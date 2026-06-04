@@ -1,10 +1,10 @@
-; v0.121 Godot procedural 2.5D visual-foundation spike.
+; v0.122 Godot content-subset adapter parity spike.
 ; Text-owned project for AI-first, editor-optional routine development.
 config_version=5
 
 [application]
 config/name="Ascendant Realms Godot Salto Spike"
-config/description="Automated placeholder-only Salto procedural visual-foundation spike. No runtime art import, gameplay change, save migration, or final engine choice."
+config/description="Automated placeholder-only Salto content-subset adapter parity spike. No runtime art import, browser gameplay change, save migration, final engine choice, or full port."
 run/main_scene="res://scenes/salto_spike_root.tscn"
 config/features=PackedStringArray("4.6", "Forward Plus")
 

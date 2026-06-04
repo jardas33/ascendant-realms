@@ -455,8 +455,8 @@ export async function validateRepositorySpikeBoundaries(projectRoot = process.cw
   });
 
   const docsFiles = await readdir(join(projectRoot, "docs"));
-  if (docsFiles.some((fileName) => fileName.startsWith("V0122_GODOT_") || fileName.startsWith("V0122_EMMANUEL_GODOT_"))) {
-    errors.push("v0.122 Godot follow-up appears to have been started; docs/V0122_GODOT_* is present.");
+  if (docsFiles.some((fileName) => fileName.startsWith("V0123_GODOT_") || fileName.startsWith("V0123_EMMANUEL_GODOT_"))) {
+    errors.push("v0.123 Godot follow-up appears to have been started; docs/V0123_GODOT_* is present.");
   }
   return errors;
 }

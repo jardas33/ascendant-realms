@@ -3,7 +3,7 @@ extends Node
 const MODE_2D := "2D_PLACEHOLDER"
 const MODE_25D := "2_5D_ORTHOGRAPHIC_PLACEHOLDER"
 const MODE_HOME := "REVIEW_HOME"
-const CHECKPOINT := "v0.121"
+const CHECKPOINT := "v0.122"
 const VIEWPORT_SIZE := Vector2i(1600, 900)
 const CAPTURE_VIEWPORTS := [Vector2i(1600, 900), Vector2i(1920, 1080)]
 const VISUAL_PRESET_2D_CONTROL := "2D_CONTROL"
@@ -169,7 +169,7 @@ func _create_review_ui() -> void:
 	home_screen.add_child(home_title)
 
 	var home_subtitle := Label.new()
-	home_subtitle.text = "v0.121 procedural 2.5D visual foundation and 2D control comparison"
+	home_subtitle.text = "v0.122 content-subset adapter parity proof"
 	home_subtitle.position = Vector2(88, 156)
 	home_subtitle.size = Vector2(1040, 44)
 	home_subtitle.add_theme_font_size_override("font_size", 22)
@@ -197,7 +197,7 @@ func _create_review_ui() -> void:
 	review_layer.add_child(review_panel)
 
 	title_label = Label.new()
-	title_label.text = "v0.121 Review"
+	title_label.text = "v0.122 Adapter Review"
 	title_label.position = Vector2(16, 10)
 	title_label.size = Vector2(220, 26)
 	title_label.add_theme_font_size_override("font_size", 18)
@@ -567,17 +567,31 @@ func run_headless_tests() -> Dictionary:
 	var errors: Array[String] = []
 	var importer: RefCounted = SaltoFixtureImporterScript.new()
 	var validation: Dictionary = importer.validate_fixture()
+	var adapter_validation: Dictionary = importer.run_adapter_validation()
+	_write_report("res://reports/godot-v0122-adapter-validation.json", adapter_validation)
 	if validation.get("status", "FAIL") != "PASS":
 		for error in validation.get("errors", []):
 			errors.append(str(error))
+	if adapter_validation.get("status", "FAIL") != "PASS_GODOT_CONTENT_ADAPTER_VALIDATION":
+		for error in adapter_validation.get("errors", []):
+			errors.append(str(error))
 	_test_scene("res://scenes/salto_2d_placeholder.tscn", MODE_2D, errors)
 	_test_scene("res://scenes/salto_2_5d_orthographic_placeholder.tscn", MODE_25D, errors)
+	var parity_report: Dictionary = _run_v0122_parity_harness()
+	_write_report("res://reports/godot-v0122-parity-report.json", parity_report)
+	if parity_report.get("status", "FAIL") != "PASS_GODOT_RULES_PARITY_HARNESS":
+		for error in parity_report.get("errors", []):
+			errors.append(str(error))
+	var fixture_validation: Dictionary = validation.get("validation", {}).duplicate(true)
+	fixture_validation.erase("adapterValidation")
 	return {
 		"schemaVersion": 1,
 		"checkpoint": CHECKPOINT,
 		"status": "PASS" if errors.is_empty() else "FAIL",
 		"errors": errors,
-		"fixtureValidation": validation.get("validation", {}),
+		"fixtureValidation": fixture_validation,
+		"adapterValidation": adapter_validation,
+		"parityReport": parity_report,
 		"godotVersion": Engine.get_version_info(),
 		"tests": [
 			"project-load",
@@ -605,8 +619,61 @@ func run_headless_tests() -> Dictionary:
 			"v0.119-results-parity",
 			"v0.121-procedural-2_5d-presets",
 			"v0.121-hud-minimap-selection-readability",
-			"v0.121-vfx-stress-private-boundary"
+			"v0.121-vfx-stress-private-boundary",
+			"v0.122-content-registry-adapter",
+			"v0.122-stable-id-validator",
+			"v0.122-read-only-save-adapter",
+			"v0.122-unit-building-site-lume-results-adapters",
+			"v0.122-fixed-seed-rules-parity",
+			"v0.122-2d-and-2_5d-same-fixture",
+			"v0.122-no-full-port-started"
 		]
+	}
+
+func _run_v0122_parity_harness() -> Dictionary:
+	var errors: Array[String] = []
+	var reports: Array[Dictionary] = []
+	for config in [
+		{"mode": MODE_2D, "path": "res://scenes/salto_2d_placeholder.tscn"},
+		{"mode": MODE_25D, "path": "res://scenes/salto_2_5d_orthographic_placeholder.tscn"}
+	]:
+		var packed: PackedScene = load(str(config["path"])) as PackedScene
+		if packed == null:
+			errors.append("Failed to load v0.122 parity scene for %s" % config["mode"])
+			continue
+		var scene: Node = packed.instantiate()
+		add_child(scene)
+		if str(config["mode"]) == MODE_25D and scene.has_method("set_visual_preset"):
+			scene.set_visual_preset(VISUAL_PRESET_CLEAN)
+		if not scene.has_method("run_v0122_parity_fixture"):
+			errors.append("%s lacks run_v0122_parity_fixture" % config["mode"])
+		else:
+			var report: Dictionary = scene.run_v0122_parity_fixture()
+			reports.append(report)
+			if report.get("status", "FAIL") != "PASS_GODOT_RULES_PARITY_HARNESS":
+				for error in report.get("errors", []):
+					errors.append("%s: %s" % [config["mode"], str(error)])
+		scene.queue_free()
+	if reports.size() == 2:
+		var left: Dictionary = reports[0].get("initialSnapshot", {})
+		var right: Dictionary = reports[1].get("initialSnapshot", {})
+		if str(left.get("placementSignature", "")) != str(right.get("placementSignature", "")):
+			errors.append("2D and 2.5D parity fixtures did not share the same initial placement signature.")
+	return {
+		"schemaVersion": 1,
+		"checkpoint": CHECKPOINT,
+		"status": "PASS_GODOT_RULES_PARITY_HARNESS" if errors.is_empty() else "FAIL_GODOT_RULES_PARITY_HARNESS",
+		"generatedAtUtc": "deterministic-v0122",
+		"errors": errors,
+		"fixedSeed": 1190119,
+		"tier": "M",
+		"modes": reports.map(func(report: Dictionary) -> String: return str(report.get("mode", ""))),
+		"modeReports": reports,
+		"sameFixtureAcross2dAnd25d": errors.filter(func(error: String) -> bool: return error.contains("same initial placement")).is_empty(),
+		"fullBrowserGodotSimulationParityClaimed": false,
+		"localStorageMutationAllowed": false,
+		"saveWritesAllowed": false,
+		"routineEditorUseRequired": false
 	}
 
 func run_headless_benchmark() -> Array[String]:

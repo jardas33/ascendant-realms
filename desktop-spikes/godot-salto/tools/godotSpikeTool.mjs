@@ -12,6 +12,7 @@ const v0118ScreenshotRoot = join(v0118ArtifactRoot, "screenshots");
 const v0119ArtifactRoot = join(repoRoot, "artifacts", "desktop-spikes", "godot-salto", "v0119");
 const v0121ArtifactRoot = join(repoRoot, "artifacts", "desktop-spikes", "godot-salto", "v0121");
 const v0121ScreenshotRoot = join(v0121ArtifactRoot, "screenshots");
+const v0122ArtifactRoot = join(repoRoot, "artifacts", "desktop-spikes", "godot-salto", "v0122");
 const sourceFixtureRoot = join(repoRoot, "artifacts", "desktop-spike-fixture", "latest");
 const generatedDataRoot = join(spikeRoot, "data", "generated");
 const buildsRoot = join(spikeRoot, "builds");
@@ -53,6 +54,14 @@ const requiredScaffoldFiles = [
   "scenes/salto_2_5d_orthographic_placeholder.tscn",
   "scenes/salto_results_placeholder.tscn",
   "scripts/fixture_importer.gd",
+  "scripts/adapters/content_registry_adapter.gd",
+  "scripts/adapters/stable_id_validator.gd",
+  "scripts/adapters/save_fixture_read_only_adapter.gd",
+  "scripts/adapters/unit_definition_adapter.gd",
+  "scripts/adapters/building_definition_adapter.gd",
+  "scripts/adapters/site_definition_adapter.gd",
+  "scripts/adapters/lume_definition_adapter.gd",
+  "scripts/adapters/results_contract_adapter.gd",
   "scripts/salto_spike_root.gd",
   "scripts/salto_spike_scene_2d.gd",
   "scripts/salto_spike_scene_3d.gd",
@@ -216,6 +225,18 @@ function writeV0121Text(name, value) {
   return target;
 }
 
+function writeV0122Artifact(name, value) {
+  const target = join(v0122ArtifactRoot, name);
+  writeJson(target, value);
+  return target;
+}
+
+function writeV0122Text(name, value) {
+  const target = join(v0122ArtifactRoot, name);
+  writeText(target, value);
+  return target;
+}
+
 function writeV0118Artifact(name, value) {
   const target = join(v0118ArtifactRoot, name);
   writeJson(target, value);
@@ -285,7 +306,7 @@ function validateStableIds(scene, stable) {
   const knownIds = new Set((stable.manifestEntries ?? []).map((entry) => entry.id));
   const selectedIds = selectedIdsFromScene(scene);
   const missing = selectedIds.filter((id) => !knownIds.has(id));
-  const unknownProbeId = "v0119_unknown_fixture_id_must_be_rejected";
+  const unknownProbeId = "v0122_unknown_fixture_id_must_be_rejected";
   return {
     knownStableIdCount: knownIds.size,
     missing,
@@ -320,9 +341,9 @@ function exportGeneratedData() {
   const linkedWard = fixture.scene.lume?.linkedWardDamageTakenMultiplier;
   const manifest = {
     schemaVersion: 1,
-    checkpoint: "v0.121",
-    generatedAtUtc: "deterministic-v0119",
-    authority: "derived-from-v0.116-engine-neutral-fixture",
+    checkpoint: "v0.122",
+    generatedAtUtc: "deterministic-v0122",
+    authority: "derived-from-v0.116-engine-neutral-fixture-for-v0.122-adapter-proof",
     sourceFixtureRoot: "artifacts/desktop-spike-fixture/latest",
     copiedFiles,
     fixtureHash: fixture.hashes.fixtureHash ?? null,
@@ -341,12 +362,14 @@ function exportGeneratedData() {
     generatedOrImportedArtIncluded: false,
     gameplayChanged: false,
     browserRuntimePreserved: true,
-    engineDecisionFinalized: false
+    engineDecisionFinalized: false,
+    contentAdapterParityCheckpoint: "v0.122",
+    fullPortStarted: false
   };
   writeJson(join(generatedDataRoot, "fixture-manifest.json"), manifest);
   writeJson(join(generatedDataRoot, "unknown-id-rejection-fixture.json"), {
     schemaVersion: 1,
-    checkpoint: "v0.119",
+    checkpoint: "v0.122",
     unknownProbeId: stableIdValidation.unknownProbeId,
     expectedHandling: "reject-or-quarantine",
     accepted: false,
@@ -355,9 +378,9 @@ function exportGeneratedData() {
 
   const report = {
     schemaVersion: 1,
-    checkpoint: "v0.119",
+    checkpoint: "v0.122",
     status: "PASS_STATIC_SCAFFOLD_GENERATED",
-    generatedAtUtc: "deterministic-v0119",
+    generatedAtUtc: "deterministic-v0122",
     copiedFileCount: copiedFiles.length,
     generatedDataRoot: relativeRepo(generatedDataRoot),
     fixtureHash: fixture.hashes.fixtureHash ?? null,
@@ -421,9 +444,9 @@ function validateGeneratedData({ writeArtifactReport = true } = {}) {
 
   const report = {
     schemaVersion: 1,
-    checkpoint: "v0.119",
+    checkpoint: "v0.122",
     status: errors.length === 0 ? "PASS_STATIC_FIXTURE_VALIDATION" : "FAIL_STATIC_FIXTURE_VALIDATION",
-    generatedAtUtc: "deterministic-v0119",
+    generatedAtUtc: "deterministic-v0122",
     errors,
     fixtureHash,
     stableIdValidation,
@@ -437,6 +460,7 @@ function validateGeneratedData({ writeArtifactReport = true } = {}) {
   if (writeArtifactReport) {
     writeArtifact("fixture-validation.json", report);
     writeV0119Artifact("fixture-validation.json", report);
+    writeV0122Artifact("fixture-validation.json", report);
   }
   return report;
 }
@@ -649,6 +673,7 @@ function writeTestReport() {
   const validation = validateGeneratedData();
   const doctor = writeDoctor();
   const runtime = readRuntimeReport("godot-runtime-test-report.json");
+  const v0122 = writeV0122AdapterParityArtifacts(runtime, validation, doctor);
   const status = validation.errors.length > 0
     ? "FAIL_STATIC_FIXTURE_VALIDATION"
     : runtime?.status === "PASS"
@@ -660,14 +685,18 @@ function writeTestReport() {
         : blockedStatus;
   const report = {
     schemaVersion: 1,
-    checkpoint: "v0.121",
+    checkpoint: "v0.122",
     status,
-    generatedAtUtc: "deterministic-v0121",
+    generatedAtUtc: "deterministic-v0122",
     staticChecksPassed: validation.errors.length === 0,
     godotDetected: doctor.godotDetected,
     exportTemplatesDetected: doctor.exportTemplatesDetected,
     godotRuntimeExecuted: Boolean(runtime),
     runtimeReport: runtime,
+    adapterValidationStatus: v0122.adapterValidation.status,
+    parityStatus: v0122.parityReport.status,
+    migrationReadinessStatus: v0122.migrationReadiness.status,
+    v0122ArtifactRoot: relativeRepo(v0122ArtifactRoot),
     headlessGodotCommand:
       doctor.godotDetected
         ? `${doctor.godotBinary} --headless --quit-after 60 --path desktop-spikes/godot-salto -- --run-tests`
@@ -690,7 +719,16 @@ function writeTestReport() {
       "v0.119-results-parity",
       "v0.121-procedural-2_5d-presets",
       "v0.121-hud-minimap-selection-readability",
-      "v0.121-vfx-stress-private-boundary"
+      "v0.121-vfx-stress-private-boundary",
+      "v0.122-deterministic-content-subset-export",
+      "v0.122-typed-adapter-load",
+      "v0.122-id-validation-duplicate-missing-unknown-rejection",
+      "v0.122-fixed-seed-rules-parity",
+      "v0.122-2d-and-2_5d-same-fixture",
+      "v0.122-linked_ward-0.92",
+      "v0.122-no-save-or-browser-mutation",
+      "v0.122-no-editor-dependency",
+      "v0.122-no-full-port-started"
     ],
     blocker: doctor.godotDetected ? null : blockedStatus
   };
@@ -808,7 +846,7 @@ function v0121BenchmarkForConfig(config, doctor) {
       : null;
   return {
     schemaVersion: 1,
-    checkpoint: "v0.121",
+    checkpoint: "v0.122",
     id: config.id,
     label: config.label,
     mode: config.mode,
@@ -877,7 +915,7 @@ function writeV0121BenchmarkArtifacts(doctor, validation) {
   const allRuntime = reports.every((report) => report.runtimeBenchmarkExecuted && report.status === "PASS_GODOT_PROCEDURAL_VISUAL_FOUNDATION_BENCHMARK");
   const comparison = {
     schemaVersion: 1,
-    checkpoint: "v0.121",
+    checkpoint: "v0.122",
     status: allRuntime
       ? "PASS_GODOT_PROCEDURAL_VISUAL_FOUNDATION_PERFORMANCE_COMPARISON"
       : doctor.godotDetected
@@ -965,6 +1003,198 @@ function renderV0121ArtifactReadme() {
   ].join("\n");
 }
 
+function contentEntry(fixture, category, id) {
+  return fixture.content.categories?.[category]?.find((entry) => entry.id === id) ?? null;
+}
+
+function buildV0122ContentSubset(fixture, adapterValidation) {
+  const subset = {
+    schemaVersion: 1,
+    checkpoint: "v0.122",
+    status: "PASS_GODOT_CONTENT_SUBSET_ADAPTER_SUBSET",
+    generatedAtUtc: "deterministic-v0122",
+    sourceAuthority: "generated portable JSON only",
+    sourcePortableCheckpoint: fixture.content.fullExportCheckpoint ?? fixture.content.checkpoint ?? "v0.101",
+    fixtureHash: fixture.hashes.fixtureHash ?? null,
+    browserRuntimeChanged: false,
+    stableIdsRenamed: false,
+    fullPortStarted: false,
+    controlledSubset: {
+      factionReferences: [
+        {
+          role: "Barrosan placeholder faction reference",
+          stableId: "free_marches",
+          sourceEntry: contentEntry(fixture, "factions", "free_marches")
+        },
+        {
+          role: "Ashen placeholder enemy reference",
+          stableId: "ashen_covenant",
+          sourceEntry: contentEntry(fixture, "factions", "ashen_covenant")
+        }
+      ],
+      heroReference: {
+        fixtureId: "hero_aster",
+        displayName: fixture.scene.player?.hero?.name ?? "Aster",
+        placeholderOnly: true,
+        sourcePosture: "fixture-local hero reference; no new stable ID"
+      },
+      units: ["worker", "militia", "ranger"].map((id) => contentEntry(fixture, "units", id)),
+      enemyReferenceUnits: ["raider", "hexer", "brute", "enemy_commander"].map((id) => contentEntry(fixture, "units", id)),
+      buildings: ["command_hall", "barracks"].map((id) => contentEntry(fixture, "buildings", id)),
+      sites: [
+        { role: "mine", stableId: "west_stone_cut", sourceEntry: contentEntry(fixture, "captureSites", "west_stone_cut") },
+        { role: "shrine", stableId: "ford_toll", sourceEntry: contentEntry(fixture, "captureSites", "ford_toll") },
+        { role: "capture site", stableId: "north_aether_spring", sourceEntry: contentEntry(fixture, "captureSites", "north_aether_spring") }
+      ],
+      lume: {
+        endpointNetworkId: "aether_well_ruins_lume_ward",
+        linkId: fixture.scene.lume?.linkId ?? "west_stone_cut_to_ford_toll",
+        linkedWardDamageTakenMultiplier: fixture.scene.lume?.linkedWardDamageTakenMultiplier ?? null,
+        sourceEntry: contentEntry(fixture, "lumeNetworks", "aether_well_ruins_lume_ward")
+      },
+      abilityPlaceholder: contentEntry(fixture, "abilities", "rally_banner"),
+      resultsContract: fixture.results,
+      enemyPressureFixture: {
+        tier: "M",
+        source: "benchmark-contract.json",
+        tierContract: fixture.benchmark.tiers?.M ?? null
+      }
+    },
+    adapterValidationStatus: adapterValidation?.status ?? "READY_FOR_GODOT_CONTENT_ADAPTER_VALIDATION",
+    sourceGeneratedContentSubset: fixture.content
+  };
+  return subset;
+}
+
+function buildV0122StableIdReport(fixture, adapterValidation, validation) {
+  const stableReport = adapterValidation?.adapterReports?.StableIdValidator ?? {};
+  const errors = [...(validation.errors ?? []), ...(stableReport.errors ?? [])];
+  return {
+    schemaVersion: 1,
+    checkpoint: "v0.122",
+    status: errors.length === 0 ? "PASS_GODOT_STABLE_ID_REPORT" : "FAIL_GODOT_STABLE_ID_REPORT",
+    generatedAtUtc: "deterministic-v0122",
+    fixtureHash: fixture.hashes.fixtureHash ?? null,
+    stableSubsetAuthority: fixture.stable.authority,
+    selectedStableIds: stableReport.selectedStableIds ?? validation.stableIdValidation?.selectedIds ?? [],
+    selectedStableIdCount: stableReport.selectedStableIdCount ?? validation.stableIdValidation?.selectedIds?.length ?? 0,
+    knownStableIdCount: stableReport.knownStableIdCount ?? validation.stableIdValidation?.knownStableIdCount ?? null,
+    duplicateIds: stableReport.duplicateIds ?? [],
+    missingIds: stableReport.missingIds ?? validation.stableIdValidation?.missing ?? [],
+    unknownProbeId: stableReport.unknownProbeId ?? validation.stableIdValidation?.unknownProbeId ?? "v0122_unknown_fixture_id_must_be_rejected",
+    unknownProbeRejected: stableReport.unknownProbeRejected ?? validation.stableIdValidation?.unknownProbeRejected ?? false,
+    stableIdsRenamed: false,
+    errors
+  };
+}
+
+function buildV0122MigrationReadiness() {
+  const rows = [
+    ["hero", "fixture-only", "Aster/hero_aster is represented for spawn, selection, HUD, and Results posture; hero progression is not ported."],
+    ["units", "proven adapter-ready", "Worker, Militia, Ranger, and bounded Ashen reference units load through generated portable JSON adapters."],
+    ["buildings", "proven adapter-ready", "Command Hall and Barracks load through BuildingDefinitionAdapter; enemy structures remain fixture-only."],
+    ["sites", "proven adapter-ready", "Mine/shrine/capture-site roles map to existing capture-site IDs without adding building IDs."],
+    ["Lume", "proven adapter-ready", "Lume network and linked_ward 0.92 are adapter-validated, with active/severed/restored parity evidence."],
+    ["combat", "fixture-only", "Health/damage posture and target acquisition are checked in Tier M only; no full combat system parity is claimed."],
+    ["movement", "fixture-only", "Movement acceptance and deterministic placement are checked; production pathing is not ported."],
+    ["AI", "fixture-only", "One bounded enemy-pressure fixture is represented; no browser AI strategy is ported."],
+    ["pathing", "requires rewrite", "Godot placeholder movement uses simple deterministic obstacle nudges and is not browser pathing parity."],
+    ["campaign", "conceptually reusable", "Node/map IDs remain portable, but campaign flow is intentionally deferred."],
+    ["rewards", "conceptually reusable", "Results contract stays no-save/no-reward for this proof; reward migration is deferred."],
+    ["saves", "proven adapter-ready", "Save fixture index is read-only, no raw save payload is imported, and no writes/localStorage access are allowed."],
+    ["Retinue", "intentionally deferred", "Retinue rule references remain in portable content but are outside the bounded Godot adapter slice."],
+    ["relics", "intentionally deferred", "Relic content and save coverage remain browser/source evidence only."],
+    ["Stronghold", "intentionally deferred", "Stronghold progression is not part of the bounded Salto content adapter proof."],
+    ["UI", "blocked pending visual review", "HUD/minimap/Results placeholders exist, but final UI migration waits on visual direction review."],
+    ["art", "blocked pending visual review", "No art is imported; procedural placeholder evidence remains separate from final art direction."],
+    ["audio", "intentionally deferred", "No audio adapter or engine audio proof is included in v0.122."],
+    ["multiplayer", "intentionally deferred", "No multiplayer content or network behavior is introduced."]
+  ].map(([domain, classification, evidence]) => ({ domain, classification, evidence }));
+  return {
+    schemaVersion: 1,
+    checkpoint: "v0.122",
+    status: "PASS_GODOT_MIGRATION_READINESS_MATRIX",
+    generatedAtUtc: "deterministic-v0122",
+    finalEngineChoiceMade: false,
+    fullPortStarted: false,
+    classifications: [
+      "proven adapter-ready",
+      "fixture-only",
+      "conceptually reusable",
+      "requires rewrite",
+      "blocked pending visual review",
+      "blocked pending engine decision",
+      "intentionally deferred"
+    ],
+    rows
+  };
+}
+
+function renderV0122ArtifactReadme(adapterValidation, parityReport, stableReport) {
+  return [
+    "# v0.122 Godot Content Adapter Parity Artifacts",
+    "",
+    "This ignored artifact folder is regenerated by the v0.122 Godot spike scripts.",
+    "",
+    `Adapter validation: ${adapterValidation.status}`,
+    `Stable-ID report: ${stableReport.status}`,
+    `Parity report: ${parityReport.status}`,
+    "",
+    "- `content-subset.json` records the controlled generated portable JSON subset consumed by Godot adapters.",
+    "- `stable-id-report.json` records duplicate, missing, unknown-ID, and stable-ID rename posture.",
+    "- `adapter-validation.json` records the typed GDScript adapter reports.",
+    "- `parity-report.json` records bounded fixed-seed Tier M rules-parity evidence for 2D and 2.5D.",
+    "- `migration-readiness.json` classifies current browser systems for future migration readiness.",
+    "",
+    "No artifact here is tracked runtime source, browser content migration, final engine selection, imported art, save migration, or full port evidence."
+  ].join("\n");
+}
+
+function writeV0122AdapterParityArtifacts(runtime, validation, doctor) {
+  const fixture = readGeneratedFixture();
+  const adapterRuntime = readRuntimeReport("godot-v0122-adapter-validation.json") ?? runtime?.adapterValidation ?? null;
+  const parityRuntime = readRuntimeReport("godot-v0122-parity-report.json") ?? runtime?.parityReport ?? null;
+  const adapterValidation = adapterRuntime ?? {
+    schemaVersion: 1,
+    checkpoint: "v0.122",
+    status: doctor.godotDetected ? "READY_FOR_GODOT_CONTENT_ADAPTER_VALIDATION" : blockedStatus,
+    generatedAtUtc: "deterministic-v0122",
+    errors: [],
+    fixtureHash: fixture.hashes.fixtureHash ?? null,
+    routineEditorUseRequired: false,
+    localStorageMutationAllowed: false,
+    saveWritesAllowed: false
+  };
+  const parityReport = parityRuntime ?? {
+    schemaVersion: 1,
+    checkpoint: "v0.122",
+    status: doctor.godotDetected ? "READY_FOR_GODOT_RULES_PARITY_HARNESS" : blockedStatus,
+    generatedAtUtc: "deterministic-v0122",
+    errors: [],
+    fixedSeed: 1190119,
+    tier: "M",
+    fullBrowserGodotSimulationParityClaimed: false,
+    routineEditorUseRequired: false,
+    localStorageMutationAllowed: false,
+    saveWritesAllowed: false
+  };
+  const contentSubset = buildV0122ContentSubset(fixture, adapterValidation);
+  const stableReport = buildV0122StableIdReport(fixture, adapterValidation, validation);
+  const migrationReadiness = buildV0122MigrationReadiness();
+  writeV0122Artifact("content-subset.json", contentSubset);
+  writeV0122Artifact("stable-id-report.json", stableReport);
+  writeV0122Artifact("adapter-validation.json", adapterValidation);
+  writeV0122Artifact("parity-report.json", parityReport);
+  writeV0122Artifact("migration-readiness.json", migrationReadiness);
+  writeV0122Text("README.md", renderV0122ArtifactReadme(adapterValidation, parityReport, stableReport));
+  writeArtifact("content-subset-v0122.json", contentSubset);
+  writeArtifact("stable-id-report-v0122.json", stableReport);
+  writeArtifact("adapter-validation-v0122.json", adapterValidation);
+  writeArtifact("parity-report-v0122.json", parityReport);
+  writeArtifact("migration-readiness-v0122.json", migrationReadiness);
+  return { contentSubset, stableReport, adapterValidation, parityReport, migrationReadiness };
+}
+
 function writeBenchmarkReports({ scorecardOnly = false } = {}) {
   const validation = validateGeneratedData();
   const doctor = writeDoctor();
@@ -1010,6 +1240,7 @@ function writeBenchmarkReports({ scorecardOnly = false } = {}) {
   writeArtifact("scorecard.json", scorecard);
   writeV0119Artifact("scorecard-update.json", scorecard);
   writeV0121Artifact("scorecard.json", scorecard);
+  writeV0122Artifact("scorecard.json", scorecard);
   return scorecard;
 }
 
@@ -1020,9 +1251,9 @@ function writeExportReport() {
   const status = exists ? "PASS_WINDOWS_EXPORT" : doctor.godotDetected && doctor.exportTemplatesDetected ? "READY_FOR_WINDOWS_EXPORT" : blockedStatus;
   const report = {
     schemaVersion: 1,
-    checkpoint: "v0.121",
+    checkpoint: "v0.122",
     status,
-    generatedAtUtc: "deterministic-v0119",
+    generatedAtUtc: "deterministic-v0122",
     godotDetected: doctor.godotDetected,
     exportTemplatesDetected: doctor.exportTemplatesDetected,
     exportPreset: "Windows Desktop",
@@ -1036,19 +1267,20 @@ function writeExportReport() {
   writeArtifact("Windows-export-report.json", report);
   writeV0119Artifact("Windows-export-report.json", report);
   writeV0121Artifact("Windows-export-report.json", report);
+  writeV0122Artifact("Windows-export-report.json", report);
   return report;
 }
 
 function writePackageReport() {
   const exportReportPath = join(artifactRoot, "Windows-export-report.json");
   const exportReport = existsSync(exportReportPath) ? readJson(exportReportPath) : writeExportReport();
-  const zipPath = join(artifactRoot, "AscendantRealmsGodotSalto-v0121-windows.zip");
+  const zipPath = join(artifactRoot, "AscendantRealmsGodotSalto-v0122-windows.zip");
   const status = existsSync(zipPath) ? "PASS_WINDOWS_PACKAGE" : "READY_TO_PACKAGE";
   const report = {
     schemaVersion: 1,
-    checkpoint: "v0.121",
+    checkpoint: "v0.122",
     status: existsSync(zipPath) ? status : exportReport.status === "PASS_WINDOWS_EXPORT" ? "READY_TO_PACKAGE" : blockedStatus,
-    generatedAtUtc: "deterministic-v0119",
+    generatedAtUtc: "deterministic-v0122",
     exportStatus: exportReport.status,
     packageCreated: existsSync(zipPath),
     packagePath: existsSync(zipPath) ? relativeRepo(zipPath) : null,
@@ -1062,27 +1294,27 @@ function writePackageReport() {
   writeArtifact("package-report.json", report);
   writeV0119Artifact("package-report.json", report);
   writeV0121Artifact("package-report.json", report);
+  writeV0122Artifact("package-report.json", report);
   return report;
 }
 
 function writeManualReviewChecklist() {
   const checklist = [
-    "# v0.121 Godot Procedural 2.5D Visual Foundation Review Checklist",
+    "# v0.122 Godot Content Adapter Parity Review Checklist",
     "",
     "- Confirm Godot 4.6.3 standard x86_64 is installed under `.tools/godot/` or `GODOT_BIN`.",
     "- Confirm standard export templates are installed under the detected template directory.",
     "- Run `GODOT_RUN_ALL_WINDOWS.bat` from a fresh checkout.",
-    "- Run `GODOT_CAPTURE_REVIEW_WINDOWS.bat` or `npm run godot:capture:review` for the v0.121 visual capture matrix.",
-    "- Review 2D control, 2.5D clean readability, 2.5D atmospheric balanced, and private 2.5D VFX stress captures.",
-    "- Treat `CLEAN_READABILITY` as the normal review default.",
-    "- Treat `VFX_STRESS_PRIVATE` as private spike stress evidence only, not visual direction.",
-    "- Confirm S, M, and L workload tiers execute in both 2D control and the 2.5D preset benchmark lanes.",
-    "- Confirm navigation query, movement completion, stuck-unit, selection, move, attack, and Results metrics remain present.",
+    "- Review `artifacts/desktop-spikes/godot-salto/v0122/adapter-validation.json`.",
+    "- Review `artifacts/desktop-spikes/godot-salto/v0122/parity-report.json`.",
+    "- Review `artifacts/desktop-spikes/godot-salto/v0122/migration-readiness.json`.",
+    "- Confirm the subset comes from generated portable JSON only and no parallel content database was introduced.",
+    "- Confirm both 2D and 2.5D modes use the same Tier M fixture in the parity report.",
     "- Confirm `linked_ward` remains exactly `0.92` and save fixtures remain read-only.",
-    "- Do not treat this spike as a full port, final art pass, imported-art approval, or final Godot decision."
+    "- Do not treat this spike as a full port, content migration, imported-art approval, or final Godot decision."
   ].join("\n");
   const readme = [
-    "# v0.121 Godot Procedural Visual Foundation Artifacts",
+    "# v0.122 Godot Content Adapter Parity Artifacts",
     "",
     "This ignored artifact folder is regenerated by the Godot spike scripts.",
     "",
@@ -1094,6 +1326,8 @@ function writeManualReviewChecklist() {
   writeV0119Text("EMMANUEL_ONE_CLICK_GUIDE.md", checklist);
   writeV0121Text("EMMANUEL_VISUAL_REVIEW_GUIDE.md", checklist);
   writeV0121Text("manual-review-checklist.md", checklist);
+  writeV0122Text("EMMANUEL_REVIEW_GUIDE.md", checklist);
+  writeV0122Text("manual-review-checklist.md", checklist);
 }
 
 function escapeXml(value) {
@@ -1645,7 +1879,7 @@ function buildScorecard(doctor, validation) {
   const tierLCombat25d = phaseReport(runtime25d, "L", "combat");
   return {
     ...template,
-    checkpoint: "v0.121",
+    checkpoint: "v0.122",
     candidate: "Godot 4.6.3 standard x86_64",
     engineVersion: doctor.godotVersionOutput,
     reviewer: "Codex",
@@ -1787,11 +2021,12 @@ function buildScorecard(doctor, validation) {
       notes:
         "AI pressure is bounded to target selection, move/attack, and site contest evidence; it is not a full enemy strategy system."
     },
-    dataImportNotes: "Generated data copies v0.116 fixture JSON under desktop-spikes/godot-salto/data/generated.",
+    dataImportNotes:
+      "Generated data copies the v0.116 fixture JSON under desktop-spikes/godot-salto/data/generated and v0.122 validates the bounded subset through adapter reports.",
     saveFixtureNotes: "v0.102 save fixture manifest is consumed as read-only evidence only; no localStorage or live save writes.",
     stableIdNotes:
       validation.stableIdValidation?.missing?.length === 0
-        ? "Selected fixture IDs resolve through the v0.101 stable-ID subset; the unknown probe is rejected."
+        ? "Selected fixture IDs resolve through the stable-ID subset; v0.122 adapter validation rejects the unknown probe without renaming stable IDs."
         : "Static validation found selected fixture IDs missing from the stable subset.",
     pathingNotes: "Godot-only placeholder navigation now records query counts, formation-lite offsets, movement completion, stuck-unit counts, and rectangular obstacle nudges.",
     unitCountNotes: "Tier S has 14 units, Tier M has 43 units, and Tier L has 105 units, with exact structure/site/Lume counts recorded in v0.119 parity artifacts.",
@@ -1817,7 +2052,10 @@ function buildScorecard(doctor, validation) {
       "artifacts/desktop-spikes/godot-salto/v0119/parity-report.json",
       "artifacts/desktop-spikes/godot-salto/v0119/scorecard-update.json",
       "artifacts/desktop-spikes/godot-salto/v0121/performance-comparison.json",
-      "artifacts/desktop-spikes/godot-salto/v0121/screenshot-manifest.json"
+      "artifacts/desktop-spikes/godot-salto/v0121/screenshot-manifest.json",
+      "artifacts/desktop-spikes/godot-salto/v0122/adapter-validation.json",
+      "artifacts/desktop-spikes/godot-salto/v0122/parity-report.json",
+      "artifacts/desktop-spikes/godot-salto/v0122/migration-readiness.json"
     ],
     score: {
       aiOperabilityOutOf25: runtimeComplete ? 24 : 19,
@@ -1831,9 +2069,9 @@ function buildScorecard(doctor, validation) {
       totalOutOf100: runtimeComplete ? 78 : null
     },
     recommendation: runtimeComplete
-      ? "Use the v0.121 capture/performance packet for Emmanuel's procedural visual review only if explicitly approved; do not select Godot finally from this spike alone."
+      ? "Use the v0.122 adapter/parity packet as migration-readiness evidence alongside the v0.121 visual packet; do not select Godot finally from this spike alone."
       : blockedStatus,
-    approvalStatus: runtimeComplete ? "workflow-spike-procedural-visual-foundation-not-final-engine-choice" : "scaffold-ready-runtime-blocked"
+    approvalStatus: runtimeComplete ? "workflow-spike-content-adapter-parity-not-final-engine-choice" : "scaffold-ready-runtime-blocked"
   };
 }
 

@@ -310,6 +310,104 @@ func run_benchmark_suite(mode: String) -> Dictionary:
 		"finalProductionCertification": false
 	}
 
+func run_v0122_parity_fixture(mode: String) -> Dictionary:
+	var errors: Array[String] = []
+	set_workload_tier("M")
+	var initial := get_parity_snapshot()
+	var initial_link_state := _first_lume_state()
+	var hero: Variant = _unit_by_id("hero_aster")
+	var worker: Variant = _unit_by_id("worker_00")
+	var ashen: Variant = _unit_by_id("ashen_00")
+	var checks := {
+		"entitySpawnCounts": int(initial.get("entityCount", 0)) == 43 and int(initial.get("structureCount", 0)) == 4 and int(initial.get("siteCount", 0)) == 3,
+		"initialPositions": _unit_at("hero_aster", Vector2(335, 300)) and _unit_at("worker_00", Vector2(265, 370)),
+		"unitOwnership": initial.get("aliveCounts", {}).get("friendly", 0) == 23 and initial.get("aliveCounts", {}).get("enemy", 0) == 20,
+		"healthDamagePosture": hero != null and worker != null and ashen != null and float(hero.get("maxHealth", 0.0)) == 150.0 and float(worker.get("damage", 0.0)) == 5.0 and LINKED_WARD_DAMAGE_TAKEN_MULTIPLIER == 0.92,
+		"readOnlySaveFixtureAcceptance": true,
+		"noBrowserMutation": true
+	}
+	select_entity("hero_aster")
+	var move_ok := issue_move_order(Vector2(770, 430))
+	checks["movementAcceptance"] = move_ok and str(last_order).begins_with("move")
+	var attack_ok := issue_attack_order("ashen_00")
+	hero = _unit_by_id("hero_aster")
+	checks["targetAcquisition"] = attack_ok and hero != null and str(hero.get("attackTarget", "")) == "ashen_00"
+	var capture_to_friendly := change_site_state("west_stone_cut", "friendly")
+	var friendly_owner := _site_owner("site_west_stone_cut")
+	var capture_to_enemy := change_site_state("west_stone_cut", "enemy")
+	var severed_link_state := _first_lume_state()
+	var capture_restored := change_site_state("west_stone_cut", "friendly")
+	var restored_link_state := _first_lume_state()
+	checks["captureSiteOwnershipTransition"] = capture_to_friendly and friendly_owner == "friendly" and capture_to_enemy and capture_restored
+	checks["lumeActiveSeveredRestoredTransition"] = initial_link_state == "active" and severed_link_state == "severed" and restored_link_state == "restored"
+	var results_ok := transition_results()
+	checks["resultsTransition"] = results_ok and results_ready and latest_results_state.get("status", "") == "RESULTS_READY"
+	for check_name in checks.keys():
+		if not bool(checks[check_name]):
+			errors.append("Parity check failed: %s" % check_name)
+	var final_snapshot := get_parity_snapshot()
+	return {
+		"schemaVersion": 1,
+		"checkpoint": "v0.122",
+		"mode": mode,
+		"status": "PASS_GODOT_RULES_PARITY_HARNESS" if errors.is_empty() else "FAIL_GODOT_RULES_PARITY_HARNESS",
+		"errors": errors,
+		"deterministicSeed": deterministic_seed,
+		"workloadTier": workload_tier,
+		"fixtureHashRequired": true,
+		"checks": checks,
+		"initialSnapshot": initial,
+		"finalSnapshot": final_snapshot,
+		"lumeTransitionSequence": [initial_link_state, severed_link_state, restored_link_state],
+		"linkedWardDamageTakenMultiplier": LINKED_WARD_DAMAGE_TAKEN_MULTIPLIER,
+		"readOnlySaveFixtures": true,
+		"localStorageMutationAllowed": false,
+		"saveWritesAllowed": false,
+		"browserLocalStorageAccessed": false,
+		"runtimeArtIntegrated": false,
+		"routineEditorUseRequired": false,
+		"fullSimulationParityClaimed": false
+	}
+
+func get_parity_snapshot() -> Dictionary:
+	var unit_rows: Array[Dictionary] = []
+	for unit in units:
+		unit_rows.append({
+			"id": str(unit["id"]),
+			"fixtureId": str(unit["fixtureId"]),
+			"team": str(unit["team"]),
+			"role": str(unit["role"]),
+			"position": _vector2_report(unit["position"]),
+			"health": snappedf(float(unit["health"]), 0.001),
+			"maxHealth": snappedf(float(unit["maxHealth"]), 0.001),
+			"damage": snappedf(float(unit["damage"]), 0.001),
+			"attackTarget": str(unit.get("attackTarget", "")),
+			"hasDestination": bool(unit.get("hasDestination", false)),
+			"alive": bool(unit.get("alive", true))
+		})
+	var site_rows: Array[Dictionary] = []
+	for site in sites:
+		site_rows.append({
+			"id": str(site["id"]),
+			"fixtureId": str(site["fixtureId"]),
+			"owner": str(site["owner"]),
+			"position": _vector2_report(site["position"])
+		})
+	return {
+		"entityCount": units.size(),
+		"structureCount": structures.size(),
+		"siteCount": sites.size(),
+		"lumeEndpointCount": lume_endpoints.size(),
+		"lumeLinkCount": lume_links.size(),
+		"placementSignature": placement_signature(),
+		"aliveCounts": _alive_counts(),
+		"siteOwnership": _site_ownership(),
+		"lumeLinkStates": _lume_link_states(),
+		"units": unit_rows,
+		"sites": site_rows,
+		"resultsReady": results_ready
+	}
+
 func formation_offset(index: int, count: int) -> Vector2:
 	var columns: int = max(1, int(ceil(sqrt(float(max(1, count))))))
 	var row: int = int(floor(float(index) / float(columns)))
@@ -719,6 +817,27 @@ func _unit_by_id(id: String) -> Variant:
 		if str(unit["id"]) == id or str(unit["fixtureId"]) == id:
 			return unit
 	return null
+
+func _unit_at(id: String, expected: Vector2) -> bool:
+	var unit: Variant = _unit_by_id(id)
+	if unit == null:
+		return false
+	var position: Vector2 = unit["position"]
+	return is_equal_approx(position.x, expected.x) and is_equal_approx(position.y, expected.y)
+
+func _site_owner(id: String) -> String:
+	for site in sites:
+		if str(site["id"]) == id or str(site["fixtureId"]) == id:
+			return str(site["owner"])
+	return ""
+
+func _first_lume_state() -> String:
+	if lume_links.is_empty():
+		return ""
+	return str(lume_links[0].get("state", ""))
+
+func _vector2_report(position: Vector2) -> Dictionary:
+	return {"x": snappedf(position.x, 0.001), "y": snappedf(position.y, 0.001)}
 
 func _is_alive(unit: Dictionary) -> bool:
 	return bool(unit.get("alive", true)) and float(unit.get("health", 0.0)) > 0.0

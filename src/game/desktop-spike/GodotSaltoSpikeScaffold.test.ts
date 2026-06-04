@@ -15,6 +15,14 @@ describe("Godot Salto spike scaffold", () => {
       "desktop-spikes/godot-salto/scenes/salto_2d_placeholder.tscn",
       "desktop-spikes/godot-salto/scenes/salto_2_5d_orthographic_placeholder.tscn",
       "desktop-spikes/godot-salto/scripts/fixture_importer.gd",
+      "desktop-spikes/godot-salto/scripts/adapters/content_registry_adapter.gd",
+      "desktop-spikes/godot-salto/scripts/adapters/stable_id_validator.gd",
+      "desktop-spikes/godot-salto/scripts/adapters/save_fixture_read_only_adapter.gd",
+      "desktop-spikes/godot-salto/scripts/adapters/unit_definition_adapter.gd",
+      "desktop-spikes/godot-salto/scripts/adapters/building_definition_adapter.gd",
+      "desktop-spikes/godot-salto/scripts/adapters/site_definition_adapter.gd",
+      "desktop-spikes/godot-salto/scripts/adapters/lume_definition_adapter.gd",
+      "desktop-spikes/godot-salto/scripts/adapters/results_contract_adapter.gd",
       "desktop-spikes/godot-salto/scripts/salto_spike_root.gd",
       "desktop-spikes/godot-salto/scripts/salto_spike_workload_runtime.gd",
       "desktop-spikes/godot-salto/tests/salto_spike_test_runner.gd",
@@ -28,7 +36,7 @@ describe("Godot Salto spike scaffold", () => {
     expect(project).toContain("run/main_scene=\"res://scenes/salto_spike_root.tscn\"");
     expect(exportPreset).toContain('name="Windows Desktop"');
     expect(exportPreset).toContain('platform="Windows Desktop"');
-    expect(exportPreset).toContain('application/product_version="0.121.0"');
+    expect(exportPreset).toContain('application/product_version="0.122.0"');
   });
 
   it("defines one-click Windows scripts without adding engine dependencies", async () => {
@@ -189,7 +197,7 @@ describe("Godot Salto spike scaffold", () => {
     const toolScript = await readFile("desktop-spikes/godot-salto/tools/godotSpikeTool.mjs", "utf8");
     const packageScript = await readFile("tools/godot/packageGodotWindows.ps1", "utf8");
 
-    expect(rootScript).toContain('const CHECKPOINT := "v0.121"');
+    expect(rootScript).toContain('const CHECKPOINT := "v0.122"');
     expect(rootScript).toContain("v0.119-workload-tier-L");
     expect(runtimeScript).toContain("const TIER_ORDER := [\"S\", \"M\", \"L\"]");
     expect(runtimeScript).toContain("LINKED_WARD_DAMAGE_TAKEN_MULTIPLIER := 0.92");
@@ -197,7 +205,7 @@ describe("Godot Salto spike scaffold", () => {
     expect(toolScript).toContain("v0119ArtifactRoot");
     expect(toolScript).toContain("PASS_GODOT_REPRESENTATIVE_RTS_BENCHMARK");
     expect(toolScript).toContain("PASS_GODOT_REPRESENTATIVE_RTS_PARITY");
-    expect(packageScript).toContain("AscendantRealmsGodotSalto-v0121-windows.zip");
+    expect(packageScript).toContain("AscendantRealmsGodotSalto-v0122-windows.zip");
   });
 
   it("defines the v0.120 fresh checkout and zero-editor automation proof", async () => {
@@ -270,5 +278,53 @@ describe("Godot Salto spike scaffold", () => {
     expect(benchmarkScript).toContain("godot-v0121-benchmark-2_5d-vfx-stress-private.json");
     expect(toolScript).toContain("PASS_GODOT_PROCEDURAL_VISUAL_FOUNDATION_PERFORMANCE_COMPARISON");
     expect(toolScript).toContain("PASS_GODOT_PROCEDURAL_VISUAL_CAPTURE");
+  });
+
+  it("defines the v0.122 content-subset adapters and bounded parity harness", async () => {
+    [
+      "docs/V0122_GODOT_CONTENT_SUBSET_ADAPTER_SPEC.md",
+      "docs/V0122_GODOT_RULES_PARITY_HARNESS.md",
+      "docs/V0122_GODOT_STABLE_ID_REPORT.md",
+      "docs/V0122_GODOT_MIGRATION_READINESS_MATRIX.md",
+      "docs/V0122_GODOT_PARITY_REPORT.md",
+      "docs/V0122_IMPLEMENTATION_REPORT.md",
+      "docs/V0122_EMMANUEL_REVIEW_GUIDE.md"
+    ].forEach((path) => expect(existsSync(path), path).toBe(true));
+
+    const rootScript = await readFile("desktop-spikes/godot-salto/scripts/salto_spike_root.gd", "utf8");
+    const importerScript = await readFile("desktop-spikes/godot-salto/scripts/fixture_importer.gd", "utf8");
+    const runtimeScript = await readFile("desktop-spikes/godot-salto/scripts/salto_spike_workload_runtime.gd", "utf8");
+    const scene2d = await readFile("desktop-spikes/godot-salto/scripts/salto_spike_scene_2d.gd", "utf8");
+    const scene3d = await readFile("desktop-spikes/godot-salto/scripts/salto_spike_scene_3d.gd", "utf8");
+    const toolScript = await readFile("desktop-spikes/godot-salto/tools/godotSpikeTool.mjs", "utf8");
+
+    [
+      "ContentRegistryAdapter",
+      "StableIdValidator",
+      "SaveFixtureReadOnlyAdapter",
+      "UnitDefinitionAdapter",
+      "BuildingDefinitionAdapter",
+      "SiteDefinitionAdapter",
+      "LumeDefinitionAdapter",
+      "ResultsContractAdapter"
+    ].forEach((adapterName) => expect(importerScript).toContain(adapterName));
+
+    expect(rootScript).toContain("godot-v0122-adapter-validation.json");
+    expect(rootScript).toContain("godot-v0122-parity-report.json");
+    expect(importerScript).toContain("v0122_unknown_fixture_id_must_be_rejected");
+    expect(importerScript).toContain("PASS_GODOT_CONTENT_ADAPTER_VALIDATION");
+    expect(importerScript).toContain("linked_ward");
+    expect(importerScript).toContain("0.92");
+    expect(runtimeScript).toContain("run_v0122_parity_fixture");
+    expect(runtimeScript).toContain("PASS_GODOT_RULES_PARITY_HARNESS");
+    expect(runtimeScript).toContain("fullSimulationParityClaimed");
+    expect(scene2d).toContain("run_v0122_parity_fixture");
+    expect(scene3d).toContain("run_v0122_parity_fixture");
+    expect(toolScript).toContain("v0122ArtifactRoot");
+    expect(toolScript).toContain("content-subset.json");
+    expect(toolScript).toContain("stable-id-report.json");
+    expect(toolScript).toContain("adapter-validation.json");
+    expect(toolScript).toContain("parity-report.json");
+    expect(toolScript).toContain("migration-readiness.json");
   });
 });

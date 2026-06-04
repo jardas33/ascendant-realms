@@ -11,9 +11,19 @@ Every phase should protect these long-term pillars:
 
 ## Current Recommended Next Phase
 
-The current checkpoint is **v0.121 Godot Procedural 2.5D Visual Foundation and 2D Control Comparison** on 2026-06-04. It extends the existing Godot Salto workflow spike with procedural-only 2.5D primitives, scriptable visual presets, deterministic capture coverage, and preset performance comparison while keeping 2D as the readability/control lane and routine editor use unnecessary.
+The current checkpoint is **v0.122 Godot Content-Subset Adapter Rules-Parity Harness and Stable-ID Migration Proof** on 2026-06-04. It extends the existing Godot Salto workflow spike with generated JSON content-subset adapters, stable-ID validation, read-only save-fixture posture, 2D/2.5D same-fixture rules-parity evidence, and a migration-readiness matrix while keeping the browser prototype as the authoritative content and behavior reference.
 
-The next recommended step, only after a future explicit goal, is Emmanuel's human-visible review of the v0.121 contact sheets and performance packet or a separately approved follow-up comparison. v0.121 keeps 2.5D orthographic as a leading presentation candidate for review because it better supports modern lighting, terrain depth, atmosphere, hero readability, and Lume VFX posture, while keeping 2D as the automation/readability control. Do not generate art for runtime integration, import art into runtime, mark `runtime-candidate-approved` assets as loadable, resume broad browser visual expansion, add gameplay systems, change rewards, change saves, rename IDs, create a desktop save path, choose Godot finally, start a full desktop port, start Unity/Unreal/Electron work, or start v0.122 until a future explicit goal approves a narrow next step.
+The next recommended step, only after a future explicit goal, is Emmanuel's review of the v0.122 adapter/parity evidence alongside the v0.121 visual packet or a separately approved narrow follow-up comparison. v0.122 does not choose Godot, does not claim full simulation parity, and does not migrate content. Do not generate art for runtime integration, import art into runtime, mark `runtime-candidate-approved` assets as loadable, resume broad browser visual expansion, add gameplay systems, change rewards, change saves, rename IDs, create a desktop save path, choose Godot finally, start a full desktop port, start Unity/Unreal/Electron work, or start v0.123 until a future explicit goal approves a narrow next step.
+
+New v0.122 docs:
+
+- `docs/V0122_GODOT_CONTENT_SUBSET_ADAPTER_SPEC.md`
+- `docs/V0122_GODOT_RULES_PARITY_HARNESS.md`
+- `docs/V0122_GODOT_STABLE_ID_REPORT.md`
+- `docs/V0122_GODOT_MIGRATION_READINESS_MATRIX.md`
+- `docs/V0122_GODOT_PARITY_REPORT.md`
+- `docs/V0122_IMPLEMENTATION_REPORT.md`
+- `docs/V0122_EMMANUEL_REVIEW_GUIDE.md`
 
 New v0.121 docs:
 

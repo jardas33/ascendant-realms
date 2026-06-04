@@ -92,8 +92,12 @@ func run_workload_phase(phase: String) -> Dictionary:
 func run_benchmark_suite() -> Dictionary:
 	return runtime.run_benchmark_suite(MODE)
 
+func run_v0122_parity_fixture() -> Dictionary:
+	return runtime.run_v0122_parity_fixture(MODE)
+
 func get_spike_status() -> Dictionary:
 	var status: Dictionary = runtime.get_status(MODE)
+	status["paritySnapshot"] = runtime.get_parity_snapshot()
 	status["fogPlaceholderRendered"] = true
 	status["minimapPlaceholderRendered"] = true
 	status["lumeLinkRendered"] = runtime.lume_links.size() > 0

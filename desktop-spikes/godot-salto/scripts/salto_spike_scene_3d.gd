@@ -142,8 +142,15 @@ func run_benchmark_suite() -> Dictionary:
 	report["routineEditorUseRequired"] = false
 	return report
 
+func run_v0122_parity_fixture() -> Dictionary:
+	var report: Dictionary = runtime.run_v0122_parity_fixture(MODE)
+	report["visualPreset"] = visual_preset
+	report["proceduralPrimitiveOnly"] = true
+	return report
+
 func get_spike_status() -> Dictionary:
 	var status: Dictionary = runtime.get_status(MODE)
+	status["paritySnapshot"] = runtime.get_parity_snapshot()
 	status["visualPreset"] = visual_preset
 	status["visualPresetScope"] = _preset_scope()
 	status["proceduralPrimitiveOnly"] = true
