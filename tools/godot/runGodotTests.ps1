@@ -15,6 +15,10 @@ if ($GodotExe) {
   & $GodotExe --headless --quit-after 60 --path "desktop-spikes/godot-salto" -- --run-tests
   $GodotExitCode = $LASTEXITCODE
   node "desktop-spikes/godot-salto/tools/godotSpikeTool.mjs" test
+  $ToolExitCode = $LASTEXITCODE
+  if ($ToolExitCode -ne 0) {
+    exit $ToolExitCode
+  }
   if ($GodotExitCode -ne 0) {
     exit $GodotExitCode
   }

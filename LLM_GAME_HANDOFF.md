@@ -1,12 +1,48 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-06-04 v0.118 Godot Packaged-Build Headed Smoke Automated Visual Capture and Human-Review Harness
+Last updated: 2026-06-04 v0.119 Godot Representative RTS Load Navigation AI-Pressure And Scalability Spike
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
 ## Project Identity
 
-Ascendant Realms is the internal repository codename for a Phaser 3, TypeScript, and Vite browser-game prototype for a fantasy RTS/RPG hybrid. v0.79 records Emmanuel's approval of `JARDAS: Oath of the Barrosan Marches` as the leading public title direction, with `JARDAS` as the dominant logo word. v0.80 through v0.108 build the current Lume, visual QA, private Playtest Hub, portable content, art-slot, Salto-planning, and representative benchmark foundation without approving a runtime rebrand. v0.109 audits the v0.108 suspicious browser benchmark numbers and adds trusted production-preview-first sampling. v0.110 adds private BattleScene phase profiling, subsystem isolation, density reports, and a browser performance gate. v0.111 adds private host-environment calibration, clean-profile reproducibility, browser control baselines, and machine-pressure classification. v0.112 adds scheduler/allocation/idle-work rescue. v0.113 adds exact-semantics spatial-query, target acquisition, and path-request optimization. v0.114 adds private renderer lifecycle instrumentation, deterministic procedural geometry caching, safe presentation no-op guards, command-marker pooling, minimap due/dirty refresh, HUD DOM diff accounting, and the v0.114 audit/docs/artifact set. v0.115 consolidates the trusted performance evidence, produces Emmanuel's clean-restart retest packet, and sets the browser performance gate to RED. v0.116 creates the reviewed architecture direction, AI-first/editor-optional desktop spike preparation pack, and engine-neutral Salto fixture export/validation scripts. v0.117 creates the first repository-driven Godot benchmark spike and one-click Windows workflow. v0.118 proves packaged-build headed smoke, deterministic screenshot capture, headed benchmarks, package validation, and Emmanuel's one-click review harness for the same workflow spike. No full port, final engine choice, gameplay, save, stable-ID, art import, browser replacement, multiplayer, content expansion, or v0.119 work is approved.
+Ascendant Realms is the internal repository codename for a Phaser 3, TypeScript, and Vite browser-game prototype for a fantasy RTS/RPG hybrid. v0.79 records Emmanuel's approval of `JARDAS: Oath of the Barrosan Marches` as the leading public title direction, with `JARDAS` as the dominant logo word. v0.80 through v0.108 build the current Lume, visual QA, private Playtest Hub, portable content, art-slot, Salto-planning, and representative benchmark foundation without approving a runtime rebrand. v0.109 audits the v0.108 suspicious browser benchmark numbers and adds trusted production-preview-first sampling. v0.110 adds private BattleScene phase profiling, subsystem isolation, density reports, and a browser performance gate. v0.111 adds private host-environment calibration, clean-profile reproducibility, browser control baselines, and machine-pressure classification. v0.112 adds scheduler/allocation/idle-work rescue. v0.113 adds exact-semantics spatial-query, target acquisition, and path-request optimization. v0.114 adds private renderer lifecycle instrumentation, deterministic procedural geometry caching, safe presentation no-op guards, command-marker pooling, minimap due/dirty refresh, HUD DOM diff accounting, and the v0.114 audit/docs/artifact set. v0.115 consolidates the trusted performance evidence, produces Emmanuel's clean-restart retest packet, and sets the browser performance gate to RED. v0.116 creates the reviewed architecture direction, AI-first/editor-optional desktop spike preparation pack, and engine-neutral Salto fixture export/validation scripts. v0.117 creates the first repository-driven Godot benchmark spike and one-click Windows workflow. v0.118 proves packaged-build headed smoke, deterministic screenshot capture, headed benchmarks, package validation, and Emmanuel's one-click review harness for the same workflow spike. v0.119 adds a deterministic representative RTS load, navigation, bounded AI-pressure, parity, scalability benchmark, and v0.119 package evidence for the same Godot workflow spike. No full port, final engine choice, save/stable-ID/art import, browser replacement, multiplayer, content expansion, or v0.120 work is approved.
+
+## Current v0.119 Godot Representative RTS Load Navigation AI-Pressure And Scalability Spike - 2026-06-04
+
+Status: v0.119 is a Godot workflow spike extension only. It proves that Codex can drive a more representative Salto RTS/RPG workload through both placeholder modes with S/M/L tiers, movement, bounded combat pressure, site/Lume transitions, Results readiness, parity reports, scorecard updates, and Windows packaging from repository scripts. It does not select Godot finally, start a full port, replace the browser prototype, import art, change browser gameplay, change saves, rename stable IDs, or start v0.120.
+
+Included work:
+
+- Added `desktop-spikes/godot-salto/scripts/salto_spike_workload_runtime.gd` for deterministic S/M/L workloads, formation-lite movement, obstacle nudging, bounded AI pressure, combat/site/Lume state, and Results readiness.
+- Updated 2D and 2.5D placeholder scenes to render and benchmark the workload.
+- Updated Godot headless tests to verify S/M/L tier counts, linked_ward exactness, navigation metrics, M/L pressure beats, zero stuck units, and Results parity.
+- Updated Godot benchmark/tooling to write v0.119 scalability, parity, scorecard, package, and one-click review artifacts under `artifacts/desktop-spikes/godot-salto/v0119/`.
+- Added v0.119 docs for representative load, navigation/AI pressure, benchmark, parity, scorecard, implementation, and Emmanuel review.
+
+Runtime/save/profile boundary:
+
+- No save-version bump.
+- No save fields, localStorage keys, stable IDs, serialized IDs, rewards, XP, Retinue state, relics, reputation, campaign progression, browser gameplay rules, browser combat balance, browser AI/pathing rules, maps, factions, generated/imported art, runtime asset paths, browser runtime replacement, final engine choice, full desktop port, multiplayer, PvP, co-op, runtime title, content expansion, or v0.120 work changed.
+- `linked_ward` remains exactly `0.92`.
+
+Current evidence:
+
+```text
+Godot dependency - standard non-.NET 4.6.3 stable x86_64 detected at .tools/godot/Godot_v4.6.3-stable_win64.exe.
+Export templates - detected for 4.6.3.stable.
+Fixture import - PASS, fixture hash d6c00aad4d32173566194b01cd9b88c2947151da1e1c93cccaeb411ce225f7a3.
+Godot headless tests - PASS.
+2D/2.5D S/M/L benchmark - PASS_GODOT_REPRESENTATIVE_RTS_BENCHMARK.
+Parity - PASS_GODOT_REPRESENTATIVE_RTS_PARITY.
+Tier L 2D combat - 31.57 FPS average, 41.67 ms p95, 28,846 nav queries, 0 stuck units, 181 pressure beats.
+Tier L 2.5D combat - 32.12 FPS average, 40.51 ms p95, 28,846 nav queries, 0 stuck units, 181 pressure beats.
+Windows package - PASS_WINDOWS_PACKAGE, package hash 3bb9c596508936a990b106a8a11597243ee55d401299f9f79119baf9c76dc3aa.
+Scorecard - workflow-spike-complete-not-final-engine-choice, total 78 / 100, AI-operability 24 / 25.
+Ignored artifact root - artifacts/desktop-spikes/godot-salto/v0119/.
+```
+
+Closeout rule: commit exactly `Checkpoint v0.119 Godot representative RTS load navigation AI-pressure and scalability spike`, push only when the worktree is clean and synced, confirm remote CI, and do not start v0.120 automatically.
 
 ## Current v0.118 Godot Packaged-Build Headed Smoke Automated Visual Capture And Human-Review Harness - 2026-06-04
 

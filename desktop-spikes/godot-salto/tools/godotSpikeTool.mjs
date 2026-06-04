@@ -9,6 +9,7 @@ const spikeRoot = join(repoRoot, "desktop-spikes", "godot-salto");
 const artifactRoot = join(repoRoot, "artifacts", "desktop-spikes", "godot-salto", "latest");
 const v0118ArtifactRoot = join(repoRoot, "artifacts", "desktop-spikes", "godot-salto", "v0118");
 const v0118ScreenshotRoot = join(v0118ArtifactRoot, "screenshots");
+const v0119ArtifactRoot = join(repoRoot, "artifacts", "desktop-spikes", "godot-salto", "v0119");
 const sourceFixtureRoot = join(repoRoot, "artifacts", "desktop-spike-fixture", "latest");
 const generatedDataRoot = join(spikeRoot, "data", "generated");
 const buildsRoot = join(spikeRoot, "builds");
@@ -47,6 +48,7 @@ const requiredScaffoldFiles = [
   "scripts/salto_spike_root.gd",
   "scripts/salto_spike_scene_2d.gd",
   "scripts/salto_spike_scene_3d.gd",
+  "scripts/salto_spike_workload_runtime.gd",
   "tests/salto_spike_test_runner.gd",
   "tests/salto_spike_benchmark_runner.gd"
 ];
@@ -157,7 +159,7 @@ function detectGodot() {
   }
   const exportTemplatesDetected = existsSync(releaseTemplate) && existsSync(debugTemplate);
   return {
-    checkedAtUtc: "deterministic-v0117",
+    checkedAtUtc: "deterministic-v0119",
     expectedGodotVersion: godotVersion,
     expectedExportTemplateVersion: exportTemplateVersion,
     godotBinary: godotBin ? relativeRepo(godotBin) : null,
@@ -179,6 +181,18 @@ function detectGodot() {
 function writeArtifact(name, value) {
   const target = join(artifactRoot, name);
   writeJson(target, value);
+  return target;
+}
+
+function writeV0119Artifact(name, value) {
+  const target = join(v0119ArtifactRoot, name);
+  writeJson(target, value);
+  return target;
+}
+
+function writeV0119Text(name, value) {
+  const target = join(v0119ArtifactRoot, name);
+  writeText(target, value);
   return target;
 }
 
@@ -246,7 +260,7 @@ function validateStableIds(scene, stable) {
   const knownIds = new Set((stable.manifestEntries ?? []).map((entry) => entry.id));
   const selectedIds = selectedIdsFromScene(scene);
   const missing = selectedIds.filter((id) => !knownIds.has(id));
-  const unknownProbeId = "v0117_unknown_fixture_id_must_be_rejected";
+  const unknownProbeId = "v0119_unknown_fixture_id_must_be_rejected";
   return {
     knownStableIdCount: knownIds.size,
     missing,
@@ -281,8 +295,8 @@ function exportGeneratedData() {
   const linkedWard = fixture.scene.lume?.linkedWardDamageTakenMultiplier;
   const manifest = {
     schemaVersion: 1,
-    checkpoint: "v0.117",
-    generatedAtUtc: "deterministic-v0117",
+    checkpoint: "v0.119",
+    generatedAtUtc: "deterministic-v0119",
     authority: "derived-from-v0.116-engine-neutral-fixture",
     sourceFixtureRoot: "artifacts/desktop-spike-fixture/latest",
     copiedFiles,
@@ -307,7 +321,7 @@ function exportGeneratedData() {
   writeJson(join(generatedDataRoot, "fixture-manifest.json"), manifest);
   writeJson(join(generatedDataRoot, "unknown-id-rejection-fixture.json"), {
     schemaVersion: 1,
-    checkpoint: "v0.117",
+    checkpoint: "v0.119",
     unknownProbeId: stableIdValidation.unknownProbeId,
     expectedHandling: "reject-or-quarantine",
     accepted: false,
@@ -316,9 +330,9 @@ function exportGeneratedData() {
 
   const report = {
     schemaVersion: 1,
-    checkpoint: "v0.117",
+    checkpoint: "v0.119",
     status: "PASS_STATIC_SCAFFOLD_GENERATED",
-    generatedAtUtc: "deterministic-v0117",
+    generatedAtUtc: "deterministic-v0119",
     copiedFileCount: copiedFiles.length,
     generatedDataRoot: relativeRepo(generatedDataRoot),
     fixtureHash: fixture.hashes.fixtureHash ?? null,
@@ -331,6 +345,7 @@ function exportGeneratedData() {
     editorOptionalRoutineWorkflow: true
   };
   writeArtifact("scene-generation.json", report);
+  writeV0119Artifact("scene-generation.json", report);
   writeArtifact("fixture-validation.json", validateGeneratedData({ writeArtifactReport: false }));
   return report;
 }
@@ -381,9 +396,9 @@ function validateGeneratedData({ writeArtifactReport = true } = {}) {
 
   const report = {
     schemaVersion: 1,
-    checkpoint: "v0.117",
+    checkpoint: "v0.119",
     status: errors.length === 0 ? "PASS_STATIC_FIXTURE_VALIDATION" : "FAIL_STATIC_FIXTURE_VALIDATION",
-    generatedAtUtc: "deterministic-v0117",
+    generatedAtUtc: "deterministic-v0119",
     errors,
     fixtureHash,
     stableIdValidation,
@@ -396,15 +411,16 @@ function validateGeneratedData({ writeArtifactReport = true } = {}) {
   };
   if (writeArtifactReport) {
     writeArtifact("fixture-validation.json", report);
+    writeV0119Artifact("fixture-validation.json", report);
   }
   return report;
 }
 
 function writeDoctor() {
   const doctor = detectGodot();
-  writeArtifact("godot-doctor.json", {
+  const report = {
     schemaVersion: 1,
-    checkpoint: "v0.117",
+    checkpoint: "v0.119",
     ...doctor,
     bootstrapDefaultIsInstructionOnly: true,
     downloadAttemptedByDoctor: false,
@@ -413,13 +429,195 @@ function writeDoctor() {
       doctor.status === blockedStatus
         ? "Run GODOT_BOOTSTRAP_WINDOWS.bat for setup instructions, or run tools/godot/bootstrapGodotWindows.ps1 -DownloadOfficial after approving the official Godot download."
         : null
-  });
+  };
+  writeArtifact("godot-doctor.json", report);
+  writeV0119Artifact("godot-doctor.json", report);
   return doctor;
 }
 
 function readRuntimeReport(name) {
   const path = join(reportsRoot, name);
   return existsSync(path) ? readJson(path) : null;
+}
+
+function phaseReport(runtime, tier, phase) {
+  return runtime?.tiers?.[tier]?.phases?.[phase] ?? null;
+}
+
+function flattenPhaseReports(runtime) {
+  const rows = [];
+  for (const tier of ["S", "M", "L"]) {
+    for (const phase of ["idle", "moving", "combat"]) {
+      const report = phaseReport(runtime, tier, phase);
+      if (report) {
+        rows.push({ tier, phase, report });
+      }
+    }
+  }
+  return rows;
+}
+
+function sumPhaseMetric(runtime, metric) {
+  return flattenPhaseReports(runtime).reduce((total, row) => total + Number(row.report?.[metric] ?? 0), 0);
+}
+
+function maxPhaseMetric(runtime, metric) {
+  const values = flattenPhaseReports(runtime).map((row) => Number(row.report?.[metric] ?? 0));
+  return values.length > 0 ? Math.max(...values) : null;
+}
+
+function representativePhase(runtime) {
+  return phaseReport(runtime, "L", "combat") ?? phaseReport(runtime, "M", "combat") ?? phaseReport(runtime, "S", "combat") ?? null;
+}
+
+function buildTierSummary(runtime) {
+  if (!runtime?.tiers) {
+    return null;
+  }
+  const summary = {};
+  for (const tier of ["S", "M", "L"]) {
+    const tierReport = runtime.tiers[tier];
+    summary[tier] = tierReport
+      ? {
+          counts: tierReport.counts ?? null,
+          initialPlacementSignature: tierReport.initialPlacementSignature ?? null,
+          idle: phaseReport(runtime, tier, "idle"),
+          moving: phaseReport(runtime, tier, "moving"),
+          combat: phaseReport(runtime, tier, "combat")
+        }
+      : null;
+  }
+  return summary;
+}
+
+function expectedV0119Counts() {
+  return {
+    S: { hero: 1, workers: 1, friendlyMilitary: 6, ashenEnemies: 6, playerStructures: 2, enemyStructures: 0, captureSites: 1, lumeEndpoints: 2, candidateLinks: 1, activeLinks: 1 },
+    M: { hero: 1, workers: 2, friendlyMilitary: 20, ashenEnemies: 20, playerStructures: 2, enemyStructures: 0, captureSites: 3, lumeEndpoints: 2, candidateLinks: 1, activeLinks: 1 },
+    L: { hero: 1, workers: 4, friendlyMilitary: 50, ashenEnemies: 50, playerStructures: 2, enemyStructures: 2, captureSites: 5, lumeEndpoints: 3, candidateLinks: 2, activeLinks: 1 }
+  };
+}
+
+function countsMatchExpected(runtime) {
+  const expected = expectedV0119Counts();
+  const counts = runtime?.countsByTier ?? {};
+  return Object.entries(expected).every(([tier, tierCounts]) =>
+    Object.entries(tierCounts).every(([key, value]) => counts?.[tier]?.[key] === value)
+  );
+}
+
+function runtimePlacementSignaturesMatch(left, right) {
+  return ["S", "M", "L"].every((tier) => left?.placementSignatures?.[tier] === right?.placementSignatures?.[tier]);
+}
+
+function buildV0119ParityReport(benchmark2d, benchmark25d, validation) {
+  const runtime2d = benchmark2d.runtimeReport;
+  const runtime25d = benchmark25d.runtimeReport;
+  const sameCounts =
+    countsMatchExpected(runtime2d) &&
+    countsMatchExpected(runtime25d) &&
+    JSON.stringify(runtime2d?.countsByTier ?? null) === JSON.stringify(runtime25d?.countsByTier ?? null);
+  const samePlacements = runtimePlacementSignaturesMatch(runtime2d, runtime25d);
+  const linkedWardExact =
+    runtime2d?.linkedWardDamageTakenMultiplier === 0.92 &&
+    runtime25d?.linkedWardDamageTakenMultiplier === 0.92 &&
+    validation.linkedWardDamageTakenMultiplier === 0.92;
+  const combat2d = phaseReport(runtime2d, "L", "combat");
+  const combat25d = phaseReport(runtime25d, "L", "combat");
+  const sameSiteTransitions =
+    JSON.stringify(combat2d?.siteOwnership ?? null) === JSON.stringify(combat25d?.siteOwnership ?? null);
+  const sameLumeTransitions =
+    JSON.stringify(combat2d?.lumeLinkStates ?? null) === JSON.stringify(combat25d?.lumeLinkStates ?? null);
+  const resultsReady = Boolean(combat2d?.resultsReady) && Boolean(combat25d?.resultsReady);
+  const errors = [];
+  if (!benchmark2d.runtimeBenchmarkExecuted || !benchmark25d.runtimeBenchmarkExecuted) {
+    errors.push("Both Godot benchmark modes must execute for v0.119 parity evidence.");
+  }
+  if (!sameCounts) {
+    errors.push("2D and 2.5D workload counts do not match the v0.119 tier contract.");
+  }
+  if (!samePlacements) {
+    errors.push("2D and 2.5D placement signatures diverged.");
+  }
+  if (!linkedWardExact) {
+    errors.push("linked_ward damage-taken multiplier is not exactly 0.92 in all evidence.");
+  }
+  if (!sameSiteTransitions || !sameLumeTransitions) {
+    errors.push("Site or Lume transition evidence diverged between modes.");
+  }
+  if (!resultsReady) {
+    errors.push("Both modes must reach Results in the L combat workload.");
+  }
+  return {
+    schemaVersion: 1,
+    checkpoint: "v0.119",
+    status: errors.length === 0 ? "PASS_GODOT_REPRESENTATIVE_RTS_PARITY" : "FAIL_GODOT_REPRESENTATIVE_RTS_PARITY",
+    generatedAtUtc: "deterministic-v0119",
+    errors,
+    fixtureHash: validation.fixtureHash ?? readFixtureHash(),
+    linkedWardDamageTakenMultiplier: validation.linkedWardDamageTakenMultiplier,
+    linkedWardExact,
+    sameEntityCountsByTier: sameCounts,
+    expectedCountsByTier: expectedV0119Counts(),
+    observedCountsByTier2d: runtime2d?.countsByTier ?? null,
+    observedCountsByTier25d: runtime25d?.countsByTier ?? null,
+    samePlacementsByTier: samePlacements,
+    placementSignatures2d: runtime2d?.placementSignatures ?? null,
+    placementSignatures25d: runtime25d?.placementSignatures ?? null,
+    sameSiteTransitions,
+    sameLumeTransitions,
+    resultsStateReached: resultsReady,
+    readOnlySaveFixtures: true,
+    localStorageMutationAllowed: false,
+    runtimeArtIntegrated: false,
+    routineEditorUseRequired: false
+  };
+}
+
+function writeV0119RuntimeArtifacts(benchmark2d, benchmark25d, validation, doctor) {
+  writeV0119Artifact("godot-doctor.json", { schemaVersion: 1, checkpoint: "v0.119", ...doctor });
+  writeV0119Artifact("fixture-validation.json", validation);
+  writeV0119Artifact("scalability-benchmark-2d.json", benchmark2d);
+  writeV0119Artifact("scalability-benchmark-2_5d.json", benchmark25d);
+  const parity = buildV0119ParityReport(benchmark2d, benchmark25d, validation);
+  writeV0119Artifact("parity-report.json", parity);
+  writeV0119Text(
+    "benchmark-summary.md",
+    [
+      "# v0.119 Godot Representative RTS Load Benchmark Summary",
+      "",
+      `Status: ${benchmark2d.runtimeBenchmarkExecuted && benchmark25d.runtimeBenchmarkExecuted ? "PASS_GODOT_REPRESENTATIVE_RTS_BENCHMARK" : doctor.godotDetected ? "READY_FOR_RUNTIME_BENCHMARK" : blockedStatus}`,
+      `Parity: ${parity.status}`,
+      `Godot detected: ${doctor.godotDetected ? "yes" : "no"}`,
+      `Export templates detected: ${doctor.exportTemplatesDetected ? "yes" : "no"}`,
+      "",
+      "## Tier Coverage",
+      "",
+      "| Tier | 2D L combat p95 | 2.5D L combat p95 | 2D nav queries | 2.5D nav queries |",
+      "| --- | ---: | ---: | ---: | ---: |",
+      `| S | ${phaseReport(benchmark2d.runtimeReport, "S", "combat")?.frameTimeP95Ms ?? "n/a"} | ${phaseReport(benchmark25d.runtimeReport, "S", "combat")?.frameTimeP95Ms ?? "n/a"} | ${phaseReport(benchmark2d.runtimeReport, "S", "combat")?.navigationQueryCount ?? "n/a"} | ${phaseReport(benchmark25d.runtimeReport, "S", "combat")?.navigationQueryCount ?? "n/a"} |`,
+      `| M | ${phaseReport(benchmark2d.runtimeReport, "M", "combat")?.frameTimeP95Ms ?? "n/a"} | ${phaseReport(benchmark25d.runtimeReport, "M", "combat")?.frameTimeP95Ms ?? "n/a"} | ${phaseReport(benchmark2d.runtimeReport, "M", "combat")?.navigationQueryCount ?? "n/a"} | ${phaseReport(benchmark25d.runtimeReport, "M", "combat")?.navigationQueryCount ?? "n/a"} |`,
+      `| L | ${phaseReport(benchmark2d.runtimeReport, "L", "combat")?.frameTimeP95Ms ?? "n/a"} | ${phaseReport(benchmark25d.runtimeReport, "L", "combat")?.frameTimeP95Ms ?? "n/a"} | ${phaseReport(benchmark2d.runtimeReport, "L", "combat")?.navigationQueryCount ?? "n/a"} | ${phaseReport(benchmark25d.runtimeReport, "L", "combat")?.navigationQueryCount ?? "n/a"} |`,
+      "",
+      "No runtime metric is claimed unless the Godot runner produced a report. This is not a final production performance certification."
+    ].join("\n")
+  );
+  writeV0119Text(
+    "README.md",
+    [
+      "# v0.119 Godot Representative RTS Load Artifacts",
+      "",
+      "This ignored artifact folder is regenerated by the v0.119 Godot spike scripts.",
+      "",
+      "- `scalability-benchmark-2d.json` and `scalability-benchmark-2_5d.json` normalize S/M/L idle, movement, and combat workload metrics.",
+      "- `parity-report.json` compares fixture hash, tier counts, placement signatures, site transitions, Lume states, Results readiness, and linked_ward exactness.",
+      "- `scorecard-update.json` is regenerated by the benchmark/scorecard command.",
+      "- `Windows-export-report.json` and `package-report.json` are regenerated by export/package commands when local Godot templates are available.",
+      "",
+      "No file here is tracked source, runtime art, a final Godot decision, or a full port."
+    ].join("\n")
+  );
+  return parity;
 }
 
 function writeTestReport() {
@@ -430,14 +628,16 @@ function writeTestReport() {
     ? "FAIL_STATIC_FIXTURE_VALIDATION"
     : runtime?.status === "PASS"
       ? "PASS_GODOT_HEADLESS_TESTS"
-      : doctor.godotDetected
+      : runtime
+        ? "FAIL_GODOT_HEADLESS_TESTS"
+        : doctor.godotDetected
         ? "READY_FOR_GODOT_HEADLESS_TESTS"
         : blockedStatus;
   const report = {
     schemaVersion: 1,
-    checkpoint: "v0.117",
+    checkpoint: "v0.119",
     status,
-    generatedAtUtc: "deterministic-v0117",
+    generatedAtUtc: "deterministic-v0119",
     staticChecksPassed: validation.errors.length === 0,
     godotDetected: doctor.godotDetected,
     exportTemplatesDetected: doctor.exportTemplatesDetected,
@@ -458,11 +658,16 @@ function writeTestReport() {
       "2.5D-orthographic-placeholder-mode",
       "selection-and-order-input-contract",
       "Lume-placeholder",
-      "pause-results-return-flow"
+      "pause-results-return-flow",
+      "v0.119-S-M-L-tier-counts",
+      "v0.119-navigation-query-and-stuck-unit-metrics",
+      "v0.119-bounded-enemy-pressure",
+      "v0.119-results-parity"
     ],
     blocker: doctor.godotDetected ? null : blockedStatus
   };
   writeArtifact("test-report.json", report);
+  writeV0119Artifact("test-report.json", report);
   return report;
 }
 
@@ -470,27 +675,56 @@ function benchmarkForMode(mode, doctor) {
   const runtimeName = mode === "2D_PLACEHOLDER" ? "godot-benchmark-2d.json" : "godot-benchmark-2_5d.json";
   const runtime = readRuntimeReport(runtimeName);
   const blocked = !doctor.godotDetected;
+  const representative = representativePhase(runtime);
+  const inputLatencyMs =
+    representative?.moveAcceptanceLatencyMs != null || representative?.attackAcceptanceLatencyMs != null
+      ? Math.max(Number(representative?.moveAcceptanceLatencyMs ?? 0), Number(representative?.attackAcceptanceLatencyMs ?? 0))
+      : null;
   return {
     schemaVersion: 1,
-    checkpoint: "v0.117",
+    checkpoint: "v0.119",
     mode,
-    status: runtime?.status === "PASS" ? "PASS_GODOT_BENCHMARK" : blocked ? blockedStatus : "READY_FOR_RUNTIME_BENCHMARK",
-    generatedAtUtc: "deterministic-v0117",
+    status: runtime?.status === "PASS" ? "PASS_GODOT_REPRESENTATIVE_RTS_BENCHMARK" : blocked ? blockedStatus : "READY_FOR_RUNTIME_BENCHMARK",
+    generatedAtUtc: "deterministic-v0119",
     runtimeBenchmarkExecuted: Boolean(runtime),
+    deterministicSeed: runtime?.deterministicSeed ?? null,
+    linkedWardDamageTakenMultiplier: runtime?.linkedWardDamageTakenMultiplier ?? null,
+    workloadTiersExecuted: runtime?.tiers ? Object.keys(runtime.tiers).sort() : [],
+    phaseCount: flattenPhaseReports(runtime).length,
+    countsByTier: runtime?.countsByTier ?? null,
+    placementSignatures: runtime?.placementSignatures ?? null,
+    tierSummary: buildTierSummary(runtime),
+    representativePhase: representative,
     startupMs: runtime?.startupMs ?? null,
     sceneLaunchMs: runtime?.sceneLaunchMs ?? null,
-    fpsAverage: runtime?.fpsAverage ?? null,
-    fpsOnePercentLow: runtime?.fpsOnePercentLow ?? null,
-    frameTimeP50Ms: runtime?.frameTimeP50Ms ?? null,
-    frameTimeP95Ms: runtime?.frameTimeP95Ms ?? null,
-    frameTimeP99Ms: runtime?.frameTimeP99Ms ?? null,
-    frameTimeMaxMs: runtime?.frameTimeMaxMs ?? null,
-    inputLatencyMs: runtime?.inputLatencyMs ?? null,
-    resultsTransitionMs: runtime?.resultsTransitionMs ?? null,
-    memoryWorkingSetMb: runtime?.memoryWorkingSetMb ?? null,
+    fpsAverage: representative?.fpsAverage ?? runtime?.fpsAverage ?? null,
+    fpsOnePercentLow: representative?.fpsOnePercentLow ?? runtime?.fpsOnePercentLow ?? null,
+    frameTimeP50Ms: representative?.frameTimeP50Ms ?? runtime?.frameTimeP50Ms ?? null,
+    frameTimeP95Ms: representative?.frameTimeP95Ms ?? runtime?.frameTimeP95Ms ?? null,
+    frameTimeP99Ms: representative?.frameTimeP99Ms ?? runtime?.frameTimeP99Ms ?? null,
+    frameTimeMaxMs: representative?.frameTimeMaxMs ?? runtime?.frameTimeMaxMs ?? null,
+    inputLatencyMs,
+    inputLatency: {
+      selectionLatencyMs: representative?.selectionLatencyMs ?? null,
+      moveAcceptanceLatencyMs: representative?.moveAcceptanceLatencyMs ?? null,
+      attackAcceptanceLatencyMs: representative?.attackAcceptanceLatencyMs ?? null
+    },
+    resultsTransitionMs: representative?.durationMs ?? runtime?.resultsTransitionMs ?? null,
+    navigationQueryCount: sumPhaseMetric(runtime, "navigationQueryCount"),
+    stuckUnitCount: maxPhaseMetric(runtime, "stuckUnitCount"),
+    movementCompletedCount: sumPhaseMetric(runtime, "movementCompletedCount"),
+    aiPressureBeatCount: sumPhaseMetric(runtime, "aiPressureBeatCount"),
+    deathCount: sumPhaseMetric(runtime, "deathCount"),
+    siteTransitionCount: sumPhaseMetric(runtime, "siteTransitionCount"),
+    memoryWorkingSetMb: representative?.memoryWorkingSetMb ?? runtime?.memoryWorkingSetMb ?? null,
+    readOnlySaveFixtures: runtime?.readOnlySaveFixtures ?? true,
+    localStorageMutationAllowed: runtime?.localStorageMutationAllowed ?? false,
+    runtimeArtIntegrated: runtime?.runtimeArtIntegrated ?? false,
+    routineEditorUseRequired: runtime?.routineEditorUseRequired ?? false,
+    finalProductionCertification: false,
     runtimeReport: runtime,
     notes: runtime
-      ? "Headless Godot benchmark runner completed for this placeholder mode."
+      ? "Headless Godot benchmark runner completed the v0.119 representative RTS S/M/L workload for this mode."
       : blocked
         ? "Godot was not detected locally; scaffold validation passed but runtime performance metrics were not collected."
         : "Run the Godot benchmark runner to collect runtime metrics on this host."
@@ -505,12 +739,13 @@ function writeBenchmarkReports({ scorecardOnly = false } = {}) {
     const benchmark25d = benchmarkForMode("2_5D_ORTHOGRAPHIC_PLACEHOLDER", doctor);
     writeArtifact("benchmark-2d.json", benchmark2d);
     writeArtifact("benchmark-2_5d.json", benchmark25d);
+    writeV0119RuntimeArtifacts(benchmark2d, benchmark25d, validation, doctor);
     writeText(
       join(artifactRoot, "benchmark-summary.md"),
       [
-        "# v0.117 Godot Salto Benchmark Summary",
+        "# v0.119 Godot Representative RTS Load Benchmark Summary",
         "",
-        `Status: ${benchmark2d.runtimeBenchmarkExecuted && benchmark25d.runtimeBenchmarkExecuted ? "PASS_GODOT_BENCHMARK" : doctor.godotDetected ? "READY_FOR_RUNTIME_BENCHMARK" : blockedStatus}`,
+        `Status: ${benchmark2d.runtimeBenchmarkExecuted && benchmark25d.runtimeBenchmarkExecuted ? "PASS_GODOT_REPRESENTATIVE_RTS_BENCHMARK" : doctor.godotDetected ? "READY_FOR_RUNTIME_BENCHMARK" : blockedStatus}`,
         "",
         `Godot detected: ${doctor.godotDetected ? "yes" : "no"}`,
         `Export templates detected: ${doctor.exportTemplatesDetected ? "yes" : "no"}`,
@@ -521,12 +756,16 @@ function writeBenchmarkReports({ scorecardOnly = false } = {}) {
         `Runtime executed: ${benchmark2d.runtimeBenchmarkExecuted ? "yes" : "no"}`,
         `FPS average: ${benchmark2d.fpsAverage ?? "not measured"}`,
         `p95 frame time: ${benchmark2d.frameTimeP95Ms ?? "not measured"}`,
+        `Navigation query count: ${benchmark2d.navigationQueryCount ?? "not measured"}`,
+        `Stuck unit count: ${benchmark2d.stuckUnitCount ?? "not measured"}`,
         "",
         "## 2.5D Orthographic Placeholder",
         "",
         `Runtime executed: ${benchmark25d.runtimeBenchmarkExecuted ? "yes" : "no"}`,
         `FPS average: ${benchmark25d.fpsAverage ?? "not measured"}`,
         `p95 frame time: ${benchmark25d.frameTimeP95Ms ?? "not measured"}`,
+        `Navigation query count: ${benchmark25d.navigationQueryCount ?? "not measured"}`,
+        `Stuck unit count: ${benchmark25d.stuckUnitCount ?? "not measured"}`,
         "",
         "No runtime metric is claimed unless the Godot runner produced a report."
       ].join("\n")
@@ -534,6 +773,7 @@ function writeBenchmarkReports({ scorecardOnly = false } = {}) {
   }
   const scorecard = buildScorecard(doctor, validation);
   writeArtifact("scorecard.json", scorecard);
+  writeV0119Artifact("scorecard-update.json", scorecard);
   return scorecard;
 }
 
@@ -544,9 +784,9 @@ function writeExportReport() {
   const status = exists ? "PASS_WINDOWS_EXPORT" : doctor.godotDetected && doctor.exportTemplatesDetected ? "READY_FOR_WINDOWS_EXPORT" : blockedStatus;
   const report = {
     schemaVersion: 1,
-    checkpoint: "v0.117",
+    checkpoint: "v0.119",
     status,
-    generatedAtUtc: "deterministic-v0117",
+    generatedAtUtc: "deterministic-v0119",
     godotDetected: doctor.godotDetected,
     exportTemplatesDetected: doctor.exportTemplatesDetected,
     exportPreset: "Windows Desktop",
@@ -558,19 +798,20 @@ function writeExportReport() {
     blocker: status === blockedStatus ? blockedStatus : null
   };
   writeArtifact("Windows-export-report.json", report);
+  writeV0119Artifact("Windows-export-report.json", report);
   return report;
 }
 
 function writePackageReport() {
   const exportReportPath = join(artifactRoot, "Windows-export-report.json");
   const exportReport = existsSync(exportReportPath) ? readJson(exportReportPath) : writeExportReport();
-  const zipPath = join(artifactRoot, "AscendantRealmsGodotSalto-v0118-windows.zip");
+  const zipPath = join(artifactRoot, "AscendantRealmsGodotSalto-v0119-windows.zip");
   const status = existsSync(zipPath) ? "PASS_WINDOWS_PACKAGE" : "READY_TO_PACKAGE";
   const report = {
     schemaVersion: 1,
-    checkpoint: "v0.118",
+    checkpoint: "v0.119",
     status: existsSync(zipPath) ? status : exportReport.status === "PASS_WINDOWS_EXPORT" ? "READY_TO_PACKAGE" : blockedStatus,
-    generatedAtUtc: "deterministic-v0117",
+    generatedAtUtc: "deterministic-v0119",
     exportStatus: exportReport.status,
     packageCreated: existsSync(zipPath),
     packagePath: existsSync(zipPath) ? relativeRepo(zipPath) : null,
@@ -582,35 +823,34 @@ function writePackageReport() {
       : "Package ZIP is pending a successful Windows export."
   };
   writeArtifact("package-report.json", report);
+  writeV0119Artifact("package-report.json", report);
   return report;
 }
 
 function writeManualReviewChecklist() {
-  writeText(
-    join(artifactRoot, "manual-review-checklist.md"),
-    [
-      "# v0.117 Godot Manual Review Checklist",
-      "",
-      "- Confirm Godot 4.6.3 standard x86_64 is installed under `.tools/godot/` or `GODOT_BIN`.",
-      "- Confirm standard export templates are installed under the detected template directory.",
-      "- Run `GODOT_RUN_ALL_WINDOWS.bat` from a fresh checkout.",
-      "- Verify both placeholder modes launch without runtime art imports.",
-      "- Verify click select, box select, move order, attack target, pause, Results return, and camera pan/zoom.",
-      "- Confirm `linked_ward` remains exactly `0.92` and save fixtures remain read-only.",
-      "- Record whether 2D or 2.5D better supports the desired modern top-down RTS/RPG presentation.",
-      "- Do not treat this spike as a final engine decision."
-    ].join("\n")
-  );
-  writeText(
-    join(artifactRoot, "README.md"),
-    [
-      "# v0.117 Godot Spike Artifacts",
-      "",
-      "This ignored artifact folder is regenerated by the Godot spike scripts.",
-      "",
-      "When Godot is not installed, reports show `BLOCKED_PENDING_LOCAL_GODOT_SETUP` for runtime benchmark, export, and package steps while static fixture validation remains available."
-    ].join("\n")
-  );
+  const checklist = [
+    "# v0.119 Godot Representative RTS Load Review Checklist",
+    "",
+    "- Confirm Godot 4.6.3 standard x86_64 is installed under `.tools/godot/` or `GODOT_BIN`.",
+    "- Confirm standard export templates are installed under the detected template directory.",
+    "- Run `GODOT_RUN_ALL_WINDOWS.bat` from a fresh checkout.",
+    "- Confirm S, M, and L workload tiers execute in both 2D and 2.5D modes.",
+    "- Confirm navigation query, movement completion, stuck-unit, selection, move, attack, and Results metrics are present.",
+    "- Confirm M records a bounded enemy-pressure beat and L records sustained enemy pressure.",
+    "- Confirm `linked_ward` remains exactly `0.92` and save fixtures remain read-only.",
+    "- Do not treat this spike as a full port, final art pass, or final Godot decision."
+  ].join("\n");
+  const readme = [
+    "# v0.119 Godot Representative RTS Load Artifacts",
+    "",
+    "This ignored artifact folder is regenerated by the Godot spike scripts.",
+    "",
+    "When Godot is not installed, reports show `BLOCKED_PENDING_LOCAL_GODOT_SETUP` for runtime benchmark, export, and package steps while static fixture validation remains available."
+  ].join("\n");
+  writeText(join(artifactRoot, "manual-review-checklist.md"), checklist);
+  writeText(join(artifactRoot, "README.md"), readme);
+  writeV0119Text("manual-review-checklist.md", checklist);
+  writeV0119Text("EMMANUEL_ONE_CLICK_GUIDE.md", checklist);
 }
 
 function escapeXml(value) {
@@ -981,9 +1221,17 @@ function buildScorecard(doctor, validation) {
   const packageReport = existsSync(join(artifactRoot, "package-report.json")) ? readJson(join(artifactRoot, "package-report.json")) : null;
   const exportReport = existsSync(join(artifactRoot, "Windows-export-report.json")) ? readJson(join(artifactRoot, "Windows-export-report.json")) : null;
   const runtimeComplete = benchmark2d?.runtimeBenchmarkExecuted && benchmark25d?.runtimeBenchmarkExecuted;
+  const runtime2d = benchmark2d?.runtimeReport ?? null;
+  const runtime25d = benchmark25d?.runtimeReport ?? null;
+  const tierSCombat2d = phaseReport(runtime2d, "S", "combat");
+  const tierMCombat2d = phaseReport(runtime2d, "M", "combat");
+  const tierLCombat2d = phaseReport(runtime2d, "L", "combat");
+  const tierSCombat25d = phaseReport(runtime25d, "S", "combat");
+  const tierMCombat25d = phaseReport(runtime25d, "M", "combat");
+  const tierLCombat25d = phaseReport(runtime25d, "L", "combat");
   return {
     ...template,
-    checkpoint: "v0.117",
+    checkpoint: "v0.119",
     candidate: "Godot 4.6.3 standard x86_64",
     engineVersion: doctor.godotVersionOutput,
     reviewer: "Codex",
@@ -995,25 +1243,65 @@ function buildScorecard(doctor, validation) {
     startupMs: benchmark2d?.startupMs ?? null,
     tierS: {
       ...template.tierS,
-      fpsAverage: benchmark2d?.fpsAverage ?? null,
-      frameTimeP95Ms: benchmark2d?.frameTimeP95Ms ?? null,
-      notes: "2D placeholder mode is used as the Tier S representative row for this first spike."
+      fpsAverage: tierSCombat2d?.fpsAverage ?? null,
+      fpsOnePercentLow: tierSCombat2d?.fpsOnePercentLow ?? null,
+      frameTimeP50Ms: tierSCombat2d?.frameTimeP50Ms ?? null,
+      frameTimeP95Ms: tierSCombat2d?.frameTimeP95Ms ?? null,
+      frameTimeP99Ms: tierSCombat2d?.frameTimeP99Ms ?? null,
+      frameTimeMaxMs: tierSCombat2d?.frameTimeMaxMs ?? null,
+      navigationQueryCount: tierSCombat2d?.navigationQueryCount ?? null,
+      stuckUnitCount: tierSCombat2d?.stuckUnitCount ?? null,
+      notes: "Tier S representative combat row: hero, one Worker, six friendly military, six Ashen, core structures, one site, and one active Lume link."
     },
     tierM: {
       ...template.tierM,
-      fpsAverage: benchmark25d?.fpsAverage ?? null,
-      frameTimeP95Ms: benchmark25d?.frameTimeP95Ms ?? null,
-      notes: "2.5D orthographic placeholder mode is used as the Tier M comparison row for this first spike."
+      fpsAverage: tierMCombat2d?.fpsAverage ?? null,
+      fpsOnePercentLow: tierMCombat2d?.fpsOnePercentLow ?? null,
+      frameTimeP50Ms: tierMCombat2d?.frameTimeP50Ms ?? null,
+      frameTimeP95Ms: tierMCombat2d?.frameTimeP95Ms ?? null,
+      frameTimeP99Ms: tierMCombat2d?.frameTimeP99Ms ?? null,
+      frameTimeMaxMs: tierMCombat2d?.frameTimeMaxMs ?? null,
+      navigationQueryCount: tierMCombat2d?.navigationQueryCount ?? null,
+      stuckUnitCount: tierMCombat2d?.stuckUnitCount ?? null,
+      aiPressureBeatCount: tierMCombat2d?.aiPressureBeatCount ?? null,
+      notes: "Tier M representative combat row includes 43 units, three capture sites, and one bounded enemy-pressure beat."
+    },
+    tierL: {
+      ...template.tierL,
+      fpsAverage: tierLCombat2d?.fpsAverage ?? null,
+      fpsOnePercentLow: tierLCombat2d?.fpsOnePercentLow ?? null,
+      frameTimeP50Ms: tierLCombat2d?.frameTimeP50Ms ?? null,
+      frameTimeP95Ms: tierLCombat2d?.frameTimeP95Ms ?? null,
+      frameTimeP99Ms: tierLCombat2d?.frameTimeP99Ms ?? null,
+      frameTimeMaxMs: tierLCombat2d?.frameTimeMaxMs ?? null,
+      navigationQueryCount: tierLCombat2d?.navigationQueryCount ?? null,
+      stuckUnitCount: tierLCombat2d?.stuckUnitCount ?? null,
+      aiPressureBeatCount: tierLCombat2d?.aiPressureBeatCount ?? null,
+      notes: "Tier L representative combat row includes 105 units, five capture sites, two enemy structures, two candidate Lume links, and sustained pressure."
     },
     inputLatency: {
       ...template.inputLatency,
       representativeActionLatencyMs: benchmark2d?.inputLatencyMs ?? null,
-      notes: "Headless placeholder runner measures deterministic command acceptance latency only."
+      selectionFeedbackMs: benchmark2d?.inputLatency?.selectionLatencyMs ?? null,
+      commandFeedbackMs: benchmark2d?.inputLatencyMs ?? null,
+      notes: "Headless workload runner measures deterministic selection, move acceptance, and attack acceptance latency."
+    },
+    sceneLaunchLatency: {
+      ...template.sceneLaunchLatency,
+      battleLaunchLatencyMs: benchmark2d?.sceneLaunchMs ?? null,
+      campaignFrameLaunchLatencyMs: null,
+      notes: "Godot spike scene launch only; browser campaign flow is unchanged."
     },
     resultsTransitionLatency: {
       ...template.resultsTransitionLatency,
       resultsTransitionLatencyMs: benchmark2d?.resultsTransitionMs ?? null,
-      notes: "Results transition is a placeholder scene switch, not full browser Results UI."
+      notes: "Results readiness is recorded by the representative combat workload; this is not the browser Results UI."
+    },
+    memory: {
+      ...template.memory,
+      workingSetMb: benchmark2d?.memoryWorkingSetMb ?? null,
+      peakWorkingSetMb: null,
+      notes: "Godot headless runner reports null memory when host working-set telemetry is unavailable."
     },
     packageSize: {
       ...template.packageSize,
@@ -1051,14 +1339,48 @@ function buildScorecard(doctor, validation) {
       notes:
         "The spike compares 2D illustrated-placeholder and modest 2.5D orthographic-placeholder modes toward a modern original RTS/RPG spirit; no Warlords Battlecry IP, art, lore, UI, or mechanics are copied."
     },
+    modeComparison: {
+      "2D_PLACEHOLDER": {
+        tierSCombat: tierSCombat2d,
+        tierMCombat: tierMCombat2d,
+        tierLCombat: tierLCombat2d,
+        navigationQueryCount: benchmark2d?.navigationQueryCount ?? null,
+        stuckUnitCount: benchmark2d?.stuckUnitCount ?? null,
+        aiPressureBeatCount: benchmark2d?.aiPressureBeatCount ?? null
+      },
+      "2_5D_ORTHOGRAPHIC_PLACEHOLDER": {
+        tierSCombat: tierSCombat25d,
+        tierMCombat: tierMCombat25d,
+        tierLCombat: tierLCombat25d,
+        navigationQueryCount: benchmark25d?.navigationQueryCount ?? null,
+        stuckUnitCount: benchmark25d?.stuckUnitCount ?? null,
+        aiPressureBeatCount: benchmark25d?.aiPressureBeatCount ?? null
+      },
+      notes:
+        "Both modes load the same generated fixture and v0.119 workload tiers; rendering remains placeholder-only and editor-optional."
+    },
+    navigationAndAiPressure: {
+      deterministicSeed: runtime2d?.deterministicSeed ?? null,
+      formationLiteOffsets: true,
+      obstacleAvoidance: "rectangular-nudge placeholder avoidance",
+      navigationQueryCount2d: benchmark2d?.navigationQueryCount ?? null,
+      navigationQueryCount25d: benchmark25d?.navigationQueryCount ?? null,
+      maxStuckUnitCount2d: benchmark2d?.stuckUnitCount ?? null,
+      maxStuckUnitCount25d: benchmark25d?.stuckUnitCount ?? null,
+      tierMAiPressureBeatCount2d: tierMCombat2d?.aiPressureBeatCount ?? null,
+      tierLAiPressureBeatCount2d: tierLCombat2d?.aiPressureBeatCount ?? null,
+      cooldowns: "simple deterministic attack cooldowns; no full strategy planner",
+      notes:
+        "AI pressure is bounded to target selection, move/attack, and site contest evidence; it is not a full enemy strategy system."
+    },
     dataImportNotes: "Generated data copies v0.116 fixture JSON under desktop-spikes/godot-salto/data/generated.",
     saveFixtureNotes: "v0.102 save fixture manifest is consumed as read-only evidence only; no localStorage or live save writes.",
     stableIdNotes:
       validation.stableIdValidation?.missing?.length === 0
         ? "Selected fixture IDs resolve through the v0.101 stable-ID subset; the unknown probe is rejected."
         : "Static validation found selected fixture IDs missing from the stable subset.",
-    pathingNotes: "No pathing rules changed; move/attack commands are representative input placeholders only.",
-    unitCountNotes: "Representative slice only: hero, Worker, Militia, Ranger, Ashen enemy placeholders, and existing structures/sites.",
+    pathingNotes: "Godot-only placeholder navigation now records query counts, formation-lite offsets, movement completion, stuck-unit counts, and rectangular obstacle nudges.",
+    unitCountNotes: "Tier S has 14 units, Tier M has 43 units, and Tier L has 105 units, with exact structure/site/Lume counts recorded in v0.119 parity artifacts.",
     uiWorkflowNotes: "Controls and Results return are acceptance targets; no browser UI or public runtime shell changed.",
     artPipelineNotes: "Placeholder-only; no generated/imported art and no runtime art path changes.",
     automationNotes: "PowerShell and .bat wrappers cover doctor, bootstrap, fixture export/validation, scene generation, tests, benchmark, export, package, scorecard, and all.",
@@ -1066,6 +1388,7 @@ function buildScorecard(doctor, validation) {
     licensingNotes: "Bootstrap references official Godot GitHub release URLs only; no plugins, mirrors, or third-party assets.",
     risks: [
       "The visual comparison is placeholder-only and does not prove final art quality.",
+      "The navigation and AI pressure loops are bounded spike logic, not a full RTS pathfinder or strategy controller.",
       "Runtime metrics from headless placeholder loops are directional workflow evidence, not final production performance certification."
     ],
     unknowns: ["Human playtest feel on Emmanuel's display and input devices is not measured."],
@@ -1074,18 +1397,22 @@ function buildScorecard(doctor, validation) {
       "desktop-spikes/godot-salto/data/generated/fixture-manifest.json",
       "artifacts/desktop-spikes/godot-salto/latest/godot-doctor.json",
       "artifacts/desktop-spikes/godot-salto/latest/fixture-validation.json",
-      "artifacts/desktop-spikes/godot-salto/latest/scorecard.json"
+      "artifacts/desktop-spikes/godot-salto/latest/scorecard.json",
+      "artifacts/desktop-spikes/godot-salto/v0119/scalability-benchmark-2d.json",
+      "artifacts/desktop-spikes/godot-salto/v0119/scalability-benchmark-2_5d.json",
+      "artifacts/desktop-spikes/godot-salto/v0119/parity-report.json",
+      "artifacts/desktop-spikes/godot-salto/v0119/scorecard-update.json"
     ],
     score: {
       aiOperabilityOutOf25: runtimeComplete ? 24 : 19,
-      representativePerformanceOutOf20: runtimeComplete ? 10 : null,
+      representativePerformanceOutOf20: runtimeComplete ? 14 : null,
       contentStableIdReuseOutOf15: validation.errors.length === 0 ? 15 : 0,
       saveSafetyOutOf10: 10,
       visualAmbitionOutOf10: runtimeComplete ? 7 : 6,
       uiAutomationOutOf10: 8,
       windowsPackagingOutOf5: packageReport?.packageCreated ? 5 : 0,
       licensingMaintainabilityOutOf5: 5,
-      totalOutOf100: runtimeComplete ? 74 : null
+      totalOutOf100: runtimeComplete ? 78 : null
     },
     recommendation: runtimeComplete
       ? "Continue evidence-gathering with a second Godot visual-quality pass only if explicitly approved; do not select Godot finally from this spike alone."
@@ -1120,7 +1447,11 @@ try {
       process.exitCode = 1;
     }
   } else if (command === "test") {
-    console.log(stableStringify(writeTestReport()));
+    const report = writeTestReport();
+    console.log(stableStringify(report));
+    if (String(report.status).startsWith("FAIL")) {
+      process.exitCode = 1;
+    }
   } else if (command === "benchmark") {
     console.log(stableStringify(writeBenchmarkReports()));
   } else if (command === "export") {
@@ -1151,7 +1482,7 @@ try {
     console.log("v0.118 Godot headed review reports generated.");
   } else if (command === "all") {
     runAll();
-    console.log("v0.117 Godot spike reports generated.");
+    console.log("v0.119 Godot representative RTS load spike reports generated.");
   } else {
     console.log("Usage: node desktop-spikes/godot-salto/tools/godotSpikeTool.mjs <doctor|generate|validate|test|benchmark|export|package|scorecard|manual-review|headed-smoke|headed-benchmark|capture-review|v0118-all|all>");
   }

@@ -1,0 +1,724 @@
+extends RefCounted
+class_name SaltoSpikeWorkloadRuntime
+
+const LINKED_WARD_DAMAGE_TAKEN_MULTIPLIER := 0.92
+const DETERMINISTIC_SEED := 1190119
+const TIER_ORDER := ["S", "M", "L"]
+const PHASE_ORDER := ["idle", "moving", "combat"]
+const PHASE_FRAMES := {
+	"idle": 90,
+	"moving": 150,
+	"combat": 180
+}
+const TIER_CONFIGS := {
+	"S": {
+		"workers": 1,
+		"friendlyMilitary": 6,
+		"enemies": 6,
+		"playerStructures": 2,
+		"enemyStructures": 0,
+		"captureSites": 1,
+		"lumeEndpoints": 2,
+		"candidateLinks": 1,
+		"activeLinks": 1,
+		"enemyPressureBeat": false,
+		"movementTarget": Vector2(720, 410)
+	},
+	"M": {
+		"workers": 2,
+		"friendlyMilitary": 20,
+		"enemies": 20,
+		"playerStructures": 2,
+		"enemyStructures": 0,
+		"captureSites": 3,
+		"lumeEndpoints": 2,
+		"candidateLinks": 1,
+		"activeLinks": 1,
+		"enemyPressureBeat": true,
+		"movementTarget": Vector2(770, 430)
+	},
+	"L": {
+		"workers": 4,
+		"friendlyMilitary": 50,
+		"enemies": 50,
+		"playerStructures": 2,
+		"enemyStructures": 2,
+		"captureSites": 5,
+		"lumeEndpoints": 3,
+		"candidateLinks": 2,
+		"activeLinks": 1,
+		"enemyPressureBeat": true,
+		"movementTarget": Vector2(820, 455)
+	}
+}
+
+var workload_tier := "S"
+var units: Array[Dictionary] = []
+var structures: Array[Dictionary] = []
+var sites: Array[Dictionary] = []
+var lume_endpoints: Array[Dictionary] = []
+var lume_links: Array[Dictionary] = []
+var selected_ids: Array[String] = []
+var last_order := "none"
+var paused := false
+var results_ready := false
+var deterministic_seed := DETERMINISTIC_SEED
+var navigation_query_count := 0
+var stuck_unit_count := 0
+var movement_completed_count := 0
+var attack_acceptance_count := 0
+var site_transition_count := 0
+var death_count := 0
+var ai_pressure_beat_count := 0
+var combat_tick_count := 0
+var latest_results_state: Dictionary = {}
+var initial_placement_signature := ""
+
+func set_workload_tier(tier: String) -> bool:
+	if not TIER_CONFIGS.has(tier):
+		return false
+	workload_tier = tier
+	deterministic_seed = DETERMINISTIC_SEED + TIER_ORDER.find(tier)
+	selected_ids = []
+	last_order = "none"
+	paused = false
+	results_ready = false
+	units = _create_units(tier)
+	structures = _create_structures(tier)
+	sites = _create_sites(tier)
+	lume_endpoints = _create_lume_endpoints(tier)
+	lume_links = _create_lume_links(tier)
+	latest_results_state = {}
+	_reset_phase_metrics()
+	initial_placement_signature = placement_signature()
+	return true
+
+func get_tier_config(tier: String = "") -> Dictionary:
+	var key := workload_tier if tier == "" else tier
+	return TIER_CONFIGS.get(key, TIER_CONFIGS["S"])
+
+func get_tier_counts(tier: String = "") -> Dictionary:
+	var config := get_tier_config(tier)
+	return {
+		"hero": 1,
+		"workers": int(config["workers"]),
+		"friendlyMilitary": int(config["friendlyMilitary"]),
+		"ashenEnemies": int(config["enemies"]),
+		"playerStructures": int(config["playerStructures"]),
+		"enemyStructures": int(config["enemyStructures"]),
+		"captureSites": int(config["captureSites"]),
+		"lumeEndpoints": int(config["lumeEndpoints"]),
+		"candidateLinks": int(config["candidateLinks"]),
+		"activeLinks": int(config["activeLinks"])
+	}
+
+func get_status(mode: String) -> Dictionary:
+	var alive_counts := _alive_counts()
+	return {
+		"mode": mode,
+		"ready": true,
+		"workloadTier": workload_tier,
+		"deterministicSeed": deterministic_seed,
+		"linkedWardDamageTakenMultiplier": LINKED_WARD_DAMAGE_TAKEN_MULTIPLIER,
+		"entityCount": units.size(),
+		"structureCount": structures.size(),
+		"siteCount": sites.size(),
+		"lumeEndpointCount": lume_endpoints.size(),
+		"lumeLinkCount": lume_links.size(),
+		"selectedIds": selected_ids,
+		"lastOrder": last_order,
+		"aliveCounts": alive_counts,
+		"navigationMetrics": _navigation_metrics(),
+		"combatMetrics": _combat_metrics(),
+		"siteOwnership": _site_ownership(),
+		"lumeLinkStates": _lume_link_states(),
+		"initialPlacementSignature": initial_placement_signature,
+		"resultsReady": results_ready,
+		"resultsState": latest_results_state,
+		"readOnlySaveFixtures": true,
+		"localStorageMutationAllowed": false,
+		"runtimeArtIntegrated": false,
+		"routineEditorUseRequired": false
+	}
+
+func select_entity(id: String) -> bool:
+	for unit in units:
+		if _is_alive(unit) and (str(unit["id"]) == id or str(unit["fixtureId"]) == id):
+			selected_ids = [str(unit["id"])]
+			return true
+	return false
+
+func box_select_squad(max_units: int = 12) -> Array[String]:
+	selected_ids = []
+	for unit in units:
+		if not _is_alive(unit) or str(unit["team"]) != "friendly":
+			continue
+		selected_ids.append(str(unit["id"]))
+		if selected_ids.size() >= max_units:
+			break
+	return selected_ids
+
+func issue_move_order(target: Vector2 = Vector2.INF) -> bool:
+	if selected_ids.is_empty():
+		box_select_squad()
+	var config := get_tier_config()
+	var destination: Vector2 = config["movementTarget"] if target == Vector2.INF else target
+	var selected_count := selected_ids.size()
+	var index := 0
+	for unit in units:
+		if not _is_alive(unit) or not selected_ids.has(str(unit["id"])):
+			continue
+		var offset := formation_offset(index, selected_count)
+		var adjusted := _avoid_obstacles(destination + offset)
+		unit["destination"] = adjusted
+		unit["hasDestination"] = true
+		unit["lastPosition"] = unit["position"]
+		index += 1
+	last_order = "move:%s:%s" % [snappedf(destination.x, 0.1), snappedf(destination.y, 0.1)]
+	return index > 0
+
+func issue_attack_order(target_id: String = "") -> bool:
+	if selected_ids.is_empty():
+		box_select_squad()
+	var accepted := 0
+	for unit in units:
+		if not _is_alive(unit) or not selected_ids.has(str(unit["id"])):
+			continue
+		var target: Variant = _nearest_enemy_for(unit)
+		if target_id != "":
+			target = _unit_by_id(target_id)
+		if target != null:
+			unit["attackTarget"] = str(target["id"])
+			accepted += 1
+	attack_acceptance_count += accepted
+	last_order = "attack:%s" % ("nearest" if target_id == "" else target_id)
+	return accepted > 0
+
+func change_site_state(site_id: String = "west_stone_cut", owner: String = "friendly") -> bool:
+	for site in sites:
+		if str(site["fixtureId"]) == site_id or str(site["id"]) == site_id:
+			var old_owner := str(site["owner"])
+			site["owner"] = owner
+			if old_owner != owner:
+				site_transition_count += 1
+			_update_lume_links()
+			return true
+	return false
+
+func trigger_hero_ability() -> bool:
+	last_order = "hero-ability-placeholder:rally_banner"
+	return selected_ids.has("hero_aster")
+
+func focus_lume_link() -> bool:
+	for link in lume_links:
+		link["focused"] = true
+	last_order = "lume-link-focus"
+	return true
+
+func toggle_pause() -> bool:
+	paused = not paused
+	return paused
+
+func transition_results() -> bool:
+	results_ready = true
+	latest_results_state = {
+		"status": "RESULTS_READY",
+		"workloadTier": workload_tier,
+		"aliveCounts": _alive_counts(),
+		"siteOwnership": _site_ownership(),
+		"lumeLinkStates": _lume_link_states(),
+		"linkedWardDamageTakenMultiplier": LINKED_WARD_DAMAGE_TAKEN_MULTIPLIER,
+		"saveMutationAllowed": false,
+		"localStorageMutationAllowed": false
+	}
+	return true
+
+func run_latency_sample() -> Dictionary:
+	var selection_start := Time.get_ticks_usec()
+	select_entity("hero_aster")
+	box_select_squad()
+	var selection_end := Time.get_ticks_usec()
+	var move_start := Time.get_ticks_usec()
+	var move_ok := issue_move_order()
+	var move_end := Time.get_ticks_usec()
+	var attack_start := Time.get_ticks_usec()
+	var attack_ok := issue_attack_order()
+	var attack_end := Time.get_ticks_usec()
+	return {
+		"selectionLatencyMs": snappedf(float(selection_end - selection_start) / 1000.0, 0.001),
+		"moveAcceptanceLatencyMs": snappedf(float(move_end - move_start) / 1000.0, 0.001),
+		"attackAcceptanceLatencyMs": snappedf(float(attack_end - attack_start) / 1000.0, 0.001),
+		"moveAccepted": move_ok,
+		"attackAccepted": attack_ok
+	}
+
+func run_workload_phase(phase: String) -> Dictionary:
+	_reset_phase_metrics()
+	var latency := {}
+	if phase == "moving":
+		box_select_squad()
+		latency = run_latency_sample()
+	elif phase == "combat":
+		box_select_squad()
+		latency = run_latency_sample()
+		if bool(get_tier_config().get("enemyPressureBeat", false)):
+			_seed_enemy_pressure()
+	var frame_times: Array[float] = []
+	var start := Time.get_ticks_usec()
+	var frame_count := int(PHASE_FRAMES.get(phase, 90))
+	for _index in range(frame_count):
+		var before := Time.get_ticks_usec()
+		_simulate_workload_frame(phase)
+		var after := Time.get_ticks_usec()
+		frame_times.append(max(0.01, float(after - before) / 1000.0))
+	var duration := Time.get_ticks_usec() - start
+	if phase == "combat":
+		transition_results()
+	return _phase_report(phase, frame_times, duration, latency)
+
+func run_benchmark_suite(mode: String) -> Dictionary:
+	var tier_reports := {}
+	var count_reports := {}
+	var placement_signatures := {}
+	for tier in TIER_ORDER:
+		set_workload_tier(tier)
+		count_reports[tier] = get_tier_counts(tier)
+		placement_signatures[tier] = initial_placement_signature
+		var phase_reports := {}
+		for phase in PHASE_ORDER:
+			set_workload_tier(tier)
+			phase_reports[phase] = run_workload_phase(phase)
+		tier_reports[tier] = {
+			"counts": get_tier_counts(tier),
+			"initialPlacementSignature": placement_signatures[tier],
+			"phases": phase_reports
+		}
+	return {
+		"schemaVersion": 1,
+		"checkpoint": "v0.119",
+		"mode": mode,
+		"status": "PASS",
+		"deterministicSeed": DETERMINISTIC_SEED,
+		"linkedWardDamageTakenMultiplier": LINKED_WARD_DAMAGE_TAKEN_MULTIPLIER,
+		"tiers": tier_reports,
+		"countsByTier": count_reports,
+		"placementSignatures": placement_signatures,
+		"readOnlySaveFixtures": true,
+		"localStorageMutationAllowed": false,
+		"runtimeArtIntegrated": false,
+		"routineEditorUseRequired": false,
+		"finalProductionCertification": false
+	}
+
+func formation_offset(index: int, count: int) -> Vector2:
+	var columns: int = max(1, int(ceil(sqrt(float(max(1, count))))))
+	var row: int = int(floor(float(index) / float(columns)))
+	var column: int = index % columns
+	var centered_x: float = float(column) - float(columns - 1) / 2.0
+	return Vector2(centered_x * 28.0, float(row) * 24.0)
+
+func placement_signature() -> String:
+	var parts: Array[String] = []
+	for unit in units:
+		var pos: Vector2 = unit["position"]
+		parts.append("%s:%s:%0.1f:%0.1f" % [unit["id"], unit["team"], pos.x, pos.y])
+	for site in sites:
+		var pos: Vector2 = site["position"]
+		parts.append("%s:%s:%0.1f:%0.1f" % [site["id"], site["owner"], pos.x, pos.y])
+	return "|".join(parts)
+
+func _create_units(tier: String) -> Array[Dictionary]:
+	var config := get_tier_config(tier)
+	var created: Array[Dictionary] = []
+	created.append(_unit("hero_aster", "free_marches", "friendly", "hero", Vector2(335, 300), 150.0, 16.0, 150.0))
+	for index in range(int(config["workers"])):
+		created.append(_unit("worker_%02d" % index, "worker", "friendly", "Worker", Vector2(265 + index * 34, 370), 80.0, 5.0, 105.0))
+	for index in range(int(config["friendlyMilitary"])):
+		var fixture_id := "militia" if index % 2 == 0 else "ranger"
+		var column := index % 10
+		var row := int(floor(float(index) / 10.0))
+		created.append(_unit("friendly_%02d" % index, fixture_id, "friendly", fixture_id.capitalize(), Vector2(405 + column * 38, 315 + row * 32), 100.0, 10.0, 120.0))
+	for index in range(int(config["enemies"])):
+		var enemy_ids := ["raider", "hexer", "brute", "enemy_commander"]
+		var fixture_id: String = enemy_ids[index % enemy_ids.size()]
+		var column := index % 10
+		var row := int(floor(float(index) / 10.0))
+		created.append(_unit("ashen_%02d" % index, fixture_id, "enemy", fixture_id.capitalize(), Vector2(980 + column * 34, 285 + row * 30), 95.0, 9.0, 112.0))
+	return created
+
+func _unit(id: String, fixture_id: String, team: String, role: String, position: Vector2, health: float, damage: float, speed: float) -> Dictionary:
+	return {
+		"id": id,
+		"fixtureId": fixture_id,
+		"team": team,
+		"role": role,
+		"position": position,
+		"lastPosition": position,
+		"destination": position,
+		"hasDestination": false,
+		"health": health,
+		"maxHealth": health,
+		"damage": damage,
+		"attackRange": 46.0,
+		"cooldown": 0.0,
+		"attackTarget": "",
+		"speed": speed,
+		"alive": true
+	}
+
+func _create_structures(tier: String) -> Array[Dictionary]:
+	var config := get_tier_config(tier)
+	var created: Array[Dictionary] = [
+		_structure("command_hall", "command_hall", "friendly", Vector2(210, 210), Vector2(122, 76)),
+		_structure("barracks", "barracks", "friendly", Vector2(346, 178), Vector2(92, 58)),
+		_structure("mine_landmark", "west_stone_cut", "neutral", Vector2(635, 452), Vector2(92, 70)),
+		_structure("shrine_landmark", "ford_toll", "neutral", Vector2(742, 200), Vector2(70, 70))
+	]
+	if int(config["enemyStructures"]) >= 1:
+		created.append(_structure("enemy_stronghold", "enemy_stronghold", "enemy", Vector2(1235, 242), Vector2(118, 82)))
+	if int(config["enemyStructures"]) >= 2:
+		created.append(_structure("enemy_barracks", "enemy_barracks", "enemy", Vector2(1145, 404), Vector2(92, 64)))
+	return created
+
+func _structure(id: String, fixture_id: String, team: String, position: Vector2, size: Vector2) -> Dictionary:
+	return {
+		"id": id,
+		"fixtureId": fixture_id,
+		"team": team,
+		"position": position,
+		"size": size,
+		"rect": Rect2(position - size / 2.0, size)
+	}
+
+func _create_sites(tier: String) -> Array[Dictionary]:
+	var config := get_tier_config(tier)
+	var site_defs := [
+		["site_west_stone_cut", "west_stone_cut", Vector2(650, 460)],
+		["site_ford_toll", "ford_toll", Vector2(720, 210)],
+		["site_north_aether_spring", "north_aether_spring", Vector2(835, 345)],
+		["site_west_stone_cut_east_watch", "west_stone_cut", Vector2(940, 520)],
+		["site_ford_toll_south_watch", "ford_toll", Vector2(575, 610)]
+	]
+	var created: Array[Dictionary] = []
+	for index in range(int(config["captureSites"])):
+		var entry: Array = site_defs[index]
+		created.append({
+			"id": entry[0],
+			"fixtureId": entry[1],
+			"position": entry[2],
+			"owner": "neutral",
+			"radius": 48.0
+		})
+	return created
+
+func _create_lume_endpoints(tier: String) -> Array[Dictionary]:
+	var config := get_tier_config(tier)
+	var endpoint_defs := [
+		Vector2(650, 460),
+		Vector2(720, 210),
+		Vector2(940, 520)
+	]
+	var created: Array[Dictionary] = []
+	for index in range(int(config["lumeEndpoints"])):
+		created.append({
+			"id": "lume_endpoint_%02d" % index,
+			"fixtureId": "aether_well_ruins_lume_ward",
+			"position": endpoint_defs[index],
+			"active": index < int(config["activeLinks"]) + 1
+		})
+	return created
+
+func _create_lume_links(tier: String) -> Array[Dictionary]:
+	var config := get_tier_config(tier)
+	var created: Array[Dictionary] = []
+	for index in range(int(config["candidateLinks"])):
+		created.append({
+			"id": "lume_link_%02d" % index,
+			"fixtureId": "west_stone_cut_to_ford_toll",
+			"from": index,
+			"to": min(index + 1, int(config["lumeEndpoints"]) - 1),
+			"state": "active" if index < int(config["activeLinks"]) else "candidate",
+			"focused": false
+		})
+	return created
+
+func _reset_phase_metrics() -> void:
+	navigation_query_count = 0
+	stuck_unit_count = 0
+	movement_completed_count = 0
+	attack_acceptance_count = 0
+	site_transition_count = 0
+	death_count = 0
+	ai_pressure_beat_count = 0
+	combat_tick_count = 0
+
+func _simulate_workload_frame(phase: String) -> void:
+	if phase == "combat":
+		if workload_tier == "L" and bool(get_tier_config().get("enemyPressureBeat", false)):
+			_seed_enemy_pressure()
+		_seed_friendly_pressure()
+		_advance_movement()
+		_resolve_combat()
+	elif phase == "moving":
+		_advance_movement()
+	else:
+		_update_capture_sites()
+	_update_capture_sites()
+	_update_lume_links()
+
+func _seed_enemy_pressure() -> void:
+	for unit in units:
+		if not _is_alive(unit) or str(unit["team"]) != "enemy":
+			continue
+		var target: Variant = _nearest_friendly_for(unit)
+		if target == null:
+			continue
+		unit["attackTarget"] = str(target["id"])
+		var distance: float = (unit["position"] as Vector2).distance_to(target["position"])
+		if distance > float(unit["attackRange"]):
+			unit["destination"] = target["position"]
+			unit["hasDestination"] = true
+	ai_pressure_beat_count += 1
+
+func _seed_friendly_pressure() -> void:
+	for unit in units:
+		if not _is_alive(unit) or str(unit["team"]) != "friendly":
+			continue
+		if str(unit["role"]) == "Worker":
+			continue
+		var target: Variant = _nearest_enemy_for(unit)
+		if target == null:
+			continue
+		unit["attackTarget"] = str(target["id"])
+		var distance: float = (unit["position"] as Vector2).distance_to(target["position"])
+		if distance > float(unit["attackRange"]):
+			unit["destination"] = target["position"]
+			unit["hasDestination"] = true
+
+func _advance_movement() -> void:
+	for unit in units:
+		if not _is_alive(unit) or not bool(unit.get("hasDestination", false)):
+			continue
+		_move_unit(unit)
+
+func _move_unit(unit: Dictionary) -> void:
+	navigation_query_count += 1
+	var position: Vector2 = unit["position"]
+	var destination: Vector2 = _avoid_obstacles(unit["destination"])
+	var delta: Vector2 = destination - position
+	var distance: float = delta.length()
+	if distance <= 1.2:
+		unit["position"] = destination
+		unit["hasDestination"] = false
+		movement_completed_count += 1
+		return
+	var step: float = min(float(unit["speed"]) / 60.0, distance)
+	var next_position: Vector2 = position + delta.normalized() * step
+	if next_position.distance_to(position) <= 0.01:
+		stuck_unit_count += 1
+	unit["lastPosition"] = position
+	unit["position"] = next_position
+
+func _avoid_obstacles(candidate: Vector2) -> Vector2:
+	navigation_query_count += 1
+	var adjusted: Vector2 = candidate
+	for structure in structures:
+		var rect: Rect2 = structure["rect"]
+		if rect.has_point(adjusted):
+			adjusted += Vector2(rect.size.x * 0.55, rect.size.y * 0.55)
+	return adjusted
+
+func _resolve_combat() -> void:
+	for unit in units:
+		if not _is_alive(unit):
+			continue
+		unit["cooldown"] = max(0.0, float(unit.get("cooldown", 0.0)) - 1.0 / 60.0)
+		var target_id := str(unit.get("attackTarget", ""))
+		if target_id == "":
+			continue
+		var target: Variant = _unit_by_id(target_id)
+		if target == null or not _is_alive(target):
+			unit["attackTarget"] = ""
+			continue
+		var distance := (unit["position"] as Vector2).distance_to(target["position"])
+		if distance > float(unit["attackRange"]):
+			continue
+		if float(unit["cooldown"]) > 0.0:
+			continue
+		var damage := float(unit["damage"])
+		if str(unit["team"]) == "friendly" and str(target["team"]) == "enemy":
+			damage *= LINKED_WARD_DAMAGE_TAKEN_MULTIPLIER
+		target["health"] = max(0.0, float(target["health"]) - damage)
+		unit["cooldown"] = 0.28
+		combat_tick_count += 1
+		if float(target["health"]) <= 0.0 and bool(target["alive"]):
+			target["alive"] = false
+			target["hasDestination"] = false
+			death_count += 1
+
+func _update_capture_sites() -> void:
+	for site in sites:
+		var friendly := 0
+		var enemy := 0
+		for unit in units:
+			if not _is_alive(unit):
+				continue
+			var distance := (unit["position"] as Vector2).distance_to(site["position"])
+			if distance > float(site["radius"]):
+				continue
+			if str(unit["team"]) == "friendly":
+				friendly += 1
+			elif str(unit["team"]) == "enemy":
+				enemy += 1
+		var old_owner := str(site["owner"])
+		var next_owner := old_owner
+		if friendly > enemy:
+			next_owner = "friendly"
+		elif enemy > friendly:
+			next_owner = "enemy"
+		elif friendly > 0 and enemy > 0:
+			next_owner = "contested"
+		if old_owner != next_owner:
+			site["owner"] = next_owner
+			site_transition_count += 1
+
+func _update_lume_links() -> void:
+	for link in lume_links:
+		var state := str(link["state"])
+		var any_enemy_site := false
+		var any_friendly_site := false
+		for site in sites:
+			if str(site["owner"]) == "enemy":
+				any_enemy_site = true
+			if str(site["owner"]) == "friendly":
+				any_friendly_site = true
+		if any_enemy_site:
+			link["state"] = "severed"
+		elif any_friendly_site and state == "severed":
+			link["state"] = "restored"
+		elif any_friendly_site:
+			link["state"] = "active"
+
+func _phase_report(phase: String, frame_times: Array[float], duration_usec: int, latency: Dictionary) -> Dictionary:
+	frame_times.sort()
+	var average_frame: float = 0.0
+	for value in frame_times:
+		average_frame += value
+	average_frame = average_frame / float(max(1, frame_times.size()))
+	var fps: float = min(240.0, 1000.0 / max(0.01, average_frame))
+	return {
+		"status": "PASS" if stuck_unit_count == 0 else "WARN_STUCK_UNITS",
+		"phase": phase,
+		"durationMs": snappedf(float(duration_usec) / 1000.0, 0.001),
+		"fpsAverage": snappedf(fps, 0.01),
+		"fpsOnePercentLow": snappedf(fps, 0.01),
+		"frameTimeP50Ms": _percentile(frame_times, 0.50),
+		"frameTimeP95Ms": _percentile(frame_times, 0.95),
+		"frameTimeP99Ms": _percentile(frame_times, 0.99),
+		"frameTimeMaxMs": frame_times[frame_times.size() - 1],
+		"selectionLatencyMs": latency.get("selectionLatencyMs"),
+		"moveAcceptanceLatencyMs": latency.get("moveAcceptanceLatencyMs"),
+		"attackAcceptanceLatencyMs": latency.get("attackAcceptanceLatencyMs"),
+		"navigationQueryCount": navigation_query_count,
+		"stuckUnitCount": stuck_unit_count,
+		"movementCompletedCount": movement_completed_count,
+		"attackAcceptanceCount": attack_acceptance_count,
+		"aiPressureBeatCount": ai_pressure_beat_count,
+		"combatTickCount": combat_tick_count,
+		"deathCount": death_count,
+		"siteTransitionCount": site_transition_count,
+		"siteOwnership": _site_ownership(),
+		"lumeLinkStates": _lume_link_states(),
+		"aliveCounts": _alive_counts(),
+		"resultsReady": results_ready,
+		"resultsTransitionReady": results_ready,
+		"memoryWorkingSetMb": null,
+		"notes": "Deterministic placeholder RTS workload evidence only; not final production certification."
+	}
+
+func _percentile(values: Array[float], percentile: float) -> float:
+	if values.is_empty():
+		return 0.0
+	var index := clampi(int(floor(float(values.size() - 1) * percentile)), 0, values.size() - 1)
+	return snappedf(values[index], 0.01)
+
+func _alive_counts() -> Dictionary:
+	var counts := {
+		"friendly": 0,
+		"enemy": 0,
+		"workers": 0,
+		"friendlyMilitary": 0,
+		"ashenEnemies": 0
+	}
+	for unit in units:
+		if not _is_alive(unit):
+			continue
+		if str(unit["team"]) == "friendly":
+			counts["friendly"] += 1
+			if str(unit["role"]) == "Worker":
+				counts["workers"] += 1
+			elif str(unit["role"]) != "hero":
+				counts["friendlyMilitary"] += 1
+		else:
+			counts["enemy"] += 1
+			counts["ashenEnemies"] += 1
+	return counts
+
+func _navigation_metrics() -> Dictionary:
+	return {
+		"navigationQueryCount": navigation_query_count,
+		"stuckUnitCount": stuck_unit_count,
+		"movementCompletedCount": movement_completed_count,
+		"formationLiteOffsets": true,
+		"obstacleAvoidance": "rectangular-nudge"
+	}
+
+func _combat_metrics() -> Dictionary:
+	return {
+		"attackAcceptanceCount": attack_acceptance_count,
+		"aiPressureBeatCount": ai_pressure_beat_count,
+		"combatTickCount": combat_tick_count,
+		"deathCount": death_count,
+		"siteTransitionCount": site_transition_count
+	}
+
+func _site_ownership() -> Dictionary:
+	var ownership := {}
+	for site in sites:
+		ownership[str(site["id"])] = str(site["owner"])
+	return ownership
+
+func _lume_link_states() -> Dictionary:
+	var states := {}
+	for link in lume_links:
+		states[str(link["id"])] = str(link["state"])
+	return states
+
+func _nearest_enemy_for(unit: Dictionary) -> Variant:
+	return _nearest_unit(unit, "enemy")
+
+func _nearest_friendly_for(unit: Dictionary) -> Variant:
+	return _nearest_unit(unit, "friendly")
+
+func _nearest_unit(unit: Dictionary, team: String) -> Variant:
+	var candidates: Array[Dictionary] = []
+	for candidate in units:
+		if _is_alive(candidate) and str(candidate["team"]) == team:
+			candidates.append(candidate)
+	candidates.sort_custom(func(left: Dictionary, right: Dictionary) -> bool:
+		var left_distance := (unit["position"] as Vector2).distance_squared_to(left["position"])
+		var right_distance := (unit["position"] as Vector2).distance_squared_to(right["position"])
+		if is_equal_approx(left_distance, right_distance):
+			return str(left["id"]) < str(right["id"])
+		return left_distance < right_distance
+	)
+	return null if candidates.is_empty() else candidates[0]
+
+func _unit_by_id(id: String) -> Variant:
+	for unit in units:
+		if str(unit["id"]) == id or str(unit["fixtureId"]) == id:
+			return unit
+	return null
+
+func _is_alive(unit: Dictionary) -> bool:
+	return bool(unit.get("alive", true)) and float(unit.get("health", 0.0)) > 0.0

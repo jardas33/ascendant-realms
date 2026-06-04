@@ -3,7 +3,7 @@ extends Node
 const MODE_2D := "2D_PLACEHOLDER"
 const MODE_25D := "2_5D_ORTHOGRAPHIC_PLACEHOLDER"
 const MODE_HOME := "REVIEW_HOME"
-const CHECKPOINT := "v0.118"
+const CHECKPOINT := "v0.119"
 const VIEWPORT_SIZE := Vector2i(1600, 900)
 const SCRIPT_ARG_PREFIXES := [
 	"--run-tests",
@@ -129,7 +129,7 @@ func _create_review_ui() -> void:
 	home_screen.add_child(home_title)
 
 	var home_subtitle := Label.new()
-	home_subtitle.text = "v0.118 packaged-build headed smoke and visual review harness"
+	home_subtitle.text = "v0.119 representative RTS workload, navigation, and AI-pressure spike"
 	home_subtitle.position = Vector2(88, 156)
 	home_subtitle.size = Vector2(1040, 44)
 	home_subtitle.add_theme_font_size_override("font_size", 22)
@@ -157,7 +157,7 @@ func _create_review_ui() -> void:
 	review_layer.add_child(review_panel)
 
 	title_label = Label.new()
-	title_label.text = "v0.118 Review"
+	title_label.text = "v0.119 Review"
 	title_label.position = Vector2(16, 10)
 	title_label.size = Vector2(220, 26)
 	title_label.add_theme_font_size_override("font_size", 18)
@@ -492,7 +492,13 @@ func run_headless_tests() -> Dictionary:
 			"Lume-placeholder",
 			"pause-results-flow",
 			"camera-pan-zoom-hooks",
-			"v0.118-private-review-harness-hooks"
+			"v0.118-private-review-harness-hooks",
+			"v0.119-workload-tier-S",
+			"v0.119-workload-tier-M",
+			"v0.119-workload-tier-L",
+			"v0.119-navigation-metrics",
+			"v0.119-bounded-ai-pressure",
+			"v0.119-results-parity"
 		]
 	}
 
@@ -520,37 +526,73 @@ func _test_scene(path: String, expected_mode: String, errors: Array[String]) -> 
 	if not scene.has_method("get_spike_status"):
 		errors.append("%s lacks get_spike_status" % path)
 	else:
-		if scene.has_method("select_entity"):
-			if not scene.select_entity("hero_aster"):
-				errors.append("%s hero selectable check failed" % expected_mode)
-			if not scene.select_entity("worker"):
-				errors.append("%s worker selectable check failed" % expected_mode)
-		if scene.has_method("box_select_squad") and scene.box_select_squad().size() < 4:
-			errors.append("%s squad box-select check failed" % expected_mode)
-		if scene.has_method("issue_move_order") and not scene.issue_move_order():
-			errors.append("%s move order check failed" % expected_mode)
-		if scene.has_method("issue_attack_order") and not scene.issue_attack_order():
-			errors.append("%s attack order check failed" % expected_mode)
-		if scene.has_method("change_site_state") and not scene.change_site_state():
-			errors.append("%s site state check failed" % expected_mode)
-		if scene.has_method("trigger_hero_ability") and not scene.trigger_hero_ability():
-			errors.append("%s hero ability placeholder check failed" % expected_mode)
-		if scene.has_method("focus_lume_link") and not scene.focus_lume_link():
-			errors.append("%s Lume focus check failed" % expected_mode)
-		if scene.has_method("pan_camera") and not scene.pan_camera():
-			errors.append("%s camera pan check failed" % expected_mode)
-		if scene.has_method("zoom_camera") and not scene.zoom_camera():
-			errors.append("%s camera zoom check failed" % expected_mode)
-		if scene.has_method("toggle_pause") and not scene.toggle_pause():
-			errors.append("%s pause check failed" % expected_mode)
-		if scene.has_method("transition_results") and not scene.transition_results():
-			errors.append("%s Results transition check failed" % expected_mode)
-		var status: Dictionary = scene.get_spike_status()
-		if status.get("mode", "") != expected_mode:
-			errors.append("%s reported wrong mode" % expected_mode)
-		if int(status.get("entityCount", 0)) < 5:
-			errors.append("%s entity spawn count too low" % expected_mode)
-		if not bool(status.get("lumeLinkRendered", false)):
+		var expected_counts := {
+			"S": {"entityCount": 14, "structureCount": 4, "siteCount": 1, "lumeEndpointCount": 2, "lumeLinkCount": 1},
+			"M": {"entityCount": 43, "structureCount": 4, "siteCount": 3, "lumeEndpointCount": 2, "lumeLinkCount": 1},
+			"L": {"entityCount": 105, "structureCount": 6, "siteCount": 5, "lumeEndpointCount": 3, "lumeLinkCount": 2}
+		}
+		for tier in ["S", "M", "L"]:
+			if scene.has_method("set_workload_tier") and not scene.set_workload_tier(str(tier)):
+				errors.append("%s tier %s selection failed" % [expected_mode, tier])
+			var status: Dictionary = scene.get_spike_status()
+			if status.get("mode", "") != expected_mode:
+				errors.append("%s reported wrong mode for tier %s" % [expected_mode, tier])
+			if str(status.get("workloadTier", "")) != str(tier):
+				errors.append("%s reported wrong workload tier %s" % [expected_mode, tier])
+			for key in expected_counts[str(tier)].keys():
+				if int(status.get(key, -1)) != int(expected_counts[str(tier)][key]):
+					errors.append("%s tier %s %s mismatch: expected %s, received %s" % [
+						expected_mode,
+						tier,
+						key,
+						expected_counts[str(tier)][key],
+						status.get(key, null)
+					])
+			if absf(float(status.get("linkedWardDamageTakenMultiplier", 0.0)) - 0.92) > 0.0001:
+				errors.append("%s tier %s linked_ward multiplier changed" % [expected_mode, tier])
+			if tier == "S":
+				if scene.has_method("select_entity"):
+					if not scene.select_entity("hero_aster"):
+						errors.append("%s hero selectable check failed" % expected_mode)
+					if not scene.select_entity("worker"):
+						errors.append("%s worker selectable check failed" % expected_mode)
+				if scene.has_method("box_select_squad") and scene.box_select_squad().size() < 4:
+					errors.append("%s squad box-select check failed" % expected_mode)
+				if scene.has_method("issue_move_order") and not scene.issue_move_order():
+					errors.append("%s move order check failed" % expected_mode)
+				if scene.has_method("issue_attack_order") and not scene.issue_attack_order():
+					errors.append("%s attack order check failed" % expected_mode)
+				if scene.has_method("change_site_state") and not scene.change_site_state():
+					errors.append("%s site state check failed" % expected_mode)
+				if scene.has_method("trigger_hero_ability") and not scene.trigger_hero_ability():
+					errors.append("%s hero ability placeholder check failed" % expected_mode)
+				if scene.has_method("focus_lume_link") and not scene.focus_lume_link():
+					errors.append("%s Lume focus check failed" % expected_mode)
+				if scene.has_method("pan_camera") and not scene.pan_camera():
+					errors.append("%s camera pan check failed" % expected_mode)
+				if scene.has_method("zoom_camera") and not scene.zoom_camera():
+					errors.append("%s camera zoom check failed" % expected_mode)
+				if scene.has_method("toggle_pause") and not scene.toggle_pause():
+					errors.append("%s pause check failed" % expected_mode)
+				if scene.has_method("transition_results") and not scene.transition_results():
+					errors.append("%s Results transition check failed" % expected_mode)
+			if not scene.has_method("run_workload_phase"):
+				errors.append("%s lacks v0.119 run_workload_phase" % expected_mode)
+			else:
+				for phase in ["idle", "moving", "combat"]:
+					var phase_report: Dictionary = scene.run_workload_phase(str(phase))
+					if phase_report.get("status", "FAIL") != "PASS":
+						errors.append("%s tier %s phase %s failed" % [expected_mode, tier, phase])
+					if int(phase_report.get("stuckUnitCount", 0)) != 0:
+						errors.append("%s tier %s phase %s reported stuck units" % [expected_mode, tier, phase])
+					if phase == "combat" and not bool(phase_report.get("resultsReady", false)):
+						errors.append("%s tier %s combat phase did not reach Results" % [expected_mode, tier])
+					if phase == "combat" and tier == "M" and int(phase_report.get("aiPressureBeatCount", 0)) < 1:
+						errors.append("%s tier M did not record its bounded enemy-pressure beat" % expected_mode)
+					if phase == "combat" and tier == "L" and int(phase_report.get("aiPressureBeatCount", 0)) < 2:
+						errors.append("%s tier L did not record sustained enemy-pressure beats" % expected_mode)
+		var final_status: Dictionary = scene.get_spike_status()
+		if not bool(final_status.get("lumeLinkRendered", false)):
 			errors.append("%s Lume placeholder not marked rendered" % expected_mode)
 	scene.queue_free()
 
@@ -563,27 +605,42 @@ func _benchmark_mode(config: Dictionary) -> Array[String]:
 	var scene: Node = packed.instantiate()
 	var launch: int = Time.get_ticks_usec()
 	add_child(scene)
-	if scene.has_method("select_entity"):
-		scene.select_entity("hero_aster")
-	if scene.has_method("box_select_squad"):
-		scene.box_select_squad()
-	var input_start := Time.get_ticks_usec()
-	if scene.has_method("issue_move_order"):
-		scene.issue_move_order()
-	if scene.has_method("issue_attack_order"):
-		scene.issue_attack_order()
-	var input_end := Time.get_ticks_usec()
-	if scene.has_method("transition_results"):
-		scene.transition_results()
-	var results_end := Time.get_ticks_usec()
-	var frame_times: Array[float] = []
-	for _index in range(180):
-		var before := Time.get_ticks_usec()
-		scene.propagate_call("_process", [1.0 / 60.0])
-		var after := Time.get_ticks_usec()
-		frame_times.append(max(0.01, float(after - before) / 1000.0))
-	var report := _metrics(str(config["mode"]), start, launch, input_start, input_end, results_end, frame_times)
+	var report: Dictionary
+	if scene.has_method("run_benchmark_suite"):
+		report = scene.run_benchmark_suite()
+		report["startupMs"] = snappedf(float(launch - start) / 1000.0, 0.01)
+		report["sceneLaunchMs"] = snappedf(float(launch - start) / 1000.0, 0.01)
+	else:
+		if scene.has_method("select_entity"):
+			scene.select_entity("hero_aster")
+		if scene.has_method("box_select_squad"):
+			scene.box_select_squad()
+		var input_start := Time.get_ticks_usec()
+		if scene.has_method("issue_move_order"):
+			scene.issue_move_order()
+		if scene.has_method("issue_attack_order"):
+			scene.issue_attack_order()
+		var input_end := Time.get_ticks_usec()
+		if scene.has_method("transition_results"):
+			scene.transition_results()
+		var results_end := Time.get_ticks_usec()
+		var frame_times: Array[float] = []
+		for _index in range(180):
+			var before := Time.get_ticks_usec()
+			scene.propagate_call("_process", [1.0 / 60.0])
+			var after := Time.get_ticks_usec()
+			frame_times.append(max(0.01, float(after - before) / 1000.0))
+		report = _metrics(str(config["mode"]), start, launch, input_start, input_end, results_end, frame_times)
+	report["checkpoint"] = CHECKPOINT
+	report["mode"] = str(config["mode"])
+	report["benchmarkKind"] = "v0.119-representative-rts-load"
+	report["godotVersion"] = Engine.get_version_info()
+	report["fixtureHash"] = _fixture_hash()
+	report["finalProductionCertification"] = false
+	report["runtimeArtIntegrated"] = false
 	_write_report(str(config["report"]), report)
+	if report.get("status", "FAIL") != "PASS":
+		errors.append("%s benchmark report did not pass" % config["mode"])
 	scene.queue_free()
 	return errors
 
@@ -627,7 +684,7 @@ func _artifact_root_from_args() -> String:
 	for arg in _script_args():
 		if arg.begins_with("--artifact-root="):
 			return arg.trim_prefix("--artifact-root=")
-	return ProjectSettings.globalize_path("user://v0118-godot-review")
+	return ProjectSettings.globalize_path("user://v0119-godot-review")
 
 func _script_args() -> PackedStringArray:
 	var args := PackedStringArray()

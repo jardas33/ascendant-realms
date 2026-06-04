@@ -1,8 +1,8 @@
 {
   "accepted": false,
-  "checkpoint": "v0.117",
+  "checkpoint": "v0.119",
   "expectedHandling": "reject-or-quarantine",
   "reason": "Probe ID is intentionally absent from the v0.101 stable-ID subset.",
   "schemaVersion": 1,
-  "unknownProbeId": "v0117_unknown_fixture_id_must_be_rejected"
+  "unknownProbeId": "v0119_unknown_fixture_id_must_be_rejected"
 }

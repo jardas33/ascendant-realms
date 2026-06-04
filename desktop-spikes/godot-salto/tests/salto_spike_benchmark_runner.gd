@@ -28,29 +28,40 @@ func _benchmark_mode(mode: String, config: Dictionary) -> Array[String]:
 	var scene = packed.instantiate()
 	var launch := Time.get_ticks_usec()
 	root.add_child(scene)
-	if scene.has_method("select_entity"):
-		scene.select_entity("hero_aster")
-	if scene.has_method("box_select_squad"):
-		scene.box_select_squad()
-	var input_start := Time.get_ticks_usec()
-	if scene.has_method("issue_move_order"):
-		scene.issue_move_order()
-	if scene.has_method("issue_attack_order"):
-		scene.issue_attack_order()
-	var input_end := Time.get_ticks_usec()
-	if scene.has_method("transition_results"):
-		scene.transition_results()
-	var results_end := Time.get_ticks_usec()
+	var report: Dictionary
+	if scene.has_method("run_benchmark_suite"):
+		report = scene.run_benchmark_suite()
+		report["startupMs"] = snappedf(float(launch - start) / 1000.0, 0.01)
+		report["sceneLaunchMs"] = snappedf(float(launch - start) / 1000.0, 0.01)
+	else:
+		if scene.has_method("select_entity"):
+			scene.select_entity("hero_aster")
+		if scene.has_method("box_select_squad"):
+			scene.box_select_squad()
+		var input_start := Time.get_ticks_usec()
+		if scene.has_method("issue_move_order"):
+			scene.issue_move_order()
+		if scene.has_method("issue_attack_order"):
+			scene.issue_attack_order()
+		var input_end := Time.get_ticks_usec()
+		if scene.has_method("transition_results"):
+			scene.transition_results()
+		var results_end := Time.get_ticks_usec()
 
-	var frame_times: Array[float] = []
-	for index in 180:
-		var before := Time.get_ticks_usec()
-		scene.propagate_call("_process", [1.0 / 60.0])
-		var after := Time.get_ticks_usec()
-		frame_times.append(max(0.01, float(after - before) / 1000.0))
+		var frame_times: Array[float] = []
+		for _index in range(180):
+			var before := Time.get_ticks_usec()
+			scene.propagate_call("_process", [1.0 / 60.0])
+			var after := Time.get_ticks_usec()
+			frame_times.append(max(0.01, float(after - before) / 1000.0))
 
-	var report := _metrics(mode, start, launch, input_start, input_end, results_end, frame_times)
+		report = _metrics(mode, start, launch, input_start, input_end, results_end, frame_times)
+	report["checkpoint"] = "v0.119"
+	report["mode"] = mode
+	report["benchmarkKind"] = "v0.119-representative-rts-load"
 	_write_report(config["report"], report)
+	if report.get("status", "FAIL") != "PASS":
+		errors.append("%s benchmark report did not pass" % mode)
 	scene.queue_free()
 	return errors
 
@@ -63,7 +74,7 @@ func _metrics(mode: String, start: int, launch: int, input_start: int, input_end
 	var fps: float = min(240.0, 1000.0 / max(0.01, average_frame))
 	return {
 		"schemaVersion": 1,
-		"checkpoint": "v0.117",
+		"checkpoint": "v0.119",
 		"mode": mode,
 		"status": "PASS",
 		"startupMs": float(launch - start) / 1000.0,

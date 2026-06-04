@@ -124,7 +124,7 @@ describe("desktop spike fixture", () => {
     });
   });
 
-  it("keeps the repository boundary free of root desktop projects, wrappers, and v0.119 docs", async () => {
+  it("keeps the repository boundary free of root desktop projects, wrappers, and v0.120 docs", async () => {
     expect(await validateRepositorySpikeBoundaries()).toEqual([]);
   });
 

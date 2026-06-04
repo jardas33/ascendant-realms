@@ -6,7 +6,7 @@ async function readJson<T>(path: string): Promise<T> {
   return JSON.parse(await readFile(path, "utf8")) as T;
 }
 
-describe("v0.117 Godot Salto spike scaffold", () => {
+describe("Godot Salto spike scaffold", () => {
   it("keeps the Godot project text-driven and repository-local", async () => {
     [
       "desktop-spikes/godot-salto/project.godot",
@@ -16,6 +16,7 @@ describe("v0.117 Godot Salto spike scaffold", () => {
       "desktop-spikes/godot-salto/scenes/salto_2_5d_orthographic_placeholder.tscn",
       "desktop-spikes/godot-salto/scripts/fixture_importer.gd",
       "desktop-spikes/godot-salto/scripts/salto_spike_root.gd",
+      "desktop-spikes/godot-salto/scripts/salto_spike_workload_runtime.gd",
       "desktop-spikes/godot-salto/tests/salto_spike_test_runner.gd",
       "desktop-spikes/godot-salto/tools/godotSpikeTool.mjs"
     ].forEach((path) => expect(existsSync(path), path).toBe(true));
@@ -27,6 +28,7 @@ describe("v0.117 Godot Salto spike scaffold", () => {
     expect(project).toContain("run/main_scene=\"res://scenes/salto_spike_root.tscn\"");
     expect(exportPreset).toContain('name="Windows Desktop"');
     expect(exportPreset).toContain('platform="Windows Desktop"');
+    expect(exportPreset).toContain('application/product_version="0.119.0"');
   });
 
   it("defines one-click Windows scripts without adding engine dependencies", async () => {
@@ -162,5 +164,34 @@ describe("v0.117 Godot Salto spike scaffold", () => {
       "docs/V0117_IMPLEMENTATION_REPORT.md",
       "docs/V0117_DEFERRED_GODOT_FINDINGS.md"
     ].forEach((path) => expect(existsSync(path), path).toBe(true));
+  });
+
+  it("defines the v0.119 representative RTS load scalability spike", async () => {
+    [
+      "docs/V0119_GODOT_REPRESENTATIVE_RTS_LOAD_SPEC.md",
+      "docs/V0119_GODOT_NAVIGATION_AND_AI_PRESSURE_SPEC.md",
+      "docs/V0119_GODOT_SCALABILITY_BENCHMARK_REPORT.md",
+      "docs/V0119_GODOT_PARITY_REPORT.md",
+      "docs/V0119_GODOT_SCORECARD_UPDATE.md",
+      "docs/V0119_IMPLEMENTATION_REPORT.md",
+      "docs/V0119_EMMANUEL_REVIEW_GUIDE.md",
+      "desktop-spikes/godot-salto/scripts/salto_spike_workload_runtime.gd",
+      "desktop-spikes/godot-salto/scripts/salto_spike_workload_runtime.gd.uid"
+    ].forEach((path) => expect(existsSync(path), path).toBe(true));
+
+    const rootScript = await readFile("desktop-spikes/godot-salto/scripts/salto_spike_root.gd", "utf8");
+    const runtimeScript = await readFile("desktop-spikes/godot-salto/scripts/salto_spike_workload_runtime.gd", "utf8");
+    const toolScript = await readFile("desktop-spikes/godot-salto/tools/godotSpikeTool.mjs", "utf8");
+    const packageScript = await readFile("tools/godot/packageGodotWindows.ps1", "utf8");
+
+    expect(rootScript).toContain('const CHECKPOINT := "v0.119"');
+    expect(rootScript).toContain("v0.119-workload-tier-L");
+    expect(runtimeScript).toContain("const TIER_ORDER := [\"S\", \"M\", \"L\"]");
+    expect(runtimeScript).toContain("LINKED_WARD_DAMAGE_TAKEN_MULTIPLIER := 0.92");
+    expect(runtimeScript).toContain("run_benchmark_suite");
+    expect(toolScript).toContain("v0119ArtifactRoot");
+    expect(toolScript).toContain("PASS_GODOT_REPRESENTATIVE_RTS_BENCHMARK");
+    expect(toolScript).toContain("PASS_GODOT_REPRESENTATIVE_RTS_PARITY");
+    expect(packageScript).toContain("AscendantRealmsGodotSalto-v0119-windows.zip");
   });
 });

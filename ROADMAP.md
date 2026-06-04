@@ -11,9 +11,19 @@ Every phase should protect these long-term pillars:
 
 ## Current Recommended Next Phase
 
-The current checkpoint is **v0.118 Godot Packaged-Build Headed Smoke Automated Visual Capture and Human-Review Harness** on 2026-06-04. It extends the v0.117 repository-driven Godot workflow spike by proving that the packaged Windows executable launches headed, runs a private review-tour harness, captures deterministic 1600x900 screenshots for both 2D and 2.5D placeholder modes, benchmarks both headed modes, validates the package, and gives Emmanuel one-click review scripts.
+The current checkpoint is **v0.119 Godot Representative RTS Load Navigation AI-Pressure and Scalability Spike** on 2026-06-04. It extends the repository-driven Godot workflow spike by replacing the tiny placeholder loop with deterministic S/M/L RTS workload tiers, formation-lite navigation, bounded enemy pressure, combat/site/Lume state, Results readiness, mode parity, scalability benchmark reports, scorecard updates, and v0.119 Windows package evidence.
 
-The next recommended step, only after a future explicit goal, is a human-visible visual-quality review or follow-up engine comparison that uses the same fixture and scorecard discipline. v0.118 keeps 2.5D orthographic as the leading presentation candidate for a future visual-quality pass because it better supports modern lighting, terrain depth, and atmosphere, while keeping 2D as the automation/readability control. Do not generate art for runtime integration, import art into runtime, mark `runtime-candidate-approved` assets as loadable, resume broad browser visual expansion, add gameplay systems, change rewards, change saves, rename IDs, create a desktop save path, choose Godot finally, start a full desktop port, start Unity/Unreal/Electron work, or start v0.119 until a future explicit goal approves a narrow next step.
+The next recommended step, only after a future explicit goal, is a human-visible visual-quality review or follow-up engine comparison that uses the same fixture and scorecard discipline. v0.119 keeps 2.5D orthographic as the leading presentation candidate for a future visual-quality pass because it better supports modern lighting, terrain depth, and atmosphere, while keeping 2D as the automation/readability control. Do not generate art for runtime integration, import art into runtime, mark `runtime-candidate-approved` assets as loadable, resume broad browser visual expansion, add gameplay systems, change rewards, change saves, rename IDs, create a desktop save path, choose Godot finally, start a full desktop port, start Unity/Unreal/Electron work, or start v0.120 until a future explicit goal approves a narrow next step.
+
+New v0.119 docs:
+
+- `docs/V0119_GODOT_REPRESENTATIVE_RTS_LOAD_SPEC.md`
+- `docs/V0119_GODOT_NAVIGATION_AND_AI_PRESSURE_SPEC.md`
+- `docs/V0119_GODOT_SCALABILITY_BENCHMARK_REPORT.md`
+- `docs/V0119_GODOT_PARITY_REPORT.md`
+- `docs/V0119_GODOT_SCORECARD_UPDATE.md`
+- `docs/V0119_IMPLEMENTATION_REPORT.md`
+- `docs/V0119_EMMANUEL_REVIEW_GUIDE.md`
 
 New v0.118 docs:
 

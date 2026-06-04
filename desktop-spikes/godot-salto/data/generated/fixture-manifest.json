@@ -1,7 +1,7 @@
 {
   "authority": "derived-from-v0.116-engine-neutral-fixture",
   "browserRuntimePreserved": true,
-  "checkpoint": "v0.117",
+  "checkpoint": "v0.119",
   "copiedFiles": [
     {
       "file": "benchmark-contract.json",
@@ -72,7 +72,7 @@
     "posture": "fixture-local-lume-contract-preserved-separately-from-content-stable-id-set"
   },
   "gameplayChanged": false,
-  "generatedAtUtc": "deterministic-v0117",
+  "generatedAtUtc": "deterministic-v0119",
   "generatedOrImportedArtIncluded": false,
   "linkedWardDamageTakenMultiplier": 0.92,
   "linkedWardMustRemainExact": 0.92,
@@ -108,7 +108,7 @@
       "west_stone_cut",
       "worker"
     ],
-    "unknownProbeId": "v0117_unknown_fixture_id_must_be_rejected",
+    "unknownProbeId": "v0119_unknown_fixture_id_must_be_rejected",
     "unknownProbeRejected": true
   }
 }
