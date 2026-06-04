@@ -42,6 +42,8 @@
     "godot:capture:review": "powershell -NoProfile -ExecutionPolicy Bypass -File tools/godot/captureGodotReviewWindows.ps1",
     "godot:scorecard": "powershell -NoProfile -ExecutionPolicy Bypass -File tools/godot/runGodotBenchmark.ps1 -ScorecardOnly",
     "godot:all": "powershell -NoProfile -ExecutionPolicy Bypass -File tools/godot/runGodotAll.ps1",
+    "godot:fresh-checkout:validate": "powershell -NoProfile -ExecutionPolicy Bypass -File tools/godot/validateGodotFreshCheckout.ps1",
+    "godot:ci-style:windows": "powershell -NoProfile -ExecutionPolicy Bypass -File tools/godot/runGodotCiStyleWindows.ps1",
     "test:save-translation-contract": "tsx tools/testSaveTranslationContract.ts",
     "test:e2e": "playwright test",
     "test:e2e:smoke:fast": "playwright test tests/e2e/smoke.spec.ts --grep @ci-fast --reporter=line",

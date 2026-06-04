@@ -42,9 +42,12 @@ describe("Godot Salto spike scaffold", () => {
       "GODOT_EXPORT_WINDOWS.bat",
       "GODOT_PACKAGE_WINDOWS.bat",
       "GODOT_RUN_ALL_WINDOWS.bat",
+      "GODOT_FRESH_CHECKOUT_VALIDATE_WINDOWS.bat",
       "tools/godot/doctorGodotWindows.ps1",
       "tools/godot/bootstrapGodotWindows.ps1",
-      "tools/godot/runGodotAll.ps1"
+      "tools/godot/runGodotAll.ps1",
+      "tools/godot/validateGodotFreshCheckout.ps1",
+      "tools/godot/runGodotCiStyleWindows.ps1"
     ].forEach((path) => expect(existsSync(path), path).toBe(true));
 
     const packageJson = await readJson<{
@@ -65,7 +68,9 @@ describe("Godot Salto spike scaffold", () => {
       "godot:export:windows",
       "godot:package:windows",
       "godot:scorecard",
-      "godot:all"
+      "godot:all",
+      "godot:fresh-checkout:validate",
+      "godot:ci-style:windows"
     ].forEach((script) => expect(packageJson.scripts[script], script).toBeTypeOf("string"));
 
     const dependencies = {
@@ -193,5 +198,43 @@ describe("Godot Salto spike scaffold", () => {
     expect(toolScript).toContain("PASS_GODOT_REPRESENTATIVE_RTS_BENCHMARK");
     expect(toolScript).toContain("PASS_GODOT_REPRESENTATIVE_RTS_PARITY");
     expect(packageScript).toContain("AscendantRealmsGodotSalto-v0119-windows.zip");
+  });
+
+  it("defines the v0.120 fresh checkout and zero-editor automation proof", async () => {
+    [
+      "docs/V0120_GODOT_FRESH_CHECKOUT_SPEC.md",
+      "docs/V0120_GODOT_CI_STYLE_WORKFLOW.md",
+      "docs/V0120_ZERO_EDITOR_AUTOMATION_CONTRACT.md",
+      "docs/V0120_GODOT_REPRODUCIBILITY_REPORT.md",
+      "docs/V0120_EMMANUEL_ONE_CLICK_GUIDE.md",
+      "docs/V0120_IMPLEMENTATION_REPORT.md",
+      ".github/workflows/godot-fresh-checkout-windows.yml"
+    ].forEach((path) => expect(existsSync(path), path).toBe(true));
+
+    const freshScript = await readFile("tools/godot/validateGodotFreshCheckout.ps1", "utf8");
+    const ciScript = await readFile("tools/godot/runGodotCiStyleWindows.ps1", "utf8");
+    const workflow = await readFile(".github/workflows/godot-fresh-checkout-windows.yml", "utf8");
+    const runAll = await readFile("GODOT_RUN_ALL_WINDOWS.bat", "utf8");
+
+    expect(freshScript).toContain("git ls-files --cached --modified --others --exclude-standard");
+    expect(freshScript).toContain("npm ci --no-audit --no-fund");
+    expect(freshScript).toContain("godot:scene:generate");
+    expect(freshScript).toContain("godot:test");
+    expect(freshScript).toContain("godot:benchmark");
+    expect(freshScript).toContain("godot:export:windows");
+    expect(freshScript).toContain("godot:package:windows");
+    expect(freshScript).toContain("packageSha256");
+    expect(freshScript).toContain("routineEditorUseRequired");
+    expect(freshScript).toContain("Test-SafeTempRoot");
+    expect(freshScript).toContain("Remove-SafeTempRoot $TempRoot");
+    expect(freshScript).toContain("Remove-Item -LiteralPath $Path -Recurse -Force");
+    expect(freshScript).not.toContain("--editor");
+    expect(ciScript).toContain("-DownloadOfficialInCi");
+    expect(ciScript).toContain(".tools\\godot\\ci-appdata");
+    expect(ciScript).toContain("CI=true");
+    expect(workflow).toContain("workflow_dispatch");
+    expect(workflow).toContain("windows-latest");
+    expect(workflow).toContain("godot:ci-style:windows");
+    expect(runAll).toContain("validateGodotFreshCheckout.ps1");
   });
 });

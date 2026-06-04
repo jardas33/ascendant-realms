@@ -1,0 +1,54 @@
+name: Godot Fresh Checkout Windows Validation
+
+on:
+  workflow_dispatch:
+    inputs:
+      download_official_godot:
+        description: "Download official Godot 4.6.3 standard Windows x86_64 and export templates in CI"
+        required: false
+        default: true
+        type: boolean
+
+permissions:
+  contents: read
+
+concurrency:
+  group: godot-fresh-checkout-windows-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  CI: true
+
+jobs:
+  godot-fresh-checkout:
+    name: Godot fresh checkout zero-editor validation
+    runs-on: windows-latest
+    timeout-minutes: 45
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Run Godot fresh-checkout validation
+        run: npm run godot:ci-style:windows -- -DownloadOfficialInCi
+        if: ${{ inputs.download_official_godot }}
+
+      - name: Run Godot fresh-checkout validation without download
+        run: npm run godot:ci-style:windows
+        if: ${{ !inputs.download_official_godot }}
+
+      - name: Upload Godot v0.120 reports
+        if: always()
+        continue-on-error: true
+        uses: actions/upload-artifact@v4
+        with:
+          name: godot-v0120-fresh-checkout
+          path: artifacts/desktop-spikes/godot-salto/v0120/
+          if-no-files-found: ignore
+          retention-days: 3
