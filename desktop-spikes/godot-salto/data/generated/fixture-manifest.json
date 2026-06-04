@@ -1,7 +1,7 @@
 {
   "authority": "derived-from-v0.116-engine-neutral-fixture",
   "browserRuntimePreserved": true,
-  "checkpoint": "v0.119",
+  "checkpoint": "v0.121",
   "copiedFiles": [
     {
       "file": "benchmark-contract.json",

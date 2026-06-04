@@ -3,8 +3,13 @@ extends Node
 const MODE_2D := "2D_PLACEHOLDER"
 const MODE_25D := "2_5D_ORTHOGRAPHIC_PLACEHOLDER"
 const MODE_HOME := "REVIEW_HOME"
-const CHECKPOINT := "v0.119"
+const CHECKPOINT := "v0.121"
 const VIEWPORT_SIZE := Vector2i(1600, 900)
+const CAPTURE_VIEWPORTS := [Vector2i(1600, 900), Vector2i(1920, 1080)]
+const VISUAL_PRESET_2D_CONTROL := "2D_CONTROL"
+const VISUAL_PRESET_CLEAN := "CLEAN_READABILITY"
+const VISUAL_PRESET_ATMOSPHERIC := "ATMOSPHERIC_BALANCED"
+const VISUAL_PRESET_VFX_STRESS := "VFX_STRESS_PRIVATE"
 const SCRIPT_ARG_PREFIXES := [
 	"--run-tests",
 	"--run-benchmark",
@@ -12,6 +17,8 @@ const SCRIPT_ARG_PREFIXES := [
 	"--capture-review",
 	"--headed-benchmark",
 	"--mode=",
+	"--visual-preset=",
+	"--viewport=",
 	"--artifact-root="
 ]
 const SaltoFixtureImporterScript: GDScript = preload("res://scripts/fixture_importer.gd")
@@ -27,9 +34,13 @@ var title_label: Label
 var status_label: Label
 var step_label: Label
 var current_step_id := "home"
+var current_viewport_size := VIEWPORT_SIZE
+var active_visual_preset := VISUAL_PRESET_CLEAN
 
 func _ready() -> void:
 	var args: PackedStringArray = _script_args()
+	current_viewport_size = _viewport_from_args(VIEWPORT_SIZE)
+	active_visual_preset = _visual_preset_from_args()
 	_configure_window()
 	if args.has("--run-tests"):
 		var test_report: Dictionary = run_headless_tests()
@@ -58,8 +69,8 @@ func _ready() -> void:
 
 func _configure_window() -> void:
 	if DisplayServer.get_name() != "headless":
-		DisplayServer.window_set_size(VIEWPORT_SIZE)
-		DisplayServer.window_set_min_size(VIEWPORT_SIZE)
+		DisplayServer.window_set_size(current_viewport_size)
+		DisplayServer.window_set_min_size(current_viewport_size)
 
 func load_home() -> void:
 	if active_scene and is_instance_valid(active_scene):
@@ -81,6 +92,8 @@ func load_mode(mode: String) -> void:
 	active_scene = packed.instantiate()
 	active_mode = mode
 	add_child(active_scene)
+	if active_mode == MODE_25D and active_scene.has_method("set_visual_preset"):
+		active_scene.set_visual_preset(active_visual_preset)
 	if home_screen:
 		home_screen.visible = false
 	_update_review_overlay("Launched %s" % _friendly_mode(mode))
@@ -96,6 +109,33 @@ func _requested_mode_from_args() -> String:
 func _mode_from_args() -> String:
 	var requested_mode := _requested_mode_from_args()
 	return default_mode if requested_mode == "" else requested_mode
+
+func _visual_preset_from_args() -> String:
+	for arg in _script_args():
+		if arg.begins_with("--visual-preset="):
+			return _normalize_visual_preset(arg.trim_prefix("--visual-preset="))
+	return VISUAL_PRESET_CLEAN
+
+func _normalize_visual_preset(preset: String) -> String:
+	var value := preset.strip_edges().to_upper()
+	if value == "" or value == "DEFAULT" or value == "CLEAN" or value == "2_5D_CLEAN":
+		return VISUAL_PRESET_CLEAN
+	if value == VISUAL_PRESET_CLEAN:
+		return VISUAL_PRESET_CLEAN
+	if value == "ATMOSPHERIC" or value == VISUAL_PRESET_ATMOSPHERIC:
+		return VISUAL_PRESET_ATMOSPHERIC
+	if value == "VFX_STRESS" or value == "STRESS" or value == VISUAL_PRESET_VFX_STRESS:
+		return VISUAL_PRESET_VFX_STRESS
+	return VISUAL_PRESET_CLEAN
+
+func _viewport_from_args(default_size: Vector2i) -> Vector2i:
+	for arg in _script_args():
+		if arg.begins_with("--viewport="):
+			var raw := arg.trim_prefix("--viewport=")
+			var parts := raw.split("x")
+			if parts.size() == 2 and parts[0].is_valid_int() and parts[1].is_valid_int():
+				return Vector2i(int(parts[0]), int(parts[1]))
+	return default_size
 
 func _create_review_ui() -> void:
 	if review_layer:
@@ -129,7 +169,7 @@ func _create_review_ui() -> void:
 	home_screen.add_child(home_title)
 
 	var home_subtitle := Label.new()
-	home_subtitle.text = "v0.119 representative RTS workload, navigation, and AI-pressure spike"
+	home_subtitle.text = "v0.121 procedural 2.5D visual foundation and 2D control comparison"
 	home_subtitle.position = Vector2(88, 156)
 	home_subtitle.size = Vector2(1040, 44)
 	home_subtitle.add_theme_font_size_override("font_size", 22)
@@ -147,7 +187,7 @@ func _create_review_ui() -> void:
 	review_panel = Panel.new()
 	review_panel.name = "ReviewStepPanel"
 	review_panel.position = Vector2(18, 18)
-	review_panel.size = Vector2(742, 128)
+	review_panel.size = Vector2(898, 128)
 	var style := StyleBoxFlat.new()
 	style.bg_color = Color(0.04, 0.05, 0.05, 0.86)
 	style.border_color = Color(0.33, 0.78, 0.72, 0.86)
@@ -157,7 +197,7 @@ func _create_review_ui() -> void:
 	review_layer.add_child(review_panel)
 
 	title_label = Label.new()
-	title_label.text = "v0.119 Review"
+	title_label.text = "v0.121 Review"
 	title_label.position = Vector2(16, 10)
 	title_label.size = Vector2(220, 26)
 	title_label.add_theme_font_size_override("font_size", 18)
@@ -166,26 +206,29 @@ func _create_review_ui() -> void:
 	status_label = Label.new()
 	status_label.text = "Home"
 	status_label.position = Vector2(240, 10)
-	status_label.size = Vector2(472, 26)
+	status_label.size = Vector2(612, 26)
 	status_label.add_theme_font_size_override("font_size", 15)
 	review_panel.add_child(status_label)
 
 	step_label = Label.new()
 	step_label.text = "Step: home | Mode: REVIEW_HOME"
 	step_label.position = Vector2(16, 42)
-	step_label.size = Vector2(704, 24)
+	step_label.size = Vector2(846, 24)
 	step_label.add_theme_font_size_override("font_size", 14)
 	review_panel.add_child(step_label)
 
 	var grid := GridContainer.new()
 	grid.position = Vector2(14, 74)
-	grid.size = Vector2(714, 38)
-	grid.columns = 8
+	grid.size = Vector2(870, 38)
+	grid.columns = 11
 	review_panel.add_child(grid)
 	for item in [
 		{"text": "Home", "action": "home"},
 		{"text": "2D", "action": "launch_2d"},
 		{"text": "2.5D", "action": "launch_25d"},
+		{"text": "Clean", "action": "preset_clean"},
+		{"text": "Atmos", "action": "preset_atmospheric"},
+		{"text": "VFX", "action": "preset_vfx_stress"},
 		{"text": "Hero", "action": "select_hero"},
 		{"text": "Worker", "action": "select_worker"},
 		{"text": "Squad", "action": "box_select"},
@@ -194,7 +237,7 @@ func _create_review_ui() -> void:
 	]:
 		var button := Button.new()
 		button.text = str(item["text"])
-		button.custom_minimum_size = Vector2(82, 32)
+		button.custom_minimum_size = Vector2(76, 32)
 		button.pressed.connect(_handle_review_action.bind(str(item["action"])))
 		grid.add_child(button)
 
@@ -210,6 +253,31 @@ func _apply_review_action(action: String) -> Dictionary:
 			load_mode(MODE_2D)
 		"launch_25d":
 			load_mode(MODE_25D)
+		"launch_25d_clean":
+			active_visual_preset = VISUAL_PRESET_CLEAN
+			load_mode(MODE_25D)
+		"launch_25d_atmospheric":
+			active_visual_preset = VISUAL_PRESET_ATMOSPHERIC
+			load_mode(MODE_25D)
+		"launch_25d_vfx_stress":
+			active_visual_preset = VISUAL_PRESET_VFX_STRESS
+			load_mode(MODE_25D)
+		"preset_clean":
+			active_visual_preset = VISUAL_PRESET_CLEAN
+			if active_mode == MODE_25D and active_scene and active_scene.has_method("set_visual_preset"):
+				active_scene.set_visual_preset(active_visual_preset)
+		"preset_atmospheric":
+			active_visual_preset = VISUAL_PRESET_ATMOSPHERIC
+			if active_mode != MODE_25D:
+				load_mode(MODE_25D)
+			elif active_scene and active_scene.has_method("set_visual_preset"):
+				active_scene.set_visual_preset(active_visual_preset)
+		"preset_vfx_stress":
+			active_visual_preset = VISUAL_PRESET_VFX_STRESS
+			if active_mode != MODE_25D:
+				load_mode(MODE_25D)
+			elif active_scene and active_scene.has_method("set_visual_preset"):
+				active_scene.set_visual_preset(active_visual_preset)
 		"select_hero":
 			_ensure_active_scene()
 			_call_scene("select_entity", ["hero_aster"])
@@ -237,8 +305,19 @@ func _apply_review_action(action: String) -> Dictionary:
 		"capture_site":
 			_ensure_active_scene()
 			_call_scene("change_site_state")
+		"show_buildings":
+			_ensure_active_scene()
+			_call_scene("set_workload_tier", ["L"])
 		"lume_link":
 			_ensure_active_scene()
+			_call_scene("focus_lume_link")
+		"lume_stable":
+			_ensure_active_scene()
+			_call_scene("set_workload_tier", ["M"])
+		"lume_transition":
+			_ensure_active_scene()
+			_call_scene("change_site_state", ["west_stone_cut", "friendly"])
+			_call_scene("change_site_state", ["ford_toll", "friendly"])
 			_call_scene("focus_lume_link")
 		"results":
 			_ensure_active_scene()
@@ -264,7 +343,7 @@ func _update_review_overlay(label: String) -> void:
 	if not status_label or not step_label:
 		return
 	status_label.text = label
-	step_label.text = "Step: %s | Mode: %s" % [current_step_id, active_mode]
+	step_label.text = "Step: %s | Mode: %s | Preset: %s" % [current_step_id, active_mode, active_visual_preset]
 
 func run_headed_smoke() -> void:
 	var artifact_root := _artifact_root_from_args()
@@ -275,6 +354,9 @@ func run_headed_smoke() -> void:
 		"home",
 		"launch_2d",
 		"launch_25d",
+		"preset_clean",
+		"preset_atmospheric",
+		"preset_vfx_stress",
 		"select_hero",
 		"select_worker",
 		"box_select",
@@ -308,7 +390,7 @@ func run_headed_smoke() -> void:
 		"artifactRoot": artifact_root,
 		"packagedExecutableMode": true,
 		"headedWindow": DisplayServer.get_name() != "headless",
-		"windowSize": {"width": VIEWPORT_SIZE.x, "height": VIEWPORT_SIZE.y},
+		"windowSize": {"width": current_viewport_size.x, "height": current_viewport_size.y},
 		"routineEditorUseRequired": false,
 		"manualEditorSceneAssemblyRequired": false,
 		"localStorageMutationAllowed": false,
@@ -329,35 +411,45 @@ func run_capture_review() -> void:
 	var errors: Array[String] = []
 	var captures: Array[Dictionary] = []
 	var index := 0
-	for step in _capture_steps():
-		var action := str(step["action"])
-		var mode := str(step["mode"])
-		if mode == MODE_HOME:
-			load_home()
-		elif mode != active_mode:
-			load_mode(mode)
-		_apply_review_action(action)
-		await _settle_frames(4)
-		var file_name := "%02d_%s.png" % [index, str(step["id"])]
-		var target := _path_join(screenshot_root, file_name)
-		var image := get_viewport().get_texture().get_image()
-		if image.get_width() != VIEWPORT_SIZE.x or image.get_height() != VIEWPORT_SIZE.y:
-			image.resize(VIEWPORT_SIZE.x, VIEWPORT_SIZE.y, Image.INTERPOLATE_LANCZOS)
-		var result := image.save_png(target)
-		if result != OK:
-			errors.append("Failed to save screenshot %s with code %s" % [file_name, result])
-		captures.append({
-			"id": step["id"],
-			"label": step["label"],
-			"mode": active_mode,
-			"action": action,
-			"fileName": file_name,
-			"absolutePath": target,
-			"width": image.get_width(),
-			"height": image.get_height(),
-			"saveResult": result
-		})
-		index += 1
+	for viewport_size in CAPTURE_VIEWPORTS:
+		_set_capture_viewport(viewport_size)
+		await _settle_frames(8)
+		for step in _capture_steps():
+			var action := str(step["action"])
+			var mode := str(step["mode"])
+			var requested_preset := str(step.get("visualPreset", active_visual_preset))
+			if mode == MODE_25D:
+				active_visual_preset = _normalize_visual_preset(requested_preset)
+			if mode == MODE_HOME:
+				load_home()
+			elif mode != active_mode:
+				load_mode(mode)
+			elif mode == MODE_25D and active_scene and active_scene.has_method("set_visual_preset"):
+				active_scene.set_visual_preset(active_visual_preset)
+			_apply_review_action(action)
+			await _settle_frames(5)
+			var file_name := "%03d_%s_%dx%d.png" % [index, str(step["id"]), viewport_size.x, viewport_size.y]
+			var target := _path_join(screenshot_root, file_name)
+			var image := get_viewport().get_texture().get_image()
+			if image.get_width() != viewport_size.x or image.get_height() != viewport_size.y:
+				image.resize(viewport_size.x, viewport_size.y, Image.INTERPOLATE_LANCZOS)
+			var result := image.save_png(target)
+			if result != OK:
+				errors.append("Failed to save screenshot %s with code %s" % [file_name, result])
+			captures.append({
+				"id": step["id"],
+				"label": step["label"],
+				"mode": active_mode,
+				"visualPreset": VISUAL_PRESET_2D_CONTROL if active_mode == MODE_2D else active_visual_preset,
+				"action": action,
+				"fileName": file_name,
+				"absolutePath": target,
+				"viewport": {"width": viewport_size.x, "height": viewport_size.y},
+				"width": image.get_width(),
+				"height": image.get_height(),
+				"saveResult": result
+			})
+			index += 1
 	var report := {
 		"schemaVersion": 1,
 		"checkpoint": CHECKPOINT,
@@ -365,10 +457,18 @@ func run_capture_review() -> void:
 		"artifactRoot": artifact_root,
 		"screenshotRoot": screenshot_root,
 		"captureCount": captures.size(),
-		"requiredCaptureCount": 15,
-		"windowSize": {"width": VIEWPORT_SIZE.x, "height": VIEWPORT_SIZE.y},
+		"requiredCaptureCount": _capture_steps().size() * CAPTURE_VIEWPORTS.size(),
+		"captureViewports": CAPTURE_VIEWPORTS.map(func(size: Vector2i) -> Dictionary: return {"width": size.x, "height": size.y}),
+		"visualPresets": [VISUAL_PRESET_2D_CONTROL, VISUAL_PRESET_CLEAN, VISUAL_PRESET_ATMOSPHERIC, VISUAL_PRESET_VFX_STRESS],
+		"defaultReviewPreset": VISUAL_PRESET_CLEAN,
+		"vfxStressExcludedFromDefaultReview": true,
+		"windowSize": {"width": current_viewport_size.x, "height": current_viewport_size.y},
 		"godotVersion": Engine.get_version_info(),
 		"fixtureHash": _fixture_hash(),
+		"routineEditorUseRequired": false,
+		"generatedOrImportedArtIncluded": false,
+		"runtimeArtIntegrated": false,
+		"finalProductionCertification": false,
 		"errors": errors,
 		"captures": captures
 	}
@@ -418,7 +518,7 @@ func _headed_benchmark_mode(mode: String) -> Dictionary:
 		frame_times.append(max(0.01, float(after - before) / 1000.0))
 	var report := _metrics(mode, start, launch, input_start, input_end, results_end, frame_times)
 	report["benchmarkKind"] = "headed-packaged-placeholder"
-	report["windowSize"] = {"width": VIEWPORT_SIZE.x, "height": VIEWPORT_SIZE.y}
+	report["windowSize"] = {"width": current_viewport_size.x, "height": current_viewport_size.y}
 	report["godotVersion"] = Engine.get_version_info()
 	report["fixtureHash"] = _fixture_hash()
 	report["runtimeArtIntegrated"] = false
@@ -427,21 +527,22 @@ func _headed_benchmark_mode(mode: String) -> Dictionary:
 
 func _capture_steps() -> Array[Dictionary]:
 	return [
-		{"id": "home", "label": "Review home", "mode": MODE_HOME, "action": "home"},
-		{"id": "2d_default", "label": "2D default", "mode": MODE_2D, "action": "launch_2d"},
+		{"id": "2d_control_default", "label": "2D control default", "mode": MODE_2D, "action": "launch_2d", "visualPreset": VISUAL_PRESET_2D_CONTROL},
 		{"id": "2d_hero", "label": "2D hero selected", "mode": MODE_2D, "action": "select_hero"},
 		{"id": "2d_worker", "label": "2D Worker selected", "mode": MODE_2D, "action": "select_worker"},
 		{"id": "2d_squad", "label": "2D squad box selected", "mode": MODE_2D, "action": "box_select"},
-		{"id": "2d_site", "label": "2D capture site", "mode": MODE_2D, "action": "capture_site"},
-		{"id": "2d_lume", "label": "2D Lume link", "mode": MODE_2D, "action": "lume_link"},
-		{"id": "2d_results", "label": "2D Results transition", "mode": MODE_2D, "action": "results"},
-		{"id": "2_5d_default", "label": "2.5D default", "mode": MODE_25D, "action": "launch_25d"},
-		{"id": "2_5d_hero", "label": "2.5D hero selected", "mode": MODE_25D, "action": "select_hero"},
-		{"id": "2_5d_worker", "label": "2.5D Worker selected", "mode": MODE_25D, "action": "select_worker"},
-		{"id": "2_5d_squad", "label": "2.5D squad box selected", "mode": MODE_25D, "action": "box_select"},
-		{"id": "2_5d_site", "label": "2.5D capture site", "mode": MODE_25D, "action": "capture_site"},
-		{"id": "2_5d_lume", "label": "2.5D Lume link", "mode": MODE_25D, "action": "lume_link"},
-		{"id": "2_5d_results", "label": "2.5D Results transition", "mode": MODE_25D, "action": "results"}
+		{"id": "2d_results", "label": "2D Results transition", "mode": MODE_2D, "action": "results", "visualPreset": VISUAL_PRESET_2D_CONTROL},
+		{"id": "2_5d_clean_default", "label": "2.5D clean readability default", "mode": MODE_25D, "action": "launch_25d_clean", "visualPreset": VISUAL_PRESET_CLEAN},
+		{"id": "2_5d_atmospheric_default", "label": "2.5D atmospheric balanced", "mode": MODE_25D, "action": "launch_25d_atmospheric", "visualPreset": VISUAL_PRESET_ATMOSPHERIC},
+		{"id": "2_5d_vfx_stress_private", "label": "2.5D VFX stress private", "mode": MODE_25D, "action": "launch_25d_vfx_stress", "visualPreset": VISUAL_PRESET_VFX_STRESS},
+		{"id": "2_5d_hero", "label": "2.5D hero selected", "mode": MODE_25D, "action": "select_hero", "visualPreset": VISUAL_PRESET_CLEAN},
+		{"id": "2_5d_worker", "label": "2.5D Worker selected", "mode": MODE_25D, "action": "select_worker", "visualPreset": VISUAL_PRESET_CLEAN},
+		{"id": "2_5d_squad", "label": "2.5D squad box selected", "mode": MODE_25D, "action": "box_select", "visualPreset": VISUAL_PRESET_CLEAN},
+		{"id": "2_5d_buildings", "label": "2.5D buildings and landmarks", "mode": MODE_25D, "action": "show_buildings", "visualPreset": VISUAL_PRESET_CLEAN},
+		{"id": "2_5d_capture_site", "label": "2.5D capture site marker", "mode": MODE_25D, "action": "capture_site", "visualPreset": VISUAL_PRESET_CLEAN},
+		{"id": "2_5d_lume_stable", "label": "2.5D stable Lume line", "mode": MODE_25D, "action": "lume_stable", "visualPreset": VISUAL_PRESET_CLEAN},
+		{"id": "2_5d_lume_transition", "label": "2.5D Lume transition pulse", "mode": MODE_25D, "action": "lume_transition", "visualPreset": VISUAL_PRESET_ATMOSPHERIC},
+		{"id": "2_5d_results", "label": "2.5D Results transition", "mode": MODE_25D, "action": "results", "visualPreset": VISUAL_PRESET_CLEAN}
 	]
 
 func get_spike_status() -> Dictionary:
@@ -450,14 +551,17 @@ func get_spike_status() -> Dictionary:
 			"mode": active_mode,
 			"ready": true,
 			"currentStepId": current_step_id,
+			"visualPreset": active_visual_preset,
 			"reviewHarnessVisible": true
 		}
 	if active_scene and active_scene.has_method("get_spike_status"):
 		var status: Dictionary = active_scene.get_spike_status()
 		status["currentStepId"] = current_step_id
 		status["reviewHarnessVisible"] = review_layer != null
+		if active_mode == MODE_2D:
+			status["visualPreset"] = VISUAL_PRESET_2D_CONTROL
 		return status
-	return {"mode": active_mode, "ready": false, "currentStepId": current_step_id}
+	return {"mode": active_mode, "ready": false, "currentStepId": current_step_id, "visualPreset": active_visual_preset}
 
 func run_headless_tests() -> Dictionary:
 	var errors: Array[String] = []
@@ -498,7 +602,10 @@ func run_headless_tests() -> Dictionary:
 			"v0.119-workload-tier-L",
 			"v0.119-navigation-metrics",
 			"v0.119-bounded-ai-pressure",
-			"v0.119-results-parity"
+			"v0.119-results-parity",
+			"v0.121-procedural-2_5d-presets",
+			"v0.121-hud-minimap-selection-readability",
+			"v0.121-vfx-stress-private-boundary"
 		]
 	}
 
@@ -506,7 +613,11 @@ func run_headless_benchmark() -> Array[String]:
 	var errors: Array[String] = []
 	for config in [
 		{"mode": MODE_2D, "path": "res://scenes/salto_2d_placeholder.tscn", "report": "res://reports/godot-benchmark-2d.json"},
-		{"mode": MODE_25D, "path": "res://scenes/salto_2_5d_orthographic_placeholder.tscn", "report": "res://reports/godot-benchmark-2_5d.json"}
+		{"mode": MODE_25D, "path": "res://scenes/salto_2_5d_orthographic_placeholder.tscn", "report": "res://reports/godot-benchmark-2_5d.json", "visualPreset": VISUAL_PRESET_CLEAN},
+		{"mode": MODE_2D, "path": "res://scenes/salto_2d_placeholder.tscn", "report": "res://reports/godot-v0121-benchmark-2d-control.json", "visualPreset": VISUAL_PRESET_2D_CONTROL, "benchmarkKind": "v0.121-procedural-visual-foundation"},
+		{"mode": MODE_25D, "path": "res://scenes/salto_2_5d_orthographic_placeholder.tscn", "report": "res://reports/godot-v0121-benchmark-2_5d-clean.json", "visualPreset": VISUAL_PRESET_CLEAN, "benchmarkKind": "v0.121-procedural-visual-foundation"},
+		{"mode": MODE_25D, "path": "res://scenes/salto_2_5d_orthographic_placeholder.tscn", "report": "res://reports/godot-v0121-benchmark-2_5d-atmospheric.json", "visualPreset": VISUAL_PRESET_ATMOSPHERIC, "benchmarkKind": "v0.121-procedural-visual-foundation"},
+		{"mode": MODE_25D, "path": "res://scenes/salto_2_5d_orthographic_placeholder.tscn", "report": "res://reports/godot-v0121-benchmark-2_5d-vfx-stress-private.json", "visualPreset": VISUAL_PRESET_VFX_STRESS, "benchmarkKind": "v0.121-procedural-visual-foundation-private"}
 	]:
 		var mode_errors: Array[String] = _benchmark_mode(config)
 		for error in mode_errors:
@@ -594,6 +705,24 @@ func _test_scene(path: String, expected_mode: String, errors: Array[String]) -> 
 		var final_status: Dictionary = scene.get_spike_status()
 		if not bool(final_status.get("lumeLinkRendered", false)):
 			errors.append("%s Lume placeholder not marked rendered" % expected_mode)
+		if expected_mode == MODE_25D:
+			if not scene.has_method("set_visual_preset"):
+				errors.append("%s lacks v0.121 set_visual_preset" % expected_mode)
+			else:
+				for preset in [VISUAL_PRESET_CLEAN, VISUAL_PRESET_ATMOSPHERIC, VISUAL_PRESET_VFX_STRESS]:
+					if not scene.set_visual_preset(preset):
+						errors.append("%s rejected v0.121 visual preset %s" % [expected_mode, preset])
+					var preset_status: Dictionary = scene.get_spike_status()
+					if str(preset_status.get("visualPreset", "")) != preset:
+						errors.append("%s did not report v0.121 visual preset %s" % [expected_mode, preset])
+					if not bool(preset_status.get("proceduralPrimitiveOnly", false)):
+						errors.append("%s preset %s is not marked procedural-only" % [expected_mode, preset])
+					if not bool(preset_status.get("hudPlaceholderRendered", false)):
+						errors.append("%s preset %s lacks HUD placeholder status" % [expected_mode, preset])
+					if not bool(preset_status.get("captureSiteMarkerRendered", false)):
+						errors.append("%s preset %s lacks capture-site marker status" % [expected_mode, preset])
+					if preset == VISUAL_PRESET_VFX_STRESS and not bool(preset_status.get("vfxStressPrivate", false)):
+						errors.append("%s VFX stress preset is not marked private" % expected_mode)
 	scene.queue_free()
 
 func _benchmark_mode(config: Dictionary) -> Array[String]:
@@ -605,6 +734,8 @@ func _benchmark_mode(config: Dictionary) -> Array[String]:
 	var scene: Node = packed.instantiate()
 	var launch: int = Time.get_ticks_usec()
 	add_child(scene)
+	if config.has("visualPreset") and str(config["mode"]) == MODE_25D and scene.has_method("set_visual_preset"):
+		scene.set_visual_preset(str(config["visualPreset"]))
 	var report: Dictionary
 	if scene.has_method("run_benchmark_suite"):
 		report = scene.run_benchmark_suite()
@@ -633,11 +764,15 @@ func _benchmark_mode(config: Dictionary) -> Array[String]:
 		report = _metrics(str(config["mode"]), start, launch, input_start, input_end, results_end, frame_times)
 	report["checkpoint"] = CHECKPOINT
 	report["mode"] = str(config["mode"])
-	report["benchmarkKind"] = "v0.119-representative-rts-load"
+	report["visualPreset"] = str(config.get("visualPreset", VISUAL_PRESET_2D_CONTROL if str(config["mode"]) == MODE_2D else VISUAL_PRESET_CLEAN))
+	report["visualPresetPrivate"] = report["visualPreset"] == VISUAL_PRESET_VFX_STRESS
+	report["benchmarkKind"] = str(config.get("benchmarkKind", "v0.119-representative-rts-load"))
 	report["godotVersion"] = Engine.get_version_info()
 	report["fixtureHash"] = _fixture_hash()
 	report["finalProductionCertification"] = false
 	report["runtimeArtIntegrated"] = false
+	report["generatedOrImportedArtIncluded"] = false
+	report["routineEditorUseRequired"] = false
 	_write_report(str(config["report"]), report)
 	if report.get("status", "FAIL") != "PASS":
 		errors.append("%s benchmark report did not pass" % config["mode"])
@@ -680,11 +815,17 @@ func _settle_frames(count: int) -> void:
 	for _index in range(count):
 		await get_tree().process_frame
 
+func _set_capture_viewport(size: Vector2i) -> void:
+	current_viewport_size = size
+	if DisplayServer.get_name() != "headless":
+		DisplayServer.window_set_size(size)
+		DisplayServer.window_set_min_size(size)
+
 func _artifact_root_from_args() -> String:
 	for arg in _script_args():
 		if arg.begins_with("--artifact-root="):
 			return arg.trim_prefix("--artifact-root=")
-	return ProjectSettings.globalize_path("user://v0119-godot-review")
+	return ProjectSettings.globalize_path("user://v0121-godot-review")
 
 func _script_args() -> PackedStringArray:
 	var args := PackedStringArray()
@@ -742,6 +883,18 @@ func _friendly_action(action: String) -> String:
 			return "Launch 2D placeholder"
 		"launch_25d":
 			return "Launch 2.5D placeholder"
+		"launch_25d_clean":
+			return "Launch 2.5D clean readability"
+		"launch_25d_atmospheric":
+			return "Launch 2.5D atmospheric balanced"
+		"launch_25d_vfx_stress":
+			return "Launch 2.5D VFX stress private"
+		"preset_clean":
+			return "Set clean readability preset"
+		"preset_atmospheric":
+			return "Set atmospheric balanced preset"
+		"preset_vfx_stress":
+			return "Set VFX stress private preset"
 		"select_hero":
 			return "Select hero"
 		"select_worker":
@@ -760,8 +913,14 @@ func _friendly_action(action: String) -> String:
 			return "Pause"
 		"capture_site":
 			return "Capture site"
+		"show_buildings":
+			return "Show buildings and landmarks"
 		"lume_link":
 			return "Focus Lume link"
+		"lume_stable":
+			return "Stable Lume line"
+		"lume_transition":
+			return "Lume transition pulse"
 		"results":
 			return "Results transition"
 		"return_home":

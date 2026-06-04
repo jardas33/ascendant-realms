@@ -28,7 +28,7 @@ describe("Godot Salto spike scaffold", () => {
     expect(project).toContain("run/main_scene=\"res://scenes/salto_spike_root.tscn\"");
     expect(exportPreset).toContain('name="Windows Desktop"');
     expect(exportPreset).toContain('platform="Windows Desktop"');
-    expect(exportPreset).toContain('application/product_version="0.119.0"');
+    expect(exportPreset).toContain('application/product_version="0.121.0"');
   });
 
   it("defines one-click Windows scripts without adding engine dependencies", async () => {
@@ -189,7 +189,7 @@ describe("Godot Salto spike scaffold", () => {
     const toolScript = await readFile("desktop-spikes/godot-salto/tools/godotSpikeTool.mjs", "utf8");
     const packageScript = await readFile("tools/godot/packageGodotWindows.ps1", "utf8");
 
-    expect(rootScript).toContain('const CHECKPOINT := "v0.119"');
+    expect(rootScript).toContain('const CHECKPOINT := "v0.121"');
     expect(rootScript).toContain("v0.119-workload-tier-L");
     expect(runtimeScript).toContain("const TIER_ORDER := [\"S\", \"M\", \"L\"]");
     expect(runtimeScript).toContain("LINKED_WARD_DAMAGE_TAKEN_MULTIPLIER := 0.92");
@@ -197,7 +197,7 @@ describe("Godot Salto spike scaffold", () => {
     expect(toolScript).toContain("v0119ArtifactRoot");
     expect(toolScript).toContain("PASS_GODOT_REPRESENTATIVE_RTS_BENCHMARK");
     expect(toolScript).toContain("PASS_GODOT_REPRESENTATIVE_RTS_PARITY");
-    expect(packageScript).toContain("AscendantRealmsGodotSalto-v0119-windows.zip");
+    expect(packageScript).toContain("AscendantRealmsGodotSalto-v0121-windows.zip");
   });
 
   it("defines the v0.120 fresh checkout and zero-editor automation proof", async () => {
@@ -236,5 +236,39 @@ describe("Godot Salto spike scaffold", () => {
     expect(workflow).toContain("windows-latest");
     expect(workflow).toContain("godot:ci-style:windows");
     expect(runAll).toContain("validateGodotFreshCheckout.ps1");
+  });
+
+  it("defines the v0.121 procedural 2.5D visual foundation spike", async () => {
+    [
+      "docs/V0121_GODOT_2_5D_VISUAL_FOUNDATION_SPEC.md",
+      "docs/V0121_GODOT_2D_CONTROL_POSTURE.md",
+      "docs/V0121_GODOT_PROCEDURAL_PRESET_SPEC.md",
+      "docs/V0121_GODOT_VISUAL_CAPTURE_REPORT.md",
+      "docs/V0121_GODOT_PERFORMANCE_COMPARISON.md",
+      "docs/V0121_GODOT_IMPLEMENTATION_REPORT.md",
+      "docs/V0121_EMMANUEL_VISUAL_REVIEW_GUIDE.md"
+    ].forEach((path) => expect(existsSync(path), path).toBe(true));
+
+    const rootScript = await readFile("desktop-spikes/godot-salto/scripts/salto_spike_root.gd", "utf8");
+    const scene3d = await readFile("desktop-spikes/godot-salto/scripts/salto_spike_scene_3d.gd", "utf8");
+    const toolScript = await readFile("desktop-spikes/godot-salto/tools/godotSpikeTool.mjs", "utf8");
+    const captureScript = await readFile("tools/godot/captureGodotReviewWindows.ps1", "utf8");
+    const benchmarkScript = await readFile("tools/godot/runGodotBenchmark.ps1", "utf8");
+
+    ["CLEAN_READABILITY", "ATMOSPHERIC_BALANCED", "VFX_STRESS_PRIVATE"].forEach((preset) => {
+      expect(rootScript).toContain(preset);
+      expect(scene3d).toContain(preset);
+      expect(toolScript).toContain(preset);
+    });
+    expect(rootScript).toContain("--visual-preset=");
+    expect(rootScript).toContain("CAPTURE_VIEWPORTS := [Vector2i(1600, 900), Vector2i(1920, 1080)]");
+    expect(scene3d).toContain("proceduralPrimitiveOnly");
+    expect(scene3d).toContain("MinimapOrientationPlaceholder");
+    expect(scene3d).toContain("safeZoomBounds");
+    expect(captureScript).toContain("godot-salto\\v0121");
+    expect(captureScript).toContain("32 PNG captures");
+    expect(benchmarkScript).toContain("godot-v0121-benchmark-2_5d-vfx-stress-private.json");
+    expect(toolScript).toContain("PASS_GODOT_PROCEDURAL_VISUAL_FOUNDATION_PERFORMANCE_COMPARISON");
+    expect(toolScript).toContain("PASS_GODOT_PROCEDURAL_VISUAL_CAPTURE");
   });
 });

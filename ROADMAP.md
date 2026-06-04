@@ -11,9 +11,19 @@ Every phase should protect these long-term pillars:
 
 ## Current Recommended Next Phase
 
-The current checkpoint is **v0.120 Godot Fresh-Checkout Reproducibility CI-Style Validation and Zero-Editor Automation Proof** on 2026-06-04. It proves the existing Godot Salto workflow spike can be recreated from repository files and scripts in a temporary checkout, with ignored editor/build/report artifacts omitted, fixture regeneration, headless tests, 2D and 2.5D representative benchmark smoke, Windows export/package, package hash validation, safe temp cleanup, and routine editor use still unnecessary.
+The current checkpoint is **v0.121 Godot Procedural 2.5D Visual Foundation and 2D Control Comparison** on 2026-06-04. It extends the existing Godot Salto workflow spike with procedural-only 2.5D primitives, scriptable visual presets, deterministic capture coverage, and preset performance comparison while keeping 2D as the readability/control lane and routine editor use unnecessary.
 
-The next recommended step, only after a future explicit goal, is a human-visible visual-quality review or follow-up engine comparison that uses the same fixture, fresh-checkout, and scorecard discipline. v0.120 keeps 2.5D orthographic as the leading presentation candidate for a future visual-quality pass because it better supports modern lighting, terrain depth, and atmosphere, while keeping 2D as the automation/readability control. Do not generate art for runtime integration, import art into runtime, mark `runtime-candidate-approved` assets as loadable, resume broad browser visual expansion, add gameplay systems, change rewards, change saves, rename IDs, create a desktop save path, choose Godot finally, start a full desktop port, start Unity/Unreal/Electron work, or start v0.121 until a future explicit goal approves a narrow next step.
+The next recommended step, only after a future explicit goal, is Emmanuel's human-visible review of the v0.121 contact sheets and performance packet or a separately approved follow-up comparison. v0.121 keeps 2.5D orthographic as a leading presentation candidate for review because it better supports modern lighting, terrain depth, atmosphere, hero readability, and Lume VFX posture, while keeping 2D as the automation/readability control. Do not generate art for runtime integration, import art into runtime, mark `runtime-candidate-approved` assets as loadable, resume broad browser visual expansion, add gameplay systems, change rewards, change saves, rename IDs, create a desktop save path, choose Godot finally, start a full desktop port, start Unity/Unreal/Electron work, or start v0.122 until a future explicit goal approves a narrow next step.
+
+New v0.121 docs:
+
+- `docs/V0121_GODOT_2_5D_VISUAL_FOUNDATION_SPEC.md`
+- `docs/V0121_GODOT_2D_CONTROL_POSTURE.md`
+- `docs/V0121_GODOT_PROCEDURAL_PRESET_SPEC.md`
+- `docs/V0121_GODOT_VISUAL_CAPTURE_REPORT.md`
+- `docs/V0121_GODOT_PERFORMANCE_COMPARISON.md`
+- `docs/V0121_GODOT_IMPLEMENTATION_REPORT.md`
+- `docs/V0121_EMMANUEL_VISUAL_REVIEW_GUIDE.md`
 
 New v0.120 docs:
 

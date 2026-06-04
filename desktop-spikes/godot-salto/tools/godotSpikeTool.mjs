@@ -10,6 +10,8 @@ const artifactRoot = join(repoRoot, "artifacts", "desktop-spikes", "godot-salto"
 const v0118ArtifactRoot = join(repoRoot, "artifacts", "desktop-spikes", "godot-salto", "v0118");
 const v0118ScreenshotRoot = join(v0118ArtifactRoot, "screenshots");
 const v0119ArtifactRoot = join(repoRoot, "artifacts", "desktop-spikes", "godot-salto", "v0119");
+const v0121ArtifactRoot = join(repoRoot, "artifacts", "desktop-spikes", "godot-salto", "v0121");
+const v0121ScreenshotRoot = join(v0121ArtifactRoot, "screenshots");
 const sourceFixtureRoot = join(repoRoot, "artifacts", "desktop-spike-fixture", "latest");
 const generatedDataRoot = join(spikeRoot, "data", "generated");
 const buildsRoot = join(spikeRoot, "builds");
@@ -17,6 +19,12 @@ const reportsRoot = join(spikeRoot, "reports");
 const godotVersion = "4.6.3-stable";
 const exportTemplateVersion = "4.6.3.stable";
 const blockedStatus = "BLOCKED_PENDING_LOCAL_GODOT_SETUP";
+const v0121VisualPresets = {
+  control2d: "2D_CONTROL",
+  clean: "CLEAN_READABILITY",
+  atmospheric: "ATMOSPHERIC_BALANCED",
+  vfxStress: "VFX_STRESS_PRIVATE"
+};
 
 const standardEditorUrl =
   "https://github.com/godotengine/godot/releases/download/4.6.3-stable/Godot_v4.6.3-stable_win64.exe.zip";
@@ -196,6 +204,18 @@ function writeV0119Text(name, value) {
   return target;
 }
 
+function writeV0121Artifact(name, value) {
+  const target = join(v0121ArtifactRoot, name);
+  writeJson(target, value);
+  return target;
+}
+
+function writeV0121Text(name, value) {
+  const target = join(v0121ArtifactRoot, name);
+  writeText(target, value);
+  return target;
+}
+
 function writeV0118Artifact(name, value) {
   const target = join(v0118ArtifactRoot, name);
   writeJson(target, value);
@@ -210,6 +230,11 @@ function writeV0118Text(name, value) {
 
 function readV0118RuntimeReport(name) {
   const path = join(v0118ArtifactRoot, name);
+  return existsSync(path) ? readJson(path) : null;
+}
+
+function readV0121RuntimeReport(name) {
+  const path = join(v0121ArtifactRoot, name);
   return existsSync(path) ? readJson(path) : null;
 }
 
@@ -295,7 +320,7 @@ function exportGeneratedData() {
   const linkedWard = fixture.scene.lume?.linkedWardDamageTakenMultiplier;
   const manifest = {
     schemaVersion: 1,
-    checkpoint: "v0.119",
+    checkpoint: "v0.121",
     generatedAtUtc: "deterministic-v0119",
     authority: "derived-from-v0.116-engine-neutral-fixture",
     sourceFixtureRoot: "artifacts/desktop-spike-fixture/latest",
@@ -635,9 +660,9 @@ function writeTestReport() {
         : blockedStatus;
   const report = {
     schemaVersion: 1,
-    checkpoint: "v0.119",
+    checkpoint: "v0.121",
     status,
-    generatedAtUtc: "deterministic-v0119",
+    generatedAtUtc: "deterministic-v0121",
     staticChecksPassed: validation.errors.length === 0,
     godotDetected: doctor.godotDetected,
     exportTemplatesDetected: doctor.exportTemplatesDetected,
@@ -662,7 +687,10 @@ function writeTestReport() {
       "v0.119-S-M-L-tier-counts",
       "v0.119-navigation-query-and-stuck-unit-metrics",
       "v0.119-bounded-enemy-pressure",
-      "v0.119-results-parity"
+      "v0.119-results-parity",
+      "v0.121-procedural-2_5d-presets",
+      "v0.121-hud-minimap-selection-readability",
+      "v0.121-vfx-stress-private-boundary"
     ],
     blocker: doctor.godotDetected ? null : blockedStatus
   };
@@ -727,8 +755,214 @@ function benchmarkForMode(mode, doctor) {
       ? "Headless Godot benchmark runner completed the v0.119 representative RTS S/M/L workload for this mode."
       : blocked
         ? "Godot was not detected locally; scaffold validation passed but runtime performance metrics were not collected."
+      : "Run the Godot benchmark runner to collect runtime metrics on this host."
+  };
+}
+
+const v0121BenchmarkConfigs = [
+  {
+    id: "2d-control",
+    label: "2D control",
+    mode: "2D_PLACEHOLDER",
+    visualPreset: v0121VisualPresets.control2d,
+    runtimeName: "godot-v0121-benchmark-2d-control.json",
+    artifactName: "benchmark-2d-control.json",
+    privatePreset: false
+  },
+  {
+    id: "2_5d-clean-readability",
+    label: "2.5D clean readability",
+    mode: "2_5D_ORTHOGRAPHIC_PLACEHOLDER",
+    visualPreset: v0121VisualPresets.clean,
+    runtimeName: "godot-v0121-benchmark-2_5d-clean.json",
+    artifactName: "benchmark-2_5d-clean-readability.json",
+    privatePreset: false
+  },
+  {
+    id: "2_5d-atmospheric-balanced",
+    label: "2.5D atmospheric balanced",
+    mode: "2_5D_ORTHOGRAPHIC_PLACEHOLDER",
+    visualPreset: v0121VisualPresets.atmospheric,
+    runtimeName: "godot-v0121-benchmark-2_5d-atmospheric.json",
+    artifactName: "benchmark-2_5d-atmospheric-balanced.json",
+    privatePreset: false
+  },
+  {
+    id: "2_5d-vfx-stress-private",
+    label: "2.5D VFX stress private",
+    mode: "2_5D_ORTHOGRAPHIC_PLACEHOLDER",
+    visualPreset: v0121VisualPresets.vfxStress,
+    runtimeName: "godot-v0121-benchmark-2_5d-vfx-stress-private.json",
+    artifactName: "benchmark-2_5d-vfx-stress-private.json",
+    privatePreset: true
+  }
+];
+
+function v0121BenchmarkForConfig(config, doctor) {
+  const runtime = readRuntimeReport(config.runtimeName);
+  const blocked = !doctor.godotDetected;
+  const representative = representativePhase(runtime);
+  const inputLatencyMs =
+    representative?.moveAcceptanceLatencyMs != null || representative?.attackAcceptanceLatencyMs != null
+      ? Math.max(Number(representative?.moveAcceptanceLatencyMs ?? 0), Number(representative?.attackAcceptanceLatencyMs ?? 0))
+      : null;
+  return {
+    schemaVersion: 1,
+    checkpoint: "v0.121",
+    id: config.id,
+    label: config.label,
+    mode: config.mode,
+    visualPreset: config.visualPreset,
+    privatePreset: config.privatePreset,
+    status:
+      runtime?.status === "PASS"
+        ? "PASS_GODOT_PROCEDURAL_VISUAL_FOUNDATION_BENCHMARK"
+        : blocked
+          ? blockedStatus
+          : "READY_FOR_RUNTIME_BENCHMARK",
+    generatedAtUtc: "deterministic-v0121",
+    runtimeBenchmarkExecuted: Boolean(runtime),
+    deterministicSeed: runtime?.deterministicSeed ?? null,
+    linkedWardDamageTakenMultiplier: runtime?.linkedWardDamageTakenMultiplier ?? null,
+    workloadTiersExecuted: runtime?.tiers ? Object.keys(runtime.tiers).sort() : [],
+    phaseCount: flattenPhaseReports(runtime).length,
+    countsByTier: runtime?.countsByTier ?? null,
+    placementSignatures: runtime?.placementSignatures ?? null,
+    tierSummary: buildTierSummary(runtime),
+    representativePhase: representative,
+    startupMs: runtime?.startupMs ?? null,
+    sceneLaunchMs: runtime?.sceneLaunchMs ?? null,
+    fpsAverage: representative?.fpsAverage ?? runtime?.fpsAverage ?? null,
+    fpsOnePercentLow: representative?.fpsOnePercentLow ?? runtime?.fpsOnePercentLow ?? null,
+    frameTimeP50Ms: representative?.frameTimeP50Ms ?? runtime?.frameTimeP50Ms ?? null,
+    frameTimeP95Ms: representative?.frameTimeP95Ms ?? runtime?.frameTimeP95Ms ?? null,
+    frameTimeP99Ms: representative?.frameTimeP99Ms ?? runtime?.frameTimeP99Ms ?? null,
+    frameTimeMaxMs: representative?.frameTimeMaxMs ?? runtime?.frameTimeMaxMs ?? null,
+    inputLatencyMs,
+    inputLatency: {
+      selectionLatencyMs: representative?.selectionLatencyMs ?? null,
+      moveAcceptanceLatencyMs: representative?.moveAcceptanceLatencyMs ?? null,
+      attackAcceptanceLatencyMs: representative?.attackAcceptanceLatencyMs ?? null
+    },
+    resultsTransitionMs: representative?.durationMs ?? runtime?.resultsTransitionMs ?? null,
+    navigationQueryCount: sumPhaseMetric(runtime, "navigationQueryCount"),
+    stuckUnitCount: maxPhaseMetric(runtime, "stuckUnitCount"),
+    movementCompletedCount: sumPhaseMetric(runtime, "movementCompletedCount"),
+    aiPressureBeatCount: sumPhaseMetric(runtime, "aiPressureBeatCount"),
+    deathCount: sumPhaseMetric(runtime, "deathCount"),
+    siteTransitionCount: sumPhaseMetric(runtime, "siteTransitionCount"),
+    memoryWorkingSetMb: representative?.memoryWorkingSetMb ?? runtime?.memoryWorkingSetMb ?? null,
+    readOnlySaveFixtures: runtime?.readOnlySaveFixtures ?? true,
+    localStorageMutationAllowed: runtime?.localStorageMutationAllowed ?? false,
+    runtimeArtIntegrated: runtime?.runtimeArtIntegrated ?? false,
+    generatedOrImportedArtIncluded: runtime?.generatedOrImportedArtIncluded ?? false,
+    routineEditorUseRequired: runtime?.routineEditorUseRequired ?? false,
+    finalProductionCertification: false,
+    runtimeReportName: config.runtimeName,
+    runtimeReport: runtime,
+    notes: runtime
+      ? "Headless Godot benchmark runner completed the v0.121 procedural visual-foundation comparison for this preset."
+      : blocked
+        ? "Godot was not detected locally; scaffold validation passed but runtime performance metrics were not collected."
         : "Run the Godot benchmark runner to collect runtime metrics on this host."
   };
+}
+
+function writeV0121BenchmarkArtifacts(doctor, validation) {
+  const reports = v0121BenchmarkConfigs.map((config) => {
+    const report = v0121BenchmarkForConfig(config, doctor);
+    writeV0121Artifact(config.artifactName, report);
+    return report;
+  });
+  const allRuntime = reports.every((report) => report.runtimeBenchmarkExecuted && report.status === "PASS_GODOT_PROCEDURAL_VISUAL_FOUNDATION_BENCHMARK");
+  const comparison = {
+    schemaVersion: 1,
+    checkpoint: "v0.121",
+    status: allRuntime
+      ? "PASS_GODOT_PROCEDURAL_VISUAL_FOUNDATION_PERFORMANCE_COMPARISON"
+      : doctor.godotDetected
+        ? "READY_FOR_RUNTIME_BENCHMARK"
+        : blockedStatus,
+    generatedAtUtc: "deterministic-v0121",
+    sourceCommit: getCurrentCommit(),
+    fixtureHash: validation.fixtureHash ?? null,
+    linkedWardDamageTakenMultiplier: validation.linkedWardDamageTakenMultiplier,
+    readOnlySaveFixtures: true,
+    localStorageMutationAllowed: false,
+    runtimeArtIntegrated: false,
+    generatedOrImportedArtIncluded: false,
+    routineEditorUseRequired: false,
+    finalProductionCertification: false,
+    normalReviewDefault: v0121VisualPresets.clean,
+    vfxStressExcludedFromDefaultReview: true,
+    visualAmbition:
+      "Original modern top-down RTS/RPG direction: fixed-camera 2D versus 2.5D readability, strong faction silhouettes, atmospheric Salto terrain, modern lighting/VFX posture, central persistent hero clarity, and no mobile-game/dashboard look.",
+    requiredScenarios: ["idle", "moving", "combat", "Results transition"],
+    reports: Object.fromEntries(reports.map((report) => [report.id, report])),
+    summaryRows: reports.map((report) => ({
+      id: report.id,
+      label: report.label,
+      mode: report.mode,
+      visualPreset: report.visualPreset,
+      privatePreset: report.privatePreset,
+      status: report.status,
+      tiers: report.workloadTiersExecuted,
+      fpsAverage: report.fpsAverage,
+      fpsOnePercentLow: report.fpsOnePercentLow,
+      frameTimeP50Ms: report.frameTimeP50Ms,
+      frameTimeP95Ms: report.frameTimeP95Ms,
+      frameTimeP99Ms: report.frameTimeP99Ms,
+      frameTimeMaxMs: report.frameTimeMaxMs,
+      startupMs: report.startupMs,
+      sceneLaunchMs: report.sceneLaunchMs,
+      inputLatencyMs: report.inputLatencyMs,
+      resultsTransitionMs: report.resultsTransitionMs,
+      memoryWorkingSetMb: report.memoryWorkingSetMb,
+      navigationQueryCount: report.navigationQueryCount,
+      stuckUnitCount: report.stuckUnitCount
+    })),
+    errors: validation.errors ?? []
+  };
+  writeV0121Artifact("performance-comparison.json", comparison);
+  writeArtifact("performance-comparison-v0121.json", comparison);
+  writeV0121Text("performance-comparison.md", renderV0121PerformanceSummary(comparison));
+  writeV0121Text("README.md", renderV0121ArtifactReadme());
+  return comparison;
+}
+
+function renderV0121PerformanceSummary(comparison) {
+  const rows = comparison.summaryRows
+    .map(
+      (row) =>
+        `| ${row.label} | ${row.visualPreset} | ${row.status} | ${row.fpsAverage ?? "n/a"} | ${row.fpsOnePercentLow ?? "n/a"} | ${row.frameTimeP95Ms ?? "n/a"} | ${row.inputLatencyMs ?? "n/a"} | ${row.resultsTransitionMs ?? "n/a"} |`
+    )
+    .join("\n");
+  return [
+    "# v0.121 Godot Procedural Visual Foundation Performance Comparison",
+    "",
+    `Status: ${comparison.status}`,
+    "",
+    "| Lane | Preset | Status | FPS avg | 1% low | p95 frame ms | input ms | Results ms |",
+    "| --- | --- | --- | ---: | ---: | ---: | ---: | ---: |",
+    rows,
+    "",
+    "The VFX stress preset is private spike evidence and is excluded from the normal Emmanuel visual-review default. No row is final production certification."
+  ].join("\n");
+}
+
+function renderV0121ArtifactReadme() {
+  return [
+    "# v0.121 Godot Procedural 2.5D Visual Foundation Artifacts",
+    "",
+    "This ignored artifact folder is regenerated by the v0.121 Godot spike scripts.",
+    "",
+    "- `performance-comparison.json` and `performance-comparison.md` compare 2D control, 2.5D clean, 2.5D atmospheric, and private 2.5D VFX stress benchmark lanes.",
+    "- `screenshot-manifest.json` records deterministic 1600x900 and 1920x1080 captures when `npm run godot:capture:review` is executed.",
+    "- `contact-sheet.svg`, `contact-sheet-1600x900.svg`, and `contact-sheet-1920x1080.svg` summarize the capture set.",
+    "- `EMMANUEL_VISUAL_REVIEW_GUIDE.md` is the local one-click review note for this ignored artifact set.",
+    "",
+    "No file here is tracked source, imported art, generated art, a final Godot decision, runtime integration, or a full port."
+  ].join("\n");
 }
 
 function writeBenchmarkReports({ scorecardOnly = false } = {}) {
@@ -740,6 +974,7 @@ function writeBenchmarkReports({ scorecardOnly = false } = {}) {
     writeArtifact("benchmark-2d.json", benchmark2d);
     writeArtifact("benchmark-2_5d.json", benchmark25d);
     writeV0119RuntimeArtifacts(benchmark2d, benchmark25d, validation, doctor);
+    writeV0121BenchmarkArtifacts(doctor, validation);
     writeText(
       join(artifactRoot, "benchmark-summary.md"),
       [
@@ -774,6 +1009,7 @@ function writeBenchmarkReports({ scorecardOnly = false } = {}) {
   const scorecard = buildScorecard(doctor, validation);
   writeArtifact("scorecard.json", scorecard);
   writeV0119Artifact("scorecard-update.json", scorecard);
+  writeV0121Artifact("scorecard.json", scorecard);
   return scorecard;
 }
 
@@ -784,7 +1020,7 @@ function writeExportReport() {
   const status = exists ? "PASS_WINDOWS_EXPORT" : doctor.godotDetected && doctor.exportTemplatesDetected ? "READY_FOR_WINDOWS_EXPORT" : blockedStatus;
   const report = {
     schemaVersion: 1,
-    checkpoint: "v0.119",
+    checkpoint: "v0.121",
     status,
     generatedAtUtc: "deterministic-v0119",
     godotDetected: doctor.godotDetected,
@@ -799,17 +1035,18 @@ function writeExportReport() {
   };
   writeArtifact("Windows-export-report.json", report);
   writeV0119Artifact("Windows-export-report.json", report);
+  writeV0121Artifact("Windows-export-report.json", report);
   return report;
 }
 
 function writePackageReport() {
   const exportReportPath = join(artifactRoot, "Windows-export-report.json");
   const exportReport = existsSync(exportReportPath) ? readJson(exportReportPath) : writeExportReport();
-  const zipPath = join(artifactRoot, "AscendantRealmsGodotSalto-v0119-windows.zip");
+  const zipPath = join(artifactRoot, "AscendantRealmsGodotSalto-v0121-windows.zip");
   const status = existsSync(zipPath) ? "PASS_WINDOWS_PACKAGE" : "READY_TO_PACKAGE";
   const report = {
     schemaVersion: 1,
-    checkpoint: "v0.119",
+    checkpoint: "v0.121",
     status: existsSync(zipPath) ? status : exportReport.status === "PASS_WINDOWS_EXPORT" ? "READY_TO_PACKAGE" : blockedStatus,
     generatedAtUtc: "deterministic-v0119",
     exportStatus: exportReport.status,
@@ -824,24 +1061,28 @@ function writePackageReport() {
   };
   writeArtifact("package-report.json", report);
   writeV0119Artifact("package-report.json", report);
+  writeV0121Artifact("package-report.json", report);
   return report;
 }
 
 function writeManualReviewChecklist() {
   const checklist = [
-    "# v0.119 Godot Representative RTS Load Review Checklist",
+    "# v0.121 Godot Procedural 2.5D Visual Foundation Review Checklist",
     "",
     "- Confirm Godot 4.6.3 standard x86_64 is installed under `.tools/godot/` or `GODOT_BIN`.",
     "- Confirm standard export templates are installed under the detected template directory.",
     "- Run `GODOT_RUN_ALL_WINDOWS.bat` from a fresh checkout.",
-    "- Confirm S, M, and L workload tiers execute in both 2D and 2.5D modes.",
-    "- Confirm navigation query, movement completion, stuck-unit, selection, move, attack, and Results metrics are present.",
-    "- Confirm M records a bounded enemy-pressure beat and L records sustained enemy pressure.",
+    "- Run `GODOT_CAPTURE_REVIEW_WINDOWS.bat` or `npm run godot:capture:review` for the v0.121 visual capture matrix.",
+    "- Review 2D control, 2.5D clean readability, 2.5D atmospheric balanced, and private 2.5D VFX stress captures.",
+    "- Treat `CLEAN_READABILITY` as the normal review default.",
+    "- Treat `VFX_STRESS_PRIVATE` as private spike stress evidence only, not visual direction.",
+    "- Confirm S, M, and L workload tiers execute in both 2D control and the 2.5D preset benchmark lanes.",
+    "- Confirm navigation query, movement completion, stuck-unit, selection, move, attack, and Results metrics remain present.",
     "- Confirm `linked_ward` remains exactly `0.92` and save fixtures remain read-only.",
-    "- Do not treat this spike as a full port, final art pass, or final Godot decision."
+    "- Do not treat this spike as a full port, final art pass, imported-art approval, or final Godot decision."
   ].join("\n");
   const readme = [
-    "# v0.119 Godot Representative RTS Load Artifacts",
+    "# v0.121 Godot Procedural Visual Foundation Artifacts",
     "",
     "This ignored artifact folder is regenerated by the Godot spike scripts.",
     "",
@@ -851,6 +1092,8 @@ function writeManualReviewChecklist() {
   writeText(join(artifactRoot, "README.md"), readme);
   writeV0119Text("manual-review-checklist.md", checklist);
   writeV0119Text("EMMANUEL_ONE_CLICK_GUIDE.md", checklist);
+  writeV0121Text("EMMANUEL_VISUAL_REVIEW_GUIDE.md", checklist);
+  writeV0121Text("manual-review-checklist.md", checklist);
 }
 
 function escapeXml(value) {
@@ -1066,6 +1309,177 @@ function writeV0118ContactSheet(manifest) {
   writeText(join(v0118ArtifactRoot, "contact-sheet.svg"), svg);
 }
 
+function writeV0121ScreenshotManifest() {
+  const runtime = readV0121RuntimeReport("screenshot-runtime-manifest.json");
+  const errors = [];
+  if (!runtime) {
+    errors.push("Missing screenshot-runtime-manifest.json from packaged executable capture.");
+  }
+  const runtimeCaptures = runtime?.captures ?? [];
+  const captures = runtimeCaptures.map((entry) => {
+    const screenshotPath = join(v0121ScreenshotRoot, entry.fileName);
+    return {
+      id: entry.id,
+      label: entry.label,
+      mode: entry.mode,
+      visualPreset: entry.visualPreset,
+      action: entry.action,
+      fileName: entry.fileName,
+      path: existsSync(screenshotPath) ? relativeRepo(screenshotPath) : relativeRepo(screenshotPath),
+      sha256: existsSync(screenshotPath) ? hashFile(screenshotPath) : null,
+      sizeBytes: existsSync(screenshotPath) ? statSync(screenshotPath).size : null,
+      viewport: entry.viewport ?? { width: entry.width, height: entry.height },
+      width: entry.width,
+      height: entry.height,
+      saveResult: entry.saveResult
+    };
+  });
+  const requiredCaptureCount = 32;
+  if (captures.length !== requiredCaptureCount) {
+    errors.push(`Expected ${requiredCaptureCount} screenshots, found ${captures.length}.`);
+  }
+  const requiredViewports = new Set(["1600x900", "1920x1080"]);
+  const requiredPresets = new Set(Object.values(v0121VisualPresets));
+  const observedViewports = new Set();
+  const observedPresets = new Set();
+  for (const capture of captures) {
+    if (!capture.sha256) {
+      errors.push(`Missing screenshot file: ${capture.fileName}`);
+    }
+    const viewportKey = `${capture.width}x${capture.height}`;
+    observedViewports.add(viewportKey);
+    if (!requiredViewports.has(viewportKey)) {
+      errors.push(`Screenshot ${capture.fileName} is ${viewportKey}; expected 1600x900 or 1920x1080.`);
+    }
+    if (capture.visualPreset) {
+      observedPresets.add(capture.visualPreset);
+    }
+  }
+  for (const viewport of requiredViewports) {
+    if (!observedViewports.has(viewport)) {
+      errors.push(`Missing v0.121 capture viewport ${viewport}.`);
+    }
+  }
+  for (const preset of requiredPresets) {
+    if (!observedPresets.has(preset)) {
+      errors.push(`Missing v0.121 visual preset capture ${preset}.`);
+    }
+  }
+  const strayPngs = existsSync(v0121ScreenshotRoot)
+    ? readdirSync(v0121ScreenshotRoot).filter((file) => file.endsWith(".png") && !captures.some((capture) => capture.fileName === file))
+    : [];
+  if (strayPngs.length > 0) {
+    errors.push(`Unexpected screenshots in v0121 folder: ${strayPngs.join(", ")}`);
+  }
+  const manifest = {
+    schemaVersion: 1,
+    checkpoint: "v0.121",
+    status: errors.length === 0 && runtime?.status === "PASS" ? "PASS_GODOT_PROCEDURAL_VISUAL_CAPTURE" : "FAIL_GODOT_PROCEDURAL_VISUAL_CAPTURE",
+    generatedAtUtc: "deterministic-v0121",
+    screenshotRoot: relativeRepo(v0121ScreenshotRoot),
+    contactSheetPath: "artifacts/desktop-spikes/godot-salto/v0121/contact-sheet.svg",
+    captureCount: captures.length,
+    requiredCaptureCount,
+    captureViewports: [...observedViewports].sort(),
+    visualPresets: [...observedPresets].sort(),
+    defaultReviewPreset: v0121VisualPresets.clean,
+    vfxStressExcludedFromDefaultReview: true,
+    deterministicCaptureOrder: [
+      "2d_control_default",
+      "2d_hero",
+      "2d_worker",
+      "2d_squad",
+      "2d_results",
+      "2_5d_clean_default",
+      "2_5d_atmospheric_default",
+      "2_5d_vfx_stress_private",
+      "2_5d_hero",
+      "2_5d_worker",
+      "2_5d_squad",
+      "2_5d_buildings",
+      "2_5d_capture_site",
+      "2_5d_lume_stable",
+      "2_5d_lume_transition",
+      "2_5d_results"
+    ],
+    fixtureHash: runtime?.fixtureHash ?? readFixtureHash(),
+    godotVersion: runtime?.godotVersion ?? null,
+    routineEditorUseRequired: false,
+    generatedOrImportedArtIncluded: false,
+    runtimeArtIntegrated: false,
+    finalProductionCertification: false,
+    errors,
+    captures
+  };
+  writeV0121Artifact("screenshot-manifest.json", manifest);
+  writeArtifact("screenshot-manifest-v0121.json", manifest);
+  writeV0121ContactSheets(manifest);
+  writeV0121VisualReviewSummary(manifest);
+  writeV0121Text("README.md", renderV0121ArtifactReadme());
+  return manifest;
+}
+
+function writeV0121ContactSheets(manifest) {
+  writeV0121ContactSheet(manifest, "contact-sheet.svg", null);
+  writeV0121ContactSheet(manifest, "contact-sheet-1600x900.svg", "1600x900");
+  writeV0121ContactSheet(manifest, "contact-sheet-1920x1080.svg", "1920x1080");
+}
+
+function writeV0121ContactSheet(manifest, fileName, viewportFilter) {
+  const selectedCaptures = (manifest.captures ?? []).filter((capture) => {
+    if (!viewportFilter) {
+      return true;
+    }
+    return `${capture.width}x${capture.height}` === viewportFilter;
+  });
+  const tileWidth = 320;
+  const tileHeight = 180;
+  const labelHeight = 56;
+  const columns = viewportFilter ? 4 : 4;
+  const rows = Math.ceil(selectedCaptures.length / columns);
+  const width = columns * tileWidth;
+  const height = 86 + rows * (tileHeight + labelHeight);
+  const tiles = selectedCaptures.map((capture, index) => {
+    const x = (index % columns) * tileWidth;
+    const y = 86 + Math.floor(index / columns) * (tileHeight + labelHeight);
+    return [
+      `<rect x="${x}" y="${y}" width="${tileWidth}" height="${tileHeight + labelHeight}" fill="#101616" stroke="#4dc6ba" stroke-width="1"/>`,
+      `<image href="screenshots/${escapeXml(capture.fileName)}" x="${x}" y="${y}" width="${tileWidth}" height="${tileHeight}" preserveAspectRatio="xMidYMid meet"/>`,
+      `<text x="${x + 10}" y="${y + tileHeight + 23}" fill="#e6efe8" font-family="Arial, sans-serif" font-size="14">${escapeXml(`${index + 1}. ${capture.label}`)}</text>`,
+      `<text x="${x + 10}" y="${y + tileHeight + 43}" fill="#9ccfc8" font-family="Arial, sans-serif" font-size="12">${escapeXml(`${capture.visualPreset} | ${capture.width}x${capture.height}`)}</text>`
+    ].join("\n");
+  });
+  const title = viewportFilter
+    ? `v0.121 Godot Procedural Visual Contact Sheet ${viewportFilter}`
+    : "v0.121 Godot Procedural Visual Contact Sheet";
+  const svg = [
+    `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}">`,
+    '<rect width="100%" height="100%" fill="#071011"/>',
+    `<text x="18" y="32" fill="#e6efe8" font-family="Arial, sans-serif" font-size="24">${escapeXml(title)}</text>`,
+    `<text x="18" y="58" fill="#9ccfc8" font-family="Arial, sans-serif" font-size="14">Status: ${escapeXml(manifest.status)} | Screenshots: ${selectedCaptures.length}</text>`,
+    tiles.join("\n"),
+    "</svg>",
+    ""
+  ].join("\n");
+  writeText(join(v0121ArtifactRoot, fileName), svg);
+}
+
+function writeV0121VisualReviewSummary(manifest) {
+  const lines = [
+    "# v0.121 Godot Procedural Visual Capture Summary",
+    "",
+    `Status: ${manifest.status}`,
+    `Screenshot count: ${manifest.captureCount}/${manifest.requiredCaptureCount}`,
+    `Viewports: ${manifest.captureViewports.join(", ")}`,
+    `Presets: ${manifest.visualPresets.join(", ")}`,
+    "",
+    "The normal Emmanuel review default is CLEAN_READABILITY. VFX_STRESS_PRIVATE is private spike evidence and should not be used as the default visual direction.",
+    "",
+    "This is procedural primitive evidence only: no imported artwork, generated images, runtime art integration, final materials, final Godot decision, or full port."
+  ];
+  writeV0121Text("visual-capture-summary.md", `${lines.join("\n")}\n`);
+}
+
 function writeV0118PackageValidation() {
   const paths = v0118PackagePaths();
   const smoke = existsSync(join(v0118ArtifactRoot, "headed-smoke.json"))
@@ -1231,7 +1645,7 @@ function buildScorecard(doctor, validation) {
   const tierLCombat25d = phaseReport(runtime25d, "L", "combat");
   return {
     ...template,
-    checkpoint: "v0.119",
+    checkpoint: "v0.121",
     candidate: "Godot 4.6.3 standard x86_64",
     engineVersion: doctor.godotVersionOutput,
     reviewer: "Codex",
@@ -1328,16 +1742,16 @@ function buildScorecard(doctor, validation) {
       ...template.visualAmbition,
       scoreOutOf10: runtimeComplete ? 7 : 6,
       topDown2DQuality: "Readable placeholder composition; final art quality is not assessed.",
-      fixedCamera2_5DQuality: "Orthographic primitive composition with lighting/shadow placeholders; final art quality is not assessed.",
-      factionSilhouetteStrength: "Placeholder roles include hero, Worker, Militia, Ranger, and Ashen contrast silhouettes.",
-      atmosphericTerrain: "Salto highland landmarks represented as placeholder roads, ford, quarry, shrine, ruin, fog, and Lume link.",
-      modernLightingAndVfx: "2.5D mode includes primitive lighting/shadow and Lume glow placeholders only.",
+      fixedCamera2_5DQuality: "Orthographic procedural-primitive composition now includes clean, atmospheric, and private VFX-stress presets; final art quality is not assessed.",
+      factionSilhouetteStrength: "Placeholder roles include hero, Worker, Militia, Ranger, Ashen raider/hexer/brute/commander contrast, and structure silhouettes.",
+      atmosphericTerrain: "Salto highland landmarks are represented as procedural terrain height bands, road, ford/water posture, quarry, shrine, ruin, fog posture, and Lume link.",
+      modernLightingAndVfx: "2.5D mode includes fixed-camera lighting, restrained shadow posture, Lume endpoint/link glow, transition pulse, and private VFX stress evidence only.",
       persistentHeroReadability: "Central Aster placeholder included.",
       tacticalReadability: "Selection, orders, Lume link, minimap/orientation, and Results flow are acceptance targets.",
       originalIpSeparation: true,
       avoidsMobileOrDashboardLook: true,
       notes:
-        "The spike compares 2D illustrated-placeholder and modest 2.5D orthographic-placeholder modes toward a modern original RTS/RPG spirit; no Warlords Battlecry IP, art, lore, UI, or mechanics are copied."
+        "The spike compares 2D control and procedural 2.5D orthographic placeholder presets toward a modern original RTS/RPG spirit; no Warlords Battlecry IP, art, lore, UI, or mechanics are copied."
     },
     modeComparison: {
       "2D_PLACEHOLDER": {
@@ -1401,7 +1815,9 @@ function buildScorecard(doctor, validation) {
       "artifacts/desktop-spikes/godot-salto/v0119/scalability-benchmark-2d.json",
       "artifacts/desktop-spikes/godot-salto/v0119/scalability-benchmark-2_5d.json",
       "artifacts/desktop-spikes/godot-salto/v0119/parity-report.json",
-      "artifacts/desktop-spikes/godot-salto/v0119/scorecard-update.json"
+      "artifacts/desktop-spikes/godot-salto/v0119/scorecard-update.json",
+      "artifacts/desktop-spikes/godot-salto/v0121/performance-comparison.json",
+      "artifacts/desktop-spikes/godot-salto/v0121/screenshot-manifest.json"
     ],
     score: {
       aiOperabilityOutOf25: runtimeComplete ? 24 : 19,
@@ -1415,9 +1831,9 @@ function buildScorecard(doctor, validation) {
       totalOutOf100: runtimeComplete ? 78 : null
     },
     recommendation: runtimeComplete
-      ? "Continue evidence-gathering with a second Godot visual-quality pass only if explicitly approved; do not select Godot finally from this spike alone."
+      ? "Use the v0.121 capture/performance packet for Emmanuel's procedural visual review only if explicitly approved; do not select Godot finally from this spike alone."
       : blockedStatus,
-    approvalStatus: runtimeComplete ? "workflow-spike-complete-not-final-engine-choice" : "scaffold-ready-runtime-blocked"
+    approvalStatus: runtimeComplete ? "workflow-spike-procedural-visual-foundation-not-final-engine-choice" : "scaffold-ready-runtime-blocked"
   };
 }
 
@@ -1477,6 +1893,8 @@ try {
     writeV0118PackageValidation();
     writeV0118ReviewSummary();
     writeV0118Readme();
+  } else if (command === "capture-review-v0121") {
+    console.log(stableStringify(writeV0121ScreenshotManifest()));
   } else if (command === "v0118-all") {
     writeV0118AllReports();
     console.log("v0.118 Godot headed review reports generated.");
@@ -1484,7 +1902,7 @@ try {
     runAll();
     console.log("v0.119 Godot representative RTS load spike reports generated.");
   } else {
-    console.log("Usage: node desktop-spikes/godot-salto/tools/godotSpikeTool.mjs <doctor|generate|validate|test|benchmark|export|package|scorecard|manual-review|headed-smoke|headed-benchmark|capture-review|v0118-all|all>");
+    console.log("Usage: node desktop-spikes/godot-salto/tools/godotSpikeTool.mjs <doctor|generate|validate|test|benchmark|export|package|scorecard|manual-review|headed-smoke|headed-benchmark|capture-review|capture-review-v0121|v0118-all|all>");
   }
 } catch (error) {
   console.error(error instanceof Error ? error.message : String(error));

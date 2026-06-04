@@ -7,6 +7,13 @@ $RepoRoot = Resolve-Path (Join-Path $PSScriptRoot "..\..")
 $GodotProjectPath = Join-Path $RepoRoot "desktop-spikes\godot-salto"
 $Benchmark2dReportPath = Join-Path $GodotProjectPath "reports\godot-benchmark-2d.json"
 $Benchmark25dReportPath = Join-Path $GodotProjectPath "reports\godot-benchmark-2_5d.json"
+$V0121BenchmarkReportPaths = @(
+  (Join-Path $GodotProjectPath "reports\godot-v0121-benchmark-2d-control.json"),
+  (Join-Path $GodotProjectPath "reports\godot-v0121-benchmark-2_5d-clean.json"),
+  (Join-Path $GodotProjectPath "reports\godot-v0121-benchmark-2_5d-atmospheric.json"),
+  (Join-Path $GodotProjectPath "reports\godot-v0121-benchmark-2_5d-vfx-stress-private.json")
+)
+$AllBenchmarkReportPaths = @($Benchmark2dReportPath, $Benchmark25dReportPath) + $V0121BenchmarkReportPaths
 $GodotExe = if ($env:GODOT_BIN -and (Test-Path $env:GODOT_BIN)) {
   $env:GODOT_BIN
 } elseif (Test-Path (Join-Path $RepoRoot ".tools\godot\Godot_v4.6.3-stable_win64.exe")) {
@@ -41,12 +48,16 @@ function Invoke-GodotAndWait {
 function Wait-ForBenchmarkReports {
   $deadline = (Get-Date).AddSeconds(10)
   while (
-    ((-not (Test-Path -LiteralPath $Benchmark2dReportPath)) -or (-not (Test-Path -LiteralPath $Benchmark25dReportPath))) -and
+    ((-not (Test-Path -LiteralPath $Benchmark2dReportPath)) -or
+      (-not (Test-Path -LiteralPath $Benchmark25dReportPath)) -or
+      (@($V0121BenchmarkReportPaths | Where-Object { -not (Test-Path -LiteralPath $_) }).Count -gt 0)) -and
     (Get-Date) -lt $deadline
   ) {
     Start-Sleep -Milliseconds 200
   }
-  return (Test-Path -LiteralPath $Benchmark2dReportPath) -and (Test-Path -LiteralPath $Benchmark25dReportPath)
+  return (Test-Path -LiteralPath $Benchmark2dReportPath) -and
+    (Test-Path -LiteralPath $Benchmark25dReportPath) -and
+    (@($V0121BenchmarkReportPaths | Where-Object { -not (Test-Path -LiteralPath $_) }).Count -eq 0)
 }
 
 if ($ScorecardOnly) {
@@ -56,7 +67,7 @@ if ($ScorecardOnly) {
 
 node "desktop-spikes/godot-salto/tools/godotSpikeTool.mjs" validate
 if ($GodotExe) {
-  foreach ($reportPath in @($Benchmark2dReportPath, $Benchmark25dReportPath)) {
+  foreach ($reportPath in $AllBenchmarkReportPaths) {
     if (Test-Path -LiteralPath $reportPath) {
       Remove-Item -LiteralPath $reportPath -Force
     }
