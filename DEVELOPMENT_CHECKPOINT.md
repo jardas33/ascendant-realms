@@ -1,6 +1,42 @@
 # Development Checkpoint
 
-Updated: 2026-06-03 v0.117 Godot-First Automated Desktop Benchmark Spike and One-Click Windows Workflow
+Updated: 2026-06-04 v0.118 Godot Packaged-Build Headed Smoke Automated Visual Capture and Human-Review Harness
+
+## v0.118 Godot Packaged-Build Headed Smoke Automated Visual Capture And Human-Review Harness - 2026-06-04
+
+Scope: Godot packaged-build review workflow only. This checkpoint proves that the v0.117 repository-driven Godot Salto spike can launch as a headed Windows executable, run an automated private review-tour harness, capture deterministic 1600x900 screenshots, benchmark both 2D and 2.5D placeholder modes headed, validate the package, and provide Emmanuel with one-click review scripts. It does not select Godot finally, start a full port, replace the browser prototype, import art, change gameplay, saves, stable IDs, rewards, maps, factions, AI, pathing, combat balance, multiplayer, PvP, co-op, content, or v0.119 scope.
+
+Included work:
+
+- Added packaged executable flags for headed smoke, screenshot capture, and headed benchmark runs.
+- Added private in-build review harness steps for home, 2D launch, 2.5D launch, hero selection, Worker selection, squad selection, move, attack, pan, zoom, pause, site capture, Lume link, Results, return home, and exit.
+- Added root one-click launch/capture/smoke wrappers and matching PowerShell automation.
+- Added `npm run godot:launch:review`, `npm run godot:headed:smoke`, and `npm run godot:capture:review`.
+- Added ignored v0.118 artifact generation for headed smoke, headed benchmarks, screenshot manifest, package validation, review summary, README, and SVG contact sheet.
+- Added v0.118 docs and updated checkpoint handoff files.
+
+Current interpretation:
+
+- Godot standard non-.NET 4.6.3 x86_64 and export templates are locally detected.
+- Routine Godot editor operation remains optional for Emmanuel; repository scripts drive scene generation, validation, build/export/package, headed smoke, benchmark, and capture.
+- 2.5D orthographic remains the stronger future visual-quality candidate, while 2D remains the automation/readability control.
+- Godot is not selected finally.
+- The browser prototype remains the current source of truth.
+
+Verification:
+
+```text
+npm test - PASS.
+npm run build - PASS with the known Phaser/vendor chunk-size warning.
+npm run validate:content - PASS.
+npm run validate:art-intake - PASS.
+npm run export:desktop-spike-fixture - PASS, fixture hash d6c00aad4d32173566194b01cd9b88c2947151da1e1c93cccaeb411ce225f7a3.
+npm run validate:desktop-spike-fixture - PASS.
+npm run godot:all - PASS.
+npm run godot:headed:smoke - PASS.
+npm run godot:capture:review - PASS.
+git diff --check - PASS.
+```
 
 ## v0.117 Godot-First Automated Desktop Benchmark Spike And One-Click Windows Workflow - 2026-06-03
 

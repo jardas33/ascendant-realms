@@ -1,5 +1,57 @@
 # Changelog
 
+# v0.118 Godot Packaged-Build Headed Smoke Automated Visual Capture And Human-Review Harness - 2026-06-04
+
+This checkpoint extends the Godot Salto workflow spike with packaged-build headed smoke, deterministic screenshot capture, headed benchmarks, package validation, and Emmanuel's one-click review harness. It keeps the work inside the existing Godot spike and fixture boundary: no final engine choice, full port, browser replacement, gameplay change, save change, stable-ID rename, runtime art import, or v0.119 work.
+
+Added:
+
+- `GODOT_LAUNCH_REVIEW_WINDOWS.bat`.
+- `GODOT_HEADED_SMOKE_WINDOWS.bat`.
+- `GODOT_CAPTURE_REVIEW_WINDOWS.bat`.
+- `tools/godot/launchGodotReviewWindows.ps1`.
+- `tools/godot/runGodotHeadedSmoke.ps1`.
+- `tools/godot/captureGodotReviewWindows.ps1`.
+- `npm run godot:launch:review`.
+- `npm run godot:headed:smoke`.
+- `npm run godot:capture:review`.
+- v0.118 docs: Emmanuel review guide, headed smoke spec, screenshot capture spec, package validation report, headed benchmark report, visual contact sheet report, and implementation report.
+
+Changed:
+
+- The Godot Salto root harness now supports packaged executable flags for review smoke, screenshot capture, and headed benchmark modes.
+- The packaged review harness covers home, 2D launch, 2.5D launch, hero selection, Worker selection, squad selection, move, attack, pan, zoom, pause, site capture, Lume link, Results, return home, and exit.
+- The 2D and 2.5D placeholder scenes now expose visible review-state changes for automated capture.
+- The Godot spike viewport is fixed at 1600x900 for headed review captures.
+- Godot export/package tooling refreshes stale Windows build outputs before packaging v0.118 artifacts.
+- The desktop-spike fixture boundary validation now allows authorized v0.118 docs and blocks v0.119 docs instead.
+- Handoff, roadmap, development checkpoint, and release checklist now describe v0.118.
+
+Current evidence:
+
+- Godot detected: `4.6.3.stable.official.7d41c59c4`.
+- Export templates detected for `4.6.3.stable`.
+- Fixture import PASS, fixture hash `d6c00aad4d32173566194b01cd9b88c2947151da1e1c93cccaeb411ce225f7a3`.
+- Packaged headed smoke PASS.
+- Screenshot capture PASS, 15 deterministic 1600x900 screenshots plus manifest and SVG contact sheet.
+- 2D headed benchmark PASS.
+- 2.5D orthographic headed benchmark PASS.
+- Package validation PASS.
+- Ignored v0.118 artifact root: `artifacts/desktop-spikes/godot-salto/v0118/`.
+
+Verification:
+
+- `npm test` PASS.
+- `npm run build` PASS with the known Phaser/vendor chunk-size warning.
+- `npm run validate:content` PASS.
+- `npm run validate:art-intake` PASS.
+- `npm run export:desktop-spike-fixture` PASS.
+- `npm run validate:desktop-spike-fixture` PASS.
+- `npm run godot:all` PASS.
+- `npm run godot:headed:smoke` PASS.
+- `npm run godot:capture:review` PASS.
+- `git diff --check` PASS.
+
 # v0.117 Godot-First Automated Desktop Benchmark Spike And One-Click Windows Workflow - 2026-06-03
 
 This checkpoint creates the first small Godot desktop benchmark spike and one-click Windows workflow. It uses the v0.116 engine-neutral Salto fixture, standard non-.NET Godot 4.6.3 x86_64, GDScript, text scenes, deterministic fixture import, headless validation/tests, 2D and 2.5D placeholder benchmarks, Windows export, Windows package assembly, scorecard output, and Emmanuel's one-click guide. It does not choose Godot finally, start a full port, replace the browser prototype, import art, change gameplay, change saves, rename stable IDs, or start v0.118.

@@ -73,6 +73,42 @@ describe("v0.117 Godot Salto spike scaffold", () => {
     ["godot", "electron", "unity", "unreal", "three"].forEach((name) => expect(dependencies[name]).toBeUndefined());
   });
 
+  it("defines the v0.118 packaged headed review and capture workflow", async () => {
+    [
+      "GODOT_LAUNCH_REVIEW_WINDOWS.bat",
+      "GODOT_HEADED_SMOKE_WINDOWS.bat",
+      "GODOT_CAPTURE_REVIEW_WINDOWS.bat",
+      "tools/godot/launchGodotReviewWindows.ps1",
+      "tools/godot/runGodotHeadedSmoke.ps1",
+      "tools/godot/captureGodotReviewWindows.ps1",
+      "docs/V0118_GODOT_HEADED_SMOKE_SPEC.md",
+      "docs/V0118_GODOT_SCREENSHOT_CAPTURE_SPEC.md",
+      "docs/V0118_GODOT_PACKAGE_VALIDATION_REPORT.md",
+      "docs/V0118_GODOT_HEADED_BENCHMARK_REPORT.md",
+      "docs/V0118_GODOT_VISUAL_CONTACT_SHEET_REPORT.md",
+      "docs/V0118_EMMANUEL_HEADLESS_AND_HEADED_REVIEW_GUIDE.md",
+      "docs/V0118_IMPLEMENTATION_REPORT.md"
+    ].forEach((path) => expect(existsSync(path), path).toBe(true));
+
+    const packageJson = await readJson<{ scripts: Record<string, string> }>("package.json");
+    ["godot:launch:review", "godot:headed:smoke", "godot:capture:review"].forEach((script) =>
+      expect(packageJson.scripts[script], script).toBeTypeOf("string")
+    );
+
+    const project = await readFile("desktop-spikes/godot-salto/project.godot", "utf8");
+    const rootScript = await readFile("desktop-spikes/godot-salto/scripts/salto_spike_root.gd", "utf8");
+    const toolScript = await readFile("desktop-spikes/godot-salto/tools/godotSpikeTool.mjs", "utf8");
+
+    expect(project).toContain("window/size/viewport_width=1600");
+    expect(project).toContain("window/size/viewport_height=900");
+    expect(rootScript).toContain("--review-smoke");
+    expect(rootScript).toContain("--capture-review");
+    expect(rootScript).toContain("--headed-benchmark");
+    expect(rootScript).toContain("saveWritesAllowed");
+    expect(toolScript).toContain("v0118ArtifactRoot");
+    expect(toolScript).toContain("contact-sheet.svg");
+  });
+
   it("commits deterministic generated fixture data with linked_ward and save safety intact", async () => {
     const manifest = await readJson<{
       browserRuntimePreserved: boolean;

@@ -1,5 +1,5 @@
 import { createHash } from "node:crypto";
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, readdirSync, readFileSync, statSync, writeFileSync } from "node:fs";
 import { dirname, join, relative, resolve } from "node:path";
 import { spawnSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
@@ -7,6 +7,8 @@ import { fileURLToPath } from "node:url";
 const repoRoot = resolve(dirname(fileURLToPath(import.meta.url)), "../../..");
 const spikeRoot = join(repoRoot, "desktop-spikes", "godot-salto");
 const artifactRoot = join(repoRoot, "artifacts", "desktop-spikes", "godot-salto", "latest");
+const v0118ArtifactRoot = join(repoRoot, "artifacts", "desktop-spikes", "godot-salto", "v0118");
+const v0118ScreenshotRoot = join(v0118ArtifactRoot, "screenshots");
 const sourceFixtureRoot = join(repoRoot, "artifacts", "desktop-spike-fixture", "latest");
 const generatedDataRoot = join(spikeRoot, "data", "generated");
 const buildsRoot = join(spikeRoot, "builds");
@@ -178,6 +180,23 @@ function writeArtifact(name, value) {
   const target = join(artifactRoot, name);
   writeJson(target, value);
   return target;
+}
+
+function writeV0118Artifact(name, value) {
+  const target = join(v0118ArtifactRoot, name);
+  writeJson(target, value);
+  return target;
+}
+
+function writeV0118Text(name, value) {
+  const target = join(v0118ArtifactRoot, name);
+  writeText(target, value);
+  return target;
+}
+
+function readV0118RuntimeReport(name) {
+  const path = join(v0118ArtifactRoot, name);
+  return existsSync(path) ? readJson(path) : null;
 }
 
 function readGeneratedFixture() {
@@ -545,11 +564,11 @@ function writeExportReport() {
 function writePackageReport() {
   const exportReportPath = join(artifactRoot, "Windows-export-report.json");
   const exportReport = existsSync(exportReportPath) ? readJson(exportReportPath) : writeExportReport();
-  const zipPath = join(artifactRoot, "AscendantRealmsGodotSalto-v0117-windows.zip");
+  const zipPath = join(artifactRoot, "AscendantRealmsGodotSalto-v0118-windows.zip");
   const status = existsSync(zipPath) ? "PASS_WINDOWS_PACKAGE" : "READY_TO_PACKAGE";
   const report = {
     schemaVersion: 1,
-    checkpoint: "v0.117",
+    checkpoint: "v0.118",
     status: existsSync(zipPath) ? status : exportReport.status === "PASS_WINDOWS_EXPORT" ? "READY_TO_PACKAGE" : blockedStatus,
     generatedAtUtc: "deterministic-v0117",
     exportStatus: exportReport.status,
@@ -592,6 +611,364 @@ function writeManualReviewChecklist() {
       "When Godot is not installed, reports show `BLOCKED_PENDING_LOCAL_GODOT_SETUP` for runtime benchmark, export, and package steps while static fixture validation remains available."
     ].join("\n")
   );
+}
+
+function escapeXml(value) {
+  return String(value)
+    .replace(/&/gu, "&amp;")
+    .replace(/</gu, "&lt;")
+    .replace(/>/gu, "&gt;")
+    .replace(/"/gu, "&quot;");
+}
+
+function readFixtureHash() {
+  const path = join(generatedDataRoot, "fixture-hashes.json");
+  return existsSync(path) ? readJson(path).fixtureHash ?? null : null;
+}
+
+function v0118PackagePaths() {
+  return {
+    exePath: join(buildsRoot, "AscendantRealmsGodotSalto.exe"),
+    zipPath: join(artifactRoot, "AscendantRealmsGodotSalto-v0118-windows.zip"),
+    launchBat: join(repoRoot, "GODOT_LAUNCH_REVIEW_WINDOWS.bat"),
+    smokeBat: join(repoRoot, "GODOT_HEADED_SMOKE_WINDOWS.bat"),
+    captureBat: join(repoRoot, "GODOT_CAPTURE_REVIEW_WINDOWS.bat")
+  };
+}
+
+function writeV0118HeadedSmokeReport() {
+  const runtime = readV0118RuntimeReport("headed-smoke-runtime.json");
+  const paths = v0118PackagePaths();
+  const errors = [];
+  if (!runtime) {
+    errors.push("Missing headed-smoke-runtime.json from packaged executable run.");
+  }
+  if (!existsSync(paths.exePath)) {
+    errors.push("Missing exported Windows executable.");
+  }
+  const report = {
+    schemaVersion: 1,
+    checkpoint: "v0.118",
+    status: errors.length === 0 && runtime?.status === "PASS" ? "PASS_PACKAGED_HEADED_SMOKE" : "FAIL_PACKAGED_HEADED_SMOKE",
+    generatedAtUtc: "deterministic-v0118",
+    executablePath: existsSync(paths.exePath) ? relativeRepo(paths.exePath) : null,
+    executableSha256: existsSync(paths.exePath) ? hashFile(paths.exePath) : null,
+    executableSizeMb: existsSync(paths.exePath) ? Number((statSync(paths.exePath).size / 1048576).toFixed(3)) : null,
+    headedWindow: runtime?.headedWindow ?? null,
+    windowSize: runtime?.windowSize ?? { width: 1600, height: 900 },
+    reviewStepCount: runtime?.steps?.length ?? 0,
+    fixtureHash: runtime?.fixtureHash ?? readFixtureHash(),
+    godotVersion: runtime?.godotVersion ?? null,
+    routineEditorUseRequired: false,
+    manualEditorSceneAssemblyRequired: false,
+    localStorageMutationAllowed: false,
+    saveWritesAllowed: false,
+    errors,
+    runtimeReport: runtime
+  };
+  writeV0118Artifact("headed-smoke.json", report);
+  return report;
+}
+
+function writeV0118HeadedBenchmarkReports() {
+  const paths = v0118PackagePaths();
+  const outputs = [];
+  for (const config of [
+    { mode: "2D_PLACEHOLDER", runtimeName: "headed-benchmark-runtime-2d.json", outputName: "headed-benchmark-2d.json" },
+    { mode: "2_5D_ORTHOGRAPHIC_PLACEHOLDER", runtimeName: "headed-benchmark-runtime-2_5d.json", outputName: "headed-benchmark-2_5d.json" }
+  ]) {
+    const runtime = readV0118RuntimeReport(config.runtimeName);
+    const errors = [];
+    if (!runtime) {
+      errors.push(`Missing ${config.runtimeName} from packaged executable benchmark.`);
+    }
+    const report = {
+      schemaVersion: 1,
+      checkpoint: "v0.118",
+      mode: config.mode,
+      status: errors.length === 0 && runtime?.status === "PASS" ? "PASS_PACKAGED_HEADED_BENCHMARK" : "FAIL_PACKAGED_HEADED_BENCHMARK",
+      generatedAtUtc: "deterministic-v0118",
+      executablePath: existsSync(paths.exePath) ? relativeRepo(paths.exePath) : null,
+      executableSha256: existsSync(paths.exePath) ? hashFile(paths.exePath) : null,
+      packageKind: "Windows packaged Godot executable",
+      windowSize: runtime?.windowSize ?? { width: 1600, height: 900 },
+      startupMs: runtime?.startupMs ?? null,
+      sceneLaunchMs: runtime?.sceneLaunchMs ?? null,
+      fpsAverage: runtime?.fpsAverage ?? null,
+      fpsOnePercentLow: runtime?.fpsOnePercentLow ?? null,
+      frameTimeP50Ms: runtime?.frameTimeP50Ms ?? null,
+      frameTimeP95Ms: runtime?.frameTimeP95Ms ?? null,
+      frameTimeP99Ms: runtime?.frameTimeP99Ms ?? null,
+      frameTimeMaxMs: runtime?.frameTimeMaxMs ?? null,
+      inputLatencyMs: runtime?.inputLatencyMs ?? null,
+      resultsTransitionMs: runtime?.resultsTransitionMs ?? null,
+      memoryWorkingSetMb: runtime?.memoryWorkingSetMb ?? null,
+      buildHash: existsSync(paths.exePath) ? hashFile(paths.exePath) : null,
+      godotVersion: runtime?.godotVersion ?? null,
+      fixtureHash: runtime?.fixtureHash ?? readFixtureHash(),
+      runtimeArtIntegrated: false,
+      finalProductionCertification: false,
+      notes:
+        "Headed packaged placeholder benchmark for workflow evidence only; not a production performance certification.",
+      errors,
+      runtimeReport: runtime
+    };
+    writeV0118Artifact(config.outputName, report);
+    outputs.push(report);
+  }
+  return outputs;
+}
+
+function writeV0118ScreenshotManifest() {
+  const runtime = readV0118RuntimeReport("screenshot-runtime-manifest.json");
+  const errors = [];
+  if (!runtime) {
+    errors.push("Missing screenshot-runtime-manifest.json from packaged executable capture.");
+  }
+  const runtimeCaptures = runtime?.captures ?? [];
+  const captures = runtimeCaptures.map((entry) => {
+    const screenshotPath = join(v0118ScreenshotRoot, entry.fileName);
+    return {
+      id: entry.id,
+      label: entry.label,
+      mode: entry.mode,
+      action: entry.action,
+      fileName: entry.fileName,
+      path: existsSync(screenshotPath) ? relativeRepo(screenshotPath) : relativeRepo(screenshotPath),
+      sha256: existsSync(screenshotPath) ? hashFile(screenshotPath) : null,
+      sizeBytes: existsSync(screenshotPath) ? statSync(screenshotPath).size : null,
+      width: entry.width,
+      height: entry.height,
+      saveResult: entry.saveResult
+    };
+  });
+  if (captures.length !== 15) {
+    errors.push(`Expected 15 screenshots, found ${captures.length}.`);
+  }
+  for (const capture of captures) {
+    if (!capture.sha256) {
+      errors.push(`Missing screenshot file: ${capture.fileName}`);
+    }
+    if (capture.width !== 1600 || capture.height !== 900) {
+      errors.push(`Screenshot ${capture.fileName} is ${capture.width}x${capture.height}, expected 1600x900.`);
+    }
+  }
+  const strayPngs = existsSync(v0118ScreenshotRoot)
+    ? readdirSync(v0118ScreenshotRoot).filter((file) => file.endsWith(".png") && !captures.some((capture) => capture.fileName === file))
+    : [];
+  if (strayPngs.length > 0) {
+    errors.push(`Unexpected screenshots in v0118 folder: ${strayPngs.join(", ")}`);
+  }
+  const manifest = {
+    schemaVersion: 1,
+    checkpoint: "v0.118",
+    status: errors.length === 0 && runtime?.status === "PASS" ? "PASS_SCREENSHOT_CAPTURE" : "FAIL_SCREENSHOT_CAPTURE",
+    generatedAtUtc: "deterministic-v0118",
+    screenshotRoot: relativeRepo(v0118ScreenshotRoot),
+    contactSheetPath: "artifacts/desktop-spikes/godot-salto/v0118/contact-sheet.svg",
+    captureCount: captures.length,
+    requiredCaptureCount: 15,
+    deterministicCaptureOrder: [
+      "home",
+      "2d_default",
+      "2d_hero",
+      "2d_worker",
+      "2d_squad",
+      "2d_site",
+      "2d_lume",
+      "2d_results",
+      "2_5d_default",
+      "2_5d_hero",
+      "2_5d_worker",
+      "2_5d_squad",
+      "2_5d_site",
+      "2_5d_lume",
+      "2_5d_results"
+    ],
+    fixtureHash: runtime?.fixtureHash ?? readFixtureHash(),
+    godotVersion: runtime?.godotVersion ?? null,
+    errors,
+    captures
+  };
+  writeV0118Artifact("screenshot-manifest.json", manifest);
+  writeV0118ContactSheet(manifest);
+  writeV0118ReviewSummary();
+  writeV0118Readme();
+  return manifest;
+}
+
+function writeV0118ContactSheet(manifest) {
+  const tileWidth = 320;
+  const tileHeight = 180;
+  const labelHeight = 44;
+  const columns = 3;
+  const rows = Math.ceil((manifest.captures?.length ?? 0) / columns);
+  const width = columns * tileWidth;
+  const height = 72 + rows * (tileHeight + labelHeight);
+  const tiles = (manifest.captures ?? []).map((capture, index) => {
+    const x = (index % columns) * tileWidth;
+    const y = 72 + Math.floor(index / columns) * (tileHeight + labelHeight);
+    return [
+      `<rect x="${x}" y="${y}" width="${tileWidth}" height="${tileHeight + labelHeight}" fill="#101616" stroke="#4dc6ba" stroke-width="1"/>`,
+      `<image href="screenshots/${escapeXml(capture.fileName)}" x="${x}" y="${y}" width="${tileWidth}" height="${tileHeight}" preserveAspectRatio="xMidYMid meet"/>`,
+      `<text x="${x + 10}" y="${y + tileHeight + 26}" fill="#e6efe8" font-family="Arial, sans-serif" font-size="15">${escapeXml(`${index + 1}. ${capture.label}`)}</text>`
+    ].join("\n");
+  });
+  const svg = [
+    `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}">`,
+    '<rect width="100%" height="100%" fill="#071011"/>',
+    '<text x="18" y="32" fill="#e6efe8" font-family="Arial, sans-serif" font-size="24">v0.118 Godot Salto Review Contact Sheet</text>',
+    `<text x="18" y="56" fill="#9ccfc8" font-family="Arial, sans-serif" font-size="14">Status: ${escapeXml(manifest.status)} | Screenshots: ${manifest.captureCount}/15</text>`,
+    tiles.join("\n"),
+    "</svg>",
+    ""
+  ].join("\n");
+  writeText(join(v0118ArtifactRoot, "contact-sheet.svg"), svg);
+}
+
+function writeV0118PackageValidation() {
+  const paths = v0118PackagePaths();
+  const smoke = existsSync(join(v0118ArtifactRoot, "headed-smoke.json"))
+    ? readJson(join(v0118ArtifactRoot, "headed-smoke.json"))
+    : writeV0118HeadedSmokeReport();
+  const manifest = existsSync(join(v0118ArtifactRoot, "screenshot-manifest.json"))
+    ? readJson(join(v0118ArtifactRoot, "screenshot-manifest.json"))
+    : null;
+  const benchmark2d = existsSync(join(v0118ArtifactRoot, "headed-benchmark-2d.json"))
+    ? readJson(join(v0118ArtifactRoot, "headed-benchmark-2d.json"))
+    : null;
+  const benchmark25d = existsSync(join(v0118ArtifactRoot, "headed-benchmark-2_5d.json"))
+    ? readJson(join(v0118ArtifactRoot, "headed-benchmark-2_5d.json"))
+    : null;
+  const errors = [];
+  if (!existsSync(paths.exePath)) {
+    errors.push("Windows executable is missing.");
+  }
+  if (!existsSync(paths.zipPath)) {
+    errors.push("Windows package ZIP is missing.");
+  }
+  for (const [label, path] of [
+    ["launch BAT", paths.launchBat],
+    ["headed smoke BAT", paths.smokeBat],
+    ["capture BAT", paths.captureBat]
+  ]) {
+    if (!existsSync(path)) {
+      errors.push(`${label} is missing.`);
+    }
+  }
+  if (smoke.status !== "PASS_PACKAGED_HEADED_SMOKE") {
+    errors.push("Headed smoke report did not pass.");
+  }
+  if (!manifest) {
+    errors.push("Screenshot manifest is missing.");
+  } else if (manifest.status !== "PASS_SCREENSHOT_CAPTURE") {
+    errors.push("Screenshot manifest did not pass.");
+  }
+  if (!benchmark2d) {
+    errors.push("2D headed benchmark report is missing.");
+  } else if (benchmark2d.status !== "PASS_PACKAGED_HEADED_BENCHMARK") {
+    errors.push("2D headed benchmark did not pass.");
+  }
+  if (!benchmark25d) {
+    errors.push("2.5D headed benchmark report is missing.");
+  } else if (benchmark25d.status !== "PASS_PACKAGED_HEADED_BENCHMARK") {
+    errors.push("2.5D headed benchmark did not pass.");
+  }
+  const report = {
+    schemaVersion: 1,
+    checkpoint: "v0.118",
+    status: errors.length === 0 ? "PASS_PACKAGE_VALIDATION" : "FAIL_PACKAGE_VALIDATION",
+    generatedAtUtc: "deterministic-v0118",
+    executablePath: existsSync(paths.exePath) ? relativeRepo(paths.exePath) : null,
+    executableSha256: existsSync(paths.exePath) ? hashFile(paths.exePath) : null,
+    packagePath: existsSync(paths.zipPath) ? relativeRepo(paths.zipPath) : null,
+    packageSha256: existsSync(paths.zipPath) ? hashFile(paths.zipPath) : null,
+    launcherScripts: {
+      launchReview: relativeRepo(paths.launchBat),
+      headedSmoke: relativeRepo(paths.smokeBat),
+      captureReview: relativeRepo(paths.captureBat)
+    },
+    launcherOpenedBuildEvidence: smoke.status === "PASS_PACKAGED_HEADED_SMOKE",
+    reviewHarnessNavigated: smoke.reviewStepCount >= 16,
+    bothModesCaptured: Boolean(manifest?.captures?.some((capture) => capture.mode === "2D_PLACEHOLDER")) &&
+      Boolean(manifest?.captures?.some((capture) => capture.mode === "2_5D_ORTHOGRAPHIC_PLACEHOLDER")),
+    bothModesBenchmarked: Boolean(benchmark2d) && Boolean(benchmark25d),
+    editorRequiredForRoutineWork: false,
+    saveWritesObserved: false,
+    localStorageWritesObserved: false,
+    runtimeArtImported: false,
+    finalEngineChoiceMade: false,
+    errors
+  };
+  writeV0118Artifact("package-validation.json", report);
+  return report;
+}
+
+function writeV0118ReviewSummary() {
+  const smoke = existsSync(join(v0118ArtifactRoot, "headed-smoke.json")) ? readJson(join(v0118ArtifactRoot, "headed-smoke.json")) : null;
+  const manifest = existsSync(join(v0118ArtifactRoot, "screenshot-manifest.json"))
+    ? readJson(join(v0118ArtifactRoot, "screenshot-manifest.json"))
+    : null;
+  const benchmark2d = existsSync(join(v0118ArtifactRoot, "headed-benchmark-2d.json"))
+    ? readJson(join(v0118ArtifactRoot, "headed-benchmark-2d.json"))
+    : null;
+  const benchmark25d = existsSync(join(v0118ArtifactRoot, "headed-benchmark-2_5d.json"))
+    ? readJson(join(v0118ArtifactRoot, "headed-benchmark-2_5d.json"))
+    : null;
+  const packageValidation = existsSync(join(v0118ArtifactRoot, "package-validation.json"))
+    ? readJson(join(v0118ArtifactRoot, "package-validation.json"))
+    : null;
+  const lines = [
+    "# v0.118 Godot Salto Headed Review Summary",
+    "",
+    `Headed smoke: ${smoke?.status ?? "pending"}`,
+    `Screenshot capture: ${manifest?.status ?? "pending"}`,
+    `Screenshot count: ${manifest?.captureCount ?? 0}/15`,
+    `2D headed benchmark: ${benchmark2d?.status ?? "pending"}`,
+    `2.5D headed benchmark: ${benchmark25d?.status ?? "pending"}`,
+    `Package validation: ${packageValidation?.status ?? "pending"}`,
+    "",
+    "This is a workflow spike only. It does not import artwork, does not require routine Godot editor work, does not write saves, and does not choose Godot finally.",
+    "",
+    "Review artifacts:",
+    "",
+    "- `contact-sheet.svg`",
+    "- `screenshot-manifest.json`",
+    "- `headed-smoke.json`",
+    "- `headed-benchmark-2d.json`",
+    "- `headed-benchmark-2_5d.json`",
+    "- `package-validation.json`"
+  ];
+  writeV0118Text("review-summary.md", `${lines.join("\n")}\n`);
+}
+
+function writeV0118Readme() {
+  writeV0118Text(
+    "README.md",
+    [
+      "# v0.118 Godot Salto Packaged Review Artifacts",
+      "",
+      "This ignored artifact folder is regenerated by the v0.118 packaged Windows review scripts.",
+      "",
+      "- `headed-smoke.json` records the scripted review harness run inside the packaged executable.",
+      "- `headed-benchmark-2d.json` and `headed-benchmark-2_5d.json` record headed placeholder benchmark evidence.",
+      "- `screenshots/` contains the 15 deterministic review captures.",
+      "- `screenshot-manifest.json` hashes and orders those captures.",
+      "- `contact-sheet.svg` is the lightweight local contact sheet.",
+      "- `package-validation.json` confirms executable, ZIP, launch scripts, mode coverage, and no save/editor/art-import drift.",
+      "",
+      "No artifact here is tracked source, final art, or final production certification."
+    ].join("\n")
+  );
+}
+
+function writeV0118AllReports() {
+  writeV0118HeadedSmokeReport();
+  writeV0118HeadedBenchmarkReports();
+  writeV0118ScreenshotManifest();
+  writeV0118PackageValidation();
+  writeV0118ReviewSummary();
+  writeV0118Readme();
 }
 
 function buildScorecard(doctor, validation) {
@@ -754,11 +1131,29 @@ try {
     console.log(stableStringify(writeBenchmarkReports({ scorecardOnly: true })));
   } else if (command === "manual-review") {
     writeManualReviewChecklist();
+  } else if (command === "headed-smoke") {
+    console.log(stableStringify(writeV0118HeadedSmokeReport()));
+    writeV0118PackageValidation();
+    writeV0118ReviewSummary();
+    writeV0118Readme();
+  } else if (command === "headed-benchmark") {
+    console.log(stableStringify(writeV0118HeadedBenchmarkReports()));
+    writeV0118PackageValidation();
+    writeV0118ReviewSummary();
+    writeV0118Readme();
+  } else if (command === "capture-review") {
+    console.log(stableStringify(writeV0118ScreenshotManifest()));
+    writeV0118PackageValidation();
+    writeV0118ReviewSummary();
+    writeV0118Readme();
+  } else if (command === "v0118-all") {
+    writeV0118AllReports();
+    console.log("v0.118 Godot headed review reports generated.");
   } else if (command === "all") {
     runAll();
     console.log("v0.117 Godot spike reports generated.");
   } else {
-    console.log("Usage: node desktop-spikes/godot-salto/tools/godotSpikeTool.mjs <doctor|generate|validate|test|benchmark|export|package|scorecard|manual-review|all>");
+    console.log("Usage: node desktop-spikes/godot-salto/tools/godotSpikeTool.mjs <doctor|generate|validate|test|benchmark|export|package|scorecard|manual-review|headed-smoke|headed-benchmark|capture-review|v0118-all|all>");
   }
 } catch (error) {
   console.error(error instanceof Error ? error.message : String(error));

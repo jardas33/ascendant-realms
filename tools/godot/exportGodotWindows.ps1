@@ -20,6 +20,15 @@ if (-not $GodotExe -or -not (Test-Path $ReleaseTemplate) -or -not (Test-Path $De
 }
 
 New-Item -ItemType Directory -Force -Path "desktop-spikes\godot-salto\builds" | Out-Null
+$ExePath = Join-Path $RepoRoot "desktop-spikes\godot-salto\builds\AscendantRealmsGodotSalto.exe"
+if (Test-Path $ExePath) {
+  $resolvedExe = Resolve-Path -LiteralPath $ExePath
+  $resolvedBuilds = Resolve-Path -LiteralPath (Join-Path $RepoRoot "desktop-spikes\godot-salto\builds")
+  if (-not ($resolvedExe.Path.StartsWith($resolvedBuilds.Path))) {
+    throw "Refusing to remove export outside Godot builds folder: $($resolvedExe.Path)"
+  }
+  Remove-Item -LiteralPath $ExePath -Force
+}
 $ExportArgs = @(
   "--headless",
   "--path",
@@ -28,9 +37,16 @@ $ExportArgs = @(
   "Windows Desktop",
   "builds/AscendantRealmsGodotSalto.exe"
 )
-$GodotProcess = Start-Process -FilePath $GodotExe -ArgumentList $ExportArgs -Wait -PassThru -WindowStyle Hidden
-$GodotExitCode = $GodotProcess.ExitCode
+& $GodotExe @ExportArgs
+$GodotExitCode = if ($null -eq $LASTEXITCODE) { 0 } else { $LASTEXITCODE }
+$ExportDeadline = (Get-Date).AddSeconds(10)
+while (-not (Test-Path $ExePath) -and (Get-Date) -lt $ExportDeadline) {
+  Start-Sleep -Milliseconds 200
+}
 node "desktop-spikes/godot-salto/tools/godotSpikeTool.mjs" export
+if (-not (Test-Path $ExePath)) {
+  exit 1
+}
 if ($GodotExitCode -ne 0 -and -not (Test-Path "desktop-spikes\godot-salto\builds\AscendantRealmsGodotSalto.exe")) {
   exit $GodotExitCode
 }

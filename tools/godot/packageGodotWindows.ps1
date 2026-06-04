@@ -6,7 +6,7 @@ Set-Location $RepoRoot
 $ExePath = Join-Path $RepoRoot "desktop-spikes\godot-salto\builds\AscendantRealmsGodotSalto.exe"
 $ArtifactRoot = Join-Path $RepoRoot "artifacts\desktop-spikes\godot-salto\latest"
 $PackageRoot = Join-Path $ArtifactRoot "package-staging"
-$ZipPath = Join-Path $ArtifactRoot "AscendantRealmsGodotSalto-v0117-windows.zip"
+$ZipPath = Join-Path $ArtifactRoot "AscendantRealmsGodotSalto-v0118-windows.zip"
 
 if (-not (Test-Path $ExePath)) {
   node "desktop-spikes/godot-salto/tools/godotSpikeTool.mjs" package
