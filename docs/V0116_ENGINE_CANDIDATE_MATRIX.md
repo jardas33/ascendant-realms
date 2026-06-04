@@ -1,0 +1,43 @@
+# v0.116 Engine Candidate Matrix
+
+## Boundary
+
+This matrix scores candidates for later spikes. It does not choose an engine and does not authorize a port, wrapper, dependency, or engine project.
+
+## Scoring Weights
+
+| Criterion | Weight | Reason |
+| --- | ---: | --- |
+| AI-operability and editor-optional workflow | 25 | Emmanuel does not want routine manual engine operation; Codex and automation must carry setup, scene edits, validation, builds, exports, benchmarks, and packaging. |
+| Representative RTS/RPG performance | 20 | The v0.115 browser gate is RED, so Tier M Salto performance and latency evidence must drive future decisions. |
+| Content and stable-ID reuse | 15 | Existing TypeScript content and v0.101 stable IDs remain authoritative until a future explicit migration. |
+| Save-translation safety | 10 | v0.102 fixtures must stay read-only and unknown IDs must be rejected or quarantined. |
+| 2D versus 2.5D visual ambition | 10 | The target is a modern top-down RTS/RPG with strong silhouettes, atmosphere, lighting/VFX, and tactical readability. |
+| UI, Results, and automation testability | 10 | The fixture must prove launch, command, HUD/minimap, Lume, Results, and return flows through scripts. |
+| Packaging and Windows distribution | 5 | Future builds must be simple for Emmanuel to launch and test. |
+| Licensing, ecosystem, and long-term maintainability | 5 | Avoid hidden licensing, binary-only project state, or hard-to-debug automation traps. |
+
+## Candidate Matrix
+
+| Candidate | AI-operability | Performance Potential | Content/Save Fit | Visual Fit | Main Risks | v0.116 Posture |
+| --- | --- | --- | --- | --- | --- | --- |
+| Godot 4 fixed-camera 2D/2.5D | Strong if project generation, import manifests, exported scenes, GDScript/C# edits, CLI exports, and validation scripts are proven. Editor may be needed for inspection but should not be routine. | Good candidate for top-down 2D/2.5D scenes, lighting, particles, and Windows export. | Needs data importer and stable-ID validation. Save fixtures can remain external JSON contracts. | Good fit for polished 2D, 2.5D, lighting, VFX, silhouettes, and custom UI if art pipeline is disciplined. | Some editor/import settings can drift if not scripted. Need prove headless/export reproducibility. | Candidate for first future spike, not selected in v0.116. |
+| Unity 2D/URP fixed-camera | Moderate to strong if project setup, package restore, scene generation, asset import, and builds are scripted. Editor automation is possible but can become hidden complexity. | Strong performance and tooling if scope stays fixed-camera and data-driven. | Requires careful manifest import and generated scene/prefab discipline. | Strong 2D/2.5D lighting and VFX potential for modern RTS/RPG presentation. | Editor metadata, package versions, licensing, CI runner size, and hidden manual setup risk. | Candidate for second future spike, not selected in v0.116. |
+| Electron or browser wrapper control | Strongest continuity for repo scripts, but weakest evidence against the current bottleneck. | Low to uncertain because v0.115 RED is browser battle-code dominant; wrapper alone is not a cure. | Excellent continuity because current app remains unchanged. | Keeps current browser appearance unless major runtime visual work resumes, which v0.115 blocks. | May package the problem instead of solving it. | Use only as a control if explicitly approved later. |
+| Unreal fixed-camera 2D/2.5D | Weak to moderate for AI-first routine work unless project generation and asset import are heavily scripted. | High ceiling, likely excessive for current slice. | Heavy adaptation cost for current TypeScript/content/save posture. | Strong rendering, but may push the project toward overbuilt 3D or cinematic workflows. | Large install, binary-heavy project state, harder text diffs, editor-centric work. | Defer unless earlier spikes fail or a future 3D direction becomes explicit. |
+| Stay in Phaser/browser | Excellent existing automation and content continuity. | Currently RED for representative browser battle performance. | Best save/content continuity. | Runtime art expansion is blocked by v0.115 evidence. | Continued optimization may consume time without clearing fixed battle-shell cost. | Keep as source of truth, not final desktop visual-expansion path on current evidence. |
+| Other lightweight custom runtime | Potentially strong if fully text/script driven. | Unknown until scoped. | Could preserve data contracts. | Could fit 2D ambitions, but tooling burden is high. | Codex would inherit engine/tooling maintenance. | Not preferred for first spike. |
+
+## Required Proof For Any Future Candidate
+
+- Fresh checkout to setup through documented scripts.
+- One-command validation of content import, save fixtures, stable IDs, benchmark fixture, and build.
+- Script-created or text-editable representative Salto scene.
+- Manifest-driven asset registration.
+- Windows package generated by CLI or simple script.
+- Automated benchmark output using the v0.116 scorecard fields.
+- Explicit list of any unavoidable editor steps, with mitigation.
+
+## Visual Evaluation Notes
+
+Each candidate must support an original, modern RTS/RPG look: polished top-down 2D or 2.5D fixed-camera presentation, readable unit silhouettes, atmospheric Salto terrain, restrained modern lighting/VFX, a central persistent hero, strong faction contrast, and UI that avoids mobile-game gloss or developer-dashboard utility styling.

@@ -1,6 +1,39 @@
 # Development Checkpoint
 
-Updated: 2026-06-03 v0.115 Trusted Performance Consolidation, Clean-Restart Retest Packet, and Browser Gate
+Updated: 2026-06-03 v0.116 Reviewed Architecture Direction, Desktop-Engine Spike Preparation Pack, and Engine-Neutral Salto Fixture
+
+## v0.116 Reviewed Architecture Direction, Desktop-Engine Spike Preparation Pack, And Engine-Neutral Salto Fixture - 2026-06-03
+
+Scope: architecture review docs, desktop-engine spike preparation docs, scorecard template, and deterministic engine-neutral Salto fixture tooling only. This checkpoint responds to the v0.115 RED browser gate by preparing a future decision packet. It does not select an engine, create an engine project, add a desktop wrapper, add an engine dependency, change gameplay, saves, stable IDs, rewards, maps, factions, AI, pathing, combat balance, art, runtime asset paths, public benchmark controls, multiplayer, PvP, co-op, content, or v0.117 scope.
+
+Included work:
+
+- Added v0.116 architecture decision record, engine candidate matrix, spike order, acceptance contract, fixture export spec, scorecard template, Emmanuel review packet, art continuation boundary, and implementation report docs.
+- Added `DesktopSpikeFixture` export/validation tooling and focused tests for deterministic double export, ID validity, save-fixture index safety, scorecard shape, boundary checks, and `linked_ward` preservation.
+- Added `export:desktop-spike-fixture` and `validate:desktop-spike-fixture`.
+- Added ignored artifact root `artifacts/desktop-spike-fixture/`.
+
+Current interpretation:
+
+- v0.115 browser gate remains `RED`; broad browser runtime visual expansion and runtime art integration remain blocked.
+- Recommended future spike order is Godot first, Unity second, Electron/browser wrapper as packaging control, Unreal deferred.
+- AI-operability is a primary scored criterion: future workflows must be reproducible from repo files, scriptable/text-editable where practical, manifest-driven, editor-optional for Emmanuel during routine work, CLI-buildable/packageable, and debuggable by Codex through deterministic evidence.
+- Visual ambition is a modern original top-down RTS/RPG in the spirit of a super-cool 2026 Warlords Battlecry evolution, with original IP, strong silhouettes, atmospheric Salto terrain, modern lighting/VFX, persistent hero readability, tactical clarity, and no mobile-game/dashboard appearance.
+
+Verification:
+
+```text
+npm test - PASS, 120 files / 830 tests.
+npm run build - PASS with the known Phaser/vendor chunk-size warning.
+npm run validate:content - PASS.
+npm run validate:art-intake - PASS.
+npm run export:portable-content - PASS, 229 stable manifest entries.
+npm run validate:portable-content - PASS, deterministic double export.
+npm run test:save-translation-contract - PASS, 16 fixtures, 11 translated, 2 quarantined, 3 rejected.
+npm run export:desktop-spike-fixture - PASS, fixture hash d6c00aad4d32173566194b01cd9b88c2947151da1e1c93cccaeb411ce225f7a3.
+npm run validate:desktop-spike-fixture - PASS, deterministic double export of 12 files.
+git diff --check - PASS with Git's line-ending warning for .gitignore.
+```
 
 ## v0.115 Trusted Performance Consolidation, Clean-Restart Retest Packet, And Browser Gate - 2026-06-03
 

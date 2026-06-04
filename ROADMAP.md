@@ -11,11 +11,23 @@ Every phase should protect these long-term pillars:
 
 ## Current Recommended Next Phase
 
-The current checkpoint is **v0.115 Trusted Performance Consolidation, Clean-Restart Retest Packet, and Browser Gate** on 2026-06-03. It consolidates v0.109 through v0.114 trusted performance evidence and sets the browser performance gate to `RED`. Host/browser controls and the true Phaser empty scene remain healthy, but actual battle rows remain around 2-3 FPS with hundreds-of-ms p95 frame time after the bounded scheduler, spatial/pathing, and renderer rescue slices.
+The current checkpoint is **v0.116 Reviewed Architecture Direction, Desktop-Engine Spike Preparation Pack, and Engine-Neutral Salto Fixture** on 2026-06-03. It responds to the v0.115 RED browser performance gate by creating architecture review docs, an engine-candidate matrix, an AI-first/editor-optional spike acceptance contract, a scorecard template, and a deterministic engine-neutral Salto fixture export/validation path.
 
-The next recommended step is Emmanuel's clean-restart retest plus a reviewed architecture or earlier engine-spike discussion. Do not generate art for runtime integration, import art into runtime, mark `runtime-candidate-approved` assets as loadable, resume broad browser visual expansion, add gameplay systems, change rewards, change saves, rename IDs, create a desktop save path, choose an engine, start an engine spike, start a desktop port, or start v0.116 until a future explicit goal approves a narrow next step.
+The next recommended step, only after a future explicit goal, is an engine spike that proves Codex and automation can create, modify, validate, build, export, benchmark, and package the representative Salto slice with minimal Emmanuel editor operation. Recommended order: Godot first, Unity second, Electron/browser wrapper as a packaging control, Unreal deferred. Do not generate art for runtime integration, import art into runtime, mark `runtime-candidate-approved` assets as loadable, resume broad browser visual expansion, add gameplay systems, change rewards, change saves, rename IDs, create a desktop save path, choose an engine, start an engine spike, start a desktop port, or start v0.117 until a future explicit goal approves a narrow next step.
 
-New v0.115 docs:
+New v0.116 docs:
+
+- `docs/V0116_ARCHITECTURE_DECISION_RECORD.md`
+- `docs/V0116_ENGINE_CANDIDATE_MATRIX.md`
+- `docs/V0116_RECOMMENDED_ENGINE_SPIKE_ORDER.md`
+- `docs/V0116_DESKTOP_SPIKE_ACCEPTANCE_CONTRACT.md`
+- `docs/V0116_DESKTOP_SPIKE_FIXTURE_EXPORT_SPEC.md`
+- `docs/V0116_ENGINE_SPIKE_SCORECARD_TEMPLATE.json`
+- `docs/V0116_EMMANUEL_ARCHITECTURE_REVIEW_PACKET.md`
+- `docs/V0116_REFERENCE_ART_CONTINUATION_BOUNDARY.md`
+- `docs/V0116_IMPLEMENTATION_REPORT.md`
+
+Recent v0.115 docs:
 
 - `docs/V0115_BROWSER_PERFORMANCE_GATE.md`
 - `docs/V0115_CONSOLIDATED_PERFORMANCE_REPORT.md`

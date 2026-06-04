@@ -1,0 +1,128 @@
+{
+  "schemaVersion": 1,
+  "checkpoint": "v0.116",
+  "candidate": "unselected",
+  "engineVersion": null,
+  "reviewer": null,
+  "sourceCommit": null,
+  "fixtureHash": null,
+  "buildStatus": "not-run",
+  "packageStatus": "not-run",
+  "windowsPackagePath": null,
+  "startupMs": null,
+  "tierS": {
+    "fpsAverage": null,
+    "fpsOnePercentLow": null,
+    "frameTimeP50Ms": null,
+    "frameTimeP95Ms": null,
+    "frameTimeP99Ms": null,
+    "frameTimeMaxMs": null,
+    "longTaskCount": null,
+    "notes": null
+  },
+  "tierM": {
+    "fpsAverage": null,
+    "fpsOnePercentLow": null,
+    "frameTimeP50Ms": null,
+    "frameTimeP95Ms": null,
+    "frameTimeP99Ms": null,
+    "frameTimeMaxMs": null,
+    "longTaskCount": null,
+    "notes": null
+  },
+  "tierL": {
+    "fpsAverage": null,
+    "fpsOnePercentLow": null,
+    "frameTimeP50Ms": null,
+    "frameTimeP95Ms": null,
+    "frameTimeP99Ms": null,
+    "frameTimeMaxMs": null,
+    "longTaskCount": null,
+    "notes": null
+  },
+  "inputLatency": {
+    "representativeActionLatencyMs": null,
+    "selectionFeedbackMs": null,
+    "commandFeedbackMs": null,
+    "notes": null
+  },
+  "sceneLaunchLatency": {
+    "battleLaunchLatencyMs": null,
+    "campaignFrameLaunchLatencyMs": null,
+    "notes": null
+  },
+  "resultsTransitionLatency": {
+    "resultsTransitionLatencyMs": null,
+    "returnToShellLatencyMs": null,
+    "notes": null
+  },
+  "memory": {
+    "workingSetMb": null,
+    "peakWorkingSetMb": null,
+    "notes": null
+  },
+  "packageSize": {
+    "windowsPackageMb": null,
+    "artifactCount": null,
+    "notes": null
+  },
+  "buildTime": {
+    "setupSeconds": null,
+    "buildSeconds": null,
+    "packageSeconds": null,
+    "notes": null
+  },
+  "aiOperability": {
+    "scoreOutOf25": null,
+    "freshCheckoutSetupScripted": null,
+    "oneCommandValidation": null,
+    "sceneCreationScriptableOrTextEditable": null,
+    "manifestDrivenContentImport": null,
+    "editorOptionalRoutineWorkflow": null,
+    "assetRegistrationWithoutManualDragDrop": null,
+    "cliBuildExportBenchmarkPackage": null,
+    "codexCanModifyValidateBuildPackage": null,
+    "unavoidableManualEditorSteps": [],
+    "debuggableWithoutRoutineEditorUse": null,
+    "notes": null
+  },
+  "visualAmbition": {
+    "scoreOutOf10": null,
+    "topDown2DQuality": null,
+    "fixedCamera2_5DQuality": null,
+    "factionSilhouetteStrength": null,
+    "atmosphericTerrain": null,
+    "modernLightingAndVfx": null,
+    "persistentHeroReadability": null,
+    "tacticalReadability": null,
+    "originalIpSeparation": null,
+    "avoidsMobileOrDashboardLook": null,
+    "notes": "Assess the spirit of a super-cool 2026 evolution of Warlords Battlecry while preserving original Ascendant Realms IP, factions, lore, assets, UI, mechanics, and visual identity."
+  },
+  "dataImportNotes": null,
+  "saveFixtureNotes": null,
+  "stableIdNotes": null,
+  "pathingNotes": null,
+  "unitCountNotes": null,
+  "uiWorkflowNotes": null,
+  "artPipelineNotes": null,
+  "automationNotes": null,
+  "ciNotes": null,
+  "licensingNotes": null,
+  "risks": [],
+  "unknowns": [],
+  "evidenceLinks": [],
+  "score": {
+    "aiOperabilityOutOf25": null,
+    "representativePerformanceOutOf20": null,
+    "contentStableIdReuseOutOf15": null,
+    "saveSafetyOutOf10": null,
+    "visualAmbitionOutOf10": null,
+    "uiAutomationOutOf10": null,
+    "windowsPackagingOutOf5": null,
+    "licensingMaintainabilityOutOf5": null,
+    "totalOutOf100": null
+  },
+  "recommendation": "not-scored",
+  "approvalStatus": "template-not-approved"
+}

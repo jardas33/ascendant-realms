@@ -1,12 +1,56 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-06-03 v0.115 Trusted Performance Consolidation, Clean-Restart Retest Packet, and Browser Gate
+Last updated: 2026-06-03 v0.116 Reviewed Architecture Direction, Desktop-Engine Spike Preparation Pack, and Engine-Neutral Salto Fixture
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
 ## Project Identity
 
-Ascendant Realms is the internal repository codename for a Phaser 3, TypeScript, and Vite browser-game prototype for a fantasy RTS/RPG hybrid. v0.79 records Emmanuel's approval of `JARDAS: Oath of the Barrosan Marches` as the leading public title direction, with `JARDAS` as the dominant logo word. v0.80 through v0.108 build the current Lume, visual QA, private Playtest Hub, portable content, art-slot, Salto-planning, and representative benchmark foundation without approving a runtime rebrand. v0.109 audits the v0.108 suspicious browser benchmark numbers and adds trusted production-preview-first sampling. v0.110 adds private BattleScene phase profiling, subsystem isolation, density reports, and a browser performance gate. v0.111 adds private host-environment calibration, clean-profile reproducibility, browser control baselines, and machine-pressure classification. v0.112 adds scheduler/allocation/idle-work rescue. v0.113 adds exact-semantics spatial-query, target acquisition, and path-request optimization. v0.114 adds private renderer lifecycle instrumentation, deterministic procedural geometry caching, safe presentation no-op guards, command-marker pooling, minimap due/dirty refresh, HUD DOM diff accounting, and the v0.114 audit/docs/artifact set. v0.115 consolidates the trusted performance evidence, produces Emmanuel's clean-restart retest packet, and sets the browser performance gate to RED. No gameplay, save, stable-ID, art, engine-choice, desktop-port, multiplayer, content, or v0.116 work is approved.
+Ascendant Realms is the internal repository codename for a Phaser 3, TypeScript, and Vite browser-game prototype for a fantasy RTS/RPG hybrid. v0.79 records Emmanuel's approval of `JARDAS: Oath of the Barrosan Marches` as the leading public title direction, with `JARDAS` as the dominant logo word. v0.80 through v0.108 build the current Lume, visual QA, private Playtest Hub, portable content, art-slot, Salto-planning, and representative benchmark foundation without approving a runtime rebrand. v0.109 audits the v0.108 suspicious browser benchmark numbers and adds trusted production-preview-first sampling. v0.110 adds private BattleScene phase profiling, subsystem isolation, density reports, and a browser performance gate. v0.111 adds private host-environment calibration, clean-profile reproducibility, browser control baselines, and machine-pressure classification. v0.112 adds scheduler/allocation/idle-work rescue. v0.113 adds exact-semantics spatial-query, target acquisition, and path-request optimization. v0.114 adds private renderer lifecycle instrumentation, deterministic procedural geometry caching, safe presentation no-op guards, command-marker pooling, minimap due/dirty refresh, HUD DOM diff accounting, and the v0.114 audit/docs/artifact set. v0.115 consolidates the trusted performance evidence, produces Emmanuel's clean-restart retest packet, and sets the browser performance gate to RED. v0.116 creates the reviewed architecture direction, AI-first/editor-optional desktop spike preparation pack, and engine-neutral Salto fixture export/validation scripts. No gameplay, save, stable-ID, art, engine-choice, desktop-port, multiplayer, content, or v0.117 work is approved.
+
+## Current v0.116 Reviewed Architecture Direction, Desktop-Engine Spike Preparation Pack, And Engine-Neutral Salto Fixture - 2026-06-03
+
+Status: v0.116 is architecture review and fixture tooling only. It creates docs, a scorecard template, and deterministic export/validation scripts for an engine-neutral Salto fixture. It does not choose an engine, add an engine dependency, create a desktop wrapper, start a port, change runtime gameplay, alter saves, rename stable IDs, import art, or start v0.117.
+
+Included work:
+
+- Added `docs/V0116_ARCHITECTURE_DECISION_RECORD.md`, `docs/V0116_ENGINE_CANDIDATE_MATRIX.md`, `docs/V0116_RECOMMENDED_ENGINE_SPIKE_ORDER.md`, `docs/V0116_DESKTOP_SPIKE_ACCEPTANCE_CONTRACT.md`, `docs/V0116_DESKTOP_SPIKE_FIXTURE_EXPORT_SPEC.md`, `docs/V0116_ENGINE_SPIKE_SCORECARD_TEMPLATE.json`, `docs/V0116_EMMANUEL_ARCHITECTURE_REVIEW_PACKET.md`, `docs/V0116_REFERENCE_ART_CONTINUATION_BOUNDARY.md`, and `docs/V0116_IMPLEMENTATION_REPORT.md`.
+- Added `src/game/desktop-spike/DesktopSpikeFixture.ts`, focused tests, `tools/exportDesktopSpikeFixture.ts`, `tools/validateDesktopSpikeFixture.ts`, `npm run export:desktop-spike-fixture`, and `npm run validate:desktop-spike-fixture`.
+- Added ignored artifact root `artifacts/desktop-spike-fixture/latest/`.
+
+Architecture interpretation:
+
+```text
+v0.115 gate - RED.
+Recommended future spike order - Godot first, Unity second, Electron/browser wrapper as a control, Unreal deferred.
+Major scored criterion - AI-first/editor-optional development where Codex and automation handle routine setup, scene generation, content import, validation, build/export/benchmark/package work.
+Visual ambition - original modern top-down RTS/RPG inspired by the spirit of a super-cool 2026 Warlords Battlecry evolution, with Ascendant Realms IP, strong silhouettes, atmospheric Salto terrain, modern lighting/VFX, persistent hero readability, tactical clarity, and no mobile-game/dashboard look.
+Fixture boundary - engine-neutral, generated from existing portable content, stable IDs, save fixtures, benchmark definitions, Lume data, and reference-only art docs.
+```
+
+Runtime/save/profile boundary:
+
+- No save-version bump.
+- No save fields, localStorage keys, stable IDs, serialized IDs, rewards, XP, Retinue state, relics, reputation, campaign progression, gameplay rules, combat balance, AI/pathing rules, maps, factions, generated/imported art, runtime asset paths, public benchmark controls, engine choice, engine project, desktop wrapper, desktop save path, multiplayer, PvP, co-op, runtime title, content, or v0.117 work changed.
+- `linked_ward` remains exactly `0.92`.
+
+Current verification:
+
+```text
+npm test - PASS, 120 files / 830 tests.
+npm run build - PASS with the known Phaser/vendor chunk-size warning.
+npm run validate:content - PASS.
+npm run validate:art-intake - PASS.
+npm run export:portable-content - PASS.
+npm run validate:portable-content - PASS.
+npm run test:save-translation-contract - PASS.
+npm run export:desktop-spike-fixture - PASS, fixture hash d6c00aad4d32173566194b01cd9b88c2947151da1e1c93cccaeb411ce225f7a3.
+npm run validate:desktop-spike-fixture - PASS, 12 files matched byte-for-byte.
+git diff --check - PASS with Git's line-ending warning for .gitignore.
+Package generation was not required because package metadata/private package contents did not change.
+```
+
+Closeout rule: commit exactly `Checkpoint v0.116 reviewed architecture direction desktop-engine spike preparation pack and engine-neutral Salto fixture`, push only when the worktree is clean and synced, confirm remote CI, and do not start v0.117 automatically.
 
 ## Current v0.115 Trusted Performance Consolidation, Clean-Restart Retest Packet, And Browser Gate - 2026-06-03
 

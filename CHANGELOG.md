@@ -1,5 +1,49 @@
 # Changelog
 
+# v0.116 Reviewed Architecture Direction, Desktop-Engine Spike Preparation Pack, And Engine-Neutral Salto Fixture - 2026-06-03
+
+This checkpoint creates the reviewed architecture direction, engine-candidate matrix, AI-first/editor-optional desktop spike acceptance contract, Emmanuel review packet, reference-art continuation boundary, scorecard template, and deterministic engine-neutral Salto fixture export/validation tooling. It does not choose an engine, add an engine dependency, create an engine project, create a desktop wrapper, start a port, change runtime gameplay, change saves, rename stable IDs, import art, or start v0.117.
+
+Added:
+
+- `docs/V0116_ARCHITECTURE_DECISION_RECORD.md`.
+- `docs/V0116_ENGINE_CANDIDATE_MATRIX.md`.
+- `docs/V0116_RECOMMENDED_ENGINE_SPIKE_ORDER.md`.
+- `docs/V0116_DESKTOP_SPIKE_ACCEPTANCE_CONTRACT.md`.
+- `docs/V0116_DESKTOP_SPIKE_FIXTURE_EXPORT_SPEC.md`.
+- `docs/V0116_ENGINE_SPIKE_SCORECARD_TEMPLATE.json`.
+- `docs/V0116_EMMANUEL_ARCHITECTURE_REVIEW_PACKET.md`.
+- `docs/V0116_REFERENCE_ART_CONTINUATION_BOUNDARY.md`.
+- `docs/V0116_IMPLEMENTATION_REPORT.md`.
+- `src/game/desktop-spike/DesktopSpikeFixture.ts`.
+- `src/game/desktop-spike/DesktopSpikeFixture.test.ts`.
+- `tools/exportDesktopSpikeFixture.ts`.
+- `tools/validateDesktopSpikeFixture.ts`.
+- `npm run export:desktop-spike-fixture`.
+- `npm run validate:desktop-spike-fixture`.
+
+Changed:
+
+- The roadmap and handoff now frame future engine spikes around Codex-led automation, reproducible setup, manifest-driven import, one-command validation, CLI build/export/benchmark/package work, and editor-optional routine development for Emmanuel.
+- The fixture artifact root `artifacts/desktop-spike-fixture/` is ignored because it is regenerated from repository sources.
+
+Current evidence:
+
+- v0.115 browser gate remains RED.
+- `linked_ward` remains exactly `0.92`.
+- The fixture is engine-neutral and derives from existing portable content, stable IDs, save fixtures, benchmark definitions, Lume data, and reference-only art docs.
+- Future visual review should assess a modern original RTS/RPG direction inspired by the spirit of a 2026 Warlords Battlecry evolution, without copying its IP, assets, lore, UI, or mechanics.
+
+Verification:
+
+- `npm test` PASS, 120 files / 830 tests.
+- `npm run build`, `npm run validate:content`, and `npm run validate:art-intake` PASS.
+- `npm run export:portable-content` PASS, 229 stable manifest entries.
+- `npm run validate:portable-content` PASS with byte-for-byte determinism.
+- `npm run test:save-translation-contract` PASS, 16 fixtures, 11 translated, 2 quarantined, 3 rejected.
+- `npm run export:desktop-spike-fixture` and `npm run validate:desktop-spike-fixture` PASS, fixture hash `d6c00aad4d32173566194b01cd9b88c2947151da1e1c93cccaeb411ce225f7a3`, 12 files matched byte-for-byte.
+- `git diff --check` PASS with Git's line-ending warning for `.gitignore`.
+
 # v0.115 Trusted Performance Consolidation, Clean-Restart Retest Packet, And Browser Gate - 2026-06-03
 
 This checkpoint consolidates v0.109-v0.114 trusted browser performance evidence, creates Emmanuel's clean-restart retest packet and performance decision packet, and sets the browser performance gate to RED. It changes docs, package metadata/docs, and validation tests only: no runtime gameplay, saves, stable IDs, rewards, balance, AI, pathing, maps, factions, art, runtime asset paths, public benchmark controls, engine posture, desktop implementation, multiplayer, PvP, co-op, content, or v0.116 work changed.

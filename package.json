@@ -25,6 +25,8 @@
     "art:review:report": "tsx tools/art-review/generateArtReviewReport.ts",
     "export:portable-content": "tsx tools/exportPortableContent.ts",
     "validate:portable-content": "tsx tools/validatePortableContent.ts",
+    "export:desktop-spike-fixture": "tsx tools/exportDesktopSpikeFixture.ts",
+    "validate:desktop-spike-fixture": "tsx tools/validateDesktopSpikeFixture.ts",
     "test:save-translation-contract": "tsx tools/testSaveTranslationContract.ts",
     "test:e2e": "playwright test",
     "test:e2e:smoke:fast": "playwright test tests/e2e/smoke.spec.ts --grep @ci-fast --reporter=line",
