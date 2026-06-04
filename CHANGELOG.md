@@ -1,5 +1,44 @@
 # Changelog
 
+# v0.123 Godot Continuation Decision Packet, Unity Comparator Boundary, And First Reference-Art Prompt Library - 2026-06-04
+
+This checkpoint consolidates the Godot Salto workflow evidence into Emmanuel's continuation decision packet. It classifies the current Godot spike as `GODOT_SPIKE_GREEN` for careful next-spike planning, defines the Unity comparator boundary, creates a simple Emmanuel review guide, and adds the first copy-ready reference-art prompt library. It keeps the work inside docs, scorecard interpretation, validation-boundary maintenance, and reference-only prompt preparation: no final engine choice, full port, Unity project, Unreal project, Electron wrapper, image generation, runtime art import, browser replacement, gameplay change, save change, stable-ID rename, multiplayer, content expansion, or v0.124 work.
+
+Added:
+
+- `docs/V0123_GODOT_CONTINUATION_GATE.md`.
+- `docs/V0123_GODOT_SCORECARD_UPDATE.md`.
+- `docs/V0123_UNITY_COMPARATOR_BOUNDARY.md`.
+- `docs/V0123_EMMANUEL_GODOT_REVIEW_GUIDE.md`.
+- `docs/V0123_REFERENCE_ART_REVIEW_BOUNDARY.md`.
+- `docs/V0123_IMPLEMENTATION_REPORT.md`.
+- `docs/art-prompts/V0123_01_SALTO_2_5D_ENVIRONMENT_STYLE_FRAME.md`.
+- `docs/art-prompts/V0123_02_BARROSAN_HERO_SILHOUETTE_SHEET.md`.
+- `docs/art-prompts/V0123_03_BARROSAN_WORKER_SILHOUETTE_SHEET.md`.
+- `docs/art-prompts/V0123_04_BARROSAN_MILITIA_RANGER_SILHOUETTE_SHEET.md`.
+- `docs/art-prompts/V0123_05_COMMAND_HALL_BARRACKS_STYLE_SHEET.md`.
+- `docs/art-prompts/V0123_06_LUME_VFX_STYLE_FRAME.md`.
+- `docs/art-prompts/V0123_07_CAMPAIGN_MAP_STYLE_FRAME.md`.
+- `docs/art-prompts/V0123_08_HUD_STYLE_FRAME.md`.
+
+Changed:
+
+- Handoff, roadmap, development checkpoint, and release checklist now describe v0.123.
+- The desktop-spike fixture boundary validation now allows authorized v0.123 Godot docs and blocks v0.124 Godot follow-up docs instead.
+
+Current evidence:
+
+- v0.122 baseline pushed and remote CI green before v0.123 edits.
+- Latest Godot scorecard remains `workflow-spike-content-adapter-parity-not-final-engine-choice`, total `78 / 100`, AI-operability `24 / 25`.
+- v0.118 packaged headed smoke PASS.
+- v0.120 fresh-checkout validation PASS with routine editor use false.
+- v0.121 visual capture PASS with 32 captures and procedural 2.5D review presets.
+- v0.122 adapter validation PASS, rules parity PASS, migration-readiness matrix PASS, Windows package PASS.
+
+Verification:
+
+- Required v0.123 verification is listed in `docs/V0123_IMPLEMENTATION_REPORT.md` and must be run before closeout.
+
 # v0.118 Godot Packaged-Build Headed Smoke Automated Visual Capture And Human-Review Harness - 2026-06-04
 
 This checkpoint extends the Godot Salto workflow spike with packaged-build headed smoke, deterministic screenshot capture, headed benchmarks, package validation, and Emmanuel's one-click review harness. It keeps the work inside the existing Godot spike and fixture boundary: no final engine choice, full port, browser replacement, gameplay change, save change, stable-ID rename, runtime art import, or v0.119 work.

@@ -1,6 +1,42 @@
 # Development Checkpoint
 
-Updated: 2026-06-04 v0.118 Godot Packaged-Build Headed Smoke Automated Visual Capture and Human-Review Harness
+Updated: 2026-06-04 v0.123 Godot Continuation Decision Packet, Unity Comparator Boundary, and First Reference-Art Prompt Library
+
+## v0.123 Godot Continuation Decision Packet, Unity Comparator Boundary, And First Reference-Art Prompt Library - 2026-06-04
+
+Scope: docs, scorecard interpretation, validation-boundary maintenance, and reference-art prompt preparation only. This checkpoint consolidates v0.116 through v0.122 Godot evidence, classifies the Godot spike as `GODOT_SPIKE_GREEN` for careful next-spike planning, defines the Unity comparator boundary, gives Emmanuel a simple one-click review guide, and prepares eight reference-only art prompts. It does not select Godot finally, start a full port, create a Unity/Unreal/Electron project, generate images, import runtime art, change browser runtime, saves, stable IDs, rewards, maps, factions, AI, pathing, combat balance, multiplayer, PvP, co-op, content, or v0.124 scope.
+
+Included work:
+
+- Added v0.123 Godot continuation gate, scorecard update, Unity comparator boundary, Emmanuel review guide, reference-art boundary, and implementation report.
+- Added eight copy-ready reference-only prompt docs under `docs/art-prompts/`.
+- Updated handoff, roadmap, changelog, checkpoint, and release checklist.
+- Advanced the desktop-spike boundary guard to block v0.124 Godot docs instead of authorized v0.123 docs.
+
+Current interpretation:
+
+- Godot is green for careful continuation planning, not final engine selection.
+- 2D remains the readability/control lane.
+- 2.5D `CLEAN_READABILITY` remains the leading visual-review lane.
+- Unity remains a comparator only if future Godot work fails visual quality, automation, packaging, or reproducibility gates.
+- Reference art may be generated outside runtime only after human prompt approval; it remains reference-only and non-loadable.
+
+Verification:
+
+```text
+Required closeout stack:
+npm test
+npm run build
+npm run validate:content
+npm run validate:art-intake
+npm run export:portable-content
+npm run validate:portable-content
+npm run export:desktop-spike-fixture
+npm run validate:desktop-spike-fixture
+npm run godot:all
+npm run godot:fresh-checkout:validate
+git diff --check
+```
 
 ## v0.118 Godot Packaged-Build Headed Smoke Automated Visual Capture And Human-Review Harness - 2026-06-04
 

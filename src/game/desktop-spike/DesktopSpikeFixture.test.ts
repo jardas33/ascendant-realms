@@ -124,7 +124,7 @@ describe("desktop spike fixture", () => {
     });
   });
 
-  it("keeps the repository boundary free of root desktop projects, wrappers, and v0.123 Godot follow-up docs", async () => {
+  it("keeps the repository boundary free of root desktop projects, wrappers, and v0.124 Godot follow-up docs", async () => {
     expect(await validateRepositorySpikeBoundaries()).toEqual([]);
   });
 

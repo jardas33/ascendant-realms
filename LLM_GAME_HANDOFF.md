@@ -1,12 +1,41 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-06-04 v0.122 Godot Content-Subset Adapter Rules-Parity Harness And Stable-ID Migration Proof
+Last updated: 2026-06-04 v0.123 Godot Continuation Decision Packet, Unity Comparator Boundary, And First Reference-Art Prompt Library
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
 ## Project Identity
 
-Ascendant Realms is the internal repository codename for a Phaser 3, TypeScript, and Vite browser-game prototype for a fantasy RTS/RPG hybrid. v0.79 records Emmanuel's approval of `JARDAS: Oath of the Barrosan Marches` as the leading public title direction, with `JARDAS` as the dominant logo word. v0.80 through v0.108 build the current Lume, visual QA, private Playtest Hub, portable content, art-slot, Salto-planning, and representative benchmark foundation without approving a runtime rebrand. v0.109 audits the v0.108 suspicious browser benchmark numbers and adds trusted production-preview-first sampling. v0.110 adds private BattleScene phase profiling, subsystem isolation, density reports, and a browser performance gate. v0.111 adds private host-environment calibration, clean-profile reproducibility, browser control baselines, and machine-pressure classification. v0.112 adds scheduler/allocation/idle-work rescue. v0.113 adds exact-semantics spatial-query, target acquisition, and path-request optimization. v0.114 adds private renderer lifecycle instrumentation, deterministic procedural geometry caching, safe presentation no-op guards, command-marker pooling, minimap due/dirty refresh, HUD DOM diff accounting, and the v0.114 audit/docs/artifact set. v0.115 consolidates the trusted performance evidence, produces Emmanuel's clean-restart retest packet, and sets the browser performance gate to RED. v0.116 creates the reviewed architecture direction, AI-first/editor-optional desktop spike preparation pack, and engine-neutral Salto fixture export/validation scripts. v0.117 creates the first repository-driven Godot benchmark spike and one-click Windows workflow. v0.118 proves packaged-build headed smoke, deterministic screenshot capture, headed benchmarks, package validation, and Emmanuel's one-click review harness for the same workflow spike. v0.119 adds a deterministic representative RTS load, navigation, bounded AI-pressure, parity, scalability benchmark, and v0.119 package evidence for the same Godot workflow spike. v0.120 proves fresh-checkout reproducibility, CI-style Windows posture, and zero-editor routine automation for that same spike. v0.121 adds a procedural 2.5D visual-foundation dry run, 2D control comparison, preset capture/benchmark evidence, and Emmanuel visual review packet for the same Godot workflow spike. v0.122 proves a generated content-subset adapter, stable-ID validation, read-only save-fixture posture, bounded rules-parity harness, and migration-readiness matrix for the same Godot workflow spike. No full port, final engine choice, save/stable-ID/art import, browser replacement, multiplayer, content expansion, or v0.123 work is approved.
+Ascendant Realms is the internal repository codename for a Phaser 3, TypeScript, and Vite browser-game prototype for a fantasy RTS/RPG hybrid. v0.79 records Emmanuel's approval of `JARDAS: Oath of the Barrosan Marches` as the leading public title direction, with `JARDAS` as the dominant logo word. v0.80 through v0.108 build the current Lume, visual QA, private Playtest Hub, portable content, art-slot, Salto-planning, and representative benchmark foundation without approving a runtime rebrand. v0.109 audits the v0.108 suspicious browser benchmark numbers and adds trusted production-preview-first sampling. v0.110 adds private BattleScene phase profiling, subsystem isolation, density reports, and a browser performance gate. v0.111 adds private host-environment calibration, clean-profile reproducibility, browser control baselines, and machine-pressure classification. v0.112 adds scheduler/allocation/idle-work rescue. v0.113 adds exact-semantics spatial-query, target acquisition, and path-request optimization. v0.114 adds private renderer lifecycle instrumentation, deterministic procedural geometry caching, safe presentation no-op guards, command-marker pooling, minimap due/dirty refresh, HUD DOM diff accounting, and the v0.114 audit/docs/artifact set. v0.115 consolidates the trusted performance evidence, produces Emmanuel's clean-restart retest packet, and sets the browser performance gate to RED. v0.116 creates the reviewed architecture direction, AI-first/editor-optional desktop spike preparation pack, and engine-neutral Salto fixture export/validation scripts. v0.117 creates the first repository-driven Godot benchmark spike and one-click Windows workflow. v0.118 proves packaged-build headed smoke, deterministic screenshot capture, headed benchmarks, package validation, and Emmanuel's one-click review harness for the same workflow spike. v0.119 adds a deterministic representative RTS load, navigation, bounded AI-pressure, parity, scalability benchmark, and v0.119 package evidence for the same Godot workflow spike. v0.120 proves fresh-checkout reproducibility, CI-style Windows posture, and zero-editor routine automation for that same spike. v0.121 adds a procedural 2.5D visual-foundation dry run, 2D control comparison, preset capture/benchmark evidence, and Emmanuel visual review packet for the same Godot workflow spike. v0.122 proves a generated content-subset adapter, stable-ID validation, read-only save-fixture posture, bounded rules-parity harness, and migration-readiness matrix for the same Godot workflow spike. v0.123 consolidates the Godot continuation decision packet, Unity comparator boundary, Emmanuel review guide, and first reference-art prompt library. No full port, final engine choice, Unity project, generated image, save/stable-ID/art import, browser replacement, multiplayer, content expansion, or v0.124 work is approved.
+
+## Current v0.123 Godot Continuation Decision Packet, Unity Comparator Boundary, And First Reference-Art Prompt Library - 2026-06-04
+
+Status: v0.123 is a docs, scorecard, validation-boundary, and reference-art prompt preparation checkpoint only. It classifies the Godot spike as `GODOT_SPIKE_GREEN` for careful continuation planning, but it does not select Godot finally, create a Unity project, start a full port, generate images, import runtime art, change browser gameplay, change saves, rename stable IDs, or start v0.124.
+
+Included work:
+
+- Added `docs/V0123_GODOT_CONTINUATION_GATE.md`.
+- Added `docs/V0123_GODOT_SCORECARD_UPDATE.md`.
+- Added `docs/V0123_UNITY_COMPARATOR_BOUNDARY.md`.
+- Added `docs/V0123_EMMANUEL_GODOT_REVIEW_GUIDE.md`.
+- Added `docs/V0123_REFERENCE_ART_REVIEW_BOUNDARY.md`.
+- Added `docs/V0123_IMPLEMENTATION_REPORT.md`.
+- Added eight reference-only copy-ready prompt docs under `docs/art-prompts/`.
+- Advanced the Godot-specific future-boundary guard to block v0.124 follow-up docs instead of authorized v0.123 docs.
+
+Decision interpretation:
+
+- Godot is green for a careful next spike, not for final engine selection.
+- Unity remains a bounded comparator only if future Godot work fails visual, automation, packaging, or reproducibility gates.
+- Reference art generation is allowed only outside runtime after human prompt approval and remains reference-only.
+
+Runtime/save/profile boundary:
+
+- No save-version bump.
+- No save fields, localStorage keys, stable IDs, serialized IDs, rewards, XP, Retinue state, relics, reputation, campaign progression, browser gameplay rules, browser combat balance, browser AI/pathing rules, maps, factions, generated/imported art, runtime asset paths, browser runtime replacement, final engine choice, Unity/Unreal/Electron project, full desktop port, multiplayer, PvP, co-op, runtime title, content expansion, or v0.124 work changed.
+- `linked_ward` remains exactly `0.92`.
+
+Closeout rule: commit exactly `Checkpoint v0.123 Godot continuation decision packet Unity comparator boundary and first reference-art prompt library`, push only when the worktree is clean and synced, confirm remote CI, and do not start v0.124 automatically.
 
 ## Current v0.122 Godot Content-Subset Adapter Rules-Parity Harness And Stable-ID Migration Proof - 2026-06-04
 

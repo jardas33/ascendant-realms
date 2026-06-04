@@ -11,9 +11,26 @@ Every phase should protect these long-term pillars:
 
 ## Current Recommended Next Phase
 
-The current checkpoint is **v0.122 Godot Content-Subset Adapter Rules-Parity Harness and Stable-ID Migration Proof** on 2026-06-04. It extends the existing Godot Salto workflow spike with generated JSON content-subset adapters, stable-ID validation, read-only save-fixture posture, 2D/2.5D same-fixture rules-parity evidence, and a migration-readiness matrix while keeping the browser prototype as the authoritative content and behavior reference.
+The current checkpoint is **v0.123 Godot Continuation Decision Packet, Unity Comparator Boundary, and First Reference-Art Prompt Library** on 2026-06-04. It consolidates the v0.116-v0.122 Godot evidence, classifies the spike as `GODOT_SPIKE_GREEN` for careful continuation planning, defines when a Unity comparator would be required, gives Emmanuel a simple one-click review guide, and prepares reference-only prompt text for the first art-direction review images.
 
-The next recommended step, only after a future explicit goal, is Emmanuel's review of the v0.122 adapter/parity evidence alongside the v0.121 visual packet or a separately approved narrow follow-up comparison. v0.122 does not choose Godot, does not claim full simulation parity, and does not migrate content. Do not generate art for runtime integration, import art into runtime, mark `runtime-candidate-approved` assets as loadable, resume broad browser visual expansion, add gameplay systems, change rewards, change saves, rename IDs, create a desktop save path, choose Godot finally, start a full desktop port, start Unity/Unreal/Electron work, or start v0.123 until a future explicit goal approves a narrow next step.
+The next recommended step, only after a future explicit goal, is Emmanuel's review of the v0.123 decision packet and the existing packaged Godot review build. v0.123 does not choose Godot, does not create a Unity project, does not generate images, does not import runtime art, and does not migrate content. Do not generate art for runtime integration, import art into runtime, mark `runtime-candidate-approved` assets as loadable, resume broad browser visual expansion, add gameplay systems, change rewards, change saves, rename IDs, create a desktop save path, choose Godot finally, start a full desktop port, start Unity/Unreal/Electron work, or start v0.124 until a future explicit goal approves a narrow next step.
+
+New v0.123 docs:
+
+- `docs/V0123_GODOT_CONTINUATION_GATE.md`
+- `docs/V0123_GODOT_SCORECARD_UPDATE.md`
+- `docs/V0123_UNITY_COMPARATOR_BOUNDARY.md`
+- `docs/V0123_EMMANUEL_GODOT_REVIEW_GUIDE.md`
+- `docs/V0123_REFERENCE_ART_REVIEW_BOUNDARY.md`
+- `docs/V0123_IMPLEMENTATION_REPORT.md`
+- `docs/art-prompts/V0123_01_SALTO_2_5D_ENVIRONMENT_STYLE_FRAME.md`
+- `docs/art-prompts/V0123_02_BARROSAN_HERO_SILHOUETTE_SHEET.md`
+- `docs/art-prompts/V0123_03_BARROSAN_WORKER_SILHOUETTE_SHEET.md`
+- `docs/art-prompts/V0123_04_BARROSAN_MILITIA_RANGER_SILHOUETTE_SHEET.md`
+- `docs/art-prompts/V0123_05_COMMAND_HALL_BARRACKS_STYLE_SHEET.md`
+- `docs/art-prompts/V0123_06_LUME_VFX_STYLE_FRAME.md`
+- `docs/art-prompts/V0123_07_CAMPAIGN_MAP_STYLE_FRAME.md`
+- `docs/art-prompts/V0123_08_HUD_STYLE_FRAME.md`
 
 New v0.122 docs:
 

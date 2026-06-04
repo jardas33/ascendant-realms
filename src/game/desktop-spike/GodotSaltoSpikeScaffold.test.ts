@@ -327,4 +327,37 @@ describe("Godot Salto spike scaffold", () => {
     expect(toolScript).toContain("parity-report.json");
     expect(toolScript).toContain("migration-readiness.json");
   });
+
+  it("defines the v0.123 Godot continuation decision packet and reference-art prompt library", async () => {
+    [
+      "docs/V0123_GODOT_CONTINUATION_GATE.md",
+      "docs/V0123_GODOT_SCORECARD_UPDATE.md",
+      "docs/V0123_UNITY_COMPARATOR_BOUNDARY.md",
+      "docs/V0123_EMMANUEL_GODOT_REVIEW_GUIDE.md",
+      "docs/V0123_REFERENCE_ART_REVIEW_BOUNDARY.md",
+      "docs/V0123_IMPLEMENTATION_REPORT.md",
+      "docs/art-prompts/V0123_01_SALTO_2_5D_ENVIRONMENT_STYLE_FRAME.md",
+      "docs/art-prompts/V0123_02_BARROSAN_HERO_SILHOUETTE_SHEET.md",
+      "docs/art-prompts/V0123_03_BARROSAN_WORKER_SILHOUETTE_SHEET.md",
+      "docs/art-prompts/V0123_04_BARROSAN_MILITIA_RANGER_SILHOUETTE_SHEET.md",
+      "docs/art-prompts/V0123_05_COMMAND_HALL_BARRACKS_STYLE_SHEET.md",
+      "docs/art-prompts/V0123_06_LUME_VFX_STYLE_FRAME.md",
+      "docs/art-prompts/V0123_07_CAMPAIGN_MAP_STYLE_FRAME.md",
+      "docs/art-prompts/V0123_08_HUD_STYLE_FRAME.md"
+    ].forEach((path) => expect(existsSync(path), path).toBe(true));
+
+    const gate = await readFile("docs/V0123_GODOT_CONTINUATION_GATE.md", "utf8");
+    const unity = await readFile("docs/V0123_UNITY_COMPARATOR_BOUNDARY.md", "utf8");
+    const boundary = await readFile("docs/V0123_REFERENCE_ART_REVIEW_BOUNDARY.md", "utf8");
+    const prompt = await readFile("docs/art-prompts/V0123_01_SALTO_2_5D_ENVIRONMENT_STYLE_FRAME.md", "utf8");
+
+    expect(gate).toContain("GODOT_SPIKE_GREEN");
+    expect(gate).toContain("not green as a final engine decision");
+    expect(unity).toContain("No Unity project is authorized by v0.123");
+    expect(boundary).toContain("v0.123 does not generate images");
+    expect(boundary).toContain("Runtime integration is explicitly forbidden");
+    expect(prompt).toContain("Original IP only");
+    expect(prompt).toContain("Runtime integration is explicitly forbidden");
+    expect(prompt).toContain("Human Review Checklist");
+  });
 });
