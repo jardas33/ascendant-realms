@@ -4,7 +4,9 @@ Ascendant Realms is a frozen v0.3 Cinderfen route baseline for a long-term fanta
 
 The latest runtime checkpoint is v0.82: Aether Well Ruins now has the first mission-local Lume Network prototype on Broken Ford. Capturing West Stone Cut plus Ford Toll, or Ford Toll plus North Aether Spring, activates Linked Ward, a battle-local non-stacking 8% incoming-damage reduction near active linked sites.
 
-Current v0.111 work adds private host-environment calibration, clean-browser reproducibility, browser control baselines, machine-pressure classification, and post-restart retest instructions. It separates blank rAF, simple DOM, simple canvas, Phaser empty-scene, campaign-map, and Tier M representative battle costs, and it shows the current local evidence as `HOST_PRESSURE_UNLIKELY` plus `BATTLE_CODE_DOMINANT`: blank/DOM/canvas/Phaser-empty are near 60 FPS with p95 around 16.7 ms, campaign-map is materially slower at 9.9 FPS / 183.4 ms p95 in preview, and Tier M remains severe at 2.5 FPS / 516.6 ms p95 in preview and 483.3 ms p95 in clean-profile headless. It uses a temporary clean Chromium profile without touching the user browser profile. It does not kill unrelated processes, reboot, change OS settings, collect browser history/open tabs/profile contents/private process command lines, generate or import art, change save format, rename internal IDs, alter gameplay/balance/AI/pathing, change desktop posture, choose an engine, or start v0.112.
+Current v0.117 work adds the first repository-driven Godot desktop benchmark spike and one-click Windows workflow. It uses the v0.116 engine-neutral Salto fixture, standard non-.NET Godot 4.6.3 x86_64, text scenes, GDScript, manifest-driven fixture import, headless validation, 2D and 2.5D placeholder benchmarks, Windows export, ZIP packaging, and scorecard output. It keeps the browser prototype as the current behavior source of truth and does not choose Godot finally, begin a full port, import art, change saves, rename stable IDs, change gameplay/balance/AI/pathing, create Unity/Unreal/Electron projects, or start v0.118.
+
+Recent v0.111 work adds private host-environment calibration, clean-browser reproducibility, browser control baselines, machine-pressure classification, and post-restart retest instructions. It separates blank rAF, simple DOM, simple canvas, Phaser empty-scene, campaign-map, and Tier M representative battle costs, and it shows the current local evidence as `HOST_PRESSURE_UNLIKELY` plus `BATTLE_CODE_DOMINANT`: blank/DOM/canvas/Phaser-empty are near 60 FPS with p95 around 16.7 ms, campaign-map is materially slower at 9.9 FPS / 183.4 ms p95 in preview, and Tier M remains severe at 2.5 FPS / 516.6 ms p95 in preview and 483.3 ms p95 in clean-profile headless. It uses a temporary clean Chromium profile without touching the user browser profile. It does not kill unrelated processes, reboot, change OS settings, collect browser history/open tabs/profile contents/private process command lines, generate or import art, change save format, rename internal IDs, alter gameplay/balance/AI/pathing, change desktop posture, choose an engine, or start v0.112.
 
 The package flow still packages the browser prototype for private human playtesting: playtest-safe production build output, ignored package folders under `artifacts/playtest/`, tester-facing README and feedback files, current retest materials, build metadata, local server launchers, and package verification. v0.111 updates package metadata and required package docs to include the host snapshot spec, browser control baselines, clean-profile benchmark spec, machine-pressure classification, Emmanuel post-restart retest, and implementation report.
 
@@ -49,6 +51,14 @@ v0.111 browser control baselines: `docs/V0111_BROWSER_CONTROL_BASELINES.md`.
 v0.111 clean-profile benchmark spec: `docs/V0111_CLEAN_PROFILE_BENCHMARK_SPEC.md`.
 v0.111 machine-pressure classification: `docs/V0111_MACHINE_PRESSURE_CLASSIFICATION.md`.
 v0.111 Emmanuel post-restart retest: `docs/V0111_EMMANUEL_POST_RESTART_RETEST.md`.
+v0.117 Godot spike scope: `docs/V0117_GODOT_SPIKE_SCOPE.md`.
+v0.117 Godot setup/bootstrap spec: `docs/V0117_GODOT_SETUP_AND_BOOTSTRAP_SPEC.md`.
+v0.117 fixture import report: `docs/V0117_GODOT_FIXTURE_IMPORT_REPORT.md`.
+v0.117 AI-first workflow report: `docs/V0117_GODOT_AI_FIRST_WORKFLOW_REPORT.md`.
+v0.117 visual direction comparison: `docs/V0117_GODOT_VISUAL_DIRECTION_COMPARISON.md`.
+v0.117 benchmark report: `docs/V0117_GODOT_BENCHMARK_REPORT.md`.
+v0.117 Windows export report: `docs/V0117_GODOT_WINDOWS_EXPORT_REPORT.md`.
+v0.117 Emmanuel one-click guide: `docs/V0117_EMMANUEL_ONE_CLICK_GUIDE.md`.
 
 Current v0.3 feature snapshot:
 

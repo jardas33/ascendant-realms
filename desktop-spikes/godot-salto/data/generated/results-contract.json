@@ -1,0 +1,73 @@
+{
+  "checkpoint": "v0.116",
+  "evidenceRequired": [
+    "resultsTransitionLatencyMs",
+    "readable outcome state",
+    "return-to-shell proof"
+  ],
+  "generatedAtUtc": "deterministic-v0116",
+  "localStorageMutationAllowed": false,
+  "posture": "no-save-results-parity-contract",
+  "requiredFields": [
+    "outcome",
+    "objective summary",
+    "no-save marker",
+    "Lume summary",
+    "performance scorecard link",
+    "return action"
+  ],
+  "rewardMutationAllowed": false,
+  "saveMutationAllowed": false,
+  "schemaVersion": 1,
+  "sourceLinks": {
+    "generatedArtifactRoot": "artifacts/desktop-spike-fixture/latest",
+    "generatedDocs": [
+      "docs/V0116_ARCHITECTURE_DECISION_RECORD.md",
+      "docs/V0116_ENGINE_CANDIDATE_MATRIX.md",
+      "docs/V0116_RECOMMENDED_ENGINE_SPIKE_ORDER.md",
+      "docs/V0116_DESKTOP_SPIKE_ACCEPTANCE_CONTRACT.md",
+      "docs/V0116_DESKTOP_SPIKE_FIXTURE_EXPORT_SPEC.md",
+      "docs/V0116_ENGINE_SPIKE_SCORECARD_TEMPLATE.json",
+      "docs/V0116_EMMANUEL_ARCHITECTURE_REVIEW_PACKET.md",
+      "docs/V0116_REFERENCE_ART_CONTINUATION_BOUNDARY.md",
+      "docs/V0116_IMPLEMENTATION_REPORT.md"
+    ],
+    "required": [
+      "LLM_GAME_HANDOFF.md",
+      "README.md",
+      "ROADMAP.md",
+      "CHANGELOG.md",
+      "DEVELOPMENT_CHECKPOINT.md",
+      "RELEASE_CHECKLIST.md",
+      "docs/V091_CURRENT_ARCHITECTURE_REUSE_MATRIX.md",
+      "docs/V091_DESKTOP_ENGINE_DECISION_CRITERIA.md",
+      "docs/V091_DESKTOP_VERTICAL_SLICE_SCOPE.md",
+      "docs/V091_STAGED_TRANSITION_EXPERIMENTS.md",
+      "docs/V091_SAVE_CONTENT_AND_TEST_REUSE_PLAN.md",
+      "docs/V0101_PORTABLE_CONTENT_EXPORT_CONTRACT.md",
+      "docs/V0101_STABLE_ID_FREEZE_POLICY.md",
+      "docs/V0102_SAVE_TRANSLATION_PROOF_REPORT.md",
+      "docs/V0102_DESKTOP_SAVE_ENVELOPE_CONTRACT.md",
+      "docs/V0107_SALTO_VERTICAL_SLICE_COMPOSITION_SPEC.md",
+      "docs/V0107_SALTO_VERTICAL_SLICE_MANIFEST.json",
+      "docs/V0108_BENCHMARK_SCENARIO_MANIFEST.json",
+      "docs/V0109_TRUSTED_BROWSER_BENCHMARK_PROTOCOL.md",
+      "docs/V0109_ROOT_CAUSE_MATRIX_REPORT.md",
+      "docs/V0110_BROWSER_PERFORMANCE_GATE.md",
+      "docs/V0111_BROWSER_CONTROL_BASELINES.md",
+      "docs/V0111_MACHINE_PRESSURE_CLASSIFICATION.md",
+      "docs/V0112_IDLE_COST_MATRIX.md",
+      "docs/V0113_SPATIAL_QUERY_PROFILE.md",
+      "docs/V0114_RENDER_LIFECYCLE_AUDIT.md",
+      "docs/V0115_BROWSER_PERFORMANCE_GATE.md",
+      "src/game/portable/PortableContentExport.ts",
+      "src/game/portable/stable-id-snapshot.json",
+      "src/game/save/SaveTranslationContract.ts",
+      "tests/fixtures/saves/v0102/manifest.json",
+      "src/game/playtest/RepresentativeBattleBenchmark.ts",
+      "src/game/data/lumeNetworks.ts",
+      "src/game/art/visual-asset-registry.json",
+      "tools/runtime-art-slots/validateRuntimeArtSlots.ts"
+    ]
+  }
+}

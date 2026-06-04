@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://v0117_salto_25d"]
+
+[ext_resource type="Script" path="res://scripts/salto_spike_scene_3d.gd" id="1_3d"]
+
+[node name="Salto25DOrthographicPlaceholder" type="Node3D"]
+script = ExtResource("1_3d")

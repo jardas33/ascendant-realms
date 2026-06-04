@@ -1,0 +1,533 @@
+{
+  "acceptanceProfile": {
+    "checkpoint": "v0.108",
+    "evidenceBoundary": "Provisional desktop acceptance profile from local deterministic browser QA. It is not final hardware certification.",
+    "minimumProfile": {
+      "frameTime": "Use p95 and long-task evidence as regression signals; do not claim final FPS targets.",
+      "name": "Low",
+      "posture": "Tier S and ordinary battle smoke should launch, reset, and remain readable at 1366x768.",
+      "responsiveness": "No obvious input stall during private hub launch, representative focus action, or Results return."
+    },
+    "packageAndCi": {
+      "ciSmoke": "benchmark:battle:smoke runs Tier S only.",
+      "package": "Private playtest package metadata must name v0.108 and include the v0.108 benchmark docs.",
+      "representativeLane": "benchmark:battle:representative runs Tier M plus Lume, fog, notification, minimap, and Results variants.",
+      "stressLane": "benchmark:battle:stress is private/local only."
+    },
+    "schemaVersion": 1,
+    "standardProfile": {
+      "frameTime": "Frame-time p95, p99, long tasks, HUD/minimap/fog counters, and DOM nodes must be reported.",
+      "name": "Standard",
+      "posture": "Tier M representative battle should be the primary desktop benchmark posture at 1600x900 and 1920x1080.",
+      "responsiveness": "Representative action and Results transition should stay visibly responsive under local deterministic QA."
+    },
+    "stretchProfile": {
+      "frameTime": "Stress output must remain separate from bounded CI smoke.",
+      "name": "Stretch",
+      "posture": "Tier L stress is private/local only and should be used to find density regressions before future desktop engine decisions.",
+      "responsiveness": "Stress results are directional evidence only and are not CI release blockers without a future explicit gate."
+    },
+    "targetTier": "M",
+    "viewports": [
+      "1920x1080",
+      "1600x900",
+      "1366x768"
+    ]
+  },
+  "aiOperabilityCriteria": [
+    "fresh checkout setup is reproducible from repository files and scripts",
+    "scene creation and configuration are scriptable or text-editable wherever practical",
+    "content import is manifest-driven and automatically validated",
+    "engine editor is optional for Emmanuel during routine work",
+    "builds, exports, tests, benchmarks, and Windows packaging run through simple scripts or CLI commands",
+    "routine asset registration does not require manual editor drag-and-drop",
+    "Codex can create, modify, validate, build, export, and package the Salto slice with minimal human interaction",
+    "unavoidable manual editor steps are explicitly identified and minimized"
+  ],
+  "authority": "v0.108-representative-battle-profile-plus-v0.109-v0.115-evidence",
+  "browserPerformanceGateResult": "RED",
+  "checkpoint": "v0.116",
+  "contentProfile": {
+    "buildingIds": [
+      "command_hall",
+      "barracks",
+      "enemy_stronghold",
+      "enemy_barracks"
+    ],
+    "campaignNodeId": "aether_well_ruins",
+    "currentContentBoundary": "Mine and shrine coverage uses existing capture-site infrastructure. No mine or shrine building IDs are added by v0.108.",
+    "enemyFactionId": "ashen_covenant",
+    "enemyUnitIds": [
+      "raider",
+      "hexer",
+      "brute",
+      "enemy_commander"
+    ],
+    "hero": "Aster",
+    "lumeLinkId": "west_stone_cut_to_ford_toll",
+    "lumeNetworkId": "aether_well_ruins_lume_ward",
+    "mapId": "broken_ford",
+    "mineEquivalentSiteId": "west_stone_cut",
+    "playerMilitaryUnitIds": [
+      "militia",
+      "ranger"
+    ],
+    "resourceSiteFocusId": "west_stone_cut",
+    "resultsFixture": "private no-save Lume Results transition",
+    "shrineEquivalentSiteId": "ford_toll",
+    "workerUnitId": "worker"
+  },
+  "decisionRules": {
+    "browserPrototype": "Remain source of truth for current behavior and content until a future explicit migration decision.",
+    "electronControl": "Use only as a packaging control if explicitly approved later; it is not a cure for the current browser battle-loop bottleneck.",
+    "godotUnityUnreal": "Compare only with this same fixture and scorecard in future spikes; v0.116 does not choose an engine."
+  },
+  "engineNeutral": true,
+  "finalHardwareCertification": false,
+  "generatedAtUtc": "deterministic-v0116",
+  "requiredMetrics": [
+    "fpsAverage",
+    "fpsOnePercentLow",
+    "frameTimeP50Ms",
+    "frameTimeP95Ms",
+    "frameTimeP99Ms",
+    "frameTimeMaxMs",
+    "longTaskCount",
+    "longTaskTotalMs",
+    "inputLatencyMs",
+    "battleLaunchLatencyMs",
+    "representativeActionLatencyMs",
+    "resultsTransitionLatencyMs",
+    "startupMs",
+    "memoryWorkingSetMb",
+    "packageSizeMb",
+    "buildTimeSeconds"
+  ],
+  "scenarios": [
+    {
+      "evidenceFocus": [
+        "battle launch latency",
+        "representative action latency",
+        "small active-unit count"
+      ],
+      "expectedVisibleUi": [
+        "battle-hud",
+        "battle-minimap",
+        "lume-network-status"
+      ],
+      "id": "benchmark_battle_tier_s_smoke",
+      "includeInCiSmoke": true,
+      "launchScenarioId": "benchmark_battle_tier_s_smoke",
+      "localOnly": false,
+      "profile": "smoke",
+      "publicPostureRule": "Hidden from public posture because the Playtest Hub itself is gated to dev/private package mode.",
+      "purpose": "CI-bounded representative launch, reset, profiler, and no-save guard.",
+      "saveIsolationRule": "Private benchmark only. No saves, no rewards, XP, campaign progress, Retinue, relic, reputation, stable-ID, or localStorage mutation is allowed; the launcher restores the pre-hub save snapshot and persistent state is not mutated.",
+      "tier": "S",
+      "title": "Tier S smoke",
+      "variant": "tier",
+      "viewport": "1366x768"
+    },
+    {
+      "evidenceFocus": [
+        "FPS posture",
+        "frame-time p95/p99",
+        "HUD/minimap/fog counters",
+        "representative action latency"
+      ],
+      "expectedVisibleUi": [
+        "battle-hud",
+        "battle-minimap",
+        "lume-network-status",
+        "unit-order-summary"
+      ],
+      "id": "benchmark_battle_tier_m_representative",
+      "includeInCiSmoke": false,
+      "launchScenarioId": "benchmark_battle_tier_m_representative",
+      "localOnly": false,
+      "profile": "representative",
+      "publicPostureRule": "Hidden from public posture because the Playtest Hub itself is gated to dev/private package mode.",
+      "purpose": "Default representative battle with hero, Worker, Militia, Rangers, Ashen pressure, resource site, Lume link, HUD, minimap, and profiler counters.",
+      "saveIsolationRule": "Private benchmark only. No saves, no rewards, XP, campaign progress, Retinue, relic, reputation, stable-ID, or localStorage mutation is allowed; the launcher restores the pre-hub save snapshot and persistent state is not mutated.",
+      "tier": "M",
+      "title": "Tier M representative",
+      "variant": "tier",
+      "viewport": "1600x900"
+    },
+    {
+      "evidenceFocus": [
+        "stress density",
+        "display objects",
+        "units",
+        "long tasks"
+      ],
+      "expectedVisibleUi": [
+        "battle-hud",
+        "battle-minimap",
+        "lume-network-status",
+        "unit-order-summary"
+      ],
+      "id": "benchmark_battle_tier_l_stress",
+      "includeInCiSmoke": false,
+      "launchScenarioId": "benchmark_battle_tier_l_stress",
+      "localOnly": true,
+      "profile": "stress",
+      "publicPostureRule": "Hidden from public posture because the Playtest Hub itself is gated to dev/private package mode.",
+      "purpose": "Private/local-only high-density battle posture. It is not part of bounded CI smoke.",
+      "saveIsolationRule": "Private benchmark only. No saves, no rewards, XP, campaign progress, Retinue, relic, reputation, stable-ID, or localStorage mutation is allowed; the launcher restores the pre-hub save snapshot and persistent state is not mutated.",
+      "tier": "L",
+      "title": "Tier L stress",
+      "variant": "tier",
+      "viewport": "1920x1080"
+    },
+    {
+      "evidenceFocus": [
+        "Lume links hidden",
+        "DOM nodes",
+        "HUD/minimap rates"
+      ],
+      "expectedVisibleUi": [
+        "battle-hud",
+        "battle-minimap",
+        "lume-visibility-controls"
+      ],
+      "id": "benchmark_battle_lume_hidden",
+      "includeInCiSmoke": false,
+      "launchScenarioId": "benchmark_battle_lume_hidden",
+      "localOnly": false,
+      "profile": "representative",
+      "publicPostureRule": "Hidden from public posture because the Playtest Hub itself is gated to dev/private package mode.",
+      "purpose": "Representative Tier M with Lume rendering hidden for overlay-cost comparison.",
+      "saveIsolationRule": "Private benchmark only. No saves, no rewards, XP, campaign progress, Retinue, relic, reputation, stable-ID, or localStorage mutation is allowed; the launcher restores the pre-hub save snapshot and persistent state is not mutated.",
+      "tier": "M",
+      "title": "Tier M with Lume Hidden",
+      "variant": "lume-hidden",
+      "viewport": "1366x768"
+    },
+    {
+      "evidenceFocus": [
+        "Lume links",
+        "Lume endpoints",
+        "frame-time p95"
+      ],
+      "expectedVisibleUi": [
+        "battle-hud",
+        "battle-minimap",
+        "lume-network-status"
+      ],
+      "id": "benchmark_battle_lume_auto",
+      "includeInCiSmoke": false,
+      "launchScenarioId": "benchmark_battle_lume_auto",
+      "localOnly": false,
+      "profile": "representative",
+      "publicPostureRule": "Hidden from public posture because the Playtest Hub itself is gated to dev/private package mode.",
+      "purpose": "Representative Tier M with default Lume Auto rendering.",
+      "saveIsolationRule": "Private benchmark only. No saves, no rewards, XP, campaign progress, Retinue, relic, reputation, stable-ID, or localStorage mutation is allowed; the launcher restores the pre-hub save snapshot and persistent state is not mutated.",
+      "tier": "M",
+      "title": "Tier M with Lume Auto",
+      "variant": "lume-auto",
+      "viewport": "1600x900"
+    },
+    {
+      "evidenceFocus": [
+        "Lume link count",
+        "display objects",
+        "graphics objects"
+      ],
+      "expectedVisibleUi": [
+        "battle-hud",
+        "battle-minimap",
+        "lume-visibility-controls"
+      ],
+      "id": "benchmark_battle_lume_always",
+      "includeInCiSmoke": false,
+      "launchScenarioId": "benchmark_battle_lume_always",
+      "localOnly": false,
+      "profile": "representative",
+      "publicPostureRule": "Hidden from public posture because the Playtest Hub itself is gated to dev/private package mode.",
+      "purpose": "Representative Tier M with explicit Always-visible Lume inspection mode.",
+      "saveIsolationRule": "Private benchmark only. No saves, no rewards, XP, campaign progress, Retinue, relic, reputation, stable-ID, or localStorage mutation is allowed; the launcher restores the pre-hub save snapshot and persistent state is not mutated.",
+      "tier": "M",
+      "title": "Tier M with Lume Always",
+      "variant": "lume-always",
+      "viewport": "1920x1080"
+    },
+    {
+      "evidenceFocus": [
+        "fog visible cells",
+        "fog redraws",
+        "minimap refreshes"
+      ],
+      "expectedVisibleUi": [
+        "battle-hud",
+        "battle-minimap",
+        "battle-objectives"
+      ],
+      "id": "benchmark_battle_fog_heavy",
+      "includeInCiSmoke": false,
+      "launchScenarioId": "benchmark_battle_fog_heavy",
+      "localOnly": false,
+      "profile": "representative",
+      "publicPostureRule": "Hidden from public posture because the Playtest Hub itself is gated to dev/private package mode.",
+      "purpose": "Representative Tier M centered on fog/minimap pressure.",
+      "saveIsolationRule": "Private benchmark only. No saves, no rewards, XP, campaign progress, Retinue, relic, reputation, stable-ID, or localStorage mutation is allowed; the launcher restores the pre-hub save snapshot and persistent state is not mutated.",
+      "tier": "M",
+      "title": "Tier M fog-heavy",
+      "variant": "fog-heavy",
+      "viewport": "1366x768"
+    },
+    {
+      "evidenceFocus": [
+        "notifications emitted",
+        "notifications visible",
+        "status readability"
+      ],
+      "expectedVisibleUi": [
+        "battle-hud",
+        "battle-status",
+        "battle-minimap"
+      ],
+      "id": "benchmark_battle_notification_heavy",
+      "includeInCiSmoke": false,
+      "launchScenarioId": "benchmark_battle_notification_heavy",
+      "localOnly": false,
+      "profile": "representative",
+      "publicPostureRule": "Hidden from public posture because the Playtest Hub itself is gated to dev/private package mode.",
+      "purpose": "Representative Tier M with a bounded notification-pressure beat.",
+      "saveIsolationRule": "Private benchmark only. No saves, no rewards, XP, campaign progress, Retinue, relic, reputation, stable-ID, or localStorage mutation is allowed; the launcher restores the pre-hub save snapshot and persistent state is not mutated.",
+      "tier": "M",
+      "title": "Tier M notification-heavy",
+      "variant": "notification-heavy",
+      "viewport": "1600x900"
+    },
+    {
+      "evidenceFocus": [
+        "minimap refreshes",
+        "representative action latency",
+        "command feedback marker"
+      ],
+      "expectedVisibleUi": [
+        "battle-hud",
+        "battle-minimap"
+      ],
+      "id": "benchmark_battle_minimap_interaction",
+      "includeInCiSmoke": false,
+      "launchScenarioId": "benchmark_battle_minimap_interaction",
+      "localOnly": false,
+      "profile": "representative",
+      "publicPostureRule": "Hidden from public posture because the Playtest Hub itself is gated to dev/private package mode.",
+      "purpose": "Representative Tier M with minimap/camera focus interaction.",
+      "saveIsolationRule": "Private benchmark only. No saves, no rewards, XP, campaign progress, Retinue, relic, reputation, stable-ID, or localStorage mutation is allowed; the launcher restores the pre-hub save snapshot and persistent state is not mutated.",
+      "tier": "M",
+      "title": "Tier M minimap interaction",
+      "variant": "minimap-interaction",
+      "viewport": "1366x768"
+    },
+    {
+      "evidenceFocus": [
+        "Results transition latency",
+        "DOM nodes",
+        "long tasks"
+      ],
+      "expectedVisibleUi": [
+        "battle-hud",
+        "private-demo-lume-summary"
+      ],
+      "id": "benchmark_battle_results_transition",
+      "includeInCiSmoke": false,
+      "launchScenarioId": "benchmark_battle_results_transition",
+      "localOnly": false,
+      "profile": "representative",
+      "publicPostureRule": "Hidden from public posture because the Playtest Hub itself is gated to dev/private package mode.",
+      "purpose": "Representative Tier M forced through a no-save victory transition to the private Lume Results surface.",
+      "saveIsolationRule": "Private benchmark only. No saves, no rewards, XP, campaign progress, Retinue, relic, reputation, stable-ID, or localStorage mutation is allowed; the launcher restores the pre-hub save snapshot and persistent state is not mutated.",
+      "tier": "M",
+      "title": "Tier M Results transition",
+      "variant": "results-transition",
+      "viewport": "1366x768"
+    }
+  ],
+  "schemaVersion": 1,
+  "selectedEngine": null,
+  "sourceLinks": {
+    "generatedArtifactRoot": "artifacts/desktop-spike-fixture/latest",
+    "generatedDocs": [
+      "docs/V0116_ARCHITECTURE_DECISION_RECORD.md",
+      "docs/V0116_ENGINE_CANDIDATE_MATRIX.md",
+      "docs/V0116_RECOMMENDED_ENGINE_SPIKE_ORDER.md",
+      "docs/V0116_DESKTOP_SPIKE_ACCEPTANCE_CONTRACT.md",
+      "docs/V0116_DESKTOP_SPIKE_FIXTURE_EXPORT_SPEC.md",
+      "docs/V0116_ENGINE_SPIKE_SCORECARD_TEMPLATE.json",
+      "docs/V0116_EMMANUEL_ARCHITECTURE_REVIEW_PACKET.md",
+      "docs/V0116_REFERENCE_ART_CONTINUATION_BOUNDARY.md",
+      "docs/V0116_IMPLEMENTATION_REPORT.md"
+    ],
+    "required": [
+      "LLM_GAME_HANDOFF.md",
+      "README.md",
+      "ROADMAP.md",
+      "CHANGELOG.md",
+      "DEVELOPMENT_CHECKPOINT.md",
+      "RELEASE_CHECKLIST.md",
+      "docs/V091_CURRENT_ARCHITECTURE_REUSE_MATRIX.md",
+      "docs/V091_DESKTOP_ENGINE_DECISION_CRITERIA.md",
+      "docs/V091_DESKTOP_VERTICAL_SLICE_SCOPE.md",
+      "docs/V091_STAGED_TRANSITION_EXPERIMENTS.md",
+      "docs/V091_SAVE_CONTENT_AND_TEST_REUSE_PLAN.md",
+      "docs/V0101_PORTABLE_CONTENT_EXPORT_CONTRACT.md",
+      "docs/V0101_STABLE_ID_FREEZE_POLICY.md",
+      "docs/V0102_SAVE_TRANSLATION_PROOF_REPORT.md",
+      "docs/V0102_DESKTOP_SAVE_ENVELOPE_CONTRACT.md",
+      "docs/V0107_SALTO_VERTICAL_SLICE_COMPOSITION_SPEC.md",
+      "docs/V0107_SALTO_VERTICAL_SLICE_MANIFEST.json",
+      "docs/V0108_BENCHMARK_SCENARIO_MANIFEST.json",
+      "docs/V0109_TRUSTED_BROWSER_BENCHMARK_PROTOCOL.md",
+      "docs/V0109_ROOT_CAUSE_MATRIX_REPORT.md",
+      "docs/V0110_BROWSER_PERFORMANCE_GATE.md",
+      "docs/V0111_BROWSER_CONTROL_BASELINES.md",
+      "docs/V0111_MACHINE_PRESSURE_CLASSIFICATION.md",
+      "docs/V0112_IDLE_COST_MATRIX.md",
+      "docs/V0113_SPATIAL_QUERY_PROFILE.md",
+      "docs/V0114_RENDER_LIFECYCLE_AUDIT.md",
+      "docs/V0115_BROWSER_PERFORMANCE_GATE.md",
+      "src/game/portable/PortableContentExport.ts",
+      "src/game/portable/stable-id-snapshot.json",
+      "src/game/save/SaveTranslationContract.ts",
+      "tests/fixtures/saves/v0102/manifest.json",
+      "src/game/playtest/RepresentativeBattleBenchmark.ts",
+      "src/game/data/lumeNetworks.ts",
+      "src/game/art/visual-asset-registry.json",
+      "tools/runtime-art-slots/validateRuntimeArtSlots.ts"
+    ]
+  },
+  "tiers": {
+    "L": {
+      "campaignNodeId": "aether_well_ruins",
+      "enemy": {
+        "brutes": 5,
+        "commanders": 1,
+        "hexers": 7,
+        "raiders": 12
+      },
+      "label": "Tier L stress",
+      "lume": {
+        "linkId": "west_stone_cut_to_ford_toll",
+        "networkId": "aether_well_ruins_lume_ward",
+        "requiredVisibleLinks": 1
+      },
+      "mapId": "broken_ford",
+      "player": {
+        "hero": 1,
+        "militia": 14,
+        "rangers": 12,
+        "workers": 1
+      },
+      "pressure": {
+        "beatLabel": "dense but bounded private Ashen pressure beat",
+        "nearbyEnemyCount": 12
+      },
+      "purpose": "Private/local-only stress posture for density regression hunting.",
+      "siteInfrastructure": {
+        "mineEquivalentSiteId": "west_stone_cut",
+        "resourceSiteFocusCount": 1,
+        "shrineEquivalentSiteId": "ford_toll"
+      },
+      "structures": {
+        "enemyBarracks": 1,
+        "enemyStrongholds": 1,
+        "playerBarracks": 1,
+        "playerCommandHalls": 1
+      },
+      "tier": "L"
+    },
+    "M": {
+      "campaignNodeId": "aether_well_ruins",
+      "enemy": {
+        "brutes": 3,
+        "commanders": 1,
+        "hexers": 4,
+        "raiders": 7
+      },
+      "label": "Tier M representative",
+      "lume": {
+        "linkId": "west_stone_cut_to_ford_toll",
+        "networkId": "aether_well_ruins_lume_ward",
+        "requiredVisibleLinks": 1
+      },
+      "mapId": "broken_ford",
+      "player": {
+        "hero": 1,
+        "militia": 8,
+        "rangers": 6,
+        "workers": 1
+      },
+      "pressure": {
+        "beatLabel": "representative Ashen approach warning",
+        "nearbyEnemyCount": 8
+      },
+      "purpose": "Default representative battle posture for desktop acceptance discussion.",
+      "siteInfrastructure": {
+        "mineEquivalentSiteId": "west_stone_cut",
+        "resourceSiteFocusCount": 1,
+        "shrineEquivalentSiteId": "ford_toll"
+      },
+      "structures": {
+        "enemyBarracks": 1,
+        "enemyStrongholds": 1,
+        "playerBarracks": 1,
+        "playerCommandHalls": 1
+      },
+      "tier": "M"
+    },
+    "S": {
+      "campaignNodeId": "aether_well_ruins",
+      "enemy": {
+        "brutes": 1,
+        "commanders": 1,
+        "hexers": 1,
+        "raiders": 2
+      },
+      "label": "Tier S smoke",
+      "lume": {
+        "linkId": "west_stone_cut_to_ford_toll",
+        "networkId": "aether_well_ruins_lume_ward",
+        "requiredVisibleLinks": 1
+      },
+      "mapId": "broken_ford",
+      "player": {
+        "hero": 1,
+        "militia": 2,
+        "rangers": 2,
+        "workers": 1
+      },
+      "pressure": {
+        "beatLabel": "single readable Ashen pressure beat",
+        "nearbyEnemyCount": 4
+      },
+      "purpose": "Small representative launch guard for CI-bounded smoke.",
+      "siteInfrastructure": {
+        "mineEquivalentSiteId": "west_stone_cut",
+        "resourceSiteFocusCount": 1,
+        "shrineEquivalentSiteId": "ford_toll"
+      },
+      "structures": {
+        "enemyBarracks": 1,
+        "enemyStrongholds": 1,
+        "playerBarracks": 1,
+        "playerCommandHalls": 1
+      },
+      "tier": "S"
+    }
+  },
+  "visualAmbitionCriteria": [
+    "modern top-down RTS/RPG presentation",
+    "polished 2D versus 2.5D fixed-camera comparison",
+    "strong Barrosan and Ashen faction silhouettes",
+    "atmospheric Salto terrain",
+    "modern lighting and VFX",
+    "central persistent hero readability",
+    "tactical readability",
+    "original IP, lore, assets, UI, mechanics, and visual identity",
+    "no generic mobile-game or developer-dashboard appearance"
+  ]
+}

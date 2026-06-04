@@ -1,0 +1,38 @@
+; v0.117 Godot-first automated desktop benchmark spike.
+; Text-owned project for AI-first, editor-optional routine development.
+config_version=5
+
+[application]
+config/name="Ascendant Realms Godot Salto Spike"
+config/description="Automated placeholder-only Salto benchmark spike. No runtime art import, gameplay change, save migration, or final engine choice."
+run/main_scene="res://scenes/salto_spike_root.tscn"
+config/features=PackedStringArray("4.6", "Forward Plus")
+
+[display]
+window/size/viewport_width=1280
+window/size/viewport_height=720
+window/size/mode=2
+window/stretch/mode="canvas_items"
+window/stretch/aspect="expand"
+
+[input]
+select_command={
+"deadzone": 0.5,
+"events": [Object(InputEventMouseButton,"button_index":1)]
+}
+move_or_attack_command={
+"deadzone": 0.5,
+"events": [Object(InputEventMouseButton,"button_index":2)]
+}
+pause_spike={
+"deadzone": 0.5,
+"events": [Object(InputEventKey,"keycode":80)]
+}
+return_to_results={
+"deadzone": 0.5,
+"events": [Object(InputEventKey,"keycode":82)]
+}
+
+[rendering]
+renderer/rendering_method="forward_plus"
+renderer/rendering_method.mobile="gl_compatibility"

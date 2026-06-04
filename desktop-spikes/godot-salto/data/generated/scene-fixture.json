@@ -1,0 +1,178 @@
+{
+  "authority": "derived-from-existing-typescript-source-and-existing-docs",
+  "browserPerformanceGateResult": "RED",
+  "checkpoint": "v0.116",
+  "desktopWrapperCreated": false,
+  "enemy": {
+    "factionId": "ashen_covenant",
+    "pressureBeat": "readable Ashen approach warning",
+    "units": [
+      {
+        "representativeRole": "raider",
+        "unitId": "raider"
+      },
+      {
+        "representativeRole": "hexer",
+        "unitId": "hexer"
+      },
+      {
+        "representativeRole": "brute",
+        "unitId": "brute"
+      },
+      {
+        "representativeRole": "enemy_commander",
+        "unitId": "enemy_commander"
+      }
+    ]
+  },
+  "engineNeutral": true,
+  "engineProjectCreated": false,
+  "gameplayChanged": false,
+  "generatedAtUtc": "deterministic-v0116",
+  "lume": {
+    "battleLocalOnly": true,
+    "benefitId": "linked_ward",
+    "linkedWardDamageTakenMultiplier": 0.92,
+    "linkId": "west_stone_cut_to_ford_toll",
+    "mustRemainExact": 0.92,
+    "networkId": "aether_well_ruins_lume_ward",
+    "saveMutationAllowed": false
+  },
+  "map": {
+    "campaignNodeId": "aether_well_ruins",
+    "mapId": "broken_ford",
+    "region": "Salto-inspired highland foothold",
+    "terrainReadabilityTargets": [
+      "road",
+      "ford",
+      "quarry",
+      "ruin",
+      "resource-site ring",
+      "UI-safe negative space"
+    ]
+  },
+  "player": {
+    "factionId": "free_marches",
+    "hero": {
+      "name": "Aster",
+      "placeholderOnly": true
+    },
+    "units": [
+      {
+        "representativeRole": "militia",
+        "unitId": "militia"
+      },
+      {
+        "representativeRole": "ranger",
+        "unitId": "ranger"
+      }
+    ],
+    "worker": {
+      "count": 1,
+      "unitId": "worker"
+    }
+  },
+  "prohibitedOutputs": [
+    "engine project",
+    "desktop wrapper",
+    "runtime art import",
+    "save migration",
+    "stable ID rename",
+    "v0.117 work"
+  ],
+  "purpose": "Engine-neutral Salto representative vertical-slice fixture for future desktop spike review.",
+  "requiredSurfaces": [
+    "battlefield",
+    "HUD",
+    "minimap",
+    "campaign map frame",
+    "Results frame"
+  ],
+  "runtimeArtIntegrated": false,
+  "runtimeBehaviorChanged": false,
+  "saveSchemaChanged": false,
+  "schemaVersion": 1,
+  "selectedEngine": null,
+  "sites": [
+    {
+      "newBuildingIdAdded": false,
+      "role": "mine-equivalent-existing-capture-site",
+      "siteId": "west_stone_cut"
+    },
+    {
+      "newBuildingIdAdded": false,
+      "role": "shrine-equivalent-existing-capture-site",
+      "siteId": "ford_toll"
+    }
+  ],
+  "sourceLinks": {
+    "generatedArtifactRoot": "artifacts/desktop-spike-fixture/latest",
+    "generatedDocs": [
+      "docs/V0116_ARCHITECTURE_DECISION_RECORD.md",
+      "docs/V0116_ENGINE_CANDIDATE_MATRIX.md",
+      "docs/V0116_RECOMMENDED_ENGINE_SPIKE_ORDER.md",
+      "docs/V0116_DESKTOP_SPIKE_ACCEPTANCE_CONTRACT.md",
+      "docs/V0116_DESKTOP_SPIKE_FIXTURE_EXPORT_SPEC.md",
+      "docs/V0116_ENGINE_SPIKE_SCORECARD_TEMPLATE.json",
+      "docs/V0116_EMMANUEL_ARCHITECTURE_REVIEW_PACKET.md",
+      "docs/V0116_REFERENCE_ART_CONTINUATION_BOUNDARY.md",
+      "docs/V0116_IMPLEMENTATION_REPORT.md"
+    ],
+    "required": [
+      "LLM_GAME_HANDOFF.md",
+      "README.md",
+      "ROADMAP.md",
+      "CHANGELOG.md",
+      "DEVELOPMENT_CHECKPOINT.md",
+      "RELEASE_CHECKLIST.md",
+      "docs/V091_CURRENT_ARCHITECTURE_REUSE_MATRIX.md",
+      "docs/V091_DESKTOP_ENGINE_DECISION_CRITERIA.md",
+      "docs/V091_DESKTOP_VERTICAL_SLICE_SCOPE.md",
+      "docs/V091_STAGED_TRANSITION_EXPERIMENTS.md",
+      "docs/V091_SAVE_CONTENT_AND_TEST_REUSE_PLAN.md",
+      "docs/V0101_PORTABLE_CONTENT_EXPORT_CONTRACT.md",
+      "docs/V0101_STABLE_ID_FREEZE_POLICY.md",
+      "docs/V0102_SAVE_TRANSLATION_PROOF_REPORT.md",
+      "docs/V0102_DESKTOP_SAVE_ENVELOPE_CONTRACT.md",
+      "docs/V0107_SALTO_VERTICAL_SLICE_COMPOSITION_SPEC.md",
+      "docs/V0107_SALTO_VERTICAL_SLICE_MANIFEST.json",
+      "docs/V0108_BENCHMARK_SCENARIO_MANIFEST.json",
+      "docs/V0109_TRUSTED_BROWSER_BENCHMARK_PROTOCOL.md",
+      "docs/V0109_ROOT_CAUSE_MATRIX_REPORT.md",
+      "docs/V0110_BROWSER_PERFORMANCE_GATE.md",
+      "docs/V0111_BROWSER_CONTROL_BASELINES.md",
+      "docs/V0111_MACHINE_PRESSURE_CLASSIFICATION.md",
+      "docs/V0112_IDLE_COST_MATRIX.md",
+      "docs/V0113_SPATIAL_QUERY_PROFILE.md",
+      "docs/V0114_RENDER_LIFECYCLE_AUDIT.md",
+      "docs/V0115_BROWSER_PERFORMANCE_GATE.md",
+      "src/game/portable/PortableContentExport.ts",
+      "src/game/portable/stable-id-snapshot.json",
+      "src/game/save/SaveTranslationContract.ts",
+      "tests/fixtures/saves/v0102/manifest.json",
+      "src/game/playtest/RepresentativeBattleBenchmark.ts",
+      "src/game/data/lumeNetworks.ts",
+      "src/game/art/visual-asset-registry.json",
+      "tools/runtime-art-slots/validateRuntimeArtSlots.ts"
+    ]
+  },
+  "stableIdsChanged": false,
+  "structures": [
+    {
+      "buildingId": "command_hall",
+      "posture": "player-placeholder-structure"
+    },
+    {
+      "buildingId": "barracks",
+      "posture": "player-placeholder-structure"
+    },
+    {
+      "buildingId": "enemy_stronghold",
+      "posture": "enemy-placeholder-structure"
+    },
+    {
+      "buildingId": "enemy_barracks",
+      "posture": "enemy-placeholder-structure"
+    }
+  ]
+}

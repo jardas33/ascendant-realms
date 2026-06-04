@@ -1,6 +1,41 @@
 # Development Checkpoint
 
-Updated: 2026-06-03 v0.116 Reviewed Architecture Direction, Desktop-Engine Spike Preparation Pack, and Engine-Neutral Salto Fixture
+Updated: 2026-06-03 v0.117 Godot-First Automated Desktop Benchmark Spike and One-Click Windows Workflow
+
+## v0.117 Godot-First Automated Desktop Benchmark Spike And One-Click Windows Workflow - 2026-06-03
+
+Scope: Godot workflow spike, one-click Windows tooling, fixture import, headless validation/tests, placeholder benchmarks, Windows export/package, scorecard, and docs only. This checkpoint proves repository-driven Godot workflow viability for the representative Salto slice. It does not select Godot finally, start a full port, replace the browser prototype, import art, change gameplay, saves, stable IDs, rewards, maps, factions, AI, pathing, combat balance, multiplayer, PvP, co-op, content, or v0.118 scope.
+
+Included work:
+
+- Added `desktop-spikes/godot-salto/` text project, scenes, scripts, tests, generated fixture data, Windows export preset, and README.
+- Added `tools/godot/` PowerShell scripts and root `GODOT_*_WINDOWS.bat` wrappers for doctor, bootstrap, validation, tests, benchmark, export, package, scorecard, and run-all flow.
+- Added `npm run godot:*` scripts and focused scaffold tests.
+- Added v0.117 docs and Emmanuel one-click guide.
+
+Current interpretation:
+
+- Godot standard non-.NET 4.6.3 x86_64 and export templates are locally detected.
+- AI-first/editor-optional workflow evidence is strong for this placeholder slice: scorecard AI-operability `24 / 25`.
+- 2.5D orthographic is the leading future visual-quality candidate because it better supports modern lighting, depth, and atmosphere, but 2D remains the automation/readability control.
+- Godot is not selected finally.
+- The browser prototype remains the current source of truth.
+
+Verification:
+
+```text
+npm run godot:all - PASS.
+npm test - PASS.
+npm run build - PASS with the known Phaser/vendor chunk-size warning.
+npm run validate:content - PASS.
+npm run validate:art-intake - PASS.
+npm run export:portable-content - PASS.
+npm run validate:portable-content - PASS.
+npm run test:save-translation-contract - PASS.
+npm run export:desktop-spike-fixture - PASS, fixture hash d6c00aad4d32173566194b01cd9b88c2947151da1e1c93cccaeb411ce225f7a3.
+npm run validate:desktop-spike-fixture - PASS.
+git diff --check - PASS with Git's line-ending warning for .gitignore.
+```
 
 ## v0.116 Reviewed Architecture Direction, Desktop-Engine Spike Preparation Pack, And Engine-Neutral Salto Fixture - 2026-06-03
 

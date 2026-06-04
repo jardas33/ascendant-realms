@@ -455,8 +455,8 @@ export async function validateRepositorySpikeBoundaries(projectRoot = process.cw
   });
 
   const docsFiles = await readdir(join(projectRoot, "docs"));
-  if (docsFiles.some((fileName) => fileName.startsWith("V0117_"))) {
-    errors.push("v0.117 appears to have been started; docs/V0117_* is present.");
+  if (docsFiles.some((fileName) => fileName.startsWith("V0118_"))) {
+    errors.push("v0.118 appears to have been started; docs/V0118_* is present.");
   }
   return errors;
 }

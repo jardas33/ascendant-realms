@@ -1,0 +1,573 @@
+{
+  "authority": "src/game/portable/stable-id-snapshot.json",
+  "categories": {
+    "abilities": [
+      "rally_banner"
+    ],
+    "buildings": [
+      "command_hall",
+      "barracks",
+      "enemy_stronghold",
+      "enemy_barracks"
+    ],
+    "captureSites": [
+      "west_stone_cut",
+      "ford_toll",
+      "north_aether_spring"
+    ],
+    "enemyDoctrines": [
+      "raider",
+      "hunter",
+      "warband"
+    ],
+    "enemyHeroAbilities": [
+      "hexfire_bolt",
+      "hold_the_line"
+    ],
+    "enemyHeroes": [
+      "veyra_cinders"
+    ],
+    "enemyPersonalities": [
+      "hexfire_cult"
+    ],
+    "factions": [
+      "free_marches",
+      "ashen_covenant"
+    ],
+    "heroClasses": [
+      "warlord",
+      "arcanist",
+      "shepherd"
+    ],
+    "lumeNetworks": [
+      "aether_well_ruins_lume_ward"
+    ],
+    "maps": [
+      "broken_ford"
+    ],
+    "missionTypes": [
+      "control"
+    ],
+    "nodes": [
+      "aether_well_ruins"
+    ],
+    "origins": [
+      "exiled_noble"
+    ],
+    "resources": [
+      "crowns",
+      "stone",
+      "iron",
+      "aether"
+    ],
+    "retinueRuleReferences": [
+      "retinue_rules"
+    ],
+    "rewards": [
+      "broken_ford_rewards"
+    ],
+    "tacticalPlans": [
+      "guarded_advance",
+      "resource_push"
+    ],
+    "unitRoles": [
+      "worker",
+      "militia",
+      "ranger",
+      "raider",
+      "hexer",
+      "brute",
+      "enemy_commander"
+    ],
+    "units": [
+      "worker",
+      "militia",
+      "ranger",
+      "raider",
+      "hexer",
+      "brute",
+      "enemy_commander"
+    ]
+  },
+  "checkpoint": "v0.116",
+  "generatedAtUtc": "deterministic-v0116",
+  "manifestEntries": [
+    {
+      "category": "abilities",
+      "displayName": "Rally Banner",
+      "exportHash": "3160110b37f4b9bdeac9472f8617f3c609e4b854a70129477ef0564b41e8f7e1",
+      "id": "rally_banner",
+      "referenceCount": 5,
+      "serializedPosture": "stable-id",
+      "sourceFile": "src/game/data/abilities.ts"
+    },
+    {
+      "category": "buildings",
+      "displayName": "Barracks",
+      "exportHash": "85a60f36ae0c2e9f807925b6e1e89260709a3a8dcc4722f992b0eb8caae3b206",
+      "id": "barracks",
+      "referenceCount": 11,
+      "serializedPosture": "stable-id",
+      "sourceFile": "src/game/data/buildings.ts"
+    },
+    {
+      "category": "buildings",
+      "displayName": "Command Hall",
+      "exportHash": "82258504e55c1feb5d79bfa9c1221f79cd11ccbf9a3889a2eadea2557b486a89",
+      "id": "command_hall",
+      "referenceCount": 21,
+      "serializedPosture": "stable-id",
+      "sourceFile": "src/game/data/buildings.ts"
+    },
+    {
+      "category": "buildings",
+      "displayName": "Enemy Barracks",
+      "exportHash": "750ac9aa8a619a5e3197a48bc32c30b4ec5636284cb6ea2bd542d72c44541e31",
+      "id": "enemy_barracks",
+      "referenceCount": 24,
+      "serializedPosture": "stable-id",
+      "sourceFile": "src/game/data/buildings.ts"
+    },
+    {
+      "category": "buildings",
+      "displayName": "Enemy Stronghold",
+      "exportHash": "6e04906e18a2eec483aea7d25e4aa2e188bff1e5994855b7c8486b35921be40a",
+      "id": "enemy_stronghold",
+      "referenceCount": 24,
+      "serializedPosture": "stable-id",
+      "sourceFile": "src/game/data/buildings.ts"
+    },
+    {
+      "category": "captureSites",
+      "displayName": "Ford Toll",
+      "exportHash": "81bbe6ab69163058181cf4b00fa99dce84ba865087dd1213dc4c365241212b16",
+      "id": "ford_toll",
+      "referenceCount": 6,
+      "serializedPosture": "stable-id",
+      "sourceFile": "src/game/data/maps/index.ts"
+    },
+    {
+      "category": "captureSites",
+      "displayName": "North Aether Spring",
+      "exportHash": "d373420132badc28fa8710c0817be7cfe8f5e3eb0dbd5ab307ceb1696b53c337",
+      "id": "north_aether_spring",
+      "referenceCount": 5,
+      "serializedPosture": "stable-id",
+      "sourceFile": "src/game/data/maps/index.ts"
+    },
+    {
+      "category": "captureSites",
+      "displayName": "West Stone Cut",
+      "exportHash": "e8b9a4ee5ea44b1caa7be663db5ddbdf1e75fedd1cd6aab917a50c19ba93a8f1",
+      "id": "west_stone_cut",
+      "referenceCount": 5,
+      "serializedPosture": "stable-id",
+      "sourceFile": "src/game/data/maps/index.ts"
+    },
+    {
+      "category": "enemyDoctrines",
+      "displayName": "Hunter",
+      "exportHash": "2e42bf2a52e6b938392960c5774d9022ffd72cf42cbe86b0a35cf7b69b9e476e",
+      "id": "hunter",
+      "referenceCount": 8,
+      "serializedPosture": "stable-id",
+      "sourceFile": "src/game/data/enemyDoctrines.ts"
+    },
+    {
+      "category": "enemyDoctrines",
+      "displayName": "Raider",
+      "exportHash": "39959b297f64504aaccf89793ae9691ed70d334ee9504fc1100d5921d949631a",
+      "id": "raider",
+      "referenceCount": 108,
+      "serializedPosture": "stable-id",
+      "sourceFile": "src/game/data/enemyDoctrines.ts"
+    },
+    {
+      "category": "enemyDoctrines",
+      "displayName": "Warband",
+      "exportHash": "fb7568ce8e82015a6ec64c9b61269d41c41154620e23c98de76088b40c227293",
+      "id": "warband",
+      "referenceCount": 11,
+      "serializedPosture": "stable-id",
+      "sourceFile": "src/game/data/enemyDoctrines.ts"
+    },
+    {
+      "category": "enemyHeroAbilities",
+      "displayName": "Hexfire Bolt",
+      "exportHash": "77c4c578bb7d3f29b829333725ee7f37f823787e89e69b8b401a2a53b8be8d5d",
+      "id": "hexfire_bolt",
+      "referenceCount": 3,
+      "serializedPosture": "derived-reference",
+      "sourceFile": "src/game/data/enemyHeroes.ts"
+    },
+    {
+      "category": "enemyHeroAbilities",
+      "displayName": "Hold the Line",
+      "exportHash": "861bcc77489756fee6af7681e97679420ac7a08aa4b6bb9a7db2e983d9bb664a",
+      "id": "hold_the_line",
+      "referenceCount": 9,
+      "serializedPosture": "derived-reference",
+      "sourceFile": "src/game/data/enemyHeroes.ts"
+    },
+    {
+      "category": "enemyHeroes",
+      "displayName": "Veyra of the Cinders",
+      "exportHash": "9d4478d87f9753912f0fd6232a1f7b61c27f710a1695e434e427b58f2439bdec",
+      "id": "veyra_cinders",
+      "referenceCount": 7,
+      "serializedPosture": "derived-reference",
+      "sourceFile": "src/game/data/enemyHeroes.ts"
+    },
+    {
+      "category": "enemyPersonalities",
+      "displayName": "Hexfire Cult",
+      "exportHash": "1fba305c4e51312bbb42de586ceec20c00d10a9c1ec5ca34222145d39d444403",
+      "id": "hexfire_cult",
+      "referenceCount": 14,
+      "serializedPosture": "derived-reference",
+      "sourceFile": "src/game/data/aiPersonalities.ts"
+    },
+    {
+      "category": "factions",
+      "displayName": "Ashen Covenant",
+      "exportHash": "c3d6c31438014e14b09304a73990ebc981b3c767d36e60025b91ff360d1099f1",
+      "id": "ashen_covenant",
+      "referenceCount": 32,
+      "serializedPosture": "stable-id",
+      "sourceFile": "src/game/data/factions.ts"
+    },
+    {
+      "category": "factions",
+      "displayName": "Barrosan Freeholds",
+      "exportHash": "8bf7eeeee4e7417c89f890c5eec3aaa1bf1261a91496066daa653fc774c52ed3",
+      "id": "free_marches",
+      "referenceCount": 26,
+      "serializedPosture": "stable-id",
+      "sourceFile": "src/game/data/factions.ts"
+    },
+    {
+      "category": "heroClasses",
+      "displayName": "Arcanist",
+      "exportHash": "7156e2259573ee7dd1920985d0287475db548bc5fa27e2719031ad348853cde5",
+      "id": "arcanist",
+      "referenceCount": 15,
+      "serializedPosture": "stable-id",
+      "sourceFile": "src/game/data/heroClasses.ts"
+    },
+    {
+      "category": "heroClasses",
+      "displayName": "Shepherd",
+      "exportHash": "2cf85d0eff3d5e7610bea8134ef180224d5cd3c5cd1bb33d963824c57be539a4",
+      "id": "shepherd",
+      "referenceCount": 18,
+      "serializedPosture": "stable-id",
+      "sourceFile": "src/game/data/heroClasses.ts"
+    },
+    {
+      "category": "heroClasses",
+      "displayName": "Warlord",
+      "exportHash": "82cb5d334fe29738b13b98715e8aaa1206581edf70cfd5494b948a1611051e9b",
+      "id": "warlord",
+      "referenceCount": 18,
+      "serializedPosture": "stable-id",
+      "sourceFile": "src/game/data/heroClasses.ts"
+    },
+    {
+      "category": "lumeNetworks",
+      "displayName": "aether_well_ruins_lume_ward",
+      "exportHash": "4c788857819823f5650cc45eedc026d3d1753b5e91ccf50fc78e9f9a0922a1a8",
+      "id": "aether_well_ruins_lume_ward",
+      "referenceCount": 3,
+      "serializedPosture": "stable-id",
+      "sourceFile": "src/game/data/lumeNetworks.ts"
+    },
+    {
+      "category": "maps",
+      "displayName": "Broken Ford",
+      "exportHash": "e17002d5489a7b3b0170de3c2707a50582692d2aa551ee2d4ceae51d217494b8",
+      "id": "broken_ford",
+      "referenceCount": 24,
+      "serializedPosture": "stable-id",
+      "sourceFile": "src/game/data/maps/index.ts"
+    },
+    {
+      "category": "missionTypes",
+      "displayName": "Control",
+      "exportHash": "02e5f3b3db9e365531e51087fcd3e934e785a86c0fb750728ec33ef7c498f1be",
+      "id": "control",
+      "referenceCount": 13,
+      "serializedPosture": "derived-reference",
+      "sourceFile": "src/game/data/missionTypes.ts"
+    },
+    {
+      "category": "nodes",
+      "displayName": "Aether Well Ruins",
+      "exportHash": "fa9ed4b894320b9dbc65e46f8e4f01e7c0613ad9ddf9f3b1f0351433a9cffda3",
+      "id": "aether_well_ruins",
+      "referenceCount": 8,
+      "serializedPosture": "stable-id",
+      "sourceFile": "src/game/data/campaignNodes.ts"
+    },
+    {
+      "category": "origins",
+      "displayName": "Exiled Noble",
+      "exportHash": "fc48c43bc80ba9045f3c05f5b4f825404fa3f6f010b5968b39cf462f382d0926",
+      "id": "exiled_noble",
+      "referenceCount": 2,
+      "serializedPosture": "derived-reference",
+      "sourceFile": "src/game/data/origins.ts"
+    },
+    {
+      "category": "resources",
+      "displayName": "Aether",
+      "exportHash": "015ad016d1230e393a2898c4985925f952db1a73fc26ceb6a86a8204e8b0852a",
+      "id": "aether",
+      "referenceCount": 22,
+      "serializedPosture": "derived-reference",
+      "sourceFile": "src/game/data/resources.ts"
+    },
+    {
+      "category": "resources",
+      "displayName": "Crowns",
+      "exportHash": "42b7daac78430f4c859e8205ca81166964f6fe9abfd15101f4399c12516a021a",
+      "id": "crowns",
+      "referenceCount": 17,
+      "serializedPosture": "derived-reference",
+      "sourceFile": "src/game/data/resources.ts"
+    },
+    {
+      "category": "resources",
+      "displayName": "Iron",
+      "exportHash": "c8b91d854181853a72498be30e7298dcabdf1b8ae5986bb388bd607d43f1c42c",
+      "id": "iron",
+      "referenceCount": 14,
+      "serializedPosture": "derived-reference",
+      "sourceFile": "src/game/data/resources.ts"
+    },
+    {
+      "category": "resources",
+      "displayName": "Stone",
+      "exportHash": "8ed879e964a9d527cc9fcdf13a7f5aaf81a567da393e81edcf25b9ee81fb1e5e",
+      "id": "stone",
+      "referenceCount": 16,
+      "serializedPosture": "derived-reference",
+      "sourceFile": "src/game/data/resources.ts"
+    },
+    {
+      "category": "retinueRuleReferences",
+      "displayName": "Retinue Rules",
+      "exportHash": "6e614d830802a2576638bca318cec03fe4acc34a04215f1e5cb2993d0e9b6785",
+      "id": "retinue_rules",
+      "referenceCount": 2,
+      "serializedPosture": "derived-reference",
+      "sourceFile": "src/game/core/RetinueRules.ts"
+    },
+    {
+      "category": "rewards",
+      "displayName": "Broken Ford Spoils",
+      "exportHash": "7286c9ffaa3d9ced13c809ac0148306b5b562daac8c62bd58723280b679ee147",
+      "id": "broken_ford_rewards",
+      "referenceCount": 3,
+      "serializedPosture": "derived-reference",
+      "sourceFile": "src/game/data/rewards.ts"
+    },
+    {
+      "category": "tacticalPlans",
+      "displayName": "Guarded Advance",
+      "exportHash": "90574b811e030f463bb7bd62d4dc36366a7b31a6bb876a2623ba7fd08a537483",
+      "id": "guarded_advance",
+      "referenceCount": 8,
+      "serializedPosture": "stable-id",
+      "sourceFile": "src/game/data/tacticalPlans.ts"
+    },
+    {
+      "category": "tacticalPlans",
+      "displayName": "Resource Push",
+      "exportHash": "172bd9f9049ce852ca1b321d7589022b502843ad61d1068701b7bbd1f28c1da3",
+      "id": "resource_push",
+      "referenceCount": 5,
+      "serializedPosture": "stable-id",
+      "sourceFile": "src/game/data/tacticalPlans.ts"
+    },
+    {
+      "category": "unitRoles",
+      "displayName": "Enemy Frontline / Heavy",
+      "exportHash": "f2c02f415a6ba78a939e76743070730030943e0c41782b21833eab27535bdc06",
+      "id": "brute",
+      "referenceCount": 46,
+      "serializedPosture": "derived-reference",
+      "sourceFile": "src/game/data/unitRoles.ts"
+    },
+    {
+      "category": "unitRoles",
+      "displayName": "Enemy Commander / Champion",
+      "exportHash": "fffc6c0d8a73a5196096ba0e7960a8b28054dec32d079685855a8be670107c42",
+      "id": "enemy_commander",
+      "referenceCount": 24,
+      "serializedPosture": "derived-reference",
+      "sourceFile": "src/game/data/unitRoles.ts"
+    },
+    {
+      "category": "unitRoles",
+      "displayName": "Enemy Aether / Ranged",
+      "exportHash": "f029a622c0b726a817c8f8b01aba20111175d2c28f9328d629d7f8a1f69df507",
+      "id": "hexer",
+      "referenceCount": 67,
+      "serializedPosture": "derived-reference",
+      "sourceFile": "src/game/data/unitRoles.ts"
+    },
+    {
+      "category": "unitRoles",
+      "displayName": "Frontline / Melee",
+      "exportHash": "2cbd29bc9152704bf3c083235ad31038e1ab223c1d1840a197dc8acd93a4a4f4",
+      "id": "militia",
+      "referenceCount": 27,
+      "serializedPosture": "derived-reference",
+      "sourceFile": "src/game/data/unitRoles.ts"
+    },
+    {
+      "category": "unitRoles",
+      "displayName": "Enemy Pressure / Melee",
+      "exportHash": "4ee0842633059d1ddee6dab5ae731b03ca86cb9385981e68687716da90c36dfe",
+      "id": "raider",
+      "referenceCount": 108,
+      "serializedPosture": "derived-reference",
+      "sourceFile": "src/game/data/unitRoles.ts"
+    },
+    {
+      "category": "unitRoles",
+      "displayName": "Ranged / Focus Fire",
+      "exportHash": "cc55a66e74dd2d5ace61602b270e51c2918843ce3e08e5c432cc1f8ede69080e",
+      "id": "ranger",
+      "referenceCount": 20,
+      "serializedPosture": "derived-reference",
+      "sourceFile": "src/game/data/unitRoles.ts"
+    },
+    {
+      "category": "unitRoles",
+      "displayName": "Utility / Site Support",
+      "exportHash": "91240a866c9d19ab2e62891f83577652453f4cf3ffc42098e1d7b1616e19653e",
+      "id": "worker",
+      "referenceCount": 7,
+      "serializedPosture": "derived-reference",
+      "sourceFile": "src/game/data/unitRoles.ts"
+    },
+    {
+      "category": "units",
+      "displayName": "Brute",
+      "exportHash": "67596fe2cfe535dd780589b4a1ae06323b5641cdfdd6d226b6b6ef1ac38ef0fd",
+      "id": "brute",
+      "referenceCount": 46,
+      "serializedPosture": "stable-id",
+      "sourceFile": "src/game/data/units.ts"
+    },
+    {
+      "category": "units",
+      "displayName": "Ashen Commander",
+      "exportHash": "77220f1b10589a6b5463eee8da8fc17793afde4e7e9e2c36ff52c921478270f0",
+      "id": "enemy_commander",
+      "referenceCount": 24,
+      "serializedPosture": "stable-id",
+      "sourceFile": "src/game/data/units.ts"
+    },
+    {
+      "category": "units",
+      "displayName": "Hexer",
+      "exportHash": "d2eebcb18ce74f29caae56ffb557522cd2401df834ad8e56e026e3f8dda3ae9b",
+      "id": "hexer",
+      "referenceCount": 67,
+      "serializedPosture": "stable-id",
+      "sourceFile": "src/game/data/units.ts"
+    },
+    {
+      "category": "units",
+      "displayName": "Militia",
+      "exportHash": "8f08cd53f22ba3c6908dba6067cd32d88e46edd2d706427954c2c4afb7db99ba",
+      "id": "militia",
+      "referenceCount": 27,
+      "serializedPosture": "stable-id",
+      "sourceFile": "src/game/data/units.ts"
+    },
+    {
+      "category": "units",
+      "displayName": "Raider",
+      "exportHash": "e77a29f9370129c9e2360cbf57c7caa36f7d2a3bf8a74c5e523c7a767cf7bdcd",
+      "id": "raider",
+      "referenceCount": 108,
+      "serializedPosture": "stable-id",
+      "sourceFile": "src/game/data/units.ts"
+    },
+    {
+      "category": "units",
+      "displayName": "Ranger",
+      "exportHash": "3a807225e3c5a8fa4e47125bf5220cbe5fad42a0666c7c5f0cb41aaf6b38faaa",
+      "id": "ranger",
+      "referenceCount": 20,
+      "serializedPosture": "stable-id",
+      "sourceFile": "src/game/data/units.ts"
+    },
+    {
+      "category": "units",
+      "displayName": "Worker",
+      "exportHash": "a15b7bdcd526f896fdefad5ef6551634856e6984d676fb5ee8a49a1a9f749f7d",
+      "id": "worker",
+      "referenceCount": 7,
+      "serializedPosture": "stable-id",
+      "sourceFile": "src/game/data/units.ts"
+    }
+  ],
+  "policy": "stable-id-freeze",
+  "schemaVersion": 1,
+  "sourceLinks": {
+    "generatedArtifactRoot": "artifacts/desktop-spike-fixture/latest",
+    "generatedDocs": [
+      "docs/V0116_ARCHITECTURE_DECISION_RECORD.md",
+      "docs/V0116_ENGINE_CANDIDATE_MATRIX.md",
+      "docs/V0116_RECOMMENDED_ENGINE_SPIKE_ORDER.md",
+      "docs/V0116_DESKTOP_SPIKE_ACCEPTANCE_CONTRACT.md",
+      "docs/V0116_DESKTOP_SPIKE_FIXTURE_EXPORT_SPEC.md",
+      "docs/V0116_ENGINE_SPIKE_SCORECARD_TEMPLATE.json",
+      "docs/V0116_EMMANUEL_ARCHITECTURE_REVIEW_PACKET.md",
+      "docs/V0116_REFERENCE_ART_CONTINUATION_BOUNDARY.md",
+      "docs/V0116_IMPLEMENTATION_REPORT.md"
+    ],
+    "required": [
+      "LLM_GAME_HANDOFF.md",
+      "README.md",
+      "ROADMAP.md",
+      "CHANGELOG.md",
+      "DEVELOPMENT_CHECKPOINT.md",
+      "RELEASE_CHECKLIST.md",
+      "docs/V091_CURRENT_ARCHITECTURE_REUSE_MATRIX.md",
+      "docs/V091_DESKTOP_ENGINE_DECISION_CRITERIA.md",
+      "docs/V091_DESKTOP_VERTICAL_SLICE_SCOPE.md",
+      "docs/V091_STAGED_TRANSITION_EXPERIMENTS.md",
+      "docs/V091_SAVE_CONTENT_AND_TEST_REUSE_PLAN.md",
+      "docs/V0101_PORTABLE_CONTENT_EXPORT_CONTRACT.md",
+      "docs/V0101_STABLE_ID_FREEZE_POLICY.md",
+      "docs/V0102_SAVE_TRANSLATION_PROOF_REPORT.md",
+      "docs/V0102_DESKTOP_SAVE_ENVELOPE_CONTRACT.md",
+      "docs/V0107_SALTO_VERTICAL_SLICE_COMPOSITION_SPEC.md",
+      "docs/V0107_SALTO_VERTICAL_SLICE_MANIFEST.json",
+      "docs/V0108_BENCHMARK_SCENARIO_MANIFEST.json",
+      "docs/V0109_TRUSTED_BROWSER_BENCHMARK_PROTOCOL.md",
+      "docs/V0109_ROOT_CAUSE_MATRIX_REPORT.md",
+      "docs/V0110_BROWSER_PERFORMANCE_GATE.md",
+      "docs/V0111_BROWSER_CONTROL_BASELINES.md",
+      "docs/V0111_MACHINE_PRESSURE_CLASSIFICATION.md",
+      "docs/V0112_IDLE_COST_MATRIX.md",
+      "docs/V0113_SPATIAL_QUERY_PROFILE.md",
+      "docs/V0114_RENDER_LIFECYCLE_AUDIT.md",
+      "docs/V0115_BROWSER_PERFORMANCE_GATE.md",
+      "src/game/portable/PortableContentExport.ts",
+      "src/game/portable/stable-id-snapshot.json",
+      "src/game/save/SaveTranslationContract.ts",
+      "tests/fixtures/saves/v0102/manifest.json",
+      "src/game/playtest/RepresentativeBattleBenchmark.ts",
+      "src/game/data/lumeNetworks.ts",
+      "src/game/art/visual-asset-registry.json",
+      "tools/runtime-art-slots/validateRuntimeArtSlots.ts"
+    ]
+  },
+  "stableIdPolicyCheckpoint": "v0.101"
+}

@@ -1,5 +1,61 @@
 # Changelog
 
+# v0.117 Godot-First Automated Desktop Benchmark Spike And One-Click Windows Workflow - 2026-06-03
+
+This checkpoint creates the first small Godot desktop benchmark spike and one-click Windows workflow. It uses the v0.116 engine-neutral Salto fixture, standard non-.NET Godot 4.6.3 x86_64, GDScript, text scenes, deterministic fixture import, headless validation/tests, 2D and 2.5D placeholder benchmarks, Windows export, Windows package assembly, scorecard output, and Emmanuel's one-click guide. It does not choose Godot finally, start a full port, replace the browser prototype, import art, change gameplay, change saves, rename stable IDs, or start v0.118.
+
+Added:
+
+- `desktop-spikes/godot-salto/`.
+- `tools/godot/doctorGodotWindows.ps1`.
+- `tools/godot/bootstrapGodotWindows.ps1`.
+- `tools/godot/generateGodotSaltoScene.ps1`.
+- `tools/godot/runGodotValidation.ps1`.
+- `tools/godot/runGodotTests.ps1`.
+- `tools/godot/runGodotBenchmark.ps1`.
+- `tools/godot/exportGodotWindows.ps1`.
+- `tools/godot/packageGodotWindows.ps1`.
+- `tools/godot/runGodotAll.ps1`.
+- Root `GODOT_*_WINDOWS.bat` wrappers.
+- `npm run godot:*` scripts.
+- `src/game/desktop-spike/GodotSaltoSpikeScaffold.test.ts`.
+- v0.117 docs: scope, setup/bootstrap, fixture import, AI-first workflow, visual comparison, benchmark, Windows export, Emmanuel one-click guide, implementation report, and deferred findings.
+
+Changed:
+
+- `.gitignore` now ignores repository-local Godot tools, Godot cache, generated builds/reports, and ignored desktop-spike artifacts while preserving `.gitkeep` placeholders.
+- The desktop-spike fixture boundary validation now allows authorized v0.117 docs and blocks v0.118 docs instead.
+- Handoff, README, roadmap, development checkpoint, and release checklist now describe v0.117.
+
+Current evidence:
+
+- Godot detected: `4.6.3.stable.official.7d41c59c4`.
+- Export templates detected for `4.6.3.stable`.
+- Fixture import PASS, fixture hash `d6c00aad4d32173566194b01cd9b88c2947151da1e1c93cccaeb411ce225f7a3`.
+- Stable-ID validation PASS, selected IDs resolved, unknown probe rejected.
+- `linked_ward` remains exactly `0.92`.
+- Read-only save fixture posture preserved.
+- Godot headless tests PASS.
+- 2D placeholder benchmark PASS.
+- 2.5D orthographic placeholder benchmark PASS.
+- Windows export PASS, executable hash `6e1e999244d991ecc41374ad20066028bf37bc6f02982b46de5441401bf718d1`.
+- Windows package PASS, ZIP hash `d65c85570350faead5d4cb0590d5f3a64670a125eb3177bc1b0ab1841f3e7f46`.
+- Scorecard status: `workflow-spike-complete-not-final-engine-choice`, score `74 / 100`, AI-operability `24 / 25`.
+
+Verification:
+
+- `npm run godot:all` PASS.
+- `npm test` PASS.
+- `npm run build` PASS with the known Phaser/vendor chunk-size warning.
+- `npm run validate:content` PASS.
+- `npm run validate:art-intake` PASS.
+- `npm run export:portable-content` PASS.
+- `npm run validate:portable-content` PASS.
+- `npm run test:save-translation-contract` PASS.
+- `npm run export:desktop-spike-fixture` PASS.
+- `npm run validate:desktop-spike-fixture` PASS.
+- `git diff --check` PASS with Git's line-ending warning for `.gitignore`.
+
 # v0.116 Reviewed Architecture Direction, Desktop-Engine Spike Preparation Pack, And Engine-Neutral Salto Fixture - 2026-06-03
 
 This checkpoint creates the reviewed architecture direction, engine-candidate matrix, AI-first/editor-optional desktop spike acceptance contract, Emmanuel review packet, reference-art continuation boundary, scorecard template, and deterministic engine-neutral Salto fixture export/validation tooling. It does not choose an engine, add an engine dependency, create an engine project, create a desktop wrapper, start a port, change runtime gameplay, change saves, rename stable IDs, import art, or start v0.117.

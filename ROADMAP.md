@@ -11,9 +11,22 @@ Every phase should protect these long-term pillars:
 
 ## Current Recommended Next Phase
 
-The current checkpoint is **v0.116 Reviewed Architecture Direction, Desktop-Engine Spike Preparation Pack, and Engine-Neutral Salto Fixture** on 2026-06-03. It responds to the v0.115 RED browser performance gate by creating architecture review docs, an engine-candidate matrix, an AI-first/editor-optional spike acceptance contract, a scorecard template, and a deterministic engine-neutral Salto fixture export/validation path.
+The current checkpoint is **v0.117 Godot-First Automated Desktop Benchmark Spike and One-Click Windows Workflow** on 2026-06-03. It responds to the v0.116 architecture packet by creating a repository-driven Godot 4.6.3 standard x86_64 spike, one-click Windows workflow scripts, deterministic fixture import, headless tests, 2D and 2.5D placeholder benchmark modes, Windows export/package flow, scorecard output, and Emmanuel's one-click guide.
 
-The next recommended step, only after a future explicit goal, is an engine spike that proves Codex and automation can create, modify, validate, build, export, benchmark, and package the representative Salto slice with minimal Emmanuel editor operation. Recommended order: Godot first, Unity second, Electron/browser wrapper as a packaging control, Unreal deferred. Do not generate art for runtime integration, import art into runtime, mark `runtime-candidate-approved` assets as loadable, resume broad browser visual expansion, add gameplay systems, change rewards, change saves, rename IDs, create a desktop save path, choose an engine, start an engine spike, start a desktop port, or start v0.117 until a future explicit goal approves a narrow next step.
+The next recommended step, only after a future explicit goal, is a human-visible visual-quality review or follow-up engine comparison that uses the same fixture and scorecard discipline. v0.117 suggests keeping 2.5D orthographic as the leading presentation candidate for a future visual-quality pass because it better supports modern lighting, terrain depth, and atmosphere, while keeping 2D as the automation/readability control. Do not generate art for runtime integration, import art into runtime, mark `runtime-candidate-approved` assets as loadable, resume broad browser visual expansion, add gameplay systems, change rewards, change saves, rename IDs, create a desktop save path, choose Godot finally, start a full desktop port, start Unity/Unreal/Electron work, or start v0.118 until a future explicit goal approves a narrow next step.
+
+New v0.117 docs:
+
+- `docs/V0117_GODOT_SPIKE_SCOPE.md`
+- `docs/V0117_GODOT_SETUP_AND_BOOTSTRAP_SPEC.md`
+- `docs/V0117_GODOT_FIXTURE_IMPORT_REPORT.md`
+- `docs/V0117_GODOT_AI_FIRST_WORKFLOW_REPORT.md`
+- `docs/V0117_GODOT_VISUAL_DIRECTION_COMPARISON.md`
+- `docs/V0117_GODOT_BENCHMARK_REPORT.md`
+- `docs/V0117_GODOT_WINDOWS_EXPORT_REPORT.md`
+- `docs/V0117_EMMANUEL_ONE_CLICK_GUIDE.md`
+- `docs/V0117_IMPLEMENTATION_REPORT.md`
+- `docs/V0117_DEFERRED_GODOT_FINDINGS.md`
 
 New v0.116 docs:
 

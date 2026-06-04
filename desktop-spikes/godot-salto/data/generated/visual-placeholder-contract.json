@@ -1,0 +1,418 @@
+{
+  "assets": [
+    {
+      "assetId": "v0107_salto_environment_style_frame",
+      "category": "environment-style-frame",
+      "fallbackBehavior": {
+        "behavior": "current procedural terrain, roads, water, resource rings, and ruin blockers remain authoritative",
+        "owner": "BattleSceneMapRenderer and CaptureSite",
+        "required": true
+      },
+      "runtimePosture": "reference-only:not-runtime",
+      "runtimeSlotIds": [
+        "terrain-ground",
+        "terrain-road",
+        "terrain-water",
+        "terrain-ford",
+        "terrain-quarry",
+        "terrain-shrine",
+        "terrain-ruin"
+      ],
+      "status": "not-created",
+      "visualQaScenarioId": "qa_salto_reference_composition"
+    },
+    {
+      "assetId": "v0107_battlefield_style_frame",
+      "category": "battlefield-style-frame",
+      "fallbackBehavior": {
+        "behavior": "existing procedural terrain, fog, capture rings, objective markers, and minimap markers stay in place",
+        "owner": "BattleSceneMapRenderer, FogPresentation, SelectionPresentation, CaptureSitePresentation, MinimapView",
+        "required": true
+      },
+      "runtimePosture": "reference-only:not-runtime",
+      "runtimeSlotIds": [
+        "terrain-ground",
+        "terrain-road",
+        "terrain-water",
+        "terrain-ford",
+        "fog-treatment",
+        "selection-ring",
+        "capture-ring-neutral",
+        "capture-ring-friendly",
+        "capture-ring-hostile",
+        "objective-marker",
+        "minimap-marker-family"
+      ],
+      "status": "not-created",
+      "visualQaScenarioId": "qa_battlefield_terrain_readability"
+    },
+    {
+      "assetId": "v0107_hud_frame",
+      "category": "hud-style-frame",
+      "fallbackBehavior": {
+        "behavior": "current CSS/DOM HUD and minimap frames remain authoritative",
+        "owner": "HUD, battle-hud.css, MinimapPanel, CommandPanel",
+        "required": true
+      },
+      "runtimePosture": "reference-only:not-runtime",
+      "runtimeSlotIds": [
+        "hud-frame",
+        "command-panel-frame",
+        "minimap-frame"
+      ],
+      "status": "not-created",
+      "visualQaScenarioId": "qa_hud_and_results_frame"
+    },
+    {
+      "assetId": "v0107_results_frame",
+      "category": "results-frame-style-reference",
+      "fallbackBehavior": {
+        "behavior": "current CSS/DOM Results layout remains authoritative",
+        "owner": "ResultsScene, ResultsViewModel, results.css",
+        "required": true
+      },
+      "runtimePosture": "reference-only:not-runtime",
+      "runtimeSlotIds": [
+        "results-frame"
+      ],
+      "status": "not-created",
+      "visualQaScenarioId": "qa_hud_and_results_frame"
+    },
+    {
+      "assetId": "v0107_lume_style_frame",
+      "category": "lume-link-style-frame",
+      "fallbackBehavior": {
+        "behavior": "current vector endpoints, links, pulses, and visibility modes remain authoritative",
+        "owner": "LumeNetworkRendering",
+        "required": true
+      },
+      "runtimePosture": "reference-only:not-runtime",
+      "runtimeSlotIds": [
+        "lume-endpoint",
+        "lume-link",
+        "lume-transition"
+      ],
+      "status": "not-created",
+      "visualQaScenarioId": "qa_lume_link_readability"
+    },
+    {
+      "assetId": "v0107_campaign_map_style_frame",
+      "category": "campaign-map-style-frame",
+      "fallbackBehavior": {
+        "behavior": "current campaign shell CSS/DOM route and node frames remain authoritative",
+        "owner": "CampaignMapScene, CampaignMapViewModel, campaign.css",
+        "required": true
+      },
+      "runtimePosture": "reference-only:not-runtime",
+      "runtimeSlotIds": [
+        "campaign-background",
+        "route-frame",
+        "chapter-banner",
+        "mission-node-frame",
+        "selected-node-frame",
+        "locked-node-frame"
+      ],
+      "status": "not-created",
+      "visualQaScenarioId": "qa_campaign_map_frame"
+    },
+    {
+      "assetId": "v0107_barrosan_worker_concept",
+      "category": "unit-concept-sheet",
+      "fallbackBehavior": {
+        "behavior": "current Worker vector silhouette remains authoritative",
+        "owner": "PlaceholderBattlefieldPresentation and Unit",
+        "required": true
+      },
+      "runtimePosture": "reference-only:not-runtime",
+      "runtimeSlotIds": [
+        "barrosan-worker"
+      ],
+      "status": "not-created",
+      "visualQaScenarioId": "qa_barrosan_unit_thumbnail_readability"
+    },
+    {
+      "assetId": "v0107_barrosan_militia_concept",
+      "category": "unit-concept-sheet",
+      "fallbackBehavior": {
+        "behavior": "current Militia vector silhouette remains authoritative",
+        "owner": "PlaceholderBattlefieldPresentation and Unit",
+        "required": true
+      },
+      "runtimePosture": "reference-only:not-runtime",
+      "runtimeSlotIds": [
+        "barrosan-militia"
+      ],
+      "status": "not-created",
+      "visualQaScenarioId": "qa_barrosan_unit_thumbnail_readability"
+    },
+    {
+      "assetId": "v0107_barrosan_ranger_concept",
+      "category": "unit-concept-sheet",
+      "fallbackBehavior": {
+        "behavior": "current Ranger vector silhouette remains authoritative",
+        "owner": "PlaceholderBattlefieldPresentation and Unit",
+        "required": true
+      },
+      "runtimePosture": "reference-only:not-runtime",
+      "runtimeSlotIds": [
+        "barrosan-ranger"
+      ],
+      "status": "not-created",
+      "visualQaScenarioId": "qa_barrosan_unit_thumbnail_readability"
+    },
+    {
+      "assetId": "v0107_barrosan_hero_concept",
+      "category": "hero-concept-sheet",
+      "fallbackBehavior": {
+        "behavior": "current hero placeholder/runtime presentation remains authoritative",
+        "owner": "PlaceholderBattlefieldPresentation, Unit, HeroHudPanel, HeroProgressionScene",
+        "required": true
+      },
+      "runtimePosture": "reference-only:not-runtime",
+      "runtimeSlotIds": [
+        "barrosan-hero",
+        "hero-frame"
+      ],
+      "status": "not-created",
+      "visualQaScenarioId": "qa_barrosan_unit_thumbnail_readability"
+    },
+    {
+      "assetId": "v0107_barrosan_command_hall",
+      "category": "building-concept-sheet",
+      "fallbackBehavior": {
+        "behavior": "current Command Hall placeholder building remains authoritative",
+        "owner": "PlaceholderBattlefieldPresentation and Building",
+        "required": true
+      },
+      "runtimePosture": "reference-only:not-runtime",
+      "runtimeSlotIds": [
+        "barrosan-command-hall",
+        "stronghold-frame"
+      ],
+      "status": "not-created",
+      "visualQaScenarioId": "qa_barrosan_building_footprint_readability"
+    },
+    {
+      "assetId": "v0107_barrosan_barracks",
+      "category": "building-concept-sheet",
+      "fallbackBehavior": {
+        "behavior": "current Barracks placeholder building remains authoritative",
+        "owner": "PlaceholderBattlefieldPresentation and Building",
+        "required": true
+      },
+      "runtimePosture": "reference-only:not-runtime",
+      "runtimeSlotIds": [
+        "barrosan-barracks"
+      ],
+      "status": "not-created",
+      "visualQaScenarioId": "qa_barrosan_building_footprint_readability"
+    },
+    {
+      "assetId": "v0107_barrosan_mine",
+      "category": "building-resource-concept-sheet",
+      "fallbackBehavior": {
+        "behavior": "current mine placeholder and quarry capture-site markers remain authoritative",
+        "owner": "PlaceholderBattlefieldPresentation, Building, CaptureSite",
+        "required": true
+      },
+      "runtimePosture": "reference-only:not-runtime",
+      "runtimeSlotIds": [
+        "barrosan-mine",
+        "terrain-quarry"
+      ],
+      "status": "not-created",
+      "visualQaScenarioId": "qa_barrosan_building_footprint_readability"
+    },
+    {
+      "assetId": "v0107_barrosan_shrine",
+      "category": "building-shrine-concept-sheet",
+      "fallbackBehavior": {
+        "behavior": "current shrine placeholder and capture-site markers remain authoritative",
+        "owner": "PlaceholderBattlefieldPresentation, Building, CaptureSite",
+        "required": true
+      },
+      "runtimePosture": "reference-only:not-runtime",
+      "runtimeSlotIds": [
+        "barrosan-shrine",
+        "terrain-shrine"
+      ],
+      "status": "not-created",
+      "visualQaScenarioId": "qa_barrosan_building_footprint_readability"
+    },
+    {
+      "assetId": "v0107_ashen_enemy_contrast_sheet",
+      "category": "enemy-contrast-sheet",
+      "fallbackBehavior": {
+        "behavior": "current Ashen placeholder silhouettes remain authoritative",
+        "owner": "PlaceholderBattlefieldPresentation and Unit",
+        "required": true
+      },
+      "runtimePosture": "reference-only:not-runtime",
+      "runtimeSlotIds": [
+        "ashen-raider",
+        "ashen-brute",
+        "ashen-hexer",
+        "ashen-commander"
+      ],
+      "status": "not-created",
+      "visualQaScenarioId": "qa_ashen_contrast_readability"
+    }
+  ],
+  "checkpoint": "v0.116",
+  "fallbackOwnershipRequired": true,
+  "generatedAssetsIncluded": false,
+  "generatedAtUtc": "deterministic-v0116",
+  "generatedImagePaths": [],
+  "qaScenarios": [
+    {
+      "reviewTarget": "Salto highland mood, wet roads, granite, readable lanes, ruin/quarry/shrine identity, and open UI-safe negative space.",
+      "runtimeSlotIds": [
+        "terrain-ground",
+        "terrain-road",
+        "terrain-water",
+        "terrain-ford",
+        "terrain-quarry",
+        "terrain-shrine",
+        "terrain-ruin"
+      ],
+      "scenarioId": "qa_salto_reference_composition",
+      "surface": "battlefield"
+    },
+    {
+      "reviewTarget": "Walkable, blocked, resource, capture, and water/ford surfaces stay readable at 1366x768 and 1920x1080.",
+      "runtimeSlotIds": [
+        "terrain-ground",
+        "terrain-road",
+        "terrain-water",
+        "terrain-ford",
+        "fog-treatment",
+        "objective-marker"
+      ],
+      "scenarioId": "qa_battlefield_terrain_readability",
+      "surface": "battlefield"
+    },
+    {
+      "reviewTarget": "Compact desktop RTS UI, readable resource/command/minimap hierarchy, and Results debrief framing without mobile-card drift.",
+      "runtimeSlotIds": [
+        "hud-frame",
+        "command-panel-frame",
+        "minimap-frame",
+        "results-frame"
+      ],
+      "scenarioId": "qa_hud_and_results_frame",
+      "surface": "ui"
+    },
+    {
+      "reviewTarget": "One restrained teal Lume link reads as land-power, not generic magic-blue clutter.",
+      "runtimeSlotIds": [
+        "lume-endpoint",
+        "lume-link",
+        "lume-transition"
+      ],
+      "scenarioId": "qa_lume_link_readability",
+      "surface": "battlefield"
+    },
+    {
+      "reviewTarget": "Campaign map frame supports Salto-region launch, selected mission focus, locked-state clarity, and return-from-Results posture.",
+      "runtimeSlotIds": [
+        "campaign-background",
+        "route-frame",
+        "chapter-banner",
+        "mission-node-frame",
+        "selected-node-frame",
+        "locked-node-frame"
+      ],
+      "scenarioId": "qa_campaign_map_frame",
+      "surface": "campaign"
+    },
+    {
+      "reviewTarget": "Hero, Worker, Militia, and Ranger have distinct RTS-scale silhouettes at 64x64 and 96x96 review thumbnails.",
+      "runtimeSlotIds": [
+        "barrosan-hero",
+        "barrosan-worker",
+        "barrosan-militia",
+        "barrosan-ranger"
+      ],
+      "scenarioId": "qa_barrosan_unit_thumbnail_readability",
+      "surface": "units"
+    },
+    {
+      "reviewTarget": "Command Hall, Barracks, mine, and shrine are distinct by footprint, roofline, material, and entry/readability cues.",
+      "runtimeSlotIds": [
+        "barrosan-command-hall",
+        "barrosan-barracks",
+        "barrosan-mine",
+        "barrosan-shrine"
+      ],
+      "scenarioId": "qa_barrosan_building_footprint_readability",
+      "surface": "buildings"
+    },
+    {
+      "reviewTarget": "Ashen contrast stays disciplined and readable without demon/orc/undead drift or overdark silhouette collapse.",
+      "runtimeSlotIds": [
+        "ashen-raider",
+        "ashen-brute",
+        "ashen-hexer",
+        "ashen-commander"
+      ],
+      "scenarioId": "qa_ashen_contrast_readability",
+      "surface": "units"
+    }
+  ],
+  "runtimeArtIntegrated": false,
+  "runtimeIntegrationApproved": false,
+  "schemaVersion": 1,
+  "sourceLinks": {
+    "generatedArtifactRoot": "artifacts/desktop-spike-fixture/latest",
+    "generatedDocs": [
+      "docs/V0116_ARCHITECTURE_DECISION_RECORD.md",
+      "docs/V0116_ENGINE_CANDIDATE_MATRIX.md",
+      "docs/V0116_RECOMMENDED_ENGINE_SPIKE_ORDER.md",
+      "docs/V0116_DESKTOP_SPIKE_ACCEPTANCE_CONTRACT.md",
+      "docs/V0116_DESKTOP_SPIKE_FIXTURE_EXPORT_SPEC.md",
+      "docs/V0116_ENGINE_SPIKE_SCORECARD_TEMPLATE.json",
+      "docs/V0116_EMMANUEL_ARCHITECTURE_REVIEW_PACKET.md",
+      "docs/V0116_REFERENCE_ART_CONTINUATION_BOUNDARY.md",
+      "docs/V0116_IMPLEMENTATION_REPORT.md"
+    ],
+    "required": [
+      "LLM_GAME_HANDOFF.md",
+      "README.md",
+      "ROADMAP.md",
+      "CHANGELOG.md",
+      "DEVELOPMENT_CHECKPOINT.md",
+      "RELEASE_CHECKLIST.md",
+      "docs/V091_CURRENT_ARCHITECTURE_REUSE_MATRIX.md",
+      "docs/V091_DESKTOP_ENGINE_DECISION_CRITERIA.md",
+      "docs/V091_DESKTOP_VERTICAL_SLICE_SCOPE.md",
+      "docs/V091_STAGED_TRANSITION_EXPERIMENTS.md",
+      "docs/V091_SAVE_CONTENT_AND_TEST_REUSE_PLAN.md",
+      "docs/V0101_PORTABLE_CONTENT_EXPORT_CONTRACT.md",
+      "docs/V0101_STABLE_ID_FREEZE_POLICY.md",
+      "docs/V0102_SAVE_TRANSLATION_PROOF_REPORT.md",
+      "docs/V0102_DESKTOP_SAVE_ENVELOPE_CONTRACT.md",
+      "docs/V0107_SALTO_VERTICAL_SLICE_COMPOSITION_SPEC.md",
+      "docs/V0107_SALTO_VERTICAL_SLICE_MANIFEST.json",
+      "docs/V0108_BENCHMARK_SCENARIO_MANIFEST.json",
+      "docs/V0109_TRUSTED_BROWSER_BENCHMARK_PROTOCOL.md",
+      "docs/V0109_ROOT_CAUSE_MATRIX_REPORT.md",
+      "docs/V0110_BROWSER_PERFORMANCE_GATE.md",
+      "docs/V0111_BROWSER_CONTROL_BASELINES.md",
+      "docs/V0111_MACHINE_PRESSURE_CLASSIFICATION.md",
+      "docs/V0112_IDLE_COST_MATRIX.md",
+      "docs/V0113_SPATIAL_QUERY_PROFILE.md",
+      "docs/V0114_RENDER_LIFECYCLE_AUDIT.md",
+      "docs/V0115_BROWSER_PERFORMANCE_GATE.md",
+      "src/game/portable/PortableContentExport.ts",
+      "src/game/portable/stable-id-snapshot.json",
+      "src/game/save/SaveTranslationContract.ts",
+      "tests/fixtures/saves/v0102/manifest.json",
+      "src/game/playtest/RepresentativeBattleBenchmark.ts",
+      "src/game/data/lumeNetworks.ts",
+      "src/game/art/visual-asset-registry.json",
+      "tools/runtime-art-slots/validateRuntimeArtSlots.ts"
+    ]
+  },
+  "sourceManifestStatus": "planning-only",
+  "status": "placeholder-only-reference-boundary"
+}

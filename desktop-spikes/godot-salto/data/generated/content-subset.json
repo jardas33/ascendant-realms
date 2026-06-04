@@ -1,0 +1,2055 @@
+{
+  "authority": "typescript-source-via-portable-content-export",
+  "categories": {
+    "abilities": [
+      {
+        "data": {
+          "amount": 0.25,
+          "cooldown": 18,
+          "description": "Nearby allied units gain +25% damage for 8 seconds.",
+          "duration": 8,
+          "effectType": "rally-banner",
+          "heroClassId": "warlord",
+          "hotkey": "1",
+          "id": "rally_banner",
+          "manaCost": 25,
+          "name": "Rally Banner",
+          "radius": 160,
+          "range": 0
+        },
+        "displayName": "Rally Banner",
+        "id": "rally_banner",
+        "serializedPosture": "stable-id",
+        "sourceFile": "src/game/data/abilities.ts"
+      }
+    ],
+    "buildings": [
+      {
+        "data": {
+          "armor": 4,
+          "buildOptions": [],
+          "color": 6261871,
+          "constructionTimeSeconds": 0,
+          "cost": {},
+          "description": "Base hub that trains Workers only, anchors the camp, and researches core camp upgrades. Losing it means defeat.",
+          "factionId": "free_marches",
+          "id": "command_hall",
+          "maxHp": 1450,
+          "name": "Command Hall",
+          "size": {
+            "height": 82,
+            "width": 96
+          },
+          "trainOptions": [
+            "worker"
+          ],
+          "upgradeOptions": [
+            "camp_foundations_1"
+          ],
+          "visionRadius": 560,
+          "xpValue": 80
+        },
+        "displayName": "Command Hall",
+        "id": "command_hall",
+        "serializedPosture": "stable-id",
+        "sourceFile": "src/game/data/buildings.ts"
+      },
+      {
+        "data": {
+          "armor": 3,
+          "buildOptions": [],
+          "color": 8035699,
+          "constructionTimeSeconds": 25,
+          "cost": {
+            "crowns": 180,
+            "stone": 120
+          },
+          "description": "Army production building for Militia, Rangers, and basic troop research.",
+          "factionId": "free_marches",
+          "id": "barracks",
+          "maxHp": 600,
+          "name": "Barracks",
+          "size": {
+            "height": 64,
+            "width": 82
+          },
+          "trainOptions": [
+            "militia",
+            "ranger"
+          ],
+          "upgradeOptions": [
+            "infantry_weapons_1",
+            "reinforced_armor_1",
+            "ranger_training_1"
+          ],
+          "visionRadius": 430,
+          "xpValue": 80
+        },
+        "displayName": "Barracks",
+        "id": "barracks",
+        "serializedPosture": "stable-id",
+        "sourceFile": "src/game/data/buildings.ts"
+      },
+      {
+        "data": {
+          "armor": 4,
+          "buildOptions": [],
+          "color": 9389115,
+          "constructionTimeSeconds": 0,
+          "cost": {},
+          "description": "Destroy this to win the skirmish.",
+          "factionId": "ashen_covenant",
+          "id": "enemy_stronghold",
+          "maxHp": 1000,
+          "name": "Enemy Stronghold",
+          "size": {
+            "height": 88,
+            "width": 104
+          },
+          "trainOptions": [],
+          "upgradeOptions": [
+            "camp_foundations_1"
+          ],
+          "visionRadius": 560,
+          "xpValue": 80
+        },
+        "displayName": "Enemy Stronghold",
+        "id": "enemy_stronghold",
+        "serializedPosture": "stable-id",
+        "sourceFile": "src/game/data/buildings.ts"
+      },
+      {
+        "data": {
+          "armor": 3,
+          "buildOptions": [],
+          "color": 9652286,
+          "constructionTimeSeconds": 0,
+          "cost": {},
+          "description": "Enemy production structure.",
+          "factionId": "ashen_covenant",
+          "id": "enemy_barracks",
+          "maxHp": 550,
+          "name": "Enemy Barracks",
+          "size": {
+            "height": 64,
+            "width": 82
+          },
+          "trainOptions": [
+            "raider",
+            "hexer",
+            "brute"
+          ],
+          "upgradeOptions": [
+            "infantry_weapons_1",
+            "reinforced_armor_1",
+            "aether_study_1",
+            "ember_blades_trait"
+          ],
+          "visionRadius": 430,
+          "xpValue": 80
+        },
+        "displayName": "Enemy Barracks",
+        "id": "enemy_barracks",
+        "serializedPosture": "stable-id",
+        "sourceFile": "src/game/data/buildings.ts"
+      }
+    ],
+    "captureSites": [
+      {
+        "data": {
+          "id": "west_stone_cut",
+          "incomeAmount": 22,
+          "incomeInterval": 6,
+          "mapId": "broken_ford",
+          "name": "West Stone Cut",
+          "radius": 76,
+          "resource": "stone",
+          "x": 690,
+          "y": 1125
+        },
+        "displayName": "West Stone Cut",
+        "id": "west_stone_cut",
+        "serializedPosture": "stable-id",
+        "sourceFile": "src/game/data/maps/index.ts"
+      },
+      {
+        "data": {
+          "id": "ford_toll",
+          "incomeAmount": 34,
+          "incomeInterval": 5,
+          "mapId": "broken_ford",
+          "name": "Ford Toll",
+          "radius": 82,
+          "resource": "crowns",
+          "x": 1300,
+          "y": 850
+        },
+        "displayName": "Ford Toll",
+        "id": "ford_toll",
+        "serializedPosture": "stable-id",
+        "sourceFile": "src/game/data/maps/index.ts"
+      },
+      {
+        "data": {
+          "id": "north_aether_spring",
+          "incomeAmount": 14,
+          "incomeInterval": 6,
+          "mapId": "broken_ford",
+          "name": "North Aether Spring",
+          "radius": 76,
+          "resource": "aether",
+          "x": 1570,
+          "y": 430
+        },
+        "displayName": "North Aether Spring",
+        "id": "north_aether_spring",
+        "serializedPosture": "stable-id",
+        "sourceFile": "src/game/data/maps/index.ts"
+      }
+    ],
+    "enemyDoctrines": [
+      {
+        "data": {
+          "activity": {
+            "resourceRaidCooldownMultiplier": 0.76,
+            "resourceRaidInitialDelaySeconds": 118,
+            "resourceRaidSquadBonus": 1
+          },
+          "counterplay": "Protect sites with Militia screens and pull fragile units back before raids land.",
+          "id": "raider",
+          "name": "Raider",
+          "preferredMissionTypeIds": [
+            "control"
+          ],
+          "preferredModifierIds": [
+            "mission_enemy_patrols"
+          ],
+          "shortDescription": "Pressures resource sites, assigned Workers, and exposed economy routes.",
+          "statusLabel": "Raider doctrine: economy pressure",
+          "tags": [
+            "resource pressure",
+            "worker threat",
+            "site raids"
+          ],
+          "threatWarning": "Raiders will look for exposed Workers and resource sites."
+        },
+        "displayName": "Raider",
+        "id": "raider",
+        "serializedPosture": "stable-id",
+        "sourceFile": "src/game/data/enemyDoctrines.ts"
+      },
+      {
+        "data": {
+          "activity": {
+            "hunterCooldownSeconds": 118,
+            "hunterEscortCount": 3,
+            "hunterInitialDelaySeconds": 215
+          },
+          "counterplay": "Keep hero and Retinue near army cover; avoid isolated dives into enemy space.",
+          "id": "hunter",
+          "name": "Hunter",
+          "preferredMissionTypeIds": [
+            "control",
+            "assault"
+          ],
+          "preferredModifierIds": [
+            "mission_aether_surge"
+          ],
+          "shortDescription": "Sends escorted pressure toward the hero or deployed Retinue when they are exposed.",
+          "statusLabel": "Hunter doctrine: champion pressure",
+          "tags": [
+            "hero pressure",
+            "retinue pressure",
+            "escorted probe"
+          ],
+          "threatWarning": "Hunter squads may probe your hero or Retinue when escorted."
+        },
+        "displayName": "Hunter",
+        "id": "hunter",
+        "serializedPosture": "stable-id",
+        "sourceFile": "src/game/data/enemyDoctrines.ts"
+      },
+      {
+        "data": {
+          "activity": {
+            "attackWaveSizeBonus": 1
+          },
+          "counterplay": "Regroup before the late push and use one Retinue reinforcement at a safe timing.",
+          "id": "warband",
+          "name": "Warband",
+          "preferredMissionTypeIds": [
+            "defense",
+            "assault"
+          ],
+          "preferredModifierIds": [
+            "mission_enemy_patrols"
+          ],
+          "shortDescription": "Builds toward a late mixed-unit push without increasing early spam.",
+          "statusLabel": "Warband doctrine: late mixed push",
+          "tags": [
+            "late push",
+            "mixed squad",
+            "regroup check"
+          ],
+          "threatWarning": "A mixed Warband can form later if the fight drags on."
+        },
+        "displayName": "Warband",
+        "id": "warband",
+        "serializedPosture": "stable-id",
+        "sourceFile": "src/game/data/enemyDoctrines.ts"
+      }
+    ],
+    "enemyHeroAbilities": [
+      {
+        "data": {
+          "cooldownSeconds": 8,
+          "description": "A measured ranged spell that punishes exposed troops.",
+          "effect": {
+            "damage": 20,
+            "projectileColor": 12023295,
+            "type": "direct-damage"
+          },
+          "id": "hexfire_bolt",
+          "name": "Hexfire Bolt",
+          "range": 185
+        },
+        "displayName": "Hexfire Bolt",
+        "id": "hexfire_bolt",
+        "serializedPosture": "derived-reference",
+        "sourceFile": "src/game/data/enemyHeroes.ts"
+      },
+      {
+        "data": {
+          "cooldownSeconds": 20,
+          "description": "A fortress order that briefly reinforces nearby defenders.",
+          "effect": {
+            "armorBonus": 2,
+            "durationSeconds": 6,
+            "radius": 215,
+            "requiresNearEnemyBase": true,
+            "type": "armor-aura"
+          },
+          "id": "hold_the_line",
+          "name": "Hold the Line",
+          "range": 230
+        },
+        "displayName": "Hold the Line",
+        "id": "hold_the_line",
+        "serializedPosture": "derived-reference",
+        "sourceFile": "src/game/data/enemyHeroes.ts"
+      }
+    ],
+    "enemyHeroes": [
+      {
+        "data": {
+          "abilities": [
+            "hexfire_bolt",
+            "rally_raiders"
+          ],
+          "archetype": "hexfire_seer",
+          "campaignNodeIds": [
+            "aether_well_ruins"
+          ],
+          "factionId": "ashen_covenant",
+          "flavorText": "Veyra reads the smoke around the Aether Well and punishes armies that cross the ford unsupported.",
+          "id": "veyra_cinders",
+          "level": 3,
+          "mapIds": [
+            "broken_ford"
+          ],
+          "name": "Veyra of the Cinders",
+          "personalityId": "hexfire_cult",
+          "stats": {
+            "armor": 1,
+            "attackCooldown": 1.35,
+            "damage": 12,
+            "maxHp": 180,
+            "range": 170,
+            "speed": 84
+          },
+          "title": "Hexfire Seer",
+          "unitId": "enemy_commander",
+          "xpValue": 135
+        },
+        "displayName": "Veyra of the Cinders",
+        "id": "veyra_cinders",
+        "serializedPosture": "derived-reference",
+        "sourceFile": "src/game/data/enemyHeroes.ts"
+      }
+    ],
+    "enemyPersonalities": [
+      {
+        "data": {
+          "aggressionLevel": 0.65,
+          "behaviorNotes": [
+            "Prioritizes Hexers and aether-heavy pressure.",
+            "Frontline is thinner than other profiles."
+          ],
+          "commander": {
+            "joinsFirstAttack": false
+          },
+          "defense": {
+            "defendRadiusMultiplier": 0.95,
+            "defenseSquadSizeDelta": 0,
+            "protectCaptureSites": false,
+            "reserveDefenseUnits": 1
+          },
+          "description": "A caster-heavy profile that fields more Hexers, fewer melee blockers, and dangerous burst waves after the opening.",
+          "economy": {
+            "incomeMultiplier": 0.98
+          },
+          "id": "hexfire_cult",
+          "name": "Hexfire Cult",
+          "preferredUnitIds": [
+            "hexer",
+            "raider",
+            "brute"
+          ],
+          "shortDescription": "Magic bursts, weak frontline.",
+          "timing": {
+            "attackIntervalMultiplier": 1.08,
+            "commanderJoinDelayMultiplier": 1,
+            "expandIntervalMultiplier": 1,
+            "firstAttackDelayMultiplier": 1.08,
+            "trainIntervalMultiplier": 1
+          },
+          "unitPlan": [
+            "hexer",
+            "raider",
+            "hexer",
+            "hexer",
+            "brute"
+          ],
+          "waves": {
+            "attackWaveSizeMultiplier": 1,
+            "minAttackArmySizeDelta": 0,
+            "phaseOverrides": {
+              "assault": {
+                "allowedAttackUnitIds": [
+                  "raider",
+                  "hexer",
+                  "brute",
+                  "enemy_commander"
+                ],
+                "maxAttackByUnitId": {
+                  "brute": 1,
+                  "enemy_commander": 1,
+                  "hexer": 2,
+                  "raider": 2
+                },
+                "maxAttackWaveSize": 5,
+                "preferredAttackUnitIds": [
+                  "hexer",
+                  "brute",
+                  "hexer",
+                  "enemy_commander",
+                  "raider",
+                  "hexer",
+                  "brute"
+                ],
+                "trainUnitIds": [
+                  "hexer",
+                  "raider",
+                  "brute"
+                ]
+              },
+              "expansion": {
+                "allowedAttackUnitIds": [
+                  "raider",
+                  "hexer"
+                ],
+                "maxAttackByUnitId": {
+                  "hexer": 2,
+                  "raider": 1
+                },
+                "maxAttackWaveSize": 3,
+                "preferredAttackUnitIds": [
+                  "hexer",
+                  "raider",
+                  "hexer"
+                ],
+                "trainUnitIds": [
+                  "hexer",
+                  "raider"
+                ]
+              },
+              "pressure": {
+                "allowedAttackUnitIds": [
+                  "raider",
+                  "hexer",
+                  "brute"
+                ],
+                "maxAttackByUnitId": {
+                  "brute": 1,
+                  "hexer": 2,
+                  "raider": 2
+                },
+                "maxAttackWaveSize": 4,
+                "preferredAttackUnitIds": [
+                  "hexer",
+                  "hexer",
+                  "raider",
+                  "brute",
+                  "hexer"
+                ],
+                "trainUnitIds": [
+                  "hexer",
+                  "raider",
+                  "brute"
+                ]
+              }
+            }
+          }
+        },
+        "displayName": "Hexfire Cult",
+        "id": "hexfire_cult",
+        "serializedPosture": "derived-reference",
+        "sourceFile": "src/game/data/aiPersonalities.ts"
+      }
+    ],
+    "factions": [
+      {
+        "data": {
+          "color": 5214056,
+          "fantasy": "Salto militias, scouts, and oathbound mystics defending the Barrosan Marches.",
+          "id": "free_marches",
+          "mechanics": {
+            "aiPersonalityPreferences": [
+              "balanced_warlord",
+              "fortress_keeper"
+            ],
+            "availableBuildingIds": [
+              "command_hall",
+              "barracks",
+              "mystic_lodge",
+              "watchtower"
+            ],
+            "availableUnitIds": [
+              "worker",
+              "militia",
+              "ranger",
+              "acolyte"
+            ],
+            "availableUpgradeIds": [
+              "camp_foundations_1",
+              "infantry_weapons_1",
+              "ranger_training_1",
+              "reinforced_armor_1",
+              "aether_study_1",
+              "sentry_bracing_1"
+            ],
+            "campaignReputationHooks": [
+              "free_marches",
+              "common_folk",
+              "old_faith"
+            ],
+            "economyStyle": "Balanced site economy with strong campaign support from trusted local communities.",
+            "factionModifiers": [],
+            "magicStyle": "Supportive Acolytes and hero-led blessings rather than raw burst damage.",
+            "militaryStyle": "Reliable infantry, Rangers, defensive Watchtowers, and leadership scaling."
+          },
+          "name": "Barrosan Freeholds"
+        },
+        "displayName": "Barrosan Freeholds",
+        "id": "free_marches",
+        "serializedPosture": "stable-id",
+        "sourceFile": "src/game/data/factions.ts"
+      },
+      {
+        "data": {
+          "color": 11946818,
+          "fantasy": "A ruthless warband culture built around raiders, hex-magic, and brutal champions.",
+          "id": "ashen_covenant",
+          "mechanics": {
+            "aiPersonalityPreferences": [
+              "raider_rush",
+              "hexfire_cult",
+              "balanced_warlord"
+            ],
+            "availableBuildingIds": [
+              "enemy_stronghold",
+              "enemy_barracks"
+            ],
+            "availableUnitIds": [
+              "raider",
+              "hexer",
+              "brute",
+              "enemy_commander"
+            ],
+            "availableUpgradeIds": [
+              "camp_foundations_1",
+              "infantry_weapons_1",
+              "reinforced_armor_1",
+              "aether_study_1",
+              "sentry_bracing_1",
+              "ember_blades_trait"
+            ],
+            "campaignReputationHooks": [
+              "ashen_covenant",
+              "common_folk"
+            ],
+            "economyStyle": "Aggressive low-cost early pressure with less interest in defensive staying power.",
+            "factionModifiers": [
+              {
+                "burn": {
+                  "damagePerSecond": 3,
+                  "durationSeconds": 4,
+                  "tickInterval": 1
+                },
+                "description": "Hexers apply a short burn that deals damage over time.",
+                "id": "hexfire_burn",
+                "name": "Hexfire Burn",
+                "type": "burn-on-hit",
+                "unitIds": [
+                  "hexer"
+                ]
+              },
+              {
+                "damageMultiplier": 1.15,
+                "description": "Ashen units deal more damage while below half health.",
+                "hpThreshold": 0.5,
+                "id": "ashen_fury",
+                "name": "Ashen Fury",
+                "type": "low-health-damage",
+                "unitIds": [
+                  "raider",
+                  "hexer",
+                  "brute",
+                  "enemy_commander"
+                ]
+              },
+              {
+                "description": "Ashen attack waves are trained for faster forward pressure.",
+                "id": "smoke_march",
+                "name": "Smoke March",
+                "speedMultiplier": 1.06,
+                "type": "wave-speed",
+                "unitIds": [
+                  "raider",
+                  "hexer"
+                ]
+              }
+            ],
+            "magicStyle": "Hexfire pressure applies burn damage and punishes clumped or wounded troops.",
+            "militaryStyle": "Cheap Raiders, hard-hitting waves, fragile casters, and Brutes as the durable exception."
+          },
+          "name": "Ashen Covenant"
+        },
+        "displayName": "Ashen Covenant",
+        "id": "ashen_covenant",
+        "serializedPosture": "stable-id",
+        "sourceFile": "src/game/data/factions.ts"
+      }
+    ],
+    "heroClasses": [
+      {
+        "data": {
+          "abilityIds": [
+            "rally_banner",
+            "cleave",
+            "war_cry"
+          ],
+          "baseStats": {
+            "arcana": 2,
+            "armor": 4,
+            "attackCooldown": 1.1,
+            "command": 8,
+            "damage": 18,
+            "faith": 3,
+            "maxHp": 260,
+            "maxMana": 60,
+            "might": 8,
+            "range": 34,
+            "speed": 110
+          },
+          "color": 14857035,
+          "description": "A strong melee commander who makes nearby soldiers hit harder.",
+          "id": "warlord",
+          "name": "Warlord",
+          "primaryAbilityId": "rally_banner",
+          "visionRadius": 540
+        },
+        "displayName": "Warlord",
+        "id": "warlord",
+        "serializedPosture": "stable-id",
+        "sourceFile": "src/game/data/heroClasses.ts"
+      },
+      {
+        "data": {
+          "abilityIds": [
+            "firebolt",
+            "arcane_burst",
+            "blink"
+          ],
+          "baseStats": {
+            "arcana": 10,
+            "armor": 1,
+            "attackCooldown": 1.25,
+            "command": 4,
+            "damage": 10,
+            "faith": 4,
+            "maxHp": 160,
+            "maxMana": 180,
+            "might": 2,
+            "range": 150,
+            "speed": 105
+          },
+          "color": 15760700,
+          "description": "A magic damage specialist who burns priority targets.",
+          "id": "arcanist",
+          "name": "Arcanist",
+          "primaryAbilityId": "firebolt",
+          "visionRadius": 560
+        },
+        "displayName": "Arcanist",
+        "id": "arcanist",
+        "serializedPosture": "stable-id",
+        "sourceFile": "src/game/data/heroClasses.ts"
+      },
+      {
+        "data": {
+          "abilityIds": [
+            "heal",
+            "blessing",
+            "sanctify_ground"
+          ],
+          "baseStats": {
+            "arcana": 4,
+            "armor": 2,
+            "attackCooldown": 1.2,
+            "command": 6,
+            "damage": 12,
+            "faith": 10,
+            "maxHp": 200,
+            "maxMana": 130,
+            "might": 3,
+            "range": 120,
+            "speed": 105
+          },
+          "color": 9361807,
+          "description": "A healer and holy commander who keeps a small force alive.",
+          "id": "shepherd",
+          "name": "Shepherd",
+          "primaryAbilityId": "heal",
+          "visionRadius": 540
+        },
+        "displayName": "Shepherd",
+        "id": "shepherd",
+        "serializedPosture": "stable-id",
+        "sourceFile": "src/game/data/heroClasses.ts"
+      }
+    ],
+    "lumeNetworks": [
+      {
+        "data": {
+          "activationMode": "capture_only",
+          "battleLocalCopy": "Linked Ward is battle-local and does not change campaign saves.",
+          "benefit": {
+            "damageTakenMultiplier": 0.92,
+            "endpointRadiusBonus": 120,
+            "id": "linked_ward",
+            "name": "Linked Ward",
+            "nonStacking": true,
+            "summary": "Friendly units and buildings near active linked sites take 8% less incoming damage."
+          },
+          "briefingCopy": "Hold two linked sites to wake a Lume Ward. Enemy recapture severs the link.",
+          "campaignNodeId": "aether_well_ruins",
+          "counterplay": "Enemy recapture severs the link; retake both endpoints to restore it.",
+          "eligibleSiteIds": [
+            "west_stone_cut",
+            "ford_toll",
+            "north_aether_spring"
+          ],
+          "hudObjective": "Hold linked sites to wake a Lume Ward.",
+          "id": "aether_well_ruins_lume_ward",
+          "links": [
+            {
+              "displayName": "West Stone Cut to Ford Toll",
+              "fromSiteId": "west_stone_cut",
+              "id": "west_stone_cut_to_ford_toll",
+              "toSiteId": "ford_toll"
+            },
+            {
+              "displayName": "Ford Toll to North Aether Spring",
+              "fromSiteId": "ford_toll",
+              "id": "ford_toll_to_north_aether_spring",
+              "toSiteId": "north_aether_spring"
+            }
+          ],
+          "mapId": "broken_ford",
+          "maxActiveLinks": 2,
+          "maxEligibleSites": 3,
+          "mode": "campaign_node",
+          "rewardsDisabledExcluded": true,
+          "tutorialExcluded": true
+        },
+        "displayName": "aether_well_ruins_lume_ward",
+        "id": "aether_well_ruins_lume_ward",
+        "serializedPosture": "stable-id",
+        "sourceFile": "src/game/data/lumeNetworks.ts"
+      }
+    ],
+    "maps": [
+      {
+        "data": {
+          "captureSites": [
+            {
+              "id": "ford_toll",
+              "incomeAmount": 34,
+              "incomeInterval": 5,
+              "name": "Ford Toll",
+              "radius": 82,
+              "resource": "crowns",
+              "x": 1300,
+              "y": 850
+            },
+            {
+              "id": "west_stone_cut",
+              "incomeAmount": 22,
+              "incomeInterval": 6,
+              "name": "West Stone Cut",
+              "radius": 76,
+              "resource": "stone",
+              "x": 690,
+              "y": 1125
+            },
+            {
+              "id": "south_iron_cache",
+              "incomeAmount": 18,
+              "incomeInterval": 6,
+              "name": "South Iron Cache",
+              "radius": 76,
+              "resource": "iron",
+              "x": 1130,
+              "y": 1390
+            },
+            {
+              "id": "north_aether_spring",
+              "incomeAmount": 14,
+              "incomeInterval": 6,
+              "name": "North Aether Spring",
+              "radius": 76,
+              "resource": "aether",
+              "x": 1570,
+              "y": 430
+            }
+          ],
+          "description": "A ruined ford splits two attack lanes around a dangerous center, with safer but slower resource routes on the flanks.",
+          "enemyStart": {
+            "x": 2320,
+            "y": 330
+          },
+          "height": 1700,
+          "id": "broken_ford",
+          "name": "Broken Ford",
+          "neutralCamps": [
+            {
+              "id": "west_bank_pack",
+              "name": "West Bank Pack",
+              "unitIds": [
+                "wild_hound",
+                "wild_hound",
+                "stone_imp"
+              ],
+              "x": 820,
+              "y": 1290
+            },
+            {
+              "id": "east_bank_imps",
+              "name": "East Bank Imps",
+              "unitIds": [
+                "stone_imp",
+                "stone_imp",
+                "wild_hound"
+              ],
+              "x": 1740,
+              "y": 555
+            },
+            {
+              "id": "ford_guardians",
+              "name": "Ford Guardians",
+              "unitIds": [
+                "stone_imp",
+                "stone_imp",
+                "wild_hound",
+                "wild_hound"
+              ],
+              "x": 1320,
+              "y": 760
+            }
+          ],
+          "playerStart": {
+            "x": 290,
+            "y": 1320
+          },
+          "role": "Contested river crossing skirmish",
+          "scenario": {
+            "buildingSpawns": [
+              {
+                "buildingId": "command_hall",
+                "id": "player_command_hall",
+                "team": "player",
+                "x": 290,
+                "y": 1320
+              },
+              {
+                "buildingId": "enemy_stronghold",
+                "id": "enemy_stronghold",
+                "team": "enemy",
+                "x": 2320,
+                "y": 330
+              },
+              {
+                "buildingId": "enemy_barracks",
+                "id": "enemy_barracks",
+                "team": "enemy",
+                "x": 2190,
+                "y": 435
+              }
+            ],
+            "enemyAI": {
+              "attackInterval": 66,
+              "attackTargetBuildingId": "command_hall",
+              "attackWaveSize": 7,
+              "baseBuildingId": "enemy_stronghold",
+              "defendRadius": 430,
+              "defenseSquadSize": 6,
+              "expandInterval": 24,
+              "expandSquadSize": 2,
+              "incomeInterval": 5,
+              "incomePerTick": {
+                "aether": 36,
+                "crowns": 95,
+                "iron": 48,
+                "stone": 48
+              },
+              "initialAttackDelay": 190,
+              "initialExpandDelay": 20,
+              "minAttackArmySize": 2,
+              "productionBuildingId": "enemy_barracks",
+              "trainInterval": 5.7,
+              "unitPlan": [
+                "raider",
+                "raider",
+                "hexer",
+                "raider",
+                "brute"
+              ]
+            },
+            "heroSpawn": {
+              "x": 360,
+              "y": 1270
+            },
+            "objectives": {
+              "enemyBaseBuildingId": "enemy_stronghold",
+              "playerBaseBuildingId": "command_hall"
+            },
+            "rewardTableId": "broken_ford_rewards",
+            "startingResources": {
+              "enemy": {
+                "aether": 80,
+                "crowns": 220,
+                "iron": 120,
+                "stone": 160
+              },
+              "player": {
+                "aether": 75,
+                "crowns": 380,
+                "iron": 140,
+                "stone": 255
+              }
+            },
+            "unitSpawns": [
+              {
+                "id": "player_militia_1",
+                "team": "player",
+                "unitId": "militia",
+                "x": 385,
+                "y": 1370
+              },
+              {
+                "id": "player_militia_2",
+                "team": "player",
+                "unitId": "militia",
+                "x": 430,
+                "y": 1350
+              },
+              {
+                "id": "player_ranger_1",
+                "team": "player",
+                "unitId": "ranger",
+                "x": 405,
+                "y": 1235
+              },
+              {
+                "id": "enemy_raider_1",
+                "team": "enemy",
+                "unitId": "raider",
+                "x": 2235,
+                "y": 295
+              },
+              {
+                "id": "enemy_raider_2",
+                "team": "enemy",
+                "unitId": "raider",
+                "x": 2200,
+                "y": 330
+              },
+              {
+                "id": "enemy_hexer_1",
+                "team": "enemy",
+                "unitId": "hexer",
+                "x": 2265,
+                "y": 405
+              },
+              {
+                "id": "enemy_brute_1",
+                "team": "enemy",
+                "unitId": "brute",
+                "x": 2345,
+                "y": 465
+              },
+              {
+                "id": "enemy_commander_1",
+                "team": "enemy",
+                "unitId": "enemy_commander",
+                "x": 2365,
+                "y": 245
+              }
+            ]
+          },
+          "strategicNotes": [
+            "The central ford is valuable and exposed; claiming it early risks fighting neutral monsters and enemy patrols.",
+            "Side resources are easier to hold, but their slower income rewards patient expansion.",
+            "Blocked ruins and water pockets make army staging and base exits feel tighter than First Claim."
+          ],
+          "terrainZones": [
+            {
+              "height": 1700,
+              "id": "broken_ford_grass",
+              "type": "grass",
+              "width": 2600,
+              "x": 0,
+              "y": 0
+            },
+            {
+              "height": 500,
+              "id": "player_build",
+              "type": "buildable",
+              "width": 620,
+              "x": 70,
+              "y": 1120
+            },
+            {
+              "height": 500,
+              "id": "enemy_build",
+              "type": "buildable",
+              "width": 560,
+              "x": 1960,
+              "y": 110
+            },
+            {
+              "height": 170,
+              "id": "north_river_bend",
+              "type": "water",
+              "width": 560,
+              "x": 850,
+              "y": 470
+            },
+            {
+              "height": 180,
+              "id": "south_river_bend",
+              "type": "water",
+              "width": 620,
+              "x": 1300,
+              "y": 960
+            },
+            {
+              "height": 120,
+              "id": "ford_shallows",
+              "type": "water",
+              "width": 270,
+              "x": 1190,
+              "y": 740
+            },
+            {
+              "height": 180,
+              "id": "western_ruin_wall",
+              "type": "blocked",
+              "width": 250,
+              "x": 780,
+              "y": 650
+            },
+            {
+              "height": 130,
+              "id": "central_broken_piers",
+              "type": "blocked",
+              "width": 150,
+              "x": 1210,
+              "y": 835
+            },
+            {
+              "height": 170,
+              "id": "eastern_rockfall",
+              "type": "blocked",
+              "width": 260,
+              "x": 1660,
+              "y": 640
+            },
+            {
+              "height": 180,
+              "id": "southern_old_keep",
+              "type": "blocked",
+              "width": 190,
+              "x": 820,
+              "y": 1260
+            },
+            {
+              "height": 160,
+              "id": "northern_watch_ruins",
+              "type": "blocked",
+              "width": 210,
+              "x": 1510,
+              "y": 300
+            }
+          ],
+          "visualPaths": [
+            {
+              "id": "southwest_lane",
+              "points": [
+                {
+                  "x": 120,
+                  "y": 1370
+                },
+                {
+                  "x": 420,
+                  "y": 1290
+                },
+                {
+                  "x": 735,
+                  "y": 1170
+                },
+                {
+                  "x": 1040,
+                  "y": 990
+                },
+                {
+                  "x": 1300,
+                  "y": 850
+                },
+                {
+                  "x": 1600,
+                  "y": 690
+                },
+                {
+                  "x": 1960,
+                  "y": 505
+                },
+                {
+                  "x": 2450,
+                  "y": 355
+                }
+              ],
+              "width": 46
+            },
+            {
+              "id": "northwest_lane",
+              "points": [
+                {
+                  "x": 260,
+                  "y": 1160
+                },
+                {
+                  "x": 555,
+                  "y": 980
+                },
+                {
+                  "x": 850,
+                  "y": 800
+                },
+                {
+                  "x": 1110,
+                  "y": 700
+                },
+                {
+                  "x": 1370,
+                  "y": 760
+                },
+                {
+                  "x": 1660,
+                  "y": 910
+                },
+                {
+                  "x": 2040,
+                  "y": 720
+                },
+                {
+                  "x": 2360,
+                  "y": 510
+                }
+              ],
+              "width": 38
+            },
+            {
+              "id": "ford_crossing",
+              "points": [
+                {
+                  "x": 1090,
+                  "y": 1040
+                },
+                {
+                  "x": 1210,
+                  "y": 940
+                },
+                {
+                  "x": 1320,
+                  "y": 845
+                },
+                {
+                  "x": 1445,
+                  "y": 740
+                },
+                {
+                  "x": 1560,
+                  "y": 625
+                }
+              ],
+              "width": 58
+            },
+            {
+              "id": "southern_resource_track",
+              "points": [
+                {
+                  "x": 610,
+                  "y": 1330
+                },
+                {
+                  "x": 890,
+                  "y": 1430
+                },
+                {
+                  "x": 1130,
+                  "y": 1390
+                },
+                {
+                  "x": 1320,
+                  "y": 1265
+                }
+              ],
+              "width": 28
+            }
+          ],
+          "width": 2600
+        },
+        "displayName": "Broken Ford",
+        "id": "broken_ford",
+        "serializedPosture": "stable-id",
+        "sourceFile": "src/game/data/maps/index.ts"
+      }
+    ],
+    "missionTypes": [
+      {
+        "data": {
+          "id": "control",
+          "name": "Control",
+          "objectiveHint": "Capture and defend resource sites before committing to the final push.",
+          "recommendedBuildTags": [
+            "Commander",
+            "Seer"
+          ],
+          "shortDescription": "Contest the map economy and hold resource sites long enough to outpace the enemy."
+        },
+        "displayName": "Control",
+        "id": "control",
+        "serializedPosture": "derived-reference",
+        "sourceFile": "src/game/data/missionTypes.ts"
+      }
+    ],
+    "nodes": [
+      {
+        "data": {
+          "aiPersonalityId": "hexfire_cult",
+          "chapterId": "border_marches",
+          "description": "A ruined well on Broken Ford pulls the fight toward site control, Worker assignment, and Lume pressure.",
+          "difficulty": "normal",
+          "enemyFactionId": "ashen_covenant",
+          "enemyHeroId": "veyra_cinders",
+          "id": "aether_well_ruins",
+          "mapId": "broken_ford",
+          "missionBriefing": {
+            "afterActionSummary": "The well is guarded again, and the chapel route is exposed.",
+            "primaryObjective": "Destroy the Ashen base after contesting the ruined well.",
+            "recommendedBuildHint": "Seer mana and cooldown support fit the longer aether fight.",
+            "rewardPreview": "First clear: XP, Aether, Stone, and the Aether Lens.",
+            "summary": "A tighter control mission around the ruined well, assigned Workers, and the Lume Surge."
+          },
+          "missionTypeId": "control",
+          "name": "Aether Well Ruins",
+          "nodeType": "battle",
+          "prerequisites": [
+            "old_stone_road"
+          ],
+          "rewards": {
+            "itemIds": [
+              "aether_lens"
+            ],
+            "resources": {
+              "aether": 65,
+              "stone": 45
+            },
+            "xp": 80
+          },
+          "scenarioModifierIds": [
+            "mission_aether_surge"
+          ],
+          "unlocks": [
+            "chapel_of_the_marches"
+          ],
+          "x": 52,
+          "y": 30
+        },
+        "displayName": "Aether Well Ruins",
+        "id": "aether_well_ruins",
+        "serializedPosture": "stable-id",
+        "sourceFile": "src/game/data/campaignNodes.ts"
+      }
+    ],
+    "origins": [
+      {
+        "data": {
+          "description": "Raised for command, stripped of title, and hungry for a second banner.",
+          "id": "exiled_noble",
+          "name": "Exiled Noble",
+          "statMods": {
+            "command": 2,
+            "maxHp": 10
+          }
+        },
+        "displayName": "Exiled Noble",
+        "id": "exiled_noble",
+        "serializedPosture": "derived-reference",
+        "sourceFile": "src/game/data/origins.ts"
+      }
+    ],
+    "resources": [
+      {
+        "data": {
+          "color": 15909198,
+          "description": "Currency used for units, buildings, and campaign payments.",
+          "id": "crowns",
+          "name": "Crowns"
+        },
+        "displayName": "Crowns",
+        "id": "crowns",
+        "serializedPosture": "derived-reference",
+        "sourceFile": "src/game/data/resources.ts"
+      },
+      {
+        "data": {
+          "color": 10331044,
+          "description": "Building material used for halls, towers, and lodges.",
+          "id": "stone",
+          "name": "Stone"
+        },
+        "displayName": "Stone",
+        "id": "stone",
+        "serializedPosture": "derived-reference",
+        "sourceFile": "src/game/data/resources.ts"
+      },
+      {
+        "data": {
+          "color": 13201235,
+          "description": "Military material used for weapons and armored troops.",
+          "id": "iron",
+          "name": "Iron"
+        },
+        "displayName": "Iron",
+        "id": "iron",
+        "serializedPosture": "derived-reference",
+        "sourceFile": "src/game/data/resources.ts"
+      },
+      {
+        "data": {
+          "color": 7656434,
+          "description": "Magic resource used for spells, rituals, and arcane units.",
+          "id": "aether",
+          "name": "Aether"
+        },
+        "displayName": "Aether",
+        "id": "aether",
+        "serializedPosture": "derived-reference",
+        "sourceFile": "src/game/data/resources.ts"
+      }
+    ],
+    "retinueRuleReferences": [
+      {
+        "data": {
+          "baseDeploymentCapacity": 2,
+          "eligibleUnitTypeIds": [
+            "militia",
+            "ranger",
+            "acolyte"
+          ],
+          "id": "retinue_rules",
+          "name": "Retinue Rules",
+          "recoveryHpRatioThreshold": 0.35,
+          "recoveryMissionSteps": 1,
+          "rosterCapacity": 5,
+          "trainingYardIiDeploymentBonus": 1,
+          "unitVeterancyRanks": [
+            {
+              "armorBonus": 0,
+              "damageMultiplier": 1,
+              "flavorText": "New to the line.",
+              "id": "recruit",
+              "maxHpMultiplier": 1,
+              "minXp": 0,
+              "name": "Recruit"
+            },
+            {
+              "armorBonus": 0,
+              "damageMultiplier": 1.04,
+              "flavorText": "Steady under pressure.",
+              "id": "seasoned",
+              "maxHpMultiplier": 1.04,
+              "minXp": 55,
+              "name": "Seasoned"
+            },
+            {
+              "armorBonus": 0,
+              "damageMultiplier": 1.08,
+              "flavorText": "Trusted in the hard fighting.",
+              "id": "veteran",
+              "maxHpMultiplier": 1.08,
+              "minXp": 130,
+              "name": "Veteran"
+            },
+            {
+              "armorBonus": 1,
+              "damageMultiplier": 1.12,
+              "flavorText": "A standard others rally around.",
+              "id": "elite",
+              "maxHpMultiplier": 1.12,
+              "minXp": 230,
+              "name": "Elite"
+            }
+          ],
+          "unitVeterancyXpRules": {
+            "damageDivisor": 4,
+            "survivalXp": 12
+          }
+        },
+        "displayName": "Retinue Rules",
+        "id": "retinue_rules",
+        "serializedPosture": "derived-reference",
+        "sourceFile": "src/game/core/RetinueRules.ts"
+      }
+    ],
+    "rewards": [
+      {
+        "data": {
+          "deterministicItemIds": [
+            "fordbreaker_halberd",
+            "captains_seal",
+            "aether_lens",
+            "scouts_bow",
+            "oathbound_aegis",
+            "starfall_prism",
+            "ascendant_signet"
+          ],
+          "firstClearBonus": {
+            "itemIds": [
+              "fordbreaker_halberd"
+            ],
+            "resources": {
+              "aether": 30,
+              "crowns": 110,
+              "iron": 50
+            },
+            "xp": 65
+          },
+          "guaranteedItemIds": [],
+          "id": "broken_ford_rewards",
+          "name": "Broken Ford Spoils",
+          "repeatClearReward": {
+            "resources": {
+              "crowns": 45,
+              "iron": 20
+            },
+            "xp": 25
+          },
+          "resourceRewards": [
+            {
+              "amount": 60,
+              "resource": "crowns"
+            },
+            {
+              "amount": 35,
+              "resource": "iron"
+            },
+            {
+              "amount": 20,
+              "resource": "aether"
+            }
+          ],
+          "rolls": 1,
+          "weightedItemPool": [
+            {
+              "itemId": "scouts_bow",
+              "mapIds": [
+                "broken_ford"
+              ],
+              "weight": 16
+            },
+            {
+              "itemId": "marcher_plate",
+              "mapIds": [
+                "broken_ford"
+              ],
+              "weight": 14
+            },
+            {
+              "itemId": "runewoven_robes",
+              "mapIds": [
+                "broken_ford"
+              ],
+              "weight": 14
+            },
+            {
+              "itemId": "dawnward_vestments",
+              "mapIds": [
+                "broken_ford"
+              ],
+              "weight": 14
+            },
+            {
+              "itemId": "captains_seal",
+              "mapIds": [
+                "broken_ford"
+              ],
+              "weight": 14
+            },
+            {
+              "itemId": "aether_lens",
+              "mapIds": [
+                "broken_ford"
+              ],
+              "weight": 14
+            },
+            {
+              "itemId": "green_chapel_icon",
+              "mapIds": [
+                "broken_ford"
+              ],
+              "weight": 14
+            },
+            {
+              "itemId": "fordbreaker_halberd",
+              "mapIds": [
+                "broken_ford"
+              ],
+              "weight": 12
+            },
+            {
+              "itemId": "ashbound_censer",
+              "mapIds": [
+                "broken_ford"
+              ],
+              "weight": 10
+            },
+            {
+              "itemId": "oathbound_aegis",
+              "mapIds": [
+                "broken_ford"
+              ],
+              "weight": 5
+            },
+            {
+              "itemId": "starfall_prism",
+              "mapIds": [
+                "broken_ford"
+              ],
+              "weight": 5
+            },
+            {
+              "itemId": "ascendant_signet",
+              "mapIds": [
+                "broken_ford"
+              ],
+              "repeatClearOnly": true,
+              "weight": 1
+            }
+          ],
+          "xpRewards": [
+            {
+              "amount": 55
+            }
+          ]
+        },
+        "displayName": "Broken Ford Spoils",
+        "id": "broken_ford_rewards",
+        "serializedPosture": "derived-reference",
+        "sourceFile": "src/game/data/rewards.ts"
+      }
+    ],
+    "tacticalPlans": [
+      {
+        "data": {
+          "afterActionSummary": "Defensive plan used; Retinue reinforcement support was available for the fight.",
+          "description": "Default safe plan: protect Workers, sites, hero, and Retinue before committing.",
+          "effectSummary": "Call Retinue costs 60 Crowns instead of 75 in eligible campaign battles.",
+          "hudSummary": "Guarded Advance active: Retinue call costs less.",
+          "id": "guarded_advance",
+          "launchModifierId": "tactical_guarded_advance",
+          "name": "Guarded Advance",
+          "recommendedCounterplay": "Use this when raids, hero probes, or late pushes threaten exposed units.",
+          "recommendedDoctrineIds": [
+            "raider",
+            "hunter",
+            "warband"
+          ],
+          "shortLabel": "Guarded",
+          "tags": [
+            "defensive",
+            "retinue",
+            "safe default"
+          ]
+        },
+        "displayName": "Guarded Advance",
+        "id": "guarded_advance",
+        "serializedPosture": "stable-id",
+        "sourceFile": "src/game/data/tacticalPlans.ts"
+      },
+      {
+        "data": {
+          "afterActionSummary": "Economy plan used; early resource support helped the opening build.",
+          "description": "Economy opener: capture and upgrade sites earlier, then convert resources into army.",
+          "effectSummary": "Start with +35 Crowns and +20 Stone in eligible campaign battles.",
+          "hudSummary": "Resource Push active: extra Crowns and Stone at start.",
+          "id": "resource_push",
+          "launchModifierId": "tactical_resource_push",
+          "name": "Resource Push",
+          "recommendedCounterplay": "Use this into Fortress defenses or when you want more site-control tempo.",
+          "recommendedDoctrineIds": [
+            "raider",
+            "fortress"
+          ],
+          "shortLabel": "Economy",
+          "tags": [
+            "economy",
+            "site control",
+            "production"
+          ]
+        },
+        "displayName": "Resource Push",
+        "id": "resource_push",
+        "serializedPosture": "stable-id",
+        "sourceFile": "src/game/data/tacticalPlans.ts"
+      }
+    ],
+    "unitRoles": [
+      {
+        "data": {
+          "id": "worker",
+          "label": "Utility / Site Support",
+          "summary": "Builder and economy support. Workers are useful in combat only as a last resort.",
+          "tacticalHint": "Use Workers to build, repair, finish construction, and boost captured resource sites.",
+          "tags": [
+            "utility",
+            "build",
+            "repair",
+            "site-support"
+          ],
+          "unitId": "worker"
+        },
+        "displayName": "Utility / Site Support",
+        "id": "worker",
+        "serializedPosture": "derived-reference",
+        "sourceFile": "src/game/data/unitRoles.ts"
+      },
+      {
+        "data": {
+          "id": "militia",
+          "label": "Frontline / Melee",
+          "summary": "Durable enough to stand in front and hold enemies away from fragile units.",
+          "tacticalHint": "Put Militia in front, use Hold Ground when defending, and let them screen Rangers or Acolytes.",
+          "tags": [
+            "frontline",
+            "melee",
+            "holds-ground"
+          ],
+          "unitId": "militia"
+        },
+        "displayName": "Frontline / Melee",
+        "id": "militia",
+        "serializedPosture": "derived-reference",
+        "sourceFile": "src/game/data/unitRoles.ts"
+      },
+      {
+        "data": {
+          "id": "ranger",
+          "label": "Ranged / Focus Fire",
+          "summary": "Longer-ranged damage that needs space and frontline cover.",
+          "tacticalHint": "Focus Rangers on priority targets from behind Militia; move them if enemies close the gap.",
+          "tags": [
+            "ranged",
+            "focus-fire",
+            "fragile"
+          ],
+          "unitId": "ranger"
+        },
+        "displayName": "Ranged / Focus Fire",
+        "id": "ranger",
+        "serializedPosture": "derived-reference",
+        "sourceFile": "src/game/data/unitRoles.ts"
+      },
+      {
+        "data": {
+          "id": "raider",
+          "label": "Enemy Pressure / Melee",
+          "summary": "Fast melee pressure that contests workers, sites, and exposed ranged units.",
+          "tacticalHint": "Screen with Militia and avoid letting Raiders reach fragile backline units.",
+          "tags": [
+            "enemy-pressure",
+            "melee"
+          ],
+          "unitId": "raider"
+        },
+        "displayName": "Enemy Pressure / Melee",
+        "id": "raider",
+        "serializedPosture": "derived-reference",
+        "sourceFile": "src/game/data/unitRoles.ts"
+      },
+      {
+        "data": {
+          "id": "hexer",
+          "label": "Enemy Aether / Ranged",
+          "summary": "Fragile ranged caster that punishes clumped or wounded units.",
+          "tacticalHint": "Focus fire Hexers before they chip down grouped troops.",
+          "tags": [
+            "enemy-pressure",
+            "aether",
+            "ranged"
+          ],
+          "unitId": "hexer"
+        },
+        "displayName": "Enemy Aether / Ranged",
+        "id": "hexer",
+        "serializedPosture": "derived-reference",
+        "sourceFile": "src/game/data/unitRoles.ts"
+      },
+      {
+        "data": {
+          "id": "brute",
+          "label": "Enemy Frontline / Heavy",
+          "summary": "Slow heavy melee unit built to soak damage during enemy pushes.",
+          "tacticalHint": "Kite Brutes with range and do not let them tie up fragile units for long.",
+          "tags": [
+            "enemy-pressure",
+            "frontline",
+            "melee"
+          ],
+          "unitId": "brute"
+        },
+        "displayName": "Enemy Frontline / Heavy",
+        "id": "brute",
+        "serializedPosture": "derived-reference",
+        "sourceFile": "src/game/data/unitRoles.ts"
+      },
+      {
+        "data": {
+          "id": "enemy_commander",
+          "label": "Enemy Commander / Champion",
+          "summary": "Rival battlefield leader that turns larger enemy attacks into a serious threat.",
+          "tacticalHint": "Defeating the commander is a major objective and can unlock the relic reward flow.",
+          "tags": [
+            "enemy-pressure",
+            "commander",
+            "champion"
+          ],
+          "unitId": "enemy_commander"
+        },
+        "displayName": "Enemy Commander / Champion",
+        "id": "enemy_commander",
+        "serializedPosture": "derived-reference",
+        "sourceFile": "src/game/data/unitRoles.ts"
+      }
+    ],
+    "units": [
+      {
+        "data": {
+          "buildOptions": [
+            "barracks",
+            "mystic_lodge",
+            "watchtower"
+          ],
+          "color": 14137712,
+          "cost": {
+            "crowns": 50
+          },
+          "description": "A camp hand who can establish basic military buildings.",
+          "factionId": "free_marches",
+          "id": "worker",
+          "name": "Worker",
+          "radius": 11,
+          "role": "Builder",
+          "stats": {
+            "armor": 0,
+            "attackCooldown": 1.4,
+            "damage": 3,
+            "maxHp": 55,
+            "range": 22,
+            "speed": 88
+          },
+          "trainTime": 3,
+          "visionRadius": 330,
+          "xpValue": 8
+        },
+        "displayName": "Worker",
+        "id": "worker",
+        "serializedPosture": "stable-id",
+        "sourceFile": "src/game/data/units.ts"
+      },
+      {
+        "data": {
+          "color": 9424785,
+          "cost": {
+            "crowns": 60,
+            "iron": 20
+          },
+          "description": "Reliable town guard with spears and stubborn courage.",
+          "factionId": "free_marches",
+          "id": "militia",
+          "name": "Militia",
+          "radius": 13,
+          "role": "Cheap melee infantry",
+          "stats": {
+            "armor": 1,
+            "attackCooldown": 1,
+            "damage": 9,
+            "maxHp": 90,
+            "range": 28,
+            "speed": 90
+          },
+          "trainTime": 4,
+          "visionRadius": 360,
+          "xpValue": 15
+        },
+        "displayName": "Militia",
+        "id": "militia",
+        "serializedPosture": "stable-id",
+        "sourceFile": "src/game/data/units.ts"
+      },
+      {
+        "data": {
+          "color": 7255512,
+          "cost": {
+            "crowns": 80,
+            "iron": 30
+          },
+          "description": "A light archer who fights best behind a front line.",
+          "factionId": "free_marches",
+          "id": "ranger",
+          "name": "Ranger",
+          "prerequisites": {
+            "buildingIds": [
+              "barracks"
+            ]
+          },
+          "projectileColor": 13101218,
+          "radius": 12,
+          "role": "Ranged skirmisher",
+          "stats": {
+            "armor": 0,
+            "attackCooldown": 1.35,
+            "damage": 8,
+            "maxHp": 65,
+            "range": 160,
+            "speed": 95
+          },
+          "trainTime": 5,
+          "visionRadius": 430,
+          "xpValue": 20
+        },
+        "displayName": "Ranger",
+        "id": "ranger",
+        "serializedPosture": "stable-id",
+        "sourceFile": "src/game/data/units.ts"
+      },
+      {
+        "data": {
+          "color": 13066062,
+          "cost": {
+            "crowns": 45,
+            "iron": 15
+          },
+          "description": "Fast enemy infantry that pressures resource sites.",
+          "factionId": "ashen_covenant",
+          "id": "raider",
+          "name": "Raider",
+          "radius": 13,
+          "role": "Enemy melee attacker",
+          "stats": {
+            "armor": 1,
+            "attackCooldown": 1,
+            "damage": 10,
+            "maxHp": 76,
+            "range": 28,
+            "speed": 98
+          },
+          "trainTime": 4,
+          "visionRadius": 360,
+          "xpValue": 15
+        },
+        "displayName": "Raider",
+        "id": "raider",
+        "serializedPosture": "stable-id",
+        "sourceFile": "src/game/data/units.ts"
+      },
+      {
+        "data": {
+          "color": 11759330,
+          "cost": {
+            "aether": 35,
+            "crowns": 75
+          },
+          "description": "A brittle caster whose bolts punish clumped troops.",
+          "factionId": "ashen_covenant",
+          "id": "hexer",
+          "name": "Hexer",
+          "projectileColor": 14519551,
+          "radius": 12,
+          "role": "Enemy ranged magic",
+          "stats": {
+            "armor": 0,
+            "attackCooldown": 1.25,
+            "damage": 9,
+            "maxHp": 52,
+            "range": 150,
+            "speed": 88
+          },
+          "trainTime": 5,
+          "visionRadius": 400,
+          "xpValue": 20
+        },
+        "displayName": "Hexer",
+        "id": "hexer",
+        "serializedPosture": "stable-id",
+        "sourceFile": "src/game/data/units.ts"
+      },
+      {
+        "data": {
+          "color": 10439222,
+          "cost": {
+            "crowns": 110,
+            "iron": 50
+          },
+          "description": "A heavy brawler meant to soak damage during attack waves.",
+          "factionId": "ashen_covenant",
+          "id": "brute",
+          "name": "Brute",
+          "radius": 16,
+          "role": "Enemy tank",
+          "stats": {
+            "armor": 3,
+            "attackCooldown": 1.25,
+            "damage": 13,
+            "maxHp": 170,
+            "range": 30,
+            "speed": 72
+          },
+          "trainTime": 7,
+          "visionRadius": 340,
+          "xpValue": 30
+        },
+        "displayName": "Brute",
+        "id": "brute",
+        "serializedPosture": "stable-id",
+        "sourceFile": "src/game/data/units.ts"
+      },
+      {
+        "data": {
+          "color": 15755843,
+          "cost": {},
+          "description": "A dangerous commander who joins larger enemy attacks.",
+          "factionId": "ashen_covenant",
+          "id": "enemy_commander",
+          "name": "Ashen Commander",
+          "radius": 18,
+          "role": "Enemy hero placeholder",
+          "stats": {
+            "armor": 3,
+            "attackCooldown": 1.1,
+            "damage": 16,
+            "maxHp": 260,
+            "range": 34,
+            "speed": 92
+          },
+          "trainTime": 0,
+          "visionRadius": 500,
+          "xpValue": 150
+        },
+        "displayName": "Ashen Commander",
+        "id": "enemy_commander",
+        "serializedPosture": "stable-id",
+        "sourceFile": "src/game/data/units.ts"
+      }
+    ]
+  },
+  "checkpoint": "v0.116",
+  "fullExportCheckpoint": "v0.101",
+  "generatedAtUtc": "deterministic-v0116",
+  "runtimeBehavior": "unchanged-downstream-export",
+  "schemaVersion": 1,
+  "sourceLinks": {
+    "generatedArtifactRoot": "artifacts/desktop-spike-fixture/latest",
+    "generatedDocs": [
+      "docs/V0116_ARCHITECTURE_DECISION_RECORD.md",
+      "docs/V0116_ENGINE_CANDIDATE_MATRIX.md",
+      "docs/V0116_RECOMMENDED_ENGINE_SPIKE_ORDER.md",
+      "docs/V0116_DESKTOP_SPIKE_ACCEPTANCE_CONTRACT.md",
+      "docs/V0116_DESKTOP_SPIKE_FIXTURE_EXPORT_SPEC.md",
+      "docs/V0116_ENGINE_SPIKE_SCORECARD_TEMPLATE.json",
+      "docs/V0116_EMMANUEL_ARCHITECTURE_REVIEW_PACKET.md",
+      "docs/V0116_REFERENCE_ART_CONTINUATION_BOUNDARY.md",
+      "docs/V0116_IMPLEMENTATION_REPORT.md"
+    ],
+    "required": [
+      "LLM_GAME_HANDOFF.md",
+      "README.md",
+      "ROADMAP.md",
+      "CHANGELOG.md",
+      "DEVELOPMENT_CHECKPOINT.md",
+      "RELEASE_CHECKLIST.md",
+      "docs/V091_CURRENT_ARCHITECTURE_REUSE_MATRIX.md",
+      "docs/V091_DESKTOP_ENGINE_DECISION_CRITERIA.md",
+      "docs/V091_DESKTOP_VERTICAL_SLICE_SCOPE.md",
+      "docs/V091_STAGED_TRANSITION_EXPERIMENTS.md",
+      "docs/V091_SAVE_CONTENT_AND_TEST_REUSE_PLAN.md",
+      "docs/V0101_PORTABLE_CONTENT_EXPORT_CONTRACT.md",
+      "docs/V0101_STABLE_ID_FREEZE_POLICY.md",
+      "docs/V0102_SAVE_TRANSLATION_PROOF_REPORT.md",
+      "docs/V0102_DESKTOP_SAVE_ENVELOPE_CONTRACT.md",
+      "docs/V0107_SALTO_VERTICAL_SLICE_COMPOSITION_SPEC.md",
+      "docs/V0107_SALTO_VERTICAL_SLICE_MANIFEST.json",
+      "docs/V0108_BENCHMARK_SCENARIO_MANIFEST.json",
+      "docs/V0109_TRUSTED_BROWSER_BENCHMARK_PROTOCOL.md",
+      "docs/V0109_ROOT_CAUSE_MATRIX_REPORT.md",
+      "docs/V0110_BROWSER_PERFORMANCE_GATE.md",
+      "docs/V0111_BROWSER_CONTROL_BASELINES.md",
+      "docs/V0111_MACHINE_PRESSURE_CLASSIFICATION.md",
+      "docs/V0112_IDLE_COST_MATRIX.md",
+      "docs/V0113_SPATIAL_QUERY_PROFILE.md",
+      "docs/V0114_RENDER_LIFECYCLE_AUDIT.md",
+      "docs/V0115_BROWSER_PERFORMANCE_GATE.md",
+      "src/game/portable/PortableContentExport.ts",
+      "src/game/portable/stable-id-snapshot.json",
+      "src/game/save/SaveTranslationContract.ts",
+      "tests/fixtures/saves/v0102/manifest.json",
+      "src/game/playtest/RepresentativeBattleBenchmark.ts",
+      "src/game/data/lumeNetworks.ts",
+      "src/game/art/visual-asset-registry.json",
+      "tools/runtime-art-slots/validateRuntimeArtSlots.ts"
+    ]
+  }
+}

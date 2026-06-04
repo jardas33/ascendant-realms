@@ -1,0 +1,20 @@
+{
+  "algorithm": "sha256",
+  "checkpoint": "v0.116",
+  "files": {
+    "benchmark-contract.json": "6b07d6bbc6cf717d4649919f618bc10762b754c0a9ce9f9bc21da5f3c0c165a9",
+    "content-subset.json": "ca0725c1870a940f3c647f4964894cd396f30f11adf9a7883ce9e2e1fae0e4f2",
+    "expected-parity.json": "9b12a88c046958a6af5eeaa4a8780e1d09609f4dca7b4d052fea507000427b6e",
+    "input-contract.json": "a576bd06ac809eb7b494b339b9f2223421ce16b8e3bad9175f4bbaeeba9397b7",
+    "qa-checklist.md": "abb0197381a16255bdd702eea95c5cb21bae19b979bf45886e0ec6ec93f83ea4",
+    "README.md": "cad4b1dc7e17fdcccb2337f993e2413368690069007e3bd235ea525b7d32530f",
+    "results-contract.json": "7124433affa86ef005a16910bb4e6f6e60f374642485c591d23f1a986c21b121",
+    "save-fixture-index.json": "3eebef7b7d7141b2b22f4eb8926365c591d2a4986789913bd1cc7994ef442e5a",
+    "scene-fixture.json": "521630978cc52c9ab2d3993996b7a69af0afd94964b68efea858edd1a87f28c5",
+    "stable-id-subset.json": "731c3f3132cf361b3b02a4580315326855cd341a94954ef7d870cbf286b4f5a2",
+    "visual-placeholder-contract.json": "906ddd09a9d13ebd65a6704ce79ccc4035229e06f14a39de26ff56c6b86ff45b"
+  },
+  "fixtureHash": "d6c00aad4d32173566194b01cd9b88c2947151da1e1c93cccaeb411ce225f7a3",
+  "generatedAtUtc": "deterministic-v0116",
+  "schemaVersion": 1
+}

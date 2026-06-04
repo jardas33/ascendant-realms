@@ -1,0 +1,114 @@
+{
+  "authority": "derived-from-v0.116-engine-neutral-fixture",
+  "browserRuntimePreserved": true,
+  "checkpoint": "v0.117",
+  "copiedFiles": [
+    {
+      "file": "benchmark-contract.json",
+      "sha256": "6b07d6bbc6cf717d4649919f618bc10762b754c0a9ce9f9bc21da5f3c0c165a9",
+      "source": "artifacts/desktop-spike-fixture/latest/benchmark-contract.json",
+      "target": "desktop-spikes/godot-salto/data/generated/benchmark-contract.json"
+    },
+    {
+      "file": "content-subset.json",
+      "sha256": "ca0725c1870a940f3c647f4964894cd396f30f11adf9a7883ce9e2e1fae0e4f2",
+      "source": "artifacts/desktop-spike-fixture/latest/content-subset.json",
+      "target": "desktop-spikes/godot-salto/data/generated/content-subset.json"
+    },
+    {
+      "file": "expected-parity.json",
+      "sha256": "9b12a88c046958a6af5eeaa4a8780e1d09609f4dca7b4d052fea507000427b6e",
+      "source": "artifacts/desktop-spike-fixture/latest/expected-parity.json",
+      "target": "desktop-spikes/godot-salto/data/generated/expected-parity.json"
+    },
+    {
+      "file": "fixture-hashes.json",
+      "sha256": "a0794c880c4edd632aa323b3ba643b0d5b78cf2bf4dbbbb8c73b65c62ca1e4cb",
+      "source": "artifacts/desktop-spike-fixture/latest/fixture-hashes.json",
+      "target": "desktop-spikes/godot-salto/data/generated/fixture-hashes.json"
+    },
+    {
+      "file": "input-contract.json",
+      "sha256": "a576bd06ac809eb7b494b339b9f2223421ce16b8e3bad9175f4bbaeeba9397b7",
+      "source": "artifacts/desktop-spike-fixture/latest/input-contract.json",
+      "target": "desktop-spikes/godot-salto/data/generated/input-contract.json"
+    },
+    {
+      "file": "results-contract.json",
+      "sha256": "7124433affa86ef005a16910bb4e6f6e60f374642485c591d23f1a986c21b121",
+      "source": "artifacts/desktop-spike-fixture/latest/results-contract.json",
+      "target": "desktop-spikes/godot-salto/data/generated/results-contract.json"
+    },
+    {
+      "file": "save-fixture-index.json",
+      "sha256": "3eebef7b7d7141b2b22f4eb8926365c591d2a4986789913bd1cc7994ef442e5a",
+      "source": "artifacts/desktop-spike-fixture/latest/save-fixture-index.json",
+      "target": "desktop-spikes/godot-salto/data/generated/save-fixture-index.json"
+    },
+    {
+      "file": "scene-fixture.json",
+      "sha256": "521630978cc52c9ab2d3993996b7a69af0afd94964b68efea858edd1a87f28c5",
+      "source": "artifacts/desktop-spike-fixture/latest/scene-fixture.json",
+      "target": "desktop-spikes/godot-salto/data/generated/scene-fixture.json"
+    },
+    {
+      "file": "stable-id-subset.json",
+      "sha256": "731c3f3132cf361b3b02a4580315326855cd341a94954ef7d870cbf286b4f5a2",
+      "source": "artifacts/desktop-spike-fixture/latest/stable-id-subset.json",
+      "target": "desktop-spikes/godot-salto/data/generated/stable-id-subset.json"
+    },
+    {
+      "file": "visual-placeholder-contract.json",
+      "sha256": "906ddd09a9d13ebd65a6704ce79ccc4035229e06f14a39de26ff56c6b86ff45b",
+      "source": "artifacts/desktop-spike-fixture/latest/visual-placeholder-contract.json",
+      "target": "desktop-spikes/godot-salto/data/generated/visual-placeholder-contract.json"
+    }
+  ],
+  "engineDecisionFinalized": false,
+  "fixtureHash": "d6c00aad4d32173566194b01cd9b88c2947151da1e1c93cccaeb411ce225f7a3",
+  "fixtureLocalLumeIds": {
+    "benefitId": "linked_ward",
+    "linkId": "west_stone_cut_to_ford_toll",
+    "posture": "fixture-local-lume-contract-preserved-separately-from-content-stable-id-set"
+  },
+  "gameplayChanged": false,
+  "generatedAtUtc": "deterministic-v0117",
+  "generatedOrImportedArtIncluded": false,
+  "linkedWardDamageTakenMultiplier": 0.92,
+  "linkedWardMustRemainExact": 0.92,
+  "localStorageMutationAllowed": false,
+  "modes": [
+    "2D_PLACEHOLDER",
+    "2_5D_ORTHOGRAPHIC_PLACEHOLDER"
+  ],
+  "readOnlySaveFixtureManifest": "tests/fixtures/saves/v0102/manifest.json",
+  "runtimeArtIntegrated": false,
+  "schemaVersion": 1,
+  "sourceFixtureRoot": "artifacts/desktop-spike-fixture/latest",
+  "stableIdValidation": {
+    "knownStableIdCount": 39,
+    "missing": [],
+    "selectedIds": [
+      "aether_well_ruins",
+      "aether_well_ruins_lume_ward",
+      "ashen_covenant",
+      "barracks",
+      "broken_ford",
+      "brute",
+      "command_hall",
+      "enemy_barracks",
+      "enemy_commander",
+      "enemy_stronghold",
+      "ford_toll",
+      "free_marches",
+      "hexer",
+      "militia",
+      "raider",
+      "ranger",
+      "west_stone_cut",
+      "worker"
+    ],
+    "unknownProbeId": "v0117_unknown_fixture_id_must_be_rejected",
+    "unknownProbeRejected": true
+  }
+}
