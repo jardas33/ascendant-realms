@@ -18,6 +18,7 @@ var hud_hero_label: Label
 var hud_objective_label: Label
 var camera_panned := false
 var camera_zoomed := false
+var player_facing_mode := false
 
 func _ready() -> void:
 	_create_camera()
@@ -41,6 +42,11 @@ func set_visual_preset(preset: String) -> bool:
 
 func get_visual_preset() -> String:
 	return visual_preset
+
+func set_player_facing_mode(enabled: bool) -> bool:
+	player_facing_mode = enabled
+	_sync_hud()
+	return true
 
 func set_workload_tier(tier: String) -> bool:
 	var result: bool = runtime.set_workload_tier(tier)
@@ -168,12 +174,17 @@ func get_spike_status() -> Dictionary:
 	status["resourceRowRendered"] = hud_layer != null
 	status["selectedHeroCardRendered"] = hud_hero_label != null
 	status["objectiveSummaryRendered"] = hud_objective_label != null
+	status["commandButtonsRendered"] = hud_layer != null
+	status["playerFacingMode"] = player_facing_mode
+	status["playerFacingHudCompact"] = player_facing_mode and hud_layer != null
+	status["minimapMarkersRendered"] = hud_layer != null
 	status["captureSiteMarkerRendered"] = runtime.sites.size() > 0
 	status["lumeLinkRendered"] = runtime.lume_links.size() > 0
 	status["lumeFocused"] = runtime.lume_links.any(func(link: Dictionary) -> bool: return bool(link.get("focused", false)))
 	status["lumeTransitionPulseRendered"] = runtime.lume_links.any(func(link: Dictionary) -> bool: return str(link.get("state", "")) == "restored" or bool(link.get("focused", false)))
 	status["vfxStressPrivate"] = visual_preset == VISUAL_PRESET_VFX_STRESS
 	status["safeZoomBounds"] = {"min": SAFE_ZOOM_MIN, "max": SAFE_ZOOM_MAX}
+	status["cameraPanBounds"] = {"minX": -6.8, "maxX": 6.8, "minZ": -4.4, "maxZ": 4.4}
 	status["cameraPanned"] = camera_panned
 	status["cameraZoomed"] = camera_zoomed
 	status["paused"] = runtime.paused
@@ -192,8 +203,8 @@ func _create_camera() -> void:
 	var camera := Camera3D.new()
 	camera.name = "FixedOrthographicCamera"
 	camera.projection = Camera3D.PROJECTION_ORTHOGONAL
-	camera.size = 13.0
-	camera.position = Vector3(0, 11.4, 9.6)
+	camera.size = 11.6
+	camera.position = Vector3(0, 10.8, 8.7)
 	camera.rotation_degrees = Vector3(-58, 0, 0)
 	camera.current = true
 	add_child(camera)
@@ -227,7 +238,7 @@ func _create_terrain() -> void:
 	var ground := MeshInstance3D.new()
 	ground.name = "SaltoTerrainPlane"
 	var mesh := PlaneMesh.new()
-	mesh.size = Vector2(15, 10)
+	mesh.size = Vector2(17.5, 11.5)
 	ground.mesh = mesh
 	ground.material_override = _material(_terrain_color())
 	terrain_root.add_child(ground)
@@ -264,7 +275,7 @@ func _create_hud() -> void:
 	var frame := Panel.new()
 	frame.name = "HudFrame"
 	frame.position = Vector2(18, 722)
-	frame.size = Vector2(562, 154)
+	frame.size = Vector2(562, 164)
 	var style := StyleBoxFlat.new()
 	style.bg_color = Color(0.035, 0.045, 0.045, 0.88)
 	style.border_color = Color(0.36, 0.74, 0.66, 0.84)
@@ -300,11 +311,22 @@ func _create_hud() -> void:
 
 	hud_status_label = Label.new()
 	hud_status_label.name = "VisualPresetStatus"
-	hud_status_label.position = Vector2(18, 108)
+	hud_status_label.position = Vector2(18, 100)
 	hud_status_label.size = Vector2(526, 24)
 	hud_status_label.add_theme_font_size_override("font_size", 13)
 	hud_status_label.add_theme_color_override("font_color", Color(0.66, 0.84, 0.78))
 	frame.add_child(hud_status_label)
+
+	var command_labels := ["Move", "Attack", "Hold", "Lume"]
+	var command_names := ["CommandButtonMove", "CommandButtonAttack", "CommandButtonHold", "CommandButtonLume"]
+	for index in range(command_labels.size()):
+		var button := Button.new()
+		button.name = command_names[index]
+		button.text = command_labels[index]
+		button.position = Vector2(18 + index * 126, 130)
+		button.size = Vector2(108, 30)
+		button.add_theme_font_size_override("font_size", 12)
+		frame.add_child(button)
 
 	var minimap := Panel.new()
 	minimap.name = "MinimapOrientationPlaceholder"
@@ -321,7 +343,9 @@ func _create_hud() -> void:
 	for marker in [
 		{"pos": Vector2(26, 42), "size": Vector2(58, 12), "color": Color(0.42, 0.78, 0.52)},
 		{"pos": Vector2(72, 88), "size": Vector2(80, 10), "color": Color(0.22, 0.66, 0.76)},
-		{"pos": Vector2(110, 38), "size": Vector2(42, 12), "color": Color(0.84, 0.28, 0.20)}
+		{"pos": Vector2(110, 38), "size": Vector2(42, 12), "color": Color(0.84, 0.28, 0.20)},
+		{"pos": Vector2(54, 120), "size": Vector2(16, 16), "color": Color(0.88, 0.78, 0.32)},
+		{"pos": Vector2(126, 116), "size": Vector2(14, 14), "color": Color(0.28, 0.86, 0.82)}
 	]:
 		var rect := ColorRect.new()
 		rect.position = marker["pos"]
@@ -331,14 +355,17 @@ func _create_hud() -> void:
 
 func _sync_hud() -> void:
 	if hud_status_label:
-		hud_status_label.text = "Preset %s | %s | editor optional" % [visual_preset, runtime.workload_tier]
+		if player_facing_mode:
+			hud_status_label.text = "Commands ready | quarry held | Lume route marked"
+		else:
+			hud_status_label.text = "Preset %s | %s | editor optional" % [visual_preset, runtime.workload_tier]
 	if hud_hero_label:
 		var selected := "Aster ready"
 		if not runtime.selected_ids.is_empty():
 			selected = "Selected %s" % ", ".join(runtime.selected_ids.slice(0, min(3, runtime.selected_ids.size())))
 		hud_hero_label.text = selected
 	if hud_objective_label:
-		hud_objective_label.text = "Hold quarry, restore Lume, exit to Results without save writes"
+		hud_objective_label.text = "Hold the quarry, guide the Worker, break the Ashen wave, restore Lume"
 
 func _rebuild_visuals() -> void:
 	if visual_root == null:
@@ -360,8 +387,9 @@ func _rebuild_visuals() -> void:
 	for endpoint in runtime.lume_endpoints:
 		_add_unit(str(endpoint["id"]), _to_world(endpoint["position"], 0.22), _lume_core_color(), 0.13, true)
 	for unit in runtime.units:
-		_add_unit(str(unit["id"]), _to_world(unit["position"], 0.28), _unit_color(unit), _unit_radius(unit), _unit_emissive(unit))
+		_add_unit_silhouette(unit)
 		_add_selection_disc("selection_%s" % str(unit["id"]), _to_world(unit["position"], 0.08), _unit_radius(unit) * 2.2, _selection_color(unit))
+		_add_box("health_%s" % str(unit["id"]), _to_world(unit["position"], 0.66), Vector3(_unit_radius(unit) * 1.65, 0.035, 0.035), Color(0.28, 0.88, 0.44), false, false)
 	_sync_unit_visuals()
 
 func _sync_unit_visuals() -> void:
@@ -376,6 +404,10 @@ func _sync_unit_visuals() -> void:
 		node.position = _to_world(unit["position"], 0.28)
 		node.scale = _unit_scale(unit) * (1.22 if runtime.selected_ids.has(id) else 1.0)
 		node.visible = bool(unit["alive"])
+		var health := visual_root.get_node_or_null("health_%s" % id) as MeshInstance3D
+		if health:
+			health.position = _to_world(unit["position"], 0.66)
+			health.visible = bool(unit["alive"])
 		if selection:
 			selection.position = _to_world(unit["position"], 0.08)
 			selection.visible = bool(unit["alive"]) and runtime.selected_ids.has(id)
@@ -429,6 +461,42 @@ func _add_unit(name: String, position: Vector3, color: Color, radius: float, emi
 	mesh_instance.mesh = mesh
 	mesh_instance.position = position
 	mesh_instance.material_override = _material(color, false, emissive, 0.35)
+	visual_root.add_child(mesh_instance)
+
+func _add_unit_silhouette(unit: Dictionary) -> void:
+	var mesh_instance := MeshInstance3D.new()
+	mesh_instance.name = str(unit["id"])
+	var mesh: Mesh
+	if str(unit["role"]) == "hero":
+		var hero_mesh := CapsuleMesh.new()
+		hero_mesh.radius = 0.18
+		hero_mesh.height = 0.62
+		mesh = hero_mesh
+	elif str(unit["role"]) == "Worker":
+		var worker_mesh := BoxMesh.new()
+		worker_mesh.size = Vector3(0.22, 0.36, 0.18)
+		mesh = worker_mesh
+	elif str(unit["fixtureId"]) == "ranger":
+		var ranger_mesh := BoxMesh.new()
+		ranger_mesh.size = Vector3(0.16, 0.36, 0.30)
+		mesh = ranger_mesh
+	elif str(unit["team"]) == "enemy":
+		var ashen_mesh := CylinderMesh.new()
+		ashen_mesh.top_radius = 0.12
+		ashen_mesh.bottom_radius = 0.21
+		ashen_mesh.height = 0.42
+		ashen_mesh.radial_segments = 5
+		mesh = ashen_mesh
+	else:
+		var militia_mesh := CylinderMesh.new()
+		militia_mesh.top_radius = 0.15
+		militia_mesh.bottom_radius = 0.18
+		militia_mesh.height = 0.42
+		militia_mesh.radial_segments = 6
+		mesh = militia_mesh
+	mesh_instance.mesh = mesh
+	mesh_instance.position = _to_world(unit["position"], 0.28)
+	mesh_instance.material_override = _material(_unit_color(unit), false, _unit_emissive(unit), 0.35)
 	visual_root.add_child(mesh_instance)
 
 func _add_box(name: String, position: Vector3, scale: Vector3, color: Color, transparent: bool = false, emissive: bool = false) -> void:

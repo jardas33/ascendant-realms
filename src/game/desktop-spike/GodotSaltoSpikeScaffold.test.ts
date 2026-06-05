@@ -205,7 +205,7 @@ describe("Godot Salto spike scaffold", () => {
     expect(toolScript).toContain("v0119ArtifactRoot");
     expect(toolScript).toContain("PASS_GODOT_REPRESENTATIVE_RTS_BENCHMARK");
     expect(toolScript).toContain("PASS_GODOT_REPRESENTATIVE_RTS_PARITY");
-    expect(packageScript).toContain("AscendantRealmsGodotSalto-v0122-windows.zip");
+    expect(packageScript).toContain("AscendantRealmsGodotSalto-v0124-windows.zip");
   });
 
   it("defines the v0.120 fresh checkout and zero-editor automation proof", async () => {
@@ -359,5 +359,90 @@ describe("Godot Salto spike scaffold", () => {
     expect(prompt).toContain("Original IP only");
     expect(prompt).toContain("Runtime integration is explicitly forbidden");
     expect(prompt).toContain("Human Review Checklist");
+  });
+
+  it("defines the v0.124 player-facing Salto review slice and private harness separation", async () => {
+    [
+      "GODOT_LAUNCH_PRIVATE_HARNESS_WINDOWS.bat",
+      "GODOT_LAUNCH_PLAYER_SLICE_WINDOWS.bat",
+      "GODOT_CAPTURE_PLAYER_SLICE_WINDOWS.bat",
+      "GODOT_PLAYER_SLICE_VALIDATE_WINDOWS.bat",
+      "tools/godot/launchGodotPrivateHarnessWindows.ps1",
+      "tools/godot/launchGodotPlayerSliceWindows.ps1",
+      "tools/godot/captureGodotPlayerSliceWindows.ps1",
+      "tools/godot/validateGodotPlayerSlice.ps1",
+      "docs/V0124_PLAYER_FACING_SLICE_SPEC.md",
+      "docs/V0124_PRIVATE_HARNESS_SEPARATION_REPORT.md",
+      "docs/V0124_PROCEDURAL_SALTO_BLOCKOUT_SPEC.md",
+      "docs/V0124_PROCEDURAL_SILHOUETTE_SPEC.md",
+      "docs/V0124_HUD_MINIMAP_PLACEHOLDER_SPEC.md",
+      "docs/V0124_LUME_PRESENTATION_SPEC.md",
+      "docs/V0124_ART_READY_SLOT_REPORT.md",
+      "docs/V0124_PERFORMANCE_SMOKE_REPORT.md",
+      "docs/V0124_VISUAL_CAPTURE_REPORT.md",
+      "docs/V0124_IMPLEMENTATION_REPORT.md",
+      "docs/V0124_EMMANUEL_PLAYER_SLICE_REVIEW_GUIDE.md"
+    ].forEach((path) => expect(existsSync(path), path).toBe(true));
+
+    const packageJson = await readJson<{ scripts: Record<string, string> }>("package.json");
+    [
+      "godot:launch:private-harness",
+      "godot:launch:player-slice",
+      "godot:capture:player-slice",
+      "godot:validate:player-slice"
+    ].forEach((script) => expect(packageJson.scripts[script], script).toBeTypeOf("string"));
+
+    const rootScript = await readFile("desktop-spikes/godot-salto/scripts/salto_spike_root.gd", "utf8");
+    const scene3d = await readFile("desktop-spikes/godot-salto/scripts/salto_spike_scene_3d.gd", "utf8");
+    const toolScript = await readFile("desktop-spikes/godot-salto/tools/godotSpikeTool.mjs", "utf8");
+    const reviewLaunch = await readFile("tools/godot/launchGodotReviewWindows.ps1", "utf8");
+    const playerLaunch = await readFile("tools/godot/launchGodotPlayerSliceWindows.ps1", "utf8");
+    const privateLaunch = await readFile("tools/godot/launchGodotPrivateHarnessWindows.ps1", "utf8");
+    const captureScript = await readFile("tools/godot/captureGodotPlayerSliceWindows.ps1", "utf8");
+    const validateScript = await readFile("tools/godot/validateGodotPlayerSlice.ps1", "utf8");
+
+    ["--private-harness", "--player-slice", "--player-slice-validate", "--player-slice-capture"].forEach((flag) =>
+      expect(rootScript).toContain(flag)
+    );
+    ["JARDAS: Salto Foothold", "Start Salto Review", "Salto Foothold Briefing", "Salto Review Complete"].forEach((text) =>
+      expect(rootScript).toContain(text)
+    );
+    expect(rootScript).toContain("PASS_PLAYER_SLICE_VALIDATION");
+    expect(rootScript).toContain("PASS_PLAYER_SLICE_CAPTURE");
+    expect(rootScript).toContain("generatedOrImportedArtIncluded");
+    expect(rootScript).toContain("saveWritesAllowed");
+    expect(rootScript).toContain("stableIdsChanged");
+
+    expect(scene3d).toContain("set_player_facing_mode");
+    expect(scene3d).toContain("commandButtonsRendered");
+    expect(scene3d).toContain("playerFacingHudCompact");
+    expect(scene3d).toContain("cameraPanBounds");
+    expect(scene3d).toContain("CapsuleMesh");
+    expect(scene3d).toContain("CommandButtonMove");
+    expect(scene3d).toContain("MinimapOrientationPlaceholder");
+
+    expect(reviewLaunch).toContain("--private-harness");
+    expect(privateLaunch).toContain("--private-harness");
+    expect(playerLaunch).toContain("--player-slice");
+    expect(captureScript).toContain("godot-salto\\v0124");
+    expect(captureScript).toContain("14 PNG captures");
+    expect(validateScript).toContain("--player-slice-validate");
+
+    [
+      "v0124ArtifactRoot",
+      "PASS_PLAYER_FACING_SLICE_VALIDATION",
+      "PASS_PLAYER_SLICE_SCREENSHOT_CAPTURE",
+      "PASS_PLAYER_SLICE_PERFORMANCE_SMOKE",
+      "PASS_ART_SLOT_REPORT",
+      "terrain_materials",
+      "title_background",
+      "manualDragDropRequired",
+      "generatedOrImportedArtIncluded",
+      "runtimeArtIntegrated"
+    ].forEach((text) => expect(toolScript).toContain(text));
+
+    expect(rootScript).not.toContain("load(\"res://assets");
+    expect(scene3d).not.toContain("load(\"res://assets");
+    expect(scene3d).not.toContain("ImageTexture");
   });
 });

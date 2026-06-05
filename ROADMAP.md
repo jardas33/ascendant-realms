@@ -11,9 +11,23 @@ Every phase should protect these long-term pillars:
 
 ## Current Recommended Next Phase
 
-The current checkpoint is **v0.123 Godot Continuation Decision Packet, Unity Comparator Boundary, and First Reference-Art Prompt Library** on 2026-06-04. It consolidates the v0.116-v0.122 Godot evidence, classifies the spike as `GODOT_SPIKE_GREEN` for careful continuation planning, defines when a Unity comparator would be required, gives Emmanuel a simple one-click review guide, and prepares reference-only prompt text for the first art-direction review images.
+The current checkpoint is **v0.124 Godot Player-Facing Salto Review Slice, Private Harness Separation, and Art-Ready Presentation Shell** on 2026-06-04. It keeps the Godot spike bounded but changes the human-review default from the private adapter harness to a player-facing Salto review slice. The browser prototype remains authoritative, the private harness remains separate, and no final engine choice, full port, generated image, imported art, save change, stable-ID change, or runtime art integration is approved.
 
-The next recommended step, only after a future explicit goal, is Emmanuel's review of the v0.123 decision packet and the existing packaged Godot review build. v0.123 does not choose Godot, does not create a Unity project, does not generate images, does not import runtime art, and does not migrate content. Do not generate art for runtime integration, import art into runtime, mark `runtime-candidate-approved` assets as loadable, resume broad browser visual expansion, add gameplay systems, change rewards, change saves, rename IDs, create a desktop save path, choose Godot finally, start a full desktop port, start Unity/Unreal/Electron work, or start v0.124 until a future explicit goal approves a narrow next step.
+The next recommended step, only after a future explicit goal, is Emmanuel's review of `GODOT_LAUNCH_PLAYER_SLICE_WINDOWS.bat` and `docs/V0124_EMMANUEL_PLAYER_SLICE_REVIEW_GUIDE.md`. Do not generate art for runtime integration, import art into runtime, mark `runtime-candidate-approved` assets as loadable, resume broad browser visual expansion, add gameplay systems, change rewards, change saves, rename IDs, create a desktop save path, choose Godot finally, start a full desktop port, start Unity/Unreal/Electron work, or start v0.125 until a future explicit goal approves a narrow next step.
+
+New v0.124 docs:
+
+- `docs/V0124_PLAYER_FACING_SLICE_SPEC.md`
+- `docs/V0124_PRIVATE_HARNESS_SEPARATION_REPORT.md`
+- `docs/V0124_PROCEDURAL_SALTO_BLOCKOUT_SPEC.md`
+- `docs/V0124_PROCEDURAL_SILHOUETTE_SPEC.md`
+- `docs/V0124_HUD_MINIMAP_PLACEHOLDER_SPEC.md`
+- `docs/V0124_LUME_PRESENTATION_SPEC.md`
+- `docs/V0124_ART_READY_SLOT_REPORT.md`
+- `docs/V0124_PERFORMANCE_SMOKE_REPORT.md`
+- `docs/V0124_VISUAL_CAPTURE_REPORT.md`
+- `docs/V0124_IMPLEMENTATION_REPORT.md`
+- `docs/V0124_EMMANUEL_PLAYER_SLICE_REVIEW_GUIDE.md`
 
 New v0.123 docs:
 

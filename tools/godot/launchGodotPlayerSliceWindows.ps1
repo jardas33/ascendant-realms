@@ -1,6 +1,5 @@
 param(
   [switch]$Wait,
-  [string[]]$ReviewArgs = @(),
   [Parameter(ValueFromRemainingArguments = $true)]
   [string[]]$RemainingArgs
 )
@@ -12,25 +11,24 @@ $ExePath = Join-Path $RepoRoot "desktop-spikes\godot-salto\builds\AscendantRealm
 Set-Location $RepoRoot
 
 if (-not (Test-Path $ExePath)) {
-  throw "Missing packaged Godot executable. Run GODOT_EXPORT_WINDOWS.bat or npm run godot:export:windows first."
+  & (Join-Path $PSScriptRoot "exportGodotWindows.ps1")
+  & (Join-Path $PSScriptRoot "packageGodotWindows.ps1")
 }
 
-$ArgumentList = @()
-if ($ReviewArgs) {
-  $ArgumentList += $ReviewArgs
+if (-not (Test-Path $ExePath)) {
+  throw "Missing packaged Godot executable after export. Run GODOT_EXPORT_WINDOWS.bat and GODOT_PACKAGE_WINDOWS.bat first."
 }
+
+$ArgumentList = @("--player-slice")
 if ($RemainingArgs) {
   $ArgumentList += $RemainingArgs
-}
-if ($ArgumentList.Count -eq 0) {
-  $ArgumentList += "--private-harness"
 }
 
 if ($Wait) {
   & $ExePath @ArgumentList
   $GodotExitCode = if ($null -eq $LASTEXITCODE) { 0 } else { $LASTEXITCODE }
   if ($GodotExitCode -ne 0) {
-    throw "Packaged Godot review executable exited with code $GodotExitCode."
+    throw "Packaged Godot player slice exited with code $GodotExitCode."
   }
   return
 }

@@ -1,6 +1,46 @@
 # Development Checkpoint
 
-Updated: 2026-06-04 v0.123 Godot Continuation Decision Packet, Unity Comparator Boundary, and First Reference-Art Prompt Library
+Updated: 2026-06-04 v0.124 Godot Player-Facing Salto Review Slice, Private Harness Separation, and Art-Ready Presentation Shell
+
+## v0.124 Godot Player-Facing Salto Review Slice, Private Harness Separation, And Art-Ready Presentation Shell - 2026-06-04
+
+Scope: bounded Godot player-facing review-slice shell, private harness separation, procedural presentation improvements, v0.124 validation/capture artifacts, and docs only. This checkpoint does not select Godot finally, start a full port, create Unity/Unreal/Electron work, generate images, import runtime art, change browser runtime, saves, stable IDs, rewards, maps, factions, AI, pathing, combat balance, multiplayer, PvP, co-op, content, or v0.125 scope.
+
+Included work:
+
+- Added `GODOT_LAUNCH_PLAYER_SLICE_WINDOWS.bat` as the default human-review launcher.
+- Added `GODOT_LAUNCH_PRIVATE_HARNESS_WINDOWS.bat` for the preserved private adapter harness.
+- Added player title, briefing, battle, and Results screens.
+- Improved the 2.5D `CLEAN_READABILITY` procedural Salto blockout, silhouettes, HUD, minimap, and Lume posture.
+- Added v0.124 player-slice validation, capture, screenshot hash, performance smoke, objective-flow, and art-slot reports under ignored artifacts.
+- Added v0.124 docs and updated handoff files.
+
+Current interpretation:
+
+- Emmanuel should review the player slice, not the private harness, for game-feel and visual-foundation feedback.
+- The private harness remains available for engineering evidence only.
+- The slice is art-ready in slot posture only; no art is loaded, generated, approved, or runtime-integrated.
+- Godot is still not selected finally.
+- The browser prototype remains the current source of truth.
+
+Verification:
+
+```text
+Required closeout stack:
+npm test
+npm run build
+npm run validate:content
+npm run validate:art-intake
+npm run export:portable-content
+npm run validate:portable-content
+npm run export:desktop-spike-fixture
+npm run validate:desktop-spike-fixture
+npm run godot:all
+npm run godot:fresh-checkout:validate
+npm run godot:validate:player-slice
+npm run godot:capture:player-slice
+git diff --check
+```
 
 ## v0.123 Godot Continuation Decision Packet, Unity Comparator Boundary, And First Reference-Art Prompt Library - 2026-06-04
 

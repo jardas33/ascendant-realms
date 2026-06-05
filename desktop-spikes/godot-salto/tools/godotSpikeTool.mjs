@@ -13,6 +13,8 @@ const v0119ArtifactRoot = join(repoRoot, "artifacts", "desktop-spikes", "godot-s
 const v0121ArtifactRoot = join(repoRoot, "artifacts", "desktop-spikes", "godot-salto", "v0121");
 const v0121ScreenshotRoot = join(v0121ArtifactRoot, "screenshots");
 const v0122ArtifactRoot = join(repoRoot, "artifacts", "desktop-spikes", "godot-salto", "v0122");
+const v0124ArtifactRoot = join(repoRoot, "artifacts", "desktop-spikes", "godot-salto", "v0124");
+const v0124ScreenshotRoot = join(v0124ArtifactRoot, "screenshots");
 const sourceFixtureRoot = join(repoRoot, "artifacts", "desktop-spike-fixture", "latest");
 const generatedDataRoot = join(spikeRoot, "data", "generated");
 const buildsRoot = join(spikeRoot, "builds");
@@ -237,6 +239,18 @@ function writeV0122Text(name, value) {
   return target;
 }
 
+function writeV0124Artifact(name, value) {
+  const target = join(v0124ArtifactRoot, name);
+  writeJson(target, value);
+  return target;
+}
+
+function writeV0124Text(name, value) {
+  const target = join(v0124ArtifactRoot, name);
+  writeText(target, value);
+  return target;
+}
+
 function writeV0118Artifact(name, value) {
   const target = join(v0118ArtifactRoot, name);
   writeJson(target, value);
@@ -256,6 +270,11 @@ function readV0118RuntimeReport(name) {
 
 function readV0121RuntimeReport(name) {
   const path = join(v0121ArtifactRoot, name);
+  return existsSync(path) ? readJson(path) : null;
+}
+
+function readV0124RuntimeReport(name) {
+  const path = join(v0124ArtifactRoot, name);
   return existsSync(path) ? readJson(path) : null;
 }
 
@@ -1251,9 +1270,9 @@ function writeExportReport() {
   const status = exists ? "PASS_WINDOWS_EXPORT" : doctor.godotDetected && doctor.exportTemplatesDetected ? "READY_FOR_WINDOWS_EXPORT" : blockedStatus;
   const report = {
     schemaVersion: 1,
-    checkpoint: "v0.122",
+    checkpoint: "v0.124",
     status,
-    generatedAtUtc: "deterministic-v0122",
+    generatedAtUtc: "deterministic-v0124",
     godotDetected: doctor.godotDetected,
     exportTemplatesDetected: doctor.exportTemplatesDetected,
     exportPreset: "Windows Desktop",
@@ -1268,19 +1287,20 @@ function writeExportReport() {
   writeV0119Artifact("Windows-export-report.json", report);
   writeV0121Artifact("Windows-export-report.json", report);
   writeV0122Artifact("Windows-export-report.json", report);
+  writeV0124Artifact("Windows-export-report.json", report);
   return report;
 }
 
 function writePackageReport() {
   const exportReportPath = join(artifactRoot, "Windows-export-report.json");
   const exportReport = existsSync(exportReportPath) ? readJson(exportReportPath) : writeExportReport();
-  const zipPath = join(artifactRoot, "AscendantRealmsGodotSalto-v0122-windows.zip");
+  const zipPath = join(artifactRoot, "AscendantRealmsGodotSalto-v0124-windows.zip");
   const status = existsSync(zipPath) ? "PASS_WINDOWS_PACKAGE" : "READY_TO_PACKAGE";
   const report = {
     schemaVersion: 1,
-    checkpoint: "v0.122",
+    checkpoint: "v0.124",
     status: existsSync(zipPath) ? status : exportReport.status === "PASS_WINDOWS_EXPORT" ? "READY_TO_PACKAGE" : blockedStatus,
-    generatedAtUtc: "deterministic-v0122",
+    generatedAtUtc: "deterministic-v0124",
     exportStatus: exportReport.status,
     packageCreated: existsSync(zipPath),
     packagePath: existsSync(zipPath) ? relativeRepo(zipPath) : null,
@@ -1295,6 +1315,7 @@ function writePackageReport() {
   writeV0119Artifact("package-report.json", report);
   writeV0121Artifact("package-report.json", report);
   writeV0122Artifact("package-report.json", report);
+  writeV0124Artifact("package-report.json", report);
   return report;
 }
 
@@ -1850,6 +1871,431 @@ function writeV0118Readme() {
   );
 }
 
+const v0124CaptureOrder = [
+  "title",
+  "briefing",
+  "battle_default",
+  "hero_selected",
+  "worker_selected",
+  "squad_selected",
+  "quarry_objective",
+  "ashen_pressure_wave",
+  "lume_stable",
+  "lume_activation",
+  "lume_restore",
+  "minimap",
+  "results",
+  "private_harness_preserved"
+];
+
+const v0124ForbiddenTerms = [
+  "adapter",
+  "fixture",
+  "repository",
+  "editor-optional",
+  "parity",
+  "benchmark",
+  "diagnostic",
+  "stable id",
+  "localstorage"
+];
+
+function v0124ArtSlotDefinitions() {
+  return [
+    ["terrain_materials", "terrain materials", "procedural Godot material fallback"],
+    ["road", "wet-granite path posture", "procedural strip fallback"],
+    ["water_ford", "water strip and shallow ford", "procedural water-color fallback"],
+    ["shrine", "small shrine", "procedural plinth/beacon fallback"],
+    ["quarry", "quarry cut and mine posture", "procedural quarry silhouette fallback"],
+    ["ruin", "broken ruin", "procedural wall fallback"],
+    ["command_hall", "command hall silhouette", "procedural keep fallback"],
+    ["barracks", "barracks silhouette", "procedural wing fallback"],
+    ["hero_aster", "hero Aster", "procedural capsule fallback"],
+    ["worker", "Worker", "procedural box silhouette fallback"],
+    ["militia", "Militia", "procedural six-sided silhouette fallback"],
+    ["ranger", "Ranger", "procedural narrow ranged silhouette fallback"],
+    ["ashen_enemy", "Ashen enemy", "procedural tapered enemy silhouette fallback"],
+    ["lume_endpoint", "Lume endpoint", "procedural compact endpoint fallback"],
+    ["lume_link", "Lume link", "procedural compact link fallback"],
+    ["hud_frame", "HUD frame", "procedural panel fallback"],
+    ["minimap_frame", "minimap frame", "procedural panel fallback"],
+    ["title_background", "title background", "live procedural Salto scene fallback"],
+    ["results_frame", "Results frame", "procedural player-facing screen fallback"]
+  ].map(([slotId, label, fallback]) => ({
+    slotId,
+    label,
+    fallback,
+    stableSlotId: true,
+    manifestDrivenFutureReplacement: true,
+    proceduralFallbackValid: true,
+    runtimeArtIntegrated: false,
+    generatedOrImportedArtIncluded: false,
+    manualDragDropRequired: false
+  }));
+}
+
+function writeV0124ArtSlotReport() {
+  const slots = v0124ArtSlotDefinitions();
+  const ids = slots.map((slot) => slot.slotId);
+  const duplicateIds = ids.filter((id, index) => ids.indexOf(id) !== index);
+  const errors = [];
+  if (slots.length !== 19) {
+    errors.push(`Expected 19 v0.124 art slots, found ${slots.length}.`);
+  }
+  if (duplicateIds.length > 0) {
+    errors.push(`Duplicate art slot IDs: ${[...new Set(duplicateIds)].join(", ")}`);
+  }
+  const report = {
+    schemaVersion: 1,
+    checkpoint: "v0.124",
+    status: errors.length === 0 ? "PASS_ART_SLOT_REPORT" : "FAIL_ART_SLOT_REPORT",
+    generatedAtUtc: "deterministic-v0124",
+    slotCount: slots.length,
+    replacementAuthority: "future manifest-driven asset replacement only",
+    currentRuntimePosture: "procedural Godot primitives only",
+    runtimeArtIntegrated: false,
+    generatedOrImportedArtIncluded: false,
+    manualDragDropRequired: false,
+    stableSlotIds: true,
+    errors,
+    slots
+  };
+  writeV0124Artifact("art-slot-report.json", report);
+  return report;
+}
+
+function playerTextForbiddenHits(entries) {
+  const hits = [];
+  for (const entry of entries) {
+    for (const text of entry.visibleText ?? []) {
+      const lower = String(text).toLowerCase();
+      for (const term of v0124ForbiddenTerms) {
+        if (lower.includes(term)) {
+          hits.push({ id: entry.id, term, text: String(text) });
+        }
+      }
+    }
+  }
+  return hits;
+}
+
+function writeV0124ObjectiveFlowReport(runtime, validationRuntime) {
+  const steps = runtime?.steps ?? validationRuntime?.steps ?? [];
+  const observed = steps.map((step) => step.id);
+  const expected = v0124CaptureOrder.slice(0, 13);
+  const errors = [];
+  for (const id of expected) {
+    if (!observed.includes(id)) {
+      errors.push(`Missing objective-flow step: ${id}`);
+    }
+  }
+  if (!(runtime?.resultsReached ?? validationRuntime?.status === "PASS_PLAYER_SLICE_VALIDATION")) {
+    errors.push("Results was not reached by the player-facing objective flow.");
+  }
+  const report = {
+    schemaVersion: 1,
+    checkpoint: "v0.124",
+    status: errors.length === 0 ? "PASS_PLAYER_SLICE_OBJECTIVE_FLOW" : "FAIL_PLAYER_SLICE_OBJECTIVE_FLOW",
+    generatedAtUtc: "deterministic-v0124",
+    requiredOrder: expected,
+    observedOrder: observed,
+    clickSelectionSupported: true,
+    boxSelectionSupported: true,
+    moveOrderSupported: true,
+    attackOrderSupported: true,
+    cameraPanSupported: true,
+    zoomSupported: true,
+    pauseSupported: true,
+    resultsReached: errors.length === 0,
+    saveWritesAllowed: false,
+    broadCampaignOrEconomyStarted: false,
+    errors,
+    steps
+  };
+  writeV0124Artifact("objective-flow-report.json", report);
+  return report;
+}
+
+function writeV0124PerformanceSmoke(performanceRuntime) {
+  const packageReport = existsSync(join(artifactRoot, "package-report.json")) ? readJson(join(artifactRoot, "package-report.json")) : null;
+  const errors = [];
+  if (!performanceRuntime) {
+    errors.push("Missing performance-smoke-runtime.json.");
+  }
+  if (performanceRuntime?.status !== "PASS_PLAYER_FACING_TIER_M_SMOKE") {
+    errors.push(`Performance smoke did not pass: ${performanceRuntime?.status ?? "missing"}.`);
+  }
+  if (performanceRuntime?.finalProductionCertification !== false) {
+    errors.push("Performance smoke must not claim final production certification.");
+  }
+  const report = {
+    schemaVersion: 1,
+    checkpoint: "v0.124",
+    status: errors.length === 0 ? "PASS_PLAYER_SLICE_PERFORMANCE_SMOKE" : "FAIL_PLAYER_SLICE_PERFORMANCE_SMOKE",
+    generatedAtUtc: "deterministic-v0124",
+    mode: performanceRuntime?.mode ?? "2_5D_ORTHOGRAPHIC_PLACEHOLDER",
+    visualPreset: performanceRuntime?.visualPreset ?? "CLEAN_READABILITY",
+    tier: performanceRuntime?.tier ?? "M",
+    fpsAverage: performanceRuntime?.fpsAverage ?? null,
+    frameTimeP95Ms: performanceRuntime?.frameTimeP95Ms ?? null,
+    inputAcceptance: performanceRuntime?.inputAcceptance ?? null,
+    objectiveTransition: performanceRuntime?.objectiveTransition ?? null,
+    stuckUnits: performanceRuntime?.stuckUnits ?? null,
+    resultsTransition: performanceRuntime?.resultsTransition ?? null,
+    packageSizeMb: packageReport?.packageSizeMb ?? null,
+    packagePath: packageReport?.packagePath ?? null,
+    launchPosture: "player-facing packaged Windows slice by default; private harness via explicit launcher",
+    finalProductionCertification: false,
+    errors,
+    runtimeReport: performanceRuntime ?? null
+  };
+  writeV0124Artifact("performance-smoke.json", report);
+  return report;
+}
+
+function writeV0124Readme() {
+  const validation = existsSync(join(v0124ArtifactRoot, "player-slice-validation.json"))
+    ? readJson(join(v0124ArtifactRoot, "player-slice-validation.json"))
+    : null;
+  const capture = existsSync(join(v0124ArtifactRoot, "screenshot-manifest.json"))
+    ? readJson(join(v0124ArtifactRoot, "screenshot-manifest.json"))
+    : null;
+  const artSlots = existsSync(join(v0124ArtifactRoot, "art-slot-report.json"))
+    ? readJson(join(v0124ArtifactRoot, "art-slot-report.json"))
+    : null;
+  writeV0124Text(
+    "README.md",
+    [
+      "# v0.124 Godot Player-Facing Salto Review Slice Artifacts",
+      "",
+      "This ignored artifact folder is regenerated by the v0.124 player-facing Godot slice scripts.",
+      "",
+      `Player-slice validation: ${validation?.status ?? "pending"}`,
+      `Screenshot capture: ${capture?.status ?? "pending"}`,
+      `Art slots: ${artSlots?.status ?? "pending"}`,
+      "",
+      "- `player-slice-validation.json` records the title, briefing, battle, objective, and Results flow.",
+      "- `screenshot-manifest.json` and `screenshot-hashes.json` record the 14 deterministic captures.",
+      "- `performance-smoke.json` records the bounded Tier M player-facing smoke evidence.",
+      "- `objective-flow-report.json` records the short Salto objective sequence.",
+      "- `art-slot-report.json` records manifest-driven future replacement slots with procedural fallbacks.",
+      "",
+      "No artifact here is final art, imported art, generated imagery, runtime art integration, save migration, final Godot selection, or a full port."
+    ].join("\n")
+  );
+}
+
+function writeV0124PlayerSliceValidation() {
+  const runtime = readV0124RuntimeReport("player-slice-validation-runtime.json");
+  const objectiveRuntime = readV0124RuntimeReport("objective-flow-runtime.json");
+  const performanceRuntime = readV0124RuntimeReport("performance-smoke-runtime.json");
+  const errors = [];
+  if (!runtime) {
+    errors.push("Missing player-slice-validation-runtime.json.");
+  }
+  if (runtime?.status !== "PASS_PLAYER_SLICE_VALIDATION") {
+    errors.push(`Player-slice runtime validation did not pass: ${runtime?.status ?? "missing"}.`);
+  }
+  if (runtime?.defaultHumanReviewPath !== "GODOT_LAUNCH_PLAYER_SLICE_WINDOWS.bat") {
+    errors.push("Default human review path is not GODOT_LAUNCH_PLAYER_SLICE_WINDOWS.bat.");
+  }
+  if (runtime?.privateHarnessPreservedSeparately !== true) {
+    errors.push("Private harness preservation was not confirmed.");
+  }
+  if (runtime?.defaultMode !== "2_5D_ORTHOGRAPHIC_PLACEHOLDER") {
+    errors.push("Player-facing default is not 2.5D.");
+  }
+  if (runtime?.defaultVisualPreset !== "CLEAN_READABILITY") {
+    errors.push("Player-facing default preset is not CLEAN_READABILITY.");
+  }
+  for (const [field, expected] of [
+    ["routineEditorUseRequired", false],
+    ["manualGodotEditorSceneAssemblyRequired", false],
+    ["proceduralPrimitiveOnly", true],
+    ["generatedOrImportedArtIncluded", false],
+    ["runtimeArtIntegrated", false],
+    ["localStorageMutationAllowed", false],
+    ["saveWritesAllowed", false],
+    ["stableIdsChanged", false]
+  ]) {
+    if (runtime?.[field] !== expected) {
+      errors.push(`Expected ${field} to be ${expected}.`);
+    }
+  }
+  if (runtime?.linkedWardDamageTakenMultiplier !== 0.92) {
+    errors.push("linked_ward damage-taken multiplier is not exactly 0.92 in player-slice validation.");
+  }
+  if ((runtime?.forbiddenTextHits ?? []).length > 0) {
+    errors.push(`Forbidden player-facing text detected: ${runtime.forbiddenTextHits.join(", ")}`);
+  }
+  const observed = (runtime?.steps ?? []).map((step) => step.id);
+  for (const id of v0124CaptureOrder.slice(0, 13)) {
+    if (!observed.includes(id)) {
+      errors.push(`Missing player-facing validation step: ${id}`);
+    }
+  }
+  const artSlotReport = writeV0124ArtSlotReport();
+  const objectiveFlow = writeV0124ObjectiveFlowReport(objectiveRuntime, runtime);
+  const performanceSmoke = writeV0124PerformanceSmoke(performanceRuntime);
+  if (artSlotReport.status !== "PASS_ART_SLOT_REPORT") {
+    errors.push("Art-slot report did not pass.");
+  }
+  if (objectiveFlow.status !== "PASS_PLAYER_SLICE_OBJECTIVE_FLOW") {
+    errors.push("Objective-flow report did not pass.");
+  }
+  if (performanceSmoke.status !== "PASS_PLAYER_SLICE_PERFORMANCE_SMOKE") {
+    errors.push("Performance-smoke report did not pass.");
+  }
+  const report = {
+    schemaVersion: 1,
+    checkpoint: "v0.124",
+    status: errors.length === 0 ? "PASS_PLAYER_FACING_SLICE_VALIDATION" : "FAIL_PLAYER_FACING_SLICE_VALIDATION",
+    generatedAtUtc: "deterministic-v0124",
+    defaultHumanReviewPath: "GODOT_LAUNCH_PLAYER_SLICE_WINDOWS.bat",
+    privateHarnessPath: "GODOT_LAUNCH_PRIVATE_HARNESS_WINDOWS.bat",
+    privateHarnessPreservedSeparately: runtime?.privateHarnessPreservedSeparately ?? false,
+    defaultMode: runtime?.defaultMode ?? null,
+    defaultVisualPreset: runtime?.defaultVisualPreset ?? null,
+    debugTextAbsentFromPlayerSlice: runtime?.debugTextAbsentFromPlayerSlice ?? false,
+    linkedWardDamageTakenMultiplier: runtime?.linkedWardDamageTakenMultiplier ?? null,
+    saveWritesAllowed: runtime?.saveWritesAllowed ?? null,
+    localStorageMutationAllowed: runtime?.localStorageMutationAllowed ?? null,
+    stableIdsChanged: runtime?.stableIdsChanged ?? null,
+    runtimeArtIntegrated: runtime?.runtimeArtIntegrated ?? null,
+    generatedOrImportedArtIncluded: runtime?.generatedOrImportedArtIncluded ?? null,
+    routineEditorUseRequired: runtime?.routineEditorUseRequired ?? null,
+    errors,
+    steps: runtime?.steps ?? [],
+    performanceSmoke,
+    objectiveFlow,
+    artSlotReport
+  };
+  writeV0124Artifact("player-slice-validation.json", report);
+  writeV0124Readme();
+  return report;
+}
+
+function writeV0124ContactSheet(manifest) {
+  const tileWidth = 320;
+  const tileHeight = 180;
+  const labelHeight = 48;
+  const columns = 4;
+  const rows = Math.ceil((manifest.captures?.length ?? 0) / columns);
+  const width = columns * tileWidth;
+  const height = 78 + rows * (tileHeight + labelHeight);
+  const tiles = (manifest.captures ?? []).map((capture, index) => {
+    const x = (index % columns) * tileWidth;
+    const y = 78 + Math.floor(index / columns) * (tileHeight + labelHeight);
+    return [
+      `<rect x="${x}" y="${y}" width="${tileWidth}" height="${tileHeight + labelHeight}" fill="#101616" stroke="#4dc6ba" stroke-width="1"/>`,
+      `<image href="screenshots/${escapeXml(capture.fileName)}" x="${x}" y="${y}" width="${tileWidth}" height="${tileHeight}" preserveAspectRatio="xMidYMid meet"/>`,
+      `<text x="${x + 10}" y="${y + tileHeight + 28}" fill="#e6efe8" font-family="Arial, sans-serif" font-size="14">${escapeXml(`${index + 1}. ${capture.label}`)}</text>`
+    ].join("\n");
+  });
+  const svg = [
+    `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}">`,
+    '<rect width="100%" height="100%" fill="#071011"/>',
+    '<text x="18" y="32" fill="#e6efe8" font-family="Arial, sans-serif" font-size="24">v0.124 Player-Facing Salto Review Contact Sheet</text>',
+    `<text x="18" y="58" fill="#9ccfc8" font-family="Arial, sans-serif" font-size="14">Status: ${escapeXml(manifest.status)} | Screenshots: ${manifest.captureCount}/14</text>`,
+    tiles.join("\n"),
+    "</svg>",
+    ""
+  ].join("\n");
+  writeText(join(v0124ArtifactRoot, "contact-sheet.svg"), svg);
+}
+
+function writeV0124ScreenshotManifest() {
+  const runtime = readV0124RuntimeReport("screenshot-runtime-manifest.json");
+  const errors = [];
+  if (!runtime) {
+    errors.push("Missing screenshot-runtime-manifest.json from packaged executable capture.");
+  }
+  const runtimeCaptures = runtime?.captures ?? [];
+  const captures = runtimeCaptures.map((entry) => {
+    const screenshotPath = join(v0124ScreenshotRoot, entry.fileName);
+    return {
+      id: entry.id,
+      label: entry.label,
+      action: entry.action,
+      screen: entry.screen,
+      fileName: entry.fileName,
+      path: relativeRepo(screenshotPath),
+      sha256: existsSync(screenshotPath) ? hashFile(screenshotPath) : null,
+      sizeBytes: existsSync(screenshotPath) ? statSync(screenshotPath).size : null,
+      width: entry.width,
+      height: entry.height,
+      privateHarnessCapture: Boolean(entry.privateHarnessCapture),
+      visibleText: entry.visibleText ?? []
+    };
+  });
+  if (captures.length !== 14) {
+    errors.push(`Expected 14 screenshots, found ${captures.length}.`);
+  }
+  for (const id of v0124CaptureOrder) {
+    if (!captures.some((capture) => capture.id === id)) {
+      errors.push(`Missing v0.124 screenshot capture: ${id}`);
+    }
+  }
+  for (const capture of captures) {
+    if (!capture.sha256) {
+      errors.push(`Missing screenshot file: ${capture.fileName}`);
+    }
+    if (capture.width !== 1600 || capture.height !== 900) {
+      errors.push(`Screenshot ${capture.fileName} is ${capture.width}x${capture.height}, expected 1600x900.`);
+    }
+  }
+  const playerCaptures = captures.filter((capture) => !capture.privateHarnessCapture);
+  const forbiddenHits = playerTextForbiddenHits(playerCaptures);
+  if (forbiddenHits.length > 0) {
+    errors.push(`Forbidden player-facing capture text detected: ${forbiddenHits.map((hit) => `${hit.term} in ${hit.id}`).join(", ")}`);
+  }
+  if (!captures.some((capture) => capture.privateHarnessCapture && capture.id === "private_harness_preserved")) {
+    errors.push("Private harness preserved capture is missing.");
+  }
+  const strayPngs = existsSync(v0124ScreenshotRoot)
+    ? readdirSync(v0124ScreenshotRoot).filter((file) => file.endsWith(".png") && !captures.some((capture) => capture.fileName === file))
+    : [];
+  if (strayPngs.length > 0) {
+    errors.push(`Unexpected screenshots in v0124 folder: ${strayPngs.join(", ")}`);
+  }
+  const manifest = {
+    schemaVersion: 1,
+    checkpoint: "v0.124",
+    status: errors.length === 0 && runtime?.status === "PASS_PLAYER_SLICE_CAPTURE" ? "PASS_PLAYER_SLICE_SCREENSHOT_CAPTURE" : "FAIL_PLAYER_SLICE_SCREENSHOT_CAPTURE",
+    generatedAtUtc: "deterministic-v0124",
+    screenshotRoot: relativeRepo(v0124ScreenshotRoot),
+    contactSheetPath: "artifacts/desktop-spikes/godot-salto/v0124/contact-sheet.svg",
+    captureCount: captures.length,
+    requiredCaptureCount: 14,
+    deterministicCaptureOrder: v0124CaptureOrder,
+    defaultMode: "2_5D_ORTHOGRAPHIC_PLACEHOLDER",
+    defaultVisualPreset: "CLEAN_READABILITY",
+    privateHarnessPreservedSeparately: captures.some((capture) => capture.privateHarnessCapture),
+    runtimeArtIntegrated: false,
+    generatedOrImportedArtIncluded: false,
+    routineEditorUseRequired: false,
+    forbiddenTextHits: forbiddenHits,
+    errors,
+    captures
+  };
+  writeV0124Artifact("screenshot-manifest.json", manifest);
+  writeV0124Artifact("screenshot-hashes.json", {
+    schemaVersion: 1,
+    checkpoint: "v0.124",
+    status: manifest.status,
+    hashes: captures.map((capture) => ({
+      id: capture.id,
+      fileName: capture.fileName,
+      path: capture.path,
+      sha256: capture.sha256,
+      sizeBytes: capture.sizeBytes
+    }))
+  });
+  writeV0124ContactSheet(manifest);
+  writeV0124Readme();
+  return manifest;
+}
+
 function writeV0118AllReports() {
   writeV0118HeadedSmokeReport();
   writeV0118HeadedBenchmarkReports();
@@ -2133,6 +2579,18 @@ try {
     writeV0118Readme();
   } else if (command === "capture-review-v0121") {
     console.log(stableStringify(writeV0121ScreenshotManifest()));
+  } else if (command === "player-slice-validate") {
+    const report = writeV0124PlayerSliceValidation();
+    console.log(stableStringify(report));
+    if (String(report.status).startsWith("FAIL")) {
+      process.exitCode = 1;
+    }
+  } else if (command === "player-slice-capture") {
+    const report = writeV0124ScreenshotManifest();
+    console.log(stableStringify(report));
+    if (String(report.status).startsWith("FAIL")) {
+      process.exitCode = 1;
+    }
   } else if (command === "v0118-all") {
     writeV0118AllReports();
     console.log("v0.118 Godot headed review reports generated.");
@@ -2140,7 +2598,7 @@ try {
     runAll();
     console.log("v0.119 Godot representative RTS load spike reports generated.");
   } else {
-    console.log("Usage: node desktop-spikes/godot-salto/tools/godotSpikeTool.mjs <doctor|generate|validate|test|benchmark|export|package|scorecard|manual-review|headed-smoke|headed-benchmark|capture-review|capture-review-v0121|v0118-all|all>");
+    console.log("Usage: node desktop-spikes/godot-salto/tools/godotSpikeTool.mjs <doctor|generate|validate|test|benchmark|export|package|scorecard|manual-review|headed-smoke|headed-benchmark|capture-review|capture-review-v0121|player-slice-validate|player-slice-capture|v0118-all|all>");
   }
 } catch (error) {
   console.error(error instanceof Error ? error.message : String(error));

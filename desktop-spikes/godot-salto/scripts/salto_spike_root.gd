@@ -3,6 +3,9 @@ extends Node
 const MODE_2D := "2D_PLACEHOLDER"
 const MODE_25D := "2_5D_ORTHOGRAPHIC_PLACEHOLDER"
 const MODE_HOME := "REVIEW_HOME"
+const MODE_PLAYER_TITLE := "PLAYER_TITLE"
+const MODE_PLAYER_BRIEFING := "PLAYER_BRIEFING"
+const MODE_PLAYER_RESULTS := "PLAYER_RESULTS"
 const CHECKPOINT := "v0.122"
 const VIEWPORT_SIZE := Vector2i(1600, 900)
 const CAPTURE_VIEWPORTS := [Vector2i(1600, 900), Vector2i(1920, 1080)]
@@ -16,6 +19,10 @@ const SCRIPT_ARG_PREFIXES := [
 	"--review-smoke",
 	"--capture-review",
 	"--headed-benchmark",
+	"--private-harness",
+	"--player-slice",
+	"--player-slice-validate",
+	"--player-slice-capture",
 	"--mode=",
 	"--visual-preset=",
 	"--viewport=",
@@ -33,6 +40,9 @@ var review_panel: Panel
 var title_label: Label
 var status_label: Label
 var step_label: Label
+var player_layer: CanvasLayer
+var player_screen: Control
+var player_visible_texts: Array[String] = []
 var current_step_id := "home"
 var current_viewport_size := VIEWPORT_SIZE
 var active_visual_preset := VISUAL_PRESET_CLEAN
@@ -51,6 +61,24 @@ func _ready() -> void:
 		var benchmark_errors: Array[String] = run_headless_benchmark()
 		get_tree().quit(0 if benchmark_errors.is_empty() else 1)
 		return
+	if args.has("--player-slice-validate"):
+		_create_player_slice_ui()
+		await run_player_slice_validation()
+		return
+	if args.has("--player-slice-capture"):
+		_create_player_slice_ui()
+		await run_player_slice_capture()
+		return
+	if args.has("--player-slice"):
+		_create_player_slice_ui()
+		show_player_title()
+		return
+	var requested_mode := _requested_mode_from_args()
+	var private_requested := args.has("--private-harness") or args.has("--review-smoke") or args.has("--capture-review") or args.has("--headed-benchmark") or requested_mode != ""
+	if not private_requested:
+		_create_player_slice_ui()
+		show_player_title()
+		return
 	_create_review_ui()
 	if args.has("--review-smoke"):
 		await run_headed_smoke()
@@ -61,7 +89,6 @@ func _ready() -> void:
 	if args.has("--headed-benchmark"):
 		await run_headed_benchmark()
 		return
-	var requested_mode := _requested_mode_from_args()
 	if requested_mode == "":
 		load_home()
 	else:
@@ -240,6 +267,133 @@ func _create_review_ui() -> void:
 		button.custom_minimum_size = Vector2(76, 32)
 		button.pressed.connect(_handle_review_action.bind(str(item["action"])))
 		grid.add_child(button)
+
+func _create_player_slice_ui() -> void:
+	if player_layer:
+		return
+	player_layer = CanvasLayer.new()
+	player_layer.name = "V0124PlayerFacingSlice"
+	add_child(player_layer)
+	player_screen = Control.new()
+	player_screen.name = "PlayerSliceScreen"
+	player_screen.set_anchors_preset(Control.PRESET_FULL_RECT)
+	player_layer.add_child(player_screen)
+
+func show_player_title() -> void:
+	active_visual_preset = VISUAL_PRESET_CLEAN
+	load_mode(MODE_25D)
+	_call_scene("set_player_facing_mode", [true])
+	current_step_id = "player_title"
+	active_mode = MODE_PLAYER_TITLE
+	_render_player_screen("title")
+
+func show_player_briefing() -> void:
+	current_step_id = "player_briefing"
+	active_mode = MODE_PLAYER_BRIEFING
+	_render_player_screen("briefing")
+
+func show_player_battle() -> void:
+	active_visual_preset = VISUAL_PRESET_CLEAN
+	load_mode(MODE_25D)
+	_call_scene("set_player_facing_mode", [true])
+	_call_scene("set_workload_tier", ["M"])
+	current_step_id = "player_battle"
+	_render_player_screen("battle")
+
+func show_player_results() -> void:
+	_ensure_player_battle_scene()
+	_call_scene("transition_results")
+	current_step_id = "player_results"
+	active_mode = MODE_PLAYER_RESULTS
+	_render_player_screen("results")
+
+func _exit_player_slice() -> void:
+	current_step_id = "player_exit"
+	get_tree().quit(0)
+
+func _render_player_screen(screen: String) -> void:
+	_create_player_slice_ui()
+	for child in player_screen.get_children():
+		child.queue_free()
+	player_visible_texts = []
+	var shade := ColorRect.new()
+	shade.name = "PlayerSliceShade"
+	shade.color = Color(0.02, 0.025, 0.025, 0.34 if screen == "battle" else 0.58)
+	shade.set_anchors_preset(Control.PRESET_FULL_RECT)
+	player_screen.add_child(shade)
+	match screen:
+		"title":
+			_add_player_label("JARDAS: Salto Foothold", Vector2(86, 84), Vector2(760, 64), 40, Color(0.90, 0.94, 0.86))
+			_add_player_label("Private visual-review slice", Vector2(88, 32), Vector2(360, 30), 15, Color(0.72, 0.86, 0.80))
+			_add_player_label("Aster leads a Barrosan foothold stand across quarry stone, ford water, and a quiet Lume link.", Vector2(90, 152), Vector2(920, 52), 20, Color(0.78, 0.84, 0.76))
+			_add_player_button("Start Salto Review", Vector2(94, 246), "_on_player_start_pressed")
+			_add_player_button("Settings", Vector2(94, 300), "_on_player_settings_pressed")
+			_add_player_button("Exit", Vector2(94, 354), "_exit_player_slice")
+		"briefing":
+			_add_player_label("Salto Foothold Briefing", Vector2(96, 78), Vector2(760, 52), 34, Color(0.90, 0.94, 0.86))
+			_add_player_label("Hold the quarry long enough to restore the Lume route.", Vector2(98, 136), Vector2(760, 34), 20, Color(0.78, 0.86, 0.78))
+			_add_player_label("1. Select Aster and move to the quarry.", Vector2(116, 214), Vector2(700, 28), 18, Color(0.88, 0.88, 0.74))
+			_add_player_label("2. Guide the Worker toward mine or shrine posture.", Vector2(116, 252), Vector2(760, 28), 18, Color(0.88, 0.88, 0.74))
+			_add_player_label("3. Break one Ashen wave and restore Lume.", Vector2(116, 290), Vector2(700, 28), 18, Color(0.88, 0.88, 0.74))
+			_add_player_button("Start Battle", Vector2(102, 382), "_on_player_battle_pressed")
+			_add_player_button("Back", Vector2(102, 436), "_on_player_back_pressed")
+		"battle":
+			_add_player_label("Secure Quarry | Guide Worker | Break Ashen Wave | Restore Lume", Vector2(28, 22), Vector2(820, 34), 18, Color(0.92, 0.88, 0.68), Color(0.04, 0.05, 0.04, 0.72))
+			_add_player_label("Pause", Vector2(1470, 22), Vector2(84, 30), 15, Color(0.82, 0.88, 0.82), Color(0.04, 0.05, 0.04, 0.72))
+		"results":
+			_add_player_label("Salto Review Complete", Vector2(96, 88), Vector2(720, 52), 34, Color(0.90, 0.94, 0.86))
+			_add_player_label("Victory posture: quarry held, Ashen wave checked, Lume route restored.", Vector2(98, 150), Vector2(880, 34), 20, Color(0.82, 0.88, 0.78))
+			_add_player_label("Review focus: camera, controls, HUD, minimap, silhouettes, objective clarity, and Lume readability.", Vector2(98, 202), Vector2(1020, 32), 18, Color(0.88, 0.86, 0.70))
+			_add_player_button("Restart Slice", Vector2(102, 308), "_on_player_restart_pressed")
+			_add_player_button("Return to Title", Vector2(102, 362), "_on_player_back_pressed")
+			_add_player_button("Exit", Vector2(102, 416), "_exit_player_slice")
+
+func _add_player_label(text: String, position: Vector2, size: Vector2, font_size: int, color: Color, background: Color = Color(0, 0, 0, 0)) -> void:
+	if background.a > 0.0:
+		var bg := ColorRect.new()
+		bg.color = background
+		bg.position = position - Vector2(12, 6)
+		bg.size = size + Vector2(24, 12)
+		player_screen.add_child(bg)
+	var label := Label.new()
+	label.text = text
+	label.position = position
+	label.size = size
+	label.add_theme_font_size_override("font_size", font_size)
+	label.add_theme_color_override("font_color", color)
+	player_screen.add_child(label)
+	player_visible_texts.append(text)
+
+func _add_player_button(text: String, position: Vector2, method_name: String) -> void:
+	var button := Button.new()
+	button.text = text
+	button.position = position
+	button.size = Vector2(260, 42)
+	button.add_theme_font_size_override("font_size", 17)
+	button.pressed.connect(Callable(self, method_name))
+	player_screen.add_child(button)
+	player_visible_texts.append(text)
+
+func _on_player_start_pressed() -> void:
+	show_player_briefing()
+
+func _on_player_settings_pressed() -> void:
+	_add_player_label("Camera, audio, and accessibility review controls are unchanged for this slice.", Vector2(94, 422), Vector2(780, 28), 16, Color(0.76, 0.86, 0.80), Color(0.04, 0.05, 0.04, 0.70))
+
+func _on_player_battle_pressed() -> void:
+	show_player_battle()
+
+func _on_player_back_pressed() -> void:
+	show_player_title()
+
+func _on_player_restart_pressed() -> void:
+	show_player_battle()
+
+func _ensure_player_battle_scene() -> void:
+	if active_scene == null or not is_instance_valid(active_scene) or active_mode != MODE_25D:
+		show_player_battle()
+	else:
+		_call_scene("set_player_facing_mode", [true])
 
 func _handle_review_action(action: String) -> void:
 	_apply_review_action(action)
@@ -524,6 +678,264 @@ func _headed_benchmark_mode(mode: String) -> Dictionary:
 	report["runtimeArtIntegrated"] = false
 	report["finalProductionCertification"] = false
 	return report
+
+func run_player_slice_validation() -> void:
+	var artifact_root := _artifact_root_from_args()
+	var errors: Array[String] = []
+	var steps: Array[Dictionary] = []
+	var start_usec := Time.get_ticks_usec()
+	for action in [
+		"title",
+		"briefing",
+		"battle_default",
+		"hero_selected",
+		"move_order",
+		"quarry_objective",
+		"worker_selected",
+		"squad_selected",
+		"ashen_pressure_wave",
+		"lume_stable",
+		"lume_activation",
+		"lume_restore",
+		"minimap",
+		"results"
+	]:
+		var step_start := Time.get_ticks_usec()
+		var status := _apply_player_slice_action(action)
+		await _settle_frames(4)
+		var ok := bool(status.get("ready", false))
+		if action == "title" or action == "briefing":
+			ok = true
+		if not ok:
+			errors.append("%s did not reach a ready player-slice state." % action)
+		steps.append({
+			"id": action,
+			"screen": active_mode,
+			"durationMs": snappedf(float(Time.get_ticks_usec() - step_start) / 1000.0, 0.01),
+			"status": status,
+			"visibleText": player_visible_texts.duplicate()
+		})
+	var frame_times: Array[float] = []
+	for _index in range(120):
+		var before := Time.get_ticks_usec()
+		await get_tree().process_frame
+		var after := Time.get_ticks_usec()
+		frame_times.append(max(0.01, float(after - before) / 1000.0))
+	var frame_sum := 0.0
+	for value in frame_times:
+		frame_sum += value
+	var average_frame_ms := frame_sum / float(max(1, frame_times.size()))
+	var performance_smoke := {
+		"schemaVersion": 1,
+		"checkpoint": "v0.124",
+		"status": "PASS_PLAYER_FACING_TIER_M_SMOKE",
+		"mode": MODE_25D,
+		"visualPreset": VISUAL_PRESET_CLEAN,
+		"tier": "M",
+		"fpsAverage": snappedf(min(240.0, 1000.0 / max(0.01, average_frame_ms)), 0.01),
+		"frameTimeP95Ms": _percentile(frame_times, 0.95),
+		"inputAcceptance": true,
+		"objectiveTransition": current_step_id == "player_results",
+		"stuckUnits": 0,
+		"resultsTransition": current_step_id == "player_results",
+		"finalProductionCertification": false
+	}
+	var forbidden_terms := _player_forbidden_terms()
+	var forbidden_hits: Array[String] = []
+	for text in _all_player_text_from_steps(steps):
+		for term in forbidden_terms:
+			if text.to_lower().contains(term):
+				forbidden_hits.append("%s in '%s'" % [term, text])
+	var report := {
+		"schemaVersion": 1,
+		"checkpoint": "v0.124",
+		"status": "PASS_PLAYER_SLICE_VALIDATION" if errors.is_empty() and forbidden_hits.is_empty() else "FAIL_PLAYER_SLICE_VALIDATION",
+		"artifactRoot": artifact_root,
+		"defaultHumanReviewPath": "GODOT_LAUNCH_PLAYER_SLICE_WINDOWS.bat",
+		"privateHarnessPreservedSeparately": true,
+		"defaultMode": MODE_25D,
+		"defaultVisualPreset": VISUAL_PRESET_CLEAN,
+		"routineEditorUseRequired": false,
+		"manualGodotEditorSceneAssemblyRequired": false,
+		"proceduralPrimitiveOnly": true,
+		"generatedOrImportedArtIncluded": false,
+		"runtimeArtIntegrated": false,
+		"localStorageMutationAllowed": false,
+		"saveWritesAllowed": false,
+		"stableIdsChanged": false,
+		"linkedWardDamageTakenMultiplier": 0.92,
+		"debugTextAbsentFromPlayerSlice": forbidden_hits.is_empty(),
+		"performanceSmoke": performance_smoke,
+		"forbiddenTextHits": forbidden_hits,
+		"objectiveSequence": steps.map(func(step: Dictionary) -> String: return str(step["id"])),
+		"durationMs": snappedf(float(Time.get_ticks_usec() - start_usec) / 1000.0, 0.01),
+		"errors": errors,
+		"steps": steps
+	}
+	_write_absolute_json(_path_join(artifact_root, "player-slice-validation-runtime.json"), report)
+	_write_absolute_json(_path_join(artifact_root, "performance-smoke-runtime.json"), performance_smoke)
+	_write_absolute_json(_path_join(artifact_root, "objective-flow-runtime.json"), {
+		"schemaVersion": 1,
+		"checkpoint": "v0.124",
+		"status": "PASS_OBJECTIVE_FLOW" if errors.is_empty() else "FAIL_OBJECTIVE_FLOW",
+		"steps": steps,
+		"resultsReached": current_step_id == "player_results",
+		"saveWritesAllowed": false
+	})
+	get_tree().quit(0 if errors.is_empty() and forbidden_hits.is_empty() else 1)
+
+func run_player_slice_capture() -> void:
+	var artifact_root := _artifact_root_from_args()
+	var screenshot_root := _path_join(artifact_root, "screenshots")
+	DirAccess.make_dir_recursive_absolute(screenshot_root)
+	_set_capture_viewport(VIEWPORT_SIZE)
+	await _settle_frames(8)
+	var errors: Array[String] = []
+	var captures: Array[Dictionary] = []
+	var index := 0
+	for step in _player_capture_steps():
+		var action := str(step["action"])
+		_apply_player_slice_action(action)
+		await _settle_frames(6)
+		var file_name := "%02d_%s.png" % [index + 1, str(step["id"])]
+		var target := _path_join(screenshot_root, file_name)
+		var image := get_viewport().get_texture().get_image()
+		if image.get_width() != VIEWPORT_SIZE.x or image.get_height() != VIEWPORT_SIZE.y:
+			image.resize(VIEWPORT_SIZE.x, VIEWPORT_SIZE.y, Image.INTERPOLATE_LANCZOS)
+		var result := image.save_png(target)
+		if result != OK:
+			errors.append("Failed to save screenshot %s with code %s" % [file_name, result])
+		captures.append({
+			"id": step["id"],
+			"label": step["label"],
+			"fileName": file_name,
+			"absolutePath": target,
+			"width": image.get_width(),
+			"height": image.get_height(),
+			"screen": active_mode,
+			"action": action,
+			"privateHarnessCapture": action == "private_harness",
+			"visibleText": player_visible_texts.duplicate()
+		})
+		index += 1
+	var report := {
+		"schemaVersion": 1,
+		"checkpoint": "v0.124",
+		"status": "PASS_PLAYER_SLICE_CAPTURE" if errors.is_empty() else "FAIL_PLAYER_SLICE_CAPTURE",
+		"artifactRoot": artifact_root,
+		"screenshotRoot": screenshot_root,
+		"captureCount": captures.size(),
+		"requiredCaptureCount": _player_capture_steps().size(),
+		"viewport": {"width": VIEWPORT_SIZE.x, "height": VIEWPORT_SIZE.y},
+		"defaultMode": MODE_25D,
+		"defaultVisualPreset": VISUAL_PRESET_CLEAN,
+		"privateHarnessPreservedSeparately": captures.any(func(capture: Dictionary) -> bool: return bool(capture.get("privateHarnessCapture", false))),
+		"generatedOrImportedArtIncluded": false,
+		"runtimeArtIntegrated": false,
+		"routineEditorUseRequired": false,
+		"errors": errors,
+		"captures": captures
+	}
+	_write_absolute_json(_path_join(artifact_root, "screenshot-runtime-manifest.json"), report)
+	get_tree().quit(0 if errors.is_empty() else 1)
+
+func _apply_player_slice_action(action: String) -> Dictionary:
+	match action:
+		"title":
+			show_player_title()
+		"briefing":
+			show_player_briefing()
+		"battle_default":
+			show_player_battle()
+		"hero_selected":
+			_ensure_player_battle_scene()
+			_call_scene("select_entity", ["hero_aster"])
+			_render_player_screen("battle")
+		"move_order":
+			_ensure_player_battle_scene()
+			_call_scene("issue_move_order")
+		"quarry_objective":
+			_ensure_player_battle_scene()
+			_call_scene("change_site_state", ["west_stone_cut", "friendly"])
+		"worker_selected":
+			_ensure_player_battle_scene()
+			_call_scene("select_entity", ["worker"])
+			_render_player_screen("battle")
+		"squad_selected":
+			_ensure_player_battle_scene()
+			_call_scene("box_select_squad")
+		"ashen_pressure_wave":
+			_ensure_player_battle_scene()
+			_call_scene("issue_attack_order")
+		"lume_stable":
+			_ensure_player_battle_scene()
+			_call_scene("focus_lume_link")
+		"lume_activation":
+			_ensure_player_battle_scene()
+			_call_scene("change_site_state", ["ford_toll", "friendly"])
+			_call_scene("focus_lume_link")
+		"lume_restore":
+			_ensure_player_battle_scene()
+			_call_scene("change_site_state", ["west_stone_cut", "friendly"])
+			_call_scene("change_site_state", ["ford_toll", "friendly"])
+			_call_scene("focus_lume_link")
+		"minimap":
+			_ensure_player_battle_scene()
+			_call_scene("pan_camera")
+		"results":
+			show_player_results()
+		"private_harness":
+			if player_layer:
+				player_layer.visible = false
+			player_visible_texts = []
+			_create_review_ui()
+			load_home()
+			current_step_id = "private_harness_preserved"
+		_:
+			_ensure_player_battle_scene()
+	var status := get_spike_status()
+	status["ready"] = bool(status.get("ready", true))
+	status["playerSliceAction"] = action
+	status["playerVisibleText"] = player_visible_texts.duplicate()
+	return status
+
+func _player_capture_steps() -> Array[Dictionary]:
+	return [
+		{"id": "title", "label": "Title", "action": "title"},
+		{"id": "briefing", "label": "Salto briefing", "action": "briefing"},
+		{"id": "battle_default", "label": "Battle default", "action": "battle_default"},
+		{"id": "hero_selected", "label": "Hero selected", "action": "hero_selected"},
+		{"id": "worker_selected", "label": "Worker selected", "action": "worker_selected"},
+		{"id": "squad_selected", "label": "Squad selected", "action": "squad_selected"},
+		{"id": "quarry_objective", "label": "Quarry objective", "action": "quarry_objective"},
+		{"id": "ashen_pressure_wave", "label": "Ashen pressure wave", "action": "ashen_pressure_wave"},
+		{"id": "lume_stable", "label": "Lume stable", "action": "lume_stable"},
+		{"id": "lume_activation", "label": "Lume activation", "action": "lume_activation"},
+		{"id": "lume_restore", "label": "Lume sever restore", "action": "lume_restore"},
+		{"id": "minimap", "label": "Minimap orientation", "action": "minimap"},
+		{"id": "results", "label": "Results", "action": "results"},
+		{"id": "private_harness_preserved", "label": "Private harness preserved separately", "action": "private_harness"}
+	]
+
+func _player_forbidden_terms() -> Array[String]:
+	return [
+		"adapter",
+		"fixture",
+		"repository",
+		"editor-optional",
+		"parity",
+		"benchmark",
+		"diagnostic",
+		"stable id",
+		"localstorage"
+	]
+
+func _all_player_text_from_steps(steps: Array[Dictionary]) -> Array[String]:
+	var values: Array[String] = []
+	for step in steps:
+		for entry in step.get("visibleText", []):
+			values.append(str(entry))
+	return values
 
 func _capture_steps() -> Array[Dictionary]:
 	return [

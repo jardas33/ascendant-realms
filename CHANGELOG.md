@@ -1,5 +1,27 @@
 # Changelog
 
+# v0.124 Godot Player-Facing Salto Review Slice, Private Harness Separation, And Art-Ready Presentation Shell - 2026-06-04
+
+This checkpoint separates the private engineering harness from a new player-facing Salto review slice. It makes `GODOT_LAUNCH_PLAYER_SLICE_WINDOWS.bat` the default human-review path, keeps `GODOT_LAUNCH_PRIVATE_HARNESS_WINDOWS.bat` for engineering review, and adds v0.124 validation/capture artifacts for the player-facing flow. It remains a bounded placeholder-only Godot workflow spike: no final engine choice, full port, generated image, imported art, runtime art integration, browser replacement, gameplay change, save change, stable-ID rename, multiplayer, or v0.125 work.
+
+Added:
+
+- Player-facing launch, validate, and capture wrappers plus npm scripts.
+- Title, briefing, battle, and Results player-slice flow.
+- Procedural Salto composition, differentiated silhouettes, compact HUD/minimap, and Lume presentation improvements.
+- v0.124 artifact reports for player-slice validation, objective flow, performance smoke, screenshot hashes, and art slots.
+- v0.124 docs and Emmanuel player-slice review guide.
+
+Changed:
+
+- Packaged Godot ZIP evidence now uses the v0.124 package name.
+- The old review launcher defaults to the private harness instead of being the human-review default.
+- Handoff, roadmap, development checkpoint, release checklist, package scripts, and focused scaffold tests now describe v0.124.
+
+Verification:
+
+- Required v0.124 verification is listed in `docs/V0124_IMPLEMENTATION_REPORT.md` and must be run before closeout.
+
 # v0.123 Godot Continuation Decision Packet, Unity Comparator Boundary, And First Reference-Art Prompt Library - 2026-06-04
 
 This checkpoint consolidates the Godot Salto workflow evidence into Emmanuel's continuation decision packet. It classifies the current Godot spike as `GODOT_SPIKE_GREEN` for careful next-spike planning, defines the Unity comparator boundary, creates a simple Emmanuel review guide, and adds the first copy-ready reference-art prompt library. It keeps the work inside docs, scorecard interpretation, validation-boundary maintenance, and reference-only prompt preparation: no final engine choice, full port, Unity project, Unreal project, Electron wrapper, image generation, runtime art import, browser replacement, gameplay change, save change, stable-ID rename, multiplayer, content expansion, or v0.124 work.
