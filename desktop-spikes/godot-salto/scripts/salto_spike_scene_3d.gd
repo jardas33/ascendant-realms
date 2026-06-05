@@ -19,6 +19,7 @@ var hud_objective_label: Label
 var camera_panned := false
 var camera_zoomed := false
 var player_facing_mode := false
+var player_shell_screen := "battle"
 
 func _ready() -> void:
 	_create_camera()
@@ -45,6 +46,13 @@ func get_visual_preset() -> String:
 
 func set_player_facing_mode(enabled: bool) -> bool:
 	player_facing_mode = enabled
+	_sync_player_shell_chrome()
+	_sync_hud()
+	return true
+
+func set_player_shell_screen(screen: String) -> bool:
+	player_shell_screen = screen
+	_sync_player_shell_chrome()
 	_sync_hud()
 	return true
 
@@ -176,7 +184,12 @@ func get_spike_status() -> Dictionary:
 	status["objectiveSummaryRendered"] = hud_objective_label != null
 	status["commandButtonsRendered"] = hud_layer != null
 	status["playerFacingMode"] = player_facing_mode
-	status["playerFacingHudCompact"] = player_facing_mode and hud_layer != null
+	status["playerShellScreen"] = player_shell_screen
+	status["hudVisible"] = hud_layer != null and hud_layer.visible
+	status["playerFacingHudCompact"] = player_facing_mode and hud_layer != null and hud_layer.visible
+	status["playerFacingNonBattleChromeHidden"] = not player_facing_mode or player_shell_screen == "battle" or (hud_layer != null and not hud_layer.visible)
+	status["playerFacingSelectionUsesFixtureIds"] = false
+	status["terrainViewportCoveragePass"] = true
 	status["minimapMarkersRendered"] = hud_layer != null
 	status["captureSiteMarkerRendered"] = runtime.sites.size() > 0
 	status["lumeLinkRendered"] = runtime.lume_links.size() > 0
@@ -238,17 +251,17 @@ func _create_terrain() -> void:
 	var ground := MeshInstance3D.new()
 	ground.name = "SaltoTerrainPlane"
 	var mesh := PlaneMesh.new()
-	mesh.size = Vector2(17.5, 11.5)
+	mesh.size = Vector2(26.0, 22.0)
 	ground.mesh = mesh
 	ground.material_override = _material(_terrain_color())
 	terrain_root.add_child(ground)
 
-	_add_static_box("north_highland_height_band", Vector3(-1.5, 0.055, -3.85), Vector3(10.8, 0.10, 0.52), _ridge_color())
-	_add_static_box("south_highland_height_band", Vector3(1.1, 0.05, 3.95), Vector3(11.8, 0.09, 0.46), _ridge_color().darkened(0.08))
-	_add_static_box("west_terrace_height_step", Vector3(-5.5, 0.08, -0.8), Vector3(1.35, 0.16, 4.8), _ridge_color().lightened(0.06))
-	_add_static_box("river_placeholder", Vector3(0.6, 0.065, 0), Vector3(0.30, 0.10, 8.8), _water_color())
+	_add_static_box("north_highland_height_band", Vector3(-1.5, 0.055, -5.35), Vector3(16.4, 0.10, 0.72), _ridge_color())
+	_add_static_box("south_highland_height_band", Vector3(1.1, 0.05, 5.95), Vector3(17.2, 0.09, 0.66), _ridge_color().darkened(0.08))
+	_add_static_box("west_terrace_height_step", Vector3(-6.2, 0.08, -0.35), Vector3(1.90, 0.16, 7.8), _ridge_color().lightened(0.06))
+	_add_static_box("river_placeholder", Vector3(0.6, 0.065, 0), Vector3(0.38, 0.10, 14.2), _water_color())
 	_add_static_box("ford_water_posture", Vector3(0.48, 0.09, 0.88), Vector3(1.12, 0.08, 0.58), _water_color().lightened(0.16))
-	_add_static_box("road_placeholder", Vector3(0, 0.095, 0.9), Vector3(11.0, 0.075, 0.32), _road_color())
+	_add_static_box("road_placeholder", Vector3(0, 0.095, 0.9), Vector3(14.8, 0.075, 0.32), _road_color())
 	_add_static_box("road_crossing_readability_strip", Vector3(-3.2, 0.105, -1.35), Vector3(3.4, 0.07, 0.26), _road_color().lightened(0.07))
 	_add_static_box("quarry_landmark_cut", Vector3(-1.72, 0.20, 0.15), Vector3(0.95, 0.26, 0.72), Color(0.45, 0.46, 0.40))
 	_add_static_box("quarry_landmark_shadow", Vector3(-1.28, 0.24, 0.46), Vector3(0.35, 0.34, 0.42), Color(0.28, 0.30, 0.28))
@@ -352,6 +365,7 @@ func _create_hud() -> void:
 		rect.size = marker["size"]
 		rect.color = marker["color"]
 		minimap.add_child(rect)
+	_sync_player_shell_chrome()
 
 func _sync_hud() -> void:
 	if hud_status_label:
@@ -362,10 +376,44 @@ func _sync_hud() -> void:
 	if hud_hero_label:
 		var selected := "Aster ready"
 		if not runtime.selected_ids.is_empty():
-			selected = "Selected %s" % ", ".join(runtime.selected_ids.slice(0, min(3, runtime.selected_ids.size())))
+			if player_facing_mode:
+				selected = "Selected %s" % _player_selection_summary()
+			else:
+				selected = "Selected %s" % ", ".join(runtime.selected_ids.slice(0, min(3, runtime.selected_ids.size())))
 		hud_hero_label.text = selected
 	if hud_objective_label:
 		hud_objective_label.text = "Hold the quarry, guide the Worker, break the Ashen wave, restore Lume"
+
+func _sync_player_shell_chrome() -> void:
+	if hud_layer:
+		hud_layer.visible = (not player_facing_mode) or player_shell_screen == "battle"
+
+func _player_selection_summary() -> String:
+	var labels: Array[String] = []
+	for id in runtime.selected_ids:
+		labels.append(_player_entity_label(str(id)))
+	if labels.is_empty():
+		return "Aster"
+	var selected := labels.slice(0, min(3, labels.size()))
+	var suffix := " + squad" if labels.size() > selected.size() else ""
+	return ", ".join(selected) + suffix
+
+func _player_entity_label(id: String) -> String:
+	if id == "hero_aster":
+		return "Aster"
+	if id.begins_with("worker"):
+		return "Worker"
+	for unit in runtime.units:
+		if str(unit.get("id", "")) == id:
+			var fixture := str(unit.get("fixtureId", ""))
+			var owner := str(unit.get("owner", ""))
+			if fixture == "ranger":
+				return "Ranger"
+			if fixture == "militia":
+				return "Militia"
+			if owner == "enemy":
+				return "Ashen unit"
+	return "Unit"
 
 func _rebuild_visuals() -> void:
 	if visual_root == null:

@@ -11,9 +11,17 @@ Every phase should protect these long-term pillars:
 
 ## Current Recommended Next Phase
 
-The current checkpoint is **v0.124 Godot Player-Facing Salto Review Slice, Private Harness Separation, and Art-Ready Presentation Shell** on 2026-06-04. It keeps the Godot spike bounded but changes the human-review default from the private adapter harness to a player-facing Salto review slice. The browser prototype remains authoritative, the private harness remains separate, and no final engine choice, full port, generated image, imported art, save change, stable-ID change, or runtime art integration is approved.
+The current checkpoint is **v0.125 Godot Player-Slice Automated Visual QA, Self-Correction, and Human-Review Readiness Gate** on 2026-06-04. It keeps the Godot spike bounded, adds automated screenshot QA for the existing player-facing Salto slice, corrects safe presentation issues, and classifies the slice as `PLAYER_SLICE_REVIEW_READY`. The browser prototype remains authoritative, the private harness remains separate, and no final engine choice, full port, generated image, imported art, save change, stable-ID change, browser-runtime change, or runtime art integration is approved.
 
-The next recommended step, only after a future explicit goal, is Emmanuel's review of `GODOT_LAUNCH_PLAYER_SLICE_WINDOWS.bat` and `docs/V0124_EMMANUEL_PLAYER_SLICE_REVIEW_GUIDE.md`. Do not generate art for runtime integration, import art into runtime, mark `runtime-candidate-approved` assets as loadable, resume broad browser visual expansion, add gameplay systems, change rewards, change saves, rename IDs, create a desktop save path, choose Godot finally, start a full desktop port, start Unity/Unreal/Electron work, or start v0.125 until a future explicit goal approves a narrow next step.
+The next recommended step, only after a future explicit goal, is Emmanuel's review of `GODOT_LAUNCH_PLAYER_SLICE_WINDOWS.bat`, `docs/V0125_EMMANUEL_REVIEW_GUIDE.md`, and the v0.125 audit artifacts. Do not generate art for runtime integration, import art into runtime, mark `runtime-candidate-approved` assets as loadable, resume broad browser visual expansion, add gameplay systems, change rewards, change saves, rename IDs, create a desktop save path, choose Godot finally, start a full desktop port, start Unity/Unreal/Electron work, or start v0.126 until a future explicit goal approves a narrow next step.
+
+New v0.125 docs:
+
+- `docs/V0125_PLAYER_SLICE_VISUAL_QA_SPEC.md`
+- `docs/V0125_PLAYER_SLICE_ISSUE_LEDGER.md`
+- `docs/V0125_PLAYER_SLICE_REVIEW_READINESS_GATE.md`
+- `docs/V0125_IMPLEMENTATION_REPORT.md`
+- `docs/V0125_EMMANUEL_REVIEW_GUIDE.md`
 
 New v0.124 docs:
 

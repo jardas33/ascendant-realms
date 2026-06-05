@@ -15,6 +15,7 @@ const v0121ScreenshotRoot = join(v0121ArtifactRoot, "screenshots");
 const v0122ArtifactRoot = join(repoRoot, "artifacts", "desktop-spikes", "godot-salto", "v0122");
 const v0124ArtifactRoot = join(repoRoot, "artifacts", "desktop-spikes", "godot-salto", "v0124");
 const v0124ScreenshotRoot = join(v0124ArtifactRoot, "screenshots");
+const v0125ArtifactRoot = join(repoRoot, "artifacts", "desktop-spikes", "godot-salto", "v0125");
 const sourceFixtureRoot = join(repoRoot, "artifacts", "desktop-spike-fixture", "latest");
 const generatedDataRoot = join(spikeRoot, "data", "generated");
 const buildsRoot = join(spikeRoot, "builds");
@@ -247,6 +248,18 @@ function writeV0124Artifact(name, value) {
 
 function writeV0124Text(name, value) {
   const target = join(v0124ArtifactRoot, name);
+  writeText(target, value);
+  return target;
+}
+
+function writeV0125Artifact(name, value) {
+  const target = join(v0125ArtifactRoot, name);
+  writeJson(target, value);
+  return target;
+}
+
+function writeV0125Text(name, value) {
+  const target = join(v0125ArtifactRoot, name);
   writeText(target, value);
   return target;
 }
@@ -2225,6 +2238,7 @@ function writeV0124ScreenshotManifest() {
       width: entry.width,
       height: entry.height,
       privateHarnessCapture: Boolean(entry.privateHarnessCapture),
+      status: entry.status ?? null,
       visibleText: entry.visibleText ?? []
     };
   });
@@ -2294,6 +2308,386 @@ function writeV0124ScreenshotManifest() {
   writeV0124ContactSheet(manifest);
   writeV0124Readme();
   return manifest;
+}
+
+const v0125AuditAreas = ["title", "briefing", "battle", "results"];
+const v0125PlayerDebugTerms = [
+  ...v0124ForbiddenTerms,
+  "private visual-review",
+  "proof",
+  "workload",
+  "stable-id",
+  "local storage",
+  "raw fixture",
+  "developer"
+];
+
+function readOptionalJson(path) {
+  return existsSync(path) ? readJson(path) : null;
+}
+
+function findCapture(manifest, id) {
+  return manifest?.captures?.find((capture) => capture.id === id) ?? null;
+}
+
+function findValidationStep(validation, id) {
+  return validation?.steps?.find((step) => step.id === id) ?? null;
+}
+
+function statusFor(validation, manifest, id) {
+  return findValidationStep(validation, id)?.status ?? findCapture(manifest, id)?.status ?? {};
+}
+
+function visibleTextFor(manifest, id) {
+  return (findCapture(manifest, id)?.visibleText ?? []).map((text) => String(text));
+}
+
+function containsAnyText(texts, terms) {
+  const haystack = texts.join("\n").toLowerCase();
+  return terms.filter((term) => haystack.includes(String(term).toLowerCase()));
+}
+
+function hasAllText(texts, terms) {
+  const haystack = texts.join("\n").toLowerCase();
+  return terms.every((term) => haystack.includes(String(term).toLowerCase()));
+}
+
+function auditCheck(area, id, label, pass, severity, evidence) {
+  return {
+    area,
+    id,
+    label,
+    pass: Boolean(pass),
+    severity,
+    evidence
+  };
+}
+
+function summarizeV0125Evidence(manifest, validation, performance) {
+  return {
+    checkpoint: "v0.125",
+    sourceManifestStatus: manifest?.status ?? "missing",
+    validationStatus: validation?.status ?? "missing",
+    performanceStatus: performance?.status ?? "missing",
+    captureCount: manifest?.captureCount ?? 0,
+    screenshots: (manifest?.captures ?? []).map((capture) => ({
+      id: capture.id,
+      fileName: capture.fileName,
+      sha256: capture.sha256,
+      width: capture.width,
+      height: capture.height,
+      visibleText: capture.visibleText ?? [],
+      statusDigest: {
+        playerShellScreen: capture.status?.playerShellScreen ?? null,
+        hudVisible: capture.status?.hudVisible ?? null,
+        playerFacingNonBattleChromeHidden: capture.status?.playerFacingNonBattleChromeHidden ?? null,
+        playerFacingSelectionUsesFixtureIds: capture.status?.playerFacingSelectionUsesFixtureIds ?? null,
+        terrainViewportCoveragePass: capture.status?.terrainViewportCoveragePass ?? null
+      }
+    })),
+    validationStepDigest: (validation?.steps ?? []).map((step) => ({
+      id: step.id,
+      visibleText: step.visibleText ?? [],
+      statusDigest: {
+        playerShellScreen: step.status?.playerShellScreen ?? null,
+        hudVisible: step.status?.hudVisible ?? null,
+        playerFacingNonBattleChromeHidden: step.status?.playerFacingNonBattleChromeHidden ?? null,
+        playerFacingSelectionUsesFixtureIds: step.status?.playerFacingSelectionUsesFixtureIds ?? null,
+        terrainViewportCoveragePass: step.status?.terrainViewportCoveragePass ?? null
+      }
+    }))
+  };
+}
+
+function buildV0125ScreenshotAudit() {
+  const manifest = readOptionalJson(join(v0124ArtifactRoot, "screenshot-manifest.json"));
+  const validation = readOptionalJson(join(v0124ArtifactRoot, "player-slice-validation.json"));
+  const performance = readOptionalJson(join(v0124ArtifactRoot, "performance-smoke.json"));
+  const previousAudit = readOptionalJson(join(v0125ArtifactRoot, "screenshot-audit.json"));
+  const previousBeforeAfter = readOptionalJson(join(v0125ArtifactRoot, "before-after-manifest.json"));
+  const checks = [];
+  const requiredCaptureIds = v0124CaptureOrder;
+  const missingCaptures = requiredCaptureIds.filter((id) => !findCapture(manifest, id));
+  const titleText = visibleTextFor(manifest, "title");
+  const briefingText = visibleTextFor(manifest, "briefing");
+  const battleText = visibleTextFor(manifest, "battle_default");
+  const resultsText = visibleTextFor(manifest, "results");
+  const titleStatus = statusFor(validation, manifest, "title");
+  const briefingStatus = statusFor(validation, manifest, "briefing");
+  const battleStatus = statusFor(validation, manifest, "battle_default");
+  const heroStatus = statusFor(validation, manifest, "hero_selected");
+  const workerStatus = statusFor(validation, manifest, "worker_selected");
+  const squadStatus = statusFor(validation, manifest, "squad_selected");
+  const resultsStatus = statusFor(validation, manifest, "results");
+  const titleForbidden = containsAnyText(titleText, v0125PlayerDebugTerms);
+  const briefingForbidden = containsAnyText(briefingText, v0125PlayerDebugTerms);
+  const battleForbidden = containsAnyText(battleText, v0125PlayerDebugTerms);
+  const resultsForbidden = containsAnyText(resultsText, v0125PlayerDebugTerms);
+
+  checks.push(
+    auditCheck("title", "V0125_TITLE_CAPTURE_PRESENT", "Title screenshot exists at 1600x900.", !missingCaptures.includes("title") && findCapture(manifest, "title")?.width === 1600 && findCapture(manifest, "title")?.height === 900, "blocking", {
+      missingCaptures,
+      width: findCapture(manifest, "title")?.width ?? null,
+      height: findCapture(manifest, "title")?.height ?? null
+    }),
+    auditCheck("title", "V0125_TITLE_NO_DEBUG_JARGON", "Title contains only player-facing copy.", titleForbidden.length === 0 && titleText.includes("Salto foothold review"), "major", {
+      visibleText: titleText,
+      forbiddenHits: titleForbidden
+    }),
+    auditCheck("title", "V0125_TITLE_CHROME_HIDDEN", "Battle HUD and minimap are hidden on the title screen.", titleStatus.playerFacingNonBattleChromeHidden === true && titleStatus.hudVisible === false, "major", {
+      playerShellScreen: titleStatus.playerShellScreen ?? null,
+      hudVisible: titleStatus.hudVisible ?? null,
+      playerFacingNonBattleChromeHidden: titleStatus.playerFacingNonBattleChromeHidden ?? null
+    }),
+    auditCheck("title", "V0125_TITLE_PRIMARY_ACTION_CLEAR", "Title presents the review start action clearly.", hasAllText(titleText, ["JARDAS: Salto Foothold", "Start Salto Review"]), "minor", {
+      visibleText: titleText
+    })
+  );
+
+  checks.push(
+    auditCheck("briefing", "V0125_BRIEFING_CAPTURE_PRESENT", "Briefing screenshot exists at 1600x900.", !missingCaptures.includes("briefing") && findCapture(manifest, "briefing")?.width === 1600 && findCapture(manifest, "briefing")?.height === 900, "blocking", {
+      missingCaptures,
+      width: findCapture(manifest, "briefing")?.width ?? null,
+      height: findCapture(manifest, "briefing")?.height ?? null
+    }),
+    auditCheck("briefing", "V0125_BRIEFING_OBJECTIVE_COPY", "Briefing has the short Salto premise and three objective beats.", hasAllText(briefingText, ["Hold the quarry", "Select Aster", "Guide the Worker", "Break one Ashen wave", "Start Battle"]), "major", {
+      visibleText: briefingText
+    }),
+    auditCheck("briefing", "V0125_BRIEFING_NO_DEBUG_JARGON", "Briefing contains no engineering or benchmark terms.", briefingForbidden.length === 0, "major", {
+      visibleText: briefingText,
+      forbiddenHits: briefingForbidden
+    }),
+    auditCheck("briefing", "V0125_BRIEFING_CHROME_HIDDEN", "Battle HUD and minimap are hidden during briefing.", briefingStatus.playerFacingNonBattleChromeHidden === true && briefingStatus.hudVisible === false, "major", {
+      playerShellScreen: briefingStatus.playerShellScreen ?? null,
+      hudVisible: briefingStatus.hudVisible ?? null,
+      playerFacingNonBattleChromeHidden: briefingStatus.playerFacingNonBattleChromeHidden ?? null
+    })
+  );
+
+  checks.push(
+    auditCheck("battle", "V0125_BATTLE_CAPTURE_PRESENT", "Battle screenshot exists at 1600x900.", !missingCaptures.includes("battle_default") && findCapture(manifest, "battle_default")?.width === 1600 && findCapture(manifest, "battle_default")?.height === 900, "blocking", {
+      missingCaptures,
+      width: findCapture(manifest, "battle_default")?.width ?? null,
+      height: findCapture(manifest, "battle_default")?.height ?? null
+    }),
+    auditCheck("battle", "V0125_BATTLE_HUD_VISIBLE", "Battle keeps the compact player HUD and minimap visible.", battleStatus.hudVisible === true && battleStatus.playerFacingHudCompact === true, "major", {
+      hudVisible: battleStatus.hudVisible ?? null,
+      playerFacingHudCompact: battleStatus.playerFacingHudCompact ?? null,
+      minimapMarkersRendered: battleStatus.minimapMarkersRendered ?? null
+    }),
+    auditCheck("battle", "V0125_BATTLE_TERRAIN_COVERAGE", "Battle camera is covered by Salto terrain without obvious gray margins.", battleStatus.terrainViewportCoveragePass === true, "major", {
+      terrainViewportCoveragePass: battleStatus.terrainViewportCoveragePass ?? null,
+      cameraPanBounds: battleStatus.cameraPanBounds ?? null
+    }),
+    auditCheck("battle", "V0125_BATTLE_FACTION_READABILITY", "Battle keeps hero, faction silhouettes, capture site, Lume, objectives, and minimap evidence.", Boolean(battleStatus.factionSilhouettePassRendered && battleStatus.selectedHeroCardRendered && battleStatus.captureSiteMarkerRendered && battleStatus.lumeLinkRendered && battleStatus.objectiveSummaryRendered && battleStatus.minimapMarkersRendered), "major", {
+      factionSilhouettePassRendered: battleStatus.factionSilhouettePassRendered ?? null,
+      selectedHeroCardRendered: battleStatus.selectedHeroCardRendered ?? null,
+      captureSiteMarkerRendered: battleStatus.captureSiteMarkerRendered ?? null,
+      lumeLinkRendered: battleStatus.lumeLinkRendered ?? null,
+      objectiveSummaryRendered: battleStatus.objectiveSummaryRendered ?? null,
+      minimapMarkersRendered: battleStatus.minimapMarkersRendered ?? null
+    }),
+    auditCheck("battle", "V0125_BATTLE_NO_DEBUG_OR_IDS", "Battle-facing HUD text avoids debug terms and raw fixture IDs.", battleForbidden.length === 0 && heroStatus.playerFacingSelectionUsesFixtureIds === false && workerStatus.playerFacingSelectionUsesFixtureIds === false && squadStatus.playerFacingSelectionUsesFixtureIds === false, "major", {
+      visibleText: battleText,
+      forbiddenHits: battleForbidden,
+      heroSelectionUsesFixtureIds: heroStatus.playerFacingSelectionUsesFixtureIds ?? null,
+      workerSelectionUsesFixtureIds: workerStatus.playerFacingSelectionUsesFixtureIds ?? null,
+      squadSelectionUsesFixtureIds: squadStatus.playerFacingSelectionUsesFixtureIds ?? null
+    }),
+    auditCheck("battle", "V0125_BATTLE_AUTOMATION_BOUNDARY", "Battle evidence preserves no art imports, save writes, localStorage mutation, or stable-ID changes.", validation?.generatedOrImportedArtIncluded === false && validation?.runtimeArtIntegrated === false && validation?.saveWritesAllowed === false && validation?.localStorageMutationAllowed === false && validation?.stableIdsChanged === false, "blocking", {
+      generatedOrImportedArtIncluded: validation?.generatedOrImportedArtIncluded ?? null,
+      runtimeArtIntegrated: validation?.runtimeArtIntegrated ?? null,
+      saveWritesAllowed: validation?.saveWritesAllowed ?? null,
+      localStorageMutationAllowed: validation?.localStorageMutationAllowed ?? null,
+      stableIdsChanged: validation?.stableIdsChanged ?? null
+    })
+  );
+
+  checks.push(
+    auditCheck("results", "V0125_RESULTS_CAPTURE_PRESENT", "Results screenshot exists at 1600x900.", !missingCaptures.includes("results") && findCapture(manifest, "results")?.width === 1600 && findCapture(manifest, "results")?.height === 900, "blocking", {
+      missingCaptures,
+      width: findCapture(manifest, "results")?.width ?? null,
+      height: findCapture(manifest, "results")?.height ?? null
+    }),
+    auditCheck("results", "V0125_RESULTS_SHORT_RECAP", "Results has a short recap and restart/return actions.", hasAllText(resultsText, ["Salto Review Complete", "Quarry held", "Restart Slice", "Return to Title"]), "major", {
+      visibleText: resultsText
+    }),
+    auditCheck("results", "V0125_RESULTS_NO_DEBUG_JARGON", "Results avoids debug walls and engineering terms.", resultsForbidden.length === 0 && resultsText.length <= 6, "major", {
+      visibleText: resultsText,
+      forbiddenHits: resultsForbidden,
+      visibleTextCount: resultsText.length
+    }),
+    auditCheck("results", "V0125_RESULTS_CHROME_HIDDEN", "Battle HUD and minimap are hidden on Results.", resultsStatus.playerFacingNonBattleChromeHidden === true && resultsStatus.hudVisible === false, "major", {
+      playerShellScreen: resultsStatus.playerShellScreen ?? null,
+      hudVisible: resultsStatus.hudVisible ?? null,
+      playerFacingNonBattleChromeHidden: resultsStatus.playerFacingNonBattleChromeHidden ?? null
+    })
+  );
+
+  checks.push(
+    auditCheck("battle", "V0125_PRIVATE_HARNESS_STILL_SEPARATE", "Private engineering harness remains a separate explicit capture.", manifest?.privateHarnessPreservedSeparately === true && findCapture(manifest, "private_harness_preserved")?.privateHarnessCapture === true, "blocking", {
+      privateHarnessPreservedSeparately: manifest?.privateHarnessPreservedSeparately ?? null,
+      privateHarnessCapture: findCapture(manifest, "private_harness_preserved")?.privateHarnessCapture ?? null
+    }),
+    auditCheck("battle", "V0125_PERFORMANCE_SMOKE_STILL_GREEN", "Player-facing performance smoke remains green and non-final.", performance?.status === "PASS_PLAYER_SLICE_PERFORMANCE_SMOKE" && performance?.finalProductionCertification === false, "blocking", {
+      status: performance?.status ?? null,
+      finalProductionCertification: performance?.finalProductionCertification ?? null,
+      fpsAverage: performance?.fpsAverage ?? null,
+      frameTimeP95Ms: performance?.frameTimeP95Ms ?? null
+    })
+  );
+
+  const failedChecks = checks.filter((check) => !check.pass);
+  const blockingIssues = failedChecks.filter((check) => check.severity === "blocking");
+  const majorIssues = failedChecks.filter((check) => check.severity === "major");
+  const readinessStatus = failedChecks.length === 0 && manifest?.status === "PASS_PLAYER_SLICE_SCREENSHOT_CAPTURE" && validation?.status === "PASS_PLAYER_FACING_SLICE_VALIDATION" && performance?.status === "PASS_PLAYER_SLICE_PERFORMANCE_SMOKE"
+    ? "PLAYER_SLICE_REVIEW_READY"
+    : blockingIssues.length > 0
+      ? "PLAYER_SLICE_REVIEW_BLOCKED"
+      : majorIssues.length > 0
+        ? "PLAYER_SLICE_REVIEW_NOT_READY"
+        : "PLAYER_SLICE_REVIEW_READY_WITH_NOTES";
+  const audit = {
+    schemaVersion: 1,
+    checkpoint: "v0.125",
+    status: failedChecks.length === 0 ? "PASS_PLAYER_SLICE_SCREENSHOT_AUDIT" : "FAIL_PLAYER_SLICE_SCREENSHOT_AUDIT",
+    generatedAtUtc: "deterministic-v0125",
+    sourceArtifacts: {
+      screenshotManifest: "artifacts/desktop-spikes/godot-salto/v0124/screenshot-manifest.json",
+      playerSliceValidation: "artifacts/desktop-spikes/godot-salto/v0124/player-slice-validation.json",
+      performanceSmoke: "artifacts/desktop-spikes/godot-salto/v0124/performance-smoke.json"
+    },
+    auditAreas: v0125AuditAreas,
+    readinessStatus,
+    blockingIssueCount: blockingIssues.length,
+    majorIssueCount: majorIssues.length,
+    minorIssueCount: failedChecks.filter((check) => check.severity === "minor").length,
+    activeIssueCount: failedChecks.length,
+    checks,
+    failedChecks,
+    previousStatus: previousAudit?.status ?? null,
+    editorRequiredForRoutineWork: false,
+    generatedOrImportedArtIncluded: false,
+    runtimeArtIntegrated: false,
+    saveWritesAllowed: false,
+    stableIdsChanged: false
+  };
+  const issueLedger = buildV0125IssueLedger(audit, previousAudit);
+  const currentSummary = summarizeV0125Evidence(manifest, validation, performance);
+  const beforeSummary = previousBeforeAfter?.before ?? currentSummary;
+  const beforeById = new Map((beforeSummary.screenshots ?? []).map((screenshot) => [screenshot.id, screenshot]));
+  const afterById = new Map((currentSummary.screenshots ?? []).map((screenshot) => [screenshot.id, screenshot]));
+  const changedScreenshotIds = [...new Set([...beforeById.keys(), ...afterById.keys()])]
+    .filter((id) => beforeById.get(id)?.sha256 !== afterById.get(id)?.sha256);
+  const beforeAfter = {
+    schemaVersion: 1,
+    checkpoint: "v0.125",
+    status: failedChecks.length === 0 ? "PASS_V0125_BEFORE_AFTER_MANIFEST" : "FAIL_V0125_BEFORE_AFTER_MANIFEST",
+    generatedAtUtc: "deterministic-v0125",
+    before: beforeSummary,
+    after: currentSummary,
+    changedScreenshotIds,
+    activeIssueCount: failedChecks.length,
+    resolvedIssueCount: issueLedger.issues.filter((issue) => issue.status === "resolved").length,
+    openIssueCount: issueLedger.issues.filter((issue) => issue.status === "open").length
+  };
+  writeV0125Artifact("screenshot-audit.json", audit);
+  writeV0125Artifact("issue-ledger.json", issueLedger);
+  writeV0125Artifact("before-after-manifest.json", beforeAfter);
+  writeV0125MarkdownReports(audit, issueLedger, beforeAfter);
+  return audit;
+}
+
+function v0125IssueForCheck(check, status) {
+  return {
+    issueId: `V0125-${check.id.replace(/^V0125_/u, "")}`,
+    checkId: check.id,
+    area: check.area,
+    severity: check.severity,
+    status,
+    title: check.label,
+    evidence: check.evidence,
+    correctionBoundary: "player-facing presentation shell only; no gameplay, save, stable-ID, art import, private-harness, or full-port change"
+  };
+}
+
+function buildV0125IssueLedger(audit, previousAudit) {
+  const currentFailures = new Map(audit.failedChecks.map((check) => [check.id, check]));
+  const previousFailures = new Map((previousAudit?.failedChecks ?? []).map((check) => [check.id, check]));
+  const issues = [];
+  for (const check of currentFailures.values()) {
+    issues.push(v0125IssueForCheck(check, "open"));
+  }
+  for (const [id, check] of previousFailures.entries()) {
+    if (!currentFailures.has(id)) {
+      issues.push(v0125IssueForCheck(check, "resolved"));
+    }
+  }
+  issues.sort((left, right) => left.issueId.localeCompare(right.issueId));
+  return {
+    schemaVersion: 1,
+    checkpoint: "v0.125",
+    status: currentFailures.size === 0 ? "PASS_V0125_ISSUE_LEDGER" : "FAIL_V0125_ISSUE_LEDGER",
+    generatedAtUtc: "deterministic-v0125",
+    openIssueCount: issues.filter((issue) => issue.status === "open").length,
+    resolvedIssueCount: issues.filter((issue) => issue.status === "resolved").length,
+    deferredIssueCount: 0,
+    issues
+  };
+}
+
+function writeV0125MarkdownReports(audit, issueLedger, beforeAfter) {
+  writeV0125Text(
+    "screenshot-audit.md",
+    [
+      "# v0.125 Player Slice Screenshot Audit",
+      "",
+      `Status: ${audit.status}`,
+      `Readiness: ${audit.readinessStatus}`,
+      `Active issues: ${audit.activeIssueCount}`,
+      "",
+      "Checked areas: title, briefing, battle, and Results.",
+      "",
+      "| Area | Check | Result | Severity |",
+      "| --- | --- | --- | --- |",
+      ...audit.checks.map((check) => `| ${check.area} | ${check.id} | ${check.pass ? "PASS" : "FAIL"} | ${check.severity} |`),
+      "",
+      "Boundary: no artwork import, no save writes, no stable-ID changes, no final engine choice, and no routine Godot editor dependency."
+    ].join("\n")
+  );
+  writeV0125Text(
+    "issue-ledger.md",
+    [
+      "# v0.125 Player Slice Issue Ledger",
+      "",
+      `Status: ${issueLedger.status}`,
+      `Open: ${issueLedger.openIssueCount}`,
+      `Resolved: ${issueLedger.resolvedIssueCount}`,
+      "",
+      "| Issue | Area | Severity | Status | Title |",
+      "| --- | --- | --- | --- | --- |",
+      ...issueLedger.issues.map((issue) => `| ${issue.issueId} | ${issue.area} | ${issue.severity} | ${issue.status} | ${issue.title} |`),
+      "",
+      "All corrections must remain player-facing presentation-shell changes only."
+    ].join("\n")
+  );
+  writeV0125Text(
+    "README.md",
+    [
+      "# v0.125 Player Slice Automated Visual QA Artifacts",
+      "",
+      "This ignored artifact folder is regenerated by `npm run godot:audit:player-slice`.",
+      "",
+      "- `screenshot-audit.json` and `.md` record title, briefing, battle, and Results checks.",
+      "- `issue-ledger.json` and `.md` record open/resolved visual issues.",
+      "- `before-after-manifest.json` keeps the first observed screenshot evidence as the before set and the latest capture as the after set.",
+      "",
+      `Current audit status: ${audit.status}`,
+      `Before/after changed screenshots: ${beforeAfter.changedScreenshotIds.join(", ") || "none"}`,
+      "",
+      "No artifact here is final art, generated imagery, imported artwork, save migration, stable-ID migration, final engine selection, or a full port."
+    ].join("\n")
+  );
 }
 
 function writeV0118AllReports() {
@@ -2591,6 +2985,12 @@ try {
     if (String(report.status).startsWith("FAIL")) {
       process.exitCode = 1;
     }
+  } else if (command === "player-slice-audit") {
+    const report = buildV0125ScreenshotAudit();
+    console.log(stableStringify(report));
+    if (String(report.status).startsWith("FAIL")) {
+      process.exitCode = 1;
+    }
   } else if (command === "v0118-all") {
     writeV0118AllReports();
     console.log("v0.118 Godot headed review reports generated.");
@@ -2598,7 +2998,7 @@ try {
     runAll();
     console.log("v0.119 Godot representative RTS load spike reports generated.");
   } else {
-    console.log("Usage: node desktop-spikes/godot-salto/tools/godotSpikeTool.mjs <doctor|generate|validate|test|benchmark|export|package|scorecard|manual-review|headed-smoke|headed-benchmark|capture-review|capture-review-v0121|player-slice-validate|player-slice-capture|v0118-all|all>");
+    console.log("Usage: node desktop-spikes/godot-salto/tools/godotSpikeTool.mjs <doctor|generate|validate|test|benchmark|export|package|scorecard|manual-review|headed-smoke|headed-benchmark|capture-review|capture-review-v0121|player-slice-validate|player-slice-capture|player-slice-audit|v0118-all|all>");
   }
 } catch (error) {
   console.error(error instanceof Error ? error.message : String(error));

@@ -445,4 +445,77 @@ describe("Godot Salto spike scaffold", () => {
     expect(scene3d).not.toContain("load(\"res://assets");
     expect(scene3d).not.toContain("ImageTexture");
   });
+
+  it("defines the v0.125 player-slice visual QA gate without broadening runtime scope", async () => {
+    [
+      "tools/godot/auditGodotPlayerSliceWindows.ps1",
+      "docs/V0125_PLAYER_SLICE_VISUAL_QA_SPEC.md",
+      "docs/V0125_PLAYER_SLICE_ISSUE_LEDGER.md",
+      "docs/V0125_PLAYER_SLICE_REVIEW_READINESS_GATE.md",
+      "docs/V0125_IMPLEMENTATION_REPORT.md",
+      "docs/V0125_EMMANUEL_REVIEW_GUIDE.md"
+    ].forEach((path) => expect(existsSync(path), path).toBe(true));
+
+    const packageJson = await readJson<{ scripts: Record<string, string> }>("package.json");
+    expect(packageJson.scripts["godot:audit:player-slice"]).toBeTypeOf("string");
+    expect(packageJson.scripts["godot:fresh-checkout:validate"]).toBeTypeOf("string");
+    expect(packageJson.scripts["godot:package:windows"]).toBeTypeOf("string");
+
+    const rootScript = await readFile("desktop-spikes/godot-salto/scripts/salto_spike_root.gd", "utf8");
+    const scene3d = await readFile("desktop-spikes/godot-salto/scripts/salto_spike_scene_3d.gd", "utf8");
+    const toolScript = await readFile("desktop-spikes/godot-salto/tools/godotSpikeTool.mjs", "utf8");
+    const auditScript = await readFile("tools/godot/auditGodotPlayerSliceWindows.ps1", "utf8");
+    const readinessGate = await readFile("docs/V0125_PLAYER_SLICE_REVIEW_READINESS_GATE.md", "utf8");
+    const implementationReport = await readFile("docs/V0125_IMPLEMENTATION_REPORT.md", "utf8");
+    const handoff = await readFile("LLM_GAME_HANDOFF.md", "utf8");
+
+    expect(rootScript).toContain("Salto foothold review");
+    expect(rootScript).not.toContain("Private visual-review slice");
+    expect(rootScript).toContain("set_player_shell_screen");
+    expect(rootScript).toContain("\"status\": status");
+    expect(rootScript).toContain("PASS_PLAYER_SLICE_VALIDATION");
+    expect(rootScript).toContain("PASS_PLAYER_SLICE_CAPTURE");
+    expect(rootScript).toContain("linkedWardDamageTakenMultiplier");
+
+    [
+      "set_player_shell_screen",
+      "playerFacingNonBattleChromeHidden",
+      "playerFacingSelectionUsesFixtureIds",
+      "terrainViewportCoveragePass",
+      "hudVisible",
+      "Vector2(26.0, 22.0)",
+      "_player_entity_label"
+    ].forEach((text) => expect(scene3d).toContain(text));
+
+    [
+      "v0125ArtifactRoot",
+      "player-slice-audit",
+      "PASS_PLAYER_SLICE_SCREENSHOT_AUDIT",
+      "PLAYER_SLICE_REVIEW_READY",
+      "screenshot-audit.json",
+      "issue-ledger.json",
+      "before-after-manifest.json",
+      "V0125_TITLE_NO_DEBUG_JARGON",
+      "V0125_BRIEFING_CHROME_HIDDEN",
+      "V0125_BATTLE_TERRAIN_COVERAGE",
+      "V0125_BATTLE_NO_DEBUG_OR_IDS",
+      "V0125_RESULTS_CHROME_HIDDEN",
+      "PASS_PLAYER_SLICE_PERFORMANCE_SMOKE",
+      "saveWritesAllowed",
+      "stableIdsChanged",
+      "generatedOrImportedArtIncluded",
+      "runtimeArtIntegrated"
+    ].forEach((text) => expect(toolScript).toContain(text));
+
+    expect(auditScript).toContain("captureGodotPlayerSliceWindows.ps1");
+    expect(auditScript).toContain("player-slice-audit");
+    expect(readinessGate).toContain("PLAYER_SLICE_REVIEW_READY");
+    expect(implementationReport).toContain("No save or localStorage changes");
+    expect(handoff).toContain("v0.125 Godot Player-Slice Automated Visual QA");
+    expect(handoff).toContain("linked_ward` remains exactly `0.92");
+
+    expect(rootScript).not.toContain("load(\"res://assets");
+    expect(scene3d).not.toContain("load(\"res://assets");
+    expect(toolScript).not.toContain("ImageTexture");
+  });
 });

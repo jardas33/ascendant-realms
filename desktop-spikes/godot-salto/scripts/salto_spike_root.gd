@@ -316,39 +316,40 @@ func _render_player_screen(screen: String) -> void:
 	for child in player_screen.get_children():
 		child.queue_free()
 	player_visible_texts = []
+	_call_scene("set_player_shell_screen", [screen])
 	var shade := ColorRect.new()
 	shade.name = "PlayerSliceShade"
-	shade.color = Color(0.02, 0.025, 0.025, 0.34 if screen == "battle" else 0.58)
+	shade.color = Color(0.02, 0.025, 0.025, 0.28 if screen == "battle" else 0.57)
 	shade.set_anchors_preset(Control.PRESET_FULL_RECT)
 	player_screen.add_child(shade)
 	match screen:
 		"title":
-			_add_player_label("JARDAS: Salto Foothold", Vector2(86, 84), Vector2(760, 64), 40, Color(0.90, 0.94, 0.86))
-			_add_player_label("Private visual-review slice", Vector2(88, 32), Vector2(360, 30), 15, Color(0.72, 0.86, 0.80))
-			_add_player_label("Aster leads a Barrosan foothold stand across quarry stone, ford water, and a quiet Lume link.", Vector2(90, 152), Vector2(920, 52), 20, Color(0.78, 0.84, 0.76))
-			_add_player_button("Start Salto Review", Vector2(94, 246), "_on_player_start_pressed")
-			_add_player_button("Settings", Vector2(94, 300), "_on_player_settings_pressed")
-			_add_player_button("Exit", Vector2(94, 354), "_exit_player_slice")
+			_add_player_label("Salto foothold review", Vector2(0, 36), Vector2(1600, 30), 15, Color(0.72, 0.86, 0.80), Color(0, 0, 0, 0), HORIZONTAL_ALIGNMENT_CENTER)
+			_add_player_label("JARDAS: Salto Foothold", Vector2(0, 88), Vector2(1600, 68), 42, Color(0.90, 0.94, 0.86), Color(0, 0, 0, 0), HORIZONTAL_ALIGNMENT_CENTER)
+			_add_player_label("Aster leads a Barrosan foothold stand across quarry stone, ford water, and a quiet Lume link.", Vector2(310, 164), Vector2(980, 56), 20, Color(0.78, 0.84, 0.76), Color(0.04, 0.05, 0.04, 0.42), HORIZONTAL_ALIGNMENT_CENTER)
+			_add_player_button("Start Salto Review", Vector2(620, 282), "_on_player_start_pressed")
+			_add_player_button("Settings", Vector2(620, 336), "_on_player_settings_pressed")
+			_add_player_button("Exit", Vector2(620, 390), "_exit_player_slice")
 		"briefing":
-			_add_player_label("Salto Foothold Briefing", Vector2(96, 78), Vector2(760, 52), 34, Color(0.90, 0.94, 0.86))
-			_add_player_label("Hold the quarry long enough to restore the Lume route.", Vector2(98, 136), Vector2(760, 34), 20, Color(0.78, 0.86, 0.78))
-			_add_player_label("1. Select Aster and move to the quarry.", Vector2(116, 214), Vector2(700, 28), 18, Color(0.88, 0.88, 0.74))
-			_add_player_label("2. Guide the Worker toward mine or shrine posture.", Vector2(116, 252), Vector2(760, 28), 18, Color(0.88, 0.88, 0.74))
-			_add_player_label("3. Break one Ashen wave and restore Lume.", Vector2(116, 290), Vector2(700, 28), 18, Color(0.88, 0.88, 0.74))
-			_add_player_button("Start Battle", Vector2(102, 382), "_on_player_battle_pressed")
-			_add_player_button("Back", Vector2(102, 436), "_on_player_back_pressed")
+			_add_player_label("Salto Foothold Briefing", Vector2(0, 78), Vector2(1600, 56), 34, Color(0.90, 0.94, 0.86), Color(0, 0, 0, 0), HORIZONTAL_ALIGNMENT_CENTER)
+			_add_player_label("Hold the quarry long enough to restore the Lume route.", Vector2(360, 140), Vector2(880, 36), 20, Color(0.78, 0.86, 0.78), Color(0.04, 0.05, 0.04, 0.36), HORIZONTAL_ALIGNMENT_CENTER)
+			_add_player_label("1. Select Aster and move to the quarry.", Vector2(430, 220), Vector2(740, 30), 18, Color(0.88, 0.88, 0.74), Color(0.04, 0.05, 0.04, 0.44), HORIZONTAL_ALIGNMENT_CENTER)
+			_add_player_label("2. Guide the Worker toward mine or shrine posture.", Vector2(430, 260), Vector2(740, 30), 18, Color(0.88, 0.88, 0.74), Color(0.04, 0.05, 0.04, 0.44), HORIZONTAL_ALIGNMENT_CENTER)
+			_add_player_label("3. Break one Ashen wave and restore Lume.", Vector2(430, 300), Vector2(740, 30), 18, Color(0.88, 0.88, 0.74), Color(0.04, 0.05, 0.04, 0.44), HORIZONTAL_ALIGNMENT_CENTER)
+			_add_player_button("Start Battle", Vector2(620, 390), "_on_player_battle_pressed")
+			_add_player_button("Back", Vector2(620, 444), "_on_player_back_pressed")
 		"battle":
 			_add_player_label("Secure Quarry | Guide Worker | Break Ashen Wave | Restore Lume", Vector2(28, 22), Vector2(820, 34), 18, Color(0.92, 0.88, 0.68), Color(0.04, 0.05, 0.04, 0.72))
 			_add_player_label("Pause", Vector2(1470, 22), Vector2(84, 30), 15, Color(0.82, 0.88, 0.82), Color(0.04, 0.05, 0.04, 0.72))
 		"results":
-			_add_player_label("Salto Review Complete", Vector2(96, 88), Vector2(720, 52), 34, Color(0.90, 0.94, 0.86))
-			_add_player_label("Victory posture: quarry held, Ashen wave checked, Lume route restored.", Vector2(98, 150), Vector2(880, 34), 20, Color(0.82, 0.88, 0.78))
-			_add_player_label("Review focus: camera, controls, HUD, minimap, silhouettes, objective clarity, and Lume readability.", Vector2(98, 202), Vector2(1020, 32), 18, Color(0.88, 0.86, 0.70))
-			_add_player_button("Restart Slice", Vector2(102, 308), "_on_player_restart_pressed")
-			_add_player_button("Return to Title", Vector2(102, 362), "_on_player_back_pressed")
-			_add_player_button("Exit", Vector2(102, 416), "_exit_player_slice")
+			_add_player_label("Salto Review Complete", Vector2(420, 88), Vector2(760, 56), 34, Color(0.90, 0.94, 0.86), Color(0.04, 0.05, 0.04, 0.62), HORIZONTAL_ALIGNMENT_CENTER)
+			_add_player_label("Quarry held. Ashen wave checked. Lume route restored.", Vector2(330, 154), Vector2(940, 36), 20, Color(0.82, 0.88, 0.78), Color(0.04, 0.05, 0.04, 0.68), HORIZONTAL_ALIGNMENT_CENTER)
+			_add_player_label("Review: camera, controls, HUD, minimap, silhouettes, objectives, and Lume readability.", Vector2(300, 214), Vector2(1000, 34), 18, Color(0.88, 0.86, 0.70), Color(0.04, 0.05, 0.04, 0.68), HORIZONTAL_ALIGNMENT_CENTER)
+			_add_player_button("Restart Slice", Vector2(620, 318), "_on_player_restart_pressed")
+			_add_player_button("Return to Title", Vector2(620, 372), "_on_player_back_pressed")
+			_add_player_button("Exit", Vector2(620, 426), "_exit_player_slice")
 
-func _add_player_label(text: String, position: Vector2, size: Vector2, font_size: int, color: Color, background: Color = Color(0, 0, 0, 0)) -> void:
+func _add_player_label(text: String, position: Vector2, size: Vector2, font_size: int, color: Color, background: Color = Color(0, 0, 0, 0), alignment: int = HORIZONTAL_ALIGNMENT_LEFT) -> void:
 	if background.a > 0.0:
 		var bg := ColorRect.new()
 		bg.color = background
@@ -359,6 +360,8 @@ func _add_player_label(text: String, position: Vector2, size: Vector2, font_size
 	label.text = text
 	label.position = position
 	label.size = size
+	label.horizontal_alignment = alignment
+	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	label.add_theme_font_size_override("font_size", font_size)
 	label.add_theme_color_override("font_color", color)
 	player_screen.add_child(label)
@@ -378,7 +381,7 @@ func _on_player_start_pressed() -> void:
 	show_player_briefing()
 
 func _on_player_settings_pressed() -> void:
-	_add_player_label("Camera, audio, and accessibility review controls are unchanged for this slice.", Vector2(94, 422), Vector2(780, 28), 16, Color(0.76, 0.86, 0.80), Color(0.04, 0.05, 0.04, 0.70))
+	_add_player_label("Settings are not needed for this short review.", Vector2(470, 462), Vector2(660, 30), 16, Color(0.76, 0.86, 0.80), Color(0.04, 0.05, 0.04, 0.70), HORIZONTAL_ALIGNMENT_CENTER)
 
 func _on_player_battle_pressed() -> void:
 	show_player_battle()
@@ -795,7 +798,7 @@ func run_player_slice_capture() -> void:
 	var index := 0
 	for step in _player_capture_steps():
 		var action := str(step["action"])
-		_apply_player_slice_action(action)
+		var status := _apply_player_slice_action(action)
 		await _settle_frames(6)
 		var file_name := "%02d_%s.png" % [index + 1, str(step["id"])]
 		var target := _path_join(screenshot_root, file_name)
@@ -815,6 +818,7 @@ func run_player_slice_capture() -> void:
 			"screen": active_mode,
 			"action": action,
 			"privateHarnessCapture": action == "private_harness",
+			"status": status,
 			"visibleText": player_visible_texts.duplicate()
 		})
 		index += 1
