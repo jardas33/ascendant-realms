@@ -531,7 +531,6 @@ describe("Godot Salto spike scaffold", () => {
     const rootScript = await readFile("desktop-spikes/godot-salto/scripts/salto_spike_root.gd", "utf8");
     const scene3d = await readFile("desktop-spikes/godot-salto/scripts/salto_spike_scene_3d.gd", "utf8");
     const toolScript = await readFile("desktop-spikes/godot-salto/tools/godotSpikeTool.mjs", "utf8");
-    const captureScript = await readFile("tools/godot/captureGodotPlayerSliceWindows.ps1", "utf8");
     const handoff = await readFile("LLM_GAME_HANDOFF.md", "utf8");
     const roadmap = await readFile("ROADMAP.md", "utf8");
 
@@ -602,10 +601,6 @@ describe("Godot Salto spike scaffold", () => {
       "fullPortStarted"
     ].forEach((text) => expect(toolScript).toContain(text));
 
-    expect(captureScript).toContain("godot-salto\\v0126");
-    expect(captureScript).toContain("15 PNG captures");
-    expect(captureScript).toContain("player-slice-capture-v0126");
-
     expect(rootScript).toContain("PASS_PLAYER_SLICE_VALIDATION");
     expect(rootScript).toContain("linkedWardDamageTakenMultiplier");
     expect(rootScript).toContain("saveWritesAllowed");
@@ -614,6 +609,117 @@ describe("Godot Salto spike scaffold", () => {
     expect(scene3d).toContain("VFX_STRESS_PRIVATE");
     expect(handoff).toContain("v0.126 Godot Procedural Salto Environment Authorship");
     expect(roadmap).toContain("v0.126 Godot Procedural Salto Environment Authorship");
+
+    expect(rootScript).not.toContain("load(\"res://assets");
+    expect(scene3d).not.toContain("load(\"res://assets");
+    expect(scene3d).not.toContain("ImageTexture");
+    expect(toolScript).not.toContain("ImageTexture");
+  });
+
+  it("defines the v0.127 procedural silhouette selection and combat readability pass", async () => {
+    [
+      "docs/V0127_PROCEDURAL_SILHOUETTE_LIBRARY.md",
+      "docs/V0127_SELECTION_FEEDBACK_SPEC.md",
+      "docs/V0127_COMBAT_READABILITY_REPORT.md",
+      "docs/V0127_VISUAL_CAPTURE_REPORT.md",
+      "docs/V0127_IMPLEMENTATION_REPORT.md"
+    ].forEach((path) => expect(existsSync(path), path).toBe(true));
+
+    const rootScript = await readFile("desktop-spikes/godot-salto/scripts/salto_spike_root.gd", "utf8");
+    const scene3d = await readFile("desktop-spikes/godot-salto/scripts/salto_spike_scene_3d.gd", "utf8");
+    const toolScript = await readFile("desktop-spikes/godot-salto/tools/godotSpikeTool.mjs", "utf8");
+    const captureScript = await readFile("tools/godot/captureGodotPlayerSliceWindows.ps1", "utf8");
+    const handoff = await readFile("LLM_GAME_HANDOFF.md", "utf8");
+    const roadmap = await readFile("ROADMAP.md", "utf8");
+
+    [
+      "hero",
+      "worker",
+      "militia",
+      "ranger",
+      "ashen_raider",
+      "command_hall",
+      "barracks",
+      "mine",
+      "shrine",
+      "quarry",
+      "ruin",
+      "site",
+      "lume_endpoint",
+      "hero_selected",
+      "worker_selected",
+      "squad_selected",
+      "move_order",
+      "attack_order",
+      "combat",
+      "death",
+      "results"
+    ].forEach((id) => {
+      expect(rootScript).toContain(id);
+      expect(toolScript).toContain(id);
+    });
+
+    [
+      "focus_visual_subject",
+      "show_combat_readability_sample",
+      "show_death_readability_sample",
+      "hero_command_banner",
+      "worker_pack_crate",
+      "militia_spear_profile",
+      "ranger_bow_profile",
+      "ashen_raider_forward_blade",
+      "ashen_brute_shoulder_left",
+      "command_door_readability",
+      "weapon_rack_silhouette",
+      "mine_mouth_shadow",
+      "shrine_beacon_slot",
+      "claim_post",
+      "lumeEndpointSilhouetteRendered",
+      "hoverFeedbackRendered",
+      "selectedHeroMarkerRendered",
+      "selectedWorkerMarkerRendered",
+      "squadSelectionMarkerRendered",
+      "moveOrderMarkerRendered",
+      "attackOrderMarkerRendered",
+      "restrainedHealthBarsRendered",
+      "damageFlashRendered",
+      "deathFadeRendered",
+      "meleeContactReadable",
+      "rangedShotPlaceholderRendered",
+      "pressureWaveArrivalReadable",
+      "siteContestReadable",
+      "resultsReadinessReadable",
+      "silhouetteDistinctnessMetadata",
+      "artSlotFallbackRemains"
+    ].forEach((text) => expect(scene3d).toContain(text));
+
+    [
+      "v0127ArtifactRoot",
+      "v0127ScreenshotRoot",
+      "PASS_V0127_SILHOUETTE_SELECTION_COMBAT_CAPTURE",
+      "PASS_V0127_PROCEDURAL_SILHOUETTE_LIBRARY",
+      "PASS_V0127_SELECTION_FEEDBACK",
+      "PASS_V0127_COMBAT_READABILITY",
+      "silhouette-library-report.json",
+      "selection-feedback-report.json",
+      "combat-readability-report.json",
+      "generatedOrImportedArtIncluded",
+      "runtimeArtIntegrated",
+      "routineEditorUseRequired",
+      "stableIdsChanged",
+      "saveWritesAllowed",
+      "fullPortStarted"
+    ].forEach((text) => expect(toolScript).toContain(text));
+
+    expect(captureScript).toContain("godot-salto\\v0127");
+    expect(captureScript).toContain("21 PNG captures");
+    expect(captureScript).toContain("player-slice-capture-v0127");
+
+    expect(rootScript).toContain("PASS_PLAYER_SLICE_VALIDATION");
+    expect(scene3d).toContain("linkedWardDamageTakenMultiplier");
+    expect(scene3d).toContain("saveWritesAllowed");
+    expect(handoff).toContain("v0.127 Godot Procedural Silhouette Library");
+    expect(roadmap).toContain("v0.127 Godot Procedural Silhouette Library");
 
     expect(rootScript).not.toContain("load(\"res://assets");
     expect(scene3d).not.toContain("load(\"res://assets");

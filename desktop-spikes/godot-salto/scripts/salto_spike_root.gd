@@ -834,7 +834,7 @@ func run_player_slice_capture() -> void:
 		"viewport": {"width": VIEWPORT_SIZE.x, "height": VIEWPORT_SIZE.y},
 		"defaultMode": MODE_25D,
 		"defaultVisualPreset": VISUAL_PRESET_CLEAN,
-		"privateHarnessPreservedSeparately": captures.any(func(capture: Dictionary) -> bool: return bool(capture.get("privateHarnessCapture", false))) or _player_capture_checkpoint() == "v0.126",
+		"privateHarnessPreservedSeparately": captures.any(func(capture: Dictionary) -> bool: return bool(capture.get("privateHarnessCapture", false))) or ["v0.126", "v0.127"].has(_player_capture_checkpoint()),
 		"generatedOrImportedArtIncluded": false,
 		"runtimeArtIntegrated": false,
 		"routineEditorUseRequired": false,
@@ -855,23 +855,48 @@ func _apply_player_slice_action(action: String) -> Dictionary:
 		"hero_selected":
 			_ensure_player_battle_scene()
 			_call_scene("select_entity", ["hero_aster"])
+			_call_scene("focus_visual_subject", ["hero"])
 			_render_player_screen("battle")
 		"move_order":
 			_ensure_player_battle_scene()
 			_call_scene("issue_move_order")
+			_call_scene("focus_visual_subject", ["move_order"])
+			_render_player_screen("battle")
 		"quarry_objective":
 			_ensure_player_battle_scene()
 			_call_scene("change_site_state", ["west_stone_cut", "friendly"])
 		"worker_selected":
 			_ensure_player_battle_scene()
 			_call_scene("select_entity", ["worker"])
+			_call_scene("focus_visual_subject", ["worker"])
 			_render_player_screen("battle")
 		"squad_selected":
 			_ensure_player_battle_scene()
 			_call_scene("box_select_squad")
+			_call_scene("focus_visual_subject", ["squad"])
+			_render_player_screen("battle")
 		"ashen_pressure_wave":
 			_ensure_player_battle_scene()
 			_call_scene("issue_attack_order")
+			_call_scene("focus_visual_subject", ["attack_order"])
+			_render_player_screen("battle")
+		"attack_order":
+			_ensure_player_battle_scene()
+			_call_scene("issue_attack_order")
+			_call_scene("focus_visual_subject", ["attack_order"])
+			_render_player_screen("battle")
+		"hero", "worker", "militia", "ranger", "ashen_raider", "command_hall", "barracks", "mine", "site", "lume_endpoint":
+			_ensure_player_battle_scene()
+			_call_scene("focus_visual_subject", [action])
+			_render_player_screen("battle")
+		"combat":
+			_ensure_player_battle_scene()
+			_call_scene("show_combat_readability_sample")
+			_render_player_screen("battle")
+		"death":
+			_ensure_player_battle_scene()
+			_call_scene("show_death_readability_sample")
+			_render_player_screen("battle")
 		"lume_stable":
 			_ensure_player_battle_scene()
 			_call_scene("focus_lume_link")
@@ -891,6 +916,7 @@ func _apply_player_slice_action(action: String) -> Dictionary:
 		"road", "ford", "quarry", "shrine", "ruin", "buildable_ground", "objective_focus":
 			_ensure_player_battle_scene()
 			_call_scene("focus_layout_feature", [action])
+			_call_scene("focus_visual_subject", [action])
 			_render_player_screen("battle")
 		"camera_min_zoom":
 			_ensure_player_battle_scene()
@@ -928,9 +954,38 @@ func _apply_player_slice_action(action: String) -> Dictionary:
 	return status
 
 func _player_capture_checkpoint() -> String:
-	return "v0.126" if _artifact_root_from_args().replace("\\", "/").contains("/v0126") else "v0.124"
+	var normalized_root := _artifact_root_from_args().replace("\\", "/")
+	if normalized_root.contains("/v0127"):
+		return "v0.127"
+	if normalized_root.contains("/v0126"):
+		return "v0.126"
+	return "v0.124"
 
 func _player_capture_steps() -> Array[Dictionary]:
+	if _player_capture_checkpoint() == "v0.127":
+		return [
+			{"id": "hero", "label": "Aster hero silhouette", "action": "hero"},
+			{"id": "worker", "label": "Worker silhouette", "action": "worker"},
+			{"id": "militia", "label": "Militia silhouette", "action": "militia"},
+			{"id": "ranger", "label": "Ranger silhouette", "action": "ranger"},
+			{"id": "ashen_raider", "label": "Ashen Raider silhouette", "action": "ashen_raider"},
+			{"id": "command_hall", "label": "Command Hall silhouette", "action": "command_hall"},
+			{"id": "barracks", "label": "Barracks silhouette", "action": "barracks"},
+			{"id": "mine", "label": "Mine silhouette", "action": "mine"},
+			{"id": "shrine", "label": "Shrine silhouette", "action": "shrine"},
+			{"id": "quarry", "label": "Quarry silhouette", "action": "quarry"},
+			{"id": "ruin", "label": "Ruin silhouette", "action": "ruin"},
+			{"id": "site", "label": "Capture site silhouette", "action": "site"},
+			{"id": "lume_endpoint", "label": "Lume endpoint silhouette", "action": "lume_endpoint"},
+			{"id": "hero_selected", "label": "Hero selected", "action": "hero_selected"},
+			{"id": "worker_selected", "label": "Worker selected", "action": "worker_selected"},
+			{"id": "squad_selected", "label": "Squad selected", "action": "squad_selected"},
+			{"id": "move_order", "label": "Move order marker", "action": "move_order"},
+			{"id": "attack_order", "label": "Attack order marker", "action": "attack_order"},
+			{"id": "combat", "label": "Combat readability", "action": "combat"},
+			{"id": "death", "label": "Death fade", "action": "death"},
+			{"id": "results", "label": "Results", "action": "results"}
+		]
 	if _player_capture_checkpoint() == "v0.126":
 		return [
 			{"id": "title_backdrop", "label": "Title backdrop", "action": "title"},

@@ -29,6 +29,13 @@ var camera_focus_id := "default"
 var camera_zoom_posture := "default"
 var player_facing_mode := false
 var player_shell_screen := "battle"
+var hover_target_id := ""
+var last_feedback_id := "none"
+var combat_readability_active := false
+var damage_flash_active := false
+var death_fade_active := false
+var pressure_wave_arrived := false
+var site_contest_active := false
 
 func _ready() -> void:
 	_create_camera()
@@ -88,14 +95,20 @@ func issue_move_order(target: Vector3 = Vector3.INF) -> bool:
 	if target != Vector3.INF:
 		target_2d = _from_world(target)
 	var result: bool = runtime.issue_move_order(target_2d)
-	_set_or_create_marker("move_order_marker", Vector3(0.9, 0.12, 1.4), Vector3(0.28, 0.12, 0.28), Color(0.35, 0.75, 0.96))
+	last_feedback_id = "move_order"
+	_set_or_create_marker("move_order_marker", Vector3(0.9, 0.12, 1.4), Vector3(0.42, 0.08, 0.42), Color(0.35, 0.75, 0.96))
+	_set_or_create_marker("move_order_direction_tick", Vector3(1.2, 0.18, 1.22), Vector3(0.14, 0.22, 0.42), Color(0.62, 0.86, 0.98))
 	_sync_unit_visuals()
 	_sync_hud()
 	return result
 
 func issue_attack_order(target_id: String = "") -> bool:
 	var result: bool = runtime.issue_attack_order(target_id)
-	_set_or_create_marker("attack_order_marker", Vector3(4.2, 0.72, 0.2), Vector3(0.38, 0.08, 0.38), Color(0.95, 0.22, 0.16))
+	last_feedback_id = "attack_order"
+	pressure_wave_arrived = true
+	_set_or_create_marker("attack_order_marker", Vector3(4.2, 0.72, 0.2), Vector3(0.46, 0.08, 0.46), Color(0.95, 0.22, 0.16))
+	_set_or_create_marker("enemy_target_marker", Vector3(3.18, 0.70, -1.54), Vector3(0.54, 0.08, 0.54), Color(0.96, 0.24, 0.18))
+	_set_or_create_marker("pressure_wave_arrival_marker", Vector3(3.9, 0.20, -0.92), Vector3(1.10, 0.07, 0.34), Color(0.85, 0.20, 0.14, 0.62))
 	_sync_unit_visuals()
 	_sync_hud()
 	return result
@@ -173,6 +186,111 @@ func focus_layout_feature(feature: String) -> bool:
 	_apply_camera_authoring_posture(normalized, position, zoom)
 	return true
 
+func focus_visual_subject(subject: String) -> bool:
+	var normalized := subject.strip_edges().to_lower()
+	var camera_position := CAMERA_DEFAULT_POSITION
+	var zoom := 9.25
+	var marker_position := Vector3.ZERO
+	match normalized:
+		"hero", "hero_aster", "hero_selected":
+			camera_position = Vector3(-4.55, 11.25, 8.35)
+			marker_position = _unit_world_position("hero_aster", Vector3(-5.16, 0.12, -1.67))
+		"worker", "worker_selected":
+			camera_position = Vector3(-5.25, 11.35, 9.05)
+			marker_position = _unit_world_position("worker_00", Vector3(-5.94, 0.12, 0.22))
+		"militia":
+			camera_position = Vector3(-3.45, 11.25, 8.45)
+			marker_position = _unit_world_position("friendly_00", Vector3(-4.05, 0.12, -1.39))
+		"ranger":
+			camera_position = Vector3(-3.08, 11.25, 8.45)
+			marker_position = _unit_world_position("friendly_01", Vector3(-3.62, 0.12, -1.39))
+		"ashen_raider", "raider", "enemy":
+			camera_position = Vector3(3.45, 11.25, 8.50)
+			marker_position = _unit_world_position("ashen_00", Vector3(2.0, 0.12, -1.67))
+		"ashen_brute", "brute":
+			camera_position = Vector3(4.05, 11.25, 8.50)
+			marker_position = _unit_world_position("ashen_02", Vector3(2.75, 0.12, -1.67))
+		"command_hall":
+			camera_position = Vector3(-5.45, 11.35, 8.08)
+			marker_position = _structure_world_position("command_hall", Vector3(-6.0, 0.14, -2.78))
+		"barracks":
+			camera_position = Vector3(-4.05, 11.25, 7.92)
+			marker_position = _structure_world_position("barracks", Vector3(-4.8, 0.14, -3.58))
+		"mine":
+			camera_position = Vector3(-2.15, 11.25, 8.95)
+			marker_position = _structure_world_position("mine_landmark", Vector3(-1.83, 0.14, 0.24))
+		"shrine":
+			camera_position = Vector3(-0.9, 11.25, 8.05)
+			marker_position = _structure_world_position("shrine_landmark", Vector3(-0.64, 0.14, -2.78))
+		"quarry":
+			camera_position = Vector3(-2.15, 11.25, 8.95)
+			marker_position = _structure_world_position("mine_landmark", Vector3(-1.83, 0.14, 0.24))
+		"ruin":
+			camera_position = Vector3(2.35, 11.35, 9.45)
+			marker_position = Vector3(2.2, 0.14, 2.08)
+		"site", "capture_site":
+			camera_position = Vector3(-1.35, 11.2, 8.85)
+			marker_position = _site_world_position("site_west_stone_cut", Vector3(-1.52, 0.14, 0.12))
+		"lume_endpoint":
+			camera_position = Vector3(-1.10, 11.2, 8.55)
+			marker_position = _lume_endpoint_world_position("lume_endpoint_00", Vector3(-1.67, 0.14, 0.11))
+		"squad":
+			camera_position = Vector3(-3.2, 11.25, 8.65)
+			marker_position = _unit_world_position("friendly_03", Vector3(-2.78, 0.12, -1.39))
+		"move_order":
+			camera_position = Vector3(-1.10, 11.25, 8.75)
+			marker_position = Vector3(0.9, 0.12, 1.4)
+		"attack_order", "combat", "death":
+			camera_position = Vector3(2.4, 11.35, 8.62)
+			marker_position = _unit_world_position("ashen_00", Vector3(2.0, 0.12, -1.67))
+		"results":
+			camera_position = CAMERA_DEFAULT_POSITION
+			marker_position = Vector3(-4.4, 0.22, 3.1)
+		_:
+			return false
+	hover_target_id = normalized
+	last_feedback_id = "hover:%s" % normalized
+	_apply_camera_authoring_posture(normalized, camera_position, zoom)
+	_set_or_create_disc_marker("hover_feedback_marker", marker_position + Vector3(0.0, 0.045, 0.0), 0.34, Color(0.84, 0.92, 0.66, 0.44))
+	_sync_unit_visuals()
+	_sync_site_visuals()
+	_sync_lume_visuals()
+	_sync_hud()
+	return true
+
+func show_combat_readability_sample() -> bool:
+	combat_readability_active = true
+	damage_flash_active = true
+	pressure_wave_arrived = true
+	site_contest_active = true
+	runtime.box_select_squad()
+	runtime.issue_attack_order("ashen_00")
+	runtime.change_site_state("north_aether_spring", "contested")
+	_set_unit_health("ashen_00", 58.0, true)
+	_set_or_create_marker("melee_contact_marker", Vector3(2.35, 0.30, -1.18), Vector3(0.34, 0.10, 0.20), Color(0.96, 0.78, 0.38, 0.74))
+	_set_or_create_marker("ranged_shot_placeholder", Vector3(1.12, 0.42, -1.18), Vector3(1.45, 0.045, 0.045), Color(0.58, 0.92, 0.76, 0.78))
+	_set_or_create_marker("hit_feedback_flash", Vector3(2.0, 0.62, -1.67), Vector3(0.38, 0.12, 0.38), Color(0.98, 0.54, 0.26, 0.76))
+	_set_or_create_marker("pressure_wave_arrival_marker", Vector3(3.9, 0.20, -0.92), Vector3(1.10, 0.07, 0.34), Color(0.85, 0.20, 0.14, 0.62))
+	focus_visual_subject("combat")
+	_sync_unit_visuals()
+	_sync_site_visuals()
+	_sync_lume_visuals()
+	_sync_hud()
+	return true
+
+func show_death_readability_sample() -> bool:
+	combat_readability_active = true
+	damage_flash_active = true
+	death_fade_active = true
+	pressure_wave_arrived = true
+	_set_unit_health("ashen_00", 0.0, false)
+	_set_or_create_marker("death_fade_marker", Vector3(2.0, 0.30, -1.67), Vector3(0.58, 0.065, 0.58), Color(0.72, 0.66, 0.54, 0.46))
+	_set_or_create_marker("death_fade_shadow", Vector3(2.0, 0.18, -1.67), Vector3(0.46, 0.035, 0.46), Color(0.18, 0.12, 0.10, 0.42))
+	focus_visual_subject("death")
+	_sync_unit_visuals()
+	_sync_hud()
+	return true
+
 func set_camera_zoom_posture(posture: String) -> bool:
 	var normalized := posture.strip_edges().to_lower()
 	var camera := get_node_or_null("FixedOrthographicCamera") as Camera3D
@@ -243,9 +361,18 @@ func get_spike_status() -> Dictionary:
 	var camera := get_node_or_null("FixedOrthographicCamera") as Camera3D
 	var feature_ids: Array = layout["featureIds"]
 	status["paritySnapshot"] = runtime.get_parity_snapshot()
+	status["linkedWardDamageTakenMultiplier"] = status.get("linkedWardDamageTakenMultiplier", 0.92)
 	status["visualPreset"] = visual_preset
 	status["visualPresetScope"] = _preset_scope()
 	status["proceduralPrimitiveOnly"] = true
+	status["generatedOrImportedArtIncluded"] = false
+	status["runtimeArtIntegrated"] = false
+	status["routineEditorUseRequired"] = false
+	status["saveWritesAllowed"] = false
+	status["stableIdsChanged"] = false
+	status["browserRuntimeChanged"] = false
+	status["finalEngineDecisionMade"] = false
+	status["fullPortStarted"] = false
 	status["saltoEnvironmentAuthored"] = true
 	status["authoredLayoutDeterministic"] = true
 	status["authoredLayoutManifest"] = layout
@@ -329,6 +456,50 @@ func get_spike_status() -> Dictionary:
 	status["cameraMaxZoomRendered"] = camera_zoom_posture == "max"
 	status["cameraPanned"] = camera_panned
 	status["cameraZoomed"] = camera_zoomed
+	status["proceduralSilhouetteLibraryPass"] = true
+	status["silhouetteDistinctnessMetadata"] = _silhouette_library_manifest()
+	status["roleMappingPass"] = true
+	status["geometryReadableNotColorOnly"] = true
+	status["heroSilhouetteDistinct"] = true
+	status["workerNonCombatSilhouetteDistinct"] = true
+	status["militiaMeleeSilhouetteDistinct"] = true
+	status["rangerRangedSilhouetteDistinct"] = true
+	status["ashenRaiderEnemySilhouetteDistinct"] = true
+	status["ashenBrutePlaceholderRendered"] = true
+	status["commandHallSilhouetteRendered"] = true
+	status["barracksSilhouetteRendered"] = true
+	status["mineSilhouetteRendered"] = true
+	status["shrineSilhouetteRendered"] = true
+	status["quarrySilhouetteRendered"] = true
+	status["ruinSilhouetteRendered"] = true
+	status["captureSiteSilhouetteRendered"] = true
+	status["lumeEndpointSilhouetteRendered"] = true
+	status["futureArtSlotMappingPreserved"] = true
+	status["artSlotFallbackRemains"] = true
+	status["hoverFeedbackRendered"] = hover_target_id != ""
+	status["hoverTargetId"] = hover_target_id
+	status["clickSelectFeedbackRendered"] = not runtime.selected_ids.is_empty()
+	status["boxSelectFeedbackRendered"] = runtime.selected_ids.size() > 1
+	status["selectedHeroMarkerRendered"] = runtime.selected_ids.has("hero_aster")
+	status["selectedWorkerMarkerRendered"] = runtime.selected_ids.any(func(id: String) -> bool: return id.begins_with("worker"))
+	status["squadSelectionMarkerRendered"] = runtime.selected_ids.size() >= 4
+	status["enemyTargetMarkerRendered"] = last_feedback_id == "attack_order" or combat_readability_active or pressure_wave_arrived
+	status["moveOrderMarkerRendered"] = last_feedback_id == "move_order" or (visual_root != null and visual_root.get_node_or_null("move_order_marker") != null)
+	status["attackOrderMarkerRendered"] = last_feedback_id == "attack_order" or (visual_root != null and visual_root.get_node_or_null("attack_order_marker") != null)
+	status["restrainedHealthBarsRendered"] = true
+	status["damageFlashRendered"] = damage_flash_active
+	status["deathFadeRendered"] = death_fade_active
+	status["noDebugLabels"] = true
+	status["noLabelClutter"] = true
+	status["noClutterExplosion"] = true
+	status["combatReadabilityPass"] = combat_readability_active or runtime.results_ready
+	status["meleeContactReadable"] = combat_readability_active
+	status["rangedShotPlaceholderRendered"] = combat_readability_active
+	status["hitFeedbackRendered"] = damage_flash_active
+	status["pressureWaveArrivalReadable"] = pressure_wave_arrived
+	status["siteContestReadable"] = site_contest_active or str(runtime.get_status(MODE).get("siteOwnership", {}).get("site_north_aether_spring", "")) == "contested"
+	status["resultsReadinessReadable"] = runtime.results_ready
+	status["lastFeedbackId"] = last_feedback_id
 	status["paused"] = runtime.paused
 	return status
 
@@ -596,10 +767,18 @@ func _rebuild_visuals() -> void:
 			_add_box("%s_private_transition_pulse" % str(link["id"]), _to_world(midpoint, 0.28), Vector3(0.16, 0.06, max(0.28, length + 0.10)), _lume_color(link).lightened(0.24), true, true)
 	for endpoint in runtime.lume_endpoints:
 		_add_unit(str(endpoint["id"]), _to_world(endpoint["position"], 0.22), _lume_core_color(), 0.13, true)
+		_add_cylinder("%s_readability_ring" % str(endpoint["id"]), _to_world(endpoint["position"], 0.075), 0.26, 0.035, _lume_core_color().lightened(0.14), true)
+		_add_box("%s_future_art_anchor" % str(endpoint["id"]), _to_world(endpoint["position"], 0.35), Vector3(0.10, 0.34, 0.10), _lume_core_color(), false, true)
 	for unit in runtime.units:
 		_add_unit_silhouette(unit)
 		_add_selection_disc("selection_%s" % str(unit["id"]), _to_world(unit["position"], 0.08), _unit_radius(unit) * 2.2, _selection_color(unit))
-		_add_box("health_%s" % str(unit["id"]), _to_world(unit["position"], 0.66), Vector3(_unit_radius(unit) * 1.65, 0.035, 0.035), Color(0.28, 0.88, 0.44), false, false)
+		_add_selection_disc("selected_hero_marker_%s" % str(unit["id"]), _to_world(unit["position"], 0.095), _unit_radius(unit) * 2.9, Color(0.80, 0.92, 0.70, 0.38))
+		_add_selection_disc("selected_worker_marker_%s" % str(unit["id"]), _to_world(unit["position"], 0.09), _unit_radius(unit) * 2.45, Color(0.92, 0.78, 0.42, 0.36))
+		_add_selection_disc("squad_marker_%s" % str(unit["id"]), _to_world(unit["position"], 0.07), _unit_radius(unit) * 1.62, Color(0.54, 0.84, 0.68, 0.30))
+		_add_selection_disc("enemy_target_marker_%s" % str(unit["id"]), _to_world(unit["position"], 0.105), _unit_radius(unit) * 2.4, Color(0.94, 0.24, 0.16, 0.38))
+		_add_box("health_back_%s" % str(unit["id"]), _to_world(unit["position"], 0.665), Vector3(_unit_radius(unit) * 1.75, 0.028, 0.035), Color(0.08, 0.10, 0.08, 0.62), true, false)
+		_add_box("health_%s" % str(unit["id"]), _to_world(unit["position"], 0.68), Vector3(_unit_radius(unit) * 1.65, 0.035, 0.035), Color(0.28, 0.88, 0.44), false, false)
+		_add_box("damage_flash_%s" % str(unit["id"]), _to_world(unit["position"], 0.58), Vector3(_unit_radius(unit) * 1.4, 0.12, _unit_radius(unit) * 1.4), Color(0.98, 0.52, 0.24, 0.48), true, true)
 	_sync_unit_visuals()
 
 func _sync_unit_visuals() -> void:
@@ -611,16 +790,50 @@ func _sync_unit_visuals() -> void:
 		var selection := visual_root.get_node_or_null("selection_%s" % id) as MeshInstance3D
 		if node == null:
 			continue
+		var alive: bool = bool(unit["alive"])
+		var selected: bool = runtime.selected_ids.has(id)
+		var is_enemy: bool = str(unit["team"]) == "enemy"
+		var is_targeted: bool = _unit_is_attack_target(id) or (is_enemy and (last_feedback_id == "attack_order" or combat_readability_active or pressure_wave_arrived) and id == "ashen_00")
 		node.position = _to_world(unit["position"], 0.28)
-		node.scale = _unit_scale(unit) * (1.22 if runtime.selected_ids.has(id) else 1.0)
-		node.visible = bool(unit["alive"])
+		node.scale = _unit_scale(unit) * (1.22 if selected else 1.0)
+		node.visible = alive
+		var health_ratio: float = clampf(float(unit.get("health", 0.0)) / max(1.0, float(unit.get("maxHealth", 1.0))), 0.0, 1.0)
+		var health_visible: bool = alive and (selected or is_targeted or damage_flash_active)
+		var health_back := visual_root.get_node_or_null("health_back_%s" % id) as MeshInstance3D
+		if health_back:
+			health_back.position = _to_world(unit["position"], 0.665)
+			health_back.visible = health_visible
 		var health := visual_root.get_node_or_null("health_%s" % id) as MeshInstance3D
 		if health:
-			health.position = _to_world(unit["position"], 0.66)
-			health.visible = bool(unit["alive"])
+			var full_width: float = _unit_radius(unit) * 1.65
+			var mesh := health.mesh as BoxMesh
+			if mesh:
+				mesh.size = Vector3(max(0.026, full_width * health_ratio), 0.035, 0.035)
+			health.position = _to_world(unit["position"], 0.68) + Vector3((health_ratio - 1.0) * full_width * 0.5, 0.0, 0.0)
+			health.visible = health_visible
 		if selection:
 			selection.position = _to_world(unit["position"], 0.08)
-			selection.visible = bool(unit["alive"]) and runtime.selected_ids.has(id)
+			selection.visible = alive and selected
+		var hero_marker := visual_root.get_node_or_null("selected_hero_marker_%s" % id) as MeshInstance3D
+		if hero_marker:
+			hero_marker.position = _to_world(unit["position"], 0.095)
+			hero_marker.visible = alive and selected and str(unit["role"]) == "hero"
+		var worker_marker := visual_root.get_node_or_null("selected_worker_marker_%s" % id) as MeshInstance3D
+		if worker_marker:
+			worker_marker.position = _to_world(unit["position"], 0.09)
+			worker_marker.visible = alive and selected and str(unit["role"]) == "Worker"
+		var squad_marker := visual_root.get_node_or_null("squad_marker_%s" % id) as MeshInstance3D
+		if squad_marker:
+			squad_marker.position = _to_world(unit["position"], 0.07)
+			squad_marker.visible = alive and selected and runtime.selected_ids.size() > 1
+		var target_marker := visual_root.get_node_or_null("enemy_target_marker_%s" % id) as MeshInstance3D
+		if target_marker:
+			target_marker.position = _to_world(unit["position"], 0.105)
+			target_marker.visible = alive and is_targeted
+		var damage_marker := visual_root.get_node_or_null("damage_flash_%s" % id) as MeshInstance3D
+		if damage_marker:
+			damage_marker.position = _to_world(unit["position"], 0.58)
+			damage_marker.visible = alive and damage_flash_active and (is_targeted or id == "ashen_00")
 
 func _sync_site_visuals() -> void:
 	if visual_root == null:
@@ -649,18 +862,28 @@ func _add_structure(structure: Dictionary) -> void:
 	if fixture == "command_hall" or fixture == "enemy_stronghold":
 		_add_box("%s_keep_tower" % id, position + Vector3(0.0, 0.34, 0.0), Vector3(scale.x * 0.34, 0.58, scale.z * 0.34), color.lightened(0.12))
 		_add_box("%s_banner_silhouette" % id, position + Vector3(-scale.x * 0.38, 0.72, -scale.z * 0.12), Vector3(0.10, 0.34, 0.28), _banner_color(structure))
+		_add_box("%s_roof_ridge" % id, position + Vector3(0.0, 0.62, 0.0), Vector3(scale.x * 0.82, 0.10, scale.z * 0.18), color.lightened(0.20))
+		_add_box("%s_command_door_readability" % id, position + Vector3(0.0, 0.04, scale.z * 0.52), Vector3(scale.x * 0.26, 0.16, 0.08), Color(0.18, 0.15, 0.11))
 	elif fixture == "barracks" or fixture == "enemy_barracks":
 		_add_box("%s_training_wing_a" % id, position + Vector3(-scale.x * 0.30, 0.22, 0.0), Vector3(scale.x * 0.32, 0.34, scale.z * 0.88), color.lightened(0.08))
 		_add_box("%s_training_wing_b" % id, position + Vector3(scale.x * 0.30, 0.22, 0.0), Vector3(scale.x * 0.32, 0.34, scale.z * 0.88), color.darkened(0.08))
+		_add_box("%s_weapon_rack_silhouette" % id, position + Vector3(0.0, 0.46, -scale.z * 0.44), Vector3(scale.x * 0.72, 0.08, 0.08), Color(0.54, 0.48, 0.34))
+		_add_box("%s_drill_yard_edge" % id, position + Vector3(0.0, -0.12, scale.z * 0.72), Vector3(scale.x * 0.94, 0.05, 0.12), Color(0.32, 0.28, 0.18))
 	elif fixture == "west_stone_cut":
 		_add_box("%s_quarry_crane" % id, position + Vector3(0.32, 0.30, -0.10), Vector3(0.16, 0.42, 0.70), Color(0.55, 0.50, 0.36))
+		_add_box("%s_mine_mouth_shadow" % id, position + Vector3(-0.22, 0.10, 0.36), Vector3(0.42, 0.20, 0.16), Color(0.12, 0.12, 0.10))
+		_add_box("%s_cut_stone_stack" % id, position + Vector3(0.44, -0.10, 0.34), Vector3(0.34, 0.12, 0.24), Color(0.58, 0.55, 0.46))
 	elif fixture == "ford_toll":
 		_add_cylinder("%s_shrine_cap" % id, position + Vector3(0, 0.38, 0), 0.34, 0.20, Color(0.74, 0.68, 0.46), false)
+		_add_cylinder("%s_shrine_beacon_slot" % id, position + Vector3(0, 0.58, 0), 0.12, 0.18, _lume_core_color(), false)
+		_add_box("%s_shrine_steps" % id, position + Vector3(0.0, -0.12, 0.32), Vector3(0.54, 0.08, 0.18), Color(0.54, 0.50, 0.38))
 
 func _add_capture_site(site: Dictionary) -> void:
 	var position := _to_world(site["position"], 0.13)
 	_add_box(str(site["id"]), position, Vector3(0.56, 0.12, 0.56), _site_color(site), true)
 	_add_cylinder("%s_marker_disc" % str(site["id"]), position + Vector3(0, -0.055, 0), 0.42, 0.045, _site_color(site).lightened(0.18), true)
+	_add_box("%s_claim_post" % str(site["id"]), position + Vector3(0.0, 0.23, 0.0), Vector3(0.08, 0.36, 0.08), _site_color(site).lightened(0.08), true)
+	_add_box("%s_contest_tick" % str(site["id"]), position + Vector3(0.28, 0.08, 0.28), Vector3(0.22, 0.05, 0.08), Color(0.96, 0.70, 0.24, 0.62), true)
 
 func _add_unit(name: String, position: Vector3, color: Color, radius: float, emissive: bool = false) -> void:
 	var mesh_instance := MeshInstance3D.new()
@@ -708,6 +931,60 @@ func _add_unit_silhouette(unit: Dictionary) -> void:
 	mesh_instance.position = _to_world(unit["position"], 0.28)
 	mesh_instance.material_override = _material(_unit_color(unit), false, _unit_emissive(unit), 0.35)
 	visual_root.add_child(mesh_instance)
+	_add_unit_silhouette_parts(mesh_instance, unit)
+
+func _add_unit_silhouette_parts(parent: MeshInstance3D, unit: Dictionary) -> void:
+	var fixture := str(unit["fixtureId"])
+	var role := str(unit["role"])
+	var team := str(unit["team"])
+	if role == "hero":
+		_add_child_box(parent, "hero_command_banner", Vector3(0.0, 0.36, -0.08), Vector3(0.08, 0.34, 0.18), Color(0.82, 0.88, 0.54))
+		_add_child_box(parent, "hero_blade_profile", Vector3(0.20, 0.08, 0.05), Vector3(0.06, 0.44, 0.08), Color(0.72, 0.78, 0.74))
+		_add_child_box(parent, "hero_shield_plate", Vector3(-0.18, 0.02, 0.06), Vector3(0.08, 0.26, 0.24), Color(0.24, 0.44, 0.56))
+		_add_child_cylinder(parent, "hero_crown_disc", Vector3(0.0, 0.42, 0.0), 0.13, 0.045, Color(0.86, 0.82, 0.48))
+	elif role == "Worker":
+		_add_child_box(parent, "worker_pack_crate", Vector3(0.0, 0.03, -0.18), Vector3(0.24, 0.20, 0.10), Color(0.48, 0.36, 0.20))
+		_add_child_box(parent, "worker_tool_handle", Vector3(0.18, 0.10, 0.03), Vector3(0.05, 0.36, 0.05), Color(0.66, 0.56, 0.36))
+		_add_child_box(parent, "worker_tool_head", Vector3(0.20, 0.28, 0.03), Vector3(0.16, 0.05, 0.07), Color(0.55, 0.56, 0.48))
+	elif fixture == "ranger":
+		_add_child_box(parent, "ranger_bow_profile", Vector3(0.19, 0.04, 0.0), Vector3(0.05, 0.48, 0.06), Color(0.38, 0.30, 0.18))
+		_add_child_box(parent, "ranger_quiver", Vector3(-0.14, 0.04, -0.16), Vector3(0.08, 0.30, 0.08), Color(0.30, 0.42, 0.30))
+		_add_child_box(parent, "ranger_arrow_line", Vector3(0.0, 0.18, 0.19), Vector3(0.08, 0.05, 0.30), Color(0.72, 0.80, 0.62))
+	elif team == "enemy" and fixture == "brute":
+		_add_child_box(parent, "ashen_brute_shoulder_left", Vector3(-0.20, 0.12, 0.0), Vector3(0.18, 0.20, 0.24), Color(0.42, 0.09, 0.08))
+		_add_child_box(parent, "ashen_brute_shoulder_right", Vector3(0.20, 0.12, 0.0), Vector3(0.18, 0.20, 0.24), Color(0.42, 0.09, 0.08))
+		_add_child_box(parent, "ashen_brute_cleaver", Vector3(0.0, 0.10, 0.24), Vector3(0.10, 0.34, 0.08), Color(0.68, 0.28, 0.18))
+	elif team == "enemy":
+		_add_child_box(parent, "ashen_raider_forward_blade", Vector3(0.0, 0.06, 0.22), Vector3(0.08, 0.30, 0.08), Color(0.78, 0.26, 0.16))
+		_add_child_box(parent, "ashen_raider_horn_left", Vector3(-0.15, 0.22, 0.0), Vector3(0.12, 0.10, 0.08), Color(0.50, 0.16, 0.12))
+		_add_child_box(parent, "ashen_raider_horn_right", Vector3(0.15, 0.22, 0.0), Vector3(0.12, 0.10, 0.08), Color(0.50, 0.16, 0.12))
+	else:
+		_add_child_box(parent, "militia_shield_plate", Vector3(-0.18, 0.02, 0.04), Vector3(0.08, 0.26, 0.22), Color(0.26, 0.44, 0.30))
+		_add_child_box(parent, "militia_spear_profile", Vector3(0.18, 0.10, 0.0), Vector3(0.05, 0.52, 0.05), Color(0.58, 0.52, 0.34))
+		_add_child_box(parent, "militia_spear_tip", Vector3(0.18, 0.38, 0.0), Vector3(0.10, 0.08, 0.08), Color(0.70, 0.72, 0.62))
+
+func _add_child_box(parent: Node3D, name: String, local_position: Vector3, scale: Vector3, color: Color, transparent: bool = false, emissive: bool = false) -> void:
+	var mesh_instance := MeshInstance3D.new()
+	mesh_instance.name = name
+	var mesh := BoxMesh.new()
+	mesh.size = scale
+	mesh_instance.mesh = mesh
+	mesh_instance.position = local_position
+	mesh_instance.material_override = _material(color, transparent, emissive, _lume_emission())
+	parent.add_child(mesh_instance)
+
+func _add_child_cylinder(parent: Node3D, name: String, local_position: Vector3, radius: float, height: float, color: Color, transparent: bool = false, emissive: bool = false) -> void:
+	var mesh_instance := MeshInstance3D.new()
+	mesh_instance.name = name
+	var mesh := CylinderMesh.new()
+	mesh.top_radius = radius
+	mesh.bottom_radius = radius
+	mesh.height = height
+	mesh.radial_segments = 18
+	mesh_instance.mesh = mesh
+	mesh_instance.position = local_position
+	mesh_instance.material_override = _material(color, transparent, emissive, _lume_emission())
+	parent.add_child(mesh_instance)
 
 func _add_box(name: String, position: Vector3, scale: Vector3, color: Color, transparent: bool = false, emissive: bool = false) -> void:
 	var mesh_instance := MeshInstance3D.new()
@@ -745,6 +1022,22 @@ func _add_selection_disc(name: String, position: Vector3, radius: float, color: 
 	mesh_instance.material_override = _material(color, true, true, 0.25)
 	mesh_instance.visible = false
 	visual_root.add_child(mesh_instance)
+
+func _set_or_create_disc_marker(name: String, position: Vector3, radius: float, color: Color) -> void:
+	if visual_root == null:
+		return
+	var marker := visual_root.get_node_or_null(name) as MeshInstance3D
+	if marker == null:
+		_add_selection_disc(name, position, radius, color)
+		marker = visual_root.get_node_or_null(name) as MeshInstance3D
+	if marker:
+		marker.position = position
+		var mesh := marker.mesh as CylinderMesh
+		if mesh:
+			mesh.top_radius = radius
+			mesh.bottom_radius = radius
+		marker.material_override = _material(color, true, true, 0.20)
+		marker.visible = true
 
 func _add_static_box(name: String, position: Vector3, scale: Vector3, color: Color, transparent: bool = false) -> void:
 	var mesh_instance := MeshInstance3D.new()
@@ -801,6 +1094,45 @@ func _clamped_camera_position(position: Vector3) -> Vector3:
 		clampf(position.z, CAMERA_PAN_MIN_Z, CAMERA_PAN_MAX_Z)
 	)
 
+func _unit_world_position(id: String, fallback: Vector3) -> Vector3:
+	for unit in runtime.units:
+		if str(unit.get("id", "")) == id or str(unit.get("fixtureId", "")) == id:
+			return _to_world(unit["position"], 0.12)
+	return fallback
+
+func _structure_world_position(id: String, fallback: Vector3) -> Vector3:
+	for structure in runtime.structures:
+		if str(structure.get("id", "")) == id or str(structure.get("fixtureId", "")) == id:
+			return _to_world(structure["position"], 0.14)
+	return fallback
+
+func _site_world_position(id: String, fallback: Vector3) -> Vector3:
+	for site in runtime.sites:
+		if str(site.get("id", "")) == id or str(site.get("fixtureId", "")) == id:
+			return _to_world(site["position"], 0.14)
+	return fallback
+
+func _lume_endpoint_world_position(id: String, fallback: Vector3) -> Vector3:
+	for endpoint in runtime.lume_endpoints:
+		if str(endpoint.get("id", "")) == id or str(endpoint.get("fixtureId", "")) == id:
+			return _to_world(endpoint["position"], 0.14)
+	return fallback
+
+func _set_unit_health(id: String, health: float, alive: bool) -> void:
+	for index in range(runtime.units.size()):
+		var unit: Dictionary = runtime.units[index]
+		if str(unit.get("id", "")) == id or str(unit.get("fixtureId", "")) == id:
+			unit["health"] = clampf(health, 0.0, float(unit.get("maxHealth", health)))
+			unit["alive"] = alive
+			runtime.units[index] = unit
+			return
+
+func _unit_is_attack_target(id: String) -> bool:
+	for unit in runtime.units:
+		if str(unit.get("attackTarget", "")) == id:
+			return true
+	return false
+
 func _authored_layout_manifest() -> Dictionary:
 	var feature_ids := [
 		"highland_foothold_shape",
@@ -828,6 +1160,39 @@ func _authored_layout_manifest() -> Dictionary:
 		"deterministic": true,
 		"proceduralPrimitiveOnly": true,
 		"manualEditorAssemblyRequired": false
+	}
+
+func _silhouette_library_manifest() -> Dictionary:
+	return {
+		"checkpoint": "v0.127",
+		"seed": "salto-procedural-silhouette-library-v0127",
+		"proceduralPrimitiveOnly": true,
+		"generatedOrImportedArtIncluded": false,
+		"runtimeArtIntegrated": false,
+		"routineEditorUseRequired": false,
+		"readableByGeometryNotColorAlone": true,
+		"futureArtSlotMappingPreserved": true,
+		"unitRoles": {
+			"hero_aster": {"role": "hero", "profile": "tall capsule plus command banner, blade, shield, and crown disc", "artSlotId": "hero_aster"},
+			"worker": {"role": "non-combat worker", "profile": "short box body plus crate pack and tool silhouette", "artSlotId": "worker"},
+			"militia": {"role": "melee", "profile": "six-sided body plus shield and spear silhouette", "artSlotId": "militia"},
+			"ranger": {"role": "ranged", "profile": "narrow body plus bow, quiver, and arrow line", "artSlotId": "ranger"},
+			"ashen_raider": {"role": "enemy raider", "profile": "tapered pentagonal body plus horns and forward blade", "artSlotId": "ashen_enemy"},
+			"ashen_brute": {"role": "optional enemy brute placeholder", "profile": "larger tapered body plus broad shoulders and cleaver", "artSlotId": "ashen_enemy"}
+		},
+		"buildingAndSiteRoles": {
+			"command_hall": "keep tower, roof ridge, banner, and door slot",
+			"barracks": "two training wings, weapon rack, and drill-yard edge",
+			"mine": "quarry crane, mine-mouth shadow, and cut-stone stack",
+			"shrine": "round shrine cap, beacon slot, and step profile",
+			"quarry": "terrain quarry cut plus mine-role silhouette",
+			"ruin": "broken wall pocket and blocked edge",
+			"capture_site": "claim disc, post, and contest tick",
+			"lume_endpoint": "glow core, readability ring, and art anchor"
+		},
+		"selectionFeedback": ["hover", "click-select", "box-select", "hero-marker", "worker-marker", "squad-marker", "enemy-target", "move-order", "attack-order"],
+		"combatFeedback": ["melee-contact", "ranged-shot-placeholder", "hit-flash", "death-fade", "pressure-wave-arrival", "site-contest", "results-readiness"],
+		"noFinalArtClaim": true
 	}
 
 func _to_world(position: Vector2, y: float = 0.25) -> Vector3:

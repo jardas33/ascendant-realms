@@ -11,11 +11,21 @@ Every phase should protect these long-term pillars:
 
 ## Current Recommended Next Phase
 
-The current checkpoint is **v0.126 Godot Procedural Salto Environment Authorship, Camera Framing, and Tactical-Lane Readability Pass** on 2026-06-05. It keeps the Godot spike bounded, authors the first coherent procedural Salto battlefield for the existing player-facing slice, improves camera framing and zoom/pan bounds, adds tactical-lane readability evidence, and generates 15 v0.126 screenshots under ignored artifacts. The browser prototype remains authoritative, the private harness remains separate, and no final engine choice, full port, generated image, imported art, save change, stable-ID change, browser-runtime change, gameplay expansion, or runtime art integration is approved.
+The current checkpoint is **v0.127 Godot Procedural Silhouette Library, Selection Feedback, and Combat-Readability Pass** on 2026-06-05. It keeps the Godot spike bounded, adds a procedural placeholder silhouette language for the existing player-facing Salto slice, improves selection/order/combat readability, and generates 21 v0.127 screenshots under ignored artifacts. The browser prototype remains authoritative, the private harness remains separate, and no final engine choice, full port, generated image, imported art, save change, stable-ID change, browser-runtime change, broad combat system, gameplay expansion, or runtime art integration is approved.
 
-The next recommended step, only after a future explicit goal, is Emmanuel's review of the v0.126 screenshots, contact sheet, and reports in `artifacts/desktop-spikes/godot-salto/v0126/`. Do not generate art for runtime integration, import art into runtime, mark `runtime-candidate-approved` assets as loadable, resume broad browser visual expansion, add gameplay systems, change rewards, change saves, rename IDs, create a desktop save path, choose Godot finally, start a full desktop port, start Unity/Unreal/Electron work, or start v0.127 until a future explicit goal approves a narrow next step.
+The next recommended step, only after a future explicit goal, is Emmanuel's review of the v0.127 screenshots, contact sheet, and reports in `artifacts/desktop-spikes/godot-salto/v0127/`. Do not generate art for runtime integration, import art into runtime, mark `runtime-candidate-approved` assets as loadable, resume broad browser visual expansion, add gameplay systems, change rewards, change saves, rename IDs, create a desktop save path, choose Godot finally, start a full desktop port, start Unity/Unreal/Electron work, or start v0.128 until a future explicit goal approves a narrow next step.
+
+New v0.127 docs:
+
+- `docs/V0127_PROCEDURAL_SILHOUETTE_LIBRARY.md`
+- `docs/V0127_SELECTION_FEEDBACK_SPEC.md`
+- `docs/V0127_COMBAT_READABILITY_REPORT.md`
+- `docs/V0127_VISUAL_CAPTURE_REPORT.md`
+- `docs/V0127_IMPLEMENTATION_REPORT.md`
 
 New v0.126 docs:
+
+Previous checkpoint reference: v0.126 Godot Procedural Salto Environment Authorship, Camera Framing, and Tactical-Lane Readability Pass.
 
 - `docs/V0126_SALTO_ENVIRONMENT_AUTHORSHIP_SPEC.md`
 - `docs/V0126_CAMERA_FRAMING_SPEC.md`

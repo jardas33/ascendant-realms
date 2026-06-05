@@ -18,6 +18,8 @@ const v0124ScreenshotRoot = join(v0124ArtifactRoot, "screenshots");
 const v0125ArtifactRoot = join(repoRoot, "artifacts", "desktop-spikes", "godot-salto", "v0125");
 const v0126ArtifactRoot = join(repoRoot, "artifacts", "desktop-spikes", "godot-salto", "v0126");
 const v0126ScreenshotRoot = join(v0126ArtifactRoot, "screenshots");
+const v0127ArtifactRoot = join(repoRoot, "artifacts", "desktop-spikes", "godot-salto", "v0127");
+const v0127ScreenshotRoot = join(v0127ArtifactRoot, "screenshots");
 const sourceFixtureRoot = join(repoRoot, "artifacts", "desktop-spike-fixture", "latest");
 const generatedDataRoot = join(spikeRoot, "data", "generated");
 const buildsRoot = join(spikeRoot, "builds");
@@ -278,6 +280,18 @@ function writeV0126Text(name, value) {
   return target;
 }
 
+function writeV0127Artifact(name, value) {
+  const target = join(v0127ArtifactRoot, name);
+  writeJson(target, value);
+  return target;
+}
+
+function writeV0127Text(name, value) {
+  const target = join(v0127ArtifactRoot, name);
+  writeText(target, value);
+  return target;
+}
+
 function writeV0118Artifact(name, value) {
   const target = join(v0118ArtifactRoot, name);
   writeJson(target, value);
@@ -307,6 +321,11 @@ function readV0124RuntimeReport(name) {
 
 function readV0126RuntimeReport(name) {
   const path = join(v0126ArtifactRoot, name);
+  return existsSync(path) ? readJson(path) : null;
+}
+
+function readV0127RuntimeReport(name) {
+  const path = join(v0127ArtifactRoot, name);
   return existsSync(path) ? readJson(path) : null;
 }
 
@@ -2752,6 +2771,355 @@ function writeV0126ScreenshotManifest() {
   return manifest;
 }
 
+const v0127CaptureOrder = [
+  "hero",
+  "worker",
+  "militia",
+  "ranger",
+  "ashen_raider",
+  "command_hall",
+  "barracks",
+  "mine",
+  "shrine",
+  "quarry",
+  "ruin",
+  "site",
+  "lume_endpoint",
+  "hero_selected",
+  "worker_selected",
+  "squad_selected",
+  "move_order",
+  "attack_order",
+  "combat",
+  "death",
+  "results"
+];
+
+function writeV0127ContactSheet(manifest) {
+  const columns = 3;
+  const tileWidth = 480;
+  const tileHeight = 270;
+  const labelHeight = 44;
+  const margin = 18;
+  const width = margin * 2 + columns * tileWidth + (columns - 1) * 18;
+  const rows = Math.ceil(manifest.captures.length / columns);
+  const height = 82 + rows * (tileHeight + labelHeight + 18);
+  const tiles = manifest.captures.map((capture, index) => {
+    const x = margin + (index % columns) * (tileWidth + 18);
+    const y = 78 + Math.floor(index / columns) * (tileHeight + labelHeight + 18);
+    return [
+      `<rect x="${x}" y="${y}" width="${tileWidth}" height="${tileHeight + labelHeight}" fill="#101616" stroke="#4dc6ba" stroke-width="1"/>`,
+      `<image href="screenshots/${escapeXml(capture.fileName)}" x="${x}" y="${y}" width="${tileWidth}" height="${tileHeight}" preserveAspectRatio="xMidYMid meet"/>`,
+      `<text x="${x + 10}" y="${y + tileHeight + 28}" fill="#e6efe8" font-family="Arial, sans-serif" font-size="14">${escapeXml(`${index + 1}. ${capture.label}`)}</text>`
+    ].join("\n");
+  });
+  const svg = [
+    `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}">`,
+    '<rect width="100%" height="100%" fill="#071011"/>',
+    '<text x="18" y="32" fill="#e6efe8" font-family="Arial, sans-serif" font-size="24">v0.127 Procedural Silhouette And Combat Readability Capture</text>',
+    `<text x="18" y="58" fill="#9ccfc8" font-family="Arial, sans-serif" font-size="14">Status: ${escapeXml(manifest.status)} | Screenshots: ${manifest.captureCount}/21 | Placeholder-only</text>`,
+    tiles.join("\n"),
+    "</svg>",
+    ""
+  ].join("\n");
+  writeText(join(v0127ArtifactRoot, "contact-sheet.svg"), svg);
+}
+
+function v0127CaptureById(manifest, id) {
+  return manifest?.captures?.find((capture) => capture.id === id) ?? null;
+}
+
+function v0127StatusFor(manifest, id) {
+  return v0127CaptureById(manifest, id)?.status ?? {};
+}
+
+function buildV0127ReadabilityReports(manifest) {
+  const heroStatus = v0127StatusFor(manifest, "hero");
+  const workerStatus = v0127StatusFor(manifest, "worker");
+  const militiaStatus = v0127StatusFor(manifest, "militia");
+  const rangerStatus = v0127StatusFor(manifest, "ranger");
+  const ashenStatus = v0127StatusFor(manifest, "ashen_raider");
+  const commandHallStatus = v0127StatusFor(manifest, "command_hall");
+  const barracksStatus = v0127StatusFor(manifest, "barracks");
+  const mineStatus = v0127StatusFor(manifest, "mine");
+  const shrineStatus = v0127StatusFor(manifest, "shrine");
+  const quarryStatus = v0127StatusFor(manifest, "quarry");
+  const ruinStatus = v0127StatusFor(manifest, "ruin");
+  const siteStatus = v0127StatusFor(manifest, "site");
+  const lumeStatus = v0127StatusFor(manifest, "lume_endpoint");
+  const heroSelectedStatus = v0127StatusFor(manifest, "hero_selected");
+  const workerSelectedStatus = v0127StatusFor(manifest, "worker_selected");
+  const squadSelectedStatus = v0127StatusFor(manifest, "squad_selected");
+  const moveStatus = v0127StatusFor(manifest, "move_order");
+  const attackStatus = v0127StatusFor(manifest, "attack_order");
+  const combatStatus = v0127StatusFor(manifest, "combat");
+  const deathStatus = v0127StatusFor(manifest, "death");
+  const resultsStatus = v0127StatusFor(manifest, "results");
+  const validation = existsSync(join(v0124ArtifactRoot, "player-slice-validation.json"))
+    ? readJson(join(v0124ArtifactRoot, "player-slice-validation.json"))
+    : null;
+  const packageReport = existsSync(join(artifactRoot, "package-report.json"))
+    ? readJson(join(artifactRoot, "package-report.json"))
+    : null;
+
+  const silhouetteErrors = [];
+  const silhouetteChecks = {
+    hero: heroStatus.heroSilhouetteDistinct === true,
+    worker: workerStatus.workerNonCombatSilhouetteDistinct === true,
+    militia: militiaStatus.militiaMeleeSilhouetteDistinct === true,
+    ranger: rangerStatus.rangerRangedSilhouetteDistinct === true,
+    ashenRaider: ashenStatus.ashenRaiderEnemySilhouetteDistinct === true,
+    ashenBruteOptional: ashenStatus.ashenBrutePlaceholderRendered === true,
+    commandHall: commandHallStatus.commandHallSilhouetteRendered === true,
+    barracks: barracksStatus.barracksSilhouetteRendered === true,
+    mine: mineStatus.mineSilhouetteRendered === true,
+    shrine: shrineStatus.shrineSilhouetteRendered === true,
+    quarry: quarryStatus.quarrySilhouetteRendered === true,
+    ruin: ruinStatus.ruinSilhouetteRendered === true,
+    site: siteStatus.captureSiteSilhouetteRendered === true,
+    lumeEndpoint: lumeStatus.lumeEndpointSilhouetteRendered === true,
+    geometryNotColorOnly: heroStatus.geometryReadableNotColorOnly === true,
+    roleMapping: heroStatus.roleMappingPass === true,
+    artSlotFallback: heroStatus.artSlotFallbackRemains === true
+  };
+  for (const [name, pass] of Object.entries(silhouetteChecks)) {
+    if (!pass) {
+      silhouetteErrors.push(`Missing or failed silhouette evidence: ${name}`);
+    }
+  }
+  const libraryReport = {
+    schemaVersion: 1,
+    checkpoint: "v0.127",
+    status: silhouetteErrors.length === 0 ? "PASS_V0127_PROCEDURAL_SILHOUETTE_LIBRARY" : "FAIL_V0127_PROCEDURAL_SILHOUETTE_LIBRARY",
+    generatedAtUtc: "deterministic-v0127",
+    proceduralPrimitiveOnly: true,
+    generatedOrImportedArtIncluded: false,
+    runtimeArtIntegrated: false,
+    routineEditorUseRequired: false,
+    noFinalArtClaim: true,
+    linkedWardDamageTakenMultiplier: heroStatus.linkedWardDamageTakenMultiplier ?? null,
+    metadata: heroStatus.silhouetteDistinctnessMetadata ?? null,
+    checks: silhouetteChecks,
+    packageStatus: packageReport?.status ?? null,
+    errors: silhouetteErrors
+  };
+  writeV0127Artifact("silhouette-library-report.json", libraryReport);
+
+  const selectionErrors = [];
+  const selectionChecks = {
+    hoverFeedback: heroStatus.hoverFeedbackRendered === true,
+    clickSelect: heroSelectedStatus.clickSelectFeedbackRendered === true,
+    boxSelect: squadSelectedStatus.boxSelectFeedbackRendered === true,
+    selectedHeroMarker: heroSelectedStatus.selectedHeroMarkerRendered === true,
+    selectedWorkerMarker: workerSelectedStatus.selectedWorkerMarkerRendered === true,
+    squadSelectionMarker: squadSelectedStatus.squadSelectionMarkerRendered === true,
+    enemyTargetMarker: attackStatus.enemyTargetMarkerRendered === true,
+    moveOrderMarker: moveStatus.moveOrderMarkerRendered === true,
+    attackOrderMarker: attackStatus.attackOrderMarkerRendered === true,
+    restrainedHealthBars: combatStatus.restrainedHealthBarsRendered === true,
+    noDebugLabels: combatStatus.noDebugLabels === true,
+    noLabelClutter: combatStatus.noLabelClutter === true,
+    noClutterExplosion: combatStatus.noClutterExplosion === true
+  };
+  for (const [name, pass] of Object.entries(selectionChecks)) {
+    if (!pass) {
+      selectionErrors.push(`Missing or failed selection feedback evidence: ${name}`);
+    }
+  }
+  const selectionReport = {
+    schemaVersion: 1,
+    checkpoint: "v0.127",
+    status: selectionErrors.length === 0 ? "PASS_V0127_SELECTION_FEEDBACK" : "FAIL_V0127_SELECTION_FEEDBACK",
+    generatedAtUtc: "deterministic-v0127",
+    proceduralPrimitiveOnly: true,
+    generatedOrImportedArtIncluded: false,
+    runtimeArtIntegrated: false,
+    selectionChecks,
+    errors: selectionErrors
+  };
+  writeV0127Artifact("selection-feedback-report.json", selectionReport);
+
+  const combatErrors = [];
+  const combatChecks = {
+    meleeContact: combatStatus.meleeContactReadable === true,
+    rangedShotPlaceholder: combatStatus.rangedShotPlaceholderRendered === true,
+    hitFeedback: combatStatus.hitFeedbackRendered === true,
+    damageFlash: combatStatus.damageFlashRendered === true,
+    deathFade: deathStatus.deathFadeRendered === true,
+    pressureWaveArrival: combatStatus.pressureWaveArrivalReadable === true,
+    siteContest: combatStatus.siteContestReadable === true,
+    resultsReadiness: resultsStatus.resultsReadinessReadable === true,
+    validationStillGreen: validation?.status === "PASS_PLAYER_FACING_SLICE_VALIDATION" || validation == null,
+    packagePasses: packageReport?.status === "PASS_WINDOWS_PACKAGE" || packageReport == null
+  };
+  for (const [name, pass] of Object.entries(combatChecks)) {
+    if (!pass) {
+      combatErrors.push(`Missing or failed combat readability evidence: ${name}`);
+    }
+  }
+  const combatReport = {
+    schemaVersion: 1,
+    checkpoint: "v0.127",
+    status: combatErrors.length === 0 ? "PASS_V0127_COMBAT_READABILITY" : "FAIL_V0127_COMBAT_READABILITY",
+    generatedAtUtc: "deterministic-v0127",
+    boundedPlaceholderCombatOnly: true,
+    finalAnimationSystemStarted: false,
+    generatedOrImportedArtIncluded: false,
+    runtimeArtIntegrated: false,
+    combatChecks,
+    validationStatus: validation?.status ?? null,
+    packageStatus: packageReport?.status ?? null,
+    errors: combatErrors
+  };
+  writeV0127Artifact("combat-readability-report.json", combatReport);
+
+  writeV0127Text(
+    "visual-capture-report.md",
+    [
+      "# v0.127 Visual Capture Report",
+      "",
+      `Status: ${manifest.status}`,
+      "",
+      `Capture count: ${manifest.captureCount}/21`,
+      "",
+      "Captured areas: hero, Worker, Militia, Ranger, Ashen Raider, Command Hall, Barracks, mine, shrine, quarry, ruin, site, Lume endpoint, hero selected, Worker selected, squad selected, move order, attack order, combat, death, Results.",
+      "",
+      "This report covers procedural placeholder screenshots only. It does not include generated images, imported art, runtime art integration, final animation approval, final engine selection, save changes, stable-ID changes, browser-runtime changes, or a full port."
+    ].join("\n")
+  );
+
+  writeV0127Text(
+    "README.md",
+    [
+      "# v0.127 Godot Procedural Silhouette And Combat Readability Artifacts",
+      "",
+      "This ignored artifact folder is regenerated by `npm run godot:capture:player-slice` for the v0.127 procedural silhouette, selection-feedback, and combat-readability pass.",
+      "",
+      `Screenshot capture: ${manifest.status}`,
+      `Silhouette library: ${libraryReport.status}`,
+      `Selection feedback: ${selectionReport.status}`,
+      `Combat readability: ${combatReport.status}`,
+      "",
+      "- `screenshots/` contains the 21 deterministic v0.127 captures.",
+      "- `screenshot-manifest.json`, `screenshot-hashes.json`, and `contact-sheet.svg` record capture order and hashes.",
+      "- `silhouette-library-report.json` records unit, building, site, and Lume endpoint silhouette evidence.",
+      "- `selection-feedback-report.json` records hover, click, box selection, marker, order, and health-bar evidence.",
+      "- `combat-readability-report.json` records melee, ranged, hit, death, pressure-wave, site-contest, and Results evidence.",
+      "",
+      "No artifact here is tracked source, final art, imported art, generated imagery, runtime art integration, save migration, stable-ID change, final Godot choice, or full-port approval."
+    ].join("\n")
+  );
+
+  return { libraryReport, selectionReport, combatReport };
+}
+
+function writeV0127ScreenshotManifest() {
+  const runtime = readV0127RuntimeReport("screenshot-runtime-manifest.json");
+  const errors = [];
+  if (!runtime) {
+    errors.push("Missing screenshot-runtime-manifest.json from packaged executable capture.");
+  }
+  const runtimeCaptures = runtime?.captures ?? [];
+  const captures = runtimeCaptures.map((entry) => {
+    const screenshotPath = join(v0127ScreenshotRoot, entry.fileName);
+    return {
+      id: entry.id,
+      label: entry.label,
+      action: entry.action,
+      screen: entry.screen,
+      fileName: entry.fileName,
+      path: relativeRepo(screenshotPath),
+      sha256: existsSync(screenshotPath) ? hashFile(screenshotPath) : null,
+      sizeBytes: existsSync(screenshotPath) ? statSync(screenshotPath).size : null,
+      width: entry.width,
+      height: entry.height,
+      privateHarnessCapture: Boolean(entry.privateHarnessCapture),
+      status: entry.status ?? null,
+      visibleText: entry.visibleText ?? []
+    };
+  });
+  if (runtime?.checkpoint !== "v0.127") {
+    errors.push(`Expected v0.127 runtime checkpoint, found ${runtime?.checkpoint ?? "missing"}.`);
+  }
+  if (captures.length !== 21) {
+    errors.push(`Expected 21 screenshots, found ${captures.length}.`);
+  }
+  for (const id of v0127CaptureOrder) {
+    if (!captures.some((capture) => capture.id === id)) {
+      errors.push(`Missing v0.127 screenshot capture: ${id}`);
+    }
+  }
+  for (const capture of captures) {
+    if (!capture.sha256) {
+      errors.push(`Missing screenshot file: ${capture.fileName}`);
+    }
+    if (capture.width !== 1600 || capture.height !== 900) {
+      errors.push(`Screenshot ${capture.fileName} is ${capture.width}x${capture.height}, expected 1600x900.`);
+    }
+    if (capture.status?.proceduralPrimitiveOnly !== true) {
+      errors.push(`Capture ${capture.id} did not report procedural primitive-only posture.`);
+    }
+    if (capture.status?.generatedOrImportedArtIncluded === true || capture.status?.runtimeArtIntegrated === true) {
+      errors.push(`Capture ${capture.id} reported generated/imported or runtime art integration.`);
+    }
+    if (capture.status?.saveWritesAllowed === true || capture.status?.stableIdsChanged === true) {
+      errors.push(`Capture ${capture.id} reported save writes or stable-ID changes.`);
+    }
+  }
+  const strayPngs = existsSync(v0127ScreenshotRoot)
+    ? readdirSync(v0127ScreenshotRoot).filter((file) => file.endsWith(".png") && !captures.some((capture) => capture.fileName === file))
+    : [];
+  if (strayPngs.length > 0) {
+    errors.push(`Unexpected screenshots in v0127 folder: ${strayPngs.join(", ")}`);
+  }
+  const manifest = {
+    schemaVersion: 1,
+    checkpoint: "v0.127",
+    status: errors.length === 0 && runtime?.status === "PASS_PLAYER_SLICE_CAPTURE" ? "PASS_V0127_SILHOUETTE_SELECTION_COMBAT_CAPTURE" : "FAIL_V0127_SILHOUETTE_SELECTION_COMBAT_CAPTURE",
+    generatedAtUtc: "deterministic-v0127",
+    screenshotRoot: relativeRepo(v0127ScreenshotRoot),
+    contactSheetPath: "artifacts/desktop-spikes/godot-salto/v0127/contact-sheet.svg",
+    captureCount: captures.length,
+    requiredCaptureCount: 21,
+    deterministicCaptureOrder: v0127CaptureOrder,
+    defaultMode: "2_5D_ORTHOGRAPHIC_PLACEHOLDER",
+    defaultVisualPreset: "CLEAN_READABILITY",
+    proceduralPrimitiveOnly: true,
+    runtimeArtIntegrated: false,
+    generatedOrImportedArtIncluded: false,
+    routineEditorUseRequired: false,
+    saveWritesAllowed: false,
+    stableIdsChanged: false,
+    browserRuntimeChanged: false,
+    finalEngineDecisionMade: false,
+    fullPortStarted: false,
+    errors,
+    captures
+  };
+  writeV0127Artifact("screenshot-manifest.json", manifest);
+  writeV0127Artifact("screenshot-hashes.json", {
+    schemaVersion: 1,
+    checkpoint: "v0.127",
+    status: manifest.status,
+    hashes: captures.map((capture) => ({
+      id: capture.id,
+      fileName: capture.fileName,
+      path: capture.path,
+      sha256: capture.sha256,
+      sizeBytes: capture.sizeBytes
+    }))
+  });
+  writeV0127ContactSheet(manifest);
+  const reports = buildV0127ReadabilityReports(manifest);
+  const reportStatuses = [reports.libraryReport.status, reports.selectionReport.status, reports.combatReport.status];
+  if (reportStatuses.some((status) => String(status).startsWith("FAIL"))) {
+    manifest.status = "FAIL_V0127_SILHOUETTE_SELECTION_COMBAT_CAPTURE";
+    manifest.errors.push(`One or more v0.127 reports failed: ${reportStatuses.join(", ")}`);
+    writeV0127Artifact("screenshot-manifest.json", manifest);
+  }
+  return manifest;
+}
+
 const v0125AuditAreas = ["title", "briefing", "battle", "results"];
 const v0125PlayerDebugTerms = [
   ...v0124ForbiddenTerms,
@@ -3433,6 +3801,12 @@ try {
     if (String(report.status).startsWith("FAIL")) {
       process.exitCode = 1;
     }
+  } else if (command === "player-slice-capture-v0127") {
+    const report = writeV0127ScreenshotManifest();
+    console.log(stableStringify(report));
+    if (String(report.status).startsWith("FAIL")) {
+      process.exitCode = 1;
+    }
   } else if (command === "player-slice-audit") {
     const report = buildV0125ScreenshotAudit();
     console.log(stableStringify(report));
@@ -3446,7 +3820,7 @@ try {
     runAll();
     console.log("v0.119 Godot representative RTS load spike reports generated.");
   } else {
-    console.log("Usage: node desktop-spikes/godot-salto/tools/godotSpikeTool.mjs <doctor|generate|validate|test|benchmark|export|package|scorecard|manual-review|headed-smoke|headed-benchmark|capture-review|capture-review-v0121|player-slice-validate|player-slice-capture|player-slice-capture-v0126|player-slice-audit|v0118-all|all>");
+    console.log("Usage: node desktop-spikes/godot-salto/tools/godotSpikeTool.mjs <doctor|generate|validate|test|benchmark|export|package|scorecard|manual-review|headed-smoke|headed-benchmark|capture-review|capture-review-v0121|player-slice-validate|player-slice-capture|player-slice-capture-v0126|player-slice-capture-v0127|player-slice-audit|v0118-all|all>");
   }
 } catch (error) {
   console.error(error instanceof Error ? error.message : String(error));
