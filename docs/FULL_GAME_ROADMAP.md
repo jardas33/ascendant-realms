@@ -10,7 +10,7 @@ Update note, 2026-06-02: v0.105 added reference-only visual asset registry and c
 
 Update note, 2026-06-02: v0.106 added the runtime art slot adapter and placeholder fallback harness. This advances the asset pipeline hardening item by making future runtime slots explicit and fallback-safe while still blocking unapproved/candidate/final-art loading. Future art integration must use a separate `runtime-integrated` checkpoint under `public/assets/runtime-art/`; this roadmap still treats generated images, broad UI kits, desktop porting, and engine choice as future gated work.
 
-Update note, 2026-06-05: v0.131 repaired the bounded Godot Salto player-facing slice's real packaged mouse-input path after Emmanuel's v0.130 playtest. Aster selection, right-click movement, visible objective advancement, Worker selection, and squad box-select now have a dedicated real-input proof packet under `artifacts/desktop-spikes/godot-salto/v0131/`. This does not approve a full Godot port, final engine choice, generated/imported art, save changes, stable-ID changes, browser replacement, or v0.132 work.
+Update note, 2026-06-05: v0.132 repaired the bounded Godot Salto player-facing slice's downstream site semantics after Emmanuel's v0.131 retest. `West Stone Cut Mine` is now the canonical live target, mine conversion progress and ownership are visible, objective state is monotonic, and Worker assignment has a normal mouse-input proof packet under `artifacts/desktop-spikes/godot-salto/v0132/`. This does not approve a full Godot port, final engine choice, generated/imported art, save changes, stable-ID changes, browser replacement, or v0.133 work.
 
 ## Product Guardrails
 

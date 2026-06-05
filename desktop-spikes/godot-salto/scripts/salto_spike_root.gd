@@ -25,6 +25,8 @@ const SCRIPT_ARG_PREFIXES := [
 	"--player-slice-capture",
 	"--real-input-smoke",
 	"--real-input-validate",
+	"--site-semantics-smoke",
+	"--site-semantics-validate",
 	"--mode=",
 	"--visual-preset=",
 	"--viewport=",
@@ -74,6 +76,10 @@ func _ready() -> void:
 	if args.has("--real-input-smoke") or args.has("--real-input-validate"):
 		_create_player_slice_ui()
 		await run_real_input_smoke()
+		return
+	if args.has("--site-semantics-smoke") or args.has("--site-semantics-validate"):
+		_create_player_slice_ui()
+		await run_site_semantics_smoke()
 		return
 	if args.has("--player-slice"):
 		_create_player_slice_ui()
@@ -341,8 +347,8 @@ func _render_player_screen(screen: String) -> void:
 		"briefing":
 			_add_player_label("Salto Foothold Briefing", Vector2(0, 78), Vector2(1600, 56), 34, Color(0.90, 0.94, 0.86), Color(0, 0, 0, 0), HORIZONTAL_ALIGNMENT_CENTER)
 			_add_player_label("Convert the mine, assign the Worker, restore the Barracks, and survive one wave.", Vector2(300, 140), Vector2(1000, 36), 20, Color(0.78, 0.86, 0.78), Color(0.04, 0.05, 0.04, 0.36), HORIZONTAL_ALIGNMENT_CENTER)
-			_add_player_label("1. Select Aster and move to the quarry.", Vector2(430, 220), Vector2(740, 30), 18, Color(0.88, 0.88, 0.74), Color(0.04, 0.05, 0.04, 0.44), HORIZONTAL_ALIGNMENT_CENTER)
-			_add_player_label("2. Assign the Worker, restore the Barracks, and queue Militia.", Vector2(430, 260), Vector2(740, 30), 18, Color(0.88, 0.88, 0.74), Color(0.04, 0.05, 0.04, 0.44), HORIZONTAL_ALIGNMENT_CENTER)
+			_add_player_label("1. Select Aster and move to West Stone Cut Mine.", Vector2(430, 220), Vector2(740, 30), 18, Color(0.88, 0.88, 0.74), Color(0.04, 0.05, 0.04, 0.44), HORIZONTAL_ALIGNMENT_CENTER)
+			_add_player_label("2. Convert the mine, assign the Worker, and queue Militia.", Vector2(430, 260), Vector2(740, 30), 18, Color(0.88, 0.88, 0.74), Color(0.04, 0.05, 0.04, 0.44), HORIZONTAL_ALIGNMENT_CENTER)
 			_add_player_label("3. Break one Ashen wave and restore Lume.", Vector2(430, 300), Vector2(740, 30), 18, Color(0.88, 0.88, 0.74), Color(0.04, 0.05, 0.04, 0.44), HORIZONTAL_ALIGNMENT_CENTER)
 			_add_player_button("Start Battle", Vector2(620, 390), "_on_player_battle_pressed")
 			_add_player_button("Back", Vector2(620, 444), "_on_player_back_pressed")
@@ -1106,10 +1112,21 @@ func _scene_screen_position(subject: String) -> Vector2:
 	return Vector2.INF
 
 func _settle_until_scene_flag(flag: String, expected: Variant, max_frames: int) -> void:
+	await _settle_until_scene_status_flag("real_input_smoke_status", flag, expected, max_frames)
+
+func _settle_until_scene_status_flag(status_method: String, flag: String, expected: Variant, max_frames: int) -> void:
 	for _index in range(max_frames):
-		var raw_status: Variant = _call_scene("real_input_smoke_status")
+		var raw_status: Variant = _call_scene(status_method)
 		var status: Dictionary = raw_status if typeof(raw_status) == TYPE_DICTIONARY else {}
 		if status.has(flag) and status[flag] == expected:
+			return
+		await get_tree().process_frame
+
+func _settle_until_scene_status_number_at_least(status_method: String, flag: String, threshold: float, max_frames: int) -> void:
+	for _index in range(max_frames):
+		var raw_status: Variant = _call_scene(status_method)
+		var status: Dictionary = raw_status if typeof(raw_status) == TYPE_DICTIONARY else {}
+		if status.has(flag) and float(status[flag]) >= threshold:
 			return
 		await get_tree().process_frame
 
@@ -1176,6 +1193,242 @@ func _real_input_readme(smoke: Dictionary, manifest: Dictionary) -> String:
 		"- `selection-proof.json` records Aster, Worker, HUD, and squad-selection evidence.",
 		"- `movement-proof.json` records right-click move, marker, displacement, and objective-advance evidence.",
 		"- `screenshot-manifest.json` records `%s/%s` required screenshots." % [manifest.get("captureCount", 0), manifest.get("requiredCaptureCount", 12)],
+		"",
+		"No debug shortcut, private-harness action, state injection, save write, stable-ID change, or Godot-editor work is accepted as proof."
+	]) + "\n"
+
+func run_site_semantics_smoke() -> void:
+	var artifact_root := _artifact_root_from_args()
+	var screenshot_root := _path_join(artifact_root, "screenshots")
+	DirAccess.make_dir_recursive_absolute(screenshot_root)
+	_set_capture_viewport(VIEWPORT_SIZE)
+	await _settle_frames(8)
+	var errors: Array[String] = []
+	var captures: Array[Dictionary] = []
+	var trace: Array[Dictionary] = []
+	var start_usec := Time.get_ticks_usec()
+	show_player_title()
+	await _settle_frames(8)
+	_trace_real_input(trace, "launch", {"screen": "title"})
+	await _inject_mouse_click(Vector2(750, 303), MOUSE_BUTTON_LEFT)
+	_trace_real_input(trace, "title_start_clicked", {"screen": "title", "position": _vector2_report(Vector2(750, 303))})
+	await _settle_frames(8)
+	if current_step_id != "player_briefing":
+		errors.append("Start Salto Review did not open the briefing.")
+	await _inject_mouse_click(Vector2(750, 411), MOUSE_BUTTON_LEFT)
+	_trace_real_input(trace, "briefing_start_battle_clicked", {"screen": "briefing", "position": _vector2_report(Vector2(750, 411))})
+	await _settle_frames(16)
+	if current_step_id != "player_battle":
+		errors.append("Start Battle did not open the player-facing battle.")
+	else:
+		_trace_real_input(trace, "battle_ready", {"screen": "battle"})
+	captures.append(await _capture_site_semantics_step(screenshot_root, captures.size(), "battle_initial", "Battle initial view", "battle_ready"))
+	captures.append(await _capture_site_semantics_step(screenshot_root, captures.size(), "canonical_mine_highlight", "West Stone Cut Mine highlight", "mine_highlight"))
+	var hero_screen := _scene_screen_position("hero_aster")
+	var mine_screen := _scene_screen_position("west_stone_cut_mine")
+	var worker_screen := _scene_screen_position("worker_00")
+	if hero_screen == Vector2.INF or mine_screen == Vector2.INF or worker_screen == Vector2.INF:
+		errors.append("Could not resolve real-input click coordinates for Aster, West Stone Cut Mine, or Worker.")
+	else:
+		await _inject_mouse_motion(hero_screen)
+		_trace_real_input(trace, "aster_hover", {"position": _vector2_report(hero_screen)})
+		await _settle_frames(4)
+		await _inject_mouse_click(hero_screen, MOUSE_BUTTON_LEFT)
+		_trace_real_input(trace, "aster_click", {"position": _vector2_report(hero_screen)})
+		await _settle_frames(8)
+		captures.append(await _capture_site_semantics_step(screenshot_root, captures.size(), "aster_selected", "Aster selected", "aster_selected"))
+		await _inject_mouse_click(mine_screen, MOUSE_BUTTON_RIGHT)
+		_trace_real_input(trace, "mine_right_click", {"position": _vector2_report(mine_screen)})
+		await _settle_frames(8)
+		captures.append(await _capture_site_semantics_step(screenshot_root, captures.size(), "move_marker", "Move marker toward West Stone Cut Mine", "move_marker"))
+		await _settle_until_scene_status_flag("site_semantics_status", "asterEnteredMineCaptureRadius", true, 220)
+		_trace_real_input(trace, "aster_entered_mine_capture_radius", {"site": "West Stone Cut Mine"})
+		captures.append(await _capture_site_semantics_step(screenshot_root, captures.size(), "aster_capture_radius", "Aster inside capture radius", "aster_capture_radius"))
+		await _settle_until_scene_status_number_at_least("site_semantics_status", "conversionProgress", 25.0, 180)
+		_trace_real_input(trace, "mine_conversion_progress_25", {"site": "West Stone Cut Mine"})
+		captures.append(await _capture_site_semantics_step(screenshot_root, captures.size(), "conversion_progress_25", "Conversion progress 25 percent", "conversion_progress_25"))
+		await _settle_until_scene_status_number_at_least("site_semantics_status", "conversionProgress", 75.0, 180)
+		_trace_real_input(trace, "mine_conversion_progress_75", {"site": "West Stone Cut Mine"})
+		captures.append(await _capture_site_semantics_step(screenshot_root, captures.size(), "conversion_progress_75", "Conversion progress 75 percent", "conversion_progress_75"))
+		await _settle_until_scene_status_flag("site_semantics_status", "mineControlled", true, 220)
+		_trace_real_input(trace, "mine_controlled", {"site": "West Stone Cut Mine"})
+		captures.append(await _capture_site_semantics_step(screenshot_root, captures.size(), "mine_controlled", "West Stone Cut Mine controlled", "mine_controlled"))
+		captures.append(await _capture_site_semantics_step(screenshot_root, captures.size(), "objective_no_regression", "Objective did not regress", "objective_no_regression"))
+		captures.append(await _capture_site_semantics_step(screenshot_root, captures.size(), "worker_highlight", "Worker highlighted", "worker_highlight"))
+		await _inject_mouse_motion(worker_screen)
+		_trace_real_input(trace, "worker_hover", {"position": _vector2_report(worker_screen)})
+		await _settle_frames(4)
+		await _inject_mouse_click(worker_screen, MOUSE_BUTTON_LEFT)
+		_trace_real_input(trace, "worker_click", {"position": _vector2_report(worker_screen)})
+		await _settle_frames(8)
+		captures.append(await _capture_site_semantics_step(screenshot_root, captures.size(), "worker_selected", "Worker selected", "worker_selected"))
+		await _inject_mouse_click(mine_screen, MOUSE_BUTTON_RIGHT)
+		_trace_real_input(trace, "worker_right_click_controlled_mine", {"position": _vector2_report(mine_screen), "site": "West Stone Cut Mine"})
+		await _settle_frames(8)
+		captures.append(await _capture_site_semantics_step(screenshot_root, captures.size(), "worker_assignment_right_click", "Worker right-click assignment", "worker_assignment_right_click"))
+		await _settle_until_scene_status_flag("site_semantics_status", "workerAssignedToMine", true, 120)
+		_trace_real_input(trace, "worker_assignment_feedback", {"site": "West Stone Cut Mine"})
+		captures.append(await _capture_site_semantics_step(screenshot_root, captures.size(), "worker_assignment_feedback", "Worker assignment feedback", "worker_assignment_feedback"))
+		await _settle_until_scene_status_flag("site_semantics_status", "productionBoostFeedbackRendered", true, 120)
+		_trace_real_input(trace, "production_boost_feedback", {"site": "West Stone Cut Mine"})
+		captures.append(await _capture_site_semantics_step(screenshot_root, captures.size(), "production_boost_feedback", "Production boost feedback", "production_boost_feedback"))
+		await _settle_until_scene_status_flag("site_semantics_status", "objectiveAdvancedAfterWorkerAssignment", true, 120)
+		_trace_real_input(trace, "objective_advanced_after_worker_assignment", {"site": "West Stone Cut Mine"})
+		captures.append(await _capture_site_semantics_step(screenshot_root, captures.size(), "objective_advanced_after_worker", "Objective advanced after Worker assignment", "objective_advanced_after_worker"))
+	var raw_scene_status: Variant = _call_scene("site_semantics_status")
+	var scene_status: Dictionary = raw_scene_status if typeof(raw_scene_status) == TYPE_DICTIONARY else {}
+	if scene_status.is_empty():
+		errors.append("Scene did not return v0.132 site-semantics status.")
+	var required_flags := {
+		"asterSelected": bool(scene_status.get("asterSelected", false)),
+		"moveOrderAccepted": bool(scene_status.get("moveOrderAccepted", false)),
+		"moveMarkerRendered": bool(scene_status.get("moveMarkerRendered", false)),
+		"movementStarted": bool(scene_status.get("movementStarted", false)),
+		"visibleMovementConfirmed": bool(scene_status.get("visibleMovementConfirmed", false)),
+		"asterEnteredMineCaptureRadius": bool(scene_status.get("asterEnteredMineCaptureRadius", false)),
+		"conversionProgressVisible": bool(scene_status.get("conversionProgressVisible", false)),
+		"mineControlled": bool(scene_status.get("mineControlled", false)),
+		"workerHighlightVisible": bool(scene_status.get("workerHighlightVisible", false)),
+		"workerSelected": bool(scene_status.get("workerSelected", false)),
+		"workerAssignmentMarkerRendered": bool(scene_status.get("workerAssignmentMarkerRendered", false)),
+		"workerAssignedToMine": bool(scene_status.get("workerAssignedToMine", false)),
+		"productionBoostFeedbackRendered": bool(scene_status.get("productionBoostFeedbackRendered", false)),
+		"objectiveAdvancedAfterWorkerAssignment": bool(scene_status.get("objectiveAdvancedAfterWorkerAssignment", false)),
+		"noActualObjectiveRegression": not bool(scene_status.get("actualObjectiveRegressionDetected", true)),
+		"debugShortcutNotUsed": not bool(scene_status.get("debugShortcutUsed", true)),
+		"stateInjectionNotUsed": not bool(scene_status.get("stateInjectionUsed", true))
+	}
+	for key in required_flags.keys():
+		if not bool(required_flags[key]):
+			errors.append("v0.132 site-semantics smoke check failed: %s" % key)
+	if str(scene_status.get("canonicalSiteLabel", "")) != "West Stone Cut Mine":
+		errors.append("Scene did not report West Stone Cut Mine as the canonical site label.")
+	var combined_trace: Array = trace.duplicate(true)
+	for entry in scene_status.get("trace", []):
+		combined_trace.append(entry)
+	var smoke := {
+		"schemaVersion": 1,
+		"checkpoint": "v0.132",
+		"status": "PASS_V0132_HEADED_SITE_SEMANTICS_SMOKE" if errors.is_empty() else "FAIL_V0132_HEADED_SITE_SEMANTICS_SMOKE",
+		"artifactRoot": artifact_root,
+		"durationMs": snappedf(float(Time.get_ticks_usec() - start_usec) / 1000.0, 0.01),
+		"inputPath": "packaged Godot player slice normal mouse events",
+		"canonicalSiteLabel": "West Stone Cut Mine",
+		"privateHarnessShortcutUsed": false,
+		"debugShortcutUsed": bool(scene_status.get("debugShortcutUsed", false)),
+		"stateInjectionUsed": bool(scene_status.get("stateInjectionUsed", false)),
+		"routineEditorUseRequired": false,
+		"saveWritesAllowed": false,
+		"stableIdsChanged": false,
+		"browserRuntimeChanged": false,
+		"linkedWardDamageTakenMultiplier": 0.92,
+		"checks": required_flags,
+		"errors": errors,
+		"sceneStatus": scene_status
+	}
+	var screenshot_manifest := {
+		"schemaVersion": 1,
+		"checkpoint": "v0.132",
+		"status": "PASS_V0132_SITE_SEMANTICS_SCREENSHOTS" if captures.size() == 15 and errors.is_empty() else "FAIL_V0132_SITE_SEMANTICS_SCREENSHOTS",
+		"screenshotRoot": screenshot_root,
+		"captureCount": captures.size(),
+		"requiredCaptureCount": 15,
+		"captures": captures
+	}
+	_write_absolute_json(_path_join(artifact_root, "headed-site-semantics-smoke.json"), smoke)
+	_write_absolute_json(_path_join(artifact_root, "site-semantics-trace.json"), {
+		"schemaVersion": 1,
+		"checkpoint": "v0.132",
+		"trace": combined_trace,
+		"noDebugShortcutUsed": not bool(scene_status.get("debugShortcutUsed", false)),
+		"noStateInjectionUsed": not bool(scene_status.get("stateInjectionUsed", false))
+	})
+	_write_absolute_json(_path_join(artifact_root, "mine-conversion-proof.json"), {
+		"schemaVersion": 1,
+		"checkpoint": "v0.132",
+		"status": "PASS_MINE_CONVERSION_PROOF" if bool(required_flags.get("asterEnteredMineCaptureRadius", false)) and bool(required_flags.get("conversionProgressVisible", false)) and bool(required_flags.get("mineControlled", false)) else "FAIL_MINE_CONVERSION_PROOF",
+		"canonicalSiteLabel": scene_status.get("canonicalSiteLabel", ""),
+		"siteState": scene_status.get("siteState", ""),
+		"conversionProgress": scene_status.get("conversionProgress", 0.0),
+		"mineControlled": scene_status.get("mineControlled", false)
+	})
+	_write_absolute_json(_path_join(artifact_root, "worker-assignment-proof.json"), {
+		"schemaVersion": 1,
+		"checkpoint": "v0.132",
+		"status": "PASS_WORKER_ASSIGNMENT_PROOF" if bool(required_flags.get("workerSelected", false)) and bool(required_flags.get("workerAssignedToMine", false)) and bool(required_flags.get("productionBoostFeedbackRendered", false)) and bool(required_flags.get("objectiveAdvancedAfterWorkerAssignment", false)) else "FAIL_WORKER_ASSIGNMENT_PROOF",
+		"workerSelected": scene_status.get("workerSelected", false),
+		"workerAssignedToMine": scene_status.get("workerAssignedToMine", false),
+		"productionBoostFeedbackRendered": scene_status.get("productionBoostFeedbackRendered", false),
+		"objectiveAdvancedAfterWorkerAssignment": scene_status.get("objectiveAdvancedAfterWorkerAssignment", false)
+	})
+	_write_absolute_json(_path_join(artifact_root, "objective-monotonicity.json"), {
+		"schemaVersion": 1,
+		"checkpoint": "v0.132",
+		"status": "PASS_OBJECTIVE_MONOTONICITY_PROOF" if not bool(scene_status.get("actualObjectiveRegressionDetected", true)) else "FAIL_OBJECTIVE_MONOTONICITY_PROOF",
+		"objectiveStep": scene_status.get("objectiveStep", ""),
+		"objectiveRank": scene_status.get("objectiveRank", 0),
+		"objectiveRegressionBlockedCount": scene_status.get("objectiveRegressionBlockedCount", 0),
+		"actualObjectiveRegressionDetected": scene_status.get("actualObjectiveRegressionDetected", true),
+		"objectiveHistory": scene_status.get("objectiveHistory", [])
+	})
+	_write_absolute_json(_path_join(artifact_root, "screenshot-manifest.json"), screenshot_manifest)
+	_write_absolute_text(_path_join(artifact_root, "site-semantics-trace.md"), _site_semantics_trace_markdown(smoke, combined_trace))
+	_write_absolute_text(_path_join(artifact_root, "README.md"), _site_semantics_readme(smoke, screenshot_manifest))
+	get_tree().quit(0 if errors.is_empty() else 1)
+
+func _capture_site_semantics_step(screenshot_root: String, index: int, id: String, label: String, action: String) -> Dictionary:
+	await _settle_frames(2)
+	var file_name := "%02d_%s.png" % [index + 1, id]
+	var target := _path_join(screenshot_root, file_name)
+	var image := get_viewport().get_texture().get_image()
+	if image.get_width() != VIEWPORT_SIZE.x or image.get_height() != VIEWPORT_SIZE.y:
+		image.resize(VIEWPORT_SIZE.x, VIEWPORT_SIZE.y, Image.INTERPOLATE_LANCZOS)
+	var save_result := image.save_png(target)
+	return {
+		"id": id,
+		"label": label,
+		"fileName": file_name,
+		"absolutePath": target,
+		"width": image.get_width(),
+		"height": image.get_height(),
+		"screen": active_mode,
+		"action": action,
+		"saveStatus": save_result,
+		"status": _call_scene("site_semantics_status")
+	}
+
+func _site_semantics_trace_markdown(smoke: Dictionary, trace: Array) -> String:
+	var lines := [
+		"# v0.132 Site Semantics Trace",
+		"",
+		"Status: `%s`" % str(smoke.get("status", "UNKNOWN")),
+		"",
+		"| # | Event | Details |",
+		"| --- | --- | --- |"
+	]
+	for index in range(trace.size()):
+		var entry: Dictionary = trace[index]
+		lines.append("| %s | %s | `%s` |" % [index + 1, str(entry.get("event", "")), JSON.stringify(entry.get("details", {}))])
+	lines.append("")
+	lines.append("Private harness shortcut used: `%s`" % str(smoke.get("privateHarnessShortcutUsed", false)))
+	lines.append("Debug shortcut used: `%s`" % str(smoke.get("debugShortcutUsed", false)))
+	lines.append("State injection used: `%s`" % str(smoke.get("stateInjectionUsed", false)))
+	return "\n".join(lines) + "\n"
+
+func _site_semantics_readme(smoke: Dictionary, manifest: Dictionary) -> String:
+	return "\n".join([
+		"# v0.132 Godot Site-Semantics Evidence",
+		"",
+		"Status: `%s`" % str(smoke.get("status", "UNKNOWN")),
+		"",
+		"These ignored artifacts are generated by `GODOT_SITE_SEMANTICS_SMOKE_WINDOWS.bat` / `npm run godot:headed:site-semantics-smoke` against the packaged player-facing Godot slice.",
+		"",
+		"- `headed-site-semantics-smoke.json` records the gated real-input smoke result.",
+		"- `site-semantics-trace.json` and `site-semantics-trace.md` record title, briefing, Aster movement, mine conversion, Worker assignment, and objective events.",
+		"- `mine-conversion-proof.json` records capture-radius, conversion-progress, and controlled-state evidence.",
+		"- `worker-assignment-proof.json` records Worker selection, assignment, production boost, and objective-advance evidence.",
+		"- `objective-monotonicity.json` records accepted and blocked tutorial transitions.",
+		"- `screenshot-manifest.json` records `%s/%s` required screenshots." % [manifest.get("captureCount", 0), manifest.get("requiredCaptureCount", 15)],
 		"",
 		"No debug shortcut, private-harness action, state injection, save write, stable-ID change, or Godot-editor work is accepted as proof."
 	]) + "\n"

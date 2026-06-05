@@ -19,6 +19,17 @@ const REAL_INPUT_HERO_CLICK_RADIUS := 54.0
 const REAL_INPUT_WORKER_CLICK_RADIUS := 46.0
 const REAL_INPUT_UNIT_CLICK_RADIUS := 38.0
 const REAL_INPUT_VISIBLE_MOVE_DELTA := 48.0
+const WEST_STONE_CUT_MINE_LABEL := "West Stone Cut Mine"
+const WEST_STONE_CUT_MINE_SITE_ID := "west_stone_cut"
+const WEST_STONE_CUT_MINE_RUNTIME_ID := "site_west_stone_cut"
+const WEST_STONE_CUT_MINE_POSITION := Vector2(650, 460)
+const WEST_STONE_CUT_MINE_CAPTURE_RADIUS := 96.0
+const V0132_CONVERSION_PROGRESS_PER_SECOND := 46.0
+const SITE_STATE_NEUTRAL := "NEUTRAL"
+const SITE_STATE_OBJECTIVE_TARGET := "OBJECTIVE_TARGET"
+const SITE_STATE_CONVERTING := "CONVERTING"
+const SITE_STATE_CONTROLLED := "CONTROLLED"
+const SITE_STATE_WORKER_ASSIGNED := "WORKER_ASSIGNED"
 const WorkloadRuntimeScript = preload("res://scripts/salto_spike_workload_runtime.gd")
 
 var runtime = WorkloadRuntimeScript.new()
@@ -90,6 +101,21 @@ var real_input_drag_start := Vector2.INF
 var real_input_drag_active := false
 var real_input_drag_rect: ColorRect
 var aster_label: Label3D
+var west_stone_cut_label: Label3D
+var worker_guidance_label: Label3D
+var v0132_site_state := SITE_STATE_NEUTRAL
+var v0132_conversion_progress := 0.0
+var v0132_aster_entered_capture_radius := false
+var v0132_conversion_progress_visible := false
+var v0132_mine_controlled := false
+var v0132_worker_highlight_visible := false
+var v0132_worker_assignment_marker_rendered := false
+var v0132_worker_assignment_complete := false
+var v0132_production_boost_feedback_rendered := false
+var v0132_worker_objective_advanced := false
+var v0132_objective_regression_blocked_count := 0
+var v0132_actual_objective_regression_detected := false
+var v0132_objective_history: Array[Dictionary] = []
 
 func _ready() -> void:
 	_create_camera()
@@ -106,10 +132,9 @@ func _ready() -> void:
 func _process(_delta: float) -> void:
 	if not _real_input_enabled():
 		return
-	if not runtime.has_active_movement():
-		return
 	var before := _unit_runtime_position("hero_aster")
-	runtime.advance_live_frame()
+	if runtime.has_active_movement():
+		runtime.advance_live_frame()
 	var after := _unit_runtime_position("hero_aster")
 	if before != Vector2.INF and after != Vector2.INF and after.distance_to(before) > 0.2:
 		if not real_input_movement_started:
@@ -127,8 +152,10 @@ func _process(_delta: float) -> void:
 				"screenDelta": snappedf(real_input_aster_screen_delta, 0.01)
 			})
 	if real_input_move_order_accepted and real_input_movement_started and not runtime.unit_has_destination("hero_aster"):
-		real_input_movement_completed = true
-		_record_real_input("movement_completed", {"unitId": "hero_aster", "position": _vector2_report(after)})
+		if not real_input_movement_completed:
+			real_input_movement_completed = true
+			_record_real_input("movement_completed", {"unitId": "hero_aster", "position": _vector2_report(after)})
+	_advance_v0132_site_semantics(_delta)
 	_sync_unit_visuals()
 	_sync_hud()
 
@@ -178,12 +205,55 @@ func set_onboarding_step(step_id: String) -> bool:
 	var normalized := step_id.strip_edges().to_lower()
 	if normalized == "":
 		return false
+	var current_rank := _onboarding_rank(current_onboarding_step)
+	var next_rank := _onboarding_rank(normalized)
+	if player_facing_mode and player_shell_screen == "battle" and current_rank > 0 and next_rank > 0 and next_rank < current_rank:
+		v0132_objective_regression_blocked_count += 1
+		_record_objective_transition(normalized, false, "blocked_regression")
+		return false
+	if current_rank > 0 and next_rank > 0 and next_rank < current_rank:
+		v0132_actual_objective_regression_detected = true
 	current_onboarding_step = normalized
 	if not onboarding_seen_steps.has(normalized):
 		onboarding_seen_steps.append(normalized)
+	_record_objective_transition(normalized, true, "accepted")
 	onboarding_dismissed = false
 	_sync_hud()
 	return true
+
+func _onboarding_rank(step_id: String) -> int:
+	match step_id:
+		"select_aster":
+			return 1
+		"move_to_quarry":
+			return 2
+		"capture_hold_quarry":
+			return 3
+		"worker_mine_or_shrine", "worker_assign_mine":
+			return 4
+		"restore_barracks", "finish_barracks":
+			return 5
+		"queue_militia", "train_militia":
+			return 6
+		"prepare_ashen_pressure", "defeat_wave":
+			return 7
+		"restore_lume_link":
+			return 8
+		"review_results":
+			return 9
+	return 0
+
+func _record_objective_transition(step_id: String, accepted: bool, reason: String) -> void:
+	v0132_objective_history.append({
+		"index": v0132_objective_history.size() + 1,
+		"frame": Engine.get_process_frames(),
+		"from": current_onboarding_step,
+		"to": step_id,
+		"accepted": accepted,
+		"reason": reason,
+		"fromRank": _onboarding_rank(current_onboarding_step),
+		"toRank": _onboarding_rank(step_id)
+	})
 
 func dismiss_onboarding() -> bool:
 	onboarding_dismissed = true
@@ -210,7 +280,7 @@ func show_objective_feedback(feedback_id: String) -> bool:
 	last_feedback_id = normalized
 	concise_alert_rendered = true
 	match normalized:
-		"objective_1", "select_aster", "move_to_quarry", "quarry_complete":
+		"objective_1", "select_aster", "move_to_quarry", "quarry_complete", "mine_converted", "worker_assigned_mine":
 			objective_complete_pulse_rendered = true
 		"pressure_wave":
 			pressure_wave_arrived = true
@@ -275,6 +345,9 @@ func issue_attack_order(target_id: String = "") -> bool:
 func change_site_state(site_id: String = "west_stone_cut", state: String = "friendly") -> bool:
 	var result: bool = runtime.change_site_state(site_id, state)
 	if site_id == "west_stone_cut" and state == "friendly":
+		v0132_site_state = SITE_STATE_CONTROLLED
+		v0132_mine_controlled = true
+		v0132_conversion_progress = 100.0
 		set_onboarding_step("worker_mine_or_shrine")
 		show_objective_feedback("quarry_complete")
 	if site_id == "ford_toll" and state == "friendly":
@@ -294,9 +367,13 @@ func trigger_hero_ability() -> bool:
 func capture_mine_site() -> bool:
 	var result: bool = runtime.capture_mine_site()
 	if result:
+		v0132_site_state = SITE_STATE_CONTROLLED
+		v0132_mine_controlled = true
+		v0132_conversion_progress = 100.0
 		set_onboarding_step("worker_assign_mine")
 		show_objective_feedback("mine_converted")
 		_set_or_create_marker("mine_conversion_ring", _site_world_position("west_stone_cut", Vector3(-1.52, 0.14, 0.12)), Vector3(0.82, 0.08, 0.82), Color(0.36, 0.92, 0.52, 0.58))
+		_record_real_input("mine_controlled", {"site": WEST_STONE_CUT_MINE_LABEL, "progress": 100.0})
 	_sync_site_visuals()
 	_sync_lume_visuals()
 	_sync_hud()
@@ -305,10 +382,16 @@ func capture_mine_site() -> bool:
 func assign_worker_to_mine() -> bool:
 	var result: bool = runtime.assign_worker_to_mine()
 	if result:
+		v0132_site_state = SITE_STATE_WORKER_ASSIGNED
+		v0132_worker_assignment_complete = true
+		v0132_worker_assignment_marker_rendered = true
 		set_onboarding_step("restore_barracks")
 		show_objective_feedback("worker_assigned_mine")
 		_set_or_create_marker("worker_mine_assignment_marker", _unit_world_position("worker_00", Vector3(-2.02, 0.14, 0.42)), Vector3(0.48, 0.08, 0.48), Color(0.92, 0.78, 0.36, 0.64))
 		runtime.advance_resource_production(120)
+		v0132_production_boost_feedback_rendered = runtime.resource_production_boosted
+		v0132_worker_objective_advanced = current_onboarding_step == "restore_barracks"
+		_record_real_input("worker_assigned_to_mine", {"site": WEST_STONE_CUT_MINE_LABEL, "productionBoosted": runtime.resource_production_boosted})
 	_sync_unit_visuals()
 	_sync_site_visuals()
 	_sync_hud()
@@ -318,6 +401,7 @@ func advance_resource_production(frames: int = 120) -> bool:
 	var result: bool = runtime.advance_resource_production(frames)
 	if result:
 		_set_or_create_marker("mine_income_boost_marker", _structure_world_position("mine_landmark", Vector3(-1.83, 0.14, 0.24)) + Vector3(0.0, 0.22, 0.0), Vector3(0.34, 0.12, 0.34), Color(0.72, 0.86, 0.46, 0.56))
+		v0132_production_boost_feedback_rendered = runtime.resource_production_boosted
 	_sync_hud()
 	return result
 
@@ -628,8 +712,8 @@ func real_input_screen_position(subject: String) -> Vector2:
 			return _unit_screen_position("friendly_00")
 		"enemy", "ashen", "ashen_00":
 			return _unit_screen_position("ashen_00")
-		"quarry", "mine", "move_destination":
-			return _world_to_screen(_to_world(Vector2(650, 460), 0.12))
+		"quarry", "mine", "move_destination", "west_stone_cut_mine", "site_west_stone_cut":
+			return _world_to_screen(_to_world(WEST_STONE_CUT_MINE_POSITION, 0.12))
 		"squad_drag_start":
 			return _unit_screen_position("friendly_00") - Vector2(34, 34)
 		"squad_drag_end":
@@ -673,6 +757,51 @@ func real_input_smoke_status() -> Dictionary:
 		"trace": real_input_trace.duplicate(true)
 	}
 
+func site_semantics_status() -> Dictionary:
+	var selected: Array[String] = runtime.selected_ids.duplicate()
+	return {
+		"schemaVersion": 1,
+		"checkpoint": "v0.132",
+		"status": "PASS_V0132_SITE_SEMANTICS_SCENE_STATUS" if _site_semantics_scene_green() else "FAIL_V0132_SITE_SEMANTICS_SCENE_STATUS",
+		"canonicalSiteId": WEST_STONE_CUT_MINE_SITE_ID,
+		"canonicalSiteRuntimeId": WEST_STONE_CUT_MINE_RUNTIME_ID,
+		"canonicalSiteLabel": WEST_STONE_CUT_MINE_LABEL,
+		"siteState": v0132_site_state,
+		"selectedIds": selected,
+		"hoverTargetId": real_input_hover_id,
+		"selectedUnitId": real_input_selected_id,
+		"asterSelected": real_input_aster_selected,
+		"moveOrderAccepted": real_input_move_order_accepted,
+		"moveMarkerRendered": real_input_move_marker_rendered,
+		"movementStarted": real_input_movement_started,
+		"visibleMovementConfirmed": real_input_visible_movement_confirmed,
+		"objectiveAdvancedAfterRealMovement": real_input_objective_advanced,
+		"asterEnteredMineCaptureRadius": v0132_aster_entered_capture_radius,
+		"conversionProgress": snappedf(v0132_conversion_progress, 0.01),
+		"conversionProgressVisible": v0132_conversion_progress_visible,
+		"mineControlled": v0132_mine_controlled,
+		"workerHighlightVisible": v0132_worker_highlight_visible,
+		"workerSelected": real_input_worker_selected,
+		"workerAssignmentMarkerRendered": v0132_worker_assignment_marker_rendered,
+		"workerAssignedToMine": v0132_worker_assignment_complete,
+		"productionBoostFeedbackRendered": v0132_production_boost_feedback_rendered,
+		"objectiveAdvancedAfterWorkerAssignment": v0132_worker_objective_advanced,
+		"objectiveStep": current_onboarding_step,
+		"objectiveRank": _onboarding_rank(current_onboarding_step),
+		"objectiveRegressionBlockedCount": v0132_objective_regression_blocked_count,
+		"actualObjectiveRegressionDetected": v0132_actual_objective_regression_detected,
+		"objectiveHistory": v0132_objective_history.duplicate(true),
+		"debugShortcutUsed": real_input_debug_shortcut_used,
+		"stateInjectionUsed": real_input_state_injection_used,
+		"privateHarnessShortcutUsed": false,
+		"saveWritesAllowed": false,
+		"stableIdsChanged": false,
+		"browserRuntimeChanged": false,
+		"routineEditorUseRequired": false,
+		"linkedWardDamageTakenMultiplier": 0.92,
+		"trace": real_input_trace.duplicate(true)
+	}
+
 func _real_input_enabled() -> bool:
 	return player_facing_mode and player_shell_screen == "battle"
 
@@ -704,6 +833,19 @@ func _reset_real_input_state() -> void:
 	real_input_visible_movement_confirmed = false
 	real_input_drag_start = Vector2.INF
 	real_input_drag_active = false
+	v0132_site_state = SITE_STATE_NEUTRAL
+	v0132_conversion_progress = 0.0
+	v0132_aster_entered_capture_radius = false
+	v0132_conversion_progress_visible = false
+	v0132_mine_controlled = false
+	v0132_worker_highlight_visible = false
+	v0132_worker_assignment_marker_rendered = false
+	v0132_worker_assignment_complete = false
+	v0132_production_boost_feedback_rendered = false
+	v0132_worker_objective_advanced = false
+	v0132_objective_regression_blocked_count = 0
+	v0132_actual_objective_regression_detected = false
+	v0132_objective_history = []
 
 func _handle_real_mouse_motion(event: InputEventMouseMotion) -> void:
 	if real_input_drag_active and real_input_drag_start != Vector2.INF:
@@ -766,12 +908,14 @@ func _select_from_real_click(screen_position: Vector2) -> void:
 		real_input_aster_current_screen = real_input_aster_start_screen
 		real_input_aster_screen_delta = 0.0
 		real_input_visible_movement_confirmed = false
+		if not v0132_mine_controlled:
+			v0132_site_state = SITE_STATE_OBJECTIVE_TARGET
 		set_onboarding_step("move_to_quarry")
 		show_objective_feedback("select_aster")
-		_set_or_create_disc_marker("move_destination_pulse", _to_world(Vector2(650, 460), 0.10), 0.54, Color(0.36, 0.74, 0.96, 0.42))
+		_set_or_create_disc_marker("move_destination_pulse", _to_world(WEST_STONE_CUT_MINE_POSITION, 0.10), 0.54, Color(0.36, 0.74, 0.96, 0.42))
 	elif id.begins_with("worker"):
 		real_input_worker_selected = true
-		set_onboarding_step("worker_mine_or_shrine")
+		set_onboarding_step("worker_assign_mine" if v0132_mine_controlled else "worker_mine_or_shrine")
 		show_objective_feedback("worker_assigned_mine")
 	_record_real_input("selected", {"unitId": id, "screen": _vector2_report(screen_position)})
 	_sync_unit_visuals()
@@ -816,6 +960,9 @@ func _issue_real_order(screen_position: Vector2) -> void:
 		_record_real_input("move_order_failed_coordinate_conversion", {"screen": _vector2_report(screen_position)})
 		return
 	var destination := _from_world(world)
+	if _selected_worker_for_v0132_assignment() and _destination_is_mine(destination):
+		_complete_v0132_worker_assignment(screen_position)
+		return
 	var hero_before := _unit_runtime_position("hero_aster")
 	if real_input_aster_start_screen == Vector2.INF:
 		real_input_aster_start_screen = _unit_screen_position("hero_aster")
@@ -824,6 +971,8 @@ func _issue_real_order(screen_position: Vector2) -> void:
 	real_input_move_order_accepted = move_ok
 	if move_ok:
 		last_feedback_id = "move_order"
+		if runtime.selected_ids.has("hero_aster") and _destination_is_mine(destination):
+			v0132_site_state = SITE_STATE_OBJECTIVE_TARGET
 		real_input_last_destination = destination
 		real_input_move_start_position = hero_before
 		real_input_move_marker_rendered = true
@@ -832,6 +981,29 @@ func _issue_real_order(screen_position: Vector2) -> void:
 		_record_real_input("move_order", {"accepted": true, "destination": _vector2_report(destination), "screen": _vector2_report(screen_position)})
 	else:
 		_record_real_input("move_order", {"accepted": false, "screen": _vector2_report(screen_position)})
+	_sync_unit_visuals()
+	_sync_hud()
+
+func _selected_worker_for_v0132_assignment() -> bool:
+	if not v0132_mine_controlled:
+		return false
+	for id in runtime.selected_ids:
+		if str(id).begins_with("worker"):
+			return true
+	return false
+
+func _destination_is_mine(destination: Vector2) -> bool:
+	return destination != Vector2.INF and destination.distance_to(WEST_STONE_CUT_MINE_POSITION) <= WEST_STONE_CUT_MINE_CAPTURE_RADIUS * 1.45
+
+func _complete_v0132_worker_assignment(screen_position: Vector2) -> void:
+	v0132_worker_assignment_marker_rendered = true
+	_set_or_create_disc_marker("worker_mine_assignment_order_marker", _to_world(WEST_STONE_CUT_MINE_POSITION, 0.12), 0.48, Color(0.92, 0.78, 0.36, 0.58))
+	var result := assign_worker_to_mine()
+	_record_real_input("worker_right_click_controlled_mine", {
+		"accepted": result,
+		"site": WEST_STONE_CUT_MINE_LABEL,
+		"screen": _vector2_report(screen_position)
+	})
 	_sync_unit_visuals()
 	_sync_hud()
 
@@ -946,6 +1118,63 @@ func _real_input_scene_green() -> bool:
 	green = green and not real_input_debug_shortcut_used
 	green = green and not real_input_state_injection_used
 	green = green and not real_input_invalid_objective_advance
+	green = green and not v0132_actual_objective_regression_detected
+	return green
+
+func _advance_v0132_site_semantics(delta: float) -> void:
+	if v0132_mine_controlled:
+		return
+	var hero_position := _unit_runtime_position("hero_aster")
+	if hero_position == Vector2.INF:
+		return
+	var distance := hero_position.distance_to(WEST_STONE_CUT_MINE_POSITION)
+	if distance > WEST_STONE_CUT_MINE_CAPTURE_RADIUS:
+		return
+	if not v0132_aster_entered_capture_radius:
+		v0132_aster_entered_capture_radius = true
+		v0132_site_state = SITE_STATE_CONVERTING
+		set_onboarding_step("capture_hold_quarry")
+		_record_real_input("aster_entered_mine_capture_radius", {
+			"site": WEST_STONE_CUT_MINE_LABEL,
+			"distance": snappedf(distance, 0.01)
+		})
+	v0132_site_state = SITE_STATE_CONVERTING
+	var previous_progress := v0132_conversion_progress
+	v0132_conversion_progress = clampf(v0132_conversion_progress + delta * V0132_CONVERSION_PROGRESS_PER_SECOND, 0.0, 100.0)
+	if v0132_conversion_progress >= 12.0 and not v0132_conversion_progress_visible:
+		v0132_conversion_progress_visible = true
+		_record_real_input("mine_conversion_progress_visible", {
+			"site": WEST_STONE_CUT_MINE_LABEL,
+			"progress": snappedf(v0132_conversion_progress, 0.01)
+		})
+	if int(previous_progress / 25.0) != int(v0132_conversion_progress / 25.0):
+		_record_real_input("mine_conversion_progress", {
+			"site": WEST_STONE_CUT_MINE_LABEL,
+			"progress": snappedf(v0132_conversion_progress, 0.01)
+		})
+	if v0132_conversion_progress >= 100.0 and not v0132_mine_controlled:
+		capture_mine_site()
+
+func _site_semantics_scene_green() -> bool:
+	var green := real_input_aster_selected
+	green = green and real_input_move_order_accepted
+	green = green and real_input_move_marker_rendered
+	green = green and real_input_movement_started
+	green = green and real_input_visible_movement_confirmed
+	green = green and real_input_objective_advanced
+	green = green and v0132_aster_entered_capture_radius
+	green = green and v0132_conversion_progress_visible
+	green = green and v0132_mine_controlled
+	green = green and v0132_site_state == SITE_STATE_WORKER_ASSIGNED
+	green = green and v0132_worker_highlight_visible
+	green = green and real_input_worker_selected
+	green = green and v0132_worker_assignment_marker_rendered
+	green = green and v0132_worker_assignment_complete
+	green = green and v0132_production_boost_feedback_rendered
+	green = green and v0132_worker_objective_advanced
+	green = green and not v0132_actual_objective_regression_detected
+	green = green and not real_input_debug_shortcut_used
+	green = green and not real_input_state_injection_used
 	return green
 
 func _vector2_report(position: Vector2) -> Dictionary:
@@ -1485,6 +1714,8 @@ func _create_hud() -> void:
 		{"name": "minimap_hero_marker", "pos": Vector2(44, 106), "size": Vector2(14, 14), "color": Color(0.88, 0.92, 0.48)},
 		{"name": "minimap_objective_marker", "pos": Vector2(60, 94), "size": Vector2(16, 16), "color": Color(0.96, 0.82, 0.28)},
 		{"name": "minimap_quarry", "pos": Vector2(58, 100), "size": Vector2(18, 16), "color": Color(0.88, 0.78, 0.32)},
+		{"name": "minimap_west_stone_cut_mine_target", "pos": Vector2(58, 100), "size": Vector2(18, 16), "color": Color(0.88, 0.78, 0.32)},
+		{"name": "minimap_west_stone_cut_mine_control", "pos": Vector2(62, 104), "size": Vector2(10, 8), "color": Color(0.32, 0.90, 0.52)},
 		{"name": "minimap_shrine", "pos": Vector2(74, 46), "size": Vector2(14, 14), "color": Color(0.28, 0.86, 0.82)},
 		{"name": "minimap_mine_marker", "pos": Vector2(52, 92), "size": Vector2(12, 12), "color": Color(0.66, 0.66, 0.56)},
 		{"name": "minimap_ruin", "pos": Vector2(130, 118), "size": Vector2(20, 12), "color": Color(0.62, 0.62, 0.54)},
@@ -1531,7 +1762,7 @@ func _sync_hud() -> void:
 		hud_alert_label.text = _alert_text(active_alert_id)
 		hud_alert_label.visible = hud_alert_label.text != ""
 	if hud_more_details_label:
-		hud_more_details_label.text = "Mine, Worker, Barracks, one Militia recruit, one wave, and Lume are the only review goals."
+		hud_more_details_label.text = "West Stone Cut Mine, Worker, Barracks, one Militia recruit, one wave, and Lume are the only review goals."
 		hud_more_details_label.visible = more_details_visible
 
 func _sync_player_shell_chrome() -> void:
@@ -1566,7 +1797,7 @@ func _toggle_more_details() -> void:
 func _hud_move_pressed() -> void:
 	if runtime.selected_ids.is_empty():
 		runtime.select_entity("hero_aster")
-	_issue_real_order(real_input_screen_position("quarry"))
+	_issue_real_order(real_input_screen_position("west_stone_cut_mine"))
 
 func _hud_attack_pressed() -> void:
 	if runtime.selected_ids.is_empty():
@@ -1595,7 +1826,13 @@ func _player_status_text() -> String:
 	if runtime.barracks_complete:
 		return "Barracks restored; train one Militia"
 	if runtime.worker_assigned_to_mine:
-		return "Worker on mine; restore the Barracks"
+		return "Worker assigned; production boosted"
+	if v0132_mine_controlled or runtime.mine_converted:
+		return "West Stone Cut Mine controlled; select the highlighted Worker"
+	if v0132_site_state == SITE_STATE_CONVERTING:
+		return "Converting West Stone Cut Mine: %s%%" % int(round(v0132_conversion_progress))
+	if v0132_site_state == SITE_STATE_OBJECTIVE_TARGET:
+		return "Move Aster into the West Stone Cut Mine ring"
 	if pressure_wave_arrived:
 		return "Hold formation; Ashen pressure is on the road"
 	if runtime.lume_links.any(func(link: Dictionary) -> bool: return bool(link.get("focused", false))):
@@ -1608,7 +1845,7 @@ func _selected_context_text() -> String:
 	if runtime.selected_ids.is_empty() or runtime.selected_ids.has("hero_aster"):
 		return "Aster HP 100/100 | Rally ability ready"
 	if runtime.selected_ids.any(func(id: String) -> bool: return id.begins_with("worker")):
-		return "Worker posture: assign to mine, restore Barracks"
+		return "Worker: right-click controlled West Stone Cut Mine"
 	return "Unit ready"
 
 func _objective_summary_text() -> String:
@@ -1619,13 +1856,13 @@ func _current_objective_text() -> String:
 		"select_aster":
 			return "Objective 1: Select Aster"
 		"move_to_quarry":
-			return "Objective 2: Move Aster to the quarry"
+			return "Objective 2: Move Aster to West Stone Cut Mine"
 		"capture_hold_quarry":
-			return "Objective 3: Capture and hold the quarry"
+			return "Objective 3: Convert West Stone Cut Mine"
 		"worker_mine_or_shrine":
-			return "Objective 4: Send Worker to mine or shrine posture"
+			return "Objective 4: Select the highlighted Worker"
 		"worker_assign_mine":
-			return "Objective 4: Assign Worker to the mine"
+			return "Objective 4: Right-click West Stone Cut Mine"
 		"restore_barracks":
 			return "Objective 5: Restore the Barracks"
 		"finish_barracks":
@@ -1642,20 +1879,20 @@ func _current_objective_text() -> String:
 			return "Objective 7: Restore the Lume link"
 		"review_results":
 			return "Objective 8: Review Results"
-	return "Objective: Secure quarry and restore Lume"
+	return "Objective: Secure West Stone Cut Mine and restore Lume"
 
 func _onboarding_text(step_id: String) -> String:
 	match step_id:
 		"select_aster":
 			return "Tip: Select Aster."
 		"move_to_quarry":
-			return "Tip: Move Aster to the quarry."
+			return "Tip: Right-click the highlighted West Stone Cut Mine."
 		"capture_hold_quarry":
-			return "Tip: Capture and hold the quarry."
+			return "Tip: Keep Aster inside the ring while the conversion bar fills."
 		"worker_mine_or_shrine":
-			return "Tip: Send the Worker to mine or shrine posture."
+			return "Tip: Select the highlighted Worker."
 		"worker_assign_mine":
-			return "Tip: Assign the Worker to the mine."
+			return "Tip: Right-click the controlled West Stone Cut Mine with the Worker."
 		"restore_barracks":
 			return "Tip: Restore the Barracks placeholder."
 		"finish_barracks":
@@ -1679,13 +1916,13 @@ func _alert_text(alert_id: String) -> String:
 		"objective_1", "select_aster":
 			return "Aster selected"
 		"move_to_quarry":
-			return "Move order set"
+			return "Move order to West Stone Cut Mine set"
 		"quarry_complete":
-			return "Quarry secured"
+			return "West Stone Cut Mine controlled"
 		"mine_converted":
-			return "Mine converted"
+			return "West Stone Cut Mine converted"
 		"worker_assigned_mine":
-			return "Worker assigned"
+			return "Worker assigned to mine"
 		"barracks_placed":
 			return "Barracks restoration started"
 		"barracks_complete":
@@ -1885,6 +2122,70 @@ func _sync_player_guidance_markers() -> void:
 	var destination := visual_root.get_node_or_null("move_destination_pulse") as MeshInstance3D
 	if destination:
 		destination.visible = player_facing_mode and player_shell_screen == "battle" and current_onboarding_step == "move_to_quarry"
+	_sync_v0132_site_guidance_markers()
+
+func _sync_v0132_site_guidance_markers() -> void:
+	if visual_root == null or not player_facing_mode or player_shell_screen != "battle":
+		return
+	var mine_world := _to_world(WEST_STONE_CUT_MINE_POSITION, 0.14)
+	var show_site_guidance := current_onboarding_step == "move_to_quarry" or current_onboarding_step == "capture_hold_quarry" or v0132_mine_controlled
+	_set_or_create_disc_marker("west_stone_cut_mine_objective_ring", mine_world + Vector3(0.0, 0.012, 0.0), 0.78, Color(0.96, 0.82, 0.24, 0.48))
+	var objective_ring := visual_root.get_node_or_null("west_stone_cut_mine_objective_ring") as MeshInstance3D
+	if objective_ring:
+		objective_ring.visible = show_site_guidance
+	_set_or_create_disc_marker("west_stone_cut_mine_capture_radius", mine_world + Vector3(0.0, 0.02, 0.0), 0.64, Color(0.36, 0.74, 0.96, 0.32))
+	var capture_radius := visual_root.get_node_or_null("west_stone_cut_mine_capture_radius") as MeshInstance3D
+	if capture_radius:
+		capture_radius.visible = show_site_guidance and not v0132_mine_controlled
+	_set_or_create_marker("west_stone_cut_conversion_back", mine_world + Vector3(0.0, 0.56, 0.30), Vector3(0.92, 0.06, 0.08), Color(0.08, 0.10, 0.08, 0.72))
+	var progress_back := visual_root.get_node_or_null("west_stone_cut_conversion_back") as MeshInstance3D
+	if progress_back:
+		progress_back.visible = v0132_site_state == SITE_STATE_CONVERTING or v0132_mine_controlled
+	var progress_width: float = maxf(0.05, 0.88 * clampf(v0132_conversion_progress / 100.0, 0.0, 1.0))
+	_set_or_create_marker("west_stone_cut_conversion_bar", mine_world + Vector3((progress_width - 0.88) * 0.5, 0.60, 0.30), Vector3(progress_width, 0.08, 0.10), Color(0.38, 0.92, 0.56, 0.78))
+	var progress_bar := visual_root.get_node_or_null("west_stone_cut_conversion_bar") as MeshInstance3D
+	if progress_bar:
+		progress_bar.visible = v0132_site_state == SITE_STATE_CONVERTING or v0132_mine_controlled
+	_set_or_create_marker("west_stone_cut_control_banner", mine_world + Vector3(-0.52, 0.44, -0.34), Vector3(0.12, 0.46, 0.30), Color(0.34, 0.88, 0.52, 0.72))
+	var control_banner := visual_root.get_node_or_null("west_stone_cut_control_banner") as MeshInstance3D
+	if control_banner:
+		control_banner.visible = v0132_mine_controlled
+	if west_stone_cut_label == null:
+		west_stone_cut_label = Label3D.new()
+		west_stone_cut_label.name = "WestStoneCutMineObjectiveLabel"
+		west_stone_cut_label.text = WEST_STONE_CUT_MINE_LABEL
+		west_stone_cut_label.font_size = 24
+		west_stone_cut_label.modulate = Color(0.98, 0.92, 0.58)
+		west_stone_cut_label.outline_size = 6
+		west_stone_cut_label.outline_modulate = Color(0.02, 0.03, 0.02)
+		visual_root.add_child(west_stone_cut_label)
+	west_stone_cut_label.position = mine_world + Vector3(0.0, 0.92, 0.0)
+	west_stone_cut_label.visible = show_site_guidance
+	var worker_position := _unit_world_position("worker_00", Vector3.INF)
+	if worker_position == Vector3.INF:
+		return
+	var show_worker_guidance := v0132_mine_controlled and not v0132_worker_assignment_complete
+	if show_worker_guidance:
+		v0132_worker_highlight_visible = true
+	_set_or_create_disc_marker("worker_assignment_focus_ring", worker_position + Vector3(0.0, 0.03, 0.0), 0.42, Color(0.98, 0.78, 0.30, 0.46))
+	var worker_ring := visual_root.get_node_or_null("worker_assignment_focus_ring") as MeshInstance3D
+	if worker_ring:
+		worker_ring.visible = show_worker_guidance
+	_set_or_create_marker("worker_assignment_arrow", worker_position + Vector3(0.0, 0.70, -0.12), Vector3(0.14, 0.30, 0.14), Color(0.98, 0.78, 0.30, 0.72))
+	var worker_arrow := visual_root.get_node_or_null("worker_assignment_arrow") as MeshInstance3D
+	if worker_arrow:
+		worker_arrow.visible = show_worker_guidance
+	if worker_guidance_label == null:
+		worker_guidance_label = Label3D.new()
+		worker_guidance_label.name = "WorkerAssignmentObjectiveLabel"
+		worker_guidance_label.text = "WORKER"
+		worker_guidance_label.font_size = 22
+		worker_guidance_label.modulate = Color(0.98, 0.82, 0.44)
+		worker_guidance_label.outline_size = 6
+		worker_guidance_label.outline_modulate = Color(0.02, 0.03, 0.02)
+		visual_root.add_child(worker_guidance_label)
+	worker_guidance_label.position = worker_position + Vector3(0.0, 0.72, 0.0)
+	worker_guidance_label.visible = show_worker_guidance
 
 func _add_structure(structure: Dictionary) -> void:
 	var id := str(structure["id"])

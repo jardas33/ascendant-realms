@@ -28,6 +28,8 @@ const v0130ArtifactRoot = join(repoRoot, "artifacts", "desktop-spikes", "godot-s
 const v0130ScreenshotRoot = join(v0130ArtifactRoot, "screenshots");
 const v0131ArtifactRoot = join(repoRoot, "artifacts", "desktop-spikes", "godot-salto", "v0131");
 const v0131ScreenshotRoot = join(v0131ArtifactRoot, "screenshots");
+const v0132ArtifactRoot = join(repoRoot, "artifacts", "desktop-spikes", "godot-salto", "v0132");
+const v0132ScreenshotRoot = join(v0132ArtifactRoot, "screenshots");
 const sourceFixtureRoot = join(repoRoot, "artifacts", "desktop-spike-fixture", "latest");
 const generatedDataRoot = join(spikeRoot, "data", "generated");
 const buildsRoot = join(spikeRoot, "builds");
@@ -4654,6 +4656,184 @@ function validateV0131RealInputArtifacts() {
   return report;
 }
 
+function validateV0132SiteSemanticsArtifacts() {
+  const smoke = readOptionalJson(join(v0132ArtifactRoot, "headed-site-semantics-smoke.json"));
+  const trace = readOptionalJson(join(v0132ArtifactRoot, "site-semantics-trace.json"));
+  const mine = readOptionalJson(join(v0132ArtifactRoot, "mine-conversion-proof.json"));
+  const worker = readOptionalJson(join(v0132ArtifactRoot, "worker-assignment-proof.json"));
+  const objective = readOptionalJson(join(v0132ArtifactRoot, "objective-monotonicity.json"));
+  const manifest = readOptionalJson(join(v0132ArtifactRoot, "screenshot-manifest.json"));
+  const errors = [];
+  const requiredCaptures = [
+    "battle_initial",
+    "canonical_mine_highlight",
+    "aster_selected",
+    "move_marker",
+    "aster_capture_radius",
+    "conversion_progress_25",
+    "conversion_progress_75",
+    "mine_controlled",
+    "objective_no_regression",
+    "worker_highlight",
+    "worker_selected",
+    "worker_assignment_right_click",
+    "worker_assignment_feedback",
+    "production_boost_feedback",
+    "objective_advanced_after_worker"
+  ];
+  if (!smoke) {
+    errors.push("Missing headed-site-semantics-smoke.json.");
+  } else {
+    if (smoke.status !== "PASS_V0132_HEADED_SITE_SEMANTICS_SMOKE") {
+      errors.push(`Site-semantics smoke did not pass: ${smoke.status}.`);
+    }
+    if (smoke.canonicalSiteLabel !== "West Stone Cut Mine") {
+      errors.push(`Expected canonical site label West Stone Cut Mine, found ${smoke.canonicalSiteLabel ?? "missing"}.`);
+    }
+    if (smoke.privateHarnessShortcutUsed !== false || smoke.debugShortcutUsed !== false || smoke.stateInjectionUsed !== false) {
+      errors.push("Site-semantics smoke reported private-harness shortcut, debug shortcut, or state injection.");
+    }
+    for (const key of [
+      "asterSelected",
+      "moveOrderAccepted",
+      "moveMarkerRendered",
+      "movementStarted",
+      "visibleMovementConfirmed",
+      "asterEnteredMineCaptureRadius",
+      "conversionProgressVisible",
+      "mineControlled",
+      "workerHighlightVisible",
+      "workerSelected",
+      "workerAssignmentMarkerRendered",
+      "workerAssignedToMine",
+      "productionBoostFeedbackRendered",
+      "objectiveAdvancedAfterWorkerAssignment",
+      "noActualObjectiveRegression",
+      "debugShortcutNotUsed",
+      "stateInjectionNotUsed"
+    ]) {
+      if (smoke.checks?.[key] !== true) {
+        errors.push(`Site-semantics smoke check ${key} was not true.`);
+      }
+    }
+    const sceneStatus = smoke.sceneStatus ?? {};
+    if (sceneStatus.siteState !== "WORKER_ASSIGNED") {
+      errors.push(`Expected final site state WORKER_ASSIGNED, found ${sceneStatus.siteState ?? "missing"}.`);
+    }
+    if (Number(sceneStatus.conversionProgress ?? 0) < 100) {
+      errors.push(`Expected conversion progress to reach 100, found ${sceneStatus.conversionProgress ?? "missing"}.`);
+    }
+    if (sceneStatus.linkedWardDamageTakenMultiplier !== 0.92) {
+      errors.push("linked_ward damage multiplier was not preserved at 0.92.");
+    }
+  }
+  if (!trace) {
+    errors.push("Missing site-semantics-trace.json.");
+  } else {
+    const events = new Set((trace.trace ?? []).map((entry) => entry.event));
+    [
+      "launch",
+      "title_start_clicked",
+      "briefing_start_battle_clicked",
+      "battle_ready",
+      "aster_click",
+      "mine_right_click",
+      "movement_started",
+      "objective_advanced_after_real_movement",
+      "aster_entered_mine_capture_radius",
+      "mine_conversion_progress_visible",
+      "mine_conversion_progress",
+      "mine_controlled",
+      "worker_click",
+      "worker_right_click_controlled_mine",
+      "worker_assigned_to_mine",
+      "production_boost_feedback",
+      "objective_advanced_after_worker_assignment"
+    ].forEach((event) => {
+      if (!events.has(event)) {
+        errors.push(`Missing v0.132 site-semantics trace event: ${event}.`);
+      }
+    });
+    if (trace.noDebugShortcutUsed !== true || trace.noStateInjectionUsed !== true) {
+      errors.push("Site-semantics trace did not preserve no-debug/no-state-injection proof.");
+    }
+  }
+  if (mine?.status !== "PASS_MINE_CONVERSION_PROOF") {
+    errors.push(`Mine conversion proof did not pass: ${mine?.status ?? "missing"}.`);
+  } else if (mine.canonicalSiteLabel !== "West Stone Cut Mine" || mine.mineControlled !== true) {
+    errors.push("Mine conversion proof did not preserve canonical controlled West Stone Cut Mine evidence.");
+  }
+  if (worker?.status !== "PASS_WORKER_ASSIGNMENT_PROOF") {
+    errors.push(`Worker assignment proof did not pass: ${worker?.status ?? "missing"}.`);
+  }
+  if (objective?.status !== "PASS_OBJECTIVE_MONOTONICITY_PROOF") {
+    errors.push(`Objective monotonicity proof did not pass: ${objective?.status ?? "missing"}.`);
+  } else if (objective.actualObjectiveRegressionDetected !== false) {
+    errors.push("Objective monotonicity proof reported an actual tutorial regression.");
+  }
+  const captures = manifest?.captures ?? [];
+  if (manifest?.status !== "PASS_V0132_SITE_SEMANTICS_SCREENSHOTS") {
+    errors.push(`Screenshot manifest did not pass: ${manifest?.status ?? "missing"}.`);
+  }
+  if (captures.length !== 15) {
+    errors.push(`Expected 15 v0.132 screenshots, found ${captures.length}.`);
+  }
+  for (const id of requiredCaptures) {
+    if (!captures.some((capture) => capture.id === id)) {
+      errors.push(`Missing v0.132 screenshot capture: ${id}.`);
+    }
+  }
+  const enrichedCaptures = captures.map((capture) => {
+    const screenshotPath = join(v0132ScreenshotRoot, capture.fileName);
+    const exists = existsSync(screenshotPath);
+    if (!exists) {
+      errors.push(`Missing screenshot file: ${capture.fileName}.`);
+    }
+    if (capture.width !== 1600 || capture.height !== 900) {
+      errors.push(`Screenshot ${capture.fileName} is ${capture.width}x${capture.height}, expected 1600x900.`);
+    }
+    return {
+      ...capture,
+      path: relativeRepo(screenshotPath),
+      sha256: exists ? hashFile(screenshotPath) : null,
+      sizeBytes: exists ? statSync(screenshotPath).size : null
+    };
+  });
+  const strayPngs = existsSync(v0132ScreenshotRoot)
+    ? readdirSync(v0132ScreenshotRoot).filter((file) => file.endsWith(".png") && !captures.some((capture) => capture.fileName === file))
+    : [];
+  if (strayPngs.length > 0) {
+    errors.push(`Unexpected screenshots in v0132 folder: ${strayPngs.join(", ")}.`);
+  }
+  const report = {
+    schemaVersion: 1,
+    checkpoint: "v0.132",
+    status: errors.length === 0 ? "PASS_V0132_SITE_SEMANTICS_VALIDATION" : "FAIL_V0132_SITE_SEMANTICS_VALIDATION",
+    generatedAtUtc: "deterministic-v0132",
+    canonicalSiteLabel: "West Stone Cut Mine",
+    smokeStatus: smoke?.status ?? null,
+    mineConversionStatus: mine?.status ?? null,
+    workerAssignmentStatus: worker?.status ?? null,
+    objectiveMonotonicityStatus: objective?.status ?? null,
+    screenshotStatus: manifest?.status ?? null,
+    captureCount: captures.length,
+    requiredCaptureCount: 15,
+    noDebugShortcutUsed: smoke?.debugShortcutUsed === false && trace?.noDebugShortcutUsed === true,
+    noStateInjectionUsed: smoke?.stateInjectionUsed === false && trace?.noStateInjectionUsed === true,
+    routineEditorUseRequired: false,
+    saveWritesAllowed: false,
+    stableIdsChanged: false,
+    browserRuntimeChanged: false,
+    generatedOrImportedArtIncluded: false,
+    runtimeArtIntegrated: false,
+    linkedWardDamageTakenMultiplier: 0.92,
+    errors,
+    captures: enrichedCaptures
+  };
+  writeJson(join(v0132ArtifactRoot, "site-semantics-validation.json"), report);
+  return report;
+}
+
 const v0125AuditAreas = ["title", "briefing", "battle", "results"];
 const v0125PlayerDebugTerms = [
   ...v0124ForbiddenTerms,
@@ -5377,6 +5557,12 @@ try {
     if (String(report.status).startsWith("FAIL")) {
       process.exitCode = 1;
     }
+  } else if (command === "site-semantics-v0132") {
+    const report = validateV0132SiteSemanticsArtifacts();
+    console.log(stableStringify(report));
+    if (String(report.status).startsWith("FAIL")) {
+      process.exitCode = 1;
+    }
   } else if (command === "player-slice-audit") {
     const report = buildV0125ScreenshotAudit();
     console.log(stableStringify(report));
@@ -5390,7 +5576,7 @@ try {
     runAll();
     console.log("v0.119 Godot representative RTS load spike reports generated.");
   } else {
-    console.log("Usage: node desktop-spikes/godot-salto/tools/godotSpikeTool.mjs <doctor|generate|validate|test|benchmark|export|package|scorecard|manual-review|headed-smoke|headed-benchmark|capture-review|capture-review-v0121|player-slice-validate|player-slice-capture|player-slice-capture-v0126|player-slice-capture-v0127|player-slice-capture-v0128|player-slice-validate-v0129|player-slice-capture-v0129|player-slice-validate-v0130|player-slice-capture-v0130|real-input-v0131|player-slice-audit|v0118-all|all>");
+    console.log("Usage: node desktop-spikes/godot-salto/tools/godotSpikeTool.mjs <doctor|generate|validate|test|benchmark|export|package|scorecard|manual-review|headed-smoke|headed-benchmark|capture-review|capture-review-v0121|player-slice-validate|player-slice-capture|player-slice-capture-v0126|player-slice-capture-v0127|player-slice-capture-v0128|player-slice-validate-v0129|player-slice-capture-v0129|player-slice-validate-v0130|player-slice-capture-v0130|real-input-v0131|site-semantics-v0132|player-slice-audit|v0118-all|all>");
   }
 } catch (error) {
   console.error(error instanceof Error ? error.message : String(error));

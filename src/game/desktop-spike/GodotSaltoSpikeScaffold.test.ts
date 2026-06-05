@@ -1129,4 +1129,98 @@ describe("Godot Salto spike scaffold", () => {
     expect(scene3d).not.toContain("ImageTexture");
     expect(toolScript).not.toContain("ImageTexture");
   });
+
+  it("defines the v0.132 West Stone Cut Mine site-semantics and Worker guidance repair", async () => {
+    [
+      "GODOT_SITE_SEMANTICS_SMOKE_WINDOWS.bat",
+      "GODOT_LAUNCH_SITE_GUIDANCE_REVIEW_WINDOWS.bat",
+      "tools/godot/runGodotSiteSemanticsSmokeWindows.ps1",
+      "docs/V0132_SITE_SEMANTICS_AUDIT.md",
+      "docs/V0132_CANONICAL_SITE_COPY_LEDGER.md",
+      "docs/V0132_OBJECTIVE_STATE_MONOTONICITY_AUDIT.md",
+      "docs/V0132_MINE_CONVERSION_GUIDANCE_SPEC.md",
+      "docs/V0132_WORKER_ASSIGNMENT_GUIDANCE_SPEC.md",
+      "docs/V0132_MINIMAP_SITE_SEMANTICS_SPEC.md",
+      "docs/V0132_HEADED_SITE_SEMANTICS_PROOF.md",
+      "docs/V0132_SITE_GUIDANCE_GATE.md",
+      "docs/V0132_IMPLEMENTATION_REPORT.md",
+      "docs/V0132_EMMANUEL_RETEST_GUIDE.md"
+    ].forEach((path) => expect(existsSync(path), path).toBe(true));
+
+    const packageJson = await readJson<{ scripts: Record<string, string> }>("package.json");
+    const rootScript = await readFile("desktop-spikes/godot-salto/scripts/salto_spike_root.gd", "utf8");
+    const scene3d = await readFile("desktop-spikes/godot-salto/scripts/salto_spike_scene_3d.gd", "utf8");
+    const toolScript = await readFile("desktop-spikes/godot-salto/tools/godotSpikeTool.mjs", "utf8");
+    const smokeScript = await readFile("tools/godot/runGodotSiteSemanticsSmokeWindows.ps1", "utf8");
+    const copyLedger = await readFile("docs/V0132_CANONICAL_SITE_COPY_LEDGER.md", "utf8");
+    const monotonicity = await readFile("docs/V0132_OBJECTIVE_STATE_MONOTONICITY_AUDIT.md", "utf8");
+    const gate = await readFile("docs/V0132_SITE_GUIDANCE_GATE.md", "utf8");
+    const proof = await readFile("docs/V0132_HEADED_SITE_SEMANTICS_PROOF.md", "utf8");
+    const handoff = await readFile("LLM_GAME_HANDOFF.md", "utf8");
+    const roadmap = await readFile("ROADMAP.md", "utf8");
+
+    ["godot:validate:site-semantics", "godot:headed:site-semantics-smoke"].forEach((script) =>
+      expect(packageJson.scripts[script], script).toBeTypeOf("string")
+    );
+
+    [
+      "--site-semantics-smoke",
+      "run_site_semantics_smoke",
+      "PASS_V0132_HEADED_SITE_SEMANTICS_SMOKE",
+      "PASS_V0132_SITE_SEMANTICS_SCREENSHOTS",
+      "site-semantics-trace.json",
+      "mine-conversion-proof.json",
+      "worker-assignment-proof.json",
+      "objective-monotonicity.json"
+    ].forEach((text) => expect(rootScript).toContain(text));
+
+    [
+      "WEST_STONE_CUT_MINE_LABEL",
+      "West Stone Cut Mine",
+      "SITE_STATE_NEUTRAL",
+      "SITE_STATE_OBJECTIVE_TARGET",
+      "SITE_STATE_CONVERTING",
+      "SITE_STATE_CONTROLLED",
+      "SITE_STATE_WORKER_ASSIGNED",
+      "site_semantics_status",
+      "_advance_v0132_site_semantics",
+      "_destination_is_mine",
+      "_complete_v0132_worker_assignment",
+      "west_stone_cut_mine_objective_ring",
+      "west_stone_cut_conversion_bar",
+      "west_stone_cut_control_banner",
+      "Worker: right-click controlled West Stone Cut Mine",
+      "objectiveRegressionBlockedCount",
+      "actualObjectiveRegressionDetected"
+    ].forEach((text) => expect(scene3d).toContain(text));
+
+    [
+      "v0132ArtifactRoot",
+      "v0132ScreenshotRoot",
+      "validateV0132SiteSemanticsArtifacts",
+      "PASS_V0132_SITE_SEMANTICS_VALIDATION",
+      "PASS_MINE_CONVERSION_PROOF",
+      "PASS_WORKER_ASSIGNMENT_PROOF",
+      "PASS_OBJECTIVE_MONOTONICITY_PROOF",
+      "site-semantics-v0132",
+      "West Stone Cut Mine",
+      "linkedWardDamageTakenMultiplier"
+    ].forEach((text) => expect(toolScript).toContain(text));
+
+    expect(smokeScript).toContain("--site-semantics-smoke");
+    expect(smokeScript).toContain("site-semantics-v0132");
+    expect(smokeScript).toContain("v0132");
+
+    expect(copyLedger).toContain("Canonical player-facing target: `West Stone Cut Mine`");
+    expect(monotonicity).toContain("Actual objective regression: `false`");
+    expect(gate).toContain("Classification: `SITE_GUIDANCE_GREEN`");
+    expect(proof).toContain("PASS_V0132_HEADED_SITE_SEMANTICS_SMOKE");
+    expect(handoff).toContain("v0.132 Godot Site Semantics");
+    expect(roadmap).toContain("v0.132 Godot Site Semantics");
+
+    expect(rootScript).not.toContain("load(\"res://assets");
+    expect(scene3d).not.toContain("load(\"res://assets");
+    expect(scene3d).not.toContain("ImageTexture");
+    expect(toolScript).not.toContain("ImageTexture");
+  });
 });

@@ -11,9 +11,24 @@ Every phase should protect these long-term pillars:
 
 ## Current Recommended Next Phase
 
-The current checkpoint is **v0.131 Godot Player-Control Emergency Repair, Real-Input Proof, and Human-Playability Gate** on 2026-06-05. It keeps the Godot spike bounded, repairs the existing player-facing Salto slice so ordinary packaged-build mouse input can select Aster, issue a right-click move, visibly move Aster, advance the objective, select the Worker, and box-select a squad, and records ignored v0.131 trace/screenshot proof under `artifacts/desktop-spikes/godot-salto/v0131/`. The browser prototype remains authoritative, the private harness remains separate, and no final engine choice, full port, generated image, imported art, save change, stable-ID change, browser-runtime change, broad economy, broad building tree, broad recruitment, full hero progression, campaign expansion, or runtime art integration is approved.
+The current checkpoint is **v0.132 Godot Site Semantics and Worker Guidance Repair** on 2026-06-05. It keeps the Godot spike bounded, preserves the v0.131 packaged mouse-control proof, makes `West Stone Cut Mine` the canonical player-facing target, adds conversion progress and controlled-state feedback, blocks objective regression, guides Worker assignment through normal packaged-build mouse input, and records ignored v0.132 trace/screenshot proof under `artifacts/desktop-spikes/godot-salto/v0132/`. The browser prototype remains authoritative, the private harness remains separate, and no final engine choice, full port, generated image, imported art, save change, stable-ID change, browser-runtime change, broad economy, broad building tree, broad recruitment, full hero progression, campaign expansion, or runtime art integration is approved.
 
-The next recommended step, only after a future explicit goal or Emmanuel's explicit review action, is Emmanuel's manual retest using `GODOT_LAUNCH_PLAYABILITY_REVIEW_WINDOWS.bat` and the checklist in `docs/V0131_EMMANUEL_RETEST_GUIDE.md`. Do not generate art for runtime integration, import art into runtime, mark `runtime-candidate-approved` assets as loadable, resume broad browser visual expansion, add broad gameplay systems, change rewards, change saves, rename IDs, create a desktop save path, choose Godot finally, start a full desktop port, start Unity/Unreal/Electron work, or start v0.132 until a future explicit goal approves a narrow next step.
+The next recommended step, only after a future explicit goal or Emmanuel's explicit review action, is Emmanuel's manual retest using `GODOT_LAUNCH_SITE_GUIDANCE_REVIEW_WINDOWS.bat` and the checklist in `docs/V0132_EMMANUEL_RETEST_GUIDE.md`. Do not generate art for runtime integration, import art into runtime, mark `runtime-candidate-approved` assets as loadable, resume broad browser visual expansion, add broad gameplay systems, change rewards, change saves, rename IDs, create a desktop save path, choose Godot finally, start a full desktop port, start Unity/Unreal/Electron work, or start v0.133 until a future explicit goal approves a narrow next step.
+
+New v0.132 docs:
+
+- `docs/V0132_SITE_SEMANTICS_AUDIT.md`
+- `docs/V0132_CANONICAL_SITE_COPY_LEDGER.md`
+- `docs/V0132_OBJECTIVE_STATE_MONOTONICITY_AUDIT.md`
+- `docs/V0132_MINE_CONVERSION_GUIDANCE_SPEC.md`
+- `docs/V0132_WORKER_ASSIGNMENT_GUIDANCE_SPEC.md`
+- `docs/V0132_MINIMAP_SITE_SEMANTICS_SPEC.md`
+- `docs/V0132_HEADED_SITE_SEMANTICS_PROOF.md`
+- `docs/V0132_SITE_GUIDANCE_GATE.md`
+- `docs/V0132_IMPLEMENTATION_REPORT.md`
+- `docs/V0132_EMMANUEL_RETEST_GUIDE.md`
+
+Previous checkpoint reference: v0.131 Godot Player-Control Emergency Repair, Real-Input Proof, and Human-Playability Gate.
 
 New v0.131 docs:
 
