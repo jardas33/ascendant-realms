@@ -205,6 +205,117 @@ func trigger_hero_ability() -> bool:
 	_sync_hud()
 	return result
 
+func capture_mine_site() -> bool:
+	var result: bool = runtime.capture_mine_site()
+	if result:
+		set_onboarding_step("worker_assign_mine")
+		show_objective_feedback("mine_converted")
+		_set_or_create_marker("mine_conversion_ring", _site_world_position("west_stone_cut", Vector3(-1.52, 0.14, 0.12)), Vector3(0.82, 0.08, 0.82), Color(0.36, 0.92, 0.52, 0.58))
+	_sync_site_visuals()
+	_sync_lume_visuals()
+	_sync_hud()
+	return result
+
+func assign_worker_to_mine() -> bool:
+	var result: bool = runtime.assign_worker_to_mine()
+	if result:
+		set_onboarding_step("restore_barracks")
+		show_objective_feedback("worker_assigned_mine")
+		_set_or_create_marker("worker_mine_assignment_marker", _unit_world_position("worker_00", Vector3(-2.02, 0.14, 0.42)), Vector3(0.48, 0.08, 0.48), Color(0.92, 0.78, 0.36, 0.64))
+		runtime.advance_resource_production(120)
+	_sync_unit_visuals()
+	_sync_site_visuals()
+	_sync_hud()
+	return result
+
+func advance_resource_production(frames: int = 120) -> bool:
+	var result: bool = runtime.advance_resource_production(frames)
+	if result:
+		_set_or_create_marker("mine_income_boost_marker", _structure_world_position("mine_landmark", Vector3(-1.83, 0.14, 0.24)) + Vector3(0.0, 0.22, 0.0), Vector3(0.34, 0.12, 0.34), Color(0.72, 0.86, 0.46, 0.56))
+	_sync_hud()
+	return result
+
+func place_barracks_placeholder() -> bool:
+	var result: bool = runtime.place_barracks_placeholder()
+	if result:
+		set_onboarding_step("finish_barracks")
+		show_objective_feedback("barracks_placed")
+	_rebuild_visuals()
+	if result:
+		_set_or_create_marker("barracks_build_placement_marker", _structure_world_position("barracks", Vector3(-4.8, 0.14, -3.58)), Vector3(0.92, 0.08, 0.62), Color(0.70, 0.82, 0.48, 0.58))
+	_sync_hud()
+	return result
+
+func advance_construction(frames: int = 120) -> bool:
+	var result: bool = runtime.advance_construction(frames)
+	if result:
+		var marker_color := Color(0.38, 0.88, 0.56, 0.64) if runtime.barracks_complete else Color(0.90, 0.74, 0.30, 0.62)
+		if runtime.barracks_complete:
+			set_onboarding_step("queue_militia")
+			show_objective_feedback("barracks_complete")
+	_rebuild_visuals()
+	if result:
+		var marker_color := Color(0.38, 0.88, 0.56, 0.64) if runtime.barracks_complete else Color(0.90, 0.74, 0.30, 0.62)
+		_set_or_create_marker("barracks_construction_progress_marker", _structure_world_position("barracks", Vector3(-4.8, 0.14, -3.58)) + Vector3(0.0, 0.30, 0.0), Vector3(0.72, 0.10, 0.20), marker_color)
+	_sync_hud()
+	return result
+
+func queue_militia_recruit() -> bool:
+	var result: bool = runtime.queue_militia_recruit()
+	if result:
+		set_onboarding_step("train_militia")
+		show_objective_feedback("militia_queued")
+		_set_or_create_marker("militia_recruit_queue_marker", _structure_world_position("barracks", Vector3(-4.8, 0.14, -3.58)) + Vector3(0.45, 0.28, 0.0), Vector3(0.34, 0.12, 0.34), Color(0.42, 0.86, 0.56, 0.64))
+	_sync_hud()
+	return result
+
+func complete_recruit_queue(frames: int = 120) -> bool:
+	var result: bool = runtime.complete_recruit_queue(frames)
+	if result:
+		set_onboarding_step("defeat_wave")
+		show_objective_feedback("militia_spawned")
+		_rebuild_visuals()
+		_set_or_create_marker("militia_spawned_marker", _unit_world_position("recruited_militia_00", Vector3(-3.95, 0.12, -2.36)), Vector3(0.42, 0.08, 0.42), Color(0.46, 0.90, 0.60, 0.58))
+	_sync_unit_visuals()
+	_sync_hud()
+	return result
+
+func queue_ranger_recruit() -> bool:
+	var result: bool = runtime.queue_ranger_recruit()
+	_sync_hud()
+	return result
+
+func trigger_pressure_wave() -> bool:
+	var result: bool = runtime.trigger_pressure_wave()
+	if result:
+		pressure_wave_arrived = true
+		set_onboarding_step("defeat_wave")
+		show_objective_feedback("pressure_wave")
+		_set_or_create_marker("pressure_wave_arrival_marker", Vector3(3.9, 0.20, -0.92), Vector3(1.10, 0.07, 0.34), Color(0.85, 0.20, 0.14, 0.62))
+	_sync_unit_visuals()
+	_sync_hud()
+	return result
+
+func defeat_pressure_wave() -> bool:
+	var result: bool = runtime.defeat_pressure_wave()
+	if result:
+		damage_flash_active = true
+		death_fade_active = true
+		show_objective_feedback("wave_defeated")
+	_rebuild_visuals()
+	_sync_hud()
+	return result
+
+func restore_lume_microloop() -> bool:
+	var result: bool = runtime.restore_lume_microloop()
+	if result:
+		set_onboarding_step("review_results")
+		show_objective_feedback("lume_restore")
+		_set_or_create_marker("lume_restore_marker", _lume_endpoint_world_position("lume_endpoint_00", Vector3(-1.67, 0.14, 0.11)), Vector3(0.74, 0.08, 0.74), Color(0.42, 0.96, 0.86, 0.62))
+	_sync_lume_visuals()
+	_sync_hud()
+	return result
+
 func focus_lume_link() -> bool:
 	var result: bool = runtime.focus_lume_link()
 	show_objective_feedback("lume_activation")
@@ -437,8 +548,15 @@ func run_v0122_parity_fixture() -> Dictionary:
 	report["proceduralPrimitiveOnly"] = true
 	return report
 
+func run_v0129_microloop_fixture() -> Dictionary:
+	var report: Dictionary = runtime.run_v0129_microloop_fixture(MODE)
+	_rebuild_visuals()
+	_sync_hud()
+	return report
+
 func get_spike_status() -> Dictionary:
 	var status: Dictionary = runtime.get_status(MODE)
+	var microloop: Dictionary = runtime.get_microloop_status()
 	var layout := _authored_layout_manifest()
 	var camera := get_node_or_null("FixedOrthographicCamera") as Camera3D
 	var feature_ids: Array = layout["featureIds"]
@@ -631,6 +749,23 @@ func get_spike_status() -> Dictionary:
 	status["resultsReadinessReadable"] = runtime.results_ready
 	status["lastFeedbackId"] = last_feedback_id
 	status["paused"] = runtime.paused
+	for key in microloop.keys():
+		status[key] = microloop[key]
+	status["v0129MicroloopPass"] = microloop.get("mineSiteConverted", false) and microloop.get("workerAssignedToMine", false) and microloop.get("barracksComplete", false) and microloop.get("militiaSpawned", false) and microloop.get("pressureWaveDefeated", false) and microloop.get("lumeRestored", false)
+	status["v0129HeroMovementSelectionAbilityPass"] = microloop.get("heroAbilityUsed", false) or runtime.selected_ids.has("hero_aster")
+	status["v0129MineWorkerProductionPass"] = microloop.get("mineSiteConverted", false) and microloop.get("workerAssignedToMine", false) and microloop.get("resourceProductionBoosted", false)
+	status["v0129BuildRecruitPass"] = microloop.get("barracksBuildPlaced", false) and microloop.get("barracksComplete", false) and microloop.get("militiaRecruitQueued", false) and microloop.get("militiaSpawned", false)
+	status["v0129PressureWaveResultsPass"] = microloop.get("pressureWaveState", "") != "dormant" and microloop.get("pressureWaveDefeated", false) and microloop.get("lumeRestored", false) and runtime.results_ready
+	status["mineConversionFeedbackRendered"] = microloop.get("mineSiteConverted", false) or (visual_root != null and visual_root.get_node_or_null("mine_conversion_ring") != null)
+	status["workerMineAssignmentFeedbackRendered"] = microloop.get("workerAssignedToMine", false) or (visual_root != null and visual_root.get_node_or_null("worker_mine_assignment_marker") != null)
+	status["boostedResourceFeedbackRendered"] = microloop.get("resourceProductionBoosted", false)
+	status["barracksBuildPlacementRendered"] = microloop.get("barracksBuildPlaced", false) or (visual_root != null and visual_root.get_node_or_null("barracks_build_placement_marker") != null)
+	status["constructionProgressRendered"] = float(microloop.get("barracksConstructionProgress", 0.0)) > 0.0
+	status["barracksCompleteRendered"] = microloop.get("barracksComplete", false)
+	status["recruitQueueRendered"] = microloop.get("militiaRecruitQueued", false)
+	status["militiaSpawnedRendered"] = microloop.get("militiaSpawned", false)
+	status["pressureWaveDefeatedRendered"] = microloop.get("pressureWaveDefeated", false)
+	status["lumeRestoreMicroloopRendered"] = microloop.get("lumeRestored", false)
 	return status
 
 func _refresh_visual_foundation() -> void:
@@ -905,7 +1040,12 @@ func _create_hud() -> void:
 
 func _sync_hud() -> void:
 	if hud_resource_label:
-		hud_resource_label.text = "Crowns 420  Stone 160  Iron 90  Aether 38"
+		hud_resource_label.text = "Crowns %s  Stone %s  Iron %s  Aether %s" % [
+			runtime.resources.get("crowns", 0),
+			runtime.resources.get("stone", 0),
+			runtime.resources.get("iron", 0),
+			runtime.resources.get("aether", 0)
+		]
 	if hud_status_label:
 		if player_facing_mode:
 			hud_status_label.text = _player_status_text()
@@ -932,7 +1072,7 @@ func _sync_hud() -> void:
 		hud_alert_label.text = _alert_text(active_alert_id)
 		hud_alert_label.visible = hud_alert_label.text != ""
 	if hud_more_details_label:
-		hud_more_details_label.text = "Quarry income, Worker posture, wave timing, and Lume link are the only review goals."
+		hud_more_details_label.text = "Mine, Worker, Barracks, one Militia recruit, one wave, and Lume are the only review goals."
 		hud_more_details_label.visible = more_details_visible
 
 func _sync_player_shell_chrome() -> void:
@@ -974,6 +1114,12 @@ func _record_notification(id: String) -> void:
 func _player_status_text() -> String:
 	if runtime.paused:
 		return "Paused"
+	if runtime.militia_spawned:
+		return "Militia ready; break the Ashen wave"
+	if runtime.barracks_complete:
+		return "Barracks restored; train one Militia"
+	if runtime.worker_assigned_to_mine:
+		return "Worker on mine; restore the Barracks"
 	if pressure_wave_arrived:
 		return "Hold formation; Ashen pressure is on the road"
 	if runtime.lume_links.any(func(link: Dictionary) -> bool: return bool(link.get("focused", false))):
@@ -986,11 +1132,11 @@ func _selected_context_text() -> String:
 	if runtime.selected_ids.is_empty() or runtime.selected_ids.has("hero_aster"):
 		return "Aster HP 100/100 | Rally ability ready"
 	if runtime.selected_ids.any(func(id: String) -> bool: return id.begins_with("worker")):
-		return "Worker posture: mine or shrine support"
+		return "Worker posture: assign to mine, restore Barracks"
 	return "Unit ready"
 
 func _objective_summary_text() -> String:
-	return "Hold quarry | Guide Worker | Break wave | Restore Lume"
+	return "Convert mine | Build Barracks | Train Militia | Restore Lume"
 
 func _current_objective_text() -> String:
 	match current_onboarding_step:
@@ -1002,6 +1148,16 @@ func _current_objective_text() -> String:
 			return "Objective 3: Capture and hold the quarry"
 		"worker_mine_or_shrine":
 			return "Objective 4: Send Worker to mine or shrine posture"
+		"worker_assign_mine":
+			return "Objective 4: Assign Worker to the mine"
+		"restore_barracks":
+			return "Objective 5: Restore the Barracks"
+		"finish_barracks":
+			return "Objective 6: Finish construction"
+		"queue_militia":
+			return "Objective 7: Queue one Militia"
+		"train_militia":
+			return "Objective 8: Train the Militia"
 		"prepare_ashen_pressure":
 			return "Objective 5: Prepare for Ashen pressure"
 		"defeat_wave":
@@ -1022,6 +1178,16 @@ func _onboarding_text(step_id: String) -> String:
 			return "Tip: Capture and hold the quarry."
 		"worker_mine_or_shrine":
 			return "Tip: Send the Worker to mine or shrine posture."
+		"worker_assign_mine":
+			return "Tip: Assign the Worker to the mine."
+		"restore_barracks":
+			return "Tip: Restore the Barracks placeholder."
+		"finish_barracks":
+			return "Tip: Let construction complete."
+		"queue_militia":
+			return "Tip: Spend resources to queue one Militia."
+		"train_militia":
+			return "Tip: Wait for the Militia to step out."
 		"prepare_ashen_pressure":
 			return "Tip: Prepare for Ashen pressure."
 		"defeat_wave":
@@ -1040,8 +1206,22 @@ func _alert_text(alert_id: String) -> String:
 			return "Move order set"
 		"quarry_complete":
 			return "Quarry secured"
+		"mine_converted":
+			return "Mine converted"
+		"worker_assigned_mine":
+			return "Worker assigned"
+		"barracks_placed":
+			return "Barracks restoration started"
+		"barracks_complete":
+			return "Barracks restored"
+		"militia_queued":
+			return "Militia queued"
+		"militia_spawned":
+			return "Militia ready"
 		"pressure_wave":
 			return "Ashen pressure incoming"
+		"wave_defeated":
+			return "Ashen wave defeated"
 		"lume_activation":
 			return "Lume link responding"
 		"lume_restore":
@@ -1198,6 +1378,10 @@ func _add_structure(structure: Dictionary) -> void:
 		_add_box("%s_training_wing_b" % id, position + Vector3(scale.x * 0.30, 0.22, 0.0), Vector3(scale.x * 0.32, 0.34, scale.z * 0.88), color.darkened(0.08))
 		_add_box("%s_weapon_rack_silhouette" % id, position + Vector3(0.0, 0.46, -scale.z * 0.44), Vector3(scale.x * 0.72, 0.08, 0.08), Color(0.54, 0.48, 0.34))
 		_add_box("%s_drill_yard_edge" % id, position + Vector3(0.0, -0.12, scale.z * 0.72), Vector3(scale.x * 0.94, 0.05, 0.12), Color(0.32, 0.28, 0.18))
+		if str(structure.get("constructionState", "")) != "complete":
+			var progress := clampf(float(structure.get("constructionProgress", 0.0)), 0.0, 1.0)
+			_add_box("%s_construction_scaffold" % id, position + Vector3(0.0, 0.58, 0.0), Vector3(scale.x * 0.90, 0.08, scale.z * 0.94), Color(0.80, 0.68, 0.36, 0.58), true)
+			_add_box("%s_construction_progress_bar" % id, position + Vector3((progress - 1.0) * scale.x * 0.28, 0.68, scale.z * 0.58), Vector3(max(0.08, scale.x * 0.56 * progress), 0.06, 0.08), Color(0.42, 0.88, 0.56, 0.72), true)
 	elif fixture == "west_stone_cut":
 		_add_box("%s_quarry_crane" % id, position + Vector3(0.32, 0.30, -0.10), Vector3(0.16, 0.42, 0.70), Color(0.55, 0.50, 0.36))
 		_add_box("%s_mine_mouth_shadow" % id, position + Vector3(-0.22, 0.10, 0.36), Vector3(0.42, 0.20, 0.16), Color(0.12, 0.12, 0.10))
@@ -1644,6 +1828,8 @@ func _selection_color(unit: Dictionary) -> Color:
 
 func _structure_color(structure: Dictionary) -> Color:
 	var team := str(structure["team"])
+	if str(structure.get("fixtureId", "")) == "barracks" and str(structure.get("constructionState", "")) != "complete":
+		return Color(0.36, 0.32, 0.25)
 	if team == "enemy":
 		return Color(0.42, 0.12, 0.10)
 	if team == "neutral":

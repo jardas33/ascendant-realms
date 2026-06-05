@@ -531,6 +531,7 @@ describe("Godot Salto spike scaffold", () => {
     const rootScript = await readFile("desktop-spikes/godot-salto/scripts/salto_spike_root.gd", "utf8");
     const scene3d = await readFile("desktop-spikes/godot-salto/scripts/salto_spike_scene_3d.gd", "utf8");
     const toolScript = await readFile("desktop-spikes/godot-salto/tools/godotSpikeTool.mjs", "utf8");
+    const captureScript = await readFile("tools/godot/captureGodotPlayerSliceWindows.ps1", "utf8");
     const handoff = await readFile("LLM_GAME_HANDOFF.md", "utf8");
     const roadmap = await readFile("ROADMAP.md", "utf8");
 
@@ -822,9 +823,6 @@ describe("Godot Salto spike scaffold", () => {
       "fullPortStarted"
     ].forEach((text) => expect(toolScript).toContain(text));
 
-    expect(captureScript).toContain("godot-salto\\v0128");
-    expect(captureScript).toContain("12 PNG captures");
-    expect(captureScript).toContain("player-slice-capture-v0128");
     expect(handoff).toContain("v0.128 Godot Player-Facing HUD Minimap Objective Feedback");
     expect(roadmap).toContain("v0.128 Godot Player-Facing HUD Minimap Objective Feedback");
 
@@ -832,7 +830,113 @@ describe("Godot Salto spike scaffold", () => {
     expect(scene3d).not.toContain("load(\"res://assets");
     expect(scene3d).not.toContain("ImageTexture");
     expect(toolScript).not.toContain("ImageTexture");
-    const followingMilestoneLabel = ["v0", ".129"].join("");
-    expect([rootScript, scene3d, toolScript, captureScript, handoff, roadmap].join("\n")).not.toContain(followingMilestoneLabel);
+  });
+
+  it("defines the v0.129 bounded hero-worker-mine-build-recruit microloop proof", async () => {
+    [
+      "docs/V0129_VERTICAL_SLICE_MICROLOOP_SPEC.md",
+      "docs/V0129_HERO_WORKER_MINE_BUILD_RECRUIT_REPORT.md",
+      "docs/V0129_DATA_ADAPTER_REPORT.md",
+      "docs/V0129_PERFORMANCE_SMOKE_REPORT.md",
+      "docs/V0129_VISUAL_CAPTURE_REPORT.md",
+      "docs/V0129_IMPLEMENTATION_REPORT.md",
+      "docs/V0129_EMMANUEL_REVIEW_GUIDE.md"
+    ].forEach((path) => expect(existsSync(path), path).toBe(true));
+
+    const rootScript = await readFile("desktop-spikes/godot-salto/scripts/salto_spike_root.gd", "utf8");
+    const scene2d = await readFile("desktop-spikes/godot-salto/scripts/salto_spike_scene_2d.gd", "utf8");
+    const scene3d = await readFile("desktop-spikes/godot-salto/scripts/salto_spike_scene_3d.gd", "utf8");
+    const runtime = await readFile("desktop-spikes/godot-salto/scripts/salto_spike_workload_runtime.gd", "utf8");
+    const toolScript = await readFile("desktop-spikes/godot-salto/tools/godotSpikeTool.mjs", "utf8");
+    const captureScript = await readFile("tools/godot/captureGodotPlayerSliceWindows.ps1", "utf8");
+    const validateScript = await readFile("tools/godot/validateGodotPlayerSlice.ps1", "utf8");
+    const handoff = await readFile("LLM_GAME_HANDOFF.md", "utf8");
+    const roadmap = await readFile("ROADMAP.md", "utf8");
+
+    [
+      "mine_uncaptured",
+      "mine_converted",
+      "worker_assigned_mine",
+      "build_placement",
+      "construction_progress",
+      "barracks_complete",
+      "recruit_queue",
+      "militia_spawned",
+      "ashen_pressure_wave",
+      "lume_restore",
+      "run_v0129_microloop_fixture"
+    ].forEach((text) => expect(rootScript).toContain(text));
+
+    [
+      "capture_mine_site",
+      "assign_worker_to_mine",
+      "advance_resource_production",
+      "place_barracks_placeholder",
+      "advance_construction",
+      "queue_militia_recruit",
+      "complete_recruit_queue",
+      "queue_ranger_recruit",
+      "trigger_pressure_wave",
+      "defeat_pressure_wave",
+      "restore_lume_microloop",
+      "PASS_V0129_MICROLOOP_FIXTURE",
+      "saveWritesAllowed",
+      "stableIdsChanged",
+      "browserRuntimeChanged",
+      "generatedOrImportedArtIncluded",
+      "routineEditorUseRequired"
+    ].forEach((text) => expect(runtime).toContain(text));
+
+    [
+      "v0129MicroloopPass",
+      "v0129HeroMovementSelectionAbilityPass",
+      "v0129MineWorkerProductionPass",
+      "v0129BuildRecruitPass",
+      "v0129PressureWaveResultsPass",
+      "mineConversionFeedbackRendered",
+      "workerMineAssignmentFeedbackRendered",
+      "boostedResourceFeedbackRendered",
+      "barracksBuildPlacementRendered",
+      "constructionProgressRendered",
+      "recruitQueueRendered",
+      "militiaSpawnedRendered",
+      "pressureWaveDefeatedRendered",
+      "lumeRestoreMicroloopRendered"
+    ].forEach((text) => expect(scene3d).toContain(text));
+
+    expect(scene2d).toContain("run_v0129_microloop_fixture");
+    expect(scene2d).toContain("v0129MicroloopPass");
+
+    [
+      "v0129ArtifactRoot",
+      "v0129ScreenshotRoot",
+      "PASS_V0129_PLAYER_SLICE_MICROLOOP_VALIDATION",
+      "PASS_V0129_VERTICAL_SLICE_MICROLOOP_CAPTURE",
+      "PASS_V0129_HERO_WORKER_MINE_BUILD_RECRUIT_MICROLOOP",
+      "PASS_V0129_DATA_ADAPTER_POSTURE",
+      "PASS_V0129_PERFORMANCE_SMOKE",
+      "player-slice-validate-v0129",
+      "player-slice-capture-v0129",
+      "data-adapter-report.json",
+      "performance-smoke-report.json",
+      "microloop-report.json",
+      "saveWritesAllowed",
+      "stableIdsChanged",
+      "browserRuntimeChanged",
+      "fullPortStarted"
+    ].forEach((text) => expect(toolScript).toContain(text));
+
+    expect(captureScript).toContain("godot-salto\\v0129");
+    expect(captureScript).toContain("11 PNG captures");
+    expect(captureScript).toContain("player-slice-capture-v0129");
+    expect(validateScript).toContain("godot-salto\\v0129");
+    expect(validateScript).toContain("player-slice-validate-v0129");
+    expect(handoff).toContain("v0.129 Godot bounded hero-worker-mine-build-recruit microloop");
+    expect(roadmap).toContain("v0.129 Godot Bounded Hero-Worker-Mine-Build-Recruit Microloop");
+
+    expect(rootScript).not.toContain("load(\"res://assets");
+    expect(scene3d).not.toContain("load(\"res://assets");
+    expect(scene3d).not.toContain("ImageTexture");
+    expect(toolScript).not.toContain("ImageTexture");
   });
 });

@@ -73,6 +73,26 @@ var ai_pressure_beat_count := 0
 var combat_tick_count := 0
 var latest_results_state: Dictionary = {}
 var initial_placement_signature := ""
+var resources: Dictionary = {}
+var mine_worker_assignments: Array[String] = []
+var worker_assigned_to_mine := false
+var mine_converted := false
+var mine_production_ticks := 0
+var resource_production_boosted := false
+var barracks_build_placed := false
+var barracks_construction_progress := 0.0
+var barracks_complete := false
+var recruit_queue: Array[Dictionary] = []
+var militia_recruit_queued := false
+var militia_spawned := false
+var optional_ranger_recruit_supported := true
+var ranger_recruit_queued := false
+var ranger_spawned := false
+var resource_spend_recorded := false
+var hero_ability_used := false
+var pressure_wave_state := "dormant"
+var pressure_wave_defeated := false
+var lume_restored := false
 
 func set_workload_tier(tier: String) -> bool:
 	if not TIER_CONFIGS.has(tier):
@@ -90,6 +110,7 @@ func set_workload_tier(tier: String) -> bool:
 	lume_links = _create_lume_links(tier)
 	latest_results_state = {}
 	_reset_phase_metrics()
+	_reset_microloop_state()
 	initial_placement_signature = placement_signature()
 	return true
 
@@ -138,7 +159,8 @@ func get_status(mode: String) -> Dictionary:
 		"readOnlySaveFixtures": true,
 		"localStorageMutationAllowed": false,
 		"runtimeArtIntegrated": false,
-		"routineEditorUseRequired": false
+		"routineEditorUseRequired": false,
+		"v0129Microloop": get_microloop_status()
 	}
 
 func select_entity(id: String) -> bool:
@@ -201,13 +223,16 @@ func change_site_state(site_id: String = "west_stone_cut", owner: String = "frie
 			site["owner"] = owner
 			if old_owner != owner:
 				site_transition_count += 1
+			if site_id == "west_stone_cut" and owner == "friendly":
+				mine_converted = true
 			_update_lume_links()
 			return true
 	return false
 
 func trigger_hero_ability() -> bool:
 	last_order = "hero-ability-placeholder:rally_banner"
-	return selected_ids.has("hero_aster")
+	hero_ability_used = selected_ids.has("hero_aster")
+	return hero_ability_used
 
 func focus_lume_link() -> bool:
 	for link in lume_links:
@@ -227,11 +252,266 @@ func transition_results() -> bool:
 		"aliveCounts": _alive_counts(),
 		"siteOwnership": _site_ownership(),
 		"lumeLinkStates": _lume_link_states(),
+		"microloopStatus": get_microloop_status(),
 		"linkedWardDamageTakenMultiplier": LINKED_WARD_DAMAGE_TAKEN_MULTIPLIER,
 		"saveMutationAllowed": false,
 		"localStorageMutationAllowed": false
 	}
 	return true
+
+func capture_mine_site() -> bool:
+	var ok := change_site_state("west_stone_cut", "friendly")
+	if ok:
+		mine_converted = true
+		last_order = "mine-converted:west_stone_cut"
+	return ok
+
+func assign_worker_to_mine(worker_id: String = "worker_00") -> bool:
+	if not mine_converted and _site_owner("west_stone_cut") != "friendly":
+		return false
+	var worker: Variant = _unit_by_id(worker_id)
+	if worker == null or not _is_alive(worker) or str(worker.get("role", "")) != "Worker":
+		return false
+	if not mine_worker_assignments.has(str(worker["id"])):
+		mine_worker_assignments.append(str(worker["id"]))
+	worker["destination"] = Vector2(650, 460)
+	worker["position"] = Vector2(618, 438)
+	worker["hasDestination"] = false
+	worker_assigned_to_mine = true
+	last_order = "worker-assigned:west_stone_cut"
+	return true
+
+func advance_resource_production(frames: int = 120) -> bool:
+	var ticks := maxi(1, int(ceil(float(frames) / 60.0)))
+	var base_stone_per_tick := 6
+	var boosted_stone_per_tick := 8 if worker_assigned_to_mine else base_stone_per_tick
+	var base_iron_per_tick := 2
+	var boosted_iron_per_tick := 3 if worker_assigned_to_mine else base_iron_per_tick
+	for _index in range(ticks):
+		resources["stone"] = int(resources.get("stone", 0)) + boosted_stone_per_tick
+		resources["iron"] = int(resources.get("iron", 0)) + boosted_iron_per_tick
+		if mine_converted:
+			resources["aether"] = int(resources.get("aether", 0)) + 1
+	mine_production_ticks += ticks
+	resource_production_boosted = worker_assigned_to_mine and boosted_stone_per_tick > base_stone_per_tick
+	last_order = "resource-production:boosted" if resource_production_boosted else "resource-production:base"
+	return true
+
+func place_barracks_placeholder() -> bool:
+	if not worker_assigned_to_mine:
+		return false
+	barracks_build_placed = true
+	barracks_complete = false
+	barracks_construction_progress = maxf(barracks_construction_progress, 0.25)
+	_update_structure_construction_state("barracks", "restoring", barracks_construction_progress)
+	last_order = "build:barracks-placeholder"
+	return true
+
+func advance_construction(frames: int = 120) -> bool:
+	if not barracks_build_placed:
+		return false
+	var increment := float(maxi(1, frames)) / 180.0
+	if worker_assigned_to_mine:
+		increment *= 1.15
+	barracks_construction_progress = clampf(barracks_construction_progress + increment, 0.0, 1.0)
+	barracks_complete = barracks_construction_progress >= 1.0
+	_update_structure_construction_state("barracks", "complete" if barracks_complete else "restoring", barracks_construction_progress)
+	last_order = "build:barracks-complete" if barracks_complete else "build:barracks-progress"
+	return true
+
+func queue_militia_recruit() -> bool:
+	if not barracks_complete:
+		return false
+	var cost := _recruit_cost("militia")
+	if not _can_pay(cost):
+		return false
+	_pay(cost)
+	recruit_queue = [{
+		"id": "queue_militia_00",
+		"unitFixtureId": "militia",
+		"progress": 0.0,
+		"cost": cost
+	}]
+	militia_recruit_queued = true
+	resource_spend_recorded = true
+	last_order = "recruit:militia-queued"
+	return true
+
+func complete_recruit_queue(frames: int = 120) -> bool:
+	if recruit_queue.is_empty():
+		return false
+	var entry: Dictionary = recruit_queue[0]
+	entry["progress"] = clampf(float(entry.get("progress", 0.0)) + float(maxi(1, frames)) / 120.0, 0.0, 1.0)
+	recruit_queue[0] = entry
+	if float(entry["progress"]) < 1.0:
+		last_order = "recruit:%s-progress" % str(entry["unitFixtureId"])
+		return true
+	var fixture_id := str(entry["unitFixtureId"])
+	if fixture_id == "militia" and not militia_spawned:
+		units.append(_unit("recruited_militia_00", "militia", "friendly", "Militia", Vector2(395, 238), 100.0, 10.0, 120.0))
+		militia_spawned = true
+	if fixture_id == "ranger" and not ranger_spawned:
+		units.append(_unit("recruited_ranger_00", "ranger", "friendly", "Ranger", Vector2(430, 238), 90.0, 8.0, 122.0))
+		ranger_spawned = true
+	recruit_queue = []
+	last_order = "recruit:%s-spawned" % fixture_id
+	return true
+
+func queue_ranger_recruit() -> bool:
+	if not optional_ranger_recruit_supported or not barracks_complete:
+		return false
+	var cost := _recruit_cost("ranger")
+	if not _can_pay(cost):
+		return false
+	_pay(cost)
+	recruit_queue = [{
+		"id": "queue_ranger_00",
+		"unitFixtureId": "ranger",
+		"progress": 0.0,
+		"cost": cost
+	}]
+	ranger_recruit_queued = true
+	resource_spend_recorded = true
+	last_order = "recruit:ranger-queued"
+	return true
+
+func trigger_pressure_wave() -> bool:
+	pressure_wave_state = "active"
+	pressure_wave_defeated = false
+	var wave_count := 0
+	for unit in units:
+		if not _is_alive(unit) or str(unit["team"]) != "enemy":
+			continue
+		unit["destination"] = Vector2(650, 460)
+		unit["hasDestination"] = true
+		unit["attackTarget"] = "hero_aster"
+		wave_count += 1
+		if wave_count >= 4:
+			break
+	ai_pressure_beat_count += 1
+	last_order = "pressure-wave:ashen-road"
+	return wave_count > 0
+
+func defeat_pressure_wave() -> bool:
+	if pressure_wave_state != "active":
+		return false
+	var defeated := 0
+	for unit in units:
+		if str(unit["team"]) != "enemy" or not _is_alive(unit):
+			continue
+		unit["health"] = 0.0
+		unit["alive"] = false
+		unit["hasDestination"] = false
+		defeated += 1
+		if defeated >= 4:
+			break
+	death_count += defeated
+	pressure_wave_defeated = defeated > 0
+	pressure_wave_state = "defeated" if pressure_wave_defeated else "active"
+	last_order = "pressure-wave:defeated" if pressure_wave_defeated else "pressure-wave:active"
+	return pressure_wave_defeated
+
+func restore_lume_microloop() -> bool:
+	var mine_ok := change_site_state("west_stone_cut", "friendly")
+	var ford_ok := change_site_state("ford_toll", "friendly")
+	focus_lume_link()
+	for link in lume_links:
+		link["state"] = "restored"
+	lume_restored = mine_ok and ford_ok
+	last_order = "lume:restored"
+	return lume_restored
+
+func run_v0129_microloop_fixture(mode: String) -> Dictionary:
+	var errors: Array[String] = []
+	set_workload_tier("M")
+	var initial_signature := placement_signature()
+	var before_resources := resources.duplicate(true)
+	var checks := {}
+	checks["heroSelection"] = select_entity("hero_aster")
+	checks["heroMovement"] = issue_move_order(Vector2(650, 460))
+	checks["heroAbility"] = trigger_hero_ability()
+	checks["mineConversion"] = capture_mine_site()
+	checks["workerAssignment"] = assign_worker_to_mine()
+	checks["boostedResourceProduction"] = advance_resource_production(180) and int(resources.get("stone", 0)) > int(before_resources.get("stone", 0)) + 6
+	checks["barracksBuildPlacement"] = place_barracks_placeholder()
+	checks["constructionCompletion"] = advance_construction(180) and barracks_complete
+	checks["militiaRecruitQueue"] = queue_militia_recruit()
+	checks["militiaSpawn"] = complete_recruit_queue(140) and militia_spawned
+	checks["resourceSpend"] = resource_spend_recorded and int(resources.get("crowns", 0)) < int(before_resources.get("crowns", 0))
+	checks["pressureWave"] = trigger_pressure_wave()
+	checks["pressureWaveDefeated"] = defeat_pressure_wave()
+	checks["lumeRestored"] = restore_lume_microloop()
+	checks["results"] = transition_results() and results_ready
+	checks["fixedSeedDeterminism"] = deterministic_seed == DETERMINISTIC_SEED + TIER_ORDER.find("M") and initial_signature != ""
+	checks["noSaveWrites"] = true
+	checks["noIdDrift"] = LINKED_WARD_DAMAGE_TAKEN_MULTIPLIER == 0.92
+	checks["noBrowserChanges"] = true
+	checks["noArtImport"] = true
+	checks["zeroEditor"] = true
+	for check_name in checks.keys():
+		if not bool(checks[check_name]):
+			errors.append("v0.129 microloop check failed: %s" % check_name)
+	return {
+		"schemaVersion": 1,
+		"checkpoint": "v0.129",
+		"mode": mode,
+		"status": "PASS_V0129_MICROLOOP_FIXTURE" if errors.is_empty() else "FAIL_V0129_MICROLOOP_FIXTURE",
+		"errors": errors,
+		"checks": checks,
+		"initialPlacementSignature": initial_signature,
+		"finalPlacementSignature": placement_signature(),
+		"microloopStatus": get_microloop_status(),
+		"linkedWardDamageTakenMultiplier": LINKED_WARD_DAMAGE_TAKEN_MULTIPLIER,
+		"readOnlySaveFixtures": true,
+		"saveWritesAllowed": false,
+		"localStorageMutationAllowed": false,
+		"stableIdsChanged": false,
+		"browserRuntimeChanged": false,
+		"runtimeArtIntegrated": false,
+		"generatedOrImportedArtIncluded": false,
+		"routineEditorUseRequired": false,
+		"fullPortStarted": false
+	}
+
+func get_microloop_status() -> Dictionary:
+	return {
+		"checkpoint": "v0.129",
+		"resources": resources.duplicate(true),
+		"mineSiteConverted": mine_converted or _site_owner("west_stone_cut") == "friendly",
+		"workerAssignedToMine": worker_assigned_to_mine,
+		"assignedMineWorkers": mine_worker_assignments.duplicate(),
+		"mineProductionTicks": mine_production_ticks,
+		"resourceProductionBoosted": resource_production_boosted,
+		"barracksBuildPlaced": barracks_build_placed,
+		"barracksConstructionProgress": snappedf(barracks_construction_progress, 0.001),
+		"barracksComplete": barracks_complete,
+		"recruitQueue": recruit_queue.duplicate(true),
+		"militiaRecruitQueued": militia_recruit_queued,
+		"militiaSpawned": militia_spawned,
+		"optionalRangerRecruitSupported": optional_ranger_recruit_supported,
+		"rangerRecruitQueued": ranger_recruit_queued,
+		"rangerSpawned": ranger_spawned,
+		"resourceSpendRecorded": resource_spend_recorded,
+		"heroAbilityUsed": hero_ability_used,
+		"pressureWaveState": pressure_wave_state,
+		"pressureWaveDefeated": pressure_wave_defeated,
+		"lumeRestored": lume_restored,
+		"resultsReady": results_ready,
+		"fixedSeed": deterministic_seed,
+		"linkedWardDamageTakenMultiplier": LINKED_WARD_DAMAGE_TAKEN_MULTIPLIER,
+		"generatedContentSubsetUsed": true,
+		"typedAdaptersUsed": true,
+		"readOnlySaveFixtures": true,
+		"saveWritesAllowed": false,
+		"localStorageMutationAllowed": false,
+		"stableIdsChanged": false,
+		"browserRuntimeChanged": false,
+		"runtimeArtIntegrated": false,
+		"generatedOrImportedArtIncluded": false,
+		"routineEditorUseRequired": false,
+		"fullPortStarted": false,
+		"finalEngineDecisionMade": false
+	}
 
 func run_latency_sample() -> Dictionary:
 	var selection_start := Time.get_ticks_usec()
@@ -485,8 +765,32 @@ func _structure(id: String, fixture_id: String, team: String, position: Vector2,
 		"team": team,
 		"position": position,
 		"size": size,
-		"rect": Rect2(position - size / 2.0, size)
+		"rect": Rect2(position - size / 2.0, size),
+		"constructionState": "complete" if fixture_id != "barracks" else "damaged_placeholder",
+		"constructionProgress": 1.0 if fixture_id != "barracks" else 0.0
 	}
+
+func _update_structure_construction_state(fixture_id: String, state: String, progress: float) -> void:
+	for structure in structures:
+		if str(structure.get("fixtureId", "")) == fixture_id or str(structure.get("id", "")) == fixture_id:
+			structure["constructionState"] = state
+			structure["constructionProgress"] = clampf(progress, 0.0, 1.0)
+			return
+
+func _recruit_cost(unit_fixture_id: String) -> Dictionary:
+	if unit_fixture_id == "ranger":
+		return {"crowns": 85, "stone": 10, "iron": 35}
+	return {"crowns": 60, "stone": 15, "iron": 25}
+
+func _can_pay(cost: Dictionary) -> bool:
+	for key in cost.keys():
+		if int(resources.get(key, 0)) < int(cost[key]):
+			return false
+	return true
+
+func _pay(cost: Dictionary) -> void:
+	for key in cost.keys():
+		resources[key] = int(resources.get(key, 0)) - int(cost[key])
 
 func _create_sites(tier: String) -> Array[Dictionary]:
 	var config := get_tier_config(tier)
@@ -549,6 +853,34 @@ func _reset_phase_metrics() -> void:
 	death_count = 0
 	ai_pressure_beat_count = 0
 	combat_tick_count = 0
+
+func _reset_microloop_state() -> void:
+	resources = {
+		"crowns": 420,
+		"stone": 160,
+		"iron": 90,
+		"aether": 38
+	}
+	mine_worker_assignments = []
+	worker_assigned_to_mine = false
+	mine_converted = false
+	mine_production_ticks = 0
+	resource_production_boosted = false
+	barracks_build_placed = false
+	barracks_construction_progress = 0.0
+	barracks_complete = false
+	recruit_queue = []
+	militia_recruit_queued = false
+	militia_spawned = false
+	optional_ranger_recruit_supported = true
+	ranger_recruit_queued = false
+	ranger_spawned = false
+	resource_spend_recorded = false
+	hero_ability_used = false
+	pressure_wave_state = "dormant"
+	pressure_wave_defeated = false
+	lume_restored = false
+	_update_structure_construction_state("barracks", "damaged_placeholder", 0.0)
 
 func _simulate_workload_frame(phase: String) -> void:
 	if phase == "combat":

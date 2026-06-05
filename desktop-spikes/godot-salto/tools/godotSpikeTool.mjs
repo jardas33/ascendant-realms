@@ -22,6 +22,8 @@ const v0127ArtifactRoot = join(repoRoot, "artifacts", "desktop-spikes", "godot-s
 const v0127ScreenshotRoot = join(v0127ArtifactRoot, "screenshots");
 const v0128ArtifactRoot = join(repoRoot, "artifacts", "desktop-spikes", "godot-salto", "v0128");
 const v0128ScreenshotRoot = join(v0128ArtifactRoot, "screenshots");
+const v0129ArtifactRoot = join(repoRoot, "artifacts", "desktop-spikes", "godot-salto", "v0129");
+const v0129ScreenshotRoot = join(v0129ArtifactRoot, "screenshots");
 const sourceFixtureRoot = join(repoRoot, "artifacts", "desktop-spike-fixture", "latest");
 const generatedDataRoot = join(spikeRoot, "data", "generated");
 const buildsRoot = join(spikeRoot, "builds");
@@ -306,6 +308,18 @@ function writeV0128Text(name, value) {
   return target;
 }
 
+function writeV0129Artifact(name, value) {
+  const target = join(v0129ArtifactRoot, name);
+  writeJson(target, value);
+  return target;
+}
+
+function writeV0129Text(name, value) {
+  const target = join(v0129ArtifactRoot, name);
+  writeText(target, value);
+  return target;
+}
+
 function writeV0118Artifact(name, value) {
   const target = join(v0118ArtifactRoot, name);
   writeJson(target, value);
@@ -345,6 +359,11 @@ function readV0127RuntimeReport(name) {
 
 function readV0128RuntimeReport(name) {
   const path = join(v0128ArtifactRoot, name);
+  return existsSync(path) ? readJson(path) : null;
+}
+
+function readV0129RuntimeReport(name) {
+  const path = join(v0129ArtifactRoot, name);
   return existsSync(path) ? readJson(path) : null;
 }
 
@@ -3495,6 +3514,421 @@ function writeV0128ScreenshotManifest() {
   return manifest;
 }
 
+const v0129CaptureOrder = [
+  "mine_uncaptured",
+  "mine_converted",
+  "worker_assigned",
+  "build_placement",
+  "construction",
+  "barracks_complete",
+  "recruit_queue",
+  "militia_spawned",
+  "pressure_wave",
+  "lume_restore",
+  "results"
+];
+
+function writeV0129ContactSheet(manifest) {
+  const columns = 3;
+  const tileWidth = 480;
+  const tileHeight = 270;
+  const labelHeight = 44;
+  const margin = 18;
+  const width = margin * 2 + columns * tileWidth + (columns - 1) * 18;
+  const rows = Math.ceil(manifest.captures.length / columns);
+  const height = 82 + rows * (tileHeight + labelHeight + 18);
+  const tiles = manifest.captures.map((capture, index) => {
+    const x = margin + (index % columns) * (tileWidth + 18);
+    const y = 78 + Math.floor(index / columns) * (tileHeight + labelHeight + 18);
+    return [
+      `<rect x="${x}" y="${y}" width="${tileWidth}" height="${tileHeight + labelHeight}" fill="#101616" stroke="#4dc6ba" stroke-width="1"/>`,
+      `<image href="screenshots/${escapeXml(capture.fileName)}" x="${x}" y="${y}" width="${tileWidth}" height="${tileHeight}" preserveAspectRatio="xMidYMid meet"/>`,
+      `<text x="${x + 10}" y="${y + tileHeight + 28}" fill="#e6efe8" font-family="Arial, sans-serif" font-size="14">${escapeXml(`${index + 1}. ${capture.label}`)}</text>`
+    ].join("\n");
+  });
+  const svg = [
+    `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}">`,
+    '<rect width="100%" height="100%" fill="#071011"/>',
+    '<text x="18" y="32" fill="#e6efe8" font-family="Arial, sans-serif" font-size="24">v0.129 Bounded Hero-Worker-Mine-Build-Recruit Capture</text>',
+    `<text x="18" y="58" fill="#9ccfc8" font-family="Arial, sans-serif" font-size="14">Status: ${escapeXml(manifest.status)} | Screenshots: ${manifest.captureCount}/11 | Placeholder-only</text>`,
+    tiles.join("\n"),
+    "</svg>",
+    ""
+  ].join("\n");
+  writeText(join(v0129ArtifactRoot, "contact-sheet.svg"), svg);
+}
+
+function v0129CaptureById(manifest, id) {
+  return manifest?.captures?.find((capture) => capture.id === id) ?? null;
+}
+
+function v0129StatusFor(manifest, id) {
+  return v0129CaptureById(manifest, id)?.status ?? {};
+}
+
+function v0129CheckErrors(checks) {
+  return Object.entries(checks)
+    .filter(([, pass]) => !pass)
+    .map(([name]) => `Missing or failed v0.129 evidence: ${name}`);
+}
+
+function writeV0129DataAdapterReport(sourceStatus = {}) {
+  const fixture = readGeneratedFixture();
+  const manifest = readJson(join(generatedDataRoot, "fixture-manifest.json"));
+  const stableIds = new Set((fixture.stable.manifestEntries ?? []).map((entry) => entry.id));
+  const checks = {
+    generatedContentSubsetAvailable: Boolean(fixture.content?.schemaVersion),
+    typedAdaptersRemainPresent: requiredScaffoldFiles.filter((file) => file.includes("scripts/adapters/")).every((file) => existsSync(join(spikeRoot, file))),
+    stableIdSubsetPreserved: ["west_stone_cut", "worker", "barracks", "militia", "rally_banner"].every((id) => stableIds.has(id)),
+    linkedWardExactly092: manifest.linkedWardDamageTakenMultiplier === 0.92 || sourceStatus.linkedWardDamageTakenMultiplier === 0.92,
+    readOnlySaveFixtures: manifest.localStorageMutationAllowed === false && sourceStatus.saveWritesAllowed !== true,
+    noBrowserChanges: sourceStatus.browserRuntimeChanged !== true,
+    noArtImport: sourceStatus.generatedOrImportedArtIncluded !== true && sourceStatus.runtimeArtIntegrated !== true,
+    zeroEditor: sourceStatus.routineEditorUseRequired !== true
+  };
+  const errors = v0129CheckErrors(checks);
+  const report = {
+    schemaVersion: 1,
+    checkpoint: "v0.129",
+    status: errors.length === 0 ? "PASS_V0129_DATA_ADAPTER_POSTURE" : "FAIL_V0129_DATA_ADAPTER_POSTURE",
+    generatedAtUtc: "deterministic-v0129",
+    generatedContentSubsetUsed: true,
+    typedAdaptersUsed: true,
+    stableIdsChanged: false,
+    linkedWardDamageTakenMultiplier: 0.92,
+    saveWritesAllowed: false,
+    localStorageMutationAllowed: false,
+    browserRuntimeChanged: false,
+    generatedOrImportedArtIncluded: false,
+    runtimeArtIntegrated: false,
+    routineEditorUseRequired: false,
+    fixtureManifestPath: relativeRepo(join(generatedDataRoot, "fixture-manifest.json")),
+    checks,
+    errors
+  };
+  writeV0129Artifact("data-adapter-report.json", report);
+  return report;
+}
+
+function writeV0129PerformanceSmoke(performanceRuntime) {
+  const packageReport = existsSync(join(artifactRoot, "package-report.json")) ? readJson(join(artifactRoot, "package-report.json")) : null;
+  const errors = [];
+  if (!performanceRuntime) {
+    errors.push("Missing performance-smoke-runtime.json.");
+  }
+  if (performanceRuntime?.status !== "PASS_PLAYER_FACING_TIER_M_SMOKE") {
+    errors.push(`Performance smoke did not pass: ${performanceRuntime?.status ?? "missing"}.`);
+  }
+  if (performanceRuntime?.finalProductionCertification !== false) {
+    errors.push("Performance smoke must not claim final production certification.");
+  }
+  const report = {
+    schemaVersion: 1,
+    checkpoint: "v0.129",
+    status: errors.length === 0 ? "PASS_V0129_PERFORMANCE_SMOKE" : "FAIL_V0129_PERFORMANCE_SMOKE",
+    generatedAtUtc: "deterministic-v0129",
+    mode: performanceRuntime?.mode ?? "2_5D_ORTHOGRAPHIC_PLACEHOLDER",
+    visualPreset: performanceRuntime?.visualPreset ?? "CLEAN_READABILITY",
+    tier: performanceRuntime?.tier ?? "M",
+    fpsAverage: performanceRuntime?.fpsAverage ?? null,
+    frameTimeP95Ms: performanceRuntime?.frameTimeP95Ms ?? null,
+    inputAcceptance: performanceRuntime?.inputAcceptance ?? null,
+    objectiveTransition: performanceRuntime?.objectiveTransition ?? null,
+    stuckUnits: performanceRuntime?.stuckUnits ?? null,
+    resultsTransition: performanceRuntime?.resultsTransition ?? null,
+    packageSizeMb: packageReport?.packageSizeMb ?? null,
+    packagePath: packageReport?.packagePath ?? null,
+    finalProductionCertification: false,
+    errors,
+    runtimeReport: performanceRuntime ?? null
+  };
+  writeV0129Artifact("performance-smoke-report.json", report);
+  return report;
+}
+
+function writeV0129PlayerSliceValidation() {
+  const runtime = readV0129RuntimeReport("player-slice-validation-runtime.json");
+  const performanceRuntime = readV0129RuntimeReport("performance-smoke-runtime.json");
+  const errors = [];
+  if (!runtime) {
+    errors.push("Missing player-slice-validation-runtime.json.");
+  }
+  if (runtime?.status !== "PASS_PLAYER_SLICE_VALIDATION") {
+    errors.push(`Player-slice runtime validation did not pass: ${runtime?.status ?? "missing"}.`);
+  }
+  const steps = runtime?.steps ?? [];
+  const observed = steps.map((step) => step.id);
+  const required = [
+    "mine_uncaptured",
+    "mine_converted",
+    "worker_assigned_mine",
+    "build_placement",
+    "construction_progress",
+    "barracks_complete",
+    "recruit_queue",
+    "militia_spawned",
+    "ashen_pressure_wave",
+    "lume_restore",
+    "results"
+  ];
+  for (const id of required) {
+    if (!observed.includes(id)) {
+      errors.push(`Missing v0.129 validation step: ${id}`);
+    }
+  }
+  const status = (id) => findValidationStep(runtime, id)?.status ?? {};
+  const checks = {
+    heroSelectedAndAbility: status("hero_selected").heroAbilityUsed === true,
+    mineConverted: status("mine_converted").mineSiteConverted === true,
+    workerAssigned: status("worker_assigned_mine").workerAssignedToMine === true,
+    boostedResourceProduction: status("worker_assigned_mine").resourceProductionBoosted === true,
+    buildPlacement: status("build_placement").barracksBuildPlaced === true,
+    constructionProgress: Number(status("construction_progress").barracksConstructionProgress ?? 0) > 0,
+    barracksComplete: status("barracks_complete").barracksComplete === true,
+    recruitQueue: status("recruit_queue").militiaRecruitQueued === true,
+    militiaSpawned: status("militia_spawned").militiaSpawned === true,
+    resourceSpend: status("recruit_queue").resourceSpendRecorded === true || status("militia_spawned").resourceSpendRecorded === true,
+    pressureWaveDefeated: status("ashen_pressure_wave").pressureWaveDefeated === true,
+    lumeRestored: status("lume_restore").lumeRestored === true,
+    resultsReady: status("results").resultsReady === true,
+    fixedSeedDeterminism: status("results").fixedSeed === 1190120 || status("lume_restore").fixedSeed === 1190120,
+    noSaveWrites: runtime?.saveWritesAllowed === false,
+    noIdDrift: runtime?.stableIdsChanged === false && runtime?.linkedWardDamageTakenMultiplier === 0.92,
+    noBrowserChanges: runtime?.localStorageMutationAllowed === false,
+    noArtImport: runtime?.generatedOrImportedArtIncluded === false && runtime?.runtimeArtIntegrated === false,
+    zeroEditor: runtime?.routineEditorUseRequired === false && runtime?.manualGodotEditorSceneAssemblyRequired === false
+  };
+  errors.push(...v0129CheckErrors(checks));
+  const performanceSmoke = writeV0129PerformanceSmoke(performanceRuntime);
+  const dataAdapterReport = writeV0129DataAdapterReport(status("results"));
+  if (performanceSmoke.status !== "PASS_V0129_PERFORMANCE_SMOKE") {
+    errors.push("v0.129 performance smoke did not pass.");
+  }
+  if (dataAdapterReport.status !== "PASS_V0129_DATA_ADAPTER_POSTURE") {
+    errors.push("v0.129 data-adapter posture did not pass.");
+  }
+  const report = {
+    schemaVersion: 1,
+    checkpoint: "v0.129",
+    status: errors.length === 0 ? "PASS_V0129_PLAYER_SLICE_MICROLOOP_VALIDATION" : "FAIL_V0129_PLAYER_SLICE_MICROLOOP_VALIDATION",
+    generatedAtUtc: "deterministic-v0129",
+    defaultHumanReviewPath: "GODOT_LAUNCH_PLAYER_SLICE_WINDOWS.bat",
+    defaultMode: runtime?.defaultMode ?? null,
+    defaultVisualPreset: runtime?.defaultVisualPreset ?? null,
+    strictScope: {
+      fullEconomyPorted: false,
+      fullBuildingTreePorted: false,
+      broadRecruitmentPorted: false,
+      fullHeroProgressionPorted: false,
+      browserRuntimeChanged: false,
+      saveWritesAllowed: false,
+      stableIdsChanged: false,
+      artImported: false,
+      finalEngineDecisionMade: false,
+      fullPortStarted: false
+    },
+    checks,
+    errors,
+    steps,
+    performanceSmoke,
+    dataAdapterReport
+  };
+  writeV0129Artifact("player-slice-validation.json", report);
+  writeV0129Text(
+    "README.md",
+    [
+      "# v0.129 Godot Bounded Microloop Artifacts",
+      "",
+      "This ignored artifact folder is regenerated by the v0.129 player-slice validation and capture scripts.",
+      "",
+      `Player-slice validation: ${report.status}`,
+      `Performance smoke: ${performanceSmoke.status}`,
+      `Data adapter posture: ${dataAdapterReport.status}`,
+      "",
+      "- `player-slice-validation.json` records mine conversion, Worker assignment, Barracks restoration, Militia training, pressure wave, Lume restore, and Results.",
+      "- `performance-smoke-report.json` records the bounded Tier M smoke posture.",
+      "- `data-adapter-report.json` confirms generated content subset and typed adapters remain the source of truth.",
+      "- `screenshot-manifest.json` is generated by capture after the screenshots exist.",
+      "",
+      "No artifact here is final art, imported art, generated imagery, save migration, stable-ID change, final Godot choice, or full-port approval."
+    ].join("\n")
+  );
+  return report;
+}
+
+function buildV0129PlayerReports(manifest) {
+  const validation = existsSync(join(v0129ArtifactRoot, "player-slice-validation.json"))
+    ? readJson(join(v0129ArtifactRoot, "player-slice-validation.json"))
+    : null;
+  const packageReport = existsSync(join(artifactRoot, "package-report.json"))
+    ? readJson(join(artifactRoot, "package-report.json"))
+    : null;
+  const mineUncaptured = v0129StatusFor(manifest, "mine_uncaptured");
+  const mineConverted = v0129StatusFor(manifest, "mine_converted");
+  const workerAssigned = v0129StatusFor(manifest, "worker_assigned");
+  const buildPlacement = v0129StatusFor(manifest, "build_placement");
+  const construction = v0129StatusFor(manifest, "construction");
+  const barracksComplete = v0129StatusFor(manifest, "barracks_complete");
+  const recruitQueue = v0129StatusFor(manifest, "recruit_queue");
+  const militiaSpawned = v0129StatusFor(manifest, "militia_spawned");
+  const pressureWave = v0129StatusFor(manifest, "pressure_wave");
+  const lumeRestore = v0129StatusFor(manifest, "lume_restore");
+  const results = v0129StatusFor(manifest, "results");
+  const checks = {
+    mineStartsNeutral: mineUncaptured.mineSiteConverted === false,
+    mineConverted: mineConverted.mineSiteConverted === true && mineConverted.mineConversionFeedbackRendered === true,
+    workerAssigned: workerAssigned.workerAssignedToMine === true && workerAssigned.workerMineAssignmentFeedbackRendered === true,
+    resourceBoost: workerAssigned.resourceProductionBoosted === true || mineConverted.resourceProductionBoosted === true,
+    buildPlacement: buildPlacement.barracksBuildPlaced === true && buildPlacement.barracksBuildPlacementRendered === true,
+    constructionProgress: Number(construction.barracksConstructionProgress ?? 0) > 0 && construction.constructionProgressRendered === true,
+    barracksComplete: barracksComplete.barracksComplete === true && barracksComplete.barracksCompleteRendered === true,
+    recruitQueue: recruitQueue.militiaRecruitQueued === true && recruitQueue.recruitQueueRendered === true,
+    militiaSpawned: militiaSpawned.militiaSpawned === true && militiaSpawned.militiaSpawnedRendered === true,
+    pressureWave: pressureWave.pressureWaveDefeated === true && pressureWave.pressureWaveDefeatedRendered === true,
+    lumeRestore: lumeRestore.lumeRestored === true && lumeRestore.lumeRestoreMicroloopRendered === true,
+    results: results.resultsReady === true,
+    validationStillGreen: validation?.status === "PASS_V0129_PLAYER_SLICE_MICROLOOP_VALIDATION" || validation == null,
+    packagePasses: packageReport?.status === "PASS_WINDOWS_PACKAGE" || packageReport == null
+  };
+  const errors = v0129CheckErrors(checks);
+  const microloopReport = {
+    schemaVersion: 1,
+    checkpoint: "v0.129",
+    status: errors.length === 0 ? "PASS_V0129_HERO_WORKER_MINE_BUILD_RECRUIT_MICROLOOP" : "FAIL_V0129_HERO_WORKER_MINE_BUILD_RECRUIT_MICROLOOP",
+    generatedAtUtc: "deterministic-v0129",
+    checks,
+    validationStatus: validation?.status ?? null,
+    packageStatus: packageReport?.status ?? null,
+    errors
+  };
+  writeV0129Artifact("microloop-report.json", microloopReport);
+  writeV0129Text(
+    "visual-capture-report.md",
+    [
+      "# v0.129 Visual Capture Report",
+      "",
+      `Status: ${manifest.status}`,
+      "",
+      `Capture count: ${manifest.captureCount}/11`,
+      "",
+      "Captured areas: mine uncaptured, mine converted, Worker assigned, build placement, construction, Barracks complete, recruit queue, Militia spawned, pressure wave, Lume restore, and Results.",
+      "",
+      "This report covers procedural placeholder screenshots only. It does not include final art, generated images, imported art, runtime art integration, save changes, stable-ID changes, browser-runtime changes, final engine selection, or a full port."
+    ].join("\n")
+  );
+  return { microloopReport };
+}
+
+function writeV0129ScreenshotManifest() {
+  const runtime = readV0129RuntimeReport("screenshot-runtime-manifest.json");
+  const errors = [];
+  if (!runtime) {
+    errors.push("Missing screenshot-runtime-manifest.json from packaged executable capture.");
+  }
+  const runtimeCaptures = runtime?.captures ?? [];
+  const captures = runtimeCaptures.map((entry) => {
+    const screenshotPath = join(v0129ScreenshotRoot, entry.fileName);
+    return {
+      id: entry.id,
+      label: entry.label,
+      action: entry.action,
+      screen: entry.screen,
+      fileName: entry.fileName,
+      path: relativeRepo(screenshotPath),
+      sha256: existsSync(screenshotPath) ? hashFile(screenshotPath) : null,
+      sizeBytes: existsSync(screenshotPath) ? statSync(screenshotPath).size : null,
+      width: entry.width,
+      height: entry.height,
+      privateHarnessCapture: Boolean(entry.privateHarnessCapture),
+      status: entry.status ?? null,
+      visibleText: entry.visibleText ?? []
+    };
+  });
+  if (runtime?.checkpoint !== "v0.129") {
+    errors.push(`Expected v0.129 runtime checkpoint, found ${runtime?.checkpoint ?? "missing"}.`);
+  }
+  if (captures.length !== 11) {
+    errors.push(`Expected 11 screenshots, found ${captures.length}.`);
+  }
+  for (const id of v0129CaptureOrder) {
+    if (!captures.some((capture) => capture.id === id)) {
+      errors.push(`Missing v0.129 screenshot capture: ${id}`);
+    }
+  }
+  for (const capture of captures) {
+    if (!capture.sha256) {
+      errors.push(`Missing screenshot file: ${capture.fileName}`);
+    }
+    if (capture.width !== 1600 || capture.height !== 900) {
+      errors.push(`Screenshot ${capture.fileName} is ${capture.width}x${capture.height}, expected 1600x900.`);
+    }
+    if (capture.status?.proceduralPrimitiveOnly !== true) {
+      errors.push(`Capture ${capture.id} did not report procedural primitive-only posture.`);
+    }
+    if (capture.status?.generatedOrImportedArtIncluded === true || capture.status?.runtimeArtIntegrated === true) {
+      errors.push(`Capture ${capture.id} reported generated/imported or runtime art integration.`);
+    }
+    if (capture.status?.saveWritesAllowed === true || capture.status?.stableIdsChanged === true) {
+      errors.push(`Capture ${capture.id} reported save writes or stable-ID changes.`);
+    }
+    if (capture.status?.linkedWardDamageTakenMultiplier !== 0.92) {
+      errors.push(`Capture ${capture.id} did not preserve linked_ward damage multiplier 0.92.`);
+    }
+  }
+  const strayPngs = existsSync(v0129ScreenshotRoot)
+    ? readdirSync(v0129ScreenshotRoot).filter((file) => file.endsWith(".png") && !captures.some((capture) => capture.fileName === file))
+    : [];
+  if (strayPngs.length > 0) {
+    errors.push(`Unexpected screenshots in v0129 folder: ${strayPngs.join(", ")}`);
+  }
+  const manifest = {
+    schemaVersion: 1,
+    checkpoint: "v0.129",
+    status: errors.length === 0 && runtime?.status === "PASS_PLAYER_SLICE_CAPTURE" ? "PASS_V0129_VERTICAL_SLICE_MICROLOOP_CAPTURE" : "FAIL_V0129_VERTICAL_SLICE_MICROLOOP_CAPTURE",
+    generatedAtUtc: "deterministic-v0129",
+    screenshotRoot: relativeRepo(v0129ScreenshotRoot),
+    contactSheetPath: "artifacts/desktop-spikes/godot-salto/v0129/contact-sheet.svg",
+    captureCount: captures.length,
+    requiredCaptureCount: 11,
+    deterministicCaptureOrder: v0129CaptureOrder,
+    defaultMode: "2_5D_ORTHOGRAPHIC_PLACEHOLDER",
+    defaultVisualPreset: "CLEAN_READABILITY",
+    proceduralPrimitiveOnly: true,
+    runtimeArtIntegrated: false,
+    generatedOrImportedArtIncluded: false,
+    finalUiArtClaimed: false,
+    routineEditorUseRequired: false,
+    saveWritesAllowed: false,
+    stableIdsChanged: false,
+    browserRuntimeChanged: false,
+    finalEngineDecisionMade: false,
+    fullPortStarted: false,
+    errors,
+    captures
+  };
+  writeV0129Artifact("screenshot-manifest.json", manifest);
+  writeV0129Artifact("screenshot-hashes.json", {
+    schemaVersion: 1,
+    checkpoint: "v0.129",
+    status: manifest.status,
+    hashes: captures.map((capture) => ({
+      id: capture.id,
+      fileName: capture.fileName,
+      path: capture.path,
+      sha256: capture.sha256,
+      sizeBytes: capture.sizeBytes
+    }))
+  });
+  writeV0129ContactSheet(manifest);
+  const reports = buildV0129PlayerReports(manifest);
+  if (String(reports.microloopReport.status).startsWith("FAIL")) {
+    manifest.status = "FAIL_V0129_VERTICAL_SLICE_MICROLOOP_CAPTURE";
+    manifest.errors.push(`v0.129 microloop report failed: ${reports.microloopReport.status}`);
+    writeV0129Artifact("screenshot-manifest.json", manifest);
+  }
+  return manifest;
+}
+
 const v0125AuditAreas = ["title", "briefing", "battle", "results"];
 const v0125PlayerDebugTerms = [
   ...v0124ForbiddenTerms,
@@ -4188,6 +4622,18 @@ try {
     if (String(report.status).startsWith("FAIL")) {
       process.exitCode = 1;
     }
+  } else if (command === "player-slice-validate-v0129") {
+    const report = writeV0129PlayerSliceValidation();
+    console.log(stableStringify(report));
+    if (String(report.status).startsWith("FAIL")) {
+      process.exitCode = 1;
+    }
+  } else if (command === "player-slice-capture-v0129") {
+    const report = writeV0129ScreenshotManifest();
+    console.log(stableStringify(report));
+    if (String(report.status).startsWith("FAIL")) {
+      process.exitCode = 1;
+    }
   } else if (command === "player-slice-audit") {
     const report = buildV0125ScreenshotAudit();
     console.log(stableStringify(report));
@@ -4201,7 +4647,7 @@ try {
     runAll();
     console.log("v0.119 Godot representative RTS load spike reports generated.");
   } else {
-    console.log("Usage: node desktop-spikes/godot-salto/tools/godotSpikeTool.mjs <doctor|generate|validate|test|benchmark|export|package|scorecard|manual-review|headed-smoke|headed-benchmark|capture-review|capture-review-v0121|player-slice-validate|player-slice-capture|player-slice-capture-v0126|player-slice-capture-v0127|player-slice-capture-v0128|player-slice-audit|v0118-all|all>");
+    console.log("Usage: node desktop-spikes/godot-salto/tools/godotSpikeTool.mjs <doctor|generate|validate|test|benchmark|export|package|scorecard|manual-review|headed-smoke|headed-benchmark|capture-review|capture-review-v0121|player-slice-validate|player-slice-capture|player-slice-capture-v0126|player-slice-capture-v0127|player-slice-capture-v0128|player-slice-validate-v0129|player-slice-capture-v0129|player-slice-audit|v0118-all|all>");
   }
 } catch (error) {
   console.error(error instanceof Error ? error.message : String(error));

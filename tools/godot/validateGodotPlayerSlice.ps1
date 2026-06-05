@@ -2,7 +2,7 @@ param()
 
 $ErrorActionPreference = "Stop"
 $RepoRoot = Resolve-Path (Join-Path $PSScriptRoot "..\..")
-$ArtifactRoot = Join-Path $RepoRoot "artifacts\desktop-spikes\godot-salto\v0124"
+$ArtifactRoot = Join-Path $RepoRoot "artifacts\desktop-spikes\godot-salto\v0129"
 $ArtifactArg = $ArtifactRoot.Replace("\", "/")
 
 Set-Location $RepoRoot
@@ -19,7 +19,10 @@ foreach ($fileName in @(
   "player-slice-validation.json",
   "performance-smoke.json",
   "objective-flow-report.json",
-  "art-slot-report.json"
+  "art-slot-report.json",
+  "data-adapter-report.json",
+  "performance-smoke-report.json",
+  "microloop-report.json"
 )) {
   Remove-Item -LiteralPath (Join-Path $ArtifactRoot $fileName) -Force -ErrorAction SilentlyContinue
 }
@@ -49,7 +52,7 @@ if ($LASTEXITCODE -ne 0) {
 }
 
 Wait-ForPlayerSliceValidationArtifacts
-node "desktop-spikes/godot-salto/tools/godotSpikeTool.mjs" player-slice-validate
+node "desktop-spikes/godot-salto/tools/godotSpikeTool.mjs" player-slice-validate-v0129
 $ToolExitCode = if ($null -eq $LASTEXITCODE) { 0 } else { $LASTEXITCODE }
 if ($ToolExitCode -ne 0) {
   exit $ToolExitCode

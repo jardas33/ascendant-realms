@@ -59,6 +59,61 @@ func trigger_hero_ability() -> bool:
 	queue_redraw()
 	return result
 
+func capture_mine_site() -> bool:
+	var result: bool = runtime.capture_mine_site()
+	queue_redraw()
+	return result
+
+func assign_worker_to_mine() -> bool:
+	var result: bool = runtime.assign_worker_to_mine()
+	queue_redraw()
+	return result
+
+func advance_resource_production(frames: int = 120) -> bool:
+	var result: bool = runtime.advance_resource_production(frames)
+	queue_redraw()
+	return result
+
+func place_barracks_placeholder() -> bool:
+	var result: bool = runtime.place_barracks_placeholder()
+	queue_redraw()
+	return result
+
+func advance_construction(frames: int = 120) -> bool:
+	var result: bool = runtime.advance_construction(frames)
+	queue_redraw()
+	return result
+
+func queue_militia_recruit() -> bool:
+	var result: bool = runtime.queue_militia_recruit()
+	queue_redraw()
+	return result
+
+func complete_recruit_queue(frames: int = 120) -> bool:
+	var result: bool = runtime.complete_recruit_queue(frames)
+	queue_redraw()
+	return result
+
+func queue_ranger_recruit() -> bool:
+	var result: bool = runtime.queue_ranger_recruit()
+	queue_redraw()
+	return result
+
+func trigger_pressure_wave() -> bool:
+	var result: bool = runtime.trigger_pressure_wave()
+	queue_redraw()
+	return result
+
+func defeat_pressure_wave() -> bool:
+	var result: bool = runtime.defeat_pressure_wave()
+	queue_redraw()
+	return result
+
+func restore_lume_microloop() -> bool:
+	var result: bool = runtime.restore_lume_microloop()
+	queue_redraw()
+	return result
+
 func focus_lume_link() -> bool:
 	var result: bool = runtime.focus_lume_link()
 	queue_redraw()
@@ -95,8 +150,14 @@ func run_benchmark_suite() -> Dictionary:
 func run_v0122_parity_fixture() -> Dictionary:
 	return runtime.run_v0122_parity_fixture(MODE)
 
+func run_v0129_microloop_fixture() -> Dictionary:
+	var report: Dictionary = runtime.run_v0129_microloop_fixture(MODE)
+	queue_redraw()
+	return report
+
 func get_spike_status() -> Dictionary:
 	var status: Dictionary = runtime.get_status(MODE)
+	var microloop: Dictionary = runtime.get_microloop_status()
 	status["paritySnapshot"] = runtime.get_parity_snapshot()
 	status["fogPlaceholderRendered"] = true
 	status["minimapPlaceholderRendered"] = true
@@ -105,6 +166,9 @@ func get_spike_status() -> Dictionary:
 	status["cameraOffset"] = {"x": camera_offset.x, "y": camera_offset.y}
 	status["cameraZoom"] = camera_zoom
 	status["paused"] = runtime.paused
+	for key in microloop.keys():
+		status[key] = microloop[key]
+	status["v0129MicroloopPass"] = microloop.get("mineSiteConverted", false) and microloop.get("workerAssignedToMine", false) and microloop.get("barracksComplete", false) and microloop.get("militiaSpawned", false) and microloop.get("pressureWaveDefeated", false) and microloop.get("lumeRestored", false)
 	return status
 
 func _draw_terrain() -> void:

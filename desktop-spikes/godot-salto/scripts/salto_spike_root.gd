@@ -326,25 +326,25 @@ func _render_player_screen(screen: String) -> void:
 		"title":
 			_add_player_label("Salto foothold review", Vector2(0, 36), Vector2(1600, 30), 15, Color(0.72, 0.86, 0.80), Color(0, 0, 0, 0), HORIZONTAL_ALIGNMENT_CENTER)
 			_add_player_label("JARDAS: Salto Foothold", Vector2(0, 88), Vector2(1600, 68), 42, Color(0.90, 0.94, 0.86), Color(0, 0, 0, 0), HORIZONTAL_ALIGNMENT_CENTER)
-			_add_player_label("Aster leads a Barrosan foothold stand across quarry stone, ford water, and a quiet Lume link.", Vector2(310, 164), Vector2(980, 56), 20, Color(0.78, 0.84, 0.76), Color(0.04, 0.05, 0.04, 0.42), HORIZONTAL_ALIGNMENT_CENTER)
+			_add_player_label("Aster converts one mine, restores a Barracks, trains Militia, and reopens a quiet Lume link.", Vector2(300, 164), Vector2(1000, 56), 20, Color(0.78, 0.84, 0.76), Color(0.04, 0.05, 0.04, 0.42), HORIZONTAL_ALIGNMENT_CENTER)
 			_add_player_button("Start Salto Review", Vector2(620, 282), "_on_player_start_pressed")
 			_add_player_button("Settings", Vector2(620, 336), "_on_player_settings_pressed")
 			_add_player_button("Exit", Vector2(620, 390), "_exit_player_slice")
 		"briefing":
 			_add_player_label("Salto Foothold Briefing", Vector2(0, 78), Vector2(1600, 56), 34, Color(0.90, 0.94, 0.86), Color(0, 0, 0, 0), HORIZONTAL_ALIGNMENT_CENTER)
-			_add_player_label("Hold the quarry long enough to restore the Lume route.", Vector2(360, 140), Vector2(880, 36), 20, Color(0.78, 0.86, 0.78), Color(0.04, 0.05, 0.04, 0.36), HORIZONTAL_ALIGNMENT_CENTER)
+			_add_player_label("Convert the mine, assign the Worker, restore the Barracks, and survive one wave.", Vector2(300, 140), Vector2(1000, 36), 20, Color(0.78, 0.86, 0.78), Color(0.04, 0.05, 0.04, 0.36), HORIZONTAL_ALIGNMENT_CENTER)
 			_add_player_label("1. Select Aster and move to the quarry.", Vector2(430, 220), Vector2(740, 30), 18, Color(0.88, 0.88, 0.74), Color(0.04, 0.05, 0.04, 0.44), HORIZONTAL_ALIGNMENT_CENTER)
-			_add_player_label("2. Guide the Worker toward mine or shrine posture.", Vector2(430, 260), Vector2(740, 30), 18, Color(0.88, 0.88, 0.74), Color(0.04, 0.05, 0.04, 0.44), HORIZONTAL_ALIGNMENT_CENTER)
+			_add_player_label("2. Assign the Worker, restore the Barracks, and queue Militia.", Vector2(430, 260), Vector2(740, 30), 18, Color(0.88, 0.88, 0.74), Color(0.04, 0.05, 0.04, 0.44), HORIZONTAL_ALIGNMENT_CENTER)
 			_add_player_label("3. Break one Ashen wave and restore Lume.", Vector2(430, 300), Vector2(740, 30), 18, Color(0.88, 0.88, 0.74), Color(0.04, 0.05, 0.04, 0.44), HORIZONTAL_ALIGNMENT_CENTER)
 			_add_player_button("Start Battle", Vector2(620, 390), "_on_player_battle_pressed")
 			_add_player_button("Back", Vector2(620, 444), "_on_player_back_pressed")
 		"battle":
-			_add_player_label("Secure Quarry | Guide Worker | Break Ashen Wave | Restore Lume", Vector2(28, 22), Vector2(820, 34), 18, Color(0.92, 0.88, 0.68), Color(0.04, 0.05, 0.04, 0.72))
+			_add_player_label("Convert Mine | Assign Worker | Restore Barracks | Train Militia | Restore Lume", Vector2(28, 22), Vector2(940, 34), 18, Color(0.92, 0.88, 0.68), Color(0.04, 0.05, 0.04, 0.72))
 			_add_player_label("Pause", Vector2(1470, 22), Vector2(84, 30), 15, Color(0.82, 0.88, 0.82), Color(0.04, 0.05, 0.04, 0.72))
 		"results":
 			_add_player_label("Salto Review Complete", Vector2(420, 88), Vector2(760, 56), 34, Color(0.90, 0.94, 0.86), Color(0.04, 0.05, 0.04, 0.62), HORIZONTAL_ALIGNMENT_CENTER)
-			_add_player_label("Quarry held. Ashen wave checked. Lume route restored.", Vector2(330, 154), Vector2(940, 36), 20, Color(0.82, 0.88, 0.78), Color(0.04, 0.05, 0.04, 0.68), HORIZONTAL_ALIGNMENT_CENTER)
-			_add_player_label("Review: camera, controls, HUD, minimap, silhouettes, objectives, and Lume readability.", Vector2(300, 214), Vector2(1000, 34), 18, Color(0.88, 0.86, 0.70), Color(0.04, 0.05, 0.04, 0.68), HORIZONTAL_ALIGNMENT_CENTER)
+			_add_player_label("Mine converted. Worker assigned. Barracks restored. Militia trained. Lume route restored.", Vector2(250, 154), Vector2(1100, 36), 20, Color(0.82, 0.88, 0.78), Color(0.04, 0.05, 0.04, 0.68), HORIZONTAL_ALIGNMENT_CENTER)
+			_add_player_label("Review: bounded hero-worker-mine-build-recruit loop, wave clarity, and Results.", Vector2(300, 214), Vector2(1000, 34), 18, Color(0.88, 0.86, 0.70), Color(0.04, 0.05, 0.04, 0.68), HORIZONTAL_ALIGNMENT_CENTER)
 			_add_player_button("Restart Slice", Vector2(620, 318), "_on_player_restart_pressed")
 			_add_player_button("Return to Title", Vector2(620, 372), "_on_player_back_pressed")
 			_add_player_button("Exit", Vector2(620, 426), "_exit_player_slice")
@@ -687,7 +687,7 @@ func run_player_slice_validation() -> void:
 	var errors: Array[String] = []
 	var steps: Array[Dictionary] = []
 	var start_usec := Time.get_ticks_usec()
-	for action in [
+	var actions := [
 		"title",
 		"briefing",
 		"battle_default",
@@ -705,7 +705,27 @@ func run_player_slice_validation() -> void:
 		"lume_restore",
 		"minimap",
 		"results"
-	]:
+	]
+	if _player_capture_checkpoint() == "v0.129":
+		actions = [
+			"title",
+			"briefing",
+			"battle_default",
+			"mine_uncaptured",
+			"hero_selected",
+			"move_order",
+			"mine_converted",
+			"worker_assigned_mine",
+			"build_placement",
+			"construction_progress",
+			"barracks_complete",
+			"recruit_queue",
+			"militia_spawned",
+			"ashen_pressure_wave",
+			"lume_restore",
+			"results"
+		]
+	for action in actions:
 		var step_start := Time.get_ticks_usec()
 		var status := _apply_player_slice_action(action)
 		await _settle_frames(4)
@@ -733,7 +753,7 @@ func run_player_slice_validation() -> void:
 	var average_frame_ms := frame_sum / float(max(1, frame_times.size()))
 	var performance_smoke := {
 		"schemaVersion": 1,
-		"checkpoint": "v0.124",
+		"checkpoint": _player_capture_checkpoint(),
 		"status": "PASS_PLAYER_FACING_TIER_M_SMOKE",
 		"mode": MODE_25D,
 		"visualPreset": VISUAL_PRESET_CLEAN,
@@ -754,7 +774,7 @@ func run_player_slice_validation() -> void:
 				forbidden_hits.append("%s in '%s'" % [term, text])
 	var report := {
 		"schemaVersion": 1,
-		"checkpoint": "v0.124",
+		"checkpoint": _player_capture_checkpoint(),
 		"status": "PASS_PLAYER_SLICE_VALIDATION" if errors.is_empty() and forbidden_hits.is_empty() else "FAIL_PLAYER_SLICE_VALIDATION",
 		"artifactRoot": artifact_root,
 		"defaultHumanReviewPath": "GODOT_LAUNCH_PLAYER_SLICE_WINDOWS.bat",
@@ -782,7 +802,7 @@ func run_player_slice_validation() -> void:
 	_write_absolute_json(_path_join(artifact_root, "performance-smoke-runtime.json"), performance_smoke)
 	_write_absolute_json(_path_join(artifact_root, "objective-flow-runtime.json"), {
 		"schemaVersion": 1,
-		"checkpoint": "v0.124",
+		"checkpoint": _player_capture_checkpoint(),
 		"status": "PASS_OBJECTIVE_FLOW" if errors.is_empty() else "FAIL_OBJECTIVE_FLOW",
 		"steps": steps,
 		"resultsReached": current_step_id == "player_results",
@@ -837,7 +857,7 @@ func run_player_slice_capture() -> void:
 		"viewport": {"width": VIEWPORT_SIZE.x, "height": VIEWPORT_SIZE.y},
 		"defaultMode": MODE_25D,
 		"defaultVisualPreset": VISUAL_PRESET_CLEAN,
-		"privateHarnessPreservedSeparately": captures.any(func(capture: Dictionary) -> bool: return bool(capture.get("privateHarnessCapture", false))) or ["v0.126", "v0.127", "v0.128"].has(_player_capture_checkpoint()),
+		"privateHarnessPreservedSeparately": captures.any(func(capture: Dictionary) -> bool: return bool(capture.get("privateHarnessCapture", false))) or ["v0.126", "v0.127", "v0.128", "v0.129"].has(_player_capture_checkpoint()),
 		"generatedOrImportedArtIncluded": false,
 		"runtimeArtIntegrated": false,
 		"routineEditorUseRequired": false,
@@ -872,6 +892,8 @@ func _apply_player_slice_action(action: String) -> Dictionary:
 		"hero_selected":
 			_ensure_player_battle_scene()
 			_call_scene("select_entity", ["hero_aster"])
+			if _player_capture_checkpoint() == "v0.129":
+				_call_scene("trigger_hero_ability")
 			_call_scene("set_onboarding_step", ["move_to_quarry"])
 			_call_scene("show_objective_feedback", ["select_aster"])
 			_call_scene("focus_visual_subject", ["hero"])
@@ -887,6 +909,71 @@ func _apply_player_slice_action(action: String) -> Dictionary:
 			_call_scene("focus_layout_feature", ["quarry"])
 			_call_scene("focus_visual_subject", ["quarry"])
 			_render_player_screen("battle")
+		"mine_uncaptured":
+			show_player_battle()
+			if _player_capture_checkpoint() == "v0.129":
+				_call_scene("select_entity", ["hero_aster"])
+				_call_scene("trigger_hero_ability")
+			_call_scene("focus_visual_subject", ["mine"])
+			_call_scene("set_onboarding_step", ["capture_hold_quarry"])
+			_render_player_screen("battle")
+		"mine_converted":
+			_ensure_player_battle_scene()
+			_call_scene("capture_mine_site")
+			_call_scene("advance_resource_production", [120])
+			_call_scene("focus_visual_subject", ["mine"])
+			_render_player_screen("battle")
+		"worker_assigned_mine":
+			_ensure_player_battle_scene()
+			_call_scene("capture_mine_site")
+			_call_scene("assign_worker_to_mine")
+			_call_scene("advance_resource_production", [180])
+			_call_scene("focus_visual_subject", ["worker"])
+			_render_player_screen("battle")
+		"build_placement":
+			_ensure_player_battle_scene()
+			_call_scene("capture_mine_site")
+			_call_scene("assign_worker_to_mine")
+			_call_scene("place_barracks_placeholder")
+			_call_scene("focus_visual_subject", ["barracks"])
+			_render_player_screen("battle")
+		"construction_progress":
+			_ensure_player_battle_scene()
+			_call_scene("capture_mine_site")
+			_call_scene("assign_worker_to_mine")
+			_call_scene("place_barracks_placeholder")
+			_call_scene("advance_construction", [60])
+			_call_scene("focus_visual_subject", ["barracks"])
+			_render_player_screen("battle")
+		"barracks_complete":
+			_ensure_player_battle_scene()
+			_call_scene("capture_mine_site")
+			_call_scene("assign_worker_to_mine")
+			_call_scene("place_barracks_placeholder")
+			_call_scene("advance_construction", [180])
+			_call_scene("focus_visual_subject", ["barracks"])
+			_render_player_screen("battle")
+		"recruit_queue":
+			_ensure_player_battle_scene()
+			_call_scene("capture_mine_site")
+			_call_scene("assign_worker_to_mine")
+			_call_scene("advance_resource_production", [180])
+			_call_scene("place_barracks_placeholder")
+			_call_scene("advance_construction", [180])
+			_call_scene("queue_militia_recruit")
+			_call_scene("focus_visual_subject", ["barracks"])
+			_render_player_screen("battle")
+		"militia_spawned":
+			_ensure_player_battle_scene()
+			_call_scene("capture_mine_site")
+			_call_scene("assign_worker_to_mine")
+			_call_scene("advance_resource_production", [180])
+			_call_scene("place_barracks_placeholder")
+			_call_scene("advance_construction", [180])
+			_call_scene("queue_militia_recruit")
+			_call_scene("complete_recruit_queue", [140])
+			_call_scene("focus_visual_subject", ["militia"])
+			_render_player_screen("battle")
 		"worker_selected":
 			_ensure_player_battle_scene()
 			_call_scene("select_entity", ["worker"])
@@ -901,7 +988,18 @@ func _apply_player_slice_action(action: String) -> Dictionary:
 			_render_player_screen("battle")
 		"ashen_pressure_wave":
 			_ensure_player_battle_scene()
-			_call_scene("issue_attack_order")
+			if _player_capture_checkpoint() == "v0.129":
+				_call_scene("capture_mine_site")
+				_call_scene("assign_worker_to_mine")
+				_call_scene("advance_resource_production", [180])
+				_call_scene("place_barracks_placeholder")
+				_call_scene("advance_construction", [180])
+				_call_scene("queue_militia_recruit")
+				_call_scene("complete_recruit_queue", [140])
+				_call_scene("trigger_pressure_wave")
+				_call_scene("defeat_pressure_wave")
+			else:
+				_call_scene("issue_attack_order")
 			_call_scene("focus_visual_subject", ["attack_order"])
 			_render_player_screen("battle")
 		"attack_order":
@@ -930,11 +1028,14 @@ func _apply_player_slice_action(action: String) -> Dictionary:
 			_call_scene("focus_lume_link")
 		"lume_restore":
 			_ensure_player_battle_scene()
-			_call_scene("change_site_state", ["west_stone_cut", "friendly"])
-			_call_scene("change_site_state", ["ford_toll", "friendly"])
-			_call_scene("focus_lume_link")
-			_call_scene("show_objective_feedback", ["lume_restore"])
-			_call_scene("set_onboarding_step", ["review_results"])
+			if _player_capture_checkpoint() == "v0.129":
+				_call_scene("restore_lume_microloop")
+			else:
+				_call_scene("change_site_state", ["west_stone_cut", "friendly"])
+				_call_scene("change_site_state", ["ford_toll", "friendly"])
+				_call_scene("focus_lume_link")
+				_call_scene("show_objective_feedback", ["lume_restore"])
+				_call_scene("set_onboarding_step", ["review_results"])
 			_render_player_screen("battle")
 		"minimap":
 			_ensure_player_battle_scene()
@@ -982,6 +1083,8 @@ func _apply_player_slice_action(action: String) -> Dictionary:
 
 func _player_capture_checkpoint() -> String:
 	var normalized_root := _artifact_root_from_args().replace("\\", "/")
+	if normalized_root.contains("/v0129"):
+		return "v0.129"
 	if normalized_root.contains("/v0128"):
 		return "v0.128"
 	if normalized_root.contains("/v0127"):
@@ -991,6 +1094,20 @@ func _player_capture_checkpoint() -> String:
 	return "v0.124"
 
 func _player_capture_steps() -> Array[Dictionary]:
+	if _player_capture_checkpoint() == "v0.129":
+		return [
+			{"id": "mine_uncaptured", "label": "Mine uncaptured", "action": "mine_uncaptured"},
+			{"id": "mine_converted", "label": "Mine converted", "action": "mine_converted"},
+			{"id": "worker_assigned", "label": "Worker assigned", "action": "worker_assigned_mine"},
+			{"id": "build_placement", "label": "Build placement", "action": "build_placement"},
+			{"id": "construction", "label": "Construction progress", "action": "construction_progress"},
+			{"id": "barracks_complete", "label": "Barracks complete", "action": "barracks_complete"},
+			{"id": "recruit_queue", "label": "Recruit queue", "action": "recruit_queue"},
+			{"id": "militia_spawned", "label": "Militia spawned", "action": "militia_spawned"},
+			{"id": "pressure_wave", "label": "Pressure wave defeated", "action": "ashen_pressure_wave"},
+			{"id": "lume_restore", "label": "Lume restore", "action": "lume_restore"},
+			{"id": "results", "label": "Results", "action": "results"}
+		]
 	if _player_capture_checkpoint() == "v0.128":
 		return [
 			{"id": "title", "label": "Title", "action": "title"},
@@ -1142,6 +1259,11 @@ func run_headless_tests() -> Dictionary:
 	if parity_report.get("status", "FAIL") != "PASS_GODOT_RULES_PARITY_HARNESS":
 		for error in parity_report.get("errors", []):
 			errors.append(str(error))
+	var microloop_report: Dictionary = _run_v0129_microloop_harness()
+	_write_report("res://reports/godot-v0129-microloop-report.json", microloop_report)
+	if microloop_report.get("status", "FAIL") != "PASS_V0129_MICROLOOP_HARNESS":
+		for error in microloop_report.get("errors", []):
+			errors.append(str(error))
 	var fixture_validation: Dictionary = validation.get("validation", {}).duplicate(true)
 	fixture_validation.erase("adapterValidation")
 	return {
@@ -1152,6 +1274,7 @@ func run_headless_tests() -> Dictionary:
 		"fixtureValidation": fixture_validation,
 		"adapterValidation": adapter_validation,
 		"parityReport": parity_report,
+		"microloopReport": microloop_report,
 		"godotVersion": Engine.get_version_info(),
 		"tests": [
 			"project-load",
@@ -1186,8 +1309,58 @@ func run_headless_tests() -> Dictionary:
 			"v0.122-unit-building-site-lume-results-adapters",
 			"v0.122-fixed-seed-rules-parity",
 			"v0.122-2d-and-2_5d-same-fixture",
-			"v0.122-no-full-port-started"
+			"v0.122-no-full-port-started",
+			"v0.129-mine-site-conversion",
+			"v0.129-worker-assignment",
+			"v0.129-boosted-resource-production",
+			"v0.129-barracks-build-and-construction",
+			"v0.129-militia-recruit-and-resource-spend",
+			"v0.129-hero-ability-pressure-wave-results",
+			"v0.129-fixed-seed-no-save-no-id-drift",
+			"v0.129-zero-editor"
 		]
+	}
+
+func _run_v0129_microloop_harness() -> Dictionary:
+	var errors: Array[String] = []
+	var reports: Array[Dictionary] = []
+	for config in [
+		{"mode": MODE_2D, "path": "res://scenes/salto_2d_placeholder.tscn"},
+		{"mode": MODE_25D, "path": "res://scenes/salto_2_5d_orthographic_placeholder.tscn"}
+	]:
+		var packed: PackedScene = load(str(config["path"])) as PackedScene
+		if packed == null:
+			errors.append("Failed to load v0.129 microloop scene for %s" % config["mode"])
+			continue
+		var scene: Node = packed.instantiate()
+		add_child(scene)
+		if str(config["mode"]) == MODE_25D and scene.has_method("set_visual_preset"):
+			scene.set_visual_preset(VISUAL_PRESET_CLEAN)
+		if not scene.has_method("run_v0129_microloop_fixture"):
+			errors.append("%s lacks run_v0129_microloop_fixture" % config["mode"])
+		else:
+			var report: Dictionary = scene.run_v0129_microloop_fixture()
+			reports.append(report)
+			if report.get("status", "FAIL") != "PASS_V0129_MICROLOOP_FIXTURE":
+				for error in report.get("errors", []):
+					errors.append("%s: %s" % [config["mode"], str(error)])
+		scene.queue_free()
+	return {
+		"schemaVersion": 1,
+		"checkpoint": "v0.129",
+		"status": "PASS_V0129_MICROLOOP_HARNESS" if errors.is_empty() else "FAIL_V0129_MICROLOOP_HARNESS",
+		"errors": errors,
+		"modeReports": reports,
+		"modes": reports.map(func(report: Dictionary) -> String: return str(report.get("mode", ""))),
+		"sameFixtureAcross2dAnd25d": reports.size() == 2,
+		"linkedWardDamageTakenMultiplier": 0.92,
+		"saveWritesAllowed": false,
+		"stableIdsChanged": false,
+		"browserRuntimeChanged": false,
+		"runtimeArtIntegrated": false,
+		"generatedOrImportedArtIncluded": false,
+		"routineEditorUseRequired": false,
+		"fullPortStarted": false
 	}
 
 func _run_v0122_parity_harness() -> Dictionary:
