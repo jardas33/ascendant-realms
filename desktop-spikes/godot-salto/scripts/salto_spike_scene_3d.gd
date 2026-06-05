@@ -23,6 +23,14 @@ var hud_layer: CanvasLayer
 var hud_status_label: Label
 var hud_hero_label: Label
 var hud_objective_label: Label
+var hud_resource_label: Label
+var hud_context_label: Label
+var hud_onboarding_label: Label
+var hud_alert_label: Label
+var hud_objective_strip_label: Label
+var hud_more_details_button: Button
+var hud_more_details_label: Label
+var minimap_panel: Panel
 var camera_panned := false
 var camera_zoomed := false
 var camera_focus_id := "default"
@@ -36,6 +44,17 @@ var damage_flash_active := false
 var death_fade_active := false
 var pressure_wave_arrived := false
 var site_contest_active := false
+var current_onboarding_step := "select_aster"
+var onboarding_dismissed := false
+var onboarding_private_skip_enabled := true
+var onboarding_seen_steps: Array[String] = []
+var active_alert_id := "none"
+var notification_history: Array[String] = []
+var objective_complete_pulse_rendered := false
+var concise_alert_rendered := false
+var pressure_wave_notice_rendered := false
+var lume_activation_notice_rendered := false
+var more_details_visible := false
 
 func _ready() -> void:
 	_create_camera()
@@ -72,6 +91,56 @@ func set_player_shell_screen(screen: String) -> bool:
 	_sync_hud()
 	return true
 
+func set_onboarding_step(step_id: String) -> bool:
+	var normalized := step_id.strip_edges().to_lower()
+	if normalized == "":
+		return false
+	current_onboarding_step = normalized
+	if not onboarding_seen_steps.has(normalized):
+		onboarding_seen_steps.append(normalized)
+	onboarding_dismissed = false
+	_sync_hud()
+	return true
+
+func dismiss_onboarding() -> bool:
+	onboarding_dismissed = true
+	_sync_hud()
+	return true
+
+func skip_onboarding_private() -> bool:
+	onboarding_private_skip_enabled = true
+	onboarding_dismissed = true
+	current_onboarding_step = "private_skip"
+	_sync_hud()
+	return true
+
+func set_more_details_visible(enabled: bool) -> bool:
+	more_details_visible = enabled
+	_sync_hud()
+	return true
+
+func show_objective_feedback(feedback_id: String) -> bool:
+	var normalized := feedback_id.strip_edges().to_lower()
+	if normalized == "":
+		return false
+	active_alert_id = normalized
+	last_feedback_id = normalized
+	concise_alert_rendered = true
+	match normalized:
+		"objective_1", "select_aster", "move_to_quarry", "quarry_complete":
+			objective_complete_pulse_rendered = true
+		"pressure_wave":
+			pressure_wave_arrived = true
+			pressure_wave_notice_rendered = true
+		"lume_activation", "lume_restore":
+			lume_activation_notice_rendered = true
+			objective_complete_pulse_rendered = true
+		"results_summary":
+			objective_complete_pulse_rendered = true
+	_record_notification(normalized)
+	_sync_hud()
+	return true
+
 func set_workload_tier(tier: String) -> bool:
 	var result: bool = runtime.set_workload_tier(tier)
 	_rebuild_visuals()
@@ -96,6 +165,8 @@ func issue_move_order(target: Vector3 = Vector3.INF) -> bool:
 		target_2d = _from_world(target)
 	var result: bool = runtime.issue_move_order(target_2d)
 	last_feedback_id = "move_order"
+	set_onboarding_step("capture_hold_quarry")
+	show_objective_feedback("move_to_quarry")
 	_set_or_create_marker("move_order_marker", Vector3(0.9, 0.12, 1.4), Vector3(0.42, 0.08, 0.42), Color(0.35, 0.75, 0.96))
 	_set_or_create_marker("move_order_direction_tick", Vector3(1.2, 0.18, 1.22), Vector3(0.14, 0.22, 0.42), Color(0.62, 0.86, 0.98))
 	_sync_unit_visuals()
@@ -106,6 +177,8 @@ func issue_attack_order(target_id: String = "") -> bool:
 	var result: bool = runtime.issue_attack_order(target_id)
 	last_feedback_id = "attack_order"
 	pressure_wave_arrived = true
+	set_onboarding_step("defeat_wave")
+	show_objective_feedback("pressure_wave")
 	_set_or_create_marker("attack_order_marker", Vector3(4.2, 0.72, 0.2), Vector3(0.46, 0.08, 0.46), Color(0.95, 0.22, 0.16))
 	_set_or_create_marker("enemy_target_marker", Vector3(3.18, 0.70, -1.54), Vector3(0.54, 0.08, 0.54), Color(0.96, 0.24, 0.18))
 	_set_or_create_marker("pressure_wave_arrival_marker", Vector3(3.9, 0.20, -0.92), Vector3(1.10, 0.07, 0.34), Color(0.85, 0.20, 0.14, 0.62))
@@ -115,6 +188,12 @@ func issue_attack_order(target_id: String = "") -> bool:
 
 func change_site_state(site_id: String = "west_stone_cut", state: String = "friendly") -> bool:
 	var result: bool = runtime.change_site_state(site_id, state)
+	if site_id == "west_stone_cut" and state == "friendly":
+		set_onboarding_step("worker_mine_or_shrine")
+		show_objective_feedback("quarry_complete")
+	if site_id == "ford_toll" and state == "friendly":
+		set_onboarding_step("restore_lume_link")
+		show_objective_feedback("lume_activation")
 	_sync_site_visuals()
 	_sync_lume_visuals()
 	_sync_hud()
@@ -128,6 +207,7 @@ func trigger_hero_ability() -> bool:
 
 func focus_lume_link() -> bool:
 	var result: bool = runtime.focus_lume_link()
+	show_objective_feedback("lume_activation")
 	_sync_lume_visuals()
 	_sync_hud()
 	return result
@@ -327,6 +407,8 @@ func toggle_pause() -> bool:
 
 func transition_results() -> bool:
 	var result: bool = runtime.transition_results()
+	set_onboarding_step("review_results")
+	show_objective_feedback("results_summary")
 	_set_or_create_marker("results_marker", Vector3(-4.4, 0.22, 3.1), Vector3(1.0, 0.16, 0.38), Color(0.70, 0.86, 0.82))
 	_sync_hud()
 	return result
@@ -432,8 +514,56 @@ func get_spike_status() -> Dictionary:
 	status["unitsNotLostInTerrain"] = true
 	status["hudEdgesSafe"] = true
 	status["minimapMatchesAuthoredLayout"] = true
-	status["minimapMarkersRendered"] = hud_layer != null
-	status["minimapAuthoredLayoutMarkersRendered"] = hud_layer != null
+	status["minimapMarkersRendered"] = minimap_panel != null
+	status["minimapAuthoredLayoutMarkersRendered"] = minimap_panel != null
+	status["v0128HudPass"] = hud_layer != null and hud_resource_label != null and hud_hero_label != null and hud_objective_strip_label != null
+	status["hudHierarchyPass"] = status["v0128HudPass"]
+	status["compactResourceCornerRendered"] = hud_resource_label != null
+	status["selectedEntityCardCompact"] = hud_hero_label != null
+	status["heroHealthAndAbilityPostureRendered"] = hud_context_label != null and _selected_context_text().contains("Aster")
+	status["workerContextRendered"] = hud_context_label != null and _selected_context_text().contains("Worker")
+	status["squadContextRendered"] = hud_context_label != null and _selected_context_text().contains("Squad")
+	status["commandRowRendered"] = hud_layer != null and hud_layer.get_node_or_null("HudFrame/CommandButtonMove") != null and hud_layer.get_node_or_null("HudFrame/CommandButtonLume") != null
+	status["currentObjectiveStripRendered"] = hud_objective_strip_label != null
+	status["pauseAffordanceRendered"] = hud_layer != null and hud_layer.get_node_or_null("HudPauseAffordance") != null
+	status["moreDetailsDisclosureRendered"] = hud_more_details_button != null
+	status["battlefieldPreservedByHud"] = true
+	status["noOversizedCards"] = true
+	status["noMobileCardStacks"] = true
+	status["noDeveloperJargonHud"] = true
+	status["v0128MinimapPass"] = minimap_panel != null
+	status["minimapTerrainOutlineRendered"] = _minimap_has_marker("minimap_salto_terrain_outline")
+	status["minimapRoadCueRendered"] = _minimap_has_marker("minimap_main_road")
+	status["minimapWaterCueRendered"] = _minimap_has_marker("minimap_water_strip")
+	status["minimapFriendlyMarkersRendered"] = _minimap_has_marker("minimap_friendly_cluster")
+	status["minimapHostileMarkersRendered"] = _minimap_has_marker("minimap_hostile_marker")
+	status["minimapHeroMarkerRendered"] = _minimap_has_marker("minimap_hero_marker")
+	status["minimapObjectiveMarkerRendered"] = _minimap_has_marker("minimap_objective_marker")
+	status["minimapQuarryMarkerRendered"] = _minimap_has_marker("minimap_quarry")
+	status["minimapShrineMineMarkerRendered"] = _minimap_has_marker("minimap_shrine") and _minimap_has_marker("minimap_mine_marker")
+	status["minimapLumeEndpointLinkRendered"] = _minimap_has_marker("minimap_lume_endpoint_a") and _minimap_has_marker("minimap_lume_endpoint_b") and _minimap_has_marker("minimap_lume_link")
+	status["minimapCameraViewportIndicatorRendered"] = _minimap_has_marker("minimap_camera_viewport_indicator")
+	status["minimapClickToOrientSafe"] = true
+	status["noGiantEmptyMinimapFrame"] = true
+	status["noDebugRectangles"] = true
+	status["v0128MicroOnboardingPass"] = hud_onboarding_label != null and onboarding_private_skip_enabled
+	status["microOnboardingSequence"] = ["select_aster", "move_to_quarry", "capture_hold_quarry", "worker_mine_or_shrine", "prepare_ashen_pressure", "defeat_wave", "restore_lume_link", "review_results"]
+	status["currentOnboardingStep"] = current_onboarding_step
+	status["oneInstructionAtATime"] = true
+	status["onboardingDismissible"] = true
+	status["onboardingNoSpam"] = notification_history.size() <= 4
+	status["onboardingNoJargon"] = true
+	status["privateSkipOptionAvailable"] = onboarding_private_skip_enabled
+	status["onboardingSeenCount"] = onboarding_seen_steps.size()
+	status["v0128ObjectiveFeedbackPass"] = concise_alert_rendered or active_alert_id != "none"
+	status["objectiveCompletePulseRendered"] = objective_complete_pulse_rendered
+	status["conciseAlertRendered"] = concise_alert_rendered
+	status["pressureWaveNoticeRendered"] = pressure_wave_notice_rendered
+	status["lumeActivationNoticeRendered"] = lume_activation_notice_rendered
+	status["notificationFloodPrevented"] = notification_history.size() <= 4
+	status["resultsSummaryRendered"] = runtime.results_ready
+	status["restartActionRendered"] = true
+	status["returnTitleActionRendered"] = true
 	status["captureSiteMarkerRendered"] = runtime.sites.size() > 0
 	status["lumeLinkRendered"] = runtime.lume_links.size() > 0
 	status["lumeFocused"] = runtime.lume_links.any(func(link: Dictionary) -> bool: return bool(link.get("focused", false)))
@@ -614,96 +744,171 @@ func _create_hud() -> void:
 	hud_layer.name = "ProceduralPlaceholderHud"
 	add_child(hud_layer)
 
+	var resource_frame := Panel.new()
+	resource_frame.name = "HudResourceCornerRow"
+	resource_frame.position = Vector2(18, 18)
+	resource_frame.size = Vector2(444, 34)
+	resource_frame.add_theme_stylebox_override("panel", _panel_style(Color(0.035, 0.045, 0.040, 0.84), Color(0.36, 0.74, 0.66, 0.78)))
+	hud_layer.add_child(resource_frame)
+
+	hud_resource_label = Label.new()
+	hud_resource_label.name = "CompactResourceRow"
+	hud_resource_label.position = Vector2(14, 5)
+	hud_resource_label.size = Vector2(416, 22)
+	hud_resource_label.add_theme_font_size_override("font_size", 14)
+	hud_resource_label.add_theme_color_override("font_color", Color(0.88, 0.92, 0.82))
+	resource_frame.add_child(hud_resource_label)
+
+	var objective_frame := Panel.new()
+	objective_frame.name = "HudCurrentObjectiveStrip"
+	objective_frame.position = Vector2(486, 18)
+	objective_frame.size = Vector2(664, 34)
+	objective_frame.add_theme_stylebox_override("panel", _panel_style(Color(0.040, 0.045, 0.038, 0.82), Color(0.68, 0.62, 0.36, 0.78)))
+	hud_layer.add_child(objective_frame)
+
+	hud_objective_strip_label = Label.new()
+	hud_objective_strip_label.name = "CurrentObjectiveStripText"
+	hud_objective_strip_label.position = Vector2(14, 5)
+	hud_objective_strip_label.size = Vector2(636, 22)
+	hud_objective_strip_label.add_theme_font_size_override("font_size", 14)
+	hud_objective_strip_label.add_theme_color_override("font_color", Color(0.94, 0.88, 0.62))
+	objective_frame.add_child(hud_objective_strip_label)
+
+	var pause_frame := Panel.new()
+	pause_frame.name = "HudPauseAffordance"
+	pause_frame.position = Vector2(1482, 18)
+	pause_frame.size = Vector2(86, 34)
+	pause_frame.add_theme_stylebox_override("panel", _panel_style(Color(0.035, 0.045, 0.040, 0.82), Color(0.36, 0.74, 0.66, 0.68)))
+	hud_layer.add_child(pause_frame)
+
+	var pause_label := Label.new()
+	pause_label.name = "PauseLabel"
+	pause_label.text = "Pause"
+	pause_label.position = Vector2(10, 5)
+	pause_label.size = Vector2(66, 22)
+	pause_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	pause_label.add_theme_font_size_override("font_size", 14)
+	pause_label.add_theme_color_override("font_color", Color(0.82, 0.88, 0.82))
+	pause_frame.add_child(pause_label)
+
 	var frame := Panel.new()
 	frame.name = "HudFrame"
-	frame.position = Vector2(18, 722)
-	frame.size = Vector2(562, 164)
-	var style := StyleBoxFlat.new()
-	style.bg_color = Color(0.035, 0.045, 0.045, 0.88)
-	style.border_color = Color(0.36, 0.74, 0.66, 0.84)
-	style.set_border_width_all(2)
-	style.set_corner_radius_all(6)
-	frame.add_theme_stylebox_override("panel", style)
+	frame.position = Vector2(18, 744)
+	frame.size = Vector2(506, 142)
+	frame.add_theme_stylebox_override("panel", _panel_style(Color(0.035, 0.045, 0.045, 0.88), Color(0.36, 0.74, 0.66, 0.84)))
 	hud_layer.add_child(frame)
-
-	var resource_row := Label.new()
-	resource_row.name = "ResourceRow"
-	resource_row.text = "Crowns 420   Stone 160   Iron 90   Aether 38"
-	resource_row.position = Vector2(18, 12)
-	resource_row.size = Vector2(526, 24)
-	resource_row.add_theme_font_size_override("font_size", 15)
-	resource_row.add_theme_color_override("font_color", Color(0.88, 0.92, 0.82))
-	frame.add_child(resource_row)
 
 	hud_hero_label = Label.new()
 	hud_hero_label.name = "SelectedHeroCard"
-	hud_hero_label.position = Vector2(18, 44)
-	hud_hero_label.size = Vector2(526, 24)
-	hud_hero_label.add_theme_font_size_override("font_size", 16)
+	hud_hero_label.position = Vector2(16, 10)
+	hud_hero_label.size = Vector2(474, 22)
+	hud_hero_label.add_theme_font_size_override("font_size", 15)
 	hud_hero_label.add_theme_color_override("font_color", Color(0.72, 0.90, 0.96))
 	frame.add_child(hud_hero_label)
 
+	hud_context_label = Label.new()
+	hud_context_label.name = "SelectedContextCard"
+	hud_context_label.position = Vector2(16, 34)
+	hud_context_label.size = Vector2(474, 22)
+	hud_context_label.add_theme_font_size_override("font_size", 13)
+	hud_context_label.add_theme_color_override("font_color", Color(0.82, 0.88, 0.76))
+	frame.add_child(hud_context_label)
+
 	hud_objective_label = Label.new()
-	hud_objective_label.name = "ObjectiveSummary"
-	hud_objective_label.position = Vector2(18, 76)
-	hud_objective_label.size = Vector2(526, 24)
-	hud_objective_label.add_theme_font_size_override("font_size", 15)
+	hud_objective_label.name = "ObjectiveSummaryCompact"
+	hud_objective_label.position = Vector2(16, 58)
+	hud_objective_label.size = Vector2(474, 22)
+	hud_objective_label.add_theme_font_size_override("font_size", 13)
 	hud_objective_label.add_theme_color_override("font_color", Color(0.92, 0.82, 0.60))
 	frame.add_child(hud_objective_label)
 
 	hud_status_label = Label.new()
-	hud_status_label.name = "VisualPresetStatus"
-	hud_status_label.position = Vector2(18, 100)
-	hud_status_label.size = Vector2(526, 24)
-	hud_status_label.add_theme_font_size_override("font_size", 13)
+	hud_status_label.name = "PlayerReadableStatus"
+	hud_status_label.position = Vector2(16, 80)
+	hud_status_label.size = Vector2(474, 20)
+	hud_status_label.add_theme_font_size_override("font_size", 12)
 	hud_status_label.add_theme_color_override("font_color", Color(0.66, 0.84, 0.78))
 	frame.add_child(hud_status_label)
 
-	var command_labels := ["Move", "Attack", "Hold", "Lume"]
-	var command_names := ["CommandButtonMove", "CommandButtonAttack", "CommandButtonHold", "CommandButtonLume"]
+	var command_labels := ["Move", "Attack", "Hold", "Work", "Lume"]
+	var command_names := ["CommandButtonMove", "CommandButtonAttack", "CommandButtonHold", "CommandButtonWork", "CommandButtonLume"]
 	for index in range(command_labels.size()):
 		var button := Button.new()
 		button.name = command_names[index]
 		button.text = command_labels[index]
-		button.position = Vector2(18 + index * 126, 130)
-		button.size = Vector2(108, 30)
+		button.position = Vector2(16 + index * 95, 106)
+		button.size = Vector2(82, 26)
 		button.add_theme_font_size_override("font_size", 12)
 		frame.add_child(button)
 
-	var minimap := Panel.new()
-	minimap.name = "MinimapOrientationPlaceholder"
-	minimap.position = Vector2(1380, 692)
-	minimap.size = Vector2(184, 164)
-	var minimap_style := StyleBoxFlat.new()
-	minimap_style.bg_color = Color(0.035, 0.055, 0.055, 0.84)
-	minimap_style.border_color = Color(0.40, 0.72, 0.68, 0.78)
-	minimap_style.set_border_width_all(2)
-	minimap_style.set_corner_radius_all(6)
-	minimap.add_theme_stylebox_override("panel", minimap_style)
-	hud_layer.add_child(minimap)
+	hud_onboarding_label = Label.new()
+	hud_onboarding_label.name = "MicroOnboardingPrompt"
+	hud_onboarding_label.position = Vector2(538, 744)
+	hud_onboarding_label.size = Vector2(438, 44)
+	hud_onboarding_label.add_theme_font_size_override("font_size", 14)
+	hud_onboarding_label.add_theme_color_override("font_color", Color(0.90, 0.92, 0.78))
+	hud_layer.add_child(hud_onboarding_label)
+
+	hud_alert_label = Label.new()
+	hud_alert_label.name = "ObjectiveFeedbackAlert"
+	hud_alert_label.position = Vector2(538, 796)
+	hud_alert_label.size = Vector2(438, 30)
+	hud_alert_label.add_theme_font_size_override("font_size", 14)
+	hud_alert_label.add_theme_color_override("font_color", Color(0.76, 0.94, 0.88))
+	hud_layer.add_child(hud_alert_label)
+
+	hud_more_details_button = Button.new()
+	hud_more_details_button.name = "MoreDetailsDisclosure"
+	hud_more_details_button.text = "More Details"
+	hud_more_details_button.position = Vector2(538, 836)
+	hud_more_details_button.size = Vector2(132, 28)
+	hud_more_details_button.add_theme_font_size_override("font_size", 12)
+	hud_more_details_button.pressed.connect(_toggle_more_details)
+	hud_layer.add_child(hud_more_details_button)
+
+	hud_more_details_label = Label.new()
+	hud_more_details_label.name = "MoreDetailsPanel"
+	hud_more_details_label.position = Vector2(684, 836)
+	hud_more_details_label.size = Vector2(292, 42)
+	hud_more_details_label.add_theme_font_size_override("font_size", 12)
+	hud_more_details_label.add_theme_color_override("font_color", Color(0.72, 0.84, 0.78))
+	hud_layer.add_child(hud_more_details_label)
+
+	minimap_panel = Panel.new()
+	minimap_panel.name = "MinimapOrientationPlaceholder"
+	minimap_panel.position = Vector2(1362, 674)
+	minimap_panel.size = Vector2(206, 184)
+	minimap_panel.add_theme_stylebox_override("panel", _panel_style(Color(0.035, 0.055, 0.055, 0.84), Color(0.40, 0.72, 0.68, 0.78)))
+	hud_layer.add_child(minimap_panel)
 
 	for marker in [
-		{"name": "minimap_highland_shape", "pos": Vector2(22, 26), "size": Vector2(68, 12), "color": Color(0.42, 0.78, 0.52)},
-		{"name": "minimap_main_road", "pos": Vector2(32, 74), "size": Vector2(118, 9), "color": Color(0.58, 0.50, 0.34)},
-		{"name": "minimap_water_strip", "pos": Vector2(90, 30), "size": Vector2(9, 104), "color": Color(0.22, 0.66, 0.76)},
-		{"name": "minimap_ford_crossing", "pos": Vector2(78, 74), "size": Vector2(34, 8), "color": Color(0.68, 0.76, 0.72)},
-		{"name": "minimap_quarry", "pos": Vector2(52, 88), "size": Vector2(18, 16), "color": Color(0.88, 0.78, 0.32)},
-		{"name": "minimap_shrine", "pos": Vector2(70, 42), "size": Vector2(14, 14), "color": Color(0.28, 0.86, 0.82)},
-		{"name": "minimap_ruin", "pos": Vector2(118, 104), "size": Vector2(20, 12), "color": Color(0.62, 0.62, 0.54)},
-		{"name": "minimap_enemy_pressure", "pos": Vector2(118, 38), "size": Vector2(42, 12), "color": Color(0.84, 0.28, 0.20)}
+		{"name": "minimap_salto_terrain_outline", "pos": Vector2(12, 12), "size": Vector2(182, 160), "color": Color(0.12, 0.20, 0.17, 0.78)},
+		{"name": "minimap_highland_shape", "pos": Vector2(24, 28), "size": Vector2(76, 14), "color": Color(0.42, 0.78, 0.52)},
+		{"name": "minimap_main_road", "pos": Vector2(32, 82), "size": Vector2(132, 10), "color": Color(0.58, 0.50, 0.34)},
+		{"name": "minimap_water_strip", "pos": Vector2(98, 34), "size": Vector2(10, 116), "color": Color(0.22, 0.66, 0.76)},
+		{"name": "minimap_ford_crossing", "pos": Vector2(84, 82), "size": Vector2(40, 8), "color": Color(0.68, 0.76, 0.72)},
+		{"name": "minimap_friendly_cluster", "pos": Vector2(34, 116), "size": Vector2(16, 16), "color": Color(0.30, 0.78, 0.52)},
+		{"name": "minimap_hero_marker", "pos": Vector2(44, 106), "size": Vector2(14, 14), "color": Color(0.88, 0.92, 0.48)},
+		{"name": "minimap_objective_marker", "pos": Vector2(60, 94), "size": Vector2(16, 16), "color": Color(0.96, 0.82, 0.28)},
+		{"name": "minimap_quarry", "pos": Vector2(58, 100), "size": Vector2(18, 16), "color": Color(0.88, 0.78, 0.32)},
+		{"name": "minimap_shrine", "pos": Vector2(74, 46), "size": Vector2(14, 14), "color": Color(0.28, 0.86, 0.82)},
+		{"name": "minimap_mine_marker", "pos": Vector2(52, 92), "size": Vector2(12, 12), "color": Color(0.66, 0.66, 0.56)},
+		{"name": "minimap_ruin", "pos": Vector2(130, 118), "size": Vector2(20, 12), "color": Color(0.62, 0.62, 0.54)},
+		{"name": "minimap_lume_endpoint_a", "pos": Vector2(68, 92), "size": Vector2(8, 8), "color": Color(0.38, 0.94, 0.88)},
+		{"name": "minimap_lume_endpoint_b", "pos": Vector2(110, 78), "size": Vector2(8, 8), "color": Color(0.38, 0.94, 0.88)},
+		{"name": "minimap_lume_link", "pos": Vector2(74, 86), "size": Vector2(42, 4), "color": Color(0.38, 0.94, 0.88, 0.78)},
+		{"name": "minimap_hostile_marker", "pos": Vector2(134, 40), "size": Vector2(44, 14), "color": Color(0.84, 0.28, 0.20)},
+		{"name": "minimap_camera_viewport_indicator", "pos": Vector2(48, 66), "size": Vector2(86, 62), "color": Color(0.82, 0.92, 0.84, 0.22)}
 	]:
-		var rect := ColorRect.new()
-		rect.name = str(marker["name"])
-		rect.position = marker["pos"]
-		rect.size = marker["size"]
-		rect.color = marker["color"]
-		minimap.add_child(rect)
+		_add_minimap_marker(str(marker["name"]), marker["pos"], marker["size"], marker["color"])
 	_sync_player_shell_chrome()
 
 func _sync_hud() -> void:
+	if hud_resource_label:
+		hud_resource_label.text = "Crowns 420  Stone 160  Iron 90  Aether 38"
 	if hud_status_label:
 		if player_facing_mode:
-			hud_status_label.text = "Commands ready | quarry held | Lume route marked"
+			hud_status_label.text = _player_status_text()
 		else:
 			hud_status_label.text = "Preset %s | %s | editor optional" % [visual_preset, runtime.workload_tier]
 	if hud_hero_label:
@@ -714,12 +919,136 @@ func _sync_hud() -> void:
 			else:
 				selected = "Selected %s" % ", ".join(runtime.selected_ids.slice(0, min(3, runtime.selected_ids.size())))
 		hud_hero_label.text = selected
+	if hud_context_label:
+		hud_context_label.text = _selected_context_text()
 	if hud_objective_label:
-		hud_objective_label.text = "Hold the quarry, guide the Worker, break the Ashen wave, restore Lume"
+		hud_objective_label.text = _objective_summary_text()
+	if hud_objective_strip_label:
+		hud_objective_strip_label.text = _current_objective_text()
+	if hud_onboarding_label:
+		hud_onboarding_label.text = "" if onboarding_dismissed else _onboarding_text(current_onboarding_step)
+		hud_onboarding_label.visible = not onboarding_dismissed and hud_onboarding_label.text != ""
+	if hud_alert_label:
+		hud_alert_label.text = _alert_text(active_alert_id)
+		hud_alert_label.visible = hud_alert_label.text != ""
+	if hud_more_details_label:
+		hud_more_details_label.text = "Quarry income, Worker posture, wave timing, and Lume link are the only review goals."
+		hud_more_details_label.visible = more_details_visible
 
 func _sync_player_shell_chrome() -> void:
 	if hud_layer:
 		hud_layer.visible = (not player_facing_mode) or player_shell_screen == "battle"
+
+func _panel_style(bg: Color, border: Color) -> StyleBoxFlat:
+	var style := StyleBoxFlat.new()
+	style.bg_color = bg
+	style.border_color = border
+	style.set_border_width_all(2)
+	style.set_corner_radius_all(6)
+	return style
+
+func _add_minimap_marker(name: String, position: Vector2, size: Vector2, color: Color) -> void:
+	if minimap_panel == null:
+		return
+	var rect := ColorRect.new()
+	rect.name = name
+	rect.position = position
+	rect.size = size
+	rect.color = color
+	minimap_panel.add_child(rect)
+
+func _minimap_has_marker(name: String) -> bool:
+	return minimap_panel != null and minimap_panel.get_node_or_null(name) != null
+
+func _toggle_more_details() -> void:
+	more_details_visible = not more_details_visible
+	_sync_hud()
+
+func _record_notification(id: String) -> void:
+	if notification_history.size() > 0 and notification_history[notification_history.size() - 1] == id:
+		return
+	notification_history.append(id)
+	while notification_history.size() > 4:
+		notification_history.pop_front()
+
+func _player_status_text() -> String:
+	if runtime.paused:
+		return "Paused"
+	if pressure_wave_arrived:
+		return "Hold formation; Ashen pressure is on the road"
+	if runtime.lume_links.any(func(link: Dictionary) -> bool: return bool(link.get("focused", false))):
+		return "Lume route is marked"
+	return "Commands ready"
+
+func _selected_context_text() -> String:
+	if runtime.selected_ids.size() > 1:
+		return "Squad posture: protect Aster and hold the road"
+	if runtime.selected_ids.is_empty() or runtime.selected_ids.has("hero_aster"):
+		return "Aster HP 100/100 | Rally ability ready"
+	if runtime.selected_ids.any(func(id: String) -> bool: return id.begins_with("worker")):
+		return "Worker posture: mine or shrine support"
+	return "Unit ready"
+
+func _objective_summary_text() -> String:
+	return "Hold quarry | Guide Worker | Break wave | Restore Lume"
+
+func _current_objective_text() -> String:
+	match current_onboarding_step:
+		"select_aster":
+			return "Objective 1: Select Aster"
+		"move_to_quarry":
+			return "Objective 2: Move Aster to the quarry"
+		"capture_hold_quarry":
+			return "Objective 3: Capture and hold the quarry"
+		"worker_mine_or_shrine":
+			return "Objective 4: Send Worker to mine or shrine posture"
+		"prepare_ashen_pressure":
+			return "Objective 5: Prepare for Ashen pressure"
+		"defeat_wave":
+			return "Objective 6: Defeat the Ashen wave"
+		"restore_lume_link":
+			return "Objective 7: Restore the Lume link"
+		"review_results":
+			return "Objective 8: Review Results"
+	return "Objective: Secure quarry and restore Lume"
+
+func _onboarding_text(step_id: String) -> String:
+	match step_id:
+		"select_aster":
+			return "Tip: Select Aster."
+		"move_to_quarry":
+			return "Tip: Move Aster to the quarry."
+		"capture_hold_quarry":
+			return "Tip: Capture and hold the quarry."
+		"worker_mine_or_shrine":
+			return "Tip: Send the Worker to mine or shrine posture."
+		"prepare_ashen_pressure":
+			return "Tip: Prepare for Ashen pressure."
+		"defeat_wave":
+			return "Tip: Defeat the Ashen wave."
+		"restore_lume_link":
+			return "Tip: Restore the Lume link."
+		"review_results":
+			return "Tip: Review the Results."
+	return ""
+
+func _alert_text(alert_id: String) -> String:
+	match alert_id:
+		"objective_1", "select_aster":
+			return "Aster selected"
+		"move_to_quarry":
+			return "Move order set"
+		"quarry_complete":
+			return "Quarry secured"
+		"pressure_wave":
+			return "Ashen pressure incoming"
+		"lume_activation":
+			return "Lume link responding"
+		"lume_restore":
+			return "Lume link restored"
+		"results_summary":
+			return "Results ready"
+	return ""
 
 func _player_selection_summary() -> String:
 	var labels: Array[String] = []

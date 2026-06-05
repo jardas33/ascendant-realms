@@ -691,6 +691,9 @@ func run_player_slice_validation() -> void:
 		"title",
 		"briefing",
 		"battle_default",
+		"hud_default",
+		"objective_1",
+		"onboarding_skip_private",
 		"hero_selected",
 		"move_order",
 		"quarry_objective",
@@ -834,7 +837,7 @@ func run_player_slice_capture() -> void:
 		"viewport": {"width": VIEWPORT_SIZE.x, "height": VIEWPORT_SIZE.y},
 		"defaultMode": MODE_25D,
 		"defaultVisualPreset": VISUAL_PRESET_CLEAN,
-		"privateHarnessPreservedSeparately": captures.any(func(capture: Dictionary) -> bool: return bool(capture.get("privateHarnessCapture", false))) or ["v0.126", "v0.127"].has(_player_capture_checkpoint()),
+		"privateHarnessPreservedSeparately": captures.any(func(capture: Dictionary) -> bool: return bool(capture.get("privateHarnessCapture", false))) or ["v0.126", "v0.127", "v0.128"].has(_player_capture_checkpoint()),
 		"generatedOrImportedArtIncluded": false,
 		"runtimeArtIntegrated": false,
 		"routineEditorUseRequired": false,
@@ -852,9 +855,25 @@ func _apply_player_slice_action(action: String) -> Dictionary:
 			show_player_briefing()
 		"battle_default":
 			show_player_battle()
+			_call_scene("set_onboarding_step", ["select_aster"])
+		"hud_default":
+			show_player_battle()
+			_call_scene("set_onboarding_step", ["select_aster"])
+			_render_player_screen("battle")
+		"objective_1":
+			_ensure_player_battle_scene()
+			_call_scene("set_onboarding_step", ["select_aster"])
+			_call_scene("show_objective_feedback", ["objective_1"])
+			_render_player_screen("battle")
+		"onboarding_skip_private":
+			_ensure_player_battle_scene()
+			_call_scene("skip_onboarding_private")
+			_render_player_screen("battle")
 		"hero_selected":
 			_ensure_player_battle_scene()
 			_call_scene("select_entity", ["hero_aster"])
+			_call_scene("set_onboarding_step", ["move_to_quarry"])
+			_call_scene("show_objective_feedback", ["select_aster"])
 			_call_scene("focus_visual_subject", ["hero"])
 			_render_player_screen("battle")
 		"move_order":
@@ -865,14 +884,19 @@ func _apply_player_slice_action(action: String) -> Dictionary:
 		"quarry_objective":
 			_ensure_player_battle_scene()
 			_call_scene("change_site_state", ["west_stone_cut", "friendly"])
+			_call_scene("focus_layout_feature", ["quarry"])
+			_call_scene("focus_visual_subject", ["quarry"])
+			_render_player_screen("battle")
 		"worker_selected":
 			_ensure_player_battle_scene()
 			_call_scene("select_entity", ["worker"])
+			_call_scene("set_onboarding_step", ["worker_mine_or_shrine"])
 			_call_scene("focus_visual_subject", ["worker"])
 			_render_player_screen("battle")
 		"squad_selected":
 			_ensure_player_battle_scene()
 			_call_scene("box_select_squad")
+			_call_scene("set_onboarding_step", ["prepare_ashen_pressure"])
 			_call_scene("focus_visual_subject", ["squad"])
 			_render_player_screen("battle")
 		"ashen_pressure_wave":
@@ -909,6 +933,9 @@ func _apply_player_slice_action(action: String) -> Dictionary:
 			_call_scene("change_site_state", ["west_stone_cut", "friendly"])
 			_call_scene("change_site_state", ["ford_toll", "friendly"])
 			_call_scene("focus_lume_link")
+			_call_scene("show_objective_feedback", ["lume_restore"])
+			_call_scene("set_onboarding_step", ["review_results"])
+			_render_player_screen("battle")
 		"minimap":
 			_ensure_player_battle_scene()
 			_call_scene("focus_layout_feature", ["minimap"])
@@ -955,6 +982,8 @@ func _apply_player_slice_action(action: String) -> Dictionary:
 
 func _player_capture_checkpoint() -> String:
 	var normalized_root := _artifact_root_from_args().replace("\\", "/")
+	if normalized_root.contains("/v0128"):
+		return "v0.128"
 	if normalized_root.contains("/v0127"):
 		return "v0.127"
 	if normalized_root.contains("/v0126"):
@@ -962,6 +991,21 @@ func _player_capture_checkpoint() -> String:
 	return "v0.124"
 
 func _player_capture_steps() -> Array[Dictionary]:
+	if _player_capture_checkpoint() == "v0.128":
+		return [
+			{"id": "title", "label": "Title", "action": "title"},
+			{"id": "briefing", "label": "Briefing", "action": "briefing"},
+			{"id": "hud_default", "label": "HUD default", "action": "hud_default"},
+			{"id": "hero_selected", "label": "Hero selected", "action": "hero_selected"},
+			{"id": "worker_selected", "label": "Worker selected", "action": "worker_selected"},
+			{"id": "squad_selected", "label": "Squad selected", "action": "squad_selected"},
+			{"id": "minimap", "label": "Minimap", "action": "minimap"},
+			{"id": "objective_1", "label": "Objective 1", "action": "objective_1"},
+			{"id": "quarry", "label": "Quarry", "action": "quarry_objective"},
+			{"id": "pressure_wave", "label": "Pressure wave", "action": "ashen_pressure_wave"},
+			{"id": "lume_restore", "label": "Lume restore", "action": "lume_restore"},
+			{"id": "results", "label": "Results", "action": "results"}
+		]
 	if _player_capture_checkpoint() == "v0.127":
 		return [
 			{"id": "hero", "label": "Aster hero silhouette", "action": "hero"},

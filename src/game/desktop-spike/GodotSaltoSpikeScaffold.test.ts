@@ -711,9 +711,7 @@ describe("Godot Salto spike scaffold", () => {
       "fullPortStarted"
     ].forEach((text) => expect(toolScript).toContain(text));
 
-    expect(captureScript).toContain("godot-salto\\v0127");
-    expect(captureScript).toContain("21 PNG captures");
-    expect(captureScript).toContain("player-slice-capture-v0127");
+    expect(captureScript).toContain("--player-slice-capture");
 
     expect(rootScript).toContain("PASS_PLAYER_SLICE_VALIDATION");
     expect(scene3d).toContain("linkedWardDamageTakenMultiplier");
@@ -725,5 +723,116 @@ describe("Godot Salto spike scaffold", () => {
     expect(scene3d).not.toContain("load(\"res://assets");
     expect(scene3d).not.toContain("ImageTexture");
     expect(toolScript).not.toContain("ImageTexture");
+  });
+
+  it("defines the v0.128 player-facing HUD minimap feedback and micro-onboarding pass", async () => {
+    [
+      "docs/V0128_HUD_SPEC.md",
+      "docs/V0128_MINIMAP_SPEC.md",
+      "docs/V0128_MICRO_ONBOARDING_SPEC.md",
+      "docs/V0128_OBJECTIVE_FEEDBACK_REPORT.md",
+      "docs/V0128_VISUAL_CAPTURE_REPORT.md",
+      "docs/V0128_IMPLEMENTATION_REPORT.md"
+    ].forEach((path) => expect(existsSync(path), path).toBe(true));
+
+    const rootScript = await readFile("desktop-spikes/godot-salto/scripts/salto_spike_root.gd", "utf8");
+    const scene3d = await readFile("desktop-spikes/godot-salto/scripts/salto_spike_scene_3d.gd", "utf8");
+    const toolScript = await readFile("desktop-spikes/godot-salto/tools/godotSpikeTool.mjs", "utf8");
+    const captureScript = await readFile("tools/godot/captureGodotPlayerSliceWindows.ps1", "utf8");
+    const handoff = await readFile("LLM_GAME_HANDOFF.md", "utf8");
+    const roadmap = await readFile("ROADMAP.md", "utf8");
+
+    [
+      "hud_default",
+      "hero_selected",
+      "worker_selected",
+      "squad_selected",
+      "minimap",
+      "objective_1",
+      "quarry",
+      "pressure_wave",
+      "lume_restore",
+      "results",
+      "onboarding_skip_private"
+    ].forEach((id) => expect(rootScript).toContain(id));
+
+    [
+      "HudResourceCornerRow",
+      "HudCurrentObjectiveStrip",
+      "SelectedContextCard",
+      "MicroOnboardingPrompt",
+      "ObjectiveFeedbackAlert",
+      "MoreDetailsDisclosure",
+      "set_onboarding_step",
+      "skip_onboarding_private",
+      "show_objective_feedback",
+      "v0128HudPass",
+      "hudHierarchyPass",
+      "compactResourceCornerRendered",
+      "heroHealthAndAbilityPostureRendered",
+      "workerContextRendered",
+      "squadContextRendered",
+      "currentObjectiveStripRendered",
+      "pauseAffordanceRendered",
+      "moreDetailsDisclosureRendered",
+      "v0128MinimapPass",
+      "minimap_salto_terrain_outline",
+      "minimap_main_road",
+      "minimap_water_strip",
+      "minimap_friendly_cluster",
+      "minimap_hostile_marker",
+      "minimap_hero_marker",
+      "minimap_objective_marker",
+      "minimap_quarry",
+      "minimap_shrine",
+      "minimap_mine_marker",
+      "minimap_lume_endpoint_a",
+      "minimap_lume_link",
+      "minimap_camera_viewport_indicator",
+      "v0128MicroOnboardingPass",
+      "oneInstructionAtATime",
+      "onboardingNoSpam",
+      "privateSkipOptionAvailable",
+      "v0128ObjectiveFeedbackPass",
+      "objectiveCompletePulseRendered",
+      "pressureWaveNoticeRendered",
+      "lumeActivationNoticeRendered",
+      "notificationFloodPrevented",
+      "restartActionRendered",
+      "returnTitleActionRendered"
+    ].forEach((text) => expect(scene3d).toContain(text));
+
+    [
+      "v0128ArtifactRoot",
+      "v0128ScreenshotRoot",
+      "PASS_V0128_HUD_MINIMAP_ONBOARDING_CAPTURE",
+      "PASS_V0128_PLAYER_FACING_HUD",
+      "PASS_V0128_MINIMAP_READABILITY",
+      "PASS_V0128_MICRO_ONBOARDING",
+      "PASS_V0128_OBJECTIVE_FEEDBACK",
+      "hud-report.json",
+      "minimap-report.json",
+      "micro-onboarding-report.json",
+      "objective-feedback-report.json",
+      "generatedOrImportedArtIncluded",
+      "runtimeArtIntegrated",
+      "routineEditorUseRequired",
+      "stableIdsChanged",
+      "saveWritesAllowed",
+      "fullPortStarted"
+    ].forEach((text) => expect(toolScript).toContain(text));
+
+    expect(captureScript).toContain("godot-salto\\v0128");
+    expect(captureScript).toContain("12 PNG captures");
+    expect(captureScript).toContain("player-slice-capture-v0128");
+    expect(handoff).toContain("v0.128 Godot Player-Facing HUD Minimap Objective Feedback");
+    expect(roadmap).toContain("v0.128 Godot Player-Facing HUD Minimap Objective Feedback");
+
+    expect(rootScript).not.toContain("load(\"res://assets");
+    expect(scene3d).not.toContain("load(\"res://assets");
+    expect(scene3d).not.toContain("ImageTexture");
+    expect(toolScript).not.toContain("ImageTexture");
+    const followingMilestoneLabel = ["v0", ".129"].join("");
+    expect([rootScript, scene3d, toolScript, captureScript, handoff, roadmap].join("\n")).not.toContain(followingMilestoneLabel);
   });
 });

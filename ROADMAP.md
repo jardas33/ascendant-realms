@@ -11,11 +11,22 @@ Every phase should protect these long-term pillars:
 
 ## Current Recommended Next Phase
 
-The current checkpoint is **v0.127 Godot Procedural Silhouette Library, Selection Feedback, and Combat-Readability Pass** on 2026-06-05. It keeps the Godot spike bounded, adds a procedural placeholder silhouette language for the existing player-facing Salto slice, improves selection/order/combat readability, and generates 21 v0.127 screenshots under ignored artifacts. The browser prototype remains authoritative, the private harness remains separate, and no final engine choice, full port, generated image, imported art, save change, stable-ID change, browser-runtime change, broad combat system, gameplay expansion, or runtime art integration is approved.
+The current checkpoint is **v0.128 Godot Player-Facing HUD Minimap Objective Feedback and Micro-Onboarding Pass** on 2026-06-05. It keeps the Godot spike bounded, makes the existing player-facing Salto slice more coherent for a 3-5 minute human review, adds a compact procedural RTS/RPG HUD, improves authored minimap readability, adds one-at-a-time micro-onboarding, adds concise objective feedback, and generates 12 v0.128 screenshots under ignored artifacts. The browser prototype remains authoritative, the private harness remains separate, and no final engine choice, full port, generated image, imported art, save change, stable-ID change, browser-runtime change, broad gameplay system, campaign expansion, or runtime art integration is approved.
 
-The next recommended step, only after a future explicit goal, is Emmanuel's review of the v0.127 screenshots, contact sheet, and reports in `artifacts/desktop-spikes/godot-salto/v0127/`. Do not generate art for runtime integration, import art into runtime, mark `runtime-candidate-approved` assets as loadable, resume broad browser visual expansion, add gameplay systems, change rewards, change saves, rename IDs, create a desktop save path, choose Godot finally, start a full desktop port, start Unity/Unreal/Electron work, or start v0.128 until a future explicit goal approves a narrow next step.
+The next recommended step, only after a future explicit goal, is Emmanuel's review of the v0.128 screenshots, contact sheet, and reports in `artifacts/desktop-spikes/godot-salto/v0128/`. Do not generate art for runtime integration, import art into runtime, mark `runtime-candidate-approved` assets as loadable, resume broad browser visual expansion, add gameplay systems, change rewards, change saves, rename IDs, create a desktop save path, choose Godot finally, start a full desktop port, start Unity/Unreal/Electron work, or start any following milestone until a future explicit goal approves a narrow next step.
+
+New v0.128 docs:
+
+- `docs/V0128_HUD_SPEC.md`
+- `docs/V0128_MINIMAP_SPEC.md`
+- `docs/V0128_MICRO_ONBOARDING_SPEC.md`
+- `docs/V0128_OBJECTIVE_FEEDBACK_REPORT.md`
+- `docs/V0128_VISUAL_CAPTURE_REPORT.md`
+- `docs/V0128_IMPLEMENTATION_REPORT.md`
 
 New v0.127 docs:
+
+Previous checkpoint reference: v0.127 Godot Procedural Silhouette Library, Selection Feedback, and Combat-Readability Pass.
 
 - `docs/V0127_PROCEDURAL_SILHOUETTE_LIBRARY.md`
 - `docs/V0127_SELECTION_FEEDBACK_SPEC.md`
