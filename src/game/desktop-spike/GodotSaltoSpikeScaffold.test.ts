@@ -939,4 +939,84 @@ describe("Godot Salto spike scaffold", () => {
     expect(scene3d).not.toContain("ImageTexture");
     expect(toolScript).not.toContain("ImageTexture");
   });
+
+  it("defines the v0.130 vertical-slice acceptance pack and reference-art review boundary", async () => {
+    [
+      "docs/V0130_SALTO_VERTICAL_SLICE_ACCEPTANCE_GATE.md",
+      "docs/V0130_FINAL_HUMAN_REVIEW_BUILD_REPORT.md",
+      "docs/V0130_FIRST_REFERENCE_ART_GENERATION_SESSION.md",
+      "docs/V0130_REFERENCE_ART_REVIEW_WORKFLOW.md",
+      "docs/V0130_EMMANUEL_DECISION_PACKET.md",
+      "docs/V0130_IMPLEMENTATION_REPORT.md",
+      "GODOT_LAUNCH_SALTO_VERTICAL_SLICE_WINDOWS.bat",
+      "GODOT_CAPTURE_SALTO_VERTICAL_SLICE_WINDOWS.bat",
+      "GODOT_VALIDATE_SALTO_VERTICAL_SLICE_WINDOWS.bat",
+      "tools/godot/captureGodotSaltoVerticalSliceWindows.ps1",
+      "tools/godot/validateGodotSaltoVerticalSliceWindows.ps1"
+    ].forEach((path) => expect(existsSync(path), path).toBe(true));
+
+    const rootScript = await readFile("desktop-spikes/godot-salto/scripts/salto_spike_root.gd", "utf8");
+    const toolScript = await readFile("desktop-spikes/godot-salto/tools/godotSpikeTool.mjs", "utf8");
+    const captureScript = await readFile("tools/godot/captureGodotSaltoVerticalSliceWindows.ps1", "utf8");
+    const validateScript = await readFile("tools/godot/validateGodotSaltoVerticalSliceWindows.ps1", "utf8");
+    const launchBat = await readFile("GODOT_LAUNCH_SALTO_VERTICAL_SLICE_WINDOWS.bat", "utf8");
+    const acceptanceGate = await readFile("docs/V0130_SALTO_VERTICAL_SLICE_ACCEPTANCE_GATE.md", "utf8");
+    const referenceSession = await readFile("docs/V0130_FIRST_REFERENCE_ART_GENERATION_SESSION.md", "utf8");
+    const reviewWorkflow = await readFile("docs/V0130_REFERENCE_ART_REVIEW_WORKFLOW.md", "utf8");
+    const decisionPacket = await readFile("docs/V0130_EMMANUEL_DECISION_PACKET.md", "utf8");
+
+    [
+      "v0.130",
+      "_is_bounded_microloop_checkpoint",
+      "private_harness_preserved",
+      "battle_default",
+      "pressure_wave",
+      "lume",
+      "minimap"
+    ].forEach((text) => expect(rootScript).toContain(text));
+
+    [
+      "v0130ArtifactRoot",
+      "v0130ScreenshotRoot",
+      "SALTO_VERTICAL_SLICE_REVIEW_READY",
+      "SALTO_VERTICAL_SLICE_REVIEW_AMBER",
+      "SALTO_VERTICAL_SLICE_BLOCKED",
+      "PASS_V0130_VERTICAL_SLICE_VALIDATION",
+      "PASS_V0130_VERTICAL_SLICE_CAPTURE",
+      "PASS_V0130_PERFORMANCE_SMOKE",
+      "PASS_V0130_OBJECTIVE_FLOW",
+      "PASS_V0130_PACKAGE_REPORT",
+      "PASS_V0130_SCORECARD_UPDATE",
+      "player-slice-validate-v0130",
+      "player-slice-capture-v0130",
+      "generatedOrImportedArtIncluded",
+      "runtimeArtIntegrated",
+      "saveWritesAllowed",
+      "stableIdsChanged",
+      "finalEngineDecisionMade",
+      "fullPortStarted"
+    ].forEach((text) => expect(toolScript).toContain(text));
+
+    expect(captureScript).toContain("godot-salto\\v0130");
+    expect(captureScript).toContain("15 PNG captures");
+    expect(captureScript).toContain("player-slice-capture-v0130");
+    expect(validateScript).toContain("godot-salto\\v0130");
+    expect(validateScript).toContain("player-slice-validate-v0130");
+    expect(launchBat).toContain("launchGodotPlayerSliceWindows.ps1");
+
+    expect(acceptanceGate).toContain("Classification: `SALTO_VERTICAL_SLICE_REVIEW_READY`");
+    expect(acceptanceGate).toContain("Private harness");
+    expect(referenceSession).toContain("Generate only these four reference-only assets first");
+    expect(referenceSession).toContain("docs/art-prompts/V0123_01_SALTO_2_5D_ENVIRONMENT_STYLE_FRAME.md");
+    expect(referenceSession).toContain("docs/art-prompts/V0123_08_HUD_STYLE_FRAME.md");
+    expect(referenceSession).toContain("docs/art-prompts/V0123_02_BARROSAN_HERO_SILHOUETTE_SHEET.md");
+    expect(referenceSession).toContain("docs/art-prompts/V0123_03_BARROSAN_WORKER_SILHOUETTE_SHEET.md");
+    expect(reviewWorkflow).toContain("style-approved");
+    expect(reviewWorkflow).toContain("runtime-integrated");
+    expect(decisionPacket).toContain("Does the player-facing slice finally feel like a game foundation rather than a test harness?");
+    expect(decisionPacket).toContain("Should the first four reference-art frames be generated?");
+
+    expect(rootScript).not.toContain("load(\"res://assets");
+    expect(toolScript).not.toContain("ImageTexture");
+  });
 });

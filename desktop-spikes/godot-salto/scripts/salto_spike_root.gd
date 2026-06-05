@@ -706,16 +706,18 @@ func run_player_slice_validation() -> void:
 		"minimap",
 		"results"
 	]
-	if _player_capture_checkpoint() == "v0.129":
+	if _is_bounded_microloop_checkpoint():
 		actions = [
 			"title",
 			"briefing",
 			"battle_default",
-			"mine_uncaptured",
 			"hero_selected",
+			"worker_selected",
+			"mine_uncaptured",
 			"move_order",
 			"mine_converted",
 			"worker_assigned_mine",
+			"quarry_objective",
 			"build_placement",
 			"construction_progress",
 			"barracks_complete",
@@ -723,6 +725,7 @@ func run_player_slice_validation() -> void:
 			"militia_spawned",
 			"ashen_pressure_wave",
 			"lume_restore",
+			"minimap",
 			"results"
 		]
 	for action in actions:
@@ -857,7 +860,7 @@ func run_player_slice_capture() -> void:
 		"viewport": {"width": VIEWPORT_SIZE.x, "height": VIEWPORT_SIZE.y},
 		"defaultMode": MODE_25D,
 		"defaultVisualPreset": VISUAL_PRESET_CLEAN,
-		"privateHarnessPreservedSeparately": captures.any(func(capture: Dictionary) -> bool: return bool(capture.get("privateHarnessCapture", false))) or ["v0.126", "v0.127", "v0.128", "v0.129"].has(_player_capture_checkpoint()),
+		"privateHarnessPreservedSeparately": captures.any(func(capture: Dictionary) -> bool: return bool(capture.get("privateHarnessCapture", false))) or ["v0.126", "v0.127", "v0.128", "v0.129", "v0.130"].has(_player_capture_checkpoint()),
 		"generatedOrImportedArtIncluded": false,
 		"runtimeArtIntegrated": false,
 		"routineEditorUseRequired": false,
@@ -892,7 +895,7 @@ func _apply_player_slice_action(action: String) -> Dictionary:
 		"hero_selected":
 			_ensure_player_battle_scene()
 			_call_scene("select_entity", ["hero_aster"])
-			if _player_capture_checkpoint() == "v0.129":
+			if _is_bounded_microloop_checkpoint():
 				_call_scene("trigger_hero_ability")
 			_call_scene("set_onboarding_step", ["move_to_quarry"])
 			_call_scene("show_objective_feedback", ["select_aster"])
@@ -911,7 +914,7 @@ func _apply_player_slice_action(action: String) -> Dictionary:
 			_render_player_screen("battle")
 		"mine_uncaptured":
 			show_player_battle()
-			if _player_capture_checkpoint() == "v0.129":
+			if _is_bounded_microloop_checkpoint():
 				_call_scene("select_entity", ["hero_aster"])
 				_call_scene("trigger_hero_ability")
 			_call_scene("focus_visual_subject", ["mine"])
@@ -988,7 +991,7 @@ func _apply_player_slice_action(action: String) -> Dictionary:
 			_render_player_screen("battle")
 		"ashen_pressure_wave":
 			_ensure_player_battle_scene()
-			if _player_capture_checkpoint() == "v0.129":
+			if _is_bounded_microloop_checkpoint():
 				_call_scene("capture_mine_site")
 				_call_scene("assign_worker_to_mine")
 				_call_scene("advance_resource_production", [180])
@@ -1028,7 +1031,7 @@ func _apply_player_slice_action(action: String) -> Dictionary:
 			_call_scene("focus_lume_link")
 		"lume_restore":
 			_ensure_player_battle_scene()
-			if _player_capture_checkpoint() == "v0.129":
+			if _is_bounded_microloop_checkpoint():
 				_call_scene("restore_lume_microloop")
 			else:
 				_call_scene("change_site_state", ["west_stone_cut", "friendly"])
@@ -1083,6 +1086,8 @@ func _apply_player_slice_action(action: String) -> Dictionary:
 
 func _player_capture_checkpoint() -> String:
 	var normalized_root := _artifact_root_from_args().replace("\\", "/")
+	if normalized_root.contains("/v0130"):
+		return "v0.130"
 	if normalized_root.contains("/v0129"):
 		return "v0.129"
 	if normalized_root.contains("/v0128"):
@@ -1093,7 +1098,28 @@ func _player_capture_checkpoint() -> String:
 		return "v0.126"
 	return "v0.124"
 
+func _is_bounded_microloop_checkpoint() -> bool:
+	return ["v0.129", "v0.130"].has(_player_capture_checkpoint())
+
 func _player_capture_steps() -> Array[Dictionary]:
+	if _player_capture_checkpoint() == "v0.130":
+		return [
+			{"id": "title", "label": "Title", "action": "title"},
+			{"id": "briefing", "label": "Briefing", "action": "briefing"},
+			{"id": "battle_default", "label": "Battle default", "action": "battle_default"},
+			{"id": "hero", "label": "Aster hero", "action": "hero_selected"},
+			{"id": "worker", "label": "Worker", "action": "worker_selected"},
+			{"id": "mine", "label": "Mine resource capture", "action": "mine_converted"},
+			{"id": "quarry", "label": "Quarry landmark", "action": "quarry_objective"},
+			{"id": "build", "label": "Build placement", "action": "build_placement"},
+			{"id": "barracks", "label": "Barracks restored", "action": "barracks_complete"},
+			{"id": "recruit", "label": "Militia recruit", "action": "militia_spawned"},
+			{"id": "pressure_wave", "label": "Pressure wave defeated", "action": "ashen_pressure_wave"},
+			{"id": "lume", "label": "Lume restore", "action": "lume_restore"},
+			{"id": "minimap", "label": "Minimap", "action": "minimap"},
+			{"id": "results", "label": "Results", "action": "results"},
+			{"id": "private_harness_preserved", "label": "Private harness preserved separately", "action": "private_harness"}
+		]
 	if _player_capture_checkpoint() == "v0.129":
 		return [
 			{"id": "mine_uncaptured", "label": "Mine uncaptured", "action": "mine_uncaptured"},

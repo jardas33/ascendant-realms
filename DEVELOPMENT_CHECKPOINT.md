@@ -1,6 +1,45 @@
 # Development Checkpoint
 
-Updated: 2026-06-04 v0.124 Godot Player-Facing Salto Review Slice, Private Harness Separation, and Art-Ready Presentation Shell
+Updated: 2026-06-05 v0.130 Godot Salto Vertical-Slice Acceptance Pack, Human Review Build, and First Reference-Art Generation Session
+
+## v0.130 Godot Salto Vertical-Slice Acceptance Pack, Human Review Build, And First Reference-Art Generation Session - 2026-06-05
+
+Scope: bounded Godot review packaging, validation, capture, docs, and reference-only art generation preparation. This checkpoint does not select Godot finally, start a full port, create Unity/Unreal/Electron work, generate images, import runtime art, change browser runtime, saves, stable IDs, rewards, maps, factions, AI, pathing, combat balance, multiplayer, PvP, co-op, campaign scope, or v0.131.
+
+Included work:
+
+- Added `GODOT_LAUNCH_SALTO_VERTICAL_SLICE_WINDOWS.bat` as the named player-facing vertical-slice launcher.
+- Added `GODOT_VALIDATE_SALTO_VERTICAL_SLICE_WINDOWS.bat` and `GODOT_CAPTURE_SALTO_VERTICAL_SLICE_WINDOWS.bat`.
+- Added v0.130-specific validation and capture scripts under `tools/godot/`.
+- Added v0.130 artifact generation under `artifacts/desktop-spikes/godot-salto/v0130/`.
+- Added v0.130 docs for acceptance, human review, first reference-art generation, art review workflow, Emmanuel decisions, and implementation.
+
+Current interpretation:
+
+- The slice is `SALTO_VERTICAL_SLICE_REVIEW_READY` for human review only.
+- The private engineering harness remains separate.
+- First reference-art generation is limited to four reference-only images, then stop for human review.
+- Godot is still not selected finally.
+- The browser prototype remains the current source of truth.
+
+Verification:
+
+```text
+Required closeout stack:
+npm test
+npm run build
+npm run validate:content
+npm run validate:art-intake
+npm run export:portable-content
+npm run validate:portable-content
+npm run export:desktop-spike-fixture
+npm run validate:desktop-spike-fixture
+npm run godot:all
+npm run godot:fresh-checkout:validate
+npm run godot:validate:player-slice
+npm run godot:capture:player-slice
+git diff --check
+```
 
 ## v0.124 Godot Player-Facing Salto Review Slice, Private Harness Separation, And Art-Ready Presentation Shell - 2026-06-04
 

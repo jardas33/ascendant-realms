@@ -1,5 +1,28 @@
 # Changelog
 
+# v0.130 Godot Salto Vertical-Slice Acceptance Pack, Human Review Build, And First Reference-Art Generation Session - 2026-06-05
+
+This checkpoint packages the existing Godot Salto player-facing slice for Emmanuel review and prepares the first four reference-only art generation prompts. It remains a bounded review-preparation checkpoint: no generated images, imported runtime art, final Godot choice, full port, Unity project, browser-runtime change, save change, stable-ID change, broad campaign, multiplayer, or v0.131 work.
+
+Added:
+
+- `GODOT_LAUNCH_SALTO_VERTICAL_SLICE_WINDOWS.bat`.
+- `GODOT_VALIDATE_SALTO_VERTICAL_SLICE_WINDOWS.bat`.
+- `GODOT_CAPTURE_SALTO_VERTICAL_SLICE_WINDOWS.bat`.
+- v0.130-specific validation and capture scripts under `tools/godot/`.
+- v0.130 ignored artifact generation for validation, acceptance gate, performance smoke, objective flow, screenshot manifest, screenshot hashes, package report, scorecard update, contact sheet, and README.
+- v0.130 docs for the acceptance gate, final human review build, first reference-art session, reference-art workflow, Emmanuel decision packet, and implementation report.
+
+Changed:
+
+- The v0.130 artifact root is `artifacts/desktop-spikes/godot-salto/v0130/`.
+- The default human-review path is named explicitly as the Salto vertical slice while the private engineering harness stays separate.
+- Handoff, roadmap, development checkpoint, and release checklist now describe v0.130.
+
+Verification:
+
+- Required v0.130 verification is listed in `docs/V0130_IMPLEMENTATION_REPORT.md` and must be run before closeout.
+
 # v0.124 Godot Player-Facing Salto Review Slice, Private Harness Separation, And Art-Ready Presentation Shell - 2026-06-04
 
 This checkpoint separates the private engineering harness from a new player-facing Salto review slice. It makes `GODOT_LAUNCH_PLAYER_SLICE_WINDOWS.bat` the default human-review path, keeps `GODOT_LAUNCH_PRIVATE_HARNESS_WINDOWS.bat` for engineering review, and adds v0.124 validation/capture artifacts for the player-facing flow. It remains a bounded placeholder-only Godot workflow spike: no final engine choice, full port, generated image, imported art, runtime art integration, browser replacement, gameplay change, save change, stable-ID rename, multiplayer, or v0.125 work.

@@ -11,9 +11,20 @@ Every phase should protect these long-term pillars:
 
 ## Current Recommended Next Phase
 
-The current checkpoint is **v0.129 Godot Bounded Hero-Worker-Mine-Build-Recruit Microloop and Vertical-Slice Gameplay Proof** on 2026-06-05. It keeps the Godot spike bounded, adds one deterministic placeholder gameplay microloop to the existing player-facing Salto slice, and proves Aster selection/movement/ability, mine conversion, Worker assignment, boosted production, Barracks restoration, Militia queue/spawn, one Ashen pressure wave, Lume restore, Results, and 11 v0.129 screenshots under ignored artifacts. The browser prototype remains authoritative, the private harness remains separate, and no final engine choice, full port, generated image, imported art, save change, stable-ID change, browser-runtime change, broad economy, broad building tree, broad recruitment, full hero progression, campaign expansion, or runtime art integration is approved.
+The current checkpoint is **v0.130 Godot Salto Vertical-Slice Acceptance Pack, Human Review Build, and First Reference-Art Generation Session** on 2026-06-05. It keeps the Godot spike bounded, packages the existing player-facing Salto title -> briefing -> microloop -> Results path for Emmanuel review, adds v0.130 one-click launch/validate/capture wrappers, generates ignored v0.130 validation/capture/package/scorecard artifacts, and prepares the first four reference-only art generation prompts. The browser prototype remains authoritative, the private harness remains separate, and no final engine choice, full port, generated image, imported art, save change, stable-ID change, browser-runtime change, broad economy, broad building tree, broad recruitment, full hero progression, campaign expansion, or runtime art integration is approved.
 
-The next recommended step, only after a future explicit goal, is Emmanuel's review of the v0.129 screenshots, contact sheet, and reports in `artifacts/desktop-spikes/godot-salto/v0129/`. Do not generate art for runtime integration, import art into runtime, mark `runtime-candidate-approved` assets as loadable, resume broad browser visual expansion, add broad gameplay systems, change rewards, change saves, rename IDs, create a desktop save path, choose Godot finally, start a full desktop port, start Unity/Unreal/Electron work, or start any following milestone until a future explicit goal approves a narrow next step.
+The next recommended step, only after a future explicit goal or Emmanuel's explicit review action, is Emmanuel's review of the v0.130 build and captures in `artifacts/desktop-spikes/godot-salto/v0130/`, followed by optional generation of only the four reference-only images listed in `docs/V0130_FIRST_REFERENCE_ART_GENERATION_SESSION.md`. Do not generate art for runtime integration, import art into runtime, mark `runtime-candidate-approved` assets as loadable, resume broad browser visual expansion, add broad gameplay systems, change rewards, change saves, rename IDs, create a desktop save path, choose Godot finally, start a full desktop port, start Unity/Unreal/Electron work, or start any following milestone until a future explicit goal approves a narrow next step.
+
+New v0.130 docs:
+
+- `docs/V0130_SALTO_VERTICAL_SLICE_ACCEPTANCE_GATE.md`
+- `docs/V0130_FINAL_HUMAN_REVIEW_BUILD_REPORT.md`
+- `docs/V0130_FIRST_REFERENCE_ART_GENERATION_SESSION.md`
+- `docs/V0130_REFERENCE_ART_REVIEW_WORKFLOW.md`
+- `docs/V0130_EMMANUEL_DECISION_PACKET.md`
+- `docs/V0130_IMPLEMENTATION_REPORT.md`
+
+Previous checkpoint reference: v0.129 Godot Bounded Hero-Worker-Mine-Build-Recruit Microloop and Vertical-Slice Gameplay Proof.
 
 New v0.129 docs:
 

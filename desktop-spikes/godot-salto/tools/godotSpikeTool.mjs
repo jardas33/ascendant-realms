@@ -24,6 +24,8 @@ const v0128ArtifactRoot = join(repoRoot, "artifacts", "desktop-spikes", "godot-s
 const v0128ScreenshotRoot = join(v0128ArtifactRoot, "screenshots");
 const v0129ArtifactRoot = join(repoRoot, "artifacts", "desktop-spikes", "godot-salto", "v0129");
 const v0129ScreenshotRoot = join(v0129ArtifactRoot, "screenshots");
+const v0130ArtifactRoot = join(repoRoot, "artifacts", "desktop-spikes", "godot-salto", "v0130");
+const v0130ScreenshotRoot = join(v0130ArtifactRoot, "screenshots");
 const sourceFixtureRoot = join(repoRoot, "artifacts", "desktop-spike-fixture", "latest");
 const generatedDataRoot = join(spikeRoot, "data", "generated");
 const buildsRoot = join(spikeRoot, "builds");
@@ -320,6 +322,18 @@ function writeV0129Text(name, value) {
   return target;
 }
 
+function writeV0130Artifact(name, value) {
+  const target = join(v0130ArtifactRoot, name);
+  writeJson(target, value);
+  return target;
+}
+
+function writeV0130Text(name, value) {
+  const target = join(v0130ArtifactRoot, name);
+  writeText(target, value);
+  return target;
+}
+
 function writeV0118Artifact(name, value) {
   const target = join(v0118ArtifactRoot, name);
   writeJson(target, value);
@@ -364,6 +378,11 @@ function readV0128RuntimeReport(name) {
 
 function readV0129RuntimeReport(name) {
   const path = join(v0129ArtifactRoot, name);
+  return existsSync(path) ? readJson(path) : null;
+}
+
+function readV0130RuntimeReport(name) {
+  const path = join(v0130ArtifactRoot, name);
   return existsSync(path) ? readJson(path) : null;
 }
 
@@ -3929,6 +3948,563 @@ function writeV0129ScreenshotManifest() {
   return manifest;
 }
 
+const v0130CaptureOrder = [
+  "title",
+  "briefing",
+  "battle_default",
+  "hero",
+  "worker",
+  "mine",
+  "quarry",
+  "build",
+  "barracks",
+  "recruit",
+  "pressure_wave",
+  "lume",
+  "minimap",
+  "results",
+  "private_harness_preserved"
+];
+
+const v0130ValidationSteps = [
+  "title",
+  "briefing",
+  "battle_default",
+  "hero_selected",
+  "worker_selected",
+  "mine_uncaptured",
+  "move_order",
+  "mine_converted",
+  "worker_assigned_mine",
+  "quarry_objective",
+  "build_placement",
+  "construction_progress",
+  "barracks_complete",
+  "recruit_queue",
+  "militia_spawned",
+  "ashen_pressure_wave",
+  "lume_restore",
+  "minimap",
+  "results"
+];
+
+function writeV0130ContactSheet(manifest) {
+  const columns = 3;
+  const tileWidth = 480;
+  const tileHeight = 270;
+  const labelHeight = 44;
+  const margin = 18;
+  const width = margin * 2 + columns * tileWidth + (columns - 1) * 18;
+  const rows = Math.ceil(manifest.captures.length / columns);
+  const height = 82 + rows * (tileHeight + labelHeight + 18);
+  const tiles = manifest.captures.map((capture, index) => {
+    const x = margin + (index % columns) * (tileWidth + 18);
+    const y = 78 + Math.floor(index / columns) * (tileHeight + labelHeight + 18);
+    return [
+      `<rect x="${x}" y="${y}" width="${tileWidth}" height="${tileHeight + labelHeight}" fill="#101616" stroke="#4dc6ba" stroke-width="1"/>`,
+      `<image href="screenshots/${escapeXml(capture.fileName)}" x="${x}" y="${y}" width="${tileWidth}" height="${tileHeight}" preserveAspectRatio="xMidYMid meet"/>`,
+      `<text x="${x + 10}" y="${y + tileHeight + 28}" fill="#e6efe8" font-family="Arial, sans-serif" font-size="14">${escapeXml(`${index + 1}. ${capture.label}`)}</text>`
+    ].join("\n");
+  });
+  const svg = [
+    `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}">`,
+    '<rect width="100%" height="100%" fill="#071011"/>',
+    '<text x="18" y="32" fill="#e6efe8" font-family="Arial, sans-serif" font-size="24">v0.130 Salto Vertical Slice Acceptance Capture</text>',
+    `<text x="18" y="58" fill="#9ccfc8" font-family="Arial, sans-serif" font-size="14">Status: ${escapeXml(manifest.status)} | Screenshots: ${manifest.captureCount}/15 | Reference-only art boundary</text>`,
+    tiles.join("\n"),
+    "</svg>",
+    ""
+  ].join("\n");
+  writeText(join(v0130ArtifactRoot, "contact-sheet.svg"), svg);
+}
+
+function v0130CaptureById(manifest, id) {
+  return manifest?.captures?.find((capture) => capture.id === id) ?? null;
+}
+
+function v0130StatusFor(manifest, id) {
+  return v0130CaptureById(manifest, id)?.status ?? {};
+}
+
+function v0130CheckErrors(checks) {
+  return Object.entries(checks)
+    .filter(([, pass]) => !pass)
+    .map(([name]) => `Missing or failed v0.130 evidence: ${name}`);
+}
+
+function writeV0130PackageReport() {
+  const source = existsSync(join(artifactRoot, "package-report.json")) ? readJson(join(artifactRoot, "package-report.json")) : writePackageReport();
+  const report = {
+    schemaVersion: 1,
+    checkpoint: "v0.130",
+    status: source.status === "PASS_WINDOWS_PACKAGE" ? "PASS_V0130_PACKAGE_REPORT" : source.status ?? "UNKNOWN_PACKAGE_STATUS",
+    generatedAtUtc: "deterministic-v0130",
+    sourcePackageStatus: source.status ?? null,
+    packageCreated: source.packageCreated === true,
+    packagePath: source.packagePath ?? null,
+    packageSha256: source.packageSha256 ?? null,
+    packageSizeMb: source.packageSizeMb ?? null,
+    finalEngineDecisionMade: false,
+    fullPortStarted: false,
+    sourceReport: source
+  };
+  writeV0130Artifact("package-report.json", report);
+  return report;
+}
+
+function writeV0130ScorecardUpdate() {
+  const source = writeBenchmarkReports({ scorecardOnly: true });
+  const report = {
+    ...source,
+    checkpoint: "v0.130",
+    status: "PASS_V0130_SCORECARD_UPDATE",
+    generatedAtUtc: "deterministic-v0130",
+    acceptancePackInterpretation: "human-review-build-ready-not-final-engine-choice",
+    finalEngineDecisionMade: false,
+    fullPortStarted: false
+  };
+  writeV0130Artifact("scorecard-update.json", report);
+  return report;
+}
+
+function writeV0130PerformanceSmoke(performanceRuntime) {
+  const errors = [];
+  if (!performanceRuntime) {
+    errors.push("Missing performance-smoke-runtime.json.");
+  }
+  if (performanceRuntime?.status !== "PASS_PLAYER_FACING_TIER_M_SMOKE") {
+    errors.push(`Performance smoke did not pass: ${performanceRuntime?.status ?? "missing"}.`);
+  }
+  if (performanceRuntime?.finalProductionCertification !== false) {
+    errors.push("Performance smoke must not claim final production certification.");
+  }
+  const report = {
+    schemaVersion: 1,
+    checkpoint: "v0.130",
+    status: errors.length === 0 ? "PASS_V0130_PERFORMANCE_SMOKE" : "FAIL_V0130_PERFORMANCE_SMOKE",
+    generatedAtUtc: "deterministic-v0130",
+    mode: performanceRuntime?.mode ?? "2_5D_ORTHOGRAPHIC_PLACEHOLDER",
+    visualPreset: performanceRuntime?.visualPreset ?? "CLEAN_READABILITY",
+    tier: performanceRuntime?.tier ?? "M",
+    fpsAverage: performanceRuntime?.fpsAverage ?? null,
+    frameTimeP95Ms: performanceRuntime?.frameTimeP95Ms ?? null,
+    inputAcceptance: performanceRuntime?.inputAcceptance ?? null,
+    objectiveTransition: performanceRuntime?.objectiveTransition ?? null,
+    stuckUnits: performanceRuntime?.stuckUnits ?? null,
+    resultsTransition: performanceRuntime?.resultsTransition ?? null,
+    finalProductionCertification: false,
+    errors,
+    runtimeReport: performanceRuntime ?? null
+  };
+  writeV0130Artifact("performance-smoke.json", report);
+  return report;
+}
+
+function writeV0130ObjectiveFlow(objectiveRuntime, validationRuntime) {
+  const observed = validationRuntime?.objectiveSequence ?? (objectiveRuntime?.steps ?? []).map((step) => step.id);
+  const checks = {
+    runtimeReportPresent: Boolean(objectiveRuntime),
+    objectiveRuntimePasses: objectiveRuntime?.status === "PASS_OBJECTIVE_FLOW",
+    titleToBriefingToMicroloopToResults: ["title", "briefing", "battle_default", "hero_selected", "worker_assigned_mine", "barracks_complete", "militia_spawned", "ashen_pressure_wave", "lume_restore", "results"].every((id) => observed.includes(id)),
+    resultsReached: objectiveRuntime?.resultsReached === true,
+    saveWritesBlocked: objectiveRuntime?.saveWritesAllowed === false
+  };
+  const errors = v0130CheckErrors(checks);
+  const report = {
+    schemaVersion: 1,
+    checkpoint: "v0.130",
+    status: errors.length === 0 ? "PASS_V0130_OBJECTIVE_FLOW" : "FAIL_V0130_OBJECTIVE_FLOW",
+    generatedAtUtc: "deterministic-v0130",
+    defaultPath: "title -> briefing -> microloop -> Results",
+    observedSequence: observed,
+    checks,
+    errors,
+    runtimeReport: objectiveRuntime ?? null
+  };
+  writeV0130Artifact("objective-flow.json", report);
+  return report;
+}
+
+function buildV0130AcceptanceGate(validation = null, manifest = null) {
+  const resolvedValidation = validation ?? readOptionalJson(join(v0130ArtifactRoot, "validation.json"));
+  const resolvedManifest = manifest ?? readOptionalJson(join(v0130ArtifactRoot, "screenshot-manifest.json"));
+  const performance = readOptionalJson(join(v0130ArtifactRoot, "performance-smoke.json"));
+  const objectiveFlow = readOptionalJson(join(v0130ArtifactRoot, "objective-flow.json"));
+  const packageReport = readOptionalJson(join(v0130ArtifactRoot, "package-report.json"));
+  const scorecard = readOptionalJson(join(v0130ArtifactRoot, "scorecard-update.json"));
+  const privateHarnessCapture = v0130CaptureById(resolvedManifest, "private_harness_preserved");
+  const checks = {
+    validationPasses: resolvedValidation?.status === "PASS_V0130_VERTICAL_SLICE_VALIDATION",
+    screenshotsPass: resolvedManifest?.status === "PASS_V0130_VERTICAL_SLICE_CAPTURE",
+    performanceSmokePasses: performance?.status === "PASS_V0130_PERFORMANCE_SMOKE",
+    objectiveFlowPasses: objectiveFlow?.status === "PASS_V0130_OBJECTIVE_FLOW",
+    packageReportPasses: packageReport?.status === "PASS_V0130_PACKAGE_REPORT",
+    scorecardUpdated: scorecard?.status === "PASS_V0130_SCORECARD_UPDATE",
+    privateHarnessSeparate: resolvedManifest?.privateHarnessPreservedSeparately === true && privateHarnessCapture?.privateHarnessCapture === true,
+    zeroEditorRoutine: resolvedValidation?.routineEditorUseRequired === false && resolvedManifest?.routineEditorUseRequired === false,
+    noRuntimeArtOrGeneratedImages: resolvedValidation?.generatedOrImportedArtIncluded === false && resolvedValidation?.runtimeArtIntegrated === false && resolvedManifest?.generatedOrImportedArtIncluded === false && resolvedManifest?.runtimeArtIntegrated === false,
+    noSaveOrStableIdChange: resolvedValidation?.saveWritesAllowed === false && resolvedValidation?.stableIdsChanged === false && resolvedManifest?.saveWritesAllowed === false && resolvedManifest?.stableIdsChanged === false,
+    noBrowserRuntimeChange: resolvedValidation?.browserRuntimeChanged === false && resolvedManifest?.browserRuntimeChanged === false,
+    noFinalEngineOrFullPort: resolvedValidation?.finalEngineDecisionMade === false && resolvedValidation?.fullPortStarted === false && resolvedManifest?.finalEngineDecisionMade === false && resolvedManifest?.fullPortStarted === false
+  };
+  const failedChecks = Object.entries(checks).filter(([, pass]) => !pass).map(([name]) => name);
+  const blockingChecks = failedChecks.filter((name) => [
+    "validationPasses",
+    "screenshotsPass",
+    "performanceSmokePasses",
+    "objectiveFlowPasses",
+    "packageReportPasses",
+    "privateHarnessSeparate",
+    "zeroEditorRoutine",
+    "noRuntimeArtOrGeneratedImages",
+    "noSaveOrStableIdChange",
+    "noBrowserRuntimeChange",
+    "noFinalEngineOrFullPort"
+  ].includes(name));
+  const classification = blockingChecks.length > 0
+    ? "SALTO_VERTICAL_SLICE_BLOCKED"
+    : failedChecks.length > 0
+      ? "SALTO_VERTICAL_SLICE_REVIEW_AMBER"
+      : "SALTO_VERTICAL_SLICE_REVIEW_READY";
+  const report = {
+    schemaVersion: 1,
+    checkpoint: "v0.130",
+    status: classification,
+    classification,
+    generatedAtUtc: "deterministic-v0130",
+    allowedClassifications: [
+      "SALTO_VERTICAL_SLICE_REVIEW_READY",
+      "SALTO_VERTICAL_SLICE_REVIEW_AMBER",
+      "SALTO_VERTICAL_SLICE_BLOCKED"
+    ],
+    acceptanceScope: "human-review acceptance pack only",
+    finalEngineDecisionMade: false,
+    fullPortStarted: false,
+    routineEditorUseRequired: false,
+    generatedOrImportedArtIncluded: false,
+    runtimeArtIntegrated: false,
+    saveWritesAllowed: false,
+    stableIdsChanged: false,
+    checks,
+    failedChecks,
+    blockingChecks,
+    sourceStatuses: {
+      validation: resolvedValidation?.status ?? null,
+      screenshots: resolvedManifest?.status ?? null,
+      performance: performance?.status ?? null,
+      objectiveFlow: objectiveFlow?.status ?? null,
+      package: packageReport?.status ?? null,
+      scorecard: scorecard?.status ?? null
+    }
+  };
+  writeV0130Artifact("acceptance-gate.json", report);
+  return report;
+}
+
+function writeV0130Readme() {
+  const validation = readOptionalJson(join(v0130ArtifactRoot, "validation.json"));
+  const manifest = readOptionalJson(join(v0130ArtifactRoot, "screenshot-manifest.json"));
+  const gate = readOptionalJson(join(v0130ArtifactRoot, "acceptance-gate.json"));
+  writeV0130Text(
+    "README.md",
+    [
+      "# v0.130 Salto Vertical Slice Acceptance Pack Artifacts",
+      "",
+      "This ignored artifact folder is regenerated by the v0.130 Salto vertical-slice validation and capture scripts.",
+      "",
+      `Acceptance classification: ${gate?.classification ?? "pending"}`,
+      `Validation: ${validation?.status ?? "pending"}`,
+      `Screenshot capture: ${manifest?.status ?? "pending"}`,
+      "",
+      "Included files:",
+      "",
+      "- `validation.json` records the scripted title, briefing, battle, hero, Worker, mine/resource, build, recruit, pressure-wave, Lume, minimap, and Results checks.",
+      "- `acceptance-gate.json` classifies the pack as ready, amber, or blocked for human review.",
+      "- `performance-smoke.json` records the Tier M player-facing smoke posture.",
+      "- `objective-flow.json` records the default title -> briefing -> microloop -> Results path.",
+      "- `screenshot-manifest.json`, `screenshot-hashes.json`, and `contact-sheet.svg` record deterministic captures.",
+      "- `package-report.json` and `scorecard-update.json` mirror the current Windows package and scorecard evidence.",
+      "",
+      "No file in this folder is final art, generated imagery, imported runtime art, a save change, a stable-ID change, final Godot selection, or full-port approval."
+    ].join("\n")
+  );
+}
+
+function writeV0130PlayerSliceValidation() {
+  const runtime = readV0130RuntimeReport("player-slice-validation-runtime.json");
+  const performanceRuntime = readV0130RuntimeReport("performance-smoke-runtime.json");
+  const objectiveRuntime = readV0130RuntimeReport("objective-flow-runtime.json");
+  const errors = [];
+  if (!runtime) {
+    errors.push("Missing player-slice-validation-runtime.json.");
+  }
+  if (runtime?.checkpoint !== "v0.130") {
+    errors.push(`Expected v0.130 runtime checkpoint, found ${runtime?.checkpoint ?? "missing"}.`);
+  }
+  if (runtime?.status !== "PASS_PLAYER_SLICE_VALIDATION") {
+    errors.push(`Player-slice runtime validation did not pass: ${runtime?.status ?? "missing"}.`);
+  }
+  const observed = runtime?.objectiveSequence ?? [];
+  for (const id of v0130ValidationSteps) {
+    if (!observed.includes(id)) {
+      errors.push(`Missing v0.130 validation step: ${id}`);
+    }
+  }
+  const status = (id) => findValidationStep(runtime, id)?.status ?? {};
+  const titleStatus = status("title");
+  const briefingStatus = status("briefing");
+  const battleStatus = status("battle_default");
+  const heroStatus = status("hero_selected");
+  const workerStatus = status("worker_selected");
+  const mineConvertedStatus = status("mine_converted");
+  const workerAssignedStatus = status("worker_assigned_mine");
+  const buildStatus = status("build_placement");
+  const constructionStatus = status("construction_progress");
+  const barracksStatus = status("barracks_complete");
+  const recruitQueueStatus = status("recruit_queue");
+  const militiaStatus = status("militia_spawned");
+  const pressureStatus = status("ashen_pressure_wave");
+  const lumeStatus = status("lume_restore");
+  const minimapStatus = status("minimap");
+  const resultsStatus = status("results");
+  const checks = {
+    titlePlayerFacing: titleStatus.playerShellScreen === "title" && titleStatus.hudVisible === false,
+    briefingPlayerFacing: briefingStatus.playerShellScreen === "briefing" && briefingStatus.hudVisible === false,
+    cameraAndEnvironmentReady: battleStatus.authoredLayoutDeterministic === true && battleStatus.terrainViewportCoveragePass === true && battleStatus.cameraBoundsSafe === true,
+    silhouettesReadable: battleStatus.factionSilhouettePassRendered === true && heroStatus.heroSilhouetteDistinct === true,
+    hudAndMinimapReady: battleStatus.hudVisible === true && battleStatus.playerFacingHudCompact === true && battleStatus.minimapMarkersRendered === true && minimapStatus.minimapMarkersRendered === true,
+    onboardingReady: runtime?.debugTextAbsentFromPlayerSlice === true && observed.includes("move_order"),
+    heroReady: heroStatus.heroAbilityUsed === true && heroStatus.selectedHeroCardRendered === true,
+    workerReady: workerStatus.selectedWorkerCardRendered === true || workerAssignedStatus.workerAssignedToMine === true,
+    mineResourceReady: mineConvertedStatus.mineSiteConverted === true && workerAssignedStatus.workerAssignedToMine === true && workerAssignedStatus.resourceProductionBoosted === true,
+    quarryReady: status("quarry_objective").quarrySilhouetteRendered === true || status("quarry_objective").quarryShrineRuinLandmarksRendered === true,
+    buildReady: buildStatus.barracksBuildPlaced === true && buildStatus.barracksBuildPlacementRendered === true,
+    barracksReady: constructionStatus.barracksConstructionProgress > 0 && barracksStatus.barracksComplete === true && barracksStatus.barracksCompleteRendered === true,
+    recruitReady: recruitQueueStatus.militiaRecruitQueued === true && militiaStatus.militiaSpawned === true && militiaStatus.militiaSpawnedRendered === true,
+    pressureWaveReady: pressureStatus.pressureWaveDefeated === true && pressureStatus.pressureWaveDefeatedRendered === true,
+    lumeReady: lumeStatus.lumeRestored === true && lumeStatus.lumeRestoreMicroloopRendered === true,
+    resultsReady: resultsStatus.resultsReady === true && runtime?.performanceSmoke?.resultsTransition === true,
+    performanceRuntimePresent: performanceRuntime?.status === "PASS_PLAYER_FACING_TIER_M_SMOKE",
+    objectiveRuntimePresent: objectiveRuntime?.status === "PASS_OBJECTIVE_FLOW",
+    privateHarnessSeparate: runtime?.privateHarnessPreservedSeparately === true,
+    noSaveWrites: runtime?.saveWritesAllowed === false && runtime?.localStorageMutationAllowed === false,
+    noStableIdDrift: runtime?.stableIdsChanged === false && runtime?.linkedWardDamageTakenMultiplier === 0.92,
+    noBrowserChanges: runtime?.localStorageMutationAllowed === false,
+    noArtImport: runtime?.generatedOrImportedArtIncluded === false && runtime?.runtimeArtIntegrated === false,
+    zeroEditor: runtime?.routineEditorUseRequired === false && runtime?.manualGodotEditorSceneAssemblyRequired === false,
+    noFinalEngineOrFullPort: resultsStatus.finalEngineDecisionMade === false && resultsStatus.fullPortStarted === false
+  };
+  errors.push(...v0130CheckErrors(checks));
+  const performanceSmoke = writeV0130PerformanceSmoke(performanceRuntime);
+  const objectiveFlow = writeV0130ObjectiveFlow(objectiveRuntime, runtime);
+  const packageReport = writeV0130PackageReport();
+  const scorecardUpdate = writeV0130ScorecardUpdate();
+  if (performanceSmoke.status !== "PASS_V0130_PERFORMANCE_SMOKE") {
+    errors.push("v0.130 performance smoke did not pass.");
+  }
+  if (objectiveFlow.status !== "PASS_V0130_OBJECTIVE_FLOW") {
+    errors.push("v0.130 objective flow did not pass.");
+  }
+  if (packageReport.status !== "PASS_V0130_PACKAGE_REPORT") {
+    errors.push("v0.130 package report did not pass.");
+  }
+  const report = {
+    schemaVersion: 1,
+    checkpoint: "v0.130",
+    status: errors.length === 0 ? "PASS_V0130_VERTICAL_SLICE_VALIDATION" : "FAIL_V0130_VERTICAL_SLICE_VALIDATION",
+    generatedAtUtc: "deterministic-v0130",
+    defaultHumanReviewPath: "GODOT_LAUNCH_SALTO_VERTICAL_SLICE_WINDOWS.bat",
+    defaultCapturePath: "GODOT_CAPTURE_SALTO_VERTICAL_SLICE_WINDOWS.bat",
+    defaultValidationPath: "GODOT_VALIDATE_SALTO_VERTICAL_SLICE_WINDOWS.bat",
+    defaultMode: runtime?.defaultMode ?? null,
+    defaultVisualPreset: runtime?.defaultVisualPreset ?? null,
+    routineEditorUseRequired: false,
+    manualGodotEditorSceneAssemblyRequired: false,
+    proceduralPrimitiveOnly: true,
+    generatedOrImportedArtIncluded: false,
+    runtimeArtIntegrated: false,
+    localStorageMutationAllowed: false,
+    saveWritesAllowed: false,
+    stableIdsChanged: false,
+    browserRuntimeChanged: false,
+    finalEngineDecisionMade: false,
+    fullPortStarted: false,
+    linkedWardDamageTakenMultiplier: 0.92,
+    checks,
+    errors,
+    steps: runtime?.steps ?? [],
+    performanceSmoke,
+    objectiveFlow,
+    packageReport,
+    scorecardUpdate
+  };
+  writeV0130Artifact("validation.json", report);
+  writeV0130Artifact("player-slice-validation.json", report);
+  buildV0130AcceptanceGate(report);
+  writeV0130Readme();
+  return report;
+}
+
+function buildV0130CaptureSummary(manifest) {
+  const validation = readOptionalJson(join(v0130ArtifactRoot, "validation.json"));
+  const packageReport = readOptionalJson(join(v0130ArtifactRoot, "package-report.json"));
+  const status = (id) => v0130StatusFor(manifest, id);
+  const checks = {
+    titleCaptured: Boolean(v0130CaptureById(manifest, "title")),
+    briefingCaptured: Boolean(v0130CaptureById(manifest, "briefing")),
+    battleCaptured: Boolean(v0130CaptureById(manifest, "battle_default")),
+    heroCaptured: status("hero").heroAbilityUsed === true,
+    workerCaptured: status("worker").workerNonCombatSilhouetteDistinct === true || status("worker").selectedWorkerMarkerRendered === true || status("worker").workerAssignedToMine === true,
+    mineCaptured: status("mine").mineSiteConverted === true,
+    quarryCaptured: status("quarry").quarrySilhouetteRendered === true || status("quarry").quarryShrineRuinLandmarksRendered === true,
+    buildCaptured: status("build").barracksBuildPlaced === true,
+    barracksCaptured: status("barracks").barracksComplete === true,
+    recruitCaptured: status("recruit").militiaSpawned === true,
+    pressureWaveCaptured: status("pressure_wave").pressureWaveDefeated === true,
+    lumeCaptured: status("lume").lumeRestored === true,
+    minimapCaptured: status("minimap").minimapMarkersRendered === true,
+    resultsCaptured: status("results").resultsReady === true,
+    privateHarnessCaptured: v0130CaptureById(manifest, "private_harness_preserved")?.privateHarnessCapture === true,
+    validationStillGreen: validation?.status === "PASS_V0130_VERTICAL_SLICE_VALIDATION" || validation == null,
+    packagePasses: packageReport?.status === "PASS_V0130_PACKAGE_REPORT" || packageReport == null
+  };
+  const errors = v0130CheckErrors(checks);
+  const report = {
+    schemaVersion: 1,
+    checkpoint: "v0.130",
+    status: errors.length === 0 ? "PASS_V0130_CAPTURE_SUMMARY" : "FAIL_V0130_CAPTURE_SUMMARY",
+    generatedAtUtc: "deterministic-v0130",
+    checks,
+    validationStatus: validation?.status ?? null,
+    packageStatus: packageReport?.status ?? null,
+    errors
+  };
+  writeV0130Artifact("capture-summary.json", report);
+  return report;
+}
+
+function writeV0130ScreenshotManifest() {
+  const runtime = readV0130RuntimeReport("screenshot-runtime-manifest.json");
+  const errors = [];
+  if (!runtime) {
+    errors.push("Missing screenshot-runtime-manifest.json from packaged executable capture.");
+  }
+  const runtimeCaptures = runtime?.captures ?? [];
+  const captures = runtimeCaptures.map((entry) => {
+    const screenshotPath = join(v0130ScreenshotRoot, entry.fileName);
+    return {
+      id: entry.id,
+      label: entry.label,
+      action: entry.action,
+      screen: entry.screen,
+      fileName: entry.fileName,
+      path: relativeRepo(screenshotPath),
+      sha256: existsSync(screenshotPath) ? hashFile(screenshotPath) : null,
+      sizeBytes: existsSync(screenshotPath) ? statSync(screenshotPath).size : null,
+      width: entry.width,
+      height: entry.height,
+      privateHarnessCapture: Boolean(entry.privateHarnessCapture),
+      status: entry.status ?? null,
+      visibleText: entry.visibleText ?? []
+    };
+  });
+  if (runtime?.checkpoint !== "v0.130") {
+    errors.push(`Expected v0.130 runtime checkpoint, found ${runtime?.checkpoint ?? "missing"}.`);
+  }
+  if (captures.length !== 15) {
+    errors.push(`Expected 15 screenshots, found ${captures.length}.`);
+  }
+  for (const id of v0130CaptureOrder) {
+    if (!captures.some((capture) => capture.id === id)) {
+      errors.push(`Missing v0.130 screenshot capture: ${id}`);
+    }
+  }
+  for (const capture of captures) {
+    if (!capture.sha256) {
+      errors.push(`Missing screenshot file: ${capture.fileName}`);
+    }
+    if (capture.width !== 1600 || capture.height !== 900) {
+      errors.push(`Screenshot ${capture.fileName} is ${capture.width}x${capture.height}, expected 1600x900.`);
+    }
+    if (capture.id === "private_harness_preserved") {
+      if (capture.privateHarnessCapture !== true || capture.status?.reviewHarnessVisible !== true) {
+        errors.push("Private harness proof capture did not report the review harness as visible.");
+      }
+    } else {
+      if (capture.status?.proceduralPrimitiveOnly !== true) {
+        errors.push(`Capture ${capture.id} did not report procedural primitive-only posture.`);
+      }
+      if (capture.status?.generatedOrImportedArtIncluded === true || capture.status?.runtimeArtIntegrated === true) {
+        errors.push(`Capture ${capture.id} reported generated/imported or runtime art integration.`);
+      }
+      if (capture.status?.saveWritesAllowed === true || capture.status?.stableIdsChanged === true) {
+        errors.push(`Capture ${capture.id} reported save writes or stable-ID changes.`);
+      }
+      if (capture.status?.linkedWardDamageTakenMultiplier !== 0.92) {
+        errors.push(`Capture ${capture.id} did not preserve linked_ward damage multiplier 0.92.`);
+      }
+    }
+  }
+  if (v0130CaptureById({ captures }, "private_harness_preserved")?.privateHarnessCapture !== true) {
+    errors.push("Missing explicit private-harness preservation capture.");
+  }
+  const strayPngs = existsSync(v0130ScreenshotRoot)
+    ? readdirSync(v0130ScreenshotRoot).filter((file) => file.endsWith(".png") && !captures.some((capture) => capture.fileName === file))
+    : [];
+  if (strayPngs.length > 0) {
+    errors.push(`Unexpected screenshots in v0130 folder: ${strayPngs.join(", ")}`);
+  }
+  const manifest = {
+    schemaVersion: 1,
+    checkpoint: "v0.130",
+    status: errors.length === 0 && runtime?.status === "PASS_PLAYER_SLICE_CAPTURE" ? "PASS_V0130_VERTICAL_SLICE_CAPTURE" : "FAIL_V0130_VERTICAL_SLICE_CAPTURE",
+    generatedAtUtc: "deterministic-v0130",
+    screenshotRoot: relativeRepo(v0130ScreenshotRoot),
+    contactSheetPath: "artifacts/desktop-spikes/godot-salto/v0130/contact-sheet.svg",
+    captureCount: captures.length,
+    requiredCaptureCount: 15,
+    deterministicCaptureOrder: v0130CaptureOrder,
+    defaultMode: "2_5D_ORTHOGRAPHIC_PLACEHOLDER",
+    defaultVisualPreset: "CLEAN_READABILITY",
+    proceduralPrimitiveOnly: true,
+    runtimeArtIntegrated: false,
+    generatedOrImportedArtIncluded: false,
+    finalUiArtClaimed: false,
+    routineEditorUseRequired: false,
+    saveWritesAllowed: false,
+    stableIdsChanged: false,
+    browserRuntimeChanged: false,
+    finalEngineDecisionMade: false,
+    fullPortStarted: false,
+    privateHarnessPreservedSeparately: runtime?.privateHarnessPreservedSeparately === true,
+    errors,
+    captures
+  };
+  writeV0130Artifact("screenshot-manifest.json", manifest);
+  writeV0130Artifact("screenshot-hashes.json", {
+    schemaVersion: 1,
+    checkpoint: "v0.130",
+    status: manifest.status,
+    hashes: captures.map((capture) => ({
+      id: capture.id,
+      fileName: capture.fileName,
+      path: capture.path,
+      sha256: capture.sha256,
+      sizeBytes: capture.sizeBytes
+    }))
+  });
+  writeV0130ContactSheet(manifest);
+  const captureSummary = buildV0130CaptureSummary(manifest);
+  if (String(captureSummary.status).startsWith("FAIL")) {
+    manifest.status = "FAIL_V0130_VERTICAL_SLICE_CAPTURE";
+    manifest.errors.push(`v0.130 capture summary failed: ${captureSummary.status}`);
+    writeV0130Artifact("screenshot-manifest.json", manifest);
+  }
+  buildV0130AcceptanceGate(null, manifest);
+  writeV0130Readme();
+  return manifest;
+}
+
 const v0125AuditAreas = ["title", "briefing", "battle", "results"];
 const v0125PlayerDebugTerms = [
   ...v0124ForbiddenTerms,
@@ -4634,6 +5210,18 @@ try {
     if (String(report.status).startsWith("FAIL")) {
       process.exitCode = 1;
     }
+  } else if (command === "player-slice-validate-v0130") {
+    const report = writeV0130PlayerSliceValidation();
+    console.log(stableStringify(report));
+    if (String(report.status).startsWith("FAIL")) {
+      process.exitCode = 1;
+    }
+  } else if (command === "player-slice-capture-v0130") {
+    const report = writeV0130ScreenshotManifest();
+    console.log(stableStringify(report));
+    if (String(report.status).startsWith("FAIL")) {
+      process.exitCode = 1;
+    }
   } else if (command === "player-slice-audit") {
     const report = buildV0125ScreenshotAudit();
     console.log(stableStringify(report));
@@ -4647,7 +5235,7 @@ try {
     runAll();
     console.log("v0.119 Godot representative RTS load spike reports generated.");
   } else {
-    console.log("Usage: node desktop-spikes/godot-salto/tools/godotSpikeTool.mjs <doctor|generate|validate|test|benchmark|export|package|scorecard|manual-review|headed-smoke|headed-benchmark|capture-review|capture-review-v0121|player-slice-validate|player-slice-capture|player-slice-capture-v0126|player-slice-capture-v0127|player-slice-capture-v0128|player-slice-validate-v0129|player-slice-capture-v0129|player-slice-audit|v0118-all|all>");
+    console.log("Usage: node desktop-spikes/godot-salto/tools/godotSpikeTool.mjs <doctor|generate|validate|test|benchmark|export|package|scorecard|manual-review|headed-smoke|headed-benchmark|capture-review|capture-review-v0121|player-slice-validate|player-slice-capture|player-slice-capture-v0126|player-slice-capture-v0127|player-slice-capture-v0128|player-slice-validate-v0129|player-slice-capture-v0129|player-slice-validate-v0130|player-slice-capture-v0130|player-slice-audit|v0118-all|all>");
   }
 } catch (error) {
   console.error(error instanceof Error ? error.message : String(error));
