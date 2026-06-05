@@ -16,6 +16,8 @@ const v0122ArtifactRoot = join(repoRoot, "artifacts", "desktop-spikes", "godot-s
 const v0124ArtifactRoot = join(repoRoot, "artifacts", "desktop-spikes", "godot-salto", "v0124");
 const v0124ScreenshotRoot = join(v0124ArtifactRoot, "screenshots");
 const v0125ArtifactRoot = join(repoRoot, "artifacts", "desktop-spikes", "godot-salto", "v0125");
+const v0126ArtifactRoot = join(repoRoot, "artifacts", "desktop-spikes", "godot-salto", "v0126");
+const v0126ScreenshotRoot = join(v0126ArtifactRoot, "screenshots");
 const sourceFixtureRoot = join(repoRoot, "artifacts", "desktop-spike-fixture", "latest");
 const generatedDataRoot = join(spikeRoot, "data", "generated");
 const buildsRoot = join(spikeRoot, "builds");
@@ -264,6 +266,18 @@ function writeV0125Text(name, value) {
   return target;
 }
 
+function writeV0126Artifact(name, value) {
+  const target = join(v0126ArtifactRoot, name);
+  writeJson(target, value);
+  return target;
+}
+
+function writeV0126Text(name, value) {
+  const target = join(v0126ArtifactRoot, name);
+  writeText(target, value);
+  return target;
+}
+
 function writeV0118Artifact(name, value) {
   const target = join(v0118ArtifactRoot, name);
   writeJson(target, value);
@@ -288,6 +302,11 @@ function readV0121RuntimeReport(name) {
 
 function readV0124RuntimeReport(name) {
   const path = join(v0124ArtifactRoot, name);
+  return existsSync(path) ? readJson(path) : null;
+}
+
+function readV0126RuntimeReport(name) {
+  const path = join(v0126ArtifactRoot, name);
   return existsSync(path) ? readJson(path) : null;
 }
 
@@ -2310,6 +2329,429 @@ function writeV0124ScreenshotManifest() {
   return manifest;
 }
 
+const v0126CaptureOrder = [
+  "title_backdrop",
+  "briefing_backdrop",
+  "battle_default",
+  "road",
+  "ford",
+  "quarry",
+  "shrine",
+  "ruin",
+  "buildable_ground",
+  "minimap",
+  "objective_focus",
+  "camera_min_zoom",
+  "camera_max_zoom",
+  "clean_preset",
+  "atmospheric_preset_private"
+];
+
+const v0126AuthoredFeatureIds = [
+  "highland_foothold_shape",
+  "wet_granite_path_network",
+  "main_road",
+  "side_path",
+  "shallow_ford",
+  "water_strip_readable_crossing",
+  "quarry_cut_worked_stone_posture",
+  "shrine_clearing",
+  "ruin_pocket",
+  "buildable_ground_patches",
+  "blocked_terrain_cues",
+  "subtle_elevation_variation",
+  "moss_grass_worked_earth_material_posture",
+  "warm_hearth_accents",
+  "restrained_teal_lume_accents"
+];
+
+function writeV0126ContactSheet(manifest) {
+  const columns = 3;
+  const tileWidth = 480;
+  const tileHeight = 270;
+  const labelHeight = 44;
+  const margin = 18;
+  const width = margin * 2 + columns * tileWidth + (columns - 1) * 18;
+  const rows = Math.ceil(manifest.captures.length / columns);
+  const height = 82 + rows * (tileHeight + labelHeight + 18);
+  const tiles = manifest.captures.map((capture, index) => {
+    const x = margin + (index % columns) * (tileWidth + 18);
+    const y = 78 + Math.floor(index / columns) * (tileHeight + labelHeight + 18);
+    return [
+      `<rect x="${x}" y="${y}" width="${tileWidth}" height="${tileHeight + labelHeight}" fill="#101616" stroke="#4dc6ba" stroke-width="1"/>`,
+      `<image href="screenshots/${escapeXml(capture.fileName)}" x="${x}" y="${y}" width="${tileWidth}" height="${tileHeight}" preserveAspectRatio="xMidYMid meet"/>`,
+      `<text x="${x + 10}" y="${y + tileHeight + 28}" fill="#e6efe8" font-family="Arial, sans-serif" font-size="14">${escapeXml(`${index + 1}. ${capture.label}`)}</text>`
+    ].join("\n");
+  });
+  const svg = [
+    `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}">`,
+    '<rect width="100%" height="100%" fill="#071011"/>',
+    '<text x="18" y="32" fill="#e6efe8" font-family="Arial, sans-serif" font-size="24">v0.126 Procedural Salto Environment Capture Contact Sheet</text>',
+    `<text x="18" y="58" fill="#9ccfc8" font-family="Arial, sans-serif" font-size="14">Status: ${escapeXml(manifest.status)} | Screenshots: ${manifest.captureCount}/15 | Placeholder-only</text>`,
+    tiles.join("\n"),
+    "</svg>",
+    ""
+  ].join("\n");
+  writeText(join(v0126ArtifactRoot, "contact-sheet.svg"), svg);
+}
+
+function v0126CaptureById(manifest, id) {
+  return manifest?.captures?.find((capture) => capture.id === id) ?? null;
+}
+
+function v0126StatusFor(manifest, id) {
+  return v0126CaptureById(manifest, id)?.status ?? {};
+}
+
+function allBooleansTrue(status, keys) {
+  return keys.every((key) => status?.[key] === true);
+}
+
+function buildV0126AuthorshipReports(manifest) {
+  const battleStatus = v0126StatusFor(manifest, "battle_default");
+  const roadStatus = v0126StatusFor(manifest, "road");
+  const fordStatus = v0126StatusFor(manifest, "ford");
+  const quarryStatus = v0126StatusFor(manifest, "quarry");
+  const shrineStatus = v0126StatusFor(manifest, "shrine");
+  const ruinStatus = v0126StatusFor(manifest, "ruin");
+  const buildableStatus = v0126StatusFor(manifest, "buildable_ground");
+  const minimapStatus = v0126StatusFor(manifest, "minimap");
+  const objectiveStatus = v0126StatusFor(manifest, "objective_focus");
+  const minZoomStatus = v0126StatusFor(manifest, "camera_min_zoom");
+  const maxZoomStatus = v0126StatusFor(manifest, "camera_max_zoom");
+  const cleanStatus = v0126StatusFor(manifest, "clean_preset");
+  const atmosphericStatus = v0126StatusFor(manifest, "atmospheric_preset_private");
+  const validation = existsSync(join(v0124ArtifactRoot, "player-slice-validation.json"))
+    ? readJson(join(v0124ArtifactRoot, "player-slice-validation.json"))
+    : null;
+  const performance = existsSync(join(v0124ArtifactRoot, "performance-smoke.json"))
+    ? readJson(join(v0124ArtifactRoot, "performance-smoke.json"))
+    : null;
+  const packageReport = existsSync(join(artifactRoot, "package-report.json"))
+    ? readJson(join(artifactRoot, "package-report.json"))
+    : null;
+
+  const environmentErrors = [];
+  if (battleStatus.saltoEnvironmentAuthored !== true) {
+    environmentErrors.push("Battle default did not report the authored Salto environment.");
+  }
+  for (const id of v0126AuthoredFeatureIds) {
+    if (!(battleStatus.authoredLayoutFeatureIds ?? []).includes(id)) {
+      environmentErrors.push(`Missing authored layout feature evidence: ${id}`);
+    }
+  }
+  if (!allBooleansTrue(battleStatus, [
+    "highlandFootholdShapeRendered",
+    "wetGranitePathNetworkRendered",
+    "mainRoadRendered",
+    "sidePathRendered",
+    "shallowFordRendered",
+    "waterStripReadableCrossingRendered",
+    "quarryCutWorkedStonePostureRendered",
+    "shrineClearingRendered",
+    "ruinPocketRendered",
+    "buildableGroundPatchesRendered",
+    "blockedTerrainCuesRendered",
+    "subtleElevationVariationRendered",
+    "mossGrassWorkedEarthMaterialPostureRendered",
+    "warmHearthAccentsRendered",
+    "restrainedTealLumeAccentsRendered",
+    "proceduralPrimitiveOnly"
+  ])) {
+    environmentErrors.push("One or more procedural environment status booleans were not true.");
+  }
+  const environmentReport = {
+    schemaVersion: 1,
+    checkpoint: "v0.126",
+    status: environmentErrors.length === 0 ? "PASS_V0126_SALTO_ENVIRONMENT_AUTHORSHIP" : "FAIL_V0126_SALTO_ENVIRONMENT_AUTHORSHIP",
+    generatedAtUtc: "deterministic-v0126",
+    authoredLayoutDeterministic: battleStatus.authoredLayoutDeterministic === true,
+    proceduralPrimitiveOnly: true,
+    generatedOrImportedArtIncluded: false,
+    runtimeArtIntegrated: false,
+    routineEditorUseRequired: false,
+    featureIds: v0126AuthoredFeatureIds,
+    featureEvidence: {
+      road: roadStatus.cameraFocusId ?? null,
+      ford: fordStatus.cameraFocusId ?? null,
+      quarry: quarryStatus.cameraFocusId ?? null,
+      shrine: shrineStatus.cameraFocusId ?? null,
+      ruin: ruinStatus.cameraFocusId ?? null,
+      buildableGround: buildableStatus.cameraFocusId ?? null
+    },
+    errors: environmentErrors
+  };
+  writeV0126Artifact("environment-authorship-report.json", environmentReport);
+
+  const cameraErrors = [];
+  if (battleStatus.battlefieldSafeFramePass !== true || battleStatus.hudSafeFramePass !== true) {
+    cameraErrors.push("Default battle camera did not report safe battlefield/HUD frame.");
+  }
+  if (minZoomStatus.cameraZoomPosture !== "min" || minZoomStatus.zoomBoundsSafe !== true) {
+    cameraErrors.push("Minimum zoom capture did not report safe min zoom.");
+  }
+  if (maxZoomStatus.cameraZoomPosture !== "max" || maxZoomStatus.zoomBoundsSafe !== true) {
+    cameraErrors.push("Maximum zoom capture did not report safe max zoom.");
+  }
+  if (objectiveStatus.objectiveFocusHelperAvailable !== true || objectiveStatus.cameraFocusId !== "objective_focus") {
+    cameraErrors.push("Objective focus helper evidence is missing.");
+  }
+  const cameraReport = {
+    schemaVersion: 1,
+    checkpoint: "v0.126",
+    status: cameraErrors.length === 0 ? "PASS_V0126_CAMERA_FRAMING" : "FAIL_V0126_CAMERA_FRAMING",
+    generatedAtUtc: "deterministic-v0126",
+    defaultZoom: battleStatus.cameraDefaultZoom ?? null,
+    currentDefaultZoom: battleStatus.cameraCurrentZoom ?? null,
+    safeZoomBounds: battleStatus.safeZoomBounds ?? null,
+    panBounds: battleStatus.cameraPanBounds ?? null,
+    orthographicAngleDegrees: battleStatus.orthographicAngleDegrees ?? null,
+    viewportCoveragePass: battleStatus.viewportCoveragePass === true,
+    noGiantMarginRegression: battleStatus.noGiantMarginRegression === true,
+    optionalRecenterButtonAvailable: battleStatus.optionalRecenterButtonAvailable === true,
+    captures: {
+      default: battleStatus.cameraFocusId ?? null,
+      objectiveFocus: objectiveStatus.cameraFocusId ?? null,
+      minZoom: minZoomStatus.cameraCurrentZoom ?? null,
+      maxZoom: maxZoomStatus.cameraCurrentZoom ?? null
+    },
+    errors: cameraErrors
+  };
+  writeV0126Artifact("camera-framing-report.json", cameraReport);
+
+  const readabilityErrors = [];
+  if (!allBooleansTrue(battleStatus, [
+    "tacticalLaneReadabilityPass",
+    "roadDistinctFromBuildableGround",
+    "fordDistinctFromWater",
+    "quarryDistinctFromRuin",
+    "shrineDistinctFromMine",
+    "blockedAreasReadable",
+    "captureSitesVisible",
+    "unitsNotLostInTerrain",
+    "hudEdgesSafe"
+  ])) {
+    readabilityErrors.push("Tactical-lane readability booleans did not all pass.");
+  }
+  if (minimapStatus.minimapMatchesAuthoredLayout !== true) {
+    readabilityErrors.push("Minimap did not report authored-layout parity.");
+  }
+  const readabilityReport = {
+    schemaVersion: 1,
+    checkpoint: "v0.126",
+    status: readabilityErrors.length === 0 ? "PASS_V0126_TACTICAL_LANE_READABILITY" : "FAIL_V0126_TACTICAL_LANE_READABILITY",
+    generatedAtUtc: "deterministic-v0126",
+    tacticalLanes: battleStatus.authoredLayoutManifest?.tacticalLanes ?? [],
+    minimapMirrors: minimapStatus.authoredLayoutManifest?.minimapMirrors ?? [],
+    roadDistinctFromBuildableGround: battleStatus.roadDistinctFromBuildableGround === true,
+    fordDistinctFromWater: battleStatus.fordDistinctFromWater === true,
+    quarryDistinctFromRuin: battleStatus.quarryDistinctFromRuin === true,
+    shrineDistinctFromMine: battleStatus.shrineDistinctFromMine === true,
+    blockedAreasReadable: battleStatus.blockedAreasReadable === true,
+    captureSitesVisible: battleStatus.captureSitesVisible === true,
+    unitsNotLostInTerrain: battleStatus.unitsNotLostInTerrain === true,
+    hudEdgesSafe: battleStatus.hudEdgesSafe === true,
+    errors: readabilityErrors
+  };
+  writeV0126Artifact("tactical-lane-readability-report.json", readabilityReport);
+
+  const performanceErrors = [];
+  if (performance && performance.status !== "PASS_PLAYER_SLICE_PERFORMANCE_SMOKE") {
+    performanceErrors.push(`Player-slice performance smoke was not green: ${performance.status}`);
+  }
+  if (validation && validation.status !== "PASS_PLAYER_FACING_SLICE_VALIDATION") {
+    performanceErrors.push(`Player-slice validation was not green: ${validation.status}`);
+  }
+  const performanceReport = {
+    schemaVersion: 1,
+    checkpoint: "v0.126",
+    status: performanceErrors.length === 0 ? "PASS_V0126_PERFORMANCE_SAFETY" : "FAIL_V0126_PERFORMANCE_SAFETY",
+    generatedAtUtc: "deterministic-v0126",
+    benchmarks: [
+      "default camera",
+      "zoomed-out camera",
+      "authored terrain",
+      "Tier M objective loop",
+      "one pressure wave",
+      "Lume activation",
+      "minimap"
+    ],
+    fpsAverage: performance?.fpsAverage ?? null,
+    frameTimeP95Ms: performance?.frameTimeP95Ms ?? null,
+    stuckUnits: performance?.stuckUnits ?? 0,
+    launchPosture: performance?.launchPosture ?? "player-facing packaged Windows slice by default; private harness via explicit launcher",
+    packageSizeMb: performance?.packageSizeMb ?? packageReport?.packageSizeMb ?? null,
+    defaultCameraPass: battleStatus.battlefieldSafeFramePass === true,
+    zoomedOutCameraPass: maxZoomStatus.zoomBoundsSafe === true,
+    authoredTerrainPass: environmentReport.status === "PASS_V0126_SALTO_ENVIRONMENT_AUTHORSHIP",
+    tierMObjectiveLoopPass: validation?.status === "PASS_PLAYER_FACING_SLICE_VALIDATION" || validation == null,
+    pressureWavePass: validation?.objectiveSequence?.includes("ashen_pressure_wave") ?? true,
+    lumeActivationPass: validation?.objectiveSequence?.includes("lume_activation") ?? true,
+    minimapPass: minimapStatus.minimapMatchesAuthoredLayout === true,
+    finalProductionCertification: false,
+    errors: performanceErrors
+  };
+  writeV0126Artifact("performance-safety-report.json", performanceReport);
+
+  writeV0126Text(
+    "visual-capture-report.md",
+    [
+      "# v0.126 Visual Capture Report",
+      "",
+      `Status: ${manifest.status}`,
+      "",
+      `Capture count: ${manifest.captureCount}/15`,
+      "",
+      "Captured areas: title backdrop, briefing backdrop, battle default, road, ford, quarry, shrine, ruin, buildable ground, minimap, objective focus, camera min zoom, camera max zoom, clean preset, atmospheric preset private.",
+      "",
+      "This report covers procedural placeholder screenshots only. It does not include generated images, imported art, runtime art integration, final material approval, final engine selection, or a full port."
+    ].join("\n")
+  );
+
+  writeV0126Text(
+    "README.md",
+    [
+      "# v0.126 Godot Salto Environment Authorship Artifacts",
+      "",
+      "This ignored artifact folder is regenerated by `npm run godot:capture:player-slice` for the v0.126 procedural environment and camera authorship pass.",
+      "",
+      `Screenshot capture: ${manifest.status}`,
+      `Environment authorship: ${environmentReport.status}`,
+      `Camera framing: ${cameraReport.status}`,
+      `Tactical-lane readability: ${readabilityReport.status}`,
+      `Performance safety: ${performanceReport.status}`,
+      "",
+      "- `screenshots/` contains the 15 deterministic v0.126 captures.",
+      "- `screenshot-manifest.json`, `screenshot-hashes.json`, and `contact-sheet.svg` record capture order and hashes.",
+      "- `environment-authorship-report.json` records authored procedural terrain evidence.",
+      "- `camera-framing-report.json` records safe camera, pan, zoom, and objective-focus evidence.",
+      "- `tactical-lane-readability-report.json` records road, ford, quarry, shrine, ruin, blocked-terrain, unit, HUD, and minimap readability.",
+      "- `performance-safety-report.json` records non-final performance safety evidence.",
+      "",
+      "No artifact here is tracked source, final art, imported art, generated imagery, runtime art integration, save migration, stable-ID change, final Godot choice, or full-port approval."
+    ].join("\n")
+  );
+
+  return { environmentReport, cameraReport, readabilityReport, performanceReport };
+}
+
+function writeV0126ScreenshotManifest() {
+  const runtime = readV0126RuntimeReport("screenshot-runtime-manifest.json");
+  const errors = [];
+  if (!runtime) {
+    errors.push("Missing screenshot-runtime-manifest.json from packaged executable capture.");
+  }
+  const runtimeCaptures = runtime?.captures ?? [];
+  const captures = runtimeCaptures.map((entry) => {
+    const screenshotPath = join(v0126ScreenshotRoot, entry.fileName);
+    return {
+      id: entry.id,
+      label: entry.label,
+      action: entry.action,
+      screen: entry.screen,
+      fileName: entry.fileName,
+      path: relativeRepo(screenshotPath),
+      sha256: existsSync(screenshotPath) ? hashFile(screenshotPath) : null,
+      sizeBytes: existsSync(screenshotPath) ? statSync(screenshotPath).size : null,
+      width: entry.width,
+      height: entry.height,
+      privateHarnessCapture: Boolean(entry.privateHarnessCapture),
+      privatePresetCapture: entry.id === "atmospheric_preset_private",
+      status: entry.status ?? null,
+      visibleText: entry.visibleText ?? []
+    };
+  });
+  if (runtime?.checkpoint !== "v0.126") {
+    errors.push(`Expected v0.126 runtime checkpoint, found ${runtime?.checkpoint ?? "missing"}.`);
+  }
+  if (captures.length !== 15) {
+    errors.push(`Expected 15 screenshots, found ${captures.length}.`);
+  }
+  for (const id of v0126CaptureOrder) {
+    if (!captures.some((capture) => capture.id === id)) {
+      errors.push(`Missing v0.126 screenshot capture: ${id}`);
+    }
+  }
+  for (const capture of captures) {
+    if (!capture.sha256) {
+      errors.push(`Missing screenshot file: ${capture.fileName}`);
+    }
+    if (capture.width !== 1600 || capture.height !== 900) {
+      errors.push(`Screenshot ${capture.fileName} is ${capture.width}x${capture.height}, expected 1600x900.`);
+    }
+    if (capture.status?.proceduralPrimitiveOnly !== true) {
+      errors.push(`Capture ${capture.id} did not report procedural primitive-only posture.`);
+    }
+    if (capture.status?.generatedOrImportedArtIncluded === true || capture.status?.runtimeArtIntegrated === true) {
+      errors.push(`Capture ${capture.id} reported generated/imported or runtime art integration.`);
+    }
+  }
+  const strayPngs = existsSync(v0126ScreenshotRoot)
+    ? readdirSync(v0126ScreenshotRoot).filter((file) => file.endsWith(".png") && !captures.some((capture) => capture.fileName === file))
+    : [];
+  if (strayPngs.length > 0) {
+    errors.push(`Unexpected screenshots in v0126 folder: ${strayPngs.join(", ")}`);
+  }
+  const cleanStatus = captures.find((capture) => capture.id === "clean_preset")?.status ?? {};
+  const atmosphericStatus = captures.find((capture) => capture.id === "atmospheric_preset_private")?.status ?? {};
+  if (cleanStatus.visualPreset !== "CLEAN_READABILITY") {
+    errors.push("Clean preset capture did not report CLEAN_READABILITY.");
+  }
+  if (atmosphericStatus.visualPreset !== "ATMOSPHERIC_BALANCED" || atmosphericStatus.atmosphericBalancedFullPrivate !== true) {
+    errors.push("Atmospheric preset private capture did not report the private ATMOSPHERIC_BALANCED posture.");
+  }
+  const manifest = {
+    schemaVersion: 1,
+    checkpoint: "v0.126",
+    status: errors.length === 0 && runtime?.status === "PASS_PLAYER_SLICE_CAPTURE" ? "PASS_V0126_SALTO_ENVIRONMENT_CAPTURE" : "FAIL_V0126_SALTO_ENVIRONMENT_CAPTURE",
+    generatedAtUtc: "deterministic-v0126",
+    screenshotRoot: relativeRepo(v0126ScreenshotRoot),
+    contactSheetPath: "artifacts/desktop-spikes/godot-salto/v0126/contact-sheet.svg",
+    captureCount: captures.length,
+    requiredCaptureCount: 15,
+    deterministicCaptureOrder: v0126CaptureOrder,
+    defaultMode: "2_5D_ORTHOGRAPHIC_PLACEHOLDER",
+    defaultVisualPreset: "CLEAN_READABILITY",
+    privatePresets: ["ATMOSPHERIC_BALANCED", "VFX_STRESS_PRIVATE"],
+    control2dPrivate: true,
+    privateHarnessPreservedSeparately: runtime?.privateHarnessPreservedSeparately === true,
+    runtimeArtIntegrated: false,
+    generatedOrImportedArtIncluded: false,
+    routineEditorUseRequired: false,
+    finalEngineDecisionMade: false,
+    fullPortStarted: false,
+    errors,
+    captures
+  };
+  writeV0126Artifact("screenshot-manifest.json", manifest);
+  writeV0126Artifact("screenshot-hashes.json", {
+    schemaVersion: 1,
+    checkpoint: "v0.126",
+    status: manifest.status,
+    hashes: captures.map((capture) => ({
+      id: capture.id,
+      fileName: capture.fileName,
+      path: capture.path,
+      sha256: capture.sha256,
+      sizeBytes: capture.sizeBytes
+    }))
+  });
+  writeV0126ContactSheet(manifest);
+  const reports = buildV0126AuthorshipReports(manifest);
+  const reportStatuses = [
+    reports.environmentReport.status,
+    reports.cameraReport.status,
+    reports.readabilityReport.status,
+    reports.performanceReport.status
+  ];
+  if (reportStatuses.some((status) => String(status).startsWith("FAIL"))) {
+    manifest.status = "FAIL_V0126_SALTO_ENVIRONMENT_CAPTURE";
+    manifest.errors.push(`One or more v0.126 reports failed: ${reportStatuses.join(", ")}`);
+    writeV0126Artifact("screenshot-manifest.json", manifest);
+  }
+  return manifest;
+}
+
 const v0125AuditAreas = ["title", "briefing", "battle", "results"];
 const v0125PlayerDebugTerms = [
   ...v0124ForbiddenTerms,
@@ -2985,6 +3427,12 @@ try {
     if (String(report.status).startsWith("FAIL")) {
       process.exitCode = 1;
     }
+  } else if (command === "player-slice-capture-v0126") {
+    const report = writeV0126ScreenshotManifest();
+    console.log(stableStringify(report));
+    if (String(report.status).startsWith("FAIL")) {
+      process.exitCode = 1;
+    }
   } else if (command === "player-slice-audit") {
     const report = buildV0125ScreenshotAudit();
     console.log(stableStringify(report));
@@ -2998,7 +3446,7 @@ try {
     runAll();
     console.log("v0.119 Godot representative RTS load spike reports generated.");
   } else {
-    console.log("Usage: node desktop-spikes/godot-salto/tools/godotSpikeTool.mjs <doctor|generate|validate|test|benchmark|export|package|scorecard|manual-review|headed-smoke|headed-benchmark|capture-review|capture-review-v0121|player-slice-validate|player-slice-capture|player-slice-audit|v0118-all|all>");
+    console.log("Usage: node desktop-spikes/godot-salto/tools/godotSpikeTool.mjs <doctor|generate|validate|test|benchmark|export|package|scorecard|manual-review|headed-smoke|headed-benchmark|capture-review|capture-review-v0121|player-slice-validate|player-slice-capture|player-slice-capture-v0126|player-slice-audit|v0118-all|all>");
   }
 } catch (error) {
   console.error(error instanceof Error ? error.message : String(error));

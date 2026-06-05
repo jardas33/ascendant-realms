@@ -2,7 +2,7 @@ param()
 
 $ErrorActionPreference = "Stop"
 $RepoRoot = Resolve-Path (Join-Path $PSScriptRoot "..\..")
-$ArtifactRoot = Join-Path $RepoRoot "artifacts\desktop-spikes\godot-salto\v0124"
+$ArtifactRoot = Join-Path $RepoRoot "artifacts\desktop-spikes\godot-salto\v0126"
 $ScreenshotRoot = Join-Path $ArtifactRoot "screenshots"
 $ArtifactArg = $ArtifactRoot.Replace("\", "/")
 
@@ -16,7 +16,7 @@ if (Test-Path $ScreenshotRoot) {
   $resolvedScreenshots = Resolve-Path -LiteralPath $ScreenshotRoot
   $resolvedArtifact = Resolve-Path -LiteralPath $ArtifactRoot
   if (-not ($resolvedScreenshots.Path.StartsWith($resolvedArtifact.Path))) {
-    throw "Refusing to remove screenshots outside v0.124 artifact root: $($resolvedScreenshots.Path)"
+    throw "Refusing to remove screenshots outside v0.126 artifact root: $($resolvedScreenshots.Path)"
   }
   Remove-Item -LiteralPath $ScreenshotRoot -Recurse -Force
 }
@@ -31,18 +31,23 @@ function Wait-ForPlayerSliceCaptureArtifacts {
     if (Test-Path $ScreenshotRoot) {
       $pngCount = @(Get-ChildItem -LiteralPath $ScreenshotRoot -Filter "*.png").Count
     }
-    if ((Test-Path $runtimeManifest) -and $pngCount -eq 14) {
+    if ((Test-Path $runtimeManifest) -and $pngCount -eq 15) {
       return
     }
     Start-Sleep -Milliseconds 250
   }
-  throw "Timed out waiting for screenshot-runtime-manifest.json and 14 PNG captures."
+  throw "Timed out waiting for screenshot-runtime-manifest.json and 15 PNG captures."
 }
 
 Remove-Item -LiteralPath (Join-Path $ArtifactRoot "screenshot-runtime-manifest.json") -Force -ErrorAction SilentlyContinue
 Remove-Item -LiteralPath (Join-Path $ArtifactRoot "screenshot-manifest.json") -Force -ErrorAction SilentlyContinue
 Remove-Item -LiteralPath (Join-Path $ArtifactRoot "screenshot-hashes.json") -Force -ErrorAction SilentlyContinue
 Remove-Item -LiteralPath (Join-Path $ArtifactRoot "contact-sheet.svg") -Force -ErrorAction SilentlyContinue
+Remove-Item -LiteralPath (Join-Path $ArtifactRoot "environment-authorship-report.json") -Force -ErrorAction SilentlyContinue
+Remove-Item -LiteralPath (Join-Path $ArtifactRoot "camera-framing-report.json") -Force -ErrorAction SilentlyContinue
+Remove-Item -LiteralPath (Join-Path $ArtifactRoot "tactical-lane-readability-report.json") -Force -ErrorAction SilentlyContinue
+Remove-Item -LiteralPath (Join-Path $ArtifactRoot "performance-safety-report.json") -Force -ErrorAction SilentlyContinue
+Remove-Item -LiteralPath (Join-Path $ArtifactRoot "visual-capture-report.md") -Force -ErrorAction SilentlyContinue
 
 & (Join-Path $PSScriptRoot "launchGodotReviewWindows.ps1") -Wait -ReviewArgs @("--player-slice-capture", "--artifact-root=$ArtifactArg")
 if ($LASTEXITCODE -ne 0) {
@@ -50,7 +55,7 @@ if ($LASTEXITCODE -ne 0) {
 }
 
 Wait-ForPlayerSliceCaptureArtifacts
-node "desktop-spikes/godot-salto/tools/godotSpikeTool.mjs" player-slice-capture
+node "desktop-spikes/godot-salto/tools/godotSpikeTool.mjs" player-slice-capture-v0126
 $ToolExitCode = if ($null -eq $LASTEXITCODE) { 0 } else { $LASTEXITCODE }
 if ($ToolExitCode -ne 0) {
   exit $ToolExitCode

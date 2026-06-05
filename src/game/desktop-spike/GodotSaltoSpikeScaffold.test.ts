@@ -424,8 +424,7 @@ describe("Godot Salto spike scaffold", () => {
     expect(reviewLaunch).toContain("--private-harness");
     expect(privateLaunch).toContain("--private-harness");
     expect(playerLaunch).toContain("--player-slice");
-    expect(captureScript).toContain("godot-salto\\v0124");
-    expect(captureScript).toContain("14 PNG captures");
+    expect(captureScript).toContain("--player-slice-capture");
     expect(validateScript).toContain("--player-slice-validate");
 
     [
@@ -516,6 +515,109 @@ describe("Godot Salto spike scaffold", () => {
 
     expect(rootScript).not.toContain("load(\"res://assets");
     expect(scene3d).not.toContain("load(\"res://assets");
+    expect(toolScript).not.toContain("ImageTexture");
+  });
+
+  it("defines the v0.126 procedural Salto environment authorship and camera readability pass", async () => {
+    [
+      "docs/V0126_SALTO_ENVIRONMENT_AUTHORSHIP_SPEC.md",
+      "docs/V0126_CAMERA_FRAMING_SPEC.md",
+      "docs/V0126_TACTICAL_LANE_READABILITY_REPORT.md",
+      "docs/V0126_PERFORMANCE_SAFETY_REPORT.md",
+      "docs/V0126_VISUAL_CAPTURE_REPORT.md",
+      "docs/V0126_IMPLEMENTATION_REPORT.md"
+    ].forEach((path) => expect(existsSync(path), path).toBe(true));
+
+    const rootScript = await readFile("desktop-spikes/godot-salto/scripts/salto_spike_root.gd", "utf8");
+    const scene3d = await readFile("desktop-spikes/godot-salto/scripts/salto_spike_scene_3d.gd", "utf8");
+    const toolScript = await readFile("desktop-spikes/godot-salto/tools/godotSpikeTool.mjs", "utf8");
+    const captureScript = await readFile("tools/godot/captureGodotPlayerSliceWindows.ps1", "utf8");
+    const handoff = await readFile("LLM_GAME_HANDOFF.md", "utf8");
+    const roadmap = await readFile("ROADMAP.md", "utf8");
+
+    [
+      "title_backdrop",
+      "briefing_backdrop",
+      "battle_default",
+      "road",
+      "ford",
+      "quarry",
+      "shrine",
+      "ruin",
+      "buildable_ground",
+      "minimap",
+      "objective_focus",
+      "camera_min_zoom",
+      "camera_max_zoom",
+      "clean_preset",
+      "atmospheric_preset_private"
+    ].forEach((id) => {
+      expect(rootScript).toContain(id);
+      expect(toolScript).toContain(id);
+    });
+
+    [
+      "focus_layout_feature",
+      "set_camera_zoom_posture",
+      "recenter_camera",
+      "highland_foothold_shape_core",
+      "wet_granite_main_road_bed",
+      "shallow_ford_cobble_crossing",
+      "quarry_cut_worked_stone_step_lower",
+      "shrine_clearing_ground",
+      "ruin_pocket_floor",
+      "buildable_ground_patch_friendly",
+      "blocked_terrain_cue_north_rocks",
+      "moss_material_posture_patch",
+      "warm_hearth_accent_command_hall",
+      "restrained_teal_lume_accent_a",
+      "minimapMatchesAuthoredLayout",
+      "roadDistinctFromBuildableGround",
+      "fordDistinctFromWater",
+      "quarryDistinctFromRuin",
+      "shrineDistinctFromMine",
+      "noGiantMarginRegression",
+      "cameraBoundsSafe",
+      "zoomBoundsSafe",
+      "objectiveFocusHelperAvailable",
+      "optionalRecenterButtonAvailable"
+    ].forEach((text) => expect(scene3d).toContain(text));
+
+    [
+      "v0126ArtifactRoot",
+      "v0126ScreenshotRoot",
+      "PASS_V0126_SALTO_ENVIRONMENT_CAPTURE",
+      "PASS_V0126_SALTO_ENVIRONMENT_AUTHORSHIP",
+      "PASS_V0126_CAMERA_FRAMING",
+      "PASS_V0126_TACTICAL_LANE_READABILITY",
+      "PASS_V0126_PERFORMANCE_SAFETY",
+      "environment-authorship-report.json",
+      "camera-framing-report.json",
+      "tactical-lane-readability-report.json",
+      "performance-safety-report.json",
+      "generatedOrImportedArtIncluded",
+      "runtimeArtIntegrated",
+      "routineEditorUseRequired",
+      "finalEngineDecisionMade",
+      "fullPortStarted"
+    ].forEach((text) => expect(toolScript).toContain(text));
+
+    expect(captureScript).toContain("godot-salto\\v0126");
+    expect(captureScript).toContain("15 PNG captures");
+    expect(captureScript).toContain("player-slice-capture-v0126");
+
+    expect(rootScript).toContain("PASS_PLAYER_SLICE_VALIDATION");
+    expect(rootScript).toContain("linkedWardDamageTakenMultiplier");
+    expect(rootScript).toContain("saveWritesAllowed");
+    expect(scene3d).toContain("proceduralPrimitiveOnly");
+    expect(scene3d).toContain("ATMOSPHERIC_BALANCED");
+    expect(scene3d).toContain("VFX_STRESS_PRIVATE");
+    expect(handoff).toContain("v0.126 Godot Procedural Salto Environment Authorship");
+    expect(roadmap).toContain("v0.126 Godot Procedural Salto Environment Authorship");
+
+    expect(rootScript).not.toContain("load(\"res://assets");
+    expect(scene3d).not.toContain("load(\"res://assets");
+    expect(scene3d).not.toContain("ImageTexture");
     expect(toolScript).not.toContain("ImageTexture");
   });
 });

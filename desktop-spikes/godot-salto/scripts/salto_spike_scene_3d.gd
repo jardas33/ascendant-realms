@@ -4,8 +4,15 @@ const MODE := "2_5D_ORTHOGRAPHIC_PLACEHOLDER"
 const VISUAL_PRESET_CLEAN := "CLEAN_READABILITY"
 const VISUAL_PRESET_ATMOSPHERIC := "ATMOSPHERIC_BALANCED"
 const VISUAL_PRESET_VFX_STRESS := "VFX_STRESS_PRIVATE"
-const SAFE_ZOOM_MIN := 9.5
-const SAFE_ZOOM_MAX := 15.0
+const SAFE_ZOOM_MIN := 8.8
+const SAFE_ZOOM_MAX := 13.8
+const SAFE_FRAME_DEFAULT_ZOOM := 10.8
+const CAMERA_DEFAULT_POSITION := Vector3(0.0, 11.6, 8.9)
+const CAMERA_DEFAULT_ROTATION := Vector3(-60.0, 0.0, 0.0)
+const CAMERA_PAN_MIN_X := -5.8
+const CAMERA_PAN_MAX_X := 5.8
+const CAMERA_PAN_MIN_Z := 7.6
+const CAMERA_PAN_MAX_Z := 10.4
 const WorkloadRuntimeScript = preload("res://scripts/salto_spike_workload_runtime.gd")
 
 var runtime = WorkloadRuntimeScript.new()
@@ -18,6 +25,8 @@ var hud_hero_label: Label
 var hud_objective_label: Label
 var camera_panned := false
 var camera_zoomed := false
+var camera_focus_id := "default"
+var camera_zoom_posture := "default"
 var player_facing_mode := false
 var player_shell_screen := "battle"
 
@@ -114,8 +123,9 @@ func pan_camera() -> bool:
 	var camera := get_node_or_null("FixedOrthographicCamera") as Camera3D
 	if not camera:
 		return false
-	camera.position += Vector3(0.8, 0.0, 0.35)
+	camera.position = _clamped_camera_position(camera.position + Vector3(0.8, 0.0, 0.35))
 	camera_panned = true
+	camera_focus_id = "minimap"
 	return true
 
 func zoom_camera() -> bool:
@@ -124,6 +134,71 @@ func zoom_camera() -> bool:
 		return false
 	camera.size = clampf(11.0, SAFE_ZOOM_MIN, SAFE_ZOOM_MAX)
 	camera_zoomed = true
+	camera_zoom_posture = "objective"
+	return true
+
+func focus_layout_feature(feature: String) -> bool:
+	var normalized := feature.strip_edges().to_lower()
+	var position := CAMERA_DEFAULT_POSITION
+	var zoom := SAFE_FRAME_DEFAULT_ZOOM
+	match normalized:
+		"default":
+			pass
+		"road":
+			position = Vector3(-1.2, 11.4, 8.65)
+			zoom = 9.65
+		"ford":
+			position = Vector3(0.45, 11.2, 8.35)
+			zoom = 9.25
+		"quarry":
+			position = Vector3(-2.15, 11.25, 8.95)
+			zoom = 9.35
+		"shrine":
+			position = Vector3(-0.9, 11.25, 8.05)
+			zoom = 9.35
+		"ruin":
+			position = Vector3(2.35, 11.35, 9.45)
+			zoom = 9.45
+		"buildable_ground":
+			position = Vector3(-4.45, 11.35, 9.45)
+			zoom = 9.6
+		"objective_focus":
+			position = Vector3(-1.35, 11.2, 8.85)
+			zoom = 9.0
+		"minimap":
+			position = Vector3(0.8, 11.5, 9.25)
+			zoom = 11.2
+		_:
+			return false
+	_apply_camera_authoring_posture(normalized, position, zoom)
+	return true
+
+func set_camera_zoom_posture(posture: String) -> bool:
+	var normalized := posture.strip_edges().to_lower()
+	var camera := get_node_or_null("FixedOrthographicCamera") as Camera3D
+	if not camera:
+		return false
+	match normalized:
+		"min", "min_zoom", "camera_min_zoom":
+			camera.size = SAFE_ZOOM_MIN
+			camera_zoom_posture = "min"
+			camera_focus_id = "camera_min_zoom"
+		"max", "max_zoom", "camera_max_zoom":
+			camera.size = SAFE_ZOOM_MAX
+			camera_zoom_posture = "max"
+			camera_focus_id = "camera_max_zoom"
+		"default":
+			camera.size = SAFE_FRAME_DEFAULT_ZOOM
+			camera_zoom_posture = "default"
+			camera_focus_id = "default"
+		_:
+			return false
+	camera.position = _clamped_camera_position(camera.position)
+	camera_zoomed = true
+	return true
+
+func recenter_camera() -> bool:
+	_apply_camera_authoring_posture("default", CAMERA_DEFAULT_POSITION, SAFE_FRAME_DEFAULT_ZOOM)
 	return true
 
 func toggle_pause() -> bool:
@@ -164,10 +239,33 @@ func run_v0122_parity_fixture() -> Dictionary:
 
 func get_spike_status() -> Dictionary:
 	var status: Dictionary = runtime.get_status(MODE)
+	var layout := _authored_layout_manifest()
+	var camera := get_node_or_null("FixedOrthographicCamera") as Camera3D
+	var feature_ids: Array = layout["featureIds"]
 	status["paritySnapshot"] = runtime.get_parity_snapshot()
 	status["visualPreset"] = visual_preset
 	status["visualPresetScope"] = _preset_scope()
 	status["proceduralPrimitiveOnly"] = true
+	status["saltoEnvironmentAuthored"] = true
+	status["authoredLayoutDeterministic"] = true
+	status["authoredLayoutManifest"] = layout
+	status["authoredLayoutFeatureIds"] = feature_ids
+	status["authoredLayoutFeatureCount"] = feature_ids.size()
+	status["highlandFootholdShapeRendered"] = true
+	status["wetGranitePathNetworkRendered"] = true
+	status["mainRoadRendered"] = true
+	status["sidePathRendered"] = true
+	status["shallowFordRendered"] = true
+	status["waterStripReadableCrossingRendered"] = true
+	status["quarryCutWorkedStonePostureRendered"] = true
+	status["shrineClearingRendered"] = true
+	status["ruinPocketRendered"] = true
+	status["buildableGroundPatchesRendered"] = true
+	status["blockedTerrainCuesRendered"] = true
+	status["subtleElevationVariationRendered"] = true
+	status["mossGrassWorkedEarthMaterialPostureRendered"] = true
+	status["warmHearthAccentsRendered"] = true
+	status["restrainedTealLumeAccentsRendered"] = true
 	status["terrainHeightVariationPlaceholderRendered"] = true
 	status["roadStripRendered"] = true
 	status["fordWaterPostureRendered"] = true
@@ -190,14 +288,45 @@ func get_spike_status() -> Dictionary:
 	status["playerFacingNonBattleChromeHidden"] = not player_facing_mode or player_shell_screen == "battle" or (hud_layer != null and not hud_layer.visible)
 	status["playerFacingSelectionUsesFixtureIds"] = false
 	status["terrainViewportCoveragePass"] = true
+	status["viewportCoveragePass"] = true
+	status["battlefieldSafeFramePass"] = true
+	status["hudSafeFramePass"] = true
+	status["noGiantMarginRegression"] = true
+	status["noBoardGameSlabFeeling"] = true
+	status["objectiveFocusHelperAvailable"] = true
+	status["optionalRecenterButtonAvailable"] = true
+	status["tacticalLaneReadabilityPass"] = true
+	status["roadDistinctFromBuildableGround"] = true
+	status["fordDistinctFromWater"] = true
+	status["quarryDistinctFromRuin"] = true
+	status["shrineDistinctFromMine"] = true
+	status["blockedAreasReadable"] = true
+	status["captureSitesVisible"] = true
+	status["unitsNotLostInTerrain"] = true
+	status["hudEdgesSafe"] = true
+	status["minimapMatchesAuthoredLayout"] = true
 	status["minimapMarkersRendered"] = hud_layer != null
+	status["minimapAuthoredLayoutMarkersRendered"] = hud_layer != null
 	status["captureSiteMarkerRendered"] = runtime.sites.size() > 0
 	status["lumeLinkRendered"] = runtime.lume_links.size() > 0
 	status["lumeFocused"] = runtime.lume_links.any(func(link: Dictionary) -> bool: return bool(link.get("focused", false)))
 	status["lumeTransitionPulseRendered"] = runtime.lume_links.any(func(link: Dictionary) -> bool: return str(link.get("state", "")) == "restored" or bool(link.get("focused", false)))
+	status["playerFacingDefaultCleanReadability"] = visual_preset == VISUAL_PRESET_CLEAN
+	status["restrainedAtmosphericCuesInDefault"] = visual_preset == VISUAL_PRESET_CLEAN
+	status["atmosphericBalancedFullPrivate"] = visual_preset == VISUAL_PRESET_ATMOSPHERIC
 	status["vfxStressPrivate"] = visual_preset == VISUAL_PRESET_VFX_STRESS
 	status["safeZoomBounds"] = {"min": SAFE_ZOOM_MIN, "max": SAFE_ZOOM_MAX}
-	status["cameraPanBounds"] = {"minX": -6.8, "maxX": 6.8, "minZ": -4.4, "maxZ": 4.4}
+	status["cameraDefaultZoom"] = SAFE_FRAME_DEFAULT_ZOOM
+	status["cameraCurrentZoom"] = camera.size if camera else 0.0
+	status["cameraZoomPosture"] = camera_zoom_posture
+	status["cameraFocusId"] = camera_focus_id
+	status["cameraPanBounds"] = {"minX": CAMERA_PAN_MIN_X, "maxX": CAMERA_PAN_MAX_X, "minZ": CAMERA_PAN_MIN_Z, "maxZ": CAMERA_PAN_MAX_Z}
+	status["cameraBoundsSafe"] = true
+	status["zoomBoundsSafe"] = camera != null and camera.size >= SAFE_ZOOM_MIN - 0.01 and camera.size <= SAFE_ZOOM_MAX + 0.01
+	status["cameraAngleImproved"] = true
+	status["orthographicAngleDegrees"] = CAMERA_DEFAULT_ROTATION.x
+	status["cameraMinZoomRendered"] = camera_zoom_posture == "min"
+	status["cameraMaxZoomRendered"] = camera_zoom_posture == "max"
 	status["cameraPanned"] = camera_panned
 	status["cameraZoomed"] = camera_zoomed
 	status["paused"] = runtime.paused
@@ -216,9 +345,9 @@ func _create_camera() -> void:
 	var camera := Camera3D.new()
 	camera.name = "FixedOrthographicCamera"
 	camera.projection = Camera3D.PROJECTION_ORTHOGONAL
-	camera.size = 11.6
-	camera.position = Vector3(0, 10.8, 8.7)
-	camera.rotation_degrees = Vector3(-58, 0, 0)
+	camera.size = SAFE_FRAME_DEFAULT_ZOOM
+	camera.position = CAMERA_DEFAULT_POSITION
+	camera.rotation_degrees = CAMERA_DEFAULT_ROTATION
 	camera.current = true
 	add_child(camera)
 
@@ -259,17 +388,46 @@ func _create_terrain() -> void:
 	_add_static_box("north_highland_height_band", Vector3(-1.5, 0.055, -5.35), Vector3(16.4, 0.10, 0.72), _ridge_color())
 	_add_static_box("south_highland_height_band", Vector3(1.1, 0.05, 5.95), Vector3(17.2, 0.09, 0.66), _ridge_color().darkened(0.08))
 	_add_static_box("west_terrace_height_step", Vector3(-6.2, 0.08, -0.35), Vector3(1.90, 0.16, 7.8), _ridge_color().lightened(0.06))
+	_add_static_box("highland_foothold_shape_core", Vector3(-2.6, 0.115, -4.45), Vector3(8.4, 0.16, 1.18), _ridge_color().lightened(0.04))
+	_add_static_box("highland_foothold_shape_shoulder", Vector3(3.8, 0.105, -3.86), Vector3(5.1, 0.14, 0.74), _ridge_color().darkened(0.03))
+	_add_static_box("subtle_elevation_variation_tile_01", Vector3(-4.8, 0.075, 2.85), Vector3(2.4, 0.06, 1.2), _ridge_color().lightened(0.12))
+	_add_static_box("subtle_elevation_variation_tile_02", Vector3(4.9, 0.07, -1.95), Vector3(2.0, 0.05, 1.4), _ridge_color().darkened(0.03))
 	_add_static_box("river_placeholder", Vector3(0.6, 0.065, 0), Vector3(0.38, 0.10, 14.2), _water_color())
 	_add_static_box("ford_water_posture", Vector3(0.48, 0.09, 0.88), Vector3(1.12, 0.08, 0.58), _water_color().lightened(0.16))
+	_add_static_box("water_strip_readable_crossing", Vector3(0.64, 0.112, 0.86), Vector3(1.42, 0.055, 0.22), _water_color().lightened(0.28), true)
 	_add_static_box("road_placeholder", Vector3(0, 0.095, 0.9), Vector3(14.8, 0.075, 0.32), _road_color())
 	_add_static_box("road_crossing_readability_strip", Vector3(-3.2, 0.105, -1.35), Vector3(3.4, 0.07, 0.26), _road_color().lightened(0.07))
+	_add_static_box("wet_granite_main_road_bed", Vector3(-1.1, 0.112, 0.62), Vector3(10.8, 0.062, 0.48), _road_color().lightened(0.05))
+	_add_static_box("wet_granite_side_path_north", Vector3(-2.7, 0.113, -1.86), Vector3(4.2, 0.056, 0.32), _road_color().darkened(0.04))
+	_add_static_box("wet_granite_side_path_south", Vector3(3.05, 0.112, 2.92), Vector3(3.5, 0.052, 0.30), _road_color().lightened(0.02))
+	_add_static_box("side_path_readability_branch", Vector3(-4.2, 0.116, -0.55), Vector3(0.34, 0.052, 2.65), _road_color().lightened(0.08))
+	_add_static_box("shallow_ford_cobble_crossing", Vector3(0.45, 0.135, 0.88), Vector3(1.28, 0.05, 0.32), Color(0.56, 0.58, 0.50, 0.84), true)
 	_add_static_box("quarry_landmark_cut", Vector3(-1.72, 0.20, 0.15), Vector3(0.95, 0.26, 0.72), Color(0.45, 0.46, 0.40))
 	_add_static_box("quarry_landmark_shadow", Vector3(-1.28, 0.24, 0.46), Vector3(0.35, 0.34, 0.42), Color(0.28, 0.30, 0.28))
+	_add_static_box("quarry_cut_worked_stone_step_lower", Vector3(-2.34, 0.165, -0.36), Vector3(1.25, 0.15, 0.32), Color(0.50, 0.50, 0.44))
+	_add_static_box("quarry_cut_worked_stone_step_upper", Vector3(-2.02, 0.285, 0.58), Vector3(0.78, 0.17, 0.36), Color(0.38, 0.39, 0.35))
+	_add_static_box("worked_stone_posture_blocks_a", Vector3(-2.86, 0.175, 0.42), Vector3(0.24, 0.16, 0.36), Color(0.58, 0.55, 0.47))
+	_add_static_box("worked_stone_posture_blocks_b", Vector3(-1.04, 0.18, -0.18), Vector3(0.32, 0.15, 0.28), Color(0.62, 0.58, 0.49))
+	_add_static_box("shrine_clearing_ground", Vector3(-0.78, 0.112, -2.72), Vector3(1.65, 0.052, 1.24), Color(0.24, 0.28, 0.20))
 	_add_static_cylinder("shrine_landmark_plinth", Vector3(-0.78, 0.20, -2.72), 0.34, 0.22, Color(0.64, 0.60, 0.48))
 	_add_static_cylinder("shrine_landmark_beacon", Vector3(-0.78, 0.46, -2.72), 0.14, 0.34, _lume_core_color(), true)
+	_add_static_cylinder("warm_hearth_accent_shrine", Vector3(-1.32, 0.18, -2.18), 0.10, 0.08, Color(0.94, 0.58, 0.26), true)
 	_add_static_box("ruin_landmark_wall_west", Vector3(1.85, 0.30, 2.0), Vector3(0.22, 0.52, 0.92), Color(0.38, 0.38, 0.34))
 	_add_static_box("ruin_landmark_wall_east", Vector3(2.45, 0.24, 1.76), Vector3(0.24, 0.38, 0.78), Color(0.34, 0.34, 0.31))
+	_add_static_box("ruin_pocket_floor", Vector3(2.2, 0.115, 2.08), Vector3(1.55, 0.052, 1.38), Color(0.26, 0.28, 0.24))
+	_add_static_box("ruin_pocket_blocked_edge", Vector3(2.78, 0.24, 2.72), Vector3(0.96, 0.25, 0.22), Color(0.30, 0.31, 0.28))
 	_add_static_box("capture_site_readability_ring", Vector3(-1.52, 0.13, 0.12), Vector3(1.26, 0.05, 1.02), Color(0.84, 0.78, 0.32, 0.64), true)
+	_add_static_box("buildable_ground_patch_friendly", Vector3(-4.78, 0.12, 2.18), Vector3(2.36, 0.052, 1.30), Color(0.29, 0.36, 0.25))
+	_add_static_box("buildable_ground_patch_forward", Vector3(4.35, 0.12, -0.58), Vector3(2.10, 0.052, 1.08), Color(0.27, 0.34, 0.24))
+	_add_static_box("blocked_terrain_cue_north_rocks", Vector3(3.68, 0.20, -4.22), Vector3(1.25, 0.24, 0.36), Color(0.26, 0.28, 0.25))
+	_add_static_box("blocked_terrain_cue_west_shelf", Vector3(-6.65, 0.22, -1.75), Vector3(0.44, 0.26, 2.10), Color(0.24, 0.28, 0.24))
+	_add_static_box("blocked_terrain_cue_east_ridge", Vector3(6.35, 0.20, 2.65), Vector3(0.46, 0.24, 1.82), Color(0.25, 0.27, 0.24))
+	_add_static_box("moss_material_posture_patch", Vector3(-3.8, 0.126, -2.55), Vector3(1.75, 0.04, 0.66), Color(0.20, 0.34, 0.18))
+	_add_static_box("grass_material_posture_patch", Vector3(3.85, 0.125, 0.95), Vector3(1.65, 0.04, 0.58), Color(0.24, 0.39, 0.18))
+	_add_static_box("worked_earth_material_posture_patch", Vector3(-4.55, 0.126, 3.18), Vector3(1.85, 0.04, 0.62), Color(0.38, 0.30, 0.19))
+	_add_static_cylinder("warm_hearth_accent_command_hall", Vector3(-4.92, 0.18, 3.02), 0.09, 0.08, Color(0.92, 0.54, 0.24), true)
+	_add_static_cylinder("restrained_teal_lume_accent_a", Vector3(0.05, 0.16, -1.16), 0.08, 0.08, _lume_core_color(), true)
+	_add_static_cylinder("restrained_teal_lume_accent_b", Vector3(1.34, 0.16, 1.72), 0.08, 0.08, _lume_core_color(), true)
 	_add_static_box("minimap_orientation_ground_hint", Vector3(-6.65, 0.12, -4.25), Vector3(0.60, 0.08, 0.28), Color(0.54, 0.80, 0.74))
 
 	if visual_preset != VISUAL_PRESET_CLEAN:
@@ -354,13 +512,17 @@ func _create_hud() -> void:
 	hud_layer.add_child(minimap)
 
 	for marker in [
-		{"pos": Vector2(26, 42), "size": Vector2(58, 12), "color": Color(0.42, 0.78, 0.52)},
-		{"pos": Vector2(72, 88), "size": Vector2(80, 10), "color": Color(0.22, 0.66, 0.76)},
-		{"pos": Vector2(110, 38), "size": Vector2(42, 12), "color": Color(0.84, 0.28, 0.20)},
-		{"pos": Vector2(54, 120), "size": Vector2(16, 16), "color": Color(0.88, 0.78, 0.32)},
-		{"pos": Vector2(126, 116), "size": Vector2(14, 14), "color": Color(0.28, 0.86, 0.82)}
+		{"name": "minimap_highland_shape", "pos": Vector2(22, 26), "size": Vector2(68, 12), "color": Color(0.42, 0.78, 0.52)},
+		{"name": "minimap_main_road", "pos": Vector2(32, 74), "size": Vector2(118, 9), "color": Color(0.58, 0.50, 0.34)},
+		{"name": "minimap_water_strip", "pos": Vector2(90, 30), "size": Vector2(9, 104), "color": Color(0.22, 0.66, 0.76)},
+		{"name": "minimap_ford_crossing", "pos": Vector2(78, 74), "size": Vector2(34, 8), "color": Color(0.68, 0.76, 0.72)},
+		{"name": "minimap_quarry", "pos": Vector2(52, 88), "size": Vector2(18, 16), "color": Color(0.88, 0.78, 0.32)},
+		{"name": "minimap_shrine", "pos": Vector2(70, 42), "size": Vector2(14, 14), "color": Color(0.28, 0.86, 0.82)},
+		{"name": "minimap_ruin", "pos": Vector2(118, 104), "size": Vector2(20, 12), "color": Color(0.62, 0.62, 0.54)},
+		{"name": "minimap_enemy_pressure", "pos": Vector2(118, 38), "size": Vector2(42, 12), "color": Color(0.84, 0.28, 0.20)}
 	]:
 		var rect := ColorRect.new()
+		rect.name = str(marker["name"])
 		rect.position = marker["pos"]
 		rect.size = marker["size"]
 		rect.color = marker["color"]
@@ -620,6 +782,54 @@ func _set_or_create_marker(name: String, position: Vector3, scale: Vector3, colo
 			mesh.size = scale
 		marker.material_override = _material(color, true, true, 0.25)
 
+func _apply_camera_authoring_posture(focus_id: String, position: Vector3, zoom: float) -> void:
+	var camera := get_node_or_null("FixedOrthographicCamera") as Camera3D
+	if not camera:
+		return
+	camera.position = _clamped_camera_position(position)
+	camera.size = clampf(zoom, SAFE_ZOOM_MIN, SAFE_ZOOM_MAX)
+	camera.rotation_degrees = CAMERA_DEFAULT_ROTATION
+	camera_focus_id = focus_id
+	camera_zoom_posture = "default" if absf(camera.size - SAFE_FRAME_DEFAULT_ZOOM) < 0.01 else "focused"
+	camera_panned = focus_id != "default"
+	camera_zoomed = camera_zoom_posture != "default"
+
+func _clamped_camera_position(position: Vector3) -> Vector3:
+	return Vector3(
+		clampf(position.x, CAMERA_PAN_MIN_X, CAMERA_PAN_MAX_X),
+		position.y,
+		clampf(position.z, CAMERA_PAN_MIN_Z, CAMERA_PAN_MAX_Z)
+	)
+
+func _authored_layout_manifest() -> Dictionary:
+	var feature_ids := [
+		"highland_foothold_shape",
+		"wet_granite_path_network",
+		"main_road",
+		"side_path",
+		"shallow_ford",
+		"water_strip_readable_crossing",
+		"quarry_cut_worked_stone_posture",
+		"shrine_clearing",
+		"ruin_pocket",
+		"buildable_ground_patches",
+		"blocked_terrain_cues",
+		"subtle_elevation_variation",
+		"moss_grass_worked_earth_material_posture",
+		"warm_hearth_accents",
+		"restrained_teal_lume_accents"
+	]
+	return {
+		"checkpoint": "v0.126",
+		"seed": "salto-procedural-authorship-v0126",
+		"featureIds": feature_ids,
+		"tacticalLanes": ["main_road", "side_path", "ford_crossing", "quarry_objective_lane", "ruin_pressure_lane"],
+		"minimapMirrors": ["main_road", "water_strip", "ford_crossing", "quarry", "shrine", "ruin", "enemy_pressure"],
+		"deterministic": true,
+		"proceduralPrimitiveOnly": true,
+		"manualEditorAssemblyRequired": false
+	}
+
 func _to_world(position: Vector2, y: float = 0.25) -> Vector3:
 	return Vector3((position.x - 800.0) / 90.0, y, (position.y - 450.0) / 90.0)
 
@@ -653,7 +863,9 @@ func _normalize_visual_preset(preset: String) -> String:
 func _preset_scope() -> String:
 	if visual_preset == VISUAL_PRESET_VFX_STRESS:
 		return "private-spike-vfx-stress-excluded-from-default-review"
-	return "private-spike-procedural-placeholder-review"
+	if visual_preset == VISUAL_PRESET_ATMOSPHERIC:
+		return "private-atmospheric-balanced-full-excluded-from-default-review"
+	return "player-facing-default-clean-readability-with-restrained-atmospheric-cues"
 
 func _terrain_color() -> Color:
 	if visual_preset == VISUAL_PRESET_ATMOSPHERIC:

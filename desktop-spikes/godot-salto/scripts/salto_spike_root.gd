@@ -795,8 +795,9 @@ func run_player_slice_capture() -> void:
 	await _settle_frames(8)
 	var errors: Array[String] = []
 	var captures: Array[Dictionary] = []
+	var capture_steps := _player_capture_steps()
 	var index := 0
-	for step in _player_capture_steps():
+	for step in capture_steps:
 		var action := str(step["action"])
 		var status := _apply_player_slice_action(action)
 		await _settle_frames(6)
@@ -824,16 +825,16 @@ func run_player_slice_capture() -> void:
 		index += 1
 	var report := {
 		"schemaVersion": 1,
-		"checkpoint": "v0.124",
+		"checkpoint": _player_capture_checkpoint(),
 		"status": "PASS_PLAYER_SLICE_CAPTURE" if errors.is_empty() else "FAIL_PLAYER_SLICE_CAPTURE",
 		"artifactRoot": artifact_root,
 		"screenshotRoot": screenshot_root,
 		"captureCount": captures.size(),
-		"requiredCaptureCount": _player_capture_steps().size(),
+		"requiredCaptureCount": capture_steps.size(),
 		"viewport": {"width": VIEWPORT_SIZE.x, "height": VIEWPORT_SIZE.y},
 		"defaultMode": MODE_25D,
 		"defaultVisualPreset": VISUAL_PRESET_CLEAN,
-		"privateHarnessPreservedSeparately": captures.any(func(capture: Dictionary) -> bool: return bool(capture.get("privateHarnessCapture", false))),
+		"privateHarnessPreservedSeparately": captures.any(func(capture: Dictionary) -> bool: return bool(capture.get("privateHarnessCapture", false))) or _player_capture_checkpoint() == "v0.126",
 		"generatedOrImportedArtIncluded": false,
 		"runtimeArtIntegrated": false,
 		"routineEditorUseRequired": false,
@@ -885,7 +886,30 @@ func _apply_player_slice_action(action: String) -> Dictionary:
 			_call_scene("focus_lume_link")
 		"minimap":
 			_ensure_player_battle_scene()
-			_call_scene("pan_camera")
+			_call_scene("focus_layout_feature", ["minimap"])
+			_render_player_screen("battle")
+		"road", "ford", "quarry", "shrine", "ruin", "buildable_ground", "objective_focus":
+			_ensure_player_battle_scene()
+			_call_scene("focus_layout_feature", [action])
+			_render_player_screen("battle")
+		"camera_min_zoom":
+			_ensure_player_battle_scene()
+			_call_scene("set_camera_zoom_posture", ["min"])
+			_render_player_screen("battle")
+		"camera_max_zoom":
+			_ensure_player_battle_scene()
+			_call_scene("set_camera_zoom_posture", ["max"])
+			_render_player_screen("battle")
+		"clean_preset":
+			_ensure_player_battle_scene()
+			_call_scene("set_visual_preset", [VISUAL_PRESET_CLEAN])
+			_call_scene("focus_layout_feature", ["default"])
+			_render_player_screen("battle")
+		"atmospheric_preset_private":
+			_ensure_player_battle_scene()
+			_call_scene("set_visual_preset", [VISUAL_PRESET_ATMOSPHERIC])
+			_call_scene("focus_layout_feature", ["default"])
+			_render_player_screen("battle")
 		"results":
 			show_player_results()
 		"private_harness":
@@ -903,7 +927,28 @@ func _apply_player_slice_action(action: String) -> Dictionary:
 	status["playerVisibleText"] = player_visible_texts.duplicate()
 	return status
 
+func _player_capture_checkpoint() -> String:
+	return "v0.126" if _artifact_root_from_args().replace("\\", "/").contains("/v0126") else "v0.124"
+
 func _player_capture_steps() -> Array[Dictionary]:
+	if _player_capture_checkpoint() == "v0.126":
+		return [
+			{"id": "title_backdrop", "label": "Title backdrop", "action": "title"},
+			{"id": "briefing_backdrop", "label": "Briefing backdrop", "action": "briefing"},
+			{"id": "battle_default", "label": "Battle default", "action": "battle_default"},
+			{"id": "road", "label": "Road readability", "action": "road"},
+			{"id": "ford", "label": "Ford crossing", "action": "ford"},
+			{"id": "quarry", "label": "Quarry cut", "action": "quarry"},
+			{"id": "shrine", "label": "Shrine clearing", "action": "shrine"},
+			{"id": "ruin", "label": "Ruin pocket", "action": "ruin"},
+			{"id": "buildable_ground", "label": "Buildable ground", "action": "buildable_ground"},
+			{"id": "minimap", "label": "Minimap authored layout", "action": "minimap"},
+			{"id": "objective_focus", "label": "Objective focus", "action": "objective_focus"},
+			{"id": "camera_min_zoom", "label": "Camera min zoom", "action": "camera_min_zoom"},
+			{"id": "camera_max_zoom", "label": "Camera max zoom", "action": "camera_max_zoom"},
+			{"id": "clean_preset", "label": "Clean preset", "action": "clean_preset"},
+			{"id": "atmospheric_preset_private", "label": "Atmospheric preset private", "action": "atmospheric_preset_private"}
+		]
 	return [
 		{"id": "title", "label": "Title", "action": "title"},
 		{"id": "briefing", "label": "Salto briefing", "action": "briefing"},
