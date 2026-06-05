@@ -1,5 +1,30 @@
 # Changelog
 
+# v0.133 Godot Post-Mine Sequence Repair, Barracks-Recruit Guidance, Ashen-Wave Trigger, And Real Combat-Onset Proof - 2026-06-05
+
+This checkpoint repairs the player-facing Godot Salto flow after Worker assignment. It replaces loose post-mine objective jumps with guarded prerequisites, removes the box-select skip into Ashen pressure, guides Barracks restoration and Militia recruitment through ordinary RTS input, starts a visible Ashen countdown, launches the bounded wave automatically, proves enemy movement and combat onset, defeats the wave through simulation/input, restores the Lume link, and reaches Results. It remains a bounded Godot spike repair: no generated images, imported runtime art, final Godot choice, full port, Unity project, browser-runtime change, save change, stable-ID change, broad economy, broad building tree, broad recruitment, campaign expansion, multiplayer, or v0.134 work.
+
+Added:
+
+- `GODOT_POST_MINE_FLOW_SMOKE_WINDOWS.bat`.
+- `GODOT_LAUNCH_POST_MINE_FLOW_REVIEW_WINDOWS.bat`.
+- `tools/godot/runGodotPostMineFlowSmokeWindows.ps1`.
+- `npm run godot:validate:post-mine-flow`.
+- `npm run godot:headed:post-mine-flow-smoke`.
+- v0.133 ignored artifact generation for post-mine trace, prerequisite report, Barracks restoration proof, Militia recruit proof, pressure countdown proof, wave launch proof, combat onset proof, wave defeat proof, Lume restore proof, screenshot manifest, screenshots, and README.
+- v0.133 docs for the objective-state audit, prerequisite ledger, Barracks guidance, Militia guidance, Ashen countdown, combat onset, Lume restore, headed proof, gate, implementation report, and Emmanuel retest guide.
+
+Changed:
+
+- The player-facing Godot sequence now advances from Worker assignment to Barracks restoration, Militia training, Ashen countdown, wave defense, Lume restoration, and Results through normal packaged-window input and simulation.
+- Box selection changes selection only and cannot skip to Ashen pressure before required prerequisites are satisfied.
+- The v0.133 artifact root is `artifacts/desktop-spikes/godot-salto/v0133/`.
+- Handoff, roadmap, development checkpoint, and release checklist now describe v0.133.
+
+Verification:
+
+- Required v0.133 verification is listed in `docs/V0133_IMPLEMENTATION_REPORT.md` and must be run before closeout.
+
 # v0.130 Godot Salto Vertical-Slice Acceptance Pack, Human Review Build, And First Reference-Art Generation Session - 2026-06-05
 
 This checkpoint packages the existing Godot Salto player-facing slice for Emmanuel review and prepares the first four reference-only art generation prompts. It remains a bounded review-preparation checkpoint: no generated images, imported runtime art, final Godot choice, full port, Unity project, browser-runtime change, save change, stable-ID change, broad campaign, multiplayer, or v0.131 work.

@@ -216,6 +216,21 @@ func issue_move_order(target: Vector2 = Vector2.INF) -> bool:
 func advance_live_frame() -> void:
 	_simulate_workload_frame("moving")
 
+func advance_pressure_wave_frame() -> void:
+	if pressure_wave_state == "active":
+		_seed_enemy_pressure()
+		if str(last_order).begins_with("attack:"):
+			_seed_friendly_pressure()
+		_advance_movement()
+		_resolve_combat()
+		_update_capture_sites()
+		_update_lume_links()
+	else:
+		_simulate_workload_frame("moving")
+	if pressure_wave_state == "active" and _active_pressure_wave_alive_count() == 0:
+		pressure_wave_state = "defeated"
+		pressure_wave_defeated = true
+
 func has_active_movement() -> bool:
 	for unit in units:
 		if _is_alive(unit) and bool(unit.get("hasDestination", false)):
@@ -233,6 +248,12 @@ func unit_has_destination(id: String) -> bool:
 	if unit == null:
 		return false
 	return bool(unit.get("hasDestination", false))
+
+func unit_alive(id: String) -> bool:
+	var unit: Variant = _unit_by_id(id)
+	if unit == null:
+		return false
+	return _is_alive(unit)
 
 func apply_player_facing_staging() -> bool:
 	var staged_positions := {
@@ -265,6 +286,10 @@ func issue_attack_order(target_id: String = "") -> bool:
 			target = _unit_by_id(target_id)
 		if target != null:
 			unit["attackTarget"] = str(target["id"])
+			var distance: float = (unit["position"] as Vector2).distance_to(target["position"])
+			if distance > float(unit["attackRange"]):
+				unit["destination"] = target["position"]
+				unit["hasDestination"] = true
 			accepted += 1
 	attack_acceptance_count += accepted
 	last_order = "attack:%s" % ("nearest" if target_id == "" else target_id)
@@ -465,6 +490,14 @@ func defeat_pressure_wave() -> bool:
 	last_order = "pressure-wave:defeated" if pressure_wave_defeated else "pressure-wave:active"
 	return pressure_wave_defeated
 
+func _active_pressure_wave_alive_count() -> int:
+	var alive := 0
+	for id in ["ashen_00", "ashen_01", "ashen_02", "ashen_03"]:
+		var unit: Variant = _unit_by_id(id)
+		if unit != null and _is_alive(unit):
+			alive += 1
+	return alive
+
 func restore_lume_microloop() -> bool:
 	var mine_ok := change_site_state("west_stone_cut", "friendly")
 	var ford_ok := change_site_state("ford_toll", "friendly")
@@ -473,6 +506,17 @@ func restore_lume_microloop() -> bool:
 		link["state"] = "restored"
 	lume_restored = mine_ok and ford_ok
 	last_order = "lume:restored"
+	return lume_restored
+
+func restore_lume_from_player_input() -> bool:
+	if not pressure_wave_defeated:
+		return false
+	var ford_ok := change_site_state("ford_toll", "friendly")
+	focus_lume_link()
+	for link in lume_links:
+		link["state"] = "restored"
+	lume_restored = ford_ok
+	last_order = "lume:restored-by-player-input"
 	return lume_restored
 
 func run_v0129_microloop_fixture(mode: String) -> Dictionary:

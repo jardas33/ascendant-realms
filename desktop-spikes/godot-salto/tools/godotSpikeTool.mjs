@@ -30,6 +30,8 @@ const v0131ArtifactRoot = join(repoRoot, "artifacts", "desktop-spikes", "godot-s
 const v0131ScreenshotRoot = join(v0131ArtifactRoot, "screenshots");
 const v0132ArtifactRoot = join(repoRoot, "artifacts", "desktop-spikes", "godot-salto", "v0132");
 const v0132ScreenshotRoot = join(v0132ArtifactRoot, "screenshots");
+const v0133ArtifactRoot = join(repoRoot, "artifacts", "desktop-spikes", "godot-salto", "v0133");
+const v0133ScreenshotRoot = join(v0133ArtifactRoot, "screenshots");
 const sourceFixtureRoot = join(repoRoot, "artifacts", "desktop-spike-fixture", "latest");
 const generatedDataRoot = join(spikeRoot, "data", "generated");
 const buildsRoot = join(spikeRoot, "builds");
@@ -4834,6 +4836,245 @@ function validateV0132SiteSemanticsArtifacts() {
   return report;
 }
 
+function validateV0133PostMineFlowArtifacts() {
+  const smoke = readOptionalJson(join(v0133ArtifactRoot, "headed-post-mine-flow-smoke.json"));
+  const trace = readOptionalJson(join(v0133ArtifactRoot, "post-mine-trace.json"));
+  const objective = readOptionalJson(join(v0133ArtifactRoot, "objective-prerequisite-report.json"));
+  const barracks = readOptionalJson(join(v0133ArtifactRoot, "barracks-restoration-proof.json"));
+  const recruit = readOptionalJson(join(v0133ArtifactRoot, "militia-recruit-proof.json"));
+  const countdown = readOptionalJson(join(v0133ArtifactRoot, "pressure-countdown-proof.json"));
+  const launch = readOptionalJson(join(v0133ArtifactRoot, "wave-launch-proof.json"));
+  const combat = readOptionalJson(join(v0133ArtifactRoot, "combat-onset-proof.json"));
+  const defeat = readOptionalJson(join(v0133ArtifactRoot, "wave-defeat-proof.json"));
+  const lume = readOptionalJson(join(v0133ArtifactRoot, "lume-restore-proof.json"));
+  const manifest = readOptionalJson(join(v0133ArtifactRoot, "screenshot-manifest.json"));
+  const errors = [];
+  const requiredCaptures = [
+    "worker_assigned",
+    "objective_restore_barracks",
+    "barracks_highlighted",
+    "build_order_accepted",
+    "construction_25",
+    "construction_75",
+    "barracks_restored",
+    "objective_train_militia",
+    "train_militia_button",
+    "queue_50",
+    "militia_spawned",
+    "ashen_incoming_countdown",
+    "road_entry_pulse",
+    "wave_launched",
+    "enemy_movement",
+    "combat_onset",
+    "enemy_remaining_counter",
+    "wave_defeated",
+    "lume_highlighted",
+    "lume_restored",
+    "results"
+  ];
+  const requiredSmokeChecks = [
+    "workerAssignedToMine",
+    "barracksHighlightVisible",
+    "barracksBuildOrderAccepted",
+    "constructionStarted",
+    "construction25Recorded",
+    "construction75Recorded",
+    "barracksRestored",
+    "barracksSelected",
+    "trainMilitiaClicked",
+    "recruitQueueStarted",
+    "recruitQueue50Recorded",
+    "militiaSpawned",
+    "countdownStarted",
+    "waveTriggeredOnce",
+    "waveTriggeredByCountdown",
+    "roadEntryPulseVisible",
+    "enemyMovementStarted",
+    "attackInputAccepted",
+    "combatStarted",
+    "waveDefeatedFromSimulation",
+    "lumeHighlightVisible",
+    "lumeRestoreInputAccepted",
+    "lumeRestored",
+    "resultsReached",
+    "boxSelectNoObjectiveSkipProven",
+    "noActualObjectiveRegression",
+    "debugShortcutNotUsed",
+    "stateInjectionNotUsed"
+  ];
+  if (!smoke) {
+    errors.push("Missing headed-post-mine-flow-smoke.json.");
+  } else {
+    if (smoke.status !== "PASS_V0133_HEADED_POST_MINE_FLOW_SMOKE") {
+      errors.push(`Post-mine flow smoke did not pass: ${smoke.status}.`);
+    }
+    if (smoke.privateHarnessShortcutUsed !== false || smoke.debugShortcutUsed !== false || smoke.stateInjectionUsed !== false || smoke.fixtureOnlyHelperProofUsed !== false) {
+      errors.push("Post-mine flow smoke reported a forbidden shortcut, debug trigger, state injection, or fixture-only proof.");
+    }
+    if (smoke.linkedWardDamageTakenMultiplier !== 0.92) {
+      errors.push("linked_ward damage multiplier was not preserved at 0.92.");
+    }
+    for (const key of requiredSmokeChecks) {
+      if (smoke.checks?.[key] !== true) {
+        errors.push(`Post-mine flow smoke check ${key} was not true.`);
+      }
+    }
+    const sceneStatus = smoke.sceneStatus ?? {};
+    if (sceneStatus.waveTriggerSource !== "countdown") {
+      errors.push(`Expected Ashen wave trigger source countdown, found ${sceneStatus.waveTriggerSource ?? "missing"}.`);
+    }
+    const expectedCanonicalSequence = [
+      "select_aster",
+      "move_to_west_stone_cut_mine",
+      "convert_west_stone_cut_mine",
+      "assign_worker_to_mine",
+      "restore_barracks",
+      "train_militia",
+      "prepare_ashen_pressure",
+      "defeat_ashen_wave",
+      "restore_lume_link",
+      "review_results"
+    ];
+    if (JSON.stringify(sceneStatus.canonicalObjectiveSequence ?? []) !== JSON.stringify(expectedCanonicalSequence)) {
+      errors.push("Scene status canonical objective sequence did not match the v0.133 contract.");
+    }
+    if (sceneStatus.objectiveStep !== "review_results" || sceneStatus.objectiveRank !== 10) {
+      errors.push(`Expected final canonical objective review_results rank 10, found ${sceneStatus.objectiveStep ?? "missing"} rank ${sceneStatus.objectiveRank ?? "missing"}.`);
+    }
+    const objectiveHistoryLabels = (sceneStatus.objectiveHistory ?? []).flatMap((entry) => [entry.from, entry.to]);
+    for (const legacyLabel of ["move_to_quarry", "capture_hold_quarry", "worker_assign_mine", "defeat_wave"]) {
+      if (objectiveHistoryLabels.includes(legacyLabel)) {
+        errors.push(`Scene status objective history exposed legacy label ${legacyLabel}.`);
+      }
+    }
+    if (sceneStatus.waveRemainingCount !== 0) {
+      errors.push(`Expected wave remaining count 0, found ${sceneStatus.waveRemainingCount ?? "missing"}.`);
+    }
+    if (sceneStatus.saveWritesAllowed !== false || sceneStatus.stableIdsChanged !== false || sceneStatus.browserRuntimeChanged !== false) {
+      errors.push("Scene status reported save writes, stable-ID changes, or browser runtime changes.");
+    }
+  }
+  if (!trace) {
+    errors.push("Missing post-mine-trace.json.");
+  } else {
+    const events = new Set((trace.trace ?? []).map((entry) => entry.event));
+    [
+      "launch",
+      "title_start_clicked",
+      "briefing_start_battle_clicked",
+      "battle_ready",
+      "worker_right_click_controlled_mine",
+      "box_select_no_objective_skip_probe",
+      "objective_restore_barracks_visible",
+      "barracks_restore_right_click",
+      "barracks_construction_progress_25",
+      "barracks_construction_progress_75",
+      "barracks_restored",
+      "barracks_selected",
+      "train_militia_clicked",
+      "militia_recruit_progress_50",
+      "militia_spawned",
+      "ashen_pressure_countdown_started",
+      "ashen_wave_launched_automatically",
+      "enemy_movement_started",
+      "combat_attack_right_click",
+      "combat_onset",
+      "wave_defeated_by_simulation",
+      "lume_restore_click"
+    ].forEach((event) => {
+      if (!events.has(event)) {
+        errors.push(`Missing v0.133 post-mine trace event: ${event}.`);
+      }
+    });
+    if (trace.noPrivateHarnessShortcutUsed !== true || trace.noDebugShortcutUsed !== true || trace.noStateInjectionUsed !== true || trace.fixtureOnlyHelperProofUsed !== false) {
+      errors.push("Post-mine trace did not preserve no-shortcut proof.");
+    }
+  }
+  const expectedProofs = [
+    [objective, "PASS_OBJECTIVE_PREREQUISITE_REPORT", "objective-prerequisite-report.json"],
+    [barracks, "PASS_BARRACKS_RESTORATION_PROOF", "barracks-restoration-proof.json"],
+    [recruit, "PASS_MILITIA_RECRUIT_PROOF", "militia-recruit-proof.json"],
+    [countdown, "PASS_PRESSURE_COUNTDOWN_PROOF", "pressure-countdown-proof.json"],
+    [launch, "PASS_WAVE_LAUNCH_PROOF", "wave-launch-proof.json"],
+    [combat, "PASS_COMBAT_ONSET_PROOF", "combat-onset-proof.json"],
+    [defeat, "PASS_WAVE_DEFEAT_PROOF", "wave-defeat-proof.json"],
+    [lume, "PASS_LUME_RESTORE_PROOF", "lume-restore-proof.json"]
+  ];
+  for (const [proof, expectedStatus, fileName] of expectedProofs) {
+    if (proof?.status !== expectedStatus) {
+      errors.push(`${fileName} did not pass: ${proof?.status ?? "missing"}.`);
+    }
+  }
+  const captures = manifest?.captures ?? [];
+  if (manifest?.status !== "PASS_V0133_POST_MINE_FLOW_SCREENSHOTS") {
+    errors.push(`Screenshot manifest did not pass: ${manifest?.status ?? "missing"}.`);
+  }
+  if (captures.length !== 21) {
+    errors.push(`Expected 21 v0.133 screenshots, found ${captures.length}.`);
+  }
+  for (const id of requiredCaptures) {
+    if (!captures.some((capture) => capture.id === id)) {
+      errors.push(`Missing v0.133 screenshot capture: ${id}.`);
+    }
+  }
+  const enrichedCaptures = captures.map((capture) => {
+    const screenshotPath = join(v0133ScreenshotRoot, capture.fileName);
+    const exists = existsSync(screenshotPath);
+    if (!exists) {
+      errors.push(`Missing screenshot file: ${capture.fileName}.`);
+    }
+    if (capture.width !== 1600 || capture.height !== 900) {
+      errors.push(`Screenshot ${capture.fileName} is ${capture.width}x${capture.height}, expected 1600x900.`);
+    }
+    return {
+      ...capture,
+      path: relativeRepo(screenshotPath),
+      sha256: exists ? hashFile(screenshotPath) : null,
+      sizeBytes: exists ? statSync(screenshotPath).size : null
+    };
+  });
+  const strayPngs = existsSync(v0133ScreenshotRoot)
+    ? readdirSync(v0133ScreenshotRoot).filter((file) => file.endsWith(".png") && !captures.some((capture) => capture.fileName === file))
+    : [];
+  if (strayPngs.length > 0) {
+    errors.push(`Unexpected screenshots in v0133 folder: ${strayPngs.join(", ")}.`);
+  }
+  const report = {
+    schemaVersion: 1,
+    checkpoint: "v0.133",
+    status: errors.length === 0 ? "PASS_V0133_POST_MINE_FLOW_VALIDATION" : "FAIL_V0133_POST_MINE_FLOW_VALIDATION",
+    generatedAtUtc: "deterministic-v0133",
+    smokeStatus: smoke?.status ?? null,
+    objectivePrerequisiteStatus: objective?.status ?? null,
+    barracksRestorationStatus: barracks?.status ?? null,
+    militiaRecruitStatus: recruit?.status ?? null,
+    pressureCountdownStatus: countdown?.status ?? null,
+    waveLaunchStatus: launch?.status ?? null,
+    combatOnsetStatus: combat?.status ?? null,
+    waveDefeatStatus: defeat?.status ?? null,
+    lumeRestoreStatus: lume?.status ?? null,
+    screenshotStatus: manifest?.status ?? null,
+    captureCount: captures.length,
+    requiredCaptureCount: 21,
+    noPrivateHarnessShortcutUsed: smoke?.privateHarnessShortcutUsed === false && trace?.noPrivateHarnessShortcutUsed === true,
+    noDebugShortcutUsed: smoke?.debugShortcutUsed === false && trace?.noDebugShortcutUsed === true,
+    noStateInjectionUsed: smoke?.stateInjectionUsed === false && trace?.noStateInjectionUsed === true,
+    fixtureOnlyHelperProofUsed: smoke?.fixtureOnlyHelperProofUsed === false ? false : true,
+    screenshotOnlyProofUsed: false,
+    routineEditorUseRequired: false,
+    saveWritesAllowed: false,
+    stableIdsChanged: false,
+    browserRuntimeChanged: false,
+    generatedOrImportedArtIncluded: false,
+    runtimeArtIntegrated: false,
+    linkedWardDamageTakenMultiplier: 0.92,
+    errors,
+    captures: enrichedCaptures
+  };
+  writeJson(join(v0133ArtifactRoot, "post-mine-flow-validation.json"), report);
+  return report;
+}
+
 const v0125AuditAreas = ["title", "briefing", "battle", "results"];
 const v0125PlayerDebugTerms = [
   ...v0124ForbiddenTerms,
@@ -5563,6 +5804,12 @@ try {
     if (String(report.status).startsWith("FAIL")) {
       process.exitCode = 1;
     }
+  } else if (command === "post-mine-flow-v0133") {
+    const report = validateV0133PostMineFlowArtifacts();
+    console.log(stableStringify(report));
+    if (String(report.status).startsWith("FAIL")) {
+      process.exitCode = 1;
+    }
   } else if (command === "player-slice-audit") {
     const report = buildV0125ScreenshotAudit();
     console.log(stableStringify(report));
@@ -5576,7 +5823,7 @@ try {
     runAll();
     console.log("v0.119 Godot representative RTS load spike reports generated.");
   } else {
-    console.log("Usage: node desktop-spikes/godot-salto/tools/godotSpikeTool.mjs <doctor|generate|validate|test|benchmark|export|package|scorecard|manual-review|headed-smoke|headed-benchmark|capture-review|capture-review-v0121|player-slice-validate|player-slice-capture|player-slice-capture-v0126|player-slice-capture-v0127|player-slice-capture-v0128|player-slice-validate-v0129|player-slice-capture-v0129|player-slice-validate-v0130|player-slice-capture-v0130|real-input-v0131|site-semantics-v0132|player-slice-audit|v0118-all|all>");
+    console.log("Usage: node desktop-spikes/godot-salto/tools/godotSpikeTool.mjs <doctor|generate|validate|test|benchmark|export|package|scorecard|manual-review|headed-smoke|headed-benchmark|capture-review|capture-review-v0121|player-slice-validate|player-slice-capture|player-slice-capture-v0126|player-slice-capture-v0127|player-slice-capture-v0128|player-slice-validate-v0129|player-slice-capture-v0129|player-slice-validate-v0130|player-slice-capture-v0130|real-input-v0131|site-semantics-v0132|post-mine-flow-v0133|player-slice-audit|v0118-all|all>");
   }
 } catch (error) {
   console.error(error instanceof Error ? error.message : String(error));

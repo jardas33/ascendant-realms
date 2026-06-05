@@ -49,6 +49,8 @@
     "godot:headed:real-input-smoke": "powershell -NoProfile -ExecutionPolicy Bypass -File tools/godot/runGodotRealInputSmokeWindows.ps1",
     "godot:validate:site-semantics": "powershell -NoProfile -ExecutionPolicy Bypass -File tools/godot/runGodotSiteSemanticsSmokeWindows.ps1",
     "godot:headed:site-semantics-smoke": "powershell -NoProfile -ExecutionPolicy Bypass -File tools/godot/runGodotSiteSemanticsSmokeWindows.ps1",
+    "godot:validate:post-mine-flow": "powershell -NoProfile -ExecutionPolicy Bypass -File tools/godot/runGodotPostMineFlowSmokeWindows.ps1",
+    "godot:headed:post-mine-flow-smoke": "powershell -NoProfile -ExecutionPolicy Bypass -File tools/godot/runGodotPostMineFlowSmokeWindows.ps1",
     "godot:scorecard": "powershell -NoProfile -ExecutionPolicy Bypass -File tools/godot/runGodotBenchmark.ps1 -ScorecardOnly",
     "godot:all": "powershell -NoProfile -ExecutionPolicy Bypass -File tools/godot/runGodotAll.ps1",
     "godot:fresh-checkout:validate": "powershell -NoProfile -ExecutionPolicy Bypass -File tools/godot/validateGodotFreshCheckout.ps1",

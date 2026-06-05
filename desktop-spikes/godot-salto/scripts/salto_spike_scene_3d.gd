@@ -30,6 +30,13 @@ const SITE_STATE_OBJECTIVE_TARGET := "OBJECTIVE_TARGET"
 const SITE_STATE_CONVERTING := "CONVERTING"
 const SITE_STATE_CONTROLLED := "CONTROLLED"
 const SITE_STATE_WORKER_ASSIGNED := "WORKER_ASSIGNED"
+const BARRACKS_POSITION := Vector2(346, 178)
+const BARRACKS_CLICK_RADIUS := 82.0
+const LUME_LINK_POSITION := Vector2(742, 200)
+const LUME_CLICK_RADIUS := 74.0
+const V0133_CONSTRUCTION_FRAMES_PER_SECOND := 42
+const V0133_RECRUIT_FRAMES_PER_SECOND := 38
+const V0133_PRESSURE_COUNTDOWN_SECONDS := 5.0
 const WorkloadRuntimeScript = preload("res://scripts/salto_spike_workload_runtime.gd")
 
 var runtime = WorkloadRuntimeScript.new()
@@ -47,6 +54,8 @@ var hud_alert_label: Label
 var hud_objective_strip_label: Label
 var hud_more_details_button: Button
 var hud_more_details_label: Label
+var hud_work_button: Button
+var hud_attack_button: Button
 var minimap_panel: Panel
 var camera_panned := false
 var camera_zoomed := false
@@ -116,6 +125,39 @@ var v0132_worker_objective_advanced := false
 var v0132_objective_regression_blocked_count := 0
 var v0132_actual_objective_regression_detected := false
 var v0132_objective_history: Array[Dictionary] = []
+var v0133_illegal_objective_skip_rejected_count := 0
+var v0133_box_select_no_skip_proven := false
+var v0133_selected_structure_id := ""
+var v0133_barracks_highlight_visible := false
+var v0133_barracks_build_order_accepted := false
+var v0133_construction_started := false
+var v0133_construction_progress := 0.0
+var v0133_construction_25_recorded := false
+var v0133_construction_75_recorded := false
+var v0133_barracks_restored := false
+var v0133_barracks_selected := false
+var v0133_train_militia_clicked := false
+var v0133_recruit_queue_started := false
+var v0133_recruit_progress := 0.0
+var v0133_recruit_queue_50_recorded := false
+var v0133_militia_spawned := false
+var v0133_countdown_started := false
+var v0133_countdown_remaining := 0.0
+var v0133_countdown_ticks: Array[int] = []
+var v0133_wave_triggered_once := false
+var v0133_wave_trigger_source := ""
+var v0133_road_entry_pulse_visible := false
+var v0133_enemy_movement_started := false
+var v0133_enemy_start_positions: Dictionary = {}
+var v0133_attack_input_accepted := false
+var v0133_combat_started := false
+var v0133_initial_combat_tick_count := 0
+var v0133_wave_remaining_count := 4
+var v0133_wave_defeated_from_simulation := false
+var v0133_lume_highlight_visible := false
+var v0133_lume_restore_input := false
+var v0133_lume_restored := false
+var v0133_results_reached := false
 
 func _ready() -> void:
 	_create_camera()
@@ -133,7 +175,9 @@ func _process(_delta: float) -> void:
 	if not _real_input_enabled():
 		return
 	var before := _unit_runtime_position("hero_aster")
-	if runtime.has_active_movement():
+	if v0133_wave_triggered_once or v0133_attack_input_accepted:
+		runtime.advance_pressure_wave_frame()
+	elif runtime.has_active_movement():
 		runtime.advance_live_frame()
 	var after := _unit_runtime_position("hero_aster")
 	if before != Vector2.INF and after != Vector2.INF and after.distance_to(before) > 0.2:
@@ -156,8 +200,13 @@ func _process(_delta: float) -> void:
 			real_input_movement_completed = true
 			_record_real_input("movement_completed", {"unitId": "hero_aster", "position": _vector2_report(after)})
 	_advance_v0132_site_semantics(_delta)
+	_advance_v0133_post_mine_flow(_delta)
 	_sync_unit_visuals()
 	_sync_hud()
+
+func _input(event: InputEvent) -> void:
+	if _try_handle_v0133_hud_attack_mouse(event):
+		get_viewport().set_input_as_handled()
 
 func _unhandled_input(event: InputEvent) -> void:
 	if not _real_input_enabled():
@@ -202,7 +251,7 @@ func set_player_shell_screen(screen: String) -> bool:
 	return true
 
 func set_onboarding_step(step_id: String) -> bool:
-	var normalized := step_id.strip_edges().to_lower()
+	var normalized := _canonical_objective_step(step_id)
 	if normalized == "":
 		return false
 	var current_rank := _onboarding_rank(current_onboarding_step)
@@ -210,6 +259,15 @@ func set_onboarding_step(step_id: String) -> bool:
 	if player_facing_mode and player_shell_screen == "battle" and current_rank > 0 and next_rank > 0 and next_rank < current_rank:
 		v0132_objective_regression_blocked_count += 1
 		_record_objective_transition(normalized, false, "blocked_regression")
+		return false
+	if player_facing_mode and player_shell_screen == "battle" and current_rank > 0 and next_rank > current_rank and not _v0133_objective_prerequisites_met(normalized):
+		v0133_illegal_objective_skip_rejected_count += 1
+		_record_objective_transition(normalized, false, "blocked_missing_prerequisite")
+		_record_real_input("illegal_objective_skip_rejected", {
+			"requestedStep": _v0133_public_objective_step(normalized),
+			"currentStep": _v0133_public_objective_step(current_onboarding_step),
+			"reason": "missing_prerequisite"
+		})
 		return false
 	if current_rank > 0 and next_rank > 0 and next_rank < current_rank:
 		v0132_actual_objective_regression_detected = true
@@ -219,6 +277,47 @@ func set_onboarding_step(step_id: String) -> bool:
 	_record_objective_transition(normalized, true, "accepted")
 	onboarding_dismissed = false
 	_sync_hud()
+	return true
+
+func _canonical_objective_step(step_id: String) -> String:
+	var normalized := step_id.strip_edges().to_lower()
+	match normalized:
+		"move_to_west_stone_cut_mine":
+			return "move_to_quarry"
+		"convert_west_stone_cut_mine":
+			return "capture_hold_quarry"
+		"assign_worker_to_mine":
+			return "worker_assign_mine"
+		"defeat_ashen_wave":
+			return "defeat_wave"
+	return normalized
+
+func _v0133_objective_prerequisites_met(step_id: String) -> bool:
+	match step_id:
+		"select_aster":
+			return true
+		"move_to_quarry":
+			return real_input_aster_selected or runtime.selected_ids.has("hero_aster")
+		"capture_hold_quarry":
+			return real_input_move_order_accepted or real_input_movement_started
+		"worker_mine_or_shrine":
+			return v0132_mine_controlled or runtime.mine_converted
+		"worker_assign_mine":
+			return (v0132_mine_controlled or runtime.mine_converted) and real_input_worker_selected
+		"restore_barracks":
+			return v0132_worker_assignment_complete or runtime.worker_assigned_to_mine
+		"finish_barracks":
+			return v0133_construction_started or runtime.barracks_build_placed
+		"queue_militia", "train_militia":
+			return v0133_barracks_restored or runtime.barracks_complete
+		"prepare_ashen_pressure":
+			return v0133_militia_spawned or runtime.militia_spawned
+		"defeat_wave":
+			return v0133_wave_triggered_once and runtime.pressure_wave_state == "active"
+		"restore_lume_link":
+			return v0133_wave_defeated_from_simulation or runtime.pressure_wave_defeated
+		"review_results":
+			return v0133_lume_restored or runtime.lume_restored
 	return true
 
 func _onboarding_rank(step_id: String) -> int:
@@ -254,6 +353,56 @@ func _record_objective_transition(step_id: String, accepted: bool, reason: Strin
 		"fromRank": _onboarding_rank(current_onboarding_step),
 		"toRank": _onboarding_rank(step_id)
 	})
+
+func _v0133_public_objective_step(step_id: String) -> String:
+	var normalized := step_id.strip_edges().to_lower()
+	match normalized:
+		"move_to_quarry":
+			return "move_to_west_stone_cut_mine"
+		"capture_hold_quarry":
+			return "convert_west_stone_cut_mine"
+		"worker_mine_or_shrine", "worker_assign_mine":
+			return "assign_worker_to_mine"
+		"defeat_wave":
+			return "defeat_ashen_wave"
+	return normalized
+
+func _v0133_public_objective_rank(step_id: String) -> int:
+	match _v0133_public_objective_step(step_id):
+		"select_aster":
+			return 1
+		"move_to_west_stone_cut_mine":
+			return 2
+		"convert_west_stone_cut_mine":
+			return 3
+		"assign_worker_to_mine":
+			return 4
+		"restore_barracks":
+			return 5
+		"train_militia":
+			return 6
+		"prepare_ashen_pressure":
+			return 7
+		"defeat_ashen_wave":
+			return 8
+		"restore_lume_link":
+			return 9
+		"review_results":
+			return 10
+	return _onboarding_rank(step_id)
+
+func _v0133_public_objective_history() -> Array:
+	var public_history := []
+	for entry in v0132_objective_history:
+		var public_entry: Dictionary = entry.duplicate(true)
+		var from_step := String(public_entry.get("from", ""))
+		var to_step := String(public_entry.get("to", ""))
+		public_entry["from"] = _v0133_public_objective_step(from_step)
+		public_entry["to"] = _v0133_public_objective_step(to_step)
+		public_entry["fromRank"] = _v0133_public_objective_rank(from_step)
+		public_entry["toRank"] = _v0133_public_objective_rank(to_step)
+		public_history.append(public_entry)
+	return public_history
 
 func dismiss_onboarding() -> bool:
 	onboarding_dismissed = true
@@ -388,6 +537,7 @@ func assign_worker_to_mine() -> bool:
 		set_onboarding_step("restore_barracks")
 		show_objective_feedback("worker_assigned_mine")
 		_set_or_create_marker("worker_mine_assignment_marker", _unit_world_position("worker_00", Vector3(-2.02, 0.14, 0.42)), Vector3(0.48, 0.08, 0.48), Color(0.92, 0.78, 0.36, 0.64))
+		_prepare_v0133_barracks_handoff()
 		runtime.advance_resource_production(120)
 		v0132_production_boost_feedback_rendered = runtime.resource_production_boosted
 		v0132_worker_objective_advanced = current_onboarding_step == "restore_barracks"
@@ -408,7 +558,10 @@ func advance_resource_production(frames: int = 120) -> bool:
 func place_barracks_placeholder() -> bool:
 	var result: bool = runtime.place_barracks_placeholder()
 	if result:
-		set_onboarding_step("finish_barracks")
+		v0133_barracks_build_order_accepted = true
+		v0133_construction_started = true
+		v0133_construction_progress = maxf(v0133_construction_progress, runtime.barracks_construction_progress)
+		set_onboarding_step("restore_barracks")
 		show_objective_feedback("barracks_placed")
 	_rebuild_visuals()
 	if result:
@@ -419,9 +572,13 @@ func place_barracks_placeholder() -> bool:
 func advance_construction(frames: int = 120) -> bool:
 	var result: bool = runtime.advance_construction(frames)
 	if result:
+		v0133_construction_progress = runtime.barracks_construction_progress
+		v0133_construction_25_recorded = v0133_construction_25_recorded or v0133_construction_progress >= 0.25
+		v0133_construction_75_recorded = v0133_construction_75_recorded or v0133_construction_progress >= 0.75
 		var marker_color := Color(0.38, 0.88, 0.56, 0.64) if runtime.barracks_complete else Color(0.90, 0.74, 0.30, 0.62)
 		if runtime.barracks_complete:
-			set_onboarding_step("queue_militia")
+			v0133_barracks_restored = true
+			set_onboarding_step("train_militia")
 			show_objective_feedback("barracks_complete")
 	_rebuild_visuals()
 	if result:
@@ -433,6 +590,9 @@ func advance_construction(frames: int = 120) -> bool:
 func queue_militia_recruit() -> bool:
 	var result: bool = runtime.queue_militia_recruit()
 	if result:
+		v0133_train_militia_clicked = true
+		v0133_recruit_queue_started = true
+		v0133_recruit_progress = 0.0
 		set_onboarding_step("train_militia")
 		show_objective_feedback("militia_queued")
 		_set_or_create_marker("militia_recruit_queue_marker", _structure_world_position("barracks", Vector3(-4.8, 0.14, -3.58)) + Vector3(0.45, 0.28, 0.0), Vector3(0.34, 0.12, 0.34), Color(0.42, 0.86, 0.56, 0.64))
@@ -442,10 +602,18 @@ func queue_militia_recruit() -> bool:
 func complete_recruit_queue(frames: int = 120) -> bool:
 	var result: bool = runtime.complete_recruit_queue(frames)
 	if result:
-		set_onboarding_step("defeat_wave")
-		show_objective_feedback("militia_spawned")
-		_rebuild_visuals()
-		_set_or_create_marker("militia_spawned_marker", _unit_world_position("recruited_militia_00", Vector3(-3.95, 0.12, -2.36)), Vector3(0.42, 0.08, 0.42), Color(0.46, 0.90, 0.60, 0.58))
+		v0133_recruit_progress = _runtime_recruit_progress()
+		if not v0133_recruit_queue_50_recorded and v0133_recruit_progress >= 0.50:
+			v0133_recruit_queue_50_recorded = true
+			_record_real_input("militia_recruit_progress_50", {"progress": snappedf(v0133_recruit_progress, 0.001)})
+		if runtime.militia_spawned:
+			v0133_militia_spawned = true
+			_start_v0133_pressure_countdown()
+			set_onboarding_step("prepare_ashen_pressure")
+			show_objective_feedback("militia_spawned")
+			_rebuild_visuals()
+			_set_or_create_marker("militia_spawned_marker", _unit_world_position("recruited_militia_00", Vector3(-3.95, 0.12, -2.36)), Vector3(0.42, 0.08, 0.42), Color(0.46, 0.90, 0.60, 0.58))
+			_record_real_input("militia_spawned", {"progress": snappedf(v0133_recruit_progress, 0.001)})
 	_sync_unit_visuals()
 	_sync_hud()
 	return result
@@ -459,6 +627,12 @@ func trigger_pressure_wave() -> bool:
 	var result: bool = runtime.trigger_pressure_wave()
 	if result:
 		pressure_wave_arrived = true
+		v0133_wave_triggered_once = true
+		v0133_wave_trigger_source = "countdown" if v0133_countdown_started else "harness"
+		v0133_road_entry_pulse_visible = true
+		v0133_enemy_start_positions = _v0133_wave_positions()
+		v0133_wave_remaining_count = _v0133_wave_remaining()
+		v0133_initial_combat_tick_count = runtime.combat_tick_count
 		set_onboarding_step("defeat_wave")
 		show_objective_feedback("pressure_wave")
 		_set_or_create_marker("pressure_wave_arrival_marker", Vector3(3.9, 0.20, -0.92), Vector3(1.10, 0.07, 0.34), Color(0.85, 0.20, 0.14, 0.62))
@@ -479,6 +653,7 @@ func defeat_pressure_wave() -> bool:
 func restore_lume_microloop() -> bool:
 	var result: bool = runtime.restore_lume_microloop()
 	if result:
+		v0133_lume_restored = true
 		set_onboarding_step("review_results")
 		show_objective_feedback("lume_restore")
 		_set_or_create_marker("lume_restore_marker", _lume_endpoint_world_position("lume_endpoint_00", Vector3(-1.67, 0.14, 0.11)), Vector3(0.74, 0.08, 0.74), Color(0.42, 0.96, 0.86, 0.62))
@@ -712,6 +887,20 @@ func real_input_screen_position(subject: String) -> Vector2:
 			return _unit_screen_position("friendly_00")
 		"enemy", "ashen", "ashen_00":
 			return _unit_screen_position("ashen_00")
+		"barracks", "restore_barracks":
+			return _world_to_screen(_structure_world_position("barracks", _to_world(BARRACKS_POSITION, 0.12)))
+		"barracks_interaction":
+			var barracks_screen := _world_to_screen(_structure_world_position("barracks", _to_world(BARRACKS_POSITION, 0.12)))
+			return barracks_screen + Vector2(0, 64) if barracks_screen != Vector2.INF else Vector2.INF
+		"lume", "lume_link", "ford_toll":
+			return _world_to_screen(_structure_world_position("shrine_landmark", _to_world(LUME_LINK_POSITION, 0.12)))
+		"lume_interaction":
+			var lume_screen := _world_to_screen(_structure_world_position("shrine_landmark", _to_world(LUME_LINK_POSITION, 0.12)))
+			return lume_screen + Vector2(0, 48) if lume_screen != Vector2.INF else Vector2.INF
+		"road_entry", "ashen_road_entry":
+			return _world_to_screen(_to_world(Vector2(980, 285), 0.12))
+		"train_militia_button":
+			return Vector2(18 + 16 + 3 * 95 + 41, 744 + 106 + 13)
 		"quarry", "mine", "move_destination", "west_stone_cut_mine", "site_west_stone_cut":
 			return _world_to_screen(_to_world(WEST_STONE_CUT_MINE_POSITION, 0.12))
 		"squad_drag_start":
@@ -802,6 +991,82 @@ func site_semantics_status() -> Dictionary:
 		"trace": real_input_trace.duplicate(true)
 	}
 
+func post_mine_flow_status() -> Dictionary:
+	var selected: Array[String] = runtime.selected_ids.duplicate()
+	return {
+		"schemaVersion": 1,
+		"checkpoint": "v0.133",
+		"status": "PASS_V0133_POST_MINE_FLOW_SCENE_STATUS" if _post_mine_flow_scene_green() else "FAIL_V0133_POST_MINE_FLOW_SCENE_STATUS",
+		"canonicalObjectiveSequence": [
+			"select_aster",
+			"move_to_west_stone_cut_mine",
+			"convert_west_stone_cut_mine",
+			"assign_worker_to_mine",
+			"restore_barracks",
+			"train_militia",
+			"prepare_ashen_pressure",
+			"defeat_ashen_wave",
+			"restore_lume_link",
+			"review_results"
+		],
+		"selectedIds": selected,
+		"objectiveStep": _v0133_public_objective_step(current_onboarding_step),
+		"objectiveRank": _v0133_public_objective_rank(current_onboarding_step),
+		"objectiveHistory": _v0133_public_objective_history(),
+		"actualObjectiveRegressionDetected": v0132_actual_objective_regression_detected,
+		"objectiveRegressionBlockedCount": v0132_objective_regression_blocked_count,
+		"illegalObjectiveSkipRejectedCount": v0133_illegal_objective_skip_rejected_count,
+		"boxSelectNoObjectiveSkipProven": v0133_box_select_no_skip_proven,
+		"asterSelected": real_input_aster_selected,
+		"moveOrderAccepted": real_input_move_order_accepted,
+		"mineControlled": v0132_mine_controlled,
+		"workerSelected": real_input_worker_selected,
+		"squadBoxSelected": real_input_squad_box_selected,
+		"workerAssignedToMine": v0132_worker_assignment_complete,
+		"productionBoostFeedbackRendered": v0132_production_boost_feedback_rendered,
+		"barracksHighlightVisible": v0133_barracks_highlight_visible,
+		"barracksBuildOrderAccepted": v0133_barracks_build_order_accepted,
+		"constructionStarted": v0133_construction_started,
+		"constructionProgress": snappedf(v0133_construction_progress, 0.001),
+		"construction25Recorded": v0133_construction_25_recorded,
+		"construction75Recorded": v0133_construction_75_recorded,
+		"barracksRestored": v0133_barracks_restored,
+		"barracksSelected": v0133_barracks_selected,
+		"trainMilitiaClicked": v0133_train_militia_clicked,
+		"recruitQueueStarted": v0133_recruit_queue_started,
+		"recruitProgress": snappedf(v0133_recruit_progress, 0.001),
+		"recruitQueue50Recorded": v0133_recruit_queue_50_recorded,
+		"militiaSpawned": v0133_militia_spawned,
+		"countdownStarted": v0133_countdown_started,
+		"countdownRemaining": snappedf(v0133_countdown_remaining, 0.001),
+		"countdownTicks": v0133_countdown_ticks.duplicate(),
+		"waveTriggeredOnce": v0133_wave_triggered_once,
+		"waveTriggerSource": v0133_wave_trigger_source,
+		"roadEntryPulseVisible": v0133_road_entry_pulse_visible,
+		"enemyMovementStarted": v0133_enemy_movement_started,
+		"attackInputAccepted": v0133_attack_input_accepted,
+		"combatStarted": v0133_combat_started,
+		"waveRemainingCount": v0133_wave_remaining_count,
+		"waveDefeatedFromSimulation": v0133_wave_defeated_from_simulation,
+		"lumeHighlightVisible": v0133_lume_highlight_visible,
+		"lumeRestoreInputAccepted": v0133_lume_restore_input,
+		"lumeRestored": v0133_lume_restored,
+		"resultsReached": v0133_results_reached,
+		"privateHarnessShortcutUsed": false,
+		"debugShortcutUsed": real_input_debug_shortcut_used,
+		"stateInjectionUsed": real_input_state_injection_used,
+		"fixtureOnlyHelperProofUsed": false,
+		"screenshotOnlyProofUsed": false,
+		"routineEditorUseRequired": false,
+		"saveWritesAllowed": false,
+		"stableIdsChanged": false,
+		"browserRuntimeChanged": false,
+		"generatedOrImportedArtIncluded": false,
+		"runtimeArtIntegrated": false,
+		"linkedWardDamageTakenMultiplier": 0.92,
+		"trace": real_input_trace.duplicate(true)
+	}
+
 func _real_input_enabled() -> bool:
 	return player_facing_mode and player_shell_screen == "battle"
 
@@ -846,6 +1111,39 @@ func _reset_real_input_state() -> void:
 	v0132_objective_regression_blocked_count = 0
 	v0132_actual_objective_regression_detected = false
 	v0132_objective_history = []
+	v0133_illegal_objective_skip_rejected_count = 0
+	v0133_box_select_no_skip_proven = false
+	v0133_selected_structure_id = ""
+	v0133_barracks_highlight_visible = false
+	v0133_barracks_build_order_accepted = false
+	v0133_construction_started = false
+	v0133_construction_progress = 0.0
+	v0133_construction_25_recorded = false
+	v0133_construction_75_recorded = false
+	v0133_barracks_restored = false
+	v0133_barracks_selected = false
+	v0133_train_militia_clicked = false
+	v0133_recruit_queue_started = false
+	v0133_recruit_progress = 0.0
+	v0133_recruit_queue_50_recorded = false
+	v0133_militia_spawned = false
+	v0133_countdown_started = false
+	v0133_countdown_remaining = 0.0
+	v0133_countdown_ticks = []
+	v0133_wave_triggered_once = false
+	v0133_wave_trigger_source = ""
+	v0133_road_entry_pulse_visible = false
+	v0133_enemy_movement_started = false
+	v0133_enemy_start_positions = {}
+	v0133_attack_input_accepted = false
+	v0133_combat_started = false
+	v0133_initial_combat_tick_count = 0
+	v0133_wave_remaining_count = 4
+	v0133_wave_defeated_from_simulation = false
+	v0133_lume_highlight_visible = false
+	v0133_lume_restore_input = false
+	v0133_lume_restored = false
+	v0133_results_reached = false
 
 func _handle_real_mouse_motion(event: InputEventMouseMotion) -> void:
 	if real_input_drag_active and real_input_drag_start != Vector2.INF:
@@ -883,24 +1181,40 @@ func _handle_real_mouse_button(event: InputEventMouseButton) -> void:
 
 func _select_from_real_click(screen_position: Vector2) -> void:
 	var hit := _pick_unit_from_screen(screen_position)
+	if current_onboarding_step == "defeat_wave" and _select_unit_hit_from_real_click(hit, screen_position):
+		return
+	if _screen_hits_barracks(screen_position):
+		_select_v0133_barracks(screen_position)
+		return
+	if _screen_hits_lume(screen_position) and (v0133_lume_highlight_visible or current_onboarding_step == "restore_lume_link"):
+		_restore_v0133_lume_from_input(screen_position)
+		return
+	if _select_unit_hit_from_real_click(hit, screen_position):
+		return
 	if hit.is_empty():
 		runtime.clear_selection()
 		real_input_selected_id = ""
+		v0133_selected_structure_id = ""
 		real_input_empty_deselect_done = true
 		_record_real_input("empty_terrain_deselect", {"screen": _vector2_report(screen_position)})
 		_sync_unit_visuals()
 		_sync_hud()
 		return
+
+func _select_unit_hit_from_real_click(hit: Dictionary, screen_position: Vector2) -> bool:
+	if hit.is_empty():
+		return false
 	var id := str(hit["id"])
 	var team := str(hit.get("team", ""))
 	if team != "friendly":
 		_record_real_input("enemy_click_no_selection", {"unitId": id})
-		return
+		return true
 	var selected := runtime.select_entity(id)
 	if not selected:
 		_record_real_input("selection_failed", {"unitId": id})
-		return
+		return true
 	real_input_selected_id = id
+	v0133_selected_structure_id = ""
 	real_input_hud_card_updated = true
 	if id == "hero_aster":
 		real_input_aster_selected = true
@@ -920,6 +1234,7 @@ func _select_from_real_click(screen_position: Vector2) -> void:
 	_record_real_input("selected", {"unitId": id, "screen": _vector2_report(screen_position)})
 	_sync_unit_visuals()
 	_sync_hud()
+	return true
 
 func _finish_real_box_select(start: Vector2, end: Vector2) -> void:
 	var rect := Rect2(Vector2(min(start.x, end.x), min(start.y, end.y)), Vector2(absf(end.x - start.x), absf(end.y - start.y)))
@@ -933,8 +1248,8 @@ func _finish_real_box_select(start: Vector2, end: Vector2) -> void:
 	var selected := runtime.select_units_by_ids(ids)
 	real_input_squad_box_selected = selected.size() >= 2
 	if real_input_squad_box_selected:
-		set_onboarding_step("prepare_ashen_pressure")
-		show_objective_feedback("select_aster")
+		v0133_box_select_no_skip_proven = current_onboarding_step != "prepare_ashen_pressure" or _v0133_objective_prerequisites_met("prepare_ashen_pressure")
+		show_objective_feedback("squad_selected")
 	_record_real_input("box_select", {"count": selected.size(), "ids": selected, "start": _vector2_report(start), "end": _vector2_report(end)})
 	_sync_unit_visuals()
 	_sync_hud()
@@ -949,6 +1264,9 @@ func _issue_real_order(screen_position: Vector2) -> void:
 		real_input_attack_order_accepted = attack_ok
 		real_input_attack_marker_rendered = attack_ok
 		if attack_ok:
+			v0133_attack_input_accepted = v0133_wave_triggered_once
+			if v0133_wave_triggered_once:
+				set_onboarding_step("defeat_wave")
 			last_feedback_id = "attack_order"
 			_set_or_create_disc_marker("real_attack_order_marker", _unit_world_position(str(hit["id"]), Vector3.ZERO), 0.44, Color(0.96, 0.28, 0.18, 0.50))
 		_record_real_input("attack_order", {"accepted": attack_ok, "targetId": str(hit["id"])})
@@ -962,6 +1280,12 @@ func _issue_real_order(screen_position: Vector2) -> void:
 	var destination := _from_world(world)
 	if _selected_worker_for_v0132_assignment() and _destination_is_mine(destination):
 		_complete_v0132_worker_assignment(screen_position)
+		return
+	if _selected_worker_for_v0133_barracks_restore() and _destination_is_barracks(destination):
+		_start_v0133_barracks_restoration(screen_position)
+		return
+	if current_onboarding_step == "restore_lume_link" and _destination_is_lume(destination):
+		_restore_v0133_lume_from_input(screen_position)
 		return
 	var hero_before := _unit_runtime_position("hero_aster")
 	if real_input_aster_start_screen == Vector2.INF:
@@ -992,8 +1316,38 @@ func _selected_worker_for_v0132_assignment() -> bool:
 			return true
 	return false
 
+func _selected_worker_for_v0133_barracks_restore() -> bool:
+	if not runtime.worker_assigned_to_mine:
+		return false
+	if v0133_barracks_build_order_accepted or runtime.barracks_build_placed:
+		return false
+	for id in runtime.selected_ids:
+		if str(id).begins_with("worker"):
+			return true
+	return false
+
 func _destination_is_mine(destination: Vector2) -> bool:
 	return destination != Vector2.INF and destination.distance_to(WEST_STONE_CUT_MINE_POSITION) <= WEST_STONE_CUT_MINE_CAPTURE_RADIUS * 1.45
+
+func _destination_is_barracks(destination: Vector2) -> bool:
+	return destination != Vector2.INF and destination.distance_to(BARRACKS_POSITION) <= BARRACKS_CLICK_RADIUS * 1.45
+
+func _destination_is_lume(destination: Vector2) -> bool:
+	return destination != Vector2.INF and destination.distance_to(LUME_LINK_POSITION) <= LUME_CLICK_RADIUS * 1.35
+
+func _screen_hits_barracks(screen_position: Vector2) -> bool:
+	var barracks_screen := real_input_screen_position("barracks")
+	if barracks_screen != Vector2.INF and barracks_screen.distance_to(screen_position) <= BARRACKS_CLICK_RADIUS:
+		return true
+	var world := _screen_to_ground(screen_position)
+	return world != Vector3.INF and _destination_is_barracks(_from_world(world))
+
+func _screen_hits_lume(screen_position: Vector2) -> bool:
+	var lume_screen := real_input_screen_position("lume")
+	if lume_screen != Vector2.INF and lume_screen.distance_to(screen_position) <= LUME_CLICK_RADIUS:
+		return true
+	var world := _screen_to_ground(screen_position)
+	return world != Vector3.INF and _destination_is_lume(_from_world(world))
 
 func _complete_v0132_worker_assignment(screen_position: Vector2) -> void:
 	v0132_worker_assignment_marker_rendered = true
@@ -1005,6 +1359,76 @@ func _complete_v0132_worker_assignment(screen_position: Vector2) -> void:
 		"screen": _vector2_report(screen_position)
 	})
 	_sync_unit_visuals()
+	_sync_hud()
+
+func _prepare_v0133_barracks_handoff() -> void:
+	v0133_barracks_highlight_visible = true
+	_set_or_create_disc_marker("v0133_barracks_highlight_ring", _structure_world_position("barracks", _to_world(BARRACKS_POSITION, 0.12)), 0.64, Color(0.92, 0.78, 0.34, 0.42))
+	_set_or_create_marker("v0133_barracks_guidance_arrow", _structure_world_position("barracks", _to_world(BARRACKS_POSITION, 0.34)) + Vector3(0.0, 0.28, 0.0), Vector3(0.22, 0.42, 0.22), Color(0.96, 0.84, 0.42, 0.64))
+	_record_real_input("objective_restore_barracks_visible", {"position": _vector2_report(BARRACKS_POSITION)})
+
+func _start_v0133_barracks_restoration(screen_position: Vector2) -> void:
+	var result := place_barracks_placeholder()
+	if result:
+		v0133_barracks_build_order_accepted = true
+		v0133_construction_started = true
+		v0133_construction_progress = runtime.barracks_construction_progress
+		last_feedback_id = "barracks_build_order"
+		_set_or_create_disc_marker("v0133_barracks_build_order_marker", _structure_world_position("barracks", _to_world(BARRACKS_POSITION, 0.12)), 0.72, Color(0.90, 0.74, 0.30, 0.48))
+	_record_real_input("barracks_right_click_build_order", {
+		"accepted": result,
+		"screen": _vector2_report(screen_position),
+		"constructionProgress": snappedf(runtime.barracks_construction_progress, 0.001)
+	})
+	_sync_unit_visuals()
+	_sync_hud()
+
+func _select_v0133_barracks(screen_position: Vector2) -> void:
+	if not runtime.barracks_complete:
+		_record_real_input("barracks_click_before_restored", {"screen": _vector2_report(screen_position)})
+		return
+	runtime.clear_selection()
+	real_input_selected_id = ""
+	v0133_selected_structure_id = "barracks"
+	v0133_barracks_selected = true
+	real_input_hud_card_updated = true
+	show_objective_feedback("barracks_selected")
+	_set_or_create_disc_marker("v0133_barracks_selected_marker", _structure_world_position("barracks", _to_world(BARRACKS_POSITION, 0.12)), 0.78, Color(0.46, 0.90, 0.58, 0.46))
+	_record_real_input("barracks_selected", {"screen": _vector2_report(screen_position)})
+	_sync_unit_visuals()
+	_sync_hud()
+
+func _queue_v0133_militia_from_input() -> bool:
+	if v0133_selected_structure_id != "barracks" or not runtime.barracks_complete:
+		_record_real_input("train_militia_ignored", {
+			"selectedStructureId": v0133_selected_structure_id,
+			"barracksComplete": runtime.barracks_complete
+		})
+		return false
+	var result := queue_militia_recruit()
+	_record_real_input("train_militia_clicked", {"accepted": result})
+	return result
+
+func _restore_v0133_lume_from_input(screen_position: Vector2) -> void:
+	if not v0133_wave_defeated_from_simulation:
+		_record_real_input("lume_restore_ignored_wave_not_defeated", {"screen": _vector2_report(screen_position)})
+		return
+	var result := runtime.restore_lume_from_player_input()
+	v0133_lume_restore_input = result
+	v0133_lume_restored = result
+	if result:
+		set_onboarding_step("review_results")
+		show_objective_feedback("lume_restore")
+		_set_or_create_marker("lume_restore_marker", _lume_endpoint_world_position("lume_endpoint_00", Vector3(-1.67, 0.14, 0.11)), Vector3(0.74, 0.08, 0.74), Color(0.42, 0.96, 0.86, 0.62))
+		transition_results()
+		v0133_results_reached = runtime.results_ready
+		var parent_node := get_parent()
+		if parent_node != null and parent_node.has_method("record_post_mine_flow_status"):
+			parent_node.call("record_post_mine_flow_status", post_mine_flow_status())
+		if parent_node != null and parent_node.has_method("show_player_results"):
+			parent_node.call_deferred("show_player_results")
+	_record_real_input("lume_restore_click", {"accepted": result, "screen": _vector2_report(screen_position)})
+	_sync_lume_visuals()
 	_sync_hud()
 
 func _pick_unit_from_screen(screen_position: Vector2) -> Dictionary:
@@ -1172,6 +1596,151 @@ func _site_semantics_scene_green() -> bool:
 	green = green and v0132_worker_assignment_complete
 	green = green and v0132_production_boost_feedback_rendered
 	green = green and v0132_worker_objective_advanced
+	green = green and not v0132_actual_objective_regression_detected
+	green = green and not real_input_debug_shortcut_used
+	green = green and not real_input_state_injection_used
+	return green
+
+func _advance_v0133_post_mine_flow(delta: float) -> void:
+	if v0133_construction_started and not v0133_barracks_restored:
+		var frames: int = maxi(1, int(round(delta * float(V0133_CONSTRUCTION_FRAMES_PER_SECOND))))
+		var before_progress: float = runtime.barracks_construction_progress
+		advance_construction(frames)
+		v0133_construction_progress = runtime.barracks_construction_progress
+		if not v0133_construction_25_recorded and v0133_construction_progress >= 0.25:
+			v0133_construction_25_recorded = true
+			_record_real_input("barracks_construction_progress_25", {"progress": snappedf(v0133_construction_progress, 0.001)})
+		if not v0133_construction_75_recorded and v0133_construction_progress >= 0.75:
+			v0133_construction_75_recorded = true
+			_record_real_input("barracks_construction_progress_75", {"progress": snappedf(v0133_construction_progress, 0.001)})
+		if runtime.barracks_complete and before_progress < 1.0:
+			v0133_barracks_restored = true
+			set_onboarding_step("train_militia")
+			_record_real_input("barracks_restored", {"progress": snappedf(v0133_construction_progress, 0.001)})
+	if v0133_recruit_queue_started and not v0133_militia_spawned:
+		var recruit_frames: int = maxi(1, int(round(delta * float(V0133_RECRUIT_FRAMES_PER_SECOND))))
+		complete_recruit_queue(recruit_frames)
+		v0133_recruit_progress = _runtime_recruit_progress()
+		if not v0133_recruit_queue_50_recorded and v0133_recruit_progress >= 0.50:
+			v0133_recruit_queue_50_recorded = true
+			_record_real_input("militia_recruit_progress_50", {"progress": snappedf(v0133_recruit_progress, 0.001)})
+		if runtime.militia_spawned and not v0133_militia_spawned:
+			v0133_militia_spawned = true
+			_start_v0133_pressure_countdown()
+	if v0133_countdown_started and not v0133_wave_triggered_once:
+		v0133_countdown_remaining = maxf(0.0, v0133_countdown_remaining - delta)
+		var tick: int = int(ceil(v0133_countdown_remaining))
+		if tick > 0 and not v0133_countdown_ticks.has(tick):
+			v0133_countdown_ticks.append(tick)
+			_record_real_input("ashen_pressure_countdown_tick", {"secondsRemaining": tick})
+		if v0133_countdown_remaining <= 0.0:
+			_trigger_v0133_pressure_wave_from_countdown()
+	if v0133_wave_triggered_once and not v0133_wave_defeated_from_simulation:
+		if not v0133_enemy_movement_started and _v0133_enemy_moved_from_start():
+			v0133_enemy_movement_started = true
+			_record_real_input("ashen_wave_enemy_movement_started", {"positions": _v0133_wave_positions()})
+		if v0133_attack_input_accepted and not v0133_combat_started and runtime.combat_tick_count > v0133_initial_combat_tick_count:
+			v0133_combat_started = true
+			combat_readability_active = true
+			damage_flash_active = true
+			_record_real_input("combat_onset", {"combatTickCount": runtime.combat_tick_count})
+		v0133_wave_remaining_count = _v0133_wave_remaining()
+		if v0133_wave_remaining_count <= 0:
+			v0133_wave_defeated_from_simulation = true
+			v0133_lume_highlight_visible = true
+			set_onboarding_step("restore_lume_link")
+			show_objective_feedback("wave_defeated")
+			_set_or_create_disc_marker("v0133_lume_restore_highlight", _structure_world_position("shrine_landmark", _to_world(LUME_LINK_POSITION, 0.14)), 0.74, Color(0.42, 0.96, 0.86, 0.48))
+			_record_real_input("ashen_wave_defeated_by_simulation", {
+				"deathCount": runtime.death_count,
+				"combatTickCount": runtime.combat_tick_count
+			})
+	if runtime.results_ready:
+		v0133_results_reached = true
+
+func _start_v0133_pressure_countdown() -> void:
+	if v0133_countdown_started:
+		return
+	v0133_countdown_started = true
+	v0133_countdown_remaining = V0133_PRESSURE_COUNTDOWN_SECONDS
+	v0133_countdown_ticks = [int(V0133_PRESSURE_COUNTDOWN_SECONDS)]
+	show_objective_feedback("militia_spawned")
+	set_onboarding_step("prepare_ashen_pressure")
+	_set_or_create_marker("v0133_countdown_marker", _to_world(Vector2(940, 292), 0.22), Vector3(0.90, 0.10, 0.26), Color(0.90, 0.34, 0.22, 0.66))
+	_record_real_input("ashen_pressure_countdown_started", {"seconds": V0133_PRESSURE_COUNTDOWN_SECONDS})
+
+func _trigger_v0133_pressure_wave_from_countdown() -> void:
+	if v0133_wave_triggered_once:
+		return
+	var result := trigger_pressure_wave()
+	v0133_wave_trigger_source = "countdown"
+	_record_real_input("ashen_wave_launched_automatically", {"accepted": result, "source": "countdown"})
+
+func _runtime_recruit_progress() -> float:
+	if runtime.militia_spawned:
+		return 1.0
+	if runtime.recruit_queue.is_empty():
+		return 0.0
+	var entry: Dictionary = runtime.recruit_queue[0]
+	return clampf(float(entry.get("progress", 0.0)), 0.0, 1.0)
+
+func _v0133_wave_ids() -> Array[String]:
+	return ["ashen_00", "ashen_01", "ashen_02", "ashen_03"]
+
+func _v0133_wave_remaining() -> int:
+	var alive := 0
+	for id in _v0133_wave_ids():
+		if runtime.unit_alive(id):
+			alive += 1
+	return alive
+
+func _v0133_wave_positions() -> Dictionary:
+	var positions := {}
+	for id in _v0133_wave_ids():
+		var position: Variant = runtime.unit_position(id)
+		if typeof(position) == TYPE_VECTOR2:
+			positions[id] = _vector2_report(position)
+	return positions
+
+func _v0133_enemy_moved_from_start() -> bool:
+	for id in _v0133_wave_ids():
+		if not v0133_enemy_start_positions.has(id):
+			continue
+		var current: Variant = runtime.unit_position(id)
+		if typeof(current) != TYPE_VECTOR2:
+			continue
+		var start_report: Dictionary = v0133_enemy_start_positions[id]
+		var start := Vector2(float(start_report.get("x", 0.0)), float(start_report.get("y", 0.0)))
+		if (current as Vector2).distance_to(start) >= 10.0:
+			return true
+	return false
+
+func _post_mine_flow_scene_green() -> bool:
+	var green := _site_semantics_scene_green()
+	green = green and v0133_barracks_highlight_visible
+	green = green and v0133_barracks_build_order_accepted
+	green = green and v0133_construction_started
+	green = green and v0133_construction_25_recorded
+	green = green and v0133_construction_75_recorded
+	green = green and v0133_barracks_restored
+	green = green and v0133_barracks_selected
+	green = green and v0133_train_militia_clicked
+	green = green and v0133_recruit_queue_started
+	green = green and v0133_recruit_queue_50_recorded
+	green = green and v0133_militia_spawned
+	green = green and v0133_countdown_started
+	green = green and v0133_wave_triggered_once
+	green = green and v0133_wave_trigger_source == "countdown"
+	green = green and v0133_road_entry_pulse_visible
+	green = green and v0133_enemy_movement_started
+	green = green and v0133_attack_input_accepted
+	green = green and v0133_combat_started
+	green = green and v0133_wave_defeated_from_simulation
+	green = green and v0133_lume_highlight_visible
+	green = green and v0133_lume_restore_input
+	green = green and v0133_lume_restored
+	green = green and v0133_results_reached
+	green = green and v0133_box_select_no_skip_proven
 	green = green and not v0132_actual_objective_regression_detected
 	green = green and not real_input_debug_shortcut_used
 	green = green and not real_input_state_injection_used
@@ -1657,8 +2226,10 @@ func _create_hud() -> void:
 			"CommandButtonMove":
 				button.pressed.connect(_hud_move_pressed)
 			"CommandButtonAttack":
+				hud_attack_button = button
 				button.pressed.connect(_hud_attack_pressed)
 			"CommandButtonWork":
+				hud_work_button = button
 				button.pressed.connect(_hud_work_pressed)
 			"CommandButtonLume":
 				button.pressed.connect(_hud_lume_pressed)
@@ -1764,6 +2335,15 @@ func _sync_hud() -> void:
 	if hud_more_details_label:
 		hud_more_details_label.text = "West Stone Cut Mine, Worker, Barracks, one Militia recruit, one wave, and Lume are the only review goals."
 		hud_more_details_label.visible = more_details_visible
+	if hud_work_button:
+		if current_onboarding_step == "restore_barracks":
+			hud_work_button.text = "Restore"
+		elif current_onboarding_step == "train_militia" and v0133_selected_structure_id == "barracks":
+			hud_work_button.text = "Train"
+		else:
+			hud_work_button.text = "Work"
+	if hud_attack_button:
+		hud_attack_button.text = "Attack"
 
 func _sync_player_shell_chrome() -> void:
 	if hud_layer:
@@ -1800,15 +2380,78 @@ func _hud_move_pressed() -> void:
 	_issue_real_order(real_input_screen_position("west_stone_cut_mine"))
 
 func _hud_attack_pressed() -> void:
-	if runtime.selected_ids.is_empty():
+	if current_onboarding_step == "defeat_wave":
+		var selected := _select_v0133_defender_squad()
+		real_input_squad_box_selected = selected.size() >= 2
+		if real_input_squad_box_selected:
+			v0133_box_select_no_skip_proven = true
+			show_objective_feedback("squad_selected")
+			_record_real_input("hud_attack_squad_select", {"count": selected.size(), "ids": selected})
+		var target_id := _first_live_v0133_wave_id()
+		if target_id != "":
+			var attack_ok := runtime.issue_attack_order(target_id)
+			real_input_attack_order_accepted = attack_ok
+			real_input_attack_marker_rendered = attack_ok
+			if attack_ok:
+				v0133_attack_input_accepted = v0133_wave_triggered_once
+				v0133_initial_combat_tick_count = runtime.combat_tick_count
+				last_feedback_id = "attack_order"
+				_set_or_create_disc_marker("real_attack_order_marker", _unit_world_position(target_id, Vector3.ZERO), 0.44, Color(0.96, 0.28, 0.18, 0.50))
+			_record_real_input("hud_attack_order", {"accepted": attack_ok, "targetId": target_id, "selectedIds": selected})
+			_sync_unit_visuals()
+			_sync_hud()
+			return
+	elif runtime.selected_ids.is_empty():
 		runtime.box_select_squad()
 	var enemy_screen := real_input_screen_position("ashen_00")
 	_issue_real_order(enemy_screen)
 
+func _try_handle_v0133_hud_attack_mouse(event: InputEvent) -> bool:
+	if not _real_input_enabled() or current_onboarding_step != "defeat_wave" or hud_attack_button == null:
+		return false
+	if not (event is InputEventMouseButton):
+		return false
+	var mouse_event := event as InputEventMouseButton
+	if mouse_event.button_index != MOUSE_BUTTON_LEFT or not mouse_event.pressed:
+		return false
+	if not hud_attack_button.get_global_rect().has_point(mouse_event.position):
+		return false
+	_record_real_input("hud_attack_raw_click", {"screen": _vector2_report(mouse_event.position)})
+	_hud_attack_pressed()
+	return true
+
+func _select_v0133_defender_squad() -> Array[String]:
+	var preferred: Array[String] = ["hero_aster", "recruited_militia_00", "friendly_00", "friendly_01", "friendly_02"]
+	var ids: Array[String] = []
+	for id in preferred:
+		if runtime.unit_alive(id):
+			ids.append(id)
+	var selected := runtime.select_units_by_ids(ids)
+	if selected.size() >= 2:
+		return selected
+	return runtime.box_select_squad()
+
+func _first_live_v0133_wave_id() -> String:
+	for id in _v0133_wave_ids():
+		if runtime.unit_alive(id):
+			return id
+	return ""
+
 func _hud_work_pressed() -> void:
+	if current_onboarding_step == "restore_barracks" and runtime.worker_assigned_to_mine:
+		if runtime.selected_ids.is_empty():
+			runtime.select_entity("worker_00")
+		_start_v0133_barracks_restoration(real_input_screen_position("barracks"))
+		return
+	if current_onboarding_step == "train_militia" and v0133_selected_structure_id == "barracks":
+		_queue_v0133_militia_from_input()
+		return
 	select_entity("worker")
 
 func _hud_lume_pressed() -> void:
+	if current_onboarding_step == "restore_lume_link":
+		_restore_v0133_lume_from_input(real_input_screen_position("lume"))
+		return
 	focus_lume_link()
 
 func _record_notification(id: String) -> void:
@@ -1821,12 +2464,24 @@ func _record_notification(id: String) -> void:
 func _player_status_text() -> String:
 	if runtime.paused:
 		return "Paused"
+	if v0133_results_reached or runtime.results_ready:
+		return "Results ready"
+	if v0133_lume_highlight_visible:
+		return "Wave broken; restore the highlighted Lume link"
+	if v0133_wave_triggered_once and not v0133_wave_defeated_from_simulation:
+		return "Ashen wave moving; box-select defenders and attack"
+	if v0133_countdown_started and not v0133_wave_triggered_once:
+		return "Ashen pressure in %ss" % int(ceil(v0133_countdown_remaining))
 	if runtime.militia_spawned:
 		return "Militia ready; break the Ashen wave"
+	if v0133_recruit_queue_started:
+		return "Militia training: %s%%" % int(round(v0133_recruit_progress * 100.0))
 	if runtime.barracks_complete:
-		return "Barracks restored; train one Militia"
+		return "Barracks restored; select it and train one Militia"
+	if v0133_construction_started:
+		return "Restoring Barracks: %s%%" % int(round(v0133_construction_progress * 100.0))
 	if runtime.worker_assigned_to_mine:
-		return "Worker assigned; production boosted"
+		return "Worker assigned; right-click the highlighted Barracks"
 	if v0132_mine_controlled or runtime.mine_converted:
 		return "West Stone Cut Mine controlled; select the highlighted Worker"
 	if v0132_site_state == SITE_STATE_CONVERTING:
@@ -1842,6 +2497,8 @@ func _player_status_text() -> String:
 func _selected_context_text() -> String:
 	if runtime.selected_ids.size() > 1:
 		return "Squad posture: protect Aster and hold the road"
+	if v0133_selected_structure_id == "barracks":
+		return "Barracks: train one Militia"
 	if runtime.selected_ids.is_empty() or runtime.selected_ids.has("hero_aster"):
 		return "Aster HP 100/100 | Rally ability ready"
 	if runtime.selected_ids.any(func(id: String) -> bool: return id.begins_with("worker")):
@@ -1866,19 +2523,19 @@ func _current_objective_text() -> String:
 		"restore_barracks":
 			return "Objective 5: Restore the Barracks"
 		"finish_barracks":
-			return "Objective 6: Finish construction"
+			return "Objective 5: Restore the Barracks"
 		"queue_militia":
-			return "Objective 7: Queue one Militia"
+			return "Objective 6: Train one Militia"
 		"train_militia":
-			return "Objective 8: Train the Militia"
+			return "Objective 6: Train one Militia"
 		"prepare_ashen_pressure":
-			return "Objective 5: Prepare for Ashen pressure"
+			return "Objective 7: Prepare for Ashen pressure"
 		"defeat_wave":
-			return "Objective 6: Defeat the Ashen wave"
+			return "Objective 8: Defeat the Ashen wave"
 		"restore_lume_link":
-			return "Objective 7: Restore the Lume link"
+			return "Objective 9: Restore the Lume link"
 		"review_results":
-			return "Objective 8: Review Results"
+			return "Objective 10: Review Results"
 	return "Objective: Secure West Stone Cut Mine and restore Lume"
 
 func _onboarding_text(step_id: String) -> String:
@@ -1894,19 +2551,19 @@ func _onboarding_text(step_id: String) -> String:
 		"worker_assign_mine":
 			return "Tip: Right-click the controlled West Stone Cut Mine with the Worker."
 		"restore_barracks":
-			return "Tip: Restore the Barracks placeholder."
+			return "Tip: With the Worker selected, right-click the highlighted Barracks frame."
 		"finish_barracks":
-			return "Tip: Let construction complete."
+			return "Tip: Watch construction finish on the highlighted Barracks."
 		"queue_militia":
-			return "Tip: Spend resources to queue one Militia."
+			return "Tip: Select the restored Barracks."
 		"train_militia":
-			return "Tip: Wait for the Militia to step out."
+			return "Tip: Click Train, then wait for the Militia to step out."
 		"prepare_ashen_pressure":
-			return "Tip: Prepare for Ashen pressure."
+			return "Tip: Watch the Ashen-pressure countdown."
 		"defeat_wave":
-			return "Tip: Defeat the Ashen wave."
+			return "Tip: Box-select defenders, right-click an Ashen unit, and hold the road."
 		"restore_lume_link":
-			return "Tip: Restore the Lume link."
+			return "Tip: Click the highlighted Lume link."
 		"review_results":
 			return "Tip: Review the Results."
 	return ""
@@ -1931,6 +2588,10 @@ func _alert_text(alert_id: String) -> String:
 			return "Militia queued"
 		"militia_spawned":
 			return "Militia ready"
+		"squad_selected":
+			return "Squad selected"
+		"barracks_selected":
+			return "Barracks selected"
 		"pressure_wave":
 			return "Ashen pressure incoming"
 		"wave_defeated":

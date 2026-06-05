@@ -1223,4 +1223,101 @@ describe("Godot Salto spike scaffold", () => {
     expect(scene3d).not.toContain("ImageTexture");
     expect(toolScript).not.toContain("ImageTexture");
   });
+
+  it("defines the v0.133 post-mine Barracks, recruit, Ashen wave, and Lume proof gate", async () => {
+    [
+      "GODOT_POST_MINE_FLOW_SMOKE_WINDOWS.bat",
+      "GODOT_LAUNCH_POST_MINE_FLOW_REVIEW_WINDOWS.bat",
+      "tools/godot/runGodotPostMineFlowSmokeWindows.ps1",
+      "docs/V0133_POST_MINE_OBJECTIVE_STATE_MACHINE_AUDIT.md",
+      "docs/V0133_OBJECTIVE_PREREQUISITE_LEDGER.md",
+      "docs/V0133_BARRACKS_RESTORATION_GUIDANCE_SPEC.md",
+      "docs/V0133_MILITIA_RECRUIT_GUIDANCE_SPEC.md",
+      "docs/V0133_ASHEN_PRESSURE_COUNTDOWN_SPEC.md",
+      "docs/V0133_COMBAT_ONSET_SPEC.md",
+      "docs/V0133_LUME_RESTORE_GUIDANCE_SPEC.md",
+      "docs/V0133_HEADED_POST_MINE_FLOW_PROOF.md",
+      "docs/V0133_POST_MINE_FLOW_GATE.md",
+      "docs/V0133_IMPLEMENTATION_REPORT.md",
+      "docs/V0133_EMMANUEL_RETEST_GUIDE.md"
+    ].forEach((path) => expect(existsSync(path), path).toBe(true));
+
+    const packageJson = await readJson<{ scripts: Record<string, string> }>("package.json");
+    const rootScript = await readFile("desktop-spikes/godot-salto/scripts/salto_spike_root.gd", "utf8");
+    const scene3d = await readFile("desktop-spikes/godot-salto/scripts/salto_spike_scene_3d.gd", "utf8");
+    const runtime = await readFile("desktop-spikes/godot-salto/scripts/salto_spike_workload_runtime.gd", "utf8");
+    const toolScript = await readFile("desktop-spikes/godot-salto/tools/godotSpikeTool.mjs", "utf8");
+    const smokeScript = await readFile("tools/godot/runGodotPostMineFlowSmokeWindows.ps1", "utf8");
+    const gate = await readFile("docs/V0133_POST_MINE_FLOW_GATE.md", "utf8");
+    const proof = await readFile("docs/V0133_HEADED_POST_MINE_FLOW_PROOF.md", "utf8");
+    const handoff = await readFile("LLM_GAME_HANDOFF.md", "utf8");
+    const roadmap = await readFile("ROADMAP.md", "utf8");
+
+    ["godot:validate:post-mine-flow", "godot:headed:post-mine-flow-smoke"].forEach((script) =>
+      expect(packageJson.scripts[script], script).toBeTypeOf("string")
+    );
+
+    [
+      "--post-mine-flow-smoke",
+      "run_post_mine_flow_smoke",
+      "PASS_V0133_HEADED_POST_MINE_FLOW_SMOKE",
+      "PASS_V0133_POST_MINE_FLOW_SCREENSHOTS",
+      "headed-post-mine-flow-smoke.json",
+      "post-mine-trace.json",
+      "objective-prerequisite-report.json",
+      "barracks-restoration-proof.json",
+      "militia-recruit-proof.json",
+      "pressure-countdown-proof.json",
+      "wave-launch-proof.json",
+      "combat-onset-proof.json",
+      "wave-defeat-proof.json",
+      "lume-restore-proof.json"
+    ].forEach((text) => expect(rootScript).toContain(text));
+
+    [
+      "post_mine_flow_status",
+      "_advance_v0133_post_mine_flow",
+      "_v0133_objective_prerequisites_met",
+      "_start_v0133_barracks_restoration",
+      "_queue_v0133_militia_from_input",
+      "_restore_v0133_lume_from_input",
+      "_try_handle_v0133_hud_attack_mouse",
+      "hud_attack_raw_click",
+      "v0133_box_select_no_skip_proven",
+      "waveTriggerSource",
+      "fixtureOnlyHelperProofUsed"
+    ].forEach((text) => expect(scene3d).toContain(text));
+
+    [
+      "advance_pressure_wave_frame",
+      "restore_lume_from_player_input",
+      "unit_alive",
+      "LINKED_WARD_DAMAGE_TAKEN_MULTIPLIER"
+    ].forEach((text) => expect(runtime).toContain(text));
+
+    [
+      "v0133ArtifactRoot",
+      "v0133ScreenshotRoot",
+      "validateV0133PostMineFlowArtifacts",
+      "PASS_V0133_POST_MINE_FLOW_VALIDATION",
+      "post-mine-flow-v0133",
+      "linkedWardDamageTakenMultiplier"
+    ].forEach((text) => expect(toolScript).toContain(text));
+
+    expect(smokeScript).toContain("--post-mine-flow-smoke");
+    expect(smokeScript).toContain("post-mine-flow-v0133");
+    expect(smokeScript).toContain("v0133");
+
+    expect(gate).toContain("Classification: `POST_MINE_FLOW_GREEN`");
+    expect(proof).toContain("PASS_V0133_HEADED_POST_MINE_FLOW_SMOKE");
+    expect(proof).toContain("post-mine-trace.json");
+    expect(proof).toContain("Salto Review Complete");
+    expect(handoff).toContain("v0.133 Godot Post-Mine Sequence Repair");
+    expect(roadmap).toContain("v0.133 Godot Post-Mine Sequence Repair");
+
+    expect(rootScript).not.toContain("load(\"res://assets");
+    expect(scene3d).not.toContain("load(\"res://assets");
+    expect(scene3d).not.toContain("ImageTexture");
+    expect(toolScript).not.toContain("ImageTexture");
+  });
 });

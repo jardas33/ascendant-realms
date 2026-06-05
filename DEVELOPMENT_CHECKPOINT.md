@@ -1,6 +1,47 @@
 # Development Checkpoint
 
-Updated: 2026-06-05 v0.130 Godot Salto Vertical-Slice Acceptance Pack, Human Review Build, and First Reference-Art Generation Session
+Updated: 2026-06-05 v0.133 Godot Post-Mine Sequence Repair, Barracks-Recruit Guidance, Ashen-Wave Trigger, and Real Combat-Onset Proof
+
+## v0.133 Godot Post-Mine Sequence Repair, Barracks-Recruit Guidance, Ashen-Wave Trigger, And Real Combat-Onset Proof - 2026-06-05
+
+Scope: bounded Godot player-facing post-mine repair, validation, headed proof, docs, and one-click retest tooling. This checkpoint does not select Godot finally, start a full port, create Unity/Unreal/Electron work, generate images, import runtime art, change browser runtime, saves, stable IDs, rewards, maps, factions, broad AI, broad economy, broad building tree, broad recruitment, pathing balance, multiplayer, PvP, co-op, campaign scope, or v0.134.
+
+Included work:
+
+- Added guarded post-mine objective prerequisites for `restore_barracks`, `train_militia`, `prepare_ashen_pressure`, `defeat_ashen_wave`, `restore_lume_link`, and `review_results`.
+- Removed the box-select objective skip so squad selection cannot advance into Ashen pressure before prerequisites are satisfied.
+- Added player-facing Barracks restoration guidance, construction progress, Barracks selection, Train Militia command, recruit progress, Militia spawn feedback, visible Ashen countdown, automatic wave trigger, enemy movement, combat onset, simulation-backed wave defeat, Lume restoration, and Results.
+- Added `GODOT_POST_MINE_FLOW_SMOKE_WINDOWS.bat` and `GODOT_LAUNCH_POST_MINE_FLOW_REVIEW_WINDOWS.bat`.
+- Added ignored v0.133 artifact generation under `artifacts/desktop-spikes/godot-salto/v0133/`.
+- Added v0.133 docs for the objective audit, prerequisite ledger, guidance specs, proof, gate, implementation report, and Emmanuel retest guide.
+
+Current interpretation:
+
+- The gate classification is `POST_MINE_FLOW_GREEN` only when the headed packaged player reaches Results through normal mouse input and simulation without debug, private-harness, direct-state, fixture-only, or screenshot-only proof.
+- The private engineering harness remains separate from the player-facing review path.
+- Godot is still not selected finally.
+- The browser prototype remains the current source of truth.
+- Emmanuel should retest with `GODOT_LAUNCH_POST_MINE_FLOW_REVIEW_WINDOWS.bat` and `docs/V0133_EMMANUEL_RETEST_GUIDE.md`.
+
+Verification:
+
+```text
+Required closeout stack:
+npm test
+npm run build
+npm run validate:content
+npm run validate:art-intake
+npm run godot:all
+npm run godot:fresh-checkout:validate
+npm run godot:validate:player-slice
+npm run godot:validate:real-input
+npm run godot:headed:real-input-smoke
+npm run godot:validate:site-semantics
+npm run godot:headed:site-semantics-smoke
+npm run godot:validate:post-mine-flow
+npm run godot:headed:post-mine-flow-smoke
+git diff --check
+```
 
 ## v0.130 Godot Salto Vertical-Slice Acceptance Pack, Human Review Build, And First Reference-Art Generation Session - 2026-06-05
 
