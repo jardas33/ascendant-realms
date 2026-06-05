@@ -11,9 +11,20 @@ Every phase should protect these long-term pillars:
 
 ## Current Recommended Next Phase
 
-The current checkpoint is **v0.130 Godot Salto Vertical-Slice Acceptance Pack, Human Review Build, and First Reference-Art Generation Session** on 2026-06-05. It keeps the Godot spike bounded, packages the existing player-facing Salto title -> briefing -> microloop -> Results path for Emmanuel review, adds v0.130 one-click launch/validate/capture wrappers, generates ignored v0.130 validation/capture/package/scorecard artifacts, and prepares the first four reference-only art generation prompts. The browser prototype remains authoritative, the private harness remains separate, and no final engine choice, full port, generated image, imported art, save change, stable-ID change, browser-runtime change, broad economy, broad building tree, broad recruitment, full hero progression, campaign expansion, or runtime art integration is approved.
+The current checkpoint is **v0.131 Godot Player-Control Emergency Repair, Real-Input Proof, and Human-Playability Gate** on 2026-06-05. It keeps the Godot spike bounded, repairs the existing player-facing Salto slice so ordinary packaged-build mouse input can select Aster, issue a right-click move, visibly move Aster, advance the objective, select the Worker, and box-select a squad, and records ignored v0.131 trace/screenshot proof under `artifacts/desktop-spikes/godot-salto/v0131/`. The browser prototype remains authoritative, the private harness remains separate, and no final engine choice, full port, generated image, imported art, save change, stable-ID change, browser-runtime change, broad economy, broad building tree, broad recruitment, full hero progression, campaign expansion, or runtime art integration is approved.
 
-The next recommended step, only after a future explicit goal or Emmanuel's explicit review action, is Emmanuel's review of the v0.130 build and captures in `artifacts/desktop-spikes/godot-salto/v0130/`, followed by optional generation of only the four reference-only images listed in `docs/V0130_FIRST_REFERENCE_ART_GENERATION_SESSION.md`. Do not generate art for runtime integration, import art into runtime, mark `runtime-candidate-approved` assets as loadable, resume broad browser visual expansion, add broad gameplay systems, change rewards, change saves, rename IDs, create a desktop save path, choose Godot finally, start a full desktop port, start Unity/Unreal/Electron work, or start any following milestone until a future explicit goal approves a narrow next step.
+The next recommended step, only after a future explicit goal or Emmanuel's explicit review action, is Emmanuel's manual retest using `GODOT_LAUNCH_PLAYABILITY_REVIEW_WINDOWS.bat` and the checklist in `docs/V0131_EMMANUEL_RETEST_GUIDE.md`. Do not generate art for runtime integration, import art into runtime, mark `runtime-candidate-approved` assets as loadable, resume broad browser visual expansion, add broad gameplay systems, change rewards, change saves, rename IDs, create a desktop save path, choose Godot finally, start a full desktop port, start Unity/Unreal/Electron work, or start v0.132 until a future explicit goal approves a narrow next step.
+
+New v0.131 docs:
+
+- `docs/V0131_REAL_INPUT_CONTRACT_AUDIT.md`
+- `docs/V0131_FIRST_MINUTE_ONBOARDING_SPEC.md`
+- `docs/V0131_HEADED_REAL_INPUT_PROOF.md`
+- `docs/V0131_HUMAN_PLAYABILITY_GATE.md`
+- `docs/V0131_IMPLEMENTATION_REPORT.md`
+- `docs/V0131_EMMANUEL_RETEST_GUIDE.md`
+
+Previous checkpoint reference: v0.130 Godot Salto Vertical-Slice Acceptance Pack, Human Review Build, and First Reference-Art Generation Session.
 
 New v0.130 docs:
 

@@ -170,6 +170,20 @@ func select_entity(id: String) -> bool:
 			return true
 	return false
 
+func clear_selection() -> bool:
+	selected_ids = []
+	return true
+
+func select_units_by_ids(ids: Array[String]) -> Array[String]:
+	selected_ids = []
+	for id in ids:
+		for unit in units:
+			if _is_alive(unit) and str(unit["team"]) == "friendly" and str(unit["id"]) == str(id):
+				if not selected_ids.has(str(unit["id"])):
+					selected_ids.append(str(unit["id"]))
+				break
+	return selected_ids
+
 func box_select_squad(max_units: int = 12) -> Array[String]:
 	selected_ids = []
 	for unit in units:
@@ -198,6 +212,46 @@ func issue_move_order(target: Vector2 = Vector2.INF) -> bool:
 		index += 1
 	last_order = "move:%s:%s" % [snappedf(destination.x, 0.1), snappedf(destination.y, 0.1)]
 	return index > 0
+
+func advance_live_frame() -> void:
+	_simulate_workload_frame("moving")
+
+func has_active_movement() -> bool:
+	for unit in units:
+		if _is_alive(unit) and bool(unit.get("hasDestination", false)):
+			return true
+	return false
+
+func unit_position(id: String) -> Variant:
+	var unit: Variant = _unit_by_id(id)
+	if unit == null:
+		return null
+	return unit["position"]
+
+func unit_has_destination(id: String) -> bool:
+	var unit: Variant = _unit_by_id(id)
+	if unit == null:
+		return false
+	return bool(unit.get("hasDestination", false))
+
+func apply_player_facing_staging() -> bool:
+	var staged_positions := {
+		"hero_aster": Vector2(340, 510),
+		"worker_00": Vector2(260, 390),
+		"worker_01": Vector2(302, 408)
+	}
+	for index in range(units.size()):
+		var unit: Dictionary = units[index]
+		var id := str(unit.get("id", ""))
+		if not staged_positions.has(id):
+			continue
+		unit["position"] = staged_positions[id]
+		unit["lastPosition"] = staged_positions[id]
+		unit["destination"] = staged_positions[id]
+		unit["hasDestination"] = false
+		units[index] = unit
+	initial_placement_signature = placement_signature()
+	return true
 
 func issue_attack_order(target_id: String = "") -> bool:
 	if selected_ids.is_empty():

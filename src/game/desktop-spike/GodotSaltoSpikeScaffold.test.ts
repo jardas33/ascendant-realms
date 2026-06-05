@@ -1019,4 +1019,114 @@ describe("Godot Salto spike scaffold", () => {
     expect(rootScript).not.toContain("load(\"res://assets");
     expect(toolScript).not.toContain("ImageTexture");
   });
+
+  it("defines the v0.131 real packaged-input human-playability gate", async () => {
+    [
+      "GODOT_REAL_INPUT_SMOKE_WINDOWS.bat",
+      "GODOT_LAUNCH_PLAYABILITY_REVIEW_WINDOWS.bat",
+      "tools/godot/runGodotRealInputSmokeWindows.ps1",
+      "docs/V0131_REAL_INPUT_CONTRACT_AUDIT.md",
+      "docs/V0131_FIRST_MINUTE_ONBOARDING_SPEC.md",
+      "docs/V0131_HEADED_REAL_INPUT_PROOF.md",
+      "docs/V0131_HUMAN_PLAYABILITY_GATE.md",
+      "docs/V0131_IMPLEMENTATION_REPORT.md",
+      "docs/V0131_EMMANUEL_RETEST_GUIDE.md"
+    ].forEach((path) => expect(existsSync(path), path).toBe(true));
+
+    const packageJson = await readJson<{ scripts: Record<string, string> }>("package.json");
+    const rootScript = await readFile("desktop-spikes/godot-salto/scripts/salto_spike_root.gd", "utf8");
+    const scene3d = await readFile("desktop-spikes/godot-salto/scripts/salto_spike_scene_3d.gd", "utf8");
+    const runtime = await readFile("desktop-spikes/godot-salto/scripts/salto_spike_workload_runtime.gd", "utf8");
+    const toolScript = await readFile("desktop-spikes/godot-salto/tools/godotSpikeTool.mjs", "utf8");
+    const smokeScript = await readFile("tools/godot/runGodotRealInputSmokeWindows.ps1", "utf8");
+    const audit = await readFile("docs/V0131_REAL_INPUT_CONTRACT_AUDIT.md", "utf8");
+    const gate = await readFile("docs/V0131_HUMAN_PLAYABILITY_GATE.md", "utf8");
+    const proof = await readFile("docs/V0131_HEADED_REAL_INPUT_PROOF.md", "utf8");
+    const handoff = await readFile("LLM_GAME_HANDOFF.md", "utf8");
+    const roadmap = await readFile("ROADMAP.md", "utf8");
+
+    ["godot:validate:real-input", "godot:headed:real-input-smoke"].forEach((script) =>
+      expect(packageJson.scripts[script], script).toBeTypeOf("string")
+    );
+
+    [
+      "--real-input-smoke",
+      "run_real_input_smoke",
+      "get_viewport().push_input",
+      "PASS_HEADED_REAL_INPUT_SMOKE",
+      "PASS_SELECTION_PROOF",
+      "PASS_MOVEMENT_PROOF",
+      "PASS_V0131_REAL_INPUT_SCREENSHOTS",
+      "real-input-trace.json",
+      "selection-proof.json",
+      "movement-proof.json",
+      "screenshot-manifest.json",
+      "MOUSE_FILTER_PASS"
+    ].forEach((text) => expect(rootScript).toContain(text));
+
+    [
+      "_unhandled_input",
+      "_handle_real_mouse_motion",
+      "_handle_real_mouse_button",
+      "_pick_unit_from_screen",
+      "_screen_to_ground",
+      "_finish_real_box_select",
+      "_issue_real_order",
+      "real_input_aster_selected",
+      "real_input_worker_selected",
+      "real_input_squad_box_selected",
+      "real_input_move_order_accepted",
+      "real_input_objective_advanced",
+      "aster_focus_pulse",
+      "aster_objective_arrow",
+      "move_destination_pulse",
+      "linkedWardDamageTakenMultiplier",
+      "saveWritesAllowed"
+    ].forEach((text) => expect(scene3d).toContain(text));
+
+    [
+      "clear_selection",
+      "select_units_by_ids",
+      "advance_live_frame",
+      "has_active_movement",
+      "unit_has_destination",
+      "apply_player_facing_staging"
+    ].forEach((text) => expect(runtime).toContain(text));
+
+    [
+      "v0131ArtifactRoot",
+      "v0131ScreenshotRoot",
+      "validateV0131RealInputArtifacts",
+      "PASS_V0131_REAL_INPUT_VALIDATION",
+      "PASS_HEADED_REAL_INPUT_SMOKE",
+      "PASS_SELECTION_PROOF",
+      "PASS_MOVEMENT_PROOF",
+      "PASS_V0131_REAL_INPUT_SCREENSHOTS",
+      "real-input-v0131",
+      "debugShortcutUsed",
+      "stateInjectionUsed",
+      "linkedWardDamageTakenMultiplier"
+    ].forEach((text) => expect(toolScript).toContain(text));
+
+    expect(smokeScript).toContain("--real-input-smoke");
+    expect(smokeScript).toContain("real-input-v0131");
+    expect(smokeScript).toContain("launchGodotReviewWindows.ps1");
+    expect(smokeScript).toContain("v0131");
+
+    expect(audit).toContain("Control node consuming mouse events");
+    expect(audit).toContain("unit movement not updating");
+    expect(audit).toContain("private harness");
+    expect(gate).toContain("Classification: `HUMAN_PLAYABILITY_GREEN`");
+    expect(gate).toContain("No debug shortcut");
+    expect(gate).toContain("Zero-editor");
+    expect(proof).toContain("PASS_HEADED_REAL_INPUT_SMOKE");
+    expect(proof).toContain("real-input-trace.json");
+    expect(handoff).toContain("v0.131 Godot Player-Control Emergency Repair");
+    expect(roadmap).toContain("v0.131 Godot Player-Control Emergency Repair");
+
+    expect(rootScript).not.toContain("load(\"res://assets");
+    expect(scene3d).not.toContain("load(\"res://assets");
+    expect(scene3d).not.toContain("ImageTexture");
+    expect(toolScript).not.toContain("ImageTexture");
+  });
 });

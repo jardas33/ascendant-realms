@@ -26,6 +26,8 @@ const v0129ArtifactRoot = join(repoRoot, "artifacts", "desktop-spikes", "godot-s
 const v0129ScreenshotRoot = join(v0129ArtifactRoot, "screenshots");
 const v0130ArtifactRoot = join(repoRoot, "artifacts", "desktop-spikes", "godot-salto", "v0130");
 const v0130ScreenshotRoot = join(v0130ArtifactRoot, "screenshots");
+const v0131ArtifactRoot = join(repoRoot, "artifacts", "desktop-spikes", "godot-salto", "v0131");
+const v0131ScreenshotRoot = join(v0131ArtifactRoot, "screenshots");
 const sourceFixtureRoot = join(repoRoot, "artifacts", "desktop-spike-fixture", "latest");
 const generatedDataRoot = join(spikeRoot, "data", "generated");
 const buildsRoot = join(spikeRoot, "builds");
@@ -4505,6 +4507,153 @@ function writeV0130ScreenshotManifest() {
   return manifest;
 }
 
+function validateV0131RealInputArtifacts() {
+  const smoke = readOptionalJson(join(v0131ArtifactRoot, "headed-playability-smoke.json"));
+  const trace = readOptionalJson(join(v0131ArtifactRoot, "real-input-trace.json"));
+  const selection = readOptionalJson(join(v0131ArtifactRoot, "selection-proof.json"));
+  const movement = readOptionalJson(join(v0131ArtifactRoot, "movement-proof.json"));
+  const manifest = readOptionalJson(join(v0131ArtifactRoot, "screenshot-manifest.json"));
+  const errors = [];
+  const requiredCaptures = [
+    "battle_initial_camera_focus",
+    "aster_pulsing",
+    "cursor_hover_aster",
+    "aster_selected",
+    "hud_card_updated",
+    "move_destination_pulse",
+    "move_marker",
+    "aster_displaced",
+    "objective_advanced",
+    "worker_hover",
+    "worker_selected",
+    "squad_box_selected"
+  ];
+  if (!smoke) {
+    errors.push("Missing headed-playability-smoke.json.");
+  } else {
+    if (smoke.status !== "PASS_HEADED_REAL_INPUT_SMOKE") {
+      errors.push(`Real-input smoke did not pass: ${smoke.status}.`);
+    }
+    if (smoke.privateHarnessShortcutUsed !== false || smoke.debugShortcutUsed !== false || smoke.stateInjectionUsed !== false) {
+      errors.push("Real-input smoke reported private-harness shortcut, debug shortcut, or state injection.");
+    }
+    for (const [key, expected] of Object.entries({
+      hoverTargetId: true,
+      selectedUnitId: true,
+      hudCardUpdated: true,
+      moveOrderAccepted: true,
+      moveMarkerRendered: true,
+      movementStarted: true,
+      visibleMovementConfirmed: true,
+      objectiveAdvancedAfterRealMovement: true,
+      workerSelected: true,
+      squadBoxSelected: true,
+      debugShortcutUsed: true,
+      stateInjectionUsed: true
+    })) {
+      if (smoke.checks?.[key] !== expected) {
+        errors.push(`Real-input smoke check ${key} did not equal ${expected}.`);
+      }
+    }
+  }
+  if (!trace) {
+    errors.push("Missing real-input-trace.json.");
+  } else {
+    const events = new Set((trace.trace ?? []).map((entry) => entry.event));
+    [
+      "launch",
+      "title_start_clicked",
+      "briefing_start_battle_clicked",
+      "battle_ready",
+      "aster_hover",
+      "hover",
+      "selected",
+      "hud_card_updated",
+      "move_order",
+      "movement_started",
+      "visible_movement_confirmed",
+      "aster_visible_movement_confirmed",
+      "meaningful_displacement",
+      "objective_advanced_after_real_movement",
+      "objective_advanced",
+      "worker_hover",
+      "worker_click",
+      "box_select"
+    ].forEach((event) => {
+      if (!events.has(event)) {
+        errors.push(`Missing real-input trace event: ${event}.`);
+      }
+    });
+    if (trace.noDebugShortcutUsed !== true || trace.noStateInjectionUsed !== true) {
+      errors.push("Real-input trace did not preserve no-debug/no-state-injection proof.");
+    }
+  }
+  if (selection?.status !== "PASS_SELECTION_PROOF") {
+    errors.push(`Selection proof did not pass: ${selection?.status ?? "missing"}.`);
+  }
+  if (movement?.status !== "PASS_MOVEMENT_PROOF") {
+    errors.push(`Movement proof did not pass: ${movement?.status ?? "missing"}.`);
+  } else if (movement.visibleMovementConfirmed !== true || Number(movement.visibleMovementDelta ?? 0) < 48) {
+    errors.push(`Movement proof did not include visible Aster screen movement; delta=${movement.visibleMovementDelta ?? "missing"}.`);
+  }
+  const captures = manifest?.captures ?? [];
+  if (manifest?.status !== "PASS_V0131_REAL_INPUT_SCREENSHOTS") {
+    errors.push(`Screenshot manifest did not pass: ${manifest?.status ?? "missing"}.`);
+  }
+  if (captures.length !== 12) {
+    errors.push(`Expected 12 v0.131 screenshots, found ${captures.length}.`);
+  }
+  for (const id of requiredCaptures) {
+    if (!captures.some((capture) => capture.id === id)) {
+      errors.push(`Missing v0.131 screenshot capture: ${id}.`);
+    }
+  }
+  const enrichedCaptures = captures.map((capture) => {
+    const screenshotPath = join(v0131ScreenshotRoot, capture.fileName);
+    const exists = existsSync(screenshotPath);
+    if (!exists) {
+      errors.push(`Missing screenshot file: ${capture.fileName}.`);
+    }
+    if (capture.width !== 1600 || capture.height !== 900) {
+      errors.push(`Screenshot ${capture.fileName} is ${capture.width}x${capture.height}, expected 1600x900.`);
+    }
+    return {
+      ...capture,
+      path: relativeRepo(screenshotPath),
+      sha256: exists ? hashFile(screenshotPath) : null,
+      sizeBytes: exists ? statSync(screenshotPath).size : null
+    };
+  });
+  const strayPngs = existsSync(v0131ScreenshotRoot)
+    ? readdirSync(v0131ScreenshotRoot).filter((file) => file.endsWith(".png") && !captures.some((capture) => capture.fileName === file))
+    : [];
+  if (strayPngs.length > 0) {
+    errors.push(`Unexpected screenshots in v0131 folder: ${strayPngs.join(", ")}.`);
+  }
+  const report = {
+    schemaVersion: 1,
+    checkpoint: "v0.131",
+    status: errors.length === 0 ? "PASS_V0131_REAL_INPUT_VALIDATION" : "FAIL_V0131_REAL_INPUT_VALIDATION",
+    generatedAtUtc: "deterministic-v0131",
+    smokeStatus: smoke?.status ?? null,
+    selectionStatus: selection?.status ?? null,
+    movementStatus: movement?.status ?? null,
+    screenshotStatus: manifest?.status ?? null,
+    captureCount: captures.length,
+    requiredCaptureCount: 12,
+    noDebugShortcutUsed: smoke?.debugShortcutUsed === false && trace?.noDebugShortcutUsed === true,
+    noStateInjectionUsed: smoke?.stateInjectionUsed === false && trace?.noStateInjectionUsed === true,
+    routineEditorUseRequired: false,
+    saveWritesAllowed: false,
+    stableIdsChanged: false,
+    browserRuntimeChanged: false,
+    linkedWardDamageTakenMultiplier: 0.92,
+    errors,
+    captures: enrichedCaptures
+  };
+  return report;
+}
+
 const v0125AuditAreas = ["title", "briefing", "battle", "results"];
 const v0125PlayerDebugTerms = [
   ...v0124ForbiddenTerms,
@@ -5222,6 +5371,12 @@ try {
     if (String(report.status).startsWith("FAIL")) {
       process.exitCode = 1;
     }
+  } else if (command === "real-input-v0131") {
+    const report = validateV0131RealInputArtifacts();
+    console.log(stableStringify(report));
+    if (String(report.status).startsWith("FAIL")) {
+      process.exitCode = 1;
+    }
   } else if (command === "player-slice-audit") {
     const report = buildV0125ScreenshotAudit();
     console.log(stableStringify(report));
@@ -5235,7 +5390,7 @@ try {
     runAll();
     console.log("v0.119 Godot representative RTS load spike reports generated.");
   } else {
-    console.log("Usage: node desktop-spikes/godot-salto/tools/godotSpikeTool.mjs <doctor|generate|validate|test|benchmark|export|package|scorecard|manual-review|headed-smoke|headed-benchmark|capture-review|capture-review-v0121|player-slice-validate|player-slice-capture|player-slice-capture-v0126|player-slice-capture-v0127|player-slice-capture-v0128|player-slice-validate-v0129|player-slice-capture-v0129|player-slice-validate-v0130|player-slice-capture-v0130|player-slice-audit|v0118-all|all>");
+    console.log("Usage: node desktop-spikes/godot-salto/tools/godotSpikeTool.mjs <doctor|generate|validate|test|benchmark|export|package|scorecard|manual-review|headed-smoke|headed-benchmark|capture-review|capture-review-v0121|player-slice-validate|player-slice-capture|player-slice-capture-v0126|player-slice-capture-v0127|player-slice-capture-v0128|player-slice-validate-v0129|player-slice-capture-v0129|player-slice-validate-v0130|player-slice-capture-v0130|real-input-v0131|player-slice-audit|v0118-all|all>");
   }
 } catch (error) {
   console.error(error instanceof Error ? error.message : String(error));

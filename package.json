@@ -45,6 +45,8 @@
     "godot:capture:player-slice": "powershell -NoProfile -ExecutionPolicy Bypass -File tools/godot/captureGodotPlayerSliceWindows.ps1",
     "godot:audit:player-slice": "powershell -NoProfile -ExecutionPolicy Bypass -File tools/godot/auditGodotPlayerSliceWindows.ps1",
     "godot:validate:player-slice": "powershell -NoProfile -ExecutionPolicy Bypass -File tools/godot/validateGodotPlayerSlice.ps1",
+    "godot:validate:real-input": "powershell -NoProfile -ExecutionPolicy Bypass -File tools/godot/runGodotRealInputSmokeWindows.ps1",
+    "godot:headed:real-input-smoke": "powershell -NoProfile -ExecutionPolicy Bypass -File tools/godot/runGodotRealInputSmokeWindows.ps1",
     "godot:scorecard": "powershell -NoProfile -ExecutionPolicy Bypass -File tools/godot/runGodotBenchmark.ps1 -ScorecardOnly",
     "godot:all": "powershell -NoProfile -ExecutionPolicy Bypass -File tools/godot/runGodotAll.ps1",
     "godot:fresh-checkout:validate": "powershell -NoProfile -ExecutionPolicy Bypass -File tools/godot/validateGodotFreshCheckout.ps1",

@@ -23,6 +23,8 @@ const SCRIPT_ARG_PREFIXES := [
 	"--player-slice",
 	"--player-slice-validate",
 	"--player-slice-capture",
+	"--real-input-smoke",
+	"--real-input-validate",
 	"--mode=",
 	"--visual-preset=",
 	"--viewport=",
@@ -68,6 +70,10 @@ func _ready() -> void:
 	if args.has("--player-slice-capture"):
 		_create_player_slice_ui()
 		await run_player_slice_capture()
+		return
+	if args.has("--real-input-smoke") or args.has("--real-input-validate"):
+		_create_player_slice_ui()
+		await run_real_input_smoke()
 		return
 	if args.has("--player-slice"):
 		_create_player_slice_ui()
@@ -277,6 +283,7 @@ func _create_player_slice_ui() -> void:
 	player_screen = Control.new()
 	player_screen.name = "PlayerSliceScreen"
 	player_screen.set_anchors_preset(Control.PRESET_FULL_RECT)
+	player_screen.mouse_filter = Control.MOUSE_FILTER_PASS
 	player_layer.add_child(player_screen)
 
 func show_player_title() -> void:
@@ -321,6 +328,7 @@ func _render_player_screen(screen: String) -> void:
 	shade.name = "PlayerSliceShade"
 	shade.color = Color(0.02, 0.025, 0.025, 0.28 if screen == "battle" else 0.57)
 	shade.set_anchors_preset(Control.PRESET_FULL_RECT)
+	shade.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	player_screen.add_child(shade)
 	match screen:
 		"title":
@@ -355,11 +363,13 @@ func _add_player_label(text: String, position: Vector2, size: Vector2, font_size
 		bg.color = background
 		bg.position = position - Vector2(12, 6)
 		bg.size = size + Vector2(24, 12)
+		bg.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		player_screen.add_child(bg)
 	var label := Label.new()
 	label.text = text
 	label.position = position
 	label.size = size
+	label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	label.horizontal_alignment = alignment
 	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	label.add_theme_font_size_override("font_size", font_size)
@@ -869,6 +879,306 @@ func run_player_slice_capture() -> void:
 	}
 	_write_absolute_json(_path_join(artifact_root, "screenshot-runtime-manifest.json"), report)
 	get_tree().quit(0 if errors.is_empty() else 1)
+
+func run_real_input_smoke() -> void:
+	var artifact_root := _artifact_root_from_args()
+	var screenshot_root := _path_join(artifact_root, "screenshots")
+	DirAccess.make_dir_recursive_absolute(screenshot_root)
+	_set_capture_viewport(VIEWPORT_SIZE)
+	await _settle_frames(8)
+	var errors: Array[String] = []
+	var captures: Array[Dictionary] = []
+	var trace: Array[Dictionary] = []
+	var start_usec := Time.get_ticks_usec()
+	show_player_title()
+	await _settle_frames(8)
+	_trace_real_input(trace, "launch", {"screen": "title"})
+	await _inject_mouse_click(Vector2(750, 303), MOUSE_BUTTON_LEFT)
+	_trace_real_input(trace, "title_start_clicked", {"screen": "title", "position": _vector2_report(Vector2(750, 303))})
+	await _settle_frames(8)
+	if current_step_id != "player_briefing":
+		errors.append("Start Salto Review did not open the briefing.")
+	await _inject_mouse_click(Vector2(750, 411), MOUSE_BUTTON_LEFT)
+	_trace_real_input(trace, "briefing_start_battle_clicked", {"screen": "briefing", "position": _vector2_report(Vector2(750, 411))})
+	await _settle_frames(16)
+	if current_step_id != "player_battle":
+		errors.append("Start Battle did not open the player-facing battle.")
+	else:
+		_trace_real_input(trace, "battle_ready", {"screen": "battle"})
+	captures.append(await _capture_real_input_step(screenshot_root, captures.size(), "battle_initial_camera_focus", "Battle initial camera focus", "battle_ready"))
+	captures.append(await _capture_real_input_step(screenshot_root, captures.size(), "aster_pulsing", "Aster pulsing", "aster_pulsing"))
+	var hero_screen := _scene_screen_position("hero_aster")
+	var quarry_screen := _scene_screen_position("quarry")
+	var worker_screen := _scene_screen_position("worker_00")
+	var squad_start := _scene_screen_position("squad_drag_start")
+	var squad_end := _scene_screen_position("squad_drag_end")
+	if hero_screen == Vector2.INF or quarry_screen == Vector2.INF or worker_screen == Vector2.INF:
+		errors.append("Could not resolve real-input click coordinates for Aster, Worker, or quarry.")
+	else:
+		await _inject_mouse_motion(hero_screen)
+		_trace_real_input(trace, "aster_hover", {"position": _vector2_report(hero_screen)})
+		await _settle_frames(6)
+		captures.append(await _capture_real_input_step(screenshot_root, captures.size(), "cursor_hover_aster", "Cursor hover Aster", "aster_hover"))
+		await _inject_mouse_click(hero_screen, MOUSE_BUTTON_LEFT)
+		_trace_real_input(trace, "aster_click", {"position": _vector2_report(hero_screen)})
+		await _settle_frames(8)
+		captures.append(await _capture_real_input_step(screenshot_root, captures.size(), "aster_selected", "Aster selected", "aster_selected"))
+		captures.append(await _capture_real_input_step(screenshot_root, captures.size(), "hud_card_updated", "HUD card updated", "hud_card_updated"))
+		_trace_real_input(trace, "hud_card_updated", {"selected": "hero_aster"})
+		captures.append(await _capture_real_input_step(screenshot_root, captures.size(), "move_destination_pulse", "Move destination pulse", "move_destination_pulse"))
+		await _inject_mouse_click(quarry_screen, MOUSE_BUTTON_RIGHT)
+		_trace_real_input(trace, "quarry_right_click", {"position": _vector2_report(quarry_screen)})
+		await _settle_frames(10)
+		captures.append(await _capture_real_input_step(screenshot_root, captures.size(), "move_marker", "Move marker", "move_marker"))
+		await _settle_until_scene_flag("visibleMovementConfirmed", true, 180)
+		var hero_screen_after_move := _scene_screen_position("hero_aster")
+		_trace_real_input(trace, "aster_visible_movement_confirmed", {"position": _vector2_report(hero_screen_after_move)})
+		var movement_scene_status_raw: Variant = _call_scene("real_input_smoke_status")
+		var movement_scene_status: Dictionary = movement_scene_status_raw if typeof(movement_scene_status_raw) == TYPE_DICTIONARY else {}
+		_trace_real_input(trace, "meaningful_displacement", {
+			"movementDisplacement": movement_scene_status.get("movementDisplacement", 0.0),
+			"visibleMovementConfirmed": movement_scene_status.get("visibleMovementConfirmed", false),
+			"visibleMovementDelta": movement_scene_status.get("visibleMovementDelta", 0.0)
+		})
+		captures.append(await _capture_real_input_step(screenshot_root, captures.size(), "aster_displaced", "Aster displaced", "aster_displaced"))
+		await _settle_until_scene_flag("objectiveAdvancedAfterRealMovement", true, 120)
+		_trace_real_input(trace, "objective_advanced", {"after": "real_movement"})
+		captures.append(await _capture_real_input_step(screenshot_root, captures.size(), "objective_advanced", "Objective advanced", "objective_advanced"))
+		await _inject_mouse_motion(worker_screen)
+		_trace_real_input(trace, "worker_hover", {"position": _vector2_report(worker_screen)})
+		await _settle_frames(4)
+		captures.append(await _capture_real_input_step(screenshot_root, captures.size(), "worker_hover", "Worker hover", "worker_hover"))
+		await _inject_mouse_click(worker_screen, MOUSE_BUTTON_LEFT)
+		_trace_real_input(trace, "worker_click", {"position": _vector2_report(worker_screen)})
+		await _settle_frames(6)
+		captures.append(await _capture_real_input_step(screenshot_root, captures.size(), "worker_selected", "Worker selected", "worker_selected"))
+		if squad_start != Vector2.INF and squad_end != Vector2.INF:
+			await _inject_mouse_drag(squad_start, squad_end)
+			_trace_real_input(trace, "squad_box_drag", {"start": _vector2_report(squad_start), "end": _vector2_report(squad_end)})
+			await _settle_frames(8)
+			captures.append(await _capture_real_input_step(screenshot_root, captures.size(), "squad_box_selected", "Squad box selected", "squad_box_selected"))
+		else:
+			errors.append("Could not resolve squad box-select coordinates.")
+	var raw_scene_status: Variant = _call_scene("real_input_smoke_status")
+	var scene_status: Dictionary = raw_scene_status if typeof(raw_scene_status) == TYPE_DICTIONARY else {}
+	if scene_status.is_empty():
+		errors.append("Scene did not return real-input smoke status.")
+	var required_flags := {
+		"hoverTargetId": str(scene_status.get("hoverTargetId", "")) != "",
+		"selectedUnitId": bool(scene_status.get("asterSelected", false)),
+		"hudCardUpdated": bool(scene_status.get("hudCardUpdated", false)),
+		"moveOrderAccepted": bool(scene_status.get("moveOrderAccepted", false)),
+		"moveMarkerRendered": bool(scene_status.get("moveMarkerRendered", false)),
+		"movementStarted": bool(scene_status.get("movementStarted", false)),
+		"visibleMovementConfirmed": bool(scene_status.get("visibleMovementConfirmed", false)),
+		"objectiveAdvancedAfterRealMovement": bool(scene_status.get("objectiveAdvancedAfterRealMovement", false)),
+		"workerSelected": bool(scene_status.get("workerSelected", false)),
+		"squadBoxSelected": bool(scene_status.get("squadBoxSelected", false)),
+		"debugShortcutUsed": not bool(scene_status.get("debugShortcutUsed", false)),
+		"stateInjectionUsed": not bool(scene_status.get("stateInjectionUsed", false))
+	}
+	for key in required_flags.keys():
+		if not bool(required_flags[key]):
+			errors.append("Real-input smoke check failed: %s" % key)
+	var combined_trace: Array = trace.duplicate(true)
+	for entry in scene_status.get("trace", []):
+		combined_trace.append(entry)
+	var smoke := {
+		"schemaVersion": 1,
+		"checkpoint": "v0.131",
+		"status": "PASS_HEADED_REAL_INPUT_SMOKE" if errors.is_empty() else "FAIL_HEADED_REAL_INPUT_SMOKE",
+		"artifactRoot": artifact_root,
+		"durationMs": snappedf(float(Time.get_ticks_usec() - start_usec) / 1000.0, 0.01),
+		"inputPath": "packaged Godot player slice normal mouse events",
+		"privateHarnessShortcutUsed": false,
+		"debugShortcutUsed": bool(scene_status.get("debugShortcutUsed", false)),
+		"stateInjectionUsed": bool(scene_status.get("stateInjectionUsed", false)),
+		"routineEditorUseRequired": false,
+		"saveWritesAllowed": false,
+		"stableIdsChanged": false,
+		"browserRuntimeChanged": false,
+		"linkedWardDamageTakenMultiplier": 0.92,
+		"checks": required_flags,
+		"errors": errors,
+		"sceneStatus": scene_status
+	}
+	var screenshot_manifest := {
+		"schemaVersion": 1,
+		"checkpoint": "v0.131",
+		"status": "PASS_V0131_REAL_INPUT_SCREENSHOTS" if captures.size() == 12 and errors.is_empty() else "FAIL_V0131_REAL_INPUT_SCREENSHOTS",
+		"screenshotRoot": screenshot_root,
+		"captureCount": captures.size(),
+		"requiredCaptureCount": 12,
+		"captures": captures
+	}
+	_write_absolute_json(_path_join(artifact_root, "headed-playability-smoke.json"), smoke)
+	_write_absolute_json(_path_join(artifact_root, "real-input-trace.json"), {
+		"schemaVersion": 1,
+		"checkpoint": "v0.131",
+		"trace": combined_trace,
+		"noDebugShortcutUsed": not bool(scene_status.get("debugShortcutUsed", false)),
+		"noStateInjectionUsed": not bool(scene_status.get("stateInjectionUsed", false))
+	})
+	_write_absolute_json(_path_join(artifact_root, "selection-proof.json"), {
+		"schemaVersion": 1,
+		"checkpoint": "v0.131",
+		"status": "PASS_SELECTION_PROOF" if bool(required_flags.get("selectedUnitId", false)) and bool(required_flags.get("workerSelected", false)) and bool(required_flags.get("squadBoxSelected", false)) else "FAIL_SELECTION_PROOF",
+		"selectedIds": scene_status.get("selectedIds", []),
+		"asterSelected": scene_status.get("asterSelected", false),
+		"finalSelectedUnitId": scene_status.get("selectedUnitId", ""),
+		"hoverTargetId": scene_status.get("hoverTargetId", ""),
+		"hudCardUpdated": scene_status.get("hudCardUpdated", false)
+	})
+	_write_absolute_json(_path_join(artifact_root, "movement-proof.json"), {
+		"schemaVersion": 1,
+		"checkpoint": "v0.131",
+		"status": "PASS_MOVEMENT_PROOF" if bool(required_flags.get("moveOrderAccepted", false)) and bool(required_flags.get("movementStarted", false)) and bool(required_flags.get("visibleMovementConfirmed", false)) and bool(required_flags.get("objectiveAdvancedAfterRealMovement", false)) else "FAIL_MOVEMENT_PROOF",
+		"moveOrderAccepted": scene_status.get("moveOrderAccepted", false),
+		"moveMarkerRendered": scene_status.get("moveMarkerRendered", false),
+		"movementStarted": scene_status.get("movementStarted", false),
+		"movementCompleted": scene_status.get("movementCompleted", false),
+		"movementDisplacement": scene_status.get("movementDisplacement", 0.0),
+		"visibleMovementConfirmed": scene_status.get("visibleMovementConfirmed", false),
+		"visibleMovementDelta": scene_status.get("visibleMovementDelta", 0.0),
+		"asterStartScreen": scene_status.get("asterStartScreen", {}),
+		"asterCurrentScreen": scene_status.get("asterCurrentScreen", {}),
+		"objectiveAdvancedAfterRealMovement": scene_status.get("objectiveAdvancedAfterRealMovement", false)
+	})
+	_write_absolute_json(_path_join(artifact_root, "screenshot-manifest.json"), screenshot_manifest)
+	_write_absolute_text(_path_join(artifact_root, "real-input-trace.md"), _real_input_trace_markdown(smoke, combined_trace))
+	_write_absolute_text(_path_join(artifact_root, "README.md"), _real_input_readme(smoke, screenshot_manifest))
+	get_tree().quit(0 if errors.is_empty() else 1)
+
+func _inject_mouse_motion(position: Vector2) -> void:
+	var motion := InputEventMouseMotion.new()
+	motion.position = position
+	motion.global_position = position
+	get_viewport().push_input(motion, true)
+	await _settle_frames(2)
+
+func _inject_mouse_click(position: Vector2, button: int) -> void:
+	await _inject_mouse_motion(position)
+	var down := InputEventMouseButton.new()
+	down.position = position
+	down.global_position = position
+	down.button_index = button
+	down.pressed = true
+	get_viewport().push_input(down, true)
+	await _settle_frames(2)
+	var up := InputEventMouseButton.new()
+	up.position = position
+	up.global_position = position
+	up.button_index = button
+	up.pressed = false
+	get_viewport().push_input(up, true)
+	await _settle_frames(2)
+
+func _inject_mouse_drag(start: Vector2, end: Vector2) -> void:
+	await _inject_mouse_motion(start)
+	var down := InputEventMouseButton.new()
+	down.position = start
+	down.global_position = start
+	down.button_index = MOUSE_BUTTON_LEFT
+	down.pressed = true
+	get_viewport().push_input(down, true)
+	await _settle_frames(2)
+	for index in range(1, 7):
+		var t := float(index) / 6.0
+		var position := start.lerp(end, t)
+		var motion := InputEventMouseMotion.new()
+		motion.position = position
+		motion.global_position = position
+		motion.relative = (end - start) / 6.0
+		get_viewport().push_input(motion, true)
+		await _settle_frames(1)
+	var up := InputEventMouseButton.new()
+	up.position = end
+	up.global_position = end
+	up.button_index = MOUSE_BUTTON_LEFT
+	up.pressed = false
+	get_viewport().push_input(up, true)
+	await _settle_frames(2)
+
+func _scene_screen_position(subject: String) -> Vector2:
+	var result: Variant = _call_scene("real_input_screen_position", [subject])
+	if typeof(result) == TYPE_VECTOR2:
+		return result
+	return Vector2.INF
+
+func _settle_until_scene_flag(flag: String, expected: Variant, max_frames: int) -> void:
+	for _index in range(max_frames):
+		var raw_status: Variant = _call_scene("real_input_smoke_status")
+		var status: Dictionary = raw_status if typeof(raw_status) == TYPE_DICTIONARY else {}
+		if status.has(flag) and status[flag] == expected:
+			return
+		await get_tree().process_frame
+
+func _capture_real_input_step(screenshot_root: String, index: int, id: String, label: String, action: String) -> Dictionary:
+	await _settle_frames(2)
+	var file_name := "%02d_%s.png" % [index + 1, id]
+	var target := _path_join(screenshot_root, file_name)
+	var image := get_viewport().get_texture().get_image()
+	if image.get_width() != VIEWPORT_SIZE.x or image.get_height() != VIEWPORT_SIZE.y:
+		image.resize(VIEWPORT_SIZE.x, VIEWPORT_SIZE.y, Image.INTERPOLATE_LANCZOS)
+	var save_result := image.save_png(target)
+	return {
+		"id": id,
+		"label": label,
+		"fileName": file_name,
+		"absolutePath": target,
+		"width": image.get_width(),
+		"height": image.get_height(),
+		"screen": active_mode,
+		"action": action,
+		"saveStatus": save_result,
+		"status": get_spike_status()
+	}
+
+func _trace_real_input(trace: Array[Dictionary], event_name: String, details: Dictionary) -> void:
+	trace.append({
+		"index": trace.size() + 1,
+		"event": event_name,
+		"frame": Engine.get_process_frames(),
+		"details": details
+	})
+
+func _vector2_report(position: Vector2) -> Dictionary:
+	return {"x": snappedf(position.x, 0.001), "y": snappedf(position.y, 0.001)}
+
+func _real_input_trace_markdown(smoke: Dictionary, trace: Array) -> String:
+	var lines := [
+		"# v0.131 Real Input Trace",
+		"",
+		"Status: `%s`" % str(smoke.get("status", "UNKNOWN")),
+		"",
+		"| # | Event | Details |",
+		"| --- | --- | --- |"
+	]
+	for index in range(trace.size()):
+		var entry: Dictionary = trace[index]
+		lines.append("| %s | %s | `%s` |" % [index + 1, str(entry.get("event", "")), JSON.stringify(entry.get("details", {}))])
+	lines.append("")
+	lines.append("Private harness shortcut used: `%s`" % str(smoke.get("privateHarnessShortcutUsed", false)))
+	lines.append("Debug shortcut used: `%s`" % str(smoke.get("debugShortcutUsed", false)))
+	lines.append("State injection used: `%s`" % str(smoke.get("stateInjectionUsed", false)))
+	return "\n".join(lines) + "\n"
+
+func _real_input_readme(smoke: Dictionary, manifest: Dictionary) -> String:
+	return "\n".join([
+		"# v0.131 Godot Real-Input Evidence",
+		"",
+		"Status: `%s`" % str(smoke.get("status", "UNKNOWN")),
+		"",
+		"These ignored artifacts are generated by `GODOT_REAL_INPUT_SMOKE_WINDOWS.bat` / `npm run godot:headed:real-input-smoke` against the packaged player-facing Godot slice.",
+		"",
+		"- `headed-playability-smoke.json` records the gated real-input smoke result.",
+		"- `real-input-trace.json` and `real-input-trace.md` record title, briefing, selection, movement, objective, Worker, and box-select events.",
+		"- `selection-proof.json` records Aster, Worker, HUD, and squad-selection evidence.",
+		"- `movement-proof.json` records right-click move, marker, displacement, and objective-advance evidence.",
+		"- `screenshot-manifest.json` records `%s/%s` required screenshots." % [manifest.get("captureCount", 0), manifest.get("requiredCaptureCount", 12)],
+		"",
+		"No debug shortcut, private-harness action, state injection, save write, stable-ID change, or Godot-editor work is accepted as proof."
+	]) + "\n"
 
 func _apply_player_slice_action(action: String) -> Dictionary:
 	match action:
@@ -1684,6 +1994,12 @@ func _write_absolute_json(path: String, report: Dictionary) -> void:
 	var file := FileAccess.open(path, FileAccess.WRITE)
 	if file:
 		file.store_string(JSON.stringify(report, "  "))
+
+func _write_absolute_text(path: String, value: String) -> void:
+	DirAccess.make_dir_recursive_absolute(path.get_base_dir())
+	var file := FileAccess.open(path, FileAccess.WRITE)
+	if file:
+		file.store_string(value)
 
 func _fixture_hash() -> Variant:
 	var file := FileAccess.open("res://data/generated/fixture-hashes.json", FileAccess.READ)

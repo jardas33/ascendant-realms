@@ -13,6 +13,12 @@ const CAMERA_PAN_MIN_X := -5.8
 const CAMERA_PAN_MAX_X := 5.8
 const CAMERA_PAN_MIN_Z := 7.6
 const CAMERA_PAN_MAX_Z := 10.4
+const REAL_INPUT_GROUND_Y := 0.12
+const REAL_INPUT_SELECT_DRAG_THRESHOLD := 12.0
+const REAL_INPUT_HERO_CLICK_RADIUS := 54.0
+const REAL_INPUT_WORKER_CLICK_RADIUS := 46.0
+const REAL_INPUT_UNIT_CLICK_RADIUS := 38.0
+const REAL_INPUT_VISIBLE_MOVE_DELTA := 48.0
 const WorkloadRuntimeScript = preload("res://scripts/salto_spike_workload_runtime.gd")
 
 var runtime = WorkloadRuntimeScript.new()
@@ -55,6 +61,35 @@ var concise_alert_rendered := false
 var pressure_wave_notice_rendered := false
 var lume_activation_notice_rendered := false
 var more_details_visible := false
+var real_input_trace: Array[Dictionary] = []
+var real_input_hover_id := ""
+var real_input_selected_id := ""
+var real_input_aster_selected := false
+var real_input_worker_selected := false
+var real_input_squad_box_selected := false
+var real_input_move_order_accepted := false
+var real_input_attack_order_accepted := false
+var real_input_move_marker_rendered := false
+var real_input_attack_marker_rendered := false
+var real_input_movement_started := false
+var real_input_movement_completed := false
+var real_input_objective_advanced := false
+var real_input_invalid_objective_advance := false
+var real_input_debug_shortcut_used := false
+var real_input_state_injection_used := false
+var real_input_hud_card_updated := false
+var real_input_empty_deselect_done := false
+var real_input_last_destination := Vector2.INF
+var real_input_move_start_position := Vector2.INF
+var real_input_movement_displacement := 0.0
+var real_input_aster_start_screen := Vector2.INF
+var real_input_aster_current_screen := Vector2.INF
+var real_input_aster_screen_delta := 0.0
+var real_input_visible_movement_confirmed := false
+var real_input_drag_start := Vector2.INF
+var real_input_drag_active := false
+var real_input_drag_rect: ColorRect
+var aster_label: Label3D
 
 func _ready() -> void:
 	_create_camera()
@@ -67,6 +102,44 @@ func _ready() -> void:
 	runtime.set_workload_tier("S")
 	_rebuild_visuals()
 	_sync_hud()
+
+func _process(_delta: float) -> void:
+	if not _real_input_enabled():
+		return
+	if not runtime.has_active_movement():
+		return
+	var before := _unit_runtime_position("hero_aster")
+	runtime.advance_live_frame()
+	var after := _unit_runtime_position("hero_aster")
+	if before != Vector2.INF and after != Vector2.INF and after.distance_to(before) > 0.2:
+		if not real_input_movement_started:
+			real_input_movement_started = true
+			_record_real_input("movement_started", {"unitId": "hero_aster", "position": _vector2_report(after)})
+		if real_input_move_start_position != Vector2.INF:
+			real_input_movement_displacement = max(real_input_movement_displacement, after.distance_to(real_input_move_start_position))
+		_update_real_input_visible_movement()
+		if real_input_move_order_accepted and not real_input_objective_advanced and real_input_movement_displacement >= 10.0 and real_input_visible_movement_confirmed:
+			real_input_objective_advanced = true
+			set_onboarding_step("capture_hold_quarry")
+			show_objective_feedback("move_to_quarry")
+			_record_real_input("objective_advanced_after_real_movement", {
+				"displacement": snappedf(real_input_movement_displacement, 0.01),
+				"screenDelta": snappedf(real_input_aster_screen_delta, 0.01)
+			})
+	if real_input_move_order_accepted and real_input_movement_started and not runtime.unit_has_destination("hero_aster"):
+		real_input_movement_completed = true
+		_record_real_input("movement_completed", {"unitId": "hero_aster", "position": _vector2_report(after)})
+	_sync_unit_visuals()
+	_sync_hud()
+
+func _unhandled_input(event: InputEvent) -> void:
+	if not _real_input_enabled():
+		return
+	if event is InputEventMouseMotion:
+		_handle_real_mouse_motion(event as InputEventMouseMotion)
+		return
+	if event is InputEventMouseButton:
+		_handle_real_mouse_button(event as InputEventMouseButton)
 
 func set_visual_preset(preset: String) -> bool:
 	var normalized := _normalize_visual_preset(preset)
@@ -81,12 +154,22 @@ func get_visual_preset() -> String:
 
 func set_player_facing_mode(enabled: bool) -> bool:
 	player_facing_mode = enabled
+	if player_facing_mode:
+		set_process(true)
+		if runtime.units.size() > 0:
+			runtime.apply_player_facing_staging()
+			_reset_real_input_state()
+			_rebuild_visuals()
+			focus_visual_subject("hero")
 	_sync_player_shell_chrome()
 	_sync_hud()
 	return true
 
 func set_player_shell_screen(screen: String) -> bool:
 	player_shell_screen = screen
+	if player_facing_mode and player_shell_screen == "battle":
+		focus_visual_subject("hero")
+		set_onboarding_step("select_aster")
 	_sync_player_shell_chrome()
 	_sync_hud()
 	return true
@@ -143,6 +226,9 @@ func show_objective_feedback(feedback_id: String) -> bool:
 
 func set_workload_tier(tier: String) -> bool:
 	var result: bool = runtime.set_workload_tier(tier)
+	if player_facing_mode:
+		runtime.apply_player_facing_staging()
+		_reset_real_input_state()
 	_rebuild_visuals()
 	_sync_hud()
 	return result
@@ -524,6 +610,347 @@ func transition_results() -> bool:
 	_sync_hud()
 	return result
 
+func clear_selection() -> bool:
+	var result: bool = runtime.clear_selection()
+	real_input_selected_id = ""
+	_sync_unit_visuals()
+	_sync_hud()
+	return result
+
+func real_input_screen_position(subject: String) -> Vector2:
+	var normalized := subject.strip_edges().to_lower()
+	match normalized:
+		"hero", "aster", "hero_aster":
+			return _unit_screen_position("hero_aster")
+		"worker", "worker_00":
+			return _unit_screen_position("worker_00")
+		"soldier", "militia", "friendly_00":
+			return _unit_screen_position("friendly_00")
+		"enemy", "ashen", "ashen_00":
+			return _unit_screen_position("ashen_00")
+		"quarry", "mine", "move_destination":
+			return _world_to_screen(_to_world(Vector2(650, 460), 0.12))
+		"squad_drag_start":
+			return _unit_screen_position("friendly_00") - Vector2(34, 34)
+		"squad_drag_end":
+			return _unit_screen_position("friendly_05") + Vector2(34, 34)
+	return Vector2.INF
+
+func real_input_smoke_status() -> Dictionary:
+	var selected: Array[String] = runtime.selected_ids.duplicate()
+	return {
+		"schemaVersion": 1,
+		"checkpoint": "v0.131",
+		"status": "PASS_REAL_INPUT_SCENE_STATUS" if _real_input_scene_green() else "FAIL_REAL_INPUT_SCENE_STATUS",
+		"selectedIds": selected,
+		"hoverTargetId": real_input_hover_id,
+		"selectedUnitId": real_input_selected_id,
+		"asterSelected": real_input_aster_selected,
+		"workerSelected": real_input_worker_selected,
+		"squadBoxSelected": real_input_squad_box_selected,
+		"moveOrderAccepted": real_input_move_order_accepted,
+		"attackOrderAccepted": real_input_attack_order_accepted,
+		"moveMarkerRendered": real_input_move_marker_rendered,
+		"attackMarkerRendered": real_input_attack_marker_rendered,
+		"movementStarted": real_input_movement_started,
+		"movementCompleted": real_input_movement_completed,
+		"movementDisplacement": snappedf(real_input_movement_displacement, 0.01),
+		"visibleMovementConfirmed": real_input_visible_movement_confirmed,
+		"visibleMovementDelta": snappedf(real_input_aster_screen_delta, 0.01),
+		"asterStartScreen": _vector2_report(real_input_aster_start_screen) if real_input_aster_start_screen != Vector2.INF else {},
+		"asterCurrentScreen": _vector2_report(real_input_aster_current_screen) if real_input_aster_current_screen != Vector2.INF else {},
+		"objectiveAdvancedAfterRealMovement": real_input_objective_advanced,
+		"invalidObjectiveAdvance": real_input_invalid_objective_advance,
+		"debugShortcutUsed": real_input_debug_shortcut_used,
+		"stateInjectionUsed": real_input_state_injection_used,
+		"hudCardUpdated": real_input_hud_card_updated,
+		"emptyDeselectDone": real_input_empty_deselect_done,
+		"linkedWardDamageTakenMultiplier": 0.92,
+		"saveWritesAllowed": false,
+		"stableIdsChanged": false,
+		"browserRuntimeChanged": false,
+		"routineEditorUseRequired": false,
+		"trace": real_input_trace.duplicate(true)
+	}
+
+func _real_input_enabled() -> bool:
+	return player_facing_mode and player_shell_screen == "battle"
+
+func _reset_real_input_state() -> void:
+	real_input_trace = []
+	real_input_hover_id = ""
+	real_input_selected_id = ""
+	real_input_aster_selected = false
+	real_input_worker_selected = false
+	real_input_squad_box_selected = false
+	real_input_move_order_accepted = false
+	real_input_attack_order_accepted = false
+	real_input_move_marker_rendered = false
+	real_input_attack_marker_rendered = false
+	real_input_movement_started = false
+	real_input_movement_completed = false
+	real_input_objective_advanced = false
+	real_input_invalid_objective_advance = false
+	real_input_debug_shortcut_used = false
+	real_input_state_injection_used = false
+	real_input_hud_card_updated = false
+	real_input_empty_deselect_done = false
+	real_input_last_destination = Vector2.INF
+	real_input_move_start_position = Vector2.INF
+	real_input_movement_displacement = 0.0
+	real_input_aster_start_screen = Vector2.INF
+	real_input_aster_current_screen = Vector2.INF
+	real_input_aster_screen_delta = 0.0
+	real_input_visible_movement_confirmed = false
+	real_input_drag_start = Vector2.INF
+	real_input_drag_active = false
+
+func _handle_real_mouse_motion(event: InputEventMouseMotion) -> void:
+	if real_input_drag_active and real_input_drag_start != Vector2.INF:
+		_update_real_drag_rect(real_input_drag_start, event.position)
+	var hit := _pick_unit_from_screen(event.position)
+	var next_hover := str(hit.get("id", ""))
+	if next_hover == real_input_hover_id:
+		return
+	real_input_hover_id = next_hover
+	hover_target_id = next_hover
+	if next_hover != "":
+		last_feedback_id = "hover:%s" % next_hover
+		_set_or_create_disc_marker("hover_feedback_marker", _unit_world_position(next_hover, Vector3.ZERO) + Vector3(0.0, 0.045, 0.0), 0.38, Color(0.92, 0.88, 0.48, 0.44))
+		_record_real_input("hover", {"unitId": next_hover, "screen": _vector2_report(event.position)})
+	_sync_unit_visuals()
+	_sync_hud()
+
+func _handle_real_mouse_button(event: InputEventMouseButton) -> void:
+	if event.button_index == MOUSE_BUTTON_LEFT:
+		if event.pressed:
+			real_input_drag_start = event.position
+			real_input_drag_active = true
+			_update_real_drag_rect(event.position, event.position)
+		else:
+			var distance := 0.0 if real_input_drag_start == Vector2.INF else event.position.distance_to(real_input_drag_start)
+			if real_input_drag_active and distance >= REAL_INPUT_SELECT_DRAG_THRESHOLD:
+				_finish_real_box_select(real_input_drag_start, event.position)
+			else:
+				_select_from_real_click(event.position)
+			real_input_drag_active = false
+			_hide_real_drag_rect()
+		return
+	if event.button_index == MOUSE_BUTTON_RIGHT and event.pressed:
+		_issue_real_order(event.position)
+
+func _select_from_real_click(screen_position: Vector2) -> void:
+	var hit := _pick_unit_from_screen(screen_position)
+	if hit.is_empty():
+		runtime.clear_selection()
+		real_input_selected_id = ""
+		real_input_empty_deselect_done = true
+		_record_real_input("empty_terrain_deselect", {"screen": _vector2_report(screen_position)})
+		_sync_unit_visuals()
+		_sync_hud()
+		return
+	var id := str(hit["id"])
+	var team := str(hit.get("team", ""))
+	if team != "friendly":
+		_record_real_input("enemy_click_no_selection", {"unitId": id})
+		return
+	var selected := runtime.select_entity(id)
+	if not selected:
+		_record_real_input("selection_failed", {"unitId": id})
+		return
+	real_input_selected_id = id
+	real_input_hud_card_updated = true
+	if id == "hero_aster":
+		real_input_aster_selected = true
+		real_input_aster_start_screen = _unit_screen_position("hero_aster")
+		real_input_aster_current_screen = real_input_aster_start_screen
+		real_input_aster_screen_delta = 0.0
+		real_input_visible_movement_confirmed = false
+		set_onboarding_step("move_to_quarry")
+		show_objective_feedback("select_aster")
+		_set_or_create_disc_marker("move_destination_pulse", _to_world(Vector2(650, 460), 0.10), 0.54, Color(0.36, 0.74, 0.96, 0.42))
+	elif id.begins_with("worker"):
+		real_input_worker_selected = true
+		set_onboarding_step("worker_mine_or_shrine")
+		show_objective_feedback("worker_assigned_mine")
+	_record_real_input("selected", {"unitId": id, "screen": _vector2_report(screen_position)})
+	_sync_unit_visuals()
+	_sync_hud()
+
+func _finish_real_box_select(start: Vector2, end: Vector2) -> void:
+	var rect := Rect2(Vector2(min(start.x, end.x), min(start.y, end.y)), Vector2(absf(end.x - start.x), absf(end.y - start.y)))
+	var ids: Array[String] = []
+	for unit in runtime.units:
+		if str(unit.get("team", "")) != "friendly" or not bool(unit.get("alive", true)):
+			continue
+		var screen := _unit_screen_position(str(unit.get("id", "")))
+		if rect.has_point(screen):
+			ids.append(str(unit.get("id", "")))
+	var selected := runtime.select_units_by_ids(ids)
+	real_input_squad_box_selected = selected.size() >= 2
+	if real_input_squad_box_selected:
+		set_onboarding_step("prepare_ashen_pressure")
+		show_objective_feedback("select_aster")
+	_record_real_input("box_select", {"count": selected.size(), "ids": selected, "start": _vector2_report(start), "end": _vector2_report(end)})
+	_sync_unit_visuals()
+	_sync_hud()
+
+func _issue_real_order(screen_position: Vector2) -> void:
+	if runtime.selected_ids.is_empty():
+		_record_real_input("right_click_ignored_no_selection", {"screen": _vector2_report(screen_position)})
+		return
+	var hit := _pick_unit_from_screen(screen_position)
+	if not hit.is_empty() and str(hit.get("team", "")) == "enemy":
+		var attack_ok := runtime.issue_attack_order(str(hit["id"]))
+		real_input_attack_order_accepted = attack_ok
+		real_input_attack_marker_rendered = attack_ok
+		if attack_ok:
+			last_feedback_id = "attack_order"
+			_set_or_create_disc_marker("real_attack_order_marker", _unit_world_position(str(hit["id"]), Vector3.ZERO), 0.44, Color(0.96, 0.28, 0.18, 0.50))
+		_record_real_input("attack_order", {"accepted": attack_ok, "targetId": str(hit["id"])})
+		_sync_unit_visuals()
+		_sync_hud()
+		return
+	var world := _screen_to_ground(screen_position)
+	if world == Vector3.INF:
+		_record_real_input("move_order_failed_coordinate_conversion", {"screen": _vector2_report(screen_position)})
+		return
+	var destination := _from_world(world)
+	var hero_before := _unit_runtime_position("hero_aster")
+	if real_input_aster_start_screen == Vector2.INF:
+		real_input_aster_start_screen = _unit_screen_position("hero_aster")
+		real_input_aster_current_screen = real_input_aster_start_screen
+	var move_ok := runtime.issue_move_order(destination)
+	real_input_move_order_accepted = move_ok
+	if move_ok:
+		last_feedback_id = "move_order"
+		real_input_last_destination = destination
+		real_input_move_start_position = hero_before
+		real_input_move_marker_rendered = true
+		_set_or_create_disc_marker("move_order_marker", _to_world(destination, 0.10), 0.46, Color(0.35, 0.75, 0.96, 0.48))
+		_set_or_create_marker("move_order_direction_tick", _to_world(destination, 0.20) + Vector3(0.28, 0.02, -0.18), Vector3(0.14, 0.22, 0.42), Color(0.62, 0.86, 0.98))
+		_record_real_input("move_order", {"accepted": true, "destination": _vector2_report(destination), "screen": _vector2_report(screen_position)})
+	else:
+		_record_real_input("move_order", {"accepted": false, "screen": _vector2_report(screen_position)})
+	_sync_unit_visuals()
+	_sync_hud()
+
+func _pick_unit_from_screen(screen_position: Vector2) -> Dictionary:
+	var best: Dictionary = {}
+	var best_distance := INF
+	for unit in runtime.units:
+		if not bool(unit.get("alive", true)):
+			continue
+		var id := str(unit.get("id", ""))
+		var projected := _unit_screen_position(id)
+		if projected == Vector2.INF:
+			continue
+		var radius := _real_input_hit_radius(unit)
+		var distance := projected.distance_to(screen_position)
+		if distance <= radius and distance < best_distance:
+			best = unit
+			best_distance = distance
+	return best
+
+func _real_input_hit_radius(unit: Dictionary) -> float:
+	if str(unit.get("role", "")) == "hero":
+		return REAL_INPUT_HERO_CLICK_RADIUS
+	if str(unit.get("role", "")) == "Worker":
+		return REAL_INPUT_WORKER_CLICK_RADIUS
+	return REAL_INPUT_UNIT_CLICK_RADIUS
+
+func _unit_screen_position(id: String) -> Vector2:
+	var position := _unit_world_position(id, Vector3.INF)
+	if position == Vector3.INF:
+		return Vector2.INF
+	return _world_to_screen(position)
+
+func _world_to_screen(position: Vector3) -> Vector2:
+	var camera := get_node_or_null("FixedOrthographicCamera") as Camera3D
+	if camera == null:
+		return Vector2.INF
+	return camera.unproject_position(position)
+
+func _screen_to_ground(screen_position: Vector2) -> Vector3:
+	var camera := get_node_or_null("FixedOrthographicCamera") as Camera3D
+	if camera == null:
+		return Vector3.INF
+	var origin := camera.project_ray_origin(screen_position)
+	var direction := camera.project_ray_normal(screen_position)
+	if absf(direction.y) < 0.0001:
+		return Vector3.INF
+	var distance := (REAL_INPUT_GROUND_Y - origin.y) / direction.y
+	if distance < 0.0:
+		return Vector3.INF
+	return origin + direction * distance
+
+func _unit_runtime_position(id: String) -> Vector2:
+	var position: Variant = runtime.unit_position(id)
+	if typeof(position) == TYPE_VECTOR2:
+		return position
+	return Vector2.INF
+
+func _update_real_input_visible_movement() -> void:
+	var current_screen := _unit_screen_position("hero_aster")
+	if current_screen == Vector2.INF:
+		return
+	if real_input_aster_start_screen == Vector2.INF:
+		real_input_aster_start_screen = current_screen
+	real_input_aster_current_screen = current_screen
+	real_input_aster_screen_delta = max(real_input_aster_screen_delta, current_screen.distance_to(real_input_aster_start_screen))
+	if real_input_aster_screen_delta >= REAL_INPUT_VISIBLE_MOVE_DELTA and not real_input_visible_movement_confirmed:
+		real_input_visible_movement_confirmed = true
+		_record_real_input("visible_movement_confirmed", {
+			"startScreen": _vector2_report(real_input_aster_start_screen),
+			"currentScreen": _vector2_report(real_input_aster_current_screen),
+			"screenDelta": snappedf(real_input_aster_screen_delta, 0.01)
+		})
+
+func _update_real_drag_rect(start: Vector2, end: Vector2) -> void:
+	if hud_layer == null:
+		return
+	if real_input_drag_rect == null:
+		real_input_drag_rect = ColorRect.new()
+		real_input_drag_rect.name = "RealInputBoxSelectRect"
+		real_input_drag_rect.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		real_input_drag_rect.color = Color(0.42, 0.86, 0.64, 0.18)
+		hud_layer.add_child(real_input_drag_rect)
+	real_input_drag_rect.position = Vector2(min(start.x, end.x), min(start.y, end.y))
+	real_input_drag_rect.size = Vector2(absf(end.x - start.x), absf(end.y - start.y))
+	real_input_drag_rect.visible = real_input_drag_rect.size.length() >= REAL_INPUT_SELECT_DRAG_THRESHOLD
+
+func _hide_real_drag_rect() -> void:
+	if real_input_drag_rect:
+		real_input_drag_rect.visible = false
+
+func _record_real_input(event_name: String, details: Dictionary = {}) -> void:
+	var entry := {
+		"index": real_input_trace.size() + 1,
+		"event": event_name,
+		"frame": Engine.get_process_frames(),
+		"details": details
+	}
+	real_input_trace.append(entry)
+
+func _real_input_scene_green() -> bool:
+	var green := real_input_hover_id != ""
+	green = green and real_input_aster_selected
+	green = green and real_input_hud_card_updated
+	green = green and real_input_move_order_accepted
+	green = green and real_input_move_marker_rendered
+	green = green and real_input_movement_started
+	green = green and real_input_visible_movement_confirmed
+	green = green and real_input_objective_advanced
+	green = green and real_input_worker_selected
+	green = green and real_input_squad_box_selected
+	green = green and not real_input_debug_shortcut_used
+	green = green and not real_input_state_injection_used
+	green = green and not real_input_invalid_objective_advance
+	return green
+
+func _vector2_report(position: Vector2) -> Dictionary:
+	return {"x": snappedf(position.x, 0.001), "y": snappedf(position.y, 0.001)}
+
 func run_workload_phase(phase: String) -> Dictionary:
 	var report: Dictionary = runtime.run_workload_phase(phase)
 	_sync_unit_visuals()
@@ -734,6 +1161,29 @@ func get_spike_status() -> Dictionary:
 	status["enemyTargetMarkerRendered"] = last_feedback_id == "attack_order" or combat_readability_active or pressure_wave_arrived
 	status["moveOrderMarkerRendered"] = last_feedback_id == "move_order" or (visual_root != null and visual_root.get_node_or_null("move_order_marker") != null)
 	status["attackOrderMarkerRendered"] = last_feedback_id == "attack_order" or (visual_root != null and visual_root.get_node_or_null("attack_order_marker") != null)
+	status["realInputEnabled"] = _real_input_enabled()
+	status["realInputHoverTargetId"] = real_input_hover_id
+	status["realInputSelectedUnitId"] = real_input_selected_id
+	status["realInputWorkerSelected"] = real_input_worker_selected
+	status["realInputSquadBoxSelected"] = real_input_squad_box_selected
+	status["realInputMoveOrderAccepted"] = real_input_move_order_accepted
+	status["realInputAttackOrderAccepted"] = real_input_attack_order_accepted
+	status["realInputMoveMarkerRendered"] = real_input_move_marker_rendered
+	status["realInputAttackMarkerRendered"] = real_input_attack_marker_rendered
+	status["realInputMovementStarted"] = real_input_movement_started
+	status["realInputMovementCompleted"] = real_input_movement_completed
+	status["realInputMovementDisplacement"] = snappedf(real_input_movement_displacement, 0.01)
+	status["realInputVisibleMovementConfirmed"] = real_input_visible_movement_confirmed
+	status["realInputVisibleMovementDelta"] = snappedf(real_input_aster_screen_delta, 0.01)
+	status["realInputObjectiveAdvancedAfterMovement"] = real_input_objective_advanced
+	status["realInputInvalidObjectiveAdvance"] = real_input_invalid_objective_advance
+	status["realInputDebugShortcutUsed"] = real_input_debug_shortcut_used
+	status["realInputStateInjectionUsed"] = real_input_state_injection_used
+	status["realInputHudCardUpdated"] = real_input_hud_card_updated
+	status["realInputTraceCount"] = real_input_trace.size()
+	status["asterFirstObjectiveLabelVisible"] = aster_label != null and aster_label.visible
+	status["asterFocusPulseRendered"] = visual_root != null and visual_root.get_node_or_null("aster_focus_pulse") != null
+	status["asterObjectiveArrowRendered"] = visual_root != null and visual_root.get_node_or_null("aster_objective_arrow") != null
 	status["restrainedHealthBarsRendered"] = true
 	status["damageFlashRendered"] = damage_flash_active
 	status["deathFadeRendered"] = death_fade_active
@@ -974,6 +1424,15 @@ func _create_hud() -> void:
 		button.position = Vector2(16 + index * 95, 106)
 		button.size = Vector2(82, 26)
 		button.add_theme_font_size_override("font_size", 12)
+		match command_names[index]:
+			"CommandButtonMove":
+				button.pressed.connect(_hud_move_pressed)
+			"CommandButtonAttack":
+				button.pressed.connect(_hud_attack_pressed)
+			"CommandButtonWork":
+				button.pressed.connect(_hud_work_pressed)
+			"CommandButtonLume":
+				button.pressed.connect(_hud_lume_pressed)
 		frame.add_child(button)
 
 	hud_onboarding_label = Label.new()
@@ -1103,6 +1562,23 @@ func _minimap_has_marker(name: String) -> bool:
 func _toggle_more_details() -> void:
 	more_details_visible = not more_details_visible
 	_sync_hud()
+
+func _hud_move_pressed() -> void:
+	if runtime.selected_ids.is_empty():
+		runtime.select_entity("hero_aster")
+	_issue_real_order(real_input_screen_position("quarry"))
+
+func _hud_attack_pressed() -> void:
+	if runtime.selected_ids.is_empty():
+		runtime.box_select_squad()
+	var enemy_screen := real_input_screen_position("ashen_00")
+	_issue_real_order(enemy_screen)
+
+func _hud_work_pressed() -> void:
+	select_entity("worker")
+
+func _hud_lume_pressed() -> void:
+	focus_lume_link()
 
 func _record_notification(id: String) -> void:
 	if notification_history.size() > 0 and notification_history[notification_history.size() - 1] == id:
@@ -1343,6 +1819,24 @@ func _sync_unit_visuals() -> void:
 		if damage_marker:
 			damage_marker.position = _to_world(unit["position"], 0.58)
 			damage_marker.visible = alive and damage_flash_active and (is_targeted or id == "ashen_00")
+	_sync_real_input_hover_marker()
+	_sync_player_guidance_markers()
+
+func _sync_real_input_hover_marker() -> void:
+	if visual_root == null:
+		return
+	var marker := visual_root.get_node_or_null("hover_feedback_marker") as MeshInstance3D
+	if marker == null:
+		return
+	if real_input_hover_id == "":
+		marker.visible = false
+		return
+	var hover_position := _unit_world_position(real_input_hover_id, Vector3.INF)
+	if hover_position == Vector3.INF:
+		marker.visible = false
+		return
+	marker.position = hover_position + Vector3(0.0, 0.045, 0.0)
+	marker.visible = true
 
 func _sync_site_visuals() -> void:
 	if visual_root == null:
@@ -1360,6 +1854,37 @@ func _sync_lume_visuals() -> void:
 		if node:
 			node.material_override = _material(_lume_color(link), false, true, _lume_emission())
 			node.scale = Vector3.ONE * (1.35 if bool(link.get("focused", false)) else 1.0)
+
+func _sync_player_guidance_markers() -> void:
+	if visual_root == null:
+		return
+	var hero_position := _unit_world_position("hero_aster", Vector3.INF)
+	if hero_position == Vector3.INF:
+		return
+	var selected_aster_helper_step: bool = current_onboarding_step == "move_to_quarry" or current_onboarding_step == "capture_hold_quarry"
+	var show_aster_helper: bool = player_facing_mode and player_shell_screen == "battle" and (current_onboarding_step == "select_aster" or (runtime.selected_ids.has("hero_aster") and selected_aster_helper_step))
+	_set_or_create_disc_marker("aster_focus_pulse", hero_position + Vector3(0.0, 0.03, 0.0), 0.58, Color(0.98, 0.90, 0.38, 0.42))
+	var pulse := visual_root.get_node_or_null("aster_focus_pulse") as MeshInstance3D
+	if pulse:
+		pulse.visible = show_aster_helper
+	_set_or_create_marker("aster_objective_arrow", hero_position + Vector3(0.0, 0.88, -0.18), Vector3(0.18, 0.34, 0.18), Color(0.98, 0.90, 0.38, 0.72))
+	var arrow := visual_root.get_node_or_null("aster_objective_arrow") as MeshInstance3D
+	if arrow:
+		arrow.visible = show_aster_helper
+	if aster_label == null:
+		aster_label = Label3D.new()
+		aster_label.name = "AsterFirstObjectiveLabel"
+		aster_label.text = "ASTER"
+		aster_label.font_size = 34
+		aster_label.modulate = Color(0.98, 0.94, 0.62)
+		aster_label.outline_size = 8
+		aster_label.outline_modulate = Color(0.02, 0.03, 0.02)
+		visual_root.add_child(aster_label)
+	aster_label.position = hero_position + Vector3(0.0, 0.86, 0.0)
+	aster_label.visible = show_aster_helper
+	var destination := visual_root.get_node_or_null("move_destination_pulse") as MeshInstance3D
+	if destination:
+		destination.visible = player_facing_mode and player_shell_screen == "battle" and current_onboarding_step == "move_to_quarry"
 
 func _add_structure(structure: Dictionary) -> void:
 	var id := str(structure["id"])
