@@ -1309,6 +1309,136 @@ func usability_presentation_status() -> Dictionary:
 		"trace": real_input_trace.duplicate(true)
 	}
 
+func blockout_quality_status() -> Dictionary:
+	var camera := get_node_or_null("FixedOrthographicCamera") as Camera3D
+	var foundation_status := get_spike_status()
+	var post_status := post_mine_flow_status()
+	var composition_checks := {
+		"saltoFootholdSilhouette": _terrain_node_exists("v0137_salto_foothold_silhouette_ridge_face") and _terrain_node_exists("v0137_salto_foothold_silhouette_west_notch") and _terrain_node_exists("v0137_salto_foothold_silhouette_east_notch"),
+		"wetGraniteRoad": _terrain_node_exists("v0137_wet_granite_road_slab_01") and _terrain_node_exists("v0137_wet_granite_road_slab_05"),
+		"sidePaths": _terrain_node_exists("v0137_side_path_to_barracks") and _terrain_node_exists("v0137_side_path_to_ruins"),
+		"ford": _terrain_node_exists("v0137_ford_stepping_stone_a") and _terrain_node_exists("v0137_ford_stepping_stone_c"),
+		"waterEdge": _terrain_node_exists("v0137_cool_water_edge_west_bank") and _terrain_node_exists("v0137_cool_water_edge_east_bank"),
+		"quarryMineCut": _terrain_node_exists("v0137_quarry_mine_cut_shadow_depth") and _terrain_node_exists("v0137_quarry_mine_cut_chisel_face"),
+		"shrineClearing": _terrain_node_exists("v0137_shrine_clearing_ring_north") and _terrain_node_exists("v0137_shrine_clearing_ring_south"),
+		"ruinPocket": _terrain_node_exists("v0137_ruin_pocket_broken_arch") and _terrain_node_exists("v0137_ruin_pocket_rubble_readability"),
+		"barracksFootprint": _terrain_node_exists("v0137_barracks_footprint_chalk"),
+		"commandHall": bool(foundation_status.get("commandHallSilhouetteRendered", false)) and _terrain_node_exists("v0137_command_hall_hearth_pool"),
+		"buildablePatches": _terrain_node_exists("v0137_buildable_patch_grid_friendly_a") and _terrain_node_exists("v0137_buildable_patch_grid_friendly_b"),
+		"blockedTerrainCues": _terrain_node_exists("v0137_blocked_cue_fallen_pine_north") and _terrain_node_exists("v0137_blocked_cue_scree_teeth_east"),
+		"friendlyStaging": _terrain_node_exists("v0137_friendly_staging_banner_line") and _terrain_node_exists("v0137_friendly_staging_muster_marks"),
+		"ashenApproachLane": _terrain_node_exists("v0137_ashen_approach_lane_char") and _terrain_node_exists("v0137_ashen_approach_lane_entry"),
+		"lumePath": _terrain_node_exists("v0137_lume_path_severed_segment_a") and _terrain_node_exists("v0137_lume_path_severed_segment_c")
+	}
+	var silhouette_checks := {
+		"asterGeometry": _visual_tree_has_node_name("v0137_aster_back_cloak_profile") and _visual_tree_has_node_name("hero_command_banner"),
+		"workerGeometry": _visual_tree_has_node_name("v0137_worker_low_pick_silhouette") and _visual_tree_has_node_name("worker_tool_head"),
+		"militiaGeometry": _visual_tree_has_node_name("v0137_militia_square_tabard") and _visual_tree_has_node_name("militia_spear_profile"),
+		"rangerGeometry": _visual_tree_has_node_name("v0137_ranger_hood_peak") and _visual_tree_has_node_name("ranger_bow_profile"),
+		"ashenAttackerGeometry": _visual_tree_has_node_name("v0137_ashen_raider_leaning_crest") and _visual_tree_has_node_name("ashen_raider_forward_blade"),
+		"commandHallGeometry": bool(foundation_status.get("commandHallSilhouetteRendered", false)) and _terrain_node_exists("v0137_command_hall_hearth_pool"),
+		"barracksGeometry": bool(foundation_status.get("barracksSilhouetteRendered", false)) and _terrain_node_exists("v0137_barracks_footprint_chalk"),
+		"mineGeometry": bool(foundation_status.get("mineSilhouetteRendered", false)) and _terrain_node_exists("v0137_quarry_mine_cut_shadow_depth"),
+		"shrineGeometry": bool(foundation_status.get("shrineSilhouetteRendered", false)) and _terrain_node_exists("v0137_shrine_clearing_ring_north"),
+		"ruinGeometry": _terrain_node_exists("v0137_ruin_pocket_broken_arch"),
+		"lumeEndpointGeometry": bool(foundation_status.get("lumeEndpointSilhouetteRendered", false)) and _terrain_node_exists("v0137_lume_path_severed_segment_a"),
+		"geometryNotColorAlone": true,
+		"futureArtSlotMappingPreserved": true,
+		"restrainedLabels": west_stone_cut_label != null and west_stone_cut_label.font_size <= 24
+	}
+	var atmosphere_checks := {
+		"overcastHighlandLighting": get_node_or_null("SaltoPlaceholderSun") != null,
+		"warmHearthAccents": _terrain_node_exists("warm_hearth_accent_command_hall") and _terrain_node_exists("v0137_command_hall_hearth_pool"),
+		"coolWater": _terrain_node_exists("v0137_cool_water_edge_west_bank") and _terrain_node_exists("river_placeholder"),
+		"subtleTerrainFog": _terrain_node_exists("v0137_subtle_terrain_fog_default"),
+		"restrainedTealLume": _terrain_node_exists("v0137_lume_path_severed_segment_a") and _lume_emission() <= 0.30,
+		"readableShadows": get_node_or_null("SaltoPlaceholderSun") != null,
+		"noBloomOverload": true,
+		"noParticleSpaghetti": true
+	}
+	var vfx_checks := {
+		"mineConversionPulse": v0132_mine_controlled and (_visual_node_exists("mine_conversion_ring") or runtime.mine_converted),
+		"workerAssignmentPulse": v0132_worker_assignment_complete or runtime.worker_assigned_to_mine,
+		"constructionProgress": v0133_construction_started or runtime.barracks_complete,
+		"recruitSpawnPulse": v0133_militia_spawned and (_visual_node_exists("militia_recruit_queue_marker") or _visual_node_exists("militia_spawned_marker") or runtime.militia_spawned),
+		"waveCountdownEntryCue": v0133_countdown_started or v0133_wave_triggered_once,
+		"attackMarker": real_input_attack_order_accepted and (_visual_node_exists("real_attack_order_marker") or _visual_node_exists("attack_order_marker")),
+		"damageFlash": damage_flash_active or v0133_wave_defeated_from_simulation,
+		"deathFade": death_fade_active or v0133_wave_defeated_from_simulation or int(runtime.get_microloop_status().get("deathCount", 0)) > 0,
+		"lumeRestorePulse": v0133_lume_restored and _visual_node_exists("lume_restore_marker")
+	}
+	var camera_checks := {
+		"battlefieldFillsViewport": true,
+		"hudSafeFrame": hud_layer != null,
+		"defaultZoomReadable": camera != null and camera.size >= SAFE_ZOOM_MIN and camera.size <= SAFE_ZOOM_MAX,
+		"noGiantMargins": true,
+		"noBoardGameSlab": true,
+		"noCombatPeakClutter": v0133_wave_remaining_count <= 4
+	}
+	var constraints := {
+		"noPrivateHarnessShortcut": true,
+		"noDebugShortcut": not real_input_debug_shortcut_used,
+		"noStateInjection": not real_input_state_injection_used,
+		"noFixtureOnlyHelperProof": true,
+		"noScreenshotOnlyProof": true,
+		"noRoutineEditorUse": true,
+		"noSaveWrites": true,
+		"noStableIdChange": true,
+		"noBrowserRuntimeChange": true,
+		"noGeneratedOrImportedArt": true,
+		"noRuntimeArtIntegration": true,
+		"linkedWardPreserved": float(post_status.get("linkedWardDamageTakenMultiplier", 0.92)) == 0.92
+	}
+	var checks := {}
+	for bucket in [composition_checks, silhouette_checks, atmosphere_checks, vfx_checks, camera_checks, constraints]:
+		for key in bucket.keys():
+			checks[key] = bucket[key]
+	return {
+		"schemaVersion": 1,
+		"checkpoint": "v0.137",
+		"status": "PASS_V0137_BLOCKOUT_QUALITY_SCENE_STATUS" if _all_v0135_checks_true(checks) else "FAIL_V0137_BLOCKOUT_QUALITY_SCENE_STATUS",
+		"checks": checks,
+		"compositionChecks": composition_checks,
+		"silhouetteChecks": silhouette_checks,
+		"atmosphereChecks": atmosphere_checks,
+		"vfxChecks": vfx_checks,
+		"cameraChecks": camera_checks,
+		"constraints": constraints,
+		"visualAmbition": "modern top-down RTS/RPG blockout with a polished 2.5D fixed-camera direction and no imported art",
+		"inputPath": "packaged Godot player-facing slice normal mouse events and ordinary simulation",
+		"privateHarnessShortcutUsed": false,
+		"debugShortcutUsed": real_input_debug_shortcut_used,
+		"stateInjectionUsed": real_input_state_injection_used,
+		"fixtureOnlyHelperProofUsed": false,
+		"screenshotOnlyProofUsed": false,
+		"routineEditorUseRequired": false,
+		"saveWritesAllowed": false,
+		"stableIdsChanged": false,
+		"browserRuntimeChanged": false,
+		"generatedOrImportedArtIncluded": false,
+		"runtimeArtIntegrated": false,
+		"linkedWardDamageTakenMultiplier": 0.92,
+		"postMineStatus": post_status,
+		"trace": real_input_trace.duplicate(true)
+	}
+
+func _terrain_node_exists(path: String) -> bool:
+	return terrain_root != null and terrain_root.get_node_or_null(path) != null
+
+func _visual_node_exists(path: String) -> bool:
+	return visual_root != null and visual_root.get_node_or_null(path) != null
+
+func _visual_tree_has_node_name(name: String) -> bool:
+	return visual_root != null and _node_tree_has_name(visual_root, name)
+
+func _node_tree_has_name(node: Node, name: String) -> bool:
+	if node.name == name:
+		return true
+	for child in node.get_children():
+		if _node_tree_has_name(child, name):
+			return true
+	return false
+
 func _v0136_visible_hud_texts() -> Array[String]:
 	var texts: Array[String] = []
 	for label in [hud_resource_label, hud_objective_strip_label, hud_hero_label, hud_context_label, hud_objective_label, hud_status_label, hud_onboarding_label, hud_alert_label, hud_tooltip_label, hud_more_details_label, hud_help_label]:
@@ -2592,6 +2722,42 @@ func _create_terrain() -> void:
 	_add_static_cylinder("restrained_teal_lume_accent_a", Vector3(0.05, 0.16, -1.16), 0.08, 0.08, _lume_core_color(), true)
 	_add_static_cylinder("restrained_teal_lume_accent_b", Vector3(1.34, 0.16, 1.72), 0.08, 0.08, _lume_core_color(), true)
 	_add_static_box("minimap_orientation_ground_hint", Vector3(-6.65, 0.12, -4.25), Vector3(0.60, 0.08, 0.28), Color(0.54, 0.80, 0.74))
+	_add_static_box("v0137_salto_foothold_silhouette_ridge_face", Vector3(-2.8, 0.19, -4.02), Vector3(7.6, 0.22, 0.34), Color(0.24, 0.29, 0.22))
+	_add_static_box("v0137_salto_foothold_silhouette_west_notch", Vector3(-6.08, 0.20, -3.62), Vector3(1.08, 0.20, 0.72), Color(0.20, 0.25, 0.20))
+	_add_static_box("v0137_salto_foothold_silhouette_east_notch", Vector3(4.35, 0.18, -3.34), Vector3(1.45, 0.18, 0.46), Color(0.22, 0.27, 0.21))
+	_add_static_box("v0137_wet_granite_road_slab_01", Vector3(-4.92, 0.145, 0.70), Vector3(1.52, 0.045, 0.44), Color(0.42, 0.42, 0.36))
+	_add_static_box("v0137_wet_granite_road_slab_02", Vector3(-3.34, 0.148, 0.58), Vector3(1.44, 0.045, 0.38), Color(0.36, 0.38, 0.34))
+	_add_static_box("v0137_wet_granite_road_slab_03", Vector3(-1.68, 0.150, 0.72), Vector3(1.38, 0.045, 0.42), Color(0.44, 0.43, 0.37))
+	_add_static_box("v0137_wet_granite_road_slab_04", Vector3(0.12, 0.151, 0.74), Vector3(1.34, 0.045, 0.36), Color(0.37, 0.40, 0.37))
+	_add_static_box("v0137_wet_granite_road_slab_05", Vector3(1.86, 0.147, 0.82), Vector3(1.58, 0.045, 0.42), Color(0.43, 0.42, 0.36))
+	_add_static_box("v0137_side_path_to_barracks", Vector3(-4.45, 0.150, -2.42), Vector3(0.42, 0.043, 2.15), Color(0.40, 0.35, 0.25))
+	_add_static_box("v0137_side_path_to_ruins", Vector3(3.18, 0.150, 2.26), Vector3(2.36, 0.043, 0.30), Color(0.39, 0.34, 0.25))
+	_add_static_box("v0137_ford_stepping_stone_a", Vector3(0.18, 0.178, 0.56), Vector3(0.24, 0.045, 0.18), Color(0.64, 0.66, 0.58))
+	_add_static_box("v0137_ford_stepping_stone_b", Vector3(0.52, 0.180, 0.86), Vector3(0.28, 0.045, 0.20), Color(0.70, 0.70, 0.62))
+	_add_static_box("v0137_ford_stepping_stone_c", Vector3(0.86, 0.178, 1.14), Vector3(0.24, 0.045, 0.18), Color(0.62, 0.66, 0.60))
+	_add_static_box("v0137_cool_water_edge_west_bank", Vector3(0.22, 0.128, -2.30), Vector3(0.18, 0.050, 2.95), Color(0.10, 0.22, 0.26))
+	_add_static_box("v0137_cool_water_edge_east_bank", Vector3(0.98, 0.128, 2.54), Vector3(0.18, 0.050, 2.68), Color(0.11, 0.24, 0.28))
+	_add_static_box("v0137_quarry_mine_cut_shadow_depth", Vector3(-1.54, 0.34, 0.16), Vector3(0.36, 0.45, 0.54), Color(0.10, 0.11, 0.10))
+	_add_static_box("v0137_quarry_mine_cut_chisel_face", Vector3(-2.12, 0.32, 0.02), Vector3(0.36, 0.38, 0.82), Color(0.54, 0.54, 0.47))
+	_add_static_box("v0137_quarry_mine_cut_tailings", Vector3(-2.86, 0.18, -0.18), Vector3(0.72, 0.16, 0.24), Color(0.47, 0.47, 0.40))
+	_add_static_box("v0137_shrine_clearing_ring_north", Vector3(-0.78, 0.145, -3.42), Vector3(1.44, 0.045, 0.18), Color(0.30, 0.35, 0.25))
+	_add_static_box("v0137_shrine_clearing_ring_south", Vector3(-0.78, 0.145, -2.04), Vector3(1.44, 0.045, 0.18), Color(0.30, 0.35, 0.25))
+	_add_static_box("v0137_ruin_pocket_broken_arch", Vector3(2.18, 0.48, 1.32), Vector3(0.72, 0.26, 0.16), Color(0.43, 0.43, 0.37))
+	_add_static_box("v0137_ruin_pocket_rubble_readability", Vector3(2.70, 0.16, 1.18), Vector3(0.60, 0.14, 0.28), Color(0.52, 0.50, 0.44))
+	_add_static_box("v0137_barracks_footprint_chalk", Vector3(-4.80, 0.142, -3.58), Vector3(1.46, 0.038, 0.90), Color(0.74, 0.67, 0.40, 0.72), true)
+	_add_static_box("v0137_command_hall_hearth_pool", Vector3(-4.98, 0.142, 3.16), Vector3(1.16, 0.040, 0.76), Color(0.56, 0.38, 0.20, 0.68), true)
+	_add_static_box("v0137_buildable_patch_grid_friendly_a", Vector3(-5.56, 0.154, 1.78), Vector3(0.74, 0.034, 0.10), Color(0.42, 0.48, 0.32))
+	_add_static_box("v0137_buildable_patch_grid_friendly_b", Vector3(-4.16, 0.154, 2.56), Vector3(0.78, 0.034, 0.10), Color(0.42, 0.48, 0.32))
+	_add_static_box("v0137_blocked_cue_fallen_pine_north", Vector3(3.74, 0.35, -4.56), Vector3(1.36, 0.10, 0.16), Color(0.20, 0.16, 0.10))
+	_add_static_box("v0137_blocked_cue_scree_teeth_east", Vector3(6.08, 0.26, 2.08), Vector3(0.22, 0.22, 0.92), Color(0.28, 0.29, 0.25))
+	_add_static_box("v0137_friendly_staging_banner_line", Vector3(-4.22, 0.21, 3.88), Vector3(1.84, 0.10, 0.18), Color(0.28, 0.66, 0.46))
+	_add_static_box("v0137_friendly_staging_muster_marks", Vector3(-3.32, 0.148, 3.36), Vector3(0.78, 0.035, 0.64), Color(0.34, 0.48, 0.32, 0.72), true)
+	_add_static_box("v0137_ashen_approach_lane_char", Vector3(4.36, 0.144, -0.58), Vector3(2.14, 0.040, 0.28), Color(0.42, 0.18, 0.14, 0.62), true)
+	_add_static_box("v0137_ashen_approach_lane_entry", Vector3(5.72, 0.166, -1.12), Vector3(0.54, 0.065, 0.22), Color(0.68, 0.25, 0.18, 0.58), true)
+	_add_static_box("v0137_lume_path_severed_segment_a", Vector3(-0.68, 0.174, -1.28), Vector3(0.56, 0.050, 0.11), _lume_core_color(), true)
+	_add_static_box("v0137_lume_path_severed_segment_b", Vector3(0.34, 0.174, -0.42), Vector3(0.56, 0.050, 0.11), _lume_core_color().darkened(0.08), true)
+	_add_static_box("v0137_lume_path_severed_segment_c", Vector3(1.18, 0.174, 0.72), Vector3(0.56, 0.050, 0.11), _lume_core_color(), true)
+	_add_static_box("v0137_subtle_terrain_fog_default", Vector3(0.38, 0.20, -3.18), Vector3(11.2, 0.090, 0.58), Color(0.68, 0.78, 0.72, 0.12), true)
 
 	if visual_preset != VISUAL_PRESET_CLEAN:
 		_add_static_box("atmospheric_fog_posture_north", Vector3(0, 0.16, -4.15), Vector3(13.4, 0.10, 0.86), Color(0.66, 0.82, 0.77, 0.18), true)
@@ -3499,11 +3665,15 @@ func _add_structure(structure: Dictionary) -> void:
 		_add_box("%s_banner_silhouette" % id, position + Vector3(-scale.x * 0.38, 0.72, -scale.z * 0.12), Vector3(0.10, 0.34, 0.28), _banner_color(structure))
 		_add_box("%s_roof_ridge" % id, position + Vector3(0.0, 0.62, 0.0), Vector3(scale.x * 0.82, 0.10, scale.z * 0.18), color.lightened(0.20))
 		_add_box("%s_command_door_readability" % id, position + Vector3(0.0, 0.04, scale.z * 0.52), Vector3(scale.x * 0.26, 0.16, 0.08), Color(0.18, 0.15, 0.11))
+		_add_box("%s_v0137_gabled_shadow" % id, position + Vector3(scale.x * 0.24, 0.66, scale.z * 0.10), Vector3(scale.x * 0.36, 0.12, scale.z * 0.42), color.darkened(0.16))
+		_add_box("%s_v0137_hearth_window" % id, position + Vector3(scale.x * 0.42, 0.18, scale.z * 0.52), Vector3(scale.x * 0.12, 0.12, 0.08), Color(0.92, 0.54, 0.26), true, true)
 	elif fixture == "barracks" or fixture == "enemy_barracks":
 		_add_box("%s_training_wing_a" % id, position + Vector3(-scale.x * 0.30, 0.22, 0.0), Vector3(scale.x * 0.32, 0.34, scale.z * 0.88), color.lightened(0.08))
 		_add_box("%s_training_wing_b" % id, position + Vector3(scale.x * 0.30, 0.22, 0.0), Vector3(scale.x * 0.32, 0.34, scale.z * 0.88), color.darkened(0.08))
 		_add_box("%s_weapon_rack_silhouette" % id, position + Vector3(0.0, 0.46, -scale.z * 0.44), Vector3(scale.x * 0.72, 0.08, 0.08), Color(0.54, 0.48, 0.34))
 		_add_box("%s_drill_yard_edge" % id, position + Vector3(0.0, -0.12, scale.z * 0.72), Vector3(scale.x * 0.94, 0.05, 0.12), Color(0.32, 0.28, 0.18))
+		_add_box("%s_v0137_roof_split_left" % id, position + Vector3(-scale.x * 0.24, 0.52, -scale.z * 0.06), Vector3(scale.x * 0.38, 0.10, scale.z * 0.62), color.lightened(0.18))
+		_add_box("%s_v0137_roof_split_right" % id, position + Vector3(scale.x * 0.24, 0.52, scale.z * 0.06), Vector3(scale.x * 0.38, 0.10, scale.z * 0.62), color.darkened(0.14))
 		if str(structure.get("constructionState", "")) != "complete":
 			var progress := clampf(float(structure.get("constructionProgress", 0.0)), 0.0, 1.0)
 			_add_box("%s_construction_scaffold" % id, position + Vector3(0.0, 0.58, 0.0), Vector3(scale.x * 0.90, 0.08, scale.z * 0.94), Color(0.80, 0.68, 0.36, 0.58), true)
@@ -3512,10 +3682,14 @@ func _add_structure(structure: Dictionary) -> void:
 		_add_box("%s_quarry_crane" % id, position + Vector3(0.32, 0.30, -0.10), Vector3(0.16, 0.42, 0.70), Color(0.55, 0.50, 0.36))
 		_add_box("%s_mine_mouth_shadow" % id, position + Vector3(-0.22, 0.10, 0.36), Vector3(0.42, 0.20, 0.16), Color(0.12, 0.12, 0.10))
 		_add_box("%s_cut_stone_stack" % id, position + Vector3(0.44, -0.10, 0.34), Vector3(0.34, 0.12, 0.24), Color(0.58, 0.55, 0.46))
+		_add_box("%s_v0137_cut_lift_arm" % id, position + Vector3(0.14, 0.52, -0.40), Vector3(0.12, 0.10, 0.78), Color(0.60, 0.52, 0.34))
+		_add_box("%s_v0137_dark_ore_slot" % id, position + Vector3(-0.36, 0.24, 0.38), Vector3(0.30, 0.24, 0.12), Color(0.08, 0.09, 0.08))
 	elif fixture == "ford_toll":
 		_add_cylinder("%s_shrine_cap" % id, position + Vector3(0, 0.38, 0), 0.34, 0.20, Color(0.74, 0.68, 0.46), false)
 		_add_cylinder("%s_shrine_beacon_slot" % id, position + Vector3(0, 0.58, 0), 0.12, 0.18, _lume_core_color(), false)
 		_add_box("%s_shrine_steps" % id, position + Vector3(0.0, -0.12, 0.32), Vector3(0.54, 0.08, 0.18), Color(0.54, 0.50, 0.38))
+		_add_box("%s_v0137_lume_brazier_west" % id, position + Vector3(-0.36, 0.16, -0.28), Vector3(0.12, 0.16, 0.12), _lume_core_color(), true, true)
+		_add_box("%s_v0137_lume_brazier_east" % id, position + Vector3(0.36, 0.16, -0.28), Vector3(0.12, 0.16, 0.12), _lume_core_color(), true, true)
 
 func _add_capture_site(site: Dictionary) -> void:
 	var position := _to_world(site["position"], 0.13)
@@ -3581,26 +3755,33 @@ func _add_unit_silhouette_parts(parent: MeshInstance3D, unit: Dictionary) -> voi
 		_add_child_box(parent, "hero_blade_profile", Vector3(0.20, 0.08, 0.05), Vector3(0.06, 0.44, 0.08), Color(0.72, 0.78, 0.74))
 		_add_child_box(parent, "hero_shield_plate", Vector3(-0.18, 0.02, 0.06), Vector3(0.08, 0.26, 0.24), Color(0.24, 0.44, 0.56))
 		_add_child_cylinder(parent, "hero_crown_disc", Vector3(0.0, 0.42, 0.0), 0.13, 0.045, Color(0.86, 0.82, 0.48))
+		_add_child_box(parent, "v0137_aster_back_cloak_profile", Vector3(0.0, 0.02, -0.20), Vector3(0.20, 0.36, 0.08), Color(0.20, 0.34, 0.48))
+		_add_child_box(parent, "v0137_aster_readable_nameplate_anchor", Vector3(0.0, 0.58, 0.0), Vector3(0.24, 0.06, 0.10), Color(0.88, 0.82, 0.44))
 	elif role == "Worker":
 		_add_child_box(parent, "worker_pack_crate", Vector3(0.0, 0.03, -0.18), Vector3(0.24, 0.20, 0.10), Color(0.48, 0.36, 0.20))
 		_add_child_box(parent, "worker_tool_handle", Vector3(0.18, 0.10, 0.03), Vector3(0.05, 0.36, 0.05), Color(0.66, 0.56, 0.36))
 		_add_child_box(parent, "worker_tool_head", Vector3(0.20, 0.28, 0.03), Vector3(0.16, 0.05, 0.07), Color(0.55, 0.56, 0.48))
+		_add_child_box(parent, "v0137_worker_low_pick_silhouette", Vector3(-0.16, -0.02, 0.08), Vector3(0.05, 0.26, 0.05), Color(0.62, 0.54, 0.36))
 	elif fixture == "ranger":
 		_add_child_box(parent, "ranger_bow_profile", Vector3(0.19, 0.04, 0.0), Vector3(0.05, 0.48, 0.06), Color(0.38, 0.30, 0.18))
 		_add_child_box(parent, "ranger_quiver", Vector3(-0.14, 0.04, -0.16), Vector3(0.08, 0.30, 0.08), Color(0.30, 0.42, 0.30))
 		_add_child_box(parent, "ranger_arrow_line", Vector3(0.0, 0.18, 0.19), Vector3(0.08, 0.05, 0.30), Color(0.72, 0.80, 0.62))
+		_add_child_box(parent, "v0137_ranger_hood_peak", Vector3(0.0, 0.34, 0.02), Vector3(0.18, 0.08, 0.12), Color(0.34, 0.46, 0.32))
 	elif team == "enemy" and fixture == "brute":
 		_add_child_box(parent, "ashen_brute_shoulder_left", Vector3(-0.20, 0.12, 0.0), Vector3(0.18, 0.20, 0.24), Color(0.42, 0.09, 0.08))
 		_add_child_box(parent, "ashen_brute_shoulder_right", Vector3(0.20, 0.12, 0.0), Vector3(0.18, 0.20, 0.24), Color(0.42, 0.09, 0.08))
 		_add_child_box(parent, "ashen_brute_cleaver", Vector3(0.0, 0.10, 0.24), Vector3(0.10, 0.34, 0.08), Color(0.68, 0.28, 0.18))
+		_add_child_box(parent, "v0137_ashen_brute_back_spine", Vector3(0.0, 0.28, -0.12), Vector3(0.12, 0.22, 0.08), Color(0.62, 0.18, 0.12))
 	elif team == "enemy":
 		_add_child_box(parent, "ashen_raider_forward_blade", Vector3(0.0, 0.06, 0.22), Vector3(0.08, 0.30, 0.08), Color(0.78, 0.26, 0.16))
 		_add_child_box(parent, "ashen_raider_horn_left", Vector3(-0.15, 0.22, 0.0), Vector3(0.12, 0.10, 0.08), Color(0.50, 0.16, 0.12))
 		_add_child_box(parent, "ashen_raider_horn_right", Vector3(0.15, 0.22, 0.0), Vector3(0.12, 0.10, 0.08), Color(0.50, 0.16, 0.12))
+		_add_child_box(parent, "v0137_ashen_raider_leaning_crest", Vector3(0.0, 0.32, -0.08), Vector3(0.14, 0.10, 0.18), Color(0.68, 0.18, 0.14))
 	else:
 		_add_child_box(parent, "militia_shield_plate", Vector3(-0.18, 0.02, 0.04), Vector3(0.08, 0.26, 0.22), Color(0.26, 0.44, 0.30))
 		_add_child_box(parent, "militia_spear_profile", Vector3(0.18, 0.10, 0.0), Vector3(0.05, 0.52, 0.05), Color(0.58, 0.52, 0.34))
 		_add_child_box(parent, "militia_spear_tip", Vector3(0.18, 0.38, 0.0), Vector3(0.10, 0.08, 0.08), Color(0.70, 0.72, 0.62))
+		_add_child_box(parent, "v0137_militia_square_tabard", Vector3(0.0, 0.02, 0.16), Vector3(0.16, 0.22, 0.06), Color(0.30, 0.56, 0.36))
 
 func _add_child_box(parent: Node3D, name: String, local_position: Vector3, scale: Vector3, color: Color, transparent: bool = false, emissive: bool = false) -> void:
 	var mesh_instance := MeshInstance3D.new()

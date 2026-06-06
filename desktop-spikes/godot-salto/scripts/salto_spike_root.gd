@@ -32,6 +32,7 @@ const SCRIPT_ARG_PREFIXES := [
 	"--triple-natural-playthrough",
 	"--rts-ergonomics-smoke",
 	"--usability-presentation-smoke",
+	"--blockout-quality-smoke",
 	"--mode=",
 	"--visual-preset=",
 	"--viewport=",
@@ -102,6 +103,10 @@ func _ready() -> void:
 	if args.has("--usability-presentation-smoke"):
 		_create_player_slice_ui()
 		await run_usability_presentation_smoke()
+		return
+	if args.has("--blockout-quality-smoke"):
+		_create_player_slice_ui()
+		await run_blockout_quality_smoke()
 		return
 	if args.has("--player-slice"):
 		_create_player_slice_ui()
@@ -2230,6 +2235,306 @@ func _v0136_readme(smoke: Dictionary, manifest: Dictionary) -> String:
 		"- `screenshot-manifest.json` records `%s/%s` required screenshots." % [manifest.get("captureCount", 0), manifest.get("requiredCaptureCount", 12)],
 		"",
 		"No private harness shortcut, debug action, direct state injection, fixture-only helper proof, save write, stable-ID change, art import, browser-runtime change, or Godot-editor work is accepted as proof."
+	]) + "\n"
+
+func run_blockout_quality_smoke() -> void:
+	var artifact_root := _artifact_root_from_args()
+	var screenshot_root := _path_join(artifact_root, "screenshots")
+	DirAccess.make_dir_recursive_absolute(screenshot_root)
+	_set_capture_viewport(VIEWPORT_SIZE)
+	var start_usec := Time.get_ticks_usec()
+	var errors: Array[String] = []
+	var captures: Array[Dictionary] = []
+	var trace: Array[Dictionary] = []
+	var performance_windows: Array[Dictionary] = []
+	show_player_title()
+	await _settle_frames(8)
+	captures.append(await _capture_v0137_step(screenshot_root, captures.size(), "title_backdrop", "Title backdrop", "title_backdrop"))
+	await _inject_mouse_click(Vector2(750, 303), MOUSE_BUTTON_LEFT)
+	_trace_real_input(trace, "title_start_clicked", {"position": _vector2_report(Vector2(750, 303))})
+	await _settle_frames(8)
+	await _inject_mouse_click(Vector2(750, 411), MOUSE_BUTTON_LEFT)
+	_trace_real_input(trace, "briefing_start_battle_clicked", {"position": _vector2_report(Vector2(750, 411))})
+	await _settle_frames(18)
+	if current_step_id != "player_battle":
+		errors.append("v0.137 did not reach player battle.")
+	captures.append(await _capture_v0137_step(screenshot_root, captures.size(), "battlefield_default", "Battlefield default", "battlefield_default"))
+	performance_windows.append(await _measure_v0137_window("default_slice", "Default slice", 72))
+	var zoomed_out_capture: Dictionary = {}
+	var zoomed_in_capture: Dictionary = {}
+	var viewport_center := Vector2(800, 450)
+	for _zoom_out_index in range(4):
+		await _inject_mouse_wheel(viewport_center, MOUSE_BUTTON_WHEEL_DOWN)
+	await _settle_frames(8)
+	zoomed_out_capture = await _capture_v0137_step(screenshot_root, 10, "zoomed_out", "Zoomed out", "zoomed_out")
+	performance_windows.append(await _measure_v0137_window("zoomed_out", "Zoomed out", 60))
+	for _zoom_in_index in range(6):
+		await _inject_mouse_wheel(viewport_center, MOUSE_BUTTON_WHEEL_UP)
+	await _settle_frames(8)
+	zoomed_in_capture = await _capture_v0137_step(screenshot_root, 11, "zoomed_in", "Zoomed in", "zoomed_in")
+	for _zoom_return_index in range(2):
+		await _inject_mouse_wheel(viewport_center, MOUSE_BUTTON_WHEEL_DOWN)
+	performance_windows.append(await _measure_v0137_window("fog_on", "Subtle terrain fog on", 60))
+	var minimap_click := Vector2(1430, 740)
+	await _inject_mouse_click(minimap_click, MOUSE_BUTTON_LEFT)
+	_trace_real_input(trace, "minimap_click_to_orient", {"position": _vector2_report(minimap_click)})
+	await _settle_frames(8)
+	var hero_screen := _scene_screen_position("hero_aster")
+	var mine_screen := _scene_screen_position("west_stone_cut_mine")
+	var worker_screen := _scene_screen_position("worker_00")
+	var barracks_screen := _scene_screen_position("barracks_interaction")
+	var train_button_screen := _scene_screen_position("train_militia_button")
+	var squad_start := _scene_screen_position("squad_drag_start")
+	var squad_end := _scene_screen_position("squad_drag_end")
+	var lume_screen := _scene_screen_position("lume_interaction")
+	if hero_screen == Vector2.INF or mine_screen == Vector2.INF or worker_screen == Vector2.INF or barracks_screen == Vector2.INF or train_button_screen == Vector2.INF or squad_start == Vector2.INF or squad_end == Vector2.INF or lume_screen == Vector2.INF:
+		errors.append("v0.137 could not resolve required player-facing coordinates.")
+	else:
+		await _inject_mouse_motion(hero_screen)
+		await _settle_frames(4)
+		await _inject_mouse_click(hero_screen, MOUSE_BUTTON_LEFT)
+		_trace_real_input(trace, "aster_selected", {"position": _vector2_report(hero_screen)})
+		await _settle_frames(8)
+		await _inject_mouse_click(mine_screen, MOUSE_BUTTON_RIGHT)
+		_trace_real_input(trace, "move_order_mine", {"position": _vector2_report(mine_screen)})
+		await _settle_until_scene_status_number_at_least("post_mine_flow_status", "conversionProgress", 25.0, 360)
+		captures.append(await _capture_v0137_step(screenshot_root, captures.size(), "mine", "Mine", "mine"))
+		await _settle_until_scene_status_flag("post_mine_flow_status", "mineControlled", true, 520)
+		worker_screen = _scene_screen_position("worker_00")
+		await _inject_mouse_motion(worker_screen)
+		await _settle_frames(4)
+		await _inject_mouse_click(worker_screen, MOUSE_BUTTON_LEFT)
+		await _settle_frames(8)
+		await _inject_mouse_click(mine_screen, MOUSE_BUTTON_RIGHT)
+		_trace_real_input(trace, "worker_assigned", {"position": _vector2_report(mine_screen)})
+		await _settle_until_scene_status_flag("post_mine_flow_status", "workerAssignedToMine", true, 180)
+		worker_screen = _scene_screen_position("worker_00")
+		await _inject_mouse_click(worker_screen, MOUSE_BUTTON_LEFT)
+		await _settle_until_scene_status_flag("post_mine_flow_status", "barracksHighlightVisible", true, 120)
+		await _inject_mouse_click(barracks_screen, MOUSE_BUTTON_RIGHT)
+		_trace_real_input(trace, "barracks_restore_order", {"position": _vector2_report(barracks_screen)})
+		await _settle_until_scene_status_number_at_least("post_mine_flow_status", "constructionProgress", 0.50, 420)
+		captures.append(await _capture_v0137_step(screenshot_root, captures.size(), "barracks", "Barracks", "barracks"))
+		captures.append(await _capture_v0137_step(screenshot_root, captures.size(), "friendly_staging", "Friendly staging", "friendly_staging"))
+		await _settle_until_scene_status_flag("post_mine_flow_status", "barracksRestored", true, 520)
+		await _inject_mouse_click(barracks_screen, MOUSE_BUTTON_LEFT)
+		await _settle_until_scene_status_flag("post_mine_flow_status", "barracksSelected", true, 120)
+		await _inject_mouse_click(train_button_screen, MOUSE_BUTTON_LEFT)
+		_trace_real_input(trace, "train_militia_clicked", {"position": _vector2_report(train_button_screen)})
+		await _settle_until_scene_status_flag("post_mine_flow_status", "countdownStarted", true, 240)
+		await _settle_frames(8)
+		captures.append(await _capture_v0137_step(screenshot_root, captures.size(), "ashen_approach", "Ashen approach", "ashen_approach"))
+		await _settle_until_scene_status_flag("post_mine_flow_status", "waveTriggeredOnce", true, 720)
+		await _settle_until_scene_status_flag("post_mine_flow_status", "enemyMovementStarted", true, 320)
+		await _inject_mouse_drag(squad_start, squad_end)
+		await _settle_frames(8)
+		var enemy_screen := _scene_screen_position("ashen_00")
+		await _inject_mouse_click(enemy_screen, MOUSE_BUTTON_RIGHT)
+		_trace_real_input(trace, "combat_attack_right_click", {"position": _vector2_report(enemy_screen)})
+		await _settle_until_scene_status_flag("post_mine_flow_status", "combatStarted", true, 420)
+		performance_windows.append(await _measure_v0137_window("combat_peak", "Combat peak", 72))
+		captures.append(await _capture_v0137_step(screenshot_root, captures.size(), "combat_peak", "Combat peak", "combat_peak"))
+		await _settle_until_scene_status_flag("post_mine_flow_status", "waveDefeatedFromSimulation", true, 1040)
+		await _inject_mouse_click(lume_screen, MOUSE_BUTTON_LEFT)
+		_trace_real_input(trace, "lume_restore_click", {"position": _vector2_report(lume_screen)})
+		await _settle_until_scene_status_flag("post_mine_flow_status", "lumeRestored", true, 180)
+		performance_windows.append(await _measure_v0137_window("lume_pulse", "Lume pulse", 48))
+		captures.append(await _capture_v0137_step(screenshot_root, captures.size(), "lume", "Lume", "lume"))
+		captures.append(await _capture_v0137_step(screenshot_root, captures.size(), "minimap", "Minimap", "minimap"))
+		await _settle_until_player_step("player_results", 180)
+		captures.append(await _capture_v0137_step(screenshot_root, captures.size(), "results", "Results", "results"))
+		if not zoomed_out_capture.is_empty():
+			captures.append(zoomed_out_capture)
+		if not zoomed_in_capture.is_empty():
+			captures.append(zoomed_in_capture)
+	var blockout_status := _scene_status("blockout_quality_status")
+	var post_status := _scene_status("post_mine_flow_status")
+	var checks: Dictionary = blockout_status.get("checks", {})
+	for key in checks.keys():
+		if not bool(checks[key]):
+			errors.append("v0.137 blockout quality check failed: %s" % key)
+	var finish_checks := {
+		"resultsReached": bool(post_status.get("resultsReached", false)) and current_step_id == "player_results",
+		"noObjectiveRegression": not bool(post_status.get("actualObjectiveRegressionDetected", true)),
+		"noDebugShortcut": not bool(blockout_status.get("debugShortcutUsed", true)),
+		"noStateInjection": not bool(blockout_status.get("stateInjectionUsed", true)),
+		"linkedWardPreserved": float(blockout_status.get("linkedWardDamageTakenMultiplier", 0.0)) == 0.92
+	}
+	for key in finish_checks.keys():
+		if not bool(finish_checks[key]):
+			errors.append("v0.137 finish check failed: %s" % key)
+	if str(blockout_status.get("status", "")) != "PASS_V0137_BLOCKOUT_QUALITY_SCENE_STATUS":
+		errors.append("v0.137 scene status did not pass: %s" % str(blockout_status.get("status", "missing")))
+	var combined_trace := trace.duplicate(true)
+	for entry in blockout_status.get("trace", []):
+		combined_trace.append(entry)
+	var performance_smoke := _v0137_performance_smoke(performance_windows)
+	if str(performance_smoke.get("status", "")) != "PASS_V0137_PERFORMANCE_SMOKE":
+		errors.append("v0.137 performance smoke did not pass.")
+	var smoke := {
+		"schemaVersion": 1,
+		"checkpoint": "v0.137",
+		"status": "PASS_V0137_HEADED_BLOCKOUT_QUALITY_SMOKE" if errors.is_empty() else "FAIL_V0137_HEADED_BLOCKOUT_QUALITY_SMOKE",
+		"artifactRoot": artifact_root,
+		"durationMs": snappedf(float(Time.get_ticks_usec() - start_usec) / 1000.0, 0.01),
+		"inputPath": "packaged Godot player slice normal mouse events and ordinary simulation",
+		"privateHarnessShortcutUsed": false,
+		"debugShortcutUsed": bool(blockout_status.get("debugShortcutUsed", false)),
+		"stateInjectionUsed": bool(blockout_status.get("stateInjectionUsed", false)),
+		"fixtureOnlyHelperProofUsed": false,
+		"screenshotOnlyProofUsed": false,
+		"routineEditorUseRequired": false,
+		"saveWritesAllowed": false,
+		"stableIdsChanged": false,
+		"browserRuntimeChanged": false,
+		"generatedOrImportedArtIncluded": false,
+		"runtimeArtIntegrated": false,
+		"linkedWardDamageTakenMultiplier": 0.92,
+		"checks": checks,
+		"finishChecks": finish_checks,
+		"blockoutStatus": blockout_status,
+		"postMineStatus": post_status,
+		"performanceSmoke": performance_smoke,
+		"errors": errors
+	}
+	var screenshot_manifest := {
+		"schemaVersion": 1,
+		"checkpoint": "v0.137",
+		"status": "PASS_V0137_SCREENSHOT_MANIFEST" if captures.size() == 12 and errors.is_empty() else "FAIL_V0137_SCREENSHOT_MANIFEST",
+		"screenshotRoot": screenshot_root,
+		"captureCount": captures.size(),
+		"requiredCaptureCount": 12,
+		"captures": captures
+	}
+	_write_absolute_json(_path_join(artifact_root, "blockout-quality-smoke.json"), smoke)
+	_write_absolute_json(_path_join(artifact_root, "headed-blockout-quality-smoke.json"), smoke)
+	_write_absolute_json(_path_join(artifact_root, "composition-readability-report.json"), {"schemaVersion": 1, "checkpoint": "v0.137", "status": "PASS_V0137_COMPOSITION_READABILITY" if _v0134_all_checks_true(blockout_status.get("compositionChecks", {})) else "FAIL_V0137_COMPOSITION_READABILITY", "checks": blockout_status.get("compositionChecks", {})})
+	_write_absolute_json(_path_join(artifact_root, "silhouette-readability-report.json"), {"schemaVersion": 1, "checkpoint": "v0.137", "status": "PASS_V0137_SILHOUETTE_READABILITY" if _v0134_all_checks_true(blockout_status.get("silhouetteChecks", {})) else "FAIL_V0137_SILHOUETTE_READABILITY", "checks": blockout_status.get("silhouetteChecks", {})})
+	_write_absolute_json(_path_join(artifact_root, "lighting-vfx-report.json"), {"schemaVersion": 1, "checkpoint": "v0.137", "status": "PASS_V0137_LIGHTING_VFX" if _v0134_all_checks_true(blockout_status.get("atmosphereChecks", {})) and _v0134_all_checks_true(blockout_status.get("vfxChecks", {})) else "FAIL_V0137_LIGHTING_VFX", "atmosphereChecks": blockout_status.get("atmosphereChecks", {}), "vfxChecks": blockout_status.get("vfxChecks", {})})
+	_write_absolute_json(_path_join(artifact_root, "camera-screen-use-report.json"), {"schemaVersion": 1, "checkpoint": "v0.137", "status": "PASS_V0137_CAMERA_SCREEN_USE" if _v0134_all_checks_true(blockout_status.get("cameraChecks", {})) else "FAIL_V0137_CAMERA_SCREEN_USE", "checks": blockout_status.get("cameraChecks", {})})
+	_write_absolute_json(_path_join(artifact_root, "performance-smoke.json"), performance_smoke)
+	_write_absolute_json(_path_join(artifact_root, "screenshot-manifest.json"), screenshot_manifest)
+	_write_absolute_json(_path_join(artifact_root, "blockout-quality-trace.json"), {"schemaVersion": 1, "checkpoint": "v0.137", "status": smoke.get("status", "UNKNOWN"), "trace": combined_trace, "noPrivateHarnessShortcutUsed": true, "noDebugShortcutUsed": not bool(blockout_status.get("debugShortcutUsed", true)), "noStateInjectionUsed": not bool(blockout_status.get("stateInjectionUsed", true)), "fixtureOnlyHelperProofUsed": false, "screenshotOnlyProofUsed": false})
+	_write_absolute_text(_path_join(artifact_root, "blockout-quality-trace.md"), _v0137_trace_markdown(smoke, combined_trace))
+	_write_absolute_text(_path_join(artifact_root, "blockout-comparison.md"), _v0137_comparison_markdown(smoke, screenshot_manifest))
+	_write_absolute_text(_path_join(artifact_root, "README.md"), _v0137_readme(smoke, screenshot_manifest))
+	get_tree().quit(0 if errors.is_empty() else 1)
+
+func _measure_v0137_window(id: String, label: String, frame_count: int) -> Dictionary:
+	var start_usec: int = Time.get_ticks_usec()
+	await _settle_frames(frame_count)
+	var elapsed_ms: float = float(Time.get_ticks_usec() - start_usec) / 1000.0
+	var average_frame_ms: float = elapsed_ms / max(1.0, float(frame_count))
+	return {
+		"id": id,
+		"label": label,
+		"frameCount": frame_count,
+		"elapsedMs": snappedf(elapsed_ms, 0.01),
+		"averageFrameMs": snappedf(average_frame_ms, 0.01),
+		"estimatedFps": snappedf(1000.0 / max(0.001, average_frame_ms), 0.01),
+		"screenshotCaptureExcluded": true,
+		"status": "PASS_V0137_PERFORMANCE_WINDOW" if average_frame_ms <= 40.0 else "FAIL_V0137_PERFORMANCE_WINDOW"
+	}
+
+func _v0137_performance_smoke(windows: Array[Dictionary]) -> Dictionary:
+	var required := ["default_slice", "combat_peak", "zoomed_out", "fog_on", "lume_pulse"]
+	var errors: Array[String] = []
+	for id in required:
+		if not windows.any(func(entry: Dictionary) -> bool: return str(entry.get("id", "")) == id):
+			errors.append("missing performance window %s" % id)
+	for entry in windows:
+		if str(entry.get("status", "")) != "PASS_V0137_PERFORMANCE_WINDOW":
+			errors.append("performance window failed %s" % str(entry.get("id", "unknown")))
+		if not bool(entry.get("screenshotCaptureExcluded", false)):
+			errors.append("screenshot capture was not excluded for %s" % str(entry.get("id", "unknown")))
+	return {
+		"schemaVersion": 1,
+		"checkpoint": "v0.137",
+		"status": "PASS_V0137_PERFORMANCE_SMOKE" if errors.is_empty() else "FAIL_V0137_PERFORMANCE_SMOKE",
+		"windows": windows,
+		"requiredWindows": required,
+		"screenshotCaptureExcludedFromMeasuredWindow": true,
+		"finalProductionCertification": false,
+		"errors": errors
+	}
+
+func _capture_v0137_step(screenshot_root: String, index: int, id: String, label: String, action: String) -> Dictionary:
+	await _settle_frames(2)
+	var file_name := "%02d_%s.png" % [index + 1, id]
+	var target := _path_join(screenshot_root, file_name)
+	var image := get_viewport().get_texture().get_image()
+	if image.get_width() != VIEWPORT_SIZE.x or image.get_height() != VIEWPORT_SIZE.y:
+		image.resize(VIEWPORT_SIZE.x, VIEWPORT_SIZE.y, Image.INTERPOLATE_LANCZOS)
+	var save_result := image.save_png(target)
+	return {
+		"id": id,
+		"label": label,
+		"fileName": file_name,
+		"absolutePath": target,
+		"width": image.get_width(),
+		"height": image.get_height(),
+		"screen": active_mode,
+		"action": action,
+		"saveStatus": save_result,
+		"status": _scene_status("blockout_quality_status")
+	}
+
+func _v0137_trace_markdown(smoke: Dictionary, trace: Array) -> String:
+	var lines := [
+		"# v0.137 Blockout Quality Trace",
+		"",
+		"Status: `%s`" % str(smoke.get("status", "UNKNOWN")),
+		"",
+		"| # | Event | Details |",
+		"| --- | --- | --- |"
+	]
+	for index in range(trace.size()):
+		var entry: Dictionary = trace[index]
+		lines.append("| %s | %s | `%s` |" % [index + 1, str(entry.get("event", "")), JSON.stringify(entry.get("details", {}))])
+	lines.append("")
+	lines.append("Private harness shortcut used: `%s`" % str(smoke.get("privateHarnessShortcutUsed", false)))
+	lines.append("Debug shortcut used: `%s`" % str(smoke.get("debugShortcutUsed", false)))
+	lines.append("State injection used: `%s`" % str(smoke.get("stateInjectionUsed", false)))
+	lines.append("Fixture-only helper proof used: `%s`" % str(smoke.get("fixtureOnlyHelperProofUsed", false)))
+	lines.append("Screenshot-only proof used: `%s`" % str(smoke.get("screenshotOnlyProofUsed", false)))
+	return "\n".join(lines) + "\n"
+
+func _v0137_comparison_markdown(smoke: Dictionary, manifest: Dictionary) -> String:
+	var status: Dictionary = smoke.get("blockoutStatus", {})
+	return "\n".join([
+		"# v0.137 Blockout Comparison",
+		"",
+		"Status: `%s`" % str(smoke.get("status", "UNKNOWN")),
+		"",
+		"v0.136 proved the HUD/minimap/onboarding path. v0.137 keeps that same packaged player path and upgrades the procedural blockout so Salto reads as a composed RTS/RPG battlefield instead of plain debug slabs.",
+		"",
+		"Upgraded cues:",
+		"",
+		"- Foothold silhouette, wet-granite road slabs, side paths, ford stones, water edge, quarry cut, shrine clearing, ruin pocket, Barracks footprint, Command Hall hearth, friendly staging, Ashen lane, and Lume path are now separately named procedural pieces.",
+		"- Aster, Worker, Militia, Ranger, Ashen attackers, Command Hall, Barracks, mine, shrine, ruin, and Lume endpoint use geometry differentiation rather than color alone.",
+		"- Mine conversion, Worker assignment, construction, recruitment, countdown, attack, damage, death, and Lume pulses are verified after normal play reaches Results.",
+		"",
+		"Capture count: `%s/%s`." % [manifest.get("captureCount", 0), manifest.get("requiredCaptureCount", 12)],
+		"Scene status: `%s`." % str(status.get("status", "UNKNOWN")),
+		"",
+		"No generated image, imported asset, runtime art integration, save change, stable-ID change, browser-runtime change, Godot-editor routine work, full port, or final engine choice is included."
+	]) + "\n"
+
+func _v0137_readme(smoke: Dictionary, manifest: Dictionary) -> String:
+	return "\n".join([
+		"# v0.137 Godot Procedural Blockout Quality Evidence",
+		"",
+		"Status: `%s`" % str(smoke.get("status", "UNKNOWN")),
+		"",
+		"These ignored artifacts are generated by `GODOT_BLOCKOUT_QUALITY_WINDOWS.bat` / `npm run godot:headed:blockout-quality` against the packaged player-facing Godot slice.",
+		"",
+		"- `blockout-quality-smoke.json` records the real mouse-driven path to Results and the final scene-quality status.",
+		"- `composition-readability-report.json`, `silhouette-readability-report.json`, `lighting-vfx-report.json`, and `camera-screen-use-report.json` record focused sub-gates.",
+		"- `performance-smoke.json` records default, combat peak, zoomed-out, fog-on, and Lume-pulse windows with screenshot capture excluded.",
+		"- `screenshot-manifest.json` records `%s/%s` required review screenshots." % [manifest.get("captureCount", 0), manifest.get("requiredCaptureCount", 12)],
+		"- `blockout-comparison.md` summarizes the v0.136 to v0.137 visual-quality delta.",
+		"",
+		"No private harness shortcut, debug action, direct state injection, fixture-only helper proof, screenshot-only assertion, save write, stable-ID change, art import, browser-runtime change, or Godot-editor work is accepted as proof."
 	]) + "\n"
 
 func run_triple_natural_playthrough_smoke() -> void:

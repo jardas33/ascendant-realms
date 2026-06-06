@@ -1639,4 +1639,109 @@ describe("Godot Salto spike scaffold", () => {
     expect(scene3d).not.toContain("ImageTexture");
     expect(toolScript).not.toContain("ImageTexture");
   });
+
+  it("defines the v0.137 procedural visual blockout quality upgrade", async () => {
+    [
+      "GODOT_BLOCKOUT_QUALITY_WINDOWS.bat",
+      "tools/godot/runGodotBlockoutQualityWindows.ps1",
+      "docs/V0137_PROCEDURAL_COMPOSITION_SPEC.md",
+      "docs/V0137_SILHOUETTE_REFINEMENT_SPEC.md",
+      "docs/V0137_LIGHTING_VFX_SPEC.md",
+      "docs/V0137_PERFORMANCE_SAFETY_REPORT.md",
+      "docs/V0137_BLOCKOUT_QUALITY_GATE.md",
+      "docs/V0137_IMPLEMENTATION_REPORT.md"
+    ].forEach((path) => expect(existsSync(path), path).toBe(true));
+
+    const packageJson = await readJson<{ scripts: Record<string, string> }>("package.json");
+    const rootScript = await readFile("desktop-spikes/godot-salto/scripts/salto_spike_root.gd", "utf8");
+    const scene3d = await readFile("desktop-spikes/godot-salto/scripts/salto_spike_scene_3d.gd", "utf8");
+    const toolScript = await readFile("desktop-spikes/godot-salto/tools/godotSpikeTool.mjs", "utf8");
+    const smokeScript = await readFile("tools/godot/runGodotBlockoutQualityWindows.ps1", "utf8");
+    const v0136Gate = await readFile("docs/V0136_USABILITY_PRESENTATION_GATE.md", "utf8");
+    const v0137Gate = await readFile("docs/V0137_BLOCKOUT_QUALITY_GATE.md", "utf8");
+    const compositionSpec = await readFile("docs/V0137_PROCEDURAL_COMPOSITION_SPEC.md", "utf8");
+    const silhouetteSpec = await readFile("docs/V0137_SILHOUETTE_REFINEMENT_SPEC.md", "utf8");
+    const lightingSpec = await readFile("docs/V0137_LIGHTING_VFX_SPEC.md", "utf8");
+    const performanceReport = await readFile("docs/V0137_PERFORMANCE_SAFETY_REPORT.md", "utf8");
+    const implementation = await readFile("docs/V0137_IMPLEMENTATION_REPORT.md", "utf8");
+    const handoff = await readFile("LLM_GAME_HANDOFF.md", "utf8");
+    const roadmap = await readFile("ROADMAP.md", "utf8");
+
+    expect(v0136Gate).toContain("USABILITY_PRESENTATION_GREEN");
+    expect(packageJson.scripts["godot:headed:blockout-quality"]).toBeTypeOf("string");
+
+    [
+      "--blockout-quality-smoke",
+      "run_blockout_quality_smoke",
+      "PASS_V0137_HEADED_BLOCKOUT_QUALITY_SMOKE",
+      "PASS_V0137_COMPOSITION_READABILITY",
+      "PASS_V0137_SILHOUETTE_READABILITY",
+      "PASS_V0137_LIGHTING_VFX",
+      "PASS_V0137_PERFORMANCE_SMOKE",
+      "PASS_V0137_SCREENSHOT_MANIFEST",
+      "blockout-quality-trace.json",
+      "blockout-comparison.md",
+      "performance-smoke.json",
+      "screenshot-manifest.json",
+      "fixtureOnlyHelperProofUsed",
+      "screenshotOnlyProofUsed"
+    ].forEach((text) => expect(rootScript).toContain(text));
+
+    [
+      "blockout_quality_status",
+      "v0137_salto_foothold_silhouette_ridge_face",
+      "v0137_wet_granite_road_slab_01",
+      "v0137_side_path_to_barracks",
+      "v0137_ford_stepping_stone_a",
+      "v0137_cool_water_edge_west_bank",
+      "v0137_quarry_mine_cut_shadow_depth",
+      "v0137_shrine_clearing_ring_north",
+      "v0137_ruin_pocket_broken_arch",
+      "v0137_barracks_footprint_chalk",
+      "v0137_friendly_staging_banner_line",
+      "v0137_ashen_approach_lane_char",
+      "v0137_lume_path_severed_segment_a",
+      "v0137_aster_back_cloak_profile",
+      "v0137_worker_low_pick_silhouette",
+      "v0137_militia_square_tabard",
+      "v0137_ranger_hood_peak",
+      "v0137_ashen_raider_leaning_crest",
+      "v0137_subtle_terrain_fog_default",
+      "PASS_V0137_BLOCKOUT_QUALITY_SCENE_STATUS",
+      "linkedWardDamageTakenMultiplier"
+    ].forEach((text) => expect(scene3d).toContain(text));
+
+    [
+      "v0137ArtifactRoot",
+      "v0137ScreenshotRoot",
+      "validateV0137BlockoutQualityArtifacts",
+      "PASS_V0137_BLOCKOUT_QUALITY_VALIDATION",
+      "blockout-quality-v0137",
+      "PASS_V0137_HEADED_BLOCKOUT_QUALITY_SMOKE",
+      "PASS_V0137_SCREENSHOT_HASHES",
+      "screenshot-hashes.json",
+      "blockout-comparison.md"
+    ].forEach((text) => expect(toolScript).toContain(text));
+
+    expect(smokeScript).toContain("--blockout-quality-smoke");
+    expect(smokeScript).toContain("blockout-quality-v0137");
+    expect(smokeScript).toContain("v0137");
+
+    expect(v0137Gate).toContain("Classification: `BLOCKOUT_QUALITY_GREEN`");
+    expect(v0137Gate).toContain("Gate: `BLOCKOUT_QUALITY_GREEN`");
+    expect(v0137Gate).toContain("BLOCKOUT_QUALITY_AMBER");
+    expect(v0137Gate).toContain("BLOCKOUT_QUALITY_RED");
+    expect(compositionSpec).toContain("wet-granite road");
+    expect(silhouetteSpec).toContain("geometry differentiation");
+    expect(lightingSpec).toContain("no particle spaghetti");
+    expect(performanceReport).toContain("screenshot capture excluded");
+    expect(implementation).toContain("No art import");
+    expect(handoff).toContain("v0.137 Godot Procedural Visual Composition");
+    expect(roadmap).toContain("v0.137 Godot Procedural Visual Composition");
+
+    expect(rootScript).not.toContain("load(\"res://assets");
+    expect(scene3d).not.toContain("load(\"res://assets");
+    expect(scene3d).not.toContain("ImageTexture");
+    expect(toolScript).not.toContain("ImageTexture");
+  });
 });

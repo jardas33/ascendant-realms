@@ -11,9 +11,20 @@ Every phase should protect these long-term pillars:
 
 ## Current Recommended Next Phase
 
-The current checkpoint is **v0.136 Godot HUD, Minimap, Onboarding, And Microloop-Pacing Cleanup** on 2026-06-06. It keeps the Godot spike bounded, builds on `RTS_ERGONOMICS_GREEN`, and proves clearer player-facing HUD hierarchy, minimap orientation, concise onboarding copy, readable progress/counter feedback, deliberate 3-5 minute review-loop pacing, screenshot evidence, and full Results completion in the packaged player-facing slice. The browser prototype remains authoritative, the private harness remains separate, and no final engine choice, full port, generated image, imported art, save change, stable-ID change, browser-runtime change, broad economy, broad building tree, broad recruitment, full hero progression, campaign expansion, or runtime art integration is approved.
+The current checkpoint is **v0.137 Godot Procedural Visual Composition, Terrain Readability, And Blockout-Quality Upgrade** on 2026-06-06. It keeps the Godot spike bounded, builds on `USABILITY_PRESENTATION_GREEN`, and proves a more intentional procedural Salto battlefield composition, terrain readability, geometry-led silhouettes, restrained lighting/VFX, camera/screen use, 12-capture review pack, screenshot hashes, bounded performance smoke, and full Results completion in the packaged player-facing slice. The browser prototype remains authoritative, the private harness remains separate, and no final engine choice, full port, generated image, imported art, save change, stable-ID change, browser-runtime change, broad economy, broad building tree, broad recruitment, full hero progression, campaign expansion, or runtime art integration is approved.
 
-The next recommended step, only after a future explicit goal or Emmanuel's explicit review action, is Emmanuel's manual retest using `GODOT_USABILITY_PRESENTATION_WINDOWS.bat`, `GODOT_LAUNCH_PLAYER_SLICE_WINDOWS.bat`, and the v0.136 docs. Do not generate art for runtime integration, import art into runtime, mark `runtime-candidate-approved` assets as loadable, resume broad browser visual expansion, add broad gameplay systems, change rewards, change saves, rename IDs, create a desktop save path, choose Godot finally, start a full desktop port, start Unity/Unreal/Electron work, or start v0.137 until a future explicit goal approves a narrow next step.
+The next recommended step, only after a future explicit goal or Emmanuel's explicit review action, is Emmanuel's manual retest using `GODOT_BLOCKOUT_QUALITY_WINDOWS.bat`, `GODOT_LAUNCH_PLAYER_SLICE_WINDOWS.bat`, and the v0.137 docs. Do not generate art for runtime integration, import art into runtime, mark `runtime-candidate-approved` assets as loadable, resume broad browser visual expansion, add broad gameplay systems, change rewards, change saves, rename IDs, create a desktop save path, choose Godot finally, start a full desktop port, start Unity/Unreal/Electron work, or start v0.138 until a future explicit goal approves a narrow next step.
+
+New v0.137 docs:
+
+- `docs/V0137_PROCEDURAL_COMPOSITION_SPEC.md`
+- `docs/V0137_SILHOUETTE_REFINEMENT_SPEC.md`
+- `docs/V0137_LIGHTING_VFX_SPEC.md`
+- `docs/V0137_PERFORMANCE_SAFETY_REPORT.md`
+- `docs/V0137_BLOCKOUT_QUALITY_GATE.md`
+- `docs/V0137_IMPLEMENTATION_REPORT.md`
+
+Previous checkpoint reference: v0.136 Godot HUD, Minimap, Onboarding, And Microloop-Pacing Cleanup.
 
 New v0.136 docs:
 

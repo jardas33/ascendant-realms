@@ -38,6 +38,8 @@ const v0135ArtifactRoot = join(repoRoot, "artifacts", "desktop-spikes", "godot-s
 const v0135ScreenshotRoot = join(v0135ArtifactRoot, "screenshots");
 const v0136ArtifactRoot = join(repoRoot, "artifacts", "desktop-spikes", "godot-salto", "v0136");
 const v0136ScreenshotRoot = join(v0136ArtifactRoot, "screenshots");
+const v0137ArtifactRoot = join(repoRoot, "artifacts", "desktop-spikes", "godot-salto", "v0137");
+const v0137ScreenshotRoot = join(v0137ArtifactRoot, "screenshots");
 const sourceFixtureRoot = join(repoRoot, "artifacts", "desktop-spike-fixture", "latest");
 const generatedDataRoot = join(spikeRoot, "data", "generated");
 const buildsRoot = join(spikeRoot, "builds");
@@ -5635,6 +5637,281 @@ function validateV0136UsabilityPresentationArtifacts() {
   return report;
 }
 
+function validateV0137BlockoutQualityArtifacts() {
+  const smoke = readOptionalJson(join(v0137ArtifactRoot, "headed-blockout-quality-smoke.json")) ?? readOptionalJson(join(v0137ArtifactRoot, "blockout-quality-smoke.json"));
+  const composition = readOptionalJson(join(v0137ArtifactRoot, "composition-readability-report.json"));
+  const silhouettes = readOptionalJson(join(v0137ArtifactRoot, "silhouette-readability-report.json"));
+  const lightingVfx = readOptionalJson(join(v0137ArtifactRoot, "lighting-vfx-report.json"));
+  const camera = readOptionalJson(join(v0137ArtifactRoot, "camera-screen-use-report.json"));
+  const performance = readOptionalJson(join(v0137ArtifactRoot, "performance-smoke.json"));
+  const trace = readOptionalJson(join(v0137ArtifactRoot, "blockout-quality-trace.json"));
+  const manifest = readOptionalJson(join(v0137ArtifactRoot, "screenshot-manifest.json"));
+  const comparisonExists = existsSync(join(v0137ArtifactRoot, "blockout-comparison.md"));
+  const readmeExists = existsSync(join(v0137ArtifactRoot, "README.md"));
+  const errors = [];
+  const requiredChecks = [
+    "saltoFootholdSilhouette",
+    "wetGraniteRoad",
+    "sidePaths",
+    "ford",
+    "waterEdge",
+    "quarryMineCut",
+    "shrineClearing",
+    "ruinPocket",
+    "barracksFootprint",
+    "commandHall",
+    "buildablePatches",
+    "blockedTerrainCues",
+    "friendlyStaging",
+    "ashenApproachLane",
+    "lumePath",
+    "asterGeometry",
+    "workerGeometry",
+    "militiaGeometry",
+    "rangerGeometry",
+    "ashenAttackerGeometry",
+    "commandHallGeometry",
+    "barracksGeometry",
+    "mineGeometry",
+    "shrineGeometry",
+    "ruinGeometry",
+    "lumeEndpointGeometry",
+    "geometryNotColorAlone",
+    "futureArtSlotMappingPreserved",
+    "restrainedLabels",
+    "overcastHighlandLighting",
+    "warmHearthAccents",
+    "coolWater",
+    "subtleTerrainFog",
+    "restrainedTealLume",
+    "readableShadows",
+    "noBloomOverload",
+    "noParticleSpaghetti",
+    "mineConversionPulse",
+    "workerAssignmentPulse",
+    "constructionProgress",
+    "recruitSpawnPulse",
+    "waveCountdownEntryCue",
+    "attackMarker",
+    "damageFlash",
+    "deathFade",
+    "lumeRestorePulse",
+    "battlefieldFillsViewport",
+    "hudSafeFrame",
+    "defaultZoomReadable",
+    "noGiantMargins",
+    "noBoardGameSlab",
+    "noCombatPeakClutter",
+    "noPrivateHarnessShortcut",
+    "noDebugShortcut",
+    "noStateInjection",
+    "noFixtureOnlyHelperProof",
+    "noScreenshotOnlyProof",
+    "noRoutineEditorUse",
+    "noSaveWrites",
+    "noStableIdChange",
+    "noBrowserRuntimeChange",
+    "noGeneratedOrImportedArt",
+    "noRuntimeArtIntegration",
+    "linkedWardPreserved"
+  ];
+  const requiredCaptures = [
+    "title_backdrop",
+    "battlefield_default",
+    "mine",
+    "barracks",
+    "friendly_staging",
+    "ashen_approach",
+    "combat_peak",
+    "lume",
+    "minimap",
+    "results",
+    "zoomed_out",
+    "zoomed_in"
+  ];
+  if (!smoke) {
+    errors.push("Missing headed-blockout-quality-smoke.json or blockout-quality-smoke.json.");
+  } else {
+    if (smoke.status !== "PASS_V0137_HEADED_BLOCKOUT_QUALITY_SMOKE") {
+      errors.push(`Blockout quality smoke did not pass: ${smoke.status ?? "missing"}.`);
+    }
+    for (const field of [
+      "privateHarnessShortcutUsed",
+      "debugShortcutUsed",
+      "stateInjectionUsed",
+      "fixtureOnlyHelperProofUsed",
+      "screenshotOnlyProofUsed",
+      "routineEditorUseRequired",
+      "saveWritesAllowed",
+      "stableIdsChanged",
+      "browserRuntimeChanged",
+      "generatedOrImportedArtIncluded",
+      "runtimeArtIntegrated"
+    ]) {
+      if (smoke[field] !== false) {
+        errors.push(`Blockout quality smoke expected ${field} false.`);
+      }
+    }
+    if (smoke.linkedWardDamageTakenMultiplier !== 0.92) {
+      errors.push("linked_ward damage multiplier was not preserved at 0.92.");
+    }
+    if (smoke.blockoutStatus?.status !== "PASS_V0137_BLOCKOUT_QUALITY_SCENE_STATUS") {
+      errors.push(`Scene blockout status did not pass: ${smoke.blockoutStatus?.status ?? "missing"}.`);
+    }
+    if (smoke.postMineStatus?.resultsReached !== true) {
+      errors.push("Post-mine flow did not reach Results in the v0.137 smoke.");
+    }
+    for (const key of requiredChecks) {
+      if (smoke.checks?.[key] !== true) {
+        errors.push(`Blockout quality smoke check ${key} was not true.`);
+      }
+    }
+    for (const key of ["resultsReached", "noObjectiveRegression", "noDebugShortcut", "noStateInjection", "linkedWardPreserved"]) {
+      if (smoke.finishChecks?.[key] !== true) {
+        errors.push(`Blockout quality finish check ${key} was not true.`);
+      }
+    }
+  }
+  const expectedReports = [
+    [composition, "PASS_V0137_COMPOSITION_READABILITY", "composition-readability-report.json"],
+    [silhouettes, "PASS_V0137_SILHOUETTE_READABILITY", "silhouette-readability-report.json"],
+    [lightingVfx, "PASS_V0137_LIGHTING_VFX", "lighting-vfx-report.json"],
+    [camera, "PASS_V0137_CAMERA_SCREEN_USE", "camera-screen-use-report.json"],
+    [performance, "PASS_V0137_PERFORMANCE_SMOKE", "performance-smoke.json"]
+  ];
+  for (const [report, expectedStatus, fileName] of expectedReports) {
+    if (report?.status !== expectedStatus) {
+      errors.push(`${fileName} did not pass: ${report?.status ?? "missing"}.`);
+    }
+  }
+  if (performance) {
+    const performanceWindows = new Set((performance.windows ?? []).map((entry) => entry.id));
+    for (const id of ["default_slice", "combat_peak", "zoomed_out", "fog_on", "lume_pulse"]) {
+      if (!performanceWindows.has(id)) {
+        errors.push(`Missing v0.137 performance window: ${id}.`);
+      }
+    }
+    if (performance.screenshotCaptureExcludedFromMeasuredWindow !== true) {
+      errors.push("Performance smoke did not mark screenshot capture as excluded.");
+    }
+    if (performance.finalProductionCertification !== false) {
+      errors.push("Performance smoke must remain non-final certification.");
+    }
+  }
+  if (!trace) {
+    errors.push("Missing blockout-quality-trace.json.");
+  } else {
+    const events = new Set((trace.trace ?? []).map((entry) => entry.event));
+    [
+      "title_start_clicked",
+      "briefing_start_battle_clicked",
+      "minimap_click_to_orient",
+      "move_order_mine",
+      "worker_assigned",
+      "barracks_restore_order",
+      "train_militia_clicked",
+      "combat_attack_right_click",
+      "lume_restore_click"
+    ].forEach((event) => {
+      if (!events.has(event)) {
+        errors.push(`Missing v0.137 blockout trace event: ${event}.`);
+      }
+    });
+    if (trace.noPrivateHarnessShortcutUsed !== true || trace.noDebugShortcutUsed !== true || trace.noStateInjectionUsed !== true || trace.fixtureOnlyHelperProofUsed !== false || trace.screenshotOnlyProofUsed !== false) {
+      errors.push("Blockout quality trace did not preserve no-shortcut proof.");
+    }
+  }
+  if (!comparisonExists) {
+    errors.push("Missing blockout-comparison.md.");
+  }
+  if (!readmeExists) {
+    errors.push("Missing README.md.");
+  }
+  const captures = manifest?.captures ?? [];
+  if (manifest?.status !== "PASS_V0137_SCREENSHOT_MANIFEST") {
+    errors.push(`Screenshot manifest did not pass: ${manifest?.status ?? "missing"}.`);
+  }
+  if (captures.length !== 12) {
+    errors.push(`Expected exactly 12 v0.137 screenshots, found ${captures.length}.`);
+  }
+  for (const id of requiredCaptures) {
+    if (!captures.some((capture) => capture.id === id)) {
+      errors.push(`Missing v0.137 screenshot capture: ${id}.`);
+    }
+  }
+  const enrichedCaptures = captures.map((capture) => {
+    const screenshotPath = join(v0137ScreenshotRoot, capture.fileName);
+    const exists = existsSync(screenshotPath);
+    if (!exists) {
+      errors.push(`Missing screenshot file: ${capture.fileName}.`);
+    }
+    if (capture.width !== 1600 || capture.height !== 900) {
+      errors.push(`Screenshot ${capture.fileName} is ${capture.width}x${capture.height}, expected 1600x900.`);
+    }
+    const status = capture.status ?? {};
+    if (status.generatedOrImportedArtIncluded === true || status.runtimeArtIntegrated === true || status.saveWritesAllowed === true || status.stableIdsChanged === true || status.browserRuntimeChanged === true || status.routineEditorUseRequired === true) {
+      errors.push(`Capture ${capture.id} reported forbidden art/save/stable/browser/editor drift.`);
+    }
+    return {
+      ...capture,
+      path: relativeRepo(screenshotPath),
+      sha256: exists ? hashFile(screenshotPath) : null,
+      sizeBytes: exists ? statSync(screenshotPath).size : null
+    };
+  });
+  const strayPngs = existsSync(v0137ScreenshotRoot)
+    ? readdirSync(v0137ScreenshotRoot).filter((file) => file.endsWith(".png") && !captures.some((capture) => capture.fileName === file))
+    : [];
+  if (strayPngs.length > 0) {
+    errors.push(`Unexpected screenshots in v0137 folder: ${strayPngs.join(", ")}.`);
+  }
+  const hashReport = {
+    schemaVersion: 1,
+    checkpoint: "v0.137",
+    status: errors.filter((error) => error.startsWith("Missing screenshot file") || error.includes("Unexpected screenshots")).length === 0 ? "PASS_V0137_SCREENSHOT_HASHES" : "FAIL_V0137_SCREENSHOT_HASHES",
+    captures: enrichedCaptures.map((capture) => ({
+      id: capture.id,
+      fileName: capture.fileName,
+      path: capture.path,
+      sha256: capture.sha256,
+      sizeBytes: capture.sizeBytes
+    }))
+  };
+  writeJson(join(v0137ArtifactRoot, "screenshot-hashes.json"), hashReport);
+  const report = {
+    schemaVersion: 1,
+    checkpoint: "v0.137",
+    status: errors.length === 0 ? "PASS_V0137_BLOCKOUT_QUALITY_VALIDATION" : "FAIL_V0137_BLOCKOUT_QUALITY_VALIDATION",
+    generatedAtUtc: "deterministic-v0137",
+    smokeStatus: smoke?.status ?? null,
+    compositionStatus: composition?.status ?? null,
+    silhouetteStatus: silhouettes?.status ?? null,
+    lightingVfxStatus: lightingVfx?.status ?? null,
+    cameraStatus: camera?.status ?? null,
+    performanceStatus: performance?.status ?? null,
+    screenshotStatus: manifest?.status ?? null,
+    hashStatus: hashReport.status,
+    captureCount: captures.length,
+    requiredCaptureCount: 12,
+    noPrivateHarnessShortcutUsed: smoke?.privateHarnessShortcutUsed === false,
+    noDebugShortcutUsed: smoke?.debugShortcutUsed === false,
+    noStateInjectionUsed: smoke?.stateInjectionUsed === false,
+    noFixtureOnlyHelperProofUsed: smoke?.fixtureOnlyHelperProofUsed === false,
+    screenshotOnlyProofUsed: false,
+    routineEditorUseRequired: false,
+    saveWritesAllowed: false,
+    stableIdsChanged: false,
+    browserRuntimeChanged: false,
+    generatedOrImportedArtIncluded: false,
+    runtimeArtIntegrated: false,
+    linkedWardDamageTakenMultiplier: 0.92,
+    errors,
+    captures: enrichedCaptures
+  };
+  writeJson(join(v0137ArtifactRoot, "blockout-quality-validation.json"), report);
+  return report;
+}
+
 const v0125AuditAreas = ["title", "briefing", "battle", "results"];
 const v0125PlayerDebugTerms = [
   ...v0124ForbiddenTerms,
@@ -6388,6 +6665,12 @@ try {
     if (String(report.status).startsWith("FAIL")) {
       process.exitCode = 1;
     }
+  } else if (command === "blockout-quality-v0137") {
+    const report = validateV0137BlockoutQualityArtifacts();
+    console.log(stableStringify(report));
+    if (String(report.status).startsWith("FAIL")) {
+      process.exitCode = 1;
+    }
   } else if (command === "player-slice-audit") {
     const report = buildV0125ScreenshotAudit();
     console.log(stableStringify(report));
@@ -6401,7 +6684,7 @@ try {
     runAll();
     console.log("v0.119 Godot representative RTS load spike reports generated.");
   } else {
-    console.log("Usage: node desktop-spikes/godot-salto/tools/godotSpikeTool.mjs <doctor|generate|validate|test|benchmark|export|package|scorecard|manual-review|headed-smoke|headed-benchmark|capture-review|capture-review-v0121|player-slice-validate|player-slice-capture|player-slice-capture-v0126|player-slice-capture-v0127|player-slice-capture-v0128|player-slice-validate-v0129|player-slice-capture-v0129|player-slice-validate-v0130|player-slice-capture-v0130|real-input-v0131|site-semantics-v0132|post-mine-flow-v0133|triple-natural-playthrough-v0134|rts-ergonomics-v0135|usability-presentation-v0136|player-slice-audit|v0118-all|all>");
+    console.log("Usage: node desktop-spikes/godot-salto/tools/godotSpikeTool.mjs <doctor|generate|validate|test|benchmark|export|package|scorecard|manual-review|headed-smoke|headed-benchmark|capture-review|capture-review-v0121|player-slice-validate|player-slice-capture|player-slice-capture-v0126|player-slice-capture-v0127|player-slice-capture-v0128|player-slice-validate-v0129|player-slice-capture-v0129|player-slice-validate-v0130|player-slice-capture-v0130|real-input-v0131|site-semantics-v0132|post-mine-flow-v0133|triple-natural-playthrough-v0134|rts-ergonomics-v0135|usability-presentation-v0136|blockout-quality-v0137|player-slice-audit|v0118-all|all>");
   }
 } catch (error) {
   console.error(error instanceof Error ? error.message : String(error));
