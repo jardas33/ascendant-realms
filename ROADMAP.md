@@ -11,9 +11,24 @@ Every phase should protect these long-term pillars:
 
 ## Current Recommended Next Phase
 
-The current checkpoint is **v0.137 Godot Procedural Visual Composition, Terrain Readability, And Blockout-Quality Upgrade** on 2026-06-06. It keeps the Godot spike bounded, builds on `USABILITY_PRESENTATION_GREEN`, and proves a more intentional procedural Salto battlefield composition, terrain readability, geometry-led silhouettes, restrained lighting/VFX, camera/screen use, 12-capture review pack, screenshot hashes, bounded performance smoke, and full Results completion in the packaged player-facing slice. The browser prototype remains authoritative, the private harness remains separate, and no final engine choice, full port, generated image, imported art, save change, stable-ID change, browser-runtime change, broad economy, broad building tree, broad recruitment, full hero progression, campaign expansion, or runtime art integration is approved.
+The current checkpoint is **v0.138 Reference-Art Workspace, Source Metadata Pipeline, Contact-Sheet Tooling, And First Four Generation Briefs** on 2026-06-06. It keeps the Godot and browser runtimes untouched, builds on `BLOCKOUT_QUALITY_GREEN`, and prepares the external reference-art workflow with an ignored candidate workspace, metadata validation, SVG contact-sheet tooling, review-pack tooling, Emmanuel's guide, and four copy-ready prompts. No images were generated, downloaded, imported, selected as final art, registered, runtime-integrated, or wired into Godot or the browser. The browser prototype remains authoritative, the private Godot harness remains separate, and no final engine choice, full port, save change, stable-ID change, browser-runtime change, broad economy, broad building tree, broad recruitment, full hero progression, campaign expansion, or runtime art integration is approved.
 
-The next recommended step, only after a future explicit goal or Emmanuel's explicit review action, is Emmanuel's manual retest using `GODOT_BLOCKOUT_QUALITY_WINDOWS.bat`, `GODOT_LAUNCH_PLAYER_SLICE_WINDOWS.bat`, and the v0.137 docs. Do not generate art for runtime integration, import art into runtime, mark `runtime-candidate-approved` assets as loadable, resume broad browser visual expansion, add broad gameplay systems, change rewards, change saves, rename IDs, create a desktop save path, choose Godot finally, start a full desktop port, start Unity/Unreal/Electron work, or start v0.138 until a future explicit goal approves a narrow next step.
+The next recommended step, only after a future explicit goal or Emmanuel's explicit review action, is an external human reference-art generation and review session using the v0.138 prompt docs and `npm run art:reference:*` scripts. Do not import art into runtime, mark candidates runtime-approved, wire assets into Godot, resume broad browser visual expansion, add broad gameplay systems, change rewards, change saves, rename IDs, create a desktop save path, choose Godot finally, start a full desktop port, start Unity/Unreal/Electron work, or start v0.139 until a future explicit goal approves a narrow next step.
+
+New v0.138 docs:
+
+- `docs/V0138_REFERENCE_ART_WORKFLOW.md`
+- `docs/V0138_REFERENCE_METADATA_SCHEMA.md`
+- `docs/V0138_CONTACT_SHEET_TOOLING.md`
+- `docs/V0138_FIRST_FOUR_REFERENCE_BRIEFS.md`
+- `docs/V0138_IMPLEMENTATION_REPORT.md`
+- `docs/V0138_EMMANUEL_REFERENCE_ART_GUIDE.md`
+- `docs/art-prompts/V0138_01_SALTO_2_5D_ENVIRONMENT_STYLE_FRAME.md`
+- `docs/art-prompts/V0138_02_HUD_STYLE_FRAME.md`
+- `docs/art-prompts/V0138_03_ASTER_HERO_SILHOUETTE_SHEET.md`
+- `docs/art-prompts/V0138_04_WORKER_SILHOUETTE_SHEET.md`
+
+Previous checkpoint reference: v0.137 Godot Procedural Visual Composition, Terrain Readability, And Blockout-Quality Upgrade.
 
 New v0.137 docs:
 

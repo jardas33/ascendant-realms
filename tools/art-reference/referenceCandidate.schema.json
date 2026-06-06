@@ -1,0 +1,193 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ascendant-realms.local/schemas/v0138-reference-candidate.schema.json",
+  "title": "v0.138 Reference Candidate Metadata",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "candidateId",
+    "briefId",
+    "purpose",
+    "generator",
+    "model",
+    "date",
+    "source",
+    "licencePosture",
+    "protectedIpReview",
+    "visualNotes",
+    "humanStatus",
+    "runtimeIntegrationStatus",
+    "hash",
+    "dimensions",
+    "aspect",
+    "revisionLineage"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": 1
+    },
+    "candidateId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "briefId": {
+      "enum": [
+        "V0138_01_SALTO_2_5D_ENVIRONMENT_STYLE_FRAME",
+        "V0138_02_HUD_STYLE_FRAME",
+        "V0138_03_ASTER_HERO_SILHOUETTE_SHEET",
+        "V0138_04_WORKER_SILHOUETTE_SHEET"
+      ]
+    },
+    "purpose": {
+      "type": "string",
+      "minLength": 1
+    },
+    "generator": {
+      "type": "string",
+      "minLength": 1
+    },
+    "model": {
+      "type": "string",
+      "minLength": 1
+    },
+    "date": {
+      "type": "string",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+    },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "promptDocument", "notes"],
+      "properties": {
+        "type": {
+          "type": "string",
+          "minLength": 1
+        },
+        "promptDocument": {
+          "type": "string",
+          "minLength": 1
+        },
+        "candidateImagePath": {
+          "type": "string",
+          "minLength": 1
+        },
+        "notes": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "licencePosture": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "terms", "runtimeUse", "notes"],
+      "properties": {
+        "status": {
+          "type": "string",
+          "minLength": 1
+        },
+        "terms": {
+          "type": "string",
+          "minLength": 1
+        },
+        "runtimeUse": {
+          "type": "string",
+          "minLength": 1
+        },
+        "notes": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "protectedIpReview": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "protectedLookalikeRisk", "notes"],
+      "properties": {
+        "status": {
+          "type": "string",
+          "minLength": 1
+        },
+        "protectedLookalikeRisk": {
+          "type": "string",
+          "minLength": 1
+        },
+        "notes": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "visualNotes": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "humanStatus": {
+      "type": "string",
+      "minLength": 1
+    },
+    "runtimeIntegrationStatus": {
+      "const": "forbidden"
+    },
+    "hash": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["algorithm", "value"],
+      "properties": {
+        "algorithm": {
+          "const": "sha256"
+        },
+        "value": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "dimensions": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["width", "height", "unit"],
+      "properties": {
+        "width": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "height": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "unit": {
+          "const": "px"
+        }
+      }
+    },
+    "aspect": {
+      "type": "string",
+      "minLength": 1
+    },
+    "revisionLineage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["parentCandidateId", "revision", "notes"],
+      "properties": {
+        "parentCandidateId": {
+          "type": ["string", "null"]
+        },
+        "revision": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "notes": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    }
+  }
+}
