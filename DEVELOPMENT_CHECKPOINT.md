@@ -1,6 +1,48 @@
 # Development Checkpoint
 
-Updated: 2026-06-06 v0.145 Salto HUD Reference-Style Exploration And Human Review Stop
+Updated: 2026-06-06 v0.146 Godot Runtime-Art Pipeline Comparator Spike And Human Decision Stop
+
+## v0.146 Godot Runtime-Art Pipeline Comparator Spike And Human Decision Stop - 2026-06-06
+
+Scope: isolated private Godot runtime-art pipeline comparator and human decision stop. This checkpoint validates the v0.145 HUD/reference-art workspace, encodes the HUD decision for future experiments, benchmarks and captures procedural Tier S/M/L evidence for three approaches, produces a scorecard and recommendation, and stops without importing art, modifying the normal Salto player slice, or starting v0.147.
+
+Included work:
+
+- Confirmed clean synchronized `main` at `ca318bc94a591eb8738c05466246826b215e7042`.
+- Confirmed v0.145 generated exactly three Salto HUD reference-style frames and was pushed with remote CI success.
+- Confirmed the existing fifteen reference candidates remained reference-only and runtime-forbidden before comparator work.
+- Encoded v0.145 HUD decision: H3 as primary combined Salto HUD reference direction, H2 as approved Barrosan material companion, and H1 as limited tactical-information companion with no production UI lock.
+- Added isolated private comparator code under `desktop-spikes/godot-salto/comparators/runtime_art_pipeline/`.
+- Added comparator wrappers and npm scripts for validation, headed benchmark, and capture.
+- Captured Tier S/M/L evidence for `ORTHO_3D_MESH`, `BILLBOARD_2D_ATLAS`, and `HYBRID_3D_WORLD_BILLBOARD_UNITS`.
+- Added scorecard, recommendation, Emmanuel review guide, boundary report, and implementation docs.
+
+Current interpretation:
+
+- Recommended next single-slot runtime-art experiment: `HYBRID_3D_WORLD_BILLBOARD_UNITS`.
+- Fallback comparator: `ORTHO_3D_MESH`.
+- Deferred for the next slot: `BILLBOARD_2D_ATLAS`.
+- This is not a final engine selection, runtime-art approval, production UI lock, or full port start.
+- Human review is pending.
+- v0.147 has not started.
+
+Verification:
+
+```text
+Required closeout stack:
+npm test
+npm run build
+npm run validate:content
+npm run validate:art-intake
+npm run art:reference:init
+npm run art:reference:validate
+npm run art:reference:contact-sheet
+npm run art:reference:review-pack
+npm run godot:runtime-art-comparator:validate
+npm run godot:runtime-art-comparator:benchmark:headed
+npm run godot:runtime-art-comparator:capture
+git diff --check
+```
 
 ## v0.145 Salto HUD Reference-Style Exploration And Human Review Stop - 2026-06-06
 

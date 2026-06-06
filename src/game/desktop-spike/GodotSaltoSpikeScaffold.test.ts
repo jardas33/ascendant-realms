@@ -1744,4 +1744,87 @@ describe("Godot Salto spike scaffold", () => {
     expect(scene3d).not.toContain("ImageTexture");
     expect(toolScript).not.toContain("ImageTexture");
   });
+
+  it("defines the v0.146 isolated runtime-art pipeline comparator spike and review stop", async () => {
+    [
+      "GODOT_ART_PIPELINE_COMPARATOR_WINDOWS.bat",
+      "tools/godot/runtimeArtComparatorTool.mjs",
+      "tools/godot/runGodotRuntimeArtComparatorValidation.ps1",
+      "tools/godot/runGodotRuntimeArtComparatorBenchmarkWindows.ps1",
+      "tools/godot/captureGodotRuntimeArtComparatorWindows.ps1",
+      "desktop-spikes/godot-salto/comparators/runtime_art_pipeline/runtime_art_pipeline_comparator.tscn",
+      "desktop-spikes/godot-salto/comparators/runtime_art_pipeline/runtime_art_pipeline_comparator.gd",
+      "docs/V0146_RUNTIME_ART_PIPELINE_COMPARATOR_SPEC.md",
+      "docs/V0146_RUNTIME_ART_PIPELINE_BENCHMARK_REPORT.md",
+      "docs/V0146_RUNTIME_ART_PIPELINE_SCORECARD.md",
+      "docs/V0146_RUNTIME_ART_PIPELINE_RECOMMENDATION.md",
+      "docs/V0146_EMMANUEL_RUNTIME_ART_PIPELINE_REVIEW_GUIDE.md",
+      "docs/V0146_REFERENCE_ONLY_AND_COMPARATOR_BOUNDARY.md",
+      "docs/V0146_IMPLEMENTATION_REPORT.md"
+    ].forEach((path) => expect(existsSync(path), path).toBe(true));
+
+    const packageJson = await readJson<{ scripts: Record<string, string> }>("package.json");
+    const project = await readFile("desktop-spikes/godot-salto/project.godot", "utf8");
+    const rootScript = await readFile("desktop-spikes/godot-salto/scripts/salto_spike_root.gd", "utf8");
+    const comparatorScript = await readFile(
+      "desktop-spikes/godot-salto/comparators/runtime_art_pipeline/runtime_art_pipeline_comparator.gd",
+      "utf8"
+    );
+    const toolScript = await readFile("tools/godot/runtimeArtComparatorTool.mjs", "utf8");
+    const comparatorLauncher = await readFile("GODOT_ART_PIPELINE_COMPARATOR_WINDOWS.bat", "utf8");
+    const stabilizedLauncher = await readFile("GODOT_LAUNCH_STABILIZED_SALTO_REVIEW_WINDOWS.bat", "utf8");
+    const playerLauncher = await readFile("GODOT_LAUNCH_PLAYER_SLICE_WINDOWS.bat", "utf8");
+    const scorecard = await readFile("docs/V0146_RUNTIME_ART_PIPELINE_SCORECARD.md", "utf8");
+    const recommendation = await readFile("docs/V0146_RUNTIME_ART_PIPELINE_RECOMMENDATION.md", "utf8");
+    const boundary = await readFile("docs/V0146_REFERENCE_ONLY_AND_COMPARATOR_BOUNDARY.md", "utf8");
+    const guide = await readFile("docs/V0146_EMMANUEL_RUNTIME_ART_PIPELINE_REVIEW_GUIDE.md", "utf8");
+    const implementation = await readFile("docs/V0146_IMPLEMENTATION_REPORT.md", "utf8");
+
+    [
+      "godot:runtime-art-comparator:validate",
+      "godot:runtime-art-comparator:benchmark:headed",
+      "godot:runtime-art-comparator:capture"
+    ].forEach((script) => expect(packageJson.scripts[script], script).toBeTypeOf("string"));
+
+    expect(project).toContain('run/main_scene="res://scenes/salto_spike_root.tscn"');
+    expect(rootScript).toContain("--runtime-art-comparator");
+    expect(rootScript).toContain("runtime_art_pipeline_comparator.gd");
+    expect(rootScript).toContain("PASS_V0146_PRIVATE_COMPARATOR_DISPATCH");
+    expect(rootScript).toContain("show_player_title");
+
+    [
+      "ORTHO_3D_MESH",
+      "BILLBOARD_2D_ATLAS",
+      "HYBRID_3D_WORLD_BILLBOARD_UNITS",
+      "generatedReferenceImagesImported",
+      "downloadedAssetsUsed",
+      "normalPlayerSliceWired",
+      "browserRuntimeWired",
+      "finalEngineSelection"
+    ].forEach((text) => expect(comparatorScript).toContain(text));
+
+    [
+      "recommendedNextSingleSlotExperiment",
+      "HYBRID_3D_WORLD_BILLBOARD_UNITS",
+      "BILLBOARD_2D_ATLAS",
+      "scorecard.md",
+      "benchmark-summary.md",
+      "contact-sheet.svg"
+    ].forEach((text) => expect(toolScript).toContain(text));
+
+    expect(comparatorLauncher).toContain("runGodotRuntimeArtComparatorBenchmarkWindows.ps1");
+    expect(stabilizedLauncher).not.toContain("runtime-art-comparator");
+    expect(stabilizedLauncher).not.toContain("runtime_art_pipeline");
+    expect(playerLauncher).not.toContain("runtime-art-comparator");
+    expect(playerLauncher).not.toContain("runtime_art_pipeline");
+
+    expect(scorecard).toContain("HYBRID_3D_WORLD_BILLBOARD_UNITS");
+    expect(recommendation).toContain("Recommend `HYBRID_3D_WORLD_BILLBOARD_UNITS`");
+    expect(boundary).toContain("Generated reference image import");
+    expect(boundary).toContain("Downloaded assets");
+    expect(boundary).toContain("Normal Salto player-facing slice mutation");
+    expect(guide).toContain("GODOT_ART_PIPELINE_COMPARATOR_WINDOWS.bat");
+    expect(implementation).toContain("No v0.147 work");
+    expect(implementation).toContain("No final engine choice");
+  });
 });

@@ -33,6 +33,7 @@ const SCRIPT_ARG_PREFIXES := [
 	"--rts-ergonomics-smoke",
 	"--usability-presentation-smoke",
 	"--blockout-quality-smoke",
+	"--runtime-art-comparator",
 	"--mode=",
 	"--visual-preset=",
 	"--viewport=",
@@ -63,6 +64,21 @@ func _ready() -> void:
 	current_viewport_size = _viewport_from_args(VIEWPORT_SIZE)
 	active_visual_preset = _visual_preset_from_args()
 	_configure_window()
+	if args.has("--runtime-art-comparator"):
+		_write_absolute_json(_path_join(_artifact_root_from_args(), "runtime-art-comparator-root-dispatch.json"), {
+			"schemaVersion": 1,
+			"checkpoint": "v0.146",
+			"status": "PASS_V0146_PRIVATE_COMPARATOR_DISPATCH",
+			"args": Array(args),
+			"defaultPlayerSliceLaunched": false
+		})
+		var comparator_script := load("res://comparators/runtime_art_pipeline/runtime_art_pipeline_comparator.gd") as GDScript
+		var comparator := Node.new()
+		comparator.name = "V0146RuntimeArtPipelineComparator"
+		comparator.set_script(comparator_script)
+		add_child(comparator)
+		comparator.call_deferred("start")
+		return
 	if args.has("--run-tests"):
 		var test_report: Dictionary = run_headless_tests()
 		_write_report("res://reports/godot-runtime-test-report.json", test_report)

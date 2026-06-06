@@ -1,5 +1,42 @@
 # Changelog
 
+# v0.146 Godot Runtime-Art Pipeline Comparator Spike And Human Decision Stop - 2026-06-06
+
+This checkpoint adds an isolated private Godot runtime-art pipeline comparator and evidence packet for human review. It validates the v0.145 reference-art workspace, encodes the HUD reference decision, runs procedural-only Tier S/M/L comparisons for three possible runtime-art approaches, records the scorecard, recommends a single next experiment, and stops for Emmanuel review.
+
+Added:
+
+- Private comparator scene/script under `desktop-spikes/godot-salto/comparators/runtime_art_pipeline/`.
+- One-click wrapper `GODOT_ART_PIPELINE_COMPARATOR_WINDOWS.bat`.
+- npm scripts `godot:runtime-art-comparator:validate`, `godot:runtime-art-comparator:benchmark:headed`, and `godot:runtime-art-comparator:capture`.
+- Evidence post-processor `tools/godot/runtimeArtComparatorTool.mjs`.
+- v0.146 docs for comparator spec, benchmark report, scorecard, recommendation, Emmanuel review guide, boundary report, and implementation report.
+
+Changed:
+
+- `desktop-spikes/godot-salto/scripts/salto_spike_root.gd` now has a private `--runtime-art-comparator` dispatch path only.
+- Desktop-spike scaffold tests now assert the comparator remains isolated from the normal Salto player slice and default launchers.
+- Handoff, roadmap, development checkpoint, and release checklist now describe v0.146 as a comparator evidence and human decision stop.
+
+Recommendation:
+
+- Recommended next single-slot runtime-art experiment: `HYBRID_3D_WORLD_BILLBOARD_UNITS`.
+- Fallback comparator: `ORTHO_3D_MESH`.
+- Deferred for the next slot: `BILLBOARD_2D_ATLAS`.
+
+Boundaries:
+
+- Zero image generation.
+- No generated reference image import.
+- No downloaded asset use.
+- No normal Salto player-slice mutation.
+- No player-facing Godot wiring or browser-runtime wiring.
+- No manifest mutation, art-slot mutation, production package mutation, save change, stable-ID change, final runtime-art approval, final engine selection, full port, or v0.147 work.
+
+Verification:
+
+- Required v0.146 verification is listed in `docs/V0146_IMPLEMENTATION_REPORT.md` and must be run before closeout.
+
 # v0.145 Salto HUD Reference-Style Exploration And Human Review Stop - 2026-06-06
 
 This checkpoint generates exactly three Salto HUD reference-style frames for human review. It encodes the v0.144 silhouette review decision inside the generation milestone, keeps all images ignored local reference candidates only, preserves `runtimeIntegrationStatus = forbidden`, regenerates the contact sheet and review pack for fifteen total candidates, and records tracked review docs.

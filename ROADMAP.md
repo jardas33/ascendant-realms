@@ -11,9 +11,21 @@ Every phase should protect these long-term pillars:
 
 ## Current Recommended Next Phase
 
-The current checkpoint is **v0.145 Salto HUD Reference-Style Exploration And Human Review Stop** on 2026-06-06. It keeps the Godot and browser runtimes untouched, encodes the v0.144 silhouette review decision, generates exactly three ignored local Salto HUD reference-style frames, validates matching runtime-forbidden metadata, updates the contact sheet and review pack for fifteen total reference candidates, and stops for Emmanuel's human HUD review. The browser prototype remains authoritative, the private Godot harness remains separate, and no final engine choice, full port, save change, stable-ID change, browser-runtime change, runtime art integration, art-slot mutation, protected-IP approval, final character design, final art choice, production UI lock, portrait, environment image, broad unit art, sprite, texture, model, UI kit, atlas, animation sheet, broad economy, broad building tree, broad recruitment, full hero progression, campaign expansion, or v0.146 work is approved.
+The current checkpoint is **v0.146 Godot Runtime-Art Pipeline Comparator Spike And Human Decision Stop** on 2026-06-06. It keeps the browser runtime, normal Salto player slice, art slots, production package, saves, and stable IDs untouched while adding one isolated private Godot comparator under `desktop-spikes/godot-salto/comparators/runtime_art_pipeline/`. It validates the v0.145 HUD/reference-art boundary, encodes H3 as the primary HUD reference direction with H2 as material companion and H1 as limited tactical companion, captures Tier S/M/L evidence for `ORTHO_3D_MESH`, `BILLBOARD_2D_ATLAS`, and `HYBRID_3D_WORLD_BILLBOARD_UNITS`, recommends `HYBRID_3D_WORLD_BILLBOARD_UNITS` as the next single-slot experiment, and stops for Emmanuel's human decision review.
 
-The next recommended step is human review and explicit approval only: Emmanuel may review `docs/V0145_HUD_REFERENCE_STYLE_REVIEW_GUIDE.md`, the contact sheet, and `artifacts/art-review/v0138/review-notes/v0145-salto-hud-reference-style-review.md`. Do not generate more HUD frames, import art into runtime, mark candidates runtime-approved, wire assets into Godot, wire assets into the browser, resume broad browser visual expansion, add broad gameplay systems, change rewards, change saves, rename IDs, create a desktop save path, choose Godot finally, start a full desktop port, start Unity/Unreal/Electron work, or start v0.146 until a future explicit goal approves a narrow next step.
+The next recommended step is human review and explicit approval only: Emmanuel may review `docs/V0146_EMMANUEL_RUNTIME_ART_PIPELINE_REVIEW_GUIDE.md`, the ignored v0.146 evidence under `artifacts/desktop-spikes/godot-salto/v0146/`, and the scorecard/recommendation docs. Do not import generated reference images, generate new images, mark candidates runtime-approved, modify the normal Salto player slice, wire comparator output into Godot production/player-facing flow, wire assets into the browser, mutate manifests or art slots, change saves or stable IDs, create a desktop save path, choose Godot finally, start a full desktop port, start Unity/Unreal/Electron work, or start v0.147 until a future explicit goal approves a narrow next step.
+
+New v0.146 docs:
+
+- `docs/V0146_RUNTIME_ART_PIPELINE_COMPARATOR_SPEC.md`
+- `docs/V0146_RUNTIME_ART_PIPELINE_BENCHMARK_REPORT.md`
+- `docs/V0146_RUNTIME_ART_PIPELINE_SCORECARD.md`
+- `docs/V0146_RUNTIME_ART_PIPELINE_RECOMMENDATION.md`
+- `docs/V0146_EMMANUEL_RUNTIME_ART_PIPELINE_REVIEW_GUIDE.md`
+- `docs/V0146_REFERENCE_ONLY_AND_COMPARATOR_BOUNDARY.md`
+- `docs/V0146_IMPLEMENTATION_REPORT.md`
+
+Previous checkpoint reference: v0.145 Salto HUD Reference-Style Exploration And Human Review Stop.
 
 New v0.145 docs:
 
