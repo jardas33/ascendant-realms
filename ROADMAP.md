@@ -11,9 +11,18 @@ Every phase should protect these long-term pillars:
 
 ## Current Recommended Next Phase
 
-The current checkpoint is **v0.140 Salto Environment Reference-Art Canary Generation And Human Style-Lock Stop** on 2026-06-06. It keeps the Godot and browser runtimes untouched, generates exactly three ignored local Salto environment reference-only candidates, validates matching metadata, builds the local contact sheet and review pack, and stops for Emmanuel's human art review. The browser prototype remains authoritative, the private Godot harness remains separate, and no final engine choice, full port, save change, stable-ID change, browser-runtime change, runtime art integration, art-slot mutation, protected-IP approval, final art choice, HUD art, character art, unit art, sprite, texture, model, animation, broad economy, broad building tree, broad recruitment, full hero progression, campaign expansion, or v0.141 work is approved.
+The current checkpoint is **v0.141 Salto Environment Style-Lock Revision Round And Human Approval Stop** on 2026-06-06. It keeps the Godot and browser runtimes untouched, generates exactly three revised ignored local Salto environment reference-only candidates, validates six total matching metadata records, rebuilds the local contact sheet and review pack, and stops for Emmanuel's human style-lock review. Candidate A from v0.140 is the primary visual base, Candidate C is the tactical-layout reference, and Candidate B is only a restrained atmosphere reference. The browser prototype remains authoritative, the private Godot harness remains separate, and no final engine choice, full port, save change, stable-ID change, browser-runtime change, runtime art integration, art-slot mutation, protected-IP approval, final art choice, HUD art, character art, unit art, sprite, texture, model, UI kit, animation, broad economy, broad building tree, broad recruitment, full hero progression, campaign expansion, or v0.142 work is approved.
 
-The next recommended step is human review only: Emmanuel should inspect `docs/V0140_EMMANUEL_ART_REVIEW_GUIDE.md` and the local contact sheet. Do not import art into runtime, mark candidates runtime-approved, wire assets into Godot, wire assets into the browser, resume broad browser visual expansion, add broad gameplay systems, change rewards, change saves, rename IDs, create a desktop save path, choose Godot finally, start a full desktop port, start Unity/Unreal/Electron work, or start v0.141 until a future explicit goal approves a narrow next step.
+The next recommended step is human review only: Emmanuel should inspect `docs/V0141_STYLE_LOCK_REVIEW_GUIDE.md` and the local contact sheet. Do not import art into runtime, mark candidates runtime-approved, wire assets into Godot, wire assets into the browser, resume broad browser visual expansion, add broad gameplay systems, change rewards, change saves, rename IDs, create a desktop save path, choose Godot finally, start a full desktop port, start Unity/Unreal/Electron work, or start v0.142 until a future explicit goal approves a narrow next step.
+
+New v0.141 docs:
+
+- `docs/V0141_SALTO_ENVIRONMENT_REVISION_REPORT.md`
+- `docs/V0141_STYLE_LOCK_REVIEW_GUIDE.md`
+- `docs/V0141_REFERENCE_ONLY_BOUNDARY.md`
+- `docs/V0141_IMPLEMENTATION_REPORT.md`
+
+Previous checkpoint reference: v0.140 Salto Environment Reference-Art Canary Generation And Human Style-Lock Stop.
 
 New v0.140 docs:
 

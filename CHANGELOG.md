@@ -1,5 +1,30 @@
 # Changelog
 
+# v0.141 Salto Environment Style-Lock Revision Round And Human Approval Stop - 2026-06-06
+
+This checkpoint uses the v0.140 canary review direction to generate exactly three revised Salto environment reference-only candidates. Candidate A is the primary visual base, Candidate C is the tactical-layout reference, and Candidate B is only a restrained atmosphere reference. It validates six total candidate metadata files, rebuilds the local contact sheet and review pack, updates tracked review docs, and stops for Emmanuel's style-lock review.
+
+Added:
+
+- Three ignored local revised environment candidates under `artifacts/art-review/v0138/candidates/`.
+- Three ignored matching metadata files under `artifacts/art-review/v0138/metadata/`.
+- Ignored v0.141 local style-lock review note under `artifacts/art-review/v0138/review-notes/`.
+- v0.141 docs for the revision report, style-lock review guide, reference-only boundary, and implementation report.
+
+Changed:
+
+- Regenerated ignored v0.138 reference-art validation, contact-sheet, and review-pack outputs for six total environment candidates.
+- Handoff, roadmap, development checkpoint, and release checklist now describe v0.141 as a reference-only style-lock revision stop.
+
+Boundaries:
+
+- No HUD, Aster, Worker, unit, sprite, texture, model, UI kit, animation, or extra candidate generation.
+- No Godot wiring, browser wiring, runtime import, art-slot mutation, save change, stable-ID change, final art choice, protected-IP approval, or v0.142 work.
+
+Verification:
+
+- Required v0.141 verification is listed in `docs/V0141_IMPLEMENTATION_REPORT.md` and must be run before closeout.
+
 # v0.140 Salto Environment Reference-Art Canary Generation And Human Style-Lock Stop - 2026-06-06
 
 This checkpoint tests the enabled Codex image-generation capability in a controlled reference-only canary session. It generates exactly three Salto environment candidates for human review, validates matching metadata, builds the local contact sheet and review pack, and stops for Emmanuel's art review.

@@ -1,6 +1,42 @@
 # Development Checkpoint
 
-Updated: 2026-06-06 v0.140 Salto Environment Reference-Art Canary Generation And Human Style-Lock Stop
+Updated: 2026-06-06 v0.141 Salto Environment Style-Lock Revision Round And Human Approval Stop
+
+## v0.141 Salto Environment Style-Lock Revision Round And Human Approval Stop - 2026-06-06
+
+Scope: controlled reference-only Salto environment revision round. This checkpoint generates exactly three revised environment candidates from the v0.140 human direction, validates six total metadata/contact-sheet/review-pack outputs, records tracked docs, and stops for Emmanuel's human style-lock review.
+
+Included work:
+
+- Confirmed clean synchronized `main` at `5a5f662de51fedd6cfa8635c01e851c6ad524b4d`.
+- Confirmed v0.140 produced exactly three validated environment reference-only candidates with `runtimeIntegrationStatus = forbidden`.
+- Confirmed the Codex `image_generation` feature was available.
+- Generated exactly three revised environment-only candidates: `v0141-env-r1-gameplay-first-barrosan`, `v0141-env-r2-barrosan-signature`, and `v0141-env-r3-modern-balanced-ashen-contrast`.
+- Added matching ignored metadata records with `runtimeIntegrationStatus = forbidden`.
+- Regenerated the local ignored contact sheet and review pack for six total environment candidates.
+- Added v0.141 docs for revision report, style-lock review guide, boundary, and implementation report.
+
+Current interpretation:
+
+- The images are local reference candidates only and are not runtime assets.
+- Human protected-IP and style-lock review is pending.
+- No Godot or browser runtime integration is approved.
+- No final art decision has been made.
+
+Verification:
+
+```text
+Required closeout stack:
+npm test
+npm run build
+npm run validate:content
+npm run validate:art-intake
+npm run art:reference:init
+npm run art:reference:validate
+npm run art:reference:contact-sheet
+npm run art:reference:review-pack
+git diff --check
+```
 
 ## v0.140 Salto Environment Reference-Art Canary Generation And Human Style-Lock Stop - 2026-06-06
 
