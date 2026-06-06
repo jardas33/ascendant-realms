@@ -32,6 +32,8 @@ const v0132ArtifactRoot = join(repoRoot, "artifacts", "desktop-spikes", "godot-s
 const v0132ScreenshotRoot = join(v0132ArtifactRoot, "screenshots");
 const v0133ArtifactRoot = join(repoRoot, "artifacts", "desktop-spikes", "godot-salto", "v0133");
 const v0133ScreenshotRoot = join(v0133ArtifactRoot, "screenshots");
+const v0134ArtifactRoot = join(repoRoot, "artifacts", "desktop-spikes", "godot-salto", "v0134");
+const v0134ScreenshotRoot = join(v0134ArtifactRoot, "screenshots");
 const sourceFixtureRoot = join(repoRoot, "artifacts", "desktop-spike-fixture", "latest");
 const generatedDataRoot = join(spikeRoot, "data", "generated");
 const buildsRoot = join(spikeRoot, "builds");
@@ -5075,6 +5077,165 @@ function validateV0133PostMineFlowArtifacts() {
   return report;
 }
 
+function validateV0134TripleNaturalPlaythroughArtifacts() {
+  const triple = readOptionalJson(join(v0134ArtifactRoot, "triple-playthrough-report.json"));
+  const recovery = readOptionalJson(join(v0134ArtifactRoot, "recovery-case-report.json"));
+  const restart = readOptionalJson(join(v0134ArtifactRoot, "restart-integrity-report.json"));
+  const softlock = readOptionalJson(join(v0134ArtifactRoot, "no-softlock-proof.json"));
+  const shortcut = readOptionalJson(join(v0134ArtifactRoot, "no-shortcut-proof.json"));
+  const manifest = readOptionalJson(join(v0134ArtifactRoot, "screenshot-manifest.json"));
+  const errors = [];
+  const requiredRecoveryCases = [
+    "empty_terrain_before_aster",
+    "invalid_move_before_selection",
+    "right_click_friendly_unit",
+    "move_aster_away_during_conversion",
+    "reenter_capture_ring",
+    "miss_worker_click_once",
+    "click_barracks_before_worker_selection",
+    "empty_box_select_during_combat",
+    "reselect_defenders",
+    "attack_with_no_valid_selection"
+  ];
+  if (triple?.status !== "PASS_V0134_TRIPLE_NATURAL_PLAYTHROUGH") {
+    errors.push(`Triple natural playthrough report did not pass: ${triple?.status ?? "missing"}.`);
+  }
+  if (triple?.profileCount !== 3) {
+    errors.push(`Expected 3 playthrough profiles, found ${triple?.profileCount ?? "missing"}.`);
+  }
+  if (triple?.privateHarnessShortcutUsed !== false || triple?.debugShortcutUsed !== false || triple?.stateInjectionUsed !== false || triple?.scriptedObjectiveSkippingUsed !== false || triple?.fixtureOnlyHelperProofUsed !== false) {
+    errors.push("Triple playthrough report used a forbidden shortcut/debug/state/fixture path.");
+  }
+  if (triple?.linkedWardDamageTakenMultiplier !== 0.92) {
+    errors.push("linked_ward damage multiplier was not preserved at 0.92.");
+  }
+  const profiles = triple?.profiles ?? [];
+  for (const requiredProfile of ["normal_direct_path", "recoverable_mistakes", "restart_and_replay"]) {
+    if (!profiles.some((profile) => profile.id === requiredProfile)) {
+      errors.push(`Missing v0.134 playthrough profile: ${requiredProfile}.`);
+    }
+  }
+  for (const profile of profiles) {
+    if (profile.id === "restart_and_replay") {
+      if ((profile.passes ?? []).length !== 2) {
+        errors.push("Restart-and-replay profile did not include initial and replay passes.");
+      }
+      if (profile.returnedToTitle !== true) {
+        errors.push("Restart-and-replay profile did not return to title.");
+      }
+      for (const pass of profile.passes ?? []) {
+        if (pass.resultsReached !== true || String(pass.status).startsWith("FAIL")) {
+          errors.push(`Restart replay pass did not reach Results cleanly: ${pass.id ?? "unknown"}.`);
+        }
+      }
+    } else if (profile.resultsReached !== true || String(profile.status).startsWith("FAIL")) {
+      errors.push(`Profile did not reach Results cleanly: ${profile.id ?? "unknown"}.`);
+    } else if (profile.returnedToTitle !== true) {
+      errors.push(`Profile did not return to title: ${profile.id ?? "unknown"}.`);
+    }
+  }
+  if (recovery?.status !== "PASS_V0134_RECOVERY_CASES") {
+    errors.push(`Recovery report did not pass: ${recovery?.status ?? "missing"}.`);
+  }
+  const cases = recovery?.cases ?? [];
+  for (const caseId of requiredRecoveryCases) {
+    const entry = cases.find((item) => item.id === caseId);
+    if (!entry) {
+      errors.push(`Missing recovery case: ${caseId}.`);
+    } else if (entry.passed !== true) {
+      errors.push(`Recovery case did not pass: ${caseId}.`);
+    }
+  }
+  if (restart?.status !== "PASS_V0134_RESTART_INTEGRITY") {
+    errors.push(`Restart integrity report did not pass: ${restart?.status ?? "missing"}.`);
+  }
+  const resetChecks = restart?.checks ?? [];
+  for (const resetId of ["restart_and_replay_results_restart", "restart_and_replay_return_title_start_again"]) {
+    const entry = resetChecks.find((item) => item.id === resetId);
+    if (!entry) {
+      errors.push(`Missing restart integrity check: ${resetId}.`);
+    } else if (entry.passed !== true) {
+      errors.push(`Restart integrity check did not pass: ${resetId}.`);
+    }
+  }
+  if (softlock?.status !== "PASS_V0134_NO_SOFTLOCK_PROOF" || softlock?.allProfilesReachedResults !== true || softlock?.allProfilesReturnedToTitle !== true || softlock?.objectiveRegressionDetected !== false) {
+    errors.push(`No-softlock proof did not pass: ${softlock?.status ?? "missing"}.`);
+  }
+  if (shortcut?.status !== "PASS_V0134_NO_SHORTCUT_PROOF") {
+    errors.push(`No-shortcut proof did not pass: ${shortcut?.status ?? "missing"}.`);
+  }
+  for (const field of [
+    "privateHarnessShortcutUsed",
+    "debugShortcutUsed",
+    "stateInjectionUsed",
+    "scriptedObjectiveSkippingUsed",
+    "fixtureOnlyHelperProofUsed",
+    "screenshotOnlyProofUsed",
+    "routineEditorUseRequired"
+  ]) {
+    if (shortcut?.[field] !== false) {
+      errors.push(`No-shortcut proof expected ${field} false.`);
+    }
+  }
+  const captures = manifest?.captures ?? [];
+  if (manifest?.status !== "PASS_V0134_SCREENSHOT_MANIFEST") {
+    errors.push(`Screenshot manifest did not pass: ${manifest?.status ?? "missing"}.`);
+  }
+  if (captures.length < 24) {
+    errors.push(`Expected at least 24 v0.134 screenshots, found ${captures.length}.`);
+  }
+  const enrichedCaptures = captures.map((capture) => {
+    const screenshotPath = join(v0134ScreenshotRoot, capture.fileName);
+    const exists = existsSync(screenshotPath);
+    if (!exists) {
+      errors.push(`Missing screenshot file: ${capture.fileName}.`);
+    }
+    if (capture.width !== 1600 || capture.height !== 900) {
+      errors.push(`Screenshot ${capture.fileName} is ${capture.width}x${capture.height}, expected 1600x900.`);
+    }
+    return {
+      ...capture,
+      path: relativeRepo(screenshotPath),
+      sha256: exists ? hashFile(screenshotPath) : null,
+      sizeBytes: exists ? statSync(screenshotPath).size : null
+    };
+  });
+  const report = {
+    schemaVersion: 1,
+    checkpoint: "v0.134",
+    status: errors.length === 0 ? "PASS_V0134_TRIPLE_NATURAL_PLAYTHROUGH_VALIDATION" : "FAIL_V0134_TRIPLE_NATURAL_PLAYTHROUGH_VALIDATION",
+    generatedAtUtc: "deterministic-v0134",
+    tripleStatus: triple?.status ?? null,
+    recoveryStatus: recovery?.status ?? null,
+    restartStatus: restart?.status ?? null,
+    softlockStatus: softlock?.status ?? null,
+    shortcutStatus: shortcut?.status ?? null,
+    screenshotStatus: manifest?.status ?? null,
+    profileCount: triple?.profileCount ?? null,
+    recoveryCaseCount: cases.length,
+    restartCheckCount: resetChecks.length,
+    captureCount: captures.length,
+    requiredCaptureCount: 24,
+    noPrivateHarnessShortcutUsed: shortcut?.privateHarnessShortcutUsed === false,
+    noDebugShortcutUsed: shortcut?.debugShortcutUsed === false,
+    noStateInjectionUsed: shortcut?.stateInjectionUsed === false,
+    noScriptedObjectiveSkippingUsed: shortcut?.scriptedObjectiveSkippingUsed === false,
+    noFixtureOnlyHelperProofUsed: shortcut?.fixtureOnlyHelperProofUsed === false,
+    screenshotOnlyProofUsed: false,
+    routineEditorUseRequired: false,
+    saveWritesAllowed: false,
+    stableIdsChanged: false,
+    browserRuntimeChanged: false,
+    generatedOrImportedArtIncluded: false,
+    runtimeArtIntegrated: false,
+    linkedWardDamageTakenMultiplier: 0.92,
+    errors,
+    captures: enrichedCaptures
+  };
+  writeJson(join(v0134ArtifactRoot, "triple-natural-playthrough-validation.json"), report);
+  return report;
+}
+
 const v0125AuditAreas = ["title", "briefing", "battle", "results"];
 const v0125PlayerDebugTerms = [
   ...v0124ForbiddenTerms,
@@ -5810,6 +5971,12 @@ try {
     if (String(report.status).startsWith("FAIL")) {
       process.exitCode = 1;
     }
+  } else if (command === "triple-natural-playthrough-v0134") {
+    const report = validateV0134TripleNaturalPlaythroughArtifacts();
+    console.log(stableStringify(report));
+    if (String(report.status).startsWith("FAIL")) {
+      process.exitCode = 1;
+    }
   } else if (command === "player-slice-audit") {
     const report = buildV0125ScreenshotAudit();
     console.log(stableStringify(report));
@@ -5823,7 +5990,7 @@ try {
     runAll();
     console.log("v0.119 Godot representative RTS load spike reports generated.");
   } else {
-    console.log("Usage: node desktop-spikes/godot-salto/tools/godotSpikeTool.mjs <doctor|generate|validate|test|benchmark|export|package|scorecard|manual-review|headed-smoke|headed-benchmark|capture-review|capture-review-v0121|player-slice-validate|player-slice-capture|player-slice-capture-v0126|player-slice-capture-v0127|player-slice-capture-v0128|player-slice-validate-v0129|player-slice-capture-v0129|player-slice-validate-v0130|player-slice-capture-v0130|real-input-v0131|site-semantics-v0132|post-mine-flow-v0133|player-slice-audit|v0118-all|all>");
+    console.log("Usage: node desktop-spikes/godot-salto/tools/godotSpikeTool.mjs <doctor|generate|validate|test|benchmark|export|package|scorecard|manual-review|headed-smoke|headed-benchmark|capture-review|capture-review-v0121|player-slice-validate|player-slice-capture|player-slice-capture-v0126|player-slice-capture-v0127|player-slice-capture-v0128|player-slice-validate-v0129|player-slice-capture-v0129|player-slice-validate-v0130|player-slice-capture-v0130|real-input-v0131|site-semantics-v0132|post-mine-flow-v0133|triple-natural-playthrough-v0134|player-slice-audit|v0118-all|all>");
   }
 } catch (error) {
   console.error(error instanceof Error ? error.message : String(error));

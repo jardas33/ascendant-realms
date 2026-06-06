@@ -503,6 +503,8 @@ func advance_construction(frames: int = 120) -> bool:
 func queue_militia_recruit() -> bool:
 	if not barracks_complete:
 		return false
+	if militia_spawned or militia_recruit_queued or not recruit_queue.is_empty():
+		return false
 	var cost := _recruit_cost("militia")
 	if not _can_pay(cost):
 		return false
@@ -557,6 +559,8 @@ func queue_ranger_recruit() -> bool:
 	return true
 
 func trigger_pressure_wave() -> bool:
+	if pressure_wave_state == "active" or pressure_wave_defeated:
+		return false
 	pressure_wave_state = "active"
 	pressure_wave_defeated = false
 	player_wave_defense_order_active = false

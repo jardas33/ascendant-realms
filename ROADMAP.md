@@ -11,9 +11,20 @@ Every phase should protect these long-term pillars:
 
 ## Current Recommended Next Phase
 
-The current checkpoint is **v0.133.1 Godot Test11 Combat Readability Repair** on 2026-06-05. It keeps the Godot spike bounded, preserves the v0.132 mine-conversion and Worker-assignment proof, replaces loose post-mine objective jumps with guarded prerequisites, removes the box-select skip into Ashen pressure, adds player-facing Barracks restoration, Militia recruitment, visible Ashen countdown, automatic wave launch, simulation-backed combat defeat, Lume restoration, and the `test11` recording repair for Objective 8 defender handoff, four-attacker wave readability, active target marks, empty combat box-select preservation, one-click wave-defense Attack behavior, and reduced top battle chrome. The browser prototype remains authoritative, the private harness remains separate, and no final engine choice, full port, generated image, imported art, save change, stable-ID change, browser-runtime change, broad economy, broad building tree, broad recruitment, full hero progression, campaign expansion, or runtime art integration is approved.
+The current checkpoint is **v0.134 Godot Repeatable Natural Playthrough And Soft-Lock Resilience Gate** on 2026-06-05. It keeps the Godot spike bounded, preserves the v0.133.1 combat-readability repair, adds a packaged repeatability gate with normal, recoverable-mistake, and restart-and-replay profiles, adds public reset-integrity evidence, records no-softlock and no-shortcut proof, and protects repeatability with idempotent Militia recruitment and Ashen wave triggering. The browser prototype remains authoritative, the private harness remains separate, and no final engine choice, full port, generated image, imported art, save change, stable-ID change, browser-runtime change, broad economy, broad building tree, broad recruitment, full hero progression, campaign expansion, or runtime art integration is approved.
 
-The next recommended step, only after a future explicit goal or Emmanuel's explicit review action, is Emmanuel's manual retest using `GODOT_LAUNCH_POST_MINE_FLOW_REVIEW_WINDOWS.bat` and the checklist in `docs/V0133_EMMANUEL_RETEST_GUIDE.md`. Do not generate art for runtime integration, import art into runtime, mark `runtime-candidate-approved` assets as loadable, resume broad browser visual expansion, add broad gameplay systems, change rewards, change saves, rename IDs, create a desktop save path, choose Godot finally, start a full desktop port, start Unity/Unreal/Electron work, or start v0.134 until a future explicit goal approves a narrow next step.
+The next recommended step, only after a future explicit goal or Emmanuel's explicit review action, is Emmanuel's manual retest using `GODOT_TRIPLE_NATURAL_PLAYTHROUGH_WINDOWS.bat`, `GODOT_LAUNCH_PLAYER_SLICE_WINDOWS.bat`, and the checklist in `docs/V0134_EMMANUEL_RETEST_GUIDE.md`. Do not generate art for runtime integration, import art into runtime, mark `runtime-candidate-approved` assets as loadable, resume broad browser visual expansion, add broad gameplay systems, change rewards, change saves, rename IDs, create a desktop save path, choose Godot finally, start a full desktop port, start Unity/Unreal/Electron work, or start v0.135 until a future explicit goal approves a narrow next step.
+
+New v0.134 docs:
+
+- `docs/V0134_REPEATABLE_NATURAL_PLAYTHROUGH_SPEC.md`
+- `docs/V0134_RECOVERY_CASE_LEDGER.md`
+- `docs/V0134_RESTART_INTEGRITY_REPORT.md`
+- `docs/V0134_REPEATABLE_PLAYTHROUGH_GATE.md`
+- `docs/V0134_IMPLEMENTATION_REPORT.md`
+- `docs/V0134_EMMANUEL_RETEST_GUIDE.md`
+
+Previous checkpoint reference: v0.133.1 Godot Test11 Combat Readability Repair.
 
 New v0.133 docs:
 

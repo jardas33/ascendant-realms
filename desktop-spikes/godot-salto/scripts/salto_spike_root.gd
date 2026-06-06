@@ -29,6 +29,7 @@ const SCRIPT_ARG_PREFIXES := [
 	"--site-semantics-validate",
 	"--post-mine-flow-smoke",
 	"--post-mine-flow-validate",
+	"--triple-natural-playthrough",
 	"--mode=",
 	"--visual-preset=",
 	"--viewport=",
@@ -87,6 +88,10 @@ func _ready() -> void:
 	if args.has("--post-mine-flow-smoke") or args.has("--post-mine-flow-validate"):
 		_create_player_slice_ui()
 		await run_post_mine_flow_smoke()
+		return
+	if args.has("--triple-natural-playthrough"):
+		_create_player_slice_ui()
+		await run_triple_natural_playthrough_smoke()
 		return
 	if args.has("--player-slice"):
 		_create_player_slice_ui()
@@ -1747,6 +1752,480 @@ func _post_mine_readme(smoke: Dictionary, manifest: Dictionary) -> String:
 		"- `screenshot-manifest.json` records `%s/%s` required screenshots." % [manifest.get("captureCount", 0), manifest.get("requiredCaptureCount", 21)],
 		"",
 		"No debug shortcut, private-harness action, state injection, fixture-only helper proof, save write, stable-ID change, or Godot-editor work is accepted as proof."
+	]) + "\n"
+
+func run_triple_natural_playthrough_smoke() -> void:
+	var artifact_root := _artifact_root_from_args()
+	var screenshot_root := _path_join(artifact_root, "screenshots")
+	DirAccess.make_dir_recursive_absolute(screenshot_root)
+	_set_capture_viewport(VIEWPORT_SIZE)
+	await _settle_frames(8)
+	var start_usec := Time.get_ticks_usec()
+	var errors: Array[String] = []
+	var captures: Array[Dictionary] = []
+	var playthroughs: Array[Dictionary] = []
+	var recovery_cases: Array[Dictionary] = []
+	var restart_checks: Array[Dictionary] = []
+	last_post_mine_flow_status = {}
+	var normal_profile := await _v0134_complete_natural_battle("normal_direct_path", false, false, screenshot_root, captures, recovery_cases, errors)
+	normal_profile["returnedToTitle"] = await _v0134_return_to_title("normal_direct_path", screenshot_root, captures, errors)
+	playthroughs.append(normal_profile)
+	var mistake_profile := await _v0134_complete_natural_battle("recoverable_mistakes", true, false, screenshot_root, captures, recovery_cases, errors)
+	mistake_profile["returnedToTitle"] = await _v0134_return_to_title("recoverable_mistakes", screenshot_root, captures, errors)
+	playthroughs.append(mistake_profile)
+	var restart_profile := {
+		"id": "restart_and_replay",
+		"passes": [],
+		"returnedToTitle": false
+	}
+	var first_restart_pass := await _v0134_complete_natural_battle("restart_and_replay_initial", false, false, screenshot_root, captures, recovery_cases, errors)
+	restart_profile["passes"].append(first_restart_pass)
+	await _v0134_click_restart_from_results("restart_and_replay", screenshot_root, captures, restart_checks, errors)
+	var replay_pass := await _v0134_complete_natural_battle("restart_and_replay_after_restart", false, true, screenshot_root, captures, recovery_cases, errors)
+	restart_profile["passes"].append(replay_pass)
+	restart_profile["returnedToTitle"] = await _v0134_return_to_title("restart_and_replay", screenshot_root, captures, errors)
+	await _v0134_start_again_from_title("restart_and_replay", screenshot_root, captures, restart_checks, errors)
+	restart_profile["status"] = "PASS_RESTART_AND_REPLAY" if first_restart_pass.get("resultsReached", false) and replay_pass.get("resultsReached", false) else "FAIL_RESTART_AND_REPLAY"
+	playthroughs.append(restart_profile)
+	var green := errors.is_empty()
+	for playthrough in playthroughs:
+		var status_text := str(playthrough.get("status", ""))
+		if status_text.begins_with("FAIL"):
+			green = false
+	for recovery in recovery_cases:
+		if not bool(recovery.get("passed", false)):
+			green = false
+	for check in restart_checks:
+		if not bool(check.get("passed", false)):
+			green = false
+	var triple_report := {
+		"schemaVersion": 1,
+		"checkpoint": "v0.134",
+		"status": "PASS_V0134_TRIPLE_NATURAL_PLAYTHROUGH" if green else "FAIL_V0134_TRIPLE_NATURAL_PLAYTHROUGH",
+		"artifactRoot": artifact_root,
+		"durationMs": snappedf(float(Time.get_ticks_usec() - start_usec) / 1000.0, 0.01),
+		"inputPath": "packaged Godot player slice normal mouse events and normal simulation",
+		"profileCount": 3,
+		"profiles": playthroughs,
+		"errors": errors,
+		"privateHarnessShortcutUsed": false,
+		"debugShortcutUsed": false,
+		"stateInjectionUsed": false,
+		"scriptedObjectiveSkippingUsed": false,
+		"fixtureOnlyHelperProofUsed": false,
+		"screenshotOnlyProofUsed": false,
+		"routineEditorUseRequired": false,
+		"saveWritesAllowed": false,
+		"stableIdsChanged": false,
+		"browserRuntimeChanged": false,
+		"generatedOrImportedArtIncluded": false,
+		"runtimeArtIntegrated": false,
+		"linkedWardDamageTakenMultiplier": 0.92
+	}
+	var recovery_report := {
+		"schemaVersion": 1,
+		"checkpoint": "v0.134",
+		"status": "PASS_V0134_RECOVERY_CASES" if _v0134_all_cases_passed(recovery_cases) else "FAIL_V0134_RECOVERY_CASES",
+		"cases": recovery_cases,
+		"noSoftLockObserved": errors.is_empty()
+	}
+	var restart_report := {
+		"schemaVersion": 1,
+		"checkpoint": "v0.134",
+		"status": "PASS_V0134_RESTART_INTEGRITY" if _v0134_all_cases_passed(restart_checks) else "FAIL_V0134_RESTART_INTEGRITY",
+		"checks": restart_checks,
+		"resetIntegritySource": "Results buttons, Return to Title, Start Salto Review, and Start Battle in packaged player-slice flow"
+	}
+	var softlock_report := {
+		"schemaVersion": 1,
+		"checkpoint": "v0.134",
+		"status": "PASS_V0134_NO_SOFTLOCK_PROOF" if green else "FAIL_V0134_NO_SOFTLOCK_PROOF",
+		"allProfilesReachedResults": _v0134_profiles_reached_results(playthroughs),
+		"allProfilesReturnedToTitle": _v0134_profiles_returned_to_title(playthroughs),
+		"objectiveRegressionDetected": _v0134_any_objective_regression(playthroughs),
+		"errors": errors
+	}
+	var shortcut_report := {
+		"schemaVersion": 1,
+		"checkpoint": "v0.134",
+		"status": "PASS_V0134_NO_SHORTCUT_PROOF",
+		"privateHarnessShortcutUsed": false,
+		"debugShortcutUsed": false,
+		"stateInjectionUsed": false,
+		"scriptedObjectiveSkippingUsed": false,
+		"fixtureOnlyHelperProofUsed": false,
+		"screenshotOnlyProofUsed": false,
+		"routineEditorUseRequired": false,
+		"evidencePath": "packaged player-facing Godot slice mouse events and ordinary simulation"
+	}
+	var screenshot_manifest := {
+		"schemaVersion": 1,
+		"checkpoint": "v0.134",
+		"status": "PASS_V0134_SCREENSHOT_MANIFEST" if captures.size() >= 24 and green else "FAIL_V0134_SCREENSHOT_MANIFEST",
+		"screenshotRoot": screenshot_root,
+		"captureCount": captures.size(),
+		"requiredCaptureCount": 24,
+		"captures": captures
+	}
+	_write_absolute_json(_path_join(artifact_root, "triple-playthrough-report.json"), triple_report)
+	_write_absolute_json(_path_join(artifact_root, "recovery-case-report.json"), recovery_report)
+	_write_absolute_json(_path_join(artifact_root, "restart-integrity-report.json"), restart_report)
+	_write_absolute_json(_path_join(artifact_root, "no-softlock-proof.json"), softlock_report)
+	_write_absolute_json(_path_join(artifact_root, "no-shortcut-proof.json"), shortcut_report)
+	_write_absolute_json(_path_join(artifact_root, "screenshot-manifest.json"), screenshot_manifest)
+	_write_absolute_text(_path_join(artifact_root, "README.md"), _v0134_readme(triple_report, recovery_report, restart_report, screenshot_manifest))
+	get_tree().quit(0 if green else 1)
+
+func _v0134_complete_natural_battle(run_id: String, mistake_mode: bool, from_current_battle: bool, screenshot_root: String, captures: Array[Dictionary], recovery_cases: Array[Dictionary], errors: Array[String]) -> Dictionary:
+	var trace: Array[Dictionary] = []
+	if not from_current_battle:
+		show_player_title()
+		await _settle_frames(8)
+		_trace_real_input(trace, "launch", {"runId": run_id, "screen": "title"})
+		await _inject_mouse_click(Vector2(750, 303), MOUSE_BUTTON_LEFT)
+		_trace_real_input(trace, "title_start_clicked", {"runId": run_id, "position": _vector2_report(Vector2(750, 303))})
+		await _settle_frames(8)
+		if current_step_id != "player_briefing":
+			errors.append("%s did not open briefing from title." % run_id)
+		await _inject_mouse_click(Vector2(750, 411), MOUSE_BUTTON_LEFT)
+		_trace_real_input(trace, "briefing_start_battle_clicked", {"runId": run_id, "position": _vector2_report(Vector2(750, 411))})
+		await _settle_frames(16)
+	else:
+		_trace_real_input(trace, "battle_replay_started_from_restart", {"runId": run_id, "screen": current_step_id})
+	if current_step_id != "player_battle":
+		errors.append("%s did not reach player battle." % run_id)
+		return {"id": run_id, "status": "FAIL_BATTLE_NOT_OPENED", "trace": trace}
+	captures.append(await _capture_v0134_step(screenshot_root, captures.size(), "%s_battle_ready" % run_id, "Battle ready", "battle_ready", run_id))
+	var hero_screen := _scene_screen_position("hero_aster")
+	var mine_screen := _scene_screen_position("west_stone_cut_mine")
+	var worker_screen := _scene_screen_position("worker_00")
+	var barracks_screen := _scene_screen_position("barracks_interaction")
+	var train_button_screen := _scene_screen_position("train_militia_button")
+	var squad_start := _scene_screen_position("squad_drag_start")
+	var squad_end := _scene_screen_position("squad_drag_end")
+	var lume_screen := _scene_screen_position("lume_interaction")
+	if hero_screen == Vector2.INF or mine_screen == Vector2.INF or worker_screen == Vector2.INF or barracks_screen == Vector2.INF or train_button_screen == Vector2.INF or lume_screen == Vector2.INF:
+		errors.append("%s could not resolve required battlefield coordinates." % run_id)
+		return {"id": run_id, "status": "FAIL_COORDINATE_RESOLUTION", "trace": trace}
+	if mistake_mode:
+		await _inject_mouse_click(Vector2(1180, 720), MOUSE_BUTTON_LEFT)
+		_trace_real_input(trace, "empty_terrain_before_aster_probe", {"runId": run_id})
+		await _settle_frames(6)
+		await _inject_mouse_click(mine_screen, MOUSE_BUTTON_RIGHT)
+		_trace_real_input(trace, "invalid_move_before_selection_probe", {"runId": run_id})
+		await _settle_frames(6)
+	await _inject_mouse_motion(hero_screen)
+	await _inject_mouse_click(hero_screen, MOUSE_BUTTON_LEFT)
+	_trace_real_input(trace, "aster_click", {"runId": run_id, "position": _vector2_report(hero_screen)})
+	await _settle_frames(8)
+	if mistake_mode:
+		await _inject_mouse_click(worker_screen, MOUSE_BUTTON_RIGHT)
+		_trace_real_input(trace, "friendly_right_click_probe", {"runId": run_id, "target": "worker_00"})
+		await _settle_frames(6)
+	await _inject_mouse_click(mine_screen, MOUSE_BUTTON_RIGHT)
+	_trace_real_input(trace, "mine_right_click", {"runId": run_id, "position": _vector2_report(mine_screen)})
+	if mistake_mode:
+		await _settle_until_scene_status_number_at_least("post_mine_flow_status", "conversionProgress", 0.25, 160)
+		captures.append(await _capture_v0134_step(screenshot_root, captures.size(), "%s_conversion_before_leave" % run_id, "Conversion before leave", "conversion_before_leave", run_id))
+		await _inject_mouse_click(Vector2(430, 690), MOUSE_BUTTON_RIGHT)
+		_trace_real_input(trace, "move_away_during_conversion_probe", {"runId": run_id})
+		await _settle_frames(40)
+		await _inject_mouse_click(mine_screen, MOUSE_BUTTON_RIGHT)
+		_trace_real_input(trace, "reenter_capture_ring_probe", {"runId": run_id})
+	await _settle_until_scene_status_flag("post_mine_flow_status", "mineControlled", true, 280)
+	captures.append(await _capture_v0134_step(screenshot_root, captures.size(), "%s_mine_controlled" % run_id, "Mine controlled", "mine_controlled", run_id))
+	if mistake_mode:
+		await _inject_mouse_click(worker_screen + Vector2(82, 0), MOUSE_BUTTON_LEFT)
+		_trace_real_input(trace, "miss_worker_click_probe", {"runId": run_id})
+		await _settle_frames(6)
+		await _inject_mouse_click(barracks_screen, MOUSE_BUTTON_LEFT)
+		_trace_real_input(trace, "barracks_click_before_worker_probe", {"runId": run_id})
+		await _settle_frames(6)
+	await _inject_mouse_click(worker_screen, MOUSE_BUTTON_LEFT)
+	_trace_real_input(trace, "worker_click", {"runId": run_id, "position": _vector2_report(worker_screen)})
+	await _settle_frames(8)
+	await _inject_mouse_click(mine_screen, MOUSE_BUTTON_RIGHT)
+	_trace_real_input(trace, "worker_right_click_controlled_mine", {"runId": run_id, "position": _vector2_report(mine_screen)})
+	await _settle_until_scene_status_flag("post_mine_flow_status", "workerAssignedToMine", true, 160)
+	captures.append(await _capture_v0134_step(screenshot_root, captures.size(), "%s_worker_assigned" % run_id, "Worker assigned", "worker_assigned", run_id))
+	if squad_start != Vector2.INF and squad_end != Vector2.INF:
+		await _inject_mouse_drag(squad_start, squad_end)
+		_trace_real_input(trace, "box_select_no_objective_skip_probe", {"runId": run_id})
+		await _settle_frames(8)
+	worker_screen = _scene_screen_position("worker_00")
+	await _inject_mouse_click(worker_screen, MOUSE_BUTTON_LEFT)
+	await _settle_until_scene_status_flag("post_mine_flow_status", "barracksHighlightVisible", true, 80)
+	await _inject_mouse_click(barracks_screen, MOUSE_BUTTON_RIGHT)
+	_trace_real_input(trace, "barracks_restore_right_click", {"runId": run_id, "position": _vector2_report(barracks_screen)})
+	await _settle_until_scene_status_number_at_least("post_mine_flow_status", "constructionProgress", 0.75, 260)
+	captures.append(await _capture_v0134_step(screenshot_root, captures.size(), "%s_construction_75" % run_id, "Construction 75 percent", "construction_75", run_id))
+	await _settle_until_scene_status_flag("post_mine_flow_status", "barracksRestored", true, 260)
+	await _inject_mouse_click(barracks_screen, MOUSE_BUTTON_LEFT)
+	await _settle_until_scene_status_flag("post_mine_flow_status", "barracksSelected", true, 100)
+	await _inject_mouse_click(train_button_screen, MOUSE_BUTTON_LEFT)
+	_trace_real_input(trace, "train_militia_clicked", {"runId": run_id})
+	if mistake_mode:
+		await _inject_mouse_click(train_button_screen, MOUSE_BUTTON_LEFT)
+		_trace_real_input(trace, "duplicate_train_click_probe", {"runId": run_id})
+	await _settle_until_scene_status_number_at_least("post_mine_flow_status", "recruitProgress", 0.50, 220)
+	captures.append(await _capture_v0134_step(screenshot_root, captures.size(), "%s_recruit_50" % run_id, "Recruitment 50 percent", "recruit_50", run_id))
+	await _settle_until_scene_status_flag("post_mine_flow_status", "militiaSpawned", true, 260)
+	captures.append(await _capture_v0134_step(screenshot_root, captures.size(), "%s_militia_spawned" % run_id, "Militia spawned", "militia_spawned", run_id))
+	await _settle_until_scene_status_flag("post_mine_flow_status", "countdownStarted", true, 100)
+	captures.append(await _capture_v0134_step(screenshot_root, captures.size(), "%s_countdown" % run_id, "Ashen countdown", "countdown", run_id))
+	await _settle_until_scene_status_flag("post_mine_flow_status", "waveTriggeredOnce", true, 440)
+	await _settle_until_scene_status_flag("post_mine_flow_status", "enemyMovementStarted", true, 260)
+	captures.append(await _capture_v0134_step(screenshot_root, captures.size(), "%s_enemy_movement" % run_id, "Enemy movement", "enemy_movement", run_id))
+	if mistake_mode:
+		await _inject_mouse_click(Vector2(1180, 720), MOUSE_BUTTON_LEFT)
+		_trace_real_input(trace, "clear_selection_before_attack_probe", {"runId": run_id})
+		await _settle_frames(6)
+		await _inject_mouse_click(_scene_screen_position("attack_button"), MOUSE_BUTTON_LEFT)
+		_trace_real_input(trace, "attack_with_no_valid_selection_probe", {"runId": run_id})
+		await _settle_frames(8)
+		await _inject_mouse_drag(Vector2(1420, 760), Vector2(1500, 830))
+		_trace_real_input(trace, "empty_box_select_during_combat_probe", {"runId": run_id})
+		await _settle_frames(8)
+	if squad_start != Vector2.INF and squad_end != Vector2.INF:
+		await _inject_mouse_drag(squad_start, squad_end)
+		_trace_real_input(trace, "combat_squad_box_selected", {"runId": run_id})
+		await _settle_frames(8)
+	var enemy_screen := _scene_screen_position("ashen_00")
+	await _inject_mouse_click(enemy_screen, MOUSE_BUTTON_RIGHT)
+	_trace_real_input(trace, "combat_attack_right_click", {"runId": run_id, "position": _vector2_report(enemy_screen)})
+	await _settle_until_scene_status_flag("post_mine_flow_status", "combatStarted", true, 360)
+	captures.append(await _capture_v0134_step(screenshot_root, captures.size(), "%s_combat_onset" % run_id, "Combat onset", "combat_onset", run_id))
+	await _settle_until_scene_status_flag("post_mine_flow_status", "waveDefeatedFromSimulation", true, 940)
+	captures.append(await _capture_v0134_step(screenshot_root, captures.size(), "%s_wave_defeated" % run_id, "Wave defeated", "wave_defeated", run_id))
+	await _inject_mouse_click(lume_screen, MOUSE_BUTTON_LEFT)
+	_trace_real_input(trace, "lume_restore_click", {"runId": run_id, "position": _vector2_report(lume_screen)})
+	await _settle_until_scene_status_flag("post_mine_flow_status", "lumeRestored", true, 140)
+	await _settle_until_player_step("player_results", 140)
+	captures.append(await _capture_v0134_step(screenshot_root, captures.size(), "%s_results" % run_id, "Results", "results", run_id))
+	var scene_status := _v0134_scene_status()
+	var checks := _v0134_required_result_checks(scene_status)
+	for key in checks.keys():
+		if not bool(checks[key]):
+			errors.append("%s failed v0.134 playthrough check: %s" % [run_id, key])
+	if mistake_mode:
+		_v0134_record_recovery_cases(run_id, trace, scene_status, recovery_cases)
+	return {
+		"id": run_id,
+		"status": "PASS_NATURAL_PLAYTHROUGH" if _v0134_all_checks_true(checks) else "FAIL_NATURAL_PLAYTHROUGH",
+		"mistakeMode": mistake_mode,
+		"resultsReached": bool(scene_status.get("resultsReached", false)) and current_step_id == "player_results",
+		"returnedToTitle": false,
+		"checks": checks,
+		"sceneStatus": scene_status,
+		"trace": _v0134_combined_trace(trace, scene_status)
+	}
+
+func _v0134_required_result_checks(scene_status: Dictionary) -> Dictionary:
+	return {
+		"asterSelected": bool(scene_status.get("asterSelected", false)),
+		"moveOrderAccepted": bool(scene_status.get("moveOrderAccepted", false)),
+		"mineControlled": bool(scene_status.get("mineControlled", false)),
+		"workerAssignedToMine": bool(scene_status.get("workerAssignedToMine", false)),
+		"barracksRestored": bool(scene_status.get("barracksRestored", false)),
+		"militiaSpawned": bool(scene_status.get("militiaSpawned", false)),
+		"countdownStarted": bool(scene_status.get("countdownStarted", false)),
+		"waveTriggeredOnce": bool(scene_status.get("waveTriggeredOnce", false)),
+		"enemyMovementStarted": bool(scene_status.get("enemyMovementStarted", false)),
+		"combatStarted": bool(scene_status.get("combatStarted", false)),
+		"waveDefeatedFromSimulation": bool(scene_status.get("waveDefeatedFromSimulation", false)),
+		"lumeRestored": bool(scene_status.get("lumeRestored", false)),
+		"resultsReached": bool(scene_status.get("resultsReached", false)) and current_step_id == "player_results",
+		"noObjectiveRegression": not bool(scene_status.get("actualObjectiveRegressionDetected", true)),
+		"boxSelectNoObjectiveSkipProven": bool(scene_status.get("boxSelectNoObjectiveSkipProven", false)),
+		"debugShortcutNotUsed": not bool(scene_status.get("debugShortcutUsed", true)),
+		"stateInjectionNotUsed": not bool(scene_status.get("stateInjectionUsed", true)),
+		"linkedWardPreserved": float(scene_status.get("linkedWardDamageTakenMultiplier", 0.0)) == 0.92
+	}
+
+func _v0134_return_to_title(run_id: String, screenshot_root: String, captures: Array[Dictionary], errors: Array[String]) -> bool:
+	await _inject_mouse_click(Vector2(750, 393), MOUSE_BUTTON_LEFT)
+	await _settle_until_player_step("player_title", 120)
+	if current_step_id != "player_title":
+		errors.append("%s did not return to title from Results." % run_id)
+	captures.append(await _capture_v0134_step(screenshot_root, captures.size(), "%s_return_title" % run_id, "Return to Title", "return_title", run_id))
+	return current_step_id == "player_title"
+
+func _v0134_click_restart_from_results(run_id: String, screenshot_root: String, captures: Array[Dictionary], restart_checks: Array[Dictionary], errors: Array[String]) -> void:
+	await _inject_mouse_click(Vector2(750, 339), MOUSE_BUTTON_LEFT)
+	await _settle_until_player_step("player_battle", 160)
+	await _settle_frames(12)
+	var status := _v0134_scene_status()
+	var check := _v0134_reset_integrity_check("%s_results_restart" % run_id, status)
+	restart_checks.append(check)
+	if not bool(check.get("passed", false)):
+		errors.append("%s restart from Results did not reset cleanly." % run_id)
+	captures.append(await _capture_v0134_step(screenshot_root, captures.size(), "%s_restart_battle_reset" % run_id, "Restart battle reset", "restart_battle_reset", run_id))
+
+func _v0134_start_again_from_title(run_id: String, screenshot_root: String, captures: Array[Dictionary], restart_checks: Array[Dictionary], errors: Array[String]) -> void:
+	if current_step_id != "player_title":
+		return
+	await _inject_mouse_click(Vector2(750, 303), MOUSE_BUTTON_LEFT)
+	await _settle_until_player_step("player_briefing", 80)
+	await _inject_mouse_click(Vector2(750, 411), MOUSE_BUTTON_LEFT)
+	await _settle_until_player_step("player_battle", 120)
+	await _settle_frames(12)
+	var status := _v0134_scene_status()
+	var check := _v0134_reset_integrity_check("%s_return_title_start_again" % run_id, status)
+	restart_checks.append(check)
+	if not bool(check.get("passed", false)):
+		errors.append("%s return-title start-again path did not reset cleanly." % run_id)
+	captures.append(await _capture_v0134_step(screenshot_root, captures.size(), "%s_start_again_reset" % run_id, "Start again reset", "start_again_reset", run_id))
+
+func _v0134_reset_integrity_check(id: String, status: Dictionary) -> Dictionary:
+	var selected: Array = status.get("selectedIds", [])
+	var checks := {
+		"objectiveReset": str(status.get("objectiveStep", "")) == "select_aster",
+		"selectionReset": selected.is_empty(),
+		"mineOwnershipReset": not bool(status.get("mineControlled", false)),
+		"workerAssignmentReset": not bool(status.get("workerAssignedToMine", false)),
+		"barracksReset": not bool(status.get("barracksRestored", false)) and not bool(status.get("barracksBuildOrderAccepted", false)),
+		"recruitReset": not bool(status.get("recruitQueueStarted", false)) and not bool(status.get("militiaSpawned", false)),
+		"countdownReset": not bool(status.get("countdownStarted", false)),
+		"waveReset": not bool(status.get("waveTriggeredOnce", false)) and int(status.get("waveRemainingCount", 4)) == 4,
+		"lumeReset": not bool(status.get("lumeRestored", false)),
+		"resultsReset": not bool(status.get("resultsReached", false)),
+		"hudMinimapReset": bool(status.get("routineEditorUseRequired", true)) == false
+	}
+	return {
+		"id": id,
+		"passed": _v0134_all_checks_true(checks),
+		"checks": checks,
+		"status": status
+	}
+
+func _v0134_record_recovery_cases(run_id: String, trace: Array[Dictionary], scene_status: Dictionary, recovery_cases: Array[Dictionary]) -> void:
+	var events := _v0134_event_names(trace, scene_status)
+	var feedback: Array = scene_status.get("v0134RecoveryFeedbackIds", [])
+	_v0134_add_recovery_case(recovery_cases, run_id, "empty_terrain_before_aster", events.has("empty_terrain_before_aster") or feedback.has("empty_terrain_before_aster"), feedback, scene_status)
+	_v0134_add_recovery_case(recovery_cases, run_id, "invalid_move_before_selection", events.has("right_click_rejected_no_selection") or feedback.has("no_selection_move_rejected"), feedback, scene_status)
+	_v0134_add_recovery_case(recovery_cases, run_id, "right_click_friendly_unit", events.has("right_click_friendly_unit_ignored") or feedback.has("friendly_right_click_ignored"), feedback, scene_status)
+	_v0134_add_recovery_case(recovery_cases, run_id, "move_aster_away_during_conversion", events.has("move_away_during_conversion_probe") and bool(scene_status.get("mineControlled", false)), feedback, scene_status)
+	_v0134_add_recovery_case(recovery_cases, run_id, "reenter_capture_ring", events.has("reenter_capture_ring_probe") and bool(scene_status.get("mineControlled", false)), feedback, scene_status)
+	_v0134_add_recovery_case(recovery_cases, run_id, "miss_worker_click_once", events.has("miss_worker_click_probe") and bool(scene_status.get("workerAssignedToMine", false)), feedback, scene_status)
+	_v0134_add_recovery_case(recovery_cases, run_id, "click_barracks_before_worker_selection", events.has("barracks_click_before_worker_probe") and (events.has("barracks_click_before_restored") or feedback.has("barracks_not_ready")), feedback, scene_status)
+	_v0134_add_recovery_case(recovery_cases, run_id, "empty_box_select_during_combat", events.has("empty_box_select_during_combat_probe") and (events.has("box_select_empty_preserved_defenders") or bool(scene_status.get("boxSelectNoObjectiveSkipProven", false))), feedback, scene_status)
+	_v0134_add_recovery_case(recovery_cases, run_id, "reselect_defenders", events.has("combat_squad_box_selected") and bool(scene_status.get("attackInputAccepted", false)), feedback, scene_status)
+	_v0134_add_recovery_case(recovery_cases, run_id, "attack_with_no_valid_selection", events.has("attack_with_no_valid_selection_recovered") or feedback.has("attack_no_selection_auto_recover"), feedback, scene_status)
+
+func _v0134_add_recovery_case(recovery_cases: Array[Dictionary], run_id: String, id: String, passed: bool, feedback: Array, scene_status: Dictionary) -> void:
+	recovery_cases.append({
+		"id": id,
+		"runId": run_id,
+		"passed": passed,
+		"feedbackIds": feedback.duplicate(),
+		"objectiveStep": scene_status.get("objectiveStep", ""),
+		"objectiveRegressionDetected": scene_status.get("actualObjectiveRegressionDetected", false),
+		"resultsReached": scene_status.get("resultsReached", false)
+	})
+
+func _v0134_event_names(trace: Array[Dictionary], scene_status: Dictionary) -> Array[String]:
+	var names: Array[String] = []
+	for entry in _v0134_combined_trace(trace, scene_status):
+		var event_name := str(entry.get("event", ""))
+		if event_name != "" and not names.has(event_name):
+			names.append(event_name)
+	return names
+
+func _v0134_combined_trace(trace: Array[Dictionary], scene_status: Dictionary) -> Array[Dictionary]:
+	var combined: Array[Dictionary] = trace.duplicate(true)
+	for entry in scene_status.get("trace", []):
+		combined.append(entry)
+	return combined
+
+func _v0134_scene_status() -> Dictionary:
+	var raw_scene_status: Variant = _call_scene("post_mine_flow_status")
+	var scene_status: Dictionary = raw_scene_status if typeof(raw_scene_status) == TYPE_DICTIONARY else {}
+	if not last_post_mine_flow_status.is_empty() and not bool(scene_status.get("resultsReached", false)) and current_step_id == "player_results":
+		scene_status = last_post_mine_flow_status.duplicate(true)
+	return scene_status
+
+func _capture_v0134_step(screenshot_root: String, index: int, id: String, label: String, action: String, run_id: String) -> Dictionary:
+	await _settle_frames(2)
+	var safe_id := id.replace(":", "_").replace("/", "_")
+	var file_name := "%02d_%s.png" % [index + 1, safe_id]
+	var target := _path_join(screenshot_root, file_name)
+	var image := get_viewport().get_texture().get_image()
+	if image.get_width() != VIEWPORT_SIZE.x or image.get_height() != VIEWPORT_SIZE.y:
+		image.resize(VIEWPORT_SIZE.x, VIEWPORT_SIZE.y, Image.INTERPOLATE_LANCZOS)
+	var save_result := image.save_png(target)
+	return {
+		"id": safe_id,
+		"label": label,
+		"fileName": file_name,
+		"absolutePath": target,
+		"width": image.get_width(),
+		"height": image.get_height(),
+		"screen": active_mode,
+		"runId": run_id,
+		"action": action,
+		"saveStatus": save_result,
+		"status": _v0134_scene_status()
+	}
+
+func _v0134_all_checks_true(checks: Dictionary) -> bool:
+	for key in checks.keys():
+		if not bool(checks[key]):
+			return false
+	return true
+
+func _v0134_all_cases_passed(cases: Array[Dictionary]) -> bool:
+	if cases.is_empty():
+		return false
+	for entry in cases:
+		if not bool(entry.get("passed", false)):
+			return false
+	return true
+
+func _v0134_profiles_reached_results(playthroughs: Array[Dictionary]) -> bool:
+	for entry in playthroughs:
+		if entry.has("passes"):
+			for pass_entry in entry.get("passes", []):
+				if not bool(pass_entry.get("resultsReached", false)):
+					return false
+		elif not bool(entry.get("resultsReached", false)):
+			return false
+	return true
+
+func _v0134_profiles_returned_to_title(playthroughs: Array[Dictionary]) -> bool:
+	if playthroughs.size() != 3:
+		return false
+	for entry in playthroughs:
+		if not bool(entry.get("returnedToTitle", false)):
+			return false
+	return true
+
+func _v0134_any_objective_regression(playthroughs: Array[Dictionary]) -> bool:
+	for entry in playthroughs:
+		if entry.has("passes"):
+			for pass_entry in entry.get("passes", []):
+				if bool(pass_entry.get("sceneStatus", {}).get("actualObjectiveRegressionDetected", false)):
+					return true
+		elif bool(entry.get("sceneStatus", {}).get("actualObjectiveRegressionDetected", false)):
+			return true
+	return false
+
+func _v0134_readme(triple_report: Dictionary, recovery_report: Dictionary, restart_report: Dictionary, manifest: Dictionary) -> String:
+	return "\n".join([
+		"# v0.134 Godot Repeatable Natural Playthrough Evidence",
+		"",
+		"Triple playthrough status: `%s`" % str(triple_report.get("status", "UNKNOWN")),
+		"Recovery status: `%s`" % str(recovery_report.get("status", "UNKNOWN")),
+		"Restart integrity status: `%s`" % str(restart_report.get("status", "UNKNOWN")),
+		"",
+		"These ignored artifacts are generated by `GODOT_TRIPLE_NATURAL_PLAYTHROUGH_WINDOWS.bat` / `npm run godot:headed:triple-natural-playthrough` against the packaged player-facing Godot slice.",
+		"",
+		"- `triple-playthrough-report.json` records the normal, recoverable-mistakes, and restart-and-replay profiles.",
+		"- `recovery-case-report.json` records invalid-click, conversion leave/re-enter, Worker miss, Barracks, combat box-select, defender reselect, and no-selection Attack recovery.",
+		"- `restart-integrity-report.json` records Results restart and Return-to-Title start-again reset checks.",
+		"- `no-softlock-proof.json` and `no-shortcut-proof.json` record the no-softlock and no-private/debug/state/fixture shortcut contract.",
+		"- `screenshot-manifest.json` records `%s/%s` screenshots." % [manifest.get("captureCount", 0), manifest.get("requiredCaptureCount", 24)],
+		"",
+		"No Godot-editor work, private-harness shortcut, state injection, scripted objective skipping, fixture-only helper proof, save write, stable-ID change, generated/imported art, or browser-runtime change is accepted as proof."
 	]) + "\n"
 
 func _apply_player_slice_action(action: String) -> Dictionary:

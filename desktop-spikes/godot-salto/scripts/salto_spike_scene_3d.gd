@@ -159,6 +159,8 @@ var v0133_lume_highlight_visible := false
 var v0133_lume_restore_input := false
 var v0133_lume_restored := false
 var v0133_results_reached := false
+var v0134_recovery_feedback_ids: Array[String] = []
+var v0134_recovery_feedback_count := 0
 
 func _ready() -> void:
 	_create_camera()
@@ -443,6 +445,19 @@ func show_objective_feedback(feedback_id: String) -> bool:
 	_record_notification(normalized)
 	_sync_hud()
 	return true
+
+func _record_v0134_recovery_feedback(feedback_id: String, event_name: String, details: Dictionary = {}) -> void:
+	var normalized := feedback_id.strip_edges().to_lower()
+	if normalized == "":
+		return
+	last_feedback_id = normalized
+	if not v0134_recovery_feedback_ids.has(normalized):
+		v0134_recovery_feedback_ids.append(normalized)
+	v0134_recovery_feedback_count += 1
+	var payload := details.duplicate(true)
+	payload["feedbackId"] = normalized
+	_record_real_input(event_name, payload)
+	_sync_hud()
 
 func set_workload_tier(tier: String) -> bool:
 	var result: bool = runtime.set_workload_tier(tier)
@@ -903,6 +918,8 @@ func real_input_screen_position(subject: String) -> Vector2:
 			return _world_to_screen(_to_world(Vector2(980, 285), 0.12))
 		"train_militia_button":
 			return Vector2(18 + 16 + 3 * 95 + 41, 744 + 106 + 13)
+		"attack_button":
+			return hud_attack_button.get_global_rect().get_center() if hud_attack_button != null else Vector2(18 + 16 + 2 * 95 + 41, 744 + 106 + 13)
 		"quarry", "mine", "move_destination", "west_stone_cut_mine", "site_west_stone_cut":
 			return _world_to_screen(_to_world(WEST_STONE_CUT_MINE_POSITION, 0.12))
 		"squad_drag_start":
@@ -1066,6 +1083,9 @@ func post_mine_flow_status() -> Dictionary:
 		"generatedOrImportedArtIncluded": false,
 		"runtimeArtIntegrated": false,
 		"linkedWardDamageTakenMultiplier": 0.92,
+		"lastFeedbackId": last_feedback_id,
+		"v0134RecoveryFeedbackIds": v0134_recovery_feedback_ids.duplicate(),
+		"v0134RecoveryFeedbackCount": v0134_recovery_feedback_count,
 		"trace": real_input_trace.duplicate(true)
 	}
 
@@ -1147,6 +1167,8 @@ func _reset_real_input_state() -> void:
 	v0133_lume_restore_input = false
 	v0133_lume_restored = false
 	v0133_results_reached = false
+	v0134_recovery_feedback_ids = []
+	v0134_recovery_feedback_count = 0
 
 func _handle_real_mouse_motion(event: InputEventMouseMotion) -> void:
 	if real_input_drag_active and real_input_drag_start != Vector2.INF:
@@ -1199,6 +1221,8 @@ func _select_from_real_click(screen_position: Vector2) -> void:
 	if _select_unit_hit_from_real_click(hit, screen_position):
 		return
 	if hit.is_empty():
+		if runtime.selected_ids.is_empty() and current_onboarding_step == "select_aster":
+			_record_v0134_recovery_feedback("empty_terrain_before_aster", "empty_terrain_before_aster", {"screen": _vector2_report(screen_position)})
 		runtime.clear_selection()
 		real_input_selected_id = ""
 		v0133_selected_structure_id = ""
@@ -1278,6 +1302,7 @@ func _finish_real_box_select(start: Vector2, end: Vector2) -> void:
 
 func _issue_real_order(screen_position: Vector2) -> void:
 	if runtime.selected_ids.is_empty():
+		_record_v0134_recovery_feedback("no_selection_move_rejected", "right_click_rejected_no_selection", {"screen": _vector2_report(screen_position)})
 		_record_real_input("right_click_ignored_no_selection", {"screen": _vector2_report(screen_position)})
 		return
 	var hit := _pick_unit_from_screen(screen_position)
@@ -1295,8 +1320,15 @@ func _issue_real_order(screen_position: Vector2) -> void:
 		_sync_unit_visuals()
 		_sync_hud()
 		return
+	if not hit.is_empty() and str(hit.get("team", "")) == "friendly":
+		_record_v0134_recovery_feedback("friendly_right_click_ignored", "right_click_friendly_unit_ignored", {
+			"screen": _vector2_report(screen_position),
+			"targetId": str(hit.get("id", ""))
+		})
+		return
 	var world := _screen_to_ground(screen_position)
 	if world == Vector3.INF:
+		_record_v0134_recovery_feedback("invalid_ground_click_rejected", "move_order_failed_coordinate_conversion", {"screen": _vector2_report(screen_position)})
 		_record_real_input("move_order_failed_coordinate_conversion", {"screen": _vector2_report(screen_position)})
 		return
 	var destination := _from_world(world)
@@ -1305,6 +1337,12 @@ func _issue_real_order(screen_position: Vector2) -> void:
 		return
 	if _selected_worker_for_v0133_barracks_restore() and _destination_is_barracks(destination):
 		_start_v0133_barracks_restoration(screen_position)
+		return
+	if runtime.worker_assigned_to_mine and current_onboarding_step == "restore_barracks" and _destination_is_barracks(destination):
+		_record_v0134_recovery_feedback("select_worker_before_barracks", "barracks_order_rejected_no_worker_selection", {
+			"screen": _vector2_report(screen_position),
+			"selectedIds": runtime.selected_ids.duplicate()
+		})
 		return
 	if current_onboarding_step == "restore_lume_link" and _destination_is_lume(destination):
 		_restore_v0133_lume_from_input(screen_position)
@@ -1407,6 +1445,7 @@ func _start_v0133_barracks_restoration(screen_position: Vector2) -> void:
 
 func _select_v0133_barracks(screen_position: Vector2) -> void:
 	if not runtime.barracks_complete:
+		_record_v0134_recovery_feedback("barracks_not_ready", "barracks_click_before_restored", {"screen": _vector2_report(screen_position)})
 		_record_real_input("barracks_click_before_restored", {"screen": _vector2_report(screen_position)})
 		return
 	runtime.clear_selection()
@@ -2427,6 +2466,8 @@ func _hud_move_pressed() -> void:
 
 func _hud_attack_pressed() -> void:
 	if current_onboarding_step == "defeat_wave":
+		if runtime.selected_ids.is_empty():
+			_record_v0134_recovery_feedback("attack_no_selection_auto_recover", "attack_with_no_valid_selection_recovered", {})
 		var selected := _select_v0133_defender_squad()
 		real_input_squad_box_selected = selected.size() >= 2
 		if real_input_squad_box_selected:

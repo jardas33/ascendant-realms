@@ -1344,4 +1344,92 @@ describe("Godot Salto spike scaffold", () => {
     expect(scene3d).not.toContain("ImageTexture");
     expect(toolScript).not.toContain("ImageTexture");
   });
+
+  it("defines the v0.134 repeatable natural playthrough and soft-lock resilience gate", async () => {
+    [
+      "GODOT_TRIPLE_NATURAL_PLAYTHROUGH_WINDOWS.bat",
+      "tools/godot/runGodotTripleNaturalPlaythroughWindows.ps1",
+      "docs/V0134_REPEATABLE_NATURAL_PLAYTHROUGH_SPEC.md",
+      "docs/V0134_RECOVERY_CASE_LEDGER.md",
+      "docs/V0134_RESTART_INTEGRITY_REPORT.md",
+      "docs/V0134_REPEATABLE_PLAYTHROUGH_GATE.md",
+      "docs/V0134_IMPLEMENTATION_REPORT.md",
+      "docs/V0134_EMMANUEL_RETEST_GUIDE.md"
+    ].forEach((path) => expect(existsSync(path), path).toBe(true));
+
+    const packageJson = await readJson<{ scripts: Record<string, string> }>("package.json");
+    const rootScript = await readFile("desktop-spikes/godot-salto/scripts/salto_spike_root.gd", "utf8");
+    const scene3d = await readFile("desktop-spikes/godot-salto/scripts/salto_spike_scene_3d.gd", "utf8");
+    const runtime = await readFile("desktop-spikes/godot-salto/scripts/salto_spike_workload_runtime.gd", "utf8");
+    const toolScript = await readFile("desktop-spikes/godot-salto/tools/godotSpikeTool.mjs", "utf8");
+    const smokeScript = await readFile("tools/godot/runGodotTripleNaturalPlaythroughWindows.ps1", "utf8");
+    const gate = await readFile("docs/V0134_REPEATABLE_PLAYTHROUGH_GATE.md", "utf8");
+    const recovery = await readFile("docs/V0134_RECOVERY_CASE_LEDGER.md", "utf8");
+    const restart = await readFile("docs/V0134_RESTART_INTEGRITY_REPORT.md", "utf8");
+    const guide = await readFile("docs/V0134_EMMANUEL_RETEST_GUIDE.md", "utf8");
+    const handoff = await readFile("LLM_GAME_HANDOFF.md", "utf8");
+    const roadmap = await readFile("ROADMAP.md", "utf8");
+
+    expect(packageJson.scripts["godot:headed:triple-natural-playthrough"]).toBeTypeOf("string");
+
+    [
+      "--triple-natural-playthrough",
+      "run_triple_natural_playthrough_smoke",
+      "PASS_V0134_TRIPLE_NATURAL_PLAYTHROUGH",
+      "PASS_V0134_RECOVERY_CASES",
+      "PASS_V0134_RESTART_INTEGRITY",
+      "PASS_V0134_NO_SOFTLOCK_PROOF",
+      "PASS_V0134_NO_SHORTCUT_PROOF",
+      "triple-playthrough-report.json",
+      "recovery-case-report.json",
+      "restart-integrity-report.json",
+      "no-softlock-proof.json",
+      "no-shortcut-proof.json",
+      "scriptedObjectiveSkippingUsed",
+      "fixtureOnlyHelperProofUsed"
+    ].forEach((text) => expect(rootScript).toContain(text));
+
+    [
+      "v0134_recovery_feedback_ids",
+      "empty_terrain_before_aster",
+      "no_selection_move_rejected",
+      "friendly_right_click_ignored",
+      "select_worker_before_barracks",
+      "attack_no_selection_auto_recover",
+      "attack_button",
+      "v0134RecoveryFeedbackIds",
+      "linkedWardDamageTakenMultiplier"
+    ].forEach((text) => expect(scene3d).toContain(text));
+
+    expect(runtime).toContain("if militia_spawned or militia_recruit_queued or not recruit_queue.is_empty()");
+    expect(runtime).toContain("if pressure_wave_state == \"active\" or pressure_wave_defeated");
+
+    [
+      "v0134ArtifactRoot",
+      "v0134ScreenshotRoot",
+      "validateV0134TripleNaturalPlaythroughArtifacts",
+      "PASS_V0134_TRIPLE_NATURAL_PLAYTHROUGH_VALIDATION",
+      "triple-natural-playthrough-v0134",
+      "scriptedObjectiveSkippingUsed",
+      "linkedWardDamageTakenMultiplier"
+    ].forEach((text) => expect(toolScript).toContain(text));
+
+    expect(smokeScript).toContain("--triple-natural-playthrough");
+    expect(smokeScript).toContain("triple-natural-playthrough-v0134");
+    expect(smokeScript).toContain("v0134");
+
+    expect(gate).toContain("Classification: `GREEN`");
+    expect(gate).toContain("Three natural packaged-window playthroughs");
+    expect(recovery).toContain("empty terrain before Aster");
+    expect(recovery).toContain("Attack with no valid selection");
+    expect(restart).toContain("No duplicate wave or Militia spawn");
+    expect(guide).toContain("GODOT_TRIPLE_NATURAL_PLAYTHROUGH_WINDOWS.bat");
+    expect(handoff).toContain("v0.134 Godot Repeatable Natural Playthrough");
+    expect(roadmap).toContain("v0.134 Godot Repeatable Natural Playthrough");
+
+    expect(rootScript).not.toContain("load(\"res://assets");
+    expect(scene3d).not.toContain("load(\"res://assets");
+    expect(scene3d).not.toContain("ImageTexture");
+    expect(toolScript).not.toContain("ImageTexture");
+  });
 });
