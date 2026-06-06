@@ -27,7 +27,21 @@ if (Test-Path $ExePath) {
   if (-not ($resolvedExe.Path.StartsWith($resolvedBuilds.Path))) {
     throw "Refusing to remove export outside Godot builds folder: $($resolvedExe.Path)"
   }
-  Remove-Item -LiteralPath $ExePath -Force
+  $removeDeadline = (Get-Date).AddSeconds(30)
+  $removedExistingExport = $false
+  while (-not $removedExistingExport -and (Get-Date) -lt $removeDeadline) {
+    try {
+      Remove-Item -LiteralPath $ExePath -Force
+      $removedExistingExport = $true
+    } catch [System.UnauthorizedAccessException] {
+      Start-Sleep -Milliseconds 500
+    } catch [System.IO.IOException] {
+      Start-Sleep -Milliseconds 500
+    }
+  }
+  if (-not $removedExistingExport) {
+    Remove-Item -LiteralPath $ExePath -Force
+  }
 }
 $ExportArgs = @(
   "--headless",

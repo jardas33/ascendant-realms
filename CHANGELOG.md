@@ -1,5 +1,28 @@
 # Changelog
 
+# v0.139 Godot Salto Slice Stabilization Gate, Human Review Package, And Next-Phase Roadmap - 2026-06-06
+
+This checkpoint consolidates the current packaged Godot Salto player-facing slice into one stabilized human-review package. It remains a bounded review and roadmap checkpoint: no gameplay systems, generated images, asset downloads, runtime art imports, final Godot choice, full port, browser-runtime change, save change, stable-ID change, multiplayer, or v0.140 work.
+
+Added:
+
+- `GODOT_LAUNCH_STABILIZED_SALTO_REVIEW_WINDOWS.bat`.
+- `GODOT_VALIDATE_STABILIZED_SALTO_REVIEW_WINDOWS.bat`.
+- `GODOT_CAPTURE_STABILIZED_SALTO_REVIEW_WINDOWS.bat`.
+- v0.139 PowerShell wrappers under `tools/godot/`.
+- `tools/godot/generateGodotStabilizationReviewPack.mjs`.
+- Ignored v0.139 artifacts under `artifacts/desktop-spikes/godot-salto/v0139/`: gate, triple-playthrough, usability, performance, screenshot manifest/hash wrappers, package report, scorecard update, and README.
+- v0.139 docs for stabilization gate, final review build, Emmanuel review guide, next-phase options, and implementation report.
+
+Changed:
+
+- Handoff, roadmap, development checkpoint, and release checklist now describe v0.139.
+- The recommended next phase is Option A only after explicit approval: generate four reference-only style frames and stop for human art review.
+
+Verification:
+
+- Required v0.139 verification is listed in `docs/V0139_IMPLEMENTATION_REPORT.md` and must be run before closeout.
+
 # v0.133.1 Godot Test11 Combat Readability And Wave Playability Repair - 2026-06-05
 
 This repair responds to Emmanuel's `test11` packaged-build recording. Objective 8 reached the Ashen wave, but stale Worker/Barracks context, a heavy top battle banner, visible reserve clutter, and weak target marking made the fight hard to read and hard to finish.

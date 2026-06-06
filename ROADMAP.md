@@ -11,9 +11,19 @@ Every phase should protect these long-term pillars:
 
 ## Current Recommended Next Phase
 
-The current checkpoint is **v0.138 Reference-Art Workspace, Source Metadata Pipeline, Contact-Sheet Tooling, And First Four Generation Briefs** on 2026-06-06. It keeps the Godot and browser runtimes untouched, builds on `BLOCKOUT_QUALITY_GREEN`, and prepares the external reference-art workflow with an ignored candidate workspace, metadata validation, SVG contact-sheet tooling, review-pack tooling, Emmanuel's guide, and four copy-ready prompts. No images were generated, downloaded, imported, selected as final art, registered, runtime-integrated, or wired into Godot or the browser. The browser prototype remains authoritative, the private Godot harness remains separate, and no final engine choice, full port, save change, stable-ID change, browser-runtime change, broad economy, broad building tree, broad recruitment, full hero progression, campaign expansion, or runtime art integration is approved.
+The current checkpoint is **v0.139 Godot Salto Slice Stabilization Gate, Human Review Package, And Next-Phase Roadmap** on 2026-06-06. It keeps the Godot and browser runtimes untouched, builds on the v0.134-v0.138 evidence chain, packages one clean stabilized human-review path, generates the ignored v0.139 stabilization review pack, classifies the gate as `SALTO_SLICE_STABILIZATION_GREEN`, and recommends next-phase options without starting them. No images were generated, downloaded, imported, selected as final art, registered, runtime-integrated, or wired into Godot or the browser. The browser prototype remains authoritative, the private Godot harness remains separate, and no final engine choice, full port, save change, stable-ID change, browser-runtime change, broad economy, broad building tree, broad recruitment, full hero progression, campaign expansion, or runtime art integration is approved.
 
-The next recommended step, only after a future explicit goal or Emmanuel's explicit review action, is an external human reference-art generation and review session using the v0.138 prompt docs and `npm run art:reference:*` scripts. Do not import art into runtime, mark candidates runtime-approved, wire assets into Godot, resume broad browser visual expansion, add broad gameplay systems, change rewards, change saves, rename IDs, create a desktop save path, choose Godot finally, start a full desktop port, start Unity/Unreal/Electron work, or start v0.139 until a future explicit goal approves a narrow next step.
+The next recommended step, only after Emmanuel review or a future explicit goal, is Option A from `docs/V0139_NEXT_PHASE_OPTIONS.md`: generate four reference-only style frames and stop for human art review. Do not import art into runtime, mark candidates runtime-approved, wire assets into Godot, resume broad browser visual expansion, add broad gameplay systems, change rewards, change saves, rename IDs, create a desktop save path, choose Godot finally, start a full desktop port, start Unity/Unreal/Electron work, or start v0.140 until a future explicit goal approves a narrow next step.
+
+New v0.139 docs:
+
+- `docs/V0139_SALTO_SLICE_STABILIZATION_GATE.md`
+- `docs/V0139_FINAL_REVIEW_BUILD_REPORT.md`
+- `docs/V0139_EMMANUEL_STABILIZED_SLICE_REVIEW_GUIDE.md`
+- `docs/V0139_NEXT_PHASE_OPTIONS.md`
+- `docs/V0139_IMPLEMENTATION_REPORT.md`
+
+Previous checkpoint reference: v0.138 Reference-Art Workspace, Source Metadata Pipeline, Contact-Sheet Tooling, And First Four Generation Briefs.
 
 New v0.138 docs:
 

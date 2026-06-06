@@ -1,6 +1,42 @@
 # Development Checkpoint
 
-Updated: 2026-06-05 v0.133.1 Godot Test11 Combat Readability and Wave Playability Repair
+Updated: 2026-06-06 v0.139 Godot Salto Slice Stabilization Gate, Human Review Package, And Next-Phase Roadmap
+
+## v0.139 Godot Salto Slice Stabilization Gate, Human Review Package, And Next-Phase Roadmap - 2026-06-06
+
+Scope: bounded Godot player-facing stabilization review packaging, validation aggregation, capture/report tooling, docs, and roadmap only. This checkpoint does not add gameplay systems, select Godot finally, start a full port, create Unity/Unreal/Electron work, generate images, download assets, import runtime art, change browser runtime, saves, stable IDs, rewards, maps, factions, broad AI, broad economy, broad building tree, broad recruitment, pathing balance, multiplayer, PvP, co-op, campaign scope, or v0.140.
+
+Included work:
+
+- Added stabilized Salto launch, validate, and capture `.bat` wrappers.
+- Added v0.139 PowerShell wrappers under `tools/godot/`.
+- Added `tools/godot/generateGodotStabilizationReviewPack.mjs`.
+- Added ignored v0.139 artifacts under `artifacts/desktop-spikes/godot-salto/v0139/`.
+- Added v0.139 docs for the gate, final review build, Emmanuel review guide, next-phase options, and implementation report.
+- Classified the stabilization gate as `SALTO_SLICE_STABILIZATION_GREEN` from the v0.134-v0.138 evidence chain.
+
+Current interpretation:
+
+- The packaged player-facing Godot Salto slice is ready for Emmanuel's stabilized human review.
+- The private engineering harness remains separate and cannot count as human-facing proof.
+- Reference-image generation is recommended only as a future explicit Option A, not started here.
+- Godot is still not selected finally.
+- The browser prototype remains the current source of truth.
+
+Verification:
+
+```text
+Required closeout stack:
+npm test
+npm run build
+npm run validate:content
+npm run validate:art-intake
+npm run godot:all
+npm run godot:fresh-checkout:validate
+npm run art:reference:validate
+npm run art:reference:review-pack
+git diff --check
+```
 
 ## v0.133 Godot Post-Mine Sequence Repair, Barracks-Recruit Guidance, Ashen-Wave Trigger, And Real Combat-Onset Proof - 2026-06-05
 
