@@ -1,6 +1,44 @@
 # Development Checkpoint
 
-Updated: 2026-06-06 v0.144 Aster / Worker Silhouette-Scale Convergence Revisions And Human Review Stop
+Updated: 2026-06-06 v0.145 Salto HUD Reference-Style Exploration And Human Review Stop
+
+## v0.145 Salto HUD Reference-Style Exploration And Human Review Stop - 2026-06-06
+
+Scope: controlled reference-only Salto HUD frame generation and human-review stop. This checkpoint encodes the v0.144 silhouette review decision, generates exactly three HUD reference-style frames, validates matching runtime-forbidden metadata, updates the contact sheet and review pack, and stops without importing art or starting v0.146.
+
+Included work:
+
+- Confirmed clean synchronized `main` at `f832edb1bf4f636f21c4f6099fe951c11fc500dd`.
+- Confirmed v0.144 generated exactly three Aster / Worker silhouette-scale convergence boards and was pushed.
+- Confirmed the existing twelve reference candidates remained reference-only and runtime-forbidden before generation.
+- Encoded v0.144 review decision: T1 as the primary combined silhouette direction, T2 as the Worker-role companion, and T3 only as a limited Aster-presence cue with large sword, ornate emblem language, oversized cape dominance, and polished-fantasy excess rejected.
+- Generated exactly three Salto HUD reference-style frames: H1 gameplay-first tactical clarity, H2 Barrosan material restraint, and H3 modern balanced PC RTS.
+- Added matching ignored metadata records with `runtimeIntegrationStatus = forbidden`.
+- Regenerated the ignored contact sheet and review pack for fifteen total reference candidates.
+- Added the ignored local human review note and v0.145 tracked docs.
+
+Current interpretation:
+
+- The frames are reference-only and are not production UI assets.
+- Human protected-IP and HUD reference review is pending.
+- No Godot or browser runtime integration is approved.
+- No final art or final HUD decision has been made.
+- v0.146 has not started.
+
+Verification:
+
+```text
+Required closeout stack:
+npm test
+npm run build
+npm run validate:content
+npm run validate:art-intake
+npm run art:reference:init
+npm run art:reference:validate
+npm run art:reference:contact-sheet
+npm run art:reference:review-pack
+git diff --check
+```
 
 ## v0.144 Aster / Worker Silhouette-Scale Convergence Revisions And Human Review Stop - 2026-06-06
 

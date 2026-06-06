@@ -1,5 +1,33 @@
 # Changelog
 
+# v0.145 Salto HUD Reference-Style Exploration And Human Review Stop - 2026-06-06
+
+This checkpoint generates exactly three Salto HUD reference-style frames for human review. It encodes the v0.144 silhouette review decision inside the generation milestone, keeps all images ignored local reference candidates only, preserves `runtimeIntegrationStatus = forbidden`, regenerates the contact sheet and review pack for fifteen total candidates, and records tracked review docs.
+
+Added:
+
+- Three ignored local Salto HUD reference-style candidates under `artifacts/art-review/v0138/candidates/`.
+- Three ignored matching metadata files under `artifacts/art-review/v0138/metadata/`.
+- Ignored v0.145 local human review note under `artifacts/art-review/v0138/review-notes/`.
+- v0.145 docs for the HUD generation report, HUD review guide, reference-only boundary, and implementation report.
+
+Changed:
+
+- Regenerated ignored v0.138 reference-art validation, contact-sheet, and review-pack outputs for fifteen total candidates.
+- Handoff, roadmap, development checkpoint, and release checklist now describe v0.145 as a reference-only Salto HUD human-review stop.
+
+Boundaries:
+
+- Exactly three frames only.
+- No production UI asset lock.
+- No runtime-art integration.
+- No character portrait, character generation, environment generation, sprite, texture, model, icon-as-asset, UI kit, atlas, animation sheet, or additional frame generation.
+- No Godot wiring, browser wiring, runtime import, manifest mutation, art-slot mutation, package inclusion, save change, stable-ID change, final runtime-art choice, protected-IP approval, or v0.146 work.
+
+Verification:
+
+- Required v0.145 verification is listed in `docs/V0145_IMPLEMENTATION_REPORT.md` and must be run before closeout.
+
 # v0.144 Aster / Worker Silhouette-Scale Convergence Revisions And Human Review Stop - 2026-06-06
 
 This checkpoint generates exactly three Aster / Worker silhouette-scale convergence boards for human review. It encodes the v0.143 review direction inside the generation milestone, keeps all images ignored local reference candidates only, preserves `runtimeIntegrationStatus = forbidden`, regenerates the contact sheet and review pack for twelve total candidates, and records tracked review docs.
