@@ -1,6 +1,45 @@
 # Development Checkpoint
 
-Updated: 2026-06-06 v0.141 Salto Environment Style-Lock Revision Round And Human Approval Stop
+Updated: 2026-06-06 v0.142 Salto Environment Reference-Only Style Lock Ratification And Silhouette Brief Preparation
+
+## v0.142 Salto Environment Reference-Only Style Lock Ratification And Silhouette Brief Preparation - 2026-06-06
+
+Scope: documentation, ratification, and future-brief preparation only. This checkpoint records Emmanuel's completed v0.141 human style-lock decision, preserves all six environment candidates as reference-only and runtime-forbidden, prepares a future Aster/Worker silhouette-scale board brief, and stops without generating images or starting v0.143.
+
+Included work:
+
+- Confirmed clean synchronized `main` at `99b598b35f53c5086f37f9cab3ec8617ca2575ae`.
+- Confirmed v0.141 produced exactly three revised environment reference-only candidates.
+- Confirmed six total environment candidates and six metadata files validate with `PASS_V0138_REFERENCE_METADATA`.
+- Confirmed all six metadata records keep `runtimeIntegrationStatus = forbidden`.
+- Recorded `v0141-env-r1-gameplay-first-barrosan` as the primary reference-only Salto environment style lock.
+- Recorded `v0141-env-r2-barrosan-signature` as the approved companion reference for Barrosan material language and atmosphere.
+- Limited `v0141-env-r3-modern-balanced-ashen-contrast` to lane hierarchy and Ashen readability, while rejecting technological Lume pylons, visible energy beams, sci-fi crystal towers, excessive cliff spectacle, and cinematic key-art framing.
+- Added the local ignored decision note and v0.142 tracked docs.
+- Prepared `docs/art-prompts/V0143_01_ASTER_WORKER_SILHOUETTE_SCALE_BOARD.md` for a future explicit v0.143 prompt.
+
+Current interpretation:
+
+- The style lock is reference-only and is not final runtime art.
+- Human style approval is not protected-IP clearance.
+- No Godot or browser runtime integration is approved.
+- No Aster or Worker images have been generated yet.
+- v0.143 has been prepared but not started.
+
+Verification:
+
+```text
+Required closeout stack:
+npm test
+npm run build
+npm run validate:content
+npm run validate:art-intake
+npm run art:reference:init
+npm run art:reference:validate
+npm run art:reference:contact-sheet
+npm run art:reference:review-pack
+git diff --check
+```
 
 ## v0.141 Salto Environment Style-Lock Revision Round And Human Approval Stop - 2026-06-06
 

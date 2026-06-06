@@ -11,9 +11,19 @@ Every phase should protect these long-term pillars:
 
 ## Current Recommended Next Phase
 
-The current checkpoint is **v0.141 Salto Environment Style-Lock Revision Round And Human Approval Stop** on 2026-06-06. It keeps the Godot and browser runtimes untouched, generates exactly three revised ignored local Salto environment reference-only candidates, validates six total matching metadata records, rebuilds the local contact sheet and review pack, and stops for Emmanuel's human style-lock review. Candidate A from v0.140 is the primary visual base, Candidate C is the tactical-layout reference, and Candidate B is only a restrained atmosphere reference. The browser prototype remains authoritative, the private Godot harness remains separate, and no final engine choice, full port, save change, stable-ID change, browser-runtime change, runtime art integration, art-slot mutation, protected-IP approval, final art choice, HUD art, character art, unit art, sprite, texture, model, UI kit, animation, broad economy, broad building tree, broad recruitment, full hero progression, campaign expansion, or v0.142 work is approved.
+The current checkpoint is **v0.142 Salto Environment Reference-Only Style Lock Ratification And Silhouette Brief Preparation** on 2026-06-06. It keeps the Godot and browser runtimes untouched, ratifies `v0141-env-r1-gameplay-first-barrosan` as the primary reference-only Salto environment style lock, records `v0141-env-r2-barrosan-signature` as the approved companion reference, limits `v0141-env-r3-modern-balanced-ashen-contrast` to lane hierarchy and Ashen readability, keeps all six environment candidates runtime-forbidden, and prepares a future Aster/Worker silhouette-scale brief without generating images. The browser prototype remains authoritative, the private Godot harness remains separate, and no final engine choice, full port, save change, stable-ID change, browser-runtime change, runtime art integration, art-slot mutation, protected-IP approval, final art choice, HUD art, character art, unit art, sprite, texture, model, portrait, UI kit, animation, broad economy, broad building tree, broad recruitment, full hero progression, campaign expansion, or v0.143 work is approved.
 
-The next recommended step is human review only: Emmanuel should inspect `docs/V0141_STYLE_LOCK_REVIEW_GUIDE.md` and the local contact sheet. Do not import art into runtime, mark candidates runtime-approved, wire assets into Godot, wire assets into the browser, resume broad browser visual expansion, add broad gameplay systems, change rewards, change saves, rename IDs, create a desktop save path, choose Godot finally, start a full desktop port, start Unity/Unreal/Electron work, or start v0.142 until a future explicit goal approves a narrow next step.
+The next recommended step is human review and explicit approval only: Emmanuel may review `docs/art-prompts/V0143_01_ASTER_WORKER_SILHOUETTE_SCALE_BOARD.md` before any future v0.143 image-generation round. Do not generate Aster/Worker boards, import art into runtime, mark candidates runtime-approved, wire assets into Godot, wire assets into the browser, resume broad browser visual expansion, add broad gameplay systems, change rewards, change saves, rename IDs, create a desktop save path, choose Godot finally, start a full desktop port, start Unity/Unreal/Electron work, or start v0.143 until a future explicit goal approves a narrow next step.
+
+New v0.142 docs:
+
+- `docs/V0142_SALTO_ENVIRONMENT_REFERENCE_STYLE_LOCK.md`
+- `docs/V0142_ASTER_WORKER_SILHOUETTE_BRIEF_PREPARATION.md`
+- `docs/V0142_REFERENCE_ONLY_BOUNDARY.md`
+- `docs/V0142_IMPLEMENTATION_REPORT.md`
+- `docs/art-prompts/V0143_01_ASTER_WORKER_SILHOUETTE_SCALE_BOARD.md`
+
+Previous checkpoint reference: v0.141 Salto Environment Style-Lock Revision Round And Human Approval Stop.
 
 New v0.141 docs:
 

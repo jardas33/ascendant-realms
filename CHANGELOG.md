@@ -1,5 +1,30 @@
 # Changelog
 
+# v0.142 Salto Environment Reference-Only Style Lock Ratification And Silhouette Brief Preparation - 2026-06-06
+
+This checkpoint ratifies Emmanuel's completed v0.141 style-lock review without generating images or integrating art. It records R1 as the primary Salto environment reference-only style lock, R2 as the companion material/atmosphere reference, R3 as a limited lane/Ashen-readability reference, and prepares the next Aster/Worker silhouette-scale brief for a future explicit v0.143 prompt.
+
+Added:
+
+- Ignored local v0.142 style-lock decision note under `artifacts/art-review/v0138/review-notes/`.
+- `docs/art-prompts/V0143_01_ASTER_WORKER_SILHOUETTE_SCALE_BOARD.md`.
+- v0.142 docs for the environment reference style lock, silhouette brief preparation, reference-only boundary, and implementation report.
+
+Changed:
+
+- Regenerated ignored v0.138 reference-art validation, contact-sheet, and review-pack outputs for the existing six environment candidates.
+- Handoff, roadmap, development checkpoint, and release checklist now describe v0.142 as a reference-only ratification and brief-preparation stop.
+
+Boundaries:
+
+- Zero image generation.
+- No HUD, Aster, Worker, unit, sprite, texture, model, portrait, UI kit, animation, or extra candidate generation.
+- No Godot wiring, browser wiring, runtime import, manifest mutation, art-slot mutation, package inclusion, save change, stable-ID change, final runtime-art choice, protected-IP approval, or v0.143 execution.
+
+Verification:
+
+- Required v0.142 verification is listed in `docs/V0142_IMPLEMENTATION_REPORT.md` and must be run before closeout.
+
 # v0.141 Salto Environment Style-Lock Revision Round And Human Approval Stop - 2026-06-06
 
 This checkpoint uses the v0.140 canary review direction to generate exactly three revised Salto environment reference-only candidates. Candidate A is the primary visual base, Candidate C is the tactical-layout reference, and Candidate B is only a restrained atmosphere reference. It validates six total candidate metadata files, rebuilds the local contact sheet and review pack, updates tracked review docs, and stops for Emmanuel's style-lock review.
