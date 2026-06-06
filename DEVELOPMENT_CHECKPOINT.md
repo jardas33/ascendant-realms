@@ -1,6 +1,42 @@
 # Development Checkpoint
 
-Updated: 2026-06-06 v0.139 Godot Salto Slice Stabilization Gate, Human Review Package, And Next-Phase Roadmap
+Updated: 2026-06-06 v0.140 Salto Environment Reference-Art Canary Generation And Human Style-Lock Stop
+
+## v0.140 Salto Environment Reference-Art Canary Generation And Human Style-Lock Stop - 2026-06-06
+
+Scope: controlled image-generation capability test and reference-only Salto environment canary. This checkpoint generates exactly three environment style-frame candidates, validates metadata/contact-sheet/review-pack outputs, records tracked docs, and stops for Emmanuel's human art review.
+
+Included work:
+
+- Confirmed v0.139 `SALTO_SLICE_STABILIZATION_GREEN` precondition from clean synchronized `main`.
+- Confirmed the Codex `image_generation` feature was available and stable.
+- Ran empty-workspace reference-art init, validation, contact-sheet, and review-pack commands before generation.
+- Generated exactly three environment-only candidates: `v0138-env-a-tactical-clarity`, `v0138-env-b-barrosan-atmosphere`, and `v0138-env-c-modern-2_5d-balance`.
+- Added matching ignored metadata records with `runtimeIntegrationStatus = forbidden`.
+- Regenerated the local ignored contact sheet and review pack.
+- Added v0.140 docs for generation report, boundary, Emmanuel guide, and implementation report.
+
+Current interpretation:
+
+- The images are local reference candidates only and are not runtime assets.
+- Human protected-IP and style-lock review is pending.
+- No Godot or browser runtime integration is approved.
+- No final art decision has been made.
+
+Verification:
+
+```text
+Required closeout stack:
+npm test
+npm run build
+npm run validate:content
+npm run validate:art-intake
+npm run art:reference:init
+npm run art:reference:validate
+npm run art:reference:contact-sheet
+npm run art:reference:review-pack
+git diff --check
+```
 
 ## v0.139 Godot Salto Slice Stabilization Gate, Human Review Package, And Next-Phase Roadmap - 2026-06-06
 

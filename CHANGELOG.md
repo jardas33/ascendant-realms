@@ -1,5 +1,29 @@
 # Changelog
 
+# v0.140 Salto Environment Reference-Art Canary Generation And Human Style-Lock Stop - 2026-06-06
+
+This checkpoint tests the enabled Codex image-generation capability in a controlled reference-only canary session. It generates exactly three Salto environment candidates for human review, validates matching metadata, builds the local contact sheet and review pack, and stops for Emmanuel's art review.
+
+Added:
+
+- Three ignored local environment candidates under `artifacts/art-review/v0138/candidates/`.
+- Three ignored matching metadata files under `artifacts/art-review/v0138/metadata/`.
+- Regenerated ignored v0.138 reference-art validation, contact-sheet, and review-pack outputs.
+- v0.140 docs for the canary generation report, reference-only boundary, Emmanuel art review guide, and implementation report.
+
+Changed:
+
+- Handoff, roadmap, development checkpoint, and release checklist now describe v0.140 as a reference-only art canary stop.
+
+Boundaries:
+
+- No HUD, Aster, Worker, unit, sprite, texture, model, animation, or extra variant generation.
+- No Godot wiring, browser wiring, runtime import, art-slot mutation, save change, stable-ID change, final art choice, protected-IP approval, or v0.141 work.
+
+Verification:
+
+- Required v0.140 verification is listed in `docs/V0140_IMPLEMENTATION_REPORT.md` and must be run before closeout.
+
 # v0.139 Godot Salto Slice Stabilization Gate, Human Review Package, And Next-Phase Roadmap - 2026-06-06
 
 This checkpoint consolidates the current packaged Godot Salto player-facing slice into one stabilized human-review package. It remains a bounded review and roadmap checkpoint: no gameplay systems, generated images, asset downloads, runtime art imports, final Godot choice, full port, browser-runtime change, save change, stable-ID change, multiplayer, or v0.140 work.
