@@ -1,6 +1,43 @@
 # Development Checkpoint
 
-Updated: 2026-06-06 v0.142 Salto Environment Reference-Only Style Lock Ratification And Silhouette Brief Preparation
+Updated: 2026-06-06 v0.143 Aster / Worker Silhouette-Scale Reference Boards And Human Review Stop
+
+## v0.143 Aster / Worker Silhouette-Scale Reference Boards And Human Review Stop - 2026-06-06
+
+Scope: controlled reference-only Aster / Worker silhouette-scale board generation and human-review stop. This checkpoint generates exactly three comparison boards, validates matching runtime-forbidden metadata, updates the contact sheet and review pack, and stops without importing art or starting v0.144.
+
+Included work:
+
+- Confirmed clean synchronized `main` at `cf93376a36bef8b0678a8d1125e7a893270d272e`.
+- Confirmed v0.142 ratified R1 as the primary reference-only environment style lock, retained R2 as the material/atmosphere companion, and limited R3 to lane hierarchy and Ashen readability.
+- Confirmed the existing six environment candidates remained reference-only and runtime-forbidden before generation.
+- Generated exactly three Aster / Worker silhouette-scale boards: S1 gameplay-first readability, S2 Barrosan grounded identity, and S3 modern balanced scale.
+- Added matching ignored metadata records with `runtimeIntegrationStatus = forbidden`.
+- Regenerated the ignored contact sheet and review pack for nine total reference candidates.
+- Added the ignored local human review note and v0.143 tracked docs.
+
+Current interpretation:
+
+- The boards are reference-only and are not final character designs.
+- Human protected-IP and silhouette-scale review is pending.
+- No Godot or browser runtime integration is approved.
+- No final art decision has been made.
+- v0.144 has not started.
+
+Verification:
+
+```text
+Required closeout stack:
+npm test
+npm run build
+npm run validate:content
+npm run validate:art-intake
+npm run art:reference:init
+npm run art:reference:validate
+npm run art:reference:contact-sheet
+npm run art:reference:review-pack
+git diff --check
+```
 
 ## v0.142 Salto Environment Reference-Only Style Lock Ratification And Silhouette Brief Preparation - 2026-06-06
 

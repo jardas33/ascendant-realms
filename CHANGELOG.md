@@ -1,5 +1,32 @@
 # Changelog
 
+# v0.143 Aster / Worker Silhouette-Scale Reference Boards And Human Review Stop - 2026-06-06
+
+This checkpoint generates exactly three Aster / Worker silhouette-scale comparison boards for human review. The images remain ignored local reference candidates only. Matching metadata keeps `runtimeIntegrationStatus = forbidden`, the contact sheet and review pack are regenerated for nine total candidates, and tracked docs record the review guide and hard runtime boundary.
+
+Added:
+
+- Three ignored local Aster / Worker silhouette-scale candidates under `artifacts/art-review/v0138/candidates/`.
+- Three ignored matching metadata files under `artifacts/art-review/v0138/metadata/`.
+- Ignored v0.143 local human review note under `artifacts/art-review/v0138/review-notes/`.
+- v0.143 docs for the generation report, silhouette-scale review guide, reference-only boundary, and implementation report.
+
+Changed:
+
+- Regenerated ignored v0.138 reference-art validation, contact-sheet, and review-pack outputs for nine total candidates.
+- Handoff, roadmap, development checkpoint, and release checklist now describe v0.143 as a reference-only Aster / Worker silhouette-scale human-review stop.
+
+Boundaries:
+
+- Exactly three boards only.
+- No final character design lock.
+- No HUD, portrait, environment, broad unit-roster, sprite, texture, model, UI kit, turnaround, animation-pose, animation-sheet, or additional board generation.
+- No Godot wiring, browser wiring, runtime import, manifest mutation, art-slot mutation, package inclusion, save change, stable-ID change, final runtime-art choice, protected-IP approval, or v0.144 work.
+
+Verification:
+
+- Required v0.143 verification is listed in `docs/V0143_IMPLEMENTATION_REPORT.md` and must be run before closeout.
+
 # v0.142 Salto Environment Reference-Only Style Lock Ratification And Silhouette Brief Preparation - 2026-06-06
 
 This checkpoint ratifies Emmanuel's completed v0.141 style-lock review without generating images or integrating art. It records R1 as the primary Salto environment reference-only style lock, R2 as the companion material/atmosphere reference, R3 as a limited lane/Ashen-readability reference, and prepares the next Aster/Worker silhouette-scale brief for a future explicit v0.143 prompt.
