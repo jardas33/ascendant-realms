@@ -1189,7 +1189,7 @@ describe("Godot Salto spike scaffold", () => {
       "west_stone_cut_mine_objective_ring",
       "west_stone_cut_conversion_bar",
       "west_stone_cut_control_banner",
-      "Worker: right-click controlled West Stone Cut Mine",
+      "Right-click the controlled mine.",
       "objectiveRegressionBlockedCount",
       "actualObjectiveRegressionDetected"
     ].forEach((text) => expect(scene3d).toContain(text));
@@ -1295,7 +1295,7 @@ describe("Godot Salto spike scaffold", () => {
       "visible_unit",
       "reviewHidden",
       "v0133_box_select_no_skip_proven",
-      "Ashen wave: %s remaining",
+      "Wave: %s left",
       "waveTriggerSource",
       "fixtureOnlyHelperProofUsed"
     ].forEach((text) => expect(scene3d).toContain(text));
@@ -1520,6 +1520,119 @@ describe("Godot Salto spike scaffold", () => {
     expect(v0135Gate).toContain("PASS_V0135_HEADED_RTS_ERGONOMICS_SMOKE");
     expect(handoff).toContain("v0.135 Godot RTS Input Ergonomics");
     expect(roadmap).toContain("v0.135 Godot RTS Input Ergonomics");
+
+    expect(rootScript).not.toContain("load(\"res://assets");
+    expect(scene3d).not.toContain("load(\"res://assets");
+    expect(scene3d).not.toContain("ImageTexture");
+    expect(toolScript).not.toContain("ImageTexture");
+  });
+
+  it("defines the v0.136 HUD, minimap, onboarding, and microloop-pacing cleanup", async () => {
+    [
+      "GODOT_USABILITY_PRESENTATION_WINDOWS.bat",
+      "tools/godot/runGodotUsabilityPresentationWindows.ps1",
+      "docs/V0136_HUD_HIERARCHY_SPEC.md",
+      "docs/V0136_MINIMAP_REFINEMENT_SPEC.md",
+      "docs/V0136_ONBOARDING_COPY_LEDGER.md",
+      "docs/V0136_MICROLOOP_PACING_REPORT.md",
+      "docs/V0136_USABILITY_PRESENTATION_GATE.md",
+      "docs/V0136_IMPLEMENTATION_REPORT.md"
+    ].forEach((path) => expect(existsSync(path), path).toBe(true));
+
+    const packageJson = await readJson<{ scripts: Record<string, string> }>("package.json");
+    const rootScript = await readFile("desktop-spikes/godot-salto/scripts/salto_spike_root.gd", "utf8");
+    const scene3d = await readFile("desktop-spikes/godot-salto/scripts/salto_spike_scene_3d.gd", "utf8");
+    const toolScript = await readFile("desktop-spikes/godot-salto/tools/godotSpikeTool.mjs", "utf8");
+    const smokeScript = await readFile("tools/godot/runGodotUsabilityPresentationWindows.ps1", "utf8");
+    const v0135Gate = await readFile("docs/V0135_RTS_ERGONOMICS_GATE.md", "utf8");
+    const v0136Gate = await readFile("docs/V0136_USABILITY_PRESENTATION_GATE.md", "utf8");
+    const hudSpec = await readFile("docs/V0136_HUD_HIERARCHY_SPEC.md", "utf8");
+    const minimapSpec = await readFile("docs/V0136_MINIMAP_REFINEMENT_SPEC.md", "utf8");
+    const onboardingLedger = await readFile("docs/V0136_ONBOARDING_COPY_LEDGER.md", "utf8");
+    const pacingReport = await readFile("docs/V0136_MICROLOOP_PACING_REPORT.md", "utf8");
+    const implementation = await readFile("docs/V0136_IMPLEMENTATION_REPORT.md", "utf8");
+    const handoff = await readFile("LLM_GAME_HANDOFF.md", "utf8");
+    const roadmap = await readFile("ROADMAP.md", "utf8");
+
+    expect(v0135Gate).toContain("RTS_ERGONOMICS_GREEN");
+    expect(packageJson.scripts["godot:headed:usability-presentation"]).toBeTypeOf("string");
+
+    [
+      "--usability-presentation-smoke",
+      "run_usability_presentation_smoke",
+      "PASS_V0136_HEADED_USABILITY_PRESENTATION_SMOKE",
+      "PASS_V0136_HUD_HIERARCHY",
+      "PASS_V0136_MINIMAP_REFINEMENT",
+      "PASS_V0136_ONBOARDING_COPY",
+      "PASS_V0136_MICROLOOP_PACING",
+      "PASS_V0136_SCREENSHOT_MANIFEST",
+      "headed-usability-presentation-smoke.json",
+      "hud-hierarchy-report.json",
+      "minimap-refinement-report.json",
+      "onboarding-copy-report.json",
+      "microloop-pacing-report.json",
+      "usability-presentation-trace.json",
+      "screenshot-manifest.json",
+      "minimap_click_to_orient",
+      "fixtureOnlyHelperProofUsed"
+    ].forEach((text) => expect(rootScript).toContain(text));
+
+    [
+      "usability_presentation_status",
+      "V0132_CONVERSION_PROGRESS_PER_SECOND := 24.0",
+      "V0133_CONSTRUCTION_FRAMES_PER_SECOND := 24",
+      "V0133_RECRUIT_FRAMES_PER_SECOND := 24",
+      "V0133_PRESSURE_COUNTDOWN_SECONDS := 7.0",
+      "HudCurrentObjectiveStrip",
+      "ObjectiveSummaryCompact",
+      "MicroOnboardingPrompt",
+      "minimap_worker_marker",
+      "minimap_barracks_marker",
+      "minimap_active_ashen_attackers",
+      "minimap_west_stone_cut_mine_control",
+      "minimap_camera_viewport_indicator",
+      "minimapClickToOrient",
+      "canonicalOnboardingCopy",
+      "noTopPauseChrome",
+      "pacingTuned",
+      "resultsRecap",
+      "Right-click West Stone Cut Mine.",
+      "Select defenders and attack marked Ashen units.",
+      "saveWritesAllowed",
+      "linkedWardDamageTakenMultiplier"
+    ].forEach((text) => expect(scene3d).toContain(text));
+
+    [
+      "v0136ArtifactRoot",
+      "v0136ScreenshotRoot",
+      "validateV0136UsabilityPresentationArtifacts",
+      "PASS_V0136_USABILITY_PRESENTATION_VALIDATION",
+      "usability-presentation-v0136",
+      "PASS_V0136_HEADED_USABILITY_PRESENTATION_SMOKE",
+      "PASS_V0136_HUD_HIERARCHY",
+      "PASS_V0136_MINIMAP_REFINEMENT",
+      "PASS_V0136_ONBOARDING_COPY",
+      "PASS_V0136_MICROLOOP_PACING",
+      "PASS_V0136_SCREENSHOT_MANIFEST",
+      "linkedWardDamageTakenMultiplier"
+    ].forEach((text) => expect(toolScript).toContain(text));
+
+    expect(smokeScript).toContain("--usability-presentation-smoke");
+    expect(smokeScript).toContain("usability-presentation-v0136");
+    expect(smokeScript).toContain("v0136");
+
+    expect(v0136Gate).toContain("Classification: `USABILITY_PRESENTATION_GREEN`");
+    expect(v0136Gate).toContain("Gate: `USABILITY_PRESENTATION_GREEN`");
+    expect(v0136Gate).toContain("USABILITY_PRESENTATION_AMBER");
+    expect(v0136Gate).toContain("USABILITY_PRESENTATION_RED");
+    expect(v0136Gate).toContain("PASS_V0136_HEADED_USABILITY_PRESENTATION_SMOKE");
+    expect(hudSpec).toContain("one primary objective line");
+    expect(minimapSpec).toContain("click-to-orient");
+    expect(onboardingLedger).toContain("Right-click West Stone Cut Mine.");
+    expect(pacingReport).toContain("3-5 minute");
+    expect(implementation).toContain("No art import");
+    expect(handoff).toContain("v0.136 Godot HUD, Minimap, Onboarding");
+    expect(roadmap).toContain("v0.136 Godot HUD, Minimap, Onboarding");
 
     expect(rootScript).not.toContain("load(\"res://assets");
     expect(scene3d).not.toContain("load(\"res://assets");

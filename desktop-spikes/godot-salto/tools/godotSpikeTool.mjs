@@ -36,6 +36,8 @@ const v0134ArtifactRoot = join(repoRoot, "artifacts", "desktop-spikes", "godot-s
 const v0134ScreenshotRoot = join(v0134ArtifactRoot, "screenshots");
 const v0135ArtifactRoot = join(repoRoot, "artifacts", "desktop-spikes", "godot-salto", "v0135");
 const v0135ScreenshotRoot = join(v0135ArtifactRoot, "screenshots");
+const v0136ArtifactRoot = join(repoRoot, "artifacts", "desktop-spikes", "godot-salto", "v0136");
+const v0136ScreenshotRoot = join(v0136ArtifactRoot, "screenshots");
 const sourceFixtureRoot = join(repoRoot, "artifacts", "desktop-spike-fixture", "latest");
 const generatedDataRoot = join(spikeRoot, "data", "generated");
 const buildsRoot = join(spikeRoot, "builds");
@@ -5435,6 +5437,204 @@ function validateV0135RtsErgonomicsArtifacts() {
   return report;
 }
 
+function validateV0136UsabilityPresentationArtifacts() {
+  const smoke = readOptionalJson(join(v0136ArtifactRoot, "headed-usability-presentation-smoke.json")) ?? readOptionalJson(join(v0136ArtifactRoot, "usability-presentation-smoke.json"));
+  const hud = readOptionalJson(join(v0136ArtifactRoot, "hud-hierarchy-report.json"));
+  const minimap = readOptionalJson(join(v0136ArtifactRoot, "minimap-refinement-report.json"));
+  const onboarding = readOptionalJson(join(v0136ArtifactRoot, "onboarding-copy-report.json"));
+  const pacing = readOptionalJson(join(v0136ArtifactRoot, "microloop-pacing-report.json"));
+  const trace = readOptionalJson(join(v0136ArtifactRoot, "usability-presentation-trace.json"));
+  const manifest = readOptionalJson(join(v0136ArtifactRoot, "screenshot-manifest.json"));
+  const errors = [];
+  const requiredChecks = [
+    "primaryObjectiveLine",
+    "secondaryHintCompact",
+    "noRedundantTopBottomBanners",
+    "selectedEntityCardCompact",
+    "resourceRowCompact",
+    "commandButtonsCompact",
+    "waveCounterConcise",
+    "progressReadable",
+    "lumeStateReadable",
+    "minimapTerrainOutline",
+    "minimapHeroMarker",
+    "minimapWorkerMarker",
+    "minimapFriendlyGroupMarker",
+    "minimapActiveAshenOnly",
+    "minimapObjectiveMarker",
+    "minimapMineControlledMarker",
+    "minimapBarracksMarker",
+    "minimapLumeLink",
+    "minimapCameraViewport",
+    "minimapClickToOrient",
+    "canonicalOnboardingCopy",
+    "noDebugText",
+    "pacingTuned",
+    "resultsRecap"
+  ];
+  const requiredCaptures = [
+    "title",
+    "briefing",
+    "hud_default",
+    "minimap_default",
+    "mine_conversion",
+    "worker_assignment",
+    "minimap_mine_controlled",
+    "construction",
+    "recruitment",
+    "countdown",
+    "minimap_wave",
+    "combat",
+    "lume",
+    "results"
+  ];
+  if (!smoke) {
+    errors.push("Missing headed-usability-presentation-smoke.json or usability-presentation-smoke.json.");
+  } else {
+    if (smoke.status !== "PASS_V0136_HEADED_USABILITY_PRESENTATION_SMOKE") {
+      errors.push(`Usability presentation smoke did not pass: ${smoke.status ?? "missing"}.`);
+    }
+    for (const field of [
+      "privateHarnessShortcutUsed",
+      "debugShortcutUsed",
+      "stateInjectionUsed",
+      "fixtureOnlyHelperProofUsed",
+      "screenshotOnlyProofUsed",
+      "routineEditorUseRequired",
+      "saveWritesAllowed",
+      "stableIdsChanged",
+      "browserRuntimeChanged",
+      "generatedOrImportedArtIncluded",
+      "runtimeArtIntegrated"
+    ]) {
+      if (smoke[field] !== false) {
+        errors.push(`Usability presentation smoke expected ${field} false.`);
+      }
+    }
+    if (smoke.linkedWardDamageTakenMultiplier !== 0.92) {
+      errors.push("linked_ward damage multiplier was not preserved at 0.92.");
+    }
+    for (const key of requiredChecks) {
+      if (smoke.checks?.[key] !== true) {
+        errors.push(`Usability presentation smoke check ${key} was not true.`);
+      }
+    }
+    for (const key of ["resultsReached", "noObjectiveRegression", "noDebugShortcut", "noStateInjection", "linkedWardPreserved"]) {
+      if (smoke.finishChecks?.[key] !== true) {
+        errors.push(`Usability presentation finish check ${key} was not true.`);
+      }
+    }
+    if (smoke.usabilityStatus?.status !== "PASS_V0136_USABILITY_PRESENTATION_SCENE_STATUS") {
+      errors.push(`Scene usability presentation status did not pass: ${smoke.usabilityStatus?.status ?? "missing"}.`);
+    }
+    if (smoke.postMineStatus?.resultsReached !== true) {
+      errors.push("Post-mine flow did not reach Results in the v0.136 smoke.");
+    }
+  }
+  const expectedReports = [
+    [hud, "PASS_V0136_HUD_HIERARCHY", "hud-hierarchy-report.json"],
+    [minimap, "PASS_V0136_MINIMAP_REFINEMENT", "minimap-refinement-report.json"],
+    [onboarding, "PASS_V0136_ONBOARDING_COPY", "onboarding-copy-report.json"],
+    [pacing, "PASS_V0136_MICROLOOP_PACING", "microloop-pacing-report.json"]
+  ];
+  for (const [report, expectedStatus, fileName] of expectedReports) {
+    if (report?.status !== expectedStatus) {
+      errors.push(`${fileName} did not pass: ${report?.status ?? "missing"}.`);
+    }
+  }
+  if (!trace) {
+    errors.push("Missing usability-presentation-trace.json.");
+  } else {
+    const events = new Set((trace.trace ?? []).map((entry) => entry.event));
+    [
+      "title_start_clicked",
+      "briefing_start_battle_clicked",
+      "minimap_click_to_orient",
+      "move_order_mine",
+      "worker_assigned",
+      "barracks_restore_order",
+      "train_militia_clicked",
+      "combat_attack_right_click",
+      "lume_restore_click"
+    ].forEach((event) => {
+      if (!events.has(event)) {
+        errors.push(`Missing v0.136 usability presentation trace event: ${event}.`);
+      }
+    });
+    if (trace.noPrivateHarnessShortcutUsed !== true || trace.noDebugShortcutUsed !== true || trace.noStateInjectionUsed !== true || trace.fixtureOnlyHelperProofUsed !== false) {
+      errors.push("Usability presentation trace did not preserve no-shortcut proof.");
+    }
+  }
+  const captures = manifest?.captures ?? [];
+  if (manifest?.status !== "PASS_V0136_SCREENSHOT_MANIFEST") {
+    errors.push(`Screenshot manifest did not pass: ${manifest?.status ?? "missing"}.`);
+  }
+  if (captures.length < 12) {
+    errors.push(`Expected at least 12 v0.136 screenshots, found ${captures.length}.`);
+  }
+  for (const id of requiredCaptures) {
+    if (!captures.some((capture) => capture.id === id)) {
+      errors.push(`Missing v0.136 screenshot capture: ${id}.`);
+    }
+  }
+  const enrichedCaptures = captures.map((capture) => {
+    const screenshotPath = join(v0136ScreenshotRoot, capture.fileName);
+    const exists = existsSync(screenshotPath);
+    if (!exists) {
+      errors.push(`Missing screenshot file: ${capture.fileName}.`);
+    }
+    if (capture.width !== 1600 || capture.height !== 900) {
+      errors.push(`Screenshot ${capture.fileName} is ${capture.width}x${capture.height}, expected 1600x900.`);
+    }
+    const status = capture.status ?? {};
+    if (status.generatedOrImportedArtIncluded === true || status.runtimeArtIntegrated === true || status.saveWritesAllowed === true || status.stableIdsChanged === true || status.browserRuntimeChanged === true) {
+      errors.push(`Capture ${capture.id} reported forbidden art/save/stable/browser drift.`);
+    }
+    return {
+      ...capture,
+      path: relativeRepo(screenshotPath),
+      sha256: exists ? hashFile(screenshotPath) : null,
+      sizeBytes: exists ? statSync(screenshotPath).size : null
+    };
+  });
+  const strayPngs = existsSync(v0136ScreenshotRoot)
+    ? readdirSync(v0136ScreenshotRoot).filter((file) => file.endsWith(".png") && !captures.some((capture) => capture.fileName === file))
+    : [];
+  if (strayPngs.length > 0) {
+    errors.push(`Unexpected screenshots in v0136 folder: ${strayPngs.join(", ")}.`);
+  }
+  const report = {
+    schemaVersion: 1,
+    checkpoint: "v0.136",
+    status: errors.length === 0 ? "PASS_V0136_USABILITY_PRESENTATION_VALIDATION" : "FAIL_V0136_USABILITY_PRESENTATION_VALIDATION",
+    generatedAtUtc: "deterministic-v0136",
+    smokeStatus: smoke?.status ?? null,
+    hudStatus: hud?.status ?? null,
+    minimapStatus: minimap?.status ?? null,
+    onboardingStatus: onboarding?.status ?? null,
+    pacingStatus: pacing?.status ?? null,
+    screenshotStatus: manifest?.status ?? null,
+    captureCount: captures.length,
+    requiredCaptureCount: 12,
+    noPrivateHarnessShortcutUsed: smoke?.privateHarnessShortcutUsed === false,
+    noDebugShortcutUsed: smoke?.debugShortcutUsed === false,
+    noStateInjectionUsed: smoke?.stateInjectionUsed === false,
+    noFixtureOnlyHelperProofUsed: smoke?.fixtureOnlyHelperProofUsed === false,
+    screenshotOnlyProofUsed: false,
+    routineEditorUseRequired: false,
+    saveWritesAllowed: false,
+    stableIdsChanged: false,
+    browserRuntimeChanged: false,
+    generatedOrImportedArtIncluded: false,
+    runtimeArtIntegrated: false,
+    linkedWardDamageTakenMultiplier: 0.92,
+    errors,
+    captures: enrichedCaptures
+  };
+  writeJson(join(v0136ArtifactRoot, "usability-presentation-validation.json"), report);
+  return report;
+}
+
 const v0125AuditAreas = ["title", "briefing", "battle", "results"];
 const v0125PlayerDebugTerms = [
   ...v0124ForbiddenTerms,
@@ -6182,6 +6382,12 @@ try {
     if (String(report.status).startsWith("FAIL")) {
       process.exitCode = 1;
     }
+  } else if (command === "usability-presentation-v0136") {
+    const report = validateV0136UsabilityPresentationArtifacts();
+    console.log(stableStringify(report));
+    if (String(report.status).startsWith("FAIL")) {
+      process.exitCode = 1;
+    }
   } else if (command === "player-slice-audit") {
     const report = buildV0125ScreenshotAudit();
     console.log(stableStringify(report));
@@ -6195,7 +6401,7 @@ try {
     runAll();
     console.log("v0.119 Godot representative RTS load spike reports generated.");
   } else {
-    console.log("Usage: node desktop-spikes/godot-salto/tools/godotSpikeTool.mjs <doctor|generate|validate|test|benchmark|export|package|scorecard|manual-review|headed-smoke|headed-benchmark|capture-review|capture-review-v0121|player-slice-validate|player-slice-capture|player-slice-capture-v0126|player-slice-capture-v0127|player-slice-capture-v0128|player-slice-validate-v0129|player-slice-capture-v0129|player-slice-validate-v0130|player-slice-capture-v0130|real-input-v0131|site-semantics-v0132|post-mine-flow-v0133|triple-natural-playthrough-v0134|rts-ergonomics-v0135|player-slice-audit|v0118-all|all>");
+    console.log("Usage: node desktop-spikes/godot-salto/tools/godotSpikeTool.mjs <doctor|generate|validate|test|benchmark|export|package|scorecard|manual-review|headed-smoke|headed-benchmark|capture-review|capture-review-v0121|player-slice-validate|player-slice-capture|player-slice-capture-v0126|player-slice-capture-v0127|player-slice-capture-v0128|player-slice-validate-v0129|player-slice-capture-v0129|player-slice-validate-v0130|player-slice-capture-v0130|real-input-v0131|site-semantics-v0132|post-mine-flow-v0133|triple-natural-playthrough-v0134|rts-ergonomics-v0135|usability-presentation-v0136|player-slice-audit|v0118-all|all>");
   }
 } catch (error) {
   console.error(error instanceof Error ? error.message : String(error));

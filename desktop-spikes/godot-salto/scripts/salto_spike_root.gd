@@ -31,6 +31,7 @@ const SCRIPT_ARG_PREFIXES := [
 	"--post-mine-flow-validate",
 	"--triple-natural-playthrough",
 	"--rts-ergonomics-smoke",
+	"--usability-presentation-smoke",
 	"--mode=",
 	"--visual-preset=",
 	"--viewport=",
@@ -97,6 +98,10 @@ func _ready() -> void:
 	if args.has("--rts-ergonomics-smoke"):
 		_create_player_slice_ui()
 		await run_rts_ergonomics_smoke()
+		return
+	if args.has("--usability-presentation-smoke"):
+		_create_player_slice_ui()
+		await run_usability_presentation_smoke()
 		return
 	if args.has("--player-slice"):
 		_create_player_slice_ui()
@@ -374,12 +379,12 @@ func _render_player_screen(screen: String) -> void:
 			_add_player_button("Start Battle", Vector2(620, 390), "_on_player_battle_pressed")
 			_add_player_button("Back", Vector2(620, 444), "_on_player_back_pressed")
 		"battle":
-			# The in-scene HUD owns objective guidance during battle; keep shell chrome out of the playfield.
-			_add_player_label("Pause", Vector2(1470, 22), Vector2(84, 30), 15, Color(0.82, 0.88, 0.82), Color(0.04, 0.05, 0.04, 0.72))
+			# The in-scene HUD owns all battle chrome.
+			pass
 		"results":
 			_add_player_label("Salto Review Complete", Vector2(420, 88), Vector2(760, 56), 34, Color(0.90, 0.94, 0.86), Color(0.04, 0.05, 0.04, 0.62), HORIZONTAL_ALIGNMENT_CENTER)
-			_add_player_label("Mine converted. Worker assigned. Barracks restored. Militia trained. Lume route restored.", Vector2(250, 154), Vector2(1100, 36), 20, Color(0.82, 0.88, 0.78), Color(0.04, 0.05, 0.04, 0.68), HORIZONTAL_ALIGNMENT_CENTER)
-			_add_player_label("Review: bounded hero-worker-mine-build-recruit loop, wave clarity, and Results.", Vector2(300, 214), Vector2(1000, 34), 18, Color(0.88, 0.86, 0.70), Color(0.04, 0.05, 0.04, 0.68), HORIZONTAL_ALIGNMENT_CENTER)
+			_add_player_label("Mine controlled. Worker assigned. Barracks restored. Militia trained. Lume restored.", Vector2(250, 154), Vector2(1100, 36), 20, Color(0.82, 0.88, 0.78), Color(0.04, 0.05, 0.04, 0.68), HORIZONTAL_ALIGNMENT_CENTER)
+			_add_player_label("Readable HUD, minimap, pacing, wave, and Results path passed.", Vector2(300, 214), Vector2(1000, 34), 18, Color(0.88, 0.86, 0.70), Color(0.04, 0.05, 0.04, 0.68), HORIZONTAL_ALIGNMENT_CENTER)
 			_add_player_button("Restart Slice", Vector2(620, 318), "_on_player_restart_pressed")
 			_add_player_button("Return to Title", Vector2(620, 372), "_on_player_back_pressed")
 			_add_player_button("Exit", Vector2(620, 426), "_exit_player_slice")
@@ -1496,14 +1501,17 @@ func run_post_mine_flow_smoke() -> void:
 		await _settle_frames(8)
 		await _inject_mouse_click(mine_screen, MOUSE_BUTTON_RIGHT)
 		_trace_real_input(trace, "mine_right_click", {"position": _vector2_report(mine_screen)})
-		await _settle_until_scene_status_flag("post_mine_flow_status", "mineControlled", true, 260)
+		await _settle_until_scene_status_flag("post_mine_flow_status", "mineControlled", true, 620)
 		_trace_real_input(trace, "mine_controlled", {"site": "West Stone Cut Mine"})
+		worker_screen = _scene_screen_position("worker_00")
+		await _inject_mouse_motion(worker_screen)
+		await _settle_frames(4)
 		await _inject_mouse_click(worker_screen, MOUSE_BUTTON_LEFT)
 		_trace_real_input(trace, "worker_click", {"position": _vector2_report(worker_screen)})
 		await _settle_frames(8)
 		await _inject_mouse_click(mine_screen, MOUSE_BUTTON_RIGHT)
 		_trace_real_input(trace, "worker_right_click_controlled_mine", {"position": _vector2_report(mine_screen), "site": "West Stone Cut Mine"})
-		await _settle_until_scene_status_flag("post_mine_flow_status", "workerAssignedToMine", true, 140)
+		await _settle_until_scene_status_flag("post_mine_flow_status", "workerAssignedToMine", true, 220)
 		_trace_real_input(trace, "worker_assignment_feedback", {"site": "West Stone Cut Mine"})
 		captures.append(await _capture_post_mine_flow_step(screenshot_root, captures.size(), "worker_assigned", "Worker assigned", "worker_assigned"))
 		if squad_start != Vector2.INF and squad_end != Vector2.INF:
@@ -1511,22 +1519,24 @@ func run_post_mine_flow_smoke() -> void:
 			_trace_real_input(trace, "box_select_no_objective_skip_probe", {"start": _vector2_report(squad_start), "end": _vector2_report(squad_end)})
 			await _settle_frames(8)
 		worker_screen = _scene_screen_position("worker_00")
+		await _inject_mouse_motion(worker_screen)
+		await _settle_frames(4)
 		await _inject_mouse_click(worker_screen, MOUSE_BUTTON_LEFT)
 		_trace_real_input(trace, "worker_reselected_for_barracks", {"position": _vector2_report(worker_screen)})
-		await _settle_until_scene_status_flag("post_mine_flow_status", "barracksHighlightVisible", true, 80)
+		await _settle_until_scene_status_flag("post_mine_flow_status", "barracksHighlightVisible", true, 140)
 		captures.append(await _capture_post_mine_flow_step(screenshot_root, captures.size(), "objective_restore_barracks", "Objective Restore Barracks", "objective_restore_barracks"))
 		captures.append(await _capture_post_mine_flow_step(screenshot_root, captures.size(), "barracks_highlighted", "Barracks highlighted", "barracks_highlighted"))
 		await _inject_mouse_click(barracks_screen, MOUSE_BUTTON_RIGHT)
 		_trace_real_input(trace, "barracks_restore_right_click", {"position": _vector2_report(barracks_screen)})
-		await _settle_until_scene_status_flag("post_mine_flow_status", "barracksBuildOrderAccepted", true, 120)
+		await _settle_until_scene_status_flag("post_mine_flow_status", "barracksBuildOrderAccepted", true, 180)
 		captures.append(await _capture_post_mine_flow_step(screenshot_root, captures.size(), "build_order_accepted", "Build order accepted", "build_order_accepted"))
-		await _settle_until_scene_status_number_at_least("post_mine_flow_status", "constructionProgress", 0.25, 180)
+		await _settle_until_scene_status_number_at_least("post_mine_flow_status", "constructionProgress", 0.25, 260)
 		_trace_real_input(trace, "barracks_construction_progress_25", {})
 		captures.append(await _capture_post_mine_flow_step(screenshot_root, captures.size(), "construction_25", "Construction 25 percent", "construction_25"))
-		await _settle_until_scene_status_number_at_least("post_mine_flow_status", "constructionProgress", 0.75, 240)
+		await _settle_until_scene_status_number_at_least("post_mine_flow_status", "constructionProgress", 0.75, 420)
 		_trace_real_input(trace, "barracks_construction_progress_75", {})
 		captures.append(await _capture_post_mine_flow_step(screenshot_root, captures.size(), "construction_75", "Construction 75 percent", "construction_75"))
-		await _settle_until_scene_status_flag("post_mine_flow_status", "barracksRestored", true, 240)
+		await _settle_until_scene_status_flag("post_mine_flow_status", "barracksRestored", true, 520)
 		_trace_real_input(trace, "barracks_restored", {})
 		captures.append(await _capture_post_mine_flow_step(screenshot_root, captures.size(), "barracks_restored", "Barracks restored", "barracks_restored"))
 		captures.append(await _capture_post_mine_flow_step(screenshot_root, captures.size(), "objective_train_militia", "Objective Train Militia", "objective_train_militia"))
@@ -1536,19 +1546,19 @@ func run_post_mine_flow_smoke() -> void:
 		captures.append(await _capture_post_mine_flow_step(screenshot_root, captures.size(), "train_militia_button", "Train Militia button", "train_militia_button"))
 		await _inject_mouse_click(train_button_screen, MOUSE_BUTTON_LEFT)
 		_trace_real_input(trace, "train_militia_clicked", {"position": _vector2_report(train_button_screen)})
-		await _settle_until_scene_status_number_at_least("post_mine_flow_status", "recruitProgress", 0.50, 200)
+		await _settle_until_scene_status_number_at_least("post_mine_flow_status", "recruitProgress", 0.50, 360)
 		captures.append(await _capture_post_mine_flow_step(screenshot_root, captures.size(), "queue_50", "Queue 50 percent", "queue_50"))
-		await _settle_until_scene_status_flag("post_mine_flow_status", "militiaSpawned", true, 220)
+		await _settle_until_scene_status_flag("post_mine_flow_status", "militiaSpawned", true, 420)
 		_trace_real_input(trace, "militia_spawned", {})
 		captures.append(await _capture_post_mine_flow_step(screenshot_root, captures.size(), "militia_spawned", "Militia spawned", "militia_spawned"))
-		await _settle_until_scene_status_flag("post_mine_flow_status", "countdownStarted", true, 80)
+		await _settle_until_scene_status_flag("post_mine_flow_status", "countdownStarted", true, 180)
 		_trace_real_input(trace, "ashen_pressure_countdown_started", {})
 		captures.append(await _capture_post_mine_flow_step(screenshot_root, captures.size(), "ashen_incoming_countdown", "Ashen incoming countdown", "ashen_incoming_countdown"))
 		captures.append(await _capture_post_mine_flow_step(screenshot_root, captures.size(), "road_entry_pulse", "Road-entry pulse", "road_entry_pulse"))
-		await _settle_until_scene_status_flag("post_mine_flow_status", "waveTriggeredOnce", true, 420)
+		await _settle_until_scene_status_flag("post_mine_flow_status", "waveTriggeredOnce", true, 720)
 		_trace_real_input(trace, "ashen_wave_launched_automatically", {})
 		captures.append(await _capture_post_mine_flow_step(screenshot_root, captures.size(), "wave_launched", "Wave launched", "wave_launched"))
-		await _settle_until_scene_status_flag("post_mine_flow_status", "enemyMovementStarted", true, 240)
+		await _settle_until_scene_status_flag("post_mine_flow_status", "enemyMovementStarted", true, 320)
 		_trace_real_input(trace, "enemy_movement_started", {})
 		captures.append(await _capture_post_mine_flow_step(screenshot_root, captures.size(), "enemy_movement", "Enemy movement", "enemy_movement"))
 		if squad_start != Vector2.INF and squad_end != Vector2.INF:
@@ -1558,19 +1568,19 @@ func run_post_mine_flow_smoke() -> void:
 		var enemy_screen := _scene_screen_position("ashen_00")
 		await _inject_mouse_click(enemy_screen, MOUSE_BUTTON_RIGHT)
 		_trace_real_input(trace, "combat_attack_right_click", {"position": _vector2_report(enemy_screen)})
-		await _settle_until_scene_status_flag("post_mine_flow_status", "combatStarted", true, 320)
+		await _settle_until_scene_status_flag("post_mine_flow_status", "combatStarted", true, 420)
 		captures.append(await _capture_post_mine_flow_step(screenshot_root, captures.size(), "combat_onset", "Combat onset", "combat_onset"))
-		await _settle_until_scene_status_number_at_most("post_mine_flow_status", "waveRemainingCount", 3.0, 360)
+		await _settle_until_scene_status_number_at_most("post_mine_flow_status", "waveRemainingCount", 3.0, 480)
 		captures.append(await _capture_post_mine_flow_step(screenshot_root, captures.size(), "enemy_remaining_counter", "Enemy remaining counter", "enemy_remaining_counter"))
-		await _settle_until_scene_status_flag("post_mine_flow_status", "waveDefeatedFromSimulation", true, 900)
+		await _settle_until_scene_status_flag("post_mine_flow_status", "waveDefeatedFromSimulation", true, 1100)
 		_trace_real_input(trace, "wave_defeated_by_simulation", {})
 		captures.append(await _capture_post_mine_flow_step(screenshot_root, captures.size(), "wave_defeated", "Wave defeated", "wave_defeated"))
 		captures.append(await _capture_post_mine_flow_step(screenshot_root, captures.size(), "lume_highlighted", "Lume highlighted", "lume_highlighted"))
 		await _inject_mouse_click(lume_screen, MOUSE_BUTTON_LEFT)
 		_trace_real_input(trace, "lume_restore_click", {"position": _vector2_report(lume_screen)})
-		await _settle_until_scene_status_flag("post_mine_flow_status", "lumeRestored", true, 120)
+		await _settle_until_scene_status_flag("post_mine_flow_status", "lumeRestored", true, 220)
 		captures.append(await _capture_post_mine_flow_step(screenshot_root, captures.size(), "lume_restored", "Lume restored", "lume_restored"))
-		await _settle_until_player_step("player_results", 120)
+		await _settle_until_player_step("player_results", 220)
 		captures.append(await _capture_post_mine_flow_step(screenshot_root, captures.size(), "results", "Results", "results"))
 	var raw_scene_status: Variant = _call_scene("post_mine_flow_status")
 	var scene_status: Dictionary = raw_scene_status if typeof(raw_scene_status) == TYPE_DICTIONARY else {}
@@ -1821,7 +1831,7 @@ func run_rts_ergonomics_smoke() -> void:
 		await _inject_mouse_click(mine_screen, MOUSE_BUTTON_RIGHT)
 		_trace_real_input(trace, "move_order_mine", {"position": _vector2_report(mine_screen)})
 		captures.append(await _capture_v0135_step(screenshot_root, captures.size(), "move_marker", "Move marker", "move_marker"))
-		await _settle_until_scene_status_flag("post_mine_flow_status", "mineControlled", true, 260)
+		await _settle_until_scene_status_flag("post_mine_flow_status", "mineControlled", true, 620)
 		captures.append(await _capture_v0135_step(screenshot_root, captures.size(), "mine_controlled", "Mine controlled", "mine_controlled"))
 		worker_screen = _scene_screen_position("worker_00")
 		await _inject_mouse_motion(worker_screen)
@@ -1830,35 +1840,37 @@ func run_rts_ergonomics_smoke() -> void:
 		await _settle_frames(8)
 		await _inject_mouse_click(mine_screen, MOUSE_BUTTON_RIGHT)
 		_trace_real_input(trace, "worker_context_mine", {"position": _vector2_report(mine_screen)})
-		await _settle_until_scene_status_flag("post_mine_flow_status", "workerAssignedToMine", true, 160)
+		await _settle_until_scene_status_flag("post_mine_flow_status", "workerAssignedToMine", true, 220)
 		captures.append(await _capture_v0135_step(screenshot_root, captures.size(), "worker_context_action", "Worker context action", "worker_context_action"))
 		worker_screen = _scene_screen_position("worker_00")
+		await _inject_mouse_motion(worker_screen)
+		await _settle_frames(4)
 		await _inject_mouse_click(worker_screen, MOUSE_BUTTON_LEFT)
-		await _settle_until_scene_status_flag("post_mine_flow_status", "barracksHighlightVisible", true, 80)
+		await _settle_until_scene_status_flag("post_mine_flow_status", "barracksHighlightVisible", true, 140)
 		await _inject_mouse_click(barracks_screen, MOUSE_BUTTON_RIGHT)
-		await _settle_until_scene_status_number_at_least("post_mine_flow_status", "constructionProgress", 0.75, 260)
+		await _settle_until_scene_status_number_at_least("post_mine_flow_status", "constructionProgress", 0.75, 520)
 		captures.append(await _capture_v0135_step(screenshot_root, captures.size(), "barracks_context_action", "Barracks context action", "barracks_context_action"))
-		await _settle_until_scene_status_flag("post_mine_flow_status", "barracksRestored", true, 260)
+		await _settle_until_scene_status_flag("post_mine_flow_status", "barracksRestored", true, 620)
 		await _inject_mouse_click(barracks_screen, MOUSE_BUTTON_LEFT)
 		await _settle_until_scene_status_flag("post_mine_flow_status", "barracksSelected", true, 100)
 		await _inject_mouse_click(train_button_screen, MOUSE_BUTTON_LEFT)
-		await _settle_until_scene_status_flag("post_mine_flow_status", "militiaSpawned", true, 260)
+		await _settle_until_scene_status_flag("post_mine_flow_status", "militiaSpawned", true, 520)
 		captures.append(await _capture_v0135_step(screenshot_root, captures.size(), "militia_spawned", "Militia spawned", "militia_spawned"))
-		await _settle_until_scene_status_flag("post_mine_flow_status", "waveTriggeredOnce", true, 460)
-		await _settle_until_scene_status_flag("post_mine_flow_status", "enemyMovementStarted", true, 260)
+		await _settle_until_scene_status_flag("post_mine_flow_status", "waveTriggeredOnce", true, 780)
+		await _settle_until_scene_status_flag("post_mine_flow_status", "enemyMovementStarted", true, 360)
 		captures.append(await _capture_v0135_step(screenshot_root, captures.size(), "wave_movement", "Wave movement", "wave_movement"))
 		await _inject_mouse_drag(squad_start, squad_end)
 		await _settle_frames(8)
 		var enemy_screen := _scene_screen_position("ashen_00")
 		await _inject_mouse_click(enemy_screen, MOUSE_BUTTON_RIGHT)
 		_trace_real_input(trace, "squad_attack_right_click", {"position": _vector2_report(enemy_screen)})
-		await _settle_until_scene_status_flag("post_mine_flow_status", "combatStarted", true, 360)
+		await _settle_until_scene_status_flag("post_mine_flow_status", "combatStarted", true, 480)
 		captures.append(await _capture_v0135_step(screenshot_root, captures.size(), "squad_attack", "Squad attack", "squad_attack"))
-		await _settle_until_scene_status_flag("post_mine_flow_status", "waveDefeatedFromSimulation", true, 940)
+		await _settle_until_scene_status_flag("post_mine_flow_status", "waveDefeatedFromSimulation", true, 1100)
 		captures.append(await _capture_v0135_step(screenshot_root, captures.size(), "wave_defeated", "Wave defeated", "wave_defeated"))
 		await _inject_mouse_click(lume_screen, MOUSE_BUTTON_LEFT)
-		await _settle_until_scene_status_flag("post_mine_flow_status", "lumeRestored", true, 140)
-		await _settle_until_player_step("player_results", 140)
+		await _settle_until_scene_status_flag("post_mine_flow_status", "lumeRestored", true, 220)
+		await _settle_until_player_step("player_results", 220)
 		captures.append(await _capture_v0135_step(screenshot_root, captures.size(), "results", "Results", "results"))
 	var rts_status := _scene_status("rts_ergonomics_status")
 	var post_status := _scene_status("post_mine_flow_status")
@@ -2002,6 +2014,219 @@ func _v0135_readme(smoke: Dictionary, manifest: Dictionary) -> String:
 		"- `rts-ergonomics-smoke.json` records the gated real mouse, keyboard, and wheel input result.",
 		"- `rts-input-contract.json` records conventional selection, move, attack, context, zoom, pan, focus, Escape, and help checks.",
 		"- `order-feedback-report.json`, `camera-control-report.json`, and `compact-help-report.json` record focused sub-gates.",
+		"- `screenshot-manifest.json` records `%s/%s` required screenshots." % [manifest.get("captureCount", 0), manifest.get("requiredCaptureCount", 12)],
+		"",
+		"No private harness shortcut, debug action, direct state injection, fixture-only helper proof, save write, stable-ID change, art import, browser-runtime change, or Godot-editor work is accepted as proof."
+	]) + "\n"
+
+func run_usability_presentation_smoke() -> void:
+	var artifact_root := _artifact_root_from_args()
+	var screenshot_root := _path_join(artifact_root, "screenshots")
+	DirAccess.make_dir_recursive_absolute(screenshot_root)
+	_set_capture_viewport(VIEWPORT_SIZE)
+	var start_usec := Time.get_ticks_usec()
+	var errors: Array[String] = []
+	var captures: Array[Dictionary] = []
+	var trace: Array[Dictionary] = []
+	show_player_title()
+	await _settle_frames(8)
+	captures.append(await _capture_v0136_step(screenshot_root, captures.size(), "title", "Title", "title"))
+	await _inject_mouse_click(Vector2(750, 303), MOUSE_BUTTON_LEFT)
+	_trace_real_input(trace, "title_start_clicked", {"position": _vector2_report(Vector2(750, 303))})
+	await _settle_frames(8)
+	captures.append(await _capture_v0136_step(screenshot_root, captures.size(), "briefing", "Briefing", "briefing"))
+	await _inject_mouse_click(Vector2(750, 411), MOUSE_BUTTON_LEFT)
+	_trace_real_input(trace, "briefing_start_battle_clicked", {"position": _vector2_report(Vector2(750, 411))})
+	await _settle_frames(18)
+	if current_step_id != "player_battle":
+		errors.append("v0.136 did not reach player battle.")
+	captures.append(await _capture_v0136_step(screenshot_root, captures.size(), "hud_default", "HUD default", "hud_default"))
+	var minimap_click := Vector2(1430, 740)
+	await _inject_mouse_click(minimap_click, MOUSE_BUTTON_LEFT)
+	_trace_real_input(trace, "minimap_click_to_orient", {"position": _vector2_report(minimap_click)})
+	await _settle_frames(8)
+	captures.append(await _capture_v0136_step(screenshot_root, captures.size(), "minimap_default", "Minimap default", "minimap_default"))
+	var hero_screen := _scene_screen_position("hero_aster")
+	var mine_screen := _scene_screen_position("west_stone_cut_mine")
+	var worker_screen := _scene_screen_position("worker_00")
+	var barracks_screen := _scene_screen_position("barracks_interaction")
+	var train_button_screen := _scene_screen_position("train_militia_button")
+	var squad_start := _scene_screen_position("squad_drag_start")
+	var squad_end := _scene_screen_position("squad_drag_end")
+	var lume_screen := _scene_screen_position("lume_interaction")
+	if hero_screen == Vector2.INF or mine_screen == Vector2.INF or worker_screen == Vector2.INF or barracks_screen == Vector2.INF or train_button_screen == Vector2.INF or squad_start == Vector2.INF or squad_end == Vector2.INF or lume_screen == Vector2.INF:
+		errors.append("v0.136 could not resolve required player-facing coordinates.")
+	else:
+		await _inject_mouse_motion(hero_screen)
+		await _settle_frames(4)
+		await _inject_mouse_click(hero_screen, MOUSE_BUTTON_LEFT)
+		_trace_real_input(trace, "aster_selected", {"position": _vector2_report(hero_screen)})
+		await _settle_frames(8)
+		await _inject_mouse_click(mine_screen, MOUSE_BUTTON_RIGHT)
+		_trace_real_input(trace, "move_order_mine", {"position": _vector2_report(mine_screen)})
+		await _settle_until_scene_status_number_at_least("post_mine_flow_status", "conversionProgress", 25.0, 360)
+		captures.append(await _capture_v0136_step(screenshot_root, captures.size(), "mine_conversion", "Mine conversion", "mine_conversion"))
+		await _settle_until_scene_status_flag("post_mine_flow_status", "mineControlled", true, 520)
+		captures.append(await _capture_v0136_step(screenshot_root, captures.size(), "minimap_mine_controlled", "Minimap mine controlled", "minimap_mine_controlled"))
+		worker_screen = _scene_screen_position("worker_00")
+		await _inject_mouse_motion(worker_screen)
+		await _settle_frames(4)
+		await _inject_mouse_click(worker_screen, MOUSE_BUTTON_LEFT)
+		await _settle_frames(8)
+		await _inject_mouse_click(mine_screen, MOUSE_BUTTON_RIGHT)
+		_trace_real_input(trace, "worker_assigned", {"position": _vector2_report(mine_screen)})
+		await _settle_until_scene_status_flag("post_mine_flow_status", "workerAssignedToMine", true, 180)
+		captures.append(await _capture_v0136_step(screenshot_root, captures.size(), "worker_assignment", "Worker assignment", "worker_assignment"))
+		worker_screen = _scene_screen_position("worker_00")
+		await _inject_mouse_click(worker_screen, MOUSE_BUTTON_LEFT)
+		await _settle_until_scene_status_flag("post_mine_flow_status", "barracksHighlightVisible", true, 120)
+		await _inject_mouse_click(barracks_screen, MOUSE_BUTTON_RIGHT)
+		_trace_real_input(trace, "barracks_restore_order", {"position": _vector2_report(barracks_screen)})
+		await _settle_until_scene_status_number_at_least("post_mine_flow_status", "constructionProgress", 0.50, 420)
+		captures.append(await _capture_v0136_step(screenshot_root, captures.size(), "construction", "Construction", "construction"))
+		await _settle_until_scene_status_flag("post_mine_flow_status", "barracksRestored", true, 520)
+		await _inject_mouse_click(barracks_screen, MOUSE_BUTTON_LEFT)
+		await _settle_until_scene_status_flag("post_mine_flow_status", "barracksSelected", true, 120)
+		await _inject_mouse_click(train_button_screen, MOUSE_BUTTON_LEFT)
+		_trace_real_input(trace, "train_militia_clicked", {"position": _vector2_report(train_button_screen)})
+		await _settle_until_scene_status_number_at_least("post_mine_flow_status", "recruitProgress", 0.50, 360)
+		captures.append(await _capture_v0136_step(screenshot_root, captures.size(), "recruitment", "Recruitment", "recruitment"))
+		await _settle_until_scene_status_flag("post_mine_flow_status", "countdownStarted", true, 180)
+		captures.append(await _capture_v0136_step(screenshot_root, captures.size(), "countdown", "Countdown", "countdown"))
+		await _settle_until_scene_status_flag("post_mine_flow_status", "waveTriggeredOnce", true, 720)
+		await _settle_until_scene_status_flag("post_mine_flow_status", "enemyMovementStarted", true, 320)
+		captures.append(await _capture_v0136_step(screenshot_root, captures.size(), "minimap_wave", "Minimap wave", "minimap_wave"))
+		await _inject_mouse_drag(squad_start, squad_end)
+		await _settle_frames(8)
+		var enemy_screen := _scene_screen_position("ashen_00")
+		await _inject_mouse_click(enemy_screen, MOUSE_BUTTON_RIGHT)
+		_trace_real_input(trace, "combat_attack_right_click", {"position": _vector2_report(enemy_screen)})
+		await _settle_until_scene_status_flag("post_mine_flow_status", "combatStarted", true, 420)
+		captures.append(await _capture_v0136_step(screenshot_root, captures.size(), "combat", "Combat", "combat"))
+		await _settle_until_scene_status_flag("post_mine_flow_status", "waveDefeatedFromSimulation", true, 1040)
+		await _inject_mouse_click(lume_screen, MOUSE_BUTTON_LEFT)
+		_trace_real_input(trace, "lume_restore_click", {"position": _vector2_report(lume_screen)})
+		await _settle_until_scene_status_flag("post_mine_flow_status", "lumeRestored", true, 180)
+		captures.append(await _capture_v0136_step(screenshot_root, captures.size(), "lume", "Lume", "lume"))
+		await _settle_until_player_step("player_results", 180)
+		captures.append(await _capture_v0136_step(screenshot_root, captures.size(), "results", "Results", "results"))
+	var usability_status := _scene_status("usability_presentation_status")
+	var post_status := _scene_status("post_mine_flow_status")
+	var checks: Dictionary = usability_status.get("checks", {})
+	for key in checks.keys():
+		if not bool(checks[key]):
+			errors.append("v0.136 usability presentation check failed: %s" % key)
+	var finish_checks := {
+		"resultsReached": bool(post_status.get("resultsReached", false)) and current_step_id == "player_results",
+		"noObjectiveRegression": not bool(post_status.get("actualObjectiveRegressionDetected", true)),
+		"noDebugShortcut": not bool(usability_status.get("debugShortcutUsed", true)),
+		"noStateInjection": not bool(usability_status.get("stateInjectionUsed", true)),
+		"linkedWardPreserved": float(usability_status.get("linkedWardDamageTakenMultiplier", 0.0)) == 0.92
+	}
+	for key in finish_checks.keys():
+		if not bool(finish_checks[key]):
+			errors.append("v0.136 finish check failed: %s" % key)
+	var combined_trace := trace.duplicate(true)
+	for entry in usability_status.get("trace", []):
+		combined_trace.append(entry)
+	var smoke := {
+		"schemaVersion": 1,
+		"checkpoint": "v0.136",
+		"status": "PASS_V0136_HEADED_USABILITY_PRESENTATION_SMOKE" if errors.is_empty() else "FAIL_V0136_HEADED_USABILITY_PRESENTATION_SMOKE",
+		"artifactRoot": artifact_root,
+		"durationMs": snappedf(float(Time.get_ticks_usec() - start_usec) / 1000.0, 0.01),
+		"inputPath": "packaged Godot player slice normal mouse events and ordinary simulation",
+		"privateHarnessShortcutUsed": false,
+		"debugShortcutUsed": bool(usability_status.get("debugShortcutUsed", false)),
+		"stateInjectionUsed": bool(usability_status.get("stateInjectionUsed", false)),
+		"fixtureOnlyHelperProofUsed": false,
+		"screenshotOnlyProofUsed": false,
+		"routineEditorUseRequired": false,
+		"saveWritesAllowed": false,
+		"stableIdsChanged": false,
+		"browserRuntimeChanged": false,
+		"generatedOrImportedArtIncluded": false,
+		"runtimeArtIntegrated": false,
+		"linkedWardDamageTakenMultiplier": 0.92,
+		"checks": checks,
+		"finishChecks": finish_checks,
+		"usabilityStatus": usability_status,
+		"postMineStatus": post_status,
+		"errors": errors
+	}
+	var screenshot_manifest := {
+		"schemaVersion": 1,
+		"checkpoint": "v0.136",
+		"status": "PASS_V0136_SCREENSHOT_MANIFEST" if captures.size() >= 12 and errors.is_empty() else "FAIL_V0136_SCREENSHOT_MANIFEST",
+		"screenshotRoot": screenshot_root,
+		"captureCount": captures.size(),
+		"requiredCaptureCount": 12,
+		"captures": captures
+	}
+	_write_absolute_json(_path_join(artifact_root, "usability-presentation-smoke.json"), smoke)
+	_write_absolute_json(_path_join(artifact_root, "headed-usability-presentation-smoke.json"), smoke)
+	_write_absolute_json(_path_join(artifact_root, "hud-hierarchy-report.json"), {"schemaVersion": 1, "checkpoint": "v0.136", "status": "PASS_V0136_HUD_HIERARCHY" if bool(checks.get("primaryObjectiveLine", false)) and bool(checks.get("secondaryHintCompact", false)) and bool(checks.get("noRedundantTopBottomBanners", false)) and bool(checks.get("selectedEntityCardCompact", false)) else "FAIL_V0136_HUD_HIERARCHY", "checks": checks})
+	_write_absolute_json(_path_join(artifact_root, "minimap-refinement-report.json"), {"schemaVersion": 1, "checkpoint": "v0.136", "status": "PASS_V0136_MINIMAP_REFINEMENT" if bool(checks.get("minimapTerrainOutline", false)) and bool(checks.get("minimapWorkerMarker", false)) and bool(checks.get("minimapActiveAshenOnly", false)) and bool(checks.get("minimapClickToOrient", false)) else "FAIL_V0136_MINIMAP_REFINEMENT", "checks": checks})
+	_write_absolute_json(_path_join(artifact_root, "onboarding-copy-report.json"), {"schemaVersion": 1, "checkpoint": "v0.136", "status": "PASS_V0136_ONBOARDING_COPY" if bool(checks.get("canonicalOnboardingCopy", false)) and bool(checks.get("noDebugText", false)) else "FAIL_V0136_ONBOARDING_COPY", "checks": checks})
+	_write_absolute_json(_path_join(artifact_root, "microloop-pacing-report.json"), {"schemaVersion": 1, "checkpoint": "v0.136", "status": "PASS_V0136_MICROLOOP_PACING" if bool(checks.get("pacingTuned", false)) and bool(finish_checks.get("resultsReached", false)) else "FAIL_V0136_MICROLOOP_PACING", "pacing": usability_status.get("pacing", {})})
+	_write_absolute_json(_path_join(artifact_root, "screenshot-manifest.json"), screenshot_manifest)
+	_write_absolute_json(_path_join(artifact_root, "usability-presentation-trace.json"), {"schemaVersion": 1, "checkpoint": "v0.136", "status": smoke.get("status", "UNKNOWN"), "trace": combined_trace, "noPrivateHarnessShortcutUsed": true, "noDebugShortcutUsed": not bool(usability_status.get("debugShortcutUsed", true)), "noStateInjectionUsed": not bool(usability_status.get("stateInjectionUsed", true)), "fixtureOnlyHelperProofUsed": false})
+	_write_absolute_text(_path_join(artifact_root, "usability-presentation-trace.md"), _v0136_trace_markdown(smoke, combined_trace))
+	_write_absolute_text(_path_join(artifact_root, "README.md"), _v0136_readme(smoke, screenshot_manifest))
+	get_tree().quit(0 if errors.is_empty() else 1)
+
+func _capture_v0136_step(screenshot_root: String, index: int, id: String, label: String, action: String) -> Dictionary:
+	await _settle_frames(2)
+	var file_name := "%02d_%s.png" % [index + 1, id]
+	var target := _path_join(screenshot_root, file_name)
+	var image := get_viewport().get_texture().get_image()
+	if image.get_width() != VIEWPORT_SIZE.x or image.get_height() != VIEWPORT_SIZE.y:
+		image.resize(VIEWPORT_SIZE.x, VIEWPORT_SIZE.y, Image.INTERPOLATE_LANCZOS)
+	var save_result := image.save_png(target)
+	return {
+		"id": id,
+		"label": label,
+		"fileName": file_name,
+		"absolutePath": target,
+		"width": image.get_width(),
+		"height": image.get_height(),
+		"screen": active_mode,
+		"action": action,
+		"saveStatus": save_result,
+		"status": _scene_status("usability_presentation_status")
+	}
+
+func _v0136_trace_markdown(smoke: Dictionary, trace: Array) -> String:
+	var lines := [
+		"# v0.136 Usability Presentation Trace",
+		"",
+		"Status: `%s`" % str(smoke.get("status", "UNKNOWN")),
+		"",
+		"| # | Event | Details |",
+		"| --- | --- | --- |"
+	]
+	for index in range(trace.size()):
+		var entry: Dictionary = trace[index]
+		lines.append("| %s | %s | `%s` |" % [index + 1, str(entry.get("event", "")), JSON.stringify(entry.get("details", {}))])
+	lines.append("")
+	lines.append("Private harness shortcut used: `%s`" % str(smoke.get("privateHarnessShortcutUsed", false)))
+	lines.append("Debug shortcut used: `%s`" % str(smoke.get("debugShortcutUsed", false)))
+	lines.append("State injection used: `%s`" % str(smoke.get("stateInjectionUsed", false)))
+	lines.append("Fixture-only helper proof used: `%s`" % str(smoke.get("fixtureOnlyHelperProofUsed", false)))
+	return "\n".join(lines) + "\n"
+
+func _v0136_readme(smoke: Dictionary, manifest: Dictionary) -> String:
+	return "\n".join([
+		"# v0.136 Godot HUD, Minimap, Onboarding, and Pacing Evidence",
+		"",
+		"Status: `%s`" % str(smoke.get("status", "UNKNOWN")),
+		"",
+		"These ignored artifacts are generated by `GODOT_USABILITY_PRESENTATION_WINDOWS.bat` / `npm run godot:headed:usability-presentation` against the packaged player-facing Godot slice.",
+		"",
+		"- `hud-hierarchy-report.json` records the compact HUD hierarchy gate.",
+		"- `minimap-refinement-report.json` records authored minimap markers and click-to-orient.",
+		"- `onboarding-copy-report.json` records the concise ten-step copy ledger.",
+		"- `microloop-pacing-report.json` records pacing targets and completion.",
 		"- `screenshot-manifest.json` records `%s/%s` required screenshots." % [manifest.get("captureCount", 0), manifest.get("requiredCaptureCount", 12)],
 		"",
 		"No private harness shortcut, debug action, direct state injection, fixture-only helper proof, save write, stable-ID change, art import, browser-runtime change, or Godot-editor work is accepted as proof."
@@ -2178,14 +2403,14 @@ func _v0134_complete_natural_battle(run_id: String, mistake_mode: bool, from_cur
 	await _inject_mouse_click(mine_screen, MOUSE_BUTTON_RIGHT)
 	_trace_real_input(trace, "mine_right_click", {"runId": run_id, "position": _vector2_report(mine_screen)})
 	if mistake_mode:
-		await _settle_until_scene_status_number_at_least("post_mine_flow_status", "conversionProgress", 0.25, 160)
+		await _settle_until_scene_status_number_at_least("post_mine_flow_status", "conversionProgress", 0.25, 220)
 		captures.append(await _capture_v0134_step(screenshot_root, captures.size(), "%s_conversion_before_leave" % run_id, "Conversion before leave", "conversion_before_leave", run_id))
 		await _inject_mouse_click(Vector2(430, 690), MOUSE_BUTTON_RIGHT)
 		_trace_real_input(trace, "move_away_during_conversion_probe", {"runId": run_id})
 		await _settle_frames(40)
 		await _inject_mouse_click(mine_screen, MOUSE_BUTTON_RIGHT)
 		_trace_real_input(trace, "reenter_capture_ring_probe", {"runId": run_id})
-	await _settle_until_scene_status_flag("post_mine_flow_status", "mineControlled", true, 280)
+	await _settle_until_scene_status_flag("post_mine_flow_status", "mineControlled", true, 620)
 	captures.append(await _capture_v0134_step(screenshot_root, captures.size(), "%s_mine_controlled" % run_id, "Mine controlled", "mine_controlled", run_id))
 	if mistake_mode:
 		await _inject_mouse_click(worker_screen + Vector2(82, 0), MOUSE_BUTTON_LEFT)
@@ -2194,25 +2419,30 @@ func _v0134_complete_natural_battle(run_id: String, mistake_mode: bool, from_cur
 		await _inject_mouse_click(barracks_screen, MOUSE_BUTTON_LEFT)
 		_trace_real_input(trace, "barracks_click_before_worker_probe", {"runId": run_id})
 		await _settle_frames(6)
+	worker_screen = _scene_screen_position("worker_00")
+	await _inject_mouse_motion(worker_screen)
+	await _settle_frames(4)
 	await _inject_mouse_click(worker_screen, MOUSE_BUTTON_LEFT)
 	_trace_real_input(trace, "worker_click", {"runId": run_id, "position": _vector2_report(worker_screen)})
 	await _settle_frames(8)
 	await _inject_mouse_click(mine_screen, MOUSE_BUTTON_RIGHT)
 	_trace_real_input(trace, "worker_right_click_controlled_mine", {"runId": run_id, "position": _vector2_report(mine_screen)})
-	await _settle_until_scene_status_flag("post_mine_flow_status", "workerAssignedToMine", true, 160)
+	await _settle_until_scene_status_flag("post_mine_flow_status", "workerAssignedToMine", true, 220)
 	captures.append(await _capture_v0134_step(screenshot_root, captures.size(), "%s_worker_assigned" % run_id, "Worker assigned", "worker_assigned", run_id))
 	if squad_start != Vector2.INF and squad_end != Vector2.INF:
 		await _inject_mouse_drag(squad_start, squad_end)
 		_trace_real_input(trace, "box_select_no_objective_skip_probe", {"runId": run_id})
 		await _settle_frames(8)
 	worker_screen = _scene_screen_position("worker_00")
+	await _inject_mouse_motion(worker_screen)
+	await _settle_frames(4)
 	await _inject_mouse_click(worker_screen, MOUSE_BUTTON_LEFT)
-	await _settle_until_scene_status_flag("post_mine_flow_status", "barracksHighlightVisible", true, 80)
+	await _settle_until_scene_status_flag("post_mine_flow_status", "barracksHighlightVisible", true, 140)
 	await _inject_mouse_click(barracks_screen, MOUSE_BUTTON_RIGHT)
 	_trace_real_input(trace, "barracks_restore_right_click", {"runId": run_id, "position": _vector2_report(barracks_screen)})
-	await _settle_until_scene_status_number_at_least("post_mine_flow_status", "constructionProgress", 0.75, 260)
+	await _settle_until_scene_status_number_at_least("post_mine_flow_status", "constructionProgress", 0.75, 520)
 	captures.append(await _capture_v0134_step(screenshot_root, captures.size(), "%s_construction_75" % run_id, "Construction 75 percent", "construction_75", run_id))
-	await _settle_until_scene_status_flag("post_mine_flow_status", "barracksRestored", true, 260)
+	await _settle_until_scene_status_flag("post_mine_flow_status", "barracksRestored", true, 620)
 	await _inject_mouse_click(barracks_screen, MOUSE_BUTTON_LEFT)
 	await _settle_until_scene_status_flag("post_mine_flow_status", "barracksSelected", true, 100)
 	await _inject_mouse_click(train_button_screen, MOUSE_BUTTON_LEFT)
@@ -2220,14 +2450,14 @@ func _v0134_complete_natural_battle(run_id: String, mistake_mode: bool, from_cur
 	if mistake_mode:
 		await _inject_mouse_click(train_button_screen, MOUSE_BUTTON_LEFT)
 		_trace_real_input(trace, "duplicate_train_click_probe", {"runId": run_id})
-	await _settle_until_scene_status_number_at_least("post_mine_flow_status", "recruitProgress", 0.50, 220)
+	await _settle_until_scene_status_number_at_least("post_mine_flow_status", "recruitProgress", 0.50, 420)
 	captures.append(await _capture_v0134_step(screenshot_root, captures.size(), "%s_recruit_50" % run_id, "Recruitment 50 percent", "recruit_50", run_id))
-	await _settle_until_scene_status_flag("post_mine_flow_status", "militiaSpawned", true, 260)
+	await _settle_until_scene_status_flag("post_mine_flow_status", "militiaSpawned", true, 520)
 	captures.append(await _capture_v0134_step(screenshot_root, captures.size(), "%s_militia_spawned" % run_id, "Militia spawned", "militia_spawned", run_id))
-	await _settle_until_scene_status_flag("post_mine_flow_status", "countdownStarted", true, 100)
+	await _settle_until_scene_status_flag("post_mine_flow_status", "countdownStarted", true, 180)
 	captures.append(await _capture_v0134_step(screenshot_root, captures.size(), "%s_countdown" % run_id, "Ashen countdown", "countdown", run_id))
-	await _settle_until_scene_status_flag("post_mine_flow_status", "waveTriggeredOnce", true, 440)
-	await _settle_until_scene_status_flag("post_mine_flow_status", "enemyMovementStarted", true, 260)
+	await _settle_until_scene_status_flag("post_mine_flow_status", "waveTriggeredOnce", true, 780)
+	await _settle_until_scene_status_flag("post_mine_flow_status", "enemyMovementStarted", true, 360)
 	captures.append(await _capture_v0134_step(screenshot_root, captures.size(), "%s_enemy_movement" % run_id, "Enemy movement", "enemy_movement", run_id))
 	if mistake_mode:
 		await _inject_mouse_click(Vector2(1180, 720), MOUSE_BUTTON_LEFT)
@@ -2236,7 +2466,7 @@ func _v0134_complete_natural_battle(run_id: String, mistake_mode: bool, from_cur
 		await _inject_mouse_click(_scene_screen_position("attack_button"), MOUSE_BUTTON_LEFT)
 		_trace_real_input(trace, "attack_with_no_valid_selection_probe", {"runId": run_id})
 		await _settle_frames(8)
-		await _inject_mouse_drag(Vector2(1420, 760), Vector2(1500, 830))
+		await _inject_mouse_drag(Vector2(260, 590), Vector2(340, 650))
 		_trace_real_input(trace, "empty_box_select_during_combat_probe", {"runId": run_id})
 		await _settle_frames(8)
 	if squad_start != Vector2.INF and squad_end != Vector2.INF:
@@ -2246,14 +2476,15 @@ func _v0134_complete_natural_battle(run_id: String, mistake_mode: bool, from_cur
 	var enemy_screen := _scene_screen_position("ashen_00")
 	await _inject_mouse_click(enemy_screen, MOUSE_BUTTON_RIGHT)
 	_trace_real_input(trace, "combat_attack_right_click", {"runId": run_id, "position": _vector2_report(enemy_screen)})
-	await _settle_until_scene_status_flag("post_mine_flow_status", "combatStarted", true, 360)
+	await _settle_until_scene_status_flag("post_mine_flow_status", "combatStarted", true, 480)
 	captures.append(await _capture_v0134_step(screenshot_root, captures.size(), "%s_combat_onset" % run_id, "Combat onset", "combat_onset", run_id))
-	await _settle_until_scene_status_flag("post_mine_flow_status", "waveDefeatedFromSimulation", true, 940)
+	await _settle_until_scene_status_flag("post_mine_flow_status", "waveDefeatedFromSimulation", true, 1100)
 	captures.append(await _capture_v0134_step(screenshot_root, captures.size(), "%s_wave_defeated" % run_id, "Wave defeated", "wave_defeated", run_id))
+	lume_screen = _scene_screen_position("lume_interaction")
 	await _inject_mouse_click(lume_screen, MOUSE_BUTTON_LEFT)
 	_trace_real_input(trace, "lume_restore_click", {"runId": run_id, "position": _vector2_report(lume_screen)})
-	await _settle_until_scene_status_flag("post_mine_flow_status", "lumeRestored", true, 140)
-	await _settle_until_player_step("player_results", 140)
+	await _settle_until_scene_status_flag("post_mine_flow_status", "lumeRestored", true, 220)
+	await _settle_until_player_step("player_results", 220)
 	captures.append(await _capture_v0134_step(screenshot_root, captures.size(), "%s_results" % run_id, "Results", "results", run_id))
 	var scene_status := _v0134_scene_status()
 	var checks := _v0134_required_result_checks(scene_status)
