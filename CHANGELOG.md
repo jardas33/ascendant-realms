@@ -1,5 +1,32 @@
 # Changelog
 
+# v0.144 Aster / Worker Silhouette-Scale Convergence Revisions And Human Review Stop - 2026-06-06
+
+This checkpoint generates exactly three Aster / Worker silhouette-scale convergence boards for human review. It encodes the v0.143 review direction inside the generation milestone, keeps all images ignored local reference candidates only, preserves `runtimeIntegrationStatus = forbidden`, regenerates the contact sheet and review pack for twelve total candidates, and records tracked review docs.
+
+Added:
+
+- Three ignored local Aster / Worker silhouette-scale convergence candidates under `artifacts/art-review/v0138/candidates/`.
+- Three ignored matching metadata files under `artifacts/art-review/v0138/metadata/`.
+- Ignored v0.144 local human review note under `artifacts/art-review/v0138/review-notes/`.
+- v0.144 docs for the convergence report, silhouette convergence review guide, reference-only boundary, and implementation report.
+
+Changed:
+
+- Regenerated ignored v0.138 reference-art validation, contact-sheet, and review-pack outputs for twelve total candidates.
+- Handoff, roadmap, development checkpoint, and release checklist now describe v0.144 as a reference-only Aster / Worker silhouette convergence human-review stop.
+
+Boundaries:
+
+- Exactly three boards only.
+- No final character design lock.
+- No HUD, portrait, environment, broad unit-roster, sprite, texture, model, UI kit, turnaround, animation-pose, animation-sheet, or additional board generation.
+- No Godot wiring, browser wiring, runtime import, manifest mutation, art-slot mutation, package inclusion, save change, stable-ID change, final runtime-art choice, protected-IP approval, or v0.145 work.
+
+Verification:
+
+- Required v0.144 verification is listed in `docs/V0144_IMPLEMENTATION_REPORT.md` and must be run before closeout.
+
 # v0.143 Aster / Worker Silhouette-Scale Reference Boards And Human Review Stop - 2026-06-06
 
 This checkpoint generates exactly three Aster / Worker silhouette-scale comparison boards for human review. The images remain ignored local reference candidates only. Matching metadata keeps `runtimeIntegrationStatus = forbidden`, the contact sheet and review pack are regenerated for nine total candidates, and tracked docs record the review guide and hard runtime boundary.

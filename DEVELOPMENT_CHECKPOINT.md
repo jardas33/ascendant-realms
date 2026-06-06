@@ -1,6 +1,44 @@
 # Development Checkpoint
 
-Updated: 2026-06-06 v0.143 Aster / Worker Silhouette-Scale Reference Boards And Human Review Stop
+Updated: 2026-06-06 v0.144 Aster / Worker Silhouette-Scale Convergence Revisions And Human Review Stop
+
+## v0.144 Aster / Worker Silhouette-Scale Convergence Revisions And Human Review Stop - 2026-06-06
+
+Scope: controlled reference-only Aster / Worker silhouette convergence board generation and human-review stop. This checkpoint encodes the v0.143 review direction, generates exactly three convergence boards, validates matching runtime-forbidden metadata, updates the contact sheet and review pack, and stops without importing art or starting v0.145.
+
+Included work:
+
+- Confirmed clean synchronized `main` at `f79e8cf5a0b4c84b2acdcff3089acc393d6ababd`.
+- Confirmed v0.143 generated exactly three Aster / Worker silhouette-scale boards and was pushed with remote CI success.
+- Confirmed the existing nine reference candidates remained reference-only and runtime-forbidden before generation.
+- Encoded v0.143 review direction: S2 as the primary grounded Barrosan material input, S3 as the primary gameplay-readability/proportion input, and S1 as selective role-separation input.
+- Generated exactly three Aster / Worker silhouette convergence boards: T1 balanced Barrosan readability, T2 Builder support clarity, and T3 Commander / Champion restraint.
+- Added matching ignored metadata records with `runtimeIntegrationStatus = forbidden`.
+- Regenerated the ignored contact sheet and review pack for twelve total reference candidates.
+- Added the ignored local human review note and v0.144 tracked docs.
+
+Current interpretation:
+
+- The boards are reference-only and are not final character designs.
+- Human protected-IP and silhouette convergence review is pending.
+- No Godot or browser runtime integration is approved.
+- No final art decision has been made.
+- v0.145 has not started.
+
+Verification:
+
+```text
+Required closeout stack:
+npm test
+npm run build
+npm run validate:content
+npm run validate:art-intake
+npm run art:reference:init
+npm run art:reference:validate
+npm run art:reference:contact-sheet
+npm run art:reference:review-pack
+git diff --check
+```
 
 ## v0.143 Aster / Worker Silhouette-Scale Reference Boards And Human Review Stop - 2026-06-06
 
