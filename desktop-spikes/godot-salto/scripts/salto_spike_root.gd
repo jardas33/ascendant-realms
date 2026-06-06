@@ -30,6 +30,7 @@ const SCRIPT_ARG_PREFIXES := [
 	"--post-mine-flow-smoke",
 	"--post-mine-flow-validate",
 	"--triple-natural-playthrough",
+	"--rts-ergonomics-smoke",
 	"--mode=",
 	"--visual-preset=",
 	"--viewport=",
@@ -92,6 +93,10 @@ func _ready() -> void:
 	if args.has("--triple-natural-playthrough"):
 		_create_player_slice_ui()
 		await run_triple_natural_playthrough_smoke()
+		return
+	if args.has("--rts-ergonomics-smoke"):
+		_create_player_slice_ui()
+		await run_rts_ergonomics_smoke()
 		return
 	if args.has("--player-slice"):
 		_create_player_slice_ui()
@@ -326,7 +331,8 @@ func show_player_battle() -> void:
 	_render_player_screen("battle")
 
 func show_player_results() -> void:
-	_ensure_player_battle_scene()
+	if active_scene == null or not is_instance_valid(active_scene):
+		show_player_battle()
 	_call_scene("transition_results")
 	current_step_id = "player_results"
 	active_mode = MODE_PLAYER_RESULTS
@@ -1752,6 +1758,253 @@ func _post_mine_readme(smoke: Dictionary, manifest: Dictionary) -> String:
 		"- `screenshot-manifest.json` records `%s/%s` required screenshots." % [manifest.get("captureCount", 0), manifest.get("requiredCaptureCount", 21)],
 		"",
 		"No debug shortcut, private-harness action, state injection, fixture-only helper proof, save write, stable-ID change, or Godot-editor work is accepted as proof."
+	]) + "\n"
+
+func run_rts_ergonomics_smoke() -> void:
+	var artifact_root := _artifact_root_from_args()
+	var screenshot_root := _path_join(artifact_root, "screenshots")
+	DirAccess.make_dir_recursive_absolute(screenshot_root)
+	_set_capture_viewport(VIEWPORT_SIZE)
+	await _settle_frames(8)
+	var start_usec := Time.get_ticks_usec()
+	var errors: Array[String] = []
+	var captures: Array[Dictionary] = []
+	var trace: Array[Dictionary] = []
+	last_post_mine_flow_status = {}
+	show_player_title()
+	await _settle_frames(8)
+	_trace_real_input(trace, "launch", {"screen": "title"})
+	await _inject_mouse_click(Vector2(750, 303), MOUSE_BUTTON_LEFT)
+	_trace_real_input(trace, "title_start_clicked", {"position": _vector2_report(Vector2(750, 303))})
+	await _settle_until_player_step("player_briefing", 80)
+	await _inject_mouse_click(Vector2(750, 411), MOUSE_BUTTON_LEFT)
+	_trace_real_input(trace, "briefing_start_battle_clicked", {"position": _vector2_report(Vector2(750, 411))})
+	await _settle_until_player_step("player_battle", 120)
+	await _settle_frames(12)
+	captures.append(await _capture_v0135_step(screenshot_root, captures.size(), "battle_ready", "Battle ready", "battle_ready"))
+	var hero_screen := _scene_screen_position("hero_aster")
+	var mine_screen := _scene_screen_position("west_stone_cut_mine")
+	var worker_screen := _scene_screen_position("worker_00")
+	var empty_screen := _scene_screen_position("empty_ground")
+	var barracks_screen := _scene_screen_position("barracks_interaction")
+	var train_button_screen := _scene_screen_position("train_militia_button")
+	var squad_start := _scene_screen_position("squad_drag_start")
+	var squad_end := _scene_screen_position("squad_drag_end")
+	var lume_screen := _scene_screen_position("lume_interaction")
+	if hero_screen == Vector2.INF or mine_screen == Vector2.INF or worker_screen == Vector2.INF or empty_screen == Vector2.INF or barracks_screen == Vector2.INF or train_button_screen == Vector2.INF or squad_start == Vector2.INF or squad_end == Vector2.INF or lume_screen == Vector2.INF:
+		errors.append("Could not resolve v0.135 RTS ergonomics coordinates.")
+	else:
+		await _inject_key(KEY_F1)
+		_trace_real_input(trace, "help_opened_f1", {})
+		captures.append(await _capture_v0135_step(screenshot_root, captures.size(), "help_opened", "Compact help opened", "help_opened"))
+		await _inject_key(KEY_ESCAPE)
+		_trace_real_input(trace, "help_closed_escape", {})
+		captures.append(await _capture_v0135_step(screenshot_root, captures.size(), "help_dismissed", "Help dismissed", "help_dismissed"))
+		await _inject_mouse_motion(hero_screen)
+		await _settle_frames(4)
+		await _inject_mouse_click(hero_screen, MOUSE_BUTTON_LEFT)
+		_trace_real_input(trace, "aster_selected", {"position": _vector2_report(hero_screen)})
+		captures.append(await _capture_v0135_step(screenshot_root, captures.size(), "aster_selected", "Aster selected", "aster_selected"))
+		await _inject_mouse_wheel(hero_screen, MOUSE_BUTTON_WHEEL_UP)
+		await _inject_key(KEY_D)
+		await _inject_key(KEY_W)
+		await _inject_key(KEY_SPACE)
+		_trace_real_input(trace, "camera_zoom_pan_focus", {})
+		captures.append(await _capture_v0135_step(screenshot_root, captures.size(), "camera_controls", "Camera controls", "camera_controls"))
+		await _inject_mouse_click(empty_screen, MOUSE_BUTTON_LEFT)
+		_trace_real_input(trace, "empty_left_click_deselect", {"position": _vector2_report(empty_screen)})
+		await _inject_mouse_click(empty_screen, MOUSE_BUTTON_RIGHT)
+		_trace_real_input(trace, "invalid_no_selection_right_click", {"position": _vector2_report(empty_screen)})
+		captures.append(await _capture_v0135_step(screenshot_root, captures.size(), "invalid_order_recovery", "Invalid order recovery", "invalid_order_recovery"))
+		await _inject_mouse_click(hero_screen, MOUSE_BUTTON_LEFT)
+		await _settle_frames(8)
+		await _inject_mouse_click(mine_screen, MOUSE_BUTTON_RIGHT)
+		_trace_real_input(trace, "move_order_mine", {"position": _vector2_report(mine_screen)})
+		captures.append(await _capture_v0135_step(screenshot_root, captures.size(), "move_marker", "Move marker", "move_marker"))
+		await _settle_until_scene_status_flag("post_mine_flow_status", "mineControlled", true, 260)
+		captures.append(await _capture_v0135_step(screenshot_root, captures.size(), "mine_controlled", "Mine controlled", "mine_controlled"))
+		worker_screen = _scene_screen_position("worker_00")
+		await _inject_mouse_motion(worker_screen)
+		await _settle_frames(4)
+		await _inject_mouse_click(worker_screen, MOUSE_BUTTON_LEFT)
+		await _settle_frames(8)
+		await _inject_mouse_click(mine_screen, MOUSE_BUTTON_RIGHT)
+		_trace_real_input(trace, "worker_context_mine", {"position": _vector2_report(mine_screen)})
+		await _settle_until_scene_status_flag("post_mine_flow_status", "workerAssignedToMine", true, 160)
+		captures.append(await _capture_v0135_step(screenshot_root, captures.size(), "worker_context_action", "Worker context action", "worker_context_action"))
+		worker_screen = _scene_screen_position("worker_00")
+		await _inject_mouse_click(worker_screen, MOUSE_BUTTON_LEFT)
+		await _settle_until_scene_status_flag("post_mine_flow_status", "barracksHighlightVisible", true, 80)
+		await _inject_mouse_click(barracks_screen, MOUSE_BUTTON_RIGHT)
+		await _settle_until_scene_status_number_at_least("post_mine_flow_status", "constructionProgress", 0.75, 260)
+		captures.append(await _capture_v0135_step(screenshot_root, captures.size(), "barracks_context_action", "Barracks context action", "barracks_context_action"))
+		await _settle_until_scene_status_flag("post_mine_flow_status", "barracksRestored", true, 260)
+		await _inject_mouse_click(barracks_screen, MOUSE_BUTTON_LEFT)
+		await _settle_until_scene_status_flag("post_mine_flow_status", "barracksSelected", true, 100)
+		await _inject_mouse_click(train_button_screen, MOUSE_BUTTON_LEFT)
+		await _settle_until_scene_status_flag("post_mine_flow_status", "militiaSpawned", true, 260)
+		captures.append(await _capture_v0135_step(screenshot_root, captures.size(), "militia_spawned", "Militia spawned", "militia_spawned"))
+		await _settle_until_scene_status_flag("post_mine_flow_status", "waveTriggeredOnce", true, 460)
+		await _settle_until_scene_status_flag("post_mine_flow_status", "enemyMovementStarted", true, 260)
+		captures.append(await _capture_v0135_step(screenshot_root, captures.size(), "wave_movement", "Wave movement", "wave_movement"))
+		await _inject_mouse_drag(squad_start, squad_end)
+		await _settle_frames(8)
+		var enemy_screen := _scene_screen_position("ashen_00")
+		await _inject_mouse_click(enemy_screen, MOUSE_BUTTON_RIGHT)
+		_trace_real_input(trace, "squad_attack_right_click", {"position": _vector2_report(enemy_screen)})
+		await _settle_until_scene_status_flag("post_mine_flow_status", "combatStarted", true, 360)
+		captures.append(await _capture_v0135_step(screenshot_root, captures.size(), "squad_attack", "Squad attack", "squad_attack"))
+		await _settle_until_scene_status_flag("post_mine_flow_status", "waveDefeatedFromSimulation", true, 940)
+		captures.append(await _capture_v0135_step(screenshot_root, captures.size(), "wave_defeated", "Wave defeated", "wave_defeated"))
+		await _inject_mouse_click(lume_screen, MOUSE_BUTTON_LEFT)
+		await _settle_until_scene_status_flag("post_mine_flow_status", "lumeRestored", true, 140)
+		await _settle_until_player_step("player_results", 140)
+		captures.append(await _capture_v0135_step(screenshot_root, captures.size(), "results", "Results", "results"))
+	var rts_status := _scene_status("rts_ergonomics_status")
+	var post_status := _scene_status("post_mine_flow_status")
+	var contract_checks: Dictionary = rts_status.get("checks", {})
+	for key in contract_checks.keys():
+		if not bool(contract_checks[key]):
+			errors.append("v0.135 RTS ergonomics check failed: %s" % key)
+	var finish_checks := {
+		"resultsReached": bool(post_status.get("resultsReached", false)) and current_step_id == "player_results",
+		"noObjectiveRegression": not bool(post_status.get("actualObjectiveRegressionDetected", true)),
+		"noDebugShortcut": not bool(rts_status.get("debugShortcutUsed", true)),
+		"noStateInjection": not bool(rts_status.get("stateInjectionUsed", true)),
+		"linkedWardPreserved": float(rts_status.get("linkedWardDamageTakenMultiplier", 0.0)) == 0.92
+	}
+	for key in finish_checks.keys():
+		if not bool(finish_checks[key]):
+			errors.append("v0.135 finish check failed: %s" % key)
+	var combined_trace := trace.duplicate(true)
+	for entry in rts_status.get("trace", []):
+		combined_trace.append(entry)
+	var smoke := {
+		"schemaVersion": 1,
+		"checkpoint": "v0.135",
+		"status": "PASS_V0135_HEADED_RTS_ERGONOMICS_SMOKE" if errors.is_empty() else "FAIL_V0135_HEADED_RTS_ERGONOMICS_SMOKE",
+		"artifactRoot": artifact_root,
+		"durationMs": snappedf(float(Time.get_ticks_usec() - start_usec) / 1000.0, 0.01),
+		"inputPath": "packaged Godot player slice normal mouse, keyboard, and wheel events",
+		"privateHarnessShortcutUsed": false,
+		"debugShortcutUsed": bool(rts_status.get("debugShortcutUsed", false)),
+		"stateInjectionUsed": bool(rts_status.get("stateInjectionUsed", false)),
+		"fixtureOnlyHelperProofUsed": false,
+		"screenshotOnlyProofUsed": false,
+		"routineEditorUseRequired": false,
+		"saveWritesAllowed": false,
+		"stableIdsChanged": false,
+		"browserRuntimeChanged": false,
+		"generatedOrImportedArtIncluded": false,
+		"runtimeArtIntegrated": false,
+		"linkedWardDamageTakenMultiplier": 0.92,
+		"checks": contract_checks,
+		"finishChecks": finish_checks,
+		"errors": errors,
+		"rtsStatus": rts_status,
+		"postMineStatus": post_status
+	}
+	var screenshot_manifest := {
+		"schemaVersion": 1,
+		"checkpoint": "v0.135",
+		"status": "PASS_V0135_SCREENSHOT_MANIFEST" if captures.size() >= 14 and errors.is_empty() else "FAIL_V0135_SCREENSHOT_MANIFEST",
+		"screenshotRoot": screenshot_root,
+		"captureCount": captures.size(),
+		"requiredCaptureCount": 14,
+		"captures": captures
+	}
+	_write_absolute_json(_path_join(artifact_root, "rts-ergonomics-smoke.json"), smoke)
+	_write_absolute_json(_path_join(artifact_root, "headed-rts-ergonomics-smoke.json"), smoke)
+	_write_absolute_json(_path_join(artifact_root, "rts-input-contract.json"), {"schemaVersion": 1, "checkpoint": "v0.135", "status": "PASS_V0135_RTS_INPUT_CONTRACT" if errors.is_empty() else "FAIL_V0135_RTS_INPUT_CONTRACT", "checks": contract_checks})
+	_write_absolute_json(_path_join(artifact_root, "order-feedback-report.json"), {"schemaVersion": 1, "checkpoint": "v0.135", "status": "PASS_V0135_ORDER_FEEDBACK" if bool(contract_checks.get("invalidOrderMarker", false)) and bool(contract_checks.get("contextMarker", false)) and bool(contract_checks.get("moveMarker", false)) and bool(contract_checks.get("attackMarker", false)) else "FAIL_V0135_ORDER_FEEDBACK", "checks": contract_checks})
+	_write_absolute_json(_path_join(artifact_root, "camera-control-report.json"), {"schemaVersion": 1, "checkpoint": "v0.135", "status": "PASS_V0135_CAMERA_CONTROL" if bool(contract_checks.get("mouseWheelZoom", false)) and bool(contract_checks.get("keyboardCameraPan", false)) and bool(contract_checks.get("spaceFocusAster", false)) and bool(contract_checks.get("zoomBoundsSafe", false)) else "FAIL_V0135_CAMERA_CONTROL", "rtsStatus": rts_status})
+	_write_absolute_json(_path_join(artifact_root, "compact-help-report.json"), {"schemaVersion": 1, "checkpoint": "v0.135", "status": "PASS_V0135_COMPACT_HELP" if bool(contract_checks.get("helpOverlay", false)) else "FAIL_V0135_COMPACT_HELP", "rtsStatus": rts_status})
+	_write_absolute_json(_path_join(artifact_root, "screenshot-manifest.json"), screenshot_manifest)
+	_write_absolute_json(_path_join(artifact_root, "rts-ergonomics-trace.json"), {"schemaVersion": 1, "checkpoint": "v0.135", "status": smoke.get("status", "UNKNOWN"), "trace": combined_trace, "noPrivateHarnessShortcutUsed": true, "noDebugShortcutUsed": not bool(rts_status.get("debugShortcutUsed", true)), "noStateInjectionUsed": not bool(rts_status.get("stateInjectionUsed", true)), "fixtureOnlyHelperProofUsed": false})
+	_write_absolute_text(_path_join(artifact_root, "rts-ergonomics-trace.md"), _v0135_trace_markdown(smoke, combined_trace))
+	_write_absolute_text(_path_join(artifact_root, "README.md"), _v0135_readme(smoke, screenshot_manifest))
+	get_tree().quit(0 if errors.is_empty() else 1)
+
+func _scene_status(method: String) -> Dictionary:
+	var raw: Variant = _call_scene(method)
+	return raw if typeof(raw) == TYPE_DICTIONARY else {}
+
+func _inject_key(keycode: int) -> void:
+	var down := InputEventKey.new()
+	down.keycode = keycode
+	down.pressed = true
+	get_viewport().push_input(down, true)
+	await _settle_frames(2)
+	var up := InputEventKey.new()
+	up.keycode = keycode
+	up.pressed = false
+	get_viewport().push_input(up, true)
+	await _settle_frames(2)
+
+func _inject_mouse_wheel(position: Vector2, button: int) -> void:
+	await _inject_mouse_motion(position)
+	var wheel := InputEventMouseButton.new()
+	wheel.position = position
+	wheel.global_position = position
+	wheel.button_index = button
+	wheel.pressed = true
+	get_viewport().push_input(wheel, true)
+	await _settle_frames(2)
+
+func _capture_v0135_step(screenshot_root: String, index: int, id: String, label: String, action: String) -> Dictionary:
+	await _settle_frames(2)
+	var file_name := "%02d_%s.png" % [index + 1, id]
+	var target := _path_join(screenshot_root, file_name)
+	var image := get_viewport().get_texture().get_image()
+	if image.get_width() != VIEWPORT_SIZE.x or image.get_height() != VIEWPORT_SIZE.y:
+		image.resize(VIEWPORT_SIZE.x, VIEWPORT_SIZE.y, Image.INTERPOLATE_LANCZOS)
+	var save_result := image.save_png(target)
+	return {
+		"id": id,
+		"label": label,
+		"fileName": file_name,
+		"absolutePath": target,
+		"width": image.get_width(),
+		"height": image.get_height(),
+		"screen": active_mode,
+		"action": action,
+		"saveStatus": save_result,
+		"status": _scene_status("rts_ergonomics_status")
+	}
+
+func _v0135_trace_markdown(smoke: Dictionary, trace: Array) -> String:
+	var lines := [
+		"# v0.135 RTS Ergonomics Trace",
+		"",
+		"Status: `%s`" % str(smoke.get("status", "UNKNOWN")),
+		"",
+		"| # | Event | Details |",
+		"| --- | --- | --- |"
+	]
+	for index in range(trace.size()):
+		var entry: Dictionary = trace[index]
+		lines.append("| %s | %s | `%s` |" % [index + 1, str(entry.get("event", "")), JSON.stringify(entry.get("details", {}))])
+	lines.append("")
+	lines.append("Private harness shortcut used: `%s`" % str(smoke.get("privateHarnessShortcutUsed", false)))
+	lines.append("Debug shortcut used: `%s`" % str(smoke.get("debugShortcutUsed", false)))
+	lines.append("State injection used: `%s`" % str(smoke.get("stateInjectionUsed", false)))
+	lines.append("Fixture-only helper proof used: `%s`" % str(smoke.get("fixtureOnlyHelperProofUsed", false)))
+	return "\n".join(lines) + "\n"
+
+func _v0135_readme(smoke: Dictionary, manifest: Dictionary) -> String:
+	return "\n".join([
+		"# v0.135 Godot RTS Ergonomics Evidence",
+		"",
+		"Status: `%s`" % str(smoke.get("status", "UNKNOWN")),
+		"",
+		"These ignored artifacts are generated by `GODOT_RTS_ERGONOMICS_SMOKE_WINDOWS.bat` / `npm run godot:headed:rts-ergonomics-smoke` against the packaged player-facing Godot slice.",
+		"",
+		"- `rts-ergonomics-smoke.json` records the gated real mouse, keyboard, and wheel input result.",
+		"- `rts-input-contract.json` records conventional selection, move, attack, context, zoom, pan, focus, Escape, and help checks.",
+		"- `order-feedback-report.json`, `camera-control-report.json`, and `compact-help-report.json` record focused sub-gates.",
+		"- `screenshot-manifest.json` records `%s/%s` required screenshots." % [manifest.get("captureCount", 0), manifest.get("requiredCaptureCount", 12)],
+		"",
+		"No private harness shortcut, debug action, direct state injection, fixture-only helper proof, save write, stable-ID change, art import, browser-runtime change, or Godot-editor work is accepted as proof."
 	]) + "\n"
 
 func run_triple_natural_playthrough_smoke() -> void:

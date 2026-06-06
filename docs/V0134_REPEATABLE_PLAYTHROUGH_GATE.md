@@ -2,6 +2,8 @@
 
 Classification: `GREEN`
 
+Gate: `REPEATABLE_PLAYTHROUGH_GREEN`
+
 Reason:
 
 - Three natural packaged-window playthroughs are defined and gated across normal, recoverable-mistake, and restart-and-replay profiles.

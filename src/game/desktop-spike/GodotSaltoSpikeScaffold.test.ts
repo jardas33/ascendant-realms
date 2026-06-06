@@ -1419,6 +1419,7 @@ describe("Godot Salto spike scaffold", () => {
     expect(smokeScript).toContain("v0134");
 
     expect(gate).toContain("Classification: `GREEN`");
+    expect(gate).toContain("Gate: `REPEATABLE_PLAYTHROUGH_GREEN`");
     expect(gate).toContain("Three natural packaged-window playthroughs");
     expect(recovery).toContain("empty terrain before Aster");
     expect(recovery).toContain("Attack with no valid selection");
@@ -1426,6 +1427,99 @@ describe("Godot Salto spike scaffold", () => {
     expect(guide).toContain("GODOT_TRIPLE_NATURAL_PLAYTHROUGH_WINDOWS.bat");
     expect(handoff).toContain("v0.134 Godot Repeatable Natural Playthrough");
     expect(roadmap).toContain("v0.134 Godot Repeatable Natural Playthrough");
+
+    expect(rootScript).not.toContain("load(\"res://assets");
+    expect(scene3d).not.toContain("load(\"res://assets");
+    expect(scene3d).not.toContain("ImageTexture");
+    expect(toolScript).not.toContain("ImageTexture");
+  });
+
+  it("defines the v0.135 RTS input ergonomics, recoverable feedback, and camera-control pass", async () => {
+    [
+      "GODOT_RTS_ERGONOMICS_SMOKE_WINDOWS.bat",
+      "tools/godot/runGodotRtsErgonomicsSmokeWindows.ps1",
+      "docs/V0135_RTS_INPUT_CONTRACT.md",
+      "docs/V0135_ORDER_FEEDBACK_SPEC.md",
+      "docs/V0135_CAMERA_CONTROL_SPEC.md",
+      "docs/V0135_COMPACT_HELP_SPEC.md",
+      "docs/V0135_RTS_ERGONOMICS_GATE.md",
+      "docs/V0135_IMPLEMENTATION_REPORT.md"
+    ].forEach((path) => expect(existsSync(path), path).toBe(true));
+
+    const packageJson = await readJson<{ scripts: Record<string, string> }>("package.json");
+    const rootScript = await readFile("desktop-spikes/godot-salto/scripts/salto_spike_root.gd", "utf8");
+    const scene3d = await readFile("desktop-spikes/godot-salto/scripts/salto_spike_scene_3d.gd", "utf8");
+    const toolScript = await readFile("desktop-spikes/godot-salto/tools/godotSpikeTool.mjs", "utf8");
+    const smokeScript = await readFile("tools/godot/runGodotRtsErgonomicsSmokeWindows.ps1", "utf8");
+    const v0134Gate = await readFile("docs/V0134_REPEATABLE_PLAYTHROUGH_GATE.md", "utf8");
+    const v0135Gate = await readFile("docs/V0135_RTS_ERGONOMICS_GATE.md", "utf8");
+    const handoff = await readFile("LLM_GAME_HANDOFF.md", "utf8");
+    const roadmap = await readFile("ROADMAP.md", "utf8");
+
+    expect(v0134Gate).toContain("Gate: `REPEATABLE_PLAYTHROUGH_GREEN`");
+    expect(packageJson.scripts["godot:headed:rts-ergonomics-smoke"]).toBeTypeOf("string");
+
+    [
+      "--rts-ergonomics-smoke",
+      "run_rts_ergonomics_smoke",
+      "PASS_V0135_HEADED_RTS_ERGONOMICS_SMOKE",
+      "PASS_V0135_RTS_INPUT_CONTRACT",
+      "PASS_V0135_ORDER_FEEDBACK",
+      "PASS_V0135_CAMERA_CONTROL",
+      "PASS_V0135_COMPACT_HELP",
+      "PASS_V0135_SCREENSHOT_MANIFEST",
+      "headed-rts-ergonomics-smoke.json",
+      "rts-input-contract.json",
+      "order-feedback-report.json",
+      "camera-control-report.json",
+      "compact-help-report.json",
+      "rts-ergonomics-trace.json",
+      "screenshot-manifest.json"
+    ].forEach((text) => expect(rootScript).toContain(text));
+
+    [
+      "_handle_real_keyboard",
+      "set_controls_help_visible",
+      "toggle_controls_help",
+      "focus_aster_from_input",
+      "rts_ergonomics_status",
+      "CompactControlsHelpButton",
+      "mouseWheelZoom",
+      "keyboardCameraPan",
+      "spaceFocusAster",
+      "escapeRecoverable",
+      "invalidOrderMarker",
+      "selectedSquadCount",
+      "minimapViewportIndicator",
+      "linkedWardDamageTakenMultiplier",
+      "saveWritesAllowed"
+    ].forEach((text) => expect(scene3d).toContain(text));
+
+    [
+      "v0135ArtifactRoot",
+      "v0135ScreenshotRoot",
+      "validateV0135RtsErgonomicsArtifacts",
+      "PASS_V0135_RTS_ERGONOMICS_VALIDATION",
+      "rts-ergonomics-v0135",
+      "PASS_V0135_HEADED_RTS_ERGONOMICS_SMOKE",
+      "PASS_V0135_RTS_INPUT_CONTRACT",
+      "PASS_V0135_ORDER_FEEDBACK",
+      "PASS_V0135_CAMERA_CONTROL",
+      "PASS_V0135_COMPACT_HELP",
+      "PASS_V0135_SCREENSHOT_MANIFEST",
+      "linkedWardDamageTakenMultiplier"
+    ].forEach((text) => expect(toolScript).toContain(text));
+
+    expect(smokeScript).toContain("--rts-ergonomics-smoke");
+    expect(smokeScript).toContain("rts-ergonomics-v0135");
+    expect(smokeScript).toContain("v0135");
+
+    expect(v0135Gate).toContain("Classification: `RTS_ERGONOMICS_GREEN`");
+    expect(v0135Gate).toContain("RTS_ERGONOMICS_AMBER");
+    expect(v0135Gate).toContain("RTS_ERGONOMICS_RED");
+    expect(v0135Gate).toContain("PASS_V0135_HEADED_RTS_ERGONOMICS_SMOKE");
+    expect(handoff).toContain("v0.135 Godot RTS Input Ergonomics");
+    expect(roadmap).toContain("v0.135 Godot RTS Input Ergonomics");
 
     expect(rootScript).not.toContain("load(\"res://assets");
     expect(scene3d).not.toContain("load(\"res://assets");

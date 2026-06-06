@@ -52,6 +52,7 @@
     "godot:validate:post-mine-flow": "powershell -NoProfile -ExecutionPolicy Bypass -File tools/godot/runGodotPostMineFlowSmokeWindows.ps1",
     "godot:headed:post-mine-flow-smoke": "powershell -NoProfile -ExecutionPolicy Bypass -File tools/godot/runGodotPostMineFlowSmokeWindows.ps1",
     "godot:headed:triple-natural-playthrough": "powershell -NoProfile -ExecutionPolicy Bypass -File tools/godot/runGodotTripleNaturalPlaythroughWindows.ps1",
+    "godot:headed:rts-ergonomics-smoke": "powershell -NoProfile -ExecutionPolicy Bypass -File tools/godot/runGodotRtsErgonomicsSmokeWindows.ps1",
     "godot:scorecard": "powershell -NoProfile -ExecutionPolicy Bypass -File tools/godot/runGodotBenchmark.ps1 -ScorecardOnly",
     "godot:all": "powershell -NoProfile -ExecutionPolicy Bypass -File tools/godot/runGodotAll.ps1",
     "godot:fresh-checkout:validate": "powershell -NoProfile -ExecutionPolicy Bypass -File tools/godot/validateGodotFreshCheckout.ps1",

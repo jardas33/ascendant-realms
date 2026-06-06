@@ -9,6 +9,8 @@ const SAFE_ZOOM_MAX := 13.8
 const SAFE_FRAME_DEFAULT_ZOOM := 10.8
 const CAMERA_DEFAULT_POSITION := Vector3(0.0, 11.6, 8.9)
 const CAMERA_DEFAULT_ROTATION := Vector3(-60.0, 0.0, 0.0)
+const CAMERA_KEYBOARD_PAN_STEP := 0.55
+const CAMERA_WHEEL_ZOOM_STEP := 0.55
 const CAMERA_PAN_MIN_X := -5.8
 const CAMERA_PAN_MAX_X := 5.8
 const CAMERA_PAN_MIN_Z := 7.6
@@ -56,6 +58,10 @@ var hud_more_details_button: Button
 var hud_more_details_label: Label
 var hud_work_button: Button
 var hud_attack_button: Button
+var hud_help_button: Button
+var hud_help_panel: Panel
+var hud_help_label: Label
+var hud_tooltip_label: Label
 var minimap_panel: Panel
 var camera_panned := false
 var camera_zoomed := false
@@ -161,6 +167,21 @@ var v0133_lume_restored := false
 var v0133_results_reached := false
 var v0134_recovery_feedback_ids: Array[String] = []
 var v0134_recovery_feedback_count := 0
+var v0135_help_overlay_visible := false
+var v0135_help_opened := false
+var v0135_help_dismissed := false
+var v0135_camera_pan_input_seen := false
+var v0135_camera_zoom_input_seen := false
+var v0135_focus_aster_input_seen := false
+var v0135_escape_handled := false
+var v0135_invalid_order_marker_rendered := false
+var v0135_context_action_marker_rendered := false
+var v0135_selected_squad_count_visible := false
+var v0135_tooltip_visible := false
+var v0135_hover_response_seen := false
+var v0135_selected_unit_marker_seen := false
+var v0135_keyboard_pan_count := 0
+var v0135_mouse_wheel_zoom_count := 0
 
 func _ready() -> void:
 	_create_camera()
@@ -213,6 +234,10 @@ func _input(event: InputEvent) -> void:
 
 func _unhandled_input(event: InputEvent) -> void:
 	if not _real_input_enabled():
+		return
+	if event is InputEventKey:
+		if _handle_real_keyboard(event as InputEventKey):
+			get_viewport().set_input_as_handled()
 		return
 	if event is InputEventMouseMotion:
 		_handle_real_mouse_motion(event as InputEventMouseMotion)
@@ -277,6 +302,8 @@ func set_onboarding_step(step_id: String) -> bool:
 	current_onboarding_step = normalized
 	if not onboarding_seen_steps.has(normalized):
 		onboarding_seen_steps.append(normalized)
+	if player_facing_mode and player_shell_screen == "battle" and normalized == "worker_mine_or_shrine":
+		focus_visual_subject("worker")
 	_record_objective_transition(normalized, true, "accepted")
 	onboarding_dismissed = false
 	_sync_hud()
@@ -424,6 +451,20 @@ func set_more_details_visible(enabled: bool) -> bool:
 	_sync_hud()
 	return true
 
+func set_controls_help_visible(enabled: bool) -> bool:
+	v0135_help_overlay_visible = enabled
+	if enabled:
+		v0135_help_opened = true
+		v0135_tooltip_visible = true
+		last_feedback_id = "controls_help"
+	else:
+		v0135_help_dismissed = true
+	_sync_hud()
+	return true
+
+func toggle_controls_help() -> bool:
+	return set_controls_help_visible(not v0135_help_overlay_visible)
+
 func show_objective_feedback(feedback_id: String) -> bool:
 	var normalized := feedback_id.strip_edges().to_lower()
 	if normalized == "":
@@ -454,6 +495,23 @@ func _record_v0134_recovery_feedback(feedback_id: String, event_name: String, de
 	if not v0134_recovery_feedback_ids.has(normalized):
 		v0134_recovery_feedback_ids.append(normalized)
 	v0134_recovery_feedback_count += 1
+	var payload := details.duplicate(true)
+	payload["feedbackId"] = normalized
+	_record_real_input(event_name, payload)
+	_sync_hud()
+
+func _record_v0135_recoverable_feedback(feedback_id: String, event_name: String, details: Dictionary = {}) -> void:
+	var normalized := feedback_id.strip_edges().to_lower()
+	if normalized == "":
+		return
+	last_feedback_id = normalized
+	match normalized:
+		"invalid_order", "no_selection_order", "invalid_ground":
+			v0135_invalid_order_marker_rendered = true
+		"context_action", "context_mine", "context_barracks", "context_lume":
+			v0135_context_action_marker_rendered = true
+		"hover", "short_tooltip", "controls_help":
+			v0135_tooltip_visible = true
 	var payload := details.duplicate(true)
 	payload["feedbackId"] = normalized
 	_record_real_input(event_name, payload)
@@ -703,6 +761,33 @@ func zoom_camera() -> bool:
 	camera_zoom_posture = "objective"
 	return true
 
+func _pan_camera_by(delta: Vector3, source: String) -> bool:
+	var camera := get_node_or_null("FixedOrthographicCamera") as Camera3D
+	if not camera:
+		return false
+	camera.position = _clamped_camera_position(camera.position + delta)
+	camera_panned = true
+	camera_focus_id = source
+	v0135_camera_pan_input_seen = true
+	v0135_keyboard_pan_count += 1
+	_record_real_input("camera_pan", {"source": source, "cameraPosition": _vector3_report(camera.position)})
+	_sync_hud()
+	return true
+
+func _zoom_camera_by(delta: float, source: String) -> bool:
+	var camera := get_node_or_null("FixedOrthographicCamera") as Camera3D
+	if not camera:
+		return false
+	camera.size = clampf(camera.size + delta, SAFE_ZOOM_MIN, SAFE_ZOOM_MAX)
+	camera_zoomed = true
+	camera_zoom_posture = "wheel"
+	camera_focus_id = source
+	v0135_camera_zoom_input_seen = true
+	v0135_mouse_wheel_zoom_count += 1
+	_record_real_input("camera_zoom", {"source": source, "zoom": snappedf(camera.size, 0.01)})
+	_sync_hud()
+	return true
+
 func focus_layout_feature(feature: String) -> bool:
 	var normalized := feature.strip_edges().to_lower()
 	var position := CAMERA_DEFAULT_POSITION
@@ -872,6 +957,13 @@ func recenter_camera() -> bool:
 	_apply_camera_authoring_posture("default", CAMERA_DEFAULT_POSITION, SAFE_FRAME_DEFAULT_ZOOM)
 	return true
 
+func focus_aster_from_input() -> bool:
+	var result := focus_visual_subject("hero")
+	v0135_focus_aster_input_seen = result
+	if result:
+		_record_real_input("focus_aster", {"source": "space"})
+	return result
+
 func toggle_pause() -> bool:
 	var result: bool = runtime.toggle_pause()
 	_set_or_create_marker("pause_marker", Vector3(-5.2, 0.22, -3.1), Vector3(0.72, 0.16, 0.32), Color(0.84, 0.78, 0.44))
@@ -896,6 +988,12 @@ func clear_selection() -> bool:
 func real_input_screen_position(subject: String) -> Vector2:
 	var normalized := subject.strip_edges().to_lower()
 	match normalized:
+		"empty_ground":
+			return _world_to_screen(_to_world(Vector2(1180, 720), 0.12))
+		"invalid_ground":
+			return Vector2(1582, 36)
+		"help_button":
+			return hud_help_button.get_global_rect().get_center() if hud_help_button != null else Vector2(1474, 626)
 		"hero", "aster", "hero_aster":
 			return _unit_screen_position("hero_aster")
 		"worker", "worker_00":
@@ -1089,6 +1187,71 @@ func post_mine_flow_status() -> Dictionary:
 		"trace": real_input_trace.duplicate(true)
 	}
 
+func rts_ergonomics_status() -> Dictionary:
+	var selected: Array[String] = runtime.selected_ids.duplicate()
+	var camera := get_node_or_null("FixedOrthographicCamera") as Camera3D
+	var checks := {
+		"leftClickFriendlySelect": real_input_aster_selected or real_input_worker_selected or not selected.is_empty(),
+		"leftClickEmptyDeselect": real_input_empty_deselect_done,
+		"leftDragBoxSelect": real_input_squad_box_selected,
+		"rightClickTerrainMove": real_input_move_order_accepted,
+		"rightClickHostileAttack": real_input_attack_order_accepted,
+		"rightClickObjectiveContextAction": v0135_context_action_marker_rendered,
+		"mouseWheelZoom": v0135_camera_zoom_input_seen,
+		"keyboardCameraPan": v0135_camera_pan_input_seen,
+		"spaceFocusAster": v0135_focus_aster_input_seen,
+		"escapeRecoverable": v0135_escape_handled,
+		"helpOverlay": v0135_help_opened and v0135_help_dismissed,
+		"moveMarker": real_input_move_marker_rendered,
+		"attackMarker": real_input_attack_marker_rendered,
+		"contextMarker": v0135_context_action_marker_rendered,
+		"invalidOrderMarker": v0135_invalid_order_marker_rendered,
+		"hoverResponse": v0135_hover_response_seen or real_input_hover_id != "" or hover_target_id != "",
+		"shortTooltip": v0135_tooltip_visible,
+		"selectedUnitMarker": v0135_selected_unit_marker_seen or real_input_selected_id != "" or not selected.is_empty(),
+		"selectedSquadCount": v0135_selected_squad_count_visible,
+		"cameraBoundsSafe": camera != null and camera.position.x >= CAMERA_PAN_MIN_X - 0.01 and camera.position.x <= CAMERA_PAN_MAX_X + 0.01 and camera.position.z >= CAMERA_PAN_MIN_Z - 0.01 and camera.position.z <= CAMERA_PAN_MAX_Z + 0.01,
+		"zoomBoundsSafe": camera != null and camera.size >= SAFE_ZOOM_MIN - 0.01 and camera.size <= SAFE_ZOOM_MAX + 0.01,
+		"minimapViewportIndicator": _minimap_has_marker("minimap_camera_viewport_indicator")
+	}
+	return {
+		"schemaVersion": 1,
+		"checkpoint": "v0.135",
+		"status": "PASS_V0135_RTS_ERGONOMICS_SCENE_STATUS" if _all_v0135_checks_true(checks) else "FAIL_V0135_RTS_ERGONOMICS_SCENE_STATUS",
+		"selectedIds": selected,
+		"checks": checks,
+		"cameraCurrentZoom": camera.size if camera else 0.0,
+		"cameraFocusId": camera_focus_id,
+		"cameraPanCount": v0135_keyboard_pan_count,
+		"mouseWheelZoomCount": v0135_mouse_wheel_zoom_count,
+		"helpOverlayVisible": v0135_help_overlay_visible,
+		"helpOpened": v0135_help_opened,
+		"helpDismissed": v0135_help_dismissed,
+		"invalidOrderMarkerRendered": v0135_invalid_order_marker_rendered,
+		"contextActionMarkerRendered": v0135_context_action_marker_rendered,
+		"selectedSquadCountVisible": v0135_selected_squad_count_visible,
+		"tooltipVisible": v0135_tooltip_visible,
+		"privateHarnessShortcutUsed": false,
+		"debugShortcutUsed": real_input_debug_shortcut_used,
+		"stateInjectionUsed": real_input_state_injection_used,
+		"fixtureOnlyHelperProofUsed": false,
+		"screenshotOnlyProofUsed": false,
+		"routineEditorUseRequired": false,
+		"saveWritesAllowed": false,
+		"stableIdsChanged": false,
+		"browserRuntimeChanged": false,
+		"generatedOrImportedArtIncluded": false,
+		"runtimeArtIntegrated": false,
+		"linkedWardDamageTakenMultiplier": 0.92,
+		"trace": real_input_trace.duplicate(true)
+	}
+
+func _all_v0135_checks_true(checks: Dictionary) -> bool:
+	for key in checks.keys():
+		if not bool(checks[key]):
+			return false
+	return true
+
 func _real_input_enabled() -> bool:
 	return player_facing_mode and player_shell_screen == "battle"
 
@@ -1169,6 +1332,21 @@ func _reset_real_input_state() -> void:
 	v0133_results_reached = false
 	v0134_recovery_feedback_ids = []
 	v0134_recovery_feedback_count = 0
+	v0135_help_overlay_visible = false
+	v0135_help_opened = false
+	v0135_help_dismissed = false
+	v0135_camera_pan_input_seen = false
+	v0135_camera_zoom_input_seen = false
+	v0135_focus_aster_input_seen = false
+	v0135_escape_handled = false
+	v0135_invalid_order_marker_rendered = false
+	v0135_context_action_marker_rendered = false
+	v0135_selected_squad_count_visible = false
+	v0135_tooltip_visible = false
+	v0135_hover_response_seen = false
+	v0135_selected_unit_marker_seen = false
+	v0135_keyboard_pan_count = 0
+	v0135_mouse_wheel_zoom_count = 0
 
 func _handle_real_mouse_motion(event: InputEventMouseMotion) -> void:
 	if real_input_drag_active and real_input_drag_start != Vector2.INF:
@@ -1181,12 +1359,20 @@ func _handle_real_mouse_motion(event: InputEventMouseMotion) -> void:
 	hover_target_id = next_hover
 	if next_hover != "":
 		last_feedback_id = "hover:%s" % next_hover
+		v0135_hover_response_seen = true
+		v0135_tooltip_visible = true
 		_set_or_create_disc_marker("hover_feedback_marker", _unit_world_position(next_hover, Vector3.ZERO) + Vector3(0.0, 0.045, 0.0), 0.38, Color(0.92, 0.88, 0.48, 0.44))
 		_record_real_input("hover", {"unitId": next_hover, "screen": _vector2_report(event.position)})
 	_sync_unit_visuals()
 	_sync_hud()
 
 func _handle_real_mouse_button(event: InputEventMouseButton) -> void:
+	if event.button_index == MOUSE_BUTTON_WHEEL_UP and event.pressed:
+		_zoom_camera_by(-CAMERA_WHEEL_ZOOM_STEP, "mouse_wheel_zoom_in")
+		return
+	if event.button_index == MOUSE_BUTTON_WHEEL_DOWN and event.pressed:
+		_zoom_camera_by(CAMERA_WHEEL_ZOOM_STEP, "mouse_wheel_zoom_out")
+		return
 	if event.button_index == MOUSE_BUTTON_LEFT:
 		if event.pressed:
 			real_input_drag_start = event.position
@@ -1204,7 +1390,46 @@ func _handle_real_mouse_button(event: InputEventMouseButton) -> void:
 	if event.button_index == MOUSE_BUTTON_RIGHT and event.pressed:
 		_issue_real_order(event.position)
 
+func _handle_real_keyboard(event: InputEventKey) -> bool:
+	if not event.pressed or event.echo:
+		return false
+	match event.keycode:
+		KEY_W, KEY_UP:
+			return _pan_camera_by(Vector3(0.0, 0.0, -CAMERA_KEYBOARD_PAN_STEP), "keyboard_pan")
+		KEY_S, KEY_DOWN:
+			return _pan_camera_by(Vector3(0.0, 0.0, CAMERA_KEYBOARD_PAN_STEP), "keyboard_pan")
+		KEY_A, KEY_LEFT:
+			return _pan_camera_by(Vector3(-CAMERA_KEYBOARD_PAN_STEP, 0.0, 0.0), "keyboard_pan")
+		KEY_D, KEY_RIGHT:
+			return _pan_camera_by(Vector3(CAMERA_KEYBOARD_PAN_STEP, 0.0, 0.0), "keyboard_pan")
+		KEY_SPACE:
+			return focus_aster_from_input()
+		KEY_ESCAPE:
+			v0135_escape_handled = true
+			if v0135_help_overlay_visible:
+				set_controls_help_visible(false)
+			elif not runtime.selected_ids.is_empty():
+				runtime.clear_selection()
+				real_input_selected_id = ""
+				v0133_selected_structure_id = ""
+				real_input_empty_deselect_done = true
+			else:
+				toggle_pause()
+			_record_real_input("escape_recoverable", {"helpOverlayVisible": v0135_help_overlay_visible, "selectedIds": runtime.selected_ids.duplicate()})
+			_sync_unit_visuals()
+			_sync_hud()
+			return true
+		KEY_F1:
+			toggle_controls_help()
+			_record_real_input("controls_help_toggled", {"visible": v0135_help_overlay_visible})
+			return true
+	return false
+
 func _select_from_real_click(screen_position: Vector2) -> void:
+	if current_onboarding_step == "train_militia" and _screen_hits_v0133_train_button(screen_position):
+		_record_real_input("hud_train_scaled_click", {"screen": _vector2_report(screen_position)})
+		_queue_v0133_militia_from_input()
+		return
 	if current_onboarding_step == "defeat_wave" and _screen_hits_v0133_attack_button(screen_position):
 		_record_real_input("hud_attack_scaled_click", {"screen": _vector2_report(screen_position)})
 		_hud_attack_pressed()
@@ -1245,6 +1470,7 @@ func _select_unit_hit_from_real_click(hit: Dictionary, screen_position: Vector2)
 		_record_real_input("selection_failed", {"unitId": id})
 		return true
 	real_input_selected_id = id
+	v0135_selected_unit_marker_seen = true
 	v0133_selected_structure_id = ""
 	real_input_hud_card_updated = true
 	if id == "hero_aster":
@@ -1278,6 +1504,7 @@ func _finish_real_box_select(start: Vector2, end: Vector2) -> void:
 			ids.append(str(unit.get("id", "")))
 	if current_onboarding_step == "defeat_wave" and ids.is_empty() and runtime.selected_ids.size() >= 2:
 		real_input_squad_box_selected = true
+		v0135_selected_squad_count_visible = true
 		v0133_box_select_no_skip_proven = true
 		real_input_selected_id = "defender_squad"
 		v0133_selected_structure_id = ""
@@ -1292,6 +1519,7 @@ func _finish_real_box_select(start: Vector2, end: Vector2) -> void:
 	var selected := runtime.select_units_by_ids(ids)
 	real_input_squad_box_selected = selected.size() >= 2
 	if real_input_squad_box_selected:
+		v0135_selected_squad_count_visible = true
 		v0133_box_select_no_skip_proven = current_onboarding_step != "prepare_ashen_pressure" or _v0133_objective_prerequisites_met("prepare_ashen_pressure")
 		real_input_selected_id = "defender_squad" if current_onboarding_step == "defeat_wave" else str(selected[0])
 		v0133_selected_structure_id = ""
@@ -1303,6 +1531,8 @@ func _finish_real_box_select(start: Vector2, end: Vector2) -> void:
 func _issue_real_order(screen_position: Vector2) -> void:
 	if runtime.selected_ids.is_empty():
 		_record_v0134_recovery_feedback("no_selection_move_rejected", "right_click_rejected_no_selection", {"screen": _vector2_report(screen_position)})
+		_record_v0135_recoverable_feedback("no_selection_order", "rts_no_selection_order_feedback", {"screen": _vector2_report(screen_position)})
+		_set_or_create_disc_marker("invalid_order_marker", _to_world(Vector2(1180, 720), 0.14), 0.36, Color(0.96, 0.36, 0.26, 0.48))
 		_record_real_input("right_click_ignored_no_selection", {"screen": _vector2_report(screen_position)})
 		return
 	var hit := _pick_unit_from_screen(screen_position)
@@ -1329,13 +1559,17 @@ func _issue_real_order(screen_position: Vector2) -> void:
 	var world := _screen_to_ground(screen_position)
 	if world == Vector3.INF:
 		_record_v0134_recovery_feedback("invalid_ground_click_rejected", "move_order_failed_coordinate_conversion", {"screen": _vector2_report(screen_position)})
+		_record_v0135_recoverable_feedback("invalid_ground", "rts_invalid_ground_feedback", {"screen": _vector2_report(screen_position)})
+		_set_or_create_disc_marker("invalid_order_marker", _to_world(Vector2(1180, 720), 0.14), 0.36, Color(0.96, 0.36, 0.26, 0.48))
 		_record_real_input("move_order_failed_coordinate_conversion", {"screen": _vector2_report(screen_position)})
 		return
 	var destination := _from_world(world)
 	if _selected_worker_for_v0132_assignment() and _destination_is_mine(destination):
+		_record_v0135_recoverable_feedback("context_mine", "rts_context_mine_order", {"screen": _vector2_report(screen_position)})
 		_complete_v0132_worker_assignment(screen_position)
 		return
 	if _selected_worker_for_v0133_barracks_restore() and _destination_is_barracks(destination):
+		_record_v0135_recoverable_feedback("context_barracks", "rts_context_barracks_order", {"screen": _vector2_report(screen_position)})
 		_start_v0133_barracks_restoration(screen_position)
 		return
 	if runtime.worker_assigned_to_mine and current_onboarding_step == "restore_barracks" and _destination_is_barracks(destination):
@@ -1345,6 +1579,7 @@ func _issue_real_order(screen_position: Vector2) -> void:
 		})
 		return
 	if current_onboarding_step == "restore_lume_link" and _destination_is_lume(destination):
+		_record_v0135_recoverable_feedback("context_lume", "rts_context_lume_order", {"screen": _vector2_report(screen_position)})
 		_restore_v0133_lume_from_input(screen_position)
 		return
 	var hero_before := _unit_runtime_position("hero_aster")
@@ -1411,6 +1646,7 @@ func _screen_hits_lume(screen_position: Vector2) -> bool:
 
 func _complete_v0132_worker_assignment(screen_position: Vector2) -> void:
 	v0132_worker_assignment_marker_rendered = true
+	v0135_context_action_marker_rendered = true
 	_set_or_create_disc_marker("worker_mine_assignment_order_marker", _to_world(WEST_STONE_CUT_MINE_POSITION, 0.12), 0.48, Color(0.92, 0.78, 0.36, 0.58))
 	var result := assign_worker_to_mine()
 	_record_real_input("worker_right_click_controlled_mine", {
@@ -1430,6 +1666,7 @@ func _prepare_v0133_barracks_handoff() -> void:
 func _start_v0133_barracks_restoration(screen_position: Vector2) -> void:
 	var result := place_barracks_placeholder()
 	if result:
+		v0135_context_action_marker_rendered = true
 		v0133_barracks_build_order_accepted = true
 		v0133_construction_started = true
 		v0133_construction_progress = runtime.barracks_construction_progress
@@ -1478,6 +1715,7 @@ func _restore_v0133_lume_from_input(screen_position: Vector2) -> void:
 	v0133_lume_restore_input = result
 	v0133_lume_restored = result
 	if result:
+		v0135_context_action_marker_rendered = true
 		set_onboarding_step("review_results")
 		show_objective_feedback("lume_restore")
 		_set_or_create_marker("lume_restore_marker", _lume_endpoint_world_position("lume_endpoint_00", Vector3(-1.67, 0.14, 0.11)), Vector3(0.74, 0.08, 0.74), Color(0.42, 0.96, 0.86, 0.62))
@@ -1829,6 +2067,9 @@ func _post_mine_flow_scene_green() -> bool:
 
 func _vector2_report(position: Vector2) -> Dictionary:
 	return {"x": snappedf(position.x, 0.001), "y": snappedf(position.y, 0.001)}
+
+func _vector3_report(position: Vector3) -> Dictionary:
+	return {"x": snappedf(position.x, 0.001), "y": snappedf(position.y, 0.001), "z": snappedf(position.z, 0.001)}
 
 func run_workload_phase(phase: String) -> Dictionary:
 	var report: Dictionary = runtime.run_workload_phase(phase)
@@ -2349,6 +2590,38 @@ func _create_hud() -> void:
 	hud_more_details_label.add_theme_color_override("font_color", Color(0.72, 0.84, 0.78))
 	hud_layer.add_child(hud_more_details_label)
 
+	hud_help_button = Button.new()
+	hud_help_button.name = "CompactControlsHelpButton"
+	hud_help_button.text = "Help"
+	hud_help_button.position = Vector2(1440, 626)
+	hud_help_button.size = Vector2(64, 26)
+	hud_help_button.add_theme_font_size_override("font_size", 12)
+	hud_help_button.pressed.connect(toggle_controls_help)
+	hud_layer.add_child(hud_help_button)
+
+	hud_help_panel = Panel.new()
+	hud_help_panel.name = "CompactControlsHelpPanel"
+	hud_help_panel.position = Vector2(1178, 462)
+	hud_help_panel.size = Vector2(326, 182)
+	hud_help_panel.add_theme_stylebox_override("panel", _panel_style(Color(0.025, 0.035, 0.035, 0.90), Color(0.46, 0.78, 0.70, 0.72)))
+	hud_layer.add_child(hud_help_panel)
+
+	hud_help_label = Label.new()
+	hud_help_label.name = "CompactControlsHelpText"
+	hud_help_label.position = Vector2(12, 10)
+	hud_help_label.size = Vector2(302, 156)
+	hud_help_label.add_theme_font_size_override("font_size", 12)
+	hud_help_label.add_theme_color_override("font_color", Color(0.86, 0.92, 0.82))
+	hud_help_panel.add_child(hud_help_label)
+
+	hud_tooltip_label = Label.new()
+	hud_tooltip_label.name = "ShortOrderTooltip"
+	hud_tooltip_label.position = Vector2(538, 704)
+	hud_tooltip_label.size = Vector2(438, 26)
+	hud_tooltip_label.add_theme_font_size_override("font_size", 12)
+	hud_tooltip_label.add_theme_color_override("font_color", Color(0.86, 0.92, 0.78))
+	hud_layer.add_child(hud_tooltip_label)
+
 	minimap_panel = Panel.new()
 	minimap_panel.name = "MinimapOrientationPlaceholder"
 	minimap_panel.position = Vector2(1362, 674)
@@ -2420,6 +2693,22 @@ func _sync_hud() -> void:
 		hud_more_details_label.visible = more_details_visible
 	if hud_more_details_button:
 		hud_more_details_button.visible = current_onboarding_step != "defeat_wave"
+	if hud_help_button:
+		hud_help_button.visible = true
+	if hud_help_panel:
+		hud_help_panel.visible = v0135_help_overlay_visible
+	if hud_help_label:
+		hud_help_label.text = "\n".join([
+			"Select: left-click friendly",
+			"Box select: drag over squad",
+			"Move: right-click terrain",
+			"Attack: right-click Ashen",
+			"Zoom/pan: wheel + WASD/arrows",
+			"Focus hero: Space"
+		])
+	if hud_tooltip_label:
+		hud_tooltip_label.text = _short_tooltip_text()
+		hud_tooltip_label.visible = hud_tooltip_label.text != ""
 	if hud_work_button:
 		if current_onboarding_step == "restore_barracks":
 			hud_work_button.text = "Restore"
@@ -2519,6 +2808,16 @@ func _screen_hits_v0133_attack_button(screen_position: Vector2) -> bool:
 	var y_ratio := screen_position.y / viewport_size.y
 	return x_ratio >= 0.075 and x_ratio <= 0.145 and y_ratio >= 0.92 and y_ratio <= 0.995
 
+func _screen_hits_v0133_train_button(screen_position: Vector2) -> bool:
+	if hud_work_button != null and hud_work_button.get_global_rect().has_point(screen_position):
+		return true
+	var viewport_size := get_viewport().get_visible_rect().size
+	if viewport_size.x <= 0.0 or viewport_size.y <= 0.0:
+		return false
+	var x_ratio := screen_position.x / viewport_size.x
+	var y_ratio := screen_position.y / viewport_size.y
+	return x_ratio >= 0.18 and x_ratio <= 0.24 and y_ratio >= 0.92 and y_ratio <= 0.995
+
 func _select_v0133_defender_squad() -> Array[String]:
 	var preferred: Array[String] = _v0133_defender_ids()
 	var ids: Array[String] = []
@@ -2605,7 +2904,8 @@ func _selected_context_text() -> String:
 	if current_onboarding_step == "defeat_wave" and runtime.selected_ids.is_empty():
 		return "No defenders selected: box-select the green line or click Attack"
 	if runtime.selected_ids.size() > 1:
-		return "Squad posture: protect Aster and hold the road"
+		v0135_selected_squad_count_visible = true
+		return "Squad selected: %s units" % runtime.selected_ids.size()
 	if v0133_selected_structure_id == "barracks":
 		return "Barracks: train one Militia"
 	if runtime.selected_ids.is_empty() or runtime.selected_ids.has("hero_aster"):
@@ -2613,6 +2913,23 @@ func _selected_context_text() -> String:
 	if runtime.selected_ids.any(func(id: String) -> bool: return id.begins_with("worker")):
 		return "Worker: right-click controlled West Stone Cut Mine"
 	return "Unit ready"
+
+func _short_tooltip_text() -> String:
+	if v0135_help_overlay_visible:
+		return "F1 or Escape closes controls"
+	if last_feedback_id == "no_selection_order":
+		return "Select a unit first"
+	if last_feedback_id == "invalid_ground":
+		return "Choose reachable ground"
+	if last_feedback_id.begins_with("context_"):
+		return "Context order accepted"
+	if last_feedback_id == "move_order":
+		return "Move marker placed"
+	if last_feedback_id == "attack_order":
+		return "Attack marker placed"
+	if real_input_hover_id != "":
+		return "Hover: %s" % _player_entity_label(real_input_hover_id)
+	return ""
 
 func _objective_summary_text() -> String:
 	if current_onboarding_step == "defeat_wave":

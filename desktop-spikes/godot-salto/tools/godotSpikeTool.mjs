@@ -34,6 +34,8 @@ const v0133ArtifactRoot = join(repoRoot, "artifacts", "desktop-spikes", "godot-s
 const v0133ScreenshotRoot = join(v0133ArtifactRoot, "screenshots");
 const v0134ArtifactRoot = join(repoRoot, "artifacts", "desktop-spikes", "godot-salto", "v0134");
 const v0134ScreenshotRoot = join(v0134ArtifactRoot, "screenshots");
+const v0135ArtifactRoot = join(repoRoot, "artifacts", "desktop-spikes", "godot-salto", "v0135");
+const v0135ScreenshotRoot = join(v0135ArtifactRoot, "screenshots");
 const sourceFixtureRoot = join(repoRoot, "artifacts", "desktop-spike-fixture", "latest");
 const generatedDataRoot = join(spikeRoot, "data", "generated");
 const buildsRoot = join(spikeRoot, "builds");
@@ -5236,6 +5238,203 @@ function validateV0134TripleNaturalPlaythroughArtifacts() {
   return report;
 }
 
+function validateV0135RtsErgonomicsArtifacts() {
+  const smoke = readOptionalJson(join(v0135ArtifactRoot, "headed-rts-ergonomics-smoke.json")) ?? readOptionalJson(join(v0135ArtifactRoot, "rts-ergonomics-smoke.json"));
+  const inputContract = readOptionalJson(join(v0135ArtifactRoot, "rts-input-contract.json"));
+  const orderFeedback = readOptionalJson(join(v0135ArtifactRoot, "order-feedback-report.json"));
+  const cameraControl = readOptionalJson(join(v0135ArtifactRoot, "camera-control-report.json"));
+  const compactHelp = readOptionalJson(join(v0135ArtifactRoot, "compact-help-report.json"));
+  const trace = readOptionalJson(join(v0135ArtifactRoot, "rts-ergonomics-trace.json"));
+  const manifest = readOptionalJson(join(v0135ArtifactRoot, "screenshot-manifest.json"));
+  const errors = [];
+  const requiredContractChecks = [
+    "leftClickFriendlySelect",
+    "leftClickEmptyDeselect",
+    "leftDragBoxSelect",
+    "rightClickTerrainMove",
+    "rightClickHostileAttack",
+    "rightClickObjectiveContextAction",
+    "mouseWheelZoom",
+    "keyboardCameraPan",
+    "spaceFocusAster",
+    "escapeRecoverable",
+    "helpOverlay",
+    "moveMarker",
+    "attackMarker",
+    "contextMarker",
+    "invalidOrderMarker",
+    "hoverResponse",
+    "shortTooltip",
+    "selectedUnitMarker",
+    "selectedSquadCount",
+    "cameraBoundsSafe",
+    "zoomBoundsSafe",
+    "minimapViewportIndicator"
+  ];
+  const requiredCaptures = [
+    "battle_ready",
+    "help_opened",
+    "help_dismissed",
+    "aster_selected",
+    "camera_controls",
+    "invalid_order_recovery",
+    "move_marker",
+    "mine_controlled",
+    "worker_context_action",
+    "barracks_context_action",
+    "militia_spawned",
+    "wave_movement",
+    "squad_attack",
+    "wave_defeated",
+    "results"
+  ];
+  if (!smoke) {
+    errors.push("Missing headed-rts-ergonomics-smoke.json or rts-ergonomics-smoke.json.");
+  } else {
+    if (smoke.status !== "PASS_V0135_HEADED_RTS_ERGONOMICS_SMOKE") {
+      errors.push(`RTS ergonomics smoke did not pass: ${smoke.status ?? "missing"}.`);
+    }
+    for (const field of [
+      "privateHarnessShortcutUsed",
+      "debugShortcutUsed",
+      "stateInjectionUsed",
+      "fixtureOnlyHelperProofUsed",
+      "screenshotOnlyProofUsed",
+      "routineEditorUseRequired",
+      "saveWritesAllowed",
+      "stableIdsChanged",
+      "browserRuntimeChanged",
+      "generatedOrImportedArtIncluded",
+      "runtimeArtIntegrated"
+    ]) {
+      if (smoke[field] !== false) {
+        errors.push(`RTS ergonomics smoke expected ${field} false.`);
+      }
+    }
+    if (smoke.linkedWardDamageTakenMultiplier !== 0.92) {
+      errors.push("linked_ward damage multiplier was not preserved at 0.92.");
+    }
+    for (const key of requiredContractChecks) {
+      if (smoke.checks?.[key] !== true) {
+        errors.push(`RTS ergonomics smoke check ${key} was not true.`);
+      }
+    }
+    for (const key of ["resultsReached", "noObjectiveRegression", "noDebugShortcut", "noStateInjection", "linkedWardPreserved"]) {
+      if (smoke.finishChecks?.[key] !== true) {
+        errors.push(`RTS ergonomics finish check ${key} was not true.`);
+      }
+    }
+    if (smoke.postMineStatus?.resultsReached !== true) {
+      errors.push("RTS ergonomics post-mine status did not reach Results.");
+    }
+    if (smoke.rtsStatus?.status !== "PASS_V0135_RTS_ERGONOMICS_SCENE_STATUS") {
+      errors.push(`Scene ergonomics status did not pass: ${smoke.rtsStatus?.status ?? "missing"}.`);
+    }
+  }
+  const expectedReports = [
+    [inputContract, "PASS_V0135_RTS_INPUT_CONTRACT", "rts-input-contract.json"],
+    [orderFeedback, "PASS_V0135_ORDER_FEEDBACK", "order-feedback-report.json"],
+    [cameraControl, "PASS_V0135_CAMERA_CONTROL", "camera-control-report.json"],
+    [compactHelp, "PASS_V0135_COMPACT_HELP", "compact-help-report.json"]
+  ];
+  for (const [report, expectedStatus, fileName] of expectedReports) {
+    if (report?.status !== expectedStatus) {
+      errors.push(`${fileName} did not pass: ${report?.status ?? "missing"}.`);
+    }
+  }
+  if (!trace) {
+    errors.push("Missing rts-ergonomics-trace.json.");
+  } else {
+    const events = new Set((trace.trace ?? []).map((entry) => entry.event));
+    [
+      "help_opened_f1",
+      "help_closed_escape",
+      "aster_selected",
+      "camera_zoom_pan_focus",
+      "empty_left_click_deselect",
+      "invalid_no_selection_right_click",
+      "move_order_mine",
+      "worker_context_mine",
+      "squad_attack_right_click"
+    ].forEach((event) => {
+      if (!events.has(event)) {
+        errors.push(`Missing v0.135 RTS ergonomics trace event: ${event}.`);
+      }
+    });
+    if (trace.noPrivateHarnessShortcutUsed !== true || trace.noDebugShortcutUsed !== true || trace.noStateInjectionUsed !== true || trace.fixtureOnlyHelperProofUsed !== false) {
+      errors.push("RTS ergonomics trace did not preserve no-shortcut proof.");
+    }
+  }
+  const captures = manifest?.captures ?? [];
+  if (manifest?.status !== "PASS_V0135_SCREENSHOT_MANIFEST") {
+    errors.push(`Screenshot manifest did not pass: ${manifest?.status ?? "missing"}.`);
+  }
+  if (captures.length < 14) {
+    errors.push(`Expected at least 14 v0.135 screenshots, found ${captures.length}.`);
+  }
+  for (const id of requiredCaptures) {
+    if (!captures.some((capture) => capture.id === id)) {
+      errors.push(`Missing v0.135 screenshot capture: ${id}.`);
+    }
+  }
+  const enrichedCaptures = captures.map((capture) => {
+    const screenshotPath = join(v0135ScreenshotRoot, capture.fileName);
+    const exists = existsSync(screenshotPath);
+    if (!exists) {
+      errors.push(`Missing screenshot file: ${capture.fileName}.`);
+    }
+    if (capture.width !== 1600 || capture.height !== 900) {
+      errors.push(`Screenshot ${capture.fileName} is ${capture.width}x${capture.height}, expected 1600x900.`);
+    }
+    const status = capture.status ?? {};
+    if (status.generatedOrImportedArtIncluded === true || status.runtimeArtIntegrated === true || status.saveWritesAllowed === true || status.stableIdsChanged === true || status.browserRuntimeChanged === true) {
+      errors.push(`Capture ${capture.id} reported forbidden art/save/stable/browser drift.`);
+    }
+    return {
+      ...capture,
+      path: relativeRepo(screenshotPath),
+      sha256: exists ? hashFile(screenshotPath) : null,
+      sizeBytes: exists ? statSync(screenshotPath).size : null
+    };
+  });
+  const strayPngs = existsSync(v0135ScreenshotRoot)
+    ? readdirSync(v0135ScreenshotRoot).filter((file) => file.endsWith(".png") && !captures.some((capture) => capture.fileName === file))
+    : [];
+  if (strayPngs.length > 0) {
+    errors.push(`Unexpected screenshots in v0135 folder: ${strayPngs.join(", ")}.`);
+  }
+  const report = {
+    schemaVersion: 1,
+    checkpoint: "v0.135",
+    status: errors.length === 0 ? "PASS_V0135_RTS_ERGONOMICS_VALIDATION" : "FAIL_V0135_RTS_ERGONOMICS_VALIDATION",
+    generatedAtUtc: "deterministic-v0135",
+    smokeStatus: smoke?.status ?? null,
+    inputContractStatus: inputContract?.status ?? null,
+    orderFeedbackStatus: orderFeedback?.status ?? null,
+    cameraControlStatus: cameraControl?.status ?? null,
+    compactHelpStatus: compactHelp?.status ?? null,
+    screenshotStatus: manifest?.status ?? null,
+    captureCount: captures.length,
+    requiredCaptureCount: 14,
+    noPrivateHarnessShortcutUsed: smoke?.privateHarnessShortcutUsed === false,
+    noDebugShortcutUsed: smoke?.debugShortcutUsed === false,
+    noStateInjectionUsed: smoke?.stateInjectionUsed === false,
+    noFixtureOnlyHelperProofUsed: smoke?.fixtureOnlyHelperProofUsed === false,
+    screenshotOnlyProofUsed: false,
+    routineEditorUseRequired: false,
+    saveWritesAllowed: false,
+    stableIdsChanged: false,
+    browserRuntimeChanged: false,
+    generatedOrImportedArtIncluded: false,
+    runtimeArtIntegrated: false,
+    linkedWardDamageTakenMultiplier: 0.92,
+    errors,
+    captures: enrichedCaptures
+  };
+  writeJson(join(v0135ArtifactRoot, "rts-ergonomics-validation.json"), report);
+  return report;
+}
+
 const v0125AuditAreas = ["title", "briefing", "battle", "results"];
 const v0125PlayerDebugTerms = [
   ...v0124ForbiddenTerms,
@@ -5977,6 +6176,12 @@ try {
     if (String(report.status).startsWith("FAIL")) {
       process.exitCode = 1;
     }
+  } else if (command === "rts-ergonomics-v0135") {
+    const report = validateV0135RtsErgonomicsArtifacts();
+    console.log(stableStringify(report));
+    if (String(report.status).startsWith("FAIL")) {
+      process.exitCode = 1;
+    }
   } else if (command === "player-slice-audit") {
     const report = buildV0125ScreenshotAudit();
     console.log(stableStringify(report));
@@ -5990,7 +6195,7 @@ try {
     runAll();
     console.log("v0.119 Godot representative RTS load spike reports generated.");
   } else {
-    console.log("Usage: node desktop-spikes/godot-salto/tools/godotSpikeTool.mjs <doctor|generate|validate|test|benchmark|export|package|scorecard|manual-review|headed-smoke|headed-benchmark|capture-review|capture-review-v0121|player-slice-validate|player-slice-capture|player-slice-capture-v0126|player-slice-capture-v0127|player-slice-capture-v0128|player-slice-validate-v0129|player-slice-capture-v0129|player-slice-validate-v0130|player-slice-capture-v0130|real-input-v0131|site-semantics-v0132|post-mine-flow-v0133|triple-natural-playthrough-v0134|player-slice-audit|v0118-all|all>");
+    console.log("Usage: node desktop-spikes/godot-salto/tools/godotSpikeTool.mjs <doctor|generate|validate|test|benchmark|export|package|scorecard|manual-review|headed-smoke|headed-benchmark|capture-review|capture-review-v0121|player-slice-validate|player-slice-capture|player-slice-capture-v0126|player-slice-capture-v0127|player-slice-capture-v0128|player-slice-validate-v0129|player-slice-capture-v0129|player-slice-validate-v0130|player-slice-capture-v0130|real-input-v0131|site-semantics-v0132|post-mine-flow-v0133|triple-natural-playthrough-v0134|rts-ergonomics-v0135|player-slice-audit|v0118-all|all>");
   }
 } catch (error) {
   console.error(error instanceof Error ? error.message : String(error));

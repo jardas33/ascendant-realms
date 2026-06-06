@@ -11,9 +11,20 @@ Every phase should protect these long-term pillars:
 
 ## Current Recommended Next Phase
 
-The current checkpoint is **v0.134 Godot Repeatable Natural Playthrough And Soft-Lock Resilience Gate** on 2026-06-05. It keeps the Godot spike bounded, preserves the v0.133.1 combat-readability repair, adds a packaged repeatability gate with normal, recoverable-mistake, and restart-and-replay profiles, adds public reset-integrity evidence, records no-softlock and no-shortcut proof, and protects repeatability with idempotent Militia recruitment and Ashen wave triggering. The browser prototype remains authoritative, the private harness remains separate, and no final engine choice, full port, generated image, imported art, save change, stable-ID change, browser-runtime change, broad economy, broad building tree, broad recruitment, full hero progression, campaign expansion, or runtime art integration is approved.
+The current checkpoint is **v0.135 Godot RTS Input Ergonomics, Recoverable Feedback, And Camera-Control Pass** on 2026-06-05. It keeps the Godot spike bounded, builds on `REPEATABLE_PLAYTHROUGH_GREEN`, and proves conventional RTS selection, deselection, box-select, move, attack, objective context actions, mouse-wheel zoom, keyboard panning, Space Aster focus, Escape recovery, compact Help, restrained order feedback, and full microloop completion in the packaged player-facing slice. The browser prototype remains authoritative, the private harness remains separate, and no final engine choice, full port, generated image, imported art, save change, stable-ID change, browser-runtime change, broad economy, broad building tree, broad recruitment, full hero progression, campaign expansion, or runtime art integration is approved.
 
-The next recommended step, only after a future explicit goal or Emmanuel's explicit review action, is Emmanuel's manual retest using `GODOT_TRIPLE_NATURAL_PLAYTHROUGH_WINDOWS.bat`, `GODOT_LAUNCH_PLAYER_SLICE_WINDOWS.bat`, and the checklist in `docs/V0134_EMMANUEL_RETEST_GUIDE.md`. Do not generate art for runtime integration, import art into runtime, mark `runtime-candidate-approved` assets as loadable, resume broad browser visual expansion, add broad gameplay systems, change rewards, change saves, rename IDs, create a desktop save path, choose Godot finally, start a full desktop port, start Unity/Unreal/Electron work, or start v0.135 until a future explicit goal approves a narrow next step.
+The next recommended step, only after a future explicit goal or Emmanuel's explicit review action, is Emmanuel's manual retest using `GODOT_RTS_ERGONOMICS_SMOKE_WINDOWS.bat`, `GODOT_LAUNCH_PLAYER_SLICE_WINDOWS.bat`, and the v0.135 docs. Do not generate art for runtime integration, import art into runtime, mark `runtime-candidate-approved` assets as loadable, resume broad browser visual expansion, add broad gameplay systems, change rewards, change saves, rename IDs, create a desktop save path, choose Godot finally, start a full desktop port, start Unity/Unreal/Electron work, or start v0.136 until a future explicit goal approves a narrow next step.
+
+New v0.135 docs:
+
+- `docs/V0135_RTS_INPUT_CONTRACT.md`
+- `docs/V0135_ORDER_FEEDBACK_SPEC.md`
+- `docs/V0135_CAMERA_CONTROL_SPEC.md`
+- `docs/V0135_COMPACT_HELP_SPEC.md`
+- `docs/V0135_RTS_ERGONOMICS_GATE.md`
+- `docs/V0135_IMPLEMENTATION_REPORT.md`
+
+Previous checkpoint reference: v0.134 Godot Repeatable Natural Playthrough and Soft-Lock Resilience Gate.
 
 New v0.134 docs:
 
