@@ -149,6 +149,7 @@ var v0133_wave_trigger_source := ""
 var v0133_road_entry_pulse_visible := false
 var v0133_enemy_movement_started := false
 var v0133_enemy_start_positions: Dictionary = {}
+var v0133_combat_handoff_done := false
 var v0133_attack_input_accepted := false
 var v0133_combat_started := false
 var v0133_initial_combat_tick_count := 0
@@ -630,12 +631,13 @@ func trigger_pressure_wave() -> bool:
 		v0133_wave_triggered_once = true
 		v0133_wave_trigger_source = "countdown" if v0133_countdown_started else "harness"
 		v0133_road_entry_pulse_visible = true
+		_prepare_v0133_combat_handoff()
 		v0133_enemy_start_positions = _v0133_wave_positions()
 		v0133_wave_remaining_count = _v0133_wave_remaining()
 		v0133_initial_combat_tick_count = runtime.combat_tick_count
 		set_onboarding_step("defeat_wave")
 		show_objective_feedback("pressure_wave")
-		_set_or_create_marker("pressure_wave_arrival_marker", Vector3(3.9, 0.20, -0.92), Vector3(1.10, 0.07, 0.34), Color(0.85, 0.20, 0.14, 0.62))
+		_set_or_create_marker("pressure_wave_arrival_marker", _to_world(Vector2(875, 486), 0.16), Vector3(1.10, 0.045, 0.20), Color(0.85, 0.20, 0.14, 0.30))
 	_sync_unit_visuals()
 	_sync_hud()
 	return result
@@ -1135,6 +1137,7 @@ func _reset_real_input_state() -> void:
 	v0133_road_entry_pulse_visible = false
 	v0133_enemy_movement_started = false
 	v0133_enemy_start_positions = {}
+	v0133_combat_handoff_done = false
 	v0133_attack_input_accepted = false
 	v0133_combat_started = false
 	v0133_initial_combat_tick_count = 0
@@ -1180,6 +1183,10 @@ func _handle_real_mouse_button(event: InputEventMouseButton) -> void:
 		_issue_real_order(event.position)
 
 func _select_from_real_click(screen_position: Vector2) -> void:
+	if current_onboarding_step == "defeat_wave" and _screen_hits_v0133_attack_button(screen_position):
+		_record_real_input("hud_attack_scaled_click", {"screen": _vector2_report(screen_position)})
+		_hud_attack_pressed()
+		return
 	var hit := _pick_unit_from_screen(screen_position)
 	if current_onboarding_step == "defeat_wave" and _select_unit_hit_from_real_click(hit, screen_position):
 		return
@@ -1245,10 +1252,25 @@ func _finish_real_box_select(start: Vector2, end: Vector2) -> void:
 		var screen := _unit_screen_position(str(unit.get("id", "")))
 		if rect.has_point(screen):
 			ids.append(str(unit.get("id", "")))
+	if current_onboarding_step == "defeat_wave" and ids.is_empty() and runtime.selected_ids.size() >= 2:
+		real_input_squad_box_selected = true
+		v0133_box_select_no_skip_proven = true
+		real_input_selected_id = "defender_squad"
+		v0133_selected_structure_id = ""
+		show_objective_feedback("squad_selected")
+		_record_real_input("box_select_empty_preserved_defenders", {
+			"count": runtime.selected_ids.size(),
+			"ids": runtime.selected_ids.duplicate(),
+			"start": _vector2_report(start),
+			"end": _vector2_report(end)
+		})
+		return
 	var selected := runtime.select_units_by_ids(ids)
 	real_input_squad_box_selected = selected.size() >= 2
 	if real_input_squad_box_selected:
 		v0133_box_select_no_skip_proven = current_onboarding_step != "prepare_ashen_pressure" or _v0133_objective_prerequisites_met("prepare_ashen_pressure")
+		real_input_selected_id = "defender_squad" if current_onboarding_step == "defeat_wave" else str(selected[0])
+		v0133_selected_structure_id = ""
 		show_objective_feedback("squad_selected")
 	_record_real_input("box_select", {"count": selected.size(), "ids": selected, "start": _vector2_report(start), "end": _vector2_report(end)})
 	_sync_unit_visuals()
@@ -1435,7 +1457,7 @@ func _pick_unit_from_screen(screen_position: Vector2) -> Dictionary:
 	var best: Dictionary = {}
 	var best_distance := INF
 	for unit in runtime.units:
-		if not bool(unit.get("alive", true)):
+		if not bool(unit.get("alive", true)) or bool(unit.get("reviewHidden", false)):
 			continue
 		var id := str(unit.get("id", ""))
 		var projected := _unit_screen_position(id)
@@ -1686,6 +1708,26 @@ func _runtime_recruit_progress() -> float:
 
 func _v0133_wave_ids() -> Array[String]:
 	return ["ashen_00", "ashen_01", "ashen_02", "ashen_03"]
+
+func _v0133_defender_ids() -> Array[String]:
+	return ["hero_aster", "recruited_militia_00", "friendly_00", "friendly_01", "friendly_02", "friendly_03"]
+
+func _prepare_v0133_combat_handoff() -> void:
+	if v0133_combat_handoff_done:
+		return
+	v0133_combat_handoff_done = true
+	var selected: bool = runtime.stage_player_facing_pressure_wave_lane(_v0133_wave_ids(), _v0133_defender_ids())
+	if selected:
+		real_input_squad_box_selected = true
+		v0133_box_select_no_skip_proven = true
+		real_input_selected_id = "defender_squad"
+		v0133_selected_structure_id = ""
+		show_objective_feedback("squad_selected")
+		_record_real_input("combat_defender_handoff", {
+			"selectedIds": runtime.selected_ids.duplicate(),
+			"waveIds": _v0133_wave_ids(),
+			"reason": "player_readability"
+		})
 
 func _v0133_wave_remaining() -> int:
 	var alive := 0
@@ -2144,16 +2186,16 @@ func _create_hud() -> void:
 
 	var objective_frame := Panel.new()
 	objective_frame.name = "HudCurrentObjectiveStrip"
-	objective_frame.position = Vector2(486, 18)
-	objective_frame.size = Vector2(664, 34)
+	objective_frame.position = Vector2(18, 58)
+	objective_frame.size = Vector2(444, 30)
 	objective_frame.add_theme_stylebox_override("panel", _panel_style(Color(0.040, 0.045, 0.038, 0.82), Color(0.68, 0.62, 0.36, 0.78)))
 	hud_layer.add_child(objective_frame)
 
 	hud_objective_strip_label = Label.new()
 	hud_objective_strip_label.name = "CurrentObjectiveStripText"
-	hud_objective_strip_label.position = Vector2(14, 5)
-	hud_objective_strip_label.size = Vector2(636, 22)
-	hud_objective_strip_label.add_theme_font_size_override("font_size", 14)
+	hud_objective_strip_label.position = Vector2(12, 4)
+	hud_objective_strip_label.size = Vector2(420, 22)
+	hud_objective_strip_label.add_theme_font_size_override("font_size", 13)
 	hud_objective_strip_label.add_theme_color_override("font_color", Color(0.94, 0.88, 0.62))
 	objective_frame.add_child(hud_objective_strip_label)
 
@@ -2314,6 +2356,8 @@ func _sync_hud() -> void:
 			hud_status_label.text = "Preset %s | %s | editor optional" % [visual_preset, runtime.workload_tier]
 	if hud_hero_label:
 		var selected := "Aster ready"
+		if v0133_selected_structure_id == "barracks":
+			selected = "Selected Barracks"
 		if not runtime.selected_ids.is_empty():
 			if player_facing_mode:
 				selected = "Selected %s" % _player_selection_summary()
@@ -2335,6 +2379,8 @@ func _sync_hud() -> void:
 	if hud_more_details_label:
 		hud_more_details_label.text = "West Stone Cut Mine, Worker, Barracks, one Militia recruit, one wave, and Lume are the only review goals."
 		hud_more_details_label.visible = more_details_visible
+	if hud_more_details_button:
+		hud_more_details_button.visible = current_onboarding_step != "defeat_wave"
 	if hud_work_button:
 		if current_onboarding_step == "restore_barracks":
 			hud_work_button.text = "Restore"
@@ -2389,15 +2435,17 @@ func _hud_attack_pressed() -> void:
 			_record_real_input("hud_attack_squad_select", {"count": selected.size(), "ids": selected})
 		var target_id := _first_live_v0133_wave_id()
 		if target_id != "":
-			var attack_ok := runtime.issue_attack_order(target_id)
+			var attack_ok := runtime.issue_player_facing_wave_defense_order(_v0133_wave_ids(), _v0133_defender_ids())
 			real_input_attack_order_accepted = attack_ok
 			real_input_attack_marker_rendered = attack_ok
 			if attack_ok:
+				real_input_selected_id = "defender_squad"
+				v0133_selected_structure_id = ""
 				v0133_attack_input_accepted = v0133_wave_triggered_once
 				v0133_initial_combat_tick_count = runtime.combat_tick_count
 				last_feedback_id = "attack_order"
 				_set_or_create_disc_marker("real_attack_order_marker", _unit_world_position(target_id, Vector3.ZERO), 0.44, Color(0.96, 0.28, 0.18, 0.50))
-			_record_real_input("hud_attack_order", {"accepted": attack_ok, "targetId": target_id, "selectedIds": selected})
+			_record_real_input("hud_attack_order", {"accepted": attack_ok, "targetId": target_id, "selectedIds": runtime.selected_ids.duplicate(), "waveDefenseOrder": true})
 			_sync_unit_visuals()
 			_sync_hud()
 			return
@@ -2414,22 +2462,38 @@ func _try_handle_v0133_hud_attack_mouse(event: InputEvent) -> bool:
 	var mouse_event := event as InputEventMouseButton
 	if mouse_event.button_index != MOUSE_BUTTON_LEFT or not mouse_event.pressed:
 		return false
-	if not hud_attack_button.get_global_rect().has_point(mouse_event.position):
+	if not _screen_hits_v0133_attack_button(mouse_event.position):
 		return false
 	_record_real_input("hud_attack_raw_click", {"screen": _vector2_report(mouse_event.position)})
 	_hud_attack_pressed()
 	return true
 
+func _screen_hits_v0133_attack_button(screen_position: Vector2) -> bool:
+	if hud_attack_button != null and hud_attack_button.get_global_rect().has_point(screen_position):
+		return true
+	var viewport_size := get_viewport().get_visible_rect().size
+	if viewport_size.x <= 0.0 or viewport_size.y <= 0.0:
+		return false
+	var x_ratio := screen_position.x / viewport_size.x
+	var y_ratio := screen_position.y / viewport_size.y
+	return x_ratio >= 0.075 and x_ratio <= 0.145 and y_ratio >= 0.92 and y_ratio <= 0.995
+
 func _select_v0133_defender_squad() -> Array[String]:
-	var preferred: Array[String] = ["hero_aster", "recruited_militia_00", "friendly_00", "friendly_01", "friendly_02"]
+	var preferred: Array[String] = _v0133_defender_ids()
 	var ids: Array[String] = []
 	for id in preferred:
 		if runtime.unit_alive(id):
 			ids.append(id)
 	var selected := runtime.select_units_by_ids(ids)
 	if selected.size() >= 2:
+		real_input_selected_id = "defender_squad"
+		v0133_selected_structure_id = ""
 		return selected
-	return runtime.box_select_squad()
+	selected = runtime.box_select_squad()
+	if selected.size() >= 2:
+		real_input_selected_id = "defender_squad"
+		v0133_selected_structure_id = ""
+	return selected
 
 func _first_live_v0133_wave_id() -> String:
 	for id in _v0133_wave_ids():
@@ -2469,7 +2533,7 @@ func _player_status_text() -> String:
 	if v0133_lume_highlight_visible:
 		return "Wave broken; restore the highlighted Lume link"
 	if v0133_wave_triggered_once and not v0133_wave_defeated_from_simulation:
-		return "Ashen wave moving; box-select defenders and attack"
+		return "Ashen wave: %s remaining; click Attack or right-click a marked Ashen" % maxi(0, v0133_wave_remaining_count)
 	if v0133_countdown_started and not v0133_wave_triggered_once:
 		return "Ashen pressure in %ss" % int(ceil(v0133_countdown_remaining))
 	if runtime.militia_spawned:
@@ -2495,6 +2559,10 @@ func _player_status_text() -> String:
 	return "Commands ready"
 
 func _selected_context_text() -> String:
+	if current_onboarding_step == "defeat_wave" and runtime.selected_ids.size() > 1:
+		return "Defenders selected: click Attack or right-click the marked Ashen wave"
+	if current_onboarding_step == "defeat_wave" and runtime.selected_ids.is_empty():
+		return "No defenders selected: box-select the green line or click Attack"
 	if runtime.selected_ids.size() > 1:
 		return "Squad posture: protect Aster and hold the road"
 	if v0133_selected_structure_id == "barracks":
@@ -2506,6 +2574,8 @@ func _selected_context_text() -> String:
 	return "Unit ready"
 
 func _objective_summary_text() -> String:
+	if current_onboarding_step == "defeat_wave":
+		return "Ashen wave: %s remaining | Attack the marked red units" % maxi(0, v0133_wave_remaining_count)
 	return "Convert mine | Build Barracks | Train Militia | Restore Lume"
 
 func _current_objective_text() -> String:
@@ -2561,7 +2631,7 @@ func _onboarding_text(step_id: String) -> String:
 		"prepare_ashen_pressure":
 			return "Tip: Watch the Ashen-pressure countdown."
 		"defeat_wave":
-			return "Tip: Box-select defenders, right-click an Ashen unit, and hold the road."
+			return "Tip: Defenders are selected. Click Attack, or right-click a marked Ashen unit."
 		"restore_lume_link":
 			return "Tip: Click the highlighted Lume link."
 		"review_results":
@@ -2589,11 +2659,11 @@ func _alert_text(alert_id: String) -> String:
 		"militia_spawned":
 			return "Militia ready"
 		"squad_selected":
-			return "Squad selected"
+			return "Defenders selected"
 		"barracks_selected":
 			return "Barracks selected"
 		"pressure_wave":
-			return "Ashen pressure incoming"
+			return "Ashen wave in view: four attackers"
 		"wave_defeated":
 			return "Ashen wave defeated"
 		"lume_activation":
@@ -2674,14 +2744,16 @@ func _sync_unit_visuals() -> void:
 		if node == null:
 			continue
 		var alive: bool = bool(unit["alive"])
+		var visible_unit: bool = alive and not bool(unit.get("reviewHidden", false))
 		var selected: bool = runtime.selected_ids.has(id)
 		var is_enemy: bool = str(unit["team"]) == "enemy"
-		var is_targeted: bool = _unit_is_attack_target(id) or (is_enemy and (last_feedback_id == "attack_order" or combat_readability_active or pressure_wave_arrived) and id == "ashen_00")
+		var is_wave_enemy: bool = is_enemy and _v0133_wave_ids().has(id)
+		var is_targeted: bool = _unit_is_attack_target(id) or (is_wave_enemy and (current_onboarding_step == "defeat_wave" or last_feedback_id == "attack_order" or combat_readability_active or pressure_wave_arrived))
 		node.position = _to_world(unit["position"], 0.28)
 		node.scale = _unit_scale(unit) * (1.22 if selected else 1.0)
-		node.visible = alive
+		node.visible = visible_unit
 		var health_ratio: float = clampf(float(unit.get("health", 0.0)) / max(1.0, float(unit.get("maxHealth", 1.0))), 0.0, 1.0)
-		var health_visible: bool = alive and (selected or is_targeted or damage_flash_active)
+		var health_visible: bool = visible_unit and (selected or is_targeted or damage_flash_active)
 		var health_back := visual_root.get_node_or_null("health_back_%s" % id) as MeshInstance3D
 		if health_back:
 			health_back.position = _to_world(unit["position"], 0.665)
@@ -2696,27 +2768,27 @@ func _sync_unit_visuals() -> void:
 			health.visible = health_visible
 		if selection:
 			selection.position = _to_world(unit["position"], 0.08)
-			selection.visible = alive and selected
+			selection.visible = visible_unit and selected
 		var hero_marker := visual_root.get_node_or_null("selected_hero_marker_%s" % id) as MeshInstance3D
 		if hero_marker:
 			hero_marker.position = _to_world(unit["position"], 0.095)
-			hero_marker.visible = alive and selected and str(unit["role"]) == "hero"
+			hero_marker.visible = visible_unit and selected and str(unit["role"]) == "hero"
 		var worker_marker := visual_root.get_node_or_null("selected_worker_marker_%s" % id) as MeshInstance3D
 		if worker_marker:
 			worker_marker.position = _to_world(unit["position"], 0.09)
-			worker_marker.visible = alive and selected and str(unit["role"]) == "Worker"
+			worker_marker.visible = visible_unit and selected and str(unit["role"]) == "Worker"
 		var squad_marker := visual_root.get_node_or_null("squad_marker_%s" % id) as MeshInstance3D
 		if squad_marker:
 			squad_marker.position = _to_world(unit["position"], 0.07)
-			squad_marker.visible = alive and selected and runtime.selected_ids.size() > 1
+			squad_marker.visible = visible_unit and selected and runtime.selected_ids.size() > 1
 		var target_marker := visual_root.get_node_or_null("enemy_target_marker_%s" % id) as MeshInstance3D
 		if target_marker:
 			target_marker.position = _to_world(unit["position"], 0.105)
-			target_marker.visible = alive and is_targeted
+			target_marker.visible = visible_unit and is_targeted
 		var damage_marker := visual_root.get_node_or_null("damage_flash_%s" % id) as MeshInstance3D
 		if damage_marker:
 			damage_marker.position = _to_world(unit["position"], 0.58)
-			damage_marker.visible = alive and damage_flash_active and (is_targeted or id == "ashen_00")
+			damage_marker.visible = visible_unit and damage_flash_active and (is_targeted or id == "ashen_00")
 	_sync_real_input_hover_marker()
 	_sync_player_guidance_markers()
 

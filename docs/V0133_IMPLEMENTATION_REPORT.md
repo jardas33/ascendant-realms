@@ -11,6 +11,7 @@ Implemented:
 - Added Barracks selection and context-sensitive Train command.
 - Added Ashen-pressure countdown and automatic wave launch.
 - Added normal wave movement and combat simulation advancement.
+- Added recording-driven Objective 8 readability repair: defender handoff, four-attacker visible wave staging, active attacker target marks, offstage reserve cleanup for wide windows, empty box-select preservation, one-click persistent wave-defense Attack behavior, scaled Attack-button click routing, and reduced top battle chrome.
 - Added Objective 8 Attack-button raw-click recovery for the visible HUD command while preserving the right-click Ashen target path.
 - Added simulation-backed wave defeat and input-facing Lume restoration.
 - Added `GODOT_POST_MINE_FLOW_SMOKE_WINDOWS.bat`, `GODOT_LAUNCH_POST_MINE_FLOW_REVIEW_WINDOWS.bat`, and npm scripts `godot:validate:post-mine-flow` / `godot:headed:post-mine-flow-smoke`.
@@ -21,6 +22,7 @@ Verified:
 - `npm run godot:validate:post-mine-flow` -> `PASS_V0133_POST_MINE_FLOW_VALIDATION`
 - `headed-post-mine-flow-smoke.json` -> `PASS_V0133_HEADED_POST_MINE_FLOW_SMOKE`
 - Packaged-window Computer Use proof reached `Salto Review Complete` through visible mouse input and normal simulation.
+- Manual `test11` recording analysis is captured in `docs/V0133_TEST11_RECORDING_COMBAT_READABILITY_REPAIR.md`.
 
 Scope not changed:
 

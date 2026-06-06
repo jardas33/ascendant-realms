@@ -363,7 +363,7 @@ func _render_player_screen(screen: String) -> void:
 			_add_player_button("Start Battle", Vector2(620, 390), "_on_player_battle_pressed")
 			_add_player_button("Back", Vector2(620, 444), "_on_player_back_pressed")
 		"battle":
-			_add_player_label("Convert Mine | Assign Worker | Restore Barracks | Train Militia | Restore Lume", Vector2(28, 22), Vector2(940, 34), 18, Color(0.92, 0.88, 0.68), Color(0.04, 0.05, 0.04, 0.72))
+			# The in-scene HUD owns objective guidance during battle; keep shell chrome out of the playfield.
 			_add_player_label("Pause", Vector2(1470, 22), Vector2(84, 30), 15, Color(0.82, 0.88, 0.82), Color(0.04, 0.05, 0.04, 0.72))
 		"results":
 			_add_player_label("Salto Review Complete", Vector2(420, 88), Vector2(760, 56), 34, Color(0.90, 0.94, 0.86), Color(0.04, 0.05, 0.04, 0.62), HORIZONTAL_ALIGNMENT_CENTER)

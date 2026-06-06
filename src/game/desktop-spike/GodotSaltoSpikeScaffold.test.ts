@@ -1239,7 +1239,8 @@ describe("Godot Salto spike scaffold", () => {
       "docs/V0133_HEADED_POST_MINE_FLOW_PROOF.md",
       "docs/V0133_POST_MINE_FLOW_GATE.md",
       "docs/V0133_IMPLEMENTATION_REPORT.md",
-      "docs/V0133_EMMANUEL_RETEST_GUIDE.md"
+      "docs/V0133_EMMANUEL_RETEST_GUIDE.md",
+      "docs/V0133_TEST11_RECORDING_COMBAT_READABILITY_REPAIR.md"
     ].forEach((path) => expect(existsSync(path), path).toBe(true));
 
     const packageJson = await readJson<{ scripts: Record<string, string> }>("package.json");
@@ -1250,6 +1251,7 @@ describe("Godot Salto spike scaffold", () => {
     const smokeScript = await readFile("tools/godot/runGodotPostMineFlowSmokeWindows.ps1", "utf8");
     const gate = await readFile("docs/V0133_POST_MINE_FLOW_GATE.md", "utf8");
     const proof = await readFile("docs/V0133_HEADED_POST_MINE_FLOW_PROOF.md", "utf8");
+    const test11Repair = await readFile("docs/V0133_TEST11_RECORDING_COMBAT_READABILITY_REPAIR.md", "utf8");
     const handoff = await readFile("LLM_GAME_HANDOFF.md", "utf8");
     const roadmap = await readFile("ROADMAP.md", "utf8");
 
@@ -1282,8 +1284,18 @@ describe("Godot Salto spike scaffold", () => {
       "_queue_v0133_militia_from_input",
       "_restore_v0133_lume_from_input",
       "_try_handle_v0133_hud_attack_mouse",
+      "_prepare_v0133_combat_handoff",
+      "issue_player_facing_wave_defense_order",
+      "_screen_hits_v0133_attack_button",
+      "combat_defender_handoff",
+      "box_select_empty_preserved_defenders",
+      "hud_attack_scaled_click",
+      "waveDefenseOrder",
       "hud_attack_raw_click",
+      "visible_unit",
+      "reviewHidden",
       "v0133_box_select_no_skip_proven",
+      "Ashen wave: %s remaining",
       "waveTriggerSource",
       "fixtureOnlyHelperProofUsed"
     ].forEach((text) => expect(scene3d).toContain(text));
@@ -1291,6 +1303,13 @@ describe("Godot Salto spike scaffold", () => {
     [
       "advance_pressure_wave_frame",
       "restore_lume_from_player_input",
+      "stage_player_facing_pressure_wave_lane",
+      "player_wave_defense_order_active",
+      "player_wave_defense_wave_ids",
+      "player_wave_defense_defender_ids",
+      "_seed_player_wave_defense_pressure",
+      "Vector2(-10000",
+      "reviewHidden",
       "unit_alive",
       "LINKED_WARD_DAMAGE_TAKEN_MULTIPLIER"
     ].forEach((text) => expect(runtime).toContain(text));
@@ -1312,8 +1331,13 @@ describe("Godot Salto spike scaffold", () => {
     expect(proof).toContain("PASS_V0133_HEADED_POST_MINE_FLOW_SMOKE");
     expect(proof).toContain("post-mine-trace.json");
     expect(proof).toContain("Salto Review Complete");
+    expect(proof).toContain("combat handoff");
+    expect(test11Repair).toContain("Recording 2026-06-05 test11.mp4");
+    expect(test11Repair).toContain("combat_defender_handoff");
+    expect(test11Repair).toContain("box_select_empty_preserved_defenders");
     expect(handoff).toContain("v0.133 Godot Post-Mine Sequence Repair");
-    expect(roadmap).toContain("v0.133 Godot Post-Mine Sequence Repair");
+    expect(roadmap).toContain("v0.133.1 Godot Test11 Combat Readability Repair");
+    expect(rootScript).not.toContain("Convert Mine | Assign Worker | Restore Barracks | Train Militia | Restore Lume");
 
     expect(rootScript).not.toContain("load(\"res://assets");
     expect(scene3d).not.toContain("load(\"res://assets");

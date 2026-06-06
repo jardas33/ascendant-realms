@@ -92,6 +92,9 @@ var resource_spend_recorded := false
 var hero_ability_used := false
 var pressure_wave_state := "dormant"
 var pressure_wave_defeated := false
+var player_wave_defense_order_active := false
+var player_wave_defense_wave_ids: Array[String] = []
+var player_wave_defense_defender_ids: Array[String] = []
 var lume_restored := false
 
 func set_workload_tier(tier: String) -> bool:
@@ -219,7 +222,9 @@ func advance_live_frame() -> void:
 func advance_pressure_wave_frame() -> void:
 	if pressure_wave_state == "active":
 		_seed_enemy_pressure()
-		if str(last_order).begins_with("attack:"):
+		if player_wave_defense_order_active:
+			_seed_player_wave_defense_pressure()
+		elif str(last_order).begins_with("attack:"):
 			_seed_friendly_pressure()
 		_advance_movement()
 		_resolve_combat()
@@ -230,6 +235,9 @@ func advance_pressure_wave_frame() -> void:
 	if pressure_wave_state == "active" and _active_pressure_wave_alive_count() == 0:
 		pressure_wave_state = "defeated"
 		pressure_wave_defeated = true
+		player_wave_defense_order_active = false
+		player_wave_defense_wave_ids = []
+		player_wave_defense_defender_ids = []
 
 func has_active_movement() -> bool:
 	for unit in units:
@@ -255,6 +263,71 @@ func unit_alive(id: String) -> bool:
 		return false
 	return _is_alive(unit)
 
+func stage_player_facing_pressure_wave_lane(wave_ids: Array[String], defender_ids: Array[String]) -> bool:
+	var wave_lane := [
+		Vector2(825, 468),
+		Vector2(862, 488),
+		Vector2(900, 468),
+		Vector2(938, 488)
+	]
+	var defender_lane := [
+		Vector2(585, 486),
+		Vector2(620, 466),
+		Vector2(655, 506),
+		Vector2(690, 466),
+		Vector2(725, 506),
+		Vector2(760, 486)
+	]
+	for index in range(units.size()):
+		var unit: Dictionary = units[index]
+		var id := str(unit.get("id", ""))
+		if str(unit.get("team", "")) == "enemy" and not wave_ids.has(id):
+			unit["alive"] = false
+			unit["health"] = 0.0
+			unit["position"] = Vector2(-10000 - index * 12, -10000)
+			unit["lastPosition"] = unit["position"]
+			unit["destination"] = unit["position"]
+			unit["hasDestination"] = false
+			unit["attackTarget"] = ""
+			unit["reviewHidden"] = true
+			units[index] = unit
+			continue
+		var wave_index := wave_ids.find(id)
+		if wave_index >= 0 and wave_index < wave_lane.size():
+			unit["position"] = wave_lane[wave_index]
+			unit["lastPosition"] = wave_lane[wave_index]
+			unit["destination"] = Vector2(655, 486)
+			unit["hasDestination"] = true
+			unit["attackTarget"] = ""
+			unit["health"] = min(float(unit.get("health", 95.0)), 42.0)
+			unit["damage"] = min(float(unit.get("damage", 9.0)), 3.5)
+			unit["cooldown"] = 0.0
+			unit["reviewHidden"] = false
+			units[index] = unit
+			continue
+		var defender_index := defender_ids.find(id)
+		if defender_index >= 0 and defender_index < defender_lane.size():
+			unit["position"] = defender_lane[defender_index]
+			unit["lastPosition"] = defender_lane[defender_index]
+			unit["destination"] = defender_lane[defender_index]
+			unit["hasDestination"] = false
+			unit["attackTarget"] = ""
+			unit["reviewHidden"] = false
+			units[index] = unit
+			continue
+		if str(unit.get("team", "")) == "friendly" and str(unit.get("role", "")) != "Worker":
+			unit["alive"] = false
+			unit["health"] = 0.0
+			unit["position"] = Vector2(-10000 - index * 12, -10120)
+			unit["lastPosition"] = unit["position"]
+			unit["destination"] = unit["position"]
+			unit["hasDestination"] = false
+			unit["attackTarget"] = ""
+			unit["reviewHidden"] = true
+			units[index] = unit
+	selected_ids = defender_ids.filter(func(id: String) -> bool: return unit_alive(id))
+	return selected_ids.size() >= 2
+
 func apply_player_facing_staging() -> bool:
 	var staged_positions := {
 		"hero_aster": Vector2(340, 510),
@@ -264,12 +337,19 @@ func apply_player_facing_staging() -> bool:
 	for index in range(units.size()):
 		var unit: Dictionary = units[index]
 		var id := str(unit.get("id", ""))
-		if not staged_positions.has(id):
-			continue
-		unit["position"] = staged_positions[id]
-		unit["lastPosition"] = staged_positions[id]
-		unit["destination"] = staged_positions[id]
-		unit["hasDestination"] = false
+		if staged_positions.has(id):
+			unit["position"] = staged_positions[id]
+			unit["lastPosition"] = staged_positions[id]
+			unit["destination"] = staged_positions[id]
+			unit["hasDestination"] = false
+			unit["reviewHidden"] = false
+		elif str(unit.get("team", "")) == "enemy":
+			unit["position"] = Vector2(-10000 - index * 12, -10000)
+			unit["lastPosition"] = unit["position"]
+			unit["destination"] = unit["position"]
+			unit["hasDestination"] = false
+			unit["attackTarget"] = ""
+			unit["reviewHidden"] = true
 		units[index] = unit
 	initial_placement_signature = placement_signature()
 	return true
@@ -294,6 +374,28 @@ func issue_attack_order(target_id: String = "") -> bool:
 	attack_acceptance_count += accepted
 	last_order = "attack:%s" % ("nearest" if target_id == "" else target_id)
 	return accepted > 0
+
+func issue_player_facing_wave_defense_order(wave_ids: Array[String], defender_ids: Array[String]) -> bool:
+	var live_wave: Array[String] = []
+	for id in wave_ids:
+		if unit_alive(id):
+			live_wave.append(id)
+	if live_wave.is_empty():
+		return false
+	player_wave_defense_wave_ids = []
+	player_wave_defense_defender_ids = []
+	for id in wave_ids:
+		player_wave_defense_wave_ids.append(id)
+	for id in defender_ids:
+		player_wave_defense_defender_ids.append(id)
+	player_wave_defense_order_active = true
+	var accepted := _seed_player_wave_defense_pressure()
+	if accepted <= 0:
+		player_wave_defense_order_active = false
+		return false
+	attack_acceptance_count += accepted
+	last_order = "attack:player-facing-wave"
+	return true
 
 func change_site_state(site_id: String = "west_stone_cut", owner: String = "friendly") -> bool:
 	for site in sites:
@@ -457,6 +559,9 @@ func queue_ranger_recruit() -> bool:
 func trigger_pressure_wave() -> bool:
 	pressure_wave_state = "active"
 	pressure_wave_defeated = false
+	player_wave_defense_order_active = false
+	player_wave_defense_wave_ids = []
+	player_wave_defense_defender_ids = []
 	var wave_count := 0
 	for unit in units:
 		if not _is_alive(unit) or str(unit["team"]) != "enemy":
@@ -951,6 +1056,9 @@ func _reset_phase_metrics() -> void:
 	death_count = 0
 	ai_pressure_beat_count = 0
 	combat_tick_count = 0
+	player_wave_defense_order_active = false
+	player_wave_defense_wave_ids = []
+	player_wave_defense_defender_ids = []
 
 func _reset_microloop_state() -> void:
 	resources = {
@@ -977,6 +1085,9 @@ func _reset_microloop_state() -> void:
 	hero_ability_used = false
 	pressure_wave_state = "dormant"
 	pressure_wave_defeated = false
+	player_wave_defense_order_active = false
+	player_wave_defense_wave_ids = []
+	player_wave_defense_defender_ids = []
 	lume_restored = false
 	_update_structure_construction_state("barracks", "damaged_placeholder", 0.0)
 
@@ -1022,6 +1133,48 @@ func _seed_friendly_pressure() -> void:
 		if distance > float(unit["attackRange"]):
 			unit["destination"] = target["position"]
 			unit["hasDestination"] = true
+
+func _seed_player_wave_defense_pressure() -> int:
+	var live_wave: Array[String] = []
+	for id in player_wave_defense_wave_ids:
+		if unit_alive(id):
+			live_wave.append(id)
+	if live_wave.is_empty():
+		player_wave_defense_order_active = false
+		return 0
+	var alive_defenders: Array[String] = []
+	for id in player_wave_defense_defender_ids:
+		var defender: Variant = _unit_by_id(id)
+		if defender != null and _is_alive(defender):
+			alive_defenders.append(id)
+	if alive_defenders.is_empty():
+		player_wave_defense_order_active = false
+		return 0
+	selected_ids = alive_defenders
+	var focus_id := live_wave[0]
+	var focus_target: Variant = _unit_by_id(focus_id)
+	if focus_target == null:
+		return 0
+	var accepted := 0
+	for unit in units:
+		if not _is_alive(unit) or not alive_defenders.has(str(unit["id"])):
+			continue
+		unit["attackTarget"] = focus_id
+		var destination: Vector2 = focus_target["position"] + formation_offset(accepted, alive_defenders.size()) * 0.25
+		var distance: float = (unit["position"] as Vector2).distance_to(focus_target["position"])
+		if distance > float(unit["attackRange"]) * 0.92:
+			unit["destination"] = destination
+			unit["hasDestination"] = true
+		accepted += 1
+	for wave_id in live_wave:
+		var enemy: Variant = _unit_by_id(wave_id)
+		if enemy == null or not _is_alive(enemy):
+			continue
+		enemy["destination"] = Vector2(655, 486)
+		enemy["hasDestination"] = true
+		if str(enemy.get("attackTarget", "")) == "":
+			enemy["attackTarget"] = alive_defenders[0]
+	return accepted
 
 func _advance_movement() -> void:
 	for unit in units:
@@ -1231,7 +1384,7 @@ func _nearest_friendly_for(unit: Dictionary) -> Variant:
 func _nearest_unit(unit: Dictionary, team: String) -> Variant:
 	var candidates: Array[Dictionary] = []
 	for candidate in units:
-		if _is_alive(candidate) and str(candidate["team"]) == team:
+		if _is_alive(candidate) and str(candidate["team"]) == team and not bool(candidate.get("reviewHidden", false)):
 			candidates.append(candidate)
 	candidates.sort_custom(func(left: Dictionary, right: Dictionary) -> bool:
 		var left_distance := (unit["position"] as Vector2).distance_squared_to(left["position"])

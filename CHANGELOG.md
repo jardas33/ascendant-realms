@@ -1,5 +1,21 @@
 # Changelog
 
+# v0.133.1 Godot Test11 Combat Readability And Wave Playability Repair - 2026-06-05
+
+This repair responds to Emmanuel's `test11` packaged-build recording. Objective 8 reached the Ashen wave, but stale Worker/Barracks context, a heavy top battle banner, visible reserve clutter, and weak target marking made the fight hard to read and hard to finish.
+
+Changed:
+
+- Objective 8 now stages a readable four-attacker Ashen lane and a visible defender line.
+- The wave launch hands off to the defender squad and records `combat_defender_handoff`.
+- Empty combat box-select attempts preserve the defender squad and record `box_select_empty_preserved_defenders`.
+- All active Ashen attackers are target-marked while the wave objective is active.
+- The visible `Attack` button now issues a wave-defense order that carries the fight across all four active attackers.
+- The redundant top player-shell battle banner was removed so battle guidance does not cover the playfield.
+- Objective 8 HUD copy now reports the remaining Ashen count and points to `Attack` or right-click targeting.
+
+Scope unchanged: no Godot editor work, no runtime art import, no save change, no stable-ID change, no browser runtime change, no full port, no final engine choice, and no v0.134 work.
+
 # v0.133 Godot Post-Mine Sequence Repair, Barracks-Recruit Guidance, Ashen-Wave Trigger, And Real Combat-Onset Proof - 2026-06-05
 
 This checkpoint repairs the player-facing Godot Salto flow after Worker assignment. It replaces loose post-mine objective jumps with guarded prerequisites, removes the box-select skip into Ashen pressure, guides Barracks restoration and Militia recruitment through ordinary RTS input, starts a visible Ashen countdown, launches the bounded wave automatically, proves enemy movement and combat onset, defeats the wave through simulation/input, restores the Lume link, and reaches Results. It remains a bounded Godot spike repair: no generated images, imported runtime art, final Godot choice, full port, Unity project, browser-runtime change, save change, stable-ID change, broad economy, broad building tree, broad recruitment, campaign expansion, multiplayer, or v0.134 work.

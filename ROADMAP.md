@@ -11,7 +11,7 @@ Every phase should protect these long-term pillars:
 
 ## Current Recommended Next Phase
 
-The current checkpoint is **v0.133 Godot Post-Mine Sequence Repair** on 2026-06-05. It keeps the Godot spike bounded, preserves the v0.132 mine-conversion and Worker-assignment proof, replaces loose post-mine objective jumps with guarded prerequisites, removes the box-select skip into Ashen pressure, adds player-facing Barracks restoration, Militia recruitment, visible Ashen countdown, automatic wave launch, simulation-backed combat defeat, and Lume restoration, and records ignored v0.133 trace/screenshot proof under `artifacts/desktop-spikes/godot-salto/v0133/`. The browser prototype remains authoritative, the private harness remains separate, and no final engine choice, full port, generated image, imported art, save change, stable-ID change, browser-runtime change, broad economy, broad building tree, broad recruitment, full hero progression, campaign expansion, or runtime art integration is approved.
+The current checkpoint is **v0.133.1 Godot Test11 Combat Readability Repair** on 2026-06-05. It keeps the Godot spike bounded, preserves the v0.132 mine-conversion and Worker-assignment proof, replaces loose post-mine objective jumps with guarded prerequisites, removes the box-select skip into Ashen pressure, adds player-facing Barracks restoration, Militia recruitment, visible Ashen countdown, automatic wave launch, simulation-backed combat defeat, Lume restoration, and the `test11` recording repair for Objective 8 defender handoff, four-attacker wave readability, active target marks, empty combat box-select preservation, one-click wave-defense Attack behavior, and reduced top battle chrome. The browser prototype remains authoritative, the private harness remains separate, and no final engine choice, full port, generated image, imported art, save change, stable-ID change, browser-runtime change, broad economy, broad building tree, broad recruitment, full hero progression, campaign expansion, or runtime art integration is approved.
 
 The next recommended step, only after a future explicit goal or Emmanuel's explicit review action, is Emmanuel's manual retest using `GODOT_LAUNCH_POST_MINE_FLOW_REVIEW_WINDOWS.bat` and the checklist in `docs/V0133_EMMANUEL_RETEST_GUIDE.md`. Do not generate art for runtime integration, import art into runtime, mark `runtime-candidate-approved` assets as loadable, resume broad browser visual expansion, add broad gameplay systems, change rewards, change saves, rename IDs, create a desktop save path, choose Godot finally, start a full desktop port, start Unity/Unreal/Electron work, or start v0.134 until a future explicit goal approves a narrow next step.
 
@@ -28,6 +28,7 @@ New v0.133 docs:
 - `docs/V0133_POST_MINE_FLOW_GATE.md`
 - `docs/V0133_IMPLEMENTATION_REPORT.md`
 - `docs/V0133_EMMANUEL_RETEST_GUIDE.md`
+- `docs/V0133_TEST11_RECORDING_COMBAT_READABILITY_REPAIR.md`
 
 Previous checkpoint reference: v0.132 Godot Site Semantics and Worker Guidance Repair.
 

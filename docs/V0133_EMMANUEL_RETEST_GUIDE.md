@@ -25,15 +25,19 @@ Expected manual path:
 13. Click Train.
 14. Watch recruitment progress and Militia spawn.
 15. Watch the Ashen-pressure countdown.
-16. When the wave launches, box-select defenders and right-click an Ashen unit, or click `Attack` if the defender selection is unclear.
-17. Confirm enemies move, combat begins, and the wave is defeated by simulation.
-18. Click the highlighted Lume link.
-19. Confirm Results is reached.
+16. When the wave launches, confirm the defender squad is selected and the four active Ashen attackers are visibly marked.
+17. Click `Attack` or right-click one of the marked Ashen attackers.
+18. Confirm enemies move, combat begins, and the wave is defeated by simulation.
+19. Click the highlighted Lume link.
+20. Confirm Results is reached.
 
 Expected result:
 
 - The flow does not stall at Ashen pressure.
 - Box selection does not skip objectives early.
+- The top battle banner no longer covers the playfield during combat.
+- Objective 8 keeps the defender squad selected even if an empty combat box-select misses the units.
+- The visible fight is the bounded four-attacker Ashen wave, not the old reserve formation.
 - No debug shortcut, private-harness action, state injection, fixture-only helper, or Godot editor step is needed.
 
 Automated proof command:

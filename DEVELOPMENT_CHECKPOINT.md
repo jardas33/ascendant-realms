@@ -1,6 +1,6 @@
 # Development Checkpoint
 
-Updated: 2026-06-05 v0.133 Godot Post-Mine Sequence Repair, Barracks-Recruit Guidance, Ashen-Wave Trigger, and Real Combat-Onset Proof
+Updated: 2026-06-05 v0.133.1 Godot Test11 Combat Readability and Wave Playability Repair
 
 ## v0.133 Godot Post-Mine Sequence Repair, Barracks-Recruit Guidance, Ashen-Wave Trigger, And Real Combat-Onset Proof - 2026-06-05
 
@@ -11,6 +11,7 @@ Included work:
 - Added guarded post-mine objective prerequisites for `restore_barracks`, `train_militia`, `prepare_ashen_pressure`, `defeat_ashen_wave`, `restore_lume_link`, and `review_results`.
 - Removed the box-select objective skip so squad selection cannot advance into Ashen pressure before prerequisites are satisfied.
 - Added player-facing Barracks restoration guidance, construction progress, Barracks selection, Train Militia command, recruit progress, Militia spawn feedback, visible Ashen countdown, automatic wave trigger, enemy movement, combat onset, simulation-backed wave defeat, Lume restoration, and Results.
+- Added the `test11` recording-driven combat readability repair: Objective 8 defender handoff, four-attacker Ashen wave staging, active attacker target marks, empty combat box-select preservation, one-click wave-defense Attack behavior, and reduced top battle chrome.
 - Added `GODOT_POST_MINE_FLOW_SMOKE_WINDOWS.bat` and `GODOT_LAUNCH_POST_MINE_FLOW_REVIEW_WINDOWS.bat`.
 - Added ignored v0.133 artifact generation under `artifacts/desktop-spikes/godot-salto/v0133/`.
 - Added v0.133 docs for the objective audit, prerequisite ledger, guidance specs, proof, gate, implementation report, and Emmanuel retest guide.
@@ -22,6 +23,7 @@ Current interpretation:
 - Godot is still not selected finally.
 - The browser prototype remains the current source of truth.
 - Emmanuel should retest with `GODOT_LAUNCH_POST_MINE_FLOW_REVIEW_WINDOWS.bat` and `docs/V0133_EMMANUEL_RETEST_GUIDE.md`.
+- The `test11` recording analysis and repair ledger is `docs/V0133_TEST11_RECORDING_COMBAT_READABILITY_REPAIR.md`.
 
 Verification:
 

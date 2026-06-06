@@ -38,13 +38,19 @@ Verified path:
 10. Observe recruit progress and Militia spawn.
 11. Observe countdown.
 12. Observe automatic wave launch and enemy movement.
-13. Box-select defenders and issue a normal attack command against the Ashen wave.
+13. Confirm the Objective 8 defender handoff, then issue a normal attack command against the marked Ashen wave.
 14. Observe combat onset and simulation-backed wave defeat.
 15. Restore highlighted Lume link.
 16. Reach Results.
 
-Computer Use packaged-window proof additionally reached `Salto Review Complete` from the rebuilt executable with visible mouse input: title, briefing, Aster selection, mine conversion, Worker assignment, Restore, Barracks selection, Train, countdown, wave launch, visible Attack command, Lume click, and Results.
+Computer Use packaged-window proof additionally reached `Salto Review Complete` from the rebuilt executable with visible mouse input: title, briefing, Aster selection, mine conversion, Worker assignment, Restore, Barracks selection, Train, countdown, wave launch, visible Attack command, highlighted field Lume click, and Results.
 
-Objective 8 accepts the original right-click attack path and also has a raw mouse fallback for the visible `Attack` button rectangle, so the player-facing command cannot be lost by HUD routing while the wave is active.
+The maximized-window `test11` follow-up proof confirmed that the pre-wave red reserve wall is hidden, the top instruction chrome no longer blocks the playfield, the visible `Attack` command defeats the review wave through normal simulation, and the highlighted Lume field click reaches Results.
+
+Objective 8 now performs a player-readable combat handoff at wave launch: the defender squad is selected, only the active four Ashen attackers remain visible in the review lane, and all active attackers are marked. Empty combat box-select attempts preserve the defender squad instead of wiping the selection.
+
+Objective 8 accepts the original right-click attack path and also has raw and scaled mouse fallbacks for the visible `Attack` button rectangle. The visible `Attack` button issues a wave-defense order that keeps defenders assigned across the live wave until all four active attackers are defeated.
+
+The `test11` manual recording repair is documented in `docs/V0133_TEST11_RECORDING_COMBAT_READABILITY_REPAIR.md`.
 
 No private-harness shortcut, debug trigger, state injection, fixture-only helper proof, screenshot-only proof, save write, stable-ID change, browser runtime change, runtime art import, or Godot editor work was used.
