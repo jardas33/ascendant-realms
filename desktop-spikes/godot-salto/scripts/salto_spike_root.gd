@@ -34,6 +34,7 @@ const SCRIPT_ARG_PREFIXES := [
 	"--usability-presentation-smoke",
 	"--blockout-quality-smoke",
 	"--runtime-art-comparator",
+	"--worker-billboard-single-slot",
 	"--mode=",
 	"--visual-preset=",
 	"--viewport=",
@@ -78,6 +79,45 @@ func _ready() -> void:
 		comparator.set_script(comparator_script)
 		add_child(comparator)
 		comparator.call_deferred("start")
+		return
+	if args.has("--worker-billboard-single-slot"):
+		_write_absolute_json(_path_join(_artifact_root_from_args(), "worker-billboard-root-dispatch.json"), {
+			"schemaVersion": 1,
+			"checkpoint": "v0.147",
+			"status": "PASS_V0147_PRIVATE_WORKER_BILLBOARD_DISPATCH",
+			"args": Array(args),
+			"defaultPlayerSliceLaunched": false
+		})
+		var worker_comparator_script := load("res://comparators/runtime_art_pipeline/worker_billboard_single_slot_comparator.gd") as GDScript
+		if worker_comparator_script == null:
+			_write_absolute_json(_path_join(_artifact_root_from_args(), "worker-billboard-dispatch-failure.json"), {
+				"schemaVersion": 1,
+				"checkpoint": "v0.147",
+				"status": "FAIL_V0147_PRIVATE_WORKER_BILLBOARD_SCRIPT_LOAD",
+				"script": "res://comparators/runtime_art_pipeline/worker_billboard_single_slot_comparator.gd"
+			})
+			get_tree().quit(1)
+			return
+		var worker_comparator := Node.new()
+		worker_comparator.name = "V0147WorkerBillboardSingleSlotComparator"
+		worker_comparator.set_script(worker_comparator_script)
+		add_child(worker_comparator)
+		_write_absolute_json(_path_join(_artifact_root_from_args(), "worker-billboard-dispatch-prestart.json"), {
+			"schemaVersion": 1,
+			"checkpoint": "v0.147",
+			"status": "PASS_V0147_PRIVATE_WORKER_BILLBOARD_PRESTART",
+			"hasStart": worker_comparator.has_method("start")
+		})
+		if not worker_comparator.has_method("start"):
+			_write_absolute_json(_path_join(_artifact_root_from_args(), "worker-billboard-dispatch-failure.json"), {
+				"schemaVersion": 1,
+				"checkpoint": "v0.147",
+				"status": "FAIL_V0147_PRIVATE_WORKER_BILLBOARD_START_METHOD",
+				"script": "res://comparators/runtime_art_pipeline/worker_billboard_single_slot_comparator.gd"
+			})
+			get_tree().quit(1)
+			return
+		worker_comparator.call("start")
 		return
 	if args.has("--run-tests"):
 		var test_report: Dictionary = run_headless_tests()

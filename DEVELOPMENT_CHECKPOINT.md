@@ -1,6 +1,53 @@
 # Development Checkpoint
 
-Updated: 2026-06-06 v0.146 Godot Runtime-Art Pipeline Comparator Spike And Human Decision Stop
+Updated: 2026-06-06 v0.147 Hybrid Worker Billboard Single-Slot Runtime-Art Intake Experiment And Human Review Stop
+
+## v0.147 Hybrid Worker Billboard Single-Slot Runtime-Art Intake Experiment And Human Review Stop - 2026-06-06
+
+Scope: isolated private Godot hybrid Worker billboard single-slot intake experiment and human review stop. This checkpoint uses the v0.146 hybrid recommendation, generates exactly one original local Worker cutout, validates it against deterministic fallback evidence, benchmarks Tier S/M/L comparator posture, and stops without importing existing reference candidates, modifying the normal Salto player slice, or starting v0.148.
+
+Included work:
+
+- Confirmed clean synchronized `main` at `d82fe5efba6ee8af70bba94d2517023c76e6b558`.
+- Confirmed v0.146 pushed remote CI success and recommended `HYBRID_3D_WORLD_BILLBOARD_UNITS` as the next single-slot experiment.
+- Confirmed `ORTHO_3D_MESH` remains fallback comparator only and `BILLBOARD_2D_ATLAS` remains deferred.
+- Generated exactly one original Worker cutout and preserved the source under the ignored v0.147 local slot folder.
+- Converted the flat chroma source to alpha and wrote ignored local metadata for `worker_billboard_static_v0147`.
+- Added tracked deterministic diagnostic fallback PNG and contract under `desktop-spikes/godot-salto/comparators/runtime_art_pipeline/fallback/`.
+- Added private Worker billboard comparator code, validation/reproducibility/benchmark/capture wrappers, one-click launcher, and tracked v0.147 docs.
+- Captured Tier S/M/L evidence for diagnostic fallback, local Worker slot, and orthographic mesh fallback comparator.
+
+Current interpretation:
+
+- Local Worker cutout hash: `e294115817821eb84a459f6c86110d7b6951ad34182802bf6b0c07f560cab88a`.
+- Local Worker dimensions: `1254 x 1254`.
+- Local Worker alpha posture: matte-to-alpha transparent PNG with source preserved.
+- Tracked fallback hash: `fa60b6e6a86b41cb449c3a16a0401cf44fbab8b5faefd7f19147b3a8c6161419`.
+- Tracked fallback dimensions: `512 x 512`.
+- Tier L threshold: `FAIL_V0147_WORKER_BILLBOARD_TIER_L_THRESHOLD`; local Worker average FPS ratio `0.8464`, p95 frame-time ratio `1.3697`, and p95 absolute delta `0.44 ms` versus diagnostic fallback. The p95 delta stayed within the recorded `0.50 ms` local headed jitter allowance, but the average-FPS gate missed the `0.90` target.
+- Preferred scale posture: `1.00x`; `0.90x` is safer for crowding and `1.10x` is close diagnostic only.
+- Recommendation: stop for Emmanuel review and consider one bounded repair pass before any additional slot or production integration.
+- Human review is pending.
+- v0.148 has not started.
+
+Verification:
+
+```text
+Required closeout stack:
+npm test
+npm run build
+npm run validate:content
+npm run validate:art-intake
+npm run art:reference:init
+npm run art:reference:validate
+npm run art:reference:contact-sheet
+npm run art:reference:review-pack
+npm run godot:worker-billboard:validate
+npm run godot:worker-billboard:fallback:reproduce
+npm run godot:worker-billboard:benchmark:headed
+npm run godot:worker-billboard:capture
+git diff --check
+```
 
 ## v0.146 Godot Runtime-Art Pipeline Comparator Spike And Human Decision Stop - 2026-06-06
 

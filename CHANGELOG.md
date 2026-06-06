@@ -1,5 +1,44 @@
 # Changelog
 
+# v0.147 Hybrid Worker Billboard Single-Slot Runtime-Art Intake Experiment And Human Review Stop - 2026-06-06
+
+This checkpoint adds one isolated private Worker billboard single-slot intake experiment for human review. It uses the v0.146 hybrid recommendation, generates exactly one original local Worker cutout, validates it against a deterministic tracked fallback, captures Tier S/M/L private comparator evidence, records the threshold scorecard, and stops for Emmanuel review.
+
+Added:
+
+- One ignored local Worker cutout source/alpha slot under `artifacts/desktop-spikes/godot-salto/v0147/local-worker-slot/`.
+- Deterministic tracked diagnostic fallback under `desktop-spikes/godot-salto/comparators/runtime_art_pipeline/fallback/`.
+- Private comparator script `desktop-spikes/godot-salto/comparators/runtime_art_pipeline/worker_billboard_single_slot_comparator.gd`.
+- One-click wrapper `GODOT_WORKER_BILLBOARD_SINGLE_SLOT_EXPERIMENT_WINDOWS.bat`.
+- npm scripts `godot:worker-billboard:validate`, `godot:worker-billboard:fallback:reproduce`, `godot:worker-billboard:benchmark:headed`, and `godot:worker-billboard:capture`.
+- Evidence/metadata tool `tools/godot/workerBillboardSingleSlotTool.mjs`.
+- v0.147 docs for intake spec, slot contract, validation report, benchmark report, visual review guide, private boundary, and implementation report.
+
+Changed:
+
+- `desktop-spikes/godot-salto/scripts/salto_spike_root.gd` now has a private `--worker-billboard-single-slot` dispatch path only.
+- Desktop-spike scaffold tests now assert the Worker billboard experiment remains isolated from the normal Salto player slice and default launchers.
+- Handoff, roadmap, development checkpoint, and release checklist now describe v0.147 as a one-image, private-comparator human review stop.
+
+Evidence:
+
+- Local Worker cutout: SHA-256 `e294115817821eb84a459f6c86110d7b6951ad34182802bf6b0c07f560cab88a`, dimensions `1254 x 1254`, matte-to-alpha transparent PNG.
+- Tracked fallback: SHA-256 `fa60b6e6a86b41cb449c3a16a0401cf44fbab8b5faefd7f19147b3a8c6161419`, dimensions `512 x 512`, transparent diagnostic fallback.
+- Tier L threshold: `FAIL_V0147_WORKER_BILLBOARD_TIER_L_THRESHOLD`, local average FPS ratio `0.8464`, local p95 frame-time ratio `1.3697`, local p95 absolute delta `0.44 ms`; the p95 delta stayed within the recorded `0.50 ms` local headed jitter allowance, but the average-FPS gate missed the `0.90` target.
+
+Boundaries:
+
+- Exactly one AI-generated image.
+- No existing reference candidate import.
+- No downloaded asset use.
+- No normal Salto player-slice mutation.
+- No player-facing Godot wiring or browser-runtime wiring.
+- No manifest mutation, art-slot mutation, production package mutation, save change, stable-ID change, final runtime-art approval, final Worker design approval, final engine selection, full port, or v0.148 work.
+
+Verification:
+
+- Required v0.147 verification is listed in `docs/V0147_IMPLEMENTATION_REPORT.md` and must be run before closeout.
+
 # v0.146 Godot Runtime-Art Pipeline Comparator Spike And Human Decision Stop - 2026-06-06
 
 This checkpoint adds an isolated private Godot runtime-art pipeline comparator and evidence packet for human review. It validates the v0.145 reference-art workspace, encodes the HUD reference decision, runs procedural-only Tier S/M/L comparisons for three possible runtime-art approaches, records the scorecard, recommends a single next experiment, and stops for Emmanuel review.

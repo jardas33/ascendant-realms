@@ -1,0 +1,32 @@
+{
+  "alphaPosture": "tracked-transparent-diagnostic-fallback",
+  "browserIntegration": "forbidden",
+  "byteLength": 3557,
+  "checkpoint": "v0.147",
+  "dimensions": {
+    "height": 512,
+    "width": 512
+  },
+  "fallbackId": "worker_billboard_static_v0147_tracked_diagnostic_fallback",
+  "generatedBy": "tools/godot/workerBillboardSingleSlotTool.mjs fallback",
+  "originalGeometricDiagnosticOnly": true,
+  "pivot": {
+    "normalizedX": 0.4971,
+    "normalizedY": 0.8809,
+    "posture": "bottom-center-foot-pivot"
+  },
+  "playerSliceIntegration": "forbidden",
+  "privateComparatorOnly": true,
+  "productionApproval": "forbidden",
+  "schemaVersion": 1,
+  "sha256": "fa60b6e6a86b41cb449c3a16a0401cf44fbab8b5faefd7f19147b3a8c6161419",
+  "slotId": "worker_billboard_static_v0147",
+  "trimBounds": {
+    "bottom": 451,
+    "height": 334,
+    "left": 119,
+    "right": 389,
+    "top": 118,
+    "width": 271
+  }
+}

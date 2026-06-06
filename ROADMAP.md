@@ -11,9 +11,21 @@ Every phase should protect these long-term pillars:
 
 ## Current Recommended Next Phase
 
-The current checkpoint is **v0.146 Godot Runtime-Art Pipeline Comparator Spike And Human Decision Stop** on 2026-06-06. It keeps the browser runtime, normal Salto player slice, art slots, production package, saves, and stable IDs untouched while adding one isolated private Godot comparator under `desktop-spikes/godot-salto/comparators/runtime_art_pipeline/`. It validates the v0.145 HUD/reference-art boundary, encodes H3 as the primary HUD reference direction with H2 as material companion and H1 as limited tactical companion, captures Tier S/M/L evidence for `ORTHO_3D_MESH`, `BILLBOARD_2D_ATLAS`, and `HYBRID_3D_WORLD_BILLBOARD_UNITS`, recommends `HYBRID_3D_WORLD_BILLBOARD_UNITS` as the next single-slot experiment, and stops for Emmanuel's human decision review.
+The current checkpoint is **v0.147 Hybrid Worker Billboard Single-Slot Runtime-Art Intake Experiment And Human Review Stop** on 2026-06-06. It keeps the browser runtime, normal Salto player slice, art slots, production package, saves, and stable IDs untouched while testing exactly one original local Worker cutout inside an isolated private Godot hybrid comparator. The local cutout remains ignored under `artifacts/desktop-spikes/godot-salto/v0147/local-worker-slot/`, the tracked fallback remains deterministic diagnostic geometry only, and the private comparator records Tier S/M/L evidence plus a final Tier L threshold failure: the local Worker slot averaged `0.8464` of the diagnostic fallback baseline against the `0.90` target.
 
-The next recommended step is human review and explicit approval only: Emmanuel may review `docs/V0146_EMMANUEL_RUNTIME_ART_PIPELINE_REVIEW_GUIDE.md`, the ignored v0.146 evidence under `artifacts/desktop-spikes/godot-salto/v0146/`, and the scorecard/recommendation docs. Do not import generated reference images, generate new images, mark candidates runtime-approved, modify the normal Salto player slice, wire comparator output into Godot production/player-facing flow, wire assets into the browser, mutate manifests or art slots, change saves or stable IDs, create a desktop save path, choose Godot finally, start a full desktop port, start Unity/Unreal/Electron work, or start v0.147 until a future explicit goal approves a narrow next step.
+The next recommended step is human review and explicit approval only: Emmanuel may review `docs/V0147_WORKER_BILLBOARD_VISUAL_REVIEW_GUIDE.md`, the ignored v0.147 evidence under `artifacts/desktop-spikes/godot-salto/v0147/`, and the v0.147 benchmark/boundary/implementation docs. The recommended next engineering step, if approved later, is one bounded repair pass for the Worker-slot Tier L overhead. Do not import existing reference candidates, generate another image, download assets, mark the Worker runtime-approved, modify the normal Salto player slice, wire comparator output into Godot production/player-facing flow, wire assets into the browser, mutate manifests or art slots, change saves or stable IDs, create a desktop save path, choose Godot finally, start a full desktop port, start Unity/Unreal/Electron work, or start v0.148 until a future explicit goal approves a narrow next step.
+
+New v0.147 docs:
+
+- `docs/V0147_WORKER_BILLBOARD_SINGLE_SLOT_INTAKE_SPEC.md`
+- `docs/V0147_WORKER_BILLBOARD_SLOT_CONTRACT.md`
+- `docs/V0147_WORKER_BILLBOARD_VALIDATION_REPORT.md`
+- `docs/V0147_WORKER_BILLBOARD_BENCHMARK_REPORT.md`
+- `docs/V0147_WORKER_BILLBOARD_VISUAL_REVIEW_GUIDE.md`
+- `docs/V0147_PRIVATE_COMPARATOR_ONLY_BOUNDARY.md`
+- `docs/V0147_IMPLEMENTATION_REPORT.md`
+
+Previous checkpoint reference: v0.146 Godot Runtime-Art Pipeline Comparator Spike And Human Decision Stop.
 
 New v0.146 docs:
 

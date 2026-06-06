@@ -1827,4 +1827,110 @@ describe("Godot Salto spike scaffold", () => {
     expect(implementation).toContain("No v0.147 work");
     expect(implementation).toContain("No final engine choice");
   });
+
+  it("defines the v0.147 private Worker billboard single-slot experiment and review stop", async () => {
+    [
+      "GODOT_WORKER_BILLBOARD_SINGLE_SLOT_EXPERIMENT_WINDOWS.bat",
+      "tools/godot/workerBillboardSingleSlotTool.mjs",
+      "tools/godot/runGodotWorkerBillboardValidation.ps1",
+      "tools/godot/runGodotWorkerBillboardFallbackReproducibility.ps1",
+      "tools/godot/runGodotWorkerBillboardBenchmarkWindows.ps1",
+      "tools/godot/captureGodotWorkerBillboardWindows.ps1",
+      "desktop-spikes/godot-salto/comparators/runtime_art_pipeline/worker_billboard_single_slot_comparator.gd",
+      "desktop-spikes/godot-salto/comparators/runtime_art_pipeline/fallback/worker_billboard_static_v0147_fallback.png",
+      "desktop-spikes/godot-salto/comparators/runtime_art_pipeline/fallback/worker_billboard_static_v0147_fallback.contract.json",
+      "docs/V0147_WORKER_BILLBOARD_SINGLE_SLOT_INTAKE_SPEC.md",
+      "docs/V0147_WORKER_BILLBOARD_SLOT_CONTRACT.md",
+      "docs/V0147_WORKER_BILLBOARD_VALIDATION_REPORT.md",
+      "docs/V0147_WORKER_BILLBOARD_BENCHMARK_REPORT.md",
+      "docs/V0147_WORKER_BILLBOARD_VISUAL_REVIEW_GUIDE.md",
+      "docs/V0147_PRIVATE_COMPARATOR_ONLY_BOUNDARY.md",
+      "docs/V0147_IMPLEMENTATION_REPORT.md"
+    ].forEach((path) => expect(existsSync(path), path).toBe(true));
+
+    const packageJson = await readJson<{ scripts: Record<string, string> }>("package.json");
+    const project = await readFile("desktop-spikes/godot-salto/project.godot", "utf8");
+    const rootScript = await readFile("desktop-spikes/godot-salto/scripts/salto_spike_root.gd", "utf8");
+    const comparatorScript = await readFile(
+      "desktop-spikes/godot-salto/comparators/runtime_art_pipeline/worker_billboard_single_slot_comparator.gd",
+      "utf8"
+    );
+    const toolScript = await readFile("tools/godot/workerBillboardSingleSlotTool.mjs", "utf8");
+    const fallbackContract = await readJson<{
+      browserIntegration: string;
+      playerSliceIntegration: string;
+      privateComparatorOnly: boolean;
+      productionApproval: string;
+      sha256: string;
+      slotId: string;
+    }>(
+      "desktop-spikes/godot-salto/comparators/runtime_art_pipeline/fallback/worker_billboard_static_v0147_fallback.contract.json"
+    );
+    const workerLauncher = await readFile("GODOT_WORKER_BILLBOARD_SINGLE_SLOT_EXPERIMENT_WINDOWS.bat", "utf8");
+    const stabilizedLauncher = await readFile("GODOT_LAUNCH_STABILIZED_SALTO_REVIEW_WINDOWS.bat", "utf8");
+    const playerLauncher = await readFile("GODOT_LAUNCH_PLAYER_SLICE_WINDOWS.bat", "utf8");
+    const benchmark = await readFile("docs/V0147_WORKER_BILLBOARD_BENCHMARK_REPORT.md", "utf8");
+    const boundary = await readFile("docs/V0147_PRIVATE_COMPARATOR_ONLY_BOUNDARY.md", "utf8");
+    const guide = await readFile("docs/V0147_WORKER_BILLBOARD_VISUAL_REVIEW_GUIDE.md", "utf8");
+    const implementation = await readFile("docs/V0147_IMPLEMENTATION_REPORT.md", "utf8");
+
+    [
+      "godot:worker-billboard:validate",
+      "godot:worker-billboard:fallback:reproduce",
+      "godot:worker-billboard:benchmark:headed",
+      "godot:worker-billboard:capture"
+    ].forEach((script) => expect(packageJson.scripts[script], script).toBeTypeOf("string"));
+
+    expect(project).toContain('run/main_scene="res://scenes/salto_spike_root.tscn"');
+    expect(rootScript).toContain("--worker-billboard-single-slot");
+    expect(rootScript).toContain("worker_billboard_single_slot_comparator.gd");
+    expect(rootScript).toContain("PASS_V0147_PRIVATE_WORKER_BILLBOARD_DISPATCH");
+    expect(rootScript).toContain("show_player_title");
+
+    [
+      "worker_billboard_static_v0147",
+      "HYBRID_DIAGNOSTIC_FALLBACK_BASELINE",
+      "HYBRID_LOCAL_WORKER_SLOT",
+      "ORTHO_3D_MESH_FALLBACK_COMPARATOR",
+      "normalPlayerSliceWired",
+      "existingReferenceCandidateImported",
+      "downloadedAssetsUsed"
+    ].forEach((text) => expect(comparatorScript).toContain(text));
+
+    [
+      "PASS_V0147_WORKER_BILLBOARD_SLOT_VALIDATION",
+      "PASS_V0147_WORKER_BILLBOARD_FALLBACK_REPRODUCIBILITY",
+      "PASS_V0147_WORKER_BILLBOARD_EVIDENCE",
+      "PASS_V0147_WORKER_BILLBOARD_TIER_L_THRESHOLD",
+      "benchmark-summary.md",
+      "threshold-report.json",
+      "contact-sheet.svg",
+      "exactlyOneGeneratedImageForV0147"
+    ].forEach((text) => expect(toolScript).toContain(text));
+
+    expect(fallbackContract.slotId).toBe("worker_billboard_static_v0147");
+    expect(fallbackContract.sha256).toBe("fa60b6e6a86b41cb449c3a16a0401cf44fbab8b5faefd7f19147b3a8c6161419");
+    expect(fallbackContract.privateComparatorOnly).toBe(true);
+    expect(fallbackContract.productionApproval).toBe("forbidden");
+    expect(fallbackContract.playerSliceIntegration).toBe("forbidden");
+    expect(fallbackContract.browserIntegration).toBe("forbidden");
+
+    expect(workerLauncher).toContain("runGodotWorkerBillboardBenchmarkWindows.ps1");
+    expect(stabilizedLauncher).not.toContain("worker-billboard-single-slot");
+    expect(stabilizedLauncher).not.toContain("worker_billboard_single_slot");
+    expect(playerLauncher).not.toContain("worker-billboard-single-slot");
+    expect(playerLauncher).not.toContain("worker_billboard_single_slot");
+
+    expect(benchmark).toContain("FAIL_V0147_WORKER_BILLBOARD_TIER_L_THRESHOLD");
+    expect(benchmark).toContain("single bounded repair pass");
+    expect(boundary).toContain("No existing reference candidate import");
+    expect(boundary).toContain("No browser runtime wiring");
+    expect(guide).toContain("GODOT_WORKER_BILLBOARD_SINGLE_SLOT_EXPERIMENT_WINDOWS.bat");
+    expect(implementation).toContain("Exactly one AI-generated image");
+    expect(implementation).toContain("No v0.148 work");
+
+    expect(rootScript).not.toContain("artifacts/art-review/v0138/candidates");
+    expect(comparatorScript).not.toContain("artifacts/art-review/v0138/candidates");
+    expect(toolScript).not.toContain("artifacts/art-review/v0138/candidates");
+  });
 });
