@@ -39,6 +39,7 @@ const SCRIPT_ARG_PREFIXES := [
 	"--barrosan-barracks-material-single-slot",
 	"--barrosan-barracks-material-seam-repair",
 	"--aster-billboard-single-slot-repair",
+	"--hybrid-three-slot-composition-stress",
 	"--aster-billboard-single-slot",
 	"--mode=",
 	"--visual-preset=",
@@ -279,6 +280,45 @@ func _ready() -> void:
 			get_tree().quit(1)
 			return
 		aster_repair.call("start")
+		return
+	if args.has("--hybrid-three-slot-composition-stress"):
+		_write_absolute_json(_path_join(_artifact_root_from_args(), "hybrid-three-slot-composition-root-dispatch.json"), {
+			"schemaVersion": 1,
+			"checkpoint": "v0.153",
+			"status": "PASS_V0153_PRIVATE_HYBRID_THREE_SLOT_COMPOSITION_DISPATCH",
+			"args": Array(args),
+			"defaultPlayerSliceLaunched": false
+		})
+		var composition_script := load("res://comparators/runtime_art_pipeline/aster_billboard_single_slot_comparator.gd") as GDScript
+		if composition_script == null:
+			_write_absolute_json(_path_join(_artifact_root_from_args(), "hybrid-three-slot-composition-dispatch-failure.json"), {
+				"schemaVersion": 1,
+				"checkpoint": "v0.153",
+				"status": "FAIL_V0153_PRIVATE_HYBRID_THREE_SLOT_COMPOSITION_SCRIPT_LOAD",
+				"script": "res://comparators/runtime_art_pipeline/aster_billboard_single_slot_comparator.gd"
+			})
+			get_tree().quit(1)
+			return
+		var composition := Node.new()
+		composition.name = "V0153HybridThreeSlotCompositionStressComparator"
+		composition.set_script(composition_script)
+		add_child(composition)
+		_write_absolute_json(_path_join(_artifact_root_from_args(), "hybrid-three-slot-composition-dispatch-prestart.json"), {
+			"schemaVersion": 1,
+			"checkpoint": "v0.153",
+			"status": "PASS_V0153_PRIVATE_HYBRID_THREE_SLOT_COMPOSITION_PRESTART",
+			"hasStart": composition.has_method("start")
+		})
+		if not composition.has_method("start"):
+			_write_absolute_json(_path_join(_artifact_root_from_args(), "hybrid-three-slot-composition-dispatch-failure.json"), {
+				"schemaVersion": 1,
+				"checkpoint": "v0.153",
+				"status": "FAIL_V0153_PRIVATE_HYBRID_THREE_SLOT_COMPOSITION_START_METHOD",
+				"script": "res://comparators/runtime_art_pipeline/aster_billboard_single_slot_comparator.gd"
+			})
+			get_tree().quit(1)
+			return
+		composition.call("start")
 		return
 	if args.has("--aster-billboard-single-slot"):
 		_write_absolute_json(_path_join(_artifact_root_from_args(), "aster-billboard-root-dispatch.json"), {

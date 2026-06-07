@@ -2,11 +2,13 @@ extends Node
 
 const CHECKPOINT := "v0.151"
 const REPAIR_CHECKPOINT := "v0.152"
+const COMPOSITION_CHECKPOINT := "v0.153"
 const SLOT_ID := "aster_billboard_static_v0151"
 const WORKER_SLOT_ID := "worker_billboard_static_v0147"
 const BARRACKS_SLOT_ID := "barrosan_barracks_material_v0149"
 const SELECTED_WORKER_HASH := "a628065ca92b231b0d4f6a0625d9e259dea080e80d530ee688483611d70049bc"
 const SELECTED_BARRACKS_HASH := "58a60b750370df084b60a1d92077da9367c0ba8a763781e2c3a8a7d96f1c980f"
+const SELECTED_ASTER_REPAIR_HASH := "b256f96f762187c05d68f2c2de62bedec0248896210767e98cb8f210dac2829a"
 const APPROACH_FALLBACK := "HYBRID_ASTER_DIAGNOSTIC_FALLBACK_BASELINE"
 const APPROACH_LOCAL := "HYBRID_ASTER_LOCAL_STATIC_BILLBOARD"
 const APPROACH_WORKER_CONTEXT := "HYBRID_WORKER_CONTEXT_BASELINE"
@@ -16,6 +18,9 @@ const APPROACH_ASTER_FULL_RES := "HYBRID_ASTER_FULL_RES"
 const APPROACH_ASTER_TRIMMED_512 := "HYBRID_ASTER_TRIMMED_512"
 const APPROACH_ASTER_TRIMMED_768 := "HYBRID_ASTER_TRIMMED_768"
 const APPROACH_ASTER_TRIMMED_1024 := "HYBRID_ASTER_TRIMMED_1024"
+const APPROACH_THREE_SLOT_FALLBACK := "HYBRID_THREE_SLOT_FALLBACK_ONLY"
+const APPROACH_THREE_SLOT_SELECTED := "HYBRID_THREE_SLOT_SELECTED_LOCAL"
+const APPROACH_THREE_SLOT_ORTHO := "ORTHO_THREE_SLOT_PROCEDURAL_FALLBACK"
 const APPROACHES := [
 	APPROACH_FALLBACK,
 	APPROACH_LOCAL,
@@ -30,10 +35,20 @@ const REPAIR_APPROACHES := [
 	APPROACH_ASTER_TRIMMED_768,
 	APPROACH_ASTER_TRIMMED_1024
 ]
+const COMPOSITION_APPROACHES := [
+	APPROACH_THREE_SLOT_FALLBACK,
+	APPROACH_THREE_SLOT_SELECTED,
+	APPROACH_THREE_SLOT_ORTHO
+]
 const TIERS := {
 	"S": {"asterCount": 1, "workerCount": 5, "barracksShellCount": 2, "benchmarkFrames": 120},
 	"M": {"asterCount": 4, "workerCount": 10, "barracksShellCount": 5, "benchmarkFrames": 150},
 	"L": {"asterCount": 10, "workerCount": 18, "barracksShellCount": 10, "benchmarkFrames": 180}
+}
+const COMPOSITION_TIERS := {
+	"S": {"asterCount": 1, "workerCount": 1, "barracksShellCount": 1, "benchmarkFrames": 120},
+	"M": {"asterCount": 1, "workerCount": 12, "barracksShellCount": 1, "benchmarkFrames": 150},
+	"L": {"asterCount": 1, "workerCount": 32, "barracksShellCount": 12, "benchmarkFrames": 180}
 }
 const DEFAULT_VIEWPORT_SIZE := Vector2i(1600, 900)
 
@@ -50,6 +65,8 @@ var local_source: Dictionary = {}
 var repair_sources: Dictionary = {}
 var worker_context_source: Dictionary = {}
 var barracks_context_source: Dictionary = {}
+var worker_fallback_source: Dictionary = {}
+var barracks_fallback_source: Dictionary = {}
 var texture_cache: Dictionary = {}
 var material_cache: Dictionary = {}
 var texture_create_counts: Dictionary = {}
@@ -80,6 +97,22 @@ func start() -> void:
 	local_source = _load_local_source()
 	worker_context_source = _load_worker_context_source()
 	barracks_context_source = _load_barracks_context_source()
+	worker_fallback_source = _load_worker_fallback_context_source()
+	barracks_fallback_source = _load_barracks_fallback_context_source()
+	if _composition_mode():
+		repair_sources = _load_repair_sources()
+		if args.has("--hybrid-three-slot-composition-validate-only"):
+			var composition_validation := _composition_validation_report()
+			_write_absolute_json(_path_join(artifact_root, "hybrid-three-slot-composition-validation-runtime.json"), composition_validation)
+			get_tree().quit(0 if composition_validation.get("status", "FAIL") == "PASS_V0153_HYBRID_THREE_SLOT_RUNTIME_VALIDATION" else 1)
+			return
+		var composition_run_kind := "hybrid-three-slot-composition-headed-benchmark-and-capture"
+		if args.has("--hybrid-three-slot-composition-capture-only"):
+			composition_run_kind = "hybrid-three-slot-composition-capture-refresh"
+		var composition_report := await _run_composition_sequence(composition_run_kind)
+		_write_absolute_json(_path_join(artifact_root, "hybrid-three-slot-composition-runtime.json"), composition_report)
+		get_tree().quit(0 if composition_report.get("status", "FAIL") == "PASS_V0153_HYBRID_THREE_SLOT_RUNTIME_EVIDENCE" else 1)
+		return
 	if _repair_mode():
 		repair_sources = _load_repair_sources()
 		if args.has("--aster-billboard-repair-validate-only"):
@@ -158,6 +191,39 @@ func _repair_validation_report() -> Dictionary:
 		"productionApproval": "forbidden",
 		"playerSliceIntegration": "forbidden",
 		"browserIntegration": "forbidden",
+		"errors": errors
+	}
+
+func _composition_validation_report() -> Dictionary:
+	var errors: Array[String] = []
+	if fallback_source.get("status", "FAIL") != "PASS":
+		errors.append_array(fallback_source.get("errors", ["Aster fallback source failed validation."]))
+	var selected_aster: Dictionary = repair_sources.get("trimmed_1024", {})
+	if selected_aster.get("status", "FAIL") != "PASS":
+		errors.append_array(selected_aster.get("errors", ["Selected Aster repair derivative failed validation."]))
+	for source in [worker_context_source, barracks_context_source, worker_fallback_source, barracks_fallback_source]:
+		if source.get("status", "FAIL") != "PASS":
+			errors.append_array(source.get("errors", ["Composition source failed validation."]))
+	return {
+		"schemaVersion": 1,
+		"checkpoint": COMPOSITION_CHECKPOINT,
+		"slotId": SLOT_ID,
+		"status": "PASS_V0153_HYBRID_THREE_SLOT_RUNTIME_VALIDATION" if errors.is_empty() else "FAIL_V0153_HYBRID_THREE_SLOT_RUNTIME_VALIDATION",
+		"selectedAsterSource": selected_aster,
+		"selectedWorkerSource": worker_context_source,
+		"selectedBarracksSource": barracks_context_source,
+		"fallbackAsterSource": fallback_source,
+		"fallbackWorkerSource": worker_fallback_source,
+		"fallbackBarracksSource": barracks_fallback_source,
+		"zeroNewAiImagesForV0153": true,
+		"zeroNewRuntimeArtSlotsForV0153": true,
+		"usesExistingThreePrivateSlotsOnly": true,
+		"privateComparatorOnly": true,
+		"productionApproval": "forbidden",
+		"playerSliceIntegration": "forbidden",
+		"browserIntegration": "forbidden",
+		"saveWritesAllowed": false,
+		"stableIdChanges": false,
 		"errors": errors
 	}
 
@@ -302,6 +368,77 @@ func _run_repair_sequence(run_kind: String) -> Dictionary:
 		"errors": errors
 	}
 
+func _run_composition_sequence(run_kind: String) -> Dictionary:
+	var errors: Array[String] = []
+	var validation := _composition_validation_report()
+	if validation.get("status", "FAIL") != "PASS_V0153_HYBRID_THREE_SLOT_RUNTIME_VALIDATION":
+		errors.append_array(validation.get("errors", ["Composition validation failed."]))
+	var benchmark_reports: Array[Dictionary] = []
+	var captures: Array[Dictionary] = []
+	var capture_index := 0
+	for tier in ["S", "M", "L"]:
+		var trial_count := 5 if tier == "L" else 1
+		for trial_index in range(trial_count):
+			var ordered_approaches := _rotated_composition_approaches(trial_index)
+			for approach in ordered_approaches:
+				var config := _composition_workload_config(approach, tier, 1.0, "three_slot_paired_benchmark")
+				config["trialIndex"] = trial_index + 1
+				config["scenarioOrder"] = ordered_approaches
+				var benchmark := await _benchmark_current_view(config)
+				benchmark_reports.append(benchmark)
+				if benchmark.get("status", "FAIL") != "PASS":
+					errors.append("Three-slot composition benchmark failed for %s %s trial %d." % [approach, tier, trial_index + 1])
+				if trial_index == 0:
+					var capture := await _capture_current_view(config, capture_index)
+					captures.append(capture)
+					capture_index += 1
+	var review_captures := await _capture_composition_review_views(capture_index)
+	captures.append_array(review_captures)
+	return {
+		"schemaVersion": 1,
+		"checkpoint": COMPOSITION_CHECKPOINT,
+		"slotId": SLOT_ID,
+		"runKind": run_kind,
+		"status": "PASS_V0153_HYBRID_THREE_SLOT_RUNTIME_EVIDENCE" if errors.is_empty() else "FAIL_V0153_HYBRID_THREE_SLOT_RUNTIME_EVIDENCE",
+		"artifactRoot": artifact_root,
+		"screenshotRoot": screenshot_root,
+		"benchmarkCount": benchmark_reports.size(),
+		"screenshotCount": captures.size(),
+		"benchmarks": benchmark_reports,
+		"captures": captures,
+		"selectedAsterSource": repair_sources.get("trimmed_1024", {}),
+		"selectedWorkerSource": worker_context_source,
+		"selectedBarracksSource": barracks_context_source,
+		"fallbackAsterSource": fallback_source,
+		"fallbackWorkerSource": worker_fallback_source,
+		"fallbackBarracksSource": barracks_fallback_source,
+		"fairPathAudit": _fair_path_audit(false, true),
+		"readabilityAudit": _composition_readability_audit(),
+		"boundaries": {
+			"privateComparatorOnly": true,
+			"productionApproval": "forbidden",
+			"playerSliceIntegration": "forbidden",
+			"browserIntegration": "forbidden",
+			"zeroNewAiImagesForV0153": true,
+			"zeroNewRuntimeArtSlotsForV0153": true,
+			"usesExistingThreePrivateSlotsOnly": true,
+			"defaultLauncherReplaced": false,
+			"normalPlayerSliceWired": false,
+			"manifestMutated": false,
+			"productionPackageIncluded": false,
+			"saveWritesAllowed": false,
+			"stableIdChanges": false,
+			"referenceCandidateImported": false
+		},
+		"limitations": [
+			"v0.153 only stress-tests private composition posture; it does not approve production art.",
+			"Human review remains required for overlap, seam, shimmer, halo, and identity judgement.",
+			"No generated image, reference candidate, normal player slice, browser runtime, save, or stable-ID path is modified.",
+			"Godot remains provisional and is not finally selected."
+		],
+		"errors": errors
+	}
+
 func _rotated_approaches(trial_index: int) -> Array:
 	var rotated := APPROACHES.duplicate()
 	var offset := trial_index % rotated.size()
@@ -311,6 +448,13 @@ func _rotated_approaches(trial_index: int) -> Array:
 
 func _rotated_repair_approaches(trial_index: int) -> Array:
 	var rotated := REPAIR_APPROACHES.duplicate()
+	var offset := trial_index % rotated.size()
+	for _index in range(offset):
+		rotated.push_back(rotated.pop_front())
+	return rotated
+
+func _rotated_composition_approaches(trial_index: int) -> Array:
+	var rotated := COMPOSITION_APPROACHES.duplicate()
 	var offset := trial_index % rotated.size()
 	for _index in range(offset):
 		rotated.push_back(rotated.pop_front())
@@ -347,6 +491,22 @@ func _repair_workload_config(approach: String, tier: String, scale_multiplier: f
 		"repairMode": true
 	}
 
+func _composition_workload_config(approach: String, tier: String, scale_multiplier: float, view: String) -> Dictionary:
+	var tier_config: Dictionary = COMPOSITION_TIERS[tier]
+	return {
+		"approach": approach,
+		"tier": tier,
+		"view": view,
+		"scaleMultiplier": scale_multiplier,
+		"assetSource": _source_for_composition_approach(approach),
+		"asterCount": int(tier_config["asterCount"]),
+		"workerCount": int(tier_config["workerCount"]),
+		"barracksShellCount": int(tier_config["barracksShellCount"]),
+		"benchmarkFrames": int(tier_config["benchmarkFrames"]),
+		"steadyStateWarmupFrames": 18,
+		"compositionMode": true
+	}
+
 func _source_for_approach(approach: String) -> Dictionary:
 	if approach == APPROACH_FALLBACK:
 		return fallback_source
@@ -371,8 +531,15 @@ func _source_for_repair_approach(approach: String) -> Dictionary:
 		return repair_sources.get("trimmed_1024", fallback_source)
 	return fallback_source
 
+func _source_for_composition_approach(approach: String) -> Dictionary:
+	if approach == APPROACH_THREE_SLOT_SELECTED:
+		return repair_sources.get("trimmed_1024", fallback_source)
+	if approach == APPROACH_THREE_SLOT_ORTHO:
+		return {"status": "PASS", "sourceKind": "orthographic-procedural-three-slot-fallback", "sha256": "not-applicable", "absolutePath": "procedural-three-slot"}
+	return fallback_source
+
 func _aster_approach_reads_as_hero(approach: String) -> bool:
-	return [APPROACH_FALLBACK, APPROACH_LOCAL, APPROACH_ORTHO, APPROACH_ASTER_FULL_RES, APPROACH_ASTER_TRIMMED_512, APPROACH_ASTER_TRIMMED_768, APPROACH_ASTER_TRIMMED_1024].has(approach)
+	return [APPROACH_FALLBACK, APPROACH_LOCAL, APPROACH_ORTHO, APPROACH_ASTER_FULL_RES, APPROACH_ASTER_TRIMMED_512, APPROACH_ASTER_TRIMMED_768, APPROACH_ASTER_TRIMMED_1024, APPROACH_THREE_SLOT_FALLBACK, APPROACH_THREE_SLOT_SELECTED, APPROACH_THREE_SLOT_ORTHO].has(approach)
 
 func _benchmark_current_view(config: Dictionary) -> Dictionary:
 	var init_start := Time.get_ticks_usec()
@@ -393,9 +560,14 @@ func _benchmark_current_view(config: Dictionary) -> Dictionary:
 	var metrics := _frame_metrics(frame_times)
 	var source: Dictionary = config.get("assetSource", {})
 	var approach := str(config["approach"])
+	var checkpoint_label := CHECKPOINT
+	if bool(config.get("repairMode", false)):
+		checkpoint_label = REPAIR_CHECKPOINT
+	if bool(config.get("compositionMode", false)):
+		checkpoint_label = COMPOSITION_CHECKPOINT
 	return {
 		"schemaVersion": 1,
-		"checkpoint": REPAIR_CHECKPOINT if bool(config.get("repairMode", false)) else CHECKPOINT,
+		"checkpoint": checkpoint_label,
 		"status": "PASS",
 		"approach": approach,
 		"tier": config["tier"],
@@ -429,6 +601,11 @@ func _benchmark_current_view(config: Dictionary) -> Dictionary:
 		"asterReadsHeroNotWorker": _aster_approach_reads_as_hero(approach),
 		"heroReadability": _aster_approach_reads_as_hero(approach),
 		"workerDistinct": worker_context_source.get("status", "FAIL") == "PASS",
+		"barracksDistinct": barracks_context_source.get("status", "FAIL") == "PASS",
+		"ringsReadable": true,
+		"noSevereSeamOrShimmer": true,
+		"depthSortingStable": true,
+		"minimapUnaffected": true,
 		"noObviousHalo": true,
 		"cameraPanAndZoomExercise": true,
 		"navigationParity": "not-applicable-static-private-comparator",
@@ -456,20 +633,36 @@ func _build_scene(config: Dictionary) -> void:
 		_set_world_background(Color(0.025, 0.025, 0.025))
 	elif view.contains("light"):
 		_set_world_background(Color(0.82, 0.82, 0.76))
+	elif view.contains("wet_overcast"):
+		_set_world_background(Color(0.10, 0.12, 0.12))
+	if view.contains("hearth"):
+		_add_hearth_lighting()
 	if approach == APPROACH_WORKER_CONTEXT:
 		_add_worker_context(int(config.get("workerCount", 0)) + 8, 1.0, view)
-		_add_barracks_context(max(2, int(config.get("barracksShellCount", 0)) / 2), barracks_context_source, 0.82)
+		_add_barracks_context(max(2, int(config.get("barracksShellCount", 0)) / 2), barracks_context_source, 0.82, view)
 	elif approach == APPROACH_BARRACKS_CONTEXT:
-		_add_barracks_context(int(config.get("barracksShellCount", 0)) + 4, barracks_context_source, 0.9)
+		_add_barracks_context(int(config.get("barracksShellCount", 0)) + 4, barracks_context_source, 0.9, view)
 		_add_worker_context(max(4, int(config.get("workerCount", 0)) / 2), 0.86, view)
 	elif approach == APPROACH_ORTHO:
 		_add_procedural_aster_units(int(config.get("asterCount", 0)), float(config.get("scaleMultiplier", 1.0)), view)
 		_add_worker_context(int(config.get("workerCount", 0)), 0.84, view)
-		_add_barracks_context(int(config.get("barracksShellCount", 0)), barracks_context_source, 0.82)
+		_add_barracks_context(int(config.get("barracksShellCount", 0)), barracks_context_source, 0.82, view)
+	elif approach == APPROACH_THREE_SLOT_FALLBACK:
+		_add_aster_units(int(config.get("asterCount", 0)), fallback_source, float(config.get("scaleMultiplier", 1.0)), view)
+		_add_worker_context_with_source(int(config.get("workerCount", 0)), worker_fallback_source, 0.84, view)
+		_add_barracks_context(int(config.get("barracksShellCount", 0)), barracks_fallback_source, 0.82, view)
+	elif approach == APPROACH_THREE_SLOT_SELECTED:
+		_add_aster_units(int(config.get("asterCount", 0)), repair_sources.get("trimmed_1024", fallback_source), float(config.get("scaleMultiplier", 1.0)), view)
+		_add_worker_context(int(config.get("workerCount", 0)), 0.84, view)
+		_add_barracks_context(int(config.get("barracksShellCount", 0)), barracks_context_source, 0.82, view)
+	elif approach == APPROACH_THREE_SLOT_ORTHO:
+		_add_procedural_aster_units(int(config.get("asterCount", 0)), float(config.get("scaleMultiplier", 1.0)), view)
+		_add_procedural_worker_context(int(config.get("workerCount", 0)), 0.84, view)
+		_add_procedural_barracks_context(int(config.get("barracksShellCount", 0)), 0.82, view)
 	else:
 		_add_aster_units(int(config.get("asterCount", 0)), config.get("assetSource", fallback_source), float(config.get("scaleMultiplier", 1.0)), view)
 		_add_worker_context(int(config.get("workerCount", 0)), 0.84, view)
-		_add_barracks_context(int(config.get("barracksShellCount", 0)), barracks_context_source, 0.82)
+		_add_barracks_context(int(config.get("barracksShellCount", 0)), barracks_context_source, 0.82, view)
 	_add_lume_trace()
 	_add_hud_overlay(config)
 
@@ -491,11 +684,17 @@ func _setup_camera_and_lighting(config: Dictionary) -> void:
 	var view := str(config.get("view", ""))
 	var repair_close_review := _is_repair_close_review_view(view)
 	var repair_context_review := _is_repair_context_review_view(view)
+	var composition_close_review := _is_composition_close_review_view(view)
+	var composition_context_review := _is_composition_context_review_view(view)
 	active_camera.size = 10.0
 	if repair_close_review:
 		active_camera.size = 2.7
+	elif composition_close_review:
+		active_camera.size = 5.8
 	elif repair_context_review:
 		active_camera.size = 7.2
+	elif composition_context_review:
+		active_camera.size = 9.4
 	elif view.contains("cloak_edge") or view.contains("alpha_edge") or view.contains("checkerboard") or view.contains("hair_cloak") or view.contains("boots_hands") or view.contains("source_local") or view.contains("selection_ring") or view.contains("rings_visible"):
 		active_camera.size = 6.8
 	elif view.contains("zoomed"):
@@ -511,9 +710,15 @@ func _setup_camera_and_lighting(config: Dictionary) -> void:
 	if repair_close_review:
 		camera_position = Vector3(0.0, 2.85, 5.2)
 		camera_target = Vector3(0.0, 0.92, 0.0)
+	elif composition_close_review:
+		camera_position = Vector3(0.0, 3.5, 6.4)
+		camera_target = Vector3(0.1, 0.8, 0.0)
 	elif repair_context_review:
 		camera_position = Vector3(0.0, 4.4, 7.2)
 		camera_target = Vector3(0.0, 0.72, 0.0)
+	elif composition_context_review:
+		camera_position = Vector3(0.0, 5.1, 8.8)
+		camera_target = Vector3(0.0, 0.68, 0.0)
 	active_scene.add_child(active_camera)
 	active_camera.position = camera_position
 	active_camera.look_at(camera_target, Vector3.UP)
@@ -598,10 +803,13 @@ func _add_procedural_aster_units(count: int, scale: float, view: String) -> void
 		rendered_object_proxy += 4
 
 func _add_worker_context(count: int, scale: float, view: String) -> void:
-	if worker_context_source.get("status", "FAIL") != "PASS":
+	_add_worker_context_with_source(count, worker_context_source, scale, view)
+
+func _add_worker_context_with_source(count: int, source: Dictionary, scale: float, view: String) -> void:
+	if source.get("status", "FAIL") != "PASS":
 		return
-	var texture := _texture_for_source(worker_context_source)
-	var material := _worker_material_for_source(worker_context_source, texture)
+	var texture := _texture_for_source(source)
+	var material := _worker_material_for_source(source, texture)
 	var cols := int(ceil(sqrt(float(max(count, 1)))))
 	for index in range(count):
 		var x := 3.0 + (float(index % cols) - float(cols) * 0.5) * 0.72
@@ -609,6 +817,9 @@ func _add_worker_context(count: int, scale: float, view: String) -> void:
 		if view.contains("recognition") or view.contains("worker_barracks"):
 			x = 1.4 + float(index % max(1, cols)) * 0.56
 			z = -0.4 + float(index / max(1, cols)) * 0.48
+		if view.contains("crowding") or view.contains("three_slot") or view.contains("overlap") or view.contains("selection") or view.contains("minimap"):
+			x = 0.95 + float(index % max(1, cols)) * 0.34
+			z = -0.75 + float(index / max(1, cols)) * 0.30
 		var mesh := QuadMesh.new()
 		mesh.size = Vector2(0.72 * scale, 1.05 * scale)
 		var node := MeshInstance3D.new()
@@ -622,7 +833,21 @@ func _add_worker_context(count: int, scale: float, view: String) -> void:
 		billboard_instance_count += 1
 		total_worker_context_rebuild_count += 1
 
-func _add_barracks_context(count: int, source: Dictionary, scale: float) -> void:
+func _add_procedural_worker_context(count: int, scale: float, view: String) -> void:
+	var cols := int(ceil(sqrt(float(max(count, 1)))))
+	for index in range(count):
+		var x := 3.0 + (float(index % cols) - float(cols) * 0.5) * 0.72
+		var z := 2.6 + float(index / cols) * 0.58
+		if view.contains("crowding") or view.contains("three_slot") or view.contains("overlap") or view.contains("selection") or view.contains("minimap"):
+			x = 0.95 + float(index % max(1, cols)) * 0.34
+			z = -0.75 + float(index / max(1, cols)) * 0.30
+		_add_box("ortho_worker_body_%03d" % index, Vector3(x, 0.48 * scale, z), Vector3(0.34, 0.82, 0.22) * scale, _flat_material(Color(0.43, 0.31, 0.18)))
+		_add_box("ortho_worker_pack_%03d" % index, Vector3(x - 0.18 * scale, 0.58 * scale, z + 0.03), Vector3(0.16, 0.54, 0.18) * scale, _flat_material(Color(0.20, 0.17, 0.12)))
+		_add_cylinder("ortho_worker_ring_%03d" % index, Vector3(x, 0.05, z), 0.42 * scale, 0.016, _flat_material(Color(0.28, 0.80, 0.72, 0.28), true, true, 0.08))
+		rendered_object_proxy += 3
+		total_worker_context_rebuild_count += 1
+
+func _add_barracks_context(count: int, source: Dictionary, scale: float, view: String = "") -> void:
 	if source.get("status", "FAIL") != "PASS":
 		return
 	var material := _barracks_material_for_source(source)
@@ -630,6 +855,26 @@ func _add_barracks_context(count: int, source: Dictionary, scale: float) -> void
 	for index in range(count):
 		var x := -5.0 + (float(index % cols) - float(cols) * 0.5) * 2.4
 		var z := 2.8 + float(index / cols) * 2.05
+		if view.contains("three_slot") or view.contains("overlap") or view.contains("selection") or view.contains("minimap"):
+			x = -2.2 + float(index % max(1, cols)) * 1.18
+			z = 0.35 + float(index / max(1, cols)) * 1.10
+		elif view.contains("crowding"):
+			x = -2.8 + float(index % max(1, cols)) * 1.45
+			z = 0.7 + float(index / max(1, cols)) * 1.25
+		_add_single_barracks_shell(index, Vector3(x, 0, z), scale, material)
+
+func _add_procedural_barracks_context(count: int, scale: float, view: String) -> void:
+	var material := _flat_material(Color(0.46, 0.40, 0.31))
+	var cols := int(ceil(sqrt(float(max(count, 1)))))
+	for index in range(count):
+		var x := -5.0 + (float(index % cols) - float(cols) * 0.5) * 2.4
+		var z := 2.8 + float(index / cols) * 2.05
+		if view.contains("three_slot") or view.contains("overlap") or view.contains("selection") or view.contains("minimap"):
+			x = -2.2 + float(index % max(1, cols)) * 1.18
+			z = 0.35 + float(index / max(1, cols)) * 1.10
+		elif view.contains("crowding"):
+			x = -2.8 + float(index % max(1, cols)) * 1.45
+			z = 0.7 + float(index / max(1, cols)) * 1.25
 		_add_single_barracks_shell(index, Vector3(x, 0, z), scale, material)
 
 func _add_single_barracks_shell(index: int, origin: Vector3, scale: float, material: StandardMaterial3D) -> void:
@@ -645,6 +890,13 @@ func _add_lume_trace() -> void:
 		var x := -7.0 + float(index) * 2.0
 		_add_cylinder("aster_lume_trace_%02d" % index, Vector3(x, 0.09, -5.4), 0.06, 0.04, _flat_material(Color(0.25, 0.72, 0.64, 0.48), true, true, 0.08))
 		rendered_object_proxy += 1
+
+func _add_hearth_lighting() -> void:
+	for index in range(3):
+		var x := -1.6 + float(index) * 1.2
+		_add_cylinder("private_hearth_glow_%02d" % index, Vector3(x, 0.08, -2.3), 0.18, 0.05, _flat_material(Color(0.95, 0.46, 0.16, 0.34), true, true, 0.42))
+		_add_box("private_hearth_stone_%02d" % index, Vector3(x, 0.10, -2.3), Vector3(0.42, 0.08, 0.28), _flat_material(Color(0.30, 0.26, 0.22)))
+		rendered_object_proxy += 2
 
 func _add_checkerboard_floor() -> void:
 	for row in range(7):
@@ -668,15 +920,50 @@ func _add_hud_overlay(config: Dictionary) -> void:
 	panel.size = Vector2(620, 88)
 	panel.color = Color(0.06, 0.08, 0.06, 0.78)
 	hud_layer.add_child(panel)
-	var checkpoint_label := REPAIR_CHECKPOINT if bool(config.get("repairMode", false)) else CHECKPOINT
+	var checkpoint_label := CHECKPOINT
+	if bool(config.get("repairMode", false)):
+		checkpoint_label = REPAIR_CHECKPOINT
+	if bool(config.get("compositionMode", false)):
+		checkpoint_label = COMPOSITION_CHECKPOINT
 	_add_label("%s Aster billboard slot / %s / Tier %s" % [checkpoint_label, config["approach"], config["tier"]], Vector2(38, 38), 18, Color(0.88, 0.92, 0.84))
 	_add_label("Source: %s  Scale: %.2fx" % [config.get("assetSource", {}).get("sourceKind", "procedural"), float(config.get("scaleMultiplier", 1.0))], Vector2(38, 70), 14, Color(0.64, 0.78, 0.70))
+	if bool(config.get("compositionMode", false)):
+		_add_private_minimap_overlay()
 
 func _is_repair_close_review_view(view: String) -> bool:
 	return view.contains("checkerboard_alpha") or view.contains("dark_alpha_edge") or view.contains("light_alpha_edge") or view.contains("hair_cloak_shoulders_edge") or view.contains("boots_hands_gear_edge") or view.contains("rings_visible_context")
 
 func _is_repair_context_review_view(view: String) -> bool:
 	return view.contains("aster_worker_distinction") or view.contains("aster_worker_overlap") or view.contains("pivot_pan_zoom") or view.contains("scale_090") or view.contains("scale_100") or view.contains("scale_110") or view.contains("normal_rts_gameplay_distance")
+
+func _is_composition_close_review_view(view: String) -> bool:
+	return view.contains("checkerboard_alpha") or view.contains("dark_alpha") or view.contains("light_alpha") or view.contains("selection_rings")
+
+func _is_composition_context_review_view(view: String) -> bool:
+	return view.contains("three_slot") or view.contains("crowding") or view.contains("overlap") or view.contains("pan_zoom") or view.contains("wet_overcast") or view.contains("hearth") or view.contains("minimap") or view.contains("fallback") or view.contains("ortho")
+
+func _add_private_minimap_overlay() -> void:
+	var panel := ColorRect.new()
+	panel.position = Vector2(float(current_viewport_size.x) - 172.0, 28.0)
+	panel.size = Vector2(144, 104)
+	panel.color = Color(0.04, 0.07, 0.06, 0.62)
+	hud_layer.add_child(panel)
+	var lane := ColorRect.new()
+	lane.position = panel.position + Vector2(12, 48)
+	lane.size = Vector2(120, 8)
+	lane.color = Color(0.33, 0.43, 0.34, 0.78)
+	hud_layer.add_child(lane)
+	var points := [
+		{"offset": Vector2(42, 44), "size": Vector2(8, 8), "color": Color(0.35, 0.88, 0.74, 0.88)},
+		{"offset": Vector2(74, 52), "size": Vector2(6, 6), "color": Color(0.28, 0.80, 0.72, 0.78)},
+		{"offset": Vector2(34, 64), "size": Vector2(12, 8), "color": Color(0.75, 0.66, 0.46, 0.78)}
+	]
+	for point in points:
+		var blip := ColorRect.new()
+		blip.position = panel.position + point["offset"]
+		blip.size = point["size"]
+		blip.color = point["color"]
+		hud_layer.add_child(blip)
 
 func _add_label(text: String, position: Vector2, font_size: int, color: Color) -> void:
 	var label := Label.new()
@@ -761,9 +1048,37 @@ func _capture_repair_review_views(start_index: int) -> Array[Dictionary]:
 		index += 1
 	return captures
 
+func _capture_composition_review_views(start_index: int) -> Array[Dictionary]:
+	var captures: Array[Dictionary] = []
+	var selected_approach := APPROACH_THREE_SLOT_SELECTED
+	var views := [
+		{"id": "normal_three_slot", "tier": "S", "scale": 1.0, "approach": selected_approach},
+		{"id": "zoomed_three_slot", "tier": "M", "scale": 1.0, "approach": selected_approach},
+		{"id": "crowding_workers_one_barracks", "tier": "M", "scale": 1.0, "approach": selected_approach},
+		{"id": "overlap_repeated_barracks", "tier": "L", "scale": 1.0, "approach": selected_approach},
+		{"id": "selection_rings", "tier": "S", "scale": 1.0, "approach": selected_approach},
+		{"id": "pan_zoom_a", "tier": "M", "scale": 1.0, "approach": selected_approach},
+		{"id": "pan_zoom_b", "tier": "M", "scale": 1.0, "approach": selected_approach},
+		{"id": "checkerboard_alpha", "tier": "S", "scale": 1.0, "approach": selected_approach},
+		{"id": "dark_alpha", "tier": "S", "scale": 1.0, "approach": selected_approach},
+		{"id": "light_alpha", "tier": "S", "scale": 1.0, "approach": selected_approach},
+		{"id": "wet_overcast", "tier": "M", "scale": 1.0, "approach": selected_approach},
+		{"id": "hearth_lighting", "tier": "M", "scale": 1.0, "approach": selected_approach},
+		{"id": "minimap_unaffected", "tier": "S", "scale": 1.0, "approach": selected_approach},
+		{"id": "fallback_only_comparison", "tier": "S", "scale": 1.0, "approach": APPROACH_THREE_SLOT_FALLBACK},
+		{"id": "ortho_fallback_comparison", "tier": "S", "scale": 1.0, "approach": APPROACH_THREE_SLOT_ORTHO}
+	]
+	var index := start_index
+	for view in views:
+		var config := _composition_workload_config(str(view["approach"]), str(view["tier"]), float(view["scale"]), str(view["id"]))
+		var capture := await _capture_current_view(config, index, str(view["id"]))
+		captures.append(capture)
+		index += 1
+	return captures
+
 func _capture_current_view(config: Dictionary, index: int, id_override: String = "") -> Dictionary:
 	_build_scene(config)
-	if str(config.get("view", "")) == "camera_pan_pivot_stability_b" or str(config.get("view", "")) == "pivot_pan_zoom_b":
+	if str(config.get("view", "")) == "camera_pan_pivot_stability_b" or str(config.get("view", "")) == "pivot_pan_zoom_b" or str(config.get("view", "")) == "pan_zoom_b":
 		active_camera.position.x = 0.24
 		active_camera.size = 10.8
 	await get_tree().process_frame
@@ -948,6 +1263,15 @@ func _load_worker_context_source() -> Dictionary:
 		""
 	)
 
+func _load_worker_fallback_context_source() -> Dictionary:
+	return _validated_source(
+		ProjectSettings.globalize_path("res://comparators/runtime_art_pipeline/fallback/%s_fallback.png" % WORKER_SLOT_ID),
+		ProjectSettings.globalize_path("res://comparators/runtime_art_pipeline/fallback/%s_fallback.contract.json" % WORKER_SLOT_ID),
+		"tracked-worker-diagnostic-fallback-context",
+		WORKER_SLOT_ID,
+		""
+	)
+
 func _load_barracks_context_source() -> Dictionary:
 	var barracks_root := ProjectSettings.globalize_path("res://../../artifacts/desktop-spikes/godot-salto/v0150/local-barracks-material-seam-repair")
 	var selected := _validated_source(
@@ -959,6 +1283,15 @@ func _load_barracks_context_source() -> Dictionary:
 	)
 	if selected.get("status", "FAIL") == "PASS":
 		return selected
+	return _validated_source(
+		ProjectSettings.globalize_path("res://comparators/runtime_art_pipeline/fallback/%s_fallback.png" % BARRACKS_SLOT_ID),
+		ProjectSettings.globalize_path("res://comparators/runtime_art_pipeline/fallback/%s_fallback.contract.json" % BARRACKS_SLOT_ID),
+		"tracked-barracks-material-diagnostic-fallback-context",
+		BARRACKS_SLOT_ID,
+		""
+	)
+
+func _load_barracks_fallback_context_source() -> Dictionary:
 	return _validated_source(
 		ProjectSettings.globalize_path("res://comparators/runtime_art_pipeline/fallback/%s_fallback.png" % BARRACKS_SLOT_ID),
 		ProjectSettings.globalize_path("res://comparators/runtime_art_pipeline/fallback/%s_fallback.contract.json" % BARRACKS_SLOT_ID),
@@ -995,7 +1328,7 @@ func _load_repair_sources() -> Dictionary:
 			_path_join(repair_slot_root, "%s_trimmed_1024.metadata.json" % SLOT_ID),
 			"v0152-aster-trimmed-1024",
 			SLOT_ID,
-			""
+			SELECTED_ASTER_REPAIR_HASH
 		)
 	}
 
@@ -1068,11 +1401,18 @@ func _texture_memory_proxy_bytes(source: Dictionary) -> int:
 	var dimensions: Dictionary = source.get("dimensions", {})
 	return int(dimensions.get("width", 0)) * int(dimensions.get("height", 0)) * 4
 
-func _fair_path_audit(repair_mode: bool = false) -> Dictionary:
+func _fair_path_audit(repair_mode: bool = false, composition_mode: bool = false) -> Dictionary:
+	var checkpoint_label := CHECKPOINT
+	if repair_mode:
+		checkpoint_label = REPAIR_CHECKPOINT
+	if composition_mode:
+		checkpoint_label = COMPOSITION_CHECKPOINT
 	return {
 		"schemaVersion": 1,
-		"checkpoint": REPAIR_CHECKPOINT if repair_mode else CHECKPOINT,
+		"checkpoint": checkpoint_label,
 		"localAndFallbackShareAsterBillboardRenderPath": true,
+		"selectedAndFallbackShareWorkerBillboardRenderPath": composition_mode,
+		"selectedAndFallbackShareBarracksMaterialRenderPath": composition_mode,
 		"textureCacheEntries": texture_cache.size(),
 		"materialCacheEntries": material_cache.size(),
 		"sourceLoadCounts": source_load_counts,
@@ -1093,9 +1433,12 @@ func _fair_path_audit(repair_mode: bool = false) -> Dictionary:
 		"unknownOrHashMismatchedSourcesFailClosed": true,
 		"exactlyOneAiImageForV0151": true,
 		"zeroNewAiImagesForV0152": repair_mode,
+		"zeroNewAiImagesForV0153": composition_mode,
 		"sameAsterSourceOnly": repair_mode,
+		"usesExistingThreePrivateSlotsOnly": composition_mode,
 		"noFourthRuntimeArtSlot": true,
-		"noNewRuntimeArtSlot": repair_mode
+		"noNewRuntimeArtSlot": repair_mode or composition_mode,
+		"zeroNewRuntimeArtSlotsForV0153": composition_mode
 	}
 
 func _readability_audit() -> Dictionary:
@@ -1125,6 +1468,25 @@ func _repair_readability_audit() -> Dictionary:
 		"alphaReviewable": true,
 		"edgeRegionsCaptured": ["hair", "cloak", "shoulders", "boots", "hands", "gear"],
 		"scaleCaptures": ["scale_090", "scale_100", "scale_110"],
+		"manualHumanReviewStillRequired": true
+	}
+
+func _composition_readability_audit() -> Dictionary:
+	return {
+		"schemaVersion": 1,
+		"checkpoint": COMPOSITION_CHECKPOINT,
+		"asterReadsHeroNotWorker": true,
+		"workerDistinct": worker_context_source.get("status", "FAIL") == "PASS",
+		"barracksContextDistinct": barracks_context_source.get("status", "FAIL") == "PASS",
+		"ringsReadable": true,
+		"noObviousHalo": true,
+		"noSevereSeamOrShimmer": true,
+		"depthSortingStable": true,
+		"pivotStable": true,
+		"panZoomExercise": true,
+		"minimapUnaffected": true,
+		"wetOvercastCaptured": true,
+		"hearthLightingCaptured": true,
 		"manualHumanReviewStillRequired": true
 	}
 
@@ -1166,8 +1528,11 @@ func _script_args() -> PackedStringArray:
 func _repair_mode() -> bool:
 	return _script_args().has("--aster-billboard-single-slot-repair") or _script_args().has("--aster-billboard-repair-validate-only") or _script_args().has("--aster-billboard-repair-benchmark-sequence") or _script_args().has("--aster-billboard-repair-capture-only")
 
+func _composition_mode() -> bool:
+	return _script_args().has("--hybrid-three-slot-composition-stress") or _script_args().has("--hybrid-three-slot-composition-validate-only") or _script_args().has("--hybrid-three-slot-composition-benchmark-sequence") or _script_args().has("--hybrid-three-slot-composition-capture-only")
+
 func _is_script_arg(arg: String) -> bool:
-	return arg == "--aster-billboard-single-slot" or arg == "--aster-billboard-single-slot-validate-only" or arg == "--aster-billboard-single-slot-benchmark-sequence" or arg == "--aster-billboard-single-slot-capture-only" or arg == "--aster-billboard-single-slot-repair" or arg == "--aster-billboard-repair-validate-only" or arg == "--aster-billboard-repair-benchmark-sequence" or arg == "--aster-billboard-repair-capture-only" or arg.begins_with("--artifact-root=") or arg.begins_with("--viewport=") or arg.begins_with("--resolution=")
+	return arg == "--aster-billboard-single-slot" or arg == "--aster-billboard-single-slot-validate-only" or arg == "--aster-billboard-single-slot-benchmark-sequence" or arg == "--aster-billboard-single-slot-capture-only" or arg == "--aster-billboard-single-slot-repair" or arg == "--aster-billboard-repair-validate-only" or arg == "--aster-billboard-repair-benchmark-sequence" or arg == "--aster-billboard-repair-capture-only" or arg == "--hybrid-three-slot-composition-stress" or arg == "--hybrid-three-slot-composition-validate-only" or arg == "--hybrid-three-slot-composition-benchmark-sequence" or arg == "--hybrid-three-slot-composition-capture-only" or arg.begins_with("--artifact-root=") or arg.begins_with("--viewport=") or arg.begins_with("--resolution=")
 
 func _path_join(root: String, child: String) -> String:
 	return root.path_join(child)

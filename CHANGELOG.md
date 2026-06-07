@@ -1,5 +1,44 @@
 # Changelog
 
+# v0.153 Hybrid Three-Slot Private Composition Stress Gate And Human Review Stop - 2026-06-07
+
+This checkpoint stress-tests only the private hybrid composition posture for the already-selected Worker billboard, Barracks material shell, and Aster billboard paths. It generates zero new AI images, adds zero new runtime-art slots, benchmarks fallback-only hybrid, selected-local three-slot hybrid, and ortho fallback comparison paths, records Tier S/M/L evidence, and stops for Emmanuel review.
+
+Added:
+
+- Private v0.153 dispatch flag `--hybrid-three-slot-composition-stress`.
+- One-click wrapper `GODOT_HYBRID_THREE_SLOT_COMPOSITION_STRESS_WINDOWS.bat`.
+- v0.153 validation, audit, headed benchmark, and capture wrappers.
+- Tool-side v0.153 validation, threshold, scorecard, visual-review, contact-sheet, and fair-path audit reports.
+- v0.153 docs for composition spec, scorecard, fair-path audit, visual review guide, private boundary, and implementation report.
+
+Changed:
+
+- `desktop-spikes/godot-salto/comparators/runtime_art_pipeline/aster_billboard_single_slot_comparator.gd` now supports a private v0.153 composition mode using selected v0.148 Worker, v0.150 Barracks, and v0.152 Aster sources plus tracked fallback/ortho comparison paths.
+- `desktop-spikes/godot-salto/scripts/salto_spike_root.gd` now has a private v0.153 dispatch path only.
+- `tools/godot/asterBillboardSingleSlotTool.mjs` now records v0.153 validation, evidence, threshold, scorecard, visual-review, contact-sheet, and fair-path audit reports.
+- Desktop-spike scaffold tests now assert the v0.153 composition path remains isolated from the normal Salto player slice and default launchers.
+
+Evidence:
+
+- Gate: `PASS_V0153_HYBRID_THREE_SLOT_STRESS_GATE`.
+- Evidence: `PASS_V0153_HYBRID_THREE_SLOT_EVIDENCE_RECORDED`, with `24` screenshots and `21` benchmark rows.
+- Selected-local Tier L FPS ratio versus fallback-only: `1.0071`.
+- Selected-local Tier L p95 frame-time ratio versus fallback-only: `1.0379`.
+- Fallback-only Tier L mean FPS / p95: `1111.09` / `1.32 ms`.
+- Selected-local Tier L mean FPS / p95: `1118.98` / `1.37 ms`.
+- Ortho fallback Tier L mean FPS / p95: `999.84` / `1.67 ms`.
+- Fair-path audit: `PASS_V0153_HYBRID_THREE_SLOT_FAIR_PATH_AUDIT`, with `6` texture cache entries, `6` material cache entries, one texture/material create per selected/fallback source key, and no repeated texture/material creation or metadata parsing during steady-state frames.
+
+Boundaries:
+
+- Zero new AI images.
+- Zero new runtime-art slots.
+- No existing reference candidate import.
+- No normal Salto player-slice mutation.
+- No browser-runtime wiring or player-facing Godot wiring.
+- No manifest mutation, art-slot mutation, production package mutation, save change, stable-ID change, final runtime-art approval, final art approval, final engine selection, full port, or v0.154 work.
+
 # v0.152 Hybrid Aster Billboard Fair-Path Repair Derivative Selection And Human Review Stop - 2026-06-07
 
 This checkpoint repairs and fairly benchmarks only the existing private v0.151 Aster billboard path. It generates zero new AI images, uses the same v0.151 Aster cutout only, creates deterministic ignored full-res/512/768/1024 comparator derivatives, selects the trimmed 1024 derivative after the preserved gate passes, and stops for Emmanuel review.

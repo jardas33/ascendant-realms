@@ -1,6 +1,52 @@
 # Development Checkpoint
 
-Updated: 2026-06-07 v0.152 Hybrid Aster Billboard Fair-Path Repair Derivative Selection And Human Review Stop
+Updated: 2026-06-07 v0.153 Hybrid Three-Slot Private Composition Stress Gate And Human Review Stop
+
+## v0.153 Hybrid Three-Slot Private Composition Stress Gate And Human Review Stop - 2026-06-07
+
+Scope: isolated private Godot composition stress checkpoint for the already-selected v0.148 Worker billboard, v0.150 Barracks material repair, and v0.152 Aster billboard repair. This checkpoint uses zero new AI images, adds zero new runtime-art slots, and does not modify the normal Salto player slice or browser runtime.
+
+Included work:
+
+- Confirmed clean synchronized `main` at `6becadddcccc3cd104ac829c257b3e0c906ee225`.
+- Confirmed v0.152 pushed remote CI success and prerequisite PASS gates for v0.148, v0.150, and v0.152.
+- Added private `--hybrid-three-slot-composition-stress` dispatch and v0.153 wrappers.
+- Added fallback-only, selected-local, and ortho fallback composition approaches.
+- Captured normal, zoomed, crowding, overlap, selection, pan/zoom, alpha-sensitive, wet-overcast, hearth, minimap, fallback, and ortho comparison evidence.
+
+Current interpretation:
+
+- Gate: `PASS_V0153_HYBRID_THREE_SLOT_STRESS_GATE`.
+- Evidence marker: `PASS_V0153_HYBRID_THREE_SLOT_EVIDENCE_RECORDED`.
+- Selected-local Tier L FPS ratio: `1.0071`.
+- Selected-local Tier L p95 ratio: `1.0379`.
+- Fallback-only Tier L mean FPS / p95: `1111.09` / `1.32 ms`.
+- Selected-local Tier L mean FPS / p95: `1118.98` / `1.37 ms`.
+- Ortho fallback Tier L mean FPS / p95: `999.84` / `1.67 ms`.
+- Screenshot count: `24`; benchmark row count: `21`.
+- Fair-path audit: `PASS_V0153_HYBRID_THREE_SLOT_FAIR_PATH_AUDIT`, with `6` texture cache entries, `6` material cache entries, one load/create per selected/fallback source/material key, and no repeated texture/material creation or metadata parsing during steady-state frames.
+- Human review is pending.
+- v0.154 has not started.
+
+Verification:
+
+```text
+Required closeout stack:
+npm test
+npm run build
+npm run validate:content
+npm run validate:art-intake
+npm run art:reference:init
+npm run art:reference:validate
+npm run art:reference:contact-sheet
+npm run art:reference:review-pack
+npm run godot:hybrid-three-slot-composition:validate
+npm run godot:hybrid-three-slot-composition:audit
+npm run godot:hybrid-three-slot-composition:benchmark:headed
+npm run godot:hybrid-three-slot-composition:capture
+isolation scans
+git diff --check
+```
 
 ## v0.152 Hybrid Aster Billboard Fair-Path Repair Derivative Selection And Human Review Stop - 2026-06-07
 

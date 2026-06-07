@@ -30,8 +30,13 @@ const repairArtifactRoot = join(repoRoot, "artifacts", "desktop-spikes", "godot-
 const repairLocalSlotRoot = join(repairArtifactRoot, "local-aster-billboard-repair");
 const repairEvidenceRootDefault = join(repairArtifactRoot, "evidence");
 const repairRuntimeReportName = "aster-billboard-repair-runtime.json";
+const compositionCheckpoint = "v0.153";
+const compositionArtifactRoot = join(repoRoot, "artifacts", "desktop-spikes", "godot-salto", "v0153");
+const compositionEvidenceRootDefault = join(compositionArtifactRoot, "evidence");
+const compositionRuntimeReportName = "hybrid-three-slot-composition-runtime.json";
 const selectedWorkerHash = "a628065ca92b231b0d4f6a0625d9e259dea080e80d530ee688483611d70049bc";
 const selectedBarracksHash = "58a60b750370df084b60a1d92077da9367c0ba8a763781e2c3a8a7d96f1c980f";
+const selectedAsterRepairHash = "b256f96f762187c05d68f2c2de62bedec0248896210767e98cb8f210dac2829a";
 const approaches = [
   "HYBRID_ASTER_DIAGNOSTIC_FALLBACK_BASELINE",
   "HYBRID_ASTER_LOCAL_STATIC_BILLBOARD",
@@ -46,6 +51,11 @@ const repairApproaches = [
   "HYBRID_ASTER_TRIMMED_512",
   "HYBRID_ASTER_TRIMMED_768",
   "HYBRID_ASTER_TRIMMED_1024"
+];
+const compositionApproaches = [
+  "HYBRID_THREE_SLOT_FALLBACK_ONLY",
+  "HYBRID_THREE_SLOT_SELECTED_LOCAL",
+  "ORTHO_THREE_SLOT_PROCEDURAL_FALLBACK"
 ];
 const repairDerivativeSizes = [512, 768, 1024];
 
@@ -97,6 +107,11 @@ function evidenceRootFromArgs() {
 function repairEvidenceRootFromArgs() {
   const explicit = process.argv.find((arg) => arg.startsWith("--artifact-root="));
   return explicit ? resolve(explicit.slice("--artifact-root=".length)) : repairEvidenceRootDefault;
+}
+
+function compositionEvidenceRootFromArgs() {
+  const explicit = process.argv.find((arg) => arg.startsWith("--artifact-root="));
+  return explicit ? resolve(explicit.slice("--artifact-root=".length)) : compositionEvidenceRootDefault;
 }
 
 function crc32(buffers) {
@@ -1722,6 +1737,457 @@ function repairContactSheetSvg(screenshots) {
   return `${parts.join("\n")}\n`;
 }
 
+function sourceCount(root, suffix = "_source.png") {
+  return existsSync(root)
+    ? readdirSync(root).filter((name) => name.endsWith(suffix)).length
+    : 0;
+}
+
+function compositionValidate() {
+  const errors = [];
+  const requiredFiles = [
+    "GODOT_HYBRID_THREE_SLOT_COMPOSITION_STRESS_WINDOWS.bat",
+    "desktop-spikes/godot-salto/comparators/runtime_art_pipeline/aster_billboard_single_slot_comparator.gd",
+    "tools/godot/asterBillboardSingleSlotTool.mjs",
+    "tools/godot/runGodotHybridThreeSlotCompositionValidation.ps1",
+    "tools/godot/runGodotHybridThreeSlotCompositionAudit.ps1",
+    "tools/godot/runGodotHybridThreeSlotCompositionBenchmarkWindows.ps1",
+    "tools/godot/captureGodotHybridThreeSlotCompositionWindows.ps1",
+    "docs/V0153_HYBRID_THREE_SLOT_COMPOSITION_STRESS_SPEC.md",
+    "docs/V0153_HYBRID_THREE_SLOT_SCORECARD.md",
+    "docs/V0153_HYBRID_THREE_SLOT_FAIR_PATH_AUDIT.md",
+    "docs/V0153_HYBRID_THREE_SLOT_VISUAL_REVIEW_GUIDE.md",
+    "docs/V0153_PRIVATE_COMPARATOR_ONLY_BOUNDARY.md",
+    "docs/V0153_IMPLEMENTATION_REPORT.md"
+  ];
+  for (const file of requiredFiles) {
+    if (!existsSync(join(repoRoot, file))) {
+      errors.push(`Missing required v0.153 file: ${file}`);
+    }
+  }
+  const packageJson = readJson(join(repoRoot, "package.json"));
+  for (const script of [
+    "godot:hybrid-three-slot-composition:validate",
+    "godot:hybrid-three-slot-composition:audit",
+    "godot:hybrid-three-slot-composition:benchmark:headed",
+    "godot:hybrid-three-slot-composition:capture"
+  ]) {
+    if (typeof packageJson.scripts?.[script] !== "string") {
+      errors.push(`Missing package script ${script}.`);
+    }
+  }
+  const rootScript = readFileSync(join(repoRoot, "desktop-spikes", "godot-salto", "scripts", "salto_spike_root.gd"), "utf8");
+  if (!rootScript.includes("--hybrid-three-slot-composition-stress") || !rootScript.includes("PASS_V0153_PRIVATE_HYBRID_THREE_SLOT_COMPOSITION_DISPATCH")) {
+    errors.push("Root script does not expose the private v0.153 composition dispatch.");
+  }
+  for (const launcher of ["GODOT_LAUNCH_STABILIZED_SALTO_REVIEW_WINDOWS.bat", "GODOT_LAUNCH_PLAYER_SLICE_WINDOWS.bat"]) {
+    const text = readFileSync(join(repoRoot, launcher), "utf8");
+    if (text.includes("hybrid-three-slot-composition-stress") || text.includes("HYBRID_THREE_SLOT_COMPOSITION")) {
+      errors.push(`${launcher} references the private v0.153 composition stress path.`);
+    }
+  }
+  const selectedAsterPath = repairDerivativePath(1024);
+  const workerPath = join(repoRoot, "artifacts", "desktop-spikes", "godot-salto", "v0148", "local-worker-slot", "worker_billboard_static_v0147_trimmed_1024.png");
+  const barracksPath = join(repoRoot, "artifacts", "desktop-spikes", "godot-salto", "v0150", "local-barracks-material-seam-repair", "barrosan_barracks_material_v0149_768_wrapsafe_offset_blend.png");
+  if (!existsSync(selectedAsterPath) || sha256File(selectedAsterPath) !== selectedAsterRepairHash) {
+    errors.push("Missing or hash-mismatched v0.152 selected Aster derivative.");
+  }
+  if (!existsSync(workerPath) || sha256File(workerPath) !== selectedWorkerHash) {
+    errors.push("Missing or hash-mismatched v0.148 selected Worker derivative.");
+  }
+  if (!existsSync(barracksPath) || sha256File(barracksPath) !== selectedBarracksHash) {
+    errors.push("Missing or hash-mismatched v0.150 selected Barracks material repair.");
+  }
+  const prerequisiteReports = [
+    {
+      path: join(repoRoot, "artifacts", "desktop-spikes", "godot-salto", "v0148", "evidence", "worker-billboard-repair-threshold-report.json"),
+      status: "PASS_V0148_WORKER_BILLBOARD_ORIGINAL_GATE"
+    },
+    {
+      path: join(repoRoot, "artifacts", "desktop-spikes", "godot-salto", "v0150", "evidence", "barracks-material-seam-repair-threshold-report.json"),
+      status: "PASS_V0150_BARRACKS_MATERIAL_SEAM_REPAIR_GATE"
+    },
+    {
+      path: join(repoRoot, "artifacts", "desktop-spikes", "godot-salto", "v0152", "evidence", "aster-billboard-repair-threshold-report.json"),
+      status: "PASS_V0152_ASTER_BILLBOARD_REPAIR_GATE"
+    }
+  ];
+  for (const report of prerequisiteReports) {
+    if (!existsSync(report.path)) {
+      errors.push(`Missing prerequisite report ${relativeRepo(report.path)}.`);
+      continue;
+    }
+    const parsed = readJson(report.path);
+    if (parsed.status !== report.status) {
+      errors.push(`Prerequisite report ${relativeRepo(report.path)} is ${parsed.status}, expected ${report.status}.`);
+    }
+  }
+  const runtimeTargets = [
+    "src",
+    "public",
+    "index.html",
+    "GODOT_LAUNCH_PLAYER_SLICE_WINDOWS.bat",
+    "GODOT_LAUNCH_STABILIZED_SALTO_REVIEW_WINDOWS.bat",
+    "desktop-spikes/godot-salto/scenes",
+    "desktop-spikes/godot-salto/project.godot"
+  ];
+  const runtimeLeak = runtimeTargets.some((target) => {
+    const absolute = join(repoRoot, target);
+    if (!existsSync(absolute)) {
+      return false;
+    }
+    const stack = [absolute];
+    while (stack.length) {
+      const current = stack.pop();
+      const stats = statSync(current);
+      if (stats.isDirectory()) {
+        for (const name of readdirSync(current)) {
+          stack.push(join(current, name));
+        }
+      } else if (/\.(ts|tsx|js|jsx|gd|json|html|bat)$/u.test(current)) {
+        if (current.endsWith("GodotSaltoSpikeScaffold.test.ts")) {
+          continue;
+        }
+        const text = readFileSync(current, "utf8");
+        if (text.includes("hybrid-three-slot-composition-stress") || text.includes("PASS_V0153_PRIVATE_HYBRID_THREE_SLOT_COMPOSITION")) {
+          return true;
+        }
+      }
+    }
+    return false;
+  });
+  if (runtimeLeak) {
+    errors.push("Private v0.153 composition marker leaked into normal runtime/player-slice targets.");
+  }
+  const report = {
+    schemaVersion: 1,
+    checkpoint: compositionCheckpoint,
+    status: errors.length ? "FAIL_V0153_HYBRID_THREE_SLOT_VALIDATION" : "PASS_V0153_HYBRID_THREE_SLOT_VALIDATION",
+    errors,
+    prerequisiteGates: prerequisiteReports.map((entry) => entry.status),
+    selectedAsterHash: selectedAsterRepairHash,
+    selectedWorkerHash,
+    selectedBarracksHash,
+    asterSourceImageCount: localSourceCount(),
+    workerV0147SourceImageCount: sourceCount(join(repoRoot, "artifacts", "desktop-spikes", "godot-salto", "v0147", "local-worker-slot")),
+    barracksV0149SourceImageCount: sourceCount(join(repoRoot, "artifacts", "desktop-spikes", "godot-salto", "v0149", "local-barracks-material-slot")),
+    zeroNewAiImagesForV0153: true,
+    zeroNewRuntimeArtSlotsForV0153: true,
+    privateComparatorOnly: true,
+    productionApproval: "forbidden",
+    playerSliceIntegration: "forbidden",
+    browserIntegration: "forbidden"
+  };
+  writeJson(join(compositionEvidenceRootFromArgs(), "hybrid-three-slot-composition-validation.json"), report);
+  return report;
+}
+
+function aggregateCompositionBenchmarks(rows) {
+  const groups = new Map();
+  for (const row of rows) {
+    const key = `${row.approach}|${row.tier}`;
+    const group = groups.get(key) ?? [];
+    group.push(row);
+    groups.set(key, group);
+  }
+  return [...groups.entries()].map(([key, group]) => {
+    const [approach, tier] = key.split("|");
+    return {
+      approach,
+      tier,
+      trialCount: group.length,
+      averageFps: numberSummary(group.map((row) => Number(row.averageFps))),
+      p95FrameTimeMs: numberSummary(group.map((row) => Number(row.p95FrameTimeMs))),
+      p99FrameTimeMs: numberSummary(group.map((row) => Number(row.p99FrameTimeMs))),
+      benchmarkDurationMs: numberSummary(group.map((row) => Number(row.benchmarkDurationMs))),
+      initializationDurationMs: numberSummary(group.map((row) => Number(row.initializationDurationMs ?? 0))),
+      frameCount: group[0]?.frameCount ?? 0,
+      entityCount: group[0]?.entityCount ?? 0,
+      asterCount: group[0]?.asterCount ?? 0,
+      workerContextCount: group[0]?.workerContextCount ?? 0,
+      barracksShellCount: group[0]?.barracksShellCount ?? 0,
+      billboardInstanceCount: group[0]?.billboardInstanceCount ?? 0,
+      renderedObjectProxy: group[0]?.renderedObjectProxy ?? 0,
+      sourceLoaded: group[0]?.sourceLoaded ?? group[0]?.assetSourceLoaded ?? "unknown",
+      assetHash: group[0]?.assetHash ?? "not-applicable",
+      heroReadability: group.every((row) => row.heroReadability !== false && row.asterReadsHeroNotWorker !== false),
+      workerDistinct: group.every((row) => row.workerDistinct !== false),
+      barracksDistinct: group.every((row) => row.barracksDistinct !== false),
+      ringsReadable: group.every((row) => row.ringsReadable !== false && row.selectionRingVisible !== false),
+      noObviousHalo: group.every((row) => row.noObviousHalo !== false),
+      noSevereSeamOrShimmer: group.every((row) => row.noSevereSeamOrShimmer !== false),
+      depthSortingStable: group.every((row) => row.depthSortingStable !== false),
+      pivotStable: group.every((row) => row.footPivotStable !== false),
+      minimapUnaffected: group.every((row) => row.minimapUnaffected !== false),
+      confidence: group[0]?.confidence ?? "local-headed-private-comparator"
+    };
+  });
+}
+
+function compositionThreshold(aggregates, trialRows) {
+  const baseline = aggregates.find((row) => row.approach === "HYBRID_THREE_SLOT_FALLBACK_ONLY" && row.tier === "L");
+  const selected = aggregates.find((row) => row.approach === "HYBRID_THREE_SLOT_SELECTED_LOCAL" && row.tier === "L");
+  const selectedTrials = trialRows.filter((row) => row.approach === "HYBRID_THREE_SLOT_SELECTED_LOCAL" && row.tier === "L");
+  const ortho = aggregates.find((row) => row.approach === "ORTHO_THREE_SLOT_PROCEDURAL_FALLBACK" && row.tier === "L");
+  const averageFpsRatio = baseline && selected && baseline.averageFps.mean > 0
+    ? Number((selected.averageFps.mean / baseline.averageFps.mean).toFixed(4))
+    : 0;
+  const p95FrameTimeRatio = baseline && selected && baseline.p95FrameTimeMs.mean > 0
+    ? Number((selected.p95FrameTimeMs.mean / baseline.p95FrameTimeMs.mean).toFixed(4))
+    : 999;
+  const visualPass = selectedTrials.length >= 5 && selectedTrials.every((row) =>
+    row.asterReadsHeroNotWorker === true &&
+    row.heroReadability !== false &&
+    row.workerDistinct === true &&
+    row.barracksDistinct === true &&
+    row.ringsReadable === true &&
+    row.noObviousHalo !== false &&
+    row.noSevereSeamOrShimmer === true &&
+    row.depthSortingStable === true &&
+    row.footPivotStable === true &&
+    row.minimapUnaffected === true
+  );
+  const pass = Boolean(baseline && selected && averageFpsRatio >= 0.9 && p95FrameTimeRatio <= 1.15 && visualPass);
+  return {
+    status: pass ? "PASS_V0153_HYBRID_THREE_SLOT_STRESS_GATE" : "FAIL_V0153_HYBRID_THREE_SLOT_STRESS_GATE",
+    gate: {
+      averageFpsRatioMinimum: 0.9,
+      p95FrameTimeWorseningMaximumRatio: 1.15,
+      asterWorkerDistinctRequired: true,
+      barracksDistinctRequired: true,
+      ringsReadableRequired: true,
+      noObviousHaloRequired: true,
+      noSevereSeamOrShimmerRequired: true,
+      stablePivotRequired: true,
+      noPlayerFacingMutationRequired: true,
+      visualGateRequiresHumanReview: true
+    },
+    baseline,
+    selected,
+    ortho,
+    averageFpsRatio,
+    averageFpsPass: averageFpsRatio >= 0.9,
+    p95FrameTimeRatio,
+    p95FrameTimePass: p95FrameTimeRatio <= 1.15,
+    visualPass,
+    selectedTierLTrials: selectedTrials,
+    reason: pass
+      ? "Selected local three-slot hybrid passed the private Tier L performance and automated readability gate versus fallback-only hybrid."
+      : "Selected local three-slot hybrid did not satisfy the private Tier L performance/readability gate."
+  };
+}
+
+function compositionReport() {
+  const validation = compositionValidate();
+  const evidenceRoot = compositionEvidenceRootFromArgs();
+  const runtimePath = join(evidenceRoot, compositionRuntimeReportName);
+  const errors = [...validation.errors];
+  if (!existsSync(runtimePath)) {
+    throw new Error(`Missing Godot hybrid three-slot composition runtime report: ${relativeRepo(runtimePath)}`);
+  }
+  const runtime = readJson(runtimePath);
+  const benchmarkRows = runtime.benchmarks ?? [];
+  errors.push(...(runtime.errors ?? []));
+  for (const approach of compositionApproaches) {
+    for (const tier of tiers) {
+      if (!benchmarkRows.some((row) => row.approach === approach && row.tier === tier)) {
+        errors.push(`Missing composition benchmark row ${approach} ${tier}.`);
+      }
+    }
+    const tierLCount = benchmarkRows.filter((row) => row.approach === approach && row.tier === "L").length;
+    if (tierLCount < 5) {
+      errors.push(`Expected at least five Tier L trials for ${approach}, found ${tierLCount}.`);
+    }
+  }
+  const screenshotRoot = join(evidenceRoot, "screenshots");
+  const screenshots = [];
+  for (const capture of runtime.captures ?? []) {
+    const path = join(screenshotRoot, capture.fileName);
+    if (!existsSync(path)) {
+      errors.push(`Missing hybrid three-slot screenshot ${relativeRepo(path)}.`);
+      continue;
+    }
+    screenshots.push({
+      ...capture,
+      path: relativeRepo(path),
+      sha256: sha256File(path),
+      width: capture.width ?? 1600,
+      height: capture.height ?? 900
+    });
+  }
+  const aggregateRows = aggregateCompositionBenchmarks(benchmarkRows);
+  const gate = compositionThreshold(aggregateRows, benchmarkRows);
+  if (!gate.status.startsWith("PASS")) {
+    errors.push(gate.reason);
+  }
+  const summary = {
+    schemaVersion: 1,
+    checkpoint: compositionCheckpoint,
+    status: errors.length ? "FAIL_V0153_HYBRID_THREE_SLOT_EVIDENCE_RECORDED" : "PASS_V0153_HYBRID_THREE_SLOT_EVIDENCE_RECORDED",
+    errors,
+    slotId,
+    sourceRuntimeReport: relativeRepo(runtimePath),
+    zeroNewAiImagesForV0153: true,
+    zeroNewRuntimeArtSlotsForV0153: true,
+    privateComparatorOnly: true,
+    selectedAsterHash: selectedAsterRepairHash,
+    selectedWorkerHash,
+    selectedBarracksHash,
+    aggregateRows,
+    benchmarkRows,
+    screenshots,
+    threshold: gate,
+    scorecard: {
+      status: gate.status,
+      tiers,
+      approaches: compositionApproaches,
+      aggregateRows
+    },
+    fairPathAudit: runtime.fairPathAudit,
+    readabilityAudit: runtime.readabilityAudit,
+    selectedAsterSource: runtime.selectedAsterSource,
+    selectedWorkerSource: runtime.selectedWorkerSource,
+    selectedBarracksSource: runtime.selectedBarracksSource,
+    fallbackAsterSource: runtime.fallbackAsterSource,
+    fallbackWorkerSource: runtime.fallbackWorkerSource,
+    fallbackBarracksSource: runtime.fallbackBarracksSource,
+    boundaries: runtime.boundaries,
+    limitations: runtime.limitations
+  };
+  writeJson(join(evidenceRoot, "hybrid-three-slot-composition-evidence.json"), summary);
+  writeJson(join(evidenceRoot, "hybrid-three-slot-composition-threshold-report.json"), gate);
+  writeJson(join(evidenceRoot, "hybrid-three-slot-composition-scorecard.json"), summary.scorecard);
+  writeJson(join(evidenceRoot, "hybrid-three-slot-composition-screenshot-manifest.json"), {
+    schemaVersion: 1,
+    checkpoint: compositionCheckpoint,
+    screenshotCount: screenshots.length,
+    screenshots
+  });
+  writeText(join(evidenceRoot, "paired-benchmark-summary.md"), compositionBenchmarkMarkdown(summary));
+  writeText(join(evidenceRoot, "visual-review-guide.md"), compositionVisualReviewMarkdown(summary));
+  writeText(join(evidenceRoot, "contact-sheet.svg"), compositionContactSheetSvg(screenshots));
+  return summary;
+}
+
+function compositionAudit() {
+  const evidenceRoot = compositionEvidenceRootFromArgs();
+  const runtimePath = join(evidenceRoot, compositionRuntimeReportName);
+  const runtime = existsSync(runtimePath) ? readJson(runtimePath) : null;
+  const auditRecord = runtime?.fairPathAudit ?? {
+    runtimeEvidencePresent: false,
+    note: "Run the v0.153 headed paired benchmark before collecting runtime audit counters."
+  };
+  const errors = [];
+  if (runtime && auditRecord.localAndFallbackShareAsterBillboardRenderPath !== true) {
+    errors.push("Runtime audit did not prove Aster selected/fallback render-path sharing.");
+  }
+  if (runtime && auditRecord.selectedAndFallbackShareWorkerBillboardRenderPath !== true) {
+    errors.push("Runtime audit did not prove Worker selected/fallback render-path sharing.");
+  }
+  if (runtime && auditRecord.selectedAndFallbackShareBarracksMaterialRenderPath !== true) {
+    errors.push("Runtime audit did not prove Barracks selected/fallback material-path sharing.");
+  }
+  if (runtime && auditRecord.repeatedTextureCreateDuringSteadyState !== false) {
+    errors.push("Runtime audit did not prove texture creation was absent during steady-state frames.");
+  }
+  if (runtime && auditRecord.repeatedMaterialCreateDuringSteadyState !== false) {
+    errors.push("Runtime audit did not prove material creation was absent during steady-state frames.");
+  }
+  if (runtime && auditRecord.metadataParsingDuringSteadyState !== false) {
+    errors.push("Runtime audit did not prove metadata parsing was absent during steady-state frames.");
+  }
+  if (runtime && auditRecord.benchmarkExcludesInitializationAndWarmup !== true) {
+    errors.push("Runtime audit did not prove initialization/warmup were excluded from measured frames.");
+  }
+  const report = {
+    schemaVersion: 1,
+    checkpoint: compositionCheckpoint,
+    status: errors.length ? "FAIL_V0153_HYBRID_THREE_SLOT_FAIR_PATH_AUDIT" : "PASS_V0153_HYBRID_THREE_SLOT_FAIR_PATH_AUDIT",
+    privateComparatorOnly: true,
+    productionApproval: "forbidden",
+    playerSliceIntegration: "forbidden",
+    browserIntegration: "forbidden",
+    zeroNewAiImagesForV0153: true,
+    zeroNewRuntimeArtSlotsForV0153: true,
+    audit: auditRecord,
+    errors
+  };
+  writeJson(join(evidenceRoot, "hybrid-three-slot-composition-fair-path-audit.json"), report);
+  return report;
+}
+
+function compositionBenchmarkMarkdown(summary) {
+  const lines = [
+    "# v0.153 Hybrid Three-Slot Composition Stress Benchmark Summary",
+    "",
+    `Status: ${summary.status}`,
+    `Gate: ${summary.threshold.status}`,
+    "",
+    "| Approach | Tier | Trials | Mean FPS | Median FPS | p95 ms | p99 ms | Aster | Worker | Barracks |",
+    "| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |"
+  ];
+  for (const row of summary.aggregateRows) {
+    lines.push(`| \`${row.approach}\` | \`${row.tier}\` | ${row.trialCount} | ${row.averageFps.mean} | ${row.averageFps.median} | ${row.p95FrameTimeMs.mean} | ${row.p99FrameTimeMs.mean} | ${row.asterCount} | ${row.workerContextCount} | ${row.barracksShellCount} |`);
+  }
+  lines.push("", "Tier L trials:", "");
+  lines.push("| Approach | Trial | Avg FPS | p95 ms | p99 ms | Init ms | Objects |");
+  lines.push("| --- | ---: | ---: | ---: | ---: | ---: | ---: |");
+  for (const row of summary.benchmarkRows.filter((entry) => entry.tier === "L")) {
+    lines.push(`| \`${row.approach}\` | ${row.trialIndex} | ${row.averageFps} | ${row.p95FrameTimeMs} | ${row.p99FrameTimeMs} | ${row.initializationDurationMs} | ${row.renderedObjectProxy} |`);
+  }
+  return `${lines.join("\n")}\n`;
+}
+
+function compositionVisualReviewMarkdown(summary) {
+  const lines = [
+    "# v0.153 Hybrid Three-Slot Composition Visual Review Guide",
+    "",
+    `Gate result: \`${summary.threshold.status}\`.`,
+    "",
+    "Review questions:",
+    "",
+    "- Does Aster stay distinct from repeated Workers?",
+    "- Do Worker rings and Aster ring remain readable in crowding and overlap captures?",
+    "- Do repeated Barracks shells avoid severe seam, shimmer, or visual mud?",
+    "- Do dark, light, checkerboard, wet-overcast, and hearth lighting views avoid obvious halos?",
+    "- Does the private minimap probe remain visually separate from the composition stress scene?",
+    "",
+    "Capture paths:",
+    ""
+  ];
+  for (const shot of summary.screenshots) {
+    lines.push(`- \`${shot.id}\`: \`${shot.path}\``);
+  }
+  lines.push("", "This is private comparator-only evidence, not production approval, not browser runtime wiring, not normal Salto player-slice integration, and not final Godot selection.");
+  return `${lines.join("\n")}\n`;
+}
+
+function compositionContactSheetSvg(screenshots) {
+  const cellWidth = 360;
+  const cellHeight = 252;
+  const cols = 3;
+  const rows = Math.max(1, Math.ceil(screenshots.length / cols));
+  const width = cols * cellWidth;
+  const height = rows * cellHeight + 48;
+  const parts = [
+    `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}">`,
+    `<rect width="100%" height="100%" fill="#111511"/>`,
+    `<text x="18" y="30" fill="#e7eadc" font-family="Arial" font-size="18">v0.153 hybrid three-slot private composition contact sheet</text>`
+  ];
+  screenshots.forEach((shot, index) => {
+    const col = index % cols;
+    const row = Math.floor(index / cols);
+    const x = col * cellWidth + 14;
+    const y = row * cellHeight + 52;
+    const href = shot.path.replace("artifacts/desktop-spikes/godot-salto/v0153/evidence/", "").replaceAll("&", "&amp;");
+    parts.push(`<rect x="${x - 4}" y="${y - 4}" width="336" height="226" fill="#202820" stroke="#465446"/>`);
+    parts.push(`<image href="${href}" x="${x}" y="${y}" width="328" height="185" preserveAspectRatio="xMidYMid meet"/>`);
+    parts.push(`<text x="${x}" y="${y + 205}" fill="#d8ddce" font-family="Arial" font-size="11">${shot.id}</text>`);
+  });
+  parts.push("</svg>");
+  return `${parts.join("\n")}\n`;
+}
+
 function printReportAndSetExitCode(result) {
   console.log(stableStringify(result));
   if (String(result.status ?? "").startsWith("FAIL") || (result.errors && result.errors.length > 0)) {
@@ -1753,11 +2219,17 @@ try {
     printReportAndSetExitCode(repairReport());
   } else if (command === "repair:audit") {
     printReportAndSetExitCode(repairAudit());
+  } else if (command === "composition:validate") {
+    printReportAndSetExitCode(compositionValidate());
+  } else if (command === "composition:report") {
+    printReportAndSetExitCode(compositionReport());
+  } else if (command === "composition:audit") {
+    printReportAndSetExitCode(compositionAudit());
   } else {
     printReportAndSetExitCode({
       status: "FAIL_V0151_ASTER_BILLBOARD_UNKNOWN_COMMAND",
       command,
-      knownCommands: ["fallback", "fallback:check", "metadata", "validate", "report", "audit", "repair:derivatives", "repair:derivatives:check", "repair:validate", "repair:report", "repair:audit"],
+      knownCommands: ["fallback", "fallback:check", "metadata", "validate", "report", "audit", "repair:derivatives", "repair:derivatives:check", "repair:validate", "repair:report", "repair:audit", "composition:validate", "composition:report", "composition:audit"],
       errors: [`Unknown command: ${command}`]
     });
   }

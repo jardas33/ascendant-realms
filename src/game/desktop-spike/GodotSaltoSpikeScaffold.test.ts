@@ -2403,4 +2403,88 @@ describe("Godot Salto spike scaffold", () => {
     expect(comparatorScript).not.toContain("artifacts/art-review/v0138/candidates");
     expect(toolScript).not.toContain("artifacts/art-review/v0138/candidates");
   });
+
+  it("defines the v0.153 private hybrid three-slot composition stress gate", async () => {
+    [
+      "GODOT_HYBRID_THREE_SLOT_COMPOSITION_STRESS_WINDOWS.bat",
+      "tools/godot/runGodotHybridThreeSlotCompositionValidation.ps1",
+      "tools/godot/runGodotHybridThreeSlotCompositionAudit.ps1",
+      "tools/godot/runGodotHybridThreeSlotCompositionBenchmarkWindows.ps1",
+      "tools/godot/captureGodotHybridThreeSlotCompositionWindows.ps1",
+      "docs/V0153_HYBRID_THREE_SLOT_COMPOSITION_STRESS_SPEC.md",
+      "docs/V0153_HYBRID_THREE_SLOT_SCORECARD.md",
+      "docs/V0153_HYBRID_THREE_SLOT_FAIR_PATH_AUDIT.md",
+      "docs/V0153_HYBRID_THREE_SLOT_VISUAL_REVIEW_GUIDE.md",
+      "docs/V0153_PRIVATE_COMPARATOR_ONLY_BOUNDARY.md",
+      "docs/V0153_IMPLEMENTATION_REPORT.md"
+    ].forEach((path) => expect(existsSync(path), path).toBe(true));
+
+    const packageJson = await readJson<{ scripts: Record<string, string> }>("package.json");
+    const rootScript = await readFile("desktop-spikes/godot-salto/scripts/salto_spike_root.gd", "utf8");
+    const comparatorScript = await readFile(
+      "desktop-spikes/godot-salto/comparators/runtime_art_pipeline/aster_billboard_single_slot_comparator.gd",
+      "utf8"
+    );
+    const toolScript = await readFile("tools/godot/asterBillboardSingleSlotTool.mjs", "utf8");
+    const launcher = await readFile("GODOT_HYBRID_THREE_SLOT_COMPOSITION_STRESS_WINDOWS.bat", "utf8");
+    const stabilizedLauncher = await readFile("GODOT_LAUNCH_STABILIZED_SALTO_REVIEW_WINDOWS.bat", "utf8");
+    const playerLauncher = await readFile("GODOT_LAUNCH_PLAYER_SLICE_WINDOWS.bat", "utf8");
+    const spec = await readFile("docs/V0153_HYBRID_THREE_SLOT_COMPOSITION_STRESS_SPEC.md", "utf8");
+    const scorecard = await readFile("docs/V0153_HYBRID_THREE_SLOT_SCORECARD.md", "utf8");
+    const boundary = await readFile("docs/V0153_PRIVATE_COMPARATOR_ONLY_BOUNDARY.md", "utf8");
+    const implementation = await readFile("docs/V0153_IMPLEMENTATION_REPORT.md", "utf8");
+
+    [
+      "godot:hybrid-three-slot-composition:validate",
+      "godot:hybrid-three-slot-composition:audit",
+      "godot:hybrid-three-slot-composition:benchmark:headed",
+      "godot:hybrid-three-slot-composition:capture"
+    ].forEach((script) => expect(packageJson.scripts[script], script).toBeTypeOf("string"));
+
+    expect(rootScript).toContain("--hybrid-three-slot-composition-stress");
+    expect(rootScript).toContain("PASS_V0153_PRIVATE_HYBRID_THREE_SLOT_COMPOSITION_DISPATCH");
+    expect(rootScript).toContain("aster_billboard_single_slot_comparator.gd");
+
+    [
+      "COMPOSITION_CHECKPOINT := \"v0.153\"",
+      "HYBRID_THREE_SLOT_FALLBACK_ONLY",
+      "HYBRID_THREE_SLOT_SELECTED_LOCAL",
+      "ORTHO_THREE_SLOT_PROCEDURAL_FALLBACK",
+      "PASS_V0153_HYBRID_THREE_SLOT_RUNTIME_EVIDENCE",
+      "zeroNewAiImagesForV0153",
+      "zeroNewRuntimeArtSlotsForV0153",
+      "selectedAndFallbackShareWorkerBillboardRenderPath",
+      "selectedAndFallbackShareBarracksMaterialRenderPath",
+      "minimapUnaffected"
+    ].forEach((text) => expect(comparatorScript).toContain(text));
+
+    [
+      "composition:validate",
+      "composition:report",
+      "composition:audit",
+      "PASS_V0153_HYBRID_THREE_SLOT_VALIDATION",
+      "PASS_V0153_HYBRID_THREE_SLOT_STRESS_GATE",
+      "PASS_V0153_HYBRID_THREE_SLOT_FAIR_PATH_AUDIT",
+      "hybrid-three-slot-composition-scorecard.json",
+      "hybrid-three-slot-composition-threshold-report.json",
+      "zeroNewRuntimeArtSlotsForV0153"
+    ].forEach((text) => expect(toolScript).toContain(text));
+
+    expect(launcher).toContain("godot:hybrid-three-slot-composition:benchmark:headed");
+    expect(stabilizedLauncher).not.toContain("hybrid-three-slot-composition-stress");
+    expect(stabilizedLauncher).not.toContain("HYBRID_THREE_SLOT_COMPOSITION");
+    expect(playerLauncher).not.toContain("hybrid-three-slot-composition-stress");
+    expect(playerLauncher).not.toContain("HYBRID_THREE_SLOT_COMPOSITION");
+
+    expect(spec).toContain("Use zero new AI images");
+    expect(spec).toContain("Add zero new runtime-art slots");
+    expect(scorecard).toContain("PASS_V0153_HYBRID_THREE_SLOT_STRESS_GATE");
+    expect(boundary).toContain("New runtime-art slots");
+    expect(boundary).toContain("No browser runtime wiring");
+    expect(implementation).toContain("No v0.154 work");
+
+    expect(rootScript).not.toContain("artifacts/art-review/v0138/candidates");
+    expect(comparatorScript).not.toContain("artifacts/art-review/v0138/candidates");
+    expect(toolScript).not.toContain("artifacts/art-review/v0138/candidates");
+  });
 });

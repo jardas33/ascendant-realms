@@ -11,9 +11,20 @@ Every phase should protect these long-term pillars:
 
 ## Current Recommended Next Phase
 
-The current checkpoint is **v0.152 Hybrid Aster Billboard Fair-Path Repair Derivative Selection And Human Review Stop** on 2026-06-07. It keeps the browser runtime, normal Salto player slice, art slots, production package, saves, and stable IDs untouched while repairing only the existing private v0.151 Aster billboard path. It generates zero new AI images, uses the same v0.151 Aster cutout only, selects `HYBRID_ASTER_TRIMMED_1024` after the preserved gate passes, and records Tier L average FPS ratio `0.9708` plus p95 frame-time ratio `1.0088`.
+The current checkpoint is **v0.153 Hybrid Three-Slot Private Composition Stress Gate And Human Review Stop** on 2026-06-07. It keeps the browser runtime, normal Salto player slice, runtime-art slots, production package, saves, and stable IDs untouched while stress-testing only the private comparator composition path that combines the selected v0.148 Worker billboard, v0.150 Barracks material, and v0.152 Aster billboard. It generates zero new AI images, adds zero runtime-art slots, records `PASS_V0153_HYBRID_THREE_SLOT_STRESS_GATE`, and records selected-local Tier L average FPS ratio `1.0071` plus p95 frame-time ratio `1.0379`.
 
-The next recommended step is human review and explicit approval only: Emmanuel may review `docs/V0152_ASTER_BILLBOARD_VISUAL_REVIEW_GUIDE.md`, the ignored v0.152 evidence under `artifacts/desktop-spikes/godot-salto/v0152/`, and the v0.152 repair/derivative/benchmark/audit/boundary/implementation docs. Do not import the Aster repair derivative, add another runtime-art slot, generate another image, import existing reference candidates, download assets, mark Aster runtime-approved, modify the normal Salto player slice, wire comparator output into Godot production/player-facing flow, wire assets into the browser, mutate manifests or art slots, change saves or stable IDs, create a desktop save path, choose Godot finally, start a full desktop port, start Unity/Unreal/Electron work, or start v0.153 until a future explicit goal approves a narrow next step.
+The next recommended step is human review and explicit approval only: Emmanuel may review `docs/V0153_HYBRID_THREE_SLOT_VISUAL_REVIEW_GUIDE.md`, the ignored v0.153 evidence under `artifacts/desktop-spikes/godot-salto/v0153/`, and the v0.153 stress/audit/boundary/implementation docs. Do not import any selected private comparator image, add another runtime-art slot, generate another image, import existing reference candidates, download assets, mark Worker/Barracks/Aster runtime-approved, modify the normal Salto player slice, wire comparator output into Godot production/player-facing flow, wire assets into the browser, mutate manifests or art slots, change saves or stable IDs, create a desktop save path, choose Godot finally, start a full desktop port, start Unity/Unreal/Electron work, or start v0.154 until a future explicit goal approves a narrow next step.
+
+New v0.153 docs:
+
+- `docs/V0153_HYBRID_THREE_SLOT_COMPOSITION_STRESS_SPEC.md`
+- `docs/V0153_HYBRID_THREE_SLOT_SCORECARD.md`
+- `docs/V0153_HYBRID_THREE_SLOT_FAIR_PATH_AUDIT.md`
+- `docs/V0153_HYBRID_THREE_SLOT_VISUAL_REVIEW_GUIDE.md`
+- `docs/V0153_PRIVATE_COMPARATOR_ONLY_BOUNDARY.md`
+- `docs/V0153_IMPLEMENTATION_REPORT.md`
+
+Previous checkpoint reference: v0.152 Hybrid Aster Billboard Fair-Path Repair Derivative Selection And Human Review Stop.
 
 New v0.152 docs:
 
