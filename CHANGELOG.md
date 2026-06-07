@@ -1,5 +1,48 @@
 # Changelog
 
+# v0.152 Hybrid Aster Billboard Fair-Path Repair Derivative Selection And Human Review Stop - 2026-06-07
+
+This checkpoint repairs and fairly benchmarks only the existing private v0.151 Aster billboard path. It generates zero new AI images, uses the same v0.151 Aster cutout only, creates deterministic ignored full-res/512/768/1024 comparator derivatives, selects the trimmed 1024 derivative after the preserved gate passes, and stops for Emmanuel review.
+
+Added:
+
+- Deterministic ignored v0.152 Aster billboard repair derivatives under `artifacts/desktop-spikes/godot-salto/v0152/local-aster-billboard-repair/`.
+- Repair derivative reproduction, validation, fair-path audit, headed benchmark, and capture wrappers.
+- One-click wrapper `GODOT_ASTER_BILLBOARD_SINGLE_SLOT_REPAIR_WINDOWS.bat`.
+- v0.152 docs for repair spec, derivative matrix, fair-path audit, paired benchmark report, visual review guide, private boundary, and implementation report.
+
+Changed:
+
+- `desktop-spikes/godot-salto/scripts/salto_spike_root.gd` now has a private `--aster-billboard-single-slot-repair` dispatch path only.
+- `desktop-spikes/godot-salto/comparators/runtime_art_pipeline/aster_billboard_single_slot_comparator.gd` now supports a repair mode with shared Aster billboard rendering and repaired review-capture framing.
+- `tools/godot/asterBillboardSingleSlotTool.mjs` now records v0.152 derivative reproducibility, validation, threshold, evidence, visual-review, and fair-path audit reports.
+- Desktop-spike scaffold tests now assert the v0.152 Aster repair path remains isolated from the normal Salto player slice and default launchers.
+- Handoff, roadmap, development checkpoint, and release checklist now describe v0.152 as the current private comparator human-review stop.
+
+Evidence:
+
+- Same v0.151 source SHA-256: `aa1572e26dcbfeaddd0b53c48a2c5e4713ddb35a002af5939f54b271621a3b72`.
+- Selected repair: `HYBRID_ASTER_TRIMMED_1024`.
+- Selected SHA-256: `b256f96f762187c05d68f2c2de62bedec0248896210767e98cb8f210dac2829a`, dimensions `1024 x 1024`.
+- Gate: `PASS_V0152_ASTER_BILLBOARD_REPAIR_GATE`.
+- Tier L selected average-FPS ratio: `0.9708`; selected p95 ratio: `1.0088`.
+- Evidence: `PASS_V0152_ASTER_BILLBOARD_REPAIR_EVIDENCE_RECORDED`, with `31` screenshots and `35` benchmark rows.
+- Fair-path audit: `PASS_V0152_ASTER_BILLBOARD_FAIR_PATH_AUDIT`, with one texture load/create per source, one material create per source/material key, and no repeated texture/material creation during steady-state frames.
+
+Boundaries:
+
+- Zero new AI images.
+- Same v0.151 Aster source only.
+- No existing reference candidate import.
+- No new runtime-art slot.
+- No normal Salto player-slice mutation.
+- No player-facing Godot wiring or browser-runtime wiring.
+- No manifest mutation, art-slot mutation, production package mutation, save change, stable-ID change, final runtime-art approval, final Aster art approval, final engine selection, full port, or v0.153 work.
+
+Verification:
+
+- Required v0.152 verification is listed in `docs/V0152_IMPLEMENTATION_REPORT.md` and must be run before closeout.
+
 # v0.151 Hybrid Aster Static Billboard Single-Slot Intake Experiment And Human Review Stop - 2026-06-07
 
 This checkpoint tests only one isolated private hybrid Aster static billboard slot. It generates exactly one original ignored Aster source image, creates a deterministic matte-to-alpha local cutout, validates a tracked diagnostic fallback, fairly benchmarks Tier S/M/L private comparator evidence with the v0.148 Worker and v0.150 Barracks repair as context only, selects the local Aster billboard after the preserved gate passes, and stops for Emmanuel review.

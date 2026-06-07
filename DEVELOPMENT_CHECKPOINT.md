@@ -1,6 +1,54 @@
 # Development Checkpoint
 
-Updated: 2026-06-07 v0.151 Hybrid Aster Static Billboard Single-Slot Intake Experiment And Human Review Stop
+Updated: 2026-06-07 v0.152 Hybrid Aster Billboard Fair-Path Repair Derivative Selection And Human Review Stop
+
+## v0.152 Hybrid Aster Billboard Fair-Path Repair Derivative Selection And Human Review Stop - 2026-06-07
+
+Scope: isolated private Godot Aster billboard repair and derivative-selection checkpoint. This checkpoint uses zero new AI images, derives deterministic full-res/512/768/1024 comparator variants from the same v0.151 Aster cutout only, preserves the original acceptance gate, and stops without modifying the normal Salto player slice or starting v0.153.
+
+Included work:
+
+- Confirmed clean synchronized `main` at `b97e0a6fbacdb5cb8a1692f04bf3c54d30b447a6`.
+- Confirmed v0.151 pushed remote CI success and selected `HYBRID_ASTER_LOCAL_STATIC_BILLBOARD` as the preserved source.
+- Generated zero new AI images and reused the same v0.151 Aster cutout only.
+- Added deterministic same-source repair derivatives under ignored `artifacts/desktop-spikes/godot-salto/v0152/local-aster-billboard-repair/`.
+- Extended the private Aster comparator/tooling with repair validation, fair-path audit, headed benchmark, capture, and one-click launcher support.
+- Captured checkerboard/dark/light alpha, hair/cloak/shoulders, boots/hands/gear, normal RTS, zoomed-out, Aster+Worker, overlap, ring, pivot, scale, fallback, and Tier S/M/L evidence.
+
+Current interpretation:
+
+- Selected recommended repair: `HYBRID_ASTER_TRIMMED_1024`.
+- Selected hash: `b256f96f762187c05d68f2c2de62bedec0248896210767e98cb8f210dac2829a`.
+- Selected dimensions: `1024 x 1024`.
+- Gate: `PASS_V0152_ASTER_BILLBOARD_REPAIR_GATE`.
+- Evidence marker: `PASS_V0152_ASTER_BILLBOARD_REPAIR_EVIDENCE_RECORDED`.
+- Tier L selected FPS ratio: `0.9708`.
+- Tier L selected p95 ratio: `1.0088`.
+- Screenshot count: `31`; benchmark row count: `35`.
+- Fair-path audit: `PASS_V0152_ASTER_BILLBOARD_FAIR_PATH_AUDIT`, with `7` texture cache entries, `7` material cache entries, one load/create per source/material key, and no repeated texture/material creation during steady-state frames.
+- Human review is pending.
+- v0.153 has not started.
+
+Verification:
+
+```text
+Required closeout stack:
+npm test
+npm run build
+npm run validate:content
+npm run validate:art-intake
+npm run art:reference:init
+npm run art:reference:validate
+npm run art:reference:contact-sheet
+npm run art:reference:review-pack
+npm run godot:aster-billboard-repair:derivatives:reproduce
+npm run godot:aster-billboard-repair:validate
+npm run godot:aster-billboard-repair:audit
+npm run godot:aster-billboard-repair:benchmark:headed
+npm run godot:aster-billboard-repair:capture
+isolation scans
+git diff --check
+```
 
 ## v0.151 Hybrid Aster Static Billboard Single-Slot Intake Experiment And Human Review Stop - 2026-06-07
 

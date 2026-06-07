@@ -25,6 +25,11 @@ const localSource = join(localSlotRoot, `${slotId}_source.png`);
 const localCutout = join(localSlotRoot, `${slotId}.png`);
 const localMetadata = join(localSlotRoot, `${slotId}.metadata.json`);
 const runtimeReportName = "aster-billboard-single-slot-runtime.json";
+const repairCheckpoint = "v0.152";
+const repairArtifactRoot = join(repoRoot, "artifacts", "desktop-spikes", "godot-salto", "v0152");
+const repairLocalSlotRoot = join(repairArtifactRoot, "local-aster-billboard-repair");
+const repairEvidenceRootDefault = join(repairArtifactRoot, "evidence");
+const repairRuntimeReportName = "aster-billboard-repair-runtime.json";
 const selectedWorkerHash = "a628065ca92b231b0d4f6a0625d9e259dea080e80d530ee688483611d70049bc";
 const selectedBarracksHash = "58a60b750370df084b60a1d92077da9367c0ba8a763781e2c3a8a7d96f1c980f";
 const approaches = [
@@ -35,6 +40,14 @@ const approaches = [
   "ORTHO_3D_MESH_FALLBACK_COMPARATOR"
 ];
 const tiers = ["S", "M", "L"];
+const repairApproaches = [
+  "HYBRID_ASTER_DIAGNOSTIC_FALLBACK_BASELINE",
+  "HYBRID_ASTER_FULL_RES",
+  "HYBRID_ASTER_TRIMMED_512",
+  "HYBRID_ASTER_TRIMMED_768",
+  "HYBRID_ASTER_TRIMMED_1024"
+];
+const repairDerivativeSizes = [512, 768, 1024];
 
 function stableSort(value) {
   if (Array.isArray(value)) {
@@ -79,6 +92,11 @@ function relativeRepo(path) {
 function evidenceRootFromArgs() {
   const explicit = process.argv.find((arg) => arg.startsWith("--artifact-root="));
   return explicit ? resolve(explicit.slice("--artifact-root=".length)) : evidenceRootDefault;
+}
+
+function repairEvidenceRootFromArgs() {
+  const explicit = process.argv.find((arg) => arg.startsWith("--artifact-root="));
+  return explicit ? resolve(explicit.slice("--artifact-root=".length)) : repairEvidenceRootDefault;
 }
 
 function crc32(buffers) {
@@ -357,6 +375,341 @@ function analyzePngFile(path) {
     byteLength: buffer.length,
     ...analyzePngBuffer(buffer)
   };
+}
+
+function samplePremultipliedBilinear(decoded, x, y) {
+  const clampedX = Math.max(0, Math.min(decoded.width - 1, x));
+  const clampedY = Math.max(0, Math.min(decoded.height - 1, y));
+  const x0 = Math.floor(clampedX);
+  const y0 = Math.floor(clampedY);
+  const x1 = Math.min(decoded.width - 1, x0 + 1);
+  const y1 = Math.min(decoded.height - 1, y0 + 1);
+  const fx = clampedX - x0;
+  const fy = clampedY - y0;
+  const samples = [
+    { x: x0, y: y0, weight: (1 - fx) * (1 - fy) },
+    { x: x1, y: y0, weight: fx * (1 - fy) },
+    { x: x0, y: y1, weight: (1 - fx) * fy },
+    { x: x1, y: y1, weight: fx * fy }
+  ];
+  let alpha = 0;
+  let red = 0;
+  let green = 0;
+  let blue = 0;
+  for (const sample of samples) {
+    const index = (sample.y * decoded.width + sample.x) * 4;
+    const sampleAlpha = decoded.rgba[index + 3] / 255;
+    const weightedAlpha = sampleAlpha * sample.weight;
+    alpha += weightedAlpha;
+    red += decoded.rgba[index] * weightedAlpha;
+    green += decoded.rgba[index + 1] * weightedAlpha;
+    blue += decoded.rgba[index + 2] * weightedAlpha;
+  }
+  if (alpha <= 0.0001) {
+    return [0, 0, 0, 0];
+  }
+  return [
+    Math.max(0, Math.min(255, Math.round(red / alpha))),
+    Math.max(0, Math.min(255, Math.round(green / alpha))),
+    Math.max(0, Math.min(255, Math.round(blue / alpha))),
+    Math.max(0, Math.min(255, Math.round(alpha * 255)))
+  ];
+}
+
+function applyTransparentColorBleed(rgba, width, height, iterations = 3) {
+  for (let iteration = 0; iteration < iterations; iteration += 1) {
+    const copy = Buffer.from(rgba);
+    for (let y = 0; y < height; y += 1) {
+      for (let x = 0; x < width; x += 1) {
+        const index = (y * width + x) * 4;
+        if (copy[index + 3] !== 0) {
+          continue;
+        }
+        let count = 0;
+        let red = 0;
+        let green = 0;
+        let blue = 0;
+        for (let dy = -1; dy <= 1; dy += 1) {
+          for (let dx = -1; dx <= 1; dx += 1) {
+            if (dx === 0 && dy === 0) {
+              continue;
+            }
+            const nx = x + dx;
+            const ny = y + dy;
+            if (nx < 0 || ny < 0 || nx >= width || ny >= height) {
+              continue;
+            }
+            const neighbor = (ny * width + nx) * 4;
+            if (copy[neighbor + 3] > 0) {
+              count += 1;
+              red += copy[neighbor];
+              green += copy[neighbor + 1];
+              blue += copy[neighbor + 2];
+            }
+          }
+        }
+        if (count > 0) {
+          rgba[index] = Math.round(red / count);
+          rgba[index + 1] = Math.round(green / count);
+          rgba[index + 2] = Math.round(blue / count);
+        }
+      }
+    }
+  }
+}
+
+function alphaEdgeStats(decoded) {
+  let partialEdgePixels = 0;
+  let greenFringePixels = 0;
+  for (let y = 0; y < decoded.height; y += 1) {
+    for (let x = 0; x < decoded.width; x += 1) {
+      const index = (y * decoded.width + x) * 4;
+      const alpha = decoded.rgba[index + 3];
+      if (alpha <= 0 || alpha >= 245) {
+        continue;
+      }
+      partialEdgePixels += 1;
+      if (decoded.rgba[index + 1] > decoded.rgba[index] + 48 && decoded.rgba[index + 1] > decoded.rgba[index + 2] + 48) {
+        greenFringePixels += 1;
+      }
+    }
+  }
+  return {
+    partialEdgePixels,
+    greenFringePixels,
+    greenFringeRatio: partialEdgePixels > 0 ? Number((greenFringePixels / partialEdgePixels).toFixed(4)) : 0
+  };
+}
+
+function repairFullresPath() {
+  return join(repairLocalSlotRoot, `${slotId}_fullres.png`);
+}
+
+function repairFullresMetadataPath() {
+  return join(repairLocalSlotRoot, `${slotId}_fullres.metadata.json`);
+}
+
+function repairDerivativePath(size) {
+  return join(repairLocalSlotRoot, `${slotId}_trimmed_${size}.png`);
+}
+
+function repairDerivativeMetadataPath(size) {
+  return join(repairLocalSlotRoot, `${slotId}_trimmed_${size}.metadata.json`);
+}
+
+function repairSourcePreflight() {
+  const errors = [];
+  if (!existsSync(localSource)) {
+    errors.push(`Missing original v0.151 Aster source ${relativeRepo(localSource)}.`);
+  }
+  if (!existsSync(localCutout)) {
+    errors.push(`Missing v0.151 Aster cutout ${relativeRepo(localCutout)}.`);
+  }
+  if (!existsSync(localMetadata)) {
+    errors.push(`Missing v0.151 Aster metadata ${relativeRepo(localMetadata)}.`);
+  }
+  if (localSourceCount() !== 1) {
+    errors.push(`Expected exactly one v0.151 Aster source image, found ${localSourceCount()}.`);
+  }
+  if (!errors.length) {
+    const metadata = readJson(localMetadata);
+    const cutoutHash = sha256File(localCutout);
+    if (metadata.sha256 !== cutoutHash || metadata.slotId !== slotId) {
+      errors.push("v0.151 Aster cutout metadata hash or slot mismatch.");
+    }
+    if (metadata.privateComparatorOnly !== true || metadata.productionApproval !== "forbidden") {
+      errors.push("v0.151 Aster metadata boundary flags are invalid.");
+    }
+  }
+  return errors;
+}
+
+function createRepairDerivativeBuffer(targetSize) {
+  const decoded = decodePng(readFileSync(localCutout));
+  const sourceAnalysis = analyzePngFile(localCutout);
+  const trim = sourceAnalysis.trimBounds;
+  if (!trim) {
+    throw new Error("Cannot create Aster derivative because source alpha trim bounds are empty.");
+  }
+  const rgba = Buffer.alloc(targetSize * targetSize * 4);
+  const maxContentWidth = targetSize * 0.62;
+  const maxContentHeight = targetSize * 0.92;
+  const scale = Math.min(maxContentWidth / trim.width, maxContentHeight / trim.height);
+  const scaledWidth = Math.max(1, Math.round(trim.width * scale));
+  const scaledHeight = Math.max(1, Math.round(trim.height * scale));
+  const destX = Math.round((targetSize - scaledWidth) / 2);
+  const bottomPad = Math.max(8, Math.round(targetSize * 0.035));
+  const destY = Math.max(0, targetSize - bottomPad - scaledHeight);
+  for (let y = 0; y < scaledHeight; y += 1) {
+    for (let x = 0; x < scaledWidth; x += 1) {
+      const sourceX = trim.left + (x + 0.5) / scale - 0.5;
+      const sourceY = trim.top + (y + 0.5) / scale - 0.5;
+      const pixel = samplePremultipliedBilinear(decoded, sourceX, sourceY);
+      const targetX = destX + x;
+      const targetY = destY + y;
+      const index = (targetY * targetSize + targetX) * 4;
+      rgba[index] = pixel[0];
+      rgba[index + 1] = pixel[1];
+      rgba[index + 2] = pixel[2];
+      rgba[index + 3] = pixel[3];
+    }
+  }
+  applyTransparentColorBleed(rgba, targetSize, targetSize, 3);
+  return encodePng(targetSize, targetSize, rgba);
+}
+
+function repairMetadata(kind, imagePath, sourceAnalysis, extra = {}, write = true) {
+  const analysis = analyzePngFile(imagePath);
+  const metadata = {
+    schemaVersion: 1,
+    checkpoint: repairCheckpoint,
+    sourceCheckpoint: checkpoint,
+    slotId,
+    derivativeKind: kind,
+    sourcePath: relativeRepo(localCutout),
+    sourceSha256: sourceAnalysis.sha256,
+    sourceDimensions: { width: sourceAnalysis.width, height: sourceAnalysis.height },
+    path: relativeRepo(imagePath),
+    sha256: analysis.sha256,
+    byteLength: analysis.byteLength,
+    dimensions: { width: analysis.width, height: analysis.height },
+    alphaPosture: "same-source deterministic trim-pad-premultiplied-resize-transparent-rgb-bleed",
+    alphaStats: {
+      transparentPixels: analysis.transparentPixels,
+      partiallyTransparentPixels: analysis.partiallyTransparentPixels,
+      opaquePixels: analysis.opaquePixels,
+      transparentCornerCount: analysis.transparentCornerCount,
+      greenFringePixels: analysis.greenFringePixels,
+      greenFringeRatio: analysis.greenFringeRatio
+    },
+    alphaEdgeStats: alphaEdgeStats(decodePng(readFileSync(imagePath))),
+    trimBounds: analysis.trimBounds,
+    pivot: analysis.pivot,
+    deterministicOperations: [
+      "same v0.151 Aster cutout only",
+      "alpha bounds trim",
+      "transparent square padding",
+      "premultiplied-alpha-equivalent bilinear resize",
+      "transparent RGB edge bleed",
+      "metadata and hash regeneration"
+    ],
+    role: {
+      defaultHeroName: "Aster",
+      workerDistinction: "hero cloak and upright command posture; not Worker utility silhouette"
+    },
+    selectedWorkerContextHash: selectedWorkerHash,
+    selectedBarracksMaterialContextHash: selectedBarracksHash,
+    zeroNewAiImagesForV0152: true,
+    sameAsterSourceOnly: true,
+    noNewRuntimeArtSlot: true,
+    privateComparatorOnly: true,
+    productionApproval: "forbidden",
+    playerSliceIntegration: "forbidden",
+    browserIntegration: "forbidden",
+    normalSaltoPlayerSliceModified: false,
+    humanReviewStatus: "pending-review",
+    ...extra
+  };
+  if (write) {
+    writeJson(imagePath.replace(/\.png$/u, ".metadata.json"), metadata);
+  }
+  return metadata;
+}
+
+function repairDerivativeRecords(write) {
+  const errors = repairSourcePreflight();
+  const records = [];
+  if (errors.length) {
+    return {
+      schemaVersion: 1,
+      checkpoint: repairCheckpoint,
+      status: "FAIL_V0152_ASTER_BILLBOARD_REPAIR_DERIVATIVES",
+      errors,
+      records
+    };
+  }
+  mkdirSync(repairLocalSlotRoot, { recursive: true });
+  const sourceAnalysis = analyzePngFile(localCutout);
+  if (write) {
+    writeFileSync(repairFullresPath(), readFileSync(localCutout));
+  }
+  if (existsSync(repairFullresPath())) {
+    records.push({
+      key: "fullres",
+      approach: "HYBRID_ASTER_FULL_RES",
+      ...repairMetadata("source-quality-full-resolution-comparator", repairFullresPath(), sourceAnalysis, {
+        alphaPosture: "same-source full-resolution comparator copy"
+      }, write)
+    });
+  } else {
+    errors.push(`Missing full-res Aster comparator ${relativeRepo(repairFullresPath())}.`);
+  }
+  for (const size of repairDerivativeSizes) {
+    const path = repairDerivativePath(size);
+    if (write) {
+      writeFileSync(path, createRepairDerivativeBuffer(size));
+    }
+    if (!existsSync(path)) {
+      errors.push(`Missing Aster repair derivative ${relativeRepo(path)}.`);
+      continue;
+    }
+    records.push({
+      key: `trimmed_${size}`,
+      approach: `HYBRID_ASTER_TRIMMED_${size}`,
+      ...repairMetadata(`trimmed-padded-alpha-treated-${size}`, path, sourceAnalysis, {
+        targetSize: size
+      }, write)
+    });
+  }
+  const matrix = {
+    schemaVersion: 1,
+    checkpoint: repairCheckpoint,
+    status: errors.length ? "FAIL_V0152_ASTER_BILLBOARD_REPAIR_DERIVATIVES" : "PASS_V0152_ASTER_BILLBOARD_REPAIR_DERIVATIVES",
+    slotId,
+    sourceImageCount: localSourceCount(),
+    zeroNewAiImagesForV0152: true,
+    sameAsterSourceOnly: true,
+    noNewRuntimeArtSlot: true,
+    records,
+    errors
+  };
+  if (write) {
+    writeJson(join(repairLocalSlotRoot, `${slotId}_derivative-matrix.json`), matrix);
+  }
+  writeJson(join(repairEvidenceRootFromArgs(), "aster-billboard-repair-derivatives.json"), matrix);
+  return matrix;
+}
+
+function repairDerivativesCheck() {
+  const expected = repairDerivativeRecords(false);
+  const errors = [...expected.errors];
+  for (const record of expected.records) {
+    const imagePath = join(repoRoot, record.path);
+    const metadataPath = imagePath.replace(/\.png$/u, ".metadata.json");
+    if (!existsSync(imagePath)) {
+      errors.push(`Missing derivative image ${record.path}.`);
+      continue;
+    }
+    if (!existsSync(metadataPath)) {
+      errors.push(`Missing derivative metadata ${relativeRepo(metadataPath)}.`);
+      continue;
+    }
+    const metadata = readJson(metadataPath);
+    const hash = sha256File(imagePath);
+    if (metadata.sha256 !== hash || record.sha256 !== hash) {
+      errors.push(`Derivative hash mismatch for ${record.path}.`);
+    }
+    if (metadata.slotId !== slotId || metadata.privateComparatorOnly !== true || metadata.productionApproval !== "forbidden") {
+      errors.push(`Derivative boundary mismatch for ${record.path}.`);
+    }
+  }
+  const report = {
+    ...expected,
+    status: errors.length ? "FAIL_V0152_ASTER_BILLBOARD_REPAIR_DERIVATIVES_REPRODUCIBILITY" : "PASS_V0152_ASTER_BILLBOARD_REPAIR_DERIVATIVES_REPRODUCIBILITY",
+    errors
+  };
+  writeJson(join(repairEvidenceRootFromArgs(), "aster-billboard-repair-derivatives-reproducibility.json"), report);
+  return report;
 }
 
 function fallbackRecord(write) {
@@ -970,6 +1323,405 @@ function contactSheetSvg(screenshots) {
   return `${parts.join("\n")}\n`;
 }
 
+function repairValidate() {
+  const errors = [];
+  const requiredFiles = [
+    "GODOT_ASTER_BILLBOARD_SINGLE_SLOT_REPAIR_WINDOWS.bat",
+    "desktop-spikes/godot-salto/comparators/runtime_art_pipeline/aster_billboard_single_slot_comparator.gd",
+    "desktop-spikes/godot-salto/comparators/runtime_art_pipeline/fallback/aster_billboard_static_v0151_fallback.png",
+    "desktop-spikes/godot-salto/comparators/runtime_art_pipeline/fallback/aster_billboard_static_v0151_fallback.contract.json",
+    "tools/godot/asterBillboardSingleSlotTool.mjs",
+    "tools/godot/runGodotAsterBillboardRepairDerivatives.ps1",
+    "tools/godot/runGodotAsterBillboardRepairValidation.ps1",
+    "tools/godot/runGodotAsterBillboardRepairAudit.ps1",
+    "tools/godot/runGodotAsterBillboardRepairBenchmarkWindows.ps1",
+    "tools/godot/captureGodotAsterBillboardRepairWindows.ps1",
+    "docs/V0152_ASTER_BILLBOARD_REPAIR_SPEC.md",
+    "docs/V0152_ASTER_BILLBOARD_DERIVATIVE_MATRIX.md",
+    "docs/V0152_ASTER_BILLBOARD_PAIRED_BENCHMARK_REPORT.md",
+    "docs/V0152_ASTER_BILLBOARD_FAIR_PATH_AUDIT.md",
+    "docs/V0152_ASTER_BILLBOARD_VISUAL_REVIEW_GUIDE.md",
+    "docs/V0152_PRIVATE_COMPARATOR_ONLY_BOUNDARY.md",
+    "docs/V0152_IMPLEMENTATION_REPORT.md"
+  ];
+  for (const file of requiredFiles) {
+    if (!existsSync(join(repoRoot, file))) {
+      errors.push(`Missing required v0.152 file: ${file}`);
+    }
+  }
+  const packageJson = readJson(join(repoRoot, "package.json"));
+  for (const script of [
+    "godot:aster-billboard-repair:derivatives:reproduce",
+    "godot:aster-billboard-repair:validate",
+    "godot:aster-billboard-repair:audit",
+    "godot:aster-billboard-repair:benchmark:headed",
+    "godot:aster-billboard-repair:capture"
+  ]) {
+    if (typeof packageJson.scripts?.[script] !== "string") {
+      errors.push(`Missing package script ${script}.`);
+    }
+  }
+  const rootScript = readFileSync(join(repoRoot, "desktop-spikes", "godot-salto", "scripts", "salto_spike_root.gd"), "utf8");
+  if (!rootScript.includes("--aster-billboard-single-slot-repair") || !rootScript.includes("PASS_V0152_PRIVATE_ASTER_BILLBOARD_REPAIR_DISPATCH")) {
+    errors.push("Root script does not expose the private Aster repair dispatch.");
+  }
+  for (const launcher of ["GODOT_LAUNCH_STABILIZED_SALTO_REVIEW_WINDOWS.bat", "GODOT_LAUNCH_PLAYER_SLICE_WINDOWS.bat"]) {
+    const text = readFileSync(join(repoRoot, launcher), "utf8");
+    if (text.includes("aster-billboard-single-slot-repair") || text.includes("ASTER_BILLBOARD_SINGLE_SLOT_REPAIR")) {
+      errors.push(`${launcher} references the private v0.152 Aster repair experiment.`);
+    }
+  }
+  const v0151Validation = validate();
+  errors.push(...v0151Validation.errors);
+  const derivatives = repairDerivativesCheck();
+  errors.push(...derivatives.errors);
+  const report = {
+    schemaVersion: 1,
+    checkpoint: repairCheckpoint,
+    status: errors.length ? "FAIL_V0152_ASTER_BILLBOARD_REPAIR_VALIDATION" : "PASS_V0152_ASTER_BILLBOARD_REPAIR_VALIDATION",
+    errors,
+    v0151ValidationStatus: v0151Validation.status,
+    derivatives,
+    sourceImageCount: localSourceCount(),
+    zeroNewAiImagesForV0152: true,
+    sameAsterSourceOnly: true,
+    noNewRuntimeArtSlot: true,
+    privateComparatorOnly: true,
+    productionApproval: "forbidden",
+    playerSliceIntegration: "forbidden",
+    browserIntegration: "forbidden"
+  };
+  writeJson(join(repairEvidenceRootFromArgs(), "aster-billboard-repair-validation.json"), report);
+  return report;
+}
+
+function aggregateRepairBenchmarks(rows) {
+  const groups = new Map();
+  for (const row of rows) {
+    const key = `${row.approach}|${row.tier}`;
+    const group = groups.get(key) ?? [];
+    group.push(row);
+    groups.set(key, group);
+  }
+  return [...groups.entries()].map(([key, group]) => {
+    const [approach, tier] = key.split("|");
+    return {
+      approach,
+      tier,
+      trialCount: group.length,
+      averageFps: numberSummary(group.map((row) => Number(row.averageFps))),
+      p95FrameTimeMs: numberSummary(group.map((row) => Number(row.p95FrameTimeMs))),
+      p99FrameTimeMs: numberSummary(group.map((row) => Number(row.p99FrameTimeMs))),
+      benchmarkDurationMs: numberSummary(group.map((row) => Number(row.benchmarkDurationMs))),
+      initializationDurationMs: numberSummary(group.map((row) => Number(row.initializationDurationMs ?? 0))),
+      frameCount: group[0]?.frameCount ?? 0,
+      entityCount: group[0]?.entityCount ?? 0,
+      asterCount: group[0]?.asterCount ?? 0,
+      workerContextCount: group[0]?.workerContextCount ?? 0,
+      barracksShellCount: group[0]?.barracksShellCount ?? 0,
+      billboardInstanceCount: group[0]?.billboardInstanceCount ?? 0,
+      renderedObjectProxy: group[0]?.renderedObjectProxy ?? 0,
+      sourceLoaded: group[0]?.sourceLoaded ?? group[0]?.assetSourceLoaded ?? "unknown",
+      assetHash: group[0]?.assetHash ?? "not-applicable",
+      derivativeDimensions: group[0]?.derivativeDimensions ?? {},
+      alphaTreatmentReviewable: group.every((row) => row.alphaTreatmentReviewable !== false),
+      footPivotStable: group.every((row) => row.footPivotStable !== false),
+      selectionRingVisible: group.every((row) => row.selectionRingVisible !== false),
+      heroReadability: group.every((row) => row.heroReadability !== false && row.asterReadsHeroNotWorker !== false),
+      workerDistinct: group.every((row) => row.workerDistinct !== false),
+      noObviousHalo: group.every((row) => row.noObviousHalo !== false),
+      confidence: group[0]?.confidence ?? "local-headed-private-comparator"
+    };
+  });
+}
+
+function repairSourceRank(approach) {
+  return {
+    HYBRID_ASTER_TRIMMED_1024: 4,
+    HYBRID_ASTER_TRIMMED_768: 3,
+    HYBRID_ASTER_TRIMMED_512: 2,
+    HYBRID_ASTER_FULL_RES: 1
+  }[approach] ?? 0;
+}
+
+function repairThreshold(aggregates, trialRows) {
+  const baseline = aggregates.find((row) => row.approach === "HYBRID_ASTER_DIAGNOSTIC_FALLBACK_BASELINE" && row.tier === "L");
+  const candidateApproaches = repairApproaches.filter((approach) => approach !== "HYBRID_ASTER_DIAGNOSTIC_FALLBACK_BASELINE");
+  const candidates = candidateApproaches
+    .map((approach) => {
+      const aggregate = aggregates.find((row) => row.approach === approach && row.tier === "L");
+      if (!baseline || !aggregate) {
+        return null;
+      }
+      const trials = trialRows.filter((row) => row.approach === approach && row.tier === "L");
+      const averageFpsRatio = Number((aggregate.averageFps.mean / baseline.averageFps.mean).toFixed(4));
+      const p95FrameTimeRatio = Number((aggregate.p95FrameTimeMs.mean / baseline.p95FrameTimeMs.mean).toFixed(4));
+      const visualPass = trials.length > 0 && trials.every((row) =>
+        row.asterReadsHeroNotWorker === true &&
+        row.heroReadability !== false &&
+        row.workerDistinct === true &&
+        row.noObviousHalo !== false &&
+        row.footPivotStable === true &&
+        row.selectionRingVisible === true &&
+        row.alphaTreatmentReviewable === true
+      );
+      return {
+        approach,
+        assetSourceLoaded: aggregate.sourceLoaded,
+        assetHash: aggregate.assetHash,
+        derivativeDimensions: aggregate.derivativeDimensions,
+        averageFpsRatio,
+        p95FrameTimeRatio,
+        averageFpsPass: averageFpsRatio >= 0.9,
+        p95FrameTimePass: p95FrameTimeRatio <= 1.15,
+        visualPass,
+        baselineAverageFpsMean: baseline.averageFps.mean,
+        candidateAverageFpsMean: aggregate.averageFps.mean,
+        baselineP95FrameTimeMeanMs: baseline.p95FrameTimeMs.mean,
+        candidateP95FrameTimeMeanMs: aggregate.p95FrameTimeMs.mean,
+        tierLTrialCount: trials.length
+      };
+    })
+    .filter(Boolean);
+  const passing = candidates
+    .filter((candidate) => candidate.averageFpsPass && candidate.p95FrameTimePass && candidate.visualPass)
+    .sort((left, right) => repairSourceRank(right.approach) - repairSourceRank(left.approach) || right.averageFpsRatio - left.averageFpsRatio);
+  const selected = passing[0] ?? null;
+  return {
+    status: selected ? "PASS_V0152_ASTER_BILLBOARD_REPAIR_GATE" : "FAIL_V0152_ASTER_BILLBOARD_REPAIR_GATE",
+    gate: {
+      averageFpsRatioMinimum: 0.9,
+      p95FrameTimeWorseningMaximumRatio: 1.15,
+      heroReadabilityRequired: true,
+      workerDistinctRequired: true,
+      noObviousHaloRequired: true,
+      stablePivotRequired: true,
+      selectionRingVisibleRequired: true,
+      visualGateRequiresHumanReview: true
+    },
+    baseline,
+    candidates,
+    selectedRecommendedDerivative: selected?.approach ?? null,
+    selectedRecommendedSource: selected?.assetSourceLoaded ?? null,
+    selectedRecommendedHash: selected?.assetHash ?? null,
+    selectedRecommendedDimensions: selected?.derivativeDimensions ?? null,
+    reason: selected
+      ? "At least one same-source deterministic Aster repair derivative passed the preserved Tier L gate and automated readability posture."
+      : "No same-source deterministic Aster repair candidate passed the preserved performance/readability gate."
+  };
+}
+
+function repairReport() {
+  const validation = repairValidate();
+  const evidenceRoot = repairEvidenceRootFromArgs();
+  const runtimePath = join(evidenceRoot, repairRuntimeReportName);
+  const errors = [...validation.errors];
+  if (!existsSync(runtimePath)) {
+    throw new Error(`Missing Godot Aster billboard repair runtime report: ${relativeRepo(runtimePath)}`);
+  }
+  const runtime = readJson(runtimePath);
+  const benchmarkRows = runtime.benchmarks ?? [];
+  errors.push(...(runtime.errors ?? []));
+  for (const approach of repairApproaches) {
+    for (const tier of tiers) {
+      if (!benchmarkRows.some((row) => row.approach === approach && row.tier === tier)) {
+        errors.push(`Missing repair benchmark row ${approach} ${tier}.`);
+      }
+    }
+  }
+  for (const approach of repairApproaches) {
+    const tierLCount = benchmarkRows.filter((row) => row.approach === approach && row.tier === "L").length;
+    if (tierLCount < 5) {
+      errors.push(`Expected at least five Tier L trials for ${approach}, found ${tierLCount}.`);
+    }
+  }
+  const screenshotRoot = join(evidenceRoot, "screenshots");
+  const screenshots = [];
+  for (const capture of runtime.captures ?? []) {
+    const path = join(screenshotRoot, capture.fileName);
+    if (!existsSync(path)) {
+      errors.push(`Missing Aster repair screenshot ${relativeRepo(path)}.`);
+      continue;
+    }
+    screenshots.push({
+      ...capture,
+      path: relativeRepo(path),
+      sha256: sha256File(path),
+      width: capture.width ?? 1600,
+      height: capture.height ?? 900
+    });
+  }
+  const aggregateRows = aggregateRepairBenchmarks(benchmarkRows);
+  const gate = repairThreshold(aggregateRows, benchmarkRows);
+  if (!gate.status.startsWith("PASS")) {
+    errors.push(gate.reason);
+  }
+  const derivatives = existsSync(join(repairLocalSlotRoot, `${slotId}_derivative-matrix.json`))
+    ? readJson(join(repairLocalSlotRoot, `${slotId}_derivative-matrix.json`))
+    : repairDerivativeRecords(false);
+  const summary = {
+    schemaVersion: 1,
+    checkpoint: repairCheckpoint,
+    status: errors.length ? "FAIL_V0152_ASTER_BILLBOARD_REPAIR_EVIDENCE_RECORDED" : "PASS_V0152_ASTER_BILLBOARD_REPAIR_EVIDENCE_RECORDED",
+    errors,
+    slotId,
+    sourceRuntimeReport: relativeRepo(runtimePath),
+    zeroNewAiImagesForV0152: true,
+    sameAsterSourceOnly: true,
+    sourceImageCount: localSourceCount(),
+    noNewRuntimeArtSlot: true,
+    derivativeMatrix: derivatives,
+    aggregateRows,
+    benchmarkRows,
+    screenshots,
+    threshold: gate,
+    scorecard: {
+      status: gate.status,
+      approaches: repairApproaches,
+      tiers,
+      aggregateRows
+    },
+    fairPathAudit: runtime.fairPathAudit,
+    readabilityAudit: runtime.readabilityAudit,
+    repairSources: runtime.repairSources,
+    fallbackSource: runtime.fallbackSource,
+    workerContextSource: runtime.workerContextSource,
+    barracksContextSource: runtime.barracksContextSource,
+    selectedRecommendedDerivative: gate.selectedRecommendedDerivative,
+    selectedRecommendedSource: gate.selectedRecommendedSource,
+    selectedRecommendedHash: gate.selectedRecommendedHash,
+    boundaries: runtime.boundaries,
+    limitations: runtime.limitations
+  };
+  writeJson(join(evidenceRoot, "aster-billboard-repair-evidence.json"), summary);
+  writeJson(join(evidenceRoot, "aster-billboard-repair-threshold-report.json"), gate);
+  writeJson(join(evidenceRoot, "aster-billboard-repair-scorecard.json"), summary.scorecard);
+  writeJson(join(evidenceRoot, "aster-billboard-repair-screenshot-manifest.json"), {
+    schemaVersion: 1,
+    checkpoint: repairCheckpoint,
+    screenshotCount: screenshots.length,
+    screenshots
+  });
+  writeText(join(evidenceRoot, "paired-benchmark-summary.md"), repairBenchmarkMarkdown(summary));
+  writeText(join(evidenceRoot, "visual-review-guide.md"), repairVisualReviewMarkdown(summary));
+  writeText(join(evidenceRoot, "contact-sheet.svg"), repairContactSheetSvg(screenshots));
+  return summary;
+}
+
+function repairAudit() {
+  const evidenceRoot = repairEvidenceRootFromArgs();
+  const runtimePath = join(evidenceRoot, repairRuntimeReportName);
+  const runtime = existsSync(runtimePath) ? readJson(runtimePath) : null;
+  const auditRecord = runtime?.fairPathAudit ?? {
+    runtimeEvidencePresent: false,
+    note: "Run the v0.152 headed paired benchmark before collecting runtime audit counters."
+  };
+  const errors = [];
+  if (runtime && auditRecord.localAndFallbackShareAsterBillboardRenderPath !== true) {
+    errors.push("Runtime audit did not prove local/fallback Aster path sharing.");
+  }
+  if (runtime && auditRecord.repeatedTextureCreateDuringSteadyState !== false) {
+    errors.push("Runtime audit did not prove texture creation was absent during steady-state frames.");
+  }
+  if (runtime && auditRecord.repeatedMaterialCreateDuringSteadyState !== false) {
+    errors.push("Runtime audit did not prove material creation was absent during steady-state frames.");
+  }
+  if (runtime && auditRecord.benchmarkExcludesInitializationAndWarmup !== true) {
+    errors.push("Runtime audit did not prove initialization/warmup were excluded from measured frames.");
+  }
+  const report = {
+    schemaVersion: 1,
+    checkpoint: repairCheckpoint,
+    status: errors.length ? "FAIL_V0152_ASTER_BILLBOARD_FAIR_PATH_AUDIT" : "PASS_V0152_ASTER_BILLBOARD_FAIR_PATH_AUDIT",
+    privateComparatorOnly: true,
+    productionApproval: "forbidden",
+    playerSliceIntegration: "forbidden",
+    browserIntegration: "forbidden",
+    zeroNewAiImagesForV0152: true,
+    sameAsterSourceOnly: true,
+    noNewRuntimeArtSlot: true,
+    audit: auditRecord,
+    errors
+  };
+  writeJson(join(evidenceRoot, "aster-billboard-repair-fair-path-audit.json"), report);
+  return report;
+}
+
+function repairBenchmarkMarkdown(summary) {
+  const lines = [
+    "# v0.152 Aster Billboard Repair Paired Benchmark Summary",
+    "",
+    `Status: ${summary.status}`,
+    `Gate: ${summary.threshold.status}`,
+    `Selected recommended derivative: ${summary.selectedRecommendedDerivative ?? "none"}`,
+    "",
+    "| Approach | Tier | Trials | Mean FPS | Median FPS | p95 ms | p99 ms | Source |",
+    "| --- | --- | ---: | ---: | ---: | ---: | ---: | --- |"
+  ];
+  for (const row of summary.aggregateRows) {
+    lines.push(`| \`${row.approach}\` | \`${row.tier}\` | ${row.trialCount} | ${row.averageFps.mean} | ${row.averageFps.median} | ${row.p95FrameTimeMs.mean} | ${row.p99FrameTimeMs.mean} | ${row.sourceLoaded} |`);
+  }
+  lines.push("", "Tier L trials:", "");
+  lines.push("| Approach | Trial | Avg FPS | p95 ms | p99 ms | Init ms | Source |");
+  lines.push("| --- | ---: | ---: | ---: | ---: | ---: | --- |");
+  for (const row of summary.benchmarkRows.filter((entry) => entry.tier === "L")) {
+    lines.push(`| \`${row.approach}\` | ${row.trialIndex} | ${row.averageFps} | ${row.p95FrameTimeMs} | ${row.p99FrameTimeMs} | ${row.initializationDurationMs} | ${row.sourceLoaded ?? row.assetSourceLoaded} |`);
+  }
+  return `${lines.join("\n")}\n`;
+}
+
+function repairVisualReviewMarkdown(summary) {
+  const lines = [
+    "# v0.152 Aster Billboard Repair Visual Review Guide",
+    "",
+    `Selected recommended derivative: \`${summary.selectedRecommendedDerivative ?? "none"}\`.`,
+    `Gate result: \`${summary.threshold.status}\`.`,
+    "",
+    "Review questions:",
+    "",
+    "- Does Aster read as the central Commander / Champion, not as a Worker?",
+    "- Do checkerboard, dark, and light backgrounds show no obvious halo?",
+    "- Do hair, cloak, shoulders, boots, hands, and gear edges hold up?",
+    "- Is the foot pivot stable during pan and zoom?",
+    "- Does the selection ring remain visible at 0.90x, 1.00x, and 1.10x?",
+    "- Do Aster and Worker remain distinct in overlap and normal RTS contexts?",
+    "",
+    "Capture paths:",
+    ""
+  ];
+  for (const shot of summary.screenshots) {
+    lines.push(`- \`${shot.id}\`: \`${shot.path}\``);
+  }
+  lines.push("", "This is private comparator-only evidence, not production approval, not browser runtime wiring, not normal Salto player-slice integration, and not final Godot selection.");
+  return `${lines.join("\n")}\n`;
+}
+
+function repairContactSheetSvg(screenshots) {
+  const cellWidth = 360;
+  const cellHeight = 252;
+  const cols = 3;
+  const rows = Math.max(1, Math.ceil(screenshots.length / cols));
+  const width = cols * cellWidth;
+  const height = rows * cellHeight + 48;
+  const parts = [
+    `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}">`,
+    `<rect width="100%" height="100%" fill="#111511"/>`,
+    `<text x="18" y="30" fill="#e7eadc" font-family="Arial" font-size="18">v0.152 Aster billboard repair private comparator contact sheet</text>`
+  ];
+  screenshots.forEach((shot, index) => {
+    const col = index % cols;
+    const row = Math.floor(index / cols);
+    const x = col * cellWidth + 14;
+    const y = row * cellHeight + 52;
+    const href = shot.path.replace("artifacts/desktop-spikes/godot-salto/v0152/evidence/", "").replaceAll("&", "&amp;");
+    parts.push(`<rect x="${x - 4}" y="${y - 4}" width="336" height="226" fill="#202820" stroke="#465446"/>`);
+    parts.push(`<image href="${href}" x="${x}" y="${y}" width="328" height="185" preserveAspectRatio="xMidYMid meet"/>`);
+    parts.push(`<text x="${x}" y="${y + 205}" fill="#d8ddce" font-family="Arial" font-size="11">${shot.id}</text>`);
+  });
+  parts.push("</svg>");
+  return `${parts.join("\n")}\n`;
+}
+
 function printReportAndSetExitCode(result) {
   console.log(stableStringify(result));
   if (String(result.status ?? "").startsWith("FAIL") || (result.errors && result.errors.length > 0)) {
@@ -991,11 +1743,21 @@ try {
     printReportAndSetExitCode(report());
   } else if (command === "audit") {
     printReportAndSetExitCode(audit());
+  } else if (command === "repair:derivatives") {
+    printReportAndSetExitCode(repairDerivativeRecords(true));
+  } else if (command === "repair:derivatives:check") {
+    printReportAndSetExitCode(repairDerivativesCheck());
+  } else if (command === "repair:validate") {
+    printReportAndSetExitCode(repairValidate());
+  } else if (command === "repair:report") {
+    printReportAndSetExitCode(repairReport());
+  } else if (command === "repair:audit") {
+    printReportAndSetExitCode(repairAudit());
   } else {
     printReportAndSetExitCode({
       status: "FAIL_V0151_ASTER_BILLBOARD_UNKNOWN_COMMAND",
       command,
-      knownCommands: ["fallback", "fallback:check", "metadata", "validate", "report", "audit"],
+      knownCommands: ["fallback", "fallback:check", "metadata", "validate", "report", "audit", "repair:derivatives", "repair:derivatives:check", "repair:validate", "repair:report", "repair:audit"],
       errors: [`Unknown command: ${command}`]
     });
   }

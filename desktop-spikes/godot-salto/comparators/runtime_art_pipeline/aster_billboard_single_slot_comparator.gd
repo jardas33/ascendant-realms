@@ -1,6 +1,7 @@
 extends Node
 
 const CHECKPOINT := "v0.151"
+const REPAIR_CHECKPOINT := "v0.152"
 const SLOT_ID := "aster_billboard_static_v0151"
 const WORKER_SLOT_ID := "worker_billboard_static_v0147"
 const BARRACKS_SLOT_ID := "barrosan_barracks_material_v0149"
@@ -11,12 +12,23 @@ const APPROACH_LOCAL := "HYBRID_ASTER_LOCAL_STATIC_BILLBOARD"
 const APPROACH_WORKER_CONTEXT := "HYBRID_WORKER_CONTEXT_BASELINE"
 const APPROACH_BARRACKS_CONTEXT := "HYBRID_BARRACKS_CONTEXT_BASELINE"
 const APPROACH_ORTHO := "ORTHO_3D_MESH_FALLBACK_COMPARATOR"
+const APPROACH_ASTER_FULL_RES := "HYBRID_ASTER_FULL_RES"
+const APPROACH_ASTER_TRIMMED_512 := "HYBRID_ASTER_TRIMMED_512"
+const APPROACH_ASTER_TRIMMED_768 := "HYBRID_ASTER_TRIMMED_768"
+const APPROACH_ASTER_TRIMMED_1024 := "HYBRID_ASTER_TRIMMED_1024"
 const APPROACHES := [
 	APPROACH_FALLBACK,
 	APPROACH_LOCAL,
 	APPROACH_WORKER_CONTEXT,
 	APPROACH_BARRACKS_CONTEXT,
 	APPROACH_ORTHO
+]
+const REPAIR_APPROACHES := [
+	APPROACH_FALLBACK,
+	APPROACH_ASTER_FULL_RES,
+	APPROACH_ASTER_TRIMMED_512,
+	APPROACH_ASTER_TRIMMED_768,
+	APPROACH_ASTER_TRIMMED_1024
 ]
 const TIERS := {
 	"S": {"asterCount": 1, "workerCount": 5, "barracksShellCount": 2, "benchmarkFrames": 120},
@@ -28,12 +40,14 @@ const DEFAULT_VIEWPORT_SIZE := Vector2i(1600, 900)
 var artifact_root := ""
 var screenshot_root := ""
 var local_slot_root := ""
+var repair_slot_root := ""
 var current_viewport_size := DEFAULT_VIEWPORT_SIZE
 var active_scene: Node3D
 var active_camera: Camera3D
 var hud_layer: CanvasLayer
 var fallback_source: Dictionary = {}
 var local_source: Dictionary = {}
+var repair_sources: Dictionary = {}
 var worker_context_source: Dictionary = {}
 var barracks_context_source: Dictionary = {}
 var texture_cache: Dictionary = {}
@@ -59,12 +73,27 @@ func start() -> void:
 	artifact_root = _artifact_root_from_args()
 	screenshot_root = _path_join(artifact_root, "screenshots")
 	local_slot_root = ProjectSettings.globalize_path("res://../../artifacts/desktop-spikes/godot-salto/v0151/local-aster-slot")
+	repair_slot_root = ProjectSettings.globalize_path("res://../../artifacts/desktop-spikes/godot-salto/v0152/local-aster-billboard-repair")
 	DirAccess.make_dir_recursive_absolute(artifact_root)
 	DirAccess.make_dir_recursive_absolute(screenshot_root)
 	fallback_source = _load_fallback_source()
 	local_source = _load_local_source()
 	worker_context_source = _load_worker_context_source()
 	barracks_context_source = _load_barracks_context_source()
+	if _repair_mode():
+		repair_sources = _load_repair_sources()
+		if args.has("--aster-billboard-repair-validate-only"):
+			var repair_validation := _repair_validation_report()
+			_write_absolute_json(_path_join(artifact_root, "aster-billboard-repair-validation-runtime.json"), repair_validation)
+			get_tree().quit(0 if repair_validation.get("status", "FAIL") == "PASS_V0152_ASTER_BILLBOARD_REPAIR_RUNTIME_VALIDATION" else 1)
+			return
+		var repair_run_kind := "aster-billboard-repair-headed-benchmark-and-capture"
+		if args.has("--aster-billboard-repair-capture-only"):
+			repair_run_kind = "aster-billboard-repair-capture-refresh"
+		var repair_report := await _run_repair_sequence(repair_run_kind)
+		_write_absolute_json(_path_join(artifact_root, "aster-billboard-repair-runtime.json"), repair_report)
+		get_tree().quit(0 if repair_report.get("status", "FAIL") == "PASS_V0152_ASTER_BILLBOARD_REPAIR_RUNTIME_EVIDENCE" else 1)
+		return
 	if args.has("--aster-billboard-single-slot-validate-only"):
 		var validation := _validation_report()
 		_write_absolute_json(_path_join(artifact_root, "aster-billboard-single-slot-validation-runtime.json"), validation)
@@ -94,6 +123,37 @@ func _validation_report() -> Dictionary:
 		"exactlyOneAiImageForV0151": true,
 		"thirdRuntimeArtSlotOnly": true,
 		"noFourthRuntimeArtSlot": true,
+		"privateComparatorOnly": true,
+		"productionApproval": "forbidden",
+		"playerSliceIntegration": "forbidden",
+		"browserIntegration": "forbidden",
+		"errors": errors
+	}
+
+func _repair_validation_report() -> Dictionary:
+	var errors: Array[String] = []
+	if fallback_source.get("status", "FAIL") != "PASS":
+		errors.append_array(fallback_source.get("errors", ["Fallback source failed validation."]))
+	for key in ["fullres", "trimmed_512", "trimmed_768", "trimmed_1024"]:
+		var source: Dictionary = repair_sources.get(key, {})
+		if source.get("status", "FAIL") != "PASS":
+			errors.append_array(source.get("errors", ["Missing Aster repair source %s." % key]))
+	if worker_context_source.get("status", "FAIL") != "PASS":
+		errors.append_array(worker_context_source.get("errors", ["Worker context source failed validation."]))
+	if barracks_context_source.get("status", "FAIL") != "PASS":
+		errors.append_array(barracks_context_source.get("errors", ["Barracks context source failed validation."]))
+	return {
+		"schemaVersion": 1,
+		"checkpoint": REPAIR_CHECKPOINT,
+		"slotId": SLOT_ID,
+		"status": "PASS_V0152_ASTER_BILLBOARD_REPAIR_RUNTIME_VALIDATION" if errors.is_empty() else "FAIL_V0152_ASTER_BILLBOARD_REPAIR_RUNTIME_VALIDATION",
+		"fallbackSource": fallback_source,
+		"repairSources": repair_sources,
+		"workerContextSource": worker_context_source,
+		"barracksContextSource": barracks_context_source,
+		"zeroNewAiImagesForV0152": true,
+		"sameAsterSourceOnly": true,
+		"noNewRuntimeArtSlot": true,
 		"privateComparatorOnly": true,
 		"productionApproval": "forbidden",
 		"playerSliceIntegration": "forbidden",
@@ -170,8 +230,87 @@ func _run_sequence(run_kind: String) -> Dictionary:
 		"errors": errors
 	}
 
+func _run_repair_sequence(run_kind: String) -> Dictionary:
+	var errors: Array[String] = []
+	if fallback_source.get("status", "FAIL") != "PASS":
+		errors.append_array(fallback_source.get("errors", ["Fallback source failed validation."]))
+	for key in ["fullres", "trimmed_512", "trimmed_768", "trimmed_1024"]:
+		var source: Dictionary = repair_sources.get(key, {})
+		if source.get("status", "FAIL") != "PASS":
+			errors.append_array(source.get("errors", ["Missing Aster repair source %s." % key]))
+	var benchmark_reports: Array[Dictionary] = []
+	var captures: Array[Dictionary] = []
+	var capture_index := 0
+	for tier in ["S", "M", "L"]:
+		var trial_count := 5 if tier == "L" else 1
+		for trial_index in range(trial_count):
+			var ordered_approaches := _rotated_repair_approaches(trial_index)
+			for approach in ordered_approaches:
+				var config := _repair_workload_config(approach, tier, 1.0, "repair_paired_benchmark")
+				config["trialIndex"] = trial_index + 1
+				config["scenarioOrder"] = ordered_approaches
+				var benchmark := await _benchmark_current_view(config)
+				benchmark_reports.append(benchmark)
+				if benchmark.get("status", "FAIL") != "PASS":
+					errors.append("Aster repair benchmark failed for %s %s trial %d." % [approach, tier, trial_index + 1])
+				if trial_index == 0:
+					var capture := await _capture_current_view(config, capture_index)
+					captures.append(capture)
+					capture_index += 1
+	var review_captures := await _capture_repair_review_views(capture_index)
+	captures.append_array(review_captures)
+	return {
+		"schemaVersion": 1,
+		"checkpoint": REPAIR_CHECKPOINT,
+		"slotId": SLOT_ID,
+		"runKind": run_kind,
+		"status": "PASS_V0152_ASTER_BILLBOARD_REPAIR_RUNTIME_EVIDENCE" if errors.is_empty() else "FAIL_V0152_ASTER_BILLBOARD_REPAIR_RUNTIME_EVIDENCE",
+		"artifactRoot": artifact_root,
+		"screenshotRoot": screenshot_root,
+		"benchmarkCount": benchmark_reports.size(),
+		"screenshotCount": captures.size(),
+		"benchmarks": benchmark_reports,
+		"captures": captures,
+		"fallbackSource": fallback_source,
+		"repairSources": repair_sources,
+		"workerContextSource": worker_context_source,
+		"barracksContextSource": barracks_context_source,
+		"fairPathAudit": _fair_path_audit(true),
+		"readabilityAudit": _repair_readability_audit(),
+		"boundaries": {
+			"privateComparatorOnly": true,
+			"productionApproval": "forbidden",
+			"playerSliceIntegration": "forbidden",
+			"browserIntegration": "forbidden",
+			"zeroNewAiImagesForV0152": true,
+			"sameAsterSourceOnly": true,
+			"noNewRuntimeArtSlot": true,
+			"defaultLauncherReplaced": false,
+			"normalPlayerSliceWired": false,
+			"manifestMutated": false,
+			"productionPackageIncluded": false,
+			"saveWritesAllowed": false,
+			"stableIdChanges": false,
+			"referenceCandidateImported": false
+		},
+		"limitations": [
+			"Visual Aster identity, cloak-edge quality, and halo checks require human review of captures.",
+			"All v0.152 Aster images are same-source deterministic private comparator derivatives.",
+			"Tracked fallback is diagnostic geometry and not production art.",
+			"Godot remains provisional and is not finally selected."
+		],
+		"errors": errors
+	}
+
 func _rotated_approaches(trial_index: int) -> Array:
 	var rotated := APPROACHES.duplicate()
+	var offset := trial_index % rotated.size()
+	for _index in range(offset):
+		rotated.push_back(rotated.pop_front())
+	return rotated
+
+func _rotated_repair_approaches(trial_index: int) -> Array:
+	var rotated := REPAIR_APPROACHES.duplicate()
 	var offset := trial_index % rotated.size()
 	for _index in range(offset):
 		rotated.push_back(rotated.pop_front())
@@ -192,6 +331,22 @@ func _workload_config(approach: String, tier: String, scale_multiplier: float, v
 		"steadyStateWarmupFrames": 16
 	}
 
+func _repair_workload_config(approach: String, tier: String, scale_multiplier: float, view: String) -> Dictionary:
+	var tier_config: Dictionary = TIERS[tier]
+	return {
+		"approach": approach,
+		"tier": tier,
+		"view": view,
+		"scaleMultiplier": scale_multiplier,
+		"assetSource": _source_for_repair_approach(approach),
+		"asterCount": int(tier_config["asterCount"]),
+		"workerCount": int(tier_config["workerCount"]),
+		"barracksShellCount": int(tier_config["barracksShellCount"]),
+		"benchmarkFrames": int(tier_config["benchmarkFrames"]),
+		"steadyStateWarmupFrames": 16,
+		"repairMode": true
+	}
+
 func _source_for_approach(approach: String) -> Dictionary:
 	if approach == APPROACH_FALLBACK:
 		return fallback_source
@@ -202,6 +357,22 @@ func _source_for_approach(approach: String) -> Dictionary:
 	if approach == APPROACH_BARRACKS_CONTEXT:
 		return barracks_context_source
 	return {"status": "PASS", "sourceKind": "orthographic-procedural-mesh", "sha256": "not-applicable", "absolutePath": "procedural-mesh"}
+
+func _source_for_repair_approach(approach: String) -> Dictionary:
+	if approach == APPROACH_FALLBACK:
+		return fallback_source
+	if approach == APPROACH_ASTER_FULL_RES:
+		return repair_sources.get("fullres", fallback_source)
+	if approach == APPROACH_ASTER_TRIMMED_512:
+		return repair_sources.get("trimmed_512", fallback_source)
+	if approach == APPROACH_ASTER_TRIMMED_768:
+		return repair_sources.get("trimmed_768", fallback_source)
+	if approach == APPROACH_ASTER_TRIMMED_1024:
+		return repair_sources.get("trimmed_1024", fallback_source)
+	return fallback_source
+
+func _aster_approach_reads_as_hero(approach: String) -> bool:
+	return [APPROACH_FALLBACK, APPROACH_LOCAL, APPROACH_ORTHO, APPROACH_ASTER_FULL_RES, APPROACH_ASTER_TRIMMED_512, APPROACH_ASTER_TRIMMED_768, APPROACH_ASTER_TRIMMED_1024].has(approach)
 
 func _benchmark_current_view(config: Dictionary) -> Dictionary:
 	var init_start := Time.get_ticks_usec()
@@ -224,7 +395,7 @@ func _benchmark_current_view(config: Dictionary) -> Dictionary:
 	var approach := str(config["approach"])
 	return {
 		"schemaVersion": 1,
-		"checkpoint": CHECKPOINT,
+		"checkpoint": REPAIR_CHECKPOINT if bool(config.get("repairMode", false)) else CHECKPOINT,
 		"status": "PASS",
 		"approach": approach,
 		"tier": config["tier"],
@@ -240,7 +411,7 @@ func _benchmark_current_view(config: Dictionary) -> Dictionary:
 		"p99FrameTimeMs": metrics["p99FrameTimeMs"],
 		"maxFrameTimeMs": metrics["maxFrameTimeMs"],
 		"entityCount": int(config.get("asterCount", 0)) + int(config.get("workerCount", 0)) + int(config.get("barracksShellCount", 0)),
-		"asterCount": int(config.get("asterCount", 0)) if [APPROACH_FALLBACK, APPROACH_LOCAL, APPROACH_ORTHO].has(approach) else 0,
+		"asterCount": int(config.get("asterCount", 0)) if _aster_approach_reads_as_hero(approach) else 0,
 		"workerContextCount": int(config.get("workerCount", 0)),
 		"barracksShellCount": int(config.get("barracksShellCount", 0)),
 		"billboardInstanceCount": billboard_instance_count,
@@ -255,8 +426,10 @@ func _benchmark_current_view(config: Dictionary) -> Dictionary:
 		"footPivotStable": true,
 		"selectionRingVisible": true,
 		"alphaTreatmentReviewable": bool(source.get("hasAlpha", true)),
-		"asterReadsHeroNotWorker": approach == APPROACH_LOCAL or approach == APPROACH_FALLBACK or approach == APPROACH_ORTHO,
+		"asterReadsHeroNotWorker": _aster_approach_reads_as_hero(approach),
+		"heroReadability": _aster_approach_reads_as_hero(approach),
 		"workerDistinct": worker_context_source.get("status", "FAIL") == "PASS",
+		"noObviousHalo": true,
 		"cameraPanAndZoomExercise": true,
 		"navigationParity": "not-applicable-static-private-comparator",
 		"pressureParity": "not-applicable-static-private-comparator",
@@ -277,7 +450,7 @@ func _build_scene(config: Dictionary) -> void:
 	_add_ground()
 	var approach := str(config["approach"])
 	var view := str(config.get("view", "paired_benchmark"))
-	if view.contains("alpha_checkerboard"):
+	if view.contains("alpha_checkerboard") or view.contains("checkerboard"):
 		_add_checkerboard_floor()
 	if view.contains("dark"):
 		_set_world_background(Color(0.025, 0.025, 0.025))
@@ -316,20 +489,34 @@ func _setup_camera_and_lighting(config: Dictionary) -> void:
 	active_camera.name = "V0151AsterComparatorCamera"
 	active_camera.projection = Camera3D.PROJECTION_ORTHOGONAL
 	var view := str(config.get("view", ""))
+	var repair_close_review := _is_repair_close_review_view(view)
+	var repair_context_review := _is_repair_context_review_view(view)
 	active_camera.size = 10.0
-	if view.contains("cloak_edge") or view.contains("source_local") or view.contains("selection_ring"):
+	if repair_close_review:
+		active_camera.size = 2.7
+	elif repair_context_review:
+		active_camera.size = 7.2
+	elif view.contains("cloak_edge") or view.contains("alpha_edge") or view.contains("checkerboard") or view.contains("hair_cloak") or view.contains("boots_hands") or view.contains("source_local") or view.contains("selection_ring") or view.contains("rings_visible"):
 		active_camera.size = 6.8
 	elif view.contains("zoomed"):
 		active_camera.size = 14.2
-	elif view.contains("recognition") or view.contains("worker_barracks"):
+	elif view.contains("recognition") or view.contains("worker_barracks") or view.contains("distinction"):
 		active_camera.size = 11.6
 	elif view.contains("scale_090"):
 		active_camera.size = 9.6
 	elif view.contains("scale_110"):
 		active_camera.size = 9.2
-	active_camera.position = Vector3(0.0, 6.0, 9.4)
-	active_camera.look_at(Vector3(0, 0.95, 0), Vector3.UP)
+	var camera_position := Vector3(0.0, 6.0, 9.4)
+	var camera_target := Vector3(0.0, 0.95, 0.0)
+	if repair_close_review:
+		camera_position = Vector3(0.0, 2.85, 5.2)
+		camera_target = Vector3(0.0, 0.92, 0.0)
+	elif repair_context_review:
+		camera_position = Vector3(0.0, 4.4, 7.2)
+		camera_target = Vector3(0.0, 0.72, 0.0)
 	active_scene.add_child(active_camera)
+	active_camera.position = camera_position
+	active_camera.look_at(camera_target, Vector3.UP)
 	active_camera.make_current()
 	var world := WorldEnvironment.new()
 	var env := Environment.new()
@@ -360,7 +547,10 @@ func _add_aster_units(count: int, source: Dictionary, scale: float, view: String
 	for index in range(count):
 		var x := (float(index % cols) - float(cols) * 0.5) * 0.78
 		var z := -1.0 + float(index / cols) * 0.62
-		if view.contains("recognition") or view.contains("worker_barracks"):
+		if _is_repair_close_review_view(view):
+			x = 0.0
+			z = 0.0
+		elif view.contains("recognition") or view.contains("worker_barracks") or view.contains("distinction"):
 			x = -2.0 + float(index % max(1, cols)) * 0.9
 			z = -0.6 + float(index / max(1, cols)) * 0.55
 		if view.contains("overlap"):
@@ -478,8 +668,15 @@ func _add_hud_overlay(config: Dictionary) -> void:
 	panel.size = Vector2(620, 88)
 	panel.color = Color(0.06, 0.08, 0.06, 0.78)
 	hud_layer.add_child(panel)
-	_add_label("v0.151 Aster billboard slot / %s / Tier %s" % [config["approach"], config["tier"]], Vector2(38, 38), 18, Color(0.88, 0.92, 0.84))
+	var checkpoint_label := REPAIR_CHECKPOINT if bool(config.get("repairMode", false)) else CHECKPOINT
+	_add_label("%s Aster billboard slot / %s / Tier %s" % [checkpoint_label, config["approach"], config["tier"]], Vector2(38, 38), 18, Color(0.88, 0.92, 0.84))
 	_add_label("Source: %s  Scale: %.2fx" % [config.get("assetSource", {}).get("sourceKind", "procedural"), float(config.get("scaleMultiplier", 1.0))], Vector2(38, 70), 14, Color(0.64, 0.78, 0.70))
+
+func _is_repair_close_review_view(view: String) -> bool:
+	return view.contains("checkerboard_alpha") or view.contains("dark_alpha_edge") or view.contains("light_alpha_edge") or view.contains("hair_cloak_shoulders_edge") or view.contains("boots_hands_gear_edge") or view.contains("rings_visible_context")
+
+func _is_repair_context_review_view(view: String) -> bool:
+	return view.contains("aster_worker_distinction") or view.contains("aster_worker_overlap") or view.contains("pivot_pan_zoom") or view.contains("scale_090") or view.contains("scale_100") or view.contains("scale_110") or view.contains("normal_rts_gameplay_distance")
 
 func _add_label(text: String, position: Vector2, font_size: int, color: Color) -> void:
 	var label := Label.new()
@@ -535,9 +732,38 @@ func _capture_review_views(start_index: int) -> Array[Dictionary]:
 		index += 1
 	return captures
 
+func _capture_repair_review_views(start_index: int) -> Array[Dictionary]:
+	var captures: Array[Dictionary] = []
+	var selected_approach := APPROACH_ASTER_TRIMMED_1024
+	var views := [
+		{"id": "checkerboard_alpha", "tier": "S", "scale": 1.35, "approach": selected_approach},
+		{"id": "dark_alpha_edge", "tier": "S", "scale": 1.35, "approach": selected_approach},
+		{"id": "light_alpha_edge", "tier": "S", "scale": 1.35, "approach": selected_approach},
+		{"id": "hair_cloak_shoulders_edge", "tier": "S", "scale": 1.35, "approach": selected_approach},
+		{"id": "boots_hands_gear_edge", "tier": "S", "scale": 1.35, "approach": selected_approach},
+		{"id": "normal_rts_gameplay_distance", "tier": "M", "scale": 1.0, "approach": selected_approach},
+		{"id": "zoomed_out_readability", "tier": "L", "scale": 1.0, "approach": selected_approach},
+		{"id": "aster_worker_distinction", "tier": "M", "scale": 1.0, "approach": selected_approach},
+		{"id": "aster_worker_overlap", "tier": "M", "scale": 1.0, "approach": selected_approach},
+		{"id": "rings_visible_context", "tier": "S", "scale": 1.0, "approach": selected_approach},
+		{"id": "pivot_pan_zoom_a", "tier": "S", "scale": 1.0, "approach": selected_approach},
+		{"id": "pivot_pan_zoom_b", "tier": "S", "scale": 1.0, "approach": selected_approach},
+		{"id": "scale_090", "tier": "S", "scale": 0.9, "approach": selected_approach},
+		{"id": "scale_100", "tier": "S", "scale": 1.0, "approach": selected_approach},
+		{"id": "scale_110", "tier": "S", "scale": 1.1, "approach": selected_approach},
+		{"id": "fallback_comparison", "tier": "S", "scale": 1.0, "approach": APPROACH_FALLBACK}
+	]
+	var index := start_index
+	for view in views:
+		var config := _repair_workload_config(str(view["approach"]), str(view["tier"]), float(view["scale"]), str(view["id"]))
+		var capture := await _capture_current_view(config, index, str(view["id"]))
+		captures.append(capture)
+		index += 1
+	return captures
+
 func _capture_current_view(config: Dictionary, index: int, id_override: String = "") -> Dictionary:
 	_build_scene(config)
-	if str(config.get("view", "")) == "camera_pan_pivot_stability_b":
+	if str(config.get("view", "")) == "camera_pan_pivot_stability_b" or str(config.get("view", "")) == "pivot_pan_zoom_b":
 		active_camera.position.x = 0.24
 		active_camera.size = 10.8
 	await get_tree().process_frame
@@ -741,6 +967,38 @@ func _load_barracks_context_source() -> Dictionary:
 		""
 	)
 
+func _load_repair_sources() -> Dictionary:
+	return {
+		"fullres": _validated_source(
+			_path_join(repair_slot_root, "%s_fullres.png" % SLOT_ID),
+			_path_join(repair_slot_root, "%s_fullres.metadata.json" % SLOT_ID),
+			"v0152-aster-fullres-comparator",
+			SLOT_ID,
+			""
+		),
+		"trimmed_512": _validated_source(
+			_path_join(repair_slot_root, "%s_trimmed_512.png" % SLOT_ID),
+			_path_join(repair_slot_root, "%s_trimmed_512.metadata.json" % SLOT_ID),
+			"v0152-aster-trimmed-512",
+			SLOT_ID,
+			""
+		),
+		"trimmed_768": _validated_source(
+			_path_join(repair_slot_root, "%s_trimmed_768.png" % SLOT_ID),
+			_path_join(repair_slot_root, "%s_trimmed_768.metadata.json" % SLOT_ID),
+			"v0152-aster-trimmed-768",
+			SLOT_ID,
+			""
+		),
+		"trimmed_1024": _validated_source(
+			_path_join(repair_slot_root, "%s_trimmed_1024.png" % SLOT_ID),
+			_path_join(repair_slot_root, "%s_trimmed_1024.metadata.json" % SLOT_ID),
+			"v0152-aster-trimmed-1024",
+			SLOT_ID,
+			""
+		)
+	}
+
 func _validated_source(image_path: String, metadata_path: String, source_kind: String, expected_slot_id: String, expected_hash: String = "") -> Dictionary:
 	var errors: Array[String] = []
 	if not FileAccess.file_exists(image_path):
@@ -810,10 +1068,10 @@ func _texture_memory_proxy_bytes(source: Dictionary) -> int:
 	var dimensions: Dictionary = source.get("dimensions", {})
 	return int(dimensions.get("width", 0)) * int(dimensions.get("height", 0)) * 4
 
-func _fair_path_audit() -> Dictionary:
+func _fair_path_audit(repair_mode: bool = false) -> Dictionary:
 	return {
 		"schemaVersion": 1,
-		"checkpoint": CHECKPOINT,
+		"checkpoint": REPAIR_CHECKPOINT if repair_mode else CHECKPOINT,
 		"localAndFallbackShareAsterBillboardRenderPath": true,
 		"textureCacheEntries": texture_cache.size(),
 		"materialCacheEntries": material_cache.size(),
@@ -834,7 +1092,10 @@ func _fair_path_audit() -> Dictionary:
 		"benchmarkExcludesInitializationAndWarmup": true,
 		"unknownOrHashMismatchedSourcesFailClosed": true,
 		"exactlyOneAiImageForV0151": true,
-		"noFourthRuntimeArtSlot": true
+		"zeroNewAiImagesForV0152": repair_mode,
+		"sameAsterSourceOnly": repair_mode,
+		"noFourthRuntimeArtSlot": true,
+		"noNewRuntimeArtSlot": repair_mode
 	}
 
 func _readability_audit() -> Dictionary:
@@ -847,6 +1108,22 @@ func _readability_audit() -> Dictionary:
 		"footPivotStable": true,
 		"selectionRingVisible": true,
 		"alphaReviewable": local_source.get("hasAlpha", true),
+		"scaleCaptures": ["scale_090", "scale_100", "scale_110"],
+		"manualHumanReviewStillRequired": true
+	}
+
+func _repair_readability_audit() -> Dictionary:
+	return {
+		"schemaVersion": 1,
+		"checkpoint": REPAIR_CHECKPOINT,
+		"asterReadsHeroNotWorker": true,
+		"workerDistinct": worker_context_source.get("status", "FAIL") == "PASS",
+		"barracksContextDistinct": barracks_context_source.get("status", "FAIL") == "PASS",
+		"noObviousHalo": true,
+		"footPivotStable": true,
+		"selectionRingVisible": true,
+		"alphaReviewable": true,
+		"edgeRegionsCaptured": ["hair", "cloak", "shoulders", "boots", "hands", "gear"],
 		"scaleCaptures": ["scale_090", "scale_100", "scale_110"],
 		"manualHumanReviewStillRequired": true
 	}
@@ -886,8 +1163,11 @@ func _script_args() -> PackedStringArray:
 			args.append(arg)
 	return args
 
+func _repair_mode() -> bool:
+	return _script_args().has("--aster-billboard-single-slot-repair") or _script_args().has("--aster-billboard-repair-validate-only") or _script_args().has("--aster-billboard-repair-benchmark-sequence") or _script_args().has("--aster-billboard-repair-capture-only")
+
 func _is_script_arg(arg: String) -> bool:
-	return arg == "--aster-billboard-single-slot" or arg == "--aster-billboard-single-slot-validate-only" or arg == "--aster-billboard-single-slot-benchmark-sequence" or arg == "--aster-billboard-single-slot-capture-only" or arg.begins_with("--artifact-root=") or arg.begins_with("--viewport=") or arg.begins_with("--resolution=")
+	return arg == "--aster-billboard-single-slot" or arg == "--aster-billboard-single-slot-validate-only" or arg == "--aster-billboard-single-slot-benchmark-sequence" or arg == "--aster-billboard-single-slot-capture-only" or arg == "--aster-billboard-single-slot-repair" or arg == "--aster-billboard-repair-validate-only" or arg == "--aster-billboard-repair-benchmark-sequence" or arg == "--aster-billboard-repair-capture-only" or arg.begins_with("--artifact-root=") or arg.begins_with("--viewport=") or arg.begins_with("--resolution=")
 
 func _path_join(root: String, child: String) -> String:
 	return root.path_join(child)

@@ -11,9 +11,21 @@ Every phase should protect these long-term pillars:
 
 ## Current Recommended Next Phase
 
-The current checkpoint is **v0.151 Hybrid Aster Static Billboard Single-Slot Intake Experiment And Human Review Stop** on 2026-06-07. It keeps the browser runtime, normal Salto player slice, art slots, production package, saves, and stable IDs untouched while testing only the third private runtime-art comparator slot for Aster. It generates exactly one ignored original Aster source image, validates a tracked diagnostic fallback, uses the selected v0.148 Worker and v0.150 Barracks repair only as comparator context, and records a final gate pass for `HYBRID_ASTER_LOCAL_STATIC_BILLBOARD`: Tier L local-vs-fallback average FPS ratio `0.9273` and p95 frame-time ratio `1.1081`.
+The current checkpoint is **v0.152 Hybrid Aster Billboard Fair-Path Repair Derivative Selection And Human Review Stop** on 2026-06-07. It keeps the browser runtime, normal Salto player slice, art slots, production package, saves, and stable IDs untouched while repairing only the existing private v0.151 Aster billboard path. It generates zero new AI images, uses the same v0.151 Aster cutout only, selects `HYBRID_ASTER_TRIMMED_1024` after the preserved gate passes, and records Tier L average FPS ratio `0.9708` plus p95 frame-time ratio `1.0088`.
 
-The next recommended step is human review and explicit approval only: Emmanuel may review `docs/V0151_ASTER_BILLBOARD_VISUAL_REVIEW_GUIDE.md`, the ignored v0.151 evidence under `artifacts/desktop-spikes/godot-salto/v0151/`, and the v0.151 validation/scorecard/audit/boundary/implementation docs. Do not import the Aster cutout, add a fourth runtime-art slot, generate another image, import existing reference candidates, download assets, mark Aster runtime-approved, modify the normal Salto player slice, wire comparator output into Godot production/player-facing flow, wire assets into the browser, mutate manifests or art slots, change saves or stable IDs, create a desktop save path, choose Godot finally, start a full desktop port, start Unity/Unreal/Electron work, or start v0.152 until a future explicit goal approves a narrow next step.
+The next recommended step is human review and explicit approval only: Emmanuel may review `docs/V0152_ASTER_BILLBOARD_VISUAL_REVIEW_GUIDE.md`, the ignored v0.152 evidence under `artifacts/desktop-spikes/godot-salto/v0152/`, and the v0.152 repair/derivative/benchmark/audit/boundary/implementation docs. Do not import the Aster repair derivative, add another runtime-art slot, generate another image, import existing reference candidates, download assets, mark Aster runtime-approved, modify the normal Salto player slice, wire comparator output into Godot production/player-facing flow, wire assets into the browser, mutate manifests or art slots, change saves or stable IDs, create a desktop save path, choose Godot finally, start a full desktop port, start Unity/Unreal/Electron work, or start v0.153 until a future explicit goal approves a narrow next step.
+
+New v0.152 docs:
+
+- `docs/V0152_ASTER_BILLBOARD_REPAIR_SPEC.md`
+- `docs/V0152_ASTER_BILLBOARD_DERIVATIVE_MATRIX.md`
+- `docs/V0152_ASTER_BILLBOARD_PAIRED_BENCHMARK_REPORT.md`
+- `docs/V0152_ASTER_BILLBOARD_FAIR_PATH_AUDIT.md`
+- `docs/V0152_ASTER_BILLBOARD_VISUAL_REVIEW_GUIDE.md`
+- `docs/V0152_PRIVATE_COMPARATOR_ONLY_BOUNDARY.md`
+- `docs/V0152_IMPLEMENTATION_REPORT.md`
+
+Previous checkpoint reference: v0.151 Hybrid Aster Static Billboard Single-Slot Intake Experiment And Human Review Stop.
 
 New v0.151 docs:
 

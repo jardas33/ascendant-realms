@@ -38,6 +38,7 @@ const SCRIPT_ARG_PREFIXES := [
 	"--worker-billboard-single-slot-repair",
 	"--barrosan-barracks-material-single-slot",
 	"--barrosan-barracks-material-seam-repair",
+	"--aster-billboard-single-slot-repair",
 	"--aster-billboard-single-slot",
 	"--mode=",
 	"--visual-preset=",
@@ -239,6 +240,45 @@ func _ready() -> void:
 			get_tree().quit(1)
 			return
 		barracks_repair.call("start")
+		return
+	if args.has("--aster-billboard-single-slot-repair"):
+		_write_absolute_json(_path_join(_artifact_root_from_args(), "aster-billboard-repair-root-dispatch.json"), {
+			"schemaVersion": 1,
+			"checkpoint": "v0.152",
+			"status": "PASS_V0152_PRIVATE_ASTER_BILLBOARD_REPAIR_DISPATCH",
+			"args": Array(args),
+			"defaultPlayerSliceLaunched": false
+		})
+		var aster_repair_script := load("res://comparators/runtime_art_pipeline/aster_billboard_single_slot_comparator.gd") as GDScript
+		if aster_repair_script == null:
+			_write_absolute_json(_path_join(_artifact_root_from_args(), "aster-billboard-repair-dispatch-failure.json"), {
+				"schemaVersion": 1,
+				"checkpoint": "v0.152",
+				"status": "FAIL_V0152_PRIVATE_ASTER_BILLBOARD_REPAIR_SCRIPT_LOAD",
+				"script": "res://comparators/runtime_art_pipeline/aster_billboard_single_slot_comparator.gd"
+			})
+			get_tree().quit(1)
+			return
+		var aster_repair := Node.new()
+		aster_repair.name = "V0152AsterBillboardRepairComparator"
+		aster_repair.set_script(aster_repair_script)
+		add_child(aster_repair)
+		_write_absolute_json(_path_join(_artifact_root_from_args(), "aster-billboard-repair-dispatch-prestart.json"), {
+			"schemaVersion": 1,
+			"checkpoint": "v0.152",
+			"status": "PASS_V0152_PRIVATE_ASTER_BILLBOARD_REPAIR_PRESTART",
+			"hasStart": aster_repair.has_method("start")
+		})
+		if not aster_repair.has_method("start"):
+			_write_absolute_json(_path_join(_artifact_root_from_args(), "aster-billboard-repair-dispatch-failure.json"), {
+				"schemaVersion": 1,
+				"checkpoint": "v0.152",
+				"status": "FAIL_V0152_PRIVATE_ASTER_BILLBOARD_REPAIR_START_METHOD",
+				"script": "res://comparators/runtime_art_pipeline/aster_billboard_single_slot_comparator.gd"
+			})
+			get_tree().quit(1)
+			return
+		aster_repair.call("start")
 		return
 	if args.has("--aster-billboard-single-slot"):
 		_write_absolute_json(_path_join(_artifact_root_from_args(), "aster-billboard-root-dispatch.json"), {

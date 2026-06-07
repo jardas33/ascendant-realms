@@ -2317,4 +2317,90 @@ describe("Godot Salto spike scaffold", () => {
     expect(comparatorScript).not.toContain("artifacts/art-review/v0138/candidates");
     expect(toolScript).not.toContain("artifacts/art-review/v0138/candidates");
   });
+
+  it("defines the v0.152 private Aster billboard repair path and review stop", async () => {
+    [
+      "GODOT_ASTER_BILLBOARD_SINGLE_SLOT_REPAIR_WINDOWS.bat",
+      "tools/godot/runGodotAsterBillboardRepairDerivatives.ps1",
+      "tools/godot/runGodotAsterBillboardRepairValidation.ps1",
+      "tools/godot/runGodotAsterBillboardRepairAudit.ps1",
+      "tools/godot/runGodotAsterBillboardRepairBenchmarkWindows.ps1",
+      "tools/godot/captureGodotAsterBillboardRepairWindows.ps1",
+      "docs/V0152_ASTER_BILLBOARD_REPAIR_SPEC.md",
+      "docs/V0152_ASTER_BILLBOARD_DERIVATIVE_MATRIX.md",
+      "docs/V0152_ASTER_BILLBOARD_PAIRED_BENCHMARK_REPORT.md",
+      "docs/V0152_ASTER_BILLBOARD_FAIR_PATH_AUDIT.md",
+      "docs/V0152_ASTER_BILLBOARD_VISUAL_REVIEW_GUIDE.md",
+      "docs/V0152_PRIVATE_COMPARATOR_ONLY_BOUNDARY.md",
+      "docs/V0152_IMPLEMENTATION_REPORT.md"
+    ].forEach((path) => expect(existsSync(path), path).toBe(true));
+
+    const packageJson = await readJson<{ scripts: Record<string, string> }>("package.json");
+    const rootScript = await readFile("desktop-spikes/godot-salto/scripts/salto_spike_root.gd", "utf8");
+    const comparatorScript = await readFile(
+      "desktop-spikes/godot-salto/comparators/runtime_art_pipeline/aster_billboard_single_slot_comparator.gd",
+      "utf8"
+    );
+    const toolScript = await readFile("tools/godot/asterBillboardSingleSlotTool.mjs", "utf8");
+    const launcher = await readFile("GODOT_ASTER_BILLBOARD_SINGLE_SLOT_REPAIR_WINDOWS.bat", "utf8");
+    const stabilizedLauncher = await readFile("GODOT_LAUNCH_STABILIZED_SALTO_REVIEW_WINDOWS.bat", "utf8");
+    const playerLauncher = await readFile("GODOT_LAUNCH_PLAYER_SLICE_WINDOWS.bat", "utf8");
+    const benchmarkReport = await readFile("docs/V0152_ASTER_BILLBOARD_PAIRED_BENCHMARK_REPORT.md", "utf8");
+    const boundary = await readFile("docs/V0152_PRIVATE_COMPARATOR_ONLY_BOUNDARY.md", "utf8");
+    const implementation = await readFile("docs/V0152_IMPLEMENTATION_REPORT.md", "utf8");
+
+    [
+      "godot:aster-billboard-repair:derivatives:reproduce",
+      "godot:aster-billboard-repair:validate",
+      "godot:aster-billboard-repair:audit",
+      "godot:aster-billboard-repair:benchmark:headed",
+      "godot:aster-billboard-repair:capture"
+    ].forEach((script) => expect(packageJson.scripts[script], script).toBeTypeOf("string"));
+
+    expect(rootScript).toContain("--aster-billboard-single-slot-repair");
+    expect(rootScript).toContain("PASS_V0152_PRIVATE_ASTER_BILLBOARD_REPAIR_DISPATCH");
+    expect(rootScript).toContain("aster_billboard_single_slot_comparator.gd");
+
+    [
+      "REPAIR_CHECKPOINT := \"v0.152\"",
+      "HYBRID_ASTER_FULL_RES",
+      "HYBRID_ASTER_TRIMMED_512",
+      "HYBRID_ASTER_TRIMMED_768",
+      "HYBRID_ASTER_TRIMMED_1024",
+      "zeroNewAiImagesForV0152",
+      "sameAsterSourceOnly",
+      "noNewRuntimeArtSlot",
+      "localAndFallbackShareAsterBillboardRenderPath",
+      "benchmarkExcludesInitializationAndWarmup",
+      "browserIntegration"
+    ].forEach((text) => expect(comparatorScript).toContain(text));
+
+    [
+      "PASS_V0152_ASTER_BILLBOARD_REPAIR_DERIVATIVES_REPRODUCIBILITY",
+      "PASS_V0152_ASTER_BILLBOARD_REPAIR_VALIDATION",
+      "PASS_V0152_ASTER_BILLBOARD_REPAIR_GATE",
+      "PASS_V0152_ASTER_BILLBOARD_FAIR_PATH_AUDIT",
+      "aster-billboard-repair-scorecard.json",
+      "aster-billboard-repair-fair-path-audit.json",
+      "zeroNewAiImagesForV0152",
+      "sameAsterSourceOnly",
+      "noNewRuntimeArtSlot"
+    ].forEach((text) => expect(toolScript).toContain(text));
+
+    expect(launcher).toContain("godot:aster-billboard-repair:benchmark:headed");
+    expect(stabilizedLauncher).not.toContain("aster-billboard-single-slot-repair");
+    expect(stabilizedLauncher).not.toContain("ASTER_BILLBOARD_SINGLE_SLOT_REPAIR");
+    expect(playerLauncher).not.toContain("aster-billboard-single-slot-repair");
+    expect(playerLauncher).not.toContain("ASTER_BILLBOARD_SINGLE_SLOT_REPAIR");
+
+    expect(benchmarkReport).toContain("PASS_V0152_ASTER_BILLBOARD_REPAIR_GATE");
+    expect(benchmarkReport).toContain("HYBRID_ASTER_TRIMMED_1024");
+    expect(boundary).toContain("No new runtime-art slot");
+    expect(boundary).toContain("No browser runtime wiring");
+    expect(implementation).toContain("No v0.153 work");
+
+    expect(rootScript).not.toContain("artifacts/art-review/v0138/candidates");
+    expect(comparatorScript).not.toContain("artifacts/art-review/v0138/candidates");
+    expect(toolScript).not.toContain("artifacts/art-review/v0138/candidates");
+  });
 });
