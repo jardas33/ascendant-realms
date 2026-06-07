@@ -1,5 +1,39 @@
 # Changelog
 
+# v0.161 Godot Salto Worker-Art Opt-In Visual QA Hardening And Human Review Stop - 2026-06-07
+
+This checkpoint inspects and hardens only the existing v0.160 Worker-art opt-in player-slice path. It adds Windows-side review, real-input, capture, benchmark, fallback, and boundary evidence for the single Worker slot, preserves the default stabilized launcher as procedural, generates zero images, adds zero slots, and stops for Emmanuel review. It does not begin v0.162.
+
+Added:
+
+- One-click opt-in review helper `GODOT_REVIEW_SALTO_WORKER_ART_OPT_IN_WINDOWS.bat`.
+- One-click hardening validator `GODOT_VALIDATE_SALTO_WORKER_ART_OPT_IN_HARDENING_WINDOWS.bat`.
+- v0.161 hardening wrapper for procedural, opt-in, missing-art, hash-mismatch, scale, benchmark, and real-input scenarios.
+- v0.161 report aggregator `tools/godot/saltoWorkerArtOptInHardeningTool.mjs`.
+- Package scripts for v0.161 review and hardening validation.
+- v0.161 visual QA, Computer Use review, real-input, hardening, visual guide, rollback, single-slot boundary, and implementation docs.
+- Scaffold guardrail coverage for the v0.161 hardening gate.
+
+Decision:
+
+- Preserved player-facing opt-in slot: `worker_billboard_static_v0147`.
+- Preserved selected derivative: `HYBRID_WORKER_TRIMMED_1024`.
+- Required SHA-256: `a628065ca92b231b0d4f6a0625d9e259dea080e80d530ee688483611d70049bc`.
+- Preferred scale remains `1.00x` unless human review requests a separate bounded repair.
+
+Evidence:
+
+- Final v0.161 scorecard: `PASS_V0161_WORKER_ART_OPT_IN_HUMAN_REVIEW_READY`, FPS ratio `1.0023`, P95 frame-time ratio `0.8784`, package leakage `false`, default stabilized launcher hash unchanged.
+
+Boundaries:
+
+- Zero images generated.
+- No second player-facing art slot.
+- No Aster, Barracks, Militia, Ashen Raider, HUD, terrain, environment, or reference-art import.
+- No browser-runtime wiring or production manifest mutation.
+- No save, stable-ID, gameplay, AI, objective, map, input, balance, campaign, or browser behavior mutation.
+- No final runtime-art approval, final Worker art approval, final Godot choice, full port, or v0.162 work.
+
 # v0.160 Godot Salto Worker Billboard Opt-In Player-Slice Integration Experiment - 2026-06-07
 
 This checkpoint integrates exactly one validated Worker billboard candidate into the packaged Godot Salto player-facing review slice behind a new explicit opt-in launcher. It preserves the default stabilized launcher and default player-slice launcher as procedural, proves missing-art and hash-mismatch fallback to the procedural Worker, benchmarks the opt-in path against the procedural baseline, and stops for Emmanuel review. It does not begin v0.161.

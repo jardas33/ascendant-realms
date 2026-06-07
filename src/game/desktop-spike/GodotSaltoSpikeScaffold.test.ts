@@ -3039,4 +3039,72 @@ describe("Godot Salto spike scaffold", () => {
       expect(playerLauncher).not.toContain(text);
     });
   });
+
+  it("defines the v0.161 Worker art opt-in visual QA hardening gate", async () => {
+    [
+      "GODOT_REVIEW_SALTO_WORKER_ART_OPT_IN_WINDOWS.bat",
+      "GODOT_VALIDATE_SALTO_WORKER_ART_OPT_IN_HARDENING_WINDOWS.bat",
+      "tools/godot/reviewGodotSaltoWorkerArtOptInWindows.ps1",
+      "tools/godot/validateGodotSaltoWorkerArtOptInHardeningWindows.ps1",
+      "tools/godot/saltoWorkerArtOptInHardeningTool.mjs",
+      "docs/V0161_WORKER_ART_OPT_IN_PLAYER_SLICE_VISUAL_QA_SPEC.md",
+      "docs/V0161_WORKER_ART_OPT_IN_COMPUTER_USE_REVIEW.md",
+      "docs/V0161_WORKER_ART_OPT_IN_REAL_INPUT_REPORT.md",
+      "docs/V0161_WORKER_ART_OPT_IN_HARDENING_REPORT.md",
+      "docs/V0161_WORKER_ART_OPT_IN_VISUAL_REVIEW_GUIDE.md",
+      "docs/V0161_WORKER_ART_OPT_IN_ROLLBACK_CONFIRMATION.md",
+      "docs/V0161_PLAYER_SLICE_SINGLE_SLOT_BOUNDARY.md",
+      "docs/V0161_IMPLEMENTATION_REPORT.md"
+    ].forEach((path) => expect(existsSync(path), path).toBe(true));
+
+    const packageJson = JSON.parse(await readFile("package.json", "utf8")) as { scripts: Record<string, string> };
+    const hardeningScript = await readFile("tools/godot/validateGodotSaltoWorkerArtOptInHardeningWindows.ps1", "utf8");
+    const toolScript = await readFile("tools/godot/saltoWorkerArtOptInHardeningTool.mjs", "utf8");
+    const reviewScript = await readFile("tools/godot/reviewGodotSaltoWorkerArtOptInWindows.ps1", "utf8");
+    const stabilizedLauncher = await readFile("GODOT_LAUNCH_STABILIZED_SALTO_REVIEW_WINDOWS.bat", "utf8");
+    const playerLauncher = await readFile("GODOT_LAUNCH_PLAYER_SLICE_WINDOWS.bat", "utf8");
+
+    [
+      "godot:review:salto-worker-art-opt-in",
+      "godot:validate:salto-worker-art-opt-in-hardening"
+    ].forEach((script) => expect(packageJson.scripts[script]).toBeTypeOf("string"));
+
+    [
+      "default-procedural",
+      "worker-opt-in",
+      "missing-art-fallback",
+      "hash-mismatch-fallback",
+      "worker-opt-in-scale-090",
+      "opt-in-real-input",
+      "opt-in-site-semantics",
+      "opt-in-post-mine-flow",
+      "opt-in-restart-replay",
+      "PASS_V0161_WORKER_ART_OPT_IN_HARDENING_AUTOMATION_READY"
+    ].forEach((text) => expect(hardeningScript).toContain(text));
+
+    [
+      "PASS_V0161_WORKER_ART_OPT_IN_QA_VALIDATION",
+      "PASS_V0161_WORKER_ART_OPT_IN_CAPTURE",
+      "PASS_V0161_WORKER_ART_OPT_IN_BENCHMARK",
+      "PASS_V0161_WORKER_ART_OPT_IN_REAL_INPUT",
+      "PASS_V0161_PLAYER_SLICE_SINGLE_SLOT_BOUNDARY",
+      "PASS_V0161_WORKER_ART_OPT_IN_HUMAN_REVIEW_READY",
+      "minOptInFpsRatioVsProcedural: 0.9",
+      "maxOptInP95FrameTimeRatioVsProcedural: 1.15",
+      "pause for Emmanuel manual review"
+    ].forEach((text) => expect(toolScript).toContain(text));
+
+    expect(reviewScript).toContain("launchGodotSaltoWorkerArtExperimentWindows.ps1");
+    expect(reviewScript).toContain("GODOT_LAUNCH_STABILIZED_SALTO_REVIEW_WINDOWS.bat");
+    expect(toolScript).toContain("v0.162 work appears to have started");
+
+    [
+      "WORKER_ART",
+      "worker-art-opt-in",
+      "worker_billboard_static_v0147"
+    ].forEach((text) => {
+      expect(stabilizedLauncher).not.toContain(text);
+      expect(playerLauncher).not.toContain(text);
+    });
+  });
 });

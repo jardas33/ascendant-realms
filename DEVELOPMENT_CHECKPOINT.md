@@ -1,6 +1,69 @@
 # Development Checkpoint
 
-Updated: 2026-06-07 v0.160 Godot Salto Worker Billboard Opt-In Player-Slice Integration Experiment
+Updated: 2026-06-07 v0.161 Godot Salto Worker-Art Opt-In Visual QA Hardening And Human Review Stop
+
+## v0.161 Godot Salto Worker-Art Opt-In Visual QA Hardening And Human Review Stop - 2026-06-07
+
+Scope: Windows-side visual QA and real-input hardening for the existing one-slot Worker-art opt-in path. This checkpoint adds evidence and docs only around the already-integrated v0.160 Worker slot, keeps the default launchers procedural, and stops for Emmanuel review.
+
+Included work:
+
+- Confirmed v0.160 prerequisite slot `worker_billboard_static_v0147` / `HYBRID_WORKER_TRIMMED_1024` and SHA-256 `a628065ca92b231b0d4f6a0625d9e259dea080e80d530ee688483611d70049bc`.
+- Added `GODOT_REVIEW_SALTO_WORKER_ART_OPT_IN_WINDOWS.bat`.
+- Added `GODOT_VALIDATE_SALTO_WORKER_ART_OPT_IN_HARDENING_WINDOWS.bat`.
+- Added v0.161 validation/capture/benchmark/real-input/boundary aggregation tooling.
+- Added v0.161 docs and scaffold guardrail coverage.
+- Preserved the default stabilized launcher as procedural.
+
+Current interpretation:
+
+- v0.161 is not a second integration checkpoint.
+- The only player-facing art slot under review remains Worker.
+- Missing-art and hash-mismatch fallback remain fail-closed to procedural Worker.
+- Browser runtime, production manifests, saves, stable IDs, gameplay, objectives, input semantics, balance, AI, map content, and campaign state remain out of scope.
+- v0.162 has not started.
+
+Required verification:
+
+```text
+npm test
+npm run build
+npm run validate:content
+npm run validate:art-intake
+npm run art:reference:init
+npm run art:reference:validate
+npm run art:reference:contact-sheet
+npm run art:reference:review-pack
+npm run godot:validate:player-slice
+npm run godot:validate:salto-worker-art-experiment
+npm run godot:validate:salto-worker-art-opt-in-hardening
+Windows-side Computer Use review where available
+npx vitest run src/game/desktop-spike/GodotSaltoSpikeScaffold.test.ts
+boundary scans
+git diff --check
+```
+
+Verification results:
+
+```text
+PASS: npm test - 122 test files, 875 tests.
+PASS: npm run build - TypeScript compile and Vite production build; known large-chunk warning only.
+PASS: npm run validate:content.
+PASS: npm run validate:art-intake - 1 candidate metadata file.
+PASS: npm run art:reference:init.
+PASS: npm run art:reference:validate - PASS_V0138_REFERENCE_METADATA, 15 metadata files, 15 candidate images.
+PASS: npm run art:reference:contact-sheet - PASS_V0138_REFERENCE_CONTACT_SHEET.
+PASS: npm run art:reference:review-pack - PASS_V0138_REFERENCE_REVIEW_PACK.
+PASS: npm run godot:validate:player-slice - default procedural player slice preserved.
+PASS: npm run godot:validate:salto-worker-art-experiment.
+PASS: npm run godot:validate:salto-worker-art-opt-in-hardening - PASS_V0161_WORKER_ART_OPT_IN_HARDENING_AUTOMATION_READY.
+PASS: Windows-side Computer Use review - PASS_V0161_WORKER_ART_OPT_IN_COMPUTER_USE_GATE.
+PASS: npx vitest run src/game/desktop-spike/GodotSaltoSpikeScaffold.test.ts - 41 tests.
+PASS: boundary scans - PASS_V0161_PLAYER_SLICE_SINGLE_SLOT_BOUNDARY and PASS_V0161_WORKER_ART_OPT_IN_HUMAN_REVIEW_READY.
+PASS: git diff --check.
+```
+
+Final v0.161 scorecard ratios: FPS `1.0023` versus procedural, P95 frame-time `0.8784` versus procedural. Package leakage is `false`; default stabilized launcher hash remains `47ea4cdef721451dfd4e55511a6b7c580bc666332c7cf216c7cc0319969a6c3d`.
 
 ## v0.160 Godot Salto Worker Billboard Opt-In Player-Slice Integration Experiment - 2026-06-07
 
@@ -21,7 +84,7 @@ Current interpretation:
 - The default stabilized launcher remains procedural and is protected by hash scan.
 - The opt-in launcher is a human-review experiment, not final runtime-art approval.
 - Missing source and hash mismatch fail closed to procedural Worker.
-- v0.161 has not started.
+- v0.161 was not started inside the v0.160 checkpoint.
 
 Verification results:
 

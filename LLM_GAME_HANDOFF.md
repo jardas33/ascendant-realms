@@ -1,6 +1,6 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-06-07 v0.160 Godot Salto Worker Billboard Opt-In Player-Slice Integration Experiment
+Last updated: 2026-06-07 v0.161 Godot Salto Worker-Art Opt-In Visual QA Hardening And Human Review Stop
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
@@ -18,7 +18,86 @@ Project Identity continuation note: v0.159 now supersedes the older no-v0.159 ta
 
 Project Identity continuation note: v0.160 now supersedes the older no-v0.160 tail above because the v0.160 prompt explicitly authorized exactly one Godot player-facing Salto Worker billboard opt-in experiment after v0.159 was committed, pushed, clean, synced, and remote-green. v0.160 integrates only `worker_billboard_static_v0147` / `HYBRID_WORKER_TRIMMED_1024` behind `GODOT_LAUNCH_SALTO_WORKER_ART_EXPERIMENT_WINDOWS.bat`, preserves default launchers as procedural, proves missing-art and hash-mismatch fallback, benchmarks against the procedural baseline, and stops for Emmanuel review.
 
-Current status override: v0.160 is the active checkpoint for this handoff. v0.161 has not started.
+Project Identity continuation note: v0.161 now supersedes the older no-v0.161 tail above because the v0.161 prompt explicitly authorized a Windows-side visual-QA and real-input hardening pass after v0.160 was committed, pushed, clean, synced, and remote-green. v0.161 inspects only the existing Worker-art opt-in player-slice path, keeps the default stabilized launcher procedural, adds hardening evidence/tooling/docs, generates zero images, adds zero slots, and stops for Emmanuel review.
+
+Current status override: v0.161 is the active checkpoint for this handoff. v0.162 has not started.
+
+## Current v0.161 Godot Salto Worker-Art Opt-In Visual QA Hardening And Human Review Stop - 2026-06-07
+
+Status: v0.161 is a hardening and human-review readiness checkpoint for the existing v0.160 Worker-art opt-in path. It does not add new art or a second slot, and it does not modify the normal Salto browser runtime.
+
+v0.161 preserved slot:
+
+- Slot: `worker_billboard_static_v0147`.
+- Derivative: `HYBRID_WORKER_TRIMMED_1024`.
+- SHA-256: `a628065ca92b231b0d4f6a0625d9e259dea080e80d530ee688483611d70049bc`.
+- Default fallback: procedural Worker silhouette.
+
+v0.161 entry points:
+
+- `GODOT_REVIEW_SALTO_WORKER_ART_OPT_IN_WINDOWS.bat`
+- `GODOT_VALIDATE_SALTO_WORKER_ART_OPT_IN_HARDENING_WINDOWS.bat`
+- `npm run godot:review:salto-worker-art-opt-in`
+- `npm run godot:validate:salto-worker-art-opt-in-hardening`
+
+v0.161 docs:
+
+- `docs/V0161_WORKER_ART_OPT_IN_PLAYER_SLICE_VISUAL_QA_SPEC.md`
+- `docs/V0161_WORKER_ART_OPT_IN_COMPUTER_USE_REVIEW.md`
+- `docs/V0161_WORKER_ART_OPT_IN_REAL_INPUT_REPORT.md`
+- `docs/V0161_WORKER_ART_OPT_IN_HARDENING_REPORT.md`
+- `docs/V0161_WORKER_ART_OPT_IN_VISUAL_REVIEW_GUIDE.md`
+- `docs/V0161_WORKER_ART_OPT_IN_ROLLBACK_CONFIRMATION.md`
+- `docs/V0161_PLAYER_SLICE_SINGLE_SLOT_BOUNDARY.md`
+- `docs/V0161_IMPLEMENTATION_REPORT.md`
+
+v0.161 constraints:
+
+- Zero images generated.
+- Exactly one opt-in normal-slice slot.
+- Worker only.
+- Default stabilized launcher unchanged and procedural.
+- Missing-art and hash-mismatch failures must fail closed to procedural Worker.
+- No browser-runtime wiring, production manifest mutation, save/stable-ID mutation, gameplay mutation, final art approval, final Godot choice, full port, or v0.162 work.
+
+v0.161 required local gates:
+
+- `npm test`
+- `npm run build`
+- `npm run validate:content`
+- `npm run validate:art-intake`
+- `npm run art:reference:init`
+- `npm run art:reference:validate`
+- `npm run art:reference:contact-sheet`
+- `npm run art:reference:review-pack`
+- `npm run godot:validate:player-slice`
+- `npm run godot:validate:salto-worker-art-experiment`
+- `npm run godot:validate:salto-worker-art-opt-in-hardening`
+- Windows-side Computer Use review where available
+- `npx vitest run src/game/desktop-spike/GodotSaltoSpikeScaffold.test.ts`
+- Boundary scans and `git diff --check`
+
+v0.161 verification results:
+
+```text
+PASS: npm test - 122 test files, 875 tests.
+PASS: npm run build - TypeScript compile and Vite production build; known large-chunk warning only.
+PASS: npm run validate:content.
+PASS: npm run validate:art-intake - 1 candidate metadata file.
+PASS: npm run art:reference:init.
+PASS: npm run art:reference:validate - PASS_V0138_REFERENCE_METADATA, 15 metadata files, 15 candidate images.
+PASS: npm run art:reference:contact-sheet - PASS_V0138_REFERENCE_CONTACT_SHEET.
+PASS: npm run art:reference:review-pack - PASS_V0138_REFERENCE_REVIEW_PACK.
+PASS: npm run godot:validate:player-slice - default procedural player slice preserved.
+PASS: npm run godot:validate:salto-worker-art-experiment.
+PASS: npm run godot:validate:salto-worker-art-opt-in-hardening - PASS_V0161_WORKER_ART_OPT_IN_HARDENING_AUTOMATION_READY.
+PASS: Windows-side Computer Use review - PASS_V0161_WORKER_ART_OPT_IN_COMPUTER_USE_GATE.
+PASS: npx vitest run src/game/desktop-spike/GodotSaltoSpikeScaffold.test.ts - 41 tests.
+PASS: boundary scans - PASS_V0161_PLAYER_SLICE_SINGLE_SLOT_BOUNDARY and PASS_V0161_WORKER_ART_OPT_IN_HUMAN_REVIEW_READY.
+PASS: git diff --check.
+```
+
+Final v0.161 scorecard ratios: FPS `1.0023` versus procedural, P95 frame-time `0.8784` versus procedural. Package leakage is `false`; default stabilized launcher hash remains `47ea4cdef721451dfd4e55511a6b7c580bc666332c7cf216c7cc0319969a6c3d`. Human review remains pending; do not begin v0.162.
 
 ## Current v0.160 Godot Salto Worker Billboard Opt-In Player-Slice Integration Experiment - 2026-06-07
 

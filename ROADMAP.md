@@ -11,9 +11,20 @@ Every phase should protect these long-term pillars:
 
 ## Current Recommended Next Phase
 
-The current checkpoint is **v0.160 Godot Salto Worker Billboard Opt-In Player-Slice Integration Experiment** on 2026-06-07. It integrates exactly one validated Worker billboard candidate into the packaged Godot Salto player-facing review slice behind an explicit opt-in launcher. The default stabilized launcher and default player-slice launcher remain procedural, and missing-art/hash-mismatch scenarios fail closed to the procedural Worker fallback.
+The current checkpoint is **v0.161 Godot Salto Worker-Art Opt-In Visual QA Hardening And Human Review Stop** on 2026-06-07. It inspects and hardens only the existing v0.160 Worker-art opt-in player-slice path, preserves the default stabilized launcher as procedural, adds Windows-side review and real-input evidence, generates zero images, adds zero slots, and keeps the Browser runtime untouched.
 
-The next recommended step is human review and explicit approval only: Emmanuel may compare the default procedural path against `GODOT_LAUNCH_SALTO_WORKER_ART_EXPERIMENT_WINDOWS.bat`, inspect the v0.160 validation/capture/benchmark artifacts, and decide whether the Worker billboard deserves further iteration. Do not add a second art slot, generate images, import Aster/Barracks/Militia/Ashen art into the player slice, wire assets into the browser runtime, mutate production manifests or art slots, change saves or stable IDs, choose Godot finally, start a full desktop port, start Unity/Unreal/Electron work, or begin v0.161.
+The next recommended step is human review and explicit approval only: Emmanuel may compare the procedural baseline against the Worker opt-in path, inspect the v0.161 Computer Use/real-input/capture/benchmark artifacts, and decide whether to pause, request a bounded Worker repair, or authorize a separate Barracks-material opt-in experiment. The final v0.161 scorecard is `PASS_V0161_WORKER_ART_OPT_IN_HUMAN_REVIEW_READY` with FPS ratio `1.0023`, P95 frame-time ratio `0.8784`, package leakage `false`, and default stabilized launcher hash unchanged. Do not add a second art slot, generate images, import Aster/Barracks/Militia/Ashen art into the player slice, wire assets into the browser runtime, mutate production manifests or art slots, change saves or stable IDs, choose Godot finally, start a full desktop port, start Unity/Unreal/Electron work, or begin v0.162.
+
+New v0.161 docs:
+
+- `docs/V0161_WORKER_ART_OPT_IN_PLAYER_SLICE_VISUAL_QA_SPEC.md`
+- `docs/V0161_WORKER_ART_OPT_IN_COMPUTER_USE_REVIEW.md`
+- `docs/V0161_WORKER_ART_OPT_IN_REAL_INPUT_REPORT.md`
+- `docs/V0161_WORKER_ART_OPT_IN_HARDENING_REPORT.md`
+- `docs/V0161_WORKER_ART_OPT_IN_VISUAL_REVIEW_GUIDE.md`
+- `docs/V0161_WORKER_ART_OPT_IN_ROLLBACK_CONFIRMATION.md`
+- `docs/V0161_PLAYER_SLICE_SINGLE_SLOT_BOUNDARY.md`
+- `docs/V0161_IMPLEMENTATION_REPORT.md`
 
 New v0.160 docs:
 
