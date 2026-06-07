@@ -1,6 +1,47 @@
 # Development Checkpoint
 
-Updated: 2026-06-07 v0.157 Ashen Raider Visual-Restraint Replacement Private Comparator And Human Review Stop
+Updated: 2026-06-07 v0.158 Hybrid Mixed Friendly-Versus-Hostile Combat-Readability Stress Gate And Human Review Stop
+
+## v0.158 Hybrid Mixed Friendly-Versus-Hostile Combat-Readability Stress Gate And Human Review Stop - 2026-06-07
+
+Scope: isolated private Godot mixed-combat comparator checkpoint. This checkpoint stress-tests the already-selected five-slot posture, generates zero new images, adds zero runtime-art slots, preserves archived v0.156 Ashen evidence, and does not modify the normal Salto player slice or browser runtime.
+
+Included work:
+
+- Confirmed clean synchronized `main` at `7a9c2685667e9f66eb43b2a99f1ef7331b702f84` before editing.
+- Confirmed v0.157 selected `HYBRID_ASHEN_RAIDER_V0157_TRIMMED_1024`, selected hash `8eb011f56d5cd56cf6ef0a843d2a5899e27aa13e203cc44517ed4a0c55c631c8`, gates, and ratios `0.9853` / `1.0159`.
+- Encoded the v0.157 Ashen visual decision only for this private mixed-combat stress test.
+- Added private `--hybrid-mixed-combat-readability-stress` dispatch and v0.158 wrappers.
+- Added selected-local, fallback-only, and orthographic fallback scenarios for 4/8/16/32 Ashen stress.
+- Added v0.158 validation, scorecard, fair-path audit, capture, contact-sheet, and benchmark reporting.
+
+Current interpretation:
+
+- Runtime validation, fair-path audit, benchmark, capture, and final scorecard were refreshed by the v0.158 command stack under `artifacts/desktop-spikes/godot-salto/v0158/evidence/`.
+- Recorded gates: `PASS_V0158_HYBRID_MIXED_COMBAT_VALIDATION`, `PASS_V0158_HYBRID_MIXED_COMBAT_FAIR_PATH_AUDIT`, `PASS_V0158_HYBRID_MIXED_COMBAT_EVIDENCE_RECORDED`, and `PASS_V0158_HYBRID_MIXED_COMBAT_STRESS_GATE`.
+- Tier L selected-vs-fallback FPS / p95 ratios: `0.9392` / `1.1098`; 32-Ashen selected-vs-fallback FPS / p95 ratios: `1.1061` / `0.9154`; screenshot count: `47`.
+- Human review is pending. Passing the private gate marks the five-slot posture technically promising only, not production-approved.
+- v0.159 has not started.
+
+Verification:
+
+```text
+Required closeout stack:
+npm test
+npm run build
+npm run validate:content
+npm run validate:art-intake
+npm run art:reference:init
+npm run art:reference:validate
+npm run art:reference:contact-sheet
+npm run art:reference:review-pack
+npm run godot:hybrid-mixed-combat:validate
+npm run godot:hybrid-mixed-combat:audit
+npm run godot:hybrid-mixed-combat:benchmark:headed
+npm run godot:hybrid-mixed-combat:capture
+isolation scans
+git diff --check
+```
 
 ## v0.157 Ashen Raider Visual-Restraint Replacement Private Comparator And Human Review Stop - 2026-06-07
 

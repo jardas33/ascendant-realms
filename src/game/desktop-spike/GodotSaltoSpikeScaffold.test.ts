@@ -2829,4 +2829,74 @@ describe("Godot Salto spike scaffold", () => {
     expect(comparatorScript).not.toContain("v0.158");
     expect(toolScript).not.toContain("v0.158");
   });
+
+  it("defines the v0.158 private hybrid mixed-combat readability stress gate", async () => {
+    [
+      "GODOT_HYBRID_MIXED_COMBAT_READABILITY_STRESS_WINDOWS.bat",
+      "tools/godot/hybridMixedCombatReadabilityStressTool.mjs",
+      "tools/godot/runGodotHybridMixedCombatReadabilityStressValidation.ps1",
+      "tools/godot/runGodotHybridMixedCombatReadabilityStressAudit.ps1",
+      "tools/godot/runGodotHybridMixedCombatReadabilityStressBenchmarkWindows.ps1",
+      "tools/godot/captureGodotHybridMixedCombatReadabilityStressWindows.ps1",
+      "desktop-spikes/godot-salto/comparators/runtime_art_pipeline/hybrid_mixed_combat_readability_stress_comparator.gd",
+      "docs/V0158_HYBRID_MIXED_COMBAT_STRESS_SPEC.md",
+      "docs/V0158_HYBRID_MIXED_COMBAT_FAIR_PATH_AUDIT.md",
+      "docs/V0158_HYBRID_MIXED_COMBAT_BENCHMARK_REPORT.md",
+      "docs/V0158_HYBRID_MIXED_COMBAT_VISUAL_REVIEW_GUIDE.md",
+      "docs/V0158_PRIVATE_COMPARATOR_ONLY_BOUNDARY.md",
+      "docs/V0158_IMPLEMENTATION_REPORT.md"
+    ].forEach((path) => expect(existsSync(path), path).toBe(true));
+
+    const packageJson = await readJson<{ scripts: Record<string, string> }>("package.json");
+    [
+      "godot:hybrid-mixed-combat:validate",
+      "godot:hybrid-mixed-combat:audit",
+      "godot:hybrid-mixed-combat:benchmark:headed",
+      "godot:hybrid-mixed-combat:capture"
+    ].forEach((script) => expect(packageJson.scripts[script], script).toBeTypeOf("string"));
+
+    const rootScript = await readFile("desktop-spikes/godot-salto/scripts/salto_spike_root.gd", "utf8");
+    const comparatorScript = await readFile(
+      "desktop-spikes/godot-salto/comparators/runtime_art_pipeline/hybrid_mixed_combat_readability_stress_comparator.gd",
+      "utf8"
+    );
+    const toolScript = await readFile("tools/godot/hybridMixedCombatReadabilityStressTool.mjs", "utf8");
+    const launcher = await readFile("GODOT_HYBRID_MIXED_COMBAT_READABILITY_STRESS_WINDOWS.bat", "utf8");
+    const playerLauncher = await readFile("GODOT_LAUNCH_PLAYER_SLICE_WINDOWS.bat", "utf8");
+    const boundary = await readFile("docs/V0158_PRIVATE_COMPARATOR_ONLY_BOUNDARY.md", "utf8");
+
+    [
+      "--hybrid-mixed-combat-readability-stress",
+      "PASS_V0158_PRIVATE_HYBRID_MIXED_COMBAT_STRESS_DISPATCH",
+      "hybrid_mixed_combat_readability_stress_comparator.gd"
+    ].forEach((text) => expect(rootScript).toContain(text));
+
+    [
+      "CHECKPOINT := \"v0.158\"",
+      "HYBRID_MIXED_COMBAT_SELECTED_LOCAL",
+      "HYBRID_MIXED_COMBAT_FALLBACK_ONLY",
+      "ORTHO_MIXED_COMBAT_PROCEDURAL_FALLBACK",
+      "C1_FOUR_ASHEN_WAVE",
+      "C4_THIRTY_TWO_ASHEN_DIAGNOSTIC",
+      "PASS_V0158_HYBRID_MIXED_COMBAT_RUNTIME_EVIDENCE",
+      "zeroNewImages",
+      "zeroNewRuntimeArtSlots"
+    ].forEach((text) => expect(comparatorScript).toContain(text));
+
+    [
+      "PASS_V0158_HYBRID_MIXED_COMBAT_VALIDATION",
+      "PASS_V0158_HYBRID_MIXED_COMBAT_FAIR_PATH_AUDIT",
+      "PASS_V0158_HYBRID_MIXED_COMBAT_STRESS_GATE",
+      "HYBRID_ASHEN_RAIDER_V0157_TRIMMED_1024",
+      "0.9853",
+      "1.0159",
+      "hybrid-mixed-combat-scorecard.json"
+    ].forEach((text) => expect(toolScript).toContain(text));
+
+    expect(launcher).toContain("godot:hybrid-mixed-combat:benchmark:headed");
+    expect(playerLauncher).not.toContain("hybrid-mixed-combat-readability-stress");
+    expect(playerLauncher).not.toContain("V0158_HYBRID_MIXED_COMBAT");
+    expect(boundary).toContain("Zero new AI images");
+    expect(boundary).toContain("No v0.159 work");
+  });
 });

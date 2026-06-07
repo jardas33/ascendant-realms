@@ -44,6 +44,7 @@ const SCRIPT_ARG_PREFIXES := [
 	"--militia-billboard-mass-overlap-repair",
 	"--ashen-raider-billboard-single-slot",
 	"--ashen-raider-visual-restraint-replacement",
+	"--hybrid-mixed-combat-readability-stress",
 	"--aster-billboard-single-slot",
 	"--mode=",
 	"--visual-preset=",
@@ -440,6 +441,48 @@ func _ready() -> void:
 			get_tree().quit(1)
 			return
 		ashen_raider_replacement.call("start")
+		return
+	if args.has("--hybrid-mixed-combat-readability-stress"):
+		var mixed_combat_failure_path := _path_join(_artifact_root_from_args(), "hybrid-mixed-combat-dispatch-failure.json")
+		if FileAccess.file_exists(mixed_combat_failure_path):
+			DirAccess.remove_absolute(mixed_combat_failure_path)
+		_write_absolute_json(_path_join(_artifact_root_from_args(), "hybrid-mixed-combat-root-dispatch.json"), {
+			"schemaVersion": 1,
+			"checkpoint": "v0.158",
+			"status": "PASS_V0158_PRIVATE_HYBRID_MIXED_COMBAT_STRESS_DISPATCH",
+			"args": Array(args),
+			"defaultPlayerSliceLaunched": false
+		})
+		var mixed_combat_script := load("res://comparators/runtime_art_pipeline/hybrid_mixed_combat_readability_stress_comparator.gd") as GDScript
+		if mixed_combat_script == null:
+			_write_absolute_json(mixed_combat_failure_path, {
+				"schemaVersion": 1,
+				"checkpoint": "v0.158",
+				"status": "FAIL_V0158_PRIVATE_HYBRID_MIXED_COMBAT_STRESS_SCRIPT_LOAD",
+				"script": "res://comparators/runtime_art_pipeline/hybrid_mixed_combat_readability_stress_comparator.gd"
+			})
+			get_tree().quit(1)
+			return
+		var mixed_combat := Node.new()
+		mixed_combat.name = "V0158HybridMixedCombatReadabilityStressComparator"
+		mixed_combat.set_script(mixed_combat_script)
+		add_child(mixed_combat)
+		_write_absolute_json(_path_join(_artifact_root_from_args(), "hybrid-mixed-combat-dispatch-prestart.json"), {
+			"schemaVersion": 1,
+			"checkpoint": "v0.158",
+			"status": "PASS_V0158_PRIVATE_HYBRID_MIXED_COMBAT_STRESS_PRESTART",
+			"hasStart": mixed_combat.has_method("start")
+		})
+		if not mixed_combat.has_method("start"):
+			_write_absolute_json(mixed_combat_failure_path, {
+				"schemaVersion": 1,
+				"checkpoint": "v0.158",
+				"status": "FAIL_V0158_PRIVATE_HYBRID_MIXED_COMBAT_STRESS_START_METHOD",
+				"script": "res://comparators/runtime_art_pipeline/hybrid_mixed_combat_readability_stress_comparator.gd"
+			})
+			get_tree().quit(1)
+			return
+		mixed_combat.call("start")
 		return
 	if args.has("--ashen-raider-billboard-single-slot"):
 		_write_absolute_json(_path_join(_artifact_root_from_args(), "ashen-raider-billboard-single-slot-root-dispatch.json"), {

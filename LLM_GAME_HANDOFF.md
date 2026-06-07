@@ -1,6 +1,6 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-06-07 v0.157 Ashen Raider Visual-Restraint Replacement Private Comparator And Human Review Stop
+Last updated: 2026-06-07 v0.158 Hybrid Mixed Friendly-Versus-Hostile Combat-Readability Stress Gate And Human Review Stop
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
@@ -12,7 +12,70 @@ Project Identity continuation note: v0.156 now supersedes the older no-v0.156 ta
 
 Project Identity continuation note: v0.157 now supersedes the older no-v0.157 tail above because the v0.157 queued prompt explicitly authorized this isolated private comparator visual-restraint replacement after v0.156 was committed, pushed, clean, synced, and remote-green. v0.157 preserves the technically valid v0.156 Ashen Raider source/cutout as archived comparison evidence, generates exactly one more restrained Ashen Raider source for the same hostile slot, selects the trimmed 1024 derivative after the preserved private gate passes, records scorecard/capture/fair-path evidence, and stops for Emmanuel review.
 
-Current status override: v0.157 is the active checkpoint for this handoff. No v0.158 work is approved.
+Project Identity continuation note: v0.158 now supersedes the older no-v0.158 tail above because the v0.158 queued prompt explicitly authorized one private-comparator-only mixed friendly-versus-hostile stress gate after v0.157 was committed, pushed, clean, synced, and remote-green. v0.158 uses zero new images, adds zero runtime-art slots, reuses exactly the selected Worker/Barracks/Aster/Militia/v0.157 Ashen context, preserves archived v0.156 Ashen comparison evidence, and stops for Emmanuel review.
+
+Current status override: v0.158 is the active checkpoint for this handoff. No v0.159 work is approved.
+
+## Current v0.158 Hybrid Mixed Friendly-Versus-Hostile Combat-Readability Stress Gate And Human Review Stop - 2026-06-07
+
+Status: v0.158 is an isolated private Godot comparator stress gate. It encodes Emmanuel's v0.157 visual decision only for the next private mixed-combat stress test, uses `HYBRID_ASHEN_RAIDER_V0157_TRIMMED_1024` as the preferred hostile direction, recorded the automated private stress gate as passing, and does not approve production art, final Ashen art, player-facing integration, animation, or a final Godot choice.
+
+v0.158 selected context:
+
+- Worker: `HYBRID_WORKER_TRIMMED_1024`, SHA-256 `a628065ca92b231b0d4f6a0625d9e259dea080e80d530ee688483611d70049bc`.
+- Barracks material: `HYBRID_BARRACKS_768_WRAPSAFE_OFFSET_BLEND`, SHA-256 `58a60b750370df084b60a1d92077da9367c0ba8a763781e2c3a8a7d96f1c980f`.
+- Aster: `HYBRID_ASTER_TRIMMED_1024`, SHA-256 `b256f96f762187c05d68f2c2de62bedec0248896210767e98cb8f210dac2829a`.
+- Militia: `HYBRID_MILITIA_TRIMMED_1024`, SHA-256 `c25349f00c422a0b3c9d5862027351bd70008e9314d4e3cd4001676e914321cb`.
+- Ashen Raider: `HYBRID_ASHEN_RAIDER_V0157_TRIMMED_1024`, SHA-256 `8eb011f56d5cd56cf6ef0a843d2a5899e27aa13e203cc44517ed4a0c55c631c8`.
+
+v0.158 private scenarios:
+
+- `C1_FOUR_ASHEN_WAVE`.
+- `C2_EIGHT_ASHEN_ESCALATION`.
+- `C3_SIXTEEN_ASHEN_STRESS`.
+- `C4_THIRTY_TWO_ASHEN_DIAGNOSTIC`.
+- Fallback-only comparison.
+- Orthographic procedural fallback comparison.
+
+v0.158 commands:
+
+```text
+npm run godot:hybrid-mixed-combat:validate
+npm run godot:hybrid-mixed-combat:audit
+npm run godot:hybrid-mixed-combat:benchmark:headed
+npm run godot:hybrid-mixed-combat:capture
+```
+
+v0.158 recorded evidence:
+
+- Validation: `PASS_V0158_HYBRID_MIXED_COMBAT_VALIDATION`.
+- Fair-path audit: `PASS_V0158_HYBRID_MIXED_COMBAT_FAIR_PATH_AUDIT`.
+- Runtime evidence: `PASS_V0158_HYBRID_MIXED_COMBAT_EVIDENCE_RECORDED`.
+- Stress gate: `PASS_V0158_HYBRID_MIXED_COMBAT_STRESS_GATE`.
+- Tier L selected-vs-fallback FPS / p95 ratios: `0.9392` / `1.1098`.
+- 32-Ashen selected-vs-fallback FPS / p95 ratios: `1.1061` / `0.9154`.
+- Screenshot count: `47`.
+
+v0.158 docs:
+
+- `docs/V0158_HYBRID_MIXED_COMBAT_STRESS_SPEC.md`
+- `docs/V0158_HYBRID_MIXED_COMBAT_FAIR_PATH_AUDIT.md`
+- `docs/V0158_HYBRID_MIXED_COMBAT_BENCHMARK_REPORT.md`
+- `docs/V0158_HYBRID_MIXED_COMBAT_VISUAL_REVIEW_GUIDE.md`
+- `docs/V0158_PRIVATE_COMPARATOR_ONLY_BOUNDARY.md`
+- `docs/V0158_IMPLEMENTATION_REPORT.md`
+
+v0.158 constraints:
+
+- Zero new AI images.
+- Zero new runtime-art slots.
+- Selected five-slot private comparator only.
+- No animations or directional variants.
+- No existing reference candidate import.
+- No normal Salto player-slice mutation.
+- No browser-runtime wiring.
+- No manifest, art-slot, production package, save, or stable-ID mutation.
+- No production approval, final runtime-art approval, final engine selection, full port, or v0.159 work.
 
 ## Current v0.157 Ashen Raider Visual-Restraint Replacement Private Comparator And Human Review Stop - 2026-06-07
 

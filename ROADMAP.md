@@ -11,9 +11,20 @@ Every phase should protect these long-term pillars:
 
 ## Current Recommended Next Phase
 
-The current checkpoint is **v0.157 Ashen Raider Visual-Restraint Replacement Private Comparator And Human Review Stop** on 2026-06-07. It keeps the browser runtime, normal Salto player slice, production package, saves, stable IDs, and production art-slot registry untouched while testing only one isolated private-comparator replacement for the existing Ashen Raider hostile slot. It preserves the technically valid v0.156 Ashen Raider source/cutout as archived comparison evidence, generates exactly one restrained replacement source image, derives deterministic fullres/512/768/1024 candidates, adds no sixth runtime-art slot, selects `HYBRID_ASHEN_RAIDER_V0157_TRIMMED_1024`, records `PASS_V0157_ASHEN_RAIDER_REPLACEMENT_SELECTION_GATE`, and records Tier L selected-vs-fallback average FPS ratio `0.9853` plus p95 frame-time ratio `1.0159`.
+The current checkpoint is **v0.158 Hybrid Mixed Friendly-Versus-Hostile Combat-Readability Stress Gate And Human Review Stop** on 2026-06-07. It keeps the browser runtime, normal Salto player slice, production package, saves, stable IDs, and production art-slot registry untouched while stress-testing only the already-selected five-slot private hybrid comparator posture. It generates zero new images, adds zero runtime-art slots, reuses the selected Worker/Barracks/Aster/Militia/v0.157 Ashen Raider context, preserves archived v0.156 Ashen evidence, and compares selected-local, fallback-only, and orthographic fallback scenarios across 4/8/16/32 Ashen readability stress. The automated private gate recorded `PASS_V0158_HYBRID_MIXED_COMBAT_STRESS_GATE`, with Tier L selected-vs-fallback FPS / p95 ratios `0.9392` / `1.1098` and 32-Ashen selected-vs-fallback FPS / p95 ratios `1.1061` / `0.9154`.
 
-The next recommended step is human review and explicit approval only: Emmanuel may review `docs/V0157_ASHEN_RAIDER_VISUAL_REVIEW_GUIDE.md`, the ignored v0.157 evidence under `artifacts/desktop-spikes/godot-salto/v0157/`, and the v0.157 derivative, benchmark, fair-path, boundary, and implementation docs. The current visual question is whether the more restrained replacement now reads like an ordinary hostile wave attacker while remaining distinct from Worker, Aster, Barracks, and selected Militia context. Do not import the Ashen Raider replacement image, add another hostile slot, add a sixth runtime-art slot, generate another image, import existing reference candidates, download assets, mark Ashen Raider runtime-approved, modify the normal Salto player slice, wire comparator output into Godot production/player-facing flow, wire assets into the browser, mutate manifests or art slots, change saves or stable IDs, create a desktop save path, choose Godot finally, start a full desktop port, start Unity/Unreal/Electron work, or start v0.158 unless a future explicit goal approves a narrow next step.
+The next recommended step is human review and explicit approval only: Emmanuel may review `docs/V0158_HYBRID_MIXED_COMBAT_VISUAL_REVIEW_GUIDE.md`, the ignored v0.158 evidence under `artifacts/desktop-spikes/godot-salto/v0158/`, and the v0.158 stress, benchmark, fair-path, boundary, and implementation docs. Do not import any selected source, generate another image, add another slot, modify the normal Salto player slice, wire comparator output into Godot production/player-facing flow, wire assets into the browser, mutate manifests or art slots, change saves or stable IDs, choose Godot finally, start a full desktop port, start Unity/Unreal/Electron work, or start v0.159 unless a future explicit goal approves a narrow next step.
+
+New v0.158 docs:
+
+- `docs/V0158_HYBRID_MIXED_COMBAT_STRESS_SPEC.md`
+- `docs/V0158_HYBRID_MIXED_COMBAT_FAIR_PATH_AUDIT.md`
+- `docs/V0158_HYBRID_MIXED_COMBAT_BENCHMARK_REPORT.md`
+- `docs/V0158_HYBRID_MIXED_COMBAT_VISUAL_REVIEW_GUIDE.md`
+- `docs/V0158_PRIVATE_COMPARATOR_ONLY_BOUNDARY.md`
+- `docs/V0158_IMPLEMENTATION_REPORT.md`
+
+Previous checkpoint reference: v0.157 Ashen Raider Visual-Restraint Replacement Private Comparator And Human Review Stop.
 
 New v0.157 docs:
 

@@ -1,5 +1,40 @@
 # Changelog
 
+# v0.158 Hybrid Mixed Friendly-Versus-Hostile Combat-Readability Stress Gate And Human Review Stop - 2026-06-07
+
+This checkpoint stress-tests only the already-selected five-slot private hybrid comparator posture. It generates zero new images, adds zero runtime-art slots, preserves the selected Worker/Barracks/Aster/Militia/v0.157 Ashen Raider context, preserves archived v0.156 Ashen source/cutout evidence, and stops for Emmanuel review. It does not modify the normal Salto player slice and does not wire anything into the browser runtime.
+
+Added:
+
+- Private v0.158 dispatch flag `--hybrid-mixed-combat-readability-stress`.
+- One-click wrapper `GODOT_HYBRID_MIXED_COMBAT_READABILITY_STRESS_WINDOWS.bat`.
+- v0.158 validation, fair-path audit, headed benchmark, and capture wrappers.
+- New private comparator `hybrid_mixed_combat_readability_stress_comparator.gd`.
+- New reporting tool `tools/godot/hybridMixedCombatReadabilityStressTool.mjs`.
+- v0.158 mixed-combat stress spec, fair-path audit, benchmark report, visual review guide, private boundary, and implementation report.
+- Scaffold guardrail coverage proving the private comparator path stays out of the player-facing launcher.
+
+Evidence:
+
+- Validation: `PASS_V0158_HYBRID_MIXED_COMBAT_VALIDATION`.
+- Fair-path audit: `PASS_V0158_HYBRID_MIXED_COMBAT_FAIR_PATH_AUDIT`.
+- Runtime evidence: `PASS_V0158_HYBRID_MIXED_COMBAT_EVIDENCE_RECORDED`.
+- Stress gate: `PASS_V0158_HYBRID_MIXED_COMBAT_STRESS_GATE`.
+- Tier L selected-vs-fallback FPS / p95 ratios: `0.9392` / `1.1098`.
+- 32-Ashen selected-vs-fallback FPS / p95 ratios: `1.1061` / `0.9154`.
+- Screenshot count: `47`.
+
+Boundaries:
+
+- Zero new AI images.
+- Zero new runtime-art slots.
+- Selected five-slot private comparator only.
+- No animation assets or directional variants.
+- No existing reference candidate import.
+- No normal Salto player-slice mutation.
+- No browser-runtime wiring or player-facing Godot wiring.
+- No manifest mutation, art-slot mutation, production package mutation, save change, stable-ID change, final runtime-art approval, final combat-art approval, final engine selection, full port, or v0.159 work inside this checkpoint.
+
 # v0.157 Ashen Raider Visual-Restraint Replacement Private Comparator And Human Review Stop - 2026-06-07
 
 This checkpoint preserves the technically valid v0.156 Ashen Raider source/cutout as archived comparison evidence, generates exactly one restrained replacement source image, derives deterministic fullres/512/768/1024 candidates for the same hostile slot, selects `HYBRID_ASHEN_RAIDER_V0157_TRIMMED_1024`, and stops for Emmanuel review. It does not add a sixth runtime-art slot, does not modify the normal Salto player slice, and does not wire anything into the browser runtime.
