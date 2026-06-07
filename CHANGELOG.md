@@ -1,5 +1,52 @@
 # Changelog
 
+# v0.157 Ashen Raider Visual-Restraint Replacement Private Comparator And Human Review Stop - 2026-06-07
+
+This checkpoint preserves the technically valid v0.156 Ashen Raider source/cutout as archived comparison evidence, generates exactly one restrained replacement source image, derives deterministic fullres/512/768/1024 candidates for the same hostile slot, selects `HYBRID_ASHEN_RAIDER_V0157_TRIMMED_1024`, and stops for Emmanuel review. It does not add a sixth runtime-art slot, does not modify the normal Salto player slice, and does not wire anything into the browser runtime.
+
+Added:
+
+- Private v0.157 dispatch flag `--ashen-raider-visual-restraint-replacement`.
+- One-click wrapper `GODOT_ASHEN_RAIDER_VISUAL_RESTRAINT_REPLACEMENT_WINDOWS.bat`.
+- v0.157 derivative reproducibility, validation, audit, headed benchmark, and capture wrappers.
+- New private comparator `ashen_raider_visual_restraint_replacement_comparator.gd`.
+- v0.157 Ashen Raider replacement spec, slot contract, derivative matrix, fair-path audit, paired benchmark report, visual review guide, private boundary, and implementation report.
+- Scaffold guardrail coverage proving the private comparator path stays out of the stabilized/player-facing launchers.
+
+Evidence:
+
+- Derivative reproducibility: `PASS_V0157_ASHEN_RAIDER_REPLACEMENT_DERIVATIVES_REPRODUCIBILITY`.
+- Validation: `PASS_V0157_ASHEN_RAIDER_REPLACEMENT_VALIDATION`.
+- Runtime validation: `PASS_V0157_ASHEN_RAIDER_RESTRAINT_REPLACEMENT_RUNTIME_VALIDATION`.
+- Runtime evidence: `PASS_V0157_ASHEN_RAIDER_RESTRAINT_REPLACEMENT_RUNTIME_EVIDENCE`.
+- Gate: `PASS_V0157_ASHEN_RAIDER_REPLACEMENT_SELECTION_GATE`.
+- Evidence: `PASS_V0157_ASHEN_RAIDER_REPLACEMENT_EVIDENCE_RECORDED`, with `37` screenshots, `42` benchmark rows, and `18` aggregate rows.
+- Fair-path audit: `PASS_V0157_ASHEN_RAIDER_REPLACEMENT_FAIR_PATH_AUDIT`.
+- Source SHA-256: `f2c96f230534c86f060b04d0580b8b0f797b859dc348ba1a450a97c90eca6954`.
+- Archived v0.156 source SHA-256: `9eec7bde19bbd698ae3d738c7cb284d570043fe31d220e22e7a00e6ecb344cad`.
+- Archived v0.156 cutout SHA-256: `95b9d6dd592e9cb84aff64ae5fb1b73eb80d8bf2b93064260484f3f99514e6ba`.
+- Selected SHA-256: `8eb011f56d5cd56cf6ef0a843d2a5899e27aa13e203cc44517ed4a0c55c631c8`.
+- Tier L selected-vs-fallback FPS ratio: `0.9853`.
+- Tier L selected-vs-fallback p95 frame-time ratio: `1.0159`.
+- Fallback Tier L mean FPS / p95: `1025.21` / `1.26 ms`.
+- Archived v0.156 Tier L mean FPS / p95: `988.19` / `1.42 ms`.
+- Selected Tier L mean FPS / p95: `1010.16` / `1.28 ms`.
+- Preserved context hashes: Worker `a628065ca92b231b0d4f6a0625d9e259dea080e80d530ee688483611d70049bc`, Barracks `58a60b750370df084b60a1d92077da9367c0ba8a763781e2c3a8a7d96f1c980f`, Aster `b256f96f762187c05d68f2c2de62bedec0248896210767e98cb8f210dac2829a`, Militia `c25349f00c422a0b3c9d5862027351bd70008e9314d4e3cd4001676e914321cb`.
+- Fair-path audit confirms `10` texture cache entries, `10` material cache entries, `10` source load entries, one create/load per key, and no repeated texture/material creation or metadata parsing during steady-state frames.
+
+Boundaries:
+
+- Exactly one AI image.
+- Same Ashen Raider hostile private comparator slot only.
+- Preserves v0.156 source/cutout as archived comparison evidence.
+- No animations.
+- No sixth runtime-art slot.
+- No second hostile slot.
+- No existing reference candidate import.
+- No normal Salto player-slice mutation.
+- No browser-runtime wiring or player-facing Godot wiring.
+- No manifest mutation, art-slot mutation, production package mutation, save change, stable-ID change, final runtime-art approval, final Ashen Raider art approval, final engine selection, full port, or v0.158 work inside this checkpoint.
+
 # v0.156 Hybrid Ashen Raider Static Billboard Single Hostile-Slot Intake Experiment And Human Review Stop - 2026-06-07
 
 This checkpoint generates exactly one original ignored Ashen Raider source image, derives one deterministic alpha cutout, validates one hostile private-comparator-only runtime-art slot against a tracked fallback, preserves the selected Worker/Barracks/Aster/Militia context, and stops for Emmanuel review. It does not modify the normal Salto player slice or browser runtime.

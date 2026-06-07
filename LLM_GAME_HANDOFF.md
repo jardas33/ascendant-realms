@@ -1,6 +1,6 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-06-07 v0.156 Hybrid Ashen Raider Static Billboard Single Hostile-Slot Intake Experiment And Human Review Stop
+Last updated: 2026-06-07 v0.157 Ashen Raider Visual-Restraint Replacement Private Comparator And Human Review Stop
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
@@ -10,7 +10,53 @@ Ascendant Realms is the internal repository codename for a Phaser 3, TypeScript,
 
 Project Identity continuation note: v0.156 now supersedes the older no-v0.156 tail in the rolling identity paragraph above. v0.156 generates exactly one original local Ashen Raider static billboard source, validates one single hostile private comparator slot against deterministic fallback with selected Worker/Barracks/Aster/Militia context, passes the Tier L gate, records scorecard/capture/fair-path evidence, and stops for Emmanuel review.
 
-Current status override: v0.156 is the active checkpoint for this handoff. It supersedes the older v0.155 "no v0.156 work" guardrail because the queued v0.156 prompt explicitly authorized this isolated private comparator single hostile-slot intake after v0.155 was committed, pushed, clean, synced, and remote-green. No v0.157 work is approved.
+Project Identity continuation note: v0.157 now supersedes the older no-v0.157 tail above because the v0.157 queued prompt explicitly authorized this isolated private comparator visual-restraint replacement after v0.156 was committed, pushed, clean, synced, and remote-green. v0.157 preserves the technically valid v0.156 Ashen Raider source/cutout as archived comparison evidence, generates exactly one more restrained Ashen Raider source for the same hostile slot, selects the trimmed 1024 derivative after the preserved private gate passes, records scorecard/capture/fair-path evidence, and stops for Emmanuel review.
+
+Current status override: v0.157 is the active checkpoint for this handoff. No v0.158 work is approved.
+
+## Current v0.157 Ashen Raider Visual-Restraint Replacement Private Comparator And Human Review Stop - 2026-06-07
+
+Status: v0.157 is an isolated private Ashen Raider visual-restraint replacement checkpoint. It preserves the technically valid v0.156 Ashen Raider source/cutout as archived comparison evidence, generates exactly one restrained replacement source, derives deterministic fullres/512/768/1024 candidates for the same hostile slot, selects `HYBRID_ASHEN_RAIDER_V0157_TRIMMED_1024`, and stops for Emmanuel review without modifying the normal Salto player slice or browser runtime.
+
+v0.157 current evidence:
+
+- Source SHA-256: `f2c96f230534c86f060b04d0580b8b0f797b859dc348ba1a450a97c90eca6954`, dimensions `1024 x 1536`.
+- Archived v0.156 source SHA-256: `9eec7bde19bbd698ae3d738c7cb284d570043fe31d220e22e7a00e6ecb344cad`.
+- Archived v0.156 cutout SHA-256: `95b9d6dd592e9cb84aff64ae5fb1b73eb80d8bf2b93064260484f3f99514e6ba`.
+- Selected derivative: `HYBRID_ASHEN_RAIDER_V0157_TRIMMED_1024`.
+- Selected SHA-256: `8eb011f56d5cd56cf6ef0a843d2a5899e27aa13e203cc44517ed4a0c55c631c8`, dimensions `1024 x 1024`.
+- Preserved context hashes: Worker `a628065ca92b231b0d4f6a0625d9e259dea080e80d530ee688483611d70049bc`, Barracks `58a60b750370df084b60a1d92077da9367c0ba8a763781e2c3a8a7d96f1c980f`, Aster `b256f96f762187c05d68f2c2de62bedec0248896210767e98cb8f210dac2829a`, Militia `c25349f00c422a0b3c9d5862027351bd70008e9314d4e3cd4001676e914321cb`.
+- Derivative reproducibility: `PASS_V0157_ASHEN_RAIDER_REPLACEMENT_DERIVATIVES_REPRODUCIBILITY`.
+- Validation: `PASS_V0157_ASHEN_RAIDER_REPLACEMENT_VALIDATION`.
+- Runtime validation: `PASS_V0157_ASHEN_RAIDER_RESTRAINT_REPLACEMENT_RUNTIME_VALIDATION`.
+- Runtime evidence: `PASS_V0157_ASHEN_RAIDER_RESTRAINT_REPLACEMENT_RUNTIME_EVIDENCE`.
+- Gate: `PASS_V0157_ASHEN_RAIDER_REPLACEMENT_SELECTION_GATE`.
+- Evidence: `PASS_V0157_ASHEN_RAIDER_REPLACEMENT_EVIDENCE_RECORDED`.
+- Fair-path audit: `PASS_V0157_ASHEN_RAIDER_REPLACEMENT_FAIR_PATH_AUDIT`.
+- Tier L fallback mean FPS / p95: `1025.21` / `1.26 ms`.
+- Tier L archived v0.156 mean FPS / p95: `988.19` / `1.42 ms`.
+- Tier L selected mean FPS / p95: `1010.16` / `1.28 ms`.
+- Tier L selected-vs-fallback FPS ratio / p95 ratio: `0.9853` / `1.0159`.
+- Evidence packet: `37` screenshots, `42` benchmark rows, and `18` aggregate rows under `artifacts/desktop-spikes/godot-salto/v0157/evidence/`.
+- Fair-path audit confirms `10` texture cache entries, `10` material cache entries, `10` source load entries, one create/load per key, no repeated texture/material creation, and no metadata parsing during steady-state frames.
+- Human visual review is pending. Automated checks mark the replacement as a restrained ordinary hostile-wave attacker, but no final runtime-art approval is implied.
+
+v0.157 constraints:
+
+- Exactly one new AI image.
+- Ashen Raider only.
+- Same hostile private comparator slot only: `ashen_raider_billboard_static_v0156`.
+- Preserve v0.156 source/cutout as archived comparison evidence.
+- No animations.
+- No sixth runtime-art slot.
+- No second hostile slot.
+- No existing reference candidate import.
+- No normal Salto player-slice mutation.
+- No browser-runtime wiring or player-facing Godot wiring.
+- No manifest, art-slot, production package, save, or stable-ID mutation.
+- No production approval, final Ashen Raider art approval, final engine selection, full port, or v0.158 work.
+
+Closeout rule: commit exactly `Checkpoint v0.157 Ashen Raider visual-restraint replacement derivative selection and human-review stop`, push only when the worktree is clean and synced, confirm remote CI, and do not start v0.158 unless a future queued prompt explicitly authorizes it and all gates are clean.
 
 ## Current v0.156 Hybrid Ashen Raider Static Billboard Single Hostile-Slot Intake Experiment And Human Review Stop - 2026-06-07
 

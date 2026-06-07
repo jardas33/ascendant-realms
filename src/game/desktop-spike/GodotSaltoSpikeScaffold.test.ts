@@ -2741,4 +2741,92 @@ describe("Godot Salto spike scaffold", () => {
     expect(comparatorScript).not.toContain("artifacts/art-review/v0138/candidates");
     expect(toolScript).not.toContain("artifacts/art-review/v0138/candidates");
   });
+
+  it("defines the v0.157 private Ashen Raider visual-restraint replacement gate", async () => {
+    [
+      "GODOT_ASHEN_RAIDER_VISUAL_RESTRAINT_REPLACEMENT_WINDOWS.bat",
+      "tools/godot/ashenRaiderVisualRestraintReplacementTool.mjs",
+      "tools/godot/runGodotAshenRaiderVisualRestraintReplacementDerivatives.ps1",
+      "tools/godot/runGodotAshenRaiderVisualRestraintReplacementValidation.ps1",
+      "tools/godot/runGodotAshenRaiderVisualRestraintReplacementAudit.ps1",
+      "tools/godot/runGodotAshenRaiderVisualRestraintReplacementBenchmarkWindows.ps1",
+      "tools/godot/captureGodotAshenRaiderVisualRestraintReplacementWindows.ps1",
+      "desktop-spikes/godot-salto/comparators/runtime_art_pipeline/ashen_raider_visual_restraint_replacement_comparator.gd",
+      "docs/V0157_ASHEN_RAIDER_VISUAL_RESTRAINT_REPLACEMENT_SPEC.md",
+      "docs/V0157_ASHEN_RAIDER_REPLACEMENT_SLOT_CONTRACT.md",
+      "docs/V0157_ASHEN_RAIDER_DERIVATIVE_MATRIX.md",
+      "docs/V0157_ASHEN_RAIDER_FAIR_PATH_AUDIT.md",
+      "docs/V0157_ASHEN_RAIDER_PAIRED_BENCHMARK_REPORT.md",
+      "docs/V0157_ASHEN_RAIDER_VISUAL_REVIEW_GUIDE.md",
+      "docs/V0157_PRIVATE_COMPARATOR_ONLY_BOUNDARY.md",
+      "docs/V0157_IMPLEMENTATION_REPORT.md"
+    ].forEach((path) => expect(existsSync(path), path).toBe(true));
+
+    const packageJson = await readJson<{ scripts: Record<string, string> }>("package.json");
+    [
+      "godot:ashen-raider-replacement:derivatives:reproduce",
+      "godot:ashen-raider-replacement:validate",
+      "godot:ashen-raider-replacement:audit",
+      "godot:ashen-raider-replacement:benchmark:headed",
+      "godot:ashen-raider-replacement:capture"
+    ].forEach((script) => expect(packageJson.scripts[script], script).toBeTypeOf("string"));
+
+    const rootScript = await readFile("desktop-spikes/godot-salto/scripts/salto_spike_root.gd", "utf8");
+    const comparatorScript = await readFile(
+      "desktop-spikes/godot-salto/comparators/runtime_art_pipeline/ashen_raider_visual_restraint_replacement_comparator.gd",
+      "utf8"
+    );
+    const toolScript = await readFile("tools/godot/ashenRaiderVisualRestraintReplacementTool.mjs", "utf8");
+    const launcher = await readFile("GODOT_ASHEN_RAIDER_VISUAL_RESTRAINT_REPLACEMENT_WINDOWS.bat", "utf8");
+    const stabilizedLauncher = await readFile("GODOT_LAUNCH_STABILIZED_SALTO_REVIEW_WINDOWS.bat", "utf8");
+    const playerLauncher = await readFile("GODOT_LAUNCH_PLAYER_SLICE_WINDOWS.bat", "utf8");
+    const boundary = await readFile("docs/V0157_PRIVATE_COMPARATOR_ONLY_BOUNDARY.md", "utf8");
+    const implementation = await readFile("docs/V0157_IMPLEMENTATION_REPORT.md", "utf8");
+
+    [
+      "--ashen-raider-visual-restraint-replacement",
+      "PASS_V0157_PRIVATE_ASHEN_RAIDER_RESTRAINT_REPLACEMENT_DISPATCH",
+      "ashen_raider_visual_restraint_replacement_comparator.gd"
+    ].forEach((text) => expect(rootScript).toContain(text));
+
+    [
+      "CHECKPOINT := \"v0.157\"",
+      "SOURCE_CHECKPOINT := \"v0.156\"",
+      "HYBRID_ASHEN_RAIDER_ARCHIVED_V0156_COMPARISON",
+      "HYBRID_ASHEN_RAIDER_V0157_FULL_RES",
+      "HYBRID_ASHEN_RAIDER_V0157_TRIMMED_512",
+      "HYBRID_ASHEN_RAIDER_V0157_TRIMMED_768",
+      "HYBRID_ASHEN_RAIDER_V0157_TRIMMED_1024",
+      "PASS_V0157_ASHEN_RAIDER_RESTRAINT_REPLACEMENT_RUNTIME_EVIDENCE",
+      "weaponSilhouetteRestrained",
+      "sameHostileSlotOnly",
+      "noSixthRuntimeArtSlot"
+    ].forEach((text) => expect(comparatorScript).toContain(text));
+
+    [
+      "PASS_V0157_ASHEN_RAIDER_REPLACEMENT_DERIVATIVES_REPRODUCIBILITY",
+      "PASS_V0157_ASHEN_RAIDER_REPLACEMENT_VALIDATION",
+      "PASS_V0157_ASHEN_RAIDER_REPLACEMENT_SELECTION_GATE",
+      "PASS_V0157_ASHEN_RAIDER_REPLACEMENT_FAIR_PATH_AUDIT",
+      "exactlyOneAiImageForV0157",
+      "preservesArchivedV0156ComparisonEvidence",
+      "ashen-raider-visual-restraint-replacement-scorecard.json"
+    ].forEach((text) => expect(toolScript).toContain(text));
+
+    expect(launcher).toContain("godot:ashen-raider-replacement:benchmark:headed");
+    expect(stabilizedLauncher).not.toContain("ashen-raider-visual-restraint-replacement");
+    expect(stabilizedLauncher).not.toContain("ASHEN_RAIDER_RESTRAINT_REPLACEMENT");
+    expect(playerLauncher).not.toContain("ashen-raider-visual-restraint-replacement");
+    expect(playerLauncher).not.toContain("ASHEN_RAIDER_RESTRAINT_REPLACEMENT");
+
+    expect(boundary).toContain("No browser runtime wiring");
+    expect(boundary).toContain("No sixth runtime-art slot");
+    expect(implementation).toContain("Do not begin v0.158");
+
+    expect(rootScript).not.toContain("artifacts/art-review/v0138/candidates");
+    expect(comparatorScript).not.toContain("artifacts/art-review/v0138/candidates");
+    expect(toolScript).not.toContain("artifacts/art-review/v0138/candidates");
+    expect(comparatorScript).not.toContain("v0.158");
+    expect(toolScript).not.toContain("v0.158");
+  });
 });

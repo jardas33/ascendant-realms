@@ -43,6 +43,7 @@ const SCRIPT_ARG_PREFIXES := [
 	"--militia-billboard-single-slot",
 	"--militia-billboard-mass-overlap-repair",
 	"--ashen-raider-billboard-single-slot",
+	"--ashen-raider-visual-restraint-replacement",
 	"--aster-billboard-single-slot",
 	"--mode=",
 	"--visual-preset=",
@@ -400,6 +401,45 @@ func _ready() -> void:
 			get_tree().quit(1)
 			return
 		militia.call("start")
+		return
+	if args.has("--ashen-raider-visual-restraint-replacement"):
+		_write_absolute_json(_path_join(_artifact_root_from_args(), "ashen-raider-visual-restraint-replacement-root-dispatch.json"), {
+			"schemaVersion": 1,
+			"checkpoint": "v0.157",
+			"status": "PASS_V0157_PRIVATE_ASHEN_RAIDER_RESTRAINT_REPLACEMENT_DISPATCH",
+			"args": Array(args),
+			"defaultPlayerSliceLaunched": false
+		})
+		var ashen_raider_replacement_script := load("res://comparators/runtime_art_pipeline/ashen_raider_visual_restraint_replacement_comparator.gd") as GDScript
+		if ashen_raider_replacement_script == null:
+			_write_absolute_json(_path_join(_artifact_root_from_args(), "ashen-raider-visual-restraint-replacement-dispatch-failure.json"), {
+				"schemaVersion": 1,
+				"checkpoint": "v0.157",
+				"status": "FAIL_V0157_PRIVATE_ASHEN_RAIDER_RESTRAINT_REPLACEMENT_SCRIPT_LOAD",
+				"script": "res://comparators/runtime_art_pipeline/ashen_raider_visual_restraint_replacement_comparator.gd"
+			})
+			get_tree().quit(1)
+			return
+		var ashen_raider_replacement := Node.new()
+		ashen_raider_replacement.name = "V0157AshenRaiderVisualRestraintReplacementComparator"
+		ashen_raider_replacement.set_script(ashen_raider_replacement_script)
+		add_child(ashen_raider_replacement)
+		_write_absolute_json(_path_join(_artifact_root_from_args(), "ashen-raider-visual-restraint-replacement-dispatch-prestart.json"), {
+			"schemaVersion": 1,
+			"checkpoint": "v0.157",
+			"status": "PASS_V0157_PRIVATE_ASHEN_RAIDER_RESTRAINT_REPLACEMENT_PRESTART",
+			"hasStart": ashen_raider_replacement.has_method("start")
+		})
+		if not ashen_raider_replacement.has_method("start"):
+			_write_absolute_json(_path_join(_artifact_root_from_args(), "ashen-raider-visual-restraint-replacement-dispatch-failure.json"), {
+				"schemaVersion": 1,
+				"checkpoint": "v0.157",
+				"status": "FAIL_V0157_PRIVATE_ASHEN_RAIDER_RESTRAINT_REPLACEMENT_START_METHOD",
+				"script": "res://comparators/runtime_art_pipeline/ashen_raider_visual_restraint_replacement_comparator.gd"
+			})
+			get_tree().quit(1)
+			return
+		ashen_raider_replacement.call("start")
 		return
 	if args.has("--ashen-raider-billboard-single-slot"):
 		_write_absolute_json(_path_join(_artifact_root_from_args(), "ashen-raider-billboard-single-slot-root-dispatch.json"), {

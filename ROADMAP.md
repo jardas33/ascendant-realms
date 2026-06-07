@@ -11,9 +11,22 @@ Every phase should protect these long-term pillars:
 
 ## Current Recommended Next Phase
 
-The current checkpoint is **v0.156 Hybrid Ashen Raider Static Billboard Single Hostile-Slot Intake Experiment And Human Review Stop** on 2026-06-07. It keeps the browser runtime, normal Salto player slice, production package, saves, stable IDs, and production art-slot registry untouched while testing only one isolated private-comparator Ashen Raider hostile slot. It generates exactly one original ignored Ashen Raider source image, derives one deterministic alpha cutout, preserves the selected Worker/Barracks/Aster/Militia context, adds no sixth runtime-art slot, records `PASS_V0156_ASHEN_RAIDER_BILLBOARD_SINGLE_SLOT_GATE`, and records Tier L local-vs-fallback average FPS ratio `1.0051` plus p95 frame-time ratio `1.0074`.
+The current checkpoint is **v0.157 Ashen Raider Visual-Restraint Replacement Private Comparator And Human Review Stop** on 2026-06-07. It keeps the browser runtime, normal Salto player slice, production package, saves, stable IDs, and production art-slot registry untouched while testing only one isolated private-comparator replacement for the existing Ashen Raider hostile slot. It preserves the technically valid v0.156 Ashen Raider source/cutout as archived comparison evidence, generates exactly one restrained replacement source image, derives deterministic fullres/512/768/1024 candidates, adds no sixth runtime-art slot, selects `HYBRID_ASHEN_RAIDER_V0157_TRIMMED_1024`, records `PASS_V0157_ASHEN_RAIDER_REPLACEMENT_SELECTION_GATE`, and records Tier L selected-vs-fallback average FPS ratio `0.9853` plus p95 frame-time ratio `1.0159`.
 
-The next recommended step is human review and explicit approval only: Emmanuel may review `docs/V0156_ASHEN_RAIDER_BILLBOARD_VISUAL_REVIEW_GUIDE.md`, the ignored v0.156 evidence under `artifacts/desktop-spikes/godot-salto/v0156/`, and the v0.156 validation/benchmark/scorecard/boundary/implementation docs. The current visual caveat is that the Raider reads hostile and distinct, but its weapon silhouette is large and should be reviewed before any future approval decision. Do not import the Ashen Raider image, add another hostile slot, add a sixth runtime-art slot, generate another image, import existing reference candidates, download assets, mark Ashen Raider runtime-approved, modify the normal Salto player slice, wire comparator output into Godot production/player-facing flow, wire assets into the browser, mutate manifests or art slots, change saves or stable IDs, create a desktop save path, choose Godot finally, start a full desktop port, start Unity/Unreal/Electron work, or start v0.157 unless a future explicit goal approves a narrow next step.
+The next recommended step is human review and explicit approval only: Emmanuel may review `docs/V0157_ASHEN_RAIDER_VISUAL_REVIEW_GUIDE.md`, the ignored v0.157 evidence under `artifacts/desktop-spikes/godot-salto/v0157/`, and the v0.157 derivative, benchmark, fair-path, boundary, and implementation docs. The current visual question is whether the more restrained replacement now reads like an ordinary hostile wave attacker while remaining distinct from Worker, Aster, Barracks, and selected Militia context. Do not import the Ashen Raider replacement image, add another hostile slot, add a sixth runtime-art slot, generate another image, import existing reference candidates, download assets, mark Ashen Raider runtime-approved, modify the normal Salto player slice, wire comparator output into Godot production/player-facing flow, wire assets into the browser, mutate manifests or art slots, change saves or stable IDs, create a desktop save path, choose Godot finally, start a full desktop port, start Unity/Unreal/Electron work, or start v0.158 unless a future explicit goal approves a narrow next step.
+
+New v0.157 docs:
+
+- `docs/V0157_ASHEN_RAIDER_VISUAL_RESTRAINT_REPLACEMENT_SPEC.md`
+- `docs/V0157_ASHEN_RAIDER_REPLACEMENT_SLOT_CONTRACT.md`
+- `docs/V0157_ASHEN_RAIDER_DERIVATIVE_MATRIX.md`
+- `docs/V0157_ASHEN_RAIDER_FAIR_PATH_AUDIT.md`
+- `docs/V0157_ASHEN_RAIDER_PAIRED_BENCHMARK_REPORT.md`
+- `docs/V0157_ASHEN_RAIDER_VISUAL_REVIEW_GUIDE.md`
+- `docs/V0157_PRIVATE_COMPARATOR_ONLY_BOUNDARY.md`
+- `docs/V0157_IMPLEMENTATION_REPORT.md`
+
+Previous checkpoint reference: v0.156 Hybrid Ashen Raider Static Billboard Single Hostile-Slot Intake Experiment And Human Review Stop.
 
 New v0.156 docs:
 

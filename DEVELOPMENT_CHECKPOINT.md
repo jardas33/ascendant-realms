@@ -1,6 +1,65 @@
 # Development Checkpoint
 
-Updated: 2026-06-07 v0.156 Hybrid Ashen Raider Static Billboard Single Hostile-Slot Intake Experiment And Human Review Stop
+Updated: 2026-06-07 v0.157 Ashen Raider Visual-Restraint Replacement Private Comparator And Human Review Stop
+
+## v0.157 Ashen Raider Visual-Restraint Replacement Private Comparator And Human Review Stop - 2026-06-07
+
+Scope: isolated private Godot Ashen Raider visual-restraint replacement checkpoint. This checkpoint preserves the technically valid v0.156 Ashen Raider source/cutout as archived comparison evidence, generates exactly one restrained replacement source image, derives fullres/512/768/1024 deterministic candidates for the same hostile slot, benchmarks the private comparator path against fallback and archived comparison evidence, and does not modify the normal Salto player slice or browser runtime.
+
+Included work:
+
+- Confirmed clean synchronized `main` at `1d74b91411641f077ba5190dd2cb4e4a17a56069`.
+- Confirmed v0.156 prerequisite evidence, source/cutout hashes, and selected Worker/Barracks/Aster/Militia context hashes.
+- Generated exactly one restrained ignored Ashen Raider source image.
+- Preserved the v0.156 source/cutout as archived comparison evidence only.
+- Added deterministic v0.157 fullres, 512, 768, and 1024 derivative tooling.
+- Added private `--ashen-raider-visual-restraint-replacement` dispatch and v0.157 wrappers.
+- Captured fallback, archived v0.156, fullres, 512, 768, 1024, alpha, dark/light edge, context, group, overlap, ring, normal-distance, zoomed, and Tier S/M/L evidence.
+
+Current interpretation:
+
+- Derivative reproducibility: `PASS_V0157_ASHEN_RAIDER_REPLACEMENT_DERIVATIVES_REPRODUCIBILITY`.
+- Validation: `PASS_V0157_ASHEN_RAIDER_REPLACEMENT_VALIDATION`.
+- Runtime validation: `PASS_V0157_ASHEN_RAIDER_RESTRAINT_REPLACEMENT_RUNTIME_VALIDATION`.
+- Runtime evidence: `PASS_V0157_ASHEN_RAIDER_RESTRAINT_REPLACEMENT_RUNTIME_EVIDENCE`.
+- Gate: `PASS_V0157_ASHEN_RAIDER_REPLACEMENT_SELECTION_GATE`.
+- Evidence marker: `PASS_V0157_ASHEN_RAIDER_REPLACEMENT_EVIDENCE_RECORDED`.
+- Fair-path audit: `PASS_V0157_ASHEN_RAIDER_REPLACEMENT_FAIR_PATH_AUDIT`.
+- Source SHA-256: `f2c96f230534c86f060b04d0580b8b0f797b859dc348ba1a450a97c90eca6954`.
+- Archived v0.156 source SHA-256: `9eec7bde19bbd698ae3d738c7cb284d570043fe31d220e22e7a00e6ecb344cad`.
+- Archived v0.156 cutout SHA-256: `95b9d6dd592e9cb84aff64ae5fb1b73eb80d8bf2b93064260484f3f99514e6ba`.
+- Selected derivative: `HYBRID_ASHEN_RAIDER_V0157_TRIMMED_1024`.
+- Selected SHA-256: `8eb011f56d5cd56cf6ef0a843d2a5899e27aa13e203cc44517ed4a0c55c631c8`, dimensions `1024 x 1024`.
+- Tier L fallback average-FPS / p95: `1025.21` / `1.26 ms`.
+- Tier L archived v0.156 average-FPS / p95: `988.19` / `1.42 ms`.
+- Tier L selected average-FPS / p95: `1010.16` / `1.28 ms`.
+- Tier L selected average-FPS ratio: `0.9853`.
+- Tier L selected p95 ratio: `1.0159`.
+- Screenshot count: `37`; benchmark row count: `42`; aggregate row count: `18`.
+- Fair-path audit cache posture: `10` texture cache entries, `10` material cache entries, `10` source load entries, one create/load per key, and no repeated texture/material creation or metadata parsing during steady-state frames.
+- Human review is pending. Automated checks mark the replacement as a restrained ordinary hostile wave attacker; this is not final runtime-art approval.
+- v0.158 has not started.
+
+Verification:
+
+```text
+Required closeout stack:
+npm test
+npm run build
+npm run validate:content
+npm run validate:art-intake
+npm run art:reference:init
+npm run art:reference:validate
+npm run art:reference:contact-sheet
+npm run art:reference:review-pack
+npm run godot:ashen-raider-replacement:derivatives:reproduce
+npm run godot:ashen-raider-replacement:validate
+npm run godot:ashen-raider-replacement:audit
+npm run godot:ashen-raider-replacement:benchmark:headed
+npm run godot:ashen-raider-replacement:capture
+isolation scans
+git diff --check
+```
 
 ## v0.156 Hybrid Ashen Raider Static Billboard Single Hostile-Slot Intake Experiment And Human Review Stop - 2026-06-07
 
