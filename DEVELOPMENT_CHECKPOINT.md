@@ -1,6 +1,60 @@
 # Development Checkpoint
 
-Updated: 2026-06-07 v0.155 Hybrid Militia Billboard Repair Mass-Overlap Combat-Readability Benchmark And Human Review Stop
+Updated: 2026-06-07 v0.156 Hybrid Ashen Raider Static Billboard Single Hostile-Slot Intake Experiment And Human Review Stop
+
+## v0.156 Hybrid Ashen Raider Static Billboard Single Hostile-Slot Intake Experiment And Human Review Stop - 2026-06-07
+
+Scope: isolated private Godot Ashen Raider billboard intake checkpoint. This checkpoint generates exactly one original ignored Ashen Raider source image, derives one deterministic alpha cutout, benchmarks a single hostile private comparator-only runtime-art slot against a tracked procedural fallback with selected Worker, Barracks, Aster, and Militia context, and does not modify the normal Salto player slice or browser runtime.
+
+Included work:
+
+- Confirmed clean synchronized `main` at `9d4a776209e22b2eaef5b6569a7af18cb6d76703`.
+- Confirmed v0.155 prerequisite evidence, selected `HYBRID_MILITIA_TRIMMED_1024`, and preserved Worker/Barracks/Aster/Militia hashes.
+- Generated exactly one original ignored Ashen Raider source image and deterministic alpha cutout.
+- Added tracked procedural fallback PNG and contract for `ashen_raider_billboard_static_v0156`.
+- Added private `--ashen-raider-billboard-single-slot` dispatch and v0.156 wrappers.
+- Captured one-Raider, alpha, dark/light edge, Aster hierarchy, Worker distinction, selected Militia friendly/hostile distinction, group, zoomed group, overlap, rings, static formation, fallback, ortho, and Tier S/M/L evidence.
+
+Current interpretation:
+
+- Gate: `PASS_V0156_ASHEN_RAIDER_BILLBOARD_SINGLE_SLOT_GATE`.
+- Evidence marker: `PASS_V0156_ASHEN_RAIDER_BILLBOARD_SINGLE_SLOT_EVIDENCE_RECORDED`.
+- Validation: `PASS_V0156_ASHEN_RAIDER_BILLBOARD_VALIDATION`.
+- Runtime validation: `PASS_V0156_ASHEN_RAIDER_BILLBOARD_RUNTIME_VALIDATION`.
+- Fair-path audit: `PASS_V0156_ASHEN_RAIDER_BILLBOARD_FAIR_PATH_AUDIT`.
+- Source SHA-256: `9eec7bde19bbd698ae3d738c7cb284d570043fe31d220e22e7a00e6ecb344cad`.
+- Cutout SHA-256: `95b9d6dd592e9cb84aff64ae5fb1b73eb80d8bf2b93064260484f3f99514e6ba`.
+- Fallback SHA-256: `501dd67cff89a7cd09aa6a1674b24717f183a7a6d71eddbd33a26f6962bb9faa`.
+- Tier L local average-FPS ratio: `1.0051`.
+- Tier L local p95 ratio: `1.0074`.
+- Fallback Tier L mean FPS / p95: `1001.64` / `1.35 ms`.
+- Local Ashen Raider Tier L mean FPS / p95: `1006.75` / `1.36 ms`.
+- Screenshot count: `24`; benchmark row count: `21`; aggregate row count: `9`.
+- Fair-path audit cache posture: `6` texture cache entries, `6` material cache entries, one load/create per source/material key, and no repeated texture/material creation or metadata parsing during steady-state frames.
+- Human review is pending. The source reads hostile and distinct, but the large weapon silhouette should be reviewed before any future approval decision.
+- v0.157 has not started.
+
+Verification:
+
+```text
+Required closeout stack:
+npm test
+npm run build
+npm run validate:content
+npm run validate:art-intake
+npm run art:reference:init
+npm run art:reference:validate
+npm run art:reference:contact-sheet
+npm run art:reference:review-pack
+npm run godot:ashen-raider-billboard:fallback:reproduce
+npm run godot:ashen-raider-billboard:metadata
+npm run godot:ashen-raider-billboard:validate
+npm run godot:ashen-raider-billboard:audit
+npm run godot:ashen-raider-billboard:benchmark:headed
+npm run godot:ashen-raider-billboard:capture
+isolation scans
+git diff --check
+```
 
 ## v0.155 Hybrid Militia Billboard Repair Mass-Overlap Combat-Readability Benchmark And Human Review Stop - 2026-06-07
 

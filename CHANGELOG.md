@@ -1,5 +1,45 @@
 # Changelog
 
+# v0.156 Hybrid Ashen Raider Static Billboard Single Hostile-Slot Intake Experiment And Human Review Stop - 2026-06-07
+
+This checkpoint generates exactly one original ignored Ashen Raider source image, derives one deterministic alpha cutout, validates one hostile private-comparator-only runtime-art slot against a tracked fallback, preserves the selected Worker/Barracks/Aster/Militia context, and stops for Emmanuel review. It does not modify the normal Salto player slice or browser runtime.
+
+Added:
+
+- Private v0.156 dispatch flag `--ashen-raider-billboard-single-slot`.
+- One-click wrapper `GODOT_ASHEN_RAIDER_BILLBOARD_SINGLE_SLOT_EXPERIMENT_WINDOWS.bat`.
+- v0.156 metadata, fallback reproducibility, validation, audit, headed benchmark, and capture wrappers.
+- New private comparator `ashen_raider_billboard_single_slot_comparator.gd`.
+- Tracked deterministic fallback PNG and contract for `ashen_raider_billboard_static_v0156`.
+- v0.156 Ashen Raider intake spec, slot contract, validation report, benchmark report, scorecard, visual review guide, private boundary, and implementation report.
+
+Evidence:
+
+- Gate: `PASS_V0156_ASHEN_RAIDER_BILLBOARD_SINGLE_SLOT_GATE`.
+- Evidence: `PASS_V0156_ASHEN_RAIDER_BILLBOARD_SINGLE_SLOT_EVIDENCE_RECORDED`, with `24` screenshots and `21` benchmark rows.
+- Source SHA-256: `9eec7bde19bbd698ae3d738c7cb284d570043fe31d220e22e7a00e6ecb344cad`.
+- Cutout SHA-256: `95b9d6dd592e9cb84aff64ae5fb1b73eb80d8bf2b93064260484f3f99514e6ba`.
+- Fallback SHA-256: `501dd67cff89a7cd09aa6a1674b24717f183a7a6d71eddbd33a26f6962bb9faa`.
+- Tier L local-vs-fallback FPS ratio: `1.0051`.
+- Tier L local-vs-fallback p95 frame-time ratio: `1.0074`.
+- Fallback Tier L mean FPS / p95: `1001.64` / `1.35 ms`.
+- Local Ashen Raider Tier L mean FPS / p95: `1006.75` / `1.36 ms`.
+- Preserved context hashes: Worker `a628065ca92b231b0d4f6a0625d9e259dea080e80d530ee688483611d70049bc`, Barracks `58a60b750370df084b60a1d92077da9367c0ba8a763781e2c3a8a7d96f1c980f`, Aster `b256f96f762187c05d68f2c2de62bedec0248896210767e98cb8f210dac2829a`, Militia `c25349f00c422a0b3c9d5862027351bd70008e9314d4e3cd4001676e914321cb`.
+- Fair-path audit: `PASS_V0156_ASHEN_RAIDER_BILLBOARD_FAIR_PATH_AUDIT`, with `6` texture cache entries, `6` material cache entries, one load/create per source/material key, and no repeated texture/material creation or metadata parsing during steady-state frames.
+- Human review note: the Raider reads hostile and distinct, but the large weapon silhouette needs human art review before any future approval decision.
+
+Boundaries:
+
+- Exactly one AI image.
+- Ashen Raider only.
+- Single hostile private comparator runtime-art slot only.
+- No animations.
+- No sixth runtime-art slot.
+- No existing reference candidate import.
+- No normal Salto player-slice mutation.
+- No browser-runtime wiring or player-facing Godot wiring.
+- No manifest mutation, art-slot mutation, production package mutation, save change, stable-ID change, final runtime-art approval, final Ashen Raider art approval, final engine selection, full port, or v0.157 work inside this checkpoint.
+
 # v0.155 Hybrid Militia Billboard Repair Mass-Overlap Combat-Readability Benchmark And Human Review Stop - 2026-06-07
 
 This checkpoint repairs and fairly benchmarks only the existing private Militia billboard path. It generates zero new AI images, derives full-res/512/768/1024 same-source variants from the v0.154 Militia cutout, adds no new runtime-art slot and no fifth runtime-art slot, validates 32-unit combat overlap readability, selects `HYBRID_MILITIA_TRIMMED_1024`, and stops for Emmanuel review. It does not modify the normal Salto player slice or browser runtime.

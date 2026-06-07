@@ -1,0 +1,33 @@
+{
+  "alphaPosture": "transparent-procedural-geometric-fallback",
+  "checkpoint": "v0.156",
+  "dimensions": {
+    "height": 1536,
+    "width": 1024
+  },
+  "fallbackType": "procedural-geometric-transparent-png",
+  "generatedAiImage": false,
+  "hasAlpha": true,
+  "noAnimations": true,
+  "noSixthRuntimeArtSlot": true,
+  "pivot": {
+    "normalizedX": 0.5,
+    "normalizedY": 0.8659,
+    "posture": "bottom-center-foot-pivot"
+  },
+  "privateComparatorOnly": true,
+  "productionApproval": "forbidden",
+  "schemaVersion": 1,
+  "sha256": "501dd67cff89a7cd09aa6a1674b24717f183a7a6d71eddbd33a26f6962bb9faa",
+  "singleHostilePrivateComparatorRuntimeArtSlotOnly": true,
+  "slotId": "ashen_raider_billboard_static_v0156",
+  "sourceKind": "tracked-ashen-raider-diagnostic-fallback",
+  "trimBounds": {
+    "bottom": 1329,
+    "height": 1168,
+    "left": 263,
+    "right": 813,
+    "top": 162,
+    "width": 551
+  }
+}

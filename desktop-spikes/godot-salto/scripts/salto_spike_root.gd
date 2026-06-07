@@ -42,6 +42,7 @@ const SCRIPT_ARG_PREFIXES := [
 	"--hybrid-three-slot-composition-stress",
 	"--militia-billboard-single-slot",
 	"--militia-billboard-mass-overlap-repair",
+	"--ashen-raider-billboard-single-slot",
 	"--aster-billboard-single-slot",
 	"--mode=",
 	"--visual-preset=",
@@ -399,6 +400,45 @@ func _ready() -> void:
 			get_tree().quit(1)
 			return
 		militia.call("start")
+		return
+	if args.has("--ashen-raider-billboard-single-slot"):
+		_write_absolute_json(_path_join(_artifact_root_from_args(), "ashen-raider-billboard-single-slot-root-dispatch.json"), {
+			"schemaVersion": 1,
+			"checkpoint": "v0.156",
+			"status": "PASS_V0156_PRIVATE_ASHEN_RAIDER_BILLBOARD_DISPATCH",
+			"args": Array(args),
+			"defaultPlayerSliceLaunched": false
+		})
+		var ashen_raider_script := load("res://comparators/runtime_art_pipeline/ashen_raider_billboard_single_slot_comparator.gd") as GDScript
+		if ashen_raider_script == null:
+			_write_absolute_json(_path_join(_artifact_root_from_args(), "ashen-raider-billboard-single-slot-dispatch-failure.json"), {
+				"schemaVersion": 1,
+				"checkpoint": "v0.156",
+				"status": "FAIL_V0156_PRIVATE_ASHEN_RAIDER_BILLBOARD_SCRIPT_LOAD",
+				"script": "res://comparators/runtime_art_pipeline/ashen_raider_billboard_single_slot_comparator.gd"
+			})
+			get_tree().quit(1)
+			return
+		var ashen_raider := Node.new()
+		ashen_raider.name = "V0156AshenRaiderBillboardSingleSlotComparator"
+		ashen_raider.set_script(ashen_raider_script)
+		add_child(ashen_raider)
+		_write_absolute_json(_path_join(_artifact_root_from_args(), "ashen-raider-billboard-single-slot-dispatch-prestart.json"), {
+			"schemaVersion": 1,
+			"checkpoint": "v0.156",
+			"status": "PASS_V0156_PRIVATE_ASHEN_RAIDER_BILLBOARD_PRESTART",
+			"hasStart": ashen_raider.has_method("start")
+		})
+		if not ashen_raider.has_method("start"):
+			_write_absolute_json(_path_join(_artifact_root_from_args(), "ashen-raider-billboard-single-slot-dispatch-failure.json"), {
+				"schemaVersion": 1,
+				"checkpoint": "v0.156",
+				"status": "FAIL_V0156_PRIVATE_ASHEN_RAIDER_BILLBOARD_START_METHOD",
+				"script": "res://comparators/runtime_art_pipeline/ashen_raider_billboard_single_slot_comparator.gd"
+			})
+			get_tree().quit(1)
+			return
+		ashen_raider.call("start")
 		return
 	if args.has("--aster-billboard-single-slot"):
 		_write_absolute_json(_path_join(_artifact_root_from_args(), "aster-billboard-root-dispatch.json"), {

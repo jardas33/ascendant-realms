@@ -2661,4 +2661,84 @@ describe("Godot Salto spike scaffold", () => {
     expect(comparatorScript).not.toContain("artifacts/art-review/v0138/candidates");
     expect(toolScript).not.toContain("artifacts/art-review/v0138/candidates");
   });
+
+  it("defines the v0.156 private Ashen Raider billboard single hostile-slot intake gate", async () => {
+    [
+      "GODOT_ASHEN_RAIDER_BILLBOARD_SINGLE_SLOT_EXPERIMENT_WINDOWS.bat",
+      "tools/godot/ashenRaiderBillboardSingleSlotTool.mjs",
+      "tools/godot/runGodotAshenRaiderBillboardValidation.ps1",
+      "tools/godot/runGodotAshenRaiderBillboardBenchmarkWindows.ps1",
+      "tools/godot/captureGodotAshenRaiderBillboardWindows.ps1",
+      "desktop-spikes/godot-salto/comparators/runtime_art_pipeline/ashen_raider_billboard_single_slot_comparator.gd",
+      "docs/V0156_ASHEN_RAIDER_BILLBOARD_SINGLE_SLOT_INTAKE_SPEC.md",
+      "docs/V0156_ASHEN_RAIDER_BILLBOARD_SLOT_CONTRACT.md",
+      "docs/V0156_ASHEN_RAIDER_BILLBOARD_VALIDATION_REPORT.md",
+      "docs/V0156_ASHEN_RAIDER_BILLBOARD_BENCHMARK_REPORT.md",
+      "docs/V0156_ASHEN_RAIDER_BILLBOARD_SCORECARD.md",
+      "docs/V0156_ASHEN_RAIDER_BILLBOARD_VISUAL_REVIEW_GUIDE.md",
+      "docs/V0156_PRIVATE_COMPARATOR_ONLY_BOUNDARY.md",
+      "docs/V0156_IMPLEMENTATION_REPORT.md"
+    ].forEach((path) => expect(existsSync(path), path).toBe(true));
+
+    const packageJson = await readJson<{ scripts: Record<string, string> }>("package.json");
+    [
+      "godot:ashen-raider-billboard:metadata",
+      "godot:ashen-raider-billboard:fallback:reproduce",
+      "godot:ashen-raider-billboard:validate",
+      "godot:ashen-raider-billboard:audit",
+      "godot:ashen-raider-billboard:benchmark:headed",
+      "godot:ashen-raider-billboard:capture"
+    ].forEach((script) => expect(packageJson.scripts[script], script).toBeTypeOf("string"));
+
+    const rootScript = await readFile("desktop-spikes/godot-salto/scripts/salto_spike_root.gd", "utf8");
+    const comparatorScript = await readFile(
+      "desktop-spikes/godot-salto/comparators/runtime_art_pipeline/ashen_raider_billboard_single_slot_comparator.gd",
+      "utf8"
+    );
+    const toolScript = await readFile("tools/godot/ashenRaiderBillboardSingleSlotTool.mjs", "utf8");
+    const launcher = await readFile("GODOT_ASHEN_RAIDER_BILLBOARD_SINGLE_SLOT_EXPERIMENT_WINDOWS.bat", "utf8");
+    const stabilizedLauncher = await readFile("GODOT_LAUNCH_STABILIZED_SALTO_REVIEW_WINDOWS.bat", "utf8");
+    const playerLauncher = await readFile("GODOT_LAUNCH_PLAYER_SLICE_WINDOWS.bat", "utf8");
+    const boundary = await readFile("docs/V0156_PRIVATE_COMPARATOR_ONLY_BOUNDARY.md", "utf8");
+    const implementation = await readFile("docs/V0156_IMPLEMENTATION_REPORT.md", "utf8");
+
+    [
+      "--ashen-raider-billboard-single-slot",
+      "PASS_V0156_PRIVATE_ASHEN_RAIDER_BILLBOARD_DISPATCH",
+      "ashen_raider_billboard_single_slot_comparator.gd"
+    ].forEach((text) => expect(rootScript).toContain(text));
+
+    [
+      "CHECKPOINT := \"v0.156\"",
+      "ashen_raider_billboard_static_v0156",
+      "HYBRID_ASHEN_RAIDER_LOCAL_STATIC_BILLBOARD",
+      "SELECTED_MILITIA_HASH := \"c25349f00c422a0b3c9d5862027351bd70008e9314d4e3cd4001676e914321cb\"",
+      "PASS_V0156_ASHEN_RAIDER_BILLBOARD_RUNTIME_EVIDENCE",
+      "singleHostilePrivateComparatorRuntimeArtSlotOnly",
+      "noSixthRuntimeArtSlot"
+    ].forEach((text) => expect(comparatorScript).toContain(text));
+
+    [
+      "PASS_V0156_ASHEN_RAIDER_BILLBOARD_VALIDATION",
+      "PASS_V0156_ASHEN_RAIDER_BILLBOARD_SINGLE_SLOT_GATE",
+      "PASS_V0156_ASHEN_RAIDER_BILLBOARD_FAIR_PATH_AUDIT",
+      "exactlyOneAiImageForV0156",
+      "selectedMilitiaHash",
+      "ashen-raider-billboard-single-slot-scorecard.json"
+    ].forEach((text) => expect(toolScript).toContain(text));
+
+    expect(launcher).toContain("godot:ashen-raider-billboard:benchmark:headed");
+    expect(stabilizedLauncher).not.toContain("ashen-raider-billboard-single-slot");
+    expect(stabilizedLauncher).not.toContain("ASHEN_RAIDER_BILLBOARD");
+    expect(playerLauncher).not.toContain("ashen-raider-billboard-single-slot");
+    expect(playerLauncher).not.toContain("ASHEN_RAIDER_BILLBOARD");
+
+    expect(boundary).toContain("No browser runtime wiring");
+    expect(boundary).toContain("No second hostile slot");
+    expect(implementation).toContain("No v0.157 work");
+
+    expect(rootScript).not.toContain("artifacts/art-review/v0138/candidates");
+    expect(comparatorScript).not.toContain("artifacts/art-review/v0138/candidates");
+    expect(toolScript).not.toContain("artifacts/art-review/v0138/candidates");
+  });
 });
