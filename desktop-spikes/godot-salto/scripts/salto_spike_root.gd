@@ -35,6 +35,7 @@ const SCRIPT_ARG_PREFIXES := [
 	"--blockout-quality-smoke",
 	"--runtime-art-comparator",
 	"--worker-billboard-single-slot",
+	"--worker-billboard-single-slot-repair",
 	"--mode=",
 	"--visual-preset=",
 	"--viewport=",
@@ -118,6 +119,45 @@ func _ready() -> void:
 			get_tree().quit(1)
 			return
 		worker_comparator.call("start")
+		return
+	if args.has("--worker-billboard-single-slot-repair"):
+		_write_absolute_json(_path_join(_artifact_root_from_args(), "worker-billboard-repair-root-dispatch.json"), {
+			"schemaVersion": 1,
+			"checkpoint": "v0.148",
+			"status": "PASS_V0148_PRIVATE_WORKER_BILLBOARD_REPAIR_DISPATCH",
+			"args": Array(args),
+			"defaultPlayerSliceLaunched": false
+		})
+		var worker_repair_script := load("res://comparators/runtime_art_pipeline/worker_billboard_single_slot_comparator.gd") as GDScript
+		if worker_repair_script == null:
+			_write_absolute_json(_path_join(_artifact_root_from_args(), "worker-billboard-repair-dispatch-failure.json"), {
+				"schemaVersion": 1,
+				"checkpoint": "v0.148",
+				"status": "FAIL_V0148_PRIVATE_WORKER_BILLBOARD_REPAIR_SCRIPT_LOAD",
+				"script": "res://comparators/runtime_art_pipeline/worker_billboard_single_slot_comparator.gd"
+			})
+			get_tree().quit(1)
+			return
+		var worker_repair := Node.new()
+		worker_repair.name = "V0148WorkerBillboardSingleSlotRepairComparator"
+		worker_repair.set_script(worker_repair_script)
+		add_child(worker_repair)
+		_write_absolute_json(_path_join(_artifact_root_from_args(), "worker-billboard-repair-dispatch-prestart.json"), {
+			"schemaVersion": 1,
+			"checkpoint": "v0.148",
+			"status": "PASS_V0148_PRIVATE_WORKER_BILLBOARD_REPAIR_PRESTART",
+			"hasStart": worker_repair.has_method("start")
+		})
+		if not worker_repair.has_method("start"):
+			_write_absolute_json(_path_join(_artifact_root_from_args(), "worker-billboard-repair-dispatch-failure.json"), {
+				"schemaVersion": 1,
+				"checkpoint": "v0.148",
+				"status": "FAIL_V0148_PRIVATE_WORKER_BILLBOARD_REPAIR_START_METHOD",
+				"script": "res://comparators/runtime_art_pipeline/worker_billboard_single_slot_comparator.gd"
+			})
+			get_tree().quit(1)
+			return
+		worker_repair.call("start")
 		return
 	if args.has("--run-tests"):
 		var test_report: Dictionary = run_headless_tests()

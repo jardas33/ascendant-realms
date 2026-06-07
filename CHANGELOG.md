@@ -1,5 +1,47 @@
 # Changelog
 
+# v0.148 Hybrid Worker Billboard Single-Slot Repair Fair Benchmark And Human Review Stop - 2026-06-06
+
+This checkpoint repairs and fairly benchmarks only the existing private hybrid Worker billboard single-slot path. It uses the existing ignored v0.147 Worker source/cutout, generates zero new AI images, adds no second runtime-art slot, preserves the original gate, captures fair-path Tier S/M/L evidence, and stops for Emmanuel review.
+
+Added:
+
+- Deterministic ignored repair derivatives under `artifacts/desktop-spikes/godot-salto/v0148/local-worker-slot/`: trimmed 512, 768, and 1024 Worker PNGs plus metadata.
+- Repair validation, fair-path audit, derivative reproducibility, headed benchmark, and capture wrappers.
+- One-click wrapper `GODOT_WORKER_BILLBOARD_SINGLE_SLOT_REPAIR_WINDOWS.bat`.
+- Private comparator repair sequencing with five Tier L trials, rotated order, cached texture/material reuse counters, and alpha/pivot review captures.
+- v0.148 docs for repair spec, fair-path audit, derivative matrix, paired benchmark report, alpha/pivot review guide, private boundary, and implementation report.
+
+Changed:
+
+- `desktop-spikes/godot-salto/scripts/salto_spike_root.gd` now has a private `--worker-billboard-single-slot-repair` dispatch path only.
+- `tools/godot/workerBillboardSingleSlotTool.mjs` now records v0.148 derivative reproducibility, threshold, evidence, and fair-path audit reports.
+- Desktop-spike scaffold tests now assert the v0.148 repair path remains isolated from the normal Salto player slice and default launchers.
+- Handoff, roadmap, development checkpoint, and release checklist now describe v0.148 as the current repair benchmark and human review stop.
+
+Evidence:
+
+- Selected derivative: `HYBRID_WORKER_TRIMMED_1024`.
+- Selected SHA-256: `a628065ca92b231b0d4f6a0625d9e259dea080e80d530ee688483611d70049bc`, dimensions `1024 x 1024`.
+- Original gate: `PASS_V0148_WORKER_BILLBOARD_ORIGINAL_GATE`.
+- Tier L baseline mean FPS: `858.41`; selected Tier L mean FPS: `851.14`; average FPS ratio `0.9915`.
+- Tier L baseline mean p95 frame time: `1.87 ms`; selected p95 `1.88 ms`; p95 ratio `1.0053`; p95 absolute delta `0.01 ms` context only.
+- Fair-path audit: `PASS_V0148_WORKER_BILLBOARD_FAIR_PATH_AUDIT`, with one texture load/create per source, one material create per source/tint, and no repeated texture/material creation during steady-state frames.
+
+Boundaries:
+
+- Zero new AI images.
+- No second runtime-art slot.
+- No existing reference candidate import.
+- No generated reference image import.
+- No normal Salto player-slice mutation.
+- No player-facing Godot wiring or browser-runtime wiring.
+- No manifest mutation, art-slot mutation, production package mutation, save change, stable-ID change, final runtime-art approval, final Worker design approval, final engine selection, full port, or v0.149 work.
+
+Verification:
+
+- Required v0.148 verification is listed in `docs/V0148_IMPLEMENTATION_REPORT.md` and must be run before closeout.
+
 # v0.147 Hybrid Worker Billboard Single-Slot Runtime-Art Intake Experiment And Human Review Stop - 2026-06-06
 
 This checkpoint adds one isolated private Worker billboard single-slot intake experiment for human review. It uses the v0.146 hybrid recommendation, generates exactly one original local Worker cutout, validates it against a deterministic tracked fallback, captures Tier S/M/L private comparator evidence, records the threshold scorecard, and stops for Emmanuel review.

@@ -10,6 +10,10 @@ const checkpoint = "v0.147";
 const artifactRoot = join(repoRoot, "artifacts", "desktop-spikes", "godot-salto", "v0147");
 const localSlotRoot = join(artifactRoot, "local-worker-slot");
 const evidenceRootDefault = join(artifactRoot, "evidence");
+const repairCheckpoint = "v0.148";
+const repairArtifactRoot = join(repoRoot, "artifacts", "desktop-spikes", "godot-salto", "v0148");
+const repairLocalSlotRoot = join(repairArtifactRoot, "local-worker-slot");
+const repairEvidenceRootDefault = join(repairArtifactRoot, "evidence");
 const comparatorRoot = join(repoRoot, "desktop-spikes", "godot-salto", "comparators", "runtime_art_pipeline");
 const fallbackRoot = join(comparatorRoot, "fallback");
 const fallbackPng = join(fallbackRoot, `${slotId}_fallback.png`);
@@ -18,11 +22,21 @@ const localCutout = join(localSlotRoot, `${slotId}.png`);
 const localSource = join(localSlotRoot, `${slotId}_source_chromakey.png`);
 const localMetadata = join(localSlotRoot, `${slotId}.metadata.json`);
 const runtimeReportName = "worker-billboard-single-slot-runtime.json";
+const repairRuntimeReportName = "worker-billboard-repair-runtime.json";
 const approaches = [
   "HYBRID_DIAGNOSTIC_FALLBACK_BASELINE",
   "HYBRID_LOCAL_WORKER_SLOT",
   "ORTHO_3D_MESH_FALLBACK_COMPARATOR"
 ];
+const repairApproaches = [
+  "HYBRID_DIAGNOSTIC_FALLBACK_BASELINE",
+  "HYBRID_WORKER_FULL_RES",
+  "HYBRID_WORKER_TRIMMED_512",
+  "HYBRID_WORKER_TRIMMED_768",
+  "HYBRID_WORKER_TRIMMED_1024",
+  "ORTHO_3D_MESH_FALLBACK_COMPARATOR"
+];
+const repairDerivativeSizes = [512, 768, 1024];
 const tiers = ["S", "M", "L"];
 
 function stableSort(value) {
@@ -72,6 +86,11 @@ function relativeRepo(path) {
 function evidenceRootFromArgs() {
   const explicit = process.argv.find((arg) => arg.startsWith("--artifact-root="));
   return explicit ? resolve(explicit.slice("--artifact-root=".length)) : evidenceRootDefault;
+}
+
+function repairEvidenceRootFromArgs() {
+  const explicit = process.argv.find((arg) => arg.startsWith("--artifact-root="));
+  return explicit ? resolve(explicit.slice("--artifact-root=".length)) : repairEvidenceRootDefault;
 }
 
 const crcTable = Array.from({ length: 256 }, (_, index) => {
@@ -369,6 +388,312 @@ function analyzePngFile(path) {
     byteLength: buffer.length,
     ...analyzePngBuffer(buffer)
   };
+}
+
+function repairDerivativePath(size) {
+  return join(repairLocalSlotRoot, `${slotId}_trimmed_${size}.png`);
+}
+
+function repairDerivativeMetadataPath(size) {
+  return join(repairLocalSlotRoot, `${slotId}_trimmed_${size}.metadata.json`);
+}
+
+function sourceQualityComparatorRecord() {
+  if (!existsSync(localCutout) || !existsSync(localMetadata)) {
+    return {
+      status: "FAIL_V0148_WORKER_BILLBOARD_SOURCE_QUALITY_COMPARATOR",
+      errors: [`Missing v0.147 local source-quality comparator at ${relativeRepo(localCutout)}.`]
+    };
+  }
+  const metadata = readJson(localMetadata);
+  const analysis = analyzePngFile(localCutout);
+  return {
+    status: metadata.sha256 === analysis.sha256 ? "PASS_V0148_WORKER_BILLBOARD_SOURCE_QUALITY_COMPARATOR" : "FAIL_V0148_WORKER_BILLBOARD_SOURCE_QUALITY_COMPARATOR",
+    errors: metadata.sha256 === analysis.sha256 ? [] : ["v0.147 local full-resolution metadata hash does not match current cutout."],
+    derivativeKind: "source-quality-full-resolution",
+    sourceKind: "local-worker-fullres",
+    path: relativeRepo(localCutout),
+    metadataPath: relativeRepo(localMetadata),
+    sha256: analysis.sha256,
+    dimensions: { width: analysis.width, height: analysis.height },
+    alphaPosture: metadata.alphaPosture ?? "matte-to-alpha-transparent-png; original chroma source preserved",
+    trimBounds: analysis.trimBounds,
+    pivot: analysis.pivot,
+    privateComparatorOnly: true,
+    productionApproval: "forbidden",
+    playerSliceIntegration: "forbidden",
+    browserIntegration: "forbidden"
+  };
+}
+
+function samplePremultipliedBilinear(decoded, x, y) {
+  const clampedX = Math.max(0, Math.min(decoded.width - 1, x));
+  const clampedY = Math.max(0, Math.min(decoded.height - 1, y));
+  const x0 = Math.floor(clampedX);
+  const y0 = Math.floor(clampedY);
+  const x1 = Math.min(decoded.width - 1, x0 + 1);
+  const y1 = Math.min(decoded.height - 1, y0 + 1);
+  const fx = clampedX - x0;
+  const fy = clampedY - y0;
+  const samples = [
+    { x: x0, y: y0, weight: (1 - fx) * (1 - fy) },
+    { x: x1, y: y0, weight: fx * (1 - fy) },
+    { x: x0, y: y1, weight: (1 - fx) * fy },
+    { x: x1, y: y1, weight: fx * fy }
+  ];
+  let alpha = 0;
+  let red = 0;
+  let green = 0;
+  let blue = 0;
+  for (const sample of samples) {
+    const index = (sample.y * decoded.width + sample.x) * 4;
+    const sampleAlpha = decoded.rgba[index + 3] / 255;
+    const weightedAlpha = sampleAlpha * sample.weight;
+    alpha += weightedAlpha;
+    red += decoded.rgba[index] * weightedAlpha;
+    green += decoded.rgba[index + 1] * weightedAlpha;
+    blue += decoded.rgba[index + 2] * weightedAlpha;
+  }
+  if (alpha <= 0.0001) {
+    return [0, 0, 0, 0];
+  }
+  return [
+    Math.max(0, Math.min(255, Math.round(red / alpha))),
+    Math.max(0, Math.min(255, Math.round(green / alpha))),
+    Math.max(0, Math.min(255, Math.round(blue / alpha))),
+    Math.max(0, Math.min(255, Math.round(alpha * 255)))
+  ];
+}
+
+function applyTransparentColorBleed(rgba, width, height, iterations = 2) {
+  for (let iteration = 0; iteration < iterations; iteration += 1) {
+    const copy = Buffer.from(rgba);
+    for (let y = 0; y < height; y += 1) {
+      for (let x = 0; x < width; x += 1) {
+        const index = (y * width + x) * 4;
+        if (copy[index + 3] !== 0) {
+          continue;
+        }
+        let count = 0;
+        let red = 0;
+        let green = 0;
+        let blue = 0;
+        for (let dy = -1; dy <= 1; dy += 1) {
+          for (let dx = -1; dx <= 1; dx += 1) {
+            if (dx === 0 && dy === 0) {
+              continue;
+            }
+            const nx = x + dx;
+            const ny = y + dy;
+            if (nx < 0 || ny < 0 || nx >= width || ny >= height) {
+              continue;
+            }
+            const neighbor = (ny * width + nx) * 4;
+            if (copy[neighbor + 3] > 0) {
+              count += 1;
+              red += copy[neighbor];
+              green += copy[neighbor + 1];
+              blue += copy[neighbor + 2];
+            }
+          }
+        }
+        if (count > 0) {
+          rgba[index] = Math.round(red / count);
+          rgba[index + 1] = Math.round(green / count);
+          rgba[index + 2] = Math.round(blue / count);
+        }
+      }
+    }
+  }
+}
+
+function alphaEdgeStats(decoded) {
+  let greenFringePixels = 0;
+  let partialEdgePixels = 0;
+  let opaqueEdgePixels = 0;
+  for (let y = 0; y < decoded.height; y += 1) {
+    for (let x = 0; x < decoded.width; x += 1) {
+      const index = (y * decoded.width + x) * 4;
+      const alpha = decoded.rgba[index + 3];
+      if (alpha > 0 && alpha < 245) {
+        partialEdgePixels += 1;
+        const red = decoded.rgba[index];
+        const green = decoded.rgba[index + 1];
+        const blue = decoded.rgba[index + 2];
+        if (green > red + 48 && green > blue + 48) {
+          greenFringePixels += 1;
+        }
+      } else if (alpha >= 245) {
+        opaqueEdgePixels += 1;
+      }
+    }
+  }
+  return {
+    partialEdgePixels,
+    opaqueEdgePixels,
+    greenFringePixels,
+    greenFringeRatio: partialEdgePixels > 0 ? Number((greenFringePixels / partialEdgePixels).toFixed(4)) : 0
+  };
+}
+
+function createRepairDerivativeBuffer(targetSize) {
+  const source = decodePng(readFileSync(localCutout));
+  const sourceAnalysis = analyzePngBuffer(readFileSync(localCutout));
+  const trim = sourceAnalysis.trimBounds;
+  if (!trim) {
+    throw new Error("Cannot create Worker derivative because source alpha trim bounds are empty.");
+  }
+  const rgba = Buffer.alloc(targetSize * targetSize * 4);
+  const maxContentWidth = targetSize * 0.78;
+  const maxContentHeight = targetSize * 0.92;
+  const scale = Math.min(maxContentWidth / trim.width, maxContentHeight / trim.height);
+  const drawWidth = trim.width * scale;
+  const drawHeight = trim.height * scale;
+  const destLeft = (targetSize - drawWidth) / 2;
+  const destTop = targetSize * 0.965 - drawHeight;
+  for (let y = 0; y < targetSize; y += 1) {
+    for (let x = 0; x < targetSize; x += 1) {
+      const sourceX = trim.left + (x - destLeft + 0.5) / scale - 0.5;
+      const sourceY = trim.top + (y - destTop + 0.5) / scale - 0.5;
+      if (sourceX < trim.left || sourceX > trim.right || sourceY < trim.top || sourceY > trim.bottom) {
+        continue;
+      }
+      const pixel = samplePremultipliedBilinear(source, sourceX, sourceY);
+      const index = (y * targetSize + x) * 4;
+      rgba[index] = pixel[0];
+      rgba[index + 1] = pixel[1];
+      rgba[index + 2] = pixel[2];
+      rgba[index + 3] = pixel[3];
+    }
+  }
+  applyTransparentColorBleed(rgba, targetSize, targetSize, 2);
+  return encodePng(targetSize, targetSize, rgba);
+}
+
+function repairDerivativeRecord(size, write) {
+  const buffer = createRepairDerivativeBuffer(size);
+  const analysis = analyzePngBuffer(buffer);
+  const decoded = decodePng(buffer);
+  const sourceAnalysis = analyzePngFile(localCutout);
+  const sha256 = sha256Bytes(buffer);
+  const imagePath = repairDerivativePath(size);
+  const metadataPath = repairDerivativeMetadataPath(size);
+  const metadata = {
+    schemaVersion: 1,
+    checkpoint: repairCheckpoint,
+    slotId,
+    derivativeKind: `trimmed-${size}`,
+    sourcePath: relativeRepo(localCutout),
+    sourceSha256: sourceAnalysis.sha256,
+    generatedBy: "tools/godot/workerBillboardSingleSlotTool.mjs repair:derivatives",
+    generationScriptVersion: "v0148-worker-billboard-repair-derivative-v1",
+    deterministicOperations: [
+      "alpha-bounds trim",
+      "premultiplied-alpha deterministic resize",
+      "transparent padding for bottom-center pivot stability",
+      "transparent RGB alpha-edge bleed"
+    ],
+    sha256,
+    dimensions: { width: analysis.width, height: analysis.height },
+    alphaPosture: "trimmed-resized-transparent-png-with-deterministic-alpha-edge-bleed",
+    alphaEdgeStats: alphaEdgeStats(decoded),
+    trimBounds: analysis.trimBounds,
+    pivot: analysis.pivot,
+    privateComparatorOnly: true,
+    productionApproval: "forbidden",
+    playerSliceIntegration: "forbidden",
+    browserIntegration: "forbidden",
+    humanReviewStatus: "pending-review"
+  };
+  if (write) {
+    mkdirSync(repairLocalSlotRoot, { recursive: true });
+    writeFileSync(imagePath, buffer);
+    writeJson(metadataPath, metadata);
+  }
+  return {
+    status: "PASS_V0148_WORKER_BILLBOARD_DERIVATIVE_GENERATED",
+    path: relativeRepo(imagePath),
+    metadataPath: relativeRepo(metadataPath),
+    byteLength: buffer.length,
+    ...metadata
+  };
+}
+
+function repairDerivativeRecords(write) {
+  const errors = [];
+  if (!existsSync(localSource)) {
+    errors.push(`Missing original generated source: ${relativeRepo(localSource)}`);
+  }
+  if (!existsSync(localCutout)) {
+    errors.push(`Missing existing matte-to-alpha Worker cutout: ${relativeRepo(localCutout)}`);
+  }
+  if (!existsSync(localMetadata)) {
+    errors.push(`Missing existing Worker metadata: ${relativeRepo(localMetadata)}`);
+  }
+  if (errors.length) {
+    return {
+      schemaVersion: 1,
+      checkpoint: repairCheckpoint,
+      status: "FAIL_V0148_WORKER_BILLBOARD_DERIVATIVE_GENERATION",
+      errors
+    };
+  }
+  const sourceQuality = sourceQualityComparatorRecord();
+  const derivatives = repairDerivativeSizes.map((size) => repairDerivativeRecord(size, write));
+  const report = {
+    schemaVersion: 1,
+    checkpoint: repairCheckpoint,
+    status: "PASS_V0148_WORKER_BILLBOARD_DERIVATIVE_GENERATION",
+    errors: sourceQuality.errors ?? [],
+    sourceQualityComparator: sourceQuality,
+    derivatives,
+    privateComparatorOnly: true,
+    productionApproval: "forbidden",
+    playerSliceIntegration: "forbidden",
+    browserIntegration: "forbidden"
+  };
+  if (write) {
+    writeJson(join(repairLocalSlotRoot, `${slotId}_derivative-matrix.json`), report);
+  }
+  return report;
+}
+
+function repairDerivativesCheck() {
+  const generated = repairDerivativeRecords(false);
+  const errors = [...(generated.errors ?? [])];
+  for (const derivative of generated.derivatives ?? []) {
+    const imagePath = join(repoRoot, derivative.path);
+    const metadataPath = join(repoRoot, derivative.metadataPath);
+    if (!existsSync(imagePath)) {
+      errors.push(`Missing derivative image: ${derivative.path}`);
+      continue;
+    }
+    const actualHash = sha256File(imagePath);
+    if (actualHash !== derivative.sha256) {
+      errors.push(`Derivative hash mismatch for ${derivative.path}.`);
+    }
+    if (!existsSync(metadataPath)) {
+      errors.push(`Missing derivative metadata: ${derivative.metadataPath}`);
+      continue;
+    }
+    const metadata = readJson(metadataPath);
+    if (metadata.sha256 !== actualHash) {
+      errors.push(`Derivative metadata hash mismatch for ${derivative.metadataPath}.`);
+    }
+    if (metadata.privateComparatorOnly !== true || metadata.productionApproval !== "forbidden") {
+      errors.push(`Derivative metadata boundary flags are invalid for ${derivative.metadataPath}.`);
+    }
+  }
+  const report = {
+    schemaVersion: 1,
+    checkpoint: repairCheckpoint,
+    status: errors.length ? "FAIL_V0148_WORKER_BILLBOARD_DERIVATIVE_REPRODUCIBILITY" : "PASS_V0148_WORKER_BILLBOARD_DERIVATIVE_REPRODUCIBILITY",
+    errors,
+    derivatives: generated.derivatives ?? [],
+    sourceQualityComparator: generated.sourceQualityComparator
+  };
+  writeJson(join(repairEvidenceRootFromArgs(), "worker-billboard-repair-derivative-reproducibility.json"), report);
+  return report;
 }
 
 function fallbackRecord(write) {
@@ -820,6 +1145,391 @@ ${cells}
 `;
 }
 
+function repairValidate() {
+  const errors = [];
+  const requiredFiles = [
+    "GODOT_WORKER_BILLBOARD_SINGLE_SLOT_REPAIR_WINDOWS.bat",
+    "desktop-spikes/godot-salto/comparators/runtime_art_pipeline/worker_billboard_single_slot_comparator.gd",
+    "desktop-spikes/godot-salto/comparators/runtime_art_pipeline/fallback/worker_billboard_static_v0147_fallback.png",
+    "desktop-spikes/godot-salto/comparators/runtime_art_pipeline/fallback/worker_billboard_static_v0147_fallback.contract.json",
+    "tools/godot/workerBillboardSingleSlotTool.mjs",
+    "tools/godot/runGodotWorkerBillboardRepairValidation.ps1",
+    "tools/godot/runGodotWorkerBillboardRepairAudit.ps1",
+    "tools/godot/runGodotWorkerBillboardRepairDerivatives.ps1",
+    "tools/godot/runGodotWorkerBillboardRepairBenchmarkWindows.ps1",
+    "tools/godot/captureGodotWorkerBillboardRepairWindows.ps1",
+    "docs/V0148_WORKER_BILLBOARD_SINGLE_SLOT_REPAIR_SPEC.md",
+    "docs/V0148_WORKER_BILLBOARD_FAIR_PATH_AUDIT.md",
+    "docs/V0148_WORKER_BILLBOARD_DERIVATIVE_MATRIX.md",
+    "docs/V0148_WORKER_BILLBOARD_PAIRED_BENCHMARK_REPORT.md",
+    "docs/V0148_WORKER_BILLBOARD_ALPHA_PIVOT_REVIEW_GUIDE.md",
+    "docs/V0148_PRIVATE_COMPARATOR_ONLY_BOUNDARY.md",
+    "docs/V0148_IMPLEMENTATION_REPORT.md"
+  ];
+  for (const file of requiredFiles) {
+    if (!existsSync(join(repoRoot, file))) {
+      errors.push(`Missing required v0.148 file: ${file}`);
+    }
+  }
+  const packageJson = readJson(join(repoRoot, "package.json"));
+  for (const script of [
+    "godot:worker-billboard-repair:validate",
+    "godot:worker-billboard-repair:audit",
+    "godot:worker-billboard-repair:derivatives:reproduce",
+    "godot:worker-billboard-repair:benchmark:headed",
+    "godot:worker-billboard-repair:capture"
+  ]) {
+    if (typeof packageJson.scripts?.[script] !== "string") {
+      errors.push(`Missing package script: ${script}`);
+    }
+  }
+  const rootScript = readFileSync(join(repoRoot, "desktop-spikes", "godot-salto", "scripts", "salto_spike_root.gd"), "utf8");
+  if (!rootScript.includes("--worker-billboard-single-slot-repair")) {
+    errors.push("Root script does not expose private --worker-billboard-single-slot-repair dispatch.");
+  }
+  for (const launcher of ["GODOT_LAUNCH_STABILIZED_SALTO_REVIEW_WINDOWS.bat", "GODOT_LAUNCH_PLAYER_SLICE_WINDOWS.bat"]) {
+    const text = readFileSync(join(repoRoot, launcher), "utf8");
+    if (text.includes("worker-billboard-single-slot-repair") || text.includes("WORKER_BILLBOARD_SINGLE_SLOT_REPAIR")) {
+      errors.push(`${launcher} references the private v0.148 Worker repair experiment.`);
+    }
+  }
+  const fallback = fallbackCheck();
+  errors.push(...fallback.errors);
+  const derivatives = repairDerivativesCheck();
+  errors.push(...derivatives.errors);
+  const report = {
+    schemaVersion: 1,
+    checkpoint: repairCheckpoint,
+    status: errors.length ? "FAIL_V0148_WORKER_BILLBOARD_REPAIR_VALIDATION" : "PASS_V0148_WORKER_BILLBOARD_REPAIR_VALIDATION",
+    errors,
+    fallback,
+    derivatives,
+    zeroNewAiImages: true,
+    existingWorkerSourceOnly: true,
+    privateComparatorOnly: true,
+    productionApproval: "forbidden",
+    playerSliceIntegration: "forbidden",
+    browserIntegration: "forbidden"
+  };
+  writeJson(join(repairEvidenceRootFromArgs(), "worker-billboard-repair-validation.json"), report);
+  return report;
+}
+
+function numberSummary(values) {
+  const sorted = values.filter((value) => Number.isFinite(value)).sort((left, right) => left - right);
+  if (!sorted.length) {
+    return { mean: 0, median: 0, min: 0, max: 0, spread: 0 };
+  }
+  const sum = sorted.reduce((total, value) => total + value, 0);
+  const middle = Math.floor(sorted.length / 2);
+  const median = sorted.length % 2 ? sorted[middle] : (sorted[middle - 1] + sorted[middle]) / 2;
+  return {
+    mean: Number((sum / sorted.length).toFixed(2)),
+    median: Number(median.toFixed(2)),
+    min: Number(sorted[0].toFixed(2)),
+    max: Number(sorted[sorted.length - 1].toFixed(2)),
+    spread: Number((sorted[sorted.length - 1] - sorted[0]).toFixed(2))
+  };
+}
+
+function aggregateRepairBenchmarks(rows) {
+  const groups = new Map();
+  for (const row of rows) {
+    const key = `${row.approach}|${row.tier}`;
+    const existing = groups.get(key) ?? [];
+    existing.push(row);
+    groups.set(key, existing);
+  }
+  return Array.from(groups.entries()).map(([key, groupRows]) => {
+    const [approach, tier] = key.split("|");
+    const fps = numberSummary(groupRows.map((row) => row.averageFps));
+    const p95 = numberSummary(groupRows.map((row) => row.p95FrameTimeMs));
+    const p99 = numberSummary(groupRows.map((row) => row.p99FrameTimeMs));
+    const duration = numberSummary(groupRows.map((row) => row.benchmarkDurationMs));
+    return {
+      approach,
+      tier,
+      trialCount: groupRows.length,
+      averageFps: fps,
+      p95FrameTimeMs: p95,
+      p99FrameTimeMs: p99,
+      benchmarkDurationMs: duration,
+      frameCount: groupRows[0]?.frameCount ?? 0,
+      entityCount: groupRows[0]?.entityCount ?? 0,
+      billboardInstanceCount: groupRows[0]?.billboardInstanceCount ?? 0,
+      renderedObjectProxy: groupRows[0]?.renderedObjectProxy ?? 0,
+      animationUpdateProxy: groupRows[0]?.animationUpdateProxy ?? 0,
+      assetSourceLoaded: groupRows[0]?.assetSourceLoaded ?? "unknown",
+      assetHash: groupRows[0]?.assetHash ?? "unknown",
+      derivativeDimensions: groupRows[0]?.derivativeDimensions ?? {},
+      initializationDurationMs: numberSummary(groupRows.map((row) => row.initializationDurationMs ?? 0)),
+      steadyStateWarmupFrames: groupRows[0]?.steadyStateWarmupFrames ?? 0
+    };
+  });
+}
+
+function sourceRank(approach) {
+  return {
+    HYBRID_WORKER_TRIMMED_1024: 4,
+    HYBRID_WORKER_TRIMMED_768: 3,
+    HYBRID_WORKER_TRIMMED_512: 2,
+    HYBRID_WORKER_FULL_RES: 1
+  }[approach] ?? 0;
+}
+
+function repairThreshold(aggregates, trialRows) {
+  const baseline = aggregates.find((row) => row.approach === "HYBRID_DIAGNOSTIC_FALLBACK_BASELINE" && row.tier === "L");
+  const candidateApproaches = [
+    "HYBRID_WORKER_FULL_RES",
+    "HYBRID_WORKER_TRIMMED_512",
+    "HYBRID_WORKER_TRIMMED_768",
+    "HYBRID_WORKER_TRIMMED_1024"
+  ];
+  const candidates = candidateApproaches
+    .map((approach) => {
+      const aggregate = aggregates.find((row) => row.approach === approach && row.tier === "L");
+      if (!baseline || !aggregate) {
+        return null;
+      }
+      const averageFpsRatio = Number((aggregate.averageFps.mean / baseline.averageFps.mean).toFixed(4));
+      const p95FrameTimeRatio = Number((aggregate.p95FrameTimeMs.mean / baseline.p95FrameTimeMs.mean).toFixed(4));
+      return {
+        approach,
+        assetSourceLoaded: aggregate.assetSourceLoaded,
+        assetHash: aggregate.assetHash,
+        derivativeDimensions: aggregate.derivativeDimensions,
+        averageFpsRatio,
+        p95FrameTimeRatio,
+        averageFpsPass: averageFpsRatio >= 0.9,
+        p95FrameTimePass: p95FrameTimeRatio <= 1.15,
+        baselineAverageFpsMean: baseline.averageFps.mean,
+        candidateAverageFpsMean: aggregate.averageFps.mean,
+        baselineP95FrameTimeMeanMs: baseline.p95FrameTimeMs.mean,
+        candidateP95FrameTimeMeanMs: aggregate.p95FrameTimeMs.mean,
+        p95FrameTimeAbsoluteDeltaMs: Number((aggregate.p95FrameTimeMs.mean - baseline.p95FrameTimeMs.mean).toFixed(4)),
+        tierLTrials: trialRows.filter((row) => row.tier === "L" && row.approach === approach)
+      };
+    })
+    .filter(Boolean);
+  const passing = candidates
+    .filter((candidate) => candidate.averageFpsPass && candidate.p95FrameTimePass)
+    .sort((left, right) => sourceRank(right.approach) - sourceRank(left.approach) || right.averageFpsRatio - left.averageFpsRatio);
+  const selected = passing[0] ?? null;
+  return {
+    status: selected ? "PASS_V0148_WORKER_BILLBOARD_ORIGINAL_GATE" : "FAIL_V0148_WORKER_BILLBOARD_ORIGINAL_GATE",
+    gate: {
+      averageFpsRatioMinimum: 0.9,
+      p95FrameTimeWorseningMaximumRatio: 1.15,
+      p95AbsoluteDeltaIsContextOnly: true
+    },
+    baseline,
+    candidates: candidates.map(({ tierLTrials, ...candidate }) => candidate),
+    selectedRecommendedDerivative: selected ? selected.approach : null,
+    selectedRecommendedSource: selected ? selected.assetSourceLoaded : null,
+    selectedRecommendedHash: selected ? selected.assetHash : null,
+    selectedRecommendedDimensions: selected ? selected.derivativeDimensions : null
+  };
+}
+
+function repairReport() {
+  const evidenceRoot = repairEvidenceRootFromArgs();
+  const rawPath = join(evidenceRoot, repairRuntimeReportName);
+  if (!existsSync(rawPath)) {
+    throw new Error(`Missing Godot Worker billboard repair runtime report: ${relativeRepo(rawPath)}`);
+  }
+  const raw = readJson(rawPath);
+  const errors = [];
+  const benchmarkRows = raw.benchmarks ?? [];
+  for (const approach of repairApproaches) {
+    for (const tier of tiers) {
+      if (!benchmarkRows.some((row) => row.approach === approach && row.tier === tier)) {
+        errors.push(`Missing paired benchmark row ${approach} ${tier}.`);
+      }
+    }
+  }
+  const tierLTrialRows = benchmarkRows.filter((row) => row.tier === "L");
+  for (const approach of repairApproaches.filter((approach) => approach !== "ORTHO_3D_MESH_FALLBACK_COMPARATOR")) {
+    const count = tierLTrialRows.filter((row) => row.approach === approach).length;
+    if (count < 5) {
+      errors.push(`Expected at least 5 Tier L trials for ${approach}, found ${count}.`);
+    }
+  }
+  const screenshotRoot = join(evidenceRoot, "screenshots");
+  const screenshots = [];
+  for (const capture of raw.captures ?? []) {
+    const path = join(screenshotRoot, capture.fileName);
+    if (!existsSync(path)) {
+      errors.push(`Missing screenshot ${relativeRepo(path)}.`);
+      continue;
+    }
+    screenshots.push({
+      id: capture.id,
+      fileName: capture.fileName,
+      path: relativeRepo(path),
+      sha256: sha256File(path),
+      width: capture.width,
+      height: capture.height,
+      approach: capture.approach,
+      tier: capture.tier ?? null,
+      view: capture.view ?? "benchmark",
+      scaleMultiplier: capture.scaleMultiplier ?? null,
+      assetSourceLoaded: capture.assetSourceLoaded ?? null,
+      assetHash: capture.assetHash ?? null
+    });
+  }
+  const aggregates = aggregateRepairBenchmarks(benchmarkRows);
+  const threshold = repairThreshold(aggregates, benchmarkRows);
+  const derivatives = existsSync(join(repairLocalSlotRoot, `${slotId}_derivative-matrix.json`))
+    ? readJson(join(repairLocalSlotRoot, `${slotId}_derivative-matrix.json`))
+    : repairDerivativeRecords(false);
+  const summary = {
+    schemaVersion: 1,
+    checkpoint: repairCheckpoint,
+    status: errors.length ? "FAIL_V0148_WORKER_BILLBOARD_REPAIR_EVIDENCE_RECORDED" : "PASS_V0148_WORKER_BILLBOARD_REPAIR_EVIDENCE_RECORDED",
+    errors,
+    slotId,
+    sourceRuntimeReport: relativeRepo(rawPath),
+    fairPathAudit: raw.fairPathAudit ?? {},
+    derivatives,
+    benchmarkRows,
+    aggregateRows: aggregates,
+    threshold,
+    selectedRecommendedDerivative: threshold.selectedRecommendedDerivative,
+    selectedRecommendedSource: threshold.selectedRecommendedSource,
+    screenshots,
+    alphaPivotReview: raw.alphaPivotReview ?? {},
+    preferredScalePosture: raw.preferredScalePosture ?? {},
+    boundaries: raw.boundaries ?? {},
+    limitations: raw.limitations ?? []
+  };
+  writeJson(join(evidenceRoot, "worker-billboard-repair-evidence.json"), summary);
+  writeJson(join(evidenceRoot, "worker-billboard-repair-threshold-report.json"), threshold);
+  writeJson(join(evidenceRoot, "worker-billboard-repair-derivative-matrix.json"), derivatives);
+  writeJson(join(evidenceRoot, "worker-billboard-repair-screenshot-manifest.json"), {
+    schemaVersion: 1,
+    checkpoint: repairCheckpoint,
+    screenshotCount: screenshots.length,
+    screenshots
+  });
+  writeText(join(evidenceRoot, "paired-benchmark-summary.md"), repairBenchmarkMarkdown(summary));
+  writeText(join(evidenceRoot, "alpha-pivot-review-guide.md"), repairVisualReviewMarkdown(summary));
+  writeText(join(evidenceRoot, "contact-sheet.svg"), repairContactSheetSvg(screenshots));
+  return summary;
+}
+
+function repairAudit() {
+  const evidenceRoot = repairEvidenceRootFromArgs();
+  const runtimePath = join(evidenceRoot, repairRuntimeReportName);
+  const runtime = existsSync(runtimePath) ? readJson(runtimePath) : null;
+  const audit = runtime?.fairPathAudit ?? {
+    runtimeEvidencePresent: false,
+    note: "Run the headed paired benchmark before collecting runtime audit counters."
+  };
+  const errors = [];
+  if (runtime && audit.repeatedTextureCreateDuringSteadyState !== false) {
+    errors.push("Runtime audit did not prove texture creation was absent during steady-state frames.");
+  }
+  if (runtime && audit.repeatedMaterialCreateDuringSteadyState !== false) {
+    errors.push("Runtime audit did not prove material creation was absent during steady-state frames.");
+  }
+  const report = {
+    schemaVersion: 1,
+    checkpoint: repairCheckpoint,
+    status: errors.length ? "FAIL_V0148_WORKER_BILLBOARD_FAIR_PATH_AUDIT" : "PASS_V0148_WORKER_BILLBOARD_FAIR_PATH_AUDIT",
+    errors,
+    audit,
+    privateComparatorOnly: true,
+    productionApproval: "forbidden",
+    playerSliceIntegration: "forbidden",
+    browserIntegration: "forbidden"
+  };
+  writeJson(join(evidenceRoot, "worker-billboard-repair-fair-path-audit.json"), report);
+  return report;
+}
+
+function repairBenchmarkMarkdown(summary) {
+  const lines = [
+    "# v0.148 Worker Billboard Repair Paired Benchmark Summary",
+    "",
+    `Status: ${summary.status}`,
+    `Original gate: ${summary.threshold.status}`,
+    `Selected recommended derivative: ${summary.selectedRecommendedDerivative ?? "none"}`,
+    "",
+    "| Approach | Tier | Trials | Mean FPS | Median FPS | Min FPS | Max FPS | FPS spread | Mean p95 ms | Mean p99 ms | Source |",
+    "| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | --- |"
+  ];
+  for (const row of summary.aggregateRows) {
+    lines.push(`| ${row.approach} | ${row.tier} | ${row.trialCount} | ${row.averageFps.mean} | ${row.averageFps.median} | ${row.averageFps.min} | ${row.averageFps.max} | ${row.averageFps.spread} | ${row.p95FrameTimeMs.mean} | ${row.p99FrameTimeMs.mean} | ${row.assetSourceLoaded} |`);
+  }
+  lines.push("", "Tier L trials:", "");
+  lines.push("| Approach | Trial | Avg FPS | p95 ms | p99 ms | Init ms | Duration ms | Source |");
+  lines.push("| --- | ---: | ---: | ---: | ---: | ---: | ---: | --- |");
+  for (const row of summary.benchmarkRows.filter((entry) => entry.tier === "L")) {
+    lines.push(`| ${row.approach} | ${row.trialIndex} | ${row.averageFps} | ${row.p95FrameTimeMs} | ${row.p99FrameTimeMs} | ${row.initializationDurationMs} | ${row.benchmarkDurationMs} | ${row.assetSourceLoaded} |`);
+  }
+  return `${lines.join("\n")}\n`;
+}
+
+function repairVisualReviewMarkdown(summary) {
+  const lines = [
+    "# v0.148 Worker Billboard Repair Alpha / Pivot Review Packet",
+    "",
+    `Selected recommended derivative: ${summary.selectedRecommendedDerivative ?? "none"}.`,
+    `Original gate result: ${summary.threshold.status}.`,
+    "",
+    "Review questions:",
+    "",
+    "- Did a repeated-load, material, or benchmark-method issue exist?",
+    "- Which derivative is recommended and why?",
+    "- Does the Worker read clearly at gameplay distance?",
+    "- Does the Builder / camp-hand / repair-support role come through?",
+    "- Is any matte halo visible?",
+    "- Is the foot pivot stable?",
+    "- Is selection-ring room adequate?",
+    "- Does repeated-worker overlap remain readable?",
+    "- Is 0.90x, 1.00x, or 1.10x the best runtime scale posture?",
+    "- Did the selected derivative pass the original Tier L gate?",
+    "- Should the next milestone test Aster static billboard, one environment / structure slot, one further Worker repair, or ORTHO_3D_MESH fallback?",
+    "",
+    "Capture paths:",
+    ""
+  ];
+  for (const shot of summary.screenshots) {
+    lines.push(`- ${shot.id}: ${shot.path}`);
+  }
+  lines.push("");
+  lines.push("This is private comparator-only intake, not production approval, not player-facing Salto integration, not final Worker design approval, and not final Godot selection.");
+  return `${lines.join("\n")}\n`;
+}
+
+function repairContactSheetSvg(screenshots) {
+  const cellWidth = 360;
+  const cellHeight = 250;
+  const margin = 24;
+  const columns = 3;
+  const rows = Math.ceil(screenshots.length / columns);
+  const width = margin * 2 + cellWidth * columns;
+  const height = margin * 2 + cellHeight * rows + 20;
+  const cells = screenshots
+    .map((shot, index) => {
+      const x = margin + (index % columns) * cellWidth;
+      const y = margin + Math.floor(index / columns) * cellHeight + 20;
+      const href = shot.path.replace("artifacts/desktop-spikes/godot-salto/v0148/evidence/", "");
+      return `<g>
+  <image href="${href}" x="${x}" y="${y}" width="${cellWidth - 20}" height="${cellHeight - 44}" preserveAspectRatio="xMidYMid meet"/>
+  <text x="${x}" y="${y + cellHeight - 24}" fill="#e8eadf" font-family="Arial" font-size="12">${shot.id}</text>
+  <text x="${x}" y="${y + cellHeight - 8}" fill="#aab7aa" font-family="Arial" font-size="11">${shot.assetSourceLoaded ?? "source n/a"}</text>
+</g>`;
+    })
+    .join("\n");
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}">
+<rect width="100%" height="100%" fill="#111611"/>
+<text x="${margin}" y="18" fill="#dce8d8" font-family="Arial" font-size="14">v0.148 Worker billboard repair private comparator captures</text>
+${cells}
+</svg>
+`;
+}
+
 const command = process.argv[2] ?? "help";
 function printReportAndSetExitCode(result) {
   console.log(stableStringify(result));
@@ -839,8 +1549,18 @@ try {
     printReportAndSetExitCode(validate());
   } else if (command === "report") {
     printReportAndSetExitCode(report());
+  } else if (command === "repair:derivatives") {
+    printReportAndSetExitCode(repairDerivativeRecords(true));
+  } else if (command === "repair:derivatives:check") {
+    printReportAndSetExitCode(repairDerivativesCheck());
+  } else if (command === "repair:validate") {
+    printReportAndSetExitCode(repairValidate());
+  } else if (command === "repair:audit") {
+    printReportAndSetExitCode(repairAudit());
+  } else if (command === "repair:report") {
+    printReportAndSetExitCode(repairReport());
   } else {
-    console.log("Usage: node tools/godot/workerBillboardSingleSlotTool.mjs <fallback|fallback:check|local-metadata|validate|report> [--artifact-root=<path>]");
+    console.log("Usage: node tools/godot/workerBillboardSingleSlotTool.mjs <fallback|fallback:check|local-metadata|validate|report|repair:derivatives|repair:derivatives:check|repair:validate|repair:audit|repair:report> [--artifact-root=<path>]");
   }
 } catch (error) {
   console.error(error instanceof Error ? error.message : String(error));

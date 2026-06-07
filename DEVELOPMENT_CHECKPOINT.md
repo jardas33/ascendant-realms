@@ -1,6 +1,52 @@
 # Development Checkpoint
 
-Updated: 2026-06-06 v0.147 Hybrid Worker Billboard Single-Slot Runtime-Art Intake Experiment And Human Review Stop
+Updated: 2026-06-06 v0.148 Hybrid Worker Billboard Single-Slot Repair Fair Benchmark And Human Review Stop
+
+## v0.148 Hybrid Worker Billboard Single-Slot Repair Fair Benchmark And Human Review Stop - 2026-06-06
+
+Scope: isolated private Godot Worker billboard single-slot repair and fair benchmark. This checkpoint uses only the existing ignored v0.147 Worker source/cutout, generates zero new AI images, adds no second runtime-art slot, preserves the original gate, and stops without modifying the normal Salto player slice or starting v0.149.
+
+Included work:
+
+- Confirmed clean synchronized `main` at `f0bb252bb6767d5c24d6c3e4764ba83534b4ce36`.
+- Confirmed v0.147 pushed remote CI success and the v0.147 Tier L threshold miss that justified one bounded repair pass.
+- Generated deterministic trimmed 512, 768, and 1024 derivatives from the existing v0.147 cutout only.
+- Preserved the original source-quality full-resolution cutout as a comparator source.
+- Added private repair validation, derivative reproducibility, fair-path audit, headed benchmark, capture wrappers, one-click launcher, and tracked v0.148 docs.
+- Added cached texture/material reuse inside the private comparator and separated initialization/warmup from measured benchmark frames.
+- Captured Tier S/M/L evidence for the diagnostic fallback, full-resolution Worker, trimmed 512, trimmed 768, trimmed 1024, and orthographic fallback comparator.
+
+Current interpretation:
+
+- Selected recommended derivative: `HYBRID_WORKER_TRIMMED_1024`.
+- Selected hash: `a628065ca92b231b0d4f6a0625d9e259dea080e80d530ee688483611d70049bc`.
+- Selected dimensions: `1024 x 1024`.
+- Original gate: `PASS_V0148_WORKER_BILLBOARD_ORIGINAL_GATE`.
+- Tier L baseline mean FPS: `858.41`; selected mean FPS: `851.14`; FPS ratio `0.9915`.
+- Tier L baseline p95: `1.87 ms`; selected p95: `1.88 ms`; p95 ratio `1.0053`; absolute p95 delta `0.01 ms` context only.
+- Fair-path audit: `PASS_V0148_WORKER_BILLBOARD_FAIR_PATH_AUDIT`, with one texture load/create per source and no repeated texture/material creation during steady-state frames.
+- Human review is pending.
+- v0.149 has not started.
+
+Verification:
+
+```text
+Required closeout stack:
+npm test
+npm run build
+npm run validate:content
+npm run validate:art-intake
+npm run art:reference:init
+npm run art:reference:validate
+npm run art:reference:contact-sheet
+npm run art:reference:review-pack
+npm run godot:worker-billboard-repair:validate
+npm run godot:worker-billboard-repair:audit
+npm run godot:worker-billboard-repair:derivatives:reproduce
+npm run godot:worker-billboard-repair:benchmark:headed
+npm run godot:worker-billboard-repair:capture
+git diff --check
+```
 
 ## v0.147 Hybrid Worker Billboard Single-Slot Runtime-Art Intake Experiment And Human Review Stop - 2026-06-06
 

@@ -11,9 +11,21 @@ Every phase should protect these long-term pillars:
 
 ## Current Recommended Next Phase
 
-The current checkpoint is **v0.147 Hybrid Worker Billboard Single-Slot Runtime-Art Intake Experiment And Human Review Stop** on 2026-06-06. It keeps the browser runtime, normal Salto player slice, art slots, production package, saves, and stable IDs untouched while testing exactly one original local Worker cutout inside an isolated private Godot hybrid comparator. The local cutout remains ignored under `artifacts/desktop-spikes/godot-salto/v0147/local-worker-slot/`, the tracked fallback remains deterministic diagnostic geometry only, and the private comparator records Tier S/M/L evidence plus a final Tier L threshold failure: the local Worker slot averaged `0.8464` of the diagnostic fallback baseline against the `0.90` target.
+The current checkpoint is **v0.148 Hybrid Worker Billboard Single-Slot Repair Fair Benchmark And Human Review Stop** on 2026-06-06. It keeps the browser runtime, normal Salto player slice, art slots, production package, saves, and stable IDs untouched while repairing only the existing private v0.147 Worker billboard path. It uses zero new AI images, generates only deterministic ignored derivatives from the existing v0.147 cutout, adds no second runtime-art slot, and records a final original-gate pass for the selected `HYBRID_WORKER_TRIMMED_1024` derivative: Tier L average FPS ratio `0.9915` and p95 frame-time ratio `1.0053` against the preserved gate.
 
-The next recommended step is human review and explicit approval only: Emmanuel may review `docs/V0147_WORKER_BILLBOARD_VISUAL_REVIEW_GUIDE.md`, the ignored v0.147 evidence under `artifacts/desktop-spikes/godot-salto/v0147/`, and the v0.147 benchmark/boundary/implementation docs. The recommended next engineering step, if approved later, is one bounded repair pass for the Worker-slot Tier L overhead. Do not import existing reference candidates, generate another image, download assets, mark the Worker runtime-approved, modify the normal Salto player slice, wire comparator output into Godot production/player-facing flow, wire assets into the browser, mutate manifests or art slots, change saves or stable IDs, create a desktop save path, choose Godot finally, start a full desktop port, start Unity/Unreal/Electron work, or start v0.148 until a future explicit goal approves a narrow next step.
+The next recommended step is human review and explicit approval only: Emmanuel may review `docs/V0148_WORKER_BILLBOARD_ALPHA_PIVOT_REVIEW_GUIDE.md`, the ignored v0.148 evidence under `artifacts/desktop-spikes/godot-salto/v0148/`, and the v0.148 repair/benchmark/boundary/implementation docs. Do not import the Worker, add another slot, generate another image, import existing reference candidates, download assets, mark the Worker runtime-approved, modify the normal Salto player slice, wire comparator output into Godot production/player-facing flow, wire assets into the browser, mutate manifests or art slots, change saves or stable IDs, create a desktop save path, choose Godot finally, start a full desktop port, start Unity/Unreal/Electron work, or start v0.149 until a future explicit goal approves a narrow next step.
+
+New v0.148 docs:
+
+- `docs/V0148_WORKER_BILLBOARD_SINGLE_SLOT_REPAIR_SPEC.md`
+- `docs/V0148_WORKER_BILLBOARD_FAIR_PATH_AUDIT.md`
+- `docs/V0148_WORKER_BILLBOARD_DERIVATIVE_MATRIX.md`
+- `docs/V0148_WORKER_BILLBOARD_PAIRED_BENCHMARK_REPORT.md`
+- `docs/V0148_WORKER_BILLBOARD_ALPHA_PIVOT_REVIEW_GUIDE.md`
+- `docs/V0148_PRIVATE_COMPARATOR_ONLY_BOUNDARY.md`
+- `docs/V0148_IMPLEMENTATION_REPORT.md`
+
+Previous checkpoint reference: v0.147 Hybrid Worker Billboard Single-Slot Runtime-Art Intake Experiment And Human Review Stop.
 
 New v0.147 docs:
 

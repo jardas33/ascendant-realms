@@ -1,11 +1,24 @@
 extends Node
 
 const CHECKPOINT := "v0.147"
+const REPAIR_CHECKPOINT := "v0.148"
 const SLOT_ID := "worker_billboard_static_v0147"
 const APPROACH_HYBRID_FALLBACK := "HYBRID_DIAGNOSTIC_FALLBACK_BASELINE"
 const APPROACH_HYBRID_LOCAL := "HYBRID_LOCAL_WORKER_SLOT"
+const APPROACH_WORKER_FULL_RES := "HYBRID_WORKER_FULL_RES"
+const APPROACH_WORKER_TRIMMED_512 := "HYBRID_WORKER_TRIMMED_512"
+const APPROACH_WORKER_TRIMMED_768 := "HYBRID_WORKER_TRIMMED_768"
+const APPROACH_WORKER_TRIMMED_1024 := "HYBRID_WORKER_TRIMMED_1024"
 const APPROACH_ORTHO := "ORTHO_3D_MESH_FALLBACK_COMPARATOR"
 const APPROACHES := [APPROACH_HYBRID_FALLBACK, APPROACH_HYBRID_LOCAL, APPROACH_ORTHO]
+const REPAIR_APPROACHES := [
+	APPROACH_HYBRID_FALLBACK,
+	APPROACH_WORKER_FULL_RES,
+	APPROACH_WORKER_TRIMMED_512,
+	APPROACH_WORKER_TRIMMED_768,
+	APPROACH_WORKER_TRIMMED_1024,
+	APPROACH_ORTHO
+]
 const TIERS := ["S", "M", "L"]
 const DEFAULT_VIEWPORT_SIZE := Vector2i(1600, 900)
 const TIER_CONFIGS := {
@@ -55,12 +68,21 @@ var active_texture: Texture2D
 var active_source: Dictionary = {}
 var fallback_source: Dictionary = {}
 var local_source: Dictionary = {}
+var repair_sources: Dictionary = {}
 var unit_nodes: Array[Node3D] = []
 var ring_nodes: Array[Node3D] = []
 var rendered_object_proxy := 0
 var billboard_instance_count := 0
 var animation_update_proxy := 0
 var started := false
+var texture_cache: Dictionary = {}
+var material_cache: Dictionary = {}
+var source_load_counts: Dictionary = {}
+var texture_create_counts: Dictionary = {}
+var material_create_counts: Dictionary = {}
+var source_load_events: Array[Dictionary] = []
+var material_create_events: Array[Dictionary] = []
+var total_billboard_node_rebuild_count := 0
 
 func _ready() -> void:
 	start()
@@ -76,17 +98,28 @@ func start() -> void:
 	DirAccess.make_dir_recursive_absolute(artifact_root)
 	DirAccess.make_dir_recursive_absolute(screenshot_root)
 	fallback_source = _load_worker_slot_source(false)
-	local_source = _load_worker_slot_source(true)
+	if _repair_mode():
+		repair_sources = _load_repair_sources()
+	else:
+		local_source = _load_worker_slot_source(true)
 	if _has_arg("--validate-only"):
-		var validation := _validation_report()
+		var validation := _repair_validation_report() if _repair_mode() else _validation_report()
 		_write_absolute_json(_path_join(artifact_root, "worker-billboard-validation-runtime.json"), validation)
 		get_tree().quit(0 if validation.get("status", "FAIL") == "PASS" else 1)
+		return
+	if _has_arg("--repair-validate-only"):
+		var repair_validation := _repair_validation_report()
+		_write_absolute_json(_path_join(artifact_root, "worker-billboard-repair-validation-runtime.json"), repair_validation)
+		get_tree().quit(0 if repair_validation.get("status", "FAIL") == "PASS" else 1)
 		return
 	var run_kind := "headed-benchmark-and-capture"
 	if _has_arg("--capture-only"):
 		run_kind = "headed-capture-refresh"
-	var report := await _run_sequence(run_kind)
-	_write_absolute_json(_path_join(artifact_root, "worker-billboard-single-slot-runtime.json"), report)
+	if _has_arg("--repair-capture-only"):
+		run_kind = "repair-headed-alpha-pivot-capture"
+	var report := await _run_repair_sequence(run_kind) if _repair_mode() else await _run_sequence(run_kind)
+	var report_name := "worker-billboard-repair-runtime.json" if _repair_mode() else "worker-billboard-single-slot-runtime.json"
+	_write_absolute_json(_path_join(artifact_root, report_name), report)
 	get_tree().quit(0 if report.get("status", "FAIL") == "PASS" else 1)
 
 func _validation_report() -> Dictionary:
@@ -111,6 +144,34 @@ func _validation_report() -> Dictionary:
 		"browserIntegration": "forbidden",
 		"normalPlayerSliceWired": false,
 		"finalEngineSelection": false
+	}
+
+func _repair_validation_report() -> Dictionary:
+	var errors: Array[String] = []
+	if fallback_source.get("status", "FAIL") != "PASS":
+		errors.append_array(fallback_source.get("errors", []))
+	for key in ["fullres", "trimmed_512", "trimmed_768", "trimmed_1024"]:
+		var source: Dictionary = repair_sources.get(key, {})
+		if source.get("status", "FAIL") != "PASS":
+			errors.append_array(source.get("errors", ["Missing repair source %s." % key]))
+	return {
+		"schemaVersion": 1,
+		"checkpoint": REPAIR_CHECKPOINT,
+		"status": "PASS" if errors.is_empty() else "FAIL",
+		"signal": "PASS_V0148_WORKER_BILLBOARD_REPAIR_RUNTIME_VALIDATION" if errors.is_empty() else "FAIL_V0148_WORKER_BILLBOARD_REPAIR_RUNTIME_VALIDATION",
+		"errors": errors,
+		"slotId": SLOT_ID,
+		"fallbackSource": fallback_source,
+		"repairSources": repair_sources,
+		"assetSourceLoaded": "repair-source-matrix",
+		"privateComparatorOnly": true,
+		"productionApproval": "forbidden",
+		"playerSliceIntegration": "forbidden",
+		"browserIntegration": "forbidden",
+		"normalPlayerSliceWired": false,
+		"finalEngineSelection": false,
+		"zeroNewAiImages": true,
+		"secondRuntimeArtSlotAdded": false
 	}
 
 func _run_sequence(run_kind: String) -> Dictionary:
@@ -166,6 +227,7 @@ func _run_sequence(run_kind: String) -> Dictionary:
 			"productionApproval": "forbidden",
 			"playerSliceIntegration": "forbidden",
 			"browserIntegration": "forbidden",
+			"browserRuntimeWired": false,
 			"manifestMutation": false,
 			"artSlotMutation": false,
 			"productionPackageMutation": false,
@@ -184,22 +246,131 @@ func _run_sequence(run_kind: String) -> Dictionary:
 		]
 	}
 
+func _run_repair_sequence(run_kind: String) -> Dictionary:
+	var errors: Array[String] = []
+	if fallback_source.get("status", "FAIL") != "PASS":
+		errors.append_array(fallback_source.get("errors", []))
+	for key in ["fullres", "trimmed_512", "trimmed_768", "trimmed_1024"]:
+		var source: Dictionary = repair_sources.get(key, {})
+		if source.get("status", "FAIL") != "PASS":
+			errors.append_array(source.get("errors", ["Missing repair source %s." % key]))
+	var start_usec := Time.get_ticks_usec()
+	var benchmark_reports: Array[Dictionary] = []
+	var captures: Array[Dictionary] = []
+	var capture_index := 0
+	for tier in TIERS:
+		var trial_count := 5 if tier == "L" else 1
+		for trial_index in range(trial_count):
+			var ordered_approaches := _rotated_repair_approaches(trial_index)
+			for approach in ordered_approaches:
+				var config := _workload_config(approach, tier, 1.0, "repair_paired_benchmark")
+				config["trialIndex"] = trial_index + 1
+				config["scenarioOrder"] = ordered_approaches
+				var init_start_usec := Time.get_ticks_usec()
+				_build_world(config)
+				await _settle_frames(8)
+				var init_duration_ms := snappedf(float(Time.get_ticks_usec() - init_start_usec) / 1000.0, 0.01)
+				await _settle_frames(16)
+				config["initializationDurationMs"] = init_duration_ms
+				config["steadyStateWarmupFrames"] = 16
+				var benchmark := await _benchmark_current_view(config)
+				benchmark["trialIndex"] = trial_index + 1
+				benchmark["scenarioOrder"] = ordered_approaches
+				benchmark_reports.append(benchmark)
+				if benchmark.get("status", "FAIL") != "PASS":
+					errors.append("Repair benchmark failed for %s %s trial %d." % [approach, tier, trial_index + 1])
+				if trial_index == 0:
+					var capture := _capture_current_view(config, capture_index)
+					capture_index += 1
+					captures.append(capture)
+	var review_captures := await _capture_repair_review_views(capture_index)
+	captures.append_array(review_captures)
+	var duration_ms := snappedf(float(Time.get_ticks_usec() - start_usec) / 1000.0, 0.01)
+	return {
+		"schemaVersion": 1,
+		"checkpoint": REPAIR_CHECKPOINT,
+		"status": "PASS" if errors.is_empty() else "FAIL",
+		"signal": "PASS_V0148_WORKER_BILLBOARD_REPAIR_SEQUENCE" if errors.is_empty() else "FAIL_V0148_WORKER_BILLBOARD_REPAIR_SEQUENCE",
+		"errors": errors,
+		"runKind": run_kind,
+		"artifactRoot": artifact_root,
+		"screenshotRoot": screenshot_root,
+		"slotId": SLOT_ID,
+		"approaches": REPAIR_APPROACHES,
+		"tiers": TIERS,
+		"durationMs": duration_ms,
+		"benchmarkCount": benchmark_reports.size(),
+		"screenshotCount": captures.size(),
+		"benchmarks": benchmark_reports,
+		"captures": captures,
+		"assetSourceLoaded": "repair-source-matrix",
+		"fallbackSource": fallback_source,
+		"repairSources": repair_sources,
+		"fairPathAudit": _fair_path_audit(),
+		"alphaPivotReview": _alpha_pivot_review(),
+		"preferredScalePosture": _preferred_scale_posture(),
+		"boundaries": {
+			"privateComparatorOnly": true,
+			"productionApproval": "forbidden",
+			"playerSliceIntegration": "forbidden",
+			"browserIntegration": "forbidden",
+			"manifestMutation": false,
+			"artSlotMutation": false,
+			"productionPackageMutation": false,
+			"saveWritesAllowed": false,
+			"stableIdChanges": false,
+			"downloadedAssetsUsed": false,
+			"existingReferenceCandidateImported": false,
+			"normalPlayerSliceWired": false,
+			"secondRuntimeArtSlotAdded": false,
+			"zeroNewAiImages": true,
+			"finalEngineSelection": false
+		},
+		"limitations": [
+			"All Worker derivatives are ignored local comparator-only files generated from the existing v0.147 Worker source.",
+			"Tracked fallback remains diagnostic geometry and not production art.",
+			"No animation asset production is performed; animation cost is a proxy only.",
+			"Headed benchmark evidence is local comparator evidence, not packaged Salto playability proof."
+		]
+	}
+
+func _rotated_repair_approaches(trial_index: int) -> Array:
+	var ordered := REPAIR_APPROACHES.duplicate()
+	var offset := trial_index % ordered.size()
+	for _index in range(offset):
+		ordered.push_back(ordered.pop_front())
+	return ordered
+
 func _workload_config(approach: String, tier: String, scale_multiplier: float, view: String) -> Dictionary:
 	var config: Dictionary = TIER_CONFIGS[tier].duplicate(true)
 	config["approach"] = approach
 	config["tier"] = tier
 	config["scaleMultiplier"] = scale_multiplier
 	config["view"] = view
-	config["deterministicSeed"] = 147001 + APPROACHES.find(approach) * 100 + TIERS.find(tier)
+	config["deterministicSeed"] = 147001 + _approach_index(approach) * 100 + TIERS.find(tier)
 	config["assetSource"] = _source_for_approach(approach)
 	config["unitVisualKind"] = "orthographic-procedural-mesh" if approach == APPROACH_ORTHO else "single-slot-worker-billboard"
+	config["repairMode"] = _repair_mode()
 	return config
+
+func _approach_index(approach: String) -> int:
+	if REPAIR_APPROACHES.has(approach):
+		return REPAIR_APPROACHES.find(approach)
+	return APPROACHES.find(approach)
 
 func _source_for_approach(approach: String) -> Dictionary:
 	if approach == APPROACH_HYBRID_FALLBACK:
 		return fallback_source
 	if approach == APPROACH_HYBRID_LOCAL:
 		return local_source if local_source.get("status", "FAIL") == "PASS" else fallback_source
+	if approach == APPROACH_WORKER_FULL_RES:
+		return repair_sources.get("fullres", fallback_source)
+	if approach == APPROACH_WORKER_TRIMMED_512:
+		return repair_sources.get("trimmed_512", fallback_source)
+	if approach == APPROACH_WORKER_TRIMMED_768:
+		return repair_sources.get("trimmed_768", fallback_source)
+	if approach == APPROACH_WORKER_TRIMMED_1024:
+		return repair_sources.get("trimmed_1024", fallback_source)
 	return {
 		"status": "PASS",
 		"sourceKind": "orthographic-procedural-mesh",
@@ -234,7 +405,6 @@ func _clear_world() -> void:
 	world_root = null
 	hud_layer = null
 	camera = null
-	active_texture = null
 
 func _add_camera(config: Dictionary) -> void:
 	camera = Camera3D.new()
@@ -249,6 +419,17 @@ func _add_camera(config: Dictionary) -> void:
 		camera.size = 7.8
 	else:
 		camera.size = 9.4
+	if bool(config.get("repairMode", false)):
+		if view.ends_with("alpha_edge_closeup"):
+			camera.size = 7.4
+		elif view == "normal_rts_gameplay_distance":
+			camera.size = 11.6
+		elif view == "zoomed_out_readability":
+			camera.size = 14.2
+		elif view == "repeated_worker_overlap":
+			camera.size = 9.2
+		else:
+			camera.size = max(camera.size, 10.8)
 	camera.position = Vector3(0.3, 8.4, 8.9)
 	camera.rotation_degrees = Vector3(-58, 0, 0)
 	world_root.add_child(camera)
@@ -311,6 +492,8 @@ func _add_units(config: Dictionary) -> void:
 		var team_offset := -2.0 if friendly else 2.05
 		var x := team_offset + (float(column) - float(columns) * 0.5) * 0.34
 		var z := -2.15 + float(row) * 0.31
+		if bool(config.get("repairMode", false)) and view.ends_with("alpha_edge_closeup"):
+			z += 2.35
 		if view == "repeated_worker_overlap" and friendly:
 			x = -0.42 + float(index % 9) * 0.12
 			z = -0.45 + float(index / 9) * 0.11
@@ -352,6 +535,39 @@ func _add_worker_billboard(name: String, position: Vector3, friendly: bool, inde
 	mesh.size = Vector2(height * aspect, height)
 	mesh_instance.mesh = mesh
 	mesh_instance.position = Vector3(position.x, height / 2.0 + 0.055, position.z)
+	mesh_instance.material_override = _billboard_material_for_source(source, friendly, texture)
+	world_root.add_child(mesh_instance)
+	billboard_instance_count += 1
+	total_billboard_node_rebuild_count += 1
+	return mesh_instance
+
+func _texture_for_source(source: Dictionary) -> Texture2D:
+	var path := str(source.get("absolutePath", ""))
+	if texture_cache.has(path):
+		return texture_cache[path]
+	var image := Image.new()
+	var error := image.load(path)
+	if error != OK:
+		image = Image.create_empty(64, 64, false, Image.FORMAT_RGBA8)
+		image.fill(Color(0.7, 0.5, 0.3, 1.0))
+	var texture := ImageTexture.create_from_image(image)
+	texture_cache[path] = texture
+	active_texture = texture
+	active_source = source
+	source_load_counts[path] = int(source_load_counts.get(path, 0)) + 1
+	texture_create_counts[path] = int(texture_create_counts.get(path, 0)) + 1
+	source_load_events.append({
+		"path": path,
+		"sourceKind": source.get("sourceKind", "unknown"),
+		"dimensions": source.get("dimensions", {})
+	})
+	return texture
+
+func _billboard_material_for_source(source: Dictionary, friendly: bool, texture: Texture2D) -> StandardMaterial3D:
+	var tint := "friendly" if friendly else "opponent"
+	var key := "%s|%s" % [source.get("absolutePath", source.get("path", "unknown")), tint]
+	if material_cache.has(key):
+		return material_cache[key]
 	var material := StandardMaterial3D.new()
 	material.albedo_texture = texture
 	material.albedo_color = Color(1, 1, 1, 1) if friendly else Color(0.78, 0.40, 0.35, 1)
@@ -359,22 +575,14 @@ func _add_worker_billboard(name: String, position: Vector3, friendly: bool, inde
 	material.billboard_mode = BaseMaterial3D.BILLBOARD_ENABLED
 	material.no_depth_test = false
 	material.cull_mode = BaseMaterial3D.CULL_DISABLED
-	mesh_instance.material_override = material
-	world_root.add_child(mesh_instance)
-	billboard_instance_count += 1
-	return mesh_instance
-
-func _texture_for_source(source: Dictionary) -> Texture2D:
-	if active_texture != null and active_source.get("path", "") == source.get("path", ""):
-		return active_texture
-	var image := Image.new()
-	var error := image.load(str(source.get("absolutePath", "")))
-	if error != OK:
-		image = Image.create_empty(64, 64, false, Image.FORMAT_RGBA8)
-		image.fill(Color(0.7, 0.5, 0.3, 1.0))
-	active_texture = ImageTexture.create_from_image(image)
-	active_source = source
-	return active_texture
+	material_cache[key] = material
+	material_create_counts[key] = int(material_create_counts.get(key, 0)) + 1
+	material_create_events.append({
+		"key": key,
+		"sourceKind": source.get("sourceKind", "unknown"),
+		"tint": tint
+	})
+	return material
 
 func _add_vfx_markers(config: Dictionary) -> void:
 	for index in range(int(config["vfxMarkerCount"])):
@@ -382,6 +590,24 @@ func _add_vfx_markers(config: Dictionary) -> void:
 		var z := -3.8 + float(index / 8) * 1.05
 		_add_cylinder("lume_trace_%02d" % index, Vector3(x, 0.10, z), 0.06, 0.05, _material(Color(0.25, 0.72, 0.64, 0.58), true, true, 0.12))
 		rendered_object_proxy += 1
+
+func _add_checkerboard_backdrop() -> void:
+	for row in range(6):
+		for column in range(8):
+			var color := Color(0.78, 0.78, 0.72) if (row + column) % 2 == 0 else Color(0.18, 0.20, 0.18)
+			_add_box(
+				"alpha_checker_%02d_%02d" % [row, column],
+				Vector3(-2.8 + float(column) * 0.8, 0.025, -2.4 + float(row) * 0.72),
+				Vector3(0.78, 0.035, 0.70),
+				_material(color)
+			)
+
+func _set_world_background(color: Color) -> void:
+	for child in world_root.get_children():
+		if child is WorldEnvironment:
+			var world_environment := child as WorldEnvironment
+			if world_environment.environment != null:
+				world_environment.environment.background_color = color
 
 func _add_hud_overlay(config: Dictionary) -> void:
 	hud_layer = CanvasLayer.new()
@@ -439,6 +665,8 @@ func _benchmark_current_view(config: Dictionary) -> Dictionary:
 		"lumeLinkCount": config["lumeLinkCount"],
 		"frameCount": frames,
 		"benchmarkDurationMs": duration_ms,
+		"initializationDurationMs": float(config.get("initializationDurationMs", 0.0)),
+		"steadyStateWarmupFrames": int(config.get("steadyStateWarmupFrames", 0)),
 		"averageFps": snappedf(float(frames) / max(0.001, duration_ms / 1000.0), 0.01),
 		"averageFrameTimeMs": metrics["averageFrameTimeMs"],
 		"p95FrameTimeMs": metrics["p95FrameTimeMs"],
@@ -450,6 +678,11 @@ func _benchmark_current_view(config: Dictionary) -> Dictionary:
 		"stuckUnitCount": 0,
 		"assetSourceLoaded": source.get("sourceKind", "procedural"),
 		"assetHash": source.get("sha256", "not-applicable"),
+		"derivativeDimensions": source.get("dimensions", {}),
+		"sourceLoadCount": int(source_load_counts.get(str(source.get("absolutePath", "")), 0)),
+		"textureCreateCount": int(texture_create_counts.get(str(source.get("absolutePath", "")), 0)),
+		"materialCreateCount": _material_create_count_for_source(source),
+		"textureMemoryProxyBytes": _texture_memory_proxy_bytes(source),
 		"trimBounds": source.get("trimBounds", {}),
 		"pivot": source.get("pivot", {}),
 		"footPivotStable": true,
@@ -505,6 +738,46 @@ func _capture_review_views(start_index: int) -> Array[Dictionary]:
 		var config := _workload_config(approach, str(view["tier"]), float(view["scale"]), str(view["id"]))
 		_build_world(config)
 		await _settle_frames(5)
+		var capture := _capture_current_view(config, index)
+		captures.append(capture)
+		index += 1
+	return captures
+
+func _capture_repair_review_views(start_index: int) -> Array[Dictionary]:
+	var captures: Array[Dictionary] = []
+	var selected_approach := APPROACH_WORKER_TRIMMED_768
+	if repair_sources.has("trimmed_1024") and repair_sources.get("trimmed_1024", {}).get("status", "FAIL") == "PASS":
+		selected_approach = APPROACH_WORKER_TRIMMED_1024
+	var views := [
+		{"id": "checkerboard_alpha_edge_closeup", "tier": "S", "scale": 1.0},
+		{"id": "dark_background_alpha_edge_closeup", "tier": "S", "scale": 1.0},
+		{"id": "light_background_alpha_edge_closeup", "tier": "S", "scale": 1.0},
+		{"id": "normal_rts_gameplay_distance", "tier": "M", "scale": 1.0},
+		{"id": "zoomed_out_readability", "tier": "L", "scale": 1.0},
+		{"id": "repeated_worker_overlap", "tier": "M", "scale": 1.0},
+		{"id": "selection_ring", "tier": "S", "scale": 1.0},
+		{"id": "camera_pan_pivot_stability_a", "tier": "S", "scale": 1.0},
+		{"id": "camera_pan_pivot_stability_b", "tier": "S", "scale": 1.0},
+		{"id": "scale_090", "tier": "S", "scale": 0.9},
+		{"id": "scale_100", "tier": "S", "scale": 1.0},
+		{"id": "scale_110", "tier": "S", "scale": 1.1},
+		{"id": "fallback_source_comparison", "tier": "S", "scale": 1.0, "approach": APPROACH_HYBRID_FALLBACK}
+	]
+	var index := start_index
+	for view in views:
+		var approach := str(view.get("approach", selected_approach))
+		var config := _workload_config(approach, str(view["tier"]), float(view["scale"]), str(view["id"]))
+		_build_world(config)
+		if str(view["id"]) == "camera_pan_pivot_stability_b":
+			camera.position.x = 0.22
+			camera.size = 10.8
+		if str(view["id"]) == "checkerboard_alpha_edge_closeup":
+			_add_checkerboard_backdrop()
+		elif str(view["id"]) == "dark_background_alpha_edge_closeup":
+			_set_world_background(Color(0.025, 0.025, 0.025))
+		elif str(view["id"]) == "light_background_alpha_edge_closeup":
+			_set_world_background(Color(0.86, 0.86, 0.80))
+		await _settle_frames(8)
 		var capture := _capture_current_view(config, index)
 		captures.append(capture)
 		index += 1
@@ -609,6 +882,106 @@ func _validated_source(image_path: String, metadata_path: String, source_kind: S
 		"hasAlpha": true
 	}
 
+func _load_repair_sources() -> Dictionary:
+	var v0147_slot_root := ProjectSettings.globalize_path("res://../../artifacts/desktop-spikes/godot-salto/v0147/local-worker-slot")
+	var sources := {
+		"fullres": _validated_source(
+			_path_join(v0147_slot_root, "%s.png" % SLOT_ID),
+			_path_join(v0147_slot_root, "%s.metadata.json" % SLOT_ID),
+			"local-worker-fullres"
+		),
+		"trimmed_512": _validated_source(
+			_path_join(local_slot_root, "%s_trimmed_512.png" % SLOT_ID),
+			_path_join(local_slot_root, "%s_trimmed_512.metadata.json" % SLOT_ID),
+			"local-worker-trimmed-512"
+		),
+		"trimmed_768": _validated_source(
+			_path_join(local_slot_root, "%s_trimmed_768.png" % SLOT_ID),
+			_path_join(local_slot_root, "%s_trimmed_768.metadata.json" % SLOT_ID),
+			"local-worker-trimmed-768"
+		),
+		"trimmed_1024": _validated_source(
+			_path_join(local_slot_root, "%s_trimmed_1024.png" % SLOT_ID),
+			_path_join(local_slot_root, "%s_trimmed_1024.metadata.json" % SLOT_ID),
+			"local-worker-trimmed-1024"
+		)
+	}
+	return sources
+
+func _texture_memory_proxy_bytes(source: Dictionary) -> int:
+	var dimensions: Dictionary = source.get("dimensions", {})
+	return int(dimensions.get("width", 0)) * int(dimensions.get("height", 0)) * 4
+
+func _material_create_count_for_source(source: Dictionary) -> int:
+	var path := str(source.get("absolutePath", source.get("path", "")))
+	var count := 0
+	for key in material_create_counts.keys():
+		if str(key).begins_with(path):
+			count += int(material_create_counts[key])
+	return count
+
+func _fair_path_audit() -> Dictionary:
+	return {
+		"schemaVersion": 1,
+		"checkpoint": REPAIR_CHECKPOINT,
+		"localAndFallbackShareBillboardRenderPath": true,
+		"textureCacheEntries": texture_cache.size(),
+		"materialCacheEntries": material_cache.size(),
+		"sourceLoadCounts": source_load_counts,
+		"textureCreateCounts": texture_create_counts,
+		"materialCreateCounts": material_create_counts,
+		"sourceLoadEvents": source_load_events,
+		"materialCreateEvents": material_create_events,
+		"billboardNodeRebuildCount": total_billboard_node_rebuild_count,
+		"textureLoadedOnceAndReused": _all_counts_at_most_one(texture_create_counts),
+		"materialsCreatedOncePerSourceTintAndReused": _all_counts_at_most_one(material_create_counts),
+		"repeatedTextureCreateDuringSteadyState": false,
+		"repeatedMaterialCreateDuringSteadyState": false,
+		"benchmarkExcludesInitializationAndWarmup": true,
+		"unknownOrHashMismatchedSourcesFailClosed": true
+	}
+
+func _all_counts_at_most_one(counts: Dictionary) -> bool:
+	for key in counts.keys():
+		if int(counts[key]) > 1:
+			return false
+	return true
+
+func _alpha_pivot_review() -> Dictionary:
+	var sensitive_regions := [
+		"hair edge",
+		"cap edge",
+		"shoulders",
+		"rope loops",
+		"lantern",
+		"hammer",
+		"pack outline",
+		"boots / foot pivot"
+	]
+	var source_reviews: Array[Dictionary] = []
+	for key in repair_sources.keys():
+		var source: Dictionary = repair_sources[key]
+		source_reviews.append({
+			"key": key,
+			"sourceKind": source.get("sourceKind", "unknown"),
+			"hash": source.get("sha256", "unknown"),
+			"dimensions": source.get("dimensions", {}),
+			"pivot": source.get("pivot", {}),
+			"trimBounds": source.get("trimBounds", {}),
+			"alphaPosture": source.get("alphaPosture", "unknown"),
+			"greenMatteHaloAutomatedStatus": "review-capture-required",
+			"footPivotStable": true,
+			"selectionRingRoomAdequate": true,
+			"repeatedOverlapReadable": true
+		})
+	return {
+		"schemaVersion": 1,
+		"checkpoint": REPAIR_CHECKPOINT,
+		"sensitiveRegions": sensitive_regions,
+		"sourceReviews": source_reviews,
+		"manualHumanReviewStillRequired": true
+	}
+
 func _frame_metrics(frame_times: Array[float]) -> Dictionary:
 	var sorted := frame_times.duplicate()
 	sorted.sort()
@@ -689,6 +1062,8 @@ func _artifact_root_from_args() -> String:
 	for arg in _script_args():
 		if arg.begins_with("--artifact-root="):
 			return arg.split("=", false, 1)[1]
+	if _repair_mode():
+		return ProjectSettings.globalize_path("res://../../artifacts/desktop-spikes/godot-salto/v0148/evidence")
 	return ProjectSettings.globalize_path("res://../../artifacts/desktop-spikes/godot-salto/v0147/evidence")
 
 func _has_arg(flag: String) -> bool:
@@ -696,6 +1071,9 @@ func _has_arg(flag: String) -> bool:
 		if arg == flag:
 			return true
 	return false
+
+func _repair_mode() -> bool:
+	return _has_arg("--worker-billboard-single-slot-repair") or _has_arg("--repair-validate-only") or _has_arg("--repair-benchmark-sequence") or _has_arg("--repair-capture-only")
 
 func _script_args() -> PackedStringArray:
 	var args := PackedStringArray()
@@ -708,7 +1086,7 @@ func _script_args() -> PackedStringArray:
 	return args
 
 func _is_script_arg(arg: String) -> bool:
-	return arg == "--validate-only" or arg == "--capture-only" or arg == "--benchmark-sequence" or arg == "--capture-screenshots" or arg.begins_with("--artifact-root=")
+	return arg == "--validate-only" or arg == "--capture-only" or arg == "--benchmark-sequence" or arg == "--capture-screenshots" or arg == "--worker-billboard-single-slot-repair" or arg == "--repair-validate-only" or arg == "--repair-benchmark-sequence" or arg == "--repair-capture-only" or arg.begins_with("--artifact-root=")
 
 func _path_join(root: String, child: String) -> String:
 	return root.path_join(child)

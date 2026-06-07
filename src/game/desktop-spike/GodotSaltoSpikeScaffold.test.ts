@@ -1933,4 +1933,105 @@ describe("Godot Salto spike scaffold", () => {
     expect(comparatorScript).not.toContain("artifacts/art-review/v0138/candidates");
     expect(toolScript).not.toContain("artifacts/art-review/v0138/candidates");
   });
+
+  it("defines the v0.148 private Worker billboard repair benchmark and review stop", async () => {
+    [
+      "GODOT_WORKER_BILLBOARD_SINGLE_SLOT_REPAIR_WINDOWS.bat",
+      "tools/godot/workerBillboardSingleSlotTool.mjs",
+      "tools/godot/runGodotWorkerBillboardRepairValidation.ps1",
+      "tools/godot/runGodotWorkerBillboardRepairAudit.ps1",
+      "tools/godot/runGodotWorkerBillboardRepairDerivatives.ps1",
+      "tools/godot/runGodotWorkerBillboardRepairBenchmarkWindows.ps1",
+      "tools/godot/captureGodotWorkerBillboardRepairWindows.ps1",
+      "desktop-spikes/godot-salto/comparators/runtime_art_pipeline/worker_billboard_single_slot_comparator.gd",
+      "desktop-spikes/godot-salto/comparators/runtime_art_pipeline/fallback/worker_billboard_static_v0147_fallback.png",
+      "desktop-spikes/godot-salto/comparators/runtime_art_pipeline/fallback/worker_billboard_static_v0147_fallback.contract.json",
+      "docs/V0148_WORKER_BILLBOARD_SINGLE_SLOT_REPAIR_SPEC.md",
+      "docs/V0148_WORKER_BILLBOARD_FAIR_PATH_AUDIT.md",
+      "docs/V0148_WORKER_BILLBOARD_DERIVATIVE_MATRIX.md",
+      "docs/V0148_WORKER_BILLBOARD_PAIRED_BENCHMARK_REPORT.md",
+      "docs/V0148_WORKER_BILLBOARD_ALPHA_PIVOT_REVIEW_GUIDE.md",
+      "docs/V0148_PRIVATE_COMPARATOR_ONLY_BOUNDARY.md",
+      "docs/V0148_IMPLEMENTATION_REPORT.md"
+    ].forEach((path) => expect(existsSync(path), path).toBe(true));
+
+    const packageJson = await readJson<{ scripts: Record<string, string> }>("package.json");
+    const rootScript = await readFile("desktop-spikes/godot-salto/scripts/salto_spike_root.gd", "utf8");
+    const comparatorScript = await readFile(
+      "desktop-spikes/godot-salto/comparators/runtime_art_pipeline/worker_billboard_single_slot_comparator.gd",
+      "utf8"
+    );
+    const toolScript = await readFile("tools/godot/workerBillboardSingleSlotTool.mjs", "utf8");
+    const repairLauncher = await readFile("GODOT_WORKER_BILLBOARD_SINGLE_SLOT_REPAIR_WINDOWS.bat", "utf8");
+    const stabilizedLauncher = await readFile("GODOT_LAUNCH_STABILIZED_SALTO_REVIEW_WINDOWS.bat", "utf8");
+    const playerLauncher = await readFile("GODOT_LAUNCH_PLAYER_SLICE_WINDOWS.bat", "utf8");
+    const repairSpec = await readFile("docs/V0148_WORKER_BILLBOARD_SINGLE_SLOT_REPAIR_SPEC.md", "utf8");
+    const fairPathAudit = await readFile("docs/V0148_WORKER_BILLBOARD_FAIR_PATH_AUDIT.md", "utf8");
+    const derivativeMatrix = await readFile("docs/V0148_WORKER_BILLBOARD_DERIVATIVE_MATRIX.md", "utf8");
+    const boundary = await readFile("docs/V0148_PRIVATE_COMPARATOR_ONLY_BOUNDARY.md", "utf8");
+    const implementation = await readFile("docs/V0148_IMPLEMENTATION_REPORT.md", "utf8");
+
+    [
+      "godot:worker-billboard-repair:validate",
+      "godot:worker-billboard-repair:audit",
+      "godot:worker-billboard-repair:derivatives:reproduce",
+      "godot:worker-billboard-repair:benchmark:headed",
+      "godot:worker-billboard-repair:capture"
+    ].forEach((script) => expect(packageJson.scripts[script], script).toBeTypeOf("string"));
+
+    expect(rootScript).toContain("--worker-billboard-single-slot-repair");
+    expect(rootScript).toContain("worker_billboard_single_slot_comparator.gd");
+    expect(rootScript).toContain("PASS_V0148_PRIVATE_WORKER_BILLBOARD_REPAIR_DISPATCH");
+    expect(rootScript).toContain("show_player_title");
+
+    [
+      "HYBRID_WORKER_FULL_RES",
+      "HYBRID_WORKER_TRIMMED_512",
+      "HYBRID_WORKER_TRIMMED_768",
+      "HYBRID_WORKER_TRIMMED_1024",
+      "repair_sources",
+      "texture_cache",
+      "material_cache",
+      "source_load_counts",
+      "texture_create_counts",
+      "material_create_counts",
+      "steadyStateWarmupFrames",
+      "initializationDurationMs",
+      "normalPlayerSliceWired",
+      "browserRuntimeWired"
+    ].forEach((text) => expect(comparatorScript).toContain(text));
+
+    [
+      "repair:derivatives",
+      "repair:derivatives:check",
+      "repair:validate",
+      "repair:audit",
+      "repair:report",
+      "PASS_V0148_WORKER_BILLBOARD_DERIVATIVE_REPRODUCIBILITY",
+      "PASS_V0148_WORKER_BILLBOARD_ORIGINAL_GATE",
+      "worker-billboard-repair-threshold-report.json",
+      "worker-billboard-repair-fair-path-audit.json",
+      "paired-benchmark-summary.md",
+      "zeroNewAiImages"
+    ].forEach((text) => expect(toolScript).toContain(text));
+
+    expect(repairLauncher).toContain("godot:worker-billboard-repair:benchmark:headed");
+    expect(stabilizedLauncher).not.toContain("worker-billboard-single-slot-repair");
+    expect(stabilizedLauncher).not.toContain("WORKER_BILLBOARD_SINGLE_SLOT_REPAIR");
+    expect(playerLauncher).not.toContain("worker-billboard-single-slot-repair");
+    expect(playerLauncher).not.toContain("WORKER_BILLBOARD_SINGLE_SLOT_REPAIR");
+
+    expect(repairSpec).toContain("Generate zero new AI-generated images");
+    expect(repairSpec).toContain("original acceptance gate");
+    expect(fairPathAudit).toContain("No gate relaxation");
+    expect(derivativeMatrix).toContain("worker_billboard_static_v0147_trimmed_1024.png");
+    expect(boundary).toContain("No second runtime-art slot");
+    expect(boundary).toContain("No existing reference candidate import");
+    expect(boundary).toContain("No browser runtime wiring");
+    expect(implementation).toContain("No v0.149 work");
+
+    expect(rootScript).not.toContain("artifacts/art-review/v0138/candidates");
+    expect(comparatorScript).not.toContain("artifacts/art-review/v0138/candidates");
+    expect(toolScript).not.toContain("artifacts/art-review/v0138/candidates");
+  });
 });
