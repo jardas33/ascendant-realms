@@ -11,9 +11,22 @@ Every phase should protect these long-term pillars:
 
 ## Current Recommended Next Phase
 
-The current checkpoint is **v0.162 Godot Salto Worker + Barracks Art Opt-In Human Review Stop** on 2026-06-07. It adds only the seam-repaired Barracks material as the second normal-slice opt-in art slot behind a new combined Worker + Barracks launcher, preserves the default stabilized launcher as procedural, preserves the existing Worker-only launcher, generates zero images, adds no third slot, and keeps the Browser runtime untouched.
+The current checkpoint is **v0.163 Godot Salto Barracks-Material Opt-In Visual QA Hardening And Human Review Stop** on 2026-06-07. It inspects and hardens only the existing combined Worker + Barracks-material opt-in player-slice path, preserves the default stabilized launcher as procedural, preserves the existing Worker-only launcher and combined launcher, generates zero images, adds zero slots, and keeps the Browser runtime untouched.
 
-The next recommended step is human review and explicit approval only: Emmanuel may compare default procedural, Worker-only, combined Worker + Barracks, Barracks missing-art fallback, and Barracks hash-mismatch fallback evidence, then decide whether to pause, request a bounded Barracks material repair, or authorize a separate v0.163 scope. The final v0.162 scorecard is `PASS_V0162_BARRACKS_MATERIAL_OPT_IN_HUMAN_REVIEW_READY` with Worker-only FPS ratio `0.9975`, combined FPS ratio `1.0028`, Worker-only P95 frame-time ratio `1.0106`, combined P95 frame-time ratio `1.0334`, package leakage `false`, and both protected launcher hashes unchanged. Do not add a third art slot, import Aster/Militia/Ashen art into the player slice, wire assets into the browser runtime, mutate production manifests or art slots, change saves or stable IDs, choose Godot finally, start a full desktop port, start Unity/Unreal/Electron work, or begin v0.163.
+The next recommended step is human review and explicit approval only: Emmanuel may compare default procedural, Worker-only, combined Worker + Barracks, Barracks missing-art fallback, and Barracks hash-mismatch fallback evidence, then decide whether to pause, request a bounded visual repair, or authorize a separate next scope. The final v0.163 scorecard is `PASS_V0163_BARRACKS_MATERIAL_OPT_IN_HUMAN_REVIEW_READY` with Worker-only FPS ratio `0.9940`, combined FPS ratio `0.9939`, combined-vs-Worker FPS ratio `0.9999`, Worker-only P95 frame-time ratio `0.9837`, combined P95 frame-time ratio `1.0186`, combined-vs-Worker P95 frame-time ratio `1.0354`, package leakage `false`, and all protected launcher hashes unchanged. Do not add a third art slot, import Aster/Militia/Ashen art into the player slice, wire assets into the browser runtime, mutate production manifests or art slots, change saves or stable IDs, choose Godot finally, start a full desktop port, start Unity/Unreal/Electron work, or begin the next milestone.
+
+New v0.163 docs:
+
+- `docs/V0163_BARRACKS_MATERIAL_OPT_IN_PLAYER_SLICE_VISUAL_QA_SPEC.md`
+- `docs/V0163_BARRACKS_MATERIAL_OPT_IN_COMPUTER_USE_REVIEW.md`
+- `docs/V0163_BARRACKS_MATERIAL_OPT_IN_REAL_INPUT_REPORT.md`
+- `docs/V0163_BARRACKS_MATERIAL_OPT_IN_HARDENING_REPORT.md`
+- `docs/V0163_BARRACKS_MATERIAL_OPT_IN_VISUAL_REVIEW_GUIDE.md`
+- `docs/V0163_BARRACKS_MATERIAL_OPT_IN_ROLLBACK_CONFIRMATION.md`
+- `docs/V0163_PLAYER_SLICE_TWO_SLOT_BOUNDARY.md`
+- `docs/V0163_IMPLEMENTATION_REPORT.md`
+
+Previous checkpoint reference: v0.162 Godot Salto Worker + Barracks Art Opt-In Human Review Stop.
 
 New v0.162 docs:
 

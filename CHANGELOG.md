@@ -1,5 +1,42 @@
 # Changelog
 
+# v0.163 Godot Salto Barracks-Material Opt-In Visual QA Hardening And Human Review Stop - 2026-06-07
+
+This checkpoint inspects and hardens only the existing combined Worker + Barracks-material opt-in player-slice path. It adds v0.163 Windows-side review, real-input, capture, benchmark, fallback, boundary, and scorecard evidence while preserving the default stabilized launcher as procedural, preserving the Worker-only launcher, generating zero images, adding zero slots, and stopping for Emmanuel review. It does not begin the next milestone.
+
+Added:
+
+- One-click combined review helper `GODOT_REVIEW_SALTO_WORKER_BARRACKS_ART_OPT_IN_WINDOWS.bat`.
+- One-click v0.163 hardening validator `GODOT_VALIDATE_SALTO_WORKER_BARRACKS_ART_OPT_IN_HARDENING_WINDOWS.bat`.
+- v0.163 hardening wrapper for default, Worker-only, combined, Barracks missing-art fallback, Barracks hash-mismatch fallback, benchmark, and real-input scenarios.
+- v0.163 report aggregator `tools/godot/saltoWorkerBarracksArtOptInHardeningTool.mjs`.
+- Package scripts for v0.163 review and hardening validation.
+- v0.163 visual QA, Computer Use review, real-input, hardening, visual guide, rollback, two-slot boundary, and implementation docs.
+- Scaffold guardrail coverage for the v0.163 hardening gate.
+
+Evidence:
+
+- Final v0.163 scorecard: `PASS_V0163_BARRACKS_MATERIAL_OPT_IN_HUMAN_REVIEW_READY`.
+- Validation: `PASS_V0163_BARRACKS_MATERIAL_OPT_IN_QA_VALIDATION`.
+- Capture: `PASS_V0163_BARRACKS_MATERIAL_OPT_IN_CAPTURE`.
+- Benchmark: `PASS_V0163_BARRACKS_MATERIAL_OPT_IN_BENCHMARK`, with Worker-only FPS ratio `0.9940`, combined FPS ratio `0.9939`, combined-vs-Worker FPS ratio `0.9999`, Worker-only P95 frame-time ratio `0.9837`, combined P95 frame-time ratio `1.0186`, and combined-vs-Worker P95 frame-time ratio `1.0354`.
+- Real-input smoke: `PASS_V0163_BARRACKS_MATERIAL_OPT_IN_REAL_INPUT`.
+- Computer Use review: `PASS_V0163_BARRACKS_MATERIAL_OPT_IN_COMPUTER_USE_GATE`.
+- Boundary: `PASS_V0163_PLAYER_SLICE_TWO_SLOT_BOUNDARY`, package leakage `false`, default launcher hash unchanged, Worker-only launcher hash unchanged, and combined launcher hash unchanged.
+- Broader local gates passed: `npm test`, `npm run build`, `npm run validate:content`, `npm run validate:art-intake`, `npm run validate:runtime-art-slots`, reference-art init/validate/contact-sheet/review-pack, default Godot player-slice validation, Worker-only Godot validation, combined Worker + Barracks Godot validation, focused scaffold Vitest, Node syntax check, and `git diff --check`.
+
+Boundaries:
+
+- Zero images generated.
+- No third player-facing art slot.
+- Existing Worker-only launcher preserved.
+- Default stabilized launcher preserved as procedural.
+- Combined Worker + Barracks launcher preserved.
+- No Aster, Militia, Ashen Raider, HUD, terrain, environment, or reference-art import.
+- No browser-runtime wiring or production manifest mutation.
+- No save, stable-ID, gameplay, AI, objective, map, input, balance, campaign, or browser behavior mutation.
+- No final runtime-art approval, final Barracks art approval, final Godot choice, full port, or next-milestone work.
+
 # v0.162 Godot Salto Worker + Barracks Art Opt-In Human Review Stop - 2026-06-07
 
 This checkpoint adds only the v0.150 seam-repaired Barracks material as the second normal-slice opt-in art slot behind a new combined Worker + Barracks launcher. It preserves the default stabilized launcher as procedural, preserves the existing Worker-only launcher, proves Barracks missing-art and hash-mismatch fallback while Worker art remains active, benchmarks equivalent modes, generates zero images, adds no third slot, and stops for Emmanuel review. It does not begin v0.163.

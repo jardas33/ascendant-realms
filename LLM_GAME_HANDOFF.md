@@ -1,6 +1,6 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-06-07 v0.162 Godot Salto Worker + Barracks Art Opt-In Human Review Stop
+Last updated: 2026-06-07 v0.163 Godot Salto Barracks-Material Opt-In Visual QA Hardening And Human Review Stop
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
@@ -22,7 +22,77 @@ Project Identity continuation note: v0.161 now supersedes the older no-v0.161 ta
 
 Project Identity continuation note: v0.162 now supersedes the older no-v0.162 tail above because the v0.162 prompt explicitly authorized adding the seam-repaired Barracks material as the second Godot normal-slice opt-in art slot after v0.161 was committed, pushed, clean, synced, and remote-green. v0.162 preserves the default stabilized launcher as procedural, preserves the existing Worker-only launcher, adds a separate combined Worker + Barracks launcher, proves Barracks missing-art and hash-mismatch fallback while Worker art remains active, benchmarks equivalent modes, and stops for Emmanuel review.
 
-Current status override: v0.162 is the active checkpoint for this handoff. v0.163 has not started.
+Project Identity continuation note: v0.163 now supersedes the older no-v0.163 tail above because the v0.163 prompt explicitly authorized a Windows-side visual-QA and real-input hardening pass after v0.162 was committed, pushed, clean, synced, and remote-green. v0.163 inspects only the existing combined Worker + Barracks-material opt-in player-slice path, keeps the default stabilized launcher procedural, preserves the Worker-only launcher and combined launcher, adds hardening evidence/tooling/docs, generates zero images, adds zero slots, and stops for Emmanuel review.
+
+Current status override: v0.163 is the active checkpoint for this handoff. The next milestone has not started.
+
+## Current v0.163 Godot Salto Barracks-Material Opt-In Visual QA Hardening And Human Review Stop - 2026-06-07
+
+Status: v0.163 is a visual-QA and real-input hardening checkpoint for the existing v0.162 two-slot Godot opt-in path. It does not add art, does not add a slot, and does not modify the normal browser runtime.
+
+v0.163 preserved slots:
+
+- Worker: `worker_billboard_static_v0147` / `HYBRID_WORKER_TRIMMED_1024` / `a628065ca92b231b0d4f6a0625d9e259dea080e80d530ee688483611d70049bc`.
+- Barracks: `barrosan_barracks_material_v0149` / `HYBRID_BARRACKS_768_WRAPSAFE_OFFSET_BLEND` / `58a60b750370df084b60a1d92077da9367c0ba8a763781e2c3a8a7d96f1c980f`.
+
+v0.163 entry points:
+
+- `GODOT_REVIEW_SALTO_WORKER_BARRACKS_ART_OPT_IN_WINDOWS.bat`
+- `GODOT_VALIDATE_SALTO_WORKER_BARRACKS_ART_OPT_IN_HARDENING_WINDOWS.bat`
+- `npm run godot:review:salto-worker-barracks-art-opt-in`
+- `npm run godot:validate:salto-worker-barracks-art-opt-in-hardening`
+
+v0.163 docs:
+
+- `docs/V0163_BARRACKS_MATERIAL_OPT_IN_PLAYER_SLICE_VISUAL_QA_SPEC.md`
+- `docs/V0163_BARRACKS_MATERIAL_OPT_IN_COMPUTER_USE_REVIEW.md`
+- `docs/V0163_BARRACKS_MATERIAL_OPT_IN_REAL_INPUT_REPORT.md`
+- `docs/V0163_BARRACKS_MATERIAL_OPT_IN_HARDENING_REPORT.md`
+- `docs/V0163_BARRACKS_MATERIAL_OPT_IN_VISUAL_REVIEW_GUIDE.md`
+- `docs/V0163_BARRACKS_MATERIAL_OPT_IN_ROLLBACK_CONFIRMATION.md`
+- `docs/V0163_PLAYER_SLICE_TWO_SLOT_BOUNDARY.md`
+- `docs/V0163_IMPLEMENTATION_REPORT.md`
+
+v0.163 constraints:
+
+- Zero images generated.
+- Exactly two normal-slice opt-in slots remain in the combined posture.
+- No third slot.
+- Default stabilized launcher unchanged and procedural.
+- Existing Worker-only launcher unchanged and Worker-only.
+- Existing combined Worker + Barracks launcher unchanged.
+- Barracks missing-art and hash-mismatch failures fail closed to procedural Barracks while Worker art remains active.
+- No browser-runtime wiring, production manifest mutation, save/stable-ID mutation, gameplay mutation, final art approval, final Godot choice, full port, or next-milestone work.
+
+v0.163 verification results:
+
+```text
+PASS: node --check tools/godot/saltoWorkerBarracksArtOptInHardeningTool.mjs.
+PASS: npm test - 122 files / 877 tests.
+PASS: npm run build.
+PASS: npm run validate:content.
+PASS: npm run validate:art-intake.
+PASS: npm run validate:runtime-art-slots.
+PASS: npm run art:reference:init.
+PASS: npm run art:reference:validate - PASS_V0138_REFERENCE_METADATA.
+PASS: npm run art:reference:contact-sheet - PASS_V0138_REFERENCE_CONTACT_SHEET.
+PASS: npm run art:reference:review-pack - PASS_V0138_REFERENCE_REVIEW_PACK.
+PASS: npm run godot:validate:player-slice.
+PASS: npm run godot:validate:salto-worker-art-experiment.
+PASS: npm run godot:validate:salto-worker-barracks-art-experiment - PASS_V0162_WORKER_BARRACKS_ART_OPT_IN_AUTOMATION_READY.
+PASS: npm exec -- vitest run src/game/desktop-spike/GodotSaltoSpikeScaffold.test.ts - 43 tests.
+PASS: npm run godot:validate:salto-worker-barracks-art-opt-in-hardening - PASS_V0163_WORKER_BARRACKS_ART_OPT_IN_HARDENING_AUTOMATION_READY.
+PASS: validation - PASS_V0163_BARRACKS_MATERIAL_OPT_IN_QA_VALIDATION.
+PASS: capture - PASS_V0163_BARRACKS_MATERIAL_OPT_IN_CAPTURE.
+PASS: benchmark - PASS_V0163_BARRACKS_MATERIAL_OPT_IN_BENCHMARK; Worker-only FPS 0.9940, combined FPS 0.9939, combined-vs-Worker FPS 0.9999, Worker-only P95 0.9837, combined P95 1.0186, combined-vs-Worker P95 1.0354.
+PASS: real-input - PASS_V0163_BARRACKS_MATERIAL_OPT_IN_REAL_INPUT.
+PASS: Windows-side Computer Use review - PASS_V0163_BARRACKS_MATERIAL_OPT_IN_COMPUTER_USE_GATE across default, Worker-only, combined, missing-art fallback, and hash-mismatch fallback postures.
+PASS: boundary - PASS_V0163_PLAYER_SLICE_TWO_SLOT_BOUNDARY; default launcher unchanged, Worker-only launcher unchanged, combined launcher unchanged, package leakage false, zero image changes.
+PASS: summary - PASS_V0163_BARRACKS_MATERIAL_OPT_IN_HUMAN_REVIEW_READY.
+PASS: git diff --check.
+```
+
+Final v0.163 scorecard: `PASS_V0163_BARRACKS_MATERIAL_OPT_IN_HUMAN_REVIEW_READY`. Human review remains pending; do not begin the next milestone.
 
 ## Current v0.162 Godot Salto Worker + Barracks Art Opt-In Human Review Stop - 2026-06-07
 

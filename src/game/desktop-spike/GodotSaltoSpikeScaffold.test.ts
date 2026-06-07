@@ -3215,4 +3215,86 @@ describe("Godot Salto spike scaffold", () => {
       expect(workerOnlyLaunchScript).not.toContain(text);
     });
   });
+
+  it("defines the v0.163 Barracks material opt-in visual QA hardening gate", async () => {
+    [
+      "GODOT_REVIEW_SALTO_WORKER_BARRACKS_ART_OPT_IN_WINDOWS.bat",
+      "GODOT_VALIDATE_SALTO_WORKER_BARRACKS_ART_OPT_IN_HARDENING_WINDOWS.bat",
+      "tools/godot/reviewGodotSaltoWorkerBarracksArtOptInWindows.ps1",
+      "tools/godot/validateGodotSaltoWorkerBarracksArtOptInHardeningWindows.ps1",
+      "tools/godot/saltoWorkerBarracksArtOptInHardeningTool.mjs",
+      "docs/V0163_BARRACKS_MATERIAL_OPT_IN_PLAYER_SLICE_VISUAL_QA_SPEC.md",
+      "docs/V0163_BARRACKS_MATERIAL_OPT_IN_COMPUTER_USE_REVIEW.md",
+      "docs/V0163_BARRACKS_MATERIAL_OPT_IN_REAL_INPUT_REPORT.md",
+      "docs/V0163_BARRACKS_MATERIAL_OPT_IN_HARDENING_REPORT.md",
+      "docs/V0163_BARRACKS_MATERIAL_OPT_IN_VISUAL_REVIEW_GUIDE.md",
+      "docs/V0163_BARRACKS_MATERIAL_OPT_IN_ROLLBACK_CONFIRMATION.md",
+      "docs/V0163_PLAYER_SLICE_TWO_SLOT_BOUNDARY.md",
+      "docs/V0163_IMPLEMENTATION_REPORT.md"
+    ].forEach((path) => expect(existsSync(path), path).toBe(true));
+
+    const packageJson = JSON.parse(await readFile("package.json", "utf8")) as { scripts: Record<string, string> };
+    const hardeningScript = await readFile("tools/godot/validateGodotSaltoWorkerBarracksArtOptInHardeningWindows.ps1", "utf8");
+    const toolScript = await readFile("tools/godot/saltoWorkerBarracksArtOptInHardeningTool.mjs", "utf8");
+    const reviewScript = await readFile("tools/godot/reviewGodotSaltoWorkerBarracksArtOptInWindows.ps1", "utf8");
+    const boundary = await readFile("docs/V0163_PLAYER_SLICE_TWO_SLOT_BOUNDARY.md", "utf8");
+    const implementation = await readFile("docs/V0163_IMPLEMENTATION_REPORT.md", "utf8");
+    const stabilizedLauncher = await readFile("GODOT_LAUNCH_STABILIZED_SALTO_REVIEW_WINDOWS.bat", "utf8");
+    const playerLauncher = await readFile("GODOT_LAUNCH_PLAYER_SLICE_WINDOWS.bat", "utf8");
+    const workerOnlyLauncher = await readFile("GODOT_LAUNCH_SALTO_WORKER_ART_EXPERIMENT_WINDOWS.bat", "utf8");
+
+    [
+      "godot:review:salto-worker-barracks-art-opt-in",
+      "godot:validate:salto-worker-barracks-art-opt-in-hardening"
+    ].forEach((script) => expect(packageJson.scripts[script]).toBeTypeOf("string"));
+
+    [
+      "default-procedural",
+      "worker-only",
+      "worker-barracks",
+      "barracks-missing-art-fallback",
+      "barracks-hash-mismatch-fallback",
+      "worker-barracks-post-mine-flow",
+      "worker-barracks-restart-replay",
+      "PASS_V0163_WORKER_BARRACKS_ART_OPT_IN_HARDENING_AUTOMATION_READY"
+    ].forEach((text) => expect(hardeningScript).toContain(text));
+
+    [
+      "PASS_V0163_BARRACKS_MATERIAL_OPT_IN_QA_VALIDATION",
+      "PASS_V0163_BARRACKS_MATERIAL_OPT_IN_CAPTURE",
+      "PASS_V0163_BARRACKS_MATERIAL_OPT_IN_BENCHMARK",
+      "PASS_V0163_BARRACKS_MATERIAL_OPT_IN_REAL_INPUT",
+      "PASS_V0163_BARRACKS_MATERIAL_OPT_IN_COMPUTER_USE_GATE",
+      "PASS_V0163_PLAYER_SLICE_TWO_SLOT_BOUNDARY",
+      "PASS_V0163_BARRACKS_MATERIAL_OPT_IN_HUMAN_REVIEW_READY",
+      "minCombinedFpsRatioVsProcedural: 0.9",
+      "maxCombinedP95FrameTimeRatioVsWorkerOnly: 1.15",
+      "pause for Emmanuel manual review"
+    ].forEach((text) => expect(toolScript).toContain(text));
+
+    [
+      "default-procedural",
+      "worker-only",
+      "worker-barracks",
+      "barracks-missing-art-fallback",
+      "barracks-hash-mismatch-fallback"
+    ].forEach((text) => expect(reviewScript).toContain(text));
+
+    expect(boundary).toContain("Default stabilized launcher SHA-256");
+    expect(boundary).toContain("Worker-only launcher SHA-256");
+    expect(boundary).toContain("Combined Worker + Barracks launcher SHA-256");
+    expect(boundary).toContain("No third player-facing art slot");
+    expect(implementation).toContain("Zero new images");
+    expect(implementation).toContain("No normal Salto gameplay mutation");
+
+    [
+      "barracks-material-opt-in",
+      "barrosan_barracks_material_v0149",
+      "HYBRID_BARRACKS_768_WRAPSAFE_OFFSET_BLEND"
+    ].forEach((text) => {
+      expect(stabilizedLauncher).not.toContain(text);
+      expect(playerLauncher).not.toContain(text);
+      expect(workerOnlyLauncher).not.toContain(text);
+    });
+  });
 });
