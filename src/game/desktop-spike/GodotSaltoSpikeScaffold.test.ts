@@ -2228,4 +2228,93 @@ describe("Godot Salto spike scaffold", () => {
     expect(comparatorScript).not.toContain("artifacts/art-review/v0138/candidates");
     expect(toolScript).not.toContain("artifacts/art-review/v0138/candidates");
   });
+
+  it("defines the v0.151 private Aster billboard single-slot experiment and review stop", async () => {
+    [
+      "GODOT_ASTER_BILLBOARD_SINGLE_SLOT_EXPERIMENT_WINDOWS.bat",
+      "tools/godot/asterBillboardSingleSlotTool.mjs",
+      "tools/godot/runGodotAsterBillboardValidation.ps1",
+      "tools/godot/runGodotAsterBillboardFallbackReproducibility.ps1",
+      "tools/godot/runGodotAsterBillboardAudit.ps1",
+      "tools/godot/runGodotAsterBillboardBenchmarkWindows.ps1",
+      "tools/godot/captureGodotAsterBillboardWindows.ps1",
+      "desktop-spikes/godot-salto/comparators/runtime_art_pipeline/aster_billboard_single_slot_comparator.gd",
+      "desktop-spikes/godot-salto/comparators/runtime_art_pipeline/fallback/aster_billboard_static_v0151_fallback.png",
+      "desktop-spikes/godot-salto/comparators/runtime_art_pipeline/fallback/aster_billboard_static_v0151_fallback.contract.json",
+      "docs/V0151_ASTER_BILLBOARD_SINGLE_SLOT_INTAKE_SPEC.md",
+      "docs/V0151_ASTER_BILLBOARD_SLOT_CONTRACT.md",
+      "docs/V0151_ASTER_BILLBOARD_VALIDATION_REPORT.md",
+      "docs/V0151_ASTER_BILLBOARD_SCORECARD.md",
+      "docs/V0151_ASTER_BILLBOARD_VISUAL_REVIEW_GUIDE.md",
+      "docs/V0151_PRIVATE_COMPARATOR_ONLY_BOUNDARY.md",
+      "docs/V0151_IMPLEMENTATION_REPORT.md"
+    ].forEach((path) => expect(existsSync(path), path).toBe(true));
+
+    const packageJson = await readJson<{ scripts: Record<string, string> }>("package.json");
+    const rootScript = await readFile("desktop-spikes/godot-salto/scripts/salto_spike_root.gd", "utf8");
+    const comparatorScript = await readFile(
+      "desktop-spikes/godot-salto/comparators/runtime_art_pipeline/aster_billboard_single_slot_comparator.gd",
+      "utf8"
+    );
+    const toolScript = await readFile("tools/godot/asterBillboardSingleSlotTool.mjs", "utf8");
+    const launcher = await readFile("GODOT_ASTER_BILLBOARD_SINGLE_SLOT_EXPERIMENT_WINDOWS.bat", "utf8");
+    const stabilizedLauncher = await readFile("GODOT_LAUNCH_STABILIZED_SALTO_REVIEW_WINDOWS.bat", "utf8");
+    const playerLauncher = await readFile("GODOT_LAUNCH_PLAYER_SLICE_WINDOWS.bat", "utf8");
+    const spec = await readFile("docs/V0151_ASTER_BILLBOARD_SINGLE_SLOT_INTAKE_SPEC.md", "utf8");
+    const boundary = await readFile("docs/V0151_PRIVATE_COMPARATOR_ONLY_BOUNDARY.md", "utf8");
+    const implementation = await readFile("docs/V0151_IMPLEMENTATION_REPORT.md", "utf8");
+
+    [
+      "godot:aster-billboard:metadata",
+      "godot:aster-billboard:validate",
+      "godot:aster-billboard:fallback:reproduce",
+      "godot:aster-billboard:audit",
+      "godot:aster-billboard:benchmark:headed",
+      "godot:aster-billboard:capture"
+    ].forEach((script) => expect(packageJson.scripts[script], script).toBeTypeOf("string"));
+
+    expect(rootScript).toContain("--aster-billboard-single-slot");
+    expect(rootScript).toContain("aster_billboard_single_slot_comparator.gd");
+    expect(rootScript).toContain("PASS_V0151_PRIVATE_ASTER_BILLBOARD_DISPATCH");
+
+    [
+      "aster_billboard_static_v0151",
+      "HYBRID_ASTER_DIAGNOSTIC_FALLBACK_BASELINE",
+      "HYBRID_ASTER_LOCAL_STATIC_BILLBOARD",
+      "HYBRID_WORKER_CONTEXT_BASELINE",
+      "HYBRID_BARRACKS_CONTEXT_BASELINE",
+      "exactlyOneAiImageForV0151",
+      "noFourthRuntimeArtSlot",
+      "localAndFallbackShareAsterBillboardRenderPath",
+      "benchmarkExcludesInitializationAndWarmup",
+      "browserIntegration"
+    ].forEach((text) => expect(comparatorScript).toContain(text));
+
+    [
+      "PASS_V0151_ASTER_BILLBOARD_LOCAL_METADATA",
+      "PASS_V0151_ASTER_BILLBOARD_FALLBACK_REPRODUCIBILITY",
+      "PASS_V0151_ASTER_BILLBOARD_SINGLE_SLOT_GATE",
+      "aster-billboard-single-slot-scorecard.json",
+      "aster-billboard-single-slot-fair-path-audit.json",
+      "exactlyOneAiImageForV0151",
+      "noFourthRuntimeArtSlot"
+    ].forEach((text) => expect(toolScript).toContain(text));
+
+    expect(launcher).toContain("godot:aster-billboard:benchmark:headed");
+    expect(stabilizedLauncher).not.toContain("aster-billboard-single-slot");
+    expect(stabilizedLauncher).not.toContain("ASTER_BILLBOARD_SINGLE_SLOT");
+    expect(playerLauncher).not.toContain("aster-billboard-single-slot");
+    expect(playerLauncher).not.toContain("ASTER_BILLBOARD_SINGLE_SLOT");
+
+    expect(spec).toContain("exactly one AI image");
+    expect(spec).toContain("HYBRID_WORKER_TRIMMED_1024");
+    expect(spec).toContain("HYBRID_BARRACKS_768_WRAPSAFE_OFFSET_BLEND");
+    expect(boundary).toContain("No fourth runtime-art slot");
+    expect(boundary).toContain("No browser runtime wiring");
+    expect(implementation).toContain("No v0.152 work");
+
+    expect(rootScript).not.toContain("artifacts/art-review/v0138/candidates");
+    expect(comparatorScript).not.toContain("artifacts/art-review/v0138/candidates");
+    expect(toolScript).not.toContain("artifacts/art-review/v0138/candidates");
+  });
 });

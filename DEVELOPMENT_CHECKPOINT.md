@@ -1,6 +1,56 @@
 # Development Checkpoint
 
-Updated: 2026-06-07 v0.150 Hybrid Barracks Material UV Seam Repair Lighting Review And Human Review Stop
+Updated: 2026-06-07 v0.151 Hybrid Aster Static Billboard Single-Slot Intake Experiment And Human Review Stop
+
+## v0.151 Hybrid Aster Static Billboard Single-Slot Intake Experiment And Human Review Stop - 2026-06-07
+
+Scope: isolated private Godot Aster static billboard single-slot intake and fair benchmark. This checkpoint generates exactly one original Aster source image, converts it to one ignored matte-to-alpha cutout, validates a tracked fallback, uses the v0.148 Worker and v0.150 Barracks repair only as comparator context, and stops without modifying the normal Salto player slice or starting v0.152.
+
+Included work:
+
+- Confirmed clean synchronized `main` at `01acb26a668fd73eb35c1e7468901ccf652fecdc`.
+- Confirmed v0.150 pushed remote CI success and selected `HYBRID_BARRACKS_768_WRAPSAFE_OFFSET_BLEND` as the preserved Barracks material context.
+- Generated exactly one original Aster source under the ignored v0.151 local slot folder.
+- Added a deterministic tracked diagnostic fallback PNG and contract.
+- Added private Aster billboard comparator code, metadata/fallback/validation/audit/benchmark/capture wrappers, one-click launcher, and tracked v0.151 docs.
+- Captured Tier S/M/L evidence for diagnostic fallback, local Aster billboard, Worker context baseline, Barracks context baseline, and orthographic fallback comparator.
+- Captured 0.90x, 1.00x, and 1.10x scale views.
+
+Current interpretation:
+
+- Selected recommended approach: `HYBRID_ASTER_LOCAL_STATIC_BILLBOARD`.
+- Selected hash: `aa1572e26dcbfeaddd0b53c48a2c5e4713ddb35a002af5939f54b271621a3b72`.
+- Selected dimensions: `1024 x 1536`.
+- Gate: `PASS_V0151_ASTER_BILLBOARD_SINGLE_SLOT_GATE`.
+- Evidence marker: `PASS_V0151_ASTER_BILLBOARD_SINGLE_SLOT_EVIDENCE_RECORDED`.
+- Tier L local-vs-fallback FPS ratio: `0.9273`.
+- Tier L local-vs-fallback p95 ratio: `1.1081`.
+- Screenshot count: `32`; benchmark row count: `35`.
+- Fair-path audit: `PASS_V0151_ASTER_BILLBOARD_FAIR_PATH_AUDIT`, with `4` texture cache entries, `4` material cache entries, one load/create per source/material key, and no repeated texture/material creation during steady-state frames.
+- Human review is pending.
+- v0.152 has not started.
+
+Verification:
+
+```text
+Required closeout stack:
+npm test
+npm run build
+npm run validate:content
+npm run validate:art-intake
+npm run art:reference:init
+npm run art:reference:validate
+npm run art:reference:contact-sheet
+npm run art:reference:review-pack
+npm run godot:aster-billboard:metadata
+npm run godot:aster-billboard:fallback:reproduce
+npm run godot:aster-billboard:validate
+npm run godot:aster-billboard:benchmark:headed
+npm run godot:aster-billboard:audit
+npm run godot:aster-billboard:capture
+isolation scans
+git diff --check
+```
 
 ## v0.150 Hybrid Barracks Material UV Seam Repair Lighting Review And Human Review Stop - 2026-06-07
 

@@ -1,5 +1,48 @@
 # Changelog
 
+# v0.151 Hybrid Aster Static Billboard Single-Slot Intake Experiment And Human Review Stop - 2026-06-07
+
+This checkpoint tests only one isolated private hybrid Aster static billboard slot. It generates exactly one original ignored Aster source image, creates a deterministic matte-to-alpha local cutout, validates a tracked diagnostic fallback, fairly benchmarks Tier S/M/L private comparator evidence with the v0.148 Worker and v0.150 Barracks repair as context only, selects the local Aster billboard after the preserved gate passes, and stops for Emmanuel review.
+
+Added:
+
+- One ignored local Aster source and cutout under `artifacts/desktop-spikes/godot-salto/v0151/local-aster-slot/`.
+- Tracked deterministic Aster fallback PNG and contract for clean-checkout validation.
+- Private comparator `desktop-spikes/godot-salto/comparators/runtime_art_pipeline/aster_billboard_single_slot_comparator.gd`.
+- Metadata, fallback reproducibility, validation, fair-path audit, headed benchmark, capture wrappers, and `GODOT_ASTER_BILLBOARD_SINGLE_SLOT_EXPERIMENT_WINDOWS.bat`.
+- v0.151 docs for intake spec, slot contract, validation report, scorecard, visual review guide, private boundary, and implementation report.
+
+Changed:
+
+- `desktop-spikes/godot-salto/scripts/salto_spike_root.gd` now has a private `--aster-billboard-single-slot` dispatch path only.
+- Desktop-spike scaffold tests now assert the v0.151 Aster billboard path remains isolated from the normal Salto player slice and default launchers.
+- Handoff, roadmap, development checkpoint, and release checklist now describe v0.151 as the current private comparator human-review stop.
+
+Evidence:
+
+- Local Aster cutout SHA-256: `aa1572e26dcbfeaddd0b53c48a2c5e4713ddb35a002af5939f54b271621a3b72`, dimensions `1024 x 1536`.
+- Fallback SHA-256: `b327fae1de7dde0047eb62af8cebe6eb2fecde43856b8dcd60ef3830d6bae46d`, dimensions `1024 x 1536`.
+- Selected approach: `HYBRID_ASTER_LOCAL_STATIC_BILLBOARD`.
+- Gate: `PASS_V0151_ASTER_BILLBOARD_SINGLE_SLOT_GATE`.
+- Tier L local-vs-fallback average-FPS ratio: `0.9273`; p95 ratio: `1.1081`.
+- Evidence: `PASS_V0151_ASTER_BILLBOARD_SINGLE_SLOT_EVIDENCE_RECORDED`, with `32` screenshots and `35` benchmark rows.
+- Fair-path audit: `PASS_V0151_ASTER_BILLBOARD_FAIR_PATH_AUDIT`, with one texture load/create per source, one material create per source/material key, and no repeated texture/material creation during steady-state frames.
+
+Boundaries:
+
+- Exactly one new AI image.
+- No existing reference candidate import.
+- No generated reference image import.
+- No downloaded asset use.
+- No fourth runtime-art slot.
+- No normal Salto player-slice mutation.
+- No player-facing Godot wiring or browser-runtime wiring.
+- No manifest mutation, art-slot mutation, production package mutation, save change, stable-ID change, final runtime-art approval, final Aster art approval, final engine selection, full port, or v0.152 work.
+
+Verification:
+
+- Required v0.151 verification is listed in `docs/V0151_IMPLEMENTATION_REPORT.md` and must be run before closeout.
+
 # v0.150 Hybrid Barracks Material UV Seam Repair Lighting Review And Human Review Stop - 2026-06-07
 
 This checkpoint repairs and fairly benchmarks only the existing private v0.149 Barrosan Barracks material path. It generates zero new AI images, uses the same v0.149 material source only, creates deterministic ignored seam-repair variants, selects the wrapsafe offset-blend derivative after the preserved gate passes, and stops for Emmanuel review.

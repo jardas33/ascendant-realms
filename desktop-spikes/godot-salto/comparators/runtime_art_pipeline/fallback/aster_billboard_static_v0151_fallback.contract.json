@@ -1,0 +1,33 @@
+{
+  "alphaPosture": "tracked-transparent-aster-diagnostic-fallback",
+  "browserIntegration": "forbidden",
+  "byteLength": 15566,
+  "checkpoint": "v0.151",
+  "dimensions": {
+    "height": 1536,
+    "width": 1024
+  },
+  "fallbackId": "aster_billboard_static_v0151_tracked_diagnostic_fallback",
+  "fourthRuntimeArtSlotAdded": false,
+  "generatedBy": "tools/godot/asterBillboardSingleSlotTool.mjs fallback",
+  "originalGeometricDiagnosticOnly": true,
+  "pivot": {
+    "normalizedX": 0.5098,
+    "normalizedY": 0.9583,
+    "posture": "bottom-center-foot-pivot"
+  },
+  "playerSliceIntegration": "forbidden",
+  "privateComparatorOnly": true,
+  "productionApproval": "forbidden",
+  "schemaVersion": 1,
+  "sha256": "b327fae1de7dde0047eb62af8cebe6eb2fecde43856b8dcd60ef3830d6bae46d",
+  "slotId": "aster_billboard_static_v0151",
+  "trimBounds": {
+    "bottom": 1472,
+    "height": 1255,
+    "left": 318,
+    "right": 725,
+    "top": 218,
+    "width": 408
+  }
+}

@@ -11,9 +11,21 @@ Every phase should protect these long-term pillars:
 
 ## Current Recommended Next Phase
 
-The current checkpoint is **v0.150 Hybrid Barracks Material UV Seam Repair Lighting Review And Human Review Stop** on 2026-06-07. It keeps the browser runtime, normal Salto player slice, art slots, production package, saves, and stable IDs untouched while repairing and benchmarking only the existing private v0.149 Barrosan Barracks material path. It generates zero new AI images, uses the same v0.149 material source only, creates deterministic ignored seam-repair variants, and records a final preserved-gate pass for `HYBRID_BARRACKS_768_WRAPSAFE_OFFSET_BLEND`: Tier L average FPS ratio `1.0048` and p95 frame-time ratio `0.9681` against the diagnostic fallback.
+The current checkpoint is **v0.151 Hybrid Aster Static Billboard Single-Slot Intake Experiment And Human Review Stop** on 2026-06-07. It keeps the browser runtime, normal Salto player slice, art slots, production package, saves, and stable IDs untouched while testing only the third private runtime-art comparator slot for Aster. It generates exactly one ignored original Aster source image, validates a tracked diagnostic fallback, uses the selected v0.148 Worker and v0.150 Barracks repair only as comparator context, and records a final gate pass for `HYBRID_ASTER_LOCAL_STATIC_BILLBOARD`: Tier L local-vs-fallback average FPS ratio `0.9273` and p95 frame-time ratio `1.1081`.
 
-The next recommended step is human review and explicit approval only: Emmanuel may review `docs/V0150_BARRACKS_MATERIAL_VISUAL_REVIEW_GUIDE.md`, the ignored v0.150 evidence under `artifacts/desktop-spikes/godot-salto/v0150/`, and the v0.150 seam-repair/benchmark/audit/boundary/implementation docs. Do not import the repaired Barracks material, add another runtime-art slot, generate another image, import existing reference candidates, download assets, mark the material runtime-approved, modify the normal Salto player slice, wire comparator output into Godot production/player-facing flow, wire assets into the browser, mutate manifests or art slots, change saves or stable IDs, create a desktop save path, choose Godot finally, start a full desktop port, start Unity/Unreal/Electron work, or start v0.151 until a future explicit goal approves a narrow next step.
+The next recommended step is human review and explicit approval only: Emmanuel may review `docs/V0151_ASTER_BILLBOARD_VISUAL_REVIEW_GUIDE.md`, the ignored v0.151 evidence under `artifacts/desktop-spikes/godot-salto/v0151/`, and the v0.151 validation/scorecard/audit/boundary/implementation docs. Do not import the Aster cutout, add a fourth runtime-art slot, generate another image, import existing reference candidates, download assets, mark Aster runtime-approved, modify the normal Salto player slice, wire comparator output into Godot production/player-facing flow, wire assets into the browser, mutate manifests or art slots, change saves or stable IDs, create a desktop save path, choose Godot finally, start a full desktop port, start Unity/Unreal/Electron work, or start v0.152 until a future explicit goal approves a narrow next step.
+
+New v0.151 docs:
+
+- `docs/V0151_ASTER_BILLBOARD_SINGLE_SLOT_INTAKE_SPEC.md`
+- `docs/V0151_ASTER_BILLBOARD_SLOT_CONTRACT.md`
+- `docs/V0151_ASTER_BILLBOARD_VALIDATION_REPORT.md`
+- `docs/V0151_ASTER_BILLBOARD_SCORECARD.md`
+- `docs/V0151_ASTER_BILLBOARD_VISUAL_REVIEW_GUIDE.md`
+- `docs/V0151_PRIVATE_COMPARATOR_ONLY_BOUNDARY.md`
+- `docs/V0151_IMPLEMENTATION_REPORT.md`
+
+Previous checkpoint reference: v0.150 Hybrid Barracks Material UV Seam Repair Lighting Review And Human Review Stop.
 
 New v0.150 docs:
 

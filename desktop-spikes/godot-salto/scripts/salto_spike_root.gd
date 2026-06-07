@@ -38,6 +38,7 @@ const SCRIPT_ARG_PREFIXES := [
 	"--worker-billboard-single-slot-repair",
 	"--barrosan-barracks-material-single-slot",
 	"--barrosan-barracks-material-seam-repair",
+	"--aster-billboard-single-slot",
 	"--mode=",
 	"--visual-preset=",
 	"--viewport=",
@@ -238,6 +239,45 @@ func _ready() -> void:
 			get_tree().quit(1)
 			return
 		barracks_repair.call("start")
+		return
+	if args.has("--aster-billboard-single-slot"):
+		_write_absolute_json(_path_join(_artifact_root_from_args(), "aster-billboard-root-dispatch.json"), {
+			"schemaVersion": 1,
+			"checkpoint": "v0.151",
+			"status": "PASS_V0151_PRIVATE_ASTER_BILLBOARD_DISPATCH",
+			"args": Array(args),
+			"defaultPlayerSliceLaunched": false
+		})
+		var aster_billboard_script := load("res://comparators/runtime_art_pipeline/aster_billboard_single_slot_comparator.gd") as GDScript
+		if aster_billboard_script == null:
+			_write_absolute_json(_path_join(_artifact_root_from_args(), "aster-billboard-dispatch-failure.json"), {
+				"schemaVersion": 1,
+				"checkpoint": "v0.151",
+				"status": "FAIL_V0151_PRIVATE_ASTER_BILLBOARD_SCRIPT_LOAD",
+				"script": "res://comparators/runtime_art_pipeline/aster_billboard_single_slot_comparator.gd"
+			})
+			get_tree().quit(1)
+			return
+		var aster_billboard := Node.new()
+		aster_billboard.name = "V0151AsterBillboardSingleSlotComparator"
+		aster_billboard.set_script(aster_billboard_script)
+		add_child(aster_billboard)
+		_write_absolute_json(_path_join(_artifact_root_from_args(), "aster-billboard-dispatch-prestart.json"), {
+			"schemaVersion": 1,
+			"checkpoint": "v0.151",
+			"status": "PASS_V0151_PRIVATE_ASTER_BILLBOARD_PRESTART",
+			"hasStart": aster_billboard.has_method("start")
+		})
+		if not aster_billboard.has_method("start"):
+			_write_absolute_json(_path_join(_artifact_root_from_args(), "aster-billboard-dispatch-failure.json"), {
+				"schemaVersion": 1,
+				"checkpoint": "v0.151",
+				"status": "FAIL_V0151_PRIVATE_ASTER_BILLBOARD_START_METHOD",
+				"script": "res://comparators/runtime_art_pipeline/aster_billboard_single_slot_comparator.gd"
+			})
+			get_tree().quit(1)
+			return
+		aster_billboard.call("start")
 		return
 	if args.has("--run-tests"):
 		var test_report: Dictionary = run_headless_tests()
