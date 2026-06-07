@@ -53,6 +53,15 @@ const BARRACKS_MATERIAL_APPROACH := "HYBRID_BARRACKS_768_WRAPSAFE_OFFSET_BLEND"
 const BARRACKS_MATERIAL_EXPECTED_SHA256 := "58a60b750370df084b60a1d92077da9367c0ba8a763781e2c3a8a7d96f1c980f"
 const BARRACKS_MATERIAL_EXPECTED_WIDTH := 768
 const BARRACKS_MATERIAL_EXPECTED_HEIGHT := 768
+const MILITIA_ART_SLOT_ID := "militia_billboard_static_v0154"
+const MILITIA_ART_APPROACH := "HYBRID_MILITIA_TRIMMED_1024"
+const MILITIA_ART_EXPECTED_SHA256 := "c25349f00c422a0b3c9d5862027351bd70008e9314d4e3cd4001676e914321cb"
+const MILITIA_ART_EXPECTED_WIDTH := 1024
+const MILITIA_ART_EXPECTED_HEIGHT := 1024
+const MILITIA_ART_DEFAULT_SCALE := 1.0
+const MILITIA_ART_QUAD_HEIGHT := 0.68
+const MILITIA_ART_QUAD_WIDTH := 0.50
+const MILITIA_ART_GROUND_CLEARANCE := 0.02
 const WorkloadRuntimeScript = preload("res://scripts/salto_spike_workload_runtime.gd")
 
 var runtime = WorkloadRuntimeScript.new()
@@ -231,10 +240,28 @@ var barracks_material_texture_create_count := 0
 var barracks_material_material_create_count := 0
 var barracks_material_material_reuse_count := 0
 var barracks_material_applied_surface_count := 0
+var militia_art_experiment_enabled := false
+var militia_art_requested_scale := MILITIA_ART_DEFAULT_SCALE
+var militia_art_source_path := ""
+var militia_art_metadata_path := ""
+var militia_art_expected_sha256 := MILITIA_ART_EXPECTED_SHA256
+var militia_art_fallback_mode := "none"
+var militia_art_texture: ImageTexture
+var militia_art_material: StandardMaterial3D
+var militia_art_mesh: QuadMesh
+var militia_art_status: Dictionary = {}
+var militia_art_source_load_count := 0
+var militia_art_metadata_parse_count := 0
+var militia_art_image_decode_count := 0
+var militia_art_texture_create_count := 0
+var militia_art_material_create_count := 0
+var militia_art_mesh_create_count := 0
+var militia_art_material_reuse_count := 0
 
 func _ready() -> void:
 	_reset_worker_art_status(false, "opt-in flag absent")
 	_reset_barracks_material_status(false, "opt-in flag absent")
+	_reset_militia_art_status(false, "opt-in flag absent")
 	_create_camera()
 	_create_light()
 	_create_terrain()
@@ -721,6 +748,221 @@ func _add_barracks_material_box(name: String, position: Vector3, scale: Vector3,
 	mesh_instance.material_override = _barracks_material()
 	barracks_material_applied_surface_count += 1
 	_refresh_barracks_material_counters()
+
+func configure_militia_art_experiment(options: Dictionary) -> Dictionary:
+	militia_art_experiment_enabled = bool(options.get("enabled", false))
+	militia_art_requested_scale = maxf(0.5, minf(1.15, float(options.get("scale", MILITIA_ART_DEFAULT_SCALE))))
+	militia_art_source_path = str(options.get("sourcePath", ""))
+	militia_art_metadata_path = str(options.get("metadataPath", ""))
+	militia_art_expected_sha256 = str(options.get("expectedSha256", MILITIA_ART_EXPECTED_SHA256)).to_lower()
+	militia_art_fallback_mode = str(options.get("fallbackMode", "none"))
+	militia_art_texture = null
+	militia_art_material = null
+	militia_art_mesh = null
+	militia_art_source_load_count = 0
+	militia_art_metadata_parse_count = 0
+	militia_art_image_decode_count = 0
+	militia_art_texture_create_count = 0
+	militia_art_material_create_count = 0
+	militia_art_mesh_create_count = 0
+	militia_art_material_reuse_count = 0
+	if not militia_art_experiment_enabled:
+		_reset_militia_art_status(false, "opt-in flag absent")
+		_rebuild_visuals()
+		return militia_art_status.duplicate(true)
+	_load_militia_art_candidate()
+	_rebuild_visuals()
+	return militia_art_status.duplicate(true)
+
+func get_militia_art_status() -> Dictionary:
+	return militia_art_status.duplicate(true)
+
+func _reset_militia_art_status(enabled: bool, reason: String) -> void:
+	militia_art_status = {
+		"schemaVersion": 1,
+		"checkpoint": "v0.164",
+		"slotId": MILITIA_ART_SLOT_ID,
+		"approach": MILITIA_ART_APPROACH,
+		"enabled": enabled,
+		"sourceLoaded": false,
+		"billboardActive": false,
+		"fallbackActive": true,
+		"fallbackReason": reason,
+		"sourcePath": militia_art_source_path,
+		"metadataPath": militia_art_metadata_path,
+		"expectedSha256": militia_art_expected_sha256,
+		"actualSha256": "",
+		"sourceDimensions": {"width": 0, "height": 0},
+		"metadataDimensions": {"width": 0, "height": 0},
+		"alphaPosture": "",
+		"pivot": {},
+		"scale": militia_art_requested_scale,
+		"fallbackMode": militia_art_fallback_mode,
+		"proceduralFallbackVisible": true,
+		"selectionAndGameplayIdsPreserved": true,
+		"stableMilitiaId": "recruited_militia_00",
+		"friendlyDefenderOnly": true,
+		"browserRuntimeChanged": false,
+		"saveWritesAllowed": false,
+		"fourthArtSlotAdded": false,
+		"productionManifestMutated": false,
+		"sourceLoadCount": militia_art_source_load_count,
+		"metadataParseCount": militia_art_metadata_parse_count,
+		"imageDecodeCount": militia_art_image_decode_count,
+		"textureCreateCount": militia_art_texture_create_count,
+		"materialCreateCount": militia_art_material_create_count,
+		"meshCreateCount": militia_art_mesh_create_count,
+		"materialReuseCount": militia_art_material_reuse_count
+	}
+
+func _load_militia_art_candidate() -> void:
+	_reset_militia_art_status(true, "not loaded")
+	var start_usec := Time.get_ticks_usec()
+	if militia_art_source_path == "":
+		_set_militia_art_fallback("missing source path")
+		return
+	if not FileAccess.file_exists(militia_art_source_path):
+		_set_militia_art_fallback("missing source file")
+		return
+	if militia_art_metadata_path == "" or not FileAccess.file_exists(militia_art_metadata_path):
+		_set_militia_art_fallback("missing metadata file")
+		return
+	var metadata := _read_militia_art_metadata(militia_art_metadata_path)
+	if metadata.is_empty():
+		_set_militia_art_fallback("metadata parse failure")
+		return
+	if str(metadata.get("slotId", "")) != MILITIA_ART_SLOT_ID:
+		_set_militia_art_fallback("metadata slot mismatch")
+		return
+	if str(metadata.get("derivativeKind", "")) != "trimmed-padded-alpha-treated-1024":
+		_set_militia_art_fallback("metadata derivative mismatch")
+		return
+	var metadata_sha := str(metadata.get("sha256", "")).to_lower()
+	if metadata_sha != militia_art_expected_sha256:
+		_set_militia_art_fallback("metadata hash mismatch")
+		return
+	var dimensions: Dictionary = metadata.get("dimensions", {})
+	var metadata_width := int(dimensions.get("width", 0))
+	var metadata_height := int(dimensions.get("height", 0))
+	if metadata_width != MILITIA_ART_EXPECTED_WIDTH or metadata_height != MILITIA_ART_EXPECTED_HEIGHT:
+		_set_militia_art_fallback("metadata dimension mismatch")
+		return
+	var actual_sha := _sha256_file(militia_art_source_path)
+	militia_art_status["actualSha256"] = actual_sha
+	if actual_sha != militia_art_expected_sha256:
+		_set_militia_art_fallback("source hash mismatch")
+		return
+	var image := Image.new()
+	militia_art_source_load_count += 1
+	var load_result := image.load(militia_art_source_path)
+	if load_result != OK:
+		_set_militia_art_fallback("image load failure %s" % str(load_result))
+		return
+	militia_art_image_decode_count += 1
+	if image.get_width() != MILITIA_ART_EXPECTED_WIDTH or image.get_height() != MILITIA_ART_EXPECTED_HEIGHT:
+		_set_militia_art_fallback("image dimension mismatch")
+		return
+	militia_art_texture = ImageTexture.create_from_image(image)
+	if militia_art_texture == null:
+		_set_militia_art_fallback("texture creation failure")
+		return
+	militia_art_texture_create_count += 1
+	militia_art_status["enabled"] = true
+	militia_art_status["sourceLoaded"] = true
+	militia_art_status["billboardActive"] = true
+	militia_art_status["fallbackActive"] = false
+	militia_art_status["fallbackReason"] = ""
+	militia_art_status["sourcePath"] = militia_art_source_path
+	militia_art_status["metadataPath"] = militia_art_metadata_path
+	militia_art_status["expectedSha256"] = militia_art_expected_sha256
+	militia_art_status["actualSha256"] = actual_sha
+	militia_art_status["sourceDimensions"] = {"width": image.get_width(), "height": image.get_height()}
+	militia_art_status["metadataDimensions"] = {"width": metadata_width, "height": metadata_height}
+	militia_art_status["alphaPosture"] = str(metadata.get("alphaPosture", ""))
+	militia_art_status["pivot"] = metadata.get("pivot", {})
+	militia_art_status["role"] = metadata.get("role", {})
+	militia_art_status["scale"] = militia_art_requested_scale
+	militia_art_status["fallbackMode"] = militia_art_fallback_mode
+	militia_art_status["proceduralFallbackVisible"] = false
+	militia_art_status["loadDurationMs"] = snappedf(float(Time.get_ticks_usec() - start_usec) / 1000.0, 0.01)
+	_refresh_militia_art_counters()
+
+func _read_militia_art_metadata(path: String) -> Dictionary:
+	militia_art_metadata_parse_count += 1
+	var file := FileAccess.open(path, FileAccess.READ)
+	if file == null:
+		return {}
+	var parsed = JSON.parse_string(file.get_as_text())
+	if typeof(parsed) == TYPE_DICTIONARY:
+		return parsed
+	return {}
+
+func _set_militia_art_fallback(reason: String) -> void:
+	militia_art_texture = null
+	militia_art_material = null
+	militia_art_mesh = null
+	militia_art_status["enabled"] = militia_art_experiment_enabled
+	militia_art_status["billboardActive"] = false
+	militia_art_status["sourceLoaded"] = false
+	militia_art_status["fallbackActive"] = true
+	militia_art_status["fallbackReason"] = reason
+	militia_art_status["sourcePath"] = militia_art_source_path
+	militia_art_status["metadataPath"] = militia_art_metadata_path
+	militia_art_status["expectedSha256"] = militia_art_expected_sha256
+	militia_art_status["scale"] = militia_art_requested_scale
+	militia_art_status["fallbackMode"] = militia_art_fallback_mode
+	militia_art_status["proceduralFallbackVisible"] = true
+	_refresh_militia_art_counters()
+
+func _refresh_militia_art_counters() -> void:
+	militia_art_status["sourceLoadCount"] = militia_art_source_load_count
+	militia_art_status["metadataParseCount"] = militia_art_metadata_parse_count
+	militia_art_status["imageDecodeCount"] = militia_art_image_decode_count
+	militia_art_status["textureCreateCount"] = militia_art_texture_create_count
+	militia_art_status["materialCreateCount"] = militia_art_material_create_count
+	militia_art_status["meshCreateCount"] = militia_art_mesh_create_count
+	militia_art_status["materialReuseCount"] = militia_art_material_reuse_count
+
+func _militia_art_is_active() -> bool:
+	return militia_art_experiment_enabled and bool(militia_art_status.get("sourceLoaded", false)) and militia_art_texture != null
+
+func _militia_art_applies_to_unit(unit: Dictionary) -> bool:
+	return _militia_art_is_active() and str(unit.get("team", "")) == "friendly" and str(unit.get("fixtureId", "")) == "militia"
+
+func _militia_art_unit_height() -> float:
+	return MILITIA_ART_QUAD_HEIGHT * militia_art_requested_scale
+
+func _militia_art_unit_width() -> float:
+	return MILITIA_ART_QUAD_WIDTH * militia_art_requested_scale
+
+func _militia_art_unit_y() -> float:
+	return MILITIA_ART_GROUND_CLEARANCE + _militia_art_unit_height() * 0.5
+
+func _militia_art_quad_mesh() -> QuadMesh:
+	if militia_art_mesh:
+		return militia_art_mesh
+	militia_art_mesh = QuadMesh.new()
+	militia_art_mesh.size = Vector2(_militia_art_unit_width(), _militia_art_unit_height())
+	militia_art_mesh_create_count += 1
+	_refresh_militia_art_counters()
+	return militia_art_mesh
+
+func _militia_art_billboard_material() -> StandardMaterial3D:
+	if militia_art_material:
+		militia_art_material_reuse_count += 1
+		_refresh_militia_art_counters()
+		return militia_art_material
+	militia_art_material = StandardMaterial3D.new()
+	militia_art_material.albedo_texture = militia_art_texture
+	militia_art_material.albedo_color = Color(1, 1, 1, 1)
+	militia_art_material.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	militia_art_material.billboard_mode = BaseMaterial3D.BILLBOARD_ENABLED
+	militia_art_material.cull_mode = BaseMaterial3D.CULL_DISABLED
+	militia_art_material.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	militia_art_material.texture_filter = BaseMaterial3D.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
+	militia_art_material_create_count += 1
+	_refresh_militia_art_counters()
+	return militia_art_material
 
 func set_player_facing_mode(enabled: bool) -> bool:
 	player_facing_mode = enabled
@@ -2832,14 +3074,16 @@ func run_benchmark_suite() -> Dictionary:
 	var report: Dictionary = runtime.run_benchmark_suite(MODE)
 	var worker_art_loaded := _worker_art_is_active()
 	var barracks_material_loaded := _barracks_material_is_active()
+	var militia_art_loaded := _militia_art_is_active()
 	report["visualPreset"] = visual_preset
 	report["visualPresetScope"] = _preset_scope()
 	report["visualPresetPrivate"] = visual_preset == VISUAL_PRESET_VFX_STRESS
-	report["proceduralPrimitiveOnly"] = not worker_art_loaded and not barracks_material_loaded
-	report["generatedOrImportedArtIncluded"] = worker_art_loaded or barracks_material_loaded
-	report["runtimeArtIntegrated"] = worker_art_loaded or barracks_material_loaded
+	report["proceduralPrimitiveOnly"] = not worker_art_loaded and not barracks_material_loaded and not militia_art_loaded
+	report["generatedOrImportedArtIncluded"] = worker_art_loaded or barracks_material_loaded or militia_art_loaded
+	report["runtimeArtIntegrated"] = worker_art_loaded or barracks_material_loaded or militia_art_loaded
 	report["workerArtExperiment"] = worker_art_status.duplicate(true)
 	report["barracksMaterialExperiment"] = barracks_material_status.duplicate(true)
+	report["militiaArtExperiment"] = militia_art_status.duplicate(true)
 	report["routineEditorUseRequired"] = false
 	return report
 
@@ -2869,20 +3113,27 @@ func get_spike_status() -> Dictionary:
 	_refresh_worker_art_counters()
 	var barracks_material_loaded := _barracks_material_is_active()
 	_refresh_barracks_material_counters()
-	status["proceduralPrimitiveOnly"] = not worker_art_loaded and not barracks_material_loaded
-	status["generatedOrImportedArtIncluded"] = worker_art_loaded or barracks_material_loaded
-	status["runtimeArtIntegrated"] = worker_art_loaded or barracks_material_loaded
+	var militia_art_loaded := _militia_art_is_active()
+	_refresh_militia_art_counters()
+	status["proceduralPrimitiveOnly"] = not worker_art_loaded and not barracks_material_loaded and not militia_art_loaded
+	status["generatedOrImportedArtIncluded"] = worker_art_loaded or barracks_material_loaded or militia_art_loaded
+	status["runtimeArtIntegrated"] = worker_art_loaded or barracks_material_loaded or militia_art_loaded
 	status["workerArtExperiment"] = worker_art_status.duplicate(true)
 	status["barracksMaterialExperiment"] = barracks_material_status.duplicate(true)
-	status["workerArtOptInOnly"] = worker_art_experiment_enabled and not barracks_material_experiment_enabled
+	status["militiaArtExperiment"] = militia_art_status.duplicate(true)
+	status["workerArtOptInOnly"] = worker_art_experiment_enabled and not barracks_material_experiment_enabled and not militia_art_experiment_enabled
 	status["workerArtSlotCount"] = 1 if worker_art_experiment_enabled else 0
 	status["workerArtProceduralFallbackActive"] = bool(worker_art_status.get("fallbackActive", true))
 	status["barracksMaterialOptInRequested"] = barracks_material_experiment_enabled
 	status["barracksMaterialSlotCount"] = 1 if barracks_material_experiment_enabled else 0
 	status["barracksMaterialProceduralFallbackActive"] = bool(barracks_material_status.get("fallbackActive", true))
-	status["normalSliceOptInRequestedSlotCount"] = int(status["workerArtSlotCount"]) + int(status["barracksMaterialSlotCount"])
-	status["normalSliceOptInLoadedSlotCount"] = (1 if worker_art_loaded else 0) + (1 if barracks_material_loaded else 0)
-	status["thirdPlayerFacingArtSlotAdded"] = false
+	status["militiaArtOptInRequested"] = militia_art_experiment_enabled
+	status["militiaArtSlotCount"] = 1 if militia_art_experiment_enabled else 0
+	status["militiaArtProceduralFallbackActive"] = bool(militia_art_status.get("fallbackActive", true))
+	status["normalSliceOptInRequestedSlotCount"] = int(status["workerArtSlotCount"]) + int(status["barracksMaterialSlotCount"]) + int(status["militiaArtSlotCount"])
+	status["normalSliceOptInLoadedSlotCount"] = (1 if worker_art_loaded else 0) + (1 if barracks_material_loaded else 0) + (1 if militia_art_loaded else 0)
+	status["thirdPlayerFacingArtSlotAdded"] = militia_art_experiment_enabled
+	status["fourthPlayerFacingArtSlotAdded"] = false
 	status["routineEditorUseRequired"] = false
 	status["saveWritesAllowed"] = false
 	status["stableIdsChanged"] = false
@@ -3967,7 +4218,13 @@ func _sync_unit_visuals() -> void:
 		var is_wave_enemy: bool = is_enemy and _v0133_wave_ids().has(id)
 		var is_targeted: bool = _unit_is_attack_target(id) or (is_wave_enemy and (current_onboarding_step == "defeat_wave" or last_feedback_id == "attack_order" or combat_readability_active or pressure_wave_arrived))
 		var worker_billboard := str(unit["role"]) == "Worker" and _worker_art_is_active()
-		node.position = _to_world(unit["position"], _worker_art_unit_y() if worker_billboard else 0.28)
+		var militia_billboard := _militia_art_applies_to_unit(unit)
+		var unit_y := 0.28
+		if worker_billboard:
+			unit_y = _worker_art_unit_y()
+		elif militia_billboard:
+			unit_y = _militia_art_unit_y()
+		node.position = _to_world(unit["position"], unit_y)
 		node.scale = _unit_scale(unit) * (1.22 if selected else 1.0)
 		node.visible = visible_unit
 		var health_ratio: float = clampf(float(unit.get("health", 0.0)) / max(1.0, float(unit.get("maxHealth", 1.0))), 0.0, 1.0)
@@ -4232,6 +4489,8 @@ func _add_unit_silhouette(unit: Dictionary) -> void:
 		ashen_mesh.height = 0.42
 		ashen_mesh.radial_segments = 5
 		mesh = ashen_mesh
+	elif _militia_art_applies_to_unit(unit):
+		mesh = _militia_art_quad_mesh()
 	else:
 		var militia_mesh := CylinderMesh.new()
 		militia_mesh.top_radius = 0.15
@@ -4241,10 +4500,21 @@ func _add_unit_silhouette(unit: Dictionary) -> void:
 		mesh = militia_mesh
 	mesh_instance.mesh = mesh
 	var worker_billboard := str(unit["role"]) == "Worker" and _worker_art_is_active()
-	mesh_instance.position = _to_world(unit["position"], _worker_art_unit_y() if worker_billboard else 0.28)
-	mesh_instance.material_override = _worker_art_billboard_material() if worker_billboard else _material(_unit_color(unit), false, _unit_emissive(unit), 0.35)
+	var militia_billboard := _militia_art_applies_to_unit(unit)
+	var unit_y := 0.28
+	if worker_billboard:
+		unit_y = _worker_art_unit_y()
+	elif militia_billboard:
+		unit_y = _militia_art_unit_y()
+	mesh_instance.position = _to_world(unit["position"], unit_y)
+	if worker_billboard:
+		mesh_instance.material_override = _worker_art_billboard_material()
+	elif militia_billboard:
+		mesh_instance.material_override = _militia_art_billboard_material()
+	else:
+		mesh_instance.material_override = _material(_unit_color(unit), false, _unit_emissive(unit), 0.35)
 	visual_root.add_child(mesh_instance)
-	if not worker_billboard:
+	if not worker_billboard and not militia_billboard:
 		_add_unit_silhouette_parts(mesh_instance, unit)
 
 func _add_unit_silhouette_parts(parent: MeshInstance3D, unit: Dictionary) -> void:

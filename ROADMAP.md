@@ -11,9 +11,22 @@ Every phase should protect these long-term pillars:
 
 ## Current Recommended Next Phase
 
-The current checkpoint is **v0.163 Godot Salto Barracks-Material Opt-In Visual QA Hardening And Human Review Stop** on 2026-06-07. It inspects and hardens only the existing combined Worker + Barracks-material opt-in player-slice path, preserves the default stabilized launcher as procedural, preserves the existing Worker-only launcher and combined launcher, generates zero images, adds zero slots, and keeps the Browser runtime untouched.
+The current checkpoint is **v0.164 Godot Salto Militia Third Opt-In Player-Slice Integration And Human Review Stop** on 2026-06-07. It adds only the validated Militia billboard as the third normal-slice opt-in art slot behind a new Worker + Barracks + Militia launcher, preserves the default procedural launcher and all prior opt-in launchers unchanged, generates zero new images, and keeps the Browser runtime untouched.
 
-The next recommended step is human review and explicit approval only: Emmanuel may compare default procedural, Worker-only, combined Worker + Barracks, Barracks missing-art fallback, and Barracks hash-mismatch fallback evidence, then decide whether to pause, request a bounded visual repair, or authorize a separate next scope. The final v0.163 scorecard is `PASS_V0163_BARRACKS_MATERIAL_OPT_IN_HUMAN_REVIEW_READY` with Worker-only FPS ratio `0.9940`, combined FPS ratio `0.9939`, combined-vs-Worker FPS ratio `0.9999`, Worker-only P95 frame-time ratio `0.9837`, combined P95 frame-time ratio `1.0186`, combined-vs-Worker P95 frame-time ratio `1.0354`, package leakage `false`, and all protected launcher hashes unchanged. Do not add a third art slot, import Aster/Militia/Ashen art into the player slice, wire assets into the browser runtime, mutate production manifests or art slots, change saves or stable IDs, choose Godot finally, start a full desktop port, start Unity/Unreal/Electron work, or begin the next milestone.
+The next recommended step is human review and explicit approval only: Emmanuel may compare default procedural, Worker-only, Worker + Barracks, Worker + Barracks + Militia, Militia missing-art fallback, and Militia hash-mismatch fallback evidence, then decide whether to pause, request a bounded visual repair, or authorize a separate next scope. The final v0.164 scorecard is `PASS_V0164_MILITIA_OPT_IN_HUMAN_REVIEW_READY` with M3 FPS ratio versus M0 `1.0003`, M3 P95 frame-time ratio versus M0 `0.9442`, M3 FPS ratio versus M2 `1.0001`, M3 P95 frame-time ratio versus M2 `0.9478`, package leakage `false`, no fourth slot, and all protected launcher hashes unchanged. Do not add a fourth art slot, import additional art into the player slice, wire assets into the browser runtime, mutate production manifests or art slots, change saves or stable IDs, choose Godot finally, start a full desktop port, start Unity/Unreal/Electron work, or begin v0.165.
+
+New v0.164 docs:
+
+- `docs/V0164_GODOT_PLAYER_SLICE_MILITIA_OPT_IN_SPEC.md`
+- `docs/V0164_MILITIA_OPT_IN_SLOT_CONTRACT.md`
+- `docs/V0164_MILITIA_OPT_IN_FUNCTIONAL_REPORT.md`
+- `docs/V0164_MILITIA_OPT_IN_VISUAL_REVIEW_GUIDE.md`
+- `docs/V0164_MILITIA_OPT_IN_BENCHMARK_REPORT.md`
+- `docs/V0164_MILITIA_OPT_IN_ROLLBACK_REPORT.md`
+- `docs/V0164_PLAYER_SLICE_THREE_SLOT_BOUNDARY.md`
+- `docs/V0164_IMPLEMENTATION_REPORT.md`
+
+Previous checkpoint reference: v0.163 Godot Salto Barracks-Material Opt-In Visual QA Hardening And Human Review Stop.
 
 New v0.163 docs:
 

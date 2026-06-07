@@ -448,7 +448,36 @@ function boundaryCommand(root) {
     "--ashen-raider-billboard-single-slot"
   ];
   const v0162ChangedTextFiles = changed.filter((path) => /\.(bat|ps1|gd|md|json)$/iu.test(path));
-  const newIntegrationText = addedOrNewText(v0162ChangedTextFiles, new Set(["tools/godot/saltoWorkerBarracksArtOptInTool.mjs"]));
+  const authorizedLaterCheckpointFiles = new Set([
+    "CHANGELOG.md",
+    "DEVELOPMENT_CHECKPOINT.md",
+    "GODOT_LAUNCH_SALTO_WORKER_BARRACKS_MILITIA_ART_EXPERIMENT_WINDOWS.bat",
+    "GODOT_VALIDATE_SALTO_WORKER_BARRACKS_MILITIA_ART_EXPERIMENT_WINDOWS.bat",
+    "GODOT_CAPTURE_SALTO_WORKER_BARRACKS_MILITIA_ART_EXPERIMENT_WINDOWS.bat",
+    "LLM_GAME_HANDOFF.md",
+    "ROADMAP.md",
+    "RELEASE_CHECKLIST.md",
+    "desktop-spikes/godot-salto/scripts/salto_spike_root.gd",
+    "desktop-spikes/godot-salto/scripts/salto_spike_scene_3d.gd",
+    "package.json",
+    "src/game/desktop-spike/GodotSaltoSpikeScaffold.test.ts",
+    "tools/godot/launchGodotSaltoWorkerBarracksMilitiaArtExperimentWindows.ps1",
+    "tools/godot/validateGodotSaltoWorkerBarracksMilitiaArtExperimentWindows.ps1",
+    "tools/godot/captureGodotSaltoWorkerBarracksMilitiaArtExperimentWindows.ps1",
+    "tools/godot/saltoWorkerBarracksMilitiaArtOptInTool.mjs",
+    "docs/V0164_GODOT_PLAYER_SLICE_MILITIA_OPT_IN_SPEC.md",
+    "docs/V0164_MILITIA_OPT_IN_SLOT_CONTRACT.md",
+    "docs/V0164_MILITIA_OPT_IN_FUNCTIONAL_REPORT.md",
+    "docs/V0164_MILITIA_OPT_IN_VISUAL_REVIEW_GUIDE.md",
+    "docs/V0164_MILITIA_OPT_IN_BENCHMARK_REPORT.md",
+    "docs/V0164_MILITIA_OPT_IN_ROLLBACK_REPORT.md",
+    "docs/V0164_PLAYER_SLICE_THREE_SLOT_BOUNDARY.md",
+    "docs/V0164_IMPLEMENTATION_REPORT.md"
+  ]);
+  const newIntegrationText = addedOrNewText(v0162ChangedTextFiles, new Set([
+    "tools/godot/saltoWorkerBarracksArtOptInTool.mjs",
+    ...authorizedLaterCheckpointFiles
+  ]));
   const thirdSlotReferences = [];
   for (const token of thirdSlotTokens) {
     if (newIntegrationText.includes(token)) {

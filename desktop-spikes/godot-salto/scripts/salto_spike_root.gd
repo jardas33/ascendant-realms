@@ -35,6 +35,12 @@ const SCRIPT_ARG_PREFIXES := [
 	"--barracks-material-metadata=",
 	"--barracks-material-expected-sha256=",
 	"--barracks-material-fallback-mode=",
+	"--militia-art-opt-in",
+	"--militia-art-source=",
+	"--militia-art-metadata=",
+	"--militia-art-expected-sha256=",
+	"--militia-art-scale=",
+	"--militia-art-fallback-mode=",
 	"--real-input-smoke",
 	"--real-input-validate",
 	"--site-semantics-smoke",
@@ -726,6 +732,8 @@ func _configure_worker_art_for_active_scene() -> void:
 		active_scene.configure_worker_art_experiment(_worker_art_options_from_args())
 	if active_scene.has_method("configure_barracks_material_experiment"):
 		active_scene.configure_barracks_material_experiment(_barracks_material_options_from_args())
+	if active_scene.has_method("configure_militia_art_experiment"):
+		active_scene.configure_militia_art_experiment(_militia_art_options_from_args())
 
 func _worker_art_options_from_args() -> Dictionary:
 	var fallback_mode := _arg_value("--worker-art-fallback-mode=", "none")
@@ -768,6 +776,30 @@ func _barracks_material_options_from_args() -> Dictionary:
 		"expectedSha256": _arg_value("--barracks-material-expected-sha256=", "58a60b750370df084b60a1d92077da9367c0ba8a763781e2c3a8a7d96f1c980f").to_lower(),
 		"fallbackMode": fallback_mode,
 		"requestedBy": "GODOT_LAUNCH_SALTO_WORKER_BARRACKS_ART_EXPERIMENT_WINDOWS.bat or explicit --barracks-material-opt-in"
+	}
+
+func _militia_art_options_from_args() -> Dictionary:
+	var fallback_mode := _arg_value("--militia-art-fallback-mode=", "none")
+	var source_path := _arg_value("--militia-art-source=", "")
+	var metadata_path := _arg_value("--militia-art-metadata=", "")
+	if source_path == "":
+		source_path = ProjectSettings.globalize_path("res://../../artifacts/desktop-spikes/godot-salto/v0155/local-militia-billboard-repair/militia_billboard_static_v0154_trimmed_1024.png")
+	if metadata_path == "":
+		metadata_path = ProjectSettings.globalize_path("res://../../artifacts/desktop-spikes/godot-salto/v0155/local-militia-billboard-repair/militia_billboard_static_v0154_trimmed_1024.metadata.json")
+	if fallback_mode == "missing" and not _has_arg_prefix("--militia-art-source="):
+		source_path = ProjectSettings.globalize_path("res://../../artifacts/desktop-spikes/godot-salto/v0164/missing-militia-source/militia_billboard_static_v0154_trimmed_1024.png")
+	var scale_text := _arg_value("--militia-art-scale=", "1.0")
+	var scale := 1.0
+	if scale_text.is_valid_float():
+		scale = float(scale_text)
+	return {
+		"enabled": _script_args().has("--militia-art-opt-in"),
+		"sourcePath": source_path.replace("\\", "/"),
+		"metadataPath": metadata_path.replace("\\", "/"),
+		"expectedSha256": _arg_value("--militia-art-expected-sha256=", "c25349f00c422a0b3c9d5862027351bd70008e9314d4e3cd4001676e914321cb").to_lower(),
+		"scale": scale,
+		"fallbackMode": fallback_mode,
+		"requestedBy": "GODOT_LAUNCH_SALTO_WORKER_BARRACKS_MILITIA_ART_EXPERIMENT_WINDOWS.bat or explicit --militia-art-opt-in"
 	}
 
 func _arg_value(prefix: String, default_value: String = "") -> String:
@@ -1406,10 +1438,14 @@ func run_player_slice_validation() -> void:
 	var worker_art_loaded := bool(worker_art.get("sourceLoaded", false))
 	var barracks_material: Dictionary = final_status.get("barracksMaterialExperiment", {})
 	var barracks_material_loaded := bool(barracks_material.get("sourceLoaded", false))
+	var militia_art: Dictionary = final_status.get("militiaArtExperiment", {})
+	var militia_art_loaded := bool(militia_art.get("sourceLoaded", false))
 	performance_smoke["workerArtOptInRequested"] = _script_args().has("--worker-art-opt-in")
 	performance_smoke["workerArtExperiment"] = worker_art
 	performance_smoke["barracksMaterialOptInRequested"] = _script_args().has("--barracks-material-opt-in")
 	performance_smoke["barracksMaterialExperiment"] = barracks_material
+	performance_smoke["militiaArtOptInRequested"] = _script_args().has("--militia-art-opt-in")
+	performance_smoke["militiaArtExperiment"] = militia_art
 	var report := {
 		"schemaVersion": 1,
 		"checkpoint": _player_capture_checkpoint(),
@@ -1418,18 +1454,21 @@ func run_player_slice_validation() -> void:
 		"defaultHumanReviewPath": "GODOT_LAUNCH_PLAYER_SLICE_WINDOWS.bat",
 		"workerArtOptInHumanReviewPath": "GODOT_LAUNCH_SALTO_WORKER_ART_EXPERIMENT_WINDOWS.bat",
 		"workerBarracksArtOptInHumanReviewPath": "GODOT_LAUNCH_SALTO_WORKER_BARRACKS_ART_EXPERIMENT_WINDOWS.bat",
+		"workerBarracksMilitiaArtOptInHumanReviewPath": "GODOT_LAUNCH_SALTO_WORKER_BARRACKS_MILITIA_ART_EXPERIMENT_WINDOWS.bat",
 		"privateHarnessPreservedSeparately": true,
 		"defaultMode": MODE_25D,
 		"defaultVisualPreset": VISUAL_PRESET_CLEAN,
 		"routineEditorUseRequired": false,
 		"manualGodotEditorSceneAssemblyRequired": false,
-		"proceduralPrimitiveOnly": not worker_art_loaded and not barracks_material_loaded,
-		"generatedOrImportedArtIncluded": worker_art_loaded or barracks_material_loaded,
-		"runtimeArtIntegrated": worker_art_loaded or barracks_material_loaded,
+		"proceduralPrimitiveOnly": not worker_art_loaded and not barracks_material_loaded and not militia_art_loaded,
+		"generatedOrImportedArtIncluded": worker_art_loaded or barracks_material_loaded or militia_art_loaded,
+		"runtimeArtIntegrated": worker_art_loaded or barracks_material_loaded or militia_art_loaded,
 		"workerArtOptInRequested": _script_args().has("--worker-art-opt-in"),
 		"workerArtExperiment": worker_art,
 		"barracksMaterialOptInRequested": _script_args().has("--barracks-material-opt-in"),
 		"barracksMaterialExperiment": barracks_material,
+		"militiaArtOptInRequested": _script_args().has("--militia-art-opt-in"),
+		"militiaArtExperiment": militia_art,
 		"normalSliceOptInRequestedSlotCount": int(final_status.get("normalSliceOptInRequestedSlotCount", 0)),
 		"normalSliceOptInLoadedSlotCount": int(final_status.get("normalSliceOptInLoadedSlotCount", 0)),
 		"localStorageMutationAllowed": false,
@@ -1497,6 +1536,8 @@ func run_player_slice_capture() -> void:
 	var worker_art_loaded := bool(worker_art.get("sourceLoaded", false))
 	var barracks_material: Dictionary = final_status.get("barracksMaterialExperiment", {})
 	var barracks_material_loaded := bool(barracks_material.get("sourceLoaded", false))
+	var militia_art: Dictionary = final_status.get("militiaArtExperiment", {})
+	var militia_art_loaded := bool(militia_art.get("sourceLoaded", false))
 	var report := {
 		"schemaVersion": 1,
 		"checkpoint": _player_capture_checkpoint(),
@@ -1508,14 +1549,16 @@ func run_player_slice_capture() -> void:
 		"viewport": {"width": VIEWPORT_SIZE.x, "height": VIEWPORT_SIZE.y},
 		"defaultMode": MODE_25D,
 		"defaultVisualPreset": VISUAL_PRESET_CLEAN,
-		"privateHarnessPreservedSeparately": captures.any(func(capture: Dictionary) -> bool: return bool(capture.get("privateHarnessCapture", false))) or ["v0.126", "v0.127", "v0.128", "v0.129", "v0.130", "v0.160", "v0.162"].has(_player_capture_checkpoint()),
-		"proceduralPrimitiveOnly": not worker_art_loaded and not barracks_material_loaded,
-		"generatedOrImportedArtIncluded": worker_art_loaded or barracks_material_loaded,
-		"runtimeArtIntegrated": worker_art_loaded or barracks_material_loaded,
+		"privateHarnessPreservedSeparately": captures.any(func(capture: Dictionary) -> bool: return bool(capture.get("privateHarnessCapture", false))) or ["v0.126", "v0.127", "v0.128", "v0.129", "v0.130", "v0.160", "v0.162", "v0.164"].has(_player_capture_checkpoint()),
+		"proceduralPrimitiveOnly": not worker_art_loaded and not barracks_material_loaded and not militia_art_loaded,
+		"generatedOrImportedArtIncluded": worker_art_loaded or barracks_material_loaded or militia_art_loaded,
+		"runtimeArtIntegrated": worker_art_loaded or barracks_material_loaded or militia_art_loaded,
 		"workerArtOptInRequested": _script_args().has("--worker-art-opt-in"),
 		"workerArtExperiment": worker_art,
 		"barracksMaterialOptInRequested": _script_args().has("--barracks-material-opt-in"),
 		"barracksMaterialExperiment": barracks_material,
+		"militiaArtOptInRequested": _script_args().has("--militia-art-opt-in"),
+		"militiaArtExperiment": militia_art,
 		"normalSliceOptInRequestedSlotCount": int(final_status.get("normalSliceOptInRequestedSlotCount", 0)),
 		"normalSliceOptInLoadedSlotCount": int(final_status.get("normalSliceOptInLoadedSlotCount", 0)),
 		"routineEditorUseRequired": false,
@@ -1563,11 +1606,14 @@ func run_worker_art_opt_in_benchmark() -> void:
 	var final_status := get_spike_status()
 	var worker_art: Dictionary = final_status.get("workerArtExperiment", {})
 	var barracks_material: Dictionary = final_status.get("barracksMaterialExperiment", {})
-	var any_loaded := bool(worker_art.get("sourceLoaded", false)) or bool(barracks_material.get("sourceLoaded", false))
+	var militia_art: Dictionary = final_status.get("militiaArtExperiment", {})
+	var any_loaded := bool(worker_art.get("sourceLoaded", false)) or bool(barracks_material.get("sourceLoaded", false)) or bool(militia_art.get("sourceLoaded", false))
+	var three_slot_requested := _script_args().has("--militia-art-opt-in")
+	var two_slot_requested := _script_args().has("--barracks-material-opt-in")
 	var report := {
 		"schemaVersion": 1,
 		"checkpoint": _player_capture_checkpoint(),
-		"status": ("PASS_V0162_WORKER_BARRACKS_ART_OPT_IN_RUNTIME_BENCHMARK" if _script_args().has("--barracks-material-opt-in") else "PASS_V0160_WORKER_ART_OPT_IN_RUNTIME_BENCHMARK") if errors.is_empty() else ("FAIL_V0162_WORKER_BARRACKS_ART_OPT_IN_RUNTIME_BENCHMARK" if _script_args().has("--barracks-material-opt-in") else "FAIL_V0160_WORKER_ART_OPT_IN_RUNTIME_BENCHMARK"),
+		"status": ("PASS_V0164_WORKER_BARRACKS_MILITIA_ART_OPT_IN_RUNTIME_BENCHMARK" if three_slot_requested else ("PASS_V0162_WORKER_BARRACKS_ART_OPT_IN_RUNTIME_BENCHMARK" if two_slot_requested else "PASS_V0160_WORKER_ART_OPT_IN_RUNTIME_BENCHMARK")) if errors.is_empty() else ("FAIL_V0164_WORKER_BARRACKS_MILITIA_ART_OPT_IN_RUNTIME_BENCHMARK" if three_slot_requested else ("FAIL_V0162_WORKER_BARRACKS_ART_OPT_IN_RUNTIME_BENCHMARK" if two_slot_requested else "FAIL_V0160_WORKER_ART_OPT_IN_RUNTIME_BENCHMARK")),
 		"artifactRoot": artifact_root,
 		"durationMs": snappedf(float(Time.get_ticks_usec() - start_usec) / 1000.0, 0.01),
 		"mode": MODE_25D,
@@ -1580,6 +1626,8 @@ func run_worker_art_opt_in_benchmark() -> void:
 		"workerArtExperiment": worker_art,
 		"barracksMaterialOptInRequested": _script_args().has("--barracks-material-opt-in"),
 		"barracksMaterialExperiment": barracks_material,
+		"militiaArtOptInRequested": _script_args().has("--militia-art-opt-in"),
+		"militiaArtExperiment": militia_art,
 		"normalSliceOptInRequestedSlotCount": int(final_status.get("normalSliceOptInRequestedSlotCount", 0)),
 		"normalSliceOptInLoadedSlotCount": int(final_status.get("normalSliceOptInLoadedSlotCount", 0)),
 		"proceduralPrimitiveOnly": not any_loaded,
@@ -1599,7 +1647,13 @@ func run_worker_art_opt_in_benchmark() -> void:
 			"barracksTextureCreateCount": int(barracks_material.get("textureCreateCount", 0)),
 			"barracksMaterialCreateCount": int(barracks_material.get("materialCreateCount", 0)),
 			"barracksMaterialReuseCount": int(barracks_material.get("materialReuseCount", 0)),
-			"barracksAppliedSurfaceCount": int(barracks_material.get("appliedSurfaceCount", 0))
+			"barracksAppliedSurfaceCount": int(barracks_material.get("appliedSurfaceCount", 0)),
+			"militiaSourceLoadCount": int(militia_art.get("sourceLoadCount", 0)),
+			"militiaMetadataParseCount": int(militia_art.get("metadataParseCount", 0)),
+			"militiaImageDecodeCount": int(militia_art.get("imageDecodeCount", 0)),
+			"militiaTextureCreateCount": int(militia_art.get("textureCreateCount", 0)),
+			"militiaMaterialCreateCount": int(militia_art.get("materialCreateCount", 0)),
+			"militiaMaterialReuseCount": int(militia_art.get("materialReuseCount", 0))
 		},
 		"steps": steps,
 		"errors": errors,
@@ -3924,6 +3978,8 @@ func _apply_player_slice_action(action: String) -> Dictionary:
 
 func _player_capture_checkpoint() -> String:
 	var normalized_root := _artifact_root_from_args().replace("\\", "/")
+	if normalized_root.contains("/v0164"):
+		return "v0.164"
 	if normalized_root.contains("/v0162"):
 		return "v0.162"
 	if normalized_root.contains("/v0160"):
@@ -3941,10 +3997,10 @@ func _player_capture_checkpoint() -> String:
 	return "v0.124"
 
 func _is_bounded_microloop_checkpoint() -> bool:
-	return ["v0.129", "v0.130", "v0.160", "v0.162"].has(_player_capture_checkpoint())
+	return ["v0.129", "v0.130", "v0.160", "v0.162", "v0.164"].has(_player_capture_checkpoint())
 
 func _player_capture_steps() -> Array[Dictionary]:
-	if _player_capture_checkpoint() == "v0.160" or _player_capture_checkpoint() == "v0.162":
+	if _player_capture_checkpoint() == "v0.160" or _player_capture_checkpoint() == "v0.162" or _player_capture_checkpoint() == "v0.164":
 		return [
 			{"id": "title", "label": "Title shell with configured 2.5D backdrop", "action": "title"},
 			{"id": "briefing", "label": "Briefing shell", "action": "briefing"},

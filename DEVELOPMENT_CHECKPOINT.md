@@ -1,6 +1,44 @@
 # Development Checkpoint
 
-Updated: 2026-06-07 v0.163 Godot Salto Barracks-Material Opt-In Visual QA Hardening And Human Review Stop
+Updated: 2026-06-07 v0.164 Godot Salto Militia Third Opt-In Player-Slice Integration And Human Review Stop
+
+## v0.164 Godot Salto Militia Third Opt-In Player-Slice Integration And Human Review Stop - 2026-06-07
+
+Scope: three-slot Godot player-slice opt-in experiment. This checkpoint adds only the selected v0.155 Militia billboard behind a new Worker + Barracks + Militia launcher, keeps the default stabilized launcher procedural, preserves the Worker-only launcher and Worker + Barracks launcher, and stops for Emmanuel review.
+
+Included work:
+
+- Confirmed v0.163 prerequisite status `PASS_V0163_BARRACKS_MATERIAL_OPT_IN_HUMAN_REVIEW_READY`.
+- Preserved Worker slot `worker_billboard_static_v0147` / `HYBRID_WORKER_TRIMMED_1024` and SHA-256 `a628065ca92b231b0d4f6a0625d9e259dea080e80d530ee688483611d70049bc`.
+- Preserved Barracks slot `barrosan_barracks_material_v0149` / `HYBRID_BARRACKS_768_WRAPSAFE_OFFSET_BLEND` and SHA-256 `58a60b750370df084b60a1d92077da9367c0ba8a763781e2c3a8a7d96f1c980f`.
+- Added Militia slot `militia_billboard_static_v0154` / `HYBRID_MILITIA_TRIMMED_1024` and SHA-256 `c25349f00c422a0b3c9d5862027351bd70008e9314d4e3cd4001676e914321cb`.
+- Added `GODOT_LAUNCH_SALTO_WORKER_BARRACKS_MILITIA_ART_EXPERIMENT_WINDOWS.bat`.
+- Added `GODOT_VALIDATE_SALTO_WORKER_BARRACKS_MILITIA_ART_EXPERIMENT_WINDOWS.bat`.
+- Added `GODOT_CAPTURE_SALTO_WORKER_BARRACKS_MILITIA_ART_EXPERIMENT_WINDOWS.bat`.
+- Added v0.164 validation/capture/benchmark/real-input/Computer Use/boundary aggregation tooling.
+- Added v0.164 docs and scaffold guardrail coverage.
+
+Current interpretation:
+
+- The default stabilized launcher remains procedural.
+- The existing Worker-only launcher remains Worker-only.
+- The existing Worker + Barracks launcher remains two-slot.
+- The new Worker + Barracks + Militia launcher requests exactly three normal-slice opt-in slots.
+- Militia missing-art and hash-mismatch fallback fail closed to procedural Militia while Worker and Barracks art remain active.
+- Browser runtime, production manifests, saves, stable IDs, fourth art slots, gameplay, objectives, input semantics, balance, AI, map content, campaign state, and v0.165 remain out of scope.
+
+Verification results:
+
+```text
+PASS: npm run godot:validate:salto-worker-barracks-militia-art-experiment - PASS_V0164_WORKER_BARRACKS_MILITIA_ART_OPT_IN_AUTOMATION_READY.
+PASS: validation - PASS_V0164_MILITIA_OPT_IN_VALIDATION.
+PASS: functional - PASS_V0164_MILITIA_OPT_IN_FUNCTIONAL.
+PASS: capture - PASS_V0164_MILITIA_OPT_IN_CAPTURE.
+PASS: benchmark - PASS_V0164_MILITIA_OPT_IN_BENCHMARK; M3 FPS ratio versus M0 1.0003, M3 P95 ratio versus M0 0.9442, M3 FPS ratio versus M2 1.0001, M3 P95 ratio versus M2 0.9478.
+PASS: real-input - PASS_V0164_MILITIA_OPT_IN_REAL_INPUT, including squad-selection and combat-onset proof with normal packaged Godot input.
+PASS: Windows-side Computer Use review - PASS_V0164_MILITIA_OPT_IN_COMPUTER_USE_GATE.
+PASS: boundary - PASS_V0164_PLAYER_SLICE_THREE_SLOT_BOUNDARY; default launcher unchanged, Worker-only launcher unchanged, Worker + Barracks launcher unchanged, package leakage false, zero image changes, no fourth slot.
+```
 
 ## v0.163 Godot Salto Barracks-Material Opt-In Visual QA Hardening And Human Review Stop - 2026-06-07
 

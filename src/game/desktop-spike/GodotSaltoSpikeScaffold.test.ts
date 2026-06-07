@@ -3297,4 +3297,119 @@ describe("Godot Salto spike scaffold", () => {
       expect(workerOnlyLauncher).not.toContain(text);
     });
   });
+
+  it("defines the v0.164 Militia third opt-in player-slice integration gate", async () => {
+    [
+      "GODOT_LAUNCH_SALTO_WORKER_BARRACKS_MILITIA_ART_EXPERIMENT_WINDOWS.bat",
+      "GODOT_VALIDATE_SALTO_WORKER_BARRACKS_MILITIA_ART_EXPERIMENT_WINDOWS.bat",
+      "GODOT_CAPTURE_SALTO_WORKER_BARRACKS_MILITIA_ART_EXPERIMENT_WINDOWS.bat",
+      "tools/godot/launchGodotSaltoWorkerBarracksMilitiaArtExperimentWindows.ps1",
+      "tools/godot/validateGodotSaltoWorkerBarracksMilitiaArtExperimentWindows.ps1",
+      "tools/godot/captureGodotSaltoWorkerBarracksMilitiaArtExperimentWindows.ps1",
+      "tools/godot/saltoWorkerBarracksMilitiaArtOptInTool.mjs",
+      "docs/V0164_GODOT_PLAYER_SLICE_MILITIA_OPT_IN_SPEC.md",
+      "docs/V0164_MILITIA_OPT_IN_SLOT_CONTRACT.md",
+      "docs/V0164_MILITIA_OPT_IN_FUNCTIONAL_REPORT.md",
+      "docs/V0164_MILITIA_OPT_IN_VISUAL_REVIEW_GUIDE.md",
+      "docs/V0164_MILITIA_OPT_IN_BENCHMARK_REPORT.md",
+      "docs/V0164_MILITIA_OPT_IN_ROLLBACK_REPORT.md",
+      "docs/V0164_PLAYER_SLICE_THREE_SLOT_BOUNDARY.md",
+      "docs/V0164_IMPLEMENTATION_REPORT.md"
+    ].forEach((path) => expect(existsSync(path), path).toBe(true));
+
+    const packageJson = JSON.parse(await readFile("package.json", "utf8")) as { scripts: Record<string, string> };
+    const rootScript = await readFile("desktop-spikes/godot-salto/scripts/salto_spike_root.gd", "utf8");
+    const sceneScript = await readFile("desktop-spikes/godot-salto/scripts/salto_spike_scene_3d.gd", "utf8");
+    const launchScript = await readFile("tools/godot/launchGodotSaltoWorkerBarracksMilitiaArtExperimentWindows.ps1", "utf8");
+    const validateScript = await readFile("tools/godot/validateGodotSaltoWorkerBarracksMilitiaArtExperimentWindows.ps1", "utf8");
+    const captureScript = await readFile("tools/godot/captureGodotSaltoWorkerBarracksMilitiaArtExperimentWindows.ps1", "utf8");
+    const toolScript = await readFile("tools/godot/saltoWorkerBarracksMilitiaArtOptInTool.mjs", "utf8");
+    const boundary = await readFile("docs/V0164_PLAYER_SLICE_THREE_SLOT_BOUNDARY.md", "utf8");
+    const implementation = await readFile("docs/V0164_IMPLEMENTATION_REPORT.md", "utf8");
+    const stabilizedLauncher = await readFile("GODOT_LAUNCH_STABILIZED_SALTO_REVIEW_WINDOWS.bat", "utf8");
+    const playerLauncher = await readFile("GODOT_LAUNCH_PLAYER_SLICE_WINDOWS.bat", "utf8");
+    const workerOnlyLauncher = await readFile("GODOT_LAUNCH_SALTO_WORKER_ART_EXPERIMENT_WINDOWS.bat", "utf8");
+    const workerBarracksLauncher = await readFile("GODOT_LAUNCH_SALTO_WORKER_BARRACKS_ART_EXPERIMENT_WINDOWS.bat", "utf8");
+
+    [
+      "godot:launch:salto-worker-barracks-militia-art-experiment",
+      "godot:validate:salto-worker-barracks-militia-art-experiment",
+      "godot:capture:salto-worker-barracks-militia-art-experiment"
+    ].forEach((script) => expect(packageJson.scripts[script]).toBeTypeOf("string"));
+
+    [
+      "--militia-art-opt-in",
+      "--militia-art-source=",
+      "--militia-art-metadata=",
+      "--militia-art-expected-sha256=",
+      "--militia-art-fallback-mode=",
+      "configure_militia_art_experiment",
+      "v0.164"
+    ].forEach((text) => expect(rootScript).toContain(text));
+
+    [
+      "MILITIA_ART_SLOT_ID := \"militia_billboard_static_v0154\"",
+      "HYBRID_MILITIA_TRIMMED_1024",
+      "c25349f00c422a0b3c9d5862027351bd70008e9314d4e3cd4001676e914321cb",
+      "configure_militia_art_experiment",
+      "metadata hash mismatch",
+      "source hash mismatch",
+      "ImageTexture.create_from_image",
+      "fourthArtSlotAdded\": false"
+    ].forEach((text) => expect(sceneScript).toContain(text));
+
+    [
+      "worker_billboard_static_v0147_trimmed_1024.png",
+      "barrosan_barracks_material_v0149_768_wrapsafe_offset_blend.png",
+      "militia_billboard_static_v0154_trimmed_1024.png",
+      "--player-slice",
+      "--worker-art-opt-in",
+      "--barracks-material-opt-in",
+      "--militia-art-opt-in"
+    ].forEach((text) => expect(launchScript).toContain(text));
+
+    [
+      "default-procedural",
+      "worker-only",
+      "worker-barracks",
+      "worker-barracks-militia",
+      "militia-missing-art-fallback",
+      "militia-hash-mismatch-fallback",
+      "PASS_V0164_WORKER_BARRACKS_MILITIA_ART_OPT_IN_AUTOMATION_READY"
+    ].forEach((text) => expect(validateScript).toContain(text));
+
+    expect(captureScript).toContain("saltoWorkerBarracksMilitiaArtOptInTool.mjs");
+
+    [
+      "PASS_V0164_MILITIA_OPT_IN_VALIDATION",
+      "PASS_V0164_MILITIA_OPT_IN_CAPTURE",
+      "PASS_V0164_MILITIA_OPT_IN_BENCHMARK",
+      "PASS_V0164_MILITIA_OPT_IN_REAL_INPUT",
+      "PASS_V0164_MILITIA_OPT_IN_COMPUTER_USE_GATE",
+      "PASS_V0164_PLAYER_SLICE_THREE_SLOT_BOUNDARY",
+      "PASS_V0164_MILITIA_OPT_IN_HUMAN_REVIEW_READY",
+      "minM3FpsRatioVsM0: 0.9",
+      "maxM3P95FrameTimeRatioVsM2: 1.15",
+      "pause for Emmanuel manual review"
+    ].forEach((text) => expect(toolScript).toContain(text));
+
+    expect(boundary).toContain("No fourth player-facing art slot was added");
+    expect(boundary).toContain("Default stabilized launcher");
+    expect(boundary).toContain("Worker-only launcher");
+    expect(boundary).toContain("Worker + Barracks launcher");
+    expect(implementation).toContain("No fourth player-facing art slot");
+    expect(implementation).toContain("No browser runtime wiring");
+    expect(implementation).toContain("Do not begin v0.165");
+
+    [
+      "militia-art-opt-in",
+      "militia_billboard_static_v0154",
+      "HYBRID_MILITIA_TRIMMED_1024"
+    ].forEach((text) => {
+      expect(stabilizedLauncher).not.toContain(text);
+      expect(playerLauncher).not.toContain(text);
+      expect(workerOnlyLauncher).not.toContain(text);
+      expect(workerBarracksLauncher).not.toContain(text);
+    });
+  });
 });
