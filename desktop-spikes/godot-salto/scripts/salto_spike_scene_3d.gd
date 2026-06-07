@@ -48,6 +48,11 @@ const WORKER_ART_DEFAULT_SCALE := 1.0
 const WORKER_ART_QUAD_HEIGHT := 0.74
 const WORKER_ART_QUAD_WIDTH := 0.55
 const WORKER_ART_GROUND_CLEARANCE := 0.02
+const BARRACKS_MATERIAL_SLOT_ID := "barrosan_barracks_material_v0149"
+const BARRACKS_MATERIAL_APPROACH := "HYBRID_BARRACKS_768_WRAPSAFE_OFFSET_BLEND"
+const BARRACKS_MATERIAL_EXPECTED_SHA256 := "58a60b750370df084b60a1d92077da9367c0ba8a763781e2c3a8a7d96f1c980f"
+const BARRACKS_MATERIAL_EXPECTED_WIDTH := 768
+const BARRACKS_MATERIAL_EXPECTED_HEIGHT := 768
 const WorkloadRuntimeScript = preload("res://scripts/salto_spike_workload_runtime.gd")
 
 var runtime = WorkloadRuntimeScript.new()
@@ -211,9 +216,25 @@ var worker_art_texture_create_count := 0
 var worker_art_material_create_count := 0
 var worker_art_mesh_create_count := 0
 var worker_art_material_reuse_count := 0
+var barracks_material_experiment_enabled := false
+var barracks_material_source_path := ""
+var barracks_material_metadata_path := ""
+var barracks_material_expected_sha256 := BARRACKS_MATERIAL_EXPECTED_SHA256
+var barracks_material_fallback_mode := "none"
+var barracks_material_texture: ImageTexture
+var barracks_material_override: StandardMaterial3D
+var barracks_material_status: Dictionary = {}
+var barracks_material_source_load_count := 0
+var barracks_material_metadata_parse_count := 0
+var barracks_material_image_decode_count := 0
+var barracks_material_texture_create_count := 0
+var barracks_material_material_create_count := 0
+var barracks_material_material_reuse_count := 0
+var barracks_material_applied_surface_count := 0
 
 func _ready() -> void:
 	_reset_worker_art_status(false, "opt-in flag absent")
+	_reset_barracks_material_status(false, "opt-in flag absent")
 	_create_camera()
 	_create_light()
 	_create_terrain()
@@ -504,6 +525,202 @@ func _worker_art_billboard_material() -> StandardMaterial3D:
 	worker_art_material_create_count += 1
 	_refresh_worker_art_counters()
 	return worker_art_material
+
+func configure_barracks_material_experiment(options: Dictionary) -> Dictionary:
+	barracks_material_experiment_enabled = bool(options.get("enabled", false))
+	barracks_material_source_path = str(options.get("sourcePath", ""))
+	barracks_material_metadata_path = str(options.get("metadataPath", ""))
+	barracks_material_expected_sha256 = str(options.get("expectedSha256", BARRACKS_MATERIAL_EXPECTED_SHA256)).to_lower()
+	barracks_material_fallback_mode = str(options.get("fallbackMode", "none"))
+	barracks_material_texture = null
+	barracks_material_override = null
+	barracks_material_source_load_count = 0
+	barracks_material_metadata_parse_count = 0
+	barracks_material_image_decode_count = 0
+	barracks_material_texture_create_count = 0
+	barracks_material_material_create_count = 0
+	barracks_material_material_reuse_count = 0
+	barracks_material_applied_surface_count = 0
+	if not barracks_material_experiment_enabled:
+		_reset_barracks_material_status(false, "opt-in flag absent")
+		_rebuild_visuals()
+		return barracks_material_status.duplicate(true)
+	_load_barracks_material_candidate()
+	_rebuild_visuals()
+	return barracks_material_status.duplicate(true)
+
+func get_barracks_material_status() -> Dictionary:
+	return barracks_material_status.duplicate(true)
+
+func _reset_barracks_material_status(enabled: bool, reason: String) -> void:
+	barracks_material_status = {
+		"schemaVersion": 1,
+		"checkpoint": "v0.162",
+		"slotId": BARRACKS_MATERIAL_SLOT_ID,
+		"approach": BARRACKS_MATERIAL_APPROACH,
+		"enabled": enabled,
+		"sourceLoaded": false,
+		"materialActive": false,
+		"fallbackActive": true,
+		"fallbackReason": reason,
+		"sourcePath": barracks_material_source_path,
+		"metadataPath": barracks_material_metadata_path,
+		"expectedSha256": barracks_material_expected_sha256,
+		"actualSha256": "",
+		"sourceDimensions": {"width": 0, "height": 0},
+		"metadataDimensions": {"width": 0, "height": 0},
+		"uvScale": 1.0,
+		"tilingMode": "",
+		"fallbackMode": barracks_material_fallback_mode,
+		"proceduralFallbackVisible": true,
+		"appliedOnlyToBarracks": true,
+		"stableBarracksId": "barracks",
+		"workerArtPreserved": true,
+		"browserRuntimeChanged": false,
+		"saveWritesAllowed": false,
+		"thirdArtSlotAdded": false,
+		"productionManifestMutated": false,
+		"sourceLoadCount": barracks_material_source_load_count,
+		"metadataParseCount": barracks_material_metadata_parse_count,
+		"imageDecodeCount": barracks_material_image_decode_count,
+		"textureCreateCount": barracks_material_texture_create_count,
+		"materialCreateCount": barracks_material_material_create_count,
+		"materialReuseCount": barracks_material_material_reuse_count,
+		"appliedSurfaceCount": barracks_material_applied_surface_count
+	}
+
+func _load_barracks_material_candidate() -> void:
+	_reset_barracks_material_status(true, "not loaded")
+	var start_usec := Time.get_ticks_usec()
+	if barracks_material_source_path == "":
+		_set_barracks_material_fallback("missing source path")
+		return
+	if not FileAccess.file_exists(barracks_material_source_path):
+		_set_barracks_material_fallback("missing source file")
+		return
+	if barracks_material_metadata_path == "" or not FileAccess.file_exists(barracks_material_metadata_path):
+		_set_barracks_material_fallback("missing metadata file")
+		return
+	var metadata := _read_barracks_material_metadata(barracks_material_metadata_path)
+	if metadata.is_empty():
+		_set_barracks_material_fallback("metadata parse failure")
+		return
+	if str(metadata.get("slotId", "")) != BARRACKS_MATERIAL_SLOT_ID:
+		_set_barracks_material_fallback("metadata slot mismatch")
+		return
+	if str(metadata.get("approach", "")) != BARRACKS_MATERIAL_APPROACH:
+		_set_barracks_material_fallback("metadata approach mismatch")
+		return
+	var metadata_sha := str(metadata.get("sha256", "")).to_lower()
+	if metadata_sha != barracks_material_expected_sha256:
+		_set_barracks_material_fallback("metadata hash mismatch")
+		return
+	var dimensions: Dictionary = metadata.get("dimensions", {})
+	var metadata_width := int(dimensions.get("width", 0))
+	var metadata_height := int(dimensions.get("height", 0))
+	if metadata_width != BARRACKS_MATERIAL_EXPECTED_WIDTH or metadata_height != BARRACKS_MATERIAL_EXPECTED_HEIGHT:
+		_set_barracks_material_fallback("metadata dimension mismatch")
+		return
+	var actual_sha := _sha256_file(barracks_material_source_path)
+	barracks_material_status["actualSha256"] = actual_sha
+	if actual_sha != barracks_material_expected_sha256:
+		_set_barracks_material_fallback("source hash mismatch")
+		return
+	var image := Image.new()
+	barracks_material_source_load_count += 1
+	var load_result := image.load(barracks_material_source_path)
+	if load_result != OK:
+		_set_barracks_material_fallback("image load failure %s" % str(load_result))
+		return
+	barracks_material_image_decode_count += 1
+	if image.get_width() != BARRACKS_MATERIAL_EXPECTED_WIDTH or image.get_height() != BARRACKS_MATERIAL_EXPECTED_HEIGHT:
+		_set_barracks_material_fallback("image dimension mismatch")
+		return
+	barracks_material_texture = ImageTexture.create_from_image(image)
+	if barracks_material_texture == null:
+		_set_barracks_material_fallback("texture creation failure")
+		return
+	barracks_material_texture_create_count += 1
+	barracks_material_status["enabled"] = true
+	barracks_material_status["sourceLoaded"] = true
+	barracks_material_status["materialActive"] = true
+	barracks_material_status["fallbackActive"] = false
+	barracks_material_status["fallbackReason"] = ""
+	barracks_material_status["sourcePath"] = barracks_material_source_path
+	barracks_material_status["metadataPath"] = barracks_material_metadata_path
+	barracks_material_status["expectedSha256"] = barracks_material_expected_sha256
+	barracks_material_status["actualSha256"] = actual_sha
+	barracks_material_status["sourceDimensions"] = {"width": image.get_width(), "height": image.get_height()}
+	barracks_material_status["metadataDimensions"] = {"width": metadata_width, "height": metadata_height}
+	barracks_material_status["uvScale"] = float(metadata.get("uvScale", 1.0))
+	barracks_material_status["tilingMode"] = str(metadata.get("tilingMode", ""))
+	barracks_material_status["fallbackMode"] = barracks_material_fallback_mode
+	barracks_material_status["proceduralFallbackVisible"] = false
+	barracks_material_status["loadDurationMs"] = snappedf(float(Time.get_ticks_usec() - start_usec) / 1000.0, 0.01)
+	_refresh_barracks_material_counters()
+
+func _read_barracks_material_metadata(path: String) -> Dictionary:
+	barracks_material_metadata_parse_count += 1
+	var file := FileAccess.open(path, FileAccess.READ)
+	if file == null:
+		return {}
+	var parsed = JSON.parse_string(file.get_as_text())
+	if typeof(parsed) == TYPE_DICTIONARY:
+		return parsed
+	return {}
+
+func _set_barracks_material_fallback(reason: String) -> void:
+	barracks_material_texture = null
+	barracks_material_override = null
+	barracks_material_status["enabled"] = barracks_material_experiment_enabled
+	barracks_material_status["materialActive"] = false
+	barracks_material_status["sourceLoaded"] = false
+	barracks_material_status["fallbackActive"] = true
+	barracks_material_status["fallbackReason"] = reason
+	barracks_material_status["sourcePath"] = barracks_material_source_path
+	barracks_material_status["metadataPath"] = barracks_material_metadata_path
+	barracks_material_status["expectedSha256"] = barracks_material_expected_sha256
+	barracks_material_status["fallbackMode"] = barracks_material_fallback_mode
+	barracks_material_status["proceduralFallbackVisible"] = true
+	_refresh_barracks_material_counters()
+
+func _refresh_barracks_material_counters() -> void:
+	barracks_material_status["sourceLoadCount"] = barracks_material_source_load_count
+	barracks_material_status["metadataParseCount"] = barracks_material_metadata_parse_count
+	barracks_material_status["imageDecodeCount"] = barracks_material_image_decode_count
+	barracks_material_status["textureCreateCount"] = barracks_material_texture_create_count
+	barracks_material_status["materialCreateCount"] = barracks_material_material_create_count
+	barracks_material_status["materialReuseCount"] = barracks_material_material_reuse_count
+	barracks_material_status["appliedSurfaceCount"] = barracks_material_applied_surface_count
+
+func _barracks_material_is_active() -> bool:
+	return barracks_material_experiment_enabled and bool(barracks_material_status.get("sourceLoaded", false)) and barracks_material_texture != null
+
+func _barracks_material() -> StandardMaterial3D:
+	if barracks_material_override:
+		barracks_material_material_reuse_count += 1
+		_refresh_barracks_material_counters()
+		return barracks_material_override
+	barracks_material_override = StandardMaterial3D.new()
+	barracks_material_override.albedo_texture = barracks_material_texture
+	barracks_material_override.albedo_color = Color(0.82, 0.78, 0.66, 1.0)
+	barracks_material_override.roughness = 0.86
+	barracks_material_override.texture_filter = BaseMaterial3D.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
+	barracks_material_override.cull_mode = BaseMaterial3D.CULL_BACK
+	barracks_material_material_create_count += 1
+	_refresh_barracks_material_counters()
+	return barracks_material_override
+
+func _add_barracks_material_box(name: String, position: Vector3, scale: Vector3, color: Color, transparent: bool = false) -> void:
+	_add_box(name, position, scale, color, transparent)
+	if not _barracks_material_is_active():
+		return
+	var mesh_instance := visual_root.get_node_or_null(name) as MeshInstance3D
+	if mesh_instance == null:
+		return
+	mesh_instance.material_override = _barracks_material()
+	barracks_material_applied_surface_count += 1
+	_refresh_barracks_material_counters()
 
 func set_player_facing_mode(enabled: bool) -> bool:
 	player_facing_mode = enabled
@@ -2613,11 +2830,16 @@ func run_workload_phase(phase: String) -> Dictionary:
 
 func run_benchmark_suite() -> Dictionary:
 	var report: Dictionary = runtime.run_benchmark_suite(MODE)
+	var worker_art_loaded := _worker_art_is_active()
+	var barracks_material_loaded := _barracks_material_is_active()
 	report["visualPreset"] = visual_preset
 	report["visualPresetScope"] = _preset_scope()
 	report["visualPresetPrivate"] = visual_preset == VISUAL_PRESET_VFX_STRESS
-	report["proceduralPrimitiveOnly"] = true
-	report["generatedOrImportedArtIncluded"] = false
+	report["proceduralPrimitiveOnly"] = not worker_art_loaded and not barracks_material_loaded
+	report["generatedOrImportedArtIncluded"] = worker_art_loaded or barracks_material_loaded
+	report["runtimeArtIntegrated"] = worker_art_loaded or barracks_material_loaded
+	report["workerArtExperiment"] = worker_art_status.duplicate(true)
+	report["barracksMaterialExperiment"] = barracks_material_status.duplicate(true)
 	report["routineEditorUseRequired"] = false
 	return report
 
@@ -2645,13 +2867,22 @@ func get_spike_status() -> Dictionary:
 	status["visualPresetScope"] = _preset_scope()
 	var worker_art_loaded := _worker_art_is_active()
 	_refresh_worker_art_counters()
-	status["proceduralPrimitiveOnly"] = not worker_art_loaded
-	status["generatedOrImportedArtIncluded"] = worker_art_loaded
-	status["runtimeArtIntegrated"] = worker_art_loaded
+	var barracks_material_loaded := _barracks_material_is_active()
+	_refresh_barracks_material_counters()
+	status["proceduralPrimitiveOnly"] = not worker_art_loaded and not barracks_material_loaded
+	status["generatedOrImportedArtIncluded"] = worker_art_loaded or barracks_material_loaded
+	status["runtimeArtIntegrated"] = worker_art_loaded or barracks_material_loaded
 	status["workerArtExperiment"] = worker_art_status.duplicate(true)
-	status["workerArtOptInOnly"] = worker_art_experiment_enabled
+	status["barracksMaterialExperiment"] = barracks_material_status.duplicate(true)
+	status["workerArtOptInOnly"] = worker_art_experiment_enabled and not barracks_material_experiment_enabled
 	status["workerArtSlotCount"] = 1 if worker_art_experiment_enabled else 0
 	status["workerArtProceduralFallbackActive"] = bool(worker_art_status.get("fallbackActive", true))
+	status["barracksMaterialOptInRequested"] = barracks_material_experiment_enabled
+	status["barracksMaterialSlotCount"] = 1 if barracks_material_experiment_enabled else 0
+	status["barracksMaterialProceduralFallbackActive"] = bool(barracks_material_status.get("fallbackActive", true))
+	status["normalSliceOptInRequestedSlotCount"] = int(status["workerArtSlotCount"]) + int(status["barracksMaterialSlotCount"])
+	status["normalSliceOptInLoadedSlotCount"] = (1 if worker_art_loaded else 0) + (1 if barracks_material_loaded else 0)
+	status["thirdPlayerFacingArtSlotAdded"] = false
 	status["routineEditorUseRequired"] = false
 	status["saveWritesAllowed"] = false
 	status["stableIdsChanged"] = false
@@ -3690,6 +3921,8 @@ func _rebuild_visuals() -> void:
 		return
 	for child in visual_root.get_children():
 		child.queue_free()
+	barracks_material_applied_surface_count = 0
+	_refresh_barracks_material_counters()
 	for structure in runtime.structures:
 		_add_structure(structure)
 	for site in runtime.sites:
@@ -3911,7 +4144,10 @@ func _add_structure(structure: Dictionary) -> void:
 	var position := _to_world(structure["position"], 0.34)
 	var scale := _structure_scale(structure)
 	var color := _structure_color(structure)
-	_add_box(id, position, scale, color)
+	if fixture == "barracks":
+		_add_barracks_material_box(id, position, scale, color)
+	else:
+		_add_box(id, position, scale, color)
 	if fixture == "command_hall" or fixture == "enemy_stronghold":
 		_add_box("%s_keep_tower" % id, position + Vector3(0.0, 0.34, 0.0), Vector3(scale.x * 0.34, 0.58, scale.z * 0.34), color.lightened(0.12))
 		_add_box("%s_banner_silhouette" % id, position + Vector3(-scale.x * 0.38, 0.72, -scale.z * 0.12), Vector3(0.10, 0.34, 0.28), _banner_color(structure))
@@ -3920,12 +4156,20 @@ func _add_structure(structure: Dictionary) -> void:
 		_add_box("%s_v0137_gabled_shadow" % id, position + Vector3(scale.x * 0.24, 0.66, scale.z * 0.10), Vector3(scale.x * 0.36, 0.12, scale.z * 0.42), color.darkened(0.16))
 		_add_box("%s_v0137_hearth_window" % id, position + Vector3(scale.x * 0.42, 0.18, scale.z * 0.52), Vector3(scale.x * 0.12, 0.12, 0.08), Color(0.92, 0.54, 0.26), true, true)
 	elif fixture == "barracks" or fixture == "enemy_barracks":
-		_add_box("%s_training_wing_a" % id, position + Vector3(-scale.x * 0.30, 0.22, 0.0), Vector3(scale.x * 0.32, 0.34, scale.z * 0.88), color.lightened(0.08))
-		_add_box("%s_training_wing_b" % id, position + Vector3(scale.x * 0.30, 0.22, 0.0), Vector3(scale.x * 0.32, 0.34, scale.z * 0.88), color.darkened(0.08))
+		if fixture == "barracks":
+			_add_barracks_material_box("%s_training_wing_a" % id, position + Vector3(-scale.x * 0.30, 0.22, 0.0), Vector3(scale.x * 0.32, 0.34, scale.z * 0.88), color.lightened(0.08))
+			_add_barracks_material_box("%s_training_wing_b" % id, position + Vector3(scale.x * 0.30, 0.22, 0.0), Vector3(scale.x * 0.32, 0.34, scale.z * 0.88), color.darkened(0.08))
+		else:
+			_add_box("%s_training_wing_a" % id, position + Vector3(-scale.x * 0.30, 0.22, 0.0), Vector3(scale.x * 0.32, 0.34, scale.z * 0.88), color.lightened(0.08))
+			_add_box("%s_training_wing_b" % id, position + Vector3(scale.x * 0.30, 0.22, 0.0), Vector3(scale.x * 0.32, 0.34, scale.z * 0.88), color.darkened(0.08))
 		_add_box("%s_weapon_rack_silhouette" % id, position + Vector3(0.0, 0.46, -scale.z * 0.44), Vector3(scale.x * 0.72, 0.08, 0.08), Color(0.54, 0.48, 0.34))
 		_add_box("%s_drill_yard_edge" % id, position + Vector3(0.0, -0.12, scale.z * 0.72), Vector3(scale.x * 0.94, 0.05, 0.12), Color(0.32, 0.28, 0.18))
-		_add_box("%s_v0137_roof_split_left" % id, position + Vector3(-scale.x * 0.24, 0.52, -scale.z * 0.06), Vector3(scale.x * 0.38, 0.10, scale.z * 0.62), color.lightened(0.18))
-		_add_box("%s_v0137_roof_split_right" % id, position + Vector3(scale.x * 0.24, 0.52, scale.z * 0.06), Vector3(scale.x * 0.38, 0.10, scale.z * 0.62), color.darkened(0.14))
+		if fixture == "barracks":
+			_add_barracks_material_box("%s_v0137_roof_split_left" % id, position + Vector3(-scale.x * 0.24, 0.52, -scale.z * 0.06), Vector3(scale.x * 0.38, 0.10, scale.z * 0.62), color.lightened(0.18))
+			_add_barracks_material_box("%s_v0137_roof_split_right" % id, position + Vector3(scale.x * 0.24, 0.52, scale.z * 0.06), Vector3(scale.x * 0.38, 0.10, scale.z * 0.62), color.darkened(0.14))
+		else:
+			_add_box("%s_v0137_roof_split_left" % id, position + Vector3(-scale.x * 0.24, 0.52, -scale.z * 0.06), Vector3(scale.x * 0.38, 0.10, scale.z * 0.62), color.lightened(0.18))
+			_add_box("%s_v0137_roof_split_right" % id, position + Vector3(scale.x * 0.24, 0.52, scale.z * 0.06), Vector3(scale.x * 0.38, 0.10, scale.z * 0.62), color.darkened(0.14))
 		if str(structure.get("constructionState", "")) != "complete":
 			var progress := clampf(float(structure.get("constructionProgress", 0.0)), 0.0, 1.0)
 			_add_box("%s_construction_scaffold" % id, position + Vector3(0.0, 0.58, 0.0), Vector3(scale.x * 0.90, 0.08, scale.z * 0.94), Color(0.80, 0.68, 0.36, 0.58), true)

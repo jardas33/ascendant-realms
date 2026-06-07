@@ -30,6 +30,11 @@ const SCRIPT_ARG_PREFIXES := [
 	"--worker-art-expected-sha256=",
 	"--worker-art-scale=",
 	"--worker-art-fallback-mode=",
+	"--barracks-material-opt-in",
+	"--barracks-material-source=",
+	"--barracks-material-metadata=",
+	"--barracks-material-expected-sha256=",
+	"--barracks-material-fallback-mode=",
 	"--real-input-smoke",
 	"--real-input-validate",
 	"--site-semantics-smoke",
@@ -717,9 +722,10 @@ func _viewport_from_args(default_size: Vector2i) -> Vector2i:
 func _configure_worker_art_for_active_scene() -> void:
 	if active_mode != MODE_25D or active_scene == null or not is_instance_valid(active_scene):
 		return
-	if not active_scene.has_method("configure_worker_art_experiment"):
-		return
-	active_scene.configure_worker_art_experiment(_worker_art_options_from_args())
+	if active_scene.has_method("configure_worker_art_experiment"):
+		active_scene.configure_worker_art_experiment(_worker_art_options_from_args())
+	if active_scene.has_method("configure_barracks_material_experiment"):
+		active_scene.configure_barracks_material_experiment(_barracks_material_options_from_args())
 
 func _worker_art_options_from_args() -> Dictionary:
 	var fallback_mode := _arg_value("--worker-art-fallback-mode=", "none")
@@ -743,6 +749,25 @@ func _worker_art_options_from_args() -> Dictionary:
 		"scale": scale,
 		"fallbackMode": fallback_mode,
 		"requestedBy": "GODOT_LAUNCH_SALTO_WORKER_ART_EXPERIMENT_WINDOWS.bat or explicit --worker-art-opt-in"
+	}
+
+func _barracks_material_options_from_args() -> Dictionary:
+	var fallback_mode := _arg_value("--barracks-material-fallback-mode=", "none")
+	var source_path := _arg_value("--barracks-material-source=", "")
+	var metadata_path := _arg_value("--barracks-material-metadata=", "")
+	if source_path == "":
+		source_path = ProjectSettings.globalize_path("res://../../artifacts/desktop-spikes/godot-salto/v0150/local-barracks-material-seam-repair/barrosan_barracks_material_v0149_768_wrapsafe_offset_blend.png")
+	if metadata_path == "":
+		metadata_path = ProjectSettings.globalize_path("res://../../artifacts/desktop-spikes/godot-salto/v0150/local-barracks-material-seam-repair/barrosan_barracks_material_v0149_768_wrapsafe_offset_blend.metadata.json")
+	if fallback_mode == "missing" and not _has_arg_prefix("--barracks-material-source="):
+		source_path = ProjectSettings.globalize_path("res://../../artifacts/desktop-spikes/godot-salto/v0162/missing-barracks-source/barrosan_barracks_material_v0149_768_wrapsafe_offset_blend.png")
+	return {
+		"enabled": _script_args().has("--barracks-material-opt-in"),
+		"sourcePath": source_path.replace("\\", "/"),
+		"metadataPath": metadata_path.replace("\\", "/"),
+		"expectedSha256": _arg_value("--barracks-material-expected-sha256=", "58a60b750370df084b60a1d92077da9367c0ba8a763781e2c3a8a7d96f1c980f").to_lower(),
+		"fallbackMode": fallback_mode,
+		"requestedBy": "GODOT_LAUNCH_SALTO_WORKER_BARRACKS_ART_EXPERIMENT_WINDOWS.bat or explicit --barracks-material-opt-in"
 	}
 
 func _arg_value(prefix: String, default_value: String = "") -> String:
@@ -1379,8 +1404,12 @@ func run_player_slice_validation() -> void:
 	var final_status := get_spike_status()
 	var worker_art: Dictionary = final_status.get("workerArtExperiment", {})
 	var worker_art_loaded := bool(worker_art.get("sourceLoaded", false))
+	var barracks_material: Dictionary = final_status.get("barracksMaterialExperiment", {})
+	var barracks_material_loaded := bool(barracks_material.get("sourceLoaded", false))
 	performance_smoke["workerArtOptInRequested"] = _script_args().has("--worker-art-opt-in")
 	performance_smoke["workerArtExperiment"] = worker_art
+	performance_smoke["barracksMaterialOptInRequested"] = _script_args().has("--barracks-material-opt-in")
+	performance_smoke["barracksMaterialExperiment"] = barracks_material
 	var report := {
 		"schemaVersion": 1,
 		"checkpoint": _player_capture_checkpoint(),
@@ -1388,16 +1417,21 @@ func run_player_slice_validation() -> void:
 		"artifactRoot": artifact_root,
 		"defaultHumanReviewPath": "GODOT_LAUNCH_PLAYER_SLICE_WINDOWS.bat",
 		"workerArtOptInHumanReviewPath": "GODOT_LAUNCH_SALTO_WORKER_ART_EXPERIMENT_WINDOWS.bat",
+		"workerBarracksArtOptInHumanReviewPath": "GODOT_LAUNCH_SALTO_WORKER_BARRACKS_ART_EXPERIMENT_WINDOWS.bat",
 		"privateHarnessPreservedSeparately": true,
 		"defaultMode": MODE_25D,
 		"defaultVisualPreset": VISUAL_PRESET_CLEAN,
 		"routineEditorUseRequired": false,
 		"manualGodotEditorSceneAssemblyRequired": false,
-		"proceduralPrimitiveOnly": not worker_art_loaded,
-		"generatedOrImportedArtIncluded": worker_art_loaded,
-		"runtimeArtIntegrated": worker_art_loaded,
+		"proceduralPrimitiveOnly": not worker_art_loaded and not barracks_material_loaded,
+		"generatedOrImportedArtIncluded": worker_art_loaded or barracks_material_loaded,
+		"runtimeArtIntegrated": worker_art_loaded or barracks_material_loaded,
 		"workerArtOptInRequested": _script_args().has("--worker-art-opt-in"),
 		"workerArtExperiment": worker_art,
+		"barracksMaterialOptInRequested": _script_args().has("--barracks-material-opt-in"),
+		"barracksMaterialExperiment": barracks_material,
+		"normalSliceOptInRequestedSlotCount": int(final_status.get("normalSliceOptInRequestedSlotCount", 0)),
+		"normalSliceOptInLoadedSlotCount": int(final_status.get("normalSliceOptInLoadedSlotCount", 0)),
 		"localStorageMutationAllowed": false,
 		"saveWritesAllowed": false,
 		"stableIdsChanged": false,
@@ -1461,6 +1495,8 @@ func run_player_slice_capture() -> void:
 	var final_status := get_spike_status()
 	var worker_art: Dictionary = final_status.get("workerArtExperiment", {})
 	var worker_art_loaded := bool(worker_art.get("sourceLoaded", false))
+	var barracks_material: Dictionary = final_status.get("barracksMaterialExperiment", {})
+	var barracks_material_loaded := bool(barracks_material.get("sourceLoaded", false))
 	var report := {
 		"schemaVersion": 1,
 		"checkpoint": _player_capture_checkpoint(),
@@ -1472,12 +1508,16 @@ func run_player_slice_capture() -> void:
 		"viewport": {"width": VIEWPORT_SIZE.x, "height": VIEWPORT_SIZE.y},
 		"defaultMode": MODE_25D,
 		"defaultVisualPreset": VISUAL_PRESET_CLEAN,
-		"privateHarnessPreservedSeparately": captures.any(func(capture: Dictionary) -> bool: return bool(capture.get("privateHarnessCapture", false))) or ["v0.126", "v0.127", "v0.128", "v0.129", "v0.130", "v0.160"].has(_player_capture_checkpoint()),
-		"proceduralPrimitiveOnly": not worker_art_loaded,
-		"generatedOrImportedArtIncluded": worker_art_loaded,
-		"runtimeArtIntegrated": worker_art_loaded,
+		"privateHarnessPreservedSeparately": captures.any(func(capture: Dictionary) -> bool: return bool(capture.get("privateHarnessCapture", false))) or ["v0.126", "v0.127", "v0.128", "v0.129", "v0.130", "v0.160", "v0.162"].has(_player_capture_checkpoint()),
+		"proceduralPrimitiveOnly": not worker_art_loaded and not barracks_material_loaded,
+		"generatedOrImportedArtIncluded": worker_art_loaded or barracks_material_loaded,
+		"runtimeArtIntegrated": worker_art_loaded or barracks_material_loaded,
 		"workerArtOptInRequested": _script_args().has("--worker-art-opt-in"),
 		"workerArtExperiment": worker_art,
+		"barracksMaterialOptInRequested": _script_args().has("--barracks-material-opt-in"),
+		"barracksMaterialExperiment": barracks_material,
+		"normalSliceOptInRequestedSlotCount": int(final_status.get("normalSliceOptInRequestedSlotCount", 0)),
+		"normalSliceOptInLoadedSlotCount": int(final_status.get("normalSliceOptInLoadedSlotCount", 0)),
 		"routineEditorUseRequired": false,
 		"errors": errors,
 		"captures": captures
@@ -1522,10 +1562,12 @@ func run_worker_art_opt_in_benchmark() -> void:
 	var average_frame_ms := frame_sum / float(max(1, frame_times.size()))
 	var final_status := get_spike_status()
 	var worker_art: Dictionary = final_status.get("workerArtExperiment", {})
+	var barracks_material: Dictionary = final_status.get("barracksMaterialExperiment", {})
+	var any_loaded := bool(worker_art.get("sourceLoaded", false)) or bool(barracks_material.get("sourceLoaded", false))
 	var report := {
 		"schemaVersion": 1,
-		"checkpoint": "v0.160",
-		"status": "PASS_V0160_WORKER_ART_OPT_IN_RUNTIME_BENCHMARK" if errors.is_empty() else "FAIL_V0160_WORKER_ART_OPT_IN_RUNTIME_BENCHMARK",
+		"checkpoint": _player_capture_checkpoint(),
+		"status": ("PASS_V0162_WORKER_BARRACKS_ART_OPT_IN_RUNTIME_BENCHMARK" if _script_args().has("--barracks-material-opt-in") else "PASS_V0160_WORKER_ART_OPT_IN_RUNTIME_BENCHMARK") if errors.is_empty() else ("FAIL_V0162_WORKER_BARRACKS_ART_OPT_IN_RUNTIME_BENCHMARK" if _script_args().has("--barracks-material-opt-in") else "FAIL_V0160_WORKER_ART_OPT_IN_RUNTIME_BENCHMARK"),
 		"artifactRoot": artifact_root,
 		"durationMs": snappedf(float(Time.get_ticks_usec() - start_usec) / 1000.0, 0.01),
 		"mode": MODE_25D,
@@ -1536,9 +1578,13 @@ func run_worker_art_opt_in_benchmark() -> void:
 		"frameTimeP99Ms": _percentile(frame_times, 0.99),
 		"workerArtOptInRequested": _script_args().has("--worker-art-opt-in"),
 		"workerArtExperiment": worker_art,
-		"proceduralPrimitiveOnly": not bool(worker_art.get("sourceLoaded", false)),
-		"generatedOrImportedArtIncluded": bool(worker_art.get("sourceLoaded", false)),
-		"runtimeArtIntegrated": bool(worker_art.get("sourceLoaded", false)),
+		"barracksMaterialOptInRequested": _script_args().has("--barracks-material-opt-in"),
+		"barracksMaterialExperiment": barracks_material,
+		"normalSliceOptInRequestedSlotCount": int(final_status.get("normalSliceOptInRequestedSlotCount", 0)),
+		"normalSliceOptInLoadedSlotCount": int(final_status.get("normalSliceOptInLoadedSlotCount", 0)),
+		"proceduralPrimitiveOnly": not any_loaded,
+		"generatedOrImportedArtIncluded": any_loaded,
+		"runtimeArtIntegrated": any_loaded,
 		"cacheCounters": {
 			"sourceLoadCount": int(worker_art.get("sourceLoadCount", 0)),
 			"metadataParseCount": int(worker_art.get("metadataParseCount", 0)),
@@ -1546,7 +1592,14 @@ func run_worker_art_opt_in_benchmark() -> void:
 			"textureCreateCount": int(worker_art.get("textureCreateCount", 0)),
 			"materialCreateCount": int(worker_art.get("materialCreateCount", 0)),
 			"meshCreateCount": int(worker_art.get("meshCreateCount", 0)),
-			"materialReuseCount": int(worker_art.get("materialReuseCount", 0))
+			"materialReuseCount": int(worker_art.get("materialReuseCount", 0)),
+			"barracksSourceLoadCount": int(barracks_material.get("sourceLoadCount", 0)),
+			"barracksMetadataParseCount": int(barracks_material.get("metadataParseCount", 0)),
+			"barracksImageDecodeCount": int(barracks_material.get("imageDecodeCount", 0)),
+			"barracksTextureCreateCount": int(barracks_material.get("textureCreateCount", 0)),
+			"barracksMaterialCreateCount": int(barracks_material.get("materialCreateCount", 0)),
+			"barracksMaterialReuseCount": int(barracks_material.get("materialReuseCount", 0)),
+			"barracksAppliedSurfaceCount": int(barracks_material.get("appliedSurfaceCount", 0))
 		},
 		"steps": steps,
 		"errors": errors,
@@ -3871,6 +3924,8 @@ func _apply_player_slice_action(action: String) -> Dictionary:
 
 func _player_capture_checkpoint() -> String:
 	var normalized_root := _artifact_root_from_args().replace("\\", "/")
+	if normalized_root.contains("/v0162"):
+		return "v0.162"
 	if normalized_root.contains("/v0160"):
 		return "v0.160"
 	if normalized_root.contains("/v0130"):
@@ -3886,10 +3941,10 @@ func _player_capture_checkpoint() -> String:
 	return "v0.124"
 
 func _is_bounded_microloop_checkpoint() -> bool:
-	return ["v0.129", "v0.130", "v0.160"].has(_player_capture_checkpoint())
+	return ["v0.129", "v0.130", "v0.160", "v0.162"].has(_player_capture_checkpoint())
 
 func _player_capture_steps() -> Array[Dictionary]:
-	if _player_capture_checkpoint() == "v0.160":
+	if _player_capture_checkpoint() == "v0.160" or _player_capture_checkpoint() == "v0.162":
 		return [
 			{"id": "title", "label": "Title shell with configured 2.5D backdrop", "action": "title"},
 			{"id": "briefing", "label": "Briefing shell", "action": "briefing"},

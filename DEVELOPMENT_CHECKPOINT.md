@@ -1,6 +1,78 @@
 # Development Checkpoint
 
-Updated: 2026-06-07 v0.161 Godot Salto Worker-Art Opt-In Visual QA Hardening And Human Review Stop
+Updated: 2026-06-07 v0.162 Godot Salto Worker + Barracks Art Opt-In Human Review Stop
+
+## v0.162 Godot Salto Worker + Barracks Art Opt-In Human Review Stop - 2026-06-07
+
+Scope: two-slot Godot player-slice opt-in experiment. This checkpoint adds only the selected v0.150 seam-repaired Barracks material behind a new combined Worker + Barracks launcher, keeps the default stabilized launcher procedural, preserves the existing Worker-only launcher, and stops for Emmanuel review.
+
+Included work:
+
+- Confirmed v0.161 prerequisite status `PASS_V0161_WORKER_ART_OPT_IN_HUMAN_REVIEW_READY`.
+- Preserved Worker slot `worker_billboard_static_v0147` / `HYBRID_WORKER_TRIMMED_1024` and SHA-256 `a628065ca92b231b0d4f6a0625d9e259dea080e80d530ee688483611d70049bc`.
+- Added Barracks slot `barrosan_barracks_material_v0149` / `HYBRID_BARRACKS_768_WRAPSAFE_OFFSET_BLEND` and SHA-256 `58a60b750370df084b60a1d92077da9367c0ba8a763781e2c3a8a7d96f1c980f`.
+- Added `GODOT_LAUNCH_SALTO_WORKER_BARRACKS_ART_EXPERIMENT_WINDOWS.bat`.
+- Added `GODOT_VALIDATE_SALTO_WORKER_BARRACKS_ART_EXPERIMENT_WINDOWS.bat`.
+- Added `GODOT_CAPTURE_SALTO_WORKER_BARRACKS_ART_EXPERIMENT_WINDOWS.bat`.
+- Added v0.162 validation/capture/benchmark/real-input/boundary aggregation tooling.
+- Added v0.162 docs and scaffold guardrail coverage.
+
+Current interpretation:
+
+- The default stabilized launcher remains procedural.
+- The existing Worker-only launcher remains Worker-only.
+- The combined launcher requests exactly two normal-slice opt-in slots.
+- Barracks missing-art and hash-mismatch fallback fail closed to procedural Barracks while Worker art remains active.
+- Browser runtime, production manifests, saves, stable IDs, third art slots, gameplay, objectives, input semantics, balance, AI, map content, campaign state, and v0.163 remain out of scope.
+
+Required verification:
+
+```text
+npm test
+npm run build
+npm run validate:content
+npm run validate:art-intake
+npm run art:reference:init
+npm run art:reference:validate
+npm run art:reference:contact-sheet
+npm run art:reference:review-pack
+npm run godot:validate:player-slice
+npm run godot:validate:salto-worker-art-experiment
+npm run godot:validate:salto-worker-barracks-art-experiment
+npm run godot:capture:salto-worker-barracks-art-experiment
+npm run godot:benchmark:salto-worker-barracks-art-experiment
+Windows-side Computer Use review where available
+npx vitest run src/game/desktop-spike/GodotSaltoSpikeScaffold.test.ts
+boundary scans
+git diff --check
+```
+
+Verification results:
+
+```text
+PASS: npm test - 122 files / 876 tests.
+PASS: npm run build.
+PASS: npm run validate:content.
+PASS: npm run validate:art-intake.
+PASS: npm run art:reference:init.
+PASS: npm run art:reference:validate - PASS_V0138_REFERENCE_METADATA.
+PASS: npm run art:reference:contact-sheet - PASS_V0138_REFERENCE_CONTACT_SHEET.
+PASS: npm run art:reference:review-pack - PASS_V0138_REFERENCE_REVIEW_PACK.
+PASS: npm run godot:validate:player-slice.
+PASS: npm run godot:validate:salto-worker-art-experiment.
+PASS: npm run godot:validate:salto-worker-barracks-art-experiment - PASS_V0162_WORKER_BARRACKS_ART_OPT_IN_AUTOMATION_READY.
+PASS: npm run godot:capture:salto-worker-barracks-art-experiment.
+PASS: npm run godot:benchmark:salto-worker-barracks-art-experiment.
+PASS: validation - PASS_V0162_BARRACKS_MATERIAL_OPT_IN_VALIDATION and PASS_V0162_BARRACKS_MATERIAL_OPT_IN_FUNCTIONAL.
+PASS: capture - PASS_V0162_BARRACKS_MATERIAL_OPT_IN_CAPTURE.
+PASS: benchmark - PASS_V0162_BARRACKS_MATERIAL_OPT_IN_BENCHMARK; Worker-only FPS 0.9975, combined FPS 1.0028, Worker-only P95 1.0106, combined P95 1.0334.
+PASS: real-input - PASS_V0162_BARRACKS_MATERIAL_OPT_IN_REAL_INPUT with debugShortcutUsed=false and stateInjectionUsed=false.
+PASS: boundary - PASS_V0162_PLAYER_SLICE_TWO_SLOT_BOUNDARY; default launcher unchanged, Worker-only launcher unchanged, package leakage false.
+PASS: Windows-side Computer Use smoke - packaged combined opt-in app reached title, briefing, and battle view, then closed cleanly.
+PASS: npx vitest run src/game/desktop-spike/GodotSaltoSpikeScaffold.test.ts - 42 tests.
+PASS: node --check tools/godot/saltoWorkerBarracksArtOptInTool.mjs.
+PASS: git diff --check.
+```
 
 ## v0.161 Godot Salto Worker-Art Opt-In Visual QA Hardening And Human Review Stop - 2026-06-07
 

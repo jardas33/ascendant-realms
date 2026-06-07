@@ -3107,4 +3107,112 @@ describe("Godot Salto spike scaffold", () => {
       expect(playerLauncher).not.toContain(text);
     });
   });
+
+  it("defines the v0.162 Barracks material second opt-in player-slice integration gate", async () => {
+    [
+      "GODOT_LAUNCH_SALTO_WORKER_BARRACKS_ART_EXPERIMENT_WINDOWS.bat",
+      "GODOT_VALIDATE_SALTO_WORKER_BARRACKS_ART_EXPERIMENT_WINDOWS.bat",
+      "GODOT_CAPTURE_SALTO_WORKER_BARRACKS_ART_EXPERIMENT_WINDOWS.bat",
+      "tools/godot/launchGodotSaltoWorkerBarracksArtExperimentWindows.ps1",
+      "tools/godot/validateGodotSaltoWorkerBarracksArtExperimentWindows.ps1",
+      "tools/godot/captureGodotSaltoWorkerBarracksArtExperimentWindows.ps1",
+      "tools/godot/runGodotSaltoWorkerBarracksArtExperimentBenchmarkWindows.ps1",
+      "tools/godot/saltoWorkerBarracksArtOptInTool.mjs",
+      "docs/V0162_GODOT_PLAYER_SLICE_BARRACKS_MATERIAL_OPT_IN_SPEC.md",
+      "docs/V0162_BARRACKS_MATERIAL_OPT_IN_SLOT_CONTRACT.md",
+      "docs/V0162_BARRACKS_MATERIAL_OPT_IN_FUNCTIONAL_REPORT.md",
+      "docs/V0162_BARRACKS_MATERIAL_OPT_IN_VISUAL_REVIEW_GUIDE.md",
+      "docs/V0162_BARRACKS_MATERIAL_OPT_IN_BENCHMARK_REPORT.md",
+      "docs/V0162_BARRACKS_MATERIAL_OPT_IN_ROLLBACK_REPORT.md",
+      "docs/V0162_PLAYER_SLICE_TWO_SLOT_BOUNDARY.md",
+      "docs/V0162_IMPLEMENTATION_REPORT.md"
+    ].forEach((path) => expect(existsSync(path), path).toBe(true));
+
+    const packageJson = JSON.parse(await readFile("package.json", "utf8")) as { scripts: Record<string, string> };
+    const rootScript = await readFile("desktop-spikes/godot-salto/scripts/salto_spike_root.gd", "utf8");
+    const sceneScript = await readFile("desktop-spikes/godot-salto/scripts/salto_spike_scene_3d.gd", "utf8");
+    const launchScript = await readFile("tools/godot/launchGodotSaltoWorkerBarracksArtExperimentWindows.ps1", "utf8");
+    const validateScript = await readFile("tools/godot/validateGodotSaltoWorkerBarracksArtExperimentWindows.ps1", "utf8");
+    const captureScript = await readFile("tools/godot/captureGodotSaltoWorkerBarracksArtExperimentWindows.ps1", "utf8");
+    const benchmarkScript = await readFile("tools/godot/runGodotSaltoWorkerBarracksArtExperimentBenchmarkWindows.ps1", "utf8");
+    const toolScript = await readFile("tools/godot/saltoWorkerBarracksArtOptInTool.mjs", "utf8");
+    const boundary = await readFile("docs/V0162_PLAYER_SLICE_TWO_SLOT_BOUNDARY.md", "utf8");
+    const implementation = await readFile("docs/V0162_IMPLEMENTATION_REPORT.md", "utf8");
+    const stabilizedLauncher = await readFile("GODOT_LAUNCH_STABILIZED_SALTO_REVIEW_WINDOWS.bat", "utf8");
+    const playerLauncher = await readFile("GODOT_LAUNCH_PLAYER_SLICE_WINDOWS.bat", "utf8");
+    const workerOnlyLauncher = await readFile("GODOT_LAUNCH_SALTO_WORKER_ART_EXPERIMENT_WINDOWS.bat", "utf8");
+    const workerOnlyLaunchScript = await readFile("tools/godot/launchGodotSaltoWorkerArtExperimentWindows.ps1", "utf8");
+
+    [
+      "godot:launch:salto-worker-barracks-art-experiment",
+      "godot:validate:salto-worker-barracks-art-experiment",
+      "godot:capture:salto-worker-barracks-art-experiment",
+      "godot:benchmark:salto-worker-barracks-art-experiment"
+    ].forEach((script) => expect(packageJson.scripts[script]).toBeTypeOf("string"));
+
+    [
+      "--barracks-material-opt-in",
+      "--barracks-material-source=",
+      "--barracks-material-metadata=",
+      "--barracks-material-expected-sha256=",
+      "--barracks-material-fallback-mode=",
+      "configure_barracks_material_experiment",
+      "v0.162"
+    ].forEach((text) => expect(rootScript).toContain(text));
+
+    [
+      "BARRACKS_MATERIAL_SLOT_ID := \"barrosan_barracks_material_v0149\"",
+      "HYBRID_BARRACKS_768_WRAPSAFE_OFFSET_BLEND",
+      "58a60b750370df084b60a1d92077da9367c0ba8a763781e2c3a8a7d96f1c980f",
+      "configure_barracks_material_experiment",
+      "metadata approach mismatch",
+      "source hash mismatch",
+      "ImageTexture.create_from_image",
+      "_add_barracks_material_box"
+    ].forEach((text) => expect(sceneScript).toContain(text));
+
+    [
+      "worker_billboard_static_v0147_trimmed_1024.png",
+      "barrosan_barracks_material_v0149_768_wrapsafe_offset_blend.png",
+      "--player-slice",
+      "--worker-art-opt-in",
+      "--barracks-material-opt-in"
+    ].forEach((text) => expect(launchScript).toContain(text));
+
+    [
+      "default-procedural",
+      "worker-only",
+      "worker-barracks",
+      "barracks-missing-art-fallback",
+      "barracks-hash-mismatch-fallback",
+      "PASS_V0162_WORKER_BARRACKS_ART_OPT_IN_AUTOMATION_READY"
+    ].forEach((text) => expect(validateScript).toContain(text));
+
+    expect(captureScript).toContain("saltoWorkerBarracksArtOptInTool.mjs");
+    expect(benchmarkScript).toContain("saltoWorkerBarracksArtOptInTool.mjs");
+
+    [
+      "PASS_V0162_BARRACKS_MATERIAL_OPT_IN_VALIDATION",
+      "PASS_V0162_BARRACKS_MATERIAL_OPT_IN_CAPTURE",
+      "PASS_V0162_BARRACKS_MATERIAL_OPT_IN_BENCHMARK",
+      "PASS_V0162_PLAYER_SLICE_TWO_SLOT_BOUNDARY",
+      "PASS_V0162_BARRACKS_MATERIAL_OPT_IN_HUMAN_REVIEW_READY",
+      "workerRemainsActiveDuringBarracksFallback"
+    ].forEach((text) => expect(toolScript).toContain(text));
+
+    expect(boundary).toContain("Worker-only launcher SHA-256");
+    expect(boundary).toContain("Forbidden in v0.162");
+    expect(implementation).toContain("No third slot");
+
+    [
+      "barracks-material-opt-in",
+      "barrosan_barracks_material_v0149",
+      "HYBRID_BARRACKS_768_WRAPSAFE_OFFSET_BLEND"
+    ].forEach((text) => {
+      expect(stabilizedLauncher).not.toContain(text);
+      expect(playerLauncher).not.toContain(text);
+      expect(workerOnlyLauncher).not.toContain(text);
+      expect(workerOnlyLaunchScript).not.toContain(text);
+    });
+  });
 });
