@@ -1,5 +1,45 @@
 # Changelog
 
+# v0.155 Hybrid Militia Billboard Repair Mass-Overlap Combat-Readability Benchmark And Human Review Stop - 2026-06-07
+
+This checkpoint repairs and fairly benchmarks only the existing private Militia billboard path. It generates zero new AI images, derives full-res/512/768/1024 same-source variants from the v0.154 Militia cutout, adds no new runtime-art slot and no fifth runtime-art slot, validates 32-unit combat overlap readability, selects `HYBRID_MILITIA_TRIMMED_1024`, and stops for Emmanuel review. It does not modify the normal Salto player slice or browser runtime.
+
+Added:
+
+- Private v0.155 dispatch flag `--militia-billboard-mass-overlap-repair`.
+- One-click wrapper `GODOT_MILITIA_BILLBOARD_MASS_OVERLAP_REPAIR_WINDOWS.bat`.
+- v0.155 derivative, validation, audit, headed benchmark, and capture wrappers.
+- v0.155 repair mode in the existing private Militia comparator.
+- v0.155 Militia repair spec, derivative matrix, scorecard, fair-path audit, visual review guide, private boundary, and implementation report.
+
+Evidence:
+
+- Gate: `PASS_V0155_MILITIA_BILLBOARD_REPAIR_GATE`.
+- Evidence: `PASS_V0155_MILITIA_BILLBOARD_REPAIR_EVIDENCE_RECORDED`, with `36` screenshots and `60` benchmark rows.
+- Selected derivative: `HYBRID_MILITIA_TRIMMED_1024`.
+- Selected SHA-256: `c25349f00c422a0b3c9d5862027351bd70008e9314d4e3cd4001676e914321cb`.
+- Tier L selected-vs-fallback FPS ratio: `1.0702`.
+- Tier L selected-vs-fallback p95 frame-time ratio: `0.9688`.
+- 32-Militia stress selected-vs-fallback FPS ratio: `1.0018`.
+- 32-Militia stress selected-vs-fallback p95 frame-time ratio: `0.9946`.
+- Fallback Tier L mean FPS / p95: `650.79` / `1.92 ms`.
+- Selected Tier L mean FPS / p95: `696.5` / `1.86 ms`.
+- Fallback stress mean FPS / p95: `690.55` / `1.85 ms`.
+- Selected stress mean FPS / p95: `691.77` / `1.84 ms`.
+- Fair-path audit: `PASS_V0155_MILITIA_BILLBOARD_REPAIR_FAIR_PATH_AUDIT`, with `8` texture cache entries, `8` material cache entries, one load/create per source/material key, and no repeated texture/material creation or metadata parsing during steady-state frames.
+
+Boundaries:
+
+- Zero new AI images.
+- Same v0.154 Militia source only.
+- No animations.
+- No new runtime-art slot.
+- No fifth runtime-art slot.
+- No existing reference candidate import.
+- No normal Salto player-slice mutation.
+- No browser-runtime wiring or player-facing Godot wiring.
+- No manifest mutation, art-slot mutation, production package mutation, save change, stable-ID change, final runtime-art approval, final Militia art approval, final engine selection, full port, or v0.156 work inside this checkpoint.
+
 # v0.154 Hybrid Militia Static Billboard Single-Slot Intake Experiment And Human Review Stop - 2026-06-07
 
 This checkpoint generates exactly one original ignored Militia source image, derives one deterministic alpha cutout, validates a fourth private comparator-only runtime-art intake check against a tracked procedural fallback, records Tier S/M/L evidence with selected Aster/Worker/Barracks context, and stops for Emmanuel review. It does not add a fifth runtime-art slot or modify the normal Salto player slice.

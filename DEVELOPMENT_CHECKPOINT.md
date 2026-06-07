@@ -1,6 +1,55 @@
 # Development Checkpoint
 
-Updated: 2026-06-07 v0.154 Hybrid Militia Static Billboard Single-Slot Intake Experiment And Human Review Stop
+Updated: 2026-06-07 v0.155 Hybrid Militia Billboard Repair Mass-Overlap Combat-Readability Benchmark And Human Review Stop
+
+## v0.155 Hybrid Militia Billboard Repair Mass-Overlap Combat-Readability Benchmark And Human Review Stop - 2026-06-07
+
+Scope: isolated private Godot Militia billboard repair checkpoint. This checkpoint generates zero new AI images, uses only the existing v0.154 Militia cutout, derives full-res/512/768/1024 deterministic same-source variants, benchmarks fallback/full/512/768/1024 at S/M/L plus 32-Militia stress, selects `HYBRID_MILITIA_TRIMMED_1024`, and does not modify the normal Salto player slice or browser runtime.
+
+Included work:
+
+- Confirmed clean synchronized `main` at `17cc1de5620c80c75ee6481508e8c783ec5aa40d`.
+- Confirmed v0.154 pushed remote CI success and prerequisite PASS gates.
+- Added private `--militia-billboard-mass-overlap-repair` dispatch and v0.155 wrappers.
+- Added deterministic full-res, 512, 768, and 1024 Militia derivatives under the ignored v0.155 artifact root.
+- Captured checkerboard/dark/light alpha review, normal/zoomed RTS distance, 4/8/16/32 overlap, Aster hierarchy, Worker distinction, rings, formation spacing, sorting, pan/zoom pivot, fallback, and Tier S/M/L/stress evidence.
+
+Current interpretation:
+
+- Gate: `PASS_V0155_MILITIA_BILLBOARD_REPAIR_GATE`.
+- Evidence marker: `PASS_V0155_MILITIA_BILLBOARD_REPAIR_EVIDENCE_RECORDED`.
+- Fair-path audit: `PASS_V0155_MILITIA_BILLBOARD_REPAIR_FAIR_PATH_AUDIT`.
+- Selected derivative: `HYBRID_MILITIA_TRIMMED_1024`.
+- Selected SHA-256: `c25349f00c422a0b3c9d5862027351bd70008e9314d4e3cd4001676e914321cb`.
+- Tier L selected average-FPS ratio: `1.0702`.
+- Tier L selected p95 ratio: `0.9688`.
+- 32-Militia stress selected average-FPS ratio: `1.0018`.
+- 32-Militia stress selected p95 ratio: `0.9946`.
+- Screenshot count: `36`; benchmark row count: `60`.
+- Fair-path audit cache posture: `8` texture cache entries, `8` material cache entries, one load/create per source/material key, and no repeated texture/material creation or metadata parsing during steady-state frames.
+- Human review is pending.
+- v0.156 has not started.
+
+Verification:
+
+```text
+Required closeout stack:
+npm test
+npm run build
+npm run validate:content
+npm run validate:art-intake
+npm run art:reference:init
+npm run art:reference:validate
+npm run art:reference:contact-sheet
+npm run art:reference:review-pack
+npm run godot:militia-billboard-repair:derivatives:reproduce
+npm run godot:militia-billboard-repair:validate
+npm run godot:militia-billboard-repair:benchmark:headed
+npm run godot:militia-billboard-repair:audit
+npm run godot:militia-billboard-repair:capture
+isolation scans
+git diff --check
+```
 
 ## v0.154 Hybrid Militia Static Billboard Single-Slot Intake Experiment And Human Review Stop - 2026-06-07
 

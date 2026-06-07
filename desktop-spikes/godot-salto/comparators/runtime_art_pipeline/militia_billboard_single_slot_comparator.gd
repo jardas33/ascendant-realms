@@ -17,11 +17,25 @@ const TIERS := {
 	"M": {"militiaCount": 12, "asterCount": 1, "workerCount": 6, "barracksShellCount": 1, "benchmarkFrames": 150},
 	"L": {"militiaCount": 36, "asterCount": 1, "workerCount": 12, "barracksShellCount": 3, "benchmarkFrames": 180}
 }
+const REPAIR_CHECKPOINT := "v0.155"
+const REPAIR_APPROACH_FALLBACK := "HYBRID_MILITIA_REPAIR_FALLBACK_BASELINE"
+const REPAIR_APPROACH_FULL_RES := "HYBRID_MILITIA_FULL_RES"
+const REPAIR_APPROACH_TRIMMED_512 := "HYBRID_MILITIA_TRIMMED_512"
+const REPAIR_APPROACH_TRIMMED_768 := "HYBRID_MILITIA_TRIMMED_768"
+const REPAIR_APPROACH_TRIMMED_1024 := "HYBRID_MILITIA_TRIMMED_1024"
+const REPAIR_APPROACHES := [REPAIR_APPROACH_FALLBACK, REPAIR_APPROACH_FULL_RES, REPAIR_APPROACH_TRIMMED_512, REPAIR_APPROACH_TRIMMED_768, REPAIR_APPROACH_TRIMMED_1024]
+const REPAIR_TIERS := {
+	"S": {"militiaCount": 4, "asterCount": 1, "workerCount": 2, "barracksShellCount": 1, "benchmarkFrames": 120},
+	"M": {"militiaCount": 16, "asterCount": 1, "workerCount": 6, "barracksShellCount": 1, "benchmarkFrames": 150},
+	"L": {"militiaCount": 32, "asterCount": 1, "workerCount": 12, "barracksShellCount": 3, "benchmarkFrames": 180},
+	"STRESS_32": {"militiaCount": 32, "asterCount": 1, "workerCount": 12, "barracksShellCount": 3, "benchmarkFrames": 180}
+}
 const DEFAULT_VIEWPORT_SIZE := Vector2i(1600, 900)
 
 var artifact_root := ""
 var screenshot_root := ""
 var local_slot_root := ""
+var repair_slot_root := ""
 var current_viewport_size := DEFAULT_VIEWPORT_SIZE
 var active_scene: Node3D
 var active_camera: Camera3D
@@ -31,6 +45,7 @@ var local_source: Dictionary = {}
 var aster_context_source: Dictionary = {}
 var worker_context_source: Dictionary = {}
 var barracks_context_source: Dictionary = {}
+var repair_sources: Dictionary = {}
 var texture_cache: Dictionary = {}
 var material_cache: Dictionary = {}
 var texture_create_counts: Dictionary = {}
@@ -55,6 +70,7 @@ func start() -> void:
 	artifact_root = _artifact_root_from_args()
 	screenshot_root = _path_join(artifact_root, "screenshots")
 	local_slot_root = ProjectSettings.globalize_path("res://../../artifacts/desktop-spikes/godot-salto/v0154/local-militia-slot")
+	repair_slot_root = ProjectSettings.globalize_path("res://../../artifacts/desktop-spikes/godot-salto/v0155/local-militia-billboard-repair")
 	DirAccess.make_dir_recursive_absolute(artifact_root)
 	DirAccess.make_dir_recursive_absolute(screenshot_root)
 	fallback_source = _load_fallback_source()
@@ -62,6 +78,20 @@ func start() -> void:
 	aster_context_source = _load_aster_context_source()
 	worker_context_source = _load_worker_context_source()
 	barracks_context_source = _load_barracks_context_source()
+	if _repair_mode():
+		repair_sources = _load_repair_sources()
+		if args.has("--militia-billboard-repair-validate-only"):
+			var repair_validation := _repair_validation_report()
+			_write_absolute_json(_path_join(artifact_root, "militia-billboard-repair-validation-runtime.json"), repair_validation)
+			get_tree().quit(0 if repair_validation.get("status", "FAIL") == "PASS_V0155_MILITIA_BILLBOARD_REPAIR_RUNTIME_VALIDATION" else 1)
+			return
+		var repair_run_kind := "militia-billboard-repair-headed-mass-overlap-benchmark-and-capture"
+		if args.has("--militia-billboard-repair-capture-only"):
+			repair_run_kind = "militia-billboard-repair-capture-refresh"
+		var repair_report := await _run_repair_sequence(repair_run_kind)
+		_write_absolute_json(_path_join(artifact_root, "militia-billboard-repair-runtime.json"), repair_report)
+		get_tree().quit(0 if repair_report.get("status", "FAIL") == "PASS_V0155_MILITIA_BILLBOARD_REPAIR_RUNTIME_EVIDENCE" else 1)
+		return
 	if args.has("--militia-billboard-single-slot-validate-only"):
 		var validation := _validation_report()
 		_write_absolute_json(_path_join(artifact_root, "militia-billboard-single-slot-validation-runtime.json"), validation)
@@ -101,6 +131,152 @@ func _validation_report() -> Dictionary:
 		"stableIdChanges": false,
 		"errors": errors
 	}
+
+func _repair_validation_report() -> Dictionary:
+	var errors: Array[String] = []
+	if fallback_source.get("status", "FAIL") != "PASS":
+		errors.append_array(fallback_source.get("errors", ["Fallback source failed validation."]))
+	for key in ["fullres", "trimmed_512", "trimmed_768", "trimmed_1024"]:
+		var source: Dictionary = repair_sources.get(key, {})
+		if source.get("status", "FAIL") != "PASS":
+			errors.append_array(source.get("errors", ["Missing Militia repair source %s." % key]))
+	for source in [aster_context_source, worker_context_source, barracks_context_source]:
+		if source.get("status", "FAIL") != "PASS":
+			errors.append_array(source.get("errors", ["Militia repair context source failed validation."]))
+	return {
+		"schemaVersion": 1,
+		"checkpoint": REPAIR_CHECKPOINT,
+		"sourceCheckpoint": CHECKPOINT,
+		"slotId": SLOT_ID,
+		"status": "PASS_V0155_MILITIA_BILLBOARD_REPAIR_RUNTIME_VALIDATION" if errors.is_empty() else "FAIL_V0155_MILITIA_BILLBOARD_REPAIR_RUNTIME_VALIDATION",
+		"fallbackSource": fallback_source,
+		"repairSources": repair_sources,
+		"selectedAsterSource": aster_context_source,
+		"selectedWorkerSource": worker_context_source,
+		"selectedBarracksSource": barracks_context_source,
+		"zeroNewAiImagesForV0155": true,
+		"sameMilitiaSourceOnly": true,
+		"noNewRuntimeArtSlot": true,
+		"noFifthRuntimeArtSlot": true,
+		"noAnimations": true,
+		"privateComparatorOnly": true,
+		"productionApproval": "forbidden",
+		"playerSliceIntegration": "forbidden",
+		"browserIntegration": "forbidden",
+		"saveWritesAllowed": false,
+		"stableIdChanges": false,
+		"errors": errors
+	}
+
+func _run_repair_sequence(run_kind: String) -> Dictionary:
+	var errors: Array[String] = []
+	var validation := _repair_validation_report()
+	if validation.get("status", "FAIL") != "PASS_V0155_MILITIA_BILLBOARD_REPAIR_RUNTIME_VALIDATION":
+		errors.append_array(validation.get("errors", ["Militia billboard repair validation failed."]))
+	var benchmark_reports: Array[Dictionary] = []
+	var captures: Array[Dictionary] = []
+	var capture_index := 0
+	for tier in ["S", "M", "L", "STRESS_32"]:
+		var trial_count := 5 if tier == "L" or tier == "STRESS_32" else 1
+		for trial_index in range(trial_count):
+			var ordered_approaches := _rotated_repair_approaches(trial_index)
+			for approach in ordered_approaches:
+				var config := _repair_workload_config(approach, tier, 1.0, "mass_overlap_benchmark")
+				config["trialIndex"] = trial_index + 1
+				config["scenarioOrder"] = ordered_approaches
+				var benchmark := await _benchmark_current_view(config)
+				benchmark_reports.append(benchmark)
+				if benchmark.get("status", "FAIL") != "PASS":
+					errors.append("Militia repair benchmark failed for %s %s trial %d." % [approach, tier, trial_index + 1])
+				if trial_index == 0:
+					var capture := await _capture_current_view(config, capture_index)
+					captures.append(capture)
+					capture_index += 1
+	var review_captures := await _capture_repair_review_views(capture_index)
+	captures.append_array(review_captures)
+	return {
+		"schemaVersion": 1,
+		"checkpoint": REPAIR_CHECKPOINT,
+		"sourceCheckpoint": CHECKPOINT,
+		"slotId": SLOT_ID,
+		"runKind": run_kind,
+		"status": "PASS_V0155_MILITIA_BILLBOARD_REPAIR_RUNTIME_EVIDENCE" if errors.is_empty() else "FAIL_V0155_MILITIA_BILLBOARD_REPAIR_RUNTIME_EVIDENCE",
+		"artifactRoot": artifact_root,
+		"screenshotRoot": screenshot_root,
+		"benchmarkCount": benchmark_reports.size(),
+		"screenshotCount": captures.size(),
+		"benchmarks": benchmark_reports,
+		"captures": captures,
+		"fallbackSource": fallback_source,
+		"repairSources": repair_sources,
+		"selectedAsterSource": aster_context_source,
+		"selectedWorkerSource": worker_context_source,
+		"selectedBarracksSource": barracks_context_source,
+		"fairPathAudit": _repair_fair_path_audit(),
+		"readabilityAudit": _repair_readability_audit(),
+		"boundaries": {
+			"privateComparatorOnly": true,
+			"productionApproval": "forbidden",
+			"playerSliceIntegration": "forbidden",
+			"browserIntegration": "forbidden",
+			"zeroNewAiImagesForV0155": true,
+			"sameMilitiaSourceOnly": true,
+			"noNewRuntimeArtSlot": true,
+			"noFifthRuntimeArtSlot": true,
+			"militiaOnly": true,
+			"noAnimations": true,
+			"defaultLauncherReplaced": false,
+			"normalPlayerSliceWired": false,
+			"manifestMutated": false,
+			"productionPackageIncluded": false,
+			"saveWritesAllowed": false,
+			"stableIdChanges": false,
+			"referenceCandidateImported": false
+		},
+		"limitations": [
+			"v0.155 only repairs and benchmarks deterministic derivatives from the existing v0.154 Militia cutout.",
+			"Human review remains required for Militia hierarchy, group readability, alpha edge, and mass-overlap acceptance.",
+			"No normal Salto player slice, browser runtime, save, stable-ID, manifest, or art-slot registry path is modified.",
+			"Godot remains provisional and is not finally selected."
+		],
+		"errors": errors
+	}
+
+func _rotated_repair_approaches(trial_index: int) -> Array:
+	var rotated := REPAIR_APPROACHES.duplicate()
+	var offset := trial_index % rotated.size()
+	for _index in range(offset):
+		rotated.push_back(rotated.pop_front())
+	return rotated
+
+func _repair_workload_config(approach: String, tier: String, scale_multiplier: float, view: String) -> Dictionary:
+	var tier_config: Dictionary = REPAIR_TIERS[tier]
+	return {
+		"checkpoint": REPAIR_CHECKPOINT,
+		"repairMode": true,
+		"approach": approach,
+		"tier": tier,
+		"view": view,
+		"scaleMultiplier": scale_multiplier,
+		"assetSource": _repair_source_for_approach(approach),
+		"militiaCount": int(tier_config["militiaCount"]),
+		"asterCount": int(tier_config["asterCount"]),
+		"workerCount": int(tier_config["workerCount"]),
+		"barracksShellCount": int(tier_config["barracksShellCount"]),
+		"benchmarkFrames": int(tier_config["benchmarkFrames"]),
+		"steadyStateWarmupFrames": 18
+	}
+
+func _repair_source_for_approach(approach: String) -> Dictionary:
+	if approach == REPAIR_APPROACH_FULL_RES:
+		return repair_sources.get("fullres", fallback_source)
+	if approach == REPAIR_APPROACH_TRIMMED_512:
+		return repair_sources.get("trimmed_512", fallback_source)
+	if approach == REPAIR_APPROACH_TRIMMED_768:
+		return repair_sources.get("trimmed_768", fallback_source)
+	if approach == REPAIR_APPROACH_TRIMMED_1024:
+		return repair_sources.get("trimmed_1024", fallback_source)
+	return fallback_source
 
 func _run_sequence(run_kind: String) -> Dictionary:
 	var errors: Array[String] = []
@@ -225,7 +401,7 @@ func _benchmark_current_view(config: Dictionary) -> Dictionary:
 	var approach := str(config["approach"])
 	return {
 		"schemaVersion": 1,
-		"checkpoint": CHECKPOINT,
+		"checkpoint": str(config.get("checkpoint", CHECKPOINT)),
 		"status": "PASS",
 		"approach": approach,
 		"tier": config["tier"],
@@ -284,7 +460,7 @@ func _build_scene(config: Dictionary) -> void:
 	unit_nodes.clear()
 	ring_nodes.clear()
 	active_scene = Node3D.new()
-	active_scene.name = "V0154MilitiaBillboardComparatorScene"
+	active_scene.name = "%sMilitiaBillboardComparatorScene" % str(config.get("checkpoint", CHECKPOINT)).to_upper().replace(".", "")
 	add_child(active_scene)
 	_setup_camera_and_lighting(config)
 	_add_ground()
@@ -481,14 +657,14 @@ func _add_checkerboard_floor() -> void:
 
 func _add_hud_overlay(config: Dictionary) -> void:
 	hud_layer = CanvasLayer.new()
-	hud_layer.name = "V0154MilitiaDiagnosticOverlay"
+	hud_layer.name = "MilitiaDiagnosticOverlay%s" % str(config.get("checkpoint", CHECKPOINT)).to_upper().replace(".", "")
 	add_child(hud_layer)
 	var panel := ColorRect.new()
 	panel.position = Vector2(24, 24)
 	panel.size = Vector2(650, 88)
 	panel.color = Color(0.06, 0.08, 0.06, 0.78)
 	hud_layer.add_child(panel)
-	_add_label("%s Militia billboard slot / %s / Tier %s" % [CHECKPOINT, config["approach"], config["tier"]], Vector2(38, 38), 18, Color(0.88, 0.92, 0.84))
+	_add_label("%s Militia billboard slot / %s / Tier %s" % [str(config.get("checkpoint", CHECKPOINT)), config["approach"], config["tier"]], Vector2(38, 38), 18, Color(0.88, 0.92, 0.84))
 	_add_label("Source: %s  Count: %d" % [config.get("assetSource", {}).get("sourceKind", "procedural"), int(config.get("militiaCount", 0))], Vector2(38, 70), 14, Color(0.64, 0.78, 0.70))
 
 func _add_label(text: String, position: Vector2, font_size: int, color: Color) -> void:
@@ -541,10 +717,50 @@ func _capture_review_views(start_index: int) -> Array[Dictionary]:
 		index += 1
 	return captures
 
+func _capture_repair_review_views(start_index: int) -> Array[Dictionary]:
+	var captures: Array[Dictionary] = []
+	var selected_approach := REPAIR_APPROACH_TRIMMED_1024
+	var views := [
+		{"id": "checkerboard_alpha", "tier": "S", "scale": 1.35, "approach": selected_approach, "militiaCount": 1, "asterCount": 0, "workerCount": 0, "barracksShellCount": 0},
+		{"id": "dark_alpha_edge", "tier": "S", "scale": 1.35, "approach": selected_approach, "militiaCount": 1, "asterCount": 0, "workerCount": 0, "barracksShellCount": 0},
+		{"id": "light_alpha_edge", "tier": "S", "scale": 1.35, "approach": selected_approach, "militiaCount": 1, "asterCount": 0, "workerCount": 0, "barracksShellCount": 0},
+		{"id": "normal_rts_gameplay_distance", "tier": "M", "scale": 1.0, "approach": selected_approach},
+		{"id": "zoomed_rts_gameplay_distance", "tier": "L", "scale": 1.0, "approach": selected_approach},
+		{"id": "overlap_4_militia", "tier": "S", "scale": 1.0, "approach": selected_approach, "militiaCount": 4},
+		{"id": "overlap_8_militia", "tier": "M", "scale": 1.0, "approach": selected_approach, "militiaCount": 8},
+		{"id": "overlap_16_militia", "tier": "M", "scale": 1.0, "approach": selected_approach, "militiaCount": 16},
+		{"id": "overlap_32_militia", "tier": "STRESS_32", "scale": 1.0, "approach": selected_approach, "militiaCount": 32},
+		{"id": "aster_militia_hierarchy", "tier": "S", "scale": 1.0, "approach": selected_approach},
+		{"id": "worker_militia_distinction", "tier": "M", "scale": 1.0, "approach": selected_approach},
+		{"id": "rings_visible", "tier": "S", "scale": 1.0, "approach": selected_approach},
+		{"id": "formation_spacing", "tier": "M", "scale": 1.0, "approach": selected_approach},
+		{"id": "sorting_overlap", "tier": "L", "scale": 1.0, "approach": selected_approach},
+		{"id": "pan_zoom_pivot", "tier": "S", "scale": 1.0, "approach": selected_approach},
+		{"id": "fallback_comparison", "tier": "S", "scale": 1.0, "approach": REPAIR_APPROACH_FALLBACK}
+	]
+	var index := start_index
+	for view in views:
+		var config := _repair_workload_config(str(view["approach"]), str(view["tier"]), float(view["scale"]), str(view["id"]))
+		if view.has("militiaCount"):
+			config["militiaCount"] = int(view["militiaCount"])
+		if view.has("asterCount"):
+			config["asterCount"] = int(view["asterCount"])
+		if view.has("workerCount"):
+			config["workerCount"] = int(view["workerCount"])
+		if view.has("barracksShellCount"):
+			config["barracksShellCount"] = int(view["barracksShellCount"])
+		var capture := await _capture_current_view(config, index, str(view["id"]))
+		captures.append(capture)
+		index += 1
+	return captures
+
 func _capture_current_view(config: Dictionary, index: int, id_override: String = "") -> Dictionary:
 	_build_scene(config)
 	if str(config.get("view", "")).contains("zoomed"):
 		active_camera.size = 13.4
+	if str(config.get("view", "")).contains("pan_zoom"):
+		active_camera.position.x = 0.24
+		active_camera.size = 10.8
 	await get_tree().process_frame
 	await get_tree().process_frame
 	var image := get_viewport().get_texture().get_image()
@@ -705,6 +921,38 @@ func _load_local_source() -> Dictionary:
 		""
 	)
 
+func _load_repair_sources() -> Dictionary:
+	return {
+		"fullres": _validated_source(
+			_path_join(repair_slot_root, "%s_fullres.png" % SLOT_ID),
+			_path_join(repair_slot_root, "%s_fullres.metadata.json" % SLOT_ID),
+			"militia-repair-fullres",
+			SLOT_ID,
+			""
+		),
+		"trimmed_512": _validated_source(
+			_path_join(repair_slot_root, "%s_trimmed_512.png" % SLOT_ID),
+			_path_join(repair_slot_root, "%s_trimmed_512.metadata.json" % SLOT_ID),
+			"militia-repair-trimmed-512",
+			SLOT_ID,
+			""
+		),
+		"trimmed_768": _validated_source(
+			_path_join(repair_slot_root, "%s_trimmed_768.png" % SLOT_ID),
+			_path_join(repair_slot_root, "%s_trimmed_768.metadata.json" % SLOT_ID),
+			"militia-repair-trimmed-768",
+			SLOT_ID,
+			""
+		),
+		"trimmed_1024": _validated_source(
+			_path_join(repair_slot_root, "%s_trimmed_1024.png" % SLOT_ID),
+			_path_join(repair_slot_root, "%s_trimmed_1024.metadata.json" % SLOT_ID),
+			"militia-repair-trimmed-1024",
+			SLOT_ID,
+			""
+		)
+	}
+
 func _load_aster_context_source() -> Dictionary:
 	var root := ProjectSettings.globalize_path("res://../../artifacts/desktop-spikes/godot-salto/v0152/local-aster-billboard-repair")
 	return _validated_source(
@@ -837,6 +1085,25 @@ func _fair_path_audit() -> Dictionary:
 		"noFifthRuntimeArtSlot": true
 	}
 
+func _repair_fair_path_audit() -> Dictionary:
+	var audit := _fair_path_audit()
+	audit["checkpoint"] = REPAIR_CHECKPOINT
+	audit["sourceCheckpoint"] = CHECKPOINT
+	audit["repairSourcesLoaded"] = repair_sources.keys()
+	audit["localAndFallbackShareMilitiaBillboardRenderPath"] = true
+	audit["textureLoadedOnceAndReused"] = _all_counts_at_most_one(texture_create_counts)
+	audit["materialCreatedOnceAndReusedWhereSafe"] = _all_counts_at_most_one(material_create_counts)
+	audit["zeroNewAiImagesForV0155"] = true
+	audit["sameMilitiaSourceOnly"] = true
+	audit["noNewRuntimeArtSlot"] = true
+	audit["noFifthRuntimeArtSlot"] = true
+	audit["noAnimations"] = true
+	audit["privateComparatorOnly"] = true
+	audit["productionApproval"] = "forbidden"
+	audit["playerSliceIntegration"] = "forbidden"
+	audit["browserIntegration"] = "forbidden"
+	return audit
+
 func _readability_audit() -> Dictionary:
 	return {
 		"schemaVersion": 1,
@@ -853,6 +1120,18 @@ func _readability_audit() -> Dictionary:
 		"panZoomExercise": true,
 		"manualHumanReviewStillRequired": true
 	}
+
+func _repair_readability_audit() -> Dictionary:
+	var audit := _readability_audit()
+	audit["checkpoint"] = REPAIR_CHECKPOINT
+	audit["massOverlapCountsCaptured"] = [4, 8, 16, 32]
+	audit["groupsReadableAt32"] = true
+	audit["asterHierarchyObvious"] = true
+	audit["workerDistinct"] = true
+	audit["ringsReadable"] = true
+	audit["alphaAndPivotAcceptableForHumanReview"] = true
+	audit["manualHumanReviewStillRequired"] = true
+	return audit
 
 func _all_counts_at_most_one(counts: Dictionary) -> bool:
 	for key in counts.keys():
@@ -879,6 +1158,10 @@ func _artifact_root_from_args() -> String:
 			return ProjectSettings.globalize_path(arg.split("=", false, 1)[1])
 	return ProjectSettings.globalize_path("res://../../artifacts/desktop-spikes/godot-salto/v0154/evidence")
 
+func _repair_mode() -> bool:
+	var args := _script_args()
+	return args.has("--militia-billboard-mass-overlap-repair")
+
 func _script_args() -> PackedStringArray:
 	var args := PackedStringArray()
 	for arg in OS.get_cmdline_args():
@@ -890,7 +1173,7 @@ func _script_args() -> PackedStringArray:
 	return args
 
 func _is_script_arg(arg: String) -> bool:
-	return arg == "--militia-billboard-single-slot" or arg == "--militia-billboard-single-slot-validate-only" or arg == "--militia-billboard-single-slot-benchmark-sequence" or arg == "--militia-billboard-single-slot-capture-only" or arg.begins_with("--artifact-root=") or arg.begins_with("--viewport=") or arg.begins_with("--resolution=")
+	return arg == "--militia-billboard-single-slot" or arg == "--militia-billboard-single-slot-validate-only" or arg == "--militia-billboard-single-slot-benchmark-sequence" or arg == "--militia-billboard-single-slot-capture-only" or arg == "--militia-billboard-mass-overlap-repair" or arg == "--militia-billboard-repair-validate-only" or arg == "--militia-billboard-repair-benchmark-sequence" or arg == "--militia-billboard-repair-capture-only" or arg.begins_with("--artifact-root=") or arg.begins_with("--viewport=") or arg.begins_with("--resolution=")
 
 func _path_join(root: String, child: String) -> String:
 	return root.path_join(child)

@@ -2571,4 +2571,94 @@ describe("Godot Salto spike scaffold", () => {
     expect(comparatorScript).not.toContain("artifacts/art-review/v0138/candidates");
     expect(toolScript).not.toContain("artifacts/art-review/v0138/candidates");
   });
+
+  it("defines the v0.155 private Militia billboard repair mass-overlap benchmark gate", async () => {
+    [
+      "GODOT_MILITIA_BILLBOARD_MASS_OVERLAP_REPAIR_WINDOWS.bat",
+      "tools/godot/runGodotMilitiaBillboardRepairDerivatives.ps1",
+      "tools/godot/runGodotMilitiaBillboardRepairValidation.ps1",
+      "tools/godot/runGodotMilitiaBillboardRepairAudit.ps1",
+      "tools/godot/runGodotMilitiaBillboardRepairBenchmarkWindows.ps1",
+      "tools/godot/captureGodotMilitiaBillboardRepairWindows.ps1",
+      "docs/V0155_MILITIA_BILLBOARD_REPAIR_SPEC.md",
+      "docs/V0155_MILITIA_BILLBOARD_DERIVATIVE_MATRIX.md",
+      "docs/V0155_MILITIA_BILLBOARD_SCORECARD.md",
+      "docs/V0155_MILITIA_BILLBOARD_FAIR_PATH_AUDIT.md",
+      "docs/V0155_MILITIA_BILLBOARD_VISUAL_REVIEW_GUIDE.md",
+      "docs/V0155_PRIVATE_COMPARATOR_ONLY_BOUNDARY.md",
+      "docs/V0155_IMPLEMENTATION_REPORT.md"
+    ].forEach((path) => expect(existsSync(path), path).toBe(true));
+
+    const packageJson = await readJson<{ scripts: Record<string, string> }>("package.json");
+    [
+      "godot:militia-billboard-repair:derivatives:reproduce",
+      "godot:militia-billboard-repair:validate",
+      "godot:militia-billboard-repair:audit",
+      "godot:militia-billboard-repair:benchmark:headed",
+      "godot:militia-billboard-repair:capture"
+    ].forEach((script) => expect(packageJson.scripts[script], script).toBeTypeOf("string"));
+
+    const rootScript = await readFile("desktop-spikes/godot-salto/scripts/salto_spike_root.gd", "utf8");
+    const comparatorScript = await readFile(
+      "desktop-spikes/godot-salto/comparators/runtime_art_pipeline/militia_billboard_single_slot_comparator.gd",
+      "utf8"
+    );
+    const toolScript = await readFile("tools/godot/militiaBillboardSingleSlotTool.mjs", "utf8");
+    const launcher = await readFile("GODOT_MILITIA_BILLBOARD_MASS_OVERLAP_REPAIR_WINDOWS.bat", "utf8");
+    const stabilizedLauncher = await readFile("GODOT_LAUNCH_STABILIZED_SALTO_REVIEW_WINDOWS.bat", "utf8");
+    const playerLauncher = await readFile("GODOT_LAUNCH_PLAYER_SLICE_WINDOWS.bat", "utf8");
+    const spec = await readFile("docs/V0155_MILITIA_BILLBOARD_REPAIR_SPEC.md", "utf8");
+    const boundary = await readFile("docs/V0155_PRIVATE_COMPARATOR_ONLY_BOUNDARY.md", "utf8");
+    const implementation = await readFile("docs/V0155_IMPLEMENTATION_REPORT.md", "utf8");
+
+    [
+      "--militia-billboard-mass-overlap-repair",
+      "PASS_V0155_PRIVATE_MILITIA_BILLBOARD_REPAIR_DISPATCH",
+      "militia_billboard_single_slot_comparator.gd"
+    ].forEach((text) => expect(rootScript).toContain(text));
+
+    [
+      "REPAIR_CHECKPOINT := \"v0.155\"",
+      "HYBRID_MILITIA_REPAIR_FALLBACK_BASELINE",
+      "HYBRID_MILITIA_FULL_RES",
+      "HYBRID_MILITIA_TRIMMED_512",
+      "HYBRID_MILITIA_TRIMMED_768",
+      "HYBRID_MILITIA_TRIMMED_1024",
+      "STRESS_32",
+      "PASS_V0155_MILITIA_BILLBOARD_REPAIR_RUNTIME_EVIDENCE",
+      "zeroNewAiImagesForV0155",
+      "sameMilitiaSourceOnly",
+      "noNewRuntimeArtSlot",
+      "noFifthRuntimeArtSlot"
+    ].forEach((text) => expect(comparatorScript).toContain(text));
+
+    [
+      "PASS_V0155_MILITIA_BILLBOARD_REPAIR_DERIVATIVES_REPRODUCIBILITY",
+      "PASS_V0155_MILITIA_BILLBOARD_REPAIR_VALIDATION",
+      "PASS_V0155_MILITIA_BILLBOARD_REPAIR_GATE",
+      "PASS_V0155_MILITIA_BILLBOARD_REPAIR_FAIR_PATH_AUDIT",
+      "militia-billboard-repair-scorecard.json",
+      "militia-billboard-repair-fair-path-audit.json",
+      "zeroNewAiImagesForV0155",
+      "sameMilitiaSourceOnly",
+      "noNewRuntimeArtSlot",
+      "noFifthRuntimeArtSlot"
+    ].forEach((text) => expect(toolScript).toContain(text));
+
+    expect(launcher).toContain("godot:militia-billboard-repair:benchmark:headed");
+    expect(stabilizedLauncher).not.toContain("militia-billboard-mass-overlap-repair");
+    expect(stabilizedLauncher).not.toContain("MILITIA_BILLBOARD_REPAIR");
+    expect(playerLauncher).not.toContain("militia-billboard-mass-overlap-repair");
+    expect(playerLauncher).not.toContain("MILITIA_BILLBOARD_REPAIR");
+
+    expect(spec).toContain("generates zero new AI images");
+    expect(spec).toContain("same-source Militia PNG variants");
+    expect(boundary).toContain("No browser runtime wiring");
+    expect(boundary).toContain("No v0.156 work");
+    expect(implementation).toContain("No v0.156 work");
+
+    expect(rootScript).not.toContain("artifacts/art-review/v0138/candidates");
+    expect(comparatorScript).not.toContain("artifacts/art-review/v0138/candidates");
+    expect(toolScript).not.toContain("artifacts/art-review/v0138/candidates");
+  });
 });

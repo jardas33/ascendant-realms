@@ -11,9 +11,21 @@ Every phase should protect these long-term pillars:
 
 ## Current Recommended Next Phase
 
-The current checkpoint is **v0.154 Hybrid Militia Static Billboard Single-Slot Intake Experiment And Human Review Stop** on 2026-06-07. It keeps the browser runtime, normal Salto player slice, production package, saves, stable IDs, and production art-slot registry untouched while testing only a fourth private comparator runtime-art intake check for a single Militia static billboard. It generates exactly one original ignored Militia source image, adds no fifth runtime-art slot, records `PASS_V0154_MILITIA_BILLBOARD_SINGLE_SLOT_GATE`, and records Tier L local-vs-fallback average FPS ratio `1.0055` plus p95 frame-time ratio `1.0199`.
+The current checkpoint is **v0.155 Hybrid Militia Billboard Repair Mass-Overlap Combat-Readability Benchmark And Human Review Stop** on 2026-06-07. It keeps the browser runtime, normal Salto player slice, production package, saves, stable IDs, and production art-slot registry untouched while repairing only the existing private Militia billboard path. It generates zero new AI images, uses only the existing v0.154 Militia source/cutout, adds no new runtime-art slot and no fifth runtime-art slot, selects `HYBRID_MILITIA_TRIMMED_1024`, records `PASS_V0155_MILITIA_BILLBOARD_REPAIR_GATE`, and records Tier L selected-vs-fallback average FPS ratio `1.0702` plus p95 frame-time ratio `0.9688` and 32-Militia stress ratio `1.0018` plus p95 ratio `0.9946`.
 
-The next recommended step is human review and explicit approval only: Emmanuel may review `docs/V0154_MILITIA_BILLBOARD_VISUAL_REVIEW_GUIDE.md`, the ignored v0.154 evidence under `artifacts/desktop-spikes/godot-salto/v0154/`, and the v0.154 validation/scorecard/boundary/implementation docs. Do not import the Militia image, add a fifth runtime-art slot, generate another image, import existing reference candidates, download assets, mark Militia runtime-approved, modify the normal Salto player slice, wire comparator output into Godot production/player-facing flow, wire assets into the browser, mutate manifests or art slots, change saves or stable IDs, create a desktop save path, choose Godot finally, start a full desktop port, start Unity/Unreal/Electron work, or start v0.155 unless a future explicit goal approves a narrow next step.
+The next recommended step is human review and explicit approval only: Emmanuel may review `docs/V0155_MILITIA_BILLBOARD_VISUAL_REVIEW_GUIDE.md`, the ignored v0.155 evidence under `artifacts/desktop-spikes/godot-salto/v0155/`, and the v0.155 validation/scorecard/boundary/implementation docs. Do not import the Militia image, add a runtime-art slot, add a fifth runtime-art slot, generate another image, import existing reference candidates, download assets, mark Militia runtime-approved, modify the normal Salto player slice, wire comparator output into Godot production/player-facing flow, wire assets into the browser, mutate manifests or art slots, change saves or stable IDs, create a desktop save path, choose Godot finally, start a full desktop port, start Unity/Unreal/Electron work, or start v0.156 unless a future explicit goal approves a narrow next step.
+
+New v0.155 docs:
+
+- `docs/V0155_MILITIA_BILLBOARD_REPAIR_SPEC.md`
+- `docs/V0155_MILITIA_BILLBOARD_DERIVATIVE_MATRIX.md`
+- `docs/V0155_MILITIA_BILLBOARD_SCORECARD.md`
+- `docs/V0155_MILITIA_BILLBOARD_FAIR_PATH_AUDIT.md`
+- `docs/V0155_MILITIA_BILLBOARD_VISUAL_REVIEW_GUIDE.md`
+- `docs/V0155_PRIVATE_COMPARATOR_ONLY_BOUNDARY.md`
+- `docs/V0155_IMPLEMENTATION_REPORT.md`
+
+Previous checkpoint reference: v0.154 Hybrid Militia Static Billboard Single-Slot Intake Experiment And Human Review Stop.
 
 New v0.154 docs:
 

@@ -41,6 +41,7 @@ const SCRIPT_ARG_PREFIXES := [
 	"--aster-billboard-single-slot-repair",
 	"--hybrid-three-slot-composition-stress",
 	"--militia-billboard-single-slot",
+	"--militia-billboard-mass-overlap-repair",
 	"--aster-billboard-single-slot",
 	"--mode=",
 	"--visual-preset=",
@@ -320,6 +321,45 @@ func _ready() -> void:
 			get_tree().quit(1)
 			return
 		composition.call("start")
+		return
+	if args.has("--militia-billboard-mass-overlap-repair"):
+		_write_absolute_json(_path_join(_artifact_root_from_args(), "militia-billboard-repair-root-dispatch.json"), {
+			"schemaVersion": 1,
+			"checkpoint": "v0.155",
+			"status": "PASS_V0155_PRIVATE_MILITIA_BILLBOARD_REPAIR_DISPATCH",
+			"args": Array(args),
+			"defaultPlayerSliceLaunched": false
+		})
+		var militia_repair_script := load("res://comparators/runtime_art_pipeline/militia_billboard_single_slot_comparator.gd") as GDScript
+		if militia_repair_script == null:
+			_write_absolute_json(_path_join(_artifact_root_from_args(), "militia-billboard-repair-dispatch-failure.json"), {
+				"schemaVersion": 1,
+				"checkpoint": "v0.155",
+				"status": "FAIL_V0155_PRIVATE_MILITIA_BILLBOARD_REPAIR_SCRIPT_LOAD",
+				"script": "res://comparators/runtime_art_pipeline/militia_billboard_single_slot_comparator.gd"
+			})
+			get_tree().quit(1)
+			return
+		var militia_repair := Node.new()
+		militia_repair.name = "V0155MilitiaBillboardMassOverlapRepairComparator"
+		militia_repair.set_script(militia_repair_script)
+		add_child(militia_repair)
+		_write_absolute_json(_path_join(_artifact_root_from_args(), "militia-billboard-repair-dispatch-prestart.json"), {
+			"schemaVersion": 1,
+			"checkpoint": "v0.155",
+			"status": "PASS_V0155_PRIVATE_MILITIA_BILLBOARD_REPAIR_PRESTART",
+			"hasStart": militia_repair.has_method("start")
+		})
+		if not militia_repair.has_method("start"):
+			_write_absolute_json(_path_join(_artifact_root_from_args(), "militia-billboard-repair-dispatch-failure.json"), {
+				"schemaVersion": 1,
+				"checkpoint": "v0.155",
+				"status": "FAIL_V0155_PRIVATE_MILITIA_BILLBOARD_REPAIR_START_METHOD",
+				"script": "res://comparators/runtime_art_pipeline/militia_billboard_single_slot_comparator.gd"
+			})
+			get_tree().quit(1)
+			return
+		militia_repair.call("start")
 		return
 	if args.has("--militia-billboard-single-slot"):
 		_write_absolute_json(_path_join(_artifact_root_from_args(), "militia-billboard-single-slot-root-dispatch.json"), {
