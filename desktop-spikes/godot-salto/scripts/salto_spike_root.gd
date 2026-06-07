@@ -36,6 +36,7 @@ const SCRIPT_ARG_PREFIXES := [
 	"--runtime-art-comparator",
 	"--worker-billboard-single-slot",
 	"--worker-billboard-single-slot-repair",
+	"--barrosan-barracks-material-single-slot",
 	"--mode=",
 	"--visual-preset=",
 	"--viewport=",
@@ -158,6 +159,45 @@ func _ready() -> void:
 			get_tree().quit(1)
 			return
 		worker_repair.call("start")
+		return
+	if args.has("--barrosan-barracks-material-single-slot"):
+		_write_absolute_json(_path_join(_artifact_root_from_args(), "barracks-material-root-dispatch.json"), {
+			"schemaVersion": 1,
+			"checkpoint": "v0.149",
+			"status": "PASS_V0149_PRIVATE_BARRACKS_MATERIAL_DISPATCH",
+			"args": Array(args),
+			"defaultPlayerSliceLaunched": false
+		})
+		var barracks_material_script := load("res://comparators/runtime_art_pipeline/barracks_material_single_slot_comparator.gd") as GDScript
+		if barracks_material_script == null:
+			_write_absolute_json(_path_join(_artifact_root_from_args(), "barracks-material-dispatch-failure.json"), {
+				"schemaVersion": 1,
+				"checkpoint": "v0.149",
+				"status": "FAIL_V0149_PRIVATE_BARRACKS_MATERIAL_SCRIPT_LOAD",
+				"script": "res://comparators/runtime_art_pipeline/barracks_material_single_slot_comparator.gd"
+			})
+			get_tree().quit(1)
+			return
+		var barracks_material := Node.new()
+		barracks_material.name = "V0149BarracksMaterialSingleSlotComparator"
+		barracks_material.set_script(barracks_material_script)
+		add_child(barracks_material)
+		_write_absolute_json(_path_join(_artifact_root_from_args(), "barracks-material-dispatch-prestart.json"), {
+			"schemaVersion": 1,
+			"checkpoint": "v0.149",
+			"status": "PASS_V0149_PRIVATE_BARRACKS_MATERIAL_PRESTART",
+			"hasStart": barracks_material.has_method("start")
+		})
+		if not barracks_material.has_method("start"):
+			_write_absolute_json(_path_join(_artifact_root_from_args(), "barracks-material-dispatch-failure.json"), {
+				"schemaVersion": 1,
+				"checkpoint": "v0.149",
+				"status": "FAIL_V0149_PRIVATE_BARRACKS_MATERIAL_START_METHOD",
+				"script": "res://comparators/runtime_art_pipeline/barracks_material_single_slot_comparator.gd"
+			})
+			get_tree().quit(1)
+			return
+		barracks_material.call("start")
 		return
 	if args.has("--run-tests"):
 		var test_report: Dictionary = run_headless_tests()

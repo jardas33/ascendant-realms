@@ -11,9 +11,22 @@ Every phase should protect these long-term pillars:
 
 ## Current Recommended Next Phase
 
-The current checkpoint is **v0.148 Hybrid Worker Billboard Single-Slot Repair Fair Benchmark And Human Review Stop** on 2026-06-06. It keeps the browser runtime, normal Salto player slice, art slots, production package, saves, and stable IDs untouched while repairing only the existing private v0.147 Worker billboard path. It uses zero new AI images, generates only deterministic ignored derivatives from the existing v0.147 cutout, adds no second runtime-art slot, and records a final original-gate pass for the selected `HYBRID_WORKER_TRIMMED_1024` derivative: Tier L average FPS ratio `0.9915` and p95 frame-time ratio `1.0053` against the preserved gate.
+The current checkpoint is **v0.149 Hybrid Barrosan Barracks Material Single-Slot Intake Experiment And Human Review Stop** on 2026-06-06. It keeps the browser runtime, normal Salto player slice, art slots, production package, saves, and stable IDs untouched while testing only one private hybrid Barrosan Barracks material slot. It generates exactly one original material-source image, derives deterministic ignored 512/768/1024 variants, validates a tracked fallback, uses the v0.148 selected Worker derivative only as comparator context, and records a final preserved-gate pass for `HYBRID_BARRACKS_LOCAL_768`: Tier L average FPS ratio `1.0499` and p95 frame-time ratio `0.9043` against the diagnostic fallback.
 
-The next recommended step is human review and explicit approval only: Emmanuel may review `docs/V0148_WORKER_BILLBOARD_ALPHA_PIVOT_REVIEW_GUIDE.md`, the ignored v0.148 evidence under `artifacts/desktop-spikes/godot-salto/v0148/`, and the v0.148 repair/benchmark/boundary/implementation docs. Do not import the Worker, add another slot, generate another image, import existing reference candidates, download assets, mark the Worker runtime-approved, modify the normal Salto player slice, wire comparator output into Godot production/player-facing flow, wire assets into the browser, mutate manifests or art slots, change saves or stable IDs, create a desktop save path, choose Godot finally, start a full desktop port, start Unity/Unreal/Electron work, or start v0.149 until a future explicit goal approves a narrow next step.
+The next recommended step is human review and explicit approval only: Emmanuel may review `docs/V0149_BARROSAN_BARRACKS_MATERIAL_VISUAL_REVIEW_GUIDE.md`, the ignored v0.149 evidence under `artifacts/desktop-spikes/godot-salto/v0149/`, and the v0.149 intake/contract/benchmark/audit/boundary/implementation docs. Do not import the Barracks material, add a third runtime-art slot, generate another image, import existing reference candidates, download assets, mark the material runtime-approved, modify the normal Salto player slice, wire comparator output into Godot production/player-facing flow, wire assets into the browser, mutate manifests or art slots, change saves or stable IDs, create a desktop save path, choose Godot finally, start a full desktop port, start Unity/Unreal/Electron work, or start v0.150 until a future explicit goal approves a narrow next step.
+
+New v0.149 docs:
+
+- `docs/V0149_BARROSAN_BARRACKS_MATERIAL_SINGLE_SLOT_INTAKE_SPEC.md`
+- `docs/V0149_BARROSAN_BARRACKS_MATERIAL_SLOT_CONTRACT.md`
+- `docs/V0149_BARROSAN_BARRACKS_MATERIAL_FAIR_PATH_AUDIT.md`
+- `docs/V0149_BARROSAN_BARRACKS_MATERIAL_DERIVATIVE_MATRIX.md`
+- `docs/V0149_BARROSAN_BARRACKS_MATERIAL_PAIRED_BENCHMARK_REPORT.md`
+- `docs/V0149_BARROSAN_BARRACKS_MATERIAL_VISUAL_REVIEW_GUIDE.md`
+- `docs/V0149_PRIVATE_COMPARATOR_ONLY_BOUNDARY.md`
+- `docs/V0149_IMPLEMENTATION_REPORT.md`
+
+Previous checkpoint reference: v0.148 Hybrid Worker Billboard Single-Slot Repair Fair Benchmark And Human Review Stop.
 
 New v0.148 docs:
 

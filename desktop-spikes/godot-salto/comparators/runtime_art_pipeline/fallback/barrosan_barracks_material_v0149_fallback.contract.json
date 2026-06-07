@@ -1,0 +1,26 @@
+{
+  "browserIntegration": "forbidden",
+  "byteLength": 48926,
+  "checkpoint": "v0.149",
+  "colorSpacePosture": "srgb-opaque-diagnostic-rgba",
+  "derivativeDimensions": {
+    "height": 512,
+    "width": 512
+  },
+  "dimensions": {
+    "height": 512,
+    "width": 512
+  },
+  "fallbackId": "barrosan_barracks_material_v0149_tracked_diagnostic_fallback",
+  "generatedBy": "tools/godot/barracksMaterialSingleSlotTool.mjs fallback",
+  "materialReusePosture": "single cached material per source",
+  "originalGeometricDiagnosticOnly": true,
+  "playerSliceIntegration": "forbidden",
+  "privateComparatorOnly": true,
+  "productionApproval": "forbidden",
+  "schemaVersion": 1,
+  "sha256": "473ea8fd00a42716d2130109d2d3eb30f0a5eb3751fe0445af773a5bf0731767",
+  "slotId": "barrosan_barracks_material_v0149",
+  "tilingPosture": "diagnostic-repeat; not art; not production",
+  "uvPosture": "fixed BoxMesh UV repeat comparator only"
+}

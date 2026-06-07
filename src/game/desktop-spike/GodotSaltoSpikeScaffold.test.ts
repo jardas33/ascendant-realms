@@ -2034,4 +2034,109 @@ describe("Godot Salto spike scaffold", () => {
     expect(comparatorScript).not.toContain("artifacts/art-review/v0138/candidates");
     expect(toolScript).not.toContain("artifacts/art-review/v0138/candidates");
   });
+
+  it("defines the v0.149 private Barrosan Barracks material single-slot intake and review stop", async () => {
+    [
+      "GODOT_BARROSAN_BARRACKS_MATERIAL_SINGLE_SLOT_EXPERIMENT_WINDOWS.bat",
+      "tools/godot/barracksMaterialSingleSlotTool.mjs",
+      "tools/godot/runGodotBarracksMaterialValidation.ps1",
+      "tools/godot/runGodotBarracksMaterialFallbackReproducibility.ps1",
+      "tools/godot/runGodotBarracksMaterialDerivatives.ps1",
+      "tools/godot/runGodotBarracksMaterialAudit.ps1",
+      "tools/godot/runGodotBarracksMaterialBenchmarkWindows.ps1",
+      "tools/godot/captureGodotBarracksMaterialWindows.ps1",
+      "desktop-spikes/godot-salto/comparators/runtime_art_pipeline/barracks_material_single_slot_comparator.gd",
+      "desktop-spikes/godot-salto/comparators/runtime_art_pipeline/fallback/barrosan_barracks_material_v0149_fallback.png",
+      "desktop-spikes/godot-salto/comparators/runtime_art_pipeline/fallback/barrosan_barracks_material_v0149_fallback.contract.json",
+      "docs/V0149_BARROSAN_BARRACKS_MATERIAL_SINGLE_SLOT_INTAKE_SPEC.md",
+      "docs/V0149_BARROSAN_BARRACKS_MATERIAL_SLOT_CONTRACT.md",
+      "docs/V0149_BARROSAN_BARRACKS_MATERIAL_FAIR_PATH_AUDIT.md",
+      "docs/V0149_BARROSAN_BARRACKS_MATERIAL_DERIVATIVE_MATRIX.md",
+      "docs/V0149_BARROSAN_BARRACKS_MATERIAL_PAIRED_BENCHMARK_REPORT.md",
+      "docs/V0149_BARROSAN_BARRACKS_MATERIAL_VISUAL_REVIEW_GUIDE.md",
+      "docs/V0149_PRIVATE_COMPARATOR_ONLY_BOUNDARY.md",
+      "docs/V0149_IMPLEMENTATION_REPORT.md"
+    ].forEach((path) => expect(existsSync(path), path).toBe(true));
+
+    const packageJson = await readJson<{ scripts: Record<string, string> }>("package.json");
+    const rootScript = await readFile("desktop-spikes/godot-salto/scripts/salto_spike_root.gd", "utf8");
+    const comparatorScript = await readFile(
+      "desktop-spikes/godot-salto/comparators/runtime_art_pipeline/barracks_material_single_slot_comparator.gd",
+      "utf8"
+    );
+    const toolScript = await readFile("tools/godot/barracksMaterialSingleSlotTool.mjs", "utf8");
+    const launcher = await readFile(
+      "GODOT_BARROSAN_BARRACKS_MATERIAL_SINGLE_SLOT_EXPERIMENT_WINDOWS.bat",
+      "utf8"
+    );
+    const stabilizedLauncher = await readFile("GODOT_LAUNCH_STABILIZED_SALTO_REVIEW_WINDOWS.bat", "utf8");
+    const playerLauncher = await readFile("GODOT_LAUNCH_PLAYER_SLICE_WINDOWS.bat", "utf8");
+    const intakeSpec = await readFile("docs/V0149_BARROSAN_BARRACKS_MATERIAL_SINGLE_SLOT_INTAKE_SPEC.md", "utf8");
+    const slotContract = await readFile("docs/V0149_BARROSAN_BARRACKS_MATERIAL_SLOT_CONTRACT.md", "utf8");
+    const fairPathAudit = await readFile("docs/V0149_BARROSAN_BARRACKS_MATERIAL_FAIR_PATH_AUDIT.md", "utf8");
+    const boundary = await readFile("docs/V0149_PRIVATE_COMPARATOR_ONLY_BOUNDARY.md", "utf8");
+    const implementation = await readFile("docs/V0149_IMPLEMENTATION_REPORT.md", "utf8");
+
+    [
+      "godot:barracks-material:validate",
+      "godot:barracks-material:fallback:reproduce",
+      "godot:barracks-material:derivatives:reproduce",
+      "godot:barracks-material:audit",
+      "godot:barracks-material:benchmark:headed",
+      "godot:barracks-material:capture"
+    ].forEach((script) => expect(packageJson.scripts[script], script).toBeTypeOf("string"));
+
+    expect(rootScript).toContain("--barrosan-barracks-material-single-slot");
+    expect(rootScript).toContain("barracks_material_single_slot_comparator.gd");
+    expect(rootScript).toContain("PASS_V0149_PRIVATE_BARRACKS_MATERIAL_DISPATCH");
+    expect(rootScript).toContain("show_player_title");
+
+    [
+      "barrosan_barracks_material_v0149",
+      "HYBRID_BARRACKS_DIAGNOSTIC_FALLBACK",
+      "HYBRID_BARRACKS_LOCAL_512",
+      "HYBRID_BARRACKS_LOCAL_768",
+      "HYBRID_BARRACKS_LOCAL_1024",
+      "HYBRID_WORKER_CONTEXT_BASELINE",
+      "texture_cache",
+      "material_cache",
+      "source_load_counts",
+      "texture_create_counts",
+      "material_create_counts",
+      "barracksShellCount",
+      "benchmarkExcludesInitializationAndWarmup",
+      "thirdRuntimeArtSlotAdded",
+      "browserIntegration"
+    ].forEach((text) => expect(comparatorScript).toContain(text));
+
+    [
+      "fallback:check",
+      "derivatives:check",
+      "PASS_V0149_BARRACKS_MATERIAL_FALLBACK_REPRODUCIBILITY",
+      "PASS_V0149_BARRACKS_MATERIAL_DERIVATIVE_REPRODUCIBILITY",
+      "PASS_V0149_BARRACKS_MATERIAL_ORIGINAL_GATE",
+      "barracks-material-threshold-report.json",
+      "barracks-material-fair-path-audit.json",
+      "exactlyOneGeneratedImage",
+      "noThirdRuntimeArtSlot"
+    ].forEach((text) => expect(toolScript).toContain(text));
+
+    expect(launcher).toContain("godot:barracks-material:benchmark:headed");
+    expect(stabilizedLauncher).not.toContain("barrosan-barracks-material-single-slot");
+    expect(stabilizedLauncher).not.toContain("BARROSAN_BARRACKS_MATERIAL_SINGLE_SLOT");
+    expect(playerLauncher).not.toContain("barrosan-barracks-material-single-slot");
+    expect(playerLauncher).not.toContain("BARROSAN_BARRACKS_MATERIAL_SINGLE_SLOT");
+
+    expect(intakeSpec).toContain("Generate exactly one new local experimental material source");
+    expect(intakeSpec).toContain("barrosan_barracks_material_v0149");
+    expect(slotContract).toContain("tracked deterministic diagnostic fallback");
+    expect(fairPathAudit).toContain("No texture decode, texture creation, material creation");
+    expect(boundary).toContain("No third runtime-art slot");
+    expect(boundary).toContain("No browser runtime mutation");
+    expect(implementation).toContain("No v0.150 work");
+
+    expect(rootScript).not.toContain("artifacts/art-review/v0138/candidates");
+    expect(comparatorScript).not.toContain("artifacts/art-review/v0138/candidates");
+    expect(toolScript).not.toContain("artifacts/art-review/v0138/candidates");
+  });
 });

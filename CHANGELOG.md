@@ -1,5 +1,50 @@
 # Changelog
 
+# v0.149 Hybrid Barrosan Barracks Material Single-Slot Intake Experiment And Human Review Stop - 2026-06-06
+
+This checkpoint tests only one isolated private hybrid Barrosan Barracks material slot. It generates exactly one original ignored material-source image, creates deterministic local derivatives, validates a tracked diagnostic fallback, fairly benchmarks Tier S/M/L private comparator evidence with v0.148 Worker context, selects the 768 derivative after the preserved gate passes, and stops for Emmanuel review.
+
+Added:
+
+- One ignored local material source under `artifacts/desktop-spikes/godot-salto/v0149/local-barracks-material-slot/`.
+- Deterministic ignored 512, 768, and 1024 Barracks material derivatives plus metadata.
+- Tracked deterministic fallback PNG and contract for clean-checkout validation.
+- Private comparator `desktop-spikes/godot-salto/comparators/runtime_art_pipeline/barracks_material_single_slot_comparator.gd`.
+- Validation, fallback reproducibility, derivative reproducibility, fair-path audit, headed benchmark, capture wrappers, and `GODOT_BARROSAN_BARRACKS_MATERIAL_SINGLE_SLOT_EXPERIMENT_WINDOWS.bat`.
+- v0.149 docs for intake spec, slot contract, derivative matrix, fair-path audit, paired benchmark report, visual review guide, private boundary, and implementation report.
+
+Changed:
+
+- `desktop-spikes/godot-salto/scripts/salto_spike_root.gd` now has a private `--barrosan-barracks-material-single-slot` dispatch path only.
+- Desktop-spike scaffold tests now assert the v0.149 Barracks material path remains isolated from the normal Salto player slice and default launchers.
+- Handoff, roadmap, development checkpoint, and release checklist now describe v0.149 as the current private comparator human review stop.
+
+Evidence:
+
+- Generated source SHA-256: `bd07ef2179dde28161a1c32624eac9efd253de7956c4455e992cb716eb367c6c`, dimensions `1254 x 1254`.
+- Fallback SHA-256: `473ea8fd00a42716d2130109d2d3eb30f0a5eb3751fe0445af773a5bf0731767`, dimensions `512 x 512`.
+- Selected derivative: `HYBRID_BARRACKS_LOCAL_768`.
+- Selected SHA-256: `2731c342024271b2babaac8681d33f060df83e30c47ce56722f9595cd8004ce3`, dimensions `768 x 768`.
+- Original gate: `PASS_V0149_BARRACKS_MATERIAL_ORIGINAL_GATE`.
+- Tier L baseline mean FPS: `1784.09`; selected Tier L mean FPS: `1873.11`; average FPS ratio `1.0499`.
+- Tier L baseline mean p95 frame time: `0.94 ms`; selected p95 `0.85 ms`; p95 ratio `0.9043`.
+- Fair-path audit: `PASS_V0149_BARRACKS_MATERIAL_FAIR_PATH_AUDIT`, with one texture load/create per source, one material create per source/material key, and no repeated texture/material creation during steady-state frames.
+
+Boundaries:
+
+- Exactly one new AI image.
+- No existing reference candidate import.
+- No generated reference image import.
+- No downloaded asset use.
+- No third runtime-art slot.
+- No normal Salto player-slice mutation.
+- No player-facing Godot wiring or browser-runtime wiring.
+- No manifest mutation, art-slot mutation, production package mutation, save change, stable-ID change, final runtime-art approval, final Barracks material approval, final engine selection, full port, or v0.150 work.
+
+Verification:
+
+- Required v0.149 verification is listed in `docs/V0149_IMPLEMENTATION_REPORT.md` and must be run before closeout.
+
 # v0.148 Hybrid Worker Billboard Single-Slot Repair Fair Benchmark And Human Review Stop - 2026-06-06
 
 This checkpoint repairs and fairly benchmarks only the existing private hybrid Worker billboard single-slot path. It uses the existing ignored v0.147 Worker source/cutout, generates zero new AI images, adds no second runtime-art slot, preserves the original gate, captures fair-path Tier S/M/L evidence, and stops for Emmanuel review.

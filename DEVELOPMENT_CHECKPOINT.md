@@ -1,6 +1,54 @@
 # Development Checkpoint
 
-Updated: 2026-06-06 v0.148 Hybrid Worker Billboard Single-Slot Repair Fair Benchmark And Human Review Stop
+Updated: 2026-06-06 v0.149 Hybrid Barrosan Barracks Material Single-Slot Intake Experiment And Human Review Stop
+
+## v0.149 Hybrid Barrosan Barracks Material Single-Slot Intake Experiment And Human Review Stop - 2026-06-06
+
+Scope: isolated private Godot Barrosan Barracks material single-slot intake and fair benchmark. This checkpoint generates exactly one original material-source image, creates deterministic ignored derivatives, validates a tracked fallback, uses the v0.148 Worker derivative only as comparator context, and stops without modifying the normal Salto player slice or starting v0.150.
+
+Included work:
+
+- Confirmed clean synchronized `main` at `5978905ab32a280543a74245ae36c2c28b87ce45`.
+- Confirmed v0.148 pushed remote CI success and selected `HYBRID_WORKER_TRIMMED_1024` as the existing Worker context.
+- Generated exactly one original Barrosan Barracks material source under the ignored v0.149 local slot folder.
+- Generated deterministic 512, 768, and 1024 derivatives from that source only.
+- Added a tracked deterministic diagnostic fallback PNG and contract.
+- Added private Barracks material comparator code, validation/reproducibility/audit/benchmark/capture wrappers, one-click launcher, and tracked v0.149 docs.
+- Captured Tier S/M/L evidence for diagnostic fallback, local 512, local 768, local 1024, Worker context baseline, and orthographic fallback comparator.
+
+Current interpretation:
+
+- Source hash: `bd07ef2179dde28161a1c32624eac9efd253de7956c4455e992cb716eb367c6c`, dimensions `1254 x 1254`.
+- Selected recommended derivative: `HYBRID_BARRACKS_LOCAL_768`.
+- Selected hash: `2731c342024271b2babaac8681d33f060df83e30c47ce56722f9595cd8004ce3`.
+- Selected dimensions: `768 x 768`.
+- Original gate: `PASS_V0149_BARRACKS_MATERIAL_ORIGINAL_GATE`.
+- Tier L baseline mean FPS: `1784.09`; selected mean FPS: `1873.11`; FPS ratio `1.0499`.
+- Tier L baseline p95: `0.94 ms`; selected p95: `0.85 ms`; p95 ratio `0.9043`.
+- Fair-path audit: `PASS_V0149_BARRACKS_MATERIAL_FAIR_PATH_AUDIT`, with one texture load/create per source and no repeated texture/material creation during steady-state frames.
+- Human review is pending.
+- v0.150 has not started.
+
+Verification:
+
+```text
+Required closeout stack:
+npm test
+npm run build
+npm run validate:content
+npm run validate:art-intake
+npm run art:reference:init
+npm run art:reference:validate
+npm run art:reference:contact-sheet
+npm run art:reference:review-pack
+npm run godot:barracks-material:validate
+npm run godot:barracks-material:fallback:reproduce
+npm run godot:barracks-material:derivatives:reproduce
+npm run godot:barracks-material:audit
+npm run godot:barracks-material:benchmark:headed
+npm run godot:barracks-material:capture
+git diff --check
+```
 
 ## v0.148 Hybrid Worker Billboard Single-Slot Repair Fair Benchmark And Human Review Stop - 2026-06-06
 
