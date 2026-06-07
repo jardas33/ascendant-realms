@@ -26,6 +26,47 @@ const sourceMetadata = join(localSlotRoot, `${slotId}_source.metadata.json`);
 const derivativeSizes = [512, 768, 1024];
 const runtimeReportName = "barracks-material-runtime.json";
 const selectedWorkerDerivativeHash = "a628065ca92b231b0d4f6a0625d9e259dea080e80d530ee688483611d70049bc";
+const repairCheckpoint = "v0.150";
+const repairArtifactRoot = join(repoRoot, "artifacts", "desktop-spikes", "godot-salto", "v0150");
+const repairLocalSlotRoot = join(repairArtifactRoot, "local-barracks-material-seam-repair");
+const repairEvidenceRootDefault = join(repairArtifactRoot, "evidence");
+const repairRuntimeReportName = "barracks-material-seam-repair-runtime.json";
+const selectedV0149MaterialHash = "2731c342024271b2babaac8681d33f060df83e30c47ce56722f9595cd8004ce3";
+const selectedV0149SourceHash = "bd07ef2179dde28161a1c32624eac9efd253de7956c4455e992cb716eb367c6c";
+const repairVariantSpecs = [
+  {
+    key: "original_768",
+    approach: "HYBRID_BARRACKS_768_ORIGINAL",
+    fileSuffix: "768_original",
+    label: "Original v0.149 selected 768",
+    uvScale: 1.05,
+    operations: ["deterministic resize from the v0.149 source to 768 square"]
+  },
+  {
+    key: "wrapsafe_offset_blend",
+    approach: "HYBRID_BARRACKS_768_WRAPSAFE_OFFSET_BLEND",
+    fileSuffix: "768_wrapsafe_offset_blend",
+    label: "768 wrapsafe offset blend",
+    uvScale: 1.0,
+    operations: ["deterministic half-tile wrap offset", "opposing edge blend", "corner seam blend"]
+  },
+  {
+    key: "wrapsafe_quadrant",
+    approach: "HYBRID_BARRACKS_768_WRAPSAFE_QUADRANT",
+    fileSuffix: "768_wrapsafe_quadrant",
+    label: "768 wrapsafe quadrant mirror",
+    uvScale: 1.0,
+    operations: ["quadrant mirror from deterministic 768 resize", "left/right and top/bottom edge parity"]
+  },
+  {
+    key: "wrapsafe_softseam",
+    approach: "HYBRID_BARRACKS_768_WRAPSAFE_SOFTSEAM",
+    fileSuffix: "768_wrapsafe_softseam",
+    label: "768 wrapsafe soft seam",
+    uvScale: 1.0,
+    operations: ["opposing edge feather blend", "corner feather blend", "source interior preserved"]
+  }
+];
 
 function stableSort(value) {
   if (Array.isArray(value)) {
@@ -872,6 +913,658 @@ function contactSheetSvg(screenshots) {
   return `${parts.join("\n")}\n`;
 }
 
+function repairEvidenceRootFromArgs() {
+  const arg = process.argv.find((value) => value.startsWith("--artifact-root="));
+  return arg ? resolve(arg.slice("--artifact-root=".length)) : repairEvidenceRootDefault;
+}
+
+function repairVariantPath(spec) {
+  return join(repairLocalSlotRoot, `${slotId}_${spec.fileSuffix}.png`);
+}
+
+function repairVariantMetadataPath(spec) {
+  return join(repairLocalSlotRoot, `${slotId}_${spec.fileSuffix}.metadata.json`);
+}
+
+function pixelAt(rgba, width, x, y) {
+  const offset = (y * width + x) * 4;
+  return [rgba[offset], rgba[offset + 1], rgba[offset + 2], rgba[offset + 3]];
+}
+
+function writePixel(rgba, width, x, y, color) {
+  const offset = (y * width + x) * 4;
+  rgba[offset] = color[0];
+  rgba[offset + 1] = color[1];
+  rgba[offset + 2] = color[2];
+  rgba[offset + 3] = color[3];
+}
+
+function mixColor(left, right, weight) {
+  const inverse = 1 - weight;
+  return [
+    Math.round(left[0] * inverse + right[0] * weight),
+    Math.round(left[1] * inverse + right[1] * weight),
+    Math.round(left[2] * inverse + right[2] * weight),
+    Math.round(left[3] * inverse + right[3] * weight)
+  ];
+}
+
+function colorDelta(left, right) {
+  return (
+    Math.abs(left[0] - right[0]) +
+    Math.abs(left[1] - right[1]) +
+    Math.abs(left[2] - right[2])
+  ) / 3;
+}
+
+function seamMetrics(decoded) {
+  let lrTotal = 0;
+  let tbTotal = 0;
+  let lrMax = 0;
+  let tbMax = 0;
+  for (let y = 0; y < decoded.height; y += 1) {
+    const delta = colorDelta(
+      pixelAt(decoded.rgba, decoded.width, 0, y),
+      pixelAt(decoded.rgba, decoded.width, decoded.width - 1, y)
+    );
+    lrTotal += delta;
+    lrMax = Math.max(lrMax, delta);
+  }
+  for (let x = 0; x < decoded.width; x += 1) {
+    const delta = colorDelta(
+      pixelAt(decoded.rgba, decoded.width, x, 0),
+      pixelAt(decoded.rgba, decoded.width, x, decoded.height - 1)
+    );
+    tbTotal += delta;
+    tbMax = Math.max(tbMax, delta);
+  }
+  const leftRightMean = lrTotal / decoded.height;
+  const topBottomMean = tbTotal / decoded.width;
+  return {
+    leftRightMean: Number(leftRightMean.toFixed(4)),
+    topBottomMean: Number(topBottomMean.toFixed(4)),
+    combinedMean: Number(((leftRightMean + topBottomMean) / 2).toFixed(4)),
+    leftRightMax: Number(lrMax.toFixed(4)),
+    topBottomMax: Number(tbMax.toFixed(4))
+  };
+}
+
+function offsetDecoded(decoded, shiftX, shiftY) {
+  const rgba = Buffer.alloc(decoded.width * decoded.height * 4);
+  for (let y = 0; y < decoded.height; y += 1) {
+    for (let x = 0; x < decoded.width; x += 1) {
+      const sourceX = (x + shiftX + decoded.width) % decoded.width;
+      const sourceY = (y + shiftY + decoded.height) % decoded.height;
+      writePixel(rgba, decoded.width, x, y, pixelAt(decoded.rgba, decoded.width, sourceX, sourceY));
+    }
+  }
+  return { width: decoded.width, height: decoded.height, rgba };
+}
+
+function quadrantMirrorDecoded(decoded) {
+  const rgba = Buffer.alloc(decoded.width * decoded.height * 4);
+  const halfWidth = Math.floor(decoded.width / 2);
+  const halfHeight = Math.floor(decoded.height / 2);
+  for (let y = 0; y < decoded.height; y += 1) {
+    for (let x = 0; x < decoded.width; x += 1) {
+      const sourceX = x < halfWidth ? x : decoded.width - 1 - x;
+      const sourceY = y < halfHeight ? y : decoded.height - 1 - y;
+      writePixel(rgba, decoded.width, x, y, pixelAt(decoded.rgba, decoded.width, sourceX, sourceY));
+    }
+  }
+  return { width: decoded.width, height: decoded.height, rgba };
+}
+
+function edgeBlendDecoded(decoded, seamWidth) {
+  const rgba = Buffer.from(decoded.rgba);
+  for (let y = 0; y < decoded.height; y += 1) {
+    for (let i = 0; i < seamWidth; i += 1) {
+      const weight = 1 - i / seamWidth;
+      const left = pixelAt(decoded.rgba, decoded.width, i, y);
+      const right = pixelAt(decoded.rgba, decoded.width, decoded.width - 1 - i, y);
+      writePixel(rgba, decoded.width, i, y, mixColor(left, right, weight * 0.5));
+      writePixel(rgba, decoded.width, decoded.width - 1 - i, y, mixColor(right, left, weight * 0.5));
+    }
+  }
+  const afterHorizontal = { width: decoded.width, height: decoded.height, rgba };
+  for (let x = 0; x < decoded.width; x += 1) {
+    for (let i = 0; i < seamWidth; i += 1) {
+      const weight = 1 - i / seamWidth;
+      const top = pixelAt(afterHorizontal.rgba, decoded.width, x, i);
+      const bottom = pixelAt(afterHorizontal.rgba, decoded.width, x, decoded.height - 1 - i);
+      writePixel(rgba, decoded.width, x, i, mixColor(top, bottom, weight * 0.5));
+      writePixel(rgba, decoded.width, x, decoded.height - 1 - i, mixColor(bottom, top, weight * 0.5));
+    }
+  }
+  return { width: decoded.width, height: decoded.height, rgba };
+}
+
+function selectedOriginal768Buffer() {
+  const sourceDecoded = decodePng(readFileSync(sourcePng));
+  return resizeSquare(sourceDecoded, 768);
+}
+
+function repairVariantBuffer(spec) {
+  const original = decodePng(selectedOriginal768Buffer());
+  if (spec.key === "original_768") {
+    return encodePng(original.width, original.height, original.rgba);
+  }
+  if (spec.key === "wrapsafe_offset_blend") {
+    const shifted = offsetDecoded(original, Math.floor(original.width / 2), Math.floor(original.height / 2));
+    const blended = edgeBlendDecoded(shifted, 56);
+    return encodePng(blended.width, blended.height, blended.rgba);
+  }
+  if (spec.key === "wrapsafe_quadrant") {
+    const mirrored = quadrantMirrorDecoded(original);
+    return encodePng(mirrored.width, mirrored.height, mirrored.rgba);
+  }
+  if (spec.key === "wrapsafe_softseam") {
+    const blended = edgeBlendDecoded(original, 72);
+    return encodePng(blended.width, blended.height, blended.rgba);
+  }
+  throw new Error(`Unknown v0.150 Barracks material repair variant: ${spec.key}`);
+}
+
+function repairVariantRecord(spec, write) {
+  if (!existsSync(sourcePng)) {
+    throw new Error(`Missing v0.149 material source: ${relativeRepo(sourcePng)}`);
+  }
+  const sourceHash = sha256File(sourcePng);
+  if (sourceHash !== selectedV0149SourceHash) {
+    throw new Error(`v0.149 source hash mismatch: expected ${selectedV0149SourceHash}, got ${sourceHash}`);
+  }
+  const originalBuffer = selectedOriginal768Buffer();
+  const originalHash = sha256Bytes(originalBuffer);
+  if (originalHash !== selectedV0149MaterialHash) {
+    throw new Error(`v0.149 selected 768 hash mismatch: expected ${selectedV0149MaterialHash}, got ${originalHash}`);
+  }
+  const buffer = repairVariantBuffer(spec);
+  const decoded = decodePng(buffer);
+  const originalMetrics = seamMetrics(decodePng(originalBuffer));
+  const variantMetrics = seamMetrics(decoded);
+  const imagePath = repairVariantPath(spec);
+  const metadataPath = repairVariantMetadataPath(spec);
+  const sha256 = sha256Bytes(buffer);
+  const seamImprovementRatio = originalMetrics.combinedMean > 0
+    ? Number(((originalMetrics.combinedMean - variantMetrics.combinedMean) / originalMetrics.combinedMean).toFixed(4))
+    : 0;
+  const metadata = {
+    schemaVersion: 1,
+    checkpoint: repairCheckpoint,
+    slotId,
+    derivativeKind: spec.fileSuffix,
+    approach: spec.approach,
+    label: spec.label,
+    path: relativeRepo(imagePath),
+    metadataPath: relativeRepo(metadataPath),
+    sourcePath: relativeRepo(sourcePng),
+    sourceSha256: sourceHash,
+    originalSelectedDerivativeHash: originalHash,
+    sha256,
+    byteLength: buffer.length,
+    dimensions: { width: decoded.width, height: decoded.height },
+    deterministicOperations: spec.operations,
+    generationScriptVersion: "v0150-barracks-material-seam-repair-v1",
+    generatedBy: "tools/godot/barracksMaterialSingleSlotTool.mjs seam-repair:derivatives",
+    colorSpacePosture: "srgb-png-opaque-deterministic-same-source-repair",
+    mipmapPosture: "Godot runtime sampler/mipmap posture; no generated mipmap map",
+    uvScale: spec.uvScale,
+    tilingMode: "repeat comparator material; 2x2 and 4x4 review boards captured",
+    seamMetrics: variantMetrics,
+    originalSeamMetrics: originalMetrics,
+    seamImprovementRatio,
+    automatedSeamRiskPass: spec.key !== "original_768" && (seamImprovementRatio >= 0.02 || variantMetrics.combinedMean <= 10),
+    uvStretchRiskPosture: "single square 768 derivative; no nonuniform resize",
+    zeroAiImagesGeneratedForV0150: true,
+    sameV0149SourceOnly: true,
+    noNewRuntimeArtSlot: true,
+    privateComparatorOnly: true,
+    productionApproval: "forbidden",
+    playerSliceIntegration: "forbidden",
+    browserIntegration: "forbidden",
+    humanReviewStatus: "pending-review"
+  };
+  if (write) {
+    mkdirSync(repairLocalSlotRoot, { recursive: true });
+    writeFileSync(imagePath, buffer);
+    writeJson(metadataPath, metadata);
+  }
+  return metadata;
+}
+
+function repairDerivativeRecords(write) {
+  const errors = [];
+  if (!existsSync(sourcePng)) {
+    errors.push(`Missing v0.149 source ${relativeRepo(sourcePng)}.`);
+  } else if (sha256File(sourcePng) !== selectedV0149SourceHash) {
+    errors.push("v0.149 material source hash mismatch.");
+  }
+  const sourceCount = existsSync(localSlotRoot)
+    ? readdirSync(localSlotRoot).filter((name) => name.endsWith("_source.png")).length
+    : 0;
+  if (sourceCount !== 1) {
+    errors.push(`Expected exactly one v0.149 material source, found ${sourceCount}.`);
+  }
+  const repairSourceCount = existsSync(repairLocalSlotRoot)
+    ? readdirSync(repairLocalSlotRoot).filter((name) => name.endsWith("_source.png")).length
+    : 0;
+  if (repairSourceCount !== 0) {
+    errors.push(`v0.150 must not create a new source image; found ${repairSourceCount} source-like PNGs.`);
+  }
+  let derivatives = [];
+  if (!errors.length) {
+    derivatives = repairVariantSpecs.map((spec) => repairVariantRecord(spec, write));
+  }
+  const report = {
+    schemaVersion: 1,
+    checkpoint: repairCheckpoint,
+    status: errors.length ? "FAIL_V0150_BARRACKS_MATERIAL_SEAM_REPAIR_DERIVATIVE_GENERATION" : "PASS_V0150_BARRACKS_MATERIAL_SEAM_REPAIR_DERIVATIVE_GENERATION",
+    slotId,
+    sourcePath: relativeRepo(sourcePng),
+    sourceSha256: errors.length ? "" : sha256File(sourcePng),
+    selectedV0149MaterialHash,
+    zeroAiImagesGeneratedForV0150: true,
+    sameV0149SourceOnly: true,
+    noNewRuntimeArtSlot: true,
+    derivatives,
+    errors
+  };
+  if (write) {
+    writeJson(join(repairLocalSlotRoot, `${slotId}_v0150_seam_repair_derivative-matrix.json`), report);
+  }
+  return report;
+}
+
+function repairDerivativesCheck() {
+  const generated = repairDerivativeRecords(false);
+  const errors = [...(generated.errors ?? [])];
+  for (const derivative of generated.derivatives ?? []) {
+    const imagePath = join(repoRoot, derivative.path);
+    const metadataPath = join(repoRoot, derivative.metadataPath);
+    if (!existsSync(imagePath)) {
+      errors.push(`Missing repair derivative ${derivative.path}.`);
+      continue;
+    }
+    const actualHash = sha256File(imagePath);
+    if (actualHash !== derivative.sha256) {
+      errors.push(`Repair derivative hash mismatch for ${derivative.path}.`);
+    }
+    if (!existsSync(metadataPath)) {
+      errors.push(`Missing repair derivative metadata ${derivative.metadataPath}.`);
+      continue;
+    }
+    const metadata = readJson(metadataPath);
+    if (metadata.sha256 !== actualHash || metadata.privateComparatorOnly !== true || metadata.productionApproval !== "forbidden") {
+      errors.push(`Repair derivative metadata boundary mismatch for ${derivative.metadataPath}.`);
+    }
+    if (metadata.sourceSha256 !== selectedV0149SourceHash || metadata.zeroAiImagesGeneratedForV0150 !== true) {
+      errors.push(`Repair derivative metadata does not prove same-source zero-AI posture for ${derivative.metadataPath}.`);
+    }
+  }
+  const report = {
+    schemaVersion: 1,
+    checkpoint: repairCheckpoint,
+    status: errors.length ? "FAIL_V0150_BARRACKS_MATERIAL_SEAM_REPAIR_DERIVATIVE_REPRODUCIBILITY" : "PASS_V0150_BARRACKS_MATERIAL_SEAM_REPAIR_DERIVATIVE_REPRODUCIBILITY",
+    errors,
+    derivatives: generated.derivatives ?? []
+  };
+  writeJson(join(repairEvidenceRootFromArgs(), "barracks-material-seam-repair-derivative-reproducibility.json"), report);
+  return report;
+}
+
+function repairValidate() {
+  const errors = [];
+  const requiredFiles = [
+    "GODOT_BARROSAN_BARRACKS_MATERIAL_SEAM_REPAIR_WINDOWS.bat",
+    "desktop-spikes/godot-salto/comparators/runtime_art_pipeline/barracks_material_seam_repair_comparator.gd",
+    "desktop-spikes/godot-salto/comparators/runtime_art_pipeline/fallback/barrosan_barracks_material_v0149_fallback.png",
+    "desktop-spikes/godot-salto/comparators/runtime_art_pipeline/fallback/barrosan_barracks_material_v0149_fallback.contract.json",
+    "tools/godot/barracksMaterialSingleSlotTool.mjs",
+    "tools/godot/runGodotBarracksMaterialSeamRepairValidation.ps1",
+    "tools/godot/runGodotBarracksMaterialSeamRepairDerivatives.ps1",
+    "tools/godot/runGodotBarracksMaterialSeamRepairAudit.ps1",
+    "tools/godot/runGodotBarracksMaterialSeamRepairBenchmarkWindows.ps1",
+    "tools/godot/captureGodotBarracksMaterialSeamRepairWindows.ps1",
+    "docs/V0150_BARRACKS_MATERIAL_UV_SEAM_REPAIR_SPEC.md",
+    "docs/V0150_BARRACKS_MATERIAL_SEAM_DERIVATIVE_MATRIX.md",
+    "docs/V0150_BARRACKS_MATERIAL_FAIR_PATH_AUDIT.md",
+    "docs/V0150_BARRACKS_MATERIAL_PAIRED_BENCHMARK_REPORT.md",
+    "docs/V0150_BARRACKS_MATERIAL_VISUAL_REVIEW_GUIDE.md",
+    "docs/V0150_PRIVATE_COMPARATOR_ONLY_BOUNDARY.md",
+    "docs/V0150_IMPLEMENTATION_REPORT.md"
+  ];
+  for (const file of requiredFiles) {
+    if (!existsSync(join(repoRoot, file))) {
+      errors.push(`Missing required v0.150 file: ${file}`);
+    }
+  }
+  const packageJson = readJson(join(repoRoot, "package.json"));
+  for (const script of [
+    "godot:barracks-material-seam-repair:validate",
+    "godot:barracks-material-seam-repair:derivatives:reproduce",
+    "godot:barracks-material-seam-repair:audit",
+    "godot:barracks-material-seam-repair:benchmark:headed",
+    "godot:barracks-material-seam-repair:capture"
+  ]) {
+    if (typeof packageJson.scripts?.[script] !== "string") {
+      errors.push(`Missing package.json script ${script}.`);
+    }
+  }
+  const rootScript = readFileSync(join(repoRoot, "desktop-spikes", "godot-salto", "scripts", "salto_spike_root.gd"), "utf8");
+  if (!rootScript.includes("--barrosan-barracks-material-seam-repair")) {
+    errors.push("Root script does not expose private --barrosan-barracks-material-seam-repair dispatch.");
+  }
+  for (const launcher of [
+    "GODOT_LAUNCH_STABILIZED_SALTO_REVIEW_WINDOWS.bat",
+    "GODOT_LAUNCH_PLAYER_SLICE_WINDOWS.bat"
+  ]) {
+    const text = readFileSync(join(repoRoot, launcher), "utf8");
+    if (text.includes("barrosan-barracks-material-seam-repair") || text.includes("BARRACKS_MATERIAL_SEAM_REPAIR")) {
+      errors.push(`${launcher} must not reference the private v0.150 Barracks seam repair path.`);
+    }
+  }
+  const fallback = fallbackCheck();
+  errors.push(...fallback.errors);
+  const derivatives = repairDerivativesCheck();
+  errors.push(...derivatives.errors);
+  const report = {
+    schemaVersion: 1,
+    checkpoint: repairCheckpoint,
+    status: errors.length ? "FAIL_V0150_BARRACKS_MATERIAL_SEAM_REPAIR_VALIDATION" : "PASS_V0150_BARRACKS_MATERIAL_SEAM_REPAIR_VALIDATION",
+    slotId,
+    zeroAiImagesGeneratedForV0150: true,
+    sameV0149SourceOnly: true,
+    selectedV0149MaterialHash,
+    noNewRuntimeArtSlot: true,
+    privateComparatorOnly: true,
+    productionApproval: "forbidden",
+    playerSliceIntegration: "forbidden",
+    browserIntegration: "forbidden",
+    fallback,
+    derivatives,
+    errors
+  };
+  writeJson(join(repairEvidenceRootFromArgs(), "barracks-material-seam-repair-validation.json"), report);
+  return report;
+}
+
+function repairSelectionRank(approach) {
+  return {
+    HYBRID_BARRACKS_768_WRAPSAFE_SOFTSEAM: 4,
+    HYBRID_BARRACKS_768_WRAPSAFE_OFFSET_BLEND: 3,
+    HYBRID_BARRACKS_768_WRAPSAFE_QUADRANT: 2,
+    HYBRID_BARRACKS_768_ORIGINAL: 1
+  }[approach] ?? 0;
+}
+
+function repairThreshold(aggregates, trialRows, derivatives) {
+  const baseline = aggregates.find((row) => row.approach === "HYBRID_BARRACKS_V0150_FALLBACK" && row.tier === "L");
+  const derivativeByApproach = new Map((derivatives.derivatives ?? []).map((derivative) => [derivative.approach, derivative]));
+  const candidates = repairVariantSpecs
+    .map((spec) => {
+      const aggregate = aggregates.find((row) => row.approach === spec.approach && row.tier === "L");
+      const derivative = derivativeByApproach.get(spec.approach);
+      if (!baseline || !aggregate || !derivative) {
+        return null;
+      }
+      const averageFpsRatio = Number((aggregate.averageFps.mean / baseline.averageFps.mean).toFixed(4));
+      const p95FrameTimeRatio = Number((aggregate.p95FrameTimeMs.mean / baseline.p95FrameTimeMs.mean).toFixed(4));
+      return {
+        approach: spec.approach,
+        sourceLoaded: aggregate.sourceLoaded,
+        assetHash: aggregate.assetHash,
+        derivativeDimensions: aggregate.derivativeDimensions,
+        averageFpsRatio,
+        p95FrameTimeRatio,
+        averageFpsPass: averageFpsRatio >= 0.9,
+        p95FrameTimePass: p95FrameTimeRatio <= 1.15,
+        baselineAverageFpsMean: baseline.averageFps.mean,
+        candidateAverageFpsMean: aggregate.averageFps.mean,
+        baselineP95FrameTimeMeanMs: baseline.p95FrameTimeMs.mean,
+        candidateP95FrameTimeMeanMs: aggregate.p95FrameTimeMs.mean,
+        p95FrameTimeAbsoluteDeltaMs: Number((aggregate.p95FrameTimeMs.mean - baseline.p95FrameTimeMs.mean).toFixed(4)),
+        seamMetrics: derivative.seamMetrics,
+        seamImprovementRatio: derivative.seamImprovementRatio,
+        automatedSeamRiskPass: derivative.automatedSeamRiskPass,
+        uvStretchRiskPass: true,
+        shimmerRiskStatus: "CAPTURED_FOR_HUMAN_REVIEW",
+        visualMudStatus: "CAPTURED_FOR_HUMAN_REVIEW"
+      };
+    })
+    .filter(Boolean);
+  const passing = candidates
+    .filter((candidate) => candidate.averageFpsPass && candidate.p95FrameTimePass && candidate.automatedSeamRiskPass && candidate.uvStretchRiskPass)
+    .sort((left, right) => repairSelectionRank(right.approach) - repairSelectionRank(left.approach) || right.averageFpsRatio - left.averageFpsRatio);
+  const selected = passing[0] ?? null;
+  return {
+    status: selected ? "PASS_V0150_BARRACKS_MATERIAL_SEAM_REPAIR_GATE" : "FAIL_V0150_BARRACKS_MATERIAL_SEAM_REPAIR_GATE",
+    gate: {
+      averageFpsRatioMinimum: 0.9,
+      p95FrameTimeWorseningMaximumRatio: 1.15,
+      automatedSeamRiskMustImproveVsOriginal: true,
+      visualGateRequiresHumanReview: true
+    },
+    baseline,
+    candidates,
+    selectedRecommendedDerivative: selected?.approach ?? "none",
+    selectedRecommendedSource: selected?.sourceLoaded ?? "none",
+    selectedRecommendedHash: selected?.assetHash ?? "",
+    selectedRecommendedDimensions: selected?.derivativeDimensions ?? { width: 0, height: 0 },
+    tierLTrials: trialRows.filter((row) => row.tier === "L"),
+    visualAutomatedStatus: "CAPTURED_FOR_HUMAN_REVIEW",
+    reason: selected
+      ? "Highest-priority deterministic seam-repair variant passing the preserved Tier L performance gate and automated seam-risk improvement check."
+      : "No deterministic same-source Barracks material repair variant passed the preserved v0.150 gate."
+  };
+}
+
+function repairReport() {
+  const evidenceRoot = repairEvidenceRootFromArgs();
+  const runtimePath = join(evidenceRoot, repairRuntimeReportName);
+  if (!existsSync(runtimePath)) {
+    throw new Error(`Missing Godot Barracks seam repair runtime report: ${relativeRepo(runtimePath)}`);
+  }
+  const runtime = readJson(runtimePath);
+  const benchmarkRows = runtime.benchmarks ?? [];
+  const errors = [...(runtime.errors ?? [])];
+  const requiredApproaches = [
+    "HYBRID_BARRACKS_V0150_FALLBACK",
+    ...repairVariantSpecs.map((spec) => spec.approach),
+    "HYBRID_WORKER_CONTEXT_BASELINE",
+    "ORTHO_3D_MESH_FALLBACK_COMPARATOR"
+  ];
+  for (const approach of requiredApproaches) {
+    for (const tier of ["S", "M", "L"]) {
+      if (!benchmarkRows.some((row) => row.approach === approach && row.tier === tier)) {
+        errors.push(`Missing v0.150 paired benchmark row ${approach} ${tier}.`);
+      }
+    }
+  }
+  for (const approach of ["HYBRID_BARRACKS_V0150_FALLBACK", ...repairVariantSpecs.map((spec) => spec.approach)]) {
+    const tierLCount = benchmarkRows.filter((row) => row.approach === approach && row.tier === "L").length;
+    if (tierLCount < 5) {
+      errors.push(`Expected at least 5 Tier L rotated trials for ${approach}, found ${tierLCount}.`);
+    }
+  }
+  const aggregateRows = aggregateBenchmarks(benchmarkRows);
+  const derivativeMatrixPath = join(repairLocalSlotRoot, `${slotId}_v0150_seam_repair_derivative-matrix.json`);
+  const derivatives = existsSync(derivativeMatrixPath) ? readJson(derivativeMatrixPath) : repairDerivativeRecords(false);
+  const screenshotRoot = join(evidenceRoot, "screenshots");
+  const screenshots = [];
+  for (const capture of runtime.captures ?? []) {
+    const path = join(screenshotRoot, capture.fileName);
+    if (!existsSync(path)) {
+      errors.push(`Missing v0.150 screenshot ${relativeRepo(path)}.`);
+      continue;
+    }
+    screenshots.push({
+      ...capture,
+      path: relativeRepo(path),
+      sha256: sha256File(path),
+      width: capture.width ?? 1600,
+      height: capture.height ?? 900
+    });
+  }
+  const threshold = repairThreshold(aggregateRows, benchmarkRows, derivatives);
+  if (threshold.status.startsWith("FAIL")) {
+    errors.push("No deterministic same-source Barracks material repair variant passed the v0.150 gate.");
+  }
+  const summary = {
+    schemaVersion: 1,
+    checkpoint: repairCheckpoint,
+    status: errors.length ? "FAIL_V0150_BARRACKS_MATERIAL_SEAM_REPAIR_EVIDENCE_RECORDED" : "PASS_V0150_BARRACKS_MATERIAL_SEAM_REPAIR_EVIDENCE_RECORDED",
+    slotId,
+    sourceRuntimeReport: relativeRepo(runtimePath),
+    zeroAiImagesGeneratedForV0150: true,
+    sameV0149SourceOnly: true,
+    noNewRuntimeArtSlot: true,
+    derivatives,
+    aggregateRows,
+    benchmarkRows,
+    screenshots,
+    threshold,
+    fairPathAudit: runtime.fairPathAudit,
+    materialSources: runtime.materialSources,
+    workerContextSource: runtime.workerContextSource,
+    selectedRecommendedDerivative: threshold.selectedRecommendedDerivative,
+    selectedRecommendedSource: threshold.selectedRecommendedSource,
+    boundaries: runtime.boundaries,
+    limitations: runtime.limitations,
+    errors
+  };
+  writeJson(join(evidenceRoot, "barracks-material-seam-repair-evidence.json"), summary);
+  writeJson(join(evidenceRoot, "barracks-material-seam-repair-threshold-report.json"), threshold);
+  writeJson(join(evidenceRoot, "barracks-material-seam-repair-derivative-matrix.json"), derivatives);
+  writeJson(join(evidenceRoot, "barracks-material-seam-repair-screenshot-manifest.json"), {
+    schemaVersion: 1,
+    checkpoint: repairCheckpoint,
+    screenshotCount: screenshots.length,
+    screenshots
+  });
+  writeText(join(evidenceRoot, "paired-benchmark-summary.md"), repairBenchmarkMarkdown(summary));
+  writeText(join(evidenceRoot, "visual-review-guide.md"), repairVisualReviewMarkdown(summary));
+  writeText(join(evidenceRoot, "contact-sheet.svg"), repairContactSheetSvg(screenshots));
+  return summary;
+}
+
+function repairAudit() {
+  const evidenceRoot = repairEvidenceRootFromArgs();
+  const runtimePath = join(evidenceRoot, repairRuntimeReportName);
+  const runtime = existsSync(runtimePath) ? readJson(runtimePath) : null;
+  const auditRecord = runtime?.fairPathAudit ?? {
+    runtimeEvidencePresent: false,
+    note: "Run the v0.150 headed paired benchmark before collecting runtime audit counters."
+  };
+  const errors = [];
+  if (runtime && auditRecord.repeatedTextureCreateDuringSteadyState !== false) {
+    errors.push("Runtime audit did not prove texture creation was absent during steady-state frames.");
+  }
+  if (runtime && auditRecord.repeatedMaterialCreateDuringSteadyState !== false) {
+    errors.push("Runtime audit did not prove material creation was absent during steady-state frames.");
+  }
+  if (runtime && auditRecord.benchmarkExcludesInitializationAndWarmup !== true) {
+    errors.push("Runtime audit did not prove initialization/warmup were excluded from measured frames.");
+  }
+  const report = {
+    schemaVersion: 1,
+    checkpoint: repairCheckpoint,
+    status: errors.length ? "FAIL_V0150_BARRACKS_MATERIAL_SEAM_REPAIR_FAIR_PATH_AUDIT" : "PASS_V0150_BARRACKS_MATERIAL_SEAM_REPAIR_FAIR_PATH_AUDIT",
+    privateComparatorOnly: true,
+    productionApproval: "forbidden",
+    playerSliceIntegration: "forbidden",
+    browserIntegration: "forbidden",
+    audit: auditRecord,
+    errors
+  };
+  writeJson(join(evidenceRoot, "barracks-material-seam-repair-fair-path-audit.json"), report);
+  return report;
+}
+
+function repairBenchmarkMarkdown(summary) {
+  const lines = [
+    "# v0.150 Barracks Material Seam Repair Paired Benchmark Summary",
+    "",
+    `Status: ${summary.status}`,
+    `Gate: ${summary.threshold.status}`,
+    `Selected variant: ${summary.threshold.selectedRecommendedDerivative}`,
+    "",
+    "| Approach | Tier | Trials | Mean FPS | Median FPS | p95 ms | p99 ms | Source |",
+    "| --- | --- | ---: | ---: | ---: | ---: | ---: | --- |"
+  ];
+  for (const row of summary.aggregateRows) {
+    lines.push(`| \`${row.approach}\` | \`${row.tier}\` | ${row.trialCount} | ${row.averageFps.mean} | ${row.averageFps.median} | ${row.p95FrameTimeMs.mean} | ${row.p99FrameTimeMs.mean} | ${row.sourceLoaded} |`);
+  }
+  lines.push("", "## Gate Candidates", "");
+  for (const candidate of summary.threshold.candidates) {
+    lines.push(`- ${candidate.approach}: FPS ratio ${candidate.averageFpsRatio}, p95 ratio ${candidate.p95FrameTimeRatio}, seam improvement ${candidate.seamImprovementRatio}, seam pass ${candidate.automatedSeamRiskPass}.`);
+  }
+  lines.push("", "## Tier L Trials", "");
+  for (const row of summary.threshold.tierLTrials) {
+    lines.push(`- ${row.approach} trial ${row.trialIndex ?? 1}: ${Number(row.averageFps).toFixed(2)} FPS, p95 ${Number(row.p95FrameTimeMs).toFixed(2)} ms, source ${row.sourceLoaded}.`);
+  }
+  return `${lines.join("\n")}\n`;
+}
+
+function repairVisualReviewMarkdown(summary) {
+  const lines = [
+    "# v0.150 Barracks Material UV Seam Repair Visual Review Guide",
+    "",
+    `Selected candidate: \`${summary.threshold.selectedRecommendedDerivative}\``,
+    `Gate result: \`${summary.threshold.status}\``,
+    "",
+    "Review questions:",
+    "",
+    "- Are seams distracting at normal gameplay distance?",
+    "- Does the selected repair reduce 2x2 and 4x4 repeat risk without obvious mirroring or mud?",
+    "- Does the material keep Barrosan Barracks rings readable under wet-overcast and restrained hearth lighting?",
+    "- Is mipmap shimmer acceptable through the zoom transition?",
+    "- Does the Worker plus Barracks composition remain readable?",
+    "",
+    "Non-approval boundary:",
+    "",
+    "- Private comparator only.",
+    "- Zero new AI images for v0.150.",
+    "- Same v0.149 material source only.",
+    "- No new runtime-art slot.",
+    "- No player-facing Salto integration.",
+    "- No browser runtime wiring.",
+    "- Not final Barracks material or Godot approval.",
+    "",
+    "Captures:",
+    ""
+  ];
+  for (const screenshot of summary.screenshots) {
+    lines.push(`- \`${screenshot.id}\`: \`${screenshot.path}\``);
+  }
+  return `${lines.join("\n")}\n`;
+}
+
+function repairContactSheetSvg(screenshots) {
+  const cellWidth = 360;
+  const cellHeight = 252;
+  const cols = 3;
+  const rows = Math.max(1, Math.ceil(screenshots.length / cols));
+  const width = cols * cellWidth;
+  const height = rows * cellHeight + 48;
+  const parts = [
+    `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}">`,
+    `<rect width="100%" height="100%" fill="#111511"/>`,
+    `<text x="18" y="30" fill="#e7eadc" font-family="Arial" font-size="18">v0.150 Barracks material seam repair private comparator contact sheet</text>`
+  ];
+  screenshots.forEach((shot, index) => {
+    const col = index % cols;
+    const row = Math.floor(index / cols);
+    const x = col * cellWidth + 14;
+    const y = row * cellHeight + 52;
+    const href = shot.path.replace("artifacts/desktop-spikes/godot-salto/v0150/evidence/", "").replaceAll("&", "&amp;");
+    parts.push(`<rect x="${x - 4}" y="${y - 4}" width="336" height="226" fill="#202820" stroke="#465446"/>`);
+    parts.push(`<image href="${href}" x="${x}" y="${y}" width="328" height="185" preserveAspectRatio="xMidYMid meet"/>`);
+    parts.push(`<text x="${x}" y="${y + 205}" fill="#d8ddce" font-family="Arial" font-size="11">${shot.id}</text>`);
+  });
+  parts.push("</svg>");
+  return `${parts.join("\n")}\n`;
+}
+
 function printReportAndSetExitCode(result) {
   console.log(JSON.stringify(result, null, 2));
   if (String(result.status ?? "").startsWith("FAIL") || (result.errors && result.errors.length > 0)) {
@@ -895,8 +1588,18 @@ try {
     printReportAndSetExitCode(report());
   } else if (command === "audit") {
     printReportAndSetExitCode(audit());
+  } else if (command === "seam-repair:derivatives") {
+    printReportAndSetExitCode(repairDerivativeRecords(true));
+  } else if (command === "seam-repair:derivatives:check") {
+    printReportAndSetExitCode(repairDerivativesCheck());
+  } else if (command === "seam-repair:validate") {
+    printReportAndSetExitCode(repairValidate());
+  } else if (command === "seam-repair:report") {
+    printReportAndSetExitCode(repairReport());
+  } else if (command === "seam-repair:audit") {
+    printReportAndSetExitCode(repairAudit());
   } else {
-    console.error("Usage: node tools/godot/barracksMaterialSingleSlotTool.mjs <fallback|fallback:check|derivatives|derivatives:check|validate|report|audit> [--artifact-root=<path>]");
+    console.error("Usage: node tools/godot/barracksMaterialSingleSlotTool.mjs <fallback|fallback:check|derivatives|derivatives:check|validate|report|audit|seam-repair:derivatives|seam-repair:derivatives:check|seam-repair:validate|seam-repair:report|seam-repair:audit> [--artifact-root=<path>]");
     process.exitCode = 1;
   }
 } catch (error) {

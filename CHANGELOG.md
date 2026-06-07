@@ -1,5 +1,50 @@
 # Changelog
 
+# v0.150 Hybrid Barracks Material UV Seam Repair Lighting Review And Human Review Stop - 2026-06-07
+
+This checkpoint repairs and fairly benchmarks only the existing private v0.149 Barrosan Barracks material path. It generates zero new AI images, uses the same v0.149 material source only, creates deterministic ignored seam-repair variants, selects the wrapsafe offset-blend derivative after the preserved gate passes, and stops for Emmanuel review.
+
+Added:
+
+- Deterministic ignored v0.150 Barracks material seam-repair derivatives under `artifacts/desktop-spikes/godot-salto/v0150/local-barracks-material-seam-repair/`.
+- Private comparator `desktop-spikes/godot-salto/comparators/runtime_art_pipeline/barracks_material_seam_repair_comparator.gd`.
+- Seam-repair validation, derivative reproducibility, fair-path audit, headed benchmark, and capture wrappers.
+- One-click wrapper `GODOT_BARROSAN_BARRACKS_MATERIAL_SEAM_REPAIR_WINDOWS.bat`.
+- v0.150 docs for seam-repair spec, derivative matrix, fair-path audit, paired benchmark report, visual review guide, private boundary, and implementation report.
+
+Changed:
+
+- `desktop-spikes/godot-salto/scripts/salto_spike_root.gd` now has a private `--barrosan-barracks-material-seam-repair` dispatch path only.
+- `tools/godot/barracksMaterialSingleSlotTool.mjs` now records v0.150 derivative reproducibility, validation, threshold, evidence, and fair-path audit reports.
+- Desktop-spike scaffold tests now assert the v0.150 seam-repair path remains isolated from the normal Salto player slice and default launchers.
+- Handoff, roadmap, development checkpoint, and release checklist now describe v0.150 as the current private comparator human-review stop.
+
+Evidence:
+
+- Same v0.149 source SHA-256: `bd07ef2179dde28161a1c32624eac9efd253de7956c4455e992cb716eb367c6c`.
+- Original v0.149 selected 768 SHA-256: `2731c342024271b2babaac8681d33f060df83e30c47ce56722f9595cd8004ce3`.
+- Selected repair: `HYBRID_BARRACKS_768_WRAPSAFE_OFFSET_BLEND`.
+- Selected SHA-256: `58a60b750370df084b60a1d92077da9367c0ba8a763781e2c3a8a7d96f1c980f`, dimensions `768 x 768`.
+- Gate: `PASS_V0150_BARRACKS_MATERIAL_SEAM_REPAIR_GATE`.
+- Tier L selected average-FPS ratio: `1.0048`; selected p95 ratio: `0.9681`.
+- Evidence: `PASS_V0150_BARRACKS_MATERIAL_SEAM_REPAIR_EVIDENCE_RECORDED`, with `62` screenshots and `49` benchmark rows.
+- Fair-path audit: `PASS_V0150_BARRACKS_MATERIAL_SEAM_REPAIR_FAIR_PATH_AUDIT`, with one texture load/create per source, one material create per source/material key, and no repeated texture/material creation during steady-state frames.
+
+Boundaries:
+
+- Zero new AI images.
+- Same v0.149 source only.
+- No new runtime-art slot.
+- No reference candidate import.
+- No downloaded asset use.
+- No normal Salto player-slice mutation.
+- No player-facing Godot wiring or browser-runtime wiring.
+- No manifest mutation, art-slot mutation, production package mutation, save change, stable-ID change, final runtime-art approval, final Barracks material approval, final engine selection, full port, or v0.151 work.
+
+Verification:
+
+- Required v0.150 verification is listed in `docs/V0150_IMPLEMENTATION_REPORT.md` and must be run before closeout.
+
 # v0.149 Hybrid Barrosan Barracks Material Single-Slot Intake Experiment And Human Review Stop - 2026-06-06
 
 This checkpoint tests only one isolated private hybrid Barrosan Barracks material slot. It generates exactly one original ignored material-source image, creates deterministic local derivatives, validates a tracked diagnostic fallback, fairly benchmarks Tier S/M/L private comparator evidence with v0.148 Worker context, selects the 768 derivative after the preserved gate passes, and stops for Emmanuel review.

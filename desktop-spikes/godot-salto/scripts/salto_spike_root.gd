@@ -37,6 +37,7 @@ const SCRIPT_ARG_PREFIXES := [
 	"--worker-billboard-single-slot",
 	"--worker-billboard-single-slot-repair",
 	"--barrosan-barracks-material-single-slot",
+	"--barrosan-barracks-material-seam-repair",
 	"--mode=",
 	"--visual-preset=",
 	"--viewport=",
@@ -198,6 +199,45 @@ func _ready() -> void:
 			get_tree().quit(1)
 			return
 		barracks_material.call("start")
+		return
+	if args.has("--barrosan-barracks-material-seam-repair"):
+		_write_absolute_json(_path_join(_artifact_root_from_args(), "barracks-material-seam-repair-root-dispatch.json"), {
+			"schemaVersion": 1,
+			"checkpoint": "v0.150",
+			"status": "PASS_V0150_PRIVATE_BARRACKS_MATERIAL_SEAM_REPAIR_DISPATCH",
+			"args": Array(args),
+			"defaultPlayerSliceLaunched": false
+		})
+		var barracks_repair_script := load("res://comparators/runtime_art_pipeline/barracks_material_seam_repair_comparator.gd") as GDScript
+		if barracks_repair_script == null:
+			_write_absolute_json(_path_join(_artifact_root_from_args(), "barracks-material-seam-repair-dispatch-failure.json"), {
+				"schemaVersion": 1,
+				"checkpoint": "v0.150",
+				"status": "FAIL_V0150_PRIVATE_BARRACKS_MATERIAL_SEAM_REPAIR_SCRIPT_LOAD",
+				"script": "res://comparators/runtime_art_pipeline/barracks_material_seam_repair_comparator.gd"
+			})
+			get_tree().quit(1)
+			return
+		var barracks_repair := Node.new()
+		barracks_repair.name = "V0150BarracksMaterialSeamRepairComparator"
+		barracks_repair.set_script(barracks_repair_script)
+		add_child(barracks_repair)
+		_write_absolute_json(_path_join(_artifact_root_from_args(), "barracks-material-seam-repair-dispatch-prestart.json"), {
+			"schemaVersion": 1,
+			"checkpoint": "v0.150",
+			"status": "PASS_V0150_PRIVATE_BARRACKS_MATERIAL_SEAM_REPAIR_PRESTART",
+			"hasStart": barracks_repair.has_method("start")
+		})
+		if not barracks_repair.has_method("start"):
+			_write_absolute_json(_path_join(_artifact_root_from_args(), "barracks-material-seam-repair-dispatch-failure.json"), {
+				"schemaVersion": 1,
+				"checkpoint": "v0.150",
+				"status": "FAIL_V0150_PRIVATE_BARRACKS_MATERIAL_SEAM_REPAIR_START_METHOD",
+				"script": "res://comparators/runtime_art_pipeline/barracks_material_seam_repair_comparator.gd"
+			})
+			get_tree().quit(1)
+			return
+		barracks_repair.call("start")
 		return
 	if args.has("--run-tests"):
 		var test_report: Dictionary = run_headless_tests()

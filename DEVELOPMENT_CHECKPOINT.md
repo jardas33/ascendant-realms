@@ -1,6 +1,54 @@
 # Development Checkpoint
 
-Updated: 2026-06-06 v0.149 Hybrid Barrosan Barracks Material Single-Slot Intake Experiment And Human Review Stop
+Updated: 2026-06-07 v0.150 Hybrid Barracks Material UV Seam Repair Lighting Review And Human Review Stop
+
+## v0.150 Hybrid Barracks Material UV Seam Repair Lighting Review And Human Review Stop - 2026-06-07
+
+Scope: isolated private Godot Barrosan Barracks material seam-repair and lighting-review checkpoint. This checkpoint uses zero new AI images, repairs and benchmarks deterministic derivatives of the same v0.149 material source only, keeps the existing second private runtime-art slot, and stops without modifying the normal Salto player slice or starting v0.151.
+
+Included work:
+
+- Confirmed clean synchronized `main` at `241dd18127f1c4c9b8a2493dd67bd2436371caac`.
+- Confirmed v0.149 pushed remote CI success and selected `HYBRID_BARRACKS_LOCAL_768` as the preserved original material control.
+- Reused the v0.149 source hash `bd07ef2179dde28161a1c32624eac9efd253de7956c4455e992cb716eb367c6c` and generated zero new AI images.
+- Generated deterministic original, wrapsafe offset-blend, wrapsafe quadrant, and wrapsafe softseam ignored derivatives.
+- Added private seam-repair comparator code, validation/reproducibility/audit/benchmark/capture wrappers, one-click launcher, and tracked v0.150 docs.
+- Captured source, tiling, seam, lighting, Worker+BARRACKS, zoom-transition, repeated-shell stress, fallback comparison, and Tier S/M/L evidence.
+
+Current interpretation:
+
+- Selected recommended repair: `HYBRID_BARRACKS_768_WRAPSAFE_OFFSET_BLEND`.
+- Selected hash: `58a60b750370df084b60a1d92077da9367c0ba8a763781e2c3a8a7d96f1c980f`.
+- Selected dimensions: `768 x 768`.
+- Gate: `PASS_V0150_BARRACKS_MATERIAL_SEAM_REPAIR_GATE`.
+- Evidence marker: `PASS_V0150_BARRACKS_MATERIAL_SEAM_REPAIR_EVIDENCE_RECORDED`.
+- Tier L selected FPS ratio: `1.0048`.
+- Tier L selected p95 ratio: `0.9681`.
+- Screenshot count: `62`; benchmark row count: `49`.
+- Fair-path audit: `PASS_V0150_BARRACKS_MATERIAL_SEAM_REPAIR_FAIR_PATH_AUDIT`, with `6` texture cache entries, `18` material cache entries, one load/create per source/material key, and no repeated texture/material creation during steady-state frames.
+- Human review is pending.
+- v0.151 has not started.
+
+Verification:
+
+```text
+Required closeout stack:
+npm test
+npm run build
+npm run validate:content
+npm run validate:art-intake
+npm run art:reference:init
+npm run art:reference:validate
+npm run art:reference:contact-sheet
+npm run art:reference:review-pack
+npm run godot:barracks-material-seam-repair:derivatives:reproduce
+npm run godot:barracks-material-seam-repair:validate
+npm run godot:barracks-material-seam-repair:audit
+npm run godot:barracks-material-seam-repair:benchmark:headed
+npm run godot:barracks-material-seam-repair:capture
+isolation scans
+git diff --check
+```
 
 ## v0.149 Hybrid Barrosan Barracks Material Single-Slot Intake Experiment And Human Review Stop - 2026-06-06
 

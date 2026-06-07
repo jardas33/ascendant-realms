@@ -2139,4 +2139,93 @@ describe("Godot Salto spike scaffold", () => {
     expect(comparatorScript).not.toContain("artifacts/art-review/v0138/candidates");
     expect(toolScript).not.toContain("artifacts/art-review/v0138/candidates");
   });
+
+  it("defines the v0.150 private Barracks material seam repair review stop", async () => {
+    [
+      "GODOT_BARROSAN_BARRACKS_MATERIAL_SEAM_REPAIR_WINDOWS.bat",
+      "tools/godot/barracksMaterialSingleSlotTool.mjs",
+      "tools/godot/runGodotBarracksMaterialSeamRepairValidation.ps1",
+      "tools/godot/runGodotBarracksMaterialSeamRepairDerivatives.ps1",
+      "tools/godot/runGodotBarracksMaterialSeamRepairAudit.ps1",
+      "tools/godot/runGodotBarracksMaterialSeamRepairBenchmarkWindows.ps1",
+      "tools/godot/captureGodotBarracksMaterialSeamRepairWindows.ps1",
+      "desktop-spikes/godot-salto/comparators/runtime_art_pipeline/barracks_material_seam_repair_comparator.gd",
+      "desktop-spikes/godot-salto/comparators/runtime_art_pipeline/fallback/barrosan_barracks_material_v0149_fallback.png",
+      "desktop-spikes/godot-salto/comparators/runtime_art_pipeline/fallback/barrosan_barracks_material_v0149_fallback.contract.json",
+      "docs/V0150_BARRACKS_MATERIAL_UV_SEAM_REPAIR_SPEC.md",
+      "docs/V0150_BARRACKS_MATERIAL_SEAM_DERIVATIVE_MATRIX.md",
+      "docs/V0150_BARRACKS_MATERIAL_FAIR_PATH_AUDIT.md",
+      "docs/V0150_BARRACKS_MATERIAL_PAIRED_BENCHMARK_REPORT.md",
+      "docs/V0150_BARRACKS_MATERIAL_VISUAL_REVIEW_GUIDE.md",
+      "docs/V0150_PRIVATE_COMPARATOR_ONLY_BOUNDARY.md",
+      "docs/V0150_IMPLEMENTATION_REPORT.md"
+    ].forEach((path) => expect(existsSync(path), path).toBe(true));
+
+    const packageJson = await readJson<{ scripts: Record<string, string> }>("package.json");
+    const rootScript = await readFile("desktop-spikes/godot-salto/scripts/salto_spike_root.gd", "utf8");
+    const comparatorScript = await readFile(
+      "desktop-spikes/godot-salto/comparators/runtime_art_pipeline/barracks_material_seam_repair_comparator.gd",
+      "utf8"
+    );
+    const toolScript = await readFile("tools/godot/barracksMaterialSingleSlotTool.mjs", "utf8");
+    const launcher = await readFile("GODOT_BARROSAN_BARRACKS_MATERIAL_SEAM_REPAIR_WINDOWS.bat", "utf8");
+    const stabilizedLauncher = await readFile("GODOT_LAUNCH_STABILIZED_SALTO_REVIEW_WINDOWS.bat", "utf8");
+    const playerLauncher = await readFile("GODOT_LAUNCH_PLAYER_SLICE_WINDOWS.bat", "utf8");
+    const spec = await readFile("docs/V0150_BARRACKS_MATERIAL_UV_SEAM_REPAIR_SPEC.md", "utf8");
+    const boundary = await readFile("docs/V0150_PRIVATE_COMPARATOR_ONLY_BOUNDARY.md", "utf8");
+    const implementation = await readFile("docs/V0150_IMPLEMENTATION_REPORT.md", "utf8");
+
+    [
+      "godot:barracks-material-seam-repair:validate",
+      "godot:barracks-material-seam-repair:derivatives:reproduce",
+      "godot:barracks-material-seam-repair:audit",
+      "godot:barracks-material-seam-repair:benchmark:headed",
+      "godot:barracks-material-seam-repair:capture"
+    ].forEach((script) => expect(packageJson.scripts[script], script).toBeTypeOf("string"));
+
+    expect(rootScript).toContain("--barrosan-barracks-material-seam-repair");
+    expect(rootScript).toContain("barracks_material_seam_repair_comparator.gd");
+    expect(rootScript).toContain("PASS_V0150_PRIVATE_BARRACKS_MATERIAL_SEAM_REPAIR_DISPATCH");
+
+    [
+      "barrosan_barracks_material_v0149",
+      "HYBRID_BARRACKS_768_ORIGINAL",
+      "HYBRID_BARRACKS_768_WRAPSAFE_OFFSET_BLEND",
+      "HYBRID_BARRACKS_768_WRAPSAFE_QUADRANT",
+      "HYBRID_BARRACKS_768_WRAPSAFE_SOFTSEAM",
+      "HYBRID_WORKER_CONTEXT_BASELINE",
+      "zeroAiImagesGeneratedForV0150",
+      "sameV0149SourceOnly",
+      "noNewRuntimeArtSlot",
+      "benchmarkExcludesInitializationAndWarmup",
+      "browserIntegration"
+    ].forEach((text) => expect(comparatorScript).toContain(text));
+
+    [
+      "seam-repair:derivatives:check",
+      "PASS_V0150_BARRACKS_MATERIAL_SEAM_REPAIR_DERIVATIVE_REPRODUCIBILITY",
+      "PASS_V0150_BARRACKS_MATERIAL_SEAM_REPAIR_GATE",
+      "barracks-material-seam-repair-threshold-report.json",
+      "barracks-material-seam-repair-fair-path-audit.json",
+      "zeroAiImagesGeneratedForV0150",
+      "sameV0149SourceOnly",
+      "noNewRuntimeArtSlot"
+    ].forEach((text) => expect(toolScript).toContain(text));
+
+    expect(launcher).toContain("godot:barracks-material-seam-repair:benchmark:headed");
+    expect(stabilizedLauncher).not.toContain("barrosan-barracks-material-seam-repair");
+    expect(stabilizedLauncher).not.toContain("BARRACKS_MATERIAL_SEAM_REPAIR");
+    expect(playerLauncher).not.toContain("barrosan-barracks-material-seam-repair");
+    expect(playerLauncher).not.toContain("BARRACKS_MATERIAL_SEAM_REPAIR");
+
+    expect(spec).toContain("zero new AI images");
+    expect(spec).toContain("2731c342024271b2babaac8681d33f060df83e30c47ce56722f9595cd8004ce3");
+    expect(boundary).toContain("No new runtime-art slot");
+    expect(boundary).toContain("No browser runtime wiring");
+    expect(implementation).toContain("No v0.151 work");
+
+    expect(rootScript).not.toContain("artifacts/art-review/v0138/candidates");
+    expect(comparatorScript).not.toContain("artifacts/art-review/v0138/candidates");
+    expect(toolScript).not.toContain("artifacts/art-review/v0138/candidates");
+  });
 });
