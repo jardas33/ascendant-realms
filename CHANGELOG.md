@@ -1,5 +1,35 @@
 # Changelog
 
+# v0.159 First Player-Facing Hybrid-Art Integration Readiness Packet And V0.160 Worker Contract - 2026-06-07
+
+This checkpoint prepares only the first player-facing hybrid-art integration readiness packet and the future v0.160 Worker opt-in implementation contract. It generates zero images, adds zero runtime-art slots, integrates nothing into the normal Salto player slice, preserves the default launcher unchanged, and stops for Emmanuel review. It does not begin v0.160.
+
+Added:
+
+- v0.159 first player-facing hybrid-art integration readiness packet.
+- v0.159 first-slot decision scorecard selecting Worker as the safest future opt-in proof.
+- v0.159 v0.160 Worker opt-in integration contract.
+- v0.159 player-slice integration risk register, rollback plan, Emmanuel review guide, private-comparator-to-player-slice boundary, and implementation report.
+- Future prompt `docs/art-prompts/V0160_01_GODOT_PLAYER_SLICE_WORKER_BILLBOARD_OPT_IN_INTEGRATION.md`.
+- Scaffold guardrail coverage proving the v0.159 packet exists while the future Worker opt-in launcher is not created and the default player-facing launchers do not contain Worker experiment tokens.
+
+Decision:
+
+- Future v0.160 first slot prepared: `worker_billboard_static_v0147`.
+- Future v0.160 selected derivative: `HYBRID_WORKER_TRIMMED_1024`.
+- Required SHA-256: `a628065ca92b231b0d4f6a0625d9e259dea080e80d530ee688483611d70049bc`.
+- Future posture: Godot-only opt-in launcher, default launcher unchanged, fail-closed procedural fallback.
+
+Boundaries:
+
+- Zero images generated.
+- Zero new runtime-art slots.
+- No selected candidate imported into the normal Salto player slice.
+- No opt-in launcher created in v0.159.
+- No browser-runtime wiring or production package mutation.
+- No manifest, production art-slot, save, stable-ID, gameplay, balance, input, map, objective, campaign, or browser behavior mutation.
+- No final runtime-art approval, final Worker art approval, final Godot choice, full port, or v0.160 execution.
+
 # v0.158 Hybrid Mixed Friendly-Versus-Hostile Combat-Readability Stress Gate And Human Review Stop - 2026-06-07
 
 This checkpoint stress-tests only the already-selected five-slot private hybrid comparator posture. It generates zero new images, adds zero runtime-art slots, preserves the selected Worker/Barracks/Aster/Militia/v0.157 Ashen Raider context, preserves archived v0.156 Ashen source/cutout evidence, and stops for Emmanuel review. It does not modify the normal Salto player slice and does not wire anything into the browser runtime.

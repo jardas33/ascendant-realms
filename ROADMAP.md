@@ -11,9 +11,23 @@ Every phase should protect these long-term pillars:
 
 ## Current Recommended Next Phase
 
-The current checkpoint is **v0.158 Hybrid Mixed Friendly-Versus-Hostile Combat-Readability Stress Gate And Human Review Stop** on 2026-06-07. It keeps the browser runtime, normal Salto player slice, production package, saves, stable IDs, and production art-slot registry untouched while stress-testing only the already-selected five-slot private hybrid comparator posture. It generates zero new images, adds zero runtime-art slots, reuses the selected Worker/Barracks/Aster/Militia/v0.157 Ashen Raider context, preserves archived v0.156 Ashen evidence, and compares selected-local, fallback-only, and orthographic fallback scenarios across 4/8/16/32 Ashen readability stress. The automated private gate recorded `PASS_V0158_HYBRID_MIXED_COMBAT_STRESS_GATE`, with Tier L selected-vs-fallback FPS / p95 ratios `0.9392` / `1.1098` and 32-Ashen selected-vs-fallback FPS / p95 ratios `1.1061` / `0.9154`.
+The current checkpoint is **v0.159 First Player-Facing Hybrid-Art Integration Readiness Packet And V0.160 Worker Contract** on 2026-06-07. It converts the v0.158 private comparator evidence into a documentation-only player-facing readiness packet and a future v0.160 Worker opt-in implementation contract. It generates zero images, adds zero runtime-art slots, integrates nothing into the normal Salto player slice, preserves the default launcher unchanged, and does not begin v0.160.
 
-The next recommended step is human review and explicit approval only: Emmanuel may review `docs/V0158_HYBRID_MIXED_COMBAT_VISUAL_REVIEW_GUIDE.md`, the ignored v0.158 evidence under `artifacts/desktop-spikes/godot-salto/v0158/`, and the v0.158 stress, benchmark, fair-path, boundary, and implementation docs. Do not import any selected source, generate another image, add another slot, modify the normal Salto player slice, wire comparator output into Godot production/player-facing flow, wire assets into the browser, mutate manifests or art slots, change saves or stable IDs, choose Godot finally, start a full desktop port, start Unity/Unreal/Electron work, or start v0.159 unless a future explicit goal approves a narrow next step.
+The next recommended step is human review and explicit approval only: Emmanuel may review `docs/V0159_FIRST_PLAYER_FACING_HYBRID_ART_INTEGRATION_READINESS.md`, `docs/V0159_FIRST_SLOT_DECISION_SCORECARD.md`, `docs/V0159_V0160_WORKER_OPT_IN_INTEGRATION_CONTRACT.md`, `docs/V0159_PLAYER_SLICE_INTEGRATION_RISK_REGISTER.md`, `docs/V0159_PLAYER_SLICE_INTEGRATION_ROLLBACK_PLAN.md`, `docs/V0159_EMMANUEL_INTEGRATION_READINESS_REVIEW_GUIDE.md`, `docs/V0159_PRIVATE_COMPARATOR_TO_PLAYER_SLICE_BOUNDARY.md`, `docs/V0159_IMPLEMENTATION_REPORT.md`, and `docs/art-prompts/V0160_01_GODOT_PLAYER_SLICE_WORKER_BILLBOARD_OPT_IN_INTEGRATION.md`. Do not generate images, add a slot, create the future opt-in launcher, modify the normal Salto player slice, wire comparator output into Godot production/player-facing flow, wire assets into the browser, mutate manifests or art slots, change saves or stable IDs, choose Godot finally, start a full desktop port, start Unity/Unreal/Electron work, or start v0.160 unless a future explicit goal approves that exact Worker-only opt-in step.
+
+New v0.159 docs:
+
+- `docs/V0159_FIRST_PLAYER_FACING_HYBRID_ART_INTEGRATION_READINESS.md`
+- `docs/V0159_FIRST_SLOT_DECISION_SCORECARD.md`
+- `docs/V0159_V0160_WORKER_OPT_IN_INTEGRATION_CONTRACT.md`
+- `docs/V0159_PLAYER_SLICE_INTEGRATION_RISK_REGISTER.md`
+- `docs/V0159_PLAYER_SLICE_INTEGRATION_ROLLBACK_PLAN.md`
+- `docs/V0159_EMMANUEL_INTEGRATION_READINESS_REVIEW_GUIDE.md`
+- `docs/V0159_PRIVATE_COMPARATOR_TO_PLAYER_SLICE_BOUNDARY.md`
+- `docs/V0159_IMPLEMENTATION_REPORT.md`
+- `docs/art-prompts/V0160_01_GODOT_PLAYER_SLICE_WORKER_BILLBOARD_OPT_IN_INTEGRATION.md`
+
+Previous checkpoint reference: v0.158 Hybrid Mixed Friendly-Versus-Hostile Combat-Readability Stress Gate And Human Review Stop.
 
 New v0.158 docs:
 

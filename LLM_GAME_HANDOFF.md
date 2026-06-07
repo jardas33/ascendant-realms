@@ -1,6 +1,6 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-06-07 v0.158 Hybrid Mixed Friendly-Versus-Hostile Combat-Readability Stress Gate And Human Review Stop
+Last updated: 2026-06-07 v0.159 First Player-Facing Hybrid-Art Integration Readiness Packet And V0.160 Worker Contract
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
@@ -14,7 +14,43 @@ Project Identity continuation note: v0.157 now supersedes the older no-v0.157 ta
 
 Project Identity continuation note: v0.158 now supersedes the older no-v0.158 tail above because the v0.158 queued prompt explicitly authorized one private-comparator-only mixed friendly-versus-hostile stress gate after v0.157 was committed, pushed, clean, synced, and remote-green. v0.158 uses zero new images, adds zero runtime-art slots, reuses exactly the selected Worker/Barracks/Aster/Militia/v0.157 Ashen context, preserves archived v0.156 Ashen comparison evidence, and stops for Emmanuel review.
 
-Current status override: v0.158 is the active checkpoint for this handoff. No v0.159 work is approved.
+Project Identity continuation note: v0.159 now supersedes the older no-v0.159 tail above because the v0.159 prompt explicitly authorized a documentation-only readiness packet after v0.158 was committed, pushed, clean, synced, and remote-green. v0.159 prepares the first player-facing hybrid-art integration readiness packet and the future v0.160 Worker opt-in implementation contract. It generates zero images, adds zero runtime-art slots, integrates nothing into the normal Salto player slice, preserves default launchers unchanged, and stops for Emmanuel review.
+
+Current status override: v0.159 is the active checkpoint for this handoff. v0.160 is prepared as a future contract only and has not started.
+
+## Current v0.159 First Player-Facing Hybrid-Art Integration Readiness Packet And V0.160 Worker Contract - 2026-06-07
+
+Status: v0.159 is a documentation and contract checkpoint only. It converts the v0.158 private comparator evidence into a first player-facing readiness decision packet and a future one-slot Worker opt-in implementation contract. No art is imported, no image is generated, no runtime-art slot is added, no opt-in launcher is created, and no normal Salto player-slice or browser-runtime integration is performed.
+
+v0.159 selected future first slot:
+
+- Slot: `worker_billboard_static_v0147`.
+- Derivative: `HYBRID_WORKER_TRIMMED_1024`.
+- SHA-256: `a628065ca92b231b0d4f6a0625d9e259dea080e80d530ee688483611d70049bc`.
+- Future posture: Godot-only opt-in launcher, default launcher unchanged, fail-closed procedural Worker fallback.
+
+v0.159 docs:
+
+- `docs/V0159_FIRST_PLAYER_FACING_HYBRID_ART_INTEGRATION_READINESS.md`
+- `docs/V0159_FIRST_SLOT_DECISION_SCORECARD.md`
+- `docs/V0159_V0160_WORKER_OPT_IN_INTEGRATION_CONTRACT.md`
+- `docs/V0159_PLAYER_SLICE_INTEGRATION_RISK_REGISTER.md`
+- `docs/V0159_PLAYER_SLICE_INTEGRATION_ROLLBACK_PLAN.md`
+- `docs/V0159_EMMANUEL_INTEGRATION_READINESS_REVIEW_GUIDE.md`
+- `docs/V0159_PRIVATE_COMPARATOR_TO_PLAYER_SLICE_BOUNDARY.md`
+- `docs/V0159_IMPLEMENTATION_REPORT.md`
+- `docs/art-prompts/V0160_01_GODOT_PLAYER_SLICE_WORKER_BILLBOARD_OPT_IN_INTEGRATION.md`
+
+v0.159 constraints:
+
+- Zero images generated.
+- Zero new runtime-art slots.
+- No selected candidate import into the normal Salto player slice.
+- No opt-in launcher created in v0.159.
+- Default launchers unchanged.
+- No browser-runtime wiring.
+- No manifest, production art-slot, production package, save, stable-ID, gameplay, balance, input, objective, map, campaign, or browser behavior mutation.
+- No final runtime-art approval, final Worker art approval, final Godot choice, full port, or v0.160 execution.
 
 ## Current v0.158 Hybrid Mixed Friendly-Versus-Hostile Combat-Readability Stress Gate And Human Review Stop - 2026-06-07
 

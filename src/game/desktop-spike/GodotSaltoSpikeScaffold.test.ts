@@ -2899,4 +2899,58 @@ describe("Godot Salto spike scaffold", () => {
     expect(boundary).toContain("Zero new AI images");
     expect(boundary).toContain("No v0.159 work");
   });
+
+  it("defines the v0.159 readiness packet without starting the Worker opt-in experiment", async () => {
+    [
+      "docs/V0159_FIRST_PLAYER_FACING_HYBRID_ART_INTEGRATION_READINESS.md",
+      "docs/V0159_FIRST_SLOT_DECISION_SCORECARD.md",
+      "docs/V0159_V0160_WORKER_OPT_IN_INTEGRATION_CONTRACT.md",
+      "docs/V0159_PLAYER_SLICE_INTEGRATION_RISK_REGISTER.md",
+      "docs/V0159_PLAYER_SLICE_INTEGRATION_ROLLBACK_PLAN.md",
+      "docs/V0159_EMMANUEL_INTEGRATION_READINESS_REVIEW_GUIDE.md",
+      "docs/V0159_PRIVATE_COMPARATOR_TO_PLAYER_SLICE_BOUNDARY.md",
+      "docs/V0159_IMPLEMENTATION_REPORT.md",
+      "docs/art-prompts/V0160_01_GODOT_PLAYER_SLICE_WORKER_BILLBOARD_OPT_IN_INTEGRATION.md"
+    ].forEach((path) => expect(existsSync(path), path).toBe(true));
+
+    expect(existsSync("GODOT_LAUNCH_SALTO_WORKER_ART_EXPERIMENT_WINDOWS.bat")).toBe(false);
+
+    const readiness = await readFile("docs/V0159_FIRST_PLAYER_FACING_HYBRID_ART_INTEGRATION_READINESS.md", "utf8");
+    const scorecard = await readFile("docs/V0159_FIRST_SLOT_DECISION_SCORECARD.md", "utf8");
+    const contract = await readFile("docs/V0159_V0160_WORKER_OPT_IN_INTEGRATION_CONTRACT.md", "utf8");
+    const boundary = await readFile("docs/V0159_PRIVATE_COMPARATOR_TO_PLAYER_SLICE_BOUNDARY.md", "utf8");
+    const futurePrompt = await readFile(
+      "docs/art-prompts/V0160_01_GODOT_PLAYER_SLICE_WORKER_BILLBOARD_OPT_IN_INTEGRATION.md",
+      "utf8"
+    );
+    const playerLauncher = await readFile("GODOT_LAUNCH_PLAYER_SLICE_WINDOWS.bat", "utf8");
+    const stabilizedLauncher = await readFile("GODOT_LAUNCH_STABILIZED_SALTO_REVIEW_WINDOWS.bat", "utf8");
+
+    [
+      "worker_billboard_static_v0147",
+      "HYBRID_WORKER_TRIMMED_1024",
+      "a628065ca92b231b0d4f6a0625d9e259dea080e80d530ee688483611d70049bc",
+      "GODOT_LAUNCH_SALTO_WORKER_ART_EXPERIMENT_WINDOWS.bat"
+    ].forEach((text) => {
+      expect(contract).toContain(text);
+      expect(futurePrompt).toContain(text);
+    });
+
+    expect(readiness).toContain("No image generation");
+    expect(readiness).toContain("No new runtime-art slot");
+    expect(scorecard).toContain("Selected future v0.160 first slot");
+    expect(boundary).toContain("Forbidden In v0.159");
+    expect(boundary).toContain("Start v0.160");
+    expect(futurePrompt).toContain("Do not execute v0.160 in v0.159");
+
+    [
+      "worker_billboard_static_v0147",
+      "HYBRID_WORKER_TRIMMED_1024",
+      "WORKER_ART_EXPERIMENT",
+      "GODOT_LAUNCH_SALTO_WORKER_ART_EXPERIMENT"
+    ].forEach((text) => {
+      expect(playerLauncher).not.toContain(text);
+      expect(stabilizedLauncher).not.toContain(text);
+    });
+  });
 });

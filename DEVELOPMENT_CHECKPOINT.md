@@ -1,6 +1,44 @@
 # Development Checkpoint
 
-Updated: 2026-06-07 v0.158 Hybrid Mixed Friendly-Versus-Hostile Combat-Readability Stress Gate And Human Review Stop
+Updated: 2026-06-07 v0.159 First Player-Facing Hybrid-Art Integration Readiness Packet And V0.160 Worker Contract
+
+## v0.159 First Player-Facing Hybrid-Art Integration Readiness Packet And V0.160 Worker Contract - 2026-06-07
+
+Scope: documentation and contract checkpoint only. This checkpoint prepares the first player-facing hybrid-art integration readiness packet and the future v0.160 Worker opt-in implementation contract. It generates zero images, adds zero runtime-art slots, integrates nothing into the normal Salto player slice, preserves default launchers unchanged, and stops for Emmanuel review.
+
+Included work:
+
+- Confirmed clean synchronized `main` at `1d5daeb61645d7fd2195c0fab8c9f13866d6e787` before editing.
+- Confirmed v0.158 prerequisite gates, selected five-slot private comparator context, and remote-green status.
+- Created v0.159 readiness, first-slot scorecard, v0.160 Worker opt-in contract, risk register, rollback plan, Emmanuel review guide, boundary, implementation report, and future v0.160 prompt.
+- Selected `worker_billboard_static_v0147` / `HYBRID_WORKER_TRIMMED_1024` as the safest future first player-facing opt-in proof.
+- Added scaffold guardrail coverage proving the packet exists while the future opt-in launcher is not created in v0.159 and default launchers do not contain Worker experiment tokens.
+
+Current interpretation:
+
+- v0.159 is not an art integration checkpoint. It prepares the next contract only.
+- Future v0.160 may be considered only after Emmanuel review and a new explicit bounded goal.
+- Required future v0.160 posture is Godot-only, Worker-only, opt-in launcher only, default launcher unchanged, and fail-closed to procedural Worker fallback.
+- v0.160 has not started.
+
+Verification:
+
+```text
+Required closeout stack:
+npm test
+npm run build
+npm run validate:content
+npm run validate:art-intake
+npm run art:reference:init
+npm run art:reference:validate
+npm run art:reference:contact-sheet
+npm run art:reference:review-pack
+npm run godot:hybrid-mixed-combat:validate
+npm run godot:hybrid-mixed-combat:audit
+npx vitest run src/game/desktop-spike/GodotSaltoSpikeScaffold.test.ts
+isolation scans
+git diff --check
+```
 
 ## v0.158 Hybrid Mixed Friendly-Versus-Hostile Combat-Readability Stress Gate And Human Review Stop - 2026-06-07
 
