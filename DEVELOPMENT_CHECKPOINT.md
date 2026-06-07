@@ -1,6 +1,59 @@
 # Development Checkpoint
 
-Updated: 2026-06-07 v0.153 Hybrid Three-Slot Private Composition Stress Gate And Human Review Stop
+Updated: 2026-06-07 v0.154 Hybrid Militia Static Billboard Single-Slot Intake Experiment And Human Review Stop
+
+## v0.154 Hybrid Militia Static Billboard Single-Slot Intake Experiment And Human Review Stop - 2026-06-07
+
+Scope: isolated private Godot Militia static billboard intake checkpoint. This checkpoint generates exactly one original ignored Militia source image, derives one deterministic alpha cutout, benchmarks a fourth private comparator-only runtime-art intake check against a tracked procedural fallback with selected Aster, Worker, and Barracks context, and does not modify the normal Salto player slice or browser runtime.
+
+Included work:
+
+- Confirmed clean synchronized `main` at `9f8bd3b617c47cafa36767515f3b0af256f4e995`.
+- Confirmed v0.153 pushed remote CI success and prerequisite PASS gates.
+- Generated exactly one original ignored Militia source image and deterministic alpha cutout.
+- Added tracked procedural fallback PNG and contract for `militia_billboard_static_v0154`.
+- Added private `--militia-billboard-single-slot` dispatch and v0.154 wrappers.
+- Captured one-Militia, alpha, dark/light edge, Aster+Militia, Worker+Militia, group, zoomed group, overlap, rings, static formation, fallback, ortho, and Tier S/M/L evidence.
+
+Current interpretation:
+
+- Gate: `PASS_V0154_MILITIA_BILLBOARD_SINGLE_SLOT_GATE`.
+- Evidence marker: `PASS_V0154_MILITIA_BILLBOARD_SINGLE_SLOT_EVIDENCE_RECORDED`.
+- Fair-path audit: `PASS_V0154_MILITIA_BILLBOARD_FAIR_PATH_AUDIT`.
+- Source SHA-256: `b53e94150bd3fb9b1fde36268655df251deca286f336e6faed72ba1d264d8de0`.
+- Cutout SHA-256: `eb007174023e2a4339d45e62ef7bb28769126bd7635ca4ca00115daaafa78996`.
+- Fallback SHA-256: `8b262f722cc28b346109f0578a0ca151ef8ff01fd4e149075cf7e539a5ab767c`.
+- Tier L local average-FPS ratio: `1.0055`.
+- Tier L local p95 ratio: `1.0199`.
+- Fallback Tier L mean FPS / p95: `962.15` / `1.51 ms`.
+- Local Militia Tier L mean FPS / p95: `967.42` / `1.54 ms`.
+- Ortho fallback Tier L mean FPS / p95: `853.8` / `2.11 ms`.
+- Screenshot count: `22`; benchmark row count: `21`.
+- Fair-path audit cache posture: `5` texture cache entries, `5` material cache entries, one load/create per source/material key, and no repeated texture/material creation or metadata parsing during steady-state frames.
+- Human review is pending.
+- v0.155 has not started in this checkpoint.
+
+Verification:
+
+```text
+Required closeout stack:
+npm test
+npm run build
+npm run validate:content
+npm run validate:art-intake
+npm run art:reference:init
+npm run art:reference:validate
+npm run art:reference:contact-sheet
+npm run art:reference:review-pack
+npm run godot:militia-billboard:metadata
+npm run godot:militia-billboard:fallback:reproduce
+npm run godot:militia-billboard:validate
+npm run godot:militia-billboard:benchmark:headed
+npm run godot:militia-billboard:audit
+npm run godot:militia-billboard:capture
+isolation scans
+git diff --check
+```
 
 ## v0.153 Hybrid Three-Slot Private Composition Stress Gate And Human Review Stop - 2026-06-07
 

@@ -2487,4 +2487,88 @@ describe("Godot Salto spike scaffold", () => {
     expect(comparatorScript).not.toContain("artifacts/art-review/v0138/candidates");
     expect(toolScript).not.toContain("artifacts/art-review/v0138/candidates");
   });
+
+  it("defines the v0.154 private Militia static billboard single-slot intake gate", async () => {
+    [
+      "GODOT_MILITIA_BILLBOARD_SINGLE_SLOT_EXPERIMENT_WINDOWS.bat",
+      "desktop-spikes/godot-salto/comparators/runtime_art_pipeline/militia_billboard_single_slot_comparator.gd",
+      "desktop-spikes/godot-salto/comparators/runtime_art_pipeline/fallback/militia_billboard_static_v0154_fallback.png",
+      "desktop-spikes/godot-salto/comparators/runtime_art_pipeline/fallback/militia_billboard_static_v0154_fallback.contract.json",
+      "tools/godot/militiaBillboardSingleSlotTool.mjs",
+      "tools/godot/runGodotMilitiaBillboardValidation.ps1",
+      "tools/godot/runGodotMilitiaBillboardBenchmarkWindows.ps1",
+      "tools/godot/captureGodotMilitiaBillboardWindows.ps1",
+      "docs/V0154_MILITIA_BILLBOARD_SINGLE_SLOT_INTAKE_SPEC.md",
+      "docs/V0154_MILITIA_BILLBOARD_SLOT_CONTRACT.md",
+      "docs/V0154_MILITIA_BILLBOARD_VALIDATION_REPORT.md",
+      "docs/V0154_MILITIA_BILLBOARD_SCORECARD.md",
+      "docs/V0154_MILITIA_BILLBOARD_VISUAL_REVIEW_GUIDE.md",
+      "docs/V0154_PRIVATE_COMPARATOR_ONLY_BOUNDARY.md",
+      "docs/V0154_IMPLEMENTATION_REPORT.md"
+    ].forEach((path) => expect(existsSync(path), path).toBe(true));
+
+    const packageJson = await readJson<{ scripts: Record<string, string> }>("package.json");
+    [
+      "godot:militia-billboard:metadata",
+      "godot:militia-billboard:fallback:reproduce",
+      "godot:militia-billboard:validate",
+      "godot:militia-billboard:audit",
+      "godot:militia-billboard:benchmark:headed",
+      "godot:militia-billboard:capture"
+    ].forEach((script) => expect(packageJson.scripts[script], script).toBeTypeOf("string"));
+
+    const rootScript = await readFile("desktop-spikes/godot-salto/scripts/salto_spike_root.gd", "utf8");
+    const comparatorScript = await readFile(
+      "desktop-spikes/godot-salto/comparators/runtime_art_pipeline/militia_billboard_single_slot_comparator.gd",
+      "utf8"
+    );
+    const toolScript = await readFile("tools/godot/militiaBillboardSingleSlotTool.mjs", "utf8");
+    const launcher = await readFile("GODOT_MILITIA_BILLBOARD_SINGLE_SLOT_EXPERIMENT_WINDOWS.bat", "utf8");
+    const stabilizedLauncher = await readFile("GODOT_LAUNCH_STABILIZED_SALTO_REVIEW_WINDOWS.bat", "utf8");
+    const playerLauncher = await readFile("GODOT_LAUNCH_PLAYER_SLICE_WINDOWS.bat", "utf8");
+    const spec = await readFile("docs/V0154_MILITIA_BILLBOARD_SINGLE_SLOT_INTAKE_SPEC.md", "utf8");
+    const boundary = await readFile("docs/V0154_PRIVATE_COMPARATOR_ONLY_BOUNDARY.md", "utf8");
+    const implementation = await readFile("docs/V0154_IMPLEMENTATION_REPORT.md", "utf8");
+
+    [
+      "--militia-billboard-single-slot",
+      "PASS_V0154_PRIVATE_MILITIA_BILLBOARD_DISPATCH",
+      "militia_billboard_single_slot_comparator.gd"
+    ].forEach((text) => expect(rootScript).toContain(text));
+
+    [
+      "HYBRID_MILITIA_DIAGNOSTIC_FALLBACK_BASELINE",
+      "HYBRID_MILITIA_LOCAL_STATIC_BILLBOARD",
+      "ORTHO_MILITIA_PROCEDURAL_FALLBACK",
+      "PASS_V0154_MILITIA_BILLBOARD_RUNTIME_EVIDENCE",
+      "militiaBelowAsterHierarchy",
+      "groupsReadable",
+      "staticFormationReadable"
+    ].forEach((text) => expect(comparatorScript).toContain(text));
+
+    [
+      "PASS_V0154_MILITIA_BILLBOARD_METADATA",
+      "PASS_V0154_MILITIA_BILLBOARD_VALIDATION",
+      "PASS_V0154_MILITIA_BILLBOARD_SINGLE_SLOT_GATE",
+      "PASS_V0154_MILITIA_BILLBOARD_FAIR_PATH_AUDIT",
+      "exactlyOneAiImageForV0154",
+      "militia-billboard-single-slot-scorecard.json"
+    ].forEach((text) => expect(toolScript).toContain(text));
+
+    expect(launcher).toContain("godot:militia-billboard:benchmark:headed");
+    expect(stabilizedLauncher).not.toContain("militia-billboard-single-slot");
+    expect(stabilizedLauncher).not.toContain("MILITIA_BILLBOARD");
+    expect(playerLauncher).not.toContain("militia-billboard-single-slot");
+    expect(playerLauncher).not.toContain("MILITIA_BILLBOARD");
+
+    expect(spec).toContain("Generate exactly one AI image");
+    expect(spec).toContain("No normal Salto player-slice mutation");
+    expect(boundary).toContain("No browser runtime wiring");
+    expect(boundary).toContain("Additional AI images");
+    expect(implementation).toContain("No v0.155 work");
+
+    expect(rootScript).not.toContain("artifacts/art-review/v0138/candidates");
+    expect(comparatorScript).not.toContain("artifacts/art-review/v0138/candidates");
+    expect(toolScript).not.toContain("artifacts/art-review/v0138/candidates");
+  });
 });

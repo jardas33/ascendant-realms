@@ -1,5 +1,44 @@
 # Changelog
 
+# v0.154 Hybrid Militia Static Billboard Single-Slot Intake Experiment And Human Review Stop - 2026-06-07
+
+This checkpoint generates exactly one original ignored Militia source image, derives one deterministic alpha cutout, validates a fourth private comparator-only runtime-art intake check against a tracked procedural fallback, records Tier S/M/L evidence with selected Aster/Worker/Barracks context, and stops for Emmanuel review. It does not add a fifth runtime-art slot or modify the normal Salto player slice.
+
+Added:
+
+- Private v0.154 dispatch flag `--militia-billboard-single-slot`.
+- One-click wrapper `GODOT_MILITIA_BILLBOARD_SINGLE_SLOT_EXPERIMENT_WINDOWS.bat`.
+- v0.154 metadata, fallback reproducibility, validation, audit, headed benchmark, and capture wrappers.
+- New private comparator `militia_billboard_single_slot_comparator.gd`.
+- Tracked deterministic fallback PNG and contract for `militia_billboard_static_v0154`.
+- v0.154 Militia intake spec, slot contract, validation report, scorecard, visual review guide, private boundary, and implementation report.
+
+Evidence:
+
+- Gate: `PASS_V0154_MILITIA_BILLBOARD_SINGLE_SLOT_GATE`.
+- Evidence: `PASS_V0154_MILITIA_BILLBOARD_SINGLE_SLOT_EVIDENCE_RECORDED`, with `22` screenshots and `21` benchmark rows.
+- Source SHA-256: `b53e94150bd3fb9b1fde36268655df251deca286f336e6faed72ba1d264d8de0`.
+- Cutout SHA-256: `eb007174023e2a4339d45e62ef7bb28769126bd7635ca4ca00115daaafa78996`.
+- Fallback SHA-256: `8b262f722cc28b346109f0578a0ca151ef8ff01fd4e149075cf7e539a5ab767c`.
+- Tier L local-vs-fallback FPS ratio: `1.0055`.
+- Tier L local-vs-fallback p95 frame-time ratio: `1.0199`.
+- Fallback Tier L mean FPS / p95: `962.15` / `1.51 ms`.
+- Local Militia Tier L mean FPS / p95: `967.42` / `1.54 ms`.
+- Ortho fallback Tier L mean FPS / p95: `853.8` / `2.11 ms`.
+- Fair-path audit: `PASS_V0154_MILITIA_BILLBOARD_FAIR_PATH_AUDIT`, with `5` texture cache entries, `5` material cache entries, one load/create per source/material key, and no repeated texture/material creation or metadata parsing during steady-state frames.
+
+Boundaries:
+
+- Exactly one AI image.
+- Militia only.
+- No animations.
+- Fourth private comparator runtime-art intake check only.
+- No fifth runtime-art slot.
+- No existing reference candidate import.
+- No normal Salto player-slice mutation.
+- No browser-runtime wiring or player-facing Godot wiring.
+- No manifest mutation, art-slot mutation, production package mutation, save change, stable-ID change, final runtime-art approval, final Militia art approval, final engine selection, full port, or v0.155 work inside this checkpoint.
+
 # v0.153 Hybrid Three-Slot Private Composition Stress Gate And Human Review Stop - 2026-06-07
 
 This checkpoint stress-tests only the private hybrid composition posture for the already-selected Worker billboard, Barracks material shell, and Aster billboard paths. It generates zero new AI images, adds zero new runtime-art slots, benchmarks fallback-only hybrid, selected-local three-slot hybrid, and ortho fallback comparison paths, records Tier S/M/L evidence, and stops for Emmanuel review.

@@ -40,6 +40,7 @@ const SCRIPT_ARG_PREFIXES := [
 	"--barrosan-barracks-material-seam-repair",
 	"--aster-billboard-single-slot-repair",
 	"--hybrid-three-slot-composition-stress",
+	"--militia-billboard-single-slot",
 	"--aster-billboard-single-slot",
 	"--mode=",
 	"--visual-preset=",
@@ -319,6 +320,45 @@ func _ready() -> void:
 			get_tree().quit(1)
 			return
 		composition.call("start")
+		return
+	if args.has("--militia-billboard-single-slot"):
+		_write_absolute_json(_path_join(_artifact_root_from_args(), "militia-billboard-single-slot-root-dispatch.json"), {
+			"schemaVersion": 1,
+			"checkpoint": "v0.154",
+			"status": "PASS_V0154_PRIVATE_MILITIA_BILLBOARD_DISPATCH",
+			"args": Array(args),
+			"defaultPlayerSliceLaunched": false
+		})
+		var militia_script := load("res://comparators/runtime_art_pipeline/militia_billboard_single_slot_comparator.gd") as GDScript
+		if militia_script == null:
+			_write_absolute_json(_path_join(_artifact_root_from_args(), "militia-billboard-single-slot-dispatch-failure.json"), {
+				"schemaVersion": 1,
+				"checkpoint": "v0.154",
+				"status": "FAIL_V0154_PRIVATE_MILITIA_BILLBOARD_SCRIPT_LOAD",
+				"script": "res://comparators/runtime_art_pipeline/militia_billboard_single_slot_comparator.gd"
+			})
+			get_tree().quit(1)
+			return
+		var militia := Node.new()
+		militia.name = "V0154MilitiaBillboardSingleSlotComparator"
+		militia.set_script(militia_script)
+		add_child(militia)
+		_write_absolute_json(_path_join(_artifact_root_from_args(), "militia-billboard-single-slot-dispatch-prestart.json"), {
+			"schemaVersion": 1,
+			"checkpoint": "v0.154",
+			"status": "PASS_V0154_PRIVATE_MILITIA_BILLBOARD_PRESTART",
+			"hasStart": militia.has_method("start")
+		})
+		if not militia.has_method("start"):
+			_write_absolute_json(_path_join(_artifact_root_from_args(), "militia-billboard-single-slot-dispatch-failure.json"), {
+				"schemaVersion": 1,
+				"checkpoint": "v0.154",
+				"status": "FAIL_V0154_PRIVATE_MILITIA_BILLBOARD_START_METHOD",
+				"script": "res://comparators/runtime_art_pipeline/militia_billboard_single_slot_comparator.gd"
+			})
+			get_tree().quit(1)
+			return
+		militia.call("start")
 		return
 	if args.has("--aster-billboard-single-slot"):
 		_write_absolute_json(_path_join(_artifact_root_from_args(), "aster-billboard-root-dispatch.json"), {

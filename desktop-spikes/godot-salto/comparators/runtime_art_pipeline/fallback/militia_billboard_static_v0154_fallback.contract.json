@@ -1,0 +1,33 @@
+{
+  "alphaPosture": "transparent-procedural-geometric-fallback",
+  "checkpoint": "v0.154",
+  "dimensions": {
+    "height": 1536,
+    "width": 1024
+  },
+  "fallbackType": "procedural-geometric-transparent-png",
+  "fourthPrivateComparatorRuntimeArtSlotOnly": true,
+  "generatedAiImage": false,
+  "hasAlpha": true,
+  "noAnimations": true,
+  "noFifthRuntimeArtSlot": true,
+  "pivot": {
+    "normalizedX": 0.5,
+    "normalizedY": 0.8659,
+    "posture": "bottom-center-foot-pivot"
+  },
+  "privateComparatorOnly": true,
+  "productionApproval": "forbidden",
+  "schemaVersion": 1,
+  "sha256": "8b262f722cc28b346109f0578a0ca151ef8ff01fd4e149075cf7e539a5ab767c",
+  "slotId": "militia_billboard_static_v0154",
+  "sourceKind": "tracked-militia-diagnostic-fallback",
+  "trimBounds": {
+    "bottom": 1329,
+    "height": 1168,
+    "left": 263,
+    "right": 813,
+    "top": 162,
+    "width": 551
+  }
+}
