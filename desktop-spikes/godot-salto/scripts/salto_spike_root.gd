@@ -23,6 +23,13 @@ const SCRIPT_ARG_PREFIXES := [
 	"--player-slice",
 	"--player-slice-validate",
 	"--player-slice-capture",
+	"--worker-art-opt-in",
+	"--worker-art-opt-in-benchmark",
+	"--worker-art-source=",
+	"--worker-art-metadata=",
+	"--worker-art-expected-sha256=",
+	"--worker-art-scale=",
+	"--worker-art-fallback-mode=",
 	"--real-input-smoke",
 	"--real-input-validate",
 	"--site-semantics-smoke",
@@ -571,6 +578,10 @@ func _ready() -> void:
 		var benchmark_errors: Array[String] = run_headless_benchmark()
 		get_tree().quit(0 if benchmark_errors.is_empty() else 1)
 		return
+	if args.has("--worker-art-opt-in-benchmark"):
+		_create_player_slice_ui()
+		await run_worker_art_opt_in_benchmark()
+		return
 	if args.has("--player-slice-validate"):
 		_create_player_slice_ui()
 		await run_player_slice_validation()
@@ -659,6 +670,7 @@ func load_mode(mode: String) -> void:
 	add_child(active_scene)
 	if active_mode == MODE_25D and active_scene.has_method("set_visual_preset"):
 		active_scene.set_visual_preset(active_visual_preset)
+	_configure_worker_art_for_active_scene()
 	if home_screen:
 		home_screen.visible = false
 	_update_review_overlay("Launched %s" % _friendly_mode(mode))
@@ -701,6 +713,49 @@ func _viewport_from_args(default_size: Vector2i) -> Vector2i:
 			if parts.size() == 2 and parts[0].is_valid_int() and parts[1].is_valid_int():
 				return Vector2i(int(parts[0]), int(parts[1]))
 	return default_size
+
+func _configure_worker_art_for_active_scene() -> void:
+	if active_mode != MODE_25D or active_scene == null or not is_instance_valid(active_scene):
+		return
+	if not active_scene.has_method("configure_worker_art_experiment"):
+		return
+	active_scene.configure_worker_art_experiment(_worker_art_options_from_args())
+
+func _worker_art_options_from_args() -> Dictionary:
+	var fallback_mode := _arg_value("--worker-art-fallback-mode=", "none")
+	var source_path := _arg_value("--worker-art-source=", "")
+	var metadata_path := _arg_value("--worker-art-metadata=", "")
+	if source_path == "":
+		source_path = ProjectSettings.globalize_path("res://../../artifacts/desktop-spikes/godot-salto/v0148/local-worker-slot/worker_billboard_static_v0147_trimmed_1024.png")
+	if metadata_path == "":
+		metadata_path = ProjectSettings.globalize_path("res://../../artifacts/desktop-spikes/godot-salto/v0148/local-worker-slot/worker_billboard_static_v0147_trimmed_1024.metadata.json")
+	if fallback_mode == "missing" and not _has_arg_prefix("--worker-art-source="):
+		source_path = ProjectSettings.globalize_path("res://../../artifacts/desktop-spikes/godot-salto/v0160/missing-worker-source/worker_billboard_static_v0147_trimmed_1024.png")
+	var scale_text := _arg_value("--worker-art-scale=", "1.0")
+	var scale := 1.0
+	if scale_text.is_valid_float():
+		scale = float(scale_text)
+	return {
+		"enabled": _script_args().has("--worker-art-opt-in"),
+		"sourcePath": source_path.replace("\\", "/"),
+		"metadataPath": metadata_path.replace("\\", "/"),
+		"expectedSha256": _arg_value("--worker-art-expected-sha256=", "a628065ca92b231b0d4f6a0625d9e259dea080e80d530ee688483611d70049bc").to_lower(),
+		"scale": scale,
+		"fallbackMode": fallback_mode,
+		"requestedBy": "GODOT_LAUNCH_SALTO_WORKER_ART_EXPERIMENT_WINDOWS.bat or explicit --worker-art-opt-in"
+	}
+
+func _arg_value(prefix: String, default_value: String = "") -> String:
+	for arg in _script_args():
+		if arg.begins_with(prefix):
+			return arg.trim_prefix(prefix)
+	return default_value
+
+func _has_arg_prefix(prefix: String) -> bool:
+	for arg in _script_args():
+		if arg.begins_with(prefix):
+			return true
+	return false
 
 func _create_review_ui() -> void:
 	if review_layer:
@@ -1321,20 +1376,28 @@ func run_player_slice_validation() -> void:
 		for term in forbidden_terms:
 			if text.to_lower().contains(term):
 				forbidden_hits.append("%s in '%s'" % [term, text])
+	var final_status := get_spike_status()
+	var worker_art: Dictionary = final_status.get("workerArtExperiment", {})
+	var worker_art_loaded := bool(worker_art.get("sourceLoaded", false))
+	performance_smoke["workerArtOptInRequested"] = _script_args().has("--worker-art-opt-in")
+	performance_smoke["workerArtExperiment"] = worker_art
 	var report := {
 		"schemaVersion": 1,
 		"checkpoint": _player_capture_checkpoint(),
 		"status": "PASS_PLAYER_SLICE_VALIDATION" if errors.is_empty() and forbidden_hits.is_empty() else "FAIL_PLAYER_SLICE_VALIDATION",
 		"artifactRoot": artifact_root,
 		"defaultHumanReviewPath": "GODOT_LAUNCH_PLAYER_SLICE_WINDOWS.bat",
+		"workerArtOptInHumanReviewPath": "GODOT_LAUNCH_SALTO_WORKER_ART_EXPERIMENT_WINDOWS.bat",
 		"privateHarnessPreservedSeparately": true,
 		"defaultMode": MODE_25D,
 		"defaultVisualPreset": VISUAL_PRESET_CLEAN,
 		"routineEditorUseRequired": false,
 		"manualGodotEditorSceneAssemblyRequired": false,
-		"proceduralPrimitiveOnly": true,
-		"generatedOrImportedArtIncluded": false,
-		"runtimeArtIntegrated": false,
+		"proceduralPrimitiveOnly": not worker_art_loaded,
+		"generatedOrImportedArtIncluded": worker_art_loaded,
+		"runtimeArtIntegrated": worker_art_loaded,
+		"workerArtOptInRequested": _script_args().has("--worker-art-opt-in"),
+		"workerArtExperiment": worker_art,
 		"localStorageMutationAllowed": false,
 		"saveWritesAllowed": false,
 		"stableIdsChanged": false,
@@ -1395,6 +1458,9 @@ func run_player_slice_capture() -> void:
 			"visibleText": player_visible_texts.duplicate()
 		})
 		index += 1
+	var final_status := get_spike_status()
+	var worker_art: Dictionary = final_status.get("workerArtExperiment", {})
+	var worker_art_loaded := bool(worker_art.get("sourceLoaded", false))
 	var report := {
 		"schemaVersion": 1,
 		"checkpoint": _player_capture_checkpoint(),
@@ -1406,14 +1472,87 @@ func run_player_slice_capture() -> void:
 		"viewport": {"width": VIEWPORT_SIZE.x, "height": VIEWPORT_SIZE.y},
 		"defaultMode": MODE_25D,
 		"defaultVisualPreset": VISUAL_PRESET_CLEAN,
-		"privateHarnessPreservedSeparately": captures.any(func(capture: Dictionary) -> bool: return bool(capture.get("privateHarnessCapture", false))) or ["v0.126", "v0.127", "v0.128", "v0.129", "v0.130"].has(_player_capture_checkpoint()),
-		"generatedOrImportedArtIncluded": false,
-		"runtimeArtIntegrated": false,
+		"privateHarnessPreservedSeparately": captures.any(func(capture: Dictionary) -> bool: return bool(capture.get("privateHarnessCapture", false))) or ["v0.126", "v0.127", "v0.128", "v0.129", "v0.130", "v0.160"].has(_player_capture_checkpoint()),
+		"proceduralPrimitiveOnly": not worker_art_loaded,
+		"generatedOrImportedArtIncluded": worker_art_loaded,
+		"runtimeArtIntegrated": worker_art_loaded,
+		"workerArtOptInRequested": _script_args().has("--worker-art-opt-in"),
+		"workerArtExperiment": worker_art,
 		"routineEditorUseRequired": false,
 		"errors": errors,
 		"captures": captures
 	}
 	_write_absolute_json(_path_join(artifact_root, "screenshot-runtime-manifest.json"), report)
+	get_tree().quit(0 if errors.is_empty() else 1)
+
+func run_worker_art_opt_in_benchmark() -> void:
+	var artifact_root := _artifact_root_from_args()
+	var errors: Array[String] = []
+	var start_usec := Time.get_ticks_usec()
+	var actions := [
+		"battle_default",
+		"worker_selected",
+		"mine_converted",
+		"worker_assigned_mine",
+		"build_placement",
+		"barracks_complete",
+		"squad_selected"
+	]
+	var steps: Array[Dictionary] = []
+	for action in actions:
+		var step_start := Time.get_ticks_usec()
+		var status := _apply_player_slice_action(action)
+		await _settle_frames(6)
+		if not bool(status.get("ready", false)):
+			errors.append("%s did not reach a ready player-slice benchmark state." % action)
+		steps.append({
+			"id": action,
+			"durationMs": snappedf(float(Time.get_ticks_usec() - step_start) / 1000.0, 0.01),
+			"status": status
+		})
+	var frame_times: Array[float] = []
+	for _index in range(240):
+		var before := Time.get_ticks_usec()
+		await get_tree().process_frame
+		var after := Time.get_ticks_usec()
+		frame_times.append(max(0.01, float(after - before) / 1000.0))
+	var frame_sum := 0.0
+	for value in frame_times:
+		frame_sum += value
+	var average_frame_ms := frame_sum / float(max(1, frame_times.size()))
+	var final_status := get_spike_status()
+	var worker_art: Dictionary = final_status.get("workerArtExperiment", {})
+	var report := {
+		"schemaVersion": 1,
+		"checkpoint": "v0.160",
+		"status": "PASS_V0160_WORKER_ART_OPT_IN_RUNTIME_BENCHMARK" if errors.is_empty() else "FAIL_V0160_WORKER_ART_OPT_IN_RUNTIME_BENCHMARK",
+		"artifactRoot": artifact_root,
+		"durationMs": snappedf(float(Time.get_ticks_usec() - start_usec) / 1000.0, 0.01),
+		"mode": MODE_25D,
+		"visualPreset": VISUAL_PRESET_CLEAN,
+		"fpsAverage": snappedf(min(240.0, 1000.0 / max(0.01, average_frame_ms)), 0.01),
+		"frameTimeAverageMs": snappedf(average_frame_ms, 0.01),
+		"frameTimeP95Ms": _percentile(frame_times, 0.95),
+		"frameTimeP99Ms": _percentile(frame_times, 0.99),
+		"workerArtOptInRequested": _script_args().has("--worker-art-opt-in"),
+		"workerArtExperiment": worker_art,
+		"proceduralPrimitiveOnly": not bool(worker_art.get("sourceLoaded", false)),
+		"generatedOrImportedArtIncluded": bool(worker_art.get("sourceLoaded", false)),
+		"runtimeArtIntegrated": bool(worker_art.get("sourceLoaded", false)),
+		"cacheCounters": {
+			"sourceLoadCount": int(worker_art.get("sourceLoadCount", 0)),
+			"metadataParseCount": int(worker_art.get("metadataParseCount", 0)),
+			"imageDecodeCount": int(worker_art.get("imageDecodeCount", 0)),
+			"textureCreateCount": int(worker_art.get("textureCreateCount", 0)),
+			"materialCreateCount": int(worker_art.get("materialCreateCount", 0)),
+			"meshCreateCount": int(worker_art.get("meshCreateCount", 0)),
+			"materialReuseCount": int(worker_art.get("materialReuseCount", 0))
+		},
+		"steps": steps,
+		"errors": errors,
+		"finalProductionCertification": false
+	}
+	_write_absolute_json(_path_join(artifact_root, "worker-art-opt-in-benchmark-runtime.json"), report)
 	get_tree().quit(0 if errors.is_empty() else 1)
 
 func run_real_input_smoke() -> void:
@@ -3732,6 +3871,8 @@ func _apply_player_slice_action(action: String) -> Dictionary:
 
 func _player_capture_checkpoint() -> String:
 	var normalized_root := _artifact_root_from_args().replace("\\", "/")
+	if normalized_root.contains("/v0160"):
+		return "v0.160"
 	if normalized_root.contains("/v0130"):
 		return "v0.130"
 	if normalized_root.contains("/v0129"):
@@ -3745,9 +3886,24 @@ func _player_capture_checkpoint() -> String:
 	return "v0.124"
 
 func _is_bounded_microloop_checkpoint() -> bool:
-	return ["v0.129", "v0.130"].has(_player_capture_checkpoint())
+	return ["v0.129", "v0.130", "v0.160"].has(_player_capture_checkpoint())
 
 func _player_capture_steps() -> Array[Dictionary]:
+	if _player_capture_checkpoint() == "v0.160":
+		return [
+			{"id": "title", "label": "Title shell with configured 2.5D backdrop", "action": "title"},
+			{"id": "briefing", "label": "Briefing shell", "action": "briefing"},
+			{"id": "battle_default", "label": "Battle default", "action": "battle_default"},
+			{"id": "worker_selected", "label": "Worker selected with selection ring", "action": "worker_selected"},
+			{"id": "mine_converted", "label": "Mine converted before assignment", "action": "mine_converted"},
+			{"id": "worker_assigned", "label": "Worker assigned to mine", "action": "worker_assigned_mine"},
+			{"id": "build_placement", "label": "Barracks repair proximity", "action": "build_placement"},
+			{"id": "barracks_complete", "label": "Barracks restored", "action": "barracks_complete"},
+			{"id": "squad_crowding", "label": "Group crowding comparison", "action": "squad_selected"},
+			{"id": "camera_min_zoom", "label": "Zoomed-in edge treatment", "action": "camera_min_zoom"},
+			{"id": "camera_max_zoom", "label": "Zoomed-out readability", "action": "camera_max_zoom"},
+			{"id": "results", "label": "Results path preserved", "action": "results"}
+		]
 	if _player_capture_checkpoint() == "v0.130":
 		return [
 			{"id": "title", "label": "Title", "action": "title"},

@@ -1,6 +1,47 @@
 # Development Checkpoint
 
-Updated: 2026-06-07 v0.159 First Player-Facing Hybrid-Art Integration Readiness Packet And V0.160 Worker Contract
+Updated: 2026-06-07 v0.160 Godot Salto Worker Billboard Opt-In Player-Slice Integration Experiment
+
+## v0.160 Godot Salto Worker Billboard Opt-In Player-Slice Integration Experiment - 2026-06-07
+
+Scope: one-slot Godot player-slice opt-in integration checkpoint. This checkpoint integrates only the validated Worker billboard into the packaged Salto review slice behind a new explicit opt-in launcher, keeps the default launchers procedural, proves fallback behavior, benchmarks the opt-in path, and stops for Emmanuel review.
+
+Included work:
+
+- Confirmed clean synchronized `main` at `0063095c8bb5c56eec2a687d392c2e4c6efcfc31` before editing.
+- Confirmed v0.159 prerequisite packet and selected Worker contract.
+- Added `GODOT_LAUNCH_SALTO_WORKER_ART_EXPERIMENT_WINDOWS.bat`, `GODOT_VALIDATE_SALTO_WORKER_ART_EXPERIMENT_WINDOWS.bat`, and `GODOT_CAPTURE_SALTO_WORKER_ART_EXPERIMENT_WINDOWS.bat`.
+- Added Worker-art opt-in flags and runtime status to the Godot root script.
+- Added one Worker-only billboard loader in the 2.5D scene with exact source hash, metadata, dimensions, image-load, and texture-creation checks.
+- Preserved `worker_00` and existing Worker selection, assignment, mine-work, Barracks repair, and Results behavior.
+- Added validation/capture/benchmark evidence tooling and docs.
+
+Current interpretation:
+
+- The default stabilized launcher remains procedural and is protected by hash scan.
+- The opt-in launcher is a human-review experiment, not final runtime-art approval.
+- Missing source and hash mismatch fail closed to procedural Worker.
+- v0.161 has not started.
+
+Verification results:
+
+```text
+PASS: npm test - 122 test files, 874 tests.
+PASS: npm run build - TypeScript compile and Vite production build; known large-chunk warning only.
+PASS: npm run validate:content.
+PASS: npm run validate:art-intake - 1 candidate metadata file.
+PASS: npm run art:reference:init.
+PASS: npm run art:reference:validate - PASS_V0138_REFERENCE_METADATA, 15 metadata files, 15 candidate images.
+PASS: npm run art:reference:contact-sheet - PASS_V0138_REFERENCE_CONTACT_SHEET.
+PASS: npm run art:reference:review-pack - PASS_V0138_REFERENCE_REVIEW_PACK.
+PASS: npm run godot:validate:player-slice - default procedural player slice preserved.
+PASS: npm run godot:validate:salto-worker-art-experiment - PASS_V0160_WORKER_ART_OPT_IN_VALIDATION.
+PASS: npm run godot:capture:salto-worker-art-experiment - PASS_V0160_WORKER_ART_OPT_IN_CAPTURE, 5 scenarios, 60 screenshots.
+PASS: npm run godot:benchmark:salto-worker-art-experiment - PASS_V0160_WORKER_ART_OPT_IN_BENCHMARK.
+PASS: npx vitest run src/game/desktop-spike/GodotSaltoSpikeScaffold.test.ts - 40 tests.
+PASS: isolation scan - PASS_V0160_WORKER_ART_OPT_IN_BOUNDARY, default stabilized launcher SHA-256 47ea4cdef721451dfd4e55511a6b7c580bc666332c7cf216c7cc0319969a6c3d.
+PASS: git diff --check.
+```
 
 ## v0.159 First Player-Facing Hybrid-Art Integration Readiness Packet And V0.160 Worker Contract - 2026-06-07
 

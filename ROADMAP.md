@@ -11,9 +11,22 @@ Every phase should protect these long-term pillars:
 
 ## Current Recommended Next Phase
 
-The current checkpoint is **v0.159 First Player-Facing Hybrid-Art Integration Readiness Packet And V0.160 Worker Contract** on 2026-06-07. It converts the v0.158 private comparator evidence into a documentation-only player-facing readiness packet and a future v0.160 Worker opt-in implementation contract. It generates zero images, adds zero runtime-art slots, integrates nothing into the normal Salto player slice, preserves the default launcher unchanged, and does not begin v0.160.
+The current checkpoint is **v0.160 Godot Salto Worker Billboard Opt-In Player-Slice Integration Experiment** on 2026-06-07. It integrates exactly one validated Worker billboard candidate into the packaged Godot Salto player-facing review slice behind an explicit opt-in launcher. The default stabilized launcher and default player-slice launcher remain procedural, and missing-art/hash-mismatch scenarios fail closed to the procedural Worker fallback.
 
-The next recommended step is human review and explicit approval only: Emmanuel may review `docs/V0159_FIRST_PLAYER_FACING_HYBRID_ART_INTEGRATION_READINESS.md`, `docs/V0159_FIRST_SLOT_DECISION_SCORECARD.md`, `docs/V0159_V0160_WORKER_OPT_IN_INTEGRATION_CONTRACT.md`, `docs/V0159_PLAYER_SLICE_INTEGRATION_RISK_REGISTER.md`, `docs/V0159_PLAYER_SLICE_INTEGRATION_ROLLBACK_PLAN.md`, `docs/V0159_EMMANUEL_INTEGRATION_READINESS_REVIEW_GUIDE.md`, `docs/V0159_PRIVATE_COMPARATOR_TO_PLAYER_SLICE_BOUNDARY.md`, `docs/V0159_IMPLEMENTATION_REPORT.md`, and `docs/art-prompts/V0160_01_GODOT_PLAYER_SLICE_WORKER_BILLBOARD_OPT_IN_INTEGRATION.md`. Do not generate images, add a slot, create the future opt-in launcher, modify the normal Salto player slice, wire comparator output into Godot production/player-facing flow, wire assets into the browser, mutate manifests or art slots, change saves or stable IDs, choose Godot finally, start a full desktop port, start Unity/Unreal/Electron work, or start v0.160 unless a future explicit goal approves that exact Worker-only opt-in step.
+The next recommended step is human review and explicit approval only: Emmanuel may compare the default procedural path against `GODOT_LAUNCH_SALTO_WORKER_ART_EXPERIMENT_WINDOWS.bat`, inspect the v0.160 validation/capture/benchmark artifacts, and decide whether the Worker billboard deserves further iteration. Do not add a second art slot, generate images, import Aster/Barracks/Militia/Ashen art into the player slice, wire assets into the browser runtime, mutate production manifests or art slots, change saves or stable IDs, choose Godot finally, start a full desktop port, start Unity/Unreal/Electron work, or begin v0.161.
+
+New v0.160 docs:
+
+- `docs/V0160_GODOT_PLAYER_SLICE_WORKER_ART_OPT_IN_SPEC.md`
+- `docs/V0160_WORKER_ART_OPT_IN_SLOT_CONTRACT.md`
+- `docs/V0160_WORKER_ART_OPT_IN_FUNCTIONAL_REPORT.md`
+- `docs/V0160_WORKER_ART_OPT_IN_VISUAL_REVIEW_GUIDE.md`
+- `docs/V0160_WORKER_ART_OPT_IN_BENCHMARK_REPORT.md`
+- `docs/V0160_WORKER_ART_OPT_IN_ROLLBACK_REPORT.md`
+- `docs/V0160_PLAYER_SLICE_SINGLE_SLOT_BOUNDARY.md`
+- `docs/V0160_IMPLEMENTATION_REPORT.md`
+
+Previous checkpoint reference: v0.159 First Player-Facing Hybrid-Art Integration Readiness Packet And V0.160 Worker Contract.
 
 New v0.159 docs:
 

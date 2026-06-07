@@ -39,6 +39,15 @@ const LUME_CLICK_RADIUS := 74.0
 const V0133_CONSTRUCTION_FRAMES_PER_SECOND := 24
 const V0133_RECRUIT_FRAMES_PER_SECOND := 24
 const V0133_PRESSURE_COUNTDOWN_SECONDS := 7.0
+const WORKER_ART_SLOT_ID := "worker_billboard_static_v0147"
+const WORKER_ART_APPROACH := "HYBRID_WORKER_TRIMMED_1024"
+const WORKER_ART_EXPECTED_SHA256 := "a628065ca92b231b0d4f6a0625d9e259dea080e80d530ee688483611d70049bc"
+const WORKER_ART_EXPECTED_WIDTH := 1024
+const WORKER_ART_EXPECTED_HEIGHT := 1024
+const WORKER_ART_DEFAULT_SCALE := 1.0
+const WORKER_ART_QUAD_HEIGHT := 0.74
+const WORKER_ART_QUAD_WIDTH := 0.55
+const WORKER_ART_GROUND_CLEARANCE := 0.02
 const WorkloadRuntimeScript = preload("res://scripts/salto_spike_workload_runtime.gd")
 
 var runtime = WorkloadRuntimeScript.new()
@@ -185,8 +194,26 @@ var v0135_mouse_wheel_zoom_count := 0
 var v0136_minimap_click_orient_seen := false
 var v0136_results_recap_seen := false
 var v0136_last_minimap_focus := ""
+var worker_art_experiment_enabled := false
+var worker_art_requested_scale := WORKER_ART_DEFAULT_SCALE
+var worker_art_source_path := ""
+var worker_art_metadata_path := ""
+var worker_art_expected_sha256 := WORKER_ART_EXPECTED_SHA256
+var worker_art_fallback_mode := "none"
+var worker_art_texture: ImageTexture
+var worker_art_material: StandardMaterial3D
+var worker_art_mesh: QuadMesh
+var worker_art_status: Dictionary = {}
+var worker_art_source_load_count := 0
+var worker_art_metadata_parse_count := 0
+var worker_art_image_decode_count := 0
+var worker_art_texture_create_count := 0
+var worker_art_material_create_count := 0
+var worker_art_mesh_create_count := 0
+var worker_art_material_reuse_count := 0
 
 func _ready() -> void:
+	_reset_worker_art_status(false, "opt-in flag absent")
 	_create_camera()
 	_create_light()
 	_create_terrain()
@@ -259,6 +286,224 @@ func set_visual_preset(preset: String) -> bool:
 
 func get_visual_preset() -> String:
 	return visual_preset
+
+func configure_worker_art_experiment(options: Dictionary) -> Dictionary:
+	worker_art_experiment_enabled = bool(options.get("enabled", false))
+	worker_art_requested_scale = maxf(0.5, minf(1.25, float(options.get("scale", WORKER_ART_DEFAULT_SCALE))))
+	worker_art_source_path = str(options.get("sourcePath", ""))
+	worker_art_metadata_path = str(options.get("metadataPath", ""))
+	worker_art_expected_sha256 = str(options.get("expectedSha256", WORKER_ART_EXPECTED_SHA256)).to_lower()
+	worker_art_fallback_mode = str(options.get("fallbackMode", "none"))
+	worker_art_texture = null
+	worker_art_material = null
+	worker_art_mesh = null
+	worker_art_source_load_count = 0
+	worker_art_metadata_parse_count = 0
+	worker_art_image_decode_count = 0
+	worker_art_texture_create_count = 0
+	worker_art_material_create_count = 0
+	worker_art_mesh_create_count = 0
+	worker_art_material_reuse_count = 0
+	if not worker_art_experiment_enabled:
+		_reset_worker_art_status(false, "opt-in flag absent")
+		_rebuild_visuals()
+		return worker_art_status.duplicate(true)
+	_load_worker_art_candidate()
+	_rebuild_visuals()
+	return worker_art_status.duplicate(true)
+
+func get_worker_art_status() -> Dictionary:
+	return worker_art_status.duplicate(true)
+
+func _reset_worker_art_status(enabled: bool, reason: String) -> void:
+	worker_art_status = {
+		"schemaVersion": 1,
+		"checkpoint": "v0.160",
+		"slotId": WORKER_ART_SLOT_ID,
+		"approach": WORKER_ART_APPROACH,
+		"enabled": enabled,
+		"sourceLoaded": false,
+		"billboardActive": false,
+		"fallbackActive": true,
+		"fallbackReason": reason,
+		"sourcePath": worker_art_source_path,
+		"metadataPath": worker_art_metadata_path,
+		"expectedSha256": worker_art_expected_sha256,
+		"actualSha256": "",
+		"sourceDimensions": {"width": 0, "height": 0},
+		"metadataDimensions": {"width": 0, "height": 0},
+		"alphaPosture": "",
+		"pivot": {},
+		"scale": worker_art_requested_scale,
+		"fallbackMode": worker_art_fallback_mode,
+		"proceduralFallbackVisible": true,
+		"selectionAndGameplayIdsPreserved": true,
+		"stableWorkerId": "worker_00",
+		"browserRuntimeChanged": false,
+		"saveWritesAllowed": false,
+		"secondArtSlotAdded": false,
+		"productionManifestMutated": false,
+		"sourceLoadCount": worker_art_source_load_count,
+		"metadataParseCount": worker_art_metadata_parse_count,
+		"imageDecodeCount": worker_art_image_decode_count,
+		"textureCreateCount": worker_art_texture_create_count,
+		"materialCreateCount": worker_art_material_create_count,
+		"meshCreateCount": worker_art_mesh_create_count,
+		"materialReuseCount": worker_art_material_reuse_count
+	}
+
+func _load_worker_art_candidate() -> void:
+	_reset_worker_art_status(true, "not loaded")
+	var start_usec := Time.get_ticks_usec()
+	if worker_art_source_path == "":
+		_set_worker_art_fallback("missing source path")
+		return
+	if not FileAccess.file_exists(worker_art_source_path):
+		_set_worker_art_fallback("missing source file")
+		return
+	if worker_art_metadata_path == "" or not FileAccess.file_exists(worker_art_metadata_path):
+		_set_worker_art_fallback("missing metadata file")
+		return
+	var metadata := _read_worker_art_metadata(worker_art_metadata_path)
+	if metadata.is_empty():
+		_set_worker_art_fallback("metadata parse failure")
+		return
+	if str(metadata.get("slotId", "")) != WORKER_ART_SLOT_ID:
+		_set_worker_art_fallback("metadata slot mismatch")
+		return
+	var metadata_sha := str(metadata.get("sha256", "")).to_lower()
+	if metadata_sha != worker_art_expected_sha256:
+		_set_worker_art_fallback("metadata hash mismatch")
+		return
+	var dimensions: Dictionary = metadata.get("dimensions", {})
+	var metadata_width := int(dimensions.get("width", 0))
+	var metadata_height := int(dimensions.get("height", 0))
+	if metadata_width != WORKER_ART_EXPECTED_WIDTH or metadata_height != WORKER_ART_EXPECTED_HEIGHT:
+		_set_worker_art_fallback("metadata dimension mismatch")
+		return
+	var actual_sha := _sha256_file(worker_art_source_path)
+	worker_art_status["actualSha256"] = actual_sha
+	if actual_sha != worker_art_expected_sha256:
+		_set_worker_art_fallback("source hash mismatch")
+		return
+	var image := Image.new()
+	worker_art_source_load_count += 1
+	var load_result := image.load(worker_art_source_path)
+	if load_result != OK:
+		_set_worker_art_fallback("image load failure %s" % str(load_result))
+		return
+	worker_art_image_decode_count += 1
+	if image.get_width() != WORKER_ART_EXPECTED_WIDTH or image.get_height() != WORKER_ART_EXPECTED_HEIGHT:
+		_set_worker_art_fallback("image dimension mismatch")
+		return
+	worker_art_texture = ImageTexture.create_from_image(image)
+	if worker_art_texture == null:
+		_set_worker_art_fallback("texture creation failure")
+		return
+	worker_art_texture_create_count += 1
+	worker_art_status["enabled"] = true
+	worker_art_status["sourceLoaded"] = true
+	worker_art_status["billboardActive"] = true
+	worker_art_status["fallbackActive"] = false
+	worker_art_status["fallbackReason"] = ""
+	worker_art_status["sourcePath"] = worker_art_source_path
+	worker_art_status["metadataPath"] = worker_art_metadata_path
+	worker_art_status["expectedSha256"] = worker_art_expected_sha256
+	worker_art_status["actualSha256"] = actual_sha
+	worker_art_status["sourceDimensions"] = {"width": image.get_width(), "height": image.get_height()}
+	worker_art_status["metadataDimensions"] = {"width": metadata_width, "height": metadata_height}
+	worker_art_status["alphaPosture"] = str(metadata.get("alphaPosture", ""))
+	worker_art_status["pivot"] = metadata.get("pivot", {})
+	worker_art_status["scale"] = worker_art_requested_scale
+	worker_art_status["fallbackMode"] = worker_art_fallback_mode
+	worker_art_status["proceduralFallbackVisible"] = false
+	worker_art_status["loadDurationMs"] = snappedf(float(Time.get_ticks_usec() - start_usec) / 1000.0, 0.01)
+	_refresh_worker_art_counters()
+
+func _read_worker_art_metadata(path: String) -> Dictionary:
+	worker_art_metadata_parse_count += 1
+	var file := FileAccess.open(path, FileAccess.READ)
+	if file == null:
+		return {}
+	var parsed = JSON.parse_string(file.get_as_text())
+	if typeof(parsed) == TYPE_DICTIONARY:
+		return parsed
+	return {}
+
+func _sha256_file(path: String) -> String:
+	var file := FileAccess.open(path, FileAccess.READ)
+	if file == null:
+		return ""
+	var context := HashingContext.new()
+	context.start(HashingContext.HASH_SHA256)
+	while file.get_position() < file.get_length():
+		var remaining := file.get_length() - file.get_position()
+		context.update(file.get_buffer(int(min(65536, remaining))))
+	return context.finish().hex_encode()
+
+func _set_worker_art_fallback(reason: String) -> void:
+	worker_art_texture = null
+	worker_art_material = null
+	worker_art_mesh = null
+	worker_art_status["enabled"] = worker_art_experiment_enabled
+	worker_art_status["billboardActive"] = false
+	worker_art_status["sourceLoaded"] = false
+	worker_art_status["fallbackActive"] = true
+	worker_art_status["fallbackReason"] = reason
+	worker_art_status["sourcePath"] = worker_art_source_path
+	worker_art_status["metadataPath"] = worker_art_metadata_path
+	worker_art_status["expectedSha256"] = worker_art_expected_sha256
+	worker_art_status["scale"] = worker_art_requested_scale
+	worker_art_status["fallbackMode"] = worker_art_fallback_mode
+	worker_art_status["proceduralFallbackVisible"] = true
+	_refresh_worker_art_counters()
+
+func _refresh_worker_art_counters() -> void:
+	worker_art_status["sourceLoadCount"] = worker_art_source_load_count
+	worker_art_status["metadataParseCount"] = worker_art_metadata_parse_count
+	worker_art_status["imageDecodeCount"] = worker_art_image_decode_count
+	worker_art_status["textureCreateCount"] = worker_art_texture_create_count
+	worker_art_status["materialCreateCount"] = worker_art_material_create_count
+	worker_art_status["meshCreateCount"] = worker_art_mesh_create_count
+	worker_art_status["materialReuseCount"] = worker_art_material_reuse_count
+
+func _worker_art_is_active() -> bool:
+	return worker_art_experiment_enabled and bool(worker_art_status.get("sourceLoaded", false)) and worker_art_texture != null
+
+func _worker_art_unit_height() -> float:
+	return WORKER_ART_QUAD_HEIGHT * worker_art_requested_scale
+
+func _worker_art_unit_width() -> float:
+	return WORKER_ART_QUAD_WIDTH * worker_art_requested_scale
+
+func _worker_art_unit_y() -> float:
+	return WORKER_ART_GROUND_CLEARANCE + _worker_art_unit_height() * 0.5
+
+func _worker_art_quad_mesh() -> QuadMesh:
+	if worker_art_mesh:
+		return worker_art_mesh
+	worker_art_mesh = QuadMesh.new()
+	worker_art_mesh.size = Vector2(_worker_art_unit_width(), _worker_art_unit_height())
+	worker_art_mesh_create_count += 1
+	_refresh_worker_art_counters()
+	return worker_art_mesh
+
+func _worker_art_billboard_material() -> StandardMaterial3D:
+	if worker_art_material:
+		worker_art_material_reuse_count += 1
+		_refresh_worker_art_counters()
+		return worker_art_material
+	worker_art_material = StandardMaterial3D.new()
+	worker_art_material.albedo_texture = worker_art_texture
+	worker_art_material.albedo_color = Color(1, 1, 1, 1)
+	worker_art_material.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	worker_art_material.billboard_mode = BaseMaterial3D.BILLBOARD_ENABLED
+	worker_art_material.cull_mode = BaseMaterial3D.CULL_DISABLED
+	worker_art_material.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	worker_art_material.texture_filter = BaseMaterial3D.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
+	worker_art_material_create_count += 1
+	_refresh_worker_art_counters()
+	return worker_art_material
 
 func set_player_facing_mode(enabled: bool) -> bool:
 	player_facing_mode = enabled
@@ -2398,9 +2643,15 @@ func get_spike_status() -> Dictionary:
 	status["linkedWardDamageTakenMultiplier"] = status.get("linkedWardDamageTakenMultiplier", 0.92)
 	status["visualPreset"] = visual_preset
 	status["visualPresetScope"] = _preset_scope()
-	status["proceduralPrimitiveOnly"] = true
-	status["generatedOrImportedArtIncluded"] = false
-	status["runtimeArtIntegrated"] = false
+	var worker_art_loaded := _worker_art_is_active()
+	_refresh_worker_art_counters()
+	status["proceduralPrimitiveOnly"] = not worker_art_loaded
+	status["generatedOrImportedArtIncluded"] = worker_art_loaded
+	status["runtimeArtIntegrated"] = worker_art_loaded
+	status["workerArtExperiment"] = worker_art_status.duplicate(true)
+	status["workerArtOptInOnly"] = worker_art_experiment_enabled
+	status["workerArtSlotCount"] = 1 if worker_art_experiment_enabled else 0
+	status["workerArtProceduralFallbackActive"] = bool(worker_art_status.get("fallbackActive", true))
 	status["routineEditorUseRequired"] = false
 	status["saveWritesAllowed"] = false
 	status["stableIdsChanged"] = false
@@ -3482,7 +3733,8 @@ func _sync_unit_visuals() -> void:
 		var is_enemy: bool = str(unit["team"]) == "enemy"
 		var is_wave_enemy: bool = is_enemy and _v0133_wave_ids().has(id)
 		var is_targeted: bool = _unit_is_attack_target(id) or (is_wave_enemy and (current_onboarding_step == "defeat_wave" or last_feedback_id == "attack_order" or combat_readability_active or pressure_wave_arrived))
-		node.position = _to_world(unit["position"], 0.28)
+		var worker_billboard := str(unit["role"]) == "Worker" and _worker_art_is_active()
+		node.position = _to_world(unit["position"], _worker_art_unit_y() if worker_billboard else 0.28)
 		node.scale = _unit_scale(unit) * (1.22 if selected else 1.0)
 		node.visible = visible_unit
 		var health_ratio: float = clampf(float(unit.get("health", 0.0)) / max(1.0, float(unit.get("maxHealth", 1.0))), 0.0, 1.0)
@@ -3719,9 +3971,12 @@ func _add_unit_silhouette(unit: Dictionary) -> void:
 		hero_mesh.height = 0.62
 		mesh = hero_mesh
 	elif str(unit["role"]) == "Worker":
-		var worker_mesh := BoxMesh.new()
-		worker_mesh.size = Vector3(0.22, 0.36, 0.18)
-		mesh = worker_mesh
+		if _worker_art_is_active():
+			mesh = _worker_art_quad_mesh()
+		else:
+			var worker_mesh := BoxMesh.new()
+			worker_mesh.size = Vector3(0.22, 0.36, 0.18)
+			mesh = worker_mesh
 	elif str(unit["fixtureId"]) == "ranger":
 		var ranger_mesh := BoxMesh.new()
 		ranger_mesh.size = Vector3(0.16, 0.36, 0.30)
@@ -3741,10 +3996,12 @@ func _add_unit_silhouette(unit: Dictionary) -> void:
 		militia_mesh.radial_segments = 6
 		mesh = militia_mesh
 	mesh_instance.mesh = mesh
-	mesh_instance.position = _to_world(unit["position"], 0.28)
-	mesh_instance.material_override = _material(_unit_color(unit), false, _unit_emissive(unit), 0.35)
+	var worker_billboard := str(unit["role"]) == "Worker" and _worker_art_is_active()
+	mesh_instance.position = _to_world(unit["position"], _worker_art_unit_y() if worker_billboard else 0.28)
+	mesh_instance.material_override = _worker_art_billboard_material() if worker_billboard else _material(_unit_color(unit), false, _unit_emissive(unit), 0.35)
 	visual_root.add_child(mesh_instance)
-	_add_unit_silhouette_parts(mesh_instance, unit)
+	if not worker_billboard:
+		_add_unit_silhouette_parts(mesh_instance, unit)
 
 func _add_unit_silhouette_parts(parent: MeshInstance3D, unit: Dictionary) -> void:
 	var fixture := str(unit["fixtureId"])

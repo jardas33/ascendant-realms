@@ -1,6 +1,6 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-06-07 v0.159 First Player-Facing Hybrid-Art Integration Readiness Packet And V0.160 Worker Contract
+Last updated: 2026-06-07 v0.160 Godot Salto Worker Billboard Opt-In Player-Slice Integration Experiment
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
@@ -16,7 +16,57 @@ Project Identity continuation note: v0.158 now supersedes the older no-v0.158 ta
 
 Project Identity continuation note: v0.159 now supersedes the older no-v0.159 tail above because the v0.159 prompt explicitly authorized a documentation-only readiness packet after v0.158 was committed, pushed, clean, synced, and remote-green. v0.159 prepares the first player-facing hybrid-art integration readiness packet and the future v0.160 Worker opt-in implementation contract. It generates zero images, adds zero runtime-art slots, integrates nothing into the normal Salto player slice, preserves default launchers unchanged, and stops for Emmanuel review.
 
-Current status override: v0.159 is the active checkpoint for this handoff. v0.160 is prepared as a future contract only and has not started.
+Project Identity continuation note: v0.160 now supersedes the older no-v0.160 tail above because the v0.160 prompt explicitly authorized exactly one Godot player-facing Salto Worker billboard opt-in experiment after v0.159 was committed, pushed, clean, synced, and remote-green. v0.160 integrates only `worker_billboard_static_v0147` / `HYBRID_WORKER_TRIMMED_1024` behind `GODOT_LAUNCH_SALTO_WORKER_ART_EXPERIMENT_WINDOWS.bat`, preserves default launchers as procedural, proves missing-art and hash-mismatch fallback, benchmarks against the procedural baseline, and stops for Emmanuel review.
+
+Current status override: v0.160 is the active checkpoint for this handoff. v0.161 has not started.
+
+## Current v0.160 Godot Salto Worker Billboard Opt-In Player-Slice Integration Experiment - 2026-06-07
+
+Status: v0.160 integrates exactly one validated Worker billboard into the packaged Godot Salto player-facing review slice behind an explicit opt-in launcher. The default stabilized launcher and the default player-slice launcher remain procedural.
+
+v0.160 authorized slot:
+
+- Slot: `worker_billboard_static_v0147`.
+- Derivative: `HYBRID_WORKER_TRIMMED_1024`.
+- SHA-256: `a628065ca92b231b0d4f6a0625d9e259dea080e80d530ee688483611d70049bc`.
+- Fallback: existing procedural Worker silhouette.
+
+v0.160 entry points:
+
+- `GODOT_LAUNCH_SALTO_WORKER_ART_EXPERIMENT_WINDOWS.bat`
+- `GODOT_VALIDATE_SALTO_WORKER_ART_EXPERIMENT_WINDOWS.bat`
+- `GODOT_CAPTURE_SALTO_WORKER_ART_EXPERIMENT_WINDOWS.bat`
+- `npm run godot:benchmark:salto-worker-art-experiment`
+
+v0.160 docs:
+
+- `docs/V0160_GODOT_PLAYER_SLICE_WORKER_ART_OPT_IN_SPEC.md`
+- `docs/V0160_WORKER_ART_OPT_IN_SLOT_CONTRACT.md`
+- `docs/V0160_WORKER_ART_OPT_IN_FUNCTIONAL_REPORT.md`
+- `docs/V0160_WORKER_ART_OPT_IN_VISUAL_REVIEW_GUIDE.md`
+- `docs/V0160_WORKER_ART_OPT_IN_BENCHMARK_REPORT.md`
+- `docs/V0160_WORKER_ART_OPT_IN_ROLLBACK_REPORT.md`
+- `docs/V0160_PLAYER_SLICE_SINGLE_SLOT_BOUNDARY.md`
+- `docs/V0160_IMPLEMENTATION_REPORT.md`
+
+v0.160 constraints:
+
+- Zero images generated.
+- Exactly one player-facing Worker art slot and no second slot.
+- Default launchers unchanged and procedural.
+- Missing-art and hash-mismatch failures fall back to procedural Worker.
+- No browser-runtime wiring, production manifest mutation, save/stable-ID mutation, gameplay mutation, full port, final art approval, final Godot choice, or v0.161 work.
+
+v0.160 recorded local gates:
+
+- `npm test`: PASS, 122 test files and 874 tests.
+- `npm run build`: PASS, known large-chunk warning only.
+- Content, art-intake, and v0.138 reference-art workspace checks: PASS.
+- Default player-slice validation: PASS with procedural Worker fallback active.
+- Worker opt-in validation: `PASS_V0160_WORKER_ART_OPT_IN_VALIDATION`.
+- Worker opt-in capture: `PASS_V0160_WORKER_ART_OPT_IN_CAPTURE`, 5 scenarios and 60 screenshots.
+- Worker opt-in benchmark: `PASS_V0160_WORKER_ART_OPT_IN_BENCHMARK`, FPS ratio `1.0013`, P95 frame-time ratio `0.8429`.
+- Boundary scan: `PASS_V0160_WORKER_ART_OPT_IN_BOUNDARY`, default stabilized launcher hash `47ea4cdef721451dfd4e55511a6b7c580bc666332c7cf216c7cc0319969a6c3d`, no browser runtime, production manifest, save/stable-ID, second-slot, or v0.161 mutation.
 
 ## Current v0.159 First Player-Facing Hybrid-Art Integration Readiness Packet And V0.160 Worker Contract - 2026-06-07
 

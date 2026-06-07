@@ -1,5 +1,36 @@
 # Changelog
 
+# v0.160 Godot Salto Worker Billboard Opt-In Player-Slice Integration Experiment - 2026-06-07
+
+This checkpoint integrates exactly one validated Worker billboard candidate into the packaged Godot Salto player-facing review slice behind a new explicit opt-in launcher. It preserves the default stabilized launcher and default player-slice launcher as procedural, proves missing-art and hash-mismatch fallback to the procedural Worker, benchmarks the opt-in path against the procedural baseline, and stops for Emmanuel review. It does not begin v0.161.
+
+Added:
+
+- Explicit opt-in launcher `GODOT_LAUNCH_SALTO_WORKER_ART_EXPERIMENT_WINDOWS.bat`.
+- Validation and capture launchers for the opt-in experiment.
+- Package scripts for opt-in launch, validation, capture, and benchmark.
+- Worker-art opt-in runtime gates for source path, metadata, slot id, SHA-256, dimensions, image load, and texture creation.
+- Fail-closed procedural fallback diagnostics for missing-art and hash-mismatch cases.
+- Runtime benchmark evidence for procedural, opt-in, missing-art fallback, and hash-mismatch fallback scenarios.
+- v0.160 spec, slot contract, functional report, visual review guide, benchmark report, rollback report, boundary, and implementation report.
+- Scaffold guardrail coverage proving the one-slot contract and default-launcher exclusion.
+
+Decision:
+
+- Player-facing opt-in slot: `worker_billboard_static_v0147`.
+- Selected derivative: `HYBRID_WORKER_TRIMMED_1024`.
+- Required SHA-256: `a628065ca92b231b0d4f6a0625d9e259dea080e80d530ee688483611d70049bc`.
+- Fallback: existing procedural Worker silhouette.
+
+Boundaries:
+
+- Zero images generated.
+- No second player-facing art slot.
+- No Aster, Barracks, Militia, Ashen Raider, or archived Ashen import.
+- No browser-runtime wiring or production manifest mutation.
+- No save, stable-ID, gameplay, AI, objective, map, input, balance, campaign, or browser behavior mutation.
+- No final runtime-art approval, final Worker art approval, final Godot choice, full port, or v0.161 work.
+
 # v0.159 First Player-Facing Hybrid-Art Integration Readiness Packet And V0.160 Worker Contract - 2026-06-07
 
 This checkpoint prepares only the first player-facing hybrid-art integration readiness packet and the future v0.160 Worker opt-in implementation contract. It generates zero images, adds zero runtime-art slots, integrates nothing into the normal Salto player slice, preserves the default launcher unchanged, and stops for Emmanuel review. It does not begin v0.160.

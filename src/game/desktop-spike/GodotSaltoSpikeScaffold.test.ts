@@ -442,7 +442,6 @@ describe("Godot Salto spike scaffold", () => {
 
     expect(rootScript).not.toContain("load(\"res://assets");
     expect(scene3d).not.toContain("load(\"res://assets");
-    expect(scene3d).not.toContain("ImageTexture");
   });
 
   it("defines the v0.125 player-slice visual QA gate without broadening runtime scope", async () => {
@@ -613,7 +612,6 @@ describe("Godot Salto spike scaffold", () => {
 
     expect(rootScript).not.toContain("load(\"res://assets");
     expect(scene3d).not.toContain("load(\"res://assets");
-    expect(scene3d).not.toContain("ImageTexture");
     expect(toolScript).not.toContain("ImageTexture");
   });
 
@@ -722,7 +720,6 @@ describe("Godot Salto spike scaffold", () => {
 
     expect(rootScript).not.toContain("load(\"res://assets");
     expect(scene3d).not.toContain("load(\"res://assets");
-    expect(scene3d).not.toContain("ImageTexture");
     expect(toolScript).not.toContain("ImageTexture");
   });
 
@@ -828,7 +825,6 @@ describe("Godot Salto spike scaffold", () => {
 
     expect(rootScript).not.toContain("load(\"res://assets");
     expect(scene3d).not.toContain("load(\"res://assets");
-    expect(scene3d).not.toContain("ImageTexture");
     expect(toolScript).not.toContain("ImageTexture");
   });
 
@@ -936,7 +932,6 @@ describe("Godot Salto spike scaffold", () => {
 
     expect(rootScript).not.toContain("load(\"res://assets");
     expect(scene3d).not.toContain("load(\"res://assets");
-    expect(scene3d).not.toContain("ImageTexture");
     expect(toolScript).not.toContain("ImageTexture");
   });
 
@@ -1126,7 +1121,6 @@ describe("Godot Salto spike scaffold", () => {
 
     expect(rootScript).not.toContain("load(\"res://assets");
     expect(scene3d).not.toContain("load(\"res://assets");
-    expect(scene3d).not.toContain("ImageTexture");
     expect(toolScript).not.toContain("ImageTexture");
   });
 
@@ -1220,7 +1214,6 @@ describe("Godot Salto spike scaffold", () => {
 
     expect(rootScript).not.toContain("load(\"res://assets");
     expect(scene3d).not.toContain("load(\"res://assets");
-    expect(scene3d).not.toContain("ImageTexture");
     expect(toolScript).not.toContain("ImageTexture");
   });
 
@@ -1341,7 +1334,6 @@ describe("Godot Salto spike scaffold", () => {
 
     expect(rootScript).not.toContain("load(\"res://assets");
     expect(scene3d).not.toContain("load(\"res://assets");
-    expect(scene3d).not.toContain("ImageTexture");
     expect(toolScript).not.toContain("ImageTexture");
   });
 
@@ -1430,7 +1422,6 @@ describe("Godot Salto spike scaffold", () => {
 
     expect(rootScript).not.toContain("load(\"res://assets");
     expect(scene3d).not.toContain("load(\"res://assets");
-    expect(scene3d).not.toContain("ImageTexture");
     expect(toolScript).not.toContain("ImageTexture");
   });
 
@@ -1523,7 +1514,6 @@ describe("Godot Salto spike scaffold", () => {
 
     expect(rootScript).not.toContain("load(\"res://assets");
     expect(scene3d).not.toContain("load(\"res://assets");
-    expect(scene3d).not.toContain("ImageTexture");
     expect(toolScript).not.toContain("ImageTexture");
   });
 
@@ -1636,7 +1626,6 @@ describe("Godot Salto spike scaffold", () => {
 
     expect(rootScript).not.toContain("load(\"res://assets");
     expect(scene3d).not.toContain("load(\"res://assets");
-    expect(scene3d).not.toContain("ImageTexture");
     expect(toolScript).not.toContain("ImageTexture");
   });
 
@@ -1741,7 +1730,6 @@ describe("Godot Salto spike scaffold", () => {
 
     expect(rootScript).not.toContain("load(\"res://assets");
     expect(scene3d).not.toContain("load(\"res://assets");
-    expect(scene3d).not.toContain("ImageTexture");
     expect(toolScript).not.toContain("ImageTexture");
   });
 
@@ -2913,8 +2901,6 @@ describe("Godot Salto spike scaffold", () => {
       "docs/art-prompts/V0160_01_GODOT_PLAYER_SLICE_WORKER_BILLBOARD_OPT_IN_INTEGRATION.md"
     ].forEach((path) => expect(existsSync(path), path).toBe(true));
 
-    expect(existsSync("GODOT_LAUNCH_SALTO_WORKER_ART_EXPERIMENT_WINDOWS.bat")).toBe(false);
-
     const readiness = await readFile("docs/V0159_FIRST_PLAYER_FACING_HYBRID_ART_INTEGRATION_READINESS.md", "utf8");
     const scorecard = await readFile("docs/V0159_FIRST_SLOT_DECISION_SCORECARD.md", "utf8");
     const contract = await readFile("docs/V0159_V0160_WORKER_OPT_IN_INTEGRATION_CONTRACT.md", "utf8");
@@ -2951,6 +2937,106 @@ describe("Godot Salto spike scaffold", () => {
     ].forEach((text) => {
       expect(playerLauncher).not.toContain(text);
       expect(stabilizedLauncher).not.toContain(text);
+    });
+  });
+
+  it("defines the v0.160 Worker billboard opt-in player-slice integration gate", async () => {
+    [
+      "GODOT_LAUNCH_SALTO_WORKER_ART_EXPERIMENT_WINDOWS.bat",
+      "GODOT_VALIDATE_SALTO_WORKER_ART_EXPERIMENT_WINDOWS.bat",
+      "GODOT_CAPTURE_SALTO_WORKER_ART_EXPERIMENT_WINDOWS.bat",
+      "tools/godot/launchGodotSaltoWorkerArtExperimentWindows.ps1",
+      "tools/godot/validateGodotSaltoWorkerArtExperimentWindows.ps1",
+      "tools/godot/captureGodotSaltoWorkerArtExperimentWindows.ps1",
+      "tools/godot/runGodotSaltoWorkerArtExperimentBenchmarkWindows.ps1",
+      "tools/godot/saltoWorkerArtOptInTool.mjs",
+      "docs/V0160_GODOT_PLAYER_SLICE_WORKER_ART_OPT_IN_SPEC.md",
+      "docs/V0160_WORKER_ART_OPT_IN_SLOT_CONTRACT.md",
+      "docs/V0160_WORKER_ART_OPT_IN_FUNCTIONAL_REPORT.md",
+      "docs/V0160_WORKER_ART_OPT_IN_VISUAL_REVIEW_GUIDE.md",
+      "docs/V0160_WORKER_ART_OPT_IN_BENCHMARK_REPORT.md",
+      "docs/V0160_WORKER_ART_OPT_IN_ROLLBACK_REPORT.md",
+      "docs/V0160_PLAYER_SLICE_SINGLE_SLOT_BOUNDARY.md",
+      "docs/V0160_IMPLEMENTATION_REPORT.md"
+    ].forEach((path) => expect(existsSync(path), path).toBe(true));
+
+    const packageJson = JSON.parse(await readFile("package.json", "utf8")) as { scripts: Record<string, string> };
+    const rootScript = await readFile("desktop-spikes/godot-salto/scripts/salto_spike_root.gd", "utf8");
+    const sceneScript = await readFile("desktop-spikes/godot-salto/scripts/salto_spike_scene_3d.gd", "utf8");
+    const launchScript = await readFile("tools/godot/launchGodotSaltoWorkerArtExperimentWindows.ps1", "utf8");
+    const validateScript = await readFile("tools/godot/validateGodotSaltoWorkerArtExperimentWindows.ps1", "utf8");
+    const captureScript = await readFile("tools/godot/captureGodotSaltoWorkerArtExperimentWindows.ps1", "utf8");
+    const benchmarkScript = await readFile("tools/godot/runGodotSaltoWorkerArtExperimentBenchmarkWindows.ps1", "utf8");
+    const toolScript = await readFile("tools/godot/saltoWorkerArtOptInTool.mjs", "utf8");
+    const boundary = await readFile("docs/V0160_PLAYER_SLICE_SINGLE_SLOT_BOUNDARY.md", "utf8");
+    const stabilizedLauncher = await readFile("GODOT_LAUNCH_STABILIZED_SALTO_REVIEW_WINDOWS.bat", "utf8");
+    const playerLauncher = await readFile("GODOT_LAUNCH_PLAYER_SLICE_WINDOWS.bat", "utf8");
+
+    [
+      "godot:launch:salto-worker-art-experiment",
+      "godot:validate:salto-worker-art-experiment",
+      "godot:capture:salto-worker-art-experiment",
+      "godot:benchmark:salto-worker-art-experiment"
+    ].forEach((script) => expect(packageJson.scripts[script]).toBeTypeOf("string"));
+
+    [
+      "--worker-art-opt-in",
+      "--worker-art-opt-in-benchmark",
+      "--worker-art-source=",
+      "--worker-art-metadata=",
+      "--worker-art-expected-sha256=",
+      "run_worker_art_opt_in_benchmark",
+      "v0.160"
+    ].forEach((text) => expect(rootScript).toContain(text));
+
+    [
+      "WORKER_ART_SLOT_ID := \"worker_billboard_static_v0147\"",
+      "HYBRID_WORKER_TRIMMED_1024",
+      "a628065ca92b231b0d4f6a0625d9e259dea080e80d530ee688483611d70049bc",
+      "configure_worker_art_experiment",
+      "source hash mismatch",
+      "missing source file",
+      "ImageTexture.create_from_image",
+      "BaseMaterial3D.BILLBOARD_ENABLED"
+    ].forEach((text) => expect(sceneScript).toContain(text));
+
+    [
+      "worker_billboard_static_v0147_trimmed_1024.png",
+      "--player-slice",
+      "--worker-art-opt-in",
+      "--worker-art-scale=1.00"
+    ].forEach((text) => expect(launchScript).toContain(text));
+
+    [
+      "default-procedural",
+      "worker-opt-in",
+      "missing-art-fallback",
+      "hash-mismatch-fallback",
+      "saltoWorkerArtOptInTool.mjs"
+    ].forEach((text) => expect(validateScript).toContain(text));
+
+    [
+      "procedural-baseline",
+      "worker-opt-in",
+      "missing-art-fallback",
+      "hash-mismatch-fallback",
+      "saltoWorkerArtOptInTool.mjs"
+    ].forEach((text) => expect(benchmarkScript).toContain(text));
+
+    expect(captureScript).toContain("worker-opt-in-scale-090");
+    expect(toolScript).toContain("PASS_V0160_WORKER_ART_OPT_IN_VALIDATION");
+    expect(toolScript).toContain("PASS_V0160_WORKER_ART_OPT_IN_BENCHMARK");
+    expect(toolScript).toContain("PASS_V0160_WORKER_ART_OPT_IN_BOUNDARY");
+    expect(boundary).toContain("No second player-facing art slot");
+    expect(boundary).toContain("Default stabilized launcher hash");
+
+    [
+      "WORKER_ART",
+      "worker-art-opt-in",
+      "worker_billboard_static_v0147"
+    ].forEach((text) => {
+      expect(stabilizedLauncher).not.toContain(text);
+      expect(playerLauncher).not.toContain(text);
     });
   });
 });
