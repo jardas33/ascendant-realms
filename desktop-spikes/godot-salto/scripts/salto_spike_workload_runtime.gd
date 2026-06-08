@@ -343,7 +343,7 @@ func apply_player_facing_staging() -> bool:
 			unit["destination"] = staged_positions[id]
 			unit["hasDestination"] = false
 			unit["reviewHidden"] = false
-		elif str(unit.get("team", "")) == "enemy":
+		elif str(unit.get("team", "")) == "enemy" or (str(unit.get("team", "")) == "friendly" and str(unit.get("role", "")) != "Worker"):
 			unit["position"] = Vector2(-10000 - index * 12, -10000)
 			unit["lastPosition"] = unit["position"]
 			unit["destination"] = unit["position"]

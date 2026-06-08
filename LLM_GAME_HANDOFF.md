@@ -1,6 +1,6 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-06-08 v0.169 Godot Salto Aster Fourth-Slot Visual-QA Hardening And Human-Review Stop
+Last updated: 2026-06-08 v0.170 Godot Salto Restrained Ashen Raider Fifth Opt-In Integration Experiment And Human-Review Stop
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
@@ -36,7 +36,53 @@ Project Identity continuation note: v0.168 now supersedes the older no-v0.168 ta
 
 Project Identity continuation note: v0.169 now supersedes the older no-v0.169 tail above because the queued prompt explicitly authorized a Windows-side Aster fourth-slot visual-QA hardening pass after v0.168 was committed, pushed, clean, synced, and remote-green. v0.169 generates zero images, adds zero slots, preserves the default procedural launcher and all prior opt-in launchers, hardens only the existing Aster opt-in path with scale/depth-sort/reporting repairs, records v0.169 validation/capture/benchmark/fallback/real-input/Computer Use/boundary evidence, and stops before v0.170 unless the next queued prompt passes.
 
-Current status override: v0.169 is the active checkpoint for this handoff after local validation, capture, benchmark, real-input, Computer Use, and boundary gates passed. v0.170 may start only after v0.169 is committed, pushed, clean/synced, and remote-green.
+Project Identity continuation note: v0.170 now supersedes the older no-v0.170 tail above because the queued prompt explicitly authorized exactly one restrained Ashen Raider normal-slice opt-in slot after v0.169 was committed, pushed, clean, synced, and remote-green. v0.170 adds only `ashen_raider_billboard_static_v0156` / `HYBRID_ASHEN_RAIDER_V0157_TRIMMED_1024` behind a new Worker + Barracks + Militia + Aster + Ashen launcher, preserves the default procedural launcher and all prior opt-in launchers, proves Ashen missing-art and hash-mismatch fallback while Worker, Barracks, Militia, and Aster remain active, benchmarks M0/M4/M5/fallback modes, hardens the opening battle view so unrecruited friendly military billboards stay hidden until progression, generates zero images, adds no sixth slot, and stops before v0.171 for human review.
+
+Current status override: v0.170 is the active checkpoint for this handoff after local validation, capture, benchmark, real-input, Computer Use, and boundary gates passed. v0.171 must not start until v0.170 is committed, pushed, clean/synced, and remote-green, and then only under an explicit prompt.
+
+## Current v0.170 Godot Salto Restrained Ashen Raider Fifth Opt-In Integration Experiment And Human-Review Stop - 2026-06-08
+
+Status: local gates are green and awaiting clean commit, push, sync, and remote CI proof.
+
+What changed:
+
+- Added only the selected v0.157 restrained Ashen Raider derivative as the fifth normal-slice opt-in slot: `ashen_raider_billboard_static_v0156` / `HYBRID_ASHEN_RAIDER_V0157_TRIMMED_1024`, SHA-256 `8eb011f56d5cd56cf6ef0a843d2a5899e27aa13e203cc44517ed4a0c55c631c8`.
+- Added `GODOT_LAUNCH_SALTO_FIVE_SLOT_ART_EXPERIMENT_WINDOWS.bat`, capture/validate wrappers, and `npm run godot:launch|capture|validate:salto-five-slot-art-experiment`.
+- Preserved the default stabilized launcher, default player-slice launcher, Worker-only launcher, Worker + Barracks launcher, Worker + Barracks + Militia launcher, and Worker + Barracks + Militia + Aster launcher.
+- Fixed the opening battle presentation leak by reapplying staging on battle-shell entry and making review rings obey `reviewHidden`; unrecruited friendly military billboards no longer appear before Barracks/Militia progression.
+- Preserved the four-Ashen combat-onset handoff with defenders restored for the real-input pressure-wave sequence.
+
+Local v0.170 evidence:
+
+```text
+npm run godot:validate:salto-five-slot-art-experiment
+PASS_V0170_WORKER_BARRACKS_MILITIA_ASTER_ASHEN_ART_OPT_IN_AUTOMATION_READY
+
+node tools/godot/saltoFiveSlotArtOptInTool.mjs computer-use --artifact-root=artifacts/desktop-spikes/godot-salto/v0170
+PASS_V0170_ASHEN_OPT_IN_COMPUTER_USE
+
+node tools/godot/saltoFiveSlotArtOptInTool.mjs summary --artifact-root=artifacts/desktop-spikes/godot-salto/v0170
+PASS_V0170_ASHEN_OPT_IN_SUMMARY
+```
+
+Key evidence files:
+
+- `artifacts/desktop-spikes/godot-salto/v0170/validation/five-slot-art-opt-in-validation.json`
+- `artifacts/desktop-spikes/godot-salto/v0170/capture/five-slot-art-opt-in-capture-report.json`
+- `artifacts/desktop-spikes/godot-salto/v0170/benchmark/five-slot-art-opt-in-benchmark-report.json`
+- `artifacts/desktop-spikes/godot-salto/v0170/real-input/five-slot-art-opt-in-real-input-report.json`
+- `artifacts/desktop-spikes/godot-salto/v0170/computer-use/five-slot-art-opt-in-review.json`
+- `artifacts/desktop-spikes/godot-salto/v0170/boundary/five-slot-art-opt-in-boundary-report.json`
+- `artifacts/desktop-spikes/godot-salto/v0170/scorecard/five-slot-art-opt-in-human-review-scorecard.md`
+
+Benchmark summary: M5 FPS ratios vs M0/M4 were `0.9976` and `1.0009`; p95 ratios were `0.9699` and `0.9771`, passing the v0.170 thresholds.
+
+Visual caveat: Computer Use inspected the live Windows Godot title window, but coordinate clicks hit a stale-window guard after title inspection. Battle/combat presentation review therefore uses regenerated screenshots from the same rebuilt executable and real-input evidence:
+
+- `artifacts/desktop-spikes/godot-salto/v0170/capture/worker-barracks-militia-aster-ashen/screenshots/03_battle_default.png`
+- `artifacts/desktop-spikes/godot-salto/v0170/real-input/worker-barracks-militia-aster-ashen-post-mine-flow/screenshots/16_combat_onset.png`
+
+Do not begin v0.171 from this handoff unless the next prompt explicitly authorizes it.
 
 ## Current v0.169 Godot Salto Aster Fourth-Slot Visual-QA Hardening And Human-Review Stop - 2026-06-08
 

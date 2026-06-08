@@ -1,0 +1,55 @@
+# v0.170 Ashen Functional Visual Benchmark Report
+
+Status: `PASS_V0170_ASHEN_OPT_IN_SUMMARY`
+
+This report covers only the new fifth opt-in Ashen Raider player-slice path and its fallbacks.
+
+## Gates
+
+- Exact Ashen hash in M5 only: `PASS`.
+- Missing-art fallback with other four slots active: `PASS`.
+- Hash-mismatch fallback with other four slots active: `PASS`.
+- Four-attacker wave readability: `PASS`.
+- Militia-vs-Ashen clarity: `PASS`.
+- Aster hierarchy: `PASS`.
+- Worker non-combatant distinction: `PASS`.
+- Hostile markers/rings: `PASS`.
+- Overlap/sort and pan/zoom checks: `PASS`.
+- Results/restart/replay: `PASS`.
+- M5 FPS ratios vs M0/M4 `>= 0.90`: `PASS`.
+- M5 p95 worsening vs M0/M4 `<= 15%`: `PASS`.
+
+## Evidence Roots
+
+- `artifacts/desktop-spikes/godot-salto/v0170/validation/`
+- `artifacts/desktop-spikes/godot-salto/v0170/capture/`
+- `artifacts/desktop-spikes/godot-salto/v0170/benchmark/`
+- `artifacts/desktop-spikes/godot-salto/v0170/real-input/`
+- `artifacts/desktop-spikes/godot-salto/v0170/computer-use/`
+- `artifacts/desktop-spikes/godot-salto/v0170/scorecard/`
+
+## Current Benchmark Result
+
+`PASS_V0170_ASHEN_OPT_IN_BENCHMARK`
+
+| Scenario | Expected | FPS avg | p95 ms | Loaded/requested slots |
+| --- | --- | ---: | ---: | --- |
+| M0 procedural baseline | procedural | 75.32 | 13.61 | 0/0 |
+| M4 Worker + Barracks + Militia + Aster | four-loaded | 75.07 | 13.51 | 4/4 |
+| M5 Worker + Barracks + Militia + Aster + Ashen | five-loaded | 75.14 | 13.20 | 5/5 |
+| Ashen missing-art fallback | ashen-missing | 75.47 | 13.42 | 4/5 |
+| Ashen hash-mismatch fallback | ashen-hash | 75.35 | 13.28 | 4/5 |
+
+M5 ratios: FPS vs M0 `0.9976`, FPS vs M4 `1.0009`; p95 worsening vs M0 `0.9699`, p95 worsening vs M4 `0.9771`.
+
+## Visual Review Result
+
+`PASS_V0170_ASHEN_OPT_IN_COMPUTER_USE_REVIEW`
+
+- Live Windows Godot title window inspected through Computer Use: `artifacts/desktop-spikes/godot-salto/v0170/computer-use/windows-five-slot-review-title-live.jpg`.
+- First battle screenshot after repair: `artifacts/desktop-spikes/godot-salto/v0170/capture/worker-barracks-militia-aster-ashen/screenshots/03_battle_default.png`.
+- Combat-onset screenshot with the four-Ashen wave: `artifacts/desktop-spikes/godot-salto/v0170/real-input/worker-barracks-militia-aster-ashen-post-mine-flow/screenshots/16_combat_onset.png`.
+- The opening battle view no longer leaks unrecruited friendly military billboards; only Aster and Workers are visible before progression.
+- The combat-onset view restores the defenders and shows four Ashen attackers with hostile markers/rings.
+
+Computer Use coordinate clicks were blocked by a stale-window guard after live title inspection, so the battle and combat presentation review uses regenerated screenshots from the same rebuilt executable plus real-input evidence.

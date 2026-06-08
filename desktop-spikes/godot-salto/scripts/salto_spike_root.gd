@@ -47,9 +47,16 @@ const SCRIPT_ARG_PREFIXES := [
 	"--aster-art-expected-sha256=",
 	"--aster-art-scale=",
 	"--aster-art-fallback-mode=",
+	"--ashen-art-opt-in",
+	"--ashen-art-source=",
+	"--ashen-art-metadata=",
+	"--ashen-art-expected-sha256=",
+	"--ashen-art-scale=",
+	"--ashen-art-fallback-mode=",
 	"--experimental-review-mode-label=",
 	"--salto-three-slot-review-framing",
 	"--salto-four-slot-review-framing",
+	"--salto-five-slot-review-framing",
 	"--real-input-smoke",
 	"--real-input-validate",
 	"--site-semantics-smoke",
@@ -763,14 +770,18 @@ func _configure_worker_art_for_active_scene() -> void:
 		active_scene.configure_militia_art_experiment(_militia_art_options_from_args())
 	if active_scene.has_method("configure_aster_art_experiment"):
 		active_scene.configure_aster_art_experiment(_aster_art_options_from_args())
+	if active_scene.has_method("configure_ashen_art_experiment"):
+		active_scene.configure_ashen_art_experiment(_ashen_art_options_from_args())
 	_apply_review_framing_for_active_scene()
 
 func _apply_review_framing_for_active_scene() -> void:
-	if not _script_args().has("--salto-three-slot-review-framing") and not _script_args().has("--salto-four-slot-review-framing"):
+	if not _script_args().has("--salto-three-slot-review-framing") and not _script_args().has("--salto-four-slot-review-framing") and not _script_args().has("--salto-five-slot-review-framing"):
 		return
 	if active_mode != MODE_25D or active_scene == null or not is_instance_valid(active_scene):
 		return
-	if _script_args().has("--salto-four-slot-review-framing") and active_scene.has_method("apply_four_slot_art_review_framing"):
+	if _script_args().has("--salto-five-slot-review-framing") and active_scene.has_method("apply_five_slot_art_review_framing"):
+		active_scene.apply_five_slot_art_review_framing()
+	elif _script_args().has("--salto-four-slot-review-framing") and active_scene.has_method("apply_four_slot_art_review_framing"):
 		active_scene.apply_four_slot_art_review_framing()
 	elif active_scene.has_method("apply_three_slot_art_review_framing"):
 		active_scene.apply_three_slot_art_review_framing()
@@ -864,6 +875,30 @@ func _aster_art_options_from_args() -> Dictionary:
 		"scale": scale,
 		"fallbackMode": fallback_mode,
 		"requestedBy": "GODOT_LAUNCH_SALTO_WORKER_BARRACKS_MILITIA_ASTER_ART_EXPERIMENT_WINDOWS.bat or explicit --aster-art-opt-in"
+	}
+
+func _ashen_art_options_from_args() -> Dictionary:
+	var fallback_mode := _arg_value("--ashen-art-fallback-mode=", "none")
+	var source_path := _arg_value("--ashen-art-source=", "")
+	var metadata_path := _arg_value("--ashen-art-metadata=", "")
+	if source_path == "":
+		source_path = ProjectSettings.globalize_path("res://../../artifacts/desktop-spikes/godot-salto/v0157/local-ashen-raider-restrained-replacement/ashen_raider_billboard_static_v0157_restrained_trimmed_1024.png")
+	if metadata_path == "":
+		metadata_path = ProjectSettings.globalize_path("res://../../artifacts/desktop-spikes/godot-salto/v0157/local-ashen-raider-restrained-replacement/ashen_raider_billboard_static_v0157_restrained_trimmed_1024.metadata.json")
+	if fallback_mode == "missing" and not _has_arg_prefix("--ashen-art-source="):
+		source_path = ProjectSettings.globalize_path("res://../../artifacts/desktop-spikes/godot-salto/v0170/missing-ashen-source/ashen_raider_billboard_static_v0157_restrained_trimmed_1024.png")
+	var scale_text := _arg_value("--ashen-art-scale=", "1.0")
+	var scale := 1.0
+	if scale_text.is_valid_float():
+		scale = float(scale_text)
+	return {
+		"enabled": _script_args().has("--ashen-art-opt-in"),
+		"sourcePath": source_path.replace("\\", "/"),
+		"metadataPath": metadata_path.replace("\\", "/"),
+		"expectedSha256": _arg_value("--ashen-art-expected-sha256=", "8eb011f56d5cd56cf6ef0a843d2a5899e27aa13e203cc44517ed4a0c55c631c8").to_lower(),
+		"scale": scale,
+		"fallbackMode": fallback_mode,
+		"requestedBy": "GODOT_LAUNCH_SALTO_FIVE_SLOT_ART_EXPERIMENT_WINDOWS.bat or explicit --ashen-art-opt-in"
 	}
 
 func _arg_value(prefix: String, default_value: String = "") -> String:
@@ -1530,6 +1565,8 @@ func run_player_slice_validation() -> void:
 	var militia_art_loaded := bool(militia_art.get("sourceLoaded", false))
 	var aster_art: Dictionary = final_status.get("asterArtExperiment", {})
 	var aster_art_loaded := bool(aster_art.get("sourceLoaded", false))
+	var ashen_art: Dictionary = final_status.get("ashenArtExperiment", {})
+	var ashen_art_loaded := bool(ashen_art.get("sourceLoaded", false))
 	performance_smoke["workerArtOptInRequested"] = _script_args().has("--worker-art-opt-in")
 	performance_smoke["workerArtExperiment"] = worker_art
 	performance_smoke["barracksMaterialOptInRequested"] = _script_args().has("--barracks-material-opt-in")
@@ -1538,6 +1575,8 @@ func run_player_slice_validation() -> void:
 	performance_smoke["militiaArtExperiment"] = militia_art
 	performance_smoke["asterArtOptInRequested"] = _script_args().has("--aster-art-opt-in")
 	performance_smoke["asterArtExperiment"] = aster_art
+	performance_smoke["ashenArtOptInRequested"] = _script_args().has("--ashen-art-opt-in")
+	performance_smoke["ashenArtExperiment"] = ashen_art
 	var report := {
 		"schemaVersion": 1,
 		"checkpoint": _player_capture_checkpoint(),
@@ -1548,14 +1587,15 @@ func run_player_slice_validation() -> void:
 		"workerBarracksArtOptInHumanReviewPath": "GODOT_LAUNCH_SALTO_WORKER_BARRACKS_ART_EXPERIMENT_WINDOWS.bat",
 		"workerBarracksMilitiaArtOptInHumanReviewPath": "GODOT_LAUNCH_SALTO_WORKER_BARRACKS_MILITIA_ART_EXPERIMENT_WINDOWS.bat",
 		"workerBarracksMilitiaAsterArtOptInHumanReviewPath": "GODOT_LAUNCH_SALTO_WORKER_BARRACKS_MILITIA_ASTER_ART_EXPERIMENT_WINDOWS.bat",
+		"fiveSlotArtOptInHumanReviewPath": "GODOT_LAUNCH_SALTO_FIVE_SLOT_ART_EXPERIMENT_WINDOWS.bat",
 		"privateHarnessPreservedSeparately": true,
 		"defaultMode": MODE_25D,
 		"defaultVisualPreset": VISUAL_PRESET_CLEAN,
 		"routineEditorUseRequired": false,
 		"manualGodotEditorSceneAssemblyRequired": false,
-		"proceduralPrimitiveOnly": not worker_art_loaded and not barracks_material_loaded and not militia_art_loaded and not aster_art_loaded,
-		"generatedOrImportedArtIncluded": worker_art_loaded or barracks_material_loaded or militia_art_loaded or aster_art_loaded,
-		"runtimeArtIntegrated": worker_art_loaded or barracks_material_loaded or militia_art_loaded or aster_art_loaded,
+		"proceduralPrimitiveOnly": not worker_art_loaded and not barracks_material_loaded and not militia_art_loaded and not aster_art_loaded and not ashen_art_loaded,
+		"generatedOrImportedArtIncluded": worker_art_loaded or barracks_material_loaded or militia_art_loaded or aster_art_loaded or ashen_art_loaded,
+		"runtimeArtIntegrated": worker_art_loaded or barracks_material_loaded or militia_art_loaded or aster_art_loaded or ashen_art_loaded,
 		"workerArtOptInRequested": _script_args().has("--worker-art-opt-in"),
 		"workerArtExperiment": worker_art,
 		"barracksMaterialOptInRequested": _script_args().has("--barracks-material-opt-in"),
@@ -1564,14 +1604,18 @@ func run_player_slice_validation() -> void:
 		"militiaArtExperiment": militia_art,
 		"asterArtOptInRequested": _script_args().has("--aster-art-opt-in"),
 		"asterArtExperiment": aster_art,
+		"ashenArtOptInRequested": _script_args().has("--ashen-art-opt-in"),
+		"ashenArtExperiment": ashen_art,
 		"normalSliceOptInRequestedSlotCount": int(final_status.get("normalSliceOptInRequestedSlotCount", 0)),
 		"normalSliceOptInLoadedSlotCount": int(final_status.get("normalSliceOptInLoadedSlotCount", 0)),
 		"workerArtProceduralFallbackActive": bool(final_status.get("workerArtProceduralFallbackActive", false)),
 		"barracksMaterialProceduralFallbackActive": bool(final_status.get("barracksMaterialProceduralFallbackActive", false)),
 		"militiaArtProceduralFallbackActive": bool(final_status.get("militiaArtProceduralFallbackActive", false)),
 		"asterArtProceduralFallbackActive": bool(final_status.get("asterArtProceduralFallbackActive", false)),
+		"ashenArtProceduralFallbackActive": bool(final_status.get("ashenArtProceduralFallbackActive", false)),
 		"fourthPlayerFacingArtSlotAdded": bool(final_status.get("fourthPlayerFacingArtSlotAdded", false)),
 		"fifthPlayerFacingArtSlotAdded": bool(final_status.get("fifthPlayerFacingArtSlotAdded", false)),
+		"sixthPlayerFacingArtSlotAdded": bool(final_status.get("sixthPlayerFacingArtSlotAdded", false)),
 		"v0165VisualHardeningAudit": final_status.get("v0165VisualHardeningAudit", {}),
 		"localStorageMutationAllowed": false,
 		"saveWritesAllowed": false,
@@ -1642,6 +1686,8 @@ func run_player_slice_capture() -> void:
 	var militia_art_loaded := bool(militia_art.get("sourceLoaded", false))
 	var aster_art: Dictionary = final_status.get("asterArtExperiment", {})
 	var aster_art_loaded := bool(aster_art.get("sourceLoaded", false))
+	var ashen_art: Dictionary = final_status.get("ashenArtExperiment", {})
+	var ashen_art_loaded := bool(ashen_art.get("sourceLoaded", false))
 	var report := {
 		"schemaVersion": 1,
 		"checkpoint": _player_capture_checkpoint(),
@@ -1653,10 +1699,10 @@ func run_player_slice_capture() -> void:
 		"viewport": {"width": VIEWPORT_SIZE.x, "height": VIEWPORT_SIZE.y},
 		"defaultMode": MODE_25D,
 		"defaultVisualPreset": VISUAL_PRESET_CLEAN,
-		"privateHarnessPreservedSeparately": captures.any(func(capture: Dictionary) -> bool: return bool(capture.get("privateHarnessCapture", false))) or ["v0.126", "v0.127", "v0.128", "v0.129", "v0.130", "v0.160", "v0.162", "v0.164", "v0.168", "v0.169"].has(_player_capture_checkpoint()),
-		"proceduralPrimitiveOnly": not worker_art_loaded and not barracks_material_loaded and not militia_art_loaded and not aster_art_loaded,
-		"generatedOrImportedArtIncluded": worker_art_loaded or barracks_material_loaded or militia_art_loaded or aster_art_loaded,
-		"runtimeArtIntegrated": worker_art_loaded or barracks_material_loaded or militia_art_loaded or aster_art_loaded,
+		"privateHarnessPreservedSeparately": captures.any(func(capture: Dictionary) -> bool: return bool(capture.get("privateHarnessCapture", false))) or ["v0.126", "v0.127", "v0.128", "v0.129", "v0.130", "v0.160", "v0.162", "v0.164", "v0.168", "v0.169", "v0.170"].has(_player_capture_checkpoint()),
+		"proceduralPrimitiveOnly": not worker_art_loaded and not barracks_material_loaded and not militia_art_loaded and not aster_art_loaded and not ashen_art_loaded,
+		"generatedOrImportedArtIncluded": worker_art_loaded or barracks_material_loaded or militia_art_loaded or aster_art_loaded or ashen_art_loaded,
+		"runtimeArtIntegrated": worker_art_loaded or barracks_material_loaded or militia_art_loaded or aster_art_loaded or ashen_art_loaded,
 		"workerArtOptInRequested": _script_args().has("--worker-art-opt-in"),
 		"workerArtExperiment": worker_art,
 		"barracksMaterialOptInRequested": _script_args().has("--barracks-material-opt-in"),
@@ -1665,14 +1711,18 @@ func run_player_slice_capture() -> void:
 		"militiaArtExperiment": militia_art,
 		"asterArtOptInRequested": _script_args().has("--aster-art-opt-in"),
 		"asterArtExperiment": aster_art,
+		"ashenArtOptInRequested": _script_args().has("--ashen-art-opt-in"),
+		"ashenArtExperiment": ashen_art,
 		"normalSliceOptInRequestedSlotCount": int(final_status.get("normalSliceOptInRequestedSlotCount", 0)),
 		"normalSliceOptInLoadedSlotCount": int(final_status.get("normalSliceOptInLoadedSlotCount", 0)),
 		"workerArtProceduralFallbackActive": bool(final_status.get("workerArtProceduralFallbackActive", false)),
 		"barracksMaterialProceduralFallbackActive": bool(final_status.get("barracksMaterialProceduralFallbackActive", false)),
 		"militiaArtProceduralFallbackActive": bool(final_status.get("militiaArtProceduralFallbackActive", false)),
 		"asterArtProceduralFallbackActive": bool(final_status.get("asterArtProceduralFallbackActive", false)),
+		"ashenArtProceduralFallbackActive": bool(final_status.get("ashenArtProceduralFallbackActive", false)),
 		"fourthPlayerFacingArtSlotAdded": bool(final_status.get("fourthPlayerFacingArtSlotAdded", false)),
 		"fifthPlayerFacingArtSlotAdded": bool(final_status.get("fifthPlayerFacingArtSlotAdded", false)),
+		"sixthPlayerFacingArtSlotAdded": bool(final_status.get("sixthPlayerFacingArtSlotAdded", false)),
 		"v0165VisualHardeningAudit": final_status.get("v0165VisualHardeningAudit", {}),
 		"routineEditorUseRequired": false,
 		"errors": errors,
@@ -1721,14 +1771,16 @@ func run_worker_art_opt_in_benchmark() -> void:
 	var barracks_material: Dictionary = final_status.get("barracksMaterialExperiment", {})
 	var militia_art: Dictionary = final_status.get("militiaArtExperiment", {})
 	var aster_art: Dictionary = final_status.get("asterArtExperiment", {})
-	var any_loaded := bool(worker_art.get("sourceLoaded", false)) or bool(barracks_material.get("sourceLoaded", false)) or bool(militia_art.get("sourceLoaded", false)) or bool(aster_art.get("sourceLoaded", false))
+	var ashen_art: Dictionary = final_status.get("ashenArtExperiment", {})
+	var any_loaded := bool(worker_art.get("sourceLoaded", false)) or bool(barracks_material.get("sourceLoaded", false)) or bool(militia_art.get("sourceLoaded", false)) or bool(aster_art.get("sourceLoaded", false)) or bool(ashen_art.get("sourceLoaded", false))
+	var five_slot_requested := _script_args().has("--ashen-art-opt-in")
 	var four_slot_requested := _script_args().has("--aster-art-opt-in")
 	var three_slot_requested := _script_args().has("--militia-art-opt-in")
 	var two_slot_requested := _script_args().has("--barracks-material-opt-in")
 	var report := {
 		"schemaVersion": 1,
 		"checkpoint": _player_capture_checkpoint(),
-		"status": ("PASS_V0168_WORKER_BARRACKS_MILITIA_ASTER_ART_OPT_IN_RUNTIME_BENCHMARK" if four_slot_requested else ("PASS_V0164_WORKER_BARRACKS_MILITIA_ART_OPT_IN_RUNTIME_BENCHMARK" if three_slot_requested else ("PASS_V0162_WORKER_BARRACKS_ART_OPT_IN_RUNTIME_BENCHMARK" if two_slot_requested else "PASS_V0160_WORKER_ART_OPT_IN_RUNTIME_BENCHMARK"))) if errors.is_empty() else ("FAIL_V0168_WORKER_BARRACKS_MILITIA_ASTER_ART_OPT_IN_RUNTIME_BENCHMARK" if four_slot_requested else ("FAIL_V0164_WORKER_BARRACKS_MILITIA_ART_OPT_IN_RUNTIME_BENCHMARK" if three_slot_requested else ("FAIL_V0162_WORKER_BARRACKS_ART_OPT_IN_RUNTIME_BENCHMARK" if two_slot_requested else "FAIL_V0160_WORKER_ART_OPT_IN_RUNTIME_BENCHMARK"))),
+		"status": ("PASS_V0170_WORKER_BARRACKS_MILITIA_ASTER_ASHEN_ART_OPT_IN_RUNTIME_BENCHMARK" if five_slot_requested else ("PASS_V0168_WORKER_BARRACKS_MILITIA_ASTER_ART_OPT_IN_RUNTIME_BENCHMARK" if four_slot_requested else ("PASS_V0164_WORKER_BARRACKS_MILITIA_ART_OPT_IN_RUNTIME_BENCHMARK" if three_slot_requested else ("PASS_V0162_WORKER_BARRACKS_ART_OPT_IN_RUNTIME_BENCHMARK" if two_slot_requested else "PASS_V0160_WORKER_ART_OPT_IN_RUNTIME_BENCHMARK")))) if errors.is_empty() else ("FAIL_V0170_WORKER_BARRACKS_MILITIA_ASTER_ASHEN_ART_OPT_IN_RUNTIME_BENCHMARK" if five_slot_requested else ("FAIL_V0168_WORKER_BARRACKS_MILITIA_ASTER_ART_OPT_IN_RUNTIME_BENCHMARK" if four_slot_requested else ("FAIL_V0164_WORKER_BARRACKS_MILITIA_ART_OPT_IN_RUNTIME_BENCHMARK" if three_slot_requested else ("FAIL_V0162_WORKER_BARRACKS_ART_OPT_IN_RUNTIME_BENCHMARK" if two_slot_requested else "FAIL_V0160_WORKER_ART_OPT_IN_RUNTIME_BENCHMARK")))),
 		"artifactRoot": artifact_root,
 		"durationMs": snappedf(float(Time.get_ticks_usec() - start_usec) / 1000.0, 0.01),
 		"mode": MODE_25D,
@@ -1745,14 +1797,18 @@ func run_worker_art_opt_in_benchmark() -> void:
 		"militiaArtExperiment": militia_art,
 		"asterArtOptInRequested": _script_args().has("--aster-art-opt-in"),
 		"asterArtExperiment": aster_art,
+		"ashenArtOptInRequested": _script_args().has("--ashen-art-opt-in"),
+		"ashenArtExperiment": ashen_art,
 		"normalSliceOptInRequestedSlotCount": int(final_status.get("normalSliceOptInRequestedSlotCount", 0)),
 		"normalSliceOptInLoadedSlotCount": int(final_status.get("normalSliceOptInLoadedSlotCount", 0)),
 		"workerArtProceduralFallbackActive": bool(final_status.get("workerArtProceduralFallbackActive", false)),
 		"barracksMaterialProceduralFallbackActive": bool(final_status.get("barracksMaterialProceduralFallbackActive", false)),
 		"militiaArtProceduralFallbackActive": bool(final_status.get("militiaArtProceduralFallbackActive", false)),
 		"asterArtProceduralFallbackActive": bool(final_status.get("asterArtProceduralFallbackActive", false)),
+		"ashenArtProceduralFallbackActive": bool(final_status.get("ashenArtProceduralFallbackActive", false)),
 		"fourthPlayerFacingArtSlotAdded": bool(final_status.get("fourthPlayerFacingArtSlotAdded", false)),
 		"fifthPlayerFacingArtSlotAdded": bool(final_status.get("fifthPlayerFacingArtSlotAdded", false)),
+		"sixthPlayerFacingArtSlotAdded": bool(final_status.get("sixthPlayerFacingArtSlotAdded", false)),
 		"v0165VisualHardeningAudit": final_status.get("v0165VisualHardeningAudit", {}),
 		"proceduralPrimitiveOnly": not any_loaded,
 		"generatedOrImportedArtIncluded": any_loaded,
@@ -1783,7 +1839,13 @@ func run_worker_art_opt_in_benchmark() -> void:
 			"asterImageDecodeCount": int(aster_art.get("imageDecodeCount", 0)),
 			"asterTextureCreateCount": int(aster_art.get("textureCreateCount", 0)),
 			"asterMaterialCreateCount": int(aster_art.get("materialCreateCount", 0)),
-			"asterMaterialReuseCount": int(aster_art.get("materialReuseCount", 0))
+			"asterMaterialReuseCount": int(aster_art.get("materialReuseCount", 0)),
+			"ashenSourceLoadCount": int(ashen_art.get("sourceLoadCount", 0)),
+			"ashenMetadataParseCount": int(ashen_art.get("metadataParseCount", 0)),
+			"ashenImageDecodeCount": int(ashen_art.get("imageDecodeCount", 0)),
+			"ashenTextureCreateCount": int(ashen_art.get("textureCreateCount", 0)),
+			"ashenMaterialCreateCount": int(ashen_art.get("materialCreateCount", 0)),
+			"ashenMaterialReuseCount": int(ashen_art.get("materialReuseCount", 0))
 		},
 		"steps": steps,
 		"errors": errors,
@@ -4108,6 +4170,8 @@ func _apply_player_slice_action(action: String) -> Dictionary:
 
 func _player_capture_checkpoint() -> String:
 	var normalized_root := _artifact_root_from_args().replace("\\", "/")
+	if normalized_root.contains("/v0170"):
+		return "v0.170"
 	if normalized_root.contains("/v0169"):
 		return "v0.169"
 	if normalized_root.contains("/v0168"):
@@ -4133,10 +4197,10 @@ func _player_capture_checkpoint() -> String:
 	return "v0.124"
 
 func _is_bounded_microloop_checkpoint() -> bool:
-	return ["v0.129", "v0.130", "v0.160", "v0.162", "v0.164", "v0.166", "v0.168", "v0.169"].has(_player_capture_checkpoint())
+	return ["v0.129", "v0.130", "v0.160", "v0.162", "v0.164", "v0.166", "v0.168", "v0.169", "v0.170"].has(_player_capture_checkpoint())
 
 func _player_capture_steps() -> Array[Dictionary]:
-	if _player_capture_checkpoint() == "v0.160" or _player_capture_checkpoint() == "v0.162" or _player_capture_checkpoint() == "v0.164" or _player_capture_checkpoint() == "v0.166" or _player_capture_checkpoint() == "v0.168" or _player_capture_checkpoint() == "v0.169":
+	if _player_capture_checkpoint() == "v0.160" or _player_capture_checkpoint() == "v0.162" or _player_capture_checkpoint() == "v0.164" or _player_capture_checkpoint() == "v0.166" or _player_capture_checkpoint() == "v0.168" or _player_capture_checkpoint() == "v0.169" or _player_capture_checkpoint() == "v0.170":
 		return [
 			{"id": "title", "label": "Title shell with configured 2.5D backdrop", "action": "title"},
 			{"id": "briefing", "label": "Briefing shell", "action": "briefing"},

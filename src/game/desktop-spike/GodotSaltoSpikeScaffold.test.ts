@@ -3799,11 +3799,104 @@ describe("Godot Salto spike scaffold", () => {
       "v0.168"
     ].forEach((text) => expect(rootScript).toContain(text));
 
-    expect(artifactIndex).toContain("ACTIVE_V0169_RETENTION_INDEX");
+    expect(artifactIndex).toContain("ACTIVE_V0170_RETENTION_INDEX");
     expect(artifactIndex).toContain("artifacts/desktop-spikes/godot-salto/v0169/");
     expect(visualReport).toContain("PASS_V0169_ASTER_VISUAL_QA_HARDENING_READY");
     expect(visualReport).toContain("foreground structure still crosses the lower-body area");
     expect(boundaryReport).toContain("M4 FPS ratio versus M0: `0.9960`");
     expect(boundaryReport).toContain("Fifth slot added: `false`");
+  });
+
+  it("defines the v0.170 Ashen Raider fifth opt-in player-slice integration gate", async () => {
+    [
+      "GODOT_LAUNCH_SALTO_FIVE_SLOT_ART_EXPERIMENT_WINDOWS.bat",
+      "GODOT_CAPTURE_SALTO_FIVE_SLOT_ART_EXPERIMENT_WINDOWS.bat",
+      "GODOT_VALIDATE_SALTO_FIVE_SLOT_ART_EXPERIMENT_WINDOWS.bat",
+      "tools/godot/launchGodotSaltoFiveSlotArtExperimentWindows.ps1",
+      "tools/godot/captureGodotSaltoFiveSlotArtExperimentWindows.ps1",
+      "tools/godot/validateGodotSaltoFiveSlotArtExperimentWindows.ps1",
+      "tools/godot/reviewGodotSaltoFiveSlotArtWindows.ps1",
+      "tools/godot/saltoFiveSlotArtOptInTool.mjs",
+      "docs/V0170_ASHEN_FIFTH_OPT_IN_SPEC.md",
+      "docs/V0170_ASHEN_FUNCTIONAL_VISUAL_BENCHMARK_REPORT.md",
+      "docs/V0170_PLAYER_SLICE_FIVE_SLOT_BOUNDARY.md",
+      "docs/V0170_IMPLEMENTATION_REPORT.md"
+    ].forEach((path) => expect(existsSync(path), path).toBe(true));
+
+    const packageJson = JSON.parse(await readFile("package.json", "utf8")) as { scripts: Record<string, string> };
+    const rootScript = await readFile("desktop-spikes/godot-salto/scripts/salto_spike_root.gd", "utf8");
+    const sceneScript = await readFile("desktop-spikes/godot-salto/scripts/salto_spike_scene_3d.gd", "utf8");
+    const launchScript = await readFile("tools/godot/launchGodotSaltoFiveSlotArtExperimentWindows.ps1", "utf8");
+    const validateScript = await readFile("tools/godot/validateGodotSaltoFiveSlotArtExperimentWindows.ps1", "utf8");
+    const reportTool = await readFile("tools/godot/saltoFiveSlotArtOptInTool.mjs", "utf8");
+    const boundary = await readFile("docs/V0170_PLAYER_SLICE_FIVE_SLOT_BOUNDARY.md", "utf8");
+    const stabilizedLauncher = await readFile("GODOT_LAUNCH_STABILIZED_SALTO_REVIEW_WINDOWS.bat", "utf8");
+    const playerLauncher = await readFile("GODOT_LAUNCH_PLAYER_SLICE_WINDOWS.bat", "utf8");
+    const priorAsterLauncher = await readFile("tools/godot/launchGodotSaltoWorkerBarracksMilitiaAsterArtExperimentWindows.ps1", "utf8");
+
+    [
+      "godot:launch:salto-five-slot-art-experiment",
+      "godot:capture:salto-five-slot-art-experiment",
+      "godot:validate:salto-five-slot-art-experiment",
+      "godot:review:salto-five-slot-art"
+    ].forEach((script) => expect(packageJson.scripts[script]).toBeTypeOf("string"));
+
+    [
+      "--ashen-art-opt-in",
+      "--ashen-art-source=",
+      "--ashen-art-metadata=",
+      "--ashen-art-expected-sha256=",
+      "--ashen-art-fallback-mode=",
+      "--salto-five-slot-review-framing",
+      "configure_ashen_art_experiment",
+      "v0170"
+    ].forEach((text) => expect(rootScript).toContain(text));
+
+    [
+      "ASHEN_ART_SLOT_ID := \"ashen_raider_billboard_static_v0156\"",
+      "HYBRID_ASHEN_RAIDER_V0157_TRIMMED_1024",
+      "8eb011f56d5cd56cf6ef0a843d2a5899e27aa13e203cc44517ed4a0c55c631c8",
+      "configure_ashen_art_experiment",
+      "_ashen_art_applies_to_unit",
+      "fifthPlayerFacingArtSlotAdded",
+      "sixthPlayerFacingArtSlotAdded"
+    ].forEach((text) => expect(sceneScript).toContain(text));
+
+    [
+      "Experimental opt-in art: Worker + Barracks + Militia + Aster + Ashen",
+      "ashen_raider_billboard_static_v0156",
+      "HYBRID_ASHEN_RAIDER_V0157_TRIMMED_1024",
+      "8eb011f56d5cd56cf6ef0a843d2a5899e27aa13e203cc44517ed4a0c55c631c8",
+      "--ashen-art-opt-in",
+      "--salto-five-slot-review-framing"
+    ].forEach((text) => expect(launchScript).toContain(text));
+
+    [
+      "worker-barracks-militia-aster-ashen",
+      "ashen-missing-art-fallback",
+      "ashen-hash-mismatch-fallback",
+      "PASS_V0170_WORKER_BARRACKS_MILITIA_ASTER_ASHEN_ART_OPT_IN_AUTOMATION_READY"
+    ].forEach((text) => expect(validateScript).toContain(text));
+
+    [
+      "PASS_V0170_ASHEN_OPT_IN_VALIDATION",
+      "PASS_V0170_ASHEN_OPT_IN_BENCHMARK",
+      "PASS_V0170_ASHEN_OPT_IN_BOUNDARY",
+      "PASS_V0170_ASHEN_OPT_IN_COMPUTER_USE_REVIEW",
+      "no sixth slot"
+    ].forEach((text) => expect(reportTool).toContain(text));
+
+    [
+      "Default stabilized launcher remains procedural",
+      "Prior launchers preserved",
+      "Browser runtime remains untouched",
+      "No sixth slot"
+    ].forEach((text) => expect(boundary).toContain(text));
+
+    ["worker-art-opt-in", "barracks-material-opt-in", "militia-art-opt-in", "aster-art-opt-in", "ashen-art-opt-in"].forEach((text) => {
+      expect(stabilizedLauncher).not.toContain(text);
+      expect(playerLauncher).not.toContain(text);
+    });
+    expect(priorAsterLauncher).not.toContain("ashen-art-opt-in");
   });
 });
