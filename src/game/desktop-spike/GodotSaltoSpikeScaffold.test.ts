@@ -3761,4 +3761,49 @@ describe("Godot Salto spike scaffold", () => {
     });
     expect(priorThreeSlotLauncher).not.toContain("aster-art-opt-in");
   });
+
+  it("defines the v0.169 Aster fourth-slot visual-QA hardening gate", async () => {
+    [
+      "docs/V0169_ASTER_VISUAL_QA_HARDENING.md",
+      "docs/V0169_ASTER_BENCHMARK_FALLBACK_AND_BOUNDARY_REPORT.md",
+      "docs/V0169_IMPLEMENTATION_REPORT.md"
+    ].forEach((path) => expect(existsSync(path), path).toBe(true));
+
+    const rootScript = await readFile("desktop-spikes/godot-salto/scripts/salto_spike_root.gd", "utf8");
+    const sceneScript = await readFile("desktop-spikes/godot-salto/scripts/salto_spike_scene_3d.gd", "utf8");
+    const launchScript = await readFile("tools/godot/launchGodotSaltoWorkerBarracksMilitiaAsterArtExperimentWindows.ps1", "utf8");
+    const validateScript = await readFile("tools/godot/validateGodotSaltoWorkerBarracksMilitiaAsterArtExperimentWindows.ps1", "utf8");
+    const reviewScript = await readFile("tools/godot/reviewGodotSaltoFourSlotArtWindows.ps1", "utf8");
+    const artifactIndex = await readFile("docs/SALTO_EXPERIMENTAL_ARTIFACT_INDEX.md", "utf8");
+    const visualReport = await readFile("docs/V0169_ASTER_VISUAL_QA_HARDENING.md", "utf8");
+    const boundaryReport = await readFile("docs/V0169_ASTER_BENCHMARK_FALLBACK_AND_BOUNDARY_REPORT.md", "utf8");
+
+    [
+      "const ASTER_ART_DEFAULT_SCALE := 1.08",
+      "foregroundDepthBypassForHeroReadability",
+      "aster_art_material.no_depth_test = true",
+      "aster_art_material.render_priority = 2"
+    ].forEach((text) => expect(sceneScript).toContain(text));
+
+    [
+      "--aster-art-scale=1.08",
+      "v0169",
+      "AscendantRealmsGodotSalto-v0169.exe"
+    ].forEach((text) => {
+      expect(launchScript + validateScript + reviewScript).toContain(text);
+    });
+
+    [
+      "v0.169",
+      "v0169",
+      "v0.168"
+    ].forEach((text) => expect(rootScript).toContain(text));
+
+    expect(artifactIndex).toContain("ACTIVE_V0169_RETENTION_INDEX");
+    expect(artifactIndex).toContain("artifacts/desktop-spikes/godot-salto/v0169/");
+    expect(visualReport).toContain("PASS_V0169_ASTER_VISUAL_QA_HARDENING_READY");
+    expect(visualReport).toContain("foreground structure still crosses the lower-body area");
+    expect(boundaryReport).toContain("M4 FPS ratio versus M0: `0.9960`");
+    expect(boundaryReport).toContain("Fifth slot added: `false`");
+  });
 });

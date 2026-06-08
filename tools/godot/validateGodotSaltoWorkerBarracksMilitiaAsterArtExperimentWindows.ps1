@@ -3,7 +3,7 @@ param()
 $ErrorActionPreference = "Stop"
 $RepoRoot = Resolve-Path (Join-Path $PSScriptRoot "..\..")
 $ExePath = Join-Path $RepoRoot "desktop-spikes\godot-salto\builds\AscendantRealmsGodotSalto.exe"
-$ArtifactRoot = Join-Path $RepoRoot "artifacts\desktop-spikes\godot-salto\v0168"
+$ArtifactRoot = Join-Path $RepoRoot "artifacts\desktop-spikes\godot-salto\v0169"
 $WorkerSourcePath = Join-Path $RepoRoot "artifacts\desktop-spikes\godot-salto\v0148\local-worker-slot\worker_billboard_static_v0147_trimmed_1024.png"
 $WorkerMetadataPath = Join-Path $RepoRoot "artifacts\desktop-spikes\godot-salto\v0148\local-worker-slot\worker_billboard_static_v0147_trimmed_1024.metadata.json"
 $BarracksSourcePath = Join-Path $RepoRoot "artifacts\desktop-spikes\godot-salto\v0150\local-barracks-material-seam-repair\barrosan_barracks_material_v0149_768_wrapsafe_offset_blend.png"
@@ -119,7 +119,7 @@ function Aster-ArtArgs {
     "--aster-art-source=$($Source.Replace('\', '/'))",
     "--aster-art-metadata=$($AsterMetadataPath.Replace('\', '/'))",
     "--aster-art-expected-sha256=$Expected",
-    "--aster-art-scale=1.00",
+    "--aster-art-scale=1.08",
     "--aster-art-fallback-mode=$FallbackMode"
   )
 }

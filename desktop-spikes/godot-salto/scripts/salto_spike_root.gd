@@ -1653,7 +1653,7 @@ func run_player_slice_capture() -> void:
 		"viewport": {"width": VIEWPORT_SIZE.x, "height": VIEWPORT_SIZE.y},
 		"defaultMode": MODE_25D,
 		"defaultVisualPreset": VISUAL_PRESET_CLEAN,
-		"privateHarnessPreservedSeparately": captures.any(func(capture: Dictionary) -> bool: return bool(capture.get("privateHarnessCapture", false))) or ["v0.126", "v0.127", "v0.128", "v0.129", "v0.130", "v0.160", "v0.162", "v0.164", "v0.168"].has(_player_capture_checkpoint()),
+		"privateHarnessPreservedSeparately": captures.any(func(capture: Dictionary) -> bool: return bool(capture.get("privateHarnessCapture", false))) or ["v0.126", "v0.127", "v0.128", "v0.129", "v0.130", "v0.160", "v0.162", "v0.164", "v0.168", "v0.169"].has(_player_capture_checkpoint()),
 		"proceduralPrimitiveOnly": not worker_art_loaded and not barracks_material_loaded and not militia_art_loaded and not aster_art_loaded,
 		"generatedOrImportedArtIncluded": worker_art_loaded or barracks_material_loaded or militia_art_loaded or aster_art_loaded,
 		"runtimeArtIntegrated": worker_art_loaded or barracks_material_loaded or militia_art_loaded or aster_art_loaded,
@@ -4108,6 +4108,8 @@ func _apply_player_slice_action(action: String) -> Dictionary:
 
 func _player_capture_checkpoint() -> String:
 	var normalized_root := _artifact_root_from_args().replace("\\", "/")
+	if normalized_root.contains("/v0169"):
+		return "v0.169"
 	if normalized_root.contains("/v0168"):
 		return "v0.168"
 	if normalized_root.contains("/v0166"):
@@ -4131,10 +4133,10 @@ func _player_capture_checkpoint() -> String:
 	return "v0.124"
 
 func _is_bounded_microloop_checkpoint() -> bool:
-	return ["v0.129", "v0.130", "v0.160", "v0.162", "v0.164", "v0.166", "v0.168"].has(_player_capture_checkpoint())
+	return ["v0.129", "v0.130", "v0.160", "v0.162", "v0.164", "v0.166", "v0.168", "v0.169"].has(_player_capture_checkpoint())
 
 func _player_capture_steps() -> Array[Dictionary]:
-	if _player_capture_checkpoint() == "v0.160" or _player_capture_checkpoint() == "v0.162" or _player_capture_checkpoint() == "v0.164" or _player_capture_checkpoint() == "v0.166" or _player_capture_checkpoint() == "v0.168":
+	if _player_capture_checkpoint() == "v0.160" or _player_capture_checkpoint() == "v0.162" or _player_capture_checkpoint() == "v0.164" or _player_capture_checkpoint() == "v0.166" or _player_capture_checkpoint() == "v0.168" or _player_capture_checkpoint() == "v0.169":
 		return [
 			{"id": "title", "label": "Title shell with configured 2.5D backdrop", "action": "title"},
 			{"id": "briefing", "label": "Briefing shell", "action": "briefing"},

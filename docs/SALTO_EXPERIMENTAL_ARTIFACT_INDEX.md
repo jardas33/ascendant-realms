@@ -1,6 +1,6 @@
 # Salto Experimental Artifact Index
 
-Status: `ACTIVE_V0168_RETENTION_INDEX`
+Status: `ACTIVE_V0169_RETENTION_INDEX`
 
 This index is the retention source of truth for the Godot Salto experimental-art path. It protects selected local art, active derivatives, metadata, tracked fallbacks, current evidence, and unknown files from broad cleanup.
 
@@ -24,7 +24,7 @@ Retain all tracked fallback `.png` and `.contract.json` files under `desktop-spi
 
 ## Latest Required Evidence
 
-Retain the latest v0.166/v0.167/v0.168 evidence until a later checkpoint explicitly supersedes it:
+Retain the latest v0.166/v0.167/v0.168/v0.169 evidence until a later checkpoint explicitly supersedes it:
 
 - `artifacts/desktop-spikes/godot-salto/v0166/v0166-three-slot-visual-coherence-scorecard.json`
 - `artifacts/desktop-spikes/godot-salto/v0166/review/worker-barracks-militia/`
@@ -32,6 +32,7 @@ Retain the latest v0.166/v0.167/v0.168 evidence until a later checkpoint explici
 - `artifacts/desktop-spikes/godot-salto/v0166/artifact-cleanup/`
 - `artifacts/desktop-spikes/godot-salto/v0167/`
 - `artifacts/desktop-spikes/godot-salto/v0168/`
+- `artifacts/desktop-spikes/godot-salto/v0169/`
 
 ## Archive Candidates
 

@@ -70,7 +70,7 @@ $ArgumentList = @(
   "--aster-art-source=$($AsterSourcePath.Replace('\', '/'))",
   "--aster-art-metadata=$($AsterMetadataPath.Replace('\', '/'))",
   "--aster-art-expected-sha256=$AsterExpectedSha",
-  "--aster-art-scale=1.00"
+  "--aster-art-scale=1.08"
 )
 if ($RemainingArgs) {
   $ArgumentList += $RemainingArgs

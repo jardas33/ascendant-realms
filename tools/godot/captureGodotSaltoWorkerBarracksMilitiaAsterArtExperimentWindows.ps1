@@ -3,7 +3,7 @@ param()
 $ErrorActionPreference = "Stop"
 $RepoRoot = Resolve-Path (Join-Path $PSScriptRoot "..\..")
 $ExePath = Join-Path $RepoRoot "desktop-spikes\godot-salto\builds\AscendantRealmsGodotSalto.exe"
-$ArtifactRoot = Join-Path $RepoRoot "artifacts\desktop-spikes\godot-salto\v0168\capture"
+$ArtifactRoot = Join-Path $RepoRoot "artifacts\desktop-spikes\godot-salto\v0169\capture"
 $WorkerSourcePath = Join-Path $RepoRoot "artifacts\desktop-spikes\godot-salto\v0148\local-worker-slot\worker_billboard_static_v0147_trimmed_1024.png"
 $WorkerMetadataPath = Join-Path $RepoRoot "artifacts\desktop-spikes\godot-salto\v0148\local-worker-slot\worker_billboard_static_v0147_trimmed_1024.metadata.json"
 $BarracksSourcePath = Join-Path $RepoRoot "artifacts\desktop-spikes\godot-salto\v0150\local-barracks-material-seam-repair\barrosan_barracks_material_v0149_768_wrapsafe_offset_blend.png"
@@ -64,11 +64,11 @@ function Barracks-ArtArgs { return @("--barracks-material-opt-in", "--barracks-m
 function Militia-ArtArgs { return @("--militia-art-opt-in", "--militia-art-source=$($MilitiaSourcePath.Replace('\', '/'))", "--militia-art-metadata=$($MilitiaMetadataPath.Replace('\', '/'))", "--militia-art-expected-sha256=$MilitiaExpectedSha", "--militia-art-scale=1.00") }
 function Aster-ArtArgs {
   param([string]$Source = $AsterSourcePath, [string]$Expected = $AsterExpectedSha, [string]$FallbackMode = "none")
-  return @("--aster-art-opt-in", "--aster-art-source=$($Source.Replace('\', '/'))", "--aster-art-metadata=$($AsterMetadataPath.Replace('\', '/'))", "--aster-art-expected-sha256=$Expected", "--aster-art-scale=1.00", "--aster-art-fallback-mode=$FallbackMode")
+  return @("--aster-art-opt-in", "--aster-art-source=$($Source.Replace('\', '/'))", "--aster-art-metadata=$($AsterMetadataPath.Replace('\', '/'))", "--aster-art-expected-sha256=$Expected", "--aster-art-scale=1.08", "--aster-art-fallback-mode=$FallbackMode")
 }
 function Review-Args { return @("--experimental-review-mode-label=Experimental opt-in art: Worker + Barracks + Militia + Aster", "--salto-four-slot-review-framing") }
 
-Reset-SafeDirectory -Path $ArtifactRoot -Parent (Join-Path $RepoRoot "artifacts\desktop-spikes\godot-salto\v0168")
+Reset-SafeDirectory -Path $ArtifactRoot -Parent (Join-Path $RepoRoot "artifacts\desktop-spikes\godot-salto\v0169")
 Invoke-GodotCaptureScenario -ScenarioId "default-procedural" -ScenarioArgs @()
 Invoke-GodotCaptureScenario -ScenarioId "worker-only" -ScenarioArgs (Worker-ArtArgs)
 Invoke-GodotCaptureScenario -ScenarioId "worker-barracks" -ScenarioArgs ((Worker-ArtArgs) + (Barracks-ArtArgs))
@@ -77,7 +77,7 @@ Invoke-GodotCaptureScenario -ScenarioId "worker-barracks-militia-aster" -Scenari
 Invoke-GodotCaptureScenario -ScenarioId "aster-missing-art-fallback" -ScenarioArgs ((Review-Args) + (Worker-ArtArgs) + (Barracks-ArtArgs) + (Militia-ArtArgs) + (Aster-ArtArgs -Source $MissingAsterSourcePath -FallbackMode "missing"))
 Invoke-GodotCaptureScenario -ScenarioId "aster-hash-mismatch-fallback" -ScenarioArgs ((Review-Args) + (Worker-ArtArgs) + (Barracks-ArtArgs) + (Militia-ArtArgs) + (Aster-ArtArgs -Expected $MismatchSha -FallbackMode "hash-mismatch"))
 
-node "tools/godot/saltoWorkerBarracksMilitiaAsterArtOptInTool.mjs" capture "--artifact-root=$((Join-Path $RepoRoot 'artifacts\desktop-spikes\godot-salto\v0168').Replace('\', '/'))"
+node "tools/godot/saltoWorkerBarracksMilitiaAsterArtOptInTool.mjs" capture "--artifact-root=$((Join-Path $RepoRoot 'artifacts\desktop-spikes\godot-salto\v0169').Replace('\', '/'))"
 if ($LASTEXITCODE -ne 0) {
   throw "v0.168 Worker + Barracks + Militia + Aster capture report failed with exit code $LASTEXITCODE."
 }

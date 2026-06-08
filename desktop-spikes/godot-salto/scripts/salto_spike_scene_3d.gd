@@ -67,7 +67,7 @@ const ASTER_ART_APPROACH := "HYBRID_ASTER_TRIMMED_1024"
 const ASTER_ART_EXPECTED_SHA256 := "b256f96f762187c05d68f2c2de62bedec0248896210767e98cb8f210dac2829a"
 const ASTER_ART_EXPECTED_WIDTH := 1024
 const ASTER_ART_EXPECTED_HEIGHT := 1024
-const ASTER_ART_DEFAULT_SCALE := 1.0
+const ASTER_ART_DEFAULT_SCALE := 1.08
 const ASTER_ART_QUAD_HEIGHT := 0.92
 const ASTER_ART_GROUND_CLEARANCE := 0.02
 const WorkloadRuntimeScript = preload("res://scripts/salto_spike_workload_runtime.gd")
@@ -1249,6 +1249,8 @@ func _refresh_aster_art_counters() -> void:
 	aster_art_status["runtimeAspectRatio"] = snappedf(runtime_aspect, 0.0001)
 	aster_art_status["aspectRatioPreserved"] = absf(runtime_aspect - source_aspect) <= 0.001
 	aster_art_status["terrainFootContactY"] = snappedf(ASTER_ART_GROUND_CLEARANCE, 0.0001)
+	aster_art_status["foregroundDepthBypassForHeroReadability"] = true
+	aster_art_status["renderPriority"] = 2
 	aster_art_status["selectionRingDiameter"] = snappedf(_unit_radius({"role": "hero", "fixtureId": "aster", "team": "friendly"}) * 2.2, 0.0001)
 	aster_art_status["renderedSelectionRingDiameterPx"] = _orthographic_rendered_pixel_size(float(aster_art_status["selectionRingDiameter"]), float(aster_art_status["selectionRingDiameter"]))["height"]
 	aster_art_status["proceduralUnitBoundingBox"] = {"radius": 0.18, "height": 0.62}
@@ -1293,6 +1295,8 @@ func _aster_art_billboard_material() -> StandardMaterial3D:
 	aster_art_material.cull_mode = BaseMaterial3D.CULL_DISABLED
 	aster_art_material.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
 	aster_art_material.texture_filter = BaseMaterial3D.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
+	aster_art_material.no_depth_test = true
+	aster_art_material.render_priority = 2
 	aster_art_material_create_count += 1
 	_refresh_aster_art_counters()
 	return aster_art_material

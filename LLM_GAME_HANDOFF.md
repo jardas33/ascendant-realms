@@ -1,6 +1,6 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-06-08 v0.168 Godot Salto Aster Fourth Opt-In Integration Experiment And Human-Review Stop
+Last updated: 2026-06-08 v0.169 Godot Salto Aster Fourth-Slot Visual-QA Hardening And Human-Review Stop
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
@@ -34,7 +34,31 @@ Project Identity continuation note: v0.167 now supersedes the older no-v0.167 ta
 
 Project Identity continuation note: v0.168 now supersedes the older no-v0.168 tail above because the queued prompt explicitly authorized exactly one Aster normal-slice opt-in slot after v0.167 was committed, pushed, clean, synced, and remote-green. v0.168 adds only `aster_billboard_static_v0151` / `HYBRID_ASTER_TRIMMED_1024` behind a new Worker + Barracks + Militia + Aster launcher, preserves the default procedural launcher and all prior opt-in launchers, proves Aster missing-art and hash-mismatch fallback while Worker, Barracks, and Militia remain active, benchmarks M0/M3/M4/fallback modes, generates zero images, adds no fifth slot, and stops before v0.169 unless the next queued prompt passes.
 
-Current status override: v0.168 is the active checkpoint for this handoff after local validation, capture, benchmark, real-input, Computer Use, and boundary gates passed. v0.169 may start only after v0.168 is committed, pushed, clean/synced, and remote-green.
+Project Identity continuation note: v0.169 now supersedes the older no-v0.169 tail above because the queued prompt explicitly authorized a Windows-side Aster fourth-slot visual-QA hardening pass after v0.168 was committed, pushed, clean, synced, and remote-green. v0.169 generates zero images, adds zero slots, preserves the default procedural launcher and all prior opt-in launchers, hardens only the existing Aster opt-in path with scale/depth-sort/reporting repairs, records v0.169 validation/capture/benchmark/fallback/real-input/Computer Use/boundary evidence, and stops before v0.170 unless the next queued prompt passes.
+
+Current status override: v0.169 is the active checkpoint for this handoff after local validation, capture, benchmark, real-input, Computer Use, and boundary gates passed. v0.170 may start only after v0.169 is committed, pushed, clean/synced, and remote-green.
+
+## Current v0.169 Godot Salto Aster Fourth-Slot Visual-QA Hardening And Human-Review Stop - 2026-06-08
+
+Status: local gates are green and awaiting clean commit, push, sync, and remote CI proof.
+
+Important files:
+
+- `docs/V0169_ASTER_VISUAL_QA_HARDENING.md`
+- `docs/V0169_ASTER_BENCHMARK_FALLBACK_AND_BOUNDARY_REPORT.md`
+- `docs/V0169_IMPLEMENTATION_REPORT.md`
+- `artifacts/desktop-spikes/godot-salto/v0169/`
+
+Implementation summary:
+
+- Aster opt-in scale is now `1.08`.
+- Aster billboard material uses no-depth-test and render priority `2` for hero readability in the player-facing review slice.
+- The v0.169 artifact root is recognized as a four-slot player-capture family so manifest-level art reports stay populated.
+- No images were generated, no fifth slot was added, no default art enablement was introduced, and the browser runtime remains untouched.
+
+Visual QA note:
+
+The v0.169 Aster frame is stronger than v0.168 and reads as the selected hero. The squad-crowding frame still has a foreground structure crossing the lower body; keep this as an honest future art-direction/framing concern rather than claiming final visual approval.
 
 ## Current v0.168 Godot Salto Aster Fourth Opt-In Integration Experiment And Human-Review Stop - 2026-06-08
 
