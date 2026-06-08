@@ -1,6 +1,6 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-06-08 v0.170 Godot Salto Restrained Ashen Raider Fifth Opt-In Integration Experiment And Human-Review Stop
+Last updated: 2026-06-08 v0.171 Salto Five-Slot Visual-Cohesion QA Cleanup Packet And Character-Integration Freeze Stop
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
@@ -38,7 +38,42 @@ Project Identity continuation note: v0.169 now supersedes the older no-v0.169 ta
 
 Project Identity continuation note: v0.170 now supersedes the older no-v0.170 tail above because the queued prompt explicitly authorized exactly one restrained Ashen Raider normal-slice opt-in slot after v0.169 was committed, pushed, clean, synced, and remote-green. v0.170 adds only `ashen_raider_billboard_static_v0156` / `HYBRID_ASHEN_RAIDER_V0157_TRIMMED_1024` behind a new Worker + Barracks + Militia + Aster + Ashen launcher, preserves the default procedural launcher and all prior opt-in launchers, proves Ashen missing-art and hash-mismatch fallback while Worker, Barracks, Militia, and Aster remain active, benchmarks M0/M4/M5/fallback modes, hardens the opening battle view so unrecruited friendly military billboards stay hidden until progression, generates zero images, adds no sixth slot, and stops before v0.171 for human review.
 
-Current status override: v0.170 is the active checkpoint for this handoff. The original v0.170 checkpoint passed local validation, capture, benchmark, real-input, Computer Use, boundary gates, commit, push, clean/sync, and remote CI proof at `0455739fc0bbaabbf05ac5dabef925ec0d79d5d9`; this handoff now records the scoped post-review Godot visual-hardening follow-up under the same no-new-images/no-new-slots/no-default-art/no-browser-runtime boundary. v0.171 must not start without an explicit prompt.
+Project Identity continuation note: v0.171 now supersedes the older no-v0.171 tail above because the queued prompt explicitly authorized a five-slot visual-cohesion QA, cleanup packet, and character-integration freeze stop after v0.170 follow-up commit `efe9ab451ed1bbc2d86d16df05c504964128ba41` was clean, synced, and ready. v0.171 generates zero images, adds zero slots, preserves the default procedural launchers and all prior opt-in launchers, hardens artifact audit/cleanup/retention protection for all five selected derivatives and metadata records, safely removes only known Godot-generated sidecars, freezes character-slot expansion after Worker, Barracks material, Militia, Aster, and Ashen, and recommends the next phase focus on procedural environment-shell readability.
+
+Current status override: v0.171 is the active checkpoint for this handoff. The checkpoint reviews the five-slot posture, records that character billboards are now less weak than the procedural world shell, preserves the five-slot path as experimental opt-in, keeps default launchers procedural, and blocks sixth-character-slot work unless a later explicit prompt reopens that boundary. v0.172 must not start unless the queued prompt passes the clean/sync/push/CI prerequisites.
+
+## Current v0.171 Salto Five-Slot Visual-Cohesion QA Cleanup Packet And Character-Integration Freeze Stop - 2026-06-08
+
+Status: local v0.171 work is the active checkpoint. Commit, push, and remote CI proof are required before any queued v0.172 work.
+
+What changed:
+
+- Added v0.171 visual QA, benchmark/fallback/boundary, cleanup packet, character-freeze, and implementation reports.
+- Hardened `scripts/auditSaltoExperimentalArtifacts.mjs`, `scripts/cleanupSaltoExperimentalArtifacts.mjs`, and `scripts/validateSaltoExperimentalArtifactRetention.mjs` so all five selected derivatives and metadata records are protected.
+- Confirmed the five-slot opt-in posture remains benchmark-green and fail-closed across Worker, Barracks material, Militia, Aster, and Ashen fallback modes.
+- Executed safe-only cleanup for 14 known Godot-generated comparator sidecars totaling 5,505 bytes.
+- Froze character-slot expansion after five selected slots and routed the next phase toward environment foundation work.
+
+Key evidence:
+
+- `docs/V0171_FIVE_SLOT_VISUAL_COHESION_QA.md`
+- `docs/V0171_FIVE_SLOT_BENCHMARK_FALLBACK_AND_BOUNDARY_REPORT.md`
+- `docs/V0171_ARTIFACT_CLEANUP_APPROVAL_PACKET.md`
+- `docs/V0171_CHARACTER_INTEGRATION_FREEZE_DECISION.md`
+- `docs/V0171_IMPLEMENTATION_REPORT.md`
+- `artifacts/desktop-spikes/godot-salto/v0171/artifact-cleanup/audit/salto-experimental-artifact-inventory.json`
+- `artifacts/desktop-spikes/godot-salto/v0171/artifact-cleanup/retention/salto-experimental-artifact-retention-report.json`
+- `artifacts/desktop-spikes/godot-salto/v0171/artifact-cleanup/safe-only/salto-experimental-cleanup-report.json`
+
+Current constraints:
+
+- Zero images generated.
+- Zero slots added.
+- Character-slot integration frozen after five selected slots.
+- Default launchers remain procedural.
+- Prior opt-in launchers remain preserved.
+- Browser runtime, production manifests, saves, stable IDs, gameplay, objectives, AI, balance, and campaign state remain untouched.
+- Do not begin v0.172 without the explicit queued prompt and clean/synced/green proof.
 
 ## Current v0.170 Godot Salto Restrained Ashen Raider Fifth Opt-In Integration Experiment And Human-Review Stop - 2026-06-08
 

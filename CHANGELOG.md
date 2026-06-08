@@ -1,5 +1,33 @@
 # Changelog
 
+# v0.171 Salto Five-Slot Visual-Cohesion QA Cleanup Packet And Character-Integration Freeze Stop - 2026-06-08
+
+This checkpoint reviews the already-selected five-slot Godot Salto opt-in posture, confirms character-billboard cohesion is no longer the main quality bottleneck, hardens cleanup retention for all five selected derivatives and metadata records, safely removes only known Godot-generated sidecars, freezes character-slot expansion, and points the next phase toward procedural environment readability.
+
+Added:
+
+- `docs/V0171_FIVE_SLOT_VISUAL_COHESION_QA.md`.
+- `docs/V0171_FIVE_SLOT_BENCHMARK_FALLBACK_AND_BOUNDARY_REPORT.md`.
+- `docs/V0171_ARTIFACT_CLEANUP_APPROVAL_PACKET.md`.
+- `docs/V0171_CHARACTER_INTEGRATION_FREEZE_DECISION.md`.
+- `docs/V0171_IMPLEMENTATION_REPORT.md`.
+
+Changed:
+
+- Artifact audit and cleanup scripts now preserve all five selected derivatives and metadata records, including Aster and Ashen Raider.
+- Artifact retention validation now classifies Aster and Ashen Raider as selected active derivatives.
+- `docs/SALTO_EXPERIMENTAL_ARTIFACT_INDEX.md` now records the v0.171 freeze and latest required evidence.
+
+Boundaries:
+
+- Zero images generated.
+- Zero slots added.
+- Character-slot integration frozen after five selected slots.
+- Default launchers remain procedural.
+- Prior opt-in launchers remain preserved.
+- Browser runtime, production manifests, saves, stable IDs, gameplay, objectives, AI, balance, campaign state, and broad cleanup remain untouched.
+- v0.172 is not started inside this checkpoint.
+
 # v0.167 Salto Three-Slot Presentation QA Placeholder Classification And Artifact-Retention Enforcement Stop - 2026-06-08
 
 This checkpoint reviews the existing Worker + Barracks + Militia opt-in Godot posture before any Aster integration. It classifies every visible block-like category in the M3 review posture, adds retention enforcement for selected local art and evidence, preserves the default procedural launcher and all prior opt-in launchers, runs safe-only cleanup policy checks, and does not begin v0.168.

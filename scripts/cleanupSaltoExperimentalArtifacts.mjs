@@ -14,13 +14,19 @@ const selectedEvidence = new Set([
   "artifacts/desktop-spikes/godot-salto/v0150/local-barracks-material-seam-repair/barrosan_barracks_material_v0149_768_wrapsafe_offset_blend.png",
   "artifacts/desktop-spikes/godot-salto/v0150/local-barracks-material-seam-repair/barrosan_barracks_material_v0149_768_wrapsafe_offset_blend.metadata.json",
   "artifacts/desktop-spikes/godot-salto/v0155/local-militia-billboard-repair/militia_billboard_static_v0154_trimmed_1024.png",
-  "artifacts/desktop-spikes/godot-salto/v0155/local-militia-billboard-repair/militia_billboard_static_v0154_trimmed_1024.metadata.json"
+  "artifacts/desktop-spikes/godot-salto/v0155/local-militia-billboard-repair/militia_billboard_static_v0154_trimmed_1024.metadata.json",
+  "artifacts/desktop-spikes/godot-salto/v0152/local-aster-billboard-repair/aster_billboard_static_v0151_trimmed_1024.png",
+  "artifacts/desktop-spikes/godot-salto/v0152/local-aster-billboard-repair/aster_billboard_static_v0151_trimmed_1024.metadata.json",
+  "artifacts/desktop-spikes/godot-salto/v0157/local-ashen-raider-restrained-replacement/ashen_raider_billboard_static_v0157_restrained_trimmed_1024.png",
+  "artifacts/desktop-spikes/godot-salto/v0157/local-ashen-raider-restrained-replacement/ashen_raider_billboard_static_v0157_restrained_trimmed_1024.metadata.json"
 ]);
 
 const selectedHashes = new Set([
   "a628065ca92b231b0d4f6a0625d9e259dea080e80d530ee688483611d70049bc",
   "58a60b750370df084b60a1d92077da9367c0ba8a763781e2c3a8a7d96f1c980f",
-  "c25349f00c422a0b3c9d5862027351bd70008e9314d4e3cd4001676e914321cb"
+  "c25349f00c422a0b3c9d5862027351bd70008e9314d4e3cd4001676e914321cb",
+  "b256f96f762187c05d68f2c2de62bedec0248896210767e98cb8f210dac2829a",
+  "8eb011f56d5cd56cf6ef0a843d2a5899e27aa13e203cc44517ed4a0c55c631c8"
 ]);
 
 const safeSidecarPatterns = [
@@ -140,7 +146,7 @@ function markdown(report) {
     "",
     "## Preservation",
     "- tracked files retained",
-    "- selected Worker/Barracks/Militia sources retained",
+    "- selected Worker/Barracks/Militia sources retained; Aster/Ashen retained as selected active evidence too",
     "- selected metadata retained",
     "- tracked fallbacks retained",
     "- current v0.165/v0.166 evidence retained",

@@ -1,6 +1,36 @@
 # Development Checkpoint
 
-Updated: 2026-06-08 v0.167 Salto Three-Slot Presentation QA Placeholder Classification And Artifact-Retention Enforcement Stop
+Updated: 2026-06-08 v0.171 Salto Five-Slot Visual-Cohesion QA Cleanup Packet And Character-Integration Freeze Stop
+
+## v0.171 Salto Five-Slot Visual-Cohesion QA Cleanup Packet And Character-Integration Freeze Stop - 2026-06-08
+
+Scope: review the existing five-slot Godot Salto opt-in posture, run cleanup retention checks, execute only safe sidecar cleanup, and freeze further character-slot integration. This checkpoint generates no images, adds no slots, keeps the default launchers procedural, preserves all prior opt-in launchers, and does not begin v0.172.
+
+Included work:
+
+- Confirmed the expected v0.170 follow-up baseline at `efe9ab451ed1bbc2d86d16df05c504964128ba41` with `HEAD...@{u}` at `0 0`.
+- Reviewed title, briefing, and live battle through the Windows Godot app with the five-slot opt-in path.
+- Confirmed Worker, Barracks material, Militia, Aster, and Ashen remain selected active opt-in evidence.
+- Recorded that the remaining visual weakness is the procedural world shell, not a sixth character slot need.
+- Hardened audit, cleanup, and retention scripts so all five selected derivatives and metadata records are protected.
+- Executed safe-only cleanup for 14 known Godot-generated sidecars totaling 5,505 bytes.
+- Preserved selected local art, metadata, tracked fallbacks, latest evidence, historical evidence, and unknown files.
+- Added v0.171 visual QA, benchmark/fallback/boundary, cleanup, character-freeze, and implementation docs.
+
+Verification targets:
+
+```text
+PASS: npm run godot:validate:salto-worker-art-experiment.
+PASS: npm run godot:validate:salto-worker-barracks-art-experiment.
+PASS: npm run godot:validate:salto-worker-barracks-militia-art-experiment.
+PASS: npm run godot:validate:salto-worker-barracks-militia-aster-art-experiment.
+PASS: npm run godot:validate:salto-five-slot-art-experiment.
+PASS: npm run godot:audit:salto-experimental-artifacts -- --output-root=artifacts/desktop-spikes/godot-salto/v0171/artifact-cleanup/audit.
+PASS: npm run godot:validate:salto-experimental-artifact-retention -- --output-root=artifacts/desktop-spikes/godot-salto/v0171/artifact-cleanup/retention.
+PASS: npm run godot:cleanup:salto-experimental-artifacts -- --output-root=artifacts/desktop-spikes/godot-salto/v0171/artifact-cleanup/dry-run.
+PASS: npm run godot:cleanup:salto-experimental-artifacts -- --output-root=artifacts/desktop-spikes/godot-salto/v0171/artifact-cleanup/safe-only --apply-safe-only.
+PASS: Windows-side Computer Use review of title, briefing, and live battle.
+```
 
 ## v0.167 Salto Three-Slot Presentation QA Placeholder Classification And Artifact-Retention Enforcement Stop - 2026-06-08
 

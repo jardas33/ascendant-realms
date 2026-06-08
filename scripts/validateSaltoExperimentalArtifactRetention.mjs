@@ -44,24 +44,24 @@ const retainedArtifacts = [
   },
   {
     rel: "artifacts/desktop-spikes/godot-salto/v0152/local-aster-billboard-repair/aster_billboard_static_v0151_trimmed_1024.png",
-    category: "selected-future-derivative",
+    category: "selected-active-derivative",
     slot: "aster_billboard_static_v0151",
     sha256: "b256f96f762187c05d68f2c2de62bedec0248896210767e98cb8f210dac2829a"
   },
   {
     rel: "artifacts/desktop-spikes/godot-salto/v0152/local-aster-billboard-repair/aster_billboard_static_v0151_trimmed_1024.metadata.json",
-    category: "required-future-metadata",
+    category: "required-metadata",
     slot: "aster_billboard_static_v0151"
   },
   {
     rel: "artifacts/desktop-spikes/godot-salto/v0157/local-ashen-raider-restrained-replacement/ashen_raider_billboard_static_v0157_restrained_trimmed_1024.png",
-    category: "selected-future-derivative",
+    category: "selected-active-derivative",
     slot: "ashen_raider_billboard_static_v0156",
     sha256: "8eb011f56d5cd56cf6ef0a843d2a5899e27aa13e203cc44517ed4a0c55c631c8"
   },
   {
     rel: "artifacts/desktop-spikes/godot-salto/v0157/local-ashen-raider-restrained-replacement/ashen_raider_billboard_static_v0157_restrained_trimmed_1024.metadata.json",
-    category: "required-future-metadata",
+    category: "required-metadata",
     slot: "ashen_raider_billboard_static_v0156"
   },
   {
@@ -219,6 +219,7 @@ function main() {
     sidecarScan,
     sidecarPolicy: {
       deleteOnlyWithSafeOnlyCleanup: true,
+      legacyFutureDerivativeCategoryRetiredAfterFiveSlotFreeze: "selected-future-derivative",
       unknownFilesBlock: true,
       preserveSelectedArtDerivativesMetadataFallbacksAndEvidence: true
     },

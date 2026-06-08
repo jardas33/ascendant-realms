@@ -1,8 +1,10 @@
 # Salto Experimental Artifact Index
 
-Status: `ACTIVE_V0170_RETENTION_INDEX`
+Status: `ACTIVE_V0171_RETENTION_INDEX`
 
 This index is the retention source of truth for the Godot Salto experimental-art path. It protects selected local art, active derivatives, metadata, tracked fallbacks, current evidence, and unknown files from broad cleanup.
+
+This v0.171 index supersedes `ACTIVE_V0170_RETENTION_INDEX` while retaining its protected evidence.
 
 ## Selected Local Source Art And Active Derivatives
 
@@ -34,6 +36,16 @@ Retain the latest v0.166/v0.167/v0.168/v0.169/v0.170 evidence until a later chec
 - `artifacts/desktop-spikes/godot-salto/v0168/`
 - `artifacts/desktop-spikes/godot-salto/v0169/`
 - `artifacts/desktop-spikes/godot-salto/v0170/`
+- `artifacts/desktop-spikes/godot-salto/v0171/artifact-cleanup/`
+- `docs/V0171_FIVE_SLOT_VISUAL_COHESION_QA.md`
+- `docs/V0171_FIVE_SLOT_BENCHMARK_FALLBACK_AND_BOUNDARY_REPORT.md`
+- `docs/V0171_ARTIFACT_CLEANUP_APPROVAL_PACKET.md`
+- `docs/V0171_CHARACTER_INTEGRATION_FREEZE_DECISION.md`
+- `docs/V0171_IMPLEMENTATION_REPORT.md`
+
+## Character Integration Freeze
+
+Character-slot expansion is frozen after the selected Worker, Barracks material, Militia, Aster, and Ashen Raider opt-in slots. Future work should prioritize procedural environment-shell readability and terrain-material planning unless a later prompt explicitly reopens character-slot scope.
 
 ## Archive Candidates
 
