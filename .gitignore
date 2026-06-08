@@ -25,6 +25,8 @@ bundle-analysis/
 !/desktop-spikes/godot-salto/builds/.gitkeep
 /desktop-spikes/godot-salto/reports/*
 !/desktop-spikes/godot-salto/reports/.gitkeep
+/desktop-spikes/godot-salto/comparators/runtime_art_pipeline/*.gd.uid
+/desktop-spikes/godot-salto/comparators/runtime_art_pipeline/fallback/*.png.import
 /.tools/godot/
 *.log
 .preview-server.pid
