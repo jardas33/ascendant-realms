@@ -34,22 +34,25 @@ This report covers only the new fifth opt-in Ashen Raider player-slice path and 
 
 | Scenario | Expected | FPS avg | p95 ms | Loaded/requested slots |
 | --- | --- | ---: | ---: | --- |
-| M0 procedural baseline | procedural | 75.32 | 13.61 | 0/0 |
-| M4 Worker + Barracks + Militia + Aster | four-loaded | 75.07 | 13.51 | 4/4 |
-| M5 Worker + Barracks + Militia + Aster + Ashen | five-loaded | 75.14 | 13.20 | 5/5 |
-| Ashen missing-art fallback | ashen-missing | 75.47 | 13.42 | 4/5 |
-| Ashen hash-mismatch fallback | ashen-hash | 75.35 | 13.28 | 4/5 |
+| M0 procedural baseline | procedural | 75.09 | 13.33 | 0/0 |
+| M4 Worker + Barracks + Militia + Aster | four-loaded | 75.39 | 13.37 | 4/4 |
+| M5 Worker + Barracks + Militia + Aster + Ashen | five-loaded | 75.33 | 13.34 | 5/5 |
+| Ashen missing-art fallback | ashen-missing | 75.19 | 13.36 | 4/5 |
+| Ashen hash-mismatch fallback | ashen-hash | 75.44 | 13.37 | 4/5 |
 
-M5 ratios: FPS vs M0 `0.9976`, FPS vs M4 `1.0009`; p95 worsening vs M0 `0.9699`, p95 worsening vs M4 `0.9771`.
+M5 ratios: FPS vs M0 `1.0032`, FPS vs M4 `0.9992`; p95 worsening vs M0 `1.0008`, p95 worsening vs M4 `0.9978`.
 
 ## Visual Review Result
 
 `PASS_V0170_ASHEN_OPT_IN_COMPUTER_USE_REVIEW`
 
-- Live Windows Godot title window inspected through Computer Use: `artifacts/desktop-spikes/godot-salto/v0170/computer-use/windows-five-slot-review-title-live.jpg`.
+- Live Windows Godot battle window inspected through Computer Use: `artifacts/desktop-spikes/godot-salto/v0170/computer-use/windows-five-slot-review-battle.jpg`.
+- Live Windows Godot title window evidence: `artifacts/desktop-spikes/godot-salto/v0170/computer-use/windows-five-slot-review-title-live.jpg`.
 - First battle screenshot after repair: `artifacts/desktop-spikes/godot-salto/v0170/capture/worker-barracks-militia-aster-ashen/screenshots/03_battle_default.png`.
 - Combat-onset screenshot with the four-Ashen wave: `artifacts/desktop-spikes/godot-salto/v0170/real-input/worker-barracks-militia-aster-ashen-post-mine-flow/screenshots/16_combat_onset.png`.
 - The opening battle view no longer leaks unrecruited friendly military billboards; only Aster and Workers are visible before progression.
+- Post-review five-slot screenshots use larger review-scale arguments for the already-selected Worker, Militia, Aster, and Ashen derivatives, plus softer review rings so the art reads before the guide markers.
+- The squad-comparison review frame now stages Aster, Workers, and selected Militia in an open lane rather than under the foreground Barracks shell.
 - The combat-onset view restores the defenders and shows four Ashen attackers with hostile markers/rings.
 
-Computer Use coordinate clicks were blocked by a stale-window guard after live title inspection, so the battle and combat presentation review uses regenerated screenshots from the same rebuilt executable plus real-input evidence.
+Computer Use advanced the rebuilt Windows executable through Start Salto Review into the battle screen; the regenerated capture and real-input artifacts remain the broader battle/combat evidence set.

@@ -59,7 +59,7 @@ $ArgumentList = @(
   "--worker-art-source=$($WorkerSourcePath.Replace('\', '/'))",
   "--worker-art-metadata=$($WorkerMetadataPath.Replace('\', '/'))",
   "--worker-art-expected-sha256=$WorkerExpectedSha",
-  "--worker-art-scale=1.00",
+  "--worker-art-scale=1.10",
   "--barracks-material-opt-in",
   "--barracks-material-source=$($BarracksSourcePath.Replace('\', '/'))",
   "--barracks-material-metadata=$($BarracksMetadataPath.Replace('\', '/'))",
@@ -68,17 +68,17 @@ $ArgumentList = @(
   "--militia-art-source=$($MilitiaSourcePath.Replace('\', '/'))",
   "--militia-art-metadata=$($MilitiaMetadataPath.Replace('\', '/'))",
   "--militia-art-expected-sha256=$MilitiaExpectedSha",
-  "--militia-art-scale=1.00",
+  "--militia-art-scale=1.08",
   "--aster-art-opt-in",
   "--aster-art-source=$($AsterSourcePath.Replace('\', '/'))",
   "--aster-art-metadata=$($AsterMetadataPath.Replace('\', '/'))",
   "--aster-art-expected-sha256=$AsterExpectedSha",
-  "--aster-art-scale=1.08",
+  "--aster-art-scale=1.16",
   "--ashen-art-opt-in",
   "--ashen-art-source=$($AshenSourcePath.Replace('\', '/'))",
   "--ashen-art-metadata=$($AshenMetadataPath.Replace('\', '/'))",
   "--ashen-art-expected-sha256=$AshenExpectedSha",
-  "--ashen-art-scale=1.00"
+  "--ashen-art-scale=1.08"
 )
 if ($RemainingArgs) {
   $ArgumentList += $RemainingArgs

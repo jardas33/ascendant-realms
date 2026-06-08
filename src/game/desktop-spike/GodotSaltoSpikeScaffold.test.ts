@@ -3848,6 +3848,7 @@ describe("Godot Salto spike scaffold", () => {
       "--ashen-art-expected-sha256=",
       "--ashen-art-fallback-mode=",
       "--salto-five-slot-review-framing",
+      "stage_five_slot_art_review_squad_comparison",
       "configure_ashen_art_experiment",
       "v0170"
     ].forEach((text) => expect(rootScript).toContain(text));
@@ -3858,6 +3859,8 @@ describe("Godot Salto spike scaffold", () => {
       "8eb011f56d5cd56cf6ef0a843d2a5899e27aa13e203cc44517ed4a0c55c631c8",
       "configure_ashen_art_experiment",
       "_ashen_art_applies_to_unit",
+      "five_slot_art_review_framing_active",
+      "stage_five_slot_art_review_squad_comparison",
       "fifthPlayerFacingArtSlotAdded",
       "sixthPlayerFacingArtSlotAdded"
     ].forEach((text) => expect(sceneScript).toContain(text));
@@ -3868,13 +3871,20 @@ describe("Godot Salto spike scaffold", () => {
       "HYBRID_ASHEN_RAIDER_V0157_TRIMMED_1024",
       "8eb011f56d5cd56cf6ef0a843d2a5899e27aa13e203cc44517ed4a0c55c631c8",
       "--ashen-art-opt-in",
-      "--salto-five-slot-review-framing"
+      "--salto-five-slot-review-framing",
+      "--worker-art-scale=1.10",
+      "--militia-art-scale=1.08",
+      "--aster-art-scale=1.16",
+      "--ashen-art-scale=1.08"
     ].forEach((text) => expect(launchScript).toContain(text));
 
     [
       "worker-barracks-militia-aster-ashen",
       "ashen-missing-art-fallback",
       "ashen-hash-mismatch-fallback",
+      "--worker-art-scale=1.10",
+      "--aster-art-scale=1.16",
+      "--ashen-art-scale=1.08",
       "PASS_V0170_WORKER_BARRACKS_MILITIA_ASTER_ASHEN_ART_OPT_IN_AUTOMATION_READY"
     ].forEach((text) => expect(validateScript).toContain(text));
 

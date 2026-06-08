@@ -1079,7 +1079,7 @@ func _render_player_screen(screen: String) -> void:
 	_apply_review_framing_for_active_scene()
 	var shade := ColorRect.new()
 	shade.name = "PlayerSliceShade"
-	shade.color = Color(0.02, 0.025, 0.025, 0.28 if screen == "battle" else 0.57)
+	shade.color = Color(0.02, 0.025, 0.025, 0.18 if screen == "battle" else 0.57)
 	shade.set_anchors_preset(Control.PRESET_FULL_RECT)
 	shade.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	player_screen.add_child(shade)
@@ -4069,10 +4069,17 @@ func _apply_player_slice_action(action: String) -> Dictionary:
 			_render_player_screen("battle")
 		"squad_selected":
 			_ensure_player_battle_scene()
-			_call_scene("box_select_squad")
-			_call_scene("set_onboarding_step", ["prepare_ashen_pressure"])
-			_call_scene("focus_visual_subject", ["squad"])
-			_render_player_screen("battle")
+			if _script_args().has("--salto-five-slot-review-framing"):
+				_render_player_screen("battle")
+				_call_scene("box_select_squad")
+				_call_scene("stage_five_slot_art_review_squad_comparison")
+				_call_scene("set_onboarding_step", ["prepare_ashen_pressure"])
+				_call_scene("focus_visual_subject", ["squad"])
+			else:
+				_call_scene("box_select_squad")
+				_call_scene("set_onboarding_step", ["prepare_ashen_pressure"])
+				_call_scene("focus_visual_subject", ["squad"])
+				_render_player_screen("battle")
 		"ashen_pressure_wave":
 			_ensure_player_battle_scene()
 			if _is_bounded_microloop_checkpoint():

@@ -308,6 +308,7 @@ var ashen_art_material_create_count := 0
 var ashen_art_mesh_create_count := 0
 var ashen_art_material_reuse_count := 0
 var three_slot_art_review_framing_active := false
+var five_slot_art_review_framing_active := false
 
 func _ready() -> void:
 	_reset_worker_art_status(false, "opt-in flag absent")
@@ -2296,6 +2297,7 @@ func set_camera_zoom_posture(posture: String) -> bool:
 
 func apply_three_slot_art_review_framing() -> bool:
 	three_slot_art_review_framing_active = true
+	five_slot_art_review_framing_active = false
 	_apply_camera_authoring_posture("v0166_three_slot_art_review", Vector3(-4.54, 11.25, 7.60), SAFE_ZOOM_MIN)
 	_refresh_worker_art_counters()
 	_refresh_militia_art_counters()
@@ -2310,6 +2312,7 @@ func apply_three_slot_art_review_framing() -> bool:
 
 func apply_four_slot_art_review_framing() -> bool:
 	three_slot_art_review_framing_active = true
+	five_slot_art_review_framing_active = false
 	_apply_camera_authoring_posture("v0168_four_slot_art_review", Vector3(-4.54, 11.25, 7.60), SAFE_ZOOM_MIN)
 	_refresh_worker_art_counters()
 	_refresh_militia_art_counters()
@@ -2324,11 +2327,25 @@ func apply_four_slot_art_review_framing() -> bool:
 
 func apply_five_slot_art_review_framing() -> bool:
 	three_slot_art_review_framing_active = true
+	five_slot_art_review_framing_active = true
 	_apply_camera_authoring_posture("v0170_five_slot_art_review", Vector3(-4.54, 11.25, 7.60), SAFE_ZOOM_MIN)
 	_refresh_worker_art_counters()
 	_refresh_militia_art_counters()
 	_refresh_aster_art_counters()
 	_refresh_ashen_art_counters()
+	_sync_unit_visuals()
+	_sync_site_visuals()
+	_sync_lume_visuals()
+	_sync_three_slot_review_art_anchors()
+	_sync_hud()
+	return true
+
+func stage_five_slot_art_review_squad_comparison() -> bool:
+	if not five_slot_art_review_framing_active or not player_facing_mode or player_shell_screen != "battle":
+		return false
+	var staged := runtime.stage_five_slot_art_review_squad_comparison()
+	if not staged:
+		return false
 	_sync_unit_visuals()
 	_sync_site_visuals()
 	_sync_lume_visuals()
@@ -4178,7 +4195,7 @@ func _apply_light_preset() -> void:
 	var light := get_node_or_null("SaltoPlaceholderSun") as DirectionalLight3D
 	if not light:
 		return
-	light.light_energy = 1.08
+	light.light_energy = 1.16
 	light.light_color = Color(0.92, 0.96, 0.88)
 	if visual_preset == VISUAL_PRESET_ATMOSPHERIC:
 		light.light_energy = 0.92
@@ -5087,6 +5104,7 @@ func _sync_three_slot_review_art_anchors() -> void:
 	if visual_root == null:
 		return
 	var active := three_slot_art_review_framing_active and player_facing_mode and player_shell_screen == "battle"
+	var five_slot_review := active and five_slot_art_review_framing_active
 	for unit in runtime.units:
 		var id := str(unit["id"])
 		var is_worker := str(unit.get("role", "")) == "Worker"
@@ -5094,14 +5112,32 @@ func _sync_three_slot_review_art_anchors() -> void:
 		var is_militia := _militia_art_applies_to_unit(unit)
 		var is_ashen := _ashen_art_applies_to_unit(unit)
 		var ring_name := "v0166_art_review_ring_%s" % id
-		var ring_color := Color(0.96, 0.74, 0.34, 0.22) if is_worker else (Color(0.92, 0.88, 0.38, 0.24) if is_aster else (Color(0.92, 0.34, 0.28, 0.24) if is_ashen else Color(0.46, 0.92, 0.72, 0.18)))
-		var ring_radius := _unit_radius(unit) * (2.15 if is_worker else (2.35 if is_aster else (2.05 if is_ashen else 1.85)))
+		var worker_ring_color := Color(0.96, 0.74, 0.34, 0.22)
+		var aster_ring_color := Color(0.92, 0.88, 0.38, 0.24)
+		var ashen_ring_color := Color(0.92, 0.34, 0.28, 0.24)
+		var militia_ring_color := Color(0.46, 0.92, 0.72, 0.18)
+		var worker_ring_radius := 2.15
+		var aster_ring_radius := 2.35
+		var ashen_ring_radius := 2.05
+		var militia_ring_radius := 1.85
+		if five_slot_review:
+			worker_ring_color = Color(0.96, 0.74, 0.34, 0.13)
+			aster_ring_color = Color(0.92, 0.88, 0.38, 0.14)
+			ashen_ring_color = Color(0.92, 0.34, 0.28, 0.13)
+			militia_ring_color = Color(0.46, 0.92, 0.72, 0.11)
+			worker_ring_radius = 1.58
+			aster_ring_radius = 1.74
+			ashen_ring_radius = 1.62
+			militia_ring_radius = 1.48
+		var ring_color := worker_ring_color if is_worker else (aster_ring_color if is_aster else (ashen_ring_color if is_ashen else militia_ring_color))
+		var ring_radius := _unit_radius(unit) * (worker_ring_radius if is_worker else (aster_ring_radius if is_aster else (ashen_ring_radius if is_ashen else militia_ring_radius)))
 		_set_or_create_disc_marker(ring_name, _unit_world_position(id, Vector3.ZERO) + Vector3(0.0, 0.025, 0.0), ring_radius, ring_color)
 		var ring := visual_root.get_node_or_null(ring_name) as MeshInstance3D
 		if ring:
 			ring.visible = active and bool(unit.get("alive", false)) and not bool(unit.get("reviewHidden", false)) and (is_worker and _worker_art_is_active() or is_militia or is_aster or is_ashen)
 	var barracks_world := _to_world(BARRACKS_POSITION, 0.74)
-	_set_or_create_marker("v0166_barracks_material_review_sheen", barracks_world + Vector3(0.12, 0.18, -0.16), Vector3(1.18, 0.055, 0.52), Color(0.98, 0.84, 0.42, 0.34))
+	var barracks_sheen_color := Color(0.98, 0.84, 0.42, 0.22) if five_slot_review else Color(0.98, 0.84, 0.42, 0.34)
+	_set_or_create_marker("v0166_barracks_material_review_sheen", barracks_world + Vector3(0.12, 0.18, -0.16), Vector3(1.18, 0.055, 0.52), barracks_sheen_color)
 	var barracks_sheen := visual_root.get_node_or_null("v0166_barracks_material_review_sheen") as MeshInstance3D
 	if barracks_sheen:
 		barracks_sheen.visible = active and _barracks_material_is_active()
@@ -5681,22 +5717,22 @@ func _terrain_color() -> Color:
 		return Color(0.16, 0.19, 0.13)
 	if visual_preset == VISUAL_PRESET_VFX_STRESS:
 		return Color(0.10, 0.15, 0.15)
-	return Color(0.13, 0.19, 0.14)
+	return Color(0.16, 0.22, 0.17)
 
 func _ridge_color() -> Color:
 	if visual_preset == VISUAL_PRESET_ATMOSPHERIC:
 		return Color(0.22, 0.23, 0.16)
-	return Color(0.18, 0.23, 0.18)
+	return Color(0.22, 0.27, 0.21)
 
 func _road_color() -> Color:
 	if visual_preset == VISUAL_PRESET_ATMOSPHERIC:
 		return Color(0.42, 0.34, 0.22)
-	return Color(0.37, 0.32, 0.22)
+	return Color(0.42, 0.36, 0.25)
 
 func _water_color() -> Color:
 	if visual_preset == VISUAL_PRESET_VFX_STRESS:
 		return Color(0.12, 0.34, 0.42)
-	return Color(0.12, 0.28, 0.34)
+	return Color(0.14, 0.34, 0.40)
 
 func _lume_core_color() -> Color:
 	if visual_preset == VISUAL_PRESET_ATMOSPHERIC:

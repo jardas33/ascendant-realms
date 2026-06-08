@@ -354,6 +354,34 @@ func apply_player_facing_staging() -> bool:
 	initial_placement_signature = placement_signature()
 	return true
 
+func stage_five_slot_art_review_squad_comparison() -> bool:
+	var staged_positions := {
+		"hero_aster": Vector2(286, 456),
+		"worker_00": Vector2(222, 386),
+		"worker_01": Vector2(260, 410),
+		"friendly_00": Vector2(374, 418),
+		"friendly_02": Vector2(426, 450),
+		"friendly_04": Vector2(478, 418)
+	}
+	var staged_selection: Array[String] = []
+	for index in range(units.size()):
+		var unit: Dictionary = units[index]
+		var id := str(unit.get("id", ""))
+		if staged_positions.has(id):
+			var position: Vector2 = staged_positions[id]
+			unit["position"] = position
+			unit["lastPosition"] = position
+			unit["destination"] = position
+			unit["hasDestination"] = false
+			unit["attackTarget"] = ""
+			unit["cooldown"] = 0.0
+			unit["reviewHidden"] = false
+			if _is_alive(unit):
+				staged_selection.append(id)
+			units[index] = unit
+	selected_ids = staged_selection
+	return selected_ids.size() >= 5
+
 func issue_attack_order(target_id: String = "") -> bool:
 	if selected_ids.is_empty():
 		box_select_squad()

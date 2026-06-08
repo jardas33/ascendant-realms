@@ -38,11 +38,11 @@ Project Identity continuation note: v0.169 now supersedes the older no-v0.169 ta
 
 Project Identity continuation note: v0.170 now supersedes the older no-v0.170 tail above because the queued prompt explicitly authorized exactly one restrained Ashen Raider normal-slice opt-in slot after v0.169 was committed, pushed, clean, synced, and remote-green. v0.170 adds only `ashen_raider_billboard_static_v0156` / `HYBRID_ASHEN_RAIDER_V0157_TRIMMED_1024` behind a new Worker + Barracks + Militia + Aster + Ashen launcher, preserves the default procedural launcher and all prior opt-in launchers, proves Ashen missing-art and hash-mismatch fallback while Worker, Barracks, Militia, and Aster remain active, benchmarks M0/M4/M5/fallback modes, hardens the opening battle view so unrecruited friendly military billboards stay hidden until progression, generates zero images, adds no sixth slot, and stops before v0.171 for human review.
 
-Current status override: v0.170 is the active checkpoint for this handoff after local validation, capture, benchmark, real-input, Computer Use, and boundary gates passed. v0.171 must not start until v0.170 is committed, pushed, clean/synced, and remote-green, and then only under an explicit prompt.
+Current status override: v0.170 is the active checkpoint for this handoff. The original v0.170 checkpoint passed local validation, capture, benchmark, real-input, Computer Use, boundary gates, commit, push, clean/sync, and remote CI proof at `0455739fc0bbaabbf05ac5dabef925ec0d79d5d9`; this handoff now records the scoped post-review Godot visual-hardening follow-up under the same no-new-images/no-new-slots/no-default-art/no-browser-runtime boundary. v0.171 must not start without an explicit prompt.
 
 ## Current v0.170 Godot Salto Restrained Ashen Raider Fifth Opt-In Integration Experiment And Human-Review Stop - 2026-06-08
 
-Status: local gates are green and awaiting clean commit, push, sync, and remote CI proof.
+Status: original v0.170 checkpoint was committed, pushed, clean/synced, and remote-green at `0455739fc0bbaabbf05ac5dabef925ec0d79d5d9`; this note also includes a scoped post-review Godot visual-hardening pass under the same v0.170 boundaries.
 
 What changed:
 
@@ -50,6 +50,7 @@ What changed:
 - Added `GODOT_LAUNCH_SALTO_FIVE_SLOT_ART_EXPERIMENT_WINDOWS.bat`, capture/validate wrappers, and `npm run godot:launch|capture|validate:salto-five-slot-art-experiment`.
 - Preserved the default stabilized launcher, default player-slice launcher, Worker-only launcher, Worker + Barracks launcher, Worker + Barracks + Militia launcher, and Worker + Barracks + Militia + Aster launcher.
 - Fixed the opening battle presentation leak by reapplying staging on battle-shell entry and making review rings obey `reviewHidden`; unrecruited friendly military billboards no longer appear before Barracks/Militia progression.
+- Post-review hardening reduces five-slot-only review-ring dominance, raises the v0.170 review-scale arguments for the already-selected Worker/Militia/Aster/Ashen cutouts, and stages the five-slot squad-comparison capture into an open lane so Barracks foreground geometry no longer cuts across Aster.
 - Preserved the four-Ashen combat-onset handoff with defenders restored for the real-input pressure-wave sequence.
 
 Local v0.170 evidence:
@@ -75,10 +76,11 @@ Key evidence files:
 - `artifacts/desktop-spikes/godot-salto/v0170/boundary/five-slot-art-opt-in-boundary-report.json`
 - `artifacts/desktop-spikes/godot-salto/v0170/scorecard/five-slot-art-opt-in-human-review-scorecard.md`
 
-Benchmark summary: M5 FPS ratios vs M0/M4 were `0.9976` and `1.0009`; p95 ratios were `0.9699` and `0.9771`, passing the v0.170 thresholds.
+Benchmark summary: M5 FPS ratios vs M0/M4 were `1.0032` and `0.9992`; p95 ratios were `1.0008` and `0.9978`, passing the v0.170 thresholds.
 
-Visual caveat: Computer Use inspected the live Windows Godot title window, but coordinate clicks hit a stale-window guard after title inspection. Battle/combat presentation review therefore uses regenerated screenshots from the same rebuilt executable and real-input evidence:
+Visual review: Computer Use inspected the rebuilt Windows Godot app and advanced it through Start Salto Review into the live battle screen. Battle/combat presentation is backed by the live Computer Use battle screenshot, regenerated capture screenshots, and real-input evidence:
 
+- `artifacts/desktop-spikes/godot-salto/v0170/computer-use/windows-five-slot-review-battle.jpg`
 - `artifacts/desktop-spikes/godot-salto/v0170/capture/worker-barracks-militia-aster-ashen/screenshots/03_battle_default.png`
 - `artifacts/desktop-spikes/godot-salto/v0170/real-input/worker-barracks-militia-aster-ashen-post-mine-flow/screenshots/16_combat_onset.png`
 

@@ -45,6 +45,8 @@ The five-slot review path also keeps the opening battle composition readable:
 
 - The player-facing battle shell reapplies staging when entering battle, so unrecruited friendly military billboards do not appear before Barracks/Militia progression.
 - Review rings now obey each unit's `reviewHidden` state.
+- The post-review five-slot wrapper uses slightly stronger review-scale arguments for the existing selected Worker, Militia, Aster, and Ashen derivatives, without changing the source images, selected hashes, default launcher, or prior opt-in launchers.
+- The five-slot squad-comparison capture stages Aster, Workers, and selected Militia into an open review lane so the Barracks shell no longer cuts across character art.
 - The staged pressure-wave handoff still restores defenders for the four-Ashen combat onset.
 
 ## Non-Goals
