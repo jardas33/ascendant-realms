@@ -1,6 +1,6 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-06-08 v0.167 Salto Three-Slot Presentation QA Placeholder Classification And Artifact-Retention Enforcement Stop
+Last updated: 2026-06-08 v0.168 Godot Salto Aster Fourth Opt-In Integration Experiment And Human-Review Stop
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
@@ -32,7 +32,71 @@ Project Identity continuation note: v0.166 now supersedes the older no-v0.166 ta
 
 Project Identity continuation note: v0.167 now supersedes the older no-v0.167 tail above because the queued prompt explicitly authorized a three-slot presentation QA, visible-placeholder classification, and artifact-retention enforcement stop after v0.166 was committed, pushed, clean, synced, and remote-green. v0.167 generates zero images, adds zero slots, preserves the default procedural launcher and all prior opt-in launchers, classifies every visible block-like element before Aster integration, adds the Salto experimental artifact index and retention validator, and stops before v0.168 unless the next queued prompt passes.
 
-Current status override: v0.167 is the active checkpoint for this handoff. v0.168 is not started unless a separate queued prompt is being executed after v0.167 passes its gates.
+Project Identity continuation note: v0.168 now supersedes the older no-v0.168 tail above because the queued prompt explicitly authorized exactly one Aster normal-slice opt-in slot after v0.167 was committed, pushed, clean, synced, and remote-green. v0.168 adds only `aster_billboard_static_v0151` / `HYBRID_ASTER_TRIMMED_1024` behind a new Worker + Barracks + Militia + Aster launcher, preserves the default procedural launcher and all prior opt-in launchers, proves Aster missing-art and hash-mismatch fallback while Worker, Barracks, and Militia remain active, benchmarks M0/M3/M4/fallback modes, generates zero images, adds no fifth slot, and stops before v0.169 unless the next queued prompt passes.
+
+Current status override: v0.168 is the active checkpoint for this handoff after local validation, capture, benchmark, real-input, Computer Use, and boundary gates passed. v0.169 may start only after v0.168 is committed, pushed, clean/synced, and remote-green.
+
+## Current v0.168 Godot Salto Aster Fourth Opt-In Integration Experiment And Human-Review Stop - 2026-06-08
+
+Status: v0.168 adds one Aster opt-in art slot to the Godot player-slice experiment while preserving all default and prior launchers.
+
+Local v0.168 evidence:
+
+- `npm run godot:validate:salto-worker-barracks-militia-aster-art-experiment` -> `PASS_V0168_WORKER_BARRACKS_MILITIA_ASTER_ART_OPT_IN_AUTOMATION_READY`.
+- `artifacts/desktop-spikes/godot-salto/v0168/validation/worker-barracks-militia-aster-art-opt-in-functional-report.json` -> `PASS_V0168_ASTER_OPT_IN_FUNCTIONAL`.
+- `artifacts/desktop-spikes/godot-salto/v0168/capture/worker-barracks-militia-aster-art-opt-in-capture-report.json` -> `PASS_V0168_ASTER_OPT_IN_CAPTURE`.
+- `artifacts/desktop-spikes/godot-salto/v0168/benchmark/worker-barracks-militia-aster-art-opt-in-scorecard.json` -> `PASS_V0168_ASTER_OPT_IN_BENCHMARK`; M4 FPS ratio versus M0 `1.0000`, M4 FPS ratio versus M3 `1.0027`, M4 p95 ratio versus M0 `0.9720`, M4 p95 ratio versus M3 `0.9630`.
+- `artifacts/desktop-spikes/godot-salto/v0168/real-input/worker-barracks-militia-aster-art-opt-in-real-input-report.json` -> `PASS_V0168_ASTER_OPT_IN_REAL_INPUT`.
+- `artifacts/desktop-spikes/godot-salto/v0168/computer-use/worker-barracks-militia-aster-art-opt-in-computer-use-gate.json` -> `PASS_V0168_ASTER_OPT_IN_COMPUTER_USE_GATE`.
+- `artifacts/desktop-spikes/godot-salto/v0168/boundary/worker-barracks-militia-aster-art-opt-in-boundary-scan.json` -> `PASS_V0168_PLAYER_SLICE_FOUR_SLOT_BOUNDARY`.
+- `artifacts/desktop-spikes/godot-salto/v0168/worker-barracks-militia-aster-art-opt-in-human-review-scorecard.json` -> `PASS_V0168_ASTER_OPT_IN_HUMAN_REVIEW_READY`.
+
+v0.168 preserved active slots:
+
+- Worker: `worker_billboard_static_v0147` / `HYBRID_WORKER_TRIMMED_1024` / `a628065ca92b231b0d4f6a0625d9e259dea080e80d530ee688483611d70049bc`.
+- Barracks: `barrosan_barracks_material_v0149` / `HYBRID_BARRACKS_768_WRAPSAFE_OFFSET_BLEND` / `58a60b750370df084b60a1d92077da9367c0ba8a763781e2c3a8a7d96f1c980f`.
+- Militia: `militia_billboard_static_v0154` / `HYBRID_MILITIA_TRIMMED_1024` / `c25349f00c422a0b3c9d5862027351bd70008e9314d4e3cd4001676e914321cb`.
+
+v0.168 added slot:
+
+- Aster: `aster_billboard_static_v0151` / `HYBRID_ASTER_TRIMMED_1024` / `b256f96f762187c05d68f2c2de62bedec0248896210767e98cb8f210dac2829a`.
+
+v0.168 preserved future evidence only:
+
+- Ashen selected derivative: `ashen_raider_billboard_static_v0156` / `HYBRID_ASHEN_RAIDER_V0157_TRIMMED_1024` / `8eb011f56d5cd56cf6ef0a843d2a5899e27aa13e203cc44517ed4a0c55c631c8`.
+
+v0.168 entry points:
+
+- `GODOT_LAUNCH_SALTO_WORKER_BARRACKS_MILITIA_ASTER_ART_EXPERIMENT_WINDOWS.bat`
+- `GODOT_REVIEW_SALTO_FOUR_SLOT_ART_WINDOWS.bat`
+- `GODOT_CAPTURE_SALTO_WORKER_BARRACKS_MILITIA_ASTER_ART_EXPERIMENT_WINDOWS.bat`
+- `GODOT_VALIDATE_SALTO_WORKER_BARRACKS_MILITIA_ASTER_ART_EXPERIMENT_WINDOWS.bat`
+- `npm run godot:launch:salto-worker-barracks-militia-aster-art-experiment`
+- `npm run godot:review:salto-four-slot-art`
+- `npm run godot:capture:salto-worker-barracks-militia-aster-art-experiment`
+- `npm run godot:validate:salto-worker-barracks-militia-aster-art-experiment`
+
+v0.168 docs:
+
+- `docs/V0168_ASTER_FOURTH_OPT_IN_SPEC.md`
+- `docs/V0168_ASTER_OPT_IN_FUNCTIONAL_VISUAL_BENCHMARK_REPORT.md`
+- `docs/V0168_PLAYER_SLICE_FOUR_SLOT_BOUNDARY.md`
+- `docs/V0168_IMPLEMENTATION_REPORT.md`
+- `docs/SALTO_EXPERIMENTAL_ARTIFACT_INDEX.md`
+
+v0.168 constraints:
+
+- Zero images generated.
+- Exactly four normal-slice opt-in slots in the new combined posture.
+- No fifth slot.
+- No Ashen integration.
+- Default stabilized launcher unchanged and procedural.
+- Default player-slice launcher unchanged and procedural.
+- Worker-only launcher unchanged.
+- Worker + Barracks launcher unchanged.
+- Worker + Barracks + Militia launcher unchanged.
+- Aster missing-art and hash-mismatch failures fail closed to procedural Aster while Worker, Barracks, and Militia remain active.
+- No browser-runtime wiring, production manifest mutation, save/stable-ID mutation, gameplay mutation, final art approval, final Godot choice, full port, or v0.169 work.
 
 ## Current v0.167 Salto Three-Slot Presentation QA Placeholder Classification And Artifact-Retention Enforcement Stop - 2026-06-08
 

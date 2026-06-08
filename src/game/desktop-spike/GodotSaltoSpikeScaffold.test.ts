@@ -3663,4 +3663,102 @@ describe("Godot Salto spike scaffold", () => {
       expect(playerLauncher).not.toContain(text);
     });
   });
+
+  it("defines the v0.168 Aster fourth opt-in player-slice integration gate", async () => {
+    [
+      "GODOT_LAUNCH_SALTO_WORKER_BARRACKS_MILITIA_ASTER_ART_EXPERIMENT_WINDOWS.bat",
+      "GODOT_CAPTURE_SALTO_WORKER_BARRACKS_MILITIA_ASTER_ART_EXPERIMENT_WINDOWS.bat",
+      "GODOT_VALIDATE_SALTO_WORKER_BARRACKS_MILITIA_ASTER_ART_EXPERIMENT_WINDOWS.bat",
+      "GODOT_REVIEW_SALTO_FOUR_SLOT_ART_WINDOWS.bat",
+      "tools/godot/launchGodotSaltoWorkerBarracksMilitiaAsterArtExperimentWindows.ps1",
+      "tools/godot/captureGodotSaltoWorkerBarracksMilitiaAsterArtExperimentWindows.ps1",
+      "tools/godot/validateGodotSaltoWorkerBarracksMilitiaAsterArtExperimentWindows.ps1",
+      "tools/godot/reviewGodotSaltoFourSlotArtWindows.ps1",
+      "tools/godot/saltoWorkerBarracksMilitiaAsterArtOptInTool.mjs",
+      "docs/V0168_ASTER_FOURTH_OPT_IN_SPEC.md",
+      "docs/V0168_ASTER_OPT_IN_FUNCTIONAL_VISUAL_BENCHMARK_REPORT.md",
+      "docs/V0168_PLAYER_SLICE_FOUR_SLOT_BOUNDARY.md",
+      "docs/V0168_IMPLEMENTATION_REPORT.md"
+    ].forEach((path) => expect(existsSync(path), path).toBe(true));
+
+    const packageJson = JSON.parse(await readFile("package.json", "utf8")) as { scripts: Record<string, string> };
+    const rootScript = await readFile("desktop-spikes/godot-salto/scripts/salto_spike_root.gd", "utf8");
+    const sceneScript = await readFile("desktop-spikes/godot-salto/scripts/salto_spike_scene_3d.gd", "utf8");
+    const launchScript = await readFile("tools/godot/launchGodotSaltoWorkerBarracksMilitiaAsterArtExperimentWindows.ps1", "utf8");
+    const validateScript = await readFile("tools/godot/validateGodotSaltoWorkerBarracksMilitiaAsterArtExperimentWindows.ps1", "utf8");
+    const reportTool = await readFile("tools/godot/saltoWorkerBarracksMilitiaAsterArtOptInTool.mjs", "utf8");
+    const boundary = await readFile("docs/V0168_PLAYER_SLICE_FOUR_SLOT_BOUNDARY.md", "utf8");
+    const artifactIndex = await readFile("docs/SALTO_EXPERIMENTAL_ARTIFACT_INDEX.md", "utf8");
+    const stabilizedLauncher = await readFile("GODOT_LAUNCH_STABILIZED_SALTO_REVIEW_WINDOWS.bat", "utf8");
+    const playerLauncher = await readFile("GODOT_LAUNCH_PLAYER_SLICE_WINDOWS.bat", "utf8");
+    const priorThreeSlotLauncher = await readFile("GODOT_LAUNCH_SALTO_WORKER_BARRACKS_MILITIA_ART_EXPERIMENT_WINDOWS.bat", "utf8");
+
+    [
+      "godot:launch:salto-worker-barracks-militia-aster-art-experiment",
+      "godot:capture:salto-worker-barracks-militia-aster-art-experiment",
+      "godot:validate:salto-worker-barracks-militia-aster-art-experiment",
+      "godot:review:salto-four-slot-art"
+    ].forEach((script) => expect(packageJson.scripts[script]).toBeTypeOf("string"));
+
+    [
+      "--aster-art-opt-in",
+      "--aster-art-source=",
+      "--aster-art-metadata=",
+      "--aster-art-expected-sha256=",
+      "--aster-art-fallback-mode=",
+      "--salto-four-slot-review-framing",
+      "configure_aster_art_experiment"
+    ].forEach((text) => expect(rootScript).toContain(text));
+
+    [
+      "ASTER_ART_SLOT_ID := \"aster_billboard_static_v0151\"",
+      "HYBRID_ASTER_TRIMMED_1024",
+      "b256f96f762187c05d68f2c2de62bedec0248896210767e98cb8f210dac2829a",
+      "configure_aster_art_experiment",
+      "_aster_art_applies_to_unit",
+      "hero_aster",
+      "hierarchyRuntimeHeightVsMilitia",
+      "fifthPlayerFacingArtSlotAdded"
+    ].forEach((text) => expect(sceneScript).toContain(text));
+
+    [
+      "Experimental opt-in art: Worker + Barracks + Militia + Aster",
+      "aster_billboard_static_v0151",
+      "HYBRID_ASTER_TRIMMED_1024",
+      "b256f96f762187c05d68f2c2de62bedec0248896210767e98cb8f210dac2829a",
+      "--aster-art-opt-in",
+      "--salto-four-slot-review-framing"
+    ].forEach((text) => expect(launchScript).toContain(text));
+
+    [
+      "aster-missing-art-fallback",
+      "aster-hash-mismatch-fallback",
+      "worker-barracks-militia-aster",
+      "PASS_V0168_WORKER_BARRACKS_MILITIA_ASTER_ART_OPT_IN_AUTOMATION_READY"
+    ].forEach((text) => expect(validateScript).toContain(text));
+
+    [
+      "PASS_V0168_ASTER_OPT_IN_VALIDATION",
+      "PASS_V0168_ASTER_OPT_IN_BENCHMARK",
+      "PASS_V0168_PLAYER_SLICE_FOUR_SLOT_BOUNDARY",
+      "PASS_V0168_ASTER_OPT_IN_HUMAN_REVIEW_READY",
+      "asterMissingArtFailsClosed",
+      "workerBarracksMilitiaRemainActiveDuringAsterFallback",
+      "noFifthSlot"
+    ].forEach((text) => expect(reportTool).toContain(text));
+
+    [
+      "No Ashen integration",
+      "No fifth slot",
+      "Default stabilized launcher remains procedural",
+      "Browser runtime remains untouched"
+    ].forEach((text) => expect(boundary).toContain(text));
+
+    expect(artifactIndex).toContain("Aster | active normal-slice opt-in");
+    ["worker-art-opt-in", "barracks-material-opt-in", "militia-art-opt-in", "aster-art-opt-in", "ashen-art-opt-in"].forEach((text) => {
+      expect(stabilizedLauncher).not.toContain(text);
+      expect(playerLauncher).not.toContain(text);
+    });
+    expect(priorThreeSlotLauncher).not.toContain("aster-art-opt-in");
+  });
 });

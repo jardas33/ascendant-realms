@@ -62,6 +62,14 @@ const MILITIA_ART_DEFAULT_SCALE := 1.0
 const MILITIA_ART_QUAD_HEIGHT := 0.68
 const MILITIA_ART_QUAD_WIDTH := 0.50
 const MILITIA_ART_GROUND_CLEARANCE := 0.02
+const ASTER_ART_SLOT_ID := "aster_billboard_static_v0151"
+const ASTER_ART_APPROACH := "HYBRID_ASTER_TRIMMED_1024"
+const ASTER_ART_EXPECTED_SHA256 := "b256f96f762187c05d68f2c2de62bedec0248896210767e98cb8f210dac2829a"
+const ASTER_ART_EXPECTED_WIDTH := 1024
+const ASTER_ART_EXPECTED_HEIGHT := 1024
+const ASTER_ART_DEFAULT_SCALE := 1.0
+const ASTER_ART_QUAD_HEIGHT := 0.92
+const ASTER_ART_GROUND_CLEARANCE := 0.02
 const WorkloadRuntimeScript = preload("res://scripts/salto_spike_workload_runtime.gd")
 
 var runtime = WorkloadRuntimeScript.new()
@@ -257,12 +265,30 @@ var militia_art_texture_create_count := 0
 var militia_art_material_create_count := 0
 var militia_art_mesh_create_count := 0
 var militia_art_material_reuse_count := 0
+var aster_art_experiment_enabled := false
+var aster_art_requested_scale := ASTER_ART_DEFAULT_SCALE
+var aster_art_source_path := ""
+var aster_art_metadata_path := ""
+var aster_art_expected_sha256 := ASTER_ART_EXPECTED_SHA256
+var aster_art_fallback_mode := "none"
+var aster_art_texture: ImageTexture
+var aster_art_material: StandardMaterial3D
+var aster_art_mesh: QuadMesh
+var aster_art_status: Dictionary = {}
+var aster_art_source_load_count := 0
+var aster_art_metadata_parse_count := 0
+var aster_art_image_decode_count := 0
+var aster_art_texture_create_count := 0
+var aster_art_material_create_count := 0
+var aster_art_mesh_create_count := 0
+var aster_art_material_reuse_count := 0
 var three_slot_art_review_framing_active := false
 
 func _ready() -> void:
 	_reset_worker_art_status(false, "opt-in flag absent")
 	_reset_barracks_material_status(false, "opt-in flag absent")
 	_reset_militia_art_status(false, "opt-in flag absent")
+	_reset_aster_art_status(false, "opt-in flag absent")
 	_create_camera()
 	_create_light()
 	_create_terrain()
@@ -1015,6 +1041,262 @@ func _militia_art_billboard_material() -> StandardMaterial3D:
 	_refresh_militia_art_counters()
 	return militia_art_material
 
+func configure_aster_art_experiment(options: Dictionary) -> Dictionary:
+	aster_art_experiment_enabled = bool(options.get("enabled", false))
+	aster_art_requested_scale = maxf(0.5, minf(1.2, float(options.get("scale", ASTER_ART_DEFAULT_SCALE))))
+	aster_art_source_path = str(options.get("sourcePath", ""))
+	aster_art_metadata_path = str(options.get("metadataPath", ""))
+	aster_art_expected_sha256 = str(options.get("expectedSha256", ASTER_ART_EXPECTED_SHA256)).to_lower()
+	aster_art_fallback_mode = str(options.get("fallbackMode", "none"))
+	aster_art_texture = null
+	aster_art_material = null
+	aster_art_mesh = null
+	aster_art_source_load_count = 0
+	aster_art_metadata_parse_count = 0
+	aster_art_image_decode_count = 0
+	aster_art_texture_create_count = 0
+	aster_art_material_create_count = 0
+	aster_art_mesh_create_count = 0
+	aster_art_material_reuse_count = 0
+	if not aster_art_experiment_enabled:
+		_reset_aster_art_status(false, "opt-in flag absent")
+		_rebuild_visuals()
+		return aster_art_status.duplicate(true)
+	_load_aster_art_candidate()
+	_rebuild_visuals()
+	return aster_art_status.duplicate(true)
+
+func get_aster_art_status() -> Dictionary:
+	return aster_art_status.duplicate(true)
+
+func _reset_aster_art_status(enabled: bool, reason: String) -> void:
+	aster_art_status = {
+		"schemaVersion": 1,
+		"checkpoint": "v0.168",
+		"slotId": ASTER_ART_SLOT_ID,
+		"approach": ASTER_ART_APPROACH,
+		"enabled": enabled,
+		"sourceLoaded": false,
+		"billboardActive": false,
+		"fallbackActive": true,
+		"fallbackReason": reason,
+		"sourcePath": aster_art_source_path,
+		"metadataPath": aster_art_metadata_path,
+		"expectedSha256": aster_art_expected_sha256,
+		"actualSha256": "",
+		"sourceDimensions": {"width": 0, "height": 0},
+		"metadataDimensions": {"width": 0, "height": 0},
+		"trimmedPixelDimensions": {"width": 0, "height": 0},
+		"alphaBounds": {},
+		"alphaPosture": "",
+		"pivot": {},
+		"scale": aster_art_requested_scale,
+		"fallbackMode": aster_art_fallback_mode,
+		"proceduralFallbackVisible": true,
+		"selectionAndGameplayIdsPreserved": true,
+		"stableAsterId": "hero_aster",
+		"heroHierarchyAboveMilitiaWorker": true,
+		"browserRuntimeChanged": false,
+		"saveWritesAllowed": false,
+		"fifthArtSlotAdded": false,
+		"productionManifestMutated": false,
+		"sourceLoadCount": aster_art_source_load_count,
+		"metadataParseCount": aster_art_metadata_parse_count,
+		"imageDecodeCount": aster_art_image_decode_count,
+		"textureCreateCount": aster_art_texture_create_count,
+		"materialCreateCount": aster_art_material_create_count,
+		"meshCreateCount": aster_art_mesh_create_count,
+		"materialReuseCount": aster_art_material_reuse_count
+	}
+	_refresh_aster_art_counters()
+
+func _load_aster_art_candidate() -> void:
+	_reset_aster_art_status(true, "not loaded")
+	var start_usec := Time.get_ticks_usec()
+	if aster_art_source_path == "":
+		_set_aster_art_fallback("missing source path")
+		return
+	if not FileAccess.file_exists(aster_art_source_path):
+		_set_aster_art_fallback("missing source file")
+		return
+	if aster_art_metadata_path == "" or not FileAccess.file_exists(aster_art_metadata_path):
+		_set_aster_art_fallback("missing metadata file")
+		return
+	var metadata := _read_aster_art_metadata(aster_art_metadata_path)
+	if metadata.is_empty():
+		_set_aster_art_fallback("metadata parse failure")
+		return
+	if str(metadata.get("slotId", "")) != ASTER_ART_SLOT_ID:
+		_set_aster_art_fallback("metadata slot mismatch")
+		return
+	if str(metadata.get("derivativeKind", "")) != "trimmed-padded-alpha-treated-1024":
+		_set_aster_art_fallback("metadata derivative mismatch")
+		return
+	var metadata_sha := str(metadata.get("sha256", "")).to_lower()
+	if metadata_sha != aster_art_expected_sha256:
+		_set_aster_art_fallback("metadata hash mismatch")
+		return
+	var dimensions: Dictionary = metadata.get("dimensions", {})
+	var metadata_width := int(dimensions.get("width", 0))
+	var metadata_height := int(dimensions.get("height", 0))
+	if metadata_width != ASTER_ART_EXPECTED_WIDTH or metadata_height != ASTER_ART_EXPECTED_HEIGHT:
+		_set_aster_art_fallback("metadata dimension mismatch")
+		return
+	var alpha_stats: Dictionary = metadata.get("alphaStats", {})
+	if int(alpha_stats.get("transparentCornerCount", 0)) < 4:
+		_set_aster_art_fallback("transparent corner metadata mismatch")
+		return
+	var trim_bounds: Dictionary = metadata.get("trimBounds", {})
+	if int(trim_bounds.get("width", 0)) <= 0 or int(trim_bounds.get("height", 0)) <= 0:
+		_set_aster_art_fallback("trim metadata missing")
+		return
+	var pivot: Dictionary = metadata.get("pivot", {})
+	var pivot_x := float(pivot.get("normalizedX", 0.0))
+	var pivot_y := float(pivot.get("normalizedY", 0.0))
+	if absf(pivot_x - 0.5005) > 0.01 or absf(pivot_y - 0.9639) > 0.02:
+		_set_aster_art_fallback("pivot metadata mismatch")
+		return
+	var actual_sha := _sha256_file(aster_art_source_path)
+	aster_art_status["actualSha256"] = actual_sha
+	if actual_sha != aster_art_expected_sha256:
+		_set_aster_art_fallback("source hash mismatch")
+		return
+	var image := Image.new()
+	aster_art_source_load_count += 1
+	var load_result := image.load(aster_art_source_path)
+	if load_result != OK:
+		_set_aster_art_fallback("image load failure %s" % str(load_result))
+		return
+	aster_art_image_decode_count += 1
+	if image.get_width() != ASTER_ART_EXPECTED_WIDTH or image.get_height() != ASTER_ART_EXPECTED_HEIGHT:
+		_set_aster_art_fallback("image dimension mismatch")
+		return
+	aster_art_texture = ImageTexture.create_from_image(image)
+	if aster_art_texture == null:
+		_set_aster_art_fallback("texture creation failure")
+		return
+	aster_art_texture_create_count += 1
+	aster_art_status["enabled"] = true
+	aster_art_status["sourceLoaded"] = true
+	aster_art_status["billboardActive"] = true
+	aster_art_status["fallbackActive"] = false
+	aster_art_status["fallbackReason"] = ""
+	aster_art_status["sourcePath"] = aster_art_source_path
+	aster_art_status["metadataPath"] = aster_art_metadata_path
+	aster_art_status["expectedSha256"] = aster_art_expected_sha256
+	aster_art_status["actualSha256"] = actual_sha
+	aster_art_status["sourceDimensions"] = {"width": image.get_width(), "height": image.get_height()}
+	aster_art_status["metadataDimensions"] = {"width": metadata_width, "height": metadata_height}
+	aster_art_status["alphaBounds"] = trim_bounds
+	aster_art_status["trimmedPixelDimensions"] = {
+		"width": int(trim_bounds.get("width", 0)),
+		"height": int(trim_bounds.get("height", 0))
+	}
+	aster_art_status["alphaPosture"] = str(metadata.get("alphaPosture", ""))
+	aster_art_status["pivot"] = pivot
+	aster_art_status["role"] = metadata.get("role", {})
+	aster_art_status["scale"] = aster_art_requested_scale
+	aster_art_status["fallbackMode"] = aster_art_fallback_mode
+	aster_art_status["proceduralFallbackVisible"] = false
+	aster_art_status["loadDurationMs"] = snappedf(float(Time.get_ticks_usec() - start_usec) / 1000.0, 0.01)
+	_refresh_aster_art_counters()
+
+func _read_aster_art_metadata(path: String) -> Dictionary:
+	aster_art_metadata_parse_count += 1
+	var file := FileAccess.open(path, FileAccess.READ)
+	if file == null:
+		return {}
+	var parsed = JSON.parse_string(file.get_as_text())
+	if typeof(parsed) == TYPE_DICTIONARY:
+		return parsed
+	return {}
+
+func _set_aster_art_fallback(reason: String) -> void:
+	aster_art_texture = null
+	aster_art_material = null
+	aster_art_mesh = null
+	aster_art_status["enabled"] = aster_art_experiment_enabled
+	aster_art_status["billboardActive"] = false
+	aster_art_status["sourceLoaded"] = false
+	aster_art_status["fallbackActive"] = true
+	aster_art_status["fallbackReason"] = reason
+	aster_art_status["sourcePath"] = aster_art_source_path
+	aster_art_status["metadataPath"] = aster_art_metadata_path
+	aster_art_status["expectedSha256"] = aster_art_expected_sha256
+	aster_art_status["scale"] = aster_art_requested_scale
+	aster_art_status["fallbackMode"] = aster_art_fallback_mode
+	aster_art_status["proceduralFallbackVisible"] = true
+	_refresh_aster_art_counters()
+
+func _refresh_aster_art_counters() -> void:
+	aster_art_status["sourceLoadCount"] = aster_art_source_load_count
+	aster_art_status["metadataParseCount"] = aster_art_metadata_parse_count
+	aster_art_status["imageDecodeCount"] = aster_art_image_decode_count
+	aster_art_status["textureCreateCount"] = aster_art_texture_create_count
+	aster_art_status["materialCreateCount"] = aster_art_material_create_count
+	aster_art_status["meshCreateCount"] = aster_art_mesh_create_count
+	aster_art_status["materialReuseCount"] = aster_art_material_reuse_count
+	var runtime_height := _aster_art_unit_height()
+	var runtime_width := _aster_art_unit_width()
+	var source_aspect := float(ASTER_ART_EXPECTED_WIDTH) / maxf(1.0, float(ASTER_ART_EXPECTED_HEIGHT))
+	var runtime_aspect := runtime_width / maxf(0.001, runtime_height)
+	aster_art_status["runtimeWorldWidth"] = snappedf(runtime_width, 0.0001)
+	aster_art_status["runtimeWorldHeight"] = snappedf(runtime_height, 0.0001)
+	var aster_pixels := _orthographic_rendered_pixel_size(runtime_width, runtime_height)
+	aster_art_status["renderedPixelWidth"] = aster_pixels["width"]
+	aster_art_status["renderedPixelHeight"] = aster_pixels["height"]
+	aster_art_status["sourceAspectRatio"] = snappedf(source_aspect, 0.0001)
+	aster_art_status["runtimeAspectRatio"] = snappedf(runtime_aspect, 0.0001)
+	aster_art_status["aspectRatioPreserved"] = absf(runtime_aspect - source_aspect) <= 0.001
+	aster_art_status["terrainFootContactY"] = snappedf(ASTER_ART_GROUND_CLEARANCE, 0.0001)
+	aster_art_status["selectionRingDiameter"] = snappedf(_unit_radius({"role": "hero", "fixtureId": "aster", "team": "friendly"}) * 2.2, 0.0001)
+	aster_art_status["renderedSelectionRingDiameterPx"] = _orthographic_rendered_pixel_size(float(aster_art_status["selectionRingDiameter"]), float(aster_art_status["selectionRingDiameter"]))["height"]
+	aster_art_status["proceduralUnitBoundingBox"] = {"radius": 0.18, "height": 0.62}
+	aster_art_status["hierarchyRuntimeHeightVsMilitia"] = snappedf(runtime_height / maxf(0.001, _militia_art_unit_height()), 0.0001)
+	aster_art_status["hierarchyRuntimeHeightVsWorker"] = snappedf(runtime_height / maxf(0.001, _worker_art_unit_height()), 0.0001)
+
+func _aster_art_is_active() -> bool:
+	return aster_art_experiment_enabled and bool(aster_art_status.get("sourceLoaded", false)) and aster_art_texture != null
+
+func _aster_art_applies_to_unit(unit: Dictionary) -> bool:
+	return _aster_art_is_active() and str(unit.get("team", "")) == "friendly" and str(unit.get("id", "")) == "hero_aster"
+
+func _aster_art_unit_height() -> float:
+	return ASTER_ART_QUAD_HEIGHT * aster_art_requested_scale
+
+func _aster_art_unit_width() -> float:
+	return _aster_art_unit_height() * (float(ASTER_ART_EXPECTED_WIDTH) / maxf(1.0, float(ASTER_ART_EXPECTED_HEIGHT)))
+
+func _aster_art_unit_y(selected: bool = false) -> float:
+	var selection_scale := 1.12 if selected else 1.0
+	return ASTER_ART_GROUND_CLEARANCE + _aster_art_unit_height() * selection_scale * 0.5
+
+func _aster_art_quad_mesh() -> QuadMesh:
+	if aster_art_mesh:
+		return aster_art_mesh
+	aster_art_mesh = QuadMesh.new()
+	aster_art_mesh.size = Vector2(_aster_art_unit_width(), _aster_art_unit_height())
+	aster_art_mesh_create_count += 1
+	_refresh_aster_art_counters()
+	return aster_art_mesh
+
+func _aster_art_billboard_material() -> StandardMaterial3D:
+	if aster_art_material:
+		aster_art_material_reuse_count += 1
+		_refresh_aster_art_counters()
+		return aster_art_material
+	aster_art_material = StandardMaterial3D.new()
+	aster_art_material.albedo_texture = aster_art_texture
+	aster_art_material.albedo_color = Color(1, 1, 1, 1)
+	aster_art_material.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	aster_art_material.billboard_mode = BaseMaterial3D.BILLBOARD_ENABLED
+	aster_art_material.cull_mode = BaseMaterial3D.CULL_DISABLED
+	aster_art_material.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	aster_art_material.texture_filter = BaseMaterial3D.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
+	aster_art_material_create_count += 1
+	_refresh_aster_art_counters()
+	return aster_art_material
+
 func set_player_facing_mode(enabled: bool) -> bool:
 	player_facing_mode = enabled
 	if player_facing_mode:
@@ -1717,6 +1999,20 @@ func apply_three_slot_art_review_framing() -> bool:
 	_apply_camera_authoring_posture("v0166_three_slot_art_review", Vector3(-4.54, 11.25, 7.60), SAFE_ZOOM_MIN)
 	_refresh_worker_art_counters()
 	_refresh_militia_art_counters()
+	_refresh_aster_art_counters()
+	_sync_unit_visuals()
+	_sync_site_visuals()
+	_sync_lume_visuals()
+	_sync_three_slot_review_art_anchors()
+	_sync_hud()
+	return true
+
+func apply_four_slot_art_review_framing() -> bool:
+	three_slot_art_review_framing_active = true
+	_apply_camera_authoring_posture("v0168_four_slot_art_review", Vector3(-4.54, 11.25, 7.60), SAFE_ZOOM_MIN)
+	_refresh_worker_art_counters()
+	_refresh_militia_art_counters()
+	_refresh_aster_art_counters()
 	_sync_unit_visuals()
 	_sync_site_visuals()
 	_sync_lume_visuals()
@@ -3192,14 +3488,17 @@ func get_spike_status() -> Dictionary:
 	_refresh_barracks_material_counters()
 	var militia_art_loaded := _militia_art_is_active()
 	_refresh_militia_art_counters()
-	status["proceduralPrimitiveOnly"] = not worker_art_loaded and not barracks_material_loaded and not militia_art_loaded
-	status["generatedOrImportedArtIncluded"] = worker_art_loaded or barracks_material_loaded or militia_art_loaded
-	status["runtimeArtIntegrated"] = worker_art_loaded or barracks_material_loaded or militia_art_loaded
+	var aster_art_loaded := _aster_art_is_active()
+	_refresh_aster_art_counters()
+	status["proceduralPrimitiveOnly"] = not worker_art_loaded and not barracks_material_loaded and not militia_art_loaded and not aster_art_loaded
+	status["generatedOrImportedArtIncluded"] = worker_art_loaded or barracks_material_loaded or militia_art_loaded or aster_art_loaded
+	status["runtimeArtIntegrated"] = worker_art_loaded or barracks_material_loaded or militia_art_loaded or aster_art_loaded
 	status["workerArtExperiment"] = worker_art_status.duplicate(true)
 	status["barracksMaterialExperiment"] = barracks_material_status.duplicate(true)
 	status["militiaArtExperiment"] = militia_art_status.duplicate(true)
-	status["v0165VisualHardeningAudit"] = _v0165_visual_hardening_audit(worker_art_loaded, barracks_material_loaded, militia_art_loaded)
-	status["workerArtOptInOnly"] = worker_art_experiment_enabled and not barracks_material_experiment_enabled and not militia_art_experiment_enabled
+	status["asterArtExperiment"] = aster_art_status.duplicate(true)
+	status["v0165VisualHardeningAudit"] = _v0165_visual_hardening_audit(worker_art_loaded, barracks_material_loaded, militia_art_loaded, aster_art_loaded)
+	status["workerArtOptInOnly"] = worker_art_experiment_enabled and not barracks_material_experiment_enabled and not militia_art_experiment_enabled and not aster_art_experiment_enabled
 	status["workerArtSlotCount"] = 1 if worker_art_experiment_enabled else 0
 	status["workerArtProceduralFallbackActive"] = bool(worker_art_status.get("fallbackActive", true))
 	status["barracksMaterialOptInRequested"] = barracks_material_experiment_enabled
@@ -3208,10 +3507,14 @@ func get_spike_status() -> Dictionary:
 	status["militiaArtOptInRequested"] = militia_art_experiment_enabled
 	status["militiaArtSlotCount"] = 1 if militia_art_experiment_enabled else 0
 	status["militiaArtProceduralFallbackActive"] = bool(militia_art_status.get("fallbackActive", true))
-	status["normalSliceOptInRequestedSlotCount"] = int(status["workerArtSlotCount"]) + int(status["barracksMaterialSlotCount"]) + int(status["militiaArtSlotCount"])
-	status["normalSliceOptInLoadedSlotCount"] = (1 if worker_art_loaded else 0) + (1 if barracks_material_loaded else 0) + (1 if militia_art_loaded else 0)
+	status["asterArtOptInRequested"] = aster_art_experiment_enabled
+	status["asterArtSlotCount"] = 1 if aster_art_experiment_enabled else 0
+	status["asterArtProceduralFallbackActive"] = bool(aster_art_status.get("fallbackActive", true))
+	status["normalSliceOptInRequestedSlotCount"] = int(status["workerArtSlotCount"]) + int(status["barracksMaterialSlotCount"]) + int(status["militiaArtSlotCount"]) + int(status["asterArtSlotCount"])
+	status["normalSliceOptInLoadedSlotCount"] = (1 if worker_art_loaded else 0) + (1 if barracks_material_loaded else 0) + (1 if militia_art_loaded else 0) + (1 if aster_art_loaded else 0)
 	status["thirdPlayerFacingArtSlotAdded"] = militia_art_experiment_enabled
-	status["fourthPlayerFacingArtSlotAdded"] = false
+	status["fourthPlayerFacingArtSlotAdded"] = aster_art_experiment_enabled
+	status["fifthPlayerFacingArtSlotAdded"] = false
 	status["routineEditorUseRequired"] = false
 	status["saveWritesAllowed"] = false
 	status["stableIdsChanged"] = false
@@ -3436,13 +3739,14 @@ func get_spike_status() -> Dictionary:
 	status["lumeRestoreMicroloopRendered"] = microloop.get("lumeRestored", false)
 	return status
 
-func _v0165_visual_hardening_audit(worker_art_loaded: bool, barracks_material_loaded: bool, militia_art_loaded: bool) -> Dictionary:
+func _v0165_visual_hardening_audit(worker_art_loaded: bool, barracks_material_loaded: bool, militia_art_loaded: bool, aster_art_loaded: bool) -> Dictionary:
 	var audit := {
 		"schemaVersion": 1,
 		"checkpoint": "v0.165",
 		"workerArtLoaded": worker_art_loaded,
 		"barracksMaterialLoaded": barracks_material_loaded,
 		"militiaArtLoaded": militia_art_loaded,
+		"asterArtLoaded": aster_art_loaded,
 		"unitVisuals": [],
 		"totalVisualNodeCount": 0,
 		"meshInstance3DCount": 0,
@@ -3452,12 +3756,12 @@ func _v0165_visual_hardening_audit(worker_art_loaded: bool, barracks_material_lo
 		"markerRingVisibleCount": 0,
 		"drawNodeCreationCount": 0,
 		"accidentalProceduralOverlayCount": 0,
-		"textureLoadCount": worker_art_source_load_count + barracks_material_source_load_count + militia_art_source_load_count,
-		"materialCreateCount": worker_art_material_create_count + barracks_material_material_create_count + militia_art_material_create_count,
-		"textureCreateCount": worker_art_texture_create_count + barracks_material_texture_create_count + militia_art_texture_create_count,
-		"metadataParseCount": worker_art_metadata_parse_count + barracks_material_metadata_parse_count + militia_art_metadata_parse_count,
-		"imageDecodeCount": worker_art_image_decode_count + barracks_material_image_decode_count + militia_art_image_decode_count,
-		"materialReuseCount": worker_art_material_reuse_count + barracks_material_material_reuse_count + militia_art_material_reuse_count,
+		"textureLoadCount": worker_art_source_load_count + barracks_material_source_load_count + militia_art_source_load_count + aster_art_source_load_count,
+		"materialCreateCount": worker_art_material_create_count + barracks_material_material_create_count + militia_art_material_create_count + aster_art_material_create_count,
+		"textureCreateCount": worker_art_texture_create_count + barracks_material_texture_create_count + militia_art_texture_create_count + aster_art_texture_create_count,
+		"metadataParseCount": worker_art_metadata_parse_count + barracks_material_metadata_parse_count + militia_art_metadata_parse_count + aster_art_metadata_parse_count,
+		"imageDecodeCount": worker_art_image_decode_count + barracks_material_image_decode_count + militia_art_image_decode_count + aster_art_image_decode_count,
+		"materialReuseCount": worker_art_material_reuse_count + barracks_material_material_reuse_count + militia_art_material_reuse_count + aster_art_material_reuse_count,
 		"perFrameDecodeCount": 0,
 		"perFrameMetadataParseCount": 0,
 		"barracksMaterialAppliedSurfaceCount": barracks_material_applied_surface_count,
@@ -3477,15 +3781,16 @@ func _v0165_visual_hardening_audit(worker_art_loaded: bool, barracks_material_lo
 		var fixture := str(unit.get("fixtureId", ""))
 		var worker_billboard := role == "Worker" and worker_art_loaded
 		var militia_billboard := fixture == "militia" and str(unit.get("team", "")) == "friendly" and militia_art_loaded
-		var procedural_visible := node != null and node.visible and not worker_billboard and not militia_billboard
-		var art_visible := node != null and node.visible and (worker_billboard or militia_billboard)
+		var aster_billboard := id == "hero_aster" and aster_art_loaded
+		var procedural_visible := node != null and node.visible and not worker_billboard and not militia_billboard and not aster_billboard
+		var art_visible := node != null and node.visible and (worker_billboard or militia_billboard or aster_billboard)
 		var child_count := node.get_child_count() if node != null else 0
 		var mesh_class := node.mesh.get_class() if node != null and node.mesh != null else "missing"
 		if procedural_visible:
 			audit["proceduralVisualVisibleCount"] = int(audit.get("proceduralVisualVisibleCount", 0)) + 1
 		if art_visible:
 			audit["generatedArtVisibleCount"] = int(audit.get("generatedArtVisibleCount", 0)) + 1
-		if (worker_billboard or militia_billboard) and child_count > 0:
+		if (worker_billboard or militia_billboard or aster_billboard) and child_count > 0:
 			audit["accidentalProceduralOverlayCount"] = int(audit.get("accidentalProceduralOverlayCount", 0)) + 1
 		audit["unitVisuals"].append({
 			"id": id,
@@ -3497,7 +3802,7 @@ func _v0165_visual_hardening_audit(worker_art_loaded: bool, barracks_material_lo
 			"childVisualCount": child_count,
 			"generatedArtVisible": art_visible,
 			"proceduralVisualVisible": procedural_visible,
-			"fallbackVisible": node != null and node.visible and ((role == "Worker" and worker_art_experiment_enabled and not worker_art_loaded) or (fixture == "militia" and militia_art_experiment_enabled and not militia_art_loaded)),
+			"fallbackVisible": node != null and node.visible and ((role == "Worker" and worker_art_experiment_enabled and not worker_art_loaded) or (fixture == "militia" and militia_art_experiment_enabled and not militia_art_loaded) or (id == "hero_aster" and aster_art_experiment_enabled and not aster_art_loaded)),
 			"selectionRingDiameter": snappedf(_unit_radius(unit) * 2.2, 0.0001),
 			"unitScale": _vector3_report(_unit_scale(unit))
 		})
@@ -4381,20 +4686,33 @@ func _sync_unit_visuals() -> void:
 		var is_wave_enemy: bool = is_enemy and _v0133_wave_ids().has(id)
 		var is_targeted: bool = _unit_is_attack_target(id) or (is_wave_enemy and (current_onboarding_step == "defeat_wave" or last_feedback_id == "attack_order" or combat_readability_active or pressure_wave_arrived))
 		var worker_billboard := str(unit["role"]) == "Worker" and _worker_art_is_active()
+		var aster_billboard := _aster_art_applies_to_unit(unit)
 		var militia_billboard := _militia_art_applies_to_unit(unit)
 		var unit_y := 0.28
 		if worker_billboard:
 			unit_y = _worker_art_unit_y()
+		elif aster_billboard:
+			unit_y = _aster_art_unit_y(selected)
 		elif militia_billboard:
 			unit_y = _militia_art_unit_y()
 		node.position = _to_world(unit["position"], unit_y)
-		node.scale = _unit_scale(unit) * (1.22 if selected else 1.0)
+		var visual_scale := _unit_scale(unit) * (1.22 if selected else 1.0)
+		if aster_billboard:
+			visual_scale = Vector3.ONE * (1.12 if selected else 1.0)
+		node.scale = visual_scale
 		node.visible = visible_unit
+		var health_y := 0.665
+		if aster_billboard:
+			health_y = ASTER_ART_GROUND_CLEARANCE + _aster_art_unit_height() * (1.12 if selected else 1.0) + 0.08
+		var health_fill_y := health_y + 0.015
+		var damage_y := 0.58
+		if aster_billboard:
+			damage_y = ASTER_ART_GROUND_CLEARANCE + _aster_art_unit_height() * 0.62
 		var health_ratio: float = clampf(float(unit.get("health", 0.0)) / max(1.0, float(unit.get("maxHealth", 1.0))), 0.0, 1.0)
 		var health_visible: bool = visible_unit and (selected or is_targeted or damage_flash_active)
 		var health_back := visual_root.get_node_or_null("health_back_%s" % id) as MeshInstance3D
 		if health_back:
-			health_back.position = _to_world(unit["position"], 0.665)
+			health_back.position = _to_world(unit["position"], health_y)
 			health_back.visible = health_visible
 		var health := visual_root.get_node_or_null("health_%s" % id) as MeshInstance3D
 		if health:
@@ -4402,7 +4720,7 @@ func _sync_unit_visuals() -> void:
 			var mesh := health.mesh as BoxMesh
 			if mesh:
 				mesh.size = Vector3(max(0.026, full_width * health_ratio), 0.035, 0.035)
-			health.position = _to_world(unit["position"], 0.68) + Vector3((health_ratio - 1.0) * full_width * 0.5, 0.0, 0.0)
+			health.position = _to_world(unit["position"], health_fill_y) + Vector3((health_ratio - 1.0) * full_width * 0.5, 0.0, 0.0)
 			health.visible = health_visible
 		if selection:
 			selection.position = _to_world(unit["position"], 0.08)
@@ -4425,7 +4743,7 @@ func _sync_unit_visuals() -> void:
 			target_marker.visible = visible_unit and is_targeted
 		var damage_marker := visual_root.get_node_or_null("damage_flash_%s" % id) as MeshInstance3D
 		if damage_marker:
-			damage_marker.position = _to_world(unit["position"], 0.58)
+			damage_marker.position = _to_world(unit["position"], damage_y)
 			damage_marker.visible = visible_unit and damage_flash_active and (is_targeted or id == "ashen_00")
 	_sync_real_input_hover_marker()
 	_sync_player_guidance_markers()
@@ -4438,14 +4756,15 @@ func _sync_three_slot_review_art_anchors() -> void:
 	for unit in runtime.units:
 		var id := str(unit["id"])
 		var is_worker := str(unit.get("role", "")) == "Worker"
+		var is_aster := _aster_art_applies_to_unit(unit)
 		var is_militia := _militia_art_applies_to_unit(unit)
 		var ring_name := "v0166_art_review_ring_%s" % id
-		var ring_color := Color(0.96, 0.74, 0.34, 0.22) if is_worker else Color(0.46, 0.92, 0.72, 0.18)
-		var ring_radius := _unit_radius(unit) * (2.15 if is_worker else 1.85)
+		var ring_color := Color(0.96, 0.74, 0.34, 0.22) if is_worker else (Color(0.92, 0.88, 0.38, 0.24) if is_aster else Color(0.46, 0.92, 0.72, 0.18))
+		var ring_radius := _unit_radius(unit) * (2.15 if is_worker else (2.35 if is_aster else 1.85))
 		_set_or_create_disc_marker(ring_name, _unit_world_position(id, Vector3.ZERO) + Vector3(0.0, 0.025, 0.0), ring_radius, ring_color)
 		var ring := visual_root.get_node_or_null(ring_name) as MeshInstance3D
 		if ring:
-			ring.visible = active and bool(unit.get("alive", false)) and (is_worker and _worker_art_is_active() or is_militia)
+			ring.visible = active and bool(unit.get("alive", false)) and (is_worker and _worker_art_is_active() or is_militia or is_aster)
 	var barracks_world := _to_world(BARRACKS_POSITION, 0.74)
 	_set_or_create_marker("v0166_barracks_material_review_sheen", barracks_world + Vector3(0.12, 0.18, -0.16), Vector3(1.18, 0.055, 0.52), Color(0.98, 0.84, 0.42, 0.34))
 	var barracks_sheen := visual_root.get_node_or_null("v0166_barracks_material_review_sheen") as MeshInstance3D
@@ -4651,7 +4970,9 @@ func _add_unit_silhouette(unit: Dictionary) -> void:
 	var mesh_instance := MeshInstance3D.new()
 	mesh_instance.name = str(unit["id"])
 	var mesh: Mesh
-	if str(unit["role"]) == "hero":
+	if _aster_art_applies_to_unit(unit):
+		mesh = _aster_art_quad_mesh()
+	elif str(unit["role"]) == "hero":
 		var hero_mesh := CapsuleMesh.new()
 		hero_mesh.radius = 0.18
 		hero_mesh.height = 0.62
@@ -4685,21 +5006,26 @@ func _add_unit_silhouette(unit: Dictionary) -> void:
 		mesh = militia_mesh
 	mesh_instance.mesh = mesh
 	var worker_billboard := str(unit["role"]) == "Worker" and _worker_art_is_active()
+	var aster_billboard := _aster_art_applies_to_unit(unit)
 	var militia_billboard := _militia_art_applies_to_unit(unit)
 	var unit_y := 0.28
 	if worker_billboard:
 		unit_y = _worker_art_unit_y()
+	elif aster_billboard:
+		unit_y = _aster_art_unit_y()
 	elif militia_billboard:
 		unit_y = _militia_art_unit_y()
 	mesh_instance.position = _to_world(unit["position"], unit_y)
 	if worker_billboard:
 		mesh_instance.material_override = _worker_art_billboard_material()
+	elif aster_billboard:
+		mesh_instance.material_override = _aster_art_billboard_material()
 	elif militia_billboard:
 		mesh_instance.material_override = _militia_art_billboard_material()
 	else:
 		mesh_instance.material_override = _material(_unit_color(unit), false, _unit_emissive(unit), 0.35)
 	visual_root.add_child(mesh_instance)
-	if not worker_billboard and not militia_billboard:
+	if not worker_billboard and not aster_billboard and not militia_billboard:
 		_add_unit_silhouette_parts(mesh_instance, unit)
 
 func _add_unit_silhouette_parts(parent: MeshInstance3D, unit: Dictionary) -> void:
