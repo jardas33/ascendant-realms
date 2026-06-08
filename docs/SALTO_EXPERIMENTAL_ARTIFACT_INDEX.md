@@ -1,10 +1,10 @@
 # Salto Experimental Artifact Index
 
-Status: `ACTIVE_V0171_RETENTION_INDEX`
+Status: `ACTIVE_V0172_RETENTION_INDEX`
 
 This index is the retention source of truth for the Godot Salto experimental-art path. It protects selected local art, active derivatives, metadata, tracked fallbacks, current evidence, and unknown files from broad cleanup.
 
-This v0.171 index supersedes `ACTIVE_V0170_RETENTION_INDEX` while retaining its protected evidence.
+This v0.172 index supersedes `ACTIVE_V0171_RETENTION_INDEX` and `ACTIVE_V0170_RETENTION_INDEX` while retaining their protected evidence.
 
 ## Selected Local Source Art And Active Derivatives
 
@@ -42,6 +42,13 @@ Retain the latest v0.166/v0.167/v0.168/v0.169/v0.170 evidence until a later chec
 - `docs/V0171_ARTIFACT_CLEANUP_APPROVAL_PACKET.md`
 - `docs/V0171_CHARACTER_INTEGRATION_FREEZE_DECISION.md`
 - `docs/V0171_IMPLEMENTATION_REPORT.md`
+- `artifacts/desktop-spikes/godot-salto/v0172/cleanup/`
+- `artifacts/desktop-spikes/godot-salto/v0172/launcher-validation/`
+- `docs/V0172_SAFE_CLEANUP_EXECUTION_REPORT.md`
+- `docs/V0172_DOCUMENTATION_BUDGET_POLICY.md`
+- `docs/V0172_ENVIRONMENT_PHASE_SCORECARD.md`
+- `docs/V0172_ENVIRONMENT_PHASE_ROADMAP.md`
+- `docs/V0172_IMPLEMENTATION_REPORT.md`
 
 ## Character Integration Freeze
 

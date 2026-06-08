@@ -11,26 +11,26 @@ Every phase should protect these long-term pillars:
 
 ## Current Recommended Next Phase
 
-The current checkpoint is **v0.171 Salto Five-Slot Visual-Cohesion QA Cleanup Packet And Character-Integration Freeze Stop** on 2026-06-08. It reviews the already-selected Worker, Barracks material, Militia, Aster, and Ashen opt-in posture, generates zero images, adds zero slots, preserves all launchers, hardens five-slot artifact retention, executes only safe Godot sidecar cleanup, and freezes character-slot expansion.
+The current checkpoint is **v0.172 Safe Cleanup Execution Documentation-Budget Enforcement And Environment-Phase Decision Packet** on 2026-06-08. It performs bounded cleanup execution, leaves archive candidates untouched, creates a documentation-budget policy, and prepares the environment-foundation roadmap after the five-slot character freeze.
 
-The next recommended step is v0.172 only if the queued prompt confirms this checkpoint passed, was pushed, and left `main` clean/synchronized. v0.172 should remain cleanup/docs/environment-roadmap only. Do not add a sixth character slot, enable art by default, mutate the browser runtime, or begin v0.173 unless the queued prompt sequence proves v0.172 passed.
+The next recommended step is v0.173 only if the queued prompt confirms this checkpoint passed, was pushed, and left `main` clean/synchronized. v0.173 should harden the procedural world-shell hierarchy in an opt-in environment-foundation path. Do not add a sixth character slot, enable art by default, mutate the browser runtime, generate images, or begin v0.174 unless the queued prompt sequence proves v0.173 passed.
 
-New v0.171 docs:
+New v0.172 docs:
 
-- `docs/V0171_FIVE_SLOT_VISUAL_COHESION_QA.md`
-- `docs/V0171_FIVE_SLOT_BENCHMARK_FALLBACK_AND_BOUNDARY_REPORT.md`
-- `docs/V0171_ARTIFACT_CLEANUP_APPROVAL_PACKET.md`
-- `docs/V0171_CHARACTER_INTEGRATION_FREEZE_DECISION.md`
-- `docs/V0171_IMPLEMENTATION_REPORT.md`
+- `docs/V0172_SAFE_CLEANUP_EXECUTION_REPORT.md`
+- `docs/V0172_DOCUMENTATION_BUDGET_POLICY.md`
+- `docs/V0172_ENVIRONMENT_PHASE_SCORECARD.md`
+- `docs/V0172_ENVIRONMENT_PHASE_ROADMAP.md`
+- `docs/V0172_IMPLEMENTATION_REPORT.md`
 - `docs/SALTO_EXPERIMENTAL_ARTIFACT_INDEX.md`
 
-Previous checkpoint reference: v0.170 Godot Salto Restrained Ashen Raider Fifth Opt-In Integration Experiment And Follow-Up Hardening.
+Previous checkpoint reference: v0.171 Salto Five-Slot Visual-Cohesion QA Cleanup Packet And Character-Integration Freeze Stop.
 
-The previous checkpoint was **v0.170 Godot Salto Restrained Ashen Raider Fifth Opt-In Integration Experiment And Follow-Up Hardening** on 2026-06-08. It added only the selected restrained Ashen Raider derivative behind the five-slot opt-in launcher, preserved the default procedural launchers and all prior opt-in launchers, proved Ashen missing-art/hash-mismatch fallback while prior slots stayed active, benchmarked M0/M4/M5/fallback modes, and hardened the opening battle view so unrecruited friendly military billboards stayed hidden until progression.
+The previous checkpoint was **v0.171 Salto Five-Slot Visual-Cohesion QA Cleanup Packet And Character-Integration Freeze Stop** on 2026-06-08. It reviewed the five selected opt-in slots, hardened artifact retention for all five derivatives and metadata records, safely removed only known Godot sidecars, and froze character-slot expansion.
 
-Earlier checkpoint reference: v0.166 Godot Salto Three-Slot Visual Coherence Review Launcher And Safe Cleanup Stop.
+Earlier checkpoint reference: v0.170 Godot Salto Restrained Ashen Raider Fifth Opt-In Integration Experiment And Follow-Up Hardening.
 
-The earlier v0.166 checkpoint keeps the existing Worker, Barracks, and Militia opt-in art posture, generates zero images, adds zero slots, preserves all existing launchers, adds only review-mode clarity/framing, records rendered pixel measurements, and restricts cleanup execution to positively identified Godot-generated sidecars.
+The earlier v0.170 checkpoint added only the selected restrained Ashen Raider derivative behind the five-slot opt-in launcher, preserved the default procedural launchers and all prior opt-in launchers, proved Ashen missing-art/hash-mismatch fallback while prior slots stayed active, benchmarked M0/M4/M5/fallback modes, and hardened the opening battle view so unrecruited friendly military billboards stayed hidden until progression.
 
 The next recommended step is human review and explicit approval only unless a separately queued prompt is already being executed after v0.166 gates pass. Emmanuel should review the v0.166 review launcher screenshots, scale measurements, Barracks visibility notes, benchmark scorecard, cleanup before/after manifests, and boundary report. Do not add a fourth art slot, import Aster or Ashen art into the player slice, wire assets into the browser runtime, mutate production manifests or art slots, change saves or stable IDs, choose Godot finally, start a full desktop port, start Unity/Unreal/Electron work, perform broad cleanup, or begin any unqueued future milestone.
 

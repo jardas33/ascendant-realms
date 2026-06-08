@@ -1,6 +1,6 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-06-08 v0.171 Salto Five-Slot Visual-Cohesion QA Cleanup Packet And Character-Integration Freeze Stop
+Last updated: 2026-06-08 v0.172 Safe Cleanup Execution Documentation-Budget Enforcement And Environment-Phase Decision Packet
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
@@ -40,7 +40,43 @@ Project Identity continuation note: v0.170 now supersedes the older no-v0.170 ta
 
 Project Identity continuation note: v0.171 now supersedes the older no-v0.171 tail above because the queued prompt explicitly authorized a five-slot visual-cohesion QA, cleanup packet, and character-integration freeze stop after v0.170 follow-up commit `efe9ab451ed1bbc2d86d16df05c504964128ba41` was clean, synced, and ready. v0.171 generates zero images, adds zero slots, preserves the default procedural launchers and all prior opt-in launchers, hardens artifact audit/cleanup/retention protection for all five selected derivatives and metadata records, safely removes only known Godot-generated sidecars, freezes character-slot expansion after Worker, Barracks material, Militia, Aster, and Ashen, and recommends the next phase focus on procedural environment-shell readability.
 
-Current status override: v0.171 is the active checkpoint for this handoff. The checkpoint reviews the five-slot posture, records that character billboards are now less weak than the procedural world shell, preserves the five-slot path as experimental opt-in, keeps default launchers procedural, and blocks sixth-character-slot work unless a later explicit prompt reopens that boundary. v0.172 must not start unless the queued prompt passes the clean/sync/push/CI prerequisites.
+Project Identity continuation note: v0.172 now supersedes the older no-v0.172 tail above because the queued prompt explicitly authorized bounded cleanup execution, documentation-budget policy, and an environment-phase roadmap after v0.171 was committed, pushed, clean, synced, and remote-green. v0.172 generates zero images, adds zero slots, makes no runtime visual changes, performs no archive moves, preserves default procedural launchers and all prior opt-in launchers, validates the launcher stack, preserves selected art/metadata/fallbacks/current evidence, and recommends v0.173 procedural world-shell hierarchy hardening only after v0.172 is committed, pushed, clean, synced, and green.
+
+Current status override: v0.172 is the active checkpoint for this handoff. Character-slot integration remains frozen after five selected opt-in slots. The next allowed direction is procedural environment-foundation work only if the queued v0.173 prompt passes prerequisites. v0.173 must not start from this handoff without the explicit queued prompt and clean/synced/green proof.
+
+## Current v0.172 Safe Cleanup Execution Documentation-Budget Enforcement And Environment-Phase Decision Packet - 2026-06-08
+
+Status: local v0.172 work is the active checkpoint. Commit, push, and remote CI proof are required before any queued v0.173 work.
+
+What changed:
+
+- Added the v0.172 cleanup execution report, documentation-budget policy, environment scorecard, environment roadmap, and implementation report.
+- Ran before/after artifact inventory and cleanup dry-runs, plus safe-only cleanup before validation and after launcher validation.
+- Deleted only known Godot-generated sidecars after launcher validation: 14 files / 5,505 bytes.
+- Executed zero archive moves; archive candidates remain candidates only.
+- Validated the default player slice plus Worker-only, Worker + Barracks, Worker + Barracks + Militia, Worker + Barracks + Militia + Aster, and five-slot opt-in launchers.
+- Recommended the next environment phase begin with procedural world-shell hierarchy hardening, then road/river/bridge/site-marker readability, then private terrain-material comparator intake, then readiness docs.
+
+Key evidence:
+
+- `docs/V0172_SAFE_CLEANUP_EXECUTION_REPORT.md`
+- `docs/V0172_DOCUMENTATION_BUDGET_POLICY.md`
+- `docs/V0172_ENVIRONMENT_PHASE_SCORECARD.md`
+- `docs/V0172_ENVIRONMENT_PHASE_ROADMAP.md`
+- `docs/V0172_IMPLEMENTATION_REPORT.md`
+- `artifacts/desktop-spikes/godot-salto/v0172/cleanup/manifests/v0172-cleanup-before-after-manifest.json`
+- `artifacts/desktop-spikes/godot-salto/v0172/cleanup/manifests/v0172-archive-manifest.json`
+- `artifacts/desktop-spikes/godot-salto/v0172/cleanup/manifests/v0172-deleted-safe-only-manifest.json`
+
+Current constraints:
+
+- Zero images generated.
+- Zero slots added.
+- Runtime visual changes: none.
+- Archive moves: none.
+- Default launchers remain procedural.
+- Browser runtime, production manifests, saves, stable IDs, gameplay, objectives, AI, balance, and campaign state remain untouched.
+- Do not begin v0.173 without the explicit queued prompt and clean/synced/green proof.
 
 ## Current v0.171 Salto Five-Slot Visual-Cohesion QA Cleanup Packet And Character-Integration Freeze Stop - 2026-06-08
 

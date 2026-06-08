@@ -1,6 +1,39 @@
 # Development Checkpoint
 
-Updated: 2026-06-08 v0.171 Salto Five-Slot Visual-Cohesion QA Cleanup Packet And Character-Integration Freeze Stop
+Updated: 2026-06-08 v0.172 Safe Cleanup Execution Documentation-Budget Enforcement And Environment-Phase Decision Packet
+
+## v0.172 Safe Cleanup Execution Documentation-Budget Enforcement And Environment-Phase Decision Packet - 2026-06-08
+
+Scope: bounded cleanup execution, documentation-budget policy, and environment-phase roadmap. This checkpoint adds no images, adds no slots, makes no runtime visual changes, performs no archive moves, keeps default launchers procedural, and does not begin v0.173.
+
+Included work:
+
+- Confirmed v0.171 as current clean/synced HEAD before edits.
+- Ran fresh before/after artifact inventory and cleanup dry-run manifests.
+- Ran safe-only cleanup before validation and again after launcher validation.
+- Deleted only regenerated Godot comparator sidecars: 14 files / 5,505 bytes after launcher validation.
+- Left all archive candidates as candidates only.
+- Preserved selected local art, active derivatives, metadata, tracked fallbacks, latest evidence, historical evidence, and unknown files.
+- Validated default player slice plus Worker-only, Worker + Barracks, Worker + Barracks + Militia, Worker + Barracks + Militia + Aster, and five-slot launchers.
+- Added documentation-budget policy and environment-phase scorecard/roadmap.
+
+Verification targets:
+
+```text
+PASS: npm run godot:audit:salto-experimental-artifacts -- --output-root=artifacts/desktop-spikes/godot-salto/v0172/cleanup/before-inventory.
+PASS: npm run godot:cleanup:salto-experimental-artifacts -- --output-root=artifacts/desktop-spikes/godot-salto/v0172/cleanup/before-dry-run.
+PASS: npm run godot:cleanup:salto-experimental-artifacts -- --output-root=artifacts/desktop-spikes/godot-salto/v0172/cleanup/safe-only --apply-safe-only.
+PASS: npm run godot:validate:player-slice.
+PASS: npm run godot:validate:salto-worker-art-experiment.
+PASS: npm run godot:validate:salto-worker-barracks-art-experiment.
+PASS: npm run godot:validate:salto-worker-barracks-militia-art-experiment.
+PASS: npm run godot:validate:salto-worker-barracks-militia-aster-art-experiment.
+PASS: npm run godot:validate:salto-five-slot-art-experiment.
+PASS: npm run godot:cleanup:salto-experimental-artifacts -- --output-root=artifacts/desktop-spikes/godot-salto/v0172/cleanup/post-launcher-safe-only --apply-safe-only.
+PASS: npm run godot:validate:salto-experimental-artifact-retention -- --output-root=artifacts/desktop-spikes/godot-salto/v0172/cleanup/retention-final.
+PASS: npm run godot:audit:salto-experimental-artifacts -- --output-root=artifacts/desktop-spikes/godot-salto/v0172/cleanup/after-inventory.
+PASS: npm run godot:cleanup:salto-experimental-artifacts -- --output-root=artifacts/desktop-spikes/godot-salto/v0172/cleanup/after-dry-run.
+```
 
 ## v0.171 Salto Five-Slot Visual-Cohesion QA Cleanup Packet And Character-Integration Freeze Stop - 2026-06-08
 

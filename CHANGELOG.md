@@ -1,5 +1,28 @@
 # Changelog
 
+# v0.172 Safe Cleanup Execution Documentation-Budget Enforcement And Environment-Phase Decision Packet - 2026-06-08
+
+This checkpoint performs bounded housekeeping after the five-slot character freeze. It runs safe-only cleanup, records before/after cleanup manifests, leaves archive candidates untouched, establishes a future documentation-budget policy, and recommends the environment-foundation sequence beginning with procedural world-shell hierarchy hardening.
+
+Added:
+
+- `docs/V0172_SAFE_CLEANUP_EXECUTION_REPORT.md`.
+- `docs/V0172_DOCUMENTATION_BUDGET_POLICY.md`.
+- `docs/V0172_ENVIRONMENT_PHASE_SCORECARD.md`.
+- `docs/V0172_ENVIRONMENT_PHASE_ROADMAP.md`.
+- `docs/V0172_IMPLEMENTATION_REPORT.md`.
+
+Boundaries:
+
+- Zero images generated.
+- Zero slots added.
+- No runtime visual changes.
+- No archive moves.
+- No broad deletion.
+- Default launchers remain procedural.
+- Browser runtime, production manifests, saves, stable IDs, gameplay, objectives, AI, balance, and campaign state remain untouched.
+- v0.173 is not started inside this checkpoint.
+
 # v0.171 Salto Five-Slot Visual-Cohesion QA Cleanup Packet And Character-Integration Freeze Stop - 2026-06-08
 
 This checkpoint reviews the already-selected five-slot Godot Salto opt-in posture, confirms character-billboard cohesion is no longer the main quality bottleneck, hardens cleanup retention for all five selected derivatives and metadata records, safely removes only known Godot-generated sidecars, freezes character-slot expansion, and points the next phase toward procedural environment readability.
