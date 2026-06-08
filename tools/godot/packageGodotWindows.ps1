@@ -3,7 +3,11 @@ param()
 $ErrorActionPreference = "Stop"
 $RepoRoot = Resolve-Path (Join-Path $PSScriptRoot "..\..")
 Set-Location $RepoRoot
-$ExePath = Join-Path $RepoRoot "desktop-spikes\godot-salto\builds\AscendantRealmsGodotSalto.exe"
+$ExePath = if ($env:GODOT_PACKAGE_EXE_PATH) {
+  $env:GODOT_PACKAGE_EXE_PATH
+} else {
+  Join-Path $RepoRoot "desktop-spikes\godot-salto\builds\AscendantRealmsGodotSalto.exe"
+}
 $ArtifactRoot = Join-Path $RepoRoot "artifacts\desktop-spikes\godot-salto\latest"
 $PackageRoot = Join-Path $ArtifactRoot "package-staging"
 $ZipPath = Join-Path $ArtifactRoot "AscendantRealmsGodotSalto-v0124-windows.zip"
@@ -23,7 +27,7 @@ if (Test-Path $PackageRoot) {
   Remove-Item -LiteralPath $PackageRoot -Recurse -Force
 }
 New-Item -ItemType Directory -Force -Path $PackageRoot | Out-Null
-Copy-Item -LiteralPath $ExePath -Destination $PackageRoot -Force
+Copy-Item -LiteralPath $ExePath -Destination (Join-Path $PackageRoot "AscendantRealmsGodotSalto.exe") -Force
 @"
 @echo off
 cd /d "%~dp0"

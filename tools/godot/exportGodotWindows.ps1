@@ -20,7 +20,11 @@ if (-not $GodotExe -or -not (Test-Path $ReleaseTemplate) -or -not (Test-Path $De
 }
 
 New-Item -ItemType Directory -Force -Path "desktop-spikes\godot-salto\builds" | Out-Null
-$ExePath = Join-Path $RepoRoot "desktop-spikes\godot-salto\builds\AscendantRealmsGodotSalto.exe"
+$ExportExeName = if ($env:GODOT_EXPORT_EXE_NAME) { $env:GODOT_EXPORT_EXE_NAME } else { "AscendantRealmsGodotSalto.exe" }
+if ([System.IO.Path]::GetFileName($ExportExeName) -ne $ExportExeName) {
+  throw "GODOT_EXPORT_EXE_NAME must be a file name, not a path: $ExportExeName"
+}
+$ExePath = Join-Path $RepoRoot "desktop-spikes\godot-salto\builds\$ExportExeName"
 if (Test-Path $ExePath) {
   $resolvedExe = Resolve-Path -LiteralPath $ExePath
   $resolvedBuilds = Resolve-Path -LiteralPath (Join-Path $RepoRoot "desktop-spikes\godot-salto\builds")
@@ -49,7 +53,7 @@ $ExportArgs = @(
   "desktop-spikes/godot-salto",
   "--export-release",
   "Windows Desktop",
-  "builds/AscendantRealmsGodotSalto.exe"
+  "builds/$ExportExeName"
 )
 & $GodotExe @ExportArgs
 $GodotExitCode = if ($null -eq $LASTEXITCODE) { 0 } else { $LASTEXITCODE }
@@ -61,7 +65,7 @@ node "desktop-spikes/godot-salto/tools/godotSpikeTool.mjs" export
 if (-not (Test-Path $ExePath)) {
   exit 1
 }
-if ($GodotExitCode -ne 0 -and -not (Test-Path "desktop-spikes\godot-salto\builds\AscendantRealmsGodotSalto.exe")) {
+if ($GodotExitCode -ne 0 -and -not (Test-Path $ExePath)) {
   exit $GodotExitCode
 }
 if ($GodotExitCode -ne 0) {

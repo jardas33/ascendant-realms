@@ -451,6 +451,8 @@ function boundaryCommand(root) {
   const authorizedLaterCheckpointFiles = new Set([
     "CHANGELOG.md",
     "DEVELOPMENT_CHECKPOINT.md",
+    "GODOT_AUDIT_SALTO_EXPERIMENTAL_ARTIFACTS_WINDOWS.bat",
+    "GODOT_VALIDATE_SALTO_THREE_SLOT_VISUAL_HARDENING_WINDOWS.bat",
     "GODOT_LAUNCH_SALTO_WORKER_BARRACKS_MILITIA_ART_EXPERIMENT_WINDOWS.bat",
     "GODOT_VALIDATE_SALTO_WORKER_BARRACKS_MILITIA_ART_EXPERIMENT_WINDOWS.bat",
     "GODOT_CAPTURE_SALTO_WORKER_BARRACKS_MILITIA_ART_EXPERIMENT_WINDOWS.bat",
@@ -464,7 +466,10 @@ function boundaryCommand(root) {
     "tools/godot/launchGodotSaltoWorkerBarracksMilitiaArtExperimentWindows.ps1",
     "tools/godot/validateGodotSaltoWorkerBarracksMilitiaArtExperimentWindows.ps1",
     "tools/godot/captureGodotSaltoWorkerBarracksMilitiaArtExperimentWindows.ps1",
+    "tools/godot/validateGodotSaltoThreeSlotVisualHardeningWindows.ps1",
+    "tools/godot/saltoThreeSlotVisualHardeningTool.mjs",
     "tools/godot/saltoWorkerBarracksMilitiaArtOptInTool.mjs",
+    "scripts/auditSaltoExperimentalArtifacts.mjs",
     "docs/V0164_GODOT_PLAYER_SLICE_MILITIA_OPT_IN_SPEC.md",
     "docs/V0164_MILITIA_OPT_IN_SLOT_CONTRACT.md",
     "docs/V0164_MILITIA_OPT_IN_FUNCTIONAL_REPORT.md",
@@ -474,9 +479,13 @@ function boundaryCommand(root) {
     "docs/V0164_PLAYER_SLICE_THREE_SLOT_BOUNDARY.md",
     "docs/V0164_IMPLEMENTATION_REPORT.md"
   ]);
+  const laterCheckpointTextFiles = new Set(
+    v0162ChangedTextFiles.filter((path) => /^docs\/V0165_/u.test(path))
+  );
   const newIntegrationText = addedOrNewText(v0162ChangedTextFiles, new Set([
     "tools/godot/saltoWorkerBarracksArtOptInTool.mjs",
-    ...authorizedLaterCheckpointFiles
+    ...authorizedLaterCheckpointFiles,
+    ...laterCheckpointTextFiles
   ]));
   const thirdSlotReferences = [];
   for (const token of thirdSlotTokens) {

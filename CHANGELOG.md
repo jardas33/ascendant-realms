@@ -1,5 +1,34 @@
 # Changelog
 
+# v0.165 Godot Salto Three-Slot Visual Hardening And Artifact Hygiene Inventory Stop - 2026-06-07
+
+This checkpoint reproduces the player-facing screenshot concern before adding any further art slot, proves the Worker and Militia billboard aspect-compression defect, repairs only that runtime width calculation, audits duplicate rendering and Barracks material binding, adds a dry-run artifact-hygiene inventory, and stops for Emmanuel review. It generates zero images, adds zero slots, preserves all launchers, and does not begin v0.166.
+
+Added:
+
+- Runtime `v0165VisualHardeningAudit` status evidence for unit visual counts, generated-art counts, fallback counts, marker/ring counts, accidental procedural overlay counts, and per-frame decode/metadata-parse counters.
+- `tools/godot/saltoThreeSlotVisualHardeningTool.mjs` for scale/aspect, duplicate-render, Barracks-binding, capture, benchmark, Computer Use, boundary, and summary gates.
+- `tools/godot/validateGodotSaltoThreeSlotVisualHardeningWindows.ps1` and `GODOT_VALIDATE_SALTO_THREE_SLOT_VISUAL_HARDENING_WINDOWS.bat`.
+- `scripts/auditSaltoExperimentalArtifacts.mjs` and `GODOT_AUDIT_SALTO_EXPERIMENTAL_ARTIFACTS_WINDOWS.bat`.
+- v0.165 visual hardening, screenshot reproduction, billboard audit, duplicate-render audit, Barracks-binding, visual QA, benchmark, artifact inventory, retention policy, boundary, and implementation docs.
+- Scaffold guardrail coverage for v0.165 commands and docs.
+
+Changed:
+
+- Worker billboard runtime width now derives from source aspect instead of fixed `0.55`.
+- Militia billboard runtime width now derives from source aspect instead of fixed `0.50`.
+- Existing status output now reports runtime width/height, source/runtime aspect, terrain-foot contact, selection-ring diameter, and procedural bounding boxes for Worker and Militia art.
+
+Boundaries:
+
+- Zero new AI images.
+- Zero new slots.
+- Exactly three normal-slice opt-in art slots remain total.
+- Default stabilized launcher remains procedural.
+- Worker-only launcher, Worker + Barracks launcher, and Worker + Barracks + Militia launcher remain preserved.
+- No Aster, Ashen, HUD, environment, or browser runtime import.
+- No package, manifest, broad registry, save, stable-ID, gameplay, final engine choice, full port, cleanup execution, or v0.166 work.
+
 # v0.164 Godot Salto Militia Third Opt-In Player-Slice Integration And Human Review Stop - 2026-06-07
 
 This checkpoint adds only the validated Militia billboard as the third normal-slice opt-in art slot behind a new Worker + Barracks + Militia launcher. It preserves the default procedural launcher, preserves the Worker-only launcher, preserves the Worker + Barracks launcher, proves Militia missing-art and hash-mismatch fallback, runs squad-selection and combat-onset checks, benchmarks equivalent modes, and stops for Emmanuel review. It does not begin v0.165.

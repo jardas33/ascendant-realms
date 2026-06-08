@@ -63,6 +63,8 @@
     "godot:validate:salto-worker-barracks-art-experiment": "powershell -NoProfile -ExecutionPolicy Bypass -File tools/godot/validateGodotSaltoWorkerBarracksArtExperimentWindows.ps1",
     "godot:validate:salto-worker-barracks-art-opt-in-hardening": "powershell -NoProfile -ExecutionPolicy Bypass -File tools/godot/validateGodotSaltoWorkerBarracksArtOptInHardeningWindows.ps1",
     "godot:validate:salto-worker-barracks-militia-art-experiment": "powershell -NoProfile -ExecutionPolicy Bypass -File tools/godot/validateGodotSaltoWorkerBarracksMilitiaArtExperimentWindows.ps1",
+    "godot:validate:salto-three-slot-visual-hardening": "powershell -NoProfile -ExecutionPolicy Bypass -File tools/godot/validateGodotSaltoThreeSlotVisualHardeningWindows.ps1",
+    "godot:audit:salto-experimental-artifacts": "node scripts/auditSaltoExperimentalArtifacts.mjs",
     "godot:benchmark:salto-worker-barracks-art-experiment": "powershell -NoProfile -ExecutionPolicy Bypass -File tools/godot/runGodotSaltoWorkerBarracksArtExperimentBenchmarkWindows.ps1",
     "godot:validate:real-input": "powershell -NoProfile -ExecutionPolicy Bypass -File tools/godot/runGodotRealInputSmokeWindows.ps1",
     "godot:headed:real-input-smoke": "powershell -NoProfile -ExecutionPolicy Bypass -File tools/godot/runGodotRealInputSmokeWindows.ps1",

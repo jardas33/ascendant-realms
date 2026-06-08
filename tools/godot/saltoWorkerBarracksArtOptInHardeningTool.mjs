@@ -570,7 +570,32 @@ function boundaryCommand(root) {
     "--militia-billboard-single-slot",
     "--ashen-raider-billboard-single-slot"
   ];
-  const textFiles = changed.filter((path) => /\.(bat|ps1|gd|md|json|mjs|ts)$/iu.test(path));
+  const authorizedLaterCheckpointFiles = new Set([
+    "CHANGELOG.md",
+    "DEVELOPMENT_CHECKPOINT.md",
+    "GODOT_AUDIT_SALTO_EXPERIMENTAL_ARTIFACTS_WINDOWS.bat",
+    "GODOT_CAPTURE_SALTO_WORKER_BARRACKS_MILITIA_ART_EXPERIMENT_WINDOWS.bat",
+    "GODOT_LAUNCH_SALTO_WORKER_BARRACKS_MILITIA_ART_EXPERIMENT_WINDOWS.bat",
+    "GODOT_VALIDATE_SALTO_THREE_SLOT_VISUAL_HARDENING_WINDOWS.bat",
+    "GODOT_VALIDATE_SALTO_WORKER_BARRACKS_MILITIA_ART_EXPERIMENT_WINDOWS.bat",
+    "LLM_GAME_HANDOFF.md",
+    "ROADMAP.md",
+    "RELEASE_CHECKLIST.md",
+    "desktop-spikes/godot-salto/scripts/salto_spike_root.gd",
+    "desktop-spikes/godot-salto/scripts/salto_spike_scene_3d.gd",
+    "package.json",
+    "scripts/auditSaltoExperimentalArtifacts.mjs",
+    "src/game/desktop-spike/GodotSaltoSpikeScaffold.test.ts",
+    "tools/godot/captureGodotSaltoWorkerBarracksMilitiaArtExperimentWindows.ps1",
+    "tools/godot/launchGodotSaltoWorkerBarracksMilitiaArtExperimentWindows.ps1",
+    "tools/godot/saltoThreeSlotVisualHardeningTool.mjs",
+    "tools/godot/saltoWorkerBarracksMilitiaArtOptInTool.mjs",
+    "tools/godot/validateGodotSaltoThreeSlotVisualHardeningWindows.ps1",
+    "tools/godot/validateGodotSaltoWorkerBarracksMilitiaArtExperimentWindows.ps1"
+  ]);
+  const textFiles = changed
+    .filter((path) => /\.(bat|ps1|gd|md|json|mjs|ts)$/iu.test(path))
+    .filter((path) => !authorizedLaterCheckpointFiles.has(path) && !/^docs\/V016[45]_/u.test(path));
   const newIntegrationText = addedOrNewText(textFiles, new Set(["tools/godot/saltoWorkerBarracksArtOptInHardeningTool.mjs"]));
   const thirdSlotReferences = thirdSlotTokens.filter((token) => newIntegrationText.includes(token));
   if (thirdSlotReferences.length > 0) {

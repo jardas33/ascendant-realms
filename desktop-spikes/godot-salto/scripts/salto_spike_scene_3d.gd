@@ -380,6 +380,8 @@ func _reset_worker_art_status(enabled: bool, reason: String) -> void:
 		"actualSha256": "",
 		"sourceDimensions": {"width": 0, "height": 0},
 		"metadataDimensions": {"width": 0, "height": 0},
+		"trimmedPixelDimensions": {"width": 0, "height": 0},
+		"alphaBounds": {},
 		"alphaPosture": "",
 		"pivot": {},
 		"scale": worker_art_requested_scale,
@@ -399,6 +401,7 @@ func _reset_worker_art_status(enabled: bool, reason: String) -> void:
 		"meshCreateCount": worker_art_mesh_create_count,
 		"materialReuseCount": worker_art_material_reuse_count
 	}
+	_refresh_worker_art_counters()
 
 func _load_worker_art_candidate() -> void:
 	_reset_worker_art_status(true, "not loaded")
@@ -460,6 +463,12 @@ func _load_worker_art_candidate() -> void:
 	worker_art_status["actualSha256"] = actual_sha
 	worker_art_status["sourceDimensions"] = {"width": image.get_width(), "height": image.get_height()}
 	worker_art_status["metadataDimensions"] = {"width": metadata_width, "height": metadata_height}
+	var trim_bounds: Dictionary = metadata.get("trimBounds", {})
+	worker_art_status["alphaBounds"] = trim_bounds
+	worker_art_status["trimmedPixelDimensions"] = {
+		"width": int(trim_bounds.get("width", 0)),
+		"height": int(trim_bounds.get("height", 0))
+	}
 	worker_art_status["alphaPosture"] = str(metadata.get("alphaPosture", ""))
 	worker_art_status["pivot"] = metadata.get("pivot", {})
 	worker_art_status["scale"] = worker_art_requested_scale
@@ -514,6 +523,18 @@ func _refresh_worker_art_counters() -> void:
 	worker_art_status["materialCreateCount"] = worker_art_material_create_count
 	worker_art_status["meshCreateCount"] = worker_art_mesh_create_count
 	worker_art_status["materialReuseCount"] = worker_art_material_reuse_count
+	var runtime_height := _worker_art_unit_height()
+	var runtime_width := _worker_art_unit_width()
+	var source_aspect := float(WORKER_ART_EXPECTED_WIDTH) / maxf(1.0, float(WORKER_ART_EXPECTED_HEIGHT))
+	var runtime_aspect := runtime_width / maxf(0.001, runtime_height)
+	worker_art_status["runtimeWorldWidth"] = snappedf(runtime_width, 0.0001)
+	worker_art_status["runtimeWorldHeight"] = snappedf(runtime_height, 0.0001)
+	worker_art_status["sourceAspectRatio"] = snappedf(source_aspect, 0.0001)
+	worker_art_status["runtimeAspectRatio"] = snappedf(runtime_aspect, 0.0001)
+	worker_art_status["aspectRatioPreserved"] = absf(runtime_aspect - source_aspect) <= 0.001
+	worker_art_status["terrainFootContactY"] = snappedf(WORKER_ART_GROUND_CLEARANCE, 0.0001)
+	worker_art_status["selectionRingDiameter"] = snappedf(_unit_radius({"role": "Worker", "fixtureId": "worker", "team": "friendly"}) * 2.2, 0.0001)
+	worker_art_status["proceduralUnitBoundingBox"] = {"width": 0.22, "height": 0.36, "depth": 0.18}
 
 func _worker_art_is_active() -> bool:
 	return worker_art_experiment_enabled and bool(worker_art_status.get("sourceLoaded", false)) and worker_art_texture != null
@@ -522,7 +543,7 @@ func _worker_art_unit_height() -> float:
 	return WORKER_ART_QUAD_HEIGHT * worker_art_requested_scale
 
 func _worker_art_unit_width() -> float:
-	return WORKER_ART_QUAD_WIDTH * worker_art_requested_scale
+	return _worker_art_unit_height() * (float(WORKER_ART_EXPECTED_WIDTH) / maxf(1.0, float(WORKER_ART_EXPECTED_HEIGHT)))
 
 func _worker_art_unit_y() -> float:
 	return WORKER_ART_GROUND_CLEARANCE + _worker_art_unit_height() * 0.5
@@ -794,6 +815,8 @@ func _reset_militia_art_status(enabled: bool, reason: String) -> void:
 		"actualSha256": "",
 		"sourceDimensions": {"width": 0, "height": 0},
 		"metadataDimensions": {"width": 0, "height": 0},
+		"trimmedPixelDimensions": {"width": 0, "height": 0},
+		"alphaBounds": {},
 		"alphaPosture": "",
 		"pivot": {},
 		"scale": militia_art_requested_scale,
@@ -814,6 +837,7 @@ func _reset_militia_art_status(enabled: bool, reason: String) -> void:
 		"meshCreateCount": militia_art_mesh_create_count,
 		"materialReuseCount": militia_art_material_reuse_count
 	}
+	_refresh_militia_art_counters()
 
 func _load_militia_art_candidate() -> void:
 	_reset_militia_art_status(true, "not loaded")
@@ -878,6 +902,12 @@ func _load_militia_art_candidate() -> void:
 	militia_art_status["actualSha256"] = actual_sha
 	militia_art_status["sourceDimensions"] = {"width": image.get_width(), "height": image.get_height()}
 	militia_art_status["metadataDimensions"] = {"width": metadata_width, "height": metadata_height}
+	var trim_bounds: Dictionary = metadata.get("trimBounds", {})
+	militia_art_status["alphaBounds"] = trim_bounds
+	militia_art_status["trimmedPixelDimensions"] = {
+		"width": int(trim_bounds.get("width", 0)),
+		"height": int(trim_bounds.get("height", 0))
+	}
 	militia_art_status["alphaPosture"] = str(metadata.get("alphaPosture", ""))
 	militia_art_status["pivot"] = metadata.get("pivot", {})
 	militia_art_status["role"] = metadata.get("role", {})
@@ -922,6 +952,18 @@ func _refresh_militia_art_counters() -> void:
 	militia_art_status["materialCreateCount"] = militia_art_material_create_count
 	militia_art_status["meshCreateCount"] = militia_art_mesh_create_count
 	militia_art_status["materialReuseCount"] = militia_art_material_reuse_count
+	var runtime_height := _militia_art_unit_height()
+	var runtime_width := _militia_art_unit_width()
+	var source_aspect := float(MILITIA_ART_EXPECTED_WIDTH) / maxf(1.0, float(MILITIA_ART_EXPECTED_HEIGHT))
+	var runtime_aspect := runtime_width / maxf(0.001, runtime_height)
+	militia_art_status["runtimeWorldWidth"] = snappedf(runtime_width, 0.0001)
+	militia_art_status["runtimeWorldHeight"] = snappedf(runtime_height, 0.0001)
+	militia_art_status["sourceAspectRatio"] = snappedf(source_aspect, 0.0001)
+	militia_art_status["runtimeAspectRatio"] = snappedf(runtime_aspect, 0.0001)
+	militia_art_status["aspectRatioPreserved"] = absf(runtime_aspect - source_aspect) <= 0.001
+	militia_art_status["terrainFootContactY"] = snappedf(MILITIA_ART_GROUND_CLEARANCE, 0.0001)
+	militia_art_status["selectionRingDiameter"] = snappedf(_unit_radius({"role": "Militia", "fixtureId": "militia", "team": "friendly"}) * 2.2, 0.0001)
+	militia_art_status["proceduralUnitBoundingBox"] = {"topRadius": 0.15, "bottomRadius": 0.18, "height": 0.42}
 
 func _militia_art_is_active() -> bool:
 	return militia_art_experiment_enabled and bool(militia_art_status.get("sourceLoaded", false)) and militia_art_texture != null
@@ -933,7 +975,7 @@ func _militia_art_unit_height() -> float:
 	return MILITIA_ART_QUAD_HEIGHT * militia_art_requested_scale
 
 func _militia_art_unit_width() -> float:
-	return MILITIA_ART_QUAD_WIDTH * militia_art_requested_scale
+	return _militia_art_unit_height() * (float(MILITIA_ART_EXPECTED_WIDTH) / maxf(1.0, float(MILITIA_ART_EXPECTED_HEIGHT)))
 
 func _militia_art_unit_y() -> float:
 	return MILITIA_ART_GROUND_CLEARANCE + _militia_art_unit_height() * 0.5
@@ -3121,6 +3163,7 @@ func get_spike_status() -> Dictionary:
 	status["workerArtExperiment"] = worker_art_status.duplicate(true)
 	status["barracksMaterialExperiment"] = barracks_material_status.duplicate(true)
 	status["militiaArtExperiment"] = militia_art_status.duplicate(true)
+	status["v0165VisualHardeningAudit"] = _v0165_visual_hardening_audit(worker_art_loaded, barracks_material_loaded, militia_art_loaded)
 	status["workerArtOptInOnly"] = worker_art_experiment_enabled and not barracks_material_experiment_enabled and not militia_art_experiment_enabled
 	status["workerArtSlotCount"] = 1 if worker_art_experiment_enabled else 0
 	status["workerArtProceduralFallbackActive"] = bool(worker_art_status.get("fallbackActive", true))
@@ -3357,6 +3400,87 @@ func get_spike_status() -> Dictionary:
 	status["pressureWaveDefeatedRendered"] = microloop.get("pressureWaveDefeated", false)
 	status["lumeRestoreMicroloopRendered"] = microloop.get("lumeRestored", false)
 	return status
+
+func _v0165_visual_hardening_audit(worker_art_loaded: bool, barracks_material_loaded: bool, militia_art_loaded: bool) -> Dictionary:
+	var audit := {
+		"schemaVersion": 1,
+		"checkpoint": "v0.165",
+		"workerArtLoaded": worker_art_loaded,
+		"barracksMaterialLoaded": barracks_material_loaded,
+		"militiaArtLoaded": militia_art_loaded,
+		"unitVisuals": [],
+		"totalVisualNodeCount": 0,
+		"meshInstance3DCount": 0,
+		"proceduralVisualVisibleCount": 0,
+		"generatedArtVisibleCount": 0,
+		"fallbackVisibleCount": 0,
+		"markerRingVisibleCount": 0,
+		"drawNodeCreationCount": 0,
+		"accidentalProceduralOverlayCount": 0,
+		"textureLoadCount": worker_art_source_load_count + barracks_material_source_load_count + militia_art_source_load_count,
+		"materialCreateCount": worker_art_material_create_count + barracks_material_material_create_count + militia_art_material_create_count,
+		"textureCreateCount": worker_art_texture_create_count + barracks_material_texture_create_count + militia_art_texture_create_count,
+		"metadataParseCount": worker_art_metadata_parse_count + barracks_material_metadata_parse_count + militia_art_metadata_parse_count,
+		"imageDecodeCount": worker_art_image_decode_count + barracks_material_image_decode_count + militia_art_image_decode_count,
+		"materialReuseCount": worker_art_material_reuse_count + barracks_material_material_reuse_count + militia_art_material_reuse_count,
+		"perFrameDecodeCount": 0,
+		"perFrameMetadataParseCount": 0,
+		"barracksMaterialAppliedSurfaceCount": barracks_material_applied_surface_count,
+		"barracksMaterialAppliedOnlyToBarracks": true,
+		"proceduralShellElementsIntentionallyVisible": ["barracks_weapon_rack_silhouette", "barracks_drill_yard_edge", "construction_scaffold", "construction_progress_bar"],
+		"cameraZoomPosture": camera_zoom_posture
+	}
+	if visual_root != null:
+		_v0165_collect_visual_node_counts(visual_root, audit)
+		audit["drawNodeCreationCount"] = int(audit.get("meshInstance3DCount", 0))
+	for unit in runtime.units:
+		var id := str(unit.get("id", ""))
+		var node: MeshInstance3D = null
+		if visual_root != null:
+			node = visual_root.get_node_or_null(id) as MeshInstance3D
+		var role := str(unit.get("role", ""))
+		var fixture := str(unit.get("fixtureId", ""))
+		var worker_billboard := role == "Worker" and worker_art_loaded
+		var militia_billboard := fixture == "militia" and str(unit.get("team", "")) == "friendly" and militia_art_loaded
+		var procedural_visible := node != null and node.visible and not worker_billboard and not militia_billboard
+		var art_visible := node != null and node.visible and (worker_billboard or militia_billboard)
+		var child_count := node.get_child_count() if node != null else 0
+		var mesh_class := node.mesh.get_class() if node != null and node.mesh != null else "missing"
+		if procedural_visible:
+			audit["proceduralVisualVisibleCount"] = int(audit.get("proceduralVisualVisibleCount", 0)) + 1
+		if art_visible:
+			audit["generatedArtVisibleCount"] = int(audit.get("generatedArtVisibleCount", 0)) + 1
+		if (worker_billboard or militia_billboard) and child_count > 0:
+			audit["accidentalProceduralOverlayCount"] = int(audit.get("accidentalProceduralOverlayCount", 0)) + 1
+		audit["unitVisuals"].append({
+			"id": id,
+			"role": role,
+			"fixtureId": fixture,
+			"team": str(unit.get("team", "")),
+			"nodeVisible": node != null and node.visible,
+			"meshClass": mesh_class,
+			"childVisualCount": child_count,
+			"generatedArtVisible": art_visible,
+			"proceduralVisualVisible": procedural_visible,
+			"fallbackVisible": node != null and node.visible and ((role == "Worker" and worker_art_experiment_enabled and not worker_art_loaded) or (fixture == "militia" and militia_art_experiment_enabled and not militia_art_loaded)),
+			"selectionRingDiameter": snappedf(_unit_radius(unit) * 2.2, 0.0001),
+			"unitScale": _vector3_report(_unit_scale(unit))
+		})
+	audit["fallbackVisibleCount"] = audit["unitVisuals"].filter(func(entry: Dictionary) -> bool: return bool(entry.get("fallbackVisible", false))).size()
+	audit["validatedArtReplacesProceduralVisual"] = int(audit.get("accidentalProceduralOverlayCount", 0)) == 0
+	audit["noPerFrameDecode"] = int(audit.get("perFrameDecodeCount", 0)) == 0
+	audit["noPerFrameMetadataParse"] = int(audit.get("perFrameMetadataParseCount", 0)) == 0
+	return audit
+
+func _v0165_collect_visual_node_counts(node: Node, audit: Dictionary) -> void:
+	for child in node.get_children():
+		audit["totalVisualNodeCount"] = int(audit.get("totalVisualNodeCount", 0)) + 1
+		var mesh_child := child as MeshInstance3D
+		if mesh_child != null:
+			audit["meshInstance3DCount"] = int(audit.get("meshInstance3DCount", 0)) + 1
+			if mesh_child.visible and (str(mesh_child.name).begins_with("selection_") or str(mesh_child.name).contains("_marker") or str(mesh_child.name).contains("_ring")):
+				audit["markerRingVisibleCount"] = int(audit.get("markerRingVisibleCount", 0)) + 1
+		_v0165_collect_visual_node_counts(child, audit)
 
 func _refresh_visual_foundation() -> void:
 	if terrain_root and is_instance_valid(terrain_root):
@@ -4171,7 +4295,11 @@ func _rebuild_visuals() -> void:
 	if visual_root == null:
 		return
 	for child in visual_root.get_children():
-		child.queue_free()
+		visual_root.remove_child(child)
+		child.free()
+	aster_label = null
+	west_stone_cut_label = null
+	worker_guidance_label = null
 	barracks_material_applied_surface_count = 0
 	_refresh_barracks_material_counters()
 	for structure in runtime.structures:

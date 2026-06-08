@@ -1,6 +1,48 @@
 # Development Checkpoint
 
-Updated: 2026-06-07 v0.164 Godot Salto Militia Third Opt-In Player-Slice Integration And Human Review Stop
+Updated: 2026-06-07 v0.165 Godot Salto Three-Slot Visual Hardening And Artifact Hygiene Inventory Stop
+
+## v0.165 Godot Salto Three-Slot Visual Hardening And Artifact Hygiene Inventory Stop - 2026-06-07
+
+Scope: visual-scale hardening and artifact-hygiene inventory for the existing three-slot Godot player-slice opt-in path. This checkpoint adds no images, adds no slots, preserves all launchers, repairs only proven Worker/Militia runtime aspect compression, and stops for Emmanuel review.
+
+Included work:
+
+- Confirmed v0.164 prerequisite status and starting commit before edits.
+- Reproduced the human screenshot concern in the actual Windows app before repair.
+- Measured selected Worker and Militia source dimensions, alpha bounds, trim bounds, pivots, and runtime quad dimensions.
+- Preserved Worker slot `worker_billboard_static_v0147` / `HYBRID_WORKER_TRIMMED_1024` and SHA-256 `a628065ca92b231b0d4f6a0625d9e259dea080e80d530ee688483611d70049bc`.
+- Preserved Barracks slot `barrosan_barracks_material_v0149` / `HYBRID_BARRACKS_768_WRAPSAFE_OFFSET_BLEND` and SHA-256 `58a60b750370df084b60a1d92077da9367c0ba8a763781e2c3a8a7d96f1c980f`.
+- Preserved Militia slot `militia_billboard_static_v0154` / `HYBRID_MILITIA_TRIMMED_1024` and SHA-256 `c25349f00c422a0b3c9d5862027351bd70008e9314d4e3cd4001676e914321cb`.
+- Repaired Worker and Militia runtime quad width calculation to preserve source aspect.
+- Added `v0165VisualHardeningAudit` runtime evidence.
+- Added `GODOT_VALIDATE_SALTO_THREE_SLOT_VISUAL_HARDENING_WINDOWS.bat`.
+- Added `GODOT_AUDIT_SALTO_EXPERIMENTAL_ARTIFACTS_WINDOWS.bat`.
+- Added v0.165 scale/aspect, duplicate-render, Barracks-binding, visual QA, benchmark, artifact-hygiene, boundary, and implementation docs.
+
+Current interpretation:
+
+- The default stabilized launcher remains procedural.
+- The Worker-only launcher remains Worker-only.
+- The Worker + Barracks launcher remains two-slot.
+- The Worker + Barracks + Militia launcher remains exactly three-slot.
+- Barracks material remains bound to the intended Barracks surfaces and intentionally leaves procedural shell detail visible.
+- Militia missing-art and hash-mismatch fallback remain fail-closed to procedural Militia while Worker and Barracks stay active.
+- Browser runtime, production manifests, saves, stable IDs, new art slots, gameplay, objectives, input semantics, balance, AI, map content, cleanup execution, campaign state, final engine choice, full port, and v0.166 remain out of scope.
+
+Verification targets:
+
+```text
+PASS: npm run godot:validate:salto-three-slot-visual-hardening - PASS_V0165_THREE_SLOT_VISUAL_HARDENING_AUTOMATION_READY.
+PASS: scale/aspect - PASS_V0165_BILLBOARD_SCALE_ASPECT_PIVOT_AUDIT.
+PASS: duplicate render - PASS_V0165_DUPLICATE_RENDER_AUDIT.
+PASS: Barracks binding - PASS_V0165_BARRACKS_MATERIAL_BINDING_REVIEW.
+PASS: benchmark - PASS_V0165_THREE_SLOT_BENCHMARK.
+PASS: artifact hygiene - PASS_V0165_EXPERIMENTAL_ARTIFACT_HYGIENE_DRY_RUN.
+PASS: Computer Use - PASS_V0165_THREE_SLOT_COMPUTER_USE_GATE.
+PASS: boundary - PASS_V0165_PLAYER_SLICE_THREE_SLOT_BOUNDARY.
+PASS: summary - PASS_V0165_THREE_SLOT_VISUAL_HARDENING_HUMAN_REVIEW_READY.
+```
 
 ## v0.164 Godot Salto Militia Third Opt-In Player-Slice Integration And Human Review Stop - 2026-06-07
 

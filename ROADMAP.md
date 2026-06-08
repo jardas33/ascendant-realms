@@ -11,9 +11,25 @@ Every phase should protect these long-term pillars:
 
 ## Current Recommended Next Phase
 
-The current checkpoint is **v0.164 Godot Salto Militia Third Opt-In Player-Slice Integration And Human Review Stop** on 2026-06-07. It adds only the validated Militia billboard as the third normal-slice opt-in art slot behind a new Worker + Barracks + Militia launcher, preserves the default procedural launcher and all prior opt-in launchers unchanged, generates zero new images, and keeps the Browser runtime untouched.
+The current checkpoint is **v0.165 Godot Salto Three-Slot Visual Hardening And Artifact Hygiene Inventory Stop** on 2026-06-07. It keeps the existing Worker, Barracks, and Militia opt-in art posture, generates zero images, adds zero slots, preserves all existing launchers, repairs only the proven Worker/Militia runtime aspect-compression defect, adds duplicate-render and Barracks-binding evidence, and creates a dry-run artifact-hygiene inventory.
 
-The next recommended step is human review and explicit approval only: Emmanuel may compare default procedural, Worker-only, Worker + Barracks, Worker + Barracks + Militia, Militia missing-art fallback, and Militia hash-mismatch fallback evidence, then decide whether to pause, request a bounded visual repair, or authorize a separate next scope. The final v0.164 scorecard is `PASS_V0164_MILITIA_OPT_IN_HUMAN_REVIEW_READY` with M3 FPS ratio versus M0 `1.0003`, M3 P95 frame-time ratio versus M0 `0.9442`, M3 FPS ratio versus M2 `1.0001`, M3 P95 frame-time ratio versus M2 `0.9478`, package leakage `false`, no fourth slot, and all protected launcher hashes unchanged. Do not add a fourth art slot, import additional art into the player slice, wire assets into the browser runtime, mutate production manifests or art slots, change saves or stable IDs, choose Godot finally, start a full desktop port, start Unity/Unreal/Electron work, or begin v0.165.
+The next recommended step is human review and explicit approval only: Emmanuel should review the v0.165 captures, Computer Use review, scale/aspect audit, duplicate-render audit, Barracks material binding review, benchmark scorecard, and artifact-hygiene inventory. A future separately authorized milestone may be a cleanup execution checkpoint, a fourth-slot Aster experiment, or a manual-review pause. Do not execute cleanup, add a fourth art slot, import Aster or Ashen art into the player slice, wire assets into the browser runtime, mutate production manifests or art slots, change saves or stable IDs, choose Godot finally, start a full desktop port, start Unity/Unreal/Electron work, or begin v0.166.
+
+New v0.165 docs:
+
+- `docs/V0165_THREE_SLOT_VISUAL_SCALE_HARDENING_SPEC.md`
+- `docs/V0165_HUMAN_SCREENSHOT_REPRODUCTION_REPORT.md`
+- `docs/V0165_BILLBOARD_SCALE_ASPECT_PIVOT_AUDIT.md`
+- `docs/V0165_DUPLICATE_RENDER_AUDIT.md`
+- `docs/V0165_BARRACKS_MATERIAL_BINDING_REVIEW.md`
+- `docs/V0165_THREE_SLOT_VISUAL_QA_REPORT.md`
+- `docs/V0165_THREE_SLOT_BENCHMARK_REPORT.md`
+- `docs/V0165_EXPERIMENTAL_ARTIFACT_HYGIENE_INVENTORY.md`
+- `docs/V0165_EXPERIMENTAL_ARTIFACT_RETENTION_POLICY.md`
+- `docs/V0165_PLAYER_SLICE_THREE_SLOT_BOUNDARY.md`
+- `docs/V0165_IMPLEMENTATION_REPORT.md`
+
+Previous checkpoint reference: v0.164 Godot Salto Militia Third Opt-In Player-Slice Integration And Human Review Stop.
 
 New v0.164 docs:
 

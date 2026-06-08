@@ -3412,4 +3412,85 @@ describe("Godot Salto spike scaffold", () => {
       expect(workerBarracksLauncher).not.toContain(text);
     });
   });
+
+  it("defines the v0.165 three-slot visual hardening and dry-run artifact hygiene gate", async () => {
+    [
+      "GODOT_VALIDATE_SALTO_THREE_SLOT_VISUAL_HARDENING_WINDOWS.bat",
+      "GODOT_AUDIT_SALTO_EXPERIMENTAL_ARTIFACTS_WINDOWS.bat",
+      "tools/godot/validateGodotSaltoThreeSlotVisualHardeningWindows.ps1",
+      "tools/godot/saltoThreeSlotVisualHardeningTool.mjs",
+      "scripts/auditSaltoExperimentalArtifacts.mjs",
+      "docs/V0165_THREE_SLOT_VISUAL_SCALE_HARDENING_SPEC.md",
+      "docs/V0165_HUMAN_SCREENSHOT_REPRODUCTION_REPORT.md",
+      "docs/V0165_BILLBOARD_SCALE_ASPECT_PIVOT_AUDIT.md",
+      "docs/V0165_DUPLICATE_RENDER_AUDIT.md",
+      "docs/V0165_BARRACKS_MATERIAL_BINDING_REVIEW.md",
+      "docs/V0165_THREE_SLOT_VISUAL_QA_REPORT.md",
+      "docs/V0165_THREE_SLOT_BENCHMARK_REPORT.md",
+      "docs/V0165_EXPERIMENTAL_ARTIFACT_HYGIENE_INVENTORY.md",
+      "docs/V0165_EXPERIMENTAL_ARTIFACT_RETENTION_POLICY.md",
+      "docs/V0165_PLAYER_SLICE_THREE_SLOT_BOUNDARY.md",
+      "docs/V0165_IMPLEMENTATION_REPORT.md"
+    ].forEach((path) => expect(existsSync(path), path).toBe(true));
+
+    const packageJson = JSON.parse(await readFile("package.json", "utf8")) as { scripts: Record<string, string> };
+    const sceneScript = await readFile("desktop-spikes/godot-salto/scripts/salto_spike_scene_3d.gd", "utf8");
+    const validateScript = await readFile("tools/godot/validateGodotSaltoThreeSlotVisualHardeningWindows.ps1", "utf8");
+    const toolScript = await readFile("tools/godot/saltoThreeSlotVisualHardeningTool.mjs", "utf8");
+    const auditScript = await readFile("scripts/auditSaltoExperimentalArtifacts.mjs", "utf8");
+    const auditBat = await readFile("GODOT_AUDIT_SALTO_EXPERIMENTAL_ARTIFACTS_WINDOWS.bat", "utf8");
+    const boundary = await readFile("docs/V0165_PLAYER_SLICE_THREE_SLOT_BOUNDARY.md", "utf8");
+    const retention = await readFile("docs/V0165_EXPERIMENTAL_ARTIFACT_RETENTION_POLICY.md", "utf8");
+
+    [
+      "godot:validate:salto-three-slot-visual-hardening",
+      "godot:audit:salto-experimental-artifacts"
+    ].forEach((script) => expect(packageJson.scripts[script]).toBeTypeOf("string"));
+
+    [
+      "runtimeWorldWidth",
+      "runtimeWorldHeight",
+      "sourceAspectRatio",
+      "runtimeAspectRatio",
+      "aspectRatioPreserved",
+      "v0165VisualHardeningAudit",
+      "accidentalProceduralOverlayCount",
+      "perFrameDecodeCount"
+    ].forEach((text) => expect(sceneScript).toContain(text));
+
+    [
+      "default-procedural",
+      "worker-only",
+      "worker-barracks",
+      "worker-barracks-militia",
+      "militia-missing-art-fallback",
+      "militia-hash-mismatch-fallback",
+      "PASS_V0165_THREE_SLOT_VISUAL_HARDENING_AUTOMATION_READY"
+    ].forEach((text) => expect(validateScript).toContain(text));
+
+    [
+      "PASS_V0165_BILLBOARD_SCALE_ASPECT_PIVOT_AUDIT",
+      "PASS_V0165_DUPLICATE_RENDER_AUDIT",
+      "PASS_V0165_BARRACKS_MATERIAL_BINDING_REVIEW",
+      "PASS_V0165_THREE_SLOT_BENCHMARK",
+      "PASS_V0165_PLAYER_SLICE_THREE_SLOT_BOUNDARY",
+      "PASS_V0165_THREE_SLOT_VISUAL_HARDENING_HUMAN_REVIEW_READY",
+      "preRepairRuntimeAspectRatio",
+      "pause for Emmanuel manual review"
+    ].forEach((text) => expect(toolScript).toContain(text));
+
+    [
+      "PASS_V0165_EXPERIMENTAL_ARTIFACT_HYGIENE_DRY_RUN",
+      "--delete-approved-disposable",
+      "selected ignored local derivatives currently used by opt-in launchers",
+      "unknownFilesFailClosed"
+    ].forEach((text) => expect(auditScript).toContain(text));
+
+    expect(auditBat).toContain("node scripts\\auditSaltoExperimentalArtifacts.mjs");
+    expect(boundary).toContain("zero new images");
+    expect(boundary).toContain("exactly three opt-in player-slice slots");
+    expect(boundary).toContain("no Aster or Ashen");
+    expect(retention).toContain("dry-run by default");
+    expect(retention).toContain("separately approved checkpoint");
+  });
 });

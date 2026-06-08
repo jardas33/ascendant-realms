@@ -1,6 +1,6 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-06-07 v0.164 Godot Salto Militia Third Opt-In Player-Slice Integration And Human Review Stop
+Last updated: 2026-06-07 v0.165 Godot Salto Three-Slot Visual Hardening And Artifact Hygiene Inventory Stop
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
@@ -26,7 +26,52 @@ Project Identity continuation note: v0.163 now supersedes the older no-v0.163 ta
 
 Project Identity continuation note: v0.164 now supersedes the older no-v0.164 tail above because the v0.164 prompt explicitly authorized adding the selected Militia billboard as the third Godot normal-slice opt-in art slot after v0.163 was committed, pushed, clean, synced, and remote-green. v0.164 preserves the default procedural launcher, preserves the Worker-only launcher, preserves the Worker + Barracks launcher, adds a separate Worker + Barracks + Militia launcher, proves Militia missing-art and hash-mismatch fallback while Worker and Barracks remain active, benchmarks equivalent modes, and stops for Emmanuel review.
 
-Current status override: v0.164 is the active checkpoint for this handoff. The next milestone has not started.
+Project Identity continuation note: v0.165 now supersedes the older no-v0.165 tail above because the v0.165 prompt explicitly authorized a three-slot visual-scale hardening, duplicate-render audit, Barracks material binding review, and dry-run artifact-hygiene inventory after v0.164 was committed, pushed, clean, synced, and green. v0.165 generates zero images, adds zero slots, preserves all existing launchers, repairs only the proven Worker/Militia runtime aspect compression defect, adds dry-run artifact inventory tooling, and stops for Emmanuel review.
+
+Current status override: v0.165 is the active checkpoint for this handoff. v0.166 has not started.
+
+## Current v0.165 Godot Salto Three-Slot Visual Hardening And Artifact Hygiene Inventory Stop - 2026-06-07
+
+Status: v0.165 hardens only the existing three-slot opt-in Godot player-slice posture. It reproduces the human screenshot concern, proves that square Worker and Militia PNGs were squeezed onto sub-square runtime quads, changes only runtime billboard width calculation to preserve source aspect, instruments duplicate-render and Barracks material binding evidence, and adds a dry-run artifact-hygiene inventory.
+
+v0.165 preserved slots:
+
+- Worker: `worker_billboard_static_v0147` / `HYBRID_WORKER_TRIMMED_1024` / `a628065ca92b231b0d4f6a0625d9e259dea080e80d530ee688483611d70049bc`.
+- Barracks: `barrosan_barracks_material_v0149` / `HYBRID_BARRACKS_768_WRAPSAFE_OFFSET_BLEND` / `58a60b750370df084b60a1d92077da9367c0ba8a763781e2c3a8a7d96f1c980f`.
+- Militia: `militia_billboard_static_v0154` / `HYBRID_MILITIA_TRIMMED_1024` / `c25349f00c422a0b3c9d5862027351bd70008e9314d4e3cd4001676e914321cb`.
+
+v0.165 entry points:
+
+- `GODOT_VALIDATE_SALTO_THREE_SLOT_VISUAL_HARDENING_WINDOWS.bat`
+- `GODOT_AUDIT_SALTO_EXPERIMENTAL_ARTIFACTS_WINDOWS.bat`
+- `npm run godot:validate:salto-three-slot-visual-hardening`
+- `npm run godot:audit:salto-experimental-artifacts`
+
+v0.165 docs:
+
+- `docs/V0165_THREE_SLOT_VISUAL_SCALE_HARDENING_SPEC.md`
+- `docs/V0165_HUMAN_SCREENSHOT_REPRODUCTION_REPORT.md`
+- `docs/V0165_BILLBOARD_SCALE_ASPECT_PIVOT_AUDIT.md`
+- `docs/V0165_DUPLICATE_RENDER_AUDIT.md`
+- `docs/V0165_BARRACKS_MATERIAL_BINDING_REVIEW.md`
+- `docs/V0165_THREE_SLOT_VISUAL_QA_REPORT.md`
+- `docs/V0165_THREE_SLOT_BENCHMARK_REPORT.md`
+- `docs/V0165_EXPERIMENTAL_ARTIFACT_HYGIENE_INVENTORY.md`
+- `docs/V0165_EXPERIMENTAL_ARTIFACT_RETENTION_POLICY.md`
+- `docs/V0165_PLAYER_SLICE_THREE_SLOT_BOUNDARY.md`
+- `docs/V0165_IMPLEMENTATION_REPORT.md`
+
+v0.165 constraints:
+
+- Zero images generated.
+- Zero slots added.
+- Exactly three normal-slice opt-in slots total.
+- Default stabilized launcher unchanged and procedural.
+- Worker-only launcher unchanged.
+- Worker + Barracks launcher unchanged.
+- Worker + Barracks + Militia launcher unchanged.
+- No Aster, Ashen, HUD, environment, or browser runtime import.
+- No broad cleanup, broad manifest migration, package mutation, save/stable-ID mutation, gameplay mutation, final engine choice, full port, or v0.166 work.
 
 ## Current v0.164 Godot Salto Militia Third Opt-In Player-Slice Integration And Human Review Stop - 2026-06-07
 

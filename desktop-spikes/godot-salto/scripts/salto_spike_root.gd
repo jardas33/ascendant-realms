@@ -88,6 +88,7 @@ var current_step_id := "home"
 var current_viewport_size := VIEWPORT_SIZE
 var active_visual_preset := VISUAL_PRESET_CLEAN
 var last_post_mine_flow_status: Dictionary = {}
+var player_input_shield_frames := 0
 
 func _ready() -> void:
 	var args: PackedStringArray = _script_args()
@@ -654,10 +655,27 @@ func _ready() -> void:
 	else:
 		load_mode(requested_mode)
 
+func _process(_delta: float) -> void:
+	if player_input_shield_frames > 0:
+		player_input_shield_frames -= 1
+
 func _configure_window() -> void:
 	if DisplayServer.get_name() != "headless":
 		DisplayServer.window_set_size(current_viewport_size)
 		DisplayServer.window_set_min_size(current_viewport_size)
+
+func _input(event: InputEvent) -> void:
+	if player_input_shield_frames > 0 and (event is InputEventMouseButton or event is InputEventMouseMotion):
+		get_viewport().set_input_as_handled()
+		return
+	if current_step_id != "player_results" or not (event is InputEventMouseButton):
+		return
+	var mouse_event := event as InputEventMouseButton
+	if not mouse_event.pressed or mouse_event.button_index != MOUSE_BUTTON_LEFT:
+		return
+	if Rect2(Vector2(620, 318), Vector2(260, 42)).has_point(mouse_event.position):
+		get_viewport().set_input_as_handled()
+		call_deferred("_restart_player_battle_from_results")
 
 func load_home() -> void:
 	if active_scene and is_instance_valid(active_scene):
@@ -932,6 +950,7 @@ func _create_player_slice_ui() -> void:
 
 func show_player_title() -> void:
 	active_visual_preset = VISUAL_PRESET_CLEAN
+	last_post_mine_flow_status = {}
 	load_mode(MODE_25D)
 	_call_scene("set_player_facing_mode", [true])
 	current_step_id = "player_title"
@@ -945,6 +964,7 @@ func show_player_briefing() -> void:
 
 func show_player_battle() -> void:
 	active_visual_preset = VISUAL_PRESET_CLEAN
+	last_post_mine_flow_status = {}
 	load_mode(MODE_25D)
 	_call_scene("set_player_facing_mode", [true])
 	_call_scene("set_workload_tier", ["M"])
@@ -1030,6 +1050,9 @@ func _add_player_button(text: String, position: Vector2, method_name: String) ->
 	button.text = text
 	button.position = position
 	button.size = Vector2(260, 42)
+	button.z_index = 20
+	button.mouse_filter = Control.MOUSE_FILTER_STOP
+	button.focus_mode = Control.FOCUS_NONE
 	button.add_theme_font_size_override("font_size", 17)
 	button.pressed.connect(Callable(self, method_name))
 	player_screen.add_child(button)
@@ -1048,6 +1071,12 @@ func _on_player_back_pressed() -> void:
 	show_player_title()
 
 func _on_player_restart_pressed() -> void:
+	_restart_player_battle_from_results()
+
+func _restart_player_battle_from_results() -> void:
+	if current_step_id != "player_results":
+		return
+	player_input_shield_frames = 10
 	show_player_battle()
 
 func _ensure_player_battle_scene() -> void:
