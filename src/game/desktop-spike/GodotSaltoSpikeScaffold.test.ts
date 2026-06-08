@@ -3909,4 +3909,92 @@ describe("Godot Salto spike scaffold", () => {
     });
     expect(priorAsterLauncher).not.toContain("ashen-art-opt-in");
   });
+
+  it("defines the v0.173 opt-in procedural environment foundation hardening gate", async () => {
+    [
+      "GODOT_REVIEW_SALTO_ENVIRONMENT_FOUNDATION_WINDOWS.bat",
+      "GODOT_CAPTURE_SALTO_ENVIRONMENT_FOUNDATION_WINDOWS.bat",
+      "GODOT_VALIDATE_SALTO_ENVIRONMENT_FOUNDATION_WINDOWS.bat",
+      "tools/godot/launchGodotSaltoEnvironmentFoundationWindows.ps1",
+      "tools/godot/reviewGodotSaltoEnvironmentFoundationWindows.ps1",
+      "tools/godot/captureGodotSaltoEnvironmentFoundationWindows.ps1",
+      "tools/godot/validateGodotSaltoEnvironmentFoundationWindows.ps1",
+      "tools/godot/saltoEnvironmentFoundationTool.mjs",
+      "docs/V0173_ENVIRONMENT_SHELL_HARDENING_QA_AND_BENCHMARK.md",
+      "docs/V0173_ENVIRONMENT_SHELL_BOUNDARY_AND_ROLLBACK.md",
+      "docs/V0173_IMPLEMENTATION_REPORT.md"
+    ].forEach((path) => expect(existsSync(path), path).toBe(true));
+
+    const packageJson = JSON.parse(await readFile("package.json", "utf8")) as { scripts: Record<string, string> };
+    const rootScript = await readFile("desktop-spikes/godot-salto/scripts/salto_spike_root.gd", "utf8");
+    const sceneScript = await readFile("desktop-spikes/godot-salto/scripts/salto_spike_scene_3d.gd", "utf8");
+    const launchScript = await readFile("tools/godot/launchGodotSaltoEnvironmentFoundationWindows.ps1", "utf8");
+    const validateScript = await readFile("tools/godot/validateGodotSaltoEnvironmentFoundationWindows.ps1", "utf8");
+    const reportTool = await readFile("tools/godot/saltoEnvironmentFoundationTool.mjs", "utf8");
+    const boundary = await readFile("docs/V0173_ENVIRONMENT_SHELL_BOUNDARY_AND_ROLLBACK.md", "utf8");
+    const defaultLauncher = await readFile("GODOT_LAUNCH_PLAYER_SLICE_WINDOWS.bat", "utf8");
+    const stabilizedLauncher = await readFile("GODOT_LAUNCH_STABILIZED_SALTO_REVIEW_WINDOWS.bat", "utf8");
+    const fiveSlotLauncher = await readFile("GODOT_LAUNCH_SALTO_FIVE_SLOT_ART_EXPERIMENT_WINDOWS.bat", "utf8");
+
+    [
+      "godot:launch:salto-environment-foundation",
+      "godot:review:salto-environment-foundation",
+      "godot:capture:salto-environment-foundation",
+      "godot:validate:salto-environment-foundation"
+    ].forEach((script) => expect(packageJson.scripts[script]).toBeTypeOf("string"));
+
+    [
+      "--salto-environment-foundation-review",
+      "configure_environment_foundation_review",
+      "v0.173",
+      "pan_camera",
+      "bridge_crossing"
+    ].forEach((text) => expect(rootScript).toContain(text));
+
+    [
+      "environment_foundation_review_enabled",
+      "configure_environment_foundation_review",
+      "_add_environment_foundation_shell_layers",
+      "v0173_bridge_wet_granite_deck",
+      "v0173_site_marker_outer_claim_collar",
+      "environmentFoundationArtSlotCount",
+      "terrainMaterialSourceImported",
+      "runtimeArtSlotAdded\": false",
+      "aiImageGenerated\": false"
+    ].forEach((text) => expect(sceneScript).toContain(text));
+
+    [
+      "Experimental opt-in art: Worker + Barracks + Militia + Aster + Ashen + environment",
+      "--salto-five-slot-review-framing",
+      "--salto-environment-foundation-review",
+      "--ashen-art-opt-in"
+    ].forEach((text) => expect(launchScript).toContain(text));
+
+    [
+      "m5-five-slot-baseline",
+      "e1-environment-foundation",
+      "PASS_V0173_SALTO_ENVIRONMENT_FOUNDATION_AUTOMATION_READY",
+      "validateSaltoExperimentalArtifactRetention"
+    ].forEach((text) => expect(validateScript).toContain(text));
+
+    [
+      "PASS_V0173_ENVIRONMENT_FOUNDATION_VALIDATION",
+      "PASS_V0173_ENVIRONMENT_FOUNDATION_CAPTURE",
+      "PASS_V0173_ENVIRONMENT_FOUNDATION_BENCHMARK",
+      "PASS_V0173_ENVIRONMENT_FOUNDATION_BOUNDARY",
+      "minimumFpsRatio: 0.90",
+      "maximumP95WorseningRatio: 0.15"
+    ].forEach((text) => expect(reportTool).toContain(text));
+
+    [
+      "Default launcher remains procedural",
+      "No sixth character slot",
+      "Zero AI images",
+      "No terrain material import"
+    ].forEach((text) => expect(boundary).toContain(text));
+
+    [defaultLauncher, stabilizedLauncher, fiveSlotLauncher].forEach((launcher) => {
+      expect(launcher).not.toContain("--salto-environment-foundation-review");
+    });
+  });
 });

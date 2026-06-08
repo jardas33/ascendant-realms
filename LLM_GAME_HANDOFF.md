@@ -1,6 +1,6 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-06-08 v0.172 Safe Cleanup Execution Documentation-Budget Enforcement And Environment-Phase Decision Packet
+Last updated: 2026-06-08 v0.173 Salto Procedural World-Shell Hierarchy Hardening Experiment And Human-Review Stop
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
@@ -42,7 +42,39 @@ Project Identity continuation note: v0.171 now supersedes the older no-v0.171 ta
 
 Project Identity continuation note: v0.172 now supersedes the older no-v0.172 tail above because the queued prompt explicitly authorized bounded cleanup execution, documentation-budget policy, and an environment-phase roadmap after v0.171 was committed, pushed, clean, synced, and remote-green. v0.172 generates zero images, adds zero slots, makes no runtime visual changes, performs no archive moves, preserves default procedural launchers and all prior opt-in launchers, validates the launcher stack, preserves selected art/metadata/fallbacks/current evidence, and recommends v0.173 procedural world-shell hierarchy hardening only after v0.172 is committed, pushed, clean, synced, and green.
 
-Current status override: v0.172 is the active checkpoint for this handoff. Character-slot integration remains frozen after five selected opt-in slots. The next allowed direction is procedural environment-foundation work only if the queued v0.173 prompt passes prerequisites. v0.173 must not start from this handoff without the explicit queued prompt and clean/synced/green proof.
+Project Identity continuation note: v0.173 now supersedes the older no-v0.173 tail above because the queued prompt explicitly authorized one opt-in procedural environment-foundation hardening experiment after v0.172 was committed, pushed, clean, synced, and remote-green. v0.173 generates zero images, adds zero slots, preserves the five selected Worker/Barracks/Militia/Aster/Ashen opt-in posture, preserves the default procedural launcher and all prior opt-in launchers, keeps the browser runtime untouched, adds only `GODOT_REVIEW_SALTO_ENVIRONMENT_FOUNDATION_WINDOWS.bat` plus matching validation/capture tooling, records before/after capture and benchmark evidence, and stops before v0.174 unless a queued prompt sequence explicitly continues.
+
+Current status override: v0.173 is the active checkpoint for this handoff. Character-slot integration remains frozen after five selected opt-in slots. The next allowed direction is v0.174 road, river, bridge, and site-marker hardening only if the queued v0.174 prompt passes prerequisites after v0.173 is committed, pushed, clean, synced, and remote-green.
+
+## Current v0.173 Salto Procedural World-Shell Hierarchy Hardening Experiment And Human-Review Stop - 2026-06-08
+
+Status: local v0.173 work is the active checkpoint. Commit, push, and remote CI proof are required before any queued v0.174 work.
+
+What changed:
+
+- Added an opt-in environment-foundation review launcher and matching validation/capture wrappers for Windows-side Godot review.
+- Hardened only procedural environment presentation: terrain value fields, road beds/edges/ticks, river banks, ford/bridge hierarchy, structure pads/shadows, site-marker collars, lighting, framing, and environment status reporting.
+- Preserved the existing five selected opt-in slots and all earlier launchers.
+- Added v0.173 capture, benchmark, boundary, and implementation evidence without importing or generating terrain material.
+
+Key evidence:
+
+- `docs/V0173_ENVIRONMENT_SHELL_HARDENING_QA_AND_BENCHMARK.md`
+- `docs/V0173_ENVIRONMENT_SHELL_BOUNDARY_AND_ROLLBACK.md`
+- `docs/V0173_IMPLEMENTATION_REPORT.md`
+- `artifacts/desktop-spikes/godot-salto/v0173/validation/environment-foundation-validation-report.json`
+- `artifacts/desktop-spikes/godot-salto/v0173/capture/environment-foundation-capture-report.json`
+- `artifacts/desktop-spikes/godot-salto/v0173/benchmark/environment-foundation-benchmark-scorecard.json`
+- `artifacts/desktop-spikes/godot-salto/v0173/boundary/environment-foundation-boundary-report.json`
+
+Current constraints:
+
+- Keep the default launcher procedural.
+- Preserve all prior opt-in launchers.
+- Keep browser runtime untouched.
+- Do not add character slots.
+- Do not import the v0.175 terrain-material source into the player-facing slice.
+- Do not begin v0.174 except through the queued prompt with clean/synced/green proof.
 
 ## Current v0.172 Safe Cleanup Execution Documentation-Budget Enforcement And Environment-Phase Decision Packet - 2026-06-08
 

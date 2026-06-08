@@ -11,9 +11,20 @@ Every phase should protect these long-term pillars:
 
 ## Current Recommended Next Phase
 
-The current checkpoint is **v0.172 Safe Cleanup Execution Documentation-Budget Enforcement And Environment-Phase Decision Packet** on 2026-06-08. It performs bounded cleanup execution, leaves archive candidates untouched, creates a documentation-budget policy, and prepares the environment-foundation roadmap after the five-slot character freeze.
+The current checkpoint is **v0.173 Salto Procedural World-Shell Hierarchy Hardening Experiment And Human-Review Stop** on 2026-06-08. It adds an opt-in environment-foundation Godot review path after the five-slot character freeze, hardens only procedural world-shell hierarchy, and preserves default procedural launchers plus all prior opt-in launchers.
 
-The next recommended step is v0.173 only if the queued prompt confirms this checkpoint passed, was pushed, and left `main` clean/synchronized. v0.173 should harden the procedural world-shell hierarchy in an opt-in environment-foundation path. Do not add a sixth character slot, enable art by default, mutate the browser runtime, generate images, or begin v0.174 unless the queued prompt sequence proves v0.173 passed.
+The next recommended step is v0.174 only if the queued prompt confirms this checkpoint passed, was pushed, and left `main` clean/synchronized. v0.174 should refine tactical readability of roads, river, bridge, and site markers in the same opt-in procedural environment lane. Do not add character slots, enable art by default, mutate the browser runtime, generate images, import terrain material, or begin v0.175 unless the queued prompt sequence proves v0.174 passed.
+
+New v0.173 docs:
+
+- `docs/V0173_ENVIRONMENT_SHELL_HARDENING_QA_AND_BENCHMARK.md`
+- `docs/V0173_ENVIRONMENT_SHELL_BOUNDARY_AND_ROLLBACK.md`
+- `docs/V0173_IMPLEMENTATION_REPORT.md`
+- `docs/SALTO_EXPERIMENTAL_ARTIFACT_INDEX.md`
+
+Previous checkpoint reference: v0.172 Safe Cleanup Execution Documentation-Budget Enforcement And Environment-Phase Decision Packet.
+
+The previous checkpoint was **v0.172 Safe Cleanup Execution Documentation-Budget Enforcement And Environment-Phase Decision Packet** on 2026-06-08. It performed bounded cleanup execution, left archive candidates untouched, created a documentation-budget policy, and prepared the environment-foundation roadmap after the five-slot character freeze.
 
 New v0.172 docs:
 
@@ -22,9 +33,6 @@ New v0.172 docs:
 - `docs/V0172_ENVIRONMENT_PHASE_SCORECARD.md`
 - `docs/V0172_ENVIRONMENT_PHASE_ROADMAP.md`
 - `docs/V0172_IMPLEMENTATION_REPORT.md`
-- `docs/SALTO_EXPERIMENTAL_ARTIFACT_INDEX.md`
-
-Previous checkpoint reference: v0.171 Salto Five-Slot Visual-Cohesion QA Cleanup Packet And Character-Integration Freeze Stop.
 
 The previous checkpoint was **v0.171 Salto Five-Slot Visual-Cohesion QA Cleanup Packet And Character-Integration Freeze Stop** on 2026-06-08. It reviewed the five selected opt-in slots, hardened artifact retention for all five derivatives and metadata records, safely removed only known Godot sidecars, and froze character-slot expansion.
 

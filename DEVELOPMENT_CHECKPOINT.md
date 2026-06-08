@@ -1,6 +1,31 @@
 # Development Checkpoint
 
-Updated: 2026-06-08 v0.172 Safe Cleanup Execution Documentation-Budget Enforcement And Environment-Phase Decision Packet
+Updated: 2026-06-08 v0.173 Salto Procedural World-Shell Hierarchy Hardening Experiment And Human-Review Stop
+
+## v0.173 Salto Procedural World-Shell Hierarchy Hardening Experiment And Human-Review Stop - 2026-06-08
+
+Scope: opt-in procedural environment-foundation review for the existing five-slot Godot Salto posture. This checkpoint generates no images, adds no slots, imports no terrain material, keeps the default launcher procedural, preserves all prior opt-in launchers, and does not begin v0.174.
+
+Included work:
+
+- Confirmed v0.172 as current clean/synced and remote-green before edits.
+- Added `GODOT_REVIEW_SALTO_ENVIRONMENT_FOUNDATION_WINDOWS.bat` with matching validation and capture launchers.
+- Added review-only procedural terrain value fields, road beds/edges/ticks, river banks, ford/bridge hierarchy, structure pads/contact shadows, site-marker collars, lighting, framing, and environment status reporting.
+- Preserved the five selected Worker, Barracks material, Militia, Aster, and Ashen opt-in slots without adding a sixth slot.
+- Preserved the default procedural launcher and all prior opt-in launchers.
+- Recorded validation, capture/contact-sheet, benchmark, and boundary evidence for M5 baseline versus E1 environment foundation.
+
+Verification targets:
+
+```text
+PASS: npm run godot:validate:salto-environment-foundation.
+PASS: PASS_V0173_ENVIRONMENT_FOUNDATION_VALIDATION.
+PASS: PASS_V0173_ENVIRONMENT_FOUNDATION_CAPTURE.
+PASS: PASS_V0173_ENVIRONMENT_FOUNDATION_BENCHMARK.
+PASS: PASS_V0173_ENVIRONMENT_FOUNDATION_BOUNDARY.
+PASS: benchmark E1 FPS ratio versus M5 >= 0.90 and p95 worsening <= 15%.
+PASS: zero images generated, zero slots added, no terrain material import, default procedural launcher preserved, all prior opt-in launchers preserved, no browser/save/stable-ID/gameplay mutation.
+```
 
 ## v0.172 Safe Cleanup Execution Documentation-Budget Enforcement And Environment-Phase Decision Packet - 2026-06-08
 

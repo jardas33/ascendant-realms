@@ -309,6 +309,7 @@ var ashen_art_mesh_create_count := 0
 var ashen_art_material_reuse_count := 0
 var three_slot_art_review_framing_active := false
 var five_slot_art_review_framing_active := false
+var environment_foundation_review_enabled := false
 
 func _ready() -> void:
 	_reset_worker_art_status(false, "opt-in flag absent")
@@ -388,6 +389,44 @@ func set_visual_preset(preset: String) -> bool:
 
 func get_visual_preset() -> String:
 	return visual_preset
+
+func configure_environment_foundation_review(enabled: bool) -> Dictionary:
+	environment_foundation_review_enabled = enabled
+	_refresh_visual_foundation()
+	if environment_foundation_review_enabled:
+		apply_environment_foundation_review_framing()
+	return _environment_foundation_status()
+
+func apply_environment_foundation_review_framing() -> bool:
+	if not environment_foundation_review_enabled:
+		return false
+	_apply_camera_authoring_posture("v0173_environment_foundation", Vector3(-1.15, 11.95, 8.35), 10.25)
+	return true
+
+func _environment_foundation_status() -> Dictionary:
+	return {
+		"schemaVersion": 1,
+		"checkpoint": "v0.173",
+		"enabled": environment_foundation_review_enabled,
+		"reviewOnly": true,
+		"runtimeArtSlotAdded": false,
+		"aiImageGenerated": false,
+		"terrainTextureImported": false,
+		"browserRuntimeChanged": false,
+		"saveWritesAllowed": false,
+		"stableIdsChanged": false,
+		"gameplayPathingChanged": false,
+		"preservesFiveCharacterMaterialSlots": true,
+		"appliedLayers": [
+			"terrain value hierarchy",
+			"main road shoulders and edge ticks",
+			"river bank contrast and water reads",
+			"bridge deck silhouette",
+			"site marker readable collars",
+			"mine barracks command hall ground plates",
+			"overcast lighting and warm hearth accents"
+		]
+	}
 
 func configure_worker_art_experiment(options: Dictionary) -> Dictionary:
 	worker_art_experiment_enabled = bool(options.get("enabled", false))
@@ -2143,6 +2182,9 @@ func focus_layout_feature(feature: String) -> bool:
 		"ford":
 			position = Vector3(0.45, 11.2, 8.35)
 			zoom = 9.25
+		"bridge":
+			position = Vector3(0.52, 11.18, 8.36)
+			zoom = 8.95
 		"quarry":
 			position = Vector3(-2.15, 11.25, 8.95)
 			zoom = 9.35
@@ -2199,6 +2241,9 @@ func focus_visual_subject(subject: String) -> bool:
 		"mine":
 			camera_position = Vector3(-2.15, 11.25, 8.95)
 			marker_position = _structure_world_position("mine_landmark", Vector3(-1.83, 0.14, 0.24))
+		"bridge":
+			camera_position = Vector3(0.52, 11.18, 8.36)
+			marker_position = Vector3(0.56, 0.20, 0.88)
 		"shrine":
 			camera_position = Vector3(-0.9, 11.25, 8.05)
 			marker_position = _structure_world_position("shrine_landmark", Vector3(-0.64, 0.14, -2.78))
@@ -3815,6 +3860,8 @@ func get_spike_status() -> Dictionary:
 	status["linkedWardDamageTakenMultiplier"] = status.get("linkedWardDamageTakenMultiplier", 0.92)
 	status["visualPreset"] = visual_preset
 	status["visualPresetScope"] = _preset_scope()
+	status["environmentFoundationReviewEnabled"] = environment_foundation_review_enabled
+	status["environmentFoundationReview"] = _environment_foundation_status()
 	var worker_art_loaded := _worker_art_is_active()
 	_refresh_worker_art_counters()
 	var barracks_material_loaded := _barracks_material_is_active()
@@ -3851,6 +3898,9 @@ func get_spike_status() -> Dictionary:
 	status["ashenArtProceduralFallbackActive"] = bool(ashen_art_status.get("fallbackActive", true))
 	status["normalSliceOptInRequestedSlotCount"] = int(status["workerArtSlotCount"]) + int(status["barracksMaterialSlotCount"]) + int(status["militiaArtSlotCount"]) + int(status["asterArtSlotCount"]) + int(status["ashenArtSlotCount"])
 	status["normalSliceOptInLoadedSlotCount"] = (1 if worker_art_loaded else 0) + (1 if barracks_material_loaded else 0) + (1 if militia_art_loaded else 0) + (1 if aster_art_loaded else 0) + (1 if ashen_art_loaded else 0)
+	status["environmentFoundationArtSlotCount"] = 0
+	status["terrainMaterialSourceImported"] = false
+	status["terrainMaterialRuntimeSlotAdded"] = false
 	status["thirdPlayerFacingArtSlotAdded"] = militia_art_experiment_enabled
 	status["fourthPlayerFacingArtSlotAdded"] = aster_art_experiment_enabled
 	status["fifthPlayerFacingArtSlotAdded"] = ashen_art_experiment_enabled
@@ -4203,6 +4253,9 @@ func _apply_light_preset() -> void:
 	elif visual_preset == VISUAL_PRESET_VFX_STRESS:
 		light.light_energy = 1.15
 		light.light_color = Color(0.88, 0.96, 1.00)
+	if environment_foundation_review_enabled:
+		light.light_energy = 0.98
+		light.light_color = Color(0.84, 0.90, 0.80)
 
 func _create_terrain() -> void:
 	terrain_root = Node3D.new()
@@ -4305,6 +4358,40 @@ func _create_terrain() -> void:
 		for index in range(10):
 			var x := -0.95 + float(index) * 0.20
 			_add_static_cylinder("private_lume_vfx_stress_%02d" % index, Vector3(x, 0.18, -1.46 + sin(float(index)) * 0.18), 0.08, 0.08, _lume_core_color().lightened(0.18), true)
+	if environment_foundation_review_enabled:
+		_add_environment_foundation_shell_layers()
+
+func _add_environment_foundation_shell_layers() -> void:
+	var road_edge := Color(0.24, 0.24, 0.20, 0.74)
+	var river_bank := Color(0.08, 0.18, 0.19, 0.82)
+	var wet_granite := Color(0.50, 0.49, 0.42)
+	var worked_earth := Color(0.32, 0.25, 0.16)
+	_add_static_box("v0173_terrain_mid_value_field", Vector3(-1.0, 0.104, 1.40), Vector3(11.6, 0.035, 5.30), Color(0.18, 0.25, 0.17, 0.58), true)
+	_add_static_box("v0173_friendly_staging_value_field", Vector3(-4.85, 0.156, 2.90), Vector3(2.95, 0.046, 2.05), Color(0.24, 0.34, 0.22, 0.70), true)
+	_add_static_box("v0173_ashen_pressure_value_field", Vector3(4.20, 0.157, -0.96), Vector3(3.25, 0.044, 1.46), Color(0.34, 0.14, 0.11, 0.50), true)
+	_add_static_box("v0173_main_road_wide_readable_bed", Vector3(-1.05, 0.178, 0.70), Vector3(11.65, 0.036, 0.68), wet_granite)
+	_add_static_box("v0173_main_road_shadow_north_edge", Vector3(-1.05, 0.184, 0.32), Vector3(11.72, 0.030, 0.08), road_edge, true)
+	_add_static_box("v0173_main_road_shadow_south_edge", Vector3(-1.05, 0.184, 1.08), Vector3(11.72, 0.030, 0.08), road_edge, true)
+	_add_static_box("v0173_barracks_side_path_wide_bed", Vector3(-4.45, 0.180, -2.28), Vector3(0.64, 0.034, 2.72), Color(0.47, 0.40, 0.30))
+	_add_static_box("v0173_ruins_side_path_wide_bed", Vector3(3.15, 0.180, 2.27), Vector3(2.72, 0.034, 0.48), Color(0.46, 0.39, 0.29))
+	for index in range(7):
+		var x := -5.10 + float(index) * 1.55
+		_add_static_box("v0173_main_road_wet_granite_tick_%02d" % index, Vector3(x, 0.204, 0.70), Vector3(0.56, 0.030, 0.10), Color(0.64, 0.63, 0.55, 0.82), true)
+	_add_static_box("v0173_river_deep_middle_column", Vector3(0.58, 0.170, -0.40), Vector3(0.54, 0.042, 12.60), Color(0.08, 0.27, 0.32, 0.86), true)
+	_add_static_box("v0173_river_west_bank_continuity", Vector3(0.20, 0.182, -0.42), Vector3(0.20, 0.034, 12.85), river_bank, true)
+	_add_static_box("v0173_river_east_bank_continuity", Vector3(0.98, 0.182, -0.42), Vector3(0.20, 0.034, 12.85), river_bank.lightened(0.08), true)
+	_add_static_box("v0173_ford_pale_shallow_water", Vector3(0.58, 0.214, 0.88), Vector3(1.64, 0.026, 0.36), Color(0.45, 0.66, 0.64, 0.64), true)
+	_add_static_box("v0173_bridge_shadow_under_deck", Vector3(0.56, 0.205, 0.88), Vector3(1.92, 0.040, 0.58), Color(0.10, 0.09, 0.07, 0.55), true)
+	_add_static_box("v0173_bridge_wet_granite_deck", Vector3(0.56, 0.246, 0.88), Vector3(1.72, 0.050, 0.44), Color(0.56, 0.54, 0.45))
+	_add_static_box("v0173_bridge_north_low_rail", Vector3(0.56, 0.316, 0.56), Vector3(1.80, 0.050, 0.08), Color(0.32, 0.25, 0.16))
+	_add_static_box("v0173_bridge_south_low_rail", Vector3(0.56, 0.316, 1.20), Vector3(1.80, 0.050, 0.08), Color(0.32, 0.25, 0.16))
+	_add_static_box("v0173_west_stone_cut_yard_plate", Vector3(-1.75, 0.170, 0.18), Vector3(1.88, 0.036, 1.24), Color(0.40, 0.39, 0.32, 0.78), true)
+	_add_static_box("v0173_west_stone_cut_tailings_line", Vector3(-2.94, 0.206, 0.46), Vector3(0.84, 0.040, 0.20), Color(0.64, 0.60, 0.50, 0.86), true)
+	_add_static_box("v0173_barracks_restoration_yard_plate", Vector3(-4.78, 0.170, -3.56), Vector3(1.98, 0.036, 1.32), worked_earth.lightened(0.08), true)
+	_add_static_box("v0173_command_hall_hearth_yard_plate", Vector3(-5.08, 0.170, 3.18), Vector3(1.84, 0.036, 1.20), worked_earth, true)
+	_add_static_box("v0173_site_marker_outer_claim_collar", Vector3(-1.52, 0.210, 0.12), Vector3(1.58, 0.032, 1.26), Color(0.92, 0.82, 0.30, 0.48), true)
+	_add_static_box("v0173_site_marker_inner_safe_read", Vector3(-1.52, 0.218, 0.12), Vector3(1.02, 0.030, 0.82), Color(0.30, 0.62, 0.48, 0.42), true)
+	_add_static_box("v0173_lume_path_readability_floor", Vector3(0.22, 0.205, -0.28), Vector3(2.96, 0.030, 0.18), _lume_core_color().darkened(0.12), true)
 
 func _create_hud() -> void:
 	hud_layer = CanvasLayer.new()
@@ -5280,6 +5367,8 @@ func _add_structure(structure: Dictionary) -> void:
 		_add_barracks_material_box(id, position, scale, color)
 	else:
 		_add_box(id, position, scale, color)
+	if environment_foundation_review_enabled:
+		_add_environment_foundation_structure_hierarchy(id, fixture, position, scale, color, structure)
 	if fixture == "command_hall" or fixture == "enemy_stronghold":
 		_add_box("%s_keep_tower" % id, position + Vector3(0.0, 0.34, 0.0), Vector3(scale.x * 0.34, 0.58, scale.z * 0.34), color.lightened(0.12))
 		_add_box("%s_banner_silhouette" % id, position + Vector3(-scale.x * 0.38, 0.72, -scale.z * 0.12), Vector3(0.10, 0.34, 0.28), _banner_color(structure))
@@ -5319,12 +5408,34 @@ func _add_structure(structure: Dictionary) -> void:
 		_add_box("%s_v0137_lume_brazier_west" % id, position + Vector3(-0.36, 0.16, -0.28), Vector3(0.12, 0.16, 0.12), _lume_core_color(), true, true)
 		_add_box("%s_v0137_lume_brazier_east" % id, position + Vector3(0.36, 0.16, -0.28), Vector3(0.12, 0.16, 0.12), _lume_core_color(), true, true)
 
+func _add_environment_foundation_structure_hierarchy(id: String, fixture: String, position: Vector3, scale: Vector3, color: Color, structure: Dictionary) -> void:
+	var team := str(structure.get("team", "neutral"))
+	var plate_color := Color(0.22, 0.20, 0.15, 0.54)
+	if team == "friendly":
+		plate_color = Color(0.26, 0.33, 0.23, 0.58)
+	elif team == "enemy":
+		plate_color = Color(0.32, 0.12, 0.10, 0.54)
+	_add_box("%s_v0173_ground_contact_shadow" % id, position + Vector3(0.0, -0.25, 0.0), Vector3(scale.x * 1.28, 0.035, scale.z * 1.22), plate_color, true)
+	if fixture == "command_hall":
+		_add_box("%s_v0173_hearth_side_plate" % id, position + Vector3(scale.x * 0.48, 0.18, scale.z * 0.18), Vector3(scale.x * 0.14, 0.18, scale.z * 0.62), Color(0.74, 0.42, 0.22, 0.70), true, true)
+		_add_box("%s_v0173_roof_value_seam" % id, position + Vector3(0.0, 0.74, 0.0), Vector3(scale.x * 0.92, 0.06, scale.z * 0.10), color.lightened(0.28))
+	elif fixture == "barracks":
+		_add_box("%s_v0173_drill_yard_foreground_edge" % id, position + Vector3(0.0, -0.18, scale.z * 0.92), Vector3(scale.x * 1.18, 0.045, 0.14), Color(0.64, 0.54, 0.30, 0.74), true)
+		_add_barracks_material_box("%s_v0173_roof_readability_cap" % id, position + Vector3(0.0, 0.64, -scale.z * 0.02), Vector3(scale.x * 0.88, 0.08, scale.z * 0.72), color.lightened(0.24))
+	elif fixture == "west_stone_cut":
+		_add_box("%s_v0173_mine_mouth_deep_read" % id, position + Vector3(-scale.x * 0.32, 0.20, scale.z * 0.48), Vector3(scale.x * 0.42, 0.30, 0.12), Color(0.05, 0.06, 0.05))
+		_add_box("%s_v0173_cut_stone_light_edge" % id, position + Vector3(scale.x * 0.36, 0.28, -scale.z * 0.18), Vector3(scale.x * 0.34, 0.12, scale.z * 0.72), Color(0.68, 0.66, 0.56))
+
 func _add_capture_site(site: Dictionary) -> void:
 	var position := _to_world(site["position"], 0.13)
 	_add_box(str(site["id"]), position, Vector3(0.56, 0.12, 0.56), _site_color(site), true)
 	_add_cylinder("%s_marker_disc" % str(site["id"]), position + Vector3(0, -0.055, 0), 0.42, 0.045, _site_color(site).lightened(0.18), true)
 	_add_box("%s_claim_post" % str(site["id"]), position + Vector3(0.0, 0.23, 0.0), Vector3(0.08, 0.36, 0.08), _site_color(site).lightened(0.08), true)
 	_add_box("%s_contest_tick" % str(site["id"]), position + Vector3(0.28, 0.08, 0.28), Vector3(0.22, 0.05, 0.08), Color(0.96, 0.70, 0.24, 0.62), true)
+	if environment_foundation_review_enabled:
+		_add_cylinder("%s_v0173_outer_marker_collar" % str(site["id"]), position + Vector3(0, -0.070, 0), 0.56, 0.030, Color(0.95, 0.82, 0.30, 0.42), true)
+		_add_box("%s_v0173_state_tick_north" % str(site["id"]), position + Vector3(0.0, 0.12, -0.36), Vector3(0.40, 0.05, 0.08), _site_color(site).lightened(0.22), true)
+		_add_box("%s_v0173_state_tick_south" % str(site["id"]), position + Vector3(0.0, 0.12, 0.36), Vector3(0.40, 0.05, 0.08), _site_color(site).lightened(0.22), true)
 
 func _add_unit(name: String, position: Vector3, color: Color, radius: float, emissive: bool = false) -> void:
 	var mesh_instance := MeshInstance3D.new()
@@ -5706,6 +5817,8 @@ func _normalize_visual_preset(preset: String) -> String:
 	return ""
 
 func _preset_scope() -> String:
+	if environment_foundation_review_enabled:
+		return "v0173-opt-in-environment-foundation-review-excluded-from-default"
 	if visual_preset == VISUAL_PRESET_VFX_STRESS:
 		return "private-spike-vfx-stress-excluded-from-default-review"
 	if visual_preset == VISUAL_PRESET_ATMOSPHERIC:
@@ -5713,6 +5826,8 @@ func _preset_scope() -> String:
 	return "player-facing-default-clean-readability-with-restrained-atmospheric-cues"
 
 func _terrain_color() -> Color:
+	if environment_foundation_review_enabled:
+		return Color(0.13, 0.19, 0.14)
 	if visual_preset == VISUAL_PRESET_ATMOSPHERIC:
 		return Color(0.16, 0.19, 0.13)
 	if visual_preset == VISUAL_PRESET_VFX_STRESS:
@@ -5720,16 +5835,22 @@ func _terrain_color() -> Color:
 	return Color(0.16, 0.22, 0.17)
 
 func _ridge_color() -> Color:
+	if environment_foundation_review_enabled:
+		return Color(0.19, 0.25, 0.19)
 	if visual_preset == VISUAL_PRESET_ATMOSPHERIC:
 		return Color(0.22, 0.23, 0.16)
 	return Color(0.22, 0.27, 0.21)
 
 func _road_color() -> Color:
+	if environment_foundation_review_enabled:
+		return Color(0.48, 0.43, 0.32)
 	if visual_preset == VISUAL_PRESET_ATMOSPHERIC:
 		return Color(0.42, 0.34, 0.22)
 	return Color(0.42, 0.36, 0.25)
 
 func _water_color() -> Color:
+	if environment_foundation_review_enabled:
+		return Color(0.08, 0.28, 0.34)
 	if visual_preset == VISUAL_PRESET_VFX_STRESS:
 		return Color(0.12, 0.34, 0.42)
 	return Color(0.14, 0.34, 0.40)

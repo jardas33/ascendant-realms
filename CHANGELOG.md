@@ -1,5 +1,37 @@
 # Changelog
 
+# v0.173 Salto Procedural World-Shell Hierarchy Hardening Experiment And Human-Review Stop - 2026-06-08
+
+This checkpoint adds an opt-in Godot environment-foundation review path after the five-slot character freeze. It improves only procedural world-shell hierarchy and readability around terrain, roads, river/banks, bridge, site markers, and core structure grounding while preserving the default procedural launcher, all prior opt-in launchers, the five selected character/material slots, and the browser runtime boundary.
+
+Added:
+
+- `GODOT_REVIEW_SALTO_ENVIRONMENT_FOUNDATION_WINDOWS.bat`.
+- `GODOT_VALIDATE_SALTO_ENVIRONMENT_FOUNDATION_WINDOWS.bat`.
+- `GODOT_CAPTURE_SALTO_ENVIRONMENT_FOUNDATION_WINDOWS.bat`.
+- v0.173 launch, review, validate, capture, and scorecard tooling for the environment-foundation path.
+- `docs/V0173_ENVIRONMENT_SHELL_HARDENING_QA_AND_BENCHMARK.md`.
+- `docs/V0173_ENVIRONMENT_SHELL_BOUNDARY_AND_ROLLBACK.md`.
+- `docs/V0173_IMPLEMENTATION_REPORT.md`.
+
+Changed:
+
+- Added an explicit environment-foundation review flag for Godot Salto captures and validation.
+- Added review-only terrain value layers, road edging, river-bank/ford/bridge hierarchy, structure grounding, site-marker collars, restrained lighting, and status reporting.
+- Updated the Salto experimental artifact index to retain v0.173 validation, capture, benchmark, and boundary evidence.
+
+Boundaries:
+
+- Zero images generated.
+- Zero slots added.
+- No sixth character slot.
+- No terrain material imported.
+- No default-art enablement.
+- Default launchers remain procedural.
+- All prior opt-in launchers remain preserved.
+- Browser runtime, production manifests, saves, stable IDs, gameplay, objectives, AI, balance, campaign state, and broad cleanup remain untouched.
+- v0.174 is not started inside this checkpoint.
+
 # v0.172 Safe Cleanup Execution Documentation-Budget Enforcement And Environment-Phase Decision Packet - 2026-06-08
 
 This checkpoint performs bounded housekeeping after the five-slot character freeze. It runs safe-only cleanup, records before/after cleanup manifests, leaves archive candidates untouched, establishes a future documentation-budget policy, and recommends the environment-foundation sequence beginning with procedural world-shell hierarchy hardening.
