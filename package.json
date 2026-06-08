@@ -68,6 +68,8 @@
     "godot:review:salto-three-slot-art": "powershell -NoProfile -ExecutionPolicy Bypass -File tools/godot/reviewGodotSaltoThreeSlotArtWindows.ps1",
     "godot:audit:salto-experimental-artifacts": "node scripts/auditSaltoExperimentalArtifacts.mjs",
     "godot:cleanup:salto-experimental-artifacts": "node scripts/cleanupSaltoExperimentalArtifacts.mjs",
+    "godot:validate:salto-experimental-artifact-retention": "node scripts/validateSaltoExperimentalArtifactRetention.mjs",
+    "godot:report:salto-three-slot-presentation-qa": "node tools/godot/saltoThreeSlotPresentationQaTool.mjs",
     "godot:benchmark:salto-worker-barracks-art-experiment": "powershell -NoProfile -ExecutionPolicy Bypass -File tools/godot/runGodotSaltoWorkerBarracksArtExperimentBenchmarkWindows.ps1",
     "godot:validate:real-input": "powershell -NoProfile -ExecutionPolicy Bypass -File tools/godot/runGodotRealInputSmokeWindows.ps1",
     "godot:headed:real-input-smoke": "powershell -NoProfile -ExecutionPolicy Bypass -File tools/godot/runGodotRealInputSmokeWindows.ps1",

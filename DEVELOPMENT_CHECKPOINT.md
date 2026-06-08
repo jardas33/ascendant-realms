@@ -1,6 +1,32 @@
 # Development Checkpoint
 
-Updated: 2026-06-07 v0.166 Godot Salto Three-Slot Visual Coherence Review Launcher And Safe Cleanup Stop
+Updated: 2026-06-08 v0.167 Salto Three-Slot Presentation QA Placeholder Classification And Artifact-Retention Enforcement Stop
+
+## v0.167 Salto Three-Slot Presentation QA Placeholder Classification And Artifact-Retention Enforcement Stop - 2026-06-08
+
+Scope: classify the existing three-slot Godot review posture, enforce artifact retention, and preserve all current launchers before any fourth-slot work. This checkpoint adds no images, adds no slots, and does not integrate Aster or Ashen.
+
+Included work:
+
+- Added the Salto experimental artifact index.
+- Added artifact-retention validation.
+- Added three-slot presentation QA and visible placeholder classification reporting.
+- Classified Worker, Militia, procedural Aster, Barracks shell/material, terrain, water/bridge, roads, site/objective markers, HUD, minimap, fallback blocks, residual procedural unit bodies, and unknown visuals.
+- Confirmed target-slot accidental procedural double-render remains zero.
+- Preserved Worker, Barracks, and Militia active opt-in derivatives and their metadata.
+- Preserved selected future Aster and Ashen derivatives as evidence only.
+
+Verification targets:
+
+```text
+PASS: npm run godot:validate:salto-three-slot-visual-coherence.
+PASS: npm run godot:report:salto-three-slot-presentation-qa.
+PASS: npm run godot:validate:salto-experimental-artifact-retention.
+PASS: npm run godot:cleanup:salto-experimental-artifacts.
+PASS: npm run godot:cleanup:salto-experimental-artifacts -- --apply-safe-only when only known sidecars are present.
+PASS: npx vitest run src/game/desktop-spike/GodotSaltoSpikeScaffold.test.ts.
+PASS: git diff --check.
+```
 
 ## v0.166 Godot Salto Three-Slot Visual Coherence Review Launcher And Safe Cleanup Stop - 2026-06-07
 

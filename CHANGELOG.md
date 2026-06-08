@@ -1,5 +1,27 @@
 # Changelog
 
+# v0.167 Salto Three-Slot Presentation QA Placeholder Classification And Artifact-Retention Enforcement Stop - 2026-06-08
+
+This checkpoint reviews the existing Worker + Barracks + Militia opt-in Godot posture before any Aster integration. It classifies every visible block-like category in the M3 review posture, adds retention enforcement for selected local art and evidence, preserves the default procedural launcher and all prior opt-in launchers, runs safe-only cleanup policy checks, and does not begin v0.168.
+
+Added:
+
+- `docs/SALTO_EXPERIMENTAL_ARTIFACT_INDEX.md`.
+- `scripts/validateSaltoExperimentalArtifactRetention.mjs`.
+- `GODOT_VALIDATE_SALTO_EXPERIMENTAL_ARTIFACT_RETENTION_WINDOWS.bat`.
+- `tools/godot/saltoThreeSlotPresentationQaTool.mjs`.
+- v0.167 presentation QA, placeholder classification, artifact retention, benchmark/boundary, and implementation docs.
+- Scaffold guardrail coverage for the v0.167 retention and classification gates.
+
+Boundaries:
+
+- Zero images generated.
+- Zero slots added.
+- Exactly three normal-slice opt-in slots remain total.
+- No Aster or Ashen normal-slice slot exists.
+- Default launchers remain procedural.
+- Browser runtime, production manifests, saves, stable IDs, gameplay, objectives, AI, balance, campaign state, and broad cleanup remain untouched.
+
 # v0.166 Godot Salto Three-Slot Visual Coherence Review Launcher And Safe Cleanup Stop - 2026-06-07
 
 This checkpoint inspects the remaining player-facing screenshot concern after v0.165, keeps the existing Worker + Barracks + Militia opt-in posture, adds review-only mode clarity and camera framing, records rendered pixel measurements, and executes only conservative safe cleanup tooling for Godot-generated sidecars. It generates zero images, adds zero slots, preserves the default procedural launcher, preserves all prior opt-in launchers, and does not begin v0.167.

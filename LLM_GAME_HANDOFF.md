@@ -1,6 +1,6 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-06-07 v0.166 Godot Salto Three-Slot Visual Coherence Review Launcher And Safe Cleanup Stop
+Last updated: 2026-06-08 v0.167 Salto Three-Slot Presentation QA Placeholder Classification And Artifact-Retention Enforcement Stop
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
@@ -30,9 +30,51 @@ Project Identity continuation note: v0.165 now supersedes the older no-v0.165 ta
 
 Project Identity continuation note: v0.166 now supersedes the older no-v0.166 tail above because the queued prompt explicitly authorized review-launcher clarity, visual-coherence evidence, and conservative safe cleanup for the existing three-slot opt-in path after v0.165 and the pre-v0.166 sidecar hygiene unblock. v0.166 generates zero images, adds zero slots, preserves the default procedural launcher and all prior opt-in launchers, adds an experimental-only review label/framing launcher, records rendered pixel measurements, and limits cleanup deletion to positively identified Godot-generated sidecars.
 
-Current status override: v0.166 is the active checkpoint for this handoff. v0.167 is not started unless a separate queued prompt is being executed after v0.166 passes its gates.
+Project Identity continuation note: v0.167 now supersedes the older no-v0.167 tail above because the queued prompt explicitly authorized a three-slot presentation QA, visible-placeholder classification, and artifact-retention enforcement stop after v0.166 was committed, pushed, clean, synced, and remote-green. v0.167 generates zero images, adds zero slots, preserves the default procedural launcher and all prior opt-in launchers, classifies every visible block-like element before Aster integration, adds the Salto experimental artifact index and retention validator, and stops before v0.168 unless the next queued prompt passes.
 
-## Current v0.166 Godot Salto Three-Slot Visual Coherence Review Launcher And Safe Cleanup Stop - 2026-06-07
+Current status override: v0.167 is the active checkpoint for this handoff. v0.168 is not started unless a separate queued prompt is being executed after v0.167 passes its gates.
+
+## Current v0.167 Salto Three-Slot Presentation QA Placeholder Classification And Artifact-Retention Enforcement Stop - 2026-06-08
+
+Status: v0.167 reviews only the existing Worker + Barracks + Militia opt-in Godot player-slice posture. It classifies visible block-like elements honestly and enforces retention before any Aster player-slice integration.
+
+v0.167 preserved active slots:
+
+- Worker: `worker_billboard_static_v0147` / `HYBRID_WORKER_TRIMMED_1024` / `a628065ca92b231b0d4f6a0625d9e259dea080e80d530ee688483611d70049bc`.
+- Barracks: `barrosan_barracks_material_v0149` / `HYBRID_BARRACKS_768_WRAPSAFE_OFFSET_BLEND` / `58a60b750370df084b60a1d92077da9367c0ba8a763781e2c3a8a7d96f1c980f`.
+- Militia: `militia_billboard_static_v0154` / `HYBRID_MILITIA_TRIMMED_1024` / `c25349f00c422a0b3c9d5862027351bd70008e9314d4e3cd4001676e914321cb`.
+
+v0.167 preserved future evidence only:
+
+- Aster selected derivative: `aster_billboard_static_v0151` / `HYBRID_ASTER_TRIMMED_1024` / `b256f96f762187c05d68f2c2de62bedec0248896210767e98cb8f210dac2829a`.
+- Ashen selected derivative: `ashen_raider_billboard_static_v0156` / `HYBRID_ASHEN_RAIDER_V0157_TRIMMED_1024` / `8eb011f56d5cd56cf6ef0a843d2a5899e27aa13e203cc44517ed4a0c55c631c8`.
+
+v0.167 entry points:
+
+- `GODOT_VALIDATE_SALTO_EXPERIMENTAL_ARTIFACT_RETENTION_WINDOWS.bat`
+- `npm run godot:report:salto-three-slot-presentation-qa`
+- `npm run godot:validate:salto-experimental-artifact-retention`
+
+v0.167 docs:
+
+- `docs/V0167_THREE_SLOT_PRESENTATION_PLAYTHROUGH_QA.md`
+- `docs/V0167_VISIBLE_PLACEHOLDER_CLASSIFICATION_AUDIT.md`
+- `docs/V0167_ARTIFACT_RETENTION_ENFORCEMENT.md`
+- `docs/V0167_THREE_SLOT_BENCHMARK_AND_BOUNDARY_REPORT.md`
+- `docs/V0167_IMPLEMENTATION_REPORT.md`
+- `docs/SALTO_EXPERIMENTAL_ARTIFACT_INDEX.md`
+
+v0.167 constraints:
+
+- Zero images generated.
+- Zero slots added.
+- No Aster or Ashen normal-slice slot.
+- Default launchers remain procedural.
+- Browser runtime, production manifests, saves, stable IDs, gameplay, objectives, AI, balance, campaign, and broad cleanup remain untouched.
+
+Required next step if queued: v0.168 may add only the selected Aster derivative as a fourth opt-in slot after v0.167 commit/push/clean/sync/CI proof. Do not begin v0.169 or later from v0.167.
+
+## Previous v0.166 Godot Salto Three-Slot Visual Coherence Review Launcher And Safe Cleanup Stop - 2026-06-07
 
 Status: v0.166 reviews only the existing Worker + Barracks + Militia opt-in Godot player-slice posture. It treats the remaining screenshot concern as a mode-clarity and review-framing problem after v0.165 repaired aspect compression and duplicate rendering.
 

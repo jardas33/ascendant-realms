@@ -11,7 +11,22 @@ Every phase should protect these long-term pillars:
 
 ## Current Recommended Next Phase
 
-The current checkpoint is **v0.166 Godot Salto Three-Slot Visual Coherence Review Launcher And Safe Cleanup Stop** on 2026-06-07. It keeps the existing Worker, Barracks, and Militia opt-in art posture, generates zero images, adds zero slots, preserves all existing launchers, adds only review-mode clarity/framing, records rendered pixel measurements, and restricts cleanup execution to positively identified Godot-generated sidecars.
+The current checkpoint is **v0.167 Salto Three-Slot Presentation QA Placeholder Classification And Artifact-Retention Enforcement Stop** on 2026-06-08. It keeps the existing Worker, Barracks, and Militia opt-in art posture, generates zero images, adds zero slots, preserves all launchers, classifies remaining block-like visuals, and introduces artifact-retention enforcement before any Aster integration.
+
+The next recommended step is v0.168 only if the queued prompt confirms this checkpoint passed, was pushed, and left `main` clean/synchronized. Do not add Aster, Ashen, a fourth slot, a browser runtime path, default art enablement, broad cleanup, or any next-phase work outside that explicit queued gate.
+
+New v0.167 docs:
+
+- `docs/V0167_THREE_SLOT_PRESENTATION_PLAYTHROUGH_QA.md`
+- `docs/V0167_VISIBLE_PLACEHOLDER_CLASSIFICATION_AUDIT.md`
+- `docs/V0167_ARTIFACT_RETENTION_ENFORCEMENT.md`
+- `docs/V0167_THREE_SLOT_BENCHMARK_AND_BOUNDARY_REPORT.md`
+- `docs/V0167_IMPLEMENTATION_REPORT.md`
+- `docs/SALTO_EXPERIMENTAL_ARTIFACT_INDEX.md`
+
+Previous checkpoint reference: v0.166 Godot Salto Three-Slot Visual Coherence Review Launcher And Safe Cleanup Stop.
+
+The previous checkpoint was **v0.166 Godot Salto Three-Slot Visual Coherence Review Launcher And Safe Cleanup Stop** on 2026-06-07. It keeps the existing Worker, Barracks, and Militia opt-in art posture, generates zero images, adds zero slots, preserves all existing launchers, adds only review-mode clarity/framing, records rendered pixel measurements, and restricts cleanup execution to positively identified Godot-generated sidecars.
 
 The next recommended step is human review and explicit approval only unless a separately queued prompt is already being executed after v0.166 gates pass. Emmanuel should review the v0.166 review launcher screenshots, scale measurements, Barracks visibility notes, benchmark scorecard, cleanup before/after manifests, and boundary report. Do not add a fourth art slot, import Aster or Ashen art into the player slice, wire assets into the browser runtime, mutate production manifests or art slots, change saves or stable IDs, choose Godot finally, start a full desktop port, start Unity/Unreal/Electron work, perform broad cleanup, or begin any unqueued future milestone.
 

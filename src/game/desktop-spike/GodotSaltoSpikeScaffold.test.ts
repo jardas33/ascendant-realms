@@ -3584,4 +3584,83 @@ describe("Godot Salto spike scaffold", () => {
       expect(playerLauncher).not.toContain(text);
     });
   });
+
+  it("defines the v0.167 presentation QA placeholder classification and retention gate", async () => {
+    [
+      "GODOT_VALIDATE_SALTO_EXPERIMENTAL_ARTIFACT_RETENTION_WINDOWS.bat",
+      "scripts/validateSaltoExperimentalArtifactRetention.mjs",
+      "tools/godot/saltoThreeSlotPresentationQaTool.mjs",
+      "docs/SALTO_EXPERIMENTAL_ARTIFACT_INDEX.md",
+      "docs/V0167_THREE_SLOT_PRESENTATION_PLAYTHROUGH_QA.md",
+      "docs/V0167_VISIBLE_PLACEHOLDER_CLASSIFICATION_AUDIT.md",
+      "docs/V0167_ARTIFACT_RETENTION_ENFORCEMENT.md",
+      "docs/V0167_THREE_SLOT_BENCHMARK_AND_BOUNDARY_REPORT.md",
+      "docs/V0167_IMPLEMENTATION_REPORT.md"
+    ].forEach((path) => expect(existsSync(path), path).toBe(true));
+
+    const packageJson = JSON.parse(await readFile("package.json", "utf8")) as { scripts: Record<string, string> };
+    const retentionScript = await readFile("scripts/validateSaltoExperimentalArtifactRetention.mjs", "utf8");
+    const qaTool = await readFile("tools/godot/saltoThreeSlotPresentationQaTool.mjs", "utf8");
+    const artifactIndex = await readFile("docs/SALTO_EXPERIMENTAL_ARTIFACT_INDEX.md", "utf8");
+    const classification = await readFile("docs/V0167_VISIBLE_PLACEHOLDER_CLASSIFICATION_AUDIT.md", "utf8");
+    const boundary = await readFile("docs/V0167_THREE_SLOT_BENCHMARK_AND_BOUNDARY_REPORT.md", "utf8");
+    const retentionBat = await readFile("GODOT_VALIDATE_SALTO_EXPERIMENTAL_ARTIFACT_RETENTION_WINDOWS.bat", "utf8");
+    const stabilizedLauncher = await readFile("GODOT_LAUNCH_STABILIZED_SALTO_REVIEW_WINDOWS.bat", "utf8");
+    const playerLauncher = await readFile("GODOT_LAUNCH_PLAYER_SLICE_WINDOWS.bat", "utf8");
+
+    [
+      "godot:validate:salto-experimental-artifact-retention",
+      "godot:report:salto-three-slot-presentation-qa"
+    ].forEach((script) => expect(packageJson.scripts[script]).toBeTypeOf("string"));
+
+    [
+      "PASS_V0167_SALTO_EXPERIMENTAL_ARTIFACT_RETENTION",
+      "selected-active-derivative",
+      "selected-future-derivative",
+      "known-godot-generated-transient-sidecar",
+      "unknownFilesBlock"
+    ].forEach((text) => expect(retentionScript).toContain(text));
+
+    [
+      "PASS_V0167_THREE_SLOT_PRESENTATION_PLAYTHROUGH_QA",
+      "PASS_V0167_VISIBLE_PLACEHOLDER_CLASSIFICATION_AUDIT",
+      "PASS_V0167_THREE_SLOT_BENCHMARK_AND_BOUNDARY",
+      "accidentalProceduralOverlayCount",
+      "classificationTable",
+      "noAsterNormalSliceSlot",
+      "noAshenNormalSliceSlot"
+    ].forEach((text) => expect(qaTool).toContain(text));
+
+    [
+      "worker_billboard_static_v0147",
+      "barrosan_barracks_material_v0149",
+      "militia_billboard_static_v0154",
+      "aster_billboard_static_v0151",
+      "ashen_raider_billboard_static_v0156",
+      "Safe-Delete Candidates",
+      "Unknown files are preserved"
+    ].forEach((text) => expect(artifactIndex).toContain(text));
+
+    [
+      "procedural Aster",
+      "procedural Barracks shell",
+      "terrain blocks",
+      "any residual procedural unit body",
+      "any unknown visual",
+      "accidentalProceduralOverlayCount"
+    ].forEach((text) => expect(classification).toContain(text));
+
+    [
+      "No Aster normal-slice slot exists",
+      "No Ashen normal-slice slot exists",
+      "Zero images generated",
+      "Zero slots added"
+    ].forEach((text) => expect(boundary).toContain(text));
+
+    expect(retentionBat).toContain("node scripts\\validateSaltoExperimentalArtifactRetention.mjs");
+    ["worker-art-opt-in", "barracks-material-opt-in", "militia-art-opt-in", "aster-art-opt-in", "ashen-art-opt-in"].forEach((text) => {
+      expect(stabilizedLauncher).not.toContain(text);
+      expect(playerLauncher).not.toContain(text);
+    });
+  });
 });
