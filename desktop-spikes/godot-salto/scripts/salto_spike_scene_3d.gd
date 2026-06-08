@@ -4,7 +4,7 @@ const MODE := "2_5D_ORTHOGRAPHIC_PLACEHOLDER"
 const VISUAL_PRESET_CLEAN := "CLEAN_READABILITY"
 const VISUAL_PRESET_ATMOSPHERIC := "ATMOSPHERIC_BALANCED"
 const VISUAL_PRESET_VFX_STRESS := "VFX_STRESS_PRIVATE"
-const SAFE_ZOOM_MIN := 8.8
+const SAFE_ZOOM_MIN := 7.8
 const SAFE_ZOOM_MAX := 13.8
 const SAFE_FRAME_DEFAULT_ZOOM := 10.8
 const CAMERA_DEFAULT_POSITION := Vector3(0.0, 11.6, 8.9)
@@ -257,6 +257,7 @@ var militia_art_texture_create_count := 0
 var militia_art_material_create_count := 0
 var militia_art_mesh_create_count := 0
 var militia_art_material_reuse_count := 0
+var three_slot_art_review_framing_active := false
 
 func _ready() -> void:
 	_reset_worker_art_status(false, "opt-in flag absent")
@@ -529,11 +530,15 @@ func _refresh_worker_art_counters() -> void:
 	var runtime_aspect := runtime_width / maxf(0.001, runtime_height)
 	worker_art_status["runtimeWorldWidth"] = snappedf(runtime_width, 0.0001)
 	worker_art_status["runtimeWorldHeight"] = snappedf(runtime_height, 0.0001)
+	var worker_pixels := _orthographic_rendered_pixel_size(runtime_width, runtime_height)
+	worker_art_status["renderedPixelWidth"] = worker_pixels["width"]
+	worker_art_status["renderedPixelHeight"] = worker_pixels["height"]
 	worker_art_status["sourceAspectRatio"] = snappedf(source_aspect, 0.0001)
 	worker_art_status["runtimeAspectRatio"] = snappedf(runtime_aspect, 0.0001)
 	worker_art_status["aspectRatioPreserved"] = absf(runtime_aspect - source_aspect) <= 0.001
 	worker_art_status["terrainFootContactY"] = snappedf(WORKER_ART_GROUND_CLEARANCE, 0.0001)
 	worker_art_status["selectionRingDiameter"] = snappedf(_unit_radius({"role": "Worker", "fixtureId": "worker", "team": "friendly"}) * 2.2, 0.0001)
+	worker_art_status["renderedSelectionRingDiameterPx"] = _orthographic_rendered_pixel_size(float(worker_art_status["selectionRingDiameter"]), float(worker_art_status["selectionRingDiameter"]))["height"]
 	worker_art_status["proceduralUnitBoundingBox"] = {"width": 0.22, "height": 0.36, "depth": 0.18}
 
 func _worker_art_is_active() -> bool:
@@ -958,11 +963,15 @@ func _refresh_militia_art_counters() -> void:
 	var runtime_aspect := runtime_width / maxf(0.001, runtime_height)
 	militia_art_status["runtimeWorldWidth"] = snappedf(runtime_width, 0.0001)
 	militia_art_status["runtimeWorldHeight"] = snappedf(runtime_height, 0.0001)
+	var militia_pixels := _orthographic_rendered_pixel_size(runtime_width, runtime_height)
+	militia_art_status["renderedPixelWidth"] = militia_pixels["width"]
+	militia_art_status["renderedPixelHeight"] = militia_pixels["height"]
 	militia_art_status["sourceAspectRatio"] = snappedf(source_aspect, 0.0001)
 	militia_art_status["runtimeAspectRatio"] = snappedf(runtime_aspect, 0.0001)
 	militia_art_status["aspectRatioPreserved"] = absf(runtime_aspect - source_aspect) <= 0.001
 	militia_art_status["terrainFootContactY"] = snappedf(MILITIA_ART_GROUND_CLEARANCE, 0.0001)
 	militia_art_status["selectionRingDiameter"] = snappedf(_unit_radius({"role": "Militia", "fixtureId": "militia", "team": "friendly"}) * 2.2, 0.0001)
+	militia_art_status["renderedSelectionRingDiameterPx"] = _orthographic_rendered_pixel_size(float(militia_art_status["selectionRingDiameter"]), float(militia_art_status["selectionRingDiameter"]))["height"]
 	militia_art_status["proceduralUnitBoundingBox"] = {"topRadius": 0.15, "bottomRadius": 0.18, "height": 0.42}
 
 func _militia_art_is_active() -> bool:
@@ -1701,6 +1710,18 @@ func set_camera_zoom_posture(posture: String) -> bool:
 			return false
 	camera.position = _clamped_camera_position(camera.position)
 	camera_zoomed = true
+	return true
+
+func apply_three_slot_art_review_framing() -> bool:
+	three_slot_art_review_framing_active = true
+	_apply_camera_authoring_posture("v0166_three_slot_art_review", Vector3(-4.54, 11.25, 7.60), SAFE_ZOOM_MIN)
+	_refresh_worker_art_counters()
+	_refresh_militia_art_counters()
+	_sync_unit_visuals()
+	_sync_site_visuals()
+	_sync_lume_visuals()
+	_sync_three_slot_review_art_anchors()
+	_sync_hud()
 	return true
 
 func recenter_camera() -> bool:
@@ -3104,6 +3125,20 @@ func _vector2_report(position: Vector2) -> Dictionary:
 func _vector3_report(position: Vector3) -> Dictionary:
 	return {"x": snappedf(position.x, 0.001), "y": snappedf(position.y, 0.001), "z": snappedf(position.z, 0.001)}
 
+func _orthographic_rendered_pixel_size(world_width: float, world_height: float) -> Dictionary:
+	var camera := get_node_or_null("FixedOrthographicCamera") as Camera3D
+	var viewport_size := get_viewport().get_visible_rect().size
+	if camera == null or viewport_size.y <= 0.0:
+		return {"width": 0.0, "height": 0.0, "basis": "unavailable"}
+	var pixels_per_world_unit := viewport_size.y / maxf(0.001, camera.size)
+	return {
+		"width": snappedf(world_width * pixels_per_world_unit, 0.01),
+		"height": snappedf(world_height * pixels_per_world_unit, 0.01),
+		"basis": "orthographic-camera-size-and-viewport-height",
+		"cameraSize": snappedf(camera.size, 0.001),
+		"viewport": _vector2_report(viewport_size)
+	}
+
 func run_workload_phase(phase: String) -> Dictionary:
 	var report: Dictionary = runtime.run_workload_phase(phase)
 	_sync_unit_visuals()
@@ -4394,6 +4429,28 @@ func _sync_unit_visuals() -> void:
 			damage_marker.visible = visible_unit and damage_flash_active and (is_targeted or id == "ashen_00")
 	_sync_real_input_hover_marker()
 	_sync_player_guidance_markers()
+	_sync_three_slot_review_art_anchors()
+
+func _sync_three_slot_review_art_anchors() -> void:
+	if visual_root == null:
+		return
+	var active := three_slot_art_review_framing_active and player_facing_mode and player_shell_screen == "battle"
+	for unit in runtime.units:
+		var id := str(unit["id"])
+		var is_worker := str(unit.get("role", "")) == "Worker"
+		var is_militia := _militia_art_applies_to_unit(unit)
+		var ring_name := "v0166_art_review_ring_%s" % id
+		var ring_color := Color(0.96, 0.74, 0.34, 0.22) if is_worker else Color(0.46, 0.92, 0.72, 0.18)
+		var ring_radius := _unit_radius(unit) * (2.15 if is_worker else 1.85)
+		_set_or_create_disc_marker(ring_name, _unit_world_position(id, Vector3.ZERO) + Vector3(0.0, 0.025, 0.0), ring_radius, ring_color)
+		var ring := visual_root.get_node_or_null(ring_name) as MeshInstance3D
+		if ring:
+			ring.visible = active and bool(unit.get("alive", false)) and (is_worker and _worker_art_is_active() or is_militia)
+	var barracks_world := _to_world(BARRACKS_POSITION, 0.74)
+	_set_or_create_marker("v0166_barracks_material_review_sheen", barracks_world + Vector3(0.12, 0.18, -0.16), Vector3(1.18, 0.055, 0.52), Color(0.98, 0.84, 0.42, 0.34))
+	var barracks_sheen := visual_root.get_node_or_null("v0166_barracks_material_review_sheen") as MeshInstance3D
+	if barracks_sheen:
+		barracks_sheen.visible = active and _barracks_material_is_active()
 
 func _sync_real_input_hover_marker() -> void:
 	if visual_root == null:

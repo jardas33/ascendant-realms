@@ -1,6 +1,6 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-06-07 v0.165 Godot Salto Three-Slot Visual Hardening And Artifact Hygiene Inventory Stop
+Last updated: 2026-06-07 v0.166 Godot Salto Three-Slot Visual Coherence Review Launcher And Safe Cleanup Stop
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
@@ -28,7 +28,49 @@ Project Identity continuation note: v0.164 now supersedes the older no-v0.164 ta
 
 Project Identity continuation note: v0.165 now supersedes the older no-v0.165 tail above because the v0.165 prompt explicitly authorized a three-slot visual-scale hardening, duplicate-render audit, Barracks material binding review, and dry-run artifact-hygiene inventory after v0.164 was committed, pushed, clean, synced, and green. v0.165 generates zero images, adds zero slots, preserves all existing launchers, repairs only the proven Worker/Militia runtime aspect compression defect, adds dry-run artifact inventory tooling, and stops for Emmanuel review.
 
-Current status override: v0.165 is the active checkpoint for this handoff. v0.166 has not started.
+Project Identity continuation note: v0.166 now supersedes the older no-v0.166 tail above because the queued prompt explicitly authorized review-launcher clarity, visual-coherence evidence, and conservative safe cleanup for the existing three-slot opt-in path after v0.165 and the pre-v0.166 sidecar hygiene unblock. v0.166 generates zero images, adds zero slots, preserves the default procedural launcher and all prior opt-in launchers, adds an experimental-only review label/framing launcher, records rendered pixel measurements, and limits cleanup deletion to positively identified Godot-generated sidecars.
+
+Current status override: v0.166 is the active checkpoint for this handoff. v0.167 is not started unless a separate queued prompt is being executed after v0.166 passes its gates.
+
+## Current v0.166 Godot Salto Three-Slot Visual Coherence Review Launcher And Safe Cleanup Stop - 2026-06-07
+
+Status: v0.166 reviews only the existing Worker + Barracks + Militia opt-in Godot player-slice posture. It treats the remaining screenshot concern as a mode-clarity and review-framing problem after v0.165 repaired aspect compression and duplicate rendering.
+
+v0.166 preserved slots:
+
+- Worker: `worker_billboard_static_v0147` / `HYBRID_WORKER_TRIMMED_1024` / `a628065ca92b231b0d4f6a0625d9e259dea080e80d530ee688483611d70049bc`.
+- Barracks: `barrosan_barracks_material_v0149` / `HYBRID_BARRACKS_768_WRAPSAFE_OFFSET_BLEND` / `58a60b750370df084b60a1d92077da9367c0ba8a763781e2c3a8a7d96f1c980f`.
+- Militia: `militia_billboard_static_v0154` / `HYBRID_MILITIA_TRIMMED_1024` / `c25349f00c422a0b3c9d5862027351bd70008e9314d4e3cd4001676e914321cb`.
+
+v0.166 entry points:
+
+- `GODOT_REVIEW_SALTO_THREE_SLOT_ART_WINDOWS.bat`
+- `GODOT_VALIDATE_SALTO_THREE_SLOT_VISUAL_COHERENCE_WINDOWS.bat`
+- `GODOT_CLEANUP_SALTO_EXPERIMENTAL_ARTIFACTS_SAFE_WINDOWS.bat`
+- `npm run godot:review:salto-three-slot-art`
+- `npm run godot:validate:salto-three-slot-visual-coherence`
+- `npm run godot:cleanup:salto-experimental-artifacts`
+
+v0.166 docs:
+
+- `docs/V0166_THREE_SLOT_VISUAL_COHERENCE_CORRECTION_SPEC.md`
+- `docs/V0166_SCREENSHOT_MODE_AND_SCALE_REVIEW.md`
+- `docs/V0166_THREE_SLOT_VISUAL_QA_REPORT.md`
+- `docs/V0166_SAFE_ARTIFACT_CLEANUP_EXECUTION_REPORT.md`
+- `docs/V0166_EXPERIMENTAL_REVIEW_LAUNCHER_GUIDE.md`
+- `docs/V0166_PLAYER_SLICE_THREE_SLOT_BOUNDARY.md`
+- `docs/V0166_IMPLEMENTATION_REPORT.md`
+
+v0.166 constraints:
+
+- Zero images generated.
+- Zero slots added.
+- Exactly three normal-slice opt-in slots total.
+- Default stabilized launcher unchanged and procedural.
+- Default player-slice launcher unchanged and procedural.
+- Worker-only launcher, Worker + Barracks launcher, and Worker + Barracks + Militia launcher preserved.
+- Cleanup deletes only known Godot-generated sidecars with explicit `--apply-safe-only`.
+- No Aster, Ashen, HUD, environment, browser runtime, save, stable-ID, gameplay, objective, AI, balance, campaign, final engine choice, full port, or broad artifact cleanup.
 
 ## Current v0.165 Godot Salto Three-Slot Visual Hardening And Artifact Hygiene Inventory Stop - 2026-06-07
 

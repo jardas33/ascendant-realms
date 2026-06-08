@@ -585,17 +585,21 @@ function boundaryCommand(root) {
     "desktop-spikes/godot-salto/scripts/salto_spike_scene_3d.gd",
     "package.json",
     "scripts/auditSaltoExperimentalArtifacts.mjs",
+    "scripts/cleanupSaltoExperimentalArtifacts.mjs",
     "src/game/desktop-spike/GodotSaltoSpikeScaffold.test.ts",
     "tools/godot/captureGodotSaltoWorkerBarracksMilitiaArtExperimentWindows.ps1",
     "tools/godot/launchGodotSaltoWorkerBarracksMilitiaArtExperimentWindows.ps1",
+    "tools/godot/reviewGodotSaltoThreeSlotArtWindows.ps1",
     "tools/godot/saltoThreeSlotVisualHardeningTool.mjs",
+    "tools/godot/saltoThreeSlotVisualCoherenceTool.mjs",
     "tools/godot/saltoWorkerBarracksMilitiaArtOptInTool.mjs",
+    "tools/godot/validateGodotSaltoThreeSlotVisualCoherenceWindows.ps1",
     "tools/godot/validateGodotSaltoThreeSlotVisualHardeningWindows.ps1",
     "tools/godot/validateGodotSaltoWorkerBarracksMilitiaArtExperimentWindows.ps1"
   ]);
   const textFiles = changed
     .filter((path) => /\.(bat|ps1|gd|md|json|mjs|ts)$/iu.test(path))
-    .filter((path) => !authorizedLaterCheckpointFiles.has(path) && !/^docs\/V016[45]_/u.test(path));
+    .filter((path) => !authorizedLaterCheckpointFiles.has(path) && !/^docs\/V016[456]_/u.test(path));
   const newIntegrationText = addedOrNewText(textFiles, new Set(["tools/godot/saltoWorkerBarracksArtOptInHardeningTool.mjs"]));
   const thirdSlotReferences = thirdSlotTokens.filter((token) => newIntegrationText.includes(token));
   if (thirdSlotReferences.length > 0) {

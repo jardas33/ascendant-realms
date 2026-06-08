@@ -1,5 +1,37 @@
 # Changelog
 
+# v0.166 Godot Salto Three-Slot Visual Coherence Review Launcher And Safe Cleanup Stop - 2026-06-07
+
+This checkpoint inspects the remaining player-facing screenshot concern after v0.165, keeps the existing Worker + Barracks + Militia opt-in posture, adds review-only mode clarity and camera framing, records rendered pixel measurements, and executes only conservative safe cleanup tooling for Godot-generated sidecars. It generates zero images, adds zero slots, preserves the default procedural launcher, preserves all prior opt-in launchers, and does not begin v0.167.
+
+Added:
+
+- Review-only script args `--experimental-review-mode-label=` and `--salto-three-slot-review-framing`.
+- Runtime rendered-pixel estimates for Worker and Militia billboards based on the active orthographic camera and viewport height.
+- `GODOT_REVIEW_SALTO_THREE_SLOT_ART_WINDOWS.bat`.
+- `GODOT_VALIDATE_SALTO_THREE_SLOT_VISUAL_COHERENCE_WINDOWS.bat`.
+- `GODOT_CLEANUP_SALTO_EXPERIMENTAL_ARTIFACTS_SAFE_WINDOWS.bat`.
+- `tools/godot/saltoThreeSlotVisualCoherenceTool.mjs`.
+- `scripts/cleanupSaltoExperimentalArtifacts.mjs`.
+- v0.166 visual-coherence, screenshot/scale, visual QA, cleanup, launcher guide, boundary, and implementation docs.
+- Scaffold guardrail coverage for v0.166 commands and boundaries.
+
+Changed:
+
+- The new review launcher clearly labels the mode as `Experimental opt-in art: Worker + Barracks + Militia`.
+- The new review launcher uses a safe focused camera posture for human screenshot review.
+- Cleanup is executable only with explicit `--apply-safe-only` and only for positively identified Godot-generated sidecars.
+
+Boundaries:
+
+- Zero new AI images.
+- Zero new slots.
+- Exactly three normal-slice opt-in art slots remain total.
+- Default stabilized launcher remains procedural.
+- Default player-slice launcher remains procedural.
+- Worker-only launcher, Worker + Barracks launcher, and Worker + Barracks + Militia launcher remain preserved.
+- No Aster, Ashen, HUD, environment, browser runtime, save, stable-ID, gameplay, objective, AI, balance, campaign, final engine choice, full port, or broad cleanup mutation.
+
 # v0.165 Godot Salto Three-Slot Visual Hardening And Artifact Hygiene Inventory Stop - 2026-06-07
 
 This checkpoint reproduces the player-facing screenshot concern before adding any further art slot, proves the Worker and Militia billboard aspect-compression defect, repairs only that runtime width calculation, audits duplicate rendering and Barracks material binding, adds a dry-run artifact-hygiene inventory, and stops for Emmanuel review. It generates zero images, adds zero slots, preserves all launchers, and does not begin v0.166.

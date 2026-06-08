@@ -3493,4 +3493,95 @@ describe("Godot Salto spike scaffold", () => {
     expect(retention).toContain("dry-run by default");
     expect(retention).toContain("separately approved checkpoint");
   });
+
+  it("defines the v0.166 three-slot visual coherence review and safe cleanup gate", async () => {
+    [
+      "GODOT_REVIEW_SALTO_THREE_SLOT_ART_WINDOWS.bat",
+      "GODOT_VALIDATE_SALTO_THREE_SLOT_VISUAL_COHERENCE_WINDOWS.bat",
+      "GODOT_CLEANUP_SALTO_EXPERIMENTAL_ARTIFACTS_SAFE_WINDOWS.bat",
+      "tools/godot/reviewGodotSaltoThreeSlotArtWindows.ps1",
+      "tools/godot/validateGodotSaltoThreeSlotVisualCoherenceWindows.ps1",
+      "tools/godot/saltoThreeSlotVisualCoherenceTool.mjs",
+      "scripts/cleanupSaltoExperimentalArtifacts.mjs",
+      "docs/V0166_THREE_SLOT_VISUAL_COHERENCE_CORRECTION_SPEC.md",
+      "docs/V0166_SCREENSHOT_MODE_AND_SCALE_REVIEW.md",
+      "docs/V0166_THREE_SLOT_VISUAL_QA_REPORT.md",
+      "docs/V0166_SAFE_ARTIFACT_CLEANUP_EXECUTION_REPORT.md",
+      "docs/V0166_EXPERIMENTAL_REVIEW_LAUNCHER_GUIDE.md",
+      "docs/V0166_PLAYER_SLICE_THREE_SLOT_BOUNDARY.md",
+      "docs/V0166_IMPLEMENTATION_REPORT.md"
+    ].forEach((path) => expect(existsSync(path), path).toBe(true));
+
+    const packageJson = JSON.parse(await readFile("package.json", "utf8")) as { scripts: Record<string, string> };
+    const rootScript = await readFile("desktop-spikes/godot-salto/scripts/salto_spike_root.gd", "utf8");
+    const sceneScript = await readFile("desktop-spikes/godot-salto/scripts/salto_spike_scene_3d.gd", "utf8");
+    const reviewScript = await readFile("tools/godot/reviewGodotSaltoThreeSlotArtWindows.ps1", "utf8");
+    const threeSlotLauncherScript = await readFile("tools/godot/launchGodotSaltoWorkerBarracksMilitiaArtExperimentWindows.ps1", "utf8");
+    const twoSlotTool = await readFile("tools/godot/saltoWorkerBarracksArtOptInTool.mjs", "utf8");
+    const twoSlotHardeningTool = await readFile("tools/godot/saltoWorkerBarracksArtOptInHardeningTool.mjs", "utf8");
+    const cleanupScript = await readFile("scripts/cleanupSaltoExperimentalArtifacts.mjs", "utf8");
+    const coherenceTool = await readFile("tools/godot/saltoThreeSlotVisualCoherenceTool.mjs", "utf8");
+    const stabilizedLauncher = await readFile("GODOT_LAUNCH_STABILIZED_SALTO_REVIEW_WINDOWS.bat", "utf8");
+    const playerLauncher = await readFile("GODOT_LAUNCH_PLAYER_SLICE_WINDOWS.bat", "utf8");
+
+    [
+      "godot:validate:salto-three-slot-visual-coherence",
+      "godot:review:salto-three-slot-art",
+      "godot:cleanup:salto-experimental-artifacts"
+    ].forEach((script) => expect(packageJson.scripts[script]).toBeTypeOf("string"));
+
+    [
+      "--experimental-review-mode-label=",
+      "--salto-three-slot-review-framing",
+      "_add_experimental_review_mode_label",
+      "v0.166"
+    ].forEach((text) => expect(rootScript).toContain(text));
+
+    [
+      "renderedPixelWidth",
+      "renderedPixelHeight",
+      "apply_three_slot_art_review_framing",
+      "v0166_three_slot_art_review",
+      "v0166_art_review_ring_",
+      "v0166_barracks_material_review_sheen",
+      "orthographic-camera-size-and-viewport-height"
+    ].forEach((text) => expect(sceneScript).toContain(text));
+
+    [
+      "Experimental opt-in art: Worker + Barracks + Militia",
+      "AscendantRealmsGodotSalto-v0166.exe",
+      "GODOT_SALTO_EXE_PATH",
+      "--worker-art-scale=1.15",
+      "--militia-art-scale=1.12",
+      "worker_billboard_static_v0147",
+      "barrosan_barracks_material_v0149",
+      "militia_billboard_static_v0154"
+    ].forEach((text) => expect(reviewScript).toContain(text));
+    expect(threeSlotLauncherScript).toContain("GODOT_SALTO_EXE_PATH");
+    expect(rootScript).toContain("value = arg.trim_prefix(prefix)");
+    expect(twoSlotTool).toContain("docs\\/V016[56]_");
+    expect(twoSlotHardeningTool).toContain("docs\\/V016[456]_");
+
+    [
+      "PASS_V0166_EXPERIMENTAL_ARTIFACT_CLEANUP_DRY_RUN",
+      "PASS_V0166_EXPERIMENTAL_ARTIFACT_SAFE_ONLY_CLEANUP",
+      "--apply-safe-only",
+      "unknownFilesFailClosed",
+      "safe-godot-generated-sidecar"
+    ].forEach((text) => expect(cleanupScript).toContain(text));
+
+    [
+      "PASS_V0166_THREE_SLOT_VISUAL_COHERENCE_AUTOMATION_READY",
+      "PASS_V0166_THREE_SLOT_VISUAL_COHERENCE_HUMAN_REVIEW_READY",
+      "PENDING_V0166_COMPUTER_USE_REVIEW",
+      "renderedPixelWidth",
+      "M3 FPS ratio vs M0",
+      "noAsterOrAshenImport"
+    ].forEach((text) => expect(coherenceTool).toContain(text));
+
+    ["worker-art-opt-in", "barracks-material-opt-in", "militia-art-opt-in"].forEach((text) => {
+      expect(stabilizedLauncher).not.toContain(text);
+      expect(playerLauncher).not.toContain(text);
+    });
+  });
 });

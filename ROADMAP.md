@@ -11,9 +11,21 @@ Every phase should protect these long-term pillars:
 
 ## Current Recommended Next Phase
 
-The current checkpoint is **v0.165 Godot Salto Three-Slot Visual Hardening And Artifact Hygiene Inventory Stop** on 2026-06-07. It keeps the existing Worker, Barracks, and Militia opt-in art posture, generates zero images, adds zero slots, preserves all existing launchers, repairs only the proven Worker/Militia runtime aspect-compression defect, adds duplicate-render and Barracks-binding evidence, and creates a dry-run artifact-hygiene inventory.
+The current checkpoint is **v0.166 Godot Salto Three-Slot Visual Coherence Review Launcher And Safe Cleanup Stop** on 2026-06-07. It keeps the existing Worker, Barracks, and Militia opt-in art posture, generates zero images, adds zero slots, preserves all existing launchers, adds only review-mode clarity/framing, records rendered pixel measurements, and restricts cleanup execution to positively identified Godot-generated sidecars.
 
-The next recommended step is human review and explicit approval only: Emmanuel should review the v0.165 captures, Computer Use review, scale/aspect audit, duplicate-render audit, Barracks material binding review, benchmark scorecard, and artifact-hygiene inventory. A future separately authorized milestone may be a cleanup execution checkpoint, a fourth-slot Aster experiment, or a manual-review pause. Do not execute cleanup, add a fourth art slot, import Aster or Ashen art into the player slice, wire assets into the browser runtime, mutate production manifests or art slots, change saves or stable IDs, choose Godot finally, start a full desktop port, start Unity/Unreal/Electron work, or begin v0.166.
+The next recommended step is human review and explicit approval only unless a separately queued prompt is already being executed after v0.166 gates pass. Emmanuel should review the v0.166 review launcher screenshots, scale measurements, Barracks visibility notes, benchmark scorecard, cleanup before/after manifests, and boundary report. Do not add a fourth art slot, import Aster or Ashen art into the player slice, wire assets into the browser runtime, mutate production manifests or art slots, change saves or stable IDs, choose Godot finally, start a full desktop port, start Unity/Unreal/Electron work, perform broad cleanup, or begin any unqueued future milestone.
+
+New v0.166 docs:
+
+- `docs/V0166_THREE_SLOT_VISUAL_COHERENCE_CORRECTION_SPEC.md`
+- `docs/V0166_SCREENSHOT_MODE_AND_SCALE_REVIEW.md`
+- `docs/V0166_THREE_SLOT_VISUAL_QA_REPORT.md`
+- `docs/V0166_SAFE_ARTIFACT_CLEANUP_EXECUTION_REPORT.md`
+- `docs/V0166_EXPERIMENTAL_REVIEW_LAUNCHER_GUIDE.md`
+- `docs/V0166_PLAYER_SLICE_THREE_SLOT_BOUNDARY.md`
+- `docs/V0166_IMPLEMENTATION_REPORT.md`
+
+Previous checkpoint reference: v0.165 Godot Salto Three-Slot Visual Hardening And Artifact Hygiene Inventory Stop.
 
 New v0.165 docs:
 

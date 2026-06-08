@@ -467,7 +467,10 @@ function boundaryCommand(root) {
     "tools/godot/validateGodotSaltoWorkerBarracksMilitiaArtExperimentWindows.ps1",
     "tools/godot/captureGodotSaltoWorkerBarracksMilitiaArtExperimentWindows.ps1",
     "tools/godot/validateGodotSaltoThreeSlotVisualHardeningWindows.ps1",
+    "tools/godot/reviewGodotSaltoThreeSlotArtWindows.ps1",
+    "tools/godot/validateGodotSaltoThreeSlotVisualCoherenceWindows.ps1",
     "tools/godot/saltoThreeSlotVisualHardeningTool.mjs",
+    "tools/godot/saltoThreeSlotVisualCoherenceTool.mjs",
     "tools/godot/saltoWorkerBarracksMilitiaArtOptInTool.mjs",
     "scripts/auditSaltoExperimentalArtifacts.mjs",
     "docs/V0164_GODOT_PLAYER_SLICE_MILITIA_OPT_IN_SPEC.md",
@@ -480,7 +483,7 @@ function boundaryCommand(root) {
     "docs/V0164_IMPLEMENTATION_REPORT.md"
   ]);
   const laterCheckpointTextFiles = new Set(
-    v0162ChangedTextFiles.filter((path) => /^docs\/V0165_/u.test(path))
+    v0162ChangedTextFiles.filter((path) => /^docs\/V016[56]_/u.test(path))
   );
   const newIntegrationText = addedOrNewText(v0162ChangedTextFiles, new Set([
     "tools/godot/saltoWorkerBarracksArtOptInTool.mjs",

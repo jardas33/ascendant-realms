@@ -41,6 +41,8 @@ const SCRIPT_ARG_PREFIXES := [
 	"--militia-art-expected-sha256=",
 	"--militia-art-scale=",
 	"--militia-art-fallback-mode=",
+	"--experimental-review-mode-label=",
+	"--salto-three-slot-review-framing",
 	"--real-input-smoke",
 	"--real-input-validate",
 	"--site-semantics-smoke",
@@ -752,6 +754,15 @@ func _configure_worker_art_for_active_scene() -> void:
 		active_scene.configure_barracks_material_experiment(_barracks_material_options_from_args())
 	if active_scene.has_method("configure_militia_art_experiment"):
 		active_scene.configure_militia_art_experiment(_militia_art_options_from_args())
+	_apply_review_framing_for_active_scene()
+
+func _apply_review_framing_for_active_scene() -> void:
+	if not _script_args().has("--salto-three-slot-review-framing"):
+		return
+	if active_mode != MODE_25D or active_scene == null or not is_instance_valid(active_scene):
+		return
+	if active_scene.has_method("apply_three_slot_art_review_framing"):
+		active_scene.apply_three_slot_art_review_framing()
 
 func _worker_art_options_from_args() -> Dictionary:
 	var fallback_mode := _arg_value("--worker-art-fallback-mode=", "none")
@@ -821,10 +832,11 @@ func _militia_art_options_from_args() -> Dictionary:
 	}
 
 func _arg_value(prefix: String, default_value: String = "") -> String:
+	var value := default_value
 	for arg in _script_args():
 		if arg.begins_with(prefix):
-			return arg.trim_prefix(prefix)
-	return default_value
+			value = arg.trim_prefix(prefix)
+	return value
 
 func _has_arg_prefix(prefix: String) -> bool:
 	for arg in _script_args():
@@ -953,6 +965,7 @@ func show_player_title() -> void:
 	last_post_mine_flow_status = {}
 	load_mode(MODE_25D)
 	_call_scene("set_player_facing_mode", [true])
+	_apply_review_framing_for_active_scene()
 	current_step_id = "player_title"
 	active_mode = MODE_PLAYER_TITLE
 	_render_player_screen("title")
@@ -968,6 +981,7 @@ func show_player_battle() -> void:
 	load_mode(MODE_25D)
 	_call_scene("set_player_facing_mode", [true])
 	_call_scene("set_workload_tier", ["M"])
+	_apply_review_framing_for_active_scene()
 	current_step_id = "player_battle"
 	_render_player_screen("battle")
 
@@ -992,6 +1006,7 @@ func _render_player_screen(screen: String) -> void:
 		child.queue_free()
 	player_visible_texts = []
 	_call_scene("set_player_shell_screen", [screen])
+	_apply_review_framing_for_active_scene()
 	var shade := ColorRect.new()
 	shade.name = "PlayerSliceShade"
 	shade.color = Color(0.02, 0.025, 0.025, 0.28 if screen == "battle" else 0.57)
@@ -1024,6 +1039,15 @@ func _render_player_screen(screen: String) -> void:
 			_add_player_button("Restart Slice", Vector2(620, 318), "_on_player_restart_pressed")
 			_add_player_button("Return to Title", Vector2(620, 372), "_on_player_back_pressed")
 			_add_player_button("Exit", Vector2(620, 426), "_exit_player_slice")
+	_add_experimental_review_mode_label()
+
+func _add_experimental_review_mode_label() -> void:
+	var label_text := _arg_value("--experimental-review-mode-label=", "").strip_edges()
+	if label_text == "":
+		return
+	if label_text.length() > 96:
+		label_text = label_text.substr(0, 96)
+	_add_player_label(label_text, Vector2(1012, 22), Vector2(548, 30), 14, Color(0.88, 0.94, 0.80), Color(0.02, 0.03, 0.025, 0.70), HORIZONTAL_ALIGNMENT_CENTER)
 
 func _add_player_label(text: String, position: Vector2, size: Vector2, font_size: int, color: Color, background: Color = Color(0, 0, 0, 0), alignment: int = HORIZONTAL_ALIGNMENT_LEFT) -> void:
 	if background.a > 0.0:
@@ -4007,6 +4031,8 @@ func _apply_player_slice_action(action: String) -> Dictionary:
 
 func _player_capture_checkpoint() -> String:
 	var normalized_root := _artifact_root_from_args().replace("\\", "/")
+	if normalized_root.contains("/v0166"):
+		return "v0.166"
 	if normalized_root.contains("/v0164"):
 		return "v0.164"
 	if normalized_root.contains("/v0162"):
@@ -4026,10 +4052,10 @@ func _player_capture_checkpoint() -> String:
 	return "v0.124"
 
 func _is_bounded_microloop_checkpoint() -> bool:
-	return ["v0.129", "v0.130", "v0.160", "v0.162", "v0.164"].has(_player_capture_checkpoint())
+	return ["v0.129", "v0.130", "v0.160", "v0.162", "v0.164", "v0.166"].has(_player_capture_checkpoint())
 
 func _player_capture_steps() -> Array[Dictionary]:
-	if _player_capture_checkpoint() == "v0.160" or _player_capture_checkpoint() == "v0.162" or _player_capture_checkpoint() == "v0.164":
+	if _player_capture_checkpoint() == "v0.160" or _player_capture_checkpoint() == "v0.162" or _player_capture_checkpoint() == "v0.164" or _player_capture_checkpoint() == "v0.166":
 		return [
 			{"id": "title", "label": "Title shell with configured 2.5D backdrop", "action": "title"},
 			{"id": "briefing", "label": "Briefing shell", "action": "briefing"},

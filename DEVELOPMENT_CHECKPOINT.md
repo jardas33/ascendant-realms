@@ -1,6 +1,46 @@
 # Development Checkpoint
 
-Updated: 2026-06-07 v0.165 Godot Salto Three-Slot Visual Hardening And Artifact Hygiene Inventory Stop
+Updated: 2026-06-07 v0.166 Godot Salto Three-Slot Visual Coherence Review Launcher And Safe Cleanup Stop
+
+## v0.166 Godot Salto Three-Slot Visual Coherence Review Launcher And Safe Cleanup Stop - 2026-06-07
+
+Scope: review clarity, visual-coherence evidence, and safe cleanup execution for the existing three-slot Godot player-slice opt-in path. This checkpoint adds no images, adds no slots, preserves all existing launchers, keeps the default launcher procedural, and confines cleanup deletion to positively identified Godot-generated sidecars.
+
+Included work:
+
+- Confirmed v0.165 prerequisite status and pre-v0.166 hygiene unblock before edits.
+- Reproduced the remaining screenshot concern as mode/framing ambiguity rather than a remaining compression or duplicate-render defect.
+- Preserved Worker slot `worker_billboard_static_v0147` / `HYBRID_WORKER_TRIMMED_1024` and SHA-256 `a628065ca92b231b0d4f6a0625d9e259dea080e80d530ee688483611d70049bc`.
+- Preserved Barracks slot `barrosan_barracks_material_v0149` / `HYBRID_BARRACKS_768_WRAPSAFE_OFFSET_BLEND` and SHA-256 `58a60b750370df084b60a1d92077da9367c0ba8a763781e2c3a8a7d96f1c980f`.
+- Preserved Militia slot `militia_billboard_static_v0154` / `HYBRID_MILITIA_TRIMMED_1024` and SHA-256 `c25349f00c422a0b3c9d5862027351bd70008e9314d4e3cd4001676e914321cb`.
+- Added review-only on-screen mode label support.
+- Added review-only safe camera framing.
+- Added rendered pixel width/height evidence for Worker and Militia.
+- Added `GODOT_REVIEW_SALTO_THREE_SLOT_ART_WINDOWS.bat`.
+- Added `GODOT_VALIDATE_SALTO_THREE_SLOT_VISUAL_COHERENCE_WINDOWS.bat`.
+- Added `GODOT_CLEANUP_SALTO_EXPERIMENTAL_ARTIFACTS_SAFE_WINDOWS.bat`.
+- Added v0.166 visual coherence, screenshot/scale, visual QA, cleanup, launcher guide, boundary, and implementation docs.
+
+Current interpretation:
+
+- The default stabilized launcher remains procedural.
+- The default player-slice launcher remains procedural.
+- The Worker-only launcher remains Worker-only.
+- The Worker + Barracks launcher remains two-slot.
+- The Worker + Barracks + Militia launcher remains exactly three-slot.
+- Barracks material remains correctly bound and intentionally restrained at normal RTS distance.
+- Cleanup deletes only audited `.gd.uid` and `.png.import` sidecars when explicitly requested.
+- Browser runtime, production manifests, saves, stable IDs, new art slots, gameplay, objectives, input semantics, balance, AI, map content, campaign state, final engine choice, full port, broad cleanup, and v0.167 remain out of scope unless a later queued prompt explicitly passes gates.
+
+Verification targets:
+
+```text
+PASS: npm run godot:validate:salto-three-slot-visual-coherence - PASS_V0166_THREE_SLOT_VISUAL_COHERENCE_AUTOMATION_READY.
+PASS: review scorecard - PASS_V0166_THREE_SLOT_VISUAL_COHERENCE_HUMAN_REVIEW_READY after cleanup evidence is present.
+PASS: cleanup dry-run - PASS_V0166_EXPERIMENTAL_ARTIFACT_CLEANUP_DRY_RUN.
+PASS: cleanup safe-only - PASS_V0166_EXPERIMENTAL_ARTIFACT_SAFE_ONLY_CLEANUP or no eligible candidates.
+PASS: boundary - default launchers procedural, prior opt-in launchers preserved, zero images, zero slots, no Aster/Ashen/browser/save/stable-ID/gameplay mutation.
+```
 
 ## v0.165 Godot Salto Three-Slot Visual Hardening And Artifact Hygiene Inventory Stop - 2026-06-07
 
