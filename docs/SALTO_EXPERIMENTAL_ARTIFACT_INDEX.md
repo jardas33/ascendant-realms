@@ -1,10 +1,10 @@
 # Salto Experimental Artifact Index
 
-Status: `ACTIVE_V0186_RETENTION_INDEX`
+Status: `ACTIVE_V0187_RETENTION_INDEX`
 
 This index is the retention source of truth for the Godot Salto experimental-art path. It protects selected local art, active derivatives, metadata, tracked fallbacks, current evidence, and unknown files from broad cleanup.
 
-This v0.186 index supersedes `ACTIVE_V0185_RETENTION_INDEX`, `ACTIVE_V0184_RETENTION_INDEX`, `ACTIVE_V0183_RETENTION_INDEX`, `ACTIVE_V0182_RETENTION_INDEX`, `ACTIVE_V0181_RETENTION_INDEX`, `ACTIVE_V0180_RETENTION_INDEX`, `ACTIVE_V0179_RETENTION_INDEX`, `ACTIVE_V0178_RETENTION_INDEX`, `ACTIVE_V0177_RETENTION_INDEX`, `ACTIVE_V0176_RETENTION_INDEX`, `ACTIVE_V0175_RETENTION_INDEX`, `ACTIVE_V0174_RETENTION_INDEX`, `ACTIVE_V0173_RETENTION_INDEX`, `ACTIVE_V0172_RETENTION_INDEX`, `ACTIVE_V0171_RETENTION_INDEX`, and `ACTIVE_V0170_RETENTION_INDEX` while retaining their protected evidence.
+This v0.187 index supersedes `ACTIVE_V0186_RETENTION_INDEX`, `ACTIVE_V0185_RETENTION_INDEX`, `ACTIVE_V0184_RETENTION_INDEX`, `ACTIVE_V0183_RETENTION_INDEX`, `ACTIVE_V0182_RETENTION_INDEX`, `ACTIVE_V0181_RETENTION_INDEX`, `ACTIVE_V0180_RETENTION_INDEX`, `ACTIVE_V0179_RETENTION_INDEX`, `ACTIVE_V0178_RETENTION_INDEX`, `ACTIVE_V0177_RETENTION_INDEX`, `ACTIVE_V0176_RETENTION_INDEX`, `ACTIVE_V0175_RETENTION_INDEX`, `ACTIVE_V0174_RETENTION_INDEX`, `ACTIVE_V0173_RETENTION_INDEX`, `ACTIVE_V0172_RETENTION_INDEX`, `ACTIVE_V0171_RETENTION_INDEX`, and `ACTIVE_V0170_RETENTION_INDEX` while retaining their protected evidence.
 
 ## Selected Local Source Art And Active Derivatives
 
@@ -168,10 +168,20 @@ Retain the latest v0.166/v0.167/v0.168/v0.169/v0.170 evidence until a later chec
 - `docs/V0186_STRUCTURE_SHELL_HIERARCHY_QA_BENCHMARK.md`
 - `docs/V0186_STRUCTURE_SHELL_BOUNDARY_ROLLBACK.md`
 - `docs/V0186_IMPLEMENTATION_REPORT.md`
+- `artifacts/desktop-spikes/godot-salto/v0187/validation/`
+- `artifacts/desktop-spikes/godot-salto/v0187/capture/`
+- `artifacts/desktop-spikes/godot-salto/v0187/benchmark/`
+- `artifacts/desktop-spikes/godot-salto/v0187/boundary/`
+- `artifacts/desktop-spikes/godot-salto/v0187/final-boundary/`
+- `artifacts/desktop-spikes/godot-salto/v0187/final-cleanup-dry-run/`
+- `artifacts/desktop-spikes/godot-salto/v0187/final-artifact-retention/`
+- `docs/V0187_RIVERBANK_BRIDGE_APPROACH_QA_BENCHMARK.md`
+- `docs/V0187_RIVERBANK_BRIDGE_BOUNDARY_ROLLBACK.md`
+- `docs/V0187_IMPLEMENTATION_REPORT.md`
 
 ## Character Integration Freeze
 
-Character-slot expansion is frozen after the selected Worker, Barracks material, Militia, Aster, and Ashen Raider opt-in slots. v0.186 keeps the existing Barrosan foothold ground-material opt-in slot and the existing Barrosan foothold road-material opt-in slot behind `GODOT_REVIEW_SALTO_GROUND_ROAD_MATERIAL_OPT_IN_WINDOWS.bat`, preserves the v0.184 visual-only environment-shell geometry convergence review path and v0.185 visual-only environment-shell live-QA path, and adds only a visual-only procedural structure-shell hierarchy hardening path behind `GODOT_REVIEW_SALTO_STRUCTURE_SHELL_HARDENING_WINDOWS.bat`. Both environment materials remain opt-in only, no bridge/riverbank/structure material slot is integrated, the default launcher remains procedural, and browser runtime remains untouched.
+Character-slot expansion is frozen after the selected Worker, Barracks material, Militia, Aster, and Ashen Raider opt-in slots. v0.187 keeps the existing Barrosan foothold ground-material opt-in slot and the existing Barrosan foothold road-material opt-in slot behind `GODOT_REVIEW_SALTO_GROUND_ROAD_MATERIAL_OPT_IN_WINDOWS.bat`, preserves the v0.184 visual-only environment-shell geometry convergence review path, v0.185 visual-only environment-shell live-QA path, and v0.186 visual-only procedural structure-shell hierarchy hardening path, and adds only a visual-only procedural riverbank/bridge approach hardening path behind `GODOT_REVIEW_SALTO_RIVERBANK_BRIDGE_APPROACH_WINDOWS.bat`. Both environment materials remain opt-in only, no bridge/riverbank/structure material slot is integrated, no water shader pipeline is added, the default launcher remains procedural, and browser runtime remains untouched.
 
 ## Archive Candidates
 

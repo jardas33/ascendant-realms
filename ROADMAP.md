@@ -11,9 +11,17 @@ Every phase should protect these long-term pillars:
 
 ## Current Recommended Next Phase
 
-The current checkpoint is **v0.186 Salto Barrosan Foothold Procedural Structure-Shell Hierarchy Hardening And Human-Review Stop** on 2026-06-09. It adds only an explicit Godot review/validate/capture path for visual procedural structure-shell hierarchy hardening after v0.185, keeps the default launcher procedural, preserves all prior opt-in launchers, keeps the browser runtime untouched, generates zero images, adds zero slots, and leaves gameplay/pathing/collisions/objectives/AI/saves/stable IDs unchanged.
+The current checkpoint is **v0.187 Salto Riverbank Bridge-Crossing Approach-Lane Procedural Visual Hardening And Human-Review Stop** on 2026-06-09. It adds only an explicit Godot review/validate/capture path for visual procedural riverbank, bridge-crossing, and approach-lane hardening after v0.186, keeps the default launcher procedural, preserves all prior opt-in launchers, keeps the browser runtime untouched, generates zero images, adds zero slots, and leaves gameplay/pathing/collisions/objectives/AI/saves/stable IDs unchanged.
 
-The next queued step is v0.187 only if v0.186 is committed, pushed, clean, synced, and remote-green and the queued v0.187 prompt prerequisites pass. v0.187 should remain riverbank and bridge-approach hardening only. Do not perform broad terrain replacement, add slots, generate images, enable art by default, mutate the browser runtime, alter gameplay/pathing/collisions/objectives/AI/saves/stable IDs, or unfreeze character-slot integration.
+The next queued step is v0.188 only if v0.187 is committed, pushed, clean, synced, and remote-green and the queued v0.188 prompt prerequisites pass. v0.188 should remain environment-shell cohesion QA, cleanup packet, and shell-freeze work only. Do not perform broad terrain replacement, add slots, generate images, enable art by default, mutate the browser runtime, alter gameplay/pathing/collisions/objectives/AI/saves/stable IDs, or unfreeze character-slot integration.
+
+New v0.187 docs:
+
+- `docs/V0187_RIVERBANK_BRIDGE_APPROACH_QA_BENCHMARK.md`
+- `docs/V0187_RIVERBANK_BRIDGE_BOUNDARY_ROLLBACK.md`
+- `docs/V0187_IMPLEMENTATION_REPORT.md`
+
+Previous checkpoint reference: v0.186 Salto Barrosan Foothold Procedural Structure-Shell Hierarchy Hardening And Human-Review Stop.
 
 New v0.186 docs:
 

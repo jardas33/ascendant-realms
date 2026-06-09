@@ -1,5 +1,43 @@
 # Changelog
 
+# v0.187 Salto Riverbank Bridge-Crossing Approach-Lane Procedural Visual Hardening And Human-Review Stop - 2026-06-09
+
+This checkpoint adds only an explicit Godot Salto review path for visual procedural riverbank, bridge-crossing, and approach-lane hardening after v0.186. It generates zero images, adds zero slots, keeps default launchers procedural, preserves all prior opt-in launchers, keeps browser runtime untouched, and leaves gameplay/pathing/collisions/objectives/AI/saves/stable IDs unchanged.
+
+Added:
+
+- `GODOT_REVIEW_SALTO_RIVERBANK_BRIDGE_APPROACH_WINDOWS.bat`.
+- `GODOT_VALIDATE_SALTO_RIVERBANK_BRIDGE_APPROACH_WINDOWS.bat`.
+- `GODOT_CAPTURE_SALTO_RIVERBANK_BRIDGE_APPROACH_WINDOWS.bat`.
+- v0.187 launch/review/validate/capture PowerShell wrappers.
+- `tools/godot/saltoRiverbankBridgeApproachTool.mjs`.
+- `docs/V0187_RIVERBANK_BRIDGE_APPROACH_QA_BENCHMARK.md`.
+- `docs/V0187_RIVERBANK_BRIDGE_BOUNDARY_ROLLBACK.md`.
+- `docs/V0187_IMPLEMENTATION_REPORT.md`.
+
+Changed:
+
+- Added an opt-in Godot Salto riverbank/bridge approach hardening flag and audit report.
+- Improved only visual procedural river continuity, bank framing, bridge deck/abutments/rails, road-to-bridge transition, friendly approach, hostile approach, site-marker hierarchy, minimap correlation, and review framing.
+- Shortened the visible v0.187 review label after Windows-side QA found title-screen clipping.
+- Updated handoff, roadmap, checkpoint, artifact index, changelog, and release checklist docs.
+
+Validation:
+
+- `npm run godot:validate:salto-riverbank-bridge-approach`.
+- `PASS_V0187_RIVERBANK_BRIDGE_APPROACH_VALIDATION/CAPTURE/BENCHMARK/BOUNDARY`.
+- R1 FPS ratio `1.0024`; p95 worsening `0.3%`.
+- `npm run godot:headed:post-mine-flow-smoke`.
+- `npm run godot:headed:triple-natural-playthrough`.
+- Windows-side Computer Use review covered title, briefing, battle, Aster selection, Move command, bridge-adjacent movement, camera movement, and zoom.
+
+Boundaries:
+
+- Zero images generated.
+- Zero slots added.
+- No default launcher or prior launcher mutation.
+- Browser runtime, production manifests, saves, stable IDs, gameplay, pathing, collisions, objectives, AI, balance, selected art, metadata, fallbacks, and required evidence remain untouched.
+
 # v0.186 Salto Barrosan Foothold Procedural Structure-Shell Hierarchy Hardening And Human-Review Stop - 2026-06-09
 
 This checkpoint adds only an explicit Godot Salto review path for visual procedural structure-shell hierarchy hardening after v0.185. It generates zero images, adds zero slots, keeps default launchers procedural, preserves all prior opt-in launchers, keeps browser runtime untouched, and leaves gameplay/pathing/collisions/objectives/AI/saves/stable IDs unchanged.

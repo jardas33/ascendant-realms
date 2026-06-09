@@ -1,6 +1,32 @@
 # Development Checkpoint
 
-Updated: 2026-06-09 v0.186 Salto Structure Shell Hierarchy
+Updated: 2026-06-09 v0.187 Salto Riverbank Bridge Approach
+
+## v0.187 Salto Riverbank Bridge-Crossing Approach-Lane Procedural Visual Hardening And Human-Review Stop - 2026-06-09
+
+Scope: explicit opt-in Godot Salto procedural riverbank, bridge-crossing, and approach-lane visual hardening after v0.186. This checkpoint generates zero images, adds zero slots, keeps the default launcher procedural, preserves all prior opt-in launchers, keeps browser runtime untouched, and leaves gameplay, pathing, collisions, production, restoration logic, objectives, AI, saves, stable IDs, selected art, metadata, fallbacks, and required evidence unchanged.
+
+Included work:
+
+- Added `GODOT_REVIEW_SALTO_RIVERBANK_BRIDGE_APPROACH_WINDOWS.bat` plus matching validate/capture wrappers.
+- Added `tools/godot/saltoRiverbankBridgeApproachTool.mjs` with validation, capture, benchmark, and boundary gates.
+- Added the visual-only `--salto-riverbank-bridge-approach-hardening` Godot flag and status/audit reporting.
+- Kept the v0.186 structure-shell hardening foundation while improving only procedural river continuity, bank framing, bridge deck/rails/abutments, road-to-bridge transition, friendly approach, hostile approach, site-marker hierarchy, and minimap correlation.
+- Shortened the visible v0.187 review label after Windows-side QA found title-screen clipping.
+- Performed Windows-side Computer Use review across title, briefing, battle, Aster selection, Move command, bridge-adjacent movement, camera movement, and zoom.
+- Produced v0.187 QA/benchmark, boundary/rollback, and implementation reports.
+
+Verification targets:
+
+```text
+PASS: npm run godot:validate:salto-riverbank-bridge-approach.
+PASS: PASS_V0187_RIVERBANK_BRIDGE_APPROACH_VALIDATION/CAPTURE/BENCHMARK/BOUNDARY.
+PASS: R1 FPS ratio 1.0024 and p95 worsening 0.3% against the S1 structure-shell baseline.
+PASS: npm run godot:headed:post-mine-flow-smoke.
+PASS: npm run godot:headed:triple-natural-playthrough.
+PASS: Windows-side packaged review covered title, briefing, battle, real-input selection/movement, camera movement, and zoom.
+PASS: zero images, zero slots, no launcher mutation, default procedural preserved, browser runtime untouched, no gameplay/pathing/collision/objective/AI/save/stable-ID mutation.
+```
 
 ## v0.186 Salto Barrosan Foothold Procedural Structure-Shell Hierarchy Hardening And Human-Review Stop - 2026-06-09
 

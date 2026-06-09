@@ -338,6 +338,7 @@ var environment_contrast_harmonization_enabled := false
 var environment_geometry_convergence_enabled := false
 var environment_shell_live_qa_enabled := false
 var environment_structure_shell_hardening_enabled := false
+var environment_riverbank_bridge_approach_enabled := false
 var ground_material_experiment_enabled := false
 var ground_material_source_path := ""
 var ground_material_metadata_path := ""
@@ -462,6 +463,7 @@ func configure_environment_foundation_review(enabled: bool) -> Dictionary:
 		environment_geometry_convergence_enabled = false
 		environment_shell_live_qa_enabled = false
 		environment_structure_shell_hardening_enabled = false
+		environment_riverbank_bridge_approach_enabled = false
 	_refresh_visual_foundation()
 	if environment_foundation_review_enabled:
 		apply_environment_foundation_review_framing()
@@ -476,6 +478,7 @@ func configure_environment_readability_hardening(enabled: bool) -> Dictionary:
 		environment_geometry_convergence_enabled = false
 		environment_shell_live_qa_enabled = false
 		environment_structure_shell_hardening_enabled = false
+		environment_riverbank_bridge_approach_enabled = false
 	_refresh_visual_foundation()
 	if environment_readability_hardening_enabled:
 		apply_environment_readability_hardening_framing()
@@ -492,6 +495,7 @@ func configure_environment_contrast_harmonization(enabled: bool) -> Dictionary:
 		environment_geometry_convergence_enabled = false
 		environment_shell_live_qa_enabled = false
 		environment_structure_shell_hardening_enabled = false
+		environment_riverbank_bridge_approach_enabled = false
 	_refresh_visual_foundation()
 	if environment_contrast_harmonization_enabled:
 		apply_environment_contrast_harmonization_framing()
@@ -508,6 +512,7 @@ func configure_environment_geometry_convergence(enabled: bool) -> Dictionary:
 		environment_contrast_harmonization_enabled = false
 		environment_shell_live_qa_enabled = false
 		environment_structure_shell_hardening_enabled = false
+		environment_riverbank_bridge_approach_enabled = false
 	_refresh_visual_foundation()
 	if environment_geometry_convergence_enabled:
 		apply_environment_geometry_convergence_framing()
@@ -524,6 +529,7 @@ func configure_environment_shell_live_qa(enabled: bool) -> Dictionary:
 		environment_contrast_harmonization_enabled = false
 		environment_geometry_convergence_enabled = true
 		environment_structure_shell_hardening_enabled = false
+		environment_riverbank_bridge_approach_enabled = false
 	_refresh_visual_foundation()
 	if environment_shell_live_qa_enabled:
 		apply_environment_shell_live_qa_framing()
@@ -542,6 +548,7 @@ func configure_environment_structure_shell_hardening(enabled: bool) -> Dictionar
 		environment_contrast_harmonization_enabled = false
 		environment_geometry_convergence_enabled = true
 		environment_shell_live_qa_enabled = true
+		environment_riverbank_bridge_approach_enabled = false
 	_refresh_visual_foundation()
 	if environment_structure_shell_hardening_enabled:
 		apply_environment_structure_shell_hardening_framing()
@@ -553,6 +560,29 @@ func configure_environment_structure_shell_hardening(enabled: bool) -> Dictionar
 		apply_environment_foundation_review_framing()
 	_apply_environment_readability_minimap_markers()
 	return _environment_structure_shell_hardening_status()
+
+func configure_environment_riverbank_bridge_approach(enabled: bool) -> Dictionary:
+	environment_riverbank_bridge_approach_enabled = enabled
+	if environment_riverbank_bridge_approach_enabled:
+		environment_foundation_review_enabled = true
+		environment_readability_hardening_enabled = false
+		environment_contrast_harmonization_enabled = false
+		environment_geometry_convergence_enabled = true
+		environment_shell_live_qa_enabled = true
+		environment_structure_shell_hardening_enabled = true
+	_refresh_visual_foundation()
+	if environment_riverbank_bridge_approach_enabled:
+		apply_environment_riverbank_bridge_approach_framing()
+	elif environment_structure_shell_hardening_enabled:
+		apply_environment_structure_shell_hardening_framing()
+	elif environment_shell_live_qa_enabled:
+		apply_environment_shell_live_qa_framing()
+	elif environment_geometry_convergence_enabled:
+		apply_environment_geometry_convergence_framing()
+	elif environment_foundation_review_enabled:
+		apply_environment_foundation_review_framing()
+	_apply_environment_readability_minimap_markers()
+	return _environment_riverbank_bridge_approach_status()
 
 func apply_environment_foundation_review_framing() -> bool:
 	if not environment_foundation_review_enabled:
@@ -588,6 +618,12 @@ func apply_environment_structure_shell_hardening_framing() -> bool:
 	if not environment_structure_shell_hardening_enabled:
 		return false
 	_apply_camera_authoring_posture("v0186_structure_shell_hardening", Vector3(-2.84, 11.35, 7.58), 8.24)
+	return true
+
+func apply_environment_riverbank_bridge_approach_framing() -> bool:
+	if not environment_riverbank_bridge_approach_enabled:
+		return false
+	_apply_camera_authoring_posture("v0187_riverbank_bridge_approach", Vector3(0.28, 11.16, 7.46), 7.92)
 	return true
 
 func _environment_foundation_status() -> Dictionary:
@@ -823,6 +859,65 @@ func _environment_structure_shell_hardening_audit() -> Dictionary:
 		"visualLanguage": ["wet_granite_foundations", "timber_frames", "restrained_metal", "practical_scaffolding", "warm_hearth_accents"],
 		"gameplayCollisionNodesLeftUntouched": ["runtime fixture positions", "real-input click radii", "site capture radius", "Barracks click radius", "Lume click radius", "pathing/navigation adapters", "stable-id adapters"],
 		"minimapSemanticsPreserved": true
+	}
+
+func _environment_riverbank_bridge_approach_status() -> Dictionary:
+	return {
+		"schemaVersion": 1,
+		"checkpoint": "v0.187",
+		"enabled": environment_riverbank_bridge_approach_enabled,
+		"requiresStructureShellHardening": true,
+		"requiresShellLiveQa": true,
+		"requiresGeometryConvergence": true,
+		"requiresFoundationReview": true,
+		"requiresGroundMaterialOptIn": true,
+		"requiresRoadMaterialOptIn": true,
+		"reviewOnly": true,
+		"runtimeArtSlotAdded": false,
+		"aiImageGenerated": false,
+		"newTextureImported": false,
+		"waterShaderPipelineAdded": false,
+		"bridgeRiverbankMaterialSlotAdded": false,
+		"browserRuntimeChanged": false,
+		"saveWritesAllowed": false,
+		"stableIdsChanged": false,
+		"gameplayPathingChanged": false,
+		"navigationSemanticsChanged": false,
+		"collisionGeometryChanged": false,
+		"objectiveLogicChanged": false,
+		"aiLogicChanged": false,
+		"preservesFiveCharacterMaterialSlots": true,
+		"addsEnvironmentMaterialSlot": false,
+		"riverReadsAsOneCoherentChannel": environment_riverbank_bridge_approach_enabled,
+		"banksFrameRiverClearly": environment_riverbank_bridge_approach_enabled,
+		"bridgeReadsAsCrossing": environment_riverbank_bridge_approach_enabled,
+		"approachLanesReadable": environment_riverbank_bridge_approach_enabled,
+		"roadToBridgeTransitionReadable": environment_riverbank_bridge_approach_enabled,
+		"hostileApproachLaneReadable": environment_riverbank_bridge_approach_enabled,
+		"friendlyApproachReadable": environment_riverbank_bridge_approach_enabled,
+		"minimapCorrelationPreserved": environment_riverbank_bridge_approach_enabled,
+		"charactersOverCrossingReadable": environment_riverbank_bridge_approach_enabled,
+		"structuresRemainCoherent": environment_riverbank_bridge_approach_enabled,
+		"traversalSemanticsUnchanged": true,
+		"audit": _environment_riverbank_bridge_approach_audit()
+	}
+
+func _environment_riverbank_bridge_approach_audit() -> Dictionary:
+	return {
+		"environmentVisualNodeCategories": ["river_channel", "riverbank_lips", "bridge_crossing", "abutments", "road_to_bridge_transition", "friendly_approach", "hostile_approach", "minimap_correlation"],
+		"newArtSlots": 0,
+		"newImportedTextures": 0,
+		"bridgeRiverbankMaterialSlotsAdded": 0,
+		"waterShadersAdded": 0,
+		"proceduralVisualOnly": true,
+		"riverContinuityNodes": ["v0187_river_channel_central_continuity", "v0187_river_north_bend_join", "v0187_river_south_bend_join", "v0187_river_under_bridge_dark_cut", "v0187_river_shallow_crossing_glaze"],
+		"bankShapeNodes": ["v0187_west_bank_upper_lip", "v0187_west_bank_lower_lip", "v0187_east_bank_upper_lip", "v0187_east_bank_lower_lip", "v0187_bridge_bank_shadow_west", "v0187_bridge_bank_shadow_east"],
+		"bridgeCrossingNodes": ["v0187_bridge_deck_readable_span", "v0187_bridge_west_abutment_mass", "v0187_bridge_east_abutment_mass", "v0187_bridge_north_low_rail", "v0187_bridge_south_low_rail", "v0187_bridge_plank_tick_00"],
+		"approachLaneNodes": ["v0187_west_road_to_bridge_collar", "v0187_east_road_from_bridge_collar", "v0187_friendly_approach_lane_feather", "v0187_hostile_approach_lane_feather", "v0187_crossing_combat_readability_lane"],
+		"minimapCorrelationNodes": ["v0174_minimap_bridge_crossing", "v0174_minimap_road_intersections", "v0174_minimap_hostile_approach", "v0174_minimap_friendly_boundary"],
+		"gameplayCollisionNodesLeftUntouched": ["runtime fixture positions", "real-input click radii", "site capture radius", "bridge traversal smoke path", "pathing/navigation adapters", "stable-id adapters"],
+		"bridgeTraversalBehaviorUnchanged": true,
+		"zOrderValues": {"riverCoreY": 0.292, "bankLipY": 0.318, "approachLaneY": 0.342, "bridgeDeckY": 0.386, "bridgeRailY": 0.462, "markerY": 0.372}
 	}
 
 func configure_worker_art_experiment(options: Dictionary) -> Dictionary:
@@ -3170,6 +3265,52 @@ func focus_environment_structure_shell_subject(subject: String, close: bool = fa
 	_sync_hud()
 	return true
 
+func focus_environment_riverbank_bridge_subject(subject: String, close: bool = false) -> bool:
+	var normalized := subject.strip_edges().to_lower()
+	var camera_position := CAMERA_DEFAULT_POSITION
+	var zoom := 8.35
+	var marker_position := Vector3.ZERO
+	match normalized:
+		"river", "river_overview":
+			camera_position = Vector3(0.26, 11.20, 7.70)
+			zoom = 8.55 if not close else 7.92
+			marker_position = Vector3(0.60, 0.18, -0.40)
+		"banks", "riverbanks":
+			camera_position = Vector3(0.22, 11.10, 7.42)
+			zoom = 8.20 if not close else 7.58
+			marker_position = Vector3(0.60, 0.20, 0.88)
+		"bridge", "crossing":
+			camera_position = Vector3(0.92, 11.02, 7.42)
+			zoom = 8.02 if not close else 7.26
+			marker_position = Vector3(0.56, 0.20, 0.88)
+		"road_to_bridge":
+			camera_position = Vector3(-0.54, 11.08, 7.58)
+			zoom = 7.86
+			marker_position = Vector3(-0.54, 0.18, 0.86)
+		"friendly_approach":
+			camera_position = Vector3(-3.82, 11.24, 8.18)
+			zoom = 8.58
+			marker_position = Vector3(-3.72, 0.18, 1.32)
+		"hostile_approach":
+			camera_position = Vector3(3.36, 11.22, 8.18)
+			zoom = 8.58
+			marker_position = Vector3(3.56, 0.18, -0.98)
+		"combat_crossing":
+			camera_position = Vector3(1.82, 11.18, 7.82)
+			zoom = 8.25
+			marker_position = Vector3(1.20, 0.18, -0.74)
+		_:
+			return false
+	hover_target_id = normalized
+	last_feedback_id = "hover:v0187:%s" % normalized
+	_apply_camera_authoring_posture("v0187_%s_%s" % [normalized, "close" if close else "normal"], camera_position, zoom)
+	_set_or_create_disc_marker("hover_feedback_marker", marker_position + Vector3(0.0, 0.045, 0.0), 0.30, Color(0.86, 0.92, 0.64, 0.38))
+	_sync_unit_visuals()
+	_sync_site_visuals()
+	_sync_lume_visuals()
+	_sync_hud()
+	return true
+
 func show_combat_readability_sample() -> bool:
 	combat_readability_active = true
 	damage_flash_active = true
@@ -4759,6 +4900,8 @@ func get_spike_status() -> Dictionary:
 	status["environmentShellLiveQa"] = _environment_shell_live_qa_status()
 	status["environmentStructureShellHardeningEnabled"] = environment_structure_shell_hardening_enabled
 	status["environmentStructureShellHardening"] = _environment_structure_shell_hardening_status()
+	status["environmentRiverbankBridgeApproachEnabled"] = environment_riverbank_bridge_approach_enabled
+	status["environmentRiverbankBridgeApproach"] = _environment_riverbank_bridge_approach_status()
 	var worker_art_loaded := _worker_art_is_active()
 	_refresh_worker_art_counters()
 	var barracks_material_loaded := _barracks_material_is_active()
@@ -4807,6 +4950,7 @@ func get_spike_status() -> Dictionary:
 	status["roadMaterialProceduralFallbackActive"] = bool(road_material_status.get("fallbackActive", true))
 	status["environmentShellLiveQaArtSlotCount"] = 0
 	status["environmentStructureShellHardeningArtSlotCount"] = 0
+	status["environmentRiverbankBridgeApproachArtSlotCount"] = 0
 	status["normalSliceOptInRequestedSlotCount"] = int(status["workerArtSlotCount"]) + int(status["barracksMaterialSlotCount"]) + int(status["militiaArtSlotCount"]) + int(status["asterArtSlotCount"]) + int(status["ashenArtSlotCount"])
 	status["normalSliceOptInLoadedSlotCount"] = (1 if worker_art_loaded else 0) + (1 if barracks_material_loaded else 0) + (1 if militia_art_loaded else 0) + (1 if aster_art_loaded else 0) + (1 if ashen_art_loaded else 0)
 	status["environmentMaterialOptInRequestedSlotCount"] = (1 if ground_material_experiment_enabled else 0) + (1 if road_material_experiment_enabled else 0)
@@ -5185,6 +5329,9 @@ func _apply_light_preset() -> void:
 	if environment_structure_shell_hardening_enabled:
 		light.light_energy = 1.17
 		light.light_color = Color(0.95, 0.98, 0.88)
+	if environment_riverbank_bridge_approach_enabled:
+		light.light_energy = 1.15
+		light.light_color = Color(0.93, 0.99, 0.90)
 
 func _create_terrain() -> void:
 	terrain_root = Node3D.new()
@@ -5346,6 +5493,8 @@ func _create_terrain() -> void:
 		_add_environment_contrast_harmonization_layers()
 	if environment_geometry_convergence_enabled:
 		_add_environment_geometry_convergence_layers()
+	if environment_riverbank_bridge_approach_enabled:
+		_add_environment_riverbank_bridge_approach_layers()
 
 func _add_environment_foundation_shell_layers() -> void:
 	if environment_geometry_convergence_enabled:
@@ -5489,6 +5638,48 @@ func _add_environment_geometry_convergence_layers() -> void:
 	else:
 		_add_static_cylinder("v0184_site_marker_outer_reading_ring", Vector3(-1.52, 0.318, 0.12), 0.72, 0.026, Color(0.95, 0.80, 0.30, 0.50), true)
 		_add_static_cylinder("v0184_site_marker_inner_state_disc", Vector3(-1.52, 0.340, 0.12), 0.34, 0.022, Color(0.32, 0.76, 0.52, 0.44), true)
+
+func _add_environment_riverbank_bridge_approach_layers() -> void:
+	var water_core := Color(0.02, 0.17, 0.24, 0.88)
+	var water_glaze := Color(0.30, 0.54, 0.54, 0.24)
+	var bank_lip := Color(0.32, 0.40, 0.30, 0.74)
+	var bank_shadow := Color(0.06, 0.10, 0.08, 0.58)
+	var bridge_stone := Color(0.58, 0.56, 0.47)
+	var bridge_shadow := Color(0.06, 0.05, 0.04, 0.70)
+	var road_transition := Color(0.78, 0.70, 0.50, 0.44)
+	var friendly_lane := Color(0.24, 0.60, 0.48, 0.32)
+	var hostile_lane := Color(0.74, 0.22, 0.15, 0.34)
+	_add_static_box("v0187_river_channel_central_continuity", Vector3(0.60, 0.292, -0.40), Vector3(0.26, 0.020, 13.04), water_core, true)
+	_add_static_box_rotated("v0187_river_north_bend_join", Vector3(0.48, 0.294, -4.58), Vector3(0.24, 0.018, 2.15), -5.0, water_core.darkened(0.07), true)
+	_add_static_box_rotated("v0187_river_south_bend_join", Vector3(0.72, 0.294, 4.06), Vector3(0.24, 0.018, 2.05), 5.0, water_core.lightened(0.04), true)
+	_add_static_box("v0187_river_under_bridge_dark_cut", Vector3(0.60, 0.306, 0.88), Vector3(0.34, 0.022, 0.88), water_core.darkened(0.20), true)
+	_add_static_box("v0187_river_shallow_crossing_glaze", Vector3(0.60, 0.330, 0.88), Vector3(1.42, 0.018, 0.26), water_glaze.lightened(0.10), true)
+	for index in range(4):
+		var z := -4.62 + float(index) * 2.82
+		var wobble := sin(float(index) * 1.6) * 0.08
+		_add_static_box_rotated("v0187_west_bank_upper_lip_%02d" % index, Vector3(0.08 + wobble, 0.318, z), Vector3(0.12, 0.020, 1.46), -4.0 + float(index % 2) * 3.0, bank_lip, true)
+		_add_static_box_rotated("v0187_east_bank_upper_lip_%02d" % index, Vector3(1.12 + wobble, 0.318, z + 0.30), Vector3(0.12, 0.020, 1.42), 4.0 - float(index % 2) * 3.0, bank_lip.lightened(0.05), true)
+	_add_static_box("v0187_west_bank_lower_lip", Vector3(0.02, 0.322, 3.18), Vector3(0.14, 0.020, 2.36), bank_lip.darkened(0.06), true)
+	_add_static_box("v0187_east_bank_lower_lip", Vector3(1.18, 0.322, 3.18), Vector3(0.14, 0.020, 2.36), bank_lip.lightened(0.03), true)
+	_add_static_box("v0187_bridge_bank_shadow_west", Vector3(-0.46, 0.332, 0.88), Vector3(0.22, 0.024, 0.78), bank_shadow, true)
+	_add_static_box("v0187_bridge_bank_shadow_east", Vector3(1.50, 0.332, 0.88), Vector3(0.22, 0.024, 0.78), bank_shadow, true)
+	_add_static_box("v0187_bridge_under_span_shadow", Vector3(0.56, 0.348, 0.88), Vector3(2.06, 0.030, 0.70), bridge_shadow, true)
+	_add_static_box("v0187_bridge_deck_readable_span", Vector3(0.56, 0.386, 0.88), Vector3(1.62, 0.056, 0.42), bridge_stone)
+	_add_static_box("v0187_bridge_west_abutment_mass", Vector3(-0.46, 0.374, 0.88), Vector3(0.24, 0.112, 0.62), bridge_stone.darkened(0.12))
+	_add_static_box("v0187_bridge_east_abutment_mass", Vector3(1.56, 0.374, 0.88), Vector3(0.24, 0.112, 0.62), bridge_stone.darkened(0.08))
+	_add_static_box("v0187_bridge_north_low_rail", Vector3(0.56, 0.462, 0.52), Vector3(1.92, 0.044, 0.06), Color(0.24, 0.19, 0.12))
+	_add_static_box("v0187_bridge_south_low_rail", Vector3(0.56, 0.462, 1.24), Vector3(1.92, 0.044, 0.06), Color(0.24, 0.19, 0.12))
+	for index in range(5):
+		var z_tick := 0.61 + float(index) * 0.15
+		_add_static_box("v0187_bridge_plank_tick_%02d" % index, Vector3(0.56, 0.430, z_tick), Vector3(1.38, 0.014, 0.026), Color(0.86, 0.78, 0.56, 0.58), true)
+	_add_static_box("v0187_west_road_to_bridge_collar", Vector3(-0.88, 0.342, 0.86), Vector3(0.86, 0.020, 0.46), road_transition, true)
+	_add_static_box("v0187_east_road_from_bridge_collar", Vector3(1.98, 0.342, 0.86), Vector3(0.86, 0.020, 0.46), road_transition.darkened(0.05), true)
+	_add_static_box("v0187_crossing_combat_readability_lane", Vector3(0.56, 0.350, 0.88), Vector3(2.58, 0.018, 0.10), Color(0.94, 0.82, 0.52, 0.40), true)
+	_add_static_box("v0187_friendly_approach_lane_feather", Vector3(-4.36, 0.342, 1.42), Vector3(1.52, 0.018, 1.36), friendly_lane, true)
+	_add_static_box("v0187_friendly_approach_to_bridge_read", Vector3(-2.16, 0.342, 0.78), Vector3(2.02, 0.018, 0.24), friendly_lane.lightened(0.08), true)
+	_add_static_box("v0187_hostile_approach_lane_feather", Vector3(3.64, 0.342, -0.98), Vector3(4.12, 0.018, 0.30), hostile_lane, true)
+	_add_static_box("v0187_hostile_approach_to_bridge_read", Vector3(2.18, 0.342, 0.48), Vector3(1.10, 0.018, 0.20), hostile_lane.lightened(0.10), true)
+	_add_static_box("v0187_site_marker_road_tick_preserved", Vector3(-0.68, 0.372, 0.12), Vector3(0.36, 0.018, 0.12), Color(0.94, 0.80, 0.32, 0.42), true)
 
 func _add_environment_readability_hardening_layers() -> void:
 	var road_core := Color(0.62, 0.58, 0.44, 0.92)
@@ -5888,7 +6079,7 @@ func _apply_environment_readability_minimap_markers() -> void:
 	]:
 		if not _minimap_has_marker(str(marker["name"])):
 			_add_minimap_marker(str(marker["name"]), marker["pos"], marker["size"], marker["color"])
-		_set_minimap_marker_visible(str(marker["name"]), environment_readability_hardening_enabled or environment_contrast_harmonization_enabled or environment_geometry_convergence_enabled)
+		_set_minimap_marker_visible(str(marker["name"]), environment_readability_hardening_enabled or environment_contrast_harmonization_enabled or environment_geometry_convergence_enabled or environment_riverbank_bridge_approach_enabled)
 
 func _sync_minimap() -> void:
 	if minimap_panel == null:
@@ -7136,6 +7327,8 @@ func _normalize_visual_preset(preset: String) -> String:
 	return ""
 
 func _preset_scope() -> String:
+	if environment_riverbank_bridge_approach_enabled:
+		return "v0187-opt-in-riverbank-bridge-approach-lane-hardening-excluded-from-default"
 	if environment_structure_shell_hardening_enabled:
 		return "v0186-opt-in-procedural-structure-shell-hierarchy-hardening-excluded-from-default"
 	if environment_shell_live_qa_enabled:
@@ -7153,6 +7346,8 @@ func _preset_scope() -> String:
 	return "player-facing-default-clean-readability-with-restrained-atmospheric-cues"
 
 func _terrain_color() -> Color:
+	if environment_riverbank_bridge_approach_enabled:
+		return Color(0.24, 0.31, 0.22)
 	if environment_shell_live_qa_enabled:
 		return Color(0.23, 0.31, 0.22)
 	if environment_geometry_convergence_enabled:
@@ -7168,6 +7363,8 @@ func _terrain_color() -> Color:
 	return Color(0.16, 0.22, 0.17)
 
 func _ridge_color() -> Color:
+	if environment_riverbank_bridge_approach_enabled:
+		return Color(0.32, 0.38, 0.27)
 	if environment_shell_live_qa_enabled:
 		return Color(0.31, 0.37, 0.27)
 	if environment_geometry_convergence_enabled:
@@ -7181,6 +7378,8 @@ func _ridge_color() -> Color:
 	return Color(0.22, 0.27, 0.21)
 
 func _road_color() -> Color:
+	if environment_riverbank_bridge_approach_enabled:
+		return Color(0.47, 0.42, 0.31)
 	if environment_shell_live_qa_enabled:
 		return Color(0.46, 0.41, 0.30)
 	if environment_geometry_convergence_enabled:
@@ -7194,6 +7393,8 @@ func _road_color() -> Color:
 	return Color(0.42, 0.36, 0.25)
 
 func _water_color() -> Color:
+	if environment_riverbank_bridge_approach_enabled:
+		return Color(0.025, 0.18, 0.25)
 	if environment_shell_live_qa_enabled:
 		return Color(0.03, 0.20, 0.27)
 	if environment_geometry_convergence_enabled:

@@ -1,6 +1,6 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-06-09 v0.186 Salto Structure Shell Hierarchy
+Last updated: 2026-06-09 v0.187 Salto Riverbank Bridge Approach
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
@@ -72,11 +72,33 @@ Project Identity continuation note: v0.185 now supersedes the older no-v0.185 ta
 
 Project Identity continuation note: v0.186 now supersedes the older no-v0.186 tail above because the queued prompt explicitly authorized opt-in Godot Salto procedural structure-shell hierarchy hardening after v0.185 was committed, pushed, clean, synced, and remote-green. v0.186 generates zero images, adds zero slots, preserves the default procedural launcher and all prior opt-in launchers, keeps browser runtime untouched, keeps gameplay/pathing/collisions/objectives/AI/saves/stable IDs unchanged, and adds only the explicit structure-shell-hardening review/validate/capture path.
 
-Current status override: v0.186 Salto structure shell hierarchy is the active checkpoint for this handoff. Character-slot integration remains frozen after five selected opt-in slots. The Barrosan foothold ground and road materials remain opt-in only, the default launcher remains procedural, browser runtime remains untouched, and bridge/riverbank material intake remains future private-comparator-only work unless explicitly queued. Do not begin v0.187 unless v0.186 is committed, pushed, clean, synced, and remote-green and the next queued prompt prerequisites pass.
+Project Identity continuation note: v0.187 now supersedes the older no-v0.187 tail above because the queued prompt explicitly authorized opt-in Godot Salto procedural riverbank, bridge-crossing, and approach-lane hardening after v0.186 was committed, pushed, clean, synced, and remote-green. v0.187 generates zero images, adds zero slots, preserves the default procedural launcher and all prior opt-in launchers, keeps browser runtime untouched, keeps gameplay/pathing/collisions/objectives/AI/saves/stable IDs unchanged, and adds only the explicit riverbank-bridge-approach review/validate/capture path.
+
+Current status override: v0.187 Salto riverbank bridge approach is the active checkpoint for this handoff. Character-slot integration remains frozen after five selected opt-in slots. The Barrosan foothold ground and road materials remain opt-in only, the default launcher remains procedural, browser runtime remains untouched, and bridge/riverbank material intake remains future private-comparator-only work unless explicitly queued. Do not begin v0.188 unless v0.187 is committed, pushed, clean, synced, and remote-green and the next queued prompt prerequisites pass.
+
+## Current v0.187 Salto Riverbank Bridge Approach - 2026-06-09
+
+Status: v0.187 opt-in Godot procedural riverbank, bridge-crossing, and approach-lane visual hardening is the active checkpoint. Commit, push, and remote CI proof are required before any queued v0.188 work.
+
+Key evidence:
+
+- `GODOT_REVIEW_SALTO_RIVERBANK_BRIDGE_APPROACH_WINDOWS.bat`
+- `GODOT_VALIDATE_SALTO_RIVERBANK_BRIDGE_APPROACH_WINDOWS.bat`
+- `GODOT_CAPTURE_SALTO_RIVERBANK_BRIDGE_APPROACH_WINDOWS.bat`
+- `docs/V0187_RIVERBANK_BRIDGE_APPROACH_QA_BENCHMARK.md`
+- `docs/V0187_RIVERBANK_BRIDGE_BOUNDARY_ROLLBACK.md`
+- `docs/V0187_IMPLEMENTATION_REPORT.md`
+- `PASS_V0187_SALTO_RIVERBANK_BRIDGE_APPROACH_AUTOMATION_READY`
+- `PASS_V0187_RIVERBANK_BRIDGE_APPROACH_VALIDATION/CAPTURE/BENCHMARK/BOUNDARY`
+- R1 FPS ratio `1.0024`; p95 worsening `0.3%` against the S1 structure-shell baseline.
+- Windows-side Computer Use review covered title, briefing, battle, Aster selection, Move command, bridge-adjacent movement, camera movement, and zoom.
+- Functional proof passed `npm run godot:headed:post-mine-flow-smoke` and `npm run godot:headed:triple-natural-playthrough`.
+
+Next boundary: v0.188 may only start from clean, synced, pushed, remote-green v0.187 state if the queued prompt is still present and its prerequisites pass. Do not generate images, add slots, enable default art, wire browser runtime, or mutate gameplay/pathing/collisions/objectives/AI/saves/stable IDs.
 
 ## Current v0.186 Salto Structure Shell Hierarchy - 2026-06-09
 
-Status: v0.186 opt-in Godot procedural structure-shell hierarchy hardening is the active checkpoint. Commit, push, and remote CI proof are required before any queued v0.187 work.
+Status: previous v0.186 opt-in Godot procedural structure-shell hierarchy hardening checkpoint. It is superseded by the active v0.187 section above.
 
 Key evidence:
 
