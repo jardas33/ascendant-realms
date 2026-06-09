@@ -11,18 +11,26 @@ Every phase should protect these long-term pillars:
 
 ## Current Recommended Next Phase
 
-The current checkpoint is **v0.173 Salto Procedural World-Shell Hierarchy Hardening Experiment And Human-Review Stop** on 2026-06-08. It adds an opt-in environment-foundation Godot review path after the five-slot character freeze, hardens only procedural world-shell hierarchy, and preserves default procedural launchers plus all prior opt-in launchers.
+The current checkpoint is **v0.174 Salto Road-River-Bridge Site-Marker Readability Hardening And Human-Review Stop** on 2026-06-08. It adds an opt-in E2 environment-readability Godot review path after the v0.173 world-shell foundation, hardens only road/river/bridge/site-marker tactical readability, and preserves default procedural launchers plus all prior opt-in launchers.
 
-The next recommended step is v0.174 only if the queued prompt confirms this checkpoint passed, was pushed, and left `main` clean/synchronized. v0.174 should refine tactical readability of roads, river, bridge, and site markers in the same opt-in procedural environment lane. Do not add character slots, enable art by default, mutate the browser runtime, generate images, import terrain material, or begin v0.175 unless the queued prompt sequence proves v0.174 passed.
+The next recommended step is v0.175 only if the queued prompt confirms this checkpoint passed, was pushed, and left `main` clean/synchronized. v0.175 may generate exactly one private-comparator terrain-material source for intake only. Do not integrate it into the player-facing slice, add character slots, enable art by default, mutate the browser runtime, or begin v0.176 unless the queued prompt sequence proves v0.175 passed.
+
+New v0.174 docs:
+
+- `docs/V0174_TACTICAL_ENVIRONMENT_READABILITY_QA_AND_BENCHMARK.md`
+- `docs/V0174_ENVIRONMENT_BOUNDARY_AND_ROLLBACK.md`
+- `docs/V0174_IMPLEMENTATION_REPORT.md`
+- `docs/SALTO_EXPERIMENTAL_ARTIFACT_INDEX.md`
+
+Previous checkpoint reference: v0.173 Salto Procedural World-Shell Hierarchy Hardening Experiment And Human-Review Stop.
+
+The previous checkpoint was **v0.173 Salto Procedural World-Shell Hierarchy Hardening Experiment And Human-Review Stop** on 2026-06-08. It added the opt-in environment-foundation Godot review path after the five-slot character freeze, hardened procedural world-shell hierarchy, and preserved default procedural launchers plus all prior opt-in launchers.
 
 New v0.173 docs:
 
 - `docs/V0173_ENVIRONMENT_SHELL_HARDENING_QA_AND_BENCHMARK.md`
 - `docs/V0173_ENVIRONMENT_SHELL_BOUNDARY_AND_ROLLBACK.md`
 - `docs/V0173_IMPLEMENTATION_REPORT.md`
-- `docs/SALTO_EXPERIMENTAL_ARTIFACT_INDEX.md`
-
-Previous checkpoint reference: v0.172 Safe Cleanup Execution Documentation-Budget Enforcement And Environment-Phase Decision Packet.
 
 The previous checkpoint was **v0.172 Safe Cleanup Execution Documentation-Budget Enforcement And Environment-Phase Decision Packet** on 2026-06-08. It performed bounded cleanup execution, left archive candidates untouched, created a documentation-budget policy, and prepared the environment-foundation roadmap after the five-slot character freeze.
 

@@ -1,6 +1,6 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-06-08 v0.173 Salto Procedural World-Shell Hierarchy Hardening Experiment And Human-Review Stop
+Last updated: 2026-06-08 v0.174 Salto Road-River-Bridge Site-Marker Readability Hardening And Human-Review Stop
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
@@ -44,7 +44,41 @@ Project Identity continuation note: v0.172 now supersedes the older no-v0.172 ta
 
 Project Identity continuation note: v0.173 now supersedes the older no-v0.173 tail above because the queued prompt explicitly authorized one opt-in procedural environment-foundation hardening experiment after v0.172 was committed, pushed, clean, synced, and remote-green. v0.173 generates zero images, adds zero slots, preserves the five selected Worker/Barracks/Militia/Aster/Ashen opt-in posture, preserves the default procedural launcher and all prior opt-in launchers, keeps the browser runtime untouched, adds only `GODOT_REVIEW_SALTO_ENVIRONMENT_FOUNDATION_WINDOWS.bat` plus matching validation/capture tooling, records before/after capture and benchmark evidence, and stops before v0.174 unless a queued prompt sequence explicitly continues.
 
-Current status override: v0.173 is the active checkpoint for this handoff. Character-slot integration remains frozen after five selected opt-in slots. The next allowed direction is v0.174 road, river, bridge, and site-marker hardening only if the queued v0.174 prompt passes prerequisites after v0.173 is committed, pushed, clean, synced, and remote-green.
+Project Identity continuation note: v0.174 now supersedes the older no-v0.174 tail above because the queued prompt explicitly authorized one opt-in procedural road/river/bridge/site-marker readability hardening experiment after v0.173 was committed, pushed, clean, synced, and remote-green. v0.174 generates zero images, adds zero slots, preserves the five selected Worker/Barracks/Militia/Aster/Ashen opt-in posture, preserves the default procedural launcher and all prior opt-in launchers, keeps the browser runtime untouched, adds only `GODOT_REVIEW_SALTO_ENVIRONMENT_READABILITY_WINDOWS.bat` plus matching validation/capture tooling, records validation/capture/benchmark/boundary/cleanup/retention evidence, repairs one Windows-side clipped review-label issue, and stops before v0.175 unless a queued prompt sequence explicitly continues.
+
+Current status override: v0.174 is the active checkpoint for this handoff. Character-slot integration remains frozen after five selected opt-in slots. The next allowed direction is v0.175 private terrain-material comparator intake only if the queued v0.175 prompt passes prerequisites after v0.174 is committed, pushed, clean, synced, and remote-green. Do not integrate terrain material into the player-facing slice from v0.174.
+
+## Current v0.174 Salto Road-River-Bridge Site-Marker Readability Hardening And Human-Review Stop - 2026-06-08
+
+Status: local v0.174 work is the active checkpoint. Commit, push, and remote CI proof are required before any queued v0.175 work.
+
+What changed:
+
+- Added an opt-in E2 environment-readability review launcher and matching validation/capture wrappers for Windows-side Godot review.
+- Hardened only procedural tactical readability: road continuity/intersections, mine and Barracks approach lanes, hostile approach lane, friendly foothold boundary, river-bank contrast, bridge crossing guards, site-marker hierarchy, minimap markers, and camera pan/zoom anchors.
+- Preserved the existing five selected opt-in slots and all earlier launchers.
+- Added v0.174 validation, capture/contact-sheet, benchmark, boundary, cleanup dry-run, retention, and implementation evidence without importing or generating terrain material.
+- Rebuilt the packaged Godot executable during validation to avoid stale-binary evidence.
+- Ran Windows-side Computer Use review; shortened the E2 review label to avoid clipping.
+
+Key evidence:
+
+- `docs/V0174_TACTICAL_ENVIRONMENT_READABILITY_QA_AND_BENCHMARK.md`
+- `docs/V0174_ENVIRONMENT_BOUNDARY_AND_ROLLBACK.md`
+- `docs/V0174_IMPLEMENTATION_REPORT.md`
+- `artifacts/desktop-spikes/godot-salto/v0174/validation/environment-readability-validation-report.json`
+- `artifacts/desktop-spikes/godot-salto/v0174/capture/environment-readability-capture-report.json`
+- `artifacts/desktop-spikes/godot-salto/v0174/benchmark/environment-readability-benchmark-scorecard.json`
+- `artifacts/desktop-spikes/godot-salto/v0174/boundary/environment-readability-boundary-report.json`
+
+Current constraints:
+
+- Keep the default launcher procedural.
+- Preserve all prior opt-in launchers.
+- Keep browser runtime untouched.
+- Do not add character slots.
+- Do not import or integrate terrain material into the player-facing slice.
+- Do not begin v0.175 except through the queued prompt with clean/synced/green proof.
 
 ## Current v0.173 Salto Procedural World-Shell Hierarchy Hardening Experiment And Human-Review Stop - 2026-06-08
 

@@ -1,10 +1,10 @@
 # Salto Experimental Artifact Index
 
-Status: `ACTIVE_V0173_RETENTION_INDEX`
+Status: `ACTIVE_V0174_RETENTION_INDEX`
 
 This index is the retention source of truth for the Godot Salto experimental-art path. It protects selected local art, active derivatives, metadata, tracked fallbacks, current evidence, and unknown files from broad cleanup.
 
-This v0.173 index supersedes `ACTIVE_V0172_RETENTION_INDEX`, `ACTIVE_V0171_RETENTION_INDEX`, and `ACTIVE_V0170_RETENTION_INDEX` while retaining their protected evidence.
+This v0.174 index supersedes `ACTIVE_V0173_RETENTION_INDEX`, `ACTIVE_V0172_RETENTION_INDEX`, `ACTIVE_V0171_RETENTION_INDEX`, and `ACTIVE_V0170_RETENTION_INDEX` while retaining their protected evidence.
 
 ## Selected Local Source Art And Active Derivatives
 
@@ -56,10 +56,21 @@ Retain the latest v0.166/v0.167/v0.168/v0.169/v0.170 evidence until a later chec
 - `docs/V0173_ENVIRONMENT_SHELL_HARDENING_QA_AND_BENCHMARK.md`
 - `docs/V0173_ENVIRONMENT_SHELL_BOUNDARY_AND_ROLLBACK.md`
 - `docs/V0173_IMPLEMENTATION_REPORT.md`
+- `artifacts/desktop-spikes/godot-salto/v0174/validation/`
+- `artifacts/desktop-spikes/godot-salto/v0174/capture/`
+- `artifacts/desktop-spikes/godot-salto/v0174/benchmark/`
+- `artifacts/desktop-spikes/godot-salto/v0174/boundary/`
+- `artifacts/desktop-spikes/godot-salto/v0174/cleanup-dry-run/`
+- `artifacts/desktop-spikes/godot-salto/v0174/artifact-retention/`
+- `artifacts/desktop-spikes/godot-salto/v0174/final-safe-only/`
+- `artifacts/desktop-spikes/godot-salto/v0174/final-retention/`
+- `docs/V0174_TACTICAL_ENVIRONMENT_READABILITY_QA_AND_BENCHMARK.md`
+- `docs/V0174_ENVIRONMENT_BOUNDARY_AND_ROLLBACK.md`
+- `docs/V0174_IMPLEMENTATION_REPORT.md`
 
 ## Character Integration Freeze
 
-Character-slot expansion is frozen after the selected Worker, Barracks material, Militia, Aster, and Ashen Raider opt-in slots. v0.173 adds only an opt-in procedural environment-foundation review path with zero new runtime-art slots and zero imported terrain material. Future work should prioritize procedural environment-shell readability and terrain-material planning unless a later prompt explicitly reopens character-slot scope.
+Character-slot expansion is frozen after the selected Worker, Barracks material, Militia, Aster, and Ashen Raider opt-in slots. v0.174 adds only an opt-in procedural E2 road/river/bridge/site-marker readability path with zero new runtime-art slots and zero imported terrain material. Future work should prioritize private terrain-material comparator intake and readiness planning unless a later prompt explicitly reopens character-slot scope.
 
 ## Archive Candidates
 

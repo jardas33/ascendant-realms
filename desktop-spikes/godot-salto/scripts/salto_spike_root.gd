@@ -58,6 +58,7 @@ const SCRIPT_ARG_PREFIXES := [
 	"--salto-four-slot-review-framing",
 	"--salto-five-slot-review-framing",
 	"--salto-environment-foundation-review",
+	"--salto-environment-readability-hardening",
 	"--real-input-smoke",
 	"--real-input-validate",
 	"--site-semantics-smoke",
@@ -776,6 +777,8 @@ func _configure_worker_art_for_active_scene() -> void:
 	_apply_review_framing_for_active_scene()
 	if active_scene.has_method("configure_environment_foundation_review"):
 		active_scene.configure_environment_foundation_review(_script_args().has("--salto-environment-foundation-review"))
+	if active_scene.has_method("configure_environment_readability_hardening"):
+		active_scene.configure_environment_readability_hardening(_script_args().has("--salto-environment-readability-hardening"))
 
 func _apply_review_framing_for_active_scene() -> void:
 	if not _script_args().has("--salto-three-slot-review-framing") and not _script_args().has("--salto-four-slot-review-framing") and not _script_args().has("--salto-five-slot-review-framing"):
@@ -1571,6 +1574,7 @@ func run_player_slice_validation() -> void:
 	var ashen_art: Dictionary = final_status.get("ashenArtExperiment", {})
 	var ashen_art_loaded := bool(ashen_art.get("sourceLoaded", false))
 	var environment_foundation: Dictionary = final_status.get("environmentFoundationReview", {})
+	var environment_readability: Dictionary = final_status.get("environmentReadabilityHardening", {})
 	performance_smoke["workerArtOptInRequested"] = _script_args().has("--worker-art-opt-in")
 	performance_smoke["workerArtExperiment"] = worker_art
 	performance_smoke["barracksMaterialOptInRequested"] = _script_args().has("--barracks-material-opt-in")
@@ -1583,6 +1587,8 @@ func run_player_slice_validation() -> void:
 	performance_smoke["ashenArtExperiment"] = ashen_art
 	performance_smoke["environmentFoundationReviewEnabled"] = bool(final_status.get("environmentFoundationReviewEnabled", false))
 	performance_smoke["environmentFoundationReview"] = environment_foundation
+	performance_smoke["environmentReadabilityHardeningEnabled"] = bool(final_status.get("environmentReadabilityHardeningEnabled", false))
+	performance_smoke["environmentReadabilityHardening"] = environment_readability
 	var report := {
 		"schemaVersion": 1,
 		"checkpoint": _player_capture_checkpoint(),
@@ -1595,6 +1601,7 @@ func run_player_slice_validation() -> void:
 		"workerBarracksMilitiaAsterArtOptInHumanReviewPath": "GODOT_LAUNCH_SALTO_WORKER_BARRACKS_MILITIA_ASTER_ART_EXPERIMENT_WINDOWS.bat",
 		"fiveSlotArtOptInHumanReviewPath": "GODOT_LAUNCH_SALTO_FIVE_SLOT_ART_EXPERIMENT_WINDOWS.bat",
 		"environmentFoundationReviewPath": "GODOT_REVIEW_SALTO_ENVIRONMENT_FOUNDATION_WINDOWS.bat",
+		"environmentReadabilityReviewPath": "GODOT_REVIEW_SALTO_ENVIRONMENT_READABILITY_WINDOWS.bat",
 		"privateHarnessPreservedSeparately": true,
 		"defaultMode": MODE_25D,
 		"defaultVisualPreset": VISUAL_PRESET_CLEAN,
@@ -1615,6 +1622,8 @@ func run_player_slice_validation() -> void:
 		"ashenArtExperiment": ashen_art,
 		"environmentFoundationReviewEnabled": bool(final_status.get("environmentFoundationReviewEnabled", false)),
 		"environmentFoundationReview": environment_foundation,
+		"environmentReadabilityHardeningEnabled": bool(final_status.get("environmentReadabilityHardeningEnabled", false)),
+		"environmentReadabilityHardening": environment_readability,
 		"environmentFoundationArtSlotCount": int(final_status.get("environmentFoundationArtSlotCount", 0)),
 		"terrainMaterialSourceImported": bool(final_status.get("terrainMaterialSourceImported", false)),
 		"terrainMaterialRuntimeSlotAdded": bool(final_status.get("terrainMaterialRuntimeSlotAdded", false)),
@@ -1701,6 +1710,7 @@ func run_player_slice_capture() -> void:
 	var ashen_art: Dictionary = final_status.get("ashenArtExperiment", {})
 	var ashen_art_loaded := bool(ashen_art.get("sourceLoaded", false))
 	var environment_foundation: Dictionary = final_status.get("environmentFoundationReview", {})
+	var environment_readability: Dictionary = final_status.get("environmentReadabilityHardening", {})
 	var report := {
 		"schemaVersion": 1,
 		"checkpoint": _player_capture_checkpoint(),
@@ -1712,7 +1722,7 @@ func run_player_slice_capture() -> void:
 		"viewport": {"width": VIEWPORT_SIZE.x, "height": VIEWPORT_SIZE.y},
 		"defaultMode": MODE_25D,
 		"defaultVisualPreset": VISUAL_PRESET_CLEAN,
-		"privateHarnessPreservedSeparately": captures.any(func(capture: Dictionary) -> bool: return bool(capture.get("privateHarnessCapture", false))) or ["v0.126", "v0.127", "v0.128", "v0.129", "v0.130", "v0.160", "v0.162", "v0.164", "v0.168", "v0.169", "v0.170", "v0.173"].has(_player_capture_checkpoint()),
+		"privateHarnessPreservedSeparately": captures.any(func(capture: Dictionary) -> bool: return bool(capture.get("privateHarnessCapture", false))) or ["v0.126", "v0.127", "v0.128", "v0.129", "v0.130", "v0.160", "v0.162", "v0.164", "v0.168", "v0.169", "v0.170", "v0.173", "v0.174"].has(_player_capture_checkpoint()),
 		"proceduralPrimitiveOnly": not worker_art_loaded and not barracks_material_loaded and not militia_art_loaded and not aster_art_loaded and not ashen_art_loaded,
 		"generatedOrImportedArtIncluded": worker_art_loaded or barracks_material_loaded or militia_art_loaded or aster_art_loaded or ashen_art_loaded,
 		"runtimeArtIntegrated": worker_art_loaded or barracks_material_loaded or militia_art_loaded or aster_art_loaded or ashen_art_loaded,
@@ -1728,6 +1738,8 @@ func run_player_slice_capture() -> void:
 		"ashenArtExperiment": ashen_art,
 		"environmentFoundationReviewEnabled": bool(final_status.get("environmentFoundationReviewEnabled", false)),
 		"environmentFoundationReview": environment_foundation,
+		"environmentReadabilityHardeningEnabled": bool(final_status.get("environmentReadabilityHardeningEnabled", false)),
+		"environmentReadabilityHardening": environment_readability,
 		"environmentFoundationArtSlotCount": int(final_status.get("environmentFoundationArtSlotCount", 0)),
 		"terrainMaterialSourceImported": bool(final_status.get("terrainMaterialSourceImported", false)),
 		"terrainMaterialRuntimeSlotAdded": bool(final_status.get("terrainMaterialRuntimeSlotAdded", false)),
@@ -1791,6 +1803,7 @@ func run_worker_art_opt_in_benchmark() -> void:
 	var aster_art: Dictionary = final_status.get("asterArtExperiment", {})
 	var ashen_art: Dictionary = final_status.get("ashenArtExperiment", {})
 	var environment_foundation: Dictionary = final_status.get("environmentFoundationReview", {})
+	var environment_readability: Dictionary = final_status.get("environmentReadabilityHardening", {})
 	var any_loaded := bool(worker_art.get("sourceLoaded", false)) or bool(barracks_material.get("sourceLoaded", false)) or bool(militia_art.get("sourceLoaded", false)) or bool(aster_art.get("sourceLoaded", false)) or bool(ashen_art.get("sourceLoaded", false))
 	var five_slot_requested := _script_args().has("--ashen-art-opt-in")
 	var four_slot_requested := _script_args().has("--aster-art-opt-in")
@@ -1820,6 +1833,9 @@ func run_worker_art_opt_in_benchmark() -> void:
 		"ashenArtExperiment": ashen_art,
 		"environmentFoundationReviewEnabled": bool(final_status.get("environmentFoundationReviewEnabled", false)),
 		"environmentFoundationReview": environment_foundation,
+		"environmentReadabilityHardeningEnabled": bool(final_status.get("environmentReadabilityHardeningEnabled", false)),
+		"environmentReadabilityHardening": environment_readability,
+		"environmentReadabilityArtSlotCount": int(final_status.get("environmentReadabilityArtSlotCount", 0)),
 		"environmentFoundationArtSlotCount": int(final_status.get("environmentFoundationArtSlotCount", 0)),
 		"terrainMaterialSourceImported": bool(final_status.get("terrainMaterialSourceImported", false)),
 		"terrainMaterialRuntimeSlotAdded": bool(final_status.get("terrainMaterialRuntimeSlotAdded", false)),
@@ -4159,10 +4175,11 @@ func _apply_player_slice_action(action: String) -> Dictionary:
 			_ensure_player_battle_scene()
 			_call_scene("focus_layout_feature", ["minimap"])
 			_render_player_screen("battle")
-		"road", "ford", "bridge", "quarry", "shrine", "ruin", "buildable_ground", "objective_focus":
+		"road", "ford", "bridge", "road_intersections", "approach_lanes", "hostile_lane", "friendly_boundary", "site_marker_hierarchy", "quarry", "shrine", "ruin", "buildable_ground", "objective_focus":
 			_ensure_player_battle_scene()
 			_call_scene("focus_layout_feature", [action])
-			_call_scene("focus_visual_subject", [action])
+			if ["road", "ford", "bridge", "quarry", "shrine", "ruin", "buildable_ground", "objective_focus"].has(action):
+				_call_scene("focus_visual_subject", [action])
 			_render_player_screen("battle")
 		"pan_camera":
 			_ensure_player_battle_scene()
@@ -4209,6 +4226,8 @@ func _apply_player_slice_action(action: String) -> Dictionary:
 
 func _player_capture_checkpoint() -> String:
 	var normalized_root := _artifact_root_from_args().replace("\\", "/")
+	if normalized_root.contains("/v0174"):
+		return "v0.174"
 	if normalized_root.contains("/v0173"):
 		return "v0.173"
 	if normalized_root.contains("/v0170"):
@@ -4238,9 +4257,30 @@ func _player_capture_checkpoint() -> String:
 	return "v0.124"
 
 func _is_bounded_microloop_checkpoint() -> bool:
-	return ["v0.129", "v0.130", "v0.160", "v0.162", "v0.164", "v0.166", "v0.168", "v0.169", "v0.170", "v0.173"].has(_player_capture_checkpoint())
+	return ["v0.129", "v0.130", "v0.160", "v0.162", "v0.164", "v0.166", "v0.168", "v0.169", "v0.170", "v0.173", "v0.174"].has(_player_capture_checkpoint())
 
 func _player_capture_steps() -> Array[Dictionary]:
+	if _player_capture_checkpoint() == "v0.174":
+		return [
+			{"id": "title", "label": "Title shell with configured E2 environment path", "action": "title"},
+			{"id": "briefing", "label": "Briefing shell", "action": "briefing"},
+			{"id": "tactical_overview", "label": "Tactical overview", "action": "battle_default"},
+			{"id": "road_intersections", "label": "Road continuity and intersections", "action": "road_intersections"},
+			{"id": "river_bridge_normal", "label": "River and bridge normal view", "action": "ford"},
+			{"id": "river_bridge_close", "label": "River and bridge close view", "action": "bridge"},
+			{"id": "approach_lanes", "label": "Mine and Barracks approach lanes", "action": "approach_lanes"},
+			{"id": "friendly_boundary", "label": "Friendly foothold boundary", "action": "friendly_boundary"},
+			{"id": "hostile_approach_lane", "label": "Hostile approach lane", "action": "hostile_lane"},
+			{"id": "site_marker_hierarchy", "label": "Site marker hierarchy", "action": "site_marker_hierarchy"},
+			{"id": "mine_converted", "label": "Mine converted and readable", "action": "mine_converted"},
+			{"id": "barracks_restored", "label": "Barracks restored", "action": "barracks_complete"},
+			{"id": "minimap_correlation", "label": "Minimap correlation", "action": "minimap"},
+			{"id": "five_slot_combat_posture", "label": "Five-slot combat posture", "action": "combat"},
+			{"id": "camera_pan_readability", "label": "Pan camera readability", "action": "pan_camera"},
+			{"id": "camera_zoom_readability", "label": "Zoom camera readability", "action": "zoom_camera"},
+			{"id": "camera_min_zoom", "label": "Zoomed-in edge treatment", "action": "camera_min_zoom"},
+			{"id": "camera_max_zoom", "label": "Zoomed-out readability", "action": "camera_max_zoom"}
+		]
 	if _player_capture_checkpoint() == "v0.173":
 		return [
 			{"id": "title", "label": "Title shell with configured 2.5D backdrop", "action": "title"},

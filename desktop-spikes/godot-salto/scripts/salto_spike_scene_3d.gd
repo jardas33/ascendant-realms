@@ -310,6 +310,7 @@ var ashen_art_material_reuse_count := 0
 var three_slot_art_review_framing_active := false
 var five_slot_art_review_framing_active := false
 var environment_foundation_review_enabled := false
+var environment_readability_hardening_enabled := false
 
 func _ready() -> void:
 	_reset_worker_art_status(false, "opt-in flag absent")
@@ -392,15 +393,36 @@ func get_visual_preset() -> String:
 
 func configure_environment_foundation_review(enabled: bool) -> Dictionary:
 	environment_foundation_review_enabled = enabled
+	if not environment_foundation_review_enabled:
+		environment_readability_hardening_enabled = false
 	_refresh_visual_foundation()
 	if environment_foundation_review_enabled:
 		apply_environment_foundation_review_framing()
+	_apply_environment_readability_minimap_markers()
 	return _environment_foundation_status()
+
+func configure_environment_readability_hardening(enabled: bool) -> Dictionary:
+	environment_readability_hardening_enabled = enabled
+	if environment_readability_hardening_enabled:
+		environment_foundation_review_enabled = true
+	_refresh_visual_foundation()
+	if environment_readability_hardening_enabled:
+		apply_environment_readability_hardening_framing()
+	elif environment_foundation_review_enabled:
+		apply_environment_foundation_review_framing()
+	_apply_environment_readability_minimap_markers()
+	return _environment_readability_status()
 
 func apply_environment_foundation_review_framing() -> bool:
 	if not environment_foundation_review_enabled:
 		return false
 	_apply_camera_authoring_posture("v0173_environment_foundation", Vector3(-1.15, 11.95, 8.35), 10.25)
+	return true
+
+func apply_environment_readability_hardening_framing() -> bool:
+	if not environment_readability_hardening_enabled:
+		return false
+	_apply_camera_authoring_posture("v0174_environment_readability", Vector3(-0.88, 11.85, 8.46), 9.92)
 	return true
 
 func _environment_foundation_status() -> Dictionary:
@@ -425,6 +447,37 @@ func _environment_foundation_status() -> Dictionary:
 			"site marker readable collars",
 			"mine barracks command hall ground plates",
 			"overcast lighting and warm hearth accents"
+		]
+	}
+
+func _environment_readability_status() -> Dictionary:
+	return {
+		"schemaVersion": 1,
+		"checkpoint": "v0.174",
+		"enabled": environment_readability_hardening_enabled,
+		"requiresFoundationReview": true,
+		"reviewOnly": true,
+		"runtimeArtSlotAdded": false,
+		"aiImageGenerated": false,
+		"terrainTextureImported": false,
+		"browserRuntimeChanged": false,
+		"saveWritesAllowed": false,
+		"stableIdsChanged": false,
+		"gameplayPathingChanged": false,
+		"navigationSemanticsChanged": false,
+		"preservesFiveCharacterMaterialSlots": true,
+		"materiallyImprovesTacticalReadability": environment_readability_hardening_enabled,
+		"minimapCorrelationMarkersRendered": _minimap_has_marker("v0174_minimap_bridge_crossing") and _minimap_marker_visible("v0174_minimap_bridge_crossing"),
+		"appliedLayers": [
+			"road continuity centerline and intersections",
+			"mine and barracks approach lanes",
+			"hostile approach lane",
+			"friendly foothold boundary",
+			"river bank ledges and water contrast",
+			"bridge silhouette crossing guards",
+			"site-marker hierarchy",
+			"minimap correlation markers",
+			"camera pan and zoom readability anchors"
 		]
 	}
 
@@ -2185,6 +2238,21 @@ func focus_layout_feature(feature: String) -> bool:
 		"bridge":
 			position = Vector3(0.52, 11.18, 8.36)
 			zoom = 8.95
+		"road_intersections":
+			position = Vector3(-2.12, 11.18, 8.42)
+			zoom = 8.72
+		"approach_lanes":
+			position = Vector3(-3.45, 11.30, 8.75)
+			zoom = 9.05
+		"hostile_lane":
+			position = Vector3(3.28, 11.25, 8.42)
+			zoom = 9.02
+		"friendly_boundary":
+			position = Vector3(-4.52, 11.20, 9.10)
+			zoom = 9.12
+		"site_marker_hierarchy":
+			position = Vector3(-1.52, 11.12, 8.64)
+			zoom = 8.72
 		"quarry":
 			position = Vector3(-2.15, 11.25, 8.95)
 			zoom = 9.35
@@ -3862,6 +3930,8 @@ func get_spike_status() -> Dictionary:
 	status["visualPresetScope"] = _preset_scope()
 	status["environmentFoundationReviewEnabled"] = environment_foundation_review_enabled
 	status["environmentFoundationReview"] = _environment_foundation_status()
+	status["environmentReadabilityHardeningEnabled"] = environment_readability_hardening_enabled
+	status["environmentReadabilityHardening"] = _environment_readability_status()
 	var worker_art_loaded := _worker_art_is_active()
 	_refresh_worker_art_counters()
 	var barracks_material_loaded := _barracks_material_is_active()
@@ -3899,6 +3969,7 @@ func get_spike_status() -> Dictionary:
 	status["normalSliceOptInRequestedSlotCount"] = int(status["workerArtSlotCount"]) + int(status["barracksMaterialSlotCount"]) + int(status["militiaArtSlotCount"]) + int(status["asterArtSlotCount"]) + int(status["ashenArtSlotCount"])
 	status["normalSliceOptInLoadedSlotCount"] = (1 if worker_art_loaded else 0) + (1 if barracks_material_loaded else 0) + (1 if militia_art_loaded else 0) + (1 if aster_art_loaded else 0) + (1 if ashen_art_loaded else 0)
 	status["environmentFoundationArtSlotCount"] = 0
+	status["environmentReadabilityArtSlotCount"] = 0
 	status["terrainMaterialSourceImported"] = false
 	status["terrainMaterialRuntimeSlotAdded"] = false
 	status["thirdPlayerFacingArtSlotAdded"] = militia_art_experiment_enabled
@@ -4256,6 +4327,9 @@ func _apply_light_preset() -> void:
 	if environment_foundation_review_enabled:
 		light.light_energy = 0.98
 		light.light_color = Color(0.84, 0.90, 0.80)
+	if environment_readability_hardening_enabled:
+		light.light_energy = 1.02
+		light.light_color = Color(0.88, 0.93, 0.83)
 
 func _create_terrain() -> void:
 	terrain_root = Node3D.new()
@@ -4360,6 +4434,8 @@ func _create_terrain() -> void:
 			_add_static_cylinder("private_lume_vfx_stress_%02d" % index, Vector3(x, 0.18, -1.46 + sin(float(index)) * 0.18), 0.08, 0.08, _lume_core_color().lightened(0.18), true)
 	if environment_foundation_review_enabled:
 		_add_environment_foundation_shell_layers()
+	if environment_readability_hardening_enabled:
+		_add_environment_readability_hardening_layers()
 
 func _add_environment_foundation_shell_layers() -> void:
 	var road_edge := Color(0.24, 0.24, 0.20, 0.74)
@@ -4392,6 +4468,35 @@ func _add_environment_foundation_shell_layers() -> void:
 	_add_static_box("v0173_site_marker_outer_claim_collar", Vector3(-1.52, 0.210, 0.12), Vector3(1.58, 0.032, 1.26), Color(0.92, 0.82, 0.30, 0.48), true)
 	_add_static_box("v0173_site_marker_inner_safe_read", Vector3(-1.52, 0.218, 0.12), Vector3(1.02, 0.030, 0.82), Color(0.30, 0.62, 0.48, 0.42), true)
 	_add_static_box("v0173_lume_path_readability_floor", Vector3(0.22, 0.205, -0.28), Vector3(2.96, 0.030, 0.18), _lume_core_color().darkened(0.12), true)
+
+func _add_environment_readability_hardening_layers() -> void:
+	var road_core := Color(0.62, 0.58, 0.44, 0.92)
+	var road_shadow := Color(0.17, 0.16, 0.12, 0.70)
+	var approach_teal := Color(0.20, 0.58, 0.50, 0.42)
+	var hostile_warm := Color(0.66, 0.19, 0.13, 0.44)
+	var site_gold := Color(0.98, 0.82, 0.28, 0.58)
+	_add_static_box("v0174_main_road_continuity_centerline", Vector3(-1.05, 0.235, 0.70), Vector3(11.90, 0.024, 0.08), road_core, true)
+	_add_static_box("v0174_main_road_left_readability_berm", Vector3(-1.05, 0.222, 0.18), Vector3(11.88, 0.026, 0.08), road_shadow, true)
+	_add_static_box("v0174_main_road_right_readability_berm", Vector3(-1.05, 0.222, 1.22), Vector3(11.88, 0.026, 0.08), road_shadow, true)
+	_add_static_box("v0174_barracks_intersection_collar", Vector3(-4.42, 0.238, 0.38), Vector3(1.04, 0.024, 0.82), Color(0.72, 0.66, 0.48, 0.48), true)
+	_add_static_box("v0174_mine_intersection_collar", Vector3(-1.72, 0.238, 0.38), Vector3(1.32, 0.024, 0.76), Color(0.75, 0.68, 0.46, 0.50), true)
+	_add_static_box("v0174_bridge_intersection_collar", Vector3(0.56, 0.240, 0.84), Vector3(1.98, 0.026, 0.92), Color(0.80, 0.72, 0.54, 0.52), true)
+	_add_static_box("v0174_hostile_approach_lane", Vector3(3.48, 0.238, -0.98), Vector3(3.82, 0.026, 0.34), hostile_warm, true)
+	_add_static_box("v0174_hostile_lane_inner_warning", Vector3(3.62, 0.252, -0.98), Vector3(2.58, 0.028, 0.08), hostile_warm.lightened(0.16), true)
+	_add_static_box("v0174_friendly_foothold_boundary", Vector3(-4.58, 0.240, 2.10), Vector3(3.86, 0.028, 0.14), approach_teal, true)
+	_add_static_box("v0174_friendly_staging_lane_to_road", Vector3(-4.48, 0.238, 1.42), Vector3(1.20, 0.026, 1.44), approach_teal.darkened(0.08), true)
+	_add_static_box("v0174_mine_approach_lane", Vector3(-2.14, 0.240, 0.74), Vector3(1.28, 0.026, 0.30), approach_teal.lightened(0.08), true)
+	_add_static_box("v0174_barracks_approach_lane", Vector3(-4.78, 0.242, -2.02), Vector3(0.46, 0.026, 3.14), approach_teal.lightened(0.04), true)
+	_add_static_box("v0174_river_deep_contrast_spine", Vector3(0.60, 0.232, -0.38), Vector3(0.30, 0.024, 12.72), Color(0.04, 0.21, 0.27, 0.82), true)
+	_add_static_box("v0174_west_bank_walkable_lip", Vector3(0.06, 0.238, -0.38), Vector3(0.12, 0.024, 12.64), Color(0.30, 0.38, 0.30, 0.58), true)
+	_add_static_box("v0174_east_bank_walkable_lip", Vector3(1.14, 0.238, -0.38), Vector3(0.12, 0.024, 12.64), Color(0.30, 0.38, 0.32, 0.58), true)
+	_add_static_box("v0174_bridge_crossing_plank_highlight", Vector3(0.56, 0.326, 0.88), Vector3(1.52, 0.030, 0.10), Color(0.83, 0.75, 0.54, 0.82), true)
+	_add_static_box("v0174_bridge_crossing_shadow_gate_west", Vector3(-0.52, 0.286, 0.88), Vector3(0.12, 0.040, 0.74), road_shadow, true)
+	_add_static_box("v0174_bridge_crossing_shadow_gate_east", Vector3(1.64, 0.286, 0.88), Vector3(0.12, 0.040, 0.74), road_shadow, true)
+	_add_static_cylinder("v0174_site_marker_outer_ring_read", Vector3(-1.52, 0.252, 0.12), 0.82, 0.030, site_gold, true)
+	_add_static_cylinder("v0174_site_marker_inner_state_disc", Vector3(-1.52, 0.274, 0.12), 0.42, 0.026, Color(0.30, 0.78, 0.52, 0.66), true)
+	_add_static_box("v0174_site_marker_orientation_tick_north", Vector3(-1.52, 0.296, -0.70), Vector3(0.16, 0.026, 0.34), site_gold.lightened(0.10), true)
+	_add_static_box("v0174_site_marker_orientation_tick_road", Vector3(-0.70, 0.296, 0.12), Vector3(0.34, 0.026, 0.16), site_gold.lightened(0.04), true)
 
 func _create_hud() -> void:
 	hud_layer = CanvasLayer.new()
@@ -4716,9 +4821,23 @@ func _set_minimap_marker_visible(name: String, visible: bool) -> void:
 	if node != null:
 		node.visible = visible
 
+func _apply_environment_readability_minimap_markers() -> void:
+	if minimap_panel == null:
+		return
+	for marker in [
+		{"name": "v0174_minimap_road_intersections", "pos": Vector2(78, 108), "size": Vector2(90, 28), "color": Color(0.84, 0.76, 0.50, 0.78)},
+		{"name": "v0174_minimap_bridge_crossing", "pos": Vector2(116, 111), "size": Vector2(62, 22), "color": Color(0.92, 0.82, 0.58, 0.82)},
+		{"name": "v0174_minimap_friendly_boundary", "pos": Vector2(34, 160), "size": Vector2(70, 16), "color": Color(0.28, 0.76, 0.58, 0.62)},
+		{"name": "v0174_minimap_hostile_approach", "pos": Vector2(184, 68), "size": Vector2(62, 22), "color": Color(0.88, 0.22, 0.16, 0.70)}
+	]:
+		if not _minimap_has_marker(str(marker["name"])):
+			_add_minimap_marker(str(marker["name"]), marker["pos"], marker["size"], marker["color"])
+		_set_minimap_marker_visible(str(marker["name"]), environment_readability_hardening_enabled)
+
 func _sync_minimap() -> void:
 	if minimap_panel == null:
 		return
+	_apply_environment_readability_minimap_markers()
 	var mine_relevant: bool = ["move_to_quarry", "capture_hold_quarry", "worker_assign_mine"].has(current_onboarding_step) or v0132_mine_controlled
 	var worker_relevant: bool = ["worker_mine_or_shrine", "worker_assign_mine", "restore_barracks", "finish_barracks"].has(current_onboarding_step) or bool(runtime.worker_assigned_to_mine)
 	var barracks_relevant: bool = ["restore_barracks", "finish_barracks", "queue_militia", "train_militia", "prepare_ashen_pressure", "defeat_wave", "restore_lume_link", "review_results"].has(current_onboarding_step) or v0133_barracks_highlight_visible
@@ -5817,6 +5936,8 @@ func _normalize_visual_preset(preset: String) -> String:
 	return ""
 
 func _preset_scope() -> String:
+	if environment_readability_hardening_enabled:
+		return "v0174-opt-in-road-river-bridge-site-marker-readability-excluded-from-default"
 	if environment_foundation_review_enabled:
 		return "v0173-opt-in-environment-foundation-review-excluded-from-default"
 	if visual_preset == VISUAL_PRESET_VFX_STRESS:
@@ -5826,6 +5947,8 @@ func _preset_scope() -> String:
 	return "player-facing-default-clean-readability-with-restrained-atmospheric-cues"
 
 func _terrain_color() -> Color:
+	if environment_readability_hardening_enabled:
+		return Color(0.12, 0.18, 0.13)
 	if environment_foundation_review_enabled:
 		return Color(0.13, 0.19, 0.14)
 	if visual_preset == VISUAL_PRESET_ATMOSPHERIC:
@@ -5835,6 +5958,8 @@ func _terrain_color() -> Color:
 	return Color(0.16, 0.22, 0.17)
 
 func _ridge_color() -> Color:
+	if environment_readability_hardening_enabled:
+		return Color(0.20, 0.27, 0.20)
 	if environment_foundation_review_enabled:
 		return Color(0.19, 0.25, 0.19)
 	if visual_preset == VISUAL_PRESET_ATMOSPHERIC:
@@ -5842,6 +5967,8 @@ func _ridge_color() -> Color:
 	return Color(0.22, 0.27, 0.21)
 
 func _road_color() -> Color:
+	if environment_readability_hardening_enabled:
+		return Color(0.54, 0.49, 0.36)
 	if environment_foundation_review_enabled:
 		return Color(0.48, 0.43, 0.32)
 	if visual_preset == VISUAL_PRESET_ATMOSPHERIC:
@@ -5849,6 +5976,8 @@ func _road_color() -> Color:
 	return Color(0.42, 0.36, 0.25)
 
 func _water_color() -> Color:
+	if environment_readability_hardening_enabled:
+		return Color(0.05, 0.25, 0.32)
 	if environment_foundation_review_enabled:
 		return Color(0.08, 0.28, 0.34)
 	if visual_preset == VISUAL_PRESET_VFX_STRESS:

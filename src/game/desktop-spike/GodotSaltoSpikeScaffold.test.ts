@@ -3997,4 +3997,83 @@ describe("Godot Salto spike scaffold", () => {
       expect(launcher).not.toContain("--salto-environment-foundation-review");
     });
   });
+
+  it("defines the v0.174 opt-in tactical environment readability pass without changing defaults", async () => {
+    [
+      "GODOT_REVIEW_SALTO_ENVIRONMENT_READABILITY_WINDOWS.bat",
+      "GODOT_VALIDATE_SALTO_ENVIRONMENT_READABILITY_WINDOWS.bat",
+      "GODOT_CAPTURE_SALTO_ENVIRONMENT_READABILITY_WINDOWS.bat",
+      "tools/godot/launchGodotSaltoEnvironmentReadabilityWindows.ps1",
+      "tools/godot/reviewGodotSaltoEnvironmentReadabilityWindows.ps1",
+      "tools/godot/captureGodotSaltoEnvironmentReadabilityWindows.ps1",
+      "tools/godot/validateGodotSaltoEnvironmentReadabilityWindows.ps1",
+      "tools/godot/saltoEnvironmentReadabilityTool.mjs",
+      "docs/V0174_TACTICAL_ENVIRONMENT_READABILITY_QA_AND_BENCHMARK.md",
+      "docs/V0174_ENVIRONMENT_BOUNDARY_AND_ROLLBACK.md",
+      "docs/V0174_IMPLEMENTATION_REPORT.md"
+    ].forEach((path) => expect(existsSync(path), path).toBe(true));
+
+    const packageJson = JSON.parse(await readFile("package.json", "utf8")) as { scripts: Record<string, string> };
+    const rootScript = await readFile("desktop-spikes/godot-salto/scripts/salto_spike_root.gd", "utf8");
+    const sceneScript = await readFile("desktop-spikes/godot-salto/scripts/salto_spike_scene_3d.gd", "utf8");
+    const launchScript = await readFile("tools/godot/launchGodotSaltoEnvironmentReadabilityWindows.ps1", "utf8");
+    const validateScript = await readFile("tools/godot/validateGodotSaltoEnvironmentReadabilityWindows.ps1", "utf8");
+    const reportTool = await readFile("tools/godot/saltoEnvironmentReadabilityTool.mjs", "utf8");
+    const defaultLauncher = await readFile("GODOT_LAUNCH_PLAYER_SLICE_WINDOWS.bat", "utf8");
+    const fiveSlotLauncher = await readFile("GODOT_LAUNCH_SALTO_FIVE_SLOT_ART_EXPERIMENT_WINDOWS.bat", "utf8");
+    const foundationReviewLauncher = await readFile("GODOT_REVIEW_SALTO_ENVIRONMENT_FOUNDATION_WINDOWS.bat", "utf8");
+
+    [
+      "godot:launch:salto-environment-readability",
+      "godot:review:salto-environment-readability",
+      "godot:capture:salto-environment-readability",
+      "godot:validate:salto-environment-readability"
+    ].forEach((script) => expect(packageJson.scripts[script]).toBeTypeOf("string"));
+
+    [
+      "--salto-environment-readability-hardening",
+      "configure_environment_readability_hardening",
+      "road_intersections",
+      "site_marker_hierarchy",
+      "v0.174"
+    ].forEach((text) => expect(rootScript).toContain(text));
+
+    [
+      "environment_readability_hardening_enabled",
+      "_add_environment_readability_hardening_layers",
+      "v0174_bridge_crossing_plank_highlight",
+      "v0174_minimap_bridge_crossing",
+      "environmentReadabilityArtSlotCount",
+      "navigationSemanticsChanged\": false",
+      "gameplayPathingChanged\": false"
+    ].forEach((text) => expect(sceneScript).toContain(text));
+
+    [
+      "Experimental opt-in art: 5 slots + E2 environment",
+      "--salto-environment-foundation-review",
+      "--salto-environment-readability-hardening",
+      "--ashen-art-opt-in"
+    ].forEach((text) => expect(launchScript).toContain(text));
+
+    [
+      "e1-environment-foundation-baseline",
+      "e2-road-river-bridge-site-marker-hardening",
+      "PASS_V0174_SALTO_ENVIRONMENT_READABILITY_AUTOMATION_READY",
+      "cleanupSaltoExperimentalArtifacts",
+      "validateSaltoExperimentalArtifactRetention"
+    ].forEach((text) => expect(validateScript).toContain(text));
+
+    [
+      "PASS_V0174_ENVIRONMENT_READABILITY_VALIDATION",
+      "PASS_V0174_ENVIRONMENT_READABILITY_CAPTURE",
+      "PASS_V0174_ENVIRONMENT_READABILITY_BENCHMARK",
+      "PASS_V0174_ENVIRONMENT_READABILITY_BOUNDARY",
+      "minimumFpsRatio: 0.90",
+      "maximumP95WorseningRatio: 0.15"
+    ].forEach((text) => expect(reportTool).toContain(text));
+
+    [defaultLauncher, fiveSlotLauncher, foundationReviewLauncher].forEach((launcher) => {
+      expect(launcher).not.toContain("--salto-environment-readability-hardening");
+    });
+  });
 });

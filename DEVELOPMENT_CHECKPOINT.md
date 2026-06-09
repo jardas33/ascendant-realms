@@ -1,6 +1,32 @@
 # Development Checkpoint
 
-Updated: 2026-06-08 v0.173 Salto Procedural World-Shell Hierarchy Hardening Experiment And Human-Review Stop
+Updated: 2026-06-08 v0.174 Salto Road-River-Bridge Site-Marker Readability Hardening And Human-Review Stop
+
+## v0.174 Salto Road-River-Bridge Site-Marker Readability Hardening And Human-Review Stop - 2026-06-08
+
+Scope: opt-in E2 procedural environment-readability review for the existing five-slot Godot Salto posture. This checkpoint generates no images, adds no slots, imports no terrain material, keeps the default launcher procedural, preserves all prior opt-in launchers, and does not begin v0.175.
+
+Included work:
+
+- Confirmed v0.173 as current clean/synced and remote-green before edits.
+- Added `GODOT_REVIEW_SALTO_ENVIRONMENT_READABILITY_WINDOWS.bat` with matching validation and capture launchers.
+- Added review-only procedural road continuity/intersection overlays, mine/Barracks approach lanes, hostile approach lane, friendly foothold boundary, river-bank contrast, bridge crossing guards, site-marker hierarchy, minimap markers, and pan/zoom anchors.
+- Preserved the five selected Worker, Barracks material, Militia, Aster, and Ashen opt-in slots without adding a sixth slot.
+- Preserved the default procedural launcher and all prior opt-in launchers.
+- Rebuilt the packaged Godot executable during validation to avoid stale-binary evidence.
+- Ran Windows-side review of title, briefing, and live battle; shortened the opt-in label after finding right-edge clipping.
+
+Verification targets:
+
+```text
+PASS: npm run godot:validate:salto-environment-readability.
+PASS: PASS_V0174_ENVIRONMENT_READABILITY_VALIDATION.
+PASS: PASS_V0174_ENVIRONMENT_READABILITY_CAPTURE.
+PASS: PASS_V0174_ENVIRONMENT_READABILITY_BENCHMARK.
+PASS: PASS_V0174_ENVIRONMENT_READABILITY_BOUNDARY.
+PASS: benchmark E2 FPS ratio versus E1 = 1.0039 and p95 worsening = 2.52%.
+PASS: zero images generated, zero slots added, no terrain material import, default procedural launcher preserved, all prior opt-in launchers preserved, no browser/save/stable-ID/gameplay/pathing/navigation mutation.
+```
 
 ## v0.173 Salto Procedural World-Shell Hierarchy Hardening Experiment And Human-Review Stop - 2026-06-08
 

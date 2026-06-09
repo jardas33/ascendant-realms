@@ -1,5 +1,38 @@
 # Changelog
 
+# v0.174 Salto Road-River-Bridge Site-Marker Readability Hardening And Human-Review Stop - 2026-06-08
+
+This checkpoint adds a second opt-in procedural environment readability layer on top of v0.173. It hardens only tactical readability for road continuity, river-bank contrast, bridge crossing silhouette, site-marker hierarchy, approach lanes, friendly boundary, hostile approach lane, minimap correlation, and pan/zoom review while preserving the default procedural launcher, all prior opt-in launchers, all five selected character/material slots, and the browser runtime boundary.
+
+Added:
+
+- `GODOT_REVIEW_SALTO_ENVIRONMENT_READABILITY_WINDOWS.bat`.
+- `GODOT_VALIDATE_SALTO_ENVIRONMENT_READABILITY_WINDOWS.bat`.
+- `GODOT_CAPTURE_SALTO_ENVIRONMENT_READABILITY_WINDOWS.bat`.
+- v0.174 launch, review, validate, capture, and scorecard tooling for the E2 environment-readability path.
+- `docs/V0174_TACTICAL_ENVIRONMENT_READABILITY_QA_AND_BENCHMARK.md`.
+- `docs/V0174_ENVIRONMENT_BOUNDARY_AND_ROLLBACK.md`.
+- `docs/V0174_IMPLEMENTATION_REPORT.md`.
+
+Changed:
+
+- Added `--salto-environment-readability-hardening` as an opt-in-only Godot Salto review flag.
+- Added procedural overlays for road continuity/intersections, mine and Barracks approach lanes, hostile approach lane, friendly foothold boundary, river-bank contrast, bridge crossing guards, site-marker hierarchy, minimap markers, and camera pan/zoom anchors.
+- Shortened the v0.174 E2 review label after Windows-side review found the first label clipped at the top edge.
+- Updated the Salto experimental artifact index to retain v0.174 validation, capture, benchmark, boundary, cleanup, and retention evidence.
+
+Boundaries:
+
+- Zero images generated.
+- Zero slots added.
+- No sixth character slot.
+- No terrain material imported.
+- No default-art enablement.
+- Default launchers remain procedural.
+- All prior opt-in launchers remain preserved.
+- Browser runtime, production manifests, saves, stable IDs, gameplay, objectives, AI, balance, campaign state, and broad cleanup remain untouched.
+- v0.175 is not started inside this checkpoint.
+
 # v0.173 Salto Procedural World-Shell Hierarchy Hardening Experiment And Human-Review Stop - 2026-06-08
 
 This checkpoint adds an opt-in Godot environment-foundation review path after the five-slot character freeze. It improves only procedural world-shell hierarchy and readability around terrain, roads, river/banks, bridge, site markers, and core structure grounding while preserving the default procedural launcher, all prior opt-in launchers, the five selected character/material slots, and the browser runtime boundary.
