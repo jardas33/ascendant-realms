@@ -1,10 +1,10 @@
 # Salto Experimental Artifact Index
 
-Status: `ACTIVE_V0180_RETENTION_INDEX`
+Status: `ACTIVE_V0181_RETENTION_INDEX`
 
 This index is the retention source of truth for the Godot Salto experimental-art path. It protects selected local art, active derivatives, metadata, tracked fallbacks, current evidence, and unknown files from broad cleanup.
 
-This v0.180 index supersedes `ACTIVE_V0179_RETENTION_INDEX`, `ACTIVE_V0178_RETENTION_INDEX`, `ACTIVE_V0177_RETENTION_INDEX`, `ACTIVE_V0176_RETENTION_INDEX`, `ACTIVE_V0175_RETENTION_INDEX`, `ACTIVE_V0174_RETENTION_INDEX`, `ACTIVE_V0173_RETENTION_INDEX`, `ACTIVE_V0172_RETENTION_INDEX`, `ACTIVE_V0171_RETENTION_INDEX`, and `ACTIVE_V0170_RETENTION_INDEX` while retaining their protected evidence.
+This v0.181 index supersedes `ACTIVE_V0180_RETENTION_INDEX`, `ACTIVE_V0179_RETENTION_INDEX`, `ACTIVE_V0178_RETENTION_INDEX`, `ACTIVE_V0177_RETENTION_INDEX`, `ACTIVE_V0176_RETENTION_INDEX`, `ACTIVE_V0175_RETENTION_INDEX`, `ACTIVE_V0174_RETENTION_INDEX`, `ACTIVE_V0173_RETENTION_INDEX`, `ACTIVE_V0172_RETENTION_INDEX`, `ACTIVE_V0171_RETENTION_INDEX`, and `ACTIVE_V0170_RETENTION_INDEX` while retaining their protected evidence.
 
 ## Selected Local Source Art And Active Derivatives
 
@@ -16,7 +16,7 @@ This v0.180 index supersedes `ACTIVE_V0179_RETENTION_INDEX`, `ACTIVE_V0178_RETEN
 | Aster | active normal-slice opt-in | `artifacts/desktop-spikes/godot-salto/v0152/local-aster-billboard-repair/aster_billboard_static_v0151_trimmed_1024.png` | `b256f96f762187c05d68f2c2de62bedec0248896210767e98cb8f210dac2829a` |
 | Ashen Raider | active normal-slice opt-in; slot `ashen_raider_billboard_static_v0156` | `artifacts/desktop-spikes/godot-salto/v0157/local-ashen-raider-restrained-replacement/ashen_raider_billboard_static_v0157_restrained_trimmed_1024.png` | `8eb011f56d5cd56cf6ef0a843d2a5899e27aa13e203cc44517ed4a0c55c631c8` |
 | Barrosan foothold ground material | active normal-slice environment-material opt-in; not enabled by default | `artifacts/desktop-spikes/godot-salto/v0175/local-ground-material-slot/barrosan_foothold_ground_material_v0175_1024.png` | `818b7743fbf192fe95dd95a0fbadb59ea92b1cb36c420dac5526c0f4d1af18a8` |
-| Barrosan foothold road material | selected private-comparator-only road material; not player-facing | `artifacts/desktop-spikes/godot-salto/v0180/local-road-material-slot/barrosan_foothold_road_material_v0180_1024.png` | `a64959ef2fd7a509fcaaa969fca3e095d590d563a4f0c578a5e96d1fb04c0e10` |
+| Barrosan foothold road material | active normal-slice environment-material opt-in; not enabled by default | `artifacts/desktop-spikes/godot-salto/v0180/local-road-material-slot/barrosan_foothold_road_material_v0180_1024.png` | `a64959ef2fd7a509fcaaa969fca3e095d590d563a4f0c578a5e96d1fb04c0e10` |
 
 ## Required Metadata
 
@@ -113,10 +113,19 @@ Retain the latest v0.166/v0.167/v0.168/v0.169/v0.170 evidence until a later chec
 - `docs/V0180_ROAD_MATERIAL_COMPARATOR_QA_BENCHMARK.md`
 - `docs/V0180_PRIVATE_COMPARATOR_BOUNDARY_ROLLBACK.md`
 - `docs/V0180_IMPLEMENTATION_REPORT.md`
+- `artifacts/desktop-spikes/godot-salto/v0181/validation/`
+- `artifacts/desktop-spikes/godot-salto/v0181/capture/`
+- `artifacts/desktop-spikes/godot-salto/v0181/benchmark/`
+- `artifacts/desktop-spikes/godot-salto/v0181/boundary/`
+- `artifacts/desktop-spikes/godot-salto/v0181/cleanup-dry-run/`
+- `artifacts/desktop-spikes/godot-salto/v0181/artifact-retention/`
+- `docs/V0181_ROAD_MATERIAL_OPT_IN_QA_BENCHMARK.md`
+- `docs/V0181_ROAD_MATERIAL_BOUNDARY_ROLLBACK.md`
+- `docs/V0181_IMPLEMENTATION_REPORT.md`
 
 ## Character Integration Freeze
 
-Character-slot expansion is frozen after the selected Worker, Barracks material, Militia, Aster, and Ashen Raider opt-in slots. v0.180 keeps the existing single environment-material opt-in slot for the selected Barrosan foothold ground material and adds only a private-comparator road-material intake. It generated exactly one private road-material source, added zero player-facing slots, preserves the default procedural launcher, and does not wire browser runtime. Future work may consider v0.181 road-material opt-in integration only after v0.180 is clean, pushed, and remote-green.
+Character-slot expansion is frozen after the selected Worker, Barracks material, Militia, Aster, and Ashen Raider opt-in slots. v0.181 keeps the existing Barrosan foothold ground-material opt-in slot and adds exactly one road-material environment opt-in slot behind `GODOT_REVIEW_SALTO_GROUND_ROAD_MATERIAL_OPT_IN_WINDOWS.bat`. Both environment materials remain opt-in only, the default launcher remains procedural, and browser runtime remains untouched.
 
 ## Archive Candidates
 

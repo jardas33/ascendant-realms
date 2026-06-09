@@ -1,5 +1,36 @@
 # Changelog
 
+# v0.181 Road-Material Opt-In Player-Slice Integration Experiment And Human-Review Stop - 2026-06-08
+
+This checkpoint integrates exactly one Barrosan foothold road-material environment slot into the Godot Salto player-slice review path behind explicit opt-in only. It uses the selected v0.180 `ROAD_MATERIAL_LOCAL_1024` derivative, proves missing-art and hash-mismatch fallback while preserving ground and character slots, benchmarks against the ground-only posture, and keeps v0.182 unstarted.
+
+Added:
+
+- `GODOT_REVIEW_SALTO_GROUND_ROAD_MATERIAL_OPT_IN_WINDOWS.bat`.
+- `GODOT_VALIDATE_SALTO_GROUND_ROAD_MATERIAL_OPT_IN_WINDOWS.bat`.
+- `GODOT_CAPTURE_SALTO_GROUND_ROAD_MATERIAL_OPT_IN_WINDOWS.bat`.
+- v0.181 launch, review, validate, capture, and report tooling.
+- `docs/V0181_ROAD_MATERIAL_OPT_IN_QA_BENCHMARK.md`.
+- `docs/V0181_ROAD_MATERIAL_BOUNDARY_ROLLBACK.md`.
+- `docs/V0181_IMPLEMENTATION_REPORT.md`.
+
+Changed:
+
+- Added explicit `--road-material-opt-in` player-slice handling with exact hash/dimension validation, linear mipmap filtering, one-time load/create counters, and procedural road fallback.
+- Applied the selected material only to the main road and two side-path road beds.
+- Kept the procedural road as fallback/underlay beneath the material overlay.
+- Updated the Salto experimental artifact index, checkpoint, release checklist, and changelog for v0.181.
+
+Boundaries:
+
+- Zero images generated.
+- Exactly one environment-material opt-in slot added.
+- Zero character slots added; character-slot expansion remains frozen at five.
+- Default launchers remain procedural.
+- Prior opt-in launchers remain preserved.
+- Browser runtime, production manifests, saves, stable IDs, AI, balance, campaign state, and broad cleanup remain untouched.
+- v0.182 is not started inside this checkpoint.
+
 # v0.178 Ground-Material Visual QA, UV-Scale Hardening, And Terrain-Noise Control Stop - 2026-06-08
 
 This checkpoint hardens only the existing Barrosan foothold ground-material opt-in path after v0.177. It reduces UV repetition, damps texture opacity, preserves a procedural value underlay, validates fallback behavior, benchmarks the opt-in path, and keeps character-slot integration frozen.

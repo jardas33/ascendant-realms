@@ -1,6 +1,31 @@
 # Development Checkpoint
 
-Updated: 2026-06-08 v0.178 Ground-Material Visual QA, UV-Scale Hardening, And Terrain-Noise Control Stop
+Updated: 2026-06-08 v0.181 Road-Material Opt-In Player-Slice Integration Experiment Stop
+
+## v0.181 Road-Material Opt-In Player-Slice Integration Experiment Stop - 2026-06-08
+
+Scope: bounded integration of the selected v0.180 Barrosan foothold road material into the existing Godot Salto environment-material opt-in posture. This checkpoint generates zero images, adds exactly one road environment-material opt-in slot, keeps character-slot integration frozen at five, preserves all prior launchers, keeps the default launcher procedural, keeps browser runtime untouched, and does not begin v0.182.
+
+Included work:
+
+- Added `GODOT_REVIEW_SALTO_GROUND_ROAD_MATERIAL_OPT_IN_WINDOWS.bat` with matching validation and capture wrappers.
+- Integrated only `barrosan_foothold_road_material_v0180` / `ROAD_MATERIAL_LOCAL_1024` with SHA `a64959ef2fd7a509fcaaa969fca3e095d590d563a4f0c578a5e96d1fb04c0e10`.
+- Bound the material only to `v0173_main_road_wide_readable_bed`, `v0173_barracks_side_path_wide_bed`, and `v0173_ruins_side_path_wide_bed`.
+- Preserved the existing ground-material opt-in, five frozen character/material slots, procedural fallback underlay, exact hash validation, one-time load/create counters, and missing-art/hash-mismatch road fallback.
+- Performed Windows-side Computer Use review of title, briefing, battle view, and safe Aster move-order input smoke.
+
+Verification targets:
+
+```text
+PASS: node --check tools/godot/saltoGroundRoadMaterialOptInTool.mjs.
+PASS: npm run godot:validate:salto-ground-road-material-opt-in.
+PASS: PASS_V0181_ROAD_MATERIAL_OPT_IN_VALIDATION.
+PASS: PASS_V0181_ROAD_MATERIAL_OPT_IN_CAPTURE.
+PASS: PASS_V0181_ROAD_MATERIAL_OPT_IN_BENCHMARK.
+PASS: PASS_V0181_ROAD_MATERIAL_OPT_IN_BOUNDARY.
+PASS: E2 FPS ratio 1.0001 and p95 worsening -1.15%.
+PASS: cleanup dry-run, artifact retention, Windows-side Computer Use review, zero images, one road environment-material opt-in slot, zero character slots, no browser/save/stable-ID/gameplay mutation.
+```
 
 ## v0.178 Ground-Material Visual QA, UV-Scale Hardening, And Terrain-Noise Control Stop - 2026-06-08
 

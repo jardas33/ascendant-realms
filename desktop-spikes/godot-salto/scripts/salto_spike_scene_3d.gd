@@ -90,6 +90,17 @@ const GROUND_MATERIAL_TINT_R := 1.08
 const GROUND_MATERIAL_TINT_G := 1.12
 const GROUND_MATERIAL_TINT_B := 0.86
 const GROUND_MATERIAL_OVERLAY_LIFT := 0.006
+const ROAD_MATERIAL_SLOT_ID := "barrosan_foothold_road_material_v0180"
+const ROAD_MATERIAL_APPROACH := "ROAD_MATERIAL_LOCAL_1024"
+const ROAD_MATERIAL_EXPECTED_SHA256 := "a64959ef2fd7a509fcaaa969fca3e095d590d563a4f0c578a5e96d1fb04c0e10"
+const ROAD_MATERIAL_EXPECTED_WIDTH := 1024
+const ROAD_MATERIAL_EXPECTED_HEIGHT := 1024
+const ROAD_MATERIAL_DEFAULT_UV_SCALE := 0.80
+const ROAD_MATERIAL_VISUAL_ALPHA := 0.82
+const ROAD_MATERIAL_TINT_R := 1.12
+const ROAD_MATERIAL_TINT_G := 1.08
+const ROAD_MATERIAL_TINT_B := 0.92
+const ROAD_MATERIAL_OVERLAY_LIFT := 0.004
 const WorkloadRuntimeScript = preload("res://scripts/salto_spike_workload_runtime.gd")
 
 var runtime = WorkloadRuntimeScript.new()
@@ -341,6 +352,23 @@ var ground_material_material_create_count := 0
 var ground_material_material_reuse_count := 0
 var ground_material_applied_surface_count := 0
 var ground_material_applied_surface_names: Array[String] = []
+var road_material_experiment_enabled := false
+var road_material_source_path := ""
+var road_material_metadata_path := ""
+var road_material_expected_sha256 := ROAD_MATERIAL_EXPECTED_SHA256
+var road_material_fallback_mode := "none"
+var road_material_requested_uv_scale := ROAD_MATERIAL_DEFAULT_UV_SCALE
+var road_material_texture: ImageTexture
+var road_material_override: StandardMaterial3D
+var road_material_status: Dictionary = {}
+var road_material_source_load_count := 0
+var road_material_metadata_parse_count := 0
+var road_material_image_decode_count := 0
+var road_material_texture_create_count := 0
+var road_material_material_create_count := 0
+var road_material_material_reuse_count := 0
+var road_material_applied_surface_count := 0
+var road_material_applied_surface_names: Array[String] = []
 
 func _ready() -> void:
 	_reset_worker_art_status(false, "opt-in flag absent")
@@ -349,6 +377,7 @@ func _ready() -> void:
 	_reset_aster_art_status(false, "opt-in flag absent")
 	_reset_ashen_art_status(false, "opt-in flag absent")
 	_reset_ground_material_status(false, "opt-in flag absent")
+	_reset_road_material_status(false, "opt-in flag absent")
 	_create_camera()
 	_create_light()
 	_create_terrain()
@@ -1228,6 +1257,224 @@ func _add_ground_material_static_box(name: String, position: Vector3, scale: Vec
 	if not ground_material_applied_surface_names.has(name):
 		ground_material_applied_surface_names.append(name)
 	_refresh_ground_material_counters()
+
+func configure_road_material_experiment(options: Dictionary) -> Dictionary:
+	road_material_experiment_enabled = bool(options.get("enabled", false))
+	road_material_source_path = str(options.get("sourcePath", ""))
+	road_material_metadata_path = str(options.get("metadataPath", ""))
+	road_material_expected_sha256 = str(options.get("expectedSha256", ROAD_MATERIAL_EXPECTED_SHA256)).to_lower()
+	road_material_fallback_mode = str(options.get("fallbackMode", "none"))
+	road_material_requested_uv_scale = clampf(float(options.get("uvScale", ROAD_MATERIAL_DEFAULT_UV_SCALE)), 0.45, 1.20)
+	road_material_texture = null
+	road_material_override = null
+	road_material_source_load_count = 0
+	road_material_metadata_parse_count = 0
+	road_material_image_decode_count = 0
+	road_material_texture_create_count = 0
+	road_material_material_create_count = 0
+	road_material_material_reuse_count = 0
+	road_material_applied_surface_count = 0
+	road_material_applied_surface_names = []
+	if not road_material_experiment_enabled:
+		_reset_road_material_status(false, "opt-in flag absent")
+		_refresh_visual_foundation()
+		return road_material_status.duplicate(true)
+	_load_road_material_candidate()
+	_refresh_visual_foundation()
+	return road_material_status.duplicate(true)
+
+func get_road_material_status() -> Dictionary:
+	return road_material_status.duplicate(true)
+
+func _reset_road_material_status(enabled: bool, reason: String) -> void:
+	road_material_status = {
+		"schemaVersion": 1,
+		"checkpoint": "v0.181",
+		"sourceCheckpoint": "v0.180",
+		"slotId": ROAD_MATERIAL_SLOT_ID,
+		"approach": ROAD_MATERIAL_APPROACH,
+		"enabled": enabled,
+		"sourceLoaded": false,
+		"materialActive": false,
+		"fallbackActive": true,
+		"fallbackReason": reason,
+		"sourcePath": road_material_source_path,
+		"metadataPath": road_material_metadata_path,
+		"expectedSha256": road_material_expected_sha256,
+		"actualSha256": "",
+		"sourceDimensions": {"width": 0, "height": 0},
+		"metadataDimensions": {"width": 0, "height": 0},
+		"uvScale": road_material_requested_uv_scale,
+		"filterMode": "linear with mipmaps",
+		"visualAlpha": ROAD_MATERIAL_VISUAL_ALPHA,
+		"visualTint": {"r": ROAD_MATERIAL_TINT_R, "g": ROAD_MATERIAL_TINT_G, "b": ROAD_MATERIAL_TINT_B, "a": ROAD_MATERIAL_VISUAL_ALPHA},
+		"fallbackMode": road_material_fallback_mode,
+		"proceduralFallbackVisible": true,
+		"appliedOnlyToRoadSurfaceGroup": true,
+		"appliedSurfaceNames": [],
+		"allowedSurfaces": ["v0173_main_road_wide_readable_bed", "v0173_barracks_side_path_wide_bed", "v0173_ruins_side_path_wide_bed"],
+		"excludedSurfaces": ["ground", "river", "banks", "bridge", "structures", "site markers", "minimap", "character slots", "approach lane overlays"],
+		"environmentFoundationReviewRequired": true,
+		"defaultLauncherChanged": false,
+		"browserRuntimeChanged": false,
+		"saveWritesAllowed": false,
+		"characterSlotCountChanged": false,
+		"productionManifestMutated": false,
+		"sourceLoadCount": road_material_source_load_count,
+		"metadataParseCount": road_material_metadata_parse_count,
+		"imageDecodeCount": road_material_image_decode_count,
+		"textureCreateCount": road_material_texture_create_count,
+		"materialCreateCount": road_material_material_create_count,
+		"materialReuseCount": road_material_material_reuse_count,
+		"appliedSurfaceCount": road_material_applied_surface_count
+	}
+
+func _load_road_material_candidate() -> void:
+	_reset_road_material_status(true, "not loaded")
+	var start_usec := Time.get_ticks_usec()
+	if road_material_source_path == "":
+		_set_road_material_fallback("missing source path")
+		return
+	if not FileAccess.file_exists(road_material_source_path):
+		_set_road_material_fallback("missing source file")
+		return
+	if road_material_metadata_path == "" or not FileAccess.file_exists(road_material_metadata_path):
+		_set_road_material_fallback("missing metadata file")
+		return
+	var metadata := _read_road_material_metadata(road_material_metadata_path)
+	if metadata.is_empty():
+		_set_road_material_fallback("metadata parse failure")
+		return
+	if str(metadata.get("slotId", "")) != ROAD_MATERIAL_SLOT_ID:
+		_set_road_material_fallback("metadata slot mismatch")
+		return
+	if str(metadata.get("approach", "")) != ROAD_MATERIAL_APPROACH:
+		_set_road_material_fallback("metadata approach mismatch")
+		return
+	var metadata_sha := str(metadata.get("sha256", "")).to_lower()
+	if metadata_sha != road_material_expected_sha256:
+		_set_road_material_fallback("metadata hash mismatch")
+		return
+	var dimensions: Dictionary = metadata.get("dimensions", {})
+	var metadata_width := int(dimensions.get("width", 0))
+	var metadata_height := int(dimensions.get("height", 0))
+	if metadata_width != ROAD_MATERIAL_EXPECTED_WIDTH or metadata_height != ROAD_MATERIAL_EXPECTED_HEIGHT:
+		_set_road_material_fallback("metadata dimension mismatch")
+		return
+	var actual_sha := _sha256_file(road_material_source_path)
+	road_material_status["actualSha256"] = actual_sha
+	if actual_sha != road_material_expected_sha256:
+		_set_road_material_fallback("source hash mismatch")
+		return
+	var image := Image.new()
+	road_material_source_load_count += 1
+	var load_result := image.load(road_material_source_path)
+	if load_result != OK:
+		_set_road_material_fallback("image load failure %s" % str(load_result))
+		return
+	road_material_image_decode_count += 1
+	if image.get_width() != ROAD_MATERIAL_EXPECTED_WIDTH or image.get_height() != ROAD_MATERIAL_EXPECTED_HEIGHT:
+		_set_road_material_fallback("image dimension mismatch")
+		return
+	road_material_texture = ImageTexture.create_from_image(image)
+	if road_material_texture == null:
+		_set_road_material_fallback("texture creation failure")
+		return
+	road_material_texture_create_count += 1
+	road_material_status["enabled"] = true
+	road_material_status["sourceLoaded"] = true
+	road_material_status["materialActive"] = true
+	road_material_status["fallbackActive"] = false
+	road_material_status["fallbackReason"] = ""
+	road_material_status["sourcePath"] = road_material_source_path
+	road_material_status["metadataPath"] = road_material_metadata_path
+	road_material_status["expectedSha256"] = road_material_expected_sha256
+	road_material_status["actualSha256"] = actual_sha
+	road_material_status["sourceDimensions"] = {"width": image.get_width(), "height": image.get_height()}
+	road_material_status["metadataDimensions"] = {"width": metadata_width, "height": metadata_height}
+	road_material_status["uvScale"] = road_material_requested_uv_scale
+	road_material_status["sourceMetadataUvScale"] = float(metadata.get("uvScale", ROAD_MATERIAL_DEFAULT_UV_SCALE))
+	road_material_status["tilingMode"] = str(metadata.get("tilingMode", "repeat player-slice road material"))
+	road_material_status["fallbackMode"] = road_material_fallback_mode
+	road_material_status["proceduralFallbackVisible"] = false
+	road_material_status["loadDurationMs"] = snappedf(float(Time.get_ticks_usec() - start_usec) / 1000.0, 0.01)
+	_refresh_road_material_counters()
+
+func _read_road_material_metadata(path: String) -> Dictionary:
+	road_material_metadata_parse_count += 1
+	var file := FileAccess.open(path, FileAccess.READ)
+	if file == null:
+		return {}
+	var parsed = JSON.parse_string(file.get_as_text())
+	if typeof(parsed) == TYPE_DICTIONARY:
+		return parsed
+	return {}
+
+func _set_road_material_fallback(reason: String) -> void:
+	road_material_texture = null
+	road_material_override = null
+	road_material_status["enabled"] = road_material_experiment_enabled
+	road_material_status["materialActive"] = false
+	road_material_status["sourceLoaded"] = false
+	road_material_status["fallbackActive"] = true
+	road_material_status["fallbackReason"] = reason
+	road_material_status["sourcePath"] = road_material_source_path
+	road_material_status["metadataPath"] = road_material_metadata_path
+	road_material_status["expectedSha256"] = road_material_expected_sha256
+	road_material_status["fallbackMode"] = road_material_fallback_mode
+	road_material_status["uvScale"] = road_material_requested_uv_scale
+	road_material_status["proceduralFallbackVisible"] = true
+	_refresh_road_material_counters()
+
+func _refresh_road_material_counters() -> void:
+	road_material_status["sourceLoadCount"] = road_material_source_load_count
+	road_material_status["metadataParseCount"] = road_material_metadata_parse_count
+	road_material_status["imageDecodeCount"] = road_material_image_decode_count
+	road_material_status["textureCreateCount"] = road_material_texture_create_count
+	road_material_status["materialCreateCount"] = road_material_material_create_count
+	road_material_status["materialReuseCount"] = road_material_material_reuse_count
+	road_material_status["appliedSurfaceCount"] = road_material_applied_surface_count
+	road_material_status["appliedSurfaceNames"] = road_material_applied_surface_names.duplicate()
+
+func _road_material_is_active() -> bool:
+	return road_material_experiment_enabled and environment_foundation_review_enabled and bool(road_material_status.get("sourceLoaded", false)) and road_material_texture != null
+
+func _road_material() -> StandardMaterial3D:
+	if road_material_override:
+		road_material_material_reuse_count += 1
+		_refresh_road_material_counters()
+		return road_material_override
+	road_material_override = StandardMaterial3D.new()
+	road_material_override.albedo_texture = road_material_texture
+	road_material_override.albedo_color = Color(ROAD_MATERIAL_TINT_R, ROAD_MATERIAL_TINT_G, ROAD_MATERIAL_TINT_B, ROAD_MATERIAL_VISUAL_ALPHA)
+	road_material_override.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	road_material_override.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	road_material_override.roughness = 0.92
+	road_material_override.metallic = 0.0
+	road_material_override.cull_mode = BaseMaterial3D.CULL_DISABLED
+	road_material_override.texture_filter = BaseMaterial3D.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
+	road_material_override.uv1_scale = Vector3(road_material_requested_uv_scale, road_material_requested_uv_scale, 1.0)
+	road_material_material_create_count += 1
+	_refresh_road_material_counters()
+	return road_material_override
+
+func _add_road_material_static_box(name: String, position: Vector3, scale: Vector3, fallback_color: Color, transparent: bool = false) -> void:
+	if not _road_material_is_active():
+		_add_static_box(name, position, scale, fallback_color, transparent)
+		return
+	_add_static_box("%s_procedural_road_underlay" % name, position, scale, fallback_color, transparent)
+	var mesh_instance := MeshInstance3D.new()
+	mesh_instance.name = name
+	var mesh := BoxMesh.new()
+	mesh.size = scale
+	mesh_instance.mesh = mesh
+	mesh_instance.position = position + Vector3(0.0, ROAD_MATERIAL_OVERLAY_LIFT, 0.0)
+	mesh_instance.material_override = _road_material()
+	terrain_root.add_child(mesh_instance)
+	road_material_applied_surface_count += 1
+	if not road_material_applied_surface_names.has(name):
+		road_material_applied_surface_names.append(name)
+	_refresh_road_material_counters()
 
 func configure_militia_art_experiment(options: Dictionary) -> Dictionary:
 	militia_art_experiment_enabled = bool(options.get("enabled", false))
@@ -4255,15 +4502,18 @@ func get_spike_status() -> Dictionary:
 	_refresh_ashen_art_counters()
 	var ground_material_loaded := _ground_material_is_active()
 	_refresh_ground_material_counters()
-	status["proceduralPrimitiveOnly"] = not worker_art_loaded and not barracks_material_loaded and not militia_art_loaded and not aster_art_loaded and not ashen_art_loaded and not ground_material_loaded
-	status["generatedOrImportedArtIncluded"] = worker_art_loaded or barracks_material_loaded or militia_art_loaded or aster_art_loaded or ashen_art_loaded or ground_material_loaded
-	status["runtimeArtIntegrated"] = worker_art_loaded or barracks_material_loaded or militia_art_loaded or aster_art_loaded or ashen_art_loaded or ground_material_loaded
+	var road_material_loaded := _road_material_is_active()
+	_refresh_road_material_counters()
+	status["proceduralPrimitiveOnly"] = not worker_art_loaded and not barracks_material_loaded and not militia_art_loaded and not aster_art_loaded and not ashen_art_loaded and not ground_material_loaded and not road_material_loaded
+	status["generatedOrImportedArtIncluded"] = worker_art_loaded or barracks_material_loaded or militia_art_loaded or aster_art_loaded or ashen_art_loaded or ground_material_loaded or road_material_loaded
+	status["runtimeArtIntegrated"] = worker_art_loaded or barracks_material_loaded or militia_art_loaded or aster_art_loaded or ashen_art_loaded or ground_material_loaded or road_material_loaded
 	status["workerArtExperiment"] = worker_art_status.duplicate(true)
 	status["barracksMaterialExperiment"] = barracks_material_status.duplicate(true)
 	status["militiaArtExperiment"] = militia_art_status.duplicate(true)
 	status["asterArtExperiment"] = aster_art_status.duplicate(true)
 	status["ashenArtExperiment"] = ashen_art_status.duplicate(true)
 	status["groundMaterialExperiment"] = ground_material_status.duplicate(true)
+	status["roadMaterialExperiment"] = road_material_status.duplicate(true)
 	status["v0165VisualHardeningAudit"] = _v0165_visual_hardening_audit(worker_art_loaded, barracks_material_loaded, militia_art_loaded, aster_art_loaded, ashen_art_loaded)
 	status["workerArtOptInOnly"] = worker_art_experiment_enabled and not barracks_material_experiment_enabled and not militia_art_experiment_enabled and not aster_art_experiment_enabled and not ashen_art_experiment_enabled
 	status["workerArtSlotCount"] = 1 if worker_art_experiment_enabled else 0
@@ -4283,14 +4533,19 @@ func get_spike_status() -> Dictionary:
 	status["groundMaterialOptInRequested"] = ground_material_experiment_enabled
 	status["groundMaterialSlotCount"] = 1 if ground_material_experiment_enabled else 0
 	status["groundMaterialProceduralFallbackActive"] = bool(ground_material_status.get("fallbackActive", true))
+	status["roadMaterialOptInRequested"] = road_material_experiment_enabled
+	status["roadMaterialSlotCount"] = 1 if road_material_experiment_enabled else 0
+	status["roadMaterialProceduralFallbackActive"] = bool(road_material_status.get("fallbackActive", true))
 	status["normalSliceOptInRequestedSlotCount"] = int(status["workerArtSlotCount"]) + int(status["barracksMaterialSlotCount"]) + int(status["militiaArtSlotCount"]) + int(status["asterArtSlotCount"]) + int(status["ashenArtSlotCount"])
 	status["normalSliceOptInLoadedSlotCount"] = (1 if worker_art_loaded else 0) + (1 if barracks_material_loaded else 0) + (1 if militia_art_loaded else 0) + (1 if aster_art_loaded else 0) + (1 if ashen_art_loaded else 0)
-	status["environmentMaterialOptInRequestedSlotCount"] = 1 if ground_material_experiment_enabled else 0
-	status["environmentMaterialOptInLoadedSlotCount"] = 1 if ground_material_loaded else 0
-	status["environmentFoundationArtSlotCount"] = 1 if ground_material_experiment_enabled else 0
+	status["environmentMaterialOptInRequestedSlotCount"] = (1 if ground_material_experiment_enabled else 0) + (1 if road_material_experiment_enabled else 0)
+	status["environmentMaterialOptInLoadedSlotCount"] = (1 if ground_material_loaded else 0) + (1 if road_material_loaded else 0)
+	status["environmentFoundationArtSlotCount"] = int(status["environmentMaterialOptInRequestedSlotCount"])
 	status["environmentReadabilityArtSlotCount"] = 0
 	status["terrainMaterialSourceImported"] = ground_material_loaded
 	status["terrainMaterialRuntimeSlotAdded"] = ground_material_experiment_enabled
+	status["roadMaterialSourceImported"] = road_material_loaded
+	status["roadMaterialRuntimeSlotAdded"] = road_material_experiment_enabled
 	status["thirdPlayerFacingArtSlotAdded"] = militia_art_experiment_enabled
 	status["fourthPlayerFacingArtSlotAdded"] = aster_art_experiment_enabled
 	status["fifthPlayerFacingArtSlotAdded"] = ashen_art_experiment_enabled
@@ -4659,8 +4914,12 @@ func _create_terrain() -> void:
 	add_child(terrain_root)
 	ground_material_applied_surface_count = 0
 	ground_material_applied_surface_names = []
+	road_material_applied_surface_count = 0
+	road_material_applied_surface_names = []
 	if not ground_material_status.is_empty():
 		_refresh_ground_material_counters()
+	if not road_material_status.is_empty():
+		_refresh_road_material_counters()
 
 	var ground := MeshInstance3D.new()
 	ground.name = "SaltoTerrainPlane"
@@ -4773,11 +5032,11 @@ func _add_environment_foundation_shell_layers() -> void:
 	_add_ground_material_static_box("v0173_terrain_mid_value_field", Vector3(-1.0, 0.104, 1.40), Vector3(11.6, 0.035, 5.30), Color(0.18, 0.25, 0.17, 0.58), true)
 	_add_ground_material_static_box("v0173_friendly_staging_value_field", Vector3(-4.85, 0.156, 2.90), Vector3(2.95, 0.046, 2.05), Color(0.24, 0.34, 0.22, 0.70), true)
 	_add_static_box("v0173_ashen_pressure_value_field", Vector3(4.20, 0.157, -0.96), Vector3(3.25, 0.044, 1.46), Color(0.34, 0.14, 0.11, 0.50), true)
-	_add_static_box("v0173_main_road_wide_readable_bed", Vector3(-1.05, 0.178, 0.70), Vector3(11.65, 0.036, 0.68), wet_granite)
+	_add_road_material_static_box("v0173_main_road_wide_readable_bed", Vector3(-1.05, 0.178, 0.70), Vector3(11.65, 0.036, 0.68), wet_granite)
 	_add_static_box("v0173_main_road_shadow_north_edge", Vector3(-1.05, 0.184, 0.32), Vector3(11.72, 0.030, 0.08), road_edge, true)
 	_add_static_box("v0173_main_road_shadow_south_edge", Vector3(-1.05, 0.184, 1.08), Vector3(11.72, 0.030, 0.08), road_edge, true)
-	_add_static_box("v0173_barracks_side_path_wide_bed", Vector3(-4.45, 0.180, -2.28), Vector3(0.64, 0.034, 2.72), Color(0.47, 0.40, 0.30))
-	_add_static_box("v0173_ruins_side_path_wide_bed", Vector3(3.15, 0.180, 2.27), Vector3(2.72, 0.034, 0.48), Color(0.46, 0.39, 0.29))
+	_add_road_material_static_box("v0173_barracks_side_path_wide_bed", Vector3(-4.45, 0.180, -2.28), Vector3(0.64, 0.034, 2.72), Color(0.47, 0.40, 0.30))
+	_add_road_material_static_box("v0173_ruins_side_path_wide_bed", Vector3(3.15, 0.180, 2.27), Vector3(2.72, 0.034, 0.48), Color(0.46, 0.39, 0.29))
 	for index in range(7):
 		var x := -5.10 + float(index) * 1.55
 		_add_static_box("v0173_main_road_wet_granite_tick_%02d" % index, Vector3(x, 0.204, 0.70), Vector3(0.56, 0.030, 0.10), Color(0.64, 0.63, 0.55, 0.82), true)

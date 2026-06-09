@@ -66,6 +66,12 @@ const SCRIPT_ARG_PREFIXES := [
 	"--ground-material-expected-sha256=",
 	"--ground-material-fallback-mode=",
 	"--ground-material-uv-scale=",
+	"--road-material-opt-in",
+	"--road-material-source=",
+	"--road-material-metadata=",
+	"--road-material-expected-sha256=",
+	"--road-material-fallback-mode=",
+	"--road-material-uv-scale=",
 	"--real-input-smoke",
 	"--real-input-validate",
 	"--site-semantics-smoke",
@@ -874,6 +880,8 @@ func _configure_worker_art_for_active_scene() -> void:
 		active_scene.configure_environment_contrast_harmonization(_script_args().has("--salto-environment-contrast-harmonization"))
 	if active_scene.has_method("configure_ground_material_experiment"):
 		active_scene.configure_ground_material_experiment(_ground_material_options_from_args())
+	if active_scene.has_method("configure_road_material_experiment"):
+		active_scene.configure_road_material_experiment(_road_material_options_from_args())
 
 func _apply_review_framing_for_active_scene() -> void:
 	if not _script_args().has("--salto-three-slot-review-framing") and not _script_args().has("--salto-four-slot-review-framing") and not _script_args().has("--salto-five-slot-review-framing"):
@@ -1024,6 +1032,30 @@ func _ground_material_options_from_args() -> Dictionary:
 		"uvScale": uv_scale,
 		"fallbackMode": fallback_mode,
 		"requestedBy": "GODOT_REVIEW_SALTO_GROUND_MATERIAL_OPT_IN_WINDOWS.bat or explicit --ground-material-opt-in"
+	}
+
+func _road_material_options_from_args() -> Dictionary:
+	var fallback_mode := _arg_value("--road-material-fallback-mode=", "none")
+	var source_path := _arg_value("--road-material-source=", "")
+	var metadata_path := _arg_value("--road-material-metadata=", "")
+	if source_path == "":
+		source_path = ProjectSettings.globalize_path("res://../../artifacts/desktop-spikes/godot-salto/v0180/local-road-material-slot/barrosan_foothold_road_material_v0180_1024.png")
+	if metadata_path == "":
+		metadata_path = ProjectSettings.globalize_path("res://../../artifacts/desktop-spikes/godot-salto/v0180/local-road-material-slot/barrosan_foothold_road_material_v0180_1024.metadata.json")
+	if fallback_mode == "missing" and not _has_arg_prefix("--road-material-source="):
+		source_path = ProjectSettings.globalize_path("res://../../artifacts/desktop-spikes/godot-salto/v0181/missing-road-source/barrosan_foothold_road_material_v0180_1024.png")
+	var uv_text := _arg_value("--road-material-uv-scale=", "0.80")
+	var uv_scale := 0.80
+	if uv_text.is_valid_float():
+		uv_scale = float(uv_text)
+	return {
+		"enabled": _script_args().has("--road-material-opt-in"),
+		"sourcePath": source_path.replace("\\", "/"),
+		"metadataPath": metadata_path.replace("\\", "/"),
+		"expectedSha256": _arg_value("--road-material-expected-sha256=", "a64959ef2fd7a509fcaaa969fca3e095d590d563a4f0c578a5e96d1fb04c0e10").to_lower(),
+		"uvScale": uv_scale,
+		"fallbackMode": fallback_mode,
+		"requestedBy": "GODOT_REVIEW_SALTO_GROUND_ROAD_MATERIAL_OPT_IN_WINDOWS.bat or explicit --road-material-opt-in"
 	}
 
 func _arg_value(prefix: String, default_value: String = "") -> String:
@@ -1694,6 +1726,8 @@ func run_player_slice_validation() -> void:
 	var ashen_art_loaded := bool(ashen_art.get("sourceLoaded", false))
 	var ground_material: Dictionary = final_status.get("groundMaterialExperiment", {})
 	var ground_material_loaded := bool(ground_material.get("sourceLoaded", false))
+	var road_material: Dictionary = final_status.get("roadMaterialExperiment", {})
+	var road_material_loaded := bool(road_material.get("sourceLoaded", false))
 	var environment_foundation: Dictionary = final_status.get("environmentFoundationReview", {})
 	var environment_readability: Dictionary = final_status.get("environmentReadabilityHardening", {})
 	var environment_contrast: Dictionary = final_status.get("environmentContrastHarmonization", {})
@@ -1709,6 +1743,8 @@ func run_player_slice_validation() -> void:
 	performance_smoke["ashenArtExperiment"] = ashen_art
 	performance_smoke["groundMaterialOptInRequested"] = _script_args().has("--ground-material-opt-in")
 	performance_smoke["groundMaterialExperiment"] = ground_material
+	performance_smoke["roadMaterialOptInRequested"] = _script_args().has("--road-material-opt-in")
+	performance_smoke["roadMaterialExperiment"] = road_material
 	performance_smoke["environmentFoundationReviewEnabled"] = bool(final_status.get("environmentFoundationReviewEnabled", false))
 	performance_smoke["environmentFoundationReview"] = environment_foundation
 	performance_smoke["environmentReadabilityHardeningEnabled"] = bool(final_status.get("environmentReadabilityHardeningEnabled", false))
@@ -1730,14 +1766,15 @@ func run_player_slice_validation() -> void:
 		"environmentReadabilityReviewPath": "GODOT_REVIEW_SALTO_ENVIRONMENT_READABILITY_WINDOWS.bat",
 		"groundMaterialOptInHumanReviewPath": "GODOT_REVIEW_SALTO_GROUND_MATERIAL_OPT_IN_WINDOWS.bat",
 		"environmentContrastReviewPath": "GODOT_REVIEW_SALTO_ENVIRONMENT_CONTRAST_WINDOWS.bat",
+		"groundRoadMaterialOptInHumanReviewPath": "GODOT_REVIEW_SALTO_GROUND_ROAD_MATERIAL_OPT_IN_WINDOWS.bat",
 		"privateHarnessPreservedSeparately": true,
 		"defaultMode": MODE_25D,
 		"defaultVisualPreset": VISUAL_PRESET_CLEAN,
 		"routineEditorUseRequired": false,
 		"manualGodotEditorSceneAssemblyRequired": false,
-		"proceduralPrimitiveOnly": not worker_art_loaded and not barracks_material_loaded and not militia_art_loaded and not aster_art_loaded and not ashen_art_loaded and not ground_material_loaded,
-		"generatedOrImportedArtIncluded": worker_art_loaded or barracks_material_loaded or militia_art_loaded or aster_art_loaded or ashen_art_loaded or ground_material_loaded,
-		"runtimeArtIntegrated": worker_art_loaded or barracks_material_loaded or militia_art_loaded or aster_art_loaded or ashen_art_loaded or ground_material_loaded,
+		"proceduralPrimitiveOnly": not worker_art_loaded and not barracks_material_loaded and not militia_art_loaded and not aster_art_loaded and not ashen_art_loaded and not ground_material_loaded and not road_material_loaded,
+		"generatedOrImportedArtIncluded": worker_art_loaded or barracks_material_loaded or militia_art_loaded or aster_art_loaded or ashen_art_loaded or ground_material_loaded or road_material_loaded,
+		"runtimeArtIntegrated": worker_art_loaded or barracks_material_loaded or militia_art_loaded or aster_art_loaded or ashen_art_loaded or ground_material_loaded or road_material_loaded,
 		"workerArtOptInRequested": _script_args().has("--worker-art-opt-in"),
 		"workerArtExperiment": worker_art,
 		"barracksMaterialOptInRequested": _script_args().has("--barracks-material-opt-in"),
@@ -1750,6 +1787,8 @@ func run_player_slice_validation() -> void:
 		"ashenArtExperiment": ashen_art,
 		"groundMaterialOptInRequested": _script_args().has("--ground-material-opt-in"),
 		"groundMaterialExperiment": ground_material,
+		"roadMaterialOptInRequested": _script_args().has("--road-material-opt-in"),
+		"roadMaterialExperiment": road_material,
 		"environmentFoundationReviewEnabled": bool(final_status.get("environmentFoundationReviewEnabled", false)),
 		"environmentFoundationReview": environment_foundation,
 		"environmentReadabilityHardeningEnabled": bool(final_status.get("environmentReadabilityHardeningEnabled", false)),
@@ -1759,6 +1798,8 @@ func run_player_slice_validation() -> void:
 		"environmentFoundationArtSlotCount": int(final_status.get("environmentFoundationArtSlotCount", 0)),
 		"terrainMaterialSourceImported": bool(final_status.get("terrainMaterialSourceImported", false)),
 		"terrainMaterialRuntimeSlotAdded": bool(final_status.get("terrainMaterialRuntimeSlotAdded", false)),
+		"roadMaterialSourceImported": bool(final_status.get("roadMaterialSourceImported", false)),
+		"roadMaterialRuntimeSlotAdded": bool(final_status.get("roadMaterialRuntimeSlotAdded", false)),
 		"environmentMaterialOptInRequestedSlotCount": int(final_status.get("environmentMaterialOptInRequestedSlotCount", 0)),
 		"environmentMaterialOptInLoadedSlotCount": int(final_status.get("environmentMaterialOptInLoadedSlotCount", 0)),
 		"normalSliceOptInRequestedSlotCount": int(final_status.get("normalSliceOptInRequestedSlotCount", 0)),
@@ -1769,6 +1810,7 @@ func run_player_slice_validation() -> void:
 		"asterArtProceduralFallbackActive": bool(final_status.get("asterArtProceduralFallbackActive", false)),
 		"ashenArtProceduralFallbackActive": bool(final_status.get("ashenArtProceduralFallbackActive", false)),
 		"groundMaterialProceduralFallbackActive": bool(final_status.get("groundMaterialProceduralFallbackActive", false)),
+		"roadMaterialProceduralFallbackActive": bool(final_status.get("roadMaterialProceduralFallbackActive", false)),
 		"fourthPlayerFacingArtSlotAdded": bool(final_status.get("fourthPlayerFacingArtSlotAdded", false)),
 		"fifthPlayerFacingArtSlotAdded": bool(final_status.get("fifthPlayerFacingArtSlotAdded", false)),
 		"sixthPlayerFacingArtSlotAdded": bool(final_status.get("sixthPlayerFacingArtSlotAdded", false)),
@@ -1846,6 +1888,8 @@ func run_player_slice_capture() -> void:
 	var ashen_art_loaded := bool(ashen_art.get("sourceLoaded", false))
 	var ground_material: Dictionary = final_status.get("groundMaterialExperiment", {})
 	var ground_material_loaded := bool(ground_material.get("sourceLoaded", false))
+	var road_material: Dictionary = final_status.get("roadMaterialExperiment", {})
+	var road_material_loaded := bool(road_material.get("sourceLoaded", false))
 	var environment_foundation: Dictionary = final_status.get("environmentFoundationReview", {})
 	var environment_readability: Dictionary = final_status.get("environmentReadabilityHardening", {})
 	var environment_contrast: Dictionary = final_status.get("environmentContrastHarmonization", {})
@@ -1860,10 +1904,10 @@ func run_player_slice_capture() -> void:
 		"viewport": {"width": VIEWPORT_SIZE.x, "height": VIEWPORT_SIZE.y},
 		"defaultMode": MODE_25D,
 		"defaultVisualPreset": VISUAL_PRESET_CLEAN,
-		"privateHarnessPreservedSeparately": captures.any(func(capture: Dictionary) -> bool: return bool(capture.get("privateHarnessCapture", false))) or ["v0.126", "v0.127", "v0.128", "v0.129", "v0.130", "v0.160", "v0.162", "v0.164", "v0.168", "v0.169", "v0.170", "v0.173", "v0.174", "v0.177", "v0.178", "v0.179"].has(_player_capture_checkpoint()),
-		"proceduralPrimitiveOnly": not worker_art_loaded and not barracks_material_loaded and not militia_art_loaded and not aster_art_loaded and not ashen_art_loaded and not ground_material_loaded,
-		"generatedOrImportedArtIncluded": worker_art_loaded or barracks_material_loaded or militia_art_loaded or aster_art_loaded or ashen_art_loaded or ground_material_loaded,
-		"runtimeArtIntegrated": worker_art_loaded or barracks_material_loaded or militia_art_loaded or aster_art_loaded or ashen_art_loaded or ground_material_loaded,
+		"privateHarnessPreservedSeparately": captures.any(func(capture: Dictionary) -> bool: return bool(capture.get("privateHarnessCapture", false))) or ["v0.126", "v0.127", "v0.128", "v0.129", "v0.130", "v0.160", "v0.162", "v0.164", "v0.168", "v0.169", "v0.170", "v0.173", "v0.174", "v0.177", "v0.178", "v0.179", "v0.181"].has(_player_capture_checkpoint()),
+		"proceduralPrimitiveOnly": not worker_art_loaded and not barracks_material_loaded and not militia_art_loaded and not aster_art_loaded and not ashen_art_loaded and not ground_material_loaded and not road_material_loaded,
+		"generatedOrImportedArtIncluded": worker_art_loaded or barracks_material_loaded or militia_art_loaded or aster_art_loaded or ashen_art_loaded or ground_material_loaded or road_material_loaded,
+		"runtimeArtIntegrated": worker_art_loaded or barracks_material_loaded or militia_art_loaded or aster_art_loaded or ashen_art_loaded or ground_material_loaded or road_material_loaded,
 		"workerArtOptInRequested": _script_args().has("--worker-art-opt-in"),
 		"workerArtExperiment": worker_art,
 		"barracksMaterialOptInRequested": _script_args().has("--barracks-material-opt-in"),
@@ -1876,6 +1920,8 @@ func run_player_slice_capture() -> void:
 		"ashenArtExperiment": ashen_art,
 		"groundMaterialOptInRequested": _script_args().has("--ground-material-opt-in"),
 		"groundMaterialExperiment": ground_material,
+		"roadMaterialOptInRequested": _script_args().has("--road-material-opt-in"),
+		"roadMaterialExperiment": road_material,
 		"environmentFoundationReviewEnabled": bool(final_status.get("environmentFoundationReviewEnabled", false)),
 		"environmentFoundationReview": environment_foundation,
 		"environmentReadabilityHardeningEnabled": bool(final_status.get("environmentReadabilityHardeningEnabled", false)),
@@ -1885,6 +1931,8 @@ func run_player_slice_capture() -> void:
 		"environmentFoundationArtSlotCount": int(final_status.get("environmentFoundationArtSlotCount", 0)),
 		"terrainMaterialSourceImported": bool(final_status.get("terrainMaterialSourceImported", false)),
 		"terrainMaterialRuntimeSlotAdded": bool(final_status.get("terrainMaterialRuntimeSlotAdded", false)),
+		"roadMaterialSourceImported": bool(final_status.get("roadMaterialSourceImported", false)),
+		"roadMaterialRuntimeSlotAdded": bool(final_status.get("roadMaterialRuntimeSlotAdded", false)),
 		"environmentMaterialOptInRequestedSlotCount": int(final_status.get("environmentMaterialOptInRequestedSlotCount", 0)),
 		"environmentMaterialOptInLoadedSlotCount": int(final_status.get("environmentMaterialOptInLoadedSlotCount", 0)),
 		"normalSliceOptInRequestedSlotCount": int(final_status.get("normalSliceOptInRequestedSlotCount", 0)),
@@ -1895,6 +1943,7 @@ func run_player_slice_capture() -> void:
 		"asterArtProceduralFallbackActive": bool(final_status.get("asterArtProceduralFallbackActive", false)),
 		"ashenArtProceduralFallbackActive": bool(final_status.get("ashenArtProceduralFallbackActive", false)),
 		"groundMaterialProceduralFallbackActive": bool(final_status.get("groundMaterialProceduralFallbackActive", false)),
+		"roadMaterialProceduralFallbackActive": bool(final_status.get("roadMaterialProceduralFallbackActive", false)),
 		"fourthPlayerFacingArtSlotAdded": bool(final_status.get("fourthPlayerFacingArtSlotAdded", false)),
 		"fifthPlayerFacingArtSlotAdded": bool(final_status.get("fifthPlayerFacingArtSlotAdded", false)),
 		"sixthPlayerFacingArtSlotAdded": bool(final_status.get("sixthPlayerFacingArtSlotAdded", false)),
@@ -1948,10 +1997,11 @@ func run_worker_art_opt_in_benchmark() -> void:
 	var aster_art: Dictionary = final_status.get("asterArtExperiment", {})
 	var ashen_art: Dictionary = final_status.get("ashenArtExperiment", {})
 	var ground_material: Dictionary = final_status.get("groundMaterialExperiment", {})
+	var road_material: Dictionary = final_status.get("roadMaterialExperiment", {})
 	var environment_foundation: Dictionary = final_status.get("environmentFoundationReview", {})
 	var environment_readability: Dictionary = final_status.get("environmentReadabilityHardening", {})
 	var environment_contrast: Dictionary = final_status.get("environmentContrastHarmonization", {})
-	var any_loaded := bool(worker_art.get("sourceLoaded", false)) or bool(barracks_material.get("sourceLoaded", false)) or bool(militia_art.get("sourceLoaded", false)) or bool(aster_art.get("sourceLoaded", false)) or bool(ashen_art.get("sourceLoaded", false)) or bool(ground_material.get("sourceLoaded", false))
+	var any_loaded := bool(worker_art.get("sourceLoaded", false)) or bool(barracks_material.get("sourceLoaded", false)) or bool(militia_art.get("sourceLoaded", false)) or bool(aster_art.get("sourceLoaded", false)) or bool(ashen_art.get("sourceLoaded", false)) or bool(ground_material.get("sourceLoaded", false)) or bool(road_material.get("sourceLoaded", false))
 	var five_slot_requested := _script_args().has("--ashen-art-opt-in")
 	var four_slot_requested := _script_args().has("--aster-art-opt-in")
 	var three_slot_requested := _script_args().has("--militia-art-opt-in")
@@ -1980,6 +2030,8 @@ func run_worker_art_opt_in_benchmark() -> void:
 		"ashenArtExperiment": ashen_art,
 		"groundMaterialOptInRequested": _script_args().has("--ground-material-opt-in"),
 		"groundMaterialExperiment": ground_material,
+		"roadMaterialOptInRequested": _script_args().has("--road-material-opt-in"),
+		"roadMaterialExperiment": road_material,
 		"environmentFoundationReviewEnabled": bool(final_status.get("environmentFoundationReviewEnabled", false)),
 		"environmentFoundationReview": environment_foundation,
 		"environmentReadabilityHardeningEnabled": bool(final_status.get("environmentReadabilityHardeningEnabled", false)),
@@ -1990,6 +2042,8 @@ func run_worker_art_opt_in_benchmark() -> void:
 		"environmentFoundationArtSlotCount": int(final_status.get("environmentFoundationArtSlotCount", 0)),
 		"terrainMaterialSourceImported": bool(final_status.get("terrainMaterialSourceImported", false)),
 		"terrainMaterialRuntimeSlotAdded": bool(final_status.get("terrainMaterialRuntimeSlotAdded", false)),
+		"roadMaterialSourceImported": bool(final_status.get("roadMaterialSourceImported", false)),
+		"roadMaterialRuntimeSlotAdded": bool(final_status.get("roadMaterialRuntimeSlotAdded", false)),
 		"environmentMaterialOptInRequestedSlotCount": int(final_status.get("environmentMaterialOptInRequestedSlotCount", 0)),
 		"environmentMaterialOptInLoadedSlotCount": int(final_status.get("environmentMaterialOptInLoadedSlotCount", 0)),
 		"normalSliceOptInRequestedSlotCount": int(final_status.get("normalSliceOptInRequestedSlotCount", 0)),
@@ -2000,6 +2054,7 @@ func run_worker_art_opt_in_benchmark() -> void:
 		"asterArtProceduralFallbackActive": bool(final_status.get("asterArtProceduralFallbackActive", false)),
 		"ashenArtProceduralFallbackActive": bool(final_status.get("ashenArtProceduralFallbackActive", false)),
 		"groundMaterialProceduralFallbackActive": bool(final_status.get("groundMaterialProceduralFallbackActive", false)),
+		"roadMaterialProceduralFallbackActive": bool(final_status.get("roadMaterialProceduralFallbackActive", false)),
 		"fourthPlayerFacingArtSlotAdded": bool(final_status.get("fourthPlayerFacingArtSlotAdded", false)),
 		"fifthPlayerFacingArtSlotAdded": bool(final_status.get("fifthPlayerFacingArtSlotAdded", false)),
 		"sixthPlayerFacingArtSlotAdded": bool(final_status.get("sixthPlayerFacingArtSlotAdded", false)),
@@ -2046,7 +2101,14 @@ func run_worker_art_opt_in_benchmark() -> void:
 			"groundMaterialTextureCreateCount": int(ground_material.get("textureCreateCount", 0)),
 			"groundMaterialMaterialCreateCount": int(ground_material.get("materialCreateCount", 0)),
 			"groundMaterialMaterialReuseCount": int(ground_material.get("materialReuseCount", 0)),
-			"groundMaterialAppliedSurfaceCount": int(ground_material.get("appliedSurfaceCount", 0))
+			"groundMaterialAppliedSurfaceCount": int(ground_material.get("appliedSurfaceCount", 0)),
+			"roadMaterialSourceLoadCount": int(road_material.get("sourceLoadCount", 0)),
+			"roadMaterialMetadataParseCount": int(road_material.get("metadataParseCount", 0)),
+			"roadMaterialImageDecodeCount": int(road_material.get("imageDecodeCount", 0)),
+			"roadMaterialTextureCreateCount": int(road_material.get("textureCreateCount", 0)),
+			"roadMaterialMaterialCreateCount": int(road_material.get("materialCreateCount", 0)),
+			"roadMaterialMaterialReuseCount": int(road_material.get("materialReuseCount", 0)),
+			"roadMaterialAppliedSurfaceCount": int(road_material.get("appliedSurfaceCount", 0))
 		},
 		"steps": steps,
 		"errors": errors,
@@ -4387,6 +4449,8 @@ func _apply_player_slice_action(action: String) -> Dictionary:
 
 func _player_capture_checkpoint() -> String:
 	var normalized_root := _artifact_root_from_args().replace("\\", "/")
+	if normalized_root.contains("/v0181"):
+		return "v0.181"
 	if normalized_root.contains("/v0179"):
 		return "v0.179"
 	if normalized_root.contains("/v0178"):
@@ -4424,7 +4488,7 @@ func _player_capture_checkpoint() -> String:
 	return "v0.124"
 
 func _is_bounded_microloop_checkpoint() -> bool:
-	return ["v0.129", "v0.130", "v0.160", "v0.162", "v0.164", "v0.166", "v0.168", "v0.169", "v0.170", "v0.173", "v0.174", "v0.177", "v0.178", "v0.179"].has(_player_capture_checkpoint())
+	return ["v0.129", "v0.130", "v0.160", "v0.162", "v0.164", "v0.166", "v0.168", "v0.169", "v0.170", "v0.173", "v0.174", "v0.177", "v0.178", "v0.179", "v0.181"].has(_player_capture_checkpoint())
 
 func _player_capture_steps() -> Array[Dictionary]:
 	if _player_capture_checkpoint() == "v0.179":
@@ -4443,6 +4507,21 @@ func _player_capture_steps() -> Array[Dictionary]:
 			{"id": "camera_min_zoom", "label": "Zoomed-in contrast edge treatment", "action": "camera_min_zoom"},
 			{"id": "camera_max_zoom", "label": "Zoomed-out contrast and repetition check", "action": "camera_max_zoom"},
 			{"id": "minimap_correlation", "label": "Minimap correlation markers", "action": "minimap"},
+			{"id": "results", "label": "Results path preserved", "action": "results"}
+		]
+	if _player_capture_checkpoint() == "v0.181":
+		return [
+			{"id": "title", "label": "Title shell with configured ground and road material opt-in", "action": "title"},
+			{"id": "briefing", "label": "Briefing shell", "action": "briefing"},
+			{"id": "ground_material_normal_rts", "label": "Ground and road material normal RTS distance", "action": "battle_default"},
+			{"id": "ground_material_close", "label": "Close foothold material and road edge view", "action": "friendly_boundary"},
+			{"id": "road_river_bridge_hierarchy", "label": "Road material, river and bridge hierarchy", "action": "ford"},
+			{"id": "site_marker_scope", "label": "Site markers and capture ring remain procedural", "action": "site_marker_hierarchy"},
+			{"id": "five_slot_coexistence", "label": "Five selected slots over ground and road materials", "action": "squad_selected"},
+			{"id": "combat_onset", "label": "Combat readability with ground and road materials", "action": "combat"},
+			{"id": "camera_pan_readability", "label": "Pan camera road material readability", "action": "pan_camera"},
+			{"id": "camera_min_zoom", "label": "Zoomed-in road material edge treatment", "action": "camera_min_zoom"},
+			{"id": "camera_max_zoom", "label": "Zoomed-out road material repetition check", "action": "camera_max_zoom"},
 			{"id": "results", "label": "Results path preserved", "action": "results"}
 		]
 	if ["v0.177", "v0.178"].has(_player_capture_checkpoint()):
