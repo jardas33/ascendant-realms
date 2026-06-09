@@ -1,0 +1,48 @@
+{
+  "approach": "ROAD_MATERIAL_DIAGNOSTIC_FALLBACK",
+  "browserIntegration": "forbidden",
+  "checkpoint": "v0.180",
+  "colorStats": {
+    "granitePixelRatio": 0.5754,
+    "lumaMean": 74.86,
+    "lumaStdDev": 12.49,
+    "mossGrassPixelRatio": 0.0179
+  },
+  "defaultLauncherChanged": false,
+  "derivativeKey": "fallback",
+  "derivativeOperations": [
+    "deterministic diagnostic compacted-road fallback generated from integer noise"
+  ],
+  "dimensions": {
+    "height": 512,
+    "width": 512
+  },
+  "fileName": "desktop-spikes/godot-salto/comparators/runtime_art_pipeline/fallback/barrosan_foothold_road_material_v0180_fallback.png",
+  "filterMode": "linear with mipmaps in private Godot comparator",
+  "generatedImageCountForV0180": 1,
+  "generationPrompt": "deterministic procedural diagnostic fallback",
+  "playerSliceIntegration": "forbidden",
+  "privateComparatorOnly": true,
+  "productionApproval": "forbidden",
+  "repetitionAnalysis": {
+    "noLargeLandmark": true,
+    "restrainedAtRtsDistance": true
+  },
+  "runtimeArtSlotAdded": false,
+  "schemaVersion": 1,
+  "seamAnalysis": {
+    "acceptableAtRtsDistance": true,
+    "meanOpposingEdgeDelta": 12.77
+  },
+  "sha256": "8ee03a8445a1899f29c380f2e15ba471be299edd5fb7082aee96270365df25bf",
+  "slotId": "barrosan_foothold_road_material_v0180",
+  "sourceHash": "not-applicable",
+  "styleAnalysis": {
+    "approvedEnvironmentDirection": true,
+    "noCharactersHudBuildingsText": true,
+    "practicalGranitePackedEarthRoad": true,
+    "wetBarrosanFoothold": true
+  },
+  "tilingMode": "repeat comparator material",
+  "uvScale": 0.8
+}

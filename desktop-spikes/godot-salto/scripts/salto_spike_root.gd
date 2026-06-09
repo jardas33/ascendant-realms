@@ -82,6 +82,7 @@ const SCRIPT_ARG_PREFIXES := [
 	"--barrosan-barracks-material-single-slot",
 	"--barrosan-barracks-material-seam-repair",
 	"--barrosan-ground-material-single-slot",
+	"--barrosan-road-material-single-slot",
 	"--aster-billboard-single-slot-repair",
 	"--hybrid-three-slot-composition-stress",
 	"--militia-billboard-single-slot",
@@ -332,6 +333,47 @@ func _ready() -> void:
 			get_tree().quit(1)
 			return
 		ground_material.call("start")
+		return
+	if args.has("--barrosan-road-material-single-slot"):
+		_write_absolute_json(_path_join(_artifact_root_from_args(), "road-material-root-dispatch.json"), {
+			"schemaVersion": 1,
+			"checkpoint": "v0.180",
+			"status": "PASS_V0180_PRIVATE_ROAD_MATERIAL_DISPATCH",
+			"args": Array(args),
+			"defaultPlayerSliceLaunched": false,
+			"playerSliceIntegration": "forbidden",
+			"runtimeArtSlotAdded": false
+		})
+		var road_material_script := load("res://comparators/runtime_art_pipeline/road_material_single_slot_comparator.gd") as GDScript
+		if road_material_script == null:
+			_write_absolute_json(_path_join(_artifact_root_from_args(), "road-material-dispatch-failure.json"), {
+				"schemaVersion": 1,
+				"checkpoint": "v0.180",
+				"status": "FAIL_V0180_PRIVATE_ROAD_MATERIAL_SCRIPT_LOAD",
+				"script": "res://comparators/runtime_art_pipeline/road_material_single_slot_comparator.gd"
+			})
+			get_tree().quit(1)
+			return
+		var road_material := Node.new()
+		road_material.name = "V0180RoadMaterialSingleSlotComparator"
+		road_material.set_script(road_material_script)
+		add_child(road_material)
+		_write_absolute_json(_path_join(_artifact_root_from_args(), "road-material-dispatch-prestart.json"), {
+			"schemaVersion": 1,
+			"checkpoint": "v0.180",
+			"status": "PASS_V0180_PRIVATE_ROAD_MATERIAL_PRESTART",
+			"hasStart": road_material.has_method("start")
+		})
+		if not road_material.has_method("start"):
+			_write_absolute_json(_path_join(_artifact_root_from_args(), "road-material-dispatch-failure.json"), {
+				"schemaVersion": 1,
+				"checkpoint": "v0.180",
+				"status": "FAIL_V0180_PRIVATE_ROAD_MATERIAL_START_METHOD",
+				"script": "res://comparators/runtime_art_pipeline/road_material_single_slot_comparator.gd"
+			})
+			get_tree().quit(1)
+			return
+		road_material.call("start")
 		return
 	if args.has("--aster-billboard-single-slot-repair"):
 		_write_absolute_json(_path_join(_artifact_root_from_args(), "aster-billboard-repair-root-dispatch.json"), {

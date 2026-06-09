@@ -14,7 +14,8 @@ const selectedLocalSources = new Set([
   "artifacts/desktop-spikes/godot-salto/v0150/local-barracks-material-seam-repair/barrosan_barracks_material_v0149_768_wrapsafe_offset_blend.png",
   "artifacts/desktop-spikes/godot-salto/v0155/local-militia-billboard-repair/militia_billboard_static_v0154_trimmed_1024.png",
   "artifacts/desktop-spikes/godot-salto/v0152/local-aster-billboard-repair/aster_billboard_static_v0151_trimmed_1024.png",
-  "artifacts/desktop-spikes/godot-salto/v0157/local-ashen-raider-restrained-replacement/ashen_raider_billboard_static_v0157_restrained_trimmed_1024.png"
+  "artifacts/desktop-spikes/godot-salto/v0157/local-ashen-raider-restrained-replacement/ashen_raider_billboard_static_v0157_restrained_trimmed_1024.png",
+  "artifacts/desktop-spikes/godot-salto/v0180/local-road-material-slot/barrosan_foothold_road_material_v0180_1024.png"
 ]);
 
 const selectedLocalMetadata = new Set([
@@ -22,7 +23,8 @@ const selectedLocalMetadata = new Set([
   "artifacts/desktop-spikes/godot-salto/v0150/local-barracks-material-seam-repair/barrosan_barracks_material_v0149_768_wrapsafe_offset_blend.metadata.json",
   "artifacts/desktop-spikes/godot-salto/v0155/local-militia-billboard-repair/militia_billboard_static_v0154_trimmed_1024.metadata.json",
   "artifacts/desktop-spikes/godot-salto/v0152/local-aster-billboard-repair/aster_billboard_static_v0151_trimmed_1024.metadata.json",
-  "artifacts/desktop-spikes/godot-salto/v0157/local-ashen-raider-restrained-replacement/ashen_raider_billboard_static_v0157_restrained_trimmed_1024.metadata.json"
+  "artifacts/desktop-spikes/godot-salto/v0157/local-ashen-raider-restrained-replacement/ashen_raider_billboard_static_v0157_restrained_trimmed_1024.metadata.json",
+  "artifacts/desktop-spikes/godot-salto/v0180/local-road-material-slot/barrosan_foothold_road_material_v0180_1024.metadata.json"
 ]);
 
 const selectedHashes = new Set([
@@ -30,13 +32,17 @@ const selectedHashes = new Set([
   "58a60b750370df084b60a1d92077da9367c0ba8a763781e2c3a8a7d96f1c980f",
   "c25349f00c422a0b3c9d5862027351bd70008e9314d4e3cd4001676e914321cb",
   "b256f96f762187c05d68f2c2de62bedec0248896210767e98cb8f210dac2829a",
-  "8eb011f56d5cd56cf6ef0a843d2a5899e27aa13e203cc44517ed4a0c55c631c8"
+  "8eb011f56d5cd56cf6ef0a843d2a5899e27aa13e203cc44517ed4a0c55c631c8",
+  "a64959ef2fd7a509fcaaa969fca3e095d590d563a4f0c578a5e96d1fb04c0e10"
 ]);
 
-const v0175PrivateComparatorIntent = new Set([
+const privateComparatorIntent = new Set([
   "desktop-spikes/godot-salto/comparators/runtime_art_pipeline/ground_material_single_slot_comparator.gd",
   "desktop-spikes/godot-salto/comparators/runtime_art_pipeline/fallback/barrosan_foothold_ground_material_v0175_fallback.png",
-  "desktop-spikes/godot-salto/comparators/runtime_art_pipeline/fallback/barrosan_foothold_ground_material_v0175_fallback.contract.json"
+  "desktop-spikes/godot-salto/comparators/runtime_art_pipeline/fallback/barrosan_foothold_ground_material_v0175_fallback.contract.json",
+  "desktop-spikes/godot-salto/comparators/runtime_art_pipeline/road_material_single_slot_comparator.gd",
+  "desktop-spikes/godot-salto/comparators/runtime_art_pipeline/fallback/barrosan_foothold_road_material_v0180_fallback.png",
+  "desktop-spikes/godot-salto/comparators/runtime_art_pipeline/fallback/barrosan_foothold_road_material_v0180_fallback.contract.json"
 ]);
 
 function stableSort(value) {
@@ -95,7 +101,7 @@ function classify(file, tracked) {
     rel === "tools/godot/validateGodotSaltoThreeSlotVisualHardeningWindows.ps1" ||
     rel === "GODOT_AUDIT_SALTO_EXPERIMENTAL_ARTIFACTS_WINDOWS.bat" ||
     rel === "GODOT_VALIDATE_SALTO_THREE_SLOT_VISUAL_HARDENING_WINDOWS.bat";
-  if ((isTracked || isV0165RequiredTrackedIntent || v0175PrivateComparatorIntent.has(rel)) && (rel.startsWith("docs/") || rel.startsWith("tools/godot/") || rel.startsWith("desktop-spikes/godot-salto/") || rel.endsWith(".bat") || rel.startsWith("scripts/"))) {
+  if ((isTracked || isV0165RequiredTrackedIntent || privateComparatorIntent.has(rel)) && (rel.startsWith("docs/") || rel.startsWith("tools/godot/") || rel.startsWith("desktop-spikes/godot-salto/") || rel.endsWith(".bat") || rel.startsWith("scripts/"))) {
     return "required tracked source/tooling/docs";
   }
   if (isTracked && /fallback|placeholder|diagnostic/iu.test(rel)) {
