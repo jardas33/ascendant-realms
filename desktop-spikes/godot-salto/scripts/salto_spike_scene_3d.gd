@@ -78,6 +78,12 @@ const ASHEN_ART_EXPECTED_HEIGHT := 1024
 const ASHEN_ART_DEFAULT_SCALE := 1.0
 const ASHEN_ART_QUAD_HEIGHT := 0.72
 const ASHEN_ART_GROUND_CLEARANCE := 0.02
+const GROUND_MATERIAL_SLOT_ID := "barrosan_foothold_ground_material_v0175"
+const GROUND_MATERIAL_APPROACH := "GROUND_MATERIAL_LOCAL_1024"
+const GROUND_MATERIAL_EXPECTED_SHA256 := "818b7743fbf192fe95dd95a0fbadb59ea92b1cb36c420dac5526c0f4d1af18a8"
+const GROUND_MATERIAL_EXPECTED_WIDTH := 1024
+const GROUND_MATERIAL_EXPECTED_HEIGHT := 1024
+const GROUND_MATERIAL_DEFAULT_UV_SCALE := 0.72
 const WorkloadRuntimeScript = preload("res://scripts/salto_spike_workload_runtime.gd")
 
 var runtime = WorkloadRuntimeScript.new()
@@ -311,6 +317,23 @@ var three_slot_art_review_framing_active := false
 var five_slot_art_review_framing_active := false
 var environment_foundation_review_enabled := false
 var environment_readability_hardening_enabled := false
+var ground_material_experiment_enabled := false
+var ground_material_source_path := ""
+var ground_material_metadata_path := ""
+var ground_material_expected_sha256 := GROUND_MATERIAL_EXPECTED_SHA256
+var ground_material_fallback_mode := "none"
+var ground_material_requested_uv_scale := GROUND_MATERIAL_DEFAULT_UV_SCALE
+var ground_material_texture: ImageTexture
+var ground_material_override: StandardMaterial3D
+var ground_material_status: Dictionary = {}
+var ground_material_source_load_count := 0
+var ground_material_metadata_parse_count := 0
+var ground_material_image_decode_count := 0
+var ground_material_texture_create_count := 0
+var ground_material_material_create_count := 0
+var ground_material_material_reuse_count := 0
+var ground_material_applied_surface_count := 0
+var ground_material_applied_surface_names: Array[String] = []
 
 func _ready() -> void:
 	_reset_worker_art_status(false, "opt-in flag absent")
@@ -318,6 +341,7 @@ func _ready() -> void:
 	_reset_militia_art_status(false, "opt-in flag absent")
 	_reset_aster_art_status(false, "opt-in flag absent")
 	_reset_ashen_art_status(false, "opt-in flag absent")
+	_reset_ground_material_status(false, "opt-in flag absent")
 	_create_camera()
 	_create_light()
 	_create_terrain()
@@ -919,6 +943,220 @@ func _add_barracks_material_box(name: String, position: Vector3, scale: Vector3,
 	mesh_instance.material_override = _barracks_material()
 	barracks_material_applied_surface_count += 1
 	_refresh_barracks_material_counters()
+
+func configure_ground_material_experiment(options: Dictionary) -> Dictionary:
+	ground_material_experiment_enabled = bool(options.get("enabled", false))
+	ground_material_source_path = str(options.get("sourcePath", ""))
+	ground_material_metadata_path = str(options.get("metadataPath", ""))
+	ground_material_expected_sha256 = str(options.get("expectedSha256", GROUND_MATERIAL_EXPECTED_SHA256)).to_lower()
+	ground_material_fallback_mode = str(options.get("fallbackMode", "none"))
+	ground_material_requested_uv_scale = clampf(float(options.get("uvScale", GROUND_MATERIAL_DEFAULT_UV_SCALE)), 0.35, 1.25)
+	ground_material_texture = null
+	ground_material_override = null
+	ground_material_source_load_count = 0
+	ground_material_metadata_parse_count = 0
+	ground_material_image_decode_count = 0
+	ground_material_texture_create_count = 0
+	ground_material_material_create_count = 0
+	ground_material_material_reuse_count = 0
+	ground_material_applied_surface_count = 0
+	ground_material_applied_surface_names = []
+	if not ground_material_experiment_enabled:
+		_reset_ground_material_status(false, "opt-in flag absent")
+		_refresh_visual_foundation()
+		return ground_material_status.duplicate(true)
+	_load_ground_material_candidate()
+	_refresh_visual_foundation()
+	return ground_material_status.duplicate(true)
+
+func get_ground_material_status() -> Dictionary:
+	return ground_material_status.duplicate(true)
+
+func _reset_ground_material_status(enabled: bool, reason: String) -> void:
+	ground_material_status = {
+		"schemaVersion": 1,
+		"checkpoint": "v0.177",
+		"slotId": GROUND_MATERIAL_SLOT_ID,
+		"approach": GROUND_MATERIAL_APPROACH,
+		"enabled": enabled,
+		"sourceLoaded": false,
+		"materialActive": false,
+		"fallbackActive": true,
+		"fallbackReason": reason,
+		"sourcePath": ground_material_source_path,
+		"metadataPath": ground_material_metadata_path,
+		"expectedSha256": ground_material_expected_sha256,
+		"actualSha256": "",
+		"sourceDimensions": {"width": 0, "height": 0},
+		"metadataDimensions": {"width": 0, "height": 0},
+		"uvScale": ground_material_requested_uv_scale,
+		"tilingMode": "",
+		"filterMode": "linear with mipmaps",
+		"fallbackMode": ground_material_fallback_mode,
+		"proceduralFallbackVisible": true,
+		"appliedOnlyToFootholdGround": true,
+		"appliedSurfaceNames": [],
+		"excludedSurfaces": ["roads", "river", "banks", "bridge", "structures", "site markers", "minimap", "character slots"],
+		"environmentFoundationReviewRequired": true,
+		"defaultLauncherChanged": false,
+		"browserRuntimeChanged": false,
+		"saveWritesAllowed": false,
+		"characterSlotCountChanged": false,
+		"productionManifestMutated": false,
+		"sourceLoadCount": ground_material_source_load_count,
+		"metadataParseCount": ground_material_metadata_parse_count,
+		"imageDecodeCount": ground_material_image_decode_count,
+		"textureCreateCount": ground_material_texture_create_count,
+		"materialCreateCount": ground_material_material_create_count,
+		"materialReuseCount": ground_material_material_reuse_count,
+		"appliedSurfaceCount": ground_material_applied_surface_count
+	}
+
+func _load_ground_material_candidate() -> void:
+	_reset_ground_material_status(true, "not loaded")
+	var start_usec := Time.get_ticks_usec()
+	if ground_material_source_path == "":
+		_set_ground_material_fallback("missing source path")
+		return
+	if not FileAccess.file_exists(ground_material_source_path):
+		_set_ground_material_fallback("missing source file")
+		return
+	if ground_material_metadata_path == "" or not FileAccess.file_exists(ground_material_metadata_path):
+		_set_ground_material_fallback("missing metadata file")
+		return
+	var metadata := _read_ground_material_metadata(ground_material_metadata_path)
+	if metadata.is_empty():
+		_set_ground_material_fallback("metadata parse failure")
+		return
+	if str(metadata.get("slotId", "")) != GROUND_MATERIAL_SLOT_ID:
+		_set_ground_material_fallback("metadata slot mismatch")
+		return
+	if str(metadata.get("approach", "")) != GROUND_MATERIAL_APPROACH:
+		_set_ground_material_fallback("metadata approach mismatch")
+		return
+	var metadata_sha := str(metadata.get("sha256", "")).to_lower()
+	if metadata_sha != ground_material_expected_sha256:
+		_set_ground_material_fallback("metadata hash mismatch")
+		return
+	var dimensions: Dictionary = metadata.get("dimensions", {})
+	var metadata_width := int(dimensions.get("width", 0))
+	var metadata_height := int(dimensions.get("height", 0))
+	if metadata_width != GROUND_MATERIAL_EXPECTED_WIDTH or metadata_height != GROUND_MATERIAL_EXPECTED_HEIGHT:
+		_set_ground_material_fallback("metadata dimension mismatch")
+		return
+	var actual_sha := _sha256_file(ground_material_source_path)
+	ground_material_status["actualSha256"] = actual_sha
+	if actual_sha != ground_material_expected_sha256:
+		_set_ground_material_fallback("source hash mismatch")
+		return
+	var image := Image.new()
+	ground_material_source_load_count += 1
+	var load_result := image.load(ground_material_source_path)
+	if load_result != OK:
+		_set_ground_material_fallback("image load failure %s" % str(load_result))
+		return
+	ground_material_image_decode_count += 1
+	if image.get_width() != GROUND_MATERIAL_EXPECTED_WIDTH or image.get_height() != GROUND_MATERIAL_EXPECTED_HEIGHT:
+		_set_ground_material_fallback("image dimension mismatch")
+		return
+	ground_material_texture = ImageTexture.create_from_image(image)
+	if ground_material_texture == null:
+		_set_ground_material_fallback("texture creation failure")
+		return
+	ground_material_texture_create_count += 1
+	ground_material_status["enabled"] = true
+	ground_material_status["sourceLoaded"] = true
+	ground_material_status["materialActive"] = true
+	ground_material_status["fallbackActive"] = false
+	ground_material_status["fallbackReason"] = ""
+	ground_material_status["sourcePath"] = ground_material_source_path
+	ground_material_status["metadataPath"] = ground_material_metadata_path
+	ground_material_status["expectedSha256"] = ground_material_expected_sha256
+	ground_material_status["actualSha256"] = actual_sha
+	ground_material_status["sourceDimensions"] = {"width": image.get_width(), "height": image.get_height()}
+	ground_material_status["metadataDimensions"] = {"width": metadata_width, "height": metadata_height}
+	ground_material_status["uvScale"] = ground_material_requested_uv_scale
+	ground_material_status["sourceMetadataUvScale"] = float(metadata.get("uvScale", 1.0))
+	ground_material_status["tilingMode"] = str(metadata.get("tilingMode", "repeat player-slice material"))
+	ground_material_status["fallbackMode"] = ground_material_fallback_mode
+	ground_material_status["proceduralFallbackVisible"] = false
+	ground_material_status["loadDurationMs"] = snappedf(float(Time.get_ticks_usec() - start_usec) / 1000.0, 0.01)
+	_refresh_ground_material_counters()
+
+func _read_ground_material_metadata(path: String) -> Dictionary:
+	ground_material_metadata_parse_count += 1
+	var file := FileAccess.open(path, FileAccess.READ)
+	if file == null:
+		return {}
+	var parsed = JSON.parse_string(file.get_as_text())
+	if typeof(parsed) == TYPE_DICTIONARY:
+		return parsed
+	return {}
+
+func _set_ground_material_fallback(reason: String) -> void:
+	ground_material_texture = null
+	ground_material_override = null
+	ground_material_status["enabled"] = ground_material_experiment_enabled
+	ground_material_status["materialActive"] = false
+	ground_material_status["sourceLoaded"] = false
+	ground_material_status["fallbackActive"] = true
+	ground_material_status["fallbackReason"] = reason
+	ground_material_status["sourcePath"] = ground_material_source_path
+	ground_material_status["metadataPath"] = ground_material_metadata_path
+	ground_material_status["expectedSha256"] = ground_material_expected_sha256
+	ground_material_status["fallbackMode"] = ground_material_fallback_mode
+	ground_material_status["uvScale"] = ground_material_requested_uv_scale
+	ground_material_status["proceduralFallbackVisible"] = true
+	_refresh_ground_material_counters()
+
+func _refresh_ground_material_counters() -> void:
+	ground_material_status["sourceLoadCount"] = ground_material_source_load_count
+	ground_material_status["metadataParseCount"] = ground_material_metadata_parse_count
+	ground_material_status["imageDecodeCount"] = ground_material_image_decode_count
+	ground_material_status["textureCreateCount"] = ground_material_texture_create_count
+	ground_material_status["materialCreateCount"] = ground_material_material_create_count
+	ground_material_status["materialReuseCount"] = ground_material_material_reuse_count
+	ground_material_status["appliedSurfaceCount"] = ground_material_applied_surface_count
+	ground_material_status["appliedSurfaceNames"] = ground_material_applied_surface_names.duplicate()
+
+func _ground_material_is_active() -> bool:
+	return ground_material_experiment_enabled and environment_foundation_review_enabled and bool(ground_material_status.get("sourceLoaded", false)) and ground_material_texture != null
+
+func _ground_material() -> StandardMaterial3D:
+	if ground_material_override:
+		ground_material_material_reuse_count += 1
+		_refresh_ground_material_counters()
+		return ground_material_override
+	ground_material_override = StandardMaterial3D.new()
+	ground_material_override.albedo_texture = ground_material_texture
+	ground_material_override.albedo_color = Color(1.18, 1.16, 1.05, 0.78)
+	ground_material_override.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	ground_material_override.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	ground_material_override.roughness = 0.94
+	ground_material_override.metallic = 0.0
+	ground_material_override.cull_mode = BaseMaterial3D.CULL_DISABLED
+	ground_material_override.texture_filter = BaseMaterial3D.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
+	ground_material_override.uv1_scale = Vector3(ground_material_requested_uv_scale, ground_material_requested_uv_scale, 1.0)
+	ground_material_material_create_count += 1
+	_refresh_ground_material_counters()
+	return ground_material_override
+
+func _add_ground_material_static_box(name: String, position: Vector3, scale: Vector3, fallback_color: Color, transparent: bool = false) -> void:
+	if not _ground_material_is_active():
+		_add_static_box(name, position, scale, fallback_color, transparent)
+		return
+	var mesh_instance := MeshInstance3D.new()
+	mesh_instance.name = name
+	var mesh := BoxMesh.new()
+	mesh.size = scale
+	mesh_instance.mesh = mesh
+	mesh_instance.position = position
+	mesh_instance.material_override = _ground_material()
+	terrain_root.add_child(mesh_instance)
+	ground_material_applied_surface_count += 1
+	if not ground_material_applied_surface_names.has(name):
+		ground_material_applied_surface_names.append(name)
+	_refresh_ground_material_counters()
 
 func configure_militia_art_experiment(options: Dictionary) -> Dictionary:
 	militia_art_experiment_enabled = bool(options.get("enabled", false))
@@ -3942,14 +4180,17 @@ func get_spike_status() -> Dictionary:
 	_refresh_aster_art_counters()
 	var ashen_art_loaded := _ashen_art_is_active()
 	_refresh_ashen_art_counters()
-	status["proceduralPrimitiveOnly"] = not worker_art_loaded and not barracks_material_loaded and not militia_art_loaded and not aster_art_loaded and not ashen_art_loaded
-	status["generatedOrImportedArtIncluded"] = worker_art_loaded or barracks_material_loaded or militia_art_loaded or aster_art_loaded or ashen_art_loaded
-	status["runtimeArtIntegrated"] = worker_art_loaded or barracks_material_loaded or militia_art_loaded or aster_art_loaded or ashen_art_loaded
+	var ground_material_loaded := _ground_material_is_active()
+	_refresh_ground_material_counters()
+	status["proceduralPrimitiveOnly"] = not worker_art_loaded and not barracks_material_loaded and not militia_art_loaded and not aster_art_loaded and not ashen_art_loaded and not ground_material_loaded
+	status["generatedOrImportedArtIncluded"] = worker_art_loaded or barracks_material_loaded or militia_art_loaded or aster_art_loaded or ashen_art_loaded or ground_material_loaded
+	status["runtimeArtIntegrated"] = worker_art_loaded or barracks_material_loaded or militia_art_loaded or aster_art_loaded or ashen_art_loaded or ground_material_loaded
 	status["workerArtExperiment"] = worker_art_status.duplicate(true)
 	status["barracksMaterialExperiment"] = barracks_material_status.duplicate(true)
 	status["militiaArtExperiment"] = militia_art_status.duplicate(true)
 	status["asterArtExperiment"] = aster_art_status.duplicate(true)
 	status["ashenArtExperiment"] = ashen_art_status.duplicate(true)
+	status["groundMaterialExperiment"] = ground_material_status.duplicate(true)
 	status["v0165VisualHardeningAudit"] = _v0165_visual_hardening_audit(worker_art_loaded, barracks_material_loaded, militia_art_loaded, aster_art_loaded, ashen_art_loaded)
 	status["workerArtOptInOnly"] = worker_art_experiment_enabled and not barracks_material_experiment_enabled and not militia_art_experiment_enabled and not aster_art_experiment_enabled and not ashen_art_experiment_enabled
 	status["workerArtSlotCount"] = 1 if worker_art_experiment_enabled else 0
@@ -3966,12 +4207,17 @@ func get_spike_status() -> Dictionary:
 	status["ashenArtOptInRequested"] = ashen_art_experiment_enabled
 	status["ashenArtSlotCount"] = 1 if ashen_art_experiment_enabled else 0
 	status["ashenArtProceduralFallbackActive"] = bool(ashen_art_status.get("fallbackActive", true))
+	status["groundMaterialOptInRequested"] = ground_material_experiment_enabled
+	status["groundMaterialSlotCount"] = 1 if ground_material_experiment_enabled else 0
+	status["groundMaterialProceduralFallbackActive"] = bool(ground_material_status.get("fallbackActive", true))
 	status["normalSliceOptInRequestedSlotCount"] = int(status["workerArtSlotCount"]) + int(status["barracksMaterialSlotCount"]) + int(status["militiaArtSlotCount"]) + int(status["asterArtSlotCount"]) + int(status["ashenArtSlotCount"])
 	status["normalSliceOptInLoadedSlotCount"] = (1 if worker_art_loaded else 0) + (1 if barracks_material_loaded else 0) + (1 if militia_art_loaded else 0) + (1 if aster_art_loaded else 0) + (1 if ashen_art_loaded else 0)
-	status["environmentFoundationArtSlotCount"] = 0
+	status["environmentMaterialOptInRequestedSlotCount"] = 1 if ground_material_experiment_enabled else 0
+	status["environmentMaterialOptInLoadedSlotCount"] = 1 if ground_material_loaded else 0
+	status["environmentFoundationArtSlotCount"] = 1 if ground_material_experiment_enabled else 0
 	status["environmentReadabilityArtSlotCount"] = 0
-	status["terrainMaterialSourceImported"] = false
-	status["terrainMaterialRuntimeSlotAdded"] = false
+	status["terrainMaterialSourceImported"] = ground_material_loaded
+	status["terrainMaterialRuntimeSlotAdded"] = ground_material_experiment_enabled
 	status["thirdPlayerFacingArtSlotAdded"] = militia_art_experiment_enabled
 	status["fourthPlayerFacingArtSlotAdded"] = aster_art_experiment_enabled
 	status["fifthPlayerFacingArtSlotAdded"] = ashen_art_experiment_enabled
@@ -4335,6 +4581,10 @@ func _create_terrain() -> void:
 	terrain_root = Node3D.new()
 	terrain_root.name = "ProceduralSaltoVisualFoundation"
 	add_child(terrain_root)
+	ground_material_applied_surface_count = 0
+	ground_material_applied_surface_names = []
+	if not ground_material_status.is_empty():
+		_refresh_ground_material_counters()
 
 	var ground := MeshInstance3D.new()
 	ground.name = "SaltoTerrainPlane"
@@ -4442,8 +4692,8 @@ func _add_environment_foundation_shell_layers() -> void:
 	var river_bank := Color(0.08, 0.18, 0.19, 0.82)
 	var wet_granite := Color(0.50, 0.49, 0.42)
 	var worked_earth := Color(0.32, 0.25, 0.16)
-	_add_static_box("v0173_terrain_mid_value_field", Vector3(-1.0, 0.104, 1.40), Vector3(11.6, 0.035, 5.30), Color(0.18, 0.25, 0.17, 0.58), true)
-	_add_static_box("v0173_friendly_staging_value_field", Vector3(-4.85, 0.156, 2.90), Vector3(2.95, 0.046, 2.05), Color(0.24, 0.34, 0.22, 0.70), true)
+	_add_ground_material_static_box("v0173_terrain_mid_value_field", Vector3(-1.0, 0.104, 1.40), Vector3(11.6, 0.035, 5.30), Color(0.18, 0.25, 0.17, 0.58), true)
+	_add_ground_material_static_box("v0173_friendly_staging_value_field", Vector3(-4.85, 0.156, 2.90), Vector3(2.95, 0.046, 2.05), Color(0.24, 0.34, 0.22, 0.70), true)
 	_add_static_box("v0173_ashen_pressure_value_field", Vector3(4.20, 0.157, -0.96), Vector3(3.25, 0.044, 1.46), Color(0.34, 0.14, 0.11, 0.50), true)
 	_add_static_box("v0173_main_road_wide_readable_bed", Vector3(-1.05, 0.178, 0.70), Vector3(11.65, 0.036, 0.68), wet_granite)
 	_add_static_box("v0173_main_road_shadow_north_edge", Vector3(-1.05, 0.184, 0.32), Vector3(11.72, 0.030, 0.08), road_edge, true)

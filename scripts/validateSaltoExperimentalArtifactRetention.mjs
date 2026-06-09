@@ -65,6 +65,17 @@ const retainedArtifacts = [
     slot: "ashen_raider_billboard_static_v0156"
   },
   {
+    rel: "artifacts/desktop-spikes/godot-salto/v0175/local-ground-material-slot/barrosan_foothold_ground_material_v0175_1024.png",
+    category: "selected-active-environment-derivative",
+    slot: "barrosan_foothold_ground_material_v0175",
+    sha256: "818b7743fbf192fe95dd95a0fbadb59ea92b1cb36c420dac5526c0f4d1af18a8"
+  },
+  {
+    rel: "artifacts/desktop-spikes/godot-salto/v0175/local-ground-material-slot/barrosan_foothold_ground_material_v0175_1024.metadata.json",
+    category: "required-metadata",
+    slot: "barrosan_foothold_ground_material_v0175"
+  },
+  {
     rel: "artifacts/desktop-spikes/godot-salto/v0166/v0166-three-slot-visual-coherence-scorecard.json",
     category: "latest-required-evidence"
   },

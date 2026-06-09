@@ -1,6 +1,32 @@
 # Development Checkpoint
 
-Updated: 2026-06-08 v0.176 Terrain-Material Opt-In Player-Slice Integration Readiness Packet
+Updated: 2026-06-08 v0.177 Barrosan Foothold Ground-Material First Opt-In Player-Slice Integration Experiment
+
+## v0.177 Barrosan Foothold Ground-Material First Opt-In Player-Slice Integration Experiment - 2026-06-08
+
+Scope: first player-slice environment-material opt-in slot for the existing five-slot Godot Salto posture. This checkpoint generates zero images, adds exactly one environment-material opt-in slot, adds zero character slots, keeps the default launcher procedural, preserves all prior opt-in launchers, and does not begin v0.178.
+
+Included work:
+
+- Confirmed v0.176 as the required clean/synced starting checkpoint before edits.
+- Integrated only `barrosan_foothold_ground_material_v0175` / `GROUND_MATERIAL_LOCAL_1024` with SHA `818b7743fbf192fe95dd95a0fbadb59ea92b1cb36c420dac5526c0f4d1af18a8`.
+- Added `GODOT_REVIEW_SALTO_GROUND_MATERIAL_OPT_IN_WINDOWS.bat` with matching validation and capture wrappers.
+- Bound the material only to `v0173_terrain_mid_value_field` and `v0173_friendly_staging_value_field`.
+- Preserved roads, river, banks, bridge, structures, site markers, minimap, HUD, browser runtime, default launchers, and all five selected character/material slots.
+- Proved missing-art and hash-mismatch fallback while keeping the five frozen character/material slots active.
+
+Verification targets:
+
+```text
+PASS: npm run godot:validate:salto-ground-material-opt-in.
+PASS: PASS_V0177_GROUND_MATERIAL_OPT_IN_VALIDATION.
+PASS: PASS_V0177_GROUND_MATERIAL_OPT_IN_CAPTURE.
+PASS: PASS_V0177_GROUND_MATERIAL_OPT_IN_BENCHMARK.
+PASS: PASS_V0177_GROUND_MATERIAL_OPT_IN_BOUNDARY.
+PASS: E1 FPS ratio 0.9977 and p95 worsening 2.49%.
+PASS: ground material one-time source load, metadata parse, image decode, texture create, and material create.
+PASS: cleanup dry-run, artifact retention, Windows-side Computer Use review, zero images, one environment-material slot, zero character slots, no browser/save/stable-ID/gameplay mutation.
+```
 
 ## v0.176 Terrain-Material Opt-In Player-Slice Integration Readiness Packet - 2026-06-08
 

@@ -1,5 +1,35 @@
 # Changelog
 
+# v0.177 Barrosan Foothold Ground-Material First Opt-In Player-Slice Integration Experiment And Human-Review Stop - 2026-06-08
+
+This checkpoint integrates exactly one Barrosan foothold ground-material environment slot into the Godot Salto player-slice review path behind explicit opt-in only. It uses the selected v0.175 `GROUND_MATERIAL_LOCAL_1024` derivative, proves missing-art and hash-mismatch fallback, benchmarks against the five-slot environment-foundation baseline, and keeps v0.178 unstarted.
+
+Added:
+
+- `GODOT_REVIEW_SALTO_GROUND_MATERIAL_OPT_IN_WINDOWS.bat`.
+- `GODOT_VALIDATE_SALTO_GROUND_MATERIAL_OPT_IN_WINDOWS.bat`.
+- `GODOT_CAPTURE_SALTO_GROUND_MATERIAL_OPT_IN_WINDOWS.bat`.
+- v0.177 launch, review, validate, capture, and report tooling.
+- `docs/V0177_GROUND_MATERIAL_OPT_IN_QA_BENCHMARK.md`.
+- `docs/V0177_GROUND_MATERIAL_BOUNDARY_ROLLBACK.md`.
+- `docs/V0177_IMPLEMENTATION_REPORT.md`.
+
+Changed:
+
+- Added explicit `--ground-material-opt-in` player-slice handling with exact hash/dimension validation, linear mipmap filtering, one-time load/create counters, and procedural fallback.
+- Applied the selected material only to `v0173_terrain_mid_value_field` and `v0173_friendly_staging_value_field`.
+- Updated the Salto experimental artifact index, roadmap, handoff, checkpoint, release checklist, and changelog for v0.177.
+
+Boundaries:
+
+- Zero images generated.
+- Exactly one environment-material opt-in slot added.
+- Zero character slots added; character-slot expansion remains frozen at five.
+- Default launchers remain procedural.
+- Prior opt-in launchers remain preserved.
+- Browser runtime, production manifests, saves, stable IDs, gameplay, pathing, objectives, AI, balance, campaign state, and broad cleanup remain untouched.
+- v0.178 is not started inside this checkpoint.
+
 # v0.176 Terrain-Material Opt-In Player-Slice Integration Readiness Packet - 2026-06-08
 
 This checkpoint prepares a documentation-only readiness packet for a future terrain-material opt-in player-slice integration. It recommends exactly one future terrain-material slot using the v0.175 selected derivative, does not authorize broad terrain replacement, and prepares the exact future v0.177 prompt without starting it.

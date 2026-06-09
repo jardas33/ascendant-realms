@@ -1,6 +1,6 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-06-08 v0.176 Terrain-Material Opt-In Player-Slice Integration Readiness Packet
+Last updated: 2026-06-08 v0.177 Barrosan Foothold Ground-Material First Opt-In Player-Slice Integration Experiment
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
@@ -50,7 +50,31 @@ Project Identity continuation note: v0.175 now supersedes the older no-v0.175 ta
 
 Project Identity continuation note: v0.176 now supersedes the older no-v0.176 tail above because the queued prompt explicitly authorized a documentation-only terrain-material opt-in readiness packet after v0.175 was committed, pushed, clean, synced, and remote-green. v0.176 generates zero images, adds zero slots, modifies no runtime code, prepares exactly one future terrain-material opt-in implementation prompt for v0.177, and does not start v0.177.
 
-Current status override: v0.176 is the active checkpoint for this handoff. Character-slot integration remains frozen after five selected opt-in slots. The prepared v0.177 prompt is documentation only until a future explicit request executes it. Do not integrate terrain material into the player-facing slice from v0.176.
+Project Identity continuation note: v0.177 now supersedes the older no-v0.177 tail above because the queued prompt explicitly authorized exactly one Barrosan foothold ground-material opt-in environment slot after v0.176 was committed, pushed, clean, synced, and remote-green. v0.177 uses zero image generation, adds one environment-material opt-in slot, adds zero character slots, preserves default procedural launchers and all prior opt-in launchers, proves missing-art and hash-mismatch fallback, records QA/benchmark/boundary/cleanup evidence, and stops before v0.178 unless a queued prompt sequence explicitly continues.
+
+Current status override: v0.177 is the active checkpoint for this handoff. Character-slot integration remains frozen after five selected opt-in slots. The ground material is opt-in only and the default launcher remains procedural. Do not begin v0.178 unless an explicit queued prompt continues from a clean, synced, pushed, remote-green v0.177.
+
+## Current v0.177 Barrosan Foothold Ground-Material First Opt-In Player-Slice Integration Experiment - 2026-06-08
+
+Status: local v0.177 work is the active checkpoint. Commit, push, and remote CI proof are required before any queued v0.178 work.
+
+Key evidence:
+
+- `PASS_V0177_SALTO_GROUND_MATERIAL_OPT_IN_AUTOMATION_READY`
+- `PASS_V0177_GROUND_MATERIAL_OPT_IN_VALIDATION`
+- `PASS_V0177_GROUND_MATERIAL_OPT_IN_CAPTURE`
+- `PASS_V0177_GROUND_MATERIAL_OPT_IN_BENCHMARK`
+- `PASS_V0177_GROUND_MATERIAL_OPT_IN_BOUNDARY`
+- E1 FPS ratio `0.9977`; p95 worsening `2.49%`
+- Missing-art fallback and hash-mismatch fallback both preserve five frozen character/material slots.
+
+New v0.177 docs:
+
+- `docs/V0177_GROUND_MATERIAL_OPT_IN_QA_BENCHMARK.md`
+- `docs/V0177_GROUND_MATERIAL_BOUNDARY_ROLLBACK.md`
+- `docs/V0177_IMPLEMENTATION_REPORT.md`
+
+Next boundary: v0.178 may harden only the existing ground-material UV/noise/readability posture if explicitly queued. Do not broaden terrain replacement, add character slots, enable art by default, or wire browser runtime.
 
 ## Current v0.176 Terrain-Material Opt-In Player-Slice Integration Readiness Packet - 2026-06-08
 

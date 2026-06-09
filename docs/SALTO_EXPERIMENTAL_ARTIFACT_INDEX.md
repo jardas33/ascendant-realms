@@ -1,10 +1,10 @@
 # Salto Experimental Artifact Index
 
-Status: `ACTIVE_V0176_RETENTION_INDEX`
+Status: `ACTIVE_V0177_RETENTION_INDEX`
 
 This index is the retention source of truth for the Godot Salto experimental-art path. It protects selected local art, active derivatives, metadata, tracked fallbacks, current evidence, and unknown files from broad cleanup.
 
-This v0.176 index supersedes `ACTIVE_V0175_RETENTION_INDEX`, `ACTIVE_V0174_RETENTION_INDEX`, `ACTIVE_V0173_RETENTION_INDEX`, `ACTIVE_V0172_RETENTION_INDEX`, `ACTIVE_V0171_RETENTION_INDEX`, and `ACTIVE_V0170_RETENTION_INDEX` while retaining their protected evidence.
+This v0.177 index supersedes `ACTIVE_V0176_RETENTION_INDEX`, `ACTIVE_V0175_RETENTION_INDEX`, `ACTIVE_V0174_RETENTION_INDEX`, `ACTIVE_V0173_RETENTION_INDEX`, `ACTIVE_V0172_RETENTION_INDEX`, `ACTIVE_V0171_RETENTION_INDEX`, and `ACTIVE_V0170_RETENTION_INDEX` while retaining their protected evidence.
 
 ## Selected Local Source Art And Active Derivatives
 
@@ -15,7 +15,7 @@ This v0.176 index supersedes `ACTIVE_V0175_RETENTION_INDEX`, `ACTIVE_V0174_RETEN
 | Militia | active normal-slice opt-in | `artifacts/desktop-spikes/godot-salto/v0155/local-militia-billboard-repair/militia_billboard_static_v0154_trimmed_1024.png` | `c25349f00c422a0b3c9d5862027351bd70008e9314d4e3cd4001676e914321cb` |
 | Aster | active normal-slice opt-in | `artifacts/desktop-spikes/godot-salto/v0152/local-aster-billboard-repair/aster_billboard_static_v0151_trimmed_1024.png` | `b256f96f762187c05d68f2c2de62bedec0248896210767e98cb8f210dac2829a` |
 | Ashen Raider | active normal-slice opt-in; slot `ashen_raider_billboard_static_v0156` | `artifacts/desktop-spikes/godot-salto/v0157/local-ashen-raider-restrained-replacement/ashen_raider_billboard_static_v0157_restrained_trimmed_1024.png` | `8eb011f56d5cd56cf6ef0a843d2a5899e27aa13e203cc44517ed4a0c55c631c8` |
-| Barrosan foothold ground material | selected private comparator evidence only; not normal-slice opt-in | `artifacts/desktop-spikes/godot-salto/v0175/local-ground-material-slot/barrosan_foothold_ground_material_v0175_1024.png` | `818b7743fbf192fe95dd95a0fbadb59ea92b1cb36c420dac5526c0f4d1af18a8` |
+| Barrosan foothold ground material | active normal-slice environment-material opt-in; not enabled by default | `artifacts/desktop-spikes/godot-salto/v0175/local-ground-material-slot/barrosan_foothold_ground_material_v0175_1024.png` | `818b7743fbf192fe95dd95a0fbadb59ea92b1cb36c420dac5526c0f4d1af18a8` |
 
 ## Required Metadata
 
@@ -79,10 +79,19 @@ Retain the latest v0.166/v0.167/v0.168/v0.169/v0.170 evidence until a later chec
 - `docs/V0176_TERRAIN_MATERIAL_RISK_AND_ROLLBACK.md`
 - `docs/art-prompts/V0177_01_TERRAIN_MATERIAL_OPT_IN_INTEGRATION.md`
 - `docs/V0176_IMPLEMENTATION_REPORT.md`
+- `artifacts/desktop-spikes/godot-salto/v0177/validation/`
+- `artifacts/desktop-spikes/godot-salto/v0177/capture/`
+- `artifacts/desktop-spikes/godot-salto/v0177/benchmark/`
+- `artifacts/desktop-spikes/godot-salto/v0177/boundary/`
+- `artifacts/desktop-spikes/godot-salto/v0177/cleanup-dry-run/`
+- `artifacts/desktop-spikes/godot-salto/v0177/artifact-retention/`
+- `docs/V0177_GROUND_MATERIAL_OPT_IN_QA_BENCHMARK.md`
+- `docs/V0177_GROUND_MATERIAL_BOUNDARY_ROLLBACK.md`
+- `docs/V0177_IMPLEMENTATION_REPORT.md`
 
 ## Character Integration Freeze
 
-Character-slot expansion is frozen after the selected Worker, Barracks material, Militia, Aster, and Ashen Raider opt-in slots. v0.176 is documentation-only readiness for exactly one future terrain-material opt-in slot. It generated zero images, added zero slots, modified no runtime code, did not import terrain material into the player-facing slice, and did not wire browser runtime. Future work may consider the prepared v0.177 prompt only after v0.176 is clean, pushed, and remote-green.
+Character-slot expansion is frozen after the selected Worker, Barracks material, Militia, Aster, and Ashen Raider opt-in slots. v0.177 adds exactly one environment-material opt-in slot for the selected Barrosan foothold ground material. It generated zero images, added zero character slots, preserves the default procedural launcher, and does not wire browser runtime. Future work may consider v0.178 UV/noise hardening only after v0.177 is clean, pushed, and remote-green.
 
 ## Archive Candidates
 

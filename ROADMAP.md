@@ -11,9 +11,20 @@ Every phase should protect these long-term pillars:
 
 ## Current Recommended Next Phase
 
-The current checkpoint is **v0.176 Terrain-Material Opt-In Player-Slice Integration Readiness Packet** on 2026-06-08. It prepares documentation only for exactly one future terrain-material opt-in player-slice slot using the selected v0.175 candidate, preserves the default procedural launcher, all prior opt-in launchers, the browser runtime boundary, and the frozen five-character-slot posture, and does not start v0.177.
+The current checkpoint is **v0.177 Barrosan Foothold Ground-Material First Opt-In Player-Slice Integration Experiment** on 2026-06-08. It integrates exactly one environment-material opt-in slot using the selected v0.175 ground derivative, preserves the default procedural launcher, all prior opt-in launchers, the browser runtime boundary, and the frozen five-character-slot posture, and does not start v0.178.
 
-The next recommended step is v0.177 only if a future prompt explicitly authorizes it after v0.176 is committed, pushed, clean, synced, and remote-green. v0.177 should integrate exactly one terrain-material opt-in slot only. Do not perform broad terrain replacement, add character slots, enable art by default, mutate the browser runtime, or begin v0.178.
+The next recommended step is v0.178 only if a future prompt explicitly authorizes it after v0.177 is committed, pushed, clean, synced, and remote-green. v0.178 should harden only the existing ground-material UV/noise/readability posture. Do not perform broad terrain replacement, add character slots, enable art by default, mutate the browser runtime, or begin v0.179.
+
+New v0.177 docs:
+
+- `docs/V0177_GROUND_MATERIAL_OPT_IN_QA_BENCHMARK.md`
+- `docs/V0177_GROUND_MATERIAL_BOUNDARY_ROLLBACK.md`
+- `docs/V0177_IMPLEMENTATION_REPORT.md`
+- `docs/SALTO_EXPERIMENTAL_ARTIFACT_INDEX.md`
+
+Previous checkpoint reference: v0.176 Terrain-Material Opt-In Player-Slice Integration Readiness Packet.
+
+The previous checkpoint was **v0.176 Terrain-Material Opt-In Player-Slice Integration Readiness Packet** on 2026-06-08. It prepared documentation only for exactly one future terrain-material opt-in player-slice slot and did not integrate terrain material.
 
 New v0.176 docs:
 
@@ -21,7 +32,6 @@ New v0.176 docs:
 - `docs/V0176_TERRAIN_MATERIAL_RISK_AND_ROLLBACK.md`
 - `docs/art-prompts/V0177_01_TERRAIN_MATERIAL_OPT_IN_INTEGRATION.md`
 - `docs/V0176_IMPLEMENTATION_REPORT.md`
-- `docs/SALTO_EXPERIMENTAL_ARTIFACT_INDEX.md`
 
 Previous checkpoint reference: v0.175 Barrosan Foothold Terrain-Material Single-Slot Private Comparator Intake And Human-Review Stop.
 
