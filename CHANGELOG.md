@@ -1,5 +1,36 @@
 # Changelog
 
+# Post-v0.183 Godot Opt-In Visual Hardening Review - 2026-06-09
+
+This ad hoc review improves the existing explicit Godot Salto ground + road material opt-in presentation after v0.183. It is not v0.184, generates zero images, adds zero slots, changes no launcher, and keeps the default launcher procedural.
+
+Added:
+
+- `docs/POST_V0183_GODOT_OPT_IN_VISUAL_HARDENING_REVIEW.md`.
+- Opt-in-only terrain feathering, road crowns, river edges, bridge trim, structure accents, and unit contact shadows in the Godot Salto review scene.
+
+Changed:
+
+- Reduced ground and road material visual dominance for the opt-in path.
+- Lightened opt-in-only terrain, ridge, and review lighting values.
+- Tightened environment-foundation review framing.
+- Updated handoff, checkpoint, changelog, and release checklist docs.
+
+Validation:
+
+- `npm run godot:validate:salto-ground-road-material-opt-in`.
+- Windows-side Computer Use title, briefing, battle start, selection, right-click move, and mine conversion smoke.
+- `git diff --check`.
+
+Boundaries:
+
+- Zero images generated.
+- Zero slots added.
+- No launcher changes.
+- Default launcher remains procedural.
+- Browser runtime, production manifests, saves, stable IDs, gameplay, pathing, objectives, AI, balance, campaign state, selected art, metadata, fallbacks, and required evidence remain untouched.
+- v0.184 remains prepared only and was not started.
+
 # v0.183 Post-Freeze Next-Phase Scorecard And v0.184 Preparation Only - 2026-06-09
 
 This checkpoint is documentation-only. It scores the next possible Godot Salto phase after the v0.182 environment freeze, recommends exactly one v0.184 manual review decision packet, and prepares the tracked v0.184 prompt without starting it.

@@ -1,6 +1,6 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-06-09 v0.183 Post-Freeze Next-Phase Scorecard And v0.184 Preparation Only
+Last updated: 2026-06-09 Post-v0.183 Godot Opt-In Visual Hardening Review
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
@@ -64,11 +64,29 @@ Project Identity continuation note: v0.182 now supersedes the older no-v0.182 ta
 
 Project Identity continuation note: v0.183 now supersedes the older no-v0.183 tail above because the queued prompt explicitly authorized a documentation-only post-freeze scorecard and v0.184 preparation packet after v0.182 passed. v0.183 generates zero images, adds zero slots, changes no runtime code or launchers, performs no broad cleanup, recommends v0.184 as an Emmanuel manual review decision packet, and prepares but does not start v0.184.
 
-Current status override: v0.183 is the active checkpoint for this handoff. Character-slot integration remains frozen after five selected opt-in slots. The Barrosan foothold ground and road materials remain opt-in only, the default launcher remains procedural, browser runtime remains untouched, and further environment-material additions remain frozen until Emmanuel review. Do not begin v0.184 implementation work; v0.184 is prepared only as a manual review decision packet.
+Project Identity continuation note: the post-v0.183 Godot opt-in visual hardening review is an ad hoc repair after Emmanuel's visual-quality concern, not v0.184. It changes only the existing explicit Godot Salto ground + road material opt-in presentation, generates zero images, adds zero slots, changes no launcher, keeps the default launcher procedural, keeps browser runtime untouched, preserves the frozen five character slots and selected ground/road materials, and does not start v0.184.
 
-## Current v0.183 Post-Freeze Next-Phase Scorecard And v0.184 Preparation Only - 2026-06-09
+Current status override: the post-v0.183 Godot opt-in visual hardening review is the active checkpoint for this handoff. Character-slot integration remains frozen after five selected opt-in slots. The Barrosan foothold ground and road materials remain opt-in only, the default launcher remains procedural, browser runtime remains untouched, and further environment-material additions remain frozen until Emmanuel review. Do not begin v0.184 implementation work; v0.184 is prepared only as a manual review decision packet.
 
-Status: v0.183 is the active checkpoint. Commit, push, and remote CI proof are required before any future v0.184 manual-review packet work.
+## Current Post-v0.183 Godot Opt-In Visual Hardening Review - 2026-06-09
+
+Status: post-v0.183 Godot opt-in visual hardening is the active checkpoint. Commit, push, and remote CI proof are required before any future v0.184 manual-review packet work.
+
+Key evidence:
+
+- `docs/POST_V0183_GODOT_OPT_IN_VISUAL_HARDENING_REVIEW.md`
+- `npm run godot:validate:salto-ground-road-material-opt-in`
+- `PASS_V0181_ROAD_MATERIAL_OPT_IN_VALIDATION/CAPTURE/BENCHMARK/BOUNDARY`
+- Repaired ground+road opt-in benchmark sample: FPS ratio `0.9987`, p95 worsening `-2.55%`.
+- Windows-side Computer Use title, briefing, battle start, Aster selection, right-click move order, and mine-conversion onset smoke.
+- `artifacts/desktop-spikes/godot-salto/v0181/capture/e2-ground-road-material-opt-in/screenshots/03_ground_material_normal_rts.png`
+- `artifacts/desktop-spikes/godot-salto/v0181/capture/e2-ground-road-material-opt-in/screenshots/07_five_slot_coexistence.png`
+
+Next boundary: v0.184 may only create a manual review decision packet if explicitly queued from clean, synced, pushed, remote-green post-v0.183 state. Do not generate images, add slots, integrate more art, enable default art, execute cleanup deletion/archive moves, wire browser runtime, or mutate gameplay/pathing/objectives/saves/stable IDs.
+
+## Prior v0.183 Post-Freeze Next-Phase Scorecard And v0.184 Preparation Only - 2026-06-09
+
+Status: v0.183 completed the post-freeze scorecard and prepared v0.184 without starting it.
 
 Key evidence:
 
@@ -79,7 +97,7 @@ Key evidence:
 - Recommended v0.184 milestone: Emmanuel environment-freeze manual review decision packet.
 - v0.184 prepared but not started.
 
-Next boundary: v0.184 may only create a manual review decision packet if explicitly queued from clean, synced, pushed, remote-green v0.183. Do not generate images, add slots, integrate art, enable default art, execute cleanup deletion/archive moves, wire browser runtime, or mutate gameplay/pathing/objectives/saves/stable IDs.
+Next boundary preserved from v0.183: v0.184 may only create a manual review decision packet if explicitly queued from clean, synced, pushed, remote-green post-v0.183 state. Do not generate images, add slots, integrate art, enable default art, execute cleanup deletion/archive moves, wire browser runtime, or mutate gameplay/pathing/objectives/saves/stable IDs.
 
 ## Current v0.177 Barrosan Foothold Ground-Material First Opt-In Player-Slice Integration Experiment - 2026-06-08
 

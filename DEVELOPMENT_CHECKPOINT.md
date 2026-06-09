@@ -1,6 +1,34 @@
 # Development Checkpoint
 
-Updated: 2026-06-09 v0.183 Post-Freeze Next-Phase Scorecard And v0.184 Preparation Only
+Updated: 2026-06-09 Post-v0.183 Godot Opt-In Visual Hardening Review
+
+## Post-v0.183 Godot Opt-In Visual Hardening Review - 2026-06-09
+
+Scope: ad hoc visual QA and repair for the existing explicit Godot Salto ground + road material opt-in review path after v0.183. This is not v0.184. It generates zero images, adds zero slots, changes no launcher, keeps the default launcher procedural, keeps browser runtime untouched, and preserves the frozen five character slots plus the selected ground and road environment-material opt-ins.
+
+Included work:
+
+- Reduced ground and road material dominance so the opt-in textures support the tactical scene instead of overpowering it.
+- Lightened opt-in-only terrain, ridge, and review lighting for better unit, road, river, and structure readability.
+- Added opt-in-only terrain feathering, road crowns, river edges, bridge trim, structure accents, and unit contact shadows.
+- Tightened environment-foundation review camera framing.
+- Revalidated the existing ground+road opt-in path, including road missing-art and hash-mismatch fallback.
+- Performed Windows-side Computer Use review of title, briefing, battle start, Aster selection, right-click move order, and mine conversion onset.
+- Added `docs/POST_V0183_GODOT_OPT_IN_VISUAL_HARDENING_REVIEW.md`.
+
+Verification targets:
+
+```text
+PASS: npm run godot:validate:salto-ground-road-material-opt-in.
+PASS: PASS_WINDOWS_EXPORT.
+PASS: PASS_WINDOWS_PACKAGE.
+PASS: PASS_V0167_SALTO_EXPERIMENTAL_ARTIFACT_RETENTION.
+PASS: PASS_V0181_SALTO_GROUND_ROAD_MATERIAL_OPT_IN_AUTOMATION_READY.
+PASS: PASS_V0181_ROAD_MATERIAL_OPT_IN_VALIDATION/CAPTURE/BENCHMARK/BOUNDARY.
+PASS: repaired ground+road FPS ratio 0.9987 and p95 worsening -2.55%.
+PASS: Windows-side Computer Use real-input smoke reached mine conversion onset.
+PASS: zero images, zero slots, no launcher mutation, default procedural preserved, browser runtime untouched, v0.184 not started.
+```
 
 ## v0.183 Post-Freeze Next-Phase Scorecard And v0.184 Preparation Only - 2026-06-09
 
