@@ -1236,7 +1236,10 @@ func _render_player_screen(screen: String) -> void:
 	_apply_review_framing_for_active_scene()
 	var shade := ColorRect.new()
 	shade.name = "PlayerSliceShade"
-	shade.color = Color(0.02, 0.025, 0.025, 0.18 if screen == "battle" else 0.57)
+	var battle_shade_alpha := 0.18
+	if screen == "battle" and (_script_args().has("--ground-material-opt-in") or _script_args().has("--road-material-opt-in")):
+		battle_shade_alpha = 0.11
+	shade.color = Color(0.02, 0.025, 0.025, battle_shade_alpha if screen == "battle" else 0.57)
 	shade.set_anchors_preset(Control.PRESET_FULL_RECT)
 	shade.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	player_screen.add_child(shade)
@@ -4370,12 +4373,12 @@ func _apply_player_slice_action(action: String) -> Dictionary:
 			_render_player_screen("battle")
 		"combat":
 			_ensure_player_battle_scene()
-			_call_scene("show_combat_readability_sample")
 			_render_player_screen("battle")
+			_call_scene("show_combat_readability_sample")
 		"death":
 			_ensure_player_battle_scene()
-			_call_scene("show_death_readability_sample")
 			_render_player_screen("battle")
+			_call_scene("show_death_readability_sample")
 		"lume_stable":
 			_ensure_player_battle_scene()
 			_call_scene("focus_lume_link")
@@ -4396,30 +4399,30 @@ func _apply_player_slice_action(action: String) -> Dictionary:
 			_render_player_screen("battle")
 		"minimap":
 			_ensure_player_battle_scene()
-			_call_scene("focus_layout_feature", ["minimap"])
 			_render_player_screen("battle")
+			_call_scene("focus_layout_feature", ["minimap"])
 		"road", "ford", "bridge", "road_intersections", "approach_lanes", "hostile_lane", "friendly_boundary", "site_marker_hierarchy", "quarry", "shrine", "ruin", "buildable_ground", "objective_focus":
 			_ensure_player_battle_scene()
+			_render_player_screen("battle")
 			_call_scene("focus_layout_feature", [action])
 			if ["road", "ford", "bridge", "quarry", "shrine", "ruin", "buildable_ground", "objective_focus"].has(action):
 				_call_scene("focus_visual_subject", [action])
-			_render_player_screen("battle")
 		"pan_camera":
 			_ensure_player_battle_scene()
-			_call_scene("pan_camera")
 			_render_player_screen("battle")
+			_call_scene("pan_camera")
 		"zoom_camera":
 			_ensure_player_battle_scene()
-			_call_scene("zoom_camera")
 			_render_player_screen("battle")
+			_call_scene("zoom_camera")
 		"camera_min_zoom":
 			_ensure_player_battle_scene()
-			_call_scene("set_camera_zoom_posture", ["min"])
 			_render_player_screen("battle")
+			_call_scene("set_camera_zoom_posture", ["min"])
 		"camera_max_zoom":
 			_ensure_player_battle_scene()
-			_call_scene("set_camera_zoom_posture", ["max"])
 			_render_player_screen("battle")
+			_call_scene("set_camera_zoom_posture", ["max"])
 		"clean_preset":
 			_ensure_player_battle_scene()
 			_call_scene("set_visual_preset", [VISUAL_PRESET_CLEAN])

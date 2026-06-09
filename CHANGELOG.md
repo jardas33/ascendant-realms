@@ -7,19 +7,22 @@ This ad hoc review improves the existing explicit Godot Salto ground + road mate
 Added:
 
 - `docs/POST_V0183_GODOT_OPT_IN_VISUAL_HARDENING_REVIEW.md`.
-- Opt-in-only terrain feathering, road crowns, river edges, bridge trim, structure accents, and unit contact shadows in the Godot Salto review scene.
+- Opt-in-only terrain feathering, west-side value pads, road crowns, river edges, bridge trim, structure accents, and unit contact shadows in the Godot Salto review scene.
+- Live exported-app screenshot evidence under `artifacts/desktop-spikes/godot-salto/post-v0183-live-review/`.
 
 Changed:
 
 - Reduced ground and road material visual dominance for the opt-in path.
-- Lightened opt-in-only terrain, ridge, and review lighting values.
+- Lightened opt-in-only terrain, ridge, review lighting, and explicit material-opt-in battle shade values.
 - Tightened environment-foundation review framing.
+- Repaired review capture action ordering so road/bridge/site/pan/zoom focus survives battle-shell rendering.
 - Updated handoff, checkpoint, changelog, and release checklist docs.
 
 Validation:
 
 - `npm run godot:validate:salto-ground-road-material-opt-in`.
-- Windows-side Computer Use title, briefing, battle start, selection, right-click move, and mine conversion smoke.
+- Windows-side live exported-app title, briefing, and battle-start capture.
+- Distinct SHA-256 proof for overview, road/bridge, pan, min zoom, and max zoom captures.
 - `git diff --check`.
 
 Boundaries:

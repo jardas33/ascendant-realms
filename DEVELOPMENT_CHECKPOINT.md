@@ -1,6 +1,6 @@
 # Development Checkpoint
 
-Updated: 2026-06-09 Post-v0.183 Godot Opt-In Visual Hardening Review
+Updated: 2026-06-09 Post-v0.183 Godot Opt-In Visual Hardening Review Continuation
 
 ## Post-v0.183 Godot Opt-In Visual Hardening Review - 2026-06-09
 
@@ -10,10 +10,11 @@ Included work:
 
 - Reduced ground and road material dominance so the opt-in textures support the tactical scene instead of overpowering it.
 - Lightened opt-in-only terrain, ridge, and review lighting for better unit, road, river, and structure readability.
-- Added opt-in-only terrain feathering, road crowns, river edges, bridge trim, structure accents, and unit contact shadows.
+- Added opt-in-only terrain feathering, west-side value pads, road crowns, river edges, bridge trim, structure accents, and unit contact shadows.
+- Repaired the review capture ordering defect that let battle-shell rendering overwrite local road/bridge/site/pan/zoom focus.
 - Tightened environment-foundation review camera framing.
 - Revalidated the existing ground+road opt-in path, including road missing-art and hash-mismatch fallback.
-- Performed Windows-side Computer Use review of title, briefing, battle start, Aster selection, right-click move order, and mine conversion onset.
+- Performed Windows-side live exported-app review of title, briefing, and battle start with captured window screenshots.
 - Added `docs/POST_V0183_GODOT_OPT_IN_VISUAL_HARDENING_REVIEW.md`.
 
 Verification targets:
@@ -25,8 +26,9 @@ PASS: PASS_WINDOWS_PACKAGE.
 PASS: PASS_V0167_SALTO_EXPERIMENTAL_ARTIFACT_RETENTION.
 PASS: PASS_V0181_SALTO_GROUND_ROAD_MATERIAL_OPT_IN_AUTOMATION_READY.
 PASS: PASS_V0181_ROAD_MATERIAL_OPT_IN_VALIDATION/CAPTURE/BENCHMARK/BOUNDARY.
-PASS: repaired ground+road FPS ratio 0.9987 and p95 worsening -2.55%.
-PASS: Windows-side Computer Use real-input smoke reached mine conversion onset.
+PASS: repaired ground+road FPS ratio 1.0035 and p95 worsening -3.49%.
+PASS: focused review captures are distinct for overview, road/bridge, pan, min zoom, and max zoom.
+PASS: Windows-side live exported-app screenshots captured title, briefing, and battle start.
 PASS: zero images, zero slots, no launcher mutation, default procedural preserved, browser runtime untouched, v0.184 not started.
 ```
 

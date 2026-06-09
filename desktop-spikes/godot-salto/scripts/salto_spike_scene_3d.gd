@@ -85,10 +85,10 @@ const GROUND_MATERIAL_EXPECTED_WIDTH := 1024
 const GROUND_MATERIAL_EXPECTED_HEIGHT := 1024
 const GROUND_MATERIAL_DEFAULT_UV_SCALE := 0.56
 const GROUND_MATERIAL_PREVIOUS_UV_SCALE := 0.72
-const GROUND_MATERIAL_VISUAL_ALPHA := 0.24
-const GROUND_MATERIAL_TINT_R := 1.36
-const GROUND_MATERIAL_TINT_G := 1.38
-const GROUND_MATERIAL_TINT_B := 1.18
+const GROUND_MATERIAL_VISUAL_ALPHA := 0.12
+const GROUND_MATERIAL_TINT_R := 1.58
+const GROUND_MATERIAL_TINT_G := 1.54
+const GROUND_MATERIAL_TINT_B := 1.30
 const GROUND_MATERIAL_OVERLAY_LIFT := 0.006
 const ROAD_MATERIAL_SLOT_ID := "barrosan_foothold_road_material_v0180"
 const ROAD_MATERIAL_APPROACH := "ROAD_MATERIAL_LOCAL_1024"
@@ -96,10 +96,10 @@ const ROAD_MATERIAL_EXPECTED_SHA256 := "a64959ef2fd7a509fcaaa969fca3e095d590d563
 const ROAD_MATERIAL_EXPECTED_WIDTH := 1024
 const ROAD_MATERIAL_EXPECTED_HEIGHT := 1024
 const ROAD_MATERIAL_DEFAULT_UV_SCALE := 0.80
-const ROAD_MATERIAL_VISUAL_ALPHA := 0.58
-const ROAD_MATERIAL_TINT_R := 1.24
-const ROAD_MATERIAL_TINT_G := 1.20
-const ROAD_MATERIAL_TINT_B := 1.08
+const ROAD_MATERIAL_VISUAL_ALPHA := 0.38
+const ROAD_MATERIAL_TINT_R := 1.30
+const ROAD_MATERIAL_TINT_G := 1.24
+const ROAD_MATERIAL_TINT_B := 1.10
 const ROAD_MATERIAL_OVERLAY_LIFT := 0.004
 const WorkloadRuntimeScript = preload("res://scripts/salto_spike_workload_runtime.gd")
 
@@ -491,7 +491,7 @@ func configure_environment_contrast_harmonization(enabled: bool) -> Dictionary:
 func apply_environment_foundation_review_framing() -> bool:
 	if not environment_foundation_review_enabled:
 		return false
-	_apply_camera_authoring_posture("v0173_environment_foundation", Vector3(-1.08, 11.95, 8.35), 9.78)
+	_apply_camera_authoring_posture("v0173_environment_foundation", Vector3(1.12, 11.95, 8.35), 9.78)
 	return true
 
 func apply_environment_readability_hardening_framing() -> bool:
@@ -2786,17 +2786,17 @@ func focus_layout_feature(feature: String) -> bool:
 		"default":
 			pass
 		"road":
-			position = Vector3(-1.2, 11.4, 8.65)
-			zoom = 9.65
+			position = Vector3(-0.78, 11.32, 8.32)
+			zoom = 8.78
 		"ford":
-			position = Vector3(0.45, 11.2, 8.35)
-			zoom = 9.25
+			position = Vector3(0.88, 11.08, 7.72)
+			zoom = 8.18
 		"bridge":
-			position = Vector3(0.52, 11.18, 8.36)
-			zoom = 8.95
+			position = Vector3(0.96, 11.08, 7.66)
+			zoom = 8.05
 		"road_intersections":
-			position = Vector3(-2.12, 11.18, 8.42)
-			zoom = 8.72
+			position = Vector3(-1.92, 11.12, 8.12)
+			zoom = 8.34
 		"approach_lanes":
 			position = Vector3(-3.45, 11.30, 8.75)
 			zoom = 9.05
@@ -2804,11 +2804,11 @@ func focus_layout_feature(feature: String) -> bool:
 			position = Vector3(3.28, 11.25, 8.42)
 			zoom = 9.02
 		"friendly_boundary":
-			position = Vector3(-4.52, 11.20, 9.10)
-			zoom = 9.12
+			position = Vector3(-4.78, 11.16, 8.72)
+			zoom = 8.46
 		"site_marker_hierarchy":
-			position = Vector3(-1.52, 11.12, 8.64)
-			zoom = 8.72
+			position = Vector3(-1.56, 11.10, 8.18)
+			zoom = 8.28
 		"quarry":
 			position = Vector3(-2.15, 11.25, 8.95)
 			zoom = 9.35
@@ -2866,7 +2866,7 @@ func focus_visual_subject(subject: String) -> bool:
 			camera_position = Vector3(-2.15, 11.25, 8.95)
 			marker_position = _structure_world_position("mine_landmark", Vector3(-1.83, 0.14, 0.24))
 		"bridge":
-			camera_position = Vector3(0.52, 11.18, 8.36)
+			camera_position = Vector3(0.96, 11.08, 7.66)
 			marker_position = Vector3(0.56, 0.20, 0.88)
 		"shrine":
 			camera_position = Vector3(-0.9, 11.25, 8.05)
@@ -2884,7 +2884,8 @@ func focus_visual_subject(subject: String) -> bool:
 			camera_position = Vector3(-1.10, 11.2, 8.55)
 			marker_position = _lume_endpoint_world_position("lume_endpoint_00", Vector3(-1.67, 0.14, 0.11))
 		"squad":
-			camera_position = Vector3(-3.2, 11.25, 8.65)
+			camera_position = Vector3(-3.32, 11.22, 8.38)
+			zoom = 8.62
 			marker_position = _unit_world_position("friendly_03", Vector3(-2.78, 0.12, -1.39))
 		"move_order":
 			camera_position = Vector3(-1.10, 11.25, 8.75)
@@ -4899,14 +4900,14 @@ func _apply_light_preset() -> void:
 		light.light_energy = 1.15
 		light.light_color = Color(0.88, 0.96, 1.00)
 	if environment_foundation_review_enabled:
-		light.light_energy = 1.08
-		light.light_color = Color(0.90, 0.96, 0.86)
+		light.light_energy = 1.20
+		light.light_color = Color(0.96, 1.00, 0.90)
 	if environment_readability_hardening_enabled:
-		light.light_energy = 1.10
-		light.light_color = Color(0.92, 0.97, 0.86)
+		light.light_energy = 1.18
+		light.light_color = Color(0.96, 1.00, 0.90)
 	if environment_contrast_harmonization_enabled:
-		light.light_energy = 1.10
-		light.light_color = Color(0.93, 0.98, 0.87)
+		light.light_energy = 1.18
+		light.light_color = Color(0.96, 1.00, 0.90)
 
 func _create_terrain() -> void:
 	terrain_root = Node3D.new()
@@ -5025,13 +5026,13 @@ func _create_terrain() -> void:
 		_add_environment_contrast_harmonization_layers()
 
 func _add_environment_foundation_shell_layers() -> void:
-	var road_edge := Color(0.24, 0.24, 0.20, 0.74)
-	var river_bank := Color(0.08, 0.18, 0.19, 0.82)
-	var wet_granite := Color(0.50, 0.49, 0.42)
+	var road_edge := Color(0.26, 0.25, 0.20, 0.54)
+	var river_bank := Color(0.10, 0.22, 0.22, 0.34)
+	var wet_granite := Color(0.54, 0.52, 0.43)
 	var worked_earth := Color(0.32, 0.25, 0.16)
-	_add_ground_material_static_box("v0173_terrain_mid_value_field", Vector3(-1.0, 0.104, 1.40), Vector3(11.6, 0.035, 5.30), Color(0.23, 0.32, 0.21, 0.66), true)
-	_add_ground_material_static_box("v0173_friendly_staging_value_field", Vector3(-4.85, 0.156, 2.90), Vector3(2.95, 0.046, 2.05), Color(0.30, 0.42, 0.27, 0.74), true)
-	_add_static_box("v0173_ashen_pressure_value_field", Vector3(4.20, 0.157, -0.96), Vector3(3.25, 0.044, 1.46), Color(0.34, 0.14, 0.11, 0.50), true)
+	_add_ground_material_static_box("v0173_terrain_mid_value_field", Vector3(-1.0, 0.104, 1.40), Vector3(11.6, 0.035, 5.30), Color(0.28, 0.38, 0.24, 0.36), true)
+	_add_ground_material_static_box("v0173_friendly_staging_value_field", Vector3(-4.85, 0.156, 2.90), Vector3(2.95, 0.046, 2.05), Color(0.34, 0.46, 0.29, 0.42), true)
+	_add_static_box("v0173_ashen_pressure_value_field", Vector3(4.20, 0.157, -0.96), Vector3(3.25, 0.044, 1.46), Color(0.34, 0.14, 0.11, 0.30), true)
 	_add_road_material_static_box("v0173_main_road_wide_readable_bed", Vector3(-1.05, 0.178, 0.70), Vector3(11.65, 0.036, 0.68), wet_granite)
 	_add_static_box("v0173_main_road_shadow_north_edge", Vector3(-1.05, 0.184, 0.32), Vector3(11.72, 0.030, 0.08), road_edge, true)
 	_add_static_box("v0173_main_road_shadow_south_edge", Vector3(-1.05, 0.184, 1.08), Vector3(11.72, 0.030, 0.08), road_edge, true)
@@ -5039,8 +5040,8 @@ func _add_environment_foundation_shell_layers() -> void:
 	_add_road_material_static_box("v0173_ruins_side_path_wide_bed", Vector3(3.15, 0.180, 2.27), Vector3(2.72, 0.034, 0.48), Color(0.46, 0.39, 0.29))
 	for index in range(7):
 		var x := -5.10 + float(index) * 1.55
-		_add_static_box("v0173_main_road_wet_granite_tick_%02d" % index, Vector3(x, 0.204, 0.70), Vector3(0.56, 0.030, 0.10), Color(0.64, 0.63, 0.55, 0.82), true)
-	_add_static_box("v0173_river_deep_middle_column", Vector3(0.58, 0.170, -0.40), Vector3(0.54, 0.042, 12.60), Color(0.08, 0.27, 0.32, 0.86), true)
+		_add_static_box("v0173_main_road_wet_granite_tick_%02d" % index, Vector3(x, 0.204, 0.70), Vector3(0.44, 0.030, 0.08), Color(0.66, 0.64, 0.54, 0.50), true)
+	_add_static_box("v0173_river_deep_middle_column", Vector3(0.58, 0.170, -0.40), Vector3(0.34, 0.042, 12.60), Color(0.10, 0.31, 0.35, 0.42), true)
 	_add_static_box("v0173_river_west_bank_continuity", Vector3(0.20, 0.182, -0.42), Vector3(0.20, 0.034, 12.85), river_bank, true)
 	_add_static_box("v0173_river_east_bank_continuity", Vector3(0.98, 0.182, -0.42), Vector3(0.20, 0.034, 12.85), river_bank.lightened(0.08), true)
 	_add_static_box("v0173_ford_pale_shallow_water", Vector3(0.58, 0.214, 0.88), Vector3(1.64, 0.026, 0.36), Color(0.45, 0.66, 0.64, 0.64), true)
@@ -5058,20 +5059,26 @@ func _add_environment_foundation_shell_layers() -> void:
 	_add_post_freeze_review_cohesion_layers()
 
 func _add_post_freeze_review_cohesion_layers() -> void:
-	var terrain_lift := Color(0.42, 0.52, 0.34, 0.34)
-	var terrain_shadow := Color(0.07, 0.10, 0.07, 0.38)
-	var road_glaze := Color(0.78, 0.70, 0.48, 0.48)
-	var river_glaze := Color(0.35, 0.62, 0.66, 0.40)
+	var terrain_lift := Color(0.46, 0.56, 0.36, 0.22)
+	var terrain_shadow := Color(0.07, 0.10, 0.07, 0.20)
+	var road_glaze := Color(0.80, 0.72, 0.48, 0.30)
+	var river_glaze := Color(0.42, 0.68, 0.68, 0.16)
 	_add_static_box("post_freeze_review_ground_feather_north", Vector3(-1.04, 0.228, -1.50), Vector3(11.38, 0.020, 0.18), terrain_shadow, true)
 	_add_static_box("post_freeze_review_ground_feather_south", Vector3(-1.04, 0.228, 3.86), Vector3(11.38, 0.020, 0.18), terrain_shadow, true)
+	_add_static_box("post_freeze_review_far_west_value_pad", Vector3(-7.82, 0.224, 1.18), Vector3(3.64, 0.020, 5.84), Color(0.27, 0.36, 0.23, 0.42), true)
+	_add_static_box("post_freeze_review_far_west_upper_scrub", Vector3(-7.48, 0.236, -1.02), Vector3(2.28, 0.018, 0.16), terrain_lift.darkened(0.08), true)
+	_add_static_box("post_freeze_review_far_west_lower_scrub", Vector3(-7.58, 0.236, 3.32), Vector3(2.54, 0.018, 0.16), terrain_lift.darkened(0.12), true)
+	_add_static_box("post_freeze_review_west_foothold_apron", Vector3(-6.34, 0.226, 1.28), Vector3(2.58, 0.020, 5.72), Color(0.28, 0.38, 0.23, 0.38), true)
+	_add_static_box("post_freeze_review_west_foothold_apron_top_edge", Vector3(-6.18, 0.234, -1.62), Vector3(2.72, 0.018, 0.16), terrain_shadow, true)
+	_add_static_box("post_freeze_review_west_foothold_apron_bottom_edge", Vector3(-6.18, 0.234, 4.08), Vector3(2.72, 0.018, 0.16), terrain_shadow.darkened(0.06), true)
 	_add_static_box("post_freeze_review_ground_stage_lift", Vector3(-4.88, 0.232, 2.18), Vector3(2.82, 0.020, 0.18), terrain_lift, true)
 	_add_static_box("post_freeze_review_ground_mine_lift", Vector3(-2.04, 0.232, 1.12), Vector3(2.20, 0.020, 0.16), terrain_lift.lightened(0.08), true)
-	_add_static_box("post_freeze_review_ground_enemy_shadow_cap", Vector3(4.18, 0.232, -1.72), Vector3(3.18, 0.020, 0.16), Color(0.18, 0.08, 0.06, 0.42), true)
+	_add_static_box("post_freeze_review_ground_enemy_shadow_cap", Vector3(4.18, 0.232, -1.72), Vector3(3.18, 0.020, 0.16), Color(0.18, 0.08, 0.06, 0.24), true)
 	_add_static_box("post_freeze_review_main_road_sunlit_crown", Vector3(-1.05, 0.236, 0.70), Vector3(11.30, 0.022, 0.10), road_glaze, true)
 	_add_static_box("post_freeze_review_barracks_path_crown", Vector3(-4.45, 0.238, -2.28), Vector3(0.22, 0.020, 2.44), road_glaze.darkened(0.10), true)
 	_add_static_box("post_freeze_review_ruins_path_crown", Vector3(3.15, 0.238, 2.27), Vector3(2.40, 0.020, 0.12), road_glaze.darkened(0.08), true)
 	_add_static_box("post_freeze_review_river_west_specular_edge", Vector3(0.36, 0.244, -0.44), Vector3(0.08, 0.018, 12.56), river_glaze, true)
-	_add_static_box("post_freeze_review_river_east_depth_edge", Vector3(0.84, 0.242, -0.44), Vector3(0.08, 0.018, 12.56), Color(0.02, 0.12, 0.16, 0.44), true)
+	_add_static_box("post_freeze_review_river_east_depth_edge", Vector3(0.84, 0.242, -0.44), Vector3(0.08, 0.018, 12.56), Color(0.02, 0.12, 0.16, 0.18), true)
 	_add_static_box("post_freeze_review_bridge_readable_lip", Vector3(0.56, 0.360, 0.88), Vector3(1.70, 0.024, 0.08), Color(0.92, 0.80, 0.52, 0.72), true)
 
 func _add_environment_readability_hardening_layers() -> void:
@@ -6611,9 +6618,9 @@ func _preset_scope() -> String:
 
 func _terrain_color() -> Color:
 	if environment_readability_hardening_enabled:
-		return Color(0.17, 0.24, 0.17)
+		return Color(0.23, 0.31, 0.21)
 	if environment_foundation_review_enabled:
-		return Color(0.17, 0.24, 0.17)
+		return Color(0.23, 0.31, 0.21)
 	if visual_preset == VISUAL_PRESET_ATMOSPHERIC:
 		return Color(0.16, 0.19, 0.13)
 	if visual_preset == VISUAL_PRESET_VFX_STRESS:
@@ -6622,9 +6629,9 @@ func _terrain_color() -> Color:
 
 func _ridge_color() -> Color:
 	if environment_readability_hardening_enabled:
-		return Color(0.24, 0.31, 0.22)
+		return Color(0.30, 0.37, 0.26)
 	if environment_foundation_review_enabled:
-		return Color(0.23, 0.30, 0.22)
+		return Color(0.30, 0.37, 0.26)
 	if visual_preset == VISUAL_PRESET_ATMOSPHERIC:
 		return Color(0.22, 0.23, 0.16)
 	return Color(0.22, 0.27, 0.21)
