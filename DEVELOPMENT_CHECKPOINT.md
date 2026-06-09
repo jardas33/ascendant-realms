@@ -1,6 +1,27 @@
 # Development Checkpoint
 
-Updated: 2026-06-08 v0.175 Barrosan Foothold Terrain-Material Single-Slot Private Comparator Intake And Human-Review Stop
+Updated: 2026-06-08 v0.176 Terrain-Material Opt-In Player-Slice Integration Readiness Packet
+
+## v0.176 Terrain-Material Opt-In Player-Slice Integration Readiness Packet - 2026-06-08
+
+Scope: documentation-only readiness for one future terrain-material opt-in player-slice slot. This checkpoint generates zero images, adds zero slots, modifies no runtime code, deletes no historical evidence, keeps the default launcher procedural, preserves all prior opt-in launchers, and does not begin v0.177.
+
+Included work:
+
+- Confirmed v0.175 as the required current clean/synced and remote-green checkpoint before edits.
+- Read v0.173/v0.174 environment QA, v0.175 ground-material evidence, artifact index, cleanup manifests, current launchers, and default procedural boundary.
+- Prepared the future terrain-material readiness packet with candidate surface, fallback posture, opt-in launcher design, UV/filter/mipmap contract, performance gates, visual gates, rollback, and package-leak prevention.
+- Prepared the exact future v0.177 prompt without executing it.
+
+Verification targets:
+
+```text
+PASS: v0.176 docs exist.
+PASS: retention validation and cleanup dry-run.
+PASS: boundary scans for zero images, zero slots, no runtime code changes, no player-slice integration, no browser wiring, no new launcher, and no default launcher mutation.
+PASS: git diff --check.
+PASS: v0.177 prepared but not started.
+```
 
 ## v0.175 Barrosan Foothold Terrain-Material Single-Slot Private Comparator Intake And Human-Review Stop - 2026-06-08
 

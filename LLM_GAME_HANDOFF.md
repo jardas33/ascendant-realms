@@ -1,6 +1,6 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-06-08 v0.175 Barrosan Foothold Terrain-Material Single-Slot Private Comparator Intake And Human-Review Stop
+Last updated: 2026-06-08 v0.176 Terrain-Material Opt-In Player-Slice Integration Readiness Packet
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
@@ -48,7 +48,39 @@ Project Identity continuation note: v0.174 now supersedes the older no-v0.174 ta
 
 Project Identity continuation note: v0.175 now supersedes the older no-v0.175 tail above because the queued prompt explicitly authorized exactly one private Barrosan foothold terrain-material comparator intake after v0.174 was committed, pushed, clean, synced, and remote-green. v0.175 generates exactly one image, adds zero character slots, adds zero normal-slice terrain slots, selects `GROUND_MATERIAL_LOCAL_1024` as private comparator evidence, rejects the wrap-safe comparison for banding, records seam/repetition/benchmark/fair-path/capture/boundary/cleanup evidence, and stops before v0.176 unless a queued prompt sequence explicitly continues.
 
-Current status override: v0.175 is the active checkpoint for this handoff. Character-slot integration remains frozen after five selected opt-in slots. The next allowed direction is v0.176 documentation-only terrain-material opt-in readiness only if the queued v0.176 prompt passes prerequisites after v0.175 is committed, pushed, clean, synced, and remote-green. Do not integrate terrain material into the player-facing slice from v0.175.
+Project Identity continuation note: v0.176 now supersedes the older no-v0.176 tail above because the queued prompt explicitly authorized a documentation-only terrain-material opt-in readiness packet after v0.175 was committed, pushed, clean, synced, and remote-green. v0.176 generates zero images, adds zero slots, modifies no runtime code, prepares exactly one future terrain-material opt-in implementation prompt for v0.177, and does not start v0.177.
+
+Current status override: v0.176 is the active checkpoint for this handoff. Character-slot integration remains frozen after five selected opt-in slots. The prepared v0.177 prompt is documentation only until a future explicit request executes it. Do not integrate terrain material into the player-facing slice from v0.176.
+
+## Current v0.176 Terrain-Material Opt-In Player-Slice Integration Readiness Packet - 2026-06-08
+
+Status: local v0.176 work is the active checkpoint. Commit, push, and remote CI proof are required before any future v0.177 work.
+
+What changed:
+
+- Created the terrain-material readiness packet for exactly one future opt-in player-slice slot.
+- Created the risk and rollback report for the future slot.
+- Created the exact future v0.177 prompt under `docs/art-prompts/`.
+- Updated standard docs and the artifact index.
+- Generated zero images, added zero slots, modified no runtime code, integrated no terrain material, and deleted no evidence.
+
+Key evidence:
+
+- `docs/V0176_TERRAIN_MATERIAL_OPT_IN_READINESS_PACKET.md`
+- `docs/V0176_TERRAIN_MATERIAL_RISK_AND_ROLLBACK.md`
+- `docs/art-prompts/V0177_01_TERRAIN_MATERIAL_OPT_IN_INTEGRATION.md`
+- `docs/V0176_IMPLEMENTATION_REPORT.md`
+- `artifacts/desktop-spikes/godot-salto/v0176/cleanup-dry-run/salto-experimental-cleanup-report.json`
+- `artifacts/desktop-spikes/godot-salto/v0176/artifact-retention/salto-experimental-artifact-retention-report.json`
+
+Current constraints:
+
+- Keep the default launcher procedural.
+- Preserve all prior opt-in launchers.
+- Keep browser runtime untouched.
+- Do not add character slots.
+- Do not integrate terrain material without the future v0.177 prompt.
+- Do not begin v0.177 in this checkpoint.
 
 ## Current v0.175 Barrosan Foothold Terrain-Material Single-Slot Private Comparator Intake And Human-Review Stop - 2026-06-08
 

@@ -1,10 +1,10 @@
 # Salto Experimental Artifact Index
 
-Status: `ACTIVE_V0175_RETENTION_INDEX`
+Status: `ACTIVE_V0176_RETENTION_INDEX`
 
 This index is the retention source of truth for the Godot Salto experimental-art path. It protects selected local art, active derivatives, metadata, tracked fallbacks, current evidence, and unknown files from broad cleanup.
 
-This v0.175 index supersedes `ACTIVE_V0174_RETENTION_INDEX`, `ACTIVE_V0173_RETENTION_INDEX`, `ACTIVE_V0172_RETENTION_INDEX`, `ACTIVE_V0171_RETENTION_INDEX`, and `ACTIVE_V0170_RETENTION_INDEX` while retaining their protected evidence.
+This v0.176 index supersedes `ACTIVE_V0175_RETENTION_INDEX`, `ACTIVE_V0174_RETENTION_INDEX`, `ACTIVE_V0173_RETENTION_INDEX`, `ACTIVE_V0172_RETENTION_INDEX`, `ACTIVE_V0171_RETENTION_INDEX`, and `ACTIVE_V0170_RETENTION_INDEX` while retaining their protected evidence.
 
 ## Selected Local Source Art And Active Derivatives
 
@@ -73,10 +73,16 @@ Retain the latest v0.166/v0.167/v0.168/v0.169/v0.170 evidence until a later chec
 - `docs/V0175_GROUND_MATERIAL_COMPARATOR_QA_AND_BENCHMARK.md`
 - `docs/V0175_PRIVATE_COMPARATOR_BOUNDARY_AND_ROLLBACK.md`
 - `docs/V0175_IMPLEMENTATION_REPORT.md`
+- `artifacts/desktop-spikes/godot-salto/v0176/cleanup-dry-run/`
+- `artifacts/desktop-spikes/godot-salto/v0176/artifact-retention/`
+- `docs/V0176_TERRAIN_MATERIAL_OPT_IN_READINESS_PACKET.md`
+- `docs/V0176_TERRAIN_MATERIAL_RISK_AND_ROLLBACK.md`
+- `docs/art-prompts/V0177_01_TERRAIN_MATERIAL_OPT_IN_INTEGRATION.md`
+- `docs/V0176_IMPLEMENTATION_REPORT.md`
 
 ## Character Integration Freeze
 
-Character-slot expansion is frozen after the selected Worker, Barracks material, Militia, Aster, and Ashen Raider opt-in slots. v0.175 generated exactly one private terrain-material source and selected one private-comparator derivative only. It did not add a character slot, did not add a normal-slice terrain opt-in slot, did not import terrain material into the player-facing slice, and did not wire browser runtime. Future work should prioritize a documentation-only readiness packet unless a later prompt explicitly reopens integration scope.
+Character-slot expansion is frozen after the selected Worker, Barracks material, Militia, Aster, and Ashen Raider opt-in slots. v0.176 is documentation-only readiness for exactly one future terrain-material opt-in slot. It generated zero images, added zero slots, modified no runtime code, did not import terrain material into the player-facing slice, and did not wire browser runtime. Future work may consider the prepared v0.177 prompt only after v0.176 is clean, pushed, and remote-green.
 
 ## Archive Candidates
 

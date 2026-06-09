@@ -11,18 +11,27 @@ Every phase should protect these long-term pillars:
 
 ## Current Recommended Next Phase
 
-The current checkpoint is **v0.175 Barrosan Foothold Terrain-Material Single-Slot Private Comparator Intake And Human-Review Stop** on 2026-06-08. It generates exactly one private-comparator terrain-material source, selects `GROUND_MATERIAL_LOCAL_1024` as review evidence, and preserves the default procedural launcher, all prior opt-in launchers, the browser runtime boundary, and the frozen five-character-slot posture.
+The current checkpoint is **v0.176 Terrain-Material Opt-In Player-Slice Integration Readiness Packet** on 2026-06-08. It prepares documentation only for exactly one future terrain-material opt-in player-slice slot using the selected v0.175 candidate, preserves the default procedural launcher, all prior opt-in launchers, the browser runtime boundary, and the frozen five-character-slot posture, and does not start v0.177.
 
-The next recommended step is v0.176 only if the queued prompt confirms this checkpoint passed, was pushed, and left `main` clean/synchronized. v0.176 should be documentation-only readiness for exactly one future terrain-material player-slice opt-in slot. Do not integrate the terrain material, add character slots, enable art by default, mutate the browser runtime, or begin v0.177.
+The next recommended step is v0.177 only if a future prompt explicitly authorizes it after v0.176 is committed, pushed, clean, synced, and remote-green. v0.177 should integrate exactly one terrain-material opt-in slot only. Do not perform broad terrain replacement, add character slots, enable art by default, mutate the browser runtime, or begin v0.178.
+
+New v0.176 docs:
+
+- `docs/V0176_TERRAIN_MATERIAL_OPT_IN_READINESS_PACKET.md`
+- `docs/V0176_TERRAIN_MATERIAL_RISK_AND_ROLLBACK.md`
+- `docs/art-prompts/V0177_01_TERRAIN_MATERIAL_OPT_IN_INTEGRATION.md`
+- `docs/V0176_IMPLEMENTATION_REPORT.md`
+- `docs/SALTO_EXPERIMENTAL_ARTIFACT_INDEX.md`
+
+Previous checkpoint reference: v0.175 Barrosan Foothold Terrain-Material Single-Slot Private Comparator Intake And Human-Review Stop.
+
+The previous checkpoint was **v0.175 Barrosan Foothold Terrain-Material Single-Slot Private Comparator Intake And Human-Review Stop** on 2026-06-08. It generated exactly one private-comparator terrain-material source, selected `GROUND_MATERIAL_LOCAL_1024`, and did not integrate terrain material into the player-facing slice.
 
 New v0.175 docs:
 
 - `docs/V0175_GROUND_MATERIAL_COMPARATOR_QA_AND_BENCHMARK.md`
 - `docs/V0175_PRIVATE_COMPARATOR_BOUNDARY_AND_ROLLBACK.md`
 - `docs/V0175_IMPLEMENTATION_REPORT.md`
-- `docs/SALTO_EXPERIMENTAL_ARTIFACT_INDEX.md`
-
-Previous checkpoint reference: v0.174 Salto Road-River-Bridge Site-Marker Readability Hardening And Human-Review Stop.
 
 The previous checkpoint was **v0.174 Salto Road-River-Bridge Site-Marker Readability Hardening And Human-Review Stop** on 2026-06-08. It added an opt-in E2 environment-readability Godot review path after the v0.173 world-shell foundation, hardened only road/river/bridge/site-marker tactical readability, and preserved default procedural launchers plus all prior opt-in launchers.
 

@@ -1,5 +1,32 @@
 # Changelog
 
+# v0.176 Terrain-Material Opt-In Player-Slice Integration Readiness Packet - 2026-06-08
+
+This checkpoint prepares a documentation-only readiness packet for a future terrain-material opt-in player-slice integration. It recommends exactly one future terrain-material slot using the v0.175 selected derivative, does not authorize broad terrain replacement, and prepares the exact future v0.177 prompt without starting it.
+
+Added:
+
+- `docs/V0176_TERRAIN_MATERIAL_OPT_IN_READINESS_PACKET.md`.
+- `docs/V0176_TERRAIN_MATERIAL_RISK_AND_ROLLBACK.md`.
+- `docs/art-prompts/V0177_01_TERRAIN_MATERIAL_OPT_IN_INTEGRATION.md`.
+- `docs/V0176_IMPLEMENTATION_REPORT.md`.
+
+Changed:
+
+- Updated the Salto experimental artifact index, roadmap, handoff, checkpoint, release checklist, and changelog for v0.176 readiness.
+
+Boundaries:
+
+- Zero images generated.
+- Zero slots added.
+- No runtime code modified.
+- No terrain material integrated into the player-facing slice.
+- No broad terrain replacement authorized.
+- Default launchers remain procedural.
+- Prior opt-in launchers remain preserved.
+- Browser runtime, production manifests, saves, stable IDs, gameplay, objectives, AI, balance, campaign state, and historical evidence remain untouched.
+- v0.177 is prepared but not started.
+
 # v0.175 Barrosan Foothold Terrain-Material Single-Slot Private Comparator Intake And Human-Review Stop - 2026-06-08
 
 This checkpoint generates exactly one original Barrosan foothold ground-material source for a private Godot comparator only. It creates deterministic 512, 768, 1024, and wrap-safe offset-blend derivatives, selects `GROUND_MATERIAL_LOCAL_1024`, rejects the wrap-safe comparison because of visible banding, and records seam, repetition, fair-path reuse, benchmark, capture, boundary, and cleanup dry-run evidence.
