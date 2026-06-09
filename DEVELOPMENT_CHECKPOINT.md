@@ -1,6 +1,31 @@
 # Development Checkpoint
 
-Updated: 2026-06-09 v0.185 Salto Environment Shell Live QA
+Updated: 2026-06-09 v0.186 Salto Structure Shell Hierarchy
+
+## v0.186 Salto Barrosan Foothold Procedural Structure-Shell Hierarchy Hardening And Human-Review Stop - 2026-06-09
+
+Scope: explicit opt-in Godot Salto procedural structure-shell hierarchy hardening after v0.185. This checkpoint generates zero images, adds zero slots, keeps the default launcher procedural, preserves all prior opt-in launchers, keeps browser runtime untouched, and leaves gameplay, pathing, collisions, production, restoration logic, objectives, AI, saves, stable IDs, selected art, metadata, fallbacks, and required evidence unchanged.
+
+Included work:
+
+- Added `GODOT_REVIEW_SALTO_STRUCTURE_SHELL_HARDENING_WINDOWS.bat` plus matching validate/capture wrappers.
+- Added `tools/godot/saltoStructureShellHardeningTool.mjs` with validation, capture, benchmark, and boundary gates.
+- Added the visual-only `--salto-structure-shell-hardening` Godot flag and status/audit reporting.
+- Kept the v0.185 shell-live-QA foundation while improving only procedural Command Hall, mine, Barracks restoration shell, site structures, and restrained defensive props.
+- Added wet-granite foundations, timber frames, restrained roof/trim accents, scaffolding, contact shadows, and practical structure silhouettes.
+- Repaired v0.186 close-capture framing so Command Hall, mine, and Barracks close inspections remain focused.
+- Performed Windows-side Computer Use review across title, briefing, battle, Aster selection, objective advancement, camera movement, and zoom.
+- Produced v0.186 QA/benchmark, boundary/rollback, and implementation reports.
+
+Verification targets:
+
+```text
+PASS: npm run godot:validate:salto-structure-shell-hardening.
+PASS: PASS_V0186_STRUCTURE_SHELL_HARDENING_VALIDATION/CAPTURE/BENCHMARK/BOUNDARY.
+PASS: S1 FPS ratio 1.0039 and p95 worsening -4.05% against the E4 shell-live-QA baseline.
+PASS: Windows-side packaged review covered title, briefing, battle, real-input selection, camera movement, and zoom.
+PASS: zero images, zero slots, no launcher mutation, default procedural preserved, browser runtime untouched, no gameplay/pathing/collision/objective/AI/save/stable-ID mutation.
+```
 
 ## v0.185 Salto Environment-Shell Live QA Residual-Overlay Pruning And Human-Review Stop - 2026-06-09
 

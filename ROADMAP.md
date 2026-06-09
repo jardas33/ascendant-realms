@@ -11,9 +11,17 @@ Every phase should protect these long-term pillars:
 
 ## Current Recommended Next Phase
 
-The current checkpoint is **v0.185 Salto Environment-Shell Live QA Residual-Overlay Pruning And Human-Review Stop** on 2026-06-09. It adds only an explicit Godot review/validate/capture path for live-QA residual-overlay pruning after v0.184, keeps the default launcher procedural, preserves all prior opt-in launchers, keeps the browser runtime untouched, generates zero images, adds zero slots, and leaves gameplay/pathing/collisions/objectives/AI/saves/stable IDs unchanged.
+The current checkpoint is **v0.186 Salto Barrosan Foothold Procedural Structure-Shell Hierarchy Hardening And Human-Review Stop** on 2026-06-09. It adds only an explicit Godot review/validate/capture path for visual procedural structure-shell hierarchy hardening after v0.185, keeps the default launcher procedural, preserves all prior opt-in launchers, keeps the browser runtime untouched, generates zero images, adds zero slots, and leaves gameplay/pathing/collisions/objectives/AI/saves/stable IDs unchanged.
 
-The next queued step is v0.186 only if v0.185 is committed, pushed, clean, synced, and remote-green and the queued v0.186 prompt prerequisites pass. v0.186 should remain structure-shell hierarchy hardening only. Do not perform broad terrain replacement, add slots, generate images, enable art by default, mutate the browser runtime, or unfreeze character-slot integration.
+The next queued step is v0.187 only if v0.186 is committed, pushed, clean, synced, and remote-green and the queued v0.187 prompt prerequisites pass. v0.187 should remain riverbank and bridge-approach hardening only. Do not perform broad terrain replacement, add slots, generate images, enable art by default, mutate the browser runtime, alter gameplay/pathing/collisions/objectives/AI/saves/stable IDs, or unfreeze character-slot integration.
+
+New v0.186 docs:
+
+- `docs/V0186_STRUCTURE_SHELL_HIERARCHY_QA_BENCHMARK.md`
+- `docs/V0186_STRUCTURE_SHELL_BOUNDARY_ROLLBACK.md`
+- `docs/V0186_IMPLEMENTATION_REPORT.md`
+
+Previous checkpoint reference: v0.185 Salto Environment-Shell Live QA Residual-Overlay Pruning And Human-Review Stop.
 
 New v0.185 docs:
 

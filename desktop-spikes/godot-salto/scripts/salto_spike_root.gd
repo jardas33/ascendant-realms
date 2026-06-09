@@ -62,6 +62,7 @@ const SCRIPT_ARG_PREFIXES := [
 	"--salto-environment-contrast-harmonization",
 	"--salto-environment-geometry-convergence",
 	"--salto-environment-shell-live-qa",
+	"--salto-structure-shell-hardening",
 	"--ground-material-opt-in",
 	"--ground-material-source=",
 	"--ground-material-metadata=",
@@ -888,13 +889,17 @@ func _configure_worker_art_for_active_scene() -> void:
 		active_scene.configure_environment_geometry_convergence(_script_args().has("--salto-environment-geometry-convergence"))
 	if active_scene.has_method("configure_environment_shell_live_qa"):
 		active_scene.configure_environment_shell_live_qa(_script_args().has("--salto-environment-shell-live-qa"))
+	if active_scene.has_method("configure_environment_structure_shell_hardening"):
+		active_scene.configure_environment_structure_shell_hardening(_script_args().has("--salto-structure-shell-hardening"))
 
 func _apply_review_framing_for_active_scene() -> void:
 	if not _script_args().has("--salto-three-slot-review-framing") and not _script_args().has("--salto-four-slot-review-framing") and not _script_args().has("--salto-five-slot-review-framing"):
 		return
 	if active_mode != MODE_25D or active_scene == null or not is_instance_valid(active_scene):
 		return
-	if _script_args().has("--salto-environment-shell-live-qa") and active_scene.has_method("apply_environment_shell_live_qa_framing"):
+	if _script_args().has("--salto-structure-shell-hardening") and active_scene.has_method("apply_environment_structure_shell_hardening_framing"):
+		active_scene.apply_environment_structure_shell_hardening_framing()
+	elif _script_args().has("--salto-environment-shell-live-qa") and active_scene.has_method("apply_environment_shell_live_qa_framing"):
 		active_scene.apply_environment_shell_live_qa_framing()
 	elif _script_args().has("--salto-environment-geometry-convergence") and active_scene.has_method("apply_environment_geometry_convergence_framing"):
 		active_scene.apply_environment_geometry_convergence_framing()
@@ -1746,6 +1751,7 @@ func run_player_slice_validation() -> void:
 	var environment_contrast: Dictionary = final_status.get("environmentContrastHarmonization", {})
 	var environment_geometry: Dictionary = final_status.get("environmentGeometryConvergence", {})
 	var environment_shell_live_qa: Dictionary = final_status.get("environmentShellLiveQa", {})
+	var environment_structure_shell_hardening: Dictionary = final_status.get("environmentStructureShellHardening", {})
 	performance_smoke["workerArtOptInRequested"] = _script_args().has("--worker-art-opt-in")
 	performance_smoke["workerArtExperiment"] = worker_art
 	performance_smoke["barracksMaterialOptInRequested"] = _script_args().has("--barracks-material-opt-in")
@@ -1770,6 +1776,8 @@ func run_player_slice_validation() -> void:
 	performance_smoke["environmentGeometryConvergence"] = environment_geometry
 	performance_smoke["environmentShellLiveQaEnabled"] = bool(final_status.get("environmentShellLiveQaEnabled", false))
 	performance_smoke["environmentShellLiveQa"] = environment_shell_live_qa
+	performance_smoke["environmentStructureShellHardeningEnabled"] = bool(final_status.get("environmentStructureShellHardeningEnabled", false))
+	performance_smoke["environmentStructureShellHardening"] = environment_structure_shell_hardening
 	var report := {
 		"schemaVersion": 1,
 		"checkpoint": _player_capture_checkpoint(),
@@ -1788,6 +1796,7 @@ func run_player_slice_validation() -> void:
 		"groundRoadMaterialOptInHumanReviewPath": "GODOT_REVIEW_SALTO_GROUND_ROAD_MATERIAL_OPT_IN_WINDOWS.bat",
 		"environmentGeometryConvergenceReviewPath": "GODOT_REVIEW_SALTO_ENVIRONMENT_GEOMETRY_CONVERGENCE_WINDOWS.bat",
 		"environmentShellLiveQaReviewPath": "GODOT_REVIEW_SALTO_ENVIRONMENT_SHELL_LIVE_QA_WINDOWS.bat",
+		"structureShellHardeningReviewPath": "GODOT_REVIEW_SALTO_STRUCTURE_SHELL_HARDENING_WINDOWS.bat",
 		"privateHarnessPreservedSeparately": true,
 		"defaultMode": MODE_25D,
 		"defaultVisualPreset": VISUAL_PRESET_CLEAN,
@@ -1822,6 +1831,9 @@ func run_player_slice_validation() -> void:
 		"environmentShellLiveQaEnabled": bool(final_status.get("environmentShellLiveQaEnabled", false)),
 		"environmentShellLiveQa": environment_shell_live_qa,
 		"environmentShellLiveQaArtSlotCount": int(final_status.get("environmentShellLiveQaArtSlotCount", 0)),
+		"environmentStructureShellHardeningEnabled": bool(final_status.get("environmentStructureShellHardeningEnabled", false)),
+		"environmentStructureShellHardening": environment_structure_shell_hardening,
+		"environmentStructureShellHardeningArtSlotCount": int(final_status.get("environmentStructureShellHardeningArtSlotCount", 0)),
 		"environmentFoundationArtSlotCount": int(final_status.get("environmentFoundationArtSlotCount", 0)),
 		"terrainMaterialSourceImported": bool(final_status.get("terrainMaterialSourceImported", false)),
 		"terrainMaterialRuntimeSlotAdded": bool(final_status.get("terrainMaterialRuntimeSlotAdded", false)),
@@ -1922,6 +1934,7 @@ func run_player_slice_capture() -> void:
 	var environment_contrast: Dictionary = final_status.get("environmentContrastHarmonization", {})
 	var environment_geometry: Dictionary = final_status.get("environmentGeometryConvergence", {})
 	var environment_shell_live_qa: Dictionary = final_status.get("environmentShellLiveQa", {})
+	var environment_structure_shell_hardening: Dictionary = final_status.get("environmentStructureShellHardening", {})
 	var report := {
 		"schemaVersion": 1,
 		"checkpoint": _player_capture_checkpoint(),
@@ -1933,7 +1946,7 @@ func run_player_slice_capture() -> void:
 		"viewport": {"width": VIEWPORT_SIZE.x, "height": VIEWPORT_SIZE.y},
 		"defaultMode": MODE_25D,
 		"defaultVisualPreset": VISUAL_PRESET_CLEAN,
-		"privateHarnessPreservedSeparately": captures.any(func(capture: Dictionary) -> bool: return bool(capture.get("privateHarnessCapture", false))) or ["v0.126", "v0.127", "v0.128", "v0.129", "v0.130", "v0.160", "v0.162", "v0.164", "v0.168", "v0.169", "v0.170", "v0.173", "v0.174", "v0.177", "v0.178", "v0.179", "v0.181", "v0.184", "v0.185"].has(_player_capture_checkpoint()),
+		"privateHarnessPreservedSeparately": captures.any(func(capture: Dictionary) -> bool: return bool(capture.get("privateHarnessCapture", false))) or ["v0.126", "v0.127", "v0.128", "v0.129", "v0.130", "v0.160", "v0.162", "v0.164", "v0.168", "v0.169", "v0.170", "v0.173", "v0.174", "v0.177", "v0.178", "v0.179", "v0.181", "v0.184", "v0.185", "v0.186"].has(_player_capture_checkpoint()),
 		"proceduralPrimitiveOnly": not worker_art_loaded and not barracks_material_loaded and not militia_art_loaded and not aster_art_loaded and not ashen_art_loaded and not ground_material_loaded and not road_material_loaded,
 		"generatedOrImportedArtIncluded": worker_art_loaded or barracks_material_loaded or militia_art_loaded or aster_art_loaded or ashen_art_loaded or ground_material_loaded or road_material_loaded,
 		"runtimeArtIntegrated": worker_art_loaded or barracks_material_loaded or militia_art_loaded or aster_art_loaded or ashen_art_loaded or ground_material_loaded or road_material_loaded,
@@ -1963,6 +1976,9 @@ func run_player_slice_capture() -> void:
 		"environmentShellLiveQaEnabled": bool(final_status.get("environmentShellLiveQaEnabled", false)),
 		"environmentShellLiveQa": environment_shell_live_qa,
 		"environmentShellLiveQaArtSlotCount": int(final_status.get("environmentShellLiveQaArtSlotCount", 0)),
+		"environmentStructureShellHardeningEnabled": bool(final_status.get("environmentStructureShellHardeningEnabled", false)),
+		"environmentStructureShellHardening": environment_structure_shell_hardening,
+		"environmentStructureShellHardeningArtSlotCount": int(final_status.get("environmentStructureShellHardeningArtSlotCount", 0)),
 		"environmentFoundationArtSlotCount": int(final_status.get("environmentFoundationArtSlotCount", 0)),
 		"terrainMaterialSourceImported": bool(final_status.get("terrainMaterialSourceImported", false)),
 		"terrainMaterialRuntimeSlotAdded": bool(final_status.get("terrainMaterialRuntimeSlotAdded", false)),
@@ -2038,6 +2054,7 @@ func run_worker_art_opt_in_benchmark() -> void:
 	var environment_contrast: Dictionary = final_status.get("environmentContrastHarmonization", {})
 	var environment_geometry: Dictionary = final_status.get("environmentGeometryConvergence", {})
 	var environment_shell_live_qa: Dictionary = final_status.get("environmentShellLiveQa", {})
+	var environment_structure_shell_hardening: Dictionary = final_status.get("environmentStructureShellHardening", {})
 	var any_loaded := bool(worker_art.get("sourceLoaded", false)) or bool(barracks_material.get("sourceLoaded", false)) or bool(militia_art.get("sourceLoaded", false)) or bool(aster_art.get("sourceLoaded", false)) or bool(ashen_art.get("sourceLoaded", false)) or bool(ground_material.get("sourceLoaded", false)) or bool(road_material.get("sourceLoaded", false))
 	var five_slot_requested := _script_args().has("--ashen-art-opt-in")
 	var four_slot_requested := _script_args().has("--aster-art-opt-in")
@@ -2081,6 +2098,9 @@ func run_worker_art_opt_in_benchmark() -> void:
 		"environmentShellLiveQaEnabled": bool(final_status.get("environmentShellLiveQaEnabled", false)),
 		"environmentShellLiveQa": environment_shell_live_qa,
 		"environmentShellLiveQaArtSlotCount": int(final_status.get("environmentShellLiveQaArtSlotCount", 0)),
+		"environmentStructureShellHardeningEnabled": bool(final_status.get("environmentStructureShellHardeningEnabled", false)),
+		"environmentStructureShellHardening": environment_structure_shell_hardening,
+		"environmentStructureShellHardeningArtSlotCount": int(final_status.get("environmentStructureShellHardeningArtSlotCount", 0)),
 		"environmentReadabilityArtSlotCount": int(final_status.get("environmentReadabilityArtSlotCount", 0)),
 		"environmentFoundationArtSlotCount": int(final_status.get("environmentFoundationArtSlotCount", 0)),
 		"terrainMaterialSourceImported": bool(final_status.get("terrainMaterialSourceImported", false)),
@@ -4407,6 +4427,53 @@ func _apply_player_slice_action(action: String) -> Dictionary:
 			_call_scene("issue_attack_order")
 			_call_scene("focus_visual_subject", ["attack_order"])
 			_render_player_screen("battle")
+		"v0186_command_hall_normal":
+			_ensure_player_battle_scene()
+			_render_player_screen("battle")
+			_call_scene("focus_environment_structure_shell_subject", ["command_hall", false])
+		"v0186_command_hall_close":
+			_ensure_player_battle_scene()
+			_render_player_screen("battle")
+			_call_scene("focus_environment_structure_shell_subject", ["command_hall", true])
+		"v0186_mine_normal":
+			_ensure_player_battle_scene()
+			_render_player_screen("battle")
+			_call_scene("focus_environment_structure_shell_subject", ["mine", false])
+		"v0186_mine_close":
+			_ensure_player_battle_scene()
+			_render_player_screen("battle")
+			_call_scene("focus_environment_structure_shell_subject", ["mine", true])
+		"v0186_barracks_restoration":
+			_ensure_player_battle_scene()
+			_call_scene("capture_mine_site")
+			_call_scene("assign_worker_to_mine")
+			_call_scene("place_barracks_placeholder")
+			_call_scene("advance_construction", [60])
+			_render_player_screen("battle")
+			_call_scene("focus_environment_structure_shell_subject", ["barracks", false])
+		"v0186_barracks_restoration_close":
+			_ensure_player_battle_scene()
+			_call_scene("capture_mine_site")
+			_call_scene("assign_worker_to_mine")
+			_call_scene("place_barracks_placeholder")
+			_call_scene("advance_construction", [60])
+			_render_player_screen("battle")
+			_call_scene("focus_environment_structure_shell_subject", ["barracks", true])
+		"v0186_barracks_restored":
+			_ensure_player_battle_scene()
+			_call_scene("capture_mine_site")
+			_call_scene("assign_worker_to_mine")
+			_call_scene("place_barracks_placeholder")
+			_call_scene("advance_construction", [180])
+			_render_player_screen("battle")
+			_call_scene("focus_environment_structure_shell_subject", ["barracks", false])
+		"v0186_worker_barracks_relation":
+			_ensure_player_battle_scene()
+			_call_scene("capture_mine_site")
+			_call_scene("assign_worker_to_mine")
+			_call_scene("place_barracks_placeholder")
+			_render_player_screen("battle")
+			_call_scene("focus_environment_structure_shell_subject", ["barracks", false])
 		"hero", "worker", "militia", "ranger", "ashen_raider", "command_hall", "barracks", "mine", "site", "lume_endpoint":
 			_ensure_player_battle_scene()
 			_call_scene("focus_visual_subject", [action])
@@ -4492,6 +4559,8 @@ func _apply_player_slice_action(action: String) -> Dictionary:
 
 func _player_capture_checkpoint() -> String:
 	var normalized_root := _artifact_root_from_args().replace("\\", "/")
+	if normalized_root.contains("/v0186"):
+		return "v0.186"
 	if normalized_root.contains("/v0185"):
 		return "v0.185"
 	if normalized_root.contains("/v0184"):
@@ -4535,9 +4604,30 @@ func _player_capture_checkpoint() -> String:
 	return "v0.124"
 
 func _is_bounded_microloop_checkpoint() -> bool:
-	return ["v0.129", "v0.130", "v0.160", "v0.162", "v0.164", "v0.166", "v0.168", "v0.169", "v0.170", "v0.173", "v0.174", "v0.177", "v0.178", "v0.179", "v0.181", "v0.184", "v0.185"].has(_player_capture_checkpoint())
+	return ["v0.129", "v0.130", "v0.160", "v0.162", "v0.164", "v0.166", "v0.168", "v0.169", "v0.170", "v0.173", "v0.174", "v0.177", "v0.178", "v0.179", "v0.181", "v0.184", "v0.185", "v0.186"].has(_player_capture_checkpoint())
 
 func _player_capture_steps() -> Array[Dictionary]:
+	if _player_capture_checkpoint() == "v0.186":
+		return [
+			{"id": "title", "label": "Title shell with v0.186 structure-shell hardening opt-in", "action": "title"},
+			{"id": "briefing", "label": "Briefing shell", "action": "briefing"},
+			{"id": "full_overview_before", "label": "E4 full overview baseline framing", "action": "battle_default"},
+			{"id": "command_hall_normal", "label": "Command Hall normal view", "action": "v0186_command_hall_normal"},
+			{"id": "command_hall_close", "label": "Command Hall close hierarchy", "action": "v0186_command_hall_close"},
+			{"id": "mine_normal", "label": "Mine normal view", "action": "v0186_mine_normal"},
+			{"id": "mine_close", "label": "Mine cut close hierarchy", "action": "v0186_mine_close"},
+			{"id": "barracks_restoration", "label": "Barracks under restoration", "action": "v0186_barracks_restoration"},
+			{"id": "barracks_restoration_close", "label": "Barracks restoration scaffold close", "action": "v0186_barracks_restoration_close"},
+			{"id": "barracks_restored", "label": "Restored Barracks", "action": "v0186_barracks_restored"},
+			{"id": "worker_barracks_relation", "label": "Worker and Barracks relationship", "action": "v0186_worker_barracks_relation"},
+			{"id": "road_bridge_relation", "label": "Road and bridge relation", "action": "bridge"},
+			{"id": "site_structure_marker", "label": "Site structure marker hierarchy", "action": "site_marker_hierarchy"},
+			{"id": "combat_posture", "label": "Combat posture with hardened structures", "action": "combat"},
+			{"id": "pan", "label": "Pan review", "action": "pan_camera"},
+			{"id": "zoom", "label": "Zoom review", "action": "camera_max_zoom"},
+			{"id": "minimap", "label": "Minimap", "action": "minimap"},
+			{"id": "results", "label": "Results path preserved", "action": "results"}
+		]
 	if _player_capture_checkpoint() == "v0.185":
 		return [
 			{"id": "title", "label": "Title shell with v0.185 refined environment-shell opt-in", "action": "title"},

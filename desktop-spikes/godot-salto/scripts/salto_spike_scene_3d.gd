@@ -337,6 +337,7 @@ var environment_readability_hardening_enabled := false
 var environment_contrast_harmonization_enabled := false
 var environment_geometry_convergence_enabled := false
 var environment_shell_live_qa_enabled := false
+var environment_structure_shell_hardening_enabled := false
 var ground_material_experiment_enabled := false
 var ground_material_source_path := ""
 var ground_material_metadata_path := ""
@@ -460,6 +461,7 @@ func configure_environment_foundation_review(enabled: bool) -> Dictionary:
 		environment_contrast_harmonization_enabled = false
 		environment_geometry_convergence_enabled = false
 		environment_shell_live_qa_enabled = false
+		environment_structure_shell_hardening_enabled = false
 	_refresh_visual_foundation()
 	if environment_foundation_review_enabled:
 		apply_environment_foundation_review_framing()
@@ -473,6 +475,7 @@ func configure_environment_readability_hardening(enabled: bool) -> Dictionary:
 		environment_contrast_harmonization_enabled = false
 		environment_geometry_convergence_enabled = false
 		environment_shell_live_qa_enabled = false
+		environment_structure_shell_hardening_enabled = false
 	_refresh_visual_foundation()
 	if environment_readability_hardening_enabled:
 		apply_environment_readability_hardening_framing()
@@ -488,6 +491,7 @@ func configure_environment_contrast_harmonization(enabled: bool) -> Dictionary:
 		environment_readability_hardening_enabled = false
 		environment_geometry_convergence_enabled = false
 		environment_shell_live_qa_enabled = false
+		environment_structure_shell_hardening_enabled = false
 	_refresh_visual_foundation()
 	if environment_contrast_harmonization_enabled:
 		apply_environment_contrast_harmonization_framing()
@@ -503,6 +507,7 @@ func configure_environment_geometry_convergence(enabled: bool) -> Dictionary:
 		environment_readability_hardening_enabled = false
 		environment_contrast_harmonization_enabled = false
 		environment_shell_live_qa_enabled = false
+		environment_structure_shell_hardening_enabled = false
 	_refresh_visual_foundation()
 	if environment_geometry_convergence_enabled:
 		apply_environment_geometry_convergence_framing()
@@ -518,6 +523,7 @@ func configure_environment_shell_live_qa(enabled: bool) -> Dictionary:
 		environment_readability_hardening_enabled = false
 		environment_contrast_harmonization_enabled = false
 		environment_geometry_convergence_enabled = true
+		environment_structure_shell_hardening_enabled = false
 	_refresh_visual_foundation()
 	if environment_shell_live_qa_enabled:
 		apply_environment_shell_live_qa_framing()
@@ -527,6 +533,26 @@ func configure_environment_shell_live_qa(enabled: bool) -> Dictionary:
 		apply_environment_foundation_review_framing()
 	_apply_environment_readability_minimap_markers()
 	return _environment_shell_live_qa_status()
+
+func configure_environment_structure_shell_hardening(enabled: bool) -> Dictionary:
+	environment_structure_shell_hardening_enabled = enabled
+	if environment_structure_shell_hardening_enabled:
+		environment_foundation_review_enabled = true
+		environment_readability_hardening_enabled = false
+		environment_contrast_harmonization_enabled = false
+		environment_geometry_convergence_enabled = true
+		environment_shell_live_qa_enabled = true
+	_refresh_visual_foundation()
+	if environment_structure_shell_hardening_enabled:
+		apply_environment_structure_shell_hardening_framing()
+	elif environment_shell_live_qa_enabled:
+		apply_environment_shell_live_qa_framing()
+	elif environment_geometry_convergence_enabled:
+		apply_environment_geometry_convergence_framing()
+	elif environment_foundation_review_enabled:
+		apply_environment_foundation_review_framing()
+	_apply_environment_readability_minimap_markers()
+	return _environment_structure_shell_hardening_status()
 
 func apply_environment_foundation_review_framing() -> bool:
 	if not environment_foundation_review_enabled:
@@ -556,6 +582,12 @@ func apply_environment_shell_live_qa_framing() -> bool:
 	if not environment_shell_live_qa_enabled:
 		return false
 	_apply_camera_authoring_posture("v0185_environment_shell_live_qa", Vector3(-0.92, 11.92, 8.10), 9.34)
+	return true
+
+func apply_environment_structure_shell_hardening_framing() -> bool:
+	if not environment_structure_shell_hardening_enabled:
+		return false
+	_apply_camera_authoring_posture("v0186_structure_shell_hardening", Vector3(-2.84, 11.35, 7.58), 8.24)
 	return true
 
 func _environment_foundation_status() -> Dictionary:
@@ -738,6 +770,57 @@ func _environment_shell_live_qa_audit() -> Dictionary:
 		"liveQaTransparencyValues": {"groundMasks": 0.035, "reviewPads": 0.18, "siteMarkers": 0.34, "roadCrown": 0.24, "characterContact": 0.18},
 		"zOrderValues": {"terrainBaseY": 0.104, "groundMaskY": 0.168, "roadY": 0.214, "riverY": 0.190, "bankY": 0.226, "bridgeY": 0.354, "structureContactY": 0.198, "markersY": 0.330},
 		"visualOnlyNodes": true,
+		"gameplayCollisionNodesLeftUntouched": ["runtime fixture positions", "real-input click radii", "site capture radius", "Barracks click radius", "Lume click radius", "pathing/navigation adapters", "stable-id adapters"],
+		"minimapSemanticsPreserved": true
+	}
+
+func _environment_structure_shell_hardening_status() -> Dictionary:
+	return {
+		"schemaVersion": 1,
+		"checkpoint": "v0.186",
+		"enabled": environment_structure_shell_hardening_enabled,
+		"requiresShellLiveQa": true,
+		"requiresGeometryConvergence": true,
+		"requiresFoundationReview": true,
+		"requiresGroundMaterialOptIn": true,
+		"requiresRoadMaterialOptIn": true,
+		"reviewOnly": true,
+		"runtimeArtSlotAdded": false,
+		"aiImageGenerated": false,
+		"newTextureImported": false,
+		"structureTextureImported": false,
+		"browserRuntimeChanged": false,
+		"saveWritesAllowed": false,
+		"stableIdsChanged": false,
+		"gameplayPathingChanged": false,
+		"navigationSemanticsChanged": false,
+		"collisionGeometryChanged": false,
+		"objectiveLogicChanged": false,
+		"aiLogicChanged": false,
+		"preservesFiveCharacterMaterialSlots": true,
+		"addsEnvironmentMaterialSlot": false,
+		"structureHierarchyMateriallyImproved": environment_structure_shell_hardening_enabled,
+		"commandHallDistinguishable": environment_structure_shell_hardening_enabled,
+		"mineDistinguishable": environment_structure_shell_hardening_enabled,
+		"barracksRestorationStateReadable": environment_structure_shell_hardening_enabled,
+		"shellsGroundedInsideTerrain": environment_structure_shell_hardening_enabled,
+		"warmAccentsRestrained": environment_structure_shell_hardening_enabled,
+		"charactersReadable": environment_structure_shell_hardening_enabled,
+		"audit": _environment_structure_shell_hardening_audit()
+	}
+
+func _environment_structure_shell_hardening_audit() -> Dictionary:
+	return {
+		"environmentVisualNodeCategories": ["command_hall_shell", "mine_shell", "barracks_restoration_shell", "site_structure_shells", "defensive_props", "contact_shadows"],
+		"newArtSlots": 0,
+		"newImportedTextures": 0,
+		"structureMaterialSlotsAdded": 0,
+		"proceduralVisualOnly": true,
+		"commandHallNodes": ["v0186_wet_granite_foundation", "v0186_timber_side_posts", "v0186_stepped_keep_core", "v0186_low_gabled_roof", "v0186_restrained_hearth_slot", "v0186_door_threshold_shadow"],
+		"mineNodes": ["v0186_quarry_retaining_walls", "v0186_deep_mine_mouth", "v0186_cut_stone_tiers", "v0186_crane_tripod", "v0186_tailings_ground_shadow"],
+		"barracksNodes": ["v0186_grounded_drill_yard", "v0186_split_training_wings", "v0186_scaffold_posts", "v0186_roof_ridge", "v0186_restoration_progress_read"],
+		"siteStructureNodes": ["v0186_site_claim_post", "v0186_site_low_stone_ring", "v0186_practical_defensive_crates"],
+		"visualLanguage": ["wet_granite_foundations", "timber_frames", "restrained_metal", "practical_scaffolding", "warm_hearth_accents"],
 		"gameplayCollisionNodesLeftUntouched": ["runtime fixture positions", "real-input click radii", "site capture radius", "Barracks click radius", "Lume click radius", "pathing/navigation adapters", "stable-id adapters"],
 		"minimapSemanticsPreserved": true
 	}
@@ -3057,6 +3140,36 @@ func focus_visual_subject(subject: String) -> bool:
 	_sync_hud()
 	return true
 
+func focus_environment_structure_shell_subject(subject: String, close: bool = false) -> bool:
+	var normalized := subject.strip_edges().to_lower()
+	var camera_position := CAMERA_DEFAULT_POSITION
+	var zoom := 8.75
+	var marker_position := Vector3.ZERO
+	match normalized:
+		"command_hall":
+			camera_position = Vector3(-5.78, 11.35, 7.60)
+			zoom = 9.20 if not close else 8.20
+			marker_position = _structure_world_position("command_hall", Vector3(-6.0, 0.14, -2.78))
+		"mine", "quarry":
+			camera_position = Vector3(-2.14, 11.25, 8.88 if not close else 8.78)
+			zoom = 8.72 if not close else 8.10
+			marker_position = _structure_world_position("mine_landmark", Vector3(-1.83, 0.14, 0.24))
+		"barracks":
+			camera_position = Vector3(-4.92, 11.32, 7.60)
+			zoom = 9.20 if not close else 8.20
+			marker_position = _structure_world_position("barracks", Vector3(-4.8, 0.14, -3.58))
+		_:
+			return false
+	hover_target_id = normalized
+	last_feedback_id = "hover:v0186:%s" % normalized
+	_apply_camera_authoring_posture("v0186_%s_%s" % [normalized, "close" if close else "normal"], camera_position, zoom)
+	_set_or_create_disc_marker("hover_feedback_marker", marker_position + Vector3(0.0, 0.045, 0.0), 0.34, Color(0.84, 0.92, 0.66, 0.44))
+	_sync_unit_visuals()
+	_sync_site_visuals()
+	_sync_lume_visuals()
+	_sync_hud()
+	return true
+
 func show_combat_readability_sample() -> bool:
 	combat_readability_active = true
 	damage_flash_active = true
@@ -4644,6 +4757,8 @@ func get_spike_status() -> Dictionary:
 	status["environmentGeometryConvergence"] = _environment_geometry_convergence_status()
 	status["environmentShellLiveQaEnabled"] = environment_shell_live_qa_enabled
 	status["environmentShellLiveQa"] = _environment_shell_live_qa_status()
+	status["environmentStructureShellHardeningEnabled"] = environment_structure_shell_hardening_enabled
+	status["environmentStructureShellHardening"] = _environment_structure_shell_hardening_status()
 	var worker_art_loaded := _worker_art_is_active()
 	_refresh_worker_art_counters()
 	var barracks_material_loaded := _barracks_material_is_active()
@@ -4691,6 +4806,7 @@ func get_spike_status() -> Dictionary:
 	status["roadMaterialSlotCount"] = 1 if road_material_experiment_enabled else 0
 	status["roadMaterialProceduralFallbackActive"] = bool(road_material_status.get("fallbackActive", true))
 	status["environmentShellLiveQaArtSlotCount"] = 0
+	status["environmentStructureShellHardeningArtSlotCount"] = 0
 	status["normalSliceOptInRequestedSlotCount"] = int(status["workerArtSlotCount"]) + int(status["barracksMaterialSlotCount"]) + int(status["militiaArtSlotCount"]) + int(status["asterArtSlotCount"]) + int(status["ashenArtSlotCount"])
 	status["normalSliceOptInLoadedSlotCount"] = (1 if worker_art_loaded else 0) + (1 if barracks_material_loaded else 0) + (1 if militia_art_loaded else 0) + (1 if aster_art_loaded else 0) + (1 if ashen_art_loaded else 0)
 	status["environmentMaterialOptInRequestedSlotCount"] = (1 if ground_material_experiment_enabled else 0) + (1 if road_material_experiment_enabled else 0)
@@ -5066,6 +5182,9 @@ func _apply_light_preset() -> void:
 	if environment_geometry_convergence_enabled:
 		light.light_energy = 1.16
 		light.light_color = Color(0.94, 0.98, 0.88)
+	if environment_structure_shell_hardening_enabled:
+		light.light_energy = 1.17
+		light.light_color = Color(0.95, 0.98, 0.88)
 
 func _create_terrain() -> void:
 	terrain_root = Node3D.new()
@@ -6418,11 +6537,12 @@ func _add_structure(structure: Dictionary) -> void:
 	var fixture := str(structure["fixtureId"])
 	var position := _to_world(structure["position"], 0.34)
 	var scale := _structure_scale(structure)
+	var base_scale := _v0186_structure_base_scale(fixture, scale, structure) if environment_structure_shell_hardening_enabled else scale
 	var color := _structure_color(structure)
 	if fixture == "barracks":
-		_add_barracks_material_box(id, position, scale, color)
+		_add_barracks_material_box(id, position, base_scale, color)
 	else:
-		_add_box(id, position, scale, color)
+		_add_box(id, position, base_scale, color)
 	if environment_foundation_review_enabled:
 		_add_environment_foundation_structure_hierarchy(id, fixture, position, scale, color, structure)
 	if fixture == "command_hall" or fixture == "enemy_stronghold":
@@ -6521,6 +6641,62 @@ func _add_environment_geometry_structure_shell(id: String, fixture: String, posi
 		_add_box("%s_v0184_quarry_apron_shadow" % id, position + Vector3(-scale.x * 0.08, -0.090, scale.z * 0.55), Vector3(scale.x * 0.90, 0.055, 0.11), Color(0.10, 0.09, 0.06, 0.64), true)
 		_add_box("%s_v0184_cut_stone_stack_a" % id, position + Vector3(scale.x * 0.36, 0.18, -scale.z * 0.20), Vector3(scale.x * 0.28, 0.12, scale.z * 0.56), Color(0.62, 0.60, 0.50))
 		_add_box("%s_v0184_cut_stone_stack_b" % id, position + Vector3(-scale.x * 0.08, 0.05, -scale.z * 0.42), Vector3(scale.x * 0.34, 0.08, scale.z * 0.24), Color(0.46, 0.45, 0.38))
+	if environment_structure_shell_hardening_enabled:
+		_add_environment_structure_shell_hardening_details(id, fixture, position, scale, color, structure)
+
+func _add_environment_structure_shell_hardening_details(id: String, fixture: String, position: Vector3, scale: Vector3, color: Color, structure: Dictionary) -> void:
+	var granite := Color(0.44, 0.43, 0.37)
+	var granite_dark := Color(0.21, 0.23, 0.20)
+	var timber := Color(0.28, 0.19, 0.11)
+	var timber_light := Color(0.54, 0.43, 0.25)
+	var metal := Color(0.44, 0.46, 0.42)
+	match fixture:
+		"command_hall":
+			_add_box("%s_v0186_command_contact_shadow" % id, position + Vector3(0.0, -0.270, 0.04), Vector3(scale.x * 1.10, 0.030, scale.z * 0.95), Color(0.035, 0.040, 0.030, 0.54), true)
+			_add_box("%s_v0186_wet_granite_foundation_front" % id, position + Vector3(0.0, -0.130, scale.z * 0.46), Vector3(scale.x * 0.94, 0.070, 0.10), granite)
+			_add_box("%s_v0186_wet_granite_foundation_back" % id, position + Vector3(0.0, -0.130, -scale.z * 0.34), Vector3(scale.x * 0.82, 0.060, 0.08), granite.darkened(0.08))
+			_add_box("%s_v0186_timber_side_post_left" % id, position + Vector3(-scale.x * 0.40, 0.18, scale.z * 0.06), Vector3(0.075, 0.56, scale.z * 0.68), timber)
+			_add_box("%s_v0186_timber_side_post_right" % id, position + Vector3(scale.x * 0.40, 0.18, scale.z * 0.06), Vector3(0.075, 0.56, scale.z * 0.68), timber.darkened(0.06))
+			_add_box("%s_v0186_stepped_keep_core" % id, position + Vector3(0.0, 0.46, -scale.z * 0.04), Vector3(scale.x * 0.32, 0.54, scale.z * 0.34), color.darkened(0.12))
+			_add_box("%s_v0186_low_gabled_roof_west" % id, position + Vector3(-scale.x * 0.18, 0.78, -scale.z * 0.02), Vector3(scale.x * 0.42, 0.090, scale.z * 0.62), color.lightened(0.18))
+			_add_box("%s_v0186_low_gabled_roof_east" % id, position + Vector3(scale.x * 0.18, 0.74, scale.z * 0.02), Vector3(scale.x * 0.42, 0.075, scale.z * 0.58), color.darkened(0.16))
+			_add_box("%s_v0186_roof_ridge_line" % id, position + Vector3(0.0, 0.845, 0.0), Vector3(scale.x * 0.70, 0.035, 0.055), timber_light)
+			_add_box("%s_v0186_door_threshold_shadow" % id, position + Vector3(0.0, 0.035, scale.z * 0.58), Vector3(scale.x * 0.34, 0.130, 0.050), Color(0.06, 0.045, 0.030, 0.78), true)
+			_add_box("%s_v0186_restrained_hearth_slot" % id, position + Vector3(scale.x * 0.34, 0.25, scale.z * 0.56), Vector3(0.080, 0.110, 0.045), Color(0.92, 0.48, 0.20), true, true)
+		"west_stone_cut":
+			_add_box("%s_v0186_mine_tailings_ground_shadow" % id, position + Vector3(-scale.x * 0.02, -0.205, scale.z * 0.54), Vector3(scale.x * 1.05, 0.035, 0.18), Color(0.05, 0.055, 0.045, 0.58), true)
+			_add_box("%s_v0186_deep_mine_mouth" % id, position + Vector3(-scale.x * 0.42, 0.23, scale.z * 0.48), Vector3(scale.x * 0.28, 0.36, 0.095), Color(0.025, 0.030, 0.025))
+			_add_box("%s_v0186_left_retaining_wall" % id, position + Vector3(-scale.x * 0.08, 0.07, scale.z * 0.56), Vector3(scale.x * 0.42, 0.105, 0.08), granite.darkened(0.05))
+			_add_box("%s_v0186_right_retaining_wall" % id, position + Vector3(scale.x * 0.34, 0.07, scale.z * 0.47), Vector3(scale.x * 0.36, 0.105, 0.08), granite.lightened(0.04))
+			_add_box("%s_v0186_cut_stone_tier_low" % id, position + Vector3(scale.x * 0.20, 0.12, -scale.z * 0.36), Vector3(scale.x * 0.54, 0.105, 0.18), granite)
+			_add_box("%s_v0186_cut_stone_tier_high" % id, position + Vector3(scale.x * 0.46, 0.26, -scale.z * 0.18), Vector3(scale.x * 0.28, 0.120, 0.16), granite.lightened(0.08))
+			_add_box("%s_v0186_crane_tripod_left" % id, position + Vector3(scale.x * 0.20, 0.42, -scale.z * 0.35), Vector3(0.055, 0.44, 0.050), timber)
+			_add_box("%s_v0186_crane_tripod_right" % id, position + Vector3(scale.x * 0.42, 0.42, -scale.z * 0.35), Vector3(0.055, 0.44, 0.050), timber.darkened(0.08))
+			_add_box("%s_v0186_crane_crossbeam" % id, position + Vector3(scale.x * 0.31, 0.65, -scale.z * 0.35), Vector3(scale.x * 0.38, 0.060, 0.050), timber_light)
+			_add_box("%s_v0186_crane_hook" % id, position + Vector3(scale.x * 0.31, 0.48, -scale.z * 0.31), Vector3(0.045, 0.18, 0.045), metal)
+		"barracks":
+			var restoring := str(structure.get("constructionState", "")) != "complete"
+			var scaffold_alpha := 0.52 if restoring else 0.32
+			_add_box("%s_v0186_barracks_contact_shadow" % id, position + Vector3(0.0, -0.265, 0.06), Vector3(scale.x * 1.06, 0.030, scale.z * 0.96), Color(0.040, 0.035, 0.025, 0.54), true)
+			_add_box("%s_v0186_grounded_drill_yard_front" % id, position + Vector3(0.0, -0.120, scale.z * 0.68), Vector3(scale.x * 1.04, 0.055, 0.115), Color(0.39, 0.31, 0.18, 0.64), true)
+			_add_barracks_material_box("%s_v0186_split_training_wing_left" % id, position + Vector3(-scale.x * 0.30, 0.28, -scale.z * 0.02), Vector3(scale.x * 0.30, 0.30, scale.z * 0.66), color.lightened(0.12))
+			_add_barracks_material_box("%s_v0186_split_training_wing_right" % id, position + Vector3(scale.x * 0.30, 0.24, scale.z * 0.02), Vector3(scale.x * 0.30, 0.26, scale.z * 0.66), color.darkened(0.10))
+			_add_barracks_material_box("%s_v0186_low_roof_left" % id, position + Vector3(-scale.x * 0.22, 0.62, -scale.z * 0.03), Vector3(scale.x * 0.36, 0.065, scale.z * 0.54), color.lightened(0.20))
+			_add_barracks_material_box("%s_v0186_low_roof_right" % id, position + Vector3(scale.x * 0.22, 0.59, scale.z * 0.03), Vector3(scale.x * 0.36, 0.060, scale.z * 0.54), color.darkened(0.16))
+			_add_box("%s_v0186_roof_ridge" % id, position + Vector3(0.0, 0.675, 0.0), Vector3(scale.x * 0.70, 0.035, 0.050), timber_light, true)
+			for corner in [
+				Vector2(-0.46, -0.42),
+				Vector2(0.46, -0.42),
+				Vector2(-0.46, 0.42),
+				Vector2(0.46, 0.42)
+			]:
+				_add_box("%s_v0186_scaffold_post_%s_%s" % [id, int((corner.x + 0.5) * 10.0), int((corner.y + 0.5) * 10.0)], position + Vector3(scale.x * corner.x, 0.40, scale.z * corner.y), Vector3(0.060, 0.48, 0.055), Color(0.60, 0.48, 0.28, scaffold_alpha), true)
+			_add_box("%s_v0186_scaffold_front_brace" % id, position + Vector3(0.0, 0.50, scale.z * 0.44), Vector3(scale.x * 0.84, 0.045, 0.050), Color(0.68, 0.52, 0.28, scaffold_alpha), true)
+			_add_box("%s_v0186_scaffold_back_brace" % id, position + Vector3(0.0, 0.47, -scale.z * 0.44), Vector3(scale.x * 0.78, 0.040, 0.048), Color(0.48, 0.36, 0.20, scaffold_alpha), true)
+			if restoring:
+				var progress := clampf(float(structure.get("constructionProgress", 0.0)), 0.0, 1.0)
+				_add_box("%s_v0186_restoration_progress_read" % id, position + Vector3((progress - 1.0) * scale.x * 0.22, 0.73, scale.z * 0.52), Vector3(max(0.08, scale.x * 0.44 * progress), 0.045, 0.060), Color(0.46, 0.84, 0.50, 0.58), true)
+				_add_box("%s_v0186_unfinished_roof_gap" % id, position + Vector3(0.0, 0.69, -scale.z * 0.05), Vector3(scale.x * 0.20, 0.030, scale.z * 0.48), Color(0.07, 0.055, 0.035, 0.44), true)
 
 func _add_capture_site(site: Dictionary) -> void:
 	var position := _to_world(site["position"], 0.13)
@@ -6543,6 +6719,12 @@ func _add_capture_site(site: Dictionary) -> void:
 			_add_cylinder("%s_v0173_outer_marker_collar" % str(site["id"]), position + Vector3(0, -0.070, 0), 0.56, 0.030, Color(0.95, 0.82, 0.30, 0.42), true)
 			_add_box("%s_v0173_state_tick_north" % str(site["id"]), position + Vector3(0.0, 0.12, -0.36), Vector3(0.40, 0.05, 0.08), _site_color(site).lightened(0.22), true)
 			_add_box("%s_v0173_state_tick_south" % str(site["id"]), position + Vector3(0.0, 0.12, 0.36), Vector3(0.40, 0.05, 0.08), _site_color(site).lightened(0.22), true)
+	if environment_structure_shell_hardening_enabled:
+		var site_id := str(site["id"])
+		_add_cylinder("%s_v0186_low_stone_claim_ring" % site_id, position + Vector3(0.0, -0.082, 0.0), 0.48, 0.020, Color(0.52, 0.48, 0.36, 0.30), true)
+		_add_box("%s_v0186_practical_claim_post_cap" % site_id, position + Vector3(0.0, 0.38, 0.0), Vector3(0.18, 0.045, 0.18), Color(0.46, 0.35, 0.18, 0.56), true)
+		_add_box("%s_v0186_defensive_crate_west" % site_id, position + Vector3(-0.36, 0.07, 0.24), Vector3(0.18, 0.12, 0.22), Color(0.34, 0.25, 0.15, 0.52), true)
+		_add_box("%s_v0186_defensive_crate_east" % site_id, position + Vector3(0.34, 0.07, -0.22), Vector3(0.16, 0.11, 0.20), Color(0.30, 0.23, 0.14, 0.46), true)
 
 func _add_unit(name: String, position: Vector3, color: Color, radius: float, emissive: bool = false) -> void:
 	var mesh_instance := MeshInstance3D.new()
@@ -6954,6 +7136,8 @@ func _normalize_visual_preset(preset: String) -> String:
 	return ""
 
 func _preset_scope() -> String:
+	if environment_structure_shell_hardening_enabled:
+		return "v0186-opt-in-procedural-structure-shell-hierarchy-hardening-excluded-from-default"
 	if environment_shell_live_qa_enabled:
 		return "v0185-opt-in-environment-shell-live-qa-pruned-overlays-excluded-from-default"
 	if environment_geometry_convergence_enabled:
@@ -7099,6 +7283,21 @@ func _banner_color(structure: Dictionary) -> Color:
 func _structure_scale(structure: Dictionary) -> Vector3:
 	var size: Vector2 = structure["size"]
 	return Vector3(max(0.25, size.x / 90.0), 0.38, max(0.25, size.y / 90.0))
+
+func _v0186_structure_base_scale(fixture: String, scale: Vector3, structure: Dictionary) -> Vector3:
+	match fixture:
+		"command_hall":
+			return Vector3(scale.x * 0.82, scale.y * 0.86, scale.z * 0.74)
+		"barracks":
+			if str(structure.get("constructionState", "")) != "complete":
+				return Vector3(scale.x * 0.78, scale.y * 0.76, scale.z * 0.68)
+			return Vector3(scale.x * 0.86, scale.y * 0.82, scale.z * 0.74)
+		"west_stone_cut":
+			return Vector3(scale.x * 0.68, scale.y * 0.72, scale.z * 0.66)
+		"ford_toll":
+			return Vector3(scale.x * 0.82, scale.y * 0.82, scale.z * 0.82)
+		_:
+			return scale
 
 func _site_color(site: Dictionary) -> Color:
 	var owner := str(site["owner"])

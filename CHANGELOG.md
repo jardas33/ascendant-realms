@@ -1,5 +1,41 @@
 # Changelog
 
+# v0.186 Salto Barrosan Foothold Procedural Structure-Shell Hierarchy Hardening And Human-Review Stop - 2026-06-09
+
+This checkpoint adds only an explicit Godot Salto review path for visual procedural structure-shell hierarchy hardening after v0.185. It generates zero images, adds zero slots, keeps default launchers procedural, preserves all prior opt-in launchers, keeps browser runtime untouched, and leaves gameplay/pathing/collisions/objectives/AI/saves/stable IDs unchanged.
+
+Added:
+
+- `GODOT_REVIEW_SALTO_STRUCTURE_SHELL_HARDENING_WINDOWS.bat`.
+- `GODOT_VALIDATE_SALTO_STRUCTURE_SHELL_HARDENING_WINDOWS.bat`.
+- `GODOT_CAPTURE_SALTO_STRUCTURE_SHELL_HARDENING_WINDOWS.bat`.
+- v0.186 launch/review/validate/capture PowerShell wrappers.
+- `tools/godot/saltoStructureShellHardeningTool.mjs`.
+- `docs/V0186_STRUCTURE_SHELL_HIERARCHY_QA_BENCHMARK.md`.
+- `docs/V0186_STRUCTURE_SHELL_BOUNDARY_ROLLBACK.md`.
+- `docs/V0186_IMPLEMENTATION_REPORT.md`.
+
+Changed:
+
+- Added an opt-in Godot Salto structure-shell hardening flag and audit report.
+- Improved only visual procedural Command Hall, mine, Barracks restoration shell, site-structure, and restrained defensive-prop hierarchy.
+- Added dedicated v0.186 capture focus for Command Hall, mine, and Barracks close/normal review.
+- Updated handoff, roadmap, checkpoint, artifact index, changelog, and release checklist docs.
+
+Validation:
+
+- `npm run godot:validate:salto-structure-shell-hardening`.
+- `PASS_V0186_STRUCTURE_SHELL_HARDENING_VALIDATION/CAPTURE/BENCHMARK/BOUNDARY`.
+- S1 FPS ratio `1.0039`; p95 worsening `-4.05%`.
+- Windows-side Computer Use review covered title, briefing, battle, Aster selection, camera movement, and zoom.
+
+Boundaries:
+
+- Zero images generated.
+- Zero slots added.
+- No default launcher or prior launcher mutation.
+- Browser runtime, production manifests, saves, stable IDs, gameplay, pathing, collisions, objectives, AI, balance, selected art, metadata, fallbacks, and required evidence remain untouched.
+
 # v0.185 Salto Environment-Shell Live QA Residual-Overlay Pruning And Human-Review Stop - 2026-06-09
 
 This checkpoint adds only an explicit Godot Salto review path for live-QA residual-overlay pruning after v0.184. It generates zero images, adds zero slots, keeps default launchers procedural, preserves all prior opt-in launchers, keeps browser runtime untouched, and leaves gameplay/pathing/collisions/objectives/AI/saves/stable IDs unchanged.
