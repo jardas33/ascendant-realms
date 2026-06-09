@@ -60,6 +60,7 @@ const SCRIPT_ARG_PREFIXES := [
 	"--salto-environment-foundation-review",
 	"--salto-environment-readability-hardening",
 	"--salto-environment-contrast-harmonization",
+	"--salto-environment-geometry-convergence",
 	"--ground-material-opt-in",
 	"--ground-material-source=",
 	"--ground-material-metadata=",
@@ -882,13 +883,17 @@ func _configure_worker_art_for_active_scene() -> void:
 		active_scene.configure_ground_material_experiment(_ground_material_options_from_args())
 	if active_scene.has_method("configure_road_material_experiment"):
 		active_scene.configure_road_material_experiment(_road_material_options_from_args())
+	if active_scene.has_method("configure_environment_geometry_convergence"):
+		active_scene.configure_environment_geometry_convergence(_script_args().has("--salto-environment-geometry-convergence"))
 
 func _apply_review_framing_for_active_scene() -> void:
 	if not _script_args().has("--salto-three-slot-review-framing") and not _script_args().has("--salto-four-slot-review-framing") and not _script_args().has("--salto-five-slot-review-framing"):
 		return
 	if active_mode != MODE_25D or active_scene == null or not is_instance_valid(active_scene):
 		return
-	if _script_args().has("--salto-five-slot-review-framing") and active_scene.has_method("apply_five_slot_art_review_framing"):
+	if _script_args().has("--salto-environment-geometry-convergence") and active_scene.has_method("apply_environment_geometry_convergence_framing"):
+		active_scene.apply_environment_geometry_convergence_framing()
+	elif _script_args().has("--salto-five-slot-review-framing") and active_scene.has_method("apply_five_slot_art_review_framing"):
 		active_scene.apply_five_slot_art_review_framing()
 	elif _script_args().has("--salto-four-slot-review-framing") and active_scene.has_method("apply_four_slot_art_review_framing"):
 		active_scene.apply_four_slot_art_review_framing()
@@ -1734,6 +1739,7 @@ func run_player_slice_validation() -> void:
 	var environment_foundation: Dictionary = final_status.get("environmentFoundationReview", {})
 	var environment_readability: Dictionary = final_status.get("environmentReadabilityHardening", {})
 	var environment_contrast: Dictionary = final_status.get("environmentContrastHarmonization", {})
+	var environment_geometry: Dictionary = final_status.get("environmentGeometryConvergence", {})
 	performance_smoke["workerArtOptInRequested"] = _script_args().has("--worker-art-opt-in")
 	performance_smoke["workerArtExperiment"] = worker_art
 	performance_smoke["barracksMaterialOptInRequested"] = _script_args().has("--barracks-material-opt-in")
@@ -1754,6 +1760,8 @@ func run_player_slice_validation() -> void:
 	performance_smoke["environmentReadabilityHardening"] = environment_readability
 	performance_smoke["environmentContrastHarmonizationEnabled"] = bool(final_status.get("environmentContrastHarmonizationEnabled", false))
 	performance_smoke["environmentContrastHarmonization"] = environment_contrast
+	performance_smoke["environmentGeometryConvergenceEnabled"] = bool(final_status.get("environmentGeometryConvergenceEnabled", false))
+	performance_smoke["environmentGeometryConvergence"] = environment_geometry
 	var report := {
 		"schemaVersion": 1,
 		"checkpoint": _player_capture_checkpoint(),
@@ -1770,6 +1778,7 @@ func run_player_slice_validation() -> void:
 		"groundMaterialOptInHumanReviewPath": "GODOT_REVIEW_SALTO_GROUND_MATERIAL_OPT_IN_WINDOWS.bat",
 		"environmentContrastReviewPath": "GODOT_REVIEW_SALTO_ENVIRONMENT_CONTRAST_WINDOWS.bat",
 		"groundRoadMaterialOptInHumanReviewPath": "GODOT_REVIEW_SALTO_GROUND_ROAD_MATERIAL_OPT_IN_WINDOWS.bat",
+		"environmentGeometryConvergenceReviewPath": "GODOT_REVIEW_SALTO_ENVIRONMENT_GEOMETRY_CONVERGENCE_WINDOWS.bat",
 		"privateHarnessPreservedSeparately": true,
 		"defaultMode": MODE_25D,
 		"defaultVisualPreset": VISUAL_PRESET_CLEAN,
@@ -1798,6 +1807,9 @@ func run_player_slice_validation() -> void:
 		"environmentReadabilityHardening": environment_readability,
 		"environmentContrastHarmonizationEnabled": bool(final_status.get("environmentContrastHarmonizationEnabled", false)),
 		"environmentContrastHarmonization": environment_contrast,
+		"environmentGeometryConvergenceEnabled": bool(final_status.get("environmentGeometryConvergenceEnabled", false)),
+		"environmentGeometryConvergence": environment_geometry,
+		"environmentGeometryConvergenceArtSlotCount": int(final_status.get("environmentGeometryConvergenceArtSlotCount", 0)),
 		"environmentFoundationArtSlotCount": int(final_status.get("environmentFoundationArtSlotCount", 0)),
 		"terrainMaterialSourceImported": bool(final_status.get("terrainMaterialSourceImported", false)),
 		"terrainMaterialRuntimeSlotAdded": bool(final_status.get("terrainMaterialRuntimeSlotAdded", false)),
@@ -1896,6 +1908,7 @@ func run_player_slice_capture() -> void:
 	var environment_foundation: Dictionary = final_status.get("environmentFoundationReview", {})
 	var environment_readability: Dictionary = final_status.get("environmentReadabilityHardening", {})
 	var environment_contrast: Dictionary = final_status.get("environmentContrastHarmonization", {})
+	var environment_geometry: Dictionary = final_status.get("environmentGeometryConvergence", {})
 	var report := {
 		"schemaVersion": 1,
 		"checkpoint": _player_capture_checkpoint(),
@@ -1907,7 +1920,7 @@ func run_player_slice_capture() -> void:
 		"viewport": {"width": VIEWPORT_SIZE.x, "height": VIEWPORT_SIZE.y},
 		"defaultMode": MODE_25D,
 		"defaultVisualPreset": VISUAL_PRESET_CLEAN,
-		"privateHarnessPreservedSeparately": captures.any(func(capture: Dictionary) -> bool: return bool(capture.get("privateHarnessCapture", false))) or ["v0.126", "v0.127", "v0.128", "v0.129", "v0.130", "v0.160", "v0.162", "v0.164", "v0.168", "v0.169", "v0.170", "v0.173", "v0.174", "v0.177", "v0.178", "v0.179", "v0.181"].has(_player_capture_checkpoint()),
+		"privateHarnessPreservedSeparately": captures.any(func(capture: Dictionary) -> bool: return bool(capture.get("privateHarnessCapture", false))) or ["v0.126", "v0.127", "v0.128", "v0.129", "v0.130", "v0.160", "v0.162", "v0.164", "v0.168", "v0.169", "v0.170", "v0.173", "v0.174", "v0.177", "v0.178", "v0.179", "v0.181", "v0.184"].has(_player_capture_checkpoint()),
 		"proceduralPrimitiveOnly": not worker_art_loaded and not barracks_material_loaded and not militia_art_loaded and not aster_art_loaded and not ashen_art_loaded and not ground_material_loaded and not road_material_loaded,
 		"generatedOrImportedArtIncluded": worker_art_loaded or barracks_material_loaded or militia_art_loaded or aster_art_loaded or ashen_art_loaded or ground_material_loaded or road_material_loaded,
 		"runtimeArtIntegrated": worker_art_loaded or barracks_material_loaded or militia_art_loaded or aster_art_loaded or ashen_art_loaded or ground_material_loaded or road_material_loaded,
@@ -1931,6 +1944,9 @@ func run_player_slice_capture() -> void:
 		"environmentReadabilityHardening": environment_readability,
 		"environmentContrastHarmonizationEnabled": bool(final_status.get("environmentContrastHarmonizationEnabled", false)),
 		"environmentContrastHarmonization": environment_contrast,
+		"environmentGeometryConvergenceEnabled": bool(final_status.get("environmentGeometryConvergenceEnabled", false)),
+		"environmentGeometryConvergence": environment_geometry,
+		"environmentGeometryConvergenceArtSlotCount": int(final_status.get("environmentGeometryConvergenceArtSlotCount", 0)),
 		"environmentFoundationArtSlotCount": int(final_status.get("environmentFoundationArtSlotCount", 0)),
 		"terrainMaterialSourceImported": bool(final_status.get("terrainMaterialSourceImported", false)),
 		"terrainMaterialRuntimeSlotAdded": bool(final_status.get("terrainMaterialRuntimeSlotAdded", false)),
@@ -2004,6 +2020,7 @@ func run_worker_art_opt_in_benchmark() -> void:
 	var environment_foundation: Dictionary = final_status.get("environmentFoundationReview", {})
 	var environment_readability: Dictionary = final_status.get("environmentReadabilityHardening", {})
 	var environment_contrast: Dictionary = final_status.get("environmentContrastHarmonization", {})
+	var environment_geometry: Dictionary = final_status.get("environmentGeometryConvergence", {})
 	var any_loaded := bool(worker_art.get("sourceLoaded", false)) or bool(barracks_material.get("sourceLoaded", false)) or bool(militia_art.get("sourceLoaded", false)) or bool(aster_art.get("sourceLoaded", false)) or bool(ashen_art.get("sourceLoaded", false)) or bool(ground_material.get("sourceLoaded", false)) or bool(road_material.get("sourceLoaded", false))
 	var five_slot_requested := _script_args().has("--ashen-art-opt-in")
 	var four_slot_requested := _script_args().has("--aster-art-opt-in")
@@ -2041,6 +2058,9 @@ func run_worker_art_opt_in_benchmark() -> void:
 		"environmentReadabilityHardening": environment_readability,
 		"environmentContrastHarmonizationEnabled": bool(final_status.get("environmentContrastHarmonizationEnabled", false)),
 		"environmentContrastHarmonization": environment_contrast,
+		"environmentGeometryConvergenceEnabled": bool(final_status.get("environmentGeometryConvergenceEnabled", false)),
+		"environmentGeometryConvergence": environment_geometry,
+		"environmentGeometryConvergenceArtSlotCount": int(final_status.get("environmentGeometryConvergenceArtSlotCount", 0)),
 		"environmentReadabilityArtSlotCount": int(final_status.get("environmentReadabilityArtSlotCount", 0)),
 		"environmentFoundationArtSlotCount": int(final_status.get("environmentFoundationArtSlotCount", 0)),
 		"terrainMaterialSourceImported": bool(final_status.get("terrainMaterialSourceImported", false)),
@@ -4452,6 +4472,8 @@ func _apply_player_slice_action(action: String) -> Dictionary:
 
 func _player_capture_checkpoint() -> String:
 	var normalized_root := _artifact_root_from_args().replace("\\", "/")
+	if normalized_root.contains("/v0184"):
+		return "v0.184"
 	if normalized_root.contains("/v0181"):
 		return "v0.181"
 	if normalized_root.contains("/v0179"):
@@ -4491,9 +4513,32 @@ func _player_capture_checkpoint() -> String:
 	return "v0.124"
 
 func _is_bounded_microloop_checkpoint() -> bool:
-	return ["v0.129", "v0.130", "v0.160", "v0.162", "v0.164", "v0.166", "v0.168", "v0.169", "v0.170", "v0.173", "v0.174", "v0.177", "v0.178", "v0.179", "v0.181"].has(_player_capture_checkpoint())
+	return ["v0.129", "v0.130", "v0.160", "v0.162", "v0.164", "v0.166", "v0.168", "v0.169", "v0.170", "v0.173", "v0.174", "v0.177", "v0.178", "v0.179", "v0.181", "v0.184"].has(_player_capture_checkpoint())
 
 func _player_capture_steps() -> Array[Dictionary]:
+	if _player_capture_checkpoint() == "v0.184":
+		return [
+			{"id": "title", "label": "Title shell with v0.184 geometry-convergence opt-in", "action": "title"},
+			{"id": "briefing", "label": "Briefing shell", "action": "briefing"},
+			{"id": "full_battlefield_overview", "label": "Full battlefield overview", "action": "battle_default"},
+			{"id": "initial_aster_frame", "label": "Initial Aster frame", "action": "hero_selected"},
+			{"id": "worker_assignment", "label": "Worker assignment posture", "action": "worker_assigned_mine"},
+			{"id": "barracks_restoration", "label": "Barracks restoration posture", "action": "construction_progress"},
+			{"id": "militia_recruitment", "label": "Militia recruitment posture", "action": "militia_spawned"},
+			{"id": "river_overview", "label": "River overview", "action": "ford"},
+			{"id": "riverbank_close_view", "label": "Riverbank close view", "action": "friendly_boundary"},
+			{"id": "bridge_close_view", "label": "Bridge close view", "action": "bridge"},
+			{"id": "road_close_view", "label": "Road close view", "action": "road"},
+			{"id": "road_intersection", "label": "Road intersection", "action": "road_intersections"},
+			{"id": "command_hall", "label": "Command Hall shell", "action": "command_hall"},
+			{"id": "mine", "label": "Mine shell", "action": "mine"},
+			{"id": "barracks_shell", "label": "Barracks shell", "action": "barracks_complete"},
+			{"id": "ashen_combat_posture", "label": "Ashen combat posture", "action": "combat"},
+			{"id": "pan", "label": "Pan review", "action": "pan_camera"},
+			{"id": "zoom", "label": "Zoom review", "action": "camera_max_zoom"},
+			{"id": "minimap", "label": "Minimap", "action": "minimap"},
+			{"id": "results", "label": "Results path preserved", "action": "results"}
+		]
 	if _player_capture_checkpoint() == "v0.179":
 		return [
 			{"id": "title", "label": "Title shell with configured environment contrast posture", "action": "title"},

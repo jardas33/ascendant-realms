@@ -11,16 +11,30 @@ Every phase should protect these long-term pillars:
 
 ## Current Recommended Next Phase
 
-The current checkpoint is **v0.178 Ground-Material Visual QA, UV-Scale Hardening, And Terrain-Noise Control Stop** on 2026-06-08. It hardens only the existing Barrosan foothold ground-material opt-in path using UV `0.56`, alpha `0.48`, mipmapped filtering, and a procedural value underlay. It preserves the default procedural launcher, all prior opt-in launchers, the browser runtime boundary, and the frozen five-character-slot posture, and does not start v0.179.
+The current checkpoint is **v0.184 Salto Opt-In Environment-Shell Geometry Convergence And Human-Review Stop** on 2026-06-09. It adds only an explicit Godot review/validate/capture path for visual environment-shell convergence, keeps the default launcher procedural, preserves all prior opt-in launchers, keeps the browser runtime untouched, generates zero images, adds zero slots, and leaves gameplay/pathing/collisions/objectives/AI/saves/stable IDs unchanged.
 
-The next recommended step is v0.179 only if a future prompt explicitly authorizes it after v0.178 is committed, pushed, clean, synced, and remote-green. v0.179 should harmonize only environment contrast around the existing opt-in posture. Do not perform broad terrain replacement, add slots, generate images, enable art by default, mutate the browser runtime, or unfreeze character-slot integration.
+The next queued step is v0.185 only if v0.184 is committed, pushed, clean, synced, and remote-green and the queued v0.185 prompt prerequisites pass. v0.185 should remain live-QA residual overlay pruning only. Do not perform broad terrain replacement, add slots, generate images, enable art by default, mutate the browser runtime, or unfreeze character-slot integration.
+
+New v0.184 docs:
+
+- `docs/V0184_ENVIRONMENT_GEOMETRY_CONVERGENCE_QA_BENCHMARK.md`
+- `docs/V0184_ENVIRONMENT_GEOMETRY_BOUNDARY_ROLLBACK.md`
+- `docs/V0184_IMPLEMENTATION_REPORT.md`
+- `docs/SALTO_EXPERIMENTAL_ARTIFACT_INDEX.md`
+
+Previous checkpoint reference: Post-v0.183 Godot Opt-In Visual Hardening Review.
+
+The previous review repaired the existing explicit Godot Salto ground + road material opt-in presentation after v0.183. It was not v0.184, generated zero images, added zero slots, changed no launcher, and kept the default launcher procedural.
+
+Previous checkpoint reference: v0.178 Ground-Material Visual QA, UV-Scale Hardening, And Terrain-Noise Control Stop.
+
+The earlier v0.178 checkpoint hardened only the existing Barrosan foothold ground-material opt-in path using UV `0.56`, alpha `0.48`, mipmapped filtering, and a procedural value underlay. It preserved the default procedural launcher, all prior opt-in launchers, the browser runtime boundary, and the frozen five-character-slot posture.
 
 New v0.178 docs:
 
 - `docs/V0178_GROUND_MATERIAL_VISUAL_QA_UV_HARDENING.md`
 - `docs/V0178_GROUND_MATERIAL_BENCHMARK_BOUNDARY.md`
 - `docs/V0178_IMPLEMENTATION_REPORT.md`
-- `docs/SALTO_EXPERIMENTAL_ARTIFACT_INDEX.md`
 
 Previous checkpoint reference: v0.177 Barrosan Foothold Ground-Material First Opt-In Player-Slice Integration Experiment.
 

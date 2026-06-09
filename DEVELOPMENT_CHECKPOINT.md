@@ -1,6 +1,33 @@
 # Development Checkpoint
 
-Updated: 2026-06-09 Post-v0.183 Godot Opt-In Visual Hardening Review Continuation
+Updated: 2026-06-09 v0.184 Salto Environment Geometry Convergence
+
+## v0.184 Salto Opt-In Environment-Shell Geometry Convergence And Human-Review Stop - 2026-06-09
+
+Scope: explicit opt-in Godot Salto visual geometry-convergence review path. This checkpoint generates zero images, adds zero character slots, adds zero environment-material slots, keeps the default launcher procedural, preserves all prior opt-in launchers, keeps browser runtime untouched, and leaves gameplay, pathing, collisions, objectives, AI, saves, stable IDs, selected art, metadata, fallbacks, and required evidence unchanged.
+
+Included work:
+
+- Added `GODOT_REVIEW_SALTO_ENVIRONMENT_GEOMETRY_CONVERGENCE_WINDOWS.bat` plus matching validate/capture wrappers.
+- Added `tools/godot/saltoEnvironmentGeometryConvergenceTool.mjs` with validation, capture, benchmark, boundary, cleanup, and retention gates.
+- Added a visual-only `--salto-environment-geometry-convergence` Godot flag and reporting audit.
+- Narrowed material-bearing terrain surfaces, segmented road and river/riverbank geometry, improved bridge readability, and added structure-grounding trim.
+- Performed Windows-side Computer Use review from title to briefing to battle.
+- Produced v0.184 QA/benchmark, boundary/rollback, and implementation reports.
+
+Verification targets:
+
+```text
+PASS: npm run godot:validate:salto-environment-geometry-convergence.
+PASS: PASS_V0184_ENVIRONMENT_GEOMETRY_CONVERGENCE_VALIDATION.
+PASS: PASS_V0184_ENVIRONMENT_GEOMETRY_CONVERGENCE_CAPTURE with 20/20 E3 screenshots.
+PASS: PASS_V0184_ENVIRONMENT_GEOMETRY_CONVERGENCE_BENCHMARK, FPS ratio 1.0000, p95 worsening -0.30%.
+PASS: PASS_V0184_ENVIRONMENT_GEOMETRY_CONVERGENCE_BOUNDARY.
+PASS: PASS_V0133_HEADED_POST_MINE_FLOW_SMOKE.
+PASS: Windows-side packaged review reached title, briefing, and battle.
+PASS: safe-only cleanup deleted exactly 18 known Godot sidecars; retention after cleanup found 0 unknown files.
+PASS: zero images, zero slots, no launcher mutation, default procedural preserved, browser runtime untouched, no gameplay/pathing/collision/objective/AI/save/stable-ID mutation.
+```
 
 ## Post-v0.183 Godot Opt-In Visual Hardening Review - 2026-06-09
 

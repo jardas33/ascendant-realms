@@ -1,6 +1,6 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-06-09 Post-v0.183 Godot Opt-In Visual Hardening Review
+Last updated: 2026-06-09 v0.184 Salto Environment Geometry Convergence
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
@@ -66,11 +66,33 @@ Project Identity continuation note: v0.183 now supersedes the older no-v0.183 ta
 
 Project Identity continuation note: the post-v0.183 Godot opt-in visual hardening review is an ad hoc repair after Emmanuel's visual-quality concern, not v0.184. It changes only the existing explicit Godot Salto ground + road material opt-in presentation, generates zero images, adds zero slots, changes no launcher, keeps the default launcher procedural, keeps browser runtime untouched, preserves the frozen five character slots and selected ground/road materials, and does not start v0.184. The continuation repaired a review-capture ordering defect that made local road/bridge/site/pan/zoom focus collapse back to global battle framing, then refreshed generated and live Windows-side evidence.
 
-Current status override: the post-v0.183 Godot opt-in visual hardening review is the active checkpoint for this handoff. Character-slot integration remains frozen after five selected opt-in slots. The Barrosan foothold ground and road materials remain opt-in only, the default launcher remains procedural, browser runtime remains untouched, and further environment-material additions remain frozen until Emmanuel review. Do not begin v0.184 implementation work; v0.184 is prepared only as a manual review decision packet.
+Project Identity continuation note: v0.184 now supersedes the older no-v0.184 tail above because the queued prompt explicitly authorized opt-in Godot Salto environment-shell geometry convergence after the expected v0.183/post-v0.183 state was clean, synced, and remote-green. v0.184 generates zero images, adds zero character slots, adds zero environment-material slots, preserves the default procedural launcher and all prior opt-in launchers, keeps browser runtime untouched, keeps gameplay/pathing/collisions/objectives/AI/saves/stable IDs unchanged, and adds only the explicit environment-geometry-convergence review/validate/capture path.
+
+Current status override: v0.184 Salto environment geometry convergence is the active checkpoint for this handoff. Character-slot integration remains frozen after five selected opt-in slots. The Barrosan foothold ground and road materials remain opt-in only, the default launcher remains procedural, browser runtime remains untouched, and bridge/riverbank material intake remains future private-comparator-only work unless explicitly queued. Do not begin v0.185 unless v0.184 is committed, pushed, clean, synced, and remote-green and the next queued prompt prerequisites pass.
+
+## Current v0.184 Salto Environment Geometry Convergence - 2026-06-09
+
+Status: v0.184 opt-in Godot environment-shell geometry convergence is the active checkpoint. Commit, push, and remote CI proof are required before any queued v0.185 work.
+
+Key evidence:
+
+- `GODOT_REVIEW_SALTO_ENVIRONMENT_GEOMETRY_CONVERGENCE_WINDOWS.bat`
+- `GODOT_VALIDATE_SALTO_ENVIRONMENT_GEOMETRY_CONVERGENCE_WINDOWS.bat`
+- `GODOT_CAPTURE_SALTO_ENVIRONMENT_GEOMETRY_CONVERGENCE_WINDOWS.bat`
+- `docs/V0184_ENVIRONMENT_GEOMETRY_CONVERGENCE_QA_BENCHMARK.md`
+- `docs/V0184_ENVIRONMENT_GEOMETRY_BOUNDARY_ROLLBACK.md`
+- `docs/V0184_IMPLEMENTATION_REPORT.md`
+- `PASS_V0184_SALTO_ENVIRONMENT_GEOMETRY_CONVERGENCE_AUTOMATION_READY`
+- `PASS_V0184_ENVIRONMENT_GEOMETRY_CONVERGENCE_VALIDATION/CAPTURE/BENCHMARK/BOUNDARY`
+- E3 FPS ratio `1.0000`; p95 worsening `-0.30%` against the E2 ground+road baseline.
+- Windows-side Computer Use review reached title, briefing, and battle with the v0.184 label visible.
+- Safe-only cleanup deleted only 18 known Godot-generated sidecars, then retention passed with `0` unknown files.
+
+Next boundary: v0.185 may only start from clean, synced, pushed, remote-green v0.184 state if the queued prompt is still present and its prerequisites pass. Do not generate images, add slots, enable default art, wire browser runtime, or mutate gameplay/pathing/collisions/objectives/AI/saves/stable IDs.
 
 ## Current Post-v0.183 Godot Opt-In Visual Hardening Review - 2026-06-09
 
-Status: post-v0.183 Godot opt-in visual hardening is the active checkpoint. Commit, push, and remote CI proof are required before any future v0.184 manual-review packet work.
+Status: previous post-v0.183 Godot opt-in visual hardening checkpoint. It is superseded by the active v0.184 section above.
 
 Key evidence:
 

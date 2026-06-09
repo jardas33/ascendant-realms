@@ -1,5 +1,42 @@
 # Changelog
 
+# v0.184 Salto Opt-In Environment-Shell Geometry Convergence And Human-Review Stop - 2026-06-09
+
+This checkpoint adds only an explicit Godot Salto review path for visual environment-shell geometry convergence. It generates zero images, adds zero character or environment-material slots, keeps default launchers procedural, preserves all prior opt-in launchers, keeps browser runtime untouched, and leaves gameplay/pathing/collisions/objectives/AI/saves/stable IDs unchanged.
+
+Added:
+
+- `GODOT_REVIEW_SALTO_ENVIRONMENT_GEOMETRY_CONVERGENCE_WINDOWS.bat`.
+- `GODOT_VALIDATE_SALTO_ENVIRONMENT_GEOMETRY_CONVERGENCE_WINDOWS.bat`.
+- `GODOT_CAPTURE_SALTO_ENVIRONMENT_GEOMETRY_CONVERGENCE_WINDOWS.bat`.
+- v0.184 launch/review/validate/capture PowerShell wrappers.
+- `tools/godot/saltoEnvironmentGeometryConvergenceTool.mjs`.
+- `docs/V0184_ENVIRONMENT_GEOMETRY_CONVERGENCE_QA_BENCHMARK.md`.
+- `docs/V0184_ENVIRONMENT_GEOMETRY_BOUNDARY_ROLLBACK.md`.
+- `docs/V0184_IMPLEMENTATION_REPORT.md`.
+
+Changed:
+
+- Added an opt-in Godot Salto environment-geometry convergence flag and audit report.
+- Narrowed material-bearing terrain masks, segmented road/river/riverbank overlays, improved bridge readability, and added visual-only structure grounding.
+- Updated handoff, roadmap, checkpoint, artifact index, changelog, and release checklist docs.
+
+Validation:
+
+- `npm run godot:validate:salto-environment-geometry-convergence`.
+- `PASS_V0184_ENVIRONMENT_GEOMETRY_CONVERGENCE_VALIDATION/CAPTURE/BENCHMARK/BOUNDARY`.
+- E3 FPS ratio `1.0000`; p95 worsening `-0.30%`.
+- `PASS_V0133_HEADED_POST_MINE_FLOW_SMOKE`.
+- Windows-side Computer Use review reached title, briefing, and battle.
+- Safe-only cleanup deleted exactly 18 known Godot-generated sidecars; retention after cleanup reported `0` unknown files.
+
+Boundaries:
+
+- Zero images generated.
+- Zero slots added.
+- No default launcher or prior launcher mutation.
+- Browser runtime, production manifests, saves, stable IDs, gameplay, pathing, collisions, objectives, AI, balance, selected art, metadata, fallbacks, and required evidence remain untouched.
+
 # Post-v0.183 Godot Opt-In Visual Hardening Review - 2026-06-09
 
 This ad hoc review improves the existing explicit Godot Salto ground + road material opt-in presentation after v0.183. It is not v0.184, generates zero images, adds zero slots, changes no launcher, and keeps the default launcher procedural.

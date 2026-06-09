@@ -1,10 +1,10 @@
 # Salto Experimental Artifact Index
 
-Status: `ACTIVE_V0183_RETENTION_INDEX`
+Status: `ACTIVE_V0184_RETENTION_INDEX`
 
 This index is the retention source of truth for the Godot Salto experimental-art path. It protects selected local art, active derivatives, metadata, tracked fallbacks, current evidence, and unknown files from broad cleanup.
 
-This v0.183 index supersedes `ACTIVE_V0182_RETENTION_INDEX`, `ACTIVE_V0181_RETENTION_INDEX`, `ACTIVE_V0180_RETENTION_INDEX`, `ACTIVE_V0179_RETENTION_INDEX`, `ACTIVE_V0178_RETENTION_INDEX`, `ACTIVE_V0177_RETENTION_INDEX`, `ACTIVE_V0176_RETENTION_INDEX`, `ACTIVE_V0175_RETENTION_INDEX`, `ACTIVE_V0174_RETENTION_INDEX`, `ACTIVE_V0173_RETENTION_INDEX`, `ACTIVE_V0172_RETENTION_INDEX`, `ACTIVE_V0171_RETENTION_INDEX`, and `ACTIVE_V0170_RETENTION_INDEX` while retaining their protected evidence.
+This v0.184 index supersedes `ACTIVE_V0183_RETENTION_INDEX`, `ACTIVE_V0182_RETENTION_INDEX`, `ACTIVE_V0181_RETENTION_INDEX`, `ACTIVE_V0180_RETENTION_INDEX`, `ACTIVE_V0179_RETENTION_INDEX`, `ACTIVE_V0178_RETENTION_INDEX`, `ACTIVE_V0177_RETENTION_INDEX`, `ACTIVE_V0176_RETENTION_INDEX`, `ACTIVE_V0175_RETENTION_INDEX`, `ACTIVE_V0174_RETENTION_INDEX`, `ACTIVE_V0173_RETENTION_INDEX`, `ACTIVE_V0172_RETENTION_INDEX`, `ACTIVE_V0171_RETENTION_INDEX`, and `ACTIVE_V0170_RETENTION_INDEX` while retaining their protected evidence.
 
 ## Selected Local Source Art And Active Derivatives
 
@@ -135,10 +135,21 @@ Retain the latest v0.166/v0.167/v0.168/v0.169/v0.170 evidence until a later chec
 - `docs/V0183_CLEANUP_EXECUTION_DECISION.md`
 - `docs/V0183_IMPLEMENTATION_REPORT.md`
 - `docs/art-prompts/V0184_01_RECOMMENDED_NEXT_PHASE.md`
+- `artifacts/desktop-spikes/godot-salto/v0184/validation/`
+- `artifacts/desktop-spikes/godot-salto/v0184/capture/`
+- `artifacts/desktop-spikes/godot-salto/v0184/benchmark/`
+- `artifacts/desktop-spikes/godot-salto/v0184/boundary/`
+- `artifacts/desktop-spikes/godot-salto/v0184/cleanup-dry-run/`
+- `artifacts/desktop-spikes/godot-salto/v0184/safe-only-cleanup/`
+- `artifacts/desktop-spikes/godot-salto/v0184/artifact-retention/`
+- `artifacts/desktop-spikes/godot-salto/v0184/artifact-retention-after-cleanup/`
+- `docs/V0184_ENVIRONMENT_GEOMETRY_CONVERGENCE_QA_BENCHMARK.md`
+- `docs/V0184_ENVIRONMENT_GEOMETRY_BOUNDARY_ROLLBACK.md`
+- `docs/V0184_IMPLEMENTATION_REPORT.md`
 
 ## Character Integration Freeze
 
-Character-slot expansion is frozen after the selected Worker, Barracks material, Militia, Aster, and Ashen Raider opt-in slots. v0.183 keeps the existing Barrosan foothold ground-material opt-in slot and the existing Barrosan foothold road-material opt-in slot behind `GODOT_REVIEW_SALTO_GROUND_ROAD_MATERIAL_OPT_IN_WINDOWS.bat`. Both environment materials remain opt-in only, the default launcher remains procedural, browser runtime remains untouched, and no further environment-material slots should be added until Emmanuel review.
+Character-slot expansion is frozen after the selected Worker, Barracks material, Militia, Aster, and Ashen Raider opt-in slots. v0.184 keeps the existing Barrosan foothold ground-material opt-in slot and the existing Barrosan foothold road-material opt-in slot behind `GODOT_REVIEW_SALTO_GROUND_ROAD_MATERIAL_OPT_IN_WINDOWS.bat`, and adds only a visual-only environment-shell geometry convergence review path behind `GODOT_REVIEW_SALTO_ENVIRONMENT_GEOMETRY_CONVERGENCE_WINDOWS.bat`. Both environment materials remain opt-in only, no bridge/riverbank/structure material slot is integrated, the default launcher remains procedural, and browser runtime remains untouched.
 
 ## Archive Candidates
 
