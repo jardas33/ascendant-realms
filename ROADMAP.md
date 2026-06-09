@@ -11,9 +11,17 @@ Every phase should protect these long-term pillars:
 
 ## Current Recommended Next Phase
 
-The current checkpoint is **v0.192 Human-Review Override Presentation-Shell V2 Architecture Audit And Contract Stop** on 2026-06-09. It overrides the previously prepared bridge-riverbank material integration recommendation, audits the current Godot Salto environment-shell architecture, selects one bounded parallel opt-in presentation-shell v2 architecture, preserves the legacy shell as comparator/fallback, keeps the v0.189 wet-granite material comparator-only, keeps the default launcher procedural, preserves all prior opt-in launchers, keeps the browser runtime untouched, adds no slots, generates zero images, starts no runtime implementation, and leaves gameplay/pathing/collisions/objectives/AI/saves/stable IDs unchanged.
+The current checkpoint is **v0.193 Isolated Salto Presentation-Shell V2 Prototype Implementation And Human-Review Stop** on 2026-06-09. It implements one explicit opt-in Godot Salto presentation-shell v2 prototype, preserves the legacy shell as comparator/fallback, keeps the v0.189 wet-granite material comparator-only, keeps the default launcher procedural, preserves all prior opt-in launchers, keeps the browser runtime untouched, adds zero imported art slots, generates zero images, and leaves gameplay/pathing/collisions/objectives/AI/saves/stable IDs unchanged.
 
-The recommended next step is v0.193 isolated Salto presentation-shell v2 prototype implementation only if v0.192 is committed, pushed, clean, synced, remote-green, and the queued prompt prerequisites pass. The v0.193 prompt must add one opt-in shell-v2 review path with zero images, zero new imported art slots, existing five character slots, existing ground and road materials, no wet-granite integration, no default-art enablement, no browser runtime wiring, and no gameplay/pathing/collision/objective/AI/save/stable-ID mutation.
+The recommended next step is human review of the v0.193 shell-v2 captures before any v0.194 decision. Do not execute the older wet-granite bridge-riverbank material integration recommendation directly. Any future v0.194 must start from a clean, synced, pushed, remote-green v0.193 state and must explicitly choose whether to keep iterating shell geometry or narrowly integrate the bridge-riverbank material.
+
+New v0.193 docs:
+
+- `docs/V0193_SHELL_V2_PROTOTYPE_QA_BENCHMARK.md`
+- `docs/V0193_SHELL_V2_BOUNDARY_ROLLBACK.md`
+- `docs/V0193_IMPLEMENTATION_REPORT.md`
+
+Previous checkpoint reference: v0.192 Human-Review Override Presentation-Shell V2 Architecture Audit And Contract Stop.
 
 New v0.192 docs:
 

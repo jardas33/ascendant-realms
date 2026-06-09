@@ -1,6 +1,6 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-06-09 v0.192 Presentation-Shell V2 Architecture Audit
+Last updated: 2026-06-09 v0.193 Presentation-Shell V2 Prototype Implementation
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
@@ -84,7 +84,40 @@ Project Identity continuation note: v0.191 now supersedes the older no-v0.191 ta
 
 Project Identity continuation note: v0.192 now supersedes the older v0.192 bridge-riverbank material recommendation because human review explicitly overrode that prompt. v0.192 is documentation-only: it audits the current Godot Salto environment-shell architecture, preserves the legacy shell as comparator/fallback, selects one bounded parallel presentation-shell v2 architecture, prepares `docs/art-prompts/V0193_01_PRESENTATION_SHELL_V2_IMPLEMENTATION.md`, generates zero images, adds zero slots, starts no runtime implementation, and keeps the default launcher procedural and browser runtime untouched.
 
-Current status override: v0.192 Presentation-Shell V2 Architecture Audit is the active checkpoint for this handoff. Character-slot integration remains frozen after five selected opt-in slots. The Barrosan foothold ground and road materials remain opt-in only, the default launcher remains procedural, browser runtime remains untouched, and the selected bridge-riverbank material remains private-comparator-only. Do not execute the older bridge-riverbank material integration recommendation directly. v0.193 may only start from clean, synced, pushed, remote-green v0.192 state if the queued prompt prerequisites pass.
+Project Identity continuation note: v0.193 now supersedes the older no-v0.193 tail above because the queued prompt explicitly authorized one isolated opt-in presentation-shell v2 prototype after v0.192 was committed, pushed, clean, synced, and remote-green. v0.193 generates zero images, adds zero imported art slots, integrates no wet-granite bridge-riverbank material, preserves the legacy shell as comparator/fallback, keeps the default launcher procedural and all prior launchers unchanged, keeps browser runtime untouched, changes no gameplay/pathing/collisions/objectives/AI/saves/stable IDs, and stops before v0.194 for human review.
+
+Current status override: v0.193 Presentation-Shell V2 Prototype Implementation is the active checkpoint for this handoff. Character-slot integration remains frozen after five selected opt-in slots. The Barrosan foothold ground and road materials remain opt-in only, the default launcher remains procedural, browser runtime remains untouched, and the selected bridge-riverbank material remains private-comparator-only. Do not execute the older bridge-riverbank material integration recommendation directly. v0.194 may only start from clean, synced, pushed, remote-green v0.193 state if a future prompt explicitly authorizes it.
+
+## Current v0.193 Presentation-Shell V2 Prototype Implementation - 2026-06-09
+
+Status: v0.193 isolated opt-in prototype is the active checkpoint. It adds one shell-v2 review path and stops for human review.
+
+Key files:
+
+- `GODOT_REVIEW_SALTO_PRESENTATION_SHELL_V2_WINDOWS.bat`
+- `GODOT_VALIDATE_SALTO_PRESENTATION_SHELL_V2_WINDOWS.bat`
+- `GODOT_CAPTURE_SALTO_PRESENTATION_SHELL_V2_WINDOWS.bat`
+- `tools/godot/saltoPresentationShellV2Tool.mjs`
+- `docs/V0193_SHELL_V2_PROTOTYPE_QA_BENCHMARK.md`
+- `docs/V0193_SHELL_V2_BOUNDARY_ROLLBACK.md`
+- `docs/V0193_IMPLEMENTATION_REPORT.md`
+
+Current decision:
+
+- Preserve the legacy shell as comparator/fallback.
+- Use scoped terrain patches, route-following roads, continuous river surfaces, bank framing, bridge crossing surfaces, simplified site markers, and structure masses for human review.
+- Keep the v0.189 wet-granite bridge-riverbank material private-comparator-only.
+- Keep gameplay, pathing, collisions, objectives, AI, saves, stable IDs, default launcher, prior launchers, and browser runtime unchanged.
+
+Validation evidence:
+
+- `PASS_V0193_PRESENTATION_SHELL_V2_VALIDATION`
+- `PASS_V0193_PRESENTATION_SHELL_V2_BENCHMARK`
+- `PASS_V0193_PRESENTATION_SHELL_V2_BOUNDARY`
+- `PASS_V0193_PRESENTATION_SHELL_V2_CAPTURE`
+- Capture evidence under `artifacts/desktop-spikes/godot-salto/v0193/capture/`.
+
+Next boundary: do not begin v0.194, do not integrate the wet-granite bridge-riverbank material, do not add imported art slots, and do not enable art by default until a future explicit prompt passes prerequisites.
 
 ## Current v0.192 Presentation-Shell V2 Architecture Audit - 2026-06-09
 

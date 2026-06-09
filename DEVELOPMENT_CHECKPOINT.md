@@ -1,6 +1,42 @@
 # Development Checkpoint
 
-Updated: 2026-06-09 v0.192 Presentation-Shell V2 Architecture Audit
+Updated: 2026-06-09 v0.193 Presentation-Shell V2 Prototype Implementation
+
+## v0.193 Isolated Salto Presentation-Shell V2 Prototype Implementation And Human-Review Stop - 2026-06-09
+
+Scope: one isolated opt-in Godot Salto presentation-shell v2 prototype after the v0.192 human-review override. This checkpoint generates zero images, adds zero imported art slots, integrates no wet-granite bridge-riverbank material, keeps the default launcher procedural, preserves all prior launchers, preserves the legacy shell as comparator/fallback, keeps browser runtime untouched, keeps character integrations frozen, and leaves gameplay, pathing, collisions, objectives, AI, saves, stable IDs, production manifests, selected prior art, metadata, fallbacks, and required evidence unchanged.
+
+Included work:
+
+- Added the v0.193 presentation-shell v2 review, validate, and capture Windows launchers.
+- Added the v0.193 PowerShell launch/review/validate/capture wrappers.
+- Added `tools/godot/saltoPresentationShellV2Tool.mjs`.
+- Added the visual-only v2 terrain compositor behind `--salto-presentation-shell-v2`.
+- Added v0.193 validation, benchmark, boundary, capture, QA, rollback, and implementation docs.
+- Updated the handoff, roadmap, checkpoint, changelog, release checklist, and Salto experimental artifact index docs.
+
+Visual decision:
+
+- Replace stacked translucent shell rectangles with scoped terrain patches, route-following road surfaces, a continuous river channel, banks, bridge deck/abutments/rails, simplified site markers, and structure masses.
+- Preserve the legacy shell as the comparator/fallback rather than replacing it.
+- Keep the selected wet-granite bridge-riverbank material private-comparator-only.
+
+Verification targets:
+
+```text
+PASS: npm run godot:validate:salto-presentation-shell-v2.
+PASS: npm run godot:capture:salto-presentation-shell-v2.
+PASS: PASS_V0193_PRESENTATION_SHELL_V2_VALIDATION.
+PASS: PASS_V0193_PRESENTATION_SHELL_V2_BENCHMARK.
+PASS: PASS_V0193_PRESENTATION_SHELL_V2_BOUNDARY.
+PASS: PASS_V0193_PRESENTATION_SHELL_V2_CAPTURE.
+PASS: Windows-side Godot review where available.
+PASS: npm run validate:content.
+PASS: npm run validate:art-intake.
+PASS: npm run validate:runtime-art-slots.
+PASS: isolation scans for zero images, zero imported art slots, no wet-granite integration, no browser wiring, no default-launcher mutation, no prior-launcher mutation, and no gameplay/pathing/collision/objective/AI/save/stable-ID mutation.
+PASS: git diff --check.
+```
 
 ## v0.192 Human-Review Override Presentation-Shell V2 Architecture Audit And Contract Stop - 2026-06-09
 

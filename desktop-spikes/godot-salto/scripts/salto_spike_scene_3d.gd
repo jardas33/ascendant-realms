@@ -339,6 +339,14 @@ var environment_geometry_convergence_enabled := false
 var environment_shell_live_qa_enabled := false
 var environment_structure_shell_hardening_enabled := false
 var environment_riverbank_bridge_approach_enabled := false
+var environment_presentation_shell_v2_enabled := false
+var presentation_shell_v2_initialized := false
+var presentation_shell_v2_fallback_active := false
+var presentation_shell_v2_fallback_reason := ""
+var presentation_shell_v2_surface_counts: Dictionary = {}
+var presentation_shell_v2_material_cache: Dictionary = {}
+var presentation_shell_v2_material_create_count := 0
+var presentation_shell_v2_material_reuse_count := 0
 var ground_material_experiment_enabled := false
 var ground_material_source_path := ""
 var ground_material_metadata_path := ""
@@ -464,6 +472,7 @@ func configure_environment_foundation_review(enabled: bool) -> Dictionary:
 		environment_shell_live_qa_enabled = false
 		environment_structure_shell_hardening_enabled = false
 		environment_riverbank_bridge_approach_enabled = false
+		environment_presentation_shell_v2_enabled = false
 	_refresh_visual_foundation()
 	if environment_foundation_review_enabled:
 		apply_environment_foundation_review_framing()
@@ -479,6 +488,7 @@ func configure_environment_readability_hardening(enabled: bool) -> Dictionary:
 		environment_shell_live_qa_enabled = false
 		environment_structure_shell_hardening_enabled = false
 		environment_riverbank_bridge_approach_enabled = false
+		environment_presentation_shell_v2_enabled = false
 	_refresh_visual_foundation()
 	if environment_readability_hardening_enabled:
 		apply_environment_readability_hardening_framing()
@@ -496,6 +506,7 @@ func configure_environment_contrast_harmonization(enabled: bool) -> Dictionary:
 		environment_shell_live_qa_enabled = false
 		environment_structure_shell_hardening_enabled = false
 		environment_riverbank_bridge_approach_enabled = false
+		environment_presentation_shell_v2_enabled = false
 	_refresh_visual_foundation()
 	if environment_contrast_harmonization_enabled:
 		apply_environment_contrast_harmonization_framing()
@@ -513,6 +524,7 @@ func configure_environment_geometry_convergence(enabled: bool) -> Dictionary:
 		environment_shell_live_qa_enabled = false
 		environment_structure_shell_hardening_enabled = false
 		environment_riverbank_bridge_approach_enabled = false
+		environment_presentation_shell_v2_enabled = false
 	_refresh_visual_foundation()
 	if environment_geometry_convergence_enabled:
 		apply_environment_geometry_convergence_framing()
@@ -530,6 +542,7 @@ func configure_environment_shell_live_qa(enabled: bool) -> Dictionary:
 		environment_geometry_convergence_enabled = true
 		environment_structure_shell_hardening_enabled = false
 		environment_riverbank_bridge_approach_enabled = false
+		environment_presentation_shell_v2_enabled = false
 	_refresh_visual_foundation()
 	if environment_shell_live_qa_enabled:
 		apply_environment_shell_live_qa_framing()
@@ -549,6 +562,7 @@ func configure_environment_structure_shell_hardening(enabled: bool) -> Dictionar
 		environment_geometry_convergence_enabled = true
 		environment_shell_live_qa_enabled = true
 		environment_riverbank_bridge_approach_enabled = false
+		environment_presentation_shell_v2_enabled = false
 	_refresh_visual_foundation()
 	if environment_structure_shell_hardening_enabled:
 		apply_environment_structure_shell_hardening_framing()
@@ -570,6 +584,7 @@ func configure_environment_riverbank_bridge_approach(enabled: bool) -> Dictionar
 		environment_geometry_convergence_enabled = true
 		environment_shell_live_qa_enabled = true
 		environment_structure_shell_hardening_enabled = true
+		environment_presentation_shell_v2_enabled = false
 	_refresh_visual_foundation()
 	if environment_riverbank_bridge_approach_enabled:
 		apply_environment_riverbank_bridge_approach_framing()
@@ -583,6 +598,28 @@ func configure_environment_riverbank_bridge_approach(enabled: bool) -> Dictionar
 		apply_environment_foundation_review_framing()
 	_apply_environment_readability_minimap_markers()
 	return _environment_riverbank_bridge_approach_status()
+
+func configure_environment_presentation_shell_v2(enabled: bool) -> Dictionary:
+	environment_presentation_shell_v2_enabled = enabled
+	if environment_presentation_shell_v2_enabled:
+		environment_foundation_review_enabled = true
+		environment_readability_hardening_enabled = false
+		environment_contrast_harmonization_enabled = false
+		environment_geometry_convergence_enabled = false
+		environment_shell_live_qa_enabled = false
+		environment_structure_shell_hardening_enabled = false
+		environment_riverbank_bridge_approach_enabled = false
+		presentation_shell_v2_fallback_active = false
+		presentation_shell_v2_fallback_reason = ""
+	_refresh_visual_foundation()
+	if environment_presentation_shell_v2_enabled:
+		apply_environment_presentation_shell_v2_framing()
+	elif environment_riverbank_bridge_approach_enabled:
+		apply_environment_riverbank_bridge_approach_framing()
+	elif environment_foundation_review_enabled:
+		apply_environment_foundation_review_framing()
+	_apply_environment_readability_minimap_markers()
+	return _environment_presentation_shell_v2_status()
 
 func apply_environment_foundation_review_framing() -> bool:
 	if not environment_foundation_review_enabled:
@@ -624,6 +661,12 @@ func apply_environment_riverbank_bridge_approach_framing() -> bool:
 	if not environment_riverbank_bridge_approach_enabled:
 		return false
 	_apply_camera_authoring_posture("v0187_riverbank_bridge_approach", Vector3(0.28, 11.16, 7.46), 7.92)
+	return true
+
+func apply_environment_presentation_shell_v2_framing() -> bool:
+	if not environment_presentation_shell_v2_enabled:
+		return false
+	_apply_camera_authoring_posture("v0193_presentation_shell_v2", Vector3(-0.28, 11.70, 7.86), 8.18)
 	return true
 
 func _environment_foundation_status() -> Dictionary:
@@ -918,6 +961,70 @@ func _environment_riverbank_bridge_approach_audit() -> Dictionary:
 		"gameplayCollisionNodesLeftUntouched": ["runtime fixture positions", "real-input click radii", "site capture radius", "bridge traversal smoke path", "pathing/navigation adapters", "stable-id adapters"],
 		"bridgeTraversalBehaviorUnchanged": true,
 		"zOrderValues": {"riverCoreY": 0.292, "bankLipY": 0.318, "approachLaneY": 0.342, "bridgeDeckY": 0.386, "bridgeRailY": 0.462, "markerY": 0.372}
+	}
+
+func _environment_presentation_shell_v2_status() -> Dictionary:
+	return {
+		"schemaVersion": 1,
+		"checkpoint": "v0.193",
+		"enabled": environment_presentation_shell_v2_enabled,
+		"initialized": presentation_shell_v2_initialized,
+		"fallbackActive": presentation_shell_v2_fallback_active,
+		"fallbackReason": presentation_shell_v2_fallback_reason,
+		"legacyShellFallbackAvailable": true,
+		"legacyFallbackFlag": "--salto-riverbank-bridge-approach-hardening",
+		"requiresFiveCharacterSlots": true,
+		"requiresGroundMaterialOptIn": true,
+		"requiresRoadMaterialOptIn": true,
+		"reviewOnly": true,
+		"runtimeArtSlotAdded": false,
+		"aiImageGenerated": false,
+		"newTextureImported": false,
+		"wetGraniteBridgeRiverbankMaterialIntegrated": false,
+		"bridgeRiverbankMaterialSlotAdded": false,
+		"browserRuntimeChanged": false,
+		"saveWritesAllowed": false,
+		"stableIdsChanged": false,
+		"gameplayPathingChanged": false,
+		"navigationSemanticsChanged": false,
+		"collisionGeometryChanged": false,
+		"objectiveLogicChanged": false,
+		"aiLogicChanged": false,
+		"preservesFiveCharacterMaterialSlots": true,
+		"addsEnvironmentMaterialSlot": false,
+		"usesExistingGroundMaterial": ground_material_experiment_enabled,
+		"usesExistingRoadMaterial": road_material_experiment_enabled,
+		"groundMaterialSha256": str(ground_material_status.get("actualSha256", "")),
+		"roadMaterialSha256": str(road_material_status.get("actualSha256", "")),
+		"largeFloatingRectanglesMateriallyReduced": environment_presentation_shell_v2_enabled and presentation_shell_v2_initialized,
+		"giantTransparentDiagnosticPads": 0,
+		"roadsFollowRoutes": environment_presentation_shell_v2_enabled and presentation_shell_v2_initialized,
+		"riverReadsContinuously": environment_presentation_shell_v2_enabled and presentation_shell_v2_initialized,
+		"banksFrameRiver": environment_presentation_shell_v2_enabled and presentation_shell_v2_initialized,
+		"bridgeReadsAsCrossing": environment_presentation_shell_v2_enabled and presentation_shell_v2_initialized,
+		"structureMassesImproved": environment_presentation_shell_v2_enabled and presentation_shell_v2_initialized,
+		"charactersGrounded": environment_presentation_shell_v2_enabled and presentation_shell_v2_initialized,
+		"minimalOverlay": true,
+		"overcastPaletteRestrained": true,
+		"explicitZOrder": {
+			"terrainBaseY": 0.104,
+			"scopedGroundY": 0.132,
+			"riverCoreY": 0.172,
+			"bankY": 0.206,
+			"roadY": 0.228,
+			"bridgeDeckY": 0.336,
+			"siteMarkerY": 0.280,
+			"structureContactY": 0.160,
+			"unitContactY": 0.170
+		},
+		"surfaceCounts": presentation_shell_v2_surface_counts.duplicate(true),
+		"proceduralMaterialCacheKeys": presentation_shell_v2_material_cache.keys(),
+		"proceduralMaterialCreateCount": presentation_shell_v2_material_create_count,
+		"proceduralMaterialReuseCount": presentation_shell_v2_material_reuse_count,
+		"noPerFrameDecodeOrParse": true,
+		"noRepeatedMaterialCreation": true,
+		"gameplayCollisionNodesLeftUntouched": ["runtime fixture positions", "real-input click radii", "site capture radius", "bridge traversal smoke path", "pathing/navigation adapters", "stable-id adapters"],
+		"visualOnlyNodes": true
 	}
 
 func configure_worker_art_experiment(options: Dictionary) -> Dictionary:
@@ -4902,6 +5009,8 @@ func get_spike_status() -> Dictionary:
 	status["environmentStructureShellHardening"] = _environment_structure_shell_hardening_status()
 	status["environmentRiverbankBridgeApproachEnabled"] = environment_riverbank_bridge_approach_enabled
 	status["environmentRiverbankBridgeApproach"] = _environment_riverbank_bridge_approach_status()
+	status["environmentPresentationShellV2Enabled"] = environment_presentation_shell_v2_enabled
+	status["environmentPresentationShellV2"] = _environment_presentation_shell_v2_status()
 	var worker_art_loaded := _worker_art_is_active()
 	_refresh_worker_art_counters()
 	var barracks_material_loaded := _barracks_material_is_active()
@@ -4958,6 +5067,7 @@ func get_spike_status() -> Dictionary:
 	status["environmentFoundationArtSlotCount"] = int(status["environmentMaterialOptInRequestedSlotCount"])
 	status["environmentReadabilityArtSlotCount"] = 0
 	status["environmentGeometryConvergenceArtSlotCount"] = 0
+	status["environmentPresentationShellV2ArtSlotCount"] = 0
 	status["terrainMaterialSourceImported"] = ground_material_loaded
 	status["terrainMaterialRuntimeSlotAdded"] = ground_material_experiment_enabled
 	status["roadMaterialSourceImported"] = road_material_loaded
@@ -5332,6 +5442,9 @@ func _apply_light_preset() -> void:
 	if environment_riverbank_bridge_approach_enabled:
 		light.light_energy = 1.15
 		light.light_color = Color(0.93, 0.99, 0.90)
+	if environment_presentation_shell_v2_enabled:
+		light.light_energy = 1.12
+		light.light_color = Color(0.91, 0.96, 0.88)
 
 func _create_terrain() -> void:
 	terrain_root = Node3D.new()
@@ -5353,6 +5466,16 @@ func _create_terrain() -> void:
 	ground.mesh = mesh
 	ground.material_override = _material(_terrain_color())
 	terrain_root.add_child(ground)
+
+	if environment_presentation_shell_v2_enabled:
+		if _create_presentation_shell_v2_terrain():
+			return
+		presentation_shell_v2_fallback_active = true
+		presentation_shell_v2_fallback_reason = "v2 compositor returned false; using legacy riverbank bridge approach shell"
+		environment_geometry_convergence_enabled = true
+		environment_shell_live_qa_enabled = true
+		environment_structure_shell_hardening_enabled = true
+		environment_riverbank_bridge_approach_enabled = true
 
 	if environment_shell_live_qa_enabled:
 		_add_static_box("north_highland_height_band", Vector3(-1.5, 0.055, -5.35), Vector3(16.4, 0.08, 0.34), _ridge_color().darkened(0.03))
@@ -5495,6 +5618,162 @@ func _create_terrain() -> void:
 		_add_environment_geometry_convergence_layers()
 	if environment_riverbank_bridge_approach_enabled:
 		_add_environment_riverbank_bridge_approach_layers()
+
+func _reset_presentation_shell_v2_surface_counts() -> void:
+	presentation_shell_v2_initialized = false
+	presentation_shell_v2_surface_counts = {
+		"ground": 0,
+		"terrainEdges": 0,
+		"roads": 0,
+		"river": 0,
+		"banks": 0,
+		"bridge": 0,
+		"structures": 0,
+		"sites": 0,
+		"unitContact": 0,
+		"overlays": 0
+	}
+
+func _count_presentation_shell_v2_surface(category: String) -> void:
+	presentation_shell_v2_surface_counts[category] = int(presentation_shell_v2_surface_counts.get(category, 0)) + 1
+
+func _presentation_shell_v2_material(key: String, color: Color, transparent: bool = false, emissive: bool = false, emission_energy: float = 0.0) -> StandardMaterial3D:
+	var cache_key := "%s|%s|%s|%s" % [key, color.to_html(true), str(transparent or color.a < 1.0), str(emissive)]
+	if presentation_shell_v2_material_cache.has(cache_key):
+		presentation_shell_v2_material_reuse_count += 1
+		return presentation_shell_v2_material_cache[cache_key]
+	var material := _material(color, transparent, emissive, emission_energy)
+	presentation_shell_v2_material_cache[cache_key] = material
+	presentation_shell_v2_material_create_count += 1
+	return material
+
+func _add_presentation_shell_v2_box(name: String, position: Vector3, scale: Vector3, color: Color, category: String, transparent: bool = false, rotation_y_degrees: float = 0.0, emissive: bool = false) -> void:
+	var mesh_instance := MeshInstance3D.new()
+	mesh_instance.name = name
+	var mesh := BoxMesh.new()
+	mesh.size = scale
+	mesh_instance.mesh = mesh
+	mesh_instance.position = position
+	mesh_instance.rotation_degrees = Vector3(0.0, rotation_y_degrees, 0.0)
+	mesh_instance.material_override = _presentation_shell_v2_material(category, color, transparent, emissive, _lume_emission())
+	terrain_root.add_child(mesh_instance)
+	_count_presentation_shell_v2_surface(category)
+
+func _add_presentation_shell_v2_cylinder(name: String, position: Vector3, radius: float, height: float, color: Color, category: String, transparent: bool = false, emissive: bool = false) -> void:
+	var mesh_instance := MeshInstance3D.new()
+	mesh_instance.name = name
+	var mesh := CylinderMesh.new()
+	mesh.top_radius = radius
+	mesh.bottom_radius = radius
+	mesh.height = height
+	mesh.radial_segments = 32
+	mesh_instance.mesh = mesh
+	mesh_instance.position = position
+	mesh_instance.material_override = _presentation_shell_v2_material(category, color, transparent, emissive, _lume_emission())
+	terrain_root.add_child(mesh_instance)
+	_count_presentation_shell_v2_surface(category)
+
+func _add_presentation_shell_v2_ground_surface(name: String, position: Vector3, scale: Vector3, fallback_color: Color, transparent: bool = false) -> void:
+	if not _ground_material_is_active():
+		_add_presentation_shell_v2_box(name, position, scale, fallback_color, "ground", transparent)
+		return
+	_add_presentation_shell_v2_box("%s_value_underlay" % name, position, scale, fallback_color, "ground", transparent)
+	var mesh_instance := MeshInstance3D.new()
+	mesh_instance.name = name
+	var mesh := BoxMesh.new()
+	mesh.size = scale
+	mesh_instance.mesh = mesh
+	mesh_instance.position = position + Vector3(0.0, GROUND_MATERIAL_OVERLAY_LIFT, 0.0)
+	mesh_instance.material_override = _ground_material()
+	terrain_root.add_child(mesh_instance)
+	ground_material_applied_surface_count += 1
+	if not ground_material_applied_surface_names.has(name):
+		ground_material_applied_surface_names.append(name)
+	_refresh_ground_material_counters()
+
+func _add_presentation_shell_v2_road_surface(name: String, position: Vector3, scale: Vector3, fallback_color: Color, transparent: bool = false, rotation_y_degrees: float = 0.0) -> void:
+	if not _road_material_is_active():
+		_add_presentation_shell_v2_box(name, position, scale, fallback_color, "roads", transparent, rotation_y_degrees)
+		return
+	_add_presentation_shell_v2_box("%s_procedural_underlay" % name, position, scale, fallback_color, "roads", transparent, rotation_y_degrees)
+	var mesh_instance := MeshInstance3D.new()
+	mesh_instance.name = name
+	var mesh := BoxMesh.new()
+	mesh.size = scale
+	mesh_instance.mesh = mesh
+	mesh_instance.position = position + Vector3(0.0, ROAD_MATERIAL_OVERLAY_LIFT, 0.0)
+	mesh_instance.rotation_degrees = Vector3(0.0, rotation_y_degrees, 0.0)
+	mesh_instance.material_override = _road_material()
+	terrain_root.add_child(mesh_instance)
+	road_material_applied_surface_count += 1
+	if not road_material_applied_surface_names.has(name):
+		road_material_applied_surface_names.append(name)
+	_refresh_road_material_counters()
+
+func _add_presentation_shell_v2_route_segment(name: String, start: Vector3, end: Vector3, width: float, y: float, color: Color, category: String, height: float = 0.030, transparent: bool = false) -> void:
+	var center := Vector3((start.x + end.x) * 0.5, y, (start.z + end.z) * 0.5)
+	var delta := Vector2(end.x - start.x, end.z - start.z)
+	var length := maxf(delta.length(), 0.01)
+	var rotation := rad_to_deg(atan2(delta.y, delta.x))
+	if category == "roads":
+		_add_presentation_shell_v2_road_surface(name, center, Vector3(length, height, width), color, transparent, rotation)
+	else:
+		_add_presentation_shell_v2_box(name, center, Vector3(length, height, width), color, category, transparent, rotation)
+
+func _create_presentation_shell_v2_terrain() -> bool:
+	_reset_presentation_shell_v2_surface_counts()
+	if terrain_root == null:
+		presentation_shell_v2_fallback_reason = "missing terrain root"
+		return false
+	var ground_color := Color(0.25, 0.32, 0.22, 0.96)
+	var stage_color := Color(0.29, 0.38, 0.24, 0.82)
+	var hostile_color := Color(0.31, 0.20, 0.16, 0.64)
+	var edge_color := Color(0.15, 0.19, 0.13, 0.78)
+	var road_color := Color(0.54, 0.48, 0.35, 0.92)
+	var road_shadow := Color(0.10, 0.09, 0.07, 0.72)
+	var water_core := Color(0.025, 0.16, 0.22, 0.96)
+	var water_lip := Color(0.20, 0.40, 0.42, 0.24)
+	var bank_color := Color(0.32, 0.40, 0.29, 0.90)
+	var bank_shadow := Color(0.055, 0.085, 0.060, 0.64)
+	var bridge_stone := Color(0.56, 0.54, 0.46)
+	var timber := Color(0.28, 0.20, 0.12)
+	_add_presentation_shell_v2_ground_surface("v0193_friendly_staging_ground", Vector3(-4.88, 0.152, 2.72), Vector3(2.42, 0.036, 1.54), stage_color, true)
+	_add_presentation_shell_v2_ground_surface("v0193_command_pocket_ground", Vector3(-5.10, 0.140, -2.18), Vector3(2.10, 0.034, 1.46), ground_color.darkened(0.08), true)
+	_add_presentation_shell_v2_ground_surface("v0193_mine_yard_ground", Vector3(-1.78, 0.142, 0.30), Vector3(2.18, 0.036, 1.56), ground_color.lightened(0.04), true)
+	_add_presentation_shell_v2_ground_surface("v0193_bridge_west_approach_ground", Vector3(-0.58, 0.138, 0.94), Vector3(1.72, 0.034, 1.20), ground_color.darkened(0.02), true)
+	_add_presentation_shell_v2_ground_surface("v0193_bridge_east_approach_ground", Vector3(2.08, 0.138, 0.96), Vector3(1.86, 0.034, 1.28), ground_color.darkened(0.03), true)
+	_add_presentation_shell_v2_ground_surface("v0193_ruins_pocket_ground", Vector3(3.90, 0.140, 2.50), Vector3(1.92, 0.034, 1.18), ground_color.darkened(0.10), true)
+	_add_presentation_shell_v2_ground_surface("v0193_barracks_pocket_ground", Vector3(-4.62, 0.146, -3.18), Vector3(1.94, 0.034, 1.14), stage_color.darkened(0.10), true)
+	_add_presentation_shell_v2_ground_surface("v0193_hostile_approach_ground", Vector3(4.18, 0.150, -1.04), Vector3(2.92, 0.034, 1.20), hostile_color, true)
+	_add_presentation_shell_v2_box("v0193_north_foothold_edge", Vector3(-1.50, 0.160, -4.30), Vector3(8.80, 0.070, 0.32), edge_color, "terrainEdges", true)
+	_add_presentation_shell_v2_box("v0193_west_terrace_edge", Vector3(-6.16, 0.164, 0.88), Vector3(0.38, 0.080, 5.25), edge_color.darkened(0.04), "terrainEdges", true)
+	_add_presentation_shell_v2_box("v0193_south_foothold_soft_edge", Vector3(-0.70, 0.156, 4.36), Vector3(7.60, 0.055, 0.30), edge_color.lightened(0.06), "terrainEdges", true)
+	_add_presentation_shell_v2_route_segment("v0193_main_road_route_west", Vector3(-5.62, 0, 0.68), Vector3(-1.10, 0, 0.66), 0.58, 0.228, road_color, "roads", 0.034, true)
+	_add_presentation_shell_v2_route_segment("v0193_main_road_route_bridge", Vector3(-1.10, 0, 0.66), Vector3(1.95, 0, 0.90), 0.56, 0.232, road_color.lightened(0.02), "roads", 0.034, true)
+	_add_presentation_shell_v2_route_segment("v0193_hostile_route_to_crossing", Vector3(1.95, 0, 0.90), Vector3(5.32, 0, -0.98), 0.44, 0.226, road_color.darkened(0.10), "roads", 0.032, true)
+	_add_presentation_shell_v2_route_segment("v0193_barracks_side_route", Vector3(-4.48, 0, 0.58), Vector3(-4.72, 0, -3.36), 0.42, 0.226, road_color.darkened(0.08), "roads", 0.032, true)
+	_add_presentation_shell_v2_route_segment("v0193_mine_spur_route", Vector3(-2.18, 0, 0.66), Vector3(-1.56, 0, 0.22), 0.36, 0.230, road_color.lightened(0.04), "roads", 0.032, true)
+	_add_presentation_shell_v2_route_segment("v0193_ruins_side_route", Vector3(2.34, 0, 1.96), Vector3(4.18, 0, 2.58), 0.34, 0.226, road_color.darkened(0.12), "roads", 0.030, true)
+	_add_presentation_shell_v2_route_segment("v0193_main_road_shadow_north", Vector3(-5.62, 0, 0.32), Vector3(1.78, 0, 0.58), 0.08, 0.214, road_shadow, "overlays", 0.018, true)
+	_add_presentation_shell_v2_route_segment("v0193_main_road_shadow_south", Vector3(-5.62, 0, 1.04), Vector3(1.82, 0, 1.18), 0.08, 0.214, road_shadow.darkened(0.06), "overlays", 0.018, true)
+	_add_presentation_shell_v2_route_segment("v0193_river_channel_north", Vector3(0.45, 0, -5.52), Vector3(0.55, 0, -1.00), 0.44, 0.172, water_core, "river", 0.040, true)
+	_add_presentation_shell_v2_route_segment("v0193_river_channel_bridge", Vector3(0.55, 0, -1.00), Vector3(0.62, 0, 1.62), 0.48, 0.174, water_core.darkened(0.06), "river", 0.042, true)
+	_add_presentation_shell_v2_route_segment("v0193_river_channel_south", Vector3(0.62, 0, 1.62), Vector3(0.80, 0, 5.62), 0.44, 0.172, water_core.lightened(0.02), "river", 0.040, true)
+	_add_presentation_shell_v2_route_segment("v0193_river_west_bank_north", Vector3(0.04, 0, -5.10), Vector3(0.16, 0, -0.62), 0.17, 0.206, bank_color.darkened(0.04), "banks", 0.032, true)
+	_add_presentation_shell_v2_route_segment("v0193_river_west_bank_south", Vector3(0.18, 0, 1.42), Vector3(0.26, 0, 5.28), 0.17, 0.206, bank_color, "banks", 0.032, true)
+	_add_presentation_shell_v2_route_segment("v0193_river_east_bank_north", Vector3(0.98, 0, -5.18), Vector3(1.08, 0, -0.58), 0.17, 0.206, bank_color.lightened(0.04), "banks", 0.032, true)
+	_add_presentation_shell_v2_route_segment("v0193_river_east_bank_south", Vector3(1.12, 0, 1.38), Vector3(1.28, 0, 5.26), 0.17, 0.206, bank_color, "banks", 0.032, true)
+	_add_presentation_shell_v2_box("v0193_bridge_under_span_shadow", Vector3(0.58, 0.298, 0.88), Vector3(1.96, 0.036, 0.62), bank_shadow, "bridge", true)
+	_add_presentation_shell_v2_box("v0193_bridge_deck_crossing_mass", Vector3(0.58, 0.336, 0.88), Vector3(1.58, 0.070, 0.46), bridge_stone, "bridge")
+	_add_presentation_shell_v2_box("v0193_bridge_west_abutment", Vector3(-0.50, 0.316, 0.88), Vector3(0.28, 0.128, 0.66), bridge_stone.darkened(0.16), "bridge")
+	_add_presentation_shell_v2_box("v0193_bridge_east_abutment", Vector3(1.66, 0.316, 0.88), Vector3(0.28, 0.128, 0.66), bridge_stone.darkened(0.10), "bridge")
+	_add_presentation_shell_v2_box("v0193_bridge_north_low_rail", Vector3(0.58, 0.422, 0.52), Vector3(1.84, 0.052, 0.065), timber, "bridge")
+	_add_presentation_shell_v2_box("v0193_bridge_south_low_rail", Vector3(0.58, 0.422, 1.24), Vector3(1.84, 0.052, 0.065), timber, "bridge")
+	_add_presentation_shell_v2_route_segment("v0193_ford_shallow_crossing_read", Vector3(-0.24, 0, 0.86), Vector3(1.34, 0, 0.94), 0.18, 0.352, water_lip.lightened(0.12), "bridge", 0.020, true)
+	presentation_shell_v2_initialized = true
+	presentation_shell_v2_fallback_active = false
+	presentation_shell_v2_fallback_reason = ""
+	return true
 
 func _add_environment_foundation_shell_layers() -> void:
 	if environment_geometry_convergence_enabled:
@@ -6723,6 +7002,49 @@ func _sync_v0132_site_guidance_markers() -> void:
 	worker_guidance_label.position = worker_position + Vector3(0.0, 0.72, 0.0)
 	worker_guidance_label.visible = show_worker_guidance
 
+func _add_presentation_shell_v2_visual_box(name: String, position: Vector3, scale: Vector3, color: Color, category: String, transparent: bool = false, emissive: bool = false) -> void:
+	var mesh_instance := MeshInstance3D.new()
+	mesh_instance.name = name
+	var mesh := BoxMesh.new()
+	mesh.size = scale
+	mesh_instance.mesh = mesh
+	mesh_instance.position = position
+	mesh_instance.material_override = _presentation_shell_v2_material(category, color, transparent, emissive, _lume_emission())
+	visual_root.add_child(mesh_instance)
+	_count_presentation_shell_v2_surface(category)
+
+func _add_presentation_shell_v2_structure_mass(id: String, fixture: String, position: Vector3, scale: Vector3, color: Color, structure: Dictionary) -> void:
+	var team := str(structure.get("team", "neutral"))
+	var contact := Color(0.035, 0.045, 0.030, 0.50)
+	if team == "friendly":
+		contact = Color(0.055, 0.090, 0.050, 0.52)
+	elif team == "enemy":
+		contact = Color(0.120, 0.035, 0.025, 0.48)
+	_add_presentation_shell_v2_visual_box("%s_v0193_grounded_mass_shadow" % id, position + Vector3(0.0, -0.275, 0.02), Vector3(scale.x * 1.12, 0.032, scale.z * 1.04), contact, "structures", true)
+	match fixture:
+		"command_hall":
+			_add_presentation_shell_v2_visual_box("%s_v0193_keep_core" % id, position + Vector3(0.0, 0.34, -scale.z * 0.04), Vector3(scale.x * 0.48, 0.56, scale.z * 0.42), color.darkened(0.10), "structures")
+			_add_presentation_shell_v2_visual_box("%s_v0193_low_roof_mass" % id, position + Vector3(0.0, 0.74, 0.0), Vector3(scale.x * 0.86, 0.105, scale.z * 0.62), color.lightened(0.12), "structures")
+			_add_presentation_shell_v2_visual_box("%s_v0193_hearth_slot" % id, position + Vector3(scale.x * 0.34, 0.22, scale.z * 0.54), Vector3(0.075, 0.120, 0.050), Color(0.86, 0.45, 0.19), "structures", true, true)
+		"west_stone_cut":
+			_add_presentation_shell_v2_visual_box("%s_v0193_quarry_face" % id, position + Vector3(-scale.x * 0.34, 0.18, scale.z * 0.42), Vector3(scale.x * 0.42, 0.34, 0.120), Color(0.055, 0.060, 0.050), "structures")
+			_add_presentation_shell_v2_visual_box("%s_v0193_retaining_wall" % id, position + Vector3(scale.x * 0.22, 0.06, scale.z * 0.50), Vector3(scale.x * 0.70, 0.105, 0.100), Color(0.48, 0.46, 0.38), "structures")
+			_add_presentation_shell_v2_visual_box("%s_v0193_tailings_stack" % id, position + Vector3(scale.x * 0.34, 0.10, -scale.z * 0.26), Vector3(scale.x * 0.50, 0.115, scale.z * 0.30), Color(0.58, 0.56, 0.48), "structures")
+		"barracks":
+			var restoring := str(structure.get("constructionState", "")) != "complete"
+			_add_barracks_material_box("%s_v0193_left_training_mass" % id, position + Vector3(-scale.x * 0.24, 0.28, -scale.z * 0.02), Vector3(scale.x * 0.34, 0.34, scale.z * 0.64), color.lightened(0.10))
+			_count_presentation_shell_v2_surface("structures")
+			_add_barracks_material_box("%s_v0193_right_training_mass" % id, position + Vector3(scale.x * 0.24, 0.25, scale.z * 0.02), Vector3(scale.x * 0.34, 0.30, scale.z * 0.64), color.darkened(0.10))
+			_count_presentation_shell_v2_surface("structures")
+			_add_barracks_material_box("%s_v0193_roof_binding" % id, position + Vector3(0.0, 0.62, 0.0), Vector3(scale.x * 0.74, 0.075, scale.z * 0.58), color.lightened(0.18))
+			_count_presentation_shell_v2_surface("structures")
+			_add_presentation_shell_v2_visual_box("%s_v0193_drill_yard_edge" % id, position + Vector3(0.0, -0.13, scale.z * 0.72), Vector3(scale.x * 0.98, 0.045, 0.100), Color(0.40, 0.31, 0.18, 0.54), "structures", true)
+			if restoring:
+				var progress := clampf(float(structure.get("constructionProgress", 0.0)), 0.0, 1.0)
+				_add_presentation_shell_v2_visual_box("%s_v0193_restoration_progress" % id, position + Vector3((progress - 1.0) * scale.x * 0.20, 0.72, scale.z * 0.50), Vector3(max(0.08, scale.x * 0.40 * progress), 0.044, 0.055), Color(0.42, 0.78, 0.48, 0.58), "structures", true)
+		_:
+			_add_presentation_shell_v2_visual_box("%s_v0193_site_shell_mass" % id, position + Vector3(0.0, 0.20, 0.0), Vector3(scale.x * 0.58, 0.30, scale.z * 0.58), color.darkened(0.08), "structures", true)
+
 func _add_structure(structure: Dictionary) -> void:
 	var id := str(structure["id"])
 	var fixture := str(structure["fixtureId"])
@@ -6734,6 +7056,9 @@ func _add_structure(structure: Dictionary) -> void:
 		_add_barracks_material_box(id, position, base_scale, color)
 	else:
 		_add_box(id, position, base_scale, color)
+	if environment_presentation_shell_v2_enabled:
+		_add_presentation_shell_v2_structure_mass(id, fixture, position, scale, color, structure)
+		return
 	if environment_foundation_review_enabled:
 		_add_environment_foundation_structure_hierarchy(id, fixture, position, scale, color, structure)
 	if fixture == "command_hall" or fixture == "enemy_stronghold":
@@ -6891,6 +7216,14 @@ func _add_environment_structure_shell_hardening_details(id: String, fixture: Str
 
 func _add_capture_site(site: Dictionary) -> void:
 	var position := _to_world(site["position"], 0.13)
+	if environment_presentation_shell_v2_enabled:
+		var site_id := str(site["id"])
+		var site_color := _site_color(site)
+		_add_presentation_shell_v2_cylinder("%s_v0193_low_claim_disc" % site_id, position + Vector3(0.0, -0.062, 0.0), 0.34, 0.030, site_color.lightened(0.08), "sites", true)
+		_add_presentation_shell_v2_cylinder("%s_v0193_outer_state_ring" % site_id, position + Vector3(0.0, -0.082, 0.0), 0.52, 0.018, Color(0.82, 0.70, 0.26, 0.28), "sites", true)
+		_add_presentation_shell_v2_visual_box("%s_v0193_claim_post" % site_id, position + Vector3(0.0, 0.18, 0.0), Vector3(0.070, 0.28, 0.070), site_color.lightened(0.05), "sites", true)
+		_add_presentation_shell_v2_visual_box("%s_v0193_road_tick" % site_id, position + Vector3(0.26, 0.060, 0.18), Vector3(0.22, 0.035, 0.055), Color(0.86, 0.66, 0.24, 0.36), "sites", true)
+		return
 	if environment_shell_live_qa_enabled:
 		_add_box(str(site["id"]), position, Vector3(0.38, 0.10, 0.38), _site_color(site).darkened(0.08), true)
 		_add_cylinder("%s_marker_disc" % str(site["id"]), position + Vector3(0, -0.055, 0), 0.30, 0.038, _site_color(site).lightened(0.08), true)
@@ -6983,7 +7316,9 @@ func _add_unit_silhouette(unit: Dictionary) -> void:
 	elif ashen_billboard:
 		unit_y = _ashen_art_unit_y()
 	mesh_instance.position = _to_world(unit["position"], unit_y)
-	if environment_foundation_review_enabled:
+	if environment_presentation_shell_v2_enabled:
+		_add_presentation_shell_v2_unit_contact_shadow(unit, mesh_instance.position)
+	elif environment_foundation_review_enabled:
 		_add_post_freeze_review_unit_contact_shadow(unit, mesh_instance.position)
 	if worker_billboard:
 		mesh_instance.material_override = _worker_art_billboard_material()
@@ -7015,6 +7350,23 @@ func _add_post_freeze_review_unit_contact_shadow(unit: Dictionary, position: Vec
 		shadow_scale = Vector3(0.46, 0.020, 0.28)
 		shadow_color = Color(0.08, 0.03, 0.02, 0.44)
 	_add_box("%s_post_freeze_review_contact_shadow" % str(unit.get("id", "unit")), Vector3(position.x, 0.155, position.z + 0.06), shadow_scale, shadow_color, true)
+
+func _add_presentation_shell_v2_unit_contact_shadow(unit: Dictionary, position: Vector3) -> void:
+	var role := str(unit.get("role", ""))
+	var fixture := str(unit.get("fixtureId", ""))
+	var team := str(unit.get("team", ""))
+	var shadow_scale := Vector3(0.34, 0.018, 0.22)
+	var shadow_color := Color(0.025, 0.030, 0.024, 0.36)
+	if role == "hero":
+		shadow_scale = Vector3(0.50, 0.018, 0.30)
+	elif role == "Worker":
+		shadow_scale = Vector3(0.34, 0.018, 0.22)
+	elif fixture == "militia":
+		shadow_scale = Vector3(0.40, 0.018, 0.24)
+	elif team == "enemy":
+		shadow_scale = Vector3(0.42, 0.018, 0.26)
+		shadow_color = Color(0.070, 0.022, 0.018, 0.34)
+	_add_presentation_shell_v2_visual_box("%s_v0193_contact_shadow" % str(unit.get("id", "unit")), Vector3(position.x, 0.170, position.z + 0.055), shadow_scale, shadow_color, "unitContact", true)
 
 func _add_unit_silhouette_parts(parent: MeshInstance3D, unit: Dictionary) -> void:
 	var fixture := str(unit["fixtureId"])
@@ -7327,6 +7679,8 @@ func _normalize_visual_preset(preset: String) -> String:
 	return ""
 
 func _preset_scope() -> String:
+	if environment_presentation_shell_v2_enabled:
+		return "v0193-opt-in-presentation-shell-v2-comparator-excluded-from-default"
 	if environment_riverbank_bridge_approach_enabled:
 		return "v0187-opt-in-riverbank-bridge-approach-lane-hardening-excluded-from-default"
 	if environment_structure_shell_hardening_enabled:
@@ -7346,6 +7700,8 @@ func _preset_scope() -> String:
 	return "player-facing-default-clean-readability-with-restrained-atmospheric-cues"
 
 func _terrain_color() -> Color:
+	if environment_presentation_shell_v2_enabled:
+		return Color(0.20, 0.26, 0.18)
 	if environment_riverbank_bridge_approach_enabled:
 		return Color(0.24, 0.31, 0.22)
 	if environment_shell_live_qa_enabled:
@@ -7363,6 +7719,8 @@ func _terrain_color() -> Color:
 	return Color(0.16, 0.22, 0.17)
 
 func _ridge_color() -> Color:
+	if environment_presentation_shell_v2_enabled:
+		return Color(0.29, 0.35, 0.24)
 	if environment_riverbank_bridge_approach_enabled:
 		return Color(0.32, 0.38, 0.27)
 	if environment_shell_live_qa_enabled:
@@ -7378,6 +7736,8 @@ func _ridge_color() -> Color:
 	return Color(0.22, 0.27, 0.21)
 
 func _road_color() -> Color:
+	if environment_presentation_shell_v2_enabled:
+		return Color(0.50, 0.44, 0.32)
 	if environment_riverbank_bridge_approach_enabled:
 		return Color(0.47, 0.42, 0.31)
 	if environment_shell_live_qa_enabled:
@@ -7393,6 +7753,8 @@ func _road_color() -> Color:
 	return Color(0.42, 0.36, 0.25)
 
 func _water_color() -> Color:
+	if environment_presentation_shell_v2_enabled:
+		return Color(0.025, 0.16, 0.22)
 	if environment_riverbank_bridge_approach_enabled:
 		return Color(0.025, 0.18, 0.25)
 	if environment_shell_live_qa_enabled:

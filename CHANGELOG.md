@@ -1,5 +1,43 @@
 # Changelog
 
+# v0.193 Isolated Salto Presentation-Shell V2 Prototype Implementation And Human-Review Stop - 2026-06-09
+
+This checkpoint implements one isolated opt-in Godot Salto presentation-shell v2 prototype after the v0.192 human-review override. It preserves the legacy shell as comparator/fallback, generates zero images, adds zero imported art slots, integrates no wet-granite bridge-riverbank material, preserves the default procedural launcher and all prior launchers, keeps the browser runtime untouched, and changes no gameplay, pathing, collisions, objectives, AI, saves, stable IDs, or production manifests.
+
+Added:
+
+- `GODOT_REVIEW_SALTO_PRESENTATION_SHELL_V2_WINDOWS.bat`.
+- `GODOT_VALIDATE_SALTO_PRESENTATION_SHELL_V2_WINDOWS.bat`.
+- `GODOT_CAPTURE_SALTO_PRESENTATION_SHELL_V2_WINDOWS.bat`.
+- `tools/godot/launchGodotSaltoPresentationShellV2Windows.ps1`.
+- `tools/godot/reviewGodotSaltoPresentationShellV2Windows.ps1`.
+- `tools/godot/validateGodotSaltoPresentationShellV2Windows.ps1`.
+- `tools/godot/captureGodotSaltoPresentationShellV2Windows.ps1`.
+- `tools/godot/saltoPresentationShellV2Tool.mjs`.
+- `docs/V0193_SHELL_V2_PROTOTYPE_QA_BENCHMARK.md`.
+- `docs/V0193_SHELL_V2_BOUNDARY_ROLLBACK.md`.
+- `docs/V0193_IMPLEMENTATION_REPORT.md`.
+
+Validation:
+
+- `PASS_V0193_PRESENTATION_SHELL_V2_VALIDATION`.
+- `PASS_V0193_PRESENTATION_SHELL_V2_BENCHMARK`.
+- `PASS_V0193_PRESENTATION_SHELL_V2_BOUNDARY`.
+- `PASS_V0193_SALTO_PRESENTATION_SHELL_V2_VALIDATION_READY`.
+- `PASS_V0193_PRESENTATION_SHELL_V2_CAPTURE`.
+- Legacy L1 average FPS `75.15`; v2 average FPS `75.16`; FPS ratio `1.0001`.
+- Legacy L1 p95 `14.29` ms; v2 p95 `13.32` ms; p95 worsening `-6.79%`.
+
+Boundaries:
+
+- Zero images generated.
+- Zero imported art slots added.
+- Existing five character slots, ground material, and road material preserved.
+- Wet-granite bridge-riverbank material remains private-comparator-only.
+- Default launcher remains procedural and all prior launchers remain unchanged.
+- Browser runtime, gameplay, pathing, collisions, objectives, AI, saves, stable IDs, production manifests, selected prior art, metadata, fallbacks, and required evidence remain untouched.
+- v0.194 was not started.
+
 # v0.192 Human-Review Override Presentation-Shell V2 Architecture Audit And Contract Stop - 2026-06-09
 
 This checkpoint overrides the previously prepared bridge-riverbank material integration recommendation. It audits the current Godot Salto environment-shell architecture, preserves the legacy shell as comparator/fallback, selects one bounded parallel opt-in presentation-shell v2 architecture, prepares v0.193, generates zero images, adds zero slots, starts no runtime implementation, changes no launcher, keeps the default launcher procedural, and keeps the browser runtime untouched.

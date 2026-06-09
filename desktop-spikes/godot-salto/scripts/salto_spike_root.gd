@@ -64,6 +64,7 @@ const SCRIPT_ARG_PREFIXES := [
 	"--salto-environment-shell-live-qa",
 	"--salto-structure-shell-hardening",
 	"--salto-riverbank-bridge-approach-hardening",
+	"--salto-presentation-shell-v2",
 	"--ground-material-opt-in",
 	"--ground-material-source=",
 	"--ground-material-metadata=",
@@ -936,13 +937,17 @@ func _configure_worker_art_for_active_scene() -> void:
 		active_scene.configure_environment_structure_shell_hardening(_script_args().has("--salto-structure-shell-hardening"))
 	if active_scene.has_method("configure_environment_riverbank_bridge_approach"):
 		active_scene.configure_environment_riverbank_bridge_approach(_script_args().has("--salto-riverbank-bridge-approach-hardening"))
+	if active_scene.has_method("configure_environment_presentation_shell_v2"):
+		active_scene.configure_environment_presentation_shell_v2(_script_args().has("--salto-presentation-shell-v2"))
 
 func _apply_review_framing_for_active_scene() -> void:
 	if not _script_args().has("--salto-three-slot-review-framing") and not _script_args().has("--salto-four-slot-review-framing") and not _script_args().has("--salto-five-slot-review-framing"):
 		return
 	if active_mode != MODE_25D or active_scene == null or not is_instance_valid(active_scene):
 		return
-	if _script_args().has("--salto-riverbank-bridge-approach-hardening") and active_scene.has_method("apply_environment_riverbank_bridge_approach_framing"):
+	if _script_args().has("--salto-presentation-shell-v2") and active_scene.has_method("apply_environment_presentation_shell_v2_framing"):
+		active_scene.apply_environment_presentation_shell_v2_framing()
+	elif _script_args().has("--salto-riverbank-bridge-approach-hardening") and active_scene.has_method("apply_environment_riverbank_bridge_approach_framing"):
 		active_scene.apply_environment_riverbank_bridge_approach_framing()
 	elif _script_args().has("--salto-structure-shell-hardening") and active_scene.has_method("apply_environment_structure_shell_hardening_framing"):
 		active_scene.apply_environment_structure_shell_hardening_framing()
@@ -1800,6 +1805,7 @@ func run_player_slice_validation() -> void:
 	var environment_shell_live_qa: Dictionary = final_status.get("environmentShellLiveQa", {})
 	var environment_structure_shell_hardening: Dictionary = final_status.get("environmentStructureShellHardening", {})
 	var environment_riverbank_bridge_approach: Dictionary = final_status.get("environmentRiverbankBridgeApproach", {})
+	var environment_presentation_shell_v2: Dictionary = final_status.get("environmentPresentationShellV2", {})
 	performance_smoke["workerArtOptInRequested"] = _script_args().has("--worker-art-opt-in")
 	performance_smoke["workerArtExperiment"] = worker_art
 	performance_smoke["barracksMaterialOptInRequested"] = _script_args().has("--barracks-material-opt-in")
@@ -2001,7 +2007,7 @@ func run_player_slice_capture() -> void:
 		"viewport": {"width": VIEWPORT_SIZE.x, "height": VIEWPORT_SIZE.y},
 		"defaultMode": MODE_25D,
 		"defaultVisualPreset": VISUAL_PRESET_CLEAN,
-		"privateHarnessPreservedSeparately": captures.any(func(capture: Dictionary) -> bool: return bool(capture.get("privateHarnessCapture", false))) or ["v0.126", "v0.127", "v0.128", "v0.129", "v0.130", "v0.160", "v0.162", "v0.164", "v0.168", "v0.169", "v0.170", "v0.173", "v0.174", "v0.177", "v0.178", "v0.179", "v0.181", "v0.184", "v0.185", "v0.186", "v0.187"].has(_player_capture_checkpoint()),
+		"privateHarnessPreservedSeparately": captures.any(func(capture: Dictionary) -> bool: return bool(capture.get("privateHarnessCapture", false))) or ["v0.126", "v0.127", "v0.128", "v0.129", "v0.130", "v0.160", "v0.162", "v0.164", "v0.168", "v0.169", "v0.170", "v0.173", "v0.174", "v0.177", "v0.178", "v0.179", "v0.181", "v0.184", "v0.185", "v0.186", "v0.187", "v0.193"].has(_player_capture_checkpoint()),
 		"proceduralPrimitiveOnly": not worker_art_loaded and not barracks_material_loaded and not militia_art_loaded and not aster_art_loaded and not ashen_art_loaded and not ground_material_loaded and not road_material_loaded,
 		"generatedOrImportedArtIncluded": worker_art_loaded or barracks_material_loaded or militia_art_loaded or aster_art_loaded or ashen_art_loaded or ground_material_loaded or road_material_loaded,
 		"runtimeArtIntegrated": worker_art_loaded or barracks_material_loaded or militia_art_loaded or aster_art_loaded or ashen_art_loaded or ground_material_loaded or road_material_loaded,
@@ -2114,6 +2120,7 @@ func run_worker_art_opt_in_benchmark() -> void:
 	var environment_shell_live_qa: Dictionary = final_status.get("environmentShellLiveQa", {})
 	var environment_structure_shell_hardening: Dictionary = final_status.get("environmentStructureShellHardening", {})
 	var environment_riverbank_bridge_approach: Dictionary = final_status.get("environmentRiverbankBridgeApproach", {})
+	var environment_presentation_shell_v2: Dictionary = final_status.get("environmentPresentationShellV2", {})
 	var any_loaded := bool(worker_art.get("sourceLoaded", false)) or bool(barracks_material.get("sourceLoaded", false)) or bool(militia_art.get("sourceLoaded", false)) or bool(aster_art.get("sourceLoaded", false)) or bool(ashen_art.get("sourceLoaded", false)) or bool(ground_material.get("sourceLoaded", false)) or bool(road_material.get("sourceLoaded", false))
 	var five_slot_requested := _script_args().has("--ashen-art-opt-in")
 	var four_slot_requested := _script_args().has("--aster-art-opt-in")
@@ -2163,6 +2170,9 @@ func run_worker_art_opt_in_benchmark() -> void:
 		"environmentRiverbankBridgeApproachEnabled": bool(final_status.get("environmentRiverbankBridgeApproachEnabled", false)),
 		"environmentRiverbankBridgeApproach": environment_riverbank_bridge_approach,
 		"environmentRiverbankBridgeApproachArtSlotCount": int(final_status.get("environmentRiverbankBridgeApproachArtSlotCount", 0)),
+		"environmentPresentationShellV2Enabled": bool(final_status.get("environmentPresentationShellV2Enabled", false)),
+		"environmentPresentationShellV2": environment_presentation_shell_v2,
+		"environmentPresentationShellV2ArtSlotCount": int(final_status.get("environmentPresentationShellV2ArtSlotCount", 0)),
 		"environmentReadabilityArtSlotCount": int(final_status.get("environmentReadabilityArtSlotCount", 0)),
 		"environmentFoundationArtSlotCount": int(final_status.get("environmentFoundationArtSlotCount", 0)),
 		"terrainMaterialSourceImported": bool(final_status.get("terrainMaterialSourceImported", false)),
@@ -4665,6 +4675,8 @@ func _apply_player_slice_action(action: String) -> Dictionary:
 
 func _player_capture_checkpoint() -> String:
 	var normalized_root := _artifact_root_from_args().replace("\\", "/")
+	if normalized_root.contains("/v0193"):
+		return "v0.193"
 	if normalized_root.contains("/v0187"):
 		return "v0.187"
 	if normalized_root.contains("/v0186"):
@@ -4712,9 +4724,28 @@ func _player_capture_checkpoint() -> String:
 	return "v0.124"
 
 func _is_bounded_microloop_checkpoint() -> bool:
-	return ["v0.129", "v0.130", "v0.160", "v0.162", "v0.164", "v0.166", "v0.168", "v0.169", "v0.170", "v0.173", "v0.174", "v0.177", "v0.178", "v0.179", "v0.181", "v0.184", "v0.185", "v0.186", "v0.187"].has(_player_capture_checkpoint())
+	return ["v0.129", "v0.130", "v0.160", "v0.162", "v0.164", "v0.166", "v0.168", "v0.169", "v0.170", "v0.173", "v0.174", "v0.177", "v0.178", "v0.179", "v0.181", "v0.184", "v0.185", "v0.186", "v0.187", "v0.193"].has(_player_capture_checkpoint())
 
 func _player_capture_steps() -> Array[Dictionary]:
+	if _player_capture_checkpoint() == "v0.193":
+		return [
+			{"id": "title", "label": "Title shell with v0.193 presentation shell v2 opt-in", "action": "title"},
+			{"id": "briefing", "label": "Briefing shell", "action": "briefing"},
+			{"id": "shell_v2_overview", "label": "Shell v2 full overview", "action": "battle_default"},
+			{"id": "aster_initial_frame", "label": "Aster initial frame", "action": "hero_selected"},
+			{"id": "worker_assignment_area", "label": "Worker assignment area", "action": "worker_assigned_mine"},
+			{"id": "barracks_restoration", "label": "Barracks restoration", "action": "construction_progress"},
+			{"id": "militia_recruitment", "label": "Militia recruitment", "action": "militia_spawned"},
+			{"id": "ashen_combat_posture", "label": "Ashen combat posture", "action": "combat"},
+			{"id": "road_close_view", "label": "Road close view", "action": "road"},
+			{"id": "river_and_banks", "label": "River and banks", "action": "ford"},
+			{"id": "bridge_crossing", "label": "Bridge crossing", "action": "bridge"},
+			{"id": "structures", "label": "Structure masses", "action": "command_hall"},
+			{"id": "pan", "label": "Pan review", "action": "pan_camera"},
+			{"id": "zoom", "label": "Zoom review", "action": "camera_max_zoom"},
+			{"id": "minimap", "label": "Minimap", "action": "minimap"},
+			{"id": "results", "label": "Results path preserved", "action": "results"}
+		]
 	if _player_capture_checkpoint() == "v0.187":
 		return [
 			{"id": "title", "label": "Title shell with v0.187 riverbank bridge approach opt-in", "action": "title"},
