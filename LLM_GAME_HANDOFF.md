@@ -1,6 +1,6 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-06-08 v0.178 Ground-Material Visual QA, UV-Scale Hardening, And Terrain-Noise Control Stop
+Last updated: 2026-06-09 v0.183 Post-Freeze Next-Phase Scorecard And v0.184 Preparation Only
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
@@ -54,30 +54,32 @@ Project Identity continuation note: v0.177 now supersedes the older no-v0.177 ta
 
 Project Identity continuation note: v0.178 now supersedes the older no-v0.178 tail above because the queued prompt explicitly authorized ground-material UV/noise hardening after v0.177 was committed, pushed, clean, synced, and remote-green. v0.178 generates zero images, adds zero slots, hardens only the existing Barrosan foothold ground-material opt-in path with UV `0.56`, alpha `0.48`, mipmapped filtering, and a procedural value underlay, validates missing-art/hash-mismatch fallback, records Windows-side visual QA, benchmark, boundary, cleanup, and retention evidence, and stops before v0.179 unless a queued prompt sequence explicitly continues.
 
-Current status override: v0.178 is the active checkpoint for this handoff. Character-slot integration remains frozen after five selected opt-in slots. The ground material remains opt-in only and the default launcher remains procedural. Do not begin v0.179 unless an explicit queued prompt continues from a clean, synced, pushed, remote-green v0.178.
+Project Identity continuation note: v0.179 now supersedes the older no-v0.179 tail above because the queued prompt explicitly authorized environment contrast harmonization after v0.178 was committed, pushed, clean, synced, and remote-green. v0.179 generates zero images, adds zero slots, harmonizes only the existing opt-in environment contrast/readability posture, keeps default procedural launchers and browser runtime untouched, and preserves the frozen five character/material slots.
 
-## Current v0.178 Ground-Material Visual QA, UV-Scale Hardening, And Terrain-Noise Control Stop - 2026-06-08
+Project Identity continuation note: v0.180 now supersedes the older no-v0.180 tail above because the queued prompt explicitly authorized exactly one private-comparator Barrosan road-material source after v0.179 passed. v0.180 generated exactly one image, selected the road material derivative as private comparator evidence, added zero player-facing slots, and did not integrate the road material into the normal slice.
 
-Status: local v0.178 work is the active checkpoint. Commit, push, and remote CI proof are required before any queued v0.179 work.
+Project Identity continuation note: v0.181 now supersedes the older no-v0.181 tail above because the queued prompt explicitly authorized exactly one road-material normal-slice opt-in after v0.180 passed. v0.181 integrates only the selected Barrosan foothold road material behind the explicit ground+road launcher, preserves the selected ground material and five frozen character/material slots, proves road missing-art/hash-mismatch fallback, and keeps the default launcher procedural.
+
+Project Identity continuation note: v0.182 now supersedes the older no-v0.182 tail above because the queued prompt explicitly authorized environment-foundation visual-cohesion QA, cleanup packet, and environment freeze after v0.181 passed. v0.182 generates zero images, adds zero slots, performs Windows-side review and safe-only sidecar cleanup, records cleanup/retention evidence, and freezes further environment-material additions until Emmanuel review.
+
+Project Identity continuation note: v0.183 now supersedes the older no-v0.183 tail above because the queued prompt explicitly authorized a documentation-only post-freeze scorecard and v0.184 preparation packet after v0.182 passed. v0.183 generates zero images, adds zero slots, changes no runtime code or launchers, performs no broad cleanup, recommends v0.184 as an Emmanuel manual review decision packet, and prepares but does not start v0.184.
+
+Current status override: v0.183 is the active checkpoint for this handoff. Character-slot integration remains frozen after five selected opt-in slots. The Barrosan foothold ground and road materials remain opt-in only, the default launcher remains procedural, browser runtime remains untouched, and further environment-material additions remain frozen until Emmanuel review. Do not begin v0.184 implementation work; v0.184 is prepared only as a manual review decision packet.
+
+## Current v0.183 Post-Freeze Next-Phase Scorecard And v0.184 Preparation Only - 2026-06-09
+
+Status: v0.183 is the active checkpoint. Commit, push, and remote CI proof are required before any future v0.184 manual-review packet work.
 
 Key evidence:
 
-- `PASS_V0178_SALTO_GROUND_MATERIAL_UV_NOISE_HARDENING_AUTOMATION_READY`
-- `PASS_V0178_GROUND_MATERIAL_UV_NOISE_HARDENING_VALIDATION`
-- `PASS_V0178_GROUND_MATERIAL_UV_NOISE_HARDENING_CAPTURE`
-- `PASS_V0178_GROUND_MATERIAL_UV_NOISE_HARDENING_BENCHMARK`
-- `PASS_V0178_GROUND_MATERIAL_UV_NOISE_HARDENING_BOUNDARY`
-- E1 FPS ratio `0.998`; p95 worsening `2.78%`
-- Missing-art fallback and hash-mismatch fallback both preserve five frozen character/material slots.
-- Windows-side Computer Use review covered title, briefing, battle view, and quick pan/zoom smoke.
+- `docs/V0183_POST_FREEZE_NEXT_PHASE_SCORECARD.md`
+- `docs/V0183_CLEANUP_EXECUTION_DECISION.md`
+- `docs/V0183_IMPLEMENTATION_REPORT.md`
+- `docs/art-prompts/V0184_01_RECOMMENDED_NEXT_PHASE.md`
+- Recommended v0.184 milestone: Emmanuel environment-freeze manual review decision packet.
+- v0.184 prepared but not started.
 
-New v0.178 docs:
-
-- `docs/V0178_GROUND_MATERIAL_VISUAL_QA_UV_HARDENING.md`
-- `docs/V0178_GROUND_MATERIAL_BENCHMARK_BOUNDARY.md`
-- `docs/V0178_IMPLEMENTATION_REPORT.md`
-
-Next boundary: v0.179 may harmonize only environment contrast if explicitly queued. Do not add slots, generate images, broaden terrain replacement, enable art by default, mutate the browser runtime, or unfreeze character-slot integration.
+Next boundary: v0.184 may only create a manual review decision packet if explicitly queued from clean, synced, pushed, remote-green v0.183. Do not generate images, add slots, integrate art, enable default art, execute cleanup deletion/archive moves, wire browser runtime, or mutate gameplay/pathing/objectives/saves/stable IDs.
 
 ## Current v0.177 Barrosan Foothold Ground-Material First Opt-In Player-Slice Integration Experiment - 2026-06-08
 

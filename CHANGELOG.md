@@ -1,5 +1,31 @@
 # Changelog
 
+# v0.183 Post-Freeze Next-Phase Scorecard And v0.184 Preparation Only - 2026-06-09
+
+This checkpoint is documentation-only. It scores the next possible Godot Salto phase after the v0.182 environment freeze, recommends exactly one v0.184 manual review decision packet, and prepares the tracked v0.184 prompt without starting it.
+
+Added:
+
+- `docs/V0183_POST_FREEZE_NEXT_PHASE_SCORECARD.md`.
+- `docs/V0183_CLEANUP_EXECUTION_DECISION.md`.
+- `docs/V0183_IMPLEMENTATION_REPORT.md`.
+- `docs/art-prompts/V0184_01_RECOMMENDED_NEXT_PHASE.md`.
+
+Changed:
+
+- Updated the Salto experimental artifact index to `ACTIVE_V0183_RETENTION_INDEX`.
+- Updated the environment roadmap, handoff, checkpoint, and release checklist for the post-freeze recommendation.
+
+Boundaries:
+
+- Zero images generated.
+- Zero slots added.
+- No runtime code or launcher changes.
+- No cleanup deletion or archive move.
+- Default launcher remains procedural.
+- Browser runtime, production manifests, saves, stable IDs, gameplay, pathing, objectives, AI, balance, campaign state, selected art, metadata, fallbacks, and required evidence remain untouched.
+- v0.184 is prepared but not started.
+
 # v0.182 Environment-Foundation Visual-Cohesion QA Cleanup Freeze Stop - 2026-06-09
 
 This checkpoint reviews and freezes the current Godot Salto environment-material posture after v0.181. It adds no images, slots, runtime wiring, or launcher behavior. It confirms the default path remains procedural, reruns the ground+road validation stack, performs Windows-side visual QA, executes safe-only sidecar cleanup, and records that further environment-material additions are frozen until Emmanuel review.

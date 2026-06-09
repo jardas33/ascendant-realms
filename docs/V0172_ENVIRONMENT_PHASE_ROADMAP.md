@@ -1,6 +1,12 @@
 # v0.172 Environment Phase Roadmap
 
-Status: `PASS_V0172_ENVIRONMENT_PHASE_ROADMAP`
+Status: `ACTIVE_V0183_ENVIRONMENT_PHASE_ROADMAP`
+
+## v0.183 Post-Freeze Update
+
+The environment-material phase is frozen after the selected Barrosan foothold ground material and road material opt-ins. The next recommended bounded milestone is v0.184 Emmanuel environment-freeze manual review decision packet, not another comparator or integration step.
+
+Do not add bridge/river, structure-shell, lighting, HUD, animation, default-art, or cleanup execution work until Emmanuel chooses that direction from the v0.184 packet.
 
 The character-slot phase is frozen after five selected slots. The next bounded phase should improve the procedural environment foundation while keeping the default launcher procedural and the browser runtime untouched.
 

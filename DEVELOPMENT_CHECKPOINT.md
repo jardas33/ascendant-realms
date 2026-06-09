@@ -1,6 +1,28 @@
 # Development Checkpoint
 
-Updated: 2026-06-09 v0.182 Environment-Foundation Visual-Cohesion QA Cleanup Freeze Stop
+Updated: 2026-06-09 v0.183 Post-Freeze Next-Phase Scorecard And v0.184 Preparation Only
+
+## v0.183 Post-Freeze Next-Phase Scorecard And v0.184 Preparation Only - 2026-06-09
+
+Scope: documentation-only post-freeze scorecard and v0.184 prompt preparation. This checkpoint generates zero images, adds zero slots, changes no runtime code or launchers, performs no cleanup deletion/archive move, preserves default procedural launchers, keeps browser runtime untouched, and prepares but does not start v0.184.
+
+Included work:
+
+- Scored bridge/river material comparator, structure-shell material comparator, environment lighting hardening, HUD visual foundation, static-to-animation comparator, default-art enablement readiness analysis, archive-first cleanup execution, and pause/manual-review options.
+- Recommended exactly one next milestone: v0.184 Emmanuel environment-freeze manual review decision packet.
+- Created the tracked v0.184 prompt under `docs/art-prompts/`.
+- Recorded cleanup execution decision: no broad archive/delete work until explicit human approval.
+- Updated handoff, artifact index, roadmap, changelog, release checklist, and checkpoint docs.
+
+Verification targets:
+
+```text
+PASS: v0.182 was current HEAD, clean/synced, and remote-green before v0.183.
+PASS: npm run godot:validate:salto-experimental-artifact-retention.
+PASS: node scripts/cleanupSaltoExperimentalArtifacts.mjs --output-root=artifacts/desktop-spikes/godot-salto/v0183/cleanup-dry-run.
+PASS: git diff --check.
+PASS: zero images, zero slots, no runtime code, no launcher mutation, no cleanup deletion/archive move, v0.184 prepared but not started.
+```
 
 ## v0.182 Environment-Foundation Visual-Cohesion QA Cleanup Freeze Stop - 2026-06-09
 
