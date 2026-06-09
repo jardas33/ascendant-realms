@@ -1,6 +1,33 @@
 # Development Checkpoint
 
-Updated: 2026-06-09 v0.184 Salto Environment Geometry Convergence
+Updated: 2026-06-09 v0.185 Salto Environment Shell Live QA
+
+## v0.185 Salto Environment-Shell Live QA Residual-Overlay Pruning And Human-Review Stop - 2026-06-09
+
+Scope: explicit opt-in Godot Salto environment-shell live-QA refinement after v0.184. This checkpoint generates zero images, adds zero slots, keeps the default launcher procedural, preserves all prior opt-in launchers, keeps browser runtime untouched, and leaves gameplay, pathing, collisions, objectives, AI, saves, stable IDs, selected art, metadata, fallbacks, and required evidence unchanged.
+
+Included work:
+
+- Added `GODOT_REVIEW_SALTO_ENVIRONMENT_SHELL_LIVE_QA_WINDOWS.bat` plus matching validate/capture wrappers.
+- Added `tools/godot/saltoEnvironmentShellLiveQaTool.mjs` with validation, capture, benchmark, and boundary gates.
+- Added the visual-only `--salto-environment-shell-live-qa` Godot flag and status/audit reporting.
+- Kept the v0.184 geometry-convergence foundation while pruning residual diagnostic-looking overlay surfaces in E4 only.
+- Reduced terrain/value pad dominance, site-marker base/collar intensity, transparent layer competition, road/bridge review-band weight, and remaining slab-like material masks.
+- Performed Windows-side Computer Use review across title, briefing, battle, pan, zoom, mine, Worker, Barracks, Militia, Ashen, minimap, Results, and restart.
+- Produced v0.185 QA/benchmark, boundary/rollback, and implementation reports.
+
+Verification targets:
+
+```text
+PASS: npm run godot:validate:salto-environment-shell-live-qa.
+PASS: PASS_V0185_ENVIRONMENT_SHELL_LIVE_QA_VALIDATION/CAPTURE/BENCHMARK/BOUNDARY.
+PASS: E4 FPS ratio 1.0000 and p95 worsening -2.92% against the E3 geometry-convergence baseline.
+PASS: npm run godot:headed:post-mine-flow-smoke.
+PASS: npm run godot:headed:triple-natural-playthrough.
+PASS: Windows-side packaged review covered live objective flow, camera movement, Results, and restart.
+PASS: safe-only cleanup deleted exactly 18 known Godot sidecars; retention after cleanup passed.
+PASS: zero images, zero slots, no launcher mutation, default procedural preserved, browser runtime untouched, no gameplay/pathing/collision/objective/AI/save/stable-ID mutation.
+```
 
 ## v0.184 Salto Opt-In Environment-Shell Geometry Convergence And Human-Review Stop - 2026-06-09
 

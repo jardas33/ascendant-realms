@@ -1,5 +1,43 @@
 # Changelog
 
+# v0.185 Salto Environment-Shell Live QA Residual-Overlay Pruning And Human-Review Stop - 2026-06-09
+
+This checkpoint adds only an explicit Godot Salto review path for live-QA residual-overlay pruning after v0.184. It generates zero images, adds zero slots, keeps default launchers procedural, preserves all prior opt-in launchers, keeps browser runtime untouched, and leaves gameplay/pathing/collisions/objectives/AI/saves/stable IDs unchanged.
+
+Added:
+
+- `GODOT_REVIEW_SALTO_ENVIRONMENT_SHELL_LIVE_QA_WINDOWS.bat`.
+- `GODOT_VALIDATE_SALTO_ENVIRONMENT_SHELL_LIVE_QA_WINDOWS.bat`.
+- `GODOT_CAPTURE_SALTO_ENVIRONMENT_SHELL_LIVE_QA_WINDOWS.bat`.
+- v0.185 launch/review/validate/capture PowerShell wrappers.
+- `tools/godot/saltoEnvironmentShellLiveQaTool.mjs`.
+- `docs/V0185_ENVIRONMENT_SHELL_LIVE_QA_AND_BENCHMARK.md`.
+- `docs/V0185_ENVIRONMENT_SHELL_BOUNDARY_ROLLBACK.md`.
+- `docs/V0185_IMPLEMENTATION_REPORT.md`.
+
+Changed:
+
+- Added an opt-in Godot Salto environment-shell live-QA flag and audit report.
+- Pruned residual diagnostic-looking terrain/value/site/road overlay surfaces in E4 while preserving the v0.184 geometry foundation.
+- Updated handoff, roadmap, checkpoint, artifact index, changelog, and release checklist docs.
+
+Validation:
+
+- `npm run godot:validate:salto-environment-shell-live-qa`.
+- `PASS_V0185_ENVIRONMENT_SHELL_LIVE_QA_VALIDATION/CAPTURE/BENCHMARK/BOUNDARY`.
+- E4 FPS ratio `1.0000`; p95 worsening `-2.92%`.
+- `npm run godot:headed:post-mine-flow-smoke`.
+- `npm run godot:headed:triple-natural-playthrough`.
+- Windows-side Computer Use review covered live objective flow, camera movement, Results, and restart.
+- Safe-only cleanup deleted exactly 18 known Godot-generated sidecars; retention after cleanup passed.
+
+Boundaries:
+
+- Zero images generated.
+- Zero slots added.
+- No default launcher or prior launcher mutation.
+- Browser runtime, production manifests, saves, stable IDs, gameplay, pathing, collisions, objectives, AI, balance, selected art, metadata, fallbacks, and required evidence remain untouched.
+
 # v0.184 Salto Opt-In Environment-Shell Geometry Convergence And Human-Review Stop - 2026-06-09
 
 This checkpoint adds only an explicit Godot Salto review path for visual environment-shell geometry convergence. It generates zero images, adds zero character or environment-material slots, keeps default launchers procedural, preserves all prior opt-in launchers, keeps browser runtime untouched, and leaves gameplay/pathing/collisions/objectives/AI/saves/stable IDs unchanged.

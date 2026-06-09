@@ -11,9 +11,17 @@ Every phase should protect these long-term pillars:
 
 ## Current Recommended Next Phase
 
-The current checkpoint is **v0.184 Salto Opt-In Environment-Shell Geometry Convergence And Human-Review Stop** on 2026-06-09. It adds only an explicit Godot review/validate/capture path for visual environment-shell convergence, keeps the default launcher procedural, preserves all prior opt-in launchers, keeps the browser runtime untouched, generates zero images, adds zero slots, and leaves gameplay/pathing/collisions/objectives/AI/saves/stable IDs unchanged.
+The current checkpoint is **v0.185 Salto Environment-Shell Live QA Residual-Overlay Pruning And Human-Review Stop** on 2026-06-09. It adds only an explicit Godot review/validate/capture path for live-QA residual-overlay pruning after v0.184, keeps the default launcher procedural, preserves all prior opt-in launchers, keeps the browser runtime untouched, generates zero images, adds zero slots, and leaves gameplay/pathing/collisions/objectives/AI/saves/stable IDs unchanged.
 
-The next queued step is v0.185 only if v0.184 is committed, pushed, clean, synced, and remote-green and the queued v0.185 prompt prerequisites pass. v0.185 should remain live-QA residual overlay pruning only. Do not perform broad terrain replacement, add slots, generate images, enable art by default, mutate the browser runtime, or unfreeze character-slot integration.
+The next queued step is v0.186 only if v0.185 is committed, pushed, clean, synced, and remote-green and the queued v0.186 prompt prerequisites pass. v0.186 should remain structure-shell hierarchy hardening only. Do not perform broad terrain replacement, add slots, generate images, enable art by default, mutate the browser runtime, or unfreeze character-slot integration.
+
+New v0.185 docs:
+
+- `docs/V0185_ENVIRONMENT_SHELL_LIVE_QA_AND_BENCHMARK.md`
+- `docs/V0185_ENVIRONMENT_SHELL_BOUNDARY_ROLLBACK.md`
+- `docs/V0185_IMPLEMENTATION_REPORT.md`
+
+Previous checkpoint reference: v0.184 Salto Opt-In Environment-Shell Geometry Convergence And Human-Review Stop.
 
 New v0.184 docs:
 

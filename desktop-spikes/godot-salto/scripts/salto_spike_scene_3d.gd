@@ -336,6 +336,7 @@ var environment_foundation_review_enabled := false
 var environment_readability_hardening_enabled := false
 var environment_contrast_harmonization_enabled := false
 var environment_geometry_convergence_enabled := false
+var environment_shell_live_qa_enabled := false
 var ground_material_experiment_enabled := false
 var ground_material_source_path := ""
 var ground_material_metadata_path := ""
@@ -458,6 +459,7 @@ func configure_environment_foundation_review(enabled: bool) -> Dictionary:
 		environment_readability_hardening_enabled = false
 		environment_contrast_harmonization_enabled = false
 		environment_geometry_convergence_enabled = false
+		environment_shell_live_qa_enabled = false
 	_refresh_visual_foundation()
 	if environment_foundation_review_enabled:
 		apply_environment_foundation_review_framing()
@@ -470,6 +472,7 @@ func configure_environment_readability_hardening(enabled: bool) -> Dictionary:
 		environment_foundation_review_enabled = true
 		environment_contrast_harmonization_enabled = false
 		environment_geometry_convergence_enabled = false
+		environment_shell_live_qa_enabled = false
 	_refresh_visual_foundation()
 	if environment_readability_hardening_enabled:
 		apply_environment_readability_hardening_framing()
@@ -484,6 +487,7 @@ func configure_environment_contrast_harmonization(enabled: bool) -> Dictionary:
 		environment_foundation_review_enabled = true
 		environment_readability_hardening_enabled = false
 		environment_geometry_convergence_enabled = false
+		environment_shell_live_qa_enabled = false
 	_refresh_visual_foundation()
 	if environment_contrast_harmonization_enabled:
 		apply_environment_contrast_harmonization_framing()
@@ -498,6 +502,7 @@ func configure_environment_geometry_convergence(enabled: bool) -> Dictionary:
 		environment_foundation_review_enabled = true
 		environment_readability_hardening_enabled = false
 		environment_contrast_harmonization_enabled = false
+		environment_shell_live_qa_enabled = false
 	_refresh_visual_foundation()
 	if environment_geometry_convergence_enabled:
 		apply_environment_geometry_convergence_framing()
@@ -505,6 +510,23 @@ func configure_environment_geometry_convergence(enabled: bool) -> Dictionary:
 		apply_environment_foundation_review_framing()
 	_apply_environment_readability_minimap_markers()
 	return _environment_geometry_convergence_status()
+
+func configure_environment_shell_live_qa(enabled: bool) -> Dictionary:
+	environment_shell_live_qa_enabled = enabled
+	if environment_shell_live_qa_enabled:
+		environment_foundation_review_enabled = true
+		environment_readability_hardening_enabled = false
+		environment_contrast_harmonization_enabled = false
+		environment_geometry_convergence_enabled = true
+	_refresh_visual_foundation()
+	if environment_shell_live_qa_enabled:
+		apply_environment_shell_live_qa_framing()
+	elif environment_geometry_convergence_enabled:
+		apply_environment_geometry_convergence_framing()
+	elif environment_foundation_review_enabled:
+		apply_environment_foundation_review_framing()
+	_apply_environment_readability_minimap_markers()
+	return _environment_shell_live_qa_status()
 
 func apply_environment_foundation_review_framing() -> bool:
 	if not environment_foundation_review_enabled:
@@ -528,6 +550,12 @@ func apply_environment_geometry_convergence_framing() -> bool:
 	if not environment_geometry_convergence_enabled:
 		return false
 	_apply_camera_authoring_posture("v0184_environment_geometry_convergence", Vector3(-0.82, 12.10, 8.18), 9.52)
+	return true
+
+func apply_environment_shell_live_qa_framing() -> bool:
+	if not environment_shell_live_qa_enabled:
+		return false
+	_apply_camera_authoring_posture("v0185_environment_shell_live_qa", Vector3(-0.92, 11.92, 8.10), 9.34)
 	return true
 
 func _environment_foundation_status() -> Dictionary:
@@ -661,6 +689,54 @@ func _environment_geometry_convergence_audit() -> Dictionary:
 		"zOrderValues": {"terrainBaseY": 0.104, "groundMaskY": 0.168, "roadY": 0.214, "riverY": 0.190, "bankY": 0.226, "bridgeY": 0.354, "structureContactY": 0.198, "markersY": 0.330},
 		"materialBindTargets": {"ground": ["v0173_terrain_mid_value_field", "v0173_friendly_staging_value_field"], "road": ["v0173_main_road_wide_readable_bed", "v0173_barracks_side_path_wide_bed", "v0173_ruins_side_path_wide_bed"]},
 		"uvScales": {"ground": ground_material_requested_uv_scale, "road": road_material_requested_uv_scale},
+		"visualOnlyNodes": true,
+		"gameplayCollisionNodesLeftUntouched": ["runtime fixture positions", "real-input click radii", "site capture radius", "Barracks click radius", "Lume click radius", "pathing/navigation adapters", "stable-id adapters"],
+		"minimapSemanticsPreserved": true
+	}
+
+func _environment_shell_live_qa_status() -> Dictionary:
+	return {
+		"schemaVersion": 1,
+		"checkpoint": "v0.185",
+		"enabled": environment_shell_live_qa_enabled,
+		"requiresGeometryConvergence": true,
+		"requiresFoundationReview": true,
+		"requiresGroundMaterialOptIn": true,
+		"requiresRoadMaterialOptIn": true,
+		"reviewOnly": true,
+		"runtimeArtSlotAdded": false,
+		"aiImageGenerated": false,
+		"newTextureImported": false,
+		"terrainTextureImportedByLiveQa": false,
+		"browserRuntimeChanged": false,
+		"saveWritesAllowed": false,
+		"stableIdsChanged": false,
+		"gameplayPathingChanged": false,
+		"navigationSemanticsChanged": false,
+		"collisionGeometryChanged": false,
+		"objectiveLogicChanged": false,
+		"aiLogicChanged": false,
+		"preservesFiveCharacterMaterialSlots": true,
+		"addsEnvironmentMaterialSlot": false,
+		"residualGiantOverlaysPruned": environment_shell_live_qa_enabled,
+		"floatingReviewRectanglesMateriallyReduced": environment_shell_live_qa_enabled,
+		"transparentLayerCompetitionReduced": environment_shell_live_qa_enabled,
+		"roadsRiverBridgeContinuous": environment_shell_live_qa_enabled,
+		"structureHierarchyImproved": environment_shell_live_qa_enabled,
+		"charactersReadable": environment_shell_live_qa_enabled,
+		"audit": _environment_shell_live_qa_audit()
+	}
+
+func _environment_shell_live_qa_audit() -> Dictionary:
+	return {
+		"environmentVisualNodeCategories": ["terrain_value_edges", "road_continuity", "river_channel", "riverbanks", "bridge_crossing", "structure_grounding", "site_markers", "character_grounding"],
+		"broadPadsReframedAsGroundingCues": ["buildable_ground_patch_friendly", "buildable_ground_patch_forward", "capture_site_readability_ring", "v0137_barracks_footprint_chalk", "v0137_command_hall_hearth_pool", "v0137_friendly_staging_muster_marks", "v0137_ashen_approach_lane_char", "v0137_subtle_terrain_fog_default"],
+		"largeTransparentDiagnosticPadsKept": 0,
+		"newArtSlots": 0,
+		"newImportedTextures": 0,
+		"siteMarkerStyle": {"outerRingRadius": 0.56, "innerDiscRadius": 0.26, "baseDiscRadius": 0.30, "maxAlpha": 0.34},
+		"liveQaTransparencyValues": {"groundMasks": 0.035, "reviewPads": 0.18, "siteMarkers": 0.34, "roadCrown": 0.24, "characterContact": 0.18},
+		"zOrderValues": {"terrainBaseY": 0.104, "groundMaskY": 0.168, "roadY": 0.214, "riverY": 0.190, "bankY": 0.226, "bridgeY": 0.354, "structureContactY": 0.198, "markersY": 0.330},
 		"visualOnlyNodes": true,
 		"gameplayCollisionNodesLeftUntouched": ["runtime fixture positions", "real-input click radii", "site capture radius", "Barracks click radius", "Lume click radius", "pathing/navigation adapters", "stable-id adapters"],
 		"minimapSemanticsPreserved": true
@@ -4566,6 +4642,8 @@ func get_spike_status() -> Dictionary:
 	status["environmentContrastHarmonization"] = _environment_contrast_harmonization_status()
 	status["environmentGeometryConvergenceEnabled"] = environment_geometry_convergence_enabled
 	status["environmentGeometryConvergence"] = _environment_geometry_convergence_status()
+	status["environmentShellLiveQaEnabled"] = environment_shell_live_qa_enabled
+	status["environmentShellLiveQa"] = _environment_shell_live_qa_status()
 	var worker_art_loaded := _worker_art_is_active()
 	_refresh_worker_art_counters()
 	var barracks_material_loaded := _barracks_material_is_active()
@@ -4612,6 +4690,7 @@ func get_spike_status() -> Dictionary:
 	status["roadMaterialOptInRequested"] = road_material_experiment_enabled
 	status["roadMaterialSlotCount"] = 1 if road_material_experiment_enabled else 0
 	status["roadMaterialProceduralFallbackActive"] = bool(road_material_status.get("fallbackActive", true))
+	status["environmentShellLiveQaArtSlotCount"] = 0
 	status["normalSliceOptInRequestedSlotCount"] = int(status["workerArtSlotCount"]) + int(status["barracksMaterialSlotCount"]) + int(status["militiaArtSlotCount"]) + int(status["asterArtSlotCount"]) + int(status["ashenArtSlotCount"])
 	status["normalSliceOptInLoadedSlotCount"] = (1 if worker_art_loaded else 0) + (1 if barracks_material_loaded else 0) + (1 if militia_art_loaded else 0) + (1 if aster_art_loaded else 0) + (1 if ashen_art_loaded else 0)
 	status["environmentMaterialOptInRequestedSlotCount"] = (1 if ground_material_experiment_enabled else 0) + (1 if road_material_experiment_enabled else 0)
@@ -5009,13 +5088,22 @@ func _create_terrain() -> void:
 	ground.material_override = _material(_terrain_color())
 	terrain_root.add_child(ground)
 
-	_add_static_box("north_highland_height_band", Vector3(-1.5, 0.055, -5.35), Vector3(16.4, 0.10, 0.72), _ridge_color())
-	_add_static_box("south_highland_height_band", Vector3(1.1, 0.05, 5.95), Vector3(17.2, 0.09, 0.66), _ridge_color().darkened(0.08))
-	_add_static_box("west_terrace_height_step", Vector3(-6.2, 0.08, -0.35), Vector3(1.90, 0.16, 7.8), _ridge_color().lightened(0.06))
-	_add_static_box("highland_foothold_shape_core", Vector3(-2.6, 0.115, -4.45), Vector3(8.4, 0.16, 1.18), _ridge_color().lightened(0.04))
-	_add_static_box("highland_foothold_shape_shoulder", Vector3(3.8, 0.105, -3.86), Vector3(5.1, 0.14, 0.74), _ridge_color().darkened(0.03))
-	_add_static_box("subtle_elevation_variation_tile_01", Vector3(-4.8, 0.075, 2.85), Vector3(2.4, 0.06, 1.2), _ridge_color().lightened(0.12))
-	_add_static_box("subtle_elevation_variation_tile_02", Vector3(4.9, 0.07, -1.95), Vector3(2.0, 0.05, 1.4), _ridge_color().darkened(0.03))
+	if environment_shell_live_qa_enabled:
+		_add_static_box("north_highland_height_band", Vector3(-1.5, 0.055, -5.35), Vector3(16.4, 0.08, 0.34), _ridge_color().darkened(0.03))
+		_add_static_box("south_highland_height_band", Vector3(1.1, 0.05, 5.95), Vector3(17.2, 0.075, 0.32), _ridge_color().darkened(0.10))
+		_add_static_box("west_terrace_height_step", Vector3(-6.42, 0.08, -0.35), Vector3(0.58, 0.13, 7.2), _ridge_color().darkened(0.02))
+		_add_static_box("highland_foothold_shape_core", Vector3(-2.6, 0.115, -4.45), Vector3(7.5, 0.12, 0.44), _ridge_color().lightened(0.02))
+		_add_static_box("highland_foothold_shape_shoulder", Vector3(3.8, 0.105, -3.86), Vector3(4.2, 0.11, 0.30), _ridge_color().darkened(0.05))
+		_add_static_box("subtle_elevation_variation_tile_01", Vector3(-4.8, 0.075, 2.85), Vector3(1.42, 0.034, 0.16), _ridge_color().lightened(0.06), true)
+		_add_static_box("subtle_elevation_variation_tile_02", Vector3(4.9, 0.07, -1.95), Vector3(1.22, 0.032, 0.14), _ridge_color().darkened(0.05), true)
+	else:
+		_add_static_box("north_highland_height_band", Vector3(-1.5, 0.055, -5.35), Vector3(16.4, 0.10, 0.72), _ridge_color())
+		_add_static_box("south_highland_height_band", Vector3(1.1, 0.05, 5.95), Vector3(17.2, 0.09, 0.66), _ridge_color().darkened(0.08))
+		_add_static_box("west_terrace_height_step", Vector3(-6.2, 0.08, -0.35), Vector3(1.90, 0.16, 7.8), _ridge_color().lightened(0.06))
+		_add_static_box("highland_foothold_shape_core", Vector3(-2.6, 0.115, -4.45), Vector3(8.4, 0.16, 1.18), _ridge_color().lightened(0.04))
+		_add_static_box("highland_foothold_shape_shoulder", Vector3(3.8, 0.105, -3.86), Vector3(5.1, 0.14, 0.74), _ridge_color().darkened(0.03))
+		_add_static_box("subtle_elevation_variation_tile_01", Vector3(-4.8, 0.075, 2.85), Vector3(2.4, 0.06, 1.2), _ridge_color().lightened(0.12))
+		_add_static_box("subtle_elevation_variation_tile_02", Vector3(4.9, 0.07, -1.95), Vector3(2.0, 0.05, 1.4), _ridge_color().darkened(0.03))
 	if environment_geometry_convergence_enabled:
 		_add_static_box("river_placeholder", Vector3(0.58, 0.064, -0.12), Vector3(0.28, 0.085, 14.1), _water_color().darkened(0.05))
 		_add_static_box("ford_water_posture", Vector3(0.50, 0.088, 0.88), Vector3(0.98, 0.070, 0.42), _water_color().lightened(0.12))
@@ -5052,15 +5140,25 @@ func _create_terrain() -> void:
 	_add_static_box("ruin_landmark_wall_east", Vector3(2.45, 0.24, 1.76), Vector3(0.24, 0.38, 0.78), Color(0.34, 0.34, 0.31))
 	_add_static_box("ruin_pocket_floor", Vector3(2.2, 0.115, 2.08), Vector3(1.55, 0.052, 1.38), Color(0.26, 0.28, 0.24))
 	_add_static_box("ruin_pocket_blocked_edge", Vector3(2.78, 0.24, 2.72), Vector3(0.96, 0.25, 0.22), Color(0.30, 0.31, 0.28))
-	_add_static_box("capture_site_readability_ring", Vector3(-1.52, 0.13, 0.12), Vector3(1.26, 0.05, 1.02), Color(0.84, 0.78, 0.32, 0.64), true)
-	_add_static_box("buildable_ground_patch_friendly", Vector3(-4.78, 0.12, 2.18), Vector3(2.36, 0.052, 1.30), Color(0.29, 0.36, 0.25))
-	_add_static_box("buildable_ground_patch_forward", Vector3(4.35, 0.12, -0.58), Vector3(2.10, 0.052, 1.08), Color(0.27, 0.34, 0.24))
+	if environment_shell_live_qa_enabled:
+		_add_static_box("capture_site_readability_ring", Vector3(-1.52, 0.13, 0.12), Vector3(0.74, 0.038, 0.60), Color(0.74, 0.66, 0.28, 0.26), true)
+		_add_static_box("buildable_ground_patch_friendly", Vector3(-4.84, 0.126, 2.18), Vector3(1.68, 0.034, 0.18), Color(0.23, 0.32, 0.22, 0.18), true)
+		_add_static_box("buildable_ground_patch_forward", Vector3(4.35, 0.126, -0.58), Vector3(1.42, 0.034, 0.16), Color(0.28, 0.20, 0.16, 0.16), true)
+	else:
+		_add_static_box("capture_site_readability_ring", Vector3(-1.52, 0.13, 0.12), Vector3(1.26, 0.05, 1.02), Color(0.84, 0.78, 0.32, 0.64), true)
+		_add_static_box("buildable_ground_patch_friendly", Vector3(-4.78, 0.12, 2.18), Vector3(2.36, 0.052, 1.30), Color(0.29, 0.36, 0.25))
+		_add_static_box("buildable_ground_patch_forward", Vector3(4.35, 0.12, -0.58), Vector3(2.10, 0.052, 1.08), Color(0.27, 0.34, 0.24))
 	_add_static_box("blocked_terrain_cue_north_rocks", Vector3(3.68, 0.20, -4.22), Vector3(1.25, 0.24, 0.36), Color(0.26, 0.28, 0.25))
 	_add_static_box("blocked_terrain_cue_west_shelf", Vector3(-6.65, 0.22, -1.75), Vector3(0.44, 0.26, 2.10), Color(0.24, 0.28, 0.24))
 	_add_static_box("blocked_terrain_cue_east_ridge", Vector3(6.35, 0.20, 2.65), Vector3(0.46, 0.24, 1.82), Color(0.25, 0.27, 0.24))
-	_add_static_box("moss_material_posture_patch", Vector3(-3.8, 0.126, -2.55), Vector3(1.75, 0.04, 0.66), Color(0.20, 0.34, 0.18))
-	_add_static_box("grass_material_posture_patch", Vector3(3.85, 0.125, 0.95), Vector3(1.65, 0.04, 0.58), Color(0.24, 0.39, 0.18))
-	_add_static_box("worked_earth_material_posture_patch", Vector3(-4.55, 0.126, 3.18), Vector3(1.85, 0.04, 0.62), Color(0.38, 0.30, 0.19))
+	if environment_shell_live_qa_enabled:
+		_add_static_box("moss_material_posture_patch", Vector3(-3.8, 0.126, -2.55), Vector3(1.18, 0.030, 0.12), Color(0.18, 0.30, 0.16, 0.18), true)
+		_add_static_box("grass_material_posture_patch", Vector3(3.85, 0.125, 0.95), Vector3(1.06, 0.030, 0.12), Color(0.20, 0.32, 0.16, 0.16), true)
+		_add_static_box("worked_earth_material_posture_patch", Vector3(-4.55, 0.126, 3.18), Vector3(1.12, 0.030, 0.14), Color(0.34, 0.26, 0.17, 0.20), true)
+	else:
+		_add_static_box("moss_material_posture_patch", Vector3(-3.8, 0.126, -2.55), Vector3(1.75, 0.04, 0.66), Color(0.20, 0.34, 0.18))
+		_add_static_box("grass_material_posture_patch", Vector3(3.85, 0.125, 0.95), Vector3(1.65, 0.04, 0.58), Color(0.24, 0.39, 0.18))
+		_add_static_box("worked_earth_material_posture_patch", Vector3(-4.55, 0.126, 3.18), Vector3(1.85, 0.04, 0.62), Color(0.38, 0.30, 0.19))
 	_add_static_cylinder("warm_hearth_accent_command_hall", Vector3(-4.92, 0.18, 3.02), 0.09, 0.08, Color(0.92, 0.54, 0.24), true)
 	_add_static_cylinder("restrained_teal_lume_accent_a", Vector3(0.05, 0.16, -1.16), 0.08, 0.08, _lume_core_color(), true)
 	_add_static_cylinder("restrained_teal_lume_accent_b", Vector3(1.34, 0.16, 1.72), 0.08, 0.08, _lume_core_color(), true)
@@ -5087,20 +5185,32 @@ func _create_terrain() -> void:
 	_add_static_box("v0137_shrine_clearing_ring_south", Vector3(-0.78, 0.145, -2.04), Vector3(1.44, 0.045, 0.18), Color(0.30, 0.35, 0.25))
 	_add_static_box("v0137_ruin_pocket_broken_arch", Vector3(2.18, 0.48, 1.32), Vector3(0.72, 0.26, 0.16), Color(0.43, 0.43, 0.37))
 	_add_static_box("v0137_ruin_pocket_rubble_readability", Vector3(2.70, 0.16, 1.18), Vector3(0.60, 0.14, 0.28), Color(0.52, 0.50, 0.44))
-	_add_static_box("v0137_barracks_footprint_chalk", Vector3(-4.80, 0.142, -3.58), Vector3(1.46, 0.038, 0.90), Color(0.74, 0.67, 0.40, 0.72), true)
-	_add_static_box("v0137_command_hall_hearth_pool", Vector3(-4.98, 0.142, 3.16), Vector3(1.16, 0.040, 0.76), Color(0.56, 0.38, 0.20, 0.68), true)
+	if environment_shell_live_qa_enabled:
+		_add_static_box("v0137_barracks_footprint_chalk", Vector3(-4.80, 0.142, -3.58), Vector3(0.94, 0.032, 0.16), Color(0.66, 0.58, 0.34, 0.24), true)
+		_add_static_box("v0137_command_hall_hearth_pool", Vector3(-4.98, 0.142, 3.16), Vector3(0.72, 0.034, 0.18), Color(0.54, 0.35, 0.18, 0.24), true)
+	else:
+		_add_static_box("v0137_barracks_footprint_chalk", Vector3(-4.80, 0.142, -3.58), Vector3(1.46, 0.038, 0.90), Color(0.74, 0.67, 0.40, 0.72), true)
+		_add_static_box("v0137_command_hall_hearth_pool", Vector3(-4.98, 0.142, 3.16), Vector3(1.16, 0.040, 0.76), Color(0.56, 0.38, 0.20, 0.68), true)
 	_add_static_box("v0137_buildable_patch_grid_friendly_a", Vector3(-5.56, 0.154, 1.78), Vector3(0.74, 0.034, 0.10), Color(0.42, 0.48, 0.32))
 	_add_static_box("v0137_buildable_patch_grid_friendly_b", Vector3(-4.16, 0.154, 2.56), Vector3(0.78, 0.034, 0.10), Color(0.42, 0.48, 0.32))
 	_add_static_box("v0137_blocked_cue_fallen_pine_north", Vector3(3.74, 0.35, -4.56), Vector3(1.36, 0.10, 0.16), Color(0.20, 0.16, 0.10))
 	_add_static_box("v0137_blocked_cue_scree_teeth_east", Vector3(6.08, 0.26, 2.08), Vector3(0.22, 0.22, 0.92), Color(0.28, 0.29, 0.25))
 	_add_static_box("v0137_friendly_staging_banner_line", Vector3(-4.22, 0.21, 3.88), Vector3(1.84, 0.10, 0.18), Color(0.28, 0.66, 0.46))
-	_add_static_box("v0137_friendly_staging_muster_marks", Vector3(-3.32, 0.148, 3.36), Vector3(0.78, 0.035, 0.64), Color(0.34, 0.48, 0.32, 0.72), true)
-	_add_static_box("v0137_ashen_approach_lane_char", Vector3(4.36, 0.144, -0.58), Vector3(2.14, 0.040, 0.28), Color(0.42, 0.18, 0.14, 0.62), true)
-	_add_static_box("v0137_ashen_approach_lane_entry", Vector3(5.72, 0.166, -1.12), Vector3(0.54, 0.065, 0.22), Color(0.68, 0.25, 0.18, 0.58), true)
+	if environment_shell_live_qa_enabled:
+		_add_static_box("v0137_friendly_staging_muster_marks", Vector3(-3.32, 0.148, 3.36), Vector3(0.72, 0.028, 0.12), Color(0.30, 0.42, 0.28, 0.24), true)
+		_add_static_box("v0137_ashen_approach_lane_char", Vector3(4.36, 0.144, -0.58), Vector3(1.54, 0.032, 0.10), Color(0.36, 0.15, 0.12, 0.22), true)
+		_add_static_box("v0137_ashen_approach_lane_entry", Vector3(5.72, 0.166, -1.12), Vector3(0.34, 0.050, 0.10), Color(0.58, 0.20, 0.15, 0.26), true)
+	else:
+		_add_static_box("v0137_friendly_staging_muster_marks", Vector3(-3.32, 0.148, 3.36), Vector3(0.78, 0.035, 0.64), Color(0.34, 0.48, 0.32, 0.72), true)
+		_add_static_box("v0137_ashen_approach_lane_char", Vector3(4.36, 0.144, -0.58), Vector3(2.14, 0.040, 0.28), Color(0.42, 0.18, 0.14, 0.62), true)
+		_add_static_box("v0137_ashen_approach_lane_entry", Vector3(5.72, 0.166, -1.12), Vector3(0.54, 0.065, 0.22), Color(0.68, 0.25, 0.18, 0.58), true)
 	_add_static_box("v0137_lume_path_severed_segment_a", Vector3(-0.68, 0.174, -1.28), Vector3(0.56, 0.050, 0.11), _lume_core_color(), true)
 	_add_static_box("v0137_lume_path_severed_segment_b", Vector3(0.34, 0.174, -0.42), Vector3(0.56, 0.050, 0.11), _lume_core_color().darkened(0.08), true)
 	_add_static_box("v0137_lume_path_severed_segment_c", Vector3(1.18, 0.174, 0.72), Vector3(0.56, 0.050, 0.11), _lume_core_color(), true)
-	_add_static_box("v0137_subtle_terrain_fog_default", Vector3(0.38, 0.20, -3.18), Vector3(11.2, 0.090, 0.58), Color(0.68, 0.78, 0.72, 0.12), true)
+	if environment_shell_live_qa_enabled:
+		_add_static_box("v0137_subtle_terrain_fog_default", Vector3(0.38, 0.20, -3.18), Vector3(6.20, 0.050, 0.10), Color(0.58, 0.68, 0.60, 0.05), true)
+	else:
+		_add_static_box("v0137_subtle_terrain_fog_default", Vector3(0.38, 0.20, -3.18), Vector3(11.2, 0.090, 0.58), Color(0.68, 0.78, 0.72, 0.12), true)
 
 	if visual_preset != VISUAL_PRESET_CLEAN:
 		_add_static_box("atmospheric_fog_posture_north", Vector3(0, 0.16, -4.15), Vector3(13.4, 0.10, 0.86), Color(0.66, 0.82, 0.77, 0.18), true)
@@ -5180,8 +5290,12 @@ func _add_post_freeze_review_cohesion_layers() -> void:
 func _add_environment_geometry_foundation_material_targets() -> void:
 	var wet_granite := Color(0.50, 0.48, 0.39)
 	var worked_earth := Color(0.31, 0.27, 0.18, 0.12)
-	_add_ground_material_static_box("v0173_terrain_mid_value_field", Vector3(-1.08, 0.156, 1.48), Vector3(6.10, 0.026, 2.18), Color(0.30, 0.39, 0.25, 0.08), true)
-	_add_ground_material_static_box("v0173_friendly_staging_value_field", Vector3(-4.88, 0.168, 2.66), Vector3(1.90, 0.030, 1.05), Color(0.34, 0.44, 0.28, 0.10), true)
+	if environment_shell_live_qa_enabled:
+		_add_ground_material_static_box("v0173_terrain_mid_value_field", Vector3(-1.08, 0.156, 1.62), Vector3(4.85, 0.020, 0.24), Color(0.28, 0.36, 0.24, 0.035), true)
+		_add_ground_material_static_box("v0173_friendly_staging_value_field", Vector3(-4.88, 0.168, 2.66), Vector3(1.22, 0.022, 0.20), Color(0.30, 0.38, 0.25, 0.045), true)
+	else:
+		_add_ground_material_static_box("v0173_terrain_mid_value_field", Vector3(-1.08, 0.156, 1.48), Vector3(6.10, 0.026, 2.18), Color(0.30, 0.39, 0.25, 0.08), true)
+		_add_ground_material_static_box("v0173_friendly_staging_value_field", Vector3(-4.88, 0.168, 2.66), Vector3(1.90, 0.030, 1.05), Color(0.34, 0.44, 0.28, 0.10), true)
 	_add_road_material_static_box("v0173_main_road_wide_readable_bed", Vector3(-1.05, 0.214, 0.70), Vector3(10.55, 0.034, 0.34), wet_granite)
 	_add_road_material_static_box("v0173_barracks_side_path_wide_bed", Vector3(-4.47, 0.216, -2.22), Vector3(0.34, 0.032, 2.32), wet_granite.darkened(0.10))
 	_add_road_material_static_box("v0173_ruins_side_path_wide_bed", Vector3(3.12, 0.216, 2.25), Vector3(2.18, 0.032, 0.28), wet_granite.darkened(0.08))
@@ -5196,6 +5310,14 @@ func _add_environment_geometry_convergence_layers() -> void:
 	var water_deep := Color(0.02, 0.18, 0.25, 0.96)
 	var water_lip := Color(0.28, 0.52, 0.55, 0.22)
 	var bridge_stone := Color(0.56, 0.54, 0.46)
+	if environment_shell_live_qa_enabled:
+		road_edge = Color(0.10, 0.09, 0.07, 0.54)
+		road_crown = Color(0.70, 0.62, 0.44, 0.24)
+		bank_core = Color(0.30, 0.38, 0.28, 0.78)
+		bank_shadow = Color(0.07, 0.11, 0.09, 0.62)
+		water_deep = Color(0.02, 0.16, 0.22, 0.92)
+		water_lip = Color(0.22, 0.42, 0.45, 0.16)
+		bridge_stone = Color(0.52, 0.50, 0.42)
 	_add_static_box("v0184_ground_mask_broken_north_edge", Vector3(-1.20, 0.186, 0.08), Vector3(5.80, 0.020, 0.08), Color(0.12, 0.16, 0.10, 0.16), true)
 	_add_static_box("v0184_ground_mask_broken_south_edge", Vector3(-0.92, 0.186, 2.78), Vector3(5.42, 0.020, 0.08), Color(0.10, 0.14, 0.09, 0.15), true)
 	_add_static_box("v0184_ground_mask_west_notch_shadow", Vector3(-5.52, 0.188, 1.56), Vector3(0.16, 0.020, 2.05), Color(0.08, 0.12, 0.08, 0.14), true)
@@ -5240,8 +5362,14 @@ func _add_environment_geometry_convergence_layers() -> void:
 		var x := -5.24 + float(index) * 1.42
 		var z_offset := sin(float(index) * 1.9) * 0.035
 		_add_static_box_rotated("v0184_main_road_granite_break_%02d" % index, Vector3(x, 0.254, 0.70 + z_offset), Vector3(0.30, 0.018, 0.046), -4.0 + float(index % 3) * 4.0, Color(0.84, 0.78, 0.58, 0.46), true)
-	_add_static_cylinder("v0184_site_marker_outer_reading_ring", Vector3(-1.52, 0.318, 0.12), 0.72, 0.026, Color(0.95, 0.80, 0.30, 0.50), true)
-	_add_static_cylinder("v0184_site_marker_inner_state_disc", Vector3(-1.52, 0.340, 0.12), 0.34, 0.022, Color(0.32, 0.76, 0.52, 0.44), true)
+	if environment_shell_live_qa_enabled:
+		_add_static_box("v0185_bridge_west_bank_seat_shadow", Vector3(-0.72, 0.328, 0.88), Vector3(0.34, 0.028, 0.36), Color(0.08, 0.07, 0.05, 0.44), true)
+		_add_static_box("v0185_bridge_east_bank_seat_shadow", Vector3(1.82, 0.328, 0.88), Vector3(0.34, 0.028, 0.36), Color(0.08, 0.07, 0.05, 0.44), true)
+		_add_static_cylinder("v0184_site_marker_outer_reading_ring", Vector3(-1.52, 0.318, 0.12), 0.56, 0.022, Color(0.84, 0.70, 0.26, 0.34), true)
+		_add_static_cylinder("v0184_site_marker_inner_state_disc", Vector3(-1.52, 0.340, 0.12), 0.26, 0.020, Color(0.26, 0.62, 0.44, 0.30), true)
+	else:
+		_add_static_cylinder("v0184_site_marker_outer_reading_ring", Vector3(-1.52, 0.318, 0.12), 0.72, 0.026, Color(0.95, 0.80, 0.30, 0.50), true)
+		_add_static_cylinder("v0184_site_marker_inner_state_disc", Vector3(-1.52, 0.340, 0.12), 0.34, 0.022, Color(0.32, 0.76, 0.52, 0.44), true)
 
 func _add_environment_readability_hardening_layers() -> void:
 	var road_core := Color(0.62, 0.58, 0.44, 0.92)
@@ -6396,14 +6524,25 @@ func _add_environment_geometry_structure_shell(id: String, fixture: String, posi
 
 func _add_capture_site(site: Dictionary) -> void:
 	var position := _to_world(site["position"], 0.13)
-	_add_box(str(site["id"]), position, Vector3(0.56, 0.12, 0.56), _site_color(site), true)
-	_add_cylinder("%s_marker_disc" % str(site["id"]), position + Vector3(0, -0.055, 0), 0.42, 0.045, _site_color(site).lightened(0.18), true)
-	_add_box("%s_claim_post" % str(site["id"]), position + Vector3(0.0, 0.23, 0.0), Vector3(0.08, 0.36, 0.08), _site_color(site).lightened(0.08), true)
-	_add_box("%s_contest_tick" % str(site["id"]), position + Vector3(0.28, 0.08, 0.28), Vector3(0.22, 0.05, 0.08), Color(0.96, 0.70, 0.24, 0.62), true)
+	if environment_shell_live_qa_enabled:
+		_add_box(str(site["id"]), position, Vector3(0.38, 0.10, 0.38), _site_color(site).darkened(0.08), true)
+		_add_cylinder("%s_marker_disc" % str(site["id"]), position + Vector3(0, -0.055, 0), 0.30, 0.038, _site_color(site).lightened(0.08), true)
+		_add_box("%s_claim_post" % str(site["id"]), position + Vector3(0.0, 0.20, 0.0), Vector3(0.06, 0.30, 0.06), _site_color(site).lightened(0.04), true)
+		_add_box("%s_contest_tick" % str(site["id"]), position + Vector3(0.22, 0.08, 0.22), Vector3(0.16, 0.04, 0.05), Color(0.84, 0.58, 0.22, 0.34), true)
+	else:
+		_add_box(str(site["id"]), position, Vector3(0.56, 0.12, 0.56), _site_color(site), true)
+		_add_cylinder("%s_marker_disc" % str(site["id"]), position + Vector3(0, -0.055, 0), 0.42, 0.045, _site_color(site).lightened(0.18), true)
+		_add_box("%s_claim_post" % str(site["id"]), position + Vector3(0.0, 0.23, 0.0), Vector3(0.08, 0.36, 0.08), _site_color(site).lightened(0.08), true)
+		_add_box("%s_contest_tick" % str(site["id"]), position + Vector3(0.28, 0.08, 0.28), Vector3(0.22, 0.05, 0.08), Color(0.96, 0.70, 0.24, 0.62), true)
 	if environment_foundation_review_enabled:
-		_add_cylinder("%s_v0173_outer_marker_collar" % str(site["id"]), position + Vector3(0, -0.070, 0), 0.56, 0.030, Color(0.95, 0.82, 0.30, 0.42), true)
-		_add_box("%s_v0173_state_tick_north" % str(site["id"]), position + Vector3(0.0, 0.12, -0.36), Vector3(0.40, 0.05, 0.08), _site_color(site).lightened(0.22), true)
-		_add_box("%s_v0173_state_tick_south" % str(site["id"]), position + Vector3(0.0, 0.12, 0.36), Vector3(0.40, 0.05, 0.08), _site_color(site).lightened(0.22), true)
+		if environment_shell_live_qa_enabled:
+			_add_cylinder("%s_v0173_outer_marker_collar" % str(site["id"]), position + Vector3(0, -0.070, 0), 0.42, 0.024, Color(0.82, 0.70, 0.26, 0.22), true)
+			_add_box("%s_v0173_state_tick_north" % str(site["id"]), position + Vector3(0.0, 0.10, -0.28), Vector3(0.26, 0.038, 0.05), _site_color(site).lightened(0.14), true)
+			_add_box("%s_v0173_state_tick_south" % str(site["id"]), position + Vector3(0.0, 0.10, 0.28), Vector3(0.26, 0.038, 0.05), _site_color(site).lightened(0.14), true)
+		else:
+			_add_cylinder("%s_v0173_outer_marker_collar" % str(site["id"]), position + Vector3(0, -0.070, 0), 0.56, 0.030, Color(0.95, 0.82, 0.30, 0.42), true)
+			_add_box("%s_v0173_state_tick_north" % str(site["id"]), position + Vector3(0.0, 0.12, -0.36), Vector3(0.40, 0.05, 0.08), _site_color(site).lightened(0.22), true)
+			_add_box("%s_v0173_state_tick_south" % str(site["id"]), position + Vector3(0.0, 0.12, 0.36), Vector3(0.40, 0.05, 0.08), _site_color(site).lightened(0.22), true)
 
 func _add_unit(name: String, position: Vector3, color: Color, radius: float, emissive: bool = false) -> void:
 	var mesh_instance := MeshInstance3D.new()
@@ -6815,6 +6954,8 @@ func _normalize_visual_preset(preset: String) -> String:
 	return ""
 
 func _preset_scope() -> String:
+	if environment_shell_live_qa_enabled:
+		return "v0185-opt-in-environment-shell-live-qa-pruned-overlays-excluded-from-default"
 	if environment_geometry_convergence_enabled:
 		return "v0184-opt-in-environment-geometry-convergence-excluded-from-default"
 	if environment_readability_hardening_enabled:
@@ -6828,6 +6969,8 @@ func _preset_scope() -> String:
 	return "player-facing-default-clean-readability-with-restrained-atmospheric-cues"
 
 func _terrain_color() -> Color:
+	if environment_shell_live_qa_enabled:
+		return Color(0.23, 0.31, 0.22)
 	if environment_geometry_convergence_enabled:
 		return Color(0.26, 0.34, 0.24)
 	if environment_readability_hardening_enabled:
@@ -6841,6 +6984,8 @@ func _terrain_color() -> Color:
 	return Color(0.16, 0.22, 0.17)
 
 func _ridge_color() -> Color:
+	if environment_shell_live_qa_enabled:
+		return Color(0.31, 0.37, 0.27)
 	if environment_geometry_convergence_enabled:
 		return Color(0.34, 0.40, 0.29)
 	if environment_readability_hardening_enabled:
@@ -6852,6 +6997,8 @@ func _ridge_color() -> Color:
 	return Color(0.22, 0.27, 0.21)
 
 func _road_color() -> Color:
+	if environment_shell_live_qa_enabled:
+		return Color(0.46, 0.41, 0.30)
 	if environment_geometry_convergence_enabled:
 		return Color(0.50, 0.46, 0.34)
 	if environment_readability_hardening_enabled:
@@ -6863,6 +7010,8 @@ func _road_color() -> Color:
 	return Color(0.42, 0.36, 0.25)
 
 func _water_color() -> Color:
+	if environment_shell_live_qa_enabled:
+		return Color(0.03, 0.20, 0.27)
 	if environment_geometry_convergence_enabled:
 		return Color(0.04, 0.23, 0.31)
 	if environment_readability_hardening_enabled:
