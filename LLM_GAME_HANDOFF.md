@@ -1,6 +1,6 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-06-09 v0.191 Post-Shell-Freeze Scorecard
+Last updated: 2026-06-09 v0.192 Presentation-Shell V2 Architecture Audit
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
@@ -82,7 +82,29 @@ Project Identity continuation note: v0.190 now supersedes the older no-v0.190 ta
 
 Project Identity continuation note: v0.191 now supersedes the older no-v0.191 tail above because the queued prompt explicitly authorized a documentation-only post-shell-freeze next-phase scorecard after v0.190 was committed, pushed, clean, synced, and remote-green. v0.191 generates zero images, adds zero slots, modifies no runtime code, performs no broad cleanup, recommends exactly one v0.192 milestone, prepares `docs/art-prompts/V0192_01_RECOMMENDED_NEXT_PHASE.md`, and stops before v0.192.
 
-Current status override: v0.191 Post-Shell-Freeze Scorecard is the active checkpoint for this handoff. Character-slot integration remains frozen after five selected opt-in slots. The Barrosan foothold ground and road materials remain opt-in only, the default launcher remains procedural, browser runtime remains untouched, and the selected bridge-riverbank material remains private-comparator-only unless a future explicitly selected integration prompt passes. Do not begin v0.192 unless v0.191 is committed, pushed, clean, synced, and remote-green and the next queued prompt prerequisites pass.
+Project Identity continuation note: v0.192 now supersedes the older v0.192 bridge-riverbank material recommendation because human review explicitly overrode that prompt. v0.192 is documentation-only: it audits the current Godot Salto environment-shell architecture, preserves the legacy shell as comparator/fallback, selects one bounded parallel presentation-shell v2 architecture, prepares `docs/art-prompts/V0193_01_PRESENTATION_SHELL_V2_IMPLEMENTATION.md`, generates zero images, adds zero slots, starts no runtime implementation, and keeps the default launcher procedural and browser runtime untouched.
+
+Current status override: v0.192 Presentation-Shell V2 Architecture Audit is the active checkpoint for this handoff. Character-slot integration remains frozen after five selected opt-in slots. The Barrosan foothold ground and road materials remain opt-in only, the default launcher remains procedural, browser runtime remains untouched, and the selected bridge-riverbank material remains private-comparator-only. Do not execute the older bridge-riverbank material integration recommendation directly. v0.193 may only start from clean, synced, pushed, remote-green v0.192 state if the queued prompt prerequisites pass.
+
+## Current v0.192 Presentation-Shell V2 Architecture Audit - 2026-06-09
+
+Status: v0.192 documentation-only human-review override is the active checkpoint. It prepares one isolated shell-v2 prototype contract and prompt, but does not implement shell v2.
+
+Key files:
+
+- `docs/V0192_PRESENTATION_SHELL_V2_ARCHITECTURE_AUDIT.md`
+- `docs/V0192_PRESENTATION_SHELL_V2_CONTRACT_AND_ROLLBACK.md`
+- `docs/art-prompts/V0193_01_PRESENTATION_SHELL_V2_IMPLEMENTATION.md`
+- `docs/V0192_IMPLEMENTATION_REPORT.md`
+
+Current decision:
+
+- Preserve the legacy R1 shell as comparator/fallback.
+- Build only one future parallel opt-in presentation-shell v2 compositor if v0.193 runs.
+- Keep the v0.189 wet-granite bridge-riverbank material comparator-only until after shell-v2 geometry is reviewed.
+- Keep gameplay, pathing, collisions, objectives, AI, saves, stable IDs, default launcher, prior launchers, and browser runtime unchanged.
+
+Next boundary: v0.193 may only add the isolated opt-in shell-v2 review path with zero images, zero imported art slots, existing five character slots, existing ground and road materials, no wet-granite integration, no default-art enablement, and no gameplay/pathing/collision/objective/AI/save/stable-ID mutation. Do not begin v0.194.
 
 ## Current v0.191 Post-Shell-Freeze Scorecard - 2026-06-09
 

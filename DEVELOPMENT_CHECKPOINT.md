@@ -1,6 +1,37 @@
 # Development Checkpoint
 
-Updated: 2026-06-09 v0.191 Post-Shell-Freeze Scorecard
+Updated: 2026-06-09 v0.192 Presentation-Shell V2 Architecture Audit
+
+## v0.192 Human-Review Override Presentation-Shell V2 Architecture Audit And Contract Stop - 2026-06-09
+
+Scope: documentation-only architecture audit after human review overrode the prepared bridge-riverbank material integration recommendation. This checkpoint generates zero images, adds zero slots, starts no runtime implementation, changes no launchers, keeps the default launcher procedural, preserves all prior launchers, keeps browser runtime untouched, keeps character integrations frozen, keeps the v0.189 wet-granite material comparator-only, and leaves gameplay, pathing, collisions, objectives, AI, saves, stable IDs, production manifests, selected prior art, metadata, fallbacks, and required evidence unchanged.
+
+Included work:
+
+- Added `docs/V0192_PRESENTATION_SHELL_V2_ARCHITECTURE_AUDIT.md`.
+- Added `docs/V0192_PRESENTATION_SHELL_V2_CONTRACT_AND_ROLLBACK.md`.
+- Added the tracked future prompt `docs/art-prompts/V0193_01_PRESENTATION_SHELL_V2_IMPLEMENTATION.md`.
+- Added `docs/V0192_IMPLEMENTATION_REPORT.md`.
+- Updated the handoff, roadmap, checkpoint, changelog, release checklist, and Salto experimental artifact index docs.
+
+Architecture decision:
+
+- The current R1 environment shell is preserved as comparator/fallback.
+- The v0.193 candidate architecture is one parallel opt-in visual-only compositor, using coherent scoped surfaces instead of stacked translucent rectangles.
+- The future v2 path must use existing five character slots plus selected ground and road materials only, with no wet-granite integration.
+
+Verification targets:
+
+```text
+PASS: docs existence checks for the four v0.192 deliverables.
+PASS: npm run godot:validate:salto-experimental-artifact-retention.
+PASS: npm run godot:cleanup:salto-experimental-artifacts -- --output-root=artifacts/desktop-spikes/godot-salto/v0192/cleanup-dry-run.
+PASS: npm run validate:content.
+PASS: npm run validate:art-intake.
+PASS: npm run validate:runtime-art-slots.
+PASS: isolation scans for zero images, zero slots, no runtime implementation, no launcher mutation, no browser wiring, no default-launcher mutation, no gameplay/pathing/collision/objective/AI/save/stable-ID mutation, wet-granite comparator-only posture, and v0.193 prepared but not started.
+PASS: git diff --check.
+```
 
 ## v0.191 Post-Shell-Freeze Next-Phase Scorecard And v0.192 Preparation Only - 2026-06-09
 

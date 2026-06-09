@@ -1,5 +1,32 @@
 # Changelog
 
+# v0.192 Human-Review Override Presentation-Shell V2 Architecture Audit And Contract Stop - 2026-06-09
+
+This checkpoint overrides the previously prepared bridge-riverbank material integration recommendation. It audits the current Godot Salto environment-shell architecture, preserves the legacy shell as comparator/fallback, selects one bounded parallel opt-in presentation-shell v2 architecture, prepares v0.193, generates zero images, adds zero slots, starts no runtime implementation, changes no launcher, keeps the default launcher procedural, and keeps the browser runtime untouched.
+
+Added:
+
+- `docs/V0192_PRESENTATION_SHELL_V2_ARCHITECTURE_AUDIT.md`.
+- `docs/V0192_PRESENTATION_SHELL_V2_CONTRACT_AND_ROLLBACK.md`.
+- `docs/art-prompts/V0193_01_PRESENTATION_SHELL_V2_IMPLEMENTATION.md`.
+- `docs/V0192_IMPLEMENTATION_REPORT.md`.
+
+Validation:
+
+- Current R1 shell preserved as comparator/fallback.
+- Selected architecture: one future visual-only shell-v2 compositor behind explicit opt-in.
+- Selected ground SHA preserved: `818b7743fbf192fe95dd95a0fbadb59ea92b1cb36c420dac5526c0f4d1af18a8`.
+- Selected road SHA preserved: `a64959ef2fd7a509fcaaa969fca3e095d590d563a4f0c578a5e96d1fb04c0e10`.
+- Wet-granite bridge-riverbank material remains comparator-only with SHA `638ce153d7a3d39db729dfa13ba05f3fb05c437c2802ab91b5cd248bd2036753`.
+- v0.193 prepared but not started.
+
+Boundaries:
+
+- Zero images generated.
+- Zero slots added.
+- No runtime implementation, launcher, browser runtime, gameplay, pathing, collisions, objectives, AI, saves, stable IDs, production manifests, selected prior art, metadata, fallbacks, or required evidence changed.
+- The older bridge-riverbank material integration prompt is not executed.
+
 # v0.191 Post-Shell-Freeze Next-Phase Scorecard And v0.192 Preparation Only - 2026-06-09
 
 This checkpoint prepares a documentation-only post-shell-freeze next-phase scorecard after v0.190. It generates zero images, adds zero slots, modifies no runtime code, performs no broad cleanup, keeps the default launcher procedural, preserves all prior launchers, keeps the browser runtime untouched, recommends exactly one v0.192 milestone, and stops before v0.192.

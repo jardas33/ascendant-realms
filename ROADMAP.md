@@ -11,9 +11,18 @@ Every phase should protect these long-term pillars:
 
 ## Current Recommended Next Phase
 
-The current checkpoint is **v0.191 Post-Shell-Freeze Next-Phase Scorecard And v0.192 Preparation Only** on 2026-06-09. It prepares documentation only after the v0.190 bridge-riverbank readiness packet, recommends exactly one v0.192 milestone, keeps the default launcher procedural, preserves all prior opt-in launchers, keeps the browser runtime untouched, adds no slots, generates zero images, modifies no runtime code, performs no broad cleanup, and leaves gameplay/pathing/collisions/objectives/AI/saves/stable IDs unchanged.
+The current checkpoint is **v0.192 Human-Review Override Presentation-Shell V2 Architecture Audit And Contract Stop** on 2026-06-09. It overrides the previously prepared bridge-riverbank material integration recommendation, audits the current Godot Salto environment-shell architecture, selects one bounded parallel opt-in presentation-shell v2 architecture, preserves the legacy shell as comparator/fallback, keeps the v0.189 wet-granite material comparator-only, keeps the default launcher procedural, preserves all prior opt-in launchers, keeps the browser runtime untouched, adds no slots, generates zero images, starts no runtime implementation, and leaves gameplay/pathing/collisions/objectives/AI/saves/stable IDs unchanged.
 
-The recommended next step is v0.192 bridge-riverbank material opt-in integration only if v0.191 is committed, pushed, clean, synced, remote-green, and a future explicit prompt authorizes that integration. The v0.192 prompt must add exactly one opt-in bridge-riverbank material slot, generate zero images, keep the default launcher procedural, preserve prior launchers, keep browser runtime untouched, and forbid broad stone replacement.
+The recommended next step is v0.193 isolated Salto presentation-shell v2 prototype implementation only if v0.192 is committed, pushed, clean, synced, remote-green, and the queued prompt prerequisites pass. The v0.193 prompt must add one opt-in shell-v2 review path with zero images, zero new imported art slots, existing five character slots, existing ground and road materials, no wet-granite integration, no default-art enablement, no browser runtime wiring, and no gameplay/pathing/collision/objective/AI/save/stable-ID mutation.
+
+New v0.192 docs:
+
+- `docs/V0192_PRESENTATION_SHELL_V2_ARCHITECTURE_AUDIT.md`
+- `docs/V0192_PRESENTATION_SHELL_V2_CONTRACT_AND_ROLLBACK.md`
+- `docs/art-prompts/V0193_01_PRESENTATION_SHELL_V2_IMPLEMENTATION.md`
+- `docs/V0192_IMPLEMENTATION_REPORT.md`
+
+Previous checkpoint reference: v0.191 Post-Shell-Freeze Next-Phase Scorecard And v0.192 Preparation Only.
 
 New v0.191 docs:
 
