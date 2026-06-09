@@ -93,6 +93,7 @@ const SCRIPT_ARG_PREFIXES := [
 	"--barrosan-barracks-material-seam-repair",
 	"--barrosan-ground-material-single-slot",
 	"--barrosan-road-material-single-slot",
+	"--barrosan-bridge-riverbank-material-single-slot",
 	"--aster-billboard-single-slot-repair",
 	"--hybrid-three-slot-composition-stress",
 	"--militia-billboard-single-slot",
@@ -384,6 +385,47 @@ func _ready() -> void:
 			get_tree().quit(1)
 			return
 		road_material.call("start")
+		return
+	if args.has("--barrosan-bridge-riverbank-material-single-slot"):
+		_write_absolute_json(_path_join(_artifact_root_from_args(), "bridge-riverbank-material-root-dispatch.json"), {
+			"schemaVersion": 1,
+			"checkpoint": "v0.189",
+			"status": "PASS_V0189_PRIVATE_BRIDGE_RIVERBANK_MATERIAL_DISPATCH",
+			"args": Array(args),
+			"defaultPlayerSliceLaunched": false,
+			"playerSliceIntegration": "forbidden",
+			"runtimeArtSlotAdded": false
+		})
+		var bridge_riverbank_material_script := load("res://comparators/runtime_art_pipeline/bridge_riverbank_material_single_slot_comparator.gd") as GDScript
+		if bridge_riverbank_material_script == null:
+			_write_absolute_json(_path_join(_artifact_root_from_args(), "bridge-riverbank-material-dispatch-failure.json"), {
+				"schemaVersion": 1,
+				"checkpoint": "v0.189",
+				"status": "FAIL_V0189_PRIVATE_BRIDGE_RIVERBANK_MATERIAL_SCRIPT_LOAD",
+				"script": "res://comparators/runtime_art_pipeline/bridge_riverbank_material_single_slot_comparator.gd"
+			})
+			get_tree().quit(1)
+			return
+		var bridge_riverbank_material := Node.new()
+		bridge_riverbank_material.name = "V0189BridgeRiverbankMaterialSingleSlotComparator"
+		bridge_riverbank_material.set_script(bridge_riverbank_material_script)
+		add_child(bridge_riverbank_material)
+		_write_absolute_json(_path_join(_artifact_root_from_args(), "bridge-riverbank-material-dispatch-prestart.json"), {
+			"schemaVersion": 1,
+			"checkpoint": "v0.189",
+			"status": "PASS_V0189_PRIVATE_BRIDGE_RIVERBANK_MATERIAL_PRESTART",
+			"hasStart": bridge_riverbank_material.has_method("start")
+		})
+		if not bridge_riverbank_material.has_method("start"):
+			_write_absolute_json(_path_join(_artifact_root_from_args(), "bridge-riverbank-material-dispatch-failure.json"), {
+				"schemaVersion": 1,
+				"checkpoint": "v0.189",
+				"status": "FAIL_V0189_PRIVATE_BRIDGE_RIVERBANK_MATERIAL_START_METHOD",
+				"script": "res://comparators/runtime_art_pipeline/bridge_riverbank_material_single_slot_comparator.gd"
+			})
+			get_tree().quit(1)
+			return
+		bridge_riverbank_material.call("start")
 		return
 	if args.has("--aster-billboard-single-slot-repair"):
 		_write_absolute_json(_path_join(_artifact_root_from_args(), "aster-billboard-repair-root-dispatch.json"), {

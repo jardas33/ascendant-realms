@@ -1,6 +1,37 @@
 # Development Checkpoint
 
-Updated: 2026-06-09 v0.188 Salto Environment Shell Freeze
+Updated: 2026-06-09 v0.189 Bridge-Riverbank Material Comparator Intake
+
+## v0.189 Barrosan Wet-Granite Bridge-Riverbank Material Private Comparator Intake And Human-Review Stop - 2026-06-09
+
+Scope: exactly one private-comparator bridge-riverbank material source after v0.188. This checkpoint adds no player-facing slots, integrates no bridge/riverbank material into the normal Salto slice, keeps the default launcher procedural, preserves all prior opt-in launchers, keeps browser runtime untouched, keeps character integrations frozen, and leaves gameplay, pathing, collisions, objectives, AI, saves, stable IDs, production manifests, selected prior art, metadata, fallbacks, and required evidence unchanged.
+
+Included work:
+
+- Generated exactly one project-local source: `barrosan_wet_granite_bridge_riverbank_material_v0189_source.png`.
+- Added the private `--barrosan-bridge-riverbank-material-single-slot` comparator dispatch and isolated comparator scene.
+- Created deterministic 512, 768, 1024, and 1024 wrap-safe derivatives.
+- Selected `BRIDGE_RIVERBANK_MATERIAL_LOCAL_1024` for private evidence only.
+- Added a tracked diagnostic fallback and contract for clean-checkout comparator reproducibility.
+- Updated cleanup and retention classification so the new fallback pair and selected private-comparator derivative are preserved.
+- Produced v0.189 comparator QA/benchmark, boundary/rollback, and implementation reports.
+
+Verification targets:
+
+```text
+PASS: node --check tools/godot/bridgeRiverbankMaterialSingleSlotTool.mjs.
+PASS: npm run godot:bridge-riverbank-material:fallback:reproduce.
+PASS: npm run godot:bridge-riverbank-material:derivatives:reproduce.
+PASS: npm run godot:bridge-riverbank-material:validate.
+PASS: npm run godot:bridge-riverbank-material:benchmark:headed.
+PASS: PASS_V0189_BRIDGE_RIVERBANK_MATERIAL_SELECTION_GATE.
+PASS: selected SHA 638ce153d7a3d39db729dfa13ba05f3fb05c437c2802ab91b5cd248bd2036753.
+PASS: source SHA 342d058f4749e115569a82bf971bb409ccd63825f93b7428d346150ebd9d003a.
+PASS: Tier L FPS ratio 1.0726 and p95 worsening -1.57%.
+PASS: cleanup dry run found 0 unknown files, 0 safe-delete candidates, and 0 deletions.
+PASS: npm run godot:validate:salto-experimental-artifact-retention.
+PASS: private comparator only, no normal-slice slot, no default launcher mutation, browser runtime untouched, no gameplay/pathing/collision/objective/AI/save/stable-ID mutation.
+```
 
 ## v0.188 Salto Environment-Shell Full Cohesion QA Cleanup Packet And Shell-Freeze Stop - 2026-06-09
 

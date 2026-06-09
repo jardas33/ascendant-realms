@@ -11,9 +11,17 @@ Every phase should protect these long-term pillars:
 
 ## Current Recommended Next Phase
 
-The current checkpoint is **v0.188 Salto Environment-Shell Full Cohesion QA Cleanup Packet And Shell-Freeze Stop** on 2026-06-09. It performs only Windows-side cohesion QA, cleanup packet, and shell-freeze documentation after v0.187, keeps the default launcher procedural, preserves all prior opt-in launchers, keeps the browser runtime untouched, generates zero images, adds zero slots, changes no runtime code, and leaves gameplay/pathing/collisions/objectives/AI/saves/stable IDs unchanged.
+The current checkpoint is **v0.189 Barrosan Wet-Granite Bridge-Riverbank Material Private Comparator Intake And Human-Review Stop** on 2026-06-09. It generates exactly one private-comparator wet-granite bridge-riverbank material source, selects the 1024 derivative for evidence only, keeps the default launcher procedural, preserves all prior opt-in launchers, keeps the browser runtime untouched, adds no player-facing slots, and leaves gameplay/pathing/collisions/objectives/AI/saves/stable IDs unchanged.
 
-The next queued step is v0.189 only if v0.188 is committed, pushed, clean, synced, and remote-green and the queued v0.189 prompt prerequisites pass. v0.189 may generate exactly one private-comparator Barrosan wet-granite bridge/riverbank material source and must not integrate it into the player-facing slice. Do not perform broad stone replacement, add player-facing slots, enable art by default, mutate the browser runtime, alter gameplay/pathing/collisions/objectives/AI/saves/stable IDs, or unfreeze character-slot integration.
+The next queued step is v0.190 only if v0.189 is committed, pushed, clean, synced, and remote-green and the queued v0.190 prompt prerequisites pass. v0.190 must be documentation-only readiness work for a future bridge-riverbank material opt-in integration; it may use zero images, add zero slots, modify no runtime code, and must not authorize broad stone replacement.
+
+New v0.189 docs:
+
+- `docs/V0189_BRIDGE_RIVERBANK_MATERIAL_COMPARATOR_QA_BENCHMARK.md`
+- `docs/V0189_PRIVATE_COMPARATOR_BOUNDARY_ROLLBACK.md`
+- `docs/V0189_IMPLEMENTATION_REPORT.md`
+
+Previous checkpoint reference: v0.188 Salto Environment-Shell Full Cohesion QA Cleanup Packet And Shell-Freeze Stop.
 
 New v0.188 docs:
 

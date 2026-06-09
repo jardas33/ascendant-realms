@@ -87,6 +87,17 @@ const retainedArtifacts = [
     slot: "barrosan_foothold_road_material_v0180"
   },
   {
+    rel: "artifacts/desktop-spikes/godot-salto/v0189/local-bridge-riverbank-material-slot/barrosan_wet_granite_bridge_riverbank_material_v0189_1024.png",
+    category: "selected-private-comparator-environment-derivative",
+    slot: "barrosan_wet_granite_bridge_riverbank_material_v0189",
+    sha256: "638ce153d7a3d39db729dfa13ba05f3fb05c437c2802ab91b5cd248bd2036753"
+  },
+  {
+    rel: "artifacts/desktop-spikes/godot-salto/v0189/local-bridge-riverbank-material-slot/barrosan_wet_granite_bridge_riverbank_material_v0189_1024.metadata.json",
+    category: "required-metadata",
+    slot: "barrosan_wet_granite_bridge_riverbank_material_v0189"
+  },
+  {
     rel: "artifacts/desktop-spikes/godot-salto/v0166/v0166-three-slot-visual-coherence-scorecard.json",
     category: "latest-required-evidence"
   },
@@ -114,7 +125,9 @@ const trackedFallbacks = [
   "desktop-spikes/godot-salto/comparators/runtime_art_pipeline/fallback/barrosan_foothold_ground_material_v0175_fallback.png",
   "desktop-spikes/godot-salto/comparators/runtime_art_pipeline/fallback/barrosan_foothold_ground_material_v0175_fallback.contract.json",
   "desktop-spikes/godot-salto/comparators/runtime_art_pipeline/fallback/barrosan_foothold_road_material_v0180_fallback.png",
-  "desktop-spikes/godot-salto/comparators/runtime_art_pipeline/fallback/barrosan_foothold_road_material_v0180_fallback.contract.json"
+  "desktop-spikes/godot-salto/comparators/runtime_art_pipeline/fallback/barrosan_foothold_road_material_v0180_fallback.contract.json",
+  "desktop-spikes/godot-salto/comparators/runtime_art_pipeline/fallback/barrosan_wet_granite_bridge_riverbank_material_v0189_fallback.png",
+  "desktop-spikes/godot-salto/comparators/runtime_art_pipeline/fallback/barrosan_wet_granite_bridge_riverbank_material_v0189_fallback.contract.json"
 ];
 
 const requiredTrackedIntent = new Set([
@@ -123,7 +136,10 @@ const requiredTrackedIntent = new Set([
   "desktop-spikes/godot-salto/comparators/runtime_art_pipeline/fallback/barrosan_foothold_ground_material_v0175_fallback.contract.json",
   "desktop-spikes/godot-salto/comparators/runtime_art_pipeline/road_material_single_slot_comparator.gd",
   "desktop-spikes/godot-salto/comparators/runtime_art_pipeline/fallback/barrosan_foothold_road_material_v0180_fallback.png",
-  "desktop-spikes/godot-salto/comparators/runtime_art_pipeline/fallback/barrosan_foothold_road_material_v0180_fallback.contract.json"
+  "desktop-spikes/godot-salto/comparators/runtime_art_pipeline/fallback/barrosan_foothold_road_material_v0180_fallback.contract.json",
+  "desktop-spikes/godot-salto/comparators/runtime_art_pipeline/bridge_riverbank_material_single_slot_comparator.gd",
+  "desktop-spikes/godot-salto/comparators/runtime_art_pipeline/fallback/barrosan_wet_granite_bridge_riverbank_material_v0189_fallback.png",
+  "desktop-spikes/godot-salto/comparators/runtime_art_pipeline/fallback/barrosan_wet_granite_bridge_riverbank_material_v0189_fallback.contract.json"
 ]);
 
 const safeSidecarPatterns = [

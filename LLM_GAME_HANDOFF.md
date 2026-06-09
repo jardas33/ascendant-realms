@@ -1,6 +1,6 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-06-09 v0.188 Salto Environment Shell Freeze
+Last updated: 2026-06-09 v0.189 Bridge-Riverbank Material Comparator Intake
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
@@ -76,11 +76,34 @@ Project Identity continuation note: v0.187 now supersedes the older no-v0.187 ta
 
 Project Identity continuation note: v0.188 now supersedes the older no-v0.188 tail above because the queued prompt explicitly authorized environment-shell full cohesion QA, cleanup packet, and shell-freeze work after v0.187 was committed, pushed, clean, synced, and remote-green. v0.188 generates zero images, adds zero slots, changes no runtime code or launchers, preserves the default procedural launcher and all prior opt-in launchers, keeps browser runtime untouched, validates playthrough/fallback coverage, safely removes only known Godot sidecars, and freezes procedural shell work for Emmanuel review.
 
-Current status override: v0.188 Salto environment-shell freeze is the active checkpoint for this handoff. Character-slot integration remains frozen after five selected opt-in slots. The Barrosan foothold ground and road materials remain opt-in only, the default launcher remains procedural, browser runtime remains untouched, and bridge/riverbank material work remains future private-comparator-only unless explicitly queued. Do not begin v0.189 unless v0.188 is committed, pushed, clean, synced, and remote-green and the next queued prompt prerequisites pass.
+Project Identity continuation note: v0.189 now supersedes the older no-v0.189 tail above because the queued prompt explicitly authorized exactly one private-comparator Barrosan wet-granite bridge-riverbank material intake after v0.188 was committed, pushed, clean, synced, and remote-green. v0.189 generated exactly one source image, selected `BRIDGE_RIVERBANK_MATERIAL_LOCAL_1024` for private evidence only, added a tracked diagnostic fallback, validated and benchmarked the private comparator, integrated nothing into the normal Salto slice, and stopped before v0.190.
+
+Current status override: v0.189 Bridge-Riverbank Material Comparator Intake is the active checkpoint for this handoff. Character-slot integration remains frozen after five selected opt-in slots. The Barrosan foothold ground and road materials remain opt-in only, the default launcher remains procedural, browser runtime remains untouched, and the selected bridge-riverbank material remains private-comparator-only unless a future queued integration prompt passes. Do not begin v0.190 unless v0.189 is committed, pushed, clean, synced, and remote-green and the next queued prompt prerequisites pass.
+
+## Current v0.189 Bridge-Riverbank Material Comparator Intake - 2026-06-09
+
+Status: v0.189 private bridge-riverbank material comparator intake is the active checkpoint. Commit, push, and remote CI proof are required before any queued v0.190 work.
+
+Key evidence:
+
+- `docs/V0189_BRIDGE_RIVERBANK_MATERIAL_COMPARATOR_QA_BENCHMARK.md`
+- `docs/V0189_PRIVATE_COMPARATOR_BOUNDARY_ROLLBACK.md`
+- `docs/V0189_IMPLEMENTATION_REPORT.md`
+- `artifacts/desktop-spikes/godot-salto/v0189/local-bridge-riverbank-material-slot/`
+- `artifacts/desktop-spikes/godot-salto/v0189/evidence/`
+- `artifacts/desktop-spikes/godot-salto/v0189/cleanup-dry-run/`
+- `PASS_V0189_BRIDGE_RIVERBANK_MATERIAL_SELECTION_GATE`
+- Source SHA `342d058f4749e115569a82bf971bb409ccd63825f93b7428d346150ebd9d003a`.
+- Selected derivative SHA `638ce153d7a3d39db729dfa13ba05f3fb05c437c2802ab91b5cd248bd2036753`.
+- Tier L FPS ratio `1.0726`; p95 worsening `-1.57%`.
+- Cleanup dry run found `0` unknowns, `0` safe-delete candidates, and `0` deletions.
+- Retention validation passed after the v0.189 fallback pair was staged as tracked evidence.
+
+Next boundary: v0.190 may only start from clean, synced, pushed, remote-green v0.189 state if the queued prompt is still present and its prerequisites pass. v0.190 must be documentation-only bridge-riverbank material readiness work: zero images, zero slots, no runtime code changes, no broad stone replacement authorization, no browser wiring, and no gameplay/pathing/collisions/objectives/AI/saves/stable-ID mutation.
 
 ## Current v0.188 Salto Environment Shell Freeze - 2026-06-09
 
-Status: v0.188 environment-shell cohesion QA, cleanup packet, and shell-freeze stop is the active checkpoint. Commit, push, and remote CI proof are required before any queued v0.189 work.
+Status: previous v0.188 environment-shell cohesion QA, cleanup packet, and shell-freeze stop. It is superseded by the active v0.189 section above.
 
 Key evidence:
 
@@ -99,7 +122,7 @@ Key evidence:
 - Safe-only cleanup deleted `18` known Godot sidecars / `7719` bytes and retention after cleanup passed.
 - Windows-side Computer Use review covered title, briefing, battle, Aster movement, bridge-adjacent order feedback, pan/zoom, and minimap.
 
-Next boundary: v0.189 may only start from clean, synced, pushed, remote-green v0.188 state if the queued prompt is still present and its prerequisites pass. v0.189 may generate exactly one private-comparator bridge/riverbank material source and must not integrate it into the player-facing slice. Do not add slots, enable default art, wire browser runtime, or mutate gameplay/pathing/collisions/objectives/AI/saves/stable IDs.
+Next boundary: superseded by the active v0.189 section above.
 
 ## Current v0.186 Salto Structure Shell Hierarchy - 2026-06-09
 

@@ -1,5 +1,37 @@
 # Changelog
 
+# v0.189 Barrosan Wet-Granite Bridge-Riverbank Material Private Comparator Intake And Human-Review Stop - 2026-06-09
+
+This checkpoint generates exactly one private-comparator Barrosan wet-granite bridge-riverbank material source after v0.188, adds deterministic derivatives plus a tracked diagnostic fallback, validates and benchmarks the isolated comparator, and stops before player-slice integration.
+
+Added:
+
+- `desktop-spikes/godot-salto/comparators/runtime_art_pipeline/bridge_riverbank_material_single_slot_comparator.gd`.
+- `desktop-spikes/godot-salto/comparators/runtime_art_pipeline/fallback/barrosan_wet_granite_bridge_riverbank_material_v0189_fallback.png`.
+- `desktop-spikes/godot-salto/comparators/runtime_art_pipeline/fallback/barrosan_wet_granite_bridge_riverbank_material_v0189_fallback.contract.json`.
+- `tools/godot/bridgeRiverbankMaterialSingleSlotTool.mjs`.
+- v0.189 validation, fallback, derivative, audit, benchmark, and capture wrappers.
+- `docs/V0189_BRIDGE_RIVERBANK_MATERIAL_COMPARATOR_QA_BENCHMARK.md`.
+- `docs/V0189_PRIVATE_COMPARATOR_BOUNDARY_ROLLBACK.md`.
+- `docs/V0189_IMPLEMENTATION_REPORT.md`.
+
+Validation:
+
+- `PASS_V0189_BRIDGE_RIVERBANK_MATERIAL_SELECTION_GATE`.
+- Source SHA `342d058f4749e115569a82bf971bb409ccd63825f93b7428d346150ebd9d003a`.
+- Selected `BRIDGE_RIVERBANK_MATERIAL_LOCAL_1024` SHA `638ce153d7a3d39db729dfa13ba05f3fb05c437c2802ab91b5cd248bd2036753`.
+- Tier L FPS ratio `1.0726`; p95 worsening `-1.57%`.
+- Cleanup dry run reported `0` unknowns, `0` safe-delete candidates, and `0` deletions.
+- `npm run godot:validate:salto-experimental-artifact-retention`.
+
+Boundaries:
+
+- Exactly one generated source image.
+- Private comparator only.
+- No player-slice integration, no normal-slice slot, no launcher integration, and no default-art enablement.
+- Browser runtime, gameplay, pathing, collisions, objectives, AI, saves, stable IDs, character-slot integrations, selected prior art, and prior launchers remain untouched.
+- v0.190 was not started inside this checkpoint.
+
 # v0.188 Salto Environment-Shell Full Cohesion QA Cleanup Packet And Shell-Freeze Stop - 2026-06-09
 
 This checkpoint performs only a Godot Salto environment-shell cohesion QA, cleanup packet, and shell-freeze documentation pass after v0.187. It generates zero images, adds zero slots, changes no runtime code or launcher behavior, keeps the default launcher procedural, preserves all prior opt-in launchers, keeps browser runtime untouched, and leaves gameplay/pathing/collisions/objectives/AI/saves/stable IDs unchanged.
