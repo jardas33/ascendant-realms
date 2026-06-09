@@ -39,7 +39,7 @@ if (-not (Test-Path $ExePath)) {
 
 foreach ($path in @($ExePath, $WorkerSourcePath, $WorkerMetadataPath, $BarracksSourcePath, $BarracksMetadataPath, $MilitiaSourcePath, $MilitiaMetadataPath, $AsterSourcePath, $AsterMetadataPath, $AshenSourcePath, $AshenMetadataPath, $GroundSourcePath, $GroundMetadataPath)) {
   if (-not (Test-Path -LiteralPath $path)) {
-    throw "Missing required v0.177 ground material opt-in path: $path"
+    throw "Missing required v0.178 ground material opt-in path: $path"
   }
 }
 
@@ -87,14 +87,14 @@ $ArgumentList = @(
   "--ground-material-source=$($GroundSourcePath.Replace('\', '/'))",
   "--ground-material-metadata=$($GroundMetadataPath.Replace('\', '/'))",
   "--ground-material-expected-sha256=$GroundExpectedSha",
-  "--ground-material-uv-scale=0.72"
+  "--ground-material-uv-scale=0.56"
 )
 if ($RemainingArgs) {
   $ArgumentList += $RemainingArgs
 }
 
-Write-Output "Launching v0.177 Salto ground-material opt-in review."
-Write-Output "Posture: five frozen character/material slots plus one Barrosan foothold ground-material environment slot."
+Write-Output "Launching v0.178 Salto hardened ground-material opt-in review."
+Write-Output "Posture: five frozen character/material slots plus one Barrosan foothold ground-material environment slot, UV 0.56, damped texture overlay."
 
 if ($Wait) {
   & $ExePath @ArgumentList

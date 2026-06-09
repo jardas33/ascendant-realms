@@ -1,5 +1,33 @@
 # Changelog
 
+# v0.178 Ground-Material Visual QA, UV-Scale Hardening, And Terrain-Noise Control Stop - 2026-06-08
+
+This checkpoint hardens only the existing Barrosan foothold ground-material opt-in path after v0.177. It reduces UV repetition, damps texture opacity, preserves a procedural value underlay, validates fallback behavior, benchmarks the opt-in path, and keeps character-slot integration frozen.
+
+Added:
+
+- `docs/V0178_GROUND_MATERIAL_VISUAL_QA_UV_HARDENING.md`.
+- `docs/V0178_GROUND_MATERIAL_BENCHMARK_BOUNDARY.md`.
+- `docs/V0178_IMPLEMENTATION_REPORT.md`.
+- v0.178 evidence under `artifacts/desktop-spikes/godot-salto/v0178/`.
+
+Changed:
+
+- Hardened the ground-material UV scale from `0.72` to `0.56`.
+- Added texture alpha/tint damping and a procedural value underlay for the two authorized foothold surfaces.
+- Updated ground-material opt-in launch, review, validation, capture, benchmark, and boundary tooling to write v0.178 evidence.
+- Updated the Salto experimental artifact index, roadmap, handoff, checkpoint, release checklist, and changelog for v0.178.
+
+Boundaries:
+
+- Zero images generated.
+- Zero slots added; the existing single environment-material slot remains opt-in only.
+- Zero character slots added; character-slot expansion remains frozen at five.
+- Default launchers remain procedural.
+- Prior opt-in launchers remain preserved.
+- Browser runtime, production manifests, saves, stable IDs, gameplay, pathing, objectives, AI, balance, campaign state, and broad cleanup remain untouched.
+- v0.179 is not started inside this checkpoint.
+
 # v0.177 Barrosan Foothold Ground-Material First Opt-In Player-Slice Integration Experiment And Human-Review Stop - 2026-06-08
 
 This checkpoint integrates exactly one Barrosan foothold ground-material environment slot into the Godot Salto player-slice review path behind explicit opt-in only. It uses the selected v0.175 `GROUND_MATERIAL_LOCAL_1024` derivative, proves missing-art and hash-mismatch fallback, benchmarks against the five-slot environment-foundation baseline, and keeps v0.178 unstarted.

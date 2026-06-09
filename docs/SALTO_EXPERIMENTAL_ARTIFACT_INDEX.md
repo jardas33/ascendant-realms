@@ -1,10 +1,10 @@
 # Salto Experimental Artifact Index
 
-Status: `ACTIVE_V0177_RETENTION_INDEX`
+Status: `ACTIVE_V0178_RETENTION_INDEX`
 
 This index is the retention source of truth for the Godot Salto experimental-art path. It protects selected local art, active derivatives, metadata, tracked fallbacks, current evidence, and unknown files from broad cleanup.
 
-This v0.177 index supersedes `ACTIVE_V0176_RETENTION_INDEX`, `ACTIVE_V0175_RETENTION_INDEX`, `ACTIVE_V0174_RETENTION_INDEX`, `ACTIVE_V0173_RETENTION_INDEX`, `ACTIVE_V0172_RETENTION_INDEX`, `ACTIVE_V0171_RETENTION_INDEX`, and `ACTIVE_V0170_RETENTION_INDEX` while retaining their protected evidence.
+This v0.178 index supersedes `ACTIVE_V0177_RETENTION_INDEX`, `ACTIVE_V0176_RETENTION_INDEX`, `ACTIVE_V0175_RETENTION_INDEX`, `ACTIVE_V0174_RETENTION_INDEX`, `ACTIVE_V0173_RETENTION_INDEX`, `ACTIVE_V0172_RETENTION_INDEX`, `ACTIVE_V0171_RETENTION_INDEX`, and `ACTIVE_V0170_RETENTION_INDEX` while retaining their protected evidence.
 
 ## Selected Local Source Art And Active Derivatives
 
@@ -88,10 +88,19 @@ Retain the latest v0.166/v0.167/v0.168/v0.169/v0.170 evidence until a later chec
 - `docs/V0177_GROUND_MATERIAL_OPT_IN_QA_BENCHMARK.md`
 - `docs/V0177_GROUND_MATERIAL_BOUNDARY_ROLLBACK.md`
 - `docs/V0177_IMPLEMENTATION_REPORT.md`
+- `artifacts/desktop-spikes/godot-salto/v0178/validation/`
+- `artifacts/desktop-spikes/godot-salto/v0178/capture/`
+- `artifacts/desktop-spikes/godot-salto/v0178/benchmark/`
+- `artifacts/desktop-spikes/godot-salto/v0178/boundary/`
+- `artifacts/desktop-spikes/godot-salto/v0178/cleanup-dry-run/`
+- `artifacts/desktop-spikes/godot-salto/v0178/artifact-retention/`
+- `docs/V0178_GROUND_MATERIAL_VISUAL_QA_UV_HARDENING.md`
+- `docs/V0178_GROUND_MATERIAL_BENCHMARK_BOUNDARY.md`
+- `docs/V0178_IMPLEMENTATION_REPORT.md`
 
 ## Character Integration Freeze
 
-Character-slot expansion is frozen after the selected Worker, Barracks material, Militia, Aster, and Ashen Raider opt-in slots. v0.177 adds exactly one environment-material opt-in slot for the selected Barrosan foothold ground material. It generated zero images, added zero character slots, preserves the default procedural launcher, and does not wire browser runtime. Future work may consider v0.178 UV/noise hardening only after v0.177 is clean, pushed, and remote-green.
+Character-slot expansion is frozen after the selected Worker, Barracks material, Militia, Aster, and Ashen Raider opt-in slots. v0.178 hardens the existing single environment-material opt-in slot for the selected Barrosan foothold ground material. It generated zero images, added zero slots, preserves the default procedural launcher, and does not wire browser runtime. Future work may consider v0.179 environment contrast harmonization only after v0.178 is clean, pushed, and remote-green.
 
 ## Archive Candidates
 

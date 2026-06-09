@@ -7,7 +7,7 @@ $ExePath = if ($env:GODOT_SALTO_EXE_PATH) {
 } else {
   Join-Path $RepoRoot "desktop-spikes\godot-salto\builds\AscendantRealmsGodotSalto.exe"
 }
-$ArtifactRoot = Join-Path $RepoRoot "artifacts\desktop-spikes\godot-salto\v0177"
+$ArtifactRoot = Join-Path $RepoRoot "artifacts\desktop-spikes\godot-salto\v0178"
 $ArtifactRootArg = $ArtifactRoot.Replace("\", "/")
 $WorkerSourcePath = Join-Path $RepoRoot "artifacts\desktop-spikes\godot-salto\v0148\local-worker-slot\worker_billboard_static_v0147_trimmed_1024.png"
 $WorkerMetadataPath = Join-Path $RepoRoot "artifacts\desktop-spikes\godot-salto\v0148\local-worker-slot\worker_billboard_static_v0147_trimmed_1024.metadata.json"
@@ -36,7 +36,7 @@ Set-Location $RepoRoot
 
 foreach ($path in @($ExePath, $WorkerSourcePath, $WorkerMetadataPath, $BarracksSourcePath, $BarracksMetadataPath, $MilitiaSourcePath, $MilitiaMetadataPath, $AsterSourcePath, $AsterMetadataPath, $AshenSourcePath, $AshenMetadataPath, $GroundSourcePath, $GroundMetadataPath)) {
   if (-not (Test-Path -LiteralPath $path)) {
-    throw "Missing required v0.177 ground material validation path: $path"
+    throw "Missing required v0.178 ground material validation path: $path"
   }
 }
 
@@ -73,7 +73,7 @@ function Invoke-GodotScenario {
   $process = Start-Process -FilePath $ExePath -ArgumentList (ConvertTo-ProcessArgumentString $ArgumentList) -Wait -PassThru -WindowStyle Hidden
   $GodotExitCode = if ($null -eq $process.ExitCode) { 0 } else { $process.ExitCode }
   if ($GodotExitCode -ne 0) {
-    throw "Godot v0.177 scenario '$ScenarioRoot' exited with code $GodotExitCode."
+    throw "Godot v0.178 scenario '$ScenarioRoot' exited with code $GodotExitCode."
   }
   foreach ($fileName in $ExpectedFiles) {
     if (-not (Test-Path -LiteralPath (Join-Path $ScenarioRoot $fileName))) {
@@ -92,15 +92,15 @@ function Environment-FoundationArgs { return @("--player-slice", "--experimental
 function Environment-GroundMaterialArgs { return @("--player-slice", "--experimental-review-mode-label=Experimental opt-in art: 5 slots + Barrosan foothold ground", "--salto-five-slot-review-framing", "--salto-environment-foundation-review") }
 function Environment-GroundMissingArgs { return @("--player-slice", "--experimental-review-mode-label=Experimental opt-in art: 5 slots + ground fallback missing", "--salto-five-slot-review-framing", "--salto-environment-foundation-review") }
 function Environment-GroundMismatchArgs { return @("--player-slice", "--experimental-review-mode-label=Experimental opt-in art: 5 slots + ground fallback hash mismatch", "--salto-five-slot-review-framing", "--salto-environment-foundation-review") }
-function Ground-MaterialArgs { return @("--ground-material-opt-in", "--ground-material-source=$($GroundSourcePath.Replace('\', '/'))", "--ground-material-metadata=$($GroundMetadataPath.Replace('\', '/'))", "--ground-material-expected-sha256=$GroundExpectedSha", "--ground-material-uv-scale=0.72") }
-function Ground-MissingArgs { return @("--ground-material-opt-in", "--ground-material-fallback-mode=missing", "--ground-material-metadata=$($GroundMetadataPath.Replace('\', '/'))", "--ground-material-expected-sha256=$GroundExpectedSha", "--ground-material-uv-scale=0.72") }
-function Ground-MismatchArgs { return @("--ground-material-opt-in", "--ground-material-source=$($GroundSourcePath.Replace('\', '/'))", "--ground-material-metadata=$($GroundMetadataPath.Replace('\', '/'))", "--ground-material-expected-sha256=$WrongGroundSha", "--ground-material-uv-scale=0.72") }
+function Ground-MaterialArgs { return @("--ground-material-opt-in", "--ground-material-source=$($GroundSourcePath.Replace('\', '/'))", "--ground-material-metadata=$($GroundMetadataPath.Replace('\', '/'))", "--ground-material-expected-sha256=$GroundExpectedSha", "--ground-material-uv-scale=0.56") }
+function Ground-MissingArgs { return @("--ground-material-opt-in", "--ground-material-fallback-mode=missing", "--ground-material-metadata=$($GroundMetadataPath.Replace('\', '/'))", "--ground-material-expected-sha256=$GroundExpectedSha", "--ground-material-uv-scale=0.56") }
+function Ground-MismatchArgs { return @("--ground-material-opt-in", "--ground-material-source=$($GroundSourcePath.Replace('\', '/'))", "--ground-material-metadata=$($GroundMetadataPath.Replace('\', '/'))", "--ground-material-expected-sha256=$WrongGroundSha", "--ground-material-uv-scale=0.56") }
 
-function Invoke-V0177Tool {
+function Invoke-V0178Tool {
   param([Parameter(Mandatory = $true)][string]$Command)
   node "tools/godot/saltoGroundMaterialOptInTool.mjs" $Command "--artifact-root=$ArtifactRootArg"
   if ($LASTEXITCODE -ne 0) {
-    throw "v0.177 ground material opt-in tool '$Command' failed with exit code $LASTEXITCODE."
+    throw "v0.178 ground material UV/noise hardening tool '$Command' failed with exit code $LASTEXITCODE."
   }
 }
 
@@ -113,7 +113,7 @@ Invoke-GodotScenario -ScenarioRoot (Join-Path $ValidationRoot "e0-environment-fo
 Invoke-GodotScenario -ScenarioRoot (Join-Path $ValidationRoot "e1-ground-material-opt-in") -ScenarioArgs (@("--player-slice-validate") + (Environment-GroundMaterialArgs) + (Five-SlotArgs) + (Ground-MaterialArgs)) -ExpectedFiles @("player-slice-validation-runtime.json")
 Invoke-GodotScenario -ScenarioRoot (Join-Path $ValidationRoot "ground-missing-art-fallback") -ScenarioArgs (@("--player-slice-validate") + (Environment-GroundMissingArgs) + (Five-SlotArgs) + (Ground-MissingArgs)) -ExpectedFiles @("player-slice-validation-runtime.json")
 Invoke-GodotScenario -ScenarioRoot (Join-Path $ValidationRoot "ground-hash-mismatch-fallback") -ScenarioArgs (@("--player-slice-validate") + (Environment-GroundMismatchArgs) + (Five-SlotArgs) + (Ground-MismatchArgs)) -ExpectedFiles @("player-slice-validation-runtime.json")
-Invoke-V0177Tool -Command "validation"
+Invoke-V0178Tool -Command "validation"
 
 $CaptureRoot = Join-Path $ArtifactRoot "capture"
 Reset-SafeDirectory -Path $CaptureRoot -Parent $ArtifactRoot
@@ -121,7 +121,7 @@ Invoke-GodotScenario -ScenarioRoot (Join-Path $CaptureRoot "e0-environment-found
 Invoke-GodotScenario -ScenarioRoot (Join-Path $CaptureRoot "e1-ground-material-opt-in") -ScenarioArgs (@("--player-slice-capture") + (Environment-GroundMaterialArgs) + (Five-SlotArgs) + (Ground-MaterialArgs)) -ExpectedFiles @("screenshot-runtime-manifest.json")
 Invoke-GodotScenario -ScenarioRoot (Join-Path $CaptureRoot "ground-missing-art-fallback") -ScenarioArgs (@("--player-slice-capture") + (Environment-GroundMissingArgs) + (Five-SlotArgs) + (Ground-MissingArgs)) -ExpectedFiles @("screenshot-runtime-manifest.json")
 Invoke-GodotScenario -ScenarioRoot (Join-Path $CaptureRoot "ground-hash-mismatch-fallback") -ScenarioArgs (@("--player-slice-capture") + (Environment-GroundMismatchArgs) + (Five-SlotArgs) + (Ground-MismatchArgs)) -ExpectedFiles @("screenshot-runtime-manifest.json")
-Invoke-V0177Tool -Command "capture"
+Invoke-V0178Tool -Command "capture"
 
 $BenchmarkRoot = Join-Path $ArtifactRoot "benchmark"
 Reset-SafeDirectory -Path $BenchmarkRoot -Parent $ArtifactRoot
@@ -129,18 +129,18 @@ Invoke-GodotScenario -ScenarioRoot (Join-Path $BenchmarkRoot "e0-environment-fou
 Invoke-GodotScenario -ScenarioRoot (Join-Path $BenchmarkRoot "e1-ground-material-opt-in") -ScenarioArgs (@("--worker-art-opt-in-benchmark") + (Environment-GroundMaterialArgs) + (Five-SlotArgs) + (Ground-MaterialArgs)) -ExpectedFiles @("worker-art-opt-in-benchmark-runtime.json")
 Invoke-GodotScenario -ScenarioRoot (Join-Path $BenchmarkRoot "ground-missing-art-fallback") -ScenarioArgs (@("--worker-art-opt-in-benchmark") + (Environment-GroundMissingArgs) + (Five-SlotArgs) + (Ground-MissingArgs)) -ExpectedFiles @("worker-art-opt-in-benchmark-runtime.json")
 Invoke-GodotScenario -ScenarioRoot (Join-Path $BenchmarkRoot "ground-hash-mismatch-fallback") -ScenarioArgs (@("--worker-art-opt-in-benchmark") + (Environment-GroundMismatchArgs) + (Five-SlotArgs) + (Ground-MismatchArgs)) -ExpectedFiles @("worker-art-opt-in-benchmark-runtime.json")
-Invoke-V0177Tool -Command "benchmark"
+Invoke-V0178Tool -Command "benchmark"
 
-Invoke-V0177Tool -Command "boundary"
+Invoke-V0178Tool -Command "boundary"
 
 node "scripts/cleanupSaltoExperimentalArtifacts.mjs" "--output-root=$((Join-Path $ArtifactRoot 'cleanup-dry-run').Replace('\', '/'))"
 if ($LASTEXITCODE -ne 0) {
-  throw "v0.177 cleanup dry-run failed with exit code $LASTEXITCODE."
+  throw "v0.178 cleanup dry-run failed with exit code $LASTEXITCODE."
 }
 
 node "scripts/validateSaltoExperimentalArtifactRetention.mjs" "--output-root=$((Join-Path $ArtifactRoot 'artifact-retention').Replace('\', '/'))"
 if ($LASTEXITCODE -ne 0) {
-  throw "v0.177 artifact retention validation failed with exit code $LASTEXITCODE."
+  throw "v0.178 artifact retention validation failed with exit code $LASTEXITCODE."
 }
 
-Write-Output "PASS_V0177_SALTO_GROUND_MATERIAL_OPT_IN_AUTOMATION_READY"
+Write-Output "PASS_V0178_SALTO_GROUND_MATERIAL_UV_NOISE_HARDENING_AUTOMATION_READY"

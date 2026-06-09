@@ -11,18 +11,26 @@ Every phase should protect these long-term pillars:
 
 ## Current Recommended Next Phase
 
-The current checkpoint is **v0.177 Barrosan Foothold Ground-Material First Opt-In Player-Slice Integration Experiment** on 2026-06-08. It integrates exactly one environment-material opt-in slot using the selected v0.175 ground derivative, preserves the default procedural launcher, all prior opt-in launchers, the browser runtime boundary, and the frozen five-character-slot posture, and does not start v0.178.
+The current checkpoint is **v0.178 Ground-Material Visual QA, UV-Scale Hardening, And Terrain-Noise Control Stop** on 2026-06-08. It hardens only the existing Barrosan foothold ground-material opt-in path using UV `0.56`, alpha `0.48`, mipmapped filtering, and a procedural value underlay. It preserves the default procedural launcher, all prior opt-in launchers, the browser runtime boundary, and the frozen five-character-slot posture, and does not start v0.179.
 
-The next recommended step is v0.178 only if a future prompt explicitly authorizes it after v0.177 is committed, pushed, clean, synced, and remote-green. v0.178 should harden only the existing ground-material UV/noise/readability posture. Do not perform broad terrain replacement, add character slots, enable art by default, mutate the browser runtime, or begin v0.179.
+The next recommended step is v0.179 only if a future prompt explicitly authorizes it after v0.178 is committed, pushed, clean, synced, and remote-green. v0.179 should harmonize only environment contrast around the existing opt-in posture. Do not perform broad terrain replacement, add slots, generate images, enable art by default, mutate the browser runtime, or unfreeze character-slot integration.
+
+New v0.178 docs:
+
+- `docs/V0178_GROUND_MATERIAL_VISUAL_QA_UV_HARDENING.md`
+- `docs/V0178_GROUND_MATERIAL_BENCHMARK_BOUNDARY.md`
+- `docs/V0178_IMPLEMENTATION_REPORT.md`
+- `docs/SALTO_EXPERIMENTAL_ARTIFACT_INDEX.md`
+
+Previous checkpoint reference: v0.177 Barrosan Foothold Ground-Material First Opt-In Player-Slice Integration Experiment.
+
+The previous checkpoint was **v0.177 Barrosan Foothold Ground-Material First Opt-In Player-Slice Integration Experiment** on 2026-06-08. It integrated exactly one environment-material opt-in slot using the selected v0.175 ground derivative and preserved the default procedural launcher, all prior opt-in launchers, browser runtime boundary, and five-character-slot freeze.
 
 New v0.177 docs:
 
 - `docs/V0177_GROUND_MATERIAL_OPT_IN_QA_BENCHMARK.md`
 - `docs/V0177_GROUND_MATERIAL_BOUNDARY_ROLLBACK.md`
 - `docs/V0177_IMPLEMENTATION_REPORT.md`
-- `docs/SALTO_EXPERIMENTAL_ARTIFACT_INDEX.md`
-
-Previous checkpoint reference: v0.176 Terrain-Material Opt-In Player-Slice Integration Readiness Packet.
 
 The previous checkpoint was **v0.176 Terrain-Material Opt-In Player-Slice Integration Readiness Packet** on 2026-06-08. It prepared documentation only for exactly one future terrain-material opt-in player-slice slot and did not integrate terrain material.
 

@@ -1,6 +1,6 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-06-08 v0.177 Barrosan Foothold Ground-Material First Opt-In Player-Slice Integration Experiment
+Last updated: 2026-06-08 v0.178 Ground-Material Visual QA, UV-Scale Hardening, And Terrain-Noise Control Stop
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
@@ -52,7 +52,32 @@ Project Identity continuation note: v0.176 now supersedes the older no-v0.176 ta
 
 Project Identity continuation note: v0.177 now supersedes the older no-v0.177 tail above because the queued prompt explicitly authorized exactly one Barrosan foothold ground-material opt-in environment slot after v0.176 was committed, pushed, clean, synced, and remote-green. v0.177 uses zero image generation, adds one environment-material opt-in slot, adds zero character slots, preserves default procedural launchers and all prior opt-in launchers, proves missing-art and hash-mismatch fallback, records QA/benchmark/boundary/cleanup evidence, and stops before v0.178 unless a queued prompt sequence explicitly continues.
 
-Current status override: v0.177 is the active checkpoint for this handoff. Character-slot integration remains frozen after five selected opt-in slots. The ground material is opt-in only and the default launcher remains procedural. Do not begin v0.178 unless an explicit queued prompt continues from a clean, synced, pushed, remote-green v0.177.
+Project Identity continuation note: v0.178 now supersedes the older no-v0.178 tail above because the queued prompt explicitly authorized ground-material UV/noise hardening after v0.177 was committed, pushed, clean, synced, and remote-green. v0.178 generates zero images, adds zero slots, hardens only the existing Barrosan foothold ground-material opt-in path with UV `0.56`, alpha `0.48`, mipmapped filtering, and a procedural value underlay, validates missing-art/hash-mismatch fallback, records Windows-side visual QA, benchmark, boundary, cleanup, and retention evidence, and stops before v0.179 unless a queued prompt sequence explicitly continues.
+
+Current status override: v0.178 is the active checkpoint for this handoff. Character-slot integration remains frozen after five selected opt-in slots. The ground material remains opt-in only and the default launcher remains procedural. Do not begin v0.179 unless an explicit queued prompt continues from a clean, synced, pushed, remote-green v0.178.
+
+## Current v0.178 Ground-Material Visual QA, UV-Scale Hardening, And Terrain-Noise Control Stop - 2026-06-08
+
+Status: local v0.178 work is the active checkpoint. Commit, push, and remote CI proof are required before any queued v0.179 work.
+
+Key evidence:
+
+- `PASS_V0178_SALTO_GROUND_MATERIAL_UV_NOISE_HARDENING_AUTOMATION_READY`
+- `PASS_V0178_GROUND_MATERIAL_UV_NOISE_HARDENING_VALIDATION`
+- `PASS_V0178_GROUND_MATERIAL_UV_NOISE_HARDENING_CAPTURE`
+- `PASS_V0178_GROUND_MATERIAL_UV_NOISE_HARDENING_BENCHMARK`
+- `PASS_V0178_GROUND_MATERIAL_UV_NOISE_HARDENING_BOUNDARY`
+- E1 FPS ratio `0.998`; p95 worsening `2.78%`
+- Missing-art fallback and hash-mismatch fallback both preserve five frozen character/material slots.
+- Windows-side Computer Use review covered title, briefing, battle view, and quick pan/zoom smoke.
+
+New v0.178 docs:
+
+- `docs/V0178_GROUND_MATERIAL_VISUAL_QA_UV_HARDENING.md`
+- `docs/V0178_GROUND_MATERIAL_BENCHMARK_BOUNDARY.md`
+- `docs/V0178_IMPLEMENTATION_REPORT.md`
+
+Next boundary: v0.179 may harmonize only environment contrast if explicitly queued. Do not add slots, generate images, broaden terrain replacement, enable art by default, mutate the browser runtime, or unfreeze character-slot integration.
 
 ## Current v0.177 Barrosan Foothold Ground-Material First Opt-In Player-Slice Integration Experiment - 2026-06-08
 

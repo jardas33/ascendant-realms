@@ -966,9 +966,9 @@ func _ground_material_options_from_args() -> Dictionary:
 	if metadata_path == "":
 		metadata_path = ProjectSettings.globalize_path("res://../../artifacts/desktop-spikes/godot-salto/v0175/local-ground-material-slot/barrosan_foothold_ground_material_v0175_1024.metadata.json")
 	if fallback_mode == "missing" and not _has_arg_prefix("--ground-material-source="):
-		source_path = ProjectSettings.globalize_path("res://../../artifacts/desktop-spikes/godot-salto/v0177/missing-ground-source/barrosan_foothold_ground_material_v0175_1024.png")
-	var uv_text := _arg_value("--ground-material-uv-scale=", "0.72")
-	var uv_scale := 0.72
+		source_path = ProjectSettings.globalize_path("res://../../artifacts/desktop-spikes/godot-salto/v0178/missing-ground-source/barrosan_foothold_ground_material_v0175_1024.png")
+	var uv_text := _arg_value("--ground-material-uv-scale=", "0.56")
+	var uv_scale := 0.56
 	if uv_text.is_valid_float():
 		uv_scale = float(uv_text)
 	return {
@@ -1808,7 +1808,7 @@ func run_player_slice_capture() -> void:
 		"viewport": {"width": VIEWPORT_SIZE.x, "height": VIEWPORT_SIZE.y},
 		"defaultMode": MODE_25D,
 		"defaultVisualPreset": VISUAL_PRESET_CLEAN,
-		"privateHarnessPreservedSeparately": captures.any(func(capture: Dictionary) -> bool: return bool(capture.get("privateHarnessCapture", false))) or ["v0.126", "v0.127", "v0.128", "v0.129", "v0.130", "v0.160", "v0.162", "v0.164", "v0.168", "v0.169", "v0.170", "v0.173", "v0.174", "v0.177"].has(_player_capture_checkpoint()),
+		"privateHarnessPreservedSeparately": captures.any(func(capture: Dictionary) -> bool: return bool(capture.get("privateHarnessCapture", false))) or ["v0.126", "v0.127", "v0.128", "v0.129", "v0.130", "v0.160", "v0.162", "v0.164", "v0.168", "v0.169", "v0.170", "v0.173", "v0.174", "v0.177", "v0.178"].has(_player_capture_checkpoint()),
 		"proceduralPrimitiveOnly": not worker_art_loaded and not barracks_material_loaded and not militia_art_loaded and not aster_art_loaded and not ashen_art_loaded and not ground_material_loaded,
 		"generatedOrImportedArtIncluded": worker_art_loaded or barracks_material_loaded or militia_art_loaded or aster_art_loaded or ashen_art_loaded or ground_material_loaded,
 		"runtimeArtIntegrated": worker_art_loaded or barracks_material_loaded or militia_art_loaded or aster_art_loaded or ashen_art_loaded or ground_material_loaded,
@@ -4330,6 +4330,8 @@ func _apply_player_slice_action(action: String) -> Dictionary:
 
 func _player_capture_checkpoint() -> String:
 	var normalized_root := _artifact_root_from_args().replace("\\", "/")
+	if normalized_root.contains("/v0178"):
+		return "v0.178"
 	if normalized_root.contains("/v0177"):
 		return "v0.177"
 	if normalized_root.contains("/v0174"):
@@ -4363,22 +4365,22 @@ func _player_capture_checkpoint() -> String:
 	return "v0.124"
 
 func _is_bounded_microloop_checkpoint() -> bool:
-	return ["v0.129", "v0.130", "v0.160", "v0.162", "v0.164", "v0.166", "v0.168", "v0.169", "v0.170", "v0.173", "v0.174", "v0.177"].has(_player_capture_checkpoint())
+	return ["v0.129", "v0.130", "v0.160", "v0.162", "v0.164", "v0.166", "v0.168", "v0.169", "v0.170", "v0.173", "v0.174", "v0.177", "v0.178"].has(_player_capture_checkpoint())
 
 func _player_capture_steps() -> Array[Dictionary]:
-	if _player_capture_checkpoint() == "v0.177":
+	if ["v0.177", "v0.178"].has(_player_capture_checkpoint()):
 		return [
 			{"id": "title", "label": "Title shell with configured ground-material opt-in", "action": "title"},
 			{"id": "briefing", "label": "Briefing shell", "action": "briefing"},
-			{"id": "ground_material_normal_rts", "label": "Ground material normal RTS distance", "action": "battle_default"},
-			{"id": "ground_material_close", "label": "Close foothold ground material view", "action": "friendly_boundary"},
-			{"id": "road_river_bridge_hierarchy", "label": "Road river bridge hierarchy over material", "action": "ford"},
+			{"id": "ground_material_normal_rts", "label": "Hardened ground material normal RTS distance", "action": "battle_default"},
+			{"id": "ground_material_close", "label": "Close hardened foothold ground material view", "action": "friendly_boundary"},
+			{"id": "road_river_bridge_hierarchy", "label": "Road river bridge hierarchy over hardened material", "action": "ford"},
 			{"id": "site_marker_scope", "label": "Site markers and capture ring remain procedural", "action": "site_marker_hierarchy"},
-			{"id": "five_slot_coexistence", "label": "Five selected slots over ground material", "action": "squad_selected"},
-			{"id": "combat_onset", "label": "Combat readability with ground material", "action": "combat"},
+			{"id": "five_slot_coexistence", "label": "Five selected slots over hardened ground material", "action": "squad_selected"},
+			{"id": "combat_onset", "label": "Combat readability with hardened ground material", "action": "combat"},
 			{"id": "camera_pan_readability", "label": "Pan camera readability", "action": "pan_camera"},
-			{"id": "camera_min_zoom", "label": "Zoomed-in material edge treatment", "action": "camera_min_zoom"},
-			{"id": "camera_max_zoom", "label": "Zoomed-out material repetition check", "action": "camera_max_zoom"},
+			{"id": "camera_min_zoom", "label": "Zoomed-in hardened material edge treatment", "action": "camera_min_zoom"},
+			{"id": "camera_max_zoom", "label": "Zoomed-out hardened material repetition check", "action": "camera_max_zoom"},
 			{"id": "results", "label": "Results path preserved", "action": "results"}
 		]
 	if _player_capture_checkpoint() == "v0.174":

@@ -1,6 +1,31 @@
 # Development Checkpoint
 
-Updated: 2026-06-08 v0.177 Barrosan Foothold Ground-Material First Opt-In Player-Slice Integration Experiment
+Updated: 2026-06-08 v0.178 Ground-Material Visual QA, UV-Scale Hardening, And Terrain-Noise Control Stop
+
+## v0.178 Ground-Material Visual QA, UV-Scale Hardening, And Terrain-Noise Control Stop - 2026-06-08
+
+Scope: bounded visual hardening for the existing Godot Salto ground-material opt-in path. This checkpoint generates zero images, adds zero slots, keeps the same selected v0.175 material source, preserves all launchers, keeps default procedural, keeps browser runtime untouched, and does not begin v0.179.
+
+Included work:
+
+- Reduced the ground-material UV scale from `0.72` to `0.56`.
+- Reduced texture overlay alpha to `0.48` with a restrained tint.
+- Added a procedural value underlay beneath the material overlay on the two authorized foothold ground surfaces.
+- Preserved mipmapped filtering, exact selected hash validation, one-time load/create counters, and missing-art/hash-mismatch fallback.
+- Updated validation/capture/benchmark/boundary tooling to write v0.178 evidence and reject the old v0.177 UV/noise posture.
+- Performed Windows-side Computer Use review of title, briefing, battle view, and quick pan/zoom smoke.
+
+Verification targets:
+
+```text
+PASS: npm run godot:validate:salto-ground-material-opt-in.
+PASS: PASS_V0178_GROUND_MATERIAL_UV_NOISE_HARDENING_VALIDATION.
+PASS: PASS_V0178_GROUND_MATERIAL_UV_NOISE_HARDENING_CAPTURE.
+PASS: PASS_V0178_GROUND_MATERIAL_UV_NOISE_HARDENING_BENCHMARK.
+PASS: PASS_V0178_GROUND_MATERIAL_UV_NOISE_HARDENING_BOUNDARY.
+PASS: E1 FPS ratio 0.998 and p95 worsening 2.78%.
+PASS: cleanup dry-run, artifact retention, Windows-side Computer Use review, zero images, zero slots added, no browser/save/stable-ID/gameplay mutation.
+```
 
 ## v0.177 Barrosan Foothold Ground-Material First Opt-In Player-Slice Integration Experiment - 2026-06-08
 

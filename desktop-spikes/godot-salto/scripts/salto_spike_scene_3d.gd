@@ -83,7 +83,13 @@ const GROUND_MATERIAL_APPROACH := "GROUND_MATERIAL_LOCAL_1024"
 const GROUND_MATERIAL_EXPECTED_SHA256 := "818b7743fbf192fe95dd95a0fbadb59ea92b1cb36c420dac5526c0f4d1af18a8"
 const GROUND_MATERIAL_EXPECTED_WIDTH := 1024
 const GROUND_MATERIAL_EXPECTED_HEIGHT := 1024
-const GROUND_MATERIAL_DEFAULT_UV_SCALE := 0.72
+const GROUND_MATERIAL_DEFAULT_UV_SCALE := 0.56
+const GROUND_MATERIAL_PREVIOUS_UV_SCALE := 0.72
+const GROUND_MATERIAL_VISUAL_ALPHA := 0.48
+const GROUND_MATERIAL_TINT_R := 1.08
+const GROUND_MATERIAL_TINT_G := 1.12
+const GROUND_MATERIAL_TINT_B := 0.86
+const GROUND_MATERIAL_OVERLAY_LIFT := 0.006
 const WorkloadRuntimeScript = preload("res://scripts/salto_spike_workload_runtime.gd")
 
 var runtime = WorkloadRuntimeScript.new()
@@ -975,7 +981,7 @@ func get_ground_material_status() -> Dictionary:
 func _reset_ground_material_status(enabled: bool, reason: String) -> void:
 	ground_material_status = {
 		"schemaVersion": 1,
-		"checkpoint": "v0.177",
+		"checkpoint": "v0.178",
 		"slotId": GROUND_MATERIAL_SLOT_ID,
 		"approach": GROUND_MATERIAL_APPROACH,
 		"enabled": enabled,
@@ -990,8 +996,15 @@ func _reset_ground_material_status(enabled: bool, reason: String) -> void:
 		"sourceDimensions": {"width": 0, "height": 0},
 		"metadataDimensions": {"width": 0, "height": 0},
 		"uvScale": ground_material_requested_uv_scale,
+		"uvScaleHardenedFrom": GROUND_MATERIAL_PREVIOUS_UV_SCALE,
+		"uvScaleHardenedTo": ground_material_requested_uv_scale,
 		"tilingMode": "",
 		"filterMode": "linear with mipmaps",
+		"visualHardeningCheckpoint": "v0.178",
+		"noiseControlAlpha": GROUND_MATERIAL_VISUAL_ALPHA,
+		"visualTint": {"r": GROUND_MATERIAL_TINT_R, "g": GROUND_MATERIAL_TINT_G, "b": GROUND_MATERIAL_TINT_B, "a": GROUND_MATERIAL_VISUAL_ALPHA},
+		"proceduralValueUnderlayVisible": false,
+		"proceduralValueUnderlayPurpose": "low-frequency terrain value retention under the texture overlay",
 		"fallbackMode": ground_material_fallback_mode,
 		"proceduralFallbackVisible": true,
 		"appliedOnlyToFootholdGround": true,
@@ -1076,10 +1089,12 @@ func _load_ground_material_candidate() -> void:
 	ground_material_status["sourceDimensions"] = {"width": image.get_width(), "height": image.get_height()}
 	ground_material_status["metadataDimensions"] = {"width": metadata_width, "height": metadata_height}
 	ground_material_status["uvScale"] = ground_material_requested_uv_scale
+	ground_material_status["uvScaleHardenedTo"] = ground_material_requested_uv_scale
 	ground_material_status["sourceMetadataUvScale"] = float(metadata.get("uvScale", 1.0))
 	ground_material_status["tilingMode"] = str(metadata.get("tilingMode", "repeat player-slice material"))
 	ground_material_status["fallbackMode"] = ground_material_fallback_mode
 	ground_material_status["proceduralFallbackVisible"] = false
+	ground_material_status["proceduralValueUnderlayVisible"] = true
 	ground_material_status["loadDurationMs"] = snappedf(float(Time.get_ticks_usec() - start_usec) / 1000.0, 0.01)
 	_refresh_ground_material_counters()
 
@@ -1106,7 +1121,9 @@ func _set_ground_material_fallback(reason: String) -> void:
 	ground_material_status["expectedSha256"] = ground_material_expected_sha256
 	ground_material_status["fallbackMode"] = ground_material_fallback_mode
 	ground_material_status["uvScale"] = ground_material_requested_uv_scale
+	ground_material_status["uvScaleHardenedTo"] = ground_material_requested_uv_scale
 	ground_material_status["proceduralFallbackVisible"] = true
+	ground_material_status["proceduralValueUnderlayVisible"] = false
 	_refresh_ground_material_counters()
 
 func _refresh_ground_material_counters() -> void:
@@ -1129,7 +1146,7 @@ func _ground_material() -> StandardMaterial3D:
 		return ground_material_override
 	ground_material_override = StandardMaterial3D.new()
 	ground_material_override.albedo_texture = ground_material_texture
-	ground_material_override.albedo_color = Color(1.18, 1.16, 1.05, 0.78)
+	ground_material_override.albedo_color = Color(GROUND_MATERIAL_TINT_R, GROUND_MATERIAL_TINT_G, GROUND_MATERIAL_TINT_B, GROUND_MATERIAL_VISUAL_ALPHA)
 	ground_material_override.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
 	ground_material_override.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
 	ground_material_override.roughness = 0.94
@@ -1145,12 +1162,13 @@ func _add_ground_material_static_box(name: String, position: Vector3, scale: Vec
 	if not _ground_material_is_active():
 		_add_static_box(name, position, scale, fallback_color, transparent)
 		return
+	_add_static_box("%s_procedural_value_underlay" % name, position, scale, fallback_color, transparent)
 	var mesh_instance := MeshInstance3D.new()
 	mesh_instance.name = name
 	var mesh := BoxMesh.new()
 	mesh.size = scale
 	mesh_instance.mesh = mesh
-	mesh_instance.position = position
+	mesh_instance.position = position + Vector3(0.0, GROUND_MATERIAL_OVERLAY_LIFT, 0.0)
 	mesh_instance.material_override = _ground_material()
 	terrain_root.add_child(mesh_instance)
 	ground_material_applied_surface_count += 1

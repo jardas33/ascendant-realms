@@ -7,7 +7,7 @@ $ExePath = if ($env:GODOT_SALTO_EXE_PATH) {
 } else {
   Join-Path $RepoRoot "desktop-spikes\godot-salto\builds\AscendantRealmsGodotSalto.exe"
 }
-$ArtifactRoot = Join-Path $RepoRoot "artifacts\desktop-spikes\godot-salto\v0177"
+$ArtifactRoot = Join-Path $RepoRoot "artifacts\desktop-spikes\godot-salto\v0178"
 $CaptureRoot = Join-Path $ArtifactRoot "capture"
 $ArtifactRootArg = $ArtifactRoot.Replace("\", "/")
 $WorkerSourcePath = Join-Path $RepoRoot "artifacts\desktop-spikes\godot-salto\v0148\local-worker-slot\worker_billboard_static_v0147_trimmed_1024.png"
@@ -69,7 +69,7 @@ function Invoke-CaptureScenario {
   $process = Start-Process -FilePath $ExePath -ArgumentList (ConvertTo-ProcessArgumentString $ArgumentList) -Wait -PassThru -WindowStyle Hidden
   $GodotExitCode = if ($null -eq $process.ExitCode) { 0 } else { $process.ExitCode }
   if ($GodotExitCode -ne 0) {
-    throw "Godot v0.177 capture scenario '$ScenarioId' exited with code $GodotExitCode."
+    throw "Godot v0.178 capture scenario '$ScenarioId' exited with code $GodotExitCode."
   }
   if (-not (Test-Path -LiteralPath (Join-Path $ScenarioRoot "screenshot-runtime-manifest.json"))) {
     throw "Missing capture runtime artifact for scenario '$ScenarioId'."
@@ -86,9 +86,9 @@ function Environment-FoundationArgs { return @("--player-slice", "--experimental
 function Environment-GroundMaterialArgs { return @("--player-slice", "--experimental-review-mode-label=Experimental opt-in art: 5 slots + Barrosan foothold ground", "--salto-five-slot-review-framing", "--salto-environment-foundation-review") }
 function Environment-GroundMissingArgs { return @("--player-slice", "--experimental-review-mode-label=Experimental opt-in art: 5 slots + ground fallback missing", "--salto-five-slot-review-framing", "--salto-environment-foundation-review") }
 function Environment-GroundMismatchArgs { return @("--player-slice", "--experimental-review-mode-label=Experimental opt-in art: 5 slots + ground fallback hash mismatch", "--salto-five-slot-review-framing", "--salto-environment-foundation-review") }
-function Ground-MaterialArgs { return @("--ground-material-opt-in", "--ground-material-source=$($GroundSourcePath.Replace('\', '/'))", "--ground-material-metadata=$($GroundMetadataPath.Replace('\', '/'))", "--ground-material-expected-sha256=$GroundExpectedSha", "--ground-material-uv-scale=0.72") }
-function Ground-MissingArgs { return @("--ground-material-opt-in", "--ground-material-fallback-mode=missing", "--ground-material-metadata=$($GroundMetadataPath.Replace('\', '/'))", "--ground-material-expected-sha256=$GroundExpectedSha", "--ground-material-uv-scale=0.72") }
-function Ground-MismatchArgs { return @("--ground-material-opt-in", "--ground-material-source=$($GroundSourcePath.Replace('\', '/'))", "--ground-material-metadata=$($GroundMetadataPath.Replace('\', '/'))", "--ground-material-expected-sha256=$WrongGroundSha", "--ground-material-uv-scale=0.72") }
+function Ground-MaterialArgs { return @("--ground-material-opt-in", "--ground-material-source=$($GroundSourcePath.Replace('\', '/'))", "--ground-material-metadata=$($GroundMetadataPath.Replace('\', '/'))", "--ground-material-expected-sha256=$GroundExpectedSha", "--ground-material-uv-scale=0.56") }
+function Ground-MissingArgs { return @("--ground-material-opt-in", "--ground-material-fallback-mode=missing", "--ground-material-metadata=$($GroundMetadataPath.Replace('\', '/'))", "--ground-material-expected-sha256=$GroundExpectedSha", "--ground-material-uv-scale=0.56") }
+function Ground-MismatchArgs { return @("--ground-material-opt-in", "--ground-material-source=$($GroundSourcePath.Replace('\', '/'))", "--ground-material-metadata=$($GroundMetadataPath.Replace('\', '/'))", "--ground-material-expected-sha256=$WrongGroundSha", "--ground-material-uv-scale=0.56") }
 
 Reset-SafeDirectory -Path $CaptureRoot -Parent $ArtifactRoot
 Invoke-CaptureScenario -ScenarioId "e0-environment-foundation-baseline" -ScenarioArgs ((Environment-FoundationArgs) + (Five-SlotArgs))
@@ -98,5 +98,5 @@ Invoke-CaptureScenario -ScenarioId "ground-hash-mismatch-fallback" -ScenarioArgs
 
 node "tools/godot/saltoGroundMaterialOptInTool.mjs" capture "--artifact-root=$ArtifactRootArg"
 if ($LASTEXITCODE -ne 0) {
-  throw "v0.177 ground material opt-in capture report failed with exit code $LASTEXITCODE."
+  throw "v0.178 ground material UV/noise hardening capture report failed with exit code $LASTEXITCODE."
 }

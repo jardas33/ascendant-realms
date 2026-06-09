@@ -4,11 +4,14 @@ import { dirname, join, relative, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const repoRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..", "..");
-const checkpoint = "v0.177";
-const artifactRootDefault = join(repoRoot, "artifacts", "desktop-spikes", "godot-salto", "v0177");
+const checkpoint = "v0.178";
+const artifactRootDefault = join(repoRoot, "artifacts", "desktop-spikes", "godot-salto", "v0178");
 const selectedSha = "818b7743fbf192fe95dd95a0fbadb59ea92b1cb36c420dac5526c0f4d1af18a8";
 const selectedSlot = "barrosan_foothold_ground_material_v0175";
 const selectedApproach = "GROUND_MATERIAL_LOCAL_1024";
+const hardenedUvScale = 0.56;
+const previousUvScale = 0.72;
+const maximumNoiseAlpha = 0.52;
 const groundSurfaces = ["v0173_terrain_mid_value_field", "v0173_friendly_staging_value_field"];
 const requiredCaptureIds = [
   "ground_material_normal_rts",
@@ -114,6 +117,12 @@ function checkGroundLoaded(report, id, errors) {
   if (g.slotId !== selectedSlot || g.approach !== selectedApproach) errors.push(`${id} ground slot/approach mismatch.`);
   if (g.expectedSha256 !== selectedSha || g.actualSha256 !== selectedSha) errors.push(`${id} ground hash mismatch.`);
   if (g.sourceLoaded !== true || g.materialActive !== true || g.fallbackActive !== false) errors.push(`${id} ground material did not load active without fallback.`);
+  if (g.checkpoint !== checkpoint || g.visualHardeningCheckpoint !== checkpoint) errors.push(`${id} did not report v0.178 visual hardening.`);
+  if (Math.abs(Number(g.uvScale ?? 0) - hardenedUvScale) > 0.001) errors.push(`${id} ground UV scale ${g.uvScale ?? "MISSING"} is not hardened value ${hardenedUvScale}.`);
+  if (Math.abs(Number(g.uvScaleHardenedFrom ?? 0) - previousUvScale) > 0.001) errors.push(`${id} missing previous UV scale audit ${previousUvScale}.`);
+  if (Number(g.noiseControlAlpha ?? 1) > maximumNoiseAlpha) errors.push(`${id} ground noise-control alpha ${g.noiseControlAlpha ?? "MISSING"} exceeds ${maximumNoiseAlpha}.`);
+  if (g.proceduralValueUnderlayVisible !== true) errors.push(`${id} did not preserve the procedural value underlay beneath the texture.`);
+  if (!String(g.filterMode ?? "").toLowerCase().includes("mipmaps")) errors.push(`${id} did not preserve mipmapped filtering.`);
   if (g.sourceDimensions?.width !== 1024 || g.sourceDimensions?.height !== 1024) errors.push(`${id} ground source dimensions are not 1024x1024.`);
   if (Number(g.sourceLoadCount ?? 99) !== 1 || Number(g.metadataParseCount ?? 99) !== 1 || Number(g.imageDecodeCount ?? 99) !== 1 || Number(g.textureCreateCount ?? 99) !== 1 || Number(g.materialCreateCount ?? 99) !== 1) errors.push(`${id} ground material was not a one-time load/create path.`);
   const surfaces = Array.isArray(g.appliedSurfaceNames) ? g.appliedSurfaceNames : [];
@@ -133,6 +142,8 @@ function checkGroundFallback(report, id, expectedReasonFragment, errors) {
   if (Number(report?.environmentMaterialOptInLoadedSlotCount ?? 0) !== 0 || report?.terrainMaterialSourceImported === true) errors.push(`${id} should not import terrain material in fallback.`);
   if (g.enabled !== true || g.sourceLoaded !== false || g.materialActive !== false || g.fallbackActive !== true || g.proceduralFallbackVisible !== true) errors.push(`${id} did not activate procedural ground fallback.`);
   if (!String(g.fallbackReason ?? "").includes(expectedReasonFragment)) errors.push(`${id} fallback reason did not include '${expectedReasonFragment}': ${g.fallbackReason ?? ""}`);
+  if (Math.abs(Number(g.uvScale ?? 0) - hardenedUvScale) > 0.001) errors.push(`${id} fallback UV scale ${g.uvScale ?? "MISSING"} is not hardened value ${hardenedUvScale}.`);
+  if (g.proceduralValueUnderlayVisible === true) errors.push(`${id} should not report the material underlay while falling back.`);
   if (Number(g.appliedSurfaceCount ?? 0) !== 0) errors.push(`${id} applied material surfaces during fallback.`);
 }
 
@@ -157,10 +168,13 @@ function validationCommand(root) {
       environmentFoundationArtSlotCount: loaded.report?.environmentFoundationArtSlotCount ?? 0,
       terrainMaterialSourceImported: loaded.report?.terrainMaterialSourceImported ?? false,
       groundFallbackActive: ground(loaded.report)?.fallbackActive ?? true,
-      groundFallbackReason: ground(loaded.report)?.fallbackReason ?? ""
+      groundFallbackReason: ground(loaded.report)?.fallbackReason ?? "",
+      groundUvScale: ground(loaded.report)?.uvScale ?? 0,
+      noiseControlAlpha: ground(loaded.report)?.noiseControlAlpha ?? 0,
+      proceduralValueUnderlayVisible: ground(loaded.report)?.proceduralValueUnderlayVisible ?? false
     };
   });
-  const report = { schemaVersion: 1, checkpoint, status: errors.length === 0 ? "PASS_V0177_GROUND_MATERIAL_OPT_IN_VALIDATION" : "FAIL_V0177_GROUND_MATERIAL_OPT_IN_VALIDATION", selectedSha, selectedSlot, scenarios, errors };
+  const report = { schemaVersion: 1, checkpoint, status: errors.length === 0 ? "PASS_V0178_GROUND_MATERIAL_UV_NOISE_HARDENING_VALIDATION" : "FAIL_V0178_GROUND_MATERIAL_UV_NOISE_HARDENING_VALIDATION", selectedSha, selectedSlot, hardenedUvScale, previousUvScale, maximumNoiseAlpha, scenarios, errors };
   writeJson(join(root, "validation", "ground-material-opt-in-validation-report.json"), report);
   if (errors.length > 0) throw new Error(errors.join("\n"));
 }
@@ -192,9 +206,9 @@ function captureCommand(root) {
       captures: captures.map((capture) => ({ id: capture.id, fileName: capture.fileName, label: capture.label, absolutePath: capture.absolutePath }))
     };
   });
-  const report = { schemaVersion: 1, checkpoint, status: errors.length === 0 ? "PASS_V0177_GROUND_MATERIAL_OPT_IN_CAPTURE" : "FAIL_V0177_GROUND_MATERIAL_OPT_IN_CAPTURE", requiredCaptureIds, scenarios, contactSheet: "capture/v0177-ground-material-opt-in-contact-sheet.svg", errors };
+  const report = { schemaVersion: 1, checkpoint, status: errors.length === 0 ? "PASS_V0178_GROUND_MATERIAL_UV_NOISE_HARDENING_CAPTURE" : "FAIL_V0178_GROUND_MATERIAL_UV_NOISE_HARDENING_CAPTURE", requiredCaptureIds, hardenedUvScale, previousUvScale, maximumNoiseAlpha, scenarios, contactSheet: "capture/v0178-ground-material-uv-noise-hardening-contact-sheet.svg", errors };
   writeJson(join(root, "capture", "ground-material-opt-in-capture-report.json"), report);
-  writeText(join(root, "capture", "v0177-ground-material-opt-in-contact-sheet.svg"), contactSheetSvg(scenarios));
+  writeText(join(root, "capture", "v0178-ground-material-uv-noise-hardening-contact-sheet.svg"), contactSheetSvg(scenarios));
   if (errors.length > 0) throw new Error(errors.join("\n"));
 }
 
@@ -221,7 +235,7 @@ function contactSheetSvg(scenarios) {
     y += 170;
   }
   const height = Math.max(420, y + 24);
-  return [`<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="${height}" viewBox="0 0 1600 ${height}">`, '<rect width="100%" height="100%" fill="#10150f"/>', '<text x="24" y="24" font-family="Arial" font-size="18" fill="#f3e7b8">v0.177 Salto Barrosan Foothold Ground Material Contact Sheet</text>', ...rows, "</svg>", ""].join("\n");
+  return [`<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="${height}" viewBox="0 0 1600 ${height}">`, '<rect width="100%" height="100%" fill="#10150f"/>', '<text x="24" y="24" font-family="Arial" font-size="18" fill="#f3e7b8">v0.178 Salto Ground Material UV/Noise Hardening Contact Sheet</text>', ...rows, "</svg>", ""].join("\n");
 }
 
 function benchmarkCommand(root) {
@@ -245,14 +259,14 @@ function benchmarkCommand(root) {
   const report = {
     schemaVersion: 1,
     checkpoint,
-    status: errors.length === 0 ? "PASS_V0177_GROUND_MATERIAL_OPT_IN_BENCHMARK" : "FAIL_V0177_GROUND_MATERIAL_OPT_IN_BENCHMARK",
+    status: errors.length === 0 ? "PASS_V0178_GROUND_MATERIAL_UV_NOISE_HARDENING_BENCHMARK" : "FAIL_V0178_GROUND_MATERIAL_UV_NOISE_HARDENING_BENCHMARK",
     baseline: { id: "e0-environment-foundation-baseline", fpsAverage: baselineFps, frameTimeP95Ms: baselineP95, path: rel(baseline.path) },
     optIn: { id: "e1-ground-material-opt-in", fpsAverage: optInFps, frameTimeP95Ms: optInP95, path: rel(optIn.path) },
     fallbacks: [
       { id: "ground-missing-art-fallback", fpsAverage: Number(missing.report?.fpsAverage ?? 0), frameTimeP95Ms: Number(missing.report?.frameTimeP95Ms ?? 0), fallbackReason: ground(missing.report)?.fallbackReason ?? "", path: rel(missing.path) },
       { id: "ground-hash-mismatch-fallback", fpsAverage: Number(mismatch.report?.fpsAverage ?? 0), frameTimeP95Ms: Number(mismatch.report?.frameTimeP95Ms ?? 0), fallbackReason: ground(mismatch.report)?.fallbackReason ?? "", path: rel(mismatch.path) }
     ],
-    thresholds: { minimumFpsRatio: 0.90, maximumP95WorseningRatio: 0.15 },
+    thresholds: { minimumFpsRatio: 0.90, maximumP95WorseningRatio: 0.15, hardenedUvScale, previousUvScale, maximumNoiseAlpha },
     result: { fpsRatio: Number(fpsRatio.toFixed(4)), p95WorseningRatio: Number(p95Worsening.toFixed(4)), p95WorseningPercent: Number((p95Worsening * 100).toFixed(2)) },
     cacheCounters: optIn.report?.cacheCounters ?? {},
     errors
@@ -263,7 +277,7 @@ function benchmarkCommand(root) {
 }
 
 function benchmarkMarkdown(report) {
-  return ["# v0.177 Ground Material Opt-In Benchmark Scorecard", "", `Status: \`${report.status}\``, "", `E0 FPS: \`${report.baseline.fpsAverage}\``, `E1 FPS: \`${report.optIn.fpsAverage}\``, `FPS ratio: \`${report.result.fpsRatio}\``, `E0 p95 ms: \`${report.baseline.frameTimeP95Ms}\``, `E1 p95 ms: \`${report.optIn.frameTimeP95Ms}\``, `p95 worsening: \`${report.result.p95WorseningPercent}%\``, "", "Thresholds: FPS ratio >= 0.90; p95 worsening <= 15%.", ""].join("\n");
+  return ["# v0.178 Ground Material UV/Noise Hardening Benchmark Scorecard", "", `Status: \`${report.status}\``, "", `E0 FPS: \`${report.baseline.fpsAverage}\``, `E1 FPS: \`${report.optIn.fpsAverage}\``, `FPS ratio: \`${report.result.fpsRatio}\``, `E0 p95 ms: \`${report.baseline.frameTimeP95Ms}\``, `E1 p95 ms: \`${report.optIn.frameTimeP95Ms}\``, `p95 worsening: \`${report.result.p95WorseningPercent}%\``, "", `Hardened UV scale: \`${report.thresholds.hardenedUvScale}\` (from \`${report.thresholds.previousUvScale}\`)`, `Maximum noise-control alpha: \`${report.thresholds.maximumNoiseAlpha}\``, "Thresholds: FPS ratio >= 0.90; p95 worsening <= 15%.", ""].join("\n");
 }
 
 function boundaryCommand(root) {
@@ -281,7 +295,7 @@ function boundaryCommand(root) {
   ];
   for (const path of preservedLaunchers) {
     const text = readFileSync(join(repoRoot, path), "utf8");
-    if (text.includes("--ground-material-opt-in")) errors.push(`${path} unexpectedly enables v0.177 ground material.`);
+    if (text.includes("--ground-material-opt-in")) errors.push(`${path} unexpectedly enables v0.178 ground material.`);
   }
   const launchPath = join(repoRoot, "tools", "godot", "launchGodotSaltoGroundMaterialOptInWindows.ps1");
   const launchScript = existsSync(launchPath) ? readFileSync(launchPath, "utf8") : "";
@@ -289,12 +303,12 @@ function boundaryCommand(root) {
     if (!launchScript.includes(text)) errors.push(`Ground material launcher missing ${text}.`);
   });
   const status = execSync("git status --short --untracked-files=all", { cwd: repoRoot, encoding: "utf8" }).trim();
-  const imageChanges = status.split(/\r?\n/u).filter((line) => /\.(png|jpe?g|webp|avif)\b/iu.test(line) && !line.includes("v0177"));
-  if (imageChanges.length > 0) errors.push(`Unexpected non-v0.177 image changes: ${imageChanges.join(", ")}`);
+  const imageChanges = status.split(/\r?\n/u).filter((line) => /\.(png|jpe?g|webp|avif)\b/iu.test(line) && !line.includes("v0178"));
+  if (imageChanges.length > 0) errors.push(`Unexpected non-v0.178 image changes: ${imageChanges.join(", ")}`);
   const report = {
     schemaVersion: 1,
     checkpoint,
-    status: errors.length === 0 ? "PASS_V0177_GROUND_MATERIAL_OPT_IN_BOUNDARY" : "FAIL_V0177_GROUND_MATERIAL_OPT_IN_BOUNDARY",
+    status: errors.length === 0 ? "PASS_V0178_GROUND_MATERIAL_UV_NOISE_HARDENING_BOUNDARY" : "FAIL_V0178_GROUND_MATERIAL_UV_NOISE_HARDENING_BOUNDARY",
     defaultLauncherProcedural: true,
     priorLaunchersPreserved: true,
     browserRuntimeChanged: false,
@@ -306,6 +320,9 @@ function boundaryCommand(root) {
     runtimeCharacterSlotsAdded: 0,
     environmentMaterialSlotsAdded: 1,
     selectedHash: selectedSha,
+    hardenedUvScale,
+    previousUvScale,
+    maximumNoiseAlpha,
     statusSnapshot: status,
     errors
   };
