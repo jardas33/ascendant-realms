@@ -1,6 +1,36 @@
 # Development Checkpoint
 
-Updated: 2026-06-09 v0.187 Salto Riverbank Bridge Approach
+Updated: 2026-06-09 v0.188 Salto Environment Shell Freeze
+
+## v0.188 Salto Environment-Shell Full Cohesion QA Cleanup Packet And Shell-Freeze Stop - 2026-06-09
+
+Scope: QA, cleanup, and documentation-only shell-freeze pass after v0.187. This checkpoint generates zero images, adds zero slots, changes no runtime code or launcher behavior, keeps the default launcher procedural, preserves all prior opt-in launchers, keeps browser runtime untouched, keeps character integrations frozen, and leaves gameplay, pathing, collisions, production, restoration logic, objectives, AI, saves, stable IDs, selected art, metadata, fallbacks, and required evidence unchanged.
+
+Included work:
+
+- Reviewed the current full opt-in Godot Salto shell, including five selected character/material slots, Barrosan foothold ground, road material, terrain masks, roads, river, bridge, structures, tactical markers, HUD, minimap, title, briefing, battle, and Results coverage.
+- Performed Windows-side Computer Use review across title, briefing, battle, Aster move input, bridge-adjacent order feedback, pan/zoom, and minimap.
+- Reran riverbank/bridge approach, ground+road opt-in, five-slot opt-in, post-mine-flow, and triple-playthrough gates.
+- Ran broad artifact inventory, cleanup dry-run, safe-only cleanup, and final retention validation.
+- Deleted only `18` known Godot-generated sidecars / `7719` bytes through the safe-only cleanup path.
+- Produced v0.188 cohesion QA, safe-cleanup shell-freeze packet, and implementation report docs.
+
+Verification targets:
+
+```text
+PASS: npm run godot:validate:salto-riverbank-bridge-approach.
+PASS: npm run godot:validate:salto-ground-road-material-opt-in.
+PASS: npm run godot:validate:salto-five-slot-art-experiment.
+PASS: npm run godot:headed:post-mine-flow-smoke.
+PASS: npm run godot:headed:triple-natural-playthrough.
+PASS: R1 FPS ratio 0.9969 and p95 worsening -1.79% against the S1 structure-shell baseline.
+PASS: artifact inventory found 5607 files / 2500.07 MB, 3217 archive candidates, 684 manual-review candidates, and 0 cleanup unknown blockers.
+PASS: safe-only cleanup deleted exactly 18 known Godot sidecars; retention after cleanup passed.
+PASS: npm test, 122 files / 887 tests.
+PASS: npm run build.
+PASS: npm run validate:content, validate:art-intake, validate:runtime-art-slots, and godot:validate:salto-experimental-artifact-retention.
+PASS: zero images, zero slots, no runtime or launcher mutation, default procedural preserved, browser runtime untouched, no gameplay/pathing/collision/objective/AI/save/stable-ID mutation, v0.189 not started.
+```
 
 ## v0.187 Salto Riverbank Bridge-Crossing Approach-Lane Procedural Visual Hardening And Human-Review Stop - 2026-06-09
 

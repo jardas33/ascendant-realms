@@ -1,5 +1,44 @@
 # Changelog
 
+# v0.188 Salto Environment-Shell Full Cohesion QA Cleanup Packet And Shell-Freeze Stop - 2026-06-09
+
+This checkpoint performs only a Godot Salto environment-shell cohesion QA, cleanup packet, and shell-freeze documentation pass after v0.187. It generates zero images, adds zero slots, changes no runtime code or launcher behavior, keeps the default launcher procedural, preserves all prior opt-in launchers, keeps browser runtime untouched, and leaves gameplay/pathing/collisions/objectives/AI/saves/stable IDs unchanged.
+
+Added:
+
+- `docs/V0188_ENVIRONMENT_SHELL_FULL_COHESION_QA.md`.
+- `docs/V0188_SAFE_CLEANUP_SHELL_FREEZE_PACKET.md`.
+- `docs/V0188_IMPLEMENTATION_REPORT.md`.
+- v0.188 ignored artifact inventory, cleanup, and retention evidence under `artifacts/desktop-spikes/godot-salto/v0188/`.
+
+Changed:
+
+- Updated the Salto experimental artifact index to `ACTIVE_V0188_RETENTION_INDEX`.
+- Updated handoff, roadmap, checkpoint, changelog, and release checklist docs for the shell-freeze stop.
+
+Validation:
+
+- `npm run godot:validate:salto-riverbank-bridge-approach`.
+- `npm run godot:validate:salto-ground-road-material-opt-in`.
+- `npm run godot:validate:salto-five-slot-art-experiment`.
+- `npm run godot:headed:post-mine-flow-smoke`.
+- `npm run godot:headed:triple-natural-playthrough`.
+- R1 FPS ratio `0.9969`; p95 worsening `-1.79%`.
+- `npm test` passed with `122` files / `887` tests after repairing one retention-index wording regression.
+- `npm run build`.
+- `npm run validate:content`, `npm run validate:art-intake`, `npm run validate:runtime-art-slots`, and `npm run godot:validate:salto-experimental-artifact-retention`.
+- Windows-side Computer Use review covered title, briefing, battle, Aster movement, bridge-adjacent order feedback, pan/zoom, and minimap.
+- Safe-only cleanup deleted exactly `18` known Godot-generated sidecars / `7719` bytes; retention after cleanup passed.
+
+Boundaries:
+
+- Zero images generated.
+- Zero slots added.
+- No runtime code or launcher mutation.
+- No default-art enablement.
+- Browser runtime, production manifests, saves, stable IDs, gameplay, pathing, collisions, objectives, AI, balance, selected art, metadata, fallbacks, and required evidence remain untouched.
+- v0.189 was not started inside this checkpoint.
+
 # v0.187 Salto Riverbank Bridge-Crossing Approach-Lane Procedural Visual Hardening And Human-Review Stop - 2026-06-09
 
 This checkpoint adds only an explicit Godot Salto review path for visual procedural riverbank, bridge-crossing, and approach-lane hardening after v0.186. It generates zero images, adds zero slots, keeps default launchers procedural, preserves all prior opt-in launchers, keeps browser runtime untouched, and leaves gameplay/pathing/collisions/objectives/AI/saves/stable IDs unchanged.

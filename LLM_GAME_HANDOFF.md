@@ -1,6 +1,6 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-06-09 v0.187 Salto Riverbank Bridge Approach
+Last updated: 2026-06-09 v0.188 Salto Environment Shell Freeze
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
@@ -74,31 +74,36 @@ Project Identity continuation note: v0.186 now supersedes the older no-v0.186 ta
 
 Project Identity continuation note: v0.187 now supersedes the older no-v0.187 tail above because the queued prompt explicitly authorized opt-in Godot Salto procedural riverbank, bridge-crossing, and approach-lane hardening after v0.186 was committed, pushed, clean, synced, and remote-green. v0.187 generates zero images, adds zero slots, preserves the default procedural launcher and all prior opt-in launchers, keeps browser runtime untouched, keeps gameplay/pathing/collisions/objectives/AI/saves/stable IDs unchanged, and adds only the explicit riverbank-bridge-approach review/validate/capture path.
 
-Current status override: v0.187 Salto riverbank bridge approach is the active checkpoint for this handoff. Character-slot integration remains frozen after five selected opt-in slots. The Barrosan foothold ground and road materials remain opt-in only, the default launcher remains procedural, browser runtime remains untouched, and bridge/riverbank material intake remains future private-comparator-only work unless explicitly queued. Do not begin v0.188 unless v0.187 is committed, pushed, clean, synced, and remote-green and the next queued prompt prerequisites pass.
+Project Identity continuation note: v0.188 now supersedes the older no-v0.188 tail above because the queued prompt explicitly authorized environment-shell full cohesion QA, cleanup packet, and shell-freeze work after v0.187 was committed, pushed, clean, synced, and remote-green. v0.188 generates zero images, adds zero slots, changes no runtime code or launchers, preserves the default procedural launcher and all prior opt-in launchers, keeps browser runtime untouched, validates playthrough/fallback coverage, safely removes only known Godot sidecars, and freezes procedural shell work for Emmanuel review.
 
-## Current v0.187 Salto Riverbank Bridge Approach - 2026-06-09
+Current status override: v0.188 Salto environment-shell freeze is the active checkpoint for this handoff. Character-slot integration remains frozen after five selected opt-in slots. The Barrosan foothold ground and road materials remain opt-in only, the default launcher remains procedural, browser runtime remains untouched, and bridge/riverbank material work remains future private-comparator-only unless explicitly queued. Do not begin v0.189 unless v0.188 is committed, pushed, clean, synced, and remote-green and the next queued prompt prerequisites pass.
 
-Status: v0.187 opt-in Godot procedural riverbank, bridge-crossing, and approach-lane visual hardening is the active checkpoint. Commit, push, and remote CI proof are required before any queued v0.188 work.
+## Current v0.188 Salto Environment Shell Freeze - 2026-06-09
+
+Status: v0.188 environment-shell cohesion QA, cleanup packet, and shell-freeze stop is the active checkpoint. Commit, push, and remote CI proof are required before any queued v0.189 work.
 
 Key evidence:
 
-- `GODOT_REVIEW_SALTO_RIVERBANK_BRIDGE_APPROACH_WINDOWS.bat`
-- `GODOT_VALIDATE_SALTO_RIVERBANK_BRIDGE_APPROACH_WINDOWS.bat`
-- `GODOT_CAPTURE_SALTO_RIVERBANK_BRIDGE_APPROACH_WINDOWS.bat`
-- `docs/V0187_RIVERBANK_BRIDGE_APPROACH_QA_BENCHMARK.md`
-- `docs/V0187_RIVERBANK_BRIDGE_BOUNDARY_ROLLBACK.md`
-- `docs/V0187_IMPLEMENTATION_REPORT.md`
+- `docs/V0188_ENVIRONMENT_SHELL_FULL_COHESION_QA.md`
+- `docs/V0188_SAFE_CLEANUP_SHELL_FREEZE_PACKET.md`
+- `docs/V0188_IMPLEMENTATION_REPORT.md`
+- `artifacts/desktop-spikes/godot-salto/v0188/artifact-inventory/`
+- `artifacts/desktop-spikes/godot-salto/v0188/safe-only-cleanup/`
+- `artifacts/desktop-spikes/godot-salto/v0188/final-artifact-retention-after-cleanup/`
 - `PASS_V0187_SALTO_RIVERBANK_BRIDGE_APPROACH_AUTOMATION_READY`
-- `PASS_V0187_RIVERBANK_BRIDGE_APPROACH_VALIDATION/CAPTURE/BENCHMARK/BOUNDARY`
-- R1 FPS ratio `1.0024`; p95 worsening `0.3%` against the S1 structure-shell baseline.
-- Windows-side Computer Use review covered title, briefing, battle, Aster selection, Move command, bridge-adjacent movement, camera movement, and zoom.
-- Functional proof passed `npm run godot:headed:post-mine-flow-smoke` and `npm run godot:headed:triple-natural-playthrough`.
+- `PASS_V0181_SALTO_GROUND_ROAD_MATERIAL_OPT_IN_AUTOMATION_READY`
+- `PASS_V0170_WORKER_BARRACKS_MILITIA_ASTER_ASHEN_ART_OPT_IN_AUTOMATION_READY`
+- `PASS_V0133_POST_MINE_FLOW_VALIDATION`
+- `PASS_V0134_TRIPLE_NATURAL_PLAYTHROUGH_VALIDATION`
+- R1 FPS ratio `0.9969`; p95 worsening `-1.79%` against the S1 structure-shell baseline.
+- Safe-only cleanup deleted `18` known Godot sidecars / `7719` bytes and retention after cleanup passed.
+- Windows-side Computer Use review covered title, briefing, battle, Aster movement, bridge-adjacent order feedback, pan/zoom, and minimap.
 
-Next boundary: v0.188 may only start from clean, synced, pushed, remote-green v0.187 state if the queued prompt is still present and its prerequisites pass. Do not generate images, add slots, enable default art, wire browser runtime, or mutate gameplay/pathing/collisions/objectives/AI/saves/stable IDs.
+Next boundary: v0.189 may only start from clean, synced, pushed, remote-green v0.188 state if the queued prompt is still present and its prerequisites pass. v0.189 may generate exactly one private-comparator bridge/riverbank material source and must not integrate it into the player-facing slice. Do not add slots, enable default art, wire browser runtime, or mutate gameplay/pathing/collisions/objectives/AI/saves/stable IDs.
 
 ## Current v0.186 Salto Structure Shell Hierarchy - 2026-06-09
 
-Status: previous v0.186 opt-in Godot procedural structure-shell hierarchy hardening checkpoint. It is superseded by the active v0.187 section above.
+Status: previous v0.186 opt-in Godot procedural structure-shell hierarchy hardening checkpoint. It is superseded by the active v0.188 section above and the intervening v0.187 riverbank/bridge approach checkpoint.
 
 Key evidence:
 

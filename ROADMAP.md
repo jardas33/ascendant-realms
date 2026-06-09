@@ -11,9 +11,17 @@ Every phase should protect these long-term pillars:
 
 ## Current Recommended Next Phase
 
-The current checkpoint is **v0.187 Salto Riverbank Bridge-Crossing Approach-Lane Procedural Visual Hardening And Human-Review Stop** on 2026-06-09. It adds only an explicit Godot review/validate/capture path for visual procedural riverbank, bridge-crossing, and approach-lane hardening after v0.186, keeps the default launcher procedural, preserves all prior opt-in launchers, keeps the browser runtime untouched, generates zero images, adds zero slots, and leaves gameplay/pathing/collisions/objectives/AI/saves/stable IDs unchanged.
+The current checkpoint is **v0.188 Salto Environment-Shell Full Cohesion QA Cleanup Packet And Shell-Freeze Stop** on 2026-06-09. It performs only Windows-side cohesion QA, cleanup packet, and shell-freeze documentation after v0.187, keeps the default launcher procedural, preserves all prior opt-in launchers, keeps the browser runtime untouched, generates zero images, adds zero slots, changes no runtime code, and leaves gameplay/pathing/collisions/objectives/AI/saves/stable IDs unchanged.
 
-The next queued step is v0.188 only if v0.187 is committed, pushed, clean, synced, and remote-green and the queued v0.188 prompt prerequisites pass. v0.188 should remain environment-shell cohesion QA, cleanup packet, and shell-freeze work only. Do not perform broad terrain replacement, add slots, generate images, enable art by default, mutate the browser runtime, alter gameplay/pathing/collisions/objectives/AI/saves/stable IDs, or unfreeze character-slot integration.
+The next queued step is v0.189 only if v0.188 is committed, pushed, clean, synced, and remote-green and the queued v0.189 prompt prerequisites pass. v0.189 may generate exactly one private-comparator Barrosan wet-granite bridge/riverbank material source and must not integrate it into the player-facing slice. Do not perform broad stone replacement, add player-facing slots, enable art by default, mutate the browser runtime, alter gameplay/pathing/collisions/objectives/AI/saves/stable IDs, or unfreeze character-slot integration.
+
+New v0.188 docs:
+
+- `docs/V0188_ENVIRONMENT_SHELL_FULL_COHESION_QA.md`
+- `docs/V0188_SAFE_CLEANUP_SHELL_FREEZE_PACKET.md`
+- `docs/V0188_IMPLEMENTATION_REPORT.md`
+
+Previous checkpoint reference: v0.187 Salto Riverbank Bridge-Crossing Approach-Lane Procedural Visual Hardening And Human-Review Stop.
 
 New v0.187 docs:
 
