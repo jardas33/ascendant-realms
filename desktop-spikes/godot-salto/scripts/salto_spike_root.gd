@@ -59,6 +59,7 @@ const SCRIPT_ARG_PREFIXES := [
 	"--salto-five-slot-review-framing",
 	"--salto-environment-foundation-review",
 	"--salto-environment-readability-hardening",
+	"--salto-environment-contrast-harmonization",
 	"--ground-material-opt-in",
 	"--ground-material-source=",
 	"--ground-material-metadata=",
@@ -827,6 +828,8 @@ func _configure_worker_art_for_active_scene() -> void:
 		active_scene.configure_environment_foundation_review(_script_args().has("--salto-environment-foundation-review"))
 	if active_scene.has_method("configure_environment_readability_hardening"):
 		active_scene.configure_environment_readability_hardening(_script_args().has("--salto-environment-readability-hardening"))
+	if active_scene.has_method("configure_environment_contrast_harmonization"):
+		active_scene.configure_environment_contrast_harmonization(_script_args().has("--salto-environment-contrast-harmonization"))
 	if active_scene.has_method("configure_ground_material_experiment"):
 		active_scene.configure_ground_material_experiment(_ground_material_options_from_args())
 
@@ -1651,6 +1654,7 @@ func run_player_slice_validation() -> void:
 	var ground_material_loaded := bool(ground_material.get("sourceLoaded", false))
 	var environment_foundation: Dictionary = final_status.get("environmentFoundationReview", {})
 	var environment_readability: Dictionary = final_status.get("environmentReadabilityHardening", {})
+	var environment_contrast: Dictionary = final_status.get("environmentContrastHarmonization", {})
 	performance_smoke["workerArtOptInRequested"] = _script_args().has("--worker-art-opt-in")
 	performance_smoke["workerArtExperiment"] = worker_art
 	performance_smoke["barracksMaterialOptInRequested"] = _script_args().has("--barracks-material-opt-in")
@@ -1667,6 +1671,8 @@ func run_player_slice_validation() -> void:
 	performance_smoke["environmentFoundationReview"] = environment_foundation
 	performance_smoke["environmentReadabilityHardeningEnabled"] = bool(final_status.get("environmentReadabilityHardeningEnabled", false))
 	performance_smoke["environmentReadabilityHardening"] = environment_readability
+	performance_smoke["environmentContrastHarmonizationEnabled"] = bool(final_status.get("environmentContrastHarmonizationEnabled", false))
+	performance_smoke["environmentContrastHarmonization"] = environment_contrast
 	var report := {
 		"schemaVersion": 1,
 		"checkpoint": _player_capture_checkpoint(),
@@ -1681,6 +1687,7 @@ func run_player_slice_validation() -> void:
 		"environmentFoundationReviewPath": "GODOT_REVIEW_SALTO_ENVIRONMENT_FOUNDATION_WINDOWS.bat",
 		"environmentReadabilityReviewPath": "GODOT_REVIEW_SALTO_ENVIRONMENT_READABILITY_WINDOWS.bat",
 		"groundMaterialOptInHumanReviewPath": "GODOT_REVIEW_SALTO_GROUND_MATERIAL_OPT_IN_WINDOWS.bat",
+		"environmentContrastReviewPath": "GODOT_REVIEW_SALTO_ENVIRONMENT_CONTRAST_WINDOWS.bat",
 		"privateHarnessPreservedSeparately": true,
 		"defaultMode": MODE_25D,
 		"defaultVisualPreset": VISUAL_PRESET_CLEAN,
@@ -1705,6 +1712,8 @@ func run_player_slice_validation() -> void:
 		"environmentFoundationReview": environment_foundation,
 		"environmentReadabilityHardeningEnabled": bool(final_status.get("environmentReadabilityHardeningEnabled", false)),
 		"environmentReadabilityHardening": environment_readability,
+		"environmentContrastHarmonizationEnabled": bool(final_status.get("environmentContrastHarmonizationEnabled", false)),
+		"environmentContrastHarmonization": environment_contrast,
 		"environmentFoundationArtSlotCount": int(final_status.get("environmentFoundationArtSlotCount", 0)),
 		"terrainMaterialSourceImported": bool(final_status.get("terrainMaterialSourceImported", false)),
 		"terrainMaterialRuntimeSlotAdded": bool(final_status.get("terrainMaterialRuntimeSlotAdded", false)),
@@ -1797,6 +1806,7 @@ func run_player_slice_capture() -> void:
 	var ground_material_loaded := bool(ground_material.get("sourceLoaded", false))
 	var environment_foundation: Dictionary = final_status.get("environmentFoundationReview", {})
 	var environment_readability: Dictionary = final_status.get("environmentReadabilityHardening", {})
+	var environment_contrast: Dictionary = final_status.get("environmentContrastHarmonization", {})
 	var report := {
 		"schemaVersion": 1,
 		"checkpoint": _player_capture_checkpoint(),
@@ -1808,7 +1818,7 @@ func run_player_slice_capture() -> void:
 		"viewport": {"width": VIEWPORT_SIZE.x, "height": VIEWPORT_SIZE.y},
 		"defaultMode": MODE_25D,
 		"defaultVisualPreset": VISUAL_PRESET_CLEAN,
-		"privateHarnessPreservedSeparately": captures.any(func(capture: Dictionary) -> bool: return bool(capture.get("privateHarnessCapture", false))) or ["v0.126", "v0.127", "v0.128", "v0.129", "v0.130", "v0.160", "v0.162", "v0.164", "v0.168", "v0.169", "v0.170", "v0.173", "v0.174", "v0.177", "v0.178"].has(_player_capture_checkpoint()),
+		"privateHarnessPreservedSeparately": captures.any(func(capture: Dictionary) -> bool: return bool(capture.get("privateHarnessCapture", false))) or ["v0.126", "v0.127", "v0.128", "v0.129", "v0.130", "v0.160", "v0.162", "v0.164", "v0.168", "v0.169", "v0.170", "v0.173", "v0.174", "v0.177", "v0.178", "v0.179"].has(_player_capture_checkpoint()),
 		"proceduralPrimitiveOnly": not worker_art_loaded and not barracks_material_loaded and not militia_art_loaded and not aster_art_loaded and not ashen_art_loaded and not ground_material_loaded,
 		"generatedOrImportedArtIncluded": worker_art_loaded or barracks_material_loaded or militia_art_loaded or aster_art_loaded or ashen_art_loaded or ground_material_loaded,
 		"runtimeArtIntegrated": worker_art_loaded or barracks_material_loaded or militia_art_loaded or aster_art_loaded or ashen_art_loaded or ground_material_loaded,
@@ -1828,6 +1838,8 @@ func run_player_slice_capture() -> void:
 		"environmentFoundationReview": environment_foundation,
 		"environmentReadabilityHardeningEnabled": bool(final_status.get("environmentReadabilityHardeningEnabled", false)),
 		"environmentReadabilityHardening": environment_readability,
+		"environmentContrastHarmonizationEnabled": bool(final_status.get("environmentContrastHarmonizationEnabled", false)),
+		"environmentContrastHarmonization": environment_contrast,
 		"environmentFoundationArtSlotCount": int(final_status.get("environmentFoundationArtSlotCount", 0)),
 		"terrainMaterialSourceImported": bool(final_status.get("terrainMaterialSourceImported", false)),
 		"terrainMaterialRuntimeSlotAdded": bool(final_status.get("terrainMaterialRuntimeSlotAdded", false)),
@@ -1896,6 +1908,7 @@ func run_worker_art_opt_in_benchmark() -> void:
 	var ground_material: Dictionary = final_status.get("groundMaterialExperiment", {})
 	var environment_foundation: Dictionary = final_status.get("environmentFoundationReview", {})
 	var environment_readability: Dictionary = final_status.get("environmentReadabilityHardening", {})
+	var environment_contrast: Dictionary = final_status.get("environmentContrastHarmonization", {})
 	var any_loaded := bool(worker_art.get("sourceLoaded", false)) or bool(barracks_material.get("sourceLoaded", false)) or bool(militia_art.get("sourceLoaded", false)) or bool(aster_art.get("sourceLoaded", false)) or bool(ashen_art.get("sourceLoaded", false)) or bool(ground_material.get("sourceLoaded", false))
 	var five_slot_requested := _script_args().has("--ashen-art-opt-in")
 	var four_slot_requested := _script_args().has("--aster-art-opt-in")
@@ -1929,6 +1942,8 @@ func run_worker_art_opt_in_benchmark() -> void:
 		"environmentFoundationReview": environment_foundation,
 		"environmentReadabilityHardeningEnabled": bool(final_status.get("environmentReadabilityHardeningEnabled", false)),
 		"environmentReadabilityHardening": environment_readability,
+		"environmentContrastHarmonizationEnabled": bool(final_status.get("environmentContrastHarmonizationEnabled", false)),
+		"environmentContrastHarmonization": environment_contrast,
 		"environmentReadabilityArtSlotCount": int(final_status.get("environmentReadabilityArtSlotCount", 0)),
 		"environmentFoundationArtSlotCount": int(final_status.get("environmentFoundationArtSlotCount", 0)),
 		"terrainMaterialSourceImported": bool(final_status.get("terrainMaterialSourceImported", false)),
@@ -4330,6 +4345,8 @@ func _apply_player_slice_action(action: String) -> Dictionary:
 
 func _player_capture_checkpoint() -> String:
 	var normalized_root := _artifact_root_from_args().replace("\\", "/")
+	if normalized_root.contains("/v0179"):
+		return "v0.179"
 	if normalized_root.contains("/v0178"):
 		return "v0.178"
 	if normalized_root.contains("/v0177"):
@@ -4365,9 +4382,27 @@ func _player_capture_checkpoint() -> String:
 	return "v0.124"
 
 func _is_bounded_microloop_checkpoint() -> bool:
-	return ["v0.129", "v0.130", "v0.160", "v0.162", "v0.164", "v0.166", "v0.168", "v0.169", "v0.170", "v0.173", "v0.174", "v0.177", "v0.178"].has(_player_capture_checkpoint())
+	return ["v0.129", "v0.130", "v0.160", "v0.162", "v0.164", "v0.166", "v0.168", "v0.169", "v0.170", "v0.173", "v0.174", "v0.177", "v0.178", "v0.179"].has(_player_capture_checkpoint())
 
 func _player_capture_steps() -> Array[Dictionary]:
+	if _player_capture_checkpoint() == "v0.179":
+		return [
+			{"id": "title", "label": "Title shell with configured environment contrast posture", "action": "title"},
+			{"id": "briefing", "label": "Briefing shell", "action": "briefing"},
+			{"id": "tactical_overview", "label": "Tactical overview over textured foothold", "action": "battle_default"},
+			{"id": "road_intersections", "label": "Road shoulders and intersections over textured ground", "action": "road_intersections"},
+			{"id": "river_banks", "label": "River bank contrast over textured ground", "action": "ford"},
+			{"id": "bridge_crossing", "label": "Bridge crossing hierarchy", "action": "bridge"},
+			{"id": "site_marker_hierarchy", "label": "Site marker hierarchy over textured ground", "action": "site_marker_hierarchy"},
+			{"id": "mine_barracks_approach", "label": "Mine and Barracks approach lanes", "action": "approach_lanes"},
+			{"id": "hostile_approach_lane", "label": "Hostile approach lane", "action": "hostile_lane"},
+			{"id": "five_slot_combat_posture", "label": "Five-slot combat posture readability", "action": "combat"},
+			{"id": "camera_pan_readability", "label": "Camera pan readability", "action": "pan_camera"},
+			{"id": "camera_min_zoom", "label": "Zoomed-in contrast edge treatment", "action": "camera_min_zoom"},
+			{"id": "camera_max_zoom", "label": "Zoomed-out contrast and repetition check", "action": "camera_max_zoom"},
+			{"id": "minimap_correlation", "label": "Minimap correlation markers", "action": "minimap"},
+			{"id": "results", "label": "Results path preserved", "action": "results"}
+		]
 	if ["v0.177", "v0.178"].has(_player_capture_checkpoint()):
 		return [
 			{"id": "title", "label": "Title shell with configured ground-material opt-in", "action": "title"},

@@ -323,6 +323,7 @@ var three_slot_art_review_framing_active := false
 var five_slot_art_review_framing_active := false
 var environment_foundation_review_enabled := false
 var environment_readability_hardening_enabled := false
+var environment_contrast_harmonization_enabled := false
 var ground_material_experiment_enabled := false
 var ground_material_source_path := ""
 var ground_material_metadata_path := ""
@@ -425,6 +426,7 @@ func configure_environment_foundation_review(enabled: bool) -> Dictionary:
 	environment_foundation_review_enabled = enabled
 	if not environment_foundation_review_enabled:
 		environment_readability_hardening_enabled = false
+		environment_contrast_harmonization_enabled = false
 	_refresh_visual_foundation()
 	if environment_foundation_review_enabled:
 		apply_environment_foundation_review_framing()
@@ -435,6 +437,7 @@ func configure_environment_readability_hardening(enabled: bool) -> Dictionary:
 	environment_readability_hardening_enabled = enabled
 	if environment_readability_hardening_enabled:
 		environment_foundation_review_enabled = true
+		environment_contrast_harmonization_enabled = false
 	_refresh_visual_foundation()
 	if environment_readability_hardening_enabled:
 		apply_environment_readability_hardening_framing()
@@ -442,6 +445,19 @@ func configure_environment_readability_hardening(enabled: bool) -> Dictionary:
 		apply_environment_foundation_review_framing()
 	_apply_environment_readability_minimap_markers()
 	return _environment_readability_status()
+
+func configure_environment_contrast_harmonization(enabled: bool) -> Dictionary:
+	environment_contrast_harmonization_enabled = enabled
+	if environment_contrast_harmonization_enabled:
+		environment_foundation_review_enabled = true
+		environment_readability_hardening_enabled = false
+	_refresh_visual_foundation()
+	if environment_contrast_harmonization_enabled:
+		apply_environment_contrast_harmonization_framing()
+	elif environment_foundation_review_enabled:
+		apply_environment_foundation_review_framing()
+	_apply_environment_readability_minimap_markers()
+	return _environment_contrast_harmonization_status()
 
 func apply_environment_foundation_review_framing() -> bool:
 	if not environment_foundation_review_enabled:
@@ -453,6 +469,12 @@ func apply_environment_readability_hardening_framing() -> bool:
 	if not environment_readability_hardening_enabled:
 		return false
 	_apply_camera_authoring_posture("v0174_environment_readability", Vector3(-0.88, 11.85, 8.46), 9.92)
+	return true
+
+func apply_environment_contrast_harmonization_framing() -> bool:
+	if not environment_contrast_harmonization_enabled:
+		return false
+	_apply_camera_authoring_posture("v0179_environment_contrast", Vector3(-0.96, 11.92, 8.42), 9.88)
 	return true
 
 func _environment_foundation_status() -> Dictionary:
@@ -508,6 +530,37 @@ func _environment_readability_status() -> Dictionary:
 			"site-marker hierarchy",
 			"minimap correlation markers",
 			"camera pan and zoom readability anchors"
+		]
+	}
+
+func _environment_contrast_harmonization_status() -> Dictionary:
+	return {
+		"schemaVersion": 1,
+		"checkpoint": "v0.179",
+		"enabled": environment_contrast_harmonization_enabled,
+		"requiresFoundationReview": true,
+		"requiresGroundMaterialOptIn": true,
+		"reviewOnly": true,
+		"runtimeArtSlotAdded": false,
+		"aiImageGenerated": false,
+		"newTextureImported": false,
+		"terrainTextureImportedByHarmonization": false,
+		"browserRuntimeChanged": false,
+		"saveWritesAllowed": false,
+		"stableIdsChanged": false,
+		"gameplayPathingChanged": false,
+		"navigationSemanticsChanged": false,
+		"preservesFiveCharacterMaterialSlots": true,
+		"materiallyImprovesTacticalReadability": environment_contrast_harmonization_enabled,
+		"minimapCorrelationMarkersRendered": _minimap_has_marker("v0174_minimap_bridge_crossing") and _minimap_marker_visible("v0174_minimap_bridge_crossing"),
+		"appliedLayers": [
+			"road shoulders, centerline, and intersection collars over textured ground",
+			"river core and bank lips separated from dark terrain material",
+			"bridge crossing silhouette and plank highlights",
+			"site-marker hierarchy and approach-lane accents",
+			"hostile lane warning tint",
+			"minimap correlation markers",
+			"restrained warm-cool light rebalance"
 		]
 	}
 
@@ -4188,6 +4241,8 @@ func get_spike_status() -> Dictionary:
 	status["environmentFoundationReview"] = _environment_foundation_status()
 	status["environmentReadabilityHardeningEnabled"] = environment_readability_hardening_enabled
 	status["environmentReadabilityHardening"] = _environment_readability_status()
+	status["environmentContrastHarmonizationEnabled"] = environment_contrast_harmonization_enabled
+	status["environmentContrastHarmonization"] = _environment_contrast_harmonization_status()
 	var worker_art_loaded := _worker_art_is_active()
 	_refresh_worker_art_counters()
 	var barracks_material_loaded := _barracks_material_is_active()
@@ -4594,6 +4649,9 @@ func _apply_light_preset() -> void:
 	if environment_readability_hardening_enabled:
 		light.light_energy = 1.02
 		light.light_color = Color(0.88, 0.93, 0.83)
+	if environment_contrast_harmonization_enabled:
+		light.light_energy = 1.04
+		light.light_color = Color(0.90, 0.94, 0.84)
 
 func _create_terrain() -> void:
 	terrain_root = Node3D.new()
@@ -4704,6 +4762,8 @@ func _create_terrain() -> void:
 		_add_environment_foundation_shell_layers()
 	if environment_readability_hardening_enabled:
 		_add_environment_readability_hardening_layers()
+	if environment_contrast_harmonization_enabled:
+		_add_environment_contrast_harmonization_layers()
 
 func _add_environment_foundation_shell_layers() -> void:
 	var road_edge := Color(0.24, 0.24, 0.20, 0.74)
@@ -4765,6 +4825,41 @@ func _add_environment_readability_hardening_layers() -> void:
 	_add_static_cylinder("v0174_site_marker_inner_state_disc", Vector3(-1.52, 0.274, 0.12), 0.42, 0.026, Color(0.30, 0.78, 0.52, 0.66), true)
 	_add_static_box("v0174_site_marker_orientation_tick_north", Vector3(-1.52, 0.296, -0.70), Vector3(0.16, 0.026, 0.34), site_gold.lightened(0.10), true)
 	_add_static_box("v0174_site_marker_orientation_tick_road", Vector3(-0.70, 0.296, 0.12), Vector3(0.34, 0.026, 0.16), site_gold.lightened(0.04), true)
+
+func _add_environment_contrast_harmonization_layers() -> void:
+	var road_core := Color(0.70, 0.64, 0.47, 0.88)
+	var road_shadow := Color(0.13, 0.12, 0.09, 0.76)
+	var bank_lip := Color(0.40, 0.46, 0.34, 0.66)
+	var bridge_gold := Color(0.88, 0.76, 0.50, 0.84)
+	var approach_teal := Color(0.24, 0.62, 0.50, 0.44)
+	var hostile_warm := Color(0.78, 0.23, 0.16, 0.48)
+	var site_gold := Color(1.00, 0.84, 0.28, 0.64)
+	_add_static_box("v0179_main_road_warm_readability_core", Vector3(-1.05, 0.272, 0.70), Vector3(11.78, 0.022, 0.11), road_core, true)
+	_add_static_box("v0179_main_road_north_dark_shoulder", Vector3(-1.05, 0.258, 0.20), Vector3(11.94, 0.024, 0.10), road_shadow, true)
+	_add_static_box("v0179_main_road_south_dark_shoulder", Vector3(-1.05, 0.258, 1.20), Vector3(11.94, 0.024, 0.10), road_shadow, true)
+	_add_static_box("v0179_barracks_intersection_readability_plate", Vector3(-4.44, 0.276, 0.42), Vector3(1.18, 0.020, 0.88), Color(0.76, 0.67, 0.47, 0.46), true)
+	_add_static_box("v0179_mine_intersection_readability_plate", Vector3(-1.78, 0.276, 0.42), Vector3(1.38, 0.020, 0.84), Color(0.78, 0.69, 0.46, 0.48), true)
+	_add_static_box("v0179_bridge_intersection_readability_plate", Vector3(0.56, 0.278, 0.86), Vector3(2.02, 0.021, 0.98), Color(0.82, 0.72, 0.52, 0.52), true)
+	for index in range(8):
+		var x := -5.70 + float(index) * 1.58
+		_add_static_box("v0179_main_road_granite_tick_%02d" % index, Vector3(x, 0.296, 0.70), Vector3(0.42, 0.020, 0.06), Color(0.92, 0.84, 0.62, 0.62), true)
+	_add_static_box("v0179_barracks_approach_lane_read", Vector3(-4.78, 0.282, -2.02), Vector3(0.52, 0.021, 3.12), approach_teal, true)
+	_add_static_box("v0179_mine_approach_lane_read", Vector3(-2.14, 0.282, 0.76), Vector3(1.32, 0.021, 0.34), approach_teal.lightened(0.08), true)
+	_add_static_box("v0179_friendly_staging_to_road_read", Vector3(-4.48, 0.280, 1.42), Vector3(1.28, 0.020, 1.46), approach_teal.darkened(0.08), true)
+	_add_static_box("v0179_hostile_approach_lane_read", Vector3(3.52, 0.280, -0.98), Vector3(3.92, 0.021, 0.36), hostile_warm, true)
+	_add_static_box("v0179_hostile_lane_inner_warning", Vector3(3.64, 0.298, -0.98), Vector3(2.68, 0.020, 0.08), hostile_warm.lightened(0.14), true)
+	_add_static_box("v0179_river_cool_deep_spine", Vector3(0.60, 0.266, -0.38), Vector3(0.34, 0.022, 12.76), Color(0.02, 0.20, 0.28, 0.86), true)
+	_add_static_box("v0179_west_bank_readability_lip", Vector3(0.04, 0.280, -0.38), Vector3(0.13, 0.020, 12.66), bank_lip, true)
+	_add_static_box("v0179_east_bank_readability_lip", Vector3(1.16, 0.280, -0.38), Vector3(0.13, 0.020, 12.66), bank_lip.lightened(0.04), true)
+	_add_static_box("v0179_ford_shallow_crossing_read", Vector3(0.58, 0.302, 0.88), Vector3(1.66, 0.020, 0.28), Color(0.58, 0.76, 0.70, 0.64), true)
+	_add_static_box("v0179_bridge_shadow_silhouette", Vector3(0.56, 0.304, 0.88), Vector3(2.05, 0.026, 0.70), road_shadow, true)
+	_add_static_box("v0179_bridge_deck_plank_highlight", Vector3(0.56, 0.354, 0.88), Vector3(1.56, 0.026, 0.12), bridge_gold, true)
+	_add_static_box("v0179_bridge_north_guard_read", Vector3(0.56, 0.384, 0.52), Vector3(1.92, 0.026, 0.07), Color(0.20, 0.15, 0.08, 0.86), true)
+	_add_static_box("v0179_bridge_south_guard_read", Vector3(0.56, 0.384, 1.24), Vector3(1.92, 0.026, 0.07), Color(0.20, 0.15, 0.08, 0.86), true)
+	_add_static_cylinder("v0179_site_marker_outer_ring_read", Vector3(-1.52, 0.318, 0.12), 0.86, 0.026, site_gold, true)
+	_add_static_cylinder("v0179_site_marker_inner_state_disc", Vector3(-1.52, 0.340, 0.12), 0.44, 0.022, Color(0.31, 0.80, 0.54, 0.66), true)
+	_add_static_box("v0179_site_marker_north_orientation_tick", Vector3(-1.52, 0.362, -0.72), Vector3(0.14, 0.022, 0.34), site_gold.lightened(0.10), true)
+	_add_static_box("v0179_site_marker_road_orientation_tick", Vector3(-0.70, 0.362, 0.12), Vector3(0.34, 0.022, 0.14), site_gold.lightened(0.04), true)
 
 func _create_hud() -> void:
 	hud_layer = CanvasLayer.new()
@@ -5100,7 +5195,7 @@ func _apply_environment_readability_minimap_markers() -> void:
 	]:
 		if not _minimap_has_marker(str(marker["name"])):
 			_add_minimap_marker(str(marker["name"]), marker["pos"], marker["size"], marker["color"])
-		_set_minimap_marker_visible(str(marker["name"]), environment_readability_hardening_enabled)
+		_set_minimap_marker_visible(str(marker["name"]), environment_readability_hardening_enabled or environment_contrast_harmonization_enabled)
 
 func _sync_minimap() -> void:
 	if minimap_panel == null:
