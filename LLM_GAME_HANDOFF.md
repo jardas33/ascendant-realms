@@ -1,6 +1,6 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-06-09 v0.189 Bridge-Riverbank Material Comparator Intake
+Last updated: 2026-06-09 v0.190 Bridge-Riverbank Material Readiness Packet
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
@@ -78,11 +78,32 @@ Project Identity continuation note: v0.188 now supersedes the older no-v0.188 ta
 
 Project Identity continuation note: v0.189 now supersedes the older no-v0.189 tail above because the queued prompt explicitly authorized exactly one private-comparator Barrosan wet-granite bridge-riverbank material intake after v0.188 was committed, pushed, clean, synced, and remote-green. v0.189 generated exactly one source image, selected `BRIDGE_RIVERBANK_MATERIAL_LOCAL_1024` for private evidence only, added a tracked diagnostic fallback, validated and benchmarked the private comparator, integrated nothing into the normal Salto slice, and stopped before v0.190.
 
-Current status override: v0.189 Bridge-Riverbank Material Comparator Intake is the active checkpoint for this handoff. Character-slot integration remains frozen after five selected opt-in slots. The Barrosan foothold ground and road materials remain opt-in only, the default launcher remains procedural, browser runtime remains untouched, and the selected bridge-riverbank material remains private-comparator-only unless a future queued integration prompt passes. Do not begin v0.190 unless v0.189 is committed, pushed, clean, synced, and remote-green and the next queued prompt prerequisites pass.
+Project Identity continuation note: v0.190 now supersedes the older no-v0.190 tail above because the queued prompt explicitly authorized documentation-only bridge-riverbank material opt-in readiness work after v0.189 was committed, pushed, clean, synced, and remote-green. v0.190 generates zero images, adds zero slots, modifies no runtime code, prepares one constrained future bridge-riverbank material opt-in contract using `BRIDGE_RIVERBANK_MATERIAL_LOCAL_1024`, forbids broad stone replacement, and stops before v0.191.
+
+Current status override: v0.190 Bridge-Riverbank Material Readiness Packet is the active checkpoint for this handoff. Character-slot integration remains frozen after five selected opt-in slots. The Barrosan foothold ground and road materials remain opt-in only, the default launcher remains procedural, browser runtime remains untouched, and the selected bridge-riverbank material remains private-comparator-only unless a future explicitly selected integration prompt passes. Do not begin v0.191 unless v0.190 is committed, pushed, clean, synced, and remote-green and the next queued prompt prerequisites pass.
+
+## Current v0.190 Bridge-Riverbank Material Readiness Packet - 2026-06-09
+
+Status: v0.190 documentation-only bridge-riverbank material readiness packet is the active checkpoint. Commit, push, and remote CI proof are required before any queued v0.191 work.
+
+Key evidence:
+
+- `docs/V0190_BRIDGE_RIVERBANK_MATERIAL_READINESS_PACKET.md`
+- `docs/V0190_BRIDGE_RIVERBANK_RISK_ROLLBACK.md`
+- `docs/art-prompts/V0191_01_BRIDGE_RIVERBANK_MATERIAL_OPT_IN.md`
+- `docs/V0190_IMPLEMENTATION_REPORT.md`
+- Selected derivative SHA `638ce153d7a3d39db729dfa13ba05f3fb05c437c2802ab91b5cd248bd2036753`.
+- Source SHA `342d058f4749e115569a82bf971bb409ccd63825f93b7428d346150ebd9d003a`.
+- Future scoped surfaces are bridge abutments and riverbank retaining-edge visuals only.
+- Forbidden future surfaces are base ground, roads, river water, structures, minimap, HUD, markers, selection rings, unit billboards, and combat VFX.
+- Broad stone replacement remains forbidden.
+- Cleanup dry-run evidence path: `artifacts/desktop-spikes/godot-salto/v0190/cleanup-dry-run/`.
+
+Next boundary: v0.191 may only start from clean, synced, pushed, remote-green v0.190 state if the queued prompt is still present and its prerequisites pass. The v0.190 bridge-riverbank opt-in prompt is prepared as a tracked readiness artifact only; it must not run unless it becomes the explicitly selected next milestone. Any v0.191 work must preserve zero images, zero unapproved slots, no default launcher art, no browser wiring, and no gameplay/pathing/collisions/objectives/AI/saves/stable-ID mutation unless the exact queued prompt explicitly authorizes a narrower change.
 
 ## Current v0.189 Bridge-Riverbank Material Comparator Intake - 2026-06-09
 
-Status: v0.189 private bridge-riverbank material comparator intake is the active checkpoint. Commit, push, and remote CI proof are required before any queued v0.190 work.
+Status: previous v0.189 private bridge-riverbank material comparator intake. It is superseded by the active v0.190 section above.
 
 Key evidence:
 

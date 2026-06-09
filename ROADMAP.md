@@ -11,9 +11,18 @@ Every phase should protect these long-term pillars:
 
 ## Current Recommended Next Phase
 
-The current checkpoint is **v0.189 Barrosan Wet-Granite Bridge-Riverbank Material Private Comparator Intake And Human-Review Stop** on 2026-06-09. It generates exactly one private-comparator wet-granite bridge-riverbank material source, selects the 1024 derivative for evidence only, keeps the default launcher procedural, preserves all prior opt-in launchers, keeps the browser runtime untouched, adds no player-facing slots, and leaves gameplay/pathing/collisions/objectives/AI/saves/stable IDs unchanged.
+The current checkpoint is **v0.190 Bridge-Riverbank Material Opt-In Integration Readiness Packet Only** on 2026-06-09. It prepares documentation only for one future bridge-riverbank material opt-in slot using the v0.189 selected wet-granite derivative, keeps the default launcher procedural, preserves all prior opt-in launchers, keeps the browser runtime untouched, adds no slots, generates zero images, modifies no runtime code, and leaves gameplay/pathing/collisions/objectives/AI/saves/stable IDs unchanged.
 
-The next queued step is v0.190 only if v0.189 is committed, pushed, clean, synced, and remote-green and the queued v0.190 prompt prerequisites pass. v0.190 must be documentation-only readiness work for a future bridge-riverbank material opt-in integration; it may use zero images, add zero slots, modify no runtime code, and must not authorize broad stone replacement.
+The next queued step is v0.191 only if v0.190 is committed, pushed, clean, synced, and remote-green and the queued v0.191 prompt prerequisites pass. The v0.190 readiness packet also includes a tracked future bridge-riverbank material opt-in prompt, but that prompt must not run unless it becomes the explicitly selected next milestone.
+
+New v0.190 docs:
+
+- `docs/V0190_BRIDGE_RIVERBANK_MATERIAL_READINESS_PACKET.md`
+- `docs/V0190_BRIDGE_RIVERBANK_RISK_ROLLBACK.md`
+- `docs/art-prompts/V0191_01_BRIDGE_RIVERBANK_MATERIAL_OPT_IN.md`
+- `docs/V0190_IMPLEMENTATION_REPORT.md`
+
+Previous checkpoint reference: v0.189 Barrosan Wet-Granite Bridge-Riverbank Material Private Comparator Intake And Human-Review Stop.
 
 New v0.189 docs:
 

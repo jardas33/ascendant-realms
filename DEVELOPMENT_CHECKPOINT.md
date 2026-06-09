@@ -1,6 +1,40 @@
 # Development Checkpoint
 
-Updated: 2026-06-09 v0.189 Bridge-Riverbank Material Comparator Intake
+Updated: 2026-06-09 v0.190 Bridge-Riverbank Material Readiness Packet
+
+## v0.190 Bridge-Riverbank Material Opt-In Integration Readiness Packet Only - 2026-06-09
+
+Scope: documentation-only readiness packet after v0.189. This checkpoint generates zero images, adds zero slots, modifies no runtime code, integrates no bridge-riverbank material into the normal Salto slice, keeps the default launcher procedural, preserves all prior opt-in launchers, keeps browser runtime untouched, keeps character integrations frozen, and leaves gameplay, pathing, collisions, objectives, AI, saves, stable IDs, production manifests, selected prior art, metadata, fallbacks, and required evidence unchanged.
+
+Included work:
+
+- Prepared `docs/V0190_BRIDGE_RIVERBANK_MATERIAL_READINESS_PACKET.md`.
+- Prepared `docs/V0190_BRIDGE_RIVERBANK_RISK_ROLLBACK.md`.
+- Prepared the tracked future prompt `docs/art-prompts/V0191_01_BRIDGE_RIVERBANK_MATERIAL_OPT_IN.md`.
+- Produced `docs/V0190_IMPLEMENTATION_REPORT.md`.
+- Updated the handoff, roadmap, checkpoint, changelog, release checklist, and Salto experimental artifact index docs.
+
+Readiness decision:
+
+- Future work may proceed only through an explicit prompt and only for exactly one bridge-riverbank material opt-in slot.
+- Selected candidate: `BRIDGE_RIVERBANK_MATERIAL_LOCAL_1024`.
+- Selected SHA: `638ce153d7a3d39db729dfa13ba05f3fb05c437c2802ab91b5cd248bd2036753`.
+- Source SHA: `342d058f4749e115569a82bf971bb409ccd63825f93b7428d346150ebd9d003a`.
+- Scoped future surfaces: bridge abutments and riverbank retaining-edge visuals only.
+- Forbidden future surfaces: base ground, roads, river water, structures, minimap, HUD, markers, selection rings, unit billboards, and combat VFX.
+
+Verification targets:
+
+```text
+PASS: docs existence checks for the four v0.190 deliverables.
+PASS: npm run godot:validate:salto-experimental-artifact-retention.
+PASS: npm run godot:cleanup:salto-experimental-artifacts -- --output-root=artifacts/desktop-spikes/godot-salto/v0190/cleanup-dry-run.
+PASS: npm run validate:content.
+PASS: npm run validate:art-intake.
+PASS: npm run validate:runtime-art-slots.
+PASS: isolation scans for zero images, zero slots, no runtime code changes, no launcher mutation, no browser wiring, and no gameplay/pathing/collision/objective/AI/save/stable-ID mutation.
+PASS: git diff --check.
+```
 
 ## v0.189 Barrosan Wet-Granite Bridge-Riverbank Material Private Comparator Intake And Human-Review Stop - 2026-06-09
 

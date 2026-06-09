@@ -1,5 +1,31 @@
 # Changelog
 
+# v0.190 Bridge-Riverbank Material Opt-In Integration Readiness Packet Only - 2026-06-09
+
+This checkpoint prepares a documentation-only readiness packet for a future bridge-riverbank material opt-in integration after v0.189. It generates zero images, adds zero slots, modifies no runtime code, deletes no historical evidence, keeps the default launcher procedural, preserves all prior launchers, keeps the browser runtime untouched, and stops before v0.191.
+
+Added:
+
+- `docs/V0190_BRIDGE_RIVERBANK_MATERIAL_READINESS_PACKET.md`.
+- `docs/V0190_BRIDGE_RIVERBANK_RISK_ROLLBACK.md`.
+- `docs/art-prompts/V0191_01_BRIDGE_RIVERBANK_MATERIAL_OPT_IN.md`.
+- `docs/V0190_IMPLEMENTATION_REPORT.md`.
+
+Validation:
+
+- Future selected candidate remains `BRIDGE_RIVERBANK_MATERIAL_LOCAL_1024`.
+- Selected SHA `638ce153d7a3d39db729dfa13ba05f3fb05c437c2802ab91b5cd248bd2036753`.
+- Source SHA `342d058f4749e115569a82bf971bb409ccd63825f93b7428d346150ebd9d003a`.
+- Future scope is limited to bridge abutments and riverbank retaining-edge visuals.
+- Broad stone replacement remains forbidden.
+
+Boundaries:
+
+- Zero images generated.
+- Zero slots added.
+- No runtime code, launcher, browser runtime, gameplay, pathing, collisions, objectives, AI, saves, stable IDs, production manifests, selected prior art, metadata, fallbacks, or required evidence changed.
+- v0.191 was prepared as a tracked prompt but not started inside this checkpoint.
+
 # v0.189 Barrosan Wet-Granite Bridge-Riverbank Material Private Comparator Intake And Human-Review Stop - 2026-06-09
 
 This checkpoint generates exactly one private-comparator Barrosan wet-granite bridge-riverbank material source after v0.188, adds deterministic derivatives plus a tracked diagnostic fallback, validates and benchmarks the isolated comparator, and stops before player-slice integration.

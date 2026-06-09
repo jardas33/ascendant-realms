@@ -1,10 +1,10 @@
 # Salto Experimental Artifact Index
 
-Status: `ACTIVE_V0189_RETENTION_INDEX`
+Status: `ACTIVE_V0190_RETENTION_INDEX`
 
 This index is the retention source of truth for the Godot Salto experimental-art path. It protects selected local art, active derivatives, metadata, tracked fallbacks, current evidence, and unknown files from broad cleanup.
 
-This v0.189 index supersedes `ACTIVE_V0188_RETENTION_INDEX`, `ACTIVE_V0187_RETENTION_INDEX`, `ACTIVE_V0186_RETENTION_INDEX`, `ACTIVE_V0185_RETENTION_INDEX`, `ACTIVE_V0184_RETENTION_INDEX`, `ACTIVE_V0183_RETENTION_INDEX`, `ACTIVE_V0182_RETENTION_INDEX`, `ACTIVE_V0181_RETENTION_INDEX`, `ACTIVE_V0180_RETENTION_INDEX`, `ACTIVE_V0179_RETENTION_INDEX`, `ACTIVE_V0178_RETENTION_INDEX`, `ACTIVE_V0177_RETENTION_INDEX`, `ACTIVE_V0176_RETENTION_INDEX`, `ACTIVE_V0175_RETENTION_INDEX`, `ACTIVE_V0174_RETENTION_INDEX`, `ACTIVE_V0173_RETENTION_INDEX`, `ACTIVE_V0172_RETENTION_INDEX`, `ACTIVE_V0171_RETENTION_INDEX`, and `ACTIVE_V0170_RETENTION_INDEX` while retaining their protected evidence.
+This v0.190 index supersedes `ACTIVE_V0189_RETENTION_INDEX`, `ACTIVE_V0188_RETENTION_INDEX`, `ACTIVE_V0187_RETENTION_INDEX`, `ACTIVE_V0186_RETENTION_INDEX`, `ACTIVE_V0185_RETENTION_INDEX`, `ACTIVE_V0184_RETENTION_INDEX`, `ACTIVE_V0183_RETENTION_INDEX`, `ACTIVE_V0182_RETENTION_INDEX`, `ACTIVE_V0181_RETENTION_INDEX`, `ACTIVE_V0180_RETENTION_INDEX`, `ACTIVE_V0179_RETENTION_INDEX`, `ACTIVE_V0178_RETENTION_INDEX`, `ACTIVE_V0177_RETENTION_INDEX`, `ACTIVE_V0176_RETENTION_INDEX`, `ACTIVE_V0175_RETENTION_INDEX`, `ACTIVE_V0174_RETENTION_INDEX`, `ACTIVE_V0173_RETENTION_INDEX`, `ACTIVE_V0172_RETENTION_INDEX`, `ACTIVE_V0171_RETENTION_INDEX`, and `ACTIVE_V0170_RETENTION_INDEX` while retaining their protected evidence.
 
 ## Selected Local Source Art And Active Derivatives
 
@@ -192,10 +192,15 @@ Retain the latest v0.166/v0.167/v0.168/v0.169/v0.170 evidence until a later chec
 - `docs/V0189_BRIDGE_RIVERBANK_MATERIAL_COMPARATOR_QA_BENCHMARK.md`
 - `docs/V0189_PRIVATE_COMPARATOR_BOUNDARY_ROLLBACK.md`
 - `docs/V0189_IMPLEMENTATION_REPORT.md`
+- `artifacts/desktop-spikes/godot-salto/v0190/cleanup-dry-run/`
+- `docs/V0190_BRIDGE_RIVERBANK_MATERIAL_READINESS_PACKET.md`
+- `docs/V0190_BRIDGE_RIVERBANK_RISK_ROLLBACK.md`
+- `docs/art-prompts/V0191_01_BRIDGE_RIVERBANK_MATERIAL_OPT_IN.md`
+- `docs/V0190_IMPLEMENTATION_REPORT.md`
 
 ## Character Integration Freeze
 
-Character-slot expansion is frozen after the selected Worker, Barracks material, Militia, Aster, and Ashen Raider opt-in slots. v0.189 keeps the existing Barrosan foothold ground-material opt-in slot and the existing Barrosan foothold road-material opt-in slot behind `GODOT_REVIEW_SALTO_GROUND_ROAD_MATERIAL_OPT_IN_WINDOWS.bat`, preserves the v0.184 visual-only environment-shell geometry convergence review path, v0.185 visual-only environment-shell live-QA path, v0.186 visual-only procedural structure-shell hierarchy hardening path, and v0.187 visual-only procedural riverbank/bridge approach hardening path behind `GODOT_REVIEW_SALTO_RIVERBANK_BRIDGE_APPROACH_WINDOWS.bat`. The v0.189 wet-granite bridge-riverbank material remains private-comparator-only, no bridge/riverbank/structure material slot is integrated, no water shader pipeline is added, the default launcher remains procedural, browser runtime remains untouched, and procedural shell work remains frozen for Emmanuel manual review.
+Character-slot expansion is frozen after the selected Worker, Barracks material, Militia, Aster, and Ashen Raider opt-in slots. v0.190 keeps the existing Barrosan foothold ground-material opt-in slot and the existing Barrosan foothold road-material opt-in slot behind `GODOT_REVIEW_SALTO_GROUND_ROAD_MATERIAL_OPT_IN_WINDOWS.bat`, preserves the v0.184 visual-only environment-shell geometry convergence review path, v0.185 visual-only environment-shell live-QA path, v0.186 visual-only procedural structure-shell hierarchy hardening path, and v0.187 visual-only procedural riverbank/bridge approach hardening path behind `GODOT_REVIEW_SALTO_RIVERBANK_BRIDGE_APPROACH_WINDOWS.bat`. The v0.189 wet-granite bridge-riverbank material remains private-comparator-only pending a future explicit implementation prompt, no bridge/riverbank/structure material slot is integrated by v0.190, no water shader pipeline is added, the default launcher remains procedural, browser runtime remains untouched, and procedural shell work remains frozen for Emmanuel manual review.
 
 ## Archive Candidates
 
@@ -212,4 +217,4 @@ Deletion requires the explicit safe-only cleanup path.
 
 ## Manual-Review Candidates And Unknown Files
 
-Unknown files are preserved and block cleanup. v0.189 found `0` cleanup unknown blockers in the comparator-scope dry run. The `684` manual-review candidates from the v0.188 broad inventory remain preserved and are not safe-delete candidates. Broad deletion or archive moves are not authorized by this index.
+Unknown files are preserved and block cleanup. v0.190 cleanup dry run must remain comparator-scope and fail closed on unknown files; v0.189 found `0` cleanup unknown blockers in the comparator-scope dry run. The `684` manual-review candidates from the v0.188 broad inventory remain preserved and are not safe-delete candidates. Broad deletion or archive moves are not authorized by this index.
