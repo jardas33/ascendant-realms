@@ -1,5 +1,36 @@
 # Changelog
 
+# v0.175 Barrosan Foothold Terrain-Material Single-Slot Private Comparator Intake And Human-Review Stop - 2026-06-08
+
+This checkpoint generates exactly one original Barrosan foothold ground-material source for a private Godot comparator only. It creates deterministic 512, 768, 1024, and wrap-safe offset-blend derivatives, selects `GROUND_MATERIAL_LOCAL_1024`, rejects the wrap-safe comparison because of visible banding, and records seam, repetition, fair-path reuse, benchmark, capture, boundary, and cleanup dry-run evidence.
+
+Added:
+
+- `desktop-spikes/godot-salto/comparators/runtime_art_pipeline/ground_material_single_slot_comparator.gd`.
+- Tracked v0.175 diagnostic ground-material fallback and contract.
+- v0.175 fallback, derivative, validation, audit, benchmark, and capture tooling.
+- `docs/V0175_GROUND_MATERIAL_COMPARATOR_QA_AND_BENCHMARK.md`.
+- `docs/V0175_PRIVATE_COMPARATOR_BOUNDARY_AND_ROLLBACK.md`.
+- `docs/V0175_IMPLEMENTATION_REPORT.md`.
+
+Changed:
+
+- Added `--barrosan-ground-material-single-slot` for isolated private-comparator dispatch only.
+- Updated cleanup, audit, and retention classifiers to protect the new v0.175 private comparator/fallback files.
+- Updated the Salto experimental artifact index to retain v0.175 evidence and clarify that the selected terrain material is not player-slice art.
+
+Boundaries:
+
+- Exactly one image generated.
+- Zero character slots added.
+- Zero normal-slice terrain slots added.
+- No terrain material imported into the player-facing slice.
+- No default-art enablement.
+- Default launchers remain procedural.
+- All prior opt-in launchers remain preserved.
+- Browser runtime, production manifests, saves, stable IDs, gameplay, objectives, AI, balance, campaign state, and broad cleanup remain untouched.
+- v0.176 is not started inside this checkpoint.
+
 # v0.174 Salto Road-River-Bridge Site-Marker Readability Hardening And Human-Review Stop - 2026-06-08
 
 This checkpoint adds a second opt-in procedural environment readability layer on top of v0.173. It hardens only tactical readability for road continuity, river-bank contrast, bridge crossing silhouette, site-marker hierarchy, approach lanes, friendly boundary, hostile approach lane, minimap correlation, and pan/zoom review while preserving the default procedural launcher, all prior opt-in launchers, all five selected character/material slots, and the browser runtime boundary.

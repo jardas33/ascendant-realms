@@ -1,6 +1,35 @@
 # Development Checkpoint
 
-Updated: 2026-06-08 v0.174 Salto Road-River-Bridge Site-Marker Readability Hardening And Human-Review Stop
+Updated: 2026-06-08 v0.175 Barrosan Foothold Terrain-Material Single-Slot Private Comparator Intake And Human-Review Stop
+
+## v0.175 Barrosan Foothold Terrain-Material Single-Slot Private Comparator Intake And Human-Review Stop - 2026-06-08
+
+Scope: private-comparator-only terrain-material intake after the character-slot freeze. This checkpoint generates exactly one image, adds no character slots, adds no normal-slice terrain slot, imports no terrain material into the player-facing slice, keeps the default launcher procedural, preserves all prior opt-in launchers, and does not begin v0.176.
+
+Included work:
+
+- Confirmed v0.174 as the required prior clean/synced and remote-green checkpoint before edits.
+- Generated exactly one original Barrosan foothold ground-material source.
+- Produced deterministic 512, 768, 1024, and wrap-safe offset-blend derivatives under the ignored v0.175 local material workspace.
+- Added a tracked diagnostic fallback and private comparator only.
+- Selected `GROUND_MATERIAL_LOCAL_1024` after seam, repetition, style, fair-path, benchmark, and capture review.
+- Rejected `GROUND_MATERIAL_1024_WRAPSAFE_OFFSET_BLEND` as comparison evidence because it showed more visible banding than the selected 1024 derivative.
+- Updated cleanup/retention classifiers to protect the new v0.175 comparator/fallback files.
+
+Verification targets:
+
+```text
+PASS: npm run godot:ground-material:fallback:reproduce.
+PASS: npm run godot:ground-material:derivatives:reproduce.
+PASS: npm run godot:ground-material:validate.
+PASS: npm run godot:ground-material:benchmark:headed.
+PASS: npm run godot:ground-material:capture.
+PASS: npm run godot:ground-material:audit.
+PASS: npm run godot:cleanup:salto-experimental-artifacts -- --output-root=artifacts/desktop-spikes/godot-salto/v0175/cleanup-dry-run.
+PASS: PASS_V0175_GROUND_MATERIAL_SELECTION_GATE.
+PASS: selected derivative GROUND_MATERIAL_LOCAL_1024, seam mean opposing-edge delta 11.29, Tier L FPS ratio 1.015, p95 worsening -1.32%.
+PASS: exactly one image generated, private comparator only, no player-slice integration, no browser runtime wiring, no further character slots.
+```
 
 ## v0.174 Salto Road-River-Bridge Site-Marker Readability Hardening And Human-Review Stop - 2026-06-08
 

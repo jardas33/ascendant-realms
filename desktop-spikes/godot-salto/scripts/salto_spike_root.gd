@@ -74,6 +74,7 @@ const SCRIPT_ARG_PREFIXES := [
 	"--worker-billboard-single-slot-repair",
 	"--barrosan-barracks-material-single-slot",
 	"--barrosan-barracks-material-seam-repair",
+	"--barrosan-ground-material-single-slot",
 	"--aster-billboard-single-slot-repair",
 	"--hybrid-three-slot-composition-stress",
 	"--militia-billboard-single-slot",
@@ -283,6 +284,47 @@ func _ready() -> void:
 			get_tree().quit(1)
 			return
 		barracks_repair.call("start")
+		return
+	if args.has("--barrosan-ground-material-single-slot"):
+		_write_absolute_json(_path_join(_artifact_root_from_args(), "ground-material-root-dispatch.json"), {
+			"schemaVersion": 1,
+			"checkpoint": "v0.175",
+			"status": "PASS_V0175_PRIVATE_GROUND_MATERIAL_DISPATCH",
+			"args": Array(args),
+			"defaultPlayerSliceLaunched": false,
+			"playerSliceIntegration": "forbidden",
+			"runtimeArtSlotAdded": false
+		})
+		var ground_material_script := load("res://comparators/runtime_art_pipeline/ground_material_single_slot_comparator.gd") as GDScript
+		if ground_material_script == null:
+			_write_absolute_json(_path_join(_artifact_root_from_args(), "ground-material-dispatch-failure.json"), {
+				"schemaVersion": 1,
+				"checkpoint": "v0.175",
+				"status": "FAIL_V0175_PRIVATE_GROUND_MATERIAL_SCRIPT_LOAD",
+				"script": "res://comparators/runtime_art_pipeline/ground_material_single_slot_comparator.gd"
+			})
+			get_tree().quit(1)
+			return
+		var ground_material := Node.new()
+		ground_material.name = "V0175GroundMaterialSingleSlotComparator"
+		ground_material.set_script(ground_material_script)
+		add_child(ground_material)
+		_write_absolute_json(_path_join(_artifact_root_from_args(), "ground-material-dispatch-prestart.json"), {
+			"schemaVersion": 1,
+			"checkpoint": "v0.175",
+			"status": "PASS_V0175_PRIVATE_GROUND_MATERIAL_PRESTART",
+			"hasStart": ground_material.has_method("start")
+		})
+		if not ground_material.has_method("start"):
+			_write_absolute_json(_path_join(_artifact_root_from_args(), "ground-material-dispatch-failure.json"), {
+				"schemaVersion": 1,
+				"checkpoint": "v0.175",
+				"status": "FAIL_V0175_PRIVATE_GROUND_MATERIAL_START_METHOD",
+				"script": "res://comparators/runtime_art_pipeline/ground_material_single_slot_comparator.gd"
+			})
+			get_tree().quit(1)
+			return
+		ground_material.call("start")
 		return
 	if args.has("--aster-billboard-single-slot-repair"):
 		_write_absolute_json(_path_join(_artifact_root_from_args(), "aster-billboard-repair-root-dispatch.json"), {

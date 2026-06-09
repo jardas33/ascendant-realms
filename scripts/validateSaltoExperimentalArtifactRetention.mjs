@@ -88,8 +88,16 @@ const trackedFallbacks = [
   "desktop-spikes/godot-salto/comparators/runtime_art_pipeline/fallback/aster_billboard_static_v0151_fallback.png",
   "desktop-spikes/godot-salto/comparators/runtime_art_pipeline/fallback/aster_billboard_static_v0151_fallback.contract.json",
   "desktop-spikes/godot-salto/comparators/runtime_art_pipeline/fallback/ashen_raider_billboard_static_v0156_fallback.png",
-  "desktop-spikes/godot-salto/comparators/runtime_art_pipeline/fallback/ashen_raider_billboard_static_v0156_fallback.contract.json"
+  "desktop-spikes/godot-salto/comparators/runtime_art_pipeline/fallback/ashen_raider_billboard_static_v0156_fallback.contract.json",
+  "desktop-spikes/godot-salto/comparators/runtime_art_pipeline/fallback/barrosan_foothold_ground_material_v0175_fallback.png",
+  "desktop-spikes/godot-salto/comparators/runtime_art_pipeline/fallback/barrosan_foothold_ground_material_v0175_fallback.contract.json"
 ];
+
+const requiredTrackedIntent = new Set([
+  "desktop-spikes/godot-salto/comparators/runtime_art_pipeline/ground_material_single_slot_comparator.gd",
+  "desktop-spikes/godot-salto/comparators/runtime_art_pipeline/fallback/barrosan_foothold_ground_material_v0175_fallback.png",
+  "desktop-spikes/godot-salto/comparators/runtime_art_pipeline/fallback/barrosan_foothold_ground_material_v0175_fallback.contract.json"
+]);
 
 const safeSidecarPatterns = [
   /^desktop-spikes\/godot-salto\/comparators\/runtime_art_pipeline\/[^/]+\.gd\.uid$/u,
@@ -200,7 +208,7 @@ function main() {
   });
 
   const sidecarFiles = walk(join(repoRoot, "desktop-spikes", "godot-salto", "comparators", "runtime_art_pipeline"))
-    .filter((file) => !tracked.has(file.rel));
+    .filter((file) => !tracked.has(file.rel) && !requiredTrackedIntent.has(file.rel));
   const sidecarScan = {
     safeDeleteCandidates: sidecarFiles.filter((file) => safeSidecarPatterns.some((pattern) => pattern.test(file.rel))).map((file) => ({ ...file, category: "known-godot-generated-transient-sidecar" })),
     unknownFiles: sidecarFiles.filter((file) => !safeSidecarPatterns.some((pattern) => pattern.test(file.rel))).map((file) => ({ ...file, category: "unknown-file" }))

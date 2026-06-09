@@ -4076,4 +4076,81 @@ describe("Godot Salto spike scaffold", () => {
       expect(launcher).not.toContain("--salto-environment-readability-hardening");
     });
   });
+
+  it("defines the v0.175 private Barrosan foothold terrain-material single-slot comparator intake", async () => {
+    [
+      "tools/godot/groundMaterialSingleSlotTool.mjs",
+      "tools/godot/runGodotGroundMaterialValidation.ps1",
+      "tools/godot/runGodotGroundMaterialFallbackReproducibility.ps1",
+      "tools/godot/runGodotGroundMaterialDerivatives.ps1",
+      "tools/godot/runGodotGroundMaterialAudit.ps1",
+      "tools/godot/runGodotGroundMaterialBenchmarkWindows.ps1",
+      "tools/godot/captureGodotGroundMaterialWindows.ps1",
+      "desktop-spikes/godot-salto/comparators/runtime_art_pipeline/ground_material_single_slot_comparator.gd",
+      "desktop-spikes/godot-salto/comparators/runtime_art_pipeline/fallback/barrosan_foothold_ground_material_v0175_fallback.png",
+      "desktop-spikes/godot-salto/comparators/runtime_art_pipeline/fallback/barrosan_foothold_ground_material_v0175_fallback.contract.json",
+      "docs/V0175_GROUND_MATERIAL_COMPARATOR_QA_AND_BENCHMARK.md",
+      "docs/V0175_PRIVATE_COMPARATOR_BOUNDARY_AND_ROLLBACK.md",
+      "docs/V0175_IMPLEMENTATION_REPORT.md"
+    ].forEach((path) => expect(existsSync(path), path).toBe(true));
+
+    const packageJson = JSON.parse(await readFile("package.json", "utf8")) as { scripts: Record<string, string> };
+    const rootScript = await readFile("desktop-spikes/godot-salto/scripts/salto_spike_root.gd", "utf8");
+    const comparatorScript = await readFile(
+      "desktop-spikes/godot-salto/comparators/runtime_art_pipeline/ground_material_single_slot_comparator.gd",
+      "utf8"
+    );
+    const toolScript = await readFile("tools/godot/groundMaterialSingleSlotTool.mjs", "utf8");
+    const boundary = await readFile("docs/V0175_PRIVATE_COMPARATOR_BOUNDARY_AND_ROLLBACK.md", "utf8");
+    const implementation = await readFile("docs/V0175_IMPLEMENTATION_REPORT.md", "utf8");
+    const defaultLauncher = await readFile("GODOT_LAUNCH_PLAYER_SLICE_WINDOWS.bat", "utf8");
+    const stabilizedLauncher = await readFile("GODOT_LAUNCH_STABILIZED_SALTO_REVIEW_WINDOWS.bat", "utf8");
+    const environmentReadabilityLauncher = await readFile("GODOT_REVIEW_SALTO_ENVIRONMENT_READABILITY_WINDOWS.bat", "utf8");
+
+    [
+      "godot:ground-material:validate",
+      "godot:ground-material:fallback:reproduce",
+      "godot:ground-material:derivatives:reproduce",
+      "godot:ground-material:audit",
+      "godot:ground-material:benchmark:headed",
+      "godot:ground-material:capture"
+    ].forEach((script) => expect(packageJson.scripts[script]).toBeTypeOf("string"));
+
+    [
+      "--barrosan-ground-material-single-slot",
+      "PASS_V0175_PRIVATE_GROUND_MATERIAL_DISPATCH",
+      "ground_material_single_slot_comparator.gd",
+      "runtimeArtSlotAdded"
+    ].forEach((text) => expect(rootScript).toContain(text));
+
+    [
+      "barrosan_foothold_ground_material_v0175",
+      "GROUND_MATERIAL_LOCAL_1024",
+      "GROUND_MATERIAL_1024_WRAPSAFE_OFFSET_BLEND",
+      "wrapsafe_1024_rejected_banding_comparison",
+      "PASS_V0175_GROUND_MATERIAL_RUNTIME_EVIDENCE",
+      "terrainMaterialImportedToPlayerSlice",
+      "perFrameDecode"
+    ].forEach((text) => expect(comparatorScript).toContain(text));
+
+    [
+      "barrosan_foothold_ground_material_v0175_source.png",
+      "PASS_V0175_GROUND_MATERIAL_SELECTION_GATE",
+      "GROUND_MATERIAL_LOCAL_1024",
+      "exactlyOneGeneratedSourceImage",
+      "playerSliceIntegration: \"forbidden\""
+    ].forEach((text) => expect(toolScript).toContain(text));
+
+    [
+      "Selected derivative: `GROUND_MATERIAL_LOCAL_1024`",
+      "Rejected comparison: `GROUND_MATERIAL_1024_WRAPSAFE_OFFSET_BLEND`",
+      "No player-slice integration",
+      "No browser runtime wiring",
+      "No further character slots"
+    ].forEach((text) => expect(boundary + implementation).toContain(text));
+
+    [defaultLauncher, stabilizedLauncher, environmentReadabilityLauncher].forEach((launcher) => {
+      expect(launcher).not.toContain("--barrosan-ground-material-single-slot");
+    });
+  });
 });

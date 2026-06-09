@@ -33,6 +33,12 @@ const selectedHashes = new Set([
   "8eb011f56d5cd56cf6ef0a843d2a5899e27aa13e203cc44517ed4a0c55c631c8"
 ]);
 
+const v0175PrivateComparatorIntent = new Set([
+  "desktop-spikes/godot-salto/comparators/runtime_art_pipeline/ground_material_single_slot_comparator.gd",
+  "desktop-spikes/godot-salto/comparators/runtime_art_pipeline/fallback/barrosan_foothold_ground_material_v0175_fallback.png",
+  "desktop-spikes/godot-salto/comparators/runtime_art_pipeline/fallback/barrosan_foothold_ground_material_v0175_fallback.contract.json"
+]);
+
 function stableSort(value) {
   if (Array.isArray(value)) return value.map(stableSort);
   if (value && typeof value === "object") {
@@ -89,7 +95,7 @@ function classify(file, tracked) {
     rel === "tools/godot/validateGodotSaltoThreeSlotVisualHardeningWindows.ps1" ||
     rel === "GODOT_AUDIT_SALTO_EXPERIMENTAL_ARTIFACTS_WINDOWS.bat" ||
     rel === "GODOT_VALIDATE_SALTO_THREE_SLOT_VISUAL_HARDENING_WINDOWS.bat";
-  if ((isTracked || isV0165RequiredTrackedIntent) && (rel.startsWith("docs/") || rel.startsWith("tools/godot/") || rel.startsWith("desktop-spikes/godot-salto/") || rel.endsWith(".bat") || rel.startsWith("scripts/"))) {
+  if ((isTracked || isV0165RequiredTrackedIntent || v0175PrivateComparatorIntent.has(rel)) && (rel.startsWith("docs/") || rel.startsWith("tools/godot/") || rel.startsWith("desktop-spikes/godot-salto/") || rel.endsWith(".bat") || rel.startsWith("scripts/"))) {
     return "required tracked source/tooling/docs";
   }
   if (isTracked && /fallback|placeholder|diagnostic/iu.test(rel)) {

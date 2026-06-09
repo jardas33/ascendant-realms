@@ -1,0 +1,48 @@
+{
+  "approach": "GROUND_MATERIAL_DIAGNOSTIC_FALLBACK",
+  "browserIntegration": "forbidden",
+  "checkpoint": "v0.175",
+  "colorStats": {
+    "granitePixelRatio": 0.2409,
+    "lumaMean": 61.73,
+    "lumaStdDev": 13.24,
+    "mossGrassPixelRatio": 0.0691
+  },
+  "defaultLauncherChanged": false,
+  "derivativeKey": "fallback",
+  "derivativeOperations": [
+    "deterministic diagnostic packed-earth fallback generated from integer noise"
+  ],
+  "dimensions": {
+    "height": 512,
+    "width": 512
+  },
+  "fileName": "desktop-spikes/godot-salto/comparators/runtime_art_pipeline/fallback/barrosan_foothold_ground_material_v0175_fallback.png",
+  "filterMode": "linear with mipmaps in private Godot comparator",
+  "generatedImageCountForV0175": 1,
+  "generationPrompt": "deterministic procedural diagnostic fallback",
+  "playerSliceIntegration": "forbidden",
+  "privateComparatorOnly": true,
+  "productionApproval": "forbidden",
+  "repetitionAnalysis": {
+    "noLargeLandmark": true,
+    "restrainedAtRtsDistance": true
+  },
+  "runtimeArtSlotAdded": false,
+  "schemaVersion": 1,
+  "seamAnalysis": {
+    "acceptableAtRtsDistance": true,
+    "meanOpposingEdgeDelta": 14.67
+  },
+  "sha256": "d44345b1dd1588c92e9ce0f5bcb6a8711e9b65ad089b6b8f89df9e0b90039d28",
+  "slotId": "barrosan_foothold_ground_material_v0175",
+  "sourceHash": "not-applicable",
+  "styleAnalysis": {
+    "approvedEnvironmentDirection": true,
+    "noCharactersHudBuildingsText": true,
+    "practicalGranitePackedEarthMossGrass": true,
+    "wetBarrosanFoothold": true
+  },
+  "tilingMode": "repeat comparator material",
+  "uvScale": 1
+}

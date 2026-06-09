@@ -29,6 +29,12 @@ const selectedHashes = new Set([
   "8eb011f56d5cd56cf6ef0a843d2a5899e27aa13e203cc44517ed4a0c55c631c8"
 ]);
 
+const requiredTrackedIntent = new Set([
+  "desktop-spikes/godot-salto/comparators/runtime_art_pipeline/ground_material_single_slot_comparator.gd",
+  "desktop-spikes/godot-salto/comparators/runtime_art_pipeline/fallback/barrosan_foothold_ground_material_v0175_fallback.png",
+  "desktop-spikes/godot-salto/comparators/runtime_art_pipeline/fallback/barrosan_foothold_ground_material_v0175_fallback.contract.json"
+]);
+
 const safeSidecarPatterns = [
   /^desktop-spikes\/godot-salto\/comparators\/runtime_art_pipeline\/[^/]+\.gd\.uid$/u,
   /^desktop-spikes\/godot-salto\/comparators\/runtime_art_pipeline\/fallback\/[^/]+\.png\.import$/u
@@ -87,6 +93,9 @@ function walk(root) {
 function classify(file, tracked) {
   if (tracked.has(file.rel)) {
     return { category: "tracked-required-file", action: "retain", reason: "Tracked repository file; never delete." };
+  }
+  if (requiredTrackedIntent.has(file.rel)) {
+    return { category: "tracked-required-file-intent", action: "retain", reason: "v0.175 private comparator/fallback required tracked intent; never delete." };
   }
   if (selectedEvidence.has(file.rel)) {
     return { category: "selected-art-or-metadata", action: "retain", reason: "Selected opt-in source art or metadata." };

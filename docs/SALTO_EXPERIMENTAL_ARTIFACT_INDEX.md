@@ -1,10 +1,10 @@
 # Salto Experimental Artifact Index
 
-Status: `ACTIVE_V0174_RETENTION_INDEX`
+Status: `ACTIVE_V0175_RETENTION_INDEX`
 
 This index is the retention source of truth for the Godot Salto experimental-art path. It protects selected local art, active derivatives, metadata, tracked fallbacks, current evidence, and unknown files from broad cleanup.
 
-This v0.174 index supersedes `ACTIVE_V0173_RETENTION_INDEX`, `ACTIVE_V0172_RETENTION_INDEX`, `ACTIVE_V0171_RETENTION_INDEX`, and `ACTIVE_V0170_RETENTION_INDEX` while retaining their protected evidence.
+This v0.175 index supersedes `ACTIVE_V0174_RETENTION_INDEX`, `ACTIVE_V0173_RETENTION_INDEX`, `ACTIVE_V0172_RETENTION_INDEX`, `ACTIVE_V0171_RETENTION_INDEX`, and `ACTIVE_V0170_RETENTION_INDEX` while retaining their protected evidence.
 
 ## Selected Local Source Art And Active Derivatives
 
@@ -15,6 +15,7 @@ This v0.174 index supersedes `ACTIVE_V0173_RETENTION_INDEX`, `ACTIVE_V0172_RETEN
 | Militia | active normal-slice opt-in | `artifacts/desktop-spikes/godot-salto/v0155/local-militia-billboard-repair/militia_billboard_static_v0154_trimmed_1024.png` | `c25349f00c422a0b3c9d5862027351bd70008e9314d4e3cd4001676e914321cb` |
 | Aster | active normal-slice opt-in | `artifacts/desktop-spikes/godot-salto/v0152/local-aster-billboard-repair/aster_billboard_static_v0151_trimmed_1024.png` | `b256f96f762187c05d68f2c2de62bedec0248896210767e98cb8f210dac2829a` |
 | Ashen Raider | active normal-slice opt-in; slot `ashen_raider_billboard_static_v0156` | `artifacts/desktop-spikes/godot-salto/v0157/local-ashen-raider-restrained-replacement/ashen_raider_billboard_static_v0157_restrained_trimmed_1024.png` | `8eb011f56d5cd56cf6ef0a843d2a5899e27aa13e203cc44517ed4a0c55c631c8` |
+| Barrosan foothold ground material | selected private comparator evidence only; not normal-slice opt-in | `artifacts/desktop-spikes/godot-salto/v0175/local-ground-material-slot/barrosan_foothold_ground_material_v0175_1024.png` | `818b7743fbf192fe95dd95a0fbadb59ea92b1cb36c420dac5526c0f4d1af18a8` |
 
 ## Required Metadata
 
@@ -22,7 +23,7 @@ Retain the matching `.metadata.json` files beside each selected derivative above
 
 ## Tracked Fallbacks
 
-Retain all tracked fallback `.png` and `.contract.json` files under `desktop-spikes/godot-salto/comparators/runtime_art_pipeline/fallback/` for Worker, Barracks, Militia, Aster, and Ashen Raider.
+Retain all tracked fallback `.png` and `.contract.json` files under `desktop-spikes/godot-salto/comparators/runtime_art_pipeline/fallback/` for Worker, Barracks, Militia, Aster, Ashen Raider, and the v0.175 private Barrosan foothold ground-material comparator.
 
 ## Latest Required Evidence
 
@@ -67,10 +68,15 @@ Retain the latest v0.166/v0.167/v0.168/v0.169/v0.170 evidence until a later chec
 - `docs/V0174_TACTICAL_ENVIRONMENT_READABILITY_QA_AND_BENCHMARK.md`
 - `docs/V0174_ENVIRONMENT_BOUNDARY_AND_ROLLBACK.md`
 - `docs/V0174_IMPLEMENTATION_REPORT.md`
+- `artifacts/desktop-spikes/godot-salto/v0175/evidence/`
+- `artifacts/desktop-spikes/godot-salto/v0175/cleanup-dry-run/`
+- `docs/V0175_GROUND_MATERIAL_COMPARATOR_QA_AND_BENCHMARK.md`
+- `docs/V0175_PRIVATE_COMPARATOR_BOUNDARY_AND_ROLLBACK.md`
+- `docs/V0175_IMPLEMENTATION_REPORT.md`
 
 ## Character Integration Freeze
 
-Character-slot expansion is frozen after the selected Worker, Barracks material, Militia, Aster, and Ashen Raider opt-in slots. v0.174 adds only an opt-in procedural E2 road/river/bridge/site-marker readability path with zero new runtime-art slots and zero imported terrain material. Future work should prioritize private terrain-material comparator intake and readiness planning unless a later prompt explicitly reopens character-slot scope.
+Character-slot expansion is frozen after the selected Worker, Barracks material, Militia, Aster, and Ashen Raider opt-in slots. v0.175 generated exactly one private terrain-material source and selected one private-comparator derivative only. It did not add a character slot, did not add a normal-slice terrain opt-in slot, did not import terrain material into the player-facing slice, and did not wire browser runtime. Future work should prioritize a documentation-only readiness packet unless a later prompt explicitly reopens integration scope.
 
 ## Archive Candidates
 

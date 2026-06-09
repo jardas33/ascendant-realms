@@ -1,6 +1,6 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-06-08 v0.174 Salto Road-River-Bridge Site-Marker Readability Hardening And Human-Review Stop
+Last updated: 2026-06-08 v0.175 Barrosan Foothold Terrain-Material Single-Slot Private Comparator Intake And Human-Review Stop
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
@@ -46,7 +46,41 @@ Project Identity continuation note: v0.173 now supersedes the older no-v0.173 ta
 
 Project Identity continuation note: v0.174 now supersedes the older no-v0.174 tail above because the queued prompt explicitly authorized one opt-in procedural road/river/bridge/site-marker readability hardening experiment after v0.173 was committed, pushed, clean, synced, and remote-green. v0.174 generates zero images, adds zero slots, preserves the five selected Worker/Barracks/Militia/Aster/Ashen opt-in posture, preserves the default procedural launcher and all prior opt-in launchers, keeps the browser runtime untouched, adds only `GODOT_REVIEW_SALTO_ENVIRONMENT_READABILITY_WINDOWS.bat` plus matching validation/capture tooling, records validation/capture/benchmark/boundary/cleanup/retention evidence, repairs one Windows-side clipped review-label issue, and stops before v0.175 unless a queued prompt sequence explicitly continues.
 
-Current status override: v0.174 is the active checkpoint for this handoff. Character-slot integration remains frozen after five selected opt-in slots. The next allowed direction is v0.175 private terrain-material comparator intake only if the queued v0.175 prompt passes prerequisites after v0.174 is committed, pushed, clean, synced, and remote-green. Do not integrate terrain material into the player-facing slice from v0.174.
+Project Identity continuation note: v0.175 now supersedes the older no-v0.175 tail above because the queued prompt explicitly authorized exactly one private Barrosan foothold terrain-material comparator intake after v0.174 was committed, pushed, clean, synced, and remote-green. v0.175 generates exactly one image, adds zero character slots, adds zero normal-slice terrain slots, selects `GROUND_MATERIAL_LOCAL_1024` as private comparator evidence, rejects the wrap-safe comparison for banding, records seam/repetition/benchmark/fair-path/capture/boundary/cleanup evidence, and stops before v0.176 unless a queued prompt sequence explicitly continues.
+
+Current status override: v0.175 is the active checkpoint for this handoff. Character-slot integration remains frozen after five selected opt-in slots. The next allowed direction is v0.176 documentation-only terrain-material opt-in readiness only if the queued v0.176 prompt passes prerequisites after v0.175 is committed, pushed, clean, synced, and remote-green. Do not integrate terrain material into the player-facing slice from v0.175.
+
+## Current v0.175 Barrosan Foothold Terrain-Material Single-Slot Private Comparator Intake And Human-Review Stop - 2026-06-08
+
+Status: local v0.175 work is the active checkpoint. Commit, push, and remote CI proof are required before any queued v0.176 work.
+
+What changed:
+
+- Generated exactly one private Barrosan foothold ground-material source under the ignored v0.175 local material workspace.
+- Produced deterministic 512, 768, 1024, and wrap-safe offset-blend derivatives.
+- Added a private Godot ground-material comparator, tracked diagnostic fallback, and fallback contract.
+- Selected `GROUND_MATERIAL_LOCAL_1024` with seam mean opposing-edge delta `11.29`, Tier L FPS ratio `1.015`, and p95 worsening `-1.32%`.
+- Rejected `GROUND_MATERIAL_1024_WRAPSAFE_OFFSET_BLEND` as comparison evidence because it showed more visible banding.
+- Updated cleanup, audit, and retention classifiers to protect the new v0.175 private comparator/fallback files.
+
+Key evidence:
+
+- `docs/V0175_GROUND_MATERIAL_COMPARATOR_QA_AND_BENCHMARK.md`
+- `docs/V0175_PRIVATE_COMPARATOR_BOUNDARY_AND_ROLLBACK.md`
+- `docs/V0175_IMPLEMENTATION_REPORT.md`
+- `artifacts/desktop-spikes/godot-salto/v0175/evidence/ground-material-threshold-report.json`
+- `artifacts/desktop-spikes/godot-salto/v0175/evidence/ground-material-fair-path-audit.json`
+- `artifacts/desktop-spikes/godot-salto/v0175/evidence/ground-material-boundary-report.json`
+- `artifacts/desktop-spikes/godot-salto/v0175/cleanup-dry-run/salto-experimental-cleanup-report.json`
+
+Current constraints:
+
+- Keep the default launcher procedural.
+- Preserve all prior opt-in launchers.
+- Keep browser runtime untouched.
+- Do not add character slots.
+- Do not integrate the v0.175 terrain material into the player-facing slice.
+- Do not begin v0.176 except through the queued prompt with clean/synced/green proof.
 
 ## Current v0.174 Salto Road-River-Bridge Site-Marker Readability Hardening And Human-Review Stop - 2026-06-08
 
