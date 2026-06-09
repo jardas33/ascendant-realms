@@ -11,9 +11,18 @@ Every phase should protect these long-term pillars:
 
 ## Current Recommended Next Phase
 
-The current checkpoint is **v0.190 Bridge-Riverbank Material Opt-In Integration Readiness Packet Only** on 2026-06-09. It prepares documentation only for one future bridge-riverbank material opt-in slot using the v0.189 selected wet-granite derivative, keeps the default launcher procedural, preserves all prior opt-in launchers, keeps the browser runtime untouched, adds no slots, generates zero images, modifies no runtime code, and leaves gameplay/pathing/collisions/objectives/AI/saves/stable IDs unchanged.
+The current checkpoint is **v0.191 Post-Shell-Freeze Next-Phase Scorecard And v0.192 Preparation Only** on 2026-06-09. It prepares documentation only after the v0.190 bridge-riverbank readiness packet, recommends exactly one v0.192 milestone, keeps the default launcher procedural, preserves all prior opt-in launchers, keeps the browser runtime untouched, adds no slots, generates zero images, modifies no runtime code, performs no broad cleanup, and leaves gameplay/pathing/collisions/objectives/AI/saves/stable IDs unchanged.
 
-The next queued step is v0.191 only if v0.190 is committed, pushed, clean, synced, and remote-green and the queued v0.191 prompt prerequisites pass. The v0.190 readiness packet also includes a tracked future bridge-riverbank material opt-in prompt, but that prompt must not run unless it becomes the explicitly selected next milestone.
+The recommended next step is v0.192 bridge-riverbank material opt-in integration only if v0.191 is committed, pushed, clean, synced, remote-green, and a future explicit prompt authorizes that integration. The v0.192 prompt must add exactly one opt-in bridge-riverbank material slot, generate zero images, keep the default launcher procedural, preserve prior launchers, keep browser runtime untouched, and forbid broad stone replacement.
+
+New v0.191 docs:
+
+- `docs/V0191_POST_SHELL_FREEZE_SCORECARD.md`
+- `docs/V0191_CLEANUP_EXECUTION_DECISION.md`
+- `docs/art-prompts/V0192_01_RECOMMENDED_NEXT_PHASE.md`
+- `docs/V0191_IMPLEMENTATION_REPORT.md`
+
+Previous checkpoint reference: v0.190 Bridge-Riverbank Material Opt-In Integration Readiness Packet Only.
 
 New v0.190 docs:
 

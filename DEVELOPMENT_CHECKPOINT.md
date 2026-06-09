@@ -1,6 +1,38 @@
 # Development Checkpoint
 
-Updated: 2026-06-09 v0.190 Bridge-Riverbank Material Readiness Packet
+Updated: 2026-06-09 v0.191 Post-Shell-Freeze Scorecard
+
+## v0.191 Post-Shell-Freeze Next-Phase Scorecard And v0.192 Preparation Only - 2026-06-09
+
+Scope: documentation-only next-phase scorecard after v0.190. This checkpoint generates zero images, adds zero slots, modifies no runtime code, performs no cleanup deletion/archive move, keeps the default launcher procedural, preserves all prior opt-in launchers, keeps browser runtime untouched, keeps character integrations frozen, and leaves gameplay, pathing, collisions, objectives, AI, saves, stable IDs, production manifests, selected prior art, metadata, fallbacks, and required evidence unchanged.
+
+Included work:
+
+- Prepared `docs/V0191_POST_SHELL_FREEZE_SCORECARD.md`.
+- Prepared `docs/V0191_CLEANUP_EXECUTION_DECISION.md`.
+- Prepared the tracked future prompt `docs/art-prompts/V0192_01_RECOMMENDED_NEXT_PHASE.md`.
+- Produced `docs/V0191_IMPLEMENTATION_REPORT.md`.
+- Updated the handoff, roadmap, checkpoint, changelog, release checklist, and Salto experimental artifact index docs.
+
+Scorecard decision:
+
+- Recommended exactly one v0.192 milestone: bridge-riverbank material opt-in integration.
+- Selected candidate: `BRIDGE_RIVERBANK_MATERIAL_LOCAL_1024`.
+- Selected SHA: `638ce153d7a3d39db729dfa13ba05f3fb05c437c2802ab91b5cd248bd2036753`.
+- Cleanup decision: do not execute archive-first cleanup in v0.192.
+
+Verification targets:
+
+```text
+PASS: docs existence checks for the four v0.191 deliverables.
+PASS: npm run godot:validate:salto-experimental-artifact-retention.
+PASS: npm run godot:cleanup:salto-experimental-artifacts -- --output-root=artifacts/desktop-spikes/godot-salto/v0191/cleanup-dry-run.
+PASS: npm run validate:content.
+PASS: npm run validate:art-intake.
+PASS: npm run validate:runtime-art-slots.
+PASS: isolation scans for zero images, zero slots, no runtime code changes, no launcher mutation, no browser wiring, no cleanup deletion/archive move, and no gameplay/pathing/collision/objective/AI/save/stable-ID mutation.
+PASS: git diff --check.
+```
 
 ## v0.190 Bridge-Riverbank Material Opt-In Integration Readiness Packet Only - 2026-06-09
 

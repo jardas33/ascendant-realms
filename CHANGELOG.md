@@ -1,5 +1,29 @@
 # Changelog
 
+# v0.191 Post-Shell-Freeze Next-Phase Scorecard And v0.192 Preparation Only - 2026-06-09
+
+This checkpoint prepares a documentation-only post-shell-freeze next-phase scorecard after v0.190. It generates zero images, adds zero slots, modifies no runtime code, performs no broad cleanup, keeps the default launcher procedural, preserves all prior launchers, keeps the browser runtime untouched, recommends exactly one v0.192 milestone, and stops before v0.192.
+
+Added:
+
+- `docs/V0191_POST_SHELL_FREEZE_SCORECARD.md`.
+- `docs/V0191_CLEANUP_EXECUTION_DECISION.md`.
+- `docs/art-prompts/V0192_01_RECOMMENDED_NEXT_PHASE.md`.
+- `docs/V0191_IMPLEMENTATION_REPORT.md`.
+
+Validation:
+
+- Recommended v0.192: bridge-riverbank material opt-in integration.
+- Selected SHA `638ce153d7a3d39db729dfa13ba05f3fb05c437c2802ab91b5cd248bd2036753`.
+- Cleanup decision: no archive-first cleanup execution in v0.192.
+
+Boundaries:
+
+- Zero images generated.
+- Zero slots added.
+- No runtime code, launcher, browser runtime, gameplay, pathing, collisions, objectives, AI, saves, stable IDs, production manifests, selected prior art, metadata, fallbacks, or required evidence changed.
+- v0.192 was prepared as a tracked prompt but not started.
+
 # v0.190 Bridge-Riverbank Material Opt-In Integration Readiness Packet Only - 2026-06-09
 
 This checkpoint prepares a documentation-only readiness packet for a future bridge-riverbank material opt-in integration after v0.189. It generates zero images, adds zero slots, modifies no runtime code, deletes no historical evidence, keeps the default launcher procedural, preserves all prior launchers, keeps the browser runtime untouched, and stops before v0.191.

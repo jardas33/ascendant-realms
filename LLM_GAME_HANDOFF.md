@@ -1,6 +1,6 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-06-09 v0.190 Bridge-Riverbank Material Readiness Packet
+Last updated: 2026-06-09 v0.191 Post-Shell-Freeze Scorecard
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
@@ -80,11 +80,31 @@ Project Identity continuation note: v0.189 now supersedes the older no-v0.189 ta
 
 Project Identity continuation note: v0.190 now supersedes the older no-v0.190 tail above because the queued prompt explicitly authorized documentation-only bridge-riverbank material opt-in readiness work after v0.189 was committed, pushed, clean, synced, and remote-green. v0.190 generates zero images, adds zero slots, modifies no runtime code, prepares one constrained future bridge-riverbank material opt-in contract using `BRIDGE_RIVERBANK_MATERIAL_LOCAL_1024`, forbids broad stone replacement, and stops before v0.191.
 
-Current status override: v0.190 Bridge-Riverbank Material Readiness Packet is the active checkpoint for this handoff. Character-slot integration remains frozen after five selected opt-in slots. The Barrosan foothold ground and road materials remain opt-in only, the default launcher remains procedural, browser runtime remains untouched, and the selected bridge-riverbank material remains private-comparator-only unless a future explicitly selected integration prompt passes. Do not begin v0.191 unless v0.190 is committed, pushed, clean, synced, and remote-green and the next queued prompt prerequisites pass.
+Project Identity continuation note: v0.191 now supersedes the older no-v0.191 tail above because the queued prompt explicitly authorized a documentation-only post-shell-freeze next-phase scorecard after v0.190 was committed, pushed, clean, synced, and remote-green. v0.191 generates zero images, adds zero slots, modifies no runtime code, performs no broad cleanup, recommends exactly one v0.192 milestone, prepares `docs/art-prompts/V0192_01_RECOMMENDED_NEXT_PHASE.md`, and stops before v0.192.
+
+Current status override: v0.191 Post-Shell-Freeze Scorecard is the active checkpoint for this handoff. Character-slot integration remains frozen after five selected opt-in slots. The Barrosan foothold ground and road materials remain opt-in only, the default launcher remains procedural, browser runtime remains untouched, and the selected bridge-riverbank material remains private-comparator-only unless a future explicitly selected integration prompt passes. Do not begin v0.192 unless v0.191 is committed, pushed, clean, synced, and remote-green and the next queued prompt prerequisites pass.
+
+## Current v0.191 Post-Shell-Freeze Scorecard - 2026-06-09
+
+Status: v0.191 documentation-only post-shell-freeze scorecard is the active checkpoint. Commit, push, and remote CI proof are required before any future v0.192 work.
+
+Key evidence:
+
+- `docs/V0191_POST_SHELL_FREEZE_SCORECARD.md`
+- `docs/V0191_CLEANUP_EXECUTION_DECISION.md`
+- `docs/art-prompts/V0192_01_RECOMMENDED_NEXT_PHASE.md`
+- `docs/V0191_IMPLEMENTATION_REPORT.md`
+- Recommended v0.192: bridge-riverbank material opt-in integration.
+- Selected derivative SHA `638ce153d7a3d39db729dfa13ba05f3fb05c437c2802ab91b5cd248bd2036753`.
+- Source SHA `342d058f4749e115569a82bf971bb409ccd63825f93b7428d346150ebd9d003a`.
+- Cleanup decision: do not execute archive-first cleanup in v0.192.
+- Cleanup dry-run evidence path: `artifacts/desktop-spikes/godot-salto/v0191/cleanup-dry-run/`.
+
+Next boundary: v0.192 may only start from clean, synced, pushed, remote-green v0.191 state if an explicit prompt authorizes it. The recommended v0.192 must generate zero images, add exactly one opt-in bridge-riverbank material slot, preserve the default procedural launcher and all prior launchers, keep browser runtime untouched, forbid broad stone replacement, preserve selected local art/metadata/fallbacks/evidence, and avoid gameplay/pathing/collisions/objectives/AI/saves/stable-ID mutation.
 
 ## Current v0.190 Bridge-Riverbank Material Readiness Packet - 2026-06-09
 
-Status: v0.190 documentation-only bridge-riverbank material readiness packet is the active checkpoint. Commit, push, and remote CI proof are required before any queued v0.191 work.
+Status: previous v0.190 documentation-only bridge-riverbank material readiness packet. It is superseded by the active v0.191 section above.
 
 Key evidence:
 
