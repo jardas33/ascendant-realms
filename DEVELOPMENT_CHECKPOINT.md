@@ -1,6 +1,33 @@
 # Development Checkpoint
 
-Updated: 2026-06-08 v0.181 Road-Material Opt-In Player-Slice Integration Experiment Stop
+Updated: 2026-06-09 v0.182 Environment-Foundation Visual-Cohesion QA Cleanup Freeze Stop
+
+## v0.182 Environment-Foundation Visual-Cohesion QA Cleanup Freeze Stop - 2026-06-09
+
+Scope: bounded QA, cleanup packet, and freeze decision for the current Godot Salto five-slot plus ground+road environment-material opt-in posture. This checkpoint generates zero images, adds zero slots, changes no code or launchers, preserves the default procedural launcher, keeps browser runtime untouched, and freezes further environment-material additions until Emmanuel review.
+
+Included work:
+
+- Reran the existing ground+road opt-in validation stack after v0.181.
+- Reviewed default procedural and explicit ground+road opt-in paths with Windows-side Computer Use.
+- Confirmed title, briefing, battle start, Aster selection, move order, conversion onset, pan/zoom, HUD, minimap, road/river/bridge hierarchy, and fallback evidence.
+- Ran broad artifact inventory, targeted cleanup dry-run, safe-only sidecar cleanup, and retention validation after cleanup.
+- Produced v0.182 visual-cohesion QA, cleanup freeze packet, and implementation report docs.
+
+Verification targets:
+
+```text
+PASS: npm run godot:validate:salto-ground-road-material-opt-in.
+PASS: PASS_V0181_ROAD_MATERIAL_OPT_IN_VALIDATION.
+PASS: PASS_V0181_ROAD_MATERIAL_OPT_IN_CAPTURE.
+PASS: PASS_V0181_ROAD_MATERIAL_OPT_IN_BENCHMARK.
+PASS: PASS_V0181_ROAD_MATERIAL_OPT_IN_BOUNDARY.
+PASS: ground+road FPS ratio 1.0032 and p95 worsening -2.92%.
+PASS: cleanup dry-run found 18 known sidecars and 0 unknown cleanup-scope files.
+PASS: safe-only cleanup deleted exactly 18 known sidecars / 7719 bytes.
+PASS: retention after cleanup reported PASS_V0167_SALTO_EXPERIMENTAL_ARTIFACT_RETENTION and 0 unknown sidecars.
+PASS: zero images, zero slots, default procedural preserved, no browser/save/stable-ID/gameplay mutation.
+```
 
 ## v0.181 Road-Material Opt-In Player-Slice Integration Experiment Stop - 2026-06-08
 

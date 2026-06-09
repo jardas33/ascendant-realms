@@ -1,7 +1,62 @@
-# v0.18.2 Worker Construction Expansion Implementation Report
+# v0.182 Implementation Report
+
+Status: `PASS_V0182_ENVIRONMENT_FOUNDATION_FREEZE_STOP`
+
+v0.182 performed a doc-and-evidence-only environment-foundation review. It generated zero images, added zero slots, changed no code, changed no launcher behavior, preserved the default procedural path, kept browser runtime untouched, and left character-slot integration frozen.
+
+## Completed Work
+
+- Verified v0.181 was the clean/synced starting checkpoint.
+- Reran `npm run godot:validate:salto-ground-road-material-opt-in`.
+- Reviewed the default packaged executable and the explicit ground+road opt-in launcher using Windows-side Computer Use.
+- Exercised title, briefing, battle start, Aster selection, move order, conversion onset, pan/zoom, HUD, minimap, and opt-in road/river/bridge readability.
+- Ran broad artifact inventory, targeted cleanup dry-run, safe-only sidecar cleanup, and retention validation after cleanup.
+- Updated the Salto retention index, checkpoint, changelog, and release checklist.
+
+## Verification
+
+```text
+PASS: git log -1 matched Checkpoint v0.181 Salto road-material opt-in player-slice integration experiment and human-review stop.
+PASS: HEAD...@{u} = 0 0 before work.
+PASS: git status --short --untracked-files=all was clean before work.
+PASS: npm run godot:validate:salto-ground-road-material-opt-in.
+PASS: PASS_V0181_ROAD_MATERIAL_OPT_IN_VALIDATION.
+PASS: PASS_V0181_ROAD_MATERIAL_OPT_IN_CAPTURE.
+PASS: PASS_V0181_ROAD_MATERIAL_OPT_IN_BENCHMARK.
+PASS: PASS_V0181_ROAD_MATERIAL_OPT_IN_BOUNDARY.
+PASS: Windows-side Computer Use default procedural comparison.
+PASS: Windows-side Computer Use ground+road opt-in review and real-input smoke.
+PASS: node scripts/auditSaltoExperimentalArtifacts.mjs --output-root=artifacts/desktop-spikes/godot-salto/v0182/artifact-inventory.
+PASS: node scripts/cleanupSaltoExperimentalArtifacts.mjs --output-root=artifacts/desktop-spikes/godot-salto/v0182/cleanup-dry-run.
+PASS: node scripts/cleanupSaltoExperimentalArtifacts.mjs --apply-safe-only --output-root=artifacts/desktop-spikes/godot-salto/v0182/safe-only-cleanup.
+PASS: node scripts/validateSaltoExperimentalArtifactRetention.mjs --output-root=artifacts/desktop-spikes/godot-salto/v0182/artifact-retention-after-cleanup.
+```
+
+## Boundary Audit
+
+- AI images generated: `0`.
+- Character slots added: `0`.
+- Environment-material slots added: `0`.
+- Default launcher procedural: yes.
+- Experimental art enabled by default: no.
+- Prior launchers preserved: yes.
+- Browser runtime touched: no.
+- Saves, stable IDs, gameplay, pathing, objectives, balance, campaign state touched: no.
+- Cleanup deleted only positively identified Godot-generated sidecars.
+- v0.183 not started inside this checkpoint.
+
+## Human Review Note
+
+The visual foundation is coherent enough for the current review slice, but still has visible prototype debt: blocky structures, simplified terrain blocks, and non-final world-shell presentation. That debt should be addressed through a future bounded environment-art pass, not by expanding material slots during this freeze.
+
+---
+
+# Historical v0.18.2 Worker Construction Expansion Implementation Report
 
 Date: 2026-05-23
 Status: implementation, local verification, clean package, and GitHub Actions push closeout complete
+
+This historical section is preserved because `docs/V0182_IMPLEMENTATION_REPORT.md` already existed for the earlier `v0.18.2` Worker Construction Expansion checkpoint before the later Salto `v0.182` environment-freeze queue reused the same filename.
 
 ## Baseline
 

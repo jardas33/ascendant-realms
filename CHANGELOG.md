@@ -1,5 +1,31 @@
 # Changelog
 
+# v0.182 Environment-Foundation Visual-Cohesion QA Cleanup Freeze Stop - 2026-06-09
+
+This checkpoint reviews and freezes the current Godot Salto environment-material posture after v0.181. It adds no images, slots, runtime wiring, or launcher behavior. It confirms the default path remains procedural, reruns the ground+road validation stack, performs Windows-side visual QA, executes safe-only sidecar cleanup, and records that further environment-material additions are frozen until Emmanuel review.
+
+Added:
+
+- `docs/V0182_ENVIRONMENT_FOUNDATION_VISUAL_COHESION_QA.md`.
+- `docs/V0182_ENVIRONMENT_CLEANUP_FREEZE_PACKET.md`.
+- v0.182 ignored cleanup and retention evidence under `artifacts/desktop-spikes/godot-salto/v0182/`.
+
+Changed:
+
+- Updated the Salto experimental artifact index to `ACTIVE_V0182_RETENTION_INDEX`.
+- Updated `docs/V0182_IMPLEMENTATION_REPORT.md` with the Salto v0.182 report while preserving its historical v0.18.2 Worker Construction content.
+- Updated checkpoint and release checklist documentation for the environment-foundation freeze gate.
+
+Boundaries:
+
+- Zero images generated.
+- Zero character slots added.
+- Zero environment-material slots added.
+- Default launcher remains procedural.
+- Prior opt-in launchers remain preserved.
+- Browser runtime, production manifests, saves, stable IDs, gameplay, pathing, objectives, AI, balance, campaign state, and broad historical evidence remain untouched.
+- v0.183 is not started inside this checkpoint.
+
 # v0.181 Road-Material Opt-In Player-Slice Integration Experiment And Human-Review Stop - 2026-06-08
 
 This checkpoint integrates exactly one Barrosan foothold road-material environment slot into the Godot Salto player-slice review path behind explicit opt-in only. It uses the selected v0.180 `ROAD_MATERIAL_LOCAL_1024` derivative, proves missing-art and hash-mismatch fallback while preserving ground and character slots, benchmarks against the ground-only posture, and keeps v0.182 unstarted.
