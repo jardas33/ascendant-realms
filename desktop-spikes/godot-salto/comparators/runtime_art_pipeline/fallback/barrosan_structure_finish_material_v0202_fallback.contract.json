@@ -1,0 +1,51 @@
+{
+  "approach": "STRUCTURE_FINISH_MATERIAL_DIAGNOSTIC_FALLBACK",
+  "browserIntegration": "forbidden",
+  "checkpoint": "v0.202",
+  "colorStats": {
+    "granitePixelRatio": 0.6363,
+    "lumaMean": 73.12,
+    "lumaStdDev": 16.94,
+    "mossGrassPixelRatio": 0.0906
+  },
+  "defaultLauncherChanged": false,
+  "derivativeKey": "fallback",
+  "derivativeOperations": [
+    "deterministic diagnostic structure-finish structure-finish fallback generated from integer noise"
+  ],
+  "dimensions": {
+    "height": 512,
+    "width": 512
+  },
+  "fileName": "desktop-spikes/godot-salto/comparators/runtime_art_pipeline/fallback/barrosan_structure_finish_material_v0202_fallback.png",
+  "filterMode": "linear with mipmaps in private Godot comparator",
+  "generatedImageCountForV0202": 1,
+  "generationPrompt": "deterministic procedural diagnostic fallback",
+  "playerSliceIntegration": "forbidden",
+  "privateComparatorOnly": true,
+  "productionApproval": "forbidden",
+  "repetitionAnalysis": {
+    "noLargeLandmark": true,
+    "restrainedAtRtsDistance": true
+  },
+  "runtimeArtSlotAdded": false,
+  "schemaVersion": 1,
+  "seamAnalysis": {
+    "acceptableAtRtsDistance": true,
+    "meanOpposingEdgeDelta": 31.14
+  },
+  "sha256": "0a2e9bb0b94f544b183f49cf7a5f2a213768a5bca9a2c76192db9bb982b36ef2",
+  "slotId": "barrosan_structure_finish_material_v0202",
+  "sourceHash": "not-applicable",
+  "styleAnalysis": {
+    "approvedEnvironmentDirection": true,
+    "distinctFromGroundAndRoad": true,
+    "distinctFromRiverbankStone": true,
+    "noCharactersHudBuildingsText": true,
+    "practicalTimberWetGraniteStructureFinish": true,
+    "suitableForFutureStructureShells": true,
+    "wetBarrosanFoothold": true
+  },
+  "tilingMode": "repeat comparator material",
+  "uvScale": 0.7
+}

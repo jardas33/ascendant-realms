@@ -1,12 +1,12 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-06-10 v0.201 Godot Salto mesh-compositor full cohesion QA cleanup runtime freeze
+Last updated: 2026-06-10 v0.202 Barrosan structure-finish material private comparator intake
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
 ## Current Continuation Note
 
-The latest work is v0.201 Godot Salto mesh-compositor full cohesion QA, cleanup packet, and runtime-freeze stop. It changes no runtime code, generates zero images, adds zero imported art slots, preserves default and prior launchers, keeps the browser runtime untouched, keeps character-slot integrations frozen, validates the existing v0.200 final shell-v2 mesh-compositor posture through Windows-side QA, safely removes only known Godot-generated sidecars, and selects exactly `one structure-finish material private comparator` as the only conditional next queued step.
+The latest work is v0.202 Barrosan structure-finish material private-comparator intake. It generates exactly one original local structure-finish material source, selects the 1024 derivative for private evidence, adds a tracked diagnostic fallback and isolated private comparator, preserves default and prior launchers, keeps browser runtime untouched, keeps character-slot integrations frozen, integrates nothing into the normal player slice, and stops before v0.203.
 
 ## Project Identity
 
@@ -108,7 +108,37 @@ Project Identity continuation note: v0.200 now supersedes the older no-v0.200 ta
 
 Project Identity continuation note: v0.201 now supersedes the older no-v0.201 tail above because the queued prompt explicitly authorized full mesh-compositor cohesion QA, cleanup packet, and runtime-freeze work after v0.200 was committed, pushed, clean, synced, and remote-green. v0.201 generates zero images, adds zero imported art slots, changes no runtime code, preserves all launchers, keeps browser runtime untouched, validates the current player-facing Godot Salto review posture, safely removes only known Godot-generated sidecars, exports the compact manual-review PNG pack under `artifacts/manual-review/v0201-final-cohesion/`, and authorizes only the conditional next step `one structure-finish material private comparator`.
 
-Current status override: v0.201 Godot Salto mesh-compositor full cohesion QA cleanup runtime freeze is the active handoff layer on top of the v0.200 grounding-lighting path. Character-slot integration remains frozen after five selected opt-in slots. The Barrosan foothold ground and road materials remain opt-in only, the default launcher remains procedural, browser runtime remains untouched, and the selected bridge-riverbank material remains scoped to bridge abutments, bridge landing aprons, and short riverbank retaining edges only. Continue to v0.202 only if the queued prompt sequence is still explicitly active, v0.201 is clean, pushed, synced, remote-green, and the v0.202 prompt remains exactly the conditional structure-finish private comparator.
+Project Identity continuation note: v0.202 now supersedes the older no-v0.202 tail above because the queued prompt explicitly authorized exactly one conditional private-comparator Barrosan structure-finish material intake after v0.201 selected that exact next step. v0.202 generates exactly one original local source image, selects `STRUCTURE_FINISH_MATERIAL_LOCAL_1024`, adds tracked fallback/comparator evidence, remains private-comparator-only, integrates nothing into the normal Salto player slice, and stops before v0.203.
+
+Current status override: v0.202 Barrosan structure-finish material private-comparator intake is the active handoff layer. Character-slot integration remains frozen after five selected opt-in slots. The Barrosan foothold ground and road materials remain opt-in only, the default launcher remains procedural, browser runtime remains untouched, and the selected bridge-riverbank material remains scoped to bridge abutments, bridge landing aprons, and short riverbank retaining edges only. Do not continue to v0.203 without explicit human instruction.
+
+## Current v0.202 Structure-Finish Material Private Comparator - 2026-06-10
+
+Status: v0.202 private-comparator-only intake is the active checkpoint. It adds no player-facing integration.
+
+Key files:
+
+- `tools/godot/structureFinishMaterialSingleSlotTool.mjs`
+- `desktop-spikes/godot-salto/comparators/runtime_art_pipeline/structure_finish_material_single_slot_comparator.gd`
+- `desktop-spikes/godot-salto/comparators/runtime_art_pipeline/fallback/barrosan_structure_finish_material_v0202_fallback.png`
+- `docs/V0202_STRUCTURE_FINISH_COMPARATOR_QA_BENCHMARK.md`
+- `docs/V0202_PRIVATE_COMPARATOR_BOUNDARY_ROLLBACK.md`
+- `docs/V0202_IMPLEMENTATION_REPORT.md`
+
+Current decision:
+
+- Preserve the generated source and selected 1024 derivative in the ignored v0.202 local slot.
+- Keep `STRUCTURE_FINISH_MATERIAL_LOCAL_1024` private-comparator-only.
+- Do not integrate this material into the player-facing slice.
+- Stop before v0.203.
+- Keep gameplay, pathing, collisions, objectives, AI, saves, stable IDs, default launcher, prior launchers, and browser runtime unchanged.
+
+Validation evidence:
+
+- `PASS_V0202_STRUCTURE_FINISH_MATERIAL_SELECTION_GATE`
+- `PASS_V0202_STRUCTURE_FINISH_MATERIAL_FAIR_PATH_AUDIT`
+- `PASS_V0202_STRUCTURE_FINISH_MATERIAL_BOUNDARY`
+- Manual-review evidence under `artifacts/manual-review/v0202-structure-finish-material/`.
 
 ## Current v0.201 Full Cohesion QA Cleanup Runtime Freeze - 2026-06-10
 

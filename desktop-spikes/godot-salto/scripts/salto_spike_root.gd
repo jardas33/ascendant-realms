@@ -104,6 +104,7 @@ const SCRIPT_ARG_PREFIXES := [
 	"--barrosan-ground-material-single-slot",
 	"--barrosan-road-material-single-slot",
 	"--barrosan-bridge-riverbank-material-single-slot",
+	"--barrosan-structure-finish-material-single-slot",
 	"--aster-billboard-single-slot-repair",
 	"--hybrid-three-slot-composition-stress",
 	"--militia-billboard-single-slot",
@@ -436,6 +437,47 @@ func _ready() -> void:
 			get_tree().quit(1)
 			return
 		bridge_riverbank_material.call("start")
+		return
+	if args.has("--barrosan-structure-finish-material-single-slot"):
+		_write_absolute_json(_path_join(_artifact_root_from_args(), "structure-finish-material-root-dispatch.json"), {
+			"schemaVersion": 1,
+			"checkpoint": "v0.202",
+			"status": "PASS_V0202_PRIVATE_STRUCTURE_FINISH_MATERIAL_DISPATCH",
+			"args": Array(args),
+			"defaultPlayerSliceLaunched": false,
+			"playerSliceIntegration": "forbidden",
+			"runtimeArtSlotAdded": false
+		})
+		var structure_finish_material_script := load("res://comparators/runtime_art_pipeline/structure_finish_material_single_slot_comparator.gd") as GDScript
+		if structure_finish_material_script == null:
+			_write_absolute_json(_path_join(_artifact_root_from_args(), "structure-finish-material-dispatch-failure.json"), {
+				"schemaVersion": 1,
+				"checkpoint": "v0.202",
+				"status": "FAIL_V0202_PRIVATE_STRUCTURE_FINISH_MATERIAL_SCRIPT_LOAD",
+				"script": "res://comparators/runtime_art_pipeline/structure_finish_material_single_slot_comparator.gd"
+			})
+			get_tree().quit(1)
+			return
+		var structure_finish_material := Node.new()
+		structure_finish_material.name = "V0202StructureFinishMaterialSingleSlotComparator"
+		structure_finish_material.set_script(structure_finish_material_script)
+		add_child(structure_finish_material)
+		_write_absolute_json(_path_join(_artifact_root_from_args(), "structure-finish-material-dispatch-prestart.json"), {
+			"schemaVersion": 1,
+			"checkpoint": "v0.202",
+			"status": "PASS_V0202_PRIVATE_STRUCTURE_FINISH_MATERIAL_PRESTART",
+			"hasStart": structure_finish_material.has_method("start")
+		})
+		if not structure_finish_material.has_method("start"):
+			_write_absolute_json(_path_join(_artifact_root_from_args(), "structure-finish-material-dispatch-failure.json"), {
+				"schemaVersion": 1,
+				"checkpoint": "v0.202",
+				"status": "FAIL_V0202_PRIVATE_STRUCTURE_FINISH_MATERIAL_START_METHOD",
+				"script": "res://comparators/runtime_art_pipeline/structure_finish_material_single_slot_comparator.gd"
+			})
+			get_tree().quit(1)
+			return
+		structure_finish_material.call("start")
 		return
 	if args.has("--aster-billboard-single-slot-repair"):
 		_write_absolute_json(_path_join(_artifact_root_from_args(), "aster-billboard-repair-root-dispatch.json"), {

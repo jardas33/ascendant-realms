@@ -1,10 +1,10 @@
 # Salto Experimental Artifact Index
 
-Status: `ACTIVE_V0201_RETENTION_INDEX`
+Status: `ACTIVE_V0202_RETENTION_INDEX`
 
 This index is the retention source of truth for the Godot Salto experimental-art path. It protects selected local art, active derivatives, metadata, tracked fallbacks, current evidence, and unknown files from broad cleanup.
 
-This v0.201 index supersedes `ACTIVE_V0200_RETENTION_INDEX`, `ACTIVE_V0199_RETENTION_INDEX`, `ACTIVE_V0198_RETENTION_INDEX`, `ACTIVE_V0197_RETENTION_INDEX`, `ACTIVE_V0196_RETENTION_INDEX`, `ACTIVE_V0195_RETENTION_INDEX`, `ACTIVE_V0194_RETENTION_INDEX`, `ACTIVE_V0193_RETENTION_INDEX`, `ACTIVE_V0192_RETENTION_INDEX`, `ACTIVE_V0191_RETENTION_INDEX`, `ACTIVE_V0190_RETENTION_INDEX`, `ACTIVE_V0189_RETENTION_INDEX`, `ACTIVE_V0188_RETENTION_INDEX`, `ACTIVE_V0187_RETENTION_INDEX`, `ACTIVE_V0186_RETENTION_INDEX`, `ACTIVE_V0185_RETENTION_INDEX`, `ACTIVE_V0184_RETENTION_INDEX`, `ACTIVE_V0183_RETENTION_INDEX`, `ACTIVE_V0182_RETENTION_INDEX`, `ACTIVE_V0181_RETENTION_INDEX`, `ACTIVE_V0180_RETENTION_INDEX`, `ACTIVE_V0179_RETENTION_INDEX`, `ACTIVE_V0178_RETENTION_INDEX`, `ACTIVE_V0177_RETENTION_INDEX`, `ACTIVE_V0176_RETENTION_INDEX`, `ACTIVE_V0175_RETENTION_INDEX`, `ACTIVE_V0174_RETENTION_INDEX`, `ACTIVE_V0173_RETENTION_INDEX`, `ACTIVE_V0172_RETENTION_INDEX`, `ACTIVE_V0171_RETENTION_INDEX`, and `ACTIVE_V0170_RETENTION_INDEX` while retaining their protected evidence.
+This v0.202 index supersedes `ACTIVE_V0201_RETENTION_INDEX`, `ACTIVE_V0200_RETENTION_INDEX`, `ACTIVE_V0199_RETENTION_INDEX`, `ACTIVE_V0198_RETENTION_INDEX`, `ACTIVE_V0197_RETENTION_INDEX`, `ACTIVE_V0196_RETENTION_INDEX`, `ACTIVE_V0195_RETENTION_INDEX`, `ACTIVE_V0194_RETENTION_INDEX`, `ACTIVE_V0193_RETENTION_INDEX`, `ACTIVE_V0192_RETENTION_INDEX`, `ACTIVE_V0191_RETENTION_INDEX`, `ACTIVE_V0190_RETENTION_INDEX`, `ACTIVE_V0189_RETENTION_INDEX`, `ACTIVE_V0188_RETENTION_INDEX`, `ACTIVE_V0187_RETENTION_INDEX`, `ACTIVE_V0186_RETENTION_INDEX`, `ACTIVE_V0185_RETENTION_INDEX`, `ACTIVE_V0184_RETENTION_INDEX`, `ACTIVE_V0183_RETENTION_INDEX`, `ACTIVE_V0182_RETENTION_INDEX`, `ACTIVE_V0181_RETENTION_INDEX`, `ACTIVE_V0180_RETENTION_INDEX`, `ACTIVE_V0179_RETENTION_INDEX`, `ACTIVE_V0178_RETENTION_INDEX`, `ACTIVE_V0177_RETENTION_INDEX`, `ACTIVE_V0176_RETENTION_INDEX`, `ACTIVE_V0175_RETENTION_INDEX`, `ACTIVE_V0174_RETENTION_INDEX`, `ACTIVE_V0173_RETENTION_INDEX`, `ACTIVE_V0172_RETENTION_INDEX`, `ACTIVE_V0171_RETENTION_INDEX`, and `ACTIVE_V0170_RETENTION_INDEX` while retaining their protected evidence.
 
 ## Selected Local Source Art And Active Derivatives
 
@@ -18,6 +18,7 @@ This v0.201 index supersedes `ACTIVE_V0200_RETENTION_INDEX`, `ACTIVE_V0199_RETEN
 | Barrosan foothold ground material | active normal-slice environment-material opt-in; not enabled by default | `artifacts/desktop-spikes/godot-salto/v0175/local-ground-material-slot/barrosan_foothold_ground_material_v0175_1024.png` | `818b7743fbf192fe95dd95a0fbadb59ea92b1cb36c420dac5526c0f4d1af18a8` |
 | Barrosan foothold road material | active normal-slice environment-material opt-in; not enabled by default | `artifacts/desktop-spikes/godot-salto/v0180/local-road-material-slot/barrosan_foothold_road_material_v0180_1024.png` | `a64959ef2fd7a509fcaaa969fca3e095d590d563a4f0c578a5e96d1fb04c0e10` |
 | Barrosan wet-granite bridge-riverbank material | active isolated shell-v2 mesh-compositor opt-in for bridge abutments and riverbank retaining edges only; not enabled by default | `artifacts/desktop-spikes/godot-salto/v0189/local-bridge-riverbank-material-slot/barrosan_wet_granite_bridge_riverbank_material_v0189_1024.png` | `638ce153d7a3d39db729dfa13ba05f3fb05c437c2802ab91b5cd248bd2036753` |
+| Barrosan structure-finish material | selected private-comparator-only source and derivative; not integrated into player slice | `artifacts/desktop-spikes/godot-salto/v0202/local-structure-finish-material-slot/barrosan_structure_finish_material_v0202_1024.png` | `94d4975f9e6f13453103439135da930b74d1d66b56d2b10e43219de408f508ef` |
 
 ## Required Metadata
 
@@ -25,7 +26,7 @@ Retain the matching `.metadata.json` files beside each selected derivative above
 
 ## Tracked Fallbacks
 
-Retain all tracked fallback `.png` and `.contract.json` files under `desktop-spikes/godot-salto/comparators/runtime_art_pipeline/fallback/` for Worker, Barracks, Militia, Aster, Ashen Raider, the v0.175 private Barrosan foothold ground-material comparator, the v0.180 private Barrosan foothold road-material comparator, and the v0.189 private Barrosan wet-granite bridge-riverbank material comparator.
+Retain all tracked fallback `.png` and `.contract.json` files under `desktop-spikes/godot-salto/comparators/runtime_art_pipeline/fallback/` for Worker, Barracks, Militia, Aster, Ashen Raider, the v0.175 private Barrosan foothold ground-material comparator, the v0.180 private Barrosan foothold road-material comparator, the v0.189 private Barrosan wet-granite bridge-riverbank material comparator, and the v0.202 private Barrosan structure-finish material comparator.
 
 ## Latest Required Evidence
 
@@ -300,10 +301,16 @@ Retain the latest v0.166/v0.167/v0.168/v0.169/v0.170 evidence until a later chec
 - `docs/V0201_CLEANUP_RUNTIME_FREEZE_PACKET.md`
 - `docs/V0201_NEXT_STEP_SCORECARD.md`
 - `docs/V0201_IMPLEMENTATION_REPORT.md`
+- `artifacts/desktop-spikes/godot-salto/v0202/local-structure-finish-material-slot/`
+- `artifacts/desktop-spikes/godot-salto/v0202/evidence/`
+- `artifacts/manual-review/v0202-structure-finish-material/`
+- `docs/V0202_STRUCTURE_FINISH_COMPARATOR_QA_BENCHMARK.md`
+- `docs/V0202_PRIVATE_COMPARATOR_BOUNDARY_ROLLBACK.md`
+- `docs/V0202_IMPLEMENTATION_REPORT.md`
 
 ## Character Integration Freeze
 
-Character-slot expansion is frozen after the selected Worker, Barracks material, Militia, Aster, and Ashen Raider opt-in slots. v0.201 changes no runtime code, generates zero images, adds zero slots, and freezes further runtime visual work for Emmanuel review after validating the existing v0.200 final shell-v2 mesh-compositor posture. The existing Barrosan foothold ground-material opt-in slot, Barrosan foothold road-material opt-in slot, and scoped v0.198 wet-granite bridge-riverbank shell-v2 mesh opt-in remain behind their prior explicit launchers only. The v0.201 scorecard authorizes only the conditional next step `one structure-finish material private comparator` if the queued v0.202 prompt independently passes. No water shader pipeline is added, the default launcher remains procedural, browser runtime remains untouched, and the legacy shell is preserved as comparator/fallback.
+Character-slot expansion is frozen after the selected Worker, Barracks material, Militia, Aster, and Ashen Raider opt-in slots. v0.202 adds one private-comparator-only structure-finish material source, selected derivative, tracked fallback, and comparator path. It does not integrate the material into the normal player slice, does not add a runtime art slot, and does not begin v0.203. The existing Barrosan foothold ground-material opt-in slot, Barrosan foothold road-material opt-in slot, and scoped v0.198 wet-granite bridge-riverbank shell-v2 mesh opt-in remain behind their prior explicit launchers only. No water shader pipeline is added, the default launcher remains procedural, browser runtime remains untouched, and the legacy shell is preserved as comparator/fallback.
 
 ## Archive Candidates
 
@@ -320,4 +327,4 @@ Deletion requires the explicit safe-only cleanup path.
 
 ## Manual-Review Candidates And Unknown Files
 
-Unknown files are preserved and block cleanup. v0.201 cleanup evidence found `0` unknown blockers, preserved `749` manual-review candidates, and safely removed only `20` known Godot-generated sidecars. Broad deletion or archive moves are not authorized by this index.
+Unknown files are preserved and block cleanup. v0.202 adds selected private-comparator structure-finish evidence to the protected set. Broad deletion or archive moves are not authorized by this index.
