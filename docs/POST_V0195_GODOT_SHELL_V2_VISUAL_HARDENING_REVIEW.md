@@ -1,10 +1,10 @@
 # Post-v0.195 Godot Shell-V2 Visual Hardening Review
 
-Status: `PASS_POST_V0195_GODOT_SHELL_V2_VISUAL_HARDENING_REVIEW`
+Status: `PASS_POST_V0195_GODOT_SHELL_V2_CONTINUED_VISUAL_HARDENING_REVIEW`
 
 Date: 2026-06-09
 
-Scope: ad hoc visual-only review and hardening after the v0.195 human-quality concern. This is not v0.196. It keeps the work inside the existing isolated Godot Salto shell-v2 scoped-material recovery path and changes no gameplay, pathing, collisions, objectives, AI, saves, stable IDs, browser runtime, production manifests, default launcher, prior launcher, imported art slot, or generated image.
+Scope: continued ad hoc visual-only review and hardening after the v0.195 human-quality concern. This is not v0.196. It keeps the work inside the existing isolated Godot Salto shell-v2 scoped-material recovery path and changes no gameplay, pathing, collisions, objectives, AI, saves, stable IDs, browser runtime, production manifests, default launcher, prior launcher, imported art slot, or generated image.
 
 ## Repairs
 
@@ -13,6 +13,10 @@ Scope: ad hoc visual-only review and hardening after the v0.195 human-quality co
 - Added small route-following road skins, ruts, crowns, approach gravel, and shoulders so the friendly road, bridge feed, and hostile road read as one connected route.
 - Broke up the large rectangular terrain-field read with narrow terrain value strips, edge feathering, and small mottle cues.
 - Added restrained river depth variation, broken bank lips, bank pebble runs, bridge plank lines, parapet shadows, ramp shadows, and structure contact shadows.
+- Continued pass: reduced the largest shell-v2 scoped ground material slabs so they read as local terrain zones over the coherent base instead of broad diagnostic pads.
+- Continued pass: added bridge cutwater shadows, abutment caps, bank foot stones, and eddy reads around the crossing.
+- Continued pass: flattened the shell-v2-only duplicate full-height structure base into a low foundation, letting the richer shell-v2 structure masses define the silhouette.
+- Continued pass: added command hall, enemy stronghold, ford toll, and generic site shell-v2 silhouette details without changing legacy/default structure rendering.
 
 ## Boundary
 
@@ -39,6 +43,7 @@ Scope: ad hoc visual-only review and hardening after the v0.195 human-quality co
 - `npx vitest run src/game/desktop-spike/GodotSaltoSpikeScaffold.test.ts`
 - `npm run build`
 - `git diff --check`
+- Computer Use note: the desktop helper timed out after the required retry/reset sequence in this run, so Windows-side review evidence was gathered through the deterministic Godot capture harness and direct screenshot inspection.
 
 Recommended screenshots for review:
 
@@ -49,4 +54,4 @@ Recommended screenshots for review:
 
 ## Human Review Note
 
-The result is still intentionally procedural and conservative, but it should now read less like stacked translucent rectangles and more like a coherent tactical shell: roads connect, the bridge has more grounding, the river/banks are less ruler-flat, and the character/structure framing has a little more depth. Further work should remain explicitly bounded and should not start v0.196 without a clean, synced, pushed, remote-green checkpoint and a new prompt.
+The result is still intentionally procedural and conservative, but it now reads less like stacked translucent rectangles and blunt placeholder blocks: roads connect, the bridge has stronger local grounding, the river/banks are less ruler-flat, and structure silhouettes no longer fight a duplicate full-height base primitive in shell v2. Further work should remain explicitly bounded and should not start v0.196 without a clean, synced, pushed, remote-green checkpoint and a new prompt.

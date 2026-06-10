@@ -2,13 +2,15 @@
 
 # Post-v0.195 Godot Shell-V2 Visual Hardening Review - 2026-06-09
 
-This ad hoc review pass responds to the Godot visual-quality concern without beginning v0.196. It changes only the isolated opt-in Salto shell-v2 scoped-material recovery presentation path. It generates zero images, adds zero art slots, keeps the v0.189 wet-granite bridge-riverbank material unintegrated, preserves the default procedural launcher and all prior launchers, keeps the browser runtime untouched, keeps character-slot integration frozen, and changes no gameplay, pathing, collisions, objectives, AI, saves, stable IDs, or production manifests.
+This continued ad hoc review pass responds to the Godot visual-quality concern without beginning v0.196. It changes only the isolated opt-in Salto shell-v2 scoped-material recovery presentation path. It generates zero images, adds zero art slots, keeps the v0.189 wet-granite bridge-riverbank material unintegrated, preserves the default procedural launcher and all prior launchers, keeps the browser runtime untouched, keeps character-slot integration frozen, and changes no gameplay, pathing, collisions, objectives, AI, saves, stable IDs, or production manifests.
 
 Changed:
 
 - Lowered the shell-v2 review camera angle to reduce the flat map-board read while preserving tactical readability.
 - Tuned ground and road material visibility so route hierarchy reads more clearly at review distance.
 - Added restrained terrain edge/mottle cues, route skins, ruts, shoulders, bridge gravel, river depth variation, bank lips, bridge deck details, and structure contact shadows inside shell v2.
+- Continued the shell-v2-only repair by shrinking the largest ground material slabs, adding crossing-local abutment/cutwater/bank-stone/eddy detail, and replacing duplicate full-height shell-v2 structure bases with low foundations.
+- Added shell-v2-specific command hall, enemy stronghold, ford toll, and generic site silhouette details while preserving legacy/default structure rendering.
 - Added `docs/POST_V0195_GODOT_SHELL_V2_VISUAL_HARDENING_REVIEW.md`.
 
 Validation:

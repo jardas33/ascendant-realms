@@ -1,16 +1,17 @@
 # Development Checkpoint
 
-Updated: 2026-06-09 post-v0.195 Godot Shell-V2 Visual Hardening Review
+Updated: 2026-06-09 continued post-v0.195 Godot Shell-V2 Visual Hardening Review
 
 ## Post-v0.195 Godot Shell-V2 Visual Hardening Review - 2026-06-09
 
-Scope: ad hoc visual-only hardening for the existing isolated opt-in Godot Salto shell-v2 scoped-material recovery path. This is not v0.196. It generates zero images, adds zero art slots, integrates no wet-granite bridge-riverbank material, keeps the default launcher procedural, preserves all prior launchers, keeps browser runtime untouched, keeps character integrations frozen, and leaves gameplay, pathing, collisions, objectives, AI, saves, stable IDs, production manifests, selected prior art, metadata, fallbacks, and required evidence unchanged.
+Scope: continued ad hoc visual-only hardening for the existing isolated opt-in Godot Salto shell-v2 scoped-material recovery path. This is not v0.196. It generates zero images, adds zero art slots, integrates no wet-granite bridge-riverbank material, keeps the default launcher procedural, preserves all prior launchers, keeps browser runtime untouched, keeps character integrations frozen, and leaves gameplay, pathing, collisions, objectives, AI, saves, stable IDs, production manifests, selected prior art, metadata, fallbacks, and required evidence unchanged.
 
 Included work:
 
 - Lowered the shell-v2-only review camera angle for more scene depth without changing any launcher.
 - Tuned the scoped ground and road material presentation for clearer road hierarchy.
 - Added restrained route skins, ruts, shoulders, bridge-approach gravel, terrain mottle strips, river depth variation, bank lips, bridge deck/parapet shadows, and structure contact shadows.
+- Continued the visual repair by reducing the largest shell-v2 scoped ground slabs, adding crossing-local abutment/cutwater/bank-stone/eddy details, flattening duplicate shell-v2 full-height structure bases into low foundations, and adding shell-v2-only command hall/stronghold/toll/site silhouette detail.
 - Added `docs/POST_V0195_GODOT_SHELL_V2_VISUAL_HARDENING_REVIEW.md`.
 
 Verification targets:

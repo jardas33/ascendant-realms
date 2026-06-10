@@ -5749,10 +5749,10 @@ func _create_presentation_shell_v2_terrain() -> bool:
 	if terrain_root == null:
 		presentation_shell_v2_fallback_reason = "missing terrain root"
 		return false
-	var ground_color := Color(0.25, 0.33, 0.23, 0.98)
-	var stage_color := Color(0.34, 0.43, 0.27, 0.86)
-	var hostile_color := Color(0.31, 0.23, 0.18, 0.82)
-	var edge_color := Color(0.12, 0.16, 0.10, 0.46)
+	var ground_color := Color(0.25, 0.33, 0.23, 0.72)
+	var stage_color := Color(0.34, 0.43, 0.27, 0.52)
+	var hostile_color := Color(0.31, 0.23, 0.18, 0.50)
+	var edge_color := Color(0.12, 0.16, 0.10, 0.42)
 	var road_color := Color(0.66, 0.57, 0.38, 0.98)
 	var road_shadow := Color(0.070, 0.060, 0.042, 0.66)
 	var water_core := Color(0.018, 0.13, 0.19, 0.96)
@@ -5768,9 +5768,13 @@ func _create_presentation_shell_v2_terrain() -> bool:
 	var terrain_feather := Color(0.34, 0.42, 0.27, 0.24)
 	var terrain_mottle := Color(0.21, 0.28, 0.18, 0.30)
 	var bank_pebble := Color(0.42, 0.42, 0.34, 0.42)
+	var ridge_face := Color(0.15, 0.20, 0.13, 0.58)
+	var turf_highlight := Color(0.40, 0.49, 0.30, 0.28)
+	var scrub_color := Color(0.13, 0.24, 0.12, 0.52)
+	var stone_lift := Color(0.45, 0.44, 0.36, 0.66)
 	_add_presentation_shell_v2_box("v0194_contiguous_foothold_base", Vector3(-0.98, 0.110, 0.52), Vector3(11.64, 0.038, 6.76), ground_color.darkened(0.14), "ground")
-	_add_presentation_shell_v2_ground_surface("v0195_west_contiguous_ground_material", Vector3(-3.88, 0.144, 0.50), Vector3(5.84, 0.032, 5.78), stage_color, false)
-	_add_presentation_shell_v2_ground_surface("v0195_central_bridge_contiguous_ground_material", Vector3(0.92, 0.140, 0.50), Vector3(3.74, 0.032, 5.74), ground_color.lightened(0.08), false)
+	_add_presentation_shell_v2_ground_surface("v0195_west_contiguous_ground_material", Vector3(-4.10, 0.144, 0.42), Vector3(4.96, 0.032, 4.86), stage_color, false)
+	_add_presentation_shell_v2_ground_surface("v0195_central_bridge_contiguous_ground_material", Vector3(0.70, 0.140, 0.50), Vector3(2.88, 0.032, 4.82), ground_color.lightened(0.08), false)
 	_add_presentation_shell_v2_ground_surface("v0195_east_route_ground_material_apron", Vector3(2.10, 0.144, 0.70), Vector3(2.28, 0.032, 1.28), hostile_color.lightened(0.04), false)
 	_add_presentation_shell_v2_ground_surface("v0195_command_yard_ground_material", Vector3(-5.20, 0.154, -0.44), Vector3(1.62, 0.024, 1.36), stage_color.lightened(0.06), true)
 	_add_presentation_shell_v2_ground_surface("v0195_mine_yard_ground_material", Vector3(-1.84, 0.154, 0.18), Vector3(1.36, 0.024, 1.10), ground_color.lightened(0.12), true)
@@ -5786,6 +5790,12 @@ func _create_presentation_shell_v2_terrain() -> bool:
 	_add_presentation_shell_v2_box("post_v0195_south_sod_break_02", Vector3(2.18, 0.182, 3.64), Vector3(1.46, 0.018, 0.075), terrain_feather.darkened(0.06), "terrainEdges", true, 3.0)
 	_add_presentation_shell_v2_box("post_v0195_west_terrace_sod_break_00", Vector3(-5.86, 0.188, -1.84), Vector3(0.075, 0.018, 1.18), terrain_feather.darkened(0.16), "terrainEdges", true, -2.0)
 	_add_presentation_shell_v2_box("post_v0195_west_terrace_sod_break_01", Vector3(-5.94, 0.188, 1.48), Vector3(0.075, 0.018, 1.52), terrain_feather.darkened(0.08), "terrainEdges", true, 2.5)
+	_add_presentation_shell_v2_box("post_v0195_v2_north_ridge_face_00", Vector3(-4.50, 0.218, -2.70), Vector3(2.28, 0.060, 0.16), ridge_face, "terrainEdges", true, -2.0)
+	_add_presentation_shell_v2_box("post_v0195_v2_north_ridge_face_01", Vector3(-0.62, 0.214, -2.78), Vector3(1.74, 0.054, 0.13), ridge_face.lightened(0.04), "terrainEdges", true, 3.0)
+	_add_presentation_shell_v2_box("post_v0195_v2_south_ridge_face_00", Vector3(-3.72, 0.214, 3.48), Vector3(2.06, 0.054, 0.14), ridge_face.darkened(0.06), "terrainEdges", true, 3.0)
+	_add_presentation_shell_v2_box("post_v0195_v2_south_ridge_face_01", Vector3(2.30, 0.212, 3.38), Vector3(1.86, 0.050, 0.13), ridge_face, "terrainEdges", true, -4.0)
+	_add_presentation_shell_v2_box("post_v0195_v2_east_field_recess_shadow", Vector3(3.92, 0.188, 0.92), Vector3(0.080, 0.018, 2.88), ridge_face.darkened(0.10), "terrainEdges", true, 1.5)
+	_add_presentation_shell_v2_box("post_v0195_v2_west_terrace_recess_shadow", Vector3(-5.58, 0.190, 0.18), Vector3(0.090, 0.018, 2.18), ridge_face.darkened(0.06), "terrainEdges", true, -2.5)
 	_add_presentation_shell_v2_box("post_v0195_stage_grass_value_00", Vector3(-4.82, 0.182, 2.28), Vector3(1.52, 0.018, 0.075), terrain_feather.lightened(0.06), "overlays", true, -4.0)
 	_add_presentation_shell_v2_box("post_v0195_mine_ground_value_00", Vector3(-2.12, 0.182, 1.02), Vector3(1.26, 0.018, 0.070), terrain_feather.lightened(0.12), "overlays", true, 3.0)
 	_add_presentation_shell_v2_box("post_v0195_hostile_ground_value_00", Vector3(2.78, 0.182, -0.98), Vector3(1.42, 0.018, 0.075), hostile_color.darkened(0.02), "overlays", true, -3.0)
@@ -5794,6 +5804,16 @@ func _create_presentation_shell_v2_terrain() -> bool:
 	_add_presentation_shell_v2_box("post_v0195_east_field_mottle_00", Vector3(2.52, 0.186, -1.70), Vector3(1.28, 0.014, 0.056), terrain_mottle.darkened(0.08), "overlays", true, -7.0)
 	_add_presentation_shell_v2_box("post_v0195_east_field_mottle_01", Vector3(3.12, 0.186, 2.10), Vector3(1.36, 0.014, 0.056), terrain_mottle, "overlays", true, 6.0)
 	_add_presentation_shell_v2_box("post_v0195_east_field_mottle_02", Vector3(3.58, 0.186, -0.20), Vector3(0.92, 0.014, 0.050), terrain_mottle.lightened(0.04), "overlays", true, 2.0)
+	_add_presentation_shell_v2_box("post_v0195_v2_west_field_turf_highlight_00", Vector3(-3.62, 0.190, -1.12), Vector3(1.32, 0.012, 0.050), turf_highlight, "overlays", true, -8.0)
+	_add_presentation_shell_v2_box("post_v0195_v2_west_field_turf_highlight_01", Vector3(-4.24, 0.190, 1.34), Vector3(1.20, 0.012, 0.048), turf_highlight.darkened(0.08), "overlays", true, 7.0)
+	_add_presentation_shell_v2_box("post_v0195_v2_east_field_turf_highlight_00", Vector3(2.18, 0.190, -2.22), Vector3(1.10, 0.012, 0.048), turf_highlight.darkened(0.10), "overlays", true, 6.0)
+	_add_presentation_shell_v2_box("post_v0195_v2_east_field_turf_highlight_01", Vector3(3.34, 0.190, 1.46), Vector3(1.44, 0.012, 0.050), turf_highlight.darkened(0.04), "overlays", true, -5.0)
+	_add_presentation_shell_v2_cylinder("post_v0195_v2_west_scrub_cluster_00", Vector3(-5.18, 0.225, -2.20), 0.075, 0.040, scrub_color, "overlays", true)
+	_add_presentation_shell_v2_cylinder("post_v0195_v2_west_scrub_cluster_01", Vector3(-4.92, 0.226, -2.04), 0.055, 0.038, scrub_color.lightened(0.06), "overlays", true)
+	_add_presentation_shell_v2_cylinder("post_v0195_v2_south_scrub_cluster_00", Vector3(-1.52, 0.222, 3.10), 0.070, 0.040, scrub_color.darkened(0.08), "overlays", true)
+	_add_presentation_shell_v2_cylinder("post_v0195_v2_east_scrub_cluster_00", Vector3(3.30, 0.222, -1.46), 0.065, 0.040, scrub_color.darkened(0.04), "overlays", true)
+	_add_presentation_shell_v2_cylinder("post_v0195_v2_bridge_approach_stone_00", Vector3(-0.76, 0.356, 1.18), 0.070, 0.035, stone_lift, "overlays", true)
+	_add_presentation_shell_v2_cylinder("post_v0195_v2_bridge_approach_stone_01", Vector3(1.88, 0.354, 0.54), 0.060, 0.032, stone_lift.darkened(0.08), "overlays", true)
 	_add_presentation_shell_v2_route_segment("v0195_main_road_friendly_to_junction", Vector3(-5.66, 0, 0.72), Vector3(-1.50, 0, 0.72), 0.68, 0.292, road_color, "roads", 0.038, false)
 	_add_presentation_shell_v2_route_segment("v0195_main_road_junction_to_west_ramp", Vector3(-1.50, 0, 0.72), Vector3(-0.36, 0, 0.86), 0.64, 0.294, road_color.lightened(0.05), "roads", 0.038, false)
 	_add_presentation_shell_v2_route_segment("v0195_main_road_east_ramp_to_hostile", Vector3(1.48, 0, 0.88), Vector3(3.28, 0, 0.54), 0.58, 0.294, road_color.darkened(0.02), "roads", 0.038, false)
@@ -5872,6 +5892,16 @@ func _create_presentation_shell_v2_terrain() -> bool:
 	_add_presentation_shell_v2_box("post_v0195_bridge_west_ramp_ground_shadow", Vector3(-0.62, 0.308, 0.88), Vector3(0.58, 0.018, 0.48), bank_shadow.darkened(0.02), "bridge", true)
 	_add_presentation_shell_v2_box("post_v0195_bridge_east_ramp_ground_shadow", Vector3(1.94, 0.308, 0.88), Vector3(0.58, 0.018, 0.48), bank_shadow, "bridge", true)
 	_add_presentation_shell_v2_route_segment("v0194_shallow_water_under_crossing_read", Vector3(-0.18, 0, 0.88), Vector3(1.54, 0, 0.88), 0.16, 0.356, water_lip.lightened(0.10), "bridge", 0.018, true)
+	_add_presentation_shell_v2_box("post_v0195_v2_bridge_north_cutwater_shadow", Vector3(0.68, 0.366, 0.38), Vector3(0.44, 0.020, 0.085), bank_shadow.darkened(0.10), "bridge", true)
+	_add_presentation_shell_v2_box("post_v0195_v2_bridge_south_cutwater_shadow", Vector3(0.68, 0.366, 1.38), Vector3(0.44, 0.020, 0.085), bank_shadow.darkened(0.04), "bridge", true)
+	_add_presentation_shell_v2_box("post_v0195_v2_bridge_west_abutment_cap", Vector3(-0.36, 0.406, 0.88), Vector3(0.34, 0.030, 0.62), bridge_stone.lightened(0.10), "bridge", true)
+	_add_presentation_shell_v2_box("post_v0195_v2_bridge_east_abutment_cap", Vector3(1.72, 0.406, 0.88), Vector3(0.34, 0.030, 0.62), bridge_stone.lightened(0.08), "bridge", true)
+	_add_presentation_shell_v2_box("post_v0195_v2_west_bank_foot_stone_00", Vector3(0.02, 0.292, 0.30), Vector3(0.085, 0.028, 0.24), bank_pebble.darkened(0.08), "banks", true, 7.0)
+	_add_presentation_shell_v2_box("post_v0195_v2_west_bank_foot_stone_01", Vector3(0.06, 0.292, 1.70), Vector3(0.075, 0.026, 0.22), bank_pebble, "banks", true, -6.0)
+	_add_presentation_shell_v2_box("post_v0195_v2_east_bank_foot_stone_00", Vector3(1.34, 0.292, 0.02), Vector3(0.078, 0.026, 0.20), bank_pebble.darkened(0.10), "banks", true, -8.0)
+	_add_presentation_shell_v2_box("post_v0195_v2_east_bank_foot_stone_01", Vector3(1.32, 0.292, 1.36), Vector3(0.084, 0.028, 0.24), bank_pebble.lightened(0.02), "banks", true, 5.0)
+	_add_presentation_shell_v2_route_segment("post_v0195_v2_north_eddy_read", Vector3(0.36, 0, 0.42), Vector3(1.00, 0, 0.42), 0.040, 0.372, water_lip.lightened(0.18), "river", 0.008, true)
+	_add_presentation_shell_v2_route_segment("post_v0195_v2_south_eddy_read", Vector3(0.34, 0, 1.34), Vector3(1.04, 0, 1.34), 0.040, 0.372, water_lip.lightened(0.14), "river", 0.008, true)
 	presentation_shell_v2_topology_metrics = {
 		"schemaVersion": 1,
 		"checkpoint": "v0.195",
@@ -5881,9 +5911,10 @@ func _create_presentation_shell_v2_terrain() -> bool:
 		"disconnectedRoadFragmentCount": 0,
 		"floatingDiagonalRoadFragmentCount": 0,
 		"riverSegmentCount": 1,
-		"bankSegmentCount": 16,
-		"bridgeNodeCount": 18,
-		"transparencyLayerCount": 88,
+		"riverDetailNodeCount": 2,
+		"bankSegmentCount": 20,
+		"bridgeNodeCount": 22,
+		"transparencyLayerCount": 112,
 		"scopedTerrainMaterialSurfaceCount": ground_material_applied_surface_names.size(),
 		"scopedRoadMaterialSurfaceCount": road_material_applied_surface_names.size(),
 		"giantTransparentDiagnosticPads": 0,
@@ -5899,6 +5930,10 @@ func _create_presentation_shell_v2_terrain() -> bool:
 		"routeHierarchyStrengthened": true,
 		"largeRectangularFieldReadReduced": true,
 		"riverChannelStraightnessBrokenUp": true,
+		"postV0195SecondVisualHardeningActive": true,
+		"terrainPropDetailAdded": true,
+		"structureSilhouetteDetailImproved": true,
+		"riverCrossingReadStrengthened": true,
 		"materialBindTargets": {
 			"ground": ground_material_applied_surface_names.duplicate(),
 			"road": road_material_applied_surface_names.duplicate()
@@ -7189,8 +7224,23 @@ func _add_presentation_shell_v2_structure_mass(id: String, fixture: String, posi
 		"command_hall":
 			_add_presentation_shell_v2_visual_box("%s_v0193_keep_core" % id, position + Vector3(0.0, 0.34, -scale.z * 0.04), Vector3(scale.x * 0.48, 0.56, scale.z * 0.42), color.darkened(0.10), "structures")
 			_add_presentation_shell_v2_visual_box("%s_v0193_low_roof_mass" % id, position + Vector3(0.0, 0.74, 0.0), Vector3(scale.x * 0.86, 0.105, scale.z * 0.62), color.lightened(0.12), "structures")
+			_add_presentation_shell_v2_visual_box("%s_post_v0195_v2_roof_ridge_spine" % id, position + Vector3(0.0, 0.82, -scale.z * 0.02), Vector3(scale.x * 0.70, 0.052, scale.z * 0.080), color.lightened(0.24), "structures")
+			_add_presentation_shell_v2_visual_box("%s_post_v0195_v2_rear_wing_shadow" % id, position + Vector3(-scale.x * 0.28, 0.22, -scale.z * 0.34), Vector3(scale.x * 0.28, 0.24, scale.z * 0.18), color.darkened(0.18), "structures", true)
+			_add_presentation_shell_v2_visual_box("%s_post_v0195_v2_right_buttress" % id, position + Vector3(scale.x * 0.36, 0.17, -scale.z * 0.02), Vector3(scale.x * 0.090, 0.30, scale.z * 0.44), color.darkened(0.20), "structures", true)
 			_add_presentation_shell_v2_visual_box("%s_post_v0195_entry_sill" % id, position + Vector3(0.0, 0.02, scale.z * 0.50), Vector3(scale.x * 0.28, 0.040, 0.075), Color(0.16, 0.13, 0.09, 0.72), "structures", true)
+			_add_presentation_shell_v2_visual_box("%s_post_v0195_v2_entry_shadow" % id, position + Vector3(0.0, 0.16, scale.z * 0.53), Vector3(scale.x * 0.22, 0.18, 0.052), Color(0.060, 0.045, 0.032, 0.72), "structures", true)
 			_add_presentation_shell_v2_visual_box("%s_v0193_hearth_slot" % id, position + Vector3(scale.x * 0.34, 0.22, scale.z * 0.54), Vector3(0.075, 0.120, 0.050), Color(0.86, 0.45, 0.19), "structures", true, true)
+		"enemy_stronghold":
+			_add_presentation_shell_v2_visual_box("%s_post_v0195_v2_stronghold_core" % id, position + Vector3(0.0, 0.38, -scale.z * 0.02), Vector3(scale.x * 0.52, 0.60, scale.z * 0.46), color.darkened(0.16), "structures")
+			_add_presentation_shell_v2_visual_box("%s_post_v0195_v2_stronghold_low_wall" % id, position + Vector3(0.0, 0.16, scale.z * 0.44), Vector3(scale.x * 0.92, 0.22, scale.z * 0.15), color.darkened(0.28), "structures")
+			_add_presentation_shell_v2_visual_box("%s_post_v0195_v2_stronghold_roof_plate" % id, position + Vector3(0.0, 0.76, -scale.z * 0.02), Vector3(scale.x * 0.76, 0.090, scale.z * 0.58), color.lightened(0.08), "structures")
+			_add_presentation_shell_v2_visual_box("%s_post_v0195_v2_stronghold_gate" % id, position + Vector3(0.0, 0.20, scale.z * 0.54), Vector3(scale.x * 0.24, 0.22, 0.060), Color(0.055, 0.030, 0.022, 0.78), "structures", true)
+			_add_presentation_shell_v2_visual_box("%s_post_v0195_v2_hostile_banner_read" % id, position + Vector3(-scale.x * 0.40, 0.60, scale.z * 0.18), Vector3(0.060, 0.30, scale.z * 0.20), _banner_color(structure), "structures", true)
+		"ford_toll":
+			_add_presentation_shell_v2_visual_box("%s_post_v0195_v2_toll_plinth" % id, position + Vector3(0.0, 0.10, 0.0), Vector3(scale.x * 0.76, 0.18, scale.z * 0.48), color.darkened(0.12), "structures")
+			_add_presentation_shell_v2_visual_box("%s_post_v0195_v2_toll_roof" % id, position + Vector3(0.0, 0.38, -scale.z * 0.02), Vector3(scale.x * 0.58, 0.070, scale.z * 0.42), color.lightened(0.14), "structures")
+			_add_presentation_shell_v2_visual_box("%s_post_v0195_v2_toll_open_shadow" % id, position + Vector3(0.0, 0.20, scale.z * 0.28), Vector3(scale.x * 0.40, 0.12, 0.052), Color(0.060, 0.050, 0.034, 0.64), "structures", true)
+			_add_presentation_shell_v2_visual_box("%s_post_v0195_v2_toll_marker_lume" % id, position + Vector3(scale.x * 0.38, 0.36, scale.z * 0.12), Vector3(0.052, 0.16, 0.052), Color(0.88, 0.55, 0.24), "structures", true, true)
 		"west_stone_cut":
 			_add_presentation_shell_v2_visual_box("%s_v0193_quarry_face" % id, position + Vector3(-scale.x * 0.34, 0.18, scale.z * 0.42), Vector3(scale.x * 0.42, 0.34, 0.120), Color(0.055, 0.060, 0.050), "structures")
 			_add_presentation_shell_v2_visual_box("%s_v0193_retaining_wall" % id, position + Vector3(scale.x * 0.22, 0.06, scale.z * 0.50), Vector3(scale.x * 0.70, 0.105, 0.100), Color(0.48, 0.46, 0.38), "structures")
@@ -7211,6 +7261,8 @@ func _add_presentation_shell_v2_structure_mass(id: String, fixture: String, posi
 				_add_presentation_shell_v2_visual_box("%s_v0193_restoration_progress" % id, position + Vector3((progress - 1.0) * scale.x * 0.20, 0.72, scale.z * 0.50), Vector3(max(0.08, scale.x * 0.40 * progress), 0.044, 0.055), Color(0.42, 0.78, 0.48, 0.58), "structures", true)
 		_:
 			_add_presentation_shell_v2_visual_box("%s_v0193_site_shell_mass" % id, position + Vector3(0.0, 0.20, 0.0), Vector3(scale.x * 0.58, 0.30, scale.z * 0.58), color.darkened(0.08), "structures", true)
+			_add_presentation_shell_v2_visual_box("%s_post_v0195_v2_site_roof_cap" % id, position + Vector3(0.0, 0.40, -scale.z * 0.02), Vector3(scale.x * 0.66, 0.060, scale.z * 0.50), color.lightened(0.12), "structures", true)
+			_add_presentation_shell_v2_visual_box("%s_post_v0195_v2_site_entry_shadow" % id, position + Vector3(0.0, 0.10, scale.z * 0.36), Vector3(scale.x * 0.24, 0.10, 0.052), Color(0.060, 0.048, 0.034, 0.60), "structures", true)
 
 func _add_structure(structure: Dictionary) -> void:
 	var id := str(structure["id"])
@@ -7219,13 +7271,19 @@ func _add_structure(structure: Dictionary) -> void:
 	var scale := _structure_scale(structure)
 	var base_scale := _v0186_structure_base_scale(fixture, scale, structure) if environment_structure_shell_hardening_enabled else scale
 	var color := _structure_color(structure)
+	if environment_presentation_shell_v2_enabled:
+		var shell_v2_foundation_scale := Vector3(base_scale.x * 0.96, maxf(0.055, base_scale.y * 0.16), base_scale.z * 0.92)
+		var shell_v2_foundation_position := position + Vector3(0.0, -base_scale.y * 0.42, 0.0)
+		if fixture == "barracks":
+			_add_barracks_material_box(id, shell_v2_foundation_position, shell_v2_foundation_scale, color.darkened(0.08))
+		else:
+			_add_box(id, shell_v2_foundation_position, shell_v2_foundation_scale, color.darkened(0.10), true)
+		_add_presentation_shell_v2_structure_mass(id, fixture, position, scale, color, structure)
+		return
 	if fixture == "barracks":
 		_add_barracks_material_box(id, position, base_scale, color)
 	else:
 		_add_box(id, position, base_scale, color)
-	if environment_presentation_shell_v2_enabled:
-		_add_presentation_shell_v2_structure_mass(id, fixture, position, scale, color, structure)
-		return
 	if environment_foundation_review_enabled:
 		_add_environment_foundation_structure_hierarchy(id, fixture, position, scale, color, structure)
 	if fixture == "command_hall" or fixture == "enemy_stronghold":
