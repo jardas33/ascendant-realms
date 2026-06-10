@@ -1,5 +1,31 @@
 # Changelog
 
+# Post-v0.195 Godot Shell-V2 Visual Hardening Review - 2026-06-09
+
+This ad hoc review pass responds to the Godot visual-quality concern without beginning v0.196. It changes only the isolated opt-in Salto shell-v2 scoped-material recovery presentation path. It generates zero images, adds zero art slots, keeps the v0.189 wet-granite bridge-riverbank material unintegrated, preserves the default procedural launcher and all prior launchers, keeps the browser runtime untouched, keeps character-slot integration frozen, and changes no gameplay, pathing, collisions, objectives, AI, saves, stable IDs, or production manifests.
+
+Changed:
+
+- Lowered the shell-v2 review camera angle to reduce the flat map-board read while preserving tactical readability.
+- Tuned ground and road material visibility so route hierarchy reads more clearly at review distance.
+- Added restrained terrain edge/mottle cues, route skins, ruts, shoulders, bridge gravel, river depth variation, bank lips, bridge deck details, and structure contact shadows inside shell v2.
+- Added `docs/POST_V0195_GODOT_SHELL_V2_VISUAL_HARDENING_REVIEW.md`.
+
+Validation:
+
+- `PASS_V0195_SHELL_V2_SCOPED_MATERIAL_CAPTURE_PACKET`.
+- `PASS_V0195_SHELL_V2_SCOPED_MATERIAL_VALIDATION`.
+- `PASS_V0195_SHELL_V2_SCOPED_MATERIAL_BENCHMARK`.
+- `PASS_V0195_SHELL_V2_SCOPED_MATERIAL_BOUNDARY_SCAN`.
+- `PASS_V0167_SALTO_EXPERIMENTAL_ARTIFACT_RETENTION`.
+- `PASS_V0195_SALTO_SHELL_V2_SCOPED_MATERIAL_RECOVERY_VALIDATION_READY`.
+- `npm run validate:content`.
+- `npm run validate:art-intake`.
+- `npm run validate:runtime-art-slots`.
+- `npx vitest run src/game/desktop-spike/GodotSaltoSpikeScaffold.test.ts`.
+- `npm run build`.
+- `git diff --check`.
+
 # v0.195 Salto Shell-V2 Scoped Material Recovery Tactical-Route Readability And Human-Review Stop - 2026-06-09
 
 This checkpoint restores only restrained scoped terrain and road hierarchy inside the isolated opt-in Godot Salto presentation-shell v2 path. It preserves the v0.194 clean topology, keeps detached terrain islands and floating diagonal road fragments at zero, strengthens connected road readability into and across the bridge, avoids broad material masks, integrates no wet-granite bridge-riverbank material, preserves the legacy shell as comparator/fallback, preserves the default procedural launcher and all prior launchers, keeps the browser runtime untouched, and changes no gameplay, pathing, collisions, objectives, AI, saves, stable IDs, or production manifests.

@@ -11,6 +11,14 @@ Every phase should protect these long-term pillars:
 
 ## Current Recommended Next Phase
 
+The current checkpoint now includes the **post-v0.195 Godot Shell-V2 Visual Hardening Review** on 2026-06-09. This ad hoc pass responds to the visual-quality concern without beginning v0.196: it keeps the work inside the isolated opt-in shell-v2 scoped-material recovery path, lowers only the shell-v2 review camera angle, strengthens route/bridge readability, reduces the rectangular field read, and adds restrained grounding cues. It generates zero images, adds zero art slots, keeps the v0.189 wet-granite material comparator-only, preserves the default procedural launcher and all prior launchers, keeps browser runtime untouched, keeps character-slot integrations frozen, and changes no gameplay/pathing/collisions/objectives/AI/saves/stable IDs.
+
+The recommended next step is human review of the refreshed post-v0.195 Godot capture screenshots, especially `03_tactical_overview.png`, `08_connected_road_network.png`, `10_road_to_bridge_transition.png`, and `12_bridge_close_view.png`. Do not execute v0.196 or the older wet-granite bridge-riverbank integration recommendation without a new explicit prompt from a clean, synced, pushed, remote-green state.
+
+New post-v0.195 doc:
+
+- `docs/POST_V0195_GODOT_SHELL_V2_VISUAL_HARDENING_REVIEW.md`
+
 The current checkpoint is **v0.195 Salto Shell-V2 Scoped Material Recovery Tactical-Route Readability And Human-Review Stop** on 2026-06-09. It preserves the v0.194 clean shell-v2 topology while restoring restrained scoped terrain and road hierarchy at review distance. It keeps detached terrain islands and floating diagonal road fragments at zero, strengthens connected route readability into and across the bridge, avoids broad material masks, preserves the legacy shell as comparator/fallback, keeps the v0.189 wet-granite material comparator-only, keeps the default launcher procedural, preserves all prior opt-in launchers, keeps the browser runtime untouched, adds zero art slots, generates zero images, and leaves gameplay/pathing/collisions/objectives/AI/saves/stable IDs unchanged.
 
 The recommended next step is human review of the v0.195 shell-v2 scoped-material captures, especially the connected road network, road intersections, road-to-bridge transition, and bridge close-up. Do not execute the older wet-granite bridge-riverbank material integration recommendation directly. Any future v0.196 must start from a clean, synced, pushed, remote-green v0.195 state and must explicitly choose its bounded next step.

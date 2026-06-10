@@ -1,6 +1,6 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-06-09 v0.195 Shell-V2 Scoped Material Recovery
+Last updated: 2026-06-09 post-v0.195 Godot Shell-V2 Visual Hardening Review
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
@@ -90,7 +90,42 @@ Project Identity continuation note: v0.194 now supersedes the older no-v0.194 ta
 
 Project Identity continuation note: v0.195 now supersedes the older no-v0.195 tail above because the queued prompt explicitly authorized scoped material recovery after v0.194. v0.195 generates zero images, adds zero art slots, keeps the wet-granite bridge-riverbank material unintegrated, preserves the legacy shell as comparator/fallback, keeps the default launcher procedural and all prior launchers unchanged, keeps browser runtime untouched, changes no gameplay/pathing/collisions/objectives/AI/saves/stable IDs, preserves the clean v0.194 topology, restores restrained terrain and route-road readability only in the isolated shell-v2 review path, and stops before v0.196 for human review.
 
-Current status override: v0.195 Shell-V2 Scoped Material Recovery is the active checkpoint for this handoff. Character-slot integration remains frozen after five selected opt-in slots. The Barrosan foothold ground and road materials remain opt-in only, the default launcher remains procedural, browser runtime remains untouched, and the selected bridge-riverbank material remains private-comparator-only. Do not execute the older bridge-riverbank material integration recommendation directly. Do not begin v0.196 unless a future explicit prompt authorizes it after clean/synced/pushed/remote-green v0.195 review.
+Project Identity continuation note: the post-v0.195 Godot shell-v2 visual hardening review is an ad hoc repair after Emmanuel's visual-quality concern, not v0.196. It changes only the isolated shell-v2 scoped-material recovery presentation path, lowers only the shell-v2 review camera angle, strengthens route/bridge readability, reduces the rectangular field read, adds restrained terrain/river/bank/bridge/structure grounding cues, generates zero images, adds zero art slots, keeps the wet-granite bridge-riverbank material unintegrated, preserves the default procedural launcher and all prior launchers, keeps browser runtime untouched, changes no gameplay/pathing/collisions/objectives/AI/saves/stable IDs, and stops for human review.
+
+Current status override: post-v0.195 Godot Shell-V2 Visual Hardening Review is the active handoff layer on top of the v0.195 checkpoint. Character-slot integration remains frozen after five selected opt-in slots. The Barrosan foothold ground and road materials remain opt-in only, the default launcher remains procedural, browser runtime remains untouched, and the selected bridge-riverbank material remains private-comparator-only. Do not execute the older bridge-riverbank material integration recommendation directly. Do not begin v0.196 unless a future explicit prompt authorizes it after clean/synced/pushed/remote-green post-v0.195 review.
+
+## Post-v0.195 Godot Shell-V2 Visual Hardening Review - 2026-06-09
+
+Status: visual-only post-v0.195 hardening is the active review layer. It improves the isolated shell-v2 human-review path and stops for human review.
+
+Key files:
+
+- `desktop-spikes/godot-salto/scripts/salto_spike_scene_3d.gd`
+- `docs/POST_V0195_GODOT_SHELL_V2_VISUAL_HARDENING_REVIEW.md`
+- `docs/V0195_SCOPED_MATERIAL_RECOVERY_QA_BENCHMARK.md`
+
+Current decision:
+
+- Keep shell-v2 scoped material recovery isolated behind explicit review/validate/capture launchers.
+- Preserve v0.194 shell-v2 topology as before-comparator evidence and preserve the legacy shell as fallback.
+- Keep the v0.189 wet-granite bridge-riverbank material private-comparator-only.
+- Keep gameplay, pathing, collisions, objectives, AI, saves, stable IDs, default launcher, prior launchers, and browser runtime unchanged.
+- Review the refreshed screenshots before authorizing any v0.196 work.
+
+Validation evidence:
+
+- `PASS_V0195_SHELL_V2_SCOPED_MATERIAL_CAPTURE_PACKET`
+- `PASS_V0195_SHELL_V2_SCOPED_MATERIAL_VALIDATION`
+- `PASS_V0195_SHELL_V2_SCOPED_MATERIAL_BENCHMARK`
+- `PASS_V0195_SHELL_V2_SCOPED_MATERIAL_BOUNDARY_SCAN`
+- `PASS_V0167_SALTO_EXPERIMENTAL_ARTIFACT_RETENTION`
+- `PASS_V0195_SALTO_SHELL_V2_SCOPED_MATERIAL_RECOVERY_VALIDATION_READY`
+- `npm run validate:content`
+- `npm run validate:art-intake`
+- `npm run validate:runtime-art-slots`
+- `npx vitest run src/game/desktop-spike/GodotSaltoSpikeScaffold.test.ts`
+- `npm run build`
+- `git diff --check`
 
 ## Current v0.195 Shell-V2 Scoped Material Recovery - 2026-06-09
 
