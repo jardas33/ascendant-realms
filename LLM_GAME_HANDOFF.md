@@ -1,12 +1,12 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-06-10 v0.197 Godot Salto shell-v2 mesh-compositor Windows QA repair
+Last updated: 2026-06-10 v0.198 Godot Salto wet-granite shell-v2 mesh opt-in integration
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
 ## Current Continuation Note
 
-The latest work is v0.197 Godot Salto shell-v2 mesh-compositor Windows QA repair. It changes only the isolated opt-in shell-v2 review path: the v0.196 mesh-compositor baseline is preserved as comparator while the v0.197 path verifies the packaged Windows presentation, keeps one coherent terrain mesh, connected route ribbons, a continuous river channel, bank shadows, and bridge crossing surfaces, and reduces shell-only marker dominance. It generates zero images, adds zero art slots, keeps the v0.189 wet-granite bridge-riverbank material unintegrated, preserves default and prior launchers, keeps the browser runtime untouched, keeps character-slot integrations frozen, and changes no gameplay/pathing/collisions/objectives/AI/saves/stable IDs.
+The latest work is v0.198 Godot Salto wet-granite shell-v2 mesh opt-in integration. It changes only the isolated shell-v2 mesh-compositor review path: the v0.197 mesh QA path remains a comparator while v0.198 adds exactly one environment-material opt-in slot for the selected v0.189 wet-granite bridge-riverbank derivative, scoped only to bridge abutments, bridge landing aprons, and short riverbank retaining edges. It generates zero images, adds zero character art slots, preserves default and prior launchers, keeps the browser runtime untouched, keeps character-slot integrations frozen, proves missing-art and hash-mismatch fallback, benchmarks green against the procedural mesh bridge/bank comparator, and changes no gameplay/pathing/collisions/objectives/AI/saves/stable IDs.
 
 ## Project Identity
 
