@@ -1,10 +1,10 @@
 # Salto Experimental Artifact Index
 
-Status: `ACTIVE_V0200_RETENTION_INDEX`
+Status: `ACTIVE_V0201_RETENTION_INDEX`
 
 This index is the retention source of truth for the Godot Salto experimental-art path. It protects selected local art, active derivatives, metadata, tracked fallbacks, current evidence, and unknown files from broad cleanup.
 
-This v0.200 index supersedes `ACTIVE_V0199_RETENTION_INDEX`, `ACTIVE_V0198_RETENTION_INDEX`, `ACTIVE_V0197_RETENTION_INDEX`, `ACTIVE_V0196_RETENTION_INDEX`, `ACTIVE_V0195_RETENTION_INDEX`, `ACTIVE_V0194_RETENTION_INDEX`, `ACTIVE_V0193_RETENTION_INDEX`, `ACTIVE_V0192_RETENTION_INDEX`, `ACTIVE_V0191_RETENTION_INDEX`, `ACTIVE_V0190_RETENTION_INDEX`, `ACTIVE_V0189_RETENTION_INDEX`, `ACTIVE_V0188_RETENTION_INDEX`, `ACTIVE_V0187_RETENTION_INDEX`, `ACTIVE_V0186_RETENTION_INDEX`, `ACTIVE_V0185_RETENTION_INDEX`, `ACTIVE_V0184_RETENTION_INDEX`, `ACTIVE_V0183_RETENTION_INDEX`, `ACTIVE_V0182_RETENTION_INDEX`, `ACTIVE_V0181_RETENTION_INDEX`, `ACTIVE_V0180_RETENTION_INDEX`, `ACTIVE_V0179_RETENTION_INDEX`, `ACTIVE_V0178_RETENTION_INDEX`, `ACTIVE_V0177_RETENTION_INDEX`, `ACTIVE_V0176_RETENTION_INDEX`, `ACTIVE_V0175_RETENTION_INDEX`, `ACTIVE_V0174_RETENTION_INDEX`, `ACTIVE_V0173_RETENTION_INDEX`, `ACTIVE_V0172_RETENTION_INDEX`, `ACTIVE_V0171_RETENTION_INDEX`, and `ACTIVE_V0170_RETENTION_INDEX` while retaining their protected evidence.
+This v0.201 index supersedes `ACTIVE_V0200_RETENTION_INDEX`, `ACTIVE_V0199_RETENTION_INDEX`, `ACTIVE_V0198_RETENTION_INDEX`, `ACTIVE_V0197_RETENTION_INDEX`, `ACTIVE_V0196_RETENTION_INDEX`, `ACTIVE_V0195_RETENTION_INDEX`, `ACTIVE_V0194_RETENTION_INDEX`, `ACTIVE_V0193_RETENTION_INDEX`, `ACTIVE_V0192_RETENTION_INDEX`, `ACTIVE_V0191_RETENTION_INDEX`, `ACTIVE_V0190_RETENTION_INDEX`, `ACTIVE_V0189_RETENTION_INDEX`, `ACTIVE_V0188_RETENTION_INDEX`, `ACTIVE_V0187_RETENTION_INDEX`, `ACTIVE_V0186_RETENTION_INDEX`, `ACTIVE_V0185_RETENTION_INDEX`, `ACTIVE_V0184_RETENTION_INDEX`, `ACTIVE_V0183_RETENTION_INDEX`, `ACTIVE_V0182_RETENTION_INDEX`, `ACTIVE_V0181_RETENTION_INDEX`, `ACTIVE_V0180_RETENTION_INDEX`, `ACTIVE_V0179_RETENTION_INDEX`, `ACTIVE_V0178_RETENTION_INDEX`, `ACTIVE_V0177_RETENTION_INDEX`, `ACTIVE_V0176_RETENTION_INDEX`, `ACTIVE_V0175_RETENTION_INDEX`, `ACTIVE_V0174_RETENTION_INDEX`, `ACTIVE_V0173_RETENTION_INDEX`, `ACTIVE_V0172_RETENTION_INDEX`, `ACTIVE_V0171_RETENTION_INDEX`, and `ACTIVE_V0170_RETENTION_INDEX` while retaining their protected evidence.
 
 ## Selected Local Source Art And Active Derivatives
 
@@ -291,10 +291,19 @@ Retain the latest v0.166/v0.167/v0.168/v0.169/v0.170 evidence until a later chec
 - `docs/V0200_ENVIRONMENT_GROUNDING_QA_BENCHMARK.md`
 - `docs/V0200_GROUNDING_BOUNDARY_ROLLBACK.md`
 - `docs/V0200_IMPLEMENTATION_REPORT.md`
+- `artifacts/desktop-spikes/godot-salto/v0201/artifact-inventory/`
+- `artifacts/desktop-spikes/godot-salto/v0201/cleanup-dry-run/`
+- `artifacts/desktop-spikes/godot-salto/v0201/cleanup-safe-only/`
+- `artifacts/desktop-spikes/godot-salto/v0201/artifact-retention-after-cleanup/`
+- `artifacts/manual-review/v0201-final-cohesion/`
+- `docs/V0201_FULL_COHESION_QA.md`
+- `docs/V0201_CLEANUP_RUNTIME_FREEZE_PACKET.md`
+- `docs/V0201_NEXT_STEP_SCORECARD.md`
+- `docs/V0201_IMPLEMENTATION_REPORT.md`
 
 ## Character Integration Freeze
 
-Character-slot expansion is frozen after the selected Worker, Barracks material, Militia, Aster, and Ashen Raider opt-in slots. v0.200 keeps the existing Barrosan foothold ground-material opt-in slot and the existing Barrosan foothold road-material opt-in slot behind their prior opt-in launchers, preserves the v0.184 visual-only environment-shell geometry convergence review path, v0.185 visual-only environment-shell live-QA path, v0.186 visual-only procedural structure-shell hierarchy hardening path, v0.187 visual-only procedural riverbank/bridge approach hardening path, v0.193 shell-v2 comparator path, v0.194 shell-v2 topology repair path, v0.195 shell-v2 scoped-material comparator path, v0.196 mesh-compositor baseline path, v0.197 shell-v2 mesh-compositor QA path, v0.198 wet-granite shell-v2 mesh path, and v0.199 structure-hierarchy path. The v0.189 wet-granite bridge-riverbank material remains integrated only as an isolated shell-v2 mesh-compositor opt-in bound to bridge abutments, bridge landing aprons, and short riverbank retaining edges. v0.200 adds only restrained procedural grounding, lighting, and sparse props behind an explicit opt-in review path. No water shader pipeline is added, the default launcher remains procedural, browser runtime remains untouched, and the legacy shell is preserved as comparator/fallback.
+Character-slot expansion is frozen after the selected Worker, Barracks material, Militia, Aster, and Ashen Raider opt-in slots. v0.201 changes no runtime code, generates zero images, adds zero slots, and freezes further runtime visual work for Emmanuel review after validating the existing v0.200 final shell-v2 mesh-compositor posture. The existing Barrosan foothold ground-material opt-in slot, Barrosan foothold road-material opt-in slot, and scoped v0.198 wet-granite bridge-riverbank shell-v2 mesh opt-in remain behind their prior explicit launchers only. The v0.201 scorecard authorizes only the conditional next step `one structure-finish material private comparator` if the queued v0.202 prompt independently passes. No water shader pipeline is added, the default launcher remains procedural, browser runtime remains untouched, and the legacy shell is preserved as comparator/fallback.
 
 ## Archive Candidates
 
@@ -311,4 +320,4 @@ Deletion requires the explicit safe-only cleanup path.
 
 ## Manual-Review Candidates And Unknown Files
 
-Unknown files are preserved and block cleanup. v0.192 cleanup dry run must remain comparator-scope and fail closed on unknown files; v0.191, v0.190, and v0.189 found `0` cleanup unknown blockers in the comparator-scope dry runs. The `684` manual-review candidates from the v0.188 broad inventory remain preserved and are not safe-delete candidates. Broad deletion or archive moves are not authorized by this index.
+Unknown files are preserved and block cleanup. v0.201 cleanup evidence found `0` unknown blockers, preserved `749` manual-review candidates, and safely removed only `20` known Godot-generated sidecars. Broad deletion or archive moves are not authorized by this index.

@@ -1,12 +1,12 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-06-10 v0.200 Godot Salto shell-v2 restrained grounding lighting sparse props hardening
+Last updated: 2026-06-10 v0.201 Godot Salto mesh-compositor full cohesion QA cleanup runtime freeze
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
 ## Current Continuation Note
 
-The latest work is v0.200 Godot Salto shell-v2 restrained grounding, lighting, and sparse props hardening. It changes only the isolated shell-v2 mesh-compositor review path: the v0.199 structure-hierarchy path remains a comparator while v0.200 adds procedural-only overcast value balance, contact shadows, sparse rocks, moss/grass accents, small timber/stone edge props, bank-edge accents, and warm hearth cues behind a new explicit opt-in launcher. It generates zero images, adds zero imported art slots, preserves default and prior launchers, keeps the browser runtime untouched, keeps character-slot integrations frozen, benchmarks green against the v0.199 structure shell comparator, and changes no gameplay/pathing/collisions/objectives/AI/saves/stable IDs.
+The latest work is v0.201 Godot Salto mesh-compositor full cohesion QA, cleanup packet, and runtime-freeze stop. It changes no runtime code, generates zero images, adds zero imported art slots, preserves default and prior launchers, keeps the browser runtime untouched, keeps character-slot integrations frozen, validates the existing v0.200 final shell-v2 mesh-compositor posture through Windows-side QA, safely removes only known Godot-generated sidecars, and selects exactly `one structure-finish material private comparator` as the only conditional next queued step.
 
 ## Project Identity
 
@@ -106,7 +106,37 @@ Project Identity continuation note: v0.199 now supersedes the older no-v0.199 ta
 
 Project Identity continuation note: v0.200 now supersedes the older no-v0.200 tail above because the queued prompt explicitly authorized visual-only restrained environment grounding, lighting, and sparse props hardening after v0.199 was committed, pushed, clean, synced, and remote-green. v0.200 generates zero images, adds zero imported art slots, preserves the v0.199 structure-hierarchy comparator and the v0.198 wet-granite mesh comparator, keeps the default launcher procedural and all prior launchers unchanged, keeps browser runtime untouched, changes no gameplay/pathing/collisions/objectives/AI/saves/stable IDs, and exports the compact manual-review PNG pack under `artifacts/manual-review/v0200-grounding-lighting/`.
 
-Current status override: v0.200 Godot Salto shell-v2 restrained grounding, lighting, and sparse props hardening is the active handoff layer on top of the v0.199 structure-hierarchy comparator. Character-slot integration remains frozen after five selected opt-in slots. The Barrosan foothold ground and road materials remain opt-in only, the default launcher remains procedural, browser runtime remains untouched, and the selected bridge-riverbank material remains scoped to bridge abutments, bridge landing aprons, and short riverbank retaining edges only. Continue to v0.201 only if the queued prompt sequence is still explicitly active and v0.200 is clean, pushed, synced, and remote-green.
+Project Identity continuation note: v0.201 now supersedes the older no-v0.201 tail above because the queued prompt explicitly authorized full mesh-compositor cohesion QA, cleanup packet, and runtime-freeze work after v0.200 was committed, pushed, clean, synced, and remote-green. v0.201 generates zero images, adds zero imported art slots, changes no runtime code, preserves all launchers, keeps browser runtime untouched, validates the current player-facing Godot Salto review posture, safely removes only known Godot-generated sidecars, exports the compact manual-review PNG pack under `artifacts/manual-review/v0201-final-cohesion/`, and authorizes only the conditional next step `one structure-finish material private comparator`.
+
+Current status override: v0.201 Godot Salto mesh-compositor full cohesion QA cleanup runtime freeze is the active handoff layer on top of the v0.200 grounding-lighting path. Character-slot integration remains frozen after five selected opt-in slots. The Barrosan foothold ground and road materials remain opt-in only, the default launcher remains procedural, browser runtime remains untouched, and the selected bridge-riverbank material remains scoped to bridge abutments, bridge landing aprons, and short riverbank retaining edges only. Continue to v0.202 only if the queued prompt sequence is still explicitly active, v0.201 is clean, pushed, synced, remote-green, and the v0.202 prompt remains exactly the conditional structure-finish private comparator.
+
+## Current v0.201 Full Cohesion QA Cleanup Runtime Freeze - 2026-06-10
+
+Status: v0.201 documentation, QA, cleanup, and runtime-freeze checkpoint is the active handoff layer. It makes no runtime code change and no art-slot change.
+
+Key files:
+
+- `docs/V0201_FULL_COHESION_QA.md`
+- `docs/V0201_CLEANUP_RUNTIME_FREEZE_PACKET.md`
+- `docs/V0201_NEXT_STEP_SCORECARD.md`
+- `docs/V0201_IMPLEMENTATION_REPORT.md`
+- `artifacts/manual-review/v0201-final-cohesion/`
+
+Current decision:
+
+- Keep v0.200 grounding-lighting isolated behind explicit review/validate/capture/benchmark launchers.
+- Preserve legacy shell, v0.195 shell-v2, v0.196 mesh-compositor baseline, v0.197 mesh QA path, v0.198 wet-granite mesh path, v0.199 structure-hierarchy path, and v0.200 grounding-lighting path as comparators/fallbacks.
+- Freeze runtime visual work for Emmanuel review.
+- Authorize only `one structure-finish material private comparator` as the conditional next queued step.
+- Keep gameplay, pathing, collisions, objectives, AI, saves, stable IDs, default launcher, prior launchers, and browser runtime unchanged.
+
+Validation evidence:
+
+- `PASS_V0201_FULL_COHESION_QA`
+- `PASS_V0201_CLEANUP_RUNTIME_FREEZE_PACKET`
+- `PASS_V0201_NEXT_STEP_SCORECARD`
+- `PASS_V0167_SALTO_EXPERIMENTAL_ARTIFACT_RETENTION`
+- Manual-review evidence under `artifacts/manual-review/v0201-final-cohesion/`.
 
 ## Current v0.200 Grounding Lighting Sparse Props Hardening - 2026-06-10
 
