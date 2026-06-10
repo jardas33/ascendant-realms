@@ -94,6 +94,7 @@ const SCRIPT_ARG_PREFIXES := [
 	"--structure-finish-material-expected-sha256=",
 	"--structure-finish-material-fallback-mode=",
 	"--structure-finish-material-uv-scale=",
+	"--salto-shell-v2-grounding-props",
 	"--real-input-smoke",
 	"--real-input-validate",
 	"--site-semantics-smoke",
@@ -1012,13 +1013,17 @@ func _configure_worker_art_for_active_scene() -> void:
 		active_scene.configure_environment_shell_v2_environmental_cohesion(_script_args().has("--salto-shell-v2-environmental-cohesion"))
 	if active_scene.has_method("configure_environment_shell_v2_structure_material"):
 		active_scene.configure_environment_shell_v2_structure_material(_script_args().has("--salto-shell-v2-structure-material"))
+	if active_scene.has_method("configure_environment_shell_v2_grounding_props"):
+		active_scene.configure_environment_shell_v2_grounding_props(_script_args().has("--salto-shell-v2-grounding-props"))
 
 func _apply_review_framing_for_active_scene() -> void:
 	if not _script_args().has("--salto-three-slot-review-framing") and not _script_args().has("--salto-four-slot-review-framing") and not _script_args().has("--salto-five-slot-review-framing"):
 		return
 	if active_mode != MODE_25D or active_scene == null or not is_instance_valid(active_scene):
 		return
-	if _script_args().has("--salto-shell-v2-structure-material") and active_scene.has_method("apply_environment_shell_v2_structure_material_framing"):
+	if _script_args().has("--salto-shell-v2-grounding-props") and active_scene.has_method("apply_environment_shell_v2_grounding_props_framing"):
+		active_scene.apply_environment_shell_v2_grounding_props_framing()
+	elif _script_args().has("--salto-shell-v2-structure-material") and active_scene.has_method("apply_environment_shell_v2_structure_material_framing"):
 		active_scene.apply_environment_shell_v2_structure_material_framing()
 	elif _script_args().has("--salto-shell-v2-environmental-cohesion") and active_scene.has_method("apply_environment_shell_v2_environmental_cohesion_framing"):
 		active_scene.apply_environment_shell_v2_environmental_cohesion_framing()
@@ -4848,6 +4853,8 @@ func _apply_player_slice_action(action: String) -> Dictionary:
 
 func _player_capture_checkpoint() -> String:
 	var normalized_root := _artifact_root_from_args().replace("\\", "/")
+	if normalized_root.contains("/v0205"):
+		return "v0.205"
 	if normalized_root.contains("/v0204"):
 		return "v0.204"
 	if normalized_root.contains("/v0203"):
@@ -4915,9 +4922,20 @@ func _player_capture_checkpoint() -> String:
 	return "v0.124"
 
 func _is_bounded_microloop_checkpoint() -> bool:
-	return ["v0.129", "v0.130", "v0.160", "v0.162", "v0.164", "v0.166", "v0.168", "v0.169", "v0.170", "v0.173", "v0.174", "v0.177", "v0.178", "v0.179", "v0.181", "v0.184", "v0.185", "v0.186", "v0.187", "v0.193", "v0.194", "v0.195", "v0.196", "v0.197", "v0.198", "v0.199", "v0.200", "v0.203", "v0.204"].has(_player_capture_checkpoint())
+	return ["v0.129", "v0.130", "v0.160", "v0.162", "v0.164", "v0.166", "v0.168", "v0.169", "v0.170", "v0.173", "v0.174", "v0.177", "v0.178", "v0.179", "v0.181", "v0.184", "v0.185", "v0.186", "v0.187", "v0.193", "v0.194", "v0.195", "v0.196", "v0.197", "v0.198", "v0.199", "v0.200", "v0.203", "v0.204", "v0.205"].has(_player_capture_checkpoint())
 
 func _player_capture_steps() -> Array[Dictionary]:
+	if _player_capture_checkpoint() == "v0.205":
+		return [
+			{"id": "overview", "label": "Grounding props tactical overview", "action": "battle_default"},
+			{"id": "ground_roads_props", "label": "Ground, roads and sparse props", "action": "quarry_objective"},
+			{"id": "river_bridge_grounding", "label": "River, banks and bridge grounding", "action": "v0195_bridge_close"},
+			{"id": "structures_grounding", "label": "Structures and foundations grounded", "action": "worker_selected"},
+			{"id": "units_grounding", "label": "Units grounded with readable markers", "action": "squad_selected"},
+			{"id": "ashen_combat_readability", "label": "Ashen combat readability", "action": "ashen_pressure_wave"},
+			{"id": "minimap_pan_zoom", "label": "Minimap, pan and zoom posture", "action": "camera_max_zoom"},
+			{"id": "results", "label": "Results path preserved", "action": "results"}
+		]
 	if _player_capture_checkpoint() == "v0.204":
 		return [
 			{"id": "overview", "label": "Structure-finish material tactical overview", "action": "battle_default"},
