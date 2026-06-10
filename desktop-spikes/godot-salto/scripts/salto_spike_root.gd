@@ -68,6 +68,7 @@ const SCRIPT_ARG_PREFIXES := [
 	"--salto-shell-v2-mesh-compositor",
 	"--salto-shell-v2-structure-hierarchy",
 	"--salto-shell-v2-grounding-lighting",
+	"--salto-shell-v2-environmental-cohesion",
 	"--ground-material-opt-in",
 	"--ground-material-source=",
 	"--ground-material-metadata=",
@@ -998,13 +999,17 @@ func _configure_worker_art_for_active_scene() -> void:
 		active_scene.configure_environment_shell_v2_structure_hierarchy(_script_args().has("--salto-shell-v2-structure-hierarchy"))
 	if active_scene.has_method("configure_environment_shell_v2_grounding_lighting"):
 		active_scene.configure_environment_shell_v2_grounding_lighting(_script_args().has("--salto-shell-v2-grounding-lighting"))
+	if active_scene.has_method("configure_environment_shell_v2_environmental_cohesion"):
+		active_scene.configure_environment_shell_v2_environmental_cohesion(_script_args().has("--salto-shell-v2-environmental-cohesion"))
 
 func _apply_review_framing_for_active_scene() -> void:
 	if not _script_args().has("--salto-three-slot-review-framing") and not _script_args().has("--salto-four-slot-review-framing") and not _script_args().has("--salto-five-slot-review-framing"):
 		return
 	if active_mode != MODE_25D or active_scene == null or not is_instance_valid(active_scene):
 		return
-	if _script_args().has("--salto-shell-v2-grounding-lighting") and active_scene.has_method("apply_environment_shell_v2_grounding_lighting_framing"):
+	if _script_args().has("--salto-shell-v2-environmental-cohesion") and active_scene.has_method("apply_environment_shell_v2_environmental_cohesion_framing"):
+		active_scene.apply_environment_shell_v2_environmental_cohesion_framing()
+	elif _script_args().has("--salto-shell-v2-grounding-lighting") and active_scene.has_method("apply_environment_shell_v2_grounding_lighting_framing"):
 		active_scene.apply_environment_shell_v2_grounding_lighting_framing()
 	elif _script_args().has("--salto-shell-v2-structure-hierarchy") and active_scene.has_method("apply_environment_shell_v2_structure_hierarchy_framing"):
 		active_scene.apply_environment_shell_v2_structure_hierarchy_framing()
