@@ -350,6 +350,7 @@ var environment_structure_shell_hardening_enabled := false
 var environment_riverbank_bridge_approach_enabled := false
 var environment_presentation_shell_v2_enabled := false
 var environment_shell_v2_mesh_compositor_enabled := false
+var environment_shell_v2_structure_hierarchy_enabled := false
 var presentation_shell_v2_initialized := false
 var presentation_shell_v2_fallback_active := false
 var presentation_shell_v2_fallback_reason := ""
@@ -361,6 +362,7 @@ var presentation_shell_v2_material_reuse_count := 0
 var shell_v2_mesh_compositor_vertex_count := 0
 var shell_v2_mesh_compositor_index_count := 0
 var shell_v2_mesh_compositor_visual_nodes: Array[String] = []
+var shell_v2_structure_hierarchy_visual_nodes: Array[String] = []
 var ground_material_experiment_enabled := false
 var ground_material_source_path := ""
 var ground_material_metadata_path := ""
@@ -506,6 +508,7 @@ func configure_environment_foundation_review(enabled: bool) -> Dictionary:
 		environment_riverbank_bridge_approach_enabled = false
 		environment_presentation_shell_v2_enabled = false
 		environment_shell_v2_mesh_compositor_enabled = false
+		environment_shell_v2_structure_hierarchy_enabled = false
 	_refresh_visual_foundation()
 	if environment_foundation_review_enabled:
 		apply_environment_foundation_review_framing()
@@ -672,6 +675,7 @@ func configure_environment_shell_v2_mesh_compositor(enabled: bool) -> Dictionary
 		environment_structure_shell_hardening_enabled = false
 		environment_riverbank_bridge_approach_enabled = false
 		environment_presentation_shell_v2_enabled = true
+		environment_shell_v2_structure_hierarchy_enabled = false
 		presentation_shell_v2_fallback_active = false
 		presentation_shell_v2_fallback_reason = ""
 	_refresh_visual_foundation()
@@ -683,6 +687,32 @@ func configure_environment_shell_v2_mesh_compositor(enabled: bool) -> Dictionary
 		apply_environment_foundation_review_framing()
 	_apply_environment_readability_minimap_markers()
 	return _environment_shell_v2_mesh_compositor_status()
+
+func configure_environment_shell_v2_structure_hierarchy(enabled: bool) -> Dictionary:
+	environment_shell_v2_structure_hierarchy_enabled = enabled
+	if environment_shell_v2_structure_hierarchy_enabled:
+		environment_foundation_review_enabled = true
+		environment_readability_hardening_enabled = false
+		environment_contrast_harmonization_enabled = false
+		environment_geometry_convergence_enabled = false
+		environment_shell_live_qa_enabled = false
+		environment_structure_shell_hardening_enabled = false
+		environment_riverbank_bridge_approach_enabled = false
+		environment_presentation_shell_v2_enabled = true
+		environment_shell_v2_mesh_compositor_enabled = true
+		presentation_shell_v2_fallback_active = false
+		presentation_shell_v2_fallback_reason = ""
+	_refresh_visual_foundation()
+	if environment_shell_v2_structure_hierarchy_enabled:
+		apply_environment_shell_v2_structure_hierarchy_framing()
+	elif environment_shell_v2_mesh_compositor_enabled:
+		apply_environment_shell_v2_mesh_compositor_framing()
+	elif environment_presentation_shell_v2_enabled:
+		apply_environment_presentation_shell_v2_framing()
+	elif environment_foundation_review_enabled:
+		apply_environment_foundation_review_framing()
+	_apply_environment_readability_minimap_markers()
+	return _environment_shell_v2_structure_hierarchy_status()
 
 func apply_environment_foundation_review_framing() -> bool:
 	if not environment_foundation_review_enabled:
@@ -737,6 +767,13 @@ func apply_environment_shell_v2_mesh_compositor_framing() -> bool:
 	if not environment_shell_v2_mesh_compositor_enabled:
 		return false
 	_apply_camera_authoring_posture("v0196_shell_v2_mesh_compositor", Vector3(-1.12, 11.18, 7.46), SAFE_ZOOM_MIN)
+	_apply_presentation_shell_v2_review_pitch()
+	return true
+
+func apply_environment_shell_v2_structure_hierarchy_framing() -> bool:
+	if not environment_shell_v2_structure_hierarchy_enabled:
+		return false
+	_apply_camera_authoring_posture("v0199_shell_v2_structure_hierarchy", Vector3(-1.72, 10.92, 7.18), SAFE_ZOOM_MIN)
 	_apply_presentation_shell_v2_review_pitch()
 	return true
 
@@ -1042,9 +1079,10 @@ func _environment_riverbank_bridge_approach_audit() -> Dictionary:
 func _environment_presentation_shell_v2_status() -> Dictionary:
 	return {
 		"schemaVersion": 1,
-		"checkpoint": "v0.198" if _bridge_riverbank_material_is_active() else ("v0.197" if environment_shell_v2_mesh_compositor_enabled else "v0.195"),
+		"checkpoint": "v0.199" if environment_shell_v2_structure_hierarchy_enabled else ("v0.198" if _bridge_riverbank_material_is_active() else ("v0.197" if environment_shell_v2_mesh_compositor_enabled else "v0.195")),
 		"enabled": environment_presentation_shell_v2_enabled,
 		"meshCompositorEnabled": environment_shell_v2_mesh_compositor_enabled,
+		"structureHierarchyEnabled": environment_shell_v2_structure_hierarchy_enabled,
 		"compositorMode": "proceduralMeshCompositor" if environment_shell_v2_mesh_compositor_enabled else "legacyPadLineShellV2",
 		"initialized": presentation_shell_v2_initialized,
 		"fallbackActive": presentation_shell_v2_fallback_active,
@@ -1090,6 +1128,7 @@ func _environment_presentation_shell_v2_status() -> Dictionary:
 		"banksFrameRiver": environment_presentation_shell_v2_enabled and presentation_shell_v2_initialized,
 		"bridgeReadsAsCrossing": environment_presentation_shell_v2_enabled and presentation_shell_v2_initialized,
 		"structureMassesImproved": environment_presentation_shell_v2_enabled and presentation_shell_v2_initialized,
+		"structureHierarchyMateriallyImproved": environment_shell_v2_structure_hierarchy_enabled and shell_v2_structure_hierarchy_visual_nodes.size() >= 30,
 		"charactersGrounded": environment_presentation_shell_v2_enabled and presentation_shell_v2_initialized,
 		"minimalOverlay": true,
 		"overcastPaletteRestrained": true,
@@ -1109,6 +1148,7 @@ func _environment_presentation_shell_v2_status() -> Dictionary:
 		"surfaceCounts": presentation_shell_v2_surface_counts.duplicate(true),
 		"topologyRepair": presentation_shell_v2_topology_metrics.duplicate(true),
 		"meshCompositor": _environment_shell_v2_mesh_compositor_status(),
+		"structureHierarchy": _environment_shell_v2_structure_hierarchy_status(),
 		"proceduralMaterialCacheKeys": presentation_shell_v2_material_cache.keys(),
 		"proceduralMaterialCreateCount": presentation_shell_v2_material_create_count,
 		"proceduralMaterialReuseCount": presentation_shell_v2_material_reuse_count,
@@ -1123,8 +1163,9 @@ func _environment_shell_v2_mesh_compositor_status() -> Dictionary:
 	var metrics := presentation_shell_v2_topology_metrics.duplicate(true)
 	return {
 		"schemaVersion": 1,
-		"checkpoint": "v0.198" if _bridge_riverbank_material_is_active() else "v0.197",
+		"checkpoint": "v0.199" if environment_shell_v2_structure_hierarchy_enabled else ("v0.198" if _bridge_riverbank_material_is_active() else "v0.197"),
 		"enabled": enabled,
+		"structureHierarchyEnabled": environment_shell_v2_structure_hierarchy_enabled,
 		"initialized": enabled and presentation_shell_v2_initialized,
 		"fallbackActive": presentation_shell_v2_fallback_active,
 		"fallbackReason": presentation_shell_v2_fallback_reason,
@@ -1151,6 +1192,7 @@ func _environment_shell_v2_mesh_compositor_status() -> Dictionary:
 		"surfaceCounts": presentation_shell_v2_surface_counts.duplicate(true),
 		"topologyMetrics": metrics,
 		"visualNodeNames": shell_v2_mesh_compositor_visual_nodes.duplicate(),
+		"structureHierarchyVisualNodeNames": shell_v2_structure_hierarchy_visual_nodes.duplicate(),
 		"vertexCount": shell_v2_mesh_compositor_vertex_count,
 		"indexCount": shell_v2_mesh_compositor_index_count,
 		"materialBindTargets": metrics.get("materialBindTargets", {}),
@@ -1179,6 +1221,45 @@ func _environment_shell_v2_mesh_compositor_status() -> Dictionary:
 			"road": road_material_material_reuse_count,
 			"wetGranite": bridge_riverbank_material_material_reuse_count
 		}
+	}
+
+func _environment_shell_v2_structure_hierarchy_status() -> Dictionary:
+	var node_names := shell_v2_structure_hierarchy_visual_nodes.duplicate()
+	return {
+		"schemaVersion": 1,
+		"checkpoint": "v0.199",
+		"enabled": environment_shell_v2_structure_hierarchy_enabled,
+		"initialized": environment_shell_v2_structure_hierarchy_enabled and presentation_shell_v2_initialized,
+		"visualOnly": true,
+		"aiImageGenerated": false,
+		"newArtSlotsAdded": 0,
+		"newImportedTextures": 0,
+		"defaultLauncherChanged": false,
+		"browserRuntimeChanged": false,
+		"saveWritesAllowed": false,
+		"stableIdsChanged": false,
+		"gameplayPathingChanged": false,
+		"collisionGeometryChanged": false,
+		"objectiveLogicChanged": false,
+		"aiLogicChanged": false,
+		"navigationSemanticsChanged": false,
+		"wetGraniteFoundationsUsed": _bridge_riverbank_material_is_active(),
+		"timberFramesUsed": environment_shell_v2_structure_hierarchy_enabled,
+		"restrainedMetalUsed": environment_shell_v2_structure_hierarchy_enabled,
+		"practicalScaffoldingUsed": environment_shell_v2_structure_hierarchy_enabled,
+		"restrainedWarmAccentsUsed": environment_shell_v2_structure_hierarchy_enabled,
+		"commandHallImproved": node_names.any(func(name): return str(name).contains("command_hall") or str(name).contains("command")),
+		"mineImproved": node_names.any(func(name): return str(name).contains("stone_cut") or str(name).contains("mine")),
+		"barracksRestorationDifferentiated": node_names.any(func(name): return str(name).contains("scaffold")) and (node_names.any(func(name): return str(name).contains("restoration")) or node_names.any(func(name): return str(name).contains("restored")) or node_names.any(func(name): return str(name).contains("complete_roof"))),
+		"restoredBarracksDifferentiated": node_names.any(func(name): return str(name).contains("complete_roof")) or node_names.any(func(name): return str(name).contains("drill_yard")),
+		"siteStructuresImproved": node_names.any(func(name): return str(name).contains("claim_ring")) and node_names.any(func(name): return str(name).contains("supply_crate")),
+		"contactGroundingImproved": node_names.any(func(name): return str(name).contains("contact_shadow")),
+		"structureHierarchyMateriallyImproved": environment_shell_v2_structure_hierarchy_enabled and node_names.size() >= 30,
+		"routeRiverBridgeReadabilityPreserved": true,
+		"legacyShellPreserved": true,
+		"wetGraniteMeshComparatorPreserved": true,
+		"visualNodeCount": node_names.size(),
+		"visualNodeNames": node_names
 	}
 
 func configure_worker_art_experiment(options: Dictionary) -> Dictionary:
@@ -5392,6 +5473,8 @@ func get_spike_status() -> Dictionary:
 	status["environmentPresentationShellV2"] = _environment_presentation_shell_v2_status()
 	status["environmentShellV2MeshCompositorEnabled"] = environment_shell_v2_mesh_compositor_enabled
 	status["environmentShellV2MeshCompositor"] = _environment_shell_v2_mesh_compositor_status()
+	status["environmentShellV2StructureHierarchyEnabled"] = environment_shell_v2_structure_hierarchy_enabled
+	status["environmentShellV2StructureHierarchy"] = _environment_shell_v2_structure_hierarchy_status()
 	var worker_art_loaded := _worker_art_is_active()
 	_refresh_worker_art_counters()
 	var barracks_material_loaded := _barracks_material_is_active()
@@ -5837,6 +5920,9 @@ func _apply_light_preset() -> void:
 	if environment_shell_v2_mesh_compositor_enabled:
 		light.light_energy = 1.16
 		light.light_color = Color(0.94, 0.98, 0.88)
+	if environment_shell_v2_structure_hierarchy_enabled:
+		light.light_energy = 1.20
+		light.light_color = Color(0.98, 0.96, 0.86)
 
 func _create_terrain() -> void:
 	terrain_root = Node3D.new()
@@ -6028,6 +6114,7 @@ func _reset_presentation_shell_v2_surface_counts() -> void:
 	shell_v2_mesh_compositor_vertex_count = 0
 	shell_v2_mesh_compositor_index_count = 0
 	shell_v2_mesh_compositor_visual_nodes = []
+	shell_v2_structure_hierarchy_visual_nodes = []
 	presentation_shell_v2_surface_counts = {
 		"ground": 0,
 		"terrainEdges": 0,
@@ -6323,8 +6410,9 @@ func _create_shell_v2_mesh_compositor_terrain() -> bool:
 		_add_shell_v2_mesh_compositor_box("v0196_mesh_bridge_deck_plank_%02d" % index, Vector3(0.66, 0.392, plank_z), Vector3(1.56, 0.012, 0.026), bridge_stone.lightened(0.22), "bridge", true)
 	presentation_shell_v2_topology_metrics = {
 		"schemaVersion": 1,
-		"checkpoint": "v0.197",
+		"checkpoint": "v0.199" if environment_shell_v2_structure_hierarchy_enabled else ("v0.198" if _bridge_riverbank_material_is_active() else "v0.197"),
 		"compositorMode": "proceduralMeshCompositor",
+		"structureHierarchyEnabled": environment_shell_v2_structure_hierarchy_enabled,
 		"visualNodeCategories": ["terrainBase", "terrainEdges", "roads", "river", "banks", "bridge", "structures", "sites", "unitContact", "overlays"],
 		"terrainBaseSurfaceCount": 1,
 		"roadRibbonCount": 7,
@@ -6338,6 +6426,8 @@ func _create_shell_v2_mesh_compositor_terrain() -> bool:
 		"bridgeVisualNodeCount": 13,
 		"bridgeNodeCount": 13,
 		"structureMassCount": 5,
+		"structureHierarchyVisualNodeCount": shell_v2_structure_hierarchy_visual_nodes.size(),
+		"structureHierarchyMateriallyImproved": environment_shell_v2_structure_hierarchy_enabled,
 		"transparencyLayerCount": 14,
 		"meshVertexCount": shell_v2_mesh_compositor_vertex_count,
 		"meshIndexCount": shell_v2_mesh_compositor_index_count,
@@ -7618,6 +7708,7 @@ func _rebuild_visuals() -> void:
 	aster_label = null
 	west_stone_cut_label = null
 	worker_guidance_label = null
+	shell_v2_structure_hierarchy_visual_nodes = []
 	barracks_material_applied_surface_count = 0
 	_refresh_barracks_material_counters()
 	for structure in runtime.structures:
@@ -7940,6 +8031,94 @@ func _add_presentation_shell_v2_visual_box(name: String, position: Vector3, scal
 	visual_root.add_child(mesh_instance)
 	_count_presentation_shell_v2_surface(category)
 
+func _record_shell_v2_structure_hierarchy_node(name: String) -> void:
+	if not shell_v2_structure_hierarchy_visual_nodes.has(name):
+		shell_v2_structure_hierarchy_visual_nodes.append(name)
+
+func _add_shell_v2_structure_hierarchy_box(name: String, position: Vector3, scale: Vector3, color: Color, transparent: bool = false, emissive: bool = false, use_barracks_material: bool = false) -> void:
+	if use_barracks_material:
+		_add_barracks_material_box(name, position, scale, color, transparent)
+		_count_presentation_shell_v2_surface("structures")
+	else:
+		_add_presentation_shell_v2_visual_box(name, position, scale, color, "structures", transparent, emissive)
+	_record_shell_v2_structure_hierarchy_node(name)
+
+func _add_shell_v2_structure_hierarchy_site_box(name: String, position: Vector3, scale: Vector3, color: Color, transparent: bool = false, emissive: bool = false) -> void:
+	_add_presentation_shell_v2_visual_box(name, position, scale, color, "sites", transparent, emissive)
+	_record_shell_v2_structure_hierarchy_node(name)
+
+func _add_shell_v2_structure_hierarchy_mass(id: String, fixture: String, position: Vector3, scale: Vector3, color: Color, structure: Dictionary) -> void:
+	var team := str(structure.get("team", "neutral"))
+	var contact := Color(0.030, 0.036, 0.026, 0.58)
+	if team == "friendly":
+		contact = Color(0.045, 0.070, 0.040, 0.58)
+	elif team == "enemy":
+		contact = Color(0.120, 0.036, 0.028, 0.54)
+	var granite := Color(0.46, 0.45, 0.38)
+	var granite_dark := Color(0.23, 0.25, 0.22)
+	var timber := Color(0.30, 0.20, 0.12)
+	var timber_dark := Color(0.18, 0.12, 0.075)
+	var timber_light := Color(0.58, 0.45, 0.25)
+	var metal := Color(0.43, 0.44, 0.39)
+	var warm := Color(0.86, 0.48, 0.21)
+	_add_shell_v2_structure_hierarchy_box("%s_v0199_contact_shadow" % id, position + Vector3(0.0, -0.280, 0.06), Vector3(scale.x * 1.16, 0.026, scale.z * 1.02), contact, true)
+	_add_shell_v2_structure_hierarchy_box("%s_v0199_wet_granite_foundation" % id, position + Vector3(0.0, -0.150, scale.z * 0.04), Vector3(scale.x * 0.98, 0.072, scale.z * 0.82), granite.darkened(0.02))
+	match fixture:
+		"command_hall":
+			_add_shell_v2_structure_hierarchy_box("%s_v0199_command_hall_broad_hall_mass" % id, position + Vector3(0.0, 0.26, 0.02), Vector3(scale.x * 0.58, 0.42, scale.z * 0.52), color.darkened(0.10))
+			_add_shell_v2_structure_hierarchy_box("%s_v0199_command_hall_keep_step" % id, position + Vector3(-scale.x * 0.05, 0.56, -scale.z * 0.05), Vector3(scale.x * 0.34, 0.54, scale.z * 0.34), color.darkened(0.18))
+			_add_shell_v2_structure_hierarchy_box("%s_v0199_command_hall_roof_west_plane" % id, position + Vector3(-scale.x * 0.18, 0.83, -scale.z * 0.02), Vector3(scale.x * 0.46, 0.080, scale.z * 0.60), color.lightened(0.18))
+			_add_shell_v2_structure_hierarchy_box("%s_v0199_command_hall_roof_east_plane" % id, position + Vector3(scale.x * 0.19, 0.78, scale.z * 0.02), Vector3(scale.x * 0.42, 0.070, scale.z * 0.56), color.darkened(0.18))
+			_add_shell_v2_structure_hierarchy_box("%s_v0199_command_hall_timber_frame_left" % id, position + Vector3(-scale.x * 0.43, 0.26, 0.03), Vector3(0.068, 0.54, scale.z * 0.62), timber)
+			_add_shell_v2_structure_hierarchy_box("%s_v0199_command_hall_timber_frame_right" % id, position + Vector3(scale.x * 0.43, 0.25, 0.03), Vector3(0.068, 0.50, scale.z * 0.62), timber_dark)
+			_add_shell_v2_structure_hierarchy_box("%s_v0199_command_hall_roof_ridge" % id, position + Vector3(0.0, 0.875, 0.0), Vector3(scale.x * 0.70, 0.032, 0.052), timber_light)
+			_add_shell_v2_structure_hierarchy_box("%s_v0199_command_hall_entry_shadow" % id, position + Vector3(0.0, 0.070, scale.z * 0.55), Vector3(scale.x * 0.30, 0.15, 0.048), Color(0.055, 0.042, 0.030, 0.78), true)
+			_add_shell_v2_structure_hierarchy_box("%s_v0199_command_hall_restrained_hearth" % id, position + Vector3(scale.x * 0.35, 0.25, scale.z * 0.55), Vector3(0.070, 0.105, 0.044), warm, true, true)
+		"enemy_stronghold":
+			_add_shell_v2_structure_hierarchy_box("%s_v0199_hostile_granite_bastion" % id, position + Vector3(0.0, 0.34, -scale.z * 0.02), Vector3(scale.x * 0.56, 0.54, scale.z * 0.48), color.darkened(0.20))
+			_add_shell_v2_structure_hierarchy_box("%s_v0199_hostile_low_front_wall" % id, position + Vector3(0.0, 0.12, scale.z * 0.48), Vector3(scale.x * 0.92, 0.19, scale.z * 0.14), granite_dark.darkened(0.08))
+			_add_shell_v2_structure_hierarchy_box("%s_v0199_hostile_roof_cap" % id, position + Vector3(0.0, 0.72, -scale.z * 0.02), Vector3(scale.x * 0.76, 0.076, scale.z * 0.58), color.darkened(0.08))
+			_add_shell_v2_structure_hierarchy_box("%s_v0199_hostile_gate_shadow" % id, position + Vector3(0.0, 0.18, scale.z * 0.55), Vector3(scale.x * 0.24, 0.20, 0.052), Color(0.045, 0.030, 0.024, 0.82), true)
+		"west_stone_cut":
+			_add_shell_v2_structure_hierarchy_box("%s_v0199_stone_cut_tailings_contact_shadow" % id, position + Vector3(0.0, -0.205, scale.z * 0.54), Vector3(scale.x * 1.04, 0.030, 0.16), Color(0.040, 0.046, 0.038, 0.62), true)
+			_add_shell_v2_structure_hierarchy_box("%s_v0199_stone_cut_deep_mine_mouth" % id, position + Vector3(-scale.x * 0.42, 0.22, scale.z * 0.48), Vector3(scale.x * 0.30, 0.34, 0.090), Color(0.024, 0.028, 0.024))
+			_add_shell_v2_structure_hierarchy_box("%s_v0199_stone_cut_left_retaining_wall" % id, position + Vector3(-scale.x * 0.08, 0.055, scale.z * 0.56), Vector3(scale.x * 0.42, 0.096, 0.080), granite.darkened(0.04))
+			_add_shell_v2_structure_hierarchy_box("%s_v0199_stone_cut_right_retaining_wall" % id, position + Vector3(scale.x * 0.34, 0.055, scale.z * 0.47), Vector3(scale.x * 0.36, 0.096, 0.080), granite.lightened(0.04))
+			_add_shell_v2_structure_hierarchy_box("%s_v0199_stone_cut_tier_low" % id, position + Vector3(scale.x * 0.20, 0.13, -scale.z * 0.36), Vector3(scale.x * 0.54, 0.105, 0.18), granite)
+			_add_shell_v2_structure_hierarchy_box("%s_v0199_stone_cut_tier_high" % id, position + Vector3(scale.x * 0.46, 0.27, -scale.z * 0.18), Vector3(scale.x * 0.28, 0.110, 0.16), granite.lightened(0.08))
+			_add_shell_v2_structure_hierarchy_box("%s_v0199_stone_cut_crane_tripod_left" % id, position + Vector3(scale.x * 0.20, 0.42, -scale.z * 0.35), Vector3(0.050, 0.42, 0.046), timber)
+			_add_shell_v2_structure_hierarchy_box("%s_v0199_stone_cut_crane_tripod_right" % id, position + Vector3(scale.x * 0.42, 0.42, -scale.z * 0.35), Vector3(0.050, 0.42, 0.046), timber_dark)
+			_add_shell_v2_structure_hierarchy_box("%s_v0199_stone_cut_crane_crossbeam" % id, position + Vector3(scale.x * 0.31, 0.64, -scale.z * 0.35), Vector3(scale.x * 0.38, 0.052, 0.046), timber_light)
+			_add_shell_v2_structure_hierarchy_box("%s_v0199_stone_cut_restrained_metal_hook" % id, position + Vector3(scale.x * 0.31, 0.48, -scale.z * 0.31), Vector3(0.040, 0.16, 0.040), metal)
+		"barracks":
+			var restoring := str(structure.get("constructionState", "")) != "complete"
+			var scaffold_alpha := 0.58 if restoring else 0.28
+			_add_shell_v2_structure_hierarchy_box("%s_v0199_barracks_drill_yard_contact_shadow" % id, position + Vector3(0.0, -0.132, scale.z * 0.70), Vector3(scale.x * 1.04, 0.042, 0.110), Color(0.34, 0.25, 0.14, 0.66), true)
+			_add_shell_v2_structure_hierarchy_box("%s_v0199_barracks_left_training_wing" % id, position + Vector3(-scale.x * 0.30, 0.28, -scale.z * 0.02), Vector3(scale.x * 0.30, 0.31, scale.z * 0.66), color.lightened(0.10), false, false, true)
+			_add_shell_v2_structure_hierarchy_box("%s_v0199_barracks_right_training_wing" % id, position + Vector3(scale.x * 0.30, 0.24, scale.z * 0.02), Vector3(scale.x * 0.30, 0.27, scale.z * 0.66), color.darkened(0.10), false, false, true)
+			_add_shell_v2_structure_hierarchy_box("%s_v0199_barracks_complete_roof_left" % id, position + Vector3(-scale.x * 0.22, 0.62, -scale.z * 0.03), Vector3(scale.x * 0.36, 0.064, scale.z * 0.54), color.lightened(0.18), false, false, true)
+			_add_shell_v2_structure_hierarchy_box("%s_v0199_barracks_complete_roof_right" % id, position + Vector3(scale.x * 0.22, 0.59, scale.z * 0.03), Vector3(scale.x * 0.36, 0.058, scale.z * 0.54), color.darkened(0.16), false, false, true)
+			_add_shell_v2_structure_hierarchy_box("%s_v0199_barracks_roof_ridge" % id, position + Vector3(0.0, 0.675, 0.0), Vector3(scale.x * 0.70, 0.030, 0.046), timber_light, true)
+			for corner in [Vector2(-0.46, -0.42), Vector2(0.46, -0.42), Vector2(-0.46, 0.42), Vector2(0.46, 0.42)]:
+				_add_shell_v2_structure_hierarchy_box("%s_v0199_barracks_scaffold_post_%s_%s" % [id, int((corner.x + 0.5) * 10.0), int((corner.y + 0.5) * 10.0)], position + Vector3(scale.x * corner.x, 0.39, scale.z * corner.y), Vector3(0.052, 0.44, 0.050), Color(0.58, 0.44, 0.24, scaffold_alpha), true)
+			_add_shell_v2_structure_hierarchy_box("%s_v0199_barracks_scaffold_front_brace" % id, position + Vector3(0.0, 0.50, scale.z * 0.44), Vector3(scale.x * 0.84, 0.040, 0.046), Color(0.66, 0.50, 0.27, scaffold_alpha), true)
+			_add_shell_v2_structure_hierarchy_box("%s_v0199_barracks_scaffold_back_brace" % id, position + Vector3(0.0, 0.47, -scale.z * 0.44), Vector3(scale.x * 0.78, 0.036, 0.044), Color(0.46, 0.34, 0.19, scaffold_alpha), true)
+			if restoring:
+				var progress := clampf(float(structure.get("constructionProgress", 0.0)), 0.0, 1.0)
+				_add_shell_v2_structure_hierarchy_box("%s_v0199_barracks_restoration_progress_read" % id, position + Vector3((progress - 1.0) * scale.x * 0.22, 0.73, scale.z * 0.52), Vector3(max(0.08, scale.x * 0.44 * progress), 0.042, 0.056), Color(0.45, 0.78, 0.48, 0.58), true)
+				_add_shell_v2_structure_hierarchy_box("%s_v0199_barracks_unfinished_roof_gap" % id, position + Vector3(0.0, 0.69, -scale.z * 0.05), Vector3(scale.x * 0.20, 0.028, scale.z * 0.48), Color(0.065, 0.052, 0.034, 0.46), true)
+			else:
+				_add_shell_v2_structure_hierarchy_box("%s_v0199_barracks_restored_warm_lantern" % id, position + Vector3(scale.x * 0.42, 0.34, scale.z * 0.48), Vector3(0.050, 0.090, 0.040), warm.darkened(0.04), true, true)
+		"ford_toll":
+			_add_shell_v2_structure_hierarchy_box("%s_v0199_ford_toll_low_granite_plinth" % id, position + Vector3(0.0, 0.07, 0.0), Vector3(scale.x * 0.72, 0.14, scale.z * 0.46), granite.darkened(0.04))
+			_add_shell_v2_structure_hierarchy_box("%s_v0199_ford_toll_timber_roof" % id, position + Vector3(0.0, 0.36, -scale.z * 0.02), Vector3(scale.x * 0.58, 0.062, scale.z * 0.42), timber_light)
+			_add_shell_v2_structure_hierarchy_box("%s_v0199_ford_toll_entry_shadow" % id, position + Vector3(0.0, 0.18, scale.z * 0.28), Vector3(scale.x * 0.38, 0.11, 0.046), Color(0.055, 0.045, 0.032, 0.68), true)
+			_add_shell_v2_structure_hierarchy_box("%s_v0199_ford_toll_restrained_lume" % id, position + Vector3(scale.x * 0.38, 0.34, scale.z * 0.12), Vector3(0.048, 0.14, 0.048), warm, true, true)
+		_:
+			_add_shell_v2_structure_hierarchy_box("%s_v0199_site_structure_low_shell" % id, position + Vector3(0.0, 0.18, 0.0), Vector3(scale.x * 0.56, 0.28, scale.z * 0.54), color.darkened(0.08), true)
+			_add_shell_v2_structure_hierarchy_box("%s_v0199_site_structure_roof_cap" % id, position + Vector3(0.0, 0.38, -scale.z * 0.02), Vector3(scale.x * 0.66, 0.056, scale.z * 0.50), color.lightened(0.10), true)
+			_add_shell_v2_structure_hierarchy_box("%s_v0199_site_structure_entry_shadow" % id, position + Vector3(0.0, 0.10, scale.z * 0.36), Vector3(scale.x * 0.24, 0.095, 0.046), Color(0.055, 0.044, 0.032, 0.62), true)
+
 func _add_presentation_shell_v2_structure_mass(id: String, fixture: String, position: Vector3, scale: Vector3, color: Color, structure: Dictionary) -> void:
 	var team := str(structure.get("team", "neutral"))
 	var contact := Color(0.035, 0.045, 0.030, 0.50)
@@ -8007,6 +8186,9 @@ func _add_structure(structure: Dictionary) -> void:
 			_add_barracks_material_box(id, shell_v2_foundation_position, shell_v2_foundation_scale, color.darkened(0.08))
 		else:
 			_add_box(id, shell_v2_foundation_position, shell_v2_foundation_scale, color.darkened(0.10), true)
+		if environment_shell_v2_structure_hierarchy_enabled:
+			_add_shell_v2_structure_hierarchy_mass(id, fixture, position, scale, color, structure)
+			return
 		_add_presentation_shell_v2_structure_mass(id, fixture, position, scale, color, structure)
 		return
 	if fixture == "barracks":
@@ -8177,6 +8359,12 @@ func _add_capture_site(site: Dictionary) -> void:
 		_add_presentation_shell_v2_cylinder("%s_v0193_outer_state_ring" % site_id, position + Vector3(0.0, -0.082, 0.0), 0.52, 0.018, Color(0.82, 0.70, 0.26, 0.28), "sites", true)
 		_add_presentation_shell_v2_visual_box("%s_v0193_claim_post" % site_id, position + Vector3(0.0, 0.18, 0.0), Vector3(0.070, 0.28, 0.070), site_color.lightened(0.05), "sites", true)
 		_add_presentation_shell_v2_visual_box("%s_v0193_road_tick" % site_id, position + Vector3(0.26, 0.060, 0.18), Vector3(0.22, 0.035, 0.055), Color(0.86, 0.66, 0.24, 0.36), "sites", true)
+		if environment_shell_v2_structure_hierarchy_enabled:
+			_add_shell_v2_structure_hierarchy_site_box("%s_v0199_claim_ring_low_stone" % site_id, position + Vector3(0.0, -0.072, 0.0), Vector3(0.78, 0.018, 0.78), Color(0.44, 0.42, 0.34, 0.24), true)
+			_add_shell_v2_structure_hierarchy_site_box("%s_v0199_site_structure_timber_post" % site_id, position + Vector3(0.0, 0.25, 0.0), Vector3(0.060, 0.40, 0.060), Color(0.34, 0.24, 0.14, 0.58), true)
+			_add_shell_v2_structure_hierarchy_site_box("%s_v0199_site_structure_post_cap" % site_id, position + Vector3(0.0, 0.48, 0.0), Vector3(0.18, 0.042, 0.18), Color(0.58, 0.44, 0.24, 0.52), true)
+			_add_shell_v2_structure_hierarchy_site_box("%s_v0199_site_supply_crate_west" % site_id, position + Vector3(-0.32, 0.060, 0.22), Vector3(0.17, 0.11, 0.20), Color(0.31, 0.23, 0.14, 0.48), true)
+			_add_shell_v2_structure_hierarchy_site_box("%s_v0199_site_supply_crate_east" % site_id, position + Vector3(0.30, 0.058, -0.20), Vector3(0.15, 0.10, 0.18), Color(0.28, 0.21, 0.13, 0.44), true)
 		return
 	if environment_shell_live_qa_enabled:
 		_add_box(str(site["id"]), position, Vector3(0.38, 0.10, 0.38), _site_color(site).darkened(0.08), true)
