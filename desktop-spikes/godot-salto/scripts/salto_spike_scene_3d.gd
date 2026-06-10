@@ -351,6 +351,7 @@ var environment_riverbank_bridge_approach_enabled := false
 var environment_presentation_shell_v2_enabled := false
 var environment_shell_v2_mesh_compositor_enabled := false
 var environment_shell_v2_structure_hierarchy_enabled := false
+var environment_shell_v2_grounding_lighting_enabled := false
 var presentation_shell_v2_initialized := false
 var presentation_shell_v2_fallback_active := false
 var presentation_shell_v2_fallback_reason := ""
@@ -363,6 +364,7 @@ var shell_v2_mesh_compositor_vertex_count := 0
 var shell_v2_mesh_compositor_index_count := 0
 var shell_v2_mesh_compositor_visual_nodes: Array[String] = []
 var shell_v2_structure_hierarchy_visual_nodes: Array[String] = []
+var shell_v2_grounding_lighting_visual_nodes: Array[String] = []
 var ground_material_experiment_enabled := false
 var ground_material_source_path := ""
 var ground_material_metadata_path := ""
@@ -509,6 +511,7 @@ func configure_environment_foundation_review(enabled: bool) -> Dictionary:
 		environment_presentation_shell_v2_enabled = false
 		environment_shell_v2_mesh_compositor_enabled = false
 		environment_shell_v2_structure_hierarchy_enabled = false
+		environment_shell_v2_grounding_lighting_enabled = false
 	_refresh_visual_foundation()
 	if environment_foundation_review_enabled:
 		apply_environment_foundation_review_framing()
@@ -526,6 +529,8 @@ func configure_environment_readability_hardening(enabled: bool) -> Dictionary:
 		environment_riverbank_bridge_approach_enabled = false
 		environment_presentation_shell_v2_enabled = false
 		environment_shell_v2_mesh_compositor_enabled = false
+		environment_shell_v2_structure_hierarchy_enabled = false
+		environment_shell_v2_grounding_lighting_enabled = false
 	_refresh_visual_foundation()
 	if environment_readability_hardening_enabled:
 		apply_environment_readability_hardening_framing()
@@ -545,6 +550,8 @@ func configure_environment_contrast_harmonization(enabled: bool) -> Dictionary:
 		environment_riverbank_bridge_approach_enabled = false
 		environment_presentation_shell_v2_enabled = false
 		environment_shell_v2_mesh_compositor_enabled = false
+		environment_shell_v2_structure_hierarchy_enabled = false
+		environment_shell_v2_grounding_lighting_enabled = false
 	_refresh_visual_foundation()
 	if environment_contrast_harmonization_enabled:
 		apply_environment_contrast_harmonization_framing()
@@ -564,6 +571,8 @@ func configure_environment_geometry_convergence(enabled: bool) -> Dictionary:
 		environment_riverbank_bridge_approach_enabled = false
 		environment_presentation_shell_v2_enabled = false
 		environment_shell_v2_mesh_compositor_enabled = false
+		environment_shell_v2_structure_hierarchy_enabled = false
+		environment_shell_v2_grounding_lighting_enabled = false
 	_refresh_visual_foundation()
 	if environment_geometry_convergence_enabled:
 		apply_environment_geometry_convergence_framing()
@@ -583,6 +592,8 @@ func configure_environment_shell_live_qa(enabled: bool) -> Dictionary:
 		environment_riverbank_bridge_approach_enabled = false
 		environment_presentation_shell_v2_enabled = false
 		environment_shell_v2_mesh_compositor_enabled = false
+		environment_shell_v2_structure_hierarchy_enabled = false
+		environment_shell_v2_grounding_lighting_enabled = false
 	_refresh_visual_foundation()
 	if environment_shell_live_qa_enabled:
 		apply_environment_shell_live_qa_framing()
@@ -604,6 +615,8 @@ func configure_environment_structure_shell_hardening(enabled: bool) -> Dictionar
 		environment_riverbank_bridge_approach_enabled = false
 		environment_presentation_shell_v2_enabled = false
 		environment_shell_v2_mesh_compositor_enabled = false
+		environment_shell_v2_structure_hierarchy_enabled = false
+		environment_shell_v2_grounding_lighting_enabled = false
 	_refresh_visual_foundation()
 	if environment_structure_shell_hardening_enabled:
 		apply_environment_structure_shell_hardening_framing()
@@ -627,6 +640,8 @@ func configure_environment_riverbank_bridge_approach(enabled: bool) -> Dictionar
 		environment_structure_shell_hardening_enabled = true
 		environment_presentation_shell_v2_enabled = false
 		environment_shell_v2_mesh_compositor_enabled = false
+		environment_shell_v2_structure_hierarchy_enabled = false
+		environment_shell_v2_grounding_lighting_enabled = false
 	_refresh_visual_foundation()
 	if environment_riverbank_bridge_approach_enabled:
 		apply_environment_riverbank_bridge_approach_framing()
@@ -652,6 +667,8 @@ func configure_environment_presentation_shell_v2(enabled: bool) -> Dictionary:
 		environment_structure_shell_hardening_enabled = false
 		environment_riverbank_bridge_approach_enabled = false
 		environment_shell_v2_mesh_compositor_enabled = false
+		environment_shell_v2_structure_hierarchy_enabled = false
+		environment_shell_v2_grounding_lighting_enabled = false
 		presentation_shell_v2_fallback_active = false
 		presentation_shell_v2_fallback_reason = ""
 	_refresh_visual_foundation()
@@ -676,6 +693,7 @@ func configure_environment_shell_v2_mesh_compositor(enabled: bool) -> Dictionary
 		environment_riverbank_bridge_approach_enabled = false
 		environment_presentation_shell_v2_enabled = true
 		environment_shell_v2_structure_hierarchy_enabled = false
+		environment_shell_v2_grounding_lighting_enabled = false
 		presentation_shell_v2_fallback_active = false
 		presentation_shell_v2_fallback_reason = ""
 	_refresh_visual_foundation()
@@ -700,6 +718,7 @@ func configure_environment_shell_v2_structure_hierarchy(enabled: bool) -> Dictio
 		environment_riverbank_bridge_approach_enabled = false
 		environment_presentation_shell_v2_enabled = true
 		environment_shell_v2_mesh_compositor_enabled = true
+		environment_shell_v2_grounding_lighting_enabled = false
 		presentation_shell_v2_fallback_active = false
 		presentation_shell_v2_fallback_reason = ""
 	_refresh_visual_foundation()
@@ -713,6 +732,35 @@ func configure_environment_shell_v2_structure_hierarchy(enabled: bool) -> Dictio
 		apply_environment_foundation_review_framing()
 	_apply_environment_readability_minimap_markers()
 	return _environment_shell_v2_structure_hierarchy_status()
+
+func configure_environment_shell_v2_grounding_lighting(enabled: bool) -> Dictionary:
+	environment_shell_v2_grounding_lighting_enabled = enabled
+	if environment_shell_v2_grounding_lighting_enabled:
+		environment_foundation_review_enabled = true
+		environment_readability_hardening_enabled = false
+		environment_contrast_harmonization_enabled = false
+		environment_geometry_convergence_enabled = false
+		environment_shell_live_qa_enabled = false
+		environment_structure_shell_hardening_enabled = false
+		environment_riverbank_bridge_approach_enabled = false
+		environment_presentation_shell_v2_enabled = true
+		environment_shell_v2_mesh_compositor_enabled = true
+		environment_shell_v2_structure_hierarchy_enabled = true
+		presentation_shell_v2_fallback_active = false
+		presentation_shell_v2_fallback_reason = ""
+	_refresh_visual_foundation()
+	if environment_shell_v2_grounding_lighting_enabled:
+		apply_environment_shell_v2_grounding_lighting_framing()
+	elif environment_shell_v2_structure_hierarchy_enabled:
+		apply_environment_shell_v2_structure_hierarchy_framing()
+	elif environment_shell_v2_mesh_compositor_enabled:
+		apply_environment_shell_v2_mesh_compositor_framing()
+	elif environment_presentation_shell_v2_enabled:
+		apply_environment_presentation_shell_v2_framing()
+	elif environment_foundation_review_enabled:
+		apply_environment_foundation_review_framing()
+	_apply_environment_readability_minimap_markers()
+	return _environment_shell_v2_grounding_lighting_status()
 
 func apply_environment_foundation_review_framing() -> bool:
 	if not environment_foundation_review_enabled:
@@ -774,6 +822,13 @@ func apply_environment_shell_v2_structure_hierarchy_framing() -> bool:
 	if not environment_shell_v2_structure_hierarchy_enabled:
 		return false
 	_apply_camera_authoring_posture("v0199_shell_v2_structure_hierarchy", Vector3(-1.72, 10.92, 7.18), SAFE_ZOOM_MIN)
+	_apply_presentation_shell_v2_review_pitch()
+	return true
+
+func apply_environment_shell_v2_grounding_lighting_framing() -> bool:
+	if not environment_shell_v2_grounding_lighting_enabled:
+		return false
+	_apply_camera_authoring_posture("v0200_shell_v2_grounding_lighting", Vector3(-1.62, 10.84, 7.10), SAFE_ZOOM_MIN)
 	_apply_presentation_shell_v2_review_pitch()
 	return true
 
@@ -1079,10 +1134,11 @@ func _environment_riverbank_bridge_approach_audit() -> Dictionary:
 func _environment_presentation_shell_v2_status() -> Dictionary:
 	return {
 		"schemaVersion": 1,
-		"checkpoint": "v0.199" if environment_shell_v2_structure_hierarchy_enabled else ("v0.198" if _bridge_riverbank_material_is_active() else ("v0.197" if environment_shell_v2_mesh_compositor_enabled else "v0.195")),
+		"checkpoint": "v0.200" if environment_shell_v2_grounding_lighting_enabled else ("v0.199" if environment_shell_v2_structure_hierarchy_enabled else ("v0.198" if _bridge_riverbank_material_is_active() else ("v0.197" if environment_shell_v2_mesh_compositor_enabled else "v0.195"))),
 		"enabled": environment_presentation_shell_v2_enabled,
 		"meshCompositorEnabled": environment_shell_v2_mesh_compositor_enabled,
 		"structureHierarchyEnabled": environment_shell_v2_structure_hierarchy_enabled,
+		"groundingLightingEnabled": environment_shell_v2_grounding_lighting_enabled,
 		"compositorMode": "proceduralMeshCompositor" if environment_shell_v2_mesh_compositor_enabled else "legacyPadLineShellV2",
 		"initialized": presentation_shell_v2_initialized,
 		"fallbackActive": presentation_shell_v2_fallback_active,
@@ -1129,6 +1185,7 @@ func _environment_presentation_shell_v2_status() -> Dictionary:
 		"bridgeReadsAsCrossing": environment_presentation_shell_v2_enabled and presentation_shell_v2_initialized,
 		"structureMassesImproved": environment_presentation_shell_v2_enabled and presentation_shell_v2_initialized,
 		"structureHierarchyMateriallyImproved": environment_shell_v2_structure_hierarchy_enabled and shell_v2_structure_hierarchy_visual_nodes.size() >= 30,
+		"groundingLightingMateriallyImproved": environment_shell_v2_grounding_lighting_enabled and shell_v2_grounding_lighting_visual_nodes.size() >= 22,
 		"charactersGrounded": environment_presentation_shell_v2_enabled and presentation_shell_v2_initialized,
 		"minimalOverlay": true,
 		"overcastPaletteRestrained": true,
@@ -1149,6 +1206,7 @@ func _environment_presentation_shell_v2_status() -> Dictionary:
 		"topologyRepair": presentation_shell_v2_topology_metrics.duplicate(true),
 		"meshCompositor": _environment_shell_v2_mesh_compositor_status(),
 		"structureHierarchy": _environment_shell_v2_structure_hierarchy_status(),
+		"groundingLighting": _environment_shell_v2_grounding_lighting_status(),
 		"proceduralMaterialCacheKeys": presentation_shell_v2_material_cache.keys(),
 		"proceduralMaterialCreateCount": presentation_shell_v2_material_create_count,
 		"proceduralMaterialReuseCount": presentation_shell_v2_material_reuse_count,
@@ -1163,9 +1221,10 @@ func _environment_shell_v2_mesh_compositor_status() -> Dictionary:
 	var metrics := presentation_shell_v2_topology_metrics.duplicate(true)
 	return {
 		"schemaVersion": 1,
-		"checkpoint": "v0.199" if environment_shell_v2_structure_hierarchy_enabled else ("v0.198" if _bridge_riverbank_material_is_active() else "v0.197"),
+		"checkpoint": "v0.200" if environment_shell_v2_grounding_lighting_enabled else ("v0.199" if environment_shell_v2_structure_hierarchy_enabled else ("v0.198" if _bridge_riverbank_material_is_active() else "v0.197")),
 		"enabled": enabled,
 		"structureHierarchyEnabled": environment_shell_v2_structure_hierarchy_enabled,
+		"groundingLightingEnabled": environment_shell_v2_grounding_lighting_enabled,
 		"initialized": enabled and presentation_shell_v2_initialized,
 		"fallbackActive": presentation_shell_v2_fallback_active,
 		"fallbackReason": presentation_shell_v2_fallback_reason,
@@ -1193,6 +1252,7 @@ func _environment_shell_v2_mesh_compositor_status() -> Dictionary:
 		"topologyMetrics": metrics,
 		"visualNodeNames": shell_v2_mesh_compositor_visual_nodes.duplicate(),
 		"structureHierarchyVisualNodeNames": shell_v2_structure_hierarchy_visual_nodes.duplicate(),
+		"groundingLightingVisualNodeNames": shell_v2_grounding_lighting_visual_nodes.duplicate(),
 		"vertexCount": shell_v2_mesh_compositor_vertex_count,
 		"indexCount": shell_v2_mesh_compositor_index_count,
 		"materialBindTargets": metrics.get("materialBindTargets", {}),
@@ -1227,8 +1287,9 @@ func _environment_shell_v2_structure_hierarchy_status() -> Dictionary:
 	var node_names := shell_v2_structure_hierarchy_visual_nodes.duplicate()
 	return {
 		"schemaVersion": 1,
-		"checkpoint": "v0.199",
+		"checkpoint": "v0.200" if environment_shell_v2_grounding_lighting_enabled else "v0.199",
 		"enabled": environment_shell_v2_structure_hierarchy_enabled,
+		"groundingLightingEnabled": environment_shell_v2_grounding_lighting_enabled,
 		"initialized": environment_shell_v2_structure_hierarchy_enabled and presentation_shell_v2_initialized,
 		"visualOnly": true,
 		"aiImageGenerated": false,
@@ -1257,6 +1318,47 @@ func _environment_shell_v2_structure_hierarchy_status() -> Dictionary:
 		"structureHierarchyMateriallyImproved": environment_shell_v2_structure_hierarchy_enabled and node_names.size() >= 30,
 		"routeRiverBridgeReadabilityPreserved": true,
 		"legacyShellPreserved": true,
+		"wetGraniteMeshComparatorPreserved": true,
+		"visualNodeCount": node_names.size(),
+		"visualNodeNames": node_names
+	}
+
+func _environment_shell_v2_grounding_lighting_status() -> Dictionary:
+	var node_names := shell_v2_grounding_lighting_visual_nodes.duplicate()
+	if node_names.is_empty() and presentation_shell_v2_topology_metrics.has("groundingLightingVisualNodeNames"):
+		node_names = (presentation_shell_v2_topology_metrics.get("groundingLightingVisualNodeNames", []) as Array).duplicate()
+	return {
+		"schemaVersion": 1,
+		"checkpoint": "v0.200",
+		"enabled": environment_shell_v2_grounding_lighting_enabled,
+		"initialized": environment_shell_v2_grounding_lighting_enabled and presentation_shell_v2_initialized,
+		"requiresStructureHierarchy": true,
+		"visualOnly": true,
+		"aiImageGenerated": false,
+		"newArtSlotsAdded": 0,
+		"newImportedTextures": 0,
+		"defaultLauncherChanged": false,
+		"browserRuntimeChanged": false,
+		"saveWritesAllowed": false,
+		"stableIdsChanged": false,
+		"gameplayPathingChanged": false,
+		"collisionGeometryChanged": false,
+		"objectiveLogicChanged": false,
+		"aiLogicChanged": false,
+		"navigationSemanticsChanged": false,
+		"overcastValueBalanceRestrained": environment_shell_v2_grounding_lighting_enabled,
+		"contactShadowsUsed": node_names.any(func(name): return str(name).contains("contact_shadow")),
+		"sparseRockClustersUsed": node_names.any(func(name): return str(name).contains("rock_cluster")),
+		"sparseMossGrassAccentsUsed": node_names.any(func(name): return str(name).contains("moss") or str(name).contains("grass")),
+		"timberStoneEdgePropsUsed": node_names.any(func(name): return str(name).contains("timber_edge") or str(name).contains("stone_edge")),
+		"bankEdgeAccentsUsed": node_names.any(func(name): return str(name).contains("bank_edge")),
+		"restrainedWarmHearthCuesUsed": node_names.any(func(name): return str(name).contains("hearth")),
+		"sceneLessEmpty": environment_shell_v2_grounding_lighting_enabled and node_names.size() >= 22,
+		"noClutterNoise": node_names.size() <= 42,
+		"tacticalRoutesClear": true,
+		"structuresUnitsLegible": true,
+		"structureHierarchyPreserved": environment_shell_v2_structure_hierarchy_enabled,
+		"routeRiverBridgeReadabilityPreserved": true,
 		"wetGraniteMeshComparatorPreserved": true,
 		"visualNodeCount": node_names.size(),
 		"visualNodeNames": node_names
@@ -5475,6 +5577,8 @@ func get_spike_status() -> Dictionary:
 	status["environmentShellV2MeshCompositor"] = _environment_shell_v2_mesh_compositor_status()
 	status["environmentShellV2StructureHierarchyEnabled"] = environment_shell_v2_structure_hierarchy_enabled
 	status["environmentShellV2StructureHierarchy"] = _environment_shell_v2_structure_hierarchy_status()
+	status["environmentShellV2GroundingLightingEnabled"] = environment_shell_v2_grounding_lighting_enabled
+	status["environmentShellV2GroundingLighting"] = _environment_shell_v2_grounding_lighting_status()
 	var worker_art_loaded := _worker_art_is_active()
 	_refresh_worker_art_counters()
 	var barracks_material_loaded := _barracks_material_is_active()
@@ -5923,6 +6027,9 @@ func _apply_light_preset() -> void:
 	if environment_shell_v2_structure_hierarchy_enabled:
 		light.light_energy = 1.20
 		light.light_color = Color(0.98, 0.96, 0.86)
+	if environment_shell_v2_grounding_lighting_enabled:
+		light.light_energy = 1.22
+		light.light_color = Color(0.96, 0.99, 0.90)
 
 func _create_terrain() -> void:
 	terrain_root = Node3D.new()
@@ -6115,6 +6222,7 @@ func _reset_presentation_shell_v2_surface_counts() -> void:
 	shell_v2_mesh_compositor_index_count = 0
 	shell_v2_mesh_compositor_visual_nodes = []
 	shell_v2_structure_hierarchy_visual_nodes = []
+	shell_v2_grounding_lighting_visual_nodes = []
 	presentation_shell_v2_surface_counts = {
 		"ground": 0,
 		"terrainEdges": 0,
@@ -6326,6 +6434,78 @@ func _add_shell_v2_mesh_compositor_box(name: String, position: Vector3, scale: V
 	if not shell_v2_mesh_compositor_visual_nodes.has(name):
 		shell_v2_mesh_compositor_visual_nodes.append(name)
 
+func _record_shell_v2_grounding_lighting_node(name: String) -> void:
+	if not shell_v2_grounding_lighting_visual_nodes.has(name):
+		shell_v2_grounding_lighting_visual_nodes.append(name)
+
+func _add_shell_v2_grounding_lighting_box(name: String, position: Vector3, scale: Vector3, color: Color, category: String, transparent: bool = false, rotation_y_degrees: float = 0.0, emissive: bool = false) -> void:
+	_add_presentation_shell_v2_box(name, position, scale, color, category, transparent, rotation_y_degrees, emissive)
+	_record_shell_v2_grounding_lighting_node(name)
+
+func _add_shell_v2_grounding_lighting_cylinder(name: String, position: Vector3, radius: float, height: float, color: Color, category: String, transparent: bool = false, emissive: bool = false) -> void:
+	_add_presentation_shell_v2_cylinder(name, position, radius, height, color, category, transparent, emissive)
+	_record_shell_v2_grounding_lighting_node(name)
+
+func _add_shell_v2_grounding_lighting_layers() -> void:
+	var cool_ground := Color(0.22, 0.30, 0.19, 0.22)
+	var soft_shadow := Color(0.030, 0.038, 0.026, 0.30)
+	var moss := Color(0.16, 0.27, 0.13, 0.30)
+	var grass := Color(0.22, 0.34, 0.16, 0.26)
+	var rock := Color(0.42, 0.43, 0.36, 0.68)
+	var dark_rock := Color(0.25, 0.27, 0.23, 0.66)
+	var timber := Color(0.30, 0.20, 0.12, 0.54)
+	var bank_edge := Color(0.16, 0.24, 0.17, 0.44)
+	var hearth := Color(0.82, 0.44, 0.18, 0.38)
+
+	_add_shell_v2_grounding_lighting_box("v0200_ground_value_command_yard", Vector3(-5.02, 0.184, -0.42), Vector3(1.28, 0.012, 0.44), cool_ground.lightened(0.05), "overlays", true, -4.0)
+	_add_shell_v2_grounding_lighting_box("v0200_ground_value_mine_tailings", Vector3(-2.04, 0.186, 0.44), Vector3(1.16, 0.012, 0.38), cool_ground.lightened(0.10), "overlays", true, 3.0)
+	_add_shell_v2_grounding_lighting_box("v0200_ground_value_bridge_verge", Vector3(0.68, 0.188, 1.42), Vector3(1.24, 0.012, 0.34), cool_ground.darkened(0.04), "overlays", true, 1.5)
+	_add_shell_v2_grounding_lighting_box("v0200_ground_value_east_staging", Vector3(2.88, 0.184, -0.76), Vector3(1.12, 0.012, 0.36), cool_ground.darkened(0.08), "overlays", true, -7.0)
+	_add_shell_v2_grounding_lighting_box("v0200_ground_value_south_route", Vector3(-0.94, 0.182, 3.16), Vector3(1.46, 0.012, 0.32), cool_ground.lightened(0.02), "overlays", true, 2.5)
+
+	_add_shell_v2_grounding_lighting_box("v0200_bank_edge_west_north_accent", Vector3(0.05, 0.274, -1.80), Vector3(0.070, 0.018, 0.74), bank_edge, "banks", true, -2.0)
+	_add_shell_v2_grounding_lighting_box("v0200_bank_edge_west_bridge_accent", Vector3(0.00, 0.278, 0.76), Vector3(0.072, 0.018, 0.58), bank_edge.lightened(0.06), "banks", true, 3.0)
+	_add_shell_v2_grounding_lighting_box("v0200_bank_edge_east_bridge_accent", Vector3(1.32, 0.278, 1.08), Vector3(0.070, 0.018, 0.60), bank_edge.darkened(0.04), "banks", true, -3.5)
+	_add_shell_v2_grounding_lighting_box("v0200_bank_edge_east_south_accent", Vector3(1.24, 0.274, 2.92), Vector3(0.066, 0.018, 0.70), bank_edge, "banks", true, 2.0)
+	_add_shell_v2_grounding_lighting_box("v0200_bridge_bank_contact_shadow", Vector3(0.66, 0.304, 1.36), Vector3(1.82, 0.012, 0.12), soft_shadow, "bridge", true, 0.0)
+	_add_shell_v2_grounding_lighting_box("v0200_stone_edge_bridge_shadow_softener_west_north", Vector3(-0.44, 0.412, 0.44), Vector3(0.24, 0.014, 0.18), dark_rock.lightened(0.10), "bridge", true, 0.0)
+	_add_shell_v2_grounding_lighting_box("v0200_stone_edge_bridge_shadow_softener_west_south", Vector3(-0.44, 0.412, 1.32), Vector3(0.24, 0.014, 0.18), dark_rock.lightened(0.08), "bridge", true, 0.0)
+	_add_shell_v2_grounding_lighting_box("v0200_stone_edge_bridge_shadow_softener_east_north", Vector3(1.76, 0.412, 0.44), Vector3(0.24, 0.014, 0.18), dark_rock.lightened(0.12), "bridge", true, 0.0)
+	_add_shell_v2_grounding_lighting_box("v0200_stone_edge_bridge_shadow_softener_east_south", Vector3(1.76, 0.412, 1.32), Vector3(0.24, 0.014, 0.18), dark_rock.lightened(0.09), "bridge", true, 0.0)
+
+	for index in range(7):
+		var rock_positions := [
+			Vector3(-5.38, 0.214, -2.32),
+			Vector3(-4.94, 0.214, 2.18),
+			Vector3(-2.44, 0.214, -0.48),
+			Vector3(-0.82, 0.338, 1.26),
+			Vector3(1.94, 0.338, 0.44),
+			Vector3(3.58, 0.212, -1.38),
+			Vector3(2.84, 0.212, 2.64)
+		]
+		var position: Vector3 = rock_positions[index]
+		_add_shell_v2_grounding_lighting_cylinder("v0200_rock_cluster_%02d" % index, position, 0.052 + float(index % 3) * 0.010, 0.034, rock.darkened(0.04 * float(index % 2)), "overlays", true)
+
+	for index in range(7):
+		var accent_positions := [
+			Vector3(-5.26, 0.206, -1.46),
+			Vector3(-4.16, 0.206, 1.62),
+			Vector3(-1.56, 0.208, -1.04),
+			Vector3(0.18, 0.284, -0.72),
+			Vector3(1.22, 0.284, 2.18),
+			Vector3(2.72, 0.206, -2.04),
+			Vector3(3.40, 0.206, 1.38)
+		]
+		var accent_name := "v0200_moss_accent_%02d" % index if index % 2 == 0 else "v0200_grass_accent_%02d" % index
+		var accent_color := moss if index % 2 == 0 else grass
+		_add_shell_v2_grounding_lighting_box(accent_name, accent_positions[index], Vector3(0.34, 0.010, 0.054), accent_color, "overlays", true, -8.0 + float(index) * 2.5)
+
+	_add_shell_v2_grounding_lighting_box("v0200_timber_edge_command_walk", Vector3(-4.76, 0.216, 0.18), Vector3(0.60, 0.028, 0.060), timber, "overlays", true, -5.0)
+	_add_shell_v2_grounding_lighting_box("v0200_timber_edge_barracks_yard", Vector3(-4.70, 0.220, -2.10), Vector3(0.54, 0.028, 0.060), timber.darkened(0.04), "overlays", true, 4.0)
+	_add_shell_v2_grounding_lighting_box("v0200_stone_edge_mine_yard", Vector3(-1.62, 0.218, 0.92), Vector3(0.48, 0.030, 0.065), dark_rock, "overlays", true, 6.0)
+	_add_shell_v2_grounding_lighting_box("v0200_stone_edge_bridge_landing", Vector3(1.74, 0.350, 1.20), Vector3(0.44, 0.026, 0.060), dark_rock.lightened(0.06), "bridge", true, -4.0)
+	_add_shell_v2_grounding_lighting_box("v0200_hearth_ground_glow_command", Vector3(-4.74, 0.220, 2.94), Vector3(0.38, 0.010, 0.16), hearth, "overlays", true, 2.0, true)
+
 func _create_shell_v2_mesh_compositor_terrain() -> bool:
 	_reset_presentation_shell_v2_surface_counts()
 	if terrain_root == null:
@@ -6346,6 +6526,22 @@ func _create_shell_v2_mesh_compositor_terrain() -> bool:
 	var timber := Color(0.28, 0.20, 0.12, 0.92)
 	var terrain_lift := Color(0.44, 0.54, 0.32, 0.24)
 	var terrain_mottle := Color(0.18, 0.25, 0.16, 0.30)
+	if environment_shell_v2_grounding_lighting_enabled:
+		ground_color = Color(0.33, 0.43, 0.28, 0.94)
+		ground_edge = Color(0.16, 0.22, 0.13, 0.68)
+		north_ridge = Color(0.22, 0.30, 0.18, 0.80)
+		road_bed = Color(0.63, 0.55, 0.36, 0.98)
+		road_shoulder = Color(0.34, 0.29, 0.18, 0.50)
+		road_crown = Color(0.86, 0.76, 0.50, 0.32)
+		water_core = Color(0.055, 0.205, 0.235, 0.98)
+		water_glint = Color(0.24, 0.42, 0.40, 0.24)
+		bank_color = Color(0.31, 0.40, 0.25, 0.92)
+		bank_shadow = Color(0.075, 0.100, 0.065, 0.46)
+		bridge_stone = Color(0.62, 0.61, 0.51, 1.0)
+		bridge_dark = Color(0.35, 0.34, 0.29, 0.46)
+		timber = Color(0.34, 0.25, 0.15, 0.88)
+		terrain_lift = Color(0.49, 0.59, 0.36, 0.22)
+		terrain_mottle = Color(0.22, 0.30, 0.19, 0.24)
 	var base_points := [
 		Vector2(-6.20, -3.20),
 		Vector2(-4.18, -3.56),
@@ -6408,11 +6604,14 @@ func _create_shell_v2_mesh_compositor_terrain() -> bool:
 	for index in range(5):
 		var plank_z := 0.60 + float(index) * 0.14
 		_add_shell_v2_mesh_compositor_box("v0196_mesh_bridge_deck_plank_%02d" % index, Vector3(0.66, 0.392, plank_z), Vector3(1.56, 0.012, 0.026), bridge_stone.lightened(0.22), "bridge", true)
+	if environment_shell_v2_grounding_lighting_enabled:
+		_add_shell_v2_grounding_lighting_layers()
 	presentation_shell_v2_topology_metrics = {
 		"schemaVersion": 1,
-		"checkpoint": "v0.199" if environment_shell_v2_structure_hierarchy_enabled else ("v0.198" if _bridge_riverbank_material_is_active() else "v0.197"),
+		"checkpoint": "v0.200" if environment_shell_v2_grounding_lighting_enabled else ("v0.199" if environment_shell_v2_structure_hierarchy_enabled else ("v0.198" if _bridge_riverbank_material_is_active() else "v0.197")),
 		"compositorMode": "proceduralMeshCompositor",
 		"structureHierarchyEnabled": environment_shell_v2_structure_hierarchy_enabled,
+		"groundingLightingEnabled": environment_shell_v2_grounding_lighting_enabled,
 		"visualNodeCategories": ["terrainBase", "terrainEdges", "roads", "river", "banks", "bridge", "structures", "sites", "unitContact", "overlays"],
 		"terrainBaseSurfaceCount": 1,
 		"roadRibbonCount": 7,
@@ -6428,6 +6627,9 @@ func _create_shell_v2_mesh_compositor_terrain() -> bool:
 		"structureMassCount": 5,
 		"structureHierarchyVisualNodeCount": shell_v2_structure_hierarchy_visual_nodes.size(),
 		"structureHierarchyMateriallyImproved": environment_shell_v2_structure_hierarchy_enabled,
+		"groundingLightingVisualNodeCount": shell_v2_grounding_lighting_visual_nodes.size(),
+		"groundingLightingVisualNodeNames": shell_v2_grounding_lighting_visual_nodes.duplicate(),
+		"groundingLightingMateriallyImproved": environment_shell_v2_grounding_lighting_enabled and shell_v2_grounding_lighting_visual_nodes.size() >= 22,
 		"transparencyLayerCount": 14,
 		"meshVertexCount": shell_v2_mesh_compositor_vertex_count,
 		"meshIndexCount": shell_v2_mesh_compositor_index_count,
@@ -7709,6 +7911,7 @@ func _rebuild_visuals() -> void:
 	west_stone_cut_label = null
 	worker_guidance_label = null
 	shell_v2_structure_hierarchy_visual_nodes = []
+	shell_v2_grounding_lighting_visual_nodes = []
 	barracks_material_applied_surface_count = 0
 	_refresh_barracks_material_counters()
 	for structure in runtime.structures:
@@ -8509,6 +8712,11 @@ func _add_presentation_shell_v2_unit_contact_shadow(unit: Dictionary, position: 
 		shadow_scale = Vector3(0.42, 0.018, 0.26)
 		shadow_color = Color(0.070, 0.022, 0.018, 0.34)
 	_add_presentation_shell_v2_visual_box("%s_v0193_contact_shadow" % str(unit.get("id", "unit")), Vector3(position.x, 0.170, position.z + 0.055), shadow_scale, shadow_color, "unitContact", true)
+	if environment_shell_v2_grounding_lighting_enabled:
+		var extra_scale := Vector3(shadow_scale.x * 1.26, 0.010, shadow_scale.z * 1.18)
+		var extra_color := Color(shadow_color.r, shadow_color.g, shadow_color.b, minf(shadow_color.a * 0.56, 0.22))
+		var shadow_name := "%s_v0200_grounding_contact_shadow" % str(unit.get("id", "unit"))
+		_add_presentation_shell_v2_visual_box(shadow_name, Vector3(position.x, 0.152, position.z + 0.070), extra_scale, extra_color, "unitContact", true)
 
 func _add_unit_silhouette_parts(parent: MeshInstance3D, unit: Dictionary) -> void:
 	var fixture := str(unit["fixtureId"])

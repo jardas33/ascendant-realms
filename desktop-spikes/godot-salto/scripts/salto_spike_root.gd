@@ -67,6 +67,7 @@ const SCRIPT_ARG_PREFIXES := [
 	"--salto-presentation-shell-v2",
 	"--salto-shell-v2-mesh-compositor",
 	"--salto-shell-v2-structure-hierarchy",
+	"--salto-shell-v2-grounding-lighting",
 	"--ground-material-opt-in",
 	"--ground-material-source=",
 	"--ground-material-metadata=",
@@ -953,13 +954,17 @@ func _configure_worker_art_for_active_scene() -> void:
 		active_scene.configure_environment_shell_v2_mesh_compositor(_script_args().has("--salto-shell-v2-mesh-compositor"))
 	if active_scene.has_method("configure_environment_shell_v2_structure_hierarchy"):
 		active_scene.configure_environment_shell_v2_structure_hierarchy(_script_args().has("--salto-shell-v2-structure-hierarchy"))
+	if active_scene.has_method("configure_environment_shell_v2_grounding_lighting"):
+		active_scene.configure_environment_shell_v2_grounding_lighting(_script_args().has("--salto-shell-v2-grounding-lighting"))
 
 func _apply_review_framing_for_active_scene() -> void:
 	if not _script_args().has("--salto-three-slot-review-framing") and not _script_args().has("--salto-four-slot-review-framing") and not _script_args().has("--salto-five-slot-review-framing"):
 		return
 	if active_mode != MODE_25D or active_scene == null or not is_instance_valid(active_scene):
 		return
-	if _script_args().has("--salto-shell-v2-structure-hierarchy") and active_scene.has_method("apply_environment_shell_v2_structure_hierarchy_framing"):
+	if _script_args().has("--salto-shell-v2-grounding-lighting") and active_scene.has_method("apply_environment_shell_v2_grounding_lighting_framing"):
+		active_scene.apply_environment_shell_v2_grounding_lighting_framing()
+	elif _script_args().has("--salto-shell-v2-structure-hierarchy") and active_scene.has_method("apply_environment_shell_v2_structure_hierarchy_framing"):
 		active_scene.apply_environment_shell_v2_structure_hierarchy_framing()
 	elif _script_args().has("--salto-shell-v2-mesh-compositor") and active_scene.has_method("apply_environment_shell_v2_mesh_compositor_framing"):
 		active_scene.apply_environment_shell_v2_mesh_compositor_framing()
@@ -2072,7 +2077,7 @@ func run_player_slice_capture() -> void:
 		"viewport": {"width": VIEWPORT_SIZE.x, "height": VIEWPORT_SIZE.y},
 		"defaultMode": MODE_25D,
 		"defaultVisualPreset": VISUAL_PRESET_CLEAN,
-		"privateHarnessPreservedSeparately": captures.any(func(capture: Dictionary) -> bool: return bool(capture.get("privateHarnessCapture", false))) or ["v0.126", "v0.127", "v0.128", "v0.129", "v0.130", "v0.160", "v0.162", "v0.164", "v0.168", "v0.169", "v0.170", "v0.173", "v0.174", "v0.177", "v0.178", "v0.179", "v0.181", "v0.184", "v0.185", "v0.186", "v0.187", "v0.193", "v0.194", "v0.195", "v0.196", "v0.197", "v0.198", "v0.199"].has(_player_capture_checkpoint()),
+		"privateHarnessPreservedSeparately": captures.any(func(capture: Dictionary) -> bool: return bool(capture.get("privateHarnessCapture", false))) or ["v0.126", "v0.127", "v0.128", "v0.129", "v0.130", "v0.160", "v0.162", "v0.164", "v0.168", "v0.169", "v0.170", "v0.173", "v0.174", "v0.177", "v0.178", "v0.179", "v0.181", "v0.184", "v0.185", "v0.186", "v0.187", "v0.193", "v0.194", "v0.195", "v0.196", "v0.197", "v0.198", "v0.199", "v0.200"].has(_player_capture_checkpoint()),
 		"proceduralPrimitiveOnly": not worker_art_loaded and not barracks_material_loaded and not militia_art_loaded and not aster_art_loaded and not ashen_art_loaded and not ground_material_loaded and not road_material_loaded and not bridge_riverbank_material_loaded,
 		"generatedOrImportedArtIncluded": worker_art_loaded or barracks_material_loaded or militia_art_loaded or aster_art_loaded or ashen_art_loaded or ground_material_loaded or road_material_loaded or bridge_riverbank_material_loaded,
 		"runtimeArtIntegrated": worker_art_loaded or barracks_material_loaded or militia_art_loaded or aster_art_loaded or ashen_art_loaded or ground_material_loaded or road_material_loaded or bridge_riverbank_material_loaded,
@@ -4759,6 +4764,8 @@ func _apply_player_slice_action(action: String) -> Dictionary:
 
 func _player_capture_checkpoint() -> String:
 	var normalized_root := _artifact_root_from_args().replace("\\", "/")
+	if normalized_root.contains("/v0200"):
+		return "v0.200"
 	if normalized_root.contains("/v0199"):
 		return "v0.199"
 	if normalized_root.contains("/v0198"):
@@ -4820,9 +4827,21 @@ func _player_capture_checkpoint() -> String:
 	return "v0.124"
 
 func _is_bounded_microloop_checkpoint() -> bool:
-	return ["v0.129", "v0.130", "v0.160", "v0.162", "v0.164", "v0.166", "v0.168", "v0.169", "v0.170", "v0.173", "v0.174", "v0.177", "v0.178", "v0.179", "v0.181", "v0.184", "v0.185", "v0.186", "v0.187", "v0.193", "v0.194", "v0.195", "v0.196", "v0.197", "v0.198", "v0.199"].has(_player_capture_checkpoint())
+	return ["v0.129", "v0.130", "v0.160", "v0.162", "v0.164", "v0.166", "v0.168", "v0.169", "v0.170", "v0.173", "v0.174", "v0.177", "v0.178", "v0.179", "v0.181", "v0.184", "v0.185", "v0.186", "v0.187", "v0.193", "v0.194", "v0.195", "v0.196", "v0.197", "v0.198", "v0.199", "v0.200"].has(_player_capture_checkpoint())
 
 func _player_capture_steps() -> Array[Dictionary]:
+	if _player_capture_checkpoint() == "v0.200":
+		return [
+			{"id": "overview", "label": "Grounding and lighting full tactical overview", "action": "battle_default"},
+			{"id": "ground_roads", "label": "Ground value, sparse props, and clear road hierarchy", "action": "v0195_road_network"},
+			{"id": "river_bridge", "label": "River, bridge, and bank-edge accents", "action": "v0195_bridge_close"},
+			{"id": "structures", "label": "Structures remain legible with sparse grounding", "action": "v0186_command_hall_close"},
+			{"id": "units", "label": "Units sit naturally on the battlefield", "action": "hero_selected"},
+			{"id": "combat", "label": "Combat onset remains tactically readable", "action": "v0187_combat_crossing"},
+			{"id": "pan_zoom", "label": "Pan and zoom review framing", "action": "camera_max_zoom"},
+			{"id": "minimap", "label": "Minimap remains procedural", "action": "minimap"},
+			{"id": "results", "label": "Results path preserved", "action": "results"}
+		]
 	if _player_capture_checkpoint() == "v0.199":
 		return [
 			{"id": "overview", "label": "Structure hierarchy full tactical overview", "action": "battle_default"},

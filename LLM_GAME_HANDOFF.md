@@ -1,12 +1,12 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-06-10 v0.199 Godot Salto shell-v2 procedural structure hierarchy hardening
+Last updated: 2026-06-10 v0.200 Godot Salto shell-v2 restrained grounding lighting sparse props hardening
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
 ## Current Continuation Note
 
-The latest work is v0.199 Godot Salto shell-v2 procedural structure hierarchy hardening. It changes only the isolated shell-v2 mesh-compositor review path: the v0.198 wet-granite bridge/bank path remains a comparator while v0.199 adds procedural-only structure massing for the command hall, mine, Barracks restoration, restored Barracks, and compact site structures behind a new explicit opt-in launcher. It generates zero images, adds zero imported art slots, preserves default and prior launchers, keeps the browser runtime untouched, keeps character-slot integrations frozen, benchmarks green against the v0.198 wet-granite mesh comparator, and changes no gameplay/pathing/collisions/objectives/AI/saves/stable IDs.
+The latest work is v0.200 Godot Salto shell-v2 restrained grounding, lighting, and sparse props hardening. It changes only the isolated shell-v2 mesh-compositor review path: the v0.199 structure-hierarchy path remains a comparator while v0.200 adds procedural-only overcast value balance, contact shadows, sparse rocks, moss/grass accents, small timber/stone edge props, bank-edge accents, and warm hearth cues behind a new explicit opt-in launcher. It generates zero images, adds zero imported art slots, preserves default and prior launchers, keeps the browser runtime untouched, keeps character-slot integrations frozen, benchmarks green against the v0.199 structure shell comparator, and changes no gameplay/pathing/collisions/objectives/AI/saves/stable IDs.
 
 ## Project Identity
 
@@ -104,11 +104,46 @@ Project Identity continuation note: v0.198 now supersedes the older no-v0.198 ta
 
 Project Identity continuation note: v0.199 now supersedes the older no-v0.199 tail above because the queued prompt explicitly authorized visual-only procedural structure hierarchy hardening after v0.198 was committed, pushed, clean, synced, and remote-green. v0.199 generates zero images, adds zero imported art slots, preserves the v0.198 wet-granite mesh comparator, keeps the default launcher procedural and all prior launchers unchanged, keeps browser runtime untouched, changes no gameplay/pathing/collisions/objectives/AI/saves/stable IDs, and exports the compact manual-review PNG pack under `artifacts/manual-review/v0199-structure-hierarchy/`.
 
-Current status override: v0.199 Godot Salto shell-v2 procedural structure hierarchy hardening is the active handoff layer on top of the v0.198 wet-granite mesh-compositor comparator. Character-slot integration remains frozen after five selected opt-in slots. The Barrosan foothold ground and road materials remain opt-in only, the default launcher remains procedural, browser runtime remains untouched, and the selected bridge-riverbank material remains scoped to bridge abutments, bridge landing aprons, and short riverbank retaining edges only. Continue to v0.200 only if the queued prompt sequence is still explicitly active and v0.199 is clean, pushed, synced, and remote-green.
+Project Identity continuation note: v0.200 now supersedes the older no-v0.200 tail above because the queued prompt explicitly authorized visual-only restrained environment grounding, lighting, and sparse props hardening after v0.199 was committed, pushed, clean, synced, and remote-green. v0.200 generates zero images, adds zero imported art slots, preserves the v0.199 structure-hierarchy comparator and the v0.198 wet-granite mesh comparator, keeps the default launcher procedural and all prior launchers unchanged, keeps browser runtime untouched, changes no gameplay/pathing/collisions/objectives/AI/saves/stable IDs, and exports the compact manual-review PNG pack under `artifacts/manual-review/v0200-grounding-lighting/`.
+
+Current status override: v0.200 Godot Salto shell-v2 restrained grounding, lighting, and sparse props hardening is the active handoff layer on top of the v0.199 structure-hierarchy comparator. Character-slot integration remains frozen after five selected opt-in slots. The Barrosan foothold ground and road materials remain opt-in only, the default launcher remains procedural, browser runtime remains untouched, and the selected bridge-riverbank material remains scoped to bridge abutments, bridge landing aprons, and short riverbank retaining edges only. Continue to v0.201 only if the queued prompt sequence is still explicitly active and v0.200 is clean, pushed, synced, and remote-green.
+
+## Current v0.200 Grounding Lighting Sparse Props Hardening - 2026-06-10
+
+Status: v0.200 visual-only procedural grounding, lighting, and sparse props hardening is the active checkpoint. It improves the isolated shell-v2 human-review path and stops at the v0.200 boundary unless a queued prompt sequence explicitly continues.
+
+Key files:
+
+- `GODOT_REVIEW_SALTO_SHELL_V2_GROUNDING_LIGHTING_WINDOWS.bat`
+- `GODOT_VALIDATE_SALTO_SHELL_V2_GROUNDING_LIGHTING_WINDOWS.bat`
+- `GODOT_CAPTURE_SALTO_SHELL_V2_GROUNDING_LIGHTING_WINDOWS.bat`
+- `GODOT_BENCHMARK_SALTO_SHELL_V2_GROUNDING_LIGHTING_WINDOWS.bat`
+- `tools/godot/saltoShellV2GroundingLightingTool.mjs`
+- `docs/V0200_ENVIRONMENT_GROUNDING_QA_BENCHMARK.md`
+- `docs/V0200_GROUNDING_BOUNDARY_ROLLBACK.md`
+- `docs/V0200_IMPLEMENTATION_REPORT.md`
+
+Current decision:
+
+- Keep v0.200 grounding-lighting isolated behind explicit review/validate/capture/benchmark launchers.
+- Preserve the legacy shell, v0.194 topology repair, v0.195 scoped-material shell, v0.196 mesh-compositor baseline, v0.197 mesh QA path, v0.198 wet-granite mesh path, and v0.199 structure-hierarchy path as comparator/fallback paths.
+- Keep restrained overcast value balance, contact shadows, sparse rocks, moss/grass accents, small timber/stone edge props, bank-edge accents, and warm hearth cues procedural-only.
+- Keep wet granite scoped to bridge abutments, bridge landing aprons, and short riverbank retaining edges.
+- Keep gameplay, pathing, collisions, objectives, AI, saves, stable IDs, default launcher, prior launchers, and browser runtime unchanged.
+
+Validation evidence:
+
+- `PASS_V0200_GROUNDING_LIGHTING_VALIDATION`
+- `PASS_V0200_GROUNDING_LIGHTING_BENCHMARK`
+- `PASS_V0200_GROUNDING_LIGHTING_BOUNDARY_SCAN`
+- `PASS_V0200_GROUNDING_LIGHTING_CAPTURE_PACKET`
+- `PASS_V0167_SALTO_EXPERIMENTAL_ARTIFACT_RETENTION`
+- `PASS_V0200_GROUNDING_LIGHTING_VALIDATION_READY`
+- Manual-review evidence under `artifacts/manual-review/v0200-grounding-lighting/`.
 
 ## Current v0.199 Structure Hierarchy Hardening - 2026-06-10
 
-Status: v0.199 visual-only procedural structure hierarchy hardening is the active checkpoint. It improves the isolated shell-v2 human-review path and stops at the v0.199 boundary unless a queued prompt sequence explicitly continues.
+Status: previous v0.199 visual-only procedural structure hierarchy hardening. It is superseded by the active v0.200 section above and remains a comparator/baseline path.
 
 Key files:
 
