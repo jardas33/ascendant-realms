@@ -1,12 +1,12 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-06-10 continued post-v0.195 Godot Shell-V2 Value And Framing Hardening Review
+Last updated: 2026-06-10 v0.196 Godot Salto shell-v2 procedural-mesh compositor replacement
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
 ## Current Continuation Note
 
-The latest work is a continued post-v0.195 Godot Shell-V2 Value And Framing Hardening Review, not v0.196. It changes only the isolated opt-in Salto shell-v2 scoped-material recovery path: shell-v2 terrain/road/river/bank/bridge values were rebalanced, small terrain-value/road-middle/bridge-shoulder/bridge-landing/river-glint cues were added, the coherent terrain base was slightly reduced, and only shell-v2 review/focus camera presets were recentered within existing safe zoom bounds. It generates zero images, adds zero art slots, keeps the v0.189 wet-granite bridge-riverbank material unintegrated, preserves default and prior launchers, keeps the browser runtime untouched, keeps character-slot integrations frozen, and changes no gameplay/pathing/collisions/objectives/AI/saves/stable IDs.
+The latest work is v0.196 Godot Salto shell-v2 procedural-mesh compositor replacement. It changes only the isolated opt-in shell-v2 review path: the old pad-and-line presentation is preserved as comparator while the new mesh-compositor path builds one coherent terrain mesh, connected route ribbons, a continuous river channel, bank shadows, and bridge crossing surfaces. It generates zero images, adds zero art slots, keeps the v0.189 wet-granite bridge-riverbank material unintegrated, preserves default and prior launchers, keeps the browser runtime untouched, keeps character-slot integrations frozen, and changes no gameplay/pathing/collisions/objectives/AI/saves/stable IDs.
 
 ## Project Identity
 
@@ -96,7 +96,42 @@ Project Identity continuation note: v0.195 now supersedes the older no-v0.195 ta
 
 Project Identity continuation note: the continued post-v0.195 Godot shell-v2 visual hardening review is an ad hoc repair after Emmanuel's visual-quality concern, not v0.196. It changes only the isolated shell-v2 scoped-material recovery presentation path, lowers only the shell-v2 review camera angle, strengthens route/bridge readability, reduces the rectangular field read, adds restrained terrain/river/bank/bridge/structure grounding cues, shrinks the largest shell-v2 material slabs, replaces duplicate full-height shell-v2 structure bases with low foundations, adds shell-v2-only structure silhouette detail, generates zero images, adds zero art slots, keeps the wet-granite bridge-riverbank material unintegrated, preserves the default procedural launcher and all prior launchers, keeps browser runtime untouched, changes no gameplay/pathing/collisions/objectives/AI/saves/stable IDs, and stops for human review.
 
-Current status override: continued post-v0.195 Godot Shell-V2 Value And Framing Hardening Review is the active handoff layer on top of the v0.195 checkpoint. Character-slot integration remains frozen after five selected opt-in slots. The Barrosan foothold ground and road materials remain opt-in only, the default launcher remains procedural, browser runtime remains untouched, and the selected bridge-riverbank material remains private-comparator-only. Do not execute the older bridge-riverbank material integration recommendation directly. Do not begin v0.196 unless a future explicit prompt authorizes it after clean/synced/pushed/remote-green post-v0.195 review.
+Project Identity continuation note: v0.196 now supersedes the older no-v0.196 tail above because the queued prompt explicitly authorized one isolated shell-v2 procedural-mesh compositor replacement after the expected `b18e0aaca112a58a51bf91c45fd3a15618cb4987` checkpoint was clean, synced, and remote-green. v0.196 generates zero images, adds zero art slots, keeps wet-granite bridge-riverbank material unintegrated, preserves legacy shell and v0.195 shell-v2 as comparators/fallbacks, keeps the default launcher procedural and all prior launchers unchanged, keeps browser runtime untouched, changes no gameplay/pathing/collisions/objectives/AI/saves/stable IDs, and exports the compact manual-review PNG pack under `artifacts/manual-review/v0196-shell-v2-mesh-compositor/`.
+
+Current status override: v0.196 Godot Salto shell-v2 procedural-mesh compositor replacement is the active handoff layer on top of the v0.195 and post-v0.195 visual-hardening comparators. Character-slot integration remains frozen after five selected opt-in slots. The Barrosan foothold ground and road materials remain opt-in only, the default launcher remains procedural, browser runtime remains untouched, and the selected bridge-riverbank material remains private-comparator-only. Do not execute the older bridge-riverbank material integration recommendation directly. Continue to v0.197 only if the queued prompt sequence is still explicitly active and v0.196 is clean, pushed, synced, and remote-green.
+
+## Current v0.196 Shell-V2 Mesh Compositor Replacement - 2026-06-10
+
+Status: v0.196 visual-only procedural-mesh compositor replacement is the active checkpoint. It improves the isolated shell-v2 human-review path and stops at the v0.196 boundary unless a queued prompt sequence explicitly continues.
+
+Key files:
+
+- `GODOT_REVIEW_SALTO_SHELL_V2_MESH_COMPOSITOR_WINDOWS.bat`
+- `GODOT_VALIDATE_SALTO_SHELL_V2_MESH_COMPOSITOR_WINDOWS.bat`
+- `GODOT_CAPTURE_SALTO_SHELL_V2_MESH_COMPOSITOR_WINDOWS.bat`
+- `GODOT_BENCHMARK_SALTO_SHELL_V2_MESH_COMPOSITOR_WINDOWS.bat`
+- `tools/godot/saltoShellV2MeshCompositorTool.mjs`
+- `docs/V0196_SHELL_V2_MESH_COMPOSITOR_QA_BENCHMARK.md`
+- `docs/V0196_SHELL_V2_MESH_COMPOSITOR_BOUNDARY_ROLLBACK.md`
+- `docs/V0196_IMPLEMENTATION_REPORT.md`
+
+Current decision:
+
+- Keep shell-v2 mesh compositor isolated behind explicit review/validate/capture/benchmark launchers.
+- Preserve the legacy shell, v0.194 topology repair, and v0.195 scoped-material shell as comparator/fallback paths.
+- Keep one terrain base mesh, zero detached terrain islands, zero floating diagonal road fragments, one continuous river channel, connected road ribbons, and bridge/road continuity.
+- Keep the v0.189 wet-granite bridge-riverbank material private-comparator-only.
+- Keep gameplay, pathing, collisions, objectives, AI, saves, stable IDs, default launcher, prior launchers, and browser runtime unchanged.
+
+Validation evidence:
+
+- `PASS_V0196_SHELL_V2_MESH_COMPOSITOR_VALIDATION`
+- `PASS_V0196_SHELL_V2_MESH_COMPOSITOR_BENCHMARK`
+- `PASS_V0196_SHELL_V2_MESH_COMPOSITOR_BOUNDARY_SCAN`
+- `PASS_V0196_SHELL_V2_MESH_COMPOSITOR_CAPTURE_PACKET`
+- `PASS_V0167_SALTO_EXPERIMENTAL_ARTIFACT_RETENTION`
+- `PASS_V0196_SALTO_SHELL_V2_MESH_COMPOSITOR_VALIDATION_READY`
+- Manual-review evidence under `artifacts/manual-review/v0196-shell-v2-mesh-compositor/`.
 
 ## Post-v0.195 Godot Shell-V2 Visual Hardening Review - 2026-06-09
 

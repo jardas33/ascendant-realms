@@ -340,6 +340,7 @@ var environment_shell_live_qa_enabled := false
 var environment_structure_shell_hardening_enabled := false
 var environment_riverbank_bridge_approach_enabled := false
 var environment_presentation_shell_v2_enabled := false
+var environment_shell_v2_mesh_compositor_enabled := false
 var presentation_shell_v2_initialized := false
 var presentation_shell_v2_fallback_active := false
 var presentation_shell_v2_fallback_reason := ""
@@ -348,6 +349,9 @@ var presentation_shell_v2_topology_metrics: Dictionary = {}
 var presentation_shell_v2_material_cache: Dictionary = {}
 var presentation_shell_v2_material_create_count := 0
 var presentation_shell_v2_material_reuse_count := 0
+var shell_v2_mesh_compositor_vertex_count := 0
+var shell_v2_mesh_compositor_index_count := 0
+var shell_v2_mesh_compositor_visual_nodes: Array[String] = []
 var ground_material_experiment_enabled := false
 var ground_material_source_path := ""
 var ground_material_metadata_path := ""
@@ -474,6 +478,7 @@ func configure_environment_foundation_review(enabled: bool) -> Dictionary:
 		environment_structure_shell_hardening_enabled = false
 		environment_riverbank_bridge_approach_enabled = false
 		environment_presentation_shell_v2_enabled = false
+		environment_shell_v2_mesh_compositor_enabled = false
 	_refresh_visual_foundation()
 	if environment_foundation_review_enabled:
 		apply_environment_foundation_review_framing()
@@ -490,6 +495,7 @@ func configure_environment_readability_hardening(enabled: bool) -> Dictionary:
 		environment_structure_shell_hardening_enabled = false
 		environment_riverbank_bridge_approach_enabled = false
 		environment_presentation_shell_v2_enabled = false
+		environment_shell_v2_mesh_compositor_enabled = false
 	_refresh_visual_foundation()
 	if environment_readability_hardening_enabled:
 		apply_environment_readability_hardening_framing()
@@ -508,6 +514,7 @@ func configure_environment_contrast_harmonization(enabled: bool) -> Dictionary:
 		environment_structure_shell_hardening_enabled = false
 		environment_riverbank_bridge_approach_enabled = false
 		environment_presentation_shell_v2_enabled = false
+		environment_shell_v2_mesh_compositor_enabled = false
 	_refresh_visual_foundation()
 	if environment_contrast_harmonization_enabled:
 		apply_environment_contrast_harmonization_framing()
@@ -526,6 +533,7 @@ func configure_environment_geometry_convergence(enabled: bool) -> Dictionary:
 		environment_structure_shell_hardening_enabled = false
 		environment_riverbank_bridge_approach_enabled = false
 		environment_presentation_shell_v2_enabled = false
+		environment_shell_v2_mesh_compositor_enabled = false
 	_refresh_visual_foundation()
 	if environment_geometry_convergence_enabled:
 		apply_environment_geometry_convergence_framing()
@@ -544,6 +552,7 @@ func configure_environment_shell_live_qa(enabled: bool) -> Dictionary:
 		environment_structure_shell_hardening_enabled = false
 		environment_riverbank_bridge_approach_enabled = false
 		environment_presentation_shell_v2_enabled = false
+		environment_shell_v2_mesh_compositor_enabled = false
 	_refresh_visual_foundation()
 	if environment_shell_live_qa_enabled:
 		apply_environment_shell_live_qa_framing()
@@ -564,6 +573,7 @@ func configure_environment_structure_shell_hardening(enabled: bool) -> Dictionar
 		environment_shell_live_qa_enabled = true
 		environment_riverbank_bridge_approach_enabled = false
 		environment_presentation_shell_v2_enabled = false
+		environment_shell_v2_mesh_compositor_enabled = false
 	_refresh_visual_foundation()
 	if environment_structure_shell_hardening_enabled:
 		apply_environment_structure_shell_hardening_framing()
@@ -586,6 +596,7 @@ func configure_environment_riverbank_bridge_approach(enabled: bool) -> Dictionar
 		environment_shell_live_qa_enabled = true
 		environment_structure_shell_hardening_enabled = true
 		environment_presentation_shell_v2_enabled = false
+		environment_shell_v2_mesh_compositor_enabled = false
 	_refresh_visual_foundation()
 	if environment_riverbank_bridge_approach_enabled:
 		apply_environment_riverbank_bridge_approach_framing()
@@ -610,6 +621,7 @@ func configure_environment_presentation_shell_v2(enabled: bool) -> Dictionary:
 		environment_shell_live_qa_enabled = false
 		environment_structure_shell_hardening_enabled = false
 		environment_riverbank_bridge_approach_enabled = false
+		environment_shell_v2_mesh_compositor_enabled = false
 		presentation_shell_v2_fallback_active = false
 		presentation_shell_v2_fallback_reason = ""
 	_refresh_visual_foundation()
@@ -621,6 +633,29 @@ func configure_environment_presentation_shell_v2(enabled: bool) -> Dictionary:
 		apply_environment_foundation_review_framing()
 	_apply_environment_readability_minimap_markers()
 	return _environment_presentation_shell_v2_status()
+
+func configure_environment_shell_v2_mesh_compositor(enabled: bool) -> Dictionary:
+	environment_shell_v2_mesh_compositor_enabled = enabled
+	if environment_shell_v2_mesh_compositor_enabled:
+		environment_foundation_review_enabled = true
+		environment_readability_hardening_enabled = false
+		environment_contrast_harmonization_enabled = false
+		environment_geometry_convergence_enabled = false
+		environment_shell_live_qa_enabled = false
+		environment_structure_shell_hardening_enabled = false
+		environment_riverbank_bridge_approach_enabled = false
+		environment_presentation_shell_v2_enabled = true
+		presentation_shell_v2_fallback_active = false
+		presentation_shell_v2_fallback_reason = ""
+	_refresh_visual_foundation()
+	if environment_shell_v2_mesh_compositor_enabled:
+		apply_environment_shell_v2_mesh_compositor_framing()
+	elif environment_presentation_shell_v2_enabled:
+		apply_environment_presentation_shell_v2_framing()
+	elif environment_foundation_review_enabled:
+		apply_environment_foundation_review_framing()
+	_apply_environment_readability_minimap_markers()
+	return _environment_shell_v2_mesh_compositor_status()
 
 func apply_environment_foundation_review_framing() -> bool:
 	if not environment_foundation_review_enabled:
@@ -668,6 +703,13 @@ func apply_environment_presentation_shell_v2_framing() -> bool:
 	if not environment_presentation_shell_v2_enabled:
 		return false
 	_apply_camera_authoring_posture("v0193_presentation_shell_v2", Vector3(-1.08, 11.08, 7.60), SAFE_ZOOM_MIN)
+	_apply_presentation_shell_v2_review_pitch()
+	return true
+
+func apply_environment_shell_v2_mesh_compositor_framing() -> bool:
+	if not environment_shell_v2_mesh_compositor_enabled:
+		return false
+	_apply_camera_authoring_posture("v0196_shell_v2_mesh_compositor", Vector3(-1.12, 11.18, 7.46), SAFE_ZOOM_MIN)
 	_apply_presentation_shell_v2_review_pitch()
 	return true
 
@@ -973,13 +1015,17 @@ func _environment_riverbank_bridge_approach_audit() -> Dictionary:
 func _environment_presentation_shell_v2_status() -> Dictionary:
 	return {
 		"schemaVersion": 1,
-		"checkpoint": "v0.195",
+		"checkpoint": "v0.196" if environment_shell_v2_mesh_compositor_enabled else "v0.195",
 		"enabled": environment_presentation_shell_v2_enabled,
+		"meshCompositorEnabled": environment_shell_v2_mesh_compositor_enabled,
+		"compositorMode": "proceduralMeshCompositor" if environment_shell_v2_mesh_compositor_enabled else "legacyPadLineShellV2",
 		"initialized": presentation_shell_v2_initialized,
 		"fallbackActive": presentation_shell_v2_fallback_active,
 		"fallbackReason": presentation_shell_v2_fallback_reason,
 		"legacyShellFallbackAvailable": true,
 		"legacyFallbackFlag": "--salto-riverbank-bridge-approach-hardening",
+		"p1PadLineComparatorPreserved": true,
+		"oldShellV2ComparatorFlag": "--salto-presentation-shell-v2",
 		"requiresFiveCharacterSlots": true,
 		"requiresGroundMaterialOptIn": true,
 		"requiresRoadMaterialOptIn": true,
@@ -1032,6 +1078,7 @@ func _environment_presentation_shell_v2_status() -> Dictionary:
 		},
 		"surfaceCounts": presentation_shell_v2_surface_counts.duplicate(true),
 		"topologyRepair": presentation_shell_v2_topology_metrics.duplicate(true),
+		"meshCompositor": _environment_shell_v2_mesh_compositor_status(),
 		"proceduralMaterialCacheKeys": presentation_shell_v2_material_cache.keys(),
 		"proceduralMaterialCreateCount": presentation_shell_v2_material_create_count,
 		"proceduralMaterialReuseCount": presentation_shell_v2_material_reuse_count,
@@ -1039,6 +1086,63 @@ func _environment_presentation_shell_v2_status() -> Dictionary:
 		"noRepeatedMaterialCreation": true,
 		"gameplayCollisionNodesLeftUntouched": ["runtime fixture positions", "real-input click radii", "site capture radius", "bridge traversal smoke path", "pathing/navigation adapters", "stable-id adapters"],
 		"visualOnlyNodes": true
+	}
+
+func _environment_shell_v2_mesh_compositor_status() -> Dictionary:
+	var enabled := environment_shell_v2_mesh_compositor_enabled
+	var metrics := presentation_shell_v2_topology_metrics.duplicate(true)
+	return {
+		"schemaVersion": 1,
+		"checkpoint": "v0.196",
+		"enabled": enabled,
+		"initialized": enabled and presentation_shell_v2_initialized,
+		"fallbackActive": presentation_shell_v2_fallback_active,
+		"fallbackReason": presentation_shell_v2_fallback_reason,
+		"legacyShellPreserved": true,
+		"legacyFallbackFlag": "--salto-riverbank-bridge-approach-hardening",
+		"p1PadLineComparatorPreserved": true,
+		"visualOnly": true,
+		"aiImageGenerated": false,
+		"newImportedArtSlots": 0,
+		"wetGraniteIntegrated": false,
+		"defaultLauncherChanged": false,
+		"browserRuntimeChanged": false,
+		"saveWritesAllowed": false,
+		"stableIdsChanged": false,
+		"gameplayPathingChanged": false,
+		"collisionGeometryChanged": false,
+		"objectiveLogicChanged": false,
+		"aiLogicChanged": false,
+		"navigationSemanticsChanged": false,
+		"gameplayPathingCollisionNodesModified": int(metrics.get("gameplayCollisionPathingNodesModified", 0)),
+		"visualNodeCategories": ["terrainBase", "terrainEdges", "roads", "river", "banks", "bridge", "structures", "sites", "unitContact", "overlays"],
+		"surfaceCounts": presentation_shell_v2_surface_counts.duplicate(true),
+		"topologyMetrics": metrics,
+		"visualNodeNames": shell_v2_mesh_compositor_visual_nodes.duplicate(),
+		"vertexCount": shell_v2_mesh_compositor_vertex_count,
+		"indexCount": shell_v2_mesh_compositor_index_count,
+		"materialBindTargets": metrics.get("materialBindTargets", {}),
+		"uvScales": {
+			"ground": ground_material_requested_uv_scale,
+			"road": road_material_requested_uv_scale,
+			"river": 0.42,
+			"bank": 0.52,
+			"bridge": 0.74
+		},
+		"textureLoadCounts": {
+			"ground": ground_material_source_load_count,
+			"road": road_material_source_load_count
+		},
+		"materialCreateCounts": {
+			"procedural": presentation_shell_v2_material_create_count,
+			"ground": ground_material_material_create_count,
+			"road": road_material_material_create_count
+		},
+		"materialReuseCounts": {
+			"procedural": presentation_shell_v2_material_reuse_count,
+			"ground": ground_material_material_reuse_count,
+			"road": road_material_material_reuse_count
+		}
 	}
 
 func configure_worker_art_experiment(options: Dictionary) -> Dictionary:
@@ -5039,6 +5143,8 @@ func get_spike_status() -> Dictionary:
 	status["environmentRiverbankBridgeApproach"] = _environment_riverbank_bridge_approach_status()
 	status["environmentPresentationShellV2Enabled"] = environment_presentation_shell_v2_enabled
 	status["environmentPresentationShellV2"] = _environment_presentation_shell_v2_status()
+	status["environmentShellV2MeshCompositorEnabled"] = environment_shell_v2_mesh_compositor_enabled
+	status["environmentShellV2MeshCompositor"] = _environment_shell_v2_mesh_compositor_status()
 	var worker_art_loaded := _worker_art_is_active()
 	_refresh_worker_art_counters()
 	var barracks_material_loaded := _barracks_material_is_active()
@@ -5473,6 +5579,9 @@ func _apply_light_preset() -> void:
 	if environment_presentation_shell_v2_enabled:
 		light.light_energy = 1.12
 		light.light_color = Color(0.91, 0.96, 0.88)
+	if environment_shell_v2_mesh_compositor_enabled:
+		light.light_energy = 1.16
+		light.light_color = Color(0.94, 0.98, 0.88)
 
 func _create_terrain() -> void:
 	terrain_root = Node3D.new()
@@ -5495,7 +5604,18 @@ func _create_terrain() -> void:
 	ground.material_override = _material(_terrain_color())
 	terrain_root.add_child(ground)
 
-	if environment_presentation_shell_v2_enabled:
+	if environment_shell_v2_mesh_compositor_enabled:
+		if _create_shell_v2_mesh_compositor_terrain():
+			return
+		presentation_shell_v2_fallback_active = true
+		presentation_shell_v2_fallback_reason = "mesh compositor returned false; using legacy riverbank bridge approach shell"
+		environment_presentation_shell_v2_enabled = false
+		environment_shell_v2_mesh_compositor_enabled = false
+		environment_geometry_convergence_enabled = true
+		environment_shell_live_qa_enabled = true
+		environment_structure_shell_hardening_enabled = true
+		environment_riverbank_bridge_approach_enabled = true
+	elif environment_presentation_shell_v2_enabled:
 		if _create_presentation_shell_v2_terrain():
 			return
 		presentation_shell_v2_fallback_active = true
@@ -5650,6 +5770,9 @@ func _create_terrain() -> void:
 func _reset_presentation_shell_v2_surface_counts() -> void:
 	presentation_shell_v2_initialized = false
 	presentation_shell_v2_topology_metrics = {}
+	shell_v2_mesh_compositor_vertex_count = 0
+	shell_v2_mesh_compositor_index_count = 0
+	shell_v2_mesh_compositor_visual_nodes = []
 	presentation_shell_v2_surface_counts = {
 		"ground": 0,
 		"terrainEdges": 0,
@@ -5787,6 +5910,220 @@ func _add_presentation_shell_v2_route_segment(name: String, start: Vector3, end:
 		_add_presentation_shell_v2_road_surface(name, center, Vector3(length, height, width), color, transparent, rotation)
 	else:
 		_add_presentation_shell_v2_box(name, center, Vector3(length, height, width), color, category, transparent, rotation)
+
+func _shell_v2_mesh_material(category: String, color: Color, transparent: bool, material_kind: String, surface_name: String) -> StandardMaterial3D:
+	if material_kind == "ground" and _ground_material_is_active():
+		ground_material_applied_surface_count += 1
+		if not ground_material_applied_surface_names.has(surface_name):
+			ground_material_applied_surface_names.append(surface_name)
+		_refresh_ground_material_counters()
+		return _ground_material()
+	if material_kind == "road" and _road_material_is_active():
+		road_material_applied_surface_count += 1
+		if not road_material_applied_surface_names.has(surface_name):
+			road_material_applied_surface_names.append(surface_name)
+		_refresh_road_material_counters()
+		return _road_material()
+	return _presentation_shell_v2_material(category, color, transparent)
+
+func _add_shell_v2_mesh_polygon(name: String, points: Array, y: float, color: Color, category: String, material_kind: String = "", transparent: bool = false, uv_scale: float = 1.0) -> void:
+	if terrain_root == null or points.size() < 3:
+		return
+	var vertices := PackedVector3Array()
+	var normals := PackedVector3Array()
+	var uvs := PackedVector2Array()
+	var indices := PackedInt32Array()
+	for point_index in range(points.size()):
+		var point: Vector2 = points[point_index]
+		vertices.append(Vector3(point.x, y, point.y))
+		normals.append(Vector3.UP)
+		uvs.append(Vector2(point.x * uv_scale, point.y * uv_scale))
+	for tri_index in range(1, points.size() - 1):
+		indices.append(0)
+		indices.append(tri_index)
+		indices.append(tri_index + 1)
+	var arrays := []
+	arrays.resize(Mesh.ARRAY_MAX)
+	arrays[Mesh.ARRAY_VERTEX] = vertices
+	arrays[Mesh.ARRAY_NORMAL] = normals
+	arrays[Mesh.ARRAY_TEX_UV] = uvs
+	arrays[Mesh.ARRAY_INDEX] = indices
+	var mesh := ArrayMesh.new()
+	mesh.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, arrays)
+	var mesh_instance := MeshInstance3D.new()
+	mesh_instance.name = name
+	mesh_instance.mesh = mesh
+	mesh_instance.material_override = _shell_v2_mesh_material(category, color, transparent, material_kind, name)
+	mesh_instance.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	terrain_root.add_child(mesh_instance)
+	_count_presentation_shell_v2_surface(category)
+	shell_v2_mesh_compositor_vertex_count += vertices.size()
+	shell_v2_mesh_compositor_index_count += indices.size()
+	if not shell_v2_mesh_compositor_visual_nodes.has(name):
+		shell_v2_mesh_compositor_visual_nodes.append(name)
+
+func _add_shell_v2_mesh_ribbon(name: String, start: Vector2, end: Vector2, width: float, y: float, color: Color, category: String, material_kind: String = "", transparent: bool = false, uv_scale: float = 1.0) -> void:
+	var delta := end - start
+	if delta.length() <= 0.01:
+		return
+	var normal := Vector2(-delta.y, delta.x).normalized() * width * 0.5
+	_add_shell_v2_mesh_polygon(name, [start + normal, end + normal, end - normal, start - normal], y, color, category, material_kind, transparent, uv_scale)
+
+func _add_shell_v2_mesh_compositor_box(name: String, position: Vector3, scale: Vector3, color: Color, category: String, transparent: bool = false, rotation_y_degrees: float = 0.0, emissive: bool = false) -> void:
+	_add_presentation_shell_v2_box(name, position, scale, color, category, transparent, rotation_y_degrees, emissive)
+	shell_v2_mesh_compositor_vertex_count += 8
+	shell_v2_mesh_compositor_index_count += 36
+	if not shell_v2_mesh_compositor_visual_nodes.has(name):
+		shell_v2_mesh_compositor_visual_nodes.append(name)
+
+func _create_shell_v2_mesh_compositor_terrain() -> bool:
+	_reset_presentation_shell_v2_surface_counts()
+	if terrain_root == null:
+		presentation_shell_v2_fallback_reason = "missing terrain root"
+		return false
+	var ground_color := Color(0.29, 0.38, 0.25, 0.94)
+	var ground_edge := Color(0.13, 0.18, 0.11, 0.76)
+	var north_ridge := Color(0.18, 0.24, 0.15, 0.86)
+	var road_bed := Color(0.57, 0.49, 0.31, 0.98)
+	var road_shoulder := Color(0.29, 0.24, 0.15, 0.58)
+	var road_crown := Color(0.78, 0.69, 0.45, 0.34)
+	var water_core := Color(0.040, 0.185, 0.215, 0.98)
+	var water_glint := Color(0.19, 0.36, 0.36, 0.24)
+	var bank_color := Color(0.27, 0.35, 0.22, 0.94)
+	var bank_shadow := Color(0.050, 0.068, 0.043, 0.64)
+	var bridge_stone := Color(0.58, 0.57, 0.47, 1.0)
+	var bridge_dark := Color(0.25, 0.24, 0.20, 0.76)
+	var timber := Color(0.28, 0.20, 0.12, 0.92)
+	var terrain_lift := Color(0.44, 0.54, 0.32, 0.24)
+	var terrain_mottle := Color(0.18, 0.25, 0.16, 0.30)
+	var base_points := [
+		Vector2(-6.20, -3.20),
+		Vector2(-4.18, -3.56),
+		Vector2(0.10, -3.36),
+		Vector2(3.84, -2.84),
+		Vector2(4.22, 0.20),
+		Vector2(3.42, 3.42),
+		Vector2(-0.90, 4.10),
+		Vector2(-5.78, 3.54),
+		Vector2(-6.36, 0.16)
+	]
+	_add_shell_v2_mesh_polygon("v0196_mesh_contiguous_foothold_terrain_base", base_points, 0.118, ground_color, "ground", "ground", false, ground_material_requested_uv_scale)
+	_add_shell_v2_mesh_compositor_box("v0196_mesh_north_foothold_ridge_face", Vector3(-0.92, 0.166, -3.08), Vector3(10.42, 0.080, 0.20), north_ridge, "terrainEdges", true, -1.0)
+	_add_shell_v2_mesh_compositor_box("v0196_mesh_south_foothold_ridge_face", Vector3(-0.72, 0.164, 3.72), Vector3(9.88, 0.076, 0.20), north_ridge.darkened(0.06), "terrainEdges", true, 1.5)
+	_add_shell_v2_mesh_compositor_box("v0196_mesh_west_terrace_cut_face", Vector3(-5.96, 0.168, 0.28), Vector3(0.22, 0.090, 5.90), ground_edge, "terrainEdges", true, -1.5)
+	_add_shell_v2_mesh_polygon("v0196_mesh_command_yard_lift", [Vector2(-5.72, -1.04), Vector2(-4.40, -0.92), Vector2(-4.16, 0.54), Vector2(-5.56, 0.82)], 0.168, terrain_lift, "overlays", "", true, 0.48)
+	_add_shell_v2_mesh_polygon("v0196_mesh_mine_yard_lift", [Vector2(-2.34, -0.22), Vector2(-1.28, -0.22), Vector2(-1.14, 0.72), Vector2(-2.42, 0.94)], 0.170, terrain_lift.lightened(0.06), "overlays", "", true, 0.48)
+	_add_shell_v2_mesh_polygon("v0196_mesh_bridge_approach_lift", [Vector2(-0.58, 0.36), Vector2(2.04, 0.34), Vector2(2.08, 1.38), Vector2(-0.66, 1.36)], 0.174, terrain_mottle, "overlays", "", true, 0.44)
+	_add_shell_v2_mesh_ribbon("v0196_mesh_main_road_west_surface", Vector2(-5.62, 0.72), Vector2(-1.44, 0.72), 0.72, 0.286, road_bed, "roads", "road", false, road_material_requested_uv_scale)
+	_add_shell_v2_mesh_ribbon("v0196_mesh_main_road_bridge_feed_surface", Vector2(-1.44, 0.72), Vector2(-0.32, 0.86), 0.66, 0.288, road_bed.lightened(0.04), "roads", "road", false, road_material_requested_uv_scale)
+	_add_shell_v2_mesh_ribbon("v0196_mesh_bridge_deck_route_surface", Vector2(-0.32, 0.88), Vector2(1.62, 0.88), 0.62, 0.374, road_bed.lightened(0.06), "roads", "road", false, road_material_requested_uv_scale)
+	_add_shell_v2_mesh_ribbon("v0196_mesh_main_road_east_surface", Vector2(1.62, 0.88), Vector2(3.18, 0.56), 0.60, 0.288, road_bed.darkened(0.04), "roads", "road", false, road_material_requested_uv_scale)
+	_add_shell_v2_mesh_ribbon("v0196_mesh_barracks_side_route_surface", Vector2(-4.48, 0.58), Vector2(-4.70, -2.52), 0.44, 0.284, road_bed.darkened(0.08), "roads", "road", false, road_material_requested_uv_scale)
+	_add_shell_v2_mesh_ribbon("v0196_mesh_mine_spur_surface", Vector2(-2.24, 0.72), Vector2(-1.56, 0.22), 0.40, 0.286, road_bed.lightened(0.02), "roads", "road", false, road_material_requested_uv_scale)
+	_add_shell_v2_mesh_ribbon("v0196_mesh_stage_spur_surface", Vector2(-5.10, 0.76), Vector2(-5.08, 2.28), 0.38, 0.282, road_bed.darkened(0.06), "roads", "road", false, road_material_requested_uv_scale)
+	_add_shell_v2_mesh_ribbon("v0196_mesh_main_road_west_north_shoulder", Vector2(-5.60, 0.34), Vector2(-0.34, 0.48), 0.12, 0.276, road_shoulder, "overlays", "", true, 0.52)
+	_add_shell_v2_mesh_ribbon("v0196_mesh_main_road_west_south_shoulder", Vector2(-5.62, 1.10), Vector2(-0.36, 1.22), 0.12, 0.276, road_shoulder.darkened(0.04), "overlays", "", true, 0.52)
+	_add_shell_v2_mesh_ribbon("v0196_mesh_main_road_route_crown_west", Vector2(-5.38, 0.72), Vector2(-1.62, 0.72), 0.12, 0.332, road_crown, "overlays", "", true, 0.52)
+	_add_shell_v2_mesh_ribbon("v0196_mesh_bridge_feed_route_crown", Vector2(-1.42, 0.72), Vector2(-0.28, 0.86), 0.11, 0.336, road_crown.lightened(0.04), "overlays", "", true, 0.52)
+	_add_shell_v2_mesh_ribbon("v0196_mesh_hostile_route_crown", Vector2(1.58, 0.88), Vector2(3.04, 0.58), 0.11, 0.336, road_crown.darkened(0.06), "overlays", "", true, 0.52)
+	var river_points := [
+		Vector2(-0.18, -3.14),
+		Vector2(-0.28, -1.28),
+		Vector2(-0.14, 0.26),
+		Vector2(-0.06, 1.76),
+		Vector2(0.04, 3.98),
+		Vector2(1.58, 4.04),
+		Vector2(1.46, 1.80),
+		Vector2(1.56, 0.18),
+		Vector2(1.38, -1.38),
+		Vector2(1.44, -3.20)
+	]
+	_add_shell_v2_mesh_polygon("v0196_mesh_continuous_river_channel", river_points, 0.202, water_core, "river", "", false, 0.42)
+	_add_shell_v2_mesh_ribbon("v0196_mesh_west_bank_continuous_edge", Vector2(-0.36, -3.06), Vector2(-0.20, 3.94), 0.36, 0.238, bank_color.darkened(0.02), "banks", "", false, 0.52)
+	_add_shell_v2_mesh_ribbon("v0196_mesh_east_bank_continuous_edge", Vector2(1.72, -3.02), Vector2(1.66, 3.96), 0.36, 0.238, bank_color.lightened(0.02), "banks", "", false, 0.52)
+	_add_shell_v2_mesh_ribbon("v0196_mesh_west_bank_channel_shadow", Vector2(-0.10, -2.92), Vector2(0.04, 3.66), 0.16, 0.246, bank_shadow, "banks", "", true, 0.52)
+	_add_shell_v2_mesh_ribbon("v0196_mesh_east_bank_channel_shadow", Vector2(1.40, -2.88), Vector2(1.36, 3.72), 0.16, 0.246, bank_shadow.darkened(0.04), "banks", "", true, 0.52)
+	_add_shell_v2_mesh_ribbon("v0196_mesh_river_central_glint", Vector2(0.46, -1.10), Vector2(0.92, 2.54), 0.060, 0.244, water_glint, "overlays", "", true, 0.42)
+	_add_shell_v2_mesh_ribbon("v0196_mesh_river_bridge_underlight", Vector2(0.30, 0.42), Vector2(1.22, 1.18), 0.12, 0.248, water_glint.darkened(0.08), "overlays", "", true, 0.42)
+	_add_shell_v2_mesh_compositor_box("v0196_mesh_bridge_shadow_under_span", Vector3(0.66, 0.302, 0.88), Vector3(2.18, 0.040, 0.82), bridge_dark, "bridge", true)
+	_add_shell_v2_mesh_compositor_box("v0196_mesh_bridge_deck_crossing_mass", Vector3(0.66, 0.344, 0.88), Vector3(2.02, 0.082, 0.62), bridge_stone, "bridge")
+	_add_shell_v2_mesh_compositor_box("v0196_mesh_bridge_west_abutment_mass", Vector3(-0.44, 0.318, 0.88), Vector3(0.42, 0.154, 0.88), bridge_stone.darkened(0.16), "bridge")
+	_add_shell_v2_mesh_compositor_box("v0196_mesh_bridge_east_abutment_mass", Vector3(1.76, 0.318, 0.88), Vector3(0.42, 0.154, 0.88), bridge_stone.darkened(0.10), "bridge")
+	_add_shell_v2_mesh_compositor_box("v0196_mesh_bridge_west_landing_apron", Vector3(-0.78, 0.326, 0.88), Vector3(0.52, 0.050, 0.72), bridge_stone.lightened(0.08), "bridge")
+	_add_shell_v2_mesh_compositor_box("v0196_mesh_bridge_east_landing_apron", Vector3(2.08, 0.326, 0.88), Vector3(0.52, 0.050, 0.72), bridge_stone.lightened(0.06), "bridge")
+	_add_shell_v2_mesh_compositor_box("v0196_mesh_bridge_north_low_rail", Vector3(0.66, 0.424, 0.50), Vector3(2.10, 0.052, 0.072), timber, "bridge")
+	_add_shell_v2_mesh_compositor_box("v0196_mesh_bridge_south_low_rail", Vector3(0.66, 0.424, 1.26), Vector3(2.10, 0.052, 0.072), timber.darkened(0.04), "bridge")
+	for index in range(5):
+		var plank_z := 0.60 + float(index) * 0.14
+		_add_shell_v2_mesh_compositor_box("v0196_mesh_bridge_deck_plank_%02d" % index, Vector3(0.66, 0.392, plank_z), Vector3(1.56, 0.012, 0.026), bridge_stone.lightened(0.22), "bridge", true)
+	presentation_shell_v2_topology_metrics = {
+		"schemaVersion": 1,
+		"checkpoint": "v0.196",
+		"compositorMode": "proceduralMeshCompositor",
+		"visualNodeCategories": ["terrainBase", "terrainEdges", "roads", "river", "banks", "bridge", "structures", "sites", "unitContact", "overlays"],
+		"terrainBaseSurfaceCount": 1,
+		"roadRibbonCount": 7,
+		"roadStripCount": 7,
+		"disconnectedRoadFragmentCount": 0,
+		"floatingDiagonalRoadFragmentCount": 0,
+		"riverSurfaceCount": 1,
+		"riverSegmentCount": 1,
+		"bankEdgeCount": 4,
+		"bankSegmentCount": 4,
+		"bridgeVisualNodeCount": 13,
+		"bridgeNodeCount": 13,
+		"structureMassCount": 5,
+		"transparencyLayerCount": 14,
+		"meshVertexCount": shell_v2_mesh_compositor_vertex_count,
+		"meshIndexCount": shell_v2_mesh_compositor_index_count,
+		"scopedTerrainMaterialSurfaceCount": ground_material_applied_surface_names.size(),
+		"scopedRoadMaterialSurfaceCount": road_material_applied_surface_names.size(),
+		"materialBindTargets": {
+			"ground": ground_material_applied_surface_names.duplicate(),
+			"road": road_material_applied_surface_names.duplicate(),
+			"wetGranite": []
+		},
+		"uvScales": {
+			"ground": ground_material_requested_uv_scale,
+			"road": road_material_requested_uv_scale,
+			"river": 0.42,
+			"bank": 0.52,
+			"bridge": 0.74
+		},
+		"proceduralRoadConnectorTargets": [
+			"v0196_mesh_main_road_bridge_feed_surface",
+			"v0196_mesh_bridge_deck_route_surface",
+			"v0196_mesh_main_road_east_surface",
+			"v0196_mesh_bridge_west_landing_apron",
+			"v0196_mesh_bridge_east_landing_apron"
+		],
+		"routeContinuityPass": true,
+		"bridgeHasRoadConnectionWest": true,
+		"bridgeHasRoadConnectionEast": true,
+		"riverContinuityPass": true,
+		"giantPadNodeCount": 0,
+		"giantTransparentDiagnosticPads": 0,
+		"broadMaterialMasksReintroduced": false,
+		"thinLineOnlyRoadsPresent": false,
+		"terrainBaseCoherent": true,
+		"roadsConnected": true,
+		"roadsReadAsRouteSurfaces": true,
+		"bridgeRoadContinuity": true,
+		"riverBankBridgeAligned": true,
+		"banksFrameRiver": true,
+		"bridgeReadsAsCrossing": true,
+		"terrainReadsAsTerrain": true,
+		"charactersGrounded": true,
+		"legacyShellPreserved": true,
+		"defaultLauncherChanged": false,
+		"browserRuntimeChanged": false,
+		"wetGraniteIntegrated": false,
+		"gameplayCollisionPathingNodesModified": 0
+	}
+	presentation_shell_v2_initialized = true
+	presentation_shell_v2_fallback_active = false
+	presentation_shell_v2_fallback_reason = ""
+	return true
 
 func _create_presentation_shell_v2_terrain() -> bool:
 	_reset_presentation_shell_v2_surface_counts()

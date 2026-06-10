@@ -237,10 +237,20 @@ Retain the latest v0.166/v0.167/v0.168/v0.169/v0.170 evidence until a later chec
 - `docs/V0195_SCOPED_MATERIAL_RECOVERY_QA_BENCHMARK.md`
 - `docs/V0195_SCOPED_MATERIAL_BOUNDARY_ROLLBACK.md`
 - `docs/V0195_IMPLEMENTATION_REPORT.md`
+- `artifacts/desktop-spikes/godot-salto/v0196/validation/`
+- `artifacts/desktop-spikes/godot-salto/v0196/capture/`
+- `artifacts/desktop-spikes/godot-salto/v0196/benchmark/`
+- `artifacts/desktop-spikes/godot-salto/v0196/boundary/`
+- `artifacts/desktop-spikes/godot-salto/v0196/cleanup-dry-run/`
+- `artifacts/desktop-spikes/godot-salto/v0196/artifact-retention-post-cleanup/`
+- `artifacts/manual-review/v0196-shell-v2-mesh-compositor/`
+- `docs/V0196_SHELL_V2_MESH_COMPOSITOR_QA_BENCHMARK.md`
+- `docs/V0196_SHELL_V2_MESH_COMPOSITOR_BOUNDARY_ROLLBACK.md`
+- `docs/V0196_IMPLEMENTATION_REPORT.md`
 
 ## Character Integration Freeze
 
-Character-slot expansion is frozen after the selected Worker, Barracks material, Militia, Aster, and Ashen Raider opt-in slots. v0.195 keeps the existing Barrosan foothold ground-material opt-in slot and the existing Barrosan foothold road-material opt-in slot behind their prior opt-in launchers, preserves the v0.184 visual-only environment-shell geometry convergence review path, v0.185 visual-only environment-shell live-QA path, v0.186 visual-only procedural structure-shell hierarchy hardening path, v0.187 visual-only procedural riverbank/bridge approach hardening path, v0.193 shell-v2 comparator path, and v0.194 shell-v2 topology repair path. The v0.189 wet-granite bridge-riverbank material remains private-comparator-only because human review deferred that integration until shell geometry is stronger. No bridge/riverbank/structure material slot is integrated by v0.195, the v0.195 shell-v2 scoped material recovery path is isolated behind `GODOT_REVIEW_SALTO_SHELL_V2_SCOPED_MATERIAL_RECOVERY_WINDOWS.bat`, no water shader pipeline is added, the default launcher remains procedural, browser runtime remains untouched, the legacy shell is preserved as comparator/fallback, and v0.196 was not started.
+Character-slot expansion is frozen after the selected Worker, Barracks material, Militia, Aster, and Ashen Raider opt-in slots. v0.196 keeps the existing Barrosan foothold ground-material opt-in slot and the existing Barrosan foothold road-material opt-in slot behind their prior opt-in launchers, preserves the v0.184 visual-only environment-shell geometry convergence review path, v0.185 visual-only environment-shell live-QA path, v0.186 visual-only procedural structure-shell hierarchy hardening path, v0.187 visual-only procedural riverbank/bridge approach hardening path, v0.193 shell-v2 comparator path, v0.194 shell-v2 topology repair path, and v0.195 shell-v2 scoped-material comparator path. The v0.189 wet-granite bridge-riverbank material remains private-comparator-only because human review deferred that integration until shell geometry is stronger. No bridge/riverbank/structure material slot is integrated by v0.196, the v0.196 shell-v2 mesh-compositor path is isolated behind `GODOT_REVIEW_SALTO_SHELL_V2_MESH_COMPOSITOR_WINDOWS.bat`, no water shader pipeline is added, the default launcher remains procedural, browser runtime remains untouched, and the legacy shell is preserved as comparator/fallback.
 
 ## Archive Candidates
 
