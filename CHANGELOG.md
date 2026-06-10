@@ -1,5 +1,27 @@
 # Changelog
 
+# Continued Post-v0.195 Godot Shell-V2 Value And Framing Hardening Review - 2026-06-10
+
+This continued ad hoc review pass stays inside the existing isolated opt-in Salto shell-v2 scoped-material recovery presentation path. It generates zero images, adds zero art slots, integrates no v0.189 wet-granite bridge-riverbank material, preserves the default procedural launcher and all prior launchers, keeps the browser runtime untouched, keeps character-slot integration frozen, and changes no gameplay, pathing, collisions, objectives, AI, saves, stable IDs, or production manifests.
+
+Changed:
+
+- Rebalanced only shell-v2 terrain, road, river, bank, and bridge values to reduce the flat green/yellow prototype read.
+- Added small shell-v2-only terrain-value, road-middle, bridge-shoulder, bridge-landing, and river-glint cues.
+- Shrunk the coherent shell-v2 terrain base slightly and recentered only shell-v2 review/focus camera presets within existing safe zoom bounds.
+- Updated the post-v0.195 visual hardening review notes with the new screenshot review posture.
+
+Validation:
+
+- `PASS_V0195_SHELL_V2_SCOPED_MATERIAL_CAPTURE_PACKET`.
+- `PASS_V0195_SHELL_V2_SCOPED_MATERIAL_VALIDATION`.
+- `npm run validate:content`.
+- `npm run validate:art-intake`.
+- `npm run validate:runtime-art-slots`.
+- `npx vitest run src/game/desktop-spike/GodotSaltoSpikeScaffold.test.ts`.
+- `npm run build`.
+- `git diff --check`.
+
 # Continued Post-v0.195 Godot Shell-V2 Contour Hardening Review - 2026-06-10
 
 This continued ad hoc review pass keeps the work inside the existing isolated opt-in Salto shell-v2 scoped-material recovery presentation path. It generates zero images, adds zero art slots, integrates no v0.189 wet-granite bridge-riverbank material, preserves the default procedural launcher and all prior launchers, keeps the browser runtime untouched, keeps character-slot integration frozen, and changes no gameplay, pathing, collisions, objectives, AI, saves, stable IDs, or production manifests.

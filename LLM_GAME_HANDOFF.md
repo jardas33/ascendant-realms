@@ -1,12 +1,12 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-06-10 continued post-v0.195 Godot Shell-V2 Contour Hardening Review
+Last updated: 2026-06-10 continued post-v0.195 Godot Shell-V2 Value And Framing Hardening Review
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
 ## Current Continuation Note
 
-The latest work is a continued post-v0.195 Godot Shell-V2 Contour Hardening Review, not v0.196. It changes only the isolated opt-in Salto shell-v2 scoped-material recovery path: the six scoped ground-material bind targets now render as smaller local oval material zones, added terrain-contour/road-dust/riverbank-shelf ovals reduce hard construction geometry, and focused v0.195 road/bridge captures preserve the shell-v2 review pitch. It generates zero images, adds zero art slots, keeps the v0.189 wet-granite bridge-riverbank material unintegrated, preserves default and prior launchers, keeps the browser runtime untouched, keeps character-slot integrations frozen, and changes no gameplay/pathing/collisions/objectives/AI/saves/stable IDs.
+The latest work is a continued post-v0.195 Godot Shell-V2 Value And Framing Hardening Review, not v0.196. It changes only the isolated opt-in Salto shell-v2 scoped-material recovery path: shell-v2 terrain/road/river/bank/bridge values were rebalanced, small terrain-value/road-middle/bridge-shoulder/bridge-landing/river-glint cues were added, the coherent terrain base was slightly reduced, and only shell-v2 review/focus camera presets were recentered within existing safe zoom bounds. It generates zero images, adds zero art slots, keeps the v0.189 wet-granite bridge-riverbank material unintegrated, preserves default and prior launchers, keeps the browser runtime untouched, keeps character-slot integrations frozen, and changes no gameplay/pathing/collisions/objectives/AI/saves/stable IDs.
 
 ## Project Identity
 
@@ -96,7 +96,7 @@ Project Identity continuation note: v0.195 now supersedes the older no-v0.195 ta
 
 Project Identity continuation note: the continued post-v0.195 Godot shell-v2 visual hardening review is an ad hoc repair after Emmanuel's visual-quality concern, not v0.196. It changes only the isolated shell-v2 scoped-material recovery presentation path, lowers only the shell-v2 review camera angle, strengthens route/bridge readability, reduces the rectangular field read, adds restrained terrain/river/bank/bridge/structure grounding cues, shrinks the largest shell-v2 material slabs, replaces duplicate full-height shell-v2 structure bases with low foundations, adds shell-v2-only structure silhouette detail, generates zero images, adds zero art slots, keeps the wet-granite bridge-riverbank material unintegrated, preserves the default procedural launcher and all prior launchers, keeps browser runtime untouched, changes no gameplay/pathing/collisions/objectives/AI/saves/stable IDs, and stops for human review.
 
-Current status override: continued post-v0.195 Godot Shell-V2 Visual Hardening Review is the active handoff layer on top of the v0.195 checkpoint. Character-slot integration remains frozen after five selected opt-in slots. The Barrosan foothold ground and road materials remain opt-in only, the default launcher remains procedural, browser runtime remains untouched, and the selected bridge-riverbank material remains private-comparator-only. Do not execute the older bridge-riverbank material integration recommendation directly. Do not begin v0.196 unless a future explicit prompt authorizes it after clean/synced/pushed/remote-green post-v0.195 review.
+Current status override: continued post-v0.195 Godot Shell-V2 Value And Framing Hardening Review is the active handoff layer on top of the v0.195 checkpoint. Character-slot integration remains frozen after five selected opt-in slots. The Barrosan foothold ground and road materials remain opt-in only, the default launcher remains procedural, browser runtime remains untouched, and the selected bridge-riverbank material remains private-comparator-only. Do not execute the older bridge-riverbank material integration recommendation directly. Do not begin v0.196 unless a future explicit prompt authorizes it after clean/synced/pushed/remote-green post-v0.195 review.
 
 ## Post-v0.195 Godot Shell-V2 Visual Hardening Review - 2026-06-09
 

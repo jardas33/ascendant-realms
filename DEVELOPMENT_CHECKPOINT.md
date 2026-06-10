@@ -1,6 +1,30 @@
 # Development Checkpoint
 
-Updated: 2026-06-10 continued post-v0.195 Godot Shell-V2 Contour Hardening Review
+Updated: 2026-06-10 continued post-v0.195 Godot Shell-V2 Value And Framing Hardening Review
+
+## Continued Post-v0.195 Godot Shell-V2 Value And Framing Hardening Review - 2026-06-10
+
+Scope: continued ad hoc visual-only hardening for the existing isolated opt-in Godot Salto shell-v2 scoped-material recovery path. This is not v0.196. It generates zero images, adds zero art slots, integrates no wet-granite bridge-riverbank material, keeps the default launcher procedural, preserves all prior launchers, keeps browser runtime untouched, keeps character integrations frozen, and leaves gameplay, pathing, collisions, objectives, AI, saves, stable IDs, production manifests, selected prior art, metadata, fallbacks, and required evidence unchanged.
+
+Included work:
+
+- Rebalanced shell-v2 terrain, road, river, bank, and bridge values to reduce the flat green/yellow prototype read.
+- Added small shell-v2-only terrain-value, road-middle, bridge-shoulder, bridge-landing, and river-glint cues.
+- Shrunk the coherent shell-v2 terrain base slightly and recentered only shell-v2 review/focus camera presets within existing safe zoom bounds.
+- Refreshed the v0.195 shell-v2 scoped-material recovery capture packet and screenshot evidence.
+
+Verification targets:
+
+```text
+PASS: npm run godot:capture:salto-shell-v2-scoped-material-recovery.
+PASS: npm run godot:validate:salto-shell-v2-scoped-material-recovery.
+PASS: npm run validate:content.
+PASS: npm run validate:art-intake.
+PASS: npm run validate:runtime-art-slots.
+PASS: npx vitest run src/game/desktop-spike/GodotSaltoSpikeScaffold.test.ts.
+PASS: npm run build.
+PASS: git diff --check.
+```
 
 ## Continued Post-v0.195 Godot Shell-V2 Contour Hardening Review - 2026-06-10
 

@@ -20,6 +20,9 @@ Scope: continued ad hoc visual-only review and hardening after the v0.195 human-
 - Continued 2026-06-10 pass: changed the six scoped ground-material bind targets from broad rectangular surfaces into smaller shell-v2-only oval material zones so the selected ground texture remains visible without reading as giant diagnostic pads.
 - Continued 2026-06-10 pass: added shell-v2-only terrain contour, road-dust, and riverbank-shelf ovals around the road, bridge approaches, and river corridor to reduce hard construction geometry while preserving route readability.
 - Continued 2026-06-10 pass: preserved the shell-v2 review pitch for focused v0.195 road-network, road-to-bridge, and bridge-close captures so close review shots no longer revert to the flatter default posture.
+- Continued 2026-06-10 value pass: rebalanced only the shell-v2 palette, scoped road overlay, river surface, and bridge deck values so roads no longer read as raw yellow strips and the crossing has stronger material hierarchy.
+- Continued 2026-06-10 value pass: added small terrain-value, verge, road-middle, river-glint, bridge-landing, and bridge-shoulder cues while keeping the v0.189 wet-granite source unintegrated.
+- Continued 2026-06-10 framing pass: recentered only the shell-v2 review camera and focused v0.195 road/bridge capture presets within the existing safe zoom bounds to reduce empty presentation padding in review screenshots.
 
 ## Boundary
 
@@ -57,4 +60,4 @@ Recommended screenshots for review:
 
 ## Human Review Note
 
-The result is still intentionally procedural and conservative, but it now reads less like stacked translucent rectangles and blunt placeholder blocks: roads connect, the bridge has stronger local grounding, the river/banks are less ruler-flat, the selected terrain material is contained to local shaped zones, and structure silhouettes no longer fight a duplicate full-height base primitive in shell v2. Further work should remain explicitly bounded and should not start v0.196 without a clean, synced, pushed, remote-green checkpoint and a new prompt.
+The result is still intentionally procedural and conservative, but it now reads less like stacked translucent rectangles and blunt placeholder blocks: roads connect, the bridge has stronger local grounding, the river/banks are less ruler-flat, the selected terrain material is contained to local shaped zones, the road value is calmer, and structure silhouettes no longer fight a duplicate full-height base primitive in shell v2. Further work should remain explicitly bounded and should not start v0.196 without a clean, synced, pushed, remote-green checkpoint and a new prompt.
