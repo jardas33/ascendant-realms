@@ -1015,7 +1015,7 @@ func _environment_riverbank_bridge_approach_audit() -> Dictionary:
 func _environment_presentation_shell_v2_status() -> Dictionary:
 	return {
 		"schemaVersion": 1,
-		"checkpoint": "v0.196" if environment_shell_v2_mesh_compositor_enabled else "v0.195",
+		"checkpoint": "v0.197" if environment_shell_v2_mesh_compositor_enabled else "v0.195",
 		"enabled": environment_presentation_shell_v2_enabled,
 		"meshCompositorEnabled": environment_shell_v2_mesh_compositor_enabled,
 		"compositorMode": "proceduralMeshCompositor" if environment_shell_v2_mesh_compositor_enabled else "legacyPadLineShellV2",
@@ -1093,7 +1093,7 @@ func _environment_shell_v2_mesh_compositor_status() -> Dictionary:
 	var metrics := presentation_shell_v2_topology_metrics.duplicate(true)
 	return {
 		"schemaVersion": 1,
-		"checkpoint": "v0.196",
+		"checkpoint": "v0.197",
 		"enabled": enabled,
 		"initialized": enabled and presentation_shell_v2_initialized,
 		"fallbackActive": presentation_shell_v2_fallback_active,
@@ -6058,7 +6058,7 @@ func _create_shell_v2_mesh_compositor_terrain() -> bool:
 		_add_shell_v2_mesh_compositor_box("v0196_mesh_bridge_deck_plank_%02d" % index, Vector3(0.66, 0.392, plank_z), Vector3(1.56, 0.012, 0.026), bridge_stone.lightened(0.22), "bridge", true)
 	presentation_shell_v2_topology_metrics = {
 		"schemaVersion": 1,
-		"checkpoint": "v0.196",
+		"checkpoint": "v0.197",
 		"compositorMode": "proceduralMeshCompositor",
 		"visualNodeCategories": ["terrainBase", "terrainEdges", "roads", "river", "banks", "bridge", "structures", "sites", "unitContact", "overlays"],
 		"terrainBaseSurfaceCount": 1,
@@ -7361,19 +7361,42 @@ func _rebuild_visuals() -> void:
 		var to_endpoint: Dictionary = runtime.lume_endpoints[int(link["to"])]
 		var midpoint: Vector2 = (from_endpoint["position"] + to_endpoint["position"]) / 2.0
 		var length: float = from_endpoint["position"].distance_to(to_endpoint["position"]) / 90.0
-		_add_box(str(link["id"]), _to_world(midpoint, 0.18), Vector3(0.08, 0.08, max(0.24, length)), _lume_color(link), false, true)
+		var link_color := _lume_color(link)
+		var link_scale := Vector3(0.08, 0.08, max(0.24, length))
+		var link_transparent := false
+		var link_emissive := true
+		if environment_shell_v2_mesh_compositor_enabled:
+			link_color = Color(0.18, 0.58, 0.54, 0.42)
+			link_scale = Vector3(0.052, 0.038, max(0.24, length))
+			link_transparent = true
+			link_emissive = false
+		_add_box(str(link["id"]), _to_world(midpoint, 0.18), link_scale, link_color, link_transparent, link_emissive)
 		if visual_preset == VISUAL_PRESET_VFX_STRESS:
 			_add_box("%s_private_transition_pulse" % str(link["id"]), _to_world(midpoint, 0.28), Vector3(0.16, 0.06, max(0.28, length + 0.10)), _lume_color(link).lightened(0.24), true, true)
 	for endpoint in runtime.lume_endpoints:
-		_add_unit(str(endpoint["id"]), _to_world(endpoint["position"], 0.22), _lume_core_color(), 0.13, true)
-		_add_cylinder("%s_readability_ring" % str(endpoint["id"]), _to_world(endpoint["position"], 0.075), 0.26, 0.035, _lume_core_color().lightened(0.14), true)
-		_add_box("%s_future_art_anchor" % str(endpoint["id"]), _to_world(endpoint["position"], 0.35), Vector3(0.10, 0.34, 0.10), _lume_core_color(), false, true)
+		var endpoint_color := _lume_core_color()
+		var endpoint_radius := 0.13
+		var endpoint_ring_radius := 0.26
+		var endpoint_anchor_color := _lume_core_color()
+		var endpoint_emissive := true
+		if environment_shell_v2_mesh_compositor_enabled:
+			endpoint_color = Color(0.22, 0.72, 0.64, 0.72)
+			endpoint_radius = 0.105
+			endpoint_ring_radius = 0.22
+			endpoint_anchor_color = Color(0.20, 0.58, 0.52, 0.52)
+			endpoint_emissive = false
+		_add_unit(str(endpoint["id"]), _to_world(endpoint["position"], 0.22), endpoint_color, endpoint_radius, endpoint_emissive)
+		_add_cylinder("%s_readability_ring" % str(endpoint["id"]), _to_world(endpoint["position"], 0.075), endpoint_ring_radius, 0.030, endpoint_color.lightened(0.08), true)
+		_add_box("%s_future_art_anchor" % str(endpoint["id"]), _to_world(endpoint["position"], 0.35), Vector3(0.085, 0.28, 0.085), endpoint_anchor_color, environment_shell_v2_mesh_compositor_enabled, endpoint_emissive)
 	for unit in runtime.units:
 		_add_unit_silhouette(unit)
 		_add_selection_disc("selection_%s" % str(unit["id"]), _to_world(unit["position"], 0.08), _unit_radius(unit) * 2.2, _selection_color(unit))
-		_add_selection_disc("selected_hero_marker_%s" % str(unit["id"]), _to_world(unit["position"], 0.095), _unit_radius(unit) * 2.9, Color(0.80, 0.92, 0.70, 0.38))
-		_add_selection_disc("selected_worker_marker_%s" % str(unit["id"]), _to_world(unit["position"], 0.09), _unit_radius(unit) * 2.45, Color(0.92, 0.78, 0.42, 0.36))
-		_add_selection_disc("squad_marker_%s" % str(unit["id"]), _to_world(unit["position"], 0.07), _unit_radius(unit) * 1.62, Color(0.54, 0.84, 0.68, 0.30))
+		var hero_marker_color := Color(0.80, 0.92, 0.70, 0.28) if environment_shell_v2_mesh_compositor_enabled else Color(0.80, 0.92, 0.70, 0.38)
+		var worker_marker_color := Color(0.92, 0.78, 0.42, 0.26) if environment_shell_v2_mesh_compositor_enabled else Color(0.92, 0.78, 0.42, 0.36)
+		var squad_marker_color := Color(0.54, 0.84, 0.68, 0.22) if environment_shell_v2_mesh_compositor_enabled else Color(0.54, 0.84, 0.68, 0.30)
+		_add_selection_disc("selected_hero_marker_%s" % str(unit["id"]), _to_world(unit["position"], 0.095), _unit_radius(unit) * 2.9, hero_marker_color)
+		_add_selection_disc("selected_worker_marker_%s" % str(unit["id"]), _to_world(unit["position"], 0.09), _unit_radius(unit) * 2.45, worker_marker_color)
+		_add_selection_disc("squad_marker_%s" % str(unit["id"]), _to_world(unit["position"], 0.07), _unit_radius(unit) * 1.62, squad_marker_color)
 		_add_selection_disc("enemy_target_marker_%s" % str(unit["id"]), _to_world(unit["position"], 0.105), _unit_radius(unit) * 2.4, Color(0.94, 0.24, 0.16, 0.38))
 		_add_box("health_back_%s" % str(unit["id"]), _to_world(unit["position"], 0.665), Vector3(_unit_radius(unit) * 1.75, 0.028, 0.035), Color(0.08, 0.10, 0.08, 0.62), true, false)
 		_add_box("health_%s" % str(unit["id"]), _to_world(unit["position"], 0.68), Vector3(_unit_radius(unit) * 1.65, 0.035, 0.035), Color(0.28, 0.88, 0.44), false, false)
