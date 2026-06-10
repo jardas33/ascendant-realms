@@ -11,9 +11,17 @@ Every phase should protect these long-term pillars:
 
 ## Current Recommended Next Phase
 
-The current checkpoint is **v0.194 Salto Shell-V2 Topology Repair And Human-Review Stop** on 2026-06-09. It repairs only the explicit opt-in Godot Salto presentation-shell v2 topology by consolidating terrain, removing detached islands, connecting roads, removing floating diagonal road fragments, repairing road-to-bridge transition, and aligning river/banks/bridge. It preserves the legacy shell as comparator/fallback, keeps the v0.189 wet-granite material comparator-only, keeps the default launcher procedural, preserves all prior opt-in launchers, keeps the browser runtime untouched, adds zero art slots, generates zero images, and leaves gameplay/pathing/collisions/objectives/AI/saves/stable IDs unchanged.
+The current checkpoint is **v0.195 Salto Shell-V2 Scoped Material Recovery Tactical-Route Readability And Human-Review Stop** on 2026-06-09. It preserves the v0.194 clean shell-v2 topology while restoring restrained scoped terrain and road hierarchy at review distance. It keeps detached terrain islands and floating diagonal road fragments at zero, strengthens connected route readability into and across the bridge, avoids broad material masks, preserves the legacy shell as comparator/fallback, keeps the v0.189 wet-granite material comparator-only, keeps the default launcher procedural, preserves all prior opt-in launchers, keeps the browser runtime untouched, adds zero art slots, generates zero images, and leaves gameplay/pathing/collisions/objectives/AI/saves/stable IDs unchanged.
 
-The recommended next step is human review of the v0.194 shell-v2 topology captures. Do not execute the older wet-granite bridge-riverbank material integration recommendation directly. Any future v0.195 must start from a clean, synced, pushed, remote-green v0.194 state and must explicitly choose its bounded next step.
+The recommended next step is human review of the v0.195 shell-v2 scoped-material captures, especially the connected road network, road intersections, road-to-bridge transition, and bridge close-up. Do not execute the older wet-granite bridge-riverbank material integration recommendation directly. Any future v0.196 must start from a clean, synced, pushed, remote-green v0.195 state and must explicitly choose its bounded next step.
+
+New v0.195 docs:
+
+- `docs/V0195_SCOPED_MATERIAL_RECOVERY_QA_BENCHMARK.md`
+- `docs/V0195_SCOPED_MATERIAL_BOUNDARY_ROLLBACK.md`
+- `docs/V0195_IMPLEMENTATION_REPORT.md`
+
+Previous checkpoint reference: v0.194 Salto Shell-V2 Topology Repair And Human-Review Stop.
 
 New v0.194 docs:
 

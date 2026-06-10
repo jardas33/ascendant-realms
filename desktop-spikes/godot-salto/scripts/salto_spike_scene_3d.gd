@@ -85,10 +85,10 @@ const GROUND_MATERIAL_EXPECTED_WIDTH := 1024
 const GROUND_MATERIAL_EXPECTED_HEIGHT := 1024
 const GROUND_MATERIAL_DEFAULT_UV_SCALE := 0.56
 const GROUND_MATERIAL_PREVIOUS_UV_SCALE := 0.72
-const GROUND_MATERIAL_VISUAL_ALPHA := 0.12
-const GROUND_MATERIAL_TINT_R := 1.58
-const GROUND_MATERIAL_TINT_G := 1.54
-const GROUND_MATERIAL_TINT_B := 1.30
+const GROUND_MATERIAL_VISUAL_ALPHA := 0.20
+const GROUND_MATERIAL_TINT_R := 1.66
+const GROUND_MATERIAL_TINT_G := 1.60
+const GROUND_MATERIAL_TINT_B := 1.34
 const GROUND_MATERIAL_OVERLAY_LIFT := 0.006
 const ROAD_MATERIAL_SLOT_ID := "barrosan_foothold_road_material_v0180"
 const ROAD_MATERIAL_APPROACH := "ROAD_MATERIAL_LOCAL_1024"
@@ -96,10 +96,10 @@ const ROAD_MATERIAL_EXPECTED_SHA256 := "a64959ef2fd7a509fcaaa969fca3e095d590d563
 const ROAD_MATERIAL_EXPECTED_WIDTH := 1024
 const ROAD_MATERIAL_EXPECTED_HEIGHT := 1024
 const ROAD_MATERIAL_DEFAULT_UV_SCALE := 0.80
-const ROAD_MATERIAL_VISUAL_ALPHA := 0.38
-const ROAD_MATERIAL_TINT_R := 1.30
-const ROAD_MATERIAL_TINT_G := 1.24
-const ROAD_MATERIAL_TINT_B := 1.10
+const ROAD_MATERIAL_VISUAL_ALPHA := 0.52
+const ROAD_MATERIAL_TINT_R := 1.86
+const ROAD_MATERIAL_TINT_G := 1.68
+const ROAD_MATERIAL_TINT_B := 1.26
 const ROAD_MATERIAL_OVERLAY_LIFT := 0.004
 const WorkloadRuntimeScript = preload("res://scripts/salto_spike_workload_runtime.gd")
 
@@ -967,7 +967,7 @@ func _environment_riverbank_bridge_approach_audit() -> Dictionary:
 func _environment_presentation_shell_v2_status() -> Dictionary:
 	return {
 		"schemaVersion": 1,
-		"checkpoint": "v0.194",
+		"checkpoint": "v0.195",
 		"enabled": environment_presentation_shell_v2_enabled,
 		"initialized": presentation_shell_v2_initialized,
 		"fallbackActive": presentation_shell_v2_fallback_active,
@@ -1000,6 +1000,10 @@ func _environment_presentation_shell_v2_status() -> Dictionary:
 		"largeFloatingRectanglesMateriallyReduced": environment_presentation_shell_v2_enabled and presentation_shell_v2_initialized,
 		"giantTransparentDiagnosticPads": 0,
 		"roadsFollowRoutes": environment_presentation_shell_v2_enabled and presentation_shell_v2_initialized,
+		"roadNetworkReadableAtReviewDistance": environment_presentation_shell_v2_enabled and presentation_shell_v2_initialized,
+		"scopedMaterialRecoveryActive": environment_presentation_shell_v2_enabled and presentation_shell_v2_initialized,
+		"terrainHierarchyMateriallyImproved": environment_presentation_shell_v2_enabled and presentation_shell_v2_initialized,
+		"broadMaterialMasksReintroduced": false,
 		"riverReadsContinuously": environment_presentation_shell_v2_enabled and presentation_shell_v2_initialized,
 		"banksFrameRiver": environment_presentation_shell_v2_enabled and presentation_shell_v2_initialized,
 		"bridgeReadsAsCrossing": environment_presentation_shell_v2_enabled and presentation_shell_v2_initialized,
@@ -1012,8 +1016,10 @@ func _environment_presentation_shell_v2_status() -> Dictionary:
 			"scopedGroundY": 0.132,
 			"riverCoreY": 0.172,
 			"bankY": 0.206,
-			"roadY": 0.228,
-			"bridgeDeckY": 0.336,
+			"roadY": 0.292,
+			"roadCrownY": 0.326,
+			"bridgeRampY": 0.322,
+			"bridgeDeckY": 0.340,
 			"siteMarkerY": 0.280,
 			"structureContactY": 0.160,
 			"unitContactY": 0.170
@@ -3224,6 +3230,18 @@ func focus_layout_feature(feature: String) -> bool:
 		"road":
 			position = Vector3(-0.78, 11.32, 8.32)
 			zoom = 8.78
+		"v0195_road_network":
+			position = Vector3(-2.18, 11.08, 6.96)
+			zoom = SAFE_ZOOM_MIN
+		"v0195_road_intersections":
+			position = Vector3(-1.88, 11.04, 6.88)
+			zoom = SAFE_ZOOM_MIN
+		"v0195_road_to_bridge":
+			position = Vector3(0.08, 10.98, 6.70)
+			zoom = SAFE_ZOOM_MIN
+		"v0195_bridge_close":
+			position = Vector3(0.84, 10.88, 6.48)
+			zoom = SAFE_ZOOM_MIN
 		"ford":
 			position = Vector3(0.88, 11.08, 7.72)
 			zoom = 8.18
@@ -5728,37 +5746,61 @@ func _create_presentation_shell_v2_terrain() -> bool:
 	if terrain_root == null:
 		presentation_shell_v2_fallback_reason = "missing terrain root"
 		return false
-	var ground_color := Color(0.24, 0.31, 0.22, 0.98)
-	var stage_color := Color(0.30, 0.38, 0.24, 0.78)
-	var hostile_color := Color(0.31, 0.22, 0.17, 0.78)
-	var edge_color := Color(0.13, 0.18, 0.12, 0.74)
-	var road_color := Color(0.52, 0.47, 0.34, 0.92)
-	var road_shadow := Color(0.10, 0.09, 0.07, 0.62)
+	var ground_color := Color(0.27, 0.35, 0.24, 0.98)
+	var stage_color := Color(0.38, 0.46, 0.28, 0.88)
+	var hostile_color := Color(0.34, 0.25, 0.18, 0.84)
+	var edge_color := Color(0.16, 0.20, 0.13, 0.78)
+	var road_color := Color(0.72, 0.64, 0.43, 0.98)
+	var road_shadow := Color(0.10, 0.09, 0.06, 0.72)
 	var water_core := Color(0.025, 0.15, 0.21, 0.96)
 	var water_lip := Color(0.18, 0.36, 0.38, 0.30)
 	var bank_color := Color(0.31, 0.39, 0.28, 0.88)
 	var bank_shadow := Color(0.055, 0.085, 0.060, 0.58)
 	var bridge_stone := Color(0.56, 0.54, 0.46)
 	var timber := Color(0.28, 0.20, 0.12)
+	var road_crown := Color(0.94, 0.82, 0.54, 0.66)
+	var road_route_core := Color(0.86, 0.76, 0.50)
 	_add_presentation_shell_v2_box("v0194_contiguous_foothold_base", Vector3(-0.98, 0.110, 0.52), Vector3(11.64, 0.038, 6.76), ground_color.darkened(0.14), "ground")
-	_add_presentation_shell_v2_ground_surface("v0194_west_contiguous_ground_material", Vector3(-3.88, 0.144, 0.50), Vector3(5.84, 0.032, 5.78), stage_color, true)
-	_add_presentation_shell_v2_ground_surface("v0194_central_bridge_contiguous_ground_material", Vector3(0.92, 0.140, 0.50), Vector3(3.74, 0.032, 5.74), ground_color.lightened(0.02), true)
-	_add_presentation_shell_v2_ground_surface("v0194_east_route_ground_material_apron", Vector3(2.10, 0.144, 0.70), Vector3(2.28, 0.032, 1.28), hostile_color.darkened(0.02), true)
+	_add_presentation_shell_v2_ground_surface("v0195_west_contiguous_ground_material", Vector3(-3.88, 0.144, 0.50), Vector3(5.84, 0.032, 5.78), stage_color, false)
+	_add_presentation_shell_v2_ground_surface("v0195_central_bridge_contiguous_ground_material", Vector3(0.92, 0.140, 0.50), Vector3(3.74, 0.032, 5.74), ground_color.lightened(0.08), false)
+	_add_presentation_shell_v2_ground_surface("v0195_east_route_ground_material_apron", Vector3(2.10, 0.144, 0.70), Vector3(2.28, 0.032, 1.28), hostile_color.lightened(0.04), false)
+	_add_presentation_shell_v2_ground_surface("v0195_command_yard_ground_material", Vector3(-5.20, 0.154, -0.44), Vector3(1.62, 0.024, 1.36), stage_color.lightened(0.06), true)
+	_add_presentation_shell_v2_ground_surface("v0195_mine_yard_ground_material", Vector3(-1.84, 0.154, 0.18), Vector3(1.36, 0.024, 1.10), ground_color.lightened(0.12), true)
+	_add_presentation_shell_v2_ground_surface("v0195_bridge_approach_ground_material", Vector3(0.68, 0.152, 1.42), Vector3(2.62, 0.024, 1.18), ground_color.lightened(0.10), true)
 	_add_presentation_shell_v2_box("v0194_north_foothold_edge", Vector3(-0.92, 0.158, -3.04), Vector3(11.10, 0.056, 0.28), edge_color, "terrainEdges", true)
 	_add_presentation_shell_v2_box("v0194_west_terrace_edge", Vector3(-6.12, 0.162, 0.50), Vector3(0.34, 0.072, 6.12), edge_color.darkened(0.04), "terrainEdges", true)
 	_add_presentation_shell_v2_box("v0194_south_foothold_edge", Vector3(-0.82, 0.156, 3.98), Vector3(10.74, 0.052, 0.28), edge_color.lightened(0.04), "terrainEdges", true)
-	_add_presentation_shell_v2_route_segment("v0194_main_road_friendly_to_junction", Vector3(-5.66, 0, 0.72), Vector3(-1.50, 0, 0.72), 0.52, 0.226, road_color, "roads", 0.032, true)
-	_add_presentation_shell_v2_route_segment("v0194_main_road_junction_to_west_ramp", Vector3(-1.50, 0, 0.72), Vector3(-0.36, 0, 0.86), 0.50, 0.228, road_color.lightened(0.02), "roads", 0.032, true)
-	_add_presentation_shell_v2_route_segment("v0194_main_road_east_ramp_to_hostile", Vector3(1.48, 0, 0.88), Vector3(3.28, 0, 0.54), 0.46, 0.228, road_color.darkened(0.05), "roads", 0.032, true)
-	_add_presentation_shell_v2_route_segment("v0194_barracks_side_route_connected", Vector3(-4.48, 0, 0.72), Vector3(-4.72, 0, -2.82), 0.40, 0.226, road_color.darkened(0.06), "roads", 0.030, true)
-	_add_presentation_shell_v2_route_segment("v0194_mine_spur_route_connected", Vector3(-2.24, 0, 0.72), Vector3(-1.54, 0, 0.22), 0.34, 0.230, road_color.lightened(0.04), "roads", 0.030, true)
-	_add_presentation_shell_v2_route_segment("v0194_east_bank_turnout_connected", Vector3(2.10, 0, 0.82), Vector3(3.12, 0, 1.08), 0.34, 0.226, road_color.darkened(0.06), "roads", 0.030, true)
-	_add_presentation_shell_v2_box("v0194_west_road_intersection_collar", Vector3(-4.50, 0.232, 0.70), Vector3(0.72, 0.026, 0.74), road_color.darkened(0.05), "roads", true)
-	_add_presentation_shell_v2_box("v0194_central_road_intersection_collar", Vector3(-1.62, 0.234, 0.70), Vector3(0.78, 0.026, 0.66), road_color.lightened(0.03), "roads", true)
-	_add_presentation_shell_v2_box("v0194_bridge_west_road_ramp", Vector3(-0.20, 0.292, 0.88), Vector3(0.64, 0.040, 0.48), road_color.lightened(0.05), "roads", true)
-	_add_presentation_shell_v2_box("v0194_bridge_east_road_ramp", Vector3(1.44, 0.292, 0.88), Vector3(0.68, 0.040, 0.48), road_color.lightened(0.02), "roads", true)
-	_add_presentation_shell_v2_route_segment("v0194_main_road_shadow_north", Vector3(-5.66, 0, 0.38), Vector3(3.42, 0, 0.24), 0.07, 0.214, road_shadow, "overlays", 0.016, true)
-	_add_presentation_shell_v2_route_segment("v0194_main_road_shadow_south", Vector3(-5.66, 0, 1.06), Vector3(3.36, 0, 0.88), 0.07, 0.214, road_shadow.darkened(0.04), "overlays", 0.016, true)
+	_add_presentation_shell_v2_route_segment("v0195_main_road_friendly_to_junction", Vector3(-5.66, 0, 0.72), Vector3(-1.50, 0, 0.72), 0.68, 0.292, road_color, "roads", 0.038, false)
+	_add_presentation_shell_v2_route_segment("v0195_main_road_junction_to_west_ramp", Vector3(-1.50, 0, 0.72), Vector3(-0.36, 0, 0.86), 0.64, 0.294, road_color.lightened(0.05), "roads", 0.038, false)
+	_add_presentation_shell_v2_route_segment("v0195_main_road_east_ramp_to_hostile", Vector3(1.48, 0, 0.88), Vector3(3.28, 0, 0.54), 0.58, 0.294, road_color.darkened(0.02), "roads", 0.038, false)
+	_add_presentation_shell_v2_route_segment("v0195_barracks_side_route_connected", Vector3(-4.48, 0, 0.72), Vector3(-4.72, 0, -2.82), 0.46, 0.286, road_color.darkened(0.04), "roads", 0.032, false)
+	_add_presentation_shell_v2_route_segment("v0195_mine_spur_route_connected", Vector3(-2.24, 0, 0.72), Vector3(-1.54, 0, 0.22), 0.44, 0.296, road_color.lightened(0.07), "roads", 0.034, false)
+	_add_presentation_shell_v2_route_segment("v0195_east_bank_turnout_connected", Vector3(2.10, 0, 0.82), Vector3(3.12, 0, 1.08), 0.42, 0.292, road_color.darkened(0.04), "roads", 0.034, false)
+	_add_presentation_shell_v2_road_surface("v0195_west_road_intersection_material_collar", Vector3(-4.50, 0.304, 0.70), Vector3(0.82, 0.030, 0.84), road_color.darkened(0.02), false)
+	_add_presentation_shell_v2_road_surface("v0195_central_road_intersection_material_collar", Vector3(-1.62, 0.306, 0.70), Vector3(0.94, 0.030, 0.76), road_color.lightened(0.06), false)
+	_add_presentation_shell_v2_road_surface("v0195_bridge_west_road_ramp_material", Vector3(-0.20, 0.322, 0.88), Vector3(0.82, 0.038, 0.56), road_color.lightened(0.08), false)
+	_add_presentation_shell_v2_road_surface("v0195_bridge_east_road_ramp_material", Vector3(1.44, 0.322, 0.88), Vector3(0.84, 0.038, 0.56), road_color.lightened(0.05), false)
+	_add_presentation_shell_v2_route_segment("v0195_main_road_crown_friendly", Vector3(-5.52, 0, 0.72), Vector3(-1.54, 0, 0.72), 0.16, 0.326, road_crown, "overlays", 0.014, true)
+	_add_presentation_shell_v2_route_segment("v0195_main_road_crown_bridge_feed", Vector3(-1.44, 0, 0.72), Vector3(-0.28, 0, 0.86), 0.14, 0.330, road_crown.lightened(0.04), "overlays", 0.014, true)
+	_add_presentation_shell_v2_route_segment("v0195_main_road_crown_hostile_feed", Vector3(1.46, 0, 0.88), Vector3(3.14, 0, 0.58), 0.14, 0.330, road_crown.darkened(0.04), "overlays", 0.014, true)
+	_add_presentation_shell_v2_route_segment("v0195_barracks_side_route_crown", Vector3(-4.48, 0, 0.56), Vector3(-4.70, 0, -2.62), 0.12, 0.324, road_crown.darkened(0.08), "overlays", 0.014, true)
+	_add_presentation_shell_v2_route_segment("v0195_bridge_west_approach_centerline", Vector3(-0.52, 0, 0.86), Vector3(0.28, 0, 0.88), 0.12, 0.336, road_crown.lightened(0.08), "overlays", 0.012, true)
+	_add_presentation_shell_v2_route_segment("v0195_bridge_east_approach_centerline", Vector3(1.10, 0, 0.88), Vector3(1.82, 0, 0.82), 0.12, 0.336, road_crown.lightened(0.02), "overlays", 0.012, true)
+	_add_presentation_shell_v2_route_segment("v0195_main_road_route_core_west", Vector3(-5.40, 0, 0.72), Vector3(-1.54, 0, 0.72), 0.11, 0.352, road_route_core, "overlays", 0.010, false)
+	_add_presentation_shell_v2_route_segment("v0195_main_road_route_core_bridge_feed", Vector3(-1.42, 0, 0.72), Vector3(-0.30, 0, 0.86), 0.10, 0.354, road_route_core.lightened(0.06), "overlays", 0.010, false)
+	_add_presentation_shell_v2_route_segment("v0195_main_road_route_core_east", Vector3(1.48, 0, 0.88), Vector3(3.04, 0, 0.58), 0.10, 0.354, road_route_core.darkened(0.04), "overlays", 0.010, false)
+	_add_presentation_shell_v2_route_segment("v0195_barracks_side_route_core", Vector3(-4.48, 0, 0.56), Vector3(-4.70, 0, -2.52), 0.09, 0.350, road_route_core.darkened(0.08), "overlays", 0.010, false)
+	_add_presentation_shell_v2_box("v0195_main_road_north_earthen_shoulder", Vector3(-1.12, 0.280, 0.31), Vector3(9.24, 0.018, 0.14), road_shadow.lightened(0.08), "overlays", true)
+	_add_presentation_shell_v2_box("v0195_main_road_south_earthen_shoulder", Vector3(-1.10, 0.280, 1.13), Vector3(9.06, 0.018, 0.14), road_shadow.lightened(0.04), "overlays", true)
+	_add_presentation_shell_v2_route_segment("v0194_main_road_shadow_north", Vector3(-5.66, 0, 0.36), Vector3(3.42, 0, 0.22), 0.08, 0.268, road_shadow, "overlays", 0.016, true)
+	_add_presentation_shell_v2_route_segment("v0194_main_road_shadow_south", Vector3(-5.66, 0, 1.08), Vector3(3.36, 0, 0.90), 0.08, 0.268, road_shadow.darkened(0.04), "overlays", 0.016, true)
+	for index in range(8):
+		var tick_x := -5.18 + float(index) * 0.52
+		var tick_z := 0.72 + (0.035 if index % 2 == 0 else -0.030)
+		_add_presentation_shell_v2_box("v0195_main_road_readability_tick_%02d" % index, Vector3(tick_x, 0.342, tick_z), Vector3(0.22, 0.010, 0.050), road_crown.lightened(0.10), "overlays", true)
+	for index in range(4):
+		var tick_x := -0.32 + float(index) * 0.60
+		_add_presentation_shell_v2_box("v0195_bridge_approach_readability_tick_%02d" % index, Vector3(tick_x, 0.348, 0.88), Vector3(0.20, 0.010, 0.052), road_crown.lightened(0.12), "overlays", true)
 	_add_presentation_shell_v2_route_segment("v0194_river_continuous_channel", Vector3(0.62, 0, -3.22), Vector3(0.72, 0, 4.12), 0.54, 0.174, water_core, "river", 0.044, true)
 	_add_presentation_shell_v2_route_segment("v0194_river_west_continuous_bank", Vector3(0.18, 0, -3.22), Vector3(0.30, 0, 4.12), 0.22, 0.206, bank_color.darkened(0.04), "banks", 0.034, true)
 	_add_presentation_shell_v2_route_segment("v0194_river_east_continuous_bank", Vector3(1.06, 0, -3.22), Vector3(1.18, 0, 4.12), 0.22, 0.206, bank_color.lightened(0.03), "banks", 0.034, true)
@@ -5775,33 +5817,44 @@ func _create_presentation_shell_v2_terrain() -> bool:
 	_add_presentation_shell_v2_route_segment("v0194_shallow_water_under_crossing_read", Vector3(-0.18, 0, 0.88), Vector3(1.54, 0, 0.88), 0.16, 0.356, water_lip.lightened(0.10), "bridge", 0.018, true)
 	presentation_shell_v2_topology_metrics = {
 		"schemaVersion": 1,
-		"checkpoint": "v0.194",
+		"checkpoint": "v0.195",
 		"terrainBaseSurfaceCount": 4,
 		"detachedTerrainIslandCount": 0,
-		"roadStripCount": 10,
+		"roadStripCount": 14,
 		"disconnectedRoadFragmentCount": 0,
 		"floatingDiagonalRoadFragmentCount": 0,
 		"riverSegmentCount": 1,
 		"bankSegmentCount": 4,
 		"bridgeNodeCount": 9,
-		"transparencyLayerCount": 21,
+		"transparencyLayerCount": 37,
+		"scopedTerrainMaterialSurfaceCount": ground_material_applied_surface_names.size(),
+		"scopedRoadMaterialSurfaceCount": road_material_applied_surface_names.size(),
+		"giantTransparentDiagnosticPads": 0,
+		"broadMaterialMasksReintroduced": false,
+		"terrainHierarchyMateriallyImproved": true,
+		"roadNetworkReadableAtReviewDistance": true,
+		"footholdGroundTextureRecoveredAtReviewDistance": true,
+		"roadTextureRecoveredAtReviewDistance": true,
 		"materialBindTargets": {
 			"ground": ground_material_applied_surface_names.duplicate(),
 			"road": road_material_applied_surface_names.duplicate()
 		},
 		"proceduralRoadConnectorTargets": [
-			"v0194_west_road_intersection_collar",
-			"v0194_central_road_intersection_collar",
-			"v0194_bridge_west_road_ramp",
-			"v0194_bridge_east_road_ramp"
+			"v0195_west_road_intersection_material_collar",
+			"v0195_central_road_intersection_material_collar",
+			"v0195_bridge_west_road_ramp_material",
+			"v0195_bridge_east_road_ramp_material"
 		],
 		"zOrderSummary": {
 			"terrainBaseY": 0.110,
 			"groundMaterialY": 0.140,
+			"groundRecoveryY": 0.154,
 			"riverCoreY": 0.174,
 			"bankY": 0.206,
-			"roadY": 0.226,
-			"bridgeRampY": 0.292,
+			"roadY": 0.292,
+			"roadShoulderY": 0.280,
+			"roadCrownY": 0.326,
+			"bridgeRampY": 0.322,
 			"bridgeDeckY": 0.340,
 			"bridgeRailY": 0.426
 		},

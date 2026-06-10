@@ -1,5 +1,48 @@
 # Changelog
 
+# v0.195 Salto Shell-V2 Scoped Material Recovery Tactical-Route Readability And Human-Review Stop - 2026-06-09
+
+This checkpoint restores only restrained scoped terrain and road hierarchy inside the isolated opt-in Godot Salto presentation-shell v2 path. It preserves the v0.194 clean topology, keeps detached terrain islands and floating diagonal road fragments at zero, strengthens connected road readability into and across the bridge, avoids broad material masks, integrates no wet-granite bridge-riverbank material, preserves the legacy shell as comparator/fallback, preserves the default procedural launcher and all prior launchers, keeps the browser runtime untouched, and changes no gameplay, pathing, collisions, objectives, AI, saves, stable IDs, or production manifests.
+
+Added:
+
+- `GODOT_REVIEW_SALTO_SHELL_V2_SCOPED_MATERIAL_RECOVERY_WINDOWS.bat`.
+- `GODOT_VALIDATE_SALTO_SHELL_V2_SCOPED_MATERIAL_RECOVERY_WINDOWS.bat`.
+- `GODOT_CAPTURE_SALTO_SHELL_V2_SCOPED_MATERIAL_RECOVERY_WINDOWS.bat`.
+- `tools/godot/launchGodotSaltoShellV2ScopedMaterialRecoveryWindows.ps1`.
+- `tools/godot/reviewGodotSaltoShellV2ScopedMaterialRecoveryWindows.ps1`.
+- `tools/godot/validateGodotSaltoShellV2ScopedMaterialRecoveryWindows.ps1`.
+- `tools/godot/captureGodotSaltoShellV2ScopedMaterialRecoveryWindows.ps1`.
+- `tools/godot/saltoShellV2ScopedMaterialRecoveryTool.mjs`.
+- `docs/V0195_SCOPED_MATERIAL_RECOVERY_QA_BENCHMARK.md`.
+- `docs/V0195_SCOPED_MATERIAL_BOUNDARY_ROLLBACK.md`.
+- `docs/V0195_IMPLEMENTATION_REPORT.md`.
+
+Validation:
+
+- `PASS_V0195_SHELL_V2_SCOPED_MATERIAL_VALIDATION`.
+- `PASS_V0195_SHELL_V2_SCOPED_MATERIAL_BENCHMARK`.
+- `PASS_V0195_SHELL_V2_SCOPED_MATERIAL_BOUNDARY_SCAN`.
+- `PASS_V0195_SALTO_SHELL_V2_SCOPED_MATERIAL_RECOVERY_VALIDATION_READY`.
+- `PASS_V0195_SHELL_V2_SCOPED_MATERIAL_CAPTURE_PACKET`.
+- `PASS_V0166_EXPERIMENTAL_ARTIFACT_SAFE_ONLY_CLEANUP`.
+- `PASS_V0167_SALTO_EXPERIMENTAL_ARTIFACT_RETENTION`.
+- Ground material bind targets increased from `3` to `6`; road material bind targets increased from `6` to `10`; road strips increased from `10` to `14`.
+- Detached terrain islands stayed `0`; floating diagonal road fragments stayed `0`; river segments stayed `1`.
+- Retained v0.194 average FPS `75.17`; v0.195 average FPS `75.28`; FPS ratio `1.0015`.
+- Retained v0.194 p95 `13.30` ms; v0.195 p95 `13.34` ms; p95 worsening `0.30%`.
+
+Boundaries:
+
+- Zero images generated.
+- Zero art slots added.
+- Existing five character slots, ground material, and road material preserved.
+- Wet-granite bridge-riverbank material remains private-comparator-only.
+- Default launcher remains procedural and all prior launchers remain unchanged.
+- Browser runtime, gameplay, pathing, collisions, objectives, AI, saves, stable IDs, production manifests, selected prior art, metadata, fallbacks, and required evidence remain untouched.
+- Safe-only cleanup removed only `20` positively classified Godot-generated sidecars and found no unknown blockers.
+- v0.196 was not started.
+
 # v0.194 Salto Shell-V2 Topology Repair And Human-Review Stop - 2026-06-09
 
 This checkpoint repairs only the isolated opt-in Godot Salto presentation-shell v2 topology. It consolidates terrain, removes detached material islands, connects the road network, removes floating diagonal road fragments, repairs the road-to-bridge transition, and aligns the river, banks, and bridge. It generates zero images, adds zero art slots, integrates no wet-granite bridge-riverbank material, preserves the legacy shell as comparator/fallback, preserves the default procedural launcher and all prior launchers, keeps the browser runtime untouched, and changes no gameplay, pathing, collisions, objectives, AI, saves, stable IDs, or production manifests.

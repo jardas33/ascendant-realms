@@ -1,6 +1,46 @@
 # Development Checkpoint
 
-Updated: 2026-06-09 v0.194 Shell-V2 Topology Repair
+Updated: 2026-06-09 v0.195 Shell-V2 Scoped Material Recovery
+
+## v0.195 Salto Shell-V2 Scoped Material Recovery Tactical-Route Readability And Human-Review Stop - 2026-06-09
+
+Scope: visual-only scoped material recovery for the isolated opt-in Godot Salto presentation-shell v2 path. This checkpoint generates zero images, adds zero art slots, integrates no wet-granite bridge-riverbank material, keeps the default launcher procedural, preserves all prior launchers, preserves the legacy shell as comparator/fallback, keeps browser runtime untouched, keeps character integrations frozen, and leaves gameplay, pathing, collisions, objectives, AI, saves, stable IDs, production manifests, selected prior art, metadata, fallbacks, and required evidence unchanged.
+
+Included work:
+
+- Added the v0.195 shell-v2 scoped material recovery review, validate, and capture Windows launchers.
+- Added the v0.195 PowerShell launch/review/validate/capture wrappers.
+- Added `tools/godot/saltoShellV2ScopedMaterialRecoveryTool.mjs`.
+- Tuned scoped ground and road material presentation without adding new art or material slots.
+- Added connected road crowns, route cores, shoulders, bridge ramps, and readability ticks inside shell v2.
+- Preserved v0.194 topology-repair evidence as the before comparator.
+- Performed safe-only cleanup of only positively identified Godot-generated sidecars and revalidated retention.
+- Updated handoff, roadmap, checkpoint, changelog, release checklist, and Salto experimental artifact index docs.
+
+Visual decision:
+
+- Preserve the v0.194 clean topology, including zero detached islands and zero floating diagonal road fragments.
+- Restore restrained scoped terrain-material hierarchy across connected battlefield surfaces.
+- Strengthen route readability from friendly area through road intersections, bridge approaches, and hostile side.
+- Keep broad material masks, giant translucent pads, detached islands, floating strips, and washed-out overlays out of the shell.
+- Keep the selected wet-granite bridge-riverbank material private-comparator-only until after human review.
+
+Verification targets:
+
+```text
+PASS: npm run godot:validate:salto-shell-v2-scoped-material-recovery.
+PASS: npm run godot:capture:salto-shell-v2-scoped-material-recovery.
+PASS: PASS_V0195_SHELL_V2_SCOPED_MATERIAL_VALIDATION.
+PASS: PASS_V0195_SHELL_V2_SCOPED_MATERIAL_BENCHMARK.
+PASS: PASS_V0195_SHELL_V2_SCOPED_MATERIAL_BOUNDARY_SCAN.
+PASS: PASS_V0195_SHELL_V2_SCOPED_MATERIAL_CAPTURE_PACKET.
+PASS: PASS_V0166_EXPERIMENTAL_ARTIFACT_SAFE_ONLY_CLEANUP.
+PASS: PASS_V0167_SALTO_EXPERIMENTAL_ARTIFACT_RETENTION.
+PASS: ground material bind targets 3 -> 6, road material bind targets 6 -> 10, road strips 10 -> 14.
+PASS: detached islands 0, floating diagonal fragments 0, river segments 1.
+PASS: isolation scans for zero images, zero art slots, no wet-granite integration, no browser wiring, no default-launcher mutation, no prior-launcher mutation, no broad material masks, and no gameplay/pathing/collision/objective/AI/save/stable-ID mutation.
+PASS: git diff --check.
+```
 
 ## v0.194 Salto Shell-V2 Topology Repair And Human-Review Stop - 2026-06-09
 
