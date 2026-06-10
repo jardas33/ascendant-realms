@@ -11,9 +11,17 @@ Every phase should protect these long-term pillars:
 
 ## Current Recommended Next Phase
 
-The current checkpoint is **v0.193 Isolated Salto Presentation-Shell V2 Prototype Implementation And Human-Review Stop** on 2026-06-09. It implements one explicit opt-in Godot Salto presentation-shell v2 prototype, preserves the legacy shell as comparator/fallback, keeps the v0.189 wet-granite material comparator-only, keeps the default launcher procedural, preserves all prior opt-in launchers, keeps the browser runtime untouched, adds zero imported art slots, generates zero images, and leaves gameplay/pathing/collisions/objectives/AI/saves/stable IDs unchanged.
+The current checkpoint is **v0.194 Salto Shell-V2 Topology Repair And Human-Review Stop** on 2026-06-09. It repairs only the explicit opt-in Godot Salto presentation-shell v2 topology by consolidating terrain, removing detached islands, connecting roads, removing floating diagonal road fragments, repairing road-to-bridge transition, and aligning river/banks/bridge. It preserves the legacy shell as comparator/fallback, keeps the v0.189 wet-granite material comparator-only, keeps the default launcher procedural, preserves all prior opt-in launchers, keeps the browser runtime untouched, adds zero art slots, generates zero images, and leaves gameplay/pathing/collisions/objectives/AI/saves/stable IDs unchanged.
 
-The recommended next step is human review of the v0.193 shell-v2 captures before any v0.194 decision. Do not execute the older wet-granite bridge-riverbank material integration recommendation directly. Any future v0.194 must start from a clean, synced, pushed, remote-green v0.193 state and must explicitly choose whether to keep iterating shell geometry or narrowly integrate the bridge-riverbank material.
+The recommended next step is human review of the v0.194 shell-v2 topology captures. Do not execute the older wet-granite bridge-riverbank material integration recommendation directly. Any future v0.195 must start from a clean, synced, pushed, remote-green v0.194 state and must explicitly choose its bounded next step.
+
+New v0.194 docs:
+
+- `docs/V0194_SHELL_V2_TOPOLOGY_REPAIR_QA_BENCHMARK.md`
+- `docs/V0194_SHELL_V2_TOPOLOGY_BOUNDARY_ROLLBACK.md`
+- `docs/V0194_IMPLEMENTATION_REPORT.md`
+
+Previous checkpoint reference: v0.193 Isolated Salto Presentation-Shell V2 Prototype Implementation And Human-Review Stop.
 
 New v0.193 docs:
 

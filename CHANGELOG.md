@@ -1,5 +1,44 @@
 # Changelog
 
+# v0.194 Salto Shell-V2 Topology Repair And Human-Review Stop - 2026-06-09
+
+This checkpoint repairs only the isolated opt-in Godot Salto presentation-shell v2 topology. It consolidates terrain, removes detached material islands, connects the road network, removes floating diagonal road fragments, repairs the road-to-bridge transition, and aligns the river, banks, and bridge. It generates zero images, adds zero art slots, integrates no wet-granite bridge-riverbank material, preserves the legacy shell as comparator/fallback, preserves the default procedural launcher and all prior launchers, keeps the browser runtime untouched, and changes no gameplay, pathing, collisions, objectives, AI, saves, stable IDs, or production manifests.
+
+Added:
+
+- `GODOT_REVIEW_SALTO_SHELL_V2_TOPOLOGY_REPAIR_WINDOWS.bat`.
+- `GODOT_VALIDATE_SALTO_SHELL_V2_TOPOLOGY_REPAIR_WINDOWS.bat`.
+- `GODOT_CAPTURE_SALTO_SHELL_V2_TOPOLOGY_REPAIR_WINDOWS.bat`.
+- `tools/godot/launchGodotSaltoShellV2TopologyRepairWindows.ps1`.
+- `tools/godot/reviewGodotSaltoShellV2TopologyRepairWindows.ps1`.
+- `tools/godot/validateGodotSaltoShellV2TopologyRepairWindows.ps1`.
+- `tools/godot/captureGodotSaltoShellV2TopologyRepairWindows.ps1`.
+- `tools/godot/saltoShellV2TopologyRepairTool.mjs`.
+- `docs/V0194_SHELL_V2_TOPOLOGY_REPAIR_QA_BENCHMARK.md`.
+- `docs/V0194_SHELL_V2_TOPOLOGY_BOUNDARY_ROLLBACK.md`.
+- `docs/V0194_IMPLEMENTATION_REPORT.md`.
+
+Validation:
+
+- `PASS_V0194_SHELL_V2_TOPOLOGY_VALIDATION`.
+- `PASS_V0194_SHELL_V2_TOPOLOGY_BENCHMARK`.
+- `PASS_V0194_SHELL_V2_TOPOLOGY_BOUNDARY_SCAN`.
+- `PASS_V0194_SALTO_SHELL_V2_TOPOLOGY_REPAIR_VALIDATION_READY`.
+- `PASS_V0194_SHELL_V2_TOPOLOGY_CAPTURE_PACKET`.
+- Terrain surfaces reduced from `8` to `4`; detached terrain islands from `5` to `0`; floating diagonal road fragments from `1` to `0`; river segments from `3` to `1`.
+- Retained v0.193 average FPS `73.7`; v0.194 average FPS `75.21`; FPS ratio `1.0205`.
+- Retained v0.193 p95 `15.08` ms; v0.194 p95 `13.23` ms; p95 worsening `-12.27%`.
+
+Boundaries:
+
+- Zero images generated.
+- Zero art slots added.
+- Existing five character slots, ground material, and road material preserved.
+- Wet-granite bridge-riverbank material remains private-comparator-only.
+- Default launcher remains procedural and all prior launchers remain unchanged.
+- Browser runtime, gameplay, pathing, collisions, objectives, AI, saves, stable IDs, production manifests, selected prior art, metadata, fallbacks, and required evidence remain untouched.
+- v0.195 was not started.
+
 # v0.193 Isolated Salto Presentation-Shell V2 Prototype Implementation And Human-Review Stop - 2026-06-09
 
 This checkpoint implements one isolated opt-in Godot Salto presentation-shell v2 prototype after the v0.192 human-review override. It preserves the legacy shell as comparator/fallback, generates zero images, adds zero imported art slots, integrates no wet-granite bridge-riverbank material, preserves the default procedural launcher and all prior launchers, keeps the browser runtime untouched, and changes no gameplay, pathing, collisions, objectives, AI, saves, stable IDs, or production manifests.

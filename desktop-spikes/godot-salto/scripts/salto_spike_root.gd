@@ -2007,7 +2007,7 @@ func run_player_slice_capture() -> void:
 		"viewport": {"width": VIEWPORT_SIZE.x, "height": VIEWPORT_SIZE.y},
 		"defaultMode": MODE_25D,
 		"defaultVisualPreset": VISUAL_PRESET_CLEAN,
-		"privateHarnessPreservedSeparately": captures.any(func(capture: Dictionary) -> bool: return bool(capture.get("privateHarnessCapture", false))) or ["v0.126", "v0.127", "v0.128", "v0.129", "v0.130", "v0.160", "v0.162", "v0.164", "v0.168", "v0.169", "v0.170", "v0.173", "v0.174", "v0.177", "v0.178", "v0.179", "v0.181", "v0.184", "v0.185", "v0.186", "v0.187", "v0.193"].has(_player_capture_checkpoint()),
+		"privateHarnessPreservedSeparately": captures.any(func(capture: Dictionary) -> bool: return bool(capture.get("privateHarnessCapture", false))) or ["v0.126", "v0.127", "v0.128", "v0.129", "v0.130", "v0.160", "v0.162", "v0.164", "v0.168", "v0.169", "v0.170", "v0.173", "v0.174", "v0.177", "v0.178", "v0.179", "v0.181", "v0.184", "v0.185", "v0.186", "v0.187", "v0.193", "v0.194"].has(_player_capture_checkpoint()),
 		"proceduralPrimitiveOnly": not worker_art_loaded and not barracks_material_loaded and not militia_art_loaded and not aster_art_loaded and not ashen_art_loaded and not ground_material_loaded and not road_material_loaded,
 		"generatedOrImportedArtIncluded": worker_art_loaded or barracks_material_loaded or militia_art_loaded or aster_art_loaded or ashen_art_loaded or ground_material_loaded or road_material_loaded,
 		"runtimeArtIntegrated": worker_art_loaded or barracks_material_loaded or militia_art_loaded or aster_art_loaded or ashen_art_loaded or ground_material_loaded or road_material_loaded,
@@ -4675,6 +4675,8 @@ func _apply_player_slice_action(action: String) -> Dictionary:
 
 func _player_capture_checkpoint() -> String:
 	var normalized_root := _artifact_root_from_args().replace("\\", "/")
+	if normalized_root.contains("/v0194"):
+		return "v0.194"
 	if normalized_root.contains("/v0193"):
 		return "v0.193"
 	if normalized_root.contains("/v0187"):
@@ -4724,9 +4726,31 @@ func _player_capture_checkpoint() -> String:
 	return "v0.124"
 
 func _is_bounded_microloop_checkpoint() -> bool:
-	return ["v0.129", "v0.130", "v0.160", "v0.162", "v0.164", "v0.166", "v0.168", "v0.169", "v0.170", "v0.173", "v0.174", "v0.177", "v0.178", "v0.179", "v0.181", "v0.184", "v0.185", "v0.186", "v0.187", "v0.193"].has(_player_capture_checkpoint())
+	return ["v0.129", "v0.130", "v0.160", "v0.162", "v0.164", "v0.166", "v0.168", "v0.169", "v0.170", "v0.173", "v0.174", "v0.177", "v0.178", "v0.179", "v0.181", "v0.184", "v0.185", "v0.186", "v0.187", "v0.193", "v0.194"].has(_player_capture_checkpoint())
 
 func _player_capture_steps() -> Array[Dictionary]:
+	if _player_capture_checkpoint() == "v0.194":
+		return [
+			{"id": "title", "label": "Title shell with v0.194 topology repair opt-in", "action": "title"},
+			{"id": "briefing", "label": "Briefing shell", "action": "briefing"},
+			{"id": "shell_v2_overview", "label": "Shell v2 repaired full tactical overview", "action": "battle_default"},
+			{"id": "aster_initial_frame", "label": "Aster initial frame", "action": "hero_selected"},
+			{"id": "terrain_overview", "label": "Coherent terrain base overview", "action": "battle_default"},
+			{"id": "road_network_overview", "label": "Connected road network overview", "action": "road"},
+			{"id": "road_intersection", "label": "Road intersection continuity", "action": "road_intersections"},
+			{"id": "road_to_bridge_transition", "label": "Road-to-bridge transition", "action": "v0187_road_to_bridge"},
+			{"id": "river_overview", "label": "Continuous river overview", "action": "v0187_river_overview"},
+			{"id": "bridge_close_view", "label": "Bridge crossing close view", "action": "v0187_bridge_close"},
+			{"id": "left_bridge_approach", "label": "Left bridge approach", "action": "v0187_friendly_approach"},
+			{"id": "right_bridge_approach", "label": "Right bridge approach", "action": "v0187_hostile_approach"},
+			{"id": "worker_assignment_area", "label": "Worker assignment area", "action": "worker_assigned_mine"},
+			{"id": "barracks_area", "label": "Barracks area", "action": "construction_progress"},
+			{"id": "militia_ready_posture", "label": "Militia-ready posture", "action": "militia_spawned"},
+			{"id": "pan", "label": "Pan review", "action": "pan_camera"},
+			{"id": "zoom", "label": "Zoom review", "action": "camera_max_zoom"},
+			{"id": "minimap", "label": "Minimap", "action": "minimap"},
+			{"id": "results", "label": "Results path preserved", "action": "results"}
+		]
 	if _player_capture_checkpoint() == "v0.193":
 		return [
 			{"id": "title", "label": "Title shell with v0.193 presentation shell v2 opt-in", "action": "title"},

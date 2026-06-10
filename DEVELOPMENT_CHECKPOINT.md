@@ -1,6 +1,43 @@
 # Development Checkpoint
 
-Updated: 2026-06-09 v0.193 Presentation-Shell V2 Prototype Implementation
+Updated: 2026-06-09 v0.194 Shell-V2 Topology Repair
+
+## v0.194 Salto Shell-V2 Topology Repair And Human-Review Stop - 2026-06-09
+
+Scope: visual-only topology repair for the isolated opt-in Godot Salto presentation-shell v2 path. This checkpoint generates zero images, adds zero art slots, integrates no wet-granite bridge-riverbank material, keeps the default launcher procedural, preserves all prior launchers, preserves the legacy shell as comparator/fallback, keeps browser runtime untouched, keeps character integrations frozen, and leaves gameplay, pathing, collisions, objectives, AI, saves, stable IDs, production manifests, selected prior art, metadata, fallbacks, and required evidence unchanged.
+
+Included work:
+
+- Added the v0.194 shell-v2 topology repair review, validate, and capture Windows launchers.
+- Added the v0.194 PowerShell launch/review/validate/capture wrappers.
+- Added `tools/godot/saltoShellV2TopologyRepairTool.mjs`.
+- Added topology metrics reporting to the shell-v2 status.
+- Repaired only shell-v2 terrain, road, river, bank, and bridge topology.
+- Preserved v0.193 shell-v2 before evidence for comparator review.
+- Updated handoff, roadmap, checkpoint, changelog, release checklist, and Salto experimental artifact index docs.
+
+Visual decision:
+
+- Consolidate detached scoped terrain/material rectangles into one coherent battlefield base with connected overlays.
+- Replace floating diagonal road fragments with connected route spans, collars, and bridge ramps.
+- Collapse the river from three segments into one continuous channel.
+- Align banks, bridge seats, deck, abutments, rails, and road ramps around the crossing.
+- Keep the selected wet-granite bridge-riverbank material private-comparator-only until after human review.
+
+Verification targets:
+
+```text
+PASS: npm run godot:validate:salto-shell-v2-topology-repair.
+PASS: npm run godot:capture:salto-shell-v2-topology-repair.
+PASS: PASS_V0194_SHELL_V2_TOPOLOGY_VALIDATION.
+PASS: PASS_V0194_SHELL_V2_TOPOLOGY_BENCHMARK.
+PASS: PASS_V0194_SHELL_V2_TOPOLOGY_BOUNDARY_SCAN.
+PASS: PASS_V0194_SHELL_V2_TOPOLOGY_CAPTURE_PACKET.
+PASS: Windows-side Computer Use before/after review.
+PASS: terrain surfaces 8 -> 4, detached islands 5 -> 0, floating diagonal fragments 1 -> 0, river segments 3 -> 1.
+PASS: isolation scans for zero images, zero art slots, no wet-granite integration, no browser wiring, no default-launcher mutation, no prior-launcher mutation, and no gameplay/pathing/collision/objective/AI/save/stable-ID mutation.
+PASS: git diff --check.
+```
 
 ## v0.193 Isolated Salto Presentation-Shell V2 Prototype Implementation And Human-Review Stop - 2026-06-09
 
