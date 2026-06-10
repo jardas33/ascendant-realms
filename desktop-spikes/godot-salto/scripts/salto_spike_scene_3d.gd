@@ -110,6 +110,16 @@ const BRIDGE_RIVERBANK_MATERIAL_DEFAULT_UV_SCALE := 0.70
 const BRIDGE_RIVERBANK_MATERIAL_TINT_R := 1.42
 const BRIDGE_RIVERBANK_MATERIAL_TINT_G := 1.38
 const BRIDGE_RIVERBANK_MATERIAL_TINT_B := 1.22
+const STRUCTURE_FINISH_MATERIAL_SLOT_ID := "barrosan_structure_finish_material_v0202"
+const STRUCTURE_FINISH_MATERIAL_APPROACH := "STRUCTURE_FINISH_MATERIAL_LOCAL_1024"
+const STRUCTURE_FINISH_MATERIAL_EXPECTED_SHA256 := "94d4975f9e6f13453103439135da930b74d1d66b56d2b10e43219de408f508ef"
+const STRUCTURE_FINISH_MATERIAL_EXPECTED_WIDTH := 1024
+const STRUCTURE_FINISH_MATERIAL_EXPECTED_HEIGHT := 1024
+const STRUCTURE_FINISH_MATERIAL_DEFAULT_UV_SCALE := 0.70
+const STRUCTURE_FINISH_MATERIAL_TINT_R := 1.22
+const STRUCTURE_FINISH_MATERIAL_TINT_G := 1.15
+const STRUCTURE_FINISH_MATERIAL_TINT_B := 0.96
+const STRUCTURE_FINISH_MATERIAL_VISUAL_ALPHA := 0.84
 const WorkloadRuntimeScript = preload("res://scripts/salto_spike_workload_runtime.gd")
 
 var runtime = WorkloadRuntimeScript.new()
@@ -353,6 +363,7 @@ var environment_shell_v2_mesh_compositor_enabled := false
 var environment_shell_v2_structure_hierarchy_enabled := false
 var environment_shell_v2_grounding_lighting_enabled := false
 var environment_shell_v2_environmental_cohesion_enabled := false
+var environment_shell_v2_structure_material_enabled := false
 var presentation_shell_v2_initialized := false
 var presentation_shell_v2_fallback_active := false
 var presentation_shell_v2_fallback_reason := ""
@@ -367,6 +378,7 @@ var shell_v2_mesh_compositor_visual_nodes: Array[String] = []
 var shell_v2_structure_hierarchy_visual_nodes: Array[String] = []
 var shell_v2_grounding_lighting_visual_nodes: Array[String] = []
 var shell_v2_environmental_cohesion_visual_nodes: Array[String] = []
+var shell_v2_structure_material_visual_nodes: Array[String] = []
 var ground_material_experiment_enabled := false
 var ground_material_source_path := ""
 var ground_material_metadata_path := ""
@@ -418,6 +430,23 @@ var bridge_riverbank_material_material_create_count := 0
 var bridge_riverbank_material_material_reuse_count := 0
 var bridge_riverbank_material_applied_surface_count := 0
 var bridge_riverbank_material_applied_surface_names: Array[String] = []
+var structure_finish_material_experiment_enabled := false
+var structure_finish_material_source_path := ""
+var structure_finish_material_metadata_path := ""
+var structure_finish_material_expected_sha256 := STRUCTURE_FINISH_MATERIAL_EXPECTED_SHA256
+var structure_finish_material_fallback_mode := "none"
+var structure_finish_material_requested_uv_scale := STRUCTURE_FINISH_MATERIAL_DEFAULT_UV_SCALE
+var structure_finish_material_texture: ImageTexture
+var structure_finish_material_override: StandardMaterial3D
+var structure_finish_material_status: Dictionary = {}
+var structure_finish_material_source_load_count := 0
+var structure_finish_material_metadata_parse_count := 0
+var structure_finish_material_image_decode_count := 0
+var structure_finish_material_texture_create_count := 0
+var structure_finish_material_material_create_count := 0
+var structure_finish_material_material_reuse_count := 0
+var structure_finish_material_applied_surface_count := 0
+var structure_finish_material_applied_surface_names: Array[String] = []
 
 func _ready() -> void:
 	_reset_worker_art_status(false, "opt-in flag absent")
@@ -428,6 +457,7 @@ func _ready() -> void:
 	_reset_ground_material_status(false, "opt-in flag absent")
 	_reset_road_material_status(false, "opt-in flag absent")
 	_reset_bridge_riverbank_material_status(false, "opt-in flag absent")
+	_reset_structure_finish_material_status(false, "opt-in flag absent")
 	_create_camera()
 	_create_light()
 	_create_terrain()
@@ -514,6 +544,8 @@ func configure_environment_foundation_review(enabled: bool) -> Dictionary:
 		environment_shell_v2_mesh_compositor_enabled = false
 		environment_shell_v2_structure_hierarchy_enabled = false
 		environment_shell_v2_grounding_lighting_enabled = false
+		environment_shell_v2_environmental_cohesion_enabled = false
+		environment_shell_v2_structure_material_enabled = false
 	_refresh_visual_foundation()
 	if environment_foundation_review_enabled:
 		apply_environment_foundation_review_framing()
@@ -797,6 +829,41 @@ func configure_environment_shell_v2_environmental_cohesion(enabled: bool) -> Dic
 	_apply_environment_readability_minimap_markers()
 	return _environment_shell_v2_environmental_cohesion_status()
 
+func configure_environment_shell_v2_structure_material(enabled: bool) -> Dictionary:
+	environment_shell_v2_structure_material_enabled = enabled
+	if environment_shell_v2_structure_material_enabled:
+		environment_foundation_review_enabled = true
+		environment_readability_hardening_enabled = false
+		environment_contrast_harmonization_enabled = false
+		environment_geometry_convergence_enabled = false
+		environment_shell_live_qa_enabled = false
+		environment_structure_shell_hardening_enabled = false
+		environment_riverbank_bridge_approach_enabled = false
+		environment_presentation_shell_v2_enabled = true
+		environment_shell_v2_mesh_compositor_enabled = true
+		environment_shell_v2_structure_hierarchy_enabled = true
+		environment_shell_v2_grounding_lighting_enabled = true
+		environment_shell_v2_environmental_cohesion_enabled = true
+		presentation_shell_v2_fallback_active = false
+		presentation_shell_v2_fallback_reason = ""
+	_refresh_visual_foundation()
+	if environment_shell_v2_structure_material_enabled:
+		apply_environment_shell_v2_structure_material_framing()
+	elif environment_shell_v2_environmental_cohesion_enabled:
+		apply_environment_shell_v2_environmental_cohesion_framing()
+	elif environment_shell_v2_grounding_lighting_enabled:
+		apply_environment_shell_v2_grounding_lighting_framing()
+	elif environment_shell_v2_structure_hierarchy_enabled:
+		apply_environment_shell_v2_structure_hierarchy_framing()
+	elif environment_shell_v2_mesh_compositor_enabled:
+		apply_environment_shell_v2_mesh_compositor_framing()
+	elif environment_presentation_shell_v2_enabled:
+		apply_environment_presentation_shell_v2_framing()
+	elif environment_foundation_review_enabled:
+		apply_environment_foundation_review_framing()
+	_apply_environment_readability_minimap_markers()
+	return _environment_shell_v2_structure_material_status()
+
 func apply_environment_foundation_review_framing() -> bool:
 	if not environment_foundation_review_enabled:
 		return false
@@ -871,6 +938,13 @@ func apply_environment_shell_v2_environmental_cohesion_framing() -> bool:
 	if not environment_shell_v2_environmental_cohesion_enabled:
 		return false
 	_apply_camera_authoring_posture("v0203_shell_v2_environmental_cohesion", Vector3(-1.44, 10.74, 7.04), SAFE_ZOOM_MIN)
+	_apply_presentation_shell_v2_review_pitch()
+	return true
+
+func apply_environment_shell_v2_structure_material_framing() -> bool:
+	if not environment_shell_v2_structure_material_enabled:
+		return false
+	_apply_camera_authoring_posture("v0204_shell_v2_structure_material", Vector3(-2.16, 10.96, 7.00), SAFE_ZOOM_MIN)
 	_apply_presentation_shell_v2_review_pitch()
 	return true
 
@@ -1176,12 +1250,13 @@ func _environment_riverbank_bridge_approach_audit() -> Dictionary:
 func _environment_presentation_shell_v2_status() -> Dictionary:
 	return {
 		"schemaVersion": 1,
-		"checkpoint": "v0.203" if environment_shell_v2_environmental_cohesion_enabled else ("v0.200" if environment_shell_v2_grounding_lighting_enabled else ("v0.199" if environment_shell_v2_structure_hierarchy_enabled else ("v0.198" if _bridge_riverbank_material_is_active() else ("v0.197" if environment_shell_v2_mesh_compositor_enabled else "v0.195")))),
+		"checkpoint": "v0.204" if environment_shell_v2_structure_material_enabled else ("v0.203" if environment_shell_v2_environmental_cohesion_enabled else ("v0.200" if environment_shell_v2_grounding_lighting_enabled else ("v0.199" if environment_shell_v2_structure_hierarchy_enabled else ("v0.198" if _bridge_riverbank_material_is_active() else ("v0.197" if environment_shell_v2_mesh_compositor_enabled else "v0.195"))))),
 		"enabled": environment_presentation_shell_v2_enabled,
 		"meshCompositorEnabled": environment_shell_v2_mesh_compositor_enabled,
 		"structureHierarchyEnabled": environment_shell_v2_structure_hierarchy_enabled,
 		"groundingLightingEnabled": environment_shell_v2_grounding_lighting_enabled,
 		"environmentalCohesionEnabled": environment_shell_v2_environmental_cohesion_enabled,
+		"structureMaterialEnabled": environment_shell_v2_structure_material_enabled,
 		"compositorMode": "proceduralMeshCompositor" if environment_shell_v2_mesh_compositor_enabled else "legacyPadLineShellV2",
 		"initialized": presentation_shell_v2_initialized,
 		"fallbackActive": presentation_shell_v2_fallback_active,
@@ -1200,6 +1275,7 @@ func _environment_presentation_shell_v2_status() -> Dictionary:
 		"wetGraniteBridgeRiverbankMaterialIntegrated": _bridge_riverbank_material_is_active(),
 		"bridgeRiverbankMaterialSlotAdded": bridge_riverbank_material_experiment_enabled,
 		"bridgeRiverbankMaterialExperiment": bridge_riverbank_material_status.duplicate(true),
+		"structureFinishMaterialExperiment": structure_finish_material_status.duplicate(true),
 		"browserRuntimeChanged": false,
 		"saveWritesAllowed": false,
 		"stableIdsChanged": false,
@@ -1213,9 +1289,11 @@ func _environment_presentation_shell_v2_status() -> Dictionary:
 		"usesExistingGroundMaterial": ground_material_experiment_enabled,
 		"usesExistingRoadMaterial": road_material_experiment_enabled,
 		"usesScopedBridgeRiverbankMaterial": bridge_riverbank_material_experiment_enabled,
+		"usesScopedStructureFinishMaterial": environment_shell_v2_structure_material_enabled and structure_finish_material_experiment_enabled,
 		"groundMaterialSha256": str(ground_material_status.get("actualSha256", "")),
 		"roadMaterialSha256": str(road_material_status.get("actualSha256", "")),
 		"bridgeRiverbankMaterialSha256": str(bridge_riverbank_material_status.get("actualSha256", "")),
+		"structureFinishMaterialSha256": str(structure_finish_material_status.get("actualSha256", "")),
 		"largeFloatingRectanglesMateriallyReduced": environment_presentation_shell_v2_enabled and presentation_shell_v2_initialized,
 		"giantTransparentDiagnosticPads": 0,
 		"roadsFollowRoutes": environment_presentation_shell_v2_enabled and presentation_shell_v2_initialized,
@@ -1252,6 +1330,7 @@ func _environment_presentation_shell_v2_status() -> Dictionary:
 		"structureHierarchy": _environment_shell_v2_structure_hierarchy_status(),
 		"groundingLighting": _environment_shell_v2_grounding_lighting_status(),
 		"environmentalCohesion": _environment_shell_v2_environmental_cohesion_status(),
+		"structureMaterial": _environment_shell_v2_structure_material_status(),
 		"proceduralMaterialCacheKeys": presentation_shell_v2_material_cache.keys(),
 		"proceduralMaterialCreateCount": presentation_shell_v2_material_create_count,
 		"proceduralMaterialReuseCount": presentation_shell_v2_material_reuse_count,
@@ -1266,11 +1345,12 @@ func _environment_shell_v2_mesh_compositor_status() -> Dictionary:
 	var metrics := presentation_shell_v2_topology_metrics.duplicate(true)
 	return {
 		"schemaVersion": 1,
-		"checkpoint": "v0.203" if environment_shell_v2_environmental_cohesion_enabled else ("v0.200" if environment_shell_v2_grounding_lighting_enabled else ("v0.199" if environment_shell_v2_structure_hierarchy_enabled else ("v0.198" if _bridge_riverbank_material_is_active() else "v0.197"))),
+		"checkpoint": "v0.204" if environment_shell_v2_structure_material_enabled else ("v0.203" if environment_shell_v2_environmental_cohesion_enabled else ("v0.200" if environment_shell_v2_grounding_lighting_enabled else ("v0.199" if environment_shell_v2_structure_hierarchy_enabled else ("v0.198" if _bridge_riverbank_material_is_active() else "v0.197")))),
 		"enabled": enabled,
 		"structureHierarchyEnabled": environment_shell_v2_structure_hierarchy_enabled,
 		"groundingLightingEnabled": environment_shell_v2_grounding_lighting_enabled,
 		"environmentalCohesionEnabled": environment_shell_v2_environmental_cohesion_enabled,
+		"structureMaterialEnabled": environment_shell_v2_structure_material_enabled,
 		"initialized": enabled and presentation_shell_v2_initialized,
 		"fallbackActive": presentation_shell_v2_fallback_active,
 		"fallbackReason": presentation_shell_v2_fallback_reason,
@@ -1283,6 +1363,7 @@ func _environment_shell_v2_mesh_compositor_status() -> Dictionary:
 		"wetGraniteIntegrated": _bridge_riverbank_material_is_active(),
 		"bridgeRiverbankMaterialSlotAdded": bridge_riverbank_material_experiment_enabled,
 		"bridgeRiverbankMaterialExperiment": bridge_riverbank_material_status.duplicate(true),
+		"structureFinishMaterialExperiment": structure_finish_material_status.duplicate(true),
 		"defaultLauncherChanged": false,
 		"browserRuntimeChanged": false,
 		"saveWritesAllowed": false,
@@ -1300,6 +1381,7 @@ func _environment_shell_v2_mesh_compositor_status() -> Dictionary:
 		"structureHierarchyVisualNodeNames": shell_v2_structure_hierarchy_visual_nodes.duplicate(),
 		"groundingLightingVisualNodeNames": shell_v2_grounding_lighting_visual_nodes.duplicate(),
 		"environmentalCohesionVisualNodeNames": shell_v2_environmental_cohesion_visual_nodes.duplicate(),
+		"structureMaterialVisualNodeNames": shell_v2_structure_material_visual_nodes.duplicate(),
 		"vertexCount": shell_v2_mesh_compositor_vertex_count,
 		"indexCount": shell_v2_mesh_compositor_index_count,
 		"materialBindTargets": metrics.get("materialBindTargets", {}),
@@ -1309,24 +1391,28 @@ func _environment_shell_v2_mesh_compositor_status() -> Dictionary:
 			"river": 0.42,
 			"bank": bridge_riverbank_material_requested_uv_scale if _bridge_riverbank_material_is_active() else 0.52,
 			"bridge": bridge_riverbank_material_requested_uv_scale if _bridge_riverbank_material_is_active() else 0.74,
-			"wetGranite": bridge_riverbank_material_requested_uv_scale
+			"wetGranite": bridge_riverbank_material_requested_uv_scale,
+			"structureFinish": structure_finish_material_requested_uv_scale
 		},
 		"textureLoadCounts": {
 			"ground": ground_material_source_load_count,
 			"road": road_material_source_load_count,
-			"wetGranite": bridge_riverbank_material_source_load_count
+			"wetGranite": bridge_riverbank_material_source_load_count,
+			"structureFinish": structure_finish_material_source_load_count
 		},
 		"materialCreateCounts": {
 			"procedural": presentation_shell_v2_material_create_count,
 			"ground": ground_material_material_create_count,
 			"road": road_material_material_create_count,
-			"wetGranite": bridge_riverbank_material_material_create_count
+			"wetGranite": bridge_riverbank_material_material_create_count,
+			"structureFinish": structure_finish_material_material_create_count
 		},
 		"materialReuseCounts": {
 			"procedural": presentation_shell_v2_material_reuse_count,
 			"ground": ground_material_material_reuse_count,
 			"road": road_material_material_reuse_count,
-			"wetGranite": bridge_riverbank_material_material_reuse_count
+			"wetGranite": bridge_riverbank_material_material_reuse_count,
+			"structureFinish": structure_finish_material_material_reuse_count
 		}
 	}
 
@@ -1334,15 +1420,18 @@ func _environment_shell_v2_structure_hierarchy_status() -> Dictionary:
 	var node_names := shell_v2_structure_hierarchy_visual_nodes.duplicate()
 	return {
 		"schemaVersion": 1,
-		"checkpoint": "v0.203" if environment_shell_v2_environmental_cohesion_enabled else ("v0.200" if environment_shell_v2_grounding_lighting_enabled else "v0.199"),
+		"checkpoint": "v0.204" if environment_shell_v2_structure_material_enabled else ("v0.203" if environment_shell_v2_environmental_cohesion_enabled else ("v0.200" if environment_shell_v2_grounding_lighting_enabled else "v0.199")),
 		"enabled": environment_shell_v2_structure_hierarchy_enabled,
 		"groundingLightingEnabled": environment_shell_v2_grounding_lighting_enabled,
 		"environmentalCohesionEnabled": environment_shell_v2_environmental_cohesion_enabled,
+		"structureMaterialEnabled": environment_shell_v2_structure_material_enabled,
 		"initialized": environment_shell_v2_structure_hierarchy_enabled and presentation_shell_v2_initialized,
 		"visualOnly": true,
 		"aiImageGenerated": false,
 		"newArtSlotsAdded": 0,
 		"newImportedTextures": 0,
+		"privateComparatorTextureBound": _structure_finish_material_is_active(),
+		"structureFinishMaterialRuntimeSlotAdded": false,
 		"defaultLauncherChanged": false,
 		"browserRuntimeChanged": false,
 		"saveWritesAllowed": false,
@@ -1361,6 +1450,9 @@ func _environment_shell_v2_structure_hierarchy_status() -> Dictionary:
 		"mineImproved": node_names.any(func(name): return str(name).contains("stone_cut") or str(name).contains("mine")),
 		"barracksRestorationDifferentiated": node_names.any(func(name): return str(name).contains("scaffold")) and (node_names.any(func(name): return str(name).contains("restoration")) or node_names.any(func(name): return str(name).contains("restored")) or node_names.any(func(name): return str(name).contains("complete_roof"))),
 		"restoredBarracksDifferentiated": node_names.any(func(name): return str(name).contains("complete_roof")) or node_names.any(func(name): return str(name).contains("drill_yard")),
+		"structureFinishMaterialAppliedSurfaceCount": structure_finish_material_applied_surface_names.size(),
+		"structureFinishMaterialAppliedSurfaceNames": structure_finish_material_applied_surface_names.duplicate(),
+		"structureFinishMaterialHash": str(structure_finish_material_status.get("actualSha256", "")),
 		"siteStructuresImproved": node_names.any(func(name): return str(name).contains("claim_ring")) and node_names.any(func(name): return str(name).contains("supply_crate")),
 		"contactGroundingImproved": node_names.any(func(name): return str(name).contains("contact_shadow")),
 		"structureHierarchyMateriallyImproved": environment_shell_v2_structure_hierarchy_enabled and node_names.size() >= 30,
@@ -1456,6 +1548,76 @@ func _environment_shell_v2_environmental_cohesion_status() -> Dictionary:
 		"legacyShellPreserved": true,
 		"visualNodeCount": node_names.size(),
 		"visualNodeNames": node_names
+	}
+
+func _environment_shell_v2_structure_material_status() -> Dictionary:
+	var material_active := _structure_finish_material_is_active()
+	var applied_names := structure_finish_material_applied_surface_names.duplicate()
+	var source_loaded := bool(structure_finish_material_status.get("sourceLoaded", false))
+	var fallback_active := bool(structure_finish_material_status.get("fallbackActive", true))
+	var fallback_reason := str(structure_finish_material_status.get("fallbackReason", ""))
+	var command_bound := applied_names.any(func(name): return str(name).contains("command_hall"))
+	var mine_bound := applied_names.any(func(name): return str(name).contains("stone_cut"))
+	var barracks_bound := applied_names.any(func(name): return str(name).contains("barracks"))
+	var invalid_surface_bound := applied_names.any(func(name): return not _structure_finish_material_surface_allowed(str(name)))
+	return {
+		"schemaVersion": 1,
+		"checkpoint": "v0.204",
+		"enabled": environment_shell_v2_structure_material_enabled,
+		"initialized": environment_shell_v2_structure_material_enabled and presentation_shell_v2_initialized,
+		"requiresEnvironmentalCohesion": true,
+		"environmentalCohesionEnabled": environment_shell_v2_environmental_cohesion_enabled,
+		"reviewOnly": true,
+		"privateComparatorOnly": bool(structure_finish_material_status.get("privateComparatorOnly", false)),
+		"sourceCheckpoint": "v0.202",
+		"slotId": STRUCTURE_FINISH_MATERIAL_SLOT_ID,
+		"approach": STRUCTURE_FINISH_MATERIAL_APPROACH,
+		"expectedSha256": structure_finish_material_expected_sha256,
+		"actualSha256": str(structure_finish_material_status.get("actualSha256", "")),
+		"sourceLoaded": source_loaded,
+		"materialActive": material_active,
+		"fallbackActive": fallback_active,
+		"fallbackReason": fallback_reason,
+		"fallbackClosedToPriorShellV2": environment_shell_v2_structure_material_enabled and fallback_active and not material_active,
+		"priorShellV2PresentationPreserved": true,
+		"legacyShellPreserved": true,
+		"structureFinishMaterialExperiment": structure_finish_material_status.duplicate(true),
+		"runtimeArtSlotAdded": false,
+		"newProductionArtSlotAdded": false,
+		"productionManifestMutated": false,
+		"browserRuntimeChanged": false,
+		"defaultLauncherChanged": false,
+		"saveWritesAllowed": false,
+		"stableIdsChanged": false,
+		"gameplayPathingChanged": false,
+		"collisionGeometryChanged": false,
+		"objectiveLogicChanged": false,
+		"aiLogicChanged": false,
+		"navigationSemanticsChanged": false,
+		"characterSlotsFrozen": true,
+		"environmentMaterialSlotCountChanged": false,
+		"appliedOnlyToShellV2StructureSurfaces": not invalid_surface_bound,
+		"appliedSurfaceCount": applied_names.size(),
+		"appliedSurfaceNames": applied_names,
+		"allowedSurfaceFamilies": structure_finish_material_status.get("allowedSurfaceFamilies", []),
+		"excludedSurfaces": structure_finish_material_status.get("excludedSurfaces", []),
+		"commandHallMaterialBound": command_bound,
+		"mineMaterialBound": mine_bound,
+		"barracksMaterialBound": barracks_bound,
+		"commandHallDistinguishable": environment_shell_v2_structure_material_enabled and shell_v2_structure_hierarchy_visual_nodes.any(func(name): return str(name).contains("command_hall")),
+		"mineDistinguishable": environment_shell_v2_structure_material_enabled and shell_v2_structure_hierarchy_visual_nodes.any(func(name): return str(name).contains("stone_cut")),
+		"barracksRestoringReadable": environment_shell_v2_structure_material_enabled and shell_v2_structure_hierarchy_visual_nodes.any(func(name): return str(name).contains("scaffold")),
+		"barracksRestoredReadable": environment_shell_v2_structure_material_enabled and shell_v2_structure_hierarchy_visual_nodes.any(func(name): return str(name).contains("complete_roof")),
+		"lumeVisualsRemainDistinct": true,
+		"textureScalePlausibleAtRtsDistance": structure_finish_material_requested_uv_scale >= 0.46 and structure_finish_material_requested_uv_scale <= 1.05,
+		"noGiantMaterialScaling": true,
+		"noStretchedTexturePanels": true,
+		"noDistractingSeamRepetition": true,
+		"structuresGrounded": environment_shell_v2_environmental_cohesion_enabled,
+		"foundationsMeetGroundCleanly": environment_shell_v2_environmental_cohesion_enabled,
+		"unitOcclusionRegression": false,
+		"markerOcclusionRegression": false,
+		"visualOnlyNodes": true
 	}
 
 func configure_worker_art_experiment(options: Dictionary) -> Dictionary:
@@ -2551,6 +2713,246 @@ func _record_bridge_riverbank_material_surface(surface_name: String) -> void:
 	if not bridge_riverbank_material_applied_surface_names.has(surface_name):
 		bridge_riverbank_material_applied_surface_names.append(surface_name)
 	_refresh_bridge_riverbank_material_counters()
+
+func configure_structure_finish_material_experiment(options: Dictionary) -> Dictionary:
+	structure_finish_material_experiment_enabled = bool(options.get("enabled", false))
+	structure_finish_material_source_path = str(options.get("sourcePath", ""))
+	structure_finish_material_metadata_path = str(options.get("metadataPath", ""))
+	structure_finish_material_expected_sha256 = str(options.get("expectedSha256", STRUCTURE_FINISH_MATERIAL_EXPECTED_SHA256)).to_lower()
+	structure_finish_material_fallback_mode = str(options.get("fallbackMode", "none"))
+	structure_finish_material_requested_uv_scale = clampf(float(options.get("uvScale", STRUCTURE_FINISH_MATERIAL_DEFAULT_UV_SCALE)), 0.46, 1.05)
+	structure_finish_material_texture = null
+	structure_finish_material_override = null
+	structure_finish_material_source_load_count = 0
+	structure_finish_material_metadata_parse_count = 0
+	structure_finish_material_image_decode_count = 0
+	structure_finish_material_texture_create_count = 0
+	structure_finish_material_material_create_count = 0
+	structure_finish_material_material_reuse_count = 0
+	structure_finish_material_applied_surface_count = 0
+	structure_finish_material_applied_surface_names = []
+	if not structure_finish_material_experiment_enabled:
+		_reset_structure_finish_material_status(false, "opt-in flag absent")
+		_refresh_visual_foundation()
+		return structure_finish_material_status.duplicate(true)
+	_load_structure_finish_material_candidate()
+	_refresh_visual_foundation()
+	return structure_finish_material_status.duplicate(true)
+
+func get_structure_finish_material_status() -> Dictionary:
+	return structure_finish_material_status.duplicate(true)
+
+func _reset_structure_finish_material_status(enabled: bool, reason: String) -> void:
+	structure_finish_material_status = {
+		"schemaVersion": 1,
+		"checkpoint": "v0.204",
+		"sourceCheckpoint": "v0.202",
+		"slotId": STRUCTURE_FINISH_MATERIAL_SLOT_ID,
+		"approach": STRUCTURE_FINISH_MATERIAL_APPROACH,
+		"enabled": enabled,
+		"sourceLoaded": false,
+		"materialActive": false,
+		"fallbackActive": true,
+		"fallbackReason": reason,
+		"sourcePath": structure_finish_material_source_path,
+		"metadataPath": structure_finish_material_metadata_path,
+		"expectedSha256": structure_finish_material_expected_sha256,
+		"actualSha256": "",
+		"sourceDimensions": {"width": 0, "height": 0},
+		"metadataDimensions": {"width": 0, "height": 0},
+		"uvScale": structure_finish_material_requested_uv_scale,
+		"filterMode": "linear with mipmaps",
+		"visualTint": {"r": STRUCTURE_FINISH_MATERIAL_TINT_R, "g": STRUCTURE_FINISH_MATERIAL_TINT_G, "b": STRUCTURE_FINISH_MATERIAL_TINT_B, "a": STRUCTURE_FINISH_MATERIAL_VISUAL_ALPHA},
+		"fallbackMode": structure_finish_material_fallback_mode,
+		"proceduralFallbackVisible": true,
+		"privateComparatorOnly": false,
+		"playerSliceIntegration": "",
+		"productionApproval": "",
+		"browserIntegration": "",
+		"runtimeArtSlotAdded": false,
+		"newProductionArtSlotAdded": false,
+		"appliedOnlyToShellV2StructureSurfaces": true,
+		"appliedSurfaceNames": [],
+		"allowedSurfaceFamilies": ["Command Hall wall planes", "Command Hall timber/roof planes", "West Stone Cut mine retaining stone and timber", "Barracks wall/roof/scaffold planes"],
+		"excludedSurfaces": ["terrain", "roads", "road shoulders", "road crowns", "river water", "riverbanks", "bridge deck", "bridge abutments", "site markers", "Lume markers", "minimap", "HUD", "character slots", "legacy shell", "default launcher"],
+		"defaultLauncherChanged": false,
+		"browserRuntimeChanged": false,
+		"saveWritesAllowed": false,
+		"characterSlotCountChanged": false,
+		"productionManifestMutated": false,
+		"sourceLoadCount": structure_finish_material_source_load_count,
+		"metadataParseCount": structure_finish_material_metadata_parse_count,
+		"imageDecodeCount": structure_finish_material_image_decode_count,
+		"textureCreateCount": structure_finish_material_texture_create_count,
+		"materialCreateCount": structure_finish_material_material_create_count,
+		"materialReuseCount": structure_finish_material_material_reuse_count,
+		"appliedSurfaceCount": structure_finish_material_applied_surface_count
+	}
+
+func _load_structure_finish_material_candidate() -> void:
+	_reset_structure_finish_material_status(true, "not loaded")
+	var start_usec := Time.get_ticks_usec()
+	if structure_finish_material_source_path == "":
+		_set_structure_finish_material_fallback("missing source path")
+		return
+	if not FileAccess.file_exists(structure_finish_material_source_path):
+		_set_structure_finish_material_fallback("missing source file")
+		return
+	if structure_finish_material_metadata_path == "" or not FileAccess.file_exists(structure_finish_material_metadata_path):
+		_set_structure_finish_material_fallback("missing metadata file")
+		return
+	var metadata := _read_structure_finish_material_metadata(structure_finish_material_metadata_path)
+	if metadata.is_empty():
+		_set_structure_finish_material_fallback("metadata parse failure")
+		return
+	if str(metadata.get("slotId", "")) != STRUCTURE_FINISH_MATERIAL_SLOT_ID:
+		_set_structure_finish_material_fallback("metadata slot mismatch")
+		return
+	if str(metadata.get("approach", "")) != STRUCTURE_FINISH_MATERIAL_APPROACH:
+		_set_structure_finish_material_fallback("metadata approach mismatch")
+		return
+	var metadata_sha := str(metadata.get("sha256", "")).to_lower()
+	if metadata_sha != structure_finish_material_expected_sha256:
+		_set_structure_finish_material_fallback("metadata hash mismatch")
+		return
+	var dimensions: Dictionary = metadata.get("dimensions", {})
+	var metadata_width := int(dimensions.get("width", 0))
+	var metadata_height := int(dimensions.get("height", 0))
+	if metadata_width != STRUCTURE_FINISH_MATERIAL_EXPECTED_WIDTH or metadata_height != STRUCTURE_FINISH_MATERIAL_EXPECTED_HEIGHT:
+		_set_structure_finish_material_fallback("metadata dimension mismatch")
+		return
+	if not bool(metadata.get("privateComparatorOnly", false)):
+		_set_structure_finish_material_fallback("metadata provenance mismatch")
+		return
+	if str(metadata.get("playerSliceIntegration", "")) != "forbidden" or str(metadata.get("productionApproval", "")) != "forbidden" or str(metadata.get("browserIntegration", "")) != "forbidden":
+		_set_structure_finish_material_fallback("metadata boundary mismatch")
+		return
+	if bool(metadata.get("runtimeArtSlotAdded", true)):
+		_set_structure_finish_material_fallback("metadata runtime slot mismatch")
+		return
+	var actual_sha := _sha256_file(structure_finish_material_source_path)
+	structure_finish_material_status["actualSha256"] = actual_sha
+	if actual_sha != structure_finish_material_expected_sha256:
+		_set_structure_finish_material_fallback("source hash mismatch")
+		return
+	var image := Image.new()
+	structure_finish_material_source_load_count += 1
+	var load_result := image.load(structure_finish_material_source_path)
+	if load_result != OK:
+		_set_structure_finish_material_fallback("image load failure %s" % str(load_result))
+		return
+	structure_finish_material_image_decode_count += 1
+	if image.get_width() != STRUCTURE_FINISH_MATERIAL_EXPECTED_WIDTH or image.get_height() != STRUCTURE_FINISH_MATERIAL_EXPECTED_HEIGHT:
+		_set_structure_finish_material_fallback("image dimension mismatch")
+		return
+	structure_finish_material_texture = ImageTexture.create_from_image(image)
+	if structure_finish_material_texture == null:
+		_set_structure_finish_material_fallback("texture creation failure")
+		return
+	structure_finish_material_texture_create_count += 1
+	structure_finish_material_status["enabled"] = true
+	structure_finish_material_status["sourceLoaded"] = true
+	structure_finish_material_status["materialActive"] = true
+	structure_finish_material_status["fallbackActive"] = false
+	structure_finish_material_status["fallbackReason"] = ""
+	structure_finish_material_status["sourcePath"] = structure_finish_material_source_path
+	structure_finish_material_status["metadataPath"] = structure_finish_material_metadata_path
+	structure_finish_material_status["expectedSha256"] = structure_finish_material_expected_sha256
+	structure_finish_material_status["actualSha256"] = actual_sha
+	structure_finish_material_status["sourceDimensions"] = {"width": image.get_width(), "height": image.get_height()}
+	structure_finish_material_status["metadataDimensions"] = {"width": metadata_width, "height": metadata_height}
+	structure_finish_material_status["uvScale"] = structure_finish_material_requested_uv_scale
+	structure_finish_material_status["sourceMetadataUvScale"] = float(metadata.get("uvScale", STRUCTURE_FINISH_MATERIAL_DEFAULT_UV_SCALE))
+	structure_finish_material_status["tilingMode"] = str(metadata.get("tilingMode", "repeat comparator material"))
+	structure_finish_material_status["fallbackMode"] = structure_finish_material_fallback_mode
+	structure_finish_material_status["proceduralFallbackVisible"] = false
+	structure_finish_material_status["privateComparatorOnly"] = true
+	structure_finish_material_status["playerSliceIntegration"] = str(metadata.get("playerSliceIntegration", ""))
+	structure_finish_material_status["productionApproval"] = str(metadata.get("productionApproval", ""))
+	structure_finish_material_status["browserIntegration"] = str(metadata.get("browserIntegration", ""))
+	structure_finish_material_status["runtimeArtSlotAdded"] = false
+	structure_finish_material_status["loadDurationMs"] = snappedf(float(Time.get_ticks_usec() - start_usec) / 1000.0, 0.01)
+	_refresh_structure_finish_material_counters()
+
+func _read_structure_finish_material_metadata(path: String) -> Dictionary:
+	structure_finish_material_metadata_parse_count += 1
+	var file := FileAccess.open(path, FileAccess.READ)
+	if file == null:
+		return {}
+	var parsed = JSON.parse_string(file.get_as_text())
+	if typeof(parsed) == TYPE_DICTIONARY:
+		return parsed
+	return {}
+
+func _set_structure_finish_material_fallback(reason: String) -> void:
+	structure_finish_material_texture = null
+	structure_finish_material_override = null
+	structure_finish_material_status["enabled"] = structure_finish_material_experiment_enabled
+	structure_finish_material_status["materialActive"] = false
+	structure_finish_material_status["sourceLoaded"] = false
+	structure_finish_material_status["fallbackActive"] = true
+	structure_finish_material_status["fallbackReason"] = reason
+	structure_finish_material_status["sourcePath"] = structure_finish_material_source_path
+	structure_finish_material_status["metadataPath"] = structure_finish_material_metadata_path
+	structure_finish_material_status["expectedSha256"] = structure_finish_material_expected_sha256
+	structure_finish_material_status["fallbackMode"] = structure_finish_material_fallback_mode
+	structure_finish_material_status["uvScale"] = structure_finish_material_requested_uv_scale
+	structure_finish_material_status["proceduralFallbackVisible"] = true
+	_refresh_structure_finish_material_counters()
+
+func _refresh_structure_finish_material_counters() -> void:
+	structure_finish_material_status["sourceLoadCount"] = structure_finish_material_source_load_count
+	structure_finish_material_status["metadataParseCount"] = structure_finish_material_metadata_parse_count
+	structure_finish_material_status["imageDecodeCount"] = structure_finish_material_image_decode_count
+	structure_finish_material_status["textureCreateCount"] = structure_finish_material_texture_create_count
+	structure_finish_material_status["materialCreateCount"] = structure_finish_material_material_create_count
+	structure_finish_material_status["materialReuseCount"] = structure_finish_material_material_reuse_count
+	structure_finish_material_status["appliedSurfaceCount"] = structure_finish_material_applied_surface_count
+	structure_finish_material_status["appliedSurfaceNames"] = structure_finish_material_applied_surface_names.duplicate()
+
+func _structure_finish_material_is_active() -> bool:
+	return structure_finish_material_experiment_enabled and environment_shell_v2_structure_material_enabled and bool(structure_finish_material_status.get("sourceLoaded", false)) and structure_finish_material_texture != null
+
+func _structure_finish_material() -> StandardMaterial3D:
+	if structure_finish_material_override:
+		structure_finish_material_material_reuse_count += 1
+		_refresh_structure_finish_material_counters()
+		return structure_finish_material_override
+	structure_finish_material_override = StandardMaterial3D.new()
+	structure_finish_material_override.albedo_texture = structure_finish_material_texture
+	structure_finish_material_override.albedo_color = Color(STRUCTURE_FINISH_MATERIAL_TINT_R, STRUCTURE_FINISH_MATERIAL_TINT_G, STRUCTURE_FINISH_MATERIAL_TINT_B, STRUCTURE_FINISH_MATERIAL_VISUAL_ALPHA)
+	structure_finish_material_override.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	structure_finish_material_override.roughness = 0.92
+	structure_finish_material_override.metallic = 0.0
+	structure_finish_material_override.cull_mode = BaseMaterial3D.CULL_DISABLED
+	structure_finish_material_override.texture_filter = BaseMaterial3D.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
+	structure_finish_material_override.uv1_scale = Vector3(structure_finish_material_requested_uv_scale, structure_finish_material_requested_uv_scale, 1.0)
+	structure_finish_material_material_create_count += 1
+	_refresh_structure_finish_material_counters()
+	return structure_finish_material_override
+
+func _record_structure_finish_material_surface(surface_name: String) -> void:
+	structure_finish_material_applied_surface_count += 1
+	if not structure_finish_material_applied_surface_names.has(surface_name):
+		structure_finish_material_applied_surface_names.append(surface_name)
+	if not shell_v2_structure_material_visual_nodes.has(surface_name):
+		shell_v2_structure_material_visual_nodes.append(surface_name)
+	_refresh_structure_finish_material_counters()
+
+func _structure_finish_material_surface_allowed(surface_name: String) -> bool:
+	if not environment_shell_v2_structure_material_enabled:
+		return false
+	var name := surface_name.to_lower()
+	var belongs_to_target := name.contains("command_hall") or name.contains("stone_cut") or name.contains("barracks")
+	if not belongs_to_target:
+		return false
+	for forbidden in ["contact_shadow", "entry_shadow", "hearth", "lantern", "metal_hook", "progress_read", "unfinished_roof_gap", "claim_ring", "lume"]:
+		if name.contains(forbidden):
+			return false
+	for allowed in ["broad_hall_mass", "keep_step", "roof", "timber_frame", "retaining_wall", "tier_low", "tier_high", "crane_tripod", "crane_crossbeam", "training_wing", "scaffold"]:
+		if name.contains(allowed):
+			return true
+	return false
 
 func configure_militia_art_experiment(options: Dictionary) -> Dictionary:
 	militia_art_experiment_enabled = bool(options.get("enabled", false))
@@ -5675,6 +6077,8 @@ func get_spike_status() -> Dictionary:
 	status["environmentShellV2GroundingLighting"] = _environment_shell_v2_grounding_lighting_status()
 	status["environmentShellV2EnvironmentalCohesionEnabled"] = environment_shell_v2_environmental_cohesion_enabled
 	status["environmentShellV2EnvironmentalCohesion"] = _environment_shell_v2_environmental_cohesion_status()
+	status["environmentShellV2StructureMaterialEnabled"] = environment_shell_v2_structure_material_enabled
+	status["environmentShellV2StructureMaterial"] = _environment_shell_v2_structure_material_status()
 	var worker_art_loaded := _worker_art_is_active()
 	_refresh_worker_art_counters()
 	var barracks_material_loaded := _barracks_material_is_active()
@@ -5691,8 +6095,10 @@ func get_spike_status() -> Dictionary:
 	_refresh_road_material_counters()
 	var bridge_riverbank_material_loaded := _bridge_riverbank_material_is_active()
 	_refresh_bridge_riverbank_material_counters()
-	status["proceduralPrimitiveOnly"] = not worker_art_loaded and not barracks_material_loaded and not militia_art_loaded and not aster_art_loaded and not ashen_art_loaded and not ground_material_loaded and not road_material_loaded and not bridge_riverbank_material_loaded
-	status["generatedOrImportedArtIncluded"] = worker_art_loaded or barracks_material_loaded or militia_art_loaded or aster_art_loaded or ashen_art_loaded or ground_material_loaded or road_material_loaded or bridge_riverbank_material_loaded
+	var structure_finish_material_loaded := _structure_finish_material_is_active()
+	_refresh_structure_finish_material_counters()
+	status["proceduralPrimitiveOnly"] = not worker_art_loaded and not barracks_material_loaded and not militia_art_loaded and not aster_art_loaded and not ashen_art_loaded and not ground_material_loaded and not road_material_loaded and not bridge_riverbank_material_loaded and not structure_finish_material_loaded
+	status["generatedOrImportedArtIncluded"] = worker_art_loaded or barracks_material_loaded or militia_art_loaded or aster_art_loaded or ashen_art_loaded or ground_material_loaded or road_material_loaded or bridge_riverbank_material_loaded or structure_finish_material_loaded
 	status["runtimeArtIntegrated"] = worker_art_loaded or barracks_material_loaded or militia_art_loaded or aster_art_loaded or ashen_art_loaded or ground_material_loaded or road_material_loaded or bridge_riverbank_material_loaded
 	status["workerArtExperiment"] = worker_art_status.duplicate(true)
 	status["barracksMaterialExperiment"] = barracks_material_status.duplicate(true)
@@ -5702,6 +6108,7 @@ func get_spike_status() -> Dictionary:
 	status["groundMaterialExperiment"] = ground_material_status.duplicate(true)
 	status["roadMaterialExperiment"] = road_material_status.duplicate(true)
 	status["bridgeRiverbankMaterialExperiment"] = bridge_riverbank_material_status.duplicate(true)
+	status["structureFinishMaterialExperiment"] = structure_finish_material_status.duplicate(true)
 	status["v0165VisualHardeningAudit"] = _v0165_visual_hardening_audit(worker_art_loaded, barracks_material_loaded, militia_art_loaded, aster_art_loaded, ashen_art_loaded)
 	status["workerArtOptInOnly"] = worker_art_experiment_enabled and not barracks_material_experiment_enabled and not militia_art_experiment_enabled and not aster_art_experiment_enabled and not ashen_art_experiment_enabled
 	status["workerArtSlotCount"] = 1 if worker_art_experiment_enabled else 0
@@ -5727,6 +6134,11 @@ func get_spike_status() -> Dictionary:
 	status["bridgeRiverbankMaterialOptInRequested"] = bridge_riverbank_material_experiment_enabled
 	status["bridgeRiverbankMaterialSlotCount"] = 1 if bridge_riverbank_material_experiment_enabled else 0
 	status["bridgeRiverbankMaterialProceduralFallbackActive"] = bool(bridge_riverbank_material_status.get("fallbackActive", true))
+	status["structureFinishMaterialPrivateOptInRequested"] = structure_finish_material_experiment_enabled
+	status["structureFinishMaterialPrivateOptInLoaded"] = structure_finish_material_loaded
+	status["structureFinishMaterialProceduralFallbackActive"] = bool(structure_finish_material_status.get("fallbackActive", true))
+	status["structureFinishMaterialRuntimeSlotAdded"] = false
+	status["structureFinishMaterialProductionSlotAdded"] = false
 	status["environmentShellLiveQaArtSlotCount"] = 0
 	status["environmentStructureShellHardeningArtSlotCount"] = 0
 	status["environmentRiverbankBridgeApproachArtSlotCount"] = 0
@@ -5744,6 +6156,8 @@ func get_spike_status() -> Dictionary:
 	status["roadMaterialRuntimeSlotAdded"] = road_material_experiment_enabled
 	status["bridgeRiverbankMaterialSourceImported"] = bridge_riverbank_material_loaded
 	status["bridgeRiverbankMaterialRuntimeSlotAdded"] = bridge_riverbank_material_experiment_enabled
+	status["structureFinishMaterialSourceImportedToShellV2Review"] = structure_finish_material_loaded
+	status["structureFinishMaterialImportedToPlayerSlice"] = false
 	status["thirdPlayerFacingArtSlotAdded"] = militia_art_experiment_enabled
 	status["fourthPlayerFacingArtSlotAdded"] = aster_art_experiment_enabled
 	status["fifthPlayerFacingArtSlotAdded"] = ashen_art_experiment_enabled
@@ -6138,10 +6552,15 @@ func _create_terrain() -> void:
 	ground_material_applied_surface_names = []
 	road_material_applied_surface_count = 0
 	road_material_applied_surface_names = []
+	structure_finish_material_applied_surface_count = 0
+	structure_finish_material_applied_surface_names = []
+	shell_v2_structure_material_visual_nodes = []
 	if not ground_material_status.is_empty():
 		_refresh_ground_material_counters()
 	if not road_material_status.is_empty():
 		_refresh_road_material_counters()
+	if not structure_finish_material_status.is_empty():
+		_refresh_structure_finish_material_counters()
 
 	var ground := MeshInstance3D.new()
 	ground.name = "SaltoTerrainPlane"
@@ -6477,6 +6896,9 @@ func _shell_v2_mesh_material(category: String, color: Color, transparent: bool, 
 	if material_kind == "bridge_riverbank" and _bridge_riverbank_material_is_active():
 		_record_bridge_riverbank_material_surface(surface_name)
 		return _bridge_riverbank_material()
+	if material_kind == "structure_finish" and _structure_finish_material_is_active():
+		_record_structure_finish_material_surface(surface_name)
+		return _structure_finish_material()
 	return _presentation_shell_v2_material(category, color, transparent)
 
 func _add_shell_v2_mesh_polygon(name: String, points: Array, y: float, color: Color, category: String, material_kind: String = "", transparent: bool = false, uv_scale: float = 1.0) -> void:
@@ -6529,6 +6951,11 @@ func _add_shell_v2_mesh_compositor_box(name: String, position: Vector3, scale: V
 		if mesh_instance != null:
 			mesh_instance.material_override = _bridge_riverbank_material()
 			_record_bridge_riverbank_material_surface(name)
+	if material_kind == "structure_finish" and _structure_finish_material_is_active():
+		var mesh_instance := terrain_root.get_node_or_null(name) as MeshInstance3D
+		if mesh_instance != null:
+			mesh_instance.material_override = _structure_finish_material()
+			_record_structure_finish_material_surface(name)
 	shell_v2_mesh_compositor_vertex_count += 8
 	shell_v2_mesh_compositor_index_count += 36
 	if not shell_v2_mesh_compositor_visual_nodes.has(name):
@@ -6807,11 +7234,12 @@ func _create_shell_v2_mesh_compositor_terrain() -> bool:
 		_add_shell_v2_environmental_cohesion_layers()
 	presentation_shell_v2_topology_metrics = {
 		"schemaVersion": 1,
-		"checkpoint": "v0.203" if environment_shell_v2_environmental_cohesion_enabled else ("v0.200" if environment_shell_v2_grounding_lighting_enabled else ("v0.199" if environment_shell_v2_structure_hierarchy_enabled else ("v0.198" if _bridge_riverbank_material_is_active() else "v0.197"))),
+		"checkpoint": "v0.204" if environment_shell_v2_structure_material_enabled else ("v0.203" if environment_shell_v2_environmental_cohesion_enabled else ("v0.200" if environment_shell_v2_grounding_lighting_enabled else ("v0.199" if environment_shell_v2_structure_hierarchy_enabled else ("v0.198" if _bridge_riverbank_material_is_active() else "v0.197")))),
 		"compositorMode": "proceduralMeshCompositor",
 		"structureHierarchyEnabled": environment_shell_v2_structure_hierarchy_enabled,
 		"groundingLightingEnabled": environment_shell_v2_grounding_lighting_enabled,
 		"environmentalCohesionEnabled": environment_shell_v2_environmental_cohesion_enabled,
+		"structureMaterialEnabled": environment_shell_v2_structure_material_enabled,
 		"visualNodeCategories": ["terrainBase", "terrainEdges", "roads", "river", "banks", "bridge", "structures", "sites", "unitContact", "overlays"],
 		"terrainBaseSurfaceCount": 1,
 		"roadRibbonCount": 7,
@@ -6839,10 +7267,12 @@ func _create_shell_v2_mesh_compositor_terrain() -> bool:
 		"scopedTerrainMaterialSurfaceCount": ground_material_applied_surface_names.size(),
 		"scopedRoadMaterialSurfaceCount": road_material_applied_surface_names.size(),
 		"scopedBridgeRiverbankMaterialSurfaceCount": bridge_riverbank_material_applied_surface_names.size(),
+		"scopedStructureFinishMaterialSurfaceCount": structure_finish_material_applied_surface_names.size(),
 		"materialBindTargets": {
 			"ground": ground_material_applied_surface_names.duplicate(),
 			"road": road_material_applied_surface_names.duplicate(),
-			"wetGranite": bridge_riverbank_material_applied_surface_names.duplicate()
+			"wetGranite": bridge_riverbank_material_applied_surface_names.duplicate(),
+			"structureFinish": structure_finish_material_applied_surface_names.duplicate()
 		},
 		"uvScales": {
 			"ground": ground_material_requested_uv_scale,
@@ -6850,7 +7280,8 @@ func _create_shell_v2_mesh_compositor_terrain() -> bool:
 			"river": 0.42,
 			"bank": bridge_riverbank_material_requested_uv_scale if _bridge_riverbank_material_is_active() else 0.52,
 			"bridge": bridge_riverbank_material_requested_uv_scale if _bridge_riverbank_material_is_active() else 0.74,
-			"wetGranite": bridge_riverbank_material_requested_uv_scale
+			"wetGranite": bridge_riverbank_material_requested_uv_scale,
+			"structureFinish": structure_finish_material_requested_uv_scale
 		},
 		"proceduralRoadConnectorTargets": [
 			"v0196_mesh_main_road_bridge_feed_surface",
@@ -8123,8 +8554,12 @@ func _rebuild_visuals() -> void:
 	worker_guidance_label = null
 	shell_v2_structure_hierarchy_visual_nodes = []
 	shell_v2_grounding_lighting_visual_nodes = []
+	shell_v2_structure_material_visual_nodes = []
 	barracks_material_applied_surface_count = 0
 	_refresh_barracks_material_counters()
+	structure_finish_material_applied_surface_count = 0
+	structure_finish_material_applied_surface_names = []
+	_refresh_structure_finish_material_counters()
 	for structure in runtime.structures:
 		_add_structure(structure)
 	for site in runtime.sites:
@@ -8475,7 +8910,14 @@ func _record_shell_v2_structure_hierarchy_node(name: String) -> void:
 		shell_v2_structure_hierarchy_visual_nodes.append(name)
 
 func _add_shell_v2_structure_hierarchy_box(name: String, position: Vector3, scale: Vector3, color: Color, transparent: bool = false, emissive: bool = false, use_barracks_material: bool = false) -> void:
-	if use_barracks_material:
+	if _structure_finish_material_surface_allowed(name):
+		_add_presentation_shell_v2_visual_box(name, position, scale, color, "structures", transparent, emissive)
+		if _structure_finish_material_is_active():
+			var mesh_instance := visual_root.get_node_or_null(name) as MeshInstance3D
+			if mesh_instance != null:
+				mesh_instance.material_override = _structure_finish_material()
+				_record_structure_finish_material_surface(name)
+	elif use_barracks_material:
 		_add_barracks_material_box(name, position, scale, color, transparent)
 		_count_presentation_shell_v2_surface("structures")
 	else:

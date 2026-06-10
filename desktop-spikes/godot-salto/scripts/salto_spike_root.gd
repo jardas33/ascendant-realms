@@ -87,6 +87,13 @@ const SCRIPT_ARG_PREFIXES := [
 	"--bridge-riverbank-material-expected-sha256=",
 	"--bridge-riverbank-material-fallback-mode=",
 	"--bridge-riverbank-material-uv-scale=",
+	"--salto-shell-v2-structure-material",
+	"--structure-finish-material-opt-in",
+	"--structure-finish-material-source=",
+	"--structure-finish-material-metadata=",
+	"--structure-finish-material-expected-sha256=",
+	"--structure-finish-material-fallback-mode=",
+	"--structure-finish-material-uv-scale=",
 	"--real-input-smoke",
 	"--real-input-validate",
 	"--site-semantics-smoke",
@@ -983,6 +990,8 @@ func _configure_worker_art_for_active_scene() -> void:
 		active_scene.configure_road_material_experiment(_road_material_options_from_args())
 	if active_scene.has_method("configure_bridge_riverbank_material_experiment"):
 		active_scene.configure_bridge_riverbank_material_experiment(_bridge_riverbank_material_options_from_args())
+	if active_scene.has_method("configure_structure_finish_material_experiment"):
+		active_scene.configure_structure_finish_material_experiment(_structure_finish_material_options_from_args())
 	if active_scene.has_method("configure_environment_geometry_convergence"):
 		active_scene.configure_environment_geometry_convergence(_script_args().has("--salto-environment-geometry-convergence"))
 	if active_scene.has_method("configure_environment_shell_live_qa"):
@@ -1001,13 +1010,17 @@ func _configure_worker_art_for_active_scene() -> void:
 		active_scene.configure_environment_shell_v2_grounding_lighting(_script_args().has("--salto-shell-v2-grounding-lighting"))
 	if active_scene.has_method("configure_environment_shell_v2_environmental_cohesion"):
 		active_scene.configure_environment_shell_v2_environmental_cohesion(_script_args().has("--salto-shell-v2-environmental-cohesion"))
+	if active_scene.has_method("configure_environment_shell_v2_structure_material"):
+		active_scene.configure_environment_shell_v2_structure_material(_script_args().has("--salto-shell-v2-structure-material"))
 
 func _apply_review_framing_for_active_scene() -> void:
 	if not _script_args().has("--salto-three-slot-review-framing") and not _script_args().has("--salto-four-slot-review-framing") and not _script_args().has("--salto-five-slot-review-framing"):
 		return
 	if active_mode != MODE_25D or active_scene == null or not is_instance_valid(active_scene):
 		return
-	if _script_args().has("--salto-shell-v2-environmental-cohesion") and active_scene.has_method("apply_environment_shell_v2_environmental_cohesion_framing"):
+	if _script_args().has("--salto-shell-v2-structure-material") and active_scene.has_method("apply_environment_shell_v2_structure_material_framing"):
+		active_scene.apply_environment_shell_v2_structure_material_framing()
+	elif _script_args().has("--salto-shell-v2-environmental-cohesion") and active_scene.has_method("apply_environment_shell_v2_environmental_cohesion_framing"):
 		active_scene.apply_environment_shell_v2_environmental_cohesion_framing()
 	elif _script_args().has("--salto-shell-v2-grounding-lighting") and active_scene.has_method("apply_environment_shell_v2_grounding_lighting_framing"):
 		active_scene.apply_environment_shell_v2_grounding_lighting_framing()
@@ -1217,6 +1230,30 @@ func _bridge_riverbank_material_options_from_args() -> Dictionary:
 		"uvScale": uv_scale,
 		"fallbackMode": fallback_mode,
 		"requestedBy": "GODOT_REVIEW_SALTO_SHELL_V2_MESH_WET_GRANITE_WINDOWS.bat or explicit --bridge-riverbank-material-opt-in"
+	}
+
+func _structure_finish_material_options_from_args() -> Dictionary:
+	var fallback_mode := _arg_value("--structure-finish-material-fallback-mode=", "none")
+	var source_path := _arg_value("--structure-finish-material-source=", "")
+	var metadata_path := _arg_value("--structure-finish-material-metadata=", "")
+	if source_path == "":
+		source_path = ProjectSettings.globalize_path("res://../../artifacts/desktop-spikes/godot-salto/v0202/local-structure-finish-material-slot/barrosan_structure_finish_material_v0202_1024.png")
+	if metadata_path == "":
+		metadata_path = ProjectSettings.globalize_path("res://../../artifacts/desktop-spikes/godot-salto/v0202/local-structure-finish-material-slot/barrosan_structure_finish_material_v0202_1024.metadata.json")
+	if fallback_mode == "missing" and not _has_arg_prefix("--structure-finish-material-source="):
+		source_path = ProjectSettings.globalize_path("res://../../artifacts/desktop-spikes/godot-salto/v0204/missing-structure-finish-source/barrosan_structure_finish_material_v0202_1024.png")
+	var uv_text := _arg_value("--structure-finish-material-uv-scale=", "0.70")
+	var uv_scale := 0.70
+	if uv_text.is_valid_float():
+		uv_scale = float(uv_text)
+	return {
+		"enabled": _script_args().has("--structure-finish-material-opt-in"),
+		"sourcePath": source_path.replace("\\", "/"),
+		"metadataPath": metadata_path.replace("\\", "/"),
+		"expectedSha256": _arg_value("--structure-finish-material-expected-sha256=", "94d4975f9e6f13453103439135da930b74d1d66b56d2b10e43219de408f508ef").to_lower(),
+		"uvScale": uv_scale,
+		"fallbackMode": fallback_mode,
+		"requestedBy": "GODOT_REVIEW_SALTO_SHELL_V2_STRUCTURE_MATERIAL_WINDOWS.bat or explicit --structure-finish-material-opt-in"
 	}
 
 func _arg_value(prefix: String, default_value: String = "") -> String:
@@ -4811,6 +4848,10 @@ func _apply_player_slice_action(action: String) -> Dictionary:
 
 func _player_capture_checkpoint() -> String:
 	var normalized_root := _artifact_root_from_args().replace("\\", "/")
+	if normalized_root.contains("/v0204"):
+		return "v0.204"
+	if normalized_root.contains("/v0203"):
+		return "v0.203"
 	if normalized_root.contains("/v0200"):
 		return "v0.200"
 	if normalized_root.contains("/v0199"):
@@ -4874,9 +4915,32 @@ func _player_capture_checkpoint() -> String:
 	return "v0.124"
 
 func _is_bounded_microloop_checkpoint() -> bool:
-	return ["v0.129", "v0.130", "v0.160", "v0.162", "v0.164", "v0.166", "v0.168", "v0.169", "v0.170", "v0.173", "v0.174", "v0.177", "v0.178", "v0.179", "v0.181", "v0.184", "v0.185", "v0.186", "v0.187", "v0.193", "v0.194", "v0.195", "v0.196", "v0.197", "v0.198", "v0.199", "v0.200"].has(_player_capture_checkpoint())
+	return ["v0.129", "v0.130", "v0.160", "v0.162", "v0.164", "v0.166", "v0.168", "v0.169", "v0.170", "v0.173", "v0.174", "v0.177", "v0.178", "v0.179", "v0.181", "v0.184", "v0.185", "v0.186", "v0.187", "v0.193", "v0.194", "v0.195", "v0.196", "v0.197", "v0.198", "v0.199", "v0.200", "v0.203", "v0.204"].has(_player_capture_checkpoint())
 
 func _player_capture_steps() -> Array[Dictionary]:
+	if _player_capture_checkpoint() == "v0.204":
+		return [
+			{"id": "overview", "label": "Structure-finish material tactical overview", "action": "battle_default"},
+			{"id": "command_hall", "label": "Command Hall practical anchor", "action": "v0186_command_hall_close"},
+			{"id": "mine", "label": "West Stone Cut utility structure", "action": "v0186_mine_close"},
+			{"id": "barracks_restoring", "label": "Barracks restoring state", "action": "v0186_barracks_restoration_close"},
+			{"id": "barracks_restored", "label": "Barracks restored state", "action": "v0186_barracks_restored"},
+			{"id": "material_scale", "label": "Material scale and seam diagnostic", "action": "v0186_command_hall_normal"},
+			{"id": "unit_marker_occlusion", "label": "Unit and marker occlusion check", "action": "squad_selected"},
+			{"id": "results", "label": "Results path preserved", "action": "results"}
+		]
+	if _player_capture_checkpoint() == "v0.203":
+		return [
+			{"id": "overview", "label": "Environmental cohesion tactical overview", "action": "battle_default"},
+			{"id": "ground_roads", "label": "Ground and road hierarchy", "action": "quarry_objective"},
+			{"id": "river_bridge", "label": "River, banks and bridge", "action": "lume_stable"},
+			{"id": "structures", "label": "Structures grounded", "action": "worker_selected"},
+			{"id": "units", "label": "Units grounded", "action": "squad_selected"},
+			{"id": "combat", "label": "Combat readability", "action": "ashen_pressure_wave"},
+			{"id": "minimap", "label": "Minimap", "action": "minimap"},
+			{"id": "results", "label": "Results path preserved", "action": "results"},
+			{"id": "private_harness_preserved", "label": "Private harness preserved separately", "action": "private_harness"}
+		]
 	if _player_capture_checkpoint() == "v0.200":
 		return [
 			{"id": "overview", "label": "Grounding and lighting full tactical overview", "action": "battle_default"},
