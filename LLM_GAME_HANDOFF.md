@@ -1,8 +1,12 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-06-09 continued post-v0.195 Godot Shell-V2 Visual Hardening Review
+Last updated: 2026-06-10 continued post-v0.195 Godot Shell-V2 Contour Hardening Review
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
+
+## Current Continuation Note
+
+The latest work is a continued post-v0.195 Godot Shell-V2 Contour Hardening Review, not v0.196. It changes only the isolated opt-in Salto shell-v2 scoped-material recovery path: the six scoped ground-material bind targets now render as smaller local oval material zones, added terrain-contour/road-dust/riverbank-shelf ovals reduce hard construction geometry, and focused v0.195 road/bridge captures preserve the shell-v2 review pitch. It generates zero images, adds zero art slots, keeps the v0.189 wet-granite bridge-riverbank material unintegrated, preserves default and prior launchers, keeps the browser runtime untouched, keeps character-slot integrations frozen, and changes no gameplay/pathing/collisions/objectives/AI/saves/stable IDs.
 
 ## Project Identity
 

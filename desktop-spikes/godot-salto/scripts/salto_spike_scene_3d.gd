@@ -668,10 +668,13 @@ func apply_environment_presentation_shell_v2_framing() -> bool:
 	if not environment_presentation_shell_v2_enabled:
 		return false
 	_apply_camera_authoring_posture("v0193_presentation_shell_v2", Vector3(-0.64, 11.18, 7.62), 7.80)
+	_apply_presentation_shell_v2_review_pitch()
+	return true
+
+func _apply_presentation_shell_v2_review_pitch() -> void:
 	var camera := get_node_or_null("FixedOrthographicCamera") as Camera3D
 	if camera:
-		camera.rotation_degrees = Vector3(-53.0, 0.0, 0.0)
-	return true
+		camera.rotation_degrees = Vector3(-52.0, 0.0, 0.0)
 
 func _environment_foundation_status() -> Dictionary:
 	return {
@@ -3287,6 +3290,8 @@ func focus_layout_feature(feature: String) -> bool:
 		_:
 			return false
 	_apply_camera_authoring_posture(normalized, position, zoom)
+	if environment_presentation_shell_v2_enabled and normalized.begins_with("v0195_"):
+		_apply_presentation_shell_v2_review_pitch()
 	return true
 
 func focus_visual_subject(subject: String) -> bool:
@@ -5697,6 +5702,22 @@ func _add_presentation_shell_v2_cylinder(name: String, position: Vector3, radius
 	terrain_root.add_child(mesh_instance)
 	_count_presentation_shell_v2_surface(category)
 
+func _add_presentation_shell_v2_oval(name: String, position: Vector3, radius_x: float, radius_z: float, height: float, color: Color, category: String, transparent: bool = false, rotation_y_degrees: float = 0.0, emissive: bool = false) -> void:
+	var mesh_instance := MeshInstance3D.new()
+	mesh_instance.name = name
+	var mesh := CylinderMesh.new()
+	mesh.top_radius = 1.0
+	mesh.bottom_radius = 1.0
+	mesh.height = height
+	mesh.radial_segments = 48
+	mesh_instance.mesh = mesh
+	mesh_instance.position = position
+	mesh_instance.scale = Vector3(radius_x, 1.0, radius_z)
+	mesh_instance.rotation_degrees = Vector3(0.0, rotation_y_degrees, 0.0)
+	mesh_instance.material_override = _presentation_shell_v2_material(category, color, transparent, emissive, _lume_emission())
+	terrain_root.add_child(mesh_instance)
+	_count_presentation_shell_v2_surface(category)
+
 func _add_presentation_shell_v2_ground_surface(name: String, position: Vector3, scale: Vector3, fallback_color: Color, transparent: bool = false) -> void:
 	if not _ground_material_is_active():
 		_add_presentation_shell_v2_box(name, position, scale, fallback_color, "ground", transparent)
@@ -5708,6 +5729,29 @@ func _add_presentation_shell_v2_ground_surface(name: String, position: Vector3, 
 	mesh.size = scale
 	mesh_instance.mesh = mesh
 	mesh_instance.position = position + Vector3(0.0, GROUND_MATERIAL_OVERLAY_LIFT, 0.0)
+	mesh_instance.material_override = _ground_material()
+	terrain_root.add_child(mesh_instance)
+	ground_material_applied_surface_count += 1
+	if not ground_material_applied_surface_names.has(name):
+		ground_material_applied_surface_names.append(name)
+	_refresh_ground_material_counters()
+
+func _add_presentation_shell_v2_ground_oval(name: String, position: Vector3, radius_x: float, radius_z: float, height: float, fallback_color: Color, transparent: bool = false, rotation_y_degrees: float = 0.0) -> void:
+	if not _ground_material_is_active():
+		_add_presentation_shell_v2_oval(name, position, radius_x, radius_z, height, fallback_color, "ground", transparent, rotation_y_degrees)
+		return
+	_add_presentation_shell_v2_oval("%s_value_underlay" % name, position, radius_x, radius_z, height, fallback_color, "ground", transparent, rotation_y_degrees)
+	var mesh_instance := MeshInstance3D.new()
+	mesh_instance.name = name
+	var mesh := CylinderMesh.new()
+	mesh.top_radius = 1.0
+	mesh.bottom_radius = 1.0
+	mesh.height = height
+	mesh.radial_segments = 64
+	mesh_instance.mesh = mesh
+	mesh_instance.position = position + Vector3(0.0, GROUND_MATERIAL_OVERLAY_LIFT, 0.0)
+	mesh_instance.scale = Vector3(radius_x, 1.0, radius_z)
+	mesh_instance.rotation_degrees = Vector3(0.0, rotation_y_degrees, 0.0)
 	mesh_instance.material_override = _ground_material()
 	terrain_root.add_child(mesh_instance)
 	ground_material_applied_surface_count += 1
@@ -5772,13 +5816,26 @@ func _create_presentation_shell_v2_terrain() -> bool:
 	var turf_highlight := Color(0.40, 0.49, 0.30, 0.28)
 	var scrub_color := Color(0.13, 0.24, 0.12, 0.52)
 	var stone_lift := Color(0.45, 0.44, 0.36, 0.66)
+	var terrain_contour := Color(0.18, 0.24, 0.16, 0.34)
+	var terrain_lift := Color(0.38, 0.47, 0.28, 0.24)
+	var bank_shelf := Color(0.20, 0.30, 0.22, 0.46)
+	var road_dust := Color(0.49, 0.43, 0.29, 0.32)
 	_add_presentation_shell_v2_box("v0194_contiguous_foothold_base", Vector3(-0.98, 0.110, 0.52), Vector3(11.64, 0.038, 6.76), ground_color.darkened(0.14), "ground")
-	_add_presentation_shell_v2_ground_surface("v0195_west_contiguous_ground_material", Vector3(-4.10, 0.144, 0.42), Vector3(4.96, 0.032, 4.86), stage_color, false)
-	_add_presentation_shell_v2_ground_surface("v0195_central_bridge_contiguous_ground_material", Vector3(0.70, 0.140, 0.50), Vector3(2.88, 0.032, 4.82), ground_color.lightened(0.08), false)
-	_add_presentation_shell_v2_ground_surface("v0195_east_route_ground_material_apron", Vector3(2.10, 0.144, 0.70), Vector3(2.28, 0.032, 1.28), hostile_color.lightened(0.04), false)
-	_add_presentation_shell_v2_ground_surface("v0195_command_yard_ground_material", Vector3(-5.20, 0.154, -0.44), Vector3(1.62, 0.024, 1.36), stage_color.lightened(0.06), true)
-	_add_presentation_shell_v2_ground_surface("v0195_mine_yard_ground_material", Vector3(-1.84, 0.154, 0.18), Vector3(1.36, 0.024, 1.10), ground_color.lightened(0.12), true)
-	_add_presentation_shell_v2_ground_surface("v0195_bridge_approach_ground_material", Vector3(0.68, 0.152, 1.42), Vector3(2.62, 0.024, 1.18), ground_color.lightened(0.10), true)
+	_add_presentation_shell_v2_ground_oval("v0195_west_contiguous_ground_material", Vector3(-3.88, 0.144, 0.50), 1.44, 0.92, 0.030, stage_color, false, -4.0)
+	_add_presentation_shell_v2_ground_oval("v0195_central_bridge_contiguous_ground_material", Vector3(0.66, 0.140, 0.42), 0.72, 1.18, 0.030, ground_color.lightened(0.08), false, 2.0)
+	_add_presentation_shell_v2_ground_oval("v0195_east_route_ground_material_apron", Vector3(2.44, 0.144, 0.72), 0.78, 0.38, 0.030, hostile_color.lightened(0.04), false, -9.0)
+	_add_presentation_shell_v2_ground_oval("v0195_command_yard_ground_material", Vector3(-5.20, 0.154, -0.44), 0.52, 0.38, 0.024, stage_color.lightened(0.06), true, 4.0)
+	_add_presentation_shell_v2_ground_oval("v0195_mine_yard_ground_material", Vector3(-1.84, 0.154, 0.18), 0.44, 0.32, 0.024, ground_color.lightened(0.12), true, -5.0)
+	_add_presentation_shell_v2_ground_oval("v0195_bridge_approach_ground_material", Vector3(0.68, 0.152, 1.36), 0.78, 0.34, 0.024, ground_color.lightened(0.10), true, 1.0)
+	_add_presentation_shell_v2_oval("post_v0195_v3_west_field_contour_mass", Vector3(-4.12, 0.184, 0.16), 2.16, 1.58, 0.016, terrain_contour, "overlays", true, -5.0)
+	_add_presentation_shell_v2_oval("post_v0195_v3_west_field_lift_patch", Vector3(-3.72, 0.196, 1.52), 1.08, 0.52, 0.012, terrain_lift, "overlays", true, 8.0)
+	_add_presentation_shell_v2_oval("post_v0195_v3_command_yard_soft_edge", Vector3(-5.18, 0.196, -0.46), 0.82, 0.58, 0.012, terrain_lift.darkened(0.08), "overlays", true, -6.0)
+	_add_presentation_shell_v2_oval("post_v0195_v3_mine_yard_soft_edge", Vector3(-1.88, 0.196, 0.20), 0.70, 0.48, 0.012, terrain_lift.lightened(0.04), "overlays", true, 5.0)
+	_add_presentation_shell_v2_oval("post_v0195_v3_central_bridge_terrain_shadow", Vector3(0.54, 0.182, 0.52), 1.18, 1.82, 0.014, terrain_contour.darkened(0.08), "overlays", true, 2.0)
+	_add_presentation_shell_v2_oval("post_v0195_v3_bridge_approach_lift", Vector3(0.64, 0.198, 1.42), 1.08, 0.46, 0.012, terrain_lift.darkened(0.04), "overlays", true, -2.0)
+	_add_presentation_shell_v2_oval("post_v0195_v3_east_route_lobe", Vector3(2.64, 0.184, 0.78), 1.18, 0.62, 0.014, terrain_contour.darkened(0.04), "overlays", true, -10.0)
+	_add_presentation_shell_v2_oval("post_v0195_v3_east_field_lift_patch", Vector3(3.10, 0.194, -0.94), 0.92, 0.50, 0.012, terrain_lift.darkened(0.16), "overlays", true, 12.0)
+	_add_presentation_shell_v2_oval("post_v0195_v3_south_field_contour_mass", Vector3(-0.90, 0.182, 2.72), 2.02, 0.74, 0.014, terrain_contour.lightened(0.03), "overlays", true, 1.0)
 	_add_presentation_shell_v2_box("v0194_north_foothold_edge", Vector3(-0.92, 0.158, -3.04), Vector3(10.64, 0.040, 0.16), edge_color, "terrainEdges", true)
 	_add_presentation_shell_v2_box("v0194_west_terrace_edge", Vector3(-6.12, 0.162, 0.50), Vector3(0.20, 0.052, 5.86), edge_color.darkened(0.04), "terrainEdges", true)
 	_add_presentation_shell_v2_box("v0194_south_foothold_edge", Vector3(-0.82, 0.156, 3.98), Vector3(10.28, 0.040, 0.16), edge_color.lightened(0.04), "terrainEdges", true)
@@ -5824,6 +5881,10 @@ func _create_presentation_shell_v2_terrain() -> bool:
 	_add_presentation_shell_v2_road_surface("v0195_central_road_intersection_material_collar", Vector3(-1.62, 0.306, 0.70), Vector3(0.94, 0.030, 0.76), road_color.lightened(0.06), false)
 	_add_presentation_shell_v2_road_surface("v0195_bridge_west_road_ramp_material", Vector3(-0.20, 0.322, 0.88), Vector3(0.82, 0.038, 0.56), road_color.lightened(0.08), false)
 	_add_presentation_shell_v2_road_surface("v0195_bridge_east_road_ramp_material", Vector3(1.44, 0.322, 0.88), Vector3(0.84, 0.038, 0.56), road_color.lightened(0.05), false)
+	_add_presentation_shell_v2_oval("post_v0195_v3_west_intersection_dust_lobe", Vector3(-4.50, 0.330, 0.70), 0.58, 0.42, 0.010, road_dust.darkened(0.08), "overlays", true, -4.0)
+	_add_presentation_shell_v2_oval("post_v0195_v3_central_junction_dust_lobe", Vector3(-1.58, 0.334, 0.70), 0.64, 0.38, 0.010, road_dust, "overlays", true, 3.0)
+	_add_presentation_shell_v2_oval("post_v0195_v3_west_bridge_transition_dust", Vector3(-0.40, 0.346, 0.90), 0.52, 0.30, 0.010, road_dust.lightened(0.06), "overlays", true, 2.0)
+	_add_presentation_shell_v2_oval("post_v0195_v3_east_bridge_transition_dust", Vector3(1.72, 0.346, 0.86), 0.54, 0.30, 0.010, road_dust.lightened(0.02), "overlays", true, -4.0)
 	_add_presentation_shell_v2_route_segment("post_v0195_main_road_visible_skin_friendly", Vector3(-5.48, 0, 0.72), Vector3(-1.58, 0, 0.72), 0.30, 0.334, road_skin, "overlays", 0.010, false)
 	_add_presentation_shell_v2_route_segment("post_v0195_main_road_visible_skin_bridge_feed", Vector3(-1.48, 0, 0.72), Vector3(-0.26, 0, 0.86), 0.26, 0.338, road_skin.lightened(0.04), "overlays", 0.010, false)
 	_add_presentation_shell_v2_route_segment("post_v0195_main_road_visible_skin_hostile", Vector3(1.60, 0, 0.84), Vector3(3.08, 0, 0.58), 0.22, 0.338, road_skin.darkened(0.04), "overlays", 0.010, false)
@@ -5868,6 +5929,12 @@ func _create_presentation_shell_v2_terrain() -> bool:
 		var lip_rotation := -3.0 + float(index % 3) * 3.0
 		_add_presentation_shell_v2_box("post_v0195_west_bank_broken_lip_%02d" % index, Vector3(0.08 + west_wobble, 0.236, segment_z), Vector3(0.080, 0.018, 0.92), water_lip, "banks", true, lip_rotation)
 		_add_presentation_shell_v2_box("post_v0195_east_bank_broken_lip_%02d" % index, Vector3(1.28 + east_wobble, 0.236, segment_z + 0.24), Vector3(0.080, 0.018, 0.86), water_lip.darkened(0.06), "banks", true, -lip_rotation)
+	_add_presentation_shell_v2_oval("post_v0195_v3_west_bank_shelf_north", Vector3(0.16, 0.232, -2.12), 0.22, 0.78, 0.014, bank_shelf.darkened(0.04), "banks", true, -3.0)
+	_add_presentation_shell_v2_oval("post_v0195_v3_west_bank_shelf_bridge", Vector3(0.12, 0.234, 0.50), 0.28, 0.58, 0.014, bank_shelf, "banks", true, 4.0)
+	_add_presentation_shell_v2_oval("post_v0195_v3_west_bank_shelf_south", Vector3(0.20, 0.232, 2.62), 0.22, 0.72, 0.014, bank_shelf.lightened(0.04), "banks", true, -2.0)
+	_add_presentation_shell_v2_oval("post_v0195_v3_east_bank_shelf_north", Vector3(1.18, 0.232, -1.64), 0.22, 0.72, 0.014, bank_shelf.darkened(0.02), "banks", true, 3.0)
+	_add_presentation_shell_v2_oval("post_v0195_v3_east_bank_shelf_bridge", Vector3(1.24, 0.234, 1.04), 0.28, 0.62, 0.014, bank_shelf.lightened(0.03), "banks", true, -5.0)
+	_add_presentation_shell_v2_oval("post_v0195_v3_east_bank_shelf_south", Vector3(1.14, 0.232, 2.96), 0.20, 0.66, 0.014, bank_shelf.darkened(0.06), "banks", true, 4.0)
 	for index in range(4):
 		var ripple_z := -2.40 + float(index) * 1.72
 		var ripple_x := 0.66 + sin(float(index) * 1.17) * 0.035
@@ -5912,9 +5979,9 @@ func _create_presentation_shell_v2_terrain() -> bool:
 		"floatingDiagonalRoadFragmentCount": 0,
 		"riverSegmentCount": 1,
 		"riverDetailNodeCount": 2,
-		"bankSegmentCount": 20,
+		"bankSegmentCount": 26,
 		"bridgeNodeCount": 22,
-		"transparencyLayerCount": 112,
+		"transparencyLayerCount": 131,
 		"scopedTerrainMaterialSurfaceCount": ground_material_applied_surface_names.size(),
 		"scopedRoadMaterialSurfaceCount": road_material_applied_surface_names.size(),
 		"giantTransparentDiagnosticPads": 0,
@@ -5934,6 +6001,10 @@ func _create_presentation_shell_v2_terrain() -> bool:
 		"terrainPropDetailAdded": true,
 		"structureSilhouetteDetailImproved": true,
 		"riverCrossingReadStrengthened": true,
+		"postV0195ThirdVisualHardeningActive": true,
+		"terrainContourOvalsAdded": true,
+		"roadGroundBlendImproved": true,
+		"riverBankShelfDetailAdded": true,
 		"materialBindTargets": {
 			"ground": ground_material_applied_surface_names.duplicate(),
 			"road": road_material_applied_surface_names.duplicate()

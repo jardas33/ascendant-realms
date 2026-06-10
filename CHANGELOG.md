@@ -1,5 +1,31 @@
 # Changelog
 
+# Continued Post-v0.195 Godot Shell-V2 Contour Hardening Review - 2026-06-10
+
+This continued ad hoc review pass keeps the work inside the existing isolated opt-in Salto shell-v2 scoped-material recovery presentation path. It generates zero images, adds zero art slots, integrates no v0.189 wet-granite bridge-riverbank material, preserves the default procedural launcher and all prior launchers, keeps the browser runtime untouched, keeps character-slot integration frozen, and changes no gameplay, pathing, collisions, objectives, AI, saves, stable IDs, or production manifests.
+
+Changed:
+
+- Added shell-v2-only oval presentation helpers for shaped terrain treatment.
+- Converted the six scoped ground-material bind targets from broad rectangular slabs into smaller local oval material zones.
+- Added restrained terrain-contour, road-dust, and riverbank-shelf detail around roads, bridge approaches, and the river corridor.
+- Preserved shell-v2 review pitch for focused v0.195 road-network, road-to-bridge, and bridge-close captures.
+
+Validation:
+
+- `PASS_V0195_SHELL_V2_SCOPED_MATERIAL_CAPTURE_PACKET`.
+- `PASS_V0195_SHELL_V2_SCOPED_MATERIAL_VALIDATION`.
+- `PASS_V0195_SHELL_V2_SCOPED_MATERIAL_BENCHMARK`.
+- `PASS_V0195_SHELL_V2_SCOPED_MATERIAL_BOUNDARY_SCAN`.
+- `PASS_V0167_SALTO_EXPERIMENTAL_ARTIFACT_RETENTION`.
+- `PASS_V0195_SALTO_SHELL_V2_SCOPED_MATERIAL_RECOVERY_VALIDATION_READY`.
+- `npm run validate:content`.
+- `npm run validate:art-intake`.
+- `npm run validate:runtime-art-slots`.
+- `npx vitest run src/game/desktop-spike/GodotSaltoSpikeScaffold.test.ts`.
+- `npm run build`.
+- `git diff --check`.
+
 # Post-v0.195 Godot Shell-V2 Visual Hardening Review - 2026-06-09
 
 This continued ad hoc review pass responds to the Godot visual-quality concern without beginning v0.196. It changes only the isolated opt-in Salto shell-v2 scoped-material recovery presentation path. It generates zero images, adds zero art slots, keeps the v0.189 wet-granite bridge-riverbank material unintegrated, preserves the default procedural launcher and all prior launchers, keeps the browser runtime untouched, keeps character-slot integration frozen, and changes no gameplay, pathing, collisions, objectives, AI, saves, stable IDs, or production manifests.

@@ -2,7 +2,7 @@
 
 Status: `PASS_POST_V0195_GODOT_SHELL_V2_CONTINUED_VISUAL_HARDENING_REVIEW`
 
-Date: 2026-06-09
+Date: 2026-06-10
 
 Scope: continued ad hoc visual-only review and hardening after the v0.195 human-quality concern. This is not v0.196. It keeps the work inside the existing isolated Godot Salto shell-v2 scoped-material recovery path and changes no gameplay, pathing, collisions, objectives, AI, saves, stable IDs, browser runtime, production manifests, default launcher, prior launcher, imported art slot, or generated image.
 
@@ -17,6 +17,9 @@ Scope: continued ad hoc visual-only review and hardening after the v0.195 human-
 - Continued pass: added bridge cutwater shadows, abutment caps, bank foot stones, and eddy reads around the crossing.
 - Continued pass: flattened the shell-v2-only duplicate full-height structure base into a low foundation, letting the richer shell-v2 structure masses define the silhouette.
 - Continued pass: added command hall, enemy stronghold, ford toll, and generic site shell-v2 silhouette details without changing legacy/default structure rendering.
+- Continued 2026-06-10 pass: changed the six scoped ground-material bind targets from broad rectangular surfaces into smaller shell-v2-only oval material zones so the selected ground texture remains visible without reading as giant diagnostic pads.
+- Continued 2026-06-10 pass: added shell-v2-only terrain contour, road-dust, and riverbank-shelf ovals around the road, bridge approaches, and river corridor to reduce hard construction geometry while preserving route readability.
+- Continued 2026-06-10 pass: preserved the shell-v2 review pitch for focused v0.195 road-network, road-to-bridge, and bridge-close captures so close review shots no longer revert to the flatter default posture.
 
 ## Boundary
 
@@ -54,4 +57,4 @@ Recommended screenshots for review:
 
 ## Human Review Note
 
-The result is still intentionally procedural and conservative, but it now reads less like stacked translucent rectangles and blunt placeholder blocks: roads connect, the bridge has stronger local grounding, the river/banks are less ruler-flat, and structure silhouettes no longer fight a duplicate full-height base primitive in shell v2. Further work should remain explicitly bounded and should not start v0.196 without a clean, synced, pushed, remote-green checkpoint and a new prompt.
+The result is still intentionally procedural and conservative, but it now reads less like stacked translucent rectangles and blunt placeholder blocks: roads connect, the bridge has stronger local grounding, the river/banks are less ruler-flat, the selected terrain material is contained to local shaped zones, and structure silhouettes no longer fight a duplicate full-height base primitive in shell v2. Further work should remain explicitly bounded and should not start v0.196 without a clean, synced, pushed, remote-green checkpoint and a new prompt.
