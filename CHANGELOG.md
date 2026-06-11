@@ -1,5 +1,36 @@
 # Changelog
 
+# v0.214 Salto Fantasy RTS UI Freeze Decision And Next-Phase Scorecard - 2026-06-11
+
+This checkpoint reviews v0.207 through v0.213 Salto UI evidence, freezes the current isolated Godot shell-v2 opt-in HUD direction, and selects exactly one next milestone: `v0.215 Salto production-art battlefield content direction packet`.
+
+Changed:
+
+- Added the v0.214 UI freeze decision and candid reference comparison.
+- Added the v0.214 next-phase scorecard.
+- Added the v0.214 implementation report.
+- Added the v0.215 recommended next-phase packet.
+- Updated canonical handoff, roadmap, changelog and development checkpoint docs.
+
+Boundary:
+
+- Generated images: zero.
+- Downloaded assets: zero.
+- New runtime art slots: zero.
+- Browser runtime changes: none.
+- Default launcher changes: none.
+- Gameplay, pathing, collision, objective, AI, economy, save, stable-ID and balance changes: none.
+
+Validation:
+
+- Artifact retention validation.
+- Safe-only cleanup dry run.
+- Runtime-art slot validation.
+- Content validation.
+- Art-intake validation.
+- Production build.
+- `git diff --check`.
+
 # Continued Post-v0.195 Godot Shell-V2 Value And Framing Hardening Review - 2026-06-10
 
 This continued ad hoc review pass stays inside the existing isolated opt-in Salto shell-v2 scoped-material recovery presentation path. It generates zero images, adds zero art slots, integrates no v0.189 wet-granite bridge-riverbank material, preserves the default procedural launcher and all prior launchers, keeps the browser runtime untouched, keeps character-slot integration frozen, and changes no gameplay, pathing, collisions, objectives, AI, saves, stable IDs, or production manifests.

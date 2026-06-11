@@ -1,12 +1,12 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-06-10 v0.202 Barrosan structure-finish material private comparator intake
+Last updated: 2026-06-11 v0.214 Salto fantasy RTS UI freeze decision
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
 ## Current Continuation Note
 
-The latest work is v0.202 Barrosan structure-finish material private-comparator intake. It generates exactly one original local structure-finish material source, selects the 1024 derivative for private evidence, adds a tracked diagnostic fallback and isolated private comparator, preserves default and prior launchers, keeps browser runtime untouched, keeps character-slot integrations frozen, integrates nothing into the normal player slice, and stops before v0.203.
+The latest work is v0.214 Salto fantasy RTS UI freeze decision and next-phase scorecard. It reviews v0.207 through v0.213 Godot Salto UI evidence, declares `PASS_V0214_UI_DIRECTION_FREEZE`, chooses exactly one next milestone (`v0.215 Salto production-art battlefield content direction packet`), updates canonical docs, generates zero images, adds zero runtime art slots, keeps browser runtime untouched, keeps the default launcher procedural, preserves all prior launchers, preserves gameplay/pathing/collisions/objectives/AI/economy/saves/stable IDs/balance, and stops for human review.
 
 ## Project Identity
 

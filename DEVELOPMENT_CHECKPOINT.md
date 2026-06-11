@@ -1,6 +1,31 @@
 # Development Checkpoint
 
-Updated: 2026-06-10 continued post-v0.195 Godot Shell-V2 Value And Framing Hardening Review
+Updated: 2026-06-11 v0.214 Salto fantasy RTS UI freeze decision
+
+## v0.214 Salto Fantasy RTS UI Freeze Decision And Next-Phase Scorecard - 2026-06-11
+
+Scope: documentation-only freeze decision for the isolated Godot Salto shell-v2 opt-in HUD direction. This checkpoint reviews v0.207 through v0.213 evidence, declares `PASS_V0214_UI_DIRECTION_FREEZE`, selects exactly one next milestone, generates zero images, adds zero runtime art slots, changes no launcher, keeps browser runtime untouched, keeps the default launcher procedural, preserves all prior launchers, and leaves gameplay, pathing, collisions, objectives, AI, economy, saves, stable IDs, balance, selected prior art, metadata, fallbacks and required evidence unchanged.
+
+Included work:
+
+- Added `docs/V0214_UI_FREEZE_DECISION.md`.
+- Added `docs/V0214_NEXT_PHASE_SCORECARD.md`.
+- Added `docs/V0214_IMPLEMENTATION_REPORT.md`.
+- Added `docs/art-prompts/V0215_01_RECOMMENDED_NEXT_PHASE.md`.
+- Updated canonical continuation docs.
+- Chose `v0.215 Salto production-art battlefield content direction packet` as the single next milestone.
+
+Verification targets:
+
+```text
+PASS: node scripts/validateSaltoExperimentalArtifactRetention.mjs --output-root=artifacts/desktop-spikes/godot-salto/v0214/artifact-retention.
+PASS: node scripts/cleanupSaltoExperimentalArtifacts.mjs --output-root=artifacts/desktop-spikes/godot-salto/v0214/cleanup-dry-run.
+PASS: npm run validate:runtime-art-slots.
+PASS: npm run validate:content.
+PASS: npm run validate:art-intake.
+PASS: npm run build.
+PASS: git diff --check.
+```
 
 ## Continued Post-v0.195 Godot Shell-V2 Value And Framing Hardening Review - 2026-06-10
 

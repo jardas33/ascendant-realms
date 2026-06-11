@@ -11,6 +11,17 @@ Every phase should protect these long-term pillars:
 
 ## Current Recommended Next Phase
 
+The current checkpoint is **v0.214 Salto Fantasy RTS UI Freeze Decision And Next-Phase Scorecard** on 2026-06-11. It freezes the current isolated Godot Salto shell-v2 opt-in HUD direction after reviewing v0.207 through v0.213 evidence. The freeze is a bounded UI-direction decision, not a production-art parity claim. The reference target remains much richer in battlefield art, structure finish, unit density, lighting and environmental storytelling, but the current HUD shell now reads as a coherent original fantasy RTS interface rather than debug boxes.
+
+The exactly selected next milestone is **v0.215 Salto Production-Art Battlefield Content Direction Packet**. Do not start v0.215 without a new explicit prompt from a clean, synced, pushed and CI-green v0.214 state. The next work should define a bounded production-art/content contract for the Salto battlefield before any new image generation, imported art, runtime slot, launcher, browser wiring or default enablement.
+
+New v0.214 docs:
+
+- `docs/V0214_UI_FREEZE_DECISION.md`
+- `docs/V0214_NEXT_PHASE_SCORECARD.md`
+- `docs/V0214_IMPLEMENTATION_REPORT.md`
+- `docs/art-prompts/V0215_01_RECOMMENDED_NEXT_PHASE.md`
+
 The current checkpoint now includes the **continued post-v0.195 Godot Shell-V2 Value And Framing Hardening Review** on 2026-06-10. This ad hoc pass responds to the continued Godot visual-quality concern without beginning v0.196: it keeps the work inside the isolated opt-in shell-v2 scoped-material recovery path, rebalances shell-v2 terrain/road/river/bank/bridge values, adds small terrain-value, road-middle, bridge-shoulder, bridge-landing, and river-glint cues, shrinks the coherent base slightly, and recenters only shell-v2 review/focus camera presets within safe zoom bounds. It generates zero images, adds zero art slots, keeps the v0.189 wet-granite material comparator-only, preserves the default procedural launcher and all prior launchers, keeps browser runtime untouched, keeps character-slot integrations frozen, and changes no gameplay/pathing/collisions/objectives/AI/saves/stable IDs.
 
 The recommended next step is human review of the refreshed post-v0.195 Godot capture screenshots, especially `03_tactical_overview.png`, `10_road_to_bridge_transition.png`, and `12_bridge_close_view.png`. Do not execute v0.196 or the older wet-granite bridge-riverbank integration recommendation without a new explicit prompt from a clean, synced, pushed, remote-green state.
