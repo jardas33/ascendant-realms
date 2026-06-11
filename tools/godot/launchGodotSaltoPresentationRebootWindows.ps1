@@ -15,8 +15,23 @@ $V0175GroundSourcePath = Join-Path $RepoRoot "artifacts\desktop-spikes\godot-sal
 $V0175GroundMetadataPath = Join-Path $RepoRoot "artifacts\desktop-spikes\godot-salto\v0175\local-ground-material-slot\barrosan_foothold_ground_material_v0175_1024.metadata.json"
 $V0175GroundExpectedSha256 = "818b7743fbf192fe95dd95a0fbadb59ea92b1cb36c420dac5526c0f4d1af18a8"
 $MissingGroundSourcePath = Join-Path $RepoRoot "artifacts\desktop-spikes\godot-salto\v0216\missing-source\barrosan_foothold_terrain_material_v0216_1024.png"
+$V0217MaterialRoot = Join-Path $RepoRoot "artifacts\desktop-spikes\godot-salto\v0217\local-road-riverbank-water-material-slot"
+$V0217MissingRoot = Join-Path $RepoRoot "artifacts\desktop-spikes\godot-salto\v0217\missing-road-riverbank-water-source"
+$V0217RoadSourcePath = Join-Path $V0217MaterialRoot "barrosan_road_riverbank_water_material_v0217_road_1024.png"
+$V0217RoadMetadataPath = Join-Path $V0217MaterialRoot "barrosan_road_riverbank_water_material_v0217_road_1024.metadata.json"
+$V0217RoadExpectedSha256 = "14de8b84468d66a582f0cf1e5fb9ee82b59ca1d37da7589c21b2673ca5417a0b"
+$V0217RiverbankSourcePath = Join-Path $V0217MaterialRoot "barrosan_road_riverbank_water_material_v0217_riverbank_1024.png"
+$V0217RiverbankMetadataPath = Join-Path $V0217MaterialRoot "barrosan_road_riverbank_water_material_v0217_riverbank_1024.metadata.json"
+$V0217RiverbankExpectedSha256 = "68b18047ae1dc501d51b57caf2cb118aa7f8b6167d887c83e0f9d5b05d5611ee"
+$V0217WaterSourcePath = Join-Path $V0217MaterialRoot "barrosan_road_riverbank_water_material_v0217_water_1024.png"
+$V0217WaterMetadataPath = Join-Path $V0217MaterialRoot "barrosan_road_riverbank_water_material_v0217_water_1024.metadata.json"
+$V0217WaterExpectedSha256 = "461e7368d4084d474ce8471ea993633dfc5651a6cfda346ab3c184cf899cfbb9"
+$V0217WetEdgeSourcePath = Join-Path $V0217MaterialRoot "barrosan_road_riverbank_water_material_v0217_wet_edge_1024.png"
+$V0217WetEdgeMetadataPath = Join-Path $V0217MaterialRoot "barrosan_road_riverbank_water_material_v0217_wet_edge_1024.metadata.json"
+$V0217WetEdgeExpectedSha256 = "c015bc67f5e9368532f0d449034f874d78da4b4e0156fbd60ec40ea6eadcc4da"
 
 $GroundMode = "v0216-selected"
+$RoadRiverbankWaterMode = "v0217-selected"
 $ForwardArgs = @()
 foreach ($arg in $RemainingArgs) {
   if ($arg -eq "--salto-presentation-reboot-use-v0175-ground") {
@@ -25,6 +40,10 @@ foreach ($arg in $RemainingArgs) {
     $GroundMode = "v0216-missing-fallback"
   } elseif ($arg -eq "--salto-presentation-reboot-ground-hash-mismatch") {
     $GroundMode = "v0216-hash-mismatch"
+  } elseif ($arg -eq "--salto-presentation-reboot-road-riverbank-water-missing-fallback") {
+    $RoadRiverbankWaterMode = "v0217-missing-fallback"
+  } elseif ($arg -eq "--salto-presentation-reboot-road-riverbank-water-hash-mismatch") {
+    $RoadRiverbankWaterMode = "v0217-hash-mismatch"
   } else {
     $ForwardArgs += $arg
   }
@@ -45,10 +64,42 @@ if ($GroundMode -eq "v0175-previous") {
   $GroundExpectedSha256 = "0000000000000000000000000000000000000000000000000000000000000000"
 }
 
+$RoadSourcePath = $V0217RoadSourcePath
+$RoadMetadataPath = $V0217RoadMetadataPath
+$RoadExpectedSha256 = $V0217RoadExpectedSha256
+$RiverbankSourcePath = $V0217RiverbankSourcePath
+$RiverbankMetadataPath = $V0217RiverbankMetadataPath
+$RiverbankExpectedSha256 = $V0217RiverbankExpectedSha256
+$WaterSourcePath = $V0217WaterSourcePath
+$WaterMetadataPath = $V0217WaterMetadataPath
+$WaterExpectedSha256 = $V0217WaterExpectedSha256
+$WetEdgeSourcePath = $V0217WetEdgeSourcePath
+$WetEdgeMetadataPath = $V0217WetEdgeMetadataPath
+$WetEdgeExpectedSha256 = $V0217WetEdgeExpectedSha256
+$RoadRiverbankWaterFallbackMode = "none"
+if ($RoadRiverbankWaterMode -eq "v0217-missing-fallback") {
+  $RoadRiverbankWaterFallbackMode = "missing"
+  $RoadSourcePath = Join-Path $V0217MissingRoot "barrosan_road_riverbank_water_material_v0217_road_1024.png"
+  $RiverbankSourcePath = Join-Path $V0217MissingRoot "barrosan_road_riverbank_water_material_v0217_riverbank_1024.png"
+  $WaterSourcePath = Join-Path $V0217MissingRoot "barrosan_road_riverbank_water_material_v0217_water_1024.png"
+  $WetEdgeSourcePath = Join-Path $V0217MissingRoot "barrosan_road_riverbank_water_material_v0217_wet_edge_1024.png"
+} elseif ($RoadRiverbankWaterMode -eq "v0217-hash-mismatch") {
+  $RoadRiverbankWaterFallbackMode = "hash-mismatch"
+  $RoadExpectedSha256 = "0000000000000000000000000000000000000000000000000000000000000000"
+}
+
 if ($GroundMode -ne "v0216-missing-fallback") {
   foreach ($path in @($GroundSourcePath, $GroundMetadataPath)) {
     if (-not (Test-Path -LiteralPath $path)) {
       Write-Warning "Ground material path is unavailable; Godot runtime should fail closed to procedural fallback: $path"
+    }
+  }
+}
+
+if ($RoadRiverbankWaterMode -ne "v0217-missing-fallback") {
+  foreach ($path in @($RoadSourcePath, $RoadMetadataPath, $RiverbankSourcePath, $RiverbankMetadataPath, $WaterSourcePath, $WaterMetadataPath, $WetEdgeSourcePath, $WetEdgeMetadataPath)) {
+    if (-not (Test-Path -LiteralPath $path)) {
+      Write-Warning "Road/riverbank/water material path is unavailable; Godot runtime should fail closed to procedural fallback: $path"
     }
   }
 }
@@ -64,16 +115,36 @@ $RebootArgs = @(
   "--ground-material-source=$($GroundSourcePath.Replace('\', '/'))",
   "--ground-material-metadata=$($GroundMetadataPath.Replace('\', '/'))",
   "--ground-material-expected-sha256=$GroundExpectedSha256",
-  "--ground-material-uv-scale=$GroundUvScale"
+  "--ground-material-uv-scale=$GroundUvScale",
+  "--road-riverbank-water-material-opt-in",
+  "--road-riverbank-water-material-fallback-mode=$RoadRiverbankWaterFallbackMode",
+  "--road-riverbank-water-road-source=$($RoadSourcePath.Replace('\', '/'))",
+  "--road-riverbank-water-road-metadata=$($RoadMetadataPath.Replace('\', '/'))",
+  "--road-riverbank-water-road-expected-sha256=$RoadExpectedSha256",
+  "--road-riverbank-water-road-uv-scale=0.70",
+  "--road-riverbank-water-riverbank-source=$($RiverbankSourcePath.Replace('\', '/'))",
+  "--road-riverbank-water-riverbank-metadata=$($RiverbankMetadataPath.Replace('\', '/'))",
+  "--road-riverbank-water-riverbank-expected-sha256=$RiverbankExpectedSha256",
+  "--road-riverbank-water-riverbank-uv-scale=0.64",
+  "--road-riverbank-water-water-source=$($WaterSourcePath.Replace('\', '/'))",
+  "--road-riverbank-water-water-metadata=$($WaterMetadataPath.Replace('\', '/'))",
+  "--road-riverbank-water-water-expected-sha256=$WaterExpectedSha256",
+  "--road-riverbank-water-water-uv-scale=0.58",
+  "--road-riverbank-water-wet-edge-source=$($WetEdgeSourcePath.Replace('\', '/'))",
+  "--road-riverbank-water-wet-edge-metadata=$($WetEdgeMetadataPath.Replace('\', '/'))",
+  "--road-riverbank-water-wet-edge-expected-sha256=$WetEdgeExpectedSha256",
+  "--road-riverbank-water-wet-edge-uv-scale=0.60"
 )
 if ($ForwardArgs) {
   $RebootArgs += $ForwardArgs
 }
 
-Write-Output "Launching v0.216 Salto presentation reboot experiment."
-Write-Output "Scope: isolated opt-in shell-v2 review path; compact contextual HUD plus selected terrain material; no new production slot, no browser wiring."
+Write-Output "Launching v0.217 Salto presentation reboot experiment."
+Write-Output "Scope: isolated opt-in shell-v2 review path; compact contextual HUD plus selected terrain, road, riverbank and water material hierarchy; no new production slot, no browser wiring."
 Write-Output "Ground material mode: $GroundMode"
 Write-Output "Selected ground material SHA-256: $GroundExpectedSha256"
+Write-Output "Road/riverbank/water material mode: $RoadRiverbankWaterMode"
+Write-Output "Selected v0.217 material SHA-256 values: road=$RoadExpectedSha256 riverbank=$RiverbankExpectedSha256 water=$WaterExpectedSha256 wet-edge=$WetEdgeExpectedSha256"
 Write-Output "Default launcher, prior UI launchers, procedural fallback and v0.175 ground material comparator remain preserved."
 
 & (Join-Path $PSScriptRoot "launchGodotSaltoShellV2GroundingPropsWindows.ps1") -Wait:$Wait @RebootArgs

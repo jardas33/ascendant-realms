@@ -110,6 +110,11 @@ const BRIDGE_RIVERBANK_MATERIAL_DEFAULT_UV_SCALE := 0.70
 const BRIDGE_RIVERBANK_MATERIAL_TINT_R := 1.42
 const BRIDGE_RIVERBANK_MATERIAL_TINT_G := 1.38
 const BRIDGE_RIVERBANK_MATERIAL_TINT_B := 1.22
+const ROAD_RIVERBANK_WATER_MATERIAL_SLOT_ID := "barrosan_road_riverbank_water_material_v0217"
+const ROAD_RIVERBANK_WATER_MATERIAL_APPROACH := "ROAD_RIVERBANK_WATER_MATERIAL_ATLAS_LOCAL_1024"
+const ROAD_RIVERBANK_WATER_MATERIAL_EXPECTED_WIDTH := 1024
+const ROAD_RIVERBANK_WATER_MATERIAL_EXPECTED_HEIGHT := 1024
+const ROAD_RIVERBANK_WATER_MATERIAL_REGIONS := ["road", "riverbank", "water", "wet_edge"]
 const STRUCTURE_FINISH_MATERIAL_SLOT_ID := "barrosan_structure_finish_material_v0202"
 const STRUCTURE_FINISH_MATERIAL_APPROACH := "STRUCTURE_FINISH_MATERIAL_LOCAL_1024"
 const STRUCTURE_FINISH_MATERIAL_EXPECTED_SHA256 := "94d4975f9e6f13453103439135da930b74d1d66b56d2b10e43219de408f508ef"
@@ -434,6 +439,23 @@ var bridge_riverbank_material_material_create_count := 0
 var bridge_riverbank_material_material_reuse_count := 0
 var bridge_riverbank_material_applied_surface_count := 0
 var bridge_riverbank_material_applied_surface_names: Array[String] = []
+var road_riverbank_water_material_experiment_enabled := false
+var road_riverbank_water_material_sources: Dictionary = {}
+var road_riverbank_water_material_metadata_paths: Dictionary = {}
+var road_riverbank_water_material_expected_sha256: Dictionary = {}
+var road_riverbank_water_material_requested_uv_scales: Dictionary = {}
+var road_riverbank_water_material_fallback_mode := "none"
+var road_riverbank_water_material_textures: Dictionary = {}
+var road_riverbank_water_material_overrides: Dictionary = {}
+var road_riverbank_water_material_status: Dictionary = {}
+var road_riverbank_water_material_source_load_count := 0
+var road_riverbank_water_material_metadata_parse_count := 0
+var road_riverbank_water_material_image_decode_count := 0
+var road_riverbank_water_material_texture_create_count := 0
+var road_riverbank_water_material_material_create_count := 0
+var road_riverbank_water_material_material_reuse_count := 0
+var road_riverbank_water_material_applied_surface_count := 0
+var road_riverbank_water_material_applied_surface_names: Array[String] = []
 var structure_finish_material_experiment_enabled := false
 var structure_finish_material_source_path := ""
 var structure_finish_material_metadata_path := ""
@@ -461,6 +483,7 @@ func _ready() -> void:
 	_reset_ground_material_status(false, "opt-in flag absent")
 	_reset_road_material_status(false, "opt-in flag absent")
 	_reset_bridge_riverbank_material_status(false, "opt-in flag absent")
+	_reset_road_riverbank_water_material_status(false, "opt-in flag absent")
 	_reset_structure_finish_material_status(false, "opt-in flag absent")
 	_create_camera()
 	_create_light()
@@ -2961,6 +2984,282 @@ func _record_bridge_riverbank_material_surface(surface_name: String) -> void:
 	if not bridge_riverbank_material_applied_surface_names.has(surface_name):
 		bridge_riverbank_material_applied_surface_names.append(surface_name)
 	_refresh_bridge_riverbank_material_counters()
+
+func configure_road_riverbank_water_material_experiment(options: Dictionary) -> Dictionary:
+	road_riverbank_water_material_experiment_enabled = bool(options.get("enabled", false))
+	var sources: Dictionary = options.get("sources", {})
+	var metadata_paths: Dictionary = options.get("metadataPaths", {})
+	var expected_sha256: Dictionary = options.get("expectedSha256", {})
+	var uv_scales: Dictionary = options.get("uvScales", {})
+	road_riverbank_water_material_sources = {}
+	road_riverbank_water_material_metadata_paths = {}
+	road_riverbank_water_material_expected_sha256 = {}
+	road_riverbank_water_material_requested_uv_scales = {}
+	for region in ROAD_RIVERBANK_WATER_MATERIAL_REGIONS:
+		road_riverbank_water_material_sources[region] = str(sources.get(region, ""))
+		road_riverbank_water_material_metadata_paths[region] = str(metadata_paths.get(region, ""))
+		road_riverbank_water_material_expected_sha256[region] = str(expected_sha256.get(region, "")).to_lower()
+		road_riverbank_water_material_requested_uv_scales[region] = clampf(float(uv_scales.get(region, 0.60)), 0.38, 1.05)
+	road_riverbank_water_material_fallback_mode = str(options.get("fallbackMode", "none"))
+	road_riverbank_water_material_textures = {}
+	road_riverbank_water_material_overrides = {}
+	road_riverbank_water_material_source_load_count = 0
+	road_riverbank_water_material_metadata_parse_count = 0
+	road_riverbank_water_material_image_decode_count = 0
+	road_riverbank_water_material_texture_create_count = 0
+	road_riverbank_water_material_material_create_count = 0
+	road_riverbank_water_material_material_reuse_count = 0
+	road_riverbank_water_material_applied_surface_count = 0
+	road_riverbank_water_material_applied_surface_names = []
+	if not road_riverbank_water_material_experiment_enabled:
+		_reset_road_riverbank_water_material_status(false, "opt-in flag absent")
+		_refresh_visual_foundation()
+		return road_riverbank_water_material_status.duplicate(true)
+	_load_road_riverbank_water_material_bundle()
+	_refresh_visual_foundation()
+	return road_riverbank_water_material_status.duplicate(true)
+
+func get_road_riverbank_water_material_status() -> Dictionary:
+	return road_riverbank_water_material_status.duplicate(true)
+
+func _reset_road_riverbank_water_material_status(enabled: bool, reason: String) -> void:
+	var region_status := {}
+	for region in ROAD_RIVERBANK_WATER_MATERIAL_REGIONS:
+		region_status[region] = {
+			"sourcePath": str(road_riverbank_water_material_sources.get(region, "")),
+			"metadataPath": str(road_riverbank_water_material_metadata_paths.get(region, "")),
+			"expectedSha256": str(road_riverbank_water_material_expected_sha256.get(region, "")),
+			"actualSha256": "",
+			"sourceLoaded": false,
+			"fallbackActive": true,
+			"fallbackReason": reason,
+			"uvScale": float(road_riverbank_water_material_requested_uv_scales.get(region, 0.60)),
+			"appliedSurfaceNames": []
+		}
+	road_riverbank_water_material_status = {
+		"schemaVersion": 1,
+		"checkpoint": "v0.217",
+		"sourceCheckpoint": "v0.217",
+		"slotId": ROAD_RIVERBANK_WATER_MATERIAL_SLOT_ID,
+		"approach": ROAD_RIVERBANK_WATER_MATERIAL_APPROACH,
+		"enabled": enabled,
+		"sourceLoaded": false,
+		"materialActive": false,
+		"fallbackActive": true,
+		"fallbackReason": reason,
+		"fallbackMode": road_riverbank_water_material_fallback_mode,
+		"regions": region_status,
+		"regionCount": ROAD_RIVERBANK_WATER_MATERIAL_REGIONS.size(),
+		"loadedRegionCount": 0,
+		"generatedImageCountForV0217": 0,
+		"presentationRebootOnly": true,
+		"runtimeArtSlotAdded": false,
+		"productionManifestMutated": false,
+		"browserRuntimeChanged": false,
+		"defaultLauncherChanged": false,
+		"saveWritesAllowed": false,
+		"gameplayPathingChanged": false,
+		"appliedOnlyToSaltoPresentationRebootShellV2": true,
+		"allowedSurfaceFamilies": ["road ribbons", "road junction collars", "river channel", "riverbank edges", "wet edge transitions"],
+		"excludedSurfaces": ["terrain base", "structures", "characters", "site markers", "minimap", "HUD", "browser runtime", "default launcher"],
+		"sourceLoadCount": road_riverbank_water_material_source_load_count,
+		"metadataParseCount": road_riverbank_water_material_metadata_parse_count,
+		"imageDecodeCount": road_riverbank_water_material_image_decode_count,
+		"textureCreateCount": road_riverbank_water_material_texture_create_count,
+		"materialCreateCount": road_riverbank_water_material_material_create_count,
+		"materialReuseCount": road_riverbank_water_material_material_reuse_count,
+		"appliedSurfaceCount": road_riverbank_water_material_applied_surface_count,
+		"appliedSurfaceNames": []
+	}
+
+func _load_road_riverbank_water_material_bundle() -> void:
+	_reset_road_riverbank_water_material_status(true, "not loaded")
+	var start_usec := Time.get_ticks_usec()
+	var source_atlas_sha := ""
+	for region in ROAD_RIVERBANK_WATER_MATERIAL_REGIONS:
+		var source_path := str(road_riverbank_water_material_sources.get(region, ""))
+		var metadata_path := str(road_riverbank_water_material_metadata_paths.get(region, ""))
+		var expected_sha := str(road_riverbank_water_material_expected_sha256.get(region, "")).to_lower()
+		if source_path == "":
+			_set_road_riverbank_water_material_fallback("missing %s source path" % region)
+			return
+		if not FileAccess.file_exists(source_path):
+			_set_road_riverbank_water_material_fallback("missing %s source file" % region)
+			return
+		if metadata_path == "" or not FileAccess.file_exists(metadata_path):
+			_set_road_riverbank_water_material_fallback("missing %s metadata file" % region)
+			return
+		var metadata := _read_road_riverbank_water_material_metadata(metadata_path)
+		if metadata.is_empty():
+			_set_road_riverbank_water_material_fallback("%s metadata parse failure" % region)
+			return
+		if str(metadata.get("slotId", "")) != ROAD_RIVERBANK_WATER_MATERIAL_SLOT_ID:
+			_set_road_riverbank_water_material_fallback("%s metadata slot mismatch" % region)
+			return
+		if str(metadata.get("approach", "")) != ROAD_RIVERBANK_WATER_MATERIAL_APPROACH:
+			_set_road_riverbank_water_material_fallback("%s metadata approach mismatch" % region)
+			return
+		if str(metadata.get("region", "")) != region:
+			_set_road_riverbank_water_material_fallback("%s metadata region mismatch" % region)
+			return
+		if not bool(metadata.get("presentationRebootOnly", false)) or bool(metadata.get("runtimeArtSlotAdded", true)):
+			_set_road_riverbank_water_material_fallback("%s metadata boundary mismatch" % region)
+			return
+		if int(metadata.get("generatedImageCountForV0217", 0)) != 1:
+			_set_road_riverbank_water_material_fallback("%s generated image count mismatch" % region)
+			return
+		var metadata_sha := str(metadata.get("sha256", "")).to_lower()
+		if metadata_sha != expected_sha or expected_sha == "":
+			_set_road_riverbank_water_material_fallback("%s metadata hash mismatch" % region)
+			return
+		var dimensions: Dictionary = metadata.get("dimensions", {})
+		if int(dimensions.get("width", 0)) != ROAD_RIVERBANK_WATER_MATERIAL_EXPECTED_WIDTH or int(dimensions.get("height", 0)) != ROAD_RIVERBANK_WATER_MATERIAL_EXPECTED_HEIGHT:
+			_set_road_riverbank_water_material_fallback("%s metadata dimension mismatch" % region)
+			return
+		var region_source_atlas_sha := str(metadata.get("sourceSha256", "")).to_lower()
+		if source_atlas_sha == "":
+			source_atlas_sha = region_source_atlas_sha
+		elif source_atlas_sha != region_source_atlas_sha:
+			_set_road_riverbank_water_material_fallback("%s source atlas hash mismatch" % region)
+			return
+		var actual_sha := _sha256_file(source_path)
+		if actual_sha != expected_sha:
+			_set_road_riverbank_water_material_fallback("%s source hash mismatch" % region)
+			return
+		var image := Image.new()
+		road_riverbank_water_material_source_load_count += 1
+		var load_result := image.load(source_path)
+		if load_result != OK:
+			_set_road_riverbank_water_material_fallback("%s image load failure %s" % [region, str(load_result)])
+			return
+		road_riverbank_water_material_image_decode_count += 1
+		if image.get_width() != ROAD_RIVERBANK_WATER_MATERIAL_EXPECTED_WIDTH or image.get_height() != ROAD_RIVERBANK_WATER_MATERIAL_EXPECTED_HEIGHT:
+			_set_road_riverbank_water_material_fallback("%s image dimension mismatch" % region)
+			return
+		var texture := ImageTexture.create_from_image(image)
+		if texture == null:
+			_set_road_riverbank_water_material_fallback("%s texture creation failure" % region)
+			return
+		road_riverbank_water_material_texture_create_count += 1
+		road_riverbank_water_material_textures[region] = texture
+		var regions: Dictionary = road_riverbank_water_material_status.get("regions", {})
+		var region_status: Dictionary = regions.get(region, {})
+		region_status["sourceLoaded"] = true
+		region_status["fallbackActive"] = false
+		region_status["fallbackReason"] = ""
+		region_status["sourcePath"] = source_path
+		region_status["metadataPath"] = metadata_path
+		region_status["expectedSha256"] = expected_sha
+		region_status["actualSha256"] = actual_sha
+		region_status["sourceSha256"] = region_source_atlas_sha
+		region_status["candidateIdentity"] = str(metadata.get("candidateIdentity", ""))
+		region_status["uvScale"] = float(metadata.get("uvScale", road_riverbank_water_material_requested_uv_scales.get(region, 0.60)))
+		region_status["sourceDimensions"] = {"width": image.get_width(), "height": image.get_height()}
+		region_status["metadataDimensions"] = {"width": int(dimensions.get("width", 0)), "height": int(dimensions.get("height", 0))}
+		regions[region] = region_status
+		road_riverbank_water_material_status["regions"] = regions
+	road_riverbank_water_material_status["enabled"] = true
+	road_riverbank_water_material_status["sourceLoaded"] = true
+	road_riverbank_water_material_status["materialActive"] = true
+	road_riverbank_water_material_status["fallbackActive"] = false
+	road_riverbank_water_material_status["fallbackReason"] = ""
+	road_riverbank_water_material_status["loadedRegionCount"] = ROAD_RIVERBANK_WATER_MATERIAL_REGIONS.size()
+	road_riverbank_water_material_status["generatedImageCountForV0217"] = 1
+	road_riverbank_water_material_status["sourceAtlasSha256"] = source_atlas_sha
+	road_riverbank_water_material_status["loadDurationMs"] = snappedf(float(Time.get_ticks_usec() - start_usec) / 1000.0, 0.01)
+	_refresh_road_riverbank_water_material_counters()
+
+func _read_road_riverbank_water_material_metadata(path: String) -> Dictionary:
+	road_riverbank_water_material_metadata_parse_count += 1
+	var file := FileAccess.open(path, FileAccess.READ)
+	if file == null:
+		return {}
+	var parsed = JSON.parse_string(file.get_as_text())
+	if typeof(parsed) == TYPE_DICTIONARY:
+		return parsed
+	return {}
+
+func _set_road_riverbank_water_material_fallback(reason: String) -> void:
+	road_riverbank_water_material_textures = {}
+	road_riverbank_water_material_overrides = {}
+	road_riverbank_water_material_status["enabled"] = road_riverbank_water_material_experiment_enabled
+	road_riverbank_water_material_status["materialActive"] = false
+	road_riverbank_water_material_status["sourceLoaded"] = false
+	road_riverbank_water_material_status["fallbackActive"] = true
+	road_riverbank_water_material_status["fallbackReason"] = reason
+	road_riverbank_water_material_status["fallbackMode"] = road_riverbank_water_material_fallback_mode
+	_refresh_road_riverbank_water_material_counters()
+
+func _refresh_road_riverbank_water_material_counters() -> void:
+	road_riverbank_water_material_status["sourceLoadCount"] = road_riverbank_water_material_source_load_count
+	road_riverbank_water_material_status["metadataParseCount"] = road_riverbank_water_material_metadata_parse_count
+	road_riverbank_water_material_status["imageDecodeCount"] = road_riverbank_water_material_image_decode_count
+	road_riverbank_water_material_status["textureCreateCount"] = road_riverbank_water_material_texture_create_count
+	road_riverbank_water_material_status["materialCreateCount"] = road_riverbank_water_material_material_create_count
+	road_riverbank_water_material_status["materialReuseCount"] = road_riverbank_water_material_material_reuse_count
+	road_riverbank_water_material_status["appliedSurfaceCount"] = road_riverbank_water_material_applied_surface_count
+	road_riverbank_water_material_status["appliedSurfaceNames"] = road_riverbank_water_material_applied_surface_names.duplicate()
+
+func _road_riverbank_water_material_bundle_is_active() -> bool:
+	return road_riverbank_water_material_experiment_enabled and bool(road_riverbank_water_material_status.get("sourceLoaded", false)) and road_riverbank_water_material_textures.size() == ROAD_RIVERBANK_WATER_MATERIAL_REGIONS.size()
+
+func _road_riverbank_water_material_region_is_active(region: String) -> bool:
+	return _road_riverbank_water_material_bundle_is_active() and road_riverbank_water_material_textures.has(region)
+
+func _road_riverbank_water_material_uv_scale(region: String) -> float:
+	var regions: Dictionary = road_riverbank_water_material_status.get("regions", {})
+	var region_status: Dictionary = regions.get(region, {})
+	return float(region_status.get("uvScale", road_riverbank_water_material_requested_uv_scales.get(region, 0.60)))
+
+func _road_riverbank_water_material_tint(region: String) -> Color:
+	match region:
+		"road":
+			return Color(1.12, 1.04, 0.88, 0.54)
+		"riverbank":
+			return Color(0.82, 0.94, 0.74, 0.36)
+		"water":
+			return Color(0.58, 0.82, 0.92, 0.30)
+		"wet_edge":
+			return Color(0.64, 0.78, 0.76, 0.34)
+		_:
+			return Color(1.0, 1.0, 1.0, 0.45)
+
+func _road_riverbank_water_material(region: String) -> StandardMaterial3D:
+	if road_riverbank_water_material_overrides.has(region):
+		road_riverbank_water_material_material_reuse_count += 1
+		_refresh_road_riverbank_water_material_counters()
+		return road_riverbank_water_material_overrides[region]
+	var material := StandardMaterial3D.new()
+	material.albedo_texture = road_riverbank_water_material_textures.get(region)
+	material.albedo_color = _road_riverbank_water_material_tint(region)
+	material.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	material.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	material.roughness = 0.96
+	material.metallic = 0.0
+	material.cull_mode = BaseMaterial3D.CULL_DISABLED
+	material.texture_filter = BaseMaterial3D.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
+	var uv_scale := _road_riverbank_water_material_uv_scale(region)
+	material.uv1_scale = Vector3(uv_scale, uv_scale, 1.0)
+	road_riverbank_water_material_overrides[region] = material
+	road_riverbank_water_material_material_create_count += 1
+	_refresh_road_riverbank_water_material_counters()
+	return material
+
+func _record_road_riverbank_water_material_surface(region: String, surface_name: String) -> void:
+	road_riverbank_water_material_applied_surface_count += 1
+	var surface_key := "%s:%s" % [region, surface_name]
+	if not road_riverbank_water_material_applied_surface_names.has(surface_key):
+		road_riverbank_water_material_applied_surface_names.append(surface_key)
+	var regions: Dictionary = road_riverbank_water_material_status.get("regions", {})
+	var region_status: Dictionary = regions.get(region, {})
+	var surfaces: Array = region_status.get("appliedSurfaceNames", [])
+	if not surfaces.has(surface_name):
+		surfaces.append(surface_name)
+	region_status["appliedSurfaceNames"] = surfaces
+	region_status["appliedSurfaceCount"] = surfaces.size()
+	regions[region] = region_status
+	road_riverbank_water_material_status["regions"] = regions
+	_refresh_road_riverbank_water_material_counters()
 
 func configure_structure_finish_material_experiment(options: Dictionary) -> Dictionary:
 	structure_finish_material_experiment_enabled = bool(options.get("enabled", false))
@@ -6276,15 +6575,28 @@ func run_benchmark_suite() -> Dictionary:
 	var worker_art_loaded := _worker_art_is_active()
 	var barracks_material_loaded := _barracks_material_is_active()
 	var militia_art_loaded := _militia_art_is_active()
+	var ground_material_loaded := _ground_material_is_active()
+	var road_material_loaded := _road_material_is_active()
+	var bridge_riverbank_material_loaded := _bridge_riverbank_material_is_active()
+	var structure_finish_material_loaded := _structure_finish_material_is_active()
+	var road_riverbank_water_material_loaded := _road_riverbank_water_material_bundle_is_active()
+	_refresh_road_riverbank_water_material_counters()
 	report["visualPreset"] = visual_preset
 	report["visualPresetScope"] = _preset_scope()
 	report["visualPresetPrivate"] = visual_preset == VISUAL_PRESET_VFX_STRESS
-	report["proceduralPrimitiveOnly"] = not worker_art_loaded and not barracks_material_loaded and not militia_art_loaded
-	report["generatedOrImportedArtIncluded"] = worker_art_loaded or barracks_material_loaded or militia_art_loaded
-	report["runtimeArtIntegrated"] = worker_art_loaded or barracks_material_loaded or militia_art_loaded
+	report["proceduralPrimitiveOnly"] = not worker_art_loaded and not barracks_material_loaded and not militia_art_loaded and not ground_material_loaded and not road_material_loaded and not bridge_riverbank_material_loaded and not structure_finish_material_loaded and not road_riverbank_water_material_loaded
+	report["generatedOrImportedArtIncluded"] = worker_art_loaded or barracks_material_loaded or militia_art_loaded or ground_material_loaded or road_material_loaded or bridge_riverbank_material_loaded or structure_finish_material_loaded or road_riverbank_water_material_loaded
+	report["runtimeArtIntegrated"] = worker_art_loaded or barracks_material_loaded or militia_art_loaded or ground_material_loaded or road_material_loaded or bridge_riverbank_material_loaded or road_riverbank_water_material_loaded
 	report["workerArtExperiment"] = worker_art_status.duplicate(true)
 	report["barracksMaterialExperiment"] = barracks_material_status.duplicate(true)
 	report["militiaArtExperiment"] = militia_art_status.duplicate(true)
+	report["groundMaterialExperiment"] = ground_material_status.duplicate(true)
+	report["roadMaterialExperiment"] = road_material_status.duplicate(true)
+	report["bridgeRiverbankMaterialExperiment"] = bridge_riverbank_material_status.duplicate(true)
+	report["structureFinishMaterialExperiment"] = structure_finish_material_status.duplicate(true)
+	report["roadRiverbankWaterMaterialExperiment"] = road_riverbank_water_material_status.duplicate(true)
+	report["roadRiverbankWaterMaterialRuntimeSlotAdded"] = false
+	report["roadRiverbankWaterMaterialProductionSlotAdded"] = false
 	report["routineEditorUseRequired"] = false
 	return report
 
@@ -6364,9 +6676,11 @@ func get_spike_status() -> Dictionary:
 	_refresh_bridge_riverbank_material_counters()
 	var structure_finish_material_loaded := _structure_finish_material_is_active()
 	_refresh_structure_finish_material_counters()
-	status["proceduralPrimitiveOnly"] = not worker_art_loaded and not barracks_material_loaded and not militia_art_loaded and not aster_art_loaded and not ashen_art_loaded and not ground_material_loaded and not road_material_loaded and not bridge_riverbank_material_loaded and not structure_finish_material_loaded
-	status["generatedOrImportedArtIncluded"] = worker_art_loaded or barracks_material_loaded or militia_art_loaded or aster_art_loaded or ashen_art_loaded or ground_material_loaded or road_material_loaded or bridge_riverbank_material_loaded or structure_finish_material_loaded
-	status["runtimeArtIntegrated"] = worker_art_loaded or barracks_material_loaded or militia_art_loaded or aster_art_loaded or ashen_art_loaded or ground_material_loaded or road_material_loaded or bridge_riverbank_material_loaded
+	var road_riverbank_water_material_loaded := _road_riverbank_water_material_bundle_is_active()
+	_refresh_road_riverbank_water_material_counters()
+	status["proceduralPrimitiveOnly"] = not worker_art_loaded and not barracks_material_loaded and not militia_art_loaded and not aster_art_loaded and not ashen_art_loaded and not ground_material_loaded and not road_material_loaded and not bridge_riverbank_material_loaded and not structure_finish_material_loaded and not road_riverbank_water_material_loaded
+	status["generatedOrImportedArtIncluded"] = worker_art_loaded or barracks_material_loaded or militia_art_loaded or aster_art_loaded or ashen_art_loaded or ground_material_loaded or road_material_loaded or bridge_riverbank_material_loaded or structure_finish_material_loaded or road_riverbank_water_material_loaded
+	status["runtimeArtIntegrated"] = worker_art_loaded or barracks_material_loaded or militia_art_loaded or aster_art_loaded or ashen_art_loaded or ground_material_loaded or road_material_loaded or bridge_riverbank_material_loaded or road_riverbank_water_material_loaded
 	status["workerArtExperiment"] = worker_art_status.duplicate(true)
 	status["barracksMaterialExperiment"] = barracks_material_status.duplicate(true)
 	status["militiaArtExperiment"] = militia_art_status.duplicate(true)
@@ -6376,6 +6690,7 @@ func get_spike_status() -> Dictionary:
 	status["roadMaterialExperiment"] = road_material_status.duplicate(true)
 	status["bridgeRiverbankMaterialExperiment"] = bridge_riverbank_material_status.duplicate(true)
 	status["structureFinishMaterialExperiment"] = structure_finish_material_status.duplicate(true)
+	status["roadRiverbankWaterMaterialExperiment"] = road_riverbank_water_material_status.duplicate(true)
 	status["v0165VisualHardeningAudit"] = _v0165_visual_hardening_audit(worker_art_loaded, barracks_material_loaded, militia_art_loaded, aster_art_loaded, ashen_art_loaded)
 	status["workerArtOptInOnly"] = worker_art_experiment_enabled and not barracks_material_experiment_enabled and not militia_art_experiment_enabled and not aster_art_experiment_enabled and not ashen_art_experiment_enabled
 	status["workerArtSlotCount"] = 1 if worker_art_experiment_enabled else 0
@@ -6406,6 +6721,12 @@ func get_spike_status() -> Dictionary:
 	status["structureFinishMaterialProceduralFallbackActive"] = bool(structure_finish_material_status.get("fallbackActive", true))
 	status["structureFinishMaterialRuntimeSlotAdded"] = false
 	status["structureFinishMaterialProductionSlotAdded"] = false
+	status["roadRiverbankWaterMaterialOptInRequested"] = road_riverbank_water_material_experiment_enabled
+	status["roadRiverbankWaterMaterialPrivateOptInLoaded"] = road_riverbank_water_material_loaded
+	status["roadRiverbankWaterMaterialProceduralFallbackActive"] = bool(road_riverbank_water_material_status.get("fallbackActive", true))
+	status["roadRiverbankWaterMaterialRuntimeSlotAdded"] = false
+	status["roadRiverbankWaterMaterialProductionSlotAdded"] = false
+	status["roadRiverbankWaterMaterialPlayerFacingProductionSlotAdded"] = false
 	status["environmentShellLiveQaArtSlotCount"] = 0
 	status["environmentStructureShellHardeningArtSlotCount"] = 0
 	status["environmentRiverbankBridgeApproachArtSlotCount"] = 0
@@ -6413,6 +6734,8 @@ func get_spike_status() -> Dictionary:
 	status["normalSliceOptInLoadedSlotCount"] = (1 if worker_art_loaded else 0) + (1 if barracks_material_loaded else 0) + (1 if militia_art_loaded else 0) + (1 if aster_art_loaded else 0) + (1 if ashen_art_loaded else 0)
 	status["environmentMaterialOptInRequestedSlotCount"] = (1 if ground_material_experiment_enabled else 0) + (1 if road_material_experiment_enabled else 0) + (1 if bridge_riverbank_material_experiment_enabled else 0)
 	status["environmentMaterialOptInLoadedSlotCount"] = (1 if ground_material_loaded else 0) + (1 if road_material_loaded else 0) + (1 if bridge_riverbank_material_loaded else 0)
+	status["environmentMaterialOptInRequestedBundleCount"] = int(status["environmentMaterialOptInRequestedSlotCount"]) + (1 if road_riverbank_water_material_experiment_enabled else 0)
+	status["environmentMaterialOptInLoadedBundleCount"] = int(status["environmentMaterialOptInLoadedSlotCount"]) + (1 if road_riverbank_water_material_loaded else 0)
 	status["environmentFoundationArtSlotCount"] = int(status["environmentMaterialOptInRequestedSlotCount"])
 	status["environmentReadabilityArtSlotCount"] = 0
 	status["environmentGeometryConvergenceArtSlotCount"] = 0
@@ -6425,6 +6748,9 @@ func get_spike_status() -> Dictionary:
 	status["bridgeRiverbankMaterialRuntimeSlotAdded"] = bridge_riverbank_material_experiment_enabled
 	status["structureFinishMaterialSourceImportedToShellV2Review"] = structure_finish_material_loaded
 	status["structureFinishMaterialImportedToPlayerSlice"] = false
+	status["roadRiverbankWaterMaterialSourceImportedToPresentationReboot"] = road_riverbank_water_material_loaded
+	status["roadRiverbankWaterMaterialImportedToBrowserRuntime"] = false
+	status["roadRiverbankWaterMaterialImportedToDefaultLauncher"] = false
 	status["thirdPlayerFacingArtSlotAdded"] = militia_art_experiment_enabled
 	status["fourthPlayerFacingArtSlotAdded"] = aster_art_experiment_enabled
 	status["fifthPlayerFacingArtSlotAdded"] = ashen_art_experiment_enabled
@@ -7043,7 +7369,7 @@ func _presentation_shell_v2_material(key: String, color: Color, transparent: boo
 	presentation_shell_v2_material_create_count += 1
 	return material
 
-func _add_presentation_shell_v2_box(name: String, position: Vector3, scale: Vector3, color: Color, category: String, transparent: bool = false, rotation_y_degrees: float = 0.0, emissive: bool = false) -> void:
+func _add_presentation_shell_v2_box(name: String, position: Vector3, scale: Vector3, color: Color, category: String, transparent: bool = false, rotation_y_degrees: float = 0.0, emissive: bool = false, material_kind: String = "") -> void:
 	var mesh_instance := MeshInstance3D.new()
 	mesh_instance.name = name
 	var mesh := BoxMesh.new()
@@ -7051,7 +7377,10 @@ func _add_presentation_shell_v2_box(name: String, position: Vector3, scale: Vect
 	mesh_instance.mesh = mesh
 	mesh_instance.position = position
 	mesh_instance.rotation_degrees = Vector3(0.0, rotation_y_degrees, 0.0)
-	mesh_instance.material_override = _presentation_shell_v2_material(category, color, transparent, emissive, _lume_emission())
+	if material_kind != "":
+		mesh_instance.material_override = _shell_v2_mesh_material(category, color, transparent, material_kind, name)
+	else:
+		mesh_instance.material_override = _presentation_shell_v2_material(category, color, transparent, emissive, _lume_emission())
 	terrain_root.add_child(mesh_instance)
 	_count_presentation_shell_v2_surface(category)
 
@@ -7127,6 +7456,19 @@ func _add_presentation_shell_v2_ground_oval(name: String, position: Vector3, rad
 	_refresh_ground_material_counters()
 
 func _add_presentation_shell_v2_road_surface(name: String, position: Vector3, scale: Vector3, fallback_color: Color, transparent: bool = false, rotation_y_degrees: float = 0.0) -> void:
+	if _road_riverbank_water_material_region_is_active("road"):
+		_add_presentation_shell_v2_box("%s_procedural_underlay" % name, position, scale, fallback_color, "roads", transparent, rotation_y_degrees)
+		var mesh_instance := MeshInstance3D.new()
+		mesh_instance.name = name
+		var mesh := BoxMesh.new()
+		mesh.size = scale
+		mesh_instance.mesh = mesh
+		mesh_instance.position = position + Vector3(0.0, ROAD_MATERIAL_OVERLAY_LIFT + 0.006, 0.0)
+		mesh_instance.rotation_degrees = Vector3(0.0, rotation_y_degrees, 0.0)
+		mesh_instance.material_override = _road_riverbank_water_material("road")
+		terrain_root.add_child(mesh_instance)
+		_record_road_riverbank_water_material_surface("road", name)
+		return
 	if not _road_material_is_active():
 		_add_presentation_shell_v2_box(name, position, scale, fallback_color, "roads", transparent, rotation_y_degrees)
 		return
@@ -7145,17 +7487,29 @@ func _add_presentation_shell_v2_road_surface(name: String, position: Vector3, sc
 		road_material_applied_surface_names.append(name)
 	_refresh_road_material_counters()
 
-func _add_presentation_shell_v2_route_segment(name: String, start: Vector3, end: Vector3, width: float, y: float, color: Color, category: String, height: float = 0.030, transparent: bool = false) -> void:
+func _add_presentation_shell_v2_route_segment(name: String, start: Vector3, end: Vector3, width: float, y: float, color: Color, category: String, height: float = 0.030, transparent: bool = false, material_kind: String = "") -> void:
 	var center := Vector3((start.x + end.x) * 0.5, y, (start.z + end.z) * 0.5)
 	var delta := Vector2(end.x - start.x, end.z - start.z)
 	var length := maxf(delta.length(), 0.01)
 	var rotation := rad_to_deg(atan2(delta.y, delta.x))
-	if category == "roads":
+	if category == "roads" and material_kind == "":
 		_add_presentation_shell_v2_road_surface(name, center, Vector3(length, height, width), color, transparent, rotation)
 	else:
-		_add_presentation_shell_v2_box(name, center, Vector3(length, height, width), color, category, transparent, rotation)
+		_add_presentation_shell_v2_box(name, center, Vector3(length, height, width), color, category, transparent, rotation, false, material_kind)
 
 func _shell_v2_mesh_material(category: String, color: Color, transparent: bool, material_kind: String, surface_name: String) -> StandardMaterial3D:
+	if material_kind == "v0217_road" and _road_riverbank_water_material_region_is_active("road"):
+		_record_road_riverbank_water_material_surface("road", surface_name)
+		return _road_riverbank_water_material("road")
+	if material_kind == "v0217_riverbank" and _road_riverbank_water_material_region_is_active("riverbank"):
+		_record_road_riverbank_water_material_surface("riverbank", surface_name)
+		return _road_riverbank_water_material("riverbank")
+	if material_kind == "v0217_water" and _road_riverbank_water_material_region_is_active("water"):
+		_record_road_riverbank_water_material_surface("water", surface_name)
+		return _road_riverbank_water_material("water")
+	if material_kind == "v0217_wet_edge" and _road_riverbank_water_material_region_is_active("wet_edge"):
+		_record_road_riverbank_water_material_surface("wet_edge", surface_name)
+		return _road_riverbank_water_material("wet_edge")
 	if material_kind == "ground" and _ground_material_is_active():
 		ground_material_applied_surface_count += 1
 		if not ground_material_applied_surface_names.has(surface_name):
@@ -7227,7 +7581,8 @@ func _add_shell_v2_mesh_ribbon(name: String, start: Vector2, end: Vector2, width
 	_add_shell_v2_mesh_polygon(name, [start + normal, end + normal, end - normal, start - normal], y, color, category, material_kind, transparent, uv_scale)
 
 func _add_shell_v2_mesh_compositor_box(name: String, position: Vector3, scale: Vector3, color: Color, category: String, transparent: bool = false, rotation_y_degrees: float = 0.0, emissive: bool = false, material_kind: String = "") -> void:
-	_add_presentation_shell_v2_box(name, position, scale, color, category, transparent, rotation_y_degrees, emissive)
+	var direct_material_kind := material_kind if str(material_kind).begins_with("v0217_") else ""
+	_add_presentation_shell_v2_box(name, position, scale, color, category, transparent, rotation_y_degrees, emissive, direct_material_kind)
 	if material_kind == "bridge_riverbank" and _bridge_riverbank_material_is_active():
 		var mesh_instance := terrain_root.get_node_or_null(name) as MeshInstance3D
 		if mesh_instance != null:
@@ -7434,6 +7789,20 @@ func _create_shell_v2_mesh_compositor_terrain() -> bool:
 		timber = Color(0.30, 0.22, 0.14, 0.88)
 		terrain_lift = Color(0.39, 0.49, 0.30, 0.20)
 		terrain_mottle = Color(0.17, 0.25, 0.16, 0.22)
+	var v0217_road_active := _road_riverbank_water_material_region_is_active("road")
+	var v0217_bank_active := _road_riverbank_water_material_region_is_active("riverbank")
+	var v0217_water_active := _road_riverbank_water_material_region_is_active("water")
+	var v0217_wet_edge_active := _road_riverbank_water_material_region_is_active("wet_edge")
+	var reboot_road_material_kind := "v0217_road" if v0217_road_active else "road"
+	var reboot_road_uv_scale := _road_riverbank_water_material_uv_scale("road") if v0217_road_active else road_material_requested_uv_scale
+	var reboot_bank_material_kind := "v0217_riverbank" if v0217_bank_active else ""
+	var reboot_bridge_bank_material_kind := "v0217_riverbank" if v0217_bank_active else "bridge_riverbank"
+	var reboot_bank_uv_scale := _road_riverbank_water_material_uv_scale("riverbank") if v0217_bank_active else 0.52
+	var reboot_bridge_bank_uv_scale := _road_riverbank_water_material_uv_scale("riverbank") if v0217_bank_active else bridge_riverbank_material_requested_uv_scale
+	var reboot_water_material_kind := "v0217_water" if v0217_water_active else ""
+	var reboot_water_uv_scale := _road_riverbank_water_material_uv_scale("water") if v0217_water_active else 0.42
+	var reboot_wet_edge_material_kind := "v0217_wet_edge" if v0217_wet_edge_active else ""
+	var reboot_wet_edge_uv_scale := _road_riverbank_water_material_uv_scale("wet_edge") if v0217_wet_edge_active else 0.52
 	var base_points := [
 		Vector2(-6.20, -3.20),
 		Vector2(-4.18, -3.56),
@@ -7466,13 +7835,13 @@ func _create_shell_v2_mesh_compositor_terrain() -> bool:
 	_add_shell_v2_mesh_polygon("v0196_mesh_command_yard_lift", [Vector2(-5.72, -1.04), Vector2(-4.40, -0.92), Vector2(-4.16, 0.54), Vector2(-5.56, 0.82)], 0.168, terrain_lift, "overlays", "", true, 0.48)
 	_add_shell_v2_mesh_polygon("v0196_mesh_mine_yard_lift", [Vector2(-2.34, -0.22), Vector2(-1.28, -0.22), Vector2(-1.14, 0.72), Vector2(-2.42, 0.94)], 0.170, terrain_lift.lightened(0.06), "overlays", "", true, 0.48)
 	_add_shell_v2_mesh_polygon("v0196_mesh_bridge_approach_lift", [Vector2(-0.58, 0.36), Vector2(2.04, 0.34), Vector2(2.08, 1.38), Vector2(-0.66, 1.36)], 0.174, terrain_mottle, "overlays", "", true, 0.44)
-	_add_shell_v2_mesh_ribbon("v0196_mesh_main_road_west_surface", Vector2(-5.62, 0.72), Vector2(-1.44, 0.72), 0.72, 0.286, road_bed, "roads", "road", false, road_material_requested_uv_scale)
-	_add_shell_v2_mesh_ribbon("v0196_mesh_main_road_bridge_feed_surface", Vector2(-1.44, 0.72), Vector2(-0.32, 0.86), 0.66, 0.288, road_bed.lightened(0.04), "roads", "road", false, road_material_requested_uv_scale)
-	_add_shell_v2_mesh_ribbon("v0196_mesh_bridge_deck_route_surface", Vector2(-0.32, 0.88), Vector2(1.62, 0.88), 0.62, 0.374, road_bed.lightened(0.06), "roads", "road", false, road_material_requested_uv_scale)
-	_add_shell_v2_mesh_ribbon("v0196_mesh_main_road_east_surface", Vector2(1.62, 0.88), Vector2(3.18, 0.56), 0.60, 0.288, road_bed.darkened(0.04), "roads", "road", false, road_material_requested_uv_scale)
-	_add_shell_v2_mesh_ribbon("v0196_mesh_barracks_side_route_surface", Vector2(-4.48, 0.58), Vector2(-4.70, -2.52), 0.44, 0.284, road_bed.darkened(0.08), "roads", "road", false, road_material_requested_uv_scale)
-	_add_shell_v2_mesh_ribbon("v0196_mesh_mine_spur_surface", Vector2(-2.24, 0.72), Vector2(-1.56, 0.22), 0.40, 0.286, road_bed.lightened(0.02), "roads", "road", false, road_material_requested_uv_scale)
-	_add_shell_v2_mesh_ribbon("v0196_mesh_stage_spur_surface", Vector2(-5.10, 0.76), Vector2(-5.08, 2.28), 0.38, 0.282, road_bed.darkened(0.06), "roads", "road", false, road_material_requested_uv_scale)
+	_add_shell_v2_mesh_ribbon("v0196_mesh_main_road_west_surface", Vector2(-5.62, 0.72), Vector2(-1.44, 0.72), 0.72, 0.286, road_bed, "roads", reboot_road_material_kind, false, reboot_road_uv_scale)
+	_add_shell_v2_mesh_ribbon("v0196_mesh_main_road_bridge_feed_surface", Vector2(-1.44, 0.72), Vector2(-0.32, 0.86), 0.66, 0.288, road_bed.lightened(0.04), "roads", reboot_road_material_kind, false, reboot_road_uv_scale)
+	_add_shell_v2_mesh_ribbon("v0196_mesh_bridge_deck_route_surface", Vector2(-0.32, 0.88), Vector2(1.62, 0.88), 0.62, 0.374, road_bed.lightened(0.06), "roads", reboot_road_material_kind, false, reboot_road_uv_scale)
+	_add_shell_v2_mesh_ribbon("v0196_mesh_main_road_east_surface", Vector2(1.62, 0.88), Vector2(3.18, 0.56), 0.60, 0.288, road_bed.darkened(0.04), "roads", reboot_road_material_kind, false, reboot_road_uv_scale)
+	_add_shell_v2_mesh_ribbon("v0196_mesh_barracks_side_route_surface", Vector2(-4.48, 0.58), Vector2(-4.70, -2.52), 0.44, 0.284, road_bed.darkened(0.08), "roads", reboot_road_material_kind, false, reboot_road_uv_scale)
+	_add_shell_v2_mesh_ribbon("v0196_mesh_mine_spur_surface", Vector2(-2.24, 0.72), Vector2(-1.56, 0.22), 0.40, 0.286, road_bed.lightened(0.02), "roads", reboot_road_material_kind, false, reboot_road_uv_scale)
+	_add_shell_v2_mesh_ribbon("v0196_mesh_stage_spur_surface", Vector2(-5.10, 0.76), Vector2(-5.08, 2.28), 0.38, 0.282, road_bed.darkened(0.06), "roads", reboot_road_material_kind, false, reboot_road_uv_scale)
 	_add_shell_v2_mesh_ribbon("v0196_mesh_main_road_west_north_shoulder", Vector2(-5.60, 0.34), Vector2(-0.34, 0.48), 0.12, 0.276, road_shoulder, "overlays", "", true, 0.52)
 	_add_shell_v2_mesh_ribbon("v0196_mesh_main_road_west_south_shoulder", Vector2(-5.62, 1.10), Vector2(-0.36, 1.22), 0.12, 0.276, road_shoulder.darkened(0.04), "overlays", "", true, 0.52)
 	_add_shell_v2_mesh_ribbon("v0196_mesh_main_road_route_crown_west", Vector2(-5.38, 0.72), Vector2(-1.62, 0.72), 0.12, 0.332, road_crown, "overlays", "", true, 0.52)
@@ -7490,21 +7859,21 @@ func _create_shell_v2_mesh_compositor_terrain() -> bool:
 		Vector2(1.38, -1.38),
 		Vector2(1.44, -3.20)
 	]
-	_add_shell_v2_mesh_polygon("v0196_mesh_continuous_river_channel", river_points, 0.202, water_core, "river", "", false, 0.42)
-	_add_shell_v2_mesh_ribbon("v0196_mesh_west_bank_continuous_edge", Vector2(-0.36, -3.06), Vector2(-0.20, 3.94), 0.36, 0.238, bank_color.darkened(0.02), "banks", "", false, 0.52)
-	_add_shell_v2_mesh_ribbon("v0196_mesh_east_bank_continuous_edge", Vector2(1.72, -3.02), Vector2(1.66, 3.96), 0.36, 0.238, bank_color.lightened(0.02), "banks", "", false, 0.52)
-	_add_shell_v2_mesh_ribbon("v0198_mesh_west_bridge_bank_retaining_edge", Vector2(-0.30, 0.08), Vector2(-0.24, 1.70), 0.30, 0.252, bridge_stone.darkened(0.06), "banks", "bridge_riverbank", false, bridge_riverbank_material_requested_uv_scale)
-	_add_shell_v2_mesh_ribbon("v0198_mesh_east_bridge_bank_retaining_edge", Vector2(1.66, 0.08), Vector2(1.62, 1.70), 0.30, 0.252, bridge_stone.darkened(0.02), "banks", "bridge_riverbank", false, bridge_riverbank_material_requested_uv_scale)
-	_add_shell_v2_mesh_ribbon("v0196_mesh_west_bank_channel_shadow", Vector2(-0.10, -2.92), Vector2(0.04, 3.66), 0.16, 0.246, bank_shadow, "banks", "", true, 0.52)
-	_add_shell_v2_mesh_ribbon("v0196_mesh_east_bank_channel_shadow", Vector2(1.40, -2.88), Vector2(1.36, 3.72), 0.16, 0.246, bank_shadow.darkened(0.04), "banks", "", true, 0.52)
-	_add_shell_v2_mesh_ribbon("v0196_mesh_river_central_glint", Vector2(0.46, -1.10), Vector2(0.92, 2.54), 0.060, 0.244, water_glint, "overlays", "", true, 0.42)
-	_add_shell_v2_mesh_ribbon("v0196_mesh_river_bridge_underlight", Vector2(0.30, 0.42), Vector2(1.22, 1.18), 0.12, 0.248, water_glint.darkened(0.08), "overlays", "", true, 0.42)
+	_add_shell_v2_mesh_polygon("v0196_mesh_continuous_river_channel", river_points, 0.202, water_core, "river", reboot_water_material_kind, false, reboot_water_uv_scale)
+	_add_shell_v2_mesh_ribbon("v0196_mesh_west_bank_continuous_edge", Vector2(-0.36, -3.06), Vector2(-0.20, 3.94), 0.36, 0.238, bank_color.darkened(0.02), "banks", reboot_bank_material_kind, false, reboot_bank_uv_scale)
+	_add_shell_v2_mesh_ribbon("v0196_mesh_east_bank_continuous_edge", Vector2(1.72, -3.02), Vector2(1.66, 3.96), 0.36, 0.238, bank_color.lightened(0.02), "banks", reboot_bank_material_kind, false, reboot_bank_uv_scale)
+	_add_shell_v2_mesh_ribbon("v0198_mesh_west_bridge_bank_retaining_edge", Vector2(-0.30, 0.08), Vector2(-0.24, 1.70), 0.30, 0.252, bridge_stone.darkened(0.06), "banks", reboot_bridge_bank_material_kind, false, reboot_bridge_bank_uv_scale)
+	_add_shell_v2_mesh_ribbon("v0198_mesh_east_bridge_bank_retaining_edge", Vector2(1.66, 0.08), Vector2(1.62, 1.70), 0.30, 0.252, bridge_stone.darkened(0.02), "banks", reboot_bridge_bank_material_kind, false, reboot_bridge_bank_uv_scale)
+	_add_shell_v2_mesh_ribbon("v0196_mesh_west_bank_channel_shadow", Vector2(-0.10, -2.92), Vector2(0.04, 3.66), 0.16, 0.246, bank_shadow, "banks", reboot_wet_edge_material_kind, true, reboot_wet_edge_uv_scale)
+	_add_shell_v2_mesh_ribbon("v0196_mesh_east_bank_channel_shadow", Vector2(1.40, -2.88), Vector2(1.36, 3.72), 0.16, 0.246, bank_shadow.darkened(0.04), "banks", reboot_wet_edge_material_kind, true, reboot_wet_edge_uv_scale)
+	_add_shell_v2_mesh_ribbon("v0196_mesh_river_central_glint", Vector2(0.46, -1.10), Vector2(0.92, 2.54), 0.060, 0.244, water_glint, "overlays", reboot_water_material_kind, true, reboot_water_uv_scale)
+	_add_shell_v2_mesh_ribbon("v0196_mesh_river_bridge_underlight", Vector2(0.30, 0.42), Vector2(1.22, 1.18), 0.12, 0.248, water_glint.darkened(0.08), "overlays", reboot_wet_edge_material_kind, true, reboot_wet_edge_uv_scale)
 	_add_shell_v2_mesh_compositor_box("v0196_mesh_bridge_shadow_under_span", Vector3(0.66, 0.302, 0.88), Vector3(2.18, 0.040, 0.82), bridge_dark, "bridge", true)
 	_add_shell_v2_mesh_compositor_box("v0196_mesh_bridge_deck_crossing_mass", Vector3(0.66, 0.344, 0.88), Vector3(2.02, 0.082, 0.62), bridge_stone, "bridge")
-	_add_shell_v2_mesh_compositor_box("v0196_mesh_bridge_west_abutment_mass", Vector3(-0.44, 0.318, 0.88), Vector3(0.42, 0.154, 0.88), bridge_stone.darkened(0.16), "bridge", false, 0.0, false, "bridge_riverbank")
-	_add_shell_v2_mesh_compositor_box("v0196_mesh_bridge_east_abutment_mass", Vector3(1.76, 0.318, 0.88), Vector3(0.42, 0.154, 0.88), bridge_stone.darkened(0.10), "bridge", false, 0.0, false, "bridge_riverbank")
-	_add_shell_v2_mesh_compositor_box("v0196_mesh_bridge_west_landing_apron", Vector3(-0.78, 0.326, 0.88), Vector3(0.52, 0.050, 0.72), bridge_stone.lightened(0.08), "bridge", false, 0.0, false, "bridge_riverbank")
-	_add_shell_v2_mesh_compositor_box("v0196_mesh_bridge_east_landing_apron", Vector3(2.08, 0.326, 0.88), Vector3(0.52, 0.050, 0.72), bridge_stone.lightened(0.06), "bridge", false, 0.0, false, "bridge_riverbank")
+	_add_shell_v2_mesh_compositor_box("v0196_mesh_bridge_west_abutment_mass", Vector3(-0.44, 0.318, 0.88), Vector3(0.42, 0.154, 0.88), bridge_stone.darkened(0.16), "bridge", false, 0.0, false, reboot_bridge_bank_material_kind)
+	_add_shell_v2_mesh_compositor_box("v0196_mesh_bridge_east_abutment_mass", Vector3(1.76, 0.318, 0.88), Vector3(0.42, 0.154, 0.88), bridge_stone.darkened(0.10), "bridge", false, 0.0, false, reboot_bridge_bank_material_kind)
+	_add_shell_v2_mesh_compositor_box("v0196_mesh_bridge_west_landing_apron", Vector3(-0.78, 0.326, 0.88), Vector3(0.52, 0.050, 0.72), bridge_stone.lightened(0.08), "bridge", false, 0.0, false, reboot_bridge_bank_material_kind)
+	_add_shell_v2_mesh_compositor_box("v0196_mesh_bridge_east_landing_apron", Vector3(2.08, 0.326, 0.88), Vector3(0.52, 0.050, 0.72), bridge_stone.lightened(0.06), "bridge", false, 0.0, false, reboot_bridge_bank_material_kind)
 	_add_shell_v2_mesh_compositor_box("v0196_mesh_bridge_north_low_rail", Vector3(0.66, 0.424, 0.50), Vector3(2.10, 0.052, 0.072), timber, "bridge")
 	_add_shell_v2_mesh_compositor_box("v0196_mesh_bridge_south_low_rail", Vector3(0.66, 0.424, 1.26), Vector3(2.10, 0.052, 0.072), timber.darkened(0.04), "bridge")
 	for index in range(5):
@@ -7516,7 +7885,7 @@ func _create_shell_v2_mesh_compositor_terrain() -> bool:
 		_add_shell_v2_environmental_cohesion_layers()
 	presentation_shell_v2_topology_metrics = {
 		"schemaVersion": 1,
-		"checkpoint": "v0.216" if _ground_material_is_v0216_reboot_or_pending() else ("v0.204" if environment_shell_v2_structure_material_enabled else ("v0.203" if environment_shell_v2_environmental_cohesion_enabled else ("v0.200" if environment_shell_v2_grounding_lighting_enabled else ("v0.199" if environment_shell_v2_structure_hierarchy_enabled else ("v0.198" if _bridge_riverbank_material_is_active() else "v0.197"))))),
+		"checkpoint": "v0.217" if _road_riverbank_water_material_bundle_is_active() else ("v0.216" if _ground_material_is_v0216_reboot_or_pending() else ("v0.204" if environment_shell_v2_structure_material_enabled else ("v0.203" if environment_shell_v2_environmental_cohesion_enabled else ("v0.200" if environment_shell_v2_grounding_lighting_enabled else ("v0.199" if environment_shell_v2_structure_hierarchy_enabled else ("v0.198" if _bridge_riverbank_material_is_active() else "v0.197")))))),
 		"compositorMode": "proceduralMeshCompositor",
 		"structureHierarchyEnabled": environment_shell_v2_structure_hierarchy_enabled,
 		"groundingLightingEnabled": environment_shell_v2_grounding_lighting_enabled,
@@ -7526,6 +7895,11 @@ func _create_shell_v2_mesh_compositor_terrain() -> bool:
 		"v0216TerrainMeshCompositorActive": bool(ground_material_status.get("terrainMeshCompositor", false)),
 		"v0216IrregularGroundPatchCount": int(ground_material_status.get("v0216IrregularPatchCount", 0)),
 		"v0216GroundEdgeTreatmentCount": int(ground_material_status.get("v0216EdgeTreatmentCount", 0)),
+		"v0217RoadRiverbankWaterMaterialActive": _road_riverbank_water_material_bundle_is_active(),
+		"v0217RoadRiverbankWaterAtlasSourceCount": 1 if _road_riverbank_water_material_bundle_is_active() else 0,
+		"v0217RoadRiverbankWaterLoadedRegionCount": int(road_riverbank_water_material_status.get("loadedRegionCount", 0)),
+		"v0217RoadRiverbankWaterRuntimeSlotAdded": false,
+		"v0217RoadRiverbankWaterProductionSlotAdded": false,
 		"visualNodeCategories": ["terrainBase", "terrainEdges", "roads", "river", "banks", "bridge", "structures", "sites", "unitContact", "overlays"],
 		"terrainBaseSurfaceCount": 1,
 		"roadRibbonCount": 7,
@@ -7554,17 +7928,21 @@ func _create_shell_v2_mesh_compositor_terrain() -> bool:
 		"scopedRoadMaterialSurfaceCount": road_material_applied_surface_names.size(),
 		"scopedBridgeRiverbankMaterialSurfaceCount": bridge_riverbank_material_applied_surface_names.size(),
 		"scopedStructureFinishMaterialSurfaceCount": structure_finish_material_applied_surface_names.size(),
+		"scopedRoadRiverbankWaterMaterialSurfaceCount": road_riverbank_water_material_applied_surface_names.size(),
 		"materialBindTargets": {
 			"ground": ground_material_applied_surface_names.duplicate(),
 			"road": road_material_applied_surface_names.duplicate(),
 			"wetGranite": bridge_riverbank_material_applied_surface_names.duplicate(),
-			"structureFinish": structure_finish_material_applied_surface_names.duplicate()
+			"structureFinish": structure_finish_material_applied_surface_names.duplicate(),
+			"roadRiverbankWater": road_riverbank_water_material_applied_surface_names.duplicate()
 		},
 		"uvScales": {
 			"ground": ground_material_requested_uv_scale,
 			"road": road_material_requested_uv_scale,
-			"river": 0.42,
-			"bank": bridge_riverbank_material_requested_uv_scale if _bridge_riverbank_material_is_active() else 0.52,
+			"v0217Road": _road_riverbank_water_material_uv_scale("road") if _road_riverbank_water_material_region_is_active("road") else 0.0,
+			"river": _road_riverbank_water_material_uv_scale("water") if _road_riverbank_water_material_region_is_active("water") else 0.42,
+			"bank": _road_riverbank_water_material_uv_scale("riverbank") if _road_riverbank_water_material_region_is_active("riverbank") else (bridge_riverbank_material_requested_uv_scale if _bridge_riverbank_material_is_active() else 0.52),
+			"wetEdge": _road_riverbank_water_material_uv_scale("wet_edge") if _road_riverbank_water_material_region_is_active("wet_edge") else 0.52,
 			"bridge": bridge_riverbank_material_requested_uv_scale if _bridge_riverbank_material_is_active() else 0.74,
 			"wetGranite": bridge_riverbank_material_requested_uv_scale,
 			"structureFinish": structure_finish_material_requested_uv_scale

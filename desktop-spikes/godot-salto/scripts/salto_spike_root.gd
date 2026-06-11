@@ -87,6 +87,24 @@ const SCRIPT_ARG_PREFIXES := [
 	"--bridge-riverbank-material-expected-sha256=",
 	"--bridge-riverbank-material-fallback-mode=",
 	"--bridge-riverbank-material-uv-scale=",
+	"--road-riverbank-water-material-opt-in",
+	"--road-riverbank-water-material-fallback-mode=",
+	"--road-riverbank-water-road-source=",
+	"--road-riverbank-water-road-metadata=",
+	"--road-riverbank-water-road-expected-sha256=",
+	"--road-riverbank-water-road-uv-scale=",
+	"--road-riverbank-water-riverbank-source=",
+	"--road-riverbank-water-riverbank-metadata=",
+	"--road-riverbank-water-riverbank-expected-sha256=",
+	"--road-riverbank-water-riverbank-uv-scale=",
+	"--road-riverbank-water-water-source=",
+	"--road-riverbank-water-water-metadata=",
+	"--road-riverbank-water-water-expected-sha256=",
+	"--road-riverbank-water-water-uv-scale=",
+	"--road-riverbank-water-wet-edge-source=",
+	"--road-riverbank-water-wet-edge-metadata=",
+	"--road-riverbank-water-wet-edge-expected-sha256=",
+	"--road-riverbank-water-wet-edge-uv-scale=",
 	"--salto-shell-v2-structure-material",
 	"--structure-finish-material-opt-in",
 	"--structure-finish-material-source=",
@@ -1024,6 +1042,8 @@ func _configure_worker_art_for_active_scene() -> void:
 		active_scene.configure_road_material_experiment(_road_material_options_from_args())
 	if active_scene.has_method("configure_bridge_riverbank_material_experiment"):
 		active_scene.configure_bridge_riverbank_material_experiment(_bridge_riverbank_material_options_from_args())
+	if active_scene.has_method("configure_road_riverbank_water_material_experiment"):
+		active_scene.configure_road_riverbank_water_material_experiment(_road_riverbank_water_material_options_from_args())
 	if active_scene.has_method("configure_structure_finish_material_experiment"):
 		active_scene.configure_structure_finish_material_experiment(_structure_finish_material_options_from_args())
 	if active_scene.has_method("configure_environment_geometry_convergence"):
@@ -1270,6 +1290,64 @@ func _bridge_riverbank_material_options_from_args() -> Dictionary:
 		"uvScale": uv_scale,
 		"fallbackMode": fallback_mode,
 		"requestedBy": "GODOT_REVIEW_SALTO_SHELL_V2_MESH_WET_GRANITE_WINDOWS.bat or explicit --bridge-riverbank-material-opt-in"
+	}
+
+func _road_riverbank_water_material_region_options(region: String, default_sha256: String, default_uv_scale: String, fallback_mode: String) -> Dictionary:
+	var arg_region := region.replace("_", "-")
+	var prefix := "--road-riverbank-water-%s" % arg_region
+	var source_path := _arg_value("%s-source=" % prefix, "")
+	var metadata_path := _arg_value("%s-metadata=" % prefix, "")
+	if source_path == "":
+		source_path = ProjectSettings.globalize_path("res://../../artifacts/desktop-spikes/godot-salto/v0217/local-road-riverbank-water-material-slot/barrosan_road_riverbank_water_material_v0217_%s_1024.png" % region)
+	if metadata_path == "":
+		metadata_path = ProjectSettings.globalize_path("res://../../artifacts/desktop-spikes/godot-salto/v0217/local-road-riverbank-water-material-slot/barrosan_road_riverbank_water_material_v0217_%s_1024.metadata.json" % region)
+	if fallback_mode == "missing" and not _has_arg_prefix("%s-source=" % prefix):
+		source_path = ProjectSettings.globalize_path("res://../../artifacts/desktop-spikes/godot-salto/v0217/missing-road-riverbank-water-source/barrosan_road_riverbank_water_material_v0217_%s_1024.png" % region)
+	var uv_text := _arg_value("%s-uv-scale=" % prefix, default_uv_scale)
+	var uv_scale := float(default_uv_scale)
+	if uv_text.is_valid_float():
+		uv_scale = float(uv_text)
+	return {
+		"sourcePath": source_path.replace("\\", "/"),
+		"metadataPath": metadata_path.replace("\\", "/"),
+		"expectedSha256": _arg_value("%s-expected-sha256=" % prefix, default_sha256).to_lower(),
+		"uvScale": uv_scale
+	}
+
+func _road_riverbank_water_material_options_from_args() -> Dictionary:
+	var fallback_mode := _arg_value("--road-riverbank-water-material-fallback-mode=", "none")
+	var road := _road_riverbank_water_material_region_options("road", "14de8b84468d66a582f0cf1e5fb9ee82b59ca1d37da7589c21b2673ca5417a0b", "0.70", fallback_mode)
+	var riverbank := _road_riverbank_water_material_region_options("riverbank", "68b18047ae1dc501d51b57caf2cb118aa7f8b6167d887c83e0f9d5b05d5611ee", "0.64", fallback_mode)
+	var water := _road_riverbank_water_material_region_options("water", "461e7368d4084d474ce8471ea993633dfc5651a6cfda346ab3c184cf899cfbb9", "0.58", fallback_mode)
+	var wet_edge := _road_riverbank_water_material_region_options("wet_edge", "c015bc67f5e9368532f0d449034f874d78da4b4e0156fbd60ec40ea6eadcc4da", "0.60", fallback_mode)
+	return {
+		"enabled": _script_args().has("--road-riverbank-water-material-opt-in"),
+		"sources": {
+			"road": road["sourcePath"],
+			"riverbank": riverbank["sourcePath"],
+			"water": water["sourcePath"],
+			"wet_edge": wet_edge["sourcePath"]
+		},
+		"metadataPaths": {
+			"road": road["metadataPath"],
+			"riverbank": riverbank["metadataPath"],
+			"water": water["metadataPath"],
+			"wet_edge": wet_edge["metadataPath"]
+		},
+		"expectedSha256": {
+			"road": road["expectedSha256"],
+			"riverbank": riverbank["expectedSha256"],
+			"water": water["expectedSha256"],
+			"wet_edge": wet_edge["expectedSha256"]
+		},
+		"uvScales": {
+			"road": road["uvScale"],
+			"riverbank": riverbank["uvScale"],
+			"water": water["uvScale"],
+			"wet_edge": wet_edge["uvScale"]
+		},
+		"fallbackMode": fallback_mode,
+		"requestedBy": "GODOT_REVIEW_SALTO_PRESENTATION_REBOOT_WINDOWS.bat or explicit --road-riverbank-water-material-opt-in"
 	}
 
 func _structure_finish_material_options_from_args() -> Dictionary:
@@ -4029,6 +4107,8 @@ func run_player_slice_validation() -> void:
 	var road_material_loaded := bool(road_material.get("sourceLoaded", false))
 	var bridge_riverbank_material: Dictionary = final_status.get("bridgeRiverbankMaterialExperiment", {})
 	var bridge_riverbank_material_loaded := bool(bridge_riverbank_material.get("sourceLoaded", false))
+	var road_riverbank_water_material: Dictionary = final_status.get("roadRiverbankWaterMaterialExperiment", {})
+	var road_riverbank_water_material_loaded := bool(road_riverbank_water_material.get("sourceLoaded", false))
 	var environment_foundation: Dictionary = final_status.get("environmentFoundationReview", {})
 	var environment_readability: Dictionary = final_status.get("environmentReadabilityHardening", {})
 	var environment_contrast: Dictionary = final_status.get("environmentContrastHarmonization", {})
@@ -4054,6 +4134,10 @@ func run_player_slice_validation() -> void:
 	performance_smoke["roadMaterialExperiment"] = road_material
 	performance_smoke["bridgeRiverbankMaterialOptInRequested"] = _script_args().has("--bridge-riverbank-material-opt-in")
 	performance_smoke["bridgeRiverbankMaterialExperiment"] = bridge_riverbank_material
+	performance_smoke["roadRiverbankWaterMaterialOptInRequested"] = _script_args().has("--road-riverbank-water-material-opt-in")
+	performance_smoke["roadRiverbankWaterMaterialExperiment"] = road_riverbank_water_material
+	performance_smoke["roadRiverbankWaterMaterialRuntimeSlotAdded"] = false
+	performance_smoke["roadRiverbankWaterMaterialProductionSlotAdded"] = false
 	performance_smoke["environmentFoundationReviewEnabled"] = bool(final_status.get("environmentFoundationReviewEnabled", false))
 	performance_smoke["environmentFoundationReview"] = environment_foundation
 	performance_smoke["environmentReadabilityHardeningEnabled"] = bool(final_status.get("environmentReadabilityHardeningEnabled", false))
@@ -4111,9 +4195,9 @@ func run_player_slice_validation() -> void:
 		"saltoAsterPortraitGeneratedImages": false,
 		"routineEditorUseRequired": false,
 		"manualGodotEditorSceneAssemblyRequired": false,
-		"proceduralPrimitiveOnly": not worker_art_loaded and not barracks_material_loaded and not militia_art_loaded and not aster_art_loaded and not ashen_art_loaded and not ground_material_loaded and not road_material_loaded and not bridge_riverbank_material_loaded,
-		"generatedOrImportedArtIncluded": worker_art_loaded or barracks_material_loaded or militia_art_loaded or aster_art_loaded or ashen_art_loaded or ground_material_loaded or road_material_loaded or bridge_riverbank_material_loaded,
-		"runtimeArtIntegrated": worker_art_loaded or barracks_material_loaded or militia_art_loaded or aster_art_loaded or ashen_art_loaded or ground_material_loaded or road_material_loaded or bridge_riverbank_material_loaded,
+		"proceduralPrimitiveOnly": not worker_art_loaded and not barracks_material_loaded and not militia_art_loaded and not aster_art_loaded and not ashen_art_loaded and not ground_material_loaded and not road_material_loaded and not bridge_riverbank_material_loaded and not road_riverbank_water_material_loaded,
+		"generatedOrImportedArtIncluded": worker_art_loaded or barracks_material_loaded or militia_art_loaded or aster_art_loaded or ashen_art_loaded or ground_material_loaded or road_material_loaded or bridge_riverbank_material_loaded or road_riverbank_water_material_loaded,
+		"runtimeArtIntegrated": worker_art_loaded or barracks_material_loaded or militia_art_loaded or aster_art_loaded or ashen_art_loaded or ground_material_loaded or road_material_loaded or bridge_riverbank_material_loaded or road_riverbank_water_material_loaded,
 		"workerArtOptInRequested": _script_args().has("--worker-art-opt-in"),
 		"workerArtExperiment": worker_art,
 		"barracksMaterialOptInRequested": _script_args().has("--barracks-material-opt-in"),
@@ -4130,6 +4214,10 @@ func run_player_slice_validation() -> void:
 		"roadMaterialExperiment": road_material,
 		"bridgeRiverbankMaterialOptInRequested": _script_args().has("--bridge-riverbank-material-opt-in"),
 		"bridgeRiverbankMaterialExperiment": bridge_riverbank_material,
+		"roadRiverbankWaterMaterialOptInRequested": _script_args().has("--road-riverbank-water-material-opt-in"),
+		"roadRiverbankWaterMaterialExperiment": road_riverbank_water_material,
+		"roadRiverbankWaterMaterialRuntimeSlotAdded": false,
+		"roadRiverbankWaterMaterialProductionSlotAdded": false,
 		"environmentFoundationReviewEnabled": bool(final_status.get("environmentFoundationReviewEnabled", false)),
 		"environmentFoundationReview": environment_foundation,
 		"environmentReadabilityHardeningEnabled": bool(final_status.get("environmentReadabilityHardeningEnabled", false)),
@@ -4162,6 +4250,8 @@ func run_player_slice_validation() -> void:
 		"bridgeRiverbankMaterialRuntimeSlotAdded": bool(final_status.get("bridgeRiverbankMaterialRuntimeSlotAdded", false)),
 		"environmentMaterialOptInRequestedSlotCount": int(final_status.get("environmentMaterialOptInRequestedSlotCount", 0)),
 		"environmentMaterialOptInLoadedSlotCount": int(final_status.get("environmentMaterialOptInLoadedSlotCount", 0)),
+		"environmentMaterialOptInRequestedBundleCount": int(final_status.get("environmentMaterialOptInRequestedBundleCount", 0)),
+		"environmentMaterialOptInLoadedBundleCount": int(final_status.get("environmentMaterialOptInLoadedBundleCount", 0)),
 		"normalSliceOptInRequestedSlotCount": int(final_status.get("normalSliceOptInRequestedSlotCount", 0)),
 		"normalSliceOptInLoadedSlotCount": int(final_status.get("normalSliceOptInLoadedSlotCount", 0)),
 		"workerArtProceduralFallbackActive": bool(final_status.get("workerArtProceduralFallbackActive", false)),
@@ -4172,6 +4262,7 @@ func run_player_slice_validation() -> void:
 		"groundMaterialProceduralFallbackActive": bool(final_status.get("groundMaterialProceduralFallbackActive", false)),
 		"roadMaterialProceduralFallbackActive": bool(final_status.get("roadMaterialProceduralFallbackActive", false)),
 		"bridgeRiverbankMaterialProceduralFallbackActive": bool(final_status.get("bridgeRiverbankMaterialProceduralFallbackActive", false)),
+		"roadRiverbankWaterMaterialProceduralFallbackActive": bool(final_status.get("roadRiverbankWaterMaterialProceduralFallbackActive", false)),
 		"fourthPlayerFacingArtSlotAdded": bool(final_status.get("fourthPlayerFacingArtSlotAdded", false)),
 		"fifthPlayerFacingArtSlotAdded": bool(final_status.get("fifthPlayerFacingArtSlotAdded", false)),
 		"sixthPlayerFacingArtSlotAdded": bool(final_status.get("sixthPlayerFacingArtSlotAdded", false)),
@@ -4275,6 +4366,8 @@ func run_player_slice_capture() -> void:
 	var road_material_loaded := bool(road_material.get("sourceLoaded", false))
 	var bridge_riverbank_material: Dictionary = final_status.get("bridgeRiverbankMaterialExperiment", {})
 	var bridge_riverbank_material_loaded := bool(bridge_riverbank_material.get("sourceLoaded", false))
+	var road_riverbank_water_material: Dictionary = final_status.get("roadRiverbankWaterMaterialExperiment", {})
+	var road_riverbank_water_material_loaded := bool(road_riverbank_water_material.get("sourceLoaded", false))
 	var environment_foundation: Dictionary = final_status.get("environmentFoundationReview", {})
 	var environment_readability: Dictionary = final_status.get("environmentReadabilityHardening", {})
 	var environment_contrast: Dictionary = final_status.get("environmentContrastHarmonization", {})
@@ -4309,10 +4402,10 @@ func run_player_slice_capture() -> void:
 		"saltoAsterPortraitFallbackActive": bool(_salto_aster_portrait_status().get("fallbackActive", true)),
 		"saltoAsterPortraitProductionSlotAdded": false,
 		"saltoAsterPortraitGeneratedImages": false,
-		"privateHarnessPreservedSeparately": captures.any(func(capture: Dictionary) -> bool: return bool(capture.get("privateHarnessCapture", false))) or ["v0.126", "v0.127", "v0.128", "v0.129", "v0.130", "v0.160", "v0.162", "v0.164", "v0.168", "v0.169", "v0.170", "v0.173", "v0.174", "v0.177", "v0.178", "v0.179", "v0.181", "v0.184", "v0.185", "v0.186", "v0.187", "v0.193", "v0.194", "v0.195", "v0.196", "v0.197", "v0.198", "v0.199", "v0.200", "v0.203", "v0.204", "v0.205", "v0.206", "v0.209", "v0.210", "v0.211", "v0.212"].has(_player_capture_checkpoint()),
-		"proceduralPrimitiveOnly": not worker_art_loaded and not barracks_material_loaded and not militia_art_loaded and not aster_art_loaded and not ashen_art_loaded and not ground_material_loaded and not road_material_loaded and not bridge_riverbank_material_loaded,
-		"generatedOrImportedArtIncluded": worker_art_loaded or barracks_material_loaded or militia_art_loaded or aster_art_loaded or ashen_art_loaded or ground_material_loaded or road_material_loaded or bridge_riverbank_material_loaded,
-		"runtimeArtIntegrated": worker_art_loaded or barracks_material_loaded or militia_art_loaded or aster_art_loaded or ashen_art_loaded or ground_material_loaded or road_material_loaded or bridge_riverbank_material_loaded,
+		"privateHarnessPreservedSeparately": captures.any(func(capture: Dictionary) -> bool: return bool(capture.get("privateHarnessCapture", false))) or ["v0.126", "v0.127", "v0.128", "v0.129", "v0.130", "v0.160", "v0.162", "v0.164", "v0.168", "v0.169", "v0.170", "v0.173", "v0.174", "v0.177", "v0.178", "v0.179", "v0.181", "v0.184", "v0.185", "v0.186", "v0.187", "v0.193", "v0.194", "v0.195", "v0.196", "v0.197", "v0.198", "v0.199", "v0.200", "v0.203", "v0.204", "v0.205", "v0.206", "v0.209", "v0.210", "v0.211", "v0.212", "v0.217"].has(_player_capture_checkpoint()),
+		"proceduralPrimitiveOnly": not worker_art_loaded and not barracks_material_loaded and not militia_art_loaded and not aster_art_loaded and not ashen_art_loaded and not ground_material_loaded and not road_material_loaded and not bridge_riverbank_material_loaded and not road_riverbank_water_material_loaded,
+		"generatedOrImportedArtIncluded": worker_art_loaded or barracks_material_loaded or militia_art_loaded or aster_art_loaded or ashen_art_loaded or ground_material_loaded or road_material_loaded or bridge_riverbank_material_loaded or road_riverbank_water_material_loaded,
+		"runtimeArtIntegrated": worker_art_loaded or barracks_material_loaded or militia_art_loaded or aster_art_loaded or ashen_art_loaded or ground_material_loaded or road_material_loaded or bridge_riverbank_material_loaded or road_riverbank_water_material_loaded,
 		"workerArtOptInRequested": _script_args().has("--worker-art-opt-in"),
 		"workerArtExperiment": worker_art,
 		"barracksMaterialOptInRequested": _script_args().has("--barracks-material-opt-in"),
@@ -4329,6 +4422,10 @@ func run_player_slice_capture() -> void:
 		"roadMaterialExperiment": road_material,
 		"bridgeRiverbankMaterialOptInRequested": _script_args().has("--bridge-riverbank-material-opt-in"),
 		"bridgeRiverbankMaterialExperiment": bridge_riverbank_material,
+		"roadRiverbankWaterMaterialOptInRequested": _script_args().has("--road-riverbank-water-material-opt-in"),
+		"roadRiverbankWaterMaterialExperiment": road_riverbank_water_material,
+		"roadRiverbankWaterMaterialRuntimeSlotAdded": false,
+		"roadRiverbankWaterMaterialProductionSlotAdded": false,
 		"environmentFoundationReviewEnabled": bool(final_status.get("environmentFoundationReviewEnabled", false)),
 		"environmentFoundationReview": environment_foundation,
 		"environmentReadabilityHardeningEnabled": bool(final_status.get("environmentReadabilityHardeningEnabled", false)),
@@ -4361,6 +4458,8 @@ func run_player_slice_capture() -> void:
 		"bridgeRiverbankMaterialRuntimeSlotAdded": bool(final_status.get("bridgeRiverbankMaterialRuntimeSlotAdded", false)),
 		"environmentMaterialOptInRequestedSlotCount": int(final_status.get("environmentMaterialOptInRequestedSlotCount", 0)),
 		"environmentMaterialOptInLoadedSlotCount": int(final_status.get("environmentMaterialOptInLoadedSlotCount", 0)),
+		"environmentMaterialOptInRequestedBundleCount": int(final_status.get("environmentMaterialOptInRequestedBundleCount", 0)),
+		"environmentMaterialOptInLoadedBundleCount": int(final_status.get("environmentMaterialOptInLoadedBundleCount", 0)),
 		"normalSliceOptInRequestedSlotCount": int(final_status.get("normalSliceOptInRequestedSlotCount", 0)),
 		"normalSliceOptInLoadedSlotCount": int(final_status.get("normalSliceOptInLoadedSlotCount", 0)),
 		"workerArtProceduralFallbackActive": bool(final_status.get("workerArtProceduralFallbackActive", false)),
@@ -4371,6 +4470,7 @@ func run_player_slice_capture() -> void:
 		"groundMaterialProceduralFallbackActive": bool(final_status.get("groundMaterialProceduralFallbackActive", false)),
 		"roadMaterialProceduralFallbackActive": bool(final_status.get("roadMaterialProceduralFallbackActive", false)),
 		"bridgeRiverbankMaterialProceduralFallbackActive": bool(final_status.get("bridgeRiverbankMaterialProceduralFallbackActive", false)),
+		"roadRiverbankWaterMaterialProceduralFallbackActive": bool(final_status.get("roadRiverbankWaterMaterialProceduralFallbackActive", false)),
 		"fourthPlayerFacingArtSlotAdded": bool(final_status.get("fourthPlayerFacingArtSlotAdded", false)),
 		"fifthPlayerFacingArtSlotAdded": bool(final_status.get("fifthPlayerFacingArtSlotAdded", false)),
 		"sixthPlayerFacingArtSlotAdded": bool(final_status.get("sixthPlayerFacingArtSlotAdded", false)),
@@ -4426,6 +4526,7 @@ func run_worker_art_opt_in_benchmark() -> void:
 	var ground_material: Dictionary = final_status.get("groundMaterialExperiment", {})
 	var road_material: Dictionary = final_status.get("roadMaterialExperiment", {})
 	var bridge_riverbank_material: Dictionary = final_status.get("bridgeRiverbankMaterialExperiment", {})
+	var road_riverbank_water_material: Dictionary = final_status.get("roadRiverbankWaterMaterialExperiment", {})
 	var environment_foundation: Dictionary = final_status.get("environmentFoundationReview", {})
 	var environment_readability: Dictionary = final_status.get("environmentReadabilityHardening", {})
 	var environment_contrast: Dictionary = final_status.get("environmentContrastHarmonization", {})
@@ -4435,7 +4536,7 @@ func run_worker_art_opt_in_benchmark() -> void:
 	var environment_riverbank_bridge_approach: Dictionary = final_status.get("environmentRiverbankBridgeApproach", {})
 	var environment_presentation_shell_v2: Dictionary = final_status.get("environmentPresentationShellV2", {})
 	var environment_shell_v2_mesh_compositor: Dictionary = final_status.get("environmentShellV2MeshCompositor", {})
-	var any_loaded := bool(worker_art.get("sourceLoaded", false)) or bool(barracks_material.get("sourceLoaded", false)) or bool(militia_art.get("sourceLoaded", false)) or bool(aster_art.get("sourceLoaded", false)) or bool(ashen_art.get("sourceLoaded", false)) or bool(ground_material.get("sourceLoaded", false)) or bool(road_material.get("sourceLoaded", false)) or bool(bridge_riverbank_material.get("sourceLoaded", false))
+	var any_loaded := bool(worker_art.get("sourceLoaded", false)) or bool(barracks_material.get("sourceLoaded", false)) or bool(militia_art.get("sourceLoaded", false)) or bool(aster_art.get("sourceLoaded", false)) or bool(ashen_art.get("sourceLoaded", false)) or bool(ground_material.get("sourceLoaded", false)) or bool(road_material.get("sourceLoaded", false)) or bool(bridge_riverbank_material.get("sourceLoaded", false)) or bool(road_riverbank_water_material.get("sourceLoaded", false))
 	var five_slot_requested := _script_args().has("--ashen-art-opt-in")
 	var four_slot_requested := _script_args().has("--aster-art-opt-in")
 	var three_slot_requested := _script_args().has("--militia-art-opt-in")
@@ -4468,6 +4569,10 @@ func run_worker_art_opt_in_benchmark() -> void:
 		"roadMaterialExperiment": road_material,
 		"bridgeRiverbankMaterialOptInRequested": _script_args().has("--bridge-riverbank-material-opt-in"),
 		"bridgeRiverbankMaterialExperiment": bridge_riverbank_material,
+		"roadRiverbankWaterMaterialOptInRequested": _script_args().has("--road-riverbank-water-material-opt-in"),
+		"roadRiverbankWaterMaterialExperiment": road_riverbank_water_material,
+		"roadRiverbankWaterMaterialRuntimeSlotAdded": false,
+		"roadRiverbankWaterMaterialProductionSlotAdded": false,
 		"environmentFoundationReviewEnabled": bool(final_status.get("environmentFoundationReviewEnabled", false)),
 		"environmentFoundationReview": environment_foundation,
 		"environmentReadabilityHardeningEnabled": bool(final_status.get("environmentReadabilityHardeningEnabled", false)),
@@ -4501,6 +4606,8 @@ func run_worker_art_opt_in_benchmark() -> void:
 		"bridgeRiverbankMaterialRuntimeSlotAdded": bool(final_status.get("bridgeRiverbankMaterialRuntimeSlotAdded", false)),
 		"environmentMaterialOptInRequestedSlotCount": int(final_status.get("environmentMaterialOptInRequestedSlotCount", 0)),
 		"environmentMaterialOptInLoadedSlotCount": int(final_status.get("environmentMaterialOptInLoadedSlotCount", 0)),
+		"environmentMaterialOptInRequestedBundleCount": int(final_status.get("environmentMaterialOptInRequestedBundleCount", 0)),
+		"environmentMaterialOptInLoadedBundleCount": int(final_status.get("environmentMaterialOptInLoadedBundleCount", 0)),
 		"normalSliceOptInRequestedSlotCount": int(final_status.get("normalSliceOptInRequestedSlotCount", 0)),
 		"normalSliceOptInLoadedSlotCount": int(final_status.get("normalSliceOptInLoadedSlotCount", 0)),
 		"workerArtProceduralFallbackActive": bool(final_status.get("workerArtProceduralFallbackActive", false)),
@@ -4511,6 +4618,7 @@ func run_worker_art_opt_in_benchmark() -> void:
 		"groundMaterialProceduralFallbackActive": bool(final_status.get("groundMaterialProceduralFallbackActive", false)),
 		"roadMaterialProceduralFallbackActive": bool(final_status.get("roadMaterialProceduralFallbackActive", false)),
 		"bridgeRiverbankMaterialProceduralFallbackActive": bool(final_status.get("bridgeRiverbankMaterialProceduralFallbackActive", false)),
+		"roadRiverbankWaterMaterialProceduralFallbackActive": bool(final_status.get("roadRiverbankWaterMaterialProceduralFallbackActive", false)),
 		"fourthPlayerFacingArtSlotAdded": bool(final_status.get("fourthPlayerFacingArtSlotAdded", false)),
 		"fifthPlayerFacingArtSlotAdded": bool(final_status.get("fifthPlayerFacingArtSlotAdded", false)),
 		"sixthPlayerFacingArtSlotAdded": bool(final_status.get("sixthPlayerFacingArtSlotAdded", false)),
@@ -4564,7 +4672,14 @@ func run_worker_art_opt_in_benchmark() -> void:
 			"roadMaterialTextureCreateCount": int(road_material.get("textureCreateCount", 0)),
 			"roadMaterialMaterialCreateCount": int(road_material.get("materialCreateCount", 0)),
 			"roadMaterialMaterialReuseCount": int(road_material.get("materialReuseCount", 0)),
-			"roadMaterialAppliedSurfaceCount": int(road_material.get("appliedSurfaceCount", 0))
+			"roadMaterialAppliedSurfaceCount": int(road_material.get("appliedSurfaceCount", 0)),
+			"roadRiverbankWaterSourceLoadCount": int(road_riverbank_water_material.get("sourceLoadCount", 0)),
+			"roadRiverbankWaterMetadataParseCount": int(road_riverbank_water_material.get("metadataParseCount", 0)),
+			"roadRiverbankWaterImageDecodeCount": int(road_riverbank_water_material.get("imageDecodeCount", 0)),
+			"roadRiverbankWaterTextureCreateCount": int(road_riverbank_water_material.get("textureCreateCount", 0)),
+			"roadRiverbankWaterMaterialCreateCount": int(road_riverbank_water_material.get("materialCreateCount", 0)),
+			"roadRiverbankWaterMaterialReuseCount": int(road_riverbank_water_material.get("materialReuseCount", 0)),
+			"roadRiverbankWaterAppliedSurfaceCount": int(road_riverbank_water_material.get("appliedSurfaceCount", 0))
 		},
 		"steps": steps,
 		"errors": errors,
@@ -7240,6 +7355,8 @@ func _apply_player_slice_action(action: String) -> Dictionary:
 
 func _player_capture_checkpoint() -> String:
 	var normalized_root := _artifact_root_from_args().replace("\\", "/")
+	if normalized_root.contains("/v0217"):
+		return "v0.217"
 	if normalized_root.contains("/v0216"):
 		return "v0.216"
 	if normalized_root.contains("/v0215"):
@@ -7325,9 +7442,18 @@ func _player_capture_checkpoint() -> String:
 	return "v0.124"
 
 func _is_bounded_microloop_checkpoint() -> bool:
-	return ["v0.129", "v0.130", "v0.160", "v0.162", "v0.164", "v0.166", "v0.168", "v0.169", "v0.170", "v0.173", "v0.174", "v0.177", "v0.178", "v0.179", "v0.181", "v0.184", "v0.185", "v0.186", "v0.187", "v0.193", "v0.194", "v0.195", "v0.196", "v0.197", "v0.198", "v0.199", "v0.200", "v0.203", "v0.204", "v0.205", "v0.206", "v0.209", "v0.210", "v0.211", "v0.212", "v0.213", "v0.215", "v0.216"].has(_player_capture_checkpoint())
+	return ["v0.129", "v0.130", "v0.160", "v0.162", "v0.164", "v0.166", "v0.168", "v0.169", "v0.170", "v0.173", "v0.174", "v0.177", "v0.178", "v0.179", "v0.181", "v0.184", "v0.185", "v0.186", "v0.187", "v0.193", "v0.194", "v0.195", "v0.196", "v0.197", "v0.198", "v0.199", "v0.200", "v0.203", "v0.204", "v0.205", "v0.206", "v0.209", "v0.210", "v0.211", "v0.212", "v0.213", "v0.215", "v0.216", "v0.217"].has(_player_capture_checkpoint())
 
 func _player_capture_steps() -> Array[Dictionary]:
+	if _player_capture_checkpoint() == "v0.217":
+		return [
+			{"id": "road_overview", "label": "v0.217 road riverbank water overview", "action": "battle_default"},
+			{"id": "road_junction", "label": "v0.217 road junction and route width", "action": "site_marker_hierarchy"},
+			{"id": "river_banks", "label": "v0.217 river and bank material hierarchy", "action": "ford"},
+			{"id": "bridge_approaches", "label": "v0.217 bridge approach transitions", "action": "v0195_bridge_close"},
+			{"id": "normal_rts_distance", "label": "v0.217 normal RTS material readability", "action": "battle_default"},
+			{"id": "fallback_comparison", "label": "v0.217 material fallback comparison posture", "action": "friendly_boundary"}
+		]
 	if _player_capture_checkpoint() == "v0.216":
 		return [
 			{"id": "terrain_overview", "label": "v0.216 terrain material reboot overview", "action": "battle_default"},

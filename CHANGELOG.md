@@ -1,5 +1,33 @@
 # Changelog
 
+# v0.217 Road Riverbank Water Material Hierarchy - 2026-06-11
+
+This checkpoint replaces pasted-on road strips and flat water in the isolated Godot Salto presentation-reboot path with one original road, riverbank, water and wet-edge material atlas. The source is generated exactly once, then split into deterministic local derivatives with strict hash-gated fallback behavior.
+
+Changed:
+
+- Generated exactly one original local road/riverbank/water/wet-edge material atlas.
+- Produced deterministic 1024 road, riverbank, water and wet-edge derivatives from that single source.
+- Bound the selected derivatives only behind the isolated presentation-reboot launcher.
+- Added selected, missing-art and hash-mismatch capture/validation/benchmark scenarios.
+- Added the v0.217 manual review pack and required implementation reports.
+
+Boundary:
+
+- Generated images: exactly one.
+- Downloaded assets: zero.
+- New production runtime art slots: zero.
+- Browser runtime changes: none.
+- Default launcher changes: none.
+- Gameplay, pathing, collision, objective, AI, economy, save, stable-ID and balance changes: none.
+
+Validation:
+
+- Road riverbank water capture and review-pack generation passed.
+- Road riverbank water validation, benchmark and boundary gate passed.
+- Artifact retention validation passed.
+- Runtime-art slot validation, content validation, art-intake validation, Vitest, Godot scaffold tests, production build and `git diff --check` passed.
+
 # v0.216 Barrosan Foothold Terrain Material Production And Reboot Integration - 2026-06-11
 
 This checkpoint replaces the flat prototype terrain read in the isolated Godot Salto presentation-reboot path with one original Barrosan foothold terrain material. The source is generated exactly once, then selected through deterministic local derivatives and strict hash-gated fallback behavior.

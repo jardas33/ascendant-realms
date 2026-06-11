@@ -1,6 +1,35 @@
 # Development Checkpoint
 
-Updated: 2026-06-11 v0.216 Barrosan foothold terrain material production and reboot integration
+Updated: 2026-06-11 v0.217 Road riverbank water material hierarchy
+
+## v0.217 Road Riverbank Water Material Hierarchy - 2026-06-11
+
+Scope: isolated opt-in Godot Salto presentation-reboot road, riverbank, water and wet-edge material path. This checkpoint generates exactly one original material-atlas source, derives four deterministic local 1024 candidates, preserves the default procedural launcher, preserves all prior launchers, keeps browser runtime untouched, adds no production runtime art slot, and leaves gameplay, pathing, collisions, objectives, AI, economy, saves, stable IDs and balance unchanged.
+
+Included work:
+
+- Generated one source atlas for compacted dirt/gravel road, mossy riverbank stone/earth, muted shallow river water and darker wet-edge transition.
+- Selected deterministic 1024 road, riverbank, water and wet-edge derivatives with SHA values recorded in `docs/V0217_ROAD_RIVERBANK_WATER_INTAKE_REPORT.md`.
+- Bound the selected bundle only through `tools/godot/launchGodotSaltoPresentationRebootWindows.ps1`.
+- Added v0.217 capture, validation, benchmark and review-pack tooling.
+- Generated the ignored manual review pack under `artifacts/manual-review/v0217-road-riverbank-water/`.
+- Added v0.217 intake, compositor and implementation docs.
+
+Verification targets:
+
+```text
+PASS: npm run godot:capture:salto-road-riverbank-water.
+PASS: npm run godot:validate:salto-road-riverbank-water.
+PASS: npm run godot:benchmark:salto-road-riverbank-water.
+PASS: v0.217 road riverbank water boundary gate.
+PASS: runtime-art slot validation.
+PASS: content validation.
+PASS: art-intake validation.
+PASS: Vitest suite.
+PASS: Godot scaffold tests.
+PASS: production build.
+PASS: git diff --check.
+```
 
 ## v0.216 Barrosan Foothold Terrain Material Production And Reboot Integration - 2026-06-11
 
