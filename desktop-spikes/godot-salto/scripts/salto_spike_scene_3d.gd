@@ -9507,12 +9507,12 @@ func _add_shell_v2_grounding_props_layer() -> void:
 	var scrub_dark := Color(0.18, 0.28, 0.15, 0.30)
 	var wet_edge := Color(0.12, 0.22, 0.22, 0.30)
 	var water_glint := Color(0.28, 0.48, 0.50, 0.24)
-	var terrain_shadow := Color(0.070, 0.090, 0.058, 0.20)
-	var terrain_lift := Color(0.42, 0.50, 0.29, 0.20)
-	var terrain_warm_lift := Color(0.52, 0.46, 0.28, 0.16)
-	var terrain_cool_shadow := Color(0.040, 0.070, 0.064, 0.18)
-	var road_edge := Color(0.16, 0.13, 0.08, 0.30)
-	var road_dust := Color(0.62, 0.54, 0.36, 0.20)
+	var terrain_shadow := Color(0.060, 0.078, 0.050, 0.24)
+	var terrain_lift := Color(0.48, 0.54, 0.32, 0.23)
+	var terrain_warm_lift := Color(0.58, 0.50, 0.30, 0.19)
+	var terrain_cool_shadow := Color(0.035, 0.060, 0.058, 0.22)
+	var road_edge := Color(0.13, 0.105, 0.065, 0.34)
+	var road_dust := Color(0.70, 0.60, 0.38, 0.24)
 	for accent in [
 		{"name": "v0214_review_field_value_break_west_00", "pos": Vector3(-4.96, 0.238, -0.84), "scale": Vector3(1.18, 0.012, 0.055), "color": terrain_shadow},
 		{"name": "v0214_review_field_value_break_west_01", "pos": Vector3(-3.62, 0.238, 2.74), "scale": Vector3(1.38, 0.012, 0.050), "color": terrain_lift},
@@ -9525,7 +9525,9 @@ func _add_shell_v2_grounding_props_layer() -> void:
 		{"name": "v0215_review_field_cool_bank_shadow_south", "pos": Vector3(1.38, 0.242, 2.86), "scale": Vector3(0.62, 0.010, 0.044), "color": terrain_cool_shadow.lightened(0.03)},
 		{"name": "v0215_review_field_hostile_read_lane", "pos": Vector3(3.92, 0.242, 0.42), "scale": Vector3(1.10, 0.010, 0.044), "color": Color(0.26, 0.15, 0.10, 0.16)},
 		{"name": "v0216_review_bridge_west_bank_cut_shadow", "pos": Vector3(-0.42, 0.244, 0.22), "scale": Vector3(0.54, 0.010, 0.040), "color": terrain_cool_shadow.darkened(0.02)},
-		{"name": "v0216_review_bridge_east_bank_warm_landing", "pos": Vector3(1.74, 0.244, 1.28), "scale": Vector3(0.68, 0.010, 0.040), "color": terrain_warm_lift.lightened(0.02)}
+		{"name": "v0216_review_bridge_east_bank_warm_landing", "pos": Vector3(1.74, 0.244, 1.28), "scale": Vector3(0.68, 0.010, 0.040), "color": terrain_warm_lift.lightened(0.02)},
+		{"name": "v0217_review_central_field_value_lift", "pos": Vector3(0.28, 0.243, 1.76), "scale": Vector3(0.92, 0.010, 0.040), "color": terrain_warm_lift.lightened(0.04)},
+		{"name": "v0217_review_hostile_field_cool_cut", "pos": Vector3(2.82, 0.243, -0.72), "scale": Vector3(0.78, 0.010, 0.038), "color": terrain_cool_shadow.darkened(0.03)}
 	]:
 		_add_shell_v2_grounding_prop_box(str(accent["name"]), accent["pos"], accent["scale"], accent["color"], "overlays", true)
 	for accent in [
@@ -9538,7 +9540,8 @@ func _add_shell_v2_grounding_props_layer() -> void:
 		{"name": "v0215_review_road_readable_crown_bridge", "pos": Vector3(-0.18, 0.338, 0.82), "scale": Vector3(0.66, 0.010, 0.030), "color": road_dust.lightened(0.05)},
 		{"name": "v0215_review_road_readable_crown_east", "pos": Vector3(2.58, 0.338, 0.90), "scale": Vector3(0.92, 0.010, 0.030), "color": road_dust.lightened(0.04)},
 		{"name": "v0216_review_road_bridge_feed_left_edge", "pos": Vector3(-0.64, 0.340, 0.50), "scale": Vector3(0.58, 0.010, 0.030), "color": road_edge.lightened(0.04)},
-		{"name": "v0216_review_road_bridge_feed_right_edge", "pos": Vector3(1.64, 0.340, 1.20), "scale": Vector3(0.56, 0.010, 0.030), "color": road_edge.lightened(0.03)}
+		{"name": "v0216_review_road_bridge_feed_right_edge", "pos": Vector3(1.64, 0.340, 1.20), "scale": Vector3(0.56, 0.010, 0.030), "color": road_edge.lightened(0.03)},
+		{"name": "v0217_review_bridge_approach_crown_tie", "pos": Vector3(0.86, 0.341, 1.02), "scale": Vector3(0.52, 0.010, 0.026), "color": road_dust.lightened(0.10)}
 	]:
 		_add_shell_v2_grounding_prop_box(str(accent["name"]), accent["pos"], accent["scale"], accent["color"], "roads", true)
 	for prop in [
@@ -10067,7 +10070,7 @@ func _preset_scope() -> String:
 
 func _terrain_color() -> Color:
 	if environment_shell_v2_grounding_props_enabled:
-		return Color(0.215, 0.270, 0.180)
+		return Color(0.232, 0.286, 0.192)
 	if environment_shell_v2_environmental_cohesion_enabled:
 		return Color(0.18, 0.24, 0.16)
 	if environment_presentation_shell_v2_enabled:
@@ -10090,7 +10093,7 @@ func _terrain_color() -> Color:
 
 func _ridge_color() -> Color:
 	if environment_shell_v2_grounding_props_enabled:
-		return Color(0.335, 0.395, 0.270)
+		return Color(0.365, 0.410, 0.282)
 	if environment_presentation_shell_v2_enabled:
 		return Color(0.29, 0.35, 0.24)
 	if environment_riverbank_bridge_approach_enabled:
@@ -10109,7 +10112,7 @@ func _ridge_color() -> Color:
 
 func _road_color() -> Color:
 	if environment_shell_v2_grounding_props_enabled:
-		return Color(0.540, 0.485, 0.335)
+		return Color(0.585, 0.520, 0.360)
 	if environment_presentation_shell_v2_enabled:
 		return Color(0.50, 0.44, 0.32)
 	if environment_riverbank_bridge_approach_enabled:
@@ -10128,7 +10131,7 @@ func _road_color() -> Color:
 
 func _water_color() -> Color:
 	if environment_shell_v2_grounding_props_enabled:
-		return Color(0.055, 0.245, 0.315)
+		return Color(0.045, 0.228, 0.318)
 	if environment_presentation_shell_v2_enabled:
 		return Color(0.025, 0.16, 0.22)
 	if environment_riverbank_bridge_approach_enabled:
