@@ -8787,13 +8787,17 @@ func _rebuild_visuals() -> void:
 		_add_box("%s_future_art_anchor" % str(endpoint["id"]), _to_world(endpoint["position"], 0.35), Vector3(0.085, 0.28, 0.085), endpoint_anchor_color, environment_shell_v2_mesh_compositor_enabled, endpoint_emissive)
 	for unit in runtime.units:
 		_add_unit_silhouette(unit)
-		_add_selection_disc("selection_%s" % str(unit["id"]), _to_world(unit["position"], 0.08), _unit_radius(unit) * 2.2, _selection_color(unit))
-		var hero_marker_color := Color(0.80, 0.92, 0.70, 0.28) if environment_shell_v2_mesh_compositor_enabled else Color(0.80, 0.92, 0.70, 0.38)
-		var worker_marker_color := Color(0.92, 0.78, 0.42, 0.26) if environment_shell_v2_mesh_compositor_enabled else Color(0.92, 0.78, 0.42, 0.36)
-		var squad_marker_color := Color(0.54, 0.84, 0.68, 0.22) if environment_shell_v2_mesh_compositor_enabled else Color(0.54, 0.84, 0.68, 0.30)
-		_add_selection_disc("selected_hero_marker_%s" % str(unit["id"]), _to_world(unit["position"], 0.095), _unit_radius(unit) * 2.9, hero_marker_color)
-		_add_selection_disc("selected_worker_marker_%s" % str(unit["id"]), _to_world(unit["position"], 0.09), _unit_radius(unit) * 2.45, worker_marker_color)
-		_add_selection_disc("squad_marker_%s" % str(unit["id"]), _to_world(unit["position"], 0.07), _unit_radius(unit) * 1.62, squad_marker_color)
+		var selection_radius_factor := 1.92 if environment_shell_v2_grounding_props_enabled else 2.2
+		var hero_marker_radius_factor := 2.46 if environment_shell_v2_grounding_props_enabled else 2.9
+		var worker_marker_radius_factor := 2.08 if environment_shell_v2_grounding_props_enabled else 2.45
+		var squad_marker_radius_factor := 1.28 if environment_shell_v2_grounding_props_enabled else 1.62
+		_add_selection_disc("selection_%s" % str(unit["id"]), _to_world(unit["position"], 0.08), _unit_radius(unit) * selection_radius_factor, _selection_color(unit))
+		var hero_marker_color := Color(0.80, 0.92, 0.70, 0.22) if environment_shell_v2_grounding_props_enabled else (Color(0.80, 0.92, 0.70, 0.28) if environment_shell_v2_mesh_compositor_enabled else Color(0.80, 0.92, 0.70, 0.38))
+		var worker_marker_color := Color(0.92, 0.78, 0.42, 0.20) if environment_shell_v2_grounding_props_enabled else (Color(0.92, 0.78, 0.42, 0.26) if environment_shell_v2_mesh_compositor_enabled else Color(0.92, 0.78, 0.42, 0.36))
+		var squad_marker_color := Color(0.54, 0.84, 0.68, 0.14) if environment_shell_v2_grounding_props_enabled else (Color(0.54, 0.84, 0.68, 0.22) if environment_shell_v2_mesh_compositor_enabled else Color(0.54, 0.84, 0.68, 0.30))
+		_add_selection_disc("selected_hero_marker_%s" % str(unit["id"]), _to_world(unit["position"], 0.095), _unit_radius(unit) * hero_marker_radius_factor, hero_marker_color)
+		_add_selection_disc("selected_worker_marker_%s" % str(unit["id"]), _to_world(unit["position"], 0.09), _unit_radius(unit) * worker_marker_radius_factor, worker_marker_color)
+		_add_selection_disc("squad_marker_%s" % str(unit["id"]), _to_world(unit["position"], 0.07), _unit_radius(unit) * squad_marker_radius_factor, squad_marker_color)
 		_add_selection_disc("enemy_target_marker_%s" % str(unit["id"]), _to_world(unit["position"], 0.105), _unit_radius(unit) * 2.4, Color(0.94, 0.24, 0.16, 0.38))
 		_add_box("health_back_%s" % str(unit["id"]), _to_world(unit["position"], 0.665), Vector3(_unit_radius(unit) * 1.75, 0.028, 0.035), Color(0.08, 0.10, 0.08, 0.62), true, false)
 		_add_box("health_%s" % str(unit["id"]), _to_world(unit["position"], 0.68), Vector3(_unit_radius(unit) * 1.65, 0.035, 0.035), Color(0.28, 0.88, 0.44), false, false)
@@ -8917,6 +8921,15 @@ func _sync_three_slot_review_art_anchors() -> void:
 			aster_ring_radius = 1.74
 			ashen_ring_radius = 1.62
 			militia_ring_radius = 1.48
+		if environment_shell_v2_grounding_props_enabled:
+			worker_ring_color = Color(0.96, 0.74, 0.34, 0.08)
+			aster_ring_color = Color(0.92, 0.88, 0.38, 0.08)
+			ashen_ring_color = Color(0.92, 0.34, 0.28, 0.09)
+			militia_ring_color = Color(0.46, 0.92, 0.72, 0.07)
+			worker_ring_radius = 1.22
+			aster_ring_radius = 1.32
+			ashen_ring_radius = 1.24
+			militia_ring_radius = 1.10
 		var ring_color := worker_ring_color if is_worker else (aster_ring_color if is_aster else (ashen_ring_color if is_ashen else militia_ring_color))
 		var ring_radius := _unit_radius(unit) * (worker_ring_radius if is_worker else (aster_ring_radius if is_aster else (ashen_ring_radius if is_ashen else militia_ring_radius)))
 		_set_or_create_disc_marker(ring_name, _unit_world_position(id, Vector3.ZERO) + Vector3(0.0, 0.025, 0.0), ring_radius, ring_color)
@@ -9510,7 +9523,9 @@ func _add_shell_v2_grounding_props_layer() -> void:
 		{"name": "v0215_review_field_warm_read_lane_command", "pos": Vector3(-5.42, 0.242, 3.02), "scale": Vector3(0.94, 0.010, 0.042), "color": terrain_warm_lift.darkened(0.03)},
 		{"name": "v0215_review_field_cool_bank_shadow_north", "pos": Vector3(0.10, 0.242, -2.12), "scale": Vector3(0.58, 0.010, 0.044), "color": terrain_cool_shadow},
 		{"name": "v0215_review_field_cool_bank_shadow_south", "pos": Vector3(1.38, 0.242, 2.86), "scale": Vector3(0.62, 0.010, 0.044), "color": terrain_cool_shadow.lightened(0.03)},
-		{"name": "v0215_review_field_hostile_read_lane", "pos": Vector3(3.92, 0.242, 0.42), "scale": Vector3(1.10, 0.010, 0.044), "color": Color(0.26, 0.15, 0.10, 0.16)}
+		{"name": "v0215_review_field_hostile_read_lane", "pos": Vector3(3.92, 0.242, 0.42), "scale": Vector3(1.10, 0.010, 0.044), "color": Color(0.26, 0.15, 0.10, 0.16)},
+		{"name": "v0216_review_bridge_west_bank_cut_shadow", "pos": Vector3(-0.42, 0.244, 0.22), "scale": Vector3(0.54, 0.010, 0.040), "color": terrain_cool_shadow.darkened(0.02)},
+		{"name": "v0216_review_bridge_east_bank_warm_landing", "pos": Vector3(1.74, 0.244, 1.28), "scale": Vector3(0.68, 0.010, 0.040), "color": terrain_warm_lift.lightened(0.02)}
 	]:
 		_add_shell_v2_grounding_prop_box(str(accent["name"]), accent["pos"], accent["scale"], accent["color"], "overlays", true)
 	for accent in [
@@ -9521,7 +9536,9 @@ func _add_shell_v2_grounding_props_layer() -> void:
 		{"name": "v0214_review_barracks_lane_embedded_edge", "pos": Vector3(-4.50, 0.334, -1.72), "scale": Vector3(0.048, 0.012, 1.26), "color": road_edge},
 		{"name": "v0215_review_road_readable_crown_west", "pos": Vector3(-3.58, 0.338, 0.72), "scale": Vector3(1.62, 0.010, 0.030), "color": road_dust.lightened(0.08)},
 		{"name": "v0215_review_road_readable_crown_bridge", "pos": Vector3(-0.18, 0.338, 0.82), "scale": Vector3(0.66, 0.010, 0.030), "color": road_dust.lightened(0.05)},
-		{"name": "v0215_review_road_readable_crown_east", "pos": Vector3(2.58, 0.338, 0.90), "scale": Vector3(0.92, 0.010, 0.030), "color": road_dust.lightened(0.04)}
+		{"name": "v0215_review_road_readable_crown_east", "pos": Vector3(2.58, 0.338, 0.90), "scale": Vector3(0.92, 0.010, 0.030), "color": road_dust.lightened(0.04)},
+		{"name": "v0216_review_road_bridge_feed_left_edge", "pos": Vector3(-0.64, 0.340, 0.50), "scale": Vector3(0.58, 0.010, 0.030), "color": road_edge.lightened(0.04)},
+		{"name": "v0216_review_road_bridge_feed_right_edge", "pos": Vector3(1.64, 0.340, 1.20), "scale": Vector3(0.56, 0.010, 0.030), "color": road_edge.lightened(0.03)}
 	]:
 		_add_shell_v2_grounding_prop_box(str(accent["name"]), accent["pos"], accent["scale"], accent["color"], "roads", true)
 	for prop in [
@@ -10184,7 +10201,11 @@ func _unit_emissive(unit: Dictionary) -> bool:
 
 func _selection_color(unit: Dictionary) -> Color:
 	if str(unit["team"]) == "enemy":
+		if environment_shell_v2_grounding_props_enabled:
+			return Color(0.88, 0.22, 0.16, 0.42)
 		return Color(0.95, 0.24, 0.18, 0.54)
+	if environment_shell_v2_grounding_props_enabled:
+		return Color(0.58, 0.86, 0.68, 0.42)
 	return Color(0.62, 0.92, 0.74, 0.56)
 
 func _structure_color(structure: Dictionary) -> Color:
