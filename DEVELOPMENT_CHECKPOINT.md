@@ -1,6 +1,38 @@
 # Development Checkpoint
 
-Updated: 2026-06-11 v0.220 Environment dressing prop atlas and scatter
+Updated: 2026-06-11 v0.221 Lighting camera selection and composition pass
+
+## v0.221 Lighting Camera Selection And Composition Pass - 2026-06-11
+
+Scope: isolated opt-in Godot Salto presentation-reboot composition path. This checkpoint generates zero images, adds zero production art slots, preserves the default procedural launcher, preserves all prior launchers, keeps browser runtime untouched, keeps the selected v0.216 ground material, v0.217 road/riverbank/water material hierarchy, v0.218 bridge shell, v0.219 structure shell and v0.220 environment dressing, and leaves gameplay, pathing, collisions, objectives, AI, economy, saves, stable IDs and balance unchanged.
+
+Included work:
+
+- Added `--salto-composition-lighting-selection` as a reversible opt-in review-path flag.
+- Added visual-only terrain-value, road/bridge, river-depth, structure-contact and unit-grounding refinements.
+- Tuned v0.221 camera posture, lighting, selected-material opacity and selection/focus ring scale.
+- Preserved the v0.220 environment dressing comparator by adding explicit v0.221-disabled guards to v0.220 wrappers.
+- Refreshed the ignored manual review pack under `artifacts/manual-review/v0221-composition-lighting-selection/`.
+- Added v0.221 composition, selection-indicator and implementation docs.
+
+Verification targets:
+
+```text
+PASS: npm run godot:capture:salto-composition-lighting-selection.
+PASS: npm run godot:validate:salto-composition-lighting-selection.
+PASS: npm run godot:benchmark:salto-composition-lighting-selection.
+PASS: npm run godot:validate:salto-environment-dressing.
+PASS: npm run godot:validate:salto-presentation-reboot.
+PASS: artifact retention validation.
+PASS: safe-only cleanup dry run.
+PASS: runtime-art slot validation.
+PASS: content validation.
+PASS: art-intake validation.
+PASS: Vitest suite.
+PASS: Godot scaffold tests.
+PASS: production build.
+PASS: git diff --check.
+```
 
 ## v0.220 Environment Dressing Prop Atlas And Scatter - 2026-06-11
 

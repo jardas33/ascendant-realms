@@ -1,5 +1,33 @@
 # Changelog
 
+# v0.221 Lighting Camera Selection And Composition Pass - 2026-06-11
+
+This checkpoint refines the isolated Godot Salto presentation-reboot review path with a visual-only composition, lighting, camera and selection-scale pass. The default stabilized launcher remains procedural, and v0.220 environment dressing remains available without v0.221 composition when explicitly validated as its comparator path.
+
+Changed:
+
+- Added the `--salto-composition-lighting-selection` opt-in review flag and capture/validation/benchmark tooling.
+- Added restrained visual-only terrain-value, route, river, bridge, structure-contact and unit-grounding cues.
+- Tuned v0.221 camera posture, lighting, selected material overlay strength and selection indicator scale.
+- Added a v0.215 boundary-tool compatibility update so prior presentation-reboot validation recognizes later milestone-owned helper scripts without weakening browser/default/art boundaries.
+- Added the v0.221 manual review pack and required implementation reports.
+
+Boundary:
+
+- Generated images: zero.
+- Downloaded assets: zero.
+- New art slots: zero.
+- New production runtime art slots: zero.
+- Browser runtime changes: none.
+- Default launcher changes: none.
+- Gameplay, pathing, collision, objective, AI, economy, save, stable-ID and balance changes: none.
+
+Validation:
+
+- Composition capture, review-pack generation, validation, benchmark and boundary gate passed.
+- v0.220 environment dressing and v0.215 presentation reboot validations passed after v0.221 compatibility guards.
+- Runtime-art slot validation, content validation, art-intake validation, Vitest and Godot scaffold tests passed.
+
 # v0.220 Environment Dressing Prop Atlas And Scatter - 2026-06-11
 
 This checkpoint adds sparse deterministic environment dressing to the isolated Godot Salto presentation-reboot path using exactly one generated private prop-atlas source. The default stabilized launcher remains procedural, and the v0.219 structure-shell path remains available without v0.220 dressing.

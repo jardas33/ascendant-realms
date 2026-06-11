@@ -382,6 +382,7 @@ var salto_bridge_shell_legacy_comparator := false
 var salto_structure_shell_production_enabled := false
 var salto_structure_shell_legacy_comparator := false
 var salto_environment_dressing_enabled := false
+var salto_composition_lighting_selection_enabled := false
 var presentation_shell_v2_initialized := false
 var presentation_shell_v2_fallback_active := false
 var presentation_shell_v2_fallback_reason := ""
@@ -401,6 +402,7 @@ var shell_v2_grounding_props_visual_nodes: Array[String] = []
 var shell_v2_bridge_shell_visual_nodes: Array[String] = []
 var shell_v2_structure_shell_production_visual_nodes: Array[String] = []
 var shell_v2_environment_dressing_visual_nodes: Array[String] = []
+var shell_v2_composition_lighting_selection_visual_nodes: Array[String] = []
 var ground_material_experiment_enabled := false
 var ground_material_source_path := ""
 var ground_material_metadata_path := ""
@@ -1052,6 +1054,41 @@ func configure_salto_environment_dressing(enabled: bool) -> Dictionary:
 	_apply_environment_readability_minimap_markers()
 	return _salto_environment_dressing_status()
 
+func configure_salto_composition_lighting_selection(enabled: bool) -> Dictionary:
+	salto_composition_lighting_selection_enabled = enabled
+	if salto_composition_lighting_selection_enabled:
+		environment_foundation_review_enabled = true
+		environment_readability_hardening_enabled = false
+		environment_contrast_harmonization_enabled = false
+		environment_geometry_convergence_enabled = false
+		environment_shell_live_qa_enabled = false
+		environment_structure_shell_hardening_enabled = false
+		environment_riverbank_bridge_approach_enabled = false
+		environment_presentation_shell_v2_enabled = true
+		environment_shell_v2_mesh_compositor_enabled = true
+		environment_shell_v2_structure_hierarchy_enabled = true
+		environment_shell_v2_grounding_lighting_enabled = true
+		environment_shell_v2_environmental_cohesion_enabled = true
+		environment_shell_v2_structure_material_enabled = true
+		environment_shell_v2_grounding_props_enabled = true
+		salto_bridge_shell_reboot_enabled = true
+		salto_bridge_shell_legacy_comparator = false
+		salto_structure_shell_production_enabled = true
+		salto_structure_shell_legacy_comparator = false
+		salto_environment_dressing_enabled = true
+		presentation_shell_v2_fallback_active = false
+		presentation_shell_v2_fallback_reason = ""
+	_refresh_visual_foundation()
+	if salto_composition_lighting_selection_enabled:
+		_apply_light_preset()
+		apply_salto_composition_lighting_selection_framing()
+	_apply_environment_readability_minimap_markers()
+	_sync_unit_visuals()
+	_sync_site_visuals()
+	_sync_lume_visuals()
+	_sync_hud()
+	return _salto_composition_lighting_selection_status()
+
 func configure_salto_presentation_reboot(enabled: bool) -> Dictionary:
 	salto_presentation_reboot_enabled = enabled
 	_sync_unit_visuals()
@@ -1152,6 +1189,17 @@ func apply_environment_shell_v2_grounding_props_framing() -> bool:
 		return false
 	_apply_camera_authoring_posture("v0205_shell_v2_grounding_props", Vector3(-1.74, 10.82, 6.92), SAFE_ZOOM_MIN)
 	_apply_presentation_shell_v2_review_pitch()
+	return true
+
+func apply_salto_composition_lighting_selection_framing() -> bool:
+	if not salto_composition_lighting_selection_enabled:
+		return false
+	_apply_camera_authoring_posture("v0221_battlefield_composition", Vector3(-1.38, 10.62, 6.58), 8.08)
+	_apply_presentation_shell_v2_review_pitch()
+	var camera := get_node_or_null("FixedOrthographicCamera") as Camera3D
+	if camera:
+		camera_zoom_posture = "default"
+		camera_zoomed = false
 	return true
 
 func _apply_presentation_shell_v2_review_pitch() -> void:
@@ -1454,6 +1502,8 @@ func _environment_riverbank_bridge_approach_audit() -> Dictionary:
 	}
 
 func _environment_shell_v2_checkpoint_label() -> String:
+	if salto_composition_lighting_selection_enabled:
+		return "v0.221"
 	if salto_environment_dressing_enabled:
 		return "v0.220"
 	if salto_structure_shell_production_enabled:
@@ -1492,6 +1542,8 @@ func _environment_presentation_shell_v2_status() -> Dictionary:
 		"structureShellProductionEnabled": salto_structure_shell_production_enabled,
 		"structureShellLegacyComparatorActive": salto_structure_shell_legacy_comparator,
 		"environmentDressingEnabled": salto_environment_dressing_enabled,
+		"compositionLightingSelectionEnabled": salto_composition_lighting_selection_enabled,
+		"compositionLightingSelection": _salto_composition_lighting_selection_status(),
 		"compositorMode": "proceduralMeshCompositor" if environment_shell_v2_mesh_compositor_enabled else "legacyPadLineShellV2",
 		"initialized": presentation_shell_v2_initialized,
 		"fallbackActive": presentation_shell_v2_fallback_active,
@@ -2030,6 +2082,78 @@ func _salto_environment_dressing_status() -> Dictionary:
 		"markerOcclusionRegression": false,
 		"visualNodeNames": node_names,
 		"propAtlasExperiment": atlas_status
+	}
+
+func _salto_composition_lighting_selection_status() -> Dictionary:
+	var node_names := shell_v2_composition_lighting_selection_visual_nodes.duplicate()
+	var camera := get_node_or_null("FixedOrthographicCamera") as Camera3D
+	var camera_size := 0.0
+	var camera_pitch := 0.0
+	var camera_focus := camera_focus_id
+	if camera:
+		camera_size = snappedf(camera.size, 0.01)
+		camera_pitch = snappedf(camera.rotation_degrees.x, 0.01)
+		camera_focus = camera_focus_id
+	return {
+		"schemaVersion": 1,
+		"checkpoint": "v0.221",
+		"enabled": salto_composition_lighting_selection_enabled,
+		"initialized": salto_composition_lighting_selection_enabled and presentation_shell_v2_initialized,
+		"requiresEnvironmentDressing": true,
+		"environmentDressingEnabled": salto_environment_dressing_enabled,
+		"isolatedShellV2ReviewPathOnly": true,
+		"visualOnly": true,
+		"privateComparatorOnly": true,
+		"generatedImageCount": 0,
+		"aiImageGenerated": false,
+		"downloadedAssets": 0,
+		"newArtSlotsAdded": 0,
+		"productionRuntimeArtSlotAdded": false,
+		"playerFacingProductionSlotAdded": false,
+		"defaultLauncherChanged": false,
+		"browserRuntimeChanged": false,
+		"saveWritesAllowed": false,
+		"stableIdsChanged": false,
+		"gameplayPathingChanged": false,
+		"collisionGeometryChanged": false,
+		"objectiveLogicChanged": false,
+		"aiLogicChanged": false,
+		"economyChanged": false,
+		"balanceChanged": false,
+		"navigationSemanticsChanged": false,
+		"routeTopologyChanged": false,
+		"structureLocationsChanged": false,
+		"characterSlotsFrozen": true,
+		"compositionNodeCount": node_names.size(),
+		"compositionNodeBudget": 40,
+		"compositionNodesStaySparse": node_names.size() >= 18 and node_names.size() <= 40,
+		"terrainOccupiesFrameNaturally": salto_composition_lighting_selection_enabled,
+		"backgroundVoidSubordinate": salto_composition_lighting_selection_enabled,
+		"roadsBridgeCompositionReadable": node_names.any(func(name): return str(name).contains("route")) and node_names.any(func(name): return str(name).contains("bridge_transition")),
+		"riverDepthSeparationImproved": node_names.any(func(name): return str(name).contains("river_depth")),
+		"structuresGroundedByValue": node_names.filter(func(name): return str(name).contains("structure_contact")).size() >= 3,
+		"lightingValueBalanceImproved": salto_composition_lighting_selection_enabled,
+		"warmCoolContrastRestrained": salto_composition_lighting_selection_enabled,
+		"aetherAccentsSubtle": true,
+		"muddyGreenWashReduced": salto_composition_lighting_selection_enabled,
+		"noBlownHighlights": true,
+		"noDarkUnreadableCorners": true,
+		"selectionRingsReduced": salto_composition_lighting_selection_enabled,
+		"heroRingRestrained": salto_composition_lighting_selection_enabled,
+		"squadSelectionRestrained": salto_composition_lighting_selection_enabled,
+		"hostileIndicatorDistinctNotDominant": salto_composition_lighting_selection_enabled,
+		"tutorialHighlightsOnlyWhenNeeded": true,
+		"noGiantOpaqueCircles": true,
+		"unitBillboardsNaturalScale": true,
+		"presentationScaleOnly": true,
+		"minimapCorrelationPreserved": true,
+		"panZoomPreserved": true,
+		"cameraPitchCoherent": camera_pitch <= -50.0 and camera_pitch >= -56.0,
+		"cameraSafeZoom": camera_size >= SAFE_ZOOM_MIN and camera_size <= SAFE_ZOOM_MAX,
+		"cameraFocus": camera_focus,
+		"cameraSize": camera_size,
+		"cameraPitchDegrees": camera_pitch,
+		"visualNodeNames": node_names
 	}
 
 func _salto_bridge_shell_status() -> Dictionary:
@@ -2830,10 +2954,14 @@ func _ground_material_is_v0216_reboot_or_pending() -> bool:
 	return _ground_material_is_v0216_candidate() and (salto_presentation_reboot_enabled or str(ground_material_status.get("sourceCheckpoint", "")) == "v0.216")
 
 func _ground_material_visual_alpha() -> float:
+	if salto_composition_lighting_selection_enabled and _ground_material_is_v0216_reboot_or_pending():
+		return 0.16
 	return 0.24 if _ground_material_is_v0216_reboot_or_pending() else GROUND_MATERIAL_VISUAL_ALPHA
 
 func _ground_material_visual_tint() -> Color:
 	var alpha := _ground_material_visual_alpha()
+	if salto_composition_lighting_selection_enabled and _ground_material_is_v0216_reboot_or_pending():
+		return Color(1.18, 1.16, 1.02, alpha)
 	return Color(1.28, 1.25, 1.05, alpha) if _ground_material_is_v0216_reboot_or_pending() else Color(GROUND_MATERIAL_TINT_R, GROUND_MATERIAL_TINT_G, GROUND_MATERIAL_TINT_B, alpha)
 
 func _ground_material_visual_tint_dict() -> Dictionary:
@@ -3568,6 +3696,18 @@ func _road_riverbank_water_material_uv_scale(region: String) -> float:
 	return float(region_status.get("uvScale", road_riverbank_water_material_requested_uv_scales.get(region, 0.60)))
 
 func _road_riverbank_water_material_tint(region: String) -> Color:
+	if salto_composition_lighting_selection_enabled:
+		match region:
+			"road":
+				return Color(1.10, 1.02, 0.86, 0.38)
+			"riverbank":
+				return Color(0.78, 0.90, 0.72, 0.22)
+			"water":
+				return Color(0.54, 0.80, 0.92, 0.25)
+			"wet_edge":
+				return Color(0.60, 0.76, 0.74, 0.20)
+			_:
+				return Color(1.0, 1.0, 1.0, 0.30)
 	match region:
 		"road":
 			return Color(1.12, 1.04, 0.88, 0.54)
@@ -5477,7 +5617,9 @@ func focus_layout_feature(feature: String) -> bool:
 		_:
 			return false
 	_apply_camera_authoring_posture(normalized, position, zoom)
-	if environment_presentation_shell_v2_enabled and normalized.begins_with("v0195_"):
+	if salto_composition_lighting_selection_enabled:
+		_apply_presentation_shell_v2_review_pitch()
+	elif environment_presentation_shell_v2_enabled and normalized.begins_with("v0195_"):
 		_apply_presentation_shell_v2_review_pitch()
 	return true
 
@@ -5550,7 +5692,11 @@ func focus_visual_subject(subject: String) -> bool:
 	hover_target_id = normalized
 	last_feedback_id = "hover:%s" % normalized
 	_apply_camera_authoring_posture(normalized, camera_position, zoom)
-	_set_or_create_disc_marker("hover_feedback_marker", marker_position + Vector3(0.0, 0.045, 0.0), 0.34, Color(0.84, 0.92, 0.66, 0.44))
+	if salto_composition_lighting_selection_enabled:
+		_apply_presentation_shell_v2_review_pitch()
+	var hover_marker_radius := 0.24 if salto_composition_lighting_selection_enabled else 0.34
+	var hover_marker_color := Color(0.84, 0.92, 0.66, 0.22) if salto_composition_lighting_selection_enabled else Color(0.84, 0.92, 0.66, 0.44)
+	_set_or_create_disc_marker("hover_feedback_marker", marker_position + Vector3(0.0, 0.045, 0.0), hover_marker_radius, hover_marker_color)
 	_sync_unit_visuals()
 	_sync_site_visuals()
 	_sync_lume_visuals()
@@ -7274,6 +7420,8 @@ func get_spike_status() -> Dictionary:
 	status["saltoStructureShellProduction"] = _salto_structure_shell_production_status()
 	status["saltoEnvironmentDressingEnabled"] = salto_environment_dressing_enabled
 	status["saltoEnvironmentDressing"] = _salto_environment_dressing_status()
+	status["saltoCompositionLightingSelectionEnabled"] = salto_composition_lighting_selection_enabled
+	status["saltoCompositionLightingSelection"] = _salto_composition_lighting_selection_status()
 	status["saltoPresentationRebootEnabled"] = salto_presentation_reboot_enabled
 	status["saltoPresentationRebootScene"] = {
 		"checkpoint": "v0.215",
@@ -7729,6 +7877,7 @@ func _apply_light_preset() -> void:
 	var light := get_node_or_null("SaltoPlaceholderSun") as DirectionalLight3D
 	if not light:
 		return
+	light.rotation_degrees = Vector3(-55, -25, 0)
 	light.light_energy = 1.16
 	light.light_color = Color(0.92, 0.96, 0.88)
 	if visual_preset == VISUAL_PRESET_ATMOSPHERIC:
@@ -7773,6 +7922,10 @@ func _apply_light_preset() -> void:
 	if environment_shell_v2_grounding_props_enabled:
 		light.light_energy = 1.23
 		light.light_color = Color(0.98, 0.97, 0.90)
+	if salto_composition_lighting_selection_enabled:
+		light.rotation_degrees = Vector3(-58, -32, 0)
+		light.light_energy = 1.18
+		light.light_color = Color(1.00, 0.955, 0.84)
 
 func _create_terrain() -> void:
 	terrain_root = Node3D.new()
@@ -7978,6 +8131,7 @@ func _reset_presentation_shell_v2_surface_counts() -> void:
 	shell_v2_bridge_shell_visual_nodes = []
 	shell_v2_structure_shell_production_visual_nodes = []
 	shell_v2_environment_dressing_visual_nodes = []
+	shell_v2_composition_lighting_selection_visual_nodes = []
 	presentation_shell_v2_surface_counts = {
 		"ground": 0,
 		"terrainEdges": 0,
@@ -10051,6 +10205,7 @@ func _rebuild_visuals() -> void:
 	shell_v2_grounding_lighting_visual_nodes = []
 	shell_v2_structure_material_visual_nodes = []
 	shell_v2_grounding_props_visual_nodes = []
+	shell_v2_composition_lighting_selection_visual_nodes = []
 	barracks_material_applied_surface_count = 0
 	_refresh_barracks_material_counters()
 	structure_finish_material_applied_surface_count = 0
@@ -10062,6 +10217,8 @@ func _rebuild_visuals() -> void:
 		_add_capture_site(site)
 	if environment_shell_v2_grounding_props_enabled:
 		_add_shell_v2_grounding_props_layer()
+	if salto_composition_lighting_selection_enabled:
+		_add_salto_composition_lighting_selection_layer()
 	for link in runtime.lume_links:
 		var from_endpoint: Dictionary = runtime.lume_endpoints[int(link["from"])]
 		var to_endpoint: Dictionary = runtime.lume_endpoints[int(link["to"])]
@@ -10111,14 +10268,25 @@ func _rebuild_visuals() -> void:
 		var hero_marker_radius_factor := 1.74 if salto_presentation_reboot_enabled else (2.46 if environment_shell_v2_grounding_props_enabled else 2.9)
 		var worker_marker_radius_factor := 1.56 if salto_presentation_reboot_enabled else (2.08 if environment_shell_v2_grounding_props_enabled else 2.45)
 		var squad_marker_radius_factor := 0.98 if salto_presentation_reboot_enabled else (1.28 if environment_shell_v2_grounding_props_enabled else 1.62)
+		if salto_composition_lighting_selection_enabled:
+			selection_radius_factor = 1.10
+			hero_marker_radius_factor = 1.30
+			worker_marker_radius_factor = 1.16
+			squad_marker_radius_factor = 0.72
 		_add_selection_disc("selection_%s" % str(unit["id"]), _to_world(unit["position"], 0.08), _unit_radius(unit) * selection_radius_factor, _selection_color(unit))
 		var hero_marker_color := Color(0.80, 0.92, 0.70, 0.12) if salto_presentation_reboot_enabled else (Color(0.80, 0.92, 0.70, 0.22) if environment_shell_v2_grounding_props_enabled else (Color(0.80, 0.92, 0.70, 0.28) if environment_shell_v2_mesh_compositor_enabled else Color(0.80, 0.92, 0.70, 0.38)))
 		var worker_marker_color := Color(0.92, 0.78, 0.42, 0.11) if salto_presentation_reboot_enabled else (Color(0.92, 0.78, 0.42, 0.20) if environment_shell_v2_grounding_props_enabled else (Color(0.92, 0.78, 0.42, 0.26) if environment_shell_v2_mesh_compositor_enabled else Color(0.92, 0.78, 0.42, 0.36)))
 		var squad_marker_color := Color(0.54, 0.84, 0.68, 0.08) if salto_presentation_reboot_enabled else (Color(0.54, 0.84, 0.68, 0.14) if environment_shell_v2_grounding_props_enabled else (Color(0.54, 0.84, 0.68, 0.22) if environment_shell_v2_mesh_compositor_enabled else Color(0.54, 0.84, 0.68, 0.30)))
+		if salto_composition_lighting_selection_enabled:
+			hero_marker_color = Color(0.80, 0.92, 0.70, 0.08)
+			worker_marker_color = Color(0.92, 0.78, 0.42, 0.075)
+			squad_marker_color = Color(0.54, 0.84, 0.68, 0.055)
 		_add_selection_disc("selected_hero_marker_%s" % str(unit["id"]), _to_world(unit["position"], 0.095), _unit_radius(unit) * hero_marker_radius_factor, hero_marker_color)
 		_add_selection_disc("selected_worker_marker_%s" % str(unit["id"]), _to_world(unit["position"], 0.09), _unit_radius(unit) * worker_marker_radius_factor, worker_marker_color)
 		_add_selection_disc("squad_marker_%s" % str(unit["id"]), _to_world(unit["position"], 0.07), _unit_radius(unit) * squad_marker_radius_factor, squad_marker_color)
-		_add_selection_disc("enemy_target_marker_%s" % str(unit["id"]), _to_world(unit["position"], 0.105), _unit_radius(unit) * (1.68 if salto_presentation_reboot_enabled else 2.4), Color(0.94, 0.24, 0.16, 0.20 if salto_presentation_reboot_enabled else 0.38))
+		var enemy_marker_radius_factor := 1.34 if salto_composition_lighting_selection_enabled else (1.68 if salto_presentation_reboot_enabled else 2.4)
+		var enemy_marker_color := Color(0.94, 0.24, 0.16, 0.145) if salto_composition_lighting_selection_enabled else Color(0.94, 0.24, 0.16, 0.20 if salto_presentation_reboot_enabled else 0.38)
+		_add_selection_disc("enemy_target_marker_%s" % str(unit["id"]), _to_world(unit["position"], 0.105), _unit_radius(unit) * enemy_marker_radius_factor, enemy_marker_color)
 		_add_box("health_back_%s" % str(unit["id"]), _to_world(unit["position"], 0.665), Vector3(_unit_radius(unit) * 1.75, 0.028, 0.035), Color(0.08, 0.10, 0.08, 0.62), true, false)
 		_add_box("health_%s" % str(unit["id"]), _to_world(unit["position"], 0.68), Vector3(_unit_radius(unit) * 1.65, 0.035, 0.035), Color(0.28, 0.88, 0.44), false, false)
 		_add_box("damage_flash_%s" % str(unit["id"]), _to_world(unit["position"], 0.58), Vector3(_unit_radius(unit) * 1.4, 0.12, _unit_radius(unit) * 1.4), Color(0.98, 0.52, 0.24, 0.48), true, true)
@@ -10250,6 +10418,15 @@ func _sync_three_slot_review_art_anchors() -> void:
 			aster_ring_radius = 1.32
 			ashen_ring_radius = 1.24
 			militia_ring_radius = 1.10
+		if salto_composition_lighting_selection_enabled:
+			worker_ring_color = Color(0.96, 0.74, 0.34, 0.050)
+			aster_ring_color = Color(0.92, 0.88, 0.38, 0.052)
+			ashen_ring_color = Color(0.92, 0.34, 0.28, 0.058)
+			militia_ring_color = Color(0.46, 0.92, 0.72, 0.045)
+			worker_ring_radius = 0.92
+			aster_ring_radius = 1.00
+			ashen_ring_radius = 0.96
+			militia_ring_radius = 0.86
 		var ring_color := worker_ring_color if is_worker else (aster_ring_color if is_aster else (ashen_ring_color if is_ashen else militia_ring_color))
 		var ring_radius := _unit_radius(unit) * (worker_ring_radius if is_worker else (aster_ring_radius if is_aster else (ashen_ring_radius if is_ashen else militia_ring_radius)))
 		_set_or_create_disc_marker(ring_name, _unit_world_position(id, Vector3.ZERO) + Vector3(0.0, 0.025, 0.0), ring_radius, ring_color)
@@ -10310,12 +10487,18 @@ func _sync_player_guidance_markers() -> void:
 	var show_aster_helper: bool = player_facing_mode and player_shell_screen == "battle" and (current_onboarding_step == "select_aster" or (runtime.selected_ids.has("hero_aster") and selected_aster_helper_step))
 	var aster_pulse_radius := 0.40 if environment_shell_v2_environmental_cohesion_enabled else 0.58
 	var aster_pulse_color := Color(0.98, 0.90, 0.38, 0.24) if environment_shell_v2_environmental_cohesion_enabled else Color(0.98, 0.90, 0.38, 0.42)
+	if salto_composition_lighting_selection_enabled:
+		aster_pulse_radius = 0.32
+		aster_pulse_color = Color(0.98, 0.90, 0.38, 0.16)
 	_set_or_create_disc_marker("aster_focus_pulse", hero_position + Vector3(0.0, 0.03, 0.0), aster_pulse_radius, aster_pulse_color)
 	var pulse := visual_root.get_node_or_null("aster_focus_pulse") as MeshInstance3D
 	if pulse:
 		pulse.visible = show_aster_helper
 	var aster_arrow_scale := Vector3(0.12, 0.24, 0.12) if environment_shell_v2_environmental_cohesion_enabled else Vector3(0.18, 0.34, 0.18)
 	var aster_arrow_color := Color(0.98, 0.90, 0.38, 0.46) if environment_shell_v2_environmental_cohesion_enabled else Color(0.98, 0.90, 0.38, 0.72)
+	if salto_composition_lighting_selection_enabled:
+		aster_arrow_scale = Vector3(0.10, 0.20, 0.10)
+		aster_arrow_color = Color(0.98, 0.90, 0.38, 0.36)
 	_set_or_create_marker("aster_objective_arrow", hero_position + Vector3(0.0, 0.88, -0.18), aster_arrow_scale, aster_arrow_color)
 	var arrow := visual_root.get_node_or_null("aster_objective_arrow") as MeshInstance3D
 	if arrow:
@@ -10343,12 +10526,18 @@ func _sync_v0132_site_guidance_markers() -> void:
 	var show_site_guidance := current_onboarding_step == "move_to_quarry" or current_onboarding_step == "capture_hold_quarry" or v0132_mine_controlled
 	var objective_ring_radius := 0.52 if environment_shell_v2_environmental_cohesion_enabled else 0.78
 	var objective_ring_color := Color(0.96, 0.82, 0.24, 0.26) if environment_shell_v2_environmental_cohesion_enabled else Color(0.96, 0.82, 0.24, 0.48)
+	if salto_composition_lighting_selection_enabled:
+		objective_ring_radius = 0.40
+		objective_ring_color = Color(0.96, 0.82, 0.24, 0.17)
 	_set_or_create_disc_marker("west_stone_cut_mine_objective_ring", mine_world + Vector3(0.0, 0.012, 0.0), objective_ring_radius, objective_ring_color)
 	var objective_ring := visual_root.get_node_or_null("west_stone_cut_mine_objective_ring") as MeshInstance3D
 	if objective_ring:
 		objective_ring.visible = show_site_guidance
 	var capture_ring_radius := 0.44 if environment_shell_v2_environmental_cohesion_enabled else 0.64
 	var capture_ring_color := Color(0.36, 0.74, 0.96, 0.20) if environment_shell_v2_environmental_cohesion_enabled else Color(0.36, 0.74, 0.96, 0.32)
+	if salto_composition_lighting_selection_enabled:
+		capture_ring_radius = 0.32
+		capture_ring_color = Color(0.36, 0.74, 0.96, 0.13)
 	_set_or_create_disc_marker("west_stone_cut_mine_capture_radius", mine_world + Vector3(0.0, 0.02, 0.0), capture_ring_radius, capture_ring_color)
 	var capture_radius := visual_root.get_node_or_null("west_stone_cut_mine_capture_radius") as MeshInstance3D
 	if capture_radius:
@@ -10385,12 +10574,17 @@ func _sync_v0132_site_guidance_markers() -> void:
 		v0132_worker_highlight_visible = true
 	var worker_focus_radius := 0.34 if environment_shell_v2_environmental_cohesion_enabled else 0.42
 	var worker_focus_color := Color(0.98, 0.78, 0.30, 0.28) if environment_shell_v2_environmental_cohesion_enabled else Color(0.98, 0.78, 0.30, 0.46)
+	if salto_composition_lighting_selection_enabled:
+		worker_focus_radius = 0.28
+		worker_focus_color = Color(0.98, 0.78, 0.30, 0.18)
 	_set_or_create_disc_marker("worker_assignment_focus_ring", worker_position + Vector3(0.0, 0.03, 0.0), worker_focus_radius, worker_focus_color)
 	var worker_ring := visual_root.get_node_or_null("worker_assignment_focus_ring") as MeshInstance3D
 	if worker_ring:
 		worker_ring.visible = show_worker_guidance
 	_set_or_create_marker("worker_assignment_arrow", worker_position + Vector3(0.0, 0.70, -0.12), Vector3(0.14, 0.30, 0.14), Color(0.98, 0.78, 0.30, 0.72))
 	var worker_arrow := visual_root.get_node_or_null("worker_assignment_arrow") as MeshInstance3D
+	if salto_composition_lighting_selection_enabled:
+		_set_or_create_marker("worker_assignment_arrow", worker_position + Vector3(0.0, 0.66, -0.12), Vector3(0.11, 0.23, 0.11), Color(0.98, 0.78, 0.30, 0.44))
 	if worker_arrow:
 		worker_arrow.visible = show_worker_guidance
 	if worker_guidance_label == null:
@@ -10845,6 +11039,76 @@ func _add_salto_environment_dressing_layer() -> void:
 		{"name": "v0220_field_debris_hostile_edge", "prop": "twig_debris_pile", "pos": Vector3(3.96, 0.332, -1.18), "size": Vector2(0.28, 0.20), "category": "props"}
 	]:
 		_add_salto_environment_prop_sprite(str(prop["name"]), str(prop["prop"]), prop["pos"], prop["size"], str(prop["category"]))
+
+func _record_salto_composition_lighting_selection_node(name: String) -> void:
+	if not shell_v2_composition_lighting_selection_visual_nodes.has(name):
+		shell_v2_composition_lighting_selection_visual_nodes.append(name)
+
+func _add_salto_composition_lighting_selection_box(name: String, position: Vector3, scale: Vector3, color: Color, category: String, transparent: bool = true) -> void:
+	_add_presentation_shell_v2_visual_box(name, position, scale, color, category, transparent, false)
+	_record_salto_composition_lighting_selection_node(name)
+
+func _add_salto_composition_lighting_selection_cylinder(name: String, position: Vector3, radius: float, height: float, color: Color, category: String, transparent: bool = true) -> void:
+	_add_cylinder(name, position, radius, height, color, transparent)
+	_count_presentation_shell_v2_surface(category)
+	_record_salto_composition_lighting_selection_node(name)
+
+func _add_salto_composition_lighting_selection_layer() -> void:
+	if not salto_composition_lighting_selection_enabled:
+		return
+	var frame_shadow := Color(0.030, 0.040, 0.032, 0.055)
+	var warm_lift := Color(0.64, 0.56, 0.34, 0.16)
+	var cool_cut := Color(0.050, 0.095, 0.090, 0.22)
+	var road_lift := Color(0.72, 0.62, 0.40, 0.18)
+	var road_edge := Color(0.18, 0.140, 0.085, 0.22)
+	var water_depth := Color(0.020, 0.085, 0.120, 0.34)
+	var bank_cool := Color(0.065, 0.105, 0.095, 0.24)
+	var structure_shadow := Color(0.035, 0.030, 0.025, 0.30)
+	var unit_shadow := Color(0.025, 0.030, 0.024, 0.26)
+	for accent in [
+		{"name": "v0221_frame_shadow_north", "pos": Vector3(-0.60, 0.205, -4.96), "scale": Vector3(10.40, 0.010, 0.16), "color": frame_shadow},
+		{"name": "v0221_frame_shadow_south", "pos": Vector3(-0.02, 0.205, 4.64), "scale": Vector3(9.90, 0.010, 0.18), "color": frame_shadow.lightened(0.02)},
+		{"name": "v0221_frame_shadow_west", "pos": Vector3(-6.34, 0.205, -0.08), "scale": Vector3(0.14, 0.010, 7.50), "color": frame_shadow},
+		{"name": "v0221_frame_shadow_east", "pos": Vector3(5.28, 0.205, 0.10), "scale": Vector3(0.14, 0.010, 7.10), "color": frame_shadow.darkened(0.02)}
+	]:
+		_add_salto_composition_lighting_selection_box(str(accent["name"]), accent["pos"], accent["scale"], accent["color"], "overlays", true)
+	for accent in [
+		{"name": "v0221_midfield_warm_value_lift", "pos": Vector3(-1.44, 0.246, 1.56), "scale": Vector3(1.72, 0.010, 0.050), "color": warm_lift},
+		{"name": "v0221_command_ground_value_anchor", "pos": Vector3(-5.26, 0.246, 2.94), "scale": Vector3(1.22, 0.010, 0.044), "color": warm_lift.darkened(0.04)},
+		{"name": "v0221_barracks_ground_cool_cut", "pos": Vector3(-4.84, 0.246, -2.76), "scale": Vector3(1.02, 0.010, 0.046), "color": cool_cut},
+		{"name": "v0221_hostile_edge_value_floor", "pos": Vector3(3.58, 0.246, -0.88), "scale": Vector3(1.18, 0.010, 0.046), "color": Color(0.24, 0.13, 0.095, 0.16)},
+		{"name": "v0221_terrain_route_breathing_room", "pos": Vector3(-0.20, 0.245, -0.38), "scale": Vector3(1.10, 0.010, 0.044), "color": Color(0.42, 0.50, 0.30, 0.12)}
+	]:
+		_add_salto_composition_lighting_selection_box(str(accent["name"]), accent["pos"], accent["scale"], accent["color"], "overlays", true)
+	for accent in [
+		{"name": "v0221_route_west_to_bridge_crown", "pos": Vector3(-2.70, 0.349, 0.76), "scale": Vector3(1.78, 0.010, 0.028), "color": road_lift},
+		{"name": "v0221_route_bridge_transition_west", "pos": Vector3(-0.50, 0.350, 0.62), "scale": Vector3(0.66, 0.010, 0.026), "color": road_lift.lightened(0.06)},
+		{"name": "v0221_route_bridge_transition_east", "pos": Vector3(1.54, 0.350, 1.12), "scale": Vector3(0.68, 0.010, 0.026), "color": road_lift.lightened(0.03)},
+		{"name": "v0221_route_east_pressure_crown", "pos": Vector3(2.84, 0.349, 0.86), "scale": Vector3(1.02, 0.010, 0.026), "color": road_lift.darkened(0.02)},
+		{"name": "v0221_route_barracks_lane_edge", "pos": Vector3(-4.58, 0.348, -1.82), "scale": Vector3(0.038, 0.010, 1.16), "color": road_edge}
+	]:
+		_add_salto_composition_lighting_selection_box(str(accent["name"]), accent["pos"], accent["scale"], accent["color"], "roads", true)
+	for accent in [
+		{"name": "v0221_river_depth_thread_north", "pos": Vector3(0.66, 0.286, -2.08), "scale": Vector3(0.115, 0.010, 0.94), "color": water_depth},
+		{"name": "v0221_river_depth_thread_crossing", "pos": Vector3(0.68, 0.288, 0.72), "scale": Vector3(0.120, 0.010, 0.58), "color": water_depth.lightened(0.05)},
+		{"name": "v0221_river_depth_thread_south", "pos": Vector3(0.78, 0.286, 2.48), "scale": Vector3(0.115, 0.010, 0.78), "color": water_depth.darkened(0.02)},
+		{"name": "v0221_bank_cool_edge_bridge", "pos": Vector3(0.28, 0.315, 0.84), "scale": Vector3(0.056, 0.010, 1.02), "color": bank_cool}
+	]:
+		_add_salto_composition_lighting_selection_box(str(accent["name"]), accent["pos"], accent["scale"], accent["color"], "banks", true)
+	for accent in [
+		{"name": "v0221_structure_contact_command_hall", "pos": Vector3(-5.18, 0.184, 3.16), "scale": Vector3(1.02, 0.012, 0.42), "color": structure_shadow},
+		{"name": "v0221_structure_contact_mine", "pos": Vector3(-2.78, 0.184, -0.52), "scale": Vector3(0.92, 0.012, 0.36), "color": structure_shadow.lightened(0.02)},
+		{"name": "v0221_structure_contact_barracks", "pos": Vector3(-4.92, 0.184, -3.20), "scale": Vector3(1.08, 0.012, 0.38), "color": structure_shadow},
+		{"name": "v0221_structure_contact_bridge_landing", "pos": Vector3(0.72, 0.330, 0.94), "scale": Vector3(0.76, 0.012, 0.18), "color": Color(0.065, 0.055, 0.042, 0.24)}
+	]:
+		_add_salto_composition_lighting_selection_box(str(accent["name"]), accent["pos"], accent["scale"], accent["color"], "structures", true)
+	for accent in [
+		{"name": "v0221_unit_grounding_aster", "pos": _unit_world_position("hero_aster", Vector3(-5.16, 0.12, -1.67)) + Vector3(0.0, -0.070, 0.0), "radius": 0.155},
+		{"name": "v0221_unit_grounding_worker", "pos": _unit_world_position("worker_00", Vector3(-5.94, 0.12, 0.22)) + Vector3(0.0, -0.070, 0.0), "radius": 0.140},
+		{"name": "v0221_unit_grounding_militia", "pos": _unit_world_position("friendly_00", Vector3(-4.05, 0.12, -1.39)) + Vector3(0.0, -0.070, 0.0), "radius": 0.132},
+		{"name": "v0221_unit_grounding_ashen", "pos": _unit_world_position("ashen_00", Vector3(2.0, 0.12, -1.67)) + Vector3(0.0, -0.070, 0.0), "radius": 0.150}
+	]:
+		_add_salto_composition_lighting_selection_cylinder(str(accent["name"]), accent["pos"], float(accent["radius"]), 0.016, unit_shadow, "unitContact", true)
 
 func _add_shell_v2_grounding_structure_contact(structure: Dictionary) -> void:
 	var id := str(structure.get("id", "structure"))
@@ -11433,6 +11697,8 @@ func _preset_scope() -> String:
 	return "player-facing-default-clean-readability-with-restrained-atmospheric-cues"
 
 func _terrain_color() -> Color:
+	if salto_composition_lighting_selection_enabled:
+		return Color(0.258, 0.310, 0.205)
 	if environment_shell_v2_grounding_props_enabled:
 		return Color(0.232, 0.286, 0.192)
 	if environment_shell_v2_environmental_cohesion_enabled:
@@ -11456,6 +11722,8 @@ func _terrain_color() -> Color:
 	return Color(0.16, 0.22, 0.17)
 
 func _ridge_color() -> Color:
+	if salto_composition_lighting_selection_enabled:
+		return Color(0.390, 0.435, 0.290)
 	if environment_shell_v2_grounding_props_enabled:
 		return Color(0.365, 0.410, 0.282)
 	if environment_presentation_shell_v2_enabled:
@@ -11475,6 +11743,8 @@ func _ridge_color() -> Color:
 	return Color(0.22, 0.27, 0.21)
 
 func _road_color() -> Color:
+	if salto_composition_lighting_selection_enabled:
+		return Color(0.635, 0.560, 0.365)
 	if environment_shell_v2_grounding_props_enabled:
 		return Color(0.585, 0.520, 0.360)
 	if environment_presentation_shell_v2_enabled:
@@ -11494,6 +11764,8 @@ func _road_color() -> Color:
 	return Color(0.42, 0.36, 0.25)
 
 func _water_color() -> Color:
+	if salto_composition_lighting_selection_enabled:
+		return Color(0.050, 0.238, 0.340)
 	if environment_shell_v2_grounding_props_enabled:
 		return Color(0.045, 0.228, 0.318)
 	if environment_presentation_shell_v2_enabled:
@@ -11568,9 +11840,13 @@ func _unit_emissive(unit: Dictionary) -> bool:
 
 func _selection_color(unit: Dictionary) -> Color:
 	if str(unit["team"]) == "enemy":
+		if salto_composition_lighting_selection_enabled:
+			return Color(0.88, 0.22, 0.16, 0.26)
 		if environment_shell_v2_grounding_props_enabled:
 			return Color(0.88, 0.22, 0.16, 0.42)
 		return Color(0.95, 0.24, 0.18, 0.54)
+	if salto_composition_lighting_selection_enabled:
+		return Color(0.58, 0.86, 0.68, 0.24)
 	if environment_shell_v2_grounding_props_enabled:
 		return Color(0.58, 0.86, 0.68, 0.42)
 	return Color(0.62, 0.92, 0.74, 0.56)

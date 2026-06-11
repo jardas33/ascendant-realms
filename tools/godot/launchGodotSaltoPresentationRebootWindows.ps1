@@ -44,6 +44,7 @@ $BridgeShellMode = "v0218-selected"
 $StructureFinishMode = "v0202-selected"
 $StructureShellMode = "v0219-selected"
 $EnvironmentDressingMode = "v0220-selected"
+$CompositionLightingSelectionMode = "v0221-selected"
 $ForwardArgs = @()
 foreach ($arg in $RemainingArgs) {
   if ($arg -eq "--salto-presentation-reboot-use-v0175-ground") {
@@ -70,6 +71,10 @@ foreach ($arg in $RemainingArgs) {
     $EnvironmentDressingMode = "v0220-hash-mismatch"
   } elseif ($arg -eq "--salto-environment-dressing-disabled") {
     $EnvironmentDressingMode = "disabled"
+  } elseif ($arg -eq "--salto-composition-lighting-selection-disabled") {
+    $CompositionLightingSelectionMode = "disabled"
+  } elseif ($arg -eq "--salto-composition-lighting-selection") {
+    $CompositionLightingSelectionMode = "v0221-selected"
   } else {
     $ForwardArgs += $arg
   }
@@ -220,6 +225,9 @@ if ($EnvironmentDressingMode -ne "disabled") {
     "--salto-environment-dressing"
   )
 }
+if ($EnvironmentDressingMode -ne "disabled" -and $CompositionLightingSelectionMode -ne "disabled") {
+  $RebootArgs += "--salto-composition-lighting-selection"
+}
 if ($BridgeShellMode -eq "v0218-legacy-comparator") {
   $RebootArgs += "--salto-bridge-shell-legacy-comparator"
 }
@@ -230,8 +238,8 @@ if ($ForwardArgs) {
   $RebootArgs += $ForwardArgs
 }
 
-Write-Output "Launching v0.220 Salto presentation reboot experiment."
-Write-Output "Scope: isolated opt-in shell-v2 review path; compact contextual HUD plus selected terrain, road, riverbank, water, bridge, structure shell hierarchy and sparse prop-atlas dressing; no new production slot, no browser wiring."
+Write-Output "Launching v0.221 Salto presentation reboot experiment."
+Write-Output "Scope: isolated opt-in shell-v2 review path; compact contextual HUD plus selected terrain, road, riverbank, water, bridge, structure shell hierarchy, sparse prop-atlas dressing, and composition/lighting/selection pass; no new production slot, no browser wiring."
 Write-Output "Ground material mode: $GroundMode"
 Write-Output "Selected ground material SHA-256: $GroundExpectedSha256"
 Write-Output "Road/riverbank/water material mode: $RoadRiverbankWaterMode"
@@ -242,6 +250,7 @@ Write-Output "Structure-finish material mode: $StructureFinishMode"
 Write-Output "Selected v0.202 structure-finish SHA-256: $StructureFinishExpectedSha256"
 Write-Output "Environment dressing mode: $EnvironmentDressingMode"
 Write-Output "Selected v0.220 prop-atlas SHA-256: $PropAtlasExpectedSha256"
+Write-Output "Composition lighting selection mode: $CompositionLightingSelectionMode"
 Write-Output "Default launcher, prior UI launchers, procedural fallback and v0.175 ground material comparator remain preserved."
 
 & (Join-Path $PSScriptRoot "launchGodotSaltoShellV2GroundingPropsWindows.ps1") -Wait:$Wait @RebootArgs

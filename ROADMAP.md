@@ -11,11 +11,17 @@ Every phase should protect these long-term pillars:
 
 ## Current Recommended Next Phase
 
-The current checkpoint is **v0.220 Environment Dressing Prop Atlas And Scatter** on 2026-06-11. It keeps the v0.215 presentation-reboot path isolated while adding exactly one private prop-atlas source and sparse deterministic visual-only dressing around road shoulders, riverbanks, structure edges, bridge approaches and field edges. It preserves the default procedural launcher, all prior launchers and comparators, and gameplay/pathing/collision/objective/AI/economy/save/stable-ID/balance boundaries.
+The current checkpoint is **v0.221 Lighting Camera Selection And Composition Pass** on 2026-06-11. It keeps the v0.215 presentation-reboot path isolated while adding visual-only composition, lighting, camera, value and selection-scale refinements on top of the selected v0.216-v0.220 material/shell/dressing context. It preserves the default procedural launcher, all prior launchers and comparators, and gameplay/pathing/collision/objective/AI/economy/save/stable-ID/balance boundaries.
 
-The queued next milestone is **v0.221 Lighting, camera, selection and composition pass**. Continue only from a clean, synced, pushed and CI-green v0.220 state, and only inside that prompt's stated boundaries.
+The queued next milestone is **v0.222**. Continue only from a clean, synced, pushed and CI-green v0.221 state, and only inside that prompt's stated boundaries.
 
-New v0.220 docs:
+New v0.221 docs:
+
+- `docs/V0221_BATTLEFIELD_COMPOSITION_REPORT.md`
+- `docs/V0221_SELECTION_INDICATOR_REPORT.md`
+- `docs/V0221_IMPLEMENTATION_REPORT.md`
+
+Previous v0.220 docs:
 
 - `docs/V0220_ENVIRONMENT_PROP_ATLAS_INTAKE_REPORT.md`
 - `docs/V0220_ENVIRONMENT_DRESSING_REPORT.md`

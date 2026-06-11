@@ -136,6 +136,8 @@ const SCRIPT_ARG_PREFIXES := [
 	"--salto-structure-shell-legacy-comparator",
 	"--salto-environment-dressing",
 	"--salto-environment-dressing-disabled",
+	"--salto-composition-lighting-selection",
+	"--salto-composition-lighting-selection-disabled",
 	"--real-input-smoke",
 	"--real-input-validate",
 	"--site-semantics-smoke",
@@ -1087,6 +1089,8 @@ func _configure_worker_art_for_active_scene() -> void:
 		active_scene.configure_salto_structure_shell_production(_script_args().has("--salto-structure-shell-production"), _script_args().has("--salto-structure-shell-legacy-comparator"))
 	if active_scene.has_method("configure_salto_environment_dressing"):
 		active_scene.configure_salto_environment_dressing(_script_args().has("--salto-environment-dressing"))
+	if active_scene.has_method("configure_salto_composition_lighting_selection"):
+		active_scene.configure_salto_composition_lighting_selection(_script_args().has("--salto-composition-lighting-selection"))
 	if active_scene.has_method("configure_salto_presentation_reboot"):
 		active_scene.configure_salto_presentation_reboot(_salto_presentation_reboot_enabled())
 
@@ -1095,7 +1099,9 @@ func _apply_review_framing_for_active_scene() -> void:
 		return
 	if active_mode != MODE_25D or active_scene == null or not is_instance_valid(active_scene):
 		return
-	if _script_args().has("--salto-environment-dressing") and active_scene.has_method("apply_environment_shell_v2_grounding_props_framing"):
+	if _script_args().has("--salto-composition-lighting-selection") and active_scene.has_method("apply_salto_composition_lighting_selection_framing"):
+		active_scene.apply_salto_composition_lighting_selection_framing()
+	elif _script_args().has("--salto-environment-dressing") and active_scene.has_method("apply_environment_shell_v2_grounding_props_framing"):
 		active_scene.apply_environment_shell_v2_grounding_props_framing()
 	elif _script_args().has("--salto-shell-v2-grounding-props") and active_scene.has_method("apply_environment_shell_v2_grounding_props_framing"):
 		active_scene.apply_environment_shell_v2_grounding_props_framing()
@@ -4450,7 +4456,7 @@ func run_player_slice_capture() -> void:
 		"saltoAsterPortraitFallbackActive": bool(_salto_aster_portrait_status().get("fallbackActive", true)),
 		"saltoAsterPortraitProductionSlotAdded": false,
 		"saltoAsterPortraitGeneratedImages": false,
-		"privateHarnessPreservedSeparately": captures.any(func(capture: Dictionary) -> bool: return bool(capture.get("privateHarnessCapture", false))) or ["v0.126", "v0.127", "v0.128", "v0.129", "v0.130", "v0.160", "v0.162", "v0.164", "v0.168", "v0.169", "v0.170", "v0.173", "v0.174", "v0.177", "v0.178", "v0.179", "v0.181", "v0.184", "v0.185", "v0.186", "v0.187", "v0.193", "v0.194", "v0.195", "v0.196", "v0.197", "v0.198", "v0.199", "v0.200", "v0.203", "v0.204", "v0.205", "v0.206", "v0.209", "v0.210", "v0.211", "v0.212", "v0.217", "v0.218", "v0.219", "v0.220"].has(_player_capture_checkpoint()),
+		"privateHarnessPreservedSeparately": captures.any(func(capture: Dictionary) -> bool: return bool(capture.get("privateHarnessCapture", false))) or ["v0.126", "v0.127", "v0.128", "v0.129", "v0.130", "v0.160", "v0.162", "v0.164", "v0.168", "v0.169", "v0.170", "v0.173", "v0.174", "v0.177", "v0.178", "v0.179", "v0.181", "v0.184", "v0.185", "v0.186", "v0.187", "v0.193", "v0.194", "v0.195", "v0.196", "v0.197", "v0.198", "v0.199", "v0.200", "v0.203", "v0.204", "v0.205", "v0.206", "v0.209", "v0.210", "v0.211", "v0.212", "v0.217", "v0.218", "v0.219", "v0.220", "v0.221"].has(_player_capture_checkpoint()),
 		"proceduralPrimitiveOnly": not worker_art_loaded and not barracks_material_loaded and not militia_art_loaded and not aster_art_loaded and not ashen_art_loaded and not ground_material_loaded and not road_material_loaded and not bridge_riverbank_material_loaded and not road_riverbank_water_material_loaded,
 		"generatedOrImportedArtIncluded": worker_art_loaded or barracks_material_loaded or militia_art_loaded or aster_art_loaded or ashen_art_loaded or ground_material_loaded or road_material_loaded or bridge_riverbank_material_loaded or road_riverbank_water_material_loaded,
 		"runtimeArtIntegrated": worker_art_loaded or barracks_material_loaded or militia_art_loaded or aster_art_loaded or ashen_art_loaded or ground_material_loaded or road_material_loaded or bridge_riverbank_material_loaded or road_riverbank_water_material_loaded,
@@ -7418,6 +7424,8 @@ func _apply_player_slice_action(action: String) -> Dictionary:
 
 func _player_capture_checkpoint() -> String:
 	var normalized_root := _artifact_root_from_args().replace("\\", "/")
+	if normalized_root.contains("/v0221"):
+		return "v0.221"
 	if normalized_root.contains("/v0220"):
 		return "v0.220"
 	if normalized_root.contains("/v0219"):
@@ -7511,9 +7519,22 @@ func _player_capture_checkpoint() -> String:
 	return "v0.124"
 
 func _is_bounded_microloop_checkpoint() -> bool:
-	return ["v0.129", "v0.130", "v0.160", "v0.162", "v0.164", "v0.166", "v0.168", "v0.169", "v0.170", "v0.173", "v0.174", "v0.177", "v0.178", "v0.179", "v0.181", "v0.184", "v0.185", "v0.186", "v0.187", "v0.193", "v0.194", "v0.195", "v0.196", "v0.197", "v0.198", "v0.199", "v0.200", "v0.203", "v0.204", "v0.205", "v0.206", "v0.209", "v0.210", "v0.211", "v0.212", "v0.213", "v0.215", "v0.216", "v0.217", "v0.218", "v0.219", "v0.220"].has(_player_capture_checkpoint())
+	return ["v0.129", "v0.130", "v0.160", "v0.162", "v0.164", "v0.166", "v0.168", "v0.169", "v0.170", "v0.173", "v0.174", "v0.177", "v0.178", "v0.179", "v0.181", "v0.184", "v0.185", "v0.186", "v0.187", "v0.193", "v0.194", "v0.195", "v0.196", "v0.197", "v0.198", "v0.199", "v0.200", "v0.203", "v0.204", "v0.205", "v0.206", "v0.209", "v0.210", "v0.211", "v0.212", "v0.213", "v0.215", "v0.216", "v0.217", "v0.218", "v0.219", "v0.220", "v0.221"].has(_player_capture_checkpoint())
 
 func _player_capture_steps() -> Array[Dictionary]:
+	if _player_capture_checkpoint() == "v0.221":
+		return [
+			{"id": "initial_overview", "label": "v0.221 initial composed overview", "action": "battle_default"},
+			{"id": "road_bridge_composition", "label": "v0.221 road and bridge composition", "action": "road_intersections"},
+			{"id": "structures_grounded", "label": "v0.221 structures grounded by value", "action": "command_hall"},
+			{"id": "hero_selected", "label": "v0.221 restrained hero selection", "action": "hero_selected"},
+			{"id": "squad_selected", "label": "v0.221 restrained squad selection", "action": "squad_selected"},
+			{"id": "hostile_pressure", "label": "v0.221 hostile pressure readability", "action": "ashen_pressure_active"},
+			{"id": "pan_zoom_near", "label": "v0.221 pan and zoom near review", "action": "camera_min_zoom"},
+			{"id": "pan_zoom_default", "label": "v0.221 default zoom review", "action": "battle_default"},
+			{"id": "pan_zoom_wide", "label": "v0.221 wide zoom review", "action": "camera_max_zoom"},
+			{"id": "minimap_correlation", "label": "v0.221 minimap correlation", "action": "minimap"}
+		]
 	if _player_capture_checkpoint() == "v0.220":
 		return [
 			{"id": "source_atlas_runtime", "label": "v0.220 source atlas runtime status", "action": "battle_default"},

@@ -2,7 +2,7 @@ param()
 
 $ErrorActionPreference = "Stop"
 $RepoRoot = Resolve-Path (Join-Path $PSScriptRoot "..\..")
-$ArtifactRoot = Join-Path $RepoRoot "artifacts\desktop-spikes\godot-salto\v0220"
+$ArtifactRoot = Join-Path $RepoRoot "artifacts\desktop-spikes\godot-salto\v0221"
 $BenchmarkRoot = Join-Path $ArtifactRoot "benchmark"
 $ArtifactRootArg = $ArtifactRoot.Replace("\", "/")
 
@@ -38,7 +38,7 @@ function Assert-ExpectedFiles {
     Start-Sleep -Milliseconds 250
   } while ((Get-Date) -lt $deadline)
   foreach ($fileName in $missing) {
-    throw "Missing expected artifact '$fileName' for v0.220 benchmark scenario '$ScenarioRoot'."
+    throw "Missing expected artifact '$fileName' for v0.221 benchmark scenario '$ScenarioRoot'."
   }
 }
 
@@ -59,17 +59,14 @@ function Invoke-BenchmarkScenario {
 
 Reset-SafeDirectory -Path $BenchmarkRoot -Parent $ArtifactRoot
 
-Invoke-BenchmarkScenario -ScenarioId "v0219-before-structure-shell" -ExtraArgs @(
-  "--salto-environment-dressing-disabled",
+Invoke-BenchmarkScenario -ScenarioId "v0220-before-composition" -ExtraArgs @(
   "--salto-composition-lighting-selection-disabled"
 )
-Invoke-BenchmarkScenario -ScenarioId "selected-environment-dressing" -ExtraArgs @(
-  "--salto-composition-lighting-selection-disabled"
-)
+Invoke-BenchmarkScenario -ScenarioId "selected-composition-lighting-selection" -ExtraArgs @()
 
-node "tools/godot/saltoEnvironmentDressingTool.mjs" benchmark "--artifact-root=$ArtifactRootArg"
+node "tools/godot/saltoCompositionLightingSelectionTool.mjs" benchmark "--artifact-root=$ArtifactRootArg"
 if ($LASTEXITCODE -ne 0) {
-  throw "v0.220 environment dressing benchmark failed with exit code $LASTEXITCODE."
+  throw "v0.221 composition lighting selection benchmark failed with exit code $LASTEXITCODE."
 }
 
-Write-Output "PASS_V0220_ENVIRONMENT_DRESSING_BENCHMARK_READY"
+Write-Output "PASS_V0221_COMPOSITION_LIGHTING_SELECTION_BENCHMARK_READY"

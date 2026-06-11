@@ -2,7 +2,7 @@ param()
 
 $ErrorActionPreference = "Stop"
 $RepoRoot = Resolve-Path (Join-Path $PSScriptRoot "..\..")
-$ArtifactRoot = Join-Path $RepoRoot "artifacts\desktop-spikes\godot-salto\v0220"
+$ArtifactRoot = Join-Path $RepoRoot "artifacts\desktop-spikes\godot-salto\v0221"
 $CaptureRoot = Join-Path $ArtifactRoot "capture"
 $ArtifactRootArg = $ArtifactRoot.Replace("\", "/")
 
@@ -71,21 +71,10 @@ function Invoke-CaptureScenario {
 
 Reset-SafeDirectory -Path $CaptureRoot -Parent $ArtifactRoot
 
-Invoke-CaptureScenario -ScenarioId "v0219-before-structure-shell" -ExtraArgs @(
-  "--salto-environment-dressing-disabled",
+Invoke-CaptureScenario -ScenarioId "v0220-before-composition" -ExtraArgs @(
   "--salto-composition-lighting-selection-disabled"
 )
-Invoke-CaptureScenario -ScenarioId "selected-environment-dressing" -ExtraArgs @(
-  "--salto-composition-lighting-selection-disabled"
-)
-Invoke-CaptureScenario -ScenarioId "missing-prop-atlas-fallback" -ExtraArgs @(
-  "--salto-environment-dressing-missing-fallback",
-  "--salto-composition-lighting-selection-disabled"
-)
-Invoke-CaptureScenario -ScenarioId "hash-mismatch-prop-atlas-fallback" -ExtraArgs @(
-  "--salto-environment-dressing-hash-mismatch",
-  "--salto-composition-lighting-selection-disabled"
-)
+Invoke-CaptureScenario -ScenarioId "selected-composition-lighting-selection" -ExtraArgs @()
 
 $BundledPython = Join-Path $env:USERPROFILE ".cache\codex-runtimes\codex-primary-runtime\dependencies\python\python.exe"
 if (Test-Path -LiteralPath $BundledPython) {
@@ -93,12 +82,12 @@ if (Test-Path -LiteralPath $BundledPython) {
 }
 
 try {
-  node "tools/godot/saltoEnvironmentDressingTool.mjs" capture "--artifact-root=$ArtifactRootArg"
+  node "tools/godot/saltoCompositionLightingSelectionTool.mjs" capture "--artifact-root=$ArtifactRootArg"
   if ($LASTEXITCODE -ne 0) {
-    throw "v0.220 environment dressing capture report failed with exit code $LASTEXITCODE."
+    throw "v0.221 composition lighting selection capture report failed with exit code $LASTEXITCODE."
   }
 } finally {
   Remove-Item Env:\SALTO_CONTACT_SHEET_PYTHON -ErrorAction SilentlyContinue
 }
 
-Write-Output "PASS_V0220_ENVIRONMENT_DRESSING_CAPTURE_READY"
+Write-Output "PASS_V0221_COMPOSITION_LIGHTING_SELECTION_CAPTURE_READY"

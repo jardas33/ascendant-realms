@@ -3,7 +3,7 @@ param()
 $ErrorActionPreference = "Stop"
 $RepoRoot = Resolve-Path (Join-Path $PSScriptRoot "..\..")
 $ExePath = Join-Path $RepoRoot "desktop-spikes\godot-salto\builds\AscendantRealmsGodotSalto.exe"
-$ArtifactRoot = Join-Path $RepoRoot "artifacts\desktop-spikes\godot-salto\v0220"
+$ArtifactRoot = Join-Path $RepoRoot "artifacts\desktop-spikes\godot-salto\v0221"
 $ValidationRoot = Join-Path $ArtifactRoot "validation"
 $ArtifactRootArg = $ArtifactRoot.Replace("\", "/")
 
@@ -94,50 +94,39 @@ function Invoke-RebootValidationScenario {
 & (Join-Path $PSScriptRoot "exportGodotWindows.ps1")
 & (Join-Path $PSScriptRoot "packageGodotWindows.ps1")
 
-if (-not (Test-Path -LiteralPath (Join-Path $ArtifactRoot "capture\selected-environment-dressing\screenshot-runtime-manifest.json"))) {
-  & (Join-Path $PSScriptRoot "captureGodotSaltoEnvironmentDressingWindows.ps1")
+if (-not (Test-Path -LiteralPath (Join-Path $ArtifactRoot "capture\selected-composition-lighting-selection\screenshot-runtime-manifest.json"))) {
+  & (Join-Path $PSScriptRoot "captureGodotSaltoCompositionLightingSelectionWindows.ps1")
 }
 if (-not (Test-Path -LiteralPath $ExePath)) {
-  throw "Missing exported Godot executable for v0.220 validation: $ExePath"
+  throw "Missing exported Godot executable for v0.221 validation: $ExePath"
 }
 
 Reset-SafeDirectory -Path $ValidationRoot -Parent $ArtifactRoot
 
 Invoke-DefaultValidationScenario -ScenarioRoot (Join-Path $ValidationRoot "default-procedural")
-Invoke-RebootValidationScenario -ScenarioId "v0219-before-structure-shell" -ExtraArgs @(
-  "--salto-environment-dressing-disabled",
+Invoke-RebootValidationScenario -ScenarioId "v0220-before-composition" -ExtraArgs @(
   "--salto-composition-lighting-selection-disabled"
 )
-Invoke-RebootValidationScenario -ScenarioId "selected-environment-dressing" -ExtraArgs @(
-  "--salto-composition-lighting-selection-disabled"
-)
-Invoke-RebootValidationScenario -ScenarioId "missing-prop-atlas-fallback" -ExtraArgs @(
-  "--salto-environment-dressing-missing-fallback",
-  "--salto-composition-lighting-selection-disabled"
-)
-Invoke-RebootValidationScenario -ScenarioId "hash-mismatch-prop-atlas-fallback" -ExtraArgs @(
-  "--salto-environment-dressing-hash-mismatch",
-  "--salto-composition-lighting-selection-disabled"
-)
+Invoke-RebootValidationScenario -ScenarioId "selected-composition-lighting-selection" -ExtraArgs @()
 
-node "tools/godot/saltoEnvironmentDressingTool.mjs" validation "--artifact-root=$ArtifactRootArg"
+node "tools/godot/saltoCompositionLightingSelectionTool.mjs" validation "--artifact-root=$ArtifactRootArg"
 if ($LASTEXITCODE -ne 0) {
-  throw "v0.220 environment dressing validation report failed with exit code $LASTEXITCODE."
+  throw "v0.221 composition lighting selection validation report failed with exit code $LASTEXITCODE."
 }
 
-node "tools/godot/saltoEnvironmentDressingTool.mjs" boundary "--artifact-root=$ArtifactRootArg"
+node "tools/godot/saltoCompositionLightingSelectionTool.mjs" boundary "--artifact-root=$ArtifactRootArg"
 if ($LASTEXITCODE -ne 0) {
-  throw "v0.220 environment dressing boundary scan failed with exit code $LASTEXITCODE."
+  throw "v0.221 composition lighting selection boundary scan failed with exit code $LASTEXITCODE."
 }
 
 node "scripts/cleanupSaltoExperimentalArtifacts.mjs" "--output-root=$((Join-Path $ArtifactRoot 'cleanup-dry-run').Replace('\', '/'))"
 if ($LASTEXITCODE -ne 0) {
-  throw "v0.220 cleanup dry-run failed with exit code $LASTEXITCODE."
+  throw "v0.221 cleanup dry-run failed with exit code $LASTEXITCODE."
 }
 
 node "scripts/validateSaltoExperimentalArtifactRetention.mjs" "--output-root=$((Join-Path $ArtifactRoot 'artifact-retention').Replace('\', '/'))"
 if ($LASTEXITCODE -ne 0) {
-  throw "v0.220 artifact retention validation failed with exit code $LASTEXITCODE."
+  throw "v0.221 artifact retention validation failed with exit code $LASTEXITCODE."
 }
 
-Write-Output "PASS_V0220_ENVIRONMENT_DRESSING_VALIDATION_READY"
+Write-Output "PASS_V0221_COMPOSITION_LIGHTING_SELECTION_VALIDATION_READY"
