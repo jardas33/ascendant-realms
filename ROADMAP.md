@@ -11,11 +11,17 @@ Every phase should protect these long-term pillars:
 
 ## Current Recommended Next Phase
 
-The current checkpoint is **v0.214 Salto Fantasy RTS UI Freeze Decision And Next-Phase Scorecard** on 2026-06-11. It freezes the current isolated Godot Salto shell-v2 opt-in HUD direction after reviewing v0.207 through v0.213 evidence. The freeze is a bounded UI-direction decision, not a production-art parity claim. The reference target remains much richer in battlefield art, structure finish, unit density, lighting and environmental storytelling, but the current HUD shell now reads as a coherent original fantasy RTS interface rather than debug boxes.
+The current checkpoint is **v0.215 Salto Presentation Reboot Baseline And Contextual HUD Declutter** on 2026-06-11. It creates a new isolated Godot Salto presentation-reboot launcher, keeps v0.214 as a comparator, and establishes a compact contextual HUD baseline. This is a presentation declutter checkpoint, not a production-art parity claim.
 
-The exactly selected next milestone is **v0.215 Salto Production-Art Battlefield Content Direction Packet**. Do not start v0.215 without a new explicit prompt from a clean, synced, pushed and CI-green v0.214 state. The next work should define a bounded production-art/content contract for the Salto battlefield before any new image generation, imported art, runtime slot, launcher, browser wiring or default enablement.
+The queued next milestone is **v0.216 Salto terrain material production pass**. Continue only from a clean, synced, pushed and CI-green v0.215 state, and only inside that prompt's stated boundaries.
 
-New v0.214 docs:
+New v0.215 docs:
+
+- `docs/V0215_PRESENTATION_REBOOT_BASELINE.md`
+- `docs/V0215_UI_DECLUTTER_REPORT.md`
+- `docs/V0215_IMPLEMENTATION_REPORT.md`
+
+Previous v0.214 docs:
 
 - `docs/V0214_UI_FREEZE_DECISION.md`
 - `docs/V0214_NEXT_PHASE_SCORECARD.md`

@@ -1,6 +1,29 @@
 # Development Checkpoint
 
-Updated: 2026-06-11 v0.214 Salto fantasy RTS UI freeze decision
+Updated: 2026-06-11 v0.215 Salto presentation reboot baseline and contextual HUD declutter
+
+## v0.215 Salto Presentation Reboot Baseline And Contextual HUD Declutter - 2026-06-11
+
+Scope: isolated opt-in Godot Salto presentation reboot path and immediate HUD declutter baseline. This checkpoint preserves v0.214 as the full-HUD comparator, keeps the default launcher procedural, keeps all prior launchers available, changes no browser runtime, generates zero images, adds zero runtime art slots, and leaves gameplay, pathing, collisions, objectives, AI, economy, saves, stable IDs and balance unchanged.
+
+Included work:
+
+- Added `GODOT_LAUNCH_SALTO_PRESENTATION_REBOOT_EXPERIMENT_WINDOWS.bat`.
+- Added `--salto-presentation-reboot` and a compact HUD branch with slim top strip, compact minimap, contextual selected panel, collapsed event toasts, docked tooltip and hidden-by-default production drawer.
+- Reduced selection and target ring visual weight only inside the reboot path.
+- Added capture, validation and benchmark wrappers for the presentation reboot path.
+- Generated the ignored manual review pack under `artifacts/manual-review/v0215-presentation-reboot-declutter/`.
+- Added v0.215 baseline, declutter and implementation docs.
+
+Verification targets:
+
+```text
+PASS: npm run godot:capture:salto-presentation-reboot.
+PASS: npm run godot:validate:salto-presentation-reboot.
+PASS: npm run godot:benchmark:salto-presentation-reboot.
+PASS: presentation reboot occupancy budget.
+PASS: presentation reboot boundary gate.
+```
 
 ## v0.214 Salto Fantasy RTS UI Freeze Decision And Next-Phase Scorecard - 2026-06-11
 

@@ -1,12 +1,12 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-06-11 v0.214 Salto fantasy RTS UI freeze decision
+Last updated: 2026-06-11 v0.215 Salto presentation reboot baseline and contextual HUD declutter
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
 ## Current Continuation Note
 
-The latest work is v0.214 Salto fantasy RTS UI freeze decision and next-phase scorecard. It reviews v0.207 through v0.213 Godot Salto UI evidence, declares `PASS_V0214_UI_DIRECTION_FREEZE`, chooses exactly one next milestone (`v0.215 Salto production-art battlefield content direction packet`), updates canonical docs, generates zero images, adds zero runtime art slots, keeps browser runtime untouched, keeps the default launcher procedural, preserves all prior launchers, preserves gameplay/pathing/collisions/objectives/AI/economy/saves/stable IDs/balance, and stops for human review.
+The latest work is v0.215 Salto presentation reboot baseline and contextual HUD declutter. It adds a new isolated Godot Salto presentation-reboot launcher, keeps v0.214 available as the full-HUD comparator, adds compact HUD capture/validation/benchmark tooling, generates zero images, adds zero runtime art slots, keeps browser runtime untouched, keeps the default launcher procedural, preserves all prior launchers, preserves gameplay/pathing/collisions/objectives/AI/economy/saves/stable IDs/balance, and continues to queued v0.216 only after clean sync and CI-green proof.
 
 ## Project Identity
 

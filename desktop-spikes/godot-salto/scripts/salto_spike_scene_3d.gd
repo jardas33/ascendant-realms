@@ -366,6 +366,7 @@ var environment_shell_v2_grounding_lighting_enabled := false
 var environment_shell_v2_environmental_cohesion_enabled := false
 var environment_shell_v2_structure_material_enabled := false
 var environment_shell_v2_grounding_props_enabled := false
+var salto_presentation_reboot_enabled := false
 var presentation_shell_v2_initialized := false
 var presentation_shell_v2_fallback_active := false
 var presentation_shell_v2_fallback_reason := ""
@@ -911,6 +912,17 @@ func configure_environment_shell_v2_grounding_props(enabled: bool) -> Dictionary
 		apply_environment_foundation_review_framing()
 	_apply_environment_readability_minimap_markers()
 	return _environment_shell_v2_grounding_props_status()
+
+func configure_salto_presentation_reboot(enabled: bool) -> Dictionary:
+	salto_presentation_reboot_enabled = enabled
+	_sync_unit_visuals()
+	return {
+		"checkpoint": "v0.215",
+		"enabled": salto_presentation_reboot_enabled,
+		"visualOnly": true,
+		"selectionRingsReduced": salto_presentation_reboot_enabled,
+		"gameplayChanged": false
+	}
 
 func apply_environment_foundation_review_framing() -> bool:
 	if not environment_foundation_review_enabled:
@@ -6159,7 +6171,10 @@ func _vector3_report(position: Vector3) -> Dictionary:
 
 func _orthographic_rendered_pixel_size(world_width: float, world_height: float) -> Dictionary:
 	var camera := get_node_or_null("FixedOrthographicCamera") as Camera3D
-	var viewport_size := get_viewport().get_visible_rect().size
+	var viewport := get_viewport()
+	if viewport == null:
+		return {"width": 0.0, "height": 0.0, "basis": "unavailable"}
+	var viewport_size := viewport.get_visible_rect().size
 	if camera == null or viewport_size.y <= 0.0:
 		return {"width": 0.0, "height": 0.0, "basis": "unavailable"}
 	var pixels_per_world_unit := viewport_size.y / maxf(0.001, camera.size)
@@ -6246,6 +6261,14 @@ func get_spike_status() -> Dictionary:
 	status["environmentShellV2StructureMaterial"] = _environment_shell_v2_structure_material_status()
 	status["environmentShellV2GroundingPropsEnabled"] = environment_shell_v2_grounding_props_enabled
 	status["environmentShellV2GroundingProps"] = _environment_shell_v2_grounding_props_status()
+	status["saltoPresentationRebootEnabled"] = salto_presentation_reboot_enabled
+	status["saltoPresentationRebootScene"] = {
+		"checkpoint": "v0.215",
+		"enabled": salto_presentation_reboot_enabled,
+		"selectionRingsReduced": salto_presentation_reboot_enabled,
+		"visualOnly": true,
+		"gameplayChanged": false
+	}
 	var worker_art_loaded := _worker_art_is_active()
 	_refresh_worker_art_counters()
 	var barracks_material_loaded := _barracks_material_is_active()
@@ -8787,18 +8810,18 @@ func _rebuild_visuals() -> void:
 		_add_box("%s_future_art_anchor" % str(endpoint["id"]), _to_world(endpoint["position"], 0.35), Vector3(0.085, 0.28, 0.085), endpoint_anchor_color, environment_shell_v2_mesh_compositor_enabled, endpoint_emissive)
 	for unit in runtime.units:
 		_add_unit_silhouette(unit)
-		var selection_radius_factor := 1.92 if environment_shell_v2_grounding_props_enabled else 2.2
-		var hero_marker_radius_factor := 2.46 if environment_shell_v2_grounding_props_enabled else 2.9
-		var worker_marker_radius_factor := 2.08 if environment_shell_v2_grounding_props_enabled else 2.45
-		var squad_marker_radius_factor := 1.28 if environment_shell_v2_grounding_props_enabled else 1.62
+		var selection_radius_factor := 1.42 if salto_presentation_reboot_enabled else (1.92 if environment_shell_v2_grounding_props_enabled else 2.2)
+		var hero_marker_radius_factor := 1.74 if salto_presentation_reboot_enabled else (2.46 if environment_shell_v2_grounding_props_enabled else 2.9)
+		var worker_marker_radius_factor := 1.56 if salto_presentation_reboot_enabled else (2.08 if environment_shell_v2_grounding_props_enabled else 2.45)
+		var squad_marker_radius_factor := 0.98 if salto_presentation_reboot_enabled else (1.28 if environment_shell_v2_grounding_props_enabled else 1.62)
 		_add_selection_disc("selection_%s" % str(unit["id"]), _to_world(unit["position"], 0.08), _unit_radius(unit) * selection_radius_factor, _selection_color(unit))
-		var hero_marker_color := Color(0.80, 0.92, 0.70, 0.22) if environment_shell_v2_grounding_props_enabled else (Color(0.80, 0.92, 0.70, 0.28) if environment_shell_v2_mesh_compositor_enabled else Color(0.80, 0.92, 0.70, 0.38))
-		var worker_marker_color := Color(0.92, 0.78, 0.42, 0.20) if environment_shell_v2_grounding_props_enabled else (Color(0.92, 0.78, 0.42, 0.26) if environment_shell_v2_mesh_compositor_enabled else Color(0.92, 0.78, 0.42, 0.36))
-		var squad_marker_color := Color(0.54, 0.84, 0.68, 0.14) if environment_shell_v2_grounding_props_enabled else (Color(0.54, 0.84, 0.68, 0.22) if environment_shell_v2_mesh_compositor_enabled else Color(0.54, 0.84, 0.68, 0.30))
+		var hero_marker_color := Color(0.80, 0.92, 0.70, 0.12) if salto_presentation_reboot_enabled else (Color(0.80, 0.92, 0.70, 0.22) if environment_shell_v2_grounding_props_enabled else (Color(0.80, 0.92, 0.70, 0.28) if environment_shell_v2_mesh_compositor_enabled else Color(0.80, 0.92, 0.70, 0.38)))
+		var worker_marker_color := Color(0.92, 0.78, 0.42, 0.11) if salto_presentation_reboot_enabled else (Color(0.92, 0.78, 0.42, 0.20) if environment_shell_v2_grounding_props_enabled else (Color(0.92, 0.78, 0.42, 0.26) if environment_shell_v2_mesh_compositor_enabled else Color(0.92, 0.78, 0.42, 0.36)))
+		var squad_marker_color := Color(0.54, 0.84, 0.68, 0.08) if salto_presentation_reboot_enabled else (Color(0.54, 0.84, 0.68, 0.14) if environment_shell_v2_grounding_props_enabled else (Color(0.54, 0.84, 0.68, 0.22) if environment_shell_v2_mesh_compositor_enabled else Color(0.54, 0.84, 0.68, 0.30)))
 		_add_selection_disc("selected_hero_marker_%s" % str(unit["id"]), _to_world(unit["position"], 0.095), _unit_radius(unit) * hero_marker_radius_factor, hero_marker_color)
 		_add_selection_disc("selected_worker_marker_%s" % str(unit["id"]), _to_world(unit["position"], 0.09), _unit_radius(unit) * worker_marker_radius_factor, worker_marker_color)
 		_add_selection_disc("squad_marker_%s" % str(unit["id"]), _to_world(unit["position"], 0.07), _unit_radius(unit) * squad_marker_radius_factor, squad_marker_color)
-		_add_selection_disc("enemy_target_marker_%s" % str(unit["id"]), _to_world(unit["position"], 0.105), _unit_radius(unit) * 2.4, Color(0.94, 0.24, 0.16, 0.38))
+		_add_selection_disc("enemy_target_marker_%s" % str(unit["id"]), _to_world(unit["position"], 0.105), _unit_radius(unit) * (1.68 if salto_presentation_reboot_enabled else 2.4), Color(0.94, 0.24, 0.16, 0.20 if salto_presentation_reboot_enabled else 0.38))
 		_add_box("health_back_%s" % str(unit["id"]), _to_world(unit["position"], 0.665), Vector3(_unit_radius(unit) * 1.75, 0.028, 0.035), Color(0.08, 0.10, 0.08, 0.62), true, false)
 		_add_box("health_%s" % str(unit["id"]), _to_world(unit["position"], 0.68), Vector3(_unit_radius(unit) * 1.65, 0.035, 0.035), Color(0.28, 0.88, 0.44), false, false)
 		_add_box("damage_flash_%s" % str(unit["id"]), _to_world(unit["position"], 0.58), Vector3(_unit_radius(unit) * 1.4, 0.12, _unit_radius(unit) * 1.4), Color(0.98, 0.52, 0.24, 0.48), true, true)

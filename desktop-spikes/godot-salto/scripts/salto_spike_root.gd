@@ -106,6 +106,7 @@ const SCRIPT_ARG_PREFIXES := [
 	"--salto-aster-portrait-force-fallback",
 	"--salto-production-objectives-log",
 	"--salto-minimap-tooltip-accessibility",
+	"--salto-presentation-reboot",
 	"--real-input-smoke",
 	"--real-input-validate",
 	"--site-semantics-smoke",
@@ -1047,6 +1048,8 @@ func _configure_worker_art_for_active_scene() -> void:
 		active_scene.configure_environment_shell_v2_structure_material(_script_args().has("--salto-shell-v2-structure-material"))
 	if active_scene.has_method("configure_environment_shell_v2_grounding_props"):
 		active_scene.configure_environment_shell_v2_grounding_props(_script_args().has("--salto-shell-v2-grounding-props"))
+	if active_scene.has_method("configure_salto_presentation_reboot"):
+		active_scene.configure_salto_presentation_reboot(_salto_presentation_reboot_enabled())
 
 func _apply_review_framing_for_active_scene() -> void:
 	if not _script_args().has("--salto-three-slot-review-framing") and not _script_args().has("--salto-four-slot-review-framing") and not _script_args().has("--salto-five-slot-review-framing"):
@@ -2381,6 +2384,39 @@ func _salto_production_objectives_log_enabled() -> bool:
 func _salto_minimap_tooltip_accessibility_enabled() -> bool:
 	return _salto_production_objectives_log_enabled() and _script_args().has("--salto-minimap-tooltip-accessibility")
 
+func _salto_presentation_reboot_enabled() -> bool:
+	return _salto_ui_shell_live_enabled() and _script_args().has("--salto-presentation-reboot")
+
+func _salto_presentation_reboot_occupancy_budget() -> Dictionary:
+	var viewport_area := float(VIEWPORT_SIZE.x * VIEWPORT_SIZE.y)
+	var top_strip_area := 950.0 * 38.0
+	var minimap_area := 220.0 * 164.0
+	var selected_area := 594.0 * 106.0
+	var production_area := 430.0 * 174.0
+	return {
+		"checkpoint": "v0.215",
+		"enabled": _salto_presentation_reboot_enabled(),
+		"battlefieldDominant": true,
+		"topStripHeightPx": 38,
+		"topStripHeightRatio": 38.0 / float(VIEWPORT_SIZE.y),
+		"topStripWithinFivePercent": 38.0 / float(VIEWPORT_SIZE.y) <= 0.05,
+		"minimapWidthPx": 220,
+		"minimapHeightPx": 164,
+		"minimapWidthRatio": 220.0 / float(VIEWPORT_SIZE.x),
+		"minimapHeightRatio": 164.0 / float(VIEWPORT_SIZE.y),
+		"minimapWithinBudget": 220.0 / float(VIEWPORT_SIZE.x) <= 0.16 and 164.0 / float(VIEWPORT_SIZE.y) <= 0.20,
+		"selectedContextWidthPx": 594,
+		"selectedContextHeightPx": 106,
+		"selectedContextWithinBudget": 594.0 / float(VIEWPORT_SIZE.x) <= 0.38 and 106.0 / float(VIEWPORT_SIZE.y) <= 0.18,
+		"productionDrawerWidthPx": 430,
+		"productionDrawerHeightPx": 174,
+		"productionDrawerWithinBudget": 430.0 / float(VIEWPORT_SIZE.x) <= 0.28 and 174.0 / float(VIEWPORT_SIZE.y) <= 0.20,
+		"objectiveSummaryOneLineDefault": true,
+		"eventLogCollapsed": true,
+		"tooltipDockedEdge": true,
+		"estimatedFixedUiAreaRatioExpanded": (top_strip_area + minimap_area + selected_area + production_area) / viewport_area
+	}
+
 func _salto_aster_portrait_force_fallback() -> bool:
 	return _script_args().has("--salto-aster-portrait-force-fallback")
 
@@ -2513,6 +2549,10 @@ func _render_live_ui_shell_overlay() -> void:
 	player_screen.add_child(overlay)
 	player_ui_shell_overlay = overlay
 	var state := _live_ui_shell_state()
+	if _salto_presentation_reboot_enabled():
+		overlay.name = "V0215SaltoPresentationRebootOverlay"
+		_live_ui_reboot_shell(overlay, state)
+		return
 	_live_ui_shell_resource_strip(overlay, state)
 	_live_ui_shell_left_stack(overlay, state)
 	_live_ui_shell_minimap(overlay, state)
@@ -2520,6 +2560,176 @@ func _render_live_ui_shell_overlay() -> void:
 	_live_ui_shell_production_panel(overlay, state)
 	_live_ui_shell_alerts(overlay, state)
 	_live_ui_shell_tooltip(overlay, state)
+
+func _live_ui_reboot_shell(root: Control, state: Dictionary) -> void:
+	_live_ui_reboot_top_strip(root, state)
+	_live_ui_reboot_objective_strip(root, state)
+	_live_ui_reboot_minimap(root, state)
+	_live_ui_reboot_selection_context(root, state)
+	_live_ui_reboot_production_drawer(root, state)
+	_live_ui_reboot_alerts(root, state)
+	_live_ui_reboot_event_toasts(root, state)
+	_live_ui_reboot_tooltip(root, state)
+
+func _live_ui_reboot_panel(parent: Control, name: String, position: Vector2, size: Vector2, border: Color, fill_alpha: float = 0.84) -> Panel:
+	var panel := Panel.new()
+	panel.name = name
+	panel.position = position
+	panel.size = size
+	panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	panel.add_theme_stylebox_override("panel", _ui_architecture_panel_style(Color(0.026, 0.033, 0.028, fill_alpha), border))
+	parent.add_child(panel)
+	return panel
+
+func _live_ui_reboot_label(parent: Control, text: String, position: Vector2, size: Vector2, font_size: int, color: Color, align: HorizontalAlignment = HORIZONTAL_ALIGNMENT_LEFT) -> Label:
+	var label := _ui_architecture_label(parent, text, position, size, font_size, color, align)
+	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	return label
+
+func _live_ui_reboot_top_strip(root: Control, state: Dictionary) -> void:
+	var panel := _live_ui_reboot_panel(root, "V0215TopResourceStrip", Vector2(318, 12), Vector2(950, 38), Color(0.38, 0.58, 0.47, 0.76), 0.78)
+	var resources: Dictionary = state.get("resources", {})
+	var entries := [
+		["Crowns", str(resources.get("crowns", 0)), Color(0.86, 0.74, 0.38, 1.0)],
+		["Stone", str(resources.get("stone", 0)), Color(0.62, 0.62, 0.54, 1.0)],
+		["Iron", str(resources.get("iron", 0)), Color(0.54, 0.58, 0.60, 1.0)],
+		["Aether", str(resources.get("aether", 0)), Color(0.28, 0.82, 0.78, 1.0)],
+		["Pop", "9/16", Color(0.64, 0.78, 0.50, 1.0)]
+	]
+	_live_ui_reboot_label(panel, "SALTO FOOTHOLD", Vector2(14, 7), Vector2(142, 22), 12, Color(0.86, 0.84, 0.62))
+	for index in range(entries.size()):
+		var entry: Array = entries[index]
+		var x := 174 + index * 142
+		_ui_architecture_rect(panel, "V0215ResourceSwatch%s" % index, Vector2(x, 13), Vector2(10, 10), entry[2])
+		_live_ui_reboot_label(panel, "%s %s" % [str(entry[0]), str(entry[1])], Vector2(x + 16, 7), Vector2(116, 22), 12, Color(0.86, 0.88, 0.70))
+	var utility := _live_ui_reboot_panel(root, "V0215UtilityCluster", Vector2(1304, 12), Vector2(228, 38), Color(0.36, 0.46, 0.40, 0.68), 0.74)
+	_live_ui_shell_action_button(utility, Vector2(12, 7), Vector2(58, 24), "Menu", "_on_player_back_pressed")
+	_live_ui_shell_action_button(utility, Vector2(84, 7), Vector2(58, 24), "Help", "_on_live_ui_shell_help_pressed")
+	_live_ui_shell_action_button(utility, Vector2(156, 7), Vector2(58, 24), "Pause", "_on_live_ui_shell_pause_pressed")
+
+func _live_ui_reboot_objective_strip(root: Control, state: Dictionary) -> void:
+	var hostile := str(state.get("alertSeverity", "info")) == "hostile"
+	var expanded := ["production_train", "event_progression", "v0212_tooltips", "v0212_alerts"].has(str(player_ui_shell_context_override))
+	var panel_size := Vector2(714, 36 if not expanded else 82)
+	var panel := _live_ui_reboot_panel(root, "V0215ObjectiveContextStrip", Vector2(438, 60), panel_size, Color(0.62, 0.54, 0.32, 0.74), 0.76)
+	var objective_text := "%s  |  Next: %s" % [str(state.get("objective", "")), _v0211_truncate(str(state.get("objectiveNextAction", "")), 68)]
+	_live_ui_reboot_label(panel, objective_text, Vector2(12, 6), Vector2(panel_size.x - 96, 22), 11, Color(0.90, 0.86, 0.66))
+	_live_ui_shell_action_button(panel, Vector2(panel_size.x - 74, 6), Vector2(56, 22), "More", "_on_live_ui_shell_help_pressed")
+	if expanded:
+		_live_ui_reboot_label(panel, str(state.get("objectiveDetail", "")).replace("\n", " / "), Vector2(12, 33), Vector2(panel_size.x - 24, 20), 10, Color(0.76, 0.84, 0.70))
+		var progress: Array = state.get("objectiveProgress", [])
+		for index in range(min(progress.size(), 5)):
+			var item: Dictionary = progress[index]
+			var done := bool(item.get("done", false))
+			var x := 14 + index * 96
+			_ui_architecture_rect(panel, "V0215ObjectiveStep%s" % index, Vector2(x, 62), Vector2(54, 5), Color(0.42, 0.74, 0.54, 0.88) if done else Color(0.24, 0.28, 0.23, 0.82))
+			_live_ui_reboot_label(panel, str(item.get("label", "")), Vector2(x + 58, 55), Vector2(36, 16), 8, Color(0.72, 0.78, 0.62), HORIZONTAL_ALIGNMENT_LEFT)
+	elif hostile:
+		_ui_architecture_rect(panel, "V0215ObjectiveHostileRail", Vector2(0, 0), Vector2(4, panel_size.y), Color(0.90, 0.28, 0.16, 0.90))
+
+func _live_ui_reboot_minimap(root: Control, state: Dictionary) -> void:
+	var panel := _live_ui_reboot_panel(root, "V0215CompactMinimap", Vector2(56, 694), Vector2(220, 164), Color(0.34, 0.62, 0.56, 0.70), 0.78)
+	_live_ui_reboot_label(panel, "MAP", Vector2(14, 8), Vector2(48, 18), 10, Color(0.78, 0.86, 0.66))
+	_ui_architecture_rect(panel, "V0215MiniBounds", Vector2(14, 32), Vector2(192, 114), Color(0.050, 0.090, 0.070, 0.94))
+	_ui_architecture_rect(panel, "V0215MiniRoadWest", Vector2(38, 86), Vector2(68, 8), Color(0.58, 0.50, 0.32, 0.94))
+	_ui_architecture_rect(panel, "V0215MiniBridge", Vector2(96, 78), Vector2(48, 22), Color(0.66, 0.60, 0.42, 0.96))
+	_ui_architecture_rect(panel, "V0215MiniRoadEast", Vector2(134, 86), Vector2(58, 8), Color(0.58, 0.50, 0.32, 0.94))
+	_ui_architecture_rect(panel, "V0215MiniRoadNorth", Vector2(102, 48), Vector2(8, 44), Color(0.48, 0.43, 0.30, 0.88))
+	_ui_architecture_rect(panel, "V0215MiniRiver", Vector2(112, 38), Vector2(13, 100), Color(0.08, 0.38, 0.48, 0.96))
+	_ui_architecture_rect(panel, "V0215MiniHero", Vector2(74, 82), Vector2(12, 12), Color(0.92, 0.78, 0.32, 1.0))
+	_ui_architecture_rect(panel, "V0215MiniMine", Vector2(84, 96), Vector2(20, 14), Color(0.32, 0.82, 0.58, 0.94) if bool(state.get("mineConverted", false)) else Color(0.84, 0.72, 0.34, 0.92))
+	_ui_architecture_rect(panel, "V0215MiniBarracks", Vector2(56, 58), Vector2(22, 14), Color(0.78, 0.66, 0.42, 0.92))
+	_ui_architecture_rect(panel, "V0215MiniFriendlies", Vector2(46, 118), Vector2(16, 16), Color(0.33, 0.84, 0.62, 0.98))
+	_ui_architecture_rect(panel, "V0215MiniHostiles", Vector2(158, 62), Vector2(34, 15), Color(0.88, 0.24, 0.16, 1.0))
+	_ui_architecture_rect(panel, "V0215MiniCamera", Vector2(66, 74), Vector2(100, 56), Color(0.90, 0.95, 0.82, 0.16))
+	_live_ui_reboot_label(panel, "bounds | routes | pressure", Vector2(14, 146), Vector2(192, 14), 8, Color(0.62, 0.70, 0.58), HORIZONTAL_ALIGNMENT_CENTER)
+
+func _live_ui_reboot_selection_context(root: Control, state: Dictionary) -> void:
+	var panel := _live_ui_reboot_panel(root, "V0215SelectedContext", Vector2(346, 764), Vector2(594, 106), Color(0.42, 0.62, 0.50, 0.72), 0.80)
+	var data: Dictionary = state.get("selectionPanel", {})
+	_ui_architecture_rect(panel, "V0215PortraitSwatch", Vector2(14, 18), Vector2(58, 58), state.get("portraitColor", Color(0.22, 0.62, 0.58, 1.0)))
+	_live_ui_reboot_label(panel, str(data.get("name", state.get("selectedTitle", ""))), Vector2(86, 14), Vector2(274, 22), 13, Color(0.92, 0.86, 0.66))
+	_live_ui_reboot_label(panel, str(data.get("summary", state.get("selectedSubtitle", ""))), Vector2(86, 38), Vector2(372, 20), 10, Color(0.76, 0.84, 0.70))
+	_ui_architecture_rect(panel, "V0215HealthBack", Vector2(86, 66), Vector2(176, 7), Color(0.10, 0.08, 0.06, 0.82))
+	_ui_architecture_rect(panel, "V0215HealthFill", Vector2(86, 66), Vector2(176 * float(data.get("hpRatio", 1.0)), 7), Color(0.42, 0.78, 0.48, 0.84))
+	_live_ui_reboot_label(panel, str(data.get("hpText", "")), Vector2(274, 58), Vector2(118, 20), 10, Color(0.80, 0.84, 0.66))
+	var commands: Array = data.get("commands", [])
+	for index in range(min(commands.size(), 4)):
+		var spec: Dictionary = commands[index]
+		_v0210_command_button(panel, Vector2(366 + index * 52, 48), Vector2(46, 42), spec, str(data.get("focusId", "")))
+	_live_ui_reboot_label(panel, str(state.get("statusPip", "")), Vector2(18, 78), Vector2(52, 18), 9, Color(0.86, 0.82, 0.60), HORIZONTAL_ALIGNMENT_CENTER)
+
+func _live_ui_reboot_production_drawer(root: Control, state: Dictionary) -> void:
+	var action := str(player_ui_shell_context_override)
+	var active := str(state.get("activeTab", "BUILD"))
+	var should_expand := ["production_build", "production_train", "production_research", "production_disabled_tooltip"].has(action)
+	if not should_expand:
+		var collapsed := _live_ui_reboot_panel(root, "V0215ProductionCollapsed", Vector2(1460, 812), Vector2(66, 40), Color(0.48, 0.46, 0.32, 0.52), 0.58)
+		_live_ui_shell_action_button(collapsed, Vector2(8, 8), Vector2(50, 24), active, "_on_live_ui_shell_work_pressed")
+		return
+	var panel := _live_ui_reboot_panel(root, "V0215ProductionDrawer", Vector2(1104, 684), Vector2(430, 174), Color(0.64, 0.54, 0.32, 0.72), 0.80)
+	_live_ui_reboot_label(panel, "PRODUCTION", Vector2(14, 10), Vector2(96, 18), 10, Color(0.86, 0.78, 0.56))
+	var tabs: Array[String] = ["BUILD", "TRAIN", "RESEARCH"]
+	for index in range(tabs.size()):
+		_v0211_production_tab(panel, Vector2(112 + index * 84, 8), Vector2(72, 24), tabs[index], active == tabs[index])
+	var cards: Array = state.get("productionCards", [])
+	for index in range(min(cards.size(), 4)):
+		var col := index % 2
+		var row := int(index / 2)
+		_v0211_production_card(panel, Vector2(14 + col * 202, 42 + row * 56), Vector2(192, 48), cards[index], str(state.get("productionFocusId", "")))
+	_live_ui_reboot_label(panel, "Existing actions only", Vector2(14, 150), Vector2(390, 14), 8, Color(0.62, 0.68, 0.56))
+
+func _live_ui_reboot_alerts(root: Control, state: Dictionary) -> void:
+	var severity := str(state.get("alertSeverity", "info"))
+	var hostile := severity == "hostile"
+	var warning := severity == "warning"
+	var border := Color(0.42, 0.62, 0.50, 0.70)
+	var rail := Color(0.34, 0.66, 0.52, 0.82)
+	var title := "FIELD"
+	if hostile:
+		border = Color(0.90, 0.26, 0.16, 0.88)
+		rail = Color(0.94, 0.22, 0.14, 0.94)
+		title = "HOSTILE"
+	elif warning:
+		border = Color(0.80, 0.58, 0.28, 0.78)
+		rail = Color(0.86, 0.62, 0.30, 0.90)
+		title = "WARNING"
+	var panel := _live_ui_reboot_panel(root, "V0215CompactAlert", Vector2(1228, 76), Vector2(306, 58), border, 0.76)
+	_ui_architecture_rect(panel, "V0215AlertRail", Vector2(0, 0), Vector2(5, 58), rail)
+	_live_ui_reboot_label(panel, title, Vector2(16, 8), Vector2(66, 16), 10, Color(0.90, 0.80, 0.58))
+	_live_ui_reboot_label(panel, str(state.get("alert", "")), Vector2(84, 7), Vector2(202, 18), 12, Color(0.95, 0.88, 0.66))
+	var guidance := "Quiet state. Keep the battlefield clear."
+	if hostile:
+		guidance = "Hold bridge and focus raiders."
+	elif warning:
+		guidance = "Unavailable action is explained."
+	_live_ui_reboot_label(panel, guidance, Vector2(84, 30), Vector2(202, 18), 9, Color(0.78, 0.84, 0.70))
+
+func _live_ui_reboot_event_toasts(root: Control, state: Dictionary) -> void:
+	var events: Array = state.get("events", [])
+	var visible_count: int = min(events.size(), 2)
+	for index in range(visible_count):
+		var event := str(events[index])
+		var border := Color(0.38, 0.56, 0.44, 0.58)
+		if event.to_lower().contains("ashen"):
+			border = Color(0.88, 0.30, 0.18, 0.78)
+		var toast := _live_ui_reboot_panel(root, "V0215EventToast%s" % index, Vector2(44, 142 + index * 34), Vector2(258, 28), border, 0.66)
+		_live_ui_reboot_label(toast, _v0211_truncate(event, 34), Vector2(12, 4), Vector2(232, 18), 9, Color(0.78, 0.84, 0.68))
+	if events.size() > 2:
+		var collapsed := _live_ui_reboot_panel(root, "V0215EventLogCollapsed", Vector2(44, 212), Vector2(164, 24), Color(0.32, 0.40, 0.34, 0.44), 0.58)
+		_live_ui_reboot_label(collapsed, "+%d events" % (events.size() - 2), Vector2(10, 3), Vector2(144, 16), 8, Color(0.62, 0.68, 0.56), HORIZONTAL_ALIGNMENT_CENTER)
+
+func _live_ui_reboot_tooltip(root: Control, state: Dictionary) -> void:
+	var meta: Dictionary = state.get("tooltipMeta", {})
+	var action := str(player_ui_shell_context_override)
+	var production_expanded := ["production_build", "production_train", "production_research", "production_disabled_tooltip"].has(action)
+	var dock_position := Vector2(1018, 612) if production_expanded else Vector2(1018, 790)
+	var panel := _live_ui_reboot_panel(root, "V0215DockedTooltip", dock_position, Vector2(430, 62), Color(0.42, 0.52, 0.40, 0.60), 0.72)
+	panel.z_index = 34
+	_live_ui_reboot_label(panel, str(meta.get("title", "Tip")), Vector2(12, 7), Vector2(142, 16), 10, Color(0.92, 0.84, 0.62))
+	_live_ui_reboot_label(panel, "Shortcut %s" % str(meta.get("shortcut", "Mouse")), Vector2(260, 7), Vector2(150, 16), 8, Color(0.74, 0.84, 0.70), HORIZONTAL_ALIGNMENT_RIGHT)
+	_ui_architecture_rect(panel, "V0215TooltipRule", Vector2(12, 28), Vector2(404, 1), Color(0.34, 0.48, 0.38, 0.56))
+	_live_ui_reboot_label(panel, _v0211_truncate(str(meta.get("body", state.get("tooltip", ""))), 86), Vector2(12, 34), Vector2(404, 17), 8, Color(0.76, 0.82, 0.70))
 
 func _live_ui_shell_state() -> Dictionary:
 	var status := get_spike_status()
@@ -3787,6 +3997,8 @@ func run_player_slice_validation() -> void:
 		"saltoSelectionCommandPanelEnabled": _salto_selection_command_panel_enabled(),
 		"saltoProductionObjectivesLogEnabled": _salto_production_objectives_log_enabled(),
 		"saltoMinimapTooltipAccessibilityEnabled": _salto_minimap_tooltip_accessibility_enabled(),
+		"saltoPresentationRebootEnabled": _salto_presentation_reboot_enabled(),
+		"saltoPresentationRebootUiOccupancy": _salto_presentation_reboot_occupancy_budget(),
 		"saltoAsterPortraitStatus": _salto_aster_portrait_status(),
 		"saltoAsterPortraitSourceLoaded": bool(_salto_aster_portrait_status().get("sourceLoaded", false)),
 		"saltoAsterPortraitFallbackActive": bool(_salto_aster_portrait_status().get("fallbackActive", true)),
@@ -3890,6 +4102,8 @@ func run_player_slice_validation() -> void:
 		"saltoSelectionCommandPanelEnabled": _salto_selection_command_panel_enabled(),
 		"saltoProductionObjectivesLogEnabled": _salto_production_objectives_log_enabled(),
 		"saltoMinimapTooltipAccessibilityEnabled": _salto_minimap_tooltip_accessibility_enabled(),
+		"saltoPresentationRebootEnabled": _salto_presentation_reboot_enabled(),
+		"saltoPresentationRebootUiOccupancy": _salto_presentation_reboot_occupancy_budget(),
 		"saltoAsterPortraitStatus": _salto_aster_portrait_status(),
 		"saltoAsterPortraitSourceLoaded": bool(_salto_aster_portrait_status().get("sourceLoaded", false)),
 		"saltoAsterPortraitFallbackActive": bool(_salto_aster_portrait_status().get("fallbackActive", true)),
@@ -4088,6 +4302,8 @@ func run_player_slice_capture() -> void:
 		"saltoSelectionCommandPanelEnabled": _salto_selection_command_panel_enabled(),
 		"saltoProductionObjectivesLogEnabled": _salto_production_objectives_log_enabled(),
 		"saltoMinimapTooltipAccessibilityEnabled": _salto_minimap_tooltip_accessibility_enabled(),
+		"saltoPresentationRebootEnabled": _salto_presentation_reboot_enabled(),
+		"saltoPresentationRebootUiOccupancy": _salto_presentation_reboot_occupancy_budget(),
 		"saltoAsterPortraitStatus": _salto_aster_portrait_status(),
 		"saltoAsterPortraitSourceLoaded": bool(_salto_aster_portrait_status().get("sourceLoaded", false)),
 		"saltoAsterPortraitFallbackActive": bool(_salto_aster_portrait_status().get("fallbackActive", true)),
@@ -7013,6 +7229,8 @@ func _apply_player_slice_action(action: String) -> Dictionary:
 	status["saltoSelectionCommandPanelEnabled"] = _salto_selection_command_panel_enabled()
 	status["saltoProductionObjectivesLogEnabled"] = _salto_production_objectives_log_enabled()
 	status["saltoMinimapTooltipAccessibilityEnabled"] = _salto_minimap_tooltip_accessibility_enabled()
+	status["saltoPresentationRebootEnabled"] = _salto_presentation_reboot_enabled()
+	status["saltoPresentationRebootUiOccupancy"] = _salto_presentation_reboot_occupancy_budget()
 	status["saltoAsterPortraitStatus"] = _salto_aster_portrait_status()
 	status["saltoAsterPortraitSourceLoaded"] = bool(status["saltoAsterPortraitStatus"].get("sourceLoaded", false))
 	status["saltoAsterPortraitFallbackActive"] = bool(status["saltoAsterPortraitStatus"].get("fallbackActive", true))
@@ -7022,6 +7240,8 @@ func _apply_player_slice_action(action: String) -> Dictionary:
 
 func _player_capture_checkpoint() -> String:
 	var normalized_root := _artifact_root_from_args().replace("\\", "/")
+	if normalized_root.contains("/v0215"):
+		return "v0.215"
 	if normalized_root.contains("/v0213"):
 		return "v0.213"
 	if normalized_root.contains("/v0212"):
@@ -7103,9 +7323,19 @@ func _player_capture_checkpoint() -> String:
 	return "v0.124"
 
 func _is_bounded_microloop_checkpoint() -> bool:
-	return ["v0.129", "v0.130", "v0.160", "v0.162", "v0.164", "v0.166", "v0.168", "v0.169", "v0.170", "v0.173", "v0.174", "v0.177", "v0.178", "v0.179", "v0.181", "v0.184", "v0.185", "v0.186", "v0.187", "v0.193", "v0.194", "v0.195", "v0.196", "v0.197", "v0.198", "v0.199", "v0.200", "v0.203", "v0.204", "v0.205", "v0.206", "v0.209", "v0.210", "v0.211", "v0.212", "v0.213"].has(_player_capture_checkpoint())
+	return ["v0.129", "v0.130", "v0.160", "v0.162", "v0.164", "v0.166", "v0.168", "v0.169", "v0.170", "v0.173", "v0.174", "v0.177", "v0.178", "v0.179", "v0.181", "v0.184", "v0.185", "v0.186", "v0.187", "v0.193", "v0.194", "v0.195", "v0.196", "v0.197", "v0.198", "v0.199", "v0.200", "v0.203", "v0.204", "v0.205", "v0.206", "v0.209", "v0.210", "v0.211", "v0.212", "v0.213", "v0.215"].has(_player_capture_checkpoint())
 
 func _player_capture_steps() -> Array[Dictionary]:
+	if _player_capture_checkpoint() == "v0.215":
+		return [
+			{"id": "initial", "label": "Presentation reboot compact initial overview", "action": "battle_default"},
+			{"id": "context_expanded", "label": "Presentation reboot contextual objective and production expansion", "action": "production_train"},
+			{"id": "hostile_alert", "label": "Presentation reboot compact hostile alert", "action": "v0212_alerts"},
+			{"id": "tooltip_docked", "label": "Presentation reboot docked edge tooltip", "action": "v0212_tooltips"},
+			{"id": "resolution_1920x1080", "label": "1920x1080 presentation reboot layout", "action": "v0212_resolution_1920", "viewport": {"width": 1920, "height": 1080}},
+			{"id": "resolution_1600x900", "label": "1600x900 presentation reboot layout", "action": "v0212_resolution_1600", "viewport": {"width": 1600, "height": 900}},
+			{"id": "resolution_1366x768", "label": "1366x768 presentation reboot layout", "action": "v0212_resolution_1366", "viewport": {"width": 1366, "height": 768}}
+		]
 	if _player_capture_checkpoint() == "v0.213":
 		return [
 			{"id": "initial", "label": "Full HUD and shell-v2 initial overview", "action": "battle_default"},

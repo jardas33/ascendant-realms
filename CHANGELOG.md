@@ -1,5 +1,42 @@
 # Changelog
 
+# v0.215 Salto Presentation Reboot Baseline And Contextual HUD Declutter - 2026-06-11
+
+This checkpoint adds a new isolated Godot Salto presentation-reboot review path and uses it to reduce the v0.214 HUD overload. The prior full-HUD path remains available as a comparator.
+
+Changed:
+
+- Added the presentation-reboot Windows launcher and npm launch/capture/validate/benchmark wrappers.
+- Added a compact HUD branch with slim top strip, one-line objective summary, compact minimap, simplified selected context, contextual production drawer, docked tooltip and toast-style event posture.
+- Reduced selection and target marker scale/opacity only inside the reboot path.
+- Added v0.215 review-pack, validation, benchmark and boundary tooling.
+- Added v0.215 baseline, declutter and implementation docs.
+- Updated canonical handoff, roadmap, changelog and development checkpoint docs.
+
+Boundary:
+
+- Generated images: zero.
+- Downloaded assets: zero.
+- New runtime art slots: zero.
+- Browser runtime changes: none.
+- Default launcher changes: none.
+- Prior launcher changes: none.
+- Gameplay, pathing, collision, objective, AI, economy, save, stable-ID and balance changes: none.
+
+Validation:
+
+- Presentation reboot capture.
+- Presentation reboot validation.
+- Presentation reboot benchmark.
+- Presentation reboot boundary gate.
+- Artifact retention validation.
+- Runtime-art slot validation.
+- Content validation.
+- Art-intake validation.
+- Focused Godot scaffold tests.
+- Production build.
+- `git diff --check`.
+
 # v0.214 Salto Fantasy RTS UI Freeze Decision And Next-Phase Scorecard - 2026-06-11
 
 This checkpoint reviews v0.207 through v0.213 Salto UI evidence, freezes the current isolated Godot shell-v2 opt-in HUD direction, and selects exactly one next milestone: `v0.215 Salto production-art battlefield content direction packet`.
