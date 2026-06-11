@@ -7021,6 +7021,8 @@ func _apply_player_slice_action(action: String) -> Dictionary:
 
 func _player_capture_checkpoint() -> String:
 	var normalized_root := _artifact_root_from_args().replace("\\", "/")
+	if normalized_root.contains("/v0213"):
+		return "v0.213"
 	if normalized_root.contains("/v0212"):
 		return "v0.212"
 	if normalized_root.contains("/v0211"):
@@ -7100,9 +7102,23 @@ func _player_capture_checkpoint() -> String:
 	return "v0.124"
 
 func _is_bounded_microloop_checkpoint() -> bool:
-	return ["v0.129", "v0.130", "v0.160", "v0.162", "v0.164", "v0.166", "v0.168", "v0.169", "v0.170", "v0.173", "v0.174", "v0.177", "v0.178", "v0.179", "v0.181", "v0.184", "v0.185", "v0.186", "v0.187", "v0.193", "v0.194", "v0.195", "v0.196", "v0.197", "v0.198", "v0.199", "v0.200", "v0.203", "v0.204", "v0.205", "v0.206", "v0.209", "v0.210", "v0.211", "v0.212"].has(_player_capture_checkpoint())
+	return ["v0.129", "v0.130", "v0.160", "v0.162", "v0.164", "v0.166", "v0.168", "v0.169", "v0.170", "v0.173", "v0.174", "v0.177", "v0.178", "v0.179", "v0.181", "v0.184", "v0.185", "v0.186", "v0.187", "v0.193", "v0.194", "v0.195", "v0.196", "v0.197", "v0.198", "v0.199", "v0.200", "v0.203", "v0.204", "v0.205", "v0.206", "v0.209", "v0.210", "v0.211", "v0.212", "v0.213"].has(_player_capture_checkpoint())
 
 func _player_capture_steps() -> Array[Dictionary]:
+	if _player_capture_checkpoint() == "v0.213":
+		return [
+			{"id": "initial", "label": "Full HUD and shell-v2 initial overview", "action": "battle_default"},
+			{"id": "aster", "label": "Aster selection and context panel", "action": "hero_selected"},
+			{"id": "worker_barracks", "label": "Worker assignment and Barracks restoring context", "action": "construction_progress"},
+			{"id": "production", "label": "Build train research production command area", "action": "production_train"},
+			{"id": "objective_log", "label": "Objective stack and event log progression", "action": "event_progression"},
+			{"id": "minimap", "label": "Minimap bounds markers camera and utilities", "action": "v0212_minimap"},
+			{"id": "ashen_pressure", "label": "Ashen pressure alert and hostile readability", "action": "v0212_alerts"},
+			{"id": "replay", "label": "Restart and replay path", "action": "restart_replay"},
+			{"id": "resolution_1920x1080", "label": "1920x1080 full HUD layout", "action": "v0212_resolution_1920", "viewport": {"width": 1920, "height": 1080}},
+			{"id": "resolution_1600x900", "label": "1600x900 full HUD layout", "action": "v0212_resolution_1600", "viewport": {"width": 1600, "height": 900}},
+			{"id": "resolution_1366x768", "label": "1366x768 full HUD layout", "action": "v0212_resolution_1366", "viewport": {"width": 1366, "height": 768}}
+		]
 	if _player_capture_checkpoint() == "v0.212":
 		return [
 			{"id": "minimap", "label": "Minimap bounds routes markers and utilities", "action": "v0212_minimap"},
