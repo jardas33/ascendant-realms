@@ -95,6 +95,7 @@ const SCRIPT_ARG_PREFIXES := [
 	"--structure-finish-material-fallback-mode=",
 	"--structure-finish-material-uv-scale=",
 	"--salto-shell-v2-grounding-props",
+	"--salto-ui-architecture-wireframe",
 	"--real-input-smoke",
 	"--real-input-validate",
 	"--site-semantics-smoke",
@@ -153,6 +154,9 @@ func _ready() -> void:
 	current_viewport_size = _viewport_from_args(VIEWPORT_SIZE)
 	active_visual_preset = _visual_preset_from_args()
 	_configure_window()
+	if args.has("--salto-ui-architecture-wireframe"):
+		await run_ui_architecture_wireframe_capture()
+		return
 	if args.has("--runtime-art-comparator"):
 		_write_absolute_json(_path_join(_artifact_root_from_args(), "runtime-art-comparator-root-dispatch.json"), {
 			"schemaVersion": 1,
@@ -1775,6 +1779,210 @@ func run_capture_review() -> void:
 	}
 	_write_absolute_json(_path_join(artifact_root, "screenshot-runtime-manifest.json"), report)
 	get_tree().quit(0 if errors.is_empty() else 1)
+
+func run_ui_architecture_wireframe_capture() -> void:
+	var artifact_root := _artifact_root_from_args()
+	var screenshot_root := _path_join(artifact_root, "screenshots")
+	DirAccess.make_dir_recursive_absolute(screenshot_root)
+	if DisplayServer.get_name() != "headless":
+		DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_WINDOWED)
+	_set_capture_viewport(VIEWPORT_SIZE)
+	await _settle_frames(4)
+	var errors: Array[String] = []
+	var captures: Array[Dictionary] = []
+	var layer := CanvasLayer.new()
+	layer.name = "V0207UiArchitectureWireframeLayer"
+	add_child(layer)
+	var steps := _ui_architecture_wireframe_steps()
+	var index := 1
+	for step in steps:
+		for child in layer.get_children():
+			child.queue_free()
+		await _settle_frames(1)
+		_render_ui_architecture_wireframe(layer, str(step["id"]))
+		await _settle_frames(8)
+		var file_name := "%02d_%s.png" % [index, str(step["id"])]
+		var target := _path_join(screenshot_root, file_name)
+		var image := get_viewport().get_texture().get_image()
+		if image.get_width() != VIEWPORT_SIZE.x or image.get_height() != VIEWPORT_SIZE.y:
+			image.resize(VIEWPORT_SIZE.x, VIEWPORT_SIZE.y, Image.INTERPOLATE_LANCZOS)
+		var result := image.save_png(target)
+		if result != OK:
+			errors.append("Failed to save UI architecture screenshot %s with code %s" % [file_name, result])
+		captures.append({
+			"id": step["id"],
+			"label": step["label"],
+			"fileName": file_name,
+			"absolutePath": target,
+			"viewport": {"width": VIEWPORT_SIZE.x, "height": VIEWPORT_SIZE.y},
+			"width": image.get_width(),
+			"height": image.get_height(),
+			"saveResult": result
+		})
+		index += 1
+	var component_inventory := [
+		"top resource ledger",
+		"left objectives and event log",
+		"bottom-left minimap",
+		"bottom-center selected hero context",
+		"bottom-right build train research commands",
+		"right-side alert rail",
+		"contextual tooltip and disabled-state language"
+	]
+	var report := {
+		"schemaVersion": 1,
+		"checkpoint": "v0.207",
+		"status": "PASS_V0207_UI_ARCHITECTURE_WIREFRAME_CAPTURE" if errors.is_empty() and captures.size() == steps.size() else "FAIL_V0207_UI_ARCHITECTURE_WIREFRAME_CAPTURE",
+		"artifactRoot": artifact_root,
+		"screenshotRoot": screenshot_root,
+		"captureCount": captures.size(),
+		"requiredCaptureCount": steps.size(),
+		"windowSize": {"width": VIEWPORT_SIZE.x, "height": VIEWPORT_SIZE.y},
+		"referenceUse": "hierarchy-and-polish-benchmark-only",
+		"copiedReferenceAssets": false,
+		"generatedImages": false,
+		"downloadedAssets": false,
+		"defaultLauncherMutated": false,
+		"browserRuntimeTouched": false,
+		"gameplayMutation": false,
+		"runtimeArtSlotAdded": false,
+		"componentInventory": component_inventory,
+		"errors": errors,
+		"captures": captures
+	}
+	_write_absolute_json(_path_join(artifact_root, "ui-architecture-wireframe-runtime.json"), report)
+	get_tree().quit(0 if errors.is_empty() and captures.size() == steps.size() else 1)
+
+func _ui_architecture_wireframe_steps() -> Array[Dictionary]:
+	return [
+		{"id": "ui_architecture_wireframe", "label": "Original Salto fantasy RTS HUD wireframe"},
+		{"id": "component_map", "label": "HUD component map and source of truth"},
+		{"id": "gap_analysis", "label": "Placeholder-to-polished UI gap analysis"}
+	]
+
+func _render_ui_architecture_wireframe(layer: CanvasLayer, variant: String) -> void:
+	var root := Control.new()
+	root.name = "V0207UiArchitecture%s" % variant.capitalize().replace(" ", "")
+	root.set_anchors_preset(Control.PRESET_FULL_RECT)
+	root.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	layer.add_child(root)
+	_ui_architecture_background(root)
+	match variant:
+		"component_map":
+			_ui_architecture_component_map(root)
+		"gap_analysis":
+			_ui_architecture_gap_analysis(root)
+		_:
+			_ui_architecture_wireframe(root)
+
+func _ui_architecture_background(root: Control) -> void:
+	_ui_architecture_rect(root, "Backdrop", Vector2(0, 0), Vector2(1600, 900), Color(0.012, 0.014, 0.012, 1.0))
+	_ui_architecture_rect(root, "BattlefieldGround", Vector2(0, 84), Vector2(1600, 700), Color(0.072, 0.108, 0.078, 1.0))
+	_ui_architecture_rect(root, "DistantHighlands", Vector2(0, 84), Vector2(1600, 104), Color(0.055, 0.080, 0.070, 1.0))
+	_ui_architecture_rect(root, "RoadSpine", Vector2(220, 405), Vector2(1040, 46), Color(0.33, 0.29, 0.20, 0.74))
+	_ui_architecture_rect(root, "RiverChannel", Vector2(740, 138), Vector2(62, 580), Color(0.025, 0.23, 0.27, 0.88))
+	_ui_architecture_rect(root, "BridgeCrossing", Vector2(671, 396), Vector2(200, 68), Color(0.41, 0.36, 0.28, 0.92))
+	_ui_architecture_rect(root, "CommandHallMass", Vector2(438, 226), Vector2(184, 108), Color(0.23, 0.20, 0.15, 0.92))
+	_ui_architecture_rect(root, "MineMass", Vector2(602, 304), Vector2(136, 86), Color(0.18, 0.17, 0.15, 0.92))
+	_ui_architecture_rect(root, "BarracksMass", Vector2(302, 306), Vector2(170, 84), Color(0.24, 0.17, 0.13, 0.92))
+	for marker in [
+		{"name": "AsterMarker", "pos": Vector2(474, 474), "size": Vector2(20, 20), "color": Color(0.44, 0.86, 0.82, 1.0)},
+		{"name": "WorkerMarker", "pos": Vector2(520, 510), "size": Vector2(16, 16), "color": Color(0.78, 0.65, 0.34, 1.0)},
+		{"name": "MilitiaMarker", "pos": Vector2(382, 474), "size": Vector2(16, 16), "color": Color(0.34, 0.68, 0.54, 1.0)},
+		{"name": "AshenMarker", "pos": Vector2(1118, 298), "size": Vector2(20, 20), "color": Color(0.78, 0.20, 0.13, 1.0)}
+	]:
+		_ui_architecture_rect(root, str(marker["name"]), marker["pos"], marker["size"], marker["color"])
+
+func _ui_architecture_wireframe(root: Control) -> void:
+	_ui_architecture_panel(root, "TopResourceLedger", Vector2(222, 18), Vector2(1116, 64), "Crowns 325    Stone 185    Iron 72    Aether 28    Pop 9/16", "compact top ledger with restrained metal trim", Color(0.31, 0.66, 0.60, 0.95))
+	_ui_architecture_panel(root, "LeftObjectives", Vector2(22, 122), Vector2(322, 246), "OBJECTIVES", "Convert West Stone Cut Mine\nAssign Worker to production\nRestore Barracks and train Militia", Color(0.68, 0.58, 0.31, 0.95))
+	_ui_architecture_panel(root, "LeftEventLog", Vector2(22, 382), Vector2(322, 172), "EVENTS", "Aster entered capture radius\nWorker idle near road\nAshen scouts sighted east ridge", Color(0.45, 0.66, 0.55, 0.95))
+	_ui_architecture_panel(root, "Minimap", Vector2(24, 662), Vector2(250, 198), "SALTO MAP", "roads, river, bridge, contacts", Color(0.36, 0.74, 0.68, 0.95))
+	_ui_architecture_minimap(root, Vector2(42, 707), Vector2(214, 132))
+	_ui_architecture_panel(root, "SelectedContext", Vector2(308, 704), Vector2(578, 158), "ASTER OF THE QUIET LINK", "Health  84/100     Lume Ward ready\nMove  Attack  Rally  Ward Pulse", Color(0.42, 0.82, 0.78, 0.95))
+	_ui_architecture_panel(root, "BuildTrainResearch", Vector2(916, 668), Vector2(542, 194), "COMMANDS", "BUILD  TRAIN  RESEARCH\nWorker: Restore Barracks\nBarracks: Train Militia\nLume: reopen foothold link", Color(0.72, 0.55, 0.30, 0.95))
+	_ui_architecture_panel(root, "AlertRail", Vector2(1268, 148), Vector2(268, 96), "ASHEN PRESSURE", "Hostiles approaching bridge", Color(0.86, 0.28, 0.17, 0.95))
+	_ui_architecture_panel(root, "Tooltip", Vector2(568, 628), Vector2(464, 46), "TIP", "Right-click Ashen units to issue a direct attack order.", Color(0.62, 0.72, 0.58, 0.95))
+	_ui_architecture_label(root, "Original Barrosan UI target: dark practical materials, readable lanes, no copied reference art.", Vector2(358, 86), Vector2(884, 28), 18, Color(0.82, 0.88, 0.76), HORIZONTAL_ALIGNMENT_CENTER)
+
+func _ui_architecture_component_map(root: Control) -> void:
+	_ui_architecture_wireframe(root)
+	var entries := [
+		{"num": "1", "pos": Vector2(184, 32)},
+		{"num": "2", "pos": Vector2(334, 128)},
+		{"num": "3", "pos": Vector2(334, 392)},
+		{"num": "4", "pos": Vector2(276, 690)},
+		{"num": "5", "pos": Vector2(846, 722)},
+		{"num": "6", "pos": Vector2(1464, 716)},
+		{"num": "7", "pos": Vector2(1244, 156)},
+		{"num": "8", "pos": Vector2(1040, 630)}
+	]
+	for entry in entries:
+		_ui_architecture_rect(root, "MapBadge%s" % str(entry["num"]), entry["pos"], Vector2(32, 32), Color(0.08, 0.10, 0.08, 0.96))
+		_ui_architecture_label(root, str(entry["num"]), entry["pos"], Vector2(32, 32), 18, Color(0.92, 0.84, 0.52), HORIZONTAL_ALIGNMENT_CENTER)
+	_ui_architecture_panel(root, "ComponentMapLegend", Vector2(1132, 288), Vector2(402, 284), "COMPONENT MAP", "1 Resources\n2 Objectives\n3 Events\n4 Minimap\n5 Selection context\n6 Build train research\n7 Alerts\n8 Tooltip lane", Color(0.46, 0.74, 0.66, 0.95))
+	_ui_architecture_panel(root, "ComponentSourceTruth", Vector2(472, 116), Vector2(644, 102), "SOURCE OF TRUTH", "Code-authored Godot controls only. Optional future art must remain opt-in and fail closed to the procedural HUD.", Color(0.46, 0.74, 0.66, 0.95))
+
+func _ui_architecture_gap_analysis(root: Control) -> void:
+	_ui_architecture_rect(root, "GapBackdrop", Vector2(0, 0), Vector2(1600, 900), Color(0.015, 0.018, 0.016, 1.0))
+	_ui_architecture_panel(root, "CurrentColumn", Vector2(72, 92), Vector2(638, 520), "CURRENT GODOT HUD RISKS", "Small scattered panels\nPlaceholder naming and weak material hierarchy\nMinimap is functional but not authored\nCommand surface lacks build/train/research grouping\nAlerts and tooltips are text-first and thin", Color(0.52, 0.46, 0.32, 0.95))
+	_ui_architecture_panel(root, "TargetColumn", Vector2(890, 92), Vector2(638, 520), "V0.208+ ORIGINAL UI TARGET", "Unified charcoal, timber, iron and wet-stone shell\nStrong RTS scan order\nSelection and production panels carry the bottom bar\nMinimap anchors the field state\nAlerts, disabled states and tooltips read as one system", Color(0.36, 0.76, 0.68, 0.95))
+	_ui_architecture_panel(root, "BridgePlan", Vector2(408, 646), Vector2(784, 96), "IMPLEMENTATION BRIDGE", "v0.208 comparator -> v0.209 opt-in live shell -> v0.210-v0.212 state polish -> v0.213 QA -> v0.214 freeze", Color(0.70, 0.56, 0.32, 0.95))
+	_ui_architecture_label(root, "Reference usage lock: hierarchy and polish only; no copied artwork, motifs, portraits, fonts, icons, text, or layout tracing.", Vector2(200, 802), Vector2(1200, 36), 18, Color(0.92, 0.86, 0.64), HORIZONTAL_ALIGNMENT_CENTER)
+
+func _ui_architecture_minimap(root: Control, position: Vector2, size: Vector2) -> void:
+	_ui_architecture_rect(root, "MiniTerrain", position, size, Color(0.08, 0.13, 0.10, 0.95))
+	_ui_architecture_rect(root, "MiniRoad", position + Vector2(26, 70), Vector2(size.x - 52, 8), Color(0.54, 0.46, 0.30, 0.95))
+	_ui_architecture_rect(root, "MiniRiver", position + Vector2(116, 18), Vector2(10, size.y - 36), Color(0.12, 0.46, 0.52, 0.96))
+	_ui_architecture_rect(root, "MiniBridge", position + Vector2(94, 66), Vector2(52, 16), Color(0.74, 0.66, 0.46, 0.96))
+	_ui_architecture_rect(root, "MiniFriendly", position + Vector2(42, 92), Vector2(18, 18), Color(0.35, 0.82, 0.62, 1.0))
+	_ui_architecture_rect(root, "MiniHostile", position + Vector2(164, 38), Vector2(30, 16), Color(0.84, 0.25, 0.16, 1.0))
+	_ui_architecture_rect(root, "MiniCamera", position + Vector2(70, 44), Vector2(82, 54), Color(0.88, 0.92, 0.82, 0.22))
+
+func _ui_architecture_panel(root: Control, name: String, position: Vector2, size: Vector2, title: String, body: String, accent: Color) -> Panel:
+	var panel := Panel.new()
+	panel.name = name
+	panel.position = position
+	panel.size = size
+	panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	panel.add_theme_stylebox_override("panel", _ui_architecture_panel_style(Color(0.026, 0.032, 0.028, 0.93), accent))
+	root.add_child(panel)
+	_ui_architecture_rect(panel, "%sHeader" % name, Vector2(0, 0), Vector2(size.x, 32), Color(0.05, 0.06, 0.048, 0.94))
+	_ui_architecture_label(panel, title, Vector2(14, 5), Vector2(size.x - 28, 24), 15, Color(0.92, 0.86, 0.66), HORIZONTAL_ALIGNMENT_LEFT)
+	_ui_architecture_label(panel, body, Vector2(14, 42), Vector2(size.x - 28, size.y - 52), 14, Color(0.82, 0.88, 0.78), HORIZONTAL_ALIGNMENT_LEFT)
+	return panel
+
+func _ui_architecture_panel_style(bg: Color, border: Color) -> StyleBoxFlat:
+	var style := StyleBoxFlat.new()
+	style.bg_color = bg
+	style.border_color = border
+	style.set_border_width_all(2)
+	style.set_corner_radius_all(5)
+	return style
+
+func _ui_architecture_rect(parent: Control, name: String, position: Vector2, size: Vector2, color: Color) -> ColorRect:
+	var rect := ColorRect.new()
+	rect.name = name
+	rect.position = position
+	rect.size = size
+	rect.color = color
+	rect.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	parent.add_child(rect)
+	return rect
+
+func _ui_architecture_label(parent: Control, text: String, position: Vector2, size: Vector2, font_size: int, color: Color, alignment: int = HORIZONTAL_ALIGNMENT_LEFT) -> Label:
+	var label := Label.new()
+	label.text = text
+	label.position = position
+	label.size = size
+	label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	label.horizontal_alignment = alignment
+	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	label.add_theme_font_size_override("font_size", font_size)
+	label.add_theme_color_override("font_color", color)
+	parent.add_child(label)
+	return label
 
 func run_headed_benchmark() -> void:
 	var artifact_root := _artifact_root_from_args()
