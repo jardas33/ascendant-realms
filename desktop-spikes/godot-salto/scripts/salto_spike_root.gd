@@ -96,6 +96,7 @@ const SCRIPT_ARG_PREFIXES := [
 	"--structure-finish-material-uv-scale=",
 	"--salto-shell-v2-grounding-props",
 	"--salto-ui-architecture-wireframe",
+	"--salto-ui-shell-comparator",
 	"--real-input-smoke",
 	"--real-input-validate",
 	"--site-semantics-smoke",
@@ -156,6 +157,9 @@ func _ready() -> void:
 	_configure_window()
 	if args.has("--salto-ui-architecture-wireframe"):
 		await run_ui_architecture_wireframe_capture()
+		return
+	if args.has("--salto-ui-shell-comparator"):
+		await run_ui_shell_comparator_capture()
 		return
 	if args.has("--runtime-art-comparator"):
 		_write_absolute_json(_path_join(_artifact_root_from_args(), "runtime-art-comparator-root-dispatch.json"), {
@@ -1983,6 +1987,353 @@ func _ui_architecture_label(parent: Control, text: String, position: Vector2, si
 	label.add_theme_color_override("font_color", color)
 	parent.add_child(label)
 	return label
+
+func run_ui_shell_comparator_capture() -> void:
+	var artifact_root := _artifact_root_from_args()
+	var screenshot_root := _path_join(artifact_root, "screenshots")
+	DirAccess.make_dir_recursive_absolute(screenshot_root)
+	if DisplayServer.get_name() != "headless":
+		DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_WINDOWED)
+	_set_capture_viewport(VIEWPORT_SIZE)
+	await _settle_frames(4)
+	var errors: Array[String] = []
+	var captures: Array[Dictionary] = []
+	var layer := CanvasLayer.new()
+	layer.name = "V0208UiShellComparatorLayer"
+	add_child(layer)
+	var steps := _ui_shell_comparator_steps()
+	var index := 1
+	for step in steps:
+		for child in layer.get_children():
+			child.queue_free()
+		await _settle_frames(1)
+		_render_ui_shell_comparator(layer, str(step["id"]))
+		await _settle_frames(8)
+		var file_name := "%02d_%s.png" % [index, str(step["id"])]
+		var target := _path_join(screenshot_root, file_name)
+		var image := get_viewport().get_texture().get_image()
+		if image.get_width() != VIEWPORT_SIZE.x or image.get_height() != VIEWPORT_SIZE.y:
+			image.resize(VIEWPORT_SIZE.x, VIEWPORT_SIZE.y, Image.INTERPOLATE_LANCZOS)
+		var result := image.save_png(target)
+		if result != OK:
+			errors.append("Failed to save UI shell comparator screenshot %s with code %s" % [file_name, result])
+		captures.append({
+			"id": step["id"],
+			"label": step["label"],
+			"fileName": file_name,
+			"absolutePath": target,
+			"viewport": {"width": VIEWPORT_SIZE.x, "height": VIEWPORT_SIZE.y},
+			"width": image.get_width(),
+			"height": image.get_height(),
+			"saveResult": result
+		})
+		index += 1
+	var report := {
+		"schemaVersion": 1,
+		"checkpoint": "v0.208",
+		"status": "PASS_V0208_UI_SHELL_COMPARATOR_CAPTURE" if errors.is_empty() and captures.size() == steps.size() else "FAIL_V0208_UI_SHELL_COMPARATOR_CAPTURE",
+		"artifactRoot": artifact_root,
+		"screenshotRoot": screenshot_root,
+		"captureCount": captures.size(),
+		"requiredCaptureCount": steps.size(),
+		"windowSize": {"width": VIEWPORT_SIZE.x, "height": VIEWPORT_SIZE.y},
+		"privateComparatorOnly": true,
+		"livePlayerFacingWiring": false,
+		"defaultLauncherMutated": false,
+		"browserRuntimeTouched": false,
+		"gameplayMutation": false,
+		"runtimeArtSlotAdded": false,
+		"generatedImages": false,
+		"downloadedAssets": false,
+		"copiedReferenceAssets": false,
+		"themeResources": ["StyleBoxFlat charcoal panels", "iron bronze trim", "geometric procedural icons", "button state panels"],
+		"representedStates": steps.map(func(step: Dictionary) -> String: return str(step["id"])),
+		"errors": errors,
+		"captures": captures
+	}
+	_write_absolute_json(_path_join(artifact_root, "ui-shell-comparator-runtime.json"), report)
+	get_tree().quit(0 if errors.is_empty() and captures.size() == steps.size() else 1)
+
+func _ui_shell_comparator_steps() -> Array[Dictionary]:
+	return [
+		{"id": "full_overview", "label": "Full fantasy RTS UI shell overview"},
+		{"id": "aster_selection", "label": "Aster selected context and command states"},
+		{"id": "worker_assignment", "label": "Worker assignment context"},
+		{"id": "barracks_restoring", "label": "Barracks restoring context"},
+		{"id": "barracks_restored", "label": "Barracks restored context"},
+		{"id": "build_tab", "label": "Build tab active"},
+		{"id": "train_tab", "label": "Train tab active with queued militia"},
+		{"id": "research_tab", "label": "Research tab active with disabled state"},
+		{"id": "ashen_alert", "label": "Ashen alert card and hostile readability"},
+		{"id": "minimap_tooltips", "label": "Minimap, utilities, and tooltip layer"}
+	]
+
+func _ui_shell_state(state_id: String) -> Dictionary:
+	var state := {
+		"id": state_id,
+		"selectedTitle": "Aster of the Quiet Link",
+		"selectedSubtitle": "Hero | Health 84/100 | Lume ward ready",
+		"portraitColor": Color(0.22, 0.62, 0.58, 1.0),
+		"objective": "Convert West Stone Cut Mine",
+		"objectiveDetail": "Assign Worker, restore Barracks,\ntrain Militia, hold bridge.",
+		"events": ["Mine capture radius entered", "Worker awaiting assignment", "Barracks frame located"],
+		"activeTab": "BUILD",
+		"tooltip": "Right-click ground to move selected forces.",
+		"alert": "",
+		"alertSeverity": "none",
+		"commandHint": "Move  Attack  Rally  Ward Pulse",
+		"statusPip": "READY"
+	}
+	match state_id:
+		"worker_assignment":
+			state["selectedTitle"] = "Worker Detachment"
+			state["selectedSubtitle"] = "Builder | Assigned to West Stone Cut Mine"
+			state["portraitColor"] = Color(0.62, 0.48, 0.22, 1.0)
+			state["objective"] = "Keep production flowing"
+			state["events"] = ["Worker assigned to mine", "Stone income boosted", "Barracks restore available"]
+			state["tooltip"] = "Work command assigns the Worker to the highlighted production task."
+			state["commandHint"] = "Work  Repair  Hold  Return"
+			state["statusPip"] = "ASSIGNED"
+		"barracks_restoring":
+			state["selectedTitle"] = "Barracks Foundation"
+			state["selectedSubtitle"] = "Structure | Restoration 62% | Worker committed"
+			state["portraitColor"] = Color(0.43, 0.29, 0.18, 1.0)
+			state["objective"] = "Restore the Barracks"
+			state["events"] = ["Barracks restoration started", "Timber braces set", "Militia queue locked"]
+			state["tooltip"] = "Restoration must complete before Militia can train."
+			state["activeTab"] = "BUILD"
+			state["commandHint"] = "Restore  Cancel  Rally"
+			state["statusPip"] = "RESTORING"
+		"barracks_restored":
+			state["selectedTitle"] = "Restored Barracks"
+			state["selectedSubtitle"] = "Structure | Militia training unlocked"
+			state["portraitColor"] = Color(0.50, 0.36, 0.21, 1.0)
+			state["objective"] = "Train defenders"
+			state["events"] = ["Barracks restored", "Militia training unlocked", "Ashen pressure timer visible"]
+			state["tooltip"] = "Train one Militia squad before the Ashen reach the bridge."
+			state["activeTab"] = "TRAIN"
+			state["commandHint"] = "Train Militia  Set Rally  Hold"
+			state["statusPip"] = "RESTORED"
+		"build_tab":
+			state["activeTab"] = "BUILD"
+			state["tooltip"] = "Build cards show cost, state, and why unavailable actions are disabled."
+		"train_tab":
+			state["activeTab"] = "TRAIN"
+			state["selectedTitle"] = "Restored Barracks"
+			state["selectedSubtitle"] = "Structure | Queue: Militia 1/1"
+			state["events"] = ["Militia squad queued", "Iron reserved", "Rally set near bridge"]
+			state["tooltip"] = "Queued state uses a warm bronze rail and progress line."
+			state["statusPip"] = "QUEUE"
+		"research_tab":
+			state["activeTab"] = "RESEARCH"
+			state["events"] = ["Research tab inspected", "Aether discipline locked", "Lume link not restored"]
+			state["tooltip"] = "Disabled research cards explain the missing Lume prerequisite."
+			state["statusPip"] = "LOCKED"
+		"ashen_alert":
+			state["alert"] = "Ashen raiders crossing east ridge"
+			state["alertSeverity"] = "hostile"
+			state["selectedTitle"] = "Militia Squad"
+			state["selectedSubtitle"] = "Defenders | Staged at bridge | Attack order ready"
+			state["portraitColor"] = Color(0.28, 0.55, 0.38, 1.0)
+			state["events"] = ["Ashen wave sighted", "Defenders staged", "Attack command highlighted"]
+			state["tooltip"] = "Select defenders and issue Attack before raiders reach the road."
+			state["activeTab"] = "TRAIN"
+			state["commandHint"] = "Attack  Hold Bridge  Focus Fire"
+			state["statusPip"] = "ALERT"
+		"minimap_tooltips":
+			state["tooltip"] = "Minimap markers mirror terrain, bridge, objectives, friendlies, hostiles, and camera view."
+			state["alert"] = "Hover: West Stone Cut Mine"
+			state["alertSeverity"] = "info"
+		"aster_selection":
+			state["tooltip"] = "Aster can rally defenders or pulse Lume once the link is restored."
+		_:
+			pass
+	return state
+
+func _render_ui_shell_comparator(layer: CanvasLayer, state_id: String) -> void:
+	var root := Control.new()
+	root.name = "V0208UiShell%s" % state_id.capitalize().replace(" ", "")
+	root.set_anchors_preset(Control.PRESET_FULL_RECT)
+	root.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	layer.add_child(root)
+	var state := _ui_shell_state(state_id)
+	_ui_shell_battlefield(root, state)
+	_ui_shell_resource_strip(root, state)
+	_ui_shell_left_stack(root, state)
+	_ui_shell_minimap(root, state)
+	_ui_shell_selection_panel(root, state)
+	_ui_shell_production_panel(root, state)
+	_ui_shell_alert_and_utilities(root, state)
+	_ui_shell_tooltip(root, state)
+
+func _ui_shell_battlefield(root: Control, state: Dictionary) -> void:
+	_ui_architecture_rect(root, "ShellBackdrop", Vector2(0, 0), Vector2(1600, 900), Color(0.010, 0.012, 0.010, 1.0))
+	_ui_architecture_rect(root, "ShellField", Vector2(0, 82), Vector2(1600, 704), Color(0.052, 0.084, 0.058, 1.0))
+	_ui_architecture_rect(root, "ShellUpperFieldValueBand", Vector2(0, 82), Vector2(1600, 112), Color(0.035, 0.052, 0.046, 1.0))
+	_ui_architecture_rect(root, "ShellRoadBed", Vector2(224, 398), Vector2(1028, 62), Color(0.27, 0.24, 0.16, 0.86))
+	_ui_architecture_rect(root, "ShellRoadCore", Vector2(250, 415), Vector2(968, 26), Color(0.47, 0.40, 0.25, 0.78))
+	_ui_architecture_rect(root, "ShellRiver", Vector2(746, 132), Vector2(56, 548), Color(0.020, 0.188, 0.222, 0.96))
+	_ui_architecture_rect(root, "ShellRiverEdgeWest", Vector2(724, 132), Vector2(18, 548), Color(0.096, 0.128, 0.096, 0.9))
+	_ui_architecture_rect(root, "ShellRiverEdgeEast", Vector2(806, 132), Vector2(18, 548), Color(0.096, 0.128, 0.096, 0.9))
+	_ui_architecture_rect(root, "ShellBridgeDeck", Vector2(668, 394), Vector2(216, 72), Color(0.43, 0.36, 0.23, 0.96))
+	_ui_architecture_rect(root, "ShellBridgeTrimNorth", Vector2(660, 390), Vector2(232, 8), Color(0.15, 0.12, 0.08, 0.98))
+	_ui_architecture_rect(root, "ShellBridgeTrimSouth", Vector2(660, 462), Vector2(232, 8), Color(0.15, 0.12, 0.08, 0.98))
+	_ui_architecture_rect(root, "ShellCommandHall", Vector2(424, 218), Vector2(196, 112), Color(0.21, 0.18, 0.13, 0.96))
+	_ui_architecture_rect(root, "ShellBarracks", Vector2(306, 304), Vector2(168, 82), Color(0.25, 0.16, 0.11, 0.96))
+	_ui_architecture_rect(root, "ShellMine", Vector2(598, 306), Vector2(134, 84), Color(0.16, 0.15, 0.13, 0.96))
+	_ui_architecture_rect(root, "ShellAsterWorldPip", Vector2(476, 472), Vector2(22, 22), Color(0.40, 0.88, 0.78, 1.0))
+	_ui_architecture_rect(root, "ShellWorkerWorldPip", Vector2(520, 510), Vector2(17, 17), Color(0.78, 0.62, 0.32, 1.0))
+	_ui_architecture_rect(root, "ShellMilitiaWorldPip", Vector2(382, 472), Vector2(17, 17), Color(0.36, 0.72, 0.48, 1.0))
+	_ui_architecture_rect(root, "ShellAshenWorldPip", Vector2(1128, 300), Vector2(22, 22), Color(0.82, 0.22, 0.14, 1.0))
+	if str(state.get("alertSeverity", "")) == "hostile":
+		_ui_architecture_rect(root, "ShellHostilePathWarn", Vector2(1018, 286), Vector2(248, 42), Color(0.52, 0.12, 0.08, 0.32))
+
+func _ui_shell_resource_strip(root: Control, _state: Dictionary) -> void:
+	var panel := _ui_architecture_panel(root, "ShellResourceStrip", Vector2(212, 16), Vector2(1176, 60), "SALTO FOOTHOLD", "", Color(0.34, 0.72, 0.66, 0.92))
+	var x := 24
+	for resource in [
+		{"name": "Crowns", "value": "325", "color": Color(0.86, 0.74, 0.38, 1.0)},
+		{"name": "Stone", "value": "185", "color": Color(0.62, 0.62, 0.54, 1.0)},
+		{"name": "Iron", "value": "72", "color": Color(0.54, 0.58, 0.60, 1.0)},
+		{"name": "Aether", "value": "28", "color": Color(0.28, 0.82, 0.78, 1.0)},
+		{"name": "Pop", "value": "9/16", "color": Color(0.64, 0.78, 0.50, 1.0)}
+	]:
+		_ui_architecture_rect(panel, "Icon%s" % str(resource["name"]), Vector2(x, 35), Vector2(16, 16), resource["color"])
+		_ui_architecture_label(panel, "%s %s" % [resource["name"], resource["value"]], Vector2(x + 24, 31), Vector2(150, 22), 15, Color(0.90, 0.88, 0.68), HORIZONTAL_ALIGNMENT_LEFT)
+		x += 206
+	_ui_architecture_label(root, "Private comparator shell - original code-authored UI, no live player wiring", Vector2(412, 84), Vector2(776, 28), 17, Color(0.72, 0.82, 0.72), HORIZONTAL_ALIGNMENT_CENTER)
+
+func _ui_shell_left_stack(root: Control, state: Dictionary) -> void:
+	_ui_architecture_panel(root, "ShellObjectives", Vector2(22, 122), Vector2(318, 236), "OBJECTIVE", "%s\n%s" % [state.get("objective", ""), state.get("objectiveDetail", "")], Color(0.74, 0.60, 0.30, 0.95))
+	var event_text := "\n".join(state.get("events", []))
+	_ui_architecture_panel(root, "ShellEventLog", Vector2(22, 374), Vector2(318, 178), "EVENT LOG", event_text, Color(0.42, 0.70, 0.56, 0.95))
+
+func _ui_shell_minimap(root: Control, state: Dictionary) -> void:
+	var panel := _ui_architecture_panel(root, "ShellMinimapFrame", Vector2(24, 654), Vector2(258, 210), "SALTO MAP", "", Color(0.36, 0.78, 0.72, 0.95))
+	_ui_architecture_rect(panel, "MapGround", Vector2(16, 48), Vector2(226, 142), Color(0.068, 0.12, 0.085, 0.98))
+	_ui_architecture_rect(panel, "MapRoad", Vector2(42, 112), Vector2(164, 9), Color(0.58, 0.48, 0.30, 1.0))
+	_ui_architecture_rect(panel, "MapRiver", Vector2(126, 58), Vector2(10, 110), Color(0.10, 0.50, 0.58, 1.0))
+	_ui_architecture_rect(panel, "MapBridge", Vector2(104, 106), Vector2(54, 18), Color(0.78, 0.68, 0.44, 1.0))
+	_ui_architecture_rect(panel, "MapCamera", Vector2(78, 82), Vector2(90, 60), Color(0.82, 0.92, 0.80, 0.18))
+	_ui_architecture_rect(panel, "MapFriendly", Vector2(58, 140), Vector2(18, 18), Color(0.36, 0.86, 0.60, 1.0))
+	_ui_architecture_rect(panel, "MapAster", Vector2(84, 122), Vector2(16, 16), Color(0.38, 0.86, 0.82, 1.0))
+	_ui_architecture_rect(panel, "MapObjective", Vector2(96, 102), Vector2(18, 18), Color(0.92, 0.76, 0.34, 1.0))
+	_ui_architecture_rect(panel, "MapHostile", Vector2(184, 70), Vector2(34, 18), Color(0.84, 0.24, 0.15, 1.0))
+	if str(state.get("id", "")) == "minimap_tooltips":
+		_ui_architecture_rect(panel, "MapHoverRing", Vector2(91, 97), Vector2(28, 28), Color(0.92, 0.82, 0.44, 0.30))
+
+func _ui_shell_selection_panel(root: Control, state: Dictionary) -> void:
+	var panel := _ui_architecture_panel(root, "ShellSelectionPanel", Vector2(306, 704), Vector2(584, 160), str(state.get("selectedTitle", "")), "", Color(0.38, 0.82, 0.78, 0.95))
+	_ui_architecture_rect(panel, "SelectionPortrait", Vector2(18, 54), Vector2(86, 82), state.get("portraitColor", Color(0.3, 0.7, 0.6, 1.0)))
+	_ui_architecture_rect(panel, "SelectionPortraitTrim", Vector2(14, 48), Vector2(94, 4), Color(0.78, 0.70, 0.44, 0.92))
+	_ui_architecture_rect(panel, "SelectionStatusBack", Vector2(18, 116), Vector2(86, 20), Color(0.06, 0.08, 0.07, 0.72))
+	_ui_architecture_label(panel, str(state.get("statusPip", "READY")), Vector2(18, 116), Vector2(86, 18), 12, Color(0.88, 0.88, 0.70), HORIZONTAL_ALIGNMENT_CENTER)
+	_ui_architecture_label(panel, str(state.get("selectedSubtitle", "")), Vector2(124, 42), Vector2(430, 20), 13, Color(0.76, 0.84, 0.72), HORIZONTAL_ALIGNMENT_LEFT)
+	_ui_architecture_rect(panel, "HealthBack", Vector2(124, 70), Vector2(240, 12), Color(0.12, 0.10, 0.08, 0.95))
+	_ui_architecture_rect(panel, "HealthFill", Vector2(124, 70), Vector2(198, 12), Color(0.36, 0.78, 0.54, 0.95))
+	_ui_architecture_label(panel, "84/100", Vector2(372, 64), Vector2(74, 20), 12, Color(0.82, 0.88, 0.72), HORIZONTAL_ALIGNMENT_LEFT)
+	_ui_architecture_label(panel, str(state.get("commandHint", "")), Vector2(124, 92), Vector2(426, 22), 13, Color(0.86, 0.88, 0.72), HORIZONTAL_ALIGNMENT_LEFT)
+	var command_x := 124
+	for command in ["Move", "Attack", "Work", "Ward"]:
+		var state_color := Color(0.12, 0.16, 0.14, 0.96)
+		var border := Color(0.46, 0.72, 0.66, 0.86)
+		if command == "Attack" and str(state.get("alertSeverity", "")) == "hostile":
+			border = Color(0.88, 0.30, 0.18, 0.96)
+		if command == "Work" and str(state.get("id", "")) == "worker_assignment":
+			border = Color(0.88, 0.72, 0.36, 0.96)
+		_ui_shell_button(panel, Vector2(command_x, 122), Vector2(88, 28), command, state_color, border)
+		command_x += 98
+
+func _ui_shell_production_panel(root: Control, state: Dictionary) -> void:
+	var panel := _ui_architecture_panel(root, "ShellProductionPanel", Vector2(918, 654), Vector2(560, 210), "BUILD / TRAIN / RESEARCH", "", Color(0.78, 0.58, 0.30, 0.95))
+	var tabs := ["BUILD", "TRAIN", "RESEARCH"]
+	var active := str(state.get("activeTab", "BUILD"))
+	for index in range(tabs.size()):
+		var tab: String = str(tabs[index])
+		var bg := Color(0.08, 0.10, 0.08, 0.96)
+		var border := Color(0.42, 0.52, 0.38, 0.86)
+		if tab == active:
+			bg = Color(0.16, 0.13, 0.08, 0.98)
+			border = Color(0.86, 0.66, 0.34, 0.96)
+		_ui_shell_button(panel, Vector2(18 + index * 128, 42), Vector2(116, 30), tab, bg, border)
+	var cards: Array[Dictionary] = _ui_shell_cards_for_tab(active)
+	for index in range(cards.size()):
+		var card := cards[index]
+		var col := index % 2
+		var row := int(index / 2)
+		_ui_shell_card(panel, Vector2(18 + col * 264, 84 + row * 58), Vector2(250, 48), card)
+
+func _ui_shell_cards_for_tab(active: String) -> Array[Dictionary]:
+	match active:
+		"TRAIN":
+			return [
+				{"title": "Militia", "meta": "Iron 25 | 18s", "state": "queued"},
+				{"title": "Ranger", "meta": "Requires Lume", "state": "disabled"},
+				{"title": "Defenders", "meta": "Stage at bridge", "state": "ready"},
+				{"title": "Cancel Queue", "meta": "Refund partial", "state": "available"}
+			]
+		"RESEARCH":
+			return [
+				{"title": "Aether Discipline", "meta": "Lume link required", "state": "disabled"},
+				{"title": "Stonecutters", "meta": "Mine held", "state": "ready"},
+				{"title": "Bridge Wards", "meta": "Aether 35", "state": "disabled"},
+				{"title": "Barracks Drill", "meta": "Iron 40", "state": "available"}
+			]
+		_:
+			return [
+				{"title": "Restore Barracks", "meta": "Stone 80 | Worker", "state": "ready"},
+				{"title": "Repair Bridge", "meta": "Future scope", "state": "disabled"},
+				{"title": "Set Rally", "meta": "No cost", "state": "available"},
+				{"title": "Lume Beacon", "meta": "Aether locked", "state": "disabled"}
+			]
+
+func _ui_shell_alert_and_utilities(root: Control, state: Dictionary) -> void:
+	for index in range(3):
+		var label: String = str(["Menu", "Help", "Pause"][index])
+		_ui_shell_button(root, Vector2(1392 + index * 62, 20), Vector2(54, 28), label, Color(0.04, 0.05, 0.04, 0.92), Color(0.38, 0.58, 0.52, 0.70))
+	var alert_text := str(state.get("alert", ""))
+	if alert_text == "":
+		alert_text = "No active pressure"
+	var border := Color(0.48, 0.70, 0.58, 0.85)
+	if str(state.get("alertSeverity", "")) == "hostile":
+		border = Color(0.92, 0.28, 0.16, 0.98)
+	_ui_architecture_panel(root, "ShellAlertCard", Vector2(1270, 150), Vector2(272, 98), "ALERT", alert_text, border)
+
+func _ui_shell_tooltip(root: Control, state: Dictionary) -> void:
+	var panel := _ui_architecture_panel(root, "ShellTooltip", Vector2(520, 584), Vector2(560, 66), "TIP", "", Color(0.58, 0.70, 0.52, 0.92))
+	panel.z_index = 30
+	_ui_architecture_label(panel, str(state.get("tooltip", "")), Vector2(14, 31), Vector2(532, 28), 12, Color(0.82, 0.88, 0.78), HORIZONTAL_ALIGNMENT_LEFT)
+
+func _ui_shell_button(parent: Control, position: Vector2, size: Vector2, text: String, bg: Color, border: Color) -> Panel:
+	var panel := Panel.new()
+	panel.position = position
+	panel.size = size
+	panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	panel.add_theme_stylebox_override("panel", _ui_architecture_panel_style(bg, border))
+	parent.add_child(panel)
+	_ui_architecture_label(panel, text, Vector2(4, 2), size - Vector2(8, 4), 12, Color(0.88, 0.86, 0.68), HORIZONTAL_ALIGNMENT_CENTER)
+	return panel
+
+func _ui_shell_card(parent: Control, position: Vector2, size: Vector2, card: Dictionary) -> Panel:
+	var state := str(card.get("state", "ready"))
+	var border := Color(0.46, 0.60, 0.48, 0.82)
+	var rail := Color(0.38, 0.70, 0.58, 0.92)
+	if state == "disabled":
+		border = Color(0.32, 0.34, 0.30, 0.74)
+		rail = Color(0.28, 0.28, 0.25, 0.92)
+	elif state == "queued":
+		border = Color(0.88, 0.68, 0.34, 0.94)
+		rail = Color(0.88, 0.60, 0.26, 0.96)
+	var panel := Panel.new()
+	panel.position = position
+	panel.size = size
+	panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	panel.add_theme_stylebox_override("panel", _ui_architecture_panel_style(Color(0.035, 0.040, 0.034, 0.95), border))
+	parent.add_child(panel)
+	_ui_architecture_rect(panel, "CardRail", Vector2(0, 0), Vector2(6, size.y), rail)
+	_ui_architecture_label(panel, str(card.get("title", "")), Vector2(14, 4), Vector2(size.x - 20, 20), 13, Color(0.90, 0.86, 0.68), HORIZONTAL_ALIGNMENT_LEFT)
+	_ui_architecture_label(panel, str(card.get("meta", "")), Vector2(14, 24), Vector2(size.x - 20, 18), 11, Color(0.72, 0.78, 0.66), HORIZONTAL_ALIGNMENT_LEFT)
+	return panel
 
 func run_headed_benchmark() -> void:
 	var artifact_root := _artifact_root_from_args()
