@@ -1,5 +1,33 @@
 # Changelog
 
+# v0.219 Structure Shell Production Pass - 2026-06-11
+
+This checkpoint replaces the most blocky structure reads in the isolated Godot Salto presentation-reboot path with restrained Barrosan foothold structure shells. The legacy structure presentation remains available as a comparator/fallback.
+
+Changed:
+
+- Added a selected v0.219 procedural structure-shell production pass for Command Hall, West Stone Cut mine/site, Barracks and Aether support.
+- Bound the approved v0.202 structure-finish material only to suitable shell-v2 structure surfaces.
+- Added Barracks damaged/restoring/restored state-read geometry, including rubble/gap/progress/restored trim cues.
+- Added selected, legacy-comparator, default-procedural, missing-art and hash-mismatch validation.
+- Added the v0.219 manual review pack and required implementation reports.
+
+Boundary:
+
+- Generated images: zero.
+- Downloaded assets: zero.
+- New art slots: zero.
+- New production runtime art slots: zero.
+- Browser runtime changes: none.
+- Default launcher changes: none.
+- Gameplay, pathing, collision, objective, AI, economy, save, stable-ID and balance changes: none.
+
+Validation:
+
+- Structure shell capture and review-pack generation passed.
+- Structure shell validation, benchmark and boundary gate passed.
+- Artifact retention validation and safe-only cleanup dry run passed.
+
 # v0.218 Bridge Shell And Crossing Readability - 2026-06-11
 
 This checkpoint replaces the flat placeholder bridge read in the isolated Godot Salto presentation-reboot path with a restrained procedural bridge shell. The legacy bridge remains available as a comparator/fallback.

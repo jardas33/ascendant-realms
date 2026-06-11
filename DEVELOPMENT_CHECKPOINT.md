@@ -1,6 +1,30 @@
 # Development Checkpoint
 
-Updated: 2026-06-11 v0.218 Bridge shell and crossing readability
+Updated: 2026-06-11 v0.219 Structure shell production pass
+
+## v0.219 Structure Shell Production Pass - 2026-06-11
+
+Scope: isolated opt-in Godot Salto presentation-reboot structure-shell path. This checkpoint generates zero images, adds zero art slots, preserves the default procedural launcher, preserves all prior launchers, keeps browser runtime untouched, keeps the selected v0.216 ground material, v0.217 road/riverbank/water material hierarchy and v0.218 bridge shell, and leaves gameplay, pathing, collisions, objectives, AI, economy, saves, stable IDs and balance unchanged.
+
+Included work:
+
+- Added a selected procedural structure-shell production pass for Command Hall, West Stone Cut mine/site, Barracks and Aether support.
+- Bound the approved v0.202 structure-finish material, SHA `94d4975f9e6f13453103439135da930b74d1d66b56d2b10e43219de408f508ef`, only to suitable shell-v2 structure surfaces.
+- Added stronger Barracks damaged/restoring/restored state-read geometry while preserving structure footprint and interactions.
+- Preserved the legacy structure presentation through `--salto-structure-shell-legacy-comparator`.
+- Generated the ignored manual review pack under `artifacts/manual-review/v0219-structure-shells/`.
+- Added v0.219 structure shell production and implementation docs.
+
+Verification targets:
+
+```text
+PASS: npm run godot:capture:salto-structure-shell-production.
+PASS: npm run godot:validate:salto-structure-shell-production.
+PASS: npm run godot:benchmark:salto-structure-shell-production.
+PASS: v0.219 structure shell boundary gate.
+PASS: artifact retention validation.
+PASS: safe-only cleanup dry run.
+```
 
 ## v0.218 Bridge Shell And Crossing Readability - 2026-06-11
 

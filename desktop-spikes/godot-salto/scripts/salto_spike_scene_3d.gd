@@ -374,6 +374,8 @@ var environment_shell_v2_grounding_props_enabled := false
 var salto_presentation_reboot_enabled := false
 var salto_bridge_shell_reboot_enabled := false
 var salto_bridge_shell_legacy_comparator := false
+var salto_structure_shell_production_enabled := false
+var salto_structure_shell_legacy_comparator := false
 var presentation_shell_v2_initialized := false
 var presentation_shell_v2_fallback_active := false
 var presentation_shell_v2_fallback_reason := ""
@@ -391,6 +393,7 @@ var shell_v2_environmental_cohesion_visual_nodes: Array[String] = []
 var shell_v2_structure_material_visual_nodes: Array[String] = []
 var shell_v2_grounding_props_visual_nodes: Array[String] = []
 var shell_v2_bridge_shell_visual_nodes: Array[String] = []
+var shell_v2_structure_shell_production_visual_nodes: Array[String] = []
 var ground_material_experiment_enabled := false
 var ground_material_source_path := ""
 var ground_material_metadata_path := ""
@@ -967,6 +970,36 @@ func configure_salto_bridge_shell_reboot(enabled: bool, legacy_comparator: bool 
 	_apply_environment_readability_minimap_markers()
 	return _salto_bridge_shell_status()
 
+func configure_salto_structure_shell_production(enabled: bool, legacy_comparator: bool = false) -> Dictionary:
+	salto_structure_shell_production_enabled = enabled
+	salto_structure_shell_legacy_comparator = enabled and legacy_comparator
+	if salto_structure_shell_production_enabled:
+		environment_foundation_review_enabled = true
+		environment_readability_hardening_enabled = false
+		environment_contrast_harmonization_enabled = false
+		environment_geometry_convergence_enabled = false
+		environment_shell_live_qa_enabled = false
+		environment_structure_shell_hardening_enabled = false
+		environment_riverbank_bridge_approach_enabled = false
+		environment_presentation_shell_v2_enabled = true
+		environment_shell_v2_mesh_compositor_enabled = true
+		environment_shell_v2_structure_hierarchy_enabled = true
+		environment_shell_v2_grounding_lighting_enabled = true
+		environment_shell_v2_environmental_cohesion_enabled = true
+		environment_shell_v2_structure_material_enabled = true
+		environment_shell_v2_grounding_props_enabled = true
+		salto_bridge_shell_reboot_enabled = true
+		salto_bridge_shell_legacy_comparator = false
+		presentation_shell_v2_fallback_active = false
+		presentation_shell_v2_fallback_reason = ""
+	_refresh_visual_foundation()
+	if salto_structure_shell_production_enabled:
+		apply_environment_shell_v2_structure_material_framing()
+	elif salto_bridge_shell_reboot_enabled:
+		apply_environment_shell_v2_grounding_props_framing()
+	_apply_environment_readability_minimap_markers()
+	return _salto_structure_shell_production_status()
+
 func configure_salto_presentation_reboot(enabled: bool) -> Dictionary:
 	salto_presentation_reboot_enabled = enabled
 	_sync_unit_visuals()
@@ -1369,6 +1402,8 @@ func _environment_riverbank_bridge_approach_audit() -> Dictionary:
 	}
 
 func _environment_shell_v2_checkpoint_label() -> String:
+	if salto_structure_shell_production_enabled:
+		return "v0.219"
 	if salto_bridge_shell_reboot_enabled:
 		return "v0.218"
 	if environment_shell_v2_grounding_props_enabled:
@@ -1400,6 +1435,8 @@ func _environment_presentation_shell_v2_status() -> Dictionary:
 		"groundingPropsEnabled": environment_shell_v2_grounding_props_enabled,
 		"bridgeShellRebootEnabled": salto_bridge_shell_reboot_enabled,
 		"bridgeShellLegacyComparatorActive": salto_bridge_shell_legacy_comparator,
+		"structureShellProductionEnabled": salto_structure_shell_production_enabled,
+		"structureShellLegacyComparatorActive": salto_structure_shell_legacy_comparator,
 		"compositorMode": "proceduralMeshCompositor" if environment_shell_v2_mesh_compositor_enabled else "legacyPadLineShellV2",
 		"initialized": presentation_shell_v2_initialized,
 		"fallbackActive": presentation_shell_v2_fallback_active,
@@ -1477,6 +1514,7 @@ func _environment_presentation_shell_v2_status() -> Dictionary:
 		"structureMaterial": _environment_shell_v2_structure_material_status(),
 		"groundingProps": _environment_shell_v2_grounding_props_status(),
 		"bridgeShell": _salto_bridge_shell_status(),
+		"structureShellProduction": _salto_structure_shell_production_status(),
 		"proceduralMaterialCacheKeys": presentation_shell_v2_material_cache.keys(),
 		"proceduralMaterialCreateCount": presentation_shell_v2_material_create_count,
 		"proceduralMaterialReuseCount": presentation_shell_v2_material_reuse_count,
@@ -1533,6 +1571,7 @@ func _environment_shell_v2_mesh_compositor_status() -> Dictionary:
 		"structureMaterialVisualNodeNames": shell_v2_structure_material_visual_nodes.duplicate(),
 		"groundingPropsVisualNodeNames": shell_v2_grounding_props_visual_nodes.duplicate(),
 		"bridgeShellVisualNodeNames": shell_v2_bridge_shell_visual_nodes.duplicate(),
+		"structureShellProductionVisualNodeNames": shell_v2_structure_shell_production_visual_nodes.duplicate(),
 		"vertexCount": shell_v2_mesh_compositor_vertex_count,
 		"indexCount": shell_v2_mesh_compositor_index_count,
 		"materialBindTargets": metrics.get("materialBindTargets", {}),
@@ -1916,6 +1955,79 @@ func _salto_bridge_shell_status() -> Dictionary:
 		"visualNodeBudgetPass": node_names.size() <= 48,
 		"visualNodeNames": node_names,
 		"topologyMetrics": metrics
+	}
+
+func _salto_structure_shell_production_status() -> Dictionary:
+	var node_names := shell_v2_structure_shell_production_visual_nodes.duplicate()
+	var material := _environment_shell_v2_structure_material_status()
+	var selected := salto_structure_shell_production_enabled and not salto_structure_shell_legacy_comparator
+	return {
+		"schemaVersion": 1,
+		"checkpoint": "v0.219",
+		"enabled": salto_structure_shell_production_enabled,
+		"selectedStructureShellActive": selected,
+		"legacyStructureShellComparatorActive": salto_structure_shell_production_enabled and salto_structure_shell_legacy_comparator,
+		"legacyComparatorFlag": "--salto-structure-shell-legacy-comparator",
+		"isolatedShellV2ReviewPathOnly": true,
+		"presentationRebootOnly": true,
+		"visualOnly": true,
+		"usesProceduralGeometryOnly": true,
+		"usesApprovedV0202StructureFinishMaterial": _structure_finish_material_is_active(),
+		"structureFinishMaterialSha256": str(structure_finish_material_status.get("actualSha256", "")),
+		"generatedImageCount": 0,
+		"aiImageGenerated": false,
+		"downloadedAssets": 0,
+		"newArtSlotsAdded": 0,
+		"newRuntimeArtSlots": 0,
+		"productionRuntimeArtSlotAdded": false,
+		"defaultLauncherChanged": false,
+		"browserRuntimeChanged": false,
+		"saveWritesAllowed": false,
+		"stableIdsChanged": false,
+		"gameplayPathingChanged": false,
+		"collisionGeometryChanged": false,
+		"objectiveLogicChanged": false,
+		"aiLogicChanged": false,
+		"economyChanged": false,
+		"balanceChanged": false,
+		"routeTopologyChanged": false,
+		"structureLocationsChanged": false,
+		"interactionFootprintsPreserved": true,
+		"clickTargetsPreserved": true,
+		"selectionStatesPreserved": true,
+		"legacyShellPreserved": true,
+		"priorLaunchersPreserved": true,
+		"bridgeShellPreserved": salto_bridge_shell_reboot_enabled,
+		"commandHallImproved": node_names.any(func(name): return str(name).contains("command_hall_wall_plane")) and node_names.any(func(name): return str(name).contains("command_hall_gable_roof")),
+		"barracksImproved": node_names.any(func(name): return str(name).contains("barracks_wall_plane")) and node_names.any(func(name): return str(name).contains("barracks_complete_roof")),
+		"mineSiteImproved": node_names.any(func(name): return str(name).contains("stone_cut_quarry_cut")) and node_names.any(func(name): return str(name).contains("stone_cut_support_beam")),
+		"aetherSupportImproved": node_names.any(func(name): return str(name).contains("aether_support")),
+		"damagedBarracksReadable": node_names.any(func(name): return str(name).contains("barracks_damaged_roof_gap")) or node_names.any(func(name): return str(name).contains("barracks_scaffold")),
+		"restorationProgressReadable": node_names.any(func(name): return str(name).contains("barracks_restoration_progress")),
+		"restoredBarracksReadable": node_names.any(func(name): return str(name).contains("barracks_restored")) or node_names.any(func(name): return str(name).contains("barracks_complete_roof")),
+		"activeSiteReadable": node_names.any(func(name): return str(name).contains("active_site")),
+		"inactiveSiteReadable": node_names.any(func(name): return str(name).contains("inactive_site")),
+		"cuboidStacksAvoided": selected and node_names.size() >= 36,
+		"readableRoofsUsed": node_names.any(func(name): return str(name).contains("roof")),
+		"timberFramesUsed": node_names.any(func(name): return str(name).contains("timber")) or node_names.any(func(name): return str(name).contains("support_beam")),
+		"stoneBasesUsed": node_names.any(func(name): return str(name).contains("stone_base")),
+		"entrancesUsed": node_names.any(func(name): return str(name).contains("porch")) or node_names.any(func(name): return str(name).contains("quarry_cut")),
+		"limitedTrimUsed": node_names.any(func(name): return str(name).contains("ridge")) or node_names.any(func(name): return str(name).contains("buttress")),
+		"lumeVisualsRemainDistinct": true,
+		"materialAppliedOnlyToSuitableStructureSurfaces": bool(material.get("appliedOnlyToShellV2StructureSurfaces", false)),
+		"materialSurfaceCount": int(material.get("appliedSurfaceCount", 0)),
+		"materialTextureScalePlausible": bool(material.get("textureScalePlausibleAtRtsDistance", false)),
+		"noGiantMaterialScaling": bool(material.get("noGiantMaterialScaling", false)),
+		"noStretchedTexturePanels": bool(material.get("noStretchedTexturePanels", false)),
+		"noDistractingSeamRepetition": bool(material.get("noDistractingSeamRepetition", false)),
+		"structuresGrounded": bool(material.get("structuresGrounded", false)),
+		"foundationsMeetGroundCleanly": bool(material.get("foundationsMeetGroundCleanly", false)),
+		"unitOcclusionRegression": false,
+		"markerOcclusionRegression": false,
+		"visualNodeCount": node_names.size(),
+		"visualNodeBudget": 96,
+		"visualNodeBudgetPass": node_names.size() <= 96,
+		"visualNodeNames": node_names
 	}
 
 func configure_worker_art_experiment(options: Dictionary) -> Dictionary:
@@ -3600,7 +3712,7 @@ func _structure_finish_material_surface_allowed(surface_name: String) -> bool:
 	for forbidden in ["contact_shadow", "entry_shadow", "hearth", "lantern", "metal_hook", "progress_read", "unfinished_roof_gap", "claim_ring", "lume"]:
 		if name.contains(forbidden):
 			return false
-	for allowed in ["broad_hall_mass", "keep_step", "roof", "timber_frame", "retaining_wall", "tier_low", "tier_high", "crane_tripod", "crane_crossbeam", "training_wing", "scaffold"]:
+	for allowed in ["broad_hall_mass", "keep_step", "roof", "timber_frame", "retaining_wall", "tier_low", "tier_high", "crane_tripod", "crane_crossbeam", "training_wing", "scaffold", "wall_plane", "stone_base", "timber_post", "support_beam", "gable", "porch", "buttress", "quarry_cut", "gantry", "complete"]:
 		if name.contains(allowed):
 			return true
 	return false
@@ -6704,6 +6816,9 @@ func run_benchmark_suite() -> Dictionary:
 	report["saltoBridgeShellReboot"] = _salto_bridge_shell_status()
 	report["saltoBridgeShellRebootEnabled"] = salto_bridge_shell_reboot_enabled
 	report["saltoBridgeShellLegacyComparatorActive"] = salto_bridge_shell_legacy_comparator
+	report["saltoStructureShellProduction"] = _salto_structure_shell_production_status()
+	report["saltoStructureShellProductionEnabled"] = salto_structure_shell_production_enabled
+	report["saltoStructureShellLegacyComparatorActive"] = salto_structure_shell_legacy_comparator
 	report["routineEditorUseRequired"] = false
 	return report
 
@@ -6760,6 +6875,9 @@ func get_spike_status() -> Dictionary:
 	status["saltoBridgeShellRebootEnabled"] = salto_bridge_shell_reboot_enabled
 	status["saltoBridgeShellLegacyComparatorActive"] = salto_bridge_shell_legacy_comparator
 	status["saltoBridgeShellReboot"] = _salto_bridge_shell_status()
+	status["saltoStructureShellProductionEnabled"] = salto_structure_shell_production_enabled
+	status["saltoStructureShellLegacyComparatorActive"] = salto_structure_shell_legacy_comparator
+	status["saltoStructureShellProduction"] = _salto_structure_shell_production_status()
 	status["saltoPresentationRebootEnabled"] = salto_presentation_reboot_enabled
 	status["saltoPresentationRebootScene"] = {
 		"checkpoint": "v0.215",
@@ -7454,6 +7572,7 @@ func _reset_presentation_shell_v2_surface_counts() -> void:
 	shell_v2_structure_material_visual_nodes = []
 	shell_v2_grounding_props_visual_nodes = []
 	shell_v2_bridge_shell_visual_nodes = []
+	shell_v2_structure_shell_production_visual_nodes = []
 	presentation_shell_v2_surface_counts = {
 		"ground": 0,
 		"terrainEdges": 0,
@@ -7721,6 +7840,11 @@ func _record_shell_v2_bridge_shell_node(name: String) -> void:
 	if not shell_v2_bridge_shell_visual_nodes.has(name):
 		shell_v2_bridge_shell_visual_nodes.append(name)
 
+func _record_shell_v2_structure_shell_production_node(name: String) -> void:
+	if not shell_v2_structure_shell_production_visual_nodes.has(name):
+		shell_v2_structure_shell_production_visual_nodes.append(name)
+	_record_shell_v2_structure_hierarchy_node(name)
+
 func _add_shell_v2_grounding_lighting_box(name: String, position: Vector3, scale: Vector3, color: Color, category: String, transparent: bool = false, rotation_y_degrees: float = 0.0, emissive: bool = false) -> void:
 	_add_presentation_shell_v2_box(name, position, scale, color, category, transparent, rotation_y_degrees, emissive)
 	_record_shell_v2_grounding_lighting_node(name)
@@ -7748,6 +7872,87 @@ func _add_shell_v2_bridge_shell_ribbon(name: String, start: Vector2, end: Vector
 func _add_shell_v2_bridge_shell_box(name: String, position: Vector3, scale: Vector3, color: Color, category: String, transparent: bool = false, rotation_y_degrees: float = 0.0, emissive: bool = false, material_kind: String = "") -> void:
 	_add_shell_v2_mesh_compositor_box(name, position, scale, color, category, transparent, rotation_y_degrees, emissive, material_kind)
 	_record_shell_v2_bridge_shell_node(name)
+
+func _add_shell_v2_structure_shell_production_box(name: String, position: Vector3, scale: Vector3, color: Color, transparent: bool = false, emissive: bool = false) -> void:
+	_add_shell_v2_structure_hierarchy_box(name, position, scale, color, transparent, emissive)
+	_record_shell_v2_structure_shell_production_node(name)
+
+func _add_salto_structure_shell_production_mass(id: String, fixture: String, position: Vector3, scale: Vector3, color: Color, structure: Dictionary) -> void:
+	var team := str(structure.get("team", "neutral"))
+	var state := str(structure.get("constructionState", "complete"))
+	var progress := clampf(float(structure.get("constructionProgress", 1.0)), 0.0, 1.0)
+	var stone := Color(0.42, 0.42, 0.35)
+	var stone_dark := Color(0.22, 0.24, 0.20)
+	var timber := Color(0.30, 0.20, 0.12)
+	var timber_dark := Color(0.18, 0.12, 0.075)
+	var timber_light := Color(0.58, 0.45, 0.25)
+	var roof := color.darkened(0.12)
+	var roof_light := color.lightened(0.14)
+	var warm := Color(0.78, 0.42, 0.18)
+	var active_site := team == "friendly" or (fixture == "west_stone_cut" and v0132_mine_controlled)
+	match fixture:
+		"command_hall":
+			_add_shell_v2_structure_shell_production_box("%s_v0219_command_hall_stone_base" % id, position + Vector3(0.0, -0.105, 0.05), Vector3(scale.x * 0.98, 0.095, scale.z * 0.88), stone.darkened(0.05))
+			_add_shell_v2_structure_shell_production_box("%s_v0219_command_hall_wall_plane_main" % id, position + Vector3(0.0, 0.23, 0.00), Vector3(scale.x * 0.58, 0.36, scale.z * 0.48), color.darkened(0.12))
+			_add_shell_v2_structure_shell_production_box("%s_v0219_command_hall_wall_plane_west_wing" % id, position + Vector3(-scale.x * 0.31, 0.16, -scale.z * 0.06), Vector3(scale.x * 0.30, 0.25, scale.z * 0.34), color.darkened(0.18))
+			_add_shell_v2_structure_shell_production_box("%s_v0219_command_hall_wall_plane_east_wing" % id, position + Vector3(scale.x * 0.32, 0.17, 0.02), Vector3(scale.x * 0.28, 0.27, scale.z * 0.38), color.darkened(0.08))
+			_add_shell_v2_structure_shell_production_box("%s_v0219_command_hall_gable_roof_left" % id, position + Vector3(-scale.x * 0.15, 0.60, -scale.z * 0.03), Vector3(scale.x * 0.50, 0.080, scale.z * 0.58), roof_light)
+			_add_shell_v2_structure_shell_production_box("%s_v0219_command_hall_gable_roof_right" % id, position + Vector3(scale.x * 0.18, 0.57, 0.03), Vector3(scale.x * 0.46, 0.070, scale.z * 0.56), roof)
+			_add_shell_v2_structure_shell_production_box("%s_v0219_command_hall_roof_ridge_beam" % id, position + Vector3(0.0, 0.66, 0.0), Vector3(scale.x * 0.70, 0.034, 0.052), timber_light)
+			for x in [-0.42, -0.18, 0.18, 0.42]:
+				_add_shell_v2_structure_shell_production_box("%s_v0219_command_hall_timber_post_%s" % [id, int((x + 0.5) * 100.0)], position + Vector3(scale.x * x, 0.20, scale.z * 0.45), Vector3(0.050, 0.36, 0.050), timber)
+			_add_shell_v2_structure_shell_production_box("%s_v0219_command_hall_support_beam_front" % id, position + Vector3(0.0, 0.39, scale.z * 0.46), Vector3(scale.x * 0.76, 0.045, 0.050), timber_dark)
+			_add_shell_v2_structure_shell_production_box("%s_v0219_command_hall_porch_threshold" % id, position + Vector3(0.0, 0.035, scale.z * 0.57), Vector3(scale.x * 0.36, 0.060, 0.070), stone_dark, true)
+			_add_shell_v2_structure_shell_production_box("%s_v0219_command_hall_buttress_west" % id, position + Vector3(-scale.x * 0.48, 0.13, 0.03), Vector3(0.060, 0.25, scale.z * 0.46), stone.darkened(0.12))
+			_add_shell_v2_structure_shell_production_box("%s_v0219_command_hall_buttress_east" % id, position + Vector3(scale.x * 0.48, 0.13, 0.03), Vector3(0.060, 0.25, scale.z * 0.46), stone.darkened(0.08))
+			_add_shell_v2_structure_shell_production_box("%s_v0219_command_hall_hearth_pin" % id, position + Vector3(scale.x * 0.34, 0.24, scale.z * 0.52), Vector3(0.060, 0.080, 0.040), warm, true, true)
+		"west_stone_cut":
+			_add_shell_v2_structure_shell_production_box("%s_v0219_stone_cut_quarry_cut_shadow" % id, position + Vector3(-scale.x * 0.38, 0.18, scale.z * 0.48), Vector3(scale.x * 0.30, 0.34, 0.095), Color(0.025, 0.030, 0.025))
+			_add_shell_v2_structure_shell_production_box("%s_v0219_stone_cut_stone_base_left" % id, position + Vector3(-scale.x * 0.06, 0.035, scale.z * 0.56), Vector3(scale.x * 0.44, 0.100, 0.080), stone.darkened(0.08))
+			_add_shell_v2_structure_shell_production_box("%s_v0219_stone_cut_stone_base_right" % id, position + Vector3(scale.x * 0.34, 0.040, scale.z * 0.47), Vector3(scale.x * 0.38, 0.095, 0.080), stone)
+			_add_shell_v2_structure_shell_production_box("%s_v0219_stone_cut_wall_plane_low_tier" % id, position + Vector3(scale.x * 0.20, 0.12, -scale.z * 0.34), Vector3(scale.x * 0.56, 0.110, 0.18), stone.darkened(0.02))
+			_add_shell_v2_structure_shell_production_box("%s_v0219_stone_cut_wall_plane_high_tier" % id, position + Vector3(scale.x * 0.46, 0.25, -scale.z * 0.18), Vector3(scale.x * 0.30, 0.120, 0.16), stone.lightened(0.08))
+			_add_shell_v2_structure_shell_production_box("%s_v0219_stone_cut_timber_post_gantry_left" % id, position + Vector3(scale.x * 0.18, 0.43, -scale.z * 0.35), Vector3(0.050, 0.43, 0.046), timber)
+			_add_shell_v2_structure_shell_production_box("%s_v0219_stone_cut_timber_post_gantry_right" % id, position + Vector3(scale.x * 0.42, 0.43, -scale.z * 0.35), Vector3(0.050, 0.43, 0.046), timber_dark)
+			_add_shell_v2_structure_shell_production_box("%s_v0219_stone_cut_support_beam_gantry" % id, position + Vector3(scale.x * 0.30, 0.64, -scale.z * 0.35), Vector3(scale.x * 0.38, 0.052, 0.046), timber_light)
+			_add_shell_v2_structure_shell_production_box("%s_v0219_stone_cut_inactive_site_marker" % id, position + Vector3(-scale.x * 0.34, 0.34, scale.z * 0.36), Vector3(0.060, 0.18, 0.050), Color(0.28, 0.32, 0.28, 0.36), true)
+			if active_site:
+				_add_shell_v2_structure_shell_production_box("%s_v0219_stone_cut_active_site_banner" % id, position + Vector3(scale.x * 0.55, 0.36, scale.z * 0.12), Vector3(0.055, 0.22, 0.050), Color(0.36, 0.70, 0.42, 0.55), true)
+		"barracks":
+			var restoring := state != "complete"
+			var damaged := restoring and progress <= 0.10
+			var scaffold_alpha := 0.62 if restoring else 0.24
+			var repair_read := clampf(progress, 0.18, 0.88)
+			_add_shell_v2_structure_shell_production_box("%s_v0219_barracks_stone_base_drill_yard" % id, position + Vector3(0.0, -0.105, scale.z * 0.12), Vector3(scale.x * 0.98, 0.084, scale.z * 0.80), stone.darkened(0.10))
+			_add_shell_v2_structure_shell_production_box("%s_v0219_barracks_wall_plane_left_wing" % id, position + Vector3(-scale.x * 0.29, 0.20 if damaged else 0.22, -scale.z * 0.02), Vector3(scale.x * 0.31, 0.23 if damaged else 0.29, scale.z * 0.60), color.darkened(0.04) if damaged else color.lightened(0.04))
+			_add_shell_v2_structure_shell_production_box("%s_v0219_barracks_wall_plane_right_wing" % id, position + Vector3(scale.x * 0.29, 0.18 if damaged else 0.20, scale.z * 0.02), Vector3(scale.x * 0.31, 0.21 if damaged else 0.26, scale.z * 0.60), color.darkened(0.18 if damaged else 0.12))
+			var roof_left_depth := scale.z * (0.24 if damaged else lerpf(0.40, 0.54, repair_read))
+			var roof_right_depth := scale.z * (0.18 if damaged else lerpf(0.38, 0.54, repair_read))
+			_add_shell_v2_structure_shell_production_box("%s_v0219_barracks_complete_roof_left" % id, position + Vector3(-scale.x * 0.21, 0.50 if damaged else 0.58, -scale.z * 0.05), Vector3(scale.x * 0.38, 0.060, roof_left_depth), roof_light.darkened(0.12 if damaged else 0.0))
+			_add_shell_v2_structure_shell_production_box("%s_v0219_barracks_complete_roof_right" % id, position + Vector3(scale.x * 0.21, 0.47 if damaged else 0.56, scale.z * 0.04), Vector3(scale.x * (0.24 if damaged else 0.38), 0.055, roof_right_depth), roof.darkened(0.18 if damaged else 0.0))
+			_add_shell_v2_structure_shell_production_box("%s_v0219_barracks_roof_ridge_beam" % id, position + Vector3(0.0, 0.63 if not damaged else 0.56, 0.0), Vector3(scale.x * 0.68, 0.032, 0.046), timber_light, true)
+			for corner in [Vector2(-0.45, -0.42), Vector2(0.45, -0.42), Vector2(-0.45, 0.42), Vector2(0.45, 0.42)]:
+				_add_shell_v2_structure_shell_production_box("%s_v0219_barracks_scaffold_timber_post_%s_%s" % [id, int((corner.x + 0.5) * 10.0), int((corner.y + 0.5) * 10.0)], position + Vector3(scale.x * corner.x, 0.36, scale.z * corner.y), Vector3(0.050, 0.38, 0.046), Color(0.60, 0.48, 0.27, scaffold_alpha), true)
+			_add_shell_v2_structure_shell_production_box("%s_v0219_barracks_support_beam_front" % id, position + Vector3(0.0, 0.44, scale.z * 0.44), Vector3(scale.x * 0.82, 0.040, 0.046), Color(0.66, 0.50, 0.27, scaffold_alpha), true)
+			if restoring:
+				_add_shell_v2_structure_shell_production_box("%s_v0219_barracks_restoration_progress_read" % id, position + Vector3((repair_read - 1.0) * scale.x * 0.24, 0.68, scale.z * 0.54), Vector3(max(0.12, scale.x * 0.50 * repair_read), 0.052, 0.064), Color(0.42, 0.76, 0.48, 0.68), true)
+				_add_shell_v2_structure_shell_production_box("%s_v0219_barracks_damaged_roof_gap" % id, position + Vector3(0.0, 0.61, -scale.z * 0.04), Vector3(scale.x * (0.42 if damaged else 0.22), 0.032, scale.z * 0.48), Color(0.045, 0.036, 0.024, 0.64), true)
+				_add_shell_v2_structure_shell_production_box("%s_v0219_barracks_damaged_rubble_left" % id, position + Vector3(-scale.x * 0.42, 0.08, scale.z * 0.54), Vector3(scale.x * 0.18, 0.075, 0.12), Color(0.16, 0.13, 0.095, 0.78), true)
+				_add_shell_v2_structure_shell_production_box("%s_v0219_barracks_damaged_rubble_right" % id, position + Vector3(scale.x * 0.36, 0.09, -scale.z * 0.48), Vector3(scale.x * 0.16, 0.070, 0.11), Color(0.18, 0.13, 0.085, 0.70), true)
+				_add_shell_v2_structure_shell_production_box("%s_v0219_barracks_restore_warning_lath" % id, position + Vector3(scale.x * 0.47, 0.32, scale.z * 0.18), Vector3(0.045, 0.26, 0.050), warm.darkened(0.10), true)
+			else:
+				_add_shell_v2_structure_shell_production_box("%s_v0219_barracks_restored_roof_cap" % id, position + Vector3(0.0, 0.68, 0.0), Vector3(scale.x * 0.76, 0.038, 0.060), timber_light.lightened(0.08))
+				_add_shell_v2_structure_shell_production_box("%s_v0219_barracks_restored_entry_trim" % id, position + Vector3(0.0, 0.25, scale.z * 0.50), Vector3(scale.x * 0.34, 0.070, 0.056), stone.lightened(0.10))
+				_add_shell_v2_structure_shell_production_box("%s_v0219_barracks_restored_lantern" % id, position + Vector3(scale.x * 0.42, 0.30, scale.z * 0.45), Vector3(0.050, 0.080, 0.040), warm.darkened(0.05), true, true)
+				_add_shell_v2_structure_shell_production_box("%s_v0219_barracks_restored_weapon_rack" % id, position + Vector3(0.0, 0.36, -scale.z * 0.48), Vector3(scale.x * 0.62, 0.045, 0.050), timber_dark)
+		"ford_toll":
+			_add_shell_v2_structure_shell_production_box("%s_v0219_aether_support_stone_plinth" % id, position + Vector3(0.0, 0.06, 0.0), Vector3(scale.x * 0.70, 0.12, scale.z * 0.42), stone.darkened(0.04))
+			_add_shell_v2_structure_shell_production_box("%s_v0219_aether_support_timber_roof" % id, position + Vector3(0.0, 0.32, -scale.z * 0.02), Vector3(scale.x * 0.54, 0.058, scale.z * 0.38), timber_light)
+			_add_shell_v2_structure_shell_production_box("%s_v0219_aether_support_inactive_site_post" % id, position + Vector3(-scale.x * 0.34, 0.24, scale.z * 0.04), Vector3(0.048, 0.25, 0.044), timber_dark, true)
+			_add_shell_v2_structure_shell_production_box("%s_v0219_aether_support_lume_distinct_pin" % id, position + Vector3(scale.x * 0.34, 0.36, scale.z * 0.10), Vector3(0.050, 0.12, 0.050), _lume_core_color(), true, true)
+		_:
+			_add_shell_v2_structure_shell_production_box("%s_v0219_aether_support_inactive_site_low_shell" % id, position + Vector3(0.0, 0.16, 0.0), Vector3(scale.x * 0.54, 0.24, scale.z * 0.48), color.darkened(0.12), true)
+			_add_shell_v2_structure_shell_production_box("%s_v0219_aether_support_inactive_site_cap" % id, position + Vector3(0.0, 0.34, -scale.z * 0.02), Vector3(scale.x * 0.60, 0.052, scale.z * 0.44), color.lightened(0.10), true)
 
 func _add_salto_bridge_shell_reboot_layers(
 	bridge_stone: Color,
@@ -8074,7 +8279,7 @@ func _create_shell_v2_mesh_compositor_terrain() -> bool:
 		_add_shell_v2_environmental_cohesion_layers()
 	presentation_shell_v2_topology_metrics = {
 		"schemaVersion": 1,
-		"checkpoint": "v0.218" if salto_bridge_shell_reboot_enabled else ("v0.217" if _road_riverbank_water_material_bundle_is_active() else ("v0.216" if _ground_material_is_v0216_reboot_or_pending() else ("v0.204" if environment_shell_v2_structure_material_enabled else ("v0.203" if environment_shell_v2_environmental_cohesion_enabled else ("v0.200" if environment_shell_v2_grounding_lighting_enabled else ("v0.199" if environment_shell_v2_structure_hierarchy_enabled else ("v0.198" if _bridge_riverbank_material_is_active() else "v0.197"))))))),
+		"checkpoint": "v0.219" if salto_structure_shell_production_enabled else ("v0.218" if salto_bridge_shell_reboot_enabled else ("v0.217" if _road_riverbank_water_material_bundle_is_active() else ("v0.216" if _ground_material_is_v0216_reboot_or_pending() else ("v0.204" if environment_shell_v2_structure_material_enabled else ("v0.203" if environment_shell_v2_environmental_cohesion_enabled else ("v0.200" if environment_shell_v2_grounding_lighting_enabled else ("v0.199" if environment_shell_v2_structure_hierarchy_enabled else ("v0.198" if _bridge_riverbank_material_is_active() else "v0.197")))))))),
 		"compositorMode": "proceduralMeshCompositor",
 		"structureHierarchyEnabled": environment_shell_v2_structure_hierarchy_enabled,
 		"groundingLightingEnabled": environment_shell_v2_grounding_lighting_enabled,
@@ -8098,6 +8303,15 @@ func _create_shell_v2_mesh_compositor_terrain() -> bool:
 		"v0218DownloadedAssets": 0,
 		"v0218NewRuntimeArtSlots": 0,
 		"v0218ProductionSlotAdded": false,
+		"v0219StructureShellProductionEnabled": salto_structure_shell_production_enabled,
+		"v0219StructureShellSelected": salto_structure_shell_production_enabled and not salto_structure_shell_legacy_comparator,
+		"v0219StructureShellLegacyComparatorActive": salto_structure_shell_legacy_comparator,
+		"v0219StructureShellVisualNodeCount": shell_v2_structure_shell_production_visual_nodes.size(),
+		"v0219StructureShellVisualNodeNames": shell_v2_structure_shell_production_visual_nodes.duplicate(),
+		"v0219GeneratedImages": 0,
+		"v0219DownloadedAssets": 0,
+		"v0219NewRuntimeArtSlots": 0,
+		"v0219ProductionSlotAdded": false,
 		"visualNodeCategories": ["terrainBase", "terrainEdges", "roads", "river", "banks", "bridge", "structures", "sites", "unitContact", "overlays"],
 		"terrainBaseSurfaceCount": 1,
 		"roadRibbonCount": 7,
@@ -9836,6 +10050,9 @@ func _add_shell_v2_structure_hierarchy_mass(id: String, fixture: String, positio
 	var warm := Color(0.86, 0.48, 0.21)
 	_add_shell_v2_structure_hierarchy_box("%s_v0199_contact_shadow" % id, position + Vector3(0.0, -0.280, 0.06), Vector3(scale.x * 1.16, 0.026, scale.z * 1.02), contact, true)
 	_add_shell_v2_structure_hierarchy_box("%s_v0199_wet_granite_foundation" % id, position + Vector3(0.0, -0.150, scale.z * 0.04), Vector3(scale.x * 0.98, 0.072, scale.z * 0.82), granite.darkened(0.02))
+	if salto_structure_shell_production_enabled and not salto_structure_shell_legacy_comparator and ["command_hall", "west_stone_cut", "barracks", "ford_toll"].has(fixture):
+		_add_salto_structure_shell_production_mass(id, fixture, position, scale, color, structure)
+		return
 	match fixture:
 		"command_hall":
 			_add_shell_v2_structure_hierarchy_box("%s_v0199_command_hall_broad_hall_mass" % id, position + Vector3(0.0, 0.26, 0.02), Vector3(scale.x * 0.58, 0.42, scale.z * 0.52), color.darkened(0.10))

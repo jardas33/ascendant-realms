@@ -1,12 +1,12 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-06-11 v0.218 Bridge shell and crossing readability
+Last updated: 2026-06-11 v0.219 Structure shell production pass
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
 ## Current Continuation Note
 
-The latest work is v0.218 Bridge shell and crossing readability. It keeps the v0.215 presentation-reboot path isolated, generates zero images, adds zero art slots, replaces the flat bridge read only with a reversible procedural bridge shell, preserves the legacy bridge comparator, keeps browser runtime untouched, keeps the default launcher procedural, preserves all prior launchers, preserves gameplay/pathing/collisions/objectives/AI/economy/saves/stable IDs/balance, and continues to queued v0.219 only after clean sync and CI-green proof.
+The latest work is v0.219 Structure shell production pass. It keeps the v0.215 presentation-reboot path isolated, generates zero images, adds zero art slots, replaces only the selected structure shell presentation with reversible Barrosan foothold geometry, binds the approved v0.202 structure-finish material only inside the isolated shell-v2 review path, preserves the legacy structure comparator, keeps browser runtime untouched, keeps the default launcher procedural, preserves all prior launchers, preserves gameplay/pathing/collisions/objectives/AI/economy/saves/stable IDs/balance, and continues to queued v0.220 only after clean sync and CI-green proof.
 
 ## Project Identity
 

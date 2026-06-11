@@ -29,10 +29,16 @@ $V0217WaterExpectedSha256 = "461e7368d4084d474ce8471ea993633dfc5651a6cfda346ab3c
 $V0217WetEdgeSourcePath = Join-Path $V0217MaterialRoot "barrosan_road_riverbank_water_material_v0217_wet_edge_1024.png"
 $V0217WetEdgeMetadataPath = Join-Path $V0217MaterialRoot "barrosan_road_riverbank_water_material_v0217_wet_edge_1024.metadata.json"
 $V0217WetEdgeExpectedSha256 = "c015bc67f5e9368532f0d449034f874d78da4b4e0156fbd60ec40ea6eadcc4da"
+$V0202StructureFinishSourcePath = Join-Path $RepoRoot "artifacts\desktop-spikes\godot-salto\v0202\local-structure-finish-material-slot\barrosan_structure_finish_material_v0202_1024.png"
+$V0202StructureFinishMetadataPath = Join-Path $RepoRoot "artifacts\desktop-spikes\godot-salto\v0202\local-structure-finish-material-slot\barrosan_structure_finish_material_v0202_1024.metadata.json"
+$V0202StructureFinishExpectedSha256 = "94d4975f9e6f13453103439135da930b74d1d66b56d2b10e43219de408f508ef"
+$MissingStructureFinishSourcePath = Join-Path $RepoRoot "artifacts\desktop-spikes\godot-salto\v0204\missing-structure-finish-source\barrosan_structure_finish_material_v0202_1024.png"
 
 $GroundMode = "v0216-selected"
 $RoadRiverbankWaterMode = "v0217-selected"
 $BridgeShellMode = "v0218-selected"
+$StructureFinishMode = "v0202-selected"
+$StructureShellMode = "v0219-selected"
 $ForwardArgs = @()
 foreach ($arg in $RemainingArgs) {
   if ($arg -eq "--salto-presentation-reboot-use-v0175-ground") {
@@ -47,6 +53,12 @@ foreach ($arg in $RemainingArgs) {
     $RoadRiverbankWaterMode = "v0217-hash-mismatch"
   } elseif ($arg -eq "--salto-presentation-reboot-legacy-bridge" -or $arg -eq "--salto-bridge-shell-legacy-comparator") {
     $BridgeShellMode = "v0218-legacy-comparator"
+  } elseif ($arg -eq "--salto-presentation-reboot-legacy-structures" -or $arg -eq "--salto-structure-shell-legacy-comparator") {
+    $StructureShellMode = "v0219-legacy-comparator"
+  } elseif ($arg -eq "--salto-structure-finish-material-missing-fallback") {
+    $StructureFinishMode = "v0202-missing-fallback"
+  } elseif ($arg -eq "--salto-structure-finish-material-hash-mismatch") {
+    $StructureFinishMode = "v0202-hash-mismatch"
   } else {
     $ForwardArgs += $arg
   }
@@ -91,6 +103,18 @@ if ($RoadRiverbankWaterMode -eq "v0217-missing-fallback") {
   $RoadExpectedSha256 = "0000000000000000000000000000000000000000000000000000000000000000"
 }
 
+$StructureFinishSourcePath = $V0202StructureFinishSourcePath
+$StructureFinishMetadataPath = $V0202StructureFinishMetadataPath
+$StructureFinishExpectedSha256 = $V0202StructureFinishExpectedSha256
+$StructureFinishFallbackMode = "none"
+if ($StructureFinishMode -eq "v0202-missing-fallback") {
+  $StructureFinishFallbackMode = "missing"
+  $StructureFinishSourcePath = $MissingStructureFinishSourcePath
+} elseif ($StructureFinishMode -eq "v0202-hash-mismatch") {
+  $StructureFinishFallbackMode = "hash-mismatch"
+  $StructureFinishExpectedSha256 = "0000000000000000000000000000000000000000000000000000000000000000"
+}
+
 if ($GroundMode -ne "v0216-missing-fallback") {
   foreach ($path in @($GroundSourcePath, $GroundMetadataPath)) {
     if (-not (Test-Path -LiteralPath $path)) {
@@ -103,6 +127,14 @@ if ($RoadRiverbankWaterMode -ne "v0217-missing-fallback") {
   foreach ($path in @($RoadSourcePath, $RoadMetadataPath, $RiverbankSourcePath, $RiverbankMetadataPath, $WaterSourcePath, $WaterMetadataPath, $WetEdgeSourcePath, $WetEdgeMetadataPath)) {
     if (-not (Test-Path -LiteralPath $path)) {
       Write-Warning "Road/riverbank/water material path is unavailable; Godot runtime should fail closed to procedural fallback: $path"
+    }
+  }
+}
+
+if ($StructureFinishMode -ne "v0202-missing-fallback") {
+  foreach ($path in @($StructureFinishSourcePath, $StructureFinishMetadataPath)) {
+    if (-not (Test-Path -LiteralPath $path)) {
+      Write-Warning "Structure-finish material path is unavailable; Godot runtime should fail closed to procedural fallback: $path"
     }
   }
 }
@@ -137,22 +169,36 @@ $RebootArgs = @(
   "--road-riverbank-water-wet-edge-metadata=$($WetEdgeMetadataPath.Replace('\', '/'))",
   "--road-riverbank-water-wet-edge-expected-sha256=$WetEdgeExpectedSha256",
   "--road-riverbank-water-wet-edge-uv-scale=0.60",
-  "--salto-bridge-shell-reboot"
+  "--salto-bridge-shell-reboot",
+  "--salto-shell-v2-structure-material",
+  "--structure-finish-material-opt-in",
+  "--structure-finish-material-source=$($StructureFinishSourcePath.Replace('\', '/'))",
+  "--structure-finish-material-metadata=$($StructureFinishMetadataPath.Replace('\', '/'))",
+  "--structure-finish-material-expected-sha256=$StructureFinishExpectedSha256",
+  "--structure-finish-material-fallback-mode=$StructureFinishFallbackMode",
+  "--structure-finish-material-uv-scale=0.70",
+  "--salto-structure-shell-production"
 )
 if ($BridgeShellMode -eq "v0218-legacy-comparator") {
   $RebootArgs += "--salto-bridge-shell-legacy-comparator"
+}
+if ($StructureShellMode -eq "v0219-legacy-comparator") {
+  $RebootArgs += "--salto-structure-shell-legacy-comparator"
 }
 if ($ForwardArgs) {
   $RebootArgs += $ForwardArgs
 }
 
-Write-Output "Launching v0.218 Salto presentation reboot experiment."
-Write-Output "Scope: isolated opt-in shell-v2 review path; compact contextual HUD plus selected terrain, road, riverbank, water material hierarchy and bridge shell; no new production slot, no browser wiring."
+Write-Output "Launching v0.219 Salto presentation reboot experiment."
+Write-Output "Scope: isolated opt-in shell-v2 review path; compact contextual HUD plus selected terrain, road, riverbank, water, bridge and structure shell hierarchy; no new production slot, no browser wiring."
 Write-Output "Ground material mode: $GroundMode"
 Write-Output "Selected ground material SHA-256: $GroundExpectedSha256"
 Write-Output "Road/riverbank/water material mode: $RoadRiverbankWaterMode"
 Write-Output "Selected v0.217 material SHA-256 values: road=$RoadExpectedSha256 riverbank=$RiverbankExpectedSha256 water=$WaterExpectedSha256 wet-edge=$WetEdgeExpectedSha256"
 Write-Output "Bridge shell mode: $BridgeShellMode"
+Write-Output "Structure shell mode: $StructureShellMode"
+Write-Output "Structure-finish material mode: $StructureFinishMode"
+Write-Output "Selected v0.202 structure-finish SHA-256: $StructureFinishExpectedSha256"
 Write-Output "Default launcher, prior UI launchers, procedural fallback and v0.175 ground material comparator remain preserved."
 
 & (Join-Path $PSScriptRoot "launchGodotSaltoShellV2GroundingPropsWindows.ps1") -Wait:$Wait @RebootArgs
