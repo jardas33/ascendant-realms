@@ -3,7 +3,7 @@ param()
 $ErrorActionPreference = "Stop"
 $RepoRoot = Resolve-Path (Join-Path $PSScriptRoot "..\..")
 $ExePath = Join-Path $RepoRoot "desktop-spikes\godot-salto\builds\AscendantRealmsGodotSalto.exe"
-$ArtifactRoot = Join-Path $RepoRoot "artifacts\desktop-spikes\godot-salto\v0219"
+$ArtifactRoot = Join-Path $RepoRoot "artifacts\desktop-spikes\godot-salto\v0220"
 $ValidationRoot = Join-Path $ArtifactRoot "validation"
 $ArtifactRootArg = $ArtifactRoot.Replace("\", "/")
 
@@ -78,7 +78,7 @@ function Invoke-RebootValidationScenario {
   )
   $ScenarioRoot = Join-Path $ValidationRoot $ScenarioId
   $ScenarioRootArg = $ScenarioRoot.Replace("\", "/")
-  $ScenarioArgs = @("--player-slice-validate", "--artifact-root=$ScenarioRootArg", "--salto-environment-dressing-disabled") + $ExtraArgs
+  $ScenarioArgs = @("--player-slice-validate", "--artifact-root=$ScenarioRootArg") + $ExtraArgs
   try {
     & (Join-Path $PSScriptRoot "launchGodotSaltoPresentationRebootWindows.ps1") -Wait @ScenarioArgs
   } catch {
@@ -94,45 +94,45 @@ function Invoke-RebootValidationScenario {
 & (Join-Path $PSScriptRoot "exportGodotWindows.ps1")
 & (Join-Path $PSScriptRoot "packageGodotWindows.ps1")
 
-if (-not (Test-Path -LiteralPath (Join-Path $ArtifactRoot "capture\selected-structure-shell\screenshot-runtime-manifest.json"))) {
-  & (Join-Path $PSScriptRoot "captureGodotSaltoStructureShellProductionWindows.ps1")
+if (-not (Test-Path -LiteralPath (Join-Path $ArtifactRoot "capture\selected-environment-dressing\screenshot-runtime-manifest.json"))) {
+  & (Join-Path $PSScriptRoot "captureGodotSaltoEnvironmentDressingWindows.ps1")
 }
 if (-not (Test-Path -LiteralPath $ExePath)) {
-  throw "Missing exported Godot executable for v0.219 validation: $ExePath"
+  throw "Missing exported Godot executable for v0.220 validation: $ExePath"
 }
 
 Reset-SafeDirectory -Path $ValidationRoot -Parent $ArtifactRoot
 
 Invoke-DefaultValidationScenario -ScenarioRoot (Join-Path $ValidationRoot "default-procedural")
-Invoke-RebootValidationScenario -ScenarioId "selected-structure-shell" -ExtraArgs @()
-Invoke-RebootValidationScenario -ScenarioId "legacy-structure-comparator" -ExtraArgs @(
-  "--salto-presentation-reboot-legacy-structures"
+Invoke-RebootValidationScenario -ScenarioId "v0219-before-structure-shell" -ExtraArgs @(
+  "--salto-environment-dressing-disabled"
 )
-Invoke-RebootValidationScenario -ScenarioId "missing-structure-material-fallback" -ExtraArgs @(
-  "--salto-structure-finish-material-missing-fallback"
+Invoke-RebootValidationScenario -ScenarioId "selected-environment-dressing" -ExtraArgs @()
+Invoke-RebootValidationScenario -ScenarioId "missing-prop-atlas-fallback" -ExtraArgs @(
+  "--salto-environment-dressing-missing-fallback"
 )
-Invoke-RebootValidationScenario -ScenarioId "hash-mismatch-structure-material-fallback" -ExtraArgs @(
-  "--salto-structure-finish-material-hash-mismatch"
+Invoke-RebootValidationScenario -ScenarioId "hash-mismatch-prop-atlas-fallback" -ExtraArgs @(
+  "--salto-environment-dressing-hash-mismatch"
 )
 
-node "tools/godot/saltoStructureShellProductionTool.mjs" validation "--artifact-root=$ArtifactRootArg"
+node "tools/godot/saltoEnvironmentDressingTool.mjs" validation "--artifact-root=$ArtifactRootArg"
 if ($LASTEXITCODE -ne 0) {
-  throw "v0.219 structure shell production validation report failed with exit code $LASTEXITCODE."
+  throw "v0.220 environment dressing validation report failed with exit code $LASTEXITCODE."
 }
 
-node "tools/godot/saltoStructureShellProductionTool.mjs" boundary "--artifact-root=$ArtifactRootArg"
+node "tools/godot/saltoEnvironmentDressingTool.mjs" boundary "--artifact-root=$ArtifactRootArg"
 if ($LASTEXITCODE -ne 0) {
-  throw "v0.219 structure shell production boundary scan failed with exit code $LASTEXITCODE."
+  throw "v0.220 environment dressing boundary scan failed with exit code $LASTEXITCODE."
 }
 
 node "scripts/cleanupSaltoExperimentalArtifacts.mjs" "--output-root=$((Join-Path $ArtifactRoot 'cleanup-dry-run').Replace('\', '/'))"
 if ($LASTEXITCODE -ne 0) {
-  throw "v0.219 cleanup dry-run failed with exit code $LASTEXITCODE."
+  throw "v0.220 cleanup dry-run failed with exit code $LASTEXITCODE."
 }
 
 node "scripts/validateSaltoExperimentalArtifactRetention.mjs" "--output-root=$((Join-Path $ArtifactRoot 'artifact-retention').Replace('\', '/'))"
 if ($LASTEXITCODE -ne 0) {
-  throw "v0.219 artifact retention validation failed with exit code $LASTEXITCODE."
+  throw "v0.220 artifact retention validation failed with exit code $LASTEXITCODE."
 }
 
-Write-Output "PASS_V0219_STRUCTURE_SHELL_VALIDATION_READY"
+Write-Output "PASS_V0220_ENVIRONMENT_DRESSING_VALIDATION_READY"

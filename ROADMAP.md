@@ -11,11 +11,17 @@ Every phase should protect these long-term pillars:
 
 ## Current Recommended Next Phase
 
-The current checkpoint is **v0.219 Structure Shell Production Pass** on 2026-06-11. It keeps the v0.215 presentation-reboot path isolated while replacing the most blocky Command Hall, Barracks, mine/site and Aether support reads with reversible procedural Barrosan foothold structure shells, preserving the legacy structure comparator, generating zero images, adding zero art slots and producing a structure-shell manual review pack.
+The current checkpoint is **v0.220 Environment Dressing Prop Atlas And Scatter** on 2026-06-11. It keeps the v0.215 presentation-reboot path isolated while adding exactly one private prop-atlas source and sparse deterministic visual-only dressing around road shoulders, riverbanks, structure edges, bridge approaches and field edges. It preserves the default procedural launcher, all prior launchers and comparators, and gameplay/pathing/collision/objective/AI/economy/save/stable-ID/balance boundaries.
 
-The queued next milestone is **v0.220 Environment dressing prop atlas and scatter**. Continue only from a clean, synced, pushed and CI-green v0.219 state, and only inside that prompt's stated boundaries.
+The queued next milestone is **v0.221 Lighting, camera, selection and composition pass**. Continue only from a clean, synced, pushed and CI-green v0.220 state, and only inside that prompt's stated boundaries.
 
-New v0.219 docs:
+New v0.220 docs:
+
+- `docs/V0220_ENVIRONMENT_PROP_ATLAS_INTAKE_REPORT.md`
+- `docs/V0220_ENVIRONMENT_DRESSING_REPORT.md`
+- `docs/V0220_IMPLEMENTATION_REPORT.md`
+
+Previous v0.219 docs:
 
 - `docs/V0219_STRUCTURE_SHELL_PRODUCTION_REPORT.md`
 - `docs/V0219_IMPLEMENTATION_REPORT.md`

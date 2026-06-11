@@ -112,6 +112,11 @@ const SCRIPT_ARG_PREFIXES := [
 	"--structure-finish-material-expected-sha256=",
 	"--structure-finish-material-fallback-mode=",
 	"--structure-finish-material-uv-scale=",
+	"--environment-prop-atlas-opt-in",
+	"--environment-prop-atlas-source=",
+	"--environment-prop-atlas-metadata=",
+	"--environment-prop-atlas-expected-sha256=",
+	"--environment-prop-atlas-fallback-mode=",
 	"--salto-shell-v2-grounding-props",
 	"--salto-ui-architecture-wireframe",
 	"--salto-ui-shell-comparator",
@@ -129,6 +134,8 @@ const SCRIPT_ARG_PREFIXES := [
 	"--salto-bridge-shell-legacy-comparator",
 	"--salto-structure-shell-production",
 	"--salto-structure-shell-legacy-comparator",
+	"--salto-environment-dressing",
+	"--salto-environment-dressing-disabled",
 	"--real-input-smoke",
 	"--real-input-validate",
 	"--site-semantics-smoke",
@@ -1050,6 +1057,8 @@ func _configure_worker_art_for_active_scene() -> void:
 		active_scene.configure_road_riverbank_water_material_experiment(_road_riverbank_water_material_options_from_args())
 	if active_scene.has_method("configure_structure_finish_material_experiment"):
 		active_scene.configure_structure_finish_material_experiment(_structure_finish_material_options_from_args())
+	if active_scene.has_method("configure_environment_prop_atlas_experiment"):
+		active_scene.configure_environment_prop_atlas_experiment(_environment_prop_atlas_options_from_args())
 	if active_scene.has_method("configure_environment_geometry_convergence"):
 		active_scene.configure_environment_geometry_convergence(_script_args().has("--salto-environment-geometry-convergence"))
 	if active_scene.has_method("configure_environment_shell_live_qa"):
@@ -1076,6 +1085,8 @@ func _configure_worker_art_for_active_scene() -> void:
 		active_scene.configure_salto_bridge_shell_reboot(_script_args().has("--salto-bridge-shell-reboot"), _script_args().has("--salto-bridge-shell-legacy-comparator"))
 	if active_scene.has_method("configure_salto_structure_shell_production"):
 		active_scene.configure_salto_structure_shell_production(_script_args().has("--salto-structure-shell-production"), _script_args().has("--salto-structure-shell-legacy-comparator"))
+	if active_scene.has_method("configure_salto_environment_dressing"):
+		active_scene.configure_salto_environment_dressing(_script_args().has("--salto-environment-dressing"))
 	if active_scene.has_method("configure_salto_presentation_reboot"):
 		active_scene.configure_salto_presentation_reboot(_salto_presentation_reboot_enabled())
 
@@ -1084,7 +1095,9 @@ func _apply_review_framing_for_active_scene() -> void:
 		return
 	if active_mode != MODE_25D or active_scene == null or not is_instance_valid(active_scene):
 		return
-	if _script_args().has("--salto-shell-v2-grounding-props") and active_scene.has_method("apply_environment_shell_v2_grounding_props_framing"):
+	if _script_args().has("--salto-environment-dressing") and active_scene.has_method("apply_environment_shell_v2_grounding_props_framing"):
+		active_scene.apply_environment_shell_v2_grounding_props_framing()
+	elif _script_args().has("--salto-shell-v2-grounding-props") and active_scene.has_method("apply_environment_shell_v2_grounding_props_framing"):
 		active_scene.apply_environment_shell_v2_grounding_props_framing()
 	elif _script_args().has("--salto-shell-v2-structure-material") and active_scene.has_method("apply_environment_shell_v2_structure_material_framing"):
 		active_scene.apply_environment_shell_v2_structure_material_framing()
@@ -1380,6 +1393,25 @@ func _structure_finish_material_options_from_args() -> Dictionary:
 		"uvScale": uv_scale,
 		"fallbackMode": fallback_mode,
 		"requestedBy": "GODOT_REVIEW_SALTO_SHELL_V2_STRUCTURE_MATERIAL_WINDOWS.bat or explicit --structure-finish-material-opt-in"
+	}
+
+func _environment_prop_atlas_options_from_args() -> Dictionary:
+	var fallback_mode := _arg_value("--environment-prop-atlas-fallback-mode=", "none")
+	var source_path := _arg_value("--environment-prop-atlas-source=", "")
+	var metadata_path := _arg_value("--environment-prop-atlas-metadata=", "")
+	if source_path == "":
+		source_path = ProjectSettings.globalize_path("res://../../artifacts/desktop-spikes/godot-salto/v0220/environment-prop-atlas/barrosan_environment_prop_atlas_v0220_1024_chroma.png")
+	if metadata_path == "":
+		metadata_path = ProjectSettings.globalize_path("res://../../artifacts/desktop-spikes/godot-salto/v0220/environment-prop-atlas/barrosan_environment_prop_atlas_v0220.metadata.json")
+	if fallback_mode == "missing" and not _has_arg_prefix("--environment-prop-atlas-source="):
+		source_path = ProjectSettings.globalize_path("res://../../artifacts/desktop-spikes/godot-salto/v0220/missing-environment-prop-atlas/barrosan_environment_prop_atlas_v0220_1024_chroma.png")
+	return {
+		"enabled": _script_args().has("--environment-prop-atlas-opt-in"),
+		"sourcePath": source_path.replace("\\", "/"),
+		"metadataPath": metadata_path.replace("\\", "/"),
+		"expectedSha256": _arg_value("--environment-prop-atlas-expected-sha256=", "fa59ddb29281b12b818c065302af632d7710fd05f419d14e838cc002fc9588df").to_lower(),
+		"fallbackMode": fallback_mode,
+		"requestedBy": "GODOT_REVIEW_SALTO_PRESENTATION_REBOOT_WINDOWS.bat or explicit --environment-prop-atlas-opt-in"
 	}
 
 func _arg_value(prefix: String, default_value: String = "") -> String:
@@ -4418,7 +4450,7 @@ func run_player_slice_capture() -> void:
 		"saltoAsterPortraitFallbackActive": bool(_salto_aster_portrait_status().get("fallbackActive", true)),
 		"saltoAsterPortraitProductionSlotAdded": false,
 		"saltoAsterPortraitGeneratedImages": false,
-		"privateHarnessPreservedSeparately": captures.any(func(capture: Dictionary) -> bool: return bool(capture.get("privateHarnessCapture", false))) or ["v0.126", "v0.127", "v0.128", "v0.129", "v0.130", "v0.160", "v0.162", "v0.164", "v0.168", "v0.169", "v0.170", "v0.173", "v0.174", "v0.177", "v0.178", "v0.179", "v0.181", "v0.184", "v0.185", "v0.186", "v0.187", "v0.193", "v0.194", "v0.195", "v0.196", "v0.197", "v0.198", "v0.199", "v0.200", "v0.203", "v0.204", "v0.205", "v0.206", "v0.209", "v0.210", "v0.211", "v0.212", "v0.217", "v0.218"].has(_player_capture_checkpoint()),
+		"privateHarnessPreservedSeparately": captures.any(func(capture: Dictionary) -> bool: return bool(capture.get("privateHarnessCapture", false))) or ["v0.126", "v0.127", "v0.128", "v0.129", "v0.130", "v0.160", "v0.162", "v0.164", "v0.168", "v0.169", "v0.170", "v0.173", "v0.174", "v0.177", "v0.178", "v0.179", "v0.181", "v0.184", "v0.185", "v0.186", "v0.187", "v0.193", "v0.194", "v0.195", "v0.196", "v0.197", "v0.198", "v0.199", "v0.200", "v0.203", "v0.204", "v0.205", "v0.206", "v0.209", "v0.210", "v0.211", "v0.212", "v0.217", "v0.218", "v0.219", "v0.220"].has(_player_capture_checkpoint()),
 		"proceduralPrimitiveOnly": not worker_art_loaded and not barracks_material_loaded and not militia_art_loaded and not aster_art_loaded and not ashen_art_loaded and not ground_material_loaded and not road_material_loaded and not bridge_riverbank_material_loaded and not road_riverbank_water_material_loaded,
 		"generatedOrImportedArtIncluded": worker_art_loaded or barracks_material_loaded or militia_art_loaded or aster_art_loaded or ashen_art_loaded or ground_material_loaded or road_material_loaded or bridge_riverbank_material_loaded or road_riverbank_water_material_loaded,
 		"runtimeArtIntegrated": worker_art_loaded or barracks_material_loaded or militia_art_loaded or aster_art_loaded or ashen_art_loaded or ground_material_loaded or road_material_loaded or bridge_riverbank_material_loaded or road_riverbank_water_material_loaded,
@@ -7386,6 +7418,8 @@ func _apply_player_slice_action(action: String) -> Dictionary:
 
 func _player_capture_checkpoint() -> String:
 	var normalized_root := _artifact_root_from_args().replace("\\", "/")
+	if normalized_root.contains("/v0220"):
+		return "v0.220"
 	if normalized_root.contains("/v0219"):
 		return "v0.219"
 	if normalized_root.contains("/v0218"):
@@ -7477,9 +7511,20 @@ func _player_capture_checkpoint() -> String:
 	return "v0.124"
 
 func _is_bounded_microloop_checkpoint() -> bool:
-	return ["v0.129", "v0.130", "v0.160", "v0.162", "v0.164", "v0.166", "v0.168", "v0.169", "v0.170", "v0.173", "v0.174", "v0.177", "v0.178", "v0.179", "v0.181", "v0.184", "v0.185", "v0.186", "v0.187", "v0.193", "v0.194", "v0.195", "v0.196", "v0.197", "v0.198", "v0.199", "v0.200", "v0.203", "v0.204", "v0.205", "v0.206", "v0.209", "v0.210", "v0.211", "v0.212", "v0.213", "v0.215", "v0.216", "v0.217", "v0.218", "v0.219"].has(_player_capture_checkpoint())
+	return ["v0.129", "v0.130", "v0.160", "v0.162", "v0.164", "v0.166", "v0.168", "v0.169", "v0.170", "v0.173", "v0.174", "v0.177", "v0.178", "v0.179", "v0.181", "v0.184", "v0.185", "v0.186", "v0.187", "v0.193", "v0.194", "v0.195", "v0.196", "v0.197", "v0.198", "v0.199", "v0.200", "v0.203", "v0.204", "v0.205", "v0.206", "v0.209", "v0.210", "v0.211", "v0.212", "v0.213", "v0.215", "v0.216", "v0.217", "v0.218", "v0.219", "v0.220"].has(_player_capture_checkpoint())
 
 func _player_capture_steps() -> Array[Dictionary]:
+	if _player_capture_checkpoint() == "v0.220":
+		return [
+			{"id": "source_atlas_runtime", "label": "v0.220 source atlas runtime status", "action": "battle_default"},
+			{"id": "before_after_overview", "label": "v0.220 sparse dressing before/after overview", "action": "battle_default"},
+			{"id": "road_shoulders", "label": "v0.220 road shoulder prop dressing", "action": "road_intersections"},
+			{"id": "riverbanks", "label": "v0.220 riverbank stones and scrub", "action": "ford"},
+			{"id": "structure_adjacent_props", "label": "v0.220 structure-adjacent practical props", "action": "command_hall"},
+			{"id": "bridge_approach", "label": "v0.220 bridge approach dressing", "action": "v0195_bridge_close"},
+			{"id": "tactical_readability", "label": "v0.220 tactical readability", "action": "squad_selected"},
+			{"id": "fallback", "label": "v0.220 atlas fallback", "action": "battle_default"}
+		]
 	if _player_capture_checkpoint() == "v0.219":
 		return [
 			{"id": "structure_overview", "label": "v0.219 structure shell tactical overview", "action": "battle_default"},

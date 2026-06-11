@@ -2,7 +2,7 @@ param()
 
 $ErrorActionPreference = "Stop"
 $RepoRoot = Resolve-Path (Join-Path $PSScriptRoot "..\..")
-$ArtifactRoot = Join-Path $RepoRoot "artifacts\desktop-spikes\godot-salto\v0219"
+$ArtifactRoot = Join-Path $RepoRoot "artifacts\desktop-spikes\godot-salto\v0220"
 $CaptureRoot = Join-Path $ArtifactRoot "capture"
 $ArtifactRootArg = $ArtifactRoot.Replace("\", "/")
 
@@ -53,7 +53,7 @@ function Invoke-CaptureScenario {
   )
   $ScenarioRoot = Join-Path $CaptureRoot $ScenarioId
   $ScenarioRootArg = $ScenarioRoot.Replace("\", "/")
-  $ScenarioArgs = @("--player-slice-capture", "--artifact-root=$ScenarioRootArg", "--salto-environment-dressing-disabled") + $ExtraArgs
+  $ScenarioArgs = @("--player-slice-capture", "--artifact-root=$ScenarioRootArg") + $ExtraArgs
   try {
     & (Join-Path $PSScriptRoot "launchGodotSaltoPresentationRebootWindows.ps1") -Wait @ScenarioArgs
   } catch {
@@ -71,9 +71,15 @@ function Invoke-CaptureScenario {
 
 Reset-SafeDirectory -Path $CaptureRoot -Parent $ArtifactRoot
 
-Invoke-CaptureScenario -ScenarioId "selected-structure-shell" -ExtraArgs @()
-Invoke-CaptureScenario -ScenarioId "legacy-structure-comparator" -ExtraArgs @(
-  "--salto-presentation-reboot-legacy-structures"
+Invoke-CaptureScenario -ScenarioId "v0219-before-structure-shell" -ExtraArgs @(
+  "--salto-environment-dressing-disabled"
+)
+Invoke-CaptureScenario -ScenarioId "selected-environment-dressing" -ExtraArgs @()
+Invoke-CaptureScenario -ScenarioId "missing-prop-atlas-fallback" -ExtraArgs @(
+  "--salto-environment-dressing-missing-fallback"
+)
+Invoke-CaptureScenario -ScenarioId "hash-mismatch-prop-atlas-fallback" -ExtraArgs @(
+  "--salto-environment-dressing-hash-mismatch"
 )
 
 $BundledPython = Join-Path $env:USERPROFILE ".cache\codex-runtimes\codex-primary-runtime\dependencies\python\python.exe"
@@ -82,12 +88,12 @@ if (Test-Path -LiteralPath $BundledPython) {
 }
 
 try {
-  node "tools/godot/saltoStructureShellProductionTool.mjs" capture "--artifact-root=$ArtifactRootArg"
+  node "tools/godot/saltoEnvironmentDressingTool.mjs" capture "--artifact-root=$ArtifactRootArg"
   if ($LASTEXITCODE -ne 0) {
-    throw "v0.219 structure shell production capture report failed with exit code $LASTEXITCODE."
+    throw "v0.220 environment dressing capture report failed with exit code $LASTEXITCODE."
   }
 } finally {
   Remove-Item Env:\SALTO_CONTACT_SHEET_PYTHON -ErrorAction SilentlyContinue
 }
 
-Write-Output "PASS_V0219_STRUCTURE_SHELL_CAPTURE_READY"
+Write-Output "PASS_V0220_ENVIRONMENT_DRESSING_CAPTURE_READY"

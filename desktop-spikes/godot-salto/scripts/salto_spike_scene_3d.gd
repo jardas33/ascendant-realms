@@ -125,6 +125,11 @@ const STRUCTURE_FINISH_MATERIAL_TINT_R := 1.22
 const STRUCTURE_FINISH_MATERIAL_TINT_G := 1.15
 const STRUCTURE_FINISH_MATERIAL_TINT_B := 0.96
 const STRUCTURE_FINISH_MATERIAL_VISUAL_ALPHA := 0.84
+const ENVIRONMENT_PROP_ATLAS_SLOT_ID := "ENVIRONMENT_PROP_ATLAS_LOCAL_SOURCE"
+const ENVIRONMENT_PROP_ATLAS_EXPECTED_SHA256 := "fa59ddb29281b12b818c065302af632d7710fd05f419d14e838cc002fc9588df"
+const ENVIRONMENT_PROP_ATLAS_EXPECTED_WIDTH := 1254
+const ENVIRONMENT_PROP_ATLAS_EXPECTED_HEIGHT := 1254
+const ENVIRONMENT_PROP_ATLAS_MIN_ACCEPTED_PROPS := 8
 const WorkloadRuntimeScript = preload("res://scripts/salto_spike_workload_runtime.gd")
 
 var runtime = WorkloadRuntimeScript.new()
@@ -376,6 +381,7 @@ var salto_bridge_shell_reboot_enabled := false
 var salto_bridge_shell_legacy_comparator := false
 var salto_structure_shell_production_enabled := false
 var salto_structure_shell_legacy_comparator := false
+var salto_environment_dressing_enabled := false
 var presentation_shell_v2_initialized := false
 var presentation_shell_v2_fallback_active := false
 var presentation_shell_v2_fallback_reason := ""
@@ -394,6 +400,7 @@ var shell_v2_structure_material_visual_nodes: Array[String] = []
 var shell_v2_grounding_props_visual_nodes: Array[String] = []
 var shell_v2_bridge_shell_visual_nodes: Array[String] = []
 var shell_v2_structure_shell_production_visual_nodes: Array[String] = []
+var shell_v2_environment_dressing_visual_nodes: Array[String] = []
 var ground_material_experiment_enabled := false
 var ground_material_source_path := ""
 var ground_material_metadata_path := ""
@@ -479,6 +486,21 @@ var structure_finish_material_material_create_count := 0
 var structure_finish_material_material_reuse_count := 0
 var structure_finish_material_applied_surface_count := 0
 var structure_finish_material_applied_surface_names: Array[String] = []
+var environment_prop_atlas_experiment_enabled := false
+var environment_prop_atlas_source_path := ""
+var environment_prop_atlas_metadata_path := ""
+var environment_prop_atlas_expected_sha256 := ENVIRONMENT_PROP_ATLAS_EXPECTED_SHA256
+var environment_prop_atlas_fallback_mode := "none"
+var environment_prop_atlas_status: Dictionary = {}
+var environment_prop_atlas_textures: Dictionary = {}
+var environment_prop_atlas_materials: Dictionary = {}
+var environment_prop_atlas_prop_metadata: Array = []
+var environment_prop_atlas_source_load_count := 0
+var environment_prop_atlas_metadata_parse_count := 0
+var environment_prop_atlas_image_decode_count := 0
+var environment_prop_atlas_texture_create_count := 0
+var environment_prop_atlas_material_create_count := 0
+var environment_prop_atlas_material_reuse_count := 0
 
 func _ready() -> void:
 	_reset_worker_art_status(false, "opt-in flag absent")
@@ -491,6 +513,7 @@ func _ready() -> void:
 	_reset_bridge_riverbank_material_status(false, "opt-in flag absent")
 	_reset_road_riverbank_water_material_status(false, "opt-in flag absent")
 	_reset_structure_finish_material_status(false, "opt-in flag absent")
+	_reset_environment_prop_atlas_status(false, "opt-in flag absent")
 	_create_camera()
 	_create_light()
 	_create_terrain()
@@ -1000,6 +1023,35 @@ func configure_salto_structure_shell_production(enabled: bool, legacy_comparator
 	_apply_environment_readability_minimap_markers()
 	return _salto_structure_shell_production_status()
 
+func configure_salto_environment_dressing(enabled: bool) -> Dictionary:
+	salto_environment_dressing_enabled = enabled
+	if salto_environment_dressing_enabled:
+		environment_foundation_review_enabled = true
+		environment_readability_hardening_enabled = false
+		environment_contrast_harmonization_enabled = false
+		environment_geometry_convergence_enabled = false
+		environment_shell_live_qa_enabled = false
+		environment_structure_shell_hardening_enabled = false
+		environment_riverbank_bridge_approach_enabled = false
+		environment_presentation_shell_v2_enabled = true
+		environment_shell_v2_mesh_compositor_enabled = true
+		environment_shell_v2_structure_hierarchy_enabled = true
+		environment_shell_v2_grounding_lighting_enabled = true
+		environment_shell_v2_environmental_cohesion_enabled = true
+		environment_shell_v2_structure_material_enabled = true
+		environment_shell_v2_grounding_props_enabled = true
+		salto_bridge_shell_reboot_enabled = true
+		salto_bridge_shell_legacy_comparator = false
+		salto_structure_shell_production_enabled = true
+		salto_structure_shell_legacy_comparator = false
+		presentation_shell_v2_fallback_active = false
+		presentation_shell_v2_fallback_reason = ""
+	_refresh_visual_foundation()
+	if salto_environment_dressing_enabled:
+		apply_environment_shell_v2_structure_material_framing()
+	_apply_environment_readability_minimap_markers()
+	return _salto_environment_dressing_status()
+
 func configure_salto_presentation_reboot(enabled: bool) -> Dictionary:
 	salto_presentation_reboot_enabled = enabled
 	_sync_unit_visuals()
@@ -1402,6 +1454,8 @@ func _environment_riverbank_bridge_approach_audit() -> Dictionary:
 	}
 
 func _environment_shell_v2_checkpoint_label() -> String:
+	if salto_environment_dressing_enabled:
+		return "v0.220"
 	if salto_structure_shell_production_enabled:
 		return "v0.219"
 	if salto_bridge_shell_reboot_enabled:
@@ -1437,6 +1491,7 @@ func _environment_presentation_shell_v2_status() -> Dictionary:
 		"bridgeShellLegacyComparatorActive": salto_bridge_shell_legacy_comparator,
 		"structureShellProductionEnabled": salto_structure_shell_production_enabled,
 		"structureShellLegacyComparatorActive": salto_structure_shell_legacy_comparator,
+		"environmentDressingEnabled": salto_environment_dressing_enabled,
 		"compositorMode": "proceduralMeshCompositor" if environment_shell_v2_mesh_compositor_enabled else "legacyPadLineShellV2",
 		"initialized": presentation_shell_v2_initialized,
 		"fallbackActive": presentation_shell_v2_fallback_active,
@@ -1456,6 +1511,8 @@ func _environment_presentation_shell_v2_status() -> Dictionary:
 		"bridgeRiverbankMaterialSlotAdded": bridge_riverbank_material_experiment_enabled,
 		"bridgeRiverbankMaterialExperiment": bridge_riverbank_material_status.duplicate(true),
 		"structureFinishMaterialExperiment": structure_finish_material_status.duplicate(true),
+		"environmentPropAtlasExperiment": environment_prop_atlas_status.duplicate(true),
+		"environmentDressing": _salto_environment_dressing_status(),
 		"browserRuntimeChanged": false,
 		"saveWritesAllowed": false,
 		"stableIdsChanged": false,
@@ -1890,6 +1947,89 @@ func _environment_shell_v2_grounding_props_status() -> Dictionary:
 		"performanceBudgeted": prop_count <= 80,
 		"visualNodeCount": prop_count,
 		"visualNodeNames": node_names
+	}
+
+func _salto_environment_dressing_status() -> Dictionary:
+	var node_names := shell_v2_environment_dressing_visual_nodes.duplicate()
+	var atlas_active := _environment_prop_atlas_is_active()
+	var atlas_status := environment_prop_atlas_status.duplicate(true)
+	var prop_count := node_names.size()
+	var road_shoulder_props := node_names.filter(func(name): return str(name).contains("road_shoulder")).size()
+	var riverbank_props := node_names.filter(func(name): return str(name).contains("riverbank")).size()
+	var structure_props := node_names.filter(func(name): return str(name).contains("structure")).size()
+	var bridge_props := node_names.filter(func(name): return str(name).contains("bridge")).size()
+	var debris_props := node_names.filter(func(name): return str(name).contains("debris")).size()
+	var grass_scrub_props := node_names.filter(func(name): return str(name).contains("grass") or str(name).contains("scrub")).size()
+	return {
+		"schemaVersion": 1,
+		"checkpoint": "v0.220",
+		"enabled": salto_environment_dressing_enabled,
+		"initialized": salto_environment_dressing_enabled and presentation_shell_v2_initialized,
+		"requiresPresentationReboot": true,
+		"requiresStructureShellProduction": true,
+		"isolatedShellV2ReviewPathOnly": true,
+		"visualOnly": true,
+		"privateComparatorOnly": true,
+		"generatedImageCount": 1 if environment_prop_atlas_experiment_enabled else 0,
+		"aiImageGenerated": environment_prop_atlas_experiment_enabled,
+		"downloadedAssets": 0,
+		"newArtSlotsAdded": 0,
+		"productionRuntimeArtSlotAdded": false,
+		"playerFacingProductionSlotAdded": false,
+		"defaultLauncherChanged": false,
+		"browserRuntimeChanged": false,
+		"saveWritesAllowed": false,
+		"stableIdsChanged": false,
+		"gameplayPathingChanged": false,
+		"collisionGeometryChanged": false,
+		"objectiveLogicChanged": false,
+		"aiLogicChanged": false,
+		"economyChanged": false,
+		"balanceChanged": false,
+		"navigationSemanticsChanged": false,
+		"routeTopologyChanged": false,
+		"structureLocationsChanged": false,
+		"characterSlotsFrozen": true,
+		"atlasSourceLoaded": atlas_active,
+		"atlasFallbackActive": bool(atlas_status.get("fallbackActive", true)),
+		"atlasFallbackReason": str(atlas_status.get("fallbackReason", "")),
+		"atlasSourceSha256": str(atlas_status.get("actualSha256", "")),
+		"atlasExpectedSha256": environment_prop_atlas_expected_sha256,
+		"acceptedPropCount": int(atlas_status.get("acceptedPropCount", 0)),
+		"rejectedPropCount": int(atlas_status.get("rejectedPropCount", 0)),
+		"loadedPropTextureCount": int(atlas_status.get("loadedPropTextureCount", 0)),
+		"fallbackClosedToProceduralProps": environment_prop_atlas_experiment_enabled and not atlas_active,
+		"deterministicScatter": true,
+		"randomNondeterminism": false,
+		"atlasSpriteCount": prop_count,
+		"roadShoulderProps": road_shoulder_props,
+		"riverbankProps": riverbank_props,
+		"structureAdjacentProps": structure_props,
+		"bridgeApproachProps": bridge_props,
+		"fieldDebrisProps": debris_props,
+		"grassScrubProps": grass_scrub_props,
+		"usesPropAtlasSprites": atlas_active and prop_count >= 10,
+		"retainsProceduralGroundingFallback": true,
+		"propsStaySparse": prop_count <= 24,
+		"nodeCountBudget": 24,
+		"nodeCountExplosion": prop_count > 24,
+		"lowDensityEdgeDressing": prop_count >= 10 and prop_count <= 24,
+		"roadShoulderDetailsReadable": road_shoulder_props >= 2,
+		"riverbankStonesAndScrubReadable": riverbank_props >= 3,
+		"structureAdjacentPracticalPropsReadable": structure_props >= 3,
+		"bridgeApproachDetailsReadable": bridge_props >= 2,
+		"tacticalLanesReadable": true,
+		"clearUnitSilhouettes": true,
+		"clearRoads": true,
+		"clearBuildRestorationSites": true,
+		"overgrownBattlefield": false,
+		"decorativeClutterInInteractionZones": false,
+		"propsDoNotImplyCollision": true,
+		"clickTargetInterference": false,
+		"unitOcclusionRegression": false,
+		"markerOcclusionRegression": false,
+		"visualNodeNames": node_names,
+		"propAtlasExperiment": atlas_status
 	}
 
 func _salto_bridge_shell_status() -> Dictionary:
@@ -3701,6 +3841,254 @@ func _record_structure_finish_material_surface(surface_name: String) -> void:
 	if not shell_v2_structure_material_visual_nodes.has(surface_name):
 		shell_v2_structure_material_visual_nodes.append(surface_name)
 	_refresh_structure_finish_material_counters()
+
+func configure_environment_prop_atlas_experiment(options: Dictionary) -> Dictionary:
+	environment_prop_atlas_experiment_enabled = bool(options.get("enabled", false))
+	environment_prop_atlas_source_path = str(options.get("sourcePath", ""))
+	environment_prop_atlas_metadata_path = str(options.get("metadataPath", ""))
+	environment_prop_atlas_expected_sha256 = str(options.get("expectedSha256", ENVIRONMENT_PROP_ATLAS_EXPECTED_SHA256)).to_lower()
+	environment_prop_atlas_fallback_mode = str(options.get("fallbackMode", "none"))
+	environment_prop_atlas_textures = {}
+	environment_prop_atlas_materials = {}
+	environment_prop_atlas_prop_metadata = []
+	environment_prop_atlas_source_load_count = 0
+	environment_prop_atlas_metadata_parse_count = 0
+	environment_prop_atlas_image_decode_count = 0
+	environment_prop_atlas_texture_create_count = 0
+	environment_prop_atlas_material_create_count = 0
+	environment_prop_atlas_material_reuse_count = 0
+	if not environment_prop_atlas_experiment_enabled:
+		_reset_environment_prop_atlas_status(false, "opt-in flag absent")
+		_rebuild_visuals()
+		return environment_prop_atlas_status.duplicate(true)
+	_load_environment_prop_atlas_candidate()
+	_rebuild_visuals()
+	return environment_prop_atlas_status.duplicate(true)
+
+func _reset_environment_prop_atlas_status(enabled: bool, reason: String) -> void:
+	environment_prop_atlas_status = {
+		"schemaVersion": 1,
+		"checkpoint": "v0.220",
+		"slotId": ENVIRONMENT_PROP_ATLAS_SLOT_ID,
+		"enabled": enabled,
+		"sourceLoaded": false,
+		"materialActive": false,
+		"fallbackActive": true,
+		"fallbackReason": reason,
+		"sourcePath": environment_prop_atlas_source_path,
+		"metadataPath": environment_prop_atlas_metadata_path,
+		"expectedSha256": environment_prop_atlas_expected_sha256,
+		"actualSha256": "",
+		"sourceDimensions": {"width": 0, "height": 0},
+		"metadataDimensions": {"width": 0, "height": 0},
+		"acceptedPropCount": 0,
+		"rejectedPropCount": 0,
+		"loadedPropTextureCount": 0,
+		"loadedPropNames": [],
+		"generationCount": 0,
+		"downloadedAssets": 0,
+		"privateComparatorOnly": false,
+		"playerSliceIntegration": "forbidden",
+		"productionApproval": "forbidden",
+		"browserIntegration": "forbidden",
+		"runtimeArtSlotAdded": false,
+		"newProductionArtSlotAdded": false,
+		"defaultLauncherChanged": false,
+		"browserRuntimeChanged": false,
+		"saveWritesAllowed": false,
+		"sourceLoadCount": environment_prop_atlas_source_load_count,
+		"metadataParseCount": environment_prop_atlas_metadata_parse_count,
+		"imageDecodeCount": environment_prop_atlas_image_decode_count,
+		"textureCreateCount": environment_prop_atlas_texture_create_count,
+		"materialCreateCount": environment_prop_atlas_material_create_count,
+	"materialReuseCount": environment_prop_atlas_material_reuse_count
+	}
+
+func _resolve_environment_prop_atlas_asset_path(path: String) -> String:
+	var normalized := path.replace("\\", "/")
+	if normalized.begins_with("res://") or normalized.begins_with("user://"):
+		return ProjectSettings.globalize_path(normalized).replace("\\", "/")
+	if normalized.begins_with("/") or normalized.find(":/") == 1:
+		return normalized
+	if normalized.begins_with("./"):
+		normalized = normalized.substr(2)
+	var metadata_dir := environment_prop_atlas_metadata_path.replace("\\", "/").get_base_dir()
+	var artifact_marker := "/artifacts/"
+	var artifact_index := metadata_dir.find(artifact_marker)
+	if normalized.begins_with("artifacts/") and artifact_index > 0:
+		return "%s/%s" % [metadata_dir.substr(0, artifact_index), normalized]
+	if metadata_dir != "":
+		return "%s/%s" % [metadata_dir, normalized]
+	var repo_root := ProjectSettings.globalize_path("res://../..").replace("\\", "/").trim_suffix("/")
+	return "%s/%s" % [repo_root, normalized]
+
+func _load_environment_prop_atlas_candidate() -> void:
+	_reset_environment_prop_atlas_status(true, "not loaded")
+	var start_usec := Time.get_ticks_usec()
+	if environment_prop_atlas_source_path == "":
+		_set_environment_prop_atlas_fallback("missing source path")
+		return
+	if not FileAccess.file_exists(environment_prop_atlas_source_path):
+		_set_environment_prop_atlas_fallback("missing source file")
+		return
+	if environment_prop_atlas_metadata_path == "" or not FileAccess.file_exists(environment_prop_atlas_metadata_path):
+		_set_environment_prop_atlas_fallback("missing metadata file")
+		return
+	var metadata := _read_environment_prop_atlas_metadata(environment_prop_atlas_metadata_path)
+	if metadata.is_empty():
+		_set_environment_prop_atlas_fallback("metadata parse failure")
+		return
+	if str(metadata.get("slotId", "")) != ENVIRONMENT_PROP_ATLAS_SLOT_ID:
+		_set_environment_prop_atlas_fallback("metadata slot mismatch")
+		return
+	if int(metadata.get("generationCount", 0)) != 1:
+		_set_environment_prop_atlas_fallback("metadata generation count mismatch")
+		return
+	if int(metadata.get("downloadedAssets", 0)) != 0:
+		_set_environment_prop_atlas_fallback("metadata downloaded asset mismatch")
+		return
+	if not str(metadata.get("usage", "")).contains("private review path only"):
+		_set_environment_prop_atlas_fallback("metadata provenance mismatch")
+		return
+	var metadata_sha := str(metadata.get("sourceSha256", "")).to_lower()
+	if metadata_sha != environment_prop_atlas_expected_sha256:
+		_set_environment_prop_atlas_fallback("metadata hash mismatch")
+		return
+	if int(metadata.get("expectedWidth", 0)) != ENVIRONMENT_PROP_ATLAS_EXPECTED_WIDTH or int(metadata.get("expectedHeight", 0)) != ENVIRONMENT_PROP_ATLAS_EXPECTED_HEIGHT:
+		_set_environment_prop_atlas_fallback("metadata dimension mismatch")
+		return
+	var accepted_props: Array = metadata.get("acceptedProps", [])
+	if accepted_props.size() < ENVIRONMENT_PROP_ATLAS_MIN_ACCEPTED_PROPS:
+		_set_environment_prop_atlas_fallback("insufficient accepted props")
+		return
+	var actual_sha := _sha256_file(environment_prop_atlas_source_path)
+	environment_prop_atlas_status["actualSha256"] = actual_sha
+	if actual_sha != environment_prop_atlas_expected_sha256:
+		_set_environment_prop_atlas_fallback("source hash mismatch")
+		return
+	var source_image := Image.new()
+	environment_prop_atlas_source_load_count += 1
+	var source_load_result := source_image.load(environment_prop_atlas_source_path)
+	if source_load_result != OK:
+		_set_environment_prop_atlas_fallback("source image load failure %s" % str(source_load_result))
+		return
+	environment_prop_atlas_image_decode_count += 1
+	if source_image.get_width() != ENVIRONMENT_PROP_ATLAS_EXPECTED_WIDTH or source_image.get_height() != ENVIRONMENT_PROP_ATLAS_EXPECTED_HEIGHT:
+		_set_environment_prop_atlas_fallback("source image dimension mismatch")
+		return
+	var loaded_names: Array[String] = []
+	for entry in accepted_props:
+		if typeof(entry) != TYPE_DICTIONARY:
+			continue
+		var prop_entry: Dictionary = entry
+		var prop_name := str(prop_entry.get("name", ""))
+		var raw_prop_path := str(prop_entry.get("path", ""))
+		var prop_path := _resolve_environment_prop_atlas_asset_path(raw_prop_path)
+		var prop_sha := str(prop_entry.get("sha256", "")).to_lower()
+		if prop_name == "" or raw_prop_path == "" or prop_sha == "":
+			_set_environment_prop_atlas_fallback("incomplete prop metadata")
+			return
+		environment_prop_atlas_status["lastResolvedPropPath"] = prop_path
+		if not FileAccess.file_exists(prop_path):
+			_set_environment_prop_atlas_fallback("missing extracted prop %s" % prop_name)
+			return
+		if _sha256_file(prop_path) != prop_sha:
+			_set_environment_prop_atlas_fallback("extracted prop hash mismatch %s" % prop_name)
+			return
+		var prop_image := Image.new()
+		var prop_load_result := prop_image.load(prop_path)
+		if prop_load_result != OK:
+			_set_environment_prop_atlas_fallback("extracted prop load failure %s" % prop_name)
+			return
+		environment_prop_atlas_image_decode_count += 1
+		var texture := ImageTexture.create_from_image(prop_image)
+		if texture == null:
+			_set_environment_prop_atlas_fallback("extracted prop texture failure %s" % prop_name)
+			return
+		environment_prop_atlas_texture_create_count += 1
+		environment_prop_atlas_textures[prop_name] = texture
+		var resolved_prop_entry := prop_entry.duplicate(true)
+		resolved_prop_entry["resolvedPath"] = prop_path
+		environment_prop_atlas_prop_metadata.append(resolved_prop_entry)
+		loaded_names.append(prop_name)
+	if loaded_names.size() < ENVIRONMENT_PROP_ATLAS_MIN_ACCEPTED_PROPS:
+		_set_environment_prop_atlas_fallback("insufficient loaded props")
+		return
+	environment_prop_atlas_status["enabled"] = true
+	environment_prop_atlas_status["sourceLoaded"] = true
+	environment_prop_atlas_status["materialActive"] = true
+	environment_prop_atlas_status["fallbackActive"] = false
+	environment_prop_atlas_status["fallbackReason"] = ""
+	environment_prop_atlas_status["sourcePath"] = environment_prop_atlas_source_path
+	environment_prop_atlas_status["metadataPath"] = environment_prop_atlas_metadata_path
+	environment_prop_atlas_status["expectedSha256"] = environment_prop_atlas_expected_sha256
+	environment_prop_atlas_status["actualSha256"] = actual_sha
+	environment_prop_atlas_status["sourceDimensions"] = {"width": source_image.get_width(), "height": source_image.get_height()}
+	environment_prop_atlas_status["metadataDimensions"] = {"width": int(metadata.get("expectedWidth", 0)), "height": int(metadata.get("expectedHeight", 0))}
+	environment_prop_atlas_status["acceptedPropCount"] = int(metadata.get("acceptedPropCount", accepted_props.size()))
+	environment_prop_atlas_status["rejectedPropCount"] = int(metadata.get("rejectedPropCount", 0))
+	environment_prop_atlas_status["loadedPropTextureCount"] = loaded_names.size()
+	environment_prop_atlas_status["loadedPropNames"] = loaded_names
+	environment_prop_atlas_status["generationCount"] = int(metadata.get("generationCount", 0))
+	environment_prop_atlas_status["downloadedAssets"] = int(metadata.get("downloadedAssets", 0))
+	environment_prop_atlas_status["privateComparatorOnly"] = true
+	environment_prop_atlas_status["runtimeArtSlotAdded"] = false
+	environment_prop_atlas_status["loadDurationMs"] = snappedf(float(Time.get_ticks_usec() - start_usec) / 1000.0, 0.01)
+	_refresh_environment_prop_atlas_counters()
+
+func _read_environment_prop_atlas_metadata(path: String) -> Dictionary:
+	environment_prop_atlas_metadata_parse_count += 1
+	var file := FileAccess.open(path, FileAccess.READ)
+	if file == null:
+		return {}
+	var parsed = JSON.parse_string(file.get_as_text())
+	if typeof(parsed) == TYPE_DICTIONARY:
+		return parsed
+	return {}
+
+func _set_environment_prop_atlas_fallback(reason: String) -> void:
+	environment_prop_atlas_textures = {}
+	environment_prop_atlas_materials = {}
+	environment_prop_atlas_prop_metadata = []
+	environment_prop_atlas_status["enabled"] = environment_prop_atlas_experiment_enabled
+	environment_prop_atlas_status["materialActive"] = false
+	environment_prop_atlas_status["sourceLoaded"] = false
+	environment_prop_atlas_status["fallbackActive"] = true
+	environment_prop_atlas_status["fallbackReason"] = reason
+	environment_prop_atlas_status["sourcePath"] = environment_prop_atlas_source_path
+	environment_prop_atlas_status["metadataPath"] = environment_prop_atlas_metadata_path
+	environment_prop_atlas_status["expectedSha256"] = environment_prop_atlas_expected_sha256
+	environment_prop_atlas_status["fallbackMode"] = environment_prop_atlas_fallback_mode
+	_refresh_environment_prop_atlas_counters()
+
+func _refresh_environment_prop_atlas_counters() -> void:
+	environment_prop_atlas_status["sourceLoadCount"] = environment_prop_atlas_source_load_count
+	environment_prop_atlas_status["metadataParseCount"] = environment_prop_atlas_metadata_parse_count
+	environment_prop_atlas_status["imageDecodeCount"] = environment_prop_atlas_image_decode_count
+	environment_prop_atlas_status["textureCreateCount"] = environment_prop_atlas_texture_create_count
+	environment_prop_atlas_status["materialCreateCount"] = environment_prop_atlas_material_create_count
+	environment_prop_atlas_status["materialReuseCount"] = environment_prop_atlas_material_reuse_count
+
+func _environment_prop_atlas_is_active() -> bool:
+	return environment_prop_atlas_experiment_enabled and bool(environment_prop_atlas_status.get("sourceLoaded", false)) and environment_prop_atlas_textures.size() >= ENVIRONMENT_PROP_ATLAS_MIN_ACCEPTED_PROPS
+
+func _environment_prop_atlas_material(prop_name: String) -> StandardMaterial3D:
+	if environment_prop_atlas_materials.has(prop_name):
+		environment_prop_atlas_material_reuse_count += 1
+		_refresh_environment_prop_atlas_counters()
+		return environment_prop_atlas_materials[prop_name]
+	var material := StandardMaterial3D.new()
+	material.albedo_texture = environment_prop_atlas_textures.get(prop_name)
+	material.albedo_color = Color(0.92, 0.90, 0.82, 0.82)
+	material.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	material.billboard_mode = BaseMaterial3D.BILLBOARD_ENABLED
+	material.cull_mode = BaseMaterial3D.CULL_DISABLED
+	material.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	material.texture_filter = BaseMaterial3D.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
+	environment_prop_atlas_materials[prop_name] = material
+	environment_prop_atlas_material_create_count += 1
+	_refresh_environment_prop_atlas_counters()
+	return material
 
 func _structure_finish_material_surface_allowed(surface_name: String) -> bool:
 	if not environment_shell_v2_structure_material_enabled:
@@ -6796,7 +7184,9 @@ func run_benchmark_suite() -> Dictionary:
 	var bridge_riverbank_material_loaded := _bridge_riverbank_material_is_active()
 	var structure_finish_material_loaded := _structure_finish_material_is_active()
 	var road_riverbank_water_material_loaded := _road_riverbank_water_material_bundle_is_active()
+	var environment_prop_atlas_loaded := _environment_prop_atlas_is_active()
 	_refresh_road_riverbank_water_material_counters()
+	_refresh_environment_prop_atlas_counters()
 	report["visualPreset"] = visual_preset
 	report["visualPresetScope"] = _preset_scope()
 	report["visualPresetPrivate"] = visual_preset == VISUAL_PRESET_VFX_STRESS
@@ -6810,6 +7200,7 @@ func run_benchmark_suite() -> Dictionary:
 	report["roadMaterialExperiment"] = road_material_status.duplicate(true)
 	report["bridgeRiverbankMaterialExperiment"] = bridge_riverbank_material_status.duplicate(true)
 	report["structureFinishMaterialExperiment"] = structure_finish_material_status.duplicate(true)
+	report["environmentPropAtlasExperiment"] = environment_prop_atlas_status.duplicate(true)
 	report["roadRiverbankWaterMaterialExperiment"] = road_riverbank_water_material_status.duplicate(true)
 	report["roadRiverbankWaterMaterialRuntimeSlotAdded"] = false
 	report["roadRiverbankWaterMaterialProductionSlotAdded"] = false
@@ -6819,6 +7210,9 @@ func run_benchmark_suite() -> Dictionary:
 	report["saltoStructureShellProduction"] = _salto_structure_shell_production_status()
 	report["saltoStructureShellProductionEnabled"] = salto_structure_shell_production_enabled
 	report["saltoStructureShellLegacyComparatorActive"] = salto_structure_shell_legacy_comparator
+	report["saltoEnvironmentDressing"] = _salto_environment_dressing_status()
+	report["saltoEnvironmentDressingEnabled"] = salto_environment_dressing_enabled
+	report["environmentPropAtlasLoaded"] = environment_prop_atlas_loaded
 	report["routineEditorUseRequired"] = false
 	return report
 
@@ -6878,6 +7272,8 @@ func get_spike_status() -> Dictionary:
 	status["saltoStructureShellProductionEnabled"] = salto_structure_shell_production_enabled
 	status["saltoStructureShellLegacyComparatorActive"] = salto_structure_shell_legacy_comparator
 	status["saltoStructureShellProduction"] = _salto_structure_shell_production_status()
+	status["saltoEnvironmentDressingEnabled"] = salto_environment_dressing_enabled
+	status["saltoEnvironmentDressing"] = _salto_environment_dressing_status()
 	status["saltoPresentationRebootEnabled"] = salto_presentation_reboot_enabled
 	status["saltoPresentationRebootScene"] = {
 		"checkpoint": "v0.215",
@@ -6906,6 +7302,8 @@ func get_spike_status() -> Dictionary:
 	_refresh_structure_finish_material_counters()
 	var road_riverbank_water_material_loaded := _road_riverbank_water_material_bundle_is_active()
 	_refresh_road_riverbank_water_material_counters()
+	var environment_prop_atlas_loaded := _environment_prop_atlas_is_active()
+	_refresh_environment_prop_atlas_counters()
 	status["proceduralPrimitiveOnly"] = not worker_art_loaded and not barracks_material_loaded and not militia_art_loaded and not aster_art_loaded and not ashen_art_loaded and not ground_material_loaded and not road_material_loaded and not bridge_riverbank_material_loaded and not structure_finish_material_loaded and not road_riverbank_water_material_loaded
 	status["generatedOrImportedArtIncluded"] = worker_art_loaded or barracks_material_loaded or militia_art_loaded or aster_art_loaded or ashen_art_loaded or ground_material_loaded or road_material_loaded or bridge_riverbank_material_loaded or structure_finish_material_loaded or road_riverbank_water_material_loaded
 	status["runtimeArtIntegrated"] = worker_art_loaded or barracks_material_loaded or militia_art_loaded or aster_art_loaded or ashen_art_loaded or ground_material_loaded or road_material_loaded or bridge_riverbank_material_loaded or road_riverbank_water_material_loaded
@@ -6918,6 +7316,7 @@ func get_spike_status() -> Dictionary:
 	status["roadMaterialExperiment"] = road_material_status.duplicate(true)
 	status["bridgeRiverbankMaterialExperiment"] = bridge_riverbank_material_status.duplicate(true)
 	status["structureFinishMaterialExperiment"] = structure_finish_material_status.duplicate(true)
+	status["environmentPropAtlasExperiment"] = environment_prop_atlas_status.duplicate(true)
 	status["roadRiverbankWaterMaterialExperiment"] = road_riverbank_water_material_status.duplicate(true)
 	status["v0165VisualHardeningAudit"] = _v0165_visual_hardening_audit(worker_art_loaded, barracks_material_loaded, militia_art_loaded, aster_art_loaded, ashen_art_loaded)
 	status["workerArtOptInOnly"] = worker_art_experiment_enabled and not barracks_material_experiment_enabled and not militia_art_experiment_enabled and not aster_art_experiment_enabled and not ashen_art_experiment_enabled
@@ -6949,6 +7348,11 @@ func get_spike_status() -> Dictionary:
 	status["structureFinishMaterialProceduralFallbackActive"] = bool(structure_finish_material_status.get("fallbackActive", true))
 	status["structureFinishMaterialRuntimeSlotAdded"] = false
 	status["structureFinishMaterialProductionSlotAdded"] = false
+	status["environmentPropAtlasPrivateOptInRequested"] = environment_prop_atlas_experiment_enabled
+	status["environmentPropAtlasPrivateOptInLoaded"] = environment_prop_atlas_loaded
+	status["environmentPropAtlasProceduralFallbackActive"] = bool(environment_prop_atlas_status.get("fallbackActive", true))
+	status["environmentPropAtlasRuntimeSlotAdded"] = false
+	status["environmentPropAtlasProductionSlotAdded"] = false
 	status["roadRiverbankWaterMaterialOptInRequested"] = road_riverbank_water_material_experiment_enabled
 	status["roadRiverbankWaterMaterialPrivateOptInLoaded"] = road_riverbank_water_material_loaded
 	status["roadRiverbankWaterMaterialProceduralFallbackActive"] = bool(road_riverbank_water_material_status.get("fallbackActive", true))
@@ -7573,6 +7977,7 @@ func _reset_presentation_shell_v2_surface_counts() -> void:
 	shell_v2_grounding_props_visual_nodes = []
 	shell_v2_bridge_shell_visual_nodes = []
 	shell_v2_structure_shell_production_visual_nodes = []
+	shell_v2_environment_dressing_visual_nodes = []
 	presentation_shell_v2_surface_counts = {
 		"ground": 0,
 		"terrainEdges": 0,
@@ -10402,6 +10807,45 @@ func _add_shell_v2_grounding_prop_cylinder(name: String, position: Vector3, radi
 	_count_presentation_shell_v2_surface(category)
 	_record_shell_v2_grounding_prop_node(name)
 
+func _record_salto_environment_dressing_node(name: String) -> void:
+	if not shell_v2_environment_dressing_visual_nodes.has(name):
+		shell_v2_environment_dressing_visual_nodes.append(name)
+
+func _add_salto_environment_prop_sprite(name: String, prop_name: String, position: Vector3, size: Vector2, category: String) -> void:
+	if not _environment_prop_atlas_is_active():
+		return
+	if not environment_prop_atlas_textures.has(prop_name):
+		return
+	var mesh_instance := MeshInstance3D.new()
+	mesh_instance.name = name
+	var mesh := QuadMesh.new()
+	mesh.size = size
+	mesh_instance.mesh = mesh
+	mesh_instance.position = position + Vector3(0.0, size.y * 0.5, 0.0)
+	mesh_instance.material_override = _environment_prop_atlas_material(prop_name)
+	visual_root.add_child(mesh_instance)
+	_count_presentation_shell_v2_surface(category)
+	_record_salto_environment_dressing_node(name)
+
+func _add_salto_environment_dressing_layer() -> void:
+	if not salto_environment_dressing_enabled or not _environment_prop_atlas_is_active():
+		return
+	for prop in [
+		{"name": "v0220_road_shoulder_grass_west", "prop": "grass_clump_tall", "pos": Vector3(-4.72, 0.330, 0.02), "size": Vector2(0.34, 0.30), "category": "props"},
+		{"name": "v0220_road_shoulder_mossy_stones_east", "prop": "mossy_stone_cluster", "pos": Vector3(2.96, 0.332, 0.30), "size": Vector2(0.34, 0.24), "category": "props"},
+		{"name": "v0220_road_shoulder_flat_stones_centre", "prop": "flat_stone_steps", "pos": Vector3(-1.36, 0.334, 1.18), "size": Vector2(0.30, 0.22), "category": "props"},
+		{"name": "v0220_riverbank_rocks_north", "prop": "riverbank_rocks", "pos": Vector3(0.04, 0.300, -1.22), "size": Vector2(0.32, 0.18), "category": "banks"},
+		{"name": "v0220_riverbank_large_rocks_south", "prop": "large_mossy_rocks", "pos": Vector3(1.28, 0.302, 2.34), "size": Vector2(0.34, 0.28), "category": "banks"},
+		{"name": "v0220_riverbank_grass_south", "prop": "grass_clump_reeds", "pos": Vector3(0.36, 0.304, 2.86), "size": Vector2(0.28, 0.28), "category": "banks"},
+		{"name": "v0220_structure_command_timber_posts", "prop": "timber_posts_pair", "pos": Vector3(-5.64, 0.336, 3.34), "size": Vector2(0.28, 0.36), "category": "structures"},
+		{"name": "v0220_structure_barracks_collapsed_timber", "prop": "collapsed_timber_stack", "pos": Vector3(-5.16, 0.334, -3.18), "size": Vector2(0.32, 0.28), "category": "structures"},
+		{"name": "v0220_structure_mine_field_debris", "prop": "field_debris_bucket", "pos": Vector3(-2.82, 0.334, -0.44), "size": Vector2(0.26, 0.24), "category": "structures"},
+		{"name": "v0220_bridge_approach_plank_west", "prop": "bridge_plank_posts", "pos": Vector3(-0.50, 0.348, 0.36), "size": Vector2(0.30, 0.24), "category": "bridge"},
+		{"name": "v0220_bridge_approach_twig_debris_east", "prop": "twig_debris_pile", "pos": Vector3(1.66, 0.346, 1.30), "size": Vector2(0.28, 0.20), "category": "bridge"},
+		{"name": "v0220_field_debris_hostile_edge", "prop": "twig_debris_pile", "pos": Vector3(3.96, 0.332, -1.18), "size": Vector2(0.28, 0.20), "category": "props"}
+	]:
+		_add_salto_environment_prop_sprite(str(prop["name"]), str(prop["prop"]), prop["pos"], prop["size"], str(prop["category"]))
+
 func _add_shell_v2_grounding_structure_contact(structure: Dictionary) -> void:
 	var id := str(structure.get("id", "structure"))
 	var fixture := str(structure.get("fixtureId", ""))
@@ -10521,6 +10965,8 @@ func _add_shell_v2_grounding_props_layer() -> void:
 		_add_shell_v2_grounding_prop_box(str(prop["name"]), prop["pos"], prop["scale"], prop["color"], "bridge", true)
 	for structure in runtime.structures:
 		_add_shell_v2_grounding_structure_contact(structure)
+	if salto_environment_dressing_enabled:
+		_add_salto_environment_dressing_layer()
 
 func _add_unit(name: String, position: Vector3, color: Color, radius: float, emissive: bool = false) -> void:
 	var mesh_instance := MeshInstance3D.new()

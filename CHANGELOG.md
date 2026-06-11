@@ -1,5 +1,33 @@
 # Changelog
 
+# v0.220 Environment Dressing Prop Atlas And Scatter - 2026-06-11
+
+This checkpoint adds sparse deterministic environment dressing to the isolated Godot Salto presentation-reboot path using exactly one generated private prop-atlas source. The default stabilized launcher remains procedural, and the v0.219 structure-shell path remains available without v0.220 dressing.
+
+Changed:
+
+- Generated exactly one original local environment prop atlas for private review-path evidence.
+- Extracted 11 accepted prop crops and rejected 5 ambiguous cells.
+- Added 12 sparse visual-only prop sprites around road shoulders, riverbanks, structure edges, bridge approaches and field edges.
+- Added selected, v0.219 comparator, default-procedural, missing-art and hash-mismatch validation.
+- Added the v0.220 manual review pack and required implementation reports.
+
+Boundary:
+
+- Generated images: exactly one.
+- Downloaded assets: zero.
+- New art slots: zero.
+- New production runtime art slots: zero.
+- Browser runtime changes: none.
+- Default launcher changes: none.
+- Gameplay, pathing, collision, objective, AI, economy, save, stable-ID and balance changes: none.
+
+Validation:
+
+- Environment dressing capture and review-pack generation passed.
+- Environment dressing validation, benchmark and boundary gate passed.
+- Artifact retention validation and safe-only cleanup dry run passed.
+
 # v0.219 Structure Shell Production Pass - 2026-06-11
 
 This checkpoint replaces the most blocky structure reads in the isolated Godot Salto presentation-reboot path with restrained Barrosan foothold structure shells. The legacy structure presentation remains available as a comparator/fallback.

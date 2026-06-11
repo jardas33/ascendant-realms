@@ -2,7 +2,7 @@ param()
 
 $ErrorActionPreference = "Stop"
 $RepoRoot = Resolve-Path (Join-Path $PSScriptRoot "..\..")
-$ArtifactRoot = Join-Path $RepoRoot "artifacts\desktop-spikes\godot-salto\v0219"
+$ArtifactRoot = Join-Path $RepoRoot "artifacts\desktop-spikes\godot-salto\v0220"
 $BenchmarkRoot = Join-Path $ArtifactRoot "benchmark"
 $ArtifactRootArg = $ArtifactRoot.Replace("\", "/")
 
@@ -38,7 +38,7 @@ function Assert-ExpectedFiles {
     Start-Sleep -Milliseconds 250
   } while ((Get-Date) -lt $deadline)
   foreach ($fileName in $missing) {
-    throw "Missing expected artifact '$fileName' for v0.219 benchmark scenario '$ScenarioRoot'."
+    throw "Missing expected artifact '$fileName' for v0.220 benchmark scenario '$ScenarioRoot'."
   }
 }
 
@@ -49,7 +49,7 @@ function Invoke-BenchmarkScenario {
   )
   $ScenarioRoot = Join-Path $BenchmarkRoot $ScenarioId
   $ScenarioRootArg = $ScenarioRoot.Replace("\", "/")
-  $ScenarioArgs = @("--worker-art-opt-in-benchmark", "--artifact-root=$ScenarioRootArg", "--salto-environment-dressing-disabled") + $ExtraArgs
+  $ScenarioArgs = @("--worker-art-opt-in-benchmark", "--artifact-root=$ScenarioRootArg") + $ExtraArgs
   & (Join-Path $PSScriptRoot "launchGodotSaltoPresentationRebootWindows.ps1") -Wait @ScenarioArgs
   Assert-ExpectedFiles -ScenarioRoot $ScenarioRoot -ExpectedFiles @("worker-art-opt-in-benchmark-runtime.json")
 }
@@ -59,14 +59,14 @@ function Invoke-BenchmarkScenario {
 
 Reset-SafeDirectory -Path $BenchmarkRoot -Parent $ArtifactRoot
 
-Invoke-BenchmarkScenario -ScenarioId "selected-structure-shell" -ExtraArgs @()
-Invoke-BenchmarkScenario -ScenarioId "legacy-structure-comparator" -ExtraArgs @(
-  "--salto-presentation-reboot-legacy-structures"
+Invoke-BenchmarkScenario -ScenarioId "v0219-before-structure-shell" -ExtraArgs @(
+  "--salto-environment-dressing-disabled"
 )
+Invoke-BenchmarkScenario -ScenarioId "selected-environment-dressing" -ExtraArgs @()
 
-node "tools/godot/saltoStructureShellProductionTool.mjs" benchmark "--artifact-root=$ArtifactRootArg"
+node "tools/godot/saltoEnvironmentDressingTool.mjs" benchmark "--artifact-root=$ArtifactRootArg"
 if ($LASTEXITCODE -ne 0) {
-  throw "v0.219 structure shell production benchmark failed with exit code $LASTEXITCODE."
+  throw "v0.220 environment dressing benchmark failed with exit code $LASTEXITCODE."
 }
 
-Write-Output "PASS_V0219_STRUCTURE_SHELL_BENCHMARK_READY"
+Write-Output "PASS_V0220_ENVIRONMENT_DRESSING_BENCHMARK_READY"

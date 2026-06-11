@@ -1,6 +1,38 @@
 # Development Checkpoint
 
-Updated: 2026-06-11 v0.219 Structure shell production pass
+Updated: 2026-06-11 v0.220 Environment dressing prop atlas and scatter
+
+## v0.220 Environment Dressing Prop Atlas And Scatter - 2026-06-11
+
+Scope: isolated opt-in Godot Salto presentation-reboot environment dressing path. This checkpoint generates exactly one original local prop-atlas source, adds zero production art slots, preserves the default procedural launcher, preserves all prior launchers, keeps browser runtime untouched, keeps the selected v0.216 ground material, v0.217 road/riverbank/water material hierarchy, v0.218 bridge shell and v0.219 structure shell, and leaves gameplay, pathing, collisions, objectives, AI, economy, saves, stable IDs and balance unchanged.
+
+Included work:
+
+- Generated one original private-review prop atlas, SHA `fa59ddb29281b12b818c065302af632d7710fd05f419d14e838cc002fc9588df`.
+- Extracted 11 usable prop crops and rejected 5 ambiguous cells.
+- Added 12 deterministic visual-only sprites for road shoulders, riverbanks, structure-adjacent practical props, bridge approaches and field-edge debris.
+- Preserved the v0.219 comparator path by explicitly disabling v0.220 dressing in the v0.219 wrappers.
+- Proved missing-art and hash-mismatch fail-closed behavior for the prop atlas.
+- Generated the ignored manual review pack under `artifacts/manual-review/v0220-environment-dressing/`.
+- Added v0.220 prop atlas intake, environment dressing and implementation docs.
+
+Verification targets:
+
+```text
+PASS: npm run godot:capture:salto-environment-dressing.
+PASS: npm run godot:validate:salto-environment-dressing.
+PASS: npm run godot:benchmark:salto-environment-dressing.
+PASS: v0.220 environment dressing boundary gate.
+PASS: artifact retention validation.
+PASS: safe-only cleanup dry run.
+PASS: runtime-art slot validation.
+PASS: content validation.
+PASS: art-intake validation.
+PASS: Vitest suite.
+PASS: Godot scaffold tests.
+PASS: production build.
+PASS: git diff --check.
+```
 
 ## v0.219 Structure Shell Production Pass - 2026-06-11
 

@@ -33,12 +33,17 @@ $V0202StructureFinishSourcePath = Join-Path $RepoRoot "artifacts\desktop-spikes\
 $V0202StructureFinishMetadataPath = Join-Path $RepoRoot "artifacts\desktop-spikes\godot-salto\v0202\local-structure-finish-material-slot\barrosan_structure_finish_material_v0202_1024.metadata.json"
 $V0202StructureFinishExpectedSha256 = "94d4975f9e6f13453103439135da930b74d1d66b56d2b10e43219de408f508ef"
 $MissingStructureFinishSourcePath = Join-Path $RepoRoot "artifacts\desktop-spikes\godot-salto\v0204\missing-structure-finish-source\barrosan_structure_finish_material_v0202_1024.png"
+$V0220PropAtlasSourcePath = Join-Path $RepoRoot "artifacts\desktop-spikes\godot-salto\v0220\environment-prop-atlas\barrosan_environment_prop_atlas_v0220_1024_chroma.png"
+$V0220PropAtlasMetadataPath = Join-Path $RepoRoot "artifacts\desktop-spikes\godot-salto\v0220\environment-prop-atlas\barrosan_environment_prop_atlas_v0220.metadata.json"
+$V0220PropAtlasExpectedSha256 = "fa59ddb29281b12b818c065302af632d7710fd05f419d14e838cc002fc9588df"
+$MissingPropAtlasSourcePath = Join-Path $RepoRoot "artifacts\desktop-spikes\godot-salto\v0220\missing-environment-prop-atlas\barrosan_environment_prop_atlas_v0220_1024_chroma.png"
 
 $GroundMode = "v0216-selected"
 $RoadRiverbankWaterMode = "v0217-selected"
 $BridgeShellMode = "v0218-selected"
 $StructureFinishMode = "v0202-selected"
 $StructureShellMode = "v0219-selected"
+$EnvironmentDressingMode = "v0220-selected"
 $ForwardArgs = @()
 foreach ($arg in $RemainingArgs) {
   if ($arg -eq "--salto-presentation-reboot-use-v0175-ground") {
@@ -59,6 +64,12 @@ foreach ($arg in $RemainingArgs) {
     $StructureFinishMode = "v0202-missing-fallback"
   } elseif ($arg -eq "--salto-structure-finish-material-hash-mismatch") {
     $StructureFinishMode = "v0202-hash-mismatch"
+  } elseif ($arg -eq "--salto-environment-dressing-missing-fallback" -or $arg -eq "--environment-prop-atlas-missing-fallback") {
+    $EnvironmentDressingMode = "v0220-missing-fallback"
+  } elseif ($arg -eq "--salto-environment-dressing-hash-mismatch" -or $arg -eq "--environment-prop-atlas-hash-mismatch") {
+    $EnvironmentDressingMode = "v0220-hash-mismatch"
+  } elseif ($arg -eq "--salto-environment-dressing-disabled") {
+    $EnvironmentDressingMode = "disabled"
   } else {
     $ForwardArgs += $arg
   }
@@ -115,6 +126,18 @@ if ($StructureFinishMode -eq "v0202-missing-fallback") {
   $StructureFinishExpectedSha256 = "0000000000000000000000000000000000000000000000000000000000000000"
 }
 
+$PropAtlasSourcePath = $V0220PropAtlasSourcePath
+$PropAtlasMetadataPath = $V0220PropAtlasMetadataPath
+$PropAtlasExpectedSha256 = $V0220PropAtlasExpectedSha256
+$PropAtlasFallbackMode = "none"
+if ($EnvironmentDressingMode -eq "v0220-missing-fallback") {
+  $PropAtlasFallbackMode = "missing"
+  $PropAtlasSourcePath = $MissingPropAtlasSourcePath
+} elseif ($EnvironmentDressingMode -eq "v0220-hash-mismatch") {
+  $PropAtlasFallbackMode = "hash-mismatch"
+  $PropAtlasExpectedSha256 = "0000000000000000000000000000000000000000000000000000000000000000"
+}
+
 if ($GroundMode -ne "v0216-missing-fallback") {
   foreach ($path in @($GroundSourcePath, $GroundMetadataPath)) {
     if (-not (Test-Path -LiteralPath $path)) {
@@ -135,6 +158,14 @@ if ($StructureFinishMode -ne "v0202-missing-fallback") {
   foreach ($path in @($StructureFinishSourcePath, $StructureFinishMetadataPath)) {
     if (-not (Test-Path -LiteralPath $path)) {
       Write-Warning "Structure-finish material path is unavailable; Godot runtime should fail closed to procedural fallback: $path"
+    }
+  }
+}
+
+if ($EnvironmentDressingMode -ne "disabled" -and $EnvironmentDressingMode -ne "v0220-missing-fallback") {
+  foreach ($path in @($PropAtlasSourcePath, $PropAtlasMetadataPath)) {
+    if (-not (Test-Path -LiteralPath $path)) {
+      Write-Warning "Environment prop-atlas path is unavailable; Godot runtime should fail closed to procedural fallback: $path"
     }
   }
 }
@@ -179,6 +210,16 @@ $RebootArgs = @(
   "--structure-finish-material-uv-scale=0.70",
   "--salto-structure-shell-production"
 )
+if ($EnvironmentDressingMode -ne "disabled") {
+  $RebootArgs += @(
+    "--environment-prop-atlas-opt-in",
+    "--environment-prop-atlas-source=$($PropAtlasSourcePath.Replace('\', '/'))",
+    "--environment-prop-atlas-metadata=$($PropAtlasMetadataPath.Replace('\', '/'))",
+    "--environment-prop-atlas-expected-sha256=$PropAtlasExpectedSha256",
+    "--environment-prop-atlas-fallback-mode=$PropAtlasFallbackMode",
+    "--salto-environment-dressing"
+  )
+}
 if ($BridgeShellMode -eq "v0218-legacy-comparator") {
   $RebootArgs += "--salto-bridge-shell-legacy-comparator"
 }
@@ -189,8 +230,8 @@ if ($ForwardArgs) {
   $RebootArgs += $ForwardArgs
 }
 
-Write-Output "Launching v0.219 Salto presentation reboot experiment."
-Write-Output "Scope: isolated opt-in shell-v2 review path; compact contextual HUD plus selected terrain, road, riverbank, water, bridge and structure shell hierarchy; no new production slot, no browser wiring."
+Write-Output "Launching v0.220 Salto presentation reboot experiment."
+Write-Output "Scope: isolated opt-in shell-v2 review path; compact contextual HUD plus selected terrain, road, riverbank, water, bridge, structure shell hierarchy and sparse prop-atlas dressing; no new production slot, no browser wiring."
 Write-Output "Ground material mode: $GroundMode"
 Write-Output "Selected ground material SHA-256: $GroundExpectedSha256"
 Write-Output "Road/riverbank/water material mode: $RoadRiverbankWaterMode"
@@ -199,6 +240,8 @@ Write-Output "Bridge shell mode: $BridgeShellMode"
 Write-Output "Structure shell mode: $StructureShellMode"
 Write-Output "Structure-finish material mode: $StructureFinishMode"
 Write-Output "Selected v0.202 structure-finish SHA-256: $StructureFinishExpectedSha256"
+Write-Output "Environment dressing mode: $EnvironmentDressingMode"
+Write-Output "Selected v0.220 prop-atlas SHA-256: $PropAtlasExpectedSha256"
 Write-Output "Default launcher, prior UI launchers, procedural fallback and v0.175 ground material comparator remain preserved."
 
 & (Join-Path $PSScriptRoot "launchGodotSaltoShellV2GroundingPropsWindows.ps1") -Wait:$Wait @RebootArgs
