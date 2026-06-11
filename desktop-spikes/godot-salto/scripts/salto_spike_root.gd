@@ -104,6 +104,7 @@ const SCRIPT_ARG_PREFIXES := [
 	"--salto-aster-portrait-metadata=",
 	"--salto-aster-portrait-expected-sha256=",
 	"--salto-aster-portrait-force-fallback",
+	"--salto-production-objectives-log",
 	"--real-input-smoke",
 	"--real-input-validate",
 	"--site-semantics-smoke",
@@ -160,9 +161,12 @@ var player_ui_shell_overlay: Control
 var player_ui_shell_refresh_frames := 0
 var player_ui_shell_context_override := ""
 var player_ui_shell_focus_hint := ""
+var player_ui_shell_production_tab_override := ""
+var player_ui_shell_production_focus_hint := ""
 var player_ui_shell_portrait_texture: ImageTexture
 var player_ui_shell_portrait_status: Dictionary = {}
 var player_ui_shell_portrait_cache_key := ""
+var player_ui_shell_svg_texture_cache: Dictionary = {}
 
 func _ready() -> void:
 	var args: PackedStringArray = _script_args()
@@ -2370,6 +2374,9 @@ func _salto_ui_shell_fallback_active() -> bool:
 func _salto_selection_command_panel_enabled() -> bool:
 	return _script_args().has("--salto-selection-command-panel")
 
+func _salto_production_objectives_log_enabled() -> bool:
+	return _salto_selection_command_panel_enabled() and _script_args().has("--salto-production-objectives-log")
+
 func _salto_aster_portrait_force_fallback() -> bool:
 	return _script_args().has("--salto-aster-portrait-force-fallback")
 
@@ -2575,6 +2582,20 @@ func _live_ui_shell_state() -> Dictionary:
 		status_pip = "CLEAR"
 		active_tab = "TRAIN"
 		tooltip = "The Ashen wave is cleared; regroup before restoring the Lume link."
+	if action == "production_research":
+		active_tab = "RESEARCH"
+		tooltip = "Research cards are preview-only in this slice and explain why they are unavailable."
+	elif action == "production_disabled_tooltip":
+		active_tab = "RESEARCH"
+		tooltip = "Bridgecraft research is disabled: this review binds existing functionality only."
+	elif action == "production_build":
+		active_tab = "BUILD"
+		tooltip = "Build tab shows Worker-supported actions and future-scope cards distinctly."
+	elif action == "production_train":
+		active_tab = "TRAIN"
+		tooltip = "Train tab binds only the existing Barracks Militia queue and marks locked units."
+	if player_ui_shell_production_tab_override != "":
+		active_tab = player_ui_shell_production_tab_override
 	var objective := "Convert West Stone Cut Mine"
 	var objective_detail := "Assign Worker, restore Barracks,\ntrain Militia, hold bridge."
 	if mine_converted and not worker_assigned:
@@ -2627,6 +2648,8 @@ func _live_ui_shell_state() -> Dictionary:
 		alert_text = "Ashen wave cleared"
 		alert_severity = "info"
 	var selection_panel_data := _v0210_selection_panel_data(action, status)
+	var objective_next_action := _v0211_next_action(mine_converted, worker_assigned, barracks_complete, militia_spawned, pressure_active, pressure_resolved)
+	var production_cards := _v0211_production_cards(active_tab, mine_converted, worker_assigned, barracks_complete, militia_queued, militia_spawned)
 	return {
 		"resources": resources,
 		"objective": objective,
@@ -2641,6 +2664,11 @@ func _live_ui_shell_state() -> Dictionary:
 		"tooltip": tooltip,
 		"alert": alert_text,
 		"alertSeverity": alert_severity,
+		"objectiveNextAction": objective_next_action,
+		"objectiveProgress": _v0211_objective_progress(mine_converted, worker_assigned, barracks_complete, militia_spawned, pressure_resolved),
+		"productionCards": production_cards,
+		"productionFocusId": player_ui_shell_production_focus_hint,
+		"productionObjectivesLogEnabled": _salto_production_objectives_log_enabled(),
 		"mineConverted": mine_converted,
 		"workerAssigned": worker_assigned,
 		"barracksComplete": barracks_complete,
@@ -2649,6 +2677,67 @@ func _live_ui_shell_state() -> Dictionary:
 		"ashenRemaining": ashen_remaining,
 		"selectionPanel": selection_panel_data
 	}
+
+func _v0211_next_action(mine_converted: bool, worker_assigned: bool, barracks_complete: bool, militia_spawned: bool, pressure_active: bool, pressure_resolved: bool) -> String:
+	if not mine_converted:
+		return "Select Aster and secure the West Stone Cut."
+	if not worker_assigned:
+		return "Assign the Worker to start stone income."
+	if not barracks_complete:
+		return "Spend Stone 80 to restore the Barracks."
+	if not militia_spawned:
+		return "Queue Militia before Ashen pressure reaches the bridge."
+	if pressure_active:
+		return "Hold the bridge line and focus Ashen raiders."
+	if pressure_resolved:
+		return "Regroup defenders; Lume actions remain review-slice locked."
+	return "Stage defenders and watch the hostile-pressure rail."
+
+func _v0211_objective_progress(mine_converted: bool, worker_assigned: bool, barracks_complete: bool, militia_spawned: bool, pressure_resolved: bool) -> Array[Dictionary]:
+	return [
+		{"label": "Mine", "done": mine_converted},
+		{"label": "Worker", "done": worker_assigned},
+		{"label": "Barracks", "done": barracks_complete},
+		{"label": "Militia", "done": militia_spawned},
+		{"label": "Bridge", "done": pressure_resolved}
+	]
+
+func _v0211_card_spec(id: String, title: String, shortcut: String, cost: String, detail: String, state: String, why: String, icon_name: String, method_name: String) -> Dictionary:
+	return {
+		"id": id,
+		"title": title,
+		"shortcut": shortcut,
+		"cost": cost,
+		"detail": detail,
+		"state": state,
+		"why": why,
+		"icon": icon_name,
+		"method": method_name,
+		"proceduralSvg": _v0210_svg_source(icon_name)
+	}
+
+func _v0211_production_cards(active_tab: String, mine_converted: bool, worker_assigned: bool, barracks_complete: bool, militia_queued: bool, militia_spawned: bool) -> Array[Dictionary]:
+	match active_tab:
+		"TRAIN":
+			return [
+				_v0211_card_spec("train_militia", "Militia", "T", "Iron 25 | 18s", "Queue one defender squad.", "queued" if militia_queued else "ready", "Uses the existing Barracks Militia queue only.", "helmet", "_on_live_ui_shell_work_pressed"),
+				_v0211_card_spec("train_ranger", "Ranger", "G", "Lume tech", "Future unit preview.", "disabled", "Requires Lume tech outside this slice.", "bow", "_on_live_ui_shell_work_pressed"),
+				_v0211_card_spec("stage_defenders", "Defenders", "H", "No cost", "Hold the bridge approach.", "ready" if militia_spawned else "disabled", "Available after Militia completes.", "shield", "_on_live_ui_shell_move_pressed"),
+				_v0211_card_spec("cancel_queue", "Cancel Queue", "X", "Preview", "No cancellable queue command in this review.", "disabled", "Cancel behavior is not added in v0.211.", "x", "_on_live_ui_shell_work_pressed")
+			]
+		"RESEARCH":
+			return [
+				_v0211_card_spec("lume_channel", "Lume Channel", "Q", "Aether locked", "Preview-only research lane.", "disabled", "Research is unavailable in the current slice.", "lume", "_on_live_ui_shell_lume_pressed"),
+				_v0211_card_spec("bridgecraft", "Bridgecraft", "B", "Future scope", "Would improve bridge repairs later.", "disabled", "No new gameplay or research effects are bound.", "timber", "_on_live_ui_shell_work_pressed"),
+				_v0211_card_spec("watch_rotation", "Watch Rotation", "W", "Preview", "Would improve alert response.", "disabled", "Preview label only; no AI or balance change.", "crosshair", "_on_live_ui_shell_attack_pressed"),
+				_v0211_card_spec("ward_discipline", "Ward Discipline", "E", "Aether locked", "Would strengthen Aster support.", "disabled", "Ward tuning is outside this UI polish pass.", "shield", "_on_live_ui_shell_lume_pressed")
+			]
+	return [
+		_v0211_card_spec("restore_barracks", "Restore Barracks", "R", "Stone 80 | Worker", "Restores the military structure.", "complete" if barracks_complete else ("ready" if worker_assigned else "disabled"), "Requires Worker assignment to the mine first." if not worker_assigned and not barracks_complete else "Bound to existing Worker/Barracks restoration.", "timber", "_on_live_ui_shell_work_pressed"),
+		_v0211_card_spec("repair_bridge", "Repair Bridge", "B", "Future scope", "Bridge repair remains preview-only.", "disabled", "No bridge repair gameplay is added in v0.211.", "hammer", "_on_live_ui_shell_work_pressed"),
+		_v0211_card_spec("set_rally", "Set Rally", "Y", "No cost", "Uses existing rally/focus presentation.", "ready" if barracks_complete else "disabled", "Rally is useful after Barracks restoration.", "banner", "_on_live_ui_shell_move_pressed"),
+		_v0211_card_spec("lume_beacon", "Lume Beacon", "L", "Aether locked", "Future Lume structure preview.", "disabled", "Lume build actions are not available in this slice.", "lume", "_on_live_ui_shell_lume_pressed")
+	]
 
 func _v0210_selection_panel_data(action: String, status: Dictionary) -> Dictionary:
 	var alive_counts: Dictionary = status.get("aliveCounts", {})
@@ -2659,13 +2748,13 @@ func _v0210_selection_panel_data(action: String, status: Dictionary) -> Dictiona
 	var worker_assigned := bool(status.get("workerAssignedToMine", false))
 	var mine_converted := bool(status.get("mineSiteConverted", false))
 	var selection_kind := "aster"
-	if ["worker_panel", "worker_assigned_mine", "worker_selected"].has(action):
+	if ["worker_panel", "worker_assigned_mine", "worker_selected", "production_build"].has(action):
 		selection_kind = "worker"
 	elif ["barracks_restoring_panel", "construction_progress", "build_placement"].has(action):
 		selection_kind = "barracks_restoring"
-	elif ["queue_panel", "recruit_queue", "barracks_complete"].has(action):
+	elif ["queue_panel", "recruit_queue", "barracks_complete", "production_train"].has(action):
 		selection_kind = "barracks_queue"
-	elif ["militia_panel", "militia_spawned", "squad_selected"].has(action):
+	elif ["militia_panel", "militia_spawned", "squad_selected", "event_progression", "ashen_pressure_active", "v0211_overview"].has(action):
 		selection_kind = "militia"
 	elif ["multi_select_panel"].has(action):
 		selection_kind = "multi"
@@ -2887,6 +2976,9 @@ func _live_ui_shell_resource_strip(root: Control, state: Dictionary) -> void:
 	_live_ui_shell_action_button(root, Vector2(1516, 20), Vector2(54, 28), "Pause", "_on_live_ui_shell_pause_pressed")
 
 func _live_ui_shell_left_stack(root: Control, state: Dictionary) -> void:
+	if _salto_production_objectives_log_enabled():
+		_live_ui_shell_left_stack_v0211(root, state)
+		return
 	var objective_panel := _ui_architecture_panel(root, "LiveShellObjective", Vector2(22, 122), Vector2(318, 234), "OBJECTIVE", "", Color(0.70, 0.56, 0.26, 0.94))
 	var objective_label := _ui_architecture_label(objective_panel, str(state["objective"]), Vector2(14, 44), Vector2(286, 30), 14, Color(0.90, 0.86, 0.66), HORIZONTAL_ALIGNMENT_LEFT)
 	objective_label.vertical_alignment = VERTICAL_ALIGNMENT_TOP
@@ -2897,6 +2989,35 @@ func _live_ui_shell_left_stack(root: Control, state: Dictionary) -> void:
 	for index in range(min(events.size(), 7)):
 		var line := _ui_architecture_label(event_panel, str(events[index]), Vector2(14, 44 + index * 22), Vector2(286, 20), 13, Color(0.82, 0.88, 0.78), HORIZONTAL_ALIGNMENT_LEFT)
 		line.vertical_alignment = VERTICAL_ALIGNMENT_TOP
+
+func _live_ui_shell_left_stack_v0211(root: Control, state: Dictionary) -> void:
+	var objective_panel := _ui_architecture_panel(root, "V0211ObjectivePanel", Vector2(22, 108), Vector2(332, 254), "OBJECTIVE", "", Color(0.78, 0.62, 0.30, 0.96))
+	_ui_architecture_label(objective_panel, str(state.get("objective", "")), Vector2(14, 42), Vector2(304, 26), 15, Color(0.94, 0.88, 0.66), HORIZONTAL_ALIGNMENT_LEFT)
+	var next_label := _ui_architecture_label(objective_panel, "NEXT: %s" % str(state.get("objectiveNextAction", "")), Vector2(14, 72), Vector2(304, 48), 12, Color(0.78, 0.88, 0.76), HORIZONTAL_ALIGNMENT_LEFT)
+	next_label.vertical_alignment = VERTICAL_ALIGNMENT_TOP
+	var detail := _ui_architecture_label(objective_panel, str(state.get("objectiveDetail", "")), Vector2(14, 126), Vector2(304, 52), 12, Color(0.82, 0.86, 0.72), HORIZONTAL_ALIGNMENT_LEFT)
+	detail.vertical_alignment = VERTICAL_ALIGNMENT_TOP
+	var progress: Array = state.get("objectiveProgress", [])
+	for index in range(min(progress.size(), 5)):
+		var item: Dictionary = progress[index]
+		var done := bool(item.get("done", false))
+		var x := 16 + index * 60
+		_ui_architecture_rect(objective_panel, "V0211ObjectiveStep%s" % index, Vector2(x, 194), Vector2(42, 8), Color(0.38, 0.78, 0.58, 0.96) if done else Color(0.22, 0.25, 0.21, 0.95))
+		_ui_architecture_label(objective_panel, str(item.get("label", "")), Vector2(x - 4, 207), Vector2(52, 18), 9, Color(0.80, 0.84, 0.66), HORIZONTAL_ALIGNMENT_CENTER)
+	var event_panel := _ui_architecture_panel(root, "V0211EventLog", Vector2(22, 382), Vector2(332, 210), "EVENT LOG", "", Color(0.42, 0.78, 0.62, 0.94))
+	var events: Array = state.get("events", [])
+	for index in range(min(events.size(), 6)):
+		var y := 44 + index * 26
+		var rail := Color(0.36, 0.72, 0.56, 0.95)
+		if str(events[index]).to_lower().contains("ashen"):
+			rail = Color(0.88, 0.32, 0.18, 0.96)
+		elif str(events[index]).to_lower().contains("barracks") or str(events[index]).to_lower().contains("militia"):
+			rail = Color(0.84, 0.62, 0.30, 0.96)
+		_ui_architecture_rect(event_panel, "V0211EventRail%s" % index, Vector2(14, y + 2), Vector2(4, 20), rail)
+		var line := _ui_architecture_label(event_panel, _v0211_truncate(str(events[index]), 44), Vector2(26, y), Vector2(286, 23), 12, Color(0.82, 0.88, 0.78), HORIZONTAL_ALIGNMENT_LEFT)
+		line.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	if events.size() > 6:
+		_ui_architecture_label(event_panel, "+%d older entries retained in log state" % (events.size() - 6), Vector2(26, 184), Vector2(286, 18), 10, Color(0.66, 0.72, 0.62), HORIZONTAL_ALIGNMENT_LEFT)
 
 func _live_ui_shell_minimap(root: Control, state: Dictionary) -> void:
 	var panel := _ui_architecture_panel(root, "LiveShellMinimap", Vector2(24, 656), Vector2(258, 208), "SALTO MAP", "", Color(0.30, 0.78, 0.72, 0.94))
@@ -2951,15 +3072,19 @@ func _live_ui_shell_selection_panel_v0210(root: Control, state: Dictionary) -> v
 func _v0210_render_portrait(parent: Control, data: Dictionary) -> void:
 	var portrait_status: Dictionary = data.get("portraitStatus", {})
 	var source_loaded := bool(portrait_status.get("sourceLoaded", false))
+	var context_kind := str(data.get("kind", "aster"))
+	var uses_art_portrait := context_kind == "aster" or not _salto_production_objectives_log_enabled()
 	var frame := Panel.new()
 	frame.name = "V0210PortraitFrame"
 	frame.position = Vector2(18, 42)
 	frame.size = Vector2(104, 120)
 	frame.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	frame.clip_contents = true
-	frame.add_theme_stylebox_override("panel", _ui_architecture_panel_style(Color(0.055, 0.065, 0.055, 0.98), Color(0.78, 0.70, 0.42, 0.92) if source_loaded else Color(0.42, 0.54, 0.46, 0.76)))
+	frame.add_theme_stylebox_override("panel", _ui_architecture_panel_style(Color(0.055, 0.065, 0.055, 0.98), Color(0.78, 0.70, 0.42, 0.92) if uses_art_portrait and source_loaded else Color(0.42, 0.54, 0.46, 0.76)))
 	parent.add_child(frame)
-	if source_loaded and player_ui_shell_portrait_texture != null:
+	if not uses_art_portrait:
+		_v0211_render_context_emblem(frame, context_kind)
+	elif source_loaded and player_ui_shell_portrait_texture != null:
 		var atlas := AtlasTexture.new()
 		atlas.atlas = player_ui_shell_portrait_texture
 		atlas.region = Rect2(430, 28, 220, 290)
@@ -2977,10 +3102,43 @@ func _v0210_render_portrait(parent: Control, data: Dictionary) -> void:
 		_ui_architecture_rect(frame, "PortraitFallbackHalo", Vector2(18, 15), Vector2(68, 68), Color(0.20, 0.36, 0.34, 0.92))
 		_ui_architecture_rect(frame, "PortraitFallbackHead", Vector2(40, 23), Vector2(24, 26), Color(0.78, 0.70, 0.46, 0.96))
 		_ui_architecture_rect(frame, "PortraitFallbackCloak", Vector2(28, 54), Vector2(48, 42), Color(0.16, 0.48, 0.44, 0.94))
-	var label := "ART"
-	if not source_loaded:
+	var label := "ART" if uses_art_portrait else "CONTEXT"
+	if uses_art_portrait and not source_loaded:
 		label = "FALLBACK"
 	_ui_architecture_label(frame, label, Vector2(8, 100), Vector2(88, 16), 10, Color(0.90, 0.84, 0.62), HORIZONTAL_ALIGNMENT_CENTER)
+
+func _v0211_render_context_emblem(parent: Control, context_kind: String) -> void:
+	var base := Color(0.26, 0.38, 0.30, 0.96)
+	var accent := Color(0.78, 0.66, 0.38, 0.98)
+	var shadow := Color(0.08, 0.10, 0.08, 0.96)
+	if context_kind == "worker":
+		_ui_architecture_rect(parent, "V0211WorkerBackdrop", Vector2(18, 18), Vector2(68, 68), Color(0.15, 0.27, 0.22, 0.95))
+		_ui_architecture_rect(parent, "V0211WorkerHead", Vector2(40, 20), Vector2(24, 24), accent)
+		_ui_architecture_rect(parent, "V0211WorkerBody", Vector2(31, 49), Vector2(42, 34), Color(0.28, 0.54, 0.48, 0.95))
+		_ui_architecture_rect(parent, "V0211WorkerTool", Vector2(66, 24), Vector2(6, 46), Color(0.68, 0.55, 0.32, 0.95))
+		_ui_architecture_rect(parent, "V0211WorkerToolHead", Vector2(58, 20), Vector2(22, 6), Color(0.54, 0.57, 0.46, 0.95))
+	elif context_kind == "barracks_restoring" or context_kind == "barracks_queue":
+		_ui_architecture_rect(parent, "V0211StructureGround", Vector2(16, 76), Vector2(72, 9), Color(0.29, 0.34, 0.27, 0.98))
+		_ui_architecture_rect(parent, "V0211StructureBase", Vector2(22, 48), Vector2(60, 30), base)
+		_ui_architecture_rect(parent, "V0211StructureRoof", Vector2(16, 36), Vector2(72, 14), Color(0.50, 0.42, 0.28, 0.98))
+		_ui_architecture_rect(parent, "V0211StructureDoor", Vector2(47, 58), Vector2(14, 20), shadow)
+		_ui_architecture_rect(parent, "V0211StructureBraceA", Vector2(27, 52), Vector2(7, 24), Color(0.62, 0.51, 0.32, 0.95))
+		_ui_architecture_rect(parent, "V0211StructureBraceB", Vector2(70, 52), Vector2(7, 24), Color(0.62, 0.51, 0.32, 0.95))
+		if context_kind == "barracks_restoring":
+			_ui_architecture_rect(parent, "V0211StructureScaffold", Vector2(25, 30), Vector2(54, 5), Color(0.54, 0.62, 0.45, 0.9))
+	elif context_kind == "militia":
+		_ui_architecture_rect(parent, "V0211MilitiaBackdrop", Vector2(20, 18), Vector2(64, 68), Color(0.12, 0.21, 0.20, 0.95))
+		_ui_architecture_rect(parent, "V0211MilitiaShield", Vector2(35, 28), Vector2(34, 42), Color(0.36, 0.52, 0.38, 0.98))
+		_ui_architecture_rect(parent, "V0211MilitiaShieldBand", Vector2(39, 40), Vector2(26, 8), accent)
+		_ui_architecture_rect(parent, "V0211MilitiaSpear", Vector2(72, 22), Vector2(5, 58), Color(0.64, 0.56, 0.35, 0.95))
+		_ui_architecture_rect(parent, "V0211MilitiaSpearTip", Vector2(69, 16), Vector2(11, 8), Color(0.64, 0.70, 0.66, 0.95))
+	elif context_kind == "multi":
+		_ui_architecture_rect(parent, "V0211MultiAster", Vector2(22, 22), Vector2(24, 24), Color(0.58, 0.66, 0.42, 0.95))
+		_ui_architecture_rect(parent, "V0211MultiWorker", Vector2(55, 24), Vector2(26, 38), Color(0.26, 0.54, 0.48, 0.95))
+		_ui_architecture_rect(parent, "V0211MultiMilitia", Vector2(29, 56), Vector2(42, 25), Color(0.35, 0.48, 0.34, 0.95))
+	else:
+		_ui_architecture_rect(parent, "V0211GenericEmblem", Vector2(22, 22), Vector2(60, 60), base)
+		_ui_architecture_rect(parent, "V0211GenericAccent", Vector2(34, 34), Vector2(36, 12), accent)
 
 func _v0210_progress_bar(parent: Control, position: Vector2, size: Vector2, ratio: float, fill_color: Color) -> void:
 	_ui_architecture_rect(parent, "V0210HealthBack", position, size, Color(0.08, 0.08, 0.06, 0.98))
@@ -3067,6 +3225,9 @@ func _v0210_command_button(parent: Control, position: Vector2, size: Vector2, sp
 	return button
 
 func _live_ui_shell_production_panel(root: Control, state: Dictionary) -> void:
+	if _salto_production_objectives_log_enabled():
+		_live_ui_shell_production_panel_v0211(root, state)
+		return
 	var panel := _ui_architecture_panel(root, "LiveShellProduction", Vector2(918, 656), Vector2(560, 208), "BUILD / TRAIN / RESEARCH", "", Color(0.80, 0.56, 0.22, 0.94))
 	var tabs: Array[String] = ["BUILD", "TRAIN", "RESEARCH"]
 	var active := str(state.get("activeTab", "BUILD"))
@@ -3099,11 +3260,145 @@ func _live_ui_shell_cards(state: Dictionary) -> Array[Dictionary]:
 		{"title": "Lume Beacon", "meta": "Aether locked", "state": "disabled"}
 	]
 
+func _live_ui_shell_production_panel_v0211(root: Control, state: Dictionary) -> void:
+	var panel := _ui_architecture_panel(root, "V0211ProductionPanel", Vector2(918, 638), Vector2(560, 226), "BUILD / TRAIN / RESEARCH", "", Color(0.82, 0.62, 0.28, 0.96))
+	var tabs: Array[String] = ["BUILD", "TRAIN", "RESEARCH"]
+	var active := str(state.get("activeTab", "BUILD"))
+	for index in range(tabs.size()):
+		_v0211_production_tab(panel, Vector2(18 + index * 128, 42), Vector2(116, 30), tabs[index], active == tabs[index])
+	var cards: Array = state.get("productionCards", [])
+	for index in range(min(cards.size(), 4)):
+		var col := index % 2
+		var row := int(index / 2)
+		_v0211_production_card(panel, Vector2(18 + col * 264, 82 + row * 62), Vector2(250, 56), cards[index], str(state.get("productionFocusId", "")))
+	_ui_architecture_label(panel, "Existing actions only; unavailable cards explain future scope without adding gameplay.", Vector2(18, 208), Vector2(524, 16), 10, Color(0.70, 0.76, 0.62), HORIZONTAL_ALIGNMENT_LEFT)
+
+func _v0211_production_tab(parent: Control, position: Vector2, size: Vector2, text: String, active: bool) -> void:
+	var bg := Color(0.055, 0.065, 0.052, 0.98)
+	var border := Color(0.40, 0.52, 0.38, 0.84)
+	if active:
+		bg = Color(0.16, 0.13, 0.08, 0.98)
+		border = Color(0.90, 0.68, 0.34, 0.98)
+	var tab := _ui_shell_button(parent, position, size, text, bg, border)
+	_ui_architecture_rect(tab, "V0211TabUnderbar", Vector2(10, size.y - 5), Vector2(size.x - 20, 3), Color(0.92, 0.72, 0.34, 0.96) if active else Color(0.28, 0.34, 0.28, 0.74))
+
+func _v0211_production_card(parent: Control, position: Vector2, size: Vector2, card: Dictionary, focus_id: String) -> Button:
+	var card_state := str(card.get("state", "ready"))
+	var card_id := str(card.get("id", ""))
+	var focused := focus_id != "" and focus_id == card_id
+	var border := Color(0.46, 0.62, 0.48, 0.84)
+	var rail := Color(0.38, 0.72, 0.58, 0.94)
+	if card_state == "disabled":
+		border = Color(0.30, 0.34, 0.30, 0.78)
+		rail = Color(0.28, 0.29, 0.25, 0.94)
+	elif card_state == "queued":
+		border = Color(0.88, 0.62, 0.28, 0.98)
+		rail = Color(0.88, 0.55, 0.22, 0.98)
+	elif card_state == "complete":
+		border = Color(0.40, 0.70, 0.54, 0.94)
+		rail = Color(0.34, 0.78, 0.56, 0.98)
+	if focused:
+		border = Color(0.98, 0.78, 0.34, 1.0)
+	var button := Button.new()
+	button.name = "V0211Production%s" % card_id
+	button.text = ""
+	button.position = position
+	button.size = size
+	button.focus_mode = Control.FOCUS_ALL
+	button.mouse_filter = Control.MOUSE_FILTER_STOP
+	button.tooltip_text = str(card.get("why", ""))
+	button.disabled = card_state == "disabled" or card_state == "queued" or card_state == "complete"
+	button.add_theme_stylebox_override("normal", _ui_architecture_panel_style(Color(0.038, 0.046, 0.038, 0.98), border))
+	button.add_theme_stylebox_override("hover", _ui_architecture_panel_style(Color(0.065, 0.078, 0.060, 0.98), Color(0.84, 0.68, 0.34, 0.96)))
+	button.add_theme_stylebox_override("focus", _ui_architecture_panel_style(Color(0.075, 0.082, 0.060, 0.98), Color(0.98, 0.78, 0.34, 1.0)))
+	button.add_theme_stylebox_override("disabled", _ui_architecture_panel_style(Color(0.034, 0.038, 0.034, 0.98), border))
+	parent.add_child(button)
+	_ui_architecture_rect(button, "V0211CardRail", Vector2(0, 0), Vector2(6, size.y), rail)
+	var icon_texture := _v0211_svg_texture(str(card.get("icon", "")))
+	if icon_texture != null:
+		var icon := TextureRect.new()
+		icon.name = "V0211CardIcon"
+		icon.texture = icon_texture
+		icon.position = Vector2(13, 13)
+		icon.size = Vector2(30, 30)
+		icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		button.add_child(icon)
+	else:
+		_ui_architecture_label(button, str(card.get("shortcut", "")), Vector2(13, 13), Vector2(30, 30), 13, Color(0.88, 0.78, 0.46), HORIZONTAL_ALIGNMENT_CENTER)
+	_ui_architecture_label(button, str(card.get("title", "")), Vector2(52, 6), Vector2(136, 18), 13, Color(0.92, 0.86, 0.66), HORIZONTAL_ALIGNMENT_LEFT)
+	_ui_architecture_label(button, str(card.get("shortcut", "")), Vector2(202, 6), Vector2(34, 18), 11, Color(0.86, 0.74, 0.46), HORIZONTAL_ALIGNMENT_RIGHT)
+	_ui_architecture_label(button, str(card.get("cost", "")), Vector2(52, 25), Vector2(178, 15), 10, Color(0.74, 0.80, 0.66), HORIZONTAL_ALIGNMENT_LEFT)
+	_ui_architecture_label(button, _v0211_truncate(str(card.get("detail", "")), 35), Vector2(52, 39), Vector2(184, 15), 9, Color(0.58, 0.66, 0.56), HORIZONTAL_ALIGNMENT_LEFT)
+	if card_state != "ready":
+		var badge_text := card_state.to_upper()
+		_ui_architecture_rect(button, "V0211CardBadgeBack", Vector2(178, 31), Vector2(58, 18), Color(0.06, 0.065, 0.052, 0.88))
+		_ui_architecture_label(button, badge_text, Vector2(181, 31), Vector2(52, 18), 8, Color(0.86, 0.76, 0.52), HORIZONTAL_ALIGNMENT_CENTER)
+	var method_name := str(card.get("method", ""))
+	if method_name != "" and has_method(method_name) and not button.disabled:
+		button.pressed.connect(Callable(self, method_name))
+	return button
+
+func _v0211_svg_texture(icon_name: String) -> Texture2D:
+	if player_ui_shell_svg_texture_cache.has(icon_name):
+		return player_ui_shell_svg_texture_cache[icon_name]
+	var svg := _v0210_svg_source(icon_name)
+	if svg == "":
+		return null
+	var image := Image.new()
+	var result := image.load_svg_from_string(svg, 1.0)
+	if result != OK:
+		player_ui_shell_svg_texture_cache[icon_name] = null
+		return null
+	var texture := ImageTexture.create_from_image(image)
+	player_ui_shell_svg_texture_cache[icon_name] = texture
+	return texture
+
+func _v0211_truncate(value: String, max_length: int) -> String:
+	if value.length() <= max_length:
+		return value
+	if max_length <= 3:
+		return value.substr(0, max_length)
+	return "%s..." % value.substr(0, max_length - 3)
+
 func _live_ui_shell_alerts(root: Control, state: Dictionary) -> void:
+	if _salto_production_objectives_log_enabled():
+		_live_ui_shell_alerts_v0211(root, state)
+		return
 	var border := Color(0.48, 0.70, 0.58, 0.85)
 	if str(state.get("alertSeverity", "")) == "hostile":
 		border = Color(0.92, 0.28, 0.16, 0.98)
 	_ui_architecture_panel(root, "LiveShellAlertCard", Vector2(1270, 150), Vector2(272, 98), "ALERT", str(state.get("alert", "")), border)
+
+func _live_ui_shell_alerts_v0211(root: Control, state: Dictionary) -> void:
+	var hostile := str(state.get("alertSeverity", "")) == "hostile"
+	var border := Color(0.48, 0.70, 0.58, 0.90)
+	var rail := Color(0.35, 0.72, 0.58, 0.96)
+	if hostile:
+		border = Color(0.92, 0.30, 0.18, 0.98)
+		rail = Color(0.92, 0.26, 0.16, 0.98)
+	var panel := _ui_architecture_panel(root, "V0211HostilePressureAlert", Vector2(1248, 136), Vector2(300, 124), "HOSTILE PRESSURE", "", border)
+	_ui_architecture_rect(panel, "V0211AlertRail", Vector2(0, 32), Vector2(7, 92), rail)
+	var icon_texture := _v0211_svg_texture("crosshair" if hostile else "shield")
+	if icon_texture != null:
+		var icon := TextureRect.new()
+		icon.name = "V0211AlertIcon"
+		icon.texture = icon_texture
+		icon.position = Vector2(18, 48)
+		icon.size = Vector2(34, 34)
+		icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		panel.add_child(icon)
+	_ui_architecture_label(panel, str(state.get("alert", "")), Vector2(62, 44), Vector2(214, 24), 14, Color(0.94, 0.86, 0.66), HORIZONTAL_ALIGNMENT_LEFT)
+	var guidance := "No active pressure. Keep training and staging defenders."
+	if hostile:
+		guidance = "Ashen wave active. Hold bridge, focus raiders, preserve Aster."
+	elif str(state.get("alert", "")).to_lower().contains("cleared"):
+		guidance = "Wave cleared. Regroup defenders and prepare the next objective."
+	var guide := _ui_architecture_label(panel, guidance, Vector2(62, 70), Vector2(214, 40), 11, Color(0.78, 0.86, 0.74), HORIZONTAL_ALIGNMENT_LEFT)
+	guide.vertical_alignment = VERTICAL_ALIGNMENT_TOP
 
 func _live_ui_shell_tooltip(root: Control, state: Dictionary) -> void:
 	var panel := _ui_architecture_panel(root, "LiveShellTooltip", Vector2(520, 584), Vector2(560, 66), "TIP", "", Color(0.58, 0.70, 0.52, 0.92))
@@ -3298,6 +3593,7 @@ func run_player_slice_validation() -> void:
 		"saltoUiShellFallbackActive": _salto_ui_shell_fallback_active(),
 		"saltoUiShellLiveOverlayEnabled": _salto_ui_shell_live_enabled(),
 		"saltoSelectionCommandPanelEnabled": _salto_selection_command_panel_enabled(),
+		"saltoProductionObjectivesLogEnabled": _salto_production_objectives_log_enabled(),
 		"saltoAsterPortraitStatus": _salto_aster_portrait_status(),
 		"saltoAsterPortraitSourceLoaded": bool(_salto_aster_portrait_status().get("sourceLoaded", false)),
 		"saltoAsterPortraitFallbackActive": bool(_salto_aster_portrait_status().get("fallbackActive", true)),
@@ -3399,6 +3695,7 @@ func run_player_slice_validation() -> void:
 		"saltoUiShellLiveOverlayEnabled": _salto_ui_shell_live_enabled(),
 		"saltoUiShellProductionSlotAdded": false,
 		"saltoSelectionCommandPanelEnabled": _salto_selection_command_panel_enabled(),
+		"saltoProductionObjectivesLogEnabled": _salto_production_objectives_log_enabled(),
 		"saltoAsterPortraitStatus": _salto_aster_portrait_status(),
 		"saltoAsterPortraitSourceLoaded": bool(_salto_aster_portrait_status().get("sourceLoaded", false)),
 		"saltoAsterPortraitFallbackActive": bool(_salto_aster_portrait_status().get("fallbackActive", true)),
@@ -3584,12 +3881,13 @@ func run_player_slice_capture() -> void:
 		"saltoUiShellLiveOverlayEnabled": _salto_ui_shell_live_enabled(),
 		"saltoUiShellProductionSlotAdded": false,
 		"saltoSelectionCommandPanelEnabled": _salto_selection_command_panel_enabled(),
+		"saltoProductionObjectivesLogEnabled": _salto_production_objectives_log_enabled(),
 		"saltoAsterPortraitStatus": _salto_aster_portrait_status(),
 		"saltoAsterPortraitSourceLoaded": bool(_salto_aster_portrait_status().get("sourceLoaded", false)),
 		"saltoAsterPortraitFallbackActive": bool(_salto_aster_portrait_status().get("fallbackActive", true)),
 		"saltoAsterPortraitProductionSlotAdded": false,
 		"saltoAsterPortraitGeneratedImages": false,
-		"privateHarnessPreservedSeparately": captures.any(func(capture: Dictionary) -> bool: return bool(capture.get("privateHarnessCapture", false))) or ["v0.126", "v0.127", "v0.128", "v0.129", "v0.130", "v0.160", "v0.162", "v0.164", "v0.168", "v0.169", "v0.170", "v0.173", "v0.174", "v0.177", "v0.178", "v0.179", "v0.181", "v0.184", "v0.185", "v0.186", "v0.187", "v0.193", "v0.194", "v0.195", "v0.196", "v0.197", "v0.198", "v0.199", "v0.200"].has(_player_capture_checkpoint()),
+		"privateHarnessPreservedSeparately": captures.any(func(capture: Dictionary) -> bool: return bool(capture.get("privateHarnessCapture", false))) or ["v0.126", "v0.127", "v0.128", "v0.129", "v0.130", "v0.160", "v0.162", "v0.164", "v0.168", "v0.169", "v0.170", "v0.173", "v0.174", "v0.177", "v0.178", "v0.179", "v0.181", "v0.184", "v0.185", "v0.186", "v0.187", "v0.193", "v0.194", "v0.195", "v0.196", "v0.197", "v0.198", "v0.199", "v0.200", "v0.203", "v0.204", "v0.205", "v0.206", "v0.209", "v0.210", "v0.211"].has(_player_capture_checkpoint()),
 		"proceduralPrimitiveOnly": not worker_art_loaded and not barracks_material_loaded and not militia_art_loaded and not aster_art_loaded and not ashen_art_loaded and not ground_material_loaded and not road_material_loaded and not bridge_riverbank_material_loaded,
 		"generatedOrImportedArtIncluded": worker_art_loaded or barracks_material_loaded or militia_art_loaded or aster_art_loaded or ashen_art_loaded or ground_material_loaded or road_material_loaded or bridge_riverbank_material_loaded,
 		"runtimeArtIntegrated": worker_art_loaded or barracks_material_loaded or militia_art_loaded or aster_art_loaded or ashen_art_loaded or ground_material_loaded or road_material_loaded or bridge_riverbank_material_loaded,
@@ -5956,8 +6254,22 @@ func _v0134_readme(triple_report: Dictionary, recovery_report: Dictionary, resta
 func _apply_player_slice_action(action: String) -> Dictionary:
 	player_ui_shell_context_override = action
 	player_ui_shell_focus_hint = ""
+	player_ui_shell_production_tab_override = ""
+	player_ui_shell_production_focus_hint = ""
 	if action == "selection_tooltips":
 		player_ui_shell_focus_hint = "lume_pulse"
+	if action == "production_build":
+		player_ui_shell_production_tab_override = "BUILD"
+		player_ui_shell_production_focus_hint = "restore_barracks"
+	elif action == "production_train":
+		player_ui_shell_production_tab_override = "TRAIN"
+		player_ui_shell_production_focus_hint = "train_militia"
+	elif action == "production_research":
+		player_ui_shell_production_tab_override = "RESEARCH"
+		player_ui_shell_production_focus_hint = "lume_channel"
+	elif action == "production_disabled_tooltip":
+		player_ui_shell_production_tab_override = "RESEARCH"
+		player_ui_shell_production_focus_hint = "bridgecraft"
 	match action:
 		"title":
 			show_player_title()
@@ -5994,6 +6306,66 @@ func _apply_player_slice_action(action: String) -> Dictionary:
 			_call_scene("set_onboarding_step", ["move_to_quarry"])
 			_call_scene("show_objective_feedback", ["select_aster"])
 			_call_scene("focus_visual_subject", ["hero"])
+			_render_player_screen("battle")
+		"production_build":
+			_ensure_player_battle_scene()
+			_call_scene("capture_mine_site")
+			_call_scene("assign_worker_to_mine")
+			_call_scene("select_entity", ["worker_00"])
+			_call_scene("advance_resource_production", [180])
+			_call_scene("focus_visual_subject", ["worker"])
+			_render_player_screen("battle")
+		"production_train":
+			_ensure_player_battle_scene()
+			_call_scene("capture_mine_site")
+			_call_scene("assign_worker_to_mine")
+			_call_scene("advance_resource_production", [180])
+			_call_scene("place_barracks_placeholder")
+			_call_scene("advance_construction", [180])
+			_call_scene("queue_militia_recruit")
+			_call_scene("focus_visual_subject", ["barracks"])
+			_render_player_screen("battle")
+		"production_research", "production_disabled_tooltip":
+			_ensure_player_battle_scene()
+			_call_scene("capture_mine_site")
+			_call_scene("assign_worker_to_mine")
+			_call_scene("advance_resource_production", [180])
+			_call_scene("place_barracks_placeholder")
+			_call_scene("advance_construction", [180])
+			_call_scene("select_entity", ["hero_aster"])
+			_call_scene("focus_visual_subject", ["hero"])
+			_render_player_screen("battle")
+		"initial_objective":
+			_ensure_player_battle_scene()
+			_call_scene("select_entity", ["hero_aster"])
+			_call_scene("set_onboarding_step", ["select_aster"])
+			_call_scene("show_objective_feedback", ["select_aster"])
+			_call_scene("focus_visual_subject", ["hero"])
+			_render_player_screen("battle")
+		"event_progression":
+			_ensure_player_battle_scene()
+			_call_scene("capture_mine_site")
+			_call_scene("assign_worker_to_mine")
+			_call_scene("advance_resource_production", [180])
+			_call_scene("place_barracks_placeholder")
+			_call_scene("advance_construction", [180])
+			_call_scene("queue_militia_recruit")
+			_call_scene("complete_recruit_queue", [140])
+			_call_scene("box_select_squad")
+			_call_scene("focus_visual_subject", ["militia"])
+			_render_player_screen("battle")
+		"v0211_overview":
+			_ensure_player_battle_scene()
+			_call_scene("capture_mine_site")
+			_call_scene("assign_worker_to_mine")
+			_call_scene("advance_resource_production", [180])
+			_call_scene("place_barracks_placeholder")
+			_call_scene("advance_construction", [180])
+			_call_scene("queue_militia_recruit")
+			_call_scene("complete_recruit_queue", [140])
+			_call_scene("box_select_squad")
+			_call_scene("set_onboarding_step", ["prepare_ashen_pressure"])
+			_call_scene("focus_visual_subject", ["squad"])
 			_render_player_screen("battle")
 		"move_order":
 			_ensure_player_battle_scene()
@@ -6140,6 +6512,20 @@ func _apply_player_slice_action(action: String) -> Dictionary:
 			_call_scene("box_select_squad")
 			_call_scene("set_onboarding_step", ["prepare_ashen_pressure"])
 			_call_scene("focus_visual_subject", ["squad"])
+			_render_player_screen("battle")
+		"ashen_pressure_active":
+			_ensure_player_battle_scene()
+			_call_scene("capture_mine_site")
+			_call_scene("assign_worker_to_mine")
+			_call_scene("advance_resource_production", [180])
+			_call_scene("place_barracks_placeholder")
+			_call_scene("advance_construction", [180])
+			_call_scene("queue_militia_recruit")
+			_call_scene("complete_recruit_queue", [140])
+			_call_scene("trigger_pressure_wave")
+			_call_scene("box_select_squad")
+			_call_scene("set_onboarding_step", ["prepare_ashen_pressure"])
+			_call_scene("focus_visual_subject", ["attack_order"])
 			_render_player_screen("battle")
 		"ashen_pressure_wave":
 			_ensure_player_battle_scene()
@@ -6351,6 +6737,7 @@ func _apply_player_slice_action(action: String) -> Dictionary:
 	status["saltoUiShellFallbackActive"] = _salto_ui_shell_fallback_active()
 	status["saltoUiShellLiveOverlayEnabled"] = _salto_ui_shell_live_enabled() and player_ui_shell_overlay != null and is_instance_valid(player_ui_shell_overlay)
 	status["saltoSelectionCommandPanelEnabled"] = _salto_selection_command_panel_enabled()
+	status["saltoProductionObjectivesLogEnabled"] = _salto_production_objectives_log_enabled()
 	status["saltoAsterPortraitStatus"] = _salto_aster_portrait_status()
 	status["saltoAsterPortraitSourceLoaded"] = bool(status["saltoAsterPortraitStatus"].get("sourceLoaded", false))
 	status["saltoAsterPortraitFallbackActive"] = bool(status["saltoAsterPortraitStatus"].get("fallbackActive", true))
@@ -6360,6 +6747,8 @@ func _apply_player_slice_action(action: String) -> Dictionary:
 
 func _player_capture_checkpoint() -> String:
 	var normalized_root := _artifact_root_from_args().replace("\\", "/")
+	if normalized_root.contains("/v0211"):
+		return "v0.211"
 	if normalized_root.contains("/v0210"):
 		return "v0.210"
 	if normalized_root.contains("/v0209"):
@@ -6435,9 +6824,20 @@ func _player_capture_checkpoint() -> String:
 	return "v0.124"
 
 func _is_bounded_microloop_checkpoint() -> bool:
-	return ["v0.129", "v0.130", "v0.160", "v0.162", "v0.164", "v0.166", "v0.168", "v0.169", "v0.170", "v0.173", "v0.174", "v0.177", "v0.178", "v0.179", "v0.181", "v0.184", "v0.185", "v0.186", "v0.187", "v0.193", "v0.194", "v0.195", "v0.196", "v0.197", "v0.198", "v0.199", "v0.200", "v0.203", "v0.204", "v0.205", "v0.206", "v0.209", "v0.210"].has(_player_capture_checkpoint())
+	return ["v0.129", "v0.130", "v0.160", "v0.162", "v0.164", "v0.166", "v0.168", "v0.169", "v0.170", "v0.173", "v0.174", "v0.177", "v0.178", "v0.179", "v0.181", "v0.184", "v0.185", "v0.186", "v0.187", "v0.193", "v0.194", "v0.195", "v0.196", "v0.197", "v0.198", "v0.199", "v0.200", "v0.203", "v0.204", "v0.205", "v0.206", "v0.209", "v0.210", "v0.211"].has(_player_capture_checkpoint())
 
 func _player_capture_steps() -> Array[Dictionary]:
+	if _player_capture_checkpoint() == "v0.211":
+		return [
+			{"id": "build", "label": "Build tab with Worker-supported restoration", "action": "production_build"},
+			{"id": "train", "label": "Train tab with Barracks Militia queue", "action": "production_train"},
+			{"id": "research", "label": "Research tab unavailable preview cards", "action": "production_research"},
+			{"id": "disabled_tooltip", "label": "Disabled card focus and why-unavailable messaging", "action": "production_disabled_tooltip"},
+			{"id": "initial_objective", "label": "Initial objective and next action stack", "action": "initial_objective"},
+			{"id": "event_progression", "label": "Progression event log after mine Barracks Militia", "action": "event_progression"},
+			{"id": "ashen_alert", "label": "Ashen hostile pressure alert card", "action": "ashen_pressure_active"},
+			{"id": "overview", "label": "Production objective event and alert overview", "action": "v0211_overview"}
+		]
 	if _player_capture_checkpoint() == "v0.210":
 		if _salto_aster_portrait_force_fallback():
 			return [
