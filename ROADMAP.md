@@ -11,11 +11,17 @@ Every phase should protect these long-term pillars:
 
 ## Current Recommended Next Phase
 
-The current checkpoint is **v0.221 Lighting Camera Selection And Composition Pass** on 2026-06-11. It keeps the v0.215 presentation-reboot path isolated while adding visual-only composition, lighting, camera, value and selection-scale refinements on top of the selected v0.216-v0.220 material/shell/dressing context. It preserves the default procedural launcher, all prior launchers and comparators, and gameplay/pathing/collision/objective/AI/economy/save/stable-ID/balance boundaries.
+The current checkpoint is **v0.222 Minimal Contextual Fantasy RTS HUD** on 2026-06-11. It keeps the v0.215 presentation-reboot path isolated while replacing the v0.214-style full dashboard HUD with a compact opt-in contextual HUD on top of the selected v0.216-v0.221 material/shell/dressing/composition context. It preserves the default procedural launcher, all prior launchers and comparators, and gameplay/pathing/collision/objective/AI/economy/save/stable-ID/balance boundaries.
 
-The queued next milestone is **v0.222**. Continue only from a clean, synced, pushed and CI-green v0.221 state, and only inside that prompt's stated boundaries.
+The queued next milestone is **v0.223 HUD visual language, icons and interaction QA**. Continue only from a clean, synced, pushed and CI-green v0.222 state, and only inside that prompt's stated boundaries.
 
-New v0.221 docs:
+New v0.222 docs:
+
+- `docs/V0222_MINIMAL_CONTEXTUAL_HUD_REPORT.md`
+- `docs/V0222_UI_OCCUPANCY_REPORT.md`
+- `docs/V0222_IMPLEMENTATION_REPORT.md`
+
+Previous v0.221 docs:
 
 - `docs/V0221_BATTLEFIELD_COMPOSITION_REPORT.md`
 - `docs/V0221_SELECTION_INDICATOR_REPORT.md`

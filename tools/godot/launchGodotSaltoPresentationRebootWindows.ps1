@@ -45,6 +45,7 @@ $StructureFinishMode = "v0202-selected"
 $StructureShellMode = "v0219-selected"
 $EnvironmentDressingMode = "v0220-selected"
 $CompositionLightingSelectionMode = "v0221-selected"
+$MinimalContextualHudMode = "disabled"
 $ForwardArgs = @()
 foreach ($arg in $RemainingArgs) {
   if ($arg -eq "--salto-presentation-reboot-use-v0175-ground") {
@@ -75,6 +76,10 @@ foreach ($arg in $RemainingArgs) {
     $CompositionLightingSelectionMode = "disabled"
   } elseif ($arg -eq "--salto-composition-lighting-selection") {
     $CompositionLightingSelectionMode = "v0221-selected"
+  } elseif ($arg -eq "--salto-minimal-contextual-hud") {
+    $MinimalContextualHudMode = "v0222-selected"
+  } elseif ($arg -eq "--salto-minimal-contextual-hud-disabled") {
+    $MinimalContextualHudMode = "disabled"
   } else {
     $ForwardArgs += $arg
   }
@@ -228,6 +233,9 @@ if ($EnvironmentDressingMode -ne "disabled") {
 if ($EnvironmentDressingMode -ne "disabled" -and $CompositionLightingSelectionMode -ne "disabled") {
   $RebootArgs += "--salto-composition-lighting-selection"
 }
+if ($MinimalContextualHudMode -eq "v0222-selected") {
+  $RebootArgs += "--salto-minimal-contextual-hud"
+}
 if ($BridgeShellMode -eq "v0218-legacy-comparator") {
   $RebootArgs += "--salto-bridge-shell-legacy-comparator"
 }
@@ -238,8 +246,8 @@ if ($ForwardArgs) {
   $RebootArgs += $ForwardArgs
 }
 
-Write-Output "Launching v0.221 Salto presentation reboot experiment."
-Write-Output "Scope: isolated opt-in shell-v2 review path; compact contextual HUD plus selected terrain, road, riverbank, water, bridge, structure shell hierarchy, sparse prop-atlas dressing, and composition/lighting/selection pass; no new production slot, no browser wiring."
+Write-Output "Launching Salto presentation reboot experiment."
+Write-Output "Scope: isolated opt-in shell-v2 review path; compact contextual HUD only when requested plus selected terrain, road, riverbank, water, bridge, structure shell hierarchy, sparse prop-atlas dressing, and composition/lighting/selection pass; no new production slot, no browser wiring."
 Write-Output "Ground material mode: $GroundMode"
 Write-Output "Selected ground material SHA-256: $GroundExpectedSha256"
 Write-Output "Road/riverbank/water material mode: $RoadRiverbankWaterMode"
@@ -251,6 +259,7 @@ Write-Output "Selected v0.202 structure-finish SHA-256: $StructureFinishExpected
 Write-Output "Environment dressing mode: $EnvironmentDressingMode"
 Write-Output "Selected v0.220 prop-atlas SHA-256: $PropAtlasExpectedSha256"
 Write-Output "Composition lighting selection mode: $CompositionLightingSelectionMode"
+Write-Output "Minimal contextual HUD mode: $MinimalContextualHudMode"
 Write-Output "Default launcher, prior UI launchers, procedural fallback and v0.175 ground material comparator remain preserved."
 
 & (Join-Path $PSScriptRoot "launchGodotSaltoShellV2GroundingPropsWindows.ps1") -Wait:$Wait @RebootArgs

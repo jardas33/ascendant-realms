@@ -1,5 +1,33 @@
 # Changelog
 
+# v0.222 Minimal Contextual Fantasy RTS HUD - 2026-06-11
+
+This checkpoint replaces the v0.214-style always-open dashboard HUD in the isolated Godot Salto presentation-reboot review path with a compact, contextual battlefield-first HUD. The default stabilized launcher remains procedural, and v0.214/full-HUD evidence remains comparator-only.
+
+Changed:
+
+- Added the `--salto-minimal-contextual-hud` opt-in review flag and capture/validation/benchmark tooling.
+- Added a slim resource strip, compact objective ribbon, bottom-left minimap, bottom-center selected-context bar and compact utility cluster.
+- Moved event history, production actions, objective detail, hostile alert and tooltip into contextual drawers that are hidden by default.
+- Added measured UI occupancy gates across 1920x1080, 1600x900 and 1366x768.
+- Added the v0.222 manual review pack and required implementation reports.
+
+Boundary:
+
+- Generated images: zero.
+- Downloaded assets: zero.
+- New art slots: zero.
+- New production runtime art slots: zero.
+- Browser runtime changes: none.
+- Default launcher changes: none.
+- Gameplay, pathing, collision, objective, AI, economy, save, stable-ID and balance changes: none.
+
+Validation:
+
+- Minimal contextual HUD capture and review-pack generation passed.
+- Default fixed UI area ratio measured at 0.0805, expanded contextual worst case at 0.2227, and v0.214 comparator estimate at 0.36.
+- Minimal contextual HUD validation, benchmark, v0.221 composition validation, v0.215 presentation-reboot validation, runtime-art slot validation, content validation, art-intake validation, Vitest, Godot scaffold tests, production build and diff hygiene passed.
+
 # v0.221 Lighting Camera Selection And Composition Pass - 2026-06-11
 
 This checkpoint refines the isolated Godot Salto presentation-reboot review path with a visual-only composition, lighting, camera and selection-scale pass. The default stabilized launcher remains procedural, and v0.220 environment dressing remains available without v0.221 composition when explicitly validated as its comparator path.

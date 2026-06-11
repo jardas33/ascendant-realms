@@ -1,12 +1,12 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-06-11 v0.221 Lighting camera selection and composition pass
+Last updated: 2026-06-11 v0.222 Minimal contextual fantasy RTS HUD
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
 ## Current Continuation Note
 
-The latest work is v0.221 Lighting camera selection and composition pass. It keeps the v0.215 presentation-reboot path isolated, generates zero images, adds zero slots, preserves selected v0.216-v0.220 material/shell/dressing context, adds visual-only composition/lighting/camera/selection refinements, preserves v0.220 as a comparator with v0.221 disabled, keeps browser runtime untouched, keeps the default launcher procedural, preserves all prior launchers, preserves gameplay/pathing/collisions/objectives/AI/economy/saves/stable IDs/balance, and continues to queued v0.222 only after clean sync and CI-green proof.
+The latest work is v0.222 Minimal contextual fantasy RTS HUD. It keeps the v0.215 presentation-reboot path isolated, generates zero images, adds zero slots, preserves selected v0.216-v0.221 material/shell/dressing/composition context, replaces the full dashboard-style HUD with a compact opt-in contextual HUD, preserves v0.214/full-HUD evidence as comparator-only, keeps browser runtime untouched, keeps the default launcher procedural, preserves all prior launchers, preserves gameplay/pathing/collisions/objectives/AI/economy/saves/stable IDs/balance, and continues to queued v0.223 only after clean sync and CI-green proof.
 
 ## Project Identity
 

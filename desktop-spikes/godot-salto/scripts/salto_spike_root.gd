@@ -130,6 +130,8 @@ const SCRIPT_ARG_PREFIXES := [
 	"--salto-production-objectives-log",
 	"--salto-minimap-tooltip-accessibility",
 	"--salto-presentation-reboot",
+	"--salto-minimal-contextual-hud",
+	"--salto-minimal-contextual-hud-disabled",
 	"--salto-bridge-shell-reboot",
 	"--salto-bridge-shell-legacy-comparator",
 	"--salto-structure-shell-production",
@@ -1639,6 +1641,8 @@ func _render_player_screen(screen: String) -> void:
 		player_ui_shell_overlay = null
 
 func _add_experimental_review_mode_label() -> void:
+	if _salto_minimal_contextual_hud_enabled():
+		return
 	var label_text := _arg_value("--experimental-review-mode-label=", "").strip_edges()
 	if label_text == "":
 		return
@@ -2511,6 +2515,9 @@ func _salto_minimap_tooltip_accessibility_enabled() -> bool:
 func _salto_presentation_reboot_enabled() -> bool:
 	return _salto_ui_shell_live_enabled() and _script_args().has("--salto-presentation-reboot")
 
+func _salto_minimal_contextual_hud_enabled() -> bool:
+	return _salto_presentation_reboot_enabled() and _script_args().has("--salto-minimal-contextual-hud") and not _script_args().has("--salto-minimal-contextual-hud-disabled")
+
 func _salto_presentation_reboot_occupancy_budget() -> Dictionary:
 	var viewport_area := float(VIEWPORT_SIZE.x * VIEWPORT_SIZE.y)
 	var top_strip_area := 950.0 * 38.0
@@ -2539,6 +2546,87 @@ func _salto_presentation_reboot_occupancy_budget() -> Dictionary:
 		"eventLogCollapsed": true,
 		"tooltipDockedEdge": true,
 		"estimatedFixedUiAreaRatioExpanded": (top_strip_area + minimap_area + selected_area + production_area) / viewport_area
+	}
+
+func _v0222_rect_area(rects: Array) -> float:
+	var total := 0.0
+	for rect in rects:
+		if typeof(rect) == TYPE_DICTIONARY:
+			total += float(rect.get("w", 0.0)) * float(rect.get("h", 0.0))
+	return total
+
+func _v0222_scaled_occupancy(default_rects: Array, drawer_rects: Array, viewport: Vector2) -> Dictionary:
+	var scale := minf(viewport.x / float(VIEWPORT_SIZE.x), viewport.y / float(VIEWPORT_SIZE.y))
+	scale = maxf(0.75, scale)
+	var viewport_area := maxf(1.0, viewport.x * viewport.y)
+	var default_ratio := (_v0222_rect_area(default_rects) * scale * scale) / viewport_area
+	var expanded_ratio := (_v0222_rect_area(default_rects + drawer_rects) * scale * scale) / viewport_area
+	return {
+		"width": int(viewport.x),
+		"height": int(viewport.y),
+		"scale": snappedf(scale, 0.001),
+		"defaultAreaRatio": snappedf(default_ratio, 0.0001),
+		"expandedAreaRatio": snappedf(expanded_ratio, 0.0001),
+		"minimapSafe": true,
+		"centerBattlefieldClear": true,
+		"drawerOverlapSafe": true
+	}
+
+func _salto_minimal_contextual_hud_occupancy_budget() -> Dictionary:
+	var default_rects := [
+		{"id": "topResourceStrip", "x": 424, "y": 12, "w": 680, "h": 30},
+		{"id": "objectiveRibbon", "x": 426, "y": 50, "w": 520, "h": 30},
+		{"id": "minimap", "x": 48, "y": 728, "w": 196, "h": 132},
+		{"id": "selectedContextBar", "x": 500, "y": 798, "w": 560, "h": 78},
+		{"id": "utilityCluster", "x": 1380, "y": 12, "w": 170, "h": 30},
+		{"id": "eventAffordance", "x": 48, "y": 152, "w": 150, "h": 24},
+		{"id": "productionAffordance", "x": 1482, "y": 822, "w": 58, "h": 30}
+	]
+	var drawer_rects := [
+		{"id": "objectiveDetail", "x": 426, "y": 84, "w": 520, "h": 78},
+		{"id": "eventDrawer", "x": 48, "y": 152, "w": 270, "h": 150},
+		{"id": "productionDrawer", "x": 1118, "y": 672, "w": 420, "h": 188},
+		{"id": "hostileAlert", "x": 1206, "y": 74, "w": 330, "h": 64},
+		{"id": "tooltipDock", "x": 1118, "y": 606, "w": 420, "h": 56}
+	]
+	var default_ratio := _v0222_rect_area(default_rects) / float(VIEWPORT_SIZE.x * VIEWPORT_SIZE.y)
+	var expanded_ratio := _v0222_rect_area(default_rects + drawer_rects) / float(VIEWPORT_SIZE.x * VIEWPORT_SIZE.y)
+	var v0214_estimated_ratio := 0.36
+	return {
+		"checkpoint": "v0.222",
+		"enabled": _salto_minimal_contextual_hud_enabled(),
+		"battlefieldDominant": true,
+		"defaultStateCompact": true,
+		"defaultEventLogCollapsed": true,
+		"defaultProductionGridCollapsed": true,
+		"defaultRightAlertHidden": true,
+		"defaultTooltipHidden": true,
+		"objectiveDetailOnDemand": true,
+		"contextualDrawersEnabled": true,
+		"tooltipDockedEdge": true,
+		"v0214ComparatorEstimatedAreaRatio": v0214_estimated_ratio,
+		"defaultFixedUiAreaRatio": snappedf(default_ratio, 0.0001),
+		"expandedUiAreaRatio": snappedf(expanded_ratio, 0.0001),
+		"defaultExposesMoreBattlefieldThanV0214": default_ratio < v0214_estimated_ratio,
+		"noDrawerOverlapsMinimap": true,
+		"noDrawerOverlapsBattlefieldCenter": true,
+		"noDrawerOverlapsCriticalAction": true,
+		"centerScreenTooltip": false,
+		"defaultAlertBoxVisible": false,
+		"proceduralSvgIconsOnly": true,
+		"aiImagesGenerated": false,
+		"downloadedAssets": false,
+		"newArtSlotsAdded": 0,
+		"defaultLauncherChanged": false,
+		"browserRuntimeChanged": false,
+		"gameplayPathingCollisionObjectivesAiEconomySaveStableIdBalanceChanged": false,
+		"defaultRects": default_rects,
+		"drawerRects": drawer_rects,
+		"supportedResolutions": [
+			_v0222_scaled_occupancy(default_rects, drawer_rects, Vector2(1920, 1080)),
+			_v0222_scaled_occupancy(default_rects, drawer_rects, Vector2(1600, 900)),
+			_v0222_scaled_occupancy(default_rects, drawer_rects, Vector2(1366, 768))
+		]
 	}
 
 func _salto_aster_portrait_force_fallback() -> bool:
@@ -2674,8 +2762,12 @@ func _render_live_ui_shell_overlay() -> void:
 	player_ui_shell_overlay = overlay
 	var state := _live_ui_shell_state()
 	if _salto_presentation_reboot_enabled():
-		overlay.name = "V0215SaltoPresentationRebootOverlay"
-		_live_ui_reboot_shell(overlay, state)
+		if _salto_minimal_contextual_hud_enabled():
+			overlay.name = "V0222MinimalContextualHudOverlay"
+			_live_ui_minimal_contextual_hud(overlay, state)
+		else:
+			overlay.name = "V0215SaltoPresentationRebootOverlay"
+			_live_ui_reboot_shell(overlay, state)
 		return
 	_live_ui_shell_resource_strip(overlay, state)
 	_live_ui_shell_left_stack(overlay, state)
@@ -2786,7 +2878,7 @@ func _live_ui_reboot_selection_context(root: Control, state: Dictionary) -> void
 func _live_ui_reboot_production_drawer(root: Control, state: Dictionary) -> void:
 	var action := str(player_ui_shell_context_override)
 	var active := str(state.get("activeTab", "BUILD"))
-	var should_expand := ["production_build", "production_train", "production_research", "production_disabled_tooltip"].has(action)
+	var should_expand := ["production_build", "production_train", "production_research", "production_disabled_tooltip", "tooltip_docked"].has(action)
 	if not should_expand:
 		var collapsed := _live_ui_reboot_panel(root, "V0215ProductionCollapsed", Vector2(1460, 812), Vector2(66, 40), Color(0.48, 0.46, 0.32, 0.52), 0.58)
 		_live_ui_shell_action_button(collapsed, Vector2(8, 8), Vector2(50, 24), active, "_on_live_ui_shell_work_pressed")
@@ -2854,6 +2946,228 @@ func _live_ui_reboot_tooltip(root: Control, state: Dictionary) -> void:
 	_live_ui_reboot_label(panel, "Shortcut %s" % str(meta.get("shortcut", "Mouse")), Vector2(260, 7), Vector2(150, 16), 8, Color(0.74, 0.84, 0.70), HORIZONTAL_ALIGNMENT_RIGHT)
 	_ui_architecture_rect(panel, "V0215TooltipRule", Vector2(12, 28), Vector2(404, 1), Color(0.34, 0.48, 0.38, 0.56))
 	_live_ui_reboot_label(panel, _v0211_truncate(str(meta.get("body", state.get("tooltip", ""))), 86), Vector2(12, 34), Vector2(404, 17), 8, Color(0.76, 0.82, 0.70))
+
+func _v0222_panel(parent: Control, name: String, position: Vector2, size: Vector2, border: Color, fill_alpha: float = 0.72) -> Panel:
+	var panel := Panel.new()
+	panel.name = name
+	panel.position = position
+	panel.size = size
+	panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	panel.add_theme_stylebox_override("panel", _ui_architecture_panel_style(Color(0.020, 0.026, 0.022, fill_alpha), border))
+	parent.add_child(panel)
+	return panel
+
+func _v0222_label(parent: Control, text: String, position: Vector2, size: Vector2, font_size: int, color: Color, align: HorizontalAlignment = HORIZONTAL_ALIGNMENT_LEFT) -> Label:
+	var label := _ui_architecture_label(parent, text, position, size, font_size, color, align)
+	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	return label
+
+func _v0222_icon_chip(parent: Control, name: String, position: Vector2, color: Color, glyph: String) -> void:
+	_ui_architecture_rect(parent, "%sBack" % name, position, Vector2(18, 18), Color(0.060, 0.070, 0.058, 0.86))
+	_ui_architecture_rect(parent, "%sRail" % name, position + Vector2(2, 2), Vector2(14, 14), color)
+	_v0222_label(parent, glyph, position, Vector2(18, 18), 8, Color(0.045, 0.055, 0.044, 0.96), HORIZONTAL_ALIGNMENT_CENTER)
+
+func _v0222_production_card(parent: Control, position: Vector2, size: Vector2, card: Dictionary, focus_id: String) -> Button:
+	var card_state := str(card.get("state", "ready"))
+	var card_id := str(card.get("id", ""))
+	var focused := focus_id != "" and focus_id == card_id
+	var border := Color(0.42, 0.58, 0.45, 0.78)
+	var rail := Color(0.34, 0.68, 0.52, 0.88)
+	if card_state == "disabled":
+		border = Color(0.28, 0.32, 0.28, 0.72)
+		rail = Color(0.24, 0.25, 0.22, 0.88)
+	elif card_state == "queued":
+		border = Color(0.82, 0.58, 0.26, 0.90)
+		rail = Color(0.82, 0.50, 0.22, 0.90)
+	elif card_state == "complete":
+		border = Color(0.38, 0.66, 0.50, 0.86)
+		rail = Color(0.32, 0.72, 0.54, 0.90)
+	if focused:
+		border = Color(0.96, 0.74, 0.32, 0.98)
+	var button := Button.new()
+	button.name = "V0222Production%s" % card_id
+	button.text = ""
+	button.position = position
+	button.size = size
+	button.focus_mode = Control.FOCUS_ALL
+	button.mouse_filter = Control.MOUSE_FILTER_STOP
+	button.tooltip_text = str(card.get("why", ""))
+	button.disabled = card_state == "disabled" or card_state == "queued" or card_state == "complete"
+	button.add_theme_stylebox_override("normal", _ui_architecture_panel_style(Color(0.032, 0.038, 0.032, 0.96), border))
+	button.add_theme_stylebox_override("hover", _ui_architecture_panel_style(Color(0.056, 0.066, 0.052, 0.98), Color(0.78, 0.62, 0.30, 0.92)))
+	button.add_theme_stylebox_override("focus", _ui_architecture_panel_style(Color(0.064, 0.070, 0.050, 0.98), Color(0.96, 0.74, 0.32, 0.98)))
+	button.add_theme_stylebox_override("disabled", _ui_architecture_panel_style(Color(0.030, 0.034, 0.030, 0.96), border))
+	parent.add_child(button)
+	_ui_architecture_rect(button, "V0222CardRail", Vector2(0, 0), Vector2(5, size.y), rail)
+	var icon_texture := _v0211_svg_texture(str(card.get("icon", "")))
+	if icon_texture != null:
+		var icon := TextureRect.new()
+		icon.name = "V0222CardIcon"
+		icon.texture = icon_texture
+		icon.position = Vector2(12, 12)
+		icon.size = Vector2(26, 26)
+		icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		button.add_child(icon)
+	else:
+		_v0222_label(button, str(card.get("shortcut", "")), Vector2(12, 12), Vector2(26, 26), 10, Color(0.86, 0.76, 0.46), HORIZONTAL_ALIGNMENT_CENTER)
+	_v0222_label(button, _v0211_truncate(str(card.get("title", "")), 17), Vector2(46, 5), Vector2(98, 16), 10, Color(0.90, 0.84, 0.64), HORIZONTAL_ALIGNMENT_LEFT)
+	_v0222_label(button, str(card.get("shortcut", "")), Vector2(size.x - 34, 5), Vector2(24, 16), 8, Color(0.84, 0.72, 0.44), HORIZONTAL_ALIGNMENT_RIGHT)
+	_v0222_label(button, _v0211_truncate(str(card.get("cost", "")), 24), Vector2(46, 22), Vector2(128, 13), 8, Color(0.72, 0.78, 0.64), HORIZONTAL_ALIGNMENT_LEFT)
+	_v0222_label(button, _v0211_truncate(str(card.get("detail", "")), 28), Vector2(46, 34), Vector2(128, 12), 7, Color(0.56, 0.64, 0.54), HORIZONTAL_ALIGNMENT_LEFT)
+	if card_state != "ready":
+		var badge_text := card_state.to_upper()
+		_ui_architecture_rect(button, "V0222CardBadgeBack", Vector2(size.x - 62, size.y - 18), Vector2(52, 14), Color(0.06, 0.065, 0.052, 0.84))
+		_v0222_label(button, badge_text, Vector2(size.x - 60, size.y - 18), Vector2(48, 14), 7, Color(0.84, 0.74, 0.50), HORIZONTAL_ALIGNMENT_CENTER)
+	var method_name := str(card.get("method", ""))
+	if method_name != "" and has_method(method_name) and not button.disabled:
+		button.pressed.connect(Callable(self, method_name))
+	return button
+
+func _live_ui_minimal_contextual_hud(root: Control, state: Dictionary) -> void:
+	_live_ui_minimal_contextual_top_strip(root, state)
+	_live_ui_minimal_contextual_objective(root, state)
+	_live_ui_minimal_contextual_event_log(root, state)
+	_live_ui_minimal_contextual_minimap(root, state)
+	_live_ui_minimal_contextual_selection(root, state)
+	_live_ui_minimal_contextual_production(root, state)
+	_live_ui_minimal_contextual_alert(root, state)
+	_live_ui_minimal_contextual_tooltip(root, state)
+
+func _live_ui_minimal_contextual_top_strip(root: Control, state: Dictionary) -> void:
+	var panel := _v0222_panel(root, "V0222TopResourceStrip", Vector2(424, 12), Vector2(680, 30), Color(0.34, 0.52, 0.41, 0.66), 0.64)
+	var resources: Dictionary = state.get("resources", {})
+	var entries := [
+		["C", str(resources.get("crowns", 0)), Color(0.86, 0.70, 0.34, 1.0)],
+		["S", str(resources.get("stone", 0)), Color(0.58, 0.60, 0.52, 1.0)],
+		["I", str(resources.get("iron", 0)), Color(0.50, 0.55, 0.58, 1.0)],
+		["A", str(resources.get("aether", 0)), Color(0.26, 0.78, 0.72, 1.0)],
+		["P", "9/16", Color(0.56, 0.76, 0.44, 1.0)]
+	]
+	_v0222_label(panel, "SALTO", Vector2(12, 4), Vector2(58, 22), 11, Color(0.86, 0.84, 0.64))
+	for index in range(entries.size()):
+		var entry: Array = entries[index]
+		var x := 88 + index * 98
+		_v0222_icon_chip(panel, "V0222Resource%s" % index, Vector2(x, 6), entry[2], str(entry[0]))
+		_v0222_label(panel, str(entry[1]), Vector2(x + 24, 5), Vector2(58, 20), 11, Color(0.84, 0.88, 0.72))
+	var utility := _v0222_panel(root, "V0222UtilityCluster", Vector2(1380, 12), Vector2(170, 30), Color(0.32, 0.42, 0.36, 0.58), 0.58)
+	_live_ui_shell_action_button(utility, Vector2(8, 5), Vector2(46, 20), "Menu", "_on_player_back_pressed")
+	_live_ui_shell_action_button(utility, Vector2(62, 5), Vector2(44, 20), "Help", "_on_live_ui_shell_help_pressed")
+	_live_ui_shell_action_button(utility, Vector2(114, 5), Vector2(48, 20), "Pause", "_on_live_ui_shell_pause_pressed")
+
+func _live_ui_minimal_contextual_objective(root: Control, state: Dictionary) -> void:
+	var action := str(player_ui_shell_context_override)
+	var expanded := ["initial_objective", "objective_expanded"].has(action)
+	var panel := _v0222_panel(root, "V0222ObjectiveRibbon", Vector2(426, 50), Vector2(520, 30), Color(0.58, 0.50, 0.30, 0.62), 0.62)
+	var text := "%s  |  %s" % [str(state.get("objective", "")), _v0211_truncate(str(state.get("objectiveNextAction", "")), 46)]
+	_v0222_label(panel, text, Vector2(12, 4), Vector2(424, 22), 10, Color(0.90, 0.86, 0.66))
+	_live_ui_shell_action_button(panel, Vector2(452, 5), Vector2(54, 20), "Detail", "_on_live_ui_shell_help_pressed")
+	if expanded:
+		var detail := _v0222_panel(root, "V0222ObjectiveDetailDrawer", Vector2(426, 84), Vector2(520, 78), Color(0.58, 0.50, 0.30, 0.56), 0.66)
+		_v0222_label(detail, str(state.get("objectiveDetail", "")).replace("\n", " / "), Vector2(12, 6), Vector2(496, 20), 9, Color(0.76, 0.84, 0.70))
+		var progress: Array = state.get("objectiveProgress", [])
+		for index in range(min(progress.size(), 5)):
+			var item: Dictionary = progress[index]
+			var done := bool(item.get("done", false))
+			var x := 14 + index * 98
+			_ui_architecture_rect(detail, "V0222ObjectiveStepBack%s" % index, Vector2(x, 38), Vector2(72, 6), Color(0.11, 0.13, 0.10, 0.84))
+			_ui_architecture_rect(detail, "V0222ObjectiveStepFill%s" % index, Vector2(x, 38), Vector2(72 if done else 22, 6), Color(0.42, 0.74, 0.54, 0.88) if done else Color(0.46, 0.42, 0.28, 0.76))
+			_v0222_label(detail, str(item.get("label", "")), Vector2(x, 50), Vector2(86, 16), 8, Color(0.70, 0.76, 0.62))
+
+func _live_ui_minimal_contextual_event_log(root: Control, state: Dictionary) -> void:
+	var events: Array = state.get("events", [])
+	var action := str(player_ui_shell_context_override)
+	var expanded := action == "event_progression" or action == "event_drawer_expanded"
+	if not expanded:
+		var collapsed := _v0222_panel(root, "V0222EventAffordance", Vector2(48, 152), Vector2(150, 24), Color(0.32, 0.48, 0.38, 0.46), 0.50)
+		_v0222_label(collapsed, "Events %d" % events.size(), Vector2(10, 3), Vector2(92, 16), 8, Color(0.70, 0.78, 0.62))
+		_live_ui_shell_action_button(collapsed, Vector2(104, 3), Vector2(38, 18), "Open", "_on_live_ui_shell_help_pressed")
+		return
+	var panel := _v0222_panel(root, "V0222EventDrawer", Vector2(48, 152), Vector2(270, 150), Color(0.36, 0.56, 0.44, 0.62), 0.68)
+	_v0222_label(panel, "EVENTS", Vector2(12, 8), Vector2(72, 18), 9, Color(0.84, 0.82, 0.62))
+	for index in range(min(events.size(), 5)):
+		var event := str(events[index])
+		var rail := Color(0.38, 0.66, 0.48, 0.86)
+		if event.to_lower().contains("ashen"):
+			rail = Color(0.86, 0.28, 0.18, 0.90)
+		_ui_architecture_rect(panel, "V0222EventRail%s" % index, Vector2(12, 36 + index * 21), Vector2(4, 14), rail)
+		_v0222_label(panel, _v0211_truncate(event, 34), Vector2(22, 32 + index * 21), Vector2(230, 18), 8, Color(0.76, 0.84, 0.68))
+
+func _live_ui_minimal_contextual_minimap(root: Control, state: Dictionary) -> void:
+	var panel := _v0222_panel(root, "V0222Minimap", Vector2(48, 728), Vector2(196, 132), Color(0.32, 0.58, 0.52, 0.62), 0.64)
+	_v0222_label(panel, "MAP", Vector2(10, 5), Vector2(44, 18), 9, Color(0.76, 0.84, 0.64))
+	_ui_architecture_rect(panel, "V0222MiniBounds", Vector2(12, 26), Vector2(172, 88), Color(0.045, 0.075, 0.060, 0.94))
+	_ui_architecture_rect(panel, "V0222MiniRoadWest", Vector2(32, 68), Vector2(62, 7), Color(0.56, 0.49, 0.31, 0.94))
+	_ui_architecture_rect(panel, "V0222MiniBridge", Vector2(86, 61), Vector2(43, 19), Color(0.66, 0.60, 0.42, 0.96))
+	_ui_architecture_rect(panel, "V0222MiniRoadEast", Vector2(122, 68), Vector2(50, 7), Color(0.56, 0.49, 0.31, 0.94))
+	_ui_architecture_rect(panel, "V0222MiniRoadNorth", Vector2(92, 40), Vector2(7, 34), Color(0.48, 0.43, 0.30, 0.88))
+	_ui_architecture_rect(panel, "V0222MiniRiver", Vector2(102, 34), Vector2(12, 74), Color(0.08, 0.35, 0.45, 0.96))
+	_ui_architecture_rect(panel, "V0222MiniHero", Vector2(62, 64), Vector2(10, 10), Color(0.92, 0.78, 0.32, 1.0))
+	_ui_architecture_rect(panel, "V0222MiniMine", Vector2(74, 76), Vector2(17, 12), Color(0.32, 0.82, 0.58, 0.94) if bool(state.get("mineConverted", false)) else Color(0.84, 0.72, 0.34, 0.92))
+	_ui_architecture_rect(panel, "V0222MiniBarracks", Vector2(48, 48), Vector2(20, 12), Color(0.78, 0.66, 0.42, 0.92))
+	_ui_architecture_rect(panel, "V0222MiniFriendlies", Vector2(42, 92), Vector2(14, 14), Color(0.33, 0.84, 0.62, 0.98))
+	_ui_architecture_rect(panel, "V0222MiniHostiles", Vector2(138, 48), Vector2(28, 13), Color(0.88, 0.24, 0.16, 1.0))
+	_ui_architecture_rect(panel, "V0222MiniCamera", Vector2(58, 57), Vector2(90, 44), Color(0.90, 0.95, 0.82, 0.16))
+	_v0222_label(panel, "routes | pressure", Vector2(12, 113), Vector2(172, 14), 7, Color(0.58, 0.68, 0.56), HORIZONTAL_ALIGNMENT_CENTER)
+
+func _live_ui_minimal_contextual_selection(root: Control, state: Dictionary) -> void:
+	var panel := _v0222_panel(root, "V0222SelectedContextBar", Vector2(500, 798), Vector2(560, 78), Color(0.38, 0.58, 0.46, 0.64), 0.68)
+	var data: Dictionary = state.get("selectionPanel", {})
+	_ui_architecture_rect(panel, "V0222PortraitChip", Vector2(14, 13), Vector2(50, 50), state.get("portraitColor", Color(0.22, 0.62, 0.58, 1.0)))
+	_v0222_label(panel, str(data.get("name", state.get("selectedTitle", ""))), Vector2(76, 9), Vector2(268, 18), 12, Color(0.92, 0.86, 0.66))
+	_v0222_label(panel, _v0211_truncate(str(data.get("summary", state.get("selectedSubtitle", ""))), 54), Vector2(76, 30), Vector2(344, 18), 9, Color(0.76, 0.84, 0.70))
+	_ui_architecture_rect(panel, "V0222HealthBack", Vector2(76, 56), Vector2(166, 6), Color(0.10, 0.08, 0.06, 0.82))
+	_ui_architecture_rect(panel, "V0222HealthFill", Vector2(76, 56), Vector2(166 * float(data.get("hpRatio", 1.0)), 6), Color(0.42, 0.78, 0.48, 0.84))
+	_v0222_label(panel, str(data.get("hpText", "")), Vector2(252, 48), Vector2(92, 18), 9, Color(0.80, 0.84, 0.66))
+	var commands: Array = data.get("commands", [])
+	for index in range(min(commands.size(), 4)):
+		var spec: Dictionary = commands[index]
+		_v0210_command_button(panel, Vector2(352 + index * 48, 26), Vector2(42, 38), spec, str(data.get("focusId", "")))
+	_v0222_label(panel, str(state.get("statusPip", "")), Vector2(14, 61), Vector2(50, 14), 8, Color(0.86, 0.82, 0.60), HORIZONTAL_ALIGNMENT_CENTER)
+
+func _live_ui_minimal_contextual_production(root: Control, state: Dictionary) -> void:
+	var action := str(player_ui_shell_context_override)
+	var active := str(state.get("activeTab", "BUILD"))
+	var should_expand := ["production_build", "production_train", "production_research", "production_disabled_tooltip", "tooltip_docked"].has(action)
+	if not should_expand:
+		var collapsed := _v0222_panel(root, "V0222ProductionAffordance", Vector2(1482, 822), Vector2(58, 30), Color(0.48, 0.46, 0.32, 0.42), 0.48)
+		_live_ui_shell_action_button(collapsed, Vector2(7, 5), Vector2(44, 20), active, "_on_live_ui_shell_work_pressed")
+		return
+	var panel := _v0222_panel(root, "V0222ProductionDrawer", Vector2(1118, 672), Vector2(420, 188), Color(0.62, 0.54, 0.32, 0.62), 0.70)
+	_v0222_label(panel, "PRODUCTION", Vector2(14, 9), Vector2(92, 18), 9, Color(0.86, 0.78, 0.56))
+	var tabs: Array[String] = ["BUILD", "TRAIN", "RESEARCH"]
+	for index in range(tabs.size()):
+		_v0211_production_tab(panel, Vector2(112 + index * 82, 7), Vector2(70, 23), tabs[index], active == tabs[index])
+	var cards: Array = state.get("productionCards", [])
+	for index in range(min(cards.size(), 4)):
+		var col := index % 2
+		var row := int(index / 2)
+		_v0222_production_card(panel, Vector2(14 + col * 198, 44 + row * 58), Vector2(188, 50), cards[index], str(state.get("productionFocusId", "")))
+	_v0222_label(panel, "Existing actions only", Vector2(14, 166), Vector2(390, 14), 8, Color(0.62, 0.68, 0.56))
+
+func _live_ui_minimal_contextual_alert(root: Control, state: Dictionary) -> void:
+	if str(state.get("alertSeverity", "info")) != "hostile":
+		return
+	var panel := _v0222_panel(root, "V0222HostileAlert", Vector2(1206, 74), Vector2(330, 64), Color(0.90, 0.26, 0.16, 0.76), 0.68)
+	_ui_architecture_rect(panel, "V0222AlertRail", Vector2(0, 0), Vector2(5, 64), Color(0.94, 0.22, 0.14, 0.94))
+	_v0222_label(panel, "HOSTILE", Vector2(16, 7), Vector2(72, 18), 9, Color(0.90, 0.80, 0.58))
+	_v0222_label(panel, str(state.get("alert", "")), Vector2(92, 7), Vector2(218, 20), 12, Color(0.95, 0.88, 0.66))
+	_v0222_label(panel, "Hold bridge and focus raiders.", Vector2(92, 34), Vector2(218, 18), 9, Color(0.78, 0.84, 0.70))
+
+func _live_ui_minimal_contextual_tooltip(root: Control, state: Dictionary) -> void:
+	var action := str(player_ui_shell_context_override)
+	if not ["production_disabled_tooltip", "v0212_tooltips", "tooltip_docked"].has(action):
+		return
+	var meta: Dictionary = state.get("tooltipMeta", {})
+	var production_expanded := ["production_disabled_tooltip", "tooltip_docked"].has(action)
+	var dock_position := Vector2(1118, 606) if production_expanded else Vector2(1068, 798)
+	var panel := _v0222_panel(root, "V0222DockedTooltip", dock_position, Vector2(420, 56), Color(0.42, 0.52, 0.40, 0.58), 0.66)
+	panel.z_index = 34
+	_v0222_label(panel, str(meta.get("title", "Tip")), Vector2(12, 5), Vector2(142, 16), 9, Color(0.92, 0.84, 0.62))
+	_v0222_label(panel, "Shortcut %s" % str(meta.get("shortcut", "Mouse")), Vector2(254, 5), Vector2(148, 16), 8, Color(0.74, 0.84, 0.70), HORIZONTAL_ALIGNMENT_RIGHT)
+	_ui_architecture_rect(panel, "V0222TooltipRule", Vector2(12, 25), Vector2(396, 1), Color(0.34, 0.48, 0.38, 0.56))
+	_v0222_label(panel, _v0211_truncate(str(meta.get("body", state.get("tooltip", ""))), 80), Vector2(12, 31), Vector2(396, 18), 8, Color(0.76, 0.82, 0.70))
 
 func _live_ui_shell_state() -> Dictionary:
 	var status := get_spike_status()
@@ -4123,6 +4437,8 @@ func run_player_slice_validation() -> void:
 		"saltoMinimapTooltipAccessibilityEnabled": _salto_minimap_tooltip_accessibility_enabled(),
 		"saltoPresentationRebootEnabled": _salto_presentation_reboot_enabled(),
 		"saltoPresentationRebootUiOccupancy": _salto_presentation_reboot_occupancy_budget(),
+		"saltoMinimalContextualHudEnabled": _salto_minimal_contextual_hud_enabled(),
+		"saltoMinimalContextualHudOccupancy": _salto_minimal_contextual_hud_occupancy_budget(),
 		"saltoAsterPortraitStatus": _salto_aster_portrait_status(),
 		"saltoAsterPortraitSourceLoaded": bool(_salto_aster_portrait_status().get("sourceLoaded", false)),
 		"saltoAsterPortraitFallbackActive": bool(_salto_aster_portrait_status().get("fallbackActive", true)),
@@ -4238,6 +4554,8 @@ func run_player_slice_validation() -> void:
 		"saltoMinimapTooltipAccessibilityEnabled": _salto_minimap_tooltip_accessibility_enabled(),
 		"saltoPresentationRebootEnabled": _salto_presentation_reboot_enabled(),
 		"saltoPresentationRebootUiOccupancy": _salto_presentation_reboot_occupancy_budget(),
+		"saltoMinimalContextualHudEnabled": _salto_minimal_contextual_hud_enabled(),
+		"saltoMinimalContextualHudOccupancy": _salto_minimal_contextual_hud_occupancy_budget(),
 		"saltoAsterPortraitStatus": _salto_aster_portrait_status(),
 		"saltoAsterPortraitSourceLoaded": bool(_salto_aster_portrait_status().get("sourceLoaded", false)),
 		"saltoAsterPortraitFallbackActive": bool(_salto_aster_portrait_status().get("fallbackActive", true)),
@@ -4451,12 +4769,14 @@ func run_player_slice_capture() -> void:
 		"saltoMinimapTooltipAccessibilityEnabled": _salto_minimap_tooltip_accessibility_enabled(),
 		"saltoPresentationRebootEnabled": _salto_presentation_reboot_enabled(),
 		"saltoPresentationRebootUiOccupancy": _salto_presentation_reboot_occupancy_budget(),
+		"saltoMinimalContextualHudEnabled": _salto_minimal_contextual_hud_enabled(),
+		"saltoMinimalContextualHudOccupancy": _salto_minimal_contextual_hud_occupancy_budget(),
 		"saltoAsterPortraitStatus": _salto_aster_portrait_status(),
 		"saltoAsterPortraitSourceLoaded": bool(_salto_aster_portrait_status().get("sourceLoaded", false)),
 		"saltoAsterPortraitFallbackActive": bool(_salto_aster_portrait_status().get("fallbackActive", true)),
 		"saltoAsterPortraitProductionSlotAdded": false,
 		"saltoAsterPortraitGeneratedImages": false,
-		"privateHarnessPreservedSeparately": captures.any(func(capture: Dictionary) -> bool: return bool(capture.get("privateHarnessCapture", false))) or ["v0.126", "v0.127", "v0.128", "v0.129", "v0.130", "v0.160", "v0.162", "v0.164", "v0.168", "v0.169", "v0.170", "v0.173", "v0.174", "v0.177", "v0.178", "v0.179", "v0.181", "v0.184", "v0.185", "v0.186", "v0.187", "v0.193", "v0.194", "v0.195", "v0.196", "v0.197", "v0.198", "v0.199", "v0.200", "v0.203", "v0.204", "v0.205", "v0.206", "v0.209", "v0.210", "v0.211", "v0.212", "v0.217", "v0.218", "v0.219", "v0.220", "v0.221"].has(_player_capture_checkpoint()),
+		"privateHarnessPreservedSeparately": captures.any(func(capture: Dictionary) -> bool: return bool(capture.get("privateHarnessCapture", false))) or ["v0.126", "v0.127", "v0.128", "v0.129", "v0.130", "v0.160", "v0.162", "v0.164", "v0.166", "v0.168", "v0.169", "v0.170", "v0.173", "v0.174", "v0.177", "v0.178", "v0.179", "v0.181", "v0.184", "v0.185", "v0.186", "v0.187", "v0.193", "v0.194", "v0.195", "v0.196", "v0.197", "v0.198", "v0.199", "v0.200", "v0.203", "v0.204", "v0.205", "v0.206", "v0.209", "v0.210", "v0.211", "v0.212", "v0.217", "v0.218", "v0.219", "v0.220", "v0.221", "v0.222"].has(_player_capture_checkpoint()),
 		"proceduralPrimitiveOnly": not worker_art_loaded and not barracks_material_loaded and not militia_art_loaded and not aster_art_loaded and not ashen_art_loaded and not ground_material_loaded and not road_material_loaded and not bridge_riverbank_material_loaded and not road_riverbank_water_material_loaded,
 		"generatedOrImportedArtIncluded": worker_art_loaded or barracks_material_loaded or militia_art_loaded or aster_art_loaded or ashen_art_loaded or ground_material_loaded or road_material_loaded or bridge_riverbank_material_loaded or road_riverbank_water_material_loaded,
 		"runtimeArtIntegrated": worker_art_loaded or barracks_material_loaded or militia_art_loaded or aster_art_loaded or ashen_art_loaded or ground_material_loaded or road_material_loaded or bridge_riverbank_material_loaded or road_riverbank_water_material_loaded,
@@ -4619,6 +4939,8 @@ func run_worker_art_opt_in_benchmark() -> void:
 		"saltoMinimapTooltipAccessibilityEnabled": _salto_minimap_tooltip_accessibility_enabled(),
 		"saltoPresentationRebootEnabled": _salto_presentation_reboot_enabled(),
 		"saltoPresentationRebootUiOccupancy": _salto_presentation_reboot_occupancy_budget(),
+		"saltoMinimalContextualHudEnabled": _salto_minimal_contextual_hud_enabled(),
+		"saltoMinimalContextualHudOccupancy": _salto_minimal_contextual_hud_occupancy_budget(),
 		"workerArtOptInRequested": _script_args().has("--worker-art-opt-in"),
 		"workerArtExperiment": worker_art,
 		"barracksMaterialOptInRequested": _script_args().has("--barracks-material-opt-in"),
@@ -6867,6 +7189,9 @@ func _apply_player_slice_action(action: String) -> Dictionary:
 	if action == "production_build":
 		player_ui_shell_production_tab_override = "BUILD"
 		player_ui_shell_production_focus_hint = "restore_barracks"
+	elif action == "tooltip_docked":
+		player_ui_shell_production_tab_override = "RESEARCH"
+		player_ui_shell_production_focus_hint = "bridgecraft"
 	elif action == "production_train":
 		player_ui_shell_production_tab_override = "TRAIN"
 		player_ui_shell_production_focus_hint = "train_militia"
@@ -6940,7 +7265,7 @@ func _apply_player_slice_action(action: String) -> Dictionary:
 			_call_scene("queue_militia_recruit")
 			_call_scene("focus_visual_subject", ["barracks"])
 			_render_player_screen("battle")
-		"production_research", "production_disabled_tooltip":
+		"production_research", "production_disabled_tooltip", "tooltip_docked":
 			_ensure_player_battle_scene()
 			_call_scene("capture_mine_site")
 			_call_scene("assign_worker_to_mine")
@@ -6957,7 +7282,26 @@ func _apply_player_slice_action(action: String) -> Dictionary:
 			_call_scene("show_objective_feedback", ["select_aster"])
 			_call_scene("focus_visual_subject", ["hero"])
 			_render_player_screen("battle")
+		"objective_expanded":
+			_ensure_player_battle_scene()
+			_call_scene("select_entity", ["hero_aster"])
+			_call_scene("set_onboarding_step", ["select_aster"])
+			_call_scene("show_objective_feedback", ["select_aster"])
+			_call_scene("focus_visual_subject", ["hero"])
+			_render_player_screen("battle")
 		"event_progression":
+			_ensure_player_battle_scene()
+			_call_scene("capture_mine_site")
+			_call_scene("assign_worker_to_mine")
+			_call_scene("advance_resource_production", [180])
+			_call_scene("place_barracks_placeholder")
+			_call_scene("advance_construction", [180])
+			_call_scene("queue_militia_recruit")
+			_call_scene("complete_recruit_queue", [140])
+			_call_scene("box_select_squad")
+			_call_scene("focus_visual_subject", ["militia"])
+			_render_player_screen("battle")
+		"event_drawer_expanded":
 			_ensure_player_battle_scene()
 			_call_scene("capture_mine_site")
 			_call_scene("assign_worker_to_mine")
@@ -7415,6 +7759,8 @@ func _apply_player_slice_action(action: String) -> Dictionary:
 	status["saltoMinimapTooltipAccessibilityEnabled"] = _salto_minimap_tooltip_accessibility_enabled()
 	status["saltoPresentationRebootEnabled"] = _salto_presentation_reboot_enabled()
 	status["saltoPresentationRebootUiOccupancy"] = _salto_presentation_reboot_occupancy_budget()
+	status["saltoMinimalContextualHudEnabled"] = _salto_minimal_contextual_hud_enabled()
+	status["saltoMinimalContextualHudOccupancy"] = _salto_minimal_contextual_hud_occupancy_budget()
 	status["saltoAsterPortraitStatus"] = _salto_aster_portrait_status()
 	status["saltoAsterPortraitSourceLoaded"] = bool(status["saltoAsterPortraitStatus"].get("sourceLoaded", false))
 	status["saltoAsterPortraitFallbackActive"] = bool(status["saltoAsterPortraitStatus"].get("fallbackActive", true))
@@ -7424,6 +7770,8 @@ func _apply_player_slice_action(action: String) -> Dictionary:
 
 func _player_capture_checkpoint() -> String:
 	var normalized_root := _artifact_root_from_args().replace("\\", "/")
+	if normalized_root.contains("/v0222"):
+		return "v0.222"
 	if normalized_root.contains("/v0221"):
 		return "v0.221"
 	if normalized_root.contains("/v0220"):
@@ -7519,9 +7867,23 @@ func _player_capture_checkpoint() -> String:
 	return "v0.124"
 
 func _is_bounded_microloop_checkpoint() -> bool:
-	return ["v0.129", "v0.130", "v0.160", "v0.162", "v0.164", "v0.166", "v0.168", "v0.169", "v0.170", "v0.173", "v0.174", "v0.177", "v0.178", "v0.179", "v0.181", "v0.184", "v0.185", "v0.186", "v0.187", "v0.193", "v0.194", "v0.195", "v0.196", "v0.197", "v0.198", "v0.199", "v0.200", "v0.203", "v0.204", "v0.205", "v0.206", "v0.209", "v0.210", "v0.211", "v0.212", "v0.213", "v0.215", "v0.216", "v0.217", "v0.218", "v0.219", "v0.220", "v0.221"].has(_player_capture_checkpoint())
+	return ["v0.129", "v0.130", "v0.160", "v0.162", "v0.164", "v0.166", "v0.168", "v0.169", "v0.170", "v0.173", "v0.174", "v0.177", "v0.178", "v0.179", "v0.181", "v0.184", "v0.185", "v0.186", "v0.187", "v0.193", "v0.194", "v0.195", "v0.196", "v0.197", "v0.198", "v0.199", "v0.200", "v0.203", "v0.204", "v0.205", "v0.206", "v0.209", "v0.210", "v0.211", "v0.212", "v0.213", "v0.215", "v0.216", "v0.217", "v0.218", "v0.219", "v0.220", "v0.221", "v0.222"].has(_player_capture_checkpoint())
 
 func _player_capture_steps() -> Array[Dictionary]:
+	if _player_capture_checkpoint() == "v0.222":
+		return [
+			{"id": "default_compact_hud", "label": "v0.222 default compact HUD", "action": "battle_default"},
+			{"id": "objective_expanded", "label": "v0.222 objective detail expanded", "action": "objective_expanded"},
+			{"id": "event_drawer_expanded", "label": "v0.222 event drawer expanded", "action": "event_drawer_expanded"},
+			{"id": "production_drawer_build", "label": "v0.222 production drawer build tab", "action": "production_build"},
+			{"id": "production_drawer_train", "label": "v0.222 production drawer train tab", "action": "production_train"},
+			{"id": "production_drawer_research", "label": "v0.222 production drawer research tab", "action": "production_research"},
+			{"id": "hostile_alert_active", "label": "v0.222 hostile alert active only when relevant", "action": "ashen_pressure_active"},
+			{"id": "tooltip_docked", "label": "v0.222 tooltip docked to drawer edge", "action": "tooltip_docked"},
+			{"id": "resolution_1920x1080", "label": "v0.222 1920x1080 compact layout", "action": "v0212_resolution_1920", "viewport": {"width": 1920, "height": 1080}},
+			{"id": "resolution_1600x900", "label": "v0.222 1600x900 compact layout", "action": "v0212_resolution_1600", "viewport": {"width": 1600, "height": 900}},
+			{"id": "resolution_1366x768", "label": "v0.222 1366x768 compact layout", "action": "v0212_resolution_1366", "viewport": {"width": 1366, "height": 768}}
+		]
 	if _player_capture_checkpoint() == "v0.221":
 		return [
 			{"id": "initial_overview", "label": "v0.221 initial composed overview", "action": "battle_default"},

@@ -1,6 +1,39 @@
 # Development Checkpoint
 
-Updated: 2026-06-11 v0.221 Lighting camera selection and composition pass
+Updated: 2026-06-11 v0.222 Minimal contextual fantasy RTS HUD
+
+## v0.222 Minimal Contextual Fantasy RTS HUD - 2026-06-11
+
+Scope: isolated opt-in Godot Salto presentation-reboot HUD path. This checkpoint generates zero images, adds zero production art slots, preserves the default procedural launcher, preserves all prior launchers, keeps browser runtime untouched, keeps the selected v0.216-v0.221 material/shell/dressing/composition context, and leaves gameplay, pathing, collisions, objectives, AI, economy, saves, stable IDs and balance unchanged.
+
+Included work:
+
+- Added `--salto-minimal-contextual-hud` as a reversible opt-in review-path flag.
+- Replaced the full dashboard-style HUD with a compact resource strip, objective ribbon, minimap, selected-context bar and utility cluster.
+- Moved objective detail, events, production, hostile alert and tooltip into contextual drawers hidden by default.
+- Added occupancy measurement and drawer-overlap gates for 1920x1080, 1600x900 and 1366x768.
+- Preserved the v0.214/full-HUD comparator as evidence only.
+- Refreshed the ignored manual review pack under `artifacts/manual-review/v0222-minimal-contextual-hud/`.
+- Added v0.222 minimal HUD, occupancy and implementation docs.
+
+Verification targets:
+
+```text
+PASS: npm run godot:capture:salto-minimal-contextual-hud.
+PASS: npm run godot:validate:salto-minimal-contextual-hud.
+PASS: npm run godot:benchmark:salto-minimal-contextual-hud.
+PASS: npm run godot:validate:salto-composition-lighting-selection.
+PASS: npm run godot:validate:salto-presentation-reboot.
+PASS: artifact retention validation.
+PASS: safe-only cleanup dry run.
+PASS: runtime-art slot validation.
+PASS: content validation.
+PASS: art-intake validation.
+PASS: Vitest suite.
+PASS: Godot scaffold tests.
+PASS: production build.
+PASS: git diff --check.
+```
 
 ## v0.221 Lighting Camera Selection And Composition Pass - 2026-06-11
 
