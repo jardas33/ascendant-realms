@@ -9496,6 +9496,8 @@ func _add_shell_v2_grounding_props_layer() -> void:
 	var water_glint := Color(0.28, 0.48, 0.50, 0.24)
 	var terrain_shadow := Color(0.070, 0.090, 0.058, 0.20)
 	var terrain_lift := Color(0.42, 0.50, 0.29, 0.20)
+	var terrain_warm_lift := Color(0.52, 0.46, 0.28, 0.16)
+	var terrain_cool_shadow := Color(0.040, 0.070, 0.064, 0.18)
 	var road_edge := Color(0.16, 0.13, 0.08, 0.30)
 	var road_dust := Color(0.62, 0.54, 0.36, 0.20)
 	for accent in [
@@ -9503,7 +9505,12 @@ func _add_shell_v2_grounding_props_layer() -> void:
 		{"name": "v0214_review_field_value_break_west_01", "pos": Vector3(-3.62, 0.238, 2.74), "scale": Vector3(1.38, 0.012, 0.050), "color": terrain_lift},
 		{"name": "v0214_review_field_value_break_mine_00", "pos": Vector3(-2.24, 0.240, -0.42), "scale": Vector3(0.92, 0.012, 0.048), "color": terrain_lift.lightened(0.05)},
 		{"name": "v0214_review_field_value_break_centre_00", "pos": Vector3(-0.76, 0.236, 2.22), "scale": Vector3(1.12, 0.012, 0.050), "color": terrain_shadow.darkened(0.04)},
-		{"name": "v0214_review_field_value_break_hostile_00", "pos": Vector3(2.98, 0.238, -1.18), "scale": Vector3(1.24, 0.012, 0.052), "color": Color(0.22, 0.12, 0.08, 0.18)}
+		{"name": "v0214_review_field_value_break_hostile_00", "pos": Vector3(2.98, 0.238, -1.18), "scale": Vector3(1.24, 0.012, 0.052), "color": Color(0.22, 0.12, 0.08, 0.18)},
+		{"name": "v0215_review_field_warm_read_lane_west", "pos": Vector3(-4.18, 0.242, 1.62), "scale": Vector3(1.42, 0.010, 0.048), "color": terrain_warm_lift},
+		{"name": "v0215_review_field_warm_read_lane_command", "pos": Vector3(-5.42, 0.242, 3.02), "scale": Vector3(0.94, 0.010, 0.042), "color": terrain_warm_lift.darkened(0.03)},
+		{"name": "v0215_review_field_cool_bank_shadow_north", "pos": Vector3(0.10, 0.242, -2.12), "scale": Vector3(0.58, 0.010, 0.044), "color": terrain_cool_shadow},
+		{"name": "v0215_review_field_cool_bank_shadow_south", "pos": Vector3(1.38, 0.242, 2.86), "scale": Vector3(0.62, 0.010, 0.044), "color": terrain_cool_shadow.lightened(0.03)},
+		{"name": "v0215_review_field_hostile_read_lane", "pos": Vector3(3.92, 0.242, 0.42), "scale": Vector3(1.10, 0.010, 0.044), "color": Color(0.26, 0.15, 0.10, 0.16)}
 	]:
 		_add_shell_v2_grounding_prop_box(str(accent["name"]), accent["pos"], accent["scale"], accent["color"], "overlays", true)
 	for accent in [
@@ -9511,7 +9518,10 @@ func _add_shell_v2_grounding_props_layer() -> void:
 		{"name": "v0214_review_road_embedded_edge_west_south", "pos": Vector3(-3.32, 0.334, 1.04), "scale": Vector3(1.76, 0.012, 0.040), "color": road_edge.darkened(0.05)},
 		{"name": "v0214_review_road_dust_bridge_feed", "pos": Vector3(-0.74, 0.336, 0.76), "scale": Vector3(0.72, 0.012, 0.050), "color": road_dust},
 		{"name": "v0214_review_road_embedded_edge_east", "pos": Vector3(2.42, 0.334, 0.72), "scale": Vector3(1.16, 0.012, 0.042), "color": road_edge.darkened(0.02)},
-		{"name": "v0214_review_barracks_lane_embedded_edge", "pos": Vector3(-4.50, 0.334, -1.72), "scale": Vector3(0.048, 0.012, 1.26), "color": road_edge}
+		{"name": "v0214_review_barracks_lane_embedded_edge", "pos": Vector3(-4.50, 0.334, -1.72), "scale": Vector3(0.048, 0.012, 1.26), "color": road_edge},
+		{"name": "v0215_review_road_readable_crown_west", "pos": Vector3(-3.58, 0.338, 0.72), "scale": Vector3(1.62, 0.010, 0.030), "color": road_dust.lightened(0.08)},
+		{"name": "v0215_review_road_readable_crown_bridge", "pos": Vector3(-0.18, 0.338, 0.82), "scale": Vector3(0.66, 0.010, 0.030), "color": road_dust.lightened(0.05)},
+		{"name": "v0215_review_road_readable_crown_east", "pos": Vector3(2.58, 0.338, 0.90), "scale": Vector3(0.92, 0.010, 0.030), "color": road_dust.lightened(0.04)}
 	]:
 		_add_shell_v2_grounding_prop_box(str(accent["name"]), accent["pos"], accent["scale"], accent["color"], "roads", true)
 	for prop in [
@@ -9552,6 +9562,7 @@ func _add_shell_v2_grounding_props_layer() -> void:
 	for prop in [
 		{"name": "v0205_water_value_thread_north", "pos": Vector3(0.62, 0.274, -2.72), "scale": Vector3(0.18, 0.014, 0.72), "color": water_glint},
 		{"name": "v0205_water_value_thread_crossing", "pos": Vector3(0.66, 0.278, 0.86), "scale": Vector3(0.20, 0.014, 0.52), "color": water_glint.lightened(0.06)},
+		{"name": "v0215_review_water_thread_readable_mid", "pos": Vector3(0.72, 0.279, -0.42), "scale": Vector3(0.16, 0.012, 0.74), "color": water_glint.lightened(0.08)},
 		{"name": "v0205_wet_edge_west_bank", "pos": Vector3(0.20, 0.304, 0.18), "scale": Vector3(0.060, 0.014, 2.24), "color": wet_edge},
 		{"name": "v0205_wet_edge_east_bank", "pos": Vector3(1.04, 0.304, 1.62), "scale": Vector3(0.060, 0.014, 2.02), "color": wet_edge},
 		{"name": "v0214_review_bank_shelf_value_west_north", "pos": Vector3(0.10, 0.306, -0.98), "scale": Vector3(0.070, 0.012, 0.74), "color": wet_edge.darkened(0.04)},
@@ -10038,6 +10049,8 @@ func _preset_scope() -> String:
 	return "player-facing-default-clean-readability-with-restrained-atmospheric-cues"
 
 func _terrain_color() -> Color:
+	if environment_shell_v2_grounding_props_enabled:
+		return Color(0.215, 0.270, 0.180)
 	if environment_shell_v2_environmental_cohesion_enabled:
 		return Color(0.18, 0.24, 0.16)
 	if environment_presentation_shell_v2_enabled:
@@ -10059,6 +10072,8 @@ func _terrain_color() -> Color:
 	return Color(0.16, 0.22, 0.17)
 
 func _ridge_color() -> Color:
+	if environment_shell_v2_grounding_props_enabled:
+		return Color(0.335, 0.395, 0.270)
 	if environment_presentation_shell_v2_enabled:
 		return Color(0.29, 0.35, 0.24)
 	if environment_riverbank_bridge_approach_enabled:
@@ -10076,6 +10091,8 @@ func _ridge_color() -> Color:
 	return Color(0.22, 0.27, 0.21)
 
 func _road_color() -> Color:
+	if environment_shell_v2_grounding_props_enabled:
+		return Color(0.540, 0.485, 0.335)
 	if environment_presentation_shell_v2_enabled:
 		return Color(0.50, 0.44, 0.32)
 	if environment_riverbank_bridge_approach_enabled:
@@ -10093,6 +10110,8 @@ func _road_color() -> Color:
 	return Color(0.42, 0.36, 0.25)
 
 func _water_color() -> Color:
+	if environment_shell_v2_grounding_props_enabled:
+		return Color(0.055, 0.245, 0.315)
 	if environment_presentation_shell_v2_enabled:
 		return Color(0.025, 0.16, 0.22)
 	if environment_riverbank_bridge_approach_enabled:

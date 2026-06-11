@@ -3582,20 +3582,20 @@ func _live_ui_shell_tooltip(root: Control, state: Dictionary) -> void:
 	if _salto_minimap_tooltip_accessibility_enabled():
 		_live_ui_shell_tooltip_v0212(root, state)
 		return
-	var panel := _ui_architecture_panel(root, "LiveShellTooltip", Vector2(520, 584), Vector2(560, 66), "TIP", "", Color(0.58, 0.70, 0.52, 0.92))
+	var panel := _ui_architecture_panel(root, "LiveShellTooltip", Vector2(942, 292), Vector2(498, 70), "TIP", "", Color(0.58, 0.70, 0.52, 0.90))
 	panel.z_index = 30
-	_ui_architecture_label(panel, str(state.get("tooltip", "")), Vector2(14, 31), Vector2(532, 28), 12, Color(0.82, 0.88, 0.78), HORIZONTAL_ALIGNMENT_LEFT)
+	_ui_architecture_label(panel, str(state.get("tooltip", "")), Vector2(14, 31), Vector2(470, 30), 11, Color(0.82, 0.88, 0.78), HORIZONTAL_ALIGNMENT_LEFT)
 
 func _live_ui_shell_tooltip_v0212(root: Control, state: Dictionary) -> void:
 	var meta: Dictionary = state.get("tooltipMeta", {})
-	var panel := _ui_architecture_panel(root, "V0212StructuredTooltip", Vector2(416, 548), Vector2(506, 86), "TIP", "", Color(0.58, 0.68, 0.52, 0.90))
+	var panel := _ui_architecture_panel(root, "V0212StructuredTooltip", Vector2(930, 278), Vector2(500, 112), "TIP", "", Color(0.58, 0.68, 0.52, 0.88))
 	panel.z_index = 34
 	_ui_architecture_label(panel, str(meta.get("title", "Command Tip")), Vector2(12, 29), Vector2(220, 18), 13, Color(0.95, 0.88, 0.66), HORIZONTAL_ALIGNMENT_LEFT)
-	_ui_architecture_label(panel, "Shortcut %s" % str(meta.get("shortcut", "Mouse")), Vector2(316, 29), Vector2(166, 17), 10, Color(0.78, 0.90, 0.78), HORIZONTAL_ALIGNMENT_RIGHT)
-	_ui_architecture_rect(panel, "V0212TooltipRule", Vector2(12, 52), Vector2(480, 1), Color(0.38, 0.54, 0.42, 0.82))
-	_ui_architecture_label(panel, str(meta.get("body", state.get("tooltip", ""))), Vector2(12, 56), Vector2(480, 18), 10, Color(0.82, 0.88, 0.78), HORIZONTAL_ALIGNMENT_LEFT)
-	_ui_architecture_label(panel, "Cost: %s" % str(meta.get("cost", "No cost")), Vector2(12, 70), Vector2(174, 14), 9, Color(0.74, 0.80, 0.66), HORIZONTAL_ALIGNMENT_LEFT)
-	_ui_architecture_label(panel, str(meta.get("availability", "Available")), Vector2(194, 70), Vector2(298, 14), 9, Color(0.88, 0.76, 0.46) if str(meta.get("availability", "")).to_lower().contains("unavailable") else Color(0.70, 0.86, 0.70), HORIZONTAL_ALIGNMENT_RIGHT)
+	_ui_architecture_label(panel, "Shortcut %s" % str(meta.get("shortcut", "Mouse")), Vector2(314, 29), Vector2(162, 17), 10, Color(0.78, 0.90, 0.78), HORIZONTAL_ALIGNMENT_RIGHT)
+	_ui_architecture_rect(panel, "V0212TooltipRule", Vector2(12, 52), Vector2(474, 1), Color(0.38, 0.54, 0.42, 0.82))
+	_ui_architecture_label(panel, str(meta.get("body", state.get("tooltip", ""))), Vector2(12, 58), Vector2(474, 24), 10, Color(0.82, 0.88, 0.78), HORIZONTAL_ALIGNMENT_LEFT)
+	_ui_architecture_label(panel, "Cost: %s" % str(meta.get("cost", "No cost")), Vector2(12, 88), Vector2(170, 14), 9, Color(0.74, 0.80, 0.66), HORIZONTAL_ALIGNMENT_LEFT)
+	_ui_architecture_label(panel, str(meta.get("availability", "Available")), Vector2(190, 88), Vector2(296, 14), 9, Color(0.88, 0.76, 0.46) if str(meta.get("availability", "")).to_lower().contains("unavailable") else Color(0.70, 0.86, 0.70), HORIZONTAL_ALIGNMENT_RIGHT)
 
 func _live_ui_shell_action_button(parent: Control, position: Vector2, size: Vector2, text: String, method_name: String) -> Button:
 	var button := Button.new()
