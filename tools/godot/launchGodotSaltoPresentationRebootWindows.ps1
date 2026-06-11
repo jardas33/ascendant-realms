@@ -32,6 +32,7 @@ $V0217WetEdgeExpectedSha256 = "c015bc67f5e9368532f0d449034f874d78da4b4e0156fbd60
 
 $GroundMode = "v0216-selected"
 $RoadRiverbankWaterMode = "v0217-selected"
+$BridgeShellMode = "v0218-selected"
 $ForwardArgs = @()
 foreach ($arg in $RemainingArgs) {
   if ($arg -eq "--salto-presentation-reboot-use-v0175-ground") {
@@ -44,6 +45,8 @@ foreach ($arg in $RemainingArgs) {
     $RoadRiverbankWaterMode = "v0217-missing-fallback"
   } elseif ($arg -eq "--salto-presentation-reboot-road-riverbank-water-hash-mismatch") {
     $RoadRiverbankWaterMode = "v0217-hash-mismatch"
+  } elseif ($arg -eq "--salto-presentation-reboot-legacy-bridge" -or $arg -eq "--salto-bridge-shell-legacy-comparator") {
+    $BridgeShellMode = "v0218-legacy-comparator"
   } else {
     $ForwardArgs += $arg
   }
@@ -133,18 +136,23 @@ $RebootArgs = @(
   "--road-riverbank-water-wet-edge-source=$($WetEdgeSourcePath.Replace('\', '/'))",
   "--road-riverbank-water-wet-edge-metadata=$($WetEdgeMetadataPath.Replace('\', '/'))",
   "--road-riverbank-water-wet-edge-expected-sha256=$WetEdgeExpectedSha256",
-  "--road-riverbank-water-wet-edge-uv-scale=0.60"
+  "--road-riverbank-water-wet-edge-uv-scale=0.60",
+  "--salto-bridge-shell-reboot"
 )
+if ($BridgeShellMode -eq "v0218-legacy-comparator") {
+  $RebootArgs += "--salto-bridge-shell-legacy-comparator"
+}
 if ($ForwardArgs) {
   $RebootArgs += $ForwardArgs
 }
 
-Write-Output "Launching v0.217 Salto presentation reboot experiment."
-Write-Output "Scope: isolated opt-in shell-v2 review path; compact contextual HUD plus selected terrain, road, riverbank and water material hierarchy; no new production slot, no browser wiring."
+Write-Output "Launching v0.218 Salto presentation reboot experiment."
+Write-Output "Scope: isolated opt-in shell-v2 review path; compact contextual HUD plus selected terrain, road, riverbank, water material hierarchy and bridge shell; no new production slot, no browser wiring."
 Write-Output "Ground material mode: $GroundMode"
 Write-Output "Selected ground material SHA-256: $GroundExpectedSha256"
 Write-Output "Road/riverbank/water material mode: $RoadRiverbankWaterMode"
 Write-Output "Selected v0.217 material SHA-256 values: road=$RoadExpectedSha256 riverbank=$RiverbankExpectedSha256 water=$WaterExpectedSha256 wet-edge=$WetEdgeExpectedSha256"
+Write-Output "Bridge shell mode: $BridgeShellMode"
 Write-Output "Default launcher, prior UI launchers, procedural fallback and v0.175 ground material comparator remain preserved."
 
 & (Join-Path $PSScriptRoot "launchGodotSaltoShellV2GroundingPropsWindows.ps1") -Wait:$Wait @RebootArgs

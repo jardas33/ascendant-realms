@@ -1,6 +1,35 @@
 # Development Checkpoint
 
-Updated: 2026-06-11 v0.217 Road riverbank water material hierarchy
+Updated: 2026-06-11 v0.218 Bridge shell and crossing readability
+
+## v0.218 Bridge Shell And Crossing Readability - 2026-06-11
+
+Scope: isolated opt-in Godot Salto presentation-reboot bridge shell path. This checkpoint generates zero images, adds zero art slots, preserves the default procedural launcher, preserves all prior launchers, keeps browser runtime untouched, keeps the v0.217 road/riverbank/water material hierarchy, and leaves gameplay, pathing, collisions, objectives, AI, economy, saves, stable IDs and balance unchanged.
+
+Included work:
+
+- Added a selected procedural bridge shell with stone abutments, bank seating, approach shoulders, a readable deck, low guard rails, rail posts, deck ties, contact shadows and depth cues.
+- Preserved the old bridge as a legacy comparator through `--salto-bridge-shell-legacy-comparator`.
+- Added v0.218 capture, validation, benchmark and review-pack tooling.
+- Generated the ignored manual review pack under `artifacts/manual-review/v0218-bridge-shell/`.
+- Added v0.218 bridge shell and implementation docs.
+
+Verification targets:
+
+```text
+PASS: npm run godot:capture:salto-bridge-shell.
+PASS: npm run godot:validate:salto-bridge-shell.
+PASS: npm run godot:benchmark:salto-bridge-shell.
+PASS: v0.218 bridge shell boundary gate.
+PASS: artifact retention validation.
+PASS: runtime-art slot validation.
+PASS: content validation.
+PASS: art-intake validation.
+PASS: Vitest suite.
+PASS: Godot scaffold tests.
+PASS: production build.
+PASS: git diff --check.
+```
 
 ## v0.217 Road Riverbank Water Material Hierarchy - 2026-06-11
 

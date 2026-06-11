@@ -11,11 +11,16 @@ Every phase should protect these long-term pillars:
 
 ## Current Recommended Next Phase
 
-The current checkpoint is **v0.217 Road Riverbank Water Material Hierarchy** on 2026-06-11. It keeps the v0.215 presentation-reboot path isolated while adding exactly one original road/riverbank/water/wet-edge material atlas, deterministic local 1024 derivatives, selected hash-gated road/water hierarchy binding, missing-art/hash-mismatch fallback proof, and a road riverbank water manual review pack.
+The current checkpoint is **v0.218 Bridge Shell And Crossing Readability** on 2026-06-11. It keeps the v0.215 presentation-reboot path isolated while replacing the flat bridge read with a reversible procedural bridge shell, preserving the legacy bridge comparator, generating zero images, adding zero art slots and producing a bridge-shell manual review pack.
 
-The queued next milestone is **v0.218 Bridge shell and crossing readability**. Continue only from a clean, synced, pushed and CI-green v0.217 state, and only inside that prompt's stated boundaries.
+The queued next milestone is **v0.219 Structure shell production pass**. Continue only from a clean, synced, pushed and CI-green v0.218 state, and only inside that prompt's stated boundaries.
 
-New v0.217 docs:
+New v0.218 docs:
+
+- `docs/V0218_BRIDGE_SHELL_REPORT.md`
+- `docs/V0218_IMPLEMENTATION_REPORT.md`
+
+Previous v0.217 docs:
 
 - `docs/V0217_ROAD_RIVERBANK_WATER_INTAKE_REPORT.md`
 - `docs/V0217_ROAD_RIVERBANK_WATER_COMPOSITOR_REPORT.md`

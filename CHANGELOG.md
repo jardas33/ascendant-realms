@@ -1,5 +1,33 @@
 # Changelog
 
+# v0.218 Bridge Shell And Crossing Readability - 2026-06-11
+
+This checkpoint replaces the flat placeholder bridge read in the isolated Godot Salto presentation-reboot path with a restrained procedural bridge shell. The legacy bridge remains available as a comparator/fallback.
+
+Changed:
+
+- Added a selected v0.218 procedural bridge shell with stone abutments, bank seats, approach shoulders, readable deck, low guard rails, posts, cross ties, contact shadows and depth cues.
+- Added the legacy bridge comparator switch for the isolated presentation-reboot path.
+- Added selected, legacy-comparator and default-procedural fallback validation.
+- Added the v0.218 manual review pack and required implementation reports.
+
+Boundary:
+
+- Generated images: zero.
+- Downloaded assets: zero.
+- New art slots: zero.
+- New production runtime art slots: zero.
+- Browser runtime changes: none.
+- Default launcher changes: none.
+- Gameplay, pathing, collision, objective, AI, economy, save, stable-ID and balance changes: none.
+
+Validation:
+
+- Bridge shell capture and review-pack generation passed.
+- Bridge shell validation, benchmark and boundary gate passed.
+- Artifact retention validation passed.
+- Runtime-art slot validation, content validation, art-intake validation, Vitest, Godot scaffold tests, production build and `git diff --check` passed.
+
 # v0.217 Road Riverbank Water Material Hierarchy - 2026-06-11
 
 This checkpoint replaces pasted-on road strips and flat water in the isolated Godot Salto presentation-reboot path with one original road, riverbank, water and wet-edge material atlas. The source is generated exactly once, then split into deterministic local derivatives with strict hash-gated fallback behavior.

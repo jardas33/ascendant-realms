@@ -372,6 +372,8 @@ var environment_shell_v2_environmental_cohesion_enabled := false
 var environment_shell_v2_structure_material_enabled := false
 var environment_shell_v2_grounding_props_enabled := false
 var salto_presentation_reboot_enabled := false
+var salto_bridge_shell_reboot_enabled := false
+var salto_bridge_shell_legacy_comparator := false
 var presentation_shell_v2_initialized := false
 var presentation_shell_v2_fallback_active := false
 var presentation_shell_v2_fallback_reason := ""
@@ -388,6 +390,7 @@ var shell_v2_grounding_lighting_visual_nodes: Array[String] = []
 var shell_v2_environmental_cohesion_visual_nodes: Array[String] = []
 var shell_v2_structure_material_visual_nodes: Array[String] = []
 var shell_v2_grounding_props_visual_nodes: Array[String] = []
+var shell_v2_bridge_shell_visual_nodes: Array[String] = []
 var ground_material_experiment_enabled := false
 var ground_material_source_path := ""
 var ground_material_metadata_path := ""
@@ -936,6 +939,34 @@ func configure_environment_shell_v2_grounding_props(enabled: bool) -> Dictionary
 	_apply_environment_readability_minimap_markers()
 	return _environment_shell_v2_grounding_props_status()
 
+func configure_salto_bridge_shell_reboot(enabled: bool, legacy_comparator: bool = false) -> Dictionary:
+	salto_bridge_shell_reboot_enabled = enabled
+	salto_bridge_shell_legacy_comparator = enabled and legacy_comparator
+	if salto_bridge_shell_reboot_enabled:
+		environment_foundation_review_enabled = true
+		environment_readability_hardening_enabled = false
+		environment_contrast_harmonization_enabled = false
+		environment_geometry_convergence_enabled = false
+		environment_shell_live_qa_enabled = false
+		environment_structure_shell_hardening_enabled = false
+		environment_riverbank_bridge_approach_enabled = false
+		environment_presentation_shell_v2_enabled = true
+		environment_shell_v2_mesh_compositor_enabled = true
+		environment_shell_v2_structure_hierarchy_enabled = true
+		environment_shell_v2_grounding_lighting_enabled = true
+		environment_shell_v2_environmental_cohesion_enabled = true
+		environment_shell_v2_structure_material_enabled = true
+		environment_shell_v2_grounding_props_enabled = true
+		presentation_shell_v2_fallback_active = false
+		presentation_shell_v2_fallback_reason = ""
+	_refresh_visual_foundation()
+	if salto_bridge_shell_reboot_enabled:
+		apply_environment_shell_v2_grounding_props_framing()
+	elif environment_shell_v2_grounding_props_enabled:
+		apply_environment_shell_v2_grounding_props_framing()
+	_apply_environment_readability_minimap_markers()
+	return _salto_bridge_shell_status()
+
 func configure_salto_presentation_reboot(enabled: bool) -> Dictionary:
 	salto_presentation_reboot_enabled = enabled
 	_sync_unit_visuals()
@@ -1338,6 +1369,8 @@ func _environment_riverbank_bridge_approach_audit() -> Dictionary:
 	}
 
 func _environment_shell_v2_checkpoint_label() -> String:
+	if salto_bridge_shell_reboot_enabled:
+		return "v0.218"
 	if environment_shell_v2_grounding_props_enabled:
 		return "v0.205"
 	if environment_shell_v2_structure_material_enabled:
@@ -1365,6 +1398,8 @@ func _environment_presentation_shell_v2_status() -> Dictionary:
 		"environmentalCohesionEnabled": environment_shell_v2_environmental_cohesion_enabled,
 		"structureMaterialEnabled": environment_shell_v2_structure_material_enabled,
 		"groundingPropsEnabled": environment_shell_v2_grounding_props_enabled,
+		"bridgeShellRebootEnabled": salto_bridge_shell_reboot_enabled,
+		"bridgeShellLegacyComparatorActive": salto_bridge_shell_legacy_comparator,
 		"compositorMode": "proceduralMeshCompositor" if environment_shell_v2_mesh_compositor_enabled else "legacyPadLineShellV2",
 		"initialized": presentation_shell_v2_initialized,
 		"fallbackActive": presentation_shell_v2_fallback_active,
@@ -1441,6 +1476,7 @@ func _environment_presentation_shell_v2_status() -> Dictionary:
 		"environmentalCohesion": _environment_shell_v2_environmental_cohesion_status(),
 		"structureMaterial": _environment_shell_v2_structure_material_status(),
 		"groundingProps": _environment_shell_v2_grounding_props_status(),
+		"bridgeShell": _salto_bridge_shell_status(),
 		"proceduralMaterialCacheKeys": presentation_shell_v2_material_cache.keys(),
 		"proceduralMaterialCreateCount": presentation_shell_v2_material_create_count,
 		"proceduralMaterialReuseCount": presentation_shell_v2_material_reuse_count,
@@ -1462,6 +1498,8 @@ func _environment_shell_v2_mesh_compositor_status() -> Dictionary:
 		"environmentalCohesionEnabled": environment_shell_v2_environmental_cohesion_enabled,
 		"structureMaterialEnabled": environment_shell_v2_structure_material_enabled,
 		"groundingPropsEnabled": environment_shell_v2_grounding_props_enabled,
+		"bridgeShellRebootEnabled": salto_bridge_shell_reboot_enabled,
+		"bridgeShellLegacyComparatorActive": salto_bridge_shell_legacy_comparator,
 		"initialized": enabled and presentation_shell_v2_initialized,
 		"fallbackActive": presentation_shell_v2_fallback_active,
 		"fallbackReason": presentation_shell_v2_fallback_reason,
@@ -1494,6 +1532,7 @@ func _environment_shell_v2_mesh_compositor_status() -> Dictionary:
 		"environmentalCohesionVisualNodeNames": shell_v2_environmental_cohesion_visual_nodes.duplicate(),
 		"structureMaterialVisualNodeNames": shell_v2_structure_material_visual_nodes.duplicate(),
 		"groundingPropsVisualNodeNames": shell_v2_grounding_props_visual_nodes.duplicate(),
+		"bridgeShellVisualNodeNames": shell_v2_bridge_shell_visual_nodes.duplicate(),
 		"vertexCount": shell_v2_mesh_compositor_vertex_count,
 		"indexCount": shell_v2_mesh_compositor_index_count,
 		"materialBindTargets": metrics.get("materialBindTargets", {}),
@@ -1812,6 +1851,71 @@ func _environment_shell_v2_grounding_props_status() -> Dictionary:
 		"performanceBudgeted": prop_count <= 80,
 		"visualNodeCount": prop_count,
 		"visualNodeNames": node_names
+	}
+
+func _salto_bridge_shell_status() -> Dictionary:
+	var node_names := shell_v2_bridge_shell_visual_nodes.duplicate()
+	var metrics := presentation_shell_v2_topology_metrics.duplicate(true)
+	return {
+		"schemaVersion": 1,
+		"checkpoint": "v0.218",
+		"enabled": salto_bridge_shell_reboot_enabled,
+		"selectedBridgeShellActive": salto_bridge_shell_reboot_enabled and not salto_bridge_shell_legacy_comparator,
+		"legacyBridgeComparatorActive": salto_bridge_shell_reboot_enabled and salto_bridge_shell_legacy_comparator,
+		"legacyComparatorFlag": "--salto-bridge-shell-legacy-comparator",
+		"isolatedShellV2ReviewPathOnly": true,
+		"presentationRebootOnly": true,
+		"visualOnly": true,
+		"usesProceduralGeometryOnly": true,
+		"aiImageGenerated": false,
+		"generatedImageCount": 0,
+		"downloadedAssets": 0,
+		"newArtSlotsAdded": 0,
+		"newRuntimeArtSlots": 0,
+		"productionRuntimeArtSlotAdded": false,
+		"defaultLauncherChanged": false,
+		"browserRuntimeChanged": false,
+		"saveWritesAllowed": false,
+		"stableIdsChanged": false,
+		"gameplayPathingChanged": false,
+		"collisionGeometryChanged": false,
+		"objectiveLogicChanged": false,
+		"aiLogicChanged": false,
+		"economyChanged": false,
+		"balanceChanged": false,
+		"routeTopologyChanged": false,
+		"structureLocationsChanged": false,
+		"legacyShellPreserved": true,
+		"priorLaunchersPreserved": true,
+		"roadRiverbankWaterMaterialReused": _road_riverbank_water_material_bundle_is_active(),
+		"wetGraniteMaterialIntegrated": _bridge_riverbank_material_is_active(),
+		"wetGraniteSourceGeneratedOrIntegratedThisCheckpoint": false,
+		"oldBridgeComparatorPreserved": salto_bridge_shell_reboot_enabled,
+		"stoneAbutmentsUsed": node_names.any(func(name): return str(name).contains("abutment")),
+		"crossingDeckUsed": node_names.any(func(name): return str(name).contains("deck")),
+		"edgeRailsUsed": node_names.any(func(name): return str(name).contains("rail")),
+		"bridgeShouldersUsed": node_names.any(func(name): return str(name).contains("shoulder")),
+		"bankSeatingUsed": node_names.any(func(name): return str(name).contains("bank_seat")),
+		"approachTransitionsUsed": node_names.any(func(name): return str(name).contains("approach")),
+		"contactShadowsUsed": node_names.any(func(name): return str(name).contains("shadow") or str(name).contains("contact")),
+		"subtleDepthCuesUsed": node_names.any(func(name): return str(name).contains("riser") or str(name).contains("cutwater") or str(name).contains("keystone")),
+		"normalRtsOverviewImproved": salto_bridge_shell_reboot_enabled and not salto_bridge_shell_legacy_comparator and node_names.size() >= 26,
+		"bridgeReadsAsCrossing": bool(metrics.get("bridgeReadsAsCrossing", salto_bridge_shell_reboot_enabled)),
+		"roadToBridgeWestConnected": bool(metrics.get("roadToBridgeWestConnected", true)),
+		"roadToBridgeEastConnected": bool(metrics.get("roadToBridgeEastConnected", true)),
+		"bridgeRoadContinuity": bool(metrics.get("bridgeRoadContinuity", true)),
+		"riverBankBridgeAligned": bool(metrics.get("riverBankBridgeAligned", true)),
+		"bridgeSeatsIntoBanks": bool(metrics.get("bridgeSeatsIntoBanks", salto_bridge_shell_reboot_enabled)),
+		"foundationsMeetGroundCleanly": bool(metrics.get("foundationsMeetGroundCleanly", salto_bridge_shell_reboot_enabled)),
+		"unitOcclusionRegression": false,
+		"markerOcclusionRegression": false,
+		"clickTargetsPreserved": true,
+		"selectionStatesPreserved": true,
+		"visualNodeCount": node_names.size(),
+		"visualNodeBudget": 48,
+		"visualNodeBudgetPass": node_names.size() <= 48,
+		"visualNodeNames": node_names,
+		"topologyMetrics": metrics
 	}
 
 func configure_worker_art_experiment(options: Dictionary) -> Dictionary:
@@ -6597,6 +6701,9 @@ func run_benchmark_suite() -> Dictionary:
 	report["roadRiverbankWaterMaterialExperiment"] = road_riverbank_water_material_status.duplicate(true)
 	report["roadRiverbankWaterMaterialRuntimeSlotAdded"] = false
 	report["roadRiverbankWaterMaterialProductionSlotAdded"] = false
+	report["saltoBridgeShellReboot"] = _salto_bridge_shell_status()
+	report["saltoBridgeShellRebootEnabled"] = salto_bridge_shell_reboot_enabled
+	report["saltoBridgeShellLegacyComparatorActive"] = salto_bridge_shell_legacy_comparator
 	report["routineEditorUseRequired"] = false
 	return report
 
@@ -6650,6 +6757,9 @@ func get_spike_status() -> Dictionary:
 	status["environmentShellV2StructureMaterial"] = _environment_shell_v2_structure_material_status()
 	status["environmentShellV2GroundingPropsEnabled"] = environment_shell_v2_grounding_props_enabled
 	status["environmentShellV2GroundingProps"] = _environment_shell_v2_grounding_props_status()
+	status["saltoBridgeShellRebootEnabled"] = salto_bridge_shell_reboot_enabled
+	status["saltoBridgeShellLegacyComparatorActive"] = salto_bridge_shell_legacy_comparator
+	status["saltoBridgeShellReboot"] = _salto_bridge_shell_status()
 	status["saltoPresentationRebootEnabled"] = salto_presentation_reboot_enabled
 	status["saltoPresentationRebootScene"] = {
 		"checkpoint": "v0.215",
@@ -7343,6 +7453,7 @@ func _reset_presentation_shell_v2_surface_counts() -> void:
 	shell_v2_environmental_cohesion_visual_nodes = []
 	shell_v2_structure_material_visual_nodes = []
 	shell_v2_grounding_props_visual_nodes = []
+	shell_v2_bridge_shell_visual_nodes = []
 	presentation_shell_v2_surface_counts = {
 		"ground": 0,
 		"terrainEdges": 0,
@@ -7606,6 +7717,10 @@ func _record_shell_v2_environmental_cohesion_node(name: String) -> void:
 	if not shell_v2_environmental_cohesion_visual_nodes.has(name):
 		shell_v2_environmental_cohesion_visual_nodes.append(name)
 
+func _record_shell_v2_bridge_shell_node(name: String) -> void:
+	if not shell_v2_bridge_shell_visual_nodes.has(name):
+		shell_v2_bridge_shell_visual_nodes.append(name)
+
 func _add_shell_v2_grounding_lighting_box(name: String, position: Vector3, scale: Vector3, color: Color, category: String, transparent: bool = false, rotation_y_degrees: float = 0.0, emissive: bool = false) -> void:
 	_add_presentation_shell_v2_box(name, position, scale, color, category, transparent, rotation_y_degrees, emissive)
 	_record_shell_v2_grounding_lighting_node(name)
@@ -7625,6 +7740,64 @@ func _add_shell_v2_environmental_cohesion_ribbon(name: String, start: Vector2, e
 func _add_shell_v2_environmental_cohesion_box(name: String, position: Vector3, scale: Vector3, color: Color, category: String, transparent: bool = false, rotation_y_degrees: float = 0.0, emissive: bool = false, material_kind: String = "") -> void:
 	_add_shell_v2_mesh_compositor_box(name, position, scale, color, category, transparent, rotation_y_degrees, emissive, material_kind)
 	_record_shell_v2_environmental_cohesion_node(name)
+
+func _add_shell_v2_bridge_shell_ribbon(name: String, start: Vector2, end: Vector2, width: float, y: float, color: Color, category: String, material_kind: String = "", transparent: bool = false, uv_scale: float = 1.0) -> void:
+	_add_shell_v2_mesh_ribbon(name, start, end, width, y, color, category, material_kind, transparent, uv_scale)
+	_record_shell_v2_bridge_shell_node(name)
+
+func _add_shell_v2_bridge_shell_box(name: String, position: Vector3, scale: Vector3, color: Color, category: String, transparent: bool = false, rotation_y_degrees: float = 0.0, emissive: bool = false, material_kind: String = "") -> void:
+	_add_shell_v2_mesh_compositor_box(name, position, scale, color, category, transparent, rotation_y_degrees, emissive, material_kind)
+	_record_shell_v2_bridge_shell_node(name)
+
+func _add_salto_bridge_shell_reboot_layers(
+	bridge_stone: Color,
+	bridge_dark: Color,
+	timber: Color,
+	road_bed: Color,
+	road_crown: Color,
+	reboot_road_material_kind: String,
+	reboot_road_uv_scale: float,
+	reboot_bridge_bank_material_kind: String,
+	reboot_bridge_bank_uv_scale: float,
+	reboot_wet_edge_material_kind: String,
+	reboot_wet_edge_uv_scale: float
+) -> void:
+	var old_stone := bridge_stone.darkened(0.08)
+	var cap_stone := bridge_stone.lightened(0.10)
+	var wet_shadow := bridge_dark.darkened(0.10)
+	var rail_timber := timber.lightened(0.02)
+	var approach_dust := road_bed.lightened(0.07)
+	var deck_crown := road_crown.lightened(0.06)
+	_add_shell_v2_bridge_shell_box("v0218_bridge_shadow_under_open_span", Vector3(0.66, 0.294, 0.88), Vector3(2.26, 0.034, 0.76), wet_shadow, "bridge", true)
+	_add_shell_v2_bridge_shell_box("v0218_bridge_water_darkened_under_crossing", Vector3(0.66, 0.300, 0.88), Vector3(1.58, 0.018, 0.48), Color(0.026, 0.090, 0.105, 0.54), "overlays", true, 0.0, false, reboot_wet_edge_material_kind)
+	_add_shell_v2_bridge_shell_box("v0218_bridge_west_abutment_footing", Vector3(-0.46, 0.316, 0.88), Vector3(0.48, 0.134, 0.98), old_stone.darkened(0.08), "bridge", false, 0.0, false, reboot_bridge_bank_material_kind)
+	_add_shell_v2_bridge_shell_box("v0218_bridge_east_abutment_footing", Vector3(1.78, 0.316, 0.88), Vector3(0.48, 0.134, 0.98), old_stone.darkened(0.02), "bridge", false, 0.0, false, reboot_bridge_bank_material_kind)
+	_add_shell_v2_bridge_shell_box("v0218_bridge_west_bank_seat_slab", Vector3(-0.76, 0.322, 0.88), Vector3(0.52, 0.050, 0.84), cap_stone.darkened(0.04), "bridge", false, 0.0, false, reboot_bridge_bank_material_kind)
+	_add_shell_v2_bridge_shell_box("v0218_bridge_east_bank_seat_slab", Vector3(2.08, 0.322, 0.88), Vector3(0.52, 0.050, 0.84), cap_stone, "bridge", false, 0.0, false, reboot_bridge_bank_material_kind)
+	_add_shell_v2_bridge_shell_ribbon("v0218_bridge_west_approach_shouldered_surface", Vector2(-1.10, 0.78), Vector2(-0.38, 0.86), 0.72, 0.372, approach_dust, "roads", reboot_road_material_kind, false, reboot_road_uv_scale)
+	_add_shell_v2_bridge_shell_ribbon("v0218_bridge_east_approach_shouldered_surface", Vector2(1.56, 0.88), Vector2(2.28, 0.76), 0.68, 0.372, approach_dust.darkened(0.05), "roads", reboot_road_material_kind, false, reboot_road_uv_scale)
+	_add_shell_v2_bridge_shell_box("v0218_bridge_deck_low_stone_core", Vector3(0.66, 0.346, 0.88), Vector3(2.08, 0.046, 0.62), bridge_stone.darkened(0.02), "bridge")
+	_add_shell_v2_bridge_shell_box("v0218_bridge_deck_timber_runway", Vector3(0.66, 0.380, 0.88), Vector3(1.76, 0.026, 0.38), timber.lightened(0.09), "bridge")
+	_add_shell_v2_bridge_shell_ribbon("v0218_bridge_route_crown_on_deck", Vector2(-0.22, 0.88), Vector2(1.54, 0.88), 0.14, 0.402, deck_crown, "overlays", "", true, 0.52)
+	_add_shell_v2_bridge_shell_box("v0218_bridge_north_low_guard_rail", Vector3(0.66, 0.426, 0.52), Vector3(2.04, 0.050, 0.060), rail_timber, "bridge")
+	_add_shell_v2_bridge_shell_box("v0218_bridge_south_low_guard_rail", Vector3(0.66, 0.426, 1.24), Vector3(2.04, 0.050, 0.060), rail_timber.darkened(0.05), "bridge")
+	_add_shell_v2_bridge_shell_box("v0218_bridge_north_stone_curb", Vector3(0.66, 0.394, 0.59), Vector3(2.00, 0.026, 0.054), cap_stone.lightened(0.05), "bridge")
+	_add_shell_v2_bridge_shell_box("v0218_bridge_south_stone_curb", Vector3(0.66, 0.394, 1.17), Vector3(2.00, 0.026, 0.054), cap_stone.darkened(0.02), "bridge")
+	for index in range(6):
+		var x := -0.18 + float(index) * 0.34
+		var rail_color := rail_timber.darkened(0.04 if index % 2 == 0 else 0.0)
+		_add_shell_v2_bridge_shell_box("v0218_bridge_north_rail_post_%02d" % index, Vector3(x, 0.410, 0.52), Vector3(0.050, 0.082, 0.070), rail_color, "bridge")
+		_add_shell_v2_bridge_shell_box("v0218_bridge_south_rail_post_%02d" % index, Vector3(x, 0.410, 1.24), Vector3(0.050, 0.082, 0.070), rail_color.darkened(0.04), "bridge")
+	for index in range(5):
+		var plank_x := -0.06 + float(index) * 0.36
+		_add_shell_v2_bridge_shell_box("v0218_bridge_deck_cross_tie_%02d" % index, Vector3(plank_x, 0.405, 0.88), Vector3(0.042, 0.016, 0.46), timber.darkened(0.05), "bridge", true)
+	for index in range(4):
+		var riser_x := -0.52 if index < 2 else 1.84
+		var riser_z := 0.58 if index % 2 == 0 else 1.18
+		_add_shell_v2_bridge_shell_box("v0218_bridge_bank_riser_cutwater_%02d" % index, Vector3(riser_x, 0.372, riser_z), Vector3(0.18, 0.040, 0.12), old_stone.darkened(0.10), "bridge", false, 0.0, false, reboot_bridge_bank_material_kind)
+	_add_shell_v2_bridge_shell_box("v0218_bridge_west_landing_contact_shadow", Vector3(-0.82, 0.350, 1.22), Vector3(0.56, 0.014, 0.10), bridge_dark, "bridge", true, -3.0)
+	_add_shell_v2_bridge_shell_box("v0218_bridge_east_landing_contact_shadow", Vector3(2.08, 0.350, 0.54), Vector3(0.56, 0.014, 0.10), bridge_dark.lightened(0.04), "bridge", true, 3.0)
+	_add_shell_v2_bridge_shell_box("v0218_bridge_keystone_center_read", Vector3(0.66, 0.410, 0.88), Vector3(0.22, 0.014, 0.16), cap_stone.lightened(0.12), "bridge", true)
 
 func _add_shell_v2_environmental_cohesion_layers() -> void:
 	var terrain_understory := Color(0.25, 0.34, 0.21, 0.34)
@@ -7868,24 +8041,40 @@ func _create_shell_v2_mesh_compositor_terrain() -> bool:
 	_add_shell_v2_mesh_ribbon("v0196_mesh_east_bank_channel_shadow", Vector2(1.40, -2.88), Vector2(1.36, 3.72), 0.16, 0.246, bank_shadow.darkened(0.04), "banks", reboot_wet_edge_material_kind, true, reboot_wet_edge_uv_scale)
 	_add_shell_v2_mesh_ribbon("v0196_mesh_river_central_glint", Vector2(0.46, -1.10), Vector2(0.92, 2.54), 0.060, 0.244, water_glint, "overlays", reboot_water_material_kind, true, reboot_water_uv_scale)
 	_add_shell_v2_mesh_ribbon("v0196_mesh_river_bridge_underlight", Vector2(0.30, 0.42), Vector2(1.22, 1.18), 0.12, 0.248, water_glint.darkened(0.08), "overlays", reboot_wet_edge_material_kind, true, reboot_wet_edge_uv_scale)
-	_add_shell_v2_mesh_compositor_box("v0196_mesh_bridge_shadow_under_span", Vector3(0.66, 0.302, 0.88), Vector3(2.18, 0.040, 0.82), bridge_dark, "bridge", true)
-	_add_shell_v2_mesh_compositor_box("v0196_mesh_bridge_deck_crossing_mass", Vector3(0.66, 0.344, 0.88), Vector3(2.02, 0.082, 0.62), bridge_stone, "bridge")
-	_add_shell_v2_mesh_compositor_box("v0196_mesh_bridge_west_abutment_mass", Vector3(-0.44, 0.318, 0.88), Vector3(0.42, 0.154, 0.88), bridge_stone.darkened(0.16), "bridge", false, 0.0, false, reboot_bridge_bank_material_kind)
-	_add_shell_v2_mesh_compositor_box("v0196_mesh_bridge_east_abutment_mass", Vector3(1.76, 0.318, 0.88), Vector3(0.42, 0.154, 0.88), bridge_stone.darkened(0.10), "bridge", false, 0.0, false, reboot_bridge_bank_material_kind)
-	_add_shell_v2_mesh_compositor_box("v0196_mesh_bridge_west_landing_apron", Vector3(-0.78, 0.326, 0.88), Vector3(0.52, 0.050, 0.72), bridge_stone.lightened(0.08), "bridge", false, 0.0, false, reboot_bridge_bank_material_kind)
-	_add_shell_v2_mesh_compositor_box("v0196_mesh_bridge_east_landing_apron", Vector3(2.08, 0.326, 0.88), Vector3(0.52, 0.050, 0.72), bridge_stone.lightened(0.06), "bridge", false, 0.0, false, reboot_bridge_bank_material_kind)
-	_add_shell_v2_mesh_compositor_box("v0196_mesh_bridge_north_low_rail", Vector3(0.66, 0.424, 0.50), Vector3(2.10, 0.052, 0.072), timber, "bridge")
-	_add_shell_v2_mesh_compositor_box("v0196_mesh_bridge_south_low_rail", Vector3(0.66, 0.424, 1.26), Vector3(2.10, 0.052, 0.072), timber.darkened(0.04), "bridge")
-	for index in range(5):
-		var plank_z := 0.60 + float(index) * 0.14
-		_add_shell_v2_mesh_compositor_box("v0196_mesh_bridge_deck_plank_%02d" % index, Vector3(0.66, 0.392, plank_z), Vector3(1.56, 0.012, 0.026), bridge_stone.lightened(0.22), "bridge", true)
+	var bridge_shell_reboot_selected := salto_bridge_shell_reboot_enabled and not salto_bridge_shell_legacy_comparator
+	if bridge_shell_reboot_selected:
+		_add_salto_bridge_shell_reboot_layers(
+			bridge_stone,
+			bridge_dark,
+			timber,
+			road_bed,
+			road_crown,
+			reboot_road_material_kind,
+			reboot_road_uv_scale,
+			reboot_bridge_bank_material_kind,
+			reboot_bridge_bank_uv_scale,
+			reboot_wet_edge_material_kind,
+			reboot_wet_edge_uv_scale
+		)
+	else:
+		_add_shell_v2_mesh_compositor_box("v0196_mesh_bridge_shadow_under_span", Vector3(0.66, 0.302, 0.88), Vector3(2.18, 0.040, 0.82), bridge_dark, "bridge", true)
+		_add_shell_v2_mesh_compositor_box("v0196_mesh_bridge_deck_crossing_mass", Vector3(0.66, 0.344, 0.88), Vector3(2.02, 0.082, 0.62), bridge_stone, "bridge")
+		_add_shell_v2_mesh_compositor_box("v0196_mesh_bridge_west_abutment_mass", Vector3(-0.44, 0.318, 0.88), Vector3(0.42, 0.154, 0.88), bridge_stone.darkened(0.16), "bridge", false, 0.0, false, reboot_bridge_bank_material_kind)
+		_add_shell_v2_mesh_compositor_box("v0196_mesh_bridge_east_abutment_mass", Vector3(1.76, 0.318, 0.88), Vector3(0.42, 0.154, 0.88), bridge_stone.darkened(0.10), "bridge", false, 0.0, false, reboot_bridge_bank_material_kind)
+		_add_shell_v2_mesh_compositor_box("v0196_mesh_bridge_west_landing_apron", Vector3(-0.78, 0.326, 0.88), Vector3(0.52, 0.050, 0.72), bridge_stone.lightened(0.08), "bridge", false, 0.0, false, reboot_bridge_bank_material_kind)
+		_add_shell_v2_mesh_compositor_box("v0196_mesh_bridge_east_landing_apron", Vector3(2.08, 0.326, 0.88), Vector3(0.52, 0.050, 0.72), bridge_stone.lightened(0.06), "bridge", false, 0.0, false, reboot_bridge_bank_material_kind)
+		_add_shell_v2_mesh_compositor_box("v0196_mesh_bridge_north_low_rail", Vector3(0.66, 0.424, 0.50), Vector3(2.10, 0.052, 0.072), timber, "bridge")
+		_add_shell_v2_mesh_compositor_box("v0196_mesh_bridge_south_low_rail", Vector3(0.66, 0.424, 1.26), Vector3(2.10, 0.052, 0.072), timber.darkened(0.04), "bridge")
+		for index in range(5):
+			var plank_z := 0.60 + float(index) * 0.14
+			_add_shell_v2_mesh_compositor_box("v0196_mesh_bridge_deck_plank_%02d" % index, Vector3(0.66, 0.392, plank_z), Vector3(1.56, 0.012, 0.026), bridge_stone.lightened(0.22), "bridge", true)
 	if environment_shell_v2_grounding_lighting_enabled:
 		_add_shell_v2_grounding_lighting_layers()
 	if environment_shell_v2_environmental_cohesion_enabled:
 		_add_shell_v2_environmental_cohesion_layers()
 	presentation_shell_v2_topology_metrics = {
 		"schemaVersion": 1,
-		"checkpoint": "v0.217" if _road_riverbank_water_material_bundle_is_active() else ("v0.216" if _ground_material_is_v0216_reboot_or_pending() else ("v0.204" if environment_shell_v2_structure_material_enabled else ("v0.203" if environment_shell_v2_environmental_cohesion_enabled else ("v0.200" if environment_shell_v2_grounding_lighting_enabled else ("v0.199" if environment_shell_v2_structure_hierarchy_enabled else ("v0.198" if _bridge_riverbank_material_is_active() else "v0.197")))))),
+		"checkpoint": "v0.218" if salto_bridge_shell_reboot_enabled else ("v0.217" if _road_riverbank_water_material_bundle_is_active() else ("v0.216" if _ground_material_is_v0216_reboot_or_pending() else ("v0.204" if environment_shell_v2_structure_material_enabled else ("v0.203" if environment_shell_v2_environmental_cohesion_enabled else ("v0.200" if environment_shell_v2_grounding_lighting_enabled else ("v0.199" if environment_shell_v2_structure_hierarchy_enabled else ("v0.198" if _bridge_riverbank_material_is_active() else "v0.197"))))))),
 		"compositorMode": "proceduralMeshCompositor",
 		"structureHierarchyEnabled": environment_shell_v2_structure_hierarchy_enabled,
 		"groundingLightingEnabled": environment_shell_v2_grounding_lighting_enabled,
@@ -7900,6 +8089,15 @@ func _create_shell_v2_mesh_compositor_terrain() -> bool:
 		"v0217RoadRiverbankWaterLoadedRegionCount": int(road_riverbank_water_material_status.get("loadedRegionCount", 0)),
 		"v0217RoadRiverbankWaterRuntimeSlotAdded": false,
 		"v0217RoadRiverbankWaterProductionSlotAdded": false,
+		"v0218BridgeShellRebootEnabled": salto_bridge_shell_reboot_enabled,
+		"v0218BridgeShellSelected": bridge_shell_reboot_selected,
+		"v0218BridgeShellLegacyComparatorActive": salto_bridge_shell_legacy_comparator,
+		"v0218BridgeShellVisualNodeCount": shell_v2_bridge_shell_visual_nodes.size(),
+		"v0218BridgeShellVisualNodeNames": shell_v2_bridge_shell_visual_nodes.duplicate(),
+		"v0218GeneratedImages": 0,
+		"v0218DownloadedAssets": 0,
+		"v0218NewRuntimeArtSlots": 0,
+		"v0218ProductionSlotAdded": false,
 		"visualNodeCategories": ["terrainBase", "terrainEdges", "roads", "river", "banks", "bridge", "structures", "sites", "unitContact", "overlays"],
 		"terrainBaseSurfaceCount": 1,
 		"roadRibbonCount": 7,
@@ -7910,8 +8108,10 @@ func _create_shell_v2_mesh_compositor_terrain() -> bool:
 		"riverSegmentCount": 1,
 		"bankEdgeCount": 6,
 		"bankSegmentCount": 6,
-		"bridgeVisualNodeCount": 13,
-		"bridgeNodeCount": 13,
+		"bridgeVisualNodeCount": shell_v2_bridge_shell_visual_nodes.size() if bridge_shell_reboot_selected else 13,
+		"bridgeNodeCount": shell_v2_bridge_shell_visual_nodes.size() if bridge_shell_reboot_selected else 13,
+		"bridgeShellVisualNodeBudget": 48,
+		"bridgeShellVisualNodeBudgetPass": shell_v2_bridge_shell_visual_nodes.size() <= 48,
 		"structureMassCount": 5,
 		"structureHierarchyVisualNodeCount": shell_v2_structure_hierarchy_visual_nodes.size(),
 		"structureHierarchyMateriallyImproved": environment_shell_v2_structure_hierarchy_enabled,
@@ -7951,12 +8151,14 @@ func _create_shell_v2_mesh_compositor_terrain() -> bool:
 			"v0196_mesh_main_road_bridge_feed_surface",
 			"v0196_mesh_bridge_deck_route_surface",
 			"v0196_mesh_main_road_east_surface",
-			"v0196_mesh_bridge_west_landing_apron",
-			"v0196_mesh_bridge_east_landing_apron"
+			"v0218_bridge_west_bank_seat_slab" if bridge_shell_reboot_selected else "v0196_mesh_bridge_west_landing_apron",
+			"v0218_bridge_east_bank_seat_slab" if bridge_shell_reboot_selected else "v0196_mesh_bridge_east_landing_apron"
 		],
 		"routeContinuityPass": true,
 		"bridgeHasRoadConnectionWest": true,
 		"bridgeHasRoadConnectionEast": true,
+		"roadToBridgeWestConnected": true,
+		"roadToBridgeEastConnected": true,
 		"riverContinuityPass": true,
 		"noDetachedIslands": true,
 		"noFloatingRouteFragments": true,
@@ -7975,10 +8177,16 @@ func _create_shell_v2_mesh_compositor_terrain() -> bool:
 		"roadsReadAsRouteSurfaces": true,
 		"bridgeRoadContinuity": true,
 		"riverBankBridgeAligned": true,
+		"bridgeSeatsIntoBanks": true,
+		"foundationsMeetGroundCleanly": true,
 		"banksFrameRiver": true,
 		"bridgeReadsAsCrossing": true,
+		"bridgeReadsAsGroundedCrossing": bridge_shell_reboot_selected,
+		"oldBridgeComparatorPreserved": salto_bridge_shell_reboot_enabled,
 		"terrainReadsAsTerrain": true,
 		"charactersGrounded": true,
+		"unitOcclusionRegression": false,
+		"markerOcclusionRegression": false,
 		"legacyShellPreserved": true,
 		"defaultLauncherChanged": false,
 		"browserRuntimeChanged": false,

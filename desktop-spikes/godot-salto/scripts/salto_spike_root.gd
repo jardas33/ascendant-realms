@@ -125,6 +125,8 @@ const SCRIPT_ARG_PREFIXES := [
 	"--salto-production-objectives-log",
 	"--salto-minimap-tooltip-accessibility",
 	"--salto-presentation-reboot",
+	"--salto-bridge-shell-reboot",
+	"--salto-bridge-shell-legacy-comparator",
 	"--real-input-smoke",
 	"--real-input-validate",
 	"--site-semantics-smoke",
@@ -1068,6 +1070,8 @@ func _configure_worker_art_for_active_scene() -> void:
 		active_scene.configure_environment_shell_v2_structure_material(_script_args().has("--salto-shell-v2-structure-material"))
 	if active_scene.has_method("configure_environment_shell_v2_grounding_props"):
 		active_scene.configure_environment_shell_v2_grounding_props(_script_args().has("--salto-shell-v2-grounding-props"))
+	if active_scene.has_method("configure_salto_bridge_shell_reboot"):
+		active_scene.configure_salto_bridge_shell_reboot(_script_args().has("--salto-bridge-shell-reboot"), _script_args().has("--salto-bridge-shell-legacy-comparator"))
 	if active_scene.has_method("configure_salto_presentation_reboot"):
 		active_scene.configure_salto_presentation_reboot(_salto_presentation_reboot_enabled())
 
@@ -4109,6 +4113,7 @@ func run_player_slice_validation() -> void:
 	var bridge_riverbank_material_loaded := bool(bridge_riverbank_material.get("sourceLoaded", false))
 	var road_riverbank_water_material: Dictionary = final_status.get("roadRiverbankWaterMaterialExperiment", {})
 	var road_riverbank_water_material_loaded := bool(road_riverbank_water_material.get("sourceLoaded", false))
+	var bridge_shell: Dictionary = final_status.get("saltoBridgeShellReboot", {})
 	var environment_foundation: Dictionary = final_status.get("environmentFoundationReview", {})
 	var environment_readability: Dictionary = final_status.get("environmentReadabilityHardening", {})
 	var environment_contrast: Dictionary = final_status.get("environmentContrastHarmonization", {})
@@ -4138,6 +4143,9 @@ func run_player_slice_validation() -> void:
 	performance_smoke["roadRiverbankWaterMaterialExperiment"] = road_riverbank_water_material
 	performance_smoke["roadRiverbankWaterMaterialRuntimeSlotAdded"] = false
 	performance_smoke["roadRiverbankWaterMaterialProductionSlotAdded"] = false
+	performance_smoke["saltoBridgeShellRebootEnabled"] = bool(final_status.get("saltoBridgeShellRebootEnabled", false))
+	performance_smoke["saltoBridgeShellLegacyComparatorActive"] = bool(final_status.get("saltoBridgeShellLegacyComparatorActive", false))
+	performance_smoke["saltoBridgeShellReboot"] = bridge_shell
 	performance_smoke["environmentFoundationReviewEnabled"] = bool(final_status.get("environmentFoundationReviewEnabled", false))
 	performance_smoke["environmentFoundationReview"] = environment_foundation
 	performance_smoke["environmentReadabilityHardeningEnabled"] = bool(final_status.get("environmentReadabilityHardeningEnabled", false))
@@ -4218,6 +4226,9 @@ func run_player_slice_validation() -> void:
 		"roadRiverbankWaterMaterialExperiment": road_riverbank_water_material,
 		"roadRiverbankWaterMaterialRuntimeSlotAdded": false,
 		"roadRiverbankWaterMaterialProductionSlotAdded": false,
+		"saltoBridgeShellRebootEnabled": bool(final_status.get("saltoBridgeShellRebootEnabled", false)),
+		"saltoBridgeShellLegacyComparatorActive": bool(final_status.get("saltoBridgeShellLegacyComparatorActive", false)),
+		"saltoBridgeShellReboot": bridge_shell,
 		"environmentFoundationReviewEnabled": bool(final_status.get("environmentFoundationReviewEnabled", false)),
 		"environmentFoundationReview": environment_foundation,
 		"environmentReadabilityHardeningEnabled": bool(final_status.get("environmentReadabilityHardeningEnabled", false)),
@@ -4368,6 +4379,7 @@ func run_player_slice_capture() -> void:
 	var bridge_riverbank_material_loaded := bool(bridge_riverbank_material.get("sourceLoaded", false))
 	var road_riverbank_water_material: Dictionary = final_status.get("roadRiverbankWaterMaterialExperiment", {})
 	var road_riverbank_water_material_loaded := bool(road_riverbank_water_material.get("sourceLoaded", false))
+	var bridge_shell: Dictionary = final_status.get("saltoBridgeShellReboot", {})
 	var environment_foundation: Dictionary = final_status.get("environmentFoundationReview", {})
 	var environment_readability: Dictionary = final_status.get("environmentReadabilityHardening", {})
 	var environment_contrast: Dictionary = final_status.get("environmentContrastHarmonization", {})
@@ -4402,7 +4414,7 @@ func run_player_slice_capture() -> void:
 		"saltoAsterPortraitFallbackActive": bool(_salto_aster_portrait_status().get("fallbackActive", true)),
 		"saltoAsterPortraitProductionSlotAdded": false,
 		"saltoAsterPortraitGeneratedImages": false,
-		"privateHarnessPreservedSeparately": captures.any(func(capture: Dictionary) -> bool: return bool(capture.get("privateHarnessCapture", false))) or ["v0.126", "v0.127", "v0.128", "v0.129", "v0.130", "v0.160", "v0.162", "v0.164", "v0.168", "v0.169", "v0.170", "v0.173", "v0.174", "v0.177", "v0.178", "v0.179", "v0.181", "v0.184", "v0.185", "v0.186", "v0.187", "v0.193", "v0.194", "v0.195", "v0.196", "v0.197", "v0.198", "v0.199", "v0.200", "v0.203", "v0.204", "v0.205", "v0.206", "v0.209", "v0.210", "v0.211", "v0.212", "v0.217"].has(_player_capture_checkpoint()),
+		"privateHarnessPreservedSeparately": captures.any(func(capture: Dictionary) -> bool: return bool(capture.get("privateHarnessCapture", false))) or ["v0.126", "v0.127", "v0.128", "v0.129", "v0.130", "v0.160", "v0.162", "v0.164", "v0.168", "v0.169", "v0.170", "v0.173", "v0.174", "v0.177", "v0.178", "v0.179", "v0.181", "v0.184", "v0.185", "v0.186", "v0.187", "v0.193", "v0.194", "v0.195", "v0.196", "v0.197", "v0.198", "v0.199", "v0.200", "v0.203", "v0.204", "v0.205", "v0.206", "v0.209", "v0.210", "v0.211", "v0.212", "v0.217", "v0.218"].has(_player_capture_checkpoint()),
 		"proceduralPrimitiveOnly": not worker_art_loaded and not barracks_material_loaded and not militia_art_loaded and not aster_art_loaded and not ashen_art_loaded and not ground_material_loaded and not road_material_loaded and not bridge_riverbank_material_loaded and not road_riverbank_water_material_loaded,
 		"generatedOrImportedArtIncluded": worker_art_loaded or barracks_material_loaded or militia_art_loaded or aster_art_loaded or ashen_art_loaded or ground_material_loaded or road_material_loaded or bridge_riverbank_material_loaded or road_riverbank_water_material_loaded,
 		"runtimeArtIntegrated": worker_art_loaded or barracks_material_loaded or militia_art_loaded or aster_art_loaded or ashen_art_loaded or ground_material_loaded or road_material_loaded or bridge_riverbank_material_loaded or road_riverbank_water_material_loaded,
@@ -4426,6 +4438,9 @@ func run_player_slice_capture() -> void:
 		"roadRiverbankWaterMaterialExperiment": road_riverbank_water_material,
 		"roadRiverbankWaterMaterialRuntimeSlotAdded": false,
 		"roadRiverbankWaterMaterialProductionSlotAdded": false,
+		"saltoBridgeShellRebootEnabled": bool(final_status.get("saltoBridgeShellRebootEnabled", false)),
+		"saltoBridgeShellLegacyComparatorActive": bool(final_status.get("saltoBridgeShellLegacyComparatorActive", false)),
+		"saltoBridgeShellReboot": bridge_shell,
 		"environmentFoundationReviewEnabled": bool(final_status.get("environmentFoundationReviewEnabled", false)),
 		"environmentFoundationReview": environment_foundation,
 		"environmentReadabilityHardeningEnabled": bool(final_status.get("environmentReadabilityHardeningEnabled", false)),
@@ -4527,6 +4542,7 @@ func run_worker_art_opt_in_benchmark() -> void:
 	var road_material: Dictionary = final_status.get("roadMaterialExperiment", {})
 	var bridge_riverbank_material: Dictionary = final_status.get("bridgeRiverbankMaterialExperiment", {})
 	var road_riverbank_water_material: Dictionary = final_status.get("roadRiverbankWaterMaterialExperiment", {})
+	var bridge_shell: Dictionary = final_status.get("saltoBridgeShellReboot", {})
 	var environment_foundation: Dictionary = final_status.get("environmentFoundationReview", {})
 	var environment_readability: Dictionary = final_status.get("environmentReadabilityHardening", {})
 	var environment_contrast: Dictionary = final_status.get("environmentContrastHarmonization", {})
@@ -4553,6 +4569,14 @@ func run_worker_art_opt_in_benchmark() -> void:
 		"frameTimeAverageMs": snappedf(average_frame_ms, 0.01),
 		"frameTimeP95Ms": _percentile(frame_times, 0.95),
 		"frameTimeP99Ms": _percentile(frame_times, 0.99),
+		"saltoUiShellOptInRequested": _script_args().has("--salto-ui-shell-experiment"),
+		"saltoUiShellFallbackActive": _salto_ui_shell_fallback_active(),
+		"saltoUiShellLiveOverlayEnabled": _salto_ui_shell_live_enabled(),
+		"saltoSelectionCommandPanelEnabled": _salto_selection_command_panel_enabled(),
+		"saltoProductionObjectivesLogEnabled": _salto_production_objectives_log_enabled(),
+		"saltoMinimapTooltipAccessibilityEnabled": _salto_minimap_tooltip_accessibility_enabled(),
+		"saltoPresentationRebootEnabled": _salto_presentation_reboot_enabled(),
+		"saltoPresentationRebootUiOccupancy": _salto_presentation_reboot_occupancy_budget(),
 		"workerArtOptInRequested": _script_args().has("--worker-art-opt-in"),
 		"workerArtExperiment": worker_art,
 		"barracksMaterialOptInRequested": _script_args().has("--barracks-material-opt-in"),
@@ -4573,6 +4597,9 @@ func run_worker_art_opt_in_benchmark() -> void:
 		"roadRiverbankWaterMaterialExperiment": road_riverbank_water_material,
 		"roadRiverbankWaterMaterialRuntimeSlotAdded": false,
 		"roadRiverbankWaterMaterialProductionSlotAdded": false,
+		"saltoBridgeShellRebootEnabled": bool(final_status.get("saltoBridgeShellRebootEnabled", false)),
+		"saltoBridgeShellLegacyComparatorActive": bool(final_status.get("saltoBridgeShellLegacyComparatorActive", false)),
+		"saltoBridgeShellReboot": bridge_shell,
 		"environmentFoundationReviewEnabled": bool(final_status.get("environmentFoundationReviewEnabled", false)),
 		"environmentFoundationReview": environment_foundation,
 		"environmentReadabilityHardeningEnabled": bool(final_status.get("environmentReadabilityHardeningEnabled", false)),
@@ -7355,6 +7382,8 @@ func _apply_player_slice_action(action: String) -> Dictionary:
 
 func _player_capture_checkpoint() -> String:
 	var normalized_root := _artifact_root_from_args().replace("\\", "/")
+	if normalized_root.contains("/v0218"):
+		return "v0.218"
 	if normalized_root.contains("/v0217"):
 		return "v0.217"
 	if normalized_root.contains("/v0216"):
@@ -7442,9 +7471,20 @@ func _player_capture_checkpoint() -> String:
 	return "v0.124"
 
 func _is_bounded_microloop_checkpoint() -> bool:
-	return ["v0.129", "v0.130", "v0.160", "v0.162", "v0.164", "v0.166", "v0.168", "v0.169", "v0.170", "v0.173", "v0.174", "v0.177", "v0.178", "v0.179", "v0.181", "v0.184", "v0.185", "v0.186", "v0.187", "v0.193", "v0.194", "v0.195", "v0.196", "v0.197", "v0.198", "v0.199", "v0.200", "v0.203", "v0.204", "v0.205", "v0.206", "v0.209", "v0.210", "v0.211", "v0.212", "v0.213", "v0.215", "v0.216", "v0.217"].has(_player_capture_checkpoint())
+	return ["v0.129", "v0.130", "v0.160", "v0.162", "v0.164", "v0.166", "v0.168", "v0.169", "v0.170", "v0.173", "v0.174", "v0.177", "v0.178", "v0.179", "v0.181", "v0.184", "v0.185", "v0.186", "v0.187", "v0.193", "v0.194", "v0.195", "v0.196", "v0.197", "v0.198", "v0.199", "v0.200", "v0.203", "v0.204", "v0.205", "v0.206", "v0.209", "v0.210", "v0.211", "v0.212", "v0.213", "v0.215", "v0.216", "v0.217", "v0.218"].has(_player_capture_checkpoint())
 
 func _player_capture_steps() -> Array[Dictionary]:
+	if _player_capture_checkpoint() == "v0.218":
+		return [
+			{"id": "old_bridge", "label": "v0.218 legacy bridge comparator", "action": "v0195_bridge_close"},
+			{"id": "new_bridge_normal_rts", "label": "v0.218 new bridge normal RTS distance", "action": "battle_default"},
+			{"id": "close_bridge", "label": "v0.218 close bridge shell readability", "action": "v0195_bridge_close"},
+			{"id": "road_to_bridge_west", "label": "v0.218 west road-to-bridge transition", "action": "site_marker_hierarchy"},
+			{"id": "road_to_bridge_east", "label": "v0.218 east road-to-bridge transition", "action": "ford"},
+			{"id": "riverbank_seats", "label": "v0.218 riverbank seats and abutments", "action": "v0195_bridge_close"},
+			{"id": "units_crossing", "label": "v0.218 units crossing and marker clearance", "action": "ashen_pressure_wave"},
+			{"id": "fallback", "label": "v0.218 bridge shell fallback comparator", "action": "friendly_boundary"}
+		]
 	if _player_capture_checkpoint() == "v0.217":
 		return [
 			{"id": "road_overview", "label": "v0.217 road riverbank water overview", "action": "battle_default"},
