@@ -150,6 +150,7 @@ var camera_focus_id := "default"
 var camera_zoom_posture := "default"
 var player_facing_mode := false
 var player_shell_screen := "battle"
+var player_ui_shell_experiment_enabled := false
 var hover_target_id := ""
 var last_feedback_id := "none"
 var combat_readability_active := false
@@ -3904,6 +3905,12 @@ func set_player_shell_screen(screen: String) -> bool:
 	_sync_hud()
 	return true
 
+func set_player_ui_shell_experiment_enabled(enabled: bool) -> bool:
+	player_ui_shell_experiment_enabled = enabled
+	_sync_player_shell_chrome()
+	_sync_hud()
+	return true
+
 func set_onboarding_step(step_id: String) -> bool:
 	var normalized := _canonical_objective_step(step_id)
 	if normalized == "":
@@ -6367,6 +6374,8 @@ func get_spike_status() -> Dictionary:
 	status["playerShellScreen"] = player_shell_screen
 	status["hudVisible"] = hud_layer != null and hud_layer.visible
 	status["playerFacingHudCompact"] = player_facing_mode and hud_layer != null and hud_layer.visible
+	status["saltoUiShellSceneHudSuppressed"] = player_ui_shell_experiment_enabled and player_facing_mode and player_shell_screen == "battle" and hud_layer != null and not hud_layer.visible
+	status["saltoUiShellExperimentEnabled"] = player_ui_shell_experiment_enabled
 	status["playerFacingNonBattleChromeHidden"] = not player_facing_mode or player_shell_screen == "battle" or (hud_layer != null and not hud_layer.visible)
 	status["playerFacingSelectionUsesFixtureIds"] = false
 	status["terrainViewportCoveragePass"] = true
@@ -8314,7 +8323,7 @@ func _sync_hud() -> void:
 
 func _sync_player_shell_chrome() -> void:
 	if hud_layer:
-		hud_layer.visible = (not player_facing_mode) or player_shell_screen == "battle"
+		hud_layer.visible = (not player_facing_mode) or (player_shell_screen == "battle" and not player_ui_shell_experiment_enabled)
 
 func _panel_style(bg: Color, border: Color) -> StyleBoxFlat:
 	var style := StyleBoxFlat.new()

@@ -97,6 +97,8 @@ const SCRIPT_ARG_PREFIXES := [
 	"--salto-shell-v2-grounding-props",
 	"--salto-ui-architecture-wireframe",
 	"--salto-ui-shell-comparator",
+	"--salto-ui-shell-experiment",
+	"--salto-ui-shell-force-fallback",
 	"--real-input-smoke",
 	"--real-input-validate",
 	"--site-semantics-smoke",
@@ -149,6 +151,8 @@ var current_viewport_size := VIEWPORT_SIZE
 var active_visual_preset := VISUAL_PRESET_CLEAN
 var last_post_mine_flow_status: Dictionary = {}
 var player_input_shield_frames := 0
+var player_ui_shell_overlay: Control
+var player_ui_shell_refresh_frames := 0
 
 func _ready() -> void:
 	var args: PackedStringArray = _script_args()
@@ -888,6 +892,11 @@ func _ready() -> void:
 func _process(_delta: float) -> void:
 	if player_input_shield_frames > 0:
 		player_input_shield_frames -= 1
+	if _salto_ui_shell_live_enabled() and active_mode == MODE_25D and current_step_id == "player_battle":
+		player_ui_shell_refresh_frames += 1
+		if player_ui_shell_refresh_frames >= 8:
+			player_ui_shell_refresh_frames = 0
+			_refresh_live_ui_shell_overlay()
 
 func _configure_window() -> void:
 	if DisplayServer.get_name() != "headless":
@@ -1444,6 +1453,7 @@ func _render_player_screen(screen: String) -> void:
 		child.queue_free()
 	player_visible_texts = []
 	_call_scene("set_player_shell_screen", [screen])
+	_call_scene("set_player_ui_shell_experiment_enabled", [_salto_ui_shell_live_enabled() and screen == "battle"])
 	_apply_review_framing_for_active_scene()
 	var shade := ColorRect.new()
 	shade.name = "PlayerSliceShade"
@@ -1481,6 +1491,10 @@ func _render_player_screen(screen: String) -> void:
 			_add_player_button("Return to Title", Vector2(620, 372), "_on_player_back_pressed")
 			_add_player_button("Exit", Vector2(620, 426), "_exit_player_slice")
 	_add_experimental_review_mode_label()
+	if screen == "battle":
+		_refresh_live_ui_shell_overlay()
+	else:
+		player_ui_shell_overlay = null
 
 func _add_experimental_review_mode_label() -> void:
 	var label_text := _arg_value("--experimental-review-mode-label=", "").strip_edges()
@@ -2335,6 +2349,336 @@ func _ui_shell_card(parent: Control, position: Vector2, size: Vector2, card: Dic
 	_ui_architecture_label(panel, str(card.get("meta", "")), Vector2(14, 24), Vector2(size.x - 20, 18), 11, Color(0.72, 0.78, 0.66), HORIZONTAL_ALIGNMENT_LEFT)
 	return panel
 
+func _salto_ui_shell_live_enabled() -> bool:
+	var args := _script_args()
+	return args.has("--salto-ui-shell-experiment") and not args.has("--salto-ui-shell-force-fallback")
+
+func _salto_ui_shell_fallback_active() -> bool:
+	var args := _script_args()
+	return args.has("--salto-ui-shell-experiment") and args.has("--salto-ui-shell-force-fallback")
+
+func _refresh_live_ui_shell_overlay() -> void:
+	if player_screen == null:
+		return
+	if player_ui_shell_overlay != null and is_instance_valid(player_ui_shell_overlay):
+		player_screen.remove_child(player_ui_shell_overlay)
+		player_ui_shell_overlay.free()
+	player_ui_shell_overlay = null
+	if not _salto_ui_shell_live_enabled() or current_step_id != "player_battle":
+		return
+	_render_live_ui_shell_overlay()
+
+func _render_live_ui_shell_overlay() -> void:
+	var overlay := Control.new()
+	overlay.name = "V0209SaltoUiShellLiveOverlay"
+	overlay.set_anchors_preset(Control.PRESET_FULL_RECT)
+	overlay.mouse_filter = Control.MOUSE_FILTER_PASS
+	overlay.z_index = 60
+	player_screen.add_child(overlay)
+	player_ui_shell_overlay = overlay
+	var state := _live_ui_shell_state()
+	_live_ui_shell_resource_strip(overlay, state)
+	_live_ui_shell_left_stack(overlay, state)
+	_live_ui_shell_minimap(overlay, state)
+	_live_ui_shell_selection_panel(overlay, state)
+	_live_ui_shell_production_panel(overlay, state)
+	_live_ui_shell_alerts(overlay, state)
+	_live_ui_shell_tooltip(overlay, state)
+
+func _live_ui_shell_state() -> Dictionary:
+	var status := get_spike_status()
+	var action := str(status.get("currentStepId", current_step_id))
+	var resources: Dictionary = status.get("resources", {})
+	var alive_counts: Dictionary = status.get("aliveCounts", {})
+	var selected_ids: Array = status.get("selectedIds", [])
+	var construction_progress := float(status.get("barracksConstructionProgress", 0.0))
+	var barracks_complete := bool(status.get("barracksComplete", false))
+	var militia_queued := bool(status.get("militiaRecruitQueued", false))
+	var militia_spawned := bool(status.get("militiaSpawned", false))
+	var worker_assigned := bool(status.get("workerAssignedToMine", false))
+	var mine_converted := bool(status.get("mineSiteConverted", false))
+	var pressure_state := str(status.get("pressureWaveState", "dormant"))
+	var ashen_remaining := int(alive_counts.get("ashenEnemies", alive_counts.get("enemy", 0)))
+	var pressure_active := pressure_state != "dormant" and ashen_remaining > 0
+	var pressure_resolved := pressure_state != "dormant" and ashen_remaining <= 0
+	var active_tab := "BUILD"
+	var selected_title := "Aster of the Quiet Link"
+	var selected_subtitle := "Hero | Health stable | Lume ward ready"
+	var portrait_color := Color(0.22, 0.62, 0.58, 1.0)
+	var command_hint := "Move  Attack  Rally  Ward"
+	var status_pip := "READY"
+	var tooltip := "Right-click ground to move selected forces."
+	if action == "worker_assigned_mine" or action == "worker_selected" or selected_ids.any(func(id: String) -> bool: return id.begins_with("worker")):
+		selected_title = "Worker Detachment"
+		selected_subtitle = "Builder | Mine assignment %s" % ("active" if worker_assigned else "available")
+		portrait_color = Color(0.62, 0.48, 0.22, 1.0)
+		command_hint = "Work  Repair  Return"
+		status_pip = "ASSIGNED" if worker_assigned else "READY"
+		tooltip = "Work assigns the Worker to the highlighted production task."
+	elif action == "construction_progress" or (construction_progress > 0.0 and not barracks_complete):
+		selected_title = "Barracks Foundation"
+		selected_subtitle = "Structure | Restoration %d%% | Worker committed" % int(round(construction_progress * 100.0))
+		portrait_color = Color(0.43, 0.29, 0.18, 1.0)
+		command_hint = "Restore  Cancel  Rally"
+		status_pip = "RESTORING"
+		tooltip = "Restoration must complete before Militia can train."
+	elif action == "barracks_complete" or action == "recruit_queue" or barracks_complete:
+		selected_title = "Restored Barracks"
+		selected_subtitle = "Structure | %s" % ("Militia queued" if militia_queued else "Militia training unlocked")
+		portrait_color = Color(0.50, 0.36, 0.21, 1.0)
+		command_hint = "Train Militia  Set Rally  Hold"
+		status_pip = "QUEUE" if militia_queued else "RESTORED"
+		active_tab = "TRAIN"
+		tooltip = "Train one Militia squad before the Ashen reach the bridge."
+	if action == "militia_spawned" or action == "squad_selected" or militia_spawned:
+		selected_title = "Militia Defenders"
+		selected_subtitle = "Squad | Staged near bridge | %d friendly military" % int(alive_counts.get("friendlyMilitary", 0))
+		portrait_color = Color(0.28, 0.55, 0.38, 1.0)
+		command_hint = "Attack  Hold Bridge  Focus Fire"
+		status_pip = "STAGED"
+		active_tab = "TRAIN"
+		tooltip = "Defenders are ready to intercept Ashen pressure."
+	if action == "ashen_pressure_wave" or pressure_active:
+		selected_title = "Ashen Pressure"
+		selected_subtitle = "Hostile wave | Ashen remaining %d" % ashen_remaining
+		portrait_color = Color(0.56, 0.18, 0.13, 1.0)
+		command_hint = "Attack  Hold Bridge  Focus Fire"
+		status_pip = "ALERT"
+		active_tab = "TRAIN"
+		tooltip = "Select defenders and issue Attack before raiders reach the road."
+	elif pressure_resolved:
+		selected_title = "Bridge Secured"
+		selected_subtitle = "Hostile wave resolved | Re-form defenders"
+		portrait_color = Color(0.28, 0.55, 0.38, 1.0)
+		command_hint = "Hold Bridge  Restore Lume"
+		status_pip = "CLEAR"
+		active_tab = "TRAIN"
+		tooltip = "The Ashen wave is cleared; regroup before restoring the Lume link."
+	var objective := "Convert West Stone Cut Mine"
+	var objective_detail := "Assign Worker, restore Barracks,\ntrain Militia, hold bridge."
+	if mine_converted and not worker_assigned:
+		objective = "Assign Worker"
+		objective_detail = "Mine controlled.\nPut the Worker on production."
+	elif worker_assigned and not barracks_complete:
+		objective = "Restore Barracks"
+		objective_detail = "Worker assigned.\nRestore the military structure."
+	elif barracks_complete and not militia_spawned:
+		objective = "Train Militia"
+		objective_detail = "Barracks restored.\nQueue defenders before pressure."
+	elif pressure_active:
+		objective = "Defeat Ashen Wave"
+		objective_detail = "Ashen remaining %d.\nHold bridge; preserve Aster." % ashen_remaining
+	elif pressure_resolved:
+		objective = "Secure Bridge"
+		objective_detail = "Ashen wave cleared.\nHold formation; prep Lume link."
+	elif bool(status.get("lumeRestored", false)):
+		objective = "Review Results"
+		objective_detail = "Mine, Barracks, Militia, Ashen wave, and Lume are resolved."
+	var events: Array[String] = []
+	if mine_converted:
+		events.append("Mine converted")
+	else:
+		events.append("Mine capture pending")
+	if worker_assigned:
+		events.append("Worker assigned to mine")
+	elif mine_converted:
+		events.append("Worker assignment available")
+	if barracks_complete:
+		events.append("Barracks restored")
+	elif construction_progress > 0.0:
+		events.append("Barracks restoring %d%%" % int(round(construction_progress * 100.0)))
+	if militia_queued:
+		events.append("Militia queue active")
+	if militia_spawned:
+		events.append("Defenders staged")
+	if pressure_active:
+		events.append("Ashen pressure active")
+	elif pressure_resolved:
+		events.append("Ashen wave cleared")
+	if events.is_empty():
+		events = ["Aster ready", "Worker awaiting order", "Barracks frame located"]
+	var alert_text := "No active pressure"
+	var alert_severity := "info"
+	if pressure_active:
+		alert_text = "Ashen pressure: %d remaining" % ashen_remaining
+		alert_severity = "hostile"
+	elif pressure_resolved:
+		alert_text = "Ashen wave cleared"
+		alert_severity = "info"
+	return {
+		"resources": resources,
+		"objective": objective,
+		"objectiveDetail": objective_detail,
+		"events": events,
+		"selectedTitle": selected_title,
+		"selectedSubtitle": selected_subtitle,
+		"portraitColor": portrait_color,
+		"commandHint": command_hint,
+		"statusPip": status_pip,
+		"activeTab": active_tab,
+		"tooltip": tooltip,
+		"alert": alert_text,
+		"alertSeverity": alert_severity,
+		"mineConverted": mine_converted,
+		"workerAssigned": worker_assigned,
+		"barracksComplete": barracks_complete,
+		"militiaQueued": militia_queued,
+		"militiaSpawned": militia_spawned,
+		"ashenRemaining": ashen_remaining
+	}
+
+func _live_ui_shell_resource_strip(root: Control, state: Dictionary) -> void:
+	var resources: Dictionary = state.get("resources", {})
+	var panel := _ui_architecture_panel(root, "LiveShellResourceStrip", Vector2(212, 16), Vector2(1176, 60), "SALTO FOOTHOLD", "", Color(0.34, 0.72, 0.66, 0.92))
+	var entries := [
+		{"name": "Crowns", "value": str(resources.get("crowns", 0)), "color": Color(0.86, 0.74, 0.38, 1.0)},
+		{"name": "Stone", "value": str(resources.get("stone", 0)), "color": Color(0.62, 0.62, 0.54, 1.0)},
+		{"name": "Iron", "value": str(resources.get("iron", 0)), "color": Color(0.54, 0.58, 0.60, 1.0)},
+		{"name": "Aether", "value": str(resources.get("aether", 0)), "color": Color(0.28, 0.82, 0.78, 1.0)},
+		{"name": "Pop", "value": "9/16", "color": Color(0.64, 0.78, 0.50, 1.0)}
+	]
+	for index in range(entries.size()):
+		var entry: Dictionary = entries[index]
+		var x := 24 + index * 206
+		_ui_architecture_rect(panel, "LiveIcon%s" % str(entry["name"]), Vector2(x, 35), Vector2(16, 16), entry["color"])
+		_ui_architecture_label(panel, "%s %s" % [entry["name"], entry["value"]], Vector2(x + 24, 31), Vector2(150, 22), 15, Color(0.90, 0.88, 0.68), HORIZONTAL_ALIGNMENT_LEFT)
+	_live_ui_shell_action_button(root, Vector2(1392, 20), Vector2(54, 28), "Menu", "_on_player_back_pressed")
+	_live_ui_shell_action_button(root, Vector2(1454, 20), Vector2(54, 28), "Help", "_on_live_ui_shell_help_pressed")
+	_live_ui_shell_action_button(root, Vector2(1516, 20), Vector2(54, 28), "Pause", "_on_live_ui_shell_pause_pressed")
+
+func _live_ui_shell_left_stack(root: Control, state: Dictionary) -> void:
+	var objective_panel := _ui_architecture_panel(root, "LiveShellObjective", Vector2(22, 122), Vector2(318, 234), "OBJECTIVE", "", Color(0.70, 0.56, 0.26, 0.94))
+	var objective_label := _ui_architecture_label(objective_panel, str(state["objective"]), Vector2(14, 44), Vector2(286, 30), 14, Color(0.90, 0.86, 0.66), HORIZONTAL_ALIGNMENT_LEFT)
+	objective_label.vertical_alignment = VERTICAL_ALIGNMENT_TOP
+	var objective_detail := _ui_architecture_label(objective_panel, str(state["objectiveDetail"]), Vector2(14, 82), Vector2(286, 118), 13, Color(0.82, 0.88, 0.78), HORIZONTAL_ALIGNMENT_LEFT)
+	objective_detail.vertical_alignment = VERTICAL_ALIGNMENT_TOP
+	var event_panel := _ui_architecture_panel(root, "LiveShellEventLog", Vector2(22, 376), Vector2(318, 198), "EVENT LOG", "", Color(0.40, 0.74, 0.60, 0.92))
+	var events: Array = state.get("events", [])
+	for index in range(min(events.size(), 7)):
+		var line := _ui_architecture_label(event_panel, str(events[index]), Vector2(14, 44 + index * 22), Vector2(286, 20), 13, Color(0.82, 0.88, 0.78), HORIZONTAL_ALIGNMENT_LEFT)
+		line.vertical_alignment = VERTICAL_ALIGNMENT_TOP
+
+func _live_ui_shell_minimap(root: Control, state: Dictionary) -> void:
+	var panel := _ui_architecture_panel(root, "LiveShellMinimap", Vector2(24, 656), Vector2(258, 208), "SALTO MAP", "", Color(0.30, 0.78, 0.72, 0.94))
+	_ui_architecture_rect(panel, "LiveMiniTerrain", Vector2(16, 46), Vector2(226, 142), Color(0.07, 0.13, 0.10, 0.94))
+	_ui_architecture_rect(panel, "LiveMiniRoad", Vector2(42, 112), Vector2(164, 9), Color(0.54, 0.46, 0.30, 0.95))
+	_ui_architecture_rect(panel, "LiveMiniRiver", Vector2(126, 58), Vector2(12, 112), Color(0.12, 0.46, 0.52, 0.96))
+	_ui_architecture_rect(panel, "LiveMiniBridge", Vector2(102, 108), Vector2(58, 16), Color(0.74, 0.66, 0.46, 0.96))
+	_ui_architecture_rect(panel, "LiveMiniFriendlies", Vector2(58, 150), Vector2(18, 18), Color(0.35, 0.82, 0.62, 1.0))
+	_ui_architecture_rect(panel, "LiveMiniAster", Vector2(86, 100), Vector2(16, 16), Color(0.90, 0.78, 0.32, 1.0))
+	_ui_architecture_rect(panel, "LiveMiniMine", Vector2(92, 104), Vector2(24, 18), Color(0.32, 0.88, 0.58, 0.92) if bool(state.get("mineConverted", false)) else Color(0.84, 0.72, 0.34, 0.92))
+	_ui_architecture_rect(panel, "LiveMiniBarracks", Vector2(62, 68), Vector2(26, 16), Color(0.78, 0.66, 0.42, 0.92))
+	_ui_architecture_rect(panel, "LiveMiniHostiles", Vector2(184, 74), Vector2(44, 18), Color(0.84, 0.25, 0.16, 1.0))
+	_ui_architecture_rect(panel, "LiveMiniCamera", Vector2(78, 94), Vector2(116, 70), Color(0.88, 0.92, 0.82, 0.22))
+
+func _live_ui_shell_selection_panel(root: Control, state: Dictionary) -> void:
+	var panel := _ui_architecture_panel(root, "LiveShellSelection", Vector2(306, 706), Vector2(584, 158), "SELECTED", "", Color(0.36, 0.78, 0.72, 0.96))
+	_ui_architecture_rect(panel, "LivePortraitFrame", Vector2(16, 48), Vector2(92, 82), Color(0.09, 0.11, 0.09, 0.96))
+	_ui_architecture_rect(panel, "LivePortraitFill", Vector2(20, 52), Vector2(84, 64), state["portraitColor"])
+	_ui_architecture_label(panel, str(state["statusPip"]), Vector2(22, 116), Vector2(80, 20), 11, Color(0.88, 0.88, 0.68), HORIZONTAL_ALIGNMENT_CENTER)
+	_ui_architecture_label(panel, str(state["selectedTitle"]), Vector2(124, 42), Vector2(430, 24), 15, Color(0.92, 0.86, 0.66), HORIZONTAL_ALIGNMENT_LEFT)
+	_ui_architecture_label(panel, str(state["selectedSubtitle"]), Vector2(124, 66), Vector2(430, 22), 13, Color(0.80, 0.88, 0.74), HORIZONTAL_ALIGNMENT_LEFT)
+	_ui_architecture_rect(panel, "LiveHealthBack", Vector2(124, 96), Vector2(240, 10), Color(0.10, 0.08, 0.06, 0.96))
+	_ui_architecture_rect(panel, "LiveHealthFill", Vector2(124, 96), Vector2(198, 10), Color(0.42, 0.78, 0.48, 0.96))
+	_ui_architecture_label(panel, str(state["commandHint"]), Vector2(124, 112), Vector2(430, 20), 12, Color(0.86, 0.84, 0.66), HORIZONTAL_ALIGNMENT_LEFT)
+	_live_ui_shell_action_button(panel, Vector2(124, 132), Vector2(86, 24), "Move", "_on_live_ui_shell_move_pressed")
+	_live_ui_shell_action_button(panel, Vector2(220, 132), Vector2(86, 24), "Attack", "_on_live_ui_shell_attack_pressed")
+	_live_ui_shell_action_button(panel, Vector2(316, 132), Vector2(86, 24), str("Train" if state["activeTab"] == "TRAIN" else "Work"), "_on_live_ui_shell_work_pressed")
+	_live_ui_shell_action_button(panel, Vector2(412, 132), Vector2(86, 24), "Lume", "_on_live_ui_shell_lume_pressed")
+
+func _live_ui_shell_production_panel(root: Control, state: Dictionary) -> void:
+	var panel := _ui_architecture_panel(root, "LiveShellProduction", Vector2(918, 656), Vector2(560, 208), "BUILD / TRAIN / RESEARCH", "", Color(0.80, 0.56, 0.22, 0.94))
+	var tabs: Array[String] = ["BUILD", "TRAIN", "RESEARCH"]
+	var active := str(state.get("activeTab", "BUILD"))
+	for index in range(tabs.size()):
+		var tab := tabs[index]
+		var bg := Color(0.08, 0.10, 0.08, 0.96)
+		var border := Color(0.42, 0.52, 0.38, 0.86)
+		if tab == active:
+			bg = Color(0.16, 0.13, 0.08, 0.98)
+			border = Color(0.86, 0.66, 0.34, 0.96)
+		_ui_shell_button(panel, Vector2(18 + index * 128, 42), Vector2(116, 30), tab, bg, border)
+	var cards: Array[Dictionary] = _live_ui_shell_cards(state)
+	for index in range(cards.size()):
+		var col := index % 2
+		var row := int(index / 2)
+		_ui_shell_card(panel, Vector2(18 + col * 264, 84 + row * 58), Vector2(250, 48), cards[index])
+
+func _live_ui_shell_cards(state: Dictionary) -> Array[Dictionary]:
+	if str(state.get("activeTab", "BUILD")) == "TRAIN":
+		return [
+			{"title": "Militia", "meta": "Queued" if bool(state.get("militiaQueued", false)) else "Iron 25 | 18s", "state": "queued" if bool(state.get("militiaQueued", false)) else "ready"},
+			{"title": "Ranger", "meta": "Requires Lume", "state": "disabled"},
+			{"title": "Defenders", "meta": "Staged" if bool(state.get("militiaSpawned", false)) else "Stage at bridge", "state": "ready"},
+			{"title": "Cancel Queue", "meta": "Refund partial", "state": "available"}
+		]
+	return [
+		{"title": "Restore Barracks", "meta": "Complete" if bool(state.get("barracksComplete", false)) else "Stone 80 | Worker", "state": "disabled" if bool(state.get("barracksComplete", false)) else "ready"},
+		{"title": "Repair Bridge", "meta": "Future scope", "state": "disabled"},
+		{"title": "Set Rally", "meta": "No cost", "state": "available"},
+		{"title": "Lume Beacon", "meta": "Aether locked", "state": "disabled"}
+	]
+
+func _live_ui_shell_alerts(root: Control, state: Dictionary) -> void:
+	var border := Color(0.48, 0.70, 0.58, 0.85)
+	if str(state.get("alertSeverity", "")) == "hostile":
+		border = Color(0.92, 0.28, 0.16, 0.98)
+	_ui_architecture_panel(root, "LiveShellAlertCard", Vector2(1270, 150), Vector2(272, 98), "ALERT", str(state.get("alert", "")), border)
+
+func _live_ui_shell_tooltip(root: Control, state: Dictionary) -> void:
+	var panel := _ui_architecture_panel(root, "LiveShellTooltip", Vector2(520, 584), Vector2(560, 66), "TIP", "", Color(0.58, 0.70, 0.52, 0.92))
+	panel.z_index = 30
+	_ui_architecture_label(panel, str(state.get("tooltip", "")), Vector2(14, 31), Vector2(532, 28), 12, Color(0.82, 0.88, 0.78), HORIZONTAL_ALIGNMENT_LEFT)
+
+func _live_ui_shell_action_button(parent: Control, position: Vector2, size: Vector2, text: String, method_name: String) -> Button:
+	var button := Button.new()
+	button.text = text
+	button.position = position
+	button.size = size
+	button.focus_mode = Control.FOCUS_NONE
+	button.mouse_filter = Control.MOUSE_FILTER_STOP
+	button.add_theme_font_size_override("font_size", 12)
+	button.add_theme_stylebox_override("normal", _ui_architecture_panel_style(Color(0.045, 0.055, 0.048, 0.96), Color(0.38, 0.58, 0.52, 0.76)))
+	button.add_theme_stylebox_override("hover", _ui_architecture_panel_style(Color(0.08, 0.10, 0.075, 0.98), Color(0.70, 0.62, 0.36, 0.92)))
+	button.add_theme_stylebox_override("pressed", _ui_architecture_panel_style(Color(0.12, 0.10, 0.07, 0.98), Color(0.90, 0.70, 0.34, 0.96)))
+	button.add_theme_color_override("font_color", Color(0.88, 0.86, 0.68))
+	button.pressed.connect(Callable(self, method_name))
+	parent.add_child(button)
+	return button
+
+func _on_live_ui_shell_help_pressed() -> void:
+	_call_scene("toggle_controls_help")
+	_refresh_live_ui_shell_overlay()
+
+func _on_live_ui_shell_pause_pressed() -> void:
+	_call_scene("toggle_pause")
+	_refresh_live_ui_shell_overlay()
+
+func _on_live_ui_shell_move_pressed() -> void:
+	_call_scene("issue_move_order")
+	_refresh_live_ui_shell_overlay()
+
+func _on_live_ui_shell_attack_pressed() -> void:
+	_call_scene("issue_attack_order")
+	_refresh_live_ui_shell_overlay()
+
+func _on_live_ui_shell_work_pressed() -> void:
+	var status := get_spike_status()
+	if bool(status.get("barracksComplete", false)):
+		_call_scene("queue_militia_recruit")
+	elif bool(status.get("workerAssignedToMine", false)):
+		_call_scene("place_barracks_placeholder")
+		_call_scene("advance_construction", [60])
+	elif bool(status.get("mineSiteConverted", false)):
+		_call_scene("assign_worker_to_mine")
+	else:
+		_call_scene("capture_mine_site")
+	_refresh_live_ui_shell_overlay()
+
+func _on_live_ui_shell_lume_pressed() -> void:
+	_call_scene("focus_lume_link")
+	_refresh_live_ui_shell_overlay()
+
 func run_headed_benchmark() -> void:
 	var artifact_root := _artifact_root_from_args()
 	var reports: Array[Dictionary] = []
@@ -2470,6 +2814,9 @@ func run_player_slice_validation() -> void:
 		"objectiveTransition": current_step_id == "player_results",
 		"stuckUnits": 0,
 		"resultsTransition": current_step_id == "player_results",
+		"saltoUiShellOptInRequested": _script_args().has("--salto-ui-shell-experiment"),
+		"saltoUiShellFallbackActive": _salto_ui_shell_fallback_active(),
+		"saltoUiShellLiveOverlayEnabled": _salto_ui_shell_live_enabled(),
 		"finalProductionCertification": false
 	}
 	var forbidden_terms := _player_forbidden_terms()
@@ -2561,6 +2908,10 @@ func run_player_slice_validation() -> void:
 		"privateHarnessPreservedSeparately": true,
 		"defaultMode": MODE_25D,
 		"defaultVisualPreset": VISUAL_PRESET_CLEAN,
+		"saltoUiShellOptInRequested": _script_args().has("--salto-ui-shell-experiment"),
+		"saltoUiShellFallbackActive": _salto_ui_shell_fallback_active(),
+		"saltoUiShellLiveOverlayEnabled": _salto_ui_shell_live_enabled(),
+		"saltoUiShellProductionSlotAdded": false,
 		"routineEditorUseRequired": false,
 		"manualGodotEditorSceneAssemblyRequired": false,
 		"proceduralPrimitiveOnly": not worker_art_loaded and not barracks_material_loaded and not militia_art_loaded and not aster_art_loaded and not ashen_art_loaded and not ground_material_loaded and not road_material_loaded and not bridge_riverbank_material_loaded,
@@ -2668,7 +3019,18 @@ func run_player_slice_capture() -> void:
 		await _settle_frames(6)
 		var file_name := "%02d_%s.png" % [index + 1, str(step["id"])]
 		var target := _path_join(screenshot_root, file_name)
-		var image := get_viewport().get_texture().get_image()
+		var image: Image = null
+		for attempt in range(20):
+			var texture := get_viewport().get_texture()
+			if texture != null:
+				image = texture.get_image()
+			if image != null:
+				break
+			await _settle_frames(2)
+		if image == null:
+			errors.append("Viewport texture was unavailable for screenshot %s" % file_name)
+			image = Image.create(VIEWPORT_SIZE.x, VIEWPORT_SIZE.y, false, Image.FORMAT_RGBA8)
+			image.fill(Color(0.02, 0.02, 0.02, 1.0))
 		if image.get_width() != VIEWPORT_SIZE.x or image.get_height() != VIEWPORT_SIZE.y:
 			image.resize(VIEWPORT_SIZE.x, VIEWPORT_SIZE.y, Image.INTERPOLATE_LANCZOS)
 		var result := image.save_png(target)
@@ -2725,6 +3087,10 @@ func run_player_slice_capture() -> void:
 		"viewport": {"width": VIEWPORT_SIZE.x, "height": VIEWPORT_SIZE.y},
 		"defaultMode": MODE_25D,
 		"defaultVisualPreset": VISUAL_PRESET_CLEAN,
+		"saltoUiShellOptInRequested": _script_args().has("--salto-ui-shell-experiment"),
+		"saltoUiShellFallbackActive": _salto_ui_shell_fallback_active(),
+		"saltoUiShellLiveOverlayEnabled": _salto_ui_shell_live_enabled(),
+		"saltoUiShellProductionSlotAdded": false,
 		"privateHarnessPreservedSeparately": captures.any(func(capture: Dictionary) -> bool: return bool(capture.get("privateHarnessCapture", false))) or ["v0.126", "v0.127", "v0.128", "v0.129", "v0.130", "v0.160", "v0.162", "v0.164", "v0.168", "v0.169", "v0.170", "v0.173", "v0.174", "v0.177", "v0.178", "v0.179", "v0.181", "v0.184", "v0.185", "v0.186", "v0.187", "v0.193", "v0.194", "v0.195", "v0.196", "v0.197", "v0.198", "v0.199", "v0.200"].has(_player_capture_checkpoint()),
 		"proceduralPrimitiveOnly": not worker_art_loaded and not barracks_material_loaded and not militia_art_loaded and not aster_art_loaded and not ashen_art_loaded and not ground_material_loaded and not road_material_loaded and not bridge_riverbank_material_loaded,
 		"generatedOrImportedArtIncluded": worker_art_loaded or barracks_material_loaded or militia_art_loaded or aster_art_loaded or ashen_art_loaded or ground_material_loaded or road_material_loaded or bridge_riverbank_material_loaded,
@@ -5217,7 +5583,17 @@ func _apply_player_slice_action(action: String) -> Dictionary:
 				_render_player_screen("battle")
 		"ashen_pressure_wave":
 			_ensure_player_battle_scene()
-			if _is_bounded_microloop_checkpoint():
+			if _player_capture_checkpoint() == "v0.209":
+				_call_scene("capture_mine_site")
+				_call_scene("assign_worker_to_mine")
+				_call_scene("advance_resource_production", [180])
+				_call_scene("place_barracks_placeholder")
+				_call_scene("advance_construction", [180])
+				_call_scene("queue_militia_recruit")
+				_call_scene("complete_recruit_queue", [140])
+				_call_scene("trigger_pressure_wave")
+				_call_scene("issue_attack_order")
+			elif _is_bounded_microloop_checkpoint():
 				_call_scene("capture_mine_site")
 				_call_scene("assign_worker_to_mine")
 				_call_scene("advance_resource_production", [180])
@@ -5395,6 +5771,9 @@ func _apply_player_slice_action(action: String) -> Dictionary:
 			_render_player_screen("battle")
 		"results":
 			show_player_results()
+		"restart_replay":
+			show_player_results()
+			_restart_player_battle_from_results()
 		"private_harness":
 			if player_layer:
 				player_layer.visible = false
@@ -5408,10 +5787,15 @@ func _apply_player_slice_action(action: String) -> Dictionary:
 	status["ready"] = bool(status.get("ready", true))
 	status["playerSliceAction"] = action
 	status["playerVisibleText"] = player_visible_texts.duplicate()
+	status["saltoUiShellOptInRequested"] = _script_args().has("--salto-ui-shell-experiment")
+	status["saltoUiShellFallbackActive"] = _salto_ui_shell_fallback_active()
+	status["saltoUiShellLiveOverlayEnabled"] = _salto_ui_shell_live_enabled() and player_ui_shell_overlay != null and is_instance_valid(player_ui_shell_overlay)
 	return status
 
 func _player_capture_checkpoint() -> String:
 	var normalized_root := _artifact_root_from_args().replace("\\", "/")
+	if normalized_root.contains("/v0209"):
+		return "v0.209"
 	if normalized_root.contains("/v0206"):
 		return "v0.206"
 	if normalized_root.contains("/v0205"):
@@ -5483,9 +5867,21 @@ func _player_capture_checkpoint() -> String:
 	return "v0.124"
 
 func _is_bounded_microloop_checkpoint() -> bool:
-	return ["v0.129", "v0.130", "v0.160", "v0.162", "v0.164", "v0.166", "v0.168", "v0.169", "v0.170", "v0.173", "v0.174", "v0.177", "v0.178", "v0.179", "v0.181", "v0.184", "v0.185", "v0.186", "v0.187", "v0.193", "v0.194", "v0.195", "v0.196", "v0.197", "v0.198", "v0.199", "v0.200", "v0.203", "v0.204", "v0.205", "v0.206"].has(_player_capture_checkpoint())
+	return ["v0.129", "v0.130", "v0.160", "v0.162", "v0.164", "v0.166", "v0.168", "v0.169", "v0.170", "v0.173", "v0.174", "v0.177", "v0.178", "v0.179", "v0.181", "v0.184", "v0.185", "v0.186", "v0.187", "v0.193", "v0.194", "v0.195", "v0.196", "v0.197", "v0.198", "v0.199", "v0.200", "v0.203", "v0.204", "v0.205", "v0.206", "v0.209"].has(_player_capture_checkpoint())
 
 func _player_capture_steps() -> Array[Dictionary]:
+	if _player_capture_checkpoint() == "v0.209":
+		return [
+			{"id": "initial", "label": "UI shell opt-in initial overview", "action": "battle_default"},
+			{"id": "aster", "label": "Aster selected in live UI shell", "action": "hero_selected"},
+			{"id": "worker_assignment", "label": "Worker assignment in live UI shell", "action": "worker_assigned_mine"},
+			{"id": "barracks_restoring", "label": "Barracks restoring in live UI shell", "action": "construction_progress"},
+			{"id": "barracks_restored", "label": "Barracks restored in live UI shell", "action": "barracks_complete"},
+			{"id": "train", "label": "Militia train queue in live UI shell", "action": "recruit_queue"},
+			{"id": "defenders", "label": "Defenders staged in live UI shell", "action": "militia_spawned"},
+			{"id": "ashen_pressure", "label": "Ashen pressure alert in live UI shell", "action": "ashen_pressure_wave"},
+			{"id": "replay", "label": "Restart and replay path with UI shell", "action": "restart_replay"}
+		]
 	if _player_capture_checkpoint() == "v0.206":
 		return [
 			{"id": "initial_overview", "label": "Initial shell-v2 QA overview", "action": "battle_default"},
