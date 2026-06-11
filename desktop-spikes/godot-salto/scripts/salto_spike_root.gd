@@ -4853,6 +4853,8 @@ func _apply_player_slice_action(action: String) -> Dictionary:
 
 func _player_capture_checkpoint() -> String:
 	var normalized_root := _artifact_root_from_args().replace("\\", "/")
+	if normalized_root.contains("/v0206"):
+		return "v0.206"
 	if normalized_root.contains("/v0205"):
 		return "v0.205"
 	if normalized_root.contains("/v0204"):
@@ -4922,9 +4924,29 @@ func _player_capture_checkpoint() -> String:
 	return "v0.124"
 
 func _is_bounded_microloop_checkpoint() -> bool:
-	return ["v0.129", "v0.130", "v0.160", "v0.162", "v0.164", "v0.166", "v0.168", "v0.169", "v0.170", "v0.173", "v0.174", "v0.177", "v0.178", "v0.179", "v0.181", "v0.184", "v0.185", "v0.186", "v0.187", "v0.193", "v0.194", "v0.195", "v0.196", "v0.197", "v0.198", "v0.199", "v0.200", "v0.203", "v0.204", "v0.205"].has(_player_capture_checkpoint())
+	return ["v0.129", "v0.130", "v0.160", "v0.162", "v0.164", "v0.166", "v0.168", "v0.169", "v0.170", "v0.173", "v0.174", "v0.177", "v0.178", "v0.179", "v0.181", "v0.184", "v0.185", "v0.186", "v0.187", "v0.193", "v0.194", "v0.195", "v0.196", "v0.197", "v0.198", "v0.199", "v0.200", "v0.203", "v0.204", "v0.205", "v0.206"].has(_player_capture_checkpoint())
 
 func _player_capture_steps() -> Array[Dictionary]:
+	if _player_capture_checkpoint() == "v0.206":
+		return [
+			{"id": "initial_overview", "label": "Initial shell-v2 QA overview", "action": "battle_default"},
+			{"id": "ground_roads", "label": "Ground and roads embedded", "action": "v0195_road_network"},
+			{"id": "river_banks_bridge", "label": "River, banks and bridge connected", "action": "v0195_bridge_close"},
+			{"id": "select_aster", "label": "Aster selected and grounded", "action": "hero_selected"},
+			{"id": "mine_interaction", "label": "Mine interaction and quarry read", "action": "mine_converted"},
+			{"id": "worker_assignment", "label": "Worker assignment grounding", "action": "worker_assigned_mine"},
+			{"id": "barracks_restoring", "label": "Barracks restoring state", "action": "construction_progress"},
+			{"id": "barracks_restored", "label": "Barracks restored state", "action": "barracks_complete"},
+			{"id": "militia_train_state", "label": "Militia train state", "action": "recruit_queue"},
+			{"id": "defenders_staged", "label": "Defenders staged and readable", "action": "squad_selected"},
+			{"id": "ashen_combat_onset", "label": "Ashen combat onset", "action": "v0187_combat_crossing"},
+			{"id": "hostile_readability", "label": "Hostile readability under pressure", "action": "ashen_pressure_wave"},
+			{"id": "normal_zoom", "label": "Normal RTS zoom", "action": "battle_default"},
+			{"id": "zoomed_out_view", "label": "Zoomed-out shell-v2 view", "action": "camera_max_zoom"},
+			{"id": "pan_framing", "label": "Pan framing", "action": "pan_camera"},
+			{"id": "minimap_correlation", "label": "Minimap correlation", "action": "minimap"},
+			{"id": "results_path", "label": "Results path preserved", "action": "results"}
+		]
 	if _player_capture_checkpoint() == "v0.205":
 		return [
 			{"id": "overview", "label": "Grounding props tactical overview", "action": "battle_default"},
