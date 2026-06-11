@@ -11,11 +11,17 @@ Every phase should protect these long-term pillars:
 
 ## Current Recommended Next Phase
 
-The current checkpoint is **v0.215 Salto Presentation Reboot Baseline And Contextual HUD Declutter** on 2026-06-11. It creates a new isolated Godot Salto presentation-reboot launcher, keeps v0.214 as a comparator, and establishes a compact contextual HUD baseline. This is a presentation declutter checkpoint, not a production-art parity claim.
+The current checkpoint is **v0.216 Barrosan Foothold Terrain Material Production And Reboot Integration** on 2026-06-11. It keeps the v0.215 presentation-reboot path isolated while adding exactly one original terrain-material source, deterministic local derivatives, a selected hash-gated 1024 derivative, missing-art/hash-mismatch fallback proof, and a terrain-material manual review pack.
 
-The queued next milestone is **v0.216 Salto terrain material production pass**. Continue only from a clean, synced, pushed and CI-green v0.215 state, and only inside that prompt's stated boundaries.
+The queued next milestone is **v0.217 Road, riverbank and water material pass**. Continue only from a clean, synced, pushed and CI-green v0.216 state, and only inside that prompt's stated boundaries.
 
-New v0.215 docs:
+New v0.216 docs:
+
+- `docs/V0216_TERRAIN_MATERIAL_INTAKE_REPORT.md`
+- `docs/V0216_TERRAIN_COMPOSITOR_REPORT.md`
+- `docs/V0216_IMPLEMENTATION_REPORT.md`
+
+Previous v0.215 docs:
 
 - `docs/V0215_PRESENTATION_REBOOT_BASELINE.md`
 - `docs/V0215_UI_DECLUTTER_REPORT.md`

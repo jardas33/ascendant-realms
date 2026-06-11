@@ -1,12 +1,12 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-06-11 v0.215 Salto presentation reboot baseline and contextual HUD declutter
+Last updated: 2026-06-11 v0.216 Barrosan foothold terrain material production and reboot integration
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
 ## Current Continuation Note
 
-The latest work is v0.215 Salto presentation reboot baseline and contextual HUD declutter. It adds a new isolated Godot Salto presentation-reboot launcher, keeps v0.214 available as the full-HUD comparator, adds compact HUD capture/validation/benchmark tooling, generates zero images, adds zero runtime art slots, keeps browser runtime untouched, keeps the default launcher procedural, preserves all prior launchers, preserves gameplay/pathing/collisions/objectives/AI/economy/saves/stable IDs/balance, and continues to queued v0.216 only after clean sync and CI-green proof.
+The latest work is v0.216 Barrosan foothold terrain material production and reboot integration. It keeps the v0.215 presentation-reboot path isolated, generates exactly one original terrain-material source, selects one deterministic RTS-distance softened 1024 derivative with SHA `8049b692b5d89d9abf5da39a79a31d8609ceb944dcb5695af8efc8553cd1eea3`, proves missing-art and hash-mismatch fallback, keeps browser runtime untouched, keeps the default launcher procedural, preserves all prior launchers, preserves gameplay/pathing/collisions/objectives/AI/economy/saves/stable IDs/balance, and continues to queued v0.217 only after clean sync and CI-green proof.
 
 ## Project Identity
 

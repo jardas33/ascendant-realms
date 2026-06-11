@@ -1,5 +1,34 @@
 # Changelog
 
+# v0.216 Barrosan Foothold Terrain Material Production And Reboot Integration - 2026-06-11
+
+This checkpoint replaces the flat prototype terrain read in the isolated Godot Salto presentation-reboot path with one original Barrosan foothold terrain material. The source is generated exactly once, then selected through deterministic local derivatives and strict hash-gated fallback behavior.
+
+Changed:
+
+- Generated exactly one original local Barrosan foothold terrain-material source image.
+- Produced deterministic 512, 768, 1024 and wrap-safe diagnostic derivatives from that single source.
+- Selected the RTS-distance softened 1024 derivative with SHA `8049b692b5d89d9abf5da39a79a31d8609ceb944dcb5695af8efc8553cd1eea3`.
+- Bound the selected derivative only behind the isolated presentation-reboot launcher.
+- Added selected, previous-material, missing-art and hash-mismatch capture/validation/benchmark scenarios.
+- Added the v0.216 manual review pack and required implementation reports.
+
+Boundary:
+
+- Generated images: exactly one.
+- Downloaded assets: zero.
+- New production runtime art slots: zero.
+- Browser runtime changes: none.
+- Default launcher changes: none.
+- Gameplay, pathing, collision, objective, AI, economy, save, stable-ID and balance changes: none.
+
+Validation:
+
+- Terrain material capture and review-pack generation passed.
+- Terrain material validation, benchmark and boundary gate passed.
+- Artifact retention validation passed.
+- Runtime-art slot validation, content validation, art-intake validation, focused Godot scaffold tests, production build and `git diff --check` passed.
+
 # v0.215 Salto Presentation Reboot Baseline And Contextual HUD Declutter - 2026-06-11
 
 This checkpoint adds a new isolated Godot Salto presentation-reboot review path and uses it to reduce the v0.214 HUD overload. The prior full-HUD path remains available as a comparator.

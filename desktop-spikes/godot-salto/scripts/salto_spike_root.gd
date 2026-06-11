@@ -7240,6 +7240,8 @@ func _apply_player_slice_action(action: String) -> Dictionary:
 
 func _player_capture_checkpoint() -> String:
 	var normalized_root := _artifact_root_from_args().replace("\\", "/")
+	if normalized_root.contains("/v0216"):
+		return "v0.216"
 	if normalized_root.contains("/v0215"):
 		return "v0.215"
 	if normalized_root.contains("/v0213"):
@@ -7323,9 +7325,17 @@ func _player_capture_checkpoint() -> String:
 	return "v0.124"
 
 func _is_bounded_microloop_checkpoint() -> bool:
-	return ["v0.129", "v0.130", "v0.160", "v0.162", "v0.164", "v0.166", "v0.168", "v0.169", "v0.170", "v0.173", "v0.174", "v0.177", "v0.178", "v0.179", "v0.181", "v0.184", "v0.185", "v0.186", "v0.187", "v0.193", "v0.194", "v0.195", "v0.196", "v0.197", "v0.198", "v0.199", "v0.200", "v0.203", "v0.204", "v0.205", "v0.206", "v0.209", "v0.210", "v0.211", "v0.212", "v0.213", "v0.215"].has(_player_capture_checkpoint())
+	return ["v0.129", "v0.130", "v0.160", "v0.162", "v0.164", "v0.166", "v0.168", "v0.169", "v0.170", "v0.173", "v0.174", "v0.177", "v0.178", "v0.179", "v0.181", "v0.184", "v0.185", "v0.186", "v0.187", "v0.193", "v0.194", "v0.195", "v0.196", "v0.197", "v0.198", "v0.199", "v0.200", "v0.203", "v0.204", "v0.205", "v0.206", "v0.209", "v0.210", "v0.211", "v0.212", "v0.213", "v0.215", "v0.216"].has(_player_capture_checkpoint())
 
 func _player_capture_steps() -> Array[Dictionary]:
+	if _player_capture_checkpoint() == "v0.216":
+		return [
+			{"id": "terrain_overview", "label": "v0.216 terrain material reboot overview", "action": "battle_default"},
+			{"id": "normal_rts_distance", "label": "v0.216 normal RTS terrain distance", "action": "battle_default"},
+			{"id": "zoomed_out_view", "label": "v0.216 zoomed-out terrain repetition check", "action": "camera_max_zoom"},
+			{"id": "pan_zoom_framing", "label": "v0.216 terrain pan and framing check", "action": "pan_camera"},
+			{"id": "fallback_comparison", "label": "v0.216 terrain fallback comparison posture", "action": "friendly_boundary"}
+		]
 	if _player_capture_checkpoint() == "v0.215":
 		return [
 			{"id": "initial", "label": "Presentation reboot compact initial overview", "action": "battle_default"},

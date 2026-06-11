@@ -1,6 +1,35 @@
 # Development Checkpoint
 
-Updated: 2026-06-11 v0.215 Salto presentation reboot baseline and contextual HUD declutter
+Updated: 2026-06-11 v0.216 Barrosan foothold terrain material production and reboot integration
+
+## v0.216 Barrosan Foothold Terrain Material Production And Reboot Integration - 2026-06-11
+
+Scope: isolated opt-in Godot Salto presentation-reboot terrain material path. This checkpoint generates exactly one original terrain-material source, derives deterministic local candidates, selects one hash-gated 1024 derivative, preserves the default procedural launcher, preserves all prior launchers, keeps browser runtime untouched, adds no production runtime art slot, and leaves gameplay, pathing, collisions, objectives, AI, economy, saves, stable IDs and balance unchanged.
+
+Included work:
+
+- Generated one source image for a dark Barrosan foothold ground material with restrained moss and fine gravel.
+- Rebuilt deterministic RTS-distance softened 512, 768, 1024 and wrap-safe diagnostic derivatives from the same source.
+- Selected `TERRAIN_MATERIAL_PRODUCTION_LOCAL_1024` / `GROUND_MATERIAL_LOCAL_1024` with SHA `8049b692b5d89d9abf5da39a79a31d8609ceb944dcb5695af8efc8553cd1eea3`.
+- Bound the selected derivative only through `tools/godot/launchGodotSaltoPresentationRebootWindows.ps1`.
+- Added v0.216 capture, validation, benchmark and review-pack tooling.
+- Generated the ignored manual review pack under `artifacts/manual-review/v0216-terrain-material-production/`.
+- Added v0.216 intake, compositor and implementation docs.
+
+Verification targets:
+
+```text
+PASS: npm run godot:capture:salto-terrain-material-production.
+PASS: npm run godot:validate:salto-terrain-material-production.
+PASS: npm run godot:benchmark:salto-terrain-material-production.
+PASS: v0.216 terrain material boundary gate.
+PASS: runtime-art slot validation.
+PASS: content validation.
+PASS: art-intake validation.
+PASS: focused Godot scaffold tests.
+PASS: production build.
+PASS: git diff --check.
+```
 
 ## v0.215 Salto Presentation Reboot Baseline And Contextual HUD Declutter - 2026-06-11
 

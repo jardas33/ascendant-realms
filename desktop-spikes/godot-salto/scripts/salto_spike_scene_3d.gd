@@ -2278,6 +2278,16 @@ func _reset_ground_material_status(enabled: bool, reason: String) -> void:
 		"uvScale": ground_material_requested_uv_scale,
 		"uvScaleHardenedFrom": GROUND_MATERIAL_PREVIOUS_UV_SCALE,
 		"uvScaleHardenedTo": ground_material_requested_uv_scale,
+		"sourceCheckpoint": "",
+		"candidateIdentity": "",
+		"v0216MaterialId": "",
+		"presentationRebootOnly": false,
+		"generatedImageCountForV0216": 0,
+		"terrainMeshCompositor": false,
+		"irregularPlayableAreaSilhouette": false,
+		"edgeTreatment": "",
+		"v0216IrregularPatchCount": 0,
+		"v0216EdgeTreatmentCount": 0,
 		"tilingMode": "",
 		"filterMode": "linear with mipmaps",
 		"visualHardeningCheckpoint": "v0.178",
@@ -2321,6 +2331,13 @@ func _load_ground_material_candidate() -> void:
 	if metadata.is_empty():
 		_set_ground_material_fallback("metadata parse failure")
 		return
+	ground_material_status["sourceCheckpoint"] = str(metadata.get("sourceCheckpoint", ""))
+	ground_material_status["candidateIdentity"] = str(metadata.get("candidateIdentity", ""))
+	ground_material_status["v0216MaterialId"] = str(metadata.get("v0216MaterialId", ""))
+	ground_material_status["presentationRebootOnly"] = bool(metadata.get("presentationRebootOnly", false))
+	ground_material_status["generatedImageCountForV0216"] = int(metadata.get("generatedImageCountForV0216", 0))
+	if str(ground_material_status.get("sourceCheckpoint", "")) == "v0.216":
+		ground_material_status["checkpoint"] = "v0.216"
 	if str(metadata.get("slotId", "")) != GROUND_MATERIAL_SLOT_ID:
 		_set_ground_material_fallback("metadata slot mismatch")
 		return
@@ -2373,6 +2390,11 @@ func _load_ground_material_candidate() -> void:
 	ground_material_status["sourceMetadataUvScale"] = float(metadata.get("uvScale", 1.0))
 	ground_material_status["tilingMode"] = str(metadata.get("tilingMode", "repeat player-slice material"))
 	ground_material_status["fallbackMode"] = ground_material_fallback_mode
+	ground_material_status["noiseControlAlpha"] = _ground_material_visual_alpha()
+	ground_material_status["visualTint"] = _ground_material_visual_tint_dict()
+	ground_material_status["terrainMeshCompositor"] = _ground_material_is_v0216_reboot_material()
+	ground_material_status["irregularPlayableAreaSilhouette"] = _ground_material_is_v0216_reboot_material()
+	ground_material_status["edgeTreatment"] = "deterministic irregular polygon overlay with procedural dark soil edge feather" if _ground_material_is_v0216_reboot_material() else ""
 	ground_material_status["proceduralFallbackVisible"] = false
 	ground_material_status["proceduralValueUnderlayVisible"] = true
 	ground_material_status["loadDurationMs"] = snappedf(float(Time.get_ticks_usec() - start_usec) / 1000.0, 0.01)
@@ -2419,6 +2441,26 @@ func _refresh_ground_material_counters() -> void:
 func _ground_material_is_active() -> bool:
 	return ground_material_experiment_enabled and environment_foundation_review_enabled and bool(ground_material_status.get("sourceLoaded", false)) and ground_material_texture != null
 
+func _ground_material_is_v0216_reboot_material() -> bool:
+	return salto_presentation_reboot_enabled and str(ground_material_status.get("v0216MaterialId", "")) == "barrosan_foothold_terrain_material_v0216" and bool(ground_material_status.get("presentationRebootOnly", false))
+
+func _ground_material_is_v0216_candidate() -> bool:
+	return str(ground_material_status.get("v0216MaterialId", "")) == "barrosan_foothold_terrain_material_v0216" and bool(ground_material_status.get("presentationRebootOnly", false))
+
+func _ground_material_is_v0216_reboot_or_pending() -> bool:
+	return _ground_material_is_v0216_candidate() and (salto_presentation_reboot_enabled or str(ground_material_status.get("sourceCheckpoint", "")) == "v0.216")
+
+func _ground_material_visual_alpha() -> float:
+	return 0.24 if _ground_material_is_v0216_reboot_or_pending() else GROUND_MATERIAL_VISUAL_ALPHA
+
+func _ground_material_visual_tint() -> Color:
+	var alpha := _ground_material_visual_alpha()
+	return Color(1.28, 1.25, 1.05, alpha) if _ground_material_is_v0216_reboot_or_pending() else Color(GROUND_MATERIAL_TINT_R, GROUND_MATERIAL_TINT_G, GROUND_MATERIAL_TINT_B, alpha)
+
+func _ground_material_visual_tint_dict() -> Dictionary:
+	var tint := _ground_material_visual_tint()
+	return {"r": tint.r, "g": tint.g, "b": tint.b, "a": tint.a}
+
 func _ground_material() -> StandardMaterial3D:
 	if ground_material_override:
 		ground_material_material_reuse_count += 1
@@ -2426,7 +2468,7 @@ func _ground_material() -> StandardMaterial3D:
 		return ground_material_override
 	ground_material_override = StandardMaterial3D.new()
 	ground_material_override.albedo_texture = ground_material_texture
-	ground_material_override.albedo_color = Color(GROUND_MATERIAL_TINT_R, GROUND_MATERIAL_TINT_G, GROUND_MATERIAL_TINT_B, GROUND_MATERIAL_VISUAL_ALPHA)
+	ground_material_override.albedo_color = _ground_material_visual_tint()
 	ground_material_override.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
 	ground_material_override.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
 	ground_material_override.roughness = 0.94
@@ -2442,6 +2484,9 @@ func _add_ground_material_static_box(name: String, position: Vector3, scale: Vec
 	if not _ground_material_is_active():
 		_add_static_box(name, position, scale, fallback_color, transparent)
 		return
+	if _ground_material_is_v0216_reboot_material():
+		_add_v0216_ground_material_patch(name, position, scale, fallback_color, transparent)
+		return
 	_add_static_box("%s_procedural_value_underlay" % name, position, scale, fallback_color, transparent)
 	var mesh_instance := MeshInstance3D.new()
 	mesh_instance.name = name
@@ -2454,6 +2499,38 @@ func _add_ground_material_static_box(name: String, position: Vector3, scale: Vec
 	ground_material_applied_surface_count += 1
 	if not ground_material_applied_surface_names.has(name):
 		ground_material_applied_surface_names.append(name)
+	_refresh_ground_material_counters()
+
+func _v0216_irregular_ground_points(position: Vector3, scale: Vector3) -> Array:
+	var half_x := maxf(scale.x * 0.5, 0.08)
+	var half_z := maxf(scale.z * 0.5, 0.08)
+	return [
+		Vector2(position.x - half_x * 0.94, position.z - half_z * 0.64),
+		Vector2(position.x - half_x * 0.66, position.z - half_z * 0.98),
+		Vector2(position.x - half_x * 0.18, position.z - half_z * 0.92),
+		Vector2(position.x + half_x * 0.38, position.z - half_z * 1.00),
+		Vector2(position.x + half_x * 0.96, position.z - half_z * 0.68),
+		Vector2(position.x + half_x * 1.02, position.z - half_z * 0.12),
+		Vector2(position.x + half_x * 0.88, position.z + half_z * 0.58),
+		Vector2(position.x + half_x * 0.42, position.z + half_z * 0.96),
+		Vector2(position.x - half_x * 0.18, position.z + half_z * 1.02),
+		Vector2(position.x - half_x * 0.74, position.z + half_z * 0.84),
+		Vector2(position.x - half_x * 1.02, position.z + half_z * 0.28)
+	]
+
+func _add_v0216_ground_material_patch(name: String, position: Vector3, scale: Vector3, fallback_color: Color, transparent: bool) -> void:
+	var points := _v0216_irregular_ground_points(position, scale)
+	var underlay_color := Color(fallback_color.r * 0.84, fallback_color.g * 0.88, fallback_color.b * 0.78, maxf(fallback_color.a, 0.18))
+	_add_shell_v2_mesh_polygon("%s_v0216_value_underlay" % name, points, position.y, underlay_color, "ground", "", transparent, ground_material_requested_uv_scale)
+	_add_shell_v2_mesh_polygon(name, points, position.y + GROUND_MATERIAL_OVERLAY_LIFT, fallback_color, "ground", "ground", true, ground_material_requested_uv_scale)
+	var edge_color := Color(0.045, 0.060, 0.038, 0.28)
+	_add_shell_v2_mesh_ribbon("%s_v0216_edge_feather_north" % name, points[1], points[4], maxf(scale.z * 0.055, 0.045), position.y + GROUND_MATERIAL_OVERLAY_LIFT + 0.006, edge_color, "terrainEdges", "", true, ground_material_requested_uv_scale)
+	_add_shell_v2_mesh_ribbon("%s_v0216_edge_feather_south" % name, points[7], points[10], maxf(scale.z * 0.050, 0.040), position.y + GROUND_MATERIAL_OVERLAY_LIFT + 0.006, edge_color.darkened(0.08), "terrainEdges", "", true, ground_material_requested_uv_scale)
+	ground_material_status["terrainMeshCompositor"] = true
+	ground_material_status["irregularPlayableAreaSilhouette"] = true
+	ground_material_status["edgeTreatment"] = "deterministic irregular polygon overlay with procedural dark soil edge feather"
+	ground_material_status["v0216IrregularPatchCount"] = int(ground_material_status.get("v0216IrregularPatchCount", 0)) + 1
+	ground_material_status["v0216EdgeTreatmentCount"] = int(ground_material_status.get("v0216EdgeTreatmentCount", 0)) + 2
 	_refresh_ground_material_counters()
 
 func configure_road_material_experiment(options: Dictionary) -> Dictionary:
@@ -7083,6 +7160,13 @@ func _shell_v2_mesh_material(category: String, color: Color, transparent: bool, 
 		ground_material_applied_surface_count += 1
 		if not ground_material_applied_surface_names.has(surface_name):
 			ground_material_applied_surface_names.append(surface_name)
+		if _ground_material_is_v0216_reboot_or_pending():
+			ground_material_status["terrainMeshCompositor"] = true
+			ground_material_status["irregularPlayableAreaSilhouette"] = true
+			ground_material_status["presentationRebootRuntimeActive"] = salto_presentation_reboot_enabled
+			ground_material_status["edgeTreatment"] = "existing shell-v2 irregular terrain-base polygon with scoped terrain-edge framing"
+			ground_material_status["v0216IrregularPatchCount"] = ground_material_applied_surface_names.size()
+			ground_material_status["v0216EdgeTreatmentCount"] = max(3, int(presentation_shell_v2_surface_counts.get("terrainEdges", 0)))
 		_refresh_ground_material_counters()
 		return _ground_material()
 	if material_kind == "road" and _road_material_is_active():
@@ -7432,12 +7516,16 @@ func _create_shell_v2_mesh_compositor_terrain() -> bool:
 		_add_shell_v2_environmental_cohesion_layers()
 	presentation_shell_v2_topology_metrics = {
 		"schemaVersion": 1,
-		"checkpoint": "v0.204" if environment_shell_v2_structure_material_enabled else ("v0.203" if environment_shell_v2_environmental_cohesion_enabled else ("v0.200" if environment_shell_v2_grounding_lighting_enabled else ("v0.199" if environment_shell_v2_structure_hierarchy_enabled else ("v0.198" if _bridge_riverbank_material_is_active() else "v0.197")))),
+		"checkpoint": "v0.216" if _ground_material_is_v0216_reboot_or_pending() else ("v0.204" if environment_shell_v2_structure_material_enabled else ("v0.203" if environment_shell_v2_environmental_cohesion_enabled else ("v0.200" if environment_shell_v2_grounding_lighting_enabled else ("v0.199" if environment_shell_v2_structure_hierarchy_enabled else ("v0.198" if _bridge_riverbank_material_is_active() else "v0.197"))))),
 		"compositorMode": "proceduralMeshCompositor",
 		"structureHierarchyEnabled": environment_shell_v2_structure_hierarchy_enabled,
 		"groundingLightingEnabled": environment_shell_v2_grounding_lighting_enabled,
 		"environmentalCohesionEnabled": environment_shell_v2_environmental_cohesion_enabled,
 		"structureMaterialEnabled": environment_shell_v2_structure_material_enabled,
+		"v0216TerrainMaterialProductionActive": _ground_material_is_v0216_reboot_or_pending(),
+		"v0216TerrainMeshCompositorActive": bool(ground_material_status.get("terrainMeshCompositor", false)),
+		"v0216IrregularGroundPatchCount": int(ground_material_status.get("v0216IrregularPatchCount", 0)),
+		"v0216GroundEdgeTreatmentCount": int(ground_material_status.get("v0216EdgeTreatmentCount", 0)),
 		"visualNodeCategories": ["terrainBase", "terrainEdges", "roads", "river", "banks", "bridge", "structures", "sites", "unitContact", "overlays"],
 		"terrainBaseSurfaceCount": 1,
 		"roadRibbonCount": 7,
@@ -7772,6 +7860,10 @@ func _create_presentation_shell_v2_terrain() -> bool:
 		"terrainPadSilhouetteReduced": true,
 		"roadOverbrightnessReduced": true,
 		"bridgeApproachShouldersImproved": true,
+		"v0216TerrainMaterialProductionActive": _ground_material_is_v0216_reboot_material(),
+		"v0216TerrainMeshCompositorActive": bool(ground_material_status.get("terrainMeshCompositor", false)),
+		"v0216IrregularGroundPatchCount": int(ground_material_status.get("v0216IrregularPatchCount", 0)),
+		"v0216GroundEdgeTreatmentCount": int(ground_material_status.get("v0216EdgeTreatmentCount", 0)),
 		"materialBindTargets": {
 			"ground": ground_material_applied_surface_names.duplicate(),
 			"road": road_material_applied_surface_names.duplicate()
