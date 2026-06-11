@@ -75,10 +75,12 @@ function Invoke-FullUiQaPass {
   try {
     & (Join-Path $PSScriptRoot "launchGodotSaltoShellV2GroundingPropsWindows.ps1") -Wait @Args
   } catch {
+    Start-Sleep -Seconds 3
     Assert-PassManifest -Path $ManifestPath -ExpectedStatus $ExpectedStatus
     Write-Output "Packaged Godot returned nonzero after writing $ExpectedStatus; continuing from manifest gate."
     return
   }
+  Start-Sleep -Seconds 3
   Assert-PassManifest -Path $ManifestPath -ExpectedStatus $ExpectedStatus
 }
 

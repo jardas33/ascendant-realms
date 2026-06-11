@@ -382,6 +382,7 @@ function validateBoundary(root) {
   const changed = statusLines.map((line) => line.slice(3).replaceAll("\\", "/"));
   const allowed = [
     /^desktop-spikes\/godot-salto\/scripts\/salto_spike_root\.gd$/u,
+    /^desktop-spikes\/godot-salto\/scripts\/salto_spike_scene_3d\.gd$/u,
     /^package\.json$/u,
     /^tools\/godot\/captureGodotSaltoFullUiQaWindows\.ps1$/u,
     /^tools\/godot\/validateGodotSaltoFullUiQaWindows\.ps1$/u,

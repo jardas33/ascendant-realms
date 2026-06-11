@@ -3047,7 +3047,7 @@ func _v0210_svg_source(icon_name: String) -> String:
 
 func _live_ui_shell_resource_strip(root: Control, state: Dictionary) -> void:
 	var resources: Dictionary = state.get("resources", {})
-	var panel := _ui_architecture_panel(root, "LiveShellResourceStrip", Vector2(212, 16), Vector2(1176, 60), "SALTO FOOTHOLD", "", Color(0.34, 0.72, 0.66, 0.92))
+	var panel := _ui_architecture_panel(root, "LiveShellResourceStrip", Vector2(212, 16), Vector2(1132, 60), "SALTO FOOTHOLD", "", Color(0.34, 0.72, 0.66, 0.92))
 	var entries := [
 		{"name": "Crowns", "value": str(resources.get("crowns", 0)), "color": Color(0.86, 0.74, 0.38, 1.0)},
 		{"name": "Stone", "value": str(resources.get("stone", 0)), "color": Color(0.62, 0.62, 0.54, 1.0)},
@@ -3057,12 +3057,13 @@ func _live_ui_shell_resource_strip(root: Control, state: Dictionary) -> void:
 	]
 	for index in range(entries.size()):
 		var entry: Dictionary = entries[index]
-		var x := 24 + index * 206
+		var x := 22 + index * 196
 		_ui_architecture_rect(panel, "LiveIcon%s" % str(entry["name"]), Vector2(x, 35), Vector2(16, 16), entry["color"])
 		_ui_architecture_label(panel, "%s %s" % [entry["name"], entry["value"]], Vector2(x + 24, 31), Vector2(150, 22), 15, Color(0.90, 0.88, 0.68), HORIZONTAL_ALIGNMENT_LEFT)
-	_live_ui_shell_action_button(root, Vector2(1392, 20), Vector2(54, 28), "Menu", "_on_player_back_pressed")
-	_live_ui_shell_action_button(root, Vector2(1454, 20), Vector2(54, 28), "Help", "_on_live_ui_shell_help_pressed")
-	_live_ui_shell_action_button(root, Vector2(1516, 20), Vector2(54, 28), "Pause", "_on_live_ui_shell_pause_pressed")
+	_ui_architecture_rect(root, "LiveShellUtilityBackplate", Vector2(1328, 16), Vector2(228, 44), Color(0.025, 0.032, 0.028, 0.97))
+	_live_ui_shell_action_button(root, Vector2(1364, 20), Vector2(54, 28), "Menu", "_on_player_back_pressed")
+	_live_ui_shell_action_button(root, Vector2(1426, 20), Vector2(54, 28), "Help", "_on_live_ui_shell_help_pressed")
+	_live_ui_shell_action_button(root, Vector2(1488, 20), Vector2(54, 28), "Pause", "_on_live_ui_shell_pause_pressed")
 
 func _live_ui_shell_left_stack(root: Control, state: Dictionary) -> void:
 	if _salto_production_objectives_log_enabled():
@@ -3587,14 +3588,14 @@ func _live_ui_shell_tooltip(root: Control, state: Dictionary) -> void:
 
 func _live_ui_shell_tooltip_v0212(root: Control, state: Dictionary) -> void:
 	var meta: Dictionary = state.get("tooltipMeta", {})
-	var panel := _ui_architecture_panel(root, "V0212StructuredTooltip", Vector2(514, 530), Vector2(580, 104), "TIP", "", Color(0.64, 0.74, 0.56, 0.94))
+	var panel := _ui_architecture_panel(root, "V0212StructuredTooltip", Vector2(416, 548), Vector2(506, 86), "TIP", "", Color(0.58, 0.68, 0.52, 0.90))
 	panel.z_index = 34
-	_ui_architecture_label(panel, str(meta.get("title", "Command Tip")), Vector2(14, 32), Vector2(244, 20), 14, Color(0.95, 0.88, 0.66), HORIZONTAL_ALIGNMENT_LEFT)
-	_ui_architecture_label(panel, "Shortcut %s" % str(meta.get("shortcut", "Mouse")), Vector2(392, 32), Vector2(164, 18), 11, Color(0.78, 0.90, 0.78), HORIZONTAL_ALIGNMENT_RIGHT)
-	_ui_architecture_rect(panel, "V0212TooltipRule", Vector2(14, 56), Vector2(548, 1), Color(0.38, 0.54, 0.42, 0.92))
-	_ui_architecture_label(panel, str(meta.get("body", state.get("tooltip", ""))), Vector2(14, 62), Vector2(548, 22), 11, Color(0.82, 0.88, 0.78), HORIZONTAL_ALIGNMENT_LEFT)
-	_ui_architecture_label(panel, "Cost: %s" % str(meta.get("cost", "No cost")), Vector2(14, 84), Vector2(184, 16), 10, Color(0.74, 0.80, 0.66), HORIZONTAL_ALIGNMENT_LEFT)
-	_ui_architecture_label(panel, str(meta.get("availability", "Available")), Vector2(206, 84), Vector2(350, 16), 10, Color(0.88, 0.76, 0.46) if str(meta.get("availability", "")).to_lower().contains("unavailable") else Color(0.70, 0.86, 0.70), HORIZONTAL_ALIGNMENT_RIGHT)
+	_ui_architecture_label(panel, str(meta.get("title", "Command Tip")), Vector2(12, 29), Vector2(220, 18), 13, Color(0.95, 0.88, 0.66), HORIZONTAL_ALIGNMENT_LEFT)
+	_ui_architecture_label(panel, "Shortcut %s" % str(meta.get("shortcut", "Mouse")), Vector2(316, 29), Vector2(166, 17), 10, Color(0.78, 0.90, 0.78), HORIZONTAL_ALIGNMENT_RIGHT)
+	_ui_architecture_rect(panel, "V0212TooltipRule", Vector2(12, 52), Vector2(480, 1), Color(0.38, 0.54, 0.42, 0.82))
+	_ui_architecture_label(panel, str(meta.get("body", state.get("tooltip", ""))), Vector2(12, 56), Vector2(480, 18), 10, Color(0.82, 0.88, 0.78), HORIZONTAL_ALIGNMENT_LEFT)
+	_ui_architecture_label(panel, "Cost: %s" % str(meta.get("cost", "No cost")), Vector2(12, 70), Vector2(174, 14), 9, Color(0.74, 0.80, 0.66), HORIZONTAL_ALIGNMENT_LEFT)
+	_ui_architecture_label(panel, str(meta.get("availability", "Available")), Vector2(194, 70), Vector2(298, 14), 9, Color(0.88, 0.76, 0.46) if str(meta.get("availability", "")).to_lower().contains("unavailable") else Color(0.70, 0.86, 0.70), HORIZONTAL_ALIGNMENT_RIGHT)
 
 func _live_ui_shell_action_button(parent: Control, position: Vector2, size: Vector2, text: String, method_name: String) -> Button:
 	var button := Button.new()

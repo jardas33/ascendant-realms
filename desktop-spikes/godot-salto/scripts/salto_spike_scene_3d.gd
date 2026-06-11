@@ -9494,6 +9494,26 @@ func _add_shell_v2_grounding_props_layer() -> void:
 	var scrub_dark := Color(0.18, 0.28, 0.15, 0.30)
 	var wet_edge := Color(0.12, 0.22, 0.22, 0.30)
 	var water_glint := Color(0.28, 0.48, 0.50, 0.24)
+	var terrain_shadow := Color(0.070, 0.090, 0.058, 0.20)
+	var terrain_lift := Color(0.42, 0.50, 0.29, 0.20)
+	var road_edge := Color(0.16, 0.13, 0.08, 0.30)
+	var road_dust := Color(0.62, 0.54, 0.36, 0.20)
+	for accent in [
+		{"name": "v0214_review_field_value_break_west_00", "pos": Vector3(-4.96, 0.238, -0.84), "scale": Vector3(1.18, 0.012, 0.055), "color": terrain_shadow},
+		{"name": "v0214_review_field_value_break_west_01", "pos": Vector3(-3.62, 0.238, 2.74), "scale": Vector3(1.38, 0.012, 0.050), "color": terrain_lift},
+		{"name": "v0214_review_field_value_break_mine_00", "pos": Vector3(-2.24, 0.240, -0.42), "scale": Vector3(0.92, 0.012, 0.048), "color": terrain_lift.lightened(0.05)},
+		{"name": "v0214_review_field_value_break_centre_00", "pos": Vector3(-0.76, 0.236, 2.22), "scale": Vector3(1.12, 0.012, 0.050), "color": terrain_shadow.darkened(0.04)},
+		{"name": "v0214_review_field_value_break_hostile_00", "pos": Vector3(2.98, 0.238, -1.18), "scale": Vector3(1.24, 0.012, 0.052), "color": Color(0.22, 0.12, 0.08, 0.18)}
+	]:
+		_add_shell_v2_grounding_prop_box(str(accent["name"]), accent["pos"], accent["scale"], accent["color"], "overlays", true)
+	for accent in [
+		{"name": "v0214_review_road_embedded_edge_west_north", "pos": Vector3(-3.64, 0.334, 0.42), "scale": Vector3(2.10, 0.012, 0.042), "color": road_edge},
+		{"name": "v0214_review_road_embedded_edge_west_south", "pos": Vector3(-3.32, 0.334, 1.04), "scale": Vector3(1.76, 0.012, 0.040), "color": road_edge.darkened(0.05)},
+		{"name": "v0214_review_road_dust_bridge_feed", "pos": Vector3(-0.74, 0.336, 0.76), "scale": Vector3(0.72, 0.012, 0.050), "color": road_dust},
+		{"name": "v0214_review_road_embedded_edge_east", "pos": Vector3(2.42, 0.334, 0.72), "scale": Vector3(1.16, 0.012, 0.042), "color": road_edge.darkened(0.02)},
+		{"name": "v0214_review_barracks_lane_embedded_edge", "pos": Vector3(-4.50, 0.334, -1.72), "scale": Vector3(0.048, 0.012, 1.26), "color": road_edge}
+	]:
+		_add_shell_v2_grounding_prop_box(str(accent["name"]), accent["pos"], accent["scale"], accent["color"], "roads", true)
 	for prop in [
 		{"name": "v0205_roadside_stone_west_00", "pos": Vector3(-5.06, 0.350, 0.38), "scale": Vector3(0.16, 0.060, 0.10), "color": stone},
 		{"name": "v0205_roadside_stone_west_01", "pos": Vector3(-3.86, 0.350, 1.05), "scale": Vector3(0.12, 0.050, 0.14), "color": stone_dark},
@@ -9533,7 +9553,10 @@ func _add_shell_v2_grounding_props_layer() -> void:
 		{"name": "v0205_water_value_thread_north", "pos": Vector3(0.62, 0.274, -2.72), "scale": Vector3(0.18, 0.014, 0.72), "color": water_glint},
 		{"name": "v0205_water_value_thread_crossing", "pos": Vector3(0.66, 0.278, 0.86), "scale": Vector3(0.20, 0.014, 0.52), "color": water_glint.lightened(0.06)},
 		{"name": "v0205_wet_edge_west_bank", "pos": Vector3(0.20, 0.304, 0.18), "scale": Vector3(0.060, 0.014, 2.24), "color": wet_edge},
-		{"name": "v0205_wet_edge_east_bank", "pos": Vector3(1.04, 0.304, 1.62), "scale": Vector3(0.060, 0.014, 2.02), "color": wet_edge}
+		{"name": "v0205_wet_edge_east_bank", "pos": Vector3(1.04, 0.304, 1.62), "scale": Vector3(0.060, 0.014, 2.02), "color": wet_edge},
+		{"name": "v0214_review_bank_shelf_value_west_north", "pos": Vector3(0.10, 0.306, -0.98), "scale": Vector3(0.070, 0.012, 0.74), "color": wet_edge.darkened(0.04)},
+		{"name": "v0214_review_bank_shelf_value_east_south", "pos": Vector3(1.14, 0.306, 2.34), "scale": Vector3(0.070, 0.012, 0.70), "color": wet_edge.lightened(0.04)},
+		{"name": "v0214_review_water_value_thread_south", "pos": Vector3(0.78, 0.276, 2.46), "scale": Vector3(0.17, 0.012, 0.62), "color": water_glint.darkened(0.03)}
 	]:
 		_add_shell_v2_grounding_prop_box(str(prop["name"]), prop["pos"], prop["scale"], prop["color"], "banks", true)
 	for prop in [
@@ -9541,7 +9564,10 @@ func _add_shell_v2_grounding_props_layer() -> void:
 		{"name": "v0205_bridge_landing_grit_east", "pos": Vector3(1.50, 0.346, 1.02), "scale": Vector3(0.50, 0.018, 0.10), "color": Color(0.34, 0.32, 0.26, 0.30)},
 		{"name": "v0205_bridge_side_grounding_west", "pos": Vector3(0.06, 0.404, 0.54), "scale": Vector3(0.10, 0.070, 0.34), "color": Color(0.22, 0.18, 0.12, 0.42)},
 		{"name": "v0205_bridge_side_grounding_east", "pos": Vector3(1.22, 0.404, 1.18), "scale": Vector3(0.10, 0.070, 0.34), "color": Color(0.22, 0.18, 0.12, 0.42)},
-		{"name": "v0205_bridge_wet_shadow_under_span", "pos": Vector3(0.62, 0.312, 0.86), "scale": Vector3(0.58, 0.016, 0.20), "color": Color(0.040, 0.060, 0.055, 0.34)}
+		{"name": "v0205_bridge_wet_shadow_under_span", "pos": Vector3(0.62, 0.312, 0.86), "scale": Vector3(0.58, 0.016, 0.20), "color": Color(0.040, 0.060, 0.055, 0.34)},
+		{"name": "v0214_review_bridge_landing_shadow_west", "pos": Vector3(-0.54, 0.342, 1.04), "scale": Vector3(0.34, 0.012, 0.090), "color": Color(0.10, 0.08, 0.052, 0.28)},
+		{"name": "v0214_review_bridge_landing_shadow_east", "pos": Vector3(1.82, 0.342, 0.72), "scale": Vector3(0.36, 0.012, 0.090), "color": Color(0.10, 0.08, 0.052, 0.26)},
+		{"name": "v0214_review_bridge_deck_worn_centre", "pos": Vector3(0.64, 0.426, 0.88), "scale": Vector3(0.92, 0.010, 0.048), "color": Color(0.76, 0.68, 0.46, 0.28)}
 	]:
 		_add_shell_v2_grounding_prop_box(str(prop["name"]), prop["pos"], prop["scale"], prop["color"], "bridge", true)
 	for structure in runtime.structures:

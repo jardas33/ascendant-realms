@@ -62,10 +62,12 @@ function Invoke-GodotPass {
   try {
     & $ScriptPath -Wait @Args
   } catch {
+    Start-Sleep -Seconds 3
     Assert-PassManifest -Path $ManifestPath -ExpectedStatus $ExpectedStatus
     Write-Output "Packaged Godot returned nonzero after writing $ExpectedStatus; continuing from manifest gate."
     return
   }
+  Start-Sleep -Seconds 3
   Assert-PassManifest -Path $ManifestPath -ExpectedStatus $ExpectedStatus
 }
 
