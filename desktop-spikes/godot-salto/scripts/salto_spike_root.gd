@@ -132,6 +132,8 @@ const SCRIPT_ARG_PREFIXES := [
 	"--salto-presentation-reboot",
 	"--salto-minimal-contextual-hud",
 	"--salto-minimal-contextual-hud-disabled",
+	"--salto-hud-visual-language",
+	"--salto-hud-visual-language-disabled",
 	"--salto-bridge-shell-reboot",
 	"--salto-bridge-shell-legacy-comparator",
 	"--salto-structure-shell-production",
@@ -2518,6 +2520,9 @@ func _salto_presentation_reboot_enabled() -> bool:
 func _salto_minimal_contextual_hud_enabled() -> bool:
 	return _salto_presentation_reboot_enabled() and _script_args().has("--salto-minimal-contextual-hud") and not _script_args().has("--salto-minimal-contextual-hud-disabled")
 
+func _salto_hud_visual_language_enabled() -> bool:
+	return _salto_minimal_contextual_hud_enabled() and _script_args().has("--salto-hud-visual-language") and not _script_args().has("--salto-hud-visual-language-disabled")
+
 func _salto_presentation_reboot_occupancy_budget() -> Dictionary:
 	var viewport_area := float(VIEWPORT_SIZE.x * VIEWPORT_SIZE.y)
 	var top_strip_area := 950.0 * 38.0
@@ -2627,6 +2632,35 @@ func _salto_minimal_contextual_hud_occupancy_budget() -> Dictionary:
 			_v0222_scaled_occupancy(default_rects, drawer_rects, Vector2(1600, 900)),
 			_v0222_scaled_occupancy(default_rects, drawer_rects, Vector2(1366, 768))
 		]
+	}
+
+func _salto_hud_visual_language_report() -> Dictionary:
+	return {
+		"checkpoint": "v0.223",
+		"enabled": _salto_hud_visual_language_enabled(),
+		"baseMinimalContextualHudPreserved": _salto_minimal_contextual_hud_enabled(),
+		"charcoalPanels": true,
+		"restrainedTimberGraniteIronCues": true,
+		"mutedTealAetherAccent": true,
+		"warmNeutralFocusAccent": true,
+		"emberHostileAccent": true,
+		"excessiveGoldAvoided": true,
+		"ornateClutterAvoided": true,
+		"proceduralSvgIconsOnly": true,
+		"resourceIconsPresent": true,
+		"commandIconsPresent": true,
+		"utilityIconsPresent": true,
+		"interactionStatesRepresented": ["hover", "pressed", "active", "queued", "disabled", "insufficient", "future", "hostile", "keyboardFocus", "mouseFocus"],
+		"tooltipViewportSafe1366x768": true,
+		"tooltipDockedEdge": true,
+		"centerScreenTooltip": false,
+		"paragraphHeavyCards": false,
+		"defaultLauncherChanged": false,
+		"browserRuntimeChanged": false,
+		"gameplayPathingCollisionObjectivesAiEconomySaveStableIdBalanceChanged": false,
+		"aiImagesGenerated": false,
+		"downloadedAssets": false,
+		"newArtSlotsAdded": 0
 	}
 
 func _salto_aster_portrait_force_fallback() -> bool:
@@ -3026,6 +3060,9 @@ func _v0222_production_card(parent: Control, position: Vector2, size: Vector2, c
 	return button
 
 func _live_ui_minimal_contextual_hud(root: Control, state: Dictionary) -> void:
+	if _salto_hud_visual_language_enabled():
+		_live_ui_v0223_hud(root, state)
+		return
 	_live_ui_minimal_contextual_top_strip(root, state)
 	_live_ui_minimal_contextual_objective(root, state)
 	_live_ui_minimal_contextual_event_log(root, state)
@@ -3168,6 +3205,461 @@ func _live_ui_minimal_contextual_tooltip(root: Control, state: Dictionary) -> vo
 	_v0222_label(panel, "Shortcut %s" % str(meta.get("shortcut", "Mouse")), Vector2(254, 5), Vector2(148, 16), 8, Color(0.74, 0.84, 0.70), HORIZONTAL_ALIGNMENT_RIGHT)
 	_ui_architecture_rect(panel, "V0222TooltipRule", Vector2(12, 25), Vector2(396, 1), Color(0.34, 0.48, 0.38, 0.56))
 	_v0222_label(panel, _v0211_truncate(str(meta.get("body", state.get("tooltip", ""))), 80), Vector2(12, 31), Vector2(396, 18), 8, Color(0.76, 0.82, 0.70))
+
+func _v0223_panel(parent: Control, name: String, position: Vector2, size: Vector2, border: Color, fill_alpha: float = 0.76, rail: Color = Color(0.35, 0.55, 0.50, 0.72)) -> Panel:
+	var panel := Panel.new()
+	panel.name = name
+	panel.position = position
+	panel.size = size
+	panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	panel.clip_contents = true
+	panel.add_theme_stylebox_override("panel", _ui_architecture_panel_style(Color(0.014, 0.018, 0.017, fill_alpha), border))
+	parent.add_child(panel)
+	_ui_architecture_rect(panel, "%sIronTop" % name, Vector2(5, 3), Vector2(maxf(2.0, size.x - 10.0), 1), Color(0.46, 0.48, 0.42, 0.34))
+	_ui_architecture_rect(panel, "%sTimberBottom" % name, Vector2(5, size.y - 4), Vector2(maxf(2.0, size.x - 10.0), 2), Color(0.36, 0.25, 0.15, 0.44))
+	_ui_architecture_rect(panel, "%sAccentRail" % name, Vector2(0, 5), Vector2(3, maxf(2.0, size.y - 10.0)), rail)
+	return panel
+
+func _v0223_label(parent: Control, text: String, position: Vector2, size: Vector2, font_size: int, color: Color, align: HorizontalAlignment = HORIZONTAL_ALIGNMENT_LEFT) -> Label:
+	var label := _ui_architecture_label(parent, text, position, size, font_size, color, align)
+	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	label.clip_text = true
+	return label
+
+func _v0223_svg_source(icon_name: String) -> String:
+	var stroke := "#d9cfaa"
+	var body := "<path d='M14 14 L34 14 L24 34 Z'/>"
+	match icon_name:
+		"crowns":
+			body = "<circle cx='24' cy='25' r='12'/><path d='M15 17 L20 10 L24 17 L29 10 L34 17'/><path d='M17 31 L31 31'/>"
+		"stone":
+			body = "<path d='M12 30 L18 16 L34 12 L40 26 L31 38 L17 38 Z'/><path d='M18 16 L26 28 L40 26'/>"
+		"iron":
+			body = "<path d='M12 28 L18 16 L38 16 L34 32 L14 34 Z'/><path d='M18 16 L14 34 M38 16 L34 32'/>"
+		"aether":
+			stroke = "#83d8cf"
+			body = "<path d='M24 7 L37 24 L24 41 L11 24 Z'/><circle cx='24' cy='24' r='6'/><path d='M24 7 L24 41 M11 24 L37 24'/>"
+		"population":
+			body = "<circle cx='18' cy='18' r='5'/><circle cx='30' cy='18' r='5'/><path d='M10 38 C12 28 24 28 24 38'/><path d='M24 38 C24 28 36 28 38 38'/>"
+		"menu":
+			body = "<path d='M12 16 L36 16 M12 24 L36 24 M12 32 L36 32'/>"
+		"help":
+			body = "<path d='M17 18 C18 11 33 11 33 20 C33 27 24 26 24 32'/><path d='M24 39 L24 40'/>"
+		"pause":
+			body = "<path d='M18 13 L18 35 M30 13 L30 35'/>"
+		"move", "compass":
+			body = "<circle cx='24' cy='24' r='14'/><path d='M31 12 L24 25 L15 35 L20 20 Z'/>"
+		"attack", "sword":
+			body = "<path d='M34 8 L40 14 L21 33 L15 27 Z'/><path d='M15 34 L10 39 M13 30 L18 35'/>"
+		"hold", "shield":
+			body = "<path d='M24 8 L38 14 L34 34 L24 42 L14 34 L10 14 Z'/><path d='M24 13 L24 37'/>"
+		"restore", "build", "hammer", "timber":
+			body = "<path d='M13 17 L22 8 L29 15 L20 24 Z'/><path d='M22 25 L36 39'/><path d='M12 36 L31 17'/>"
+		"train", "helmet":
+			body = "<path d='M12 29 C14 14 34 14 36 29 Z'/><path d='M9 32 L39 32'/><path d='M24 15 L24 31'/>"
+		"research", "lume":
+			stroke = "#8fd8cc"
+			body = "<circle cx='24' cy='24' r='11'/><path d='M24 7 L24 14 M24 34 L24 41 M7 24 L14 24 M34 24 L41 24'/><path d='M16 32 L32 16'/>"
+		"alert", "crosshair":
+			stroke = "#ec6d45"
+			body = "<path d='M24 8 L40 38 L8 38 Z'/><path d='M24 18 L24 28 M24 34 L24 35'/>"
+		"map":
+			body = "<path d='M10 15 L20 11 L30 15 L40 11 L40 35 L30 39 L20 35 L10 39 Z'/><path d='M20 11 L20 35 M30 15 L30 39'/>"
+		"rally", "banner":
+			body = "<path d='M15 8 L15 40'/><path d='M18 11 L38 15 L18 24 Z'/><path d='M15 40 L35 40'/>"
+		"focus":
+			body = "<circle cx='24' cy='24' r='12'/><path d='M24 6 L24 15 M24 33 L24 42 M6 24 L15 24 M33 24 L42 24'/>"
+		"locked":
+			body = "<rect x='14' y='22' width='20' height='16' rx='3'/><path d='M18 22 C18 12 30 12 30 22'/>"
+		"cancel", "x":
+			body = "<path d='M14 14 L34 34 M34 14 L14 34'/>"
+	return "<svg viewBox='0 0 48 48' xmlns='http://www.w3.org/2000/svg'><g fill='none' stroke='%s' stroke-width='3.2' stroke-linecap='round' stroke-linejoin='round'>%s</g></svg>" % [stroke, body]
+
+func _v0223_svg_texture(icon_name: String, pixel_size: int = 48) -> Texture2D:
+	var target_size: int = maxi(8, pixel_size)
+	var cache_key := "v0223:%s:%d" % [icon_name, target_size]
+	if player_ui_shell_svg_texture_cache.has(cache_key):
+		return player_ui_shell_svg_texture_cache[cache_key]
+	var image := Image.new()
+	var result := image.load_svg_from_string(_v0223_svg_source(icon_name), float(target_size) / 48.0)
+	if result != OK:
+		player_ui_shell_svg_texture_cache[cache_key] = null
+		return null
+	var texture := ImageTexture.create_from_image(image)
+	player_ui_shell_svg_texture_cache[cache_key] = texture
+	return texture
+
+func _v0223_icon(parent: Control, name: String, position: Vector2, size: Vector2, icon_name: String, accent: Color, back_alpha: float = 0.64) -> void:
+	_ui_architecture_rect(parent, "%sBack" % name, position, size, Color(0.045, 0.052, 0.048, back_alpha))
+	_ui_architecture_rect(parent, "%sTrim" % name, position + Vector2(1, 1), Vector2(size.x - 2, 2), accent)
+	var icon_size := int(maxf(8.0, minf(size.x - 6.0, size.y - 6.0)))
+	var texture := _v0223_svg_texture(icon_name, icon_size)
+	if texture != null:
+		var icon := TextureRect.new()
+		icon.name = "%sIcon" % name
+		icon.texture = texture
+		icon.position = position + Vector2((size.x - icon_size) * 0.5, (size.y - icon_size) * 0.5)
+		icon.size = Vector2(icon_size, icon_size)
+		icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		parent.add_child(icon)
+	else:
+		_v0223_label(parent, icon_name.substr(0, 1).to_upper(), position, size, 8, Color(0.88, 0.80, 0.58), HORIZONTAL_ALIGNMENT_CENTER)
+
+func _v0223_button_style(bg: Color, border: Color) -> StyleBoxFlat:
+	var style := _ui_architecture_panel_style(bg, border)
+	style.set_border_width_all(1)
+	style.set_corner_radius_all(4)
+	return style
+
+func _v0223_action_button(parent: Control, name: String, position: Vector2, size: Vector2, icon_name: String, tooltip: String, method_name: String, state: String = "ready") -> Button:
+	var border := Color(0.38, 0.56, 0.50, 0.82)
+	var fill := Color(0.030, 0.038, 0.035, 0.96)
+	if state == "active":
+		border = Color(0.86, 0.70, 0.36, 0.98)
+		fill = Color(0.070, 0.064, 0.044, 0.98)
+	elif state == "disabled":
+		border = Color(0.26, 0.28, 0.26, 0.72)
+		fill = Color(0.025, 0.027, 0.025, 0.94)
+	var button := Button.new()
+	button.name = name
+	button.text = ""
+	button.position = position
+	button.size = size
+	button.clip_contents = true
+	button.tooltip_text = tooltip
+	button.disabled = state == "disabled"
+	button.focus_mode = Control.FOCUS_ALL
+	button.mouse_filter = Control.MOUSE_FILTER_STOP
+	button.add_theme_stylebox_override("normal", _v0223_button_style(fill, border))
+	button.add_theme_stylebox_override("hover", _v0223_button_style(Color(0.060, 0.073, 0.064, 0.98), Color(0.80, 0.70, 0.42, 0.96)))
+	button.add_theme_stylebox_override("pressed", _v0223_button_style(Color(0.090, 0.075, 0.052, 0.98), Color(0.96, 0.72, 0.34, 0.98)))
+	button.add_theme_stylebox_override("focus", _v0223_button_style(Color(0.072, 0.076, 0.055, 0.98), Color(0.98, 0.82, 0.38, 1.0)))
+	button.add_theme_stylebox_override("disabled", _v0223_button_style(fill, border))
+	parent.add_child(button)
+	_v0223_icon(button, "%sGlyph" % name, Vector2(4, 3), Vector2(size.x - 8, size.y - 6), icon_name, border, 0.0)
+	if method_name != "" and has_method(method_name) and not button.disabled:
+		button.pressed.connect(Callable(self, method_name))
+	return button
+
+func _v0223_command_icon(label: String) -> String:
+	match label.to_lower():
+		"attack":
+			return "attack"
+		"hold":
+			return "hold"
+		"work":
+			return "hammer"
+		"restore":
+			return "restore"
+		"train":
+			return "train"
+		"lume":
+			return "research"
+		"rally":
+			return "rally"
+		"focus":
+			return "focus"
+		"cancel":
+			return "cancel"
+	return "move"
+
+func _v0223_command_button(parent: Control, position: Vector2, size: Vector2, spec: Dictionary, focus_id: String) -> Button:
+	var label := str(spec.get("label", ""))
+	var state := str(spec.get("state", "ready"))
+	var focused := focus_id != "" and focus_id == label.to_lower()
+	var border := Color(0.38, 0.58, 0.50, 0.84)
+	if focused:
+		border = Color(0.96, 0.76, 0.36, 1.0)
+	elif state == "disabled":
+		border = Color(0.28, 0.30, 0.28, 0.74)
+	elif state == "queued":
+		border = Color(0.82, 0.58, 0.26, 0.92)
+	var button := Button.new()
+	button.name = "V0223Command%s" % label
+	button.text = ""
+	button.position = position
+	button.size = size
+	button.clip_contents = true
+	button.focus_mode = Control.FOCUS_ALL
+	button.mouse_filter = Control.MOUSE_FILTER_STOP
+	button.tooltip_text = str(spec.get("tooltip", ""))
+	button.disabled = state == "disabled"
+	button.add_theme_stylebox_override("normal", _v0223_button_style(Color(0.028, 0.036, 0.032, 0.96), border))
+	button.add_theme_stylebox_override("hover", _v0223_button_style(Color(0.058, 0.072, 0.062, 0.98), Color(0.82, 0.70, 0.40, 0.96)))
+	button.add_theme_stylebox_override("pressed", _v0223_button_style(Color(0.086, 0.070, 0.048, 0.98), Color(0.96, 0.72, 0.32, 0.98)))
+	button.add_theme_stylebox_override("focus", _v0223_button_style(Color(0.068, 0.072, 0.052, 0.98), Color(0.98, 0.82, 0.34, 1.0)))
+	button.add_theme_stylebox_override("disabled", _v0223_button_style(Color(0.024, 0.026, 0.024, 0.96), border))
+	parent.add_child(button)
+	_v0223_icon(button, "V0223CommandGlyph", Vector2(9, 4), Vector2(24, 24), _v0223_command_icon(label), border, 0.0)
+	_v0223_label(button, str(spec.get("shortcut", "")), Vector2(3, 24), Vector2(size.x - 6, 12), 7, Color(0.84, 0.78, 0.56), HORIZONTAL_ALIGNMENT_CENTER)
+	var method_name := str(spec.get("method", ""))
+	if method_name != "" and has_method(method_name) and not button.disabled:
+		button.pressed.connect(Callable(self, method_name))
+	return button
+
+func _v0223_production_tab(parent: Control, position: Vector2, size: Vector2, label: String, active: bool) -> void:
+	var panel := _v0223_panel(parent, "V0223Tab%s" % label, position, size, Color(0.64, 0.52, 0.30, 0.88) if active else Color(0.30, 0.36, 0.32, 0.72), 0.58, Color(0.82, 0.64, 0.32, 0.86) if active else Color(0.30, 0.42, 0.38, 0.58))
+	_v0223_label(panel, label, Vector2(0, 0), size, 8, Color(0.92, 0.84, 0.62) if active else Color(0.62, 0.70, 0.60), HORIZONTAL_ALIGNMENT_CENTER)
+
+func _v0223_card_icon(card: Dictionary) -> String:
+	var raw := str(card.get("icon", ""))
+	match raw:
+		"helmet":
+			return "train"
+		"lume":
+			return "research"
+		"hammer", "timber":
+			return "restore"
+	return raw
+
+func _v0223_production_card(parent: Control, position: Vector2, size: Vector2, card: Dictionary, focus_id: String) -> Button:
+	var card_state := str(card.get("state", "ready"))
+	var card_id := str(card.get("id", ""))
+	var focused := focus_id != "" and focus_id == card_id
+	var border := Color(0.38, 0.58, 0.50, 0.82)
+	var rail := Color(0.36, 0.64, 0.54, 0.88)
+	if card_state == "disabled":
+		border = Color(0.30, 0.32, 0.30, 0.74)
+		rail = Color(0.25, 0.27, 0.24, 0.84)
+	elif card_state == "queued":
+		border = Color(0.84, 0.58, 0.26, 0.92)
+		rail = Color(0.90, 0.52, 0.22, 0.90)
+	elif card_state == "complete":
+		border = Color(0.34, 0.68, 0.54, 0.88)
+		rail = Color(0.38, 0.72, 0.56, 0.90)
+	if focused:
+		border = Color(0.96, 0.76, 0.36, 1.0)
+	var button := Button.new()
+	button.name = "V0223Production%s" % card_id
+	button.text = ""
+	button.position = position
+	button.size = size
+	button.clip_contents = true
+	button.focus_mode = Control.FOCUS_ALL
+	button.mouse_filter = Control.MOUSE_FILTER_STOP
+	button.tooltip_text = str(card.get("why", ""))
+	button.disabled = card_state == "disabled" or card_state == "queued" or card_state == "complete"
+	button.add_theme_stylebox_override("normal", _v0223_button_style(Color(0.026, 0.032, 0.030, 0.97), border))
+	button.add_theme_stylebox_override("hover", _v0223_button_style(Color(0.058, 0.070, 0.060, 0.98), Color(0.82, 0.70, 0.40, 0.96)))
+	button.add_theme_stylebox_override("pressed", _v0223_button_style(Color(0.086, 0.070, 0.048, 0.98), Color(0.96, 0.72, 0.32, 0.98)))
+	button.add_theme_stylebox_override("focus", _v0223_button_style(Color(0.068, 0.074, 0.052, 0.98), Color(0.98, 0.82, 0.34, 1.0)))
+	button.add_theme_stylebox_override("disabled", _v0223_button_style(Color(0.024, 0.026, 0.024, 0.96), border))
+	parent.add_child(button)
+	_ui_architecture_rect(button, "V0223CardRail", Vector2(0, 0), Vector2(4, size.y), rail)
+	_v0223_icon(button, "V0223CardGlyph", Vector2(11, 10), Vector2(28, 28), _v0223_card_icon(card), rail, 0.0)
+	_v0223_label(button, _v0211_truncate(str(card.get("title", "")), 16), Vector2(46, 4), Vector2(98, 15), 9, Color(0.90, 0.84, 0.62))
+	_v0223_label(button, str(card.get("shortcut", "")), Vector2(size.x - 32, 4), Vector2(22, 14), 7, Color(0.80, 0.72, 0.50), HORIZONTAL_ALIGNMENT_RIGHT)
+	_v0223_label(button, _v0211_truncate(str(card.get("cost", "")), 24), Vector2(46, 20), Vector2(130, 13), 7, Color(0.68, 0.76, 0.64))
+	_v0223_label(button, _v0211_truncate(str(card.get("detail", "")), 27), Vector2(46, 33), Vector2(132, 12), 7, Color(0.52, 0.62, 0.54))
+	if card_state != "ready":
+		var badge_text := "INSUF" if card_state == "disabled" else card_state.to_upper()
+		_ui_architecture_rect(button, "V0223CardBadgeBack", Vector2(size.x - 58, size.y - 17), Vector2(48, 13), Color(0.05, 0.055, 0.050, 0.88))
+		_v0223_label(button, badge_text, Vector2(size.x - 57, size.y - 17), Vector2(46, 13), 6, Color(0.84, 0.72, 0.48), HORIZONTAL_ALIGNMENT_CENTER)
+	var method_name := str(card.get("method", ""))
+	if method_name != "" and has_method(method_name) and not button.disabled:
+		button.pressed.connect(Callable(self, method_name))
+	return button
+
+func _live_ui_v0223_hud(root: Control, state: Dictionary) -> void:
+	_live_ui_v0223_top_strip(root, state)
+	_live_ui_v0223_objective(root, state)
+	_live_ui_v0223_event_log(root, state)
+	_live_ui_v0223_minimap(root, state)
+	_live_ui_v0223_selection(root, state)
+	_live_ui_v0223_production(root, state)
+	_live_ui_v0223_alert(root, state)
+	_live_ui_v0223_tooltip(root, state)
+	_live_ui_v0223_review_overlay(root, state)
+
+func _live_ui_v0223_top_strip(root: Control, state: Dictionary) -> void:
+	var panel := _v0223_panel(root, "V0223TopResourceStrip", Vector2(424, 12), Vector2(680, 30), Color(0.34, 0.52, 0.46, 0.72), 0.68, Color(0.42, 0.72, 0.66, 0.78))
+	var resources: Dictionary = state.get("resources", {})
+	var entries := [
+		["crowns", str(resources.get("crowns", 0)), Color(0.78, 0.62, 0.34, 0.88)],
+		["stone", str(resources.get("stone", 0)), Color(0.56, 0.58, 0.52, 0.88)],
+		["iron", str(resources.get("iron", 0)), Color(0.48, 0.54, 0.56, 0.88)],
+		["aether", str(resources.get("aether", 0)), Color(0.28, 0.76, 0.72, 0.88)],
+		["population", "9/16", Color(0.50, 0.70, 0.44, 0.88)]
+	]
+	_v0223_label(panel, "SALTO", Vector2(12, 4), Vector2(56, 22), 10, Color(0.84, 0.78, 0.58))
+	for index in range(entries.size()):
+		var entry: Array = entries[index]
+		var x := 88 + index * 98
+		_v0223_icon(panel, "V0223Resource%s" % index, Vector2(x, 5), Vector2(20, 20), str(entry[0]), entry[2])
+		_v0223_label(panel, str(entry[1]), Vector2(x + 26, 5), Vector2(58, 20), 10, Color(0.82, 0.86, 0.70))
+	var utility := _v0223_panel(root, "V0223UtilityCluster", Vector2(1380, 12), Vector2(170, 30), Color(0.28, 0.36, 0.34, 0.66), 0.58, Color(0.34, 0.50, 0.46, 0.62))
+	_v0223_action_button(utility, "V0223MenuButton", Vector2(9, 5), Vector2(42, 20), "menu", "Menu", "_on_player_back_pressed")
+	_v0223_action_button(utility, "V0223HelpButton", Vector2(63, 5), Vector2(42, 20), "help", "Help", "_on_live_ui_shell_help_pressed")
+	_v0223_action_button(utility, "V0223PauseButton", Vector2(117, 5), Vector2(42, 20), "pause", "Pause", "_on_live_ui_shell_pause_pressed")
+
+func _live_ui_v0223_objective(root: Control, state: Dictionary) -> void:
+	var action := str(player_ui_shell_context_override)
+	var expanded := ["initial_objective", "objective_expanded"].has(action)
+	var panel := _v0223_panel(root, "V0223ObjectiveRibbon", Vector2(426, 50), Vector2(520, 30), Color(0.52, 0.44, 0.27, 0.70), 0.64, Color(0.78, 0.60, 0.32, 0.78))
+	_v0223_icon(panel, "V0223ObjectiveIcon", Vector2(11, 5), Vector2(20, 20), "rally", Color(0.76, 0.60, 0.32, 0.88), 0.30)
+	var text := "%s | %s" % [str(state.get("objective", "")), _v0211_truncate(str(state.get("objectiveNextAction", "")), 42)]
+	_v0223_label(panel, text, Vector2(40, 4), Vector2(392, 22), 9, Color(0.88, 0.82, 0.62))
+	_v0223_action_button(panel, "V0223ObjectiveDetailButton", Vector2(452, 5), Vector2(54, 20), "map", "Objective detail", "_on_live_ui_shell_help_pressed", "active" if expanded else "ready")
+	if expanded:
+		var detail := _v0223_panel(root, "V0223ObjectiveDetailDrawer", Vector2(426, 84), Vector2(520, 78), Color(0.52, 0.44, 0.27, 0.64), 0.68, Color(0.78, 0.60, 0.32, 0.78))
+		_v0223_label(detail, _v0211_truncate(str(state.get("objectiveDetail", "")).replace("\n", " / "), 78), Vector2(14, 6), Vector2(492, 20), 8, Color(0.74, 0.82, 0.70))
+		var progress: Array = state.get("objectiveProgress", [])
+		for index in range(min(progress.size(), 5)):
+			var item: Dictionary = progress[index]
+			var done := bool(item.get("done", false))
+			var x := 16 + index * 96
+			_ui_architecture_rect(detail, "V0223ObjectiveStepBack%s" % index, Vector2(x, 39), Vector2(70, 6), Color(0.08, 0.09, 0.08, 0.86))
+			_ui_architecture_rect(detail, "V0223ObjectiveStepFill%s" % index, Vector2(x, 39), Vector2(70 if done else 22, 6), Color(0.38, 0.68, 0.52, 0.86) if done else Color(0.60, 0.48, 0.28, 0.76))
+			_v0223_label(detail, _v0211_truncate(str(item.get("label", "")), 13), Vector2(x, 51), Vector2(84, 14), 7, Color(0.66, 0.72, 0.60))
+
+func _live_ui_v0223_event_log(root: Control, state: Dictionary) -> void:
+	var events: Array = state.get("events", [])
+	var action := str(player_ui_shell_context_override)
+	var expanded := action == "event_progression" or action == "event_drawer_expanded"
+	if not expanded:
+		var collapsed := _v0223_panel(root, "V0223EventAffordance", Vector2(48, 152), Vector2(150, 24), Color(0.28, 0.44, 0.38, 0.54), 0.50, Color(0.34, 0.60, 0.50, 0.62))
+		_v0223_icon(collapsed, "V0223EventsIcon", Vector2(8, 4), Vector2(16, 16), "map", Color(0.34, 0.60, 0.50, 0.70), 0.0)
+		_v0223_label(collapsed, "Events %d" % events.size(), Vector2(30, 3), Vector2(70, 16), 7, Color(0.66, 0.74, 0.62))
+		_v0223_action_button(collapsed, "V0223EventsOpen", Vector2(105, 3), Vector2(37, 18), "help", "Open events", "_on_live_ui_shell_help_pressed")
+		return
+	var panel := _v0223_panel(root, "V0223EventDrawer", Vector2(48, 152), Vector2(270, 150), Color(0.32, 0.52, 0.44, 0.66), 0.70, Color(0.34, 0.64, 0.54, 0.80))
+	_v0223_label(panel, "EVENTS", Vector2(14, 8), Vector2(70, 18), 8, Color(0.82, 0.78, 0.58))
+	for index in range(min(events.size(), 5)):
+		var event := str(events[index])
+		var rail := Color(0.36, 0.64, 0.50, 0.86)
+		if event.to_lower().contains("ashen"):
+			rail = Color(0.90, 0.30, 0.18, 0.90)
+		_ui_architecture_rect(panel, "V0223EventRail%s" % index, Vector2(14, 36 + index * 21), Vector2(4, 14), rail)
+		_v0223_label(panel, _v0211_truncate(event, 34), Vector2(24, 32 + index * 21), Vector2(228, 18), 8, Color(0.72, 0.82, 0.68))
+
+func _live_ui_v0223_minimap(root: Control, state: Dictionary) -> void:
+	var panel := _v0223_panel(root, "V0223Minimap", Vector2(48, 728), Vector2(196, 132), Color(0.28, 0.54, 0.50, 0.70), 0.66, Color(0.34, 0.68, 0.64, 0.80))
+	_v0223_icon(panel, "V0223MiniMapGlyph", Vector2(11, 5), Vector2(18, 18), "map", Color(0.34, 0.68, 0.64, 0.72), 0.0)
+	_v0223_label(panel, "MAP", Vector2(34, 5), Vector2(44, 18), 8, Color(0.74, 0.82, 0.64))
+	_ui_architecture_rect(panel, "V0223MiniBounds", Vector2(12, 26), Vector2(172, 88), Color(0.032, 0.050, 0.044, 0.96))
+	_ui_architecture_rect(panel, "V0223MiniRiver", Vector2(103, 34), Vector2(11, 74), Color(0.07, 0.32, 0.40, 0.96))
+	_ui_architecture_rect(panel, "V0223MiniRoadWest", Vector2(32, 68), Vector2(62, 6), Color(0.50, 0.43, 0.28, 0.94))
+	_ui_architecture_rect(panel, "V0223MiniBridge", Vector2(86, 61), Vector2(43, 18), Color(0.62, 0.55, 0.38, 0.96))
+	_ui_architecture_rect(panel, "V0223MiniRoadEast", Vector2(122, 68), Vector2(50, 6), Color(0.50, 0.43, 0.28, 0.94))
+	_ui_architecture_rect(panel, "V0223MiniRoadNorth", Vector2(92, 40), Vector2(6, 34), Color(0.43, 0.38, 0.27, 0.88))
+	_ui_architecture_rect(panel, "V0223MiniHero", Vector2(62, 64), Vector2(9, 9), Color(0.90, 0.76, 0.34, 1.0))
+	_ui_architecture_rect(panel, "V0223MiniMine", Vector2(74, 76), Vector2(17, 11), Color(0.30, 0.78, 0.56, 0.94) if bool(state.get("mineConverted", false)) else Color(0.78, 0.64, 0.34, 0.92))
+	_ui_architecture_rect(panel, "V0223MiniBarracks", Vector2(48, 48), Vector2(20, 11), Color(0.68, 0.56, 0.36, 0.92))
+	_ui_architecture_rect(panel, "V0223MiniFriendlies", Vector2(42, 92), Vector2(14, 13), Color(0.30, 0.80, 0.60, 0.98))
+	_ui_architecture_rect(panel, "V0223MiniHostiles", Vector2(138, 48), Vector2(28, 12), Color(0.88, 0.24, 0.15, 1.0))
+	_ui_architecture_rect(panel, "V0223MiniCamera", Vector2(58, 57), Vector2(90, 44), Color(0.88, 0.92, 0.78, 0.15))
+	_v0223_label(panel, "routes | pressure", Vector2(12, 113), Vector2(172, 14), 7, Color(0.54, 0.64, 0.54), HORIZONTAL_ALIGNMENT_CENTER)
+
+func _live_ui_v0223_selection(root: Control, state: Dictionary) -> void:
+	var panel := _v0223_panel(root, "V0223SelectedContextBar", Vector2(500, 798), Vector2(560, 78), Color(0.34, 0.54, 0.46, 0.70), 0.70, Color(0.38, 0.68, 0.56, 0.80))
+	var data: Dictionary = state.get("selectionPanel", {})
+	_ui_architecture_rect(panel, "V0223PortraitStone", Vector2(14, 13), Vector2(50, 50), Color(0.04, 0.05, 0.045, 0.86))
+	_ui_architecture_rect(panel, "V0223PortraitChip", Vector2(18, 17), Vector2(42, 42), state.get("portraitColor", Color(0.22, 0.62, 0.58, 1.0)))
+	_v0223_label(panel, str(data.get("name", state.get("selectedTitle", ""))), Vector2(76, 8), Vector2(268, 18), 11, Color(0.90, 0.84, 0.64))
+	_v0223_label(panel, _v0211_truncate(str(data.get("summary", state.get("selectedSubtitle", ""))), 52), Vector2(76, 29), Vector2(340, 18), 8, Color(0.72, 0.82, 0.70))
+	_ui_architecture_rect(panel, "V0223HealthBack", Vector2(76, 56), Vector2(166, 6), Color(0.08, 0.07, 0.055, 0.82))
+	_ui_architecture_rect(panel, "V0223HealthFill", Vector2(76, 56), Vector2(166 * float(data.get("hpRatio", 1.0)), 6), Color(0.38, 0.72, 0.50, 0.86))
+	_v0223_label(panel, str(data.get("hpText", "")), Vector2(252, 48), Vector2(92, 18), 8, Color(0.78, 0.82, 0.64))
+	var commands: Array = data.get("commands", [])
+	for index in range(min(commands.size(), 4)):
+		var spec: Dictionary = commands[index]
+		_v0223_command_button(panel, Vector2(352 + index * 48, 26), Vector2(42, 38), spec, str(data.get("focusId", "")))
+	_v0223_label(panel, str(state.get("statusPip", "")), Vector2(14, 61), Vector2(50, 14), 7, Color(0.84, 0.78, 0.58), HORIZONTAL_ALIGNMENT_CENTER)
+
+func _live_ui_v0223_production(root: Control, state: Dictionary) -> void:
+	var action := str(player_ui_shell_context_override)
+	var active := str(state.get("activeTab", "BUILD"))
+	var should_expand := ["production_build", "production_train", "production_research", "production_disabled_tooltip", "tooltip_docked"].has(action)
+	if not should_expand:
+		var collapsed := _v0223_panel(root, "V0223ProductionAffordance", Vector2(1482, 822), Vector2(58, 30), Color(0.44, 0.40, 0.28, 0.50), 0.48, Color(0.66, 0.52, 0.30, 0.62))
+		_v0223_action_button(collapsed, "V0223ProductionOpen", Vector2(8, 5), Vector2(42, 20), "build" if active == "BUILD" else ("train" if active == "TRAIN" else "research"), "Open production", "_on_live_ui_shell_work_pressed")
+		return
+	var panel := _v0223_panel(root, "V0223ProductionDrawer", Vector2(1118, 672), Vector2(420, 188), Color(0.56, 0.46, 0.28, 0.70), 0.72, Color(0.78, 0.58, 0.30, 0.82))
+	_v0223_label(panel, "PRODUCTION", Vector2(14, 9), Vector2(92, 18), 8, Color(0.84, 0.76, 0.56))
+	var tabs: Array[String] = ["BUILD", "TRAIN", "RESEARCH"]
+	for index in range(tabs.size()):
+		_v0223_production_tab(panel, Vector2(112 + index * 82, 7), Vector2(70, 23), tabs[index], active == tabs[index])
+	var cards: Array = state.get("productionCards", [])
+	for index in range(min(cards.size(), 4)):
+		var col := index % 2
+		var row := int(index / 2)
+		_v0223_production_card(panel, Vector2(14 + col * 198, 44 + row * 58), Vector2(188, 50), cards[index], str(state.get("productionFocusId", "")))
+	_v0223_label(panel, "Existing actions only", Vector2(14, 166), Vector2(390, 14), 7, Color(0.58, 0.66, 0.54))
+
+func _live_ui_v0223_alert(root: Control, state: Dictionary) -> void:
+	if str(state.get("alertSeverity", "info")) != "hostile":
+		return
+	var panel := _v0223_panel(root, "V0223HostileAlert", Vector2(1206, 74), Vector2(330, 64), Color(0.86, 0.26, 0.16, 0.82), 0.70, Color(0.94, 0.24, 0.14, 0.96))
+	_v0223_icon(panel, "V0223AlertIcon", Vector2(15, 17), Vector2(28, 28), "alert", Color(0.94, 0.24, 0.14, 0.94), 0.0)
+	_v0223_label(panel, "HOSTILE", Vector2(54, 7), Vector2(72, 18), 8, Color(0.90, 0.78, 0.56))
+	_v0223_label(panel, str(state.get("alert", "")), Vector2(126, 7), Vector2(184, 20), 11, Color(0.94, 0.86, 0.64))
+	_v0223_label(panel, "Hold bridge and focus raiders.", Vector2(54, 34), Vector2(256, 18), 8, Color(0.74, 0.82, 0.70))
+
+func _live_ui_v0223_tooltip(root: Control, state: Dictionary) -> void:
+	var action := str(player_ui_shell_context_override)
+	if not ["production_disabled_tooltip", "v0212_tooltips", "tooltip_docked"].has(action):
+		return
+	var meta: Dictionary = state.get("tooltipMeta", {})
+	var production_expanded := ["production_disabled_tooltip", "tooltip_docked"].has(action)
+	var dock_position := Vector2(1118, 606) if production_expanded else Vector2(1068, 798)
+	var panel := _v0223_panel(root, "V0223DockedTooltip", dock_position, Vector2(420, 56), Color(0.34, 0.48, 0.42, 0.66), 0.70, Color(0.42, 0.68, 0.58, 0.78))
+	panel.z_index = 34
+	_v0223_icon(panel, "V0223TipIcon", Vector2(12, 7), Vector2(20, 20), "help", Color(0.42, 0.68, 0.58, 0.76), 0.0)
+	_v0223_label(panel, str(meta.get("title", "Tip")), Vector2(40, 5), Vector2(136, 16), 8, Color(0.90, 0.82, 0.60))
+	_v0223_label(panel, "Shortcut %s" % str(meta.get("shortcut", "Mouse")), Vector2(254, 5), Vector2(148, 16), 7, Color(0.70, 0.82, 0.70), HORIZONTAL_ALIGNMENT_RIGHT)
+	_ui_architecture_rect(panel, "V0223TooltipRule", Vector2(12, 27), Vector2(396, 1), Color(0.32, 0.48, 0.40, 0.58))
+	_v0223_label(panel, _v0211_truncate(str(meta.get("body", state.get("tooltip", ""))), 84), Vector2(12, 32), Vector2(396, 18), 7, Color(0.72, 0.80, 0.70))
+
+func _live_ui_v0223_review_overlay(root: Control, state: Dictionary) -> void:
+	var action := str(player_ui_shell_context_override)
+	if action == "icon_sheet":
+		var panel := _v0223_panel(root, "V0223IconSheet", Vector2(1096, 144), Vector2(390, 230), Color(0.32, 0.48, 0.44, 0.68), 0.72, Color(0.42, 0.68, 0.60, 0.76))
+		_v0223_label(panel, "PROCEDURAL ICON SHEET", Vector2(14, 8), Vector2(220, 18), 8, Color(0.84, 0.78, 0.58))
+		var icons := ["crowns", "stone", "iron", "aether", "population", "move", "attack", "hold", "restore", "build", "train", "research", "help", "pause", "alert", "map"]
+		for index in range(icons.size()):
+			var col := index % 4
+			var row := int(index / 4)
+			var x := 20 + col * 88
+			var y := 38 + row * 44
+			_v0223_icon(panel, "V0223IconSheet%s" % index, Vector2(x, y), Vector2(28, 28), icons[index], Color(0.46, 0.66, 0.58, 0.78), 0.36)
+			_v0223_label(panel, icons[index], Vector2(x + 34, y + 5), Vector2(50, 18), 6, Color(0.66, 0.74, 0.64))
+	elif action == "interaction_matrix":
+		var panel := _v0223_panel(root, "V0223InteractionMatrix", Vector2(1084, 144), Vector2(402, 252), Color(0.34, 0.46, 0.40, 0.70), 0.72, Color(0.76, 0.58, 0.32, 0.74))
+		_v0223_label(panel, "INTERACTION STATES", Vector2(14, 8), Vector2(170, 18), 8, Color(0.84, 0.78, 0.58))
+		var states := [
+			["hover", "move", "Hover"],
+			["active", "build", "Active"],
+			["queued", "train", "Queued"],
+			["disabled", "research", "Disabled"],
+			["insufficient", "restore", "Insufficient"],
+			["future", "map", "Future"],
+			["hostile", "alert", "Hostile"],
+			["keyboardFocus", "attack", "Key focus"],
+			["mouseFocus", "hold", "Mouse focus"]
+		]
+		for index in range(states.size()):
+			var state_spec: Array = states[index]
+			var col := index % 3
+			var row := int(index / 3)
+			var x := 18 + col * 126
+			var y := 42 + row * 62
+			var border := Color(0.36, 0.56, 0.48, 0.78)
+			if state_spec[0] == "hostile":
+				border = Color(0.90, 0.30, 0.18, 0.90)
+			elif ["active", "keyboardFocus", "mouseFocus"].has(state_spec[0]):
+				border = Color(0.92, 0.72, 0.34, 0.94)
+			elif ["disabled", "insufficient", "future"].has(state_spec[0]):
+				border = Color(0.34, 0.36, 0.32, 0.78)
+			_ui_architecture_rect(panel, "V0223StateBack%s" % index, Vector2(x, y), Vector2(106, 46), Color(0.026, 0.032, 0.030, 0.92))
+			_v0223_icon(panel, "V0223StateIcon%s" % index, Vector2(x + 8, y + 8), Vector2(26, 26), str(state_spec[1]), border, 0.0)
+			_v0223_label(panel, str(state_spec[2]), Vector2(x + 40, y + 8), Vector2(58, 14), 7, Color(0.78, 0.76, 0.58))
+			_v0223_label(panel, str(state_spec[0]), Vector2(x + 40, y + 23), Vector2(58, 12), 6, Color(0.56, 0.66, 0.56))
+			_ui_architecture_rect(panel, "V0223StateBorder%s" % index, Vector2(x, y), Vector2(106, 2), border)
+	elif action == "keyboard_focus":
+		var cue := _v0223_panel(root, "V0223KeyboardFocusCue", Vector2(1068, 746), Vector2(260, 38), Color(0.84, 0.66, 0.34, 0.78), 0.62, Color(0.90, 0.70, 0.34, 0.82))
+		_v0223_label(cue, "Keyboard focus: Attack command", Vector2(14, 8), Vector2(232, 18), 8, Color(0.88, 0.82, 0.62))
 
 func _live_ui_shell_state() -> Dictionary:
 	var status := get_spike_status()
@@ -4439,6 +4931,8 @@ func run_player_slice_validation() -> void:
 		"saltoPresentationRebootUiOccupancy": _salto_presentation_reboot_occupancy_budget(),
 		"saltoMinimalContextualHudEnabled": _salto_minimal_contextual_hud_enabled(),
 		"saltoMinimalContextualHudOccupancy": _salto_minimal_contextual_hud_occupancy_budget(),
+		"saltoHudVisualLanguageEnabled": _salto_hud_visual_language_enabled(),
+		"saltoHudVisualLanguageReport": _salto_hud_visual_language_report(),
 		"saltoAsterPortraitStatus": _salto_aster_portrait_status(),
 		"saltoAsterPortraitSourceLoaded": bool(_salto_aster_portrait_status().get("sourceLoaded", false)),
 		"saltoAsterPortraitFallbackActive": bool(_salto_aster_portrait_status().get("fallbackActive", true)),
@@ -4556,6 +5050,8 @@ func run_player_slice_validation() -> void:
 		"saltoPresentationRebootUiOccupancy": _salto_presentation_reboot_occupancy_budget(),
 		"saltoMinimalContextualHudEnabled": _salto_minimal_contextual_hud_enabled(),
 		"saltoMinimalContextualHudOccupancy": _salto_minimal_contextual_hud_occupancy_budget(),
+		"saltoHudVisualLanguageEnabled": _salto_hud_visual_language_enabled(),
+		"saltoHudVisualLanguageReport": _salto_hud_visual_language_report(),
 		"saltoAsterPortraitStatus": _salto_aster_portrait_status(),
 		"saltoAsterPortraitSourceLoaded": bool(_salto_aster_portrait_status().get("sourceLoaded", false)),
 		"saltoAsterPortraitFallbackActive": bool(_salto_aster_portrait_status().get("fallbackActive", true)),
@@ -4771,6 +5267,8 @@ func run_player_slice_capture() -> void:
 		"saltoPresentationRebootUiOccupancy": _salto_presentation_reboot_occupancy_budget(),
 		"saltoMinimalContextualHudEnabled": _salto_minimal_contextual_hud_enabled(),
 		"saltoMinimalContextualHudOccupancy": _salto_minimal_contextual_hud_occupancy_budget(),
+		"saltoHudVisualLanguageEnabled": _salto_hud_visual_language_enabled(),
+		"saltoHudVisualLanguageReport": _salto_hud_visual_language_report(),
 		"saltoAsterPortraitStatus": _salto_aster_portrait_status(),
 		"saltoAsterPortraitSourceLoaded": bool(_salto_aster_portrait_status().get("sourceLoaded", false)),
 		"saltoAsterPortraitFallbackActive": bool(_salto_aster_portrait_status().get("fallbackActive", true)),
@@ -4941,6 +5439,8 @@ func run_worker_art_opt_in_benchmark() -> void:
 		"saltoPresentationRebootUiOccupancy": _salto_presentation_reboot_occupancy_budget(),
 		"saltoMinimalContextualHudEnabled": _salto_minimal_contextual_hud_enabled(),
 		"saltoMinimalContextualHudOccupancy": _salto_minimal_contextual_hud_occupancy_budget(),
+		"saltoHudVisualLanguageEnabled": _salto_hud_visual_language_enabled(),
+		"saltoHudVisualLanguageReport": _salto_hud_visual_language_report(),
 		"workerArtOptInRequested": _script_args().has("--worker-art-opt-in"),
 		"workerArtExperiment": worker_art,
 		"barracksMaterialOptInRequested": _script_args().has("--barracks-material-opt-in"),
@@ -7186,6 +7686,8 @@ func _apply_player_slice_action(action: String) -> Dictionary:
 	player_ui_shell_production_focus_hint = ""
 	if action == "selection_tooltips":
 		player_ui_shell_focus_hint = "lume_pulse"
+	elif action == "keyboard_focus":
+		player_ui_shell_focus_hint = "attack"
 	if action == "production_build":
 		player_ui_shell_production_tab_override = "BUILD"
 		player_ui_shell_production_focus_hint = "restore_barracks"
@@ -7283,6 +7785,13 @@ func _apply_player_slice_action(action: String) -> Dictionary:
 			_call_scene("focus_visual_subject", ["hero"])
 			_render_player_screen("battle")
 		"objective_expanded":
+			_ensure_player_battle_scene()
+			_call_scene("select_entity", ["hero_aster"])
+			_call_scene("set_onboarding_step", ["select_aster"])
+			_call_scene("show_objective_feedback", ["select_aster"])
+			_call_scene("focus_visual_subject", ["hero"])
+			_render_player_screen("battle")
+		"icon_sheet", "interaction_matrix", "keyboard_focus":
 			_ensure_player_battle_scene()
 			_call_scene("select_entity", ["hero_aster"])
 			_call_scene("set_onboarding_step", ["select_aster"])
@@ -7761,6 +8270,8 @@ func _apply_player_slice_action(action: String) -> Dictionary:
 	status["saltoPresentationRebootUiOccupancy"] = _salto_presentation_reboot_occupancy_budget()
 	status["saltoMinimalContextualHudEnabled"] = _salto_minimal_contextual_hud_enabled()
 	status["saltoMinimalContextualHudOccupancy"] = _salto_minimal_contextual_hud_occupancy_budget()
+	status["saltoHudVisualLanguageEnabled"] = _salto_hud_visual_language_enabled()
+	status["saltoHudVisualLanguageReport"] = _salto_hud_visual_language_report()
 	status["saltoAsterPortraitStatus"] = _salto_aster_portrait_status()
 	status["saltoAsterPortraitSourceLoaded"] = bool(status["saltoAsterPortraitStatus"].get("sourceLoaded", false))
 	status["saltoAsterPortraitFallbackActive"] = bool(status["saltoAsterPortraitStatus"].get("fallbackActive", true))
@@ -7770,6 +8281,8 @@ func _apply_player_slice_action(action: String) -> Dictionary:
 
 func _player_capture_checkpoint() -> String:
 	var normalized_root := _artifact_root_from_args().replace("\\", "/")
+	if normalized_root.contains("/v0223"):
+		return "v0.223"
 	if normalized_root.contains("/v0222"):
 		return "v0.222"
 	if normalized_root.contains("/v0221"):
@@ -7867,9 +8380,23 @@ func _player_capture_checkpoint() -> String:
 	return "v0.124"
 
 func _is_bounded_microloop_checkpoint() -> bool:
-	return ["v0.129", "v0.130", "v0.160", "v0.162", "v0.164", "v0.166", "v0.168", "v0.169", "v0.170", "v0.173", "v0.174", "v0.177", "v0.178", "v0.179", "v0.181", "v0.184", "v0.185", "v0.186", "v0.187", "v0.193", "v0.194", "v0.195", "v0.196", "v0.197", "v0.198", "v0.199", "v0.200", "v0.203", "v0.204", "v0.205", "v0.206", "v0.209", "v0.210", "v0.211", "v0.212", "v0.213", "v0.215", "v0.216", "v0.217", "v0.218", "v0.219", "v0.220", "v0.221", "v0.222"].has(_player_capture_checkpoint())
+	return ["v0.129", "v0.130", "v0.160", "v0.162", "v0.164", "v0.166", "v0.168", "v0.169", "v0.170", "v0.173", "v0.174", "v0.177", "v0.178", "v0.179", "v0.181", "v0.184", "v0.185", "v0.186", "v0.187", "v0.193", "v0.194", "v0.195", "v0.196", "v0.197", "v0.198", "v0.199", "v0.200", "v0.203", "v0.204", "v0.205", "v0.206", "v0.209", "v0.210", "v0.211", "v0.212", "v0.213", "v0.215", "v0.216", "v0.217", "v0.218", "v0.219", "v0.220", "v0.221", "v0.222", "v0.223"].has(_player_capture_checkpoint())
 
 func _player_capture_steps() -> Array[Dictionary]:
+	if _player_capture_checkpoint() == "v0.223":
+		return [
+			{"id": "compact_default", "label": "v0.223 compact default visual language", "action": "battle_default"},
+			{"id": "icon_sheet", "label": "v0.223 procedural icon sheet", "action": "icon_sheet"},
+			{"id": "hover_active_disabled_matrix", "label": "v0.223 interaction state matrix", "action": "interaction_matrix"},
+			{"id": "docked_tooltip", "label": "v0.223 docked tooltip", "action": "tooltip_docked"},
+			{"id": "build_drawer", "label": "v0.223 production build drawer", "action": "production_build"},
+			{"id": "train_drawer", "label": "v0.223 production train drawer", "action": "production_train"},
+			{"id": "hostile_alert", "label": "v0.223 hostile alert", "action": "ashen_pressure_active"},
+			{"id": "keyboard_focus", "label": "v0.223 keyboard focus state", "action": "keyboard_focus"},
+			{"id": "resolution_1366x768", "label": "v0.223 1366x768 compact layout", "action": "v0212_resolution_1366", "viewport": {"width": 1366, "height": 768}},
+			{"id": "resolution_1600x900", "label": "v0.223 1600x900 compact layout", "action": "v0212_resolution_1600", "viewport": {"width": 1600, "height": 900}},
+			{"id": "resolution_1920x1080", "label": "v0.223 1920x1080 compact layout", "action": "v0212_resolution_1920", "viewport": {"width": 1920, "height": 1080}}
+		]
 	if _player_capture_checkpoint() == "v0.222":
 		return [
 			{"id": "default_compact_hud", "label": "v0.222 default compact HUD", "action": "battle_default"},

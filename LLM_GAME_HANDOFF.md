@@ -1,12 +1,14 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-06-11 v0.222 Minimal contextual fantasy RTS HUD
+Last updated: 2026-06-17 v0.223 HUD visual language, icons and interaction QA
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
 ## Current Continuation Note
 
-The latest work is v0.222 Minimal contextual fantasy RTS HUD. It keeps the v0.215 presentation-reboot path isolated, generates zero images, adds zero slots, preserves selected v0.216-v0.221 material/shell/dressing/composition context, replaces the full dashboard-style HUD with a compact opt-in contextual HUD, preserves v0.214/full-HUD evidence as comparator-only, keeps browser runtime untouched, keeps the default launcher procedural, preserves all prior launchers, preserves gameplay/pathing/collisions/objectives/AI/economy/saves/stable IDs/balance, and continues to queued v0.223 only after clean sync and CI-green proof.
+The latest work is v0.223 HUD visual language, icons and interaction QA. It preserves the isolated v0.215-v0.222 presentation-reboot stack and adds original procedural SVG icons, a restrained Barrosan HUD theme, explicit interaction states and docked tooltip QA. It generates zero images, downloads zero assets, adds zero slots, keeps browser runtime untouched, keeps the default launcher procedural, preserves all prior launchers and comparators, and changes no gameplay/pathing/collision/objective/AI/economy/save/stable-ID/balance behavior.
+
+The queued next milestone is v0.224 integrated vertical-slice review and reference-gap correction. Continue only after the v0.223 commit is pushed, its GitHub Actions run is green, and the recovery worktree is clean and synced.
 
 ## Project Identity
 

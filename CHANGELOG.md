@@ -1,5 +1,13 @@
 # Changelog
 
+# v0.223 HUD Visual Language, Icons and Interaction QA - 2026-06-17
+
+- Added an isolated Barrosan visual-language layer over the compact Godot Salto reboot HUD.
+- Added original procedural SVG resource, command, production and utility iconography.
+- Added explicit hover, pressed, active, queued, disabled, insufficient, future, hostile and focus-state QA.
+- Added the required v0.223 review pack, validation, benchmark and implementation reports.
+- Preserved the procedural default, v0.222 comparator, browser runtime and gameplay boundaries.
+
 # v0.222 Minimal Contextual Fantasy RTS HUD - 2026-06-11
 
 This checkpoint replaces the v0.214-style always-open dashboard HUD in the isolated Godot Salto presentation-reboot review path with a compact, contextual battlefield-first HUD. The default stabilized launcher remains procedural, and v0.214/full-HUD evidence remains comparator-only.

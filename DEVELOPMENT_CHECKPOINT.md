@@ -1,6 +1,15 @@
 # Development Checkpoint
 
-Updated: 2026-06-11 v0.222 Minimal contextual fantasy RTS HUD
+Updated: 2026-06-17 v0.223 HUD visual language, icons and interaction QA
+
+## v0.223 HUD Visual Language, Icons and Interaction QA - 2026-06-17
+
+- Added an opt-in Barrosan visual-language layer over the v0.222 compact HUD.
+- Added original procedural SVG icons and explicit interaction-state review captures.
+- Preserved default procedural and v0.222 comparator paths.
+- Fresh packaged capture, full progression validation, boundary, retention and benchmark gates passed.
+- Selected benchmark: 57.26 FPS average and 7.60 ms p95 frame time.
+- Review pack: `artifacts/manual-review/v0223-hud-visual-language/`.
 
 ## v0.222 Minimal Contextual Fantasy RTS HUD - 2026-06-11
 

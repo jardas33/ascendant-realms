@@ -11,9 +11,15 @@ Every phase should protect these long-term pillars:
 
 ## Current Recommended Next Phase
 
-The current checkpoint is **v0.222 Minimal Contextual Fantasy RTS HUD** on 2026-06-11. It keeps the v0.215 presentation-reboot path isolated while replacing the v0.214-style full dashboard HUD with a compact opt-in contextual HUD on top of the selected v0.216-v0.221 material/shell/dressing/composition context. It preserves the default procedural launcher, all prior launchers and comparators, and gameplay/pathing/collision/objective/AI/economy/save/stable-ID/balance boundaries.
+The current checkpoint is **v0.223 HUD Visual Language, Icons and Interaction QA** on 2026-06-17. It keeps the v0.215 presentation-reboot path isolated while adding original procedural SVG icons, restrained Barrosan HUD styling and explicit interaction-state QA on top of the v0.222 compact HUD. It preserves the default procedural launcher, all prior launchers and comparators, and gameplay/pathing/collision/objective/AI/economy/save/stable-ID/balance boundaries.
 
-The queued next milestone is **v0.223 HUD visual language, icons and interaction QA**. Continue only from a clean, synced, pushed and CI-green v0.222 state, and only inside that prompt's stated boundaries.
+The queued next milestone is **v0.224 Integrated vertical-slice review and reference-gap correction**. Continue only from a clean, synced, pushed and CI-green v0.223 state, and fix only the three highest-impact scoped visual defects found by the weighted review.
+
+New v0.223 docs:
+
+- `docs/V0223_HUD_VISUAL_LANGUAGE_REPORT.md`
+- `docs/V0223_INTERACTION_QA_REPORT.md`
+- `docs/V0223_IMPLEMENTATION_REPORT.md`
 
 New v0.222 docs:
 

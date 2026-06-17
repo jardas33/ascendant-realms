@@ -46,6 +46,7 @@ $StructureShellMode = "v0219-selected"
 $EnvironmentDressingMode = "v0220-selected"
 $CompositionLightingSelectionMode = "v0221-selected"
 $MinimalContextualHudMode = "disabled"
+$HudVisualLanguageMode = "disabled"
 $ForwardArgs = @()
 foreach ($arg in $RemainingArgs) {
   if ($arg -eq "--salto-presentation-reboot-use-v0175-ground") {
@@ -80,6 +81,12 @@ foreach ($arg in $RemainingArgs) {
     $MinimalContextualHudMode = "v0222-selected"
   } elseif ($arg -eq "--salto-minimal-contextual-hud-disabled") {
     $MinimalContextualHudMode = "disabled"
+    $HudVisualLanguageMode = "disabled"
+  } elseif ($arg -eq "--salto-hud-visual-language") {
+    $MinimalContextualHudMode = "v0222-selected"
+    $HudVisualLanguageMode = "v0223-selected"
+  } elseif ($arg -eq "--salto-hud-visual-language-disabled") {
+    $HudVisualLanguageMode = "disabled"
   } else {
     $ForwardArgs += $arg
   }
@@ -236,6 +243,9 @@ if ($EnvironmentDressingMode -ne "disabled" -and $CompositionLightingSelectionMo
 if ($MinimalContextualHudMode -eq "v0222-selected") {
   $RebootArgs += "--salto-minimal-contextual-hud"
 }
+if ($HudVisualLanguageMode -eq "v0223-selected") {
+  $RebootArgs += "--salto-hud-visual-language"
+}
 if ($BridgeShellMode -eq "v0218-legacy-comparator") {
   $RebootArgs += "--salto-bridge-shell-legacy-comparator"
 }
@@ -260,6 +270,7 @@ Write-Output "Environment dressing mode: $EnvironmentDressingMode"
 Write-Output "Selected v0.220 prop-atlas SHA-256: $PropAtlasExpectedSha256"
 Write-Output "Composition lighting selection mode: $CompositionLightingSelectionMode"
 Write-Output "Minimal contextual HUD mode: $MinimalContextualHudMode"
+Write-Output "HUD visual language mode: $HudVisualLanguageMode"
 Write-Output "Default launcher, prior UI launchers, procedural fallback and v0.175 ground material comparator remain preserved."
 
 & (Join-Path $PSScriptRoot "launchGodotSaltoShellV2GroundingPropsWindows.ps1") -Wait:$Wait @RebootArgs
