@@ -1,6 +1,14 @@
 # Development Checkpoint
 
-Updated: 2026-06-17 v0.223 HUD visual language, icons and interaction QA
+Updated: 2026-06-17 v0.224 integrated vertical-slice reference-gap review
+
+## v0.224 Integrated Vertical-Slice Reference-Gap Review - 2026-06-17
+
+- Fixed exactly three scoped visual defects: haze, framing and structure emphasis.
+- Captured and inspected 23 packaged states across progression and resolutions.
+- Weighted score: v0.214 40/100; reboot v0.224 75/100.
+- Fresh validation, benchmark, retention, tests, Godot scaffold, build, content, art-intake and runtime-slot gates passed.
+- Review pack: `artifacts/manual-review/v0224-integrated-reference-gap-review/`.
 
 ## v0.223 HUD Visual Language, Icons and Interaction QA - 2026-06-17
 

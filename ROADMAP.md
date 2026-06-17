@@ -11,9 +11,15 @@ Every phase should protect these long-term pillars:
 
 ## Current Recommended Next Phase
 
-The current checkpoint is **v0.223 HUD Visual Language, Icons and Interaction QA** on 2026-06-17. It keeps the v0.215 presentation-reboot path isolated while adding original procedural SVG icons, restrained Barrosan HUD styling and explicit interaction-state QA on top of the v0.222 compact HUD. It preserves the default procedural launcher, all prior launchers and comparators, and gameplay/pathing/collision/objective/AI/economy/save/stable-ID/balance boundaries.
+The current checkpoint is **v0.224 Integrated vertical-slice reference-gap review** on 2026-06-17. It fixes exactly three visual defects in the isolated reboot path and records an honest 75/100 weighted score versus 40/100 for v0.214.
 
-The queued next milestone is **v0.224 Integrated vertical-slice review and reference-gap correction**. Continue only from a clean, synced, pushed and CI-green v0.223 state, and fix only the three highest-impact scoped visual defects found by the weighted review.
+The queued next milestone is **v0.225 Full QA, benchmark, retention and safe cleanup**. Continue only from a clean, synced, pushed and CI-green v0.224 state.
+
+New v0.224 docs:
+
+- `docs/V0224_REFERENCE_GAP_SCORECARD.md`
+- `docs/V0224_VERTICAL_SLICE_REVIEW_REPORT.md`
+- `docs/V0224_IMPLEMENTATION_REPORT.md`
 
 New v0.223 docs:
 

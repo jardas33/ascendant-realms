@@ -383,6 +383,7 @@ var salto_structure_shell_production_enabled := false
 var salto_structure_shell_legacy_comparator := false
 var salto_environment_dressing_enabled := false
 var salto_composition_lighting_selection_enabled := false
+var salto_integrated_reference_gap_enabled := false
 var presentation_shell_v2_initialized := false
 var presentation_shell_v2_fallback_active := false
 var presentation_shell_v2_fallback_reason := ""
@@ -1089,6 +1090,15 @@ func configure_salto_composition_lighting_selection(enabled: bool) -> Dictionary
 	_sync_hud()
 	return _salto_composition_lighting_selection_status()
 
+func configure_salto_integrated_reference_gap(enabled: bool) -> Dictionary:
+	salto_integrated_reference_gap_enabled = enabled
+	if salto_integrated_reference_gap_enabled:
+		salto_composition_lighting_selection_enabled = true
+		_refresh_visual_foundation()
+		_apply_light_preset()
+		apply_salto_composition_lighting_selection_framing()
+	return _salto_integrated_reference_gap_status()
+
 func configure_salto_presentation_reboot(enabled: bool) -> Dictionary:
 	salto_presentation_reboot_enabled = enabled
 	_sync_unit_visuals()
@@ -1194,7 +1204,10 @@ func apply_environment_shell_v2_grounding_props_framing() -> bool:
 func apply_salto_composition_lighting_selection_framing() -> bool:
 	if not salto_composition_lighting_selection_enabled:
 		return false
-	_apply_camera_authoring_posture("v0221_battlefield_composition", Vector3(-1.38, 10.62, 6.58), 8.08)
+	var posture_name := "v0224_integrated_reference_gap" if salto_integrated_reference_gap_enabled else "v0221_battlefield_composition"
+	var posture_position := Vector3(-1.46, 10.22, 6.18) if salto_integrated_reference_gap_enabled else Vector3(-1.38, 10.62, 6.58)
+	var posture_size := 7.42 if salto_integrated_reference_gap_enabled else 8.08
+	_apply_camera_authoring_posture(posture_name, posture_position, posture_size)
 	_apply_presentation_shell_v2_review_pitch()
 	var camera := get_node_or_null("FixedOrthographicCamera") as Camera3D
 	if camera:
@@ -2154,6 +2167,23 @@ func _salto_composition_lighting_selection_status() -> Dictionary:
 		"cameraSize": camera_size,
 		"cameraPitchDegrees": camera_pitch,
 		"visualNodeNames": node_names
+	}
+
+func _salto_integrated_reference_gap_status() -> Dictionary:
+	return {
+		"schemaVersion": 1,
+		"checkpoint": "v0.224",
+		"enabled": salto_integrated_reference_gap_enabled,
+		"visualOnly": true,
+		"topThreeFixes": [
+			"reduced broad green atmospheric wash",
+			"closer integrated RTS review framing",
+			"stronger local structure silhouette and value anchors"
+		],
+		"newArtSlotsAdded": 0,
+		"generatedImageCount": 0,
+		"gameplayChanged": false,
+		"defaultLauncherChanged": false
 	}
 
 func _salto_bridge_shell_status() -> Dictionary:
@@ -7422,6 +7452,8 @@ func get_spike_status() -> Dictionary:
 	status["saltoEnvironmentDressing"] = _salto_environment_dressing_status()
 	status["saltoCompositionLightingSelectionEnabled"] = salto_composition_lighting_selection_enabled
 	status["saltoCompositionLightingSelection"] = _salto_composition_lighting_selection_status()
+	status["saltoIntegratedReferenceGapEnabled"] = salto_integrated_reference_gap_enabled
+	status["saltoIntegratedReferenceGap"] = _salto_integrated_reference_gap_status()
 	status["saltoPresentationRebootEnabled"] = salto_presentation_reboot_enabled
 	status["saltoPresentationRebootScene"] = {
 		"checkpoint": "v0.215",
@@ -7924,8 +7956,8 @@ func _apply_light_preset() -> void:
 		light.light_color = Color(0.98, 0.97, 0.90)
 	if salto_composition_lighting_selection_enabled:
 		light.rotation_degrees = Vector3(-58, -32, 0)
-		light.light_energy = 1.18
-		light.light_color = Color(1.00, 0.955, 0.84)
+		light.light_energy = 1.24 if salto_integrated_reference_gap_enabled else 1.18
+		light.light_color = Color(1.00, 0.975, 0.90) if salto_integrated_reference_gap_enabled else Color(1.00, 0.955, 0.84)
 
 func _create_terrain() -> void:
 	terrain_root = Node3D.new()
@@ -7975,7 +8007,9 @@ func _create_terrain() -> void:
 		environment_structure_shell_hardening_enabled = true
 		environment_riverbank_bridge_approach_enabled = true
 
-	if environment_shell_live_qa_enabled:
+	if salto_integrated_reference_gap_enabled:
+		_add_static_box("v0137_subtle_terrain_fog_default", Vector3(0.38, 0.20, -3.18), Vector3(5.40, 0.040, 0.08), Color(0.58, 0.68, 0.60, 0.025), true)
+	elif environment_shell_live_qa_enabled:
 		_add_static_box("north_highland_height_band", Vector3(-1.5, 0.055, -5.35), Vector3(16.4, 0.08, 0.34), _ridge_color().darkened(0.03))
 		_add_static_box("south_highland_height_band", Vector3(1.1, 0.05, 5.95), Vector3(17.2, 0.075, 0.32), _ridge_color().darkened(0.10))
 		_add_static_box("west_terrace_height_step", Vector3(-6.42, 0.08, -0.35), Vector3(0.58, 0.13, 7.2), _ridge_color().darkened(0.02))
@@ -11109,6 +11143,13 @@ func _add_salto_composition_lighting_selection_layer() -> void:
 		{"name": "v0221_unit_grounding_ashen", "pos": _unit_world_position("ashen_00", Vector3(2.0, 0.12, -1.67)) + Vector3(0.0, -0.070, 0.0), "radius": 0.150}
 	]:
 		_add_salto_composition_lighting_selection_cylinder(str(accent["name"]), accent["pos"], float(accent["radius"]), 0.016, unit_shadow, "unitContact", true)
+	if salto_integrated_reference_gap_enabled:
+		for accent in [
+			{"name": "v0224_command_hall_silhouette_cap", "pos": Vector3(-5.18, 0.72, 3.16), "scale": Vector3(0.74, 0.16, 0.34), "color": Color(0.34, 0.20, 0.10, 0.74)},
+			{"name": "v0224_barracks_silhouette_cap", "pos": Vector3(-4.92, 0.66, -3.20), "scale": Vector3(0.82, 0.13, 0.30), "color": Color(0.29, 0.18, 0.11, 0.72)},
+			{"name": "v0224_mine_silhouette_cap", "pos": Vector3(-2.78, 0.58, -0.52), "scale": Vector3(0.62, 0.12, 0.27), "color": Color(0.34, 0.31, 0.24, 0.68)}
+		]:
+			_add_salto_composition_lighting_selection_box(str(accent["name"]), accent["pos"], accent["scale"], accent["color"], "structures", true)
 
 func _add_shell_v2_grounding_structure_contact(structure: Dictionary) -> void:
 	var id := str(structure.get("id", "structure"))

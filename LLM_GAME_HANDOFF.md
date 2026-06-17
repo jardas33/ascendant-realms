@@ -1,14 +1,14 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-06-17 v0.223 HUD visual language, icons and interaction QA
+Last updated: 2026-06-17 v0.224 integrated vertical-slice reference-gap review
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
 ## Current Continuation Note
 
-The latest work is v0.223 HUD visual language, icons and interaction QA. It preserves the isolated v0.215-v0.222 presentation-reboot stack and adds original procedural SVG icons, a restrained Barrosan HUD theme, explicit interaction states and docked tooltip QA. It generates zero images, downloads zero assets, adds zero slots, keeps browser runtime untouched, keeps the default launcher procedural, preserves all prior launchers and comparators, and changes no gameplay/pathing/collision/objective/AI/economy/save/stable-ID/balance behavior.
+The latest work is v0.224 integrated vertical-slice reference-gap review. It adds one isolated visual-only flag and fixes exactly three high-impact defects: broad green haze, distant framing and weak local structure emphasis. The fresh review scores the reboot 75/100 versus 40/100 for v0.214, while explicitly recording that it still trails the supplied reference in authored geometry, landmarks, animation and VFX.
 
-The queued next milestone is v0.224 integrated vertical-slice review and reference-gap correction. Continue only after the v0.223 commit is pushed, its GitHub Actions run is green, and the recovery worktree is clean and synced.
+The queued next milestone is v0.225 full QA, benchmark, retention and safe cleanup. Continue only after v0.224 is pushed, CI-green, clean and synced.
 
 ## Project Identity
 

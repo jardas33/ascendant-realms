@@ -1,5 +1,12 @@
 # Changelog
 
+# v0.224 Integrated Vertical-Slice Reference-Gap Review - 2026-06-17
+
+- Added an isolated visual-only reference-gap correction flag.
+- Reduced broad green haze, moved the review camera closer and strengthened three local structure silhouettes.
+- Added a 23-state packaged review pack, weighted scorecard, validation and three-way benchmark.
+- Preserved the procedural default, prior comparators, browser runtime and all gameplay boundaries.
+
 # v0.223 HUD Visual Language, Icons and Interaction QA - 2026-06-17
 
 - Added an isolated Barrosan visual-language layer over the compact Godot Salto reboot HUD.
