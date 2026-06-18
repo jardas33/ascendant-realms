@@ -1,5 +1,14 @@
 # Changelog
 
+# v0.229 Salto Structure Landmark Fidelity and Haze Cleanup Rescue - 2026-06-18
+
+- Added an isolated visual-only path that removes broad review-value overlays and the muddy full-field ground texture blanket.
+- Rebuilt the player keep, barracks and central mine/Lume site as opaque procedural landmarks with stronger foundations, roofs, entries and vertical hierarchy.
+- Preserved the v0.228 road, river, banks, bridge topology, compact HUD and all gameplay/default-launcher boundaries.
+- Added the required eleven captures, before/after sheet, fallback validation and benchmark tooling.
+- Recorded `PASS_V0229_STRUCTURE_LANDMARK_FIDELITY_RESCUE_WITH_PROCEDURAL_ART_LIMIT`: materially clearer and more legible, but still below finished production-art fidelity.
+- Created zero source assets, derivatives or runtime-art slots.
+
 # v0.228 Salto Production Battlefield Backplate Rescue - 2026-06-18
 
 - Added an isolated authored terrain-topology path with a warm irregular foundation, tapered worn roads, shaped river/banks and integrated bridge landings.

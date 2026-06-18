@@ -1,6 +1,17 @@
 # Development Checkpoint
 
-Updated: 2026-06-18 v0.228 production battlefield backplate rescue
+Updated: 2026-06-18 v0.229 structure landmark fidelity and haze cleanup rescue
+
+## v0.229 Structure Landmark Fidelity and Haze Cleanup Rescue - 2026-06-18
+
+- Decision: `PASS_V0229_STRUCTURE_LANDMARK_FIDELITY_RESCUE_WITH_PROCEDURAL_ART_LIMIT`.
+- Removed broad legacy review-value overlays and the noisy ground texture blanket from the isolated v0.229 path.
+- Added opaque, readable keep, barracks and central mine/Lume landmark geometry while preserving footprints and gameplay.
+- Capture, fallback/comparator validation, benchmark, 887 tests, Godot headless tests, build, content, 52 runtime-art slots, cleanup dry run and diff checks pass.
+- Selected benchmark: 49.04 FPS average, 20.82 ms p95; 1.0116 FPS ratio versus v0.228.
+- New source images, derivatives and runtime-art slots: zero.
+- Review pack: `artifacts/manual-review/v0229-structure-landmark-fidelity/`.
+- Remaining ceiling: the procedural landmark geometry is readable blockout art, not final authored fantasy RTS structure art.
 
 ## v0.228 Production Battlefield Backplate Rescue - 2026-06-18
 

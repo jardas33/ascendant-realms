@@ -11,11 +11,16 @@ Every phase should protect these long-term pillars:
 
 ## Current Recommended Next Phase
 
-The current checkpoint is **v0.228 Salto production battlefield backplate rescue** on 2026-06-18. The decision is `PASS_V0228_PRODUCTION_BATTLEFIELD_BACKPLATE_RESCUE_WITH_LIMITATIONS`.
+The current checkpoint is **v0.229 Salto structure landmark fidelity and haze cleanup rescue** on 2026-06-18. The decision is `PASS_V0229_STRUCTURE_LANDMARK_FIDELITY_RESCUE_WITH_PROCEDURAL_ART_LIMIT`.
 
-The terrain-topology foundation is visibly better than v0.227: warm irregular ground, tapered worn routes, shaped riverbanks and grounded bridge approaches replace the blunt strip geometry. Existing structure silhouettes remain the main visual-quality ceiling.
+The v0.228 terrain topology remains, while broad review-value haze and the muddy ground blanket are removed. The keep, barracks and central mine/Lume site now read as distinct opaque landmarks. The remaining ceiling is authored structure-art fidelity rather than battlefield topology or hierarchy.
 
-Exactly one next milestone is recommended if authorized: **v0.229 Salto structure silhouette and landmark fidelity pass**. Do not start it without a new explicit prompt.
+Exactly one next milestone is recommended if authorized: **v0.230 retained authored structure-art fidelity pass** for the existing keep, barracks and mine/Lume silhouettes. Do not start it without a new explicit prompt.
+
+New v0.229 docs:
+
+- `docs/V0229_STRUCTURE_LANDMARK_FIDELITY_REPORT.md`
+- `docs/V0229_IMPLEMENTATION_REPORT.md`
 
 New v0.228 docs:
 

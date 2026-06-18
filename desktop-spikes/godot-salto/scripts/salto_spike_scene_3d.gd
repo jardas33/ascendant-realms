@@ -386,6 +386,7 @@ var salto_composition_lighting_selection_enabled := false
 var salto_integrated_reference_gap_enabled := false
 var salto_battlefield_visual_rescue_enabled := false
 var salto_production_battlefield_backplate_enabled := false
+var salto_structure_landmark_fidelity_enabled := false
 var presentation_shell_v2_initialized := false
 var presentation_shell_v2_fallback_active := false
 var presentation_shell_v2_fallback_reason := ""
@@ -1121,6 +1122,22 @@ func configure_salto_production_battlefield_backplate(enabled: bool) -> Dictiona
 		_apply_light_preset()
 		apply_salto_composition_lighting_selection_framing()
 	return _salto_production_battlefield_backplate_status()
+
+func configure_salto_structure_landmark_fidelity(enabled: bool) -> Dictionary:
+	salto_structure_landmark_fidelity_enabled = enabled
+	if enabled:
+		salto_production_battlefield_backplate_enabled = true
+		salto_battlefield_visual_rescue_enabled = false
+		salto_integrated_reference_gap_enabled = true
+		salto_composition_lighting_selection_enabled = true
+		salto_structure_shell_production_enabled = true
+		salto_structure_shell_legacy_comparator = false
+		environment_shell_v2_structure_material_enabled = false
+		environment_shell_v2_grounding_props_enabled = true
+		_refresh_visual_foundation()
+		_apply_light_preset()
+		apply_salto_composition_lighting_selection_framing()
+	return _salto_structure_landmark_fidelity_status()
 
 func configure_salto_presentation_reboot(enabled: bool) -> Dictionary:
 	salto_presentation_reboot_enabled = enabled
@@ -2235,6 +2252,23 @@ func _salto_production_battlefield_backplate_status() -> Dictionary:
 		"organicRoadSilhouette": salto_production_battlefield_backplate_enabled,
 		"shapedRiverBanks": salto_production_battlefield_backplate_enabled,
 		"bridgeApproachIntegrated": salto_production_battlefield_backplate_enabled,
+		"generatedProjectSourceImageCount": 0,
+		"newRuntimeArtSlotsAdded": 0,
+		"gameplayChanged": false,
+		"defaultLauncherChanged": false
+	}
+
+func _salto_structure_landmark_fidelity_status() -> Dictionary:
+	return {
+		"schemaVersion": 1,
+		"checkpoint": "v0.229",
+		"enabled": salto_structure_landmark_fidelity_enabled,
+		"visualOnly": true,
+		"broadFieldOverlaysRemoved": salto_structure_landmark_fidelity_enabled,
+		"opaqueStructureSilhouettes": salto_structure_landmark_fidelity_enabled,
+		"playerBaseLandmarkImproved": salto_structure_landmark_fidelity_enabled,
+		"barracksLandmarkImproved": salto_structure_landmark_fidelity_enabled,
+		"centralUtilityLandmarkImproved": salto_structure_landmark_fidelity_enabled,
 		"generatedProjectSourceImageCount": 0,
 		"newRuntimeArtSlotsAdded": 0,
 		"gameplayChanged": false,
@@ -7513,6 +7547,8 @@ func get_spike_status() -> Dictionary:
 	status["saltoBattlefieldVisualRescue"] = _salto_battlefield_visual_rescue_status()
 	status["saltoProductionBattlefieldBackplateEnabled"] = salto_production_battlefield_backplate_enabled
 	status["saltoProductionBattlefieldBackplate"] = _salto_production_battlefield_backplate_status()
+	status["saltoStructureLandmarkFidelityEnabled"] = salto_structure_landmark_fidelity_enabled
+	status["saltoStructureLandmarkFidelity"] = _salto_structure_landmark_fidelity_status()
 	status["saltoPresentationRebootEnabled"] = salto_presentation_reboot_enabled
 	status["saltoPresentationRebootScene"] = {
 		"checkpoint": "v0.215",
@@ -8025,6 +8061,10 @@ func _apply_light_preset() -> void:
 		light.rotation_degrees = Vector3(-57, -34, 0)
 		light.light_energy = 1.18
 		light.light_color = Color(1.00, 0.965, 0.88)
+	if salto_structure_landmark_fidelity_enabled:
+		light.rotation_degrees = Vector3(-55, -36, 0)
+		light.light_energy = 1.36
+		light.light_color = Color(1.00, 0.97, 0.87)
 
 func _create_terrain() -> void:
 	terrain_root = Node3D.new()
@@ -8686,6 +8726,59 @@ func _add_salto_structure_shell_production_mass(id: String, fixture: String, pos
 			_add_shell_v2_structure_shell_production_box("%s_v0219_aether_support_inactive_site_cap" % id, position + Vector3(0.0, 0.34, -scale.z * 0.02), Vector3(scale.x * 0.60, 0.052, scale.z * 0.44), color.lightened(0.10), true)
 	if salto_battlefield_visual_rescue_enabled:
 		_add_salto_battlefield_visual_rescue_structure_details(id, fixture, position, scale, state)
+	if salto_structure_landmark_fidelity_enabled:
+		_add_salto_structure_landmark_fidelity_details(id, fixture, position, scale, state)
+
+func _add_salto_structure_landmark_fidelity_details(id: String, fixture: String, position: Vector3, scale: Vector3, state: String) -> void:
+	var dressed_stone := Color(0.48, 0.45, 0.35, 1.0)
+	var stone_shadow := Color(0.19, 0.20, 0.17, 1.0)
+	var slate := Color(0.16, 0.145, 0.115, 1.0)
+	var slate_light := Color(0.30, 0.27, 0.20, 1.0)
+	var timber := Color(0.25, 0.145, 0.075, 1.0)
+	var timber_light := Color(0.48, 0.33, 0.17, 1.0)
+	var iron := Color(0.25, 0.27, 0.25, 1.0)
+	var lume := Color(0.16, 0.72, 0.67, 1.0)
+	match fixture:
+		"command_hall":
+			_add_shell_v2_structure_shell_production_box("%s_v0229_command_foundation_course" % id, position + Vector3(0.0, -0.045, 0.02), Vector3(scale.x * 1.08, 0.12, scale.z * 0.96), stone_shadow)
+			_add_shell_v2_structure_shell_production_box("%s_v0229_command_roof_west_mass" % id, position + Vector3(-scale.x * 0.20, 0.70, -scale.z * 0.04), Vector3(scale.x * 0.54, 0.14, scale.z * 0.64), slate)
+			_add_shell_v2_structure_shell_production_box("%s_v0229_command_roof_east_mass" % id, position + Vector3(scale.x * 0.24, 0.64, scale.z * 0.04), Vector3(scale.x * 0.42, 0.12, scale.z * 0.54), slate_light)
+			_add_shell_v2_structure_shell_production_box("%s_v0229_command_watch_tower" % id, position + Vector3(-scale.x * 0.32, 0.78, -scale.z * 0.18), Vector3(scale.x * 0.22, 0.58, scale.z * 0.24), dressed_stone.darkened(0.08))
+			_add_shell_v2_structure_shell_production_box("%s_v0229_command_watch_roof" % id, position + Vector3(-scale.x * 0.32, 1.10, -scale.z * 0.18), Vector3(scale.x * 0.29, 0.11, scale.z * 0.31), slate)
+			_add_shell_v2_structure_shell_production_box("%s_v0229_command_entry_shadow" % id, position + Vector3(0.0, 0.22, scale.z * 0.54), Vector3(scale.x * 0.22, 0.31, 0.075), Color(0.045, 0.035, 0.025, 1.0))
+			_add_shell_v2_structure_shell_production_box("%s_v0229_command_entry_header" % id, position + Vector3(0.0, 0.42, scale.z * 0.56), Vector3(scale.x * 0.32, 0.065, 0.10), timber_light)
+			_add_shell_v2_structure_shell_production_box("%s_v0229_command_step_lower" % id, position + Vector3(0.0, -0.055, scale.z * 0.72), Vector3(scale.x * 0.50, 0.055, 0.16), dressed_stone)
+			_add_shell_v2_structure_shell_production_box("%s_v0229_command_chimney" % id, position + Vector3(scale.x * 0.36, 0.84, -scale.z * 0.18), Vector3(0.13, 0.46, 0.13), dressed_stone.darkened(0.14))
+			_add_shell_v2_structure_shell_production_box("%s_v0229_command_banner_post" % id, position + Vector3(-scale.x * 0.52, 0.47, scale.z * 0.36), Vector3(0.045, 0.68, 0.045), timber)
+			_add_shell_v2_structure_shell_production_box("%s_v0229_command_banner" % id, position + Vector3(-scale.x * 0.45, 0.65, scale.z * 0.36), Vector3(0.18, 0.24, 0.035), Color(0.18, 0.42, 0.34, 1.0))
+		"barracks":
+			_add_shell_v2_structure_shell_production_box("%s_v0229_barracks_foundation_course" % id, position + Vector3(0.0, -0.050, 0.02), Vector3(scale.x * 1.06, 0.11, scale.z * 0.94), stone_shadow)
+			_add_shell_v2_structure_shell_production_box("%s_v0229_barracks_long_roof_west" % id, position + Vector3(-scale.x * 0.25, 0.66, -scale.z * 0.02), Vector3(scale.x * 0.45, 0.13, scale.z * 0.72), slate)
+			_add_shell_v2_structure_shell_production_box("%s_v0229_barracks_long_roof_east" % id, position + Vector3(scale.x * 0.25, 0.61, scale.z * 0.02), Vector3(scale.x * 0.43, 0.11, scale.z * 0.66), slate_light.darkened(0.06))
+			_add_shell_v2_structure_shell_production_box("%s_v0229_barracks_front_gate_shadow" % id, position + Vector3(0.0, 0.22, scale.z * 0.54), Vector3(scale.x * 0.24, 0.28, 0.080), Color(0.045, 0.032, 0.022, 1.0))
+			_add_shell_v2_structure_shell_production_box("%s_v0229_barracks_gate_header" % id, position + Vector3(0.0, 0.41, scale.z * 0.56), Vector3(scale.x * 0.34, 0.060, 0.10), timber_light)
+			_add_shell_v2_structure_shell_production_box("%s_v0229_barracks_drill_step" % id, position + Vector3(0.0, -0.052, scale.z * 0.70), Vector3(scale.x * 0.48, 0.050, 0.14), dressed_stone.darkened(0.04))
+			_add_shell_v2_structure_shell_production_box("%s_v0229_barracks_armory_annex" % id, position + Vector3(scale.x * 0.46, 0.24, -scale.z * 0.24), Vector3(scale.x * 0.26, 0.34, scale.z * 0.34), dressed_stone.darkened(0.12))
+			_add_shell_v2_structure_shell_production_box("%s_v0229_barracks_armory_roof" % id, position + Vector3(scale.x * 0.46, 0.47, -scale.z * 0.24), Vector3(scale.x * 0.31, 0.095, scale.z * 0.40), slate)
+			_add_shell_v2_structure_shell_production_box("%s_v0229_barracks_weapon_rack" % id, position + Vector3(-scale.x * 0.42, 0.24, scale.z * 0.50), Vector3(0.08, 0.34, scale.z * 0.30), timber)
+			_add_shell_v2_structure_shell_production_box("%s_v0229_barracks_rack_iron" % id, position + Vector3(-scale.x * 0.42, 0.30, scale.z * 0.54), Vector3(0.11, 0.045, scale.z * 0.24), iron)
+			if state != "complete":
+				_add_shell_v2_structure_shell_production_box("%s_v0229_barracks_repair_trestle" % id, position + Vector3(scale.x * 0.12, 0.32, -scale.z * 0.50), Vector3(scale.x * 0.44, 0.050, 0.06), timber_light)
+		"west_stone_cut":
+			_add_shell_v2_structure_shell_production_box("%s_v0229_mine_retaining_foundation" % id, position + Vector3(0.0, -0.035, 0.02), Vector3(scale.x * 1.10, 0.12, scale.z * 0.92), stone_shadow)
+			_add_shell_v2_structure_shell_production_box("%s_v0229_mine_mouth_deep" % id, position + Vector3(-scale.x * 0.36, 0.27, scale.z * 0.43), Vector3(scale.x * 0.38, 0.45, 0.16), Color(0.018, 0.022, 0.020, 1.0))
+			_add_shell_v2_structure_shell_production_box("%s_v0229_mine_mouth_left_pier" % id, position + Vector3(-scale.x * 0.58, 0.28, scale.z * 0.43), Vector3(0.12, 0.48, 0.20), dressed_stone.darkened(0.10))
+			_add_shell_v2_structure_shell_production_box("%s_v0229_mine_mouth_right_pier" % id, position + Vector3(-scale.x * 0.14, 0.28, scale.z * 0.43), Vector3(0.12, 0.48, 0.20), dressed_stone.darkened(0.04))
+			_add_shell_v2_structure_shell_production_box("%s_v0229_mine_mouth_lintel" % id, position + Vector3(-scale.x * 0.36, 0.53, scale.z * 0.43), Vector3(scale.x * 0.58, 0.10, 0.22), timber_light)
+			_add_shell_v2_structure_shell_production_box("%s_v0229_mine_workshop_mass" % id, position + Vector3(scale.x * 0.30, 0.28, -scale.z * 0.18), Vector3(scale.x * 0.52, 0.42, scale.z * 0.46), dressed_stone.darkened(0.12))
+			_add_shell_v2_structure_shell_production_box("%s_v0229_mine_workshop_roof" % id, position + Vector3(scale.x * 0.30, 0.55, -scale.z * 0.18), Vector3(scale.x * 0.62, 0.12, scale.z * 0.56), slate)
+			_add_shell_v2_structure_shell_production_box("%s_v0229_mine_gantry_left" % id, position + Vector3(scale.x * 0.06, 0.72, scale.z * 0.04), Vector3(0.065, 0.80, 0.065), timber)
+			_add_shell_v2_structure_shell_production_box("%s_v0229_mine_gantry_right" % id, position + Vector3(scale.x * 0.52, 0.72, scale.z * 0.04), Vector3(0.065, 0.80, 0.065), timber)
+			_add_shell_v2_structure_shell_production_box("%s_v0229_mine_gantry_beam" % id, position + Vector3(scale.x * 0.29, 1.12, scale.z * 0.04), Vector3(scale.x * 0.62, 0.075, 0.075), timber_light)
+			_add_shell_v2_structure_shell_production_box("%s_v0229_mine_winch" % id, position + Vector3(scale.x * 0.29, 0.91, scale.z * 0.04), Vector3(0.18, 0.16, 0.18), iron)
+			_add_shell_v2_structure_shell_production_box("%s_v0229_mine_lume_plinth" % id, position + Vector3(scale.x * 0.58, 0.18, scale.z * 0.48), Vector3(0.32, 0.22, 0.32), dressed_stone)
+			_add_shell_v2_structure_shell_production_box("%s_v0229_mine_lume_core" % id, position + Vector3(scale.x * 0.58, 0.48, scale.z * 0.48), Vector3(0.14, 0.46, 0.14), lume, false, true)
+			_add_shell_v2_structure_shell_production_box("%s_v0229_mine_lume_cap" % id, position + Vector3(scale.x * 0.58, 0.74, scale.z * 0.48), Vector3(0.23, 0.08, 0.23), iron)
 
 func _add_salto_battlefield_visual_rescue_structure_details(id: String, fixture: String, position: Vector3, scale: Vector3, state: String) -> void:
 	var slate := Color(0.20, 0.19, 0.15, 1.0)
@@ -8945,6 +9038,10 @@ func _create_shell_v2_mesh_compositor_terrain() -> bool:
 		timber = Color(0.31, 0.20, 0.105, 1.0)
 		terrain_lift = Color(0.43, 0.40, 0.25, 1.0)
 		terrain_mottle = Color(0.29, 0.31, 0.19, 1.0)
+	if salto_structure_landmark_fidelity_enabled:
+		ground_color = Color(0.36, 0.37, 0.23, 1.0)
+		ground_edge = Color(0.15, 0.18, 0.10, 1.0)
+		north_ridge = Color(0.24, 0.27, 0.15, 1.0)
 	var v0217_road_active := _road_riverbank_water_material_region_is_active("road")
 	var v0217_bank_active := _road_riverbank_water_material_region_is_active("riverbank")
 	var v0217_water_active := _road_riverbank_water_material_region_is_active("water")
@@ -8986,7 +9083,8 @@ func _create_shell_v2_mesh_compositor_terrain() -> bool:
 		]
 	if salto_production_battlefield_backplate_enabled:
 		_add_shell_v2_mesh_polygon("v0228_warm_earth_foundation", base_points, 0.116, Color(0.285, 0.265, 0.175, 1.0), "ground")
-	_add_shell_v2_mesh_polygon("v0196_mesh_contiguous_foothold_terrain_base", base_points, 0.118, ground_color, "ground", "ground", false, ground_material_requested_uv_scale)
+	var selected_ground_material_kind := "" if salto_structure_landmark_fidelity_enabled else "ground"
+	_add_shell_v2_mesh_polygon("v0196_mesh_contiguous_foothold_terrain_base", base_points, 0.118, ground_color, "ground", selected_ground_material_kind, false, ground_material_requested_uv_scale)
 	_add_shell_v2_mesh_compositor_box("v0196_mesh_north_foothold_ridge_face", Vector3(-0.92, 0.166, -3.08), Vector3(10.42, 0.080, 0.20), north_ridge, "terrainEdges", true, -1.0)
 	_add_shell_v2_mesh_compositor_box("v0196_mesh_south_foothold_ridge_face", Vector3(-0.72, 0.164, 3.72), Vector3(9.88, 0.076, 0.20), north_ridge.darkened(0.06), "terrainEdges", true, 1.5)
 	_add_shell_v2_mesh_compositor_box("v0196_mesh_west_terrace_cut_face", Vector3(-5.96, 0.168, 0.28), Vector3(0.22, 0.090, 5.90), ground_edge, "terrainEdges", true, -1.5)
@@ -11403,6 +11501,9 @@ func _add_shell_v2_grounding_structure_contact(structure: Dictionary) -> void:
 	_add_shell_v2_grounding_prop_box("%s_v0205_structure_contact_back_trim" % id, position + Vector3(0.0, -0.002, -scale.z * 0.46), Vector3(scale.x * 0.74, 0.012, 0.044), trim_color.darkened(0.03), "structures", true)
 
 func _add_shell_v2_grounding_props_layer() -> void:
+	if salto_structure_landmark_fidelity_enabled:
+		_add_salto_structure_landmark_local_props_layer()
+		return
 	var stone := Color(0.38, 0.38, 0.32, 0.68)
 	var stone_dark := Color(0.25, 0.27, 0.24, 0.68)
 	var timber := Color(0.30, 0.21, 0.12, 0.64)
@@ -11508,6 +11609,28 @@ func _add_shell_v2_grounding_props_layer() -> void:
 		_add_shell_v2_grounding_structure_contact(structure)
 	if salto_environment_dressing_enabled:
 		_add_salto_environment_dressing_layer()
+
+func _add_salto_structure_landmark_local_props_layer() -> void:
+	var stone := Color(0.34, 0.34, 0.29, 1.0)
+	var dark_stone := Color(0.20, 0.22, 0.19, 1.0)
+	var timber := Color(0.27, 0.17, 0.09, 1.0)
+	for prop in [
+		{"name":"v0229_command_roadstone","pos":Vector3(-4.76,0.350,1.14),"scale":Vector3(0.18,0.08,0.12),"color":stone},
+		{"name":"v0229_barracks_roadstone","pos":Vector3(-4.48,0.350,-1.70),"scale":Vector3(0.14,0.07,0.16),"color":dark_stone},
+		{"name":"v0229_mine_tailings_west","pos":Vector3(-3.34,0.350,-0.16),"scale":Vector3(0.22,0.09,0.16),"color":stone},
+		{"name":"v0229_mine_tailings_east","pos":Vector3(-2.20,0.350,-0.18),"scale":Vector3(0.18,0.07,0.13),"color":dark_stone},
+		{"name":"v0229_bridge_bank_stone_west","pos":Vector3(-0.18,0.370,0.32),"scale":Vector3(0.16,0.08,0.13),"color":dark_stone},
+		{"name":"v0229_bridge_bank_stone_east","pos":Vector3(1.56,0.370,1.42),"scale":Vector3(0.18,0.08,0.12),"color":stone}
+	]:
+		_add_shell_v2_grounding_prop_box(str(prop["name"]), prop["pos"], prop["scale"], prop["color"], "props", false)
+	for post in [
+		{"name":"v0229_command_yard_post","pos":Vector3(-5.58,0.48,2.30)},
+		{"name":"v0229_barracks_yard_post","pos":Vector3(-4.28,0.48,-2.08)},
+		{"name":"v0229_mine_cart_stop","pos":Vector3(-2.08,0.44,0.62)}
+	]:
+		_add_shell_v2_grounding_prop_box(str(post["name"]), post["pos"], Vector3(0.055,0.36,0.055), timber, "props", false)
+	for structure in runtime.structures:
+		_add_shell_v2_grounding_structure_contact(structure)
 
 func _add_unit(name: String, position: Vector3, color: Color, radius: float, emissive: bool = false) -> void:
 	var mesh_instance := MeshInstance3D.new()

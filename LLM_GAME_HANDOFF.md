@@ -1,16 +1,16 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-06-18 v0.228 production battlefield backplate rescue
+Last updated: 2026-06-18 v0.229 structure landmark fidelity and haze cleanup rescue
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
 ## Current Continuation Note
 
-The latest work is v0.228 production battlefield backplate rescue. The decision is `PASS_V0228_PRODUCTION_BATTLEFIELD_BACKPLATE_RESCUE_WITH_LIMITATIONS`. The isolated path replaces v0.227's blunt route and river strips with tapered roads, segmented water/banks, integrated bridge landings and a warmer irregular terrain foundation. Technical, fallback, benchmark and repository gates pass.
+The latest work is v0.229 structure landmark fidelity and haze cleanup rescue. The decision is `PASS_V0229_STRUCTURE_LANDMARK_FIDELITY_RESCUE_WITH_PROCEDURAL_ART_LIMIT`. The isolated path removes broad translucent review-value overlays and the muddy ground texture blanket, while rebuilding the keep, barracks and central mine/Lume site as opaque procedural landmarks. Technical, fallback, benchmark and repository gates pass.
 
-One generated preview was attempted but no filesystem artifact was exposed, so no generated source or derivative was retained. The remaining visual ceiling is structure silhouette and landmark fidelity.
+No new source asset, derivative or runtime-art slot was created. The v0.202 structure material remains comparator/fallback evidence but is not projected across the v0.229 landmarks because its box-wide projection read as texture cards.
 
-Exactly one next milestone is recommended if authorized: v0.229 Salto structure silhouette and landmark fidelity pass. Do not start it without a new explicit prompt.
+Exactly one next milestone is recommended if authorized: v0.230 retained authored structure-art fidelity pass for the existing keep, barracks and mine/Lume silhouettes. Do not start it without a new explicit prompt.
 
 ## Project Identity
 
