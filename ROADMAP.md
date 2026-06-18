@@ -11,9 +11,16 @@ Every phase should protect these long-term pillars:
 
 ## Current Recommended Next Phase
 
-The current checkpoint is **v0.225 Full QA, benchmark, retention and safe cleanup** on 2026-06-17. The selected reboot passed the complete local QA stack, and safe cleanup finished with zero unknown files.
+The current checkpoint is **v0.226 Presentation reboot direction freeze** on 2026-06-17. Decision: `PASS_V0226_PRESENTATION_REBOOT_DIRECTION_FREEZE`.
 
-The queued next milestone is **v0.226 Presentation reboot freeze decision and next-phase packet**. Continue only from a clean, synced, pushed and CI-green v0.225 state.
+Exactly one next milestone is recommended: **v0.227 Structure-shell second pass**. Do not start it without a new explicit prompt.
+
+New v0.226 docs:
+
+- `docs/V0226_PRESENTATION_REBOOT_FREEZE_DECISION.md`
+- `docs/V0226_NEXT_PHASE_SCORECARD.md`
+- `docs/V0226_IMPLEMENTATION_REPORT.md`
+- `docs/art-prompts/V0227_01_RECOMMENDED_NEXT_PHASE.md`
 
 New v0.225 docs:
 

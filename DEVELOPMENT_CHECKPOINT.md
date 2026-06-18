@@ -1,6 +1,14 @@
 # Development Checkpoint
 
-Updated: 2026-06-17 v0.225 full QA, benchmark, retention and safe cleanup
+Updated: 2026-06-17 v0.226 presentation reboot direction freeze
+
+## v0.226 Presentation Reboot Direction Freeze - 2026-06-17
+
+- Decision: `PASS_V0226_PRESENTATION_REBOOT_DIRECTION_FREEZE`.
+- The reboot is materially better than v0.214 and safe to continue as the presentation foundation.
+- This is not a production-art completion claim; structures, landmarks, animation and VFX remain below the supplied reference.
+- Exactly one next milestone is selected: v0.227 structure-shell second pass.
+- v0.227 is not started.
 
 ## v0.225 Full QA, Benchmark, Retention and Safe Cleanup - 2026-06-17
 

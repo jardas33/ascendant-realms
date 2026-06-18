@@ -1,5 +1,12 @@
 # Changelog
 
+# v0.226 Presentation Reboot Direction Freeze - 2026-06-17
+
+- Recorded `PASS_V0226_PRESENTATION_REBOOT_DIRECTION_FREEZE`.
+- Froze the reboot as the continuation foundation without claiming production-art completion.
+- Selected exactly one next milestone: v0.227 structure-shell second pass.
+- Started no v0.227 implementation.
+
 # v0.225 Full QA, Benchmark, Retention and Safe Cleanup - 2026-06-17
 
 - Re-ran the full reboot progression, comparator, fallback and resolution stack.

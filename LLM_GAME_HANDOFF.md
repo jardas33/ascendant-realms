@@ -1,14 +1,14 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-06-17 v0.225 full QA, benchmark, retention and safe cleanup
+Last updated: 2026-06-17 v0.226 presentation reboot direction freeze
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
 ## Current Continuation Note
 
-The latest work is v0.225 full QA, benchmark, retention and safe cleanup. The v0.224 selected reboot passed packaged progression, fallback, resolution, tests, Godot scaffold, build, content, art-intake and runtime-slot gates. Safe cleanup deleted 22 generated sidecars and ended with zero safe candidates and zero unknown files. The capture wrapper was hardened against a partial-manifest timing race.
+The latest work is v0.226 presentation reboot direction freeze. Decision: `PASS_V0226_PRESENTATION_REBOOT_DIRECTION_FREEZE`. The reboot is approved as the direction foundation, not as finished production art. Its largest remaining weakness is bespoke structure geometry and faction silhouette.
 
-The queued next milestone is v0.226 presentation-reboot freeze decision and next-phase packet. Continue only after v0.225 is pushed, CI-green, clean and synced.
+Exactly one next milestone is recommended: v0.227 structure-shell second pass. Do not start it without a new explicit prompt.
 
 ## Project Identity
 
