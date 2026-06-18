@@ -1,5 +1,13 @@
 # Changelog
 
+# v0.228 Salto Production Battlefield Backplate Rescue - 2026-06-18
+
+- Added an isolated authored terrain-topology path with a warm irregular foundation, tapered worn roads, shaped river/banks and integrated bridge landings.
+- Removed duplicate legacy rectangular road/river surfaces only from the v0.228 path.
+- Added the required ten captures, before/after sheet, fallback validation and benchmark tooling.
+- Recorded `PASS_V0228_PRODUCTION_BATTLEFIELD_BACKPLATE_RESCUE_WITH_LIMITATIONS`: visibly better than v0.227, while existing structure fidelity remains below final production-art quality.
+- Attempted one image-generation preview, retained no source artifact, added zero runtime-art slots and preserved all gameplay/default-launcher boundaries.
+
 # v0.227 Salto Battlefield Visual Rescue - 2026-06-17
 
 - Added an isolated visual-only battlefield rescue path with opaque terrain hierarchy, cooler water, stronger bridge grounding and restrained structure-read accents.

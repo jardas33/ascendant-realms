@@ -1,14 +1,16 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-06-17 v0.227 battlefield visual rescue pass
+Last updated: 2026-06-18 v0.228 production battlefield backplate rescue
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
 ## Current Continuation Note
 
-The latest work is v0.227 battlefield visual rescue. Technical and safety gates pass, but the candid artistic decision is `INSUFFICIENT_V0227_BATTLEFIELD_VISUAL_RESCUE`. The isolated pass removes the stacked translucent look, clarifies water and bridge grounding, and improves road flow, but the replacement road/river geometry remains primitive, the olive cast remains too strong, and several structures still read as placeholders.
+The latest work is v0.228 production battlefield backplate rescue. The decision is `PASS_V0228_PRODUCTION_BATTLEFIELD_BACKPLATE_RESCUE_WITH_LIMITATIONS`. The isolated path replaces v0.227's blunt route and river strips with tapered roads, segmented water/banks, integrated bridge landings and a warmer irregular terrain foundation. Technical, fallback, benchmark and repository gates pass.
 
-Exactly one next milestone is recommended if authorized: v0.228 authored terrain-topology pass focused on shaped road, river and bank geometry. Do not start it without a new explicit prompt.
+One generated preview was attempted but no filesystem artifact was exposed, so no generated source or derivative was retained. The remaining visual ceiling is structure silhouette and landmark fidelity.
+
+Exactly one next milestone is recommended if authorized: v0.229 Salto structure silhouette and landmark fidelity pass. Do not start it without a new explicit prompt.
 
 ## Project Identity
 

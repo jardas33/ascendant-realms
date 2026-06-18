@@ -11,9 +11,16 @@ Every phase should protect these long-term pillars:
 
 ## Current Recommended Next Phase
 
-The current checkpoint is **v0.227 Salto battlefield visual rescue** on 2026-06-17. Technical gates pass, but the artistic decision is `INSUFFICIENT_V0227_BATTLEFIELD_VISUAL_RESCUE`.
+The current checkpoint is **v0.228 Salto production battlefield backplate rescue** on 2026-06-18. The decision is `PASS_V0228_PRODUCTION_BATTLEFIELD_BACKPLATE_RESCUE_WITH_LIMITATIONS`.
 
-Exactly one next milestone is recommended if authorized: **v0.228 Authored terrain-topology pass**, replacing rectangular road, river and bank strips with shaped mesh/ribbon geometry before further HUD or structure-detail work. Do not start it without a new explicit prompt.
+The terrain-topology foundation is visibly better than v0.227: warm irregular ground, tapered worn routes, shaped riverbanks and grounded bridge approaches replace the blunt strip geometry. Existing structure silhouettes remain the main visual-quality ceiling.
+
+Exactly one next milestone is recommended if authorized: **v0.229 Salto structure silhouette and landmark fidelity pass**. Do not start it without a new explicit prompt.
+
+New v0.228 docs:
+
+- `docs/V0228_PRODUCTION_BATTLEFIELD_BACKPLATE_REPORT.md`
+- `docs/V0228_IMPLEMENTATION_REPORT.md`
 
 New v0.227 docs:
 

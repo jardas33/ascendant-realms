@@ -136,6 +136,7 @@ const SCRIPT_ARG_PREFIXES := [
 	"--salto-hud-visual-language-disabled",
 	"--salto-integrated-reference-gap",
 	"--salto-battlefield-visual-rescue",
+	"--salto-production-battlefield-backplate",
 	"--salto-bridge-shell-reboot",
 	"--salto-bridge-shell-legacy-comparator",
 	"--salto-structure-shell-production",
@@ -1101,6 +1102,8 @@ func _configure_worker_art_for_active_scene() -> void:
 		active_scene.configure_salto_integrated_reference_gap(_script_args().has("--salto-integrated-reference-gap"))
 	if active_scene.has_method("configure_salto_battlefield_visual_rescue"):
 		active_scene.configure_salto_battlefield_visual_rescue(_script_args().has("--salto-battlefield-visual-rescue"))
+	if active_scene.has_method("configure_salto_production_battlefield_backplate"):
+		active_scene.configure_salto_production_battlefield_backplate(_script_args().has("--salto-production-battlefield-backplate"))
 	if active_scene.has_method("configure_salto_presentation_reboot"):
 		active_scene.configure_salto_presentation_reboot(_salto_presentation_reboot_enabled())
 
@@ -8280,6 +8283,7 @@ func _apply_player_slice_action(action: String) -> Dictionary:
 	status["saltoHudVisualLanguageReport"] = _salto_hud_visual_language_report()
 	status["saltoIntegratedReferenceGapEnabled"] = _script_args().has("--salto-integrated-reference-gap")
 	status["saltoBattlefieldVisualRescueEnabled"] = _script_args().has("--salto-battlefield-visual-rescue")
+	status["saltoProductionBattlefieldBackplateEnabled"] = _script_args().has("--salto-production-battlefield-backplate")
 	status["saltoAsterPortraitStatus"] = _salto_aster_portrait_status()
 	status["saltoAsterPortraitSourceLoaded"] = bool(status["saltoAsterPortraitStatus"].get("sourceLoaded", false))
 	status["saltoAsterPortraitFallbackActive"] = bool(status["saltoAsterPortraitStatus"].get("fallbackActive", true))
@@ -8289,6 +8293,8 @@ func _apply_player_slice_action(action: String) -> Dictionary:
 
 func _player_capture_checkpoint() -> String:
 	var normalized_root := _artifact_root_from_args().replace("\\", "/")
+	if normalized_root.contains("/v0228"):
+		return "v0.228"
 	if normalized_root.contains("/v0227"):
 		return "v0.227"
 	if normalized_root.contains("/v0224"):
@@ -8392,9 +8398,22 @@ func _player_capture_checkpoint() -> String:
 	return "v0.124"
 
 func _is_bounded_microloop_checkpoint() -> bool:
-	return ["v0.129", "v0.130", "v0.160", "v0.162", "v0.164", "v0.166", "v0.168", "v0.169", "v0.170", "v0.173", "v0.174", "v0.177", "v0.178", "v0.179", "v0.181", "v0.184", "v0.185", "v0.186", "v0.187", "v0.193", "v0.194", "v0.195", "v0.196", "v0.197", "v0.198", "v0.199", "v0.200", "v0.203", "v0.204", "v0.205", "v0.206", "v0.209", "v0.210", "v0.211", "v0.212", "v0.213", "v0.215", "v0.216", "v0.217", "v0.218", "v0.219", "v0.220", "v0.221", "v0.222", "v0.223", "v0.224", "v0.227"].has(_player_capture_checkpoint())
+	return ["v0.129", "v0.130", "v0.160", "v0.162", "v0.164", "v0.166", "v0.168", "v0.169", "v0.170", "v0.173", "v0.174", "v0.177", "v0.178", "v0.179", "v0.181", "v0.184", "v0.185", "v0.186", "v0.187", "v0.193", "v0.194", "v0.195", "v0.196", "v0.197", "v0.198", "v0.199", "v0.200", "v0.203", "v0.204", "v0.205", "v0.206", "v0.209", "v0.210", "v0.211", "v0.212", "v0.213", "v0.215", "v0.216", "v0.217", "v0.218", "v0.219", "v0.220", "v0.221", "v0.222", "v0.223", "v0.224", "v0.227", "v0.228"].has(_player_capture_checkpoint())
 
 func _player_capture_steps() -> Array[Dictionary]:
+	if _player_capture_checkpoint() == "v0.228":
+		return [
+			{"id": "initial_overview", "label": "v0.228 production battlefield overview", "action": "battle_default"},
+			{"id": "terrain_focus", "label": "v0.228 authored terrain focus", "action": "friendly_boundary"},
+			{"id": "road_focus", "label": "v0.228 worn road focus", "action": "road_intersections"},
+			{"id": "river_bridge_focus", "label": "v0.228 river and grounded bridge", "action": "v0195_bridge_close"},
+			{"id": "structure_context", "label": "v0.228 structures in authored terrain", "action": "command_hall"},
+			{"id": "hostile_pressure", "label": "v0.228 hostile pressure readability", "action": "ashen_pressure_active"},
+			{"id": "train_drawer", "label": "v0.228 compact train drawer", "action": "production_train"},
+			{"id": "resolution_1366x768", "label": "v0.228 1366x768", "action": "v0212_resolution_1366", "viewport": {"width": 1366, "height": 768}},
+			{"id": "resolution_1600x900", "label": "v0.228 1600x900", "action": "v0212_resolution_1600", "viewport": {"width": 1600, "height": 900}},
+			{"id": "resolution_1920x1080", "label": "v0.228 1920x1080", "action": "v0212_resolution_1920", "viewport": {"width": 1920, "height": 1080}}
+		]
 	if _player_capture_checkpoint() == "v0.227":
 		return [
 			{"id": "initial_overview", "label": "v0.227 rescued battlefield overview", "action": "battle_default"},

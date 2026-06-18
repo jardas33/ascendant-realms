@@ -385,6 +385,7 @@ var salto_environment_dressing_enabled := false
 var salto_composition_lighting_selection_enabled := false
 var salto_integrated_reference_gap_enabled := false
 var salto_battlefield_visual_rescue_enabled := false
+var salto_production_battlefield_backplate_enabled := false
 var presentation_shell_v2_initialized := false
 var presentation_shell_v2_fallback_active := false
 var presentation_shell_v2_fallback_reason := ""
@@ -1109,6 +1110,17 @@ func configure_salto_battlefield_visual_rescue(enabled: bool) -> Dictionary:
 		_apply_light_preset()
 		apply_salto_composition_lighting_selection_framing()
 	return _salto_battlefield_visual_rescue_status()
+
+func configure_salto_production_battlefield_backplate(enabled: bool) -> Dictionary:
+	salto_production_battlefield_backplate_enabled = enabled
+	if enabled:
+		salto_battlefield_visual_rescue_enabled = false
+		salto_integrated_reference_gap_enabled = true
+		salto_composition_lighting_selection_enabled = true
+		_refresh_visual_foundation()
+		_apply_light_preset()
+		apply_salto_composition_lighting_selection_framing()
+	return _salto_production_battlefield_backplate_status()
 
 func configure_salto_presentation_reboot(enabled: bool) -> Dictionary:
 	salto_presentation_reboot_enabled = enabled
@@ -2209,6 +2221,22 @@ func _salto_battlefield_visual_rescue_status() -> Dictionary:
 		"structurePresentationImproved": salto_battlefield_visual_rescue_enabled,
 		"newArtSlotsAdded": 0,
 		"generatedImageCount": 0,
+		"gameplayChanged": false,
+		"defaultLauncherChanged": false
+	}
+
+func _salto_production_battlefield_backplate_status() -> Dictionary:
+	return {
+		"schemaVersion": 1,
+		"checkpoint": "v0.228",
+		"enabled": salto_production_battlefield_backplate_enabled,
+		"visualOnly": true,
+		"authoredIrregularTerrain": salto_production_battlefield_backplate_enabled,
+		"organicRoadSilhouette": salto_production_battlefield_backplate_enabled,
+		"shapedRiverBanks": salto_production_battlefield_backplate_enabled,
+		"bridgeApproachIntegrated": salto_production_battlefield_backplate_enabled,
+		"generatedProjectSourceImageCount": 0,
+		"newRuntimeArtSlotsAdded": 0,
 		"gameplayChanged": false,
 		"defaultLauncherChanged": false
 	}
@@ -7483,6 +7511,8 @@ func get_spike_status() -> Dictionary:
 	status["saltoIntegratedReferenceGap"] = _salto_integrated_reference_gap_status()
 	status["saltoBattlefieldVisualRescueEnabled"] = salto_battlefield_visual_rescue_enabled
 	status["saltoBattlefieldVisualRescue"] = _salto_battlefield_visual_rescue_status()
+	status["saltoProductionBattlefieldBackplateEnabled"] = salto_production_battlefield_backplate_enabled
+	status["saltoProductionBattlefieldBackplate"] = _salto_production_battlefield_backplate_status()
 	status["saltoPresentationRebootEnabled"] = salto_presentation_reboot_enabled
 	status["saltoPresentationRebootScene"] = {
 		"checkpoint": "v0.215",
@@ -7991,6 +8021,10 @@ func _apply_light_preset() -> void:
 		light.rotation_degrees = Vector3(-61, -38, 0)
 		light.light_energy = 1.30
 		light.light_color = Color(1.00, 0.93, 0.80)
+	if salto_production_battlefield_backplate_enabled:
+		light.rotation_degrees = Vector3(-57, -34, 0)
+		light.light_energy = 1.18
+		light.light_color = Color(1.00, 0.965, 0.88)
 
 func _create_terrain() -> void:
 	terrain_root = Node3D.new()
@@ -8522,6 +8556,58 @@ func _add_salto_battlefield_visual_rescue_terrain_layer() -> void:
 	_add_shell_v2_mesh_compositor_box("v0227_road_west_embedded_edge", Vector3(-2.94, 0.366, 0.46), Vector3(5.24, 0.012, 0.075), road_edge, "roads", false, -1.5)
 	_add_shell_v2_mesh_compositor_box("v0227_road_east_embedded_edge", Vector3(2.36, 0.366, 1.02), Vector3(1.70, 0.012, 0.075), road_edge, "roads", false, 11.0)
 
+func _add_v0228_tapered_segment(name: String, start: Vector2, finish: Vector2, start_width: float, end_width: float, y: float, color: Color, category: String, material_kind: String = "", transparent: bool = false) -> void:
+	var delta := finish - start
+	if delta.length() <= 0.01:
+		return
+	var normal := Vector2(-delta.y, delta.x).normalized()
+	_add_shell_v2_mesh_polygon(name, [
+		start + normal * start_width * 0.5,
+		finish + normal * end_width * 0.5,
+		finish - normal * end_width * 0.5,
+		start - normal * start_width * 0.5
+	], y, color, category, material_kind, transparent, 0.58)
+
+func _add_salto_production_battlefield_backplate_layer() -> void:
+	var earth := Color(0.34, 0.32, 0.20, 1.0)
+	var grass := Color(0.30, 0.37, 0.22, 1.0)
+	var dry_grass := Color(0.43, 0.42, 0.25, 1.0)
+	var stone := Color(0.31, 0.32, 0.27, 1.0)
+	var road_edge := Color(0.23, 0.17, 0.105, 1.0)
+	var road_core := Color(0.50, 0.39, 0.235, 1.0)
+	var road_wear := Color(0.62, 0.52, 0.33, 0.72)
+	var bank_dry := Color(0.32, 0.30, 0.17, 1.0)
+	var bank_wet := Color(0.105, 0.14, 0.115, 1.0)
+	var water_deep := Color(0.035, 0.16, 0.205, 1.0)
+	var water_mid := Color(0.060, 0.245, 0.285, 1.0)
+	var water_glint := Color(0.20, 0.48, 0.50, 0.45)
+	for segment in [
+		{"n":"west_a","a":Vector2(-5.74,0.82),"b":Vector2(-4.10,0.72),"wa":0.78,"wb":0.70},
+		{"n":"west_b","a":Vector2(-4.12,0.72),"b":Vector2(-2.56,0.92),"wa":0.70,"wb":0.66},
+		{"n":"west_c","a":Vector2(-2.58,0.92),"b":Vector2(-1.34,0.72),"wa":0.66,"wb":0.60},
+		{"n":"bridge_feed","a":Vector2(-1.36,0.72),"b":Vector2(-0.42,0.88),"wa":0.60,"wb":0.56},
+		{"n":"east","a":Vector2(1.74,0.88),"b":Vector2(3.34,0.48),"wa":0.56,"wb":0.66},
+		{"n":"barracks","a":Vector2(-4.64,0.72),"b":Vector2(-4.92,-2.46),"wa":0.44,"wb":0.56}
+	]:
+		_add_v0228_tapered_segment("v0228_road_edge_%s" % segment["n"], segment["a"], segment["b"], segment["wa"] + 0.18, segment["wb"] + 0.18, 0.330, road_edge, "roads")
+		_add_v0228_tapered_segment("v0228_road_bed_%s" % segment["n"], segment["a"], segment["b"], segment["wa"], segment["wb"], 0.336, road_core.darkened(0.08), "roads")
+		_add_v0228_tapered_segment("v0228_road_texture_%s" % segment["n"], segment["a"], segment["b"], segment["wa"] * 0.90, segment["wb"] * 0.90, 0.340, road_core, "roads", "v0217_road")
+		_add_v0228_tapered_segment("v0228_road_wear_%s" % segment["n"], segment["a"] + Vector2(0.0,0.05), segment["b"] + Vector2(0.0,0.02), segment["wa"] * 0.18, segment["wb"] * 0.15, 0.343, road_wear, "roads", "", true)
+	var river_nodes := [Vector2(0.76,-3.18),Vector2(0.92,-2.00),Vector2(0.80,-0.62),Vector2(0.94,0.76),Vector2(0.82,2.14),Vector2(0.96,3.76)]
+	for index in range(river_nodes.size()-1):
+		_add_v0228_tapered_segment("v0228_west_bank_bed_%02d" % index, river_nodes[index] + Vector2(-0.74,0.0), river_nodes[index+1] + Vector2(-0.70,0.0), 0.52, 0.46, 0.326, bank_dry, "banks")
+		_add_v0228_tapered_segment("v0228_west_bank_texture_%02d" % index, river_nodes[index] + Vector2(-0.74,0.0), river_nodes[index+1] + Vector2(-0.70,0.0), 0.38, 0.34, 0.331, bank_dry, "banks", "v0217_riverbank")
+		_add_v0228_tapered_segment("v0228_river_bed_%02d" % index, river_nodes[index], river_nodes[index+1], 1.36, 1.18, 0.329, water_deep, "river")
+		_add_v0228_tapered_segment("v0228_river_texture_%02d" % index, river_nodes[index], river_nodes[index+1], 1.20, 1.04, 0.333, water_deep, "river", "v0217_water")
+		_add_v0228_tapered_segment("v0228_river_mid_%02d" % index, river_nodes[index], river_nodes[index+1], 0.48, 0.42, 0.337, water_mid, "river", "", true)
+		_add_v0228_tapered_segment("v0228_east_bank_bed_%02d" % index, river_nodes[index] + Vector2(0.72,0.0), river_nodes[index+1] + Vector2(0.68,0.0), 0.48, 0.52, 0.326, bank_dry.lightened(0.04), "banks")
+		_add_v0228_tapered_segment("v0228_east_bank_texture_%02d" % index, river_nodes[index] + Vector2(0.72,0.0), river_nodes[index+1] + Vector2(0.68,0.0), 0.34, 0.38, 0.331, bank_dry.lightened(0.04), "banks", "v0217_riverbank")
+	_add_v0228_tapered_segment("v0228_west_wet_edge", Vector2(0.20,-2.90), Vector2(0.42,3.54), 0.16, 0.13, 0.338, bank_wet, "banks")
+	_add_v0228_tapered_segment("v0228_east_wet_edge", Vector2(1.36,-2.92), Vector2(1.46,3.48), 0.14, 0.16, 0.338, bank_wet, "banks")
+	_add_v0228_tapered_segment("v0228_water_glint", Vector2(0.82,-2.56), Vector2(0.94,3.10), 0.045, 0.035, 0.341, water_glint, "river")
+	_add_shell_v2_mesh_polygon("v0228_west_bridge_landing", [Vector2(-0.82,0.42),Vector2(-0.28,0.36),Vector2(-0.12,1.34),Vector2(-0.74,1.38)], 0.347, Color(0.48,0.43,0.31,1.0), "bridge")
+	_add_shell_v2_mesh_polygon("v0228_east_bridge_landing", [Vector2(1.54,0.36),Vector2(2.16,0.30),Vector2(2.34,1.20),Vector2(1.58,1.38)], 0.347, Color(0.50,0.45,0.33,1.0), "bridge")
+
 func _add_salto_structure_shell_production_mass(id: String, fixture: String, position: Vector3, scale: Vector3, color: Color, structure: Dictionary) -> void:
 	var team := str(structure.get("team", "neutral"))
 	var state := str(structure.get("constructionState", "complete"))
@@ -8898,25 +8984,28 @@ func _create_shell_v2_mesh_compositor_terrain() -> bool:
 			Vector2(-5.94, 2.86),
 			Vector2(-6.34, 0.02)
 		]
+	if salto_production_battlefield_backplate_enabled:
+		_add_shell_v2_mesh_polygon("v0228_warm_earth_foundation", base_points, 0.116, Color(0.285, 0.265, 0.175, 1.0), "ground")
 	_add_shell_v2_mesh_polygon("v0196_mesh_contiguous_foothold_terrain_base", base_points, 0.118, ground_color, "ground", "ground", false, ground_material_requested_uv_scale)
 	_add_shell_v2_mesh_compositor_box("v0196_mesh_north_foothold_ridge_face", Vector3(-0.92, 0.166, -3.08), Vector3(10.42, 0.080, 0.20), north_ridge, "terrainEdges", true, -1.0)
 	_add_shell_v2_mesh_compositor_box("v0196_mesh_south_foothold_ridge_face", Vector3(-0.72, 0.164, 3.72), Vector3(9.88, 0.076, 0.20), north_ridge.darkened(0.06), "terrainEdges", true, 1.5)
 	_add_shell_v2_mesh_compositor_box("v0196_mesh_west_terrace_cut_face", Vector3(-5.96, 0.168, 0.28), Vector3(0.22, 0.090, 5.90), ground_edge, "terrainEdges", true, -1.5)
-	_add_shell_v2_mesh_polygon("v0196_mesh_command_yard_lift", [Vector2(-5.72, -1.04), Vector2(-4.40, -0.92), Vector2(-4.16, 0.54), Vector2(-5.56, 0.82)], 0.168, terrain_lift, "overlays", "", not salto_battlefield_visual_rescue_enabled, 0.48)
-	_add_shell_v2_mesh_polygon("v0196_mesh_mine_yard_lift", [Vector2(-2.34, -0.22), Vector2(-1.28, -0.22), Vector2(-1.14, 0.72), Vector2(-2.42, 0.94)], 0.170, terrain_lift.lightened(0.06), "overlays", "", not salto_battlefield_visual_rescue_enabled, 0.48)
-	_add_shell_v2_mesh_polygon("v0196_mesh_bridge_approach_lift", [Vector2(-0.58, 0.36), Vector2(2.04, 0.34), Vector2(2.08, 1.38), Vector2(-0.66, 1.36)], 0.174, terrain_mottle, "overlays", "", not salto_battlefield_visual_rescue_enabled, 0.44)
-	_add_shell_v2_mesh_ribbon("v0196_mesh_main_road_west_surface", Vector2(-5.62, 0.72), Vector2(-1.44, 0.72), 0.72, 0.286, road_bed, "roads", reboot_road_material_kind, false, reboot_road_uv_scale)
-	_add_shell_v2_mesh_ribbon("v0196_mesh_main_road_bridge_feed_surface", Vector2(-1.44, 0.72), Vector2(-0.32, 0.86), 0.66, 0.288, road_bed.lightened(0.04), "roads", reboot_road_material_kind, false, reboot_road_uv_scale)
-	_add_shell_v2_mesh_ribbon("v0196_mesh_bridge_deck_route_surface", Vector2(-0.32, 0.88), Vector2(1.62, 0.88), 0.62, 0.374, road_bed.lightened(0.06), "roads", reboot_road_material_kind, false, reboot_road_uv_scale)
-	_add_shell_v2_mesh_ribbon("v0196_mesh_main_road_east_surface", Vector2(1.62, 0.88), Vector2(3.18, 0.56), 0.60, 0.288, road_bed.darkened(0.04), "roads", reboot_road_material_kind, false, reboot_road_uv_scale)
-	_add_shell_v2_mesh_ribbon("v0196_mesh_barracks_side_route_surface", Vector2(-4.48, 0.58), Vector2(-4.70, -2.52), 0.44, 0.284, road_bed.darkened(0.08), "roads", reboot_road_material_kind, false, reboot_road_uv_scale)
-	_add_shell_v2_mesh_ribbon("v0196_mesh_mine_spur_surface", Vector2(-2.24, 0.72), Vector2(-1.56, 0.22), 0.40, 0.286, road_bed.lightened(0.02), "roads", reboot_road_material_kind, false, reboot_road_uv_scale)
-	_add_shell_v2_mesh_ribbon("v0196_mesh_stage_spur_surface", Vector2(-5.10, 0.76), Vector2(-5.08, 2.28), 0.38, 0.282, road_bed.darkened(0.06), "roads", reboot_road_material_kind, false, reboot_road_uv_scale)
-	_add_shell_v2_mesh_ribbon("v0196_mesh_main_road_west_north_shoulder", Vector2(-5.60, 0.34), Vector2(-0.34, 0.48), 0.12, 0.276, road_shoulder, "overlays", "", not salto_battlefield_visual_rescue_enabled, 0.52)
-	_add_shell_v2_mesh_ribbon("v0196_mesh_main_road_west_south_shoulder", Vector2(-5.62, 1.10), Vector2(-0.36, 1.22), 0.12, 0.276, road_shoulder.darkened(0.04), "overlays", "", not salto_battlefield_visual_rescue_enabled, 0.52)
-	_add_shell_v2_mesh_ribbon("v0196_mesh_main_road_route_crown_west", Vector2(-5.38, 0.72), Vector2(-1.62, 0.72), 0.12, 0.332, road_crown, "overlays", "", not salto_battlefield_visual_rescue_enabled, 0.52)
-	_add_shell_v2_mesh_ribbon("v0196_mesh_bridge_feed_route_crown", Vector2(-1.42, 0.72), Vector2(-0.28, 0.86), 0.11, 0.336, road_crown.lightened(0.04), "overlays", "", not salto_battlefield_visual_rescue_enabled, 0.52)
-	_add_shell_v2_mesh_ribbon("v0196_mesh_hostile_route_crown", Vector2(1.58, 0.88), Vector2(3.04, 0.58), 0.11, 0.336, road_crown.darkened(0.06), "overlays", "", not salto_battlefield_visual_rescue_enabled, 0.52)
+	if not salto_production_battlefield_backplate_enabled:
+		_add_shell_v2_mesh_polygon("v0196_mesh_command_yard_lift", [Vector2(-5.72, -1.04), Vector2(-4.40, -0.92), Vector2(-4.16, 0.54), Vector2(-5.56, 0.82)], 0.168, terrain_lift, "overlays", "", not salto_battlefield_visual_rescue_enabled, 0.48)
+		_add_shell_v2_mesh_polygon("v0196_mesh_mine_yard_lift", [Vector2(-2.34, -0.22), Vector2(-1.28, -0.22), Vector2(-1.14, 0.72), Vector2(-2.42, 0.94)], 0.170, terrain_lift.lightened(0.06), "overlays", "", not salto_battlefield_visual_rescue_enabled, 0.48)
+		_add_shell_v2_mesh_polygon("v0196_mesh_bridge_approach_lift", [Vector2(-0.58, 0.36), Vector2(2.04, 0.34), Vector2(2.08, 1.38), Vector2(-0.66, 1.36)], 0.174, terrain_mottle, "overlays", "", not salto_battlefield_visual_rescue_enabled, 0.44)
+		_add_shell_v2_mesh_ribbon("v0196_mesh_main_road_west_surface", Vector2(-5.62, 0.72), Vector2(-1.44, 0.72), 0.72, 0.286, road_bed, "roads", reboot_road_material_kind, false, reboot_road_uv_scale)
+		_add_shell_v2_mesh_ribbon("v0196_mesh_main_road_bridge_feed_surface", Vector2(-1.44, 0.72), Vector2(-0.32, 0.86), 0.66, 0.288, road_bed.lightened(0.04), "roads", reboot_road_material_kind, false, reboot_road_uv_scale)
+		_add_shell_v2_mesh_ribbon("v0196_mesh_bridge_deck_route_surface", Vector2(-0.32, 0.88), Vector2(1.62, 0.88), 0.62, 0.374, road_bed.lightened(0.06), "roads", reboot_road_material_kind, false, reboot_road_uv_scale)
+		_add_shell_v2_mesh_ribbon("v0196_mesh_main_road_east_surface", Vector2(1.62, 0.88), Vector2(3.18, 0.56), 0.60, 0.288, road_bed.darkened(0.04), "roads", reboot_road_material_kind, false, reboot_road_uv_scale)
+		_add_shell_v2_mesh_ribbon("v0196_mesh_barracks_side_route_surface", Vector2(-4.48, 0.58), Vector2(-4.70, -2.52), 0.44, 0.284, road_bed.darkened(0.08), "roads", reboot_road_material_kind, false, reboot_road_uv_scale)
+		_add_shell_v2_mesh_ribbon("v0196_mesh_mine_spur_surface", Vector2(-2.24, 0.72), Vector2(-1.56, 0.22), 0.40, 0.286, road_bed.lightened(0.02), "roads", reboot_road_material_kind, false, reboot_road_uv_scale)
+		_add_shell_v2_mesh_ribbon("v0196_mesh_stage_spur_surface", Vector2(-5.10, 0.76), Vector2(-5.08, 2.28), 0.38, 0.282, road_bed.darkened(0.06), "roads", reboot_road_material_kind, false, reboot_road_uv_scale)
+		_add_shell_v2_mesh_ribbon("v0196_mesh_main_road_west_north_shoulder", Vector2(-5.60, 0.34), Vector2(-0.34, 0.48), 0.12, 0.276, road_shoulder, "overlays", "", not salto_battlefield_visual_rescue_enabled, 0.52)
+		_add_shell_v2_mesh_ribbon("v0196_mesh_main_road_west_south_shoulder", Vector2(-5.62, 1.10), Vector2(-0.36, 1.22), 0.12, 0.276, road_shoulder.darkened(0.04), "overlays", "", not salto_battlefield_visual_rescue_enabled, 0.52)
+		_add_shell_v2_mesh_ribbon("v0196_mesh_main_road_route_crown_west", Vector2(-5.38, 0.72), Vector2(-1.62, 0.72), 0.12, 0.332, road_crown, "overlays", "", not salto_battlefield_visual_rescue_enabled, 0.52)
+		_add_shell_v2_mesh_ribbon("v0196_mesh_bridge_feed_route_crown", Vector2(-1.42, 0.72), Vector2(-0.28, 0.86), 0.11, 0.336, road_crown.lightened(0.04), "overlays", "", not salto_battlefield_visual_rescue_enabled, 0.52)
+		_add_shell_v2_mesh_ribbon("v0196_mesh_hostile_route_crown", Vector2(1.58, 0.88), Vector2(3.04, 0.58), 0.11, 0.336, road_crown.darkened(0.06), "overlays", "", not salto_battlefield_visual_rescue_enabled, 0.52)
 	var river_points := [
 		Vector2(-0.18, -3.14),
 		Vector2(-0.28, -1.28),
@@ -8929,15 +9018,16 @@ func _create_shell_v2_mesh_compositor_terrain() -> bool:
 		Vector2(1.38, -1.38),
 		Vector2(1.44, -3.20)
 	]
-	_add_shell_v2_mesh_polygon("v0196_mesh_continuous_river_channel", river_points, 0.202, water_core, "river", reboot_water_material_kind, false, reboot_water_uv_scale)
-	_add_shell_v2_mesh_ribbon("v0196_mesh_west_bank_continuous_edge", Vector2(-0.36, -3.06), Vector2(-0.20, 3.94), 0.36, 0.238, bank_color.darkened(0.02), "banks", reboot_bank_material_kind, false, reboot_bank_uv_scale)
-	_add_shell_v2_mesh_ribbon("v0196_mesh_east_bank_continuous_edge", Vector2(1.72, -3.02), Vector2(1.66, 3.96), 0.36, 0.238, bank_color.lightened(0.02), "banks", reboot_bank_material_kind, false, reboot_bank_uv_scale)
-	_add_shell_v2_mesh_ribbon("v0198_mesh_west_bridge_bank_retaining_edge", Vector2(-0.30, 0.08), Vector2(-0.24, 1.70), 0.30, 0.252, bridge_stone.darkened(0.06), "banks", reboot_bridge_bank_material_kind, false, reboot_bridge_bank_uv_scale)
-	_add_shell_v2_mesh_ribbon("v0198_mesh_east_bridge_bank_retaining_edge", Vector2(1.66, 0.08), Vector2(1.62, 1.70), 0.30, 0.252, bridge_stone.darkened(0.02), "banks", reboot_bridge_bank_material_kind, false, reboot_bridge_bank_uv_scale)
-	_add_shell_v2_mesh_ribbon("v0196_mesh_west_bank_channel_shadow", Vector2(-0.10, -2.92), Vector2(0.04, 3.66), 0.16, 0.246, bank_shadow, "banks", reboot_wet_edge_material_kind, not salto_battlefield_visual_rescue_enabled, reboot_wet_edge_uv_scale)
-	_add_shell_v2_mesh_ribbon("v0196_mesh_east_bank_channel_shadow", Vector2(1.40, -2.88), Vector2(1.36, 3.72), 0.16, 0.246, bank_shadow.darkened(0.04), "banks", reboot_wet_edge_material_kind, not salto_battlefield_visual_rescue_enabled, reboot_wet_edge_uv_scale)
-	_add_shell_v2_mesh_ribbon("v0196_mesh_river_central_glint", Vector2(0.46, -1.10), Vector2(0.92, 2.54), 0.060, 0.244, water_glint, "overlays", reboot_water_material_kind, true, reboot_water_uv_scale)
-	_add_shell_v2_mesh_ribbon("v0196_mesh_river_bridge_underlight", Vector2(0.30, 0.42), Vector2(1.22, 1.18), 0.12, 0.248, water_glint.darkened(0.08), "overlays", reboot_wet_edge_material_kind, true, reboot_wet_edge_uv_scale)
+	if not salto_production_battlefield_backplate_enabled:
+		_add_shell_v2_mesh_polygon("v0196_mesh_continuous_river_channel", river_points, 0.202, water_core, "river", reboot_water_material_kind, false, reboot_water_uv_scale)
+		_add_shell_v2_mesh_ribbon("v0196_mesh_west_bank_continuous_edge", Vector2(-0.36, -3.06), Vector2(-0.20, 3.94), 0.36, 0.238, bank_color.darkened(0.02), "banks", reboot_bank_material_kind, false, reboot_bank_uv_scale)
+		_add_shell_v2_mesh_ribbon("v0196_mesh_east_bank_continuous_edge", Vector2(1.72, -3.02), Vector2(1.66, 3.96), 0.36, 0.238, bank_color.lightened(0.02), "banks", reboot_bank_material_kind, false, reboot_bank_uv_scale)
+		_add_shell_v2_mesh_ribbon("v0198_mesh_west_bridge_bank_retaining_edge", Vector2(-0.30, 0.08), Vector2(-0.24, 1.70), 0.30, 0.252, bridge_stone.darkened(0.06), "banks", reboot_bridge_bank_material_kind, false, reboot_bridge_bank_uv_scale)
+		_add_shell_v2_mesh_ribbon("v0198_mesh_east_bridge_bank_retaining_edge", Vector2(1.66, 0.08), Vector2(1.62, 1.70), 0.30, 0.252, bridge_stone.darkened(0.02), "banks", reboot_bridge_bank_material_kind, false, reboot_bridge_bank_uv_scale)
+		_add_shell_v2_mesh_ribbon("v0196_mesh_west_bank_channel_shadow", Vector2(-0.10, -2.92), Vector2(0.04, 3.66), 0.16, 0.246, bank_shadow, "banks", reboot_wet_edge_material_kind, not salto_battlefield_visual_rescue_enabled, reboot_wet_edge_uv_scale)
+		_add_shell_v2_mesh_ribbon("v0196_mesh_east_bank_channel_shadow", Vector2(1.40, -2.88), Vector2(1.36, 3.72), 0.16, 0.246, bank_shadow.darkened(0.04), "banks", reboot_wet_edge_material_kind, not salto_battlefield_visual_rescue_enabled, reboot_wet_edge_uv_scale)
+		_add_shell_v2_mesh_ribbon("v0196_mesh_river_central_glint", Vector2(0.46, -1.10), Vector2(0.92, 2.54), 0.060, 0.244, water_glint, "overlays", reboot_water_material_kind, true, reboot_water_uv_scale)
+		_add_shell_v2_mesh_ribbon("v0196_mesh_river_bridge_underlight", Vector2(0.30, 0.42), Vector2(1.22, 1.18), 0.12, 0.248, water_glint.darkened(0.08), "overlays", reboot_wet_edge_material_kind, true, reboot_wet_edge_uv_scale)
 	var bridge_shell_reboot_selected := salto_bridge_shell_reboot_enabled and not salto_bridge_shell_legacy_comparator
 	if bridge_shell_reboot_selected:
 		_add_salto_bridge_shell_reboot_layers(
@@ -8971,6 +9061,8 @@ func _create_shell_v2_mesh_compositor_terrain() -> bool:
 		_add_shell_v2_environmental_cohesion_layers()
 	if salto_battlefield_visual_rescue_enabled:
 		_add_salto_battlefield_visual_rescue_terrain_layer()
+	if salto_production_battlefield_backplate_enabled:
+		_add_salto_production_battlefield_backplate_layer()
 	presentation_shell_v2_topology_metrics = {
 		"schemaVersion": 1,
 		"checkpoint": "v0.219" if salto_structure_shell_production_enabled else ("v0.218" if salto_bridge_shell_reboot_enabled else ("v0.217" if _road_riverbank_water_material_bundle_is_active() else ("v0.216" if _ground_material_is_v0216_reboot_or_pending() else ("v0.204" if environment_shell_v2_structure_material_enabled else ("v0.203" if environment_shell_v2_environmental_cohesion_enabled else ("v0.200" if environment_shell_v2_grounding_lighting_enabled else ("v0.199" if environment_shell_v2_structure_hierarchy_enabled else ("v0.198" if _bridge_riverbank_material_is_active() else "v0.197")))))))),
@@ -11191,6 +11283,9 @@ func _add_salto_composition_lighting_selection_cylinder(name: String, position: 
 func _add_salto_composition_lighting_selection_layer() -> void:
 	if not salto_composition_lighting_selection_enabled:
 		return
+	if salto_production_battlefield_backplate_enabled:
+		_add_salto_production_battlefield_backplate_composition_layer()
+		return
 	if salto_battlefield_visual_rescue_enabled:
 		_add_salto_battlefield_visual_rescue_composition_layer()
 		return
@@ -11276,6 +11371,21 @@ func _add_salto_battlefield_visual_rescue_composition_layer() -> void:
 		{"name": "v0227_unit_grounding_ashen", "pos": _unit_world_position("ashen_00", Vector3(2.0, 0.12, -1.67)) + Vector3(0.0, -0.070, 0.0), "radius": 0.145}
 	]:
 		_add_salto_composition_lighting_selection_cylinder(str(accent["name"]), accent["pos"], float(accent["radius"]), 0.016, unit_shadow, "unitContact", true)
+
+func _add_salto_production_battlefield_backplate_composition_layer() -> void:
+	var contact := Color(0.035, 0.030, 0.024, 0.54)
+	var glint := Color(0.24, 0.58, 0.60, 0.24)
+	for accent in [
+		{"name":"v0228_river_glint_north","pos":Vector3(0.88,0.345,-2.12),"scale":Vector3(0.035,0.006,0.56),"color":glint},
+		{"name":"v0228_river_glint_south","pos":Vector3(0.96,0.345,2.36),"scale":Vector3(0.030,0.006,0.48),"color":glint.darkened(0.08)}
+	]:
+		_add_salto_composition_lighting_selection_box(str(accent["name"]), accent["pos"], accent["scale"], accent["color"], "river", true)
+	for accent in [
+		{"name":"v0228_command_contact","pos":Vector3(-5.18,0.322,3.16),"scale":Vector3(1.02,0.010,0.36)},
+		{"name":"v0228_mine_contact","pos":Vector3(-2.78,0.322,-0.52),"scale":Vector3(0.86,0.010,0.32)},
+		{"name":"v0228_barracks_contact","pos":Vector3(-4.92,0.322,-3.20),"scale":Vector3(1.06,0.010,0.36)}
+	]:
+		_add_salto_composition_lighting_selection_box(str(accent["name"]), accent["pos"], accent["scale"], contact, "structures", true)
 
 func _add_shell_v2_grounding_structure_contact(structure: Dictionary) -> void:
 	var id := str(structure.get("id", "structure"))

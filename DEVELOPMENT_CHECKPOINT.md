@@ -1,6 +1,16 @@
 # Development Checkpoint
 
-Updated: 2026-06-17 v0.227 battlefield visual rescue pass
+Updated: 2026-06-18 v0.228 production battlefield backplate rescue
+
+## v0.228 Production Battlefield Backplate Rescue - 2026-06-18
+
+- Decision: `PASS_V0228_PRODUCTION_BATTLEFIELD_BACKPLATE_RESCUE_WITH_LIMITATIONS`.
+- Replaced legacy rectangular route/river surfaces in the isolated v0.228 path with tapered roads, segmented water/banks, integrated bridge landings and a warm irregular terrain foundation.
+- Capture, fallback/comparator validation, benchmark, 887 tests, Godot headless tests, build, content, art-intake, 52 runtime-art slots, cleanup dry run and diff checks pass.
+- Selected benchmark: 74.79 FPS average, 12.57 ms p95; 1.0199 FPS ratio versus v0.227.
+- One generated preview was attempted but no source artifact was exposed; retained source images and new runtime-art slots are both zero.
+- Review pack: `artifacts/manual-review/v0228-production-battlefield-backplate/`.
+- Remaining ceiling: structure silhouettes and landmark density are not final production quality.
 
 ## v0.227 Battlefield Visual Rescue - 2026-06-17
 
