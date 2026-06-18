@@ -1,6 +1,14 @@
 # Development Checkpoint
 
-Updated: 2026-06-17 v0.224 integrated vertical-slice reference-gap review
+Updated: 2026-06-17 v0.225 full QA, benchmark, retention and safe cleanup
+
+## v0.225 Full QA, Benchmark, Retention and Safe Cleanup - 2026-06-17
+
+- Re-ran packaged progression, comparator, fallback and resolution validation.
+- Confirmed 66.24 FPS average and 13.97 ms p95 for the selected reboot.
+- Passed 887 tests, Godot scaffold, build, content, art-intake and 52 runtime-art-slot checks.
+- Deleted 22 safe generated Godot sidecars; final cleanup dry-run found zero safe candidates and zero unknowns.
+- Hardened capture manifest polling against partial-write timing.
 
 ## v0.224 Integrated Vertical-Slice Reference-Gap Review - 2026-06-17
 

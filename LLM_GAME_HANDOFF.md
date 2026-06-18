@@ -1,14 +1,14 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-06-17 v0.224 integrated vertical-slice reference-gap review
+Last updated: 2026-06-17 v0.225 full QA, benchmark, retention and safe cleanup
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
 ## Current Continuation Note
 
-The latest work is v0.224 integrated vertical-slice reference-gap review. It adds one isolated visual-only flag and fixes exactly three high-impact defects: broad green haze, distant framing and weak local structure emphasis. The fresh review scores the reboot 75/100 versus 40/100 for v0.214, while explicitly recording that it still trails the supplied reference in authored geometry, landmarks, animation and VFX.
+The latest work is v0.225 full QA, benchmark, retention and safe cleanup. The v0.224 selected reboot passed packaged progression, fallback, resolution, tests, Godot scaffold, build, content, art-intake and runtime-slot gates. Safe cleanup deleted 22 generated sidecars and ended with zero safe candidates and zero unknown files. The capture wrapper was hardened against a partial-manifest timing race.
 
-The queued next milestone is v0.225 full QA, benchmark, retention and safe cleanup. Continue only after v0.224 is pushed, CI-green, clean and synced.
+The queued next milestone is v0.226 presentation-reboot freeze decision and next-phase packet. Continue only after v0.225 is pushed, CI-green, clean and synced.
 
 ## Project Identity
 

@@ -21,10 +21,20 @@ New-Item -ItemType Directory -Force -Path $ScenarioRoot | Out-Null
 
 $Manifest = Join-Path $ScenarioRoot "screenshot-runtime-manifest.json"
 $Deadline = (Get-Date).AddSeconds(360)
-while (-not (Test-Path -LiteralPath $Manifest) -and (Get-Date) -lt $Deadline) { Start-Sleep -Milliseconds 500 }
-if (-not (Test-Path -LiteralPath $Manifest)) { throw "Missing v0.224 capture manifest." }
-$Report = Get-Content -LiteralPath $Manifest -Raw | ConvertFrom-Json
-if ($Report.status -ne "PASS_PLAYER_SLICE_CAPTURE") { throw "v0.224 capture did not pass." }
+$CapturePassed = $false
+while ((Get-Date) -lt $Deadline) {
+  if (Test-Path -LiteralPath $Manifest) {
+    try {
+      $Report = Get-Content -LiteralPath $Manifest -Raw | ConvertFrom-Json
+      if ($Report.status -eq "PASS_PLAYER_SLICE_CAPTURE") {
+        $CapturePassed = $true
+        break
+      }
+    } catch {}
+  }
+  Start-Sleep -Milliseconds 500
+}
+if (-not $CapturePassed) { throw "v0.224 capture did not reach PASS_PLAYER_SLICE_CAPTURE." }
 
 node tools/godot/saltoIntegratedReferenceGapTool.mjs capture "--artifact-root=$ArtifactRootArg"
 if ($LASTEXITCODE -ne 0) { throw "v0.224 review-pack generation failed." }

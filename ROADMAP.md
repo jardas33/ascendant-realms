@@ -11,9 +11,16 @@ Every phase should protect these long-term pillars:
 
 ## Current Recommended Next Phase
 
-The current checkpoint is **v0.224 Integrated vertical-slice reference-gap review** on 2026-06-17. It fixes exactly three visual defects in the isolated reboot path and records an honest 75/100 weighted score versus 40/100 for v0.214.
+The current checkpoint is **v0.225 Full QA, benchmark, retention and safe cleanup** on 2026-06-17. The selected reboot passed the complete local QA stack, and safe cleanup finished with zero unknown files.
 
-The queued next milestone is **v0.225 Full QA, benchmark, retention and safe cleanup**. Continue only from a clean, synced, pushed and CI-green v0.224 state.
+The queued next milestone is **v0.226 Presentation reboot freeze decision and next-phase packet**. Continue only from a clean, synced, pushed and CI-green v0.225 state.
+
+New v0.225 docs:
+
+- `docs/V0225_REBOOT_FULL_QA_SCORECARD.md`
+- `docs/V0225_REBOOT_BENCHMARK_REPORT.md`
+- `docs/V0225_REBOOT_ARTIFACT_HYGIENE_REPORT.md`
+- `docs/V0225_IMPLEMENTATION_REPORT.md`
 
 New v0.224 docs:
 

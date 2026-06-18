@@ -1,5 +1,12 @@
 # Changelog
 
+# v0.225 Full QA, Benchmark, Retention and Safe Cleanup - 2026-06-17
+
+- Re-ran the full reboot progression, comparator, fallback and resolution stack.
+- Confirmed acceptable three-way benchmark results and stable cache reuse.
+- Deleted 22 safe generated Godot sidecars and retained all selected evidence.
+- Fixed a capture-wrapper partial-manifest timing race.
+
 # v0.224 Integrated Vertical-Slice Reference-Gap Review - 2026-06-17
 
 - Added an isolated visual-only reference-gap correction flag.
