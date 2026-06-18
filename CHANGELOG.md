@@ -1,5 +1,12 @@
 # Changelog
 
+# v0.227 Salto Battlefield Visual Rescue - 2026-06-17
+
+- Added an isolated visual-only battlefield rescue path with opaque terrain hierarchy, cooler water, stronger bridge grounding and restrained structure-read accents.
+- Added the required nine-capture review pack, before/after sheet, validation and benchmark tooling.
+- Passed technical and safety gates with zero generated source images and zero new runtime-art slots.
+- Recorded the candid decision `INSUFFICIENT_V0227_BATTLEFIELD_VISUAL_RESCUE`: readability improved, but primitive route/river geometry, olive monotony and placeholder-grade structures remain.
+
 # v0.226 Presentation Reboot Direction Freeze - 2026-06-17
 
 - Recorded `PASS_V0226_PRESENTATION_REBOOT_DIRECTION_FREEZE`.

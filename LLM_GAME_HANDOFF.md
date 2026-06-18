@@ -1,14 +1,14 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-06-17 v0.226 presentation reboot direction freeze
+Last updated: 2026-06-17 v0.227 battlefield visual rescue pass
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
 ## Current Continuation Note
 
-The latest work is v0.226 presentation reboot direction freeze. Decision: `PASS_V0226_PRESENTATION_REBOOT_DIRECTION_FREEZE`. The reboot is approved as the direction foundation, not as finished production art. Its largest remaining weakness is bespoke structure geometry and faction silhouette.
+The latest work is v0.227 battlefield visual rescue. Technical and safety gates pass, but the candid artistic decision is `INSUFFICIENT_V0227_BATTLEFIELD_VISUAL_RESCUE`. The isolated pass removes the stacked translucent look, clarifies water and bridge grounding, and improves road flow, but the replacement road/river geometry remains primitive, the olive cast remains too strong, and several structures still read as placeholders.
 
-Exactly one next milestone is recommended: v0.227 structure-shell second pass. Do not start it without a new explicit prompt.
+Exactly one next milestone is recommended if authorized: v0.228 authored terrain-topology pass focused on shaped road, river and bank geometry. Do not start it without a new explicit prompt.
 
 ## Project Identity
 

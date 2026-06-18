@@ -1,6 +1,15 @@
 # Development Checkpoint
 
-Updated: 2026-06-17 v0.226 presentation reboot direction freeze
+Updated: 2026-06-17 v0.227 battlefield visual rescue pass
+
+## v0.227 Battlefield Visual Rescue - 2026-06-17
+
+- Decision: `INSUFFICIENT_V0227_BATTLEFIELD_VISUAL_RESCUE`.
+- Technical, fallback, benchmark, test, build, content, runtime-art-slot and cleanup dry-run gates pass.
+- The v0.227 path removes broad translucent stacking, clarifies the river and strengthens bridge contact.
+- The artistic bar remains unmet because road/river geometry is primitive, olive monotony remains and structures are still mixed-fidelity placeholders.
+- Review pack: `artifacts/manual-review/v0227-battlefield-visual-rescue/`.
+- Generated source images: zero.
 
 ## v0.226 Presentation Reboot Direction Freeze - 2026-06-17
 

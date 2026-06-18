@@ -11,9 +11,14 @@ Every phase should protect these long-term pillars:
 
 ## Current Recommended Next Phase
 
-The current checkpoint is **v0.226 Presentation reboot direction freeze** on 2026-06-17. Decision: `PASS_V0226_PRESENTATION_REBOOT_DIRECTION_FREEZE`.
+The current checkpoint is **v0.227 Salto battlefield visual rescue** on 2026-06-17. Technical gates pass, but the artistic decision is `INSUFFICIENT_V0227_BATTLEFIELD_VISUAL_RESCUE`.
 
-Exactly one next milestone is recommended: **v0.227 Structure-shell second pass**. Do not start it without a new explicit prompt.
+Exactly one next milestone is recommended if authorized: **v0.228 Authored terrain-topology pass**, replacing rectangular road, river and bank strips with shaped mesh/ribbon geometry before further HUD or structure-detail work. Do not start it without a new explicit prompt.
+
+New v0.227 docs:
+
+- `docs/V0227_BATTLEFIELD_VISUAL_RESCUE_REPORT.md`
+- `docs/V0227_IMPLEMENTATION_REPORT.md`
 
 New v0.226 docs:
 
