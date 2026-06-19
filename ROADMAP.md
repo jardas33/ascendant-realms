@@ -11,11 +11,16 @@ Every phase should protect these long-term pillars:
 
 ## Current Recommended Next Phase
 
-The current checkpoint is **v0.230 retained authored structure-art fidelity** on 2026-06-18. The decision is `PASS_V0230_RETAINED_AUTHORED_STRUCTURE_ART_FIDELITY`.
+The current checkpoint is **v0.231 retained battlefield material and value integration** on 2026-06-19. The decision is `PASS_V0231_RETAINED_BATTLEFIELD_MATERIAL_VALUE_INTEGRATION_WITH_PROCEDURAL_LIMIT`.
 
-The v0.228 terrain topology and v0.229 readability cleanup remain, while the selected structure renderer now uses true pitched roof prisms, stepped plinths, recessed entries, asymmetric massing, timber framing and diagonal braces. The keep, barracks, mine/Lume site, ford support and bridge supports now read as distinct authored low-poly landmarks.
+The v0.230 authored structures remain unchanged while the selected battlefield path now uses warm earth values, restrained local field variation, layered worn roads, an opaque tapered river, shaped banks and sparse structure/bridge grounding. The flat olive field and rectangular transparent river failure modes are materially reduced, though road and river bands remain visibly procedural at close review.
 
-Exactly one next milestone is recommended if authorized: **v0.231 retained battlefield material/value integration** around the authored structures. Do not reopen structure geometry, UI or gameplay scope, and do not start it without a new explicit prompt.
+Stop at v0.231. No v0.232 or following milestone is authorized without a new explicit prompt.
+
+New v0.231 docs:
+
+- `docs/V0231_BATTLEFIELD_MATERIAL_VALUE_INTEGRATION_REPORT.md`
+- `docs/V0231_IMPLEMENTATION_REPORT.md`
 
 New v0.230 docs:
 

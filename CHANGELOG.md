@@ -7298,3 +7298,10 @@ Known release caveat: the Vite production build reports that the main Phaser bun
 
 - At the v0.2 baseline point, the next recommended pass was Rival Rewards Balance And Readability Review.
 - This is now superseded by the v0.3 Cinderfen route baseline candidate above; the current next phase is `automated route readiness + polish freeze`.
+# v0.231 Retained Battlefield Material and Value Integration - 2026-06-19
+
+- Retained the complete v0.230 authored structure geometry and comparator.
+- Rebalanced battlefield ground values toward warm earth with restrained local variation.
+- Replaced the translucent rectangular river read with an opaque tapered channel and layered banks.
+- Added soil-matched road shoulders, compacted bodies, dust lanes, wear ruts and local structure/bridge grounding.
+- Added exact capture, validation, benchmark and review-pack tooling with zero new art assets or slots.

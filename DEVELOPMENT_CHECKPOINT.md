@@ -10713,3 +10713,11 @@ After pushing the checkpoint and metadata update, `git status -sb` reported `## 
 ## Recommended Next Milestone
 
 Human-verify the v0.3 Cinderfen route freeze candidate end to end: Overlook, Waystation, Crossing, Cinder Shrine surge/attunement, Watch, Aftermath, Results, route-complete campaign-map copy, and return-to-campaign persistence. Add no further Chapter 2 content until the route stays green in human readability and balance review. Avoid workers, enemy construction, new factions, diplomacy, procedural generation, crafting, and broad army-management systems.
+# v0.231 Retained Battlefield Material and Value Integration - 2026-06-19
+
+- Added an isolated visual-only battlefield integration path while retaining v0.230 authored structures and comparator.
+- Shifted the playable field from pale olive toward warm earth with restrained local value variation.
+- Added layered worn roads, an opaque tapered river, shaped dry/wet banks, bridge contact and sparse structure grounding.
+- Added the exact 15-file review pack, fallback/comparator validation and benchmark tooling.
+- Recorded `PASS_V0231_RETAINED_BATTLEFIELD_MATERIAL_VALUE_INTEGRATION_WITH_PROCEDURAL_LIMIT`; road/river bands remain visibly procedural at close review.
+- Created zero images, downloads, derivatives or runtime-art slots and preserved all gameplay/default-launcher boundaries.

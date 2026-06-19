@@ -1,16 +1,16 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-06-18 v0.230 retained authored structure-art fidelity
+Last updated: 2026-06-19 v0.231 retained battlefield material and value integration
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
 ## Current Continuation Note
 
-The latest work is v0.230 retained authored structure-art fidelity. The decision is `PASS_V0230_RETAINED_AUTHORED_STRUCTURE_ART_FIDELITY`. The isolated path replaces the selected v0.229 stacked-box structure renderer with deterministic authored Godot geometry for the keep, barracks, central mine/Lume site, ford support and bridge supports. True pitched roof prisms, stepped foundations, recessed entries, asymmetric masses, timber framing and diagonal braces now survive normal zoom.
+The latest work is v0.231 retained battlefield material and value integration. The decision is `PASS_V0231_RETAINED_BATTLEFIELD_MATERIAL_VALUE_INTEGRATION_WITH_PROCEDURAL_LIMIT`. The isolated path retains the v0.230 authored keep, barracks, mine/Lume, ford-support and bridge-support geometry while replacing the pale olive field and translucent rectangular river read with warm earth values, local field variation, layered worn roads, an opaque tapered river, shaped banks and sparse structure grounding.
 
 No source image, download, derivative or runtime-art slot was created. The default launcher, browser runtime, gameplay, pathing, collision, objectives, AI, economy, saves, stable IDs and unit data remain unchanged. v0.229 remains the direct comparator.
 
-The result passes as authored low-poly structure art, not final high-detail environment art. Exactly one next milestone is recommended if authorized: v0.231 retained battlefield material/value integration around the authored structures. Do not start it without a new explicit prompt.
+The result passes as a meaningful retained material/value integration step, not final environment art. Road and river band transitions remain visibly procedural under close review. Stop at v0.231; no following milestone is authorized without a new explicit prompt.
 
 ## Project Identity
 
