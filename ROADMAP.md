@@ -11,11 +11,18 @@ Every phase should protect these long-term pillars:
 
 ## Current Recommended Next Phase
 
-The current checkpoint is **v0.231 retained battlefield material and value integration** on 2026-06-19. The decision is `PASS_V0231_RETAINED_BATTLEFIELD_MATERIAL_VALUE_INTEGRATION_WITH_PROCEDURAL_LIMIT`.
+The current checkpoint is **v0.232 visual pipeline reset and production-art direction spike** on 2026-06-19. The decision is `PRODUCTION_DIRECTION_PROVEN_NOT_PRODUCTION_ART`.
 
-The v0.230 authored structures remain unchanged while the selected battlefield path now uses warm earth values, restrained local field variation, layered worn roads, an opaque tapered river, shaped banks and sparse structure/bridge grounding. The flat olive field and rectangular transparent river failure modes are materially reduced, though road and river bands remain visibly procedural at close review.
+The separate non-playable Godot 3D orthographic spike is substantially stronger than v0.231 in depth, lighting, terrain elevation, water recession, bridge contact and landmark hierarchy. It proves that Godot is not the bottleneck. It does not prove finished art quality: the current spike is still code-built low-poly geometry.
 
-Stop at v0.231. No v0.232 or following milestone is authorized without a new explicit prompt.
+Recommended future direction, only if explicitly authorized: build a small Blender-authored modular GLTF environment kit and validate it in the isolated scene before reconnecting gameplay. Do not resume incremental rectangle/band compositor polish and do not change engine now.
+
+Stop at v0.232. No v0.233 or following milestone is authorized without a new explicit prompt.
+
+New v0.232 docs:
+
+- `docs/V0232_VISUAL_PIPELINE_RESET_DIAGNOSIS.md`
+- `docs/V0232_IMPLEMENTATION_REPORT.md`
 
 New v0.231 docs:
 

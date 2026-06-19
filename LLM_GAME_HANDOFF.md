@@ -1,16 +1,18 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-06-19 v0.231 retained battlefield material and value integration
+Last updated: 2026-06-19 v0.232 visual pipeline reset and production-art direction spike
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
 ## Current Continuation Note
 
-The latest work is v0.231 retained battlefield material and value integration. The decision is `PASS_V0231_RETAINED_BATTLEFIELD_MATERIAL_VALUE_INTEGRATION_WITH_PROCEDURAL_LIMIT`. The isolated path retains the v0.230 authored keep, barracks, mine/Lume, ford-support and bridge-support geometry while replacing the pale olive field and translucent rectangular river read with warm earth values, local field variation, layered worn roads, an opaque tapered river, shaped banks and sparse structure grounding.
+The latest work is v0.232 visual pipeline reset and production-art direction spike. The decision is `PRODUCTION_DIRECTION_PROVEN_NOT_PRODUCTION_ART`.
 
-No source image, download, derivative or runtime-art slot was created. The default launcher, browser runtime, gameplay, pathing, collision, objectives, AI, economy, saves, stable IDs and unit data remain unchanged. v0.229 remains the direct comparator.
+The milestone stops incremental v0.231 polishing and adds one separate non-playable Godot scene: `res://scenes/salto_production_target_spike.tscn`. It uses an orthographic 3D camera, real terrain elevation, recessed water, continuous route and river geometry, directional/local lighting, cast shadows, authored low-poly keep/barracks/mine/bridge silhouettes and units for scale. The exact review pack demonstrates a substantially stronger RTS scene read than v0.231.
 
-The result passes as a meaningful retained material/value integration step, not final environment art. Road and river band transitions remain visibly procedural under close review. Stop at v0.231; no following milestone is authorized without a new explicit prompt.
+The candid boundary matters: this is still code-built low-poly prototype geometry, not production art. Godot should be retained; the next recommended art step is a Blender-authored modular GLTF kit with explicit scale, palette, material, lighting and performance budgets. The v0.231 rectangle/band compositor should remain only as comparator/debug fallback.
+
+No generated image, download or runtime-art slot was added. The default launcher, browser runtime, gameplay, pathing, collision, objectives, AI, economy, saves, stable IDs and production logic remain unchanged. Stop at v0.232; do not start v0.233 without a new explicit prompt.
 
 ## Project Identity
 

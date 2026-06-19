@@ -1,6 +1,17 @@
 # Development Checkpoint
 
-Updated: 2026-06-18 v0.230 retained authored structure-art fidelity
+Updated: 2026-06-19 v0.232 visual pipeline reset and production-art direction spike
+
+## v0.232 Visual Pipeline Reset and Production-Art Direction Spike - 2026-06-19
+
+- Decision: `PRODUCTION_DIRECTION_PROVEN_NOT_PRODUCTION_ART`.
+- Added an isolated non-playable `salto_production_target_spike.tscn` using Godot 3D orthographic authored low-poly massing, continuous route/water meshes, real elevation, lighting and shadows.
+- The exact seven-file review pack shows a substantial improvement over v0.231 in depth, hierarchy, structure silhouette, water separation and bridge contact.
+- The spike is still code-built low-poly prototype art. Production should move to a Blender-authored modular GLTF environment kit rather than extending either this primitive kit or the v0.231 compositor.
+- Capture/isolated validation, 887 tests, Godot headless tests, build, content, art intake, 52 runtime-art slots, retention, cleanup dry run and diff checks pass.
+- Generated images, downloaded assets and new runtime-art slots: zero.
+- Gameplay, browser runtime, saves, stable IDs, pathing, collision, AI, economy, objectives, production logic and default launcher: unchanged.
+- Review pack: `artifacts/manual-review/v0232-visual-pipeline-reset/`.
 
 ## v0.230 Retained Authored Structure-Art Fidelity - 2026-06-18
 

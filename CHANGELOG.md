@@ -1,5 +1,13 @@
 # Changelog
 
+# v0.232 Visual Pipeline Reset and Production-Art Direction Spike - 2026-06-19
+
+- Recorded the blunt diagnosis that v0.231's remaining failure is the code-authored rectangle/band/primitive art pipeline, not Godot's rendering ceiling.
+- Added a separate non-playable Godot 3D orthographic production-target scene with real terrain elevation, continuous road and river meshes, recessed water, cast shadows, authored landmark massing and units for scale.
+- Preserved v0.231 as comparator evidence and added the exact seven-file visual-pipeline-reset review pack.
+- Recorded `PRODUCTION_DIRECTION_PROVEN_NOT_PRODUCTION_ART`: the new scene is substantially better than v0.231, but remains a low-detail pipeline proof rather than finished environment art.
+- Added zero generated images, downloaded assets or runtime-art slots and changed no gameplay, browser, save, pathing, collision or default-launcher behavior.
+
 # v0.230 Retained Authored Structure-Art Fidelity - 2026-06-18
 
 - Added an isolated visual-only authored structure renderer while preserving v0.229 as the direct comparator.

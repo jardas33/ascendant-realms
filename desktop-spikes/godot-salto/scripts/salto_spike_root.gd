@@ -140,6 +140,7 @@ const SCRIPT_ARG_PREFIXES := [
 	"--salto-structure-landmark-fidelity",
 	"--salto-structure-art-fidelity",
 	"--salto-battlefield-material-value-integration",
+	"--salto-production-target-spike",
 	"--salto-bridge-shell-reboot",
 	"--salto-bridge-shell-legacy-comparator",
 	"--salto-structure-shell-production",
@@ -216,6 +217,15 @@ func _ready() -> void:
 	current_viewport_size = _viewport_from_args(VIEWPORT_SIZE)
 	active_visual_preset = _visual_preset_from_args()
 	_configure_window()
+	if args.has("--salto-production-target-spike"):
+		var spike_scene := load("res://scenes/salto_production_target_spike.tscn") as PackedScene
+		if spike_scene == null:
+			get_tree().quit(1)
+			return
+		var spike := spike_scene.instantiate()
+		add_child(spike)
+		spike.call_deferred("start")
+		return
 	if args.has("--salto-ui-architecture-wireframe"):
 		await run_ui_architecture_wireframe_capture()
 		return

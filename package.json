@@ -147,6 +147,8 @@
     "godot:capture:salto-structure-landmark-fidelity": "powershell -NoProfile -ExecutionPolicy Bypass -File tools/godot/captureGodotSaltoStructureLandmarkFidelityWindows.ps1",
     "godot:capture:salto-structure-art-fidelity": "powershell -NoProfile -ExecutionPolicy Bypass -File tools/godot/captureGodotSaltoStructureArtFidelityWindows.ps1",
     "godot:capture:salto-battlefield-material-value-integration": "powershell -NoProfile -ExecutionPolicy Bypass -File tools/godot/captureGodotSaltoBattlefieldMaterialValueIntegrationWindows.ps1",
+    "godot:capture:salto-visual-pipeline-reset": "powershell -NoProfile -ExecutionPolicy Bypass -File tools/godot/captureGodotSaltoVisualPipelineResetWindows.ps1",
+    "godot:validate:salto-visual-pipeline-reset": "powershell -NoProfile -ExecutionPolicy Bypass -File tools/godot/validateGodotSaltoVisualPipelineResetWindows.ps1",
     "godot:capture:salto-environment-contrast": "powershell -NoProfile -ExecutionPolicy Bypass -File tools/godot/captureGodotSaltoEnvironmentContrastWindows.ps1",
     "godot:audit:player-slice": "powershell -NoProfile -ExecutionPolicy Bypass -File tools/godot/auditGodotPlayerSliceWindows.ps1",
     "godot:validate:player-slice": "powershell -NoProfile -ExecutionPolicy Bypass -File tools/godot/validateGodotPlayerSlice.ps1",
