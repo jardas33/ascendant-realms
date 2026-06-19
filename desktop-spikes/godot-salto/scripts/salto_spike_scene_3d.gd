@@ -387,6 +387,7 @@ var salto_integrated_reference_gap_enabled := false
 var salto_battlefield_visual_rescue_enabled := false
 var salto_production_battlefield_backplate_enabled := false
 var salto_structure_landmark_fidelity_enabled := false
+var salto_structure_art_fidelity_enabled := false
 var presentation_shell_v2_initialized := false
 var presentation_shell_v2_fallback_active := false
 var presentation_shell_v2_fallback_reason := ""
@@ -1138,6 +1139,23 @@ func configure_salto_structure_landmark_fidelity(enabled: bool) -> Dictionary:
 		_apply_light_preset()
 		apply_salto_composition_lighting_selection_framing()
 	return _salto_structure_landmark_fidelity_status()
+
+func configure_salto_structure_art_fidelity(enabled: bool) -> Dictionary:
+	salto_structure_art_fidelity_enabled = enabled
+	if enabled:
+		salto_structure_landmark_fidelity_enabled = true
+		salto_production_battlefield_backplate_enabled = true
+		salto_battlefield_visual_rescue_enabled = false
+		salto_integrated_reference_gap_enabled = true
+		salto_composition_lighting_selection_enabled = true
+		salto_structure_shell_production_enabled = true
+		salto_structure_shell_legacy_comparator = false
+		environment_shell_v2_structure_material_enabled = false
+		environment_shell_v2_grounding_props_enabled = true
+		_refresh_visual_foundation()
+		_apply_light_preset()
+		apply_salto_composition_lighting_selection_framing()
+	return _salto_structure_art_fidelity_status()
 
 func configure_salto_presentation_reboot(enabled: bool) -> Dictionary:
 	salto_presentation_reboot_enabled = enabled
@@ -2272,6 +2290,26 @@ func _salto_structure_landmark_fidelity_status() -> Dictionary:
 		"generatedProjectSourceImageCount": 0,
 		"newRuntimeArtSlotsAdded": 0,
 		"gameplayChanged": false,
+		"defaultLauncherChanged": false
+	}
+
+func _salto_structure_art_fidelity_status() -> Dictionary:
+	return {
+		"schemaVersion": 1,
+		"checkpoint": "v0.230",
+		"enabled": salto_structure_art_fidelity_enabled,
+		"visualOnly": true,
+		"retainsV0229Comparator": true,
+		"authoredPitchedRoofs": salto_structure_art_fidelity_enabled,
+		"diagonalTimberBracing": salto_structure_art_fidelity_enabled,
+		"distinctStructureIdentities": salto_structure_art_fidelity_enabled,
+		"bridgeSupportIntegration": salto_structure_art_fidelity_enabled,
+		"generatedProjectSourceImageCount": 0,
+		"downloadedAssetCount": 0,
+		"newRuntimeArtSlotsAdded": 0,
+		"gameplayChanged": false,
+		"pathingChanged": false,
+		"collisionChanged": false,
 		"defaultLauncherChanged": false
 	}
 
@@ -7549,6 +7587,8 @@ func get_spike_status() -> Dictionary:
 	status["saltoProductionBattlefieldBackplate"] = _salto_production_battlefield_backplate_status()
 	status["saltoStructureLandmarkFidelityEnabled"] = salto_structure_landmark_fidelity_enabled
 	status["saltoStructureLandmarkFidelity"] = _salto_structure_landmark_fidelity_status()
+	status["saltoStructureArtFidelityEnabled"] = salto_structure_art_fidelity_enabled
+	status["saltoStructureArtFidelity"] = _salto_structure_art_fidelity_status()
 	status["saltoPresentationRebootEnabled"] = salto_presentation_reboot_enabled
 	status["saltoPresentationRebootScene"] = {
 		"checkpoint": "v0.215",
@@ -8648,10 +8688,87 @@ func _add_salto_production_battlefield_backplate_layer() -> void:
 	_add_shell_v2_mesh_polygon("v0228_west_bridge_landing", [Vector2(-0.82,0.42),Vector2(-0.28,0.36),Vector2(-0.12,1.34),Vector2(-0.74,1.38)], 0.347, Color(0.48,0.43,0.31,1.0), "bridge")
 	_add_shell_v2_mesh_polygon("v0228_east_bridge_landing", [Vector2(1.54,0.36),Vector2(2.16,0.30),Vector2(2.34,1.20),Vector2(1.58,1.38)], 0.347, Color(0.50,0.45,0.33,1.0), "bridge")
 
+func _add_v0230_triangle(surface_tool: SurfaceTool, a: Vector3, b: Vector3, c: Vector3) -> void:
+	surface_tool.add_vertex(a)
+	surface_tool.add_vertex(b)
+	surface_tool.add_vertex(c)
+
+func _add_v0230_gable_roof(name: String, position: Vector3, width: float, depth: float, rise: float, color: Color, ridge_along_x: bool = true) -> void:
+	var half_width := width * 0.5
+	var half_depth := depth * 0.5
+	var a := Vector3(-half_width, 0.0, -half_depth)
+	var b := Vector3(-half_width, 0.0, half_depth)
+	var c := Vector3(-half_width, rise, 0.0)
+	var d := Vector3(half_width, 0.0, -half_depth)
+	var e := Vector3(half_width, 0.0, half_depth)
+	var f := Vector3(half_width, rise, 0.0)
+	var surface_tool := SurfaceTool.new()
+	surface_tool.begin(Mesh.PRIMITIVE_TRIANGLES)
+	_add_v0230_triangle(surface_tool, a, c, b)
+	_add_v0230_triangle(surface_tool, d, e, f)
+	_add_v0230_triangle(surface_tool, a, d, f)
+	_add_v0230_triangle(surface_tool, a, f, c)
+	_add_v0230_triangle(surface_tool, b, c, f)
+	_add_v0230_triangle(surface_tool, b, f, e)
+	_add_v0230_triangle(surface_tool, a, b, e)
+	_add_v0230_triangle(surface_tool, a, e, d)
+	surface_tool.generate_normals()
+	var mesh_instance := MeshInstance3D.new()
+	mesh_instance.name = name
+	mesh_instance.mesh = surface_tool.commit()
+	mesh_instance.position = position
+	if not ridge_along_x:
+		mesh_instance.rotation_degrees.y = 90.0
+	mesh_instance.material_override = _presentation_shell_v2_material("structures", color)
+	terrain_root.add_child(mesh_instance)
+	_count_presentation_shell_v2_surface("structures")
+	_record_shell_v2_structure_shell_production_node(name)
+
+func _add_v0230_brace(name: String, origin: Vector3, start: Vector2, finish: Vector2, depth: float, thickness: float, color: Color) -> void:
+	var delta := finish - start
+	var mesh_instance := MeshInstance3D.new()
+	mesh_instance.name = name
+	var mesh := BoxMesh.new()
+	mesh.size = Vector3(delta.length(), thickness, depth)
+	mesh_instance.mesh = mesh
+	mesh_instance.position = origin + Vector3((start.x + finish.x) * 0.5, (start.y + finish.y) * 0.5, 0.0)
+	mesh_instance.rotation_degrees.z = rad_to_deg(atan2(delta.y, delta.x))
+	mesh_instance.material_override = _presentation_shell_v2_material("structures", color)
+	terrain_root.add_child(mesh_instance)
+	_count_presentation_shell_v2_surface("structures")
+	_record_shell_v2_structure_shell_production_node(name)
+
+func _add_v0230_lume_crystal(name: String, position: Vector3, radius: float, height: float, color: Color) -> void:
+	var top := Vector3(0.0, height * 0.5, 0.0)
+	var bottom := Vector3(0.0, -height * 0.5, 0.0)
+	var north := Vector3(0.0, 0.0, -radius)
+	var east := Vector3(radius, 0.0, 0.0)
+	var south := Vector3(0.0, 0.0, radius)
+	var west := Vector3(-radius, 0.0, 0.0)
+	var surface_tool := SurfaceTool.new()
+	surface_tool.begin(Mesh.PRIMITIVE_TRIANGLES)
+	for face in [
+		[top, east, north], [top, south, east], [top, west, south], [top, north, west],
+		[bottom, north, east], [bottom, east, south], [bottom, south, west], [bottom, west, north]
+	]:
+		_add_v0230_triangle(surface_tool, face[0], face[1], face[2])
+	surface_tool.generate_normals()
+	var mesh_instance := MeshInstance3D.new()
+	mesh_instance.name = name
+	mesh_instance.mesh = surface_tool.commit()
+	mesh_instance.position = position
+	mesh_instance.material_override = _presentation_shell_v2_material("structures", color, false, true, _lume_emission())
+	terrain_root.add_child(mesh_instance)
+	_count_presentation_shell_v2_surface("structures")
+	_record_shell_v2_structure_shell_production_node(name)
+
 func _add_salto_structure_shell_production_mass(id: String, fixture: String, position: Vector3, scale: Vector3, color: Color, structure: Dictionary) -> void:
 	var team := str(structure.get("team", "neutral"))
 	var state := str(structure.get("constructionState", "complete"))
 	var progress := clampf(float(structure.get("constructionProgress", 1.0)), 0.0, 1.0)
+	if salto_structure_art_fidelity_enabled:
+		_add_salto_authored_structure_art_mass(id, fixture, position, scale, color, state, progress, team)
+		return
 	var stone := Color(0.42, 0.42, 0.35)
 	var stone_dark := Color(0.22, 0.24, 0.20)
 	var timber := Color(0.30, 0.20, 0.12)
@@ -8728,6 +8845,104 @@ func _add_salto_structure_shell_production_mass(id: String, fixture: String, pos
 		_add_salto_battlefield_visual_rescue_structure_details(id, fixture, position, scale, state)
 	if salto_structure_landmark_fidelity_enabled:
 		_add_salto_structure_landmark_fidelity_details(id, fixture, position, scale, state)
+
+func _add_salto_authored_structure_art_mass(id: String, fixture: String, position: Vector3, scale: Vector3, color: Color, state: String, progress: float, team: String) -> void:
+	var dressed_stone := Color(0.41, 0.39, 0.32, 1.0)
+	var pale_stone := Color(0.49, 0.46, 0.37, 1.0)
+	var stone_shadow := Color(0.18, 0.19, 0.16, 1.0)
+	var slate := Color(0.25, 0.22, 0.16, 1.0)
+	var slate_light := Color(0.36, 0.31, 0.22, 1.0)
+	var timber := Color(0.24, 0.135, 0.065, 1.0)
+	var timber_light := Color(0.50, 0.34, 0.17, 1.0)
+	var iron := Color(0.20, 0.23, 0.22, 1.0)
+	var entry_dark := Color(0.030, 0.025, 0.020, 1.0)
+	var warm := Color(0.78, 0.38, 0.13, 1.0)
+	var lume := Color(0.12, 0.80, 0.76, 1.0)
+	match fixture:
+		"command_hall":
+			_add_shell_v2_structure_shell_production_box("%s_v0230_keep_lower_plinth" % id, position + Vector3(0.0, -0.055, 0.04), Vector3(scale.x * 1.10, 0.13, scale.z * 0.98), stone_shadow)
+			_add_shell_v2_structure_shell_production_box("%s_v0230_keep_upper_plinth" % id, position + Vector3(0.0, 0.020, 0.01), Vector3(scale.x * 0.98, 0.075, scale.z * 0.86), dressed_stone.darkened(0.10))
+			_add_shell_v2_structure_shell_production_box("%s_v0230_keep_great_hall" % id, position + Vector3(0.02, 0.31, -0.02), Vector3(scale.x * 0.66, 0.54, scale.z * 0.56), color.darkened(0.14))
+			_add_shell_v2_structure_shell_production_box("%s_v0230_keep_west_tower" % id, position + Vector3(-scale.x * 0.39, 0.39, -scale.z * 0.10), Vector3(scale.x * 0.25, 0.70, scale.z * 0.34), dressed_stone.darkened(0.05))
+			_add_shell_v2_structure_shell_production_box("%s_v0230_keep_east_stair_tower" % id, position + Vector3(scale.x * 0.38, 0.31, scale.z * 0.02), Vector3(scale.x * 0.22, 0.52, scale.z * 0.30), dressed_stone.darkened(0.13))
+			_add_v0230_gable_roof("%s_v0230_keep_true_gable" % id, position + Vector3(0.02, 0.58, -0.02), scale.x * 0.78, scale.z * 0.72, 0.36, slate)
+			_add_v0230_gable_roof("%s_v0230_keep_west_tower_roof" % id, position + Vector3(-scale.x * 0.39, 0.74, -scale.z * 0.10), scale.x * 0.34, scale.z * 0.45, 0.24, slate_light)
+			_add_v0230_gable_roof("%s_v0230_keep_east_tower_roof" % id, position + Vector3(scale.x * 0.38, 0.57, scale.z * 0.02), scale.x * 0.31, scale.z * 0.40, 0.20, slate.darkened(0.04))
+			_add_shell_v2_structure_shell_production_box("%s_v0230_keep_roof_ridge" % id, position + Vector3(0.02, 0.95, -0.02), Vector3(scale.x * 0.82, 0.045, 0.055), timber_light)
+			_add_shell_v2_structure_shell_production_box("%s_v0230_keep_entry_recess" % id, position + Vector3(0.0, 0.24, scale.z * 0.35), Vector3(scale.x * 0.22, 0.36, 0.10), entry_dark)
+			_add_shell_v2_structure_shell_production_box("%s_v0230_keep_entry_lintel" % id, position + Vector3(0.0, 0.47, scale.z * 0.37), Vector3(scale.x * 0.34, 0.07, 0.13), pale_stone)
+			_add_shell_v2_structure_shell_production_box("%s_v0230_keep_porch_canopy" % id, position + Vector3(0.0, 0.49, scale.z * 0.49), Vector3(scale.x * 0.42, 0.055, scale.z * 0.20), timber_light)
+			for x in [-0.27, 0.27]:
+				_add_shell_v2_structure_shell_production_box("%s_v0230_keep_front_post_%s" % [id, int((x + 0.3) * 100.0)], position + Vector3(scale.x * x, 0.30, scale.z * 0.38), Vector3(0.055, 0.49, 0.060), timber)
+			_add_v0230_brace("%s_v0230_keep_front_brace_west" % id, position + Vector3(0.0, 0.10, scale.z * 0.385), Vector2(-scale.x * 0.29, 0.04), Vector2(-scale.x * 0.04, 0.40), 0.070, 0.050, timber_light)
+			_add_v0230_brace("%s_v0230_keep_front_brace_east" % id, position + Vector3(0.0, 0.10, scale.z * 0.385), Vector2(scale.x * 0.29, 0.04), Vector2(scale.x * 0.04, 0.40), 0.070, 0.050, timber_light)
+			for x in [-0.52, 0.52]:
+				_add_shell_v2_structure_shell_production_box("%s_v0230_keep_buttress_%s" % [id, int((x + 0.6) * 100.0)], position + Vector3(scale.x * x, 0.19, 0.02), Vector3(0.12, 0.36, scale.z * 0.48), stone_shadow.lightened(0.06))
+			_add_shell_v2_structure_shell_production_box("%s_v0230_keep_chimney" % id, position + Vector3(scale.x * 0.27, 0.89, -scale.z * 0.16), Vector3(0.14, 0.50, 0.14), dressed_stone.darkened(0.18))
+			_add_shell_v2_structure_shell_production_box("%s_v0230_keep_banner_post" % id, position + Vector3(-scale.x * 0.56, 0.52, scale.z * 0.28), Vector3(0.045, 0.80, 0.045), timber)
+			_add_shell_v2_structure_shell_production_box("%s_v0230_keep_banner" % id, position + Vector3(-scale.x * 0.48, 0.70, scale.z * 0.28), Vector3(0.18, 0.28, 0.030), Color(0.12, 0.42, 0.34, 1.0))
+			_add_shell_v2_structure_shell_production_box("%s_v0230_keep_step_upper" % id, position + Vector3(0.0, -0.025, scale.z * 0.58), Vector3(scale.x * 0.48, 0.07, 0.16), pale_stone.darkened(0.08))
+			_add_shell_v2_structure_shell_production_box("%s_v0230_keep_step_lower" % id, position + Vector3(0.0, -0.070, scale.z * 0.70), Vector3(scale.x * 0.62, 0.055, 0.17), dressed_stone)
+			_add_shell_v2_structure_shell_production_box("%s_v0230_keep_hearth" % id, position + Vector3(scale.x * 0.22, 0.34, scale.z * 0.38), Vector3(0.060, 0.10, 0.045), warm, false, true)
+		"barracks":
+			var damaged := state != "complete" and progress <= 0.10
+			var roof_color := slate.darkened(0.12) if damaged else slate
+			_add_shell_v2_structure_shell_production_box("%s_v0230_barracks_drill_plinth" % id, position + Vector3(0.0, -0.052, 0.08), Vector3(scale.x * 1.08, 0.12, scale.z * 0.96), stone_shadow)
+			_add_shell_v2_structure_shell_production_box("%s_v0230_barracks_long_hall" % id, position + Vector3(-scale.x * 0.08, 0.28, -0.02), Vector3(scale.x * 0.72, 0.48, scale.z * 0.62), color.darkened(0.12 if damaged else 0.06))
+			_add_v0230_gable_roof("%s_v0230_barracks_true_long_roof" % id, position + Vector3(-scale.x * 0.08, 0.52, -0.02), scale.x * 0.86, scale.z * 0.78, 0.32, roof_color)
+			_add_shell_v2_structure_shell_production_box("%s_v0230_barracks_roof_ridge" % id, position + Vector3(-scale.x * 0.08, 0.85, -0.02), Vector3(scale.x * 0.90, 0.045, 0.055), timber_light)
+			_add_shell_v2_structure_shell_production_box("%s_v0230_barracks_armory_annex" % id, position + Vector3(scale.x * 0.40, 0.23, -scale.z * 0.22), Vector3(scale.x * 0.32, 0.38, scale.z * 0.38), dressed_stone.darkened(0.12))
+			_add_v0230_gable_roof("%s_v0230_barracks_annex_cross_gable" % id, position + Vector3(scale.x * 0.40, 0.42, -scale.z * 0.22), scale.z * 0.52, scale.x * 0.43, 0.23, slate_light.darkened(0.08), false)
+			_add_shell_v2_structure_shell_production_box("%s_v0230_barracks_gate_recess" % id, position + Vector3(-scale.x * 0.12, 0.22, scale.z * 0.36), Vector3(scale.x * 0.24, 0.34, 0.10), entry_dark)
+			_add_shell_v2_structure_shell_production_box("%s_v0230_barracks_gate_header" % id, position + Vector3(-scale.x * 0.12, 0.43, scale.z * 0.39), Vector3(scale.x * 0.36, 0.065, 0.12), timber_light)
+			for x in [-0.38, -0.12, 0.14]:
+				_add_shell_v2_structure_shell_production_box("%s_v0230_barracks_frame_post_%s" % [id, int((x + 0.5) * 100.0)], position + Vector3(scale.x * x, 0.30, scale.z * 0.37), Vector3(0.052, 0.48, 0.060), timber)
+			_add_v0230_brace("%s_v0230_barracks_brace_west" % id, position + Vector3(0.0, 0.10, scale.z * 0.375), Vector2(-scale.x * 0.39, 0.02), Vector2(-scale.x * 0.14, 0.39), 0.070, 0.048, timber_light)
+			_add_v0230_brace("%s_v0230_barracks_brace_east" % id, position + Vector3(0.0, 0.10, scale.z * 0.375), Vector2(scale.x * 0.14, 0.02), Vector2(scale.x * 0.36, 0.37), 0.070, 0.048, timber_light)
+			_add_shell_v2_structure_shell_production_box("%s_v0230_barracks_yard_step" % id, position + Vector3(-scale.x * 0.08, -0.065, scale.z * 0.60), Vector3(scale.x * 0.62, 0.055, 0.17), dressed_stone)
+			for x in [-0.48, 0.46]:
+				_add_shell_v2_structure_shell_production_box("%s_v0230_barracks_yard_post_%s" % [id, int((x + 0.5) * 100.0)], position + Vector3(scale.x * x, 0.18, scale.z * 0.58), Vector3(0.052, 0.32, 0.052), timber)
+			_add_shell_v2_structure_shell_production_box("%s_v0230_barracks_weapon_rack" % id, position + Vector3(-scale.x * 0.43, 0.26, scale.z * 0.48), Vector3(0.08, 0.40, scale.z * 0.30), timber)
+			_add_v0230_brace("%s_v0230_barracks_weapon_spear" % id, position + Vector3(-scale.x * 0.43, 0.08, scale.z * 0.51), Vector2(-0.08, 0.0), Vector2(0.08, 0.36), 0.035, 0.025, iron)
+			if state != "complete":
+				_add_shell_v2_structure_shell_production_box("%s_v0230_barracks_repair_trestle" % id, position + Vector3(scale.x * 0.17, 0.22, -scale.z * 0.47), Vector3(scale.x * 0.42, 0.055, 0.07), timber_light)
+				_add_v0230_brace("%s_v0230_barracks_repair_brace" % id, position + Vector3(0.0, 0.07, -scale.z * 0.47), Vector2(-scale.x * 0.12, 0.0), Vector2(scale.x * 0.23, 0.30), 0.060, 0.045, timber_light)
+		"west_stone_cut":
+			var active_site := team == "friendly" or v0132_mine_controlled
+			_add_shell_v2_structure_shell_production_box("%s_v0230_mine_lower_terrace" % id, position + Vector3(0.0, -0.060, 0.02), Vector3(scale.x * 1.12, 0.14, scale.z * 0.98), stone_shadow)
+			_add_shell_v2_structure_shell_production_box("%s_v0230_mine_upper_terrace" % id, position + Vector3(scale.x * 0.24, 0.015, -scale.z * 0.18), Vector3(scale.x * 0.62, 0.12, scale.z * 0.48), dressed_stone.darkened(0.12))
+			_add_shell_v2_structure_shell_production_box("%s_v0230_mine_mouth" % id, position + Vector3(-scale.x * 0.37, 0.27, scale.z * 0.39), Vector3(scale.x * 0.38, 0.45, 0.18), entry_dark)
+			for x in [-0.59, -0.15]:
+				_add_shell_v2_structure_shell_production_box("%s_v0230_mine_mouth_pier_%s" % [id, int((x + 0.7) * 100.0)], position + Vector3(scale.x * x, 0.29, scale.z * 0.39), Vector3(0.13, 0.50, 0.22), pale_stone.darkened(0.12))
+			_add_shell_v2_structure_shell_production_box("%s_v0230_mine_mouth_lintel" % id, position + Vector3(-scale.x * 0.37, 0.56, scale.z * 0.39), Vector3(scale.x * 0.60, 0.105, 0.24), timber_light)
+			_add_v0230_gable_roof("%s_v0230_mine_mouth_canopy" % id, position + Vector3(-scale.x * 0.37, 0.61, scale.z * 0.41), scale.x * 0.67, scale.z * 0.38, 0.20, slate_light)
+			_add_shell_v2_structure_shell_production_box("%s_v0230_mine_workshop" % id, position + Vector3(scale.x * 0.29, 0.29, -scale.z * 0.20), Vector3(scale.x * 0.52, 0.46, scale.z * 0.48), dressed_stone.darkened(0.15))
+			_add_v0230_gable_roof("%s_v0230_mine_workshop_true_roof" % id, position + Vector3(scale.x * 0.29, 0.52, -scale.z * 0.20), scale.x * 0.66, scale.z * 0.62, 0.28, slate)
+			_add_shell_v2_structure_shell_production_box("%s_v0230_mine_workshop_ridge" % id, position + Vector3(scale.x * 0.29, 0.81, -scale.z * 0.20), Vector3(scale.x * 0.70, 0.045, 0.050), timber_light)
+			for x in [0.02, 0.54]:
+				_add_shell_v2_structure_shell_production_box("%s_v0230_mine_gantry_post_%s" % [id, int(x * 100.0)], position + Vector3(scale.x * x, 0.66, scale.z * 0.02), Vector3(0.070, 0.96, 0.070), timber)
+			_add_shell_v2_structure_shell_production_box("%s_v0230_mine_gantry_crossbeam" % id, position + Vector3(scale.x * 0.28, 1.14, scale.z * 0.02), Vector3(scale.x * 0.72, 0.085, 0.085), timber_light)
+			_add_v0230_brace("%s_v0230_mine_gantry_brace_west" % id, position + Vector3(0.0, 0.20, scale.z * 0.025), Vector2(scale.x * 0.02, 0.0), Vector2(scale.x * 0.27, 0.76), 0.080, 0.055, timber_light)
+			_add_v0230_brace("%s_v0230_mine_gantry_brace_east" % id, position + Vector3(0.0, 0.20, scale.z * 0.025), Vector2(scale.x * 0.54, 0.0), Vector2(scale.x * 0.29, 0.76), 0.080, 0.055, timber_light)
+			_add_presentation_shell_v2_cylinder("%s_v0230_mine_winch" % id, position + Vector3(scale.x * 0.28, 0.90, scale.z * 0.02), 0.13, 0.18, iron, "structures")
+			_record_shell_v2_structure_shell_production_node("%s_v0230_mine_winch" % id)
+			_add_shell_v2_structure_shell_production_box("%s_v0230_mine_cart" % id, position + Vector3(-scale.x * 0.04, 0.10, scale.z * 0.58), Vector3(0.36, 0.19, 0.26), timber.darkened(0.06))
+			_add_shell_v2_structure_shell_production_box("%s_v0230_mine_lume_plinth" % id, position + Vector3(scale.x * 0.58, 0.18, scale.z * 0.47), Vector3(0.34, 0.25, 0.34), pale_stone)
+			_add_v0230_lume_crystal("%s_v0230_mine_lume_crystal" % id, position + Vector3(scale.x * 0.58, 0.55, scale.z * 0.47), 0.15, 0.56, lume)
+			if active_site:
+				_add_shell_v2_structure_shell_production_box("%s_v0230_mine_claim_banner" % id, position + Vector3(scale.x * 0.67, 0.52, -scale.z * 0.38), Vector3(0.055, 0.64, 0.055), timber)
+				_add_shell_v2_structure_shell_production_box("%s_v0230_mine_claim_cloth" % id, position + Vector3(scale.x * 0.59, 0.69, -scale.z * 0.38), Vector3(0.18, 0.24, 0.030), Color(0.14, 0.52, 0.39, 1.0))
+		"ford_toll":
+			_add_shell_v2_structure_shell_production_box("%s_v0230_ford_plinth" % id, position + Vector3(0.0, 0.035, 0.0), Vector3(scale.x * 0.76, 0.15, scale.z * 0.50), dressed_stone.darkened(0.08))
+			_add_shell_v2_structure_shell_production_box("%s_v0230_ford_house" % id, position + Vector3(0.0, 0.24, -scale.z * 0.02), Vector3(scale.x * 0.48, 0.34, scale.z * 0.34), color.darkened(0.14))
+			_add_v0230_gable_roof("%s_v0230_ford_true_roof" % id, position + Vector3(0.0, 0.41, -scale.z * 0.02), scale.x * 0.62, scale.z * 0.48, 0.22, slate_light)
+			_add_shell_v2_structure_shell_production_box("%s_v0230_ford_entry" % id, position + Vector3(0.0, 0.20, scale.z * 0.18), Vector3(scale.x * 0.18, 0.24, 0.07), entry_dark)
+			_add_v0230_brace("%s_v0230_ford_front_brace" % id, position + Vector3(0.0, 0.09, scale.z * 0.19), Vector2(-scale.x * 0.22, 0.0), Vector2(scale.x * 0.19, 0.28), 0.055, 0.040, timber_light)
+			_add_v0230_lume_crystal("%s_v0230_ford_lume_marker" % id, position + Vector3(scale.x * 0.34, 0.40, scale.z * 0.10), 0.075, 0.28, lume)
+		_:
+			_add_shell_v2_structure_shell_production_box("%s_v0230_support_plinth" % id, position + Vector3(0.0, 0.08, 0.0), Vector3(scale.x * 0.62, 0.18, scale.z * 0.50), dressed_stone.darkened(0.12))
+			_add_shell_v2_structure_shell_production_box("%s_v0230_support_house" % id, position + Vector3(0.0, 0.27, 0.0), Vector3(scale.x * 0.48, 0.30, scale.z * 0.38), color.darkened(0.15))
+			_add_v0230_gable_roof("%s_v0230_support_true_roof" % id, position + Vector3(0.0, 0.42, 0.0), scale.x * 0.60, scale.z * 0.50, 0.20, slate)
 
 func _add_salto_structure_landmark_fidelity_details(id: String, fixture: String, position: Vector3, scale: Vector3, state: String) -> void:
 	var dressed_stone := Color(0.48, 0.45, 0.35, 1.0)
@@ -8858,6 +9073,23 @@ func _add_salto_bridge_shell_reboot_layers(
 		_add_shell_v2_bridge_shell_box("v0227_bridge_east_abutment_face", Vector3(1.84, 0.338, 0.88), Vector3(0.34, 0.19, 1.02), old_stone.darkened(0.10), "bridge", false, 0.0, false, reboot_bridge_bank_material_kind)
 		_add_shell_v2_bridge_shell_ribbon("v0227_bridge_west_approach_blend", Vector2(-1.36, 0.84), Vector2(-0.48, 0.88), 0.62, 0.350, approach_dust.darkened(0.08), "bridge", reboot_road_material_kind, false, reboot_road_uv_scale)
 		_add_shell_v2_bridge_shell_ribbon("v0227_bridge_east_approach_blend", Vector2(1.80, 0.88), Vector2(2.70, 0.70), 0.62, 0.350, approach_dust.darkened(0.12), "bridge", reboot_road_material_kind, false, reboot_road_uv_scale)
+	if salto_structure_art_fidelity_enabled:
+		_add_v0230_bridge_support_details(old_stone, cap_stone, rail_timber)
+
+func _add_v0230_bridge_support_details(old_stone: Color, cap_stone: Color, rail_timber: Color) -> void:
+	for side in [-1.0, 1.0]:
+		var x := -0.48 if side < 0.0 else 1.80
+		var prefix := "west" if side < 0.0 else "east"
+		_add_shell_v2_bridge_shell_box("v0230_bridge_%s_masonry_pier" % prefix, Vector3(x, 0.330, 0.88), Vector3(0.24, 0.18, 0.82), old_stone.darkened(0.14 if side < 0.0 else 0.10), "bridge")
+		_add_shell_v2_bridge_shell_box("v0230_bridge_%s_pier_cap" % prefix, Vector3(x, 0.418, 0.88), Vector3(0.33, 0.050, 0.88), cap_stone.darkened(0.18), "bridge")
+		_add_shell_v2_bridge_shell_box("v0230_bridge_%s_north_buttress" % prefix, Vector3(x - side * 0.13, 0.344, 0.52), Vector3(0.16, 0.14, 0.18), old_stone.darkened(0.18), "bridge")
+		_add_shell_v2_bridge_shell_box("v0230_bridge_%s_south_buttress" % prefix, Vector3(x - side * 0.13, 0.344, 1.24), Vector3(0.16, 0.14, 0.18), old_stone.darkened(0.15), "bridge")
+		_add_v0230_brace("v0230_bridge_%s_north_timber_knee" % prefix, Vector3(x, 0.39, 0.49), Vector2(-side * 0.04, 0.0), Vector2(side * 0.33, 0.22), 0.065, 0.045, rail_timber)
+		_add_v0230_brace("v0230_bridge_%s_south_timber_knee" % prefix, Vector3(x, 0.39, 1.27), Vector2(-side * 0.04, 0.0), Vector2(side * 0.33, 0.22), 0.065, 0.045, rail_timber.darkened(0.05))
+		_record_shell_v2_bridge_shell_node("v0230_bridge_%s_north_timber_knee" % prefix)
+		_record_shell_v2_bridge_shell_node("v0230_bridge_%s_south_timber_knee" % prefix)
+	_add_shell_v2_bridge_shell_box("v0230_bridge_west_approach_step", Vector3(-0.82, 0.370, 0.88), Vector3(0.34, 0.050, 0.64), cap_stone.darkened(0.18), "bridge")
+	_add_shell_v2_bridge_shell_box("v0230_bridge_east_approach_step", Vector3(2.14, 0.370, 0.88), Vector3(0.34, 0.050, 0.64), cap_stone.darkened(0.14), "bridge")
 
 func _add_shell_v2_environmental_cohesion_layers() -> void:
 	var terrain_understory := Color(0.25, 0.34, 0.21, 0.34)

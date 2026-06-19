@@ -11,11 +11,16 @@ Every phase should protect these long-term pillars:
 
 ## Current Recommended Next Phase
 
-The current checkpoint is **v0.229 Salto structure landmark fidelity and haze cleanup rescue** on 2026-06-18. The decision is `PASS_V0229_STRUCTURE_LANDMARK_FIDELITY_RESCUE_WITH_PROCEDURAL_ART_LIMIT`.
+The current checkpoint is **v0.230 retained authored structure-art fidelity** on 2026-06-18. The decision is `PASS_V0230_RETAINED_AUTHORED_STRUCTURE_ART_FIDELITY`.
 
-The v0.228 terrain topology remains, while broad review-value haze and the muddy ground blanket are removed. The keep, barracks and central mine/Lume site now read as distinct opaque landmarks. The remaining ceiling is authored structure-art fidelity rather than battlefield topology or hierarchy.
+The v0.228 terrain topology and v0.229 readability cleanup remain, while the selected structure renderer now uses true pitched roof prisms, stepped plinths, recessed entries, asymmetric massing, timber framing and diagonal braces. The keep, barracks, mine/Lume site, ford support and bridge supports now read as distinct authored low-poly landmarks.
 
-Exactly one next milestone is recommended if authorized: **v0.230 retained authored structure-art fidelity pass** for the existing keep, barracks and mine/Lume silhouettes. Do not start it without a new explicit prompt.
+Exactly one next milestone is recommended if authorized: **v0.231 retained battlefield material/value integration** around the authored structures. Do not reopen structure geometry, UI or gameplay scope, and do not start it without a new explicit prompt.
+
+New v0.230 docs:
+
+- `docs/V0230_STRUCTURE_ART_FIDELITY_REPORT.md`
+- `docs/V0230_IMPLEMENTATION_REPORT.md`
 
 New v0.229 docs:
 

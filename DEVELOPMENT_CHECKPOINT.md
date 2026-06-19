@@ -1,6 +1,17 @@
 # Development Checkpoint
 
-Updated: 2026-06-18 v0.229 structure landmark fidelity and haze cleanup rescue
+Updated: 2026-06-18 v0.230 retained authored structure-art fidelity
+
+## v0.230 Retained Authored Structure-Art Fidelity - 2026-06-18
+
+- Decision: `PASS_V0230_RETAINED_AUTHORED_STRUCTURE_ART_FIDELITY`.
+- Replaced the selected v0.229 stacked-box renderer with authored low-poly keep, barracks, mine/Lume, ford-support and bridge-support geometry.
+- Added true pitched roof prisms, stepped foundations, recessed entries, asymmetric massing, timber framing, diagonal braces, gantries, banners and faceted Lume crystals.
+- Capture, fallback/v0.229 comparator validation, benchmark, 887 tests, Godot headless tests, build, content, art intake, 52 runtime-art slots, retention, cleanup dry run and diff checks pass.
+- Selected benchmark: 48.80 FPS average, 18.80 ms p95; 1.2345 FPS ratio versus v0.229.
+- New source images, downloads, derivatives and runtime-art slots: zero.
+- Review pack: `artifacts/manual-review/v0230-structure-art-fidelity/`.
+- Remaining ceiling: authored silhouette and identity now pass, but material richness remains below final fantasy RTS production art.
 
 ## v0.229 Structure Landmark Fidelity and Haze Cleanup Rescue - 2026-06-18
 

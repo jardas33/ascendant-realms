@@ -1,16 +1,16 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-06-18 v0.229 structure landmark fidelity and haze cleanup rescue
+Last updated: 2026-06-18 v0.230 retained authored structure-art fidelity
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
 ## Current Continuation Note
 
-The latest work is v0.229 structure landmark fidelity and haze cleanup rescue. The decision is `PASS_V0229_STRUCTURE_LANDMARK_FIDELITY_RESCUE_WITH_PROCEDURAL_ART_LIMIT`. The isolated path removes broad translucent review-value overlays and the muddy ground texture blanket, while rebuilding the keep, barracks and central mine/Lume site as opaque procedural landmarks. Technical, fallback, benchmark and repository gates pass.
+The latest work is v0.230 retained authored structure-art fidelity. The decision is `PASS_V0230_RETAINED_AUTHORED_STRUCTURE_ART_FIDELITY`. The isolated path replaces the selected v0.229 stacked-box structure renderer with deterministic authored Godot geometry for the keep, barracks, central mine/Lume site, ford support and bridge supports. True pitched roof prisms, stepped foundations, recessed entries, asymmetric masses, timber framing and diagonal braces now survive normal zoom.
 
-No new source asset, derivative or runtime-art slot was created. The v0.202 structure material remains comparator/fallback evidence but is not projected across the v0.229 landmarks because its box-wide projection read as texture cards.
+No source image, download, derivative or runtime-art slot was created. The default launcher, browser runtime, gameplay, pathing, collision, objectives, AI, economy, saves, stable IDs and unit data remain unchanged. v0.229 remains the direct comparator.
 
-Exactly one next milestone is recommended if authorized: v0.230 retained authored structure-art fidelity pass for the existing keep, barracks and mine/Lume silhouettes. Do not start it without a new explicit prompt.
+The result passes as authored low-poly structure art, not final high-detail environment art. Exactly one next milestone is recommended if authorized: v0.231 retained battlefield material/value integration around the authored structures. Do not start it without a new explicit prompt.
 
 ## Project Identity
 

@@ -1,5 +1,13 @@
 # Changelog
 
+# v0.230 Retained Authored Structure-Art Fidelity - 2026-06-18
+
+- Added an isolated visual-only authored structure renderer while preserving v0.229 as the direct comparator.
+- Rebuilt the keep, barracks, mine/Lume site, ford support and bridge supports with true pitched roof prisms, stepped plinths, recessed entries, asymmetric massing, timber posts and diagonal braces.
+- Added the exact eleven captures, before/after sheet, candid notes, fallback/comparator validation and benchmark tooling.
+- Recorded `PASS_V0230_RETAINED_AUTHORED_STRUCTURE_ART_FIDELITY`: structures now read as authored low-poly landmarks, while material richness remains below final production-art fidelity.
+- Created zero source assets, downloads, derivatives or runtime-art slots and preserved all gameplay/default-launcher boundaries.
+
 # v0.229 Salto Structure Landmark Fidelity and Haze Cleanup Rescue - 2026-06-18
 
 - Added an isolated visual-only path that removes broad review-value overlays and the muddy full-field ground texture blanket.
