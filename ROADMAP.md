@@ -11,13 +11,18 @@ Every phase should protect these long-term pillars:
 
 ## Current Recommended Next Phase
 
-The current checkpoint is **v0.232 visual pipeline reset and production-art direction spike** on 2026-06-19. The decision is `PRODUCTION_DIRECTION_PROVEN_NOT_PRODUCTION_ART`.
+The current checkpoint is **v0.233 Blender-authored modular RTS environment-kit attempt** on 2026-06-19. The verdict is `BLOCKED_FOR_LOCAL_BLENDER_EXPORT`.
 
-The separate non-playable Godot 3D orthographic spike is substantially stronger than v0.231 in depth, lighting, terrain elevation, water recession, bridge contact and landmark hierarchy. It proves that Godot is not the bottleneck. It does not prove finished art quality: the current spike is still code-built low-poly geometry.
+Blender is unavailable in the execution environment, so no `.blend`, `.glb`, Godot import or new visual result exists. The repository now contains the full authoring script, module/material contract and fail-closed Godot importer required to resume this milestone locally.
 
-Recommended future direction, only if explicitly authorized: build a small Blender-authored modular GLTF environment kit and validate it in the isolated scene before reconnecting gameplay. Do not resume incremental rectangle/band compositor polish and do not change engine now.
+Required next action: provide Blender, run the checked-in export, and finish the v0.233 visual quality gate. Keep Godot. Do not reconnect gameplay, resume rectangle/band polishing or start an engine migration.
 
-Stop at v0.232. No v0.233 or following milestone is authorized without a new explicit prompt.
+Stop at blocked v0.233. Do not start v0.234 before the real v0.233 authored GLB is imported and reviewed.
+
+New v0.233 docs:
+
+- `docs/V0233_BLENDER_MODULAR_KIT_PIPELINE.md`
+- `docs/V0233_IMPLEMENTATION_REPORT.md`
 
 New v0.232 docs:
 

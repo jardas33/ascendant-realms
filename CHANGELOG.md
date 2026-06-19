@@ -1,5 +1,13 @@
 # Changelog
 
+# v0.233 Blender-Authored Modular RTS Environment Kit Scaffold - 2026-06-19
+
+- Recorded `BLOCKED_FOR_LOCAL_BLENDER_EXPORT` after Blender was absent from PATH, standard installs, registry, user-local, package-manager and Steam locations.
+- Added a checked-in Blender Python authoring source for nineteen terrain, road, river, bridge, landmark, prop and scale modules with twelve named material slots.
+- Added the deterministic asset contract and isolated Godot GLB importer scaffold without creating or pretending to import a GLB.
+- Created the exact ten-file review pack using explicit blocker cards; no v0.233 visual improvement is claimed.
+- Added zero downloads, generated images or runtime-art slots and changed no gameplay/default-launcher behavior.
+
 # v0.232 Visual Pipeline Reset and Production-Art Direction Spike - 2026-06-19
 
 - Recorded the blunt diagnosis that v0.231's remaining failure is the code-authored rectangle/band/primitive art pipeline, not Godot's rendering ceiling.

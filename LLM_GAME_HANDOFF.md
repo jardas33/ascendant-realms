@@ -1,18 +1,20 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-06-19 v0.232 visual pipeline reset and production-art direction spike
+Last updated: 2026-06-19 v0.233 Blender modular-kit export blocker
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
 ## Current Continuation Note
 
-The latest work is v0.232 visual pipeline reset and production-art direction spike. The decision is `PRODUCTION_DIRECTION_PROVEN_NOT_PRODUCTION_ART`.
+The latest work is the v0.233 Blender-authored modular RTS environment-kit attempt. The verdict is `BLOCKED_FOR_LOCAL_BLENDER_EXPORT`.
 
-The milestone stops incremental v0.231 polishing and adds one separate non-playable Godot scene: `res://scenes/salto_production_target_spike.tscn`. It uses an orthographic 3D camera, real terrain elevation, recessed water, continuous route and river geometry, directional/local lighting, cast shadows, authored low-poly keep/barracks/mine/bridge silhouettes and units for scale. The exact review pack demonstrates a substantially stronger RTS scene read than v0.231.
+Blender was not available through PATH, standard Blender Foundation folders, Windows uninstall registry entries, user-local programs, package-manager locations or common Steam libraries. Per the milestone rules, no installer was downloaded and no GLB was fabricated.
 
-The candid boundary matters: this is still code-built low-poly prototype geometry, not production art. Godot should be retained; the next recommended art step is a Blender-authored modular GLTF kit with explicit scale, palette, material, lighting and performance budgets. The v0.231 rectangle/band compositor should remain only as comparator/debug fallback.
+The repository now contains the checked-in Blender Python source for nineteen named environment modules, a twelve-material asset contract, an isolated Godot importer scaffold and exact blocked-state review/validation tooling. The ten-file review pack explicitly shows that v0.232 remains the only visual result; v0.233 does not claim improvement or production-art proof.
 
-No generated image, download or runtime-art slot was added. The default launcher, browser runtime, gameplay, pathing, collision, objectives, AI, economy, saves, stable IDs and production logic remain unchanged. Stop at v0.232; do not start v0.233 without a new explicit prompt.
+Keep Godot and retain the Blender-authored direction. The next action is to provide a local Blender installation, run `npm run blender:generate:salto-modular-kit`, and rerun v0.233 until a real GLB is visibly imported and reviewed. Do not begin v0.234 first.
+
+No generated image, download or runtime-art slot was added. The default launcher, browser runtime, gameplay, pathing, collision, objectives, AI, economy, saves, stable IDs and production logic remain unchanged.
 
 ## Project Identity
 

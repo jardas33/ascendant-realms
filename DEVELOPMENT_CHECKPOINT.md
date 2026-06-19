@@ -1,6 +1,17 @@
 # Development Checkpoint
 
-Updated: 2026-06-19 v0.232 visual pipeline reset and production-art direction spike
+Updated: 2026-06-19 v0.233 Blender modular-kit export blocker
+
+## v0.233 Blender-Authored Modular RTS Environment Kit - 2026-06-19
+
+- Verdict: `BLOCKED_FOR_LOCAL_BLENDER_EXPORT`.
+- Blender was unavailable after PATH, standard-install, registry, user-local, package-manager and Steam checks.
+- No `.blend`, `.glb` or imported authored asset was produced, so no visual PASS or improvement claim is made.
+- Added checked-in Blender source for nineteen modules, a twelve-material asset contract, an isolated Godot importer scaffold and explicit blocked-state review tooling.
+- Exact review pack: `artifacts/manual-review/v0233-blender-modular-kit/`.
+- Downloads, generated images and new runtime-art slots: zero.
+- Browser runtime, gameplay, saves, stable IDs, pathing, collision, AI, objectives, economy, production logic and default launcher: unchanged.
+- Do not begin v0.234. Resolve the local Blender export and rerun v0.233 first.
 
 ## v0.232 Visual Pipeline Reset and Production-Art Direction Spike - 2026-06-19
 

@@ -1,0 +1,53 @@
+{
+  "schemaVersion": 1,
+  "checkpoint": "v0.233",
+  "statusWithoutExport": "BLOCKED_FOR_LOCAL_BLENDER_EXPORT",
+  "sourceScript": "tools/blender/generate_v0233_salto_modular_kit.py",
+  "expectedBlendPath": "desktop-spikes/godot-salto/assets/v0233/salto_modular_environment_kit.blend",
+  "expectedGlbPath": "desktop-spikes/godot-salto/assets/v0233/salto_modular_environment_kit.glb",
+  "coordinateSystem": "Blender Z-up exported to Godot GLTF",
+  "unitScaleMeters": 1.0,
+  "modules": [
+    "terrain_base_tile",
+    "terrain_grass_patch",
+    "terrain_earth_patch",
+    "road_straight",
+    "road_intersection",
+    "road_bridge_connector",
+    "river_channel_banks",
+    "bridge_module",
+    "keep_landmark",
+    "barracks_workshop_landmark",
+    "mine_lume_landmark",
+    "prop_rock_cluster",
+    "prop_log_stack",
+    "prop_crate_stack",
+    "prop_posts",
+    "prop_tree",
+    "prop_rubble",
+    "prop_barrels",
+    "unit_scale_dummies"
+  ],
+  "materials": [
+    "MAT_Stone",
+    "MAT_StoneDark",
+    "MAT_RoadDirt",
+    "MAT_Grass",
+    "MAT_Earth",
+    "MAT_Roof",
+    "MAT_Wood",
+    "MAT_Water",
+    "MAT_Crystal",
+    "MAT_ContactDark",
+    "MAT_Plaster",
+    "MAT_Metal"
+  ],
+  "hardBoundaries": {
+    "browserRuntimeChanged": false,
+    "gameplayConnected": false,
+    "defaultLauncherChanged": false,
+    "newRuntimeArtSlots": 0,
+    "downloadedAssets": 0,
+    "generatedAiImages": 0
+  }
+}
