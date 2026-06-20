@@ -1,6 +1,18 @@
 # Development Checkpoint
 
-Updated: 2026-06-20 v0.238 Barrosan building roster expansion
+Updated: 2026-06-20 v0.239 Barrosan roster silhouette differentiation and settlement beauty restore
+
+## v0.239 Barrosan Roster Silhouette Differentiation and Settlement Beauty Restore - 2026-06-20
+
+- Milestone verdict: `PASS`.
+- Revised all six v0.238 roster modules by footprint, height, openness, roof proportion and role-yard language rather than recoloring a shared body.
+- Added six role props and six material families; composed nine buildings, 28 role-prop instances, fifteen additional vegetation instances and six working-ground surfaces.
+- Restored inhabited settlement rhythm while preserving road, bridge, river and tactical readability.
+- New versioned GLB: `desktop-spikes/godot-salto/assets/v0239/salto_barrosan_roster_silhouette_beauty.glb`; v0.238 remains byte-for-byte unchanged.
+- Exact review pack: `artifacts/manual-review/v0239-barrosan-roster-silhouette-beauty/`.
+- Required report: `docs/V0239_BARROSAN_ROSTER_SILHOUETTE_BEAUTY_REPORT.md`.
+- Gameplay, saves, economy, selection, pathing, commands, minimap, objectives, production, AI, collision, browser runtime, runtime-art slots and default launcher remain unchanged.
+- Stop after v0.239. Do not begin v0.240 without explicit authorization.
 
 ## v0.238 Barrosan Building Roster Expansion - 2026-06-20
 

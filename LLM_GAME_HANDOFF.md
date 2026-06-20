@@ -1,22 +1,24 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-06-20 v0.238 Barrosan building roster expansion
+Last updated: 2026-06-20 v0.239 Barrosan roster silhouette differentiation and settlement beauty restore
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
 ## Current Continuation Note
 
-The latest work is v0.238, the Barrosan building-roster expansion over the retained v0.237 material-richness slice. The bounded milestone verdict is `PASS`.
+The latest work is v0.239, the silhouette-differentiation and settlement-beauty rescue over the retained v0.238 roster. The bounded milestone verdict is `PASS`.
 
-The art bible at `docs/art/V0236_BARROSAN_FACTION_ART_BIBLE.md` now includes v0.238 rules for domestic, economy, defense/support and future roster expansion while reserving civic, military and Lume hierarchy for the existing landmark trio.
+The art bible at `docs/art/V0236_BARROSAN_FACTION_ART_BIBLE.md` now requires silhouette-first role separation and explicitly prevents same-body orange-roof variants.
 
 Blender 5.1.2 generated `art-source/blender/v0238/salto_barrosan_building_roster.blend` and `desktop-spikes/godot-salto/assets/v0238/salto_barrosan_building_roster.glb`. The v0.237 GLB remains byte-for-byte unchanged. The revision adds exactly six buildings—house/dwelling, farm/granary, lumber/carpenter yard, blacksmith/forge, watchtower and market/storehouse—plus eight reusable props and ten material families.
 
-The isolated Godot scene `res://scenes/salto_barrosan_building_roster.tscn` composes the three retained landmarks and all six new roles into one connected mini-base with fifteen role props, organic ground, connected roads, shaped river and bridge. The exact eleven-file pack at `artifacts/manual-review/v0238-barrosan-building-roster/` proves the overview, each required role and scale readability; optional capture `09` is absent because no optional building was authored.
+Blender 5.1.2 generated `art-source/blender/v0239/salto_barrosan_roster_silhouette_beauty.blend` and `desktop-spikes/godot-salto/assets/v0239/salto_barrosan_roster_silhouette_beauty.glb`. The v0.238 GLB remains byte-for-byte unchanged. All six roster roles were revised, with six added role props and six material changes.
 
-The overview reads as a substantially more complete RTS base, and role-specific silhouettes and yards remain legible while the keep, barracks and mine retain landmark authority. It remains stylized low-poly production art rather than final hand-textured shipped environment art.
+The isolated Godot scene `res://scenes/salto_barrosan_roster_silhouette_beauty.tscn` composes the three retained landmarks and six revised roles with 28 role-prop placements, added vegetation and working-ground wear. The exact twelve-file pack is at `artifacts/manual-review/v0239-barrosan-roster-silhouette-beauty/`.
 
-No generated image, download or runtime-art slot was added. The default launcher, browser runtime, gameplay, pathing, collision, objectives, AI, economy, saves, stable IDs, selection, commands, production and minimap semantics remain unchanged. Stop at v0.238; do not begin v0.239 without new authorization.
+The overview now separates house, granary, lumber yard, forge, watchtower and market by massing and yard language while restoring more of v0.237's inhabited character. It remains stylized low-poly production art rather than final hand-textured shipped environment art.
+
+No generated image, download or runtime-art slot was added. The default launcher, browser runtime, gameplay, pathing, collision, objectives, AI, economy, saves, stable IDs, selection, commands, production and minimap semantics remain unchanged. Stop at v0.239; do not begin v0.240 without new authorization.
 
 ## Project Identity
 

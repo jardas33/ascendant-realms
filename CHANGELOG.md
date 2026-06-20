@@ -1,5 +1,14 @@
 # Changelog
 
+# v0.239 Barrosan Roster Silhouette Differentiation and Settlement Beauty Restore - 2026-06-20
+
+- Rebuilt all six v0.238 roster roles around distinct silhouette verbs: calm cottage, raised granary, open carpenter yard, heavy forge, braced watchtower and open trade hall.
+- Added six role props and six material families while preserving the v0.238 GLB byte-for-byte.
+- Restored inhabited settlement richness with threshold wear, working yards, vegetation, riverbank growth and clustered role clutter without narrowing tactical lanes.
+- Extended the Barrosan art bible with silhouette-first role rules and explicit prevention of samey orange-roof house variants.
+- Added the exact twelve-file review pack and recorded verdict `PASS`.
+- Gameplay systems and launcher defaults remain unchanged.
+
 # v0.238 Barrosan Building Roster Expansion - 2026-06-20
 
 - Used Blender 5.1.2 to create a new versioned source and GLB containing exactly six new roster modules: house/dwelling, farm/granary, lumber/carpenter yard, blacksmith/forge, watchtower and market/storehouse.

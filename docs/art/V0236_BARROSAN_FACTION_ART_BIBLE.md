@@ -258,3 +258,36 @@ This addendum raises the finish standard without changing the underlying Barrosa
 - The barracks/workshop alone owns the primary military training and weapons-yard read.
 - The mine/Lume site alone owns the dominant extraction portal and large controlled crystal language.
 - Domestic, economy and support modules may echo these materials, but must not borrow their landmark scale or signature role cues.
+
+## 12. v0.239 role-silhouette differentiation rules
+
+### Read the role before the palette
+
+- A Barrosan building must communicate its job through body mass, height, roof proportion, open or closed frontage, and yard footprint before material color is considered.
+- House means the smallest calm closed body, low porch, domestic footpath, garden, bench, laundry or low fence.
+- Granary means raised storage mass, broad loading threshold, loft or vent, food platform, sacks, hay and cart access.
+- Lumber means a small service body attached to a larger open timber yard with canopy, A-frame, saw bench, logs and plank stock.
+- Forge means a compact heavy stone body, dominant soot-dark chimney, forge mouth, anvil, tool rack and coal or ore pile.
+- Watchtower means a narrow vertical shaft, projecting lookout deck, braces, ladder and restrained guard banner; it must never read as a house lifted onto a plinth.
+- Market means an open public counter or hall, broad cloth awning, visible goods, loading space and restrained red or ochre trade accents.
+
+### Avoid samey orange-roof house syndrome
+
+- Do not begin every role from the same rectangular body and add props afterward.
+- Vary footprint aspect ratio, body-to-yard ratio, ridge height, roof pitch and span, attached canopy direction, vertical projection, foundation weight and threshold width.
+- Terracotta remains the faction roof family, but role recognition must survive a grayscale silhouette check.
+- Repeated roof color is acceptable only when the body, roof proportion and yard organization are clearly different.
+
+### Future roster variation
+
+- Choose one primary silhouette verb for every future module: compact, raised, open, heavy, vertical, broad, stepped or clustered.
+- Give every role one reserved yard language and two supporting props; do not scatter generic crates as a substitute for purpose.
+- Compose future buildings in a real settlement overview with roads, vegetation and neighboring structures before approval.
+- Preserve clear thresholds, worn working ground and clustered inhabited detail without narrowing tactical routes.
+
+### Landmark reservations remain
+
+- The keep retains the tallest formal civic crown, paired defensive towers and strongest banner authority.
+- The barracks/workshop retains the largest military frontage, drill or weapons-yard language and primary troop-production read.
+- The mine/Lume landmark retains the dominant extraction portal, cyan crystal concentration and industrial-magical identity.
+- Smaller roster buildings may share Barrosan construction materials but may not copy those three landmark signatures.

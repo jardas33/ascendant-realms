@@ -1,0 +1,42 @@
+﻿{
+    "checkpoint":  "v0.239",
+    "newV0239GlbExported":  true,
+    "blendPath":  "art-source/blender/v0239/salto_barrosan_roster_silhouette_beauty.blend",
+    "newOrChangedMaterialCount":  6,
+    "glbPath":  "desktop-spikes/godot-salto/assets/v0239/salto_barrosan_roster_silhouette_beauty.glb",
+    "revisedBuildingModules":  [
+                                   "house_dwelling",
+                                   "farm_granary",
+                                   "lumber_carpenter_yard",
+                                   "blacksmith_forge",
+                                   "watchtower_defense",
+                                   "market_storehouse"
+                               ],
+    "addedOrRevisedPropModuleCount":  6,
+    "existingV0238GlbModified":  false,
+    "sourceGenerator":  "tools/blender/generate_v0239_barrosan_roster_silhouette_beauty.py",
+    "hardBoundaries":  {
+                           "saveChanged":  false,
+                           "collisionChanged":  false,
+                           "newRuntimeArtSlots":  0,
+                           "downloadedAssets":  0,
+                           "browserRuntimeChanged":  false,
+                           "defaultLauncherChanged":  false,
+                           "economyLogicChanged":  false,
+                           "pathingChanged":  false,
+                           "selectionChanged":  false,
+                           "generatedAiImages":  0,
+                           "gameplayChanged":  false
+                       },
+    "revisedBuildingModuleCount":  6,
+    "schemaVersion":  1,
+    "addedOrRevisedPropModules":  [
+                                      "prop_laundry_bench",
+                                      "prop_grain_cart",
+                                      "prop_timber_a_frame",
+                                      "prop_forge_tool_rack",
+                                      "prop_coal_ore_pile",
+                                      "prop_watchtower_ladder"
+                                  ],
+    "blenderUsed":  true
+}
