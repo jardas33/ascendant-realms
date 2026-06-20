@@ -1,5 +1,13 @@
 # Changelog
 
+# v0.240 Barrosan Playable Art Integration Lane - 2026-06-20
+
+- Reused the v0.239 Barrosan GLB unchanged and added a data-driven opt-in mapping for nine gameplay building roles.
+- Added an isolated Godot playable/review scene with game-scale buildings, selection rings, labels, footprint fills, review collision shapes, valid/blocked placement examples and three unit-scale probes.
+- Preserved the v0.239 roof, yard, chimney, awning, storage and tower silhouette cues while keeping roads, bridge and river tactically readable.
+- Added the exact eleven-file review pack and recorded verdict `PASS`.
+- Blender, new GLB export, gameplay logic, browser runtime, runtime-art slots and launcher defaults remain unchanged.
+
 # v0.239 Barrosan Roster Silhouette Differentiation and Settlement Beauty Restore - 2026-06-20
 
 - Rebuilt all six v0.238 roster roles around distinct silhouette verbs: calm cottage, raised granary, open carpenter yard, heavy forge, braced watchtower and open trade hall.

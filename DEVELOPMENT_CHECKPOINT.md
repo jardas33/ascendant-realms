@@ -1,6 +1,18 @@
 # Development Checkpoint
 
-Updated: 2026-06-20 v0.239 Barrosan roster silhouette differentiation and settlement beauty restore
+Updated: 2026-06-20 v0.240 Barrosan playable art integration lane
+
+## v0.240 Barrosan Playable Art Integration Lane - 2026-06-20
+
+- Milestone verdict: `PASS`.
+- Reused the v0.239 GLB unchanged; Blender was not used and no new GLB was exported.
+- Added an opt-in nine-role mapping for keep, house, farm, lumber, blacksmith, barracks, mine, watchtower and market.
+- Added one isolated playable/review scene with nine selection rings, nine review collision shapes, completed-building footprint overlays, valid/blocked placement examples and Worker/Militia/Aster scale probes.
+- Preserved roads, bridge, river, v0.239 role silhouettes and all launcher defaults.
+- Exact review pack: `artifacts/manual-review/v0240-barrosan-playable-art-integration/`.
+- Required report: `docs/V0240_BARROSAN_PLAYABLE_ART_INTEGRATION_REPORT.md`.
+- Gameplay, saves, economy, selection logic, pathing, commands, minimap, objectives, production, AI, collision logic and browser runtime remain unchanged.
+- Stop after v0.240. Do not begin v0.241 without explicit authorization.
 
 ## v0.239 Barrosan Roster Silhouette Differentiation and Settlement Beauty Restore - 2026-06-20
 

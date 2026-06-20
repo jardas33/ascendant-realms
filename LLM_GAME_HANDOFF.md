@@ -1,12 +1,20 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-06-20 v0.239 Barrosan roster silhouette differentiation and settlement beauty restore
+Last updated: 2026-06-20 v0.240 Barrosan playable art integration lane
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
 ## Current Continuation Note
 
-The latest work is v0.239, the silhouette-differentiation and settlement-beauty rescue over the retained v0.238 roster. The bounded milestone verdict is `PASS`.
+The latest work is v0.240, the opt-in playable presentation integration of the retained v0.239 Barrosan roster. The bounded milestone verdict is `PASS`.
+
+The v0.239 GLB remains byte-for-byte unchanged. Blender was not used and no new GLB was exported.
+
+The isolated scene `res://scenes/salto_barrosan_playable_art_integration.tscn` loads `res://data/v0240_barrosan_playable_art_mapping.json` and maps nine gameplay-facing building roles to retained v0.239 modules. It adds review-only selection rings, labels, completed-building footprints, collision bounds, valid/blocked placement examples and Worker/Militia/Aster scale probes.
+
+The exact eleven-file pack is at `artifacts/manual-review/v0240-barrosan-playable-art-integration/`; the implementation report is `docs/V0240_BARROSAN_PLAYABLE_ART_INTEGRATION_REPORT.md`.
+
+This is presentation proof, not live gameplay wiring. Construction/damage states, real selection integration and default-runtime replacement remain future gated work. Gameplay, build rules, saves, economy, selection logic, pathing, collision logic, commands, minimap, objectives, production, AI, browser runtime, runtime-art slots and launcher defaults remain unchanged. Stop after v0.240; do not begin v0.241 without new authorization.
 
 The art bible at `docs/art/V0236_BARROSAN_FACTION_ART_BIBLE.md` now requires silhouette-first role separation and explicitly prevents same-body orange-roof variants.
 

@@ -148,6 +148,7 @@ const SCRIPT_ARG_PREFIXES := [
 	"--salto-barrosan-material-richness",
 	"--salto-barrosan-building-roster",
 	"--salto-barrosan-roster-silhouette-beauty",
+	"--salto-barrosan-playable-art-integration",
 	"--salto-bridge-shell-reboot",
 	"--salto-bridge-shell-legacy-comparator",
 	"--salto-structure-shell-production",
@@ -295,6 +296,15 @@ func _ready() -> void:
 		var silhouette_slice := silhouette_scene.instantiate()
 		add_child(silhouette_slice)
 		silhouette_slice.call_deferred("start")
+		return
+	if args.has("--salto-barrosan-playable-art-integration"):
+		var playable_art_scene := load("res://scenes/salto_barrosan_playable_art_integration.tscn") as PackedScene
+		if playable_art_scene == null:
+			get_tree().quit(1)
+			return
+		var playable_art_slice := playable_art_scene.instantiate()
+		add_child(playable_art_slice)
+		playable_art_slice.call_deferred("start")
 		return
 	if args.has("--salto-ui-architecture-wireframe"):
 		await run_ui_architecture_wireframe_capture()

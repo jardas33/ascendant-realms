@@ -1,0 +1,109 @@
+{
+  "schemaVersion": 1,
+  "checkpoint": "v0.240",
+  "posture": "opt-in-review-only",
+  "sourceGlb": "res://assets/v0239/salto_barrosan_roster_silhouette_beauty.glb",
+  "roles": [
+    {
+      "gameplayRole": "main_base",
+      "displayName": "Command Keep",
+      "module": "keep_landmark",
+      "position": [-20.0, -0.25, -14.0],
+      "yawDegrees": -2.0,
+      "scale": 0.82,
+      "footprint": [11.0, 8.5],
+      "selectionRadius": 6.0,
+      "cluster": "base"
+    },
+    {
+      "gameplayRole": "house",
+      "displayName": "Barrosan House",
+      "module": "house_dwelling",
+      "position": [-8.0, -0.24, 14.0],
+      "yawDegrees": 0.0,
+      "scale": 0.82,
+      "footprint": [7.0, 6.0],
+      "selectionRadius": 4.0,
+      "cluster": "economy"
+    },
+    {
+      "gameplayRole": "farm",
+      "displayName": "Granary Farm",
+      "module": "farm_granary",
+      "position": [2.0, -0.24, 14.0],
+      "yawDegrees": 0.0,
+      "scale": 0.78,
+      "footprint": [8.0, 6.5],
+      "selectionRadius": 4.4,
+      "cluster": "economy"
+    },
+    {
+      "gameplayRole": "lumber",
+      "displayName": "Carpenter Yard",
+      "module": "lumber_carpenter_yard",
+      "position": [15.0, -0.24, 14.0],
+      "yawDegrees": 0.0,
+      "scale": 0.74,
+      "footprint": [10.0, 7.0],
+      "selectionRadius": 5.2,
+      "cluster": "economy"
+    },
+    {
+      "gameplayRole": "blacksmith",
+      "displayName": "March Forge",
+      "module": "blacksmith_forge",
+      "position": [28.0, -0.24, 9.0],
+      "yawDegrees": -7.0,
+      "scale": 0.76,
+      "footprint": [8.0, 7.0],
+      "selectionRadius": 4.6,
+      "cluster": "economy"
+    },
+    {
+      "gameplayRole": "barracks",
+      "displayName": "Restored Barracks",
+      "module": "barracks_workshop_landmark",
+      "position": [-24.0, -0.25, 13.0],
+      "yawDegrees": 2.0,
+      "scale": 0.76,
+      "footprint": [12.0, 9.0],
+      "selectionRadius": 6.3,
+      "cluster": "base"
+    },
+    {
+      "gameplayRole": "mine",
+      "displayName": "Lume Mine",
+      "module": "mine_lume_landmark",
+      "position": [20.0, -0.25, -15.0],
+      "yawDegrees": -2.0,
+      "scale": 0.78,
+      "footprint": [11.0, 8.5],
+      "selectionRadius": 6.0,
+      "cluster": "resource"
+    },
+    {
+      "gameplayRole": "watchtower",
+      "displayName": "March Watchtower",
+      "module": "watchtower_defense",
+      "position": [31.0, -0.24, -11.0],
+      "yawDegrees": 2.0,
+      "scale": 0.74,
+      "footprint": [6.0, 6.0],
+      "selectionRadius": 3.8,
+      "cluster": "defense"
+    },
+    {
+      "gameplayRole": "market",
+      "displayName": "Frontier Market",
+      "module": "market_storehouse",
+      "position": [18.0, -0.24, -2.0],
+      "yawDegrees": 0.0,
+      "scale": 0.76,
+      "footprint": [10.0, 7.5],
+      "selectionRadius": 5.3,
+      "cluster": "logistics"
+    }
+  ],
+  "defaultRuntimeChanged": false,
+  "gameplaySystemsChanged": false
+}
