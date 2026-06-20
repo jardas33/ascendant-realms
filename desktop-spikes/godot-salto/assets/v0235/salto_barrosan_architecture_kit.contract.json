@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "checkpoint": "v0.235",
+  "sourceGenerator": "tools/blender/generate_v0235_salto_barrosan_architecture.py",
+  "blendPath": "art-source/blender/v0235/salto_barrosan_architecture_kit.blend",
+  "glbPath": "desktop-spikes/godot-salto/assets/v0235/salto_barrosan_architecture_kit.glb",
+  "existingV0233GlbModified": false,
+  "newV0235GlbExported": true,
+  "correctedBuildingModules": [
+    "keep_landmark",
+    "barracks_workshop_landmark",
+    "mine_lume_landmark"
+  ],
+  "correctedBuildingModuleCount": 3,
+  "correctedPitchedRoofAssemblies": [
+    "Keep_Roof",
+    "Barracks_Roof",
+    "Workshop_Roof",
+    "Mine_Roof"
+  ],
+  "correctedPitchedRoofAssemblyCount": 4,
+  "correctedTowerCapCount": 4,
+  "roofGeometryContract": {
+    "centralRidgeHighest": true,
+    "slopesDownToBothEaves": true,
+    "eaveOverhang": true,
+    "ridgeCaps": true,
+    "fasciaBoards": true,
+    "invertedRoofGeometry": false
+  },
+  "hardBoundaries": {
+    "browserRuntimeChanged": false,
+    "gameplayChanged": false,
+    "saveChanged": false,
+    "pathingChanged": false,
+    "defaultLauncherChanged": false,
+    "newRuntimeArtSlots": 0,
+    "downloadedAssets": 0,
+    "generatedAiImages": 0
+  }
+}

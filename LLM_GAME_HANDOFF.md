@@ -1,18 +1,20 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-06-19 v0.234 composed imported-Blender battlefield slice
+Last updated: 2026-06-19 v0.235 Human/Barrosan architecture correction and beauty pass
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
 ## Current Continuation Note
 
-The latest work is v0.234, which composes the retained v0.233R Blender-authored modular kit into one isolated Godot battlefield slice. The verdict is `PASS`.
+The latest work is v0.235, a Blender-authored Human/Barrosan architecture correction and beauty pass on the retained v0.234 battlefield composition. The bounded milestone verdict is `PASS`; overall production-art quality remains `PARTIAL`.
 
-Godot loads `desktop-spikes/godot-salto/assets/v0233/salto_modular_environment_kit.glb`, keeps the source instance hidden as a module library, and places forty imported instances into a continuous outpost: irregular ground, visible recessed river, bank-to-bank bridge, connected roads, raised keep, grounded barracks/workshop and mine/Lume zones, and localized prop clusters. Blender was not run again.
+Blender 5.1.2 generated a new source at `art-source/blender/v0235/salto_barrosan_architecture_kit.blend` and a new runtime GLB at `desktop-spikes/godot-salto/assets/v0235/salto_barrosan_architecture_kit.glb`. The v0.233R/v0.234 GLB remains unchanged for honest comparison.
 
-The exact ten-file pack at `artifacts/manual-review/v0234-composed-blender-battlefield-slice/` contains the v0.233R baseline, six real Godot captures, two contact sheets and the final report. The composition is clearly stronger than the floating catalogue and passes the bounded v0.234 goal. The art remains a simple low-poly direction slice rather than final production finish; its remaining weaknesses are material richness, repeated tile edges and sparse environmental dressing.
+Exactly three building modules were corrected: keep, barracks/workshop and mine/Lume. Four pitched-roof assemblies now use true ridge-to-eave mesh planes with the central ridge highest, bilateral downward slopes, overhanging eaves, ridge caps and fascia boards. Four keep tower crowns were replaced with hipped caps. Foundations, contact skirts, stone/plaster/wood variants, timber bracing, work-yard details, mine extraction framing and bridge braces make the roles more intentional.
 
-No generated image, download or runtime-art slot was added. The default launcher, browser runtime, gameplay, pathing, collision, objectives, AI, economy, saves, stable IDs, selection, commands, production and minimap semantics remain unchanged. Stop at v0.234; do not begin v0.235 without new authorization.
+The exact pack at `artifacts/manual-review/v0235-architecture-correction-beauty-pass/` proves the roof geometry and before/after result. The architecture is now competent authored low-poly faction work, but terrain repetition, sparse vegetation, broad flat surfaces and limited material microvariation still prevent a production-quality overall art verdict.
+
+No generated image, download or runtime-art slot was added. The default launcher, browser runtime, gameplay, pathing, collision, objectives, AI, economy, saves, stable IDs, selection, commands, production and minimap semantics remain unchanged. Stop at v0.235; do not begin v0.236 without new authorization.
 
 ## Project Identity
 

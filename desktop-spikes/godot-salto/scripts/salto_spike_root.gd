@@ -143,6 +143,7 @@ const SCRIPT_ARG_PREFIXES := [
 	"--salto-production-target-spike",
 	"--salto-blender-modular-kit-spike",
 	"--salto-composed-blender-battlefield-slice",
+	"--salto-architecture-correction-beauty-pass",
 	"--salto-bridge-shell-reboot",
 	"--salto-bridge-shell-legacy-comparator",
 	"--salto-structure-shell-production",
@@ -245,6 +246,15 @@ func _ready() -> void:
 		var composed_slice := composed_scene.instantiate()
 		add_child(composed_slice)
 		composed_slice.call_deferred("start")
+		return
+	if args.has("--salto-architecture-correction-beauty-pass"):
+		var architecture_scene := load("res://scenes/salto_architecture_correction_beauty_pass.tscn") as PackedScene
+		if architecture_scene == null:
+			get_tree().quit(1)
+			return
+		var architecture_pass := architecture_scene.instantiate()
+		add_child(architecture_pass)
+		architecture_pass.call_deferred("start")
 		return
 	if args.has("--salto-ui-architecture-wireframe"):
 		await run_ui_architecture_wireframe_capture()

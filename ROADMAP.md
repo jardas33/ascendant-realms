@@ -11,13 +11,18 @@ Every phase should protect these long-term pillars:
 
 ## Current Recommended Next Phase
 
-The current checkpoint is **v0.234 composed imported-Blender battlefield slice** on 2026-06-19. The verdict is `PASS`.
+The current checkpoint is **v0.235 Human/Barrosan architecture correction and beauty pass** on 2026-06-19. The milestone verdict is `PASS`; overall production-art quality remains `PARTIAL`.
 
-The retained v0.233R GLB is now composed in Godot as one connected outpost using forty imported module instances: continuous terrain, visible recessed river, bank-to-bank bridge, connected roads, raised keep, grounded barracks/workshop and mine/Lume zones, and localized props. The exact review pack proves the result with the v0.233R baseline, six real Godot captures and two contact sheets.
+The first faction architecture standard now has correct roof construction and clearer role identity. A new versioned Blender/GLB asset corrects exactly three building modules, four pitched roofs and four tower caps while retaining the connected v0.234 outpost. Roof ridges are highest, planes slope down to overhanging eaves, and separate caps, fascia, foundations, timber braces and industrial/mystic details are visible in the exact review pack.
 
-The composition milestone passes because the scene clearly reads as a battlefield rather than a floating catalogue. The retained kit still has simple materials, repeated tile edges and sparse dressing, so future explicitly authorized art work should improve finish without reconnecting gameplay by default.
+Future explicitly authorized visual work should address terrain repetition, vegetation density, broad flat material surfaces and environmental microvariation. It should retain this corrected Human/Barrosan architectural grammar and must not regress to folded roofs or disconnected kit displays.
 
-Stop at v0.234. Do not start v0.235 without a new explicit milestone.
+Stop at v0.235. Do not start v0.236 without a new explicit milestone.
+
+New v0.235 docs:
+
+- `docs/V0235_BARROSAN_ARCHITECTURE_CORRECTION_REPORT.md`
+- `docs/V0235_IMPLEMENTATION_REPORT.md`
 
 New v0.234 docs:
 

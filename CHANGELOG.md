@@ -1,5 +1,14 @@
 # Changelog
 
+# v0.235 Human/Barrosan Architecture Correction and Beauty Pass - 2026-06-19
+
+- Rebuilt the keep, barracks/workshop and mine/Lume modules in Blender 5.1.2 and exported a new versioned v0.235 GLB while retaining the v0.233R/v0.234 asset unchanged as comparator evidence.
+- Replaced the folded rotated-box roofs with four true ridge-to-eave mesh assemblies: central ridges are highest, both planes slope down to overhanging eaves, and ridge caps, dark fascia and gable edge boards are separate geometry.
+- Replaced flat keep tower crowns with four hipped caps; added layered foundations, contact skirts, stone/plaster/wood shade variants, timber piers and braces, work-yard details, a mine extraction frame, bridge braces and more embedded road/contact surfaces.
+- Added the exact ten-file review pack at `artifacts/manual-review/v0235-architecture-correction-beauty-pass/`.
+- Recorded milestone verdict `PASS`: roof geometry and Human/Barrosan role readability are visibly stronger than v0.234. Overall environment-art quality remains `PARTIAL` because terrain repetition, sparse vegetation and broad flat materials are still prototype-grade.
+- Browser runtime, gameplay, saves, objectives, economy, selection, commands, production, minimap semantics, pathing, collision, AI, runtime-art slots and the default launcher remain unchanged.
+
 # v0.234 Composed Imported-Blender Battlefield Slice - 2026-06-19
 
 - Composed forty instances from the retained v0.233R GLB into one isolated Godot battlefield with a continuous terrain island, visible recessed river, bank-to-bank bridge, connected road network, raised keep, grounded barracks/workshop and mine/Lume zones, and localized prop clusters.

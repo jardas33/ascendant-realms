@@ -1,6 +1,20 @@
 # Development Checkpoint
 
-Updated: 2026-06-19 v0.234 composed imported-Blender battlefield slice
+Updated: 2026-06-19 v0.235 Human/Barrosan architecture correction and beauty pass
+
+## v0.235 Human/Barrosan Architecture Correction and Beauty Pass - 2026-06-19
+
+- Milestone verdict: `PASS`; overall production-art direction remains `PARTIAL`.
+- Used Blender 5.1.2 to create `art-source/blender/v0235/salto_barrosan_architecture_kit.blend` and a new GLB at `desktop-spikes/godot-salto/assets/v0235/salto_barrosan_architecture_kit.glb`.
+- The existing v0.233R/v0.234 GLB was not modified.
+- Corrected exactly three building modules, four pitched-roof assemblies and four keep tower caps.
+- Roof geometry now has the central ridge as the highest line, downward slopes to both eaves, wall overhangs, separate ridge caps, dark fascia boards and no folded/inverted planes.
+- Keep, barracks/workshop and mine/Lume now separate by role through stone weight, plaster/timber framing, work-yard trim, extraction machinery, crystals and prop use.
+- Roads/contact patches were lowered and darkened to sit into the retained v0.234 composition.
+- Exact review pack: `artifacts/manual-review/v0235-architecture-correction-beauty-pass/`.
+- Honest ceiling: the architecture is now competent authored low-poly work, but broad flat materials, repeated terrain modules and sparse vegetation remain below production quality.
+- Gameplay, saves, economy, selection, pathing, commands, minimap, objectives, production, AI, collision, browser runtime, runtime-art slots and default launcher: unchanged.
+- Stop at v0.235. Do not begin v0.236 without explicit authorization.
 
 ## v0.234 Composed Imported-Blender Battlefield Slice - 2026-06-19
 
