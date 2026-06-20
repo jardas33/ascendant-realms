@@ -7965,6 +7965,38 @@ func _apply_player_slice_action(action: String) -> Dictionary:
 			_ensure_player_battle_scene()
 			_call_scene("set_barrosan_runtime_review_mode", ["blocked_preview"])
 			_render_player_screen("battle")
+		"v0242_overview", "v0242_cohesion", "v0242_unselected":
+			_ensure_player_battle_scene()
+			_call_scene("set_barrosan_runtime_review_mode", ["clean"])
+			_render_player_screen("battle")
+		"v0242_all_roles", "v0242_minimap":
+			_ensure_player_battle_scene()
+			_call_scene("set_barrosan_runtime_review_mode", ["all_roles"])
+			_render_player_screen("battle")
+		"v0242_live_roles":
+			_ensure_player_battle_scene()
+			_call_scene("set_barrosan_runtime_review_mode", ["live_roles"])
+			_render_player_screen("battle")
+		"v0242_inert_roles":
+			_ensure_player_battle_scene()
+			_call_scene("set_barrosan_runtime_review_mode", ["inert_roles"])
+			_render_player_screen("battle")
+		"v0242_selected":
+			_ensure_player_battle_scene()
+			_call_scene("set_barrosan_runtime_review_mode", ["selected"])
+			_render_player_screen("battle")
+		"v0242_valid_preview":
+			_ensure_player_battle_scene()
+			_call_scene("set_barrosan_runtime_review_mode", ["valid_preview"])
+			_render_player_screen("battle")
+		"v0242_blocked_preview":
+			_ensure_player_battle_scene()
+			_call_scene("set_barrosan_runtime_review_mode", ["blocked_preview"])
+			_render_player_screen("battle")
+		"v0242_units_scale":
+			_ensure_player_battle_scene()
+			_call_scene("set_barrosan_runtime_review_mode", ["units_scale"])
+			_render_player_screen("battle")
 		"v0211_overview":
 			_ensure_player_battle_scene()
 			_call_scene("capture_mine_site")
@@ -8442,6 +8474,8 @@ func _apply_player_slice_action(action: String) -> Dictionary:
 
 func _player_capture_checkpoint() -> String:
 	var normalized_root := _artifact_root_from_args().replace("\\", "/")
+	if normalized_root.contains("/v0242"):
+		return "v0.242"
 	if normalized_root.contains("/v0241"):
 		return "v0.241"
 	if normalized_root.contains("/v0231"):
@@ -8558,6 +8592,20 @@ func _is_bounded_microloop_checkpoint() -> bool:
 	return ["v0.129", "v0.130", "v0.160", "v0.162", "v0.164", "v0.166", "v0.168", "v0.169", "v0.170", "v0.173", "v0.174", "v0.177", "v0.178", "v0.179", "v0.181", "v0.184", "v0.185", "v0.186", "v0.187", "v0.193", "v0.194", "v0.195", "v0.196", "v0.197", "v0.198", "v0.199", "v0.200", "v0.203", "v0.204", "v0.205", "v0.206", "v0.209", "v0.210", "v0.211", "v0.212", "v0.213", "v0.215", "v0.216", "v0.217", "v0.218", "v0.219", "v0.220", "v0.221", "v0.222", "v0.223", "v0.224", "v0.227", "v0.228", "v0.229", "v0.230", "v0.231"].has(_player_capture_checkpoint())
 
 func _player_capture_steps() -> Array[Dictionary]:
+	if _player_capture_checkpoint() == "v0.242":
+		return [
+			{"id": "runtime_cohesion_overview", "label": "v0.242 runtime cohesion overview", "action": "v0242_overview"},
+			{"id": "terrain_road_river_cohesion", "label": "v0.242 Barrosan terrain road river cohesion", "action": "v0242_cohesion"},
+			{"id": "all_nine_roles_runtime_addressable", "label": "v0.242 all nine runtime-addressable roles", "action": "v0242_all_roles"},
+			{"id": "live_roles_preserved", "label": "v0.242 live main base barracks mine roles", "action": "v0242_live_roles"},
+			{"id": "inert_roles_selectable", "label": "v0.242 inert opt-in roles selectable", "action": "v0242_inert_roles"},
+			{"id": "selected_structure_clean_indicator", "label": "v0.242 selected structure clean indicator", "action": "v0242_selected"},
+			{"id": "unselected_clean_no_debug", "label": "v0.242 clean unselected state", "action": "v0242_unselected"},
+			{"id": "valid_placement_preview", "label": "v0.242 valid placement preview", "action": "v0242_valid_preview"},
+			{"id": "blocked_placement_preview", "label": "v0.242 blocked placement preview", "action": "v0242_blocked_preview"},
+			{"id": "units_near_buildings_scale", "label": "v0.242 units near buildings scale", "action": "v0242_units_scale"},
+			{"id": "minimap_role_presence", "label": "v0.242 minimap role presence", "action": "v0242_minimap"},
+		]
 	if _player_capture_checkpoint() == "v0.241":
 		return [
 			{"id": "runtime_overview", "label": "v0.241 opt-in playable runtime overview", "action": "v0241_overview"},

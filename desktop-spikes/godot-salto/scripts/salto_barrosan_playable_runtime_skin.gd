@@ -9,14 +9,31 @@ const EXPECTED_ROLES := [
 const LIVE_FIXTURE_ROLES := {
 	"command_hall": "main_base",
 	"barracks": "barracks",
+	"west_stone_cut": "mine",
 }
-const PLACEHOLDER_POSITIONS := {
-	"house": Vector3(2.65, 0.02, 2.55),
-	"farm": Vector3(4.15, 0.02, 2.55),
-	"lumber": Vector3(5.55, 0.02, 1.35),
-	"blacksmith": Vector3(5.35, 0.02, -0.35),
-	"watchtower": Vector3(4.70, 0.02, -2.10),
-	"market": Vector3(3.10, 0.02, -2.65),
+const INERT_ROLE_POSITIONS := {
+	"house": Vector3(-4.45, 0.20, 2.78),
+	"farm": Vector3(-2.55, 0.20, 3.34),
+	"lumber": Vector3(-0.35, 0.20, 3.20),
+	"blacksmith": Vector3(2.08, 0.20, 2.64),
+	"watchtower": Vector3(4.42, 0.20, -2.62),
+	"market": Vector3(3.10, 0.20, 0.18),
+}
+const ROLE_SCALE_FACTORS := {
+	"main_base": 0.102,
+	"barracks": 0.094,
+	"mine": 0.090,
+	"house": 0.074,
+	"farm": 0.078,
+	"lumber": 0.080,
+	"blacksmith": 0.082,
+	"watchtower": 0.094,
+	"market": 0.080,
+}
+const LIVE_ROLE_IDS := {
+	"main_base": "command_hall",
+	"barracks": "barracks",
+	"mine": "mine_landmark",
 }
 
 var barrosan_runtime_skin_enabled := false
@@ -25,8 +42,8 @@ var barrosan_runtime_review_mode := "clean"
 var barrosan_source_kit: Node3D
 var barrosan_mapping: Dictionary = {}
 var barrosan_role_entries: Dictionary = {}
-var barrosan_live_instances: Dictionary = {}
-var barrosan_placeholder_instances: Dictionary = {}
+var barrosan_runtime_structures: Dictionary = {}
+var barrosan_selected_role_id := ""
 var barrosan_runtime_errors: Array[String] = []
 
 
@@ -36,7 +53,8 @@ func configure_barrosan_playable_runtime_skin(options: Dictionary) -> void:
 	if not barrosan_runtime_skin_enabled:
 		return
 	_load_barrosan_runtime_assets()
-	_rebuild_visuals()
+	_refresh_visual_foundation()
+	_add_barrosan_minimap_role_markers()
 
 
 func _load_barrosan_runtime_assets() -> void:
@@ -69,57 +87,112 @@ func _load_barrosan_runtime_assets() -> void:
 	if barrosan_source_kit == null:
 		barrosan_runtime_errors.append("Unable to instantiate retained v0.239 GLB")
 		return
-	barrosan_source_kit.name = "V0241RetainedBarrosanRuntimeLibrary"
+	barrosan_source_kit.name = "V0242RetainedBarrosanRuntimeLibrary"
 	barrosan_source_kit.visible = false
 	add_child(barrosan_source_kit)
 
 
+func _create_terrain() -> void:
+	if not barrosan_runtime_skin_enabled:
+		super._create_terrain()
+		return
+	terrain_root = Node3D.new()
+	terrain_root.name = "V0242BarrosanRuntimeCohesionFoundation"
+	add_child(terrain_root)
+	var ground := MeshInstance3D.new()
+	ground.name = "V0242BarrosanGround"
+	var ground_mesh := PlaneMesh.new()
+	ground_mesh.size = Vector2(26.0, 22.0)
+	ground.mesh = ground_mesh
+	ground.material_override = _material(Color("#59643d"))
+	terrain_root.add_child(ground)
+	_add_static_box("v0242_north_heath", Vector3(-1.0, 0.035, -4.85), Vector3(17.4, 0.07, 1.10), Color("#687047"))
+	_add_static_box("v0242_south_heath", Vector3(-0.2, 0.030, 5.15), Vector3(18.0, 0.06, 1.00), Color("#4f5b39"))
+	_add_static_box("v0242_keep_terrace", Vector3(-6.25, 0.075, -2.58), Vector3(3.25, 0.11, 2.35), Color("#6b6d4c"))
+	_add_static_box("v0242_economy_terrace", Vector3(-1.10, 0.060, 3.15), Vector3(8.70, 0.09, 2.15), Color("#666b45"))
+	_add_static_box("v0242_east_terrace", Vector3(3.40, 0.060, 0.15), Vector3(4.60, 0.09, 6.20), Color("#56613e"))
+	_add_static_box("v0242_river", Vector3(0.70, 0.072, 0.0), Vector3(0.88, 0.105, 14.6), Color("#295868"))
+	_add_static_box("v0242_west_bank", Vector3(0.08, 0.105, 0.0), Vector3(0.34, 0.10, 14.6), Color("#49543b"))
+	_add_static_box("v0242_east_bank", Vector3(1.32, 0.105, 0.0), Vector3(0.34, 0.10, 14.6), Color("#49543b"))
+	_add_static_box("v0242_bridge_deck", Vector3(0.70, 0.205, 0.82), Vector3(2.05, 0.16, 0.62), Color("#7a6745"))
+	_add_static_box("v0242_bridge_west_landing", Vector3(-0.62, 0.155, 0.82), Vector3(0.75, 0.10, 0.86), Color("#6e694f"))
+	_add_static_box("v0242_bridge_east_landing", Vector3(2.02, 0.155, 0.82), Vector3(0.75, 0.10, 0.86), Color("#6e694f"))
+	_add_barrosan_road("v0242_main_road_west", Vector3(-3.45, 0.155, 0.82), Vector3(5.35, 0.08, 0.58), 0.0)
+	_add_barrosan_road("v0242_main_road_east", Vector3(4.30, 0.155, 0.82), Vector3(4.70, 0.08, 0.58), 0.0)
+	_add_barrosan_road("v0242_keep_lane", Vector3(-5.75, 0.155, -0.90), Vector3(0.58, 0.08, 3.25), 0.0)
+	_add_barrosan_road("v0242_barracks_lane", Vector3(-4.90, 0.155, -1.10), Vector3(0.52, 0.08, 3.65), -11.0)
+	_add_barrosan_road("v0242_economy_lane", Vector3(-1.30, 0.155, 2.52), Vector3(7.15, 0.08, 0.50), 0.0)
+	_add_barrosan_road("v0242_market_lane", Vector3(3.15, 0.155, 0.48), Vector3(0.52, 0.08, 3.35), 0.0)
+	_add_barrosan_road("v0242_watch_lane", Vector3(4.05, 0.155, -1.25), Vector3(0.48, 0.08, 3.10), -9.0)
+	_add_barrosan_road("v0242_mine_lane", Vector3(-0.58, 0.155, 0.10), Vector3(2.45, 0.08, 0.48), 3.0)
+	for patch in [
+		["v0242_keep_yard", Vector3(-6.05, 0.162, -2.48), Vector3(2.20, 0.025, 1.45), Color(0.38, 0.32, 0.21, 0.72)],
+		["v0242_barracks_yard", Vector3(-4.92, 0.162, -3.00), Vector3(1.85, 0.025, 1.32), Color(0.40, 0.31, 0.19, 0.70)],
+		["v0242_farm_wear", Vector3(-2.55, 0.162, 3.28), Vector3(1.42, 0.025, 1.10), Color(0.48, 0.39, 0.20, 0.62)],
+		["v0242_lumber_wear", Vector3(-0.32, 0.162, 3.15), Vector3(1.65, 0.025, 1.15), Color(0.34, 0.27, 0.16, 0.65)],
+		["v0242_forge_soot", Vector3(2.08, 0.162, 2.60), Vector3(1.35, 0.025, 1.10), Color(0.19, 0.18, 0.15, 0.62)],
+	]:
+		_add_static_box(patch[0], patch[1], patch[2], patch[3], true)
+	for glint_z in [-3.8, -1.1, 2.2, 4.2]:
+		_add_static_box("v0242_water_glint_%s" % str(glint_z).replace(".", "_"), Vector3(0.72, 0.132, glint_z), Vector3(0.35, 0.012, 0.72), Color(0.34, 0.67, 0.72, 0.30), true)
+
+
+func _add_barrosan_road(name: String, position: Vector3, scale: Vector3, yaw: float) -> void:
+	_add_static_box_rotated(name, position, scale, yaw, Color("#8b774d"))
+	_add_static_box_rotated("%s_wear" % name, position + Vector3(0.0, 0.046, 0.0), Vector3(scale.x * 0.78, 0.018, scale.z * 0.54), yaw, Color(0.55, 0.44, 0.26, 0.42), true)
+
+
 func _rebuild_visuals() -> void:
-	barrosan_live_instances.clear()
-	barrosan_placeholder_instances.clear()
+	barrosan_runtime_structures.clear()
 	super._rebuild_visuals()
 	if not barrosan_runtime_skin_enabled or not barrosan_runtime_errors.is_empty():
 		return
-	_add_missing_role_placeholders()
-	_sync_barrosan_runtime_review_visuals()
+	_add_inert_runtime_structures()
+	_sync_barrosan_runtime_visuals()
 
 
 func _add_structure(structure: Dictionary) -> void:
 	var fixture := str(structure.get("fixtureId", ""))
 	var team := str(structure.get("team", ""))
-	if barrosan_runtime_skin_enabled and team == "friendly" and LIVE_FIXTURE_ROLES.has(fixture):
+	if barrosan_runtime_skin_enabled and (team == "friendly" or fixture == "west_stone_cut") and LIVE_FIXTURE_ROLES.has(fixture):
 		var role := str(LIVE_FIXTURE_ROLES[fixture])
 		var entry: Dictionary = barrosan_role_entries.get(role, {})
-		var placed := _place_barrosan_module(
-			role,
-			str(entry.get("module", "")),
-			_to_world(structure.get("position", Vector2.ZERO), 0.02),
-			float(entry.get("yawDegrees", 0.0)),
-			_runtime_module_scale(role)
-		)
+		var placed := _place_barrosan_module(role, str(entry.get("module", "")), _to_world(structure.get("position", Vector2.ZERO), 0.20), float(entry.get("yawDegrees", 0.0)), _runtime_module_scale(role))
 		if placed != null:
-			barrosan_live_instances[role] = placed
-			_add_runtime_footprint(role, placed.position, _runtime_footprint(entry), false)
+			_register_runtime_structure(role, placed, true, str(structure.get("id", LIVE_ROLE_IDS.get(role, role))))
 			return
 	super._add_structure(structure)
 
 
 func _add_capture_site(site: Dictionary) -> void:
 	super._add_capture_site(site)
-	var site_id := str(site.get("id", ""))
-	if not barrosan_runtime_skin_enabled or (site_id != "west_stone_cut" and not site_id.ends_with("west_stone_cut")):
-		return
-	var entry: Dictionary = barrosan_role_entries.get("mine", {})
-	var placed := _place_barrosan_module(
-		"mine",
-		str(entry.get("module", "")),
-		_to_world(site.get("position", Vector2.ZERO), 0.02),
-		float(entry.get("yawDegrees", 0.0)),
-		_runtime_module_scale("mine")
-	)
-	if placed != null:
-		barrosan_live_instances["mine"] = placed
-		_add_runtime_footprint("mine", placed.position, _runtime_footprint(entry), false)
+
+
+func _add_inert_runtime_structures() -> void:
+	for role in ["house", "farm", "lumber", "blacksmith", "watchtower", "market"]:
+		var entry: Dictionary = barrosan_role_entries.get(role, {})
+		var placed := _place_barrosan_module(role, str(entry.get("module", "")), INERT_ROLE_POSITIONS[role], float(entry.get("yawDegrees", 0.0)), _runtime_module_scale(role))
+		if placed != null:
+			_register_runtime_structure(role, placed, false, "v0242_inert_%s" % role)
+
+
+func _register_runtime_structure(role: String, placed: Node3D, live: bool, runtime_id: String) -> void:
+	var entry: Dictionary = barrosan_role_entries.get(role, {})
+	var footprint := _runtime_footprint(entry)
+	barrosan_runtime_structures[role] = {
+		"role": role,
+		"runtimeId": runtime_id,
+		"stableRoleId": "barrosan_role_%s" % role,
+		"displayName": str(entry.get("displayName", role)),
+		"module": str(entry.get("module", "")),
+		"position": placed.position,
+		"footprint": footprint,
+		"liveGameplayEntity": live,
+		"inertOptInStructure": not live,
+		"selectable": true,
+	}
+	_add_runtime_footprint(role, placed.position, footprint)
+	_add_runtime_role_label(role, str(entry.get("displayName", role)), placed.position, live)
 
 
 func _place_barrosan_module(role: String, module_name: String, position: Vector3, yaw_degrees: float, scale_value: float) -> Node3D:
@@ -133,7 +206,7 @@ func _place_barrosan_module(role: String, module_name: String, position: Vector3
 	if placed == null:
 		barrosan_runtime_errors.append("Unable to duplicate retained module %s" % module_name)
 		return null
-	placed.name = "v0241_%s_%s" % [role, module_name]
+	placed.name = "v0242_%s_%s" % [role, module_name]
 	placed.visible = true
 	placed.position = position
 	placed.rotation_degrees.y = yaw_degrees
@@ -142,107 +215,204 @@ func _place_barrosan_module(role: String, module_name: String, position: Vector3
 	return placed
 
 
-func _add_missing_role_placeholders() -> void:
-	for role in ["house", "farm", "lumber", "blacksmith", "watchtower", "market"]:
-		var entry: Dictionary = barrosan_role_entries.get(role, {})
-		var placed := _place_barrosan_module(
-			role,
-			str(entry.get("module", "")),
-			PLACEHOLDER_POSITIONS[role],
-			float(entry.get("yawDegrees", 0.0)),
-			_runtime_module_scale(role)
-		)
-		if placed == null:
-			continue
-		barrosan_placeholder_instances[role] = placed
-		_add_runtime_footprint(role, placed.position, _runtime_footprint(entry), true)
-		_add_runtime_role_label(role, str(entry.get("displayName", role)), placed.position)
-
-
 func _runtime_module_scale(role: String) -> float:
 	var entry: Dictionary = barrosan_role_entries.get(role, {})
-	var mapped_scale := float(entry.get("scale", 0.76))
-	return mapped_scale * (0.055 if role in ["main_base", "barracks", "mine"] else 0.045)
+	return float(entry.get("scale", 0.76)) * float(ROLE_SCALE_FACTORS.get(role, 0.08))
 
 
 func _runtime_footprint(entry: Dictionary) -> Vector2:
 	var footprint: Array = entry.get("footprint", [])
 	if footprint.size() != 2:
-		return Vector2(0.8, 0.7)
-	return Vector2(float(footprint[0]), float(footprint[1])) * 0.11
+		return Vector2(0.9, 0.7)
+	return Vector2(float(footprint[0]), float(footprint[1])) * 0.105
 
 
-func _add_runtime_footprint(role: String, position: Vector3, footprint: Vector2, placeholder: bool) -> void:
-	var marker_name := "v0241_footprint_%s" % role
-	_add_box(
-		marker_name,
-		position + Vector3(0.0, -0.015, 0.0),
-		Vector3(footprint.x, 0.022, footprint.y),
-		Color(0.20, 0.72, 0.48, 0.10 if placeholder else 0.07),
-		true
-	)
+func _add_runtime_footprint(role: String, position: Vector3, footprint: Vector2) -> void:
+	_add_box("v0242_footprint_%s" % role, position + Vector3(0.0, -0.028, 0.0), Vector3(footprint.x, 0.018, footprint.y), Color(0.24, 0.62, 0.42, 0.08), true)
 
 
-func _add_runtime_role_label(role: String, display_name: String, position: Vector3) -> void:
+func _add_runtime_role_label(role: String, display_name: String, position: Vector3, live: bool) -> void:
 	var label := Label3D.new()
-	label.name = "v0241_role_label_%s" % role
-	label.text = "%s\nREVIEW PLACEHOLDER" % display_name
-	label.position = position + Vector3(0.0, 0.56, 0.0)
+	label.name = "v0242_role_label_%s" % role
+	label.text = "%s\n%s" % [display_name, "LIVE ENTITY" if live else "INERT OPT-IN"]
+	label.position = position + Vector3(0.0, 0.70, 0.0)
 	label.font_size = 18
 	label.pixel_size = 0.006
 	label.outline_size = 5
 	label.billboard = BaseMaterial3D.BILLBOARD_ENABLED
 	label.no_depth_test = true
-	label.visible = barrosan_runtime_debug_labels or barrosan_runtime_review_mode == "mapping"
+	label.visible = barrosan_runtime_debug_labels or barrosan_runtime_review_mode in ["all_roles", "inert_roles"]
 	visual_root.add_child(label)
+
+
+func _select_from_real_click(screen_position: Vector2) -> void:
+	var role := _pick_barrosan_structure_from_screen(screen_position)
+	if role != "":
+		select_barrosan_runtime_role(role)
+		return
+	super._select_from_real_click(screen_position)
+
+
+func _pick_barrosan_structure_from_screen(screen_position: Vector2) -> String:
+	var best_role := ""
+	var best_distance := INF
+	for role in barrosan_runtime_structures:
+		var structure: Dictionary = barrosan_runtime_structures[role]
+		var projected := _world_to_screen(structure.get("position", Vector3.INF))
+		if projected == Vector2.INF:
+			continue
+		var footprint: Vector2 = structure.get("footprint", Vector2.ONE)
+		var radius := clampf(maxf(footprint.x, footprint.y) * 36.0, 24.0, 70.0)
+		var distance := projected.distance_to(screen_position)
+		if distance <= radius and distance < best_distance:
+			best_role = str(role)
+			best_distance = distance
+	return best_role
+
+
+func select_barrosan_runtime_role(role: String) -> bool:
+	if not barrosan_runtime_structures.has(role):
+		return false
+	runtime.clear_selection()
+	real_input_selected_id = ""
+	barrosan_selected_role_id = role
+	v0133_selected_structure_id = "barracks" if role == "barracks" else "barrosan_role_%s" % role
+	v0133_barracks_selected = role == "barracks"
+	real_input_hud_card_updated = true
+	_record_real_input("barrosan_runtime_structure_selected", {
+		"role": role,
+		"stableRoleId": "barrosan_role_%s" % role,
+		"liveGameplayEntity": bool(barrosan_runtime_structures[role].get("liveGameplayEntity", false)),
+	})
+	_sync_barrosan_runtime_visuals()
+	_sync_hud()
+	return true
 
 
 func set_barrosan_runtime_review_mode(mode: String) -> void:
 	barrosan_runtime_review_mode = mode
-	if mode == "selected":
-		v0133_barracks_selected = true
-	_sync_barrosan_runtime_review_visuals()
+	match mode:
+		"selected":
+			select_barrosan_runtime_role("market")
+		"inert_roles":
+			select_barrosan_runtime_role("blacksmith")
+		"live_roles":
+			select_barrosan_runtime_role("mine")
+		_:
+			if mode == "clean":
+				barrosan_selected_role_id = ""
+	_sync_barrosan_runtime_visuals()
 
 
 func _sync_unit_visuals() -> void:
 	super._sync_unit_visuals()
-	_sync_barrosan_runtime_review_visuals()
+	_sync_barrosan_runtime_visuals()
 
 
-func _sync_barrosan_runtime_review_visuals() -> void:
+func _sync_barrosan_runtime_visuals() -> void:
 	if visual_root == null or not barrosan_runtime_skin_enabled:
 		return
-	for role in ["house", "farm", "lumber", "blacksmith", "watchtower", "market"]:
-		var label := visual_root.get_node_or_null("v0241_role_label_%s" % role) as Label3D
+	for role in barrosan_runtime_structures:
+		var label := visual_root.get_node_or_null("v0242_role_label_%s" % role) as Label3D
 		if label != null:
-			label.visible = barrosan_runtime_debug_labels or barrosan_runtime_review_mode == "mapping"
-	var barracks_position := _structure_world_position("barracks", Vector3(-4.8, 0.12, -3.58))
-	_set_or_create_disc_marker("v0241_selected_building_indicator", barracks_position, 0.78, Color(0.96, 0.78, 0.24, 0.78))
-	var selected_marker := visual_root.get_node_or_null("v0241_selected_building_indicator")
-	if selected_marker != null:
-		selected_marker.visible = v0133_barracks_selected or barrosan_runtime_review_mode == "selected"
-	_set_or_create_marker("v0241_valid_placement_preview", Vector3(1.55, 0.11, 2.15), Vector3(0.82, 0.045, 0.68), Color(0.20, 0.82, 0.46, 0.46))
-	_set_or_create_marker("v0241_blocked_placement_preview", Vector3(0.65, 0.11, 0.20), Vector3(0.82, 0.045, 0.68), Color(0.90, 0.22, 0.16, 0.48))
-	var valid_preview := visual_root.get_node_or_null("v0241_valid_placement_preview")
-	var blocked_preview := visual_root.get_node_or_null("v0241_blocked_placement_preview")
+			label.visible = barrosan_runtime_debug_labels or barrosan_runtime_review_mode in ["all_roles", "inert_roles"]
+		var structure: Dictionary = barrosan_runtime_structures[role]
+		var position: Vector3 = structure.get("position", Vector3.ZERO)
+		var footprint: Vector2 = structure.get("footprint", Vector2.ONE)
+		_set_or_create_disc_marker("v0242_selected_%s" % role, position + Vector3(0.0, 0.015, 0.0), maxf(0.46, maxf(footprint.x, footprint.y) * 0.55), Color(0.96, 0.78, 0.24, 0.62))
+		var marker := visual_root.get_node_or_null("v0242_selected_%s" % role)
+		if marker != null:
+			marker.visible = barrosan_selected_role_id == role
+		var footprint_node := visual_root.get_node_or_null("v0242_footprint_%s" % role)
+		if footprint_node != null:
+			footprint_node.visible = barrosan_runtime_review_mode in ["all_roles", "footprints", "valid_preview", "blocked_preview"]
+	_set_or_create_marker("v0242_valid_placement_preview", Vector3(-3.30, 0.20, 1.92), Vector3(0.92, 0.045, 0.72), Color(0.20, 0.82, 0.46, 0.44))
+	_set_or_create_marker("v0242_blocked_placement_preview", Vector3(0.70, 0.20, -1.20), Vector3(0.92, 0.045, 0.72), Color(0.90, 0.22, 0.16, 0.46))
+	var valid_preview := visual_root.get_node_or_null("v0242_valid_placement_preview")
+	var blocked_preview := visual_root.get_node_or_null("v0242_blocked_placement_preview")
 	if valid_preview != null:
 		valid_preview.visible = barrosan_runtime_review_mode == "valid_preview"
 	if blocked_preview != null:
 		blocked_preview.visible = barrosan_runtime_review_mode == "blocked_preview"
+	_sync_scale_probes()
+
+
+func _sync_scale_probes() -> void:
+	for probe in ["worker", "militia", "aster"]:
+		var node := visual_root.get_node_or_null("v0242_probe_%s" % probe)
+		if node != null:
+			node.queue_free()
+	if barrosan_runtime_review_mode != "units_scale":
+		return
+	_add_scale_probe("worker", Vector3(-4.22, 0.28, 2.12), 0.18, Color("#d6b878"))
+	_add_scale_probe("militia", Vector3(4.05, 0.28, -2.00), 0.22, Color("#8fc2a4"))
+	_add_scale_probe("aster", Vector3(-2.05, 0.28, 0.12), 0.26, Color("#46bdb2"))
+
+
+func _add_scale_probe(id: String, position: Vector3, radius: float, color: Color) -> void:
+	_add_cylinder("v0242_probe_%s" % id, position, radius, 0.54, color)
+
+
+func _add_barrosan_minimap_role_markers() -> void:
+	if minimap_panel == null:
+		return
+	var marker_data := {
+		"main_base": [Vector2(34, 44), Color("#d5b45d")],
+		"barracks": [Vector2(52, 68), Color("#bd8c50")],
+		"mine": [Vector2(82, 142), Color("#55c8b5")],
+		"house": [Vector2(60, 174), Color("#d8c59c")],
+		"farm": [Vector2(86, 184), Color("#c89b4b")],
+		"lumber": [Vector2(112, 180), Color("#8c6844")],
+		"blacksmith": [Vector2(182, 170), Color("#79463b")],
+		"watchtower": [Vector2(216, 72), Color("#ad4f3c")],
+		"market": [Vector2(196, 120), Color("#d69a43")],
+	}
+	for role in marker_data:
+		var config: Array = marker_data[role]
+		var marker_name := "v0242_minimap_role_%s" % role
+		if not _minimap_has_marker(marker_name):
+			_add_minimap_marker(marker_name, config[0], Vector2(12, 12), config[1])
+
+
+func _sync_minimap() -> void:
+	super._sync_minimap()
+	if barrosan_runtime_skin_enabled:
+		_add_barrosan_minimap_role_markers()
 
 
 func get_spike_status() -> Dictionary:
 	var status := super.get_spike_status()
+	var addressable_roles: Array[String] = []
+	var live_roles: Array[String] = []
+	var inert_roles: Array[String] = []
+	for role in EXPECTED_ROLES:
+		if not barrosan_runtime_structures.has(role):
+			continue
+		addressable_roles.append(role)
+		if bool(barrosan_runtime_structures[role].get("liveGameplayEntity", false)):
+			live_roles.append(role)
+		else:
+			inert_roles.append(role)
 	status["barrosanPlayableRuntimeSkin"] = {
 		"enabled": barrosan_runtime_skin_enabled,
+		"checkpoint": "v0.242",
 		"scenePath": "res://scenes/salto_barrosan_playable_runtime_skin.tscn",
 		"mappingPath": V0240_MAPPING_PATH,
 		"sourceGlb": V0239_KIT_PATH,
 		"defaultRuntimeChanged": false,
 		"gameplaySystemsChanged": false,
-		"liveMappedRoles": barrosan_live_instances.keys(),
-		"reviewPlaceholderRoles": barrosan_placeholder_instances.keys(),
-		"debugLabelsVisible": barrosan_runtime_debug_labels or barrosan_runtime_review_mode == "mapping",
+		"terrainVisualOnly": true,
+		"terrainCollisionChanged": false,
+		"pathingChanged": false,
+		"addressableRoles": addressable_roles,
+		"liveMappedRoles": live_roles,
+		"inertOptInRoles": inert_roles,
+		"selectedRole": barrosan_selected_role_id,
+		"selectionIntegrated": addressable_roles.size() == 9,
+		"footprintCount": addressable_roles.size(),
+		"placementValidation": "evidence-only",
+		"minimapRoleMarkerCount": addressable_roles.size(),
+		"debugLabelsVisible": barrosan_runtime_debug_labels or barrosan_runtime_review_mode in ["all_roles", "inert_roles"],
 		"reviewMode": barrosan_runtime_review_mode,
 		"errors": barrosan_runtime_errors.duplicate(),
 	}
