@@ -11,13 +11,19 @@ Every phase should protect these long-term pillars:
 
 ## Current Recommended Next Phase
 
-The current checkpoint is **v0.235 Human/Barrosan architecture correction and beauty pass** on 2026-06-19. The milestone verdict is `PASS`; overall production-art quality remains `PARTIAL`.
+The current checkpoint is **v0.236 Barrosan faction art bible and production-quality slice** on 2026-06-20. The milestone verdict is `PASS`.
 
-The first faction architecture standard now has correct roof construction and clearer role identity. A new versioned Blender/GLB asset corrects exactly three building modules, four pitched roofs and four tower caps while retaining the connected v0.234 outpost. Roof ridges are highest, planes slope down to overhanging eaves, and separate caps, fascia, foundations, timber braces and industrial/mystic details are visible in the exact review pack.
+The first written faction art standard now defines Barrosan frontier identity, silhouettes, roof construction, materials, detail/grounding rules, terrain integration and separation from future factions. A new versioned Blender/GLB asset enriches exactly three landmarks while retaining all corrected v0.235 roof geometry.
 
-Future explicitly authorized visual work should address terrain repetition, vegetation density, broad flat material surfaces and environmental microvariation. It should retain this corrected Human/Barrosan architectural grammar and must not regress to folded roofs or disconnected kit displays.
+The applied slice adds 35 new/changed materials, 98 authored building details, six role-prop modules and eighteen composed role details. The isolated scene replaces visible square terrain and panel roads with a continuous organic island, variable-width roads and a shaped river. The result passes as coherent low-poly production direction, but is not final textured environment art.
 
-Stop at v0.235. Do not start v0.236 without a new explicit milestone.
+Future explicitly authorized work should use this art bible as the Human baseline and should focus on texture authorship, vegetation variety and environment-edge richness rather than returning to generic procedural rectangles. Stop at v0.236. Do not start v0.237 without a new explicit milestone.
+
+New v0.236 docs:
+
+- `docs/art/V0236_BARROSAN_FACTION_ART_BIBLE.md`
+- `docs/V0236_BARROSAN_PRODUCTION_SLICE_REPORT.md`
+- `docs/V0236_IMPLEMENTATION_REPORT.md`
 
 New v0.235 docs:
 

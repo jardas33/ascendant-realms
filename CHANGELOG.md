@@ -1,5 +1,15 @@
 # Changelog
 
+# v0.236 Barrosan Faction Art Bible and Production-Quality Slice - 2026-06-20
+
+- Added `docs/art/V0236_BARROSAN_FACTION_ART_BIBLE.md` as the first written Human/Barrosan faction standard for frontier identity, silhouettes, roofs, materials, detail, terrain and future-race separation.
+- Used Blender 5.1.2 to export a new versioned v0.236 GLB with exactly three enriched landmark modules, 35 new/changed material families, 98 authored detail objects and six reusable role-prop modules; v0.235 and v0.233R remain unchanged.
+- Composed eighteen deliberate civic, barracks/workshop and mine/Lume detail instances and retained all corrected ridge-to-eave roof geometry.
+- Removed visible square terrain-module and panel-road placement from the v0.236 scene; added a continuous island, organic patches, variable-width road ribbons and a shaped segmented river.
+- Added the exact eleven-file review pack at `artifacts/manual-review/v0236-barrosan-art-bible-production-slice/`.
+- Recorded verdict `PASS`: the overview is visibly richer and less toy-like than v0.235, terrain/infrastructure are less board-like and each landmark has clearer functional identity. The honest ceiling remains untextured low-poly production direction rather than final shipped art.
+- Gameplay, saves, economy, selection, pathing, commands, minimap logic, objectives, production, AI, collision, browser runtime, runtime-art slots and default launcher remain unchanged.
+
 # v0.235 Human/Barrosan Architecture Correction and Beauty Pass - 2026-06-19
 
 - Rebuilt the keep, barracks/workshop and mine/Lume modules in Blender 5.1.2 and exported a new versioned v0.235 GLB while retaining the v0.233R/v0.234 asset unchanged as comparator evidence.

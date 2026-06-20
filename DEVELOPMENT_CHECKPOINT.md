@@ -1,6 +1,21 @@
 # Development Checkpoint
 
-Updated: 2026-06-19 v0.235 Human/Barrosan architecture correction and beauty pass
+Updated: 2026-06-20 v0.236 Barrosan faction art bible and production-quality slice
+
+## v0.236 Barrosan Faction Art Bible and Production-Quality Slice - 2026-06-20
+
+- Milestone verdict: `PASS`.
+- Added the first written Barrosan/Human faction standard at `docs/art/V0236_BARROSAN_FACTION_ART_BIBLE.md`.
+- Blender 5.1.2 created `art-source/blender/v0236/salto_barrosan_production_slice.blend` and `desktop-spikes/godot-salto/assets/v0236/salto_barrosan_production_slice.glb`; v0.235 and v0.233R remain unchanged.
+- Enriched exactly three landmark modules with 35 new/changed materials, 98 authored building-detail objects and six reusable role-prop modules.
+- Composed exactly eighteen role-specific prop/detail instances across keep civic, barracks/workshop and mine/Lume clusters.
+- Removed visible square terrain and panel-road module placement from the isolated v0.236 scene.
+- Added one continuous terrain island, organic grass/dirt patches, 87 variable-width road ribbon segments and 18 shaped river segments.
+- Retained all four corrected v0.235 pitched roofs and their highest ridges, bilateral slopes, eaves, ridge caps and fascia.
+- Exact review pack: `artifacts/manual-review/v0236-barrosan-art-bible-production-slice/`.
+- Honest ceiling: this is coherent low-poly production direction with stronger faction identity, not final textured environment art.
+- Gameplay, saves, economy, selection, pathing, commands, minimap, objectives, production, AI, collision, browser runtime, runtime-art slots and default launcher: unchanged.
+- Stop at v0.236. Do not begin v0.237 without explicit authorization.
 
 ## v0.235 Human/Barrosan Architecture Correction and Beauty Pass - 2026-06-19
 

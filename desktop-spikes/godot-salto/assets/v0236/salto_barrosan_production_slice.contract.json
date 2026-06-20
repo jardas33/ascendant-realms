@@ -1,0 +1,47 @@
+﻿{
+    "blendPath":  "art-source/blender/v0236/salto_barrosan_production_slice.blend",
+    "newOrChangedMaterialCount":  35,
+    "sourceGenerator":  "tools/blender/generate_v0236_barrosan_production_slice.py",
+    "changedBuildingModules":  [
+                                   "keep_landmark",
+                                   "barracks_workshop_landmark",
+                                   "mine_lume_landmark"
+                               ],
+    "rolePropModuleCount":  6,
+    "existingV0235GlbModified":  false,
+    "changedBuildingModuleCount":  3,
+    "retunedExistingMaterialCount":  21,
+    "newV0236GlbExported":  true,
+    "authoredBuildingDetailObjectCount":  98,
+    "newMaterialCount":  14,
+    "artBiblePath":  "docs/art/V0236_BARROSAN_FACTION_ART_BIBLE.md",
+    "roofGeometryContract":  {
+                                 "ridgeCaps":  true,
+                                 "fasciaBoards":  true,
+                                 "slopesDownToBothEaves":  true,
+                                 "invertedRoofGeometry":  false,
+                                 "centralRidgeHighest":  true,
+                                 "eaveOverhang":  true
+                             },
+    "glbPath":  "desktop-spikes/godot-salto/assets/v0236/salto_barrosan_production_slice.glb",
+    "schemaVersion":  1,
+    "checkpoint":  "v0.236",
+    "rolePropModules":  [
+                            "prop_weapon_rack",
+                            "prop_training_post",
+                            "prop_tool_cart",
+                            "prop_crystal_shards",
+                            "prop_mine_support",
+                            "prop_civic_banner"
+                        ],
+    "hardBoundaries":  {
+                           "generatedAiImages":  0,
+                           "saveChanged":  false,
+                           "browserRuntimeChanged":  false,
+                           "gameplayChanged":  false,
+                           "newRuntimeArtSlots":  0,
+                           "defaultLauncherChanged":  false,
+                           "downloadedAssets":  0,
+                           "pathingChanged":  false
+                       }
+}
