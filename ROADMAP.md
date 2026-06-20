@@ -11,13 +11,18 @@ Every phase should protect these long-term pillars:
 
 ## Current Recommended Next Phase
 
-The current checkpoint is **v0.236 Barrosan faction art bible and production-quality slice** on 2026-06-20. The milestone verdict is `PASS`.
+The current checkpoint is **v0.237 Barrosan material richness, foliage, and inhabited detail** on 2026-06-20. The milestone verdict is `PASS`.
 
-The first written faction art standard now defines Barrosan frontier identity, silhouettes, roof construction, materials, detail/grounding rules, terrain integration and separation from future factions. A new versioned Blender/GLB asset enriches exactly three landmarks while retaining all corrected v0.235 roof geometry.
+The Barrosan art bible now includes a material-richness addendum covering roof/wall/stone/timber detail, temperate vegetation, ground wear and RTS noise control. A new versioned Blender/GLB revision retains all corrected roof geometry and the v0.236 asset unchanged.
 
-The applied slice adds 35 new/changed materials, 98 authored building details, six role-prop modules and eighteen composed role details. The isolated scene replaces visible square terrain and panel roads with a continuous organic island, variable-width roads and a shaped river. The result passes as coherent low-poly production direction, but is not final textured environment art.
+The applied slice adds sixteen material families, 123 building-detail objects, seven vegetation modules, six inhabited-prop modules, 46 vegetation placements, twenty role details and twenty-four ground/road/river blending surfaces. The result is visibly richer at full overview while preserving the three landmarks, roads, bridge and river.
 
-Future explicitly authorized work should use this art bible as the Human baseline and should focus on texture authorship, vegetation variety and environment-edge richness rather than returning to generic procedural rectangles. Stop at v0.236. Do not start v0.237 without a new explicit milestone.
+Future explicitly authorized work should use this stronger Barrosan baseline and may pursue bespoke texture authorship or final lighting polish. Do not return to generic procedural rectangles, square terrain or panel roads. Stop at v0.237. Do not start v0.238 without a new explicit milestone.
+
+New v0.237 docs:
+
+- `docs/V0237_BARROSAN_MATERIAL_RICHNESS_REPORT.md`
+- v0.237 addendum in `docs/art/V0236_BARROSAN_FACTION_ART_BIBLE.md`
 
 New v0.236 docs:
 

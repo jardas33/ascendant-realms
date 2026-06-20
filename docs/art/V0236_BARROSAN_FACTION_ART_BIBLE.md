@@ -188,3 +188,38 @@ The production-direction slice must:
 - replace panel-like roads and river banks with shaped ribbons and organic patches;
 - preserve the v0.234/v0.235 connected battlefield layout and isometric readability;
 - change no gameplay, save, economy, selection, pathing, command, minimap, objective, production or launcher-default behavior.
+
+## 10. v0.237 material-richness and inhabited-detail addendum
+
+This addendum raises the finish standard without changing the underlying Barrosan identity or the corrected ridge-to-eave roof contract.
+
+### Barrosan material-detail rules
+
+- Roof variation follows construction: restrained tile-row or ridge-strip rhythm, dark eaves and occasional aged bands. It must never become random confetti across the silhouette.
+- Lime plaster uses broad shade changes, repair patches, hairline cracks and contact staining. A wall should read first as one wall and second as a repaired frontier surface.
+- Stone foundations show courses, chipped edges, moss at damp contacts and darker grounding beneath walls, steps and bridge supports.
+- Timber uses at least two related values plus selective pegs, beam caps or iron brackets where joints need explanation.
+- Contact dirt belongs beneath eaves, walls, thresholds, props and supports. It is a grounding device, not a global black outline.
+- Lume crystals remain a controlled cyan accent. Emission must reveal the extraction role without flooding nearby materials or competing with objective readability.
+
+### Vegetation vocabulary
+
+- Small round and wind-shaped bushes provide low silhouette breakup.
+- Grass clumps appear in composed groups along road edges, yards and quieter terrain pockets.
+- Reeds and bank plants belong near water and damp soil, with moss or low ground cover near stone and river edges.
+- Trees use at least two distinct size and crown shapes: young narrow frontier growth and broader mature shelter trees.
+- Vegetation remains temperate, practical and slightly rugged. Barrosan territory is a worked frontier, not a fantasy jungle.
+
+### Ground-wear rules
+
+- Road centers may show restrained compacted wear, while edges blend through grass islands, dirt scars and trampled patches.
+- Building yards receive role-specific wear: drill and cart traffic at the barracks, formal threshold wear at the keep and ore/cart scars at the mine.
+- Shallow terrace cues may break broad terrain planes, but they must not imply blocked routes or change gameplay collision.
+- Island and river edges use irregular silhouettes, intermittent stone, reeds and moss instead of continuous decorative borders.
+
+### Avoiding over-noise in the RTS view
+
+- Cluster details around landmarks, thresholds, working yards and damp edges; preserve open breathing room between those clusters.
+- Prefer a few readable families repeated with variation over many unrelated tiny props.
+- The three landmarks, road network, bridge and river must remain legible before individual details are noticed.
+- If a detail improves only a close-up but muddies the full overview, remove or simplify it.

@@ -1,6 +1,19 @@
 # Development Checkpoint
 
-Updated: 2026-06-20 v0.236 Barrosan faction art bible and production-quality slice
+Updated: 2026-06-20 v0.237 Barrosan material richness, foliage, and inhabited detail
+
+## v0.237 Barrosan Material Richness, Foliage, and Inhabited Detail - 2026-06-20
+
+- Milestone verdict: `PASS`.
+- Added a material-richness addendum to `docs/art/V0236_BARROSAN_FACTION_ART_BIBLE.md`.
+- Blender 5.1.2 created `art-source/blender/v0237/salto_barrosan_material_richness.blend` and `desktop-spikes/godot-salto/assets/v0237/salto_barrosan_material_richness.glb`; v0.236 remains unchanged.
+- Added sixteen material families, seven vegetation modules, six inhabited-prop modules and 123 building-detail objects.
+- Composed 46 vegetation instances, twenty added prop/detail instances and twenty-four terrain/road/river blending surfaces.
+- Retained all four corrected roofs, organic terrain, variable-width roads, shaped river and RTS landmark readability.
+- Exact review pack: `artifacts/manual-review/v0237-barrosan-material-richness-foliage/`.
+- Required report: `docs/V0237_BARROSAN_MATERIAL_RICHNESS_REPORT.md`.
+- Gameplay, saves, economy, selection, pathing, commands, minimap, objectives, production, AI, collision, browser runtime, runtime-art slots and default launcher remain unchanged.
+- Stop after v0.237. Do not begin v0.238 without explicit authorization.
 
 ## v0.236 Barrosan Faction Art Bible and Production-Quality Slice - 2026-06-20
 

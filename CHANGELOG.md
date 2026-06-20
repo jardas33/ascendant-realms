@@ -1,5 +1,14 @@
 # Changelog
 
+# v0.237 Barrosan Material Richness, Foliage, and Inhabited Detail - 2026-06-20
+
+- Added a v0.237 art-bible addendum covering material detail, vegetation, ground wear and RTS noise control.
+- Used Blender 5.1.2 to export a new versioned v0.237 GLB with sixteen material families, seven vegetation modules, six inhabited-prop modules and 123 authored building-detail objects; v0.236 remains unchanged.
+- Composed 46 vegetation instances, twenty new landmark prop/detail instances and twenty-four terrain/road/river blending surfaces.
+- Preserved corrected roof geometry, organic terrain, variable-width roads, shaped river, gameplay boundaries and launcher defaults.
+- Added the exact eleven-file review pack at `artifacts/manual-review/v0237-barrosan-material-richness-foliage/`.
+- Recorded verdict `PASS`: the full overview is visibly richer and more inhabited than v0.236 while retaining landmark, road, bridge and river readability. The honest ceiling remains stylized low-poly rather than final hand-textured art.
+
 # v0.236 Barrosan Faction Art Bible and Production-Quality Slice - 2026-06-20
 
 - Added `docs/art/V0236_BARROSAN_FACTION_ART_BIBLE.md` as the first written Human/Barrosan faction standard for frontier identity, silhouettes, roofs, materials, detail, terrain and future-race separation.

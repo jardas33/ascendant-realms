@@ -1,0 +1,50 @@
+﻿{
+    "checkpoint":  "v0.237",
+    "blendPath":  "art-source/blender/v0237/salto_barrosan_material_richness.blend",
+    "existingV0236GlbModified":  false,
+    "newOrChangedMaterialCount":  16,
+    "glbPath":  "desktop-spikes/godot-salto/assets/v0237/salto_barrosan_material_richness.glb",
+    "vegetationModuleCount":  7,
+    "vegetationModules":  [
+                              "prop_bush_round",
+                              "prop_bush_wind",
+                              "prop_grass_clump",
+                              "prop_reeds",
+                              "prop_tree_young",
+                              "prop_tree_broad",
+                              "prop_moss_patch"
+                          ],
+    "newV0237GlbExported":  true,
+    "inhabitedPropModules":  [
+                                 "prop_plank_stack",
+                                 "prop_small_awning",
+                                 "prop_guard_post",
+                                 "prop_entrance_lamp",
+                                 "prop_ore_cart",
+                                 "prop_mine_workbench"
+                             ],
+    "sourceGenerator":  "tools/blender/generate_v0237_barrosan_material_richness.py",
+    "hardBoundaries":  {
+                           "saveChanged":  false,
+                           "collisionChanged":  false,
+                           "gameplayChanged":  false,
+                           "newRuntimeArtSlots":  0,
+                           "downloadedAssets":  0,
+                           "defaultLauncherChanged":  false,
+                           "pathingChanged":  false,
+                           "generatedAiImages":  0,
+                           "browserRuntimeChanged":  false
+                       },
+    "inhabitedPropModuleCount":  6,
+    "authoredBuildingDetailObjectCount":  123,
+    "schemaVersion":  1,
+    "roofGeometryContract":  {
+                                 "centralRidgeHighest":  true,
+                                 "slopesDownToBothEaves":  true,
+                                 "eaveOverhang":  true,
+                                 "ridgeCaps":  true,
+                                 "fasciaBoards":  true,
+                                 "invertedRoofGeometry":  false
+                             },
+    "artBibleAddendumPath":  "docs/art/V0236_BARROSAN_FACTION_ART_BIBLE.md"
+}

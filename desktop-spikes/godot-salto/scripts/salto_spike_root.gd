@@ -145,6 +145,7 @@ const SCRIPT_ARG_PREFIXES := [
 	"--salto-composed-blender-battlefield-slice",
 	"--salto-architecture-correction-beauty-pass",
 	"--salto-barrosan-production-slice",
+	"--salto-barrosan-material-richness",
 	"--salto-bridge-shell-reboot",
 	"--salto-bridge-shell-legacy-comparator",
 	"--salto-structure-shell-production",
@@ -265,6 +266,15 @@ func _ready() -> void:
 		var production_slice := production_scene.instantiate()
 		add_child(production_slice)
 		production_slice.call_deferred("start")
+		return
+	if args.has("--salto-barrosan-material-richness"):
+		var richness_scene := load("res://scenes/salto_barrosan_material_richness.tscn") as PackedScene
+		if richness_scene == null:
+			get_tree().quit(1)
+			return
+		var richness_slice := richness_scene.instantiate()
+		add_child(richness_slice)
+		richness_slice.call_deferred("start")
 		return
 	if args.has("--salto-ui-architecture-wireframe"):
 		await run_ui_architecture_wireframe_capture()

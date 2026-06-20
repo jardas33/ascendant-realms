@@ -1,22 +1,22 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-06-20 v0.236 Barrosan faction art bible and production-quality slice
+Last updated: 2026-06-20 v0.237 Barrosan material richness, foliage, and inhabited detail
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
 ## Current Continuation Note
 
-The latest work is v0.236, the first written Barrosan/Human faction art bible and its applied production-direction battlefield slice. The bounded milestone verdict is `PASS`.
+The latest work is v0.237, the Barrosan material-richness, foliage and inhabited-detail upgrade over the v0.236 production slice. The bounded milestone verdict is `PASS`.
 
-The art bible at `docs/art/V0236_BARROSAN_FACTION_ART_BIBLE.md` defines frontier identity, role silhouettes, roof construction, named palette, detail and terrain rules, lighting/camera guidance and separation from future Ashen, Sylvan, Stone and Arcane factions.
+The art bible at `docs/art/V0236_BARROSAN_FACTION_ART_BIBLE.md` now includes the v0.237 addendum defining material-detail rhythm, temperate vegetation vocabulary, ground-wear rules and RTS over-noise prevention.
 
-Blender 5.1.2 generated `art-source/blender/v0236/salto_barrosan_production_slice.blend` and `desktop-spikes/godot-salto/assets/v0236/salto_barrosan_production_slice.glb`. The v0.235 and v0.233R GLBs remain unchanged. Exactly three landmark modules were enriched with 35 new/changed materials, 98 authored building-detail objects and six reusable role-prop modules. All corrected v0.235 roof geometry is retained.
+Blender 5.1.2 generated `art-source/blender/v0237/salto_barrosan_material_richness.blend` and `desktop-spikes/godot-salto/assets/v0237/salto_barrosan_material_richness.glb`. The v0.236 GLB remains unchanged. The revision adds sixteen material families, seven vegetation modules, six inhabited-prop modules and 123 building-detail objects while retaining every corrected roof plane, ridge, eave and fascia.
 
-The isolated Godot scene `res://scenes/salto_barrosan_production_slice.tscn` adds eighteen deliberate role-detail placements and replaces visible square terrain/panel roads with a continuous island, organic patches, variable-width roads and a shaped river. The exact pack at `artifacts/manual-review/v0236-barrosan-art-bible-production-slice/` proves the overview and close-role result.
+The isolated Godot scene `res://scenes/salto_barrosan_material_richness.tscn` retains the organic v0.236 battlefield and adds 46 composed vegetation instances, twenty inhabited details and twenty-four terrain/road/river blending surfaces. The exact pack at `artifacts/manual-review/v0237-barrosan-material-richness-foliage/` proves the overview and close-detail result.
 
-The result is clearly richer, less toy-like and more art-directed than v0.235, so the bounded milestone passes. It remains untextured low-poly production direction rather than final shipped environment art; vegetation variety and bespoke texture work are still future concerns.
+The full overview is clearly richer and more inhabited than v0.236 without cluttering landmarks, roads, bridge or river, so the bounded milestone passes. It remains stylized low-poly production art rather than final hand-textured shipped environment art.
 
-No generated image, download or runtime-art slot was added. The default launcher, browser runtime, gameplay, pathing, collision, objectives, AI, economy, saves, stable IDs, selection, commands, production and minimap semantics remain unchanged. Stop at v0.236; do not begin v0.237 without new authorization.
+No generated image, download or runtime-art slot was added. The default launcher, browser runtime, gameplay, pathing, collision, objectives, AI, economy, saves, stable IDs, selection, commands, production and minimap semantics remain unchanged. Stop at v0.237; do not begin v0.238 without new authorization.
 
 ## Project Identity
 
