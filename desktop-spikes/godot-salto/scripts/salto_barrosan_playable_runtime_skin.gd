@@ -2,6 +2,7 @@ extends "res://scripts/salto_spike_scene_3d.gd"
 
 const V0240_MAPPING_PATH := "res://data/v0240_barrosan_playable_art_mapping.json"
 const V0239_KIT_PATH := "res://assets/v0239/salto_barrosan_roster_silhouette_beauty.glb"
+const BuildPlacementValidationAdapterScript = preload("res://scripts/adapters/build_placement_validation_adapter.gd")
 const EXPECTED_ROLES := [
 	"main_base", "house", "farm", "lumber", "blacksmith",
 	"barracks", "mine", "watchtower", "market",
@@ -45,6 +46,10 @@ var barrosan_role_entries: Dictionary = {}
 var barrosan_runtime_structures: Dictionary = {}
 var barrosan_selected_role_id := ""
 var barrosan_runtime_errors: Array[String] = []
+var barrosan_build_validation_adapter = BuildPlacementValidationAdapterScript.new()
+var barrosan_valid_placement: Dictionary = {}
+var barrosan_blocked_placement: Dictionary = {}
+var barrosan_pathing_probe: Dictionary = {}
 
 
 func configure_barrosan_playable_runtime_skin(options: Dictionary) -> void:
@@ -53,8 +58,21 @@ func configure_barrosan_playable_runtime_skin(options: Dictionary) -> void:
 	if not barrosan_runtime_skin_enabled:
 		return
 	_load_barrosan_runtime_assets()
+	_upgrade_inert_roles_to_runtime_shells()
+	barrosan_build_validation_adapter.load_authority()
+	_evaluate_barrosan_build_previews()
 	_refresh_visual_foundation()
 	_add_barrosan_minimap_role_markers()
+
+
+func set_workload_tier(tier: String) -> bool:
+	var result := super.set_workload_tier(tier)
+	if result and barrosan_runtime_skin_enabled:
+		_upgrade_inert_roles_to_runtime_shells()
+		_evaluate_barrosan_build_previews()
+		_refresh_visual_foundation()
+		_add_barrosan_minimap_role_markers()
+	return result
 
 
 func _load_barrosan_runtime_assets() -> void:
@@ -147,19 +165,25 @@ func _rebuild_visuals() -> void:
 	super._rebuild_visuals()
 	if not barrosan_runtime_skin_enabled or not barrosan_runtime_errors.is_empty():
 		return
-	_add_inert_runtime_structures()
 	_sync_barrosan_runtime_visuals()
 
 
 func _add_structure(structure: Dictionary) -> void:
 	var fixture := str(structure.get("fixtureId", ""))
 	var team := str(structure.get("team", ""))
+	if barrosan_runtime_skin_enabled and fixture.begins_with("barrosan_shell_"):
+		var shell_role := fixture.trim_prefix("barrosan_shell_")
+		var shell_entry: Dictionary = barrosan_role_entries.get(shell_role, {})
+		var shell_placed := _place_barrosan_module(shell_role, str(shell_entry.get("module", "")), _to_world(structure.get("position", Vector2.ZERO), 0.20), float(shell_entry.get("yawDegrees", 0.0)), _runtime_module_scale(shell_role))
+		if shell_placed != null:
+			_register_runtime_structure(shell_role, shell_placed, false, str(structure.get("id", "")), structure)
+			return
 	if barrosan_runtime_skin_enabled and (team == "friendly" or fixture == "west_stone_cut") and LIVE_FIXTURE_ROLES.has(fixture):
 		var role := str(LIVE_FIXTURE_ROLES[fixture])
 		var entry: Dictionary = barrosan_role_entries.get(role, {})
 		var placed := _place_barrosan_module(role, str(entry.get("module", "")), _to_world(structure.get("position", Vector2.ZERO), 0.20), float(entry.get("yawDegrees", 0.0)), _runtime_module_scale(role))
 		if placed != null:
-			_register_runtime_structure(role, placed, true, str(structure.get("id", LIVE_ROLE_IDS.get(role, role))))
+			_register_runtime_structure(role, placed, true, str(structure.get("id", LIVE_ROLE_IDS.get(role, role))), structure)
 			return
 	super._add_structure(structure)
 
@@ -168,15 +192,38 @@ func _add_capture_site(site: Dictionary) -> void:
 	super._add_capture_site(site)
 
 
-func _add_inert_runtime_structures() -> void:
+func _upgrade_inert_roles_to_runtime_shells() -> void:
 	for role in ["house", "farm", "lumber", "blacksmith", "watchtower", "market"]:
+		var runtime_id := "v0243_shell_%s" % role
+		if runtime.structures.any(func(structure: Dictionary) -> bool: return str(structure.get("id", "")) == runtime_id):
+			continue
 		var entry: Dictionary = barrosan_role_entries.get(role, {})
-		var placed := _place_barrosan_module(role, str(entry.get("module", "")), INERT_ROLE_POSITIONS[role], float(entry.get("yawDegrees", 0.0)), _runtime_module_scale(role))
-		if placed != null:
-			_register_runtime_structure(role, placed, false, "v0242_inert_%s" % role)
+		var footprint := _runtime_footprint(entry) * 90.0
+		var runtime_position := _from_world(INERT_ROLE_POSITIONS[role])
+		runtime.structures.append({
+			"id": runtime_id,
+			"fixtureId": "barrosan_shell_%s" % role,
+			"roleId": "barrosan_role_%s" % role,
+			"team": "friendly",
+			"position": runtime_position,
+			"size": footprint,
+			"rect": Rect2(runtime_position - footprint * 0.5, footprint),
+			"entityType": "sim_safe_role_shell",
+			"alive": true,
+			"health": 500.0,
+			"maxHealth": 500.0,
+			"constructionState": "shell_complete",
+			"constructionProgress": 1.0,
+			"productionQueue": [],
+			"productionEnabled": false,
+			"economyMutationAllowed": false,
+			"aiMutationAllowed": false,
+			"combatEnabled": false,
+			"savePersistenceEnabled": false,
+		})
 
 
-func _register_runtime_structure(role: String, placed: Node3D, live: bool, runtime_id: String) -> void:
+func _register_runtime_structure(role: String, placed: Node3D, live: bool, runtime_id: String, runtime_entity: Dictionary = {}) -> void:
 	var entry: Dictionary = barrosan_role_entries.get(role, {})
 	var footprint := _runtime_footprint(entry)
 	barrosan_runtime_structures[role] = {
@@ -188,8 +235,12 @@ func _register_runtime_structure(role: String, placed: Node3D, live: bool, runti
 		"position": placed.position,
 		"footprint": footprint,
 		"liveGameplayEntity": live,
-		"inertOptInStructure": not live,
+		"simSafeShellEntity": not live,
 		"selectable": true,
+		"health": runtime_entity.get("health", null),
+		"maxHealth": runtime_entity.get("maxHealth", null),
+		"productionEnabled": bool(runtime_entity.get("productionEnabled", live and role == "barracks")),
+		"collisionPathingFootprintActive": not live,
 	}
 	_add_runtime_footprint(role, placed.position, footprint)
 	_add_runtime_role_label(role, str(entry.get("displayName", role)), placed.position, live)
@@ -289,19 +340,44 @@ func select_barrosan_runtime_role(role: String) -> bool:
 	return true
 
 
+func _sync_hud() -> void:
+	super._sync_hud()
+	if not barrosan_runtime_skin_enabled or barrosan_selected_role_id == "" or not barrosan_runtime_structures.has(barrosan_selected_role_id):
+		return
+	var structure: Dictionary = barrosan_runtime_structures[barrosan_selected_role_id]
+	var display_name := str(structure.get("displayName", barrosan_selected_role_id.capitalize()))
+	if hud_hero_label:
+		hud_hero_label.text = "%s | %s" % [display_name, "Live gameplay building" if bool(structure.get("liveGameplayEntity", false)) else "Sim-safe role shell"]
+	if hud_context_label:
+		if bool(structure.get("liveGameplayEntity", false)):
+			hud_context_label.text = _barrosan_live_state_text(barrosan_selected_role_id)
+		else:
+			hud_context_label.text = "Shell / opt-in / 500 HP / no production yet"
+
+
 func set_barrosan_runtime_review_mode(mode: String) -> void:
 	barrosan_runtime_review_mode = mode
 	match mode:
 		"selected":
 			select_barrosan_runtime_role("market")
+		"selected_live":
+			select_barrosan_runtime_role("barracks")
+		"selected_shell":
+			select_barrosan_runtime_role("blacksmith")
 		"inert_roles":
 			select_barrosan_runtime_role("blacksmith")
 		"live_roles":
 			select_barrosan_runtime_role("mine")
+		"pathing":
+			_run_barrosan_shell_pathing_probe()
+		"valid_preview", "blocked_preview", "all_roles":
+			barrosan_selected_role_id = ""
+			v0133_selected_structure_id = ""
 		_:
 			if mode == "clean":
 				barrosan_selected_role_id = ""
 	_sync_barrosan_runtime_visuals()
+	_sync_hud()
 
 
 func _sync_unit_visuals() -> void:
@@ -326,15 +402,77 @@ func _sync_barrosan_runtime_visuals() -> void:
 		var footprint_node := visual_root.get_node_or_null("v0242_footprint_%s" % role)
 		if footprint_node != null:
 			footprint_node.visible = barrosan_runtime_review_mode in ["all_roles", "footprints", "valid_preview", "blocked_preview"]
-	_set_or_create_marker("v0242_valid_placement_preview", Vector3(-3.30, 0.20, 1.92), Vector3(0.92, 0.045, 0.72), Color(0.20, 0.82, 0.46, 0.44))
-	_set_or_create_marker("v0242_blocked_placement_preview", Vector3(0.70, 0.20, -1.20), Vector3(0.92, 0.045, 0.72), Color(0.90, 0.22, 0.16, 0.46))
+	var valid_world: Vector3 = barrosan_build_validation_adapter.source_to_runtime_world(_placement_point(barrosan_valid_placement))
+	var blocked_world: Vector3 = barrosan_build_validation_adapter.source_to_runtime_world(_placement_point(barrosan_blocked_placement))
+	_set_or_create_marker("v0242_valid_placement_preview", valid_world, Vector3(0.92, 0.045, 0.72), Color(0.20, 0.82, 0.46, 0.44))
+	_set_or_create_marker("v0242_blocked_placement_preview", blocked_world, Vector3(0.92, 0.045, 0.72), Color(0.90, 0.22, 0.16, 0.46))
 	var valid_preview := visual_root.get_node_or_null("v0242_valid_placement_preview")
 	var blocked_preview := visual_root.get_node_or_null("v0242_blocked_placement_preview")
 	if valid_preview != null:
 		valid_preview.visible = barrosan_runtime_review_mode == "valid_preview"
 	if blocked_preview != null:
 		blocked_preview.visible = barrosan_runtime_review_mode == "blocked_preview"
+	_sync_validation_reason_label(valid_world, blocked_world)
 	_sync_scale_probes()
+
+
+func _evaluate_barrosan_build_previews() -> void:
+	barrosan_valid_placement = barrosan_build_validation_adapter.evaluate(Vector2(520, 1450), "barracks", runtime.resources)
+	barrosan_blocked_placement = barrosan_build_validation_adapter.evaluate(Vector2(1280, 800), "barracks", runtime.resources)
+
+
+func _sync_validation_reason_label(valid_world: Vector3, blocked_world: Vector3) -> void:
+	var label := visual_root.get_node_or_null("v0243_validation_reason") as Label3D
+	if label == null:
+		label = Label3D.new()
+		label.name = "v0243_validation_reason"
+		label.font_size = 20
+		label.pixel_size = 0.006
+		label.outline_size = 6
+		label.billboard = BaseMaterial3D.BILLBOARD_ENABLED
+		label.no_depth_test = true
+		visual_root.add_child(label)
+	var blocked := barrosan_runtime_review_mode == "blocked_preview"
+	label.position = (blocked_world if blocked else valid_world) + Vector3(0.0, 0.62, 0.0)
+	label.text = str((barrosan_blocked_placement if blocked else barrosan_valid_placement).get("reasonText", ""))
+	label.modulate = Color("#ffaaa0") if blocked else Color("#a8efad")
+	label.visible = barrosan_runtime_review_mode in ["valid_preview", "blocked_preview"]
+
+
+func _placement_point(result: Dictionary) -> Vector2:
+	var point: Dictionary = result.get("point", {})
+	return Vector2(float(point.get("x", 0.0)), float(point.get("y", 0.0)))
+
+
+func _barrosan_live_state_text(role: String) -> String:
+	match role:
+		"barracks":
+			return "Live | %s | train flow preserved" % ("complete" if runtime.barracks_complete else "restoration available")
+		"mine":
+			return "Live resource site | %s" % ("controlled" if runtime.mine_converted else "neutral")
+		_:
+			return "Live base entity | complete"
+
+
+func _run_barrosan_shell_pathing_probe() -> void:
+	barrosan_selected_role_id = ""
+	v0133_selected_structure_id = ""
+	var before = runtime.unit_position("worker_00")
+	runtime.select_entity("worker_00")
+	var accepted := runtime.issue_move_order(Vector2(520, 700))
+	for _frame in range(240):
+		runtime.advance_live_frame()
+	var after = runtime.unit_position("worker_00")
+	barrosan_pathing_probe = {
+		"accepted": accepted,
+		"before": before,
+		"after": after,
+		"displacement": before.distance_to(after) if before is Vector2 and after is Vector2 else 0.0,
+		"stuckUnitCount": runtime.stuck_unit_count,
+		"obstacleModel": "existing rectangular destination nudge",
+	}
+	_sync_unit_visuals()
+	_sync_hud()
 
 
 func _sync_scale_probes() -> void:
@@ -384,7 +522,7 @@ func get_spike_status() -> Dictionary:
 	var status := super.get_spike_status()
 	var addressable_roles: Array[String] = []
 	var live_roles: Array[String] = []
-	var inert_roles: Array[String] = []
+	var shell_roles: Array[String] = []
 	for role in EXPECTED_ROLES:
 		if not barrosan_runtime_structures.has(role):
 			continue
@@ -392,10 +530,10 @@ func get_spike_status() -> Dictionary:
 		if bool(barrosan_runtime_structures[role].get("liveGameplayEntity", false)):
 			live_roles.append(role)
 		else:
-			inert_roles.append(role)
+			shell_roles.append(role)
 	status["barrosanPlayableRuntimeSkin"] = {
 		"enabled": barrosan_runtime_skin_enabled,
-		"checkpoint": "v0.242",
+		"checkpoint": "v0.243",
 		"scenePath": "res://scenes/salto_barrosan_playable_runtime_skin.tscn",
 		"mappingPath": V0240_MAPPING_PATH,
 		"sourceGlb": V0239_KIT_PATH,
@@ -406,11 +544,18 @@ func get_spike_status() -> Dictionary:
 		"pathingChanged": false,
 		"addressableRoles": addressable_roles,
 		"liveMappedRoles": live_roles,
-		"inertOptInRoles": inert_roles,
+		"simSafeShellRoles": shell_roles,
 		"selectedRole": barrosan_selected_role_id,
 		"selectionIntegrated": addressable_roles.size() == 9,
 		"footprintCount": addressable_roles.size(),
-		"placementValidation": "evidence-only",
+		"placementValidation": "read-only-generated-authority-adapter",
+		"buildValidationAdapter": barrosan_build_validation_adapter.status(),
+		"validPlacementResult": barrosan_valid_placement,
+		"blockedPlacementResult": barrosan_blocked_placement,
+		"blockedPlacementReason": str(barrosan_blocked_placement.get("reason", "")),
+		"shellFootprintsAffectRuntimeObstacleAvoidance": true,
+		"pathingProbe": barrosan_pathing_probe,
+		"visualRoadsMatchActualPathing": "partial-decorative-mismatch",
 		"minimapRoleMarkerCount": addressable_roles.size(),
 		"debugLabelsVisible": barrosan_runtime_debug_labels or barrosan_runtime_review_mode in ["all_roles", "inert_roles"],
 		"reviewMode": barrosan_runtime_review_mode,

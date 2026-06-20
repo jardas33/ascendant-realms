@@ -7997,6 +7997,42 @@ func _apply_player_slice_action(action: String) -> Dictionary:
 			_ensure_player_battle_scene()
 			_call_scene("set_barrosan_runtime_review_mode", ["units_scale"])
 			_render_player_screen("battle")
+		"v0243_overview", "v0243_unselected":
+			_ensure_player_battle_scene()
+			_call_scene("set_barrosan_runtime_review_mode", ["clean"])
+			_render_player_screen("battle")
+		"v0243_all_roles", "v0243_minimap":
+			_ensure_player_battle_scene()
+			_call_scene("set_barrosan_runtime_review_mode", ["all_roles"])
+			_render_player_screen("battle")
+		"v0243_live_roles":
+			_ensure_player_battle_scene()
+			_call_scene("set_barrosan_runtime_review_mode", ["live_roles"])
+			_render_player_screen("battle")
+		"v0243_shell_roles":
+			_ensure_player_battle_scene()
+			_call_scene("set_barrosan_runtime_review_mode", ["inert_roles"])
+			_render_player_screen("battle")
+		"v0243_selected_live":
+			_ensure_player_battle_scene()
+			_call_scene("set_barrosan_runtime_review_mode", ["selected_live"])
+			_render_player_screen("battle")
+		"v0243_selected_shell":
+			_ensure_player_battle_scene()
+			_call_scene("set_barrosan_runtime_review_mode", ["selected_shell"])
+			_render_player_screen("battle")
+		"v0243_valid_preview":
+			_ensure_player_battle_scene()
+			_call_scene("set_barrosan_runtime_review_mode", ["valid_preview"])
+			_render_player_screen("battle")
+		"v0243_blocked_preview", "v0243_validation_reason":
+			_ensure_player_battle_scene()
+			_call_scene("set_barrosan_runtime_review_mode", ["blocked_preview"])
+			_render_player_screen("battle")
+		"v0243_pathing":
+			_ensure_player_battle_scene()
+			_call_scene("set_barrosan_runtime_review_mode", ["pathing"])
+			_render_player_screen("battle")
 		"v0211_overview":
 			_ensure_player_battle_scene()
 			_call_scene("capture_mine_site")
@@ -8474,6 +8510,8 @@ func _apply_player_slice_action(action: String) -> Dictionary:
 
 func _player_capture_checkpoint() -> String:
 	var normalized_root := _artifact_root_from_args().replace("\\", "/")
+	if normalized_root.contains("/v0243"):
+		return "v0.243"
 	if normalized_root.contains("/v0242"):
 		return "v0.242"
 	if normalized_root.contains("/v0241"):
@@ -8589,9 +8627,24 @@ func _player_capture_checkpoint() -> String:
 	return "v0.124"
 
 func _is_bounded_microloop_checkpoint() -> bool:
-	return ["v0.129", "v0.130", "v0.160", "v0.162", "v0.164", "v0.166", "v0.168", "v0.169", "v0.170", "v0.173", "v0.174", "v0.177", "v0.178", "v0.179", "v0.181", "v0.184", "v0.185", "v0.186", "v0.187", "v0.193", "v0.194", "v0.195", "v0.196", "v0.197", "v0.198", "v0.199", "v0.200", "v0.203", "v0.204", "v0.205", "v0.206", "v0.209", "v0.210", "v0.211", "v0.212", "v0.213", "v0.215", "v0.216", "v0.217", "v0.218", "v0.219", "v0.220", "v0.221", "v0.222", "v0.223", "v0.224", "v0.227", "v0.228", "v0.229", "v0.230", "v0.231"].has(_player_capture_checkpoint())
+	return ["v0.129", "v0.130", "v0.160", "v0.162", "v0.164", "v0.166", "v0.168", "v0.169", "v0.170", "v0.173", "v0.174", "v0.177", "v0.178", "v0.179", "v0.181", "v0.184", "v0.185", "v0.186", "v0.187", "v0.193", "v0.194", "v0.195", "v0.196", "v0.197", "v0.198", "v0.199", "v0.200", "v0.203", "v0.204", "v0.205", "v0.206", "v0.209", "v0.210", "v0.211", "v0.212", "v0.213", "v0.215", "v0.216", "v0.217", "v0.218", "v0.219", "v0.220", "v0.221", "v0.222", "v0.223", "v0.224", "v0.227", "v0.228", "v0.229", "v0.230", "v0.231", "v0.243"].has(_player_capture_checkpoint())
 
 func _player_capture_steps() -> Array[Dictionary]:
+	if _player_capture_checkpoint() == "v0.243":
+		return [
+			{"id": "runtime_shell_overview", "label": "v0.243 runtime shell overview", "action": "v0243_overview"},
+			{"id": "all_nine_roles_registered", "label": "v0.243 all nine roles registered", "action": "v0243_all_roles"},
+			{"id": "live_entities_preserved", "label": "v0.243 live entities preserved", "action": "v0243_live_roles"},
+			{"id": "shell_entities_selectable", "label": "v0.243 shell entities selectable", "action": "v0243_shell_roles"},
+			{"id": "selected_live_building_hud", "label": "v0.243 selected live building HUD", "action": "v0243_selected_live"},
+			{"id": "selected_shell_building_hud", "label": "v0.243 selected shell building HUD", "action": "v0243_selected_shell"},
+			{"id": "valid_build_preview_real_validation", "label": "v0.243 valid build preview real validation", "action": "v0243_valid_preview"},
+			{"id": "blocked_build_preview_real_validation", "label": "v0.243 blocked build preview real validation", "action": "v0243_blocked_preview"},
+			{"id": "validation_reason_overlay", "label": "v0.243 validation reason overlay", "action": "v0243_validation_reason"},
+			{"id": "units_pathing_near_shells", "label": "v0.243 units pathing near shells", "action": "v0243_pathing"},
+			{"id": "minimap_all_roles", "label": "v0.243 minimap all roles", "action": "v0243_minimap"},
+			{"id": "unselected_clean_view", "label": "v0.243 unselected clean view", "action": "v0243_unselected"},
+		]
 	if _player_capture_checkpoint() == "v0.242":
 		return [
 			{"id": "runtime_cohesion_overview", "label": "v0.242 runtime cohesion overview", "action": "v0242_overview"},
