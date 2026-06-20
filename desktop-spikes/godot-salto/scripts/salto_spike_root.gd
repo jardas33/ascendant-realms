@@ -23,6 +23,8 @@ const SCRIPT_ARG_PREFIXES := [
 	"--player-slice",
 	"--player-slice-validate",
 	"--player-slice-capture",
+	"--salto-barrosan-playable-runtime-skin",
+	"--salto-barrosan-runtime-debug-labels",
 	"--worker-art-opt-in",
 	"--worker-art-opt-in-benchmark",
 	"--worker-art-source=",
@@ -1078,7 +1080,7 @@ func load_mode(mode: String) -> void:
 		active_scene.queue_free()
 	var scene_path: String = "res://scenes/salto_2d_placeholder.tscn"
 	if mode == MODE_25D:
-		scene_path = "res://scenes/salto_2_5d_orthographic_placeholder.tscn"
+		scene_path = "res://scenes/salto_barrosan_playable_runtime_skin.tscn" if _script_args().has("--salto-barrosan-playable-runtime-skin") else "res://scenes/salto_2_5d_orthographic_placeholder.tscn"
 	var packed: PackedScene = load(scene_path) as PackedScene
 	active_scene = packed.instantiate()
 	active_mode = mode
@@ -1205,6 +1207,11 @@ func _configure_worker_art_for_active_scene() -> void:
 		active_scene.configure_salto_battlefield_material_value_integration(_script_args().has("--salto-battlefield-material-value-integration"))
 	if active_scene.has_method("configure_salto_presentation_reboot"):
 		active_scene.configure_salto_presentation_reboot(_salto_presentation_reboot_enabled())
+	if active_scene.has_method("configure_barrosan_playable_runtime_skin"):
+		active_scene.configure_barrosan_playable_runtime_skin({
+			"enabled": _script_args().has("--salto-barrosan-playable-runtime-skin"),
+			"debugLabels": _script_args().has("--salto-barrosan-runtime-debug-labels"),
+		})
 
 func _apply_review_framing_for_active_scene() -> void:
 	if not _script_args().has("--salto-three-slot-review-framing") and not _script_args().has("--salto-four-slot-review-framing") and not _script_args().has("--salto-five-slot-review-framing"):
@@ -5382,6 +5389,7 @@ func run_player_slice_capture() -> void:
 		"saltoAsterPortraitFallbackActive": bool(_salto_aster_portrait_status().get("fallbackActive", true)),
 		"saltoAsterPortraitProductionSlotAdded": false,
 		"saltoAsterPortraitGeneratedImages": false,
+		"barrosanPlayableRuntimeSkin": final_status.get("barrosanPlayableRuntimeSkin", {}),
 		"privateHarnessPreservedSeparately": captures.any(func(capture: Dictionary) -> bool: return bool(capture.get("privateHarnessCapture", false))) or ["v0.126", "v0.127", "v0.128", "v0.129", "v0.130", "v0.160", "v0.162", "v0.164", "v0.166", "v0.168", "v0.169", "v0.170", "v0.173", "v0.174", "v0.177", "v0.178", "v0.179", "v0.181", "v0.184", "v0.185", "v0.186", "v0.187", "v0.193", "v0.194", "v0.195", "v0.196", "v0.197", "v0.198", "v0.199", "v0.200", "v0.203", "v0.204", "v0.205", "v0.206", "v0.209", "v0.210", "v0.211", "v0.212", "v0.217", "v0.218", "v0.219", "v0.220", "v0.221", "v0.222"].has(_player_capture_checkpoint()),
 		"proceduralPrimitiveOnly": not worker_art_loaded and not barracks_material_loaded and not militia_art_loaded and not aster_art_loaded and not ashen_art_loaded and not ground_material_loaded and not road_material_loaded and not bridge_riverbank_material_loaded and not road_riverbank_water_material_loaded,
 		"generatedOrImportedArtIncluded": worker_art_loaded or barracks_material_loaded or militia_art_loaded or aster_art_loaded or ashen_art_loaded or ground_material_loaded or road_material_loaded or bridge_riverbank_material_loaded or road_riverbank_water_material_loaded,
@@ -7930,6 +7938,33 @@ func _apply_player_slice_action(action: String) -> Dictionary:
 			_call_scene("box_select_squad")
 			_call_scene("focus_visual_subject", ["militia"])
 			_render_player_screen("battle")
+		"v0241_overview", "v0241_unselected", "v0241_units_scale":
+			_ensure_player_battle_scene()
+			_call_scene("set_barrosan_runtime_review_mode", ["clean"])
+			_render_player_screen("battle")
+		"v0241_selected":
+			_ensure_player_battle_scene()
+			_call_scene("capture_mine_site")
+			_call_scene("assign_worker_to_mine")
+			_call_scene("advance_resource_production", [180])
+			_call_scene("place_barracks_placeholder")
+			_call_scene("advance_construction", [180])
+			_call_scene("_select_v0133_barracks")
+			_call_scene("set_barrosan_runtime_review_mode", ["selected"])
+			_call_scene("focus_visual_subject", ["barracks"])
+			_render_player_screen("battle")
+		"v0241_mapping":
+			_ensure_player_battle_scene()
+			_call_scene("set_barrosan_runtime_review_mode", ["mapping"])
+			_render_player_screen("battle")
+		"v0241_valid_preview":
+			_ensure_player_battle_scene()
+			_call_scene("set_barrosan_runtime_review_mode", ["valid_preview"])
+			_render_player_screen("battle")
+		"v0241_blocked_preview":
+			_ensure_player_battle_scene()
+			_call_scene("set_barrosan_runtime_review_mode", ["blocked_preview"])
+			_render_player_screen("battle")
 		"v0211_overview":
 			_ensure_player_battle_scene()
 			_call_scene("capture_mine_site")
@@ -8407,6 +8442,8 @@ func _apply_player_slice_action(action: String) -> Dictionary:
 
 func _player_capture_checkpoint() -> String:
 	var normalized_root := _artifact_root_from_args().replace("\\", "/")
+	if normalized_root.contains("/v0241"):
+		return "v0.241"
 	if normalized_root.contains("/v0231"):
 		return "v0.231"
 	if normalized_root.contains("/v0230"):
@@ -8521,6 +8558,16 @@ func _is_bounded_microloop_checkpoint() -> bool:
 	return ["v0.129", "v0.130", "v0.160", "v0.162", "v0.164", "v0.166", "v0.168", "v0.169", "v0.170", "v0.173", "v0.174", "v0.177", "v0.178", "v0.179", "v0.181", "v0.184", "v0.185", "v0.186", "v0.187", "v0.193", "v0.194", "v0.195", "v0.196", "v0.197", "v0.198", "v0.199", "v0.200", "v0.203", "v0.204", "v0.205", "v0.206", "v0.209", "v0.210", "v0.211", "v0.212", "v0.213", "v0.215", "v0.216", "v0.217", "v0.218", "v0.219", "v0.220", "v0.221", "v0.222", "v0.223", "v0.224", "v0.227", "v0.228", "v0.229", "v0.230", "v0.231"].has(_player_capture_checkpoint())
 
 func _player_capture_steps() -> Array[Dictionary]:
+	if _player_capture_checkpoint() == "v0.241":
+		return [
+			{"id": "runtime_overview", "label": "v0.241 opt-in playable runtime overview", "action": "v0241_overview"},
+			{"id": "selected_building_indicator", "label": "v0.241 selected runtime building indicator", "action": "v0241_selected"},
+			{"id": "clean_unselected_state", "label": "v0.241 clean unselected runtime state", "action": "v0241_unselected"},
+			{"id": "role_mapping_proof", "label": "v0.241 runtime role mapping proof", "action": "v0241_mapping"},
+			{"id": "valid_placement_preview", "label": "v0.241 valid placement preview", "action": "v0241_valid_preview"},
+			{"id": "blocked_placement_preview", "label": "v0.241 blocked placement preview", "action": "v0241_blocked_preview"},
+			{"id": "units_and_buildings_scale", "label": "v0.241 units and buildings at gameplay scale", "action": "v0241_units_scale"},
+		]
 	if _player_capture_checkpoint() == "v0.231":
 		return [
 			{"id": "overview", "label": "v0.231 retained battlefield material overview", "action": "battle_default"},

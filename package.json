@@ -171,6 +171,8 @@
     "godot:validate:salto-barrosan-roster-silhouette-beauty": "powershell -NoProfile -ExecutionPolicy Bypass -File tools/godot/validateGodotV0239BarrosanRosterSilhouetteBeautyWindows.ps1",
     "godot:capture:salto-barrosan-playable-art-integration": "powershell -NoProfile -ExecutionPolicy Bypass -File tools/godot/captureGodotV0240BarrosanPlayableArtIntegrationWindows.ps1",
     "godot:validate:salto-barrosan-playable-art-integration": "powershell -NoProfile -ExecutionPolicy Bypass -File tools/godot/validateGodotV0240BarrosanPlayableArtIntegrationWindows.ps1",
+    "godot:capture:salto-barrosan-playable-runtime-skin": "powershell -NoProfile -ExecutionPolicy Bypass -File tools/godot/captureGodotV0241BarrosanPlayableRuntimeSkinWindows.ps1",
+    "godot:validate:salto-barrosan-playable-runtime-skin": "powershell -NoProfile -ExecutionPolicy Bypass -File tools/godot/validateGodotV0241BarrosanPlayableRuntimeSkinWindows.ps1",
     "godot:capture:salto-environment-contrast": "powershell -NoProfile -ExecutionPolicy Bypass -File tools/godot/captureGodotSaltoEnvironmentContrastWindows.ps1",
     "godot:audit:player-slice": "powershell -NoProfile -ExecutionPolicy Bypass -File tools/godot/auditGodotPlayerSliceWindows.ps1",
     "godot:validate:player-slice": "powershell -NoProfile -ExecutionPolicy Bypass -File tools/godot/validateGodotPlayerSlice.ps1",
