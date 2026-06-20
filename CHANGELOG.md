@@ -1,5 +1,15 @@
 # Changelog
 
+# v0.238 Barrosan Building Roster Expansion - 2026-06-20
+
+- Used Blender 5.1.2 to create a new versioned source and GLB containing exactly six new roster modules: house/dwelling, farm/granary, lumber/carpenter yard, blacksmith/forge, watchtower and market/storehouse.
+- Added eight reusable role-prop modules and ten material families while retaining the v0.237 asset byte-for-byte.
+- Composed the three existing landmarks and all six new buildings into one connected mini-base with fifteen role-prop placements, organic ground, connected roads, shaped river and bridge.
+- Extended the Barrosan art bible with domestic, economy, defense/support, future-expansion and reserved-landmark rules.
+- Added the exact eleven-file review pack at `artifacts/manual-review/v0238-barrosan-building-roster/`; optional capture `09` is omitted because no optional building was authored.
+- Recorded verdict `PASS`: the settlement reads as a substantially more complete RTS base, all six roles are distinguishable, and the keep, barracks/workshop and mine/Lume retain landmark authority. The honest ceiling remains stylized low-poly rather than final hand-textured art.
+- Gameplay, saves, economy, selection, pathing, commands, minimap, objectives, production, AI, collision, browser runtime, runtime-art slots and default launcher remain unchanged.
+
 # v0.237 Barrosan Material Richness, Foliage, and Inhabited Detail - 2026-06-20
 
 - Added a v0.237 art-bible addendum covering material detail, vegetation, ground wear and RTS noise control.

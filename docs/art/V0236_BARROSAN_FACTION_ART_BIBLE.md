@@ -223,3 +223,38 @@ This addendum raises the finish standard without changing the underlying Barrosa
 - Prefer a few readable families repeated with variation over many unrelated tiny props.
 - The three landmarks, road network, bridge and river must remain legible before individual details are noticed.
 - If a detail improves only a close-up but muddies the full overview, remove or simplify it.
+
+## 11. v0.238 building-roster expansion rules
+
+### Domestic buildings
+
+- Houses are the smallest warm inhabited structures: compact limewashed walls, clay roofs, porches, gardens and household storage.
+- Domestic silhouettes stay low and welcoming. They must not inherit barracks-length footprints, weapon-yard cues or defensive massing.
+- Doors, porches and gardens face a lane or shared yard so homes read as part of a settlement rather than isolated props.
+
+### Economy buildings
+
+- Food buildings use barn or granary massing, raised storage, broad doors, grain sacks, barrels, hay and field-edge cues.
+- Lumber buildings use open working bays, rough timber frames, log/plank storage and saw benches. Their yards are civilian and workmanlike, not drill grounds.
+- Markets and depots use open counters, awnings, stacked goods and visible drop-off space. Their silhouette must communicate exchange and logistics before cloth color is noticed.
+- Economy buildings may be broader than houses but remain lower and less authoritative than the keep.
+
+### Defense and support buildings
+
+- Forges use dark stone, substantial chimneys, practical metalwork props and one controlled hot accent. They remain craft buildings, not magical laboratories.
+- Watchtowers use a stone base and timber lookout logic, but remain clearly smaller and less monumental than the keep.
+- Support buildings inherit Barrosan limewash, fieldstone, exposed timber and terracotta while gaining role-specific openings, roofs, yards and props.
+
+### Coherent future expansion
+
+- New buildings begin with a distinct role silhouette and footprint; palette variation is supporting evidence, never the primary distinction.
+- Every building needs a grounded foundation, road-facing threshold, correct ridge-to-eave roof, at least two major-surface values and one composed role-prop cluster.
+- Reuse the Barrosan material families and construction grammar, while varying roof height, footprint, open/closed bays, chimney, porch, platform and yard organization.
+- Avoid catalogue sprawl: future modules should be reviewed together in connected settlement layouts at the real RTS overview.
+
+### Reserved landmark language
+
+- The keep alone owns the highest civic mass, formal defensive crown and strongest paired-banner authority.
+- The barracks/workshop alone owns the primary military training and weapons-yard read.
+- The mine/Lume site alone owns the dominant extraction portal and large controlled crystal language.
+- Domestic, economy and support modules may echo these materials, but must not borrow their landmark scale or signature role cues.

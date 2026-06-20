@@ -1,0 +1,52 @@
+﻿{
+    "checkpoint":  "v0.238",
+    "blendPath":  "art-source/blender/v0238/salto_barrosan_building_roster.blend",
+    "newV0238GlbExported":  true,
+    "newOrChangedMaterialCount":  10,
+    "newBuildingModules":  [
+                               "house_dwelling",
+                               "farm_granary",
+                               "lumber_carpenter_yard",
+                               "blacksmith_forge",
+                               "watchtower_defense",
+                               "market_storehouse"
+                           ],
+    "glbPath":  "desktop-spikes/godot-salto/assets/v0238/salto_barrosan_building_roster.glb",
+    "newPropModules":  [
+                           "prop_garden_plot",
+                           "prop_grain_sacks",
+                           "prop_hay_bales",
+                           "prop_saw_bench",
+                           "prop_anvil",
+                           "prop_forge_brazier",
+                           "prop_market_goods",
+                           "prop_supply_stall"
+                       ],
+    "newPropModuleCount":  8,
+    "sourceGenerator":  "tools/blender/generate_v0238_barrosan_building_roster.py",
+    "existingV0237GlbModified":  false,
+    "newBuildingModuleCount":  6,
+    "artBiblePath":  "docs/art/V0236_BARROSAN_FACTION_ART_BIBLE.md",
+    "schemaVersion":  1,
+    "roofGeometryContract":  {
+                                 "centralRidgeHighest":  true,
+                                 "slopesDownToBothEaves":  true,
+                                 "eaveOverhang":  true,
+                                 "ridgeCaps":  true,
+                                 "fasciaBoards":  true,
+                                 "invertedRoofGeometry":  false
+                             },
+    "hardBoundaries":  {
+                           "saveChanged":  false,
+                           "collisionChanged":  false,
+                           "newRuntimeArtSlots":  0,
+                           "downloadedAssets":  0,
+                           "browserRuntimeChanged":  false,
+                           "defaultLauncherChanged":  false,
+                           "economyLogicChanged":  false,
+                           "pathingChanged":  false,
+                           "selectionChanged":  false,
+                           "generatedAiImages":  0,
+                           "gameplayChanged":  false
+                       }
+}

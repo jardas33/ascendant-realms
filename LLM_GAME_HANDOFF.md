@@ -1,22 +1,22 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-06-20 v0.237 Barrosan material richness, foliage, and inhabited detail
+Last updated: 2026-06-20 v0.238 Barrosan building roster expansion
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
 ## Current Continuation Note
 
-The latest work is v0.237, the Barrosan material-richness, foliage and inhabited-detail upgrade over the v0.236 production slice. The bounded milestone verdict is `PASS`.
+The latest work is v0.238, the Barrosan building-roster expansion over the retained v0.237 material-richness slice. The bounded milestone verdict is `PASS`.
 
-The art bible at `docs/art/V0236_BARROSAN_FACTION_ART_BIBLE.md` now includes the v0.237 addendum defining material-detail rhythm, temperate vegetation vocabulary, ground-wear rules and RTS over-noise prevention.
+The art bible at `docs/art/V0236_BARROSAN_FACTION_ART_BIBLE.md` now includes v0.238 rules for domestic, economy, defense/support and future roster expansion while reserving civic, military and Lume hierarchy for the existing landmark trio.
 
-Blender 5.1.2 generated `art-source/blender/v0237/salto_barrosan_material_richness.blend` and `desktop-spikes/godot-salto/assets/v0237/salto_barrosan_material_richness.glb`. The v0.236 GLB remains unchanged. The revision adds sixteen material families, seven vegetation modules, six inhabited-prop modules and 123 building-detail objects while retaining every corrected roof plane, ridge, eave and fascia.
+Blender 5.1.2 generated `art-source/blender/v0238/salto_barrosan_building_roster.blend` and `desktop-spikes/godot-salto/assets/v0238/salto_barrosan_building_roster.glb`. The v0.237 GLB remains byte-for-byte unchanged. The revision adds exactly six buildings—house/dwelling, farm/granary, lumber/carpenter yard, blacksmith/forge, watchtower and market/storehouse—plus eight reusable props and ten material families.
 
-The isolated Godot scene `res://scenes/salto_barrosan_material_richness.tscn` retains the organic v0.236 battlefield and adds 46 composed vegetation instances, twenty inhabited details and twenty-four terrain/road/river blending surfaces. The exact pack at `artifacts/manual-review/v0237-barrosan-material-richness-foliage/` proves the overview and close-detail result.
+The isolated Godot scene `res://scenes/salto_barrosan_building_roster.tscn` composes the three retained landmarks and all six new roles into one connected mini-base with fifteen role props, organic ground, connected roads, shaped river and bridge. The exact eleven-file pack at `artifacts/manual-review/v0238-barrosan-building-roster/` proves the overview, each required role and scale readability; optional capture `09` is absent because no optional building was authored.
 
-The full overview is clearly richer and more inhabited than v0.236 without cluttering landmarks, roads, bridge or river, so the bounded milestone passes. It remains stylized low-poly production art rather than final hand-textured shipped environment art.
+The overview reads as a substantially more complete RTS base, and role-specific silhouettes and yards remain legible while the keep, barracks and mine retain landmark authority. It remains stylized low-poly production art rather than final hand-textured shipped environment art.
 
-No generated image, download or runtime-art slot was added. The default launcher, browser runtime, gameplay, pathing, collision, objectives, AI, economy, saves, stable IDs, selection, commands, production and minimap semantics remain unchanged. Stop at v0.237; do not begin v0.238 without new authorization.
+No generated image, download or runtime-art slot was added. The default launcher, browser runtime, gameplay, pathing, collision, objectives, AI, economy, saves, stable IDs, selection, commands, production and minimap semantics remain unchanged. Stop at v0.238; do not begin v0.239 without new authorization.
 
 ## Project Identity
 

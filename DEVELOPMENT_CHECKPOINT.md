@@ -1,6 +1,19 @@
 # Development Checkpoint
 
-Updated: 2026-06-20 v0.237 Barrosan material richness, foliage, and inhabited detail
+Updated: 2026-06-20 v0.238 Barrosan building roster expansion
+
+## v0.238 Barrosan Building Roster Expansion - 2026-06-20
+
+- Milestone verdict: `PASS`.
+- Blender 5.1.2 created a new versioned source and 6,987,388-byte GLB while preserving the v0.237 GLB byte-for-byte.
+- Added exactly six roster modules: house/dwelling, farm/granary, lumber/carpenter yard, blacksmith/forge, watchtower and market/storehouse.
+- Added eight reusable role-prop modules and ten material families; composed nine total buildings and fifteen role-prop instances.
+- Retained the keep, barracks/workshop and mine/Lume as the primary civic, military and magical-extraction landmarks.
+- Composed one connected settlement with organic ground, connected roads, shaped river and bridge; placed zero square terrain or panel-road modules.
+- Exact review pack: `artifacts/manual-review/v0238-barrosan-building-roster/` (eleven files; optional `09` correctly omitted).
+- Required report: `docs/V0238_BARROSAN_BUILDING_ROSTER_REPORT.md`.
+- Gameplay, saves, economy, selection, pathing, commands, minimap, objectives, production, AI, collision, browser runtime, runtime-art slots and default launcher remain unchanged.
+- Stop after v0.238. Do not begin v0.239 without explicit authorization.
 
 ## v0.237 Barrosan Material Richness, Foliage, and Inhabited Detail - 2026-06-20
 

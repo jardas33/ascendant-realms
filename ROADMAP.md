@@ -11,13 +11,18 @@ Every phase should protect these long-term pillars:
 
 ## Current Recommended Next Phase
 
-The current checkpoint is **v0.237 Barrosan material richness, foliage, and inhabited detail** on 2026-06-20. The milestone verdict is `PASS`.
+The current checkpoint is **v0.238 Barrosan building roster expansion** on 2026-06-20. The milestone verdict is `PASS`.
 
-The Barrosan art bible now includes a material-richness addendum covering roof/wall/stone/timber detail, temperate vegetation, ground wear and RTS noise control. A new versioned Blender/GLB revision retains all corrected roof geometry and the v0.236 asset unchanged.
+The Barrosan art bible now includes roster rules for domestic, economy, defense/support and future expansion. A new versioned Blender/GLB revision retains the v0.237 asset unchanged and preserves the established true pitched-roof construction.
 
-The applied slice adds sixteen material families, 123 building-detail objects, seven vegetation modules, six inhabited-prop modules, 46 vegetation placements, twenty role details and twenty-four ground/road/river blending surfaces. The result is visibly richer at full overview while preserving the three landmarks, roads, bridge and river.
+The applied slice adds exactly six buildings—dwelling, granary, carpenter yard, forge, watchtower and market/storehouse—plus eight reusable props and ten material families. One connected mini-base now contains nine buildings and fifteen role-prop placements while preserving keep, barracks/workshop and mine/Lume hierarchy.
 
-Future explicitly authorized work should use this stronger Barrosan baseline and may pursue bespoke texture authorship or final lighting polish. Do not return to generic procedural rectangles, square terrain or panel roads. Stop at v0.237. Do not start v0.238 without a new explicit milestone.
+Future explicitly authorized work should use this broader Barrosan baseline and may pursue game integration, construction/damage states, bespoke texture authorship or final lighting polish. Do not return to generic procedural rectangles, square terrain or panel roads. Stop at v0.238. Do not start v0.239 without a new explicit milestone.
+
+New v0.238 docs:
+
+- `docs/V0238_BARROSAN_BUILDING_ROSTER_REPORT.md`
+- v0.238 roster-expansion rules in `docs/art/V0236_BARROSAN_FACTION_ART_BIBLE.md`
 
 New v0.237 docs:
 
