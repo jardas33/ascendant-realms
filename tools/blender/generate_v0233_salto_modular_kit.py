@@ -113,7 +113,9 @@ def parent_module(name: str, location) -> bpy.types.Object:
 
 def parent_children(root: bpy.types.Object, objects) -> None:
     for obj in objects:
+        world_transform = obj.matrix_world.copy()
         obj.parent = root
+        obj.matrix_world = world_transform
 
 
 def pitched_roof(name: str, location, width: float, depth: float, height: float):
@@ -135,7 +137,7 @@ def pitched_roof(name: str, location, width: float, depth: float, height: float)
 
 def terrain_modules():
     roots = []
-    root = parent_module("MOD_terrain_base_tile", (-22, -14, 0))
+    root = parent_module("terrain_base_tile", (-22, -14, 0))
     objs = [
         box("TerrainBase_Beveled", (-22, -14, -0.45), (12, 10, 0.9), "MAT_Earth", 0.3),
         box("TerrainBase_GrassCap", (-22, -14, 0.04), (11.4, 9.4, 0.16), "MAT_Grass", 0.12),
@@ -145,7 +147,7 @@ def terrain_modules():
     roots.append(root)
 
     for label, x, mat_name, z in [("grass_patch", -9, "MAT_Grass", 0.08), ("earth_patch", 4, "MAT_Earth", 0.08)]:
-        root = parent_module(f"MOD_terrain_{label}", (x, -14, 0))
+        root = parent_module(f"terrain_{label}", (x, -14, 0))
         objs = [
             box(f"{label}_Base", (x, -14, -0.28), (11, 9, 0.58), "MAT_Earth", 0.28),
             box(f"{label}_Surface", (x, -14, z), (10.3, 8.3, 0.16), mat_name, 0.18),
@@ -165,7 +167,7 @@ def road_modules():
         ("road_bridge_connector", 43, -14, False),
     ]
     for label, x, y, intersection in layouts:
-        root = parent_module(f"MOD_{label}", (x, y, 0))
+        root = parent_module(label, (x, y, 0))
         objs = [
             box(f"{label}_Terrain", (x, y, -0.35), (11, 9, 0.7), "MAT_Grass", 0.24),
             box(f"{label}_RoadBed", (x, y, 0.03), (10.3, 3.4, 0.22), "MAT_Earth", 0.25),
@@ -186,7 +188,7 @@ def road_modules():
 
 def river_bridge_modules():
     roots = []
-    root = parent_module("MOD_river_channel_banks", (-22, 0, 0))
+    root = parent_module("river_channel_banks", (-22, 0, 0))
     objs = [
         box("RiverTerrainLeft", (-26.3, 0, -0.32), (7.4, 11, 0.65), "MAT_Grass", 0.22),
         box("RiverTerrainRight", (-17.7, 0, -0.32), (7.4, 11, 0.65), "MAT_Grass", 0.22),
@@ -198,7 +200,7 @@ def river_bridge_modules():
     parent_children(root, objs)
     roots.append(root)
 
-    root = parent_module("MOD_bridge_module", (-7, 0, 0))
+    root = parent_module("bridge_module", (-7, 0, 0))
     objs = [
         box("Bridge_LeftBank", (-11.2, 0, -0.3), (3.6, 11, 0.65), "MAT_Grass", 0.22),
         box("Bridge_RightBank", (-2.8, 0, -0.3), (3.6, 11, 0.65), "MAT_Grass", 0.22),
@@ -221,7 +223,7 @@ def river_bridge_modules():
 def landmark_modules():
     roots = []
 
-    root = parent_module("MOD_keep_landmark", (10, 2, 0))
+    root = parent_module("keep_landmark", (10, 2, 0))
     objs = [
         box("Keep_Foundation", (10, 2, 0.35), (12, 9, 0.7), "MAT_StoneDark", 0.28),
         box("Keep_Hall", (10, 2, 3.2), (7.2, 5.7, 5.4), "MAT_Stone", 0.22),
@@ -237,7 +239,7 @@ def landmark_modules():
     parent_children(root, objs)
     roots.append(root)
 
-    root = parent_module("MOD_barracks_workshop_landmark", (29, 2, 0))
+    root = parent_module("barracks_workshop_landmark", (29, 2, 0))
     objs = [
         box("Barracks_Foundation", (29, 2, 0.3), (13, 9, 0.6), "MAT_StoneDark", 0.24),
         box("Barracks_Wall", (27.5, 2, 2.65), (9.3, 6.0, 4.3), "MAT_Plaster", 0.18),
@@ -252,7 +254,7 @@ def landmark_modules():
     parent_children(root, objs)
     roots.append(root)
 
-    root = parent_module("MOD_mine_lume_landmark", (47, 2, 0))
+    root = parent_module("mine_lume_landmark", (47, 2, 0))
     objs = [
         box("Mine_Foundation", (47, 2, 0.15), (13, 9, 0.5), "MAT_StoneDark", 0.25),
         box("Mine_RockMass", (47, 3.0, 2.0), (11.5, 6.0, 4.0), "MAT_Stone", 0.55),
@@ -279,7 +281,7 @@ def prop_modules():
         ("prop_barrels", 42, 15), ("unit_scale_dummies", 52, 15),
     ]
     for label, x, y in specs:
-        root = parent_module(f"MOD_{label}", (x, y, 0))
+        root = parent_module(label, (x, y, 0))
         objs = [box(f"{label}_Plinth", (x, y, -0.16), (8, 8, 0.32), "MAT_Grass", 0.2)]
         if label == "prop_rock_cluster":
             for i, loc in enumerate([(-1.4, 0), (0, 0.8), (1.2, -0.5), (0.5, -1.4)]):
@@ -325,9 +327,12 @@ def prop_modules():
 
 def configure_scene():
     bpy.ops.wm.read_factory_settings(use_empty=True)
+    bpy.context.preferences.filepaths.save_version = 0
     scene = bpy.context.scene
     scene.unit_settings.system = "METRIC"
     scene.unit_settings.scale_length = 1.0
+    if scene.world is None:
+        scene.world = bpy.data.worlds.new("SaltoWorld")
     scene.world.color = (0.025, 0.035, 0.03)
     for name in PALETTE:
         material(name)
@@ -335,7 +340,8 @@ def configure_scene():
 
 def export(output: Path):
     output.parent.mkdir(parents=True, exist_ok=True)
-    blend_path = output.with_suffix(".blend")
+    blend_path = Path("art-source/blender/v0233/salto_modular_environment_kit.blend")
+    blend_path.parent.mkdir(parents=True, exist_ok=True)
     metadata_path = output.with_suffix(".export.json")
     bpy.ops.wm.save_as_mainfile(filepath=str(blend_path.resolve()))
     bpy.ops.export_scene.gltf(
@@ -347,12 +353,17 @@ def export(output: Path):
         export_cameras=False,
         export_lights=False,
     )
+    resolved_output = output.resolve()
+    try:
+        metadata_glb_path = resolved_output.relative_to(Path.cwd().resolve()).as_posix()
+    except ValueError:
+        metadata_glb_path = resolved_output.as_posix()
     metadata = {
         "schemaVersion": 1,
-        "checkpoint": "v0.233",
+        "checkpoint": "v0.233R",
         "status": "PASS_BLENDER_GLTF_EXPORT",
         "blendPath": str(blend_path.as_posix()),
-        "glbPath": str(output.as_posix()),
+        "glbPath": metadata_glb_path,
         "modules": MODULES,
         "materials": list(PALETTE),
         "authoredBy": "checked-in Blender Python source",

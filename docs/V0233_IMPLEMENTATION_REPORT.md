@@ -1,44 +1,44 @@
-# v0.233 Implementation Report
+# v0.233R Implementation Report
 
-Verdict: `BLOCKED_FOR_LOCAL_BLENDER_EXPORT`
+Verdict: `PARTIAL`
 
 ## Delivered
 
-- Checked-in Blender Python source for the complete nineteen-module kit.
-- Deterministic module/material/scale/path contract.
-- Isolated Godot GLB importer scaffold.
-- Blender availability/export wrapper.
-- Fail-closed capture and validation tooling.
-- Exact ten-file review pack with explicit blocker cards instead of fabricated v0.233 art.
+- Blender 5.1.2 authoring run through the checked-in Python source.
+- Real `.blend` source at `art-source/blender/v0233/salto_modular_environment_kit.blend`.
+- Real 1,728,616-byte GLB with 189 meshes at `desktop-spikes/godot-salto/assets/v0233/salto_modular_environment_kit.glb`.
+- Nineteen exact module roots and twelve exact material names verified in both the GLB and Godot runtime.
+- Successful isolated Godot import, display and six-view capture.
+- Exact ten-file review pack with real geometry and no blocker cards.
 
-## Not delivered
+## Visual assessment
 
-- Blender `.blend`: absent.
-- GLTF/GLB: absent.
-- Imported authored asset visible in Godot: absent.
-- Visual improvement over v0.232: not claimed.
+The authored kit is a clear structural and pipeline improvement: landmark silhouettes,
+roof construction, foundations, bevels, bridge pieces and prop scale are coherent.
+It remains an early low-poly asset family shown as separated modules. Surface richness,
+environmental composition and integrated battlefield quality are not yet production-ready.
 
 ## Safety boundary
 
-- Browser runtime: unchanged.
-- Gameplay and production logic: unchanged.
-- Saves and stable IDs: unchanged.
-- Pathing, collision, AI, objectives, economy and unit stats: unchanged.
-- Default launcher: unchanged.
+- Browser runtime and default launcher: unchanged.
+- Gameplay, saves, objectives, economy, selection, commands, production, minimap semantics, pathing, collision and AI: unchanged.
 - Runtime-art slots added: zero.
 - Downloads, external packs and AI-generated images: zero.
 
 ## Verification
 
-- `npm run godot:validate:salto-blender-modular-kit`: passed with `PASS_V0233_BLOCKED_SCAFFOLD_VALIDATION_READY`.
-- `npm run godot:test`: passed with `PASS_GODOT_HEADLESS_TESTS`.
-- `npm run validate:content`: passed.
-- `npm run validate:art-intake`: passed.
-- `npm run validate:runtime-art-slots`: passed with 52 stable slots and zero additions.
-- `npm run godot:validate:salto-experimental-artifact-retention`: passed.
-- `npm test`: 122 files and 887 tests passed.
-- `npm run build`: passed.
+- Blender export: `PASS_V0233_BLENDER_GLTF_EXPORT_READY`.
+- Godot import: `PASS_V0233R_IMPORTED_GLTF`.
+- Review-pack validation: `PASS_V0233R_REAL_GLTF_VALIDATION_READY`.
+- Modules found: 19 / 19.
+- Materials found: 12 / 12.
+- Real captures: 6.
+- Godot headless tests: `PASS_GODOT_HEADLESS_TESTS`.
+- Browser tests: 122 files and 887 tests passed.
+- Production build, content validation, art-intake validation, 52-slot runtime-art validation and artifact-retention validation: passed.
 
 ## Recommendation
 
-Keep Godot and keep the Blender-authored modular pipeline. Provide a local Blender installation, execute the checked-in script, inspect the resulting module kit, and rerun v0.233. Do not begin v0.234 before the actual imported-asset quality gate is resolved.
+Retain Godot and the Blender-authored modular pipeline. Treat this as a real but
+partial production-art foundation. Stop at v0.233R and require explicit authorization
+before any v0.234 integration or refinement milestone.

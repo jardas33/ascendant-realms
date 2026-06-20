@@ -1,6 +1,18 @@
 # Development Checkpoint
 
-Updated: 2026-06-19 v0.233 Blender modular-kit export blocker
+Updated: 2026-06-19 v0.233R real Blender export and Godot review
+
+## v0.233R Blender Export Unblock - 2026-06-19
+
+- Verdict: `PARTIAL`.
+- Blender 5.1.2 was found at `C:\Program Files\Blender Foundation\Blender 5.1\blender.exe`.
+- Produced `art-source/blender/v0233/salto_modular_environment_kit.blend` and the 1,728,616-byte runtime GLB at `desktop-spikes/godot-salto/assets/v0233/salto_modular_environment_kit.glb`.
+- Binary and Godot runtime evidence prove all nineteen module roots, all twelve material names, 189 meshes, successful import and six rendered captures.
+- Replaced the blocker-card evidence with the exact ten-file real-asset review pack at `artifacts/manual-review/v0233-blender-modular-kit/`.
+- Visual assessment: authored silhouettes, bevels, roofs, foundations, bridge construction and prop scale are materially stronger, but the isolated floating kit is not an integrated or production-finish battlefield.
+- Downloads, AI-generated images and new runtime-art slots: zero.
+- Browser runtime, gameplay, saves, stable IDs, pathing, collision, AI, objectives, economy, selection, production, minimap semantics and default launcher: unchanged.
+- Stop at v0.233R. Do not begin v0.234 without a new explicit authorization.
 
 ## v0.233 Blender-Authored Modular RTS Environment Kit - 2026-06-19
 

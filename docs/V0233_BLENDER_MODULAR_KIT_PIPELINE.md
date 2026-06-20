@@ -1,63 +1,55 @@
-# v0.233 Blender-Authored Modular RTS Environment Kit Pipeline
+# v0.233R Blender-Authored Modular RTS Environment Kit Pipeline
 
-Status: `BLOCKED_FOR_LOCAL_BLENDER_EXPORT`
+Status: `PARTIAL`
 
-## Tooling result
+## Blender execution
 
-Blender is not installed or callable in the current execution environment. The check covered:
-
-- `blender` on `PATH`;
-- Blender Foundation 3.6 through 4.4 standard installation folders;
-- Windows uninstall registry entries;
-- user-local Programs and WindowsApps locations;
-- Scoop and Chocolatey locations;
-- common Steam libraries.
-
-No installer or asset was downloaded because the milestone explicitly requires an honest blocked result when Blender is unavailable.
-
-## Checked-in authoring source
-
-The complete procedural authoring source is:
-
-`tools/blender/generate_v0233_salto_modular_kit.py`
-
-It defines nineteen named modules and twelve named material slots, applies bevel/chamfer modifiers, separates roofs/walls/foundations, creates contact layers, and exports both:
-
-- `desktop-spikes/godot-salto/assets/v0233/salto_modular_environment_kit.blend`
-- `desktop-spikes/godot-salto/assets/v0233/salto_modular_environment_kit.glb`
-
-Expected command:
+- Blender path: `C:\Program Files\Blender Foundation\Blender 5.1\blender.exe`
+- Version: `5.1.2`
+- Initial command:
 
 ```powershell
-blender --background --factory-startup `
-  --python tools/blender/generate_v0233_salto_modular_kit.py -- `
-  --output=desktop-spikes/godot-salto/assets/v0233/salto_modular_environment_kit.glb
+"C:\Program Files\Blender Foundation\Blender 5.1\blender.exe" `
+  -b --python tools/blender/generate_v0233_salto_modular_kit.py
 ```
 
-The repository wrapper is:
+The reusable repository command remains:
 
 ```powershell
 npm run blender:generate:salto-modular-kit
 ```
 
-## Godot importer scaffold
+## Asset locations
 
-The isolated importer is:
+- Blender source: `art-source/blender/v0233/salto_modular_environment_kit.blend`
+- Runtime GLB: `desktop-spikes/godot-salto/assets/v0233/salto_modular_environment_kit.glb`
+- Export metadata: `desktop-spikes/godot-salto/assets/v0233/salto_modular_environment_kit.export.json`
+- Contract: `desktop-spikes/godot-salto/assets/v0233/salto_modular_environment_kit.contract.json`
 
-- scene: `res://scenes/salto_blender_modular_kit_spike.tscn`;
-- script: `res://scripts/salto_blender_modular_kit_spike.gd`;
-- private flag: `--salto-blender-modular-kit-spike`.
+The Blender source intentionally lives outside the Godot project. Godot therefore
+imports one canonical runtime asset—the GLB—without invoking its editor-only Blender importer.
 
-The importer expects the tracked GLB path from the asset contract. The current blocked execution emits `BLOCKED_FOR_LOCAL_BLENDER_EXPORT` and does not substitute the v0.232 primitive scene.
+## Verified result
+
+- GLB size: 1,728,616 bytes.
+- Meshes: 189.
+- Exact module roots: 19 / 19.
+- Exact materials: 12 / 12.
+- Godot import status: `PASS_V0233R_IMPORTED_GLTF`.
+- Isolated scene displayed asset: yes.
+- Real rendered captures: 6.
+
+## Review path
+
+- scene: `res://scenes/salto_blender_modular_kit_spike.tscn`
+- script: `res://scripts/salto_blender_modular_kit_spike.gd`
+- private flag: `--salto-blender-modular-kit-spike`
+- review pack: `artifacts/manual-review/v0233-blender-modular-kit/`
 
 ## Acceptance boundary
 
-This checkpoint is not a visual PASS. It creates no `.blend`, no `.glb`, no imported Godot asset and no visual improvement over v0.232.
+The export/import pipeline passes. The art verdict remains `PARTIAL`: the module
+family is real and materially more authored than the procedural foundation, but the
+floating low-poly showroom does not prove integrated production-quality battlefield art.
 
-The quality gate may be reopened only after a real Blender export exists and Godot visibly imports it. Until then:
-
-- no production-art claim;
-- no v0.234;
-- no gameplay reconnection;
-- no engine change;
-- no replacement primitive scene presented as authored art.
+Do not reconnect gameplay or begin v0.234 without a new explicit milestone.

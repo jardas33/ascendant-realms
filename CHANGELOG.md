@@ -1,5 +1,14 @@
 # Changelog
 
+# v0.233R Real Blender Export and Godot Modular-Kit Review - 2026-06-19
+
+- Located Blender 5.1.2 at `C:\Program Files\Blender Foundation\Blender 5.1\blender.exe` and ran the checked-in authoring source.
+- Produced and tracked the real Blender source and 1,728,616-byte GLB with 189 meshes, nineteen exact module roots and twelve contracted materials.
+- Imported the GLB through the isolated Godot scene, discovered every contracted module/material in-engine and captured six real geometry views.
+- Replaced the blocked review cards with the exact ten-file real-asset review pack and recorded the candid verdict `PARTIAL`.
+- The kit is a meaningful authorship improvement over the procedural rectangles, but remains a floating low-poly module showroom rather than integrated production-finish battlefield art.
+- Added zero downloads, AI images or runtime-art slots and changed no gameplay, browser, save, pathing, collision or default-launcher behavior.
+
 # v0.233 Blender-Authored Modular RTS Environment Kit Scaffold - 2026-06-19
 
 - Recorded `BLOCKED_FOR_LOCAL_BLENDER_EXPORT` after Blender was absent from PATH, standard installs, registry, user-local, package-manager and Steam locations.

@@ -11,13 +11,13 @@ Every phase should protect these long-term pillars:
 
 ## Current Recommended Next Phase
 
-The current checkpoint is **v0.233 Blender-authored modular RTS environment-kit attempt** on 2026-06-19. The verdict is `BLOCKED_FOR_LOCAL_BLENDER_EXPORT`.
+The current checkpoint is **v0.233R real Blender export and Godot modular-kit review** on 2026-06-19. The verdict is `PARTIAL`.
 
-Blender is unavailable in the execution environment, so no `.blend`, `.glb`, Godot import or new visual result exists. The repository now contains the full authoring script, module/material contract and fail-closed Godot importer required to resume this milestone locally.
+Blender 5.1.2 produced a tracked authoring source and a 1,728,616-byte GLB with nineteen contracted module roots, twelve materials and 189 meshes. The isolated Godot path imports it successfully and the exact review pack contains six real authored-geometry captures plus before/after and kit contact sheets.
 
-Required next action: provide Blender, run the checked-in export, and finish the v0.233 visual quality gate. Keep Godot. Do not reconnect gameplay, resume rectangle/band polishing or start an engine migration.
+The pipeline is worth retaining, but the current asset is an early low-poly modular showroom rather than an integrated production-art battlefield. Future work should evaluate layout integration, richer material treatment and art-direction fit before reconnecting any gameplay.
 
-Stop at blocked v0.233. Do not start v0.234 before the real v0.233 authored GLB is imported and reviewed.
+Stop at v0.233R. Do not start v0.234 without a new explicit milestone.
 
 New v0.233 docs:
 

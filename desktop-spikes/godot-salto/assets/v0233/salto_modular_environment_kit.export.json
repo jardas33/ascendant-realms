@@ -1,12 +1,9 @@
 {
   "schemaVersion": 1,
-  "checkpoint": "v0.233",
-  "statusWithoutExport": "BLOCKED_FOR_LOCAL_BLENDER_EXPORT",
-  "sourceScript": "tools/blender/generate_v0233_salto_modular_kit.py",
-  "expectedBlendPath": "art-source/blender/v0233/salto_modular_environment_kit.blend",
-  "expectedGlbPath": "desktop-spikes/godot-salto/assets/v0233/salto_modular_environment_kit.glb",
-  "coordinateSystem": "Blender Z-up exported to Godot GLTF",
-  "unitScaleMeters": 1.0,
+  "checkpoint": "v0.233R",
+  "status": "PASS_BLENDER_GLTF_EXPORT",
+  "blendPath": "art-source/blender/v0233/salto_modular_environment_kit.blend",
+  "glbPath": "desktop-spikes/godot-salto/assets/v0233/salto_modular_environment_kit.glb",
   "modules": [
     "terrain_base_tile",
     "terrain_grass_patch",
@@ -42,12 +39,7 @@
     "MAT_Plaster",
     "MAT_Metal"
   ],
-  "hardBoundaries": {
-    "browserRuntimeChanged": false,
-    "gameplayConnected": false,
-    "defaultLauncherChanged": false,
-    "newRuntimeArtSlots": 0,
-    "downloadedAssets": 0,
-    "generatedAiImages": 0
-  }
+  "authoredBy": "checked-in Blender Python source",
+  "downloadedAssets": 0,
+  "generatedAiImages": 0
 }

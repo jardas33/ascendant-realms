@@ -1,20 +1,20 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-06-19 v0.233 Blender modular-kit export blocker
+Last updated: 2026-06-19 v0.233R real Blender export and Godot review
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
 ## Current Continuation Note
 
-The latest work is the v0.233 Blender-authored modular RTS environment-kit attempt. The verdict is `BLOCKED_FOR_LOCAL_BLENDER_EXPORT`.
+The latest work is v0.233R, which unblocks the Blender-authored modular RTS environment kit. The verdict is `PARTIAL`.
 
-Blender was not available through PATH, standard Blender Foundation folders, Windows uninstall registry entries, user-local programs, package-manager locations or common Steam libraries. Per the milestone rules, no installer was downloaded and no GLB was fabricated.
+Blender 5.1.2 was found at `C:\Program Files\Blender Foundation\Blender 5.1\blender.exe`. The checked-in generator now produces the real authoring source at `art-source/blender/v0233/salto_modular_environment_kit.blend` and the runtime GLB at `desktop-spikes/godot-salto/assets/v0233/salto_modular_environment_kit.glb`.
 
-The repository now contains the checked-in Blender Python source for nineteen named environment modules, a twelve-material asset contract, an isolated Godot importer scaffold and exact blocked-state review/validation tooling. The ten-file review pack explicitly shows that v0.232 remains the only visual result; v0.233 does not claim improvement or production-art proof.
+The GLB is 1,728,616 bytes with 189 meshes. Binary inspection and the isolated Godot runtime both prove all nineteen named module roots and all twelve contracted materials. Godot imports and displays the asset, emits six real captures, and the exact ten-file review pack now contains authored geometry rather than blocker cards.
 
-Keep Godot and retain the Blender-authored direction. The next action is to provide a local Blender installation, run `npm run blender:generate:salto-modular-kit`, and rerun v0.233 until a real GLB is visibly imported and reviewed. Do not begin v0.234 first.
+The visual result is not a full PASS: it is a coherent, beveled low-poly modular kit and a real pipeline breakthrough, but it is still presented as a floating module showroom with simple materials. It does not yet prove an integrated production-quality battlefield.
 
-No generated image, download or runtime-art slot was added. The default launcher, browser runtime, gameplay, pathing, collision, objectives, AI, economy, saves, stable IDs and production logic remain unchanged.
+No generated image, download or runtime-art slot was added. The default launcher, browser runtime, gameplay, pathing, collision, objectives, AI, economy, saves, stable IDs, selection, production and minimap semantics remain unchanged. Stop at v0.233R; do not begin v0.234 without new authorization.
 
 ## Project Identity
 

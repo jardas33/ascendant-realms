@@ -8,9 +8,13 @@ Set-Location $RepoRoot
 New-Item -ItemType Directory -Force -Path $ArtifactRoot | Out-Null
 
 $Candidates = [System.Collections.Generic.List[string]]::new()
+if ($env:BLENDER_EXE) { $Candidates.Add($env:BLENDER_EXE) }
 $Command = Get-Command blender -ErrorAction SilentlyContinue
 if ($Command) { $Candidates.Add($Command.Source) }
 @(
+  "C:\Program Files\Blender Foundation\Blender 5.1\blender.exe",
+  "C:\Program Files\Blender Foundation\Blender 5.0\blender.exe",
+  "C:\Program Files\Blender Foundation\Blender 4.5\blender.exe",
   "C:\Program Files\Blender Foundation\Blender 4.4\blender.exe",
   "C:\Program Files\Blender Foundation\Blender 4.3\blender.exe",
   "C:\Program Files\Blender Foundation\Blender 4.2\blender.exe",
@@ -58,14 +62,14 @@ $Blender = $Candidates | Where-Object { $_ -and (Test-Path -LiteralPath $_) } | 
 if (-not $Blender) {
   @{
     schemaVersion = 1
-    checkpoint = "v0.233"
+    checkpoint = "v0.233R"
     status = "BLOCKED_FOR_LOCAL_BLENDER_EXPORT"
     blenderAvailable = $false
     blenderPath = $null
     sourceScript = "tools/blender/generate_v0233_salto_modular_kit.py"
     expectedGlbPath = "desktop-spikes/godot-salto/assets/v0233/salto_modular_environment_kit.glb"
     actualGlbProduced = $false
-    searched = @("PATH", "Blender Foundation 3.6-4.4", "registry", "user-local programs", "Scoop", "Chocolatey", "Steam libraries")
+    searched = @("BLENDER_EXE", "PATH", "Blender Foundation 3.6-5.1", "registry", "user-local programs", "Scoop", "Chocolatey", "Steam libraries")
     downloadedAssets = 0
     generatedAiImages = 0
   } | ConvertTo-Json -Depth 4 | Set-Content -LiteralPath $ReportPath -Encoding UTF8
@@ -79,7 +83,8 @@ if ($LASTEXITCODE -ne 0 -or -not (Test-Path -LiteralPath $OutputPath)) {
 }
 @{
   schemaVersion = 1
-  checkpoint = "v0.233"
+  checkpoint = "v0.233R"
+  blendPath = (Join-Path $RepoRoot "art-source\blender\v0233\salto_modular_environment_kit.blend")
   status = "PASS_BLENDER_GLTF_EXPORT"
   blenderAvailable = $true
   blenderPath = $Blender
