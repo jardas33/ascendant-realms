@@ -38,6 +38,7 @@ const LIVE_ROLE_IDS := {
 }
 
 var barrosan_runtime_skin_enabled := false
+var barrosan_runtime_checkpoint := "v0.243"
 var barrosan_runtime_debug_labels := false
 var barrosan_runtime_review_mode := "clean"
 var barrosan_source_kit: Node3D
@@ -50,10 +51,12 @@ var barrosan_build_validation_adapter = BuildPlacementValidationAdapterScript.ne
 var barrosan_valid_placement: Dictionary = {}
 var barrosan_blocked_placement: Dictionary = {}
 var barrosan_pathing_probe: Dictionary = {}
+var barrosan_playtest: Dictionary = {}
 
 
 func configure_barrosan_playable_runtime_skin(options: Dictionary) -> void:
 	barrosan_runtime_skin_enabled = bool(options.get("enabled", false))
+	barrosan_runtime_checkpoint = str(options.get("checkpoint", "v0.243"))
 	barrosan_runtime_debug_labels = bool(options.get("debugLabels", false))
 	if not barrosan_runtime_skin_enabled:
 		return
@@ -61,6 +64,8 @@ func configure_barrosan_playable_runtime_skin(options: Dictionary) -> void:
 	_upgrade_inert_roles_to_runtime_shells()
 	barrosan_build_validation_adapter.load_authority()
 	_evaluate_barrosan_build_previews()
+	if barrosan_runtime_checkpoint == "v0.244":
+		_reset_barrosan_playtest_status()
 	_refresh_visual_foundation()
 	_add_barrosan_minimap_role_markers()
 
@@ -364,6 +369,42 @@ func set_barrosan_runtime_review_mode(mode: String) -> void:
 			select_barrosan_runtime_role("barracks")
 		"selected_shell":
 			select_barrosan_runtime_role("blacksmith")
+		"v0244_overview":
+			_clear_barrosan_playtest_selection()
+		"v0244_select_aster":
+			_select_playtest_unit("hero_aster")
+		"v0244_road_probe":
+			_run_v0244_movement_probe("road_adjacent", "hero_aster", Vector2(520, 700), 240)
+		"v0244_bridge_probe":
+			_run_v0244_movement_probe("bridge_river", "worker_00", Vector2(760, 560), 280)
+		"v0244_select_keep":
+			select_barrosan_runtime_role("main_base")
+			_record_v0244_live_role("main_base")
+		"v0244_select_barracks":
+			select_barrosan_runtime_role("barracks")
+			_record_v0244_live_role("barracks")
+		"v0244_barracks_flow":
+			_run_v0244_barracks_restore_train_flow()
+		"v0244_select_mine":
+			select_barrosan_runtime_role("mine")
+			_record_v0244_live_role("mine")
+		"v0244_select_forge":
+			_select_v0244_shell("blacksmith")
+		"v0244_select_market":
+			_select_v0244_shell("market")
+			_select_v0244_shell("watchtower", false)
+			select_barrosan_runtime_role("market")
+		"v0244_valid_preview":
+			_run_v0244_preview_probe(false)
+		"v0244_blocked_preview":
+			_run_v0244_preview_probe(true)
+		"v0244_resource_proof":
+			_show_v0244_resource_proof()
+		"v0244_minimap":
+			_clear_barrosan_playtest_selection()
+			barrosan_runtime_review_mode = "all_roles"
+		"v0244_clean":
+			_clear_barrosan_playtest_selection()
 		"inert_roles":
 			select_barrosan_runtime_role("blacksmith")
 		"live_roles":
@@ -413,6 +454,7 @@ func _sync_barrosan_runtime_visuals() -> void:
 	if blocked_preview != null:
 		blocked_preview.visible = barrosan_runtime_review_mode == "blocked_preview"
 	_sync_validation_reason_label(valid_world, blocked_world)
+	_sync_v0244_resource_label()
 	_sync_scale_probes()
 
 
@@ -475,6 +517,171 @@ func _run_barrosan_shell_pathing_probe() -> void:
 	_sync_hud()
 
 
+func _reset_barrosan_playtest_status() -> void:
+	barrosan_playtest = {
+		"status": "READY",
+		"baseCommit": "832175edc9acd71648b0d986061e45f98f6464dd",
+		"baseCiRun": "https://github.com/jardas33/ascendant-realms/actions/runs/27884622555",
+		"selectedUnits": [],
+		"selectedLiveRoles": [],
+		"selectedShellRoles": [],
+		"movementProbes": {},
+		"barracksRestoreTrain": {
+			"supported": true,
+			"attempted": false,
+			"restored": false,
+			"militiaQueued": false,
+			"militiaSpawned": false,
+		},
+		"constructionAttempted": false,
+		"constructionStatus": "preview-only-intentionally-skipped",
+		"previewResourcesBefore": {},
+		"previewResourcesAfter": {},
+		"previewResourcesUnchanged": false,
+		"validPreview": {},
+		"blockedPreview": {},
+		"minimapRolesAfterPlaytest": 0,
+	}
+
+
+func _clear_barrosan_playtest_selection() -> void:
+	runtime.clear_selection()
+	real_input_selected_id = ""
+	barrosan_selected_role_id = ""
+	v0133_selected_structure_id = ""
+	v0133_barracks_selected = false
+
+
+func _select_playtest_unit(unit_id: String) -> bool:
+	_clear_barrosan_playtest_selection()
+	var selected := runtime.select_entity(unit_id)
+	if selected:
+		var selected_units: Array = barrosan_playtest.get("selectedUnits", [])
+		if not selected_units.has(unit_id):
+			selected_units.append(unit_id)
+		barrosan_playtest["selectedUnits"] = selected_units
+	_sync_unit_visuals()
+	_sync_hud()
+	return selected
+
+
+func _select_v0244_shell(role: String, show_selection: bool = true) -> bool:
+	var selected := select_barrosan_runtime_role(role)
+	if selected:
+		var shell_roles: Array = barrosan_playtest.get("selectedShellRoles", [])
+		if not shell_roles.has(role):
+			shell_roles.append(role)
+		barrosan_playtest["selectedShellRoles"] = shell_roles
+	if not show_selection:
+		_clear_barrosan_playtest_selection()
+	return selected
+
+
+func _record_v0244_live_role(role: String) -> void:
+	var live_roles: Array = barrosan_playtest.get("selectedLiveRoles", [])
+	if not live_roles.has(role):
+		live_roles.append(role)
+	barrosan_playtest["selectedLiveRoles"] = live_roles
+
+
+func _run_v0244_movement_probe(probe_id: String, unit_id: String, target: Vector2, frames: int) -> void:
+	_clear_barrosan_playtest_selection()
+	var selected := runtime.select_entity(unit_id)
+	var before: Vector2 = runtime.unit_position(unit_id)
+	var stuck_before: int = int(runtime.stuck_unit_count)
+	var accepted := selected and runtime.issue_move_order(target)
+	for _frame in range(frames):
+		runtime.advance_live_frame()
+	var after: Vector2 = runtime.unit_position(unit_id)
+	var displacement: float = before.distance_to(after)
+	var probes: Dictionary = barrosan_playtest.get("movementProbes", {})
+	probes[probe_id] = {
+		"unitId": unit_id,
+		"accepted": accepted,
+		"target": target,
+		"before": before,
+		"after": after,
+		"displacement": displacement,
+		"stuckDelta": runtime.stuck_unit_count - stuck_before,
+		"obstacleModel": "existing rectangular destination nudge",
+		"reviewGradeOnly": true,
+	}
+	barrosan_playtest["movementProbes"] = probes
+	_sync_unit_visuals()
+	_sync_hud()
+
+
+func _run_v0244_barracks_restore_train_flow() -> void:
+	var before_resources: Dictionary = runtime.resources.duplicate(true)
+	var mine_captured: bool = runtime.mine_converted or capture_mine_site()
+	var worker_assigned: bool = runtime.worker_assigned_to_mine or assign_worker_to_mine()
+	var build_started: bool = runtime.barracks_build_placed or place_barracks_placeholder()
+	var construction_advanced: bool = runtime.barracks_complete or advance_construction(180)
+	select_barrosan_runtime_role("barracks")
+	_record_v0244_live_role("barracks")
+	var queued: bool = runtime.militia_recruit_queued or runtime.militia_spawned or queue_militia_recruit()
+	var spawned: bool = runtime.militia_spawned or (queued and complete_recruit_queue(140))
+	barrosan_playtest["barracksRestoreTrain"] = {
+		"supported": true,
+		"attempted": true,
+		"mineCaptured": mine_captured,
+		"workerAssigned": worker_assigned,
+		"buildStarted": build_started,
+		"constructionAdvanced": construction_advanced,
+		"restored": runtime.barracks_complete,
+		"militiaQueued": queued,
+		"militiaSpawned": runtime.militia_spawned and spawned,
+		"resourcesBefore": before_resources,
+		"resourcesAfter": runtime.resources.duplicate(true),
+		"resourceChangeLegitimate": queued,
+	}
+	_run_v0244_movement_probe("live_mine", "worker_00", Vector2(650, 460), 180)
+	_run_v0244_movement_probe("barracks_main_base", "recruited_militia_00" if runtime.militia_spawned else "hero_aster", Vector2(360, 260), 220)
+	select_barrosan_runtime_role("barracks")
+	_sync_hud()
+
+
+func _run_v0244_preview_probe(blocked: bool) -> void:
+	_clear_barrosan_playtest_selection()
+	var before: Dictionary = runtime.resources.duplicate(true)
+	_evaluate_barrosan_build_previews()
+	barrosan_runtime_review_mode = "blocked_preview" if blocked else "valid_preview"
+	var result := (barrosan_blocked_placement if blocked else barrosan_valid_placement).duplicate(true)
+	var after: Dictionary = runtime.resources.duplicate(true)
+	if barrosan_playtest.get("previewResourcesBefore", {}).is_empty():
+		barrosan_playtest["previewResourcesBefore"] = before
+	barrosan_playtest["previewResourcesAfter"] = after
+	barrosan_playtest["previewResourcesUnchanged"] = barrosan_playtest["previewResourcesBefore"] == after
+	barrosan_playtest["blockedPreview" if blocked else "validPreview"] = result
+	barrosan_playtest["constructionAttempted"] = false
+	barrosan_playtest["constructionStatus"] = "preview-only-intentionally-skipped"
+
+
+func _show_v0244_resource_proof() -> void:
+	_clear_barrosan_playtest_selection()
+	barrosan_runtime_review_mode = "v0244_resource_proof"
+	_sync_v0244_resource_label()
+
+
+func _sync_v0244_resource_label() -> void:
+	if visual_root == null:
+		return
+	var label := visual_root.get_node_or_null("v0244_resource_proof") as Label3D
+	if label == null:
+		label = Label3D.new()
+		label.name = "v0244_resource_proof"
+		label.font_size = 19
+		label.pixel_size = 0.006
+		label.outline_size = 6
+		label.billboard = BaseMaterial3D.BILLBOARD_ENABLED
+		label.no_depth_test = true
+		visual_root.add_child(label)
+	label.position = Vector3(-0.55, 1.05, 2.10)
+	label.text = "PREVIEW ONLY\nResources unchanged" if bool(barrosan_playtest.get("previewResourcesUnchanged", false)) else "PREVIEW RESOURCE CHECK PENDING"
+	label.modulate = Color("#a8efad") if bool(barrosan_playtest.get("previewResourcesUnchanged", false)) else Color("#ffcf82")
+	label.visible = barrosan_runtime_review_mode == "v0244_resource_proof"
+
+
 func _sync_scale_probes() -> void:
 	for probe in ["worker", "militia", "aster"]:
 		var node := visual_root.get_node_or_null("v0242_probe_%s" % probe)
@@ -533,7 +740,7 @@ func get_spike_status() -> Dictionary:
 			shell_roles.append(role)
 	status["barrosanPlayableRuntimeSkin"] = {
 		"enabled": barrosan_runtime_skin_enabled,
-		"checkpoint": "v0.243",
+		"checkpoint": barrosan_runtime_checkpoint,
 		"scenePath": "res://scenes/salto_barrosan_playable_runtime_skin.tscn",
 		"mappingPath": V0240_MAPPING_PATH,
 		"sourceGlb": V0239_KIT_PATH,
@@ -560,5 +767,32 @@ func get_spike_status() -> Dictionary:
 		"debugLabelsVisible": barrosan_runtime_debug_labels or barrosan_runtime_review_mode in ["all_roles", "inert_roles"],
 		"reviewMode": barrosan_runtime_review_mode,
 		"errors": barrosan_runtime_errors.duplicate(),
+		"limitedTechnicalPlaytest": _v0244_playtest_status(addressable_roles) if barrosan_runtime_checkpoint == "v0.244" else {},
 	}
 	return status
+
+
+func _v0244_playtest_status(addressable_roles: Array[String]) -> Dictionary:
+	var result := barrosan_playtest.duplicate(true)
+	var probes: Dictionary = result.get("movementProbes", {})
+	var movement_pass := ["road_adjacent", "bridge_river", "live_mine", "barracks_main_base"].all(
+		func(probe_id: String) -> bool:
+			var probe: Dictionary = probes.get(probe_id, {})
+			return bool(probe.get("accepted", false)) and float(probe.get("displacement", 0.0)) > 20.0 and int(probe.get("stuckDelta", 0)) == 0
+	)
+	result["status"] = "PASS" if (
+		addressable_roles.size() == 9
+		and movement_pass
+		and bool(result.get("previewResourcesUnchanged", false))
+		and bool(result.get("validPreview", {}).get("ok", false))
+		and not bool(result.get("blockedPreview", {}).get("ok", true))
+		and bool(result.get("barracksRestoreTrain", {}).get("militiaSpawned", false))
+	) else "IN_PROGRESS"
+	result["movementProbePass"] = movement_pass
+	result["pathingParity"] = "review-grade rectangular destination-nudge only"
+	result["realConstructionAttempted"] = false
+	result["realConstructionStatus"] = "preview-only-intentionally-skipped"
+	result["defaultRuntimeChanged"] = false
+	result["minimapRolesAfterPlaytest"] = addressable_roles.size()
+	result["shellsRemainNonProducing"] = true
+	return result

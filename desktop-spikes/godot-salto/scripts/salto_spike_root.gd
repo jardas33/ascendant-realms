@@ -1211,6 +1211,7 @@ func _configure_worker_art_for_active_scene() -> void:
 		active_scene.configure_barrosan_playable_runtime_skin({
 			"enabled": _script_args().has("--salto-barrosan-playable-runtime-skin"),
 			"debugLabels": _script_args().has("--salto-barrosan-runtime-debug-labels"),
+			"checkpoint": _player_capture_checkpoint(),
 		})
 
 func _apply_review_framing_for_active_scene() -> void:
@@ -8033,6 +8034,66 @@ func _apply_player_slice_action(action: String) -> Dictionary:
 			_ensure_player_battle_scene()
 			_call_scene("set_barrosan_runtime_review_mode", ["pathing"])
 			_render_player_screen("battle")
+		"v0244_overview":
+			_ensure_player_battle_scene()
+			_call_scene("set_barrosan_runtime_review_mode", ["v0244_overview"])
+			_render_player_screen("battle")
+		"v0244_select_aster":
+			_ensure_player_battle_scene()
+			_call_scene("set_barrosan_runtime_review_mode", ["v0244_select_aster"])
+			_render_player_screen("battle")
+		"v0244_road_probe":
+			_ensure_player_battle_scene()
+			_call_scene("set_barrosan_runtime_review_mode", ["v0244_road_probe"])
+			_render_player_screen("battle")
+		"v0244_bridge_probe":
+			_ensure_player_battle_scene()
+			_call_scene("set_barrosan_runtime_review_mode", ["v0244_bridge_probe"])
+			_render_player_screen("battle")
+		"v0244_select_keep":
+			_ensure_player_battle_scene()
+			_call_scene("set_barrosan_runtime_review_mode", ["v0244_select_keep"])
+			_render_player_screen("battle")
+		"v0244_select_barracks":
+			_ensure_player_battle_scene()
+			_call_scene("set_barrosan_runtime_review_mode", ["v0244_select_barracks"])
+			_render_player_screen("battle")
+		"v0244_barracks_flow":
+			_ensure_player_battle_scene()
+			_call_scene("set_barrosan_runtime_review_mode", ["v0244_barracks_flow"])
+			_render_player_screen("battle")
+		"v0244_select_mine":
+			_ensure_player_battle_scene()
+			_call_scene("set_barrosan_runtime_review_mode", ["v0244_select_mine"])
+			_render_player_screen("battle")
+		"v0244_select_forge":
+			_ensure_player_battle_scene()
+			_call_scene("set_barrosan_runtime_review_mode", ["v0244_select_forge"])
+			_render_player_screen("battle")
+		"v0244_select_market":
+			_ensure_player_battle_scene()
+			_call_scene("set_barrosan_runtime_review_mode", ["v0244_select_market"])
+			_render_player_screen("battle")
+		"v0244_valid_preview":
+			_ensure_player_battle_scene()
+			_call_scene("set_barrosan_runtime_review_mode", ["v0244_valid_preview"])
+			_render_player_screen("battle")
+		"v0244_blocked_preview":
+			_ensure_player_battle_scene()
+			_call_scene("set_barrosan_runtime_review_mode", ["v0244_blocked_preview"])
+			_render_player_screen("battle")
+		"v0244_resource_proof":
+			_ensure_player_battle_scene()
+			_call_scene("set_barrosan_runtime_review_mode", ["v0244_resource_proof"])
+			_render_player_screen("battle")
+		"v0244_minimap":
+			_ensure_player_battle_scene()
+			_call_scene("set_barrosan_runtime_review_mode", ["v0244_minimap"])
+			_render_player_screen("battle")
+		"v0244_clean":
+			_ensure_player_battle_scene()
+			_call_scene("set_barrosan_runtime_review_mode", ["v0244_clean"])
+			_render_player_screen("battle")
 		"v0211_overview":
 			_ensure_player_battle_scene()
 			_call_scene("capture_mine_site")
@@ -8510,6 +8571,8 @@ func _apply_player_slice_action(action: String) -> Dictionary:
 
 func _player_capture_checkpoint() -> String:
 	var normalized_root := _artifact_root_from_args().replace("\\", "/")
+	if normalized_root.contains("/v0244"):
+		return "v0.244"
 	if normalized_root.contains("/v0243"):
 		return "v0.243"
 	if normalized_root.contains("/v0242"):
@@ -8627,9 +8690,27 @@ func _player_capture_checkpoint() -> String:
 	return "v0.124"
 
 func _is_bounded_microloop_checkpoint() -> bool:
-	return ["v0.129", "v0.130", "v0.160", "v0.162", "v0.164", "v0.166", "v0.168", "v0.169", "v0.170", "v0.173", "v0.174", "v0.177", "v0.178", "v0.179", "v0.181", "v0.184", "v0.185", "v0.186", "v0.187", "v0.193", "v0.194", "v0.195", "v0.196", "v0.197", "v0.198", "v0.199", "v0.200", "v0.203", "v0.204", "v0.205", "v0.206", "v0.209", "v0.210", "v0.211", "v0.212", "v0.213", "v0.215", "v0.216", "v0.217", "v0.218", "v0.219", "v0.220", "v0.221", "v0.222", "v0.223", "v0.224", "v0.227", "v0.228", "v0.229", "v0.230", "v0.231", "v0.243"].has(_player_capture_checkpoint())
+	return ["v0.129", "v0.130", "v0.160", "v0.162", "v0.164", "v0.166", "v0.168", "v0.169", "v0.170", "v0.173", "v0.174", "v0.177", "v0.178", "v0.179", "v0.181", "v0.184", "v0.185", "v0.186", "v0.187", "v0.193", "v0.194", "v0.195", "v0.196", "v0.197", "v0.198", "v0.199", "v0.200", "v0.203", "v0.204", "v0.205", "v0.206", "v0.209", "v0.210", "v0.211", "v0.212", "v0.213", "v0.215", "v0.216", "v0.217", "v0.218", "v0.219", "v0.220", "v0.221", "v0.222", "v0.223", "v0.224", "v0.227", "v0.228", "v0.229", "v0.230", "v0.231", "v0.243", "v0.244"].has(_player_capture_checkpoint())
 
 func _player_capture_steps() -> Array[Dictionary]:
+	if _player_capture_checkpoint() == "v0.244":
+		return [
+			{"id": "playtest_overview", "label": "v0.244 technical playtest overview", "action": "v0244_overview"},
+			{"id": "select_aster", "label": "v0.244 select Aster", "action": "v0244_select_aster"},
+			{"id": "unit_movement_road_probe", "label": "v0.244 road movement probe", "action": "v0244_road_probe"},
+			{"id": "unit_movement_bridge_probe", "label": "v0.244 bridge movement probe", "action": "v0244_bridge_probe"},
+			{"id": "select_command_keep_live_hud", "label": "v0.244 Command Keep live HUD", "action": "v0244_select_keep"},
+			{"id": "select_barracks_live_hud", "label": "v0.244 Barracks live HUD", "action": "v0244_select_barracks"},
+			{"id": "barracks_restore_train_flow", "label": "v0.244 Barracks restore and train flow", "action": "v0244_barracks_flow"},
+			{"id": "select_lume_mine_live_hud", "label": "v0.244 Lume Mine live HUD", "action": "v0244_select_mine"},
+			{"id": "select_shell_forge_hud", "label": "v0.244 March Forge shell HUD", "action": "v0244_select_forge"},
+			{"id": "select_shell_market_hud", "label": "v0.244 Frontier Market shell HUD", "action": "v0244_select_market"},
+			{"id": "valid_preview_real_validation", "label": "v0.244 valid preview", "action": "v0244_valid_preview"},
+			{"id": "blocked_preview_real_reason", "label": "v0.244 blocked preview", "action": "v0244_blocked_preview"},
+			{"id": "resources_unchanged_after_preview", "label": "v0.244 preview resource proof", "action": "v0244_resource_proof"},
+			{"id": "minimap_all_roles_after_playtest", "label": "v0.244 minimap registry proof", "action": "v0244_minimap"},
+			{"id": "unselected_clean_view", "label": "v0.244 unselected clean view", "action": "v0244_clean"},
+		]
 	if _player_capture_checkpoint() == "v0.243":
 		return [
 			{"id": "runtime_shell_overview", "label": "v0.243 runtime shell overview", "action": "v0243_overview"},

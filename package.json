@@ -177,6 +177,8 @@
     "godot:validate:salto-barrosan-runtime-cohesion-role-coverage": "powershell -NoProfile -ExecutionPolicy Bypass -File tools/godot/validateGodotV0242BarrosanRuntimeCohesionRoleCoverageWindows.ps1",
     "godot:capture:salto-barrosan-build-validation-role-shells": "powershell -NoProfile -ExecutionPolicy Bypass -File tools/godot/captureGodotV0243BarrosanBuildValidationRoleShellsWindows.ps1",
     "godot:validate:salto-barrosan-build-validation-role-shells": "powershell -NoProfile -ExecutionPolicy Bypass -File tools/godot/validateGodotV0243BarrosanBuildValidationRoleShellsWindows.ps1",
+    "godot:capture:salto-barrosan-limited-technical-playtest": "powershell -NoProfile -ExecutionPolicy Bypass -File tools/godot/captureGodotV0244BarrosanLimitedTechnicalPlaytestWindows.ps1",
+    "godot:validate:salto-barrosan-limited-technical-playtest": "powershell -NoProfile -ExecutionPolicy Bypass -File tools/godot/validateGodotV0244BarrosanLimitedTechnicalPlaytestWindows.ps1",
     "godot:capture:salto-environment-contrast": "powershell -NoProfile -ExecutionPolicy Bypass -File tools/godot/captureGodotSaltoEnvironmentContrastWindows.ps1",
     "godot:audit:player-slice": "powershell -NoProfile -ExecutionPolicy Bypass -File tools/godot/auditGodotPlayerSliceWindows.ps1",
     "godot:validate:player-slice": "powershell -NoProfile -ExecutionPolicy Bypass -File tools/godot/validateGodotPlayerSlice.ps1",
