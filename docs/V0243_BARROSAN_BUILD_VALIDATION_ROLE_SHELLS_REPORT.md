@@ -5,8 +5,8 @@ Verdict: `PARTIAL`
 ## Exact facts
 
 - Scene: `res://scenes/salto_barrosan_playable_runtime_skin.tscn`.
-- Published implementation commit: `PENDING_PUBLICATION`.
-- Exact-SHA GitHub Actions run: PENDING_PUBLICATION.
+- Published implementation commit: `af4b52914cec260b6517f16021cf502774ea2ddd`.
+- Exact-SHA GitHub Actions run: https://github.com/jardas33/ascendant-realms/actions/runs/27884349103.
 - Blender used: no.
 - New GLB exported: no.
 - v0.239 GLB reused unchanged: yes.
