@@ -1,5 +1,13 @@
 # Changelog
 
+# v0.234 Composed Imported-Blender Battlefield Slice - 2026-06-19
+
+- Composed forty instances from the retained v0.233R GLB into one isolated Godot battlefield with a continuous terrain island, visible recessed river, bank-to-bank bridge, connected road network, raised keep, grounded barracks/workshop and mine/Lume zones, and localized prop clusters.
+- Added the exact ten-file review pack at `artifacts/manual-review/v0234-composed-blender-battlefield-slice/`, including the v0.233R baseline, six real Godot captures, two contact sheets and a candid report.
+- Recorded verdict `PASS`: the result is clearly a coherent battlefield rather than a floating module catalogue, while remaining honest that simple materials, repeated tile edges and sparse dressing are not final production-finish art.
+- Reused the existing GLB without another Blender authoring pass, downloads, generated images or new runtime-art slots.
+- Browser runtime, gameplay, saves, objectives, economy, selection, commands, production, minimap semantics, pathing, collision, AI and the default launcher remain unchanged.
+
 # v0.233R Real Blender Export and Godot Modular-Kit Review - 2026-06-19
 
 - Located Blender 5.1.2 at `C:\Program Files\Blender Foundation\Blender 5.1\blender.exe` and ran the checked-in authoring source.

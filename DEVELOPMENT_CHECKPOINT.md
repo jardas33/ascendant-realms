@@ -1,6 +1,18 @@
 # Development Checkpoint
 
-Updated: 2026-06-19 v0.233R real Blender export and Godot review
+Updated: 2026-06-19 v0.234 composed imported-Blender battlefield slice
+
+## v0.234 Composed Imported-Blender Battlefield Slice - 2026-06-19
+
+- Verdict: `PASS`.
+- Reused `desktop-spikes/godot-salto/assets/v0233/salto_modular_environment_kit.glb` and composed forty imported module instances in Godot; Blender was not run again.
+- Added one connected terrain island with a visible recessed river, bank-to-bank bridge, connected road spine and branches, raised keep platform, grounded barracks/workshop and mine/Lume zones, and localized props for scale and use.
+- Exact review pack: `artifacts/manual-review/v0234-composed-blender-battlefield-slice/`.
+- Visual assessment: the scene now reads as one deliberate RTS outpost and clearly improves on the v0.233R floating catalogue. The retained low-poly kit still has simple materials, repeated tile edges and sparse dressing, so this is production direction rather than final environment finish.
+- Isolated scene: `res://scenes/salto_composed_blender_battlefield_slice.tscn`.
+- Downloads, generated images and new runtime-art slots: zero.
+- Browser runtime, gameplay, saves, stable IDs, pathing, collision, AI, objectives, economy, selection, commands, production, minimap semantics and default launcher: unchanged.
+- Stop at v0.234. Do not begin v0.235 without explicit authorization.
 
 ## v0.233R Blender Export Unblock - 2026-06-19
 

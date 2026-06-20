@@ -11,13 +11,18 @@ Every phase should protect these long-term pillars:
 
 ## Current Recommended Next Phase
 
-The current checkpoint is **v0.233R real Blender export and Godot modular-kit review** on 2026-06-19. The verdict is `PARTIAL`.
+The current checkpoint is **v0.234 composed imported-Blender battlefield slice** on 2026-06-19. The verdict is `PASS`.
 
-Blender 5.1.2 produced a tracked authoring source and a 1,728,616-byte GLB with nineteen contracted module roots, twelve materials and 189 meshes. The isolated Godot path imports it successfully and the exact review pack contains six real authored-geometry captures plus before/after and kit contact sheets.
+The retained v0.233R GLB is now composed in Godot as one connected outpost using forty imported module instances: continuous terrain, visible recessed river, bank-to-bank bridge, connected roads, raised keep, grounded barracks/workshop and mine/Lume zones, and localized props. The exact review pack proves the result with the v0.233R baseline, six real Godot captures and two contact sheets.
 
-The pipeline is worth retaining, but the current asset is an early low-poly modular showroom rather than an integrated production-art battlefield. Future work should evaluate layout integration, richer material treatment and art-direction fit before reconnecting any gameplay.
+The composition milestone passes because the scene clearly reads as a battlefield rather than a floating catalogue. The retained kit still has simple materials, repeated tile edges and sparse dressing, so future explicitly authorized art work should improve finish without reconnecting gameplay by default.
 
-Stop at v0.233R. Do not start v0.234 without a new explicit milestone.
+Stop at v0.234. Do not start v0.235 without a new explicit milestone.
+
+New v0.234 docs:
+
+- `docs/V0234_COMPOSED_BLENDER_BATTLEFIELD_REPORT.md`
+- `docs/V0234_IMPLEMENTATION_REPORT.md`
 
 New v0.233 docs:
 

@@ -1,20 +1,18 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-06-19 v0.233R real Blender export and Godot review
+Last updated: 2026-06-19 v0.234 composed imported-Blender battlefield slice
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
 ## Current Continuation Note
 
-The latest work is v0.233R, which unblocks the Blender-authored modular RTS environment kit. The verdict is `PARTIAL`.
+The latest work is v0.234, which composes the retained v0.233R Blender-authored modular kit into one isolated Godot battlefield slice. The verdict is `PASS`.
 
-Blender 5.1.2 was found at `C:\Program Files\Blender Foundation\Blender 5.1\blender.exe`. The checked-in generator now produces the real authoring source at `art-source/blender/v0233/salto_modular_environment_kit.blend` and the runtime GLB at `desktop-spikes/godot-salto/assets/v0233/salto_modular_environment_kit.glb`.
+Godot loads `desktop-spikes/godot-salto/assets/v0233/salto_modular_environment_kit.glb`, keeps the source instance hidden as a module library, and places forty imported instances into a continuous outpost: irregular ground, visible recessed river, bank-to-bank bridge, connected roads, raised keep, grounded barracks/workshop and mine/Lume zones, and localized prop clusters. Blender was not run again.
 
-The GLB is 1,728,616 bytes with 189 meshes. Binary inspection and the isolated Godot runtime both prove all nineteen named module roots and all twelve contracted materials. Godot imports and displays the asset, emits six real captures, and the exact ten-file review pack now contains authored geometry rather than blocker cards.
+The exact ten-file pack at `artifacts/manual-review/v0234-composed-blender-battlefield-slice/` contains the v0.233R baseline, six real Godot captures, two contact sheets and the final report. The composition is clearly stronger than the floating catalogue and passes the bounded v0.234 goal. The art remains a simple low-poly direction slice rather than final production finish; its remaining weaknesses are material richness, repeated tile edges and sparse environmental dressing.
 
-The visual result is not a full PASS: it is a coherent, beveled low-poly modular kit and a real pipeline breakthrough, but it is still presented as a floating module showroom with simple materials. It does not yet prove an integrated production-quality battlefield.
-
-No generated image, download or runtime-art slot was added. The default launcher, browser runtime, gameplay, pathing, collision, objectives, AI, economy, saves, stable IDs, selection, production and minimap semantics remain unchanged. Stop at v0.233R; do not begin v0.234 without new authorization.
+No generated image, download or runtime-art slot was added. The default launcher, browser runtime, gameplay, pathing, collision, objectives, AI, economy, saves, stable IDs, selection, commands, production and minimap semantics remain unchanged. Stop at v0.234; do not begin v0.235 without new authorization.
 
 ## Project Identity
 

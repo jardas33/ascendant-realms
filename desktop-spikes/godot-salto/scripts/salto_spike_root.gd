@@ -142,6 +142,7 @@ const SCRIPT_ARG_PREFIXES := [
 	"--salto-battlefield-material-value-integration",
 	"--salto-production-target-spike",
 	"--salto-blender-modular-kit-spike",
+	"--salto-composed-blender-battlefield-slice",
 	"--salto-bridge-shell-reboot",
 	"--salto-bridge-shell-legacy-comparator",
 	"--salto-structure-shell-production",
@@ -235,6 +236,15 @@ func _ready() -> void:
 		var kit_spike := kit_scene.instantiate()
 		add_child(kit_spike)
 		kit_spike.call_deferred("start")
+		return
+	if args.has("--salto-composed-blender-battlefield-slice"):
+		var composed_scene := load("res://scenes/salto_composed_blender_battlefield_slice.tscn") as PackedScene
+		if composed_scene == null:
+			get_tree().quit(1)
+			return
+		var composed_slice := composed_scene.instantiate()
+		add_child(composed_slice)
+		composed_slice.call_deferred("start")
 		return
 	if args.has("--salto-ui-architecture-wireframe"):
 		await run_ui_architecture_wireframe_capture()

@@ -152,6 +152,8 @@
     "blender:generate:salto-modular-kit": "powershell -NoProfile -ExecutionPolicy Bypass -File tools/blender/generateV0233SaltoModularKitWindows.ps1",
     "godot:capture:salto-blender-modular-kit": "powershell -NoProfile -ExecutionPolicy Bypass -File tools/godot/captureGodotSaltoBlenderModularKitWindows.ps1",
     "godot:validate:salto-blender-modular-kit": "powershell -NoProfile -ExecutionPolicy Bypass -File tools/godot/validateGodotSaltoBlenderModularKitWindows.ps1",
+    "godot:capture:salto-composed-blender-battlefield": "powershell -NoProfile -ExecutionPolicy Bypass -File tools/godot/captureGodotSaltoComposedBlenderBattlefieldWindows.ps1",
+    "godot:validate:salto-composed-blender-battlefield": "powershell -NoProfile -ExecutionPolicy Bypass -File tools/godot/validateGodotSaltoComposedBlenderBattlefieldWindows.ps1",
     "godot:capture:salto-environment-contrast": "powershell -NoProfile -ExecutionPolicy Bypass -File tools/godot/captureGodotSaltoEnvironmentContrastWindows.ps1",
     "godot:audit:player-slice": "powershell -NoProfile -ExecutionPolicy Bypass -File tools/godot/auditGodotPlayerSliceWindows.ps1",
     "godot:validate:player-slice": "powershell -NoProfile -ExecutionPolicy Bypass -File tools/godot/validateGodotPlayerSlice.ps1",
