@@ -8250,6 +8250,110 @@ func _apply_player_slice_action(action: String) -> Dictionary:
 			_ensure_player_battle_scene()
 			_call_scene("set_barrosan_runtime_review_mode", ["v0246_clean"])
 			_render_player_screen("battle")
+		"v0247_overview":
+			_ensure_player_battle_scene()
+			_call_scene("set_barrosan_runtime_review_mode", ["v0247_overview"])
+			_render_player_screen("battle")
+		"v0247_starting_resources":
+			_ensure_player_battle_scene()
+			_call_scene("set_barrosan_runtime_review_mode", ["v0247_starting_resources"])
+			_render_player_screen("battle")
+		"v0247_select_builder":
+			_ensure_player_battle_scene()
+			_call_scene("set_barrosan_runtime_review_mode", ["v0247_select_builder"])
+			_render_player_screen("battle")
+		"v0247_valid_preview":
+			_ensure_player_battle_scene()
+			_call_scene("set_barrosan_runtime_review_mode", ["v0247_valid_preview"])
+			_render_player_screen("battle")
+		"v0247_confirm_placement":
+			_ensure_player_battle_scene()
+			_call_scene("set_barrosan_runtime_review_mode", ["v0247_confirm_placement"])
+			_render_player_screen("battle")
+		"v0247_construction_delta":
+			_ensure_player_battle_scene()
+			_call_scene("set_barrosan_runtime_review_mode", ["v0247_construction_delta"])
+			_render_player_screen("battle")
+		"v0247_select_field_barracks":
+			_ensure_player_battle_scene()
+			_call_scene("set_barrosan_runtime_review_mode", ["v0247_select_field_barracks"])
+			_render_player_screen("battle")
+		"v0247_train_command":
+			_ensure_player_battle_scene()
+			_call_scene("set_barrosan_runtime_review_mode", ["v0247_train_command"])
+			_render_player_screen("battle")
+		"v0247_train_militia":
+			_ensure_player_battle_scene()
+			_call_scene("set_barrosan_runtime_review_mode", ["v0247_train_militia"])
+			_render_player_screen("battle")
+		"v0247_training_progress":
+			_ensure_player_battle_scene()
+			_call_scene("set_barrosan_runtime_review_mode", ["v0247_training_progress"])
+			_render_player_screen("battle")
+		"v0247_militia_spawned":
+			_ensure_player_battle_scene()
+			_call_scene("set_barrosan_runtime_review_mode", ["v0247_militia_spawned"])
+			_render_player_screen("battle")
+		"v0247_select_militia":
+			_ensure_player_battle_scene()
+			_call_scene("set_barrosan_runtime_review_mode", ["v0247_select_militia"])
+			_render_player_screen("battle")
+		"v0247_pressure_incoming":
+			_ensure_player_battle_scene()
+			_call_scene("set_barrosan_runtime_review_mode", ["v0247_pressure_incoming"])
+			_render_player_screen("battle")
+		"v0247_raider_spawned":
+			_ensure_player_battle_scene()
+			_call_scene("set_barrosan_runtime_review_mode", ["v0247_raider_spawned"])
+			_render_player_screen("battle")
+		"v0247_raider_minimap":
+			_ensure_player_battle_scene()
+			_call_scene("set_barrosan_runtime_review_mode", ["v0247_raider_minimap"])
+			_render_player_screen("battle")
+		"v0247_lane_start":
+			_ensure_player_battle_scene()
+			_call_scene("set_barrosan_runtime_review_mode", ["v0247_lane_start"])
+			_render_player_screen("battle")
+		"v0247_lane_bridge":
+			_ensure_player_battle_scene()
+			_call_scene("set_barrosan_runtime_review_mode", ["v0247_lane_bridge"])
+			_render_player_screen("battle")
+		"v0247_militia_intercept_move":
+			_ensure_player_battle_scene()
+			_call_scene("set_barrosan_runtime_review_mode", ["v0247_militia_intercept_move"])
+			_render_player_screen("battle")
+		"v0247_intercept_reached":
+			_ensure_player_battle_scene()
+			_call_scene("set_barrosan_runtime_review_mode", ["v0247_intercept_reached"])
+			_render_player_screen("battle")
+		"v0247_pressure_contained":
+			_ensure_player_battle_scene()
+			_call_scene("set_barrosan_runtime_review_mode", ["v0247_pressure_contained"])
+			_render_player_screen("battle")
+		"v0247_no_mutation":
+			_ensure_player_battle_scene()
+			_call_scene("set_barrosan_runtime_review_mode", ["v0247_no_mutation"])
+			_render_player_screen("battle")
+		"v0247_preserve_keep":
+			_ensure_player_battle_scene()
+			_call_scene("set_barrosan_runtime_review_mode", ["v0247_preserve_keep"])
+			_render_player_screen("battle")
+		"v0247_preserve_barracks":
+			_ensure_player_battle_scene()
+			_call_scene("set_barrosan_runtime_review_mode", ["v0247_preserve_barracks"])
+			_render_player_screen("battle")
+		"v0247_preserve_mine":
+			_ensure_player_battle_scene()
+			_call_scene("set_barrosan_runtime_review_mode", ["v0247_preserve_mine"])
+			_render_player_screen("battle")
+		"v0247_preserve_shells":
+			_ensure_player_battle_scene()
+			_call_scene("set_barrosan_runtime_review_mode", ["v0247_preserve_shells"])
+			_render_player_screen("battle")
+		"v0247_clean":
+			_ensure_player_battle_scene()
+			_call_scene("set_barrosan_runtime_review_mode", ["v0247_clean"])
+			_render_player_screen("battle")
 		"v0211_overview":
 			_ensure_player_battle_scene()
 			_call_scene("capture_mine_site")
@@ -8727,6 +8831,8 @@ func _apply_player_slice_action(action: String) -> Dictionary:
 
 func _player_capture_checkpoint() -> String:
 	var normalized_root := _artifact_root_from_args().replace("\\", "/")
+	if normalized_root.contains("/v0247"):
+		return "v0.247"
 	if normalized_root.contains("/v0246"):
 		return "v0.246"
 	if normalized_root.contains("/v0245"):
@@ -8850,9 +8956,38 @@ func _player_capture_checkpoint() -> String:
 	return "v0.124"
 
 func _is_bounded_microloop_checkpoint() -> bool:
-	return ["v0.129", "v0.130", "v0.160", "v0.162", "v0.164", "v0.166", "v0.168", "v0.169", "v0.170", "v0.173", "v0.174", "v0.177", "v0.178", "v0.179", "v0.181", "v0.184", "v0.185", "v0.186", "v0.187", "v0.193", "v0.194", "v0.195", "v0.196", "v0.197", "v0.198", "v0.199", "v0.200", "v0.203", "v0.204", "v0.205", "v0.206", "v0.209", "v0.210", "v0.211", "v0.212", "v0.213", "v0.215", "v0.216", "v0.217", "v0.218", "v0.219", "v0.220", "v0.221", "v0.222", "v0.223", "v0.224", "v0.227", "v0.228", "v0.229", "v0.230", "v0.231", "v0.243", "v0.244", "v0.245", "v0.246"].has(_player_capture_checkpoint())
+	return ["v0.129", "v0.130", "v0.160", "v0.162", "v0.164", "v0.166", "v0.168", "v0.169", "v0.170", "v0.173", "v0.174", "v0.177", "v0.178", "v0.179", "v0.181", "v0.184", "v0.185", "v0.186", "v0.187", "v0.193", "v0.194", "v0.195", "v0.196", "v0.197", "v0.198", "v0.199", "v0.200", "v0.203", "v0.204", "v0.205", "v0.206", "v0.209", "v0.210", "v0.211", "v0.212", "v0.213", "v0.215", "v0.216", "v0.217", "v0.218", "v0.219", "v0.220", "v0.221", "v0.222", "v0.223", "v0.224", "v0.227", "v0.228", "v0.229", "v0.230", "v0.231", "v0.243", "v0.244", "v0.245", "v0.246", "v0.247"].has(_player_capture_checkpoint())
 
 func _player_capture_steps() -> Array[Dictionary]:
+	if _player_capture_checkpoint() == "v0.247":
+		return [
+			{"id": "opt_in_overview_before_build", "label": "v0.247 opt-in overview", "action": "v0247_overview"},
+			{"id": "starting_resources", "label": "v0.247 starting resources", "action": "v0247_starting_resources"},
+			{"id": "select_builder_unit", "label": "v0.247 select Worker builder", "action": "v0247_select_builder"},
+			{"id": "valid_barracks_preview", "label": "v0.247 valid Barracks preview", "action": "v0247_valid_preview"},
+			{"id": "confirm_authoritative_barracks_placement", "label": "v0.247 authoritative placement", "action": "v0247_confirm_placement"},
+			{"id": "construction_resource_delta", "label": "v0.247 construction resource delta", "action": "v0247_construction_delta"},
+			{"id": "select_new_field_barracks_hud", "label": "v0.247 select Field Barracks", "action": "v0247_select_field_barracks"},
+			{"id": "train_militia_command_available", "label": "v0.247 Train Militia command", "action": "v0247_train_command"},
+			{"id": "train_militia_resource_delta", "label": "v0.247 training resource delta", "action": "v0247_train_militia"},
+			{"id": "militia_training_progress", "label": "v0.247 Militia training progress", "action": "v0247_training_progress"},
+			{"id": "militia_ready_spawned", "label": "v0.247 Militia ready", "action": "v0247_militia_spawned"},
+			{"id": "select_spawned_militia", "label": "v0.247 select Militia", "action": "v0247_select_militia"},
+			{"id": "objective_ashen_pressure_incoming", "label": "v0.247 pressure objective", "action": "v0247_pressure_incoming"},
+			{"id": "ashen_raider_spawned", "label": "v0.247 Ashen Raider spawned", "action": "v0247_raider_spawned"},
+			{"id": "ashen_raider_minimap_presence", "label": "v0.247 Raider minimap", "action": "v0247_raider_minimap"},
+			{"id": "ashen_raider_pressure_lane_start", "label": "v0.247 Raider lane start", "action": "v0247_lane_start"},
+			{"id": "ashen_raider_advancing_bridge_lane", "label": "v0.247 Raider bridge approach", "action": "v0247_lane_bridge"},
+			{"id": "militia_moves_to_intercept", "label": "v0.247 Militia intercept move", "action": "v0247_militia_intercept_move"},
+			{"id": "militia_intercept_zone_reached", "label": "v0.247 intercept reached", "action": "v0247_intercept_reached"},
+			{"id": "pressure_contained_status", "label": "v0.247 pressure contained", "action": "v0247_pressure_contained"},
+			{"id": "no_damage_no_resource_mutation_after_pressure", "label": "v0.247 no combat mutation", "action": "v0247_no_mutation"},
+			{"id": "command_keep_preserved", "label": "v0.247 Command Keep preserved", "action": "v0247_preserve_keep"},
+			{"id": "existing_barracks_train_flow_preserved", "label": "v0.247 Restored Barracks preserved", "action": "v0247_preserve_barracks"},
+			{"id": "lume_mine_preserved", "label": "v0.247 Lume Mine preserved", "action": "v0247_preserve_mine"},
+			{"id": "shells_remain_non_producing", "label": "v0.247 shells remain non-producing", "action": "v0247_preserve_shells"},
+			{"id": "unselected_clean_view", "label": "v0.247 clean view", "action": "v0247_clean"},
+		]
 	if _player_capture_checkpoint() == "v0.246":
 		return [
 			{"id": "opt_in_overview_before_build", "label": "v0.246 opt-in overview", "action": "v0246_overview"},
