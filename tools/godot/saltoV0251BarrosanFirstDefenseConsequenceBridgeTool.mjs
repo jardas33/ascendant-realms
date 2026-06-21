@@ -58,7 +58,7 @@ function report(e){return [
 "- Default runtime proof: opt-in skin disabled; no Raider, Field Barracks HP bridge, building damage, or v0.251 objective text.",
 `- Pathing honesty: ${e.bridge.pathingParity}.`,
 "- v0.251 capture and dedicated validator: pass.",
-"- Full local validation and exact-SHA GitHub Actions: pending publication.","","## Honest assessment","",
+`- Full local validation: pass. Exact-SHA GitHub Actions: ${ciRun.startsWith("PENDING")?"pending publication":"pass"}.`,"","## Honest assessment","",
 "The first defense consequence is readable and deterministic, but the undefended Raider route targets only the constructed Field Barracks and stops after a scripted three-tick sequence. Verdict remains PARTIAL.",
 "Recommendation for v0.252: improve natural player-facing consequence timing and feedback without adding waves, destruction, repair, or broad AI.","",
 "Stop after v0.251. Do not begin v0.252.",""
