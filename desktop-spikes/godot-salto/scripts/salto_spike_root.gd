@@ -8166,6 +8166,90 @@ func _apply_player_slice_action(action: String) -> Dictionary:
 			_ensure_player_battle_scene()
 			_call_scene("set_barrosan_runtime_review_mode", ["v0245_clean"])
 			_render_player_screen("battle")
+		"v0246_overview":
+			_ensure_player_battle_scene()
+			_call_scene("set_barrosan_runtime_review_mode", ["v0246_overview"])
+			_render_player_screen("battle")
+		"v0246_starting_resources":
+			_ensure_player_battle_scene()
+			_call_scene("set_barrosan_runtime_review_mode", ["v0246_starting_resources"])
+			_render_player_screen("battle")
+		"v0246_select_builder":
+			_ensure_player_battle_scene()
+			_call_scene("set_barrosan_runtime_review_mode", ["v0246_select_builder"])
+			_render_player_screen("battle")
+		"v0246_valid_preview":
+			_ensure_player_battle_scene()
+			_call_scene("set_barrosan_runtime_review_mode", ["v0246_valid_preview"])
+			_render_player_screen("battle")
+		"v0246_confirm_placement":
+			_ensure_player_battle_scene()
+			_call_scene("set_barrosan_runtime_review_mode", ["v0246_confirm_placement"])
+			_render_player_screen("battle")
+		"v0246_construction_delta":
+			_ensure_player_battle_scene()
+			_call_scene("set_barrosan_runtime_review_mode", ["v0246_construction_delta"])
+			_render_player_screen("battle")
+		"v0246_select_field_barracks":
+			_ensure_player_battle_scene()
+			_call_scene("set_barrosan_runtime_review_mode", ["v0246_select_field_barracks"])
+			_render_player_screen("battle")
+		"v0246_train_command":
+			_ensure_player_battle_scene()
+			_call_scene("set_barrosan_runtime_review_mode", ["v0246_train_command"])
+			_render_player_screen("battle")
+		"v0246_train_militia":
+			_ensure_player_battle_scene()
+			_call_scene("set_barrosan_runtime_review_mode", ["v0246_train_militia"])
+			_render_player_screen("battle")
+		"v0246_training_progress":
+			_ensure_player_battle_scene()
+			_call_scene("set_barrosan_runtime_review_mode", ["v0246_training_progress"])
+			_render_player_screen("battle")
+		"v0246_militia_spawned":
+			_ensure_player_battle_scene()
+			_call_scene("set_barrosan_runtime_review_mode", ["v0246_militia_spawned"])
+			_render_player_screen("battle")
+		"v0246_select_spawned_militia":
+			_ensure_player_battle_scene()
+			_call_scene("set_barrosan_runtime_review_mode", ["v0246_select_spawned_militia"])
+			_render_player_screen("battle")
+		"v0246_move_road":
+			_ensure_player_battle_scene()
+			_call_scene("set_barrosan_runtime_review_mode", ["v0246_move_road"])
+			_render_player_screen("battle")
+		"v0246_move_bridge":
+			_ensure_player_battle_scene()
+			_call_scene("set_barrosan_runtime_review_mode", ["v0246_move_bridge"])
+			_render_player_screen("battle")
+		"v0246_failed_train":
+			_ensure_player_battle_scene()
+			_call_scene("set_barrosan_runtime_review_mode", ["v0246_failed_train"])
+			_render_player_screen("battle")
+		"v0246_minimap":
+			_ensure_player_battle_scene()
+			_call_scene("set_barrosan_runtime_review_mode", ["v0246_minimap"])
+			_render_player_screen("battle")
+		"v0246_preserve_barracks":
+			_ensure_player_battle_scene()
+			_call_scene("set_barrosan_runtime_review_mode", ["v0246_preserve_barracks"])
+			_render_player_screen("battle")
+		"v0246_preserve_keep":
+			_ensure_player_battle_scene()
+			_call_scene("set_barrosan_runtime_review_mode", ["v0246_preserve_keep"])
+			_render_player_screen("battle")
+		"v0246_preserve_mine":
+			_ensure_player_battle_scene()
+			_call_scene("set_barrosan_runtime_review_mode", ["v0246_preserve_mine"])
+			_render_player_screen("battle")
+		"v0246_preserve_shells":
+			_ensure_player_battle_scene()
+			_call_scene("set_barrosan_runtime_review_mode", ["v0246_preserve_shells"])
+			_render_player_screen("battle")
+		"v0246_clean":
+			_ensure_player_battle_scene()
+			_call_scene("set_barrosan_runtime_review_mode", ["v0246_clean"])
+			_render_player_screen("battle")
 		"v0211_overview":
 			_ensure_player_battle_scene()
 			_call_scene("capture_mine_site")
@@ -8643,6 +8727,8 @@ func _apply_player_slice_action(action: String) -> Dictionary:
 
 func _player_capture_checkpoint() -> String:
 	var normalized_root := _artifact_root_from_args().replace("\\", "/")
+	if normalized_root.contains("/v0246"):
+		return "v0.246"
 	if normalized_root.contains("/v0245"):
 		return "v0.245"
 	if normalized_root.contains("/v0244"):
@@ -8764,9 +8850,33 @@ func _player_capture_checkpoint() -> String:
 	return "v0.124"
 
 func _is_bounded_microloop_checkpoint() -> bool:
-	return ["v0.129", "v0.130", "v0.160", "v0.162", "v0.164", "v0.166", "v0.168", "v0.169", "v0.170", "v0.173", "v0.174", "v0.177", "v0.178", "v0.179", "v0.181", "v0.184", "v0.185", "v0.186", "v0.187", "v0.193", "v0.194", "v0.195", "v0.196", "v0.197", "v0.198", "v0.199", "v0.200", "v0.203", "v0.204", "v0.205", "v0.206", "v0.209", "v0.210", "v0.211", "v0.212", "v0.213", "v0.215", "v0.216", "v0.217", "v0.218", "v0.219", "v0.220", "v0.221", "v0.222", "v0.223", "v0.224", "v0.227", "v0.228", "v0.229", "v0.230", "v0.231", "v0.243", "v0.244", "v0.245"].has(_player_capture_checkpoint())
+	return ["v0.129", "v0.130", "v0.160", "v0.162", "v0.164", "v0.166", "v0.168", "v0.169", "v0.170", "v0.173", "v0.174", "v0.177", "v0.178", "v0.179", "v0.181", "v0.184", "v0.185", "v0.186", "v0.187", "v0.193", "v0.194", "v0.195", "v0.196", "v0.197", "v0.198", "v0.199", "v0.200", "v0.203", "v0.204", "v0.205", "v0.206", "v0.209", "v0.210", "v0.211", "v0.212", "v0.213", "v0.215", "v0.216", "v0.217", "v0.218", "v0.219", "v0.220", "v0.221", "v0.222", "v0.223", "v0.224", "v0.227", "v0.228", "v0.229", "v0.230", "v0.231", "v0.243", "v0.244", "v0.245", "v0.246"].has(_player_capture_checkpoint())
 
 func _player_capture_steps() -> Array[Dictionary]:
+	if _player_capture_checkpoint() == "v0.246":
+		return [
+			{"id": "opt_in_overview_before_build", "label": "v0.246 opt-in overview", "action": "v0246_overview"},
+			{"id": "starting_resources", "label": "v0.246 starting resources", "action": "v0246_starting_resources"},
+			{"id": "select_builder_unit", "label": "v0.246 select and move Worker builder", "action": "v0246_select_builder"},
+			{"id": "valid_barracks_preview", "label": "v0.246 valid Barracks preview", "action": "v0246_valid_preview"},
+			{"id": "confirm_authoritative_barracks_placement", "label": "v0.246 authoritative placement", "action": "v0246_confirm_placement"},
+			{"id": "construction_resource_delta", "label": "v0.246 construction resource delta", "action": "v0246_construction_delta"},
+			{"id": "select_new_field_barracks_hud", "label": "v0.246 select Field Barracks", "action": "v0246_select_field_barracks"},
+			{"id": "train_militia_command_available", "label": "v0.246 Train Militia command", "action": "v0246_train_command"},
+			{"id": "train_militia_resource_delta", "label": "v0.246 training resource delta", "action": "v0246_train_militia"},
+			{"id": "militia_training_progress", "label": "v0.246 single-slot training progress", "action": "v0246_training_progress"},
+			{"id": "militia_spawned_from_new_barracks", "label": "v0.246 Field Militia spawned", "action": "v0246_militia_spawned"},
+			{"id": "select_spawned_militia", "label": "v0.246 select spawned Militia", "action": "v0246_select_spawned_militia"},
+			{"id": "move_spawned_militia_road_probe", "label": "v0.246 Militia road probe", "action": "v0246_move_road"},
+			{"id": "move_spawned_militia_bridge_probe", "label": "v0.246 Militia bridge probe", "action": "v0246_move_bridge"},
+			{"id": "failed_train_no_resource_mutation", "label": "v0.246 failed train mutation proof", "action": "v0246_failed_train"},
+			{"id": "new_barracks_and_militia_minimap_presence", "label": "v0.246 Barracks and Militia minimap", "action": "v0246_minimap"},
+			{"id": "existing_barracks_train_flow_preserved", "label": "v0.246 Restored Barracks preserved", "action": "v0246_preserve_barracks"},
+			{"id": "command_keep_live_hud_preserved", "label": "v0.246 Command Keep preserved", "action": "v0246_preserve_keep"},
+			{"id": "lume_mine_live_hud_preserved", "label": "v0.246 Lume Mine preserved", "action": "v0246_preserve_mine"},
+			{"id": "shells_remain_non_producing", "label": "v0.246 shells remain non-producing", "action": "v0246_preserve_shells"},
+			{"id": "unselected_clean_view", "label": "v0.246 clean view", "action": "v0246_clean"},
+		]
 	if _player_capture_checkpoint() == "v0.245":
 		return [
 			{"id": "opt_in_overview_before_build", "label": "v0.245 opt-in overview", "action": "v0245_overview"},

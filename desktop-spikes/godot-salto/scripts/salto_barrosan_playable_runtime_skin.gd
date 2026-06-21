@@ -39,6 +39,8 @@ const LIVE_ROLE_IDS := {
 const V0245_CONSTRUCTED_KEY := "constructed_barracks"
 const V0245_CONSTRUCTED_RUNTIME_ID := "v0245_authoritative_barracks_00"
 const V0245_CONSTRUCTED_ROLE_ID := "barrosan_role_barracks_constructed_00"
+const V0246_FIELD_MILITIA_RUNTIME_ID := "v0246_field_militia_00"
+const PORTABLE_CONTENT_PATH := "res://data/generated/content-subset.json"
 
 var barrosan_runtime_skin_enabled := false
 var barrosan_runtime_checkpoint := "v0.243"
@@ -55,6 +57,7 @@ var barrosan_valid_placement: Dictionary = {}
 var barrosan_blocked_placement: Dictionary = {}
 var barrosan_pathing_probe: Dictionary = {}
 var barrosan_playtest: Dictionary = {}
+var v0246_militia_definition: Dictionary = {}
 
 
 func configure_barrosan_playable_runtime_skin(options: Dictionary) -> void:
@@ -67,8 +70,10 @@ func configure_barrosan_playable_runtime_skin(options: Dictionary) -> void:
 	_upgrade_inert_roles_to_runtime_shells()
 	barrosan_build_validation_adapter.load_authority()
 	_evaluate_barrosan_build_previews()
-	if barrosan_runtime_checkpoint in ["v0.244", "v0.245"]:
+	if barrosan_runtime_checkpoint in ["v0.244", "v0.245", "v0.246"]:
 		_reset_barrosan_playtest_status()
+	if barrosan_runtime_checkpoint == "v0.246":
+		_load_v0246_militia_authority()
 	_refresh_visual_foundation()
 	_add_barrosan_minimap_role_markers()
 
@@ -363,19 +368,23 @@ func _sync_hud() -> void:
 	var structure: Dictionary = barrosan_runtime_structures[barrosan_selected_role_id]
 	var display_name := str(structure.get("displayName", barrosan_selected_role_id.capitalize()))
 	if hud_hero_label:
-		var kind := "Live gameplay building" if bool(structure.get("liveGameplayEntity", false)) else ("Opt-in technical construction" if bool(structure.get("technicalConstructionEntity", false)) else "Sim-safe role shell")
+		var kind := "Live gameplay building" if bool(structure.get("liveGameplayEntity", false)) else ("Opt-in production bridge" if barrosan_runtime_checkpoint == "v0.246" and barrosan_selected_role_id == V0245_CONSTRUCTED_KEY else ("Opt-in technical construction" if bool(structure.get("technicalConstructionEntity", false)) else "Sim-safe role shell"))
 		hud_hero_label.text = "%s | %s" % [display_name, kind]
 	if hud_context_label:
 		if bool(structure.get("liveGameplayEntity", false)):
 			hud_context_label.text = _barrosan_live_state_text(barrosan_selected_role_id)
 		elif bool(structure.get("technicalConstructionEntity", false)):
-			hud_context_label.text = "Authoritative placement / complete / no production"
+			hud_context_label.text = _v0246_field_barracks_hud_text() if barrosan_runtime_checkpoint == "v0.246" else "Authoritative placement / complete / no production"
 		else:
 			hud_context_label.text = "Shell / opt-in / 500 HP / no production yet"
+	if hud_work_button != null and barrosan_runtime_checkpoint == "v0.246" and barrosan_selected_role_id == V0245_CONSTRUCTED_KEY:
+		hud_work_button.text = "Train Militia"
 
 
 func set_barrosan_runtime_review_mode(mode: String) -> void:
 	barrosan_runtime_review_mode = mode
+	if barrosan_runtime_checkpoint == "v0.246":
+		_ensure_v0246_field_militia_active()
 	match mode:
 		"selected":
 			select_barrosan_runtime_role("market")
@@ -455,6 +464,52 @@ func set_barrosan_runtime_review_mode(mode: String) -> void:
 		"v0245_pathing":
 			_run_v0245_pathing_probe()
 		"v0245_clean":
+			_clear_barrosan_playtest_selection()
+		"v0246_overview", "v0246_starting_resources":
+			_capture_v0245_starting_resources()
+		"v0246_select_builder":
+			_run_v0246_builder_probe()
+		"v0246_valid_preview":
+			_run_v0245_preview(false, "v0246_confirm")
+		"v0246_confirm_placement":
+			_attempt_v0245_placement(false)
+		"v0246_construction_delta":
+			_show_v0245_construction_proof("resource_delta")
+		"v0246_select_field_barracks", "v0246_train_command":
+			select_barrosan_runtime_role(V0245_CONSTRUCTED_KEY)
+		"v0246_train_militia":
+			select_barrosan_runtime_role(V0245_CONSTRUCTED_KEY)
+			_queue_v0246_field_militia()
+		"v0246_training_progress":
+			_advance_v0246_field_training(60)
+			_attempt_v0246_duplicate_queue()
+		"v0246_militia_spawned":
+			_advance_v0246_field_training(70)
+		"v0246_select_spawned_militia":
+			_select_playtest_unit(V0246_FIELD_MILITIA_RUNTIME_ID)
+		"v0246_move_road":
+			_run_v0246_militia_probe("road", Vector2(610, 1120), 220)
+		"v0246_move_bridge":
+			_run_v0246_militia_probe("bridge_river", Vector2(790, 760), 260)
+		"v0246_failed_train":
+			_attempt_v0246_failed_training()
+		"v0246_minimap":
+			_add_v0246_field_militia_minimap_marker()
+			_select_playtest_unit(V0246_FIELD_MILITIA_RUNTIME_ID)
+		"v0246_preserve_barracks":
+			_run_v0246_militia_probe("restored_barracks_main_base", Vector2(360, 260), 260)
+			_run_v0244_barracks_restore_train_flow()
+		"v0246_preserve_keep":
+			select_barrosan_runtime_role("main_base")
+			_record_v0244_live_role("main_base")
+		"v0246_preserve_mine":
+			select_barrosan_runtime_role("mine")
+			_record_v0244_live_role("mine")
+		"v0246_preserve_shells":
+			_select_v0244_shell("blacksmith", false)
+			_select_v0244_shell("market", false)
+			_select_v0244_shell("watchtower")
+		"v0246_clean":
 			_clear_barrosan_playtest_selection()
 		"inert_roles":
 			select_barrosan_runtime_role("blacksmith")
@@ -610,6 +665,27 @@ func _reset_barrosan_playtest_status() -> void:
 			"placementResourceDelta": {},
 			"spendCount": 0,
 		},
+		"v0246FieldProduction": {
+			"authorityLoaded": false,
+			"target": "constructed authoritative Field Barracks",
+			"unitId": "militia",
+			"runtimeId": V0246_FIELD_MILITIA_RUNTIME_ID,
+			"cost": {},
+			"queue": [],
+			"queueAccepted": false,
+			"queueSpendCount": 0,
+			"queueResourceDelta": {},
+			"progress": 0.0,
+			"spawned": false,
+			"spawnCount": 0,
+			"selected": false,
+			"minimapRegistered": false,
+			"duplicateQueueRejected": false,
+			"duplicateQueueResourcesUnchanged": false,
+			"failedTrainRejected": false,
+			"failedTrainResourcesUnchanged": false,
+			"movementProbes": {},
+		},
 	}
 
 
@@ -629,6 +705,10 @@ func _select_playtest_unit(unit_id: String) -> bool:
 		if not selected_units.has(unit_id):
 			selected_units.append(unit_id)
 		barrosan_playtest["selectedUnits"] = selected_units
+		if unit_id == V0246_FIELD_MILITIA_RUNTIME_ID:
+			var production: Dictionary = barrosan_playtest.get("v0246FieldProduction", {})
+			production["selected"] = true
+			barrosan_playtest["v0246FieldProduction"] = production
 	_sync_unit_visuals()
 	_sync_hud()
 	return selected
@@ -832,7 +912,8 @@ func _attempt_v0245_placement(blocked: bool) -> bool:
 		"constructionState": "complete",
 		"constructionProgress": 1.0,
 		"productionQueue": [],
-		"productionEnabled": false,
+		"productionEnabled": barrosan_runtime_checkpoint == "v0.246",
+		"productionLimit": "militia-single-slot-single-spawn" if barrosan_runtime_checkpoint == "v0.246" else "none",
 		"technicalConstructionEntity": true,
 		"economyMutationAllowed": false,
 		"aiMutationAllowed": false,
@@ -905,6 +986,255 @@ func _run_v0245_pathing_probe() -> void:
 	_sync_hud()
 
 
+func _load_v0246_militia_authority() -> void:
+	v0246_militia_definition = {}
+	if not FileAccess.file_exists(PORTABLE_CONTENT_PATH):
+		barrosan_runtime_errors.append("Missing generated portable content for v0.246 Militia authority")
+		return
+	var file := FileAccess.open(PORTABLE_CONTENT_PATH, FileAccess.READ)
+	var parsed = JSON.parse_string(file.get_as_text()) if file != null else null
+	if not parsed is Dictionary:
+		barrosan_runtime_errors.append("Invalid generated portable content for v0.246")
+		return
+	var categories: Dictionary = parsed.get("categories", {})
+	var barracks_definition: Dictionary = {}
+	for raw_entry in categories.get("buildings", []):
+		if raw_entry is Dictionary and str(raw_entry.get("id", "")) == "barracks":
+			barracks_definition = raw_entry.get("data", {}).duplicate(true)
+			break
+	for raw_entry in categories.get("units", []):
+		if raw_entry is Dictionary and str(raw_entry.get("id", "")) == "militia":
+			v0246_militia_definition = raw_entry.get("data", {}).duplicate(true)
+			break
+	var production: Dictionary = barrosan_playtest.get("v0246FieldProduction", {})
+	production["authorityLoaded"] = (
+		not v0246_militia_definition.is_empty()
+		and (barracks_definition.get("trainOptions", []) as Array).has("militia")
+	)
+	production["authoritySource"] = PORTABLE_CONTENT_PATH
+	production["cost"] = (v0246_militia_definition.get("cost", {}) as Dictionary).duplicate(true)
+	production["trainTime"] = float(v0246_militia_definition.get("trainTime", 0.0))
+	barrosan_playtest["v0246FieldProduction"] = production
+	if not bool(production["authorityLoaded"]):
+		barrosan_runtime_errors.append("Generated authority does not permit Barracks -> Militia production")
+
+
+func _v0246_field_barracks_hud_text() -> String:
+	var production: Dictionary = barrosan_playtest.get("v0246FieldProduction", {})
+	if bool(production.get("spawned", false)):
+		return "Authoritative placement | complete | Militia ready"
+	if not (production.get("queue", []) as Array).is_empty():
+		return "Authoritative placement | complete | Militia training... %s%%" % int(round(float(production.get("progress", 0.0)) * 100.0))
+	return "Authoritative placement | complete | trains Militia only"
+
+
+func _hud_work_pressed() -> void:
+	if barrosan_runtime_checkpoint == "v0.246" and barrosan_selected_role_id == V0245_CONSTRUCTED_KEY:
+		_queue_v0246_field_militia()
+		return
+	super._hud_work_pressed()
+
+
+func _run_v0246_builder_probe() -> void:
+	_select_playtest_unit("worker_00")
+	var production: Dictionary = barrosan_playtest.get("v0246FieldProduction", {})
+	production["builderResourcesUnchanged"] = true
+	barrosan_playtest["v0246FieldProduction"] = production
+	_run_v0246_unit_probe("builder_construction_site", "worker_00", Vector2(500, 1320), 560)
+
+
+func _queue_v0246_field_militia() -> bool:
+	var production: Dictionary = barrosan_playtest.get("v0246FieldProduction", {})
+	var before: Dictionary = runtime.resources.duplicate(true)
+	var queue: Array = production.get("queue", [])
+	if (
+		_v0245_constructed_count() != 1
+		or not bool(production.get("authorityLoaded", false))
+		or bool(production.get("spawned", false))
+		or not queue.is_empty()
+	):
+		production["lastRejectReason"] = "single-slot-occupied-or-limit-reached"
+		production["lastRejectResourcesUnchanged"] = before == runtime.resources
+		barrosan_playtest["v0246FieldProduction"] = production
+		_sync_hud()
+		return false
+	var cost: Dictionary = production.get("cost", {})
+	for key in cost:
+		if int(runtime.resources.get(key, 0)) < int(cost[key]):
+			production["lastRejectReason"] = "insufficient-resources"
+			production["lastRejectResourcesUnchanged"] = before == runtime.resources
+			barrosan_playtest["v0246FieldProduction"] = production
+			_sync_hud()
+			return false
+	for key in cost:
+		runtime.resources[key] = int(runtime.resources.get(key, 0)) - int(cost[key])
+	production["queue"] = [{
+		"id": "v0246_field_militia_queue_00",
+		"unitFixtureId": "militia",
+		"progress": 0.0,
+		"cost": cost.duplicate(true),
+	}]
+	production["queueAccepted"] = true
+	production["queueSpendCount"] = int(production.get("queueSpendCount", 0)) + 1
+	production["resourcesBeforeTraining"] = before
+	production["resourcesAfterTrainingSpend"] = runtime.resources.duplicate(true)
+	production["queueResourceDelta"] = _resource_delta(before, runtime.resources)
+	barrosan_playtest["v0246FieldProduction"] = production
+	_sync_hud()
+	return true
+
+
+func _advance_v0246_field_training(frames: int) -> bool:
+	var production: Dictionary = barrosan_playtest.get("v0246FieldProduction", {})
+	var queue: Array = production.get("queue", [])
+	if queue.is_empty():
+		return false
+	var entry: Dictionary = queue[0]
+	entry["progress"] = clampf(float(entry.get("progress", 0.0)) + float(maxi(frames, 1)) / 120.0, 0.0, 1.0)
+	queue[0] = entry
+	production["queue"] = queue
+	production["progress"] = float(entry["progress"])
+	if float(entry["progress"]) >= 1.0:
+		_spawn_v0246_field_militia()
+		return true
+	barrosan_playtest["v0246FieldProduction"] = production
+	_sync_hud()
+	return true
+
+
+func _spawn_v0246_field_militia() -> void:
+	var production: Dictionary = barrosan_playtest.get("v0246FieldProduction", {})
+	if bool(production.get("spawned", false)):
+		return
+	var stats: Dictionary = v0246_militia_definition.get("stats", {})
+	var spawn_point := Vector2(630, 1450)
+	runtime.units.append({
+		"id": V0246_FIELD_MILITIA_RUNTIME_ID,
+		"fixtureId": "militia",
+		"team": "friendly",
+		"role": "Militia",
+		"position": spawn_point,
+		"lastPosition": spawn_point,
+		"destination": spawn_point,
+		"hasDestination": false,
+		"health": float(stats.get("maxHp", 90.0)),
+		"maxHealth": float(stats.get("maxHp", 90.0)),
+		"damage": float(stats.get("damage", 9.0)),
+		"attackRange": float(stats.get("range", 28.0)),
+		"cooldown": 0.0,
+		"attackTarget": "",
+		"speed": float(stats.get("speed", 90.0)),
+		"alive": true,
+		"productionSourceId": V0245_CONSTRUCTED_RUNTIME_ID,
+		"optInProductionEntity": true,
+	})
+	production["queue"] = []
+	production["progress"] = 1.0
+	production["spawned"] = true
+	production["spawnCount"] = int(production.get("spawnCount", 0)) + 1
+	production["spawnPoint"] = spawn_point
+	production["lastKnownPosition"] = spawn_point
+	barrosan_playtest["v0246FieldProduction"] = production
+	_rebuild_visuals()
+	_add_barrosan_minimap_role_markers()
+	_add_v0245_constructed_minimap_marker()
+	_add_v0246_field_militia_minimap_marker()
+	_sync_hud()
+
+
+func _attempt_v0246_duplicate_queue() -> void:
+	var production: Dictionary = barrosan_playtest.get("v0246FieldProduction", {})
+	var before: Dictionary = runtime.resources.duplicate(true)
+	var accepted := _queue_v0246_field_militia()
+	production = barrosan_playtest.get("v0246FieldProduction", {})
+	production["duplicateQueueRejected"] = not accepted
+	production["duplicateQueueResourcesUnchanged"] = before == runtime.resources
+	barrosan_playtest["v0246FieldProduction"] = production
+
+
+func _attempt_v0246_failed_training() -> void:
+	select_barrosan_runtime_role(V0245_CONSTRUCTED_KEY)
+	var production: Dictionary = barrosan_playtest.get("v0246FieldProduction", {})
+	var before: Dictionary = runtime.resources.duplicate(true)
+	var accepted := _queue_v0246_field_militia()
+	production = barrosan_playtest.get("v0246FieldProduction", {})
+	production["failedTrainRejected"] = not accepted
+	production["failedTrainResourcesUnchanged"] = before == runtime.resources
+	production["failedTrainReason"] = str(production.get("lastRejectReason", ""))
+	barrosan_playtest["v0246FieldProduction"] = production
+
+
+func _run_v0246_militia_probe(probe_id: String, target: Vector2, frames: int) -> void:
+	_run_v0246_unit_probe(probe_id, V0246_FIELD_MILITIA_RUNTIME_ID, target, frames)
+
+
+func _run_v0246_unit_probe(probe_id: String, unit_id: String, target: Vector2, frames: int) -> void:
+	if unit_id == V0246_FIELD_MILITIA_RUNTIME_ID:
+		_ensure_v0246_field_militia_active()
+	var production: Dictionary = barrosan_playtest.get("v0246FieldProduction", {})
+	var before_value = runtime.unit_position(unit_id)
+	if not before_value is Vector2:
+		return
+	var before: Vector2 = before_value
+	var stuck_before := int(runtime.stuck_unit_count)
+	var selected := runtime.select_entity(unit_id)
+	var accepted := selected and runtime.issue_move_order(target)
+	for _frame in range(frames):
+		runtime.advance_live_frame()
+	var after_value = runtime.unit_position(unit_id)
+	var after: Vector2 = after_value if after_value is Vector2 else before
+	var probes: Dictionary = production.get("movementProbes", {})
+	probes[probe_id] = {
+		"unitId": unit_id,
+		"accepted": accepted,
+		"target": target,
+		"before": before,
+		"after": after,
+		"displacement": before.distance_to(after),
+		"stuckDelta": int(runtime.stuck_unit_count) - stuck_before,
+		"obstacleModel": "existing rectangular destination nudge",
+		"reviewGradeOnly": true,
+	}
+	production["movementProbes"] = probes
+	if unit_id == V0246_FIELD_MILITIA_RUNTIME_ID:
+		production["selected"] = selected
+		production["lastKnownPosition"] = after
+	barrosan_playtest["v0246FieldProduction"] = production
+	_sync_unit_visuals()
+	_sync_hud()
+
+
+func _ensure_v0246_field_militia_active() -> void:
+	var production: Dictionary = barrosan_playtest.get("v0246FieldProduction", {})
+	if not bool(production.get("spawned", false)):
+		return
+	for unit in runtime.units:
+		if str(unit.get("id", "")) != V0246_FIELD_MILITIA_RUNTIME_ID:
+			continue
+		var last_position: Vector2 = production.get("lastKnownPosition", production.get("spawnPoint", Vector2(630, 1450)))
+		var current_position: Vector2 = unit.get("position", Vector2.ZERO)
+		if not bool(unit.get("alive", false)) or current_position.x < -9000.0:
+			unit["alive"] = true
+			unit["health"] = float(unit.get("maxHealth", 90.0))
+			unit["position"] = last_position
+			unit["lastPosition"] = last_position
+			unit["destination"] = last_position
+			unit["hasDestination"] = false
+			unit["attackTarget"] = ""
+			unit["reviewHidden"] = false
+		return
+
+
+func _add_v0246_field_militia_minimap_marker() -> void:
+	if minimap_panel == null or not runtime.unit_alive(V0246_FIELD_MILITIA_RUNTIME_ID):
+		return
+	if not _minimap_has_marker("v0246_minimap_field_militia"):
+		_add_minimap_marker("v0246_minimap_field_militia", Vector2(126, 190), Vector2(10, 10), Color("#79d39a"))
+	var production: Dictionary = barrosan_playtest.get("v0246FieldProduction", {})
+	production["minimapRegistered"] = _minimap_has_marker("v0246_minimap_field_militia")
+	barrosan_playtest["v0246FieldProduction"] = production
+
+
 func _sync_scale_probes() -> void:
 	for probe in ["worker", "militia", "aster"]:
 		var node := visual_root.get_node_or_null("v0242_probe_%s" % probe)
@@ -947,6 +1277,7 @@ func _sync_minimap() -> void:
 	if barrosan_runtime_skin_enabled:
 		_add_barrosan_minimap_role_markers()
 		_add_v0245_constructed_minimap_marker()
+		_add_v0246_field_militia_minimap_marker()
 
 
 func get_spike_status() -> Dictionary:
@@ -992,7 +1323,8 @@ func get_spike_status() -> Dictionary:
 		"reviewMode": barrosan_runtime_review_mode,
 		"errors": barrosan_runtime_errors.duplicate(),
 		"limitedTechnicalPlaytest": _v0244_playtest_status(addressable_roles) if barrosan_runtime_checkpoint == "v0.244" else {},
-		"authoritativeConstructionBridge": _v0245_construction_status() if barrosan_runtime_checkpoint == "v0.245" else {},
+		"authoritativeConstructionBridge": _v0245_construction_status() if barrosan_runtime_checkpoint in ["v0.245", "v0.246"] else {},
+		"fieldBarracksProductionBridge": _v0246_production_status() if barrosan_runtime_checkpoint == "v0.246" else {},
 	}
 	return status
 
@@ -1001,7 +1333,18 @@ func _v0245_construction_status() -> Dictionary:
 	var result: Dictionary = barrosan_playtest.get("v0245Construction", {}).duplicate(true)
 	var delta: Dictionary = result.get("placementResourceDelta", {})
 	var pathing: Dictionary = result.get("pathingProbe", {})
-	result["status"] = "PASS" if (
+	var v0246_construction_pass := (
+		barrosan_runtime_checkpoint == "v0.246"
+		and bool(result.get("validAttempt", {}).get("ok", false))
+		and bool(result.get("implemented", false))
+		and int(result.get("spendCount", 0)) == 1
+		and int(delta.get("crowns", 0)) == -180
+		and int(delta.get("stone", 0)) == -120
+		and bool(result.get("registered", false))
+		and bool(result.get("selected", false))
+		and bool(result.get("minimapRegistered", false))
+	)
+	var v0245_construction_pass := (
 		bool(result.get("implemented", false))
 		and bool(result.get("cancelResourcesUnchanged", false))
 		and bool(result.get("blockedResourcesUnchanged", false))
@@ -1015,10 +1358,60 @@ func _v0245_construction_status() -> Dictionary:
 		and bool(pathing.get("accepted", false))
 		and float(pathing.get("displacement", 0.0)) > 20.0
 		and int(pathing.get("stuckDelta", 0)) == 0
-	) else "IN_PROGRESS"
+	)
+	result["status"] = "PASS" if v0246_construction_pass or v0245_construction_pass else "IN_PROGRESS"
 	result["placementAuthority"] = "BuildPlacementValidationAdapter generated portable authority"
-	result["constructionKind"] = "opt-in technical Barracks / complete / no production"
+	result["constructionKind"] = "opt-in authoritative Barracks / complete / Militia-only limited production" if barrosan_runtime_checkpoint == "v0.246" else "opt-in technical Barracks / complete / no production"
 	result["existingRestoredBarracksPreserved"] = bool(barrosan_playtest.get("barracksRestoreTrain", {}).get("militiaSpawned", false))
+	result["defaultRuntimeChanged"] = false
+	result["pathingParity"] = "review-grade rectangular destination-nudge only"
+	return result
+
+
+func _v0246_production_status() -> Dictionary:
+	var result: Dictionary = barrosan_playtest.get("v0246FieldProduction", {}).duplicate(true)
+	var delta: Dictionary = result.get("queueResourceDelta", {})
+	var probes: Dictionary = result.get("movementProbes", {})
+	var required_probes := ["builder_construction_site", "road", "bridge_river", "restored_barracks_main_base"]
+	var movement_pass := required_probes.all(
+		func(probe_id: String) -> bool:
+			var probe: Dictionary = probes.get(probe_id, {})
+			return bool(probe.get("accepted", false)) and float(probe.get("displacement", 0.0)) > 20.0 and int(probe.get("stuckDelta", 0)) == 0
+	)
+	var construction: Dictionary = _v0245_construction_status()
+	result["status"] = "PASS" if (
+		construction.get("status", "") == "PASS"
+		and bool(result.get("authorityLoaded", false))
+		and bool(result.get("queueAccepted", false))
+		and int(result.get("queueSpendCount", 0)) == 1
+		and int(delta.get("crowns", 0)) == -60
+		and int(delta.get("iron", 0)) == -20
+		and int(delta.get("stone", 0)) == 0
+		and bool(result.get("duplicateQueueRejected", false))
+		and bool(result.get("duplicateQueueResourcesUnchanged", false))
+		and bool(result.get("failedTrainRejected", false))
+		and bool(result.get("failedTrainResourcesUnchanged", false))
+		and bool(result.get("spawned", false))
+		and int(result.get("spawnCount", 0)) == 1
+		and runtime.unit_alive(V0246_FIELD_MILITIA_RUNTIME_ID)
+		and bool(result.get("selected", false))
+		and bool(result.get("minimapRegistered", false))
+		and movement_pass
+		and bool(barrosan_playtest.get("barracksRestoreTrain", {}).get("militiaSpawned", false))
+	) else "IN_PROGRESS"
+	result["productionAuthority"] = "generated portable Militia definition and Barracks trainOptions"
+	result["productionKind"] = "opt-in single-slot, one-Militia limit"
+	result["movementProbePass"] = movement_pass
+	result["existingRestoredBarracksPreserved"] = bool(barrosan_playtest.get("barracksRestoreTrain", {}).get("militiaSpawned", false))
+	result["commandKeepPreserved"] = (barrosan_playtest.get("selectedLiveRoles", []) as Array).has("main_base")
+	result["lumeMinePreserved"] = (barrosan_playtest.get("selectedLiveRoles", []) as Array).has("mine")
+	result["shellsRemainNonProducing"] = ["blacksmith", "market", "watchtower"].all(
+		func(role: String) -> bool:
+			return (
+				barrosan_runtime_structures.has(role)
+				and not bool(barrosan_runtime_structures[role].get("productionEnabled", false))
+			)
+	)
 	result["defaultRuntimeChanged"] = false
 	result["pathingParity"] = "review-grade rectangular destination-nudge only"
 	return result
