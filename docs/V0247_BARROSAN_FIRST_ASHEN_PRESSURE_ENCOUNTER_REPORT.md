@@ -7,9 +7,9 @@ Verdict: `PARTIAL`
 - Resolved base commit: `0ffa827d8377148f599b3df173f67de710a11ad1`.
 - v0.246 implementation commit: `2325d8c2853404a62193957471bebdf2c8cdcb62`; documentation closeout/base: `0ffa827d8377148f599b3df173f67de710a11ad1`.
 - Base exact-SHA CI: https://github.com/jardas33/ascendant-realms/actions/runs/27890932048.
-- Implementation commit: `PENDING_PUBLICATION`.
-- Final repository HEAD: `PENDING_PUBLICATION`.
-- Exact-SHA GitHub Actions run: PENDING_PUBLICATION.
+- Implementation commit: `2c502121ec83b476e571d1ef557bf8666fed90de`.
+- Final repository HEAD: `2c502121ec83b476e571d1ef557bf8666fed90de`.
+- Exact-SHA GitHub Actions run: https://github.com/jardas33/ascendant-realms/actions/runs/27906407253.
 - Scene: `res://scenes/salto_barrosan_playable_runtime_skin.tscn`.
 - Blender used: no.
 - New GLB exported: no.
