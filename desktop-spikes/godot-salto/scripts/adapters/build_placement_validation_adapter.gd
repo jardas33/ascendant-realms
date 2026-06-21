@@ -86,6 +86,12 @@ func evaluate(point: Vector2, building_id: String, resources: Dictionary) -> Dic
 	return _result(true, "", point, building_id)
 
 
+func definition(building_id: String) -> Dictionary:
+	if source_map.is_empty() or building_definitions.is_empty():
+		load_authority()
+	return (building_definitions.get(building_id, {}) as Dictionary).duplicate(true)
+
+
 func reason_text(reason: String) -> String:
 	match reason:
 		"missing-resources":

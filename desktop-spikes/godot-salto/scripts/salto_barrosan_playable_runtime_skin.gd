@@ -36,6 +36,9 @@ const LIVE_ROLE_IDS := {
 	"barracks": "barracks",
 	"mine": "mine_landmark",
 }
+const V0245_CONSTRUCTED_KEY := "constructed_barracks"
+const V0245_CONSTRUCTED_RUNTIME_ID := "v0245_authoritative_barracks_00"
+const V0245_CONSTRUCTED_ROLE_ID := "barrosan_role_barracks_constructed_00"
 
 var barrosan_runtime_skin_enabled := false
 var barrosan_runtime_checkpoint := "v0.243"
@@ -64,7 +67,7 @@ func configure_barrosan_playable_runtime_skin(options: Dictionary) -> void:
 	_upgrade_inert_roles_to_runtime_shells()
 	barrosan_build_validation_adapter.load_authority()
 	_evaluate_barrosan_build_previews()
-	if barrosan_runtime_checkpoint == "v0.244":
+	if barrosan_runtime_checkpoint in ["v0.244", "v0.245"]:
 		_reset_barrosan_playtest_status()
 	_refresh_visual_foundation()
 	_add_barrosan_minimap_role_markers()
@@ -176,6 +179,12 @@ func _rebuild_visuals() -> void:
 func _add_structure(structure: Dictionary) -> void:
 	var fixture := str(structure.get("fixtureId", ""))
 	var team := str(structure.get("team", ""))
+	if barrosan_runtime_skin_enabled and fixture == "barrosan_authoritative_barracks":
+		var constructed_entry: Dictionary = barrosan_role_entries.get("barracks", {})
+		var constructed: Node3D = _place_barrosan_module("barracks", str(constructed_entry.get("module", "")), _to_world(structure.get("position", Vector2.ZERO), 0.20), float(constructed_entry.get("yawDegrees", 0.0)), _runtime_module_scale("barracks"))
+		if constructed != null:
+			_register_runtime_structure("barracks", constructed, false, str(structure.get("id", "")), structure, V0245_CONSTRUCTED_KEY, V0245_CONSTRUCTED_ROLE_ID, "Authoritative Field Barracks")
+			return
 	if barrosan_runtime_skin_enabled and fixture.begins_with("barrosan_shell_"):
 		var shell_role := fixture.trim_prefix("barrosan_shell_")
 		var shell_entry: Dictionary = barrosan_role_entries.get(shell_role, {})
@@ -228,27 +237,29 @@ func _upgrade_inert_roles_to_runtime_shells() -> void:
 		})
 
 
-func _register_runtime_structure(role: String, placed: Node3D, live: bool, runtime_id: String, runtime_entity: Dictionary = {}) -> void:
+func _register_runtime_structure(role: String, placed: Node3D, live: bool, runtime_id: String, runtime_entity: Dictionary = {}, registry_key: String = "", stable_role_id: String = "", display_name_override: String = "") -> void:
 	var entry: Dictionary = barrosan_role_entries.get(role, {})
 	var footprint := _runtime_footprint(entry)
-	barrosan_runtime_structures[role] = {
+	var key: String = role if registry_key == "" else registry_key
+	barrosan_runtime_structures[key] = {
 		"role": role,
 		"runtimeId": runtime_id,
-		"stableRoleId": "barrosan_role_%s" % role,
-		"displayName": str(entry.get("displayName", role)),
+		"stableRoleId": "barrosan_role_%s" % role if stable_role_id == "" else stable_role_id,
+		"displayName": str(entry.get("displayName", role)) if display_name_override == "" else display_name_override,
 		"module": str(entry.get("module", "")),
 		"position": placed.position,
 		"footprint": footprint,
 		"liveGameplayEntity": live,
 		"simSafeShellEntity": not live,
+		"technicalConstructionEntity": bool(runtime_entity.get("technicalConstructionEntity", false)),
 		"selectable": true,
 		"health": runtime_entity.get("health", null),
 		"maxHealth": runtime_entity.get("maxHealth", null),
 		"productionEnabled": bool(runtime_entity.get("productionEnabled", live and role == "barracks")),
 		"collisionPathingFootprintActive": not live,
 	}
-	_add_runtime_footprint(role, placed.position, footprint)
-	_add_runtime_role_label(role, str(entry.get("displayName", role)), placed.position, live)
+	_add_runtime_footprint(key, placed.position, footprint)
+	_add_runtime_role_label(key, str(entry.get("displayName", role)) if display_name_override == "" else display_name_override, placed.position, live)
 
 
 func _place_barrosan_module(role: String, module_name: String, position: Vector3, yaw_degrees: float, scale_value: float) -> Node3D:
@@ -337,7 +348,7 @@ func select_barrosan_runtime_role(role: String) -> bool:
 	real_input_hud_card_updated = true
 	_record_real_input("barrosan_runtime_structure_selected", {
 		"role": role,
-		"stableRoleId": "barrosan_role_%s" % role,
+		"stableRoleId": str(barrosan_runtime_structures[role].get("stableRoleId", "barrosan_role_%s" % role)),
 		"liveGameplayEntity": bool(barrosan_runtime_structures[role].get("liveGameplayEntity", false)),
 	})
 	_sync_barrosan_runtime_visuals()
@@ -352,10 +363,13 @@ func _sync_hud() -> void:
 	var structure: Dictionary = barrosan_runtime_structures[barrosan_selected_role_id]
 	var display_name := str(structure.get("displayName", barrosan_selected_role_id.capitalize()))
 	if hud_hero_label:
-		hud_hero_label.text = "%s | %s" % [display_name, "Live gameplay building" if bool(structure.get("liveGameplayEntity", false)) else "Sim-safe role shell"]
+		var kind := "Live gameplay building" if bool(structure.get("liveGameplayEntity", false)) else ("Opt-in technical construction" if bool(structure.get("technicalConstructionEntity", false)) else "Sim-safe role shell")
+		hud_hero_label.text = "%s | %s" % [display_name, kind]
 	if hud_context_label:
 		if bool(structure.get("liveGameplayEntity", false)):
 			hud_context_label.text = _barrosan_live_state_text(barrosan_selected_role_id)
+		elif bool(structure.get("technicalConstructionEntity", false)):
+			hud_context_label.text = "Authoritative placement / complete / no production"
 		else:
 			hud_context_label.text = "Shell / opt-in / 500 HP / no production yet"
 
@@ -404,6 +418,43 @@ func set_barrosan_runtime_review_mode(mode: String) -> void:
 			_clear_barrosan_playtest_selection()
 			barrosan_runtime_review_mode = "all_roles"
 		"v0244_clean":
+			_clear_barrosan_playtest_selection()
+		"v0245_overview", "v0245_starting_resources":
+			_capture_v0245_starting_resources()
+		"v0245_select_builder":
+			_select_playtest_unit("worker_00")
+		"v0245_valid_preview_cancel":
+			_run_v0245_preview(false, "before_cancel")
+		"v0245_cancel_preview":
+			_cancel_v0245_preview()
+		"v0245_blocked_preview":
+			_run_v0245_preview(true, "blocked")
+		"v0245_blocked_attempt":
+			_attempt_v0245_placement(true)
+		"v0245_valid_preview_confirm":
+			_run_v0245_preview(false, "before_confirm")
+		"v0245_confirm_placement":
+			_attempt_v0245_placement(false)
+		"v0245_resource_delta":
+			_show_v0245_construction_proof("resource_delta")
+		"v0245_select_constructed":
+			select_barrosan_runtime_role(V0245_CONSTRUCTED_KEY)
+		"v0245_minimap":
+			_add_v0245_constructed_minimap_marker()
+			select_barrosan_runtime_role(V0245_CONSTRUCTED_KEY)
+		"v0245_preserve_keep":
+			select_barrosan_runtime_role("main_base")
+		"v0245_preserve_barracks":
+			_run_v0244_barracks_restore_train_flow()
+		"v0245_preserve_mine":
+			select_barrosan_runtime_role("mine")
+		"v0245_preserve_shells":
+			_select_v0244_shell("blacksmith", false)
+			_select_v0244_shell("market", false)
+			_select_v0244_shell("watchtower")
+		"v0245_pathing":
+			_run_v0245_pathing_probe()
+		"v0245_clean":
 			_clear_barrosan_playtest_selection()
 		"inert_roles":
 			select_barrosan_runtime_role("blacksmith")
@@ -541,6 +592,24 @@ func _reset_barrosan_playtest_status() -> void:
 		"validPreview": {},
 		"blockedPreview": {},
 		"minimapRolesAfterPlaytest": 0,
+		"v0245Construction": {
+			"target": "barracks",
+			"runtimeId": V0245_CONSTRUCTED_RUNTIME_ID,
+			"roleId": V0245_CONSTRUCTED_ROLE_ID,
+			"implemented": false,
+			"registered": false,
+			"selected": false,
+			"minimapRegistered": false,
+			"startingResources": {},
+			"afterCancelResources": {},
+			"afterBlockedResources": {},
+			"afterPlacementResources": {},
+			"cancelResourcesUnchanged": false,
+			"blockedResourcesUnchanged": false,
+			"blockedStructureCreated": false,
+			"placementResourceDelta": {},
+			"spendCount": 0,
+		},
 	}
 
 
@@ -677,9 +746,163 @@ func _sync_v0244_resource_label() -> void:
 		label.no_depth_test = true
 		visual_root.add_child(label)
 	label.position = Vector3(-0.55, 1.05, 2.10)
-	label.text = "PREVIEW ONLY\nResources unchanged" if bool(barrosan_playtest.get("previewResourcesUnchanged", false)) else "PREVIEW RESOURCE CHECK PENDING"
-	label.modulate = Color("#a8efad") if bool(barrosan_playtest.get("previewResourcesUnchanged", false)) else Color("#ffcf82")
-	label.visible = barrosan_runtime_review_mode == "v0244_resource_proof"
+	var construction: Dictionary = barrosan_playtest.get("v0245Construction", {})
+	if barrosan_runtime_review_mode.begins_with("v0245_proof_"):
+		var proof_kind := barrosan_runtime_review_mode.trim_prefix("v0245_proof_")
+		if proof_kind == "resource_delta":
+			label.text = "REAL PLACEMENT\n-180 Crowns / -120 Stone\nspent exactly once"
+		else:
+			label.text = "AUTHORITATIVE CONSTRUCTION"
+		label.modulate = Color("#a8efad")
+	else:
+		label.text = "PREVIEW ONLY\nResources unchanged" if bool(barrosan_playtest.get("previewResourcesUnchanged", false)) else "PREVIEW RESOURCE CHECK PENDING"
+		label.modulate = Color("#a8efad") if bool(barrosan_playtest.get("previewResourcesUnchanged", false)) else Color("#ffcf82")
+	label.visible = barrosan_runtime_review_mode == "v0244_resource_proof" or barrosan_runtime_review_mode.begins_with("v0245_proof_")
+
+
+func _capture_v0245_starting_resources() -> void:
+	_clear_barrosan_playtest_selection()
+	var construction: Dictionary = barrosan_playtest.get("v0245Construction", {})
+	if construction.get("startingResources", {}).is_empty():
+		construction["startingResources"] = runtime.resources.duplicate(true)
+	barrosan_playtest["v0245Construction"] = construction
+
+
+func _run_v0245_preview(blocked: bool, phase: String) -> void:
+	_capture_v0245_starting_resources()
+	var before: Dictionary = runtime.resources.duplicate(true)
+	_evaluate_barrosan_build_previews()
+	var result := (barrosan_blocked_placement if blocked else barrosan_valid_placement).duplicate(true)
+	var construction: Dictionary = barrosan_playtest.get("v0245Construction", {})
+	construction["%sPreview" % phase] = result
+	construction["%sPreviewResources" % phase] = before
+	barrosan_playtest["v0245Construction"] = construction
+	barrosan_runtime_review_mode = "blocked_preview" if blocked else "valid_preview"
+
+
+func _cancel_v0245_preview() -> void:
+	var construction: Dictionary = barrosan_playtest.get("v0245Construction", {})
+	var starting: Dictionary = construction.get("startingResources", {})
+	construction["afterCancelResources"] = runtime.resources.duplicate(true)
+	construction["cancelResourcesUnchanged"] = starting == runtime.resources
+	barrosan_playtest["v0245Construction"] = construction
+	_clear_barrosan_playtest_selection()
+	barrosan_runtime_review_mode = "v0245_proof_cancel"
+
+
+func _attempt_v0245_placement(blocked: bool) -> bool:
+	_capture_v0245_starting_resources()
+	var point := Vector2(1280, 800) if blocked else Vector2(520, 1450)
+	var result: Dictionary = barrosan_build_validation_adapter.evaluate(point, "barracks", runtime.resources)
+	var construction: Dictionary = barrosan_playtest.get("v0245Construction", {})
+	if blocked:
+		var before_count: int = _v0245_constructed_count()
+		var before_resources: Dictionary = runtime.resources.duplicate(true)
+		construction["blockedAttempt"] = result.duplicate(true)
+		construction["afterBlockedResources"] = runtime.resources.duplicate(true)
+		construction["blockedResourcesUnchanged"] = before_resources == runtime.resources
+		construction["blockedStructureCreated"] = _v0245_constructed_count() != before_count
+		barrosan_playtest["v0245Construction"] = construction
+		barrosan_runtime_review_mode = "blocked_preview"
+		return false
+	if not bool(result.get("ok", false)) or _v0245_constructed_count() > 0:
+		construction["validAttempt"] = result.duplicate(true)
+		construction["failureReason"] = "validation-rejected-or-already-constructed"
+		barrosan_playtest["v0245Construction"] = construction
+		return false
+	var definition: Dictionary = barrosan_build_validation_adapter.definition("barracks")
+	var cost: Dictionary = definition.get("cost", {})
+	var size_data: Dictionary = definition.get("size", {})
+	var before_resources: Dictionary = runtime.resources.duplicate(true)
+	for key in cost:
+		runtime.resources[key] = int(runtime.resources.get(key, 0)) - int(cost[key])
+	var size: Vector2 = Vector2(float(size_data.get("width", 82.0)), float(size_data.get("height", 64.0)))
+	runtime.structures.append({
+		"id": V0245_CONSTRUCTED_RUNTIME_ID,
+		"fixtureId": "barrosan_authoritative_barracks",
+		"roleId": V0245_CONSTRUCTED_ROLE_ID,
+		"team": "friendly",
+		"position": point,
+		"size": size,
+		"rect": Rect2(point - size * 0.5, size),
+		"entityType": "opt_in_technical_construction",
+		"alive": true,
+		"health": 650.0,
+		"maxHealth": 650.0,
+		"constructionState": "complete",
+		"constructionProgress": 1.0,
+		"productionQueue": [],
+		"productionEnabled": false,
+		"technicalConstructionEntity": true,
+		"economyMutationAllowed": false,
+		"aiMutationAllowed": false,
+		"combatEnabled": false,
+		"savePersistenceEnabled": false,
+	})
+	construction["validAttempt"] = result.duplicate(true)
+	construction["implemented"] = true
+	construction["spendCount"] = int(construction.get("spendCount", 0)) + 1
+	construction["cost"] = cost.duplicate(true)
+	construction["afterPlacementResources"] = runtime.resources.duplicate(true)
+	construction["placementResourceDelta"] = _resource_delta(before_resources, runtime.resources)
+	barrosan_playtest["v0245Construction"] = construction
+	_rebuild_visuals()
+	_add_barrosan_minimap_role_markers()
+	_add_v0245_constructed_minimap_marker()
+	select_barrosan_runtime_role(V0245_CONSTRUCTED_KEY)
+	construction = barrosan_playtest.get("v0245Construction", {})
+	construction["registered"] = barrosan_runtime_structures.has(V0245_CONSTRUCTED_KEY)
+	construction["selected"] = barrosan_selected_role_id == V0245_CONSTRUCTED_KEY
+	construction["minimapRegistered"] = _minimap_has_marker("v0245_minimap_constructed_barracks")
+	barrosan_playtest["v0245Construction"] = construction
+	return true
+
+
+func _v0245_constructed_count() -> int:
+	return runtime.structures.filter(func(structure: Dictionary) -> bool: return str(structure.get("id", "")) == V0245_CONSTRUCTED_RUNTIME_ID).size()
+
+
+func _resource_delta(before: Dictionary, after: Dictionary) -> Dictionary:
+	var delta: Dictionary = {}
+	for key in before:
+		delta[key] = int(after.get(key, 0)) - int(before.get(key, 0))
+	return delta
+
+
+func _show_v0245_construction_proof(kind: String) -> void:
+	_clear_barrosan_playtest_selection()
+	barrosan_runtime_review_mode = "v0245_proof_%s" % kind
+	_sync_v0244_resource_label()
+
+
+func _add_v0245_constructed_minimap_marker() -> void:
+	if minimap_panel == null or _v0245_constructed_count() == 0:
+		return
+	if not _minimap_has_marker("v0245_minimap_constructed_barracks"):
+		_add_minimap_marker("v0245_minimap_constructed_barracks", Vector2(112, 198), Vector2(14, 14), Color("#f0c458"))
+
+
+func _run_v0245_pathing_probe() -> void:
+	var construction: Dictionary = barrosan_playtest.get("v0245Construction", {})
+	var before: Vector2 = runtime.unit_position("worker_00")
+	var stuck_before := int(runtime.stuck_unit_count)
+	runtime.select_entity("worker_00")
+	var accepted := runtime.issue_move_order(Vector2(560, 1380))
+	for _frame in range(260):
+		runtime.advance_live_frame()
+	var after: Vector2 = runtime.unit_position("worker_00")
+	construction["pathingProbe"] = {
+		"accepted": accepted,
+		"before": before,
+		"after": after,
+		"displacement": before.distance_to(after),
+		"stuckDelta": int(runtime.stuck_unit_count) - stuck_before,
+		"obstacleModel": "existing rectangular destination nudge",
+		"reviewGradeOnly": true,
+	}
+	barrosan_playtest["v0245Construction"] = construction
+	_sync_unit_visuals()
+	_sync_hud()
 
 
 func _sync_scale_probes() -> void:
@@ -723,6 +946,7 @@ func _sync_minimap() -> void:
 	super._sync_minimap()
 	if barrosan_runtime_skin_enabled:
 		_add_barrosan_minimap_role_markers()
+		_add_v0245_constructed_minimap_marker()
 
 
 func get_spike_status() -> Dictionary:
@@ -768,8 +992,36 @@ func get_spike_status() -> Dictionary:
 		"reviewMode": barrosan_runtime_review_mode,
 		"errors": barrosan_runtime_errors.duplicate(),
 		"limitedTechnicalPlaytest": _v0244_playtest_status(addressable_roles) if barrosan_runtime_checkpoint == "v0.244" else {},
+		"authoritativeConstructionBridge": _v0245_construction_status() if barrosan_runtime_checkpoint == "v0.245" else {},
 	}
 	return status
+
+
+func _v0245_construction_status() -> Dictionary:
+	var result: Dictionary = barrosan_playtest.get("v0245Construction", {}).duplicate(true)
+	var delta: Dictionary = result.get("placementResourceDelta", {})
+	var pathing: Dictionary = result.get("pathingProbe", {})
+	result["status"] = "PASS" if (
+		bool(result.get("implemented", false))
+		and bool(result.get("cancelResourcesUnchanged", false))
+		and bool(result.get("blockedResourcesUnchanged", false))
+		and not bool(result.get("blockedStructureCreated", true))
+		and int(result.get("spendCount", 0)) == 1
+		and int(delta.get("crowns", 0)) == -180
+		and int(delta.get("stone", 0)) == -120
+		and bool(result.get("registered", false))
+		and bool(result.get("selected", false))
+		and bool(result.get("minimapRegistered", false))
+		and bool(pathing.get("accepted", false))
+		and float(pathing.get("displacement", 0.0)) > 20.0
+		and int(pathing.get("stuckDelta", 0)) == 0
+	) else "IN_PROGRESS"
+	result["placementAuthority"] = "BuildPlacementValidationAdapter generated portable authority"
+	result["constructionKind"] = "opt-in technical Barracks / complete / no production"
+	result["existingRestoredBarracksPreserved"] = bool(barrosan_playtest.get("barracksRestoreTrain", {}).get("militiaSpawned", false))
+	result["defaultRuntimeChanged"] = false
+	result["pathingParity"] = "review-grade rectangular destination-nudge only"
+	return result
 
 
 func _v0244_playtest_status(addressable_roles: Array[String]) -> Dictionary:
