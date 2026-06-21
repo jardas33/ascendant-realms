@@ -52,6 +52,11 @@ const V0249_RAIDER_MAX_HP := 60.0
 const V0249_MILITIA_DAMAGE := 20.0
 const V0249_RAIDER_DAMAGE := 10.0
 const V0249_COMBAT_TICK_SECONDS := 1.0
+const V0251_FIELD_BARRACKS_MAX_HP := 200.0
+const V0251_RAIDER_BUILDING_DAMAGE := 25.0
+const V0251_BUILDING_DAMAGE_TICK_LIMIT := 3
+const V0251_FIELD_BARRACKS_PRESSURE_POINT := Vector2(600, 1400)
+const V0251_FIELD_BARRACKS_PRESSURE_RADIUS := 135.0
 const PORTABLE_CONTENT_PATH := "res://data/generated/content-subset.json"
 
 var barrosan_runtime_skin_enabled := false
@@ -70,6 +75,8 @@ var barrosan_blocked_placement: Dictionary = {}
 var barrosan_pathing_probe: Dictionary = {}
 var barrosan_playtest: Dictionary = {}
 var v0246_militia_definition: Dictionary = {}
+var v0251_defended_proof: Dictionary = {}
+var v0251_undefended_proof: Dictionary = {}
 
 
 func configure_barrosan_playable_runtime_skin(options: Dictionary) -> void:
@@ -82,9 +89,9 @@ func configure_barrosan_playable_runtime_skin(options: Dictionary) -> void:
 	_upgrade_inert_roles_to_runtime_shells()
 	barrosan_build_validation_adapter.load_authority()
 	_evaluate_barrosan_build_previews()
-	if barrosan_runtime_checkpoint in ["v0.244", "v0.245", "v0.246", "v0.247", "v0.248", "v0.249", "v0.250"]:
+	if barrosan_runtime_checkpoint in ["v0.244", "v0.245", "v0.246", "v0.247", "v0.248", "v0.249", "v0.250", "v0.251"]:
 		_reset_barrosan_playtest_status()
-	if barrosan_runtime_checkpoint in ["v0.246", "v0.247", "v0.248", "v0.249", "v0.250"]:
+	if barrosan_runtime_checkpoint in ["v0.246", "v0.247", "v0.248", "v0.249", "v0.250", "v0.251"]:
 		_load_v0246_militia_authority()
 	_refresh_visual_foundation()
 	_add_barrosan_minimap_role_markers()
@@ -381,25 +388,34 @@ func _sync_hud() -> void:
 		var structure: Dictionary = barrosan_runtime_structures[barrosan_selected_role_id]
 		var display_name := str(structure.get("displayName", barrosan_selected_role_id.capitalize()))
 		if hud_hero_label:
-			var kind := "Live gameplay building" if bool(structure.get("liveGameplayEntity", false)) else ("Opt-in production bridge" if barrosan_runtime_checkpoint in ["v0.246", "v0.247", "v0.248", "v0.249", "v0.250"] and barrosan_selected_role_id == V0245_CONSTRUCTED_KEY else ("Opt-in technical construction" if bool(structure.get("technicalConstructionEntity", false)) else "Sim-safe role shell"))
+			var kind := "Live gameplay building" if bool(structure.get("liveGameplayEntity", false)) else ("Opt-in production bridge" if barrosan_runtime_checkpoint in ["v0.246", "v0.247", "v0.248", "v0.249", "v0.250", "v0.251"] and barrosan_selected_role_id == V0245_CONSTRUCTED_KEY else ("Opt-in technical construction" if bool(structure.get("technicalConstructionEntity", false)) else "Sim-safe role shell"))
 			hud_hero_label.text = "%s | %s" % [display_name, kind]
-			if barrosan_runtime_checkpoint in ["v0.248", "v0.249", "v0.250"] and barrosan_selected_role_id == V0245_CONSTRUCTED_KEY:
-				hud_hero_label.text = "Authoritative Field Barracks | Opt-in production bridge"
+			if barrosan_runtime_checkpoint in ["v0.248", "v0.249", "v0.250", "v0.251"] and barrosan_selected_role_id == V0245_CONSTRUCTED_KEY:
+				var consequence: Dictionary = barrosan_playtest.get("v0251DefenseConsequence", {})
+				var state := str(consequence.get("fieldBarracksState", "unharmed"))
+				hud_hero_label.text = "Authoritative Field Barracks | %s" % ("Under Ashen pressure" if state == "under_pressure" else ("Damaged but standing" if state == "damaged" else "Opt-in production bridge"))
 		if hud_context_label:
 			if bool(structure.get("liveGameplayEntity", false)):
 				hud_context_label.text = _barrosan_live_state_text(barrosan_selected_role_id)
 			elif bool(structure.get("technicalConstructionEntity", false)):
-				hud_context_label.text = _v0246_field_barracks_hud_text() if barrosan_runtime_checkpoint in ["v0.246", "v0.247", "v0.248", "v0.249", "v0.250"] else "Authoritative placement / complete / no production"
+				hud_context_label.text = _v0246_field_barracks_hud_text() if barrosan_runtime_checkpoint in ["v0.246", "v0.247", "v0.248", "v0.249", "v0.250", "v0.251"] else "Authoritative placement / complete / no production"
 			else:
 				hud_context_label.text = "Shell / opt-in / 500 HP / no production yet"
-		if hud_work_button != null and barrosan_runtime_checkpoint in ["v0.246", "v0.247", "v0.248", "v0.249", "v0.250"] and barrosan_selected_role_id == V0245_CONSTRUCTED_KEY:
+		if hud_work_button != null and barrosan_runtime_checkpoint in ["v0.246", "v0.247", "v0.248", "v0.249", "v0.250", "v0.251"] and barrosan_selected_role_id == V0245_CONSTRUCTED_KEY:
 			hud_work_button.text = "Train Militia"
-	if barrosan_runtime_checkpoint in ["v0.247", "v0.248", "v0.249", "v0.250"]:
+		if barrosan_runtime_checkpoint == "v0.251" and barrosan_selected_role_id == V0245_CONSTRUCTED_KEY:
+			var consequence: Dictionary = barrosan_playtest.get("v0251DefenseConsequence", {})
+			hud_context_label.text = "%s | HP %s/%s" % [
+				"Pressure damage contained" if bool(consequence.get("buildingPressureContained", false)) else ("Ashen pressure damaging structure" if int(consequence.get("buildingDamageTickCount", 0)) > 1 else ("Building pressure incoming" if bool(consequence.get("buildingDamageStarted", false)) else _v0246_field_barracks_hud_text())),
+				int(_v0251_field_barracks_health()),
+				int(V0251_FIELD_BARRACKS_MAX_HP),
+			]
+	if barrosan_runtime_checkpoint in ["v0.247", "v0.248", "v0.249", "v0.250", "v0.251"]:
 		var pressure: Dictionary = barrosan_playtest.get("v0247Pressure", {})
 		if runtime.selected_ids.has(V0247_ASHEN_RAIDER_RUNTIME_ID):
 			hud_hero_label.text = "Ashen Raider | Opt-in pressure unit"
-			hud_context_label.text = "Scripted pressure entity | bounded combat in %s" % barrosan_runtime_checkpoint if barrosan_runtime_checkpoint in ["v0.249", "v0.250"] else "Scripted pressure entity | no damage in %s" % barrosan_runtime_checkpoint
-			if barrosan_runtime_checkpoint in ["v0.249", "v0.250"]:
+			hud_context_label.text = "Scripted pressure entity | bounded consequence in %s" % barrosan_runtime_checkpoint if barrosan_runtime_checkpoint in ["v0.249", "v0.250", "v0.251"] else "Scripted pressure entity | no damage in %s" % barrosan_runtime_checkpoint
+			if barrosan_runtime_checkpoint in ["v0.249", "v0.250", "v0.251"]:
 				hud_objective_label.text = "%s | HP %s/%s" % [
 					"Engaged by Militia" if bool(pressure.get("combatStarted", false)) else "Ashen Raider advancing",
 					int(_v0247_unit_health(V0247_ASHEN_RAIDER_RUNTIME_ID)),
@@ -409,14 +425,14 @@ func _sync_hud() -> void:
 				hud_objective_label.text = "Ashen Raider advancing"
 		elif runtime.selected_ids.has(V0246_FIELD_MILITIA_RUNTIME_ID):
 			hud_hero_label.text = "Selected Militia"
-			hud_context_label.text = "Engaging Ashen Raider" if barrosan_runtime_checkpoint in ["v0.249", "v0.250"] and bool(pressure.get("combatStarted", false)) and not bool(pressure.get("raiderDefeated", false)) else "Unit ready | Can intercept Ashen pressure"
-			if barrosan_runtime_checkpoint in ["v0.249", "v0.250"]:
+			hud_context_label.text = "Engaging Ashen Raider" if barrosan_runtime_checkpoint in ["v0.249", "v0.250", "v0.251"] and bool(pressure.get("combatStarted", false)) and not bool(pressure.get("raiderDefeated", false)) else "Unit ready | Can intercept Ashen pressure"
+			if barrosan_runtime_checkpoint in ["v0.249", "v0.250", "v0.251"]:
 				hud_objective_label.text = "%s | HP %s/%s" % [
 					"Pressure contained by combat" if bool(pressure.get("raiderDefeated", false)) else ("Militia engaging Raider" if bool(pressure.get("combatStarted", false)) else "Move to intercept zone"),
 					int(_v0247_unit_health(V0246_FIELD_MILITIA_RUNTIME_ID)),
 					int(V0249_MILITIA_MAX_HP),
 				]
-				if barrosan_runtime_checkpoint == "v0.250" and not bool(pressure.get("combatStarted", false)):
+				if barrosan_runtime_checkpoint in ["v0.250", "v0.251"] and not bool(pressure.get("combatStarted", false)):
 					if bool(pressure.get("attackOrderAccepted", false)):
 						hud_context_label.text = "Attack order accepted"
 						hud_objective_label.text = "Target: Ashen Raider | HP 100/100"
@@ -436,20 +452,20 @@ func _sync_hud() -> void:
 		if barrosan_runtime_checkpoint == "v0.248" and runtime.selected_ids.has(V0246_FIELD_MILITIA_RUNTIME_ID) and not bool(pressure.get("contained", false)):
 			hud_objective_strip_label.text = "Move Militia to intercept"
 			hud_objective_label.text = "Move to intercept zone"
-		if barrosan_runtime_checkpoint in ["v0.249", "v0.250"] and bool(pressure.get("raiderDefeated", false)):
+		if barrosan_runtime_checkpoint in ["v0.249", "v0.250", "v0.251"] and bool(pressure.get("raiderDefeated", false)):
 			if barrosan_runtime_review_mode == "v0249_raider_defeated":
 				hud_objective_strip_label.text = "Ashen Raider defeated"
 				hud_objective_label.text = "Raider HP 0/60 | Militia HP 70/100"
 			else:
 				hud_objective_strip_label.text = "Ashen pressure contained"
-				hud_objective_label.text = "Pressure contained by explicit attack order | Resources unchanged after combat" if barrosan_runtime_checkpoint == "v0.250" else "Pressure contained by combat | No resource mutation after combat"
+				hud_objective_label.text = "Pressure contained by explicit attack order | Field Barracks unharmed" if barrosan_runtime_checkpoint in ["v0.250", "v0.251"] else "Pressure contained by combat | No resource mutation after combat"
 
 
 func set_barrosan_runtime_review_mode(mode: String) -> void:
 	barrosan_runtime_review_mode = mode
-	if barrosan_runtime_checkpoint in ["v0.246", "v0.247", "v0.248", "v0.249", "v0.250"]:
+	if barrosan_runtime_checkpoint in ["v0.246", "v0.247", "v0.248", "v0.249", "v0.250", "v0.251"]:
 		_ensure_v0246_field_militia_active()
-	if barrosan_runtime_checkpoint in ["v0.247", "v0.248", "v0.249", "v0.250"]:
+	if barrosan_runtime_checkpoint in ["v0.247", "v0.248", "v0.249", "v0.250", "v0.251"]:
 		_ensure_v0247_ashen_raider_active()
 	match mode:
 		"selected":
@@ -727,6 +743,131 @@ func set_barrosan_runtime_review_mode(mode: String) -> void:
 			_select_v0244_shell("watchtower")
 		"v0248_clean":
 			_clear_barrosan_playtest_selection()
+		"v0251_overview", "v0251_starting_resources":
+			_capture_v0245_starting_resources()
+			_set_v0249_objective("1. Select Aster", "Select Aster")
+		"v0251_select_builder":
+			_run_v0246_builder_probe()
+			_set_v0249_objective("8. Prepare for Ashen pressure", "Construction available")
+		"v0251_valid_preview":
+			_run_v0245_preview(false, "v0251_confirm")
+		"v0251_confirm_placement":
+			_attempt_v0245_placement(false)
+			_set_v0249_objective("Prepare one defender", "Authoritative placement | complete | trains Militia only")
+		"v0251_construction_delta", "v0251_barracks_hp_200":
+			_show_v0245_construction_proof("resource_delta")
+			select_barrosan_runtime_role(V0245_CONSTRUCTED_KEY)
+		"v0251_select_field_barracks", "v0251_train_command":
+			select_barrosan_runtime_role(V0245_CONSTRUCTED_KEY)
+		"v0251_train_militia":
+			_queue_v0246_field_militia()
+			_set_v0249_objective("Militia preparing...", "Militia training...")
+		"v0251_training_progress":
+			_advance_v0246_field_training(60)
+			_attempt_v0246_duplicate_queue()
+		"v0251_militia_ready":
+			_advance_v0246_field_training(70)
+			_prepare_v0247_pressure()
+			_set_v0249_objective("Defender ready", "Militia ready")
+		"v0251_select_militia":
+			_select_playtest_unit(V0246_FIELD_MILITIA_RUNTIME_ID)
+			_set_v0249_objective("Defender ready", "Attack Raider available | HP 100/100")
+		"v0251_pressure_telegraph", "v0251_intercept_marker":
+			_prepare_v0247_pressure()
+			_activate_v0249_markers()
+			_set_v0249_objective("9. Ashen pressure incoming", "Incoming pressure")
+		"v0251_raider_spawned":
+			_spawn_v0247_ashen_raider()
+			_advance_v0247_raider_lane("lane_start", V0247_PRESSURE_LANE_START, 150)
+			_advance_v0247_raider_lane("bridge_approach", V0247_PRESSURE_BRIDGE_APPROACH, 245)
+			_select_v0247_raider()
+		"v0251_raider_minimap":
+			_add_v0247_ashen_raider_minimap_marker()
+			_select_v0247_raider()
+		"v0251_attack_available":
+			_select_playtest_unit(V0246_FIELD_MILITIA_RUNTIME_ID)
+			_set_v0249_objective("Defender ready", "Attack Raider available | HP 100/100")
+		"v0251_attack_accepted":
+			_select_playtest_unit(V0246_FIELD_MILITIA_RUNTIME_ID)
+			_hud_attack_pressed()
+			issue_attack_order(V0247_ASHEN_RAIDER_RUNTIME_ID)
+			_set_v0249_objective("Attack order accepted", "Target: Ashen Raider | HP 100/100")
+		"v0251_militia_closing":
+			_run_v0247_militia_intercept(480, false)
+		"v0251_combat_tick_1":
+			_begin_v0249_combat()
+			_advance_v0249_combat_tick()
+			_set_v0249_objective("Militia engaging Raider", "Militia HP 90/100 | Raider HP 40/60")
+		"v0251_combat_tick_2":
+			_advance_v0249_combat_tick()
+			_set_v0249_objective("Militia engaging Raider", "Militia HP 80/100 | Raider HP 20/60")
+		"v0251_combat_tick_3":
+			_advance_v0249_combat_tick()
+			_set_v0249_objective("Ashen Raider defeated", "Raider HP 0/60 | Militia HP 70/100")
+		"v0251_raider_defeated":
+			_finalize_v0249_combat_visuals()
+		"v0251_pressure_contained":
+			_select_playtest_unit(V0246_FIELD_MILITIA_RUNTIME_ID)
+			_finalize_v0249_combat_visuals()
+			_set_v0249_objective("Ashen pressure contained", "Pressure contained by explicit attack order")
+		"v0251_barracks_unharmed", "v0251_defended_no_resource_mutation":
+			_record_v0249_collateral_proof()
+			select_barrosan_runtime_role(V0245_CONSTRUCTED_KEY)
+		"v0251_undefended_start":
+			v0251_defended_proof = _v0250_attack_order_status().duplicate(true)
+			v0251_defended_proof["fieldBarracksFinalHp"] = _v0251_field_barracks_health()
+			v0251_defended_proof["production"] = _v0246_production_status().duplicate(true)
+			v0251_defended_proof["construction"] = _v0245_construction_status().duplicate(true)
+			_reset_v0251_branch_runtime()
+			_reset_barrosan_playtest_status()
+			_load_v0246_militia_authority()
+			_capture_v0245_starting_resources()
+			_run_v0246_builder_probe()
+			_run_v0245_preview(false, "v0251_undefended_confirm")
+			_attempt_v0245_placement(false)
+			_prepare_v0251_undefended_pressure()
+			_activate_v0249_markers()
+			select_barrosan_runtime_role(V0245_CONSTRUCTED_KEY)
+		"v0251_undefended_raider_spawned":
+			_spawn_v0247_ashen_raider()
+			_add_v0247_ashen_raider_minimap_marker()
+			_select_v0247_raider()
+		"v0251_undefended_advancing":
+			_advance_v0247_raider_lane("lane_start", V0247_PRESSURE_LANE_START, 150)
+			_advance_v0247_raider_lane("field_barracks_approach", V0251_FIELD_BARRACKS_PRESSURE_POINT, 760)
+			_set_v0249_objective("Field Barracks under Ashen pressure", "Building pressure incoming")
+		"v0251_undefended_contact":
+			_begin_v0251_building_pressure()
+			select_barrosan_runtime_role(V0245_CONSTRUCTED_KEY)
+		"v0251_building_tick_1":
+			_advance_v0251_building_damage_tick()
+			select_barrosan_runtime_role(V0245_CONSTRUCTED_KEY)
+		"v0251_building_tick_2":
+			_advance_v0251_building_damage_tick()
+			select_barrosan_runtime_role(V0245_CONSTRUCTED_KEY)
+		"v0251_building_tick_3":
+			_advance_v0251_building_damage_tick()
+			select_barrosan_runtime_role(V0245_CONSTRUCTED_KEY)
+		"v0251_barracks_damaged", "v0251_undefended_contained", "v0251_undefended_no_resource_mutation":
+			_finalize_v0251_building_pressure()
+			select_barrosan_runtime_role(V0245_CONSTRUCTED_KEY)
+		"v0251_aster_worker_unharmed":
+			v0251_undefended_proof = _v0251_undefended_status().duplicate(true)
+			_select_playtest_unit("hero_aster")
+		"v0251_preserve_barracks":
+			_run_v0244_barracks_restore_train_flow()
+		"v0251_preserve_keep":
+			select_barrosan_runtime_role("main_base")
+			_record_v0244_live_role("main_base")
+		"v0251_preserve_mine":
+			select_barrosan_runtime_role("mine")
+			_record_v0244_live_role("mine")
+		"v0251_preserve_shells":
+			_select_v0244_shell("blacksmith", false)
+			_select_v0244_shell("market", false)
+			_select_v0244_shell("watchtower")
+		"v0251_default_clean", "v0251_clean":
+			_clear_barrosan_playtest_selection()
 		"v0250_overview", "v0250_starting_resources":
 			_capture_v0245_starting_resources()
 			_set_v0249_objective("1. Select Aster", "Select Aster")
@@ -954,7 +1095,7 @@ func _sync_unit_visuals() -> void:
 
 
 func set_player_facing_mode(enabled: bool) -> bool:
-	if barrosan_runtime_checkpoint in ["v0.249", "v0.250"] and enabled and player_facing_mode:
+	if barrosan_runtime_checkpoint in ["v0.249", "v0.250", "v0.251"] and enabled and player_facing_mode:
 		_sync_player_shell_chrome()
 		_sync_hud()
 		return true
@@ -962,7 +1103,7 @@ func set_player_facing_mode(enabled: bool) -> bool:
 
 
 func set_player_shell_screen(screen: String) -> bool:
-	if barrosan_runtime_checkpoint in ["v0.249", "v0.250"] and player_facing_mode and player_shell_screen == screen and screen == "battle":
+	if barrosan_runtime_checkpoint in ["v0.249", "v0.250", "v0.251"] and player_facing_mode and player_shell_screen == screen and screen == "battle":
 		_sync_player_shell_chrome()
 		_sync_hud()
 		return true
@@ -970,7 +1111,7 @@ func set_player_shell_screen(screen: String) -> bool:
 
 
 func _hud_attack_pressed() -> void:
-	if barrosan_runtime_checkpoint == "v0.250" and runtime.selected_ids.has(V0246_FIELD_MILITIA_RUNTIME_ID):
+	if barrosan_runtime_checkpoint in ["v0.250", "v0.251"] and runtime.selected_ids.has(V0246_FIELD_MILITIA_RUNTIME_ID):
 		var pressure: Dictionary = barrosan_playtest.get("v0247Pressure", {})
 		if runtime.unit_alive(V0247_ASHEN_RAIDER_RUNTIME_ID) and not bool(pressure.get("raiderDefeated", false)):
 			pressure["attackCommandAvailable"] = true
@@ -988,7 +1129,7 @@ func _hud_attack_pressed() -> void:
 
 
 func _issue_real_order(screen_position: Vector2) -> void:
-	if barrosan_runtime_checkpoint == "v0.250":
+	if barrosan_runtime_checkpoint in ["v0.250", "v0.251"]:
 		var pressure: Dictionary = barrosan_playtest.get("v0247Pressure", {})
 		if bool(pressure.get("attackTargetingMode", false)):
 			var hit := _pick_unit_from_screen(screen_position)
@@ -999,7 +1140,7 @@ func _issue_real_order(screen_position: Vector2) -> void:
 
 
 func issue_attack_order(target_id: String = "") -> bool:
-	if barrosan_runtime_checkpoint != "v0.250":
+	if barrosan_runtime_checkpoint not in ["v0.250", "v0.251"]:
 		return super.issue_attack_order(target_id)
 	var pressure: Dictionary = barrosan_playtest.get("v0247Pressure", {})
 	var valid: bool = (
@@ -1233,6 +1374,24 @@ func _reset_barrosan_playtest_status() -> void:
 			"buildingsUnharmed": false,
 			"asterWorkerUnharmed": false,
 		},
+		"v0251DefenseConsequence": {
+			"fieldBarracksMaxHp": V0251_FIELD_BARRACKS_MAX_HP,
+			"fieldBarracksStartHp": V0251_FIELD_BARRACKS_MAX_HP,
+			"fieldBarracksFinalHp": V0251_FIELD_BARRACKS_MAX_HP,
+			"fieldBarracksState": "unharmed",
+			"buildingPressureContact": false,
+			"buildingDamageStarted": false,
+			"buildingDamageStartedBeforeContact": false,
+			"buildingDamageTickCount": 0,
+			"buildingDamageTicks": [],
+			"buildingPressureContained": false,
+			"buildingDestroyed": false,
+			"boundedStop": false,
+			"resourcesBeforeBuildingPressure": {},
+			"resourcesAfterBuildingPressure": {},
+			"resourcesUnchanged": false,
+			"asterWorkerUnharmed": false,
+		},
 	}
 
 
@@ -1242,6 +1401,22 @@ func _clear_barrosan_playtest_selection() -> void:
 	barrosan_selected_role_id = ""
 	v0133_selected_structure_id = ""
 	v0133_barracks_selected = false
+
+
+func _reset_v0251_branch_runtime() -> void:
+	runtime.resources = {"crowns": 420, "stone": 160, "iron": 90, "aether": 38}
+	runtime.units = runtime.units.filter(
+		func(unit: Dictionary) -> bool:
+			return str(unit.get("id", "")) not in [V0246_FIELD_MILITIA_RUNTIME_ID, V0247_ASHEN_RAIDER_RUNTIME_ID]
+	)
+	runtime.structures = runtime.structures.filter(
+		func(structure: Dictionary) -> bool:
+			return str(structure.get("id", "")) != V0245_CONSTRUCTED_RUNTIME_ID
+	)
+	barrosan_runtime_structures.erase(V0245_CONSTRUCTED_KEY)
+	_clear_barrosan_playtest_selection()
+	_rebuild_visuals()
+	_add_barrosan_minimap_role_markers()
 
 
 func _select_playtest_unit(unit_id: String) -> bool:
@@ -1458,13 +1633,13 @@ func _attempt_v0245_placement(blocked: bool) -> bool:
 		"rect": Rect2(point - size * 0.5, size),
 		"entityType": "opt_in_technical_construction",
 		"alive": true,
-		"health": 650.0,
-		"maxHealth": 650.0,
+		"health": V0251_FIELD_BARRACKS_MAX_HP if barrosan_runtime_checkpoint == "v0.251" else 650.0,
+		"maxHealth": V0251_FIELD_BARRACKS_MAX_HP if barrosan_runtime_checkpoint == "v0.251" else 650.0,
 		"constructionState": "complete",
 		"constructionProgress": 1.0,
 		"productionQueue": [],
-		"productionEnabled": barrosan_runtime_checkpoint in ["v0.246", "v0.247", "v0.248", "v0.249", "v0.250"],
-		"productionLimit": "militia-single-slot-single-spawn" if barrosan_runtime_checkpoint in ["v0.246", "v0.247", "v0.248", "v0.249", "v0.250"] else "none",
+		"productionEnabled": barrosan_runtime_checkpoint in ["v0.246", "v0.247", "v0.248", "v0.249", "v0.250", "v0.251"],
+		"productionLimit": "militia-single-slot-single-spawn" if barrosan_runtime_checkpoint in ["v0.246", "v0.247", "v0.248", "v0.249", "v0.250", "v0.251"] else "none",
 		"technicalConstructionEntity": true,
 		"economyMutationAllowed": false,
 		"aiMutationAllowed": false,
@@ -1580,7 +1755,7 @@ func _v0246_field_barracks_hud_text() -> String:
 
 
 func _hud_work_pressed() -> void:
-	if barrosan_runtime_checkpoint in ["v0.246", "v0.247", "v0.248", "v0.249", "v0.250"] and barrosan_selected_role_id == V0245_CONSTRUCTED_KEY:
+	if barrosan_runtime_checkpoint in ["v0.246", "v0.247", "v0.248", "v0.249", "v0.250", "v0.251"] and barrosan_selected_role_id == V0245_CONSTRUCTED_KEY:
 		_queue_v0246_field_militia()
 		return
 	super._hud_work_pressed()
@@ -1668,9 +1843,9 @@ func _spawn_v0246_field_militia() -> void:
 		"lastPosition": spawn_point,
 		"destination": spawn_point,
 		"hasDestination": false,
-		"health": V0249_MILITIA_MAX_HP if barrosan_runtime_checkpoint in ["v0.249", "v0.250"] else float(stats.get("maxHp", 90.0)),
-		"maxHealth": V0249_MILITIA_MAX_HP if barrosan_runtime_checkpoint in ["v0.249", "v0.250"] else float(stats.get("maxHp", 90.0)),
-		"damage": V0249_MILITIA_DAMAGE if barrosan_runtime_checkpoint in ["v0.249", "v0.250"] else float(stats.get("damage", 9.0)),
+		"health": V0249_MILITIA_MAX_HP if barrosan_runtime_checkpoint in ["v0.249", "v0.250", "v0.251"] else float(stats.get("maxHp", 90.0)),
+		"maxHealth": V0249_MILITIA_MAX_HP if barrosan_runtime_checkpoint in ["v0.249", "v0.250", "v0.251"] else float(stats.get("maxHp", 90.0)),
+		"damage": V0249_MILITIA_DAMAGE if barrosan_runtime_checkpoint in ["v0.249", "v0.250", "v0.251"] else float(stats.get("damage", 9.0)),
 		"attackRange": float(stats.get("range", 28.0)),
 		"cooldown": 0.0,
 		"attackTarget": "",
@@ -1797,10 +1972,27 @@ func _prepare_v0247_pressure() -> void:
 	pressure["statusText"] = "Ashen pressure incoming"
 	pressure["resourcesBeforePressure"] = runtime.resources.duplicate(true)
 	pressure["militiaHealthBeforePressure"] = _v0247_unit_health(V0246_FIELD_MILITIA_RUNTIME_ID)
-	if barrosan_runtime_checkpoint in ["v0.248", "v0.249", "v0.250"]:
+	if barrosan_runtime_checkpoint in ["v0.248", "v0.249", "v0.250", "v0.251"]:
 		pressure["telegraphVisible"] = true
 		pressure["interceptMarkerVisible"] = true
 		pressure["interceptMarkerState"] = "waiting"
+	barrosan_playtest["v0247Pressure"] = pressure
+	_record_v0248_pressure_snapshot("afterTelegraph")
+	_sync_hud()
+
+
+func _prepare_v0251_undefended_pressure() -> void:
+	if barrosan_runtime_checkpoint != "v0.251" or _v0245_constructed_count() != 1:
+		return
+	var pressure: Dictionary = barrosan_playtest.get("v0247Pressure", {})
+	pressure["triggered"] = true
+	pressure["trigger"] = "constructed Field Barracks left undefended"
+	pressure["objectiveText"] = "Ashen pressure incoming"
+	pressure["statusText"] = "Field Barracks has no defender"
+	pressure["resourcesBeforePressure"] = runtime.resources.duplicate(true)
+	pressure["telegraphVisible"] = true
+	pressure["interceptMarkerVisible"] = true
+	pressure["interceptMarkerState"] = "waiting"
 	barrosan_playtest["v0247Pressure"] = pressure
 	_record_v0248_pressure_snapshot("afterTelegraph")
 	_sync_hud()
@@ -1819,25 +2011,25 @@ func _spawn_v0247_ashen_raider() -> void:
 		"lastPosition": V0247_PRESSURE_SPAWN,
 		"destination": V0247_PRESSURE_SPAWN,
 		"hasDestination": false,
-		"health": V0249_RAIDER_MAX_HP if barrosan_runtime_checkpoint in ["v0.249", "v0.250"] else 80.0,
-		"maxHealth": V0249_RAIDER_MAX_HP if barrosan_runtime_checkpoint in ["v0.249", "v0.250"] else 80.0,
-		"damage": V0249_RAIDER_DAMAGE if barrosan_runtime_checkpoint in ["v0.249", "v0.250"] else 0.0,
-		"attackRange": V0247_INTERCEPT_RADIUS if barrosan_runtime_checkpoint in ["v0.249", "v0.250"] else 0.0,
+		"health": V0249_RAIDER_MAX_HP if barrosan_runtime_checkpoint in ["v0.249", "v0.250", "v0.251"] else 80.0,
+		"maxHealth": V0249_RAIDER_MAX_HP if barrosan_runtime_checkpoint in ["v0.249", "v0.250", "v0.251"] else 80.0,
+		"damage": V0249_RAIDER_DAMAGE if barrosan_runtime_checkpoint in ["v0.249", "v0.250", "v0.251"] else 0.0,
+		"attackRange": V0247_INTERCEPT_RADIUS if barrosan_runtime_checkpoint in ["v0.249", "v0.250", "v0.251"] else 0.0,
 		"cooldown": 0.0,
 		"attackTarget": "",
 		"speed": 82.0,
 		"alive": true,
 		"scriptedPressureEntity": true,
-		"combatDisabled": barrosan_runtime_checkpoint not in ["v0.249", "v0.250"],
-		"boundedCombatEntity": barrosan_runtime_checkpoint in ["v0.249", "v0.250"],
+		"combatDisabled": barrosan_runtime_checkpoint not in ["v0.249", "v0.250", "v0.251"],
+		"boundedCombatEntity": barrosan_runtime_checkpoint in ["v0.249", "v0.250", "v0.251"],
 	})
 	pressure["spawned"] = true
 	pressure["spawnCount"] = int(pressure.get("spawnCount", 0)) + 1
 	pressure["registered"] = runtime.unit_alive(V0247_ASHEN_RAIDER_RUNTIME_ID)
 	pressure["spawnPoint"] = V0247_PRESSURE_SPAWN
 	pressure["lastKnownPosition"] = V0247_PRESSURE_SPAWN
-	pressure["raiderHealthBeforePressure"] = V0249_RAIDER_MAX_HP if barrosan_runtime_checkpoint in ["v0.249", "v0.250"] else 80.0
-	if barrosan_runtime_checkpoint in ["v0.249", "v0.250"]:
+	pressure["raiderHealthBeforePressure"] = V0249_RAIDER_MAX_HP if barrosan_runtime_checkpoint in ["v0.249", "v0.250", "v0.251"] else 80.0
+	if barrosan_runtime_checkpoint in ["v0.249", "v0.250", "v0.251"]:
 		pressure["militiaHealthBeforePressure"] = V0249_MILITIA_MAX_HP
 		pressure["collateralBefore"] = _v0249_collateral_snapshot()
 	pressure["objectiveText"] = "Ashen Raider advancing"
@@ -1957,7 +2149,7 @@ func _evaluate_v0247_pressure_containment() -> bool:
 
 
 func _set_v0248_objective(objective: String, status: String) -> void:
-	if barrosan_runtime_checkpoint not in ["v0.248", "v0.249", "v0.250"]:
+	if barrosan_runtime_checkpoint not in ["v0.248", "v0.249", "v0.250", "v0.251"]:
 		return
 	var pressure: Dictionary = barrosan_playtest.get("v0247Pressure", {})
 	pressure["objectiveText"] = objective
@@ -1971,7 +2163,7 @@ func _set_v0248_objective(objective: String, status: String) -> void:
 
 
 func _record_v0248_pressure_snapshot(snapshot_id: String) -> void:
-	if barrosan_runtime_checkpoint not in ["v0.248", "v0.249", "v0.250"]:
+	if barrosan_runtime_checkpoint not in ["v0.248", "v0.249", "v0.250", "v0.251"]:
 		return
 	var pressure: Dictionary = barrosan_playtest.get("v0247Pressure", {})
 	var resources: Dictionary = pressure.get("resourceSnapshots", {})
@@ -2058,7 +2250,7 @@ func _sync_v0248_pressure_markers() -> void:
 	_set_or_create_disc_marker("v0250_attack_target", raider_world, 0.52, Color(1.0, 0.28, 0.16, 0.72))
 	var attack_target := visual_root.get_node_or_null("v0250_attack_target")
 	if attack_target != null:
-		attack_target.visible = barrosan_runtime_checkpoint == "v0.250" and bool(pressure.get("targetMarkerVisible", false)) and runtime.unit_alive(V0247_ASHEN_RAIDER_RUNTIME_ID)
+		attack_target.visible = barrosan_runtime_checkpoint in ["v0.250", "v0.251"] and bool(pressure.get("targetMarkerVisible", false)) and runtime.unit_alive(V0247_ASHEN_RAIDER_RUNTIME_ID)
 	var attack_label := _v0248_marker_label("v0250_attack_target_label", raider_world + Vector3(0.0, 0.86, 0.0), "ASHEN RAIDER TARGETED", Color("#ff9b72"))
 	attack_label.visible = attack_target != null and attack_target.visible
 	threat_label.visible = threat != null and threat.visible
@@ -2071,13 +2263,13 @@ func _sync_v0248_pressure_markers() -> void:
 
 
 func _set_v0249_objective(objective: String, status: String) -> void:
-	if barrosan_runtime_checkpoint not in ["v0.249", "v0.250"]:
+	if barrosan_runtime_checkpoint not in ["v0.249", "v0.250", "v0.251"]:
 		return
 	_set_v0248_objective(objective, status)
 
 
 func _activate_v0249_markers() -> void:
-	if barrosan_runtime_checkpoint not in ["v0.249", "v0.250"]:
+	if barrosan_runtime_checkpoint not in ["v0.249", "v0.250", "v0.251"]:
 		return
 	var pressure: Dictionary = barrosan_playtest.get("v0247Pressure", {})
 	pressure["telegraphVisible"] = true
@@ -2087,11 +2279,118 @@ func _activate_v0249_markers() -> void:
 	_record_v0249_snapshot("afterTelegraph")
 
 
-func _begin_v0249_combat() -> bool:
-	if barrosan_runtime_checkpoint not in ["v0.249", "v0.250"]:
+func _v0251_field_barracks_health() -> float:
+	for structure in runtime.structures:
+		if str(structure.get("id", "")) == V0245_CONSTRUCTED_RUNTIME_ID:
+			return float(structure.get("health", 0.0))
+	return 0.0
+
+
+func _v0251_field_barracks_position() -> Vector2:
+	for structure in runtime.structures:
+		if str(structure.get("id", "")) == V0245_CONSTRUCTED_RUNTIME_ID:
+			return structure.get("position", Vector2.ZERO)
+	return Vector2.ZERO
+
+
+func _v0251_set_field_barracks_health(health: float) -> void:
+	for index in range(runtime.structures.size()):
+		var structure: Dictionary = runtime.structures[index]
+		if str(structure.get("id", "")) != V0245_CONSTRUCTED_RUNTIME_ID:
+			continue
+		structure["health"] = health
+		structure["maxHealth"] = V0251_FIELD_BARRACKS_MAX_HP
+		structure["alive"] = true
+		runtime.structures[index] = structure
+		break
+	if barrosan_runtime_structures.has(V0245_CONSTRUCTED_KEY):
+		var cached: Dictionary = barrosan_runtime_structures[V0245_CONSTRUCTED_KEY]
+		cached["health"] = health
+		cached["maxHealth"] = V0251_FIELD_BARRACKS_MAX_HP
+		barrosan_runtime_structures[V0245_CONSTRUCTED_KEY] = cached
+
+
+func _begin_v0251_building_pressure() -> bool:
+	if barrosan_runtime_checkpoint != "v0.251":
 		return false
 	var pressure: Dictionary = barrosan_playtest.get("v0247Pressure", {})
-	if barrosan_runtime_checkpoint == "v0.250" and (
+	var consequence: Dictionary = barrosan_playtest.get("v0251DefenseConsequence", {})
+	if bool(pressure.get("raiderDefeated", false)) or bool(pressure.get("attackOrderAccepted", false)):
+		return false
+	var raider_value = runtime.unit_position(V0247_ASHEN_RAIDER_RUNTIME_ID)
+	var barracks_position := _v0251_field_barracks_position()
+	if not raider_value is Vector2 or barracks_position == Vector2.ZERO:
+		return false
+	var distance := (raider_value as Vector2).distance_to(barracks_position)
+	consequence["buildingPressureDistance"] = distance
+	consequence["buildingPressureContact"] = distance <= V0251_FIELD_BARRACKS_PRESSURE_RADIUS
+	consequence["buildingDamageStartedBeforeContact"] = not bool(consequence["buildingPressureContact"])
+	if not bool(consequence["buildingPressureContact"]):
+		barrosan_playtest["v0251DefenseConsequence"] = consequence
+		return false
+	consequence["buildingDamageStarted"] = true
+	consequence["fieldBarracksState"] = "under_pressure"
+	consequence["resourcesBeforeBuildingPressure"] = runtime.resources.duplicate(true)
+	barrosan_playtest["v0251DefenseConsequence"] = consequence
+	_set_v0249_objective("Field Barracks under Ashen pressure", "Building pressure incoming")
+	_sync_hud()
+	return true
+
+
+func _advance_v0251_building_damage_tick() -> bool:
+	if barrosan_runtime_checkpoint != "v0.251":
+		return false
+	var consequence: Dictionary = barrosan_playtest.get("v0251DefenseConsequence", {})
+	if not bool(consequence.get("buildingDamageStarted", false)) or bool(consequence.get("buildingPressureContained", false)):
+		return false
+	var tick := int(consequence.get("buildingDamageTickCount", 0)) + 1
+	if tick > V0251_BUILDING_DAMAGE_TICK_LIMIT:
+		consequence["boundedStop"] = true
+		barrosan_playtest["v0251DefenseConsequence"] = consequence
+		return false
+	var before := _v0251_field_barracks_health()
+	var after := maxf(125.0, before - V0251_RAIDER_BUILDING_DAMAGE)
+	_v0251_set_field_barracks_health(after)
+	var ticks: Array = consequence.get("buildingDamageTicks", [])
+	ticks.append({"tick": tick, "before": before, "after": after, "damage": V0251_RAIDER_BUILDING_DAMAGE})
+	consequence["buildingDamageTicks"] = ticks
+	consequence["buildingDamageTickCount"] = tick
+	consequence["fieldBarracksFinalHp"] = after
+	consequence["fieldBarracksState"] = "under_pressure" if tick < V0251_BUILDING_DAMAGE_TICK_LIMIT else "damaged"
+	if tick == 1:
+		_set_v0249_objective("Field Barracks under Ashen pressure", "Building pressure incoming")
+	elif tick == 2:
+		_set_v0249_objective("Field Barracks damaged", "Ashen pressure damaging structure")
+	else:
+		consequence["buildingPressureContained"] = true
+		consequence["boundedStop"] = true
+		consequence["resourcesAfterBuildingPressure"] = runtime.resources.duplicate(true)
+		consequence["resourcesUnchanged"] = consequence.get("resourcesBeforeBuildingPressure", {}) == runtime.resources
+		consequence["buildingDestroyed"] = false
+		_set_v0249_objective("Pressure damage contained", "Field Barracks damaged by Ashen pressure")
+	barrosan_playtest["v0251DefenseConsequence"] = consequence
+	_sync_hud()
+	return true
+
+
+func _finalize_v0251_building_pressure() -> void:
+	var consequence: Dictionary = barrosan_playtest.get("v0251DefenseConsequence", {})
+	consequence["fieldBarracksFinalHp"] = _v0251_field_barracks_health()
+	consequence["buildingPressureContained"] = int(consequence.get("buildingDamageTickCount", 0)) == V0251_BUILDING_DAMAGE_TICK_LIMIT
+	consequence["boundedStop"] = bool(consequence.get("buildingPressureContained", false))
+	consequence["buildingDestroyed"] = false
+	consequence["resourcesAfterBuildingPressure"] = runtime.resources.duplicate(true)
+	consequence["resourcesUnchanged"] = consequence.get("resourcesBeforeBuildingPressure", {}) == runtime.resources
+	consequence["asterWorkerUnharmed"] = _v0247_unit_health("hero_aster") == 150.0 and _v0247_unit_health("worker_00") == 80.0
+	barrosan_playtest["v0251DefenseConsequence"] = consequence
+	_sync_hud()
+
+
+func _begin_v0249_combat() -> bool:
+	if barrosan_runtime_checkpoint not in ["v0.249", "v0.250", "v0.251"]:
+		return false
+	var pressure: Dictionary = barrosan_playtest.get("v0247Pressure", {})
+	if barrosan_runtime_checkpoint in ["v0.250", "v0.251"] and (
 		not bool(pressure.get("attackOrderAccepted", false))
 		or str(pressure.get("activeAttackTarget", "")) != V0247_ASHEN_RAIDER_RUNTIME_ID
 	):
@@ -2113,7 +2412,7 @@ func _begin_v0249_combat() -> bool:
 		barrosan_playtest["v0247Pressure"] = pressure
 		return false
 	pressure["combatStarted"] = true
-	pressure["combatAuthorizedByAttackOrder"] = barrosan_runtime_checkpoint == "v0.250"
+	pressure["combatAuthorizedByAttackOrder"] = barrosan_runtime_checkpoint in ["v0.250", "v0.251"]
 	pressure["interceptReached"] = in_zone
 	pressure["combatStartCondition"] = "Militia and Raider within 115-unit intercept/contact radius"
 	pressure["objectiveText"] = "Combat engaged"
@@ -2128,7 +2427,7 @@ func _begin_v0249_combat() -> bool:
 
 
 func _advance_v0249_combat_tick() -> bool:
-	if barrosan_runtime_checkpoint not in ["v0.249", "v0.250"]:
+	if barrosan_runtime_checkpoint not in ["v0.249", "v0.250", "v0.251"]:
 		return false
 	var pressure: Dictionary = barrosan_playtest.get("v0247Pressure", {})
 	if not bool(pressure.get("combatStarted", false)) or bool(pressure.get("raiderDefeated", false)):
@@ -2162,7 +2461,7 @@ func _advance_v0249_combat_tick() -> bool:
 		pressure["raiderRemoved"] = true
 		pressure["contained"] = true
 		pressure["containedByCombat"] = true
-		pressure["containedByAttackOrder"] = barrosan_runtime_checkpoint == "v0.250"
+		pressure["containedByAttackOrder"] = barrosan_runtime_checkpoint in ["v0.250", "v0.251"]
 		pressure["deathOccurred"] = true
 		pressure["deathLimitedToRaider"] = runtime.unit_alive(V0246_FIELD_MILITIA_RUNTIME_ID)
 		pressure["combatMarkerVisible"] = false
@@ -2170,7 +2469,7 @@ func _advance_v0249_combat_tick() -> bool:
 		pressure["interceptMarkerVisible"] = true
 		pressure["interceptMarkerState"] = "contained"
 		pressure["objectiveText"] = "Ashen Raider defeated"
-		pressure["statusText"] = "Pressure contained by attack order" if barrosan_runtime_checkpoint == "v0.250" else "Pressure contained by combat"
+		pressure["statusText"] = "Pressure contained by attack order" if barrosan_runtime_checkpoint in ["v0.250", "v0.251"] else "Pressure contained by combat"
 		pressure["resourcesAfterCombat"] = runtime.resources.duplicate(true)
 		pressure["raiderHealthAfterPressure"] = 0.0
 		pressure["militiaHealthAfterPressure"] = next_militia
@@ -2199,14 +2498,14 @@ func _v0249_set_unit_health(unit_id: String, health: float, alive: bool) -> void
 
 
 func _finalize_v0249_combat_visuals() -> void:
-	if barrosan_runtime_checkpoint not in ["v0.249", "v0.250"]:
+	if barrosan_runtime_checkpoint not in ["v0.249", "v0.250", "v0.251"]:
 		return
 	var pressure: Dictionary = barrosan_playtest.get("v0247Pressure", {})
 	if bool(pressure.get("raiderDefeated", false)):
 		_remove_v0249_raider_minimap_marker()
 		pressure["interceptMarkerState"] = "contained"
 		pressure["objectiveText"] = "Ashen pressure contained"
-		pressure["statusText"] = "Pressure contained by explicit attack order | No building damage" if barrosan_runtime_checkpoint == "v0.250" else "Pressure contained by combat | No building damage"
+		pressure["statusText"] = "Pressure contained by explicit attack order | Field Barracks unharmed" if barrosan_runtime_checkpoint in ["v0.250", "v0.251"] else "Pressure contained by combat | No building damage"
 	barrosan_playtest["v0247Pressure"] = pressure
 	_sync_barrosan_runtime_visuals()
 	_sync_hud()
@@ -2220,7 +2519,7 @@ func _remove_v0249_raider_minimap_marker() -> void:
 
 
 func _record_v0249_snapshot(snapshot_id: String) -> void:
-	if barrosan_runtime_checkpoint not in ["v0.249", "v0.250"]:
+	if barrosan_runtime_checkpoint not in ["v0.249", "v0.250", "v0.251"]:
 		return
 	var pressure: Dictionary = barrosan_playtest.get("v0247Pressure", {})
 	var resources: Dictionary = pressure.get("resourceSnapshots", {})
@@ -2253,7 +2552,7 @@ func _v0249_collateral_snapshot() -> Dictionary:
 
 
 func _record_v0249_collateral_proof() -> void:
-	if barrosan_runtime_checkpoint not in ["v0.249", "v0.250"]:
+	if barrosan_runtime_checkpoint not in ["v0.249", "v0.250", "v0.251"]:
 		return
 	var pressure: Dictionary = barrosan_playtest.get("v0247Pressure", {})
 	var before: Dictionary = pressure.get("collateralBefore", _v0249_collateral_snapshot())
@@ -2301,7 +2600,7 @@ func _ensure_v0247_ashen_raider_active() -> void:
 	var pressure: Dictionary = barrosan_playtest.get("v0247Pressure", {})
 	if not bool(pressure.get("spawned", false)):
 		return
-	if barrosan_runtime_checkpoint in ["v0.249", "v0.250"] and bool(pressure.get("raiderDefeated", false)):
+	if barrosan_runtime_checkpoint in ["v0.249", "v0.250", "v0.251"] and bool(pressure.get("raiderDefeated", false)):
 		return
 	for unit in runtime.units:
 		if str(unit.get("id", "")) != V0247_ASHEN_RAIDER_RUNTIME_ID:
@@ -2440,12 +2739,13 @@ func get_spike_status() -> Dictionary:
 		"reviewMode": barrosan_runtime_review_mode,
 		"errors": barrosan_runtime_errors.duplicate(),
 		"limitedTechnicalPlaytest": _v0244_playtest_status(addressable_roles) if barrosan_runtime_checkpoint == "v0.244" else {},
-		"authoritativeConstructionBridge": _v0245_construction_status() if barrosan_runtime_checkpoint in ["v0.245", "v0.246", "v0.247", "v0.248", "v0.249", "v0.250"] else {},
-		"fieldBarracksProductionBridge": _v0246_production_status() if barrosan_runtime_checkpoint in ["v0.246", "v0.247", "v0.248", "v0.249", "v0.250"] else {},
+		"authoritativeConstructionBridge": _v0245_construction_status() if barrosan_runtime_checkpoint in ["v0.245", "v0.246", "v0.247", "v0.248", "v0.249", "v0.250", "v0.251"] else {},
+		"fieldBarracksProductionBridge": _v0246_production_status() if barrosan_runtime_checkpoint in ["v0.246", "v0.247", "v0.248", "v0.249", "v0.250", "v0.251"] else {},
 		"firstAshenPressureEncounter": _v0247_pressure_status() if barrosan_runtime_checkpoint in ["v0.247", "v0.248"] else {},
 		"ashenPressureReadabilityTiming": _v0248_readability_status() if barrosan_runtime_checkpoint == "v0.248" else {},
 		"boundedCombatResolutionBridge": _v0249_combat_status() if barrosan_runtime_checkpoint == "v0.249" else {},
 		"explicitAttackOrderBridge": _v0250_attack_order_status() if barrosan_runtime_checkpoint == "v0.250" else {},
+		"firstDefenseConsequenceBridge": _v0251_defense_consequence_status() if barrosan_runtime_checkpoint == "v0.251" else {},
 	}
 	return status
 
@@ -2455,7 +2755,7 @@ func _v0245_construction_status() -> Dictionary:
 	var delta: Dictionary = result.get("placementResourceDelta", {})
 	var pathing: Dictionary = result.get("pathingProbe", {})
 	var v0246_construction_pass := (
-		barrosan_runtime_checkpoint in ["v0.246", "v0.247", "v0.248", "v0.249", "v0.250"]
+		barrosan_runtime_checkpoint in ["v0.246", "v0.247", "v0.248", "v0.249", "v0.250", "v0.251"]
 		and bool(result.get("validAttempt", {}).get("ok", false))
 		and bool(result.get("implemented", false))
 		and int(result.get("spendCount", 0)) == 1
@@ -2482,7 +2782,7 @@ func _v0245_construction_status() -> Dictionary:
 	)
 	result["status"] = "PASS" if v0246_construction_pass or v0245_construction_pass else "IN_PROGRESS"
 	result["placementAuthority"] = "BuildPlacementValidationAdapter generated portable authority"
-	result["constructionKind"] = "opt-in authoritative Barracks / complete / Militia-only limited production" if barrosan_runtime_checkpoint in ["v0.246", "v0.247", "v0.248", "v0.249"] else "opt-in technical Barracks / complete / no production"
+	result["constructionKind"] = "opt-in authoritative Barracks / complete / Militia-only limited production" if barrosan_runtime_checkpoint in ["v0.246", "v0.247", "v0.248", "v0.249", "v0.250", "v0.251"] else "opt-in technical Barracks / complete / no production"
 	result["existingRestoredBarracksPreserved"] = bool(barrosan_playtest.get("barracksRestoreTrain", {}).get("militiaSpawned", false))
 	result["defaultRuntimeChanged"] = false
 	result["pathingParity"] = "review-grade rectangular destination-nudge only"
@@ -2493,13 +2793,13 @@ func _v0246_production_status() -> Dictionary:
 	var result: Dictionary = barrosan_playtest.get("v0246FieldProduction", {}).duplicate(true)
 	var delta: Dictionary = result.get("queueResourceDelta", {})
 	var probes: Dictionary = result.get("movementProbes", {})
-	var required_probes := ["builder_construction_site", "restored_barracks_main_base"] if barrosan_runtime_checkpoint in ["v0.247", "v0.248", "v0.249", "v0.250"] else ["builder_construction_site", "road", "bridge_river", "restored_barracks_main_base"]
+	var required_probes := ["builder_construction_site", "restored_barracks_main_base"] if barrosan_runtime_checkpoint in ["v0.247", "v0.248", "v0.249", "v0.250", "v0.251"] else ["builder_construction_site", "road", "bridge_river", "restored_barracks_main_base"]
 	var movement_pass := required_probes.all(
 		func(probe_id: String) -> bool:
 			var probe: Dictionary = probes.get(probe_id, {})
 			return bool(probe.get("accepted", false)) and float(probe.get("displacement", 0.0)) > 20.0 and int(probe.get("stuckDelta", 0)) == 0
 	)
-	if barrosan_runtime_checkpoint in ["v0.247", "v0.248", "v0.249", "v0.250"]:
+	if barrosan_runtime_checkpoint in ["v0.247", "v0.248", "v0.249", "v0.250", "v0.251"]:
 		var intercept: Dictionary = barrosan_playtest.get("v0247Pressure", {}).get("militiaInterceptProbe", {})
 		movement_pass = movement_pass and bool(intercept.get("accepted", false)) and float(intercept.get("displacement", 0.0)) > 20.0
 	var construction: Dictionary = _v0245_construction_status()
@@ -2795,6 +3095,100 @@ func _v0250_attack_order_status() -> Dictionary:
 	) else "IN_PROGRESS"
 	result["verdictCeiling"] = "PARTIAL"
 	return result
+
+
+func _v0251_undefended_status() -> Dictionary:
+	var consequence: Dictionary = barrosan_playtest.get("v0251DefenseConsequence", {}).duplicate(true)
+	var pressure: Dictionary = barrosan_playtest.get("v0247Pressure", {})
+	var ticks: Array = consequence.get("buildingDamageTicks", [])
+	var deterministic_ticks := ticks.size() == 3
+	if deterministic_ticks:
+		deterministic_ticks = (
+			float(ticks[0].get("before", -1.0)) == 200.0
+			and float(ticks[0].get("after", -1.0)) == 175.0
+			and float(ticks[1].get("before", -1.0)) == 175.0
+			and float(ticks[1].get("after", -1.0)) == 150.0
+			and float(ticks[2].get("before", -1.0)) == 150.0
+			and float(ticks[2].get("after", -1.0)) == 125.0
+		)
+	consequence["raiderSpawnCount"] = int(pressure.get("spawnCount", 0))
+	consequence["raiderRuntimeId"] = V0247_ASHEN_RAIDER_RUNTIME_ID
+	consequence["raiderMinimapRegistered"] = bool(pressure.get("minimapRegistered", false))
+	consequence["raiderStoppedAfterBoundedDamage"] = bool(consequence.get("boundedStop", false))
+	consequence["fieldBarracksSurvives"] = _v0251_field_barracks_health() == 125.0
+	consequence["deterministicBuildingTicksPass"] = deterministic_ticks
+	consequence["finalResources"] = runtime.resources.duplicate(true)
+	consequence["status"] = "PASS" if (
+		int(pressure.get("spawnCount", 0)) == 1
+		and bool(consequence.get("buildingPressureContact", false))
+		and bool(consequence.get("buildingDamageStarted", false))
+		and not bool(consequence.get("buildingDamageStartedBeforeContact", true))
+		and deterministic_ticks
+		and int(consequence.get("buildingDamageTickCount", 0)) == V0251_BUILDING_DAMAGE_TICK_LIMIT
+		and _v0251_field_barracks_health() == 125.0
+		and bool(consequence.get("buildingPressureContained", false))
+		and bool(consequence.get("boundedStop", false))
+		and not bool(consequence.get("buildingDestroyed", true))
+		and bool(consequence.get("resourcesUnchanged", false))
+		and bool(consequence.get("asterWorkerUnharmed", false))
+	) else "IN_PROGRESS"
+	consequence["pathingParity"] = "review-grade deterministic lane destination to one constructed Field Barracks"
+	consequence["verdictCeiling"] = "PARTIAL"
+	return consequence
+
+
+func _v0251_defense_consequence_status() -> Dictionary:
+	var undefended := _v0251_undefended_status()
+	var defended := v0251_defended_proof.duplicate(true)
+	if v0251_undefended_proof.size() > 0:
+		undefended = v0251_undefended_proof.duplicate(true)
+	var selected_live_roles: Array = barrosan_playtest.get("selectedLiveRoles", [])
+	var shells_preserved := ["blacksmith", "market", "watchtower"].all(
+		func(role: String) -> bool:
+			return not bool(barrosan_runtime_structures.get(role, {}).get("productionEnabled", false))
+	)
+	var defended_pass := (
+		int(defended.get("spawnCount", 0)) == 1
+		and bool(defended.get("attackOrderAccepted", false))
+		and bool(defended.get("combatAuthorizedByAttackOrder", false))
+		and bool(defended.get("deterministicTicksPass", false))
+		and float(defended.get("finalMilitiaHp", -1.0)) == 70.0
+		and float(defended.get("finalRaiderHp", -1.0)) == 0.0
+		and float(defended.get("fieldBarracksFinalHp", -1.0)) == V0251_FIELD_BARRACKS_MAX_HP
+		and bool(defended.get("raiderDefeated", false))
+		and bool(defended.get("containedByAttackOrder", false))
+		and bool(defended.get("pressureResourcesUnchanged", false))
+		and bool(defended.get("buildingsUnharmed", false))
+	)
+	return {
+		"status": "PASS" if (
+			defended_pass
+			and undefended.get("status", "") == "PASS"
+			and bool(barrosan_playtest.get("barracksRestoreTrain", {}).get("militiaSpawned", false))
+			and selected_live_roles.has("main_base")
+			and selected_live_roles.has("mine")
+			and shells_preserved
+		) else "IN_PROGRESS",
+		"checkpoint": "v0.251",
+		"defendedBranch": defended,
+		"undefendedBranch": undefended,
+		"fieldBarracksStartHp": V0251_FIELD_BARRACKS_MAX_HP,
+		"fieldBarracksDefendedFinalHp": V0251_FIELD_BARRACKS_MAX_HP,
+		"fieldBarracksUndefendedFinalHp": float(undefended.get("fieldBarracksFinalHp", -1.0)),
+		"buildingDamagePerTick": V0251_RAIDER_BUILDING_DAMAGE,
+		"buildingDamageTickLimit": V0251_BUILDING_DAMAGE_TICK_LIMIT,
+		"existingRestoredBarracksPreserved": bool(barrosan_playtest.get("barracksRestoreTrain", {}).get("militiaSpawned", false)),
+		"commandKeepPreserved": selected_live_roles.has("main_base"),
+		"lumeMinePreserved": selected_live_roles.has("mine"),
+		"shellsRemainNonProducing": shells_preserved,
+		"defaultRuntimeChanged": false,
+		"enemyAiExists": false,
+		"wavesExist": false,
+		"buildingDestructionExists": false,
+		"repairExists": false,
+		"pathingParity": "review-grade deterministic lane destination to one constructed Field Barracks",
+		"verdictCeiling": "PARTIAL",
+	}
 
 
 func _v0244_playtest_status(addressable_roles: Array[String]) -> Dictionary:

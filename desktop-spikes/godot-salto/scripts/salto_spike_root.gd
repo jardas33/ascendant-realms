@@ -8258,6 +8258,10 @@ func _apply_player_slice_action(action: String) -> Dictionary:
 			_ensure_player_battle_scene()
 			_call_scene("set_barrosan_runtime_review_mode", [action])
 			_render_player_screen("battle")
+		"v0251_overview", "v0251_starting_resources", "v0251_select_builder", "v0251_valid_preview", "v0251_confirm_placement", "v0251_construction_delta", "v0251_barracks_hp_200", "v0251_select_field_barracks", "v0251_train_command", "v0251_train_militia", "v0251_training_progress", "v0251_militia_ready", "v0251_select_militia", "v0251_pressure_telegraph", "v0251_intercept_marker", "v0251_raider_spawned", "v0251_raider_minimap", "v0251_attack_available", "v0251_attack_accepted", "v0251_militia_closing", "v0251_combat_tick_1", "v0251_combat_tick_2", "v0251_combat_tick_3", "v0251_raider_defeated", "v0251_pressure_contained", "v0251_barracks_unharmed", "v0251_defended_no_resource_mutation", "v0251_undefended_start", "v0251_undefended_raider_spawned", "v0251_undefended_advancing", "v0251_undefended_contact", "v0251_building_tick_1", "v0251_building_tick_2", "v0251_building_tick_3", "v0251_barracks_damaged", "v0251_undefended_contained", "v0251_undefended_no_resource_mutation", "v0251_aster_worker_unharmed", "v0251_preserve_barracks", "v0251_preserve_keep", "v0251_preserve_mine", "v0251_preserve_shells", "v0251_default_clean", "v0251_clean":
+			_ensure_player_battle_scene()
+			_call_scene("set_barrosan_runtime_review_mode", [action])
+			_render_player_screen("battle")
 		"v0249_overview", "v0249_starting_resources", "v0249_select_builder", "v0249_valid_preview", "v0249_confirm_placement", "v0249_construction_delta", "v0249_select_field_barracks", "v0249_train_command", "v0249_train_militia", "v0249_training_progress", "v0249_militia_ready", "v0249_select_militia", "v0249_pressure_telegraph", "v0249_intercept_marker", "v0249_pressure_incoming", "v0249_raider_spawned", "v0249_raider_minimap", "v0249_raider_advancing", "v0249_militia_move", "v0249_combat_contact", "v0249_combat_tick_1", "v0249_combat_tick_2", "v0249_raider_defeated", "v0249_raider_defeated_state", "v0249_raider_minimap_removed", "v0249_militia_survives", "v0249_pressure_contained", "v0249_no_resource_mutation", "v0249_no_building_damage", "v0249_aster_worker_unharmed", "v0249_preserve_barracks", "v0249_preserve_keep", "v0249_preserve_mine", "v0249_preserve_shells", "v0249_clean":
 			_ensure_player_battle_scene()
 			_call_scene("set_barrosan_runtime_review_mode", [action])
@@ -8843,6 +8847,8 @@ func _apply_player_slice_action(action: String) -> Dictionary:
 
 func _player_capture_checkpoint() -> String:
 	var normalized_root := _artifact_root_from_args().replace("\\", "/")
+	if normalized_root.contains("/v0251"):
+		return "v0.251"
 	if normalized_root.contains("/v0250"):
 		return "v0.250"
 	if normalized_root.contains("/v0249"):
@@ -8974,9 +8980,56 @@ func _player_capture_checkpoint() -> String:
 	return "v0.124"
 
 func _is_bounded_microloop_checkpoint() -> bool:
-	return ["v0.129", "v0.130", "v0.160", "v0.162", "v0.164", "v0.166", "v0.168", "v0.169", "v0.170", "v0.173", "v0.174", "v0.177", "v0.178", "v0.179", "v0.181", "v0.184", "v0.185", "v0.186", "v0.187", "v0.193", "v0.194", "v0.195", "v0.196", "v0.197", "v0.198", "v0.199", "v0.200", "v0.203", "v0.204", "v0.205", "v0.206", "v0.209", "v0.210", "v0.211", "v0.212", "v0.213", "v0.215", "v0.216", "v0.217", "v0.218", "v0.219", "v0.220", "v0.221", "v0.222", "v0.223", "v0.224", "v0.227", "v0.228", "v0.229", "v0.230", "v0.231", "v0.243", "v0.244", "v0.245", "v0.246", "v0.247", "v0.248", "v0.249", "v0.250"].has(_player_capture_checkpoint())
+	return ["v0.129", "v0.130", "v0.160", "v0.162", "v0.164", "v0.166", "v0.168", "v0.169", "v0.170", "v0.173", "v0.174", "v0.177", "v0.178", "v0.179", "v0.181", "v0.184", "v0.185", "v0.186", "v0.187", "v0.193", "v0.194", "v0.195", "v0.196", "v0.197", "v0.198", "v0.199", "v0.200", "v0.203", "v0.204", "v0.205", "v0.206", "v0.209", "v0.210", "v0.211", "v0.212", "v0.213", "v0.215", "v0.216", "v0.217", "v0.218", "v0.219", "v0.220", "v0.221", "v0.222", "v0.223", "v0.224", "v0.227", "v0.228", "v0.229", "v0.230", "v0.231", "v0.243", "v0.244", "v0.245", "v0.246", "v0.247", "v0.248", "v0.249", "v0.250", "v0.251"].has(_player_capture_checkpoint())
 
 func _player_capture_steps() -> Array[Dictionary]:
+	if _player_capture_checkpoint() == "v0.251":
+		return [
+			{"id":"opt_in_overview_before_build","label":"v0.251 overview","action":"v0251_overview"},
+			{"id":"starting_resources","label":"v0.251 resources","action":"v0251_starting_resources"},
+			{"id":"select_builder_unit","label":"v0.251 Worker","action":"v0251_select_builder"},
+			{"id":"valid_barracks_preview","label":"v0.251 preview","action":"v0251_valid_preview"},
+			{"id":"confirm_authoritative_barracks_placement","label":"v0.251 placement","action":"v0251_confirm_placement"},
+			{"id":"construction_resource_delta","label":"v0.251 construction delta","action":"v0251_construction_delta"},
+			{"id":"field_barracks_hp_200","label":"v0.251 Barracks HP","action":"v0251_barracks_hp_200"},
+			{"id":"select_new_field_barracks_hud","label":"v0.251 Field Barracks","action":"v0251_select_field_barracks"},
+			{"id":"train_militia_command_available","label":"v0.251 train command","action":"v0251_train_command"},
+			{"id":"train_militia_resource_delta","label":"v0.251 train spend","action":"v0251_train_militia"},
+			{"id":"militia_training_progress","label":"v0.251 training","action":"v0251_training_progress"},
+			{"id":"militia_ready_spawned","label":"v0.251 Militia","action":"v0251_militia_ready"},
+			{"id":"select_spawned_militia_hp_100_attack_available","label":"v0.251 Militia selected","action":"v0251_select_militia"},
+			{"id":"pressure_telegraph_marker_preserved","label":"v0.251 telegraph","action":"v0251_pressure_telegraph"},
+			{"id":"intercept_zone_marker_preserved","label":"v0.251 intercept","action":"v0251_intercept_marker"},
+			{"id":"ashen_raider_spawned_once_hp_full","label":"v0.251 Raider","action":"v0251_raider_spawned"},
+			{"id":"raider_minimap_presence","label":"v0.251 minimap","action":"v0251_raider_minimap"},
+			{"id":"attack_command_available","label":"v0.251 Attack","action":"v0251_attack_available"},
+			{"id":"attack_order_accepted","label":"v0.251 accepted","action":"v0251_attack_accepted"},
+			{"id":"militia_closing_to_raider","label":"v0.251 closing","action":"v0251_militia_closing"},
+			{"id":"combat_tick_1_hp_90_40","label":"v0.251 tick 1","action":"v0251_combat_tick_1"},
+			{"id":"combat_tick_2_hp_80_20","label":"v0.251 tick 2","action":"v0251_combat_tick_2"},
+			{"id":"combat_tick_3_raider_hp_zero_militia_70","label":"v0.251 tick 3","action":"v0251_combat_tick_3"},
+			{"id":"raider_defeated_or_removed","label":"v0.251 defeated","action":"v0251_raider_defeated"},
+			{"id":"pressure_contained_by_attack_order","label":"v0.251 defended","action":"v0251_pressure_contained"},
+			{"id":"field_barracks_unharmed_defended_branch_hp_200","label":"v0.251 Barracks unharmed","action":"v0251_barracks_unharmed"},
+			{"id":"no_resource_mutation_after_defended_combat","label":"v0.251 defended resources","action":"v0251_defended_no_resource_mutation"},
+			{"id":"undefended_branch_start","label":"v0.251 undefended","action":"v0251_undefended_start"},
+			{"id":"undefended_raider_spawned_once","label":"v0.251 undefended Raider","action":"v0251_undefended_raider_spawned"},
+			{"id":"undefended_raider_advancing_to_barracks","label":"v0.251 advancing","action":"v0251_undefended_advancing"},
+			{"id":"undefended_barracks_pressure_contact","label":"v0.251 contact","action":"v0251_undefended_contact"},
+			{"id":"barracks_damage_tick_1_hp_175","label":"v0.251 damage 1","action":"v0251_building_tick_1"},
+			{"id":"barracks_damage_tick_2_hp_150","label":"v0.251 damage 2","action":"v0251_building_tick_2"},
+			{"id":"barracks_damage_tick_3_hp_125","label":"v0.251 damage 3","action":"v0251_building_tick_3"},
+			{"id":"barracks_damaged_but_standing","label":"v0.251 damaged","action":"v0251_barracks_damaged"},
+			{"id":"undefended_pressure_damage_contained","label":"v0.251 bounded stop","action":"v0251_undefended_contained"},
+			{"id":"no_resource_mutation_after_building_damage","label":"v0.251 resources","action":"v0251_undefended_no_resource_mutation"},
+			{"id":"aster_worker_unharmed_proof","label":"v0.251 units preserved","action":"v0251_aster_worker_unharmed"},
+			{"id":"existing_barracks_train_flow_preserved","label":"v0.251 Barracks preserved","action":"v0251_preserve_barracks"},
+			{"id":"command_keep_preserved","label":"v0.251 Keep preserved","action":"v0251_preserve_keep"},
+			{"id":"lume_mine_preserved","label":"v0.251 Mine preserved","action":"v0251_preserve_mine"},
+			{"id":"shells_remain_non_producing","label":"v0.251 shells","action":"v0251_preserve_shells"},
+			{"id":"default_runtime_clean_after_opt_in_work","label":"v0.251 default clean","action":"v0251_default_clean"},
+			{"id":"unselected_clean_view","label":"v0.251 clean","action":"v0251_clean"},
+		]
 	if _player_capture_checkpoint() == "v0.250":
 		return [
 			{"id":"opt_in_overview_before_build","label":"v0.250 overview","action":"v0250_overview"},
