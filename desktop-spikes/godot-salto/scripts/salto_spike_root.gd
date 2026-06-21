@@ -8250,6 +8250,10 @@ func _apply_player_slice_action(action: String) -> Dictionary:
 			_ensure_player_battle_scene()
 			_call_scene("set_barrosan_runtime_review_mode", ["v0246_clean"])
 			_render_player_screen("battle")
+		"v0248_overview", "v0248_starting_resources", "v0248_select_builder", "v0248_valid_preview", "v0248_confirm_placement", "v0248_construction_delta", "v0248_select_field_barracks", "v0248_prepare_defender", "v0248_train_command", "v0248_train_militia", "v0248_training_0", "v0248_training_50", "v0248_militia_ready", "v0248_defender_ready", "v0248_pressure_incoming", "v0248_pressure_telegraph", "v0248_raider_spawned", "v0248_raider_minimap", "v0248_lane_start", "v0248_advancing_timing", "v0248_select_militia", "v0248_intercept_marker", "v0248_militia_move", "v0248_intercept_reached", "v0248_pressure_contained", "v0248_no_mutation", "v0248_preserve_keep", "v0248_preserve_barracks", "v0248_preserve_mine", "v0248_preserve_shells", "v0248_clean":
+			_ensure_player_battle_scene()
+			_call_scene("set_barrosan_runtime_review_mode", [action])
+			_render_player_screen("battle")
 		"v0247_overview":
 			_ensure_player_battle_scene()
 			_call_scene("set_barrosan_runtime_review_mode", ["v0247_overview"])
@@ -8831,6 +8835,8 @@ func _apply_player_slice_action(action: String) -> Dictionary:
 
 func _player_capture_checkpoint() -> String:
 	var normalized_root := _artifact_root_from_args().replace("\\", "/")
+	if normalized_root.contains("/v0248"):
+		return "v0.248"
 	if normalized_root.contains("/v0247"):
 		return "v0.247"
 	if normalized_root.contains("/v0246"):
@@ -8956,9 +8962,43 @@ func _player_capture_checkpoint() -> String:
 	return "v0.124"
 
 func _is_bounded_microloop_checkpoint() -> bool:
-	return ["v0.129", "v0.130", "v0.160", "v0.162", "v0.164", "v0.166", "v0.168", "v0.169", "v0.170", "v0.173", "v0.174", "v0.177", "v0.178", "v0.179", "v0.181", "v0.184", "v0.185", "v0.186", "v0.187", "v0.193", "v0.194", "v0.195", "v0.196", "v0.197", "v0.198", "v0.199", "v0.200", "v0.203", "v0.204", "v0.205", "v0.206", "v0.209", "v0.210", "v0.211", "v0.212", "v0.213", "v0.215", "v0.216", "v0.217", "v0.218", "v0.219", "v0.220", "v0.221", "v0.222", "v0.223", "v0.224", "v0.227", "v0.228", "v0.229", "v0.230", "v0.231", "v0.243", "v0.244", "v0.245", "v0.246", "v0.247"].has(_player_capture_checkpoint())
+	return ["v0.129", "v0.130", "v0.160", "v0.162", "v0.164", "v0.166", "v0.168", "v0.169", "v0.170", "v0.173", "v0.174", "v0.177", "v0.178", "v0.179", "v0.181", "v0.184", "v0.185", "v0.186", "v0.187", "v0.193", "v0.194", "v0.195", "v0.196", "v0.197", "v0.198", "v0.199", "v0.200", "v0.203", "v0.204", "v0.205", "v0.206", "v0.209", "v0.210", "v0.211", "v0.212", "v0.213", "v0.215", "v0.216", "v0.217", "v0.218", "v0.219", "v0.220", "v0.221", "v0.222", "v0.223", "v0.224", "v0.227", "v0.228", "v0.229", "v0.230", "v0.231", "v0.243", "v0.244", "v0.245", "v0.246", "v0.247", "v0.248"].has(_player_capture_checkpoint())
 
 func _player_capture_steps() -> Array[Dictionary]:
+	if _player_capture_checkpoint() == "v0.248":
+		return [
+			{"id": "opt_in_overview_before_build", "label": "v0.248 opt-in overview", "action": "v0248_overview"},
+			{"id": "starting_resources", "label": "v0.248 starting resources", "action": "v0248_starting_resources"},
+			{"id": "select_builder_unit", "label": "v0.248 select Worker builder", "action": "v0248_select_builder"},
+			{"id": "valid_barracks_preview", "label": "v0.248 valid Barracks preview", "action": "v0248_valid_preview"},
+			{"id": "confirm_authoritative_barracks_placement", "label": "v0.248 authoritative placement", "action": "v0248_confirm_placement"},
+			{"id": "construction_resource_delta", "label": "v0.248 construction resource delta", "action": "v0248_construction_delta"},
+			{"id": "select_new_field_barracks_hud", "label": "v0.248 Field Barracks HUD", "action": "v0248_select_field_barracks"},
+			{"id": "prepare_one_defender_objective", "label": "v0.248 prepare defender objective", "action": "v0248_prepare_defender"},
+			{"id": "train_militia_command_available", "label": "v0.248 Train Militia command", "action": "v0248_train_command"},
+			{"id": "train_militia_resource_delta", "label": "v0.248 training resource delta", "action": "v0248_train_militia"},
+			{"id": "militia_training_progress_0", "label": "v0.248 Militia training 0 percent", "action": "v0248_training_0"},
+			{"id": "militia_training_progress_50", "label": "v0.248 Militia training 50 percent", "action": "v0248_training_50"},
+			{"id": "militia_ready_spawned", "label": "v0.248 Militia ready", "action": "v0248_militia_ready"},
+			{"id": "defender_ready_objective", "label": "v0.248 defender ready objective", "action": "v0248_defender_ready"},
+			{"id": "ashen_pressure_incoming_objective", "label": "v0.248 incoming objective", "action": "v0248_pressure_incoming"},
+			{"id": "pressure_telegraph_marker", "label": "v0.248 pressure telegraph", "action": "v0248_pressure_telegraph"},
+			{"id": "ashen_raider_spawned_once", "label": "v0.248 Raider spawned once", "action": "v0248_raider_spawned"},
+			{"id": "ashen_raider_minimap_presence", "label": "v0.248 Raider minimap", "action": "v0248_raider_minimap"},
+			{"id": "ashen_raider_pressure_lane_start", "label": "v0.248 Raider lane entry", "action": "v0248_lane_start"},
+			{"id": "ashen_raider_advancing_readable_timing", "label": "v0.248 readable Raider advance", "action": "v0248_advancing_timing"},
+			{"id": "select_spawned_militia_hud", "label": "v0.248 select Militia", "action": "v0248_select_militia"},
+			{"id": "intercept_zone_marker", "label": "v0.248 intercept marker", "action": "v0248_intercept_marker"},
+			{"id": "militia_moves_to_intercept_zone", "label": "v0.248 Militia intercept move", "action": "v0248_militia_move"},
+			{"id": "militia_reaches_intercept_zone", "label": "v0.248 intercept reached", "action": "v0248_intercept_reached"},
+			{"id": "pressure_contained_status", "label": "v0.248 pressure contained", "action": "v0248_pressure_contained"},
+			{"id": "no_damage_no_resource_mutation_after_pressure", "label": "v0.248 no combat mutation", "action": "v0248_no_mutation"},
+			{"id": "command_keep_preserved", "label": "v0.248 Command Keep preserved", "action": "v0248_preserve_keep"},
+			{"id": "existing_barracks_train_flow_preserved", "label": "v0.248 Restored Barracks preserved", "action": "v0248_preserve_barracks"},
+			{"id": "lume_mine_preserved", "label": "v0.248 Lume Mine preserved", "action": "v0248_preserve_mine"},
+			{"id": "shells_remain_non_producing", "label": "v0.248 shells non-producing", "action": "v0248_preserve_shells"},
+			{"id": "unselected_clean_view", "label": "v0.248 clean view", "action": "v0248_clean"},
+		]
 	if _player_capture_checkpoint() == "v0.247":
 		return [
 			{"id": "opt_in_overview_before_build", "label": "v0.247 opt-in overview", "action": "v0247_overview"},

@@ -77,9 +77,9 @@ func configure_barrosan_playable_runtime_skin(options: Dictionary) -> void:
 	_upgrade_inert_roles_to_runtime_shells()
 	barrosan_build_validation_adapter.load_authority()
 	_evaluate_barrosan_build_previews()
-	if barrosan_runtime_checkpoint in ["v0.244", "v0.245", "v0.246", "v0.247"]:
+	if barrosan_runtime_checkpoint in ["v0.244", "v0.245", "v0.246", "v0.247", "v0.248"]:
 		_reset_barrosan_playtest_status()
-	if barrosan_runtime_checkpoint in ["v0.246", "v0.247"]:
+	if barrosan_runtime_checkpoint in ["v0.246", "v0.247", "v0.248"]:
 		_load_v0246_militia_authority()
 	_refresh_visual_foundation()
 	_add_barrosan_minimap_role_markers()
@@ -376,36 +376,46 @@ func _sync_hud() -> void:
 		var structure: Dictionary = barrosan_runtime_structures[barrosan_selected_role_id]
 		var display_name := str(structure.get("displayName", barrosan_selected_role_id.capitalize()))
 		if hud_hero_label:
-			var kind := "Live gameplay building" if bool(structure.get("liveGameplayEntity", false)) else ("Opt-in production bridge" if barrosan_runtime_checkpoint in ["v0.246", "v0.247"] and barrosan_selected_role_id == V0245_CONSTRUCTED_KEY else ("Opt-in technical construction" if bool(structure.get("technicalConstructionEntity", false)) else "Sim-safe role shell"))
+			var kind := "Live gameplay building" if bool(structure.get("liveGameplayEntity", false)) else ("Opt-in production bridge" if barrosan_runtime_checkpoint in ["v0.246", "v0.247", "v0.248"] and barrosan_selected_role_id == V0245_CONSTRUCTED_KEY else ("Opt-in technical construction" if bool(structure.get("technicalConstructionEntity", false)) else "Sim-safe role shell"))
 			hud_hero_label.text = "%s | %s" % [display_name, kind]
+			if barrosan_runtime_checkpoint == "v0.248" and barrosan_selected_role_id == V0245_CONSTRUCTED_KEY:
+				hud_hero_label.text = "Authoritative Field Barracks | Opt-in production bridge"
 		if hud_context_label:
 			if bool(structure.get("liveGameplayEntity", false)):
 				hud_context_label.text = _barrosan_live_state_text(barrosan_selected_role_id)
 			elif bool(structure.get("technicalConstructionEntity", false)):
-				hud_context_label.text = _v0246_field_barracks_hud_text() if barrosan_runtime_checkpoint in ["v0.246", "v0.247"] else "Authoritative placement / complete / no production"
+				hud_context_label.text = _v0246_field_barracks_hud_text() if barrosan_runtime_checkpoint in ["v0.246", "v0.247", "v0.248"] else "Authoritative placement / complete / no production"
 			else:
 				hud_context_label.text = "Shell / opt-in / 500 HP / no production yet"
-		if hud_work_button != null and barrosan_runtime_checkpoint in ["v0.246", "v0.247"] and barrosan_selected_role_id == V0245_CONSTRUCTED_KEY:
+		if hud_work_button != null and barrosan_runtime_checkpoint in ["v0.246", "v0.247", "v0.248"] and barrosan_selected_role_id == V0245_CONSTRUCTED_KEY:
 			hud_work_button.text = "Train Militia"
-	if barrosan_runtime_checkpoint == "v0.247":
+	if barrosan_runtime_checkpoint in ["v0.247", "v0.248"]:
 		var pressure: Dictionary = barrosan_playtest.get("v0247Pressure", {})
 		if runtime.selected_ids.has(V0247_ASHEN_RAIDER_RUNTIME_ID):
 			hud_hero_label.text = "Ashen Raider | Opt-in pressure unit"
-			hud_context_label.text = "Scripted pressure entity | no damage in v0.247"
+			hud_context_label.text = "Scripted pressure entity | no damage in %s" % barrosan_runtime_checkpoint
+			if barrosan_runtime_checkpoint == "v0.248" and hud_objective_label:
+				hud_objective_label.text = "Ashen Raider advancing"
 		elif runtime.selected_ids.has(V0246_FIELD_MILITIA_RUNTIME_ID):
 			hud_hero_label.text = "Selected Militia"
 			hud_context_label.text = "Unit ready | Can intercept Ashen pressure"
+			if barrosan_runtime_checkpoint == "v0.248" and not bool(pressure.get("contained", false)):
+				hud_objective_strip_label.text = "Move Militia to intercept"
+				hud_objective_label.text = "Move to intercept zone"
 		if hud_objective_strip_label:
 			hud_objective_strip_label.text = str(pressure.get("objectiveText", "8. Prepare for Ashen pressure"))
 		if hud_objective_label:
 			hud_objective_label.text = str(pressure.get("statusText", "Prepare one defender"))
+		if barrosan_runtime_checkpoint == "v0.248" and runtime.selected_ids.has(V0246_FIELD_MILITIA_RUNTIME_ID) and not bool(pressure.get("contained", false)):
+			hud_objective_strip_label.text = "Move Militia to intercept"
+			hud_objective_label.text = "Move to intercept zone"
 
 
 func set_barrosan_runtime_review_mode(mode: String) -> void:
 	barrosan_runtime_review_mode = mode
-	if barrosan_runtime_checkpoint in ["v0.246", "v0.247"]:
+	if barrosan_runtime_checkpoint in ["v0.246", "v0.247", "v0.248"]:
 		_ensure_v0246_field_militia_active()
-	if barrosan_runtime_checkpoint == "v0.247":
+	if barrosan_runtime_checkpoint in ["v0.247", "v0.248"]:
 		_ensure_v0247_ashen_raider_active()
 	match mode:
 		"selected":
@@ -594,6 +604,95 @@ func set_barrosan_runtime_review_mode(mode: String) -> void:
 			_select_v0244_shell("watchtower")
 		"v0247_clean":
 			_clear_barrosan_playtest_selection()
+		"v0248_overview", "v0248_starting_resources":
+			_capture_v0245_starting_resources()
+			_set_v0248_objective("1. Select Aster", "Select Aster")
+		"v0248_select_builder":
+			_run_v0246_builder_probe()
+			_set_v0248_objective("8. Prepare for Ashen pressure", "Construction available")
+		"v0248_valid_preview":
+			_run_v0245_preview(false, "v0248_confirm")
+			_set_v0248_objective("8. Prepare for Ashen pressure", "Authoritative Field Barracks preview")
+		"v0248_confirm_placement":
+			_attempt_v0245_placement(false)
+			_set_v0248_objective("Prepare one defender", "Authoritative placement | complete | trains Militia only")
+		"v0248_construction_delta":
+			_show_v0245_construction_proof("resource_delta")
+			_set_v0248_objective("Prepare one defender", "Prepare one defender")
+		"v0248_select_field_barracks", "v0248_prepare_defender", "v0248_train_command":
+			select_barrosan_runtime_role(V0245_CONSTRUCTED_KEY)
+			_set_v0248_objective("Prepare one defender", "Prepare one defender")
+		"v0248_train_militia", "v0248_training_0":
+			select_barrosan_runtime_role(V0245_CONSTRUCTED_KEY)
+			_queue_v0246_field_militia()
+			_set_v0248_objective("Militia preparing...", "Militia training... 0%")
+		"v0248_training_50":
+			_advance_v0246_field_training(50)
+			_attempt_v0246_duplicate_queue()
+			_set_v0248_objective("Militia preparing...", "Militia training... 50%")
+		"v0248_militia_ready", "v0248_defender_ready":
+			_advance_v0246_field_training(80)
+			_prepare_v0247_pressure()
+			_set_v0248_objective("Defender ready", "Militia ready")
+		"v0248_pressure_incoming", "v0248_pressure_telegraph":
+			_prepare_v0247_pressure()
+			_activate_v0248_pressure_telegraph()
+			_set_v0248_objective("9. Ashen pressure incoming", "Incoming pressure | no damage")
+		"v0248_raider_spawned":
+			_spawn_v0247_ashen_raider()
+			_set_v0248_objective("Ashen Raider advancing", "Ashen Raider advancing")
+			_record_v0248_pressure_snapshot("afterRaiderSpawn")
+			_select_v0247_raider()
+		"v0248_raider_minimap":
+			_add_v0247_ashen_raider_minimap_marker()
+			_select_v0247_raider()
+		"v0248_lane_start":
+			_advance_v0247_raider_lane("lane_start", V0247_PRESSURE_LANE_START, 150)
+			_set_v0248_objective("Ashen Raider advancing", "Ashen Raider advancing")
+			_record_v0248_pressure_snapshot("afterLaneStart")
+		"v0248_advancing_timing":
+			_advance_v0247_raider_lane("bridge_approach", V0247_PRESSURE_BRIDGE_APPROACH, 245)
+			_set_v0248_objective("Ashen Raider advancing", "Ashen Raider advancing")
+			_record_v0248_pressure_snapshot("afterRaiderMovement")
+		"v0248_select_militia":
+			_select_playtest_unit(V0246_FIELD_MILITIA_RUNTIME_ID)
+			_set_v0248_objective("Move Militia to intercept", "Move to intercept zone")
+		"v0248_intercept_marker":
+			_select_playtest_unit(V0246_FIELD_MILITIA_RUNTIME_ID)
+			_activate_v0248_intercept_marker()
+		"v0248_militia_move":
+			_run_v0247_militia_intercept(180, false)
+			_set_v0248_objective("Move Militia to intercept", "Militia moving to intercept zone")
+		"v0248_intercept_reached":
+			_run_v0247_militia_intercept(260, true)
+			if bool(barrosan_playtest.get("v0247Pressure", {}).get("contained", false)):
+				_set_v0248_objective("Ashen pressure contained", "No damage exchanged")
+		"v0248_pressure_contained":
+			_evaluate_v0247_pressure_containment()
+			if bool(barrosan_playtest.get("v0247Pressure", {}).get("contained", false)):
+				_set_v0248_objective("Ashen pressure contained", "No damage exchanged")
+			_record_v0248_pressure_snapshot("afterContainment")
+			_select_playtest_unit(V0246_FIELD_MILITIA_RUNTIME_ID)
+		"v0248_no_mutation":
+			_attempt_v0246_failed_training()
+			_record_v0247_no_combat_mutation()
+			_record_v0248_pressure_snapshot("afterContainment")
+			_select_v0247_raider()
+		"v0248_preserve_keep":
+			select_barrosan_runtime_role("main_base")
+			_record_v0244_live_role("main_base")
+		"v0248_preserve_barracks":
+			_run_v0246_militia_probe("restored_barracks_main_base", Vector2(360, 260), 260)
+			_run_v0244_barracks_restore_train_flow()
+		"v0248_preserve_mine":
+			select_barrosan_runtime_role("mine")
+			_record_v0244_live_role("mine")
+		"v0248_preserve_shells":
+			_select_v0244_shell("blacksmith", false)
+			_select_v0244_shell("market", false)
+			_select_v0244_shell("watchtower")
+		"v0248_clean":
+			_clear_barrosan_playtest_selection()
 		"inert_roles":
 			select_barrosan_runtime_role("blacksmith")
 		"live_roles":
@@ -644,6 +743,7 @@ func _sync_barrosan_runtime_visuals() -> void:
 		blocked_preview.visible = barrosan_runtime_review_mode == "blocked_preview"
 	_sync_validation_reason_label(valid_world, blocked_world)
 	_sync_v0244_resource_label()
+	_sync_v0248_pressure_markers()
 	_sync_scale_probes()
 
 
@@ -789,6 +889,19 @@ func _reset_barrosan_playtest_status() -> void:
 			"damageApplied": false,
 			"deathOccurred": false,
 			"additionalEnemiesSpawned": false,
+			"objectiveHistory": [],
+			"telegraphVisible": false,
+			"telegraphRegistered": false,
+			"interceptMarkerVisible": false,
+			"interceptMarkerRegistered": false,
+			"interceptMarkerState": "waiting",
+			"timing": {
+				"spawnHoldFrames": 0,
+				"laneStartFrames": 150,
+				"bridgeApproachFrames": 245,
+			},
+			"resourceSnapshots": {},
+			"healthSnapshots": {},
 		},
 	}
 
@@ -1137,7 +1250,7 @@ func _v0246_field_barracks_hud_text() -> String:
 
 
 func _hud_work_pressed() -> void:
-	if barrosan_runtime_checkpoint in ["v0.246", "v0.247"] and barrosan_selected_role_id == V0245_CONSTRUCTED_KEY:
+	if barrosan_runtime_checkpoint in ["v0.246", "v0.247", "v0.248"] and barrosan_selected_role_id == V0245_CONSTRUCTED_KEY:
 		_queue_v0246_field_militia()
 		return
 	super._hud_work_pressed()
@@ -1354,7 +1467,12 @@ func _prepare_v0247_pressure() -> void:
 	pressure["statusText"] = "Ashen pressure incoming"
 	pressure["resourcesBeforePressure"] = runtime.resources.duplicate(true)
 	pressure["militiaHealthBeforePressure"] = _v0247_unit_health(V0246_FIELD_MILITIA_RUNTIME_ID)
+	if barrosan_runtime_checkpoint == "v0.248":
+		pressure["telegraphVisible"] = true
+		pressure["interceptMarkerVisible"] = true
+		pressure["interceptMarkerState"] = "waiting"
 	barrosan_playtest["v0247Pressure"] = pressure
+	_record_v0248_pressure_snapshot("afterTelegraph")
 	_sync_hud()
 
 
@@ -1388,7 +1506,9 @@ func _spawn_v0247_ashen_raider() -> void:
 	pressure["spawnPoint"] = V0247_PRESSURE_SPAWN
 	pressure["lastKnownPosition"] = V0247_PRESSURE_SPAWN
 	pressure["raiderHealthBeforePressure"] = 80.0
-	pressure["statusText"] = "Ashen Raider advancing."
+	pressure["objectiveText"] = "Ashen Raider advancing"
+	pressure["statusText"] = "Ashen Raider advancing"
+	pressure["spawnHoldFrames"] = 0
 	barrosan_playtest["v0247Pressure"] = pressure
 	_rebuild_visuals()
 	_add_v0247_ashen_raider_minimap_marker()
@@ -1430,8 +1550,8 @@ func _advance_v0247_raider_lane(probe_id: String, target: Vector2, frames: int) 
 	pressure["resourcesUnchangedDuringLane"] = resources_before == runtime.resources
 	pressure["healthUnchangedDuringLane"] = health_before == _v0247_health_snapshot()
 	pressure["reachedPressureMarker"] = after.distance_to(V0247_PRESSURE_MARKER) <= 36.0
-	pressure["objectiveText"] = "9. Ashen pressure incoming"
-	pressure["statusText"] = "Ashen Raider advancing."
+	pressure["objectiveText"] = "Ashen Raider advancing"
+	pressure["statusText"] = "Ashen Raider advancing"
 	barrosan_playtest["v0247Pressure"] = pressure
 	_select_v0247_raider()
 	_sync_unit_visuals()
@@ -1485,8 +1605,11 @@ func _evaluate_v0247_pressure_containment() -> bool:
 	pressure["interceptDistanceToRaider"] = militia.distance_to(raider)
 	pressure["contained"] = in_zone and near_raider
 	if bool(pressure["contained"]):
-		pressure["objectiveText"] = "Ashen pressure contained."
-		pressure["statusText"] = "Ashen pressure contained."
+		pressure["objectiveText"] = "Ashen pressure contained"
+		pressure["statusText"] = "No damage exchanged"
+		pressure["telegraphVisible"] = false
+		pressure["interceptMarkerVisible"] = true
+		pressure["interceptMarkerState"] = "contained"
 		for unit in runtime.units:
 			if str(unit.get("id", "")) == V0247_ASHEN_RAIDER_RUNTIME_ID:
 				unit["hasDestination"] = false
@@ -1497,6 +1620,122 @@ func _evaluate_v0247_pressure_containment() -> bool:
 	_record_v0247_no_combat_mutation()
 	_sync_hud()
 	return bool(pressure["contained"])
+
+
+func _set_v0248_objective(objective: String, status: String) -> void:
+	if barrosan_runtime_checkpoint != "v0.248":
+		return
+	var pressure: Dictionary = barrosan_playtest.get("v0247Pressure", {})
+	pressure["objectiveText"] = objective
+	pressure["statusText"] = status
+	var history: Array = pressure.get("objectiveHistory", [])
+	if history.is_empty() or str(history.back()) != objective:
+		history.append(objective)
+	pressure["objectiveHistory"] = history
+	barrosan_playtest["v0247Pressure"] = pressure
+	_sync_hud()
+
+
+func _record_v0248_pressure_snapshot(snapshot_id: String) -> void:
+	if barrosan_runtime_checkpoint != "v0.248":
+		return
+	var pressure: Dictionary = barrosan_playtest.get("v0247Pressure", {})
+	var resources: Dictionary = pressure.get("resourceSnapshots", {})
+	var health: Dictionary = pressure.get("healthSnapshots", {})
+	resources[snapshot_id] = runtime.resources.duplicate(true)
+	health[snapshot_id] = _v0247_health_snapshot()
+	pressure["resourceSnapshots"] = resources
+	pressure["healthSnapshots"] = health
+	var baseline: Dictionary = pressure.get("resourcesBeforePressure", runtime.resources)
+	pressure["resourceSnapshotsUnchanged"] = resources.values().all(
+		func(value: Dictionary) -> bool:
+			return value == baseline
+	)
+	var baseline_health := {
+		"militia": float(pressure.get("militiaHealthBeforePressure", _v0247_unit_health(V0246_FIELD_MILITIA_RUNTIME_ID))),
+		"raider": float(pressure.get("raiderHealthBeforePressure", _v0247_unit_health(V0247_ASHEN_RAIDER_RUNTIME_ID))),
+	}
+	pressure["healthSnapshotsUnchanged"] = health.values().all(
+		func(value: Dictionary) -> bool:
+			if float(value.get("militia", 0.0)) != float(baseline_health.get("militia", 0.0)):
+				return false
+			if value.has("raider") and float(value.get("raider", 0.0)) > 0.0 and float(baseline_health.get("raider", 0.0)) > 0.0:
+				return float(value.get("raider", 0.0)) == float(baseline_health.get("raider", 0.0))
+			return true
+	)
+	barrosan_playtest["v0247Pressure"] = pressure
+
+
+func _activate_v0248_pressure_telegraph() -> void:
+	if barrosan_runtime_checkpoint != "v0.248":
+		return
+	var pressure: Dictionary = barrosan_playtest.get("v0247Pressure", {})
+	pressure["telegraphVisible"] = true
+	pressure["interceptMarkerVisible"] = true
+	pressure["interceptMarkerState"] = "waiting"
+	pressure["objectiveText"] = "9. Ashen pressure incoming"
+	pressure["statusText"] = "Incoming pressure | no damage"
+	barrosan_playtest["v0247Pressure"] = pressure
+	_record_v0248_pressure_snapshot("afterTelegraph")
+
+
+func _activate_v0248_intercept_marker() -> void:
+	if barrosan_runtime_checkpoint != "v0.248":
+		return
+	var pressure: Dictionary = barrosan_playtest.get("v0247Pressure", {})
+	pressure["interceptMarkerVisible"] = true
+	pressure["interceptMarkerState"] = "waiting"
+	pressure["objectiveText"] = "Move Militia to intercept"
+	pressure["statusText"] = "Move to intercept zone"
+	barrosan_playtest["v0247Pressure"] = pressure
+
+
+func _sync_v0248_pressure_markers() -> void:
+	if visual_root == null:
+		return
+	var threat_world := barrosan_build_validation_adapter.source_to_runtime_world(V0247_PRESSURE_LANE_START)
+	var intercept_world := barrosan_build_validation_adapter.source_to_runtime_world(V0247_INTERCEPT_ZONE)
+	_set_or_create_disc_marker("v0248_pressure_telegraph", threat_world + Vector3(0.0, 0.04, 0.0), 0.72, Color(0.96, 0.22, 0.08, 0.68))
+	_set_or_create_disc_marker("v0248_intercept_zone", intercept_world + Vector3(0.0, 0.035, 0.0), 0.86, Color(0.16, 0.82, 0.88, 0.62))
+	var pressure: Dictionary = barrosan_playtest.get("v0247Pressure", {})
+	var enabled := barrosan_runtime_checkpoint == "v0.248"
+	var threat := visual_root.get_node_or_null("v0248_pressure_telegraph")
+	var intercept := visual_root.get_node_or_null("v0248_intercept_zone")
+	if threat != null:
+		threat.visible = enabled and bool(pressure.get("telegraphVisible", false)) and not bool(pressure.get("contained", false))
+	if intercept != null:
+		intercept.visible = enabled and bool(pressure.get("interceptMarkerVisible", false))
+		if str(pressure.get("interceptMarkerState", "waiting")) == "contained":
+			var material := StandardMaterial3D.new()
+			material.albedo_color = Color(0.24, 0.86, 0.42, 0.66)
+			material.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+			intercept.material_override = material
+	var threat_label := _v0248_marker_label("v0248_pressure_label", threat_world + Vector3(0.0, 0.72, 0.0), "ASHEN APPROACH", Color("#ff8b61"))
+	var intercept_text := "PRESSURE CONTAINED" if bool(pressure.get("contained", false)) else "INTERCEPT ZONE"
+	var intercept_color := Color("#7fe39a") if bool(pressure.get("contained", false)) else Color("#75e7ed")
+	var intercept_label := _v0248_marker_label("v0248_intercept_label", intercept_world + Vector3(0.0, 0.68, 0.0), intercept_text, intercept_color)
+	threat_label.visible = threat != null and threat.visible
+	intercept_label.visible = intercept != null and intercept.visible
+	pressure["telegraphRegistered"] = threat != null
+	pressure["interceptMarkerRegistered"] = intercept != null
+	barrosan_playtest["v0247Pressure"] = pressure
+
+
+func _v0248_marker_label(node_name: String, position: Vector3, text: String, color: Color) -> Label3D:
+	var label := visual_root.get_node_or_null(node_name) as Label3D
+	if label == null:
+		label = Label3D.new()
+		label.name = node_name
+		label.font_size = 24
+		label.pixel_size = 0.006
+		label.outline_size = 8
+		label.billboard = BaseMaterial3D.BILLBOARD_ENABLED
+		label.no_depth_test = true
+		visual_root.add_child(label)
+	label.position = position
+	label.text = text
+	label.modulate = color
+	return label
 
 
 func _record_v0247_no_combat_mutation() -> void:
@@ -1656,9 +1895,10 @@ func get_spike_status() -> Dictionary:
 		"reviewMode": barrosan_runtime_review_mode,
 		"errors": barrosan_runtime_errors.duplicate(),
 		"limitedTechnicalPlaytest": _v0244_playtest_status(addressable_roles) if barrosan_runtime_checkpoint == "v0.244" else {},
-		"authoritativeConstructionBridge": _v0245_construction_status() if barrosan_runtime_checkpoint in ["v0.245", "v0.246", "v0.247"] else {},
-		"fieldBarracksProductionBridge": _v0246_production_status() if barrosan_runtime_checkpoint in ["v0.246", "v0.247"] else {},
-		"firstAshenPressureEncounter": _v0247_pressure_status() if barrosan_runtime_checkpoint == "v0.247" else {},
+		"authoritativeConstructionBridge": _v0245_construction_status() if barrosan_runtime_checkpoint in ["v0.245", "v0.246", "v0.247", "v0.248"] else {},
+		"fieldBarracksProductionBridge": _v0246_production_status() if barrosan_runtime_checkpoint in ["v0.246", "v0.247", "v0.248"] else {},
+		"firstAshenPressureEncounter": _v0247_pressure_status() if barrosan_runtime_checkpoint in ["v0.247", "v0.248"] else {},
+		"ashenPressureReadabilityTiming": _v0248_readability_status() if barrosan_runtime_checkpoint == "v0.248" else {},
 	}
 	return status
 
@@ -1668,7 +1908,7 @@ func _v0245_construction_status() -> Dictionary:
 	var delta: Dictionary = result.get("placementResourceDelta", {})
 	var pathing: Dictionary = result.get("pathingProbe", {})
 	var v0246_construction_pass := (
-		barrosan_runtime_checkpoint in ["v0.246", "v0.247"]
+		barrosan_runtime_checkpoint in ["v0.246", "v0.247", "v0.248"]
 		and bool(result.get("validAttempt", {}).get("ok", false))
 		and bool(result.get("implemented", false))
 		and int(result.get("spendCount", 0)) == 1
@@ -1695,7 +1935,7 @@ func _v0245_construction_status() -> Dictionary:
 	)
 	result["status"] = "PASS" if v0246_construction_pass or v0245_construction_pass else "IN_PROGRESS"
 	result["placementAuthority"] = "BuildPlacementValidationAdapter generated portable authority"
-	result["constructionKind"] = "opt-in authoritative Barracks / complete / Militia-only limited production" if barrosan_runtime_checkpoint == "v0.246" else "opt-in technical Barracks / complete / no production"
+	result["constructionKind"] = "opt-in authoritative Barracks / complete / Militia-only limited production" if barrosan_runtime_checkpoint in ["v0.246", "v0.247", "v0.248"] else "opt-in technical Barracks / complete / no production"
 	result["existingRestoredBarracksPreserved"] = bool(barrosan_playtest.get("barracksRestoreTrain", {}).get("militiaSpawned", false))
 	result["defaultRuntimeChanged"] = false
 	result["pathingParity"] = "review-grade rectangular destination-nudge only"
@@ -1706,13 +1946,13 @@ func _v0246_production_status() -> Dictionary:
 	var result: Dictionary = barrosan_playtest.get("v0246FieldProduction", {}).duplicate(true)
 	var delta: Dictionary = result.get("queueResourceDelta", {})
 	var probes: Dictionary = result.get("movementProbes", {})
-	var required_probes := ["builder_construction_site", "restored_barracks_main_base"] if barrosan_runtime_checkpoint == "v0.247" else ["builder_construction_site", "road", "bridge_river", "restored_barracks_main_base"]
+	var required_probes := ["builder_construction_site", "restored_barracks_main_base"] if barrosan_runtime_checkpoint in ["v0.247", "v0.248"] else ["builder_construction_site", "road", "bridge_river", "restored_barracks_main_base"]
 	var movement_pass := required_probes.all(
 		func(probe_id: String) -> bool:
 			var probe: Dictionary = probes.get(probe_id, {})
 			return bool(probe.get("accepted", false)) and float(probe.get("displacement", 0.0)) > 20.0 and int(probe.get("stuckDelta", 0)) == 0
 	)
-	if barrosan_runtime_checkpoint == "v0.247":
+	if barrosan_runtime_checkpoint in ["v0.247", "v0.248"]:
 		var intercept: Dictionary = barrosan_playtest.get("v0247Pressure", {}).get("militiaInterceptProbe", {})
 		movement_pass = movement_pass and bool(intercept.get("accepted", false)) and float(intercept.get("displacement", 0.0)) > 20.0
 	var construction: Dictionary = _v0245_construction_status()
@@ -1799,6 +2039,66 @@ func _v0247_pressure_status() -> Dictionary:
 		func(role: String) -> bool:
 			return barrosan_runtime_structures.has(role) and not bool(barrosan_runtime_structures[role].get("productionEnabled", false))
 	)
+	return result
+
+
+func _v0248_readability_status() -> Dictionary:
+	var result := _v0247_pressure_status()
+	var pressure: Dictionary = barrosan_playtest.get("v0247Pressure", {})
+	var expected_objectives := [
+		"1. Select Aster",
+		"8. Prepare for Ashen pressure",
+		"Prepare one defender",
+		"Militia preparing...",
+		"Defender ready",
+		"9. Ashen pressure incoming",
+		"Ashen Raider advancing",
+		"Move Militia to intercept",
+		"Ashen pressure contained",
+	]
+	var history: Array = pressure.get("objectiveHistory", [])
+	var ladder_pass := expected_objectives.all(
+		func(objective: String) -> bool:
+			return history.has(objective)
+	)
+	var resources: Dictionary = pressure.get("resourceSnapshots", {})
+	result["status"] = "PASS" if (
+		result.get("status", "") == "PASS"
+		and bool(pressure.get("telegraphRegistered", false))
+		and bool(pressure.get("interceptMarkerRegistered", false))
+		and str(pressure.get("interceptMarkerState", "")) == "contained"
+		and ladder_pass
+		and bool(pressure.get("resourceSnapshotsUnchanged", false))
+		and bool(pressure.get("healthSnapshotsUnchanged", false))
+		and resources.has("afterTelegraph")
+		and resources.has("afterRaiderSpawn")
+		and resources.has("afterRaiderMovement")
+		and resources.has("afterContainment")
+	) else "IN_PROGRESS"
+	result["objectiveLadder"] = expected_objectives
+	result["objectiveHistory"] = history
+	result["objectiveLadderPass"] = ladder_pass
+	result["pressureTelegraph"] = {
+		"registered": bool(pressure.get("telegraphRegistered", false)),
+		"label": "Ashen approach",
+		"nonBlocking": true,
+		"defaultRuntimePresent": false,
+	}
+	result["interceptMarker"] = {
+		"registered": bool(pressure.get("interceptMarkerRegistered", false)),
+		"state": str(pressure.get("interceptMarkerState", "waiting")),
+		"label": "Intercept zone",
+		"nonBlocking": true,
+		"countsAsBuilding": false,
+		"defaultRuntimePresent": false,
+	}
+	result["timing"] = pressure.get("timing", {})
+	result["resourceSnapshots"] = resources
+	result["resourceSnapshotsUnchanged"] = bool(pressure.get("resourceSnapshotsUnchanged", false))
+	result["healthSnapshots"] = pressure.get("healthSnapshots", {})
+	result["healthSnapshotsUnchanged"] = bool(pressure.get("healthSnapshotsUnchanged", false))
+	result["hudNoCombatCopy"] = "Scripted pressure entity | no damage in v0.248"
+	result["verdictCeiling"] = "PARTIAL"
 	return result
 
 
