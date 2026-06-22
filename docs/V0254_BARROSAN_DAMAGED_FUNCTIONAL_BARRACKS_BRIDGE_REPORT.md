@@ -6,9 +6,9 @@ Verdict: `PARTIAL`
 
 - Resolved base commit: `177fffcd545670cd2bfc346ae0cd460a50e5b152`.
 - Base exact-SHA CI: https://github.com/jardas33/ascendant-realms/actions/runs/27923998996.
-- Implementation commit: `PENDING_PUBLICATION`.
-- Final repository HEAD: `PENDING_PUBLICATION`.
-- Exact-SHA GitHub Actions run: PENDING_PUBLICATION.
+- Implementation commit: `406878cdbb0163c1f8266199a31ccfe5d5839fd9`.
+- Final repository HEAD: `406878cdbb0163c1f8266199a31ccfe5d5839fd9`.
+- Exact-SHA GitHub Actions run: https://github.com/jardas33/ascendant-realms/actions/runs/27926809716.
 - Scene: `res://scenes/salto_barrosan_playable_runtime_skin.tscn`.
 - Blender used: no. New GLB exported: no. Existing v0.239 GLB reused unchanged: yes (B7A68A4442071FB29A9DB0468B9A2A56BE724E80E2C69C0E5846539BA193D0EB).
 - Files changed: opt-in runtime subclass, capture dispatch, v0.254 capture/validator/report tooling, package scripts and this report.
@@ -40,7 +40,7 @@ Verdict: `PARTIAL`
 - Pathing honesty: review-grade deterministic lane and existing rectangular destination nudge.
 - Destruction honesty: HP 0 is a dormant production-disable rule only; v0.254 does not force or exercise destruction.
 - v0.254 capture and dedicated validator: pass.
-- Full local validation: pass. Exact-SHA GitHub Actions: pending publication.
+- Full local validation: pass. Exact-SHA GitHub Actions: pass.
 
 ## Honest assessment
 
