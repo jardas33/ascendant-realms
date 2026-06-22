@@ -6,9 +6,9 @@ Verdict: `PARTIAL`
 
 - Resolved base commit: `b3043402cb1219468ed09a8e0c3e1345a59f407e`.
 - Base exact-SHA CI: https://github.com/jardas33/ascendant-realms/actions/runs/27949696015.
-- Implementation commit: `PENDING_PUBLICATION`.
-- Final repository HEAD: `PENDING_PUBLICATION`.
-- Exact-SHA GitHub Actions run: PENDING_PUBLICATION.
+- Implementation commit: `902c36606a1e02e1b6b91dd667c11ed1bb6e1c57`.
+- Final repository HEAD: `documentation closeout commit (see final response)`.
+- Exact-SHA GitHub Actions run: https://github.com/jardas33/ascendant-realms/actions/runs/27988129066.
 - Scene: `res://scenes/salto_barrosan_playable_runtime_skin.tscn`.
 - Blender used: no. New GLB exported: no. Existing v0.239 GLB reused unchanged: yes (B7A68A4442071FB29A9DB0468B9A2A56BE724E80E2C69C0E5846539BA193D0EB).
 - Files changed: opt-in runtime subclass, capture dispatch, v0.256 capture/validator/report tooling, package scripts and this report.
@@ -41,7 +41,7 @@ Verdict: `PARTIAL`
 ## Validation and honest assessment
 
 - Dedicated v0.256 capture and validator: pass.
-- Full local validation: pass. Exact-SHA GitHub Actions: pending publication.
+- Full local validation: pass. Exact-SHA GitHub Actions: pass.
 - Honest assessment: this is a first explicit Worker rebuild bridge for one authoritative opt-in Field Barracks. It restores only to 100/200 and uses placeholder progress/overlay presentation. Global building reconstruction remains intentionally absent, so the verdict is PARTIAL.
 - Recommendation for v0.257: only if separately authorized, broaden reconstruction UX or add another bounded structure contract; do not infer a global rebuild system from this slice.
 
