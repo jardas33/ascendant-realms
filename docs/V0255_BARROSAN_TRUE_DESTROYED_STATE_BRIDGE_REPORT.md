@@ -6,9 +6,9 @@ Verdict: `PARTIAL`
 
 - Resolved base commit: `a0c682d94795a2bb81c62faeb9a1629d6fe4bd82`.
 - Base exact-SHA CI: https://github.com/jardas33/ascendant-realms/actions/runs/27943772442.
-- Implementation commit: `PENDING_PUBLICATION`.
-- Final repository HEAD: `PENDING_PUBLICATION`.
-- Exact-SHA GitHub Actions run: PENDING_PUBLICATION.
+- Implementation commit: `6c67d0fc2dd0b16ee65846aff83459eed85c5506`.
+- Final repository HEAD: `documentation closeout commit (see final response)`.
+- Exact-SHA GitHub Actions run: https://github.com/jardas33/ascendant-realms/actions/runs/27949064432.
 - Scene: `res://scenes/salto_barrosan_playable_runtime_skin.tscn`.
 - Blender used: no. New GLB exported: no. Existing v0.239 GLB reused unchanged: yes (B7A68A4442071FB29A9DB0468B9A2A56BE724E80E2C69C0E5846539BA193D0EB).
 - Files changed: opt-in runtime subclass, capture dispatch, v0.255 capture/validator/report tooling, package scripts and this report.
@@ -39,7 +39,7 @@ Verdict: `PARTIAL`
 ## Validation and honest assessment
 
 - Dedicated v0.255 capture and validator: pass.
-- Full local validation: pass. Exact-SHA GitHub Actions: pending publication.
+- Full local validation: pass. Exact-SHA GitHub Actions: pass.
 - Honest assessment: this exercises a true destroyed state only for the authoritative opt-in Field Barracks. Global destruction, rubble replacement and rebuilding remain intentionally absent, so the verdict is PARTIAL.
 - Recommendation for v0.256: define a separately authorized reconstruction/rebuild contract or broaden destruction only after this local threshold bridge is accepted.
 
