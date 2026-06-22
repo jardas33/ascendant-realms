@@ -66,6 +66,7 @@ const PORTABLE_CONTENT_PATH := "res://data/generated/content-subset.json"
 
 var barrosan_runtime_skin_enabled := false
 var barrosan_runtime_checkpoint := "v0.243"
+var barrosan_requested_checkpoint := "v0.243"
 var barrosan_runtime_debug_labels := false
 var barrosan_runtime_review_mode := "clean"
 var barrosan_source_kit: Node3D
@@ -86,11 +87,15 @@ var v0252_defended_proof: Dictionary = {}
 var v0252_missed_window_proof: Dictionary = {}
 var v0253_defended_proof: Dictionary = {}
 var v0253_repair_proof: Dictionary = {}
+var v0254_damaged_proof: Dictionary = {}
+var v0254_repair_proof: Dictionary = {}
+var v0254_defended_proof: Dictionary = {}
 
 
 func configure_barrosan_playable_runtime_skin(options: Dictionary) -> void:
 	barrosan_runtime_skin_enabled = bool(options.get("enabled", false))
-	barrosan_runtime_checkpoint = str(options.get("checkpoint", "v0.243"))
+	barrosan_requested_checkpoint = str(options.get("checkpoint", "v0.243"))
+	barrosan_runtime_checkpoint = "v0.253" if barrosan_requested_checkpoint == "v0.254" else barrosan_requested_checkpoint
 	barrosan_runtime_debug_labels = bool(options.get("debugLabels", false))
 	if not barrosan_runtime_skin_enabled:
 		return
@@ -441,6 +446,11 @@ func _sync_hud() -> void:
 				int(_v0251_field_barracks_health()),
 				int(V0251_FIELD_BARRACKS_MAX_HP),
 			]
+			if barrosan_requested_checkpoint == "v0.254" and str(consequence.get("fieldBarracksState", "unharmed")) == "damaged":
+				hud_hero_label.text = "Authoritative Field Barracks | Damaged but functional"
+				hud_context_label.text = "Operational | Damaged HP %s/200 | Train Militia available" % int(_v0251_field_barracks_health())
+				hud_objective_strip_label.text = "Field Barracks damaged but functional"
+				hud_objective_label.text = "Can train Militia | Worker repair available"
 	if barrosan_runtime_checkpoint == "v0.253" and runtime.selected_ids.has("worker_00"):
 		var repair: Dictionary = barrosan_playtest.get("v0253WorkerRepair", {})
 		var repair_available := _v0253_repair_command_available()
@@ -783,6 +793,167 @@ func set_barrosan_runtime_review_mode(mode: String) -> void:
 			_select_v0244_shell("market", false)
 			_select_v0244_shell("watchtower")
 		"v0248_clean":
+			_clear_barrosan_playtest_selection()
+		"v0254_overview", "v0254_starting_resources":
+			_set_v0252_aster_health_contract()
+			_capture_v0245_starting_resources()
+			_set_v0249_objective("1. Select Aster", "Select Aster")
+		"v0254_select_worker":
+			_run_v0246_builder_probe()
+			_set_v0249_objective("Build authoritative Field Barracks", "Construction available")
+		"v0254_valid_preview":
+			_run_v0245_preview(false, "v0254_confirm")
+		"v0254_confirm_placement":
+			_attempt_v0245_placement(false)
+			_set_v0249_objective("Prepare for Ashen pressure", "Authoritative placement complete")
+		"v0254_construction_delta", "v0254_barracks_hp_200":
+			_show_v0245_construction_proof("resource_delta")
+			select_barrosan_runtime_role(V0245_CONSTRUCTED_KEY)
+		"v0254_raider_spawned":
+			_prepare_v0251_undefended_pressure()
+			_activate_v0249_markers()
+			_spawn_v0247_ashen_raider()
+			_add_v0247_ashen_raider_minimap_marker()
+			_select_v0247_raider()
+		"v0254_raider_threat_range":
+			_advance_v0247_raider_lane("lane_start", V0247_PRESSURE_LANE_START, 150)
+			_advance_v0247_raider_lane("field_barracks_threat_approach", V0251_FIELD_BARRACKS_PRESSURE_POINT, 760)
+			_set_v0249_objective("Ashen pressure entering threat range", "Threat range reached")
+		"v0254_warning_started":
+			_begin_v0252_threat_window()
+			_select_v0247_raider()
+		"v0254_warning_midpoint":
+			_advance_v0252_threat_window()
+			select_barrosan_runtime_role(V0245_CONSTRUCTED_KEY)
+		"v0254_warning_expired":
+			_advance_v0252_threat_window()
+			select_barrosan_runtime_role(V0245_CONSTRUCTED_KEY)
+		"v0254_damage_tick_1":
+			_begin_v0252_building_pressure_after_warning()
+			_advance_v0251_building_damage_tick()
+			select_barrosan_runtime_role(V0245_CONSTRUCTED_KEY)
+		"v0254_damage_tick_2":
+			_advance_v0251_building_damage_tick()
+			select_barrosan_runtime_role(V0245_CONSTRUCTED_KEY)
+		"v0254_damage_tick_3":
+			_advance_v0251_building_damage_tick()
+			select_barrosan_runtime_role(V0245_CONSTRUCTED_KEY)
+		"v0254_damage_stopped":
+			_finalize_v0251_building_pressure()
+			var repair: Dictionary = barrosan_playtest.get("v0253WorkerRepair", {})
+			repair["missedWindowProof"] = _v0252_missed_window_status().duplicate(true)
+			barrosan_playtest["v0253WorkerRepair"] = repair
+			_record_v0254_damaged_functional_state()
+			_set_v0249_objective("Field Barracks damaged but functional", "No active pressure")
+		"v0254_damaged_selectable", "v0254_damaged_train_available":
+			_record_v0254_damaged_functional_state()
+		"v0254_damaged_train_ordered":
+			select_barrosan_runtime_role(V0245_CONSTRUCTED_KEY)
+			var state: Dictionary = barrosan_playtest.get("v0254DamagedFunctional", {})
+			state["resourcesBeforeDamagedTraining"] = runtime.resources.duplicate(true)
+			state["trainOrderAcceptedAt125"] = _queue_v0246_field_militia()
+			var production: Dictionary = barrosan_playtest.get("v0246FieldProduction", {})
+			state["trainCost"] = production.get("cost", {}).duplicate(true)
+			state["resourcesAfterDamagedTraining"] = runtime.resources.duplicate(true)
+			state["trainResourceDelta"] = _resource_delta(state["resourcesBeforeDamagedTraining"], runtime.resources)
+			barrosan_playtest["v0254DamagedFunctional"] = state
+		"v0254_damaged_train_delta":
+			select_barrosan_runtime_role(V0245_CONSTRUCTED_KEY)
+		"v0254_damaged_militia_ready":
+			_advance_v0246_field_training(130)
+			_select_playtest_unit(V0246_FIELD_MILITIA_RUNTIME_ID)
+		"v0254_damaged_hp_after_training":
+			select_barrosan_runtime_role(V0245_CONSTRUCTED_KEY)
+		"v0254_no_passive_collapse":
+			_record_v0254_no_passive_collapse()
+			select_barrosan_runtime_role(V0245_CONSTRUCTED_KEY)
+			_set_v0249_objective("Field Barracks damaged but functional", "No active pressure")
+		"v0254_select_worker_repair":
+			_prepare_v0254_damaged_branch()
+			_select_playtest_unit("worker_00")
+			var repair: Dictionary = barrosan_playtest.get("v0253WorkerRepair", {})
+			repair["repairCommandAvailable"] = _v0253_repair_command_available()
+			barrosan_playtest["v0253WorkerRepair"] = repair
+			_set_v0249_objective("Repair damaged Field Barracks", "Worker repair available")
+		"v0254_repair_accepted", "v0254_repair_delta":
+			_select_playtest_unit("worker_00")
+			_hud_work_pressed()
+		"v0254_repair_tick_1":
+			_advance_v0253_worker_repair_tick()
+			select_barrosan_runtime_role(V0245_CONSTRUCTED_KEY)
+		"v0254_repair_tick_2":
+			_advance_v0253_worker_repair_tick()
+			select_barrosan_runtime_role(V0245_CONSTRUCTED_KEY)
+		"v0254_repair_tick_3", "v0254_repair_complete":
+			_advance_v0253_worker_repair_tick()
+			select_barrosan_runtime_role(V0245_CONSTRUCTED_KEY)
+		"v0254_repair_unavailable_full":
+			_select_playtest_unit("worker_00")
+			_begin_v0253_worker_repair()
+			v0254_repair_proof = _v0253_repair_branch_status().duplicate(true)
+		"v0254_defended_start":
+			v0254_repair_proof = _v0253_repair_branch_status().duplicate(true)
+			_reset_v0251_branch_runtime()
+			_reset_barrosan_playtest_status()
+			_set_v0252_aster_health_contract()
+			_load_v0246_militia_authority()
+			_capture_v0245_starting_resources()
+			_run_v0246_builder_probe()
+			_run_v0245_preview(false, "v0254_defended_confirm")
+			_attempt_v0245_placement(false)
+			select_barrosan_runtime_role(V0245_CONSTRUCTED_KEY)
+		"v0254_defended_train":
+			_queue_v0246_field_militia()
+			_advance_v0246_field_training(130)
+			_prepare_v0247_pressure()
+		"v0254_defended_attack":
+			_spawn_v0247_ashen_raider()
+			_add_v0247_ashen_raider_minimap_marker()
+			_advance_v0247_raider_lane("lane_start", V0247_PRESSURE_LANE_START, 150)
+			_advance_v0247_raider_lane("field_barracks_threat_approach", V0251_FIELD_BARRACKS_PRESSURE_POINT, 760)
+			_begin_v0252_threat_window()
+			_advance_v0252_threat_window()
+			_select_playtest_unit(V0246_FIELD_MILITIA_RUNTIME_ID)
+			_hud_attack_pressed()
+			issue_attack_order(V0247_ASHEN_RAIDER_RUNTIME_ID)
+			var timing: Dictionary = barrosan_playtest.get("v0252ThreatTiming", {})
+			timing["defendedDuringWarning"] = bool(timing.get("warningActive", false))
+			timing["warningStepAtAttackOrder"] = int(timing.get("warningStep", 0))
+			timing["threatWindowMarkerVisible"] = false
+			barrosan_playtest["v0252ThreatTiming"] = timing
+			_run_v0252_militia_threat_intercept(120)
+		"v0254_defended_tick_1":
+			_begin_v0249_combat()
+			_advance_v0249_combat_tick()
+		"v0254_defended_tick_2":
+			_advance_v0249_combat_tick()
+		"v0254_defended_tick_3":
+			_advance_v0249_combat_tick()
+			_finalize_v0249_combat_visuals()
+		"v0254_defended_barracks", "v0254_raider_count", "v0254_militia_count", "v0254_units_unharmed", "v0254_minimap":
+			_record_v0249_collateral_proof()
+			v0254_defended_proof = _v0250_attack_order_status().duplicate(true)
+			v0254_defended_proof["fieldBarracksFinalHp"] = _v0251_field_barracks_health()
+			v0254_defended_proof["threatTiming"] = barrosan_playtest.get("v0252ThreatTiming", {}).duplicate(true)
+			v0254_defended_proof["repairCommandAvailable"] = false
+			v0254_defended_proof["militiaCount"] = runtime.units.filter(
+				func(unit: Dictionary) -> bool:
+					return str(unit.get("id", "")) == V0246_FIELD_MILITIA_RUNTIME_ID and bool(unit.get("alive", false))
+			).size()
+			select_barrosan_runtime_role(V0245_CONSTRUCTED_KEY)
+		"v0254_preserve_barracks":
+			_run_v0244_barracks_restore_train_flow()
+		"v0254_preserve_keep":
+			select_barrosan_runtime_role("main_base")
+			_record_v0244_live_role("main_base")
+		"v0254_preserve_mine":
+			select_barrosan_runtime_role("mine")
+			_record_v0244_live_role("mine")
+		"v0254_preserve_shells":
+			_select_v0244_shell("blacksmith", false)
+			_select_v0244_shell("market", false)
+			_select_v0244_shell("watchtower")
+		"v0254_default_clean", "v0254_clean":
 			_clear_barrosan_playtest_selection()
 		"v0253_overview", "v0253_starting_resources":
 			_set_v0252_aster_health_contract()
@@ -1772,6 +1943,28 @@ func _reset_barrosan_playtest_status() -> void:
 			"workerMinimapVisibleDuringRepair": false,
 			"fieldBarracksMinimapVisibleDuringRepair": false,
 		},
+		"v0254DamagedFunctional": {
+			"damagedBarracksSelectable": false,
+			"damagedBarracksFunctional": false,
+			"productionAvailableAt125": false,
+			"trainOrderAcceptedAt125": false,
+			"trainCost": {},
+			"resourcesBeforeDamagedTraining": {},
+			"resourcesAfterDamagedTraining": {},
+			"trainResourceDelta": {},
+			"militiaCountFromDamagedBarracks": 0,
+			"fieldBarracksHpAfterTraining": 0.0,
+			"waitAttempts": 0,
+			"fieldBarracksHpBeforeWait": 0.0,
+			"fieldBarracksHpAfterWait": 0.0,
+			"resourcesBeforeWait": {},
+			"resourcesAfterWait": {},
+			"noPassiveCollapse": false,
+			"noRefund": false,
+			"noExtraCharge": false,
+			"productionUnavailableOnlyAtZeroHp": true,
+			"minimapPreserved": false,
+		},
 	}
 
 
@@ -1797,6 +1990,78 @@ func _reset_v0251_branch_runtime() -> void:
 	_clear_barrosan_playtest_selection()
 	_rebuild_visuals()
 	_add_barrosan_minimap_role_markers()
+
+
+func _prepare_v0254_damaged_branch() -> void:
+	_reset_v0251_branch_runtime()
+	_reset_barrosan_playtest_status()
+	_set_v0252_aster_health_contract()
+	_load_v0246_militia_authority()
+	_capture_v0245_starting_resources()
+	_run_v0246_builder_probe()
+	_run_v0245_preview(false, "v0254_branch_confirm")
+	_attempt_v0245_placement(false)
+	_prepare_v0251_undefended_pressure()
+	_activate_v0249_markers()
+	_spawn_v0247_ashen_raider()
+	_add_v0247_ashen_raider_minimap_marker()
+	_advance_v0247_raider_lane("lane_start", V0247_PRESSURE_LANE_START, 150)
+	_advance_v0247_raider_lane("field_barracks_threat_approach", V0251_FIELD_BARRACKS_PRESSURE_POINT, 760)
+	_begin_v0252_threat_window()
+	_advance_v0252_threat_window()
+	_advance_v0252_threat_window()
+	_begin_v0252_building_pressure_after_warning()
+	_advance_v0251_building_damage_tick()
+	_advance_v0251_building_damage_tick()
+	_advance_v0251_building_damage_tick()
+	_finalize_v0251_building_pressure()
+	var repair: Dictionary = barrosan_playtest.get("v0253WorkerRepair", {})
+	repair["missedWindowProof"] = _v0252_missed_window_status().duplicate(true)
+	barrosan_playtest["v0253WorkerRepair"] = repair
+	select_barrosan_runtime_role(V0245_CONSTRUCTED_KEY)
+	_set_v0249_objective("Field Barracks damaged but functional", "No active pressure")
+
+
+func _record_v0254_damaged_functional_state() -> void:
+	var state: Dictionary = barrosan_playtest.get("v0254DamagedFunctional", {})
+	var production: Dictionary = barrosan_playtest.get("v0246FieldProduction", {})
+	state["damagedBarracksSelectable"] = select_barrosan_runtime_role(V0245_CONSTRUCTED_KEY)
+	state["damagedBarracksFunctional"] = _v0251_field_barracks_health() > 0.0
+	state["productionAvailableAt125"] = (
+		_v0251_field_barracks_health() == 125.0
+		and not bool(production.get("spawned", false))
+		and (production.get("queue", []) as Array).is_empty()
+	)
+	state["minimapPreserved"] = _minimap_has_marker("v0245_minimap_constructed_barracks")
+	barrosan_playtest["v0254DamagedFunctional"] = state
+
+
+func _record_v0254_no_passive_collapse() -> void:
+	var state: Dictionary = barrosan_playtest.get("v0254DamagedFunctional", {})
+	state["fieldBarracksHpBeforeWait"] = _v0251_field_barracks_health()
+	state["resourcesBeforeWait"] = runtime.resources.duplicate(true)
+	var accepted_damage_ticks := 0
+	for _attempt in range(6):
+		if _advance_v0251_building_damage_tick():
+			accepted_damage_ticks += 1
+	state["waitAttempts"] = 6
+	state["acceptedDamageTicksAfterBoundedStop"] = accepted_damage_ticks
+	state["fieldBarracksHpAfterWait"] = _v0251_field_barracks_health()
+	state["resourcesAfterWait"] = runtime.resources.duplicate(true)
+	state["noPassiveCollapse"] = (
+		float(state["fieldBarracksHpBeforeWait"]) == 125.0
+		and float(state["fieldBarracksHpAfterWait"]) == 125.0
+		and accepted_damage_ticks == 0
+	)
+	state["noRefund"] = state["resourcesAfterWait"] == state["resourcesBeforeWait"]
+	state["noExtraCharge"] = state["resourcesAfterWait"] == state["resourcesBeforeWait"]
+	state["fieldBarracksHpAfterTraining"] = _v0251_field_barracks_health()
+	state["militiaCountFromDamagedBarracks"] = runtime.units.filter(
+		func(unit: Dictionary) -> bool:
+			return str(unit.get("id", "")) == V0246_FIELD_MILITIA_RUNTIME_ID and bool(unit.get("alive", false))
+	).size()
+	barrosan_playtest["v0254DamagedFunctional"] = state
+	v0254_damaged_proof = state.duplicate(true)
 
 
 func _set_v0252_aster_health_contract() -> void:
@@ -2024,13 +2289,13 @@ func _attempt_v0245_placement(blocked: bool) -> bool:
 		"rect": Rect2(point - size * 0.5, size),
 		"entityType": "opt_in_technical_construction",
 		"alive": true,
-		"health": V0251_FIELD_BARRACKS_MAX_HP if barrosan_runtime_checkpoint in ["v0.251", "v0.252", "v0.253"] else 650.0,
-		"maxHealth": V0251_FIELD_BARRACKS_MAX_HP if barrosan_runtime_checkpoint in ["v0.251", "v0.252", "v0.253"] else 650.0,
+		"health": V0251_FIELD_BARRACKS_MAX_HP if barrosan_runtime_checkpoint in ["v0.251", "v0.252", "v0.253", "v0.254"] else 650.0,
+		"maxHealth": V0251_FIELD_BARRACKS_MAX_HP if barrosan_runtime_checkpoint in ["v0.251", "v0.252", "v0.253", "v0.254"] else 650.0,
 		"constructionState": "complete",
 		"constructionProgress": 1.0,
 		"productionQueue": [],
-		"productionEnabled": barrosan_runtime_checkpoint in ["v0.246", "v0.247", "v0.248", "v0.249", "v0.250", "v0.251", "v0.252", "v0.253"],
-		"productionLimit": "militia-single-slot-single-spawn" if barrosan_runtime_checkpoint in ["v0.246", "v0.247", "v0.248", "v0.249", "v0.250", "v0.251", "v0.252", "v0.253"] else "none",
+		"productionEnabled": barrosan_runtime_checkpoint in ["v0.246", "v0.247", "v0.248", "v0.249", "v0.250", "v0.251", "v0.252", "v0.253", "v0.254"],
+		"productionLimit": "militia-single-slot-single-spawn" if barrosan_runtime_checkpoint in ["v0.246", "v0.247", "v0.248", "v0.249", "v0.250", "v0.251", "v0.252", "v0.253", "v0.254"] else "none",
 		"technicalConstructionEntity": true,
 		"economyMutationAllowed": false,
 		"aiMutationAllowed": false,
@@ -2156,7 +2421,7 @@ func _hud_work_pressed() -> void:
 
 
 func _v0253_repair_command_available() -> bool:
-	if barrosan_runtime_checkpoint != "v0.253":
+	if barrosan_runtime_checkpoint not in ["v0.253", "v0.254"]:
 		return false
 	var repair: Dictionary = barrosan_playtest.get("v0253WorkerRepair", {})
 	return (
@@ -2208,7 +2473,7 @@ func _begin_v0253_worker_repair() -> bool:
 
 
 func _advance_v0253_worker_repair_tick() -> bool:
-	if barrosan_runtime_checkpoint != "v0.253":
+	if barrosan_runtime_checkpoint not in ["v0.253", "v0.254"]:
 		return false
 	var repair: Dictionary = barrosan_playtest.get("v0253WorkerRepair", {})
 	if not bool(repair.get("repairStarted", false)) or bool(repair.get("repairComplete", false)):
@@ -2256,13 +2521,18 @@ func _queue_v0246_field_militia() -> bool:
 	var production: Dictionary = barrosan_playtest.get("v0246FieldProduction", {})
 	var before: Dictionary = runtime.resources.duplicate(true)
 	var queue: Array = production.get("queue", [])
+	var field_barracks_functional := _v0245_constructed_count() == 1 and _v0251_field_barracks_health() > 0.0
+	for structure in runtime.structures:
+		if str(structure.get("id", "")) == V0245_CONSTRUCTED_RUNTIME_ID:
+			field_barracks_functional = field_barracks_functional and bool(structure.get("productionEnabled", false))
+			break
 	if (
-		_v0245_constructed_count() != 1
+		not field_barracks_functional
 		or not bool(production.get("authorityLoaded", false))
 		or bool(production.get("spawned", false))
 		or not queue.is_empty()
 	):
-		production["lastRejectReason"] = "single-slot-occupied-or-limit-reached"
+		production["lastRejectReason"] = "field-barracks-disabled-at-zero-hp" if not field_barracks_functional else "single-slot-occupied-or-limit-reached"
 		production["lastRejectResourcesUnchanged"] = before == runtime.resources
 		barrosan_playtest["v0246FieldProduction"] = production
 		_sync_hud()
@@ -2979,7 +3249,7 @@ func _begin_v0251_building_pressure() -> bool:
 
 
 func _advance_v0251_building_damage_tick() -> bool:
-	if barrosan_runtime_checkpoint not in ["v0.251", "v0.252", "v0.253"]:
+	if barrosan_runtime_checkpoint not in ["v0.251", "v0.252", "v0.253", "v0.254"]:
 		return false
 	var consequence: Dictionary = barrosan_playtest.get("v0251DefenseConsequence", {})
 	if not bool(consequence.get("buildingDamageStarted", false)) or bool(consequence.get("buildingPressureContained", false)):
@@ -3361,7 +3631,7 @@ func get_spike_status() -> Dictionary:
 			shell_roles.append(role)
 	status["barrosanPlayableRuntimeSkin"] = {
 		"enabled": barrosan_runtime_skin_enabled,
-		"checkpoint": barrosan_runtime_checkpoint,
+		"checkpoint": barrosan_requested_checkpoint,
 		"scenePath": "res://scenes/salto_barrosan_playable_runtime_skin.tscn",
 		"mappingPath": V0240_MAPPING_PATH,
 		"sourceGlb": V0239_KIT_PATH,
@@ -3398,6 +3668,7 @@ func get_spike_status() -> Dictionary:
 		"firstDefenseConsequenceBridge": _v0251_defense_consequence_status() if barrosan_runtime_checkpoint == "v0.251" else {},
 		"threatTimingFeedbackBridge": _v0252_threat_timing_status() if barrosan_runtime_checkpoint == "v0.252" else {},
 		"firstWorkerRepairBridge": _v0253_worker_repair_status() if barrosan_runtime_checkpoint == "v0.253" else {},
+		"damagedFunctionalBarracksBridge": _v0254_damaged_functional_status() if barrosan_requested_checkpoint == "v0.254" else {},
 	}
 	return status
 
@@ -4042,6 +4313,88 @@ func _v0253_worker_repair_status() -> Dictionary:
 		"autoRepairExists": false,
 		"buildingDestructionExists": false,
 		"pathingParity": "review-grade explicit Worker selection and deterministic repair ticks",
+		"verdictCeiling": "PARTIAL",
+	}
+
+
+func _v0254_damaged_functional_status() -> Dictionary:
+	var damaged := v0254_damaged_proof.duplicate(true)
+	var repair := v0254_repair_proof.duplicate(true)
+	var defended := v0254_defended_proof.duplicate(true)
+	var missed: Dictionary = repair.get("missedWindow", repair.get("missedWindowProof", {}))
+	var selected_live_roles: Array = barrosan_playtest.get("selectedLiveRoles", [])
+	var shells_preserved := ["blacksmith", "market", "watchtower"].all(
+		func(role: String) -> bool:
+			return not bool(barrosan_runtime_structures.get(role, {}).get("productionEnabled", false))
+	)
+	var damaged_pass: bool = (
+		bool(damaged.get("damagedBarracksSelectable", false))
+		and bool(damaged.get("damagedBarracksFunctional", false))
+		and bool(damaged.get("productionAvailableAt125", false))
+		and bool(damaged.get("trainOrderAcceptedAt125", false))
+		and damaged.get("resourcesBeforeDamagedTraining", {}) == {"crowns": 240, "stone": 40, "iron": 90, "aether": 38}
+		and damaged.get("resourcesAfterDamagedTraining", {}) == {"crowns": 180, "stone": 40, "iron": 70, "aether": 38}
+		and int(damaged.get("trainResourceDelta", {}).get("crowns", 0)) == -60
+		and int(damaged.get("trainResourceDelta", {}).get("iron", 0)) == -20
+		and int(damaged.get("militiaCountFromDamagedBarracks", 0)) == 1
+		and float(damaged.get("fieldBarracksHpAfterTraining", -1.0)) == 125.0
+		and bool(damaged.get("noPassiveCollapse", false))
+		and int(damaged.get("acceptedDamageTicksAfterBoundedStop", -1)) == 0
+		and bool(damaged.get("noRefund", false))
+		and bool(damaged.get("noExtraCharge", false))
+		and bool(damaged.get("productionUnavailableOnlyAtZeroHp", false))
+		and bool(damaged.get("minimapPreserved", false))
+	)
+	var repair_pass: bool = (
+		repair.get("status", "") == "PASS"
+		and missed.get("status", "") == "PASS"
+		and float(repair.get("fieldBarracksHpBeforeRepair", -1.0)) == 125.0
+		and repair.get("resourcesAfterRepairSpend", {}) == {"crowns": 210, "stone": 10, "iron": 90, "aether": 38}
+		and bool(repair.get("repairHpSequencePass", false))
+		and float(repair.get("fieldBarracksFinalHp", -1.0)) == 200.0
+	)
+	var defended_timing: Dictionary = defended.get("threatTiming", {})
+	var defended_pass: bool = (
+		int(defended.get("spawnCount", 0)) == 1
+		and int(defended.get("militiaCount", 0)) == 1
+		and bool(defended_timing.get("warningStarted", false))
+		and bool(defended_timing.get("defendedDuringWarning", false))
+		and bool(defended.get("attackOrderAccepted", false))
+		and bool(defended.get("deterministicTicksPass", false))
+		and float(defended.get("finalMilitiaHp", -1.0)) == 70.0
+		and float(defended.get("finalRaiderHp", -1.0)) == 0.0
+		and float(defended.get("fieldBarracksFinalHp", -1.0)) == 200.0
+		and not bool(defended.get("repairCommandAvailable", true))
+		and defended.get("resourcesAfterCombat", {}) == {"crowns": 180, "stone": 40, "iron": 70, "aether": 38}
+	)
+	damaged["status"] = "PASS" if damaged_pass else "IN_PROGRESS"
+	repair["status"] = "PASS" if repair_pass else "IN_PROGRESS"
+	defended["status"] = "PASS" if defended_pass else "IN_PROGRESS"
+	return {
+		"status": "PASS" if (
+			damaged_pass
+			and repair_pass
+			and defended_pass
+			and bool(barrosan_playtest.get("barracksRestoreTrain", {}).get("militiaSpawned", false))
+			and selected_live_roles.has("main_base")
+			and selected_live_roles.has("mine")
+			and shells_preserved
+		) else "IN_PROGRESS",
+		"checkpoint": "v0.254",
+		"damagedFunctionalBranch": damaged,
+		"repairOptionalBranch": repair,
+		"defendedRegressionBranch": defended,
+		"coreRule": "HP > 0 remains selectable, repairable and production-capable; production is unavailable only at HP 0",
+		"passiveCollapseExists": false,
+		"forcedDestructionExists": false,
+		"destroyedStateExercised": false,
+		"existingRestoredBarracksPreserved": bool(barrosan_playtest.get("barracksRestoreTrain", {}).get("militiaSpawned", false)),
+		"commandKeepPreserved": selected_live_roles.has("main_base"),
+		"lumeMinePreserved": selected_live_roles.has("mine"),
+		"shellsRemainNonProducing": shells_preserved,
+		"defaultRuntimeChanged": false,
+		"globalBuildingDamageChanged": false,
+		"pathingParity": "review-grade deterministic lane and existing rectangular destination nudge",
 		"verdictCeiling": "PARTIAL",
 	}
 
