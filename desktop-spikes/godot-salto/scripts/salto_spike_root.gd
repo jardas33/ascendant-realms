@@ -8266,6 +8266,10 @@ func _apply_player_slice_action(action: String) -> Dictionary:
 			_ensure_player_battle_scene()
 			_call_scene("set_barrosan_runtime_review_mode", [action])
 			_render_player_screen("battle")
+		"v0253_overview", "v0253_starting_resources", "v0253_select_worker", "v0253_valid_preview", "v0253_confirm_placement", "v0253_construction_delta", "v0253_barracks_hp_200", "v0253_raider_spawned", "v0253_raider_threat_range", "v0253_warning_started", "v0253_warning_midpoint", "v0253_warning_expired", "v0253_damage_tick_1", "v0253_damage_tick_2", "v0253_damage_tick_3", "v0253_damage_stopped", "v0253_select_damaged_barracks", "v0253_select_worker_after_damage", "v0253_repair_available", "v0253_repair_accepted", "v0253_repair_resource_delta", "v0253_repair_tick_1", "v0253_repair_tick_2", "v0253_repair_tick_3", "v0253_repair_complete", "v0253_repair_unavailable_full", "v0253_no_mutation_after_repair", "v0253_units_unharmed", "v0253_raider_bounded", "v0253_minimap_preserved", "v0253_defended_start", "v0253_defended_train", "v0253_defended_warning", "v0253_defended_attack", "v0253_defended_tick_1", "v0253_defended_tick_2", "v0253_defended_tick_3", "v0253_defended_barracks", "v0253_defended_repair_unavailable", "v0253_preserve_barracks", "v0253_preserve_keep", "v0253_preserve_mine", "v0253_preserve_shells", "v0253_default_clean", "v0253_clean":
+			_ensure_player_battle_scene()
+			_call_scene("set_barrosan_runtime_review_mode", [action])
+			_render_player_screen("battle")
 		"v0249_overview", "v0249_starting_resources", "v0249_select_builder", "v0249_valid_preview", "v0249_confirm_placement", "v0249_construction_delta", "v0249_select_field_barracks", "v0249_train_command", "v0249_train_militia", "v0249_training_progress", "v0249_militia_ready", "v0249_select_militia", "v0249_pressure_telegraph", "v0249_intercept_marker", "v0249_pressure_incoming", "v0249_raider_spawned", "v0249_raider_minimap", "v0249_raider_advancing", "v0249_militia_move", "v0249_combat_contact", "v0249_combat_tick_1", "v0249_combat_tick_2", "v0249_raider_defeated", "v0249_raider_defeated_state", "v0249_raider_minimap_removed", "v0249_militia_survives", "v0249_pressure_contained", "v0249_no_resource_mutation", "v0249_no_building_damage", "v0249_aster_worker_unharmed", "v0249_preserve_barracks", "v0249_preserve_keep", "v0249_preserve_mine", "v0249_preserve_shells", "v0249_clean":
 			_ensure_player_battle_scene()
 			_call_scene("set_barrosan_runtime_review_mode", [action])
@@ -8851,6 +8855,8 @@ func _apply_player_slice_action(action: String) -> Dictionary:
 
 func _player_capture_checkpoint() -> String:
 	var normalized_root := _artifact_root_from_args().replace("\\", "/")
+	if normalized_root.contains("/v0253"):
+		return "v0.253"
 	if normalized_root.contains("/v0252"):
 		return "v0.252"
 	if normalized_root.contains("/v0251"):
@@ -8986,9 +8992,57 @@ func _player_capture_checkpoint() -> String:
 	return "v0.124"
 
 func _is_bounded_microloop_checkpoint() -> bool:
-	return ["v0.129", "v0.130", "v0.160", "v0.162", "v0.164", "v0.166", "v0.168", "v0.169", "v0.170", "v0.173", "v0.174", "v0.177", "v0.178", "v0.179", "v0.181", "v0.184", "v0.185", "v0.186", "v0.187", "v0.193", "v0.194", "v0.195", "v0.196", "v0.197", "v0.198", "v0.199", "v0.200", "v0.203", "v0.204", "v0.205", "v0.206", "v0.209", "v0.210", "v0.211", "v0.212", "v0.213", "v0.215", "v0.216", "v0.217", "v0.218", "v0.219", "v0.220", "v0.221", "v0.222", "v0.223", "v0.224", "v0.227", "v0.228", "v0.229", "v0.230", "v0.231", "v0.243", "v0.244", "v0.245", "v0.246", "v0.247", "v0.248", "v0.249", "v0.250", "v0.251", "v0.252"].has(_player_capture_checkpoint())
+	return ["v0.129", "v0.130", "v0.160", "v0.162", "v0.164", "v0.166", "v0.168", "v0.169", "v0.170", "v0.173", "v0.174", "v0.177", "v0.178", "v0.179", "v0.181", "v0.184", "v0.185", "v0.186", "v0.187", "v0.193", "v0.194", "v0.195", "v0.196", "v0.197", "v0.198", "v0.199", "v0.200", "v0.203", "v0.204", "v0.205", "v0.206", "v0.209", "v0.210", "v0.211", "v0.212", "v0.213", "v0.215", "v0.216", "v0.217", "v0.218", "v0.219", "v0.220", "v0.221", "v0.222", "v0.223", "v0.224", "v0.227", "v0.228", "v0.229", "v0.230", "v0.231", "v0.243", "v0.244", "v0.245", "v0.246", "v0.247", "v0.248", "v0.249", "v0.250", "v0.251", "v0.252", "v0.253"].has(_player_capture_checkpoint())
 
 func _player_capture_steps() -> Array[Dictionary]:
+	if _player_capture_checkpoint() == "v0.253":
+		return [
+			{"id":"opt_in_overview_before_build","label":"v0.253 overview","action":"v0253_overview"},
+			{"id":"starting_resources","label":"v0.253 resources","action":"v0253_starting_resources"},
+			{"id":"select_worker_construction_available","label":"v0.253 Worker","action":"v0253_select_worker"},
+			{"id":"valid_barracks_preview","label":"v0.253 preview","action":"v0253_valid_preview"},
+			{"id":"confirm_authoritative_barracks_placement","label":"v0.253 placement","action":"v0253_confirm_placement"},
+			{"id":"construction_resource_delta","label":"v0.253 construction delta","action":"v0253_construction_delta"},
+			{"id":"field_barracks_hp_200","label":"v0.253 Barracks HP","action":"v0253_barracks_hp_200"},
+			{"id":"raider_spawned_once_hp_full","label":"v0.253 Raider","action":"v0253_raider_spawned"},
+			{"id":"raider_enters_threat_range","label":"v0.253 threat range","action":"v0253_raider_threat_range"},
+			{"id":"warning_window_started","label":"v0.253 warning","action":"v0253_warning_started"},
+			{"id":"warning_midpoint_no_damage","label":"v0.253 warning midpoint","action":"v0253_warning_midpoint"},
+			{"id":"warning_expired_no_intercept","label":"v0.253 warning expired","action":"v0253_warning_expired"},
+			{"id":"damage_tick_1_barracks_hp_175","label":"v0.253 damage 1","action":"v0253_damage_tick_1"},
+			{"id":"damage_tick_2_barracks_hp_150","label":"v0.253 damage 2","action":"v0253_damage_tick_2"},
+			{"id":"damage_tick_3_barracks_hp_125","label":"v0.253 damage 3","action":"v0253_damage_tick_3"},
+			{"id":"damage_stopped_barracks_survives","label":"v0.253 damage stopped","action":"v0253_damage_stopped"},
+			{"id":"select_damaged_field_barracks_hud","label":"v0.253 damaged Barracks","action":"v0253_select_damaged_barracks"},
+			{"id":"select_worker_after_damage","label":"v0.253 Worker selected","action":"v0253_select_worker_after_damage"},
+			{"id":"worker_repair_command_available","label":"v0.253 Repair available","action":"v0253_repair_available"},
+			{"id":"repair_order_accepted","label":"v0.253 Repair accepted","action":"v0253_repair_accepted"},
+			{"id":"repair_resource_delta","label":"v0.253 Repair spend","action":"v0253_repair_resource_delta"},
+			{"id":"repair_progress_tick_1_hp_150","label":"v0.253 repair 1","action":"v0253_repair_tick_1"},
+			{"id":"repair_progress_tick_2_hp_175","label":"v0.253 repair 2","action":"v0253_repair_tick_2"},
+			{"id":"repair_progress_tick_3_hp_200","label":"v0.253 repair 3","action":"v0253_repair_tick_3"},
+			{"id":"repair_complete_hud","label":"v0.253 repaired","action":"v0253_repair_complete"},
+			{"id":"repair_command_unavailable_at_full_hp","label":"v0.253 Repair unavailable","action":"v0253_repair_unavailable_full"},
+			{"id":"no_resource_mutation_after_repair_complete","label":"v0.253 repair resources stable","action":"v0253_no_mutation_after_repair"},
+			{"id":"aster_worker_unharmed_proof","label":"v0.253 units preserved","action":"v0253_units_unharmed"},
+			{"id":"raider_bounded_after_pressure","label":"v0.253 Raider bounded","action":"v0253_raider_bounded"},
+			{"id":"minimap_preserved_during_repair","label":"v0.253 minimap","action":"v0253_minimap_preserved"},
+			{"id":"defended_branch_start","label":"v0.253 defended branch","action":"v0253_defended_start"},
+			{"id":"defended_train_militia_resource_delta","label":"v0.253 train Militia","action":"v0253_defended_train"},
+			{"id":"defended_warning_window","label":"v0.253 defended warning","action":"v0253_defended_warning"},
+			{"id":"defended_attack_order_accepted","label":"v0.253 defended Attack","action":"v0253_defended_attack"},
+			{"id":"defended_combat_tick_1_90_40","label":"v0.253 defended tick 1","action":"v0253_defended_tick_1"},
+			{"id":"defended_combat_tick_2_80_20","label":"v0.253 defended tick 2","action":"v0253_defended_tick_2"},
+			{"id":"defended_combat_tick_3_70_0","label":"v0.253 defended tick 3","action":"v0253_defended_tick_3"},
+			{"id":"defended_barracks_unharmed_hp_200","label":"v0.253 defended Barracks","action":"v0253_defended_barracks"},
+			{"id":"defended_repair_not_available_full_hp","label":"v0.253 defended no Repair","action":"v0253_defended_repair_unavailable"},
+			{"id":"existing_barracks_train_flow_preserved","label":"v0.253 Barracks preserved","action":"v0253_preserve_barracks"},
+			{"id":"command_keep_preserved","label":"v0.253 Keep preserved","action":"v0253_preserve_keep"},
+			{"id":"lume_mine_preserved","label":"v0.253 Mine preserved","action":"v0253_preserve_mine"},
+			{"id":"shells_remain_non_producing","label":"v0.253 shells","action":"v0253_preserve_shells"},
+			{"id":"default_runtime_clean_after_opt_in_work","label":"v0.253 default clean","action":"v0253_default_clean"},
+			{"id":"unselected_clean_view","label":"v0.253 clean","action":"v0253_clean"},
+		]
 	if _player_capture_checkpoint() == "v0.252":
 		return [
 			{"id":"opt_in_overview_before_build","label":"v0.252 overview","action":"v0252_overview"},

@@ -195,6 +195,8 @@
     "godot:validate:salto-barrosan-first-defense-consequence-bridge": "powershell -NoProfile -ExecutionPolicy Bypass -File tools/godot/validateGodotV0251BarrosanFirstDefenseConsequenceBridgeWindows.ps1",
     "godot:capture:salto-barrosan-threat-timing-feedback-bridge": "powershell -NoProfile -ExecutionPolicy Bypass -File tools/godot/captureGodotV0252BarrosanThreatTimingFeedbackBridgeWindows.ps1",
     "godot:validate:salto-barrosan-threat-timing-feedback-bridge": "powershell -NoProfile -ExecutionPolicy Bypass -File tools/godot/validateGodotV0252BarrosanThreatTimingFeedbackBridgeWindows.ps1",
+    "godot:capture:salto-barrosan-first-worker-repair-bridge": "powershell -NoProfile -ExecutionPolicy Bypass -File tools/godot/captureGodotV0253BarrosanFirstWorkerRepairBridgeWindows.ps1",
+    "godot:validate:salto-barrosan-first-worker-repair-bridge": "powershell -NoProfile -ExecutionPolicy Bypass -File tools/godot/validateGodotV0253BarrosanFirstWorkerRepairBridgeWindows.ps1",
     "godot:capture:salto-environment-contrast": "powershell -NoProfile -ExecutionPolicy Bypass -File tools/godot/captureGodotSaltoEnvironmentContrastWindows.ps1",
     "godot:audit:player-slice": "powershell -NoProfile -ExecutionPolicy Bypass -File tools/godot/auditGodotPlayerSliceWindows.ps1",
     "godot:validate:player-slice": "powershell -NoProfile -ExecutionPolicy Bypass -File tools/godot/validateGodotPlayerSlice.ps1",
