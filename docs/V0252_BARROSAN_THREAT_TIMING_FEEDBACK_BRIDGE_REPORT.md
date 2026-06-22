@@ -6,9 +6,9 @@ Verdict: `PARTIAL`
 
 - Resolved base commit: `06f179f4a40583e7f569dd0c0ebafd3411d7afeb`.
 - Base exact-SHA CI: https://github.com/jardas33/ascendant-realms/actions/runs/27916829778.
-- Implementation commit: `PENDING_PUBLICATION`.
-- Final repository HEAD: `PENDING_PUBLICATION`.
-- Exact-SHA GitHub Actions run: PENDING_PUBLICATION.
+- Implementation commit: `b6e793a9698ff7fcb342af2dd6c430a00b16a299`.
+- Final repository HEAD: `b6e793a9698ff7fcb342af2dd6c430a00b16a299`.
+- Exact-SHA GitHub Actions run: https://github.com/jardas33/ascendant-realms/actions/runs/27921499780.
 - Scene: `res://scenes/salto_barrosan_playable_runtime_skin.tscn`.
 - Blender used: no. New GLB exported: no. Existing v0.239 GLB reused unchanged: yes (B7A68A4442071FB29A9DB0468B9A2A56BE724E80E2C69C0E5846539BA193D0EB).
 - Files changed: opt-in runtime subclass, capture dispatch, v0.252 evidence/validator/report tooling, package scripts and this report.
@@ -46,7 +46,7 @@ Verdict: `PARTIAL`
 - Default runtime proof: opt-in skin disabled; no Raider, warning window, Field Barracks HP bridge, building damage, attack-order pressure bridge or v0.252 copy.
 - Pathing honesty: review-grade deterministic lane destination and three-step threat window.
 - v0.252 capture and dedicated validator: pass.
-- Full local validation: pass. Exact-SHA GitHub Actions: pending publication.
+- Full local validation: pass. Exact-SHA GitHub Actions: pass.
 
 ## Honest assessment
 
