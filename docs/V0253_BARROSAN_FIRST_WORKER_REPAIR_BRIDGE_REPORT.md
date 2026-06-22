@@ -6,9 +6,9 @@ Verdict: `PARTIAL`
 
 - Resolved base commit: `c6acf6a01b23d66403f3e8b7ebe3a486fb33f71c`.
 - Base exact-SHA CI: https://github.com/jardas33/ascendant-realms/actions/runs/27921864487.
-- Implementation commit: `PENDING_PUBLICATION`.
-- Final repository HEAD: `PENDING_PUBLICATION`.
-- Exact-SHA GitHub Actions run: PENDING_PUBLICATION.
+- Implementation commit: `5e9956b0c2e4ac372a78bb91997fbc83d5767d57`.
+- Final repository HEAD: `5e9956b0c2e4ac372a78bb91997fbc83d5767d57`.
+- Exact-SHA GitHub Actions run: https://github.com/jardas33/ascendant-realms/actions/runs/27923623402.
 - Scene: `res://scenes/salto_barrosan_playable_runtime_skin.tscn`.
 - Blender used: no. New GLB exported: no. Existing v0.239 GLB reused unchanged: yes (B7A68A4442071FB29A9DB0468B9A2A56BE724E80E2C69C0E5846539BA193D0EB).
 - Files changed: opt-in runtime subclass, capture dispatch, v0.253 evidence/validator/report tooling, package scripts and this report.
@@ -42,7 +42,7 @@ Verdict: `PARTIAL`
 - Pathing honesty: review-grade explicit Worker selection and deterministic repair ticks.
 - Repair honesty: scripted single-target bridge only; no global repair system, queue, passive regeneration or broad building model.
 - v0.253 capture and dedicated validator: pass.
-- Full local validation: pass. Exact-SHA GitHub Actions: pending publication.
+- Full local validation: pass. Exact-SHA GitHub Actions: pass.
 
 ## Honest assessment
 
