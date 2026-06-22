@@ -1080,14 +1080,25 @@ func load_mode(mode: String) -> void:
 		active_scene.queue_free()
 	var scene_path: String = "res://scenes/salto_2d_placeholder.tscn"
 	if mode == MODE_25D:
-		scene_path = "res://scenes/salto_barrosan_playable_runtime_skin.tscn" if _player_capture_checkpoint() == "v0.254" or _barrosan_runtime_scene_requested() else "res://scenes/salto_2_5d_orthographic_placeholder.tscn"
-	var packed: PackedScene = load(scene_path) as PackedScene
-	active_scene = packed.instantiate()
+		scene_path = "res://scenes/salto_barrosan_playable_runtime_skin.tscn" if _player_capture_checkpoint() in ["v0.254", "v0.255"] or _barrosan_runtime_scene_requested() else "res://scenes/salto_2_5d_orthographic_placeholder.tscn"
+	if scene_path == "res://scenes/salto_barrosan_playable_runtime_skin.tscn":
+		var runtime_script := load("res://scripts/salto_barrosan_playable_runtime_skin.gd") as GDScript
+		active_scene = runtime_script.new()
+		active_scene.name = "SaltoBarrosanPlayableRuntimeSkin"
+	else:
+		var packed: PackedScene = load(scene_path) as PackedScene
+		active_scene = packed.instantiate()
 	active_mode = mode
 	add_child(active_scene)
 	if active_mode == MODE_25D and active_scene.has_method("set_visual_preset"):
 		active_scene.set_visual_preset(active_visual_preset)
 	_configure_worker_art_for_active_scene()
+	if active_scene.has_method("configure_barrosan_playable_runtime_skin"):
+		active_scene.configure_barrosan_playable_runtime_skin({
+			"enabled": _barrosan_runtime_skin_requested(),
+			"debugLabels": _script_args().has("--salto-barrosan-runtime-debug-labels"),
+			"checkpoint": _player_capture_checkpoint(),
+		})
 	if home_screen:
 		home_screen.visible = false
 	_update_review_overlay("Launched %s" % _friendly_mode(mode))
@@ -1823,7 +1834,7 @@ func _restart_player_battle_from_results() -> void:
 	show_player_battle()
 
 func _ensure_player_battle_scene() -> void:
-	if _player_capture_checkpoint() == "v0.254" and (
+	if _player_capture_checkpoint() in ["v0.254", "v0.255"] and (
 		active_scene == null
 		or not is_instance_valid(active_scene)
 		or not active_scene.has_method("configure_barrosan_playable_runtime_skin")
@@ -1833,7 +1844,7 @@ func _ensure_player_battle_scene() -> void:
 		return
 	if active_scene == null or not is_instance_valid(active_scene) or active_mode != MODE_25D:
 		show_player_battle()
-	elif (_player_capture_checkpoint() == "v0.254" or _barrosan_runtime_scene_requested()) and not active_scene.has_method("configure_barrosan_playable_runtime_skin"):
+	elif (_player_capture_checkpoint() in ["v0.254", "v0.255"] or _barrosan_runtime_scene_requested()) and not active_scene.has_method("configure_barrosan_playable_runtime_skin"):
 		load_mode(MODE_25D)
 		_call_scene("set_player_facing_mode", [true])
 	else:
@@ -1843,16 +1854,23 @@ func _ensure_player_battle_scene() -> void:
 func _load_v0254_capture_scene() -> void:
 	if active_scene and is_instance_valid(active_scene):
 		active_scene.queue_free()
-	var packed := load("res://scenes/salto_barrosan_playable_runtime_skin.tscn") as PackedScene
-	active_scene = packed.instantiate()
+	var runtime_script := load("res://scripts/salto_barrosan_playable_runtime_skin.gd") as GDScript
+	active_scene = runtime_script.new()
+	active_scene.name = "SaltoBarrosanPlayableRuntimeSkin"
 	active_mode = MODE_25D
 	add_child(active_scene)
 	if active_scene.has_method("set_visual_preset"):
 		active_scene.set_visual_preset(active_visual_preset)
 	_configure_worker_art_for_active_scene()
+	if active_scene.has_method("configure_barrosan_playable_runtime_skin"):
+		active_scene.configure_barrosan_playable_runtime_skin({
+			"enabled": _barrosan_runtime_skin_requested(),
+			"debugLabels": _script_args().has("--salto-barrosan-runtime-debug-labels"),
+			"checkpoint": _player_capture_checkpoint(),
+		})
 	if home_screen:
 		home_screen.visible = false
-	_update_review_overlay("Launched v0.254 Barrosan runtime capture")
+	_update_review_overlay("Launched %s Barrosan runtime capture" % _player_capture_checkpoint())
 
 
 func _handle_review_action(action: String) -> void:
@@ -8293,7 +8311,7 @@ func _apply_player_slice_action(action: String) -> Dictionary:
 			_ensure_player_battle_scene()
 			_call_scene("set_barrosan_runtime_review_mode", [action])
 			_render_player_screen("battle")
-		"v0254_overview", "v0254_starting_resources", "v0254_select_worker", "v0254_valid_preview", "v0254_confirm_placement", "v0254_construction_delta", "v0254_barracks_hp_200", "v0254_raider_spawned", "v0254_raider_threat_range", "v0254_warning_started", "v0254_warning_midpoint", "v0254_warning_expired", "v0254_damage_tick_1", "v0254_damage_tick_2", "v0254_damage_tick_3", "v0254_damage_stopped", "v0254_damaged_selectable", "v0254_damaged_train_available", "v0254_damaged_train_ordered", "v0254_damaged_train_delta", "v0254_damaged_militia_ready", "v0254_damaged_hp_after_training", "v0254_no_passive_collapse", "v0254_select_worker_repair", "v0254_repair_accepted", "v0254_repair_delta", "v0254_repair_tick_1", "v0254_repair_tick_2", "v0254_repair_tick_3", "v0254_repair_complete", "v0254_repair_unavailable_full", "v0254_defended_start", "v0254_defended_train", "v0254_defended_attack", "v0254_defended_tick_1", "v0254_defended_tick_2", "v0254_defended_tick_3", "v0254_defended_barracks", "v0254_raider_count", "v0254_militia_count", "v0254_units_unharmed", "v0254_minimap", "v0254_preserve_barracks", "v0254_preserve_keep", "v0254_preserve_mine", "v0254_preserve_shells", "v0254_default_clean", "v0254_clean":
+		"v0255_overview", "v0255_starting_resources", "v0255_select_worker", "v0255_valid_preview", "v0255_confirm_placement", "v0255_construction_delta", "v0255_barracks_hp_200", "v0255_first_raider", "v0255_first_warning_started", "v0255_first_warning_midpoint", "v0255_first_warning_expired", "v0255_first_damage_175", "v0255_first_damage_150", "v0255_first_damage_125", "v0255_first_pressure_stopped", "v0255_no_passive_collapse", "v0255_damaged_selectable", "v0255_damaged_train_available", "v0255_train_damaged_ordered", "v0255_train_damaged_delta", "v0255_militia_ready_damaged", "v0255_damaged_hp_after_training", "v0255_second_pressure_triggered", "v0255_second_warning_started", "v0255_second_warning_midpoint", "v0255_second_warning_expired", "v0255_second_damage_100", "v0255_second_damage_75", "v0255_second_damage_50", "v0255_second_damage_25", "v0255_second_damage_0", "v0255_destroyed_selected", "v0255_destroyed_train_unavailable", "v0255_destroyed_repair_unavailable", "v0255_no_refund_destroyed", "v0255_second_intercept_start", "v0255_second_intercept_order", "v0255_second_intercept_tick_1", "v0255_second_intercept_tick_2", "v0255_second_intercept_tick_3", "v0255_second_intercept_survives", "v0255_repair_available", "v0255_repair_delta", "v0255_repair_150", "v0255_repair_175", "v0255_repair_200", "v0255_repair_unavailable_full", "v0255_defended_first_start", "v0255_defended_first_tick_1", "v0255_defended_first_tick_2", "v0255_defended_first_tick_3", "v0255_defended_barracks", "v0255_units_unharmed", "v0255_minimap", "v0255_preserve_barracks", "v0255_preserve_keep_mine", "v0255_preserve_shells", "v0255_default_clean", "v0255_clean", "v0254_overview", "v0254_starting_resources", "v0254_select_worker", "v0254_valid_preview", "v0254_confirm_placement", "v0254_construction_delta", "v0254_barracks_hp_200", "v0254_raider_spawned", "v0254_raider_threat_range", "v0254_warning_started", "v0254_warning_midpoint", "v0254_warning_expired", "v0254_damage_tick_1", "v0254_damage_tick_2", "v0254_damage_tick_3", "v0254_damage_stopped", "v0254_damaged_selectable", "v0254_damaged_train_available", "v0254_damaged_train_ordered", "v0254_damaged_train_delta", "v0254_damaged_militia_ready", "v0254_damaged_hp_after_training", "v0254_no_passive_collapse", "v0254_select_worker_repair", "v0254_repair_accepted", "v0254_repair_delta", "v0254_repair_tick_1", "v0254_repair_tick_2", "v0254_repair_tick_3", "v0254_repair_complete", "v0254_repair_unavailable_full", "v0254_defended_start", "v0254_defended_train", "v0254_defended_attack", "v0254_defended_tick_1", "v0254_defended_tick_2", "v0254_defended_tick_3", "v0254_defended_barracks", "v0254_raider_count", "v0254_militia_count", "v0254_units_unharmed", "v0254_minimap", "v0254_preserve_barracks", "v0254_preserve_keep", "v0254_preserve_mine", "v0254_preserve_shells", "v0254_default_clean", "v0254_clean":
 			_ensure_player_battle_scene()
 			_call_scene("set_barrosan_runtime_review_mode", [action])
 			_render_player_screen("battle")
@@ -8886,6 +8904,8 @@ func _apply_player_slice_action(action: String) -> Dictionary:
 
 func _player_capture_checkpoint() -> String:
 	var normalized_root := _artifact_root_from_args().replace("\\", "/")
+	if normalized_root.contains("/v0255"):
+		return "v0.255"
 	if normalized_root.contains("/v0254"):
 		return "v0.254"
 	if normalized_root.contains("/v0253"):
@@ -9025,9 +9045,71 @@ func _player_capture_checkpoint() -> String:
 	return "v0.124"
 
 func _is_bounded_microloop_checkpoint() -> bool:
-	return ["v0.129", "v0.130", "v0.160", "v0.162", "v0.164", "v0.166", "v0.168", "v0.169", "v0.170", "v0.173", "v0.174", "v0.177", "v0.178", "v0.179", "v0.181", "v0.184", "v0.185", "v0.186", "v0.187", "v0.193", "v0.194", "v0.195", "v0.196", "v0.197", "v0.198", "v0.199", "v0.200", "v0.203", "v0.204", "v0.205", "v0.206", "v0.209", "v0.210", "v0.211", "v0.212", "v0.213", "v0.215", "v0.216", "v0.217", "v0.218", "v0.219", "v0.220", "v0.221", "v0.222", "v0.223", "v0.224", "v0.227", "v0.228", "v0.229", "v0.230", "v0.231", "v0.243", "v0.244", "v0.245", "v0.246", "v0.247", "v0.248", "v0.249", "v0.250", "v0.251", "v0.252", "v0.253", "v0.254"].has(_player_capture_checkpoint())
+	return ["v0.129", "v0.130", "v0.160", "v0.162", "v0.164", "v0.166", "v0.168", "v0.169", "v0.170", "v0.173", "v0.174", "v0.177", "v0.178", "v0.179", "v0.181", "v0.184", "v0.185", "v0.186", "v0.187", "v0.193", "v0.194", "v0.195", "v0.196", "v0.197", "v0.198", "v0.199", "v0.200", "v0.203", "v0.204", "v0.205", "v0.206", "v0.209", "v0.210", "v0.211", "v0.212", "v0.213", "v0.215", "v0.216", "v0.217", "v0.218", "v0.219", "v0.220", "v0.221", "v0.222", "v0.223", "v0.224", "v0.227", "v0.228", "v0.229", "v0.230", "v0.231", "v0.243", "v0.244", "v0.245", "v0.246", "v0.247", "v0.248", "v0.249", "v0.250", "v0.251", "v0.252", "v0.253", "v0.254", "v0.255"].has(_player_capture_checkpoint())
 
 func _player_capture_steps() -> Array[Dictionary]:
+	if _player_capture_checkpoint() == "v0.255":
+		return [
+			{"id":"opt_in_overview_before_build","label":"v0.255 overview","action":"v0255_overview"},
+			{"id":"starting_resources","label":"v0.255 resources","action":"v0255_starting_resources"},
+			{"id":"select_worker_construction_available","label":"v0.255 Worker","action":"v0255_select_worker"},
+			{"id":"valid_barracks_preview","label":"v0.255 preview","action":"v0255_valid_preview"},
+			{"id":"confirm_authoritative_barracks_placement","label":"v0.255 placement","action":"v0255_confirm_placement"},
+			{"id":"construction_resource_delta","label":"v0.255 construction delta","action":"v0255_construction_delta"},
+			{"id":"field_barracks_hp_200","label":"v0.255 HP 200","action":"v0255_barracks_hp_200"},
+			{"id":"first_raider_spawned_once","label":"v0.255 first Raider","action":"v0255_first_raider"},
+			{"id":"first_warning_started","label":"v0.255 first warning","action":"v0255_first_warning_started"},
+			{"id":"first_warning_midpoint_no_damage","label":"v0.255 first warning midpoint","action":"v0255_first_warning_midpoint"},
+			{"id":"first_warning_expired","label":"v0.255 first warning expired","action":"v0255_first_warning_expired"},
+			{"id":"first_damage_hp_175","label":"v0.255 first damage 175","action":"v0255_first_damage_175"},
+			{"id":"first_damage_hp_150","label":"v0.255 first damage 150","action":"v0255_first_damage_150"},
+			{"id":"first_damage_hp_125","label":"v0.255 first damage 125","action":"v0255_first_damage_125"},
+			{"id":"first_pressure_stops_at_125","label":"v0.255 first pressure stopped","action":"v0255_first_pressure_stopped"},
+			{"id":"no_passive_collapse_after_wait","label":"v0.255 no passive collapse","action":"v0255_no_passive_collapse"},
+			{"id":"damaged_barracks_selectable","label":"v0.255 damaged selectable","action":"v0255_damaged_selectable"},
+			{"id":"damaged_barracks_train_available","label":"v0.255 damaged production","action":"v0255_damaged_train_available"},
+			{"id":"train_from_damaged_ordered","label":"v0.255 train damaged","action":"v0255_train_damaged_ordered"},
+			{"id":"train_from_damaged_resource_delta","label":"v0.255 train delta","action":"v0255_train_damaged_delta"},
+			{"id":"militia_ready_from_damaged_barracks","label":"v0.255 damaged Militia ready","action":"v0255_militia_ready_damaged"},
+			{"id":"damaged_barracks_still_hp_125_after_training","label":"v0.255 damaged HP retained","action":"v0255_damaged_hp_after_training"},
+			{"id":"second_pressure_triggered_explicitly","label":"v0.255 second pressure","action":"v0255_second_pressure_triggered"},
+			{"id":"second_warning_started","label":"v0.255 second warning","action":"v0255_second_warning_started"},
+			{"id":"second_warning_midpoint_no_damage","label":"v0.255 second warning midpoint","action":"v0255_second_warning_midpoint"},
+			{"id":"second_warning_expired_no_intercept","label":"v0.255 second warning expired","action":"v0255_second_warning_expired"},
+			{"id":"second_damage_hp_100","label":"v0.255 HP 100","action":"v0255_second_damage_100"},
+			{"id":"second_damage_hp_75","label":"v0.255 HP 75","action":"v0255_second_damage_75"},
+			{"id":"second_damage_hp_50","label":"v0.255 HP 50","action":"v0255_second_damage_50"},
+			{"id":"second_damage_hp_25_still_functional","label":"v0.255 HP 25 functional","action":"v0255_second_damage_25"},
+			{"id":"second_damage_hp_0_destroyed","label":"v0.255 HP 0 destroyed","action":"v0255_second_damage_0"},
+			{"id":"destroyed_barracks_selected","label":"v0.255 destroyed selected","action":"v0255_destroyed_selected"},
+			{"id":"destroyed_barracks_train_unavailable","label":"v0.255 train unavailable","action":"v0255_destroyed_train_unavailable"},
+			{"id":"destroyed_barracks_repair_unavailable","label":"v0.255 repair unavailable","action":"v0255_destroyed_repair_unavailable"},
+			{"id":"no_refund_after_destruction","label":"v0.255 no refund","action":"v0255_no_refund_destroyed"},
+			{"id":"train_from_damaged_intercepts_second_pressure_start","label":"v0.255 second intercept start","action":"v0255_second_intercept_start"},
+			{"id":"second_pressure_intercept_order","label":"v0.255 second intercept order","action":"v0255_second_intercept_order"},
+			{"id":"second_pressure_intercept_combat_90_40","label":"v0.255 second combat 90/40","action":"v0255_second_intercept_tick_1"},
+			{"id":"second_pressure_intercept_combat_80_20","label":"v0.255 second combat 80/20","action":"v0255_second_intercept_tick_2"},
+			{"id":"second_pressure_intercept_combat_70_0","label":"v0.255 second combat 70/0","action":"v0255_second_intercept_tick_3"},
+			{"id":"second_pressure_intercept_barracks_survives_125","label":"v0.255 second pressure stopped","action":"v0255_second_intercept_survives"},
+			{"id":"repair_branch_available_at_125","label":"v0.255 repair available","action":"v0255_repair_available"},
+			{"id":"repair_resource_delta","label":"v0.255 repair delta","action":"v0255_repair_delta"},
+			{"id":"repair_hp_150","label":"v0.255 repair HP 150","action":"v0255_repair_150"},
+			{"id":"repair_hp_175","label":"v0.255 repair HP 175","action":"v0255_repair_175"},
+			{"id":"repair_hp_200","label":"v0.255 repair HP 200","action":"v0255_repair_200"},
+			{"id":"repair_unavailable_full_hp","label":"v0.255 repair unavailable full","action":"v0255_repair_unavailable_full"},
+			{"id":"defended_first_branch_start","label":"v0.255 defended first start","action":"v0255_defended_first_start"},
+			{"id":"defended_first_combat_90_40","label":"v0.255 defended 90/40","action":"v0255_defended_first_tick_1"},
+			{"id":"defended_first_combat_80_20","label":"v0.255 defended 80/20","action":"v0255_defended_first_tick_2"},
+			{"id":"defended_first_combat_70_0","label":"v0.255 defended 70/0","action":"v0255_defended_first_tick_3"},
+			{"id":"defended_barracks_unharmed_200","label":"v0.255 defended Barracks","action":"v0255_defended_barracks"},
+			{"id":"aster_worker_unharmed_proof","label":"v0.255 units preserved","action":"v0255_units_unharmed"},
+			{"id":"minimap_preserved","label":"v0.255 minimap","action":"v0255_minimap"},
+			{"id":"existing_barracks_preserved","label":"v0.255 existing Barracks","action":"v0255_preserve_barracks"},
+			{"id":"command_keep_lume_mine_preserved","label":"v0.255 Keep and Mine","action":"v0255_preserve_keep_mine"},
+			{"id":"shells_remain_non_producing","label":"v0.255 shells","action":"v0255_preserve_shells"},
+			{"id":"default_runtime_clean_after_opt_in_work","label":"v0.255 default clean","action":"v0255_default_clean"},
+			{"id":"unselected_clean_view","label":"v0.255 clean","action":"v0255_clean"},
+		]
 	if _player_capture_checkpoint() == "v0.254":
 		return [
 			{"id":"opt_in_overview_before_build","label":"v0.254 overview","action":"v0254_overview"},
@@ -10661,7 +10743,7 @@ func _barrosan_runtime_skin_requested() -> bool:
 
 
 func _barrosan_runtime_scene_requested() -> bool:
-	return _barrosan_runtime_skin_requested() or _player_capture_checkpoint() == "v0.254"
+	return _barrosan_runtime_skin_requested() or _player_capture_checkpoint() in ["v0.254", "v0.255"]
 
 
 func _script_args() -> PackedStringArray:
