@@ -5,9 +5,9 @@ Verdict: `PARTIAL`
 ## Exact facts
 
 - Base commit: `fca1f34ad0bf1304447e0a5d957afa702ae65973`.
-- Implementation commit: `PENDING_PUBLICATION`.
-- Final HEAD: `PENDING_PUBLICATION`.
-- Exact-SHA GitHub Actions run: PENDING_PUBLICATION.
+- Implementation commit: `560f35f796a3182be56b0fbac41c0d78098243f2`.
+- Final HEAD: `560f35f796a3182be56b0fbac41c0d78098243f2`.
+- Exact-SHA GitHub Actions run: https://github.com/jardas33/ascendant-realms/actions/runs/27995663566.
 - Scene: `res://scenes/salto_barrosan_playable_runtime_skin.tscn`.
 - Blender used: no. New GLB exported: no. Existing v0.239 GLB reused unchanged: yes (B7A68A4442071FB29A9DB0468B9A2A56BE724E80E2C69C0E5846539BA193D0EB).
 - Files changed: opt-in runtime lifecycle instructions/overlays, capture dispatch, v0.258 evidence tooling, package scripts, and this report.
@@ -31,7 +31,7 @@ Verdict: `PARTIAL`
 ## Validation and honest assessment
 
 - Dedicated v0.258 capture and validator: pass.
-- Full local validation: pass. Exact-SHA GitHub Actions: pending publication.
+- Full local validation: pass. Exact-SHA GitHub Actions: pass.
 - Honest assessment: this is one bounded opt-in Field Barracks lifecycle readability pass using lightweight runtime overlays. It is not global reconstruction and remains placeholder-grade. Verdict is PARTIAL.
 - Recommendation for v0.259: if separately authorized, improve one next bounded interaction or visual-feedback contract without broadening into global reconstruction, new waves, or economy gathering.
 
