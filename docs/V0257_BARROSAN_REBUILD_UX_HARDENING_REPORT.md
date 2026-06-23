@@ -5,9 +5,9 @@ Verdict: `PARTIAL`
 ## Exact facts
 
 - Base commit: `3de91a5332022151b71ab3e3aa3d27270e1433f8`.
-- Implementation commit: `PENDING_PUBLICATION`.
-- Final HEAD: `PENDING_PUBLICATION`.
-- Exact-SHA GitHub Actions run: PENDING_PUBLICATION.
+- Implementation commit: `a9798bc4433ec968ab838e1c458a2fbf60825b4d`.
+- Final HEAD: `a9798bc4433ec968ab838e1c458a2fbf60825b4d`.
+- Exact-SHA GitHub Actions run: https://github.com/jardas33/ascendant-realms/actions/runs/27992461613.
 - Scene: `res://scenes/salto_barrosan_playable_runtime_skin.tscn`.
 - Blender used: no. New GLB exported: no. Existing v0.239 GLB reused unchanged: yes (B7A68A4442071FB29A9DB0468B9A2A56BE724E80E2C69C0E5846539BA193D0EB).
 - Files changed: opt-in runtime HUD/capture dispatch, v0.257 evidence tooling, package scripts, and this report.
@@ -35,7 +35,7 @@ Verdict: `PARTIAL`
 ## Validation and honest assessment
 
 - Dedicated v0.257 capture and validator: pass.
-- Full local validation: pass. Exact-SHA GitHub Actions: pending publication.
+- Full local validation: pass. Exact-SHA GitHub Actions: pass.
 - Honest assessment: this is bounded opt-in UX/text hardening for one Field Barracks rebuild bridge. It is not global reconstruction; placeholder-grade visuals remain. Verdict is PARTIAL.
 - Recommendation for v0.258: if separately authorized, test the next bounded gameplay consequence or broaden rebuild UX to another explicitly scoped structure without inferring a global system.
 
