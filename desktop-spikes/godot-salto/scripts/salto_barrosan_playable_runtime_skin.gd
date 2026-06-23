@@ -103,12 +103,13 @@ var v0256_destroyed_proof: Dictionary = {}
 var v0256_rebuild_proof: Dictionary = {}
 var v0256_separation_proof: Dictionary = {}
 var v0256_defended_proof: Dictionary = {}
+var v0257_hud_proof: Dictionary = {}
 
 
 func configure_barrosan_playable_runtime_skin(options: Dictionary) -> void:
 	barrosan_runtime_skin_enabled = bool(options.get("enabled", false))
 	barrosan_requested_checkpoint = str(options.get("checkpoint", "v0.243"))
-	barrosan_runtime_checkpoint = "v0.253" if barrosan_requested_checkpoint in ["v0.254", "v0.255", "v0.256"] else barrosan_requested_checkpoint
+	barrosan_runtime_checkpoint = "v0.253" if barrosan_requested_checkpoint in ["v0.254", "v0.255", "v0.256", "v0.257"] else barrosan_requested_checkpoint
 	barrosan_runtime_debug_labels = bool(options.get("debugLabels", false))
 	if not barrosan_runtime_skin_enabled:
 		return
@@ -459,27 +460,27 @@ func _sync_hud() -> void:
 				int(_v0251_field_barracks_health()),
 				int(V0251_FIELD_BARRACKS_MAX_HP),
 			]
-			if barrosan_requested_checkpoint in ["v0.254", "v0.255", "v0.256"] and str(consequence.get("fieldBarracksState", "unharmed")) == "damaged":
+			if barrosan_requested_checkpoint in ["v0.254", "v0.255", "v0.256", "v0.257"] and str(consequence.get("fieldBarracksState", "unharmed")) == "damaged":
 				hud_hero_label.text = "Authoritative Field Barracks | Damaged but functional"
-				hud_context_label.text = "Operational | Damaged HP %s/200 | Train Militia available" % int(_v0251_field_barracks_health())
+				hud_context_label.text = ("Operational | HP %s/200 | Train Militia available" if barrosan_requested_checkpoint == "v0.257" else "Operational | Damaged HP %s/200 | Train Militia available") % int(_v0251_field_barracks_health())
 				hud_objective_strip_label.text = "Field Barracks damaged but functional"
-				hud_objective_label.text = "Can train Militia | Worker repair available"
-			if barrosan_requested_checkpoint in ["v0.255", "v0.256"]:
+				hud_objective_label.text = "Ready. | Production available while HP > 0" if barrosan_requested_checkpoint == "v0.257" else "Can train Militia | Worker repair available"
+			if barrosan_requested_checkpoint in ["v0.255", "v0.256", "v0.257"]:
 				var second: Dictionary = barrosan_playtest.get("v0255SecondPressure", {})
 				var rebuild: Dictionary = barrosan_playtest.get("v0256WorkerRebuild", {})
 				var hp := int(_v0251_field_barracks_health())
 				if bool(rebuild.get("rebuildStarted", false)):
 					hud_hero_label.text = "Authoritative Field Barracks | Rebuilding"
-					hud_context_label.text = "HP %s/200 | Production unavailable | Worker rebuilding" % hp
+					hud_context_label.text = ("Production unavailable until rebuild complete | HP %s/200" if barrosan_requested_checkpoint == "v0.257" else "HP %s/200 | Production unavailable | Worker rebuilding") % hp
 					hud_objective_strip_label.text = "Rebuilding Field Barracks"
 					hud_objective_label.text = "Production unavailable until rebuild complete"
 					if hud_work_button != null:
 						hud_work_button.text = "Train unavailable"
 				elif hp <= 0:
 					hud_hero_label.text = "Authoritative Field Barracks | Destroyed"
-					hud_context_label.text = "HP 0/200 | Production unavailable | Select Worker to rebuild"
+					hud_context_label.text = "HP 0/200 | Production unavailable"
 					hud_objective_strip_label.text = "Authoritative Field Barracks destroyed"
-					hud_objective_label.text = "Production unavailable | Select Worker to rebuild"
+					hud_objective_label.text = "Select Worker to rebuild"
 					if hud_work_button != null:
 						hud_work_button.text = "Train unavailable"
 				elif bool(rebuild.get("rebuildComplete", false)) and hp == 100:
@@ -493,8 +494,9 @@ func _sync_hud() -> void:
 					hud_objective_strip_label.text = "Second Ashen pressure incoming"
 					hud_objective_label.text = "Intercept before impact"
 				elif bool(second.get("damageStarted", false)) and hp == 25:
-					hud_hero_label.text = "Authoritative Field Barracks | Critical but functional"
-					hud_context_label.text = "HP 25/200 | Production still available while HP > 0"
+					hud_hero_label.text = "Authoritative Field Barracks | Damaged but functional" if barrosan_requested_checkpoint == "v0.257" else "Authoritative Field Barracks | Critical but functional"
+					hud_context_label.text = "Operational | HP 25/200 | Train Militia available"
+					hud_objective_label.text = "Ready. | Production still available while HP > 0"
 				elif bool(second.get("damageStarted", false)):
 					hud_hero_label.text = "Authoritative Field Barracks | Under Ashen pressure"
 					hud_context_label.text = "HP %s/200 | Production still available while HP > 0" % hp
@@ -503,14 +505,22 @@ func _sync_hud() -> void:
 		var rebuild: Dictionary = barrosan_playtest.get("v0256WorkerRebuild", {})
 		var repair_available := _v0253_repair_command_available()
 		hud_hero_label.text = "Selected Worker"
-		if barrosan_requested_checkpoint == "v0.256" and bool(rebuild.get("rebuildStarted", false)):
+		if barrosan_requested_checkpoint in ["v0.256", "v0.257"] and bool(rebuild.get("rebuildStarted", false)):
 			hud_context_label.text = "Rebuilding Field Barracks | Progress active | Production unavailable until rebuild complete"
 			hud_objective_strip_label.text = "Rebuilding Field Barracks"
 			hud_objective_label.text = "HP %s/200 | Rebuild progress %s/4" % [int(_v0251_field_barracks_health()), int(rebuild.get("rebuildTickCount", 0))]
-		elif barrosan_requested_checkpoint == "v0.256" and _v0251_field_barracks_health() <= 0.0:
-			hud_context_label.text = "Rebuild available | Destroyed Field Barracks | Cost: 90 Crowns / 40 Stone | Ready"
+		elif barrosan_requested_checkpoint in ["v0.256", "v0.257"] and _v0251_field_barracks_health() <= 0.0:
+			hud_context_label.text = "Rebuild available | Destroyed Field Barracks | Cost: 90 Crowns / 40 Stone | Ready."
 			hud_objective_strip_label.text = "Rebuild destroyed Field Barracks"
-			hud_objective_label.text = "Repair unavailable at HP 0"
+			hud_objective_label.text = "Repair unavailable | Target destroyed"
+		elif barrosan_requested_checkpoint == "v0.257" and bool(rebuild.get("rebuildComplete", false)):
+			hud_context_label.text = "Rebuild unavailable | No destroyed target | Construction available | Ready."
+			hud_objective_strip_label.text = "Field Barracks damaged but functional"
+			hud_objective_label.text = "Repair unavailable | Insufficient Stone"
+		elif barrosan_requested_checkpoint == "v0.257" and repair_available:
+			hud_context_label.text = "Repair available | Damaged Field Barracks | Rebuild unavailable | Target not destroyed | Ready."
+			hud_objective_strip_label.text = "Repair damaged Field Barracks"
+			hud_objective_label.text = "Production available while HP > 0"
 		elif barrosan_requested_checkpoint == "v0.256" and bool(rebuild.get("rebuildComplete", false)):
 			hud_context_label.text = "Repair unavailable | Insufficient Stone | Construction available | Ready"
 			hud_objective_strip_label.text = "Field Barracks damaged but functional"
@@ -571,15 +581,19 @@ func _sync_hud() -> void:
 			else:
 				hud_objective_strip_label.text = "Ashen pressure contained"
 				hud_objective_label.text = "Pressure contained before impact | Field Barracks unharmed" if barrosan_runtime_checkpoint in ["v0.252", "v0.253"] else ("Pressure contained by explicit attack order | Field Barracks unharmed" if barrosan_runtime_checkpoint in ["v0.250", "v0.251"] else "Pressure contained by combat | No resource mutation after combat")
+	if barrosan_requested_checkpoint == "v0.257":
+		_apply_v0257_hud_override()
 
 
 func set_barrosan_runtime_review_mode(mode: String) -> void:
 	barrosan_runtime_review_mode = mode
+	var v0257_custom_modes := ["v0257_barracks_built", "v0257_hp_25", "v0257_militia_ready_rebuilt", "v0257_rebuild_unavailable_no_target", "v0257_defended_combat", "v0257_preserve_structures", "v0257_no_stale_text"]
+	var action_mode := mode.replace("v0257_", "v0256_") if mode.begins_with("v0257_") and not v0257_custom_modes.has(mode) else mode
 	if barrosan_runtime_checkpoint in ["v0.246", "v0.247", "v0.248", "v0.249", "v0.250", "v0.251", "v0.252", "v0.253"]:
 		_ensure_v0246_field_militia_active()
 	if barrosan_runtime_checkpoint in ["v0.247", "v0.248", "v0.249", "v0.250", "v0.251", "v0.252", "v0.253"]:
 		_ensure_v0247_ashen_raider_active()
-	match mode:
+	match action_mode:
 		"selected":
 			select_barrosan_runtime_role("market")
 		"selected_live":
@@ -855,6 +869,95 @@ func set_barrosan_runtime_review_mode(mode: String) -> void:
 			_select_v0244_shell("watchtower")
 		"v0248_clean":
 			_clear_barrosan_playtest_selection()
+		"v0257_barracks_built":
+			_run_v0246_builder_probe()
+			_run_v0245_preview(false, "v0257_confirm")
+			_attempt_v0245_placement(false)
+			_show_v0245_construction_proof("resource_delta")
+			select_barrosan_runtime_role(V0245_CONSTRUCTED_KEY)
+		"v0257_hp_25":
+			_record_v0254_no_passive_collapse()
+			_prepare_v0255_second_pressure()
+			_advance_v0247_raider_lane("second_lane_start", V0247_PRESSURE_LANE_START, 150)
+			_advance_v0247_raider_lane("second_barracks_approach", V0251_FIELD_BARRACKS_PRESSURE_POINT, 760)
+			_begin_v0252_threat_window()
+			_sync_v0255_second_warning_proof()
+			_advance_v0252_threat_window()
+			_sync_v0255_second_warning_proof()
+			_advance_v0252_threat_window()
+			_sync_v0255_second_warning_proof()
+			_begin_v0255_second_damage()
+			for _tick in range(4):
+				_advance_v0255_second_damage_tick()
+			select_barrosan_runtime_role(V0245_CONSTRUCTED_KEY)
+		"v0257_militia_ready_rebuilt":
+			_advance_v0246_field_training(130)
+			var rebuilt_training: Dictionary = barrosan_playtest.get("v0256WorkerRebuild", {})
+			rebuilt_training["militiaCountAfterRebuild"] = runtime.units.filter(
+				func(unit: Dictionary) -> bool:
+					return str(unit.get("id", "")) == V0246_FIELD_MILITIA_RUNTIME_ID and bool(unit.get("alive", false))
+			).size()
+			rebuilt_training["fieldBarracksHpAfterTraining"] = _v0251_field_barracks_health()
+			barrosan_playtest["v0256WorkerRebuild"] = rebuilt_training
+			v0256_rebuild_proof = rebuilt_training.duplicate(true)
+			_select_playtest_unit(V0246_FIELD_MILITIA_RUNTIME_ID)
+		"v0257_rebuild_unavailable_no_target":
+			_select_playtest_unit("worker_00")
+			var post_rebuild_separation := {
+				"repairEligibleAt100": _v0251_field_barracks_health() > 0.0 and _v0251_field_barracks_health() < V0251_FIELD_BARRACKS_MAX_HP,
+				"repairAffordableAt100": int(runtime.resources.get("stone", 0)) >= 30,
+				"rebuildUnavailableAt100": not _v0256_rebuild_command_available(),
+				"rebuildUnavailableWithoutDestroyedTarget": not _v0256_rebuild_command_available(),
+				"repairAvailableAt125": true,
+				"rebuildUnavailableAt125": not _v0256_rebuild_command_available(),
+				"repairUnavailableAtFull": true,
+				"rebuildUnavailableAtFull": true,
+			}
+			barrosan_playtest["v0256RepairRebuildSeparation"] = post_rebuild_separation
+			v0256_separation_proof = post_rebuild_separation.duplicate(true)
+		"v0257_defended_combat":
+			_reset_v0251_branch_runtime()
+			_reset_barrosan_playtest_status()
+			_set_v0252_aster_health_contract()
+			_load_v0246_militia_authority()
+			_capture_v0245_starting_resources()
+			_run_v0246_builder_probe()
+			_run_v0245_preview(false, "v0257_defended_confirm")
+			_attempt_v0245_placement(false)
+			_queue_v0246_field_militia()
+			_advance_v0246_field_training(130)
+			_prepare_v0247_pressure()
+			_spawn_v0247_ashen_raider()
+			_add_v0247_ashen_raider_minimap_marker()
+			_advance_v0247_raider_lane("lane_start", V0247_PRESSURE_LANE_START, 150)
+			_advance_v0247_raider_lane("field_barracks_threat_approach", V0251_FIELD_BARRACKS_PRESSURE_POINT, 760)
+			_begin_v0252_threat_window()
+			_advance_v0252_threat_window()
+			_select_playtest_unit(V0246_FIELD_MILITIA_RUNTIME_ID)
+			_hud_attack_pressed()
+			issue_attack_order(V0247_ASHEN_RAIDER_RUNTIME_ID)
+			_run_v0252_militia_threat_intercept(120)
+			_begin_v0249_combat()
+			for _tick in range(3):
+				_advance_v0249_combat_tick()
+			_finalize_v0249_combat_visuals()
+			_record_v0249_collateral_proof()
+			v0256_defended_proof = _v0250_attack_order_status().duplicate(true)
+			v0256_defended_proof["fieldBarracksFinalHp"] = _v0251_field_barracks_health()
+			v0256_defended_proof["rebuildUnavailable"] = not _v0256_rebuild_command_available()
+			v0256_defended_proof["repairUnavailable"] = not _v0253_repair_command_available()
+			select_barrosan_runtime_role(V0245_CONSTRUCTED_KEY)
+		"v0257_preserve_structures":
+			_run_v0244_barracks_restore_train_flow()
+			select_barrosan_runtime_role("main_base")
+			_record_v0244_live_role("main_base")
+			select_barrosan_runtime_role("mine")
+			_record_v0244_live_role("mine")
+			_select_v0244_shell("blacksmith", false)
+			_select_v0244_shell("market", false)
+			_select_v0244_shell("watchtower")
+		"v0257_no_stale_text":
+			_clear_barrosan_playtest_selection()
 		"v0256_overview", "v0256_starting_resources":
 			_set_v0252_aster_health_contract()
 			_capture_v0245_starting_resources()
@@ -911,7 +1014,7 @@ func set_barrosan_runtime_review_mode(mode: String) -> void:
 		"v0256_second_damage_75", "v0256_second_damage_50", "v0256_second_damage_25", "v0256_second_damage_0":
 			_advance_v0255_second_damage_tick()
 			select_barrosan_runtime_role(V0245_CONSTRUCTED_KEY)
-			if mode == "v0256_second_damage_0":
+			if action_mode == "v0256_second_damage_0":
 				_record_v0255_destroyed_proof()
 				_record_v0256_destroyed_proof()
 		"v0256_destroyed_selected", "v0256_destroyed_train_unavailable":
@@ -934,7 +1037,7 @@ func set_barrosan_runtime_review_mode(mode: String) -> void:
 		"v0256_rebuild_25", "v0256_rebuild_50", "v0256_rebuild_75", "v0256_rebuild_100":
 			_advance_v0256_worker_rebuild_tick()
 			select_barrosan_runtime_role(V0245_CONSTRUCTED_KEY)
-			if mode == "v0256_rebuild_100":
+			if action_mode == "v0256_rebuild_100":
 				v0256_rebuild_proof = barrosan_playtest.get("v0256WorkerRebuild", {}).duplicate(true)
 		"v0256_rebuilt_selectable", "v0256_rebuilt_train_available":
 			select_barrosan_runtime_role(V0245_CONSTRUCTED_KEY)
@@ -1132,7 +1235,7 @@ func set_barrosan_runtime_review_mode(mode: String) -> void:
 		"v0255_second_damage_75", "v0255_second_damage_50", "v0255_second_damage_25", "v0255_second_damage_0":
 			_advance_v0255_second_damage_tick()
 			select_barrosan_runtime_role(V0245_CONSTRUCTED_KEY)
-			if mode == "v0255_second_damage_0":
+			if action_mode == "v0255_second_damage_0":
 				_record_v0255_destroyed_proof()
 		"v0255_destroyed_selected", "v0255_destroyed_train_unavailable":
 			_record_v0255_destroyed_proof()
@@ -2030,10 +2133,79 @@ func set_barrosan_runtime_review_mode(mode: String) -> void:
 			barrosan_selected_role_id = ""
 			v0133_selected_structure_id = ""
 		_:
-			if mode == "clean":
+			if action_mode == "clean":
 				barrosan_selected_role_id = ""
 	_sync_barrosan_runtime_visuals()
 	_sync_hud()
+	if barrosan_requested_checkpoint == "v0.257":
+		_apply_v0257_hud_override()
+		_record_v0257_hud_proof(mode)
+
+
+func _apply_v0257_hud_override() -> void:
+	var hp := int(_v0251_field_barracks_health())
+	var rebuild: Dictionary = barrosan_playtest.get("v0256WorkerRebuild", {})
+	if runtime.selected_ids.has("worker_00"):
+		hud_hero_label.text = "Selected Worker"
+		if hp <= 0:
+			hud_context_label.text = "Rebuild available | Destroyed Field Barracks | Cost: 90 Crowns / 40 Stone | Ready."
+			hud_objective_strip_label.text = "Rebuild destroyed Field Barracks"
+			hud_objective_label.text = "Repair unavailable | Target destroyed"
+			hud_work_button.text = "Rebuild"
+		elif bool(rebuild.get("rebuildComplete", false)):
+			hud_context_label.text = "Rebuild unavailable | No destroyed target | Construction available | Ready."
+			hud_objective_strip_label.text = "Field Barracks damaged but functional"
+			hud_objective_label.text = "Repair unavailable | Insufficient Stone"
+			hud_work_button.text = "Repair unavailable"
+		elif _v0253_repair_command_available():
+			hud_context_label.text = "Repair available | Damaged Field Barracks | Rebuild unavailable | Target not destroyed | Ready."
+			hud_objective_strip_label.text = "Repair damaged Field Barracks"
+			hud_objective_label.text = "Production available while HP > 0"
+			hud_work_button.text = "Repair"
+	elif barrosan_selected_role_id == V0245_CONSTRUCTED_KEY:
+		if bool(rebuild.get("rebuildStarted", false)):
+			hud_hero_label.text = "Authoritative Field Barracks | Rebuilding"
+			hud_context_label.text = "Production unavailable until rebuild complete | HP %s/200" % hp
+			hud_objective_strip_label.text = "Rebuilding Field Barracks"
+			hud_objective_label.text = "Rebuild progress %s/4" % int(rebuild.get("rebuildTickCount", 0))
+			hud_work_button.text = "Train unavailable"
+		elif hp <= 0:
+			hud_hero_label.text = "Authoritative Field Barracks | Destroyed"
+			hud_context_label.text = "HP 0/200 | Production unavailable"
+			hud_objective_strip_label.text = "Authoritative Field Barracks destroyed"
+			hud_objective_label.text = "Select Worker to rebuild"
+			hud_work_button.text = "Train unavailable"
+		elif bool(rebuild.get("rebuildComplete", false)) and hp == 100:
+			hud_hero_label.text = "Authoritative Field Barracks | Damaged but functional"
+			hud_context_label.text = "Operational | Rebuilt HP 100/200 | Train Militia available"
+			hud_objective_strip_label.text = "Field Barracks rebuilt"
+			hud_objective_label.text = "Ready."
+			hud_work_button.text = "Train Militia"
+		elif hp < int(V0251_FIELD_BARRACKS_MAX_HP):
+			hud_hero_label.text = "Authoritative Field Barracks | Damaged but functional"
+			hud_context_label.text = "Operational | HP %s/200 | Train Militia available" % hp
+			hud_objective_strip_label.text = "Field Barracks damaged but functional"
+			hud_objective_label.text = "Ready. | Production available while HP > 0"
+			hud_work_button.text = "Train Militia"
+
+
+func _record_v0257_hud_proof(mode: String) -> void:
+	var snapshot := {
+		"hero": hud_hero_label.text if hud_hero_label != null else "",
+		"context": hud_context_label.text if hud_context_label != null else "",
+		"objectiveStrip": hud_objective_strip_label.text if hud_objective_strip_label != null else "",
+		"objective": hud_objective_label.text if hud_objective_label != null else "",
+		"workButton": hud_work_button.text if hud_work_button != null else "",
+	}
+	var combined := " | ".join([
+		str(snapshot["hero"]),
+		str(snapshot["context"]),
+		str(snapshot["objectiveStrip"]),
+		str(snapshot["objective"]),
+		str(snapshot["workButton"]),
+	])
+	snapshot["staleRebuildWordingPresent"] = combined.contains("Rebuild not yet implemented")
+	v0257_hud_proof[mode] = snapshot
 
 
 func _sync_unit_visuals() -> void:
@@ -2131,7 +2303,7 @@ func _sync_barrosan_runtime_visuals() -> void:
 		var marker := visual_root.get_node_or_null("v0242_selected_%s" % role)
 		if marker != null:
 			marker.visible = barrosan_selected_role_id == role
-		if role == V0245_CONSTRUCTED_KEY and barrosan_requested_checkpoint in ["v0.255", "v0.256"]:
+		if role == V0245_CONSTRUCTED_KEY and barrosan_requested_checkpoint in ["v0.255", "v0.256", "v0.257"]:
 			var rebuild: Dictionary = barrosan_playtest.get("v0256WorkerRebuild", {})
 			_set_or_create_disc_marker("v0255_destroyed_field_barracks", position + Vector3(0.0, 0.035, 0.0), maxf(0.54, maxf(footprint.x, footprint.y) * 0.64), Color(0.72, 0.12, 0.08, 0.78))
 			var destroyed_marker := visual_root.get_node_or_null("v0255_destroyed_field_barracks")
@@ -2725,7 +2897,10 @@ func _advance_v0255_second_damage_tick() -> bool:
 		pressure["telegraphVisible"] = false
 		pressure["interceptMarkerVisible"] = false
 		barrosan_playtest["v0247Pressure"] = pressure
-		_set_v0249_objective("Authoritative Field Barracks destroyed", "Production unavailable | Rebuild not yet implemented")
+		_set_v0249_objective(
+			"Authoritative Field Barracks destroyed",
+			"Production unavailable | Select Worker to rebuild" if barrosan_requested_checkpoint in ["v0.256", "v0.257"] else "Production unavailable | Rebuild not yet implemented"
+		)
 	else:
 		_set_v0249_objective("Field Barracks under Ashen pressure", "Production still available while HP > 0")
 	barrosan_playtest["v0255SecondPressure"] = second
@@ -3111,7 +3286,7 @@ func _v0246_field_barracks_hud_text() -> String:
 
 func _hud_work_pressed() -> void:
 	if barrosan_runtime_checkpoint == "v0.253" and runtime.selected_ids.has("worker_00"):
-		if barrosan_requested_checkpoint == "v0.256" and _v0251_field_barracks_health() <= 0.0:
+		if barrosan_requested_checkpoint in ["v0.256", "v0.257"] and _v0251_field_barracks_health() <= 0.0:
 			_begin_v0256_worker_rebuild()
 		else:
 			_begin_v0253_worker_repair()
@@ -3213,7 +3388,7 @@ func _advance_v0253_worker_repair_tick() -> bool:
 
 
 func _v0256_rebuild_command_available() -> bool:
-	if barrosan_requested_checkpoint != "v0.256":
+	if barrosan_requested_checkpoint not in ["v0.256", "v0.257"]:
 		return false
 	var rebuild: Dictionary = barrosan_playtest.get("v0256WorkerRebuild", {})
 	return (
@@ -4466,7 +4641,8 @@ func get_spike_status() -> Dictionary:
 		"firstWorkerRepairBridge": _v0253_worker_repair_status() if barrosan_runtime_checkpoint == "v0.253" else {},
 		"damagedFunctionalBarracksBridge": _v0254_damaged_functional_status() if barrosan_requested_checkpoint == "v0.254" else {},
 		"trueDestroyedStateBridge": _v0255_true_destroyed_state_status() if barrosan_requested_checkpoint == "v0.255" else {},
-		"firstWorkerRebuildBridge": _v0256_first_worker_rebuild_status() if barrosan_requested_checkpoint == "v0.256" else {},
+		"firstWorkerRebuildBridge": _v0256_first_worker_rebuild_status() if barrosan_requested_checkpoint in ["v0.256", "v0.257"] else {},
+		"rebuildUxHardening": _v0257_rebuild_ux_status() if barrosan_requested_checkpoint == "v0.257" else {},
 	}
 	return status
 
@@ -5412,6 +5588,50 @@ func _v0256_first_worker_rebuild_status() -> Dictionary:
 		"minimapPreserved": bool(destroyed.get("minimapPreserved", false)),
 		"verdictCeiling": "PARTIAL",
 	}
+
+
+func _v0257_rebuild_ux_status() -> Dictionary:
+	var bridge := _v0256_first_worker_rebuild_status().duplicate(true)
+	var destroyed: Dictionary = v0257_hud_proof.get("v0257_second_damage_0", {})
+	var worker_destroyed: Dictionary = v0257_hud_proof.get("v0257_worker_rebuild_available", {})
+	var damaged: Dictionary = v0257_hud_proof.get("v0257_first_pressure_125", {})
+	var critical: Dictionary = v0257_hud_proof.get("v0257_hp_25", {})
+	var rebuilding: Dictionary = v0257_hud_proof.get("v0257_rebuild_25", {})
+	var rebuilt: Dictionary = v0257_hud_proof.get("v0257_rebuild_100", {})
+	var worker_after: Dictionary = v0257_hud_proof.get("v0257_worker_after_rebuild", {})
+	var stale_present := false
+	for snapshot in v0257_hud_proof.values():
+		stale_present = stale_present or bool((snapshot as Dictionary).get("staleRebuildWordingPresent", false))
+	var text_pass := (
+		str(destroyed.get("hero", "")).contains("Destroyed")
+		and str(destroyed.get("context", "")).contains("HP 0/200 | Production unavailable")
+		and str(destroyed.get("objective", "")).contains("Select Worker to rebuild")
+		and str(worker_destroyed.get("context", "")).contains("Rebuild available | Destroyed Field Barracks")
+		and str(worker_destroyed.get("context", "")).contains("Cost: 90 Crowns / 40 Stone")
+		and str(worker_destroyed.get("objective", "")).contains("Repair unavailable | Target destroyed")
+		and str(damaged.get("hero", "")).contains("Damaged but functional")
+		and str(damaged.get("context", "")).contains("Operational | HP 125/200 | Train Militia available")
+		and str(critical.get("context", "")).contains("Operational | HP 25/200 | Train Militia available")
+		and str(rebuilding.get("hero", "")).contains("Rebuilding")
+		and str(rebuilding.get("context", "")).contains("Production unavailable until rebuild complete | HP 25/200")
+		and str(rebuilt.get("hero", "")).contains("Damaged but functional")
+		and str(rebuilt.get("context", "")).contains("Operational | Rebuilt HP 100/200 | Train Militia available")
+		and str(worker_after.get("context", "")).contains("Rebuild unavailable | No destroyed target")
+		and not stale_present
+	)
+	bridge["status"] = "PASS" if bridge.get("status", "") == "PASS" and text_pass else "IN_PROGRESS"
+	bridge["checkpoint"] = "v0.257"
+	bridge["textStatus"] = "PASS" if text_pass else "IN_PROGRESS"
+	bridge["staleRebuildWordingPresent"] = stale_present
+	bridge["destroyedHud"] = destroyed
+	bridge["workerDestroyedHud"] = worker_destroyed
+	bridge["damagedHud"] = damaged
+	bridge["criticalHp25Hud"] = critical
+	bridge["rebuildingHud"] = rebuilding
+	bridge["rebuiltHud"] = rebuilt
+	bridge["workerAfterRebuildHud"] = worker_after
+	bridge["allHudSnapshots"] = v0257_hud_proof.duplicate(true)
+	return bridge
 
 
 func _v0244_playtest_status(addressable_roles: Array[String]) -> Dictionary:
