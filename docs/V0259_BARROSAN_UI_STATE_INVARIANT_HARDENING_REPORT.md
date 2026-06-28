@@ -5,9 +5,9 @@ Verdict: `PARTIAL`
 ## Exact facts
 
 - Base commit: `d28ccebc34eb0b72d6e6e6809c687598a11cc8ae`.
-- Implementation commit: `PENDING_PUBLICATION`.
-- Final HEAD: `PENDING_PUBLICATION`.
-- Exact-SHA GitHub Actions run: PENDING_PUBLICATION.
+- Implementation commit: `e87f363a273af63106619cc21173a34578c2d4ce`.
+- Publication proof HEAD: `e87f363a273af63106619cc21173a34578c2d4ce`.
+- Exact-SHA GitHub Actions run: `28333088519` (`success`) — https://github.com/jardas33/ascendant-realms/actions/runs/28333088519.
 - Scene: `res://scenes/salto_barrosan_playable_runtime_skin.tscn`.
 - Blender used: no. New GLB exported: no. Existing v0.239 GLB reused unchanged: yes (B7A68A4442071FB29A9DB0468B9A2A56BE724E80E2C69C0E5846539BA193D0EB).
 - Files changed: opt-in Barrosan runtime single-source resolver, capture dispatch, v0.259 evidence tooling, package scripts, and this report.
@@ -38,7 +38,7 @@ Verdict: `PARTIAL`
 ## Validation and honest assessment
 
 - Dedicated v0.259 capture and validator: pass.
-- Full local validation: pass. Exact-SHA GitHub Actions: pending publication.
+- Full local validation: pass. Exact-SHA GitHub Actions: pass for `e87f363a273af63106619cc21173a34578c2d4ce`.
 - Honest assessment: this is a bounded opt-in UI invariant hardening pass for the Barrosan lifecycle slice. It is not global reconstruction, new economy, or production art expansion. Verdict is PARTIAL.
 - Recommendation for v0.260: only if separately authorized, move from UI-state correctness to one further bounded gameplay or visual contract without broadening scope.
 
