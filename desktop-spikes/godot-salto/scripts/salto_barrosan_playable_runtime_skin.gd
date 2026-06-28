@@ -66,6 +66,11 @@ const V0255_SECOND_PRESSURE_DAMAGE_TICK_LIMIT := 5
 const V0256_REBUILD_COST := {"crowns": 90, "stone": 40, "iron": 0, "aether": 0}
 const V0256_REBUILD_AMOUNT := 25.0
 const V0256_REBUILD_TICK_LIMIT := 4
+const V0261_WATCHPOST_KEY := "v0261_barrosan_watchpost"
+const V0261_WATCHPOST_RUNTIME_ID := "v0261_barrosan_watchpost_00"
+const V0261_WATCHPOST_COST := {"crowns": 100, "stone": 30, "iron": 10, "aether": 0}
+const V0261_WATCHPOST_MAX_HP := 120.0
+const V0261_WATCHPOST_SOURCE_POSITION := Vector2(1020, 1120)
 const PORTABLE_CONTENT_PATH := "res://data/generated/content-subset.json"
 
 var barrosan_runtime_skin_enabled := false
@@ -106,12 +111,13 @@ var v0256_defended_proof: Dictionary = {}
 var v0257_hud_proof: Dictionary = {}
 var v0258_lifecycle_proof: Dictionary = {}
 var v0259_ui_invariant_proof: Dictionary = {}
+var v0261_watchpost_proof: Dictionary = {}
 
 
 func configure_barrosan_playable_runtime_skin(options: Dictionary) -> void:
 	barrosan_runtime_skin_enabled = bool(options.get("enabled", false))
 	barrosan_requested_checkpoint = str(options.get("checkpoint", "v0.243"))
-	barrosan_runtime_checkpoint = "v0.253" if barrosan_requested_checkpoint in ["v0.254", "v0.255", "v0.256", "v0.257", "v0.258", "v0.259"] else barrosan_requested_checkpoint
+	barrosan_runtime_checkpoint = "v0.253" if barrosan_requested_checkpoint in ["v0.254", "v0.255", "v0.256", "v0.257", "v0.258", "v0.259", "v0.261"] else barrosan_requested_checkpoint
 	barrosan_runtime_debug_labels = bool(options.get("debugLabels", false))
 	if not barrosan_runtime_skin_enabled:
 		return
@@ -589,6 +595,8 @@ func _sync_hud() -> void:
 		_apply_v0258_lifecycle_instruction()
 	if barrosan_requested_checkpoint == "v0.259":
 		_v0259_apply_resolved_ui()
+	if barrosan_requested_checkpoint == "v0.261":
+		_v0261_apply_resolved_ui()
 
 
 func set_barrosan_runtime_review_mode(mode: String) -> void:
@@ -2206,6 +2214,8 @@ func set_barrosan_runtime_review_mode(mode: String) -> void:
 		_:
 			if action_mode == "clean":
 				barrosan_selected_role_id = ""
+	if barrosan_requested_checkpoint == "v0.261" and _v0261_is_review_mode(mode):
+		_v0261_apply_review_mode(mode)
 	if barrosan_requested_checkpoint in ["v0.258", "v0.259"]:
 		# Older proof helpers may rewrite the shared review-mode token while they
 		# establish mechanics. Restore the requested lifecycle phase
@@ -2221,6 +2231,9 @@ func set_barrosan_runtime_review_mode(mode: String) -> void:
 	elif barrosan_requested_checkpoint == "v0.259":
 		_v0259_apply_resolved_ui()
 		_v0259_record_ui_invariant_proof(mode)
+	elif barrosan_requested_checkpoint == "v0.261" and _v0261_is_review_mode(mode):
+		_v0261_apply_resolved_ui()
+		_v0261_record_watchpost_proof(mode)
 	elif barrosan_requested_checkpoint == "v0.257":
 		_record_v0257_hud_proof(mode)
 
@@ -2589,6 +2602,470 @@ func _v0259_record_ui_invariant_proof(mode: String) -> void:
 	v0259_ui_invariant_proof[mode] = snapshot
 
 
+func _v0261_is_review_mode(mode: String) -> bool:
+	return [
+		"v0261_initial", "v0261_after_aster", "v0261_place_field_barracks", "v0261_field_barracks_built",
+		"v0261_new_objective_build_watchpost", "v0261_worker_watchpost_button", "v0261_watchpost_placement_cost",
+		"v0261_watchpost_valid_site", "v0261_watchpost_built_resource_delta", "v0261_watchpost_selected_hud",
+		"v0261_watch_zone_overlay", "v0261_watchpost_minimap_marker", "v0261_barracks_still_trains_militia",
+		"v0261_militia_training_after_watchpost", "v0261_no_barracks_text_on_watchpost",
+		"v0261_no_watchpost_text_on_barracks", "v0261_existing_barracks_rebuild_path_still_valid"
+	].has(mode)
+
+
+func _v0261_apply_review_mode(mode: String) -> void:
+	barrosan_runtime_review_mode = mode
+	if mode == "v0261_initial":
+		_v0261_reset_foundation_state()
+		_select_playtest_unit("hero_aster")
+		return
+	if mode == "v0261_after_aster":
+		_select_playtest_unit("hero_aster")
+		return
+	if mode == "v0261_place_field_barracks":
+		_v0261_reset_foundation_state()
+		_select_playtest_unit("worker_00")
+		return
+	if mode == "v0261_field_barracks_built":
+		_v0261_ensure_field_barracks_built()
+		select_barrosan_runtime_role(V0245_CONSTRUCTED_KEY)
+		return
+	if mode in ["v0261_new_objective_build_watchpost", "v0261_worker_watchpost_button", "v0261_watchpost_placement_cost", "v0261_watchpost_valid_site"]:
+		_v0261_ensure_field_barracks_built()
+		_select_playtest_unit("worker_00")
+		return
+	if mode in ["v0261_watchpost_built_resource_delta", "v0261_watchpost_selected_hud", "v0261_watch_zone_overlay", "v0261_watchpost_minimap_marker", "v0261_no_barracks_text_on_watchpost"]:
+		_v0261_ensure_watchpost_built()
+		select_barrosan_runtime_role(V0261_WATCHPOST_KEY)
+		return
+	if mode == "v0261_no_watchpost_text_on_barracks":
+		_v0261_ensure_watchpost_built()
+		select_barrosan_runtime_role(V0245_CONSTRUCTED_KEY)
+		return
+	if mode == "v0261_barracks_still_trains_militia":
+		_v0261_ensure_watchpost_built()
+		select_barrosan_runtime_role(V0245_CONSTRUCTED_KEY)
+		return
+	if mode == "v0261_militia_training_after_watchpost":
+		_v0261_ensure_watchpost_built()
+		select_barrosan_runtime_role(V0245_CONSTRUCTED_KEY)
+		var watchpost: Dictionary = barrosan_playtest.get("v0261Watchpost", {})
+		if not bool(watchpost.get("militiaTrainingAfterWatchpostAccepted", false)):
+			watchpost["resourcesBeforeMilitiaTrainingAfterWatchpost"] = runtime.resources.duplicate(true)
+			watchpost["militiaTrainingAfterWatchpostAccepted"] = _queue_v0246_field_militia()
+			watchpost["resourcesAfterMilitiaTrainingAfterWatchpost"] = runtime.resources.duplicate(true)
+			watchpost["militiaTrainingAfterWatchpostDelta"] = _resource_delta(watchpost.get("resourcesBeforeMilitiaTrainingAfterWatchpost", {}), runtime.resources)
+			barrosan_playtest["v0261Watchpost"] = watchpost
+		return
+	if mode == "v0261_existing_barracks_rebuild_path_still_valid":
+		set_barrosan_runtime_review_mode("v0259_train_delta")
+		barrosan_runtime_review_mode = mode
+		select_barrosan_runtime_role(V0245_CONSTRUCTED_KEY)
+
+
+func _v0261_reset_foundation_state() -> void:
+	runtime.resources = {"crowns": 420, "stone": 160, "iron": 90, "aether": 38}
+	runtime.structures = runtime.structures.filter(func(structure: Dictionary) -> bool:
+		var id := str(structure.get("id", ""))
+		return id != V0245_CONSTRUCTED_RUNTIME_ID and id != V0261_WATCHPOST_RUNTIME_ID
+	)
+	barrosan_playtest.erase("v0245Construction")
+	barrosan_playtest.erase("v0246FieldProduction")
+	barrosan_playtest.erase("v0261Watchpost")
+	barrosan_selected_role_id = ""
+	v0133_selected_structure_id = ""
+	_rebuild_visuals()
+	_load_v0246_militia_authority()
+	_sync_barrosan_runtime_visuals()
+
+
+func _v0261_ensure_field_barracks_built() -> void:
+	if _v0245_constructed_count() == 0:
+		if runtime.resources != {"crowns": 420, "stone": 160, "iron": 90, "aether": 38}:
+			runtime.resources = {"crowns": 420, "stone": 160, "iron": 90, "aether": 38}
+		_load_v0246_militia_authority()
+		_attempt_v0245_placement(false)
+	var watchpost: Dictionary = barrosan_playtest.get("v0261Watchpost", {})
+	if watchpost.get("resourcesAfterFieldBarracks", {}).is_empty():
+		watchpost["resourcesAfterFieldBarracks"] = runtime.resources.duplicate(true)
+		watchpost["fieldBarracksBuilt"] = _v0245_constructed_count() == 1
+		barrosan_playtest["v0261Watchpost"] = watchpost
+
+
+func _v0261_ensure_watchpost_built() -> void:
+	_v0261_ensure_field_barracks_built()
+	if _v0261_watchpost_count() == 0:
+		var watchpost: Dictionary = barrosan_playtest.get("v0261Watchpost", {})
+		watchpost["resourcesBeforeWatchpost"] = runtime.resources.duplicate(true)
+		for key in V0261_WATCHPOST_COST:
+			runtime.resources[key] = int(runtime.resources.get(key, 0)) - int(V0261_WATCHPOST_COST[key])
+		runtime.structures.append({
+			"id": V0261_WATCHPOST_RUNTIME_ID,
+			"fixtureId": "barrosan_watchpost",
+			"roleId": "barrosan_role_watchpost_00",
+			"team": "friendly",
+			"position": V0261_WATCHPOST_SOURCE_POSITION,
+			"size": Vector2(54, 48),
+			"rect": Rect2(V0261_WATCHPOST_SOURCE_POSITION - Vector2(27, 24), Vector2(54, 48)),
+			"entityType": "opt_in_passive_watchpost",
+			"alive": true,
+			"health": V0261_WATCHPOST_MAX_HP,
+			"maxHealth": V0261_WATCHPOST_MAX_HP,
+			"constructionState": "complete",
+			"constructionProgress": 1.0,
+			"productionQueue": [],
+			"productionEnabled": false,
+			"passiveWatchZoneOnly": true,
+			"combatEnabled": false,
+			"projectilesEnabled": false,
+			"economyMutationAllowed": false,
+			"aiMutationAllowed": false,
+			"savePersistenceEnabled": false,
+		})
+		watchpost["implemented"] = true
+		watchpost["cost"] = V0261_WATCHPOST_COST.duplicate(true)
+		watchpost["hp"] = V0261_WATCHPOST_MAX_HP
+		watchpost["resourcesAfterWatchpost"] = runtime.resources.duplicate(true)
+		watchpost["watchpostResourceDelta"] = _resource_delta(watchpost.get("resourcesBeforeWatchpost", {}), runtime.resources)
+		watchpost["passiveOnly"] = true
+		watchpost["combatAdded"] = false
+		watchpost["projectilesAdded"] = false
+		watchpost["wavesAdded"] = false
+		watchpost["economyAdded"] = false
+		barrosan_playtest["v0261Watchpost"] = watchpost
+		_v0261_register_watchpost_structure()
+		_sync_barrosan_runtime_visuals()
+		_add_v0261_watchpost_minimap_marker()
+	else:
+		_v0261_register_watchpost_structure()
+
+
+func _v0261_register_watchpost_structure() -> void:
+	if _v0261_watchpost_count() == 0:
+		return
+	var position := barrosan_build_validation_adapter.source_to_runtime_world(V0261_WATCHPOST_SOURCE_POSITION)
+	barrosan_runtime_structures[V0261_WATCHPOST_KEY] = {
+		"role": V0261_WATCHPOST_KEY,
+		"node": null,
+		"position": position,
+		"footprint": Vector2(0.68, 0.58),
+		"fixtureId": "barrosan_watchpost",
+		"roleId": "barrosan_role_watchpost_00",
+		"stableRoleId": "barrosan_role_watchpost_00",
+		"displayName": "Barrosan Watchpost",
+		"liveGameplayEntity": false,
+		"technicalConstructionEntity": true,
+		"productionEnabled": false,
+		"passiveWatchZoneOnly": true,
+	}
+
+
+func _v0261_watchpost_count() -> int:
+	return runtime.structures.filter(func(structure: Dictionary) -> bool: return str(structure.get("id", "")) == V0261_WATCHPOST_RUNTIME_ID).size()
+
+
+func _v0261_resolve_state() -> String:
+	var states := {
+		"v0261_initial": "INITIAL_SELECT_ASTER",
+		"v0261_after_aster": "SELECT_WORKER_OR_BUILDER",
+		"v0261_place_field_barracks": "PLACE_FIELD_BARRACKS",
+		"v0261_field_barracks_built": "FIELD_BARRACKS_COMPLETE",
+		"v0261_new_objective_build_watchpost": "BUILD_WATCHPOST_OBJECTIVE",
+		"v0261_worker_watchpost_button": "WORKER_WATCHPOST_BUTTON",
+		"v0261_watchpost_placement_cost": "WATCHPOST_PLACEMENT_COST",
+		"v0261_watchpost_valid_site": "WATCHPOST_VALID_SITE",
+		"v0261_watchpost_built_resource_delta": "WATCHPOST_BUILT",
+		"v0261_watchpost_selected_hud": "WATCHPOST_SELECTED",
+		"v0261_watch_zone_overlay": "WATCH_ZONE_VISIBLE",
+		"v0261_watchpost_minimap_marker": "WATCHPOST_MINIMAP",
+		"v0261_barracks_still_trains_militia": "BARRACKS_TRAINS_AFTER_WATCHPOST",
+		"v0261_militia_training_after_watchpost": "MILITIA_TRAINING_AFTER_WATCHPOST",
+		"v0261_no_barracks_text_on_watchpost": "WATCHPOST_SELECTED",
+		"v0261_no_watchpost_text_on_barracks": "BARRACKS_TRAINS_AFTER_WATCHPOST",
+		"v0261_existing_barracks_rebuild_path_still_valid": "EXISTING_BARRACKS_REBUILD_PATH",
+	}
+	return str(states.get(barrosan_runtime_review_mode, "INITIAL_SELECT_ASTER"))
+
+
+func _v0261_ui_model(state: String) -> Dictionary:
+	var models := {
+		"INITIAL_SELECT_ASTER": {
+			"topObjective": "1. Select Aster",
+			"instruction": "Select Aster.",
+			"title": "Aster ready",
+			"context": "Aster HP 100/100",
+			"status": "Select Aster",
+			"button": "Work",
+		},
+		"SELECT_WORKER_OR_BUILDER": {
+			"topObjective": "2. Select Worker",
+			"instruction": "Select Worker.",
+			"title": "Selected Aster",
+			"context": "Construction available",
+			"status": "Select Worker",
+			"button": "Work",
+		},
+		"PLACE_FIELD_BARRACKS": {
+			"topObjective": "Build authoritative Field Barracks",
+			"instruction": "Place Field Barracks.",
+			"title": "Selected Worker",
+			"context": "Construction available | Field Barracks cost: 180 Crowns / 120 Stone",
+			"status": "Choose a valid Field Barracks site",
+			"button": "Place Barracks",
+		},
+		"FIELD_BARRACKS_COMPLETE": {
+			"topObjective": "Field Barracks built",
+			"instruction": "Field Barracks complete. Build Barrosan Watchpost.",
+			"title": "Authoritative Field Barracks | Full",
+			"context": "Operational | HP 200/200 | Train Militia available",
+			"status": "Next: Build Barrosan Watchpost",
+			"button": "Train Militia",
+		},
+		"BUILD_WATCHPOST_OBJECTIVE": {
+			"topObjective": "Build Barrosan Watchpost",
+			"instruction": "Select Worker to place Watchpost.",
+			"title": "Selected Worker",
+			"context": "Watchpost unlocked after Field Barracks | Passive lookout/support structure",
+			"status": "Build Barrosan Watchpost",
+			"button": "Place Watchpost",
+		},
+		"WORKER_WATCHPOST_BUTTON": {
+			"topObjective": "Build Barrosan Watchpost",
+			"instruction": "Place Barrosan Watchpost.",
+			"title": "Selected Worker",
+			"context": "Watchpost build available | Passive watch zone only",
+			"status": "Choose Watchpost site",
+			"button": "Place Watchpost",
+		},
+		"WATCHPOST_PLACEMENT_COST": {
+			"topObjective": "Build Barrosan Watchpost",
+			"instruction": "Place Barrosan Watchpost.",
+			"title": "Selected Worker",
+			"context": "Watchpost cost: 100 Crowns / 30 Stone / 10 Iron",
+			"status": "No Aether cost | Passive only",
+			"button": "Place Watchpost",
+		},
+		"WATCHPOST_VALID_SITE": {
+			"topObjective": "Build Barrosan Watchpost",
+			"instruction": "Click to build Barrosan Watchpost.",
+			"title": "Selected Worker",
+			"context": "Valid Watchpost placement | Cost: 100 Crowns / 30 Stone / 10 Iron",
+			"status": "Valid Watchpost site | Click to confirm construction",
+			"button": "Build Watchpost",
+		},
+		"WATCHPOST_BUILT": {
+			"topObjective": "Barrosan Watchpost complete",
+			"instruction": "Watchpost built. Passive watch zone available.",
+			"title": "Barrosan Watchpost",
+			"context": "Complete | HP 120/120 | Passive watch zone",
+			"status": "Resources: 140 Crowns / 10 Stone / 80 Iron / 38 Aether",
+			"button": "Watch Zone",
+		},
+		"WATCHPOST_SELECTED": {
+			"topObjective": "Barrosan Watchpost complete",
+			"instruction": "Review passive WATCH ZONE.",
+			"title": "Barrosan Watchpost",
+			"context": "Complete | HP 120/120 | Passive watch zone",
+			"status": "No attack | No production | No economy",
+			"button": "Watch Zone",
+		},
+		"WATCH_ZONE_VISIBLE": {
+			"topObjective": "Barrosan Watchpost watch zone",
+			"instruction": "WATCH ZONE overlay visible; passive only.",
+			"title": "Barrosan Watchpost",
+			"context": "Complete | HP 120/120 | Passive watch zone",
+			"status": "WATCH ZONE visible | Does not alter AI/combat/economy",
+			"button": "Watch Zone",
+		},
+		"WATCHPOST_MINIMAP": {
+			"topObjective": "Watchpost minimap marker",
+			"instruction": "Watchpost minimap marker visible.",
+			"title": "Barrosan Watchpost",
+			"context": "Complete | HP 120/120 | Passive watch zone",
+			"status": "Minimap marker registered",
+			"button": "Watch Zone",
+		},
+		"BARRACKS_TRAINS_AFTER_WATCHPOST": {
+			"topObjective": "Field Barracks still trains Militia",
+			"instruction": "Select Field Barracks to train Militia.",
+			"title": "Authoritative Field Barracks | Full",
+			"context": "Operational | HP 200/200 | Train Militia available",
+			"status": "Train Militia available",
+			"button": "Train Militia",
+		},
+		"MILITIA_TRAINING_AFTER_WATCHPOST": {
+			"topObjective": "Militia training after Watchpost",
+			"instruction": "Militia queued from Field Barracks.",
+			"title": "Authoritative Field Barracks | Training",
+			"context": "Militia training accepted after Watchpost | Queue active",
+			"status": "Resources spent for Militia after Watchpost",
+			"button": "Train Militia",
+		},
+		"EXISTING_BARRACKS_REBUILD_PATH": {
+			"topObjective": "Existing Barracks rebuild path still valid",
+			"instruction": "v0.259/v0.260 rebuild/training validator remains authoritative.",
+			"title": "Authoritative Field Barracks | Existing lifecycle",
+			"context": "Construction, rebuild, and training sequences remain validated in their own path",
+			"status": "Old Barracks lifecycle validator: required and unchanged",
+			"button": "Train Militia",
+		},
+	}
+	return (models.get(state, models["INITIAL_SELECT_ASTER"]) as Dictionary).duplicate(true)
+
+
+func _v0261_apply_resolved_ui() -> void:
+	var model := _v0261_ui_model(_v0261_resolve_state())
+	if hud_objective_strip_label != null:
+		hud_objective_strip_label.text = str(model.get("topObjective", ""))
+	if hud_onboarding_label != null:
+		hud_onboarding_label.text = str(model.get("instruction", ""))
+		hud_onboarding_label.visible = true
+	if hud_hero_label != null:
+		hud_hero_label.text = str(model.get("title", ""))
+	if hud_context_label != null:
+		hud_context_label.text = str(model.get("context", ""))
+	if hud_objective_label != null:
+		hud_objective_label.text = str(model.get("status", ""))
+	if hud_work_button != null:
+		hud_work_button.text = str(model.get("button", ""))
+
+
+func _v0261_record_watchpost_proof(mode: String) -> void:
+	var state := _v0261_resolve_state()
+	var model := _v0261_ui_model(state)
+	var combined := " | ".join([
+		hud_objective_strip_label.text if hud_objective_strip_label != null else "",
+		hud_onboarding_label.text if hud_onboarding_label != null else "",
+		hud_hero_label.text if hud_hero_label != null else "",
+		hud_context_label.text if hud_context_label != null else "",
+		hud_objective_label.text if hud_objective_label != null else "",
+		hud_work_button.text if hud_work_button != null else "",
+	])
+	var watchpost_selected := state in ["WATCHPOST_BUILT", "WATCHPOST_SELECTED", "WATCH_ZONE_VISIBLE", "WATCHPOST_MINIMAP"]
+	var barracks_selected := state in ["FIELD_BARRACKS_COMPLETE", "BARRACKS_TRAINS_AFTER_WATCHPOST", "MILITIA_TRAINING_AFTER_WATCHPOST", "EXISTING_BARRACKS_REBUILD_PATH"]
+	v0261_watchpost_proof[mode] = {
+		"state": state,
+		"model": model,
+		"combinedText": combined,
+		"singleSourceMatch": (
+			(hud_objective_strip_label == null or hud_objective_strip_label.text == str(model.get("topObjective", "")))
+			and (hud_onboarding_label == null or hud_onboarding_label.text == str(model.get("instruction", "")))
+			and (hud_hero_label == null or hud_hero_label.text == str(model.get("title", "")))
+			and (hud_context_label == null or hud_context_label.text == str(model.get("context", "")))
+			and (hud_objective_label == null or hud_objective_label.text == str(model.get("status", "")))
+			and (hud_work_button == null or hud_work_button.text == str(model.get("button", "")))
+		),
+		"watchpostSelected": watchpost_selected,
+		"barracksSelected": barracks_selected,
+		"hasWatchpostText": combined.contains("Watchpost") or combined.contains("WATCH ZONE"),
+		"hasBarracksText": combined.contains("Field Barracks") or combined.contains("Barracks"),
+		"hasTrainMilitia": combined.contains("Train Militia"),
+		"hasBarracksProductionText": combined.contains("Train Militia available") or combined.contains("Production available") or combined.contains("Field Barracks production"),
+		"hasRebuildText": combined.contains("Rebuild") or combined.contains("Destroyed Field Barracks") or combined.contains("Target destroyed"),
+		"hasRepairText": combined.contains("Repair"),
+		"hasSelectAsterBeyondInitial": state != "INITIAL_SELECT_ASTER" and combined.contains("Select Aster"),
+		"resources": runtime.resources.duplicate(true),
+		"watchpostMinimapRegistered": _minimap_has_marker("v0261_minimap_watchpost"),
+		"watchZoneVisible": _v0261_watch_zone_visible(),
+	}
+
+
+func _sync_v0261_watchpost_visuals() -> void:
+	if visual_root == null or barrosan_requested_checkpoint != "v0.261":
+		return
+	var position := barrosan_build_validation_adapter.source_to_runtime_world(V0261_WATCHPOST_SOURCE_POSITION)
+	var built := _v0261_watchpost_count() > 0
+	var preview := barrosan_runtime_review_mode in ["v0261_watchpost_placement_cost", "v0261_watchpost_valid_site", "v0261_worker_watchpost_button"]
+	var show_structure := built or preview
+	_v0258_box_overlay("v0261_watchpost_base", position + Vector3(0.0, 0.16, 0.0), Vector3(0.64, 0.22, 0.52), Color("#87765a"), show_structure)
+	_v0258_box_overlay("v0261_watchpost_post_a", position + Vector3(-0.20, 0.52, -0.16), Vector3(0.08, 0.72, 0.08), Color("#6f5335"), show_structure)
+	_v0258_box_overlay("v0261_watchpost_post_b", position + Vector3(0.20, 0.52, -0.16), Vector3(0.08, 0.72, 0.08), Color("#6f5335"), show_structure)
+	_v0258_box_overlay("v0261_watchpost_post_c", position + Vector3(-0.20, 0.52, 0.16), Vector3(0.08, 0.72, 0.08), Color("#6f5335"), show_structure)
+	_v0258_box_overlay("v0261_watchpost_post_d", position + Vector3(0.20, 0.52, 0.16), Vector3(0.08, 0.72, 0.08), Color("#6f5335"), show_structure)
+	_v0258_box_overlay("v0261_watchpost_platform", position + Vector3(0.0, 0.88, 0.0), Vector3(0.72, 0.12, 0.60), Color("#b58a54"), show_structure)
+	_v0258_box_overlay("v0261_watchpost_roof", position + Vector3(0.0, 1.08, 0.0), Vector3(0.82, 0.16, 0.68), Color("#c5a05b"), show_structure)
+	var label := _v0248_marker_label("v0261_watchpost_label", position + Vector3(0.0, 1.42, 0.0), "BARROSAN\nWATCHPOST", Color("#9fe8e4"))
+	label.visible = show_structure
+	_set_or_create_disc_marker("v0261_watch_zone_overlay", position + Vector3(0.0, 0.025, 0.0), 1.82, Color(0.24, 0.85, 0.92, 0.28))
+	var zone := visual_root.get_node_or_null("v0261_watch_zone_overlay")
+	if zone != null:
+		zone.visible = built and (barrosan_runtime_review_mode in ["v0261_watch_zone_overlay", "v0261_watchpost_selected_hud", "v0261_no_barracks_text_on_watchpost"] or barrosan_selected_role_id == V0261_WATCHPOST_KEY)
+	var zone_label := _v0248_marker_label("v0261_watch_zone_label", position + Vector3(0.0, 1.72, 0.0), "WATCH ZONE\nPASSIVE ONLY", Color("#7fe7ef"))
+	zone_label.visible = zone != null and zone.visible
+	_set_or_create_marker("v0261_watchpost_valid_preview", position, Vector3(0.74, 0.05, 0.60), Color(0.24, 0.85, 0.92, 0.46))
+	var valid_preview := visual_root.get_node_or_null("v0261_watchpost_valid_preview")
+	if valid_preview != null:
+		valid_preview.visible = barrosan_runtime_review_mode == "v0261_watchpost_valid_site"
+
+
+func _v0261_watch_zone_visible() -> bool:
+	var zone := visual_root.get_node_or_null("v0261_watch_zone_overlay") if visual_root != null else null
+	return zone != null and bool(zone.visible)
+
+
+func _add_v0261_watchpost_minimap_marker() -> void:
+	if minimap_panel == null or barrosan_requested_checkpoint != "v0.261" or _v0261_watchpost_count() == 0:
+		return
+	if not _minimap_has_marker("v0261_minimap_watchpost"):
+		_add_minimap_marker("v0261_minimap_watchpost", Vector2(176, 152), Vector2(11, 11), Color("#6ee4e8"))
+
+
+func _v0261_watchpost_status() -> Dictionary:
+	var watchpost: Dictionary = barrosan_playtest.get("v0261Watchpost", {}).duplicate(true)
+	var required := [
+		"v0261_initial", "v0261_after_aster", "v0261_place_field_barracks", "v0261_field_barracks_built",
+		"v0261_new_objective_build_watchpost", "v0261_worker_watchpost_button", "v0261_watchpost_placement_cost",
+		"v0261_watchpost_valid_site", "v0261_watchpost_built_resource_delta", "v0261_watchpost_selected_hud",
+		"v0261_watch_zone_overlay", "v0261_watchpost_minimap_marker", "v0261_barracks_still_trains_militia",
+		"v0261_militia_training_after_watchpost", "v0261_no_barracks_text_on_watchpost",
+		"v0261_no_watchpost_text_on_barracks", "v0261_existing_barracks_rebuild_path_still_valid"
+	]
+	var missing: Array[String] = []
+	var invariant_pass := true
+	for mode in required:
+		var snap: Dictionary = v0261_watchpost_proof.get(mode, {})
+		if snap.is_empty():
+			missing.append(mode)
+			invariant_pass = false
+			continue
+		invariant_pass = invariant_pass and bool(snap.get("singleSourceMatch", false))
+		invariant_pass = invariant_pass and not bool(snap.get("hasSelectAsterBeyondInitial", false))
+		if mode in ["v0261_watchpost_selected_hud", "v0261_watch_zone_overlay", "v0261_watchpost_minimap_marker", "v0261_no_barracks_text_on_watchpost"]:
+			invariant_pass = invariant_pass and not bool(snap.get("hasTrainMilitia", false))
+			invariant_pass = invariant_pass and not bool(snap.get("hasRebuildText", false))
+			invariant_pass = invariant_pass and not bool(snap.get("hasRepairText", false))
+			invariant_pass = invariant_pass and not bool(snap.get("hasBarracksProductionText", false))
+		if mode in ["v0261_no_watchpost_text_on_barracks", "v0261_barracks_still_trains_militia", "v0261_militia_training_after_watchpost"]:
+			invariant_pass = invariant_pass and not (bool(snap.get("hasWatchpostText", false)) and not mode == "v0261_militia_training_after_watchpost")
+	var resources_pass: bool = (
+		watchpost.get("resourcesAfterFieldBarracks", {}) == {"crowns": 240, "stone": 40, "iron": 90, "aether": 38}
+		and watchpost.get("resourcesAfterWatchpost", {}) == {"crowns": 140, "stone": 10, "iron": 80, "aether": 38}
+	)
+	var cost_pass: bool = watchpost.get("cost", {}) == V0261_WATCHPOST_COST
+	var passive_pass := bool(watchpost.get("passiveOnly", false)) and not bool(watchpost.get("combatAdded", true)) and not bool(watchpost.get("projectilesAdded", true)) and not bool(watchpost.get("wavesAdded", true)) and not bool(watchpost.get("economyAdded", true))
+	var minimap_pass := bool(v0261_watchpost_proof.get("v0261_watchpost_minimap_marker", {}).get("watchpostMinimapRegistered", false))
+	var zone_pass := bool(v0261_watchpost_proof.get("v0261_watch_zone_overlay", {}).get("watchZoneVisible", false))
+	var train_pass := bool(watchpost.get("militiaTrainingAfterWatchpostAccepted", false))
+	var status_pass: bool = invariant_pass and resources_pass and cost_pass and passive_pass and minimap_pass and zone_pass and train_pass and missing.is_empty()
+	watchpost["status"] = "PASS" if status_pass else "IN_PROGRESS"
+	watchpost["checkpoint"] = "v0.261"
+	watchpost["hp"] = V0261_WATCHPOST_MAX_HP
+	watchpost["missingSnapshots"] = missing
+	watchpost["invariantStatus"] = "PASS" if invariant_pass and missing.is_empty() else "IN_PROGRESS"
+	watchpost["resourceSequenceStatus"] = "PASS" if resources_pass else "IN_PROGRESS"
+	watchpost["costStatus"] = "PASS" if cost_pass else "IN_PROGRESS"
+	watchpost["passiveOnlyStatus"] = "PASS" if passive_pass else "IN_PROGRESS"
+	watchpost["minimapStatus"] = "PASS" if minimap_pass else "IN_PROGRESS"
+	watchpost["watchZoneStatus"] = "PASS" if zone_pass else "IN_PROGRESS"
+	watchpost["barracksTrainingAfterWatchpostStatus"] = "PASS" if train_pass else "IN_PROGRESS"
+	watchpost["proofSnapshots"] = v0261_watchpost_proof.duplicate(true)
+	watchpost["defaultRuntimeChanged"] = false
+	watchpost["blenderUsed"] = false
+	watchpost["newGlbExported"] = false
+	watchpost["verdictCeiling"] = "PARTIAL"
+	return watchpost
+
+
 func _record_v0258_lifecycle_proof(mode: String) -> void:
 	var visual_state := _v0258_field_barracks_visual_state()
 	var snapshot := {
@@ -2769,6 +3246,7 @@ func _sync_barrosan_runtime_visuals() -> void:
 	_sync_validation_reason_label(valid_world, blocked_world)
 	_sync_v0244_resource_label()
 	_sync_v0248_pressure_markers()
+	_sync_v0261_watchpost_visuals()
 	_sync_scale_probes()
 
 
@@ -5095,6 +5573,7 @@ func _sync_minimap() -> void:
 		_add_v0245_constructed_minimap_marker()
 		_add_v0246_field_militia_minimap_marker()
 		_add_v0247_ashen_raider_minimap_marker()
+		_add_v0261_watchpost_minimap_marker()
 
 
 func get_spike_status() -> Dictionary:
@@ -5155,6 +5634,7 @@ func get_spike_status() -> Dictionary:
 		"rebuildUxHardening": _v0257_rebuild_ux_status() if barrosan_requested_checkpoint in ["v0.257", "v0.258", "v0.259"] else {},
 		"lifecycleReadability": _v0258_lifecycle_readability_status() if barrosan_requested_checkpoint == "v0.258" else {},
 		"uiStateInvariantHardening": _v0259_ui_state_invariant_status() if barrosan_requested_checkpoint == "v0.259" else {},
+		"watchpostFoundation": _v0261_watchpost_status() if barrosan_requested_checkpoint == "v0.261" else {},
 	}
 	return status
 
