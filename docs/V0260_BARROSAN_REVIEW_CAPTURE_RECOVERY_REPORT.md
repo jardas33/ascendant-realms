@@ -5,9 +5,9 @@ Verdict: `PARTIAL`
 ## Exact facts
 
 - Base commit: `de5d043a00658fcb89d9ba541b6881413d9a7cf1`.
-- Implementation commit: `PENDING_PUBLICATION`.
-- Final HEAD: `PENDING_PUBLICATION`.
-- Exact-SHA GitHub Actions run: PENDING_PUBLICATION.
+- Implementation commit: `01c902b89d6d430cd1af1ab16b783196e421e975`.
+- Final HEAD: `01c902b89d6d430cd1af1ab16b783196e421e975`.
+- Exact-SHA GitHub Actions run: 28334864525 success - https://github.com/jardas33/ascendant-realms/actions/runs/28334864525.
 - Scene: `res://scenes/salto_barrosan_playable_runtime_skin.tscn`.
 - Old evidence issue: v0.259 uploaded review screenshots 02-29 were black/blank dummy frames.
 - Root cause: v0.259 capture used headless Godot dummy rendering; when viewport texture was unavailable the v0.259 code accepted a near-black fallback image for that checkpoint.
@@ -51,7 +51,7 @@ Verdict: `PARTIAL`
 
 - Dedicated v0.260 capture and black-frame validator: pass.
 - Dedicated v0.260 UI-state invariant validator: pass.
-- Exact-SHA GitHub Actions: pending publication.
+- Exact-SHA GitHub Actions: pass.
 - Honest recommendation for v0.261: use this restored visible evidence as the review baseline; do not start new gameplay/art work without a separately authorized v0.261 prompt.
 
 Stop before v0.261.
