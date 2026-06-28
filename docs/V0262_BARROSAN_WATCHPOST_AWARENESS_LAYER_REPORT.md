@@ -5,9 +5,9 @@ Verdict: `PARTIAL`
 ## Exact facts
 
 - Base commit: `74d36f0de995852db1e5666fc18ed75aa2656fe9`.
-- Implementation commit: `PENDING_PUBLICATION`.
-- Final HEAD: `PENDING_PUBLICATION`.
-- Exact-SHA GitHub Actions run: PENDING_PUBLICATION.
+- Implementation commit published for validation: `9870f1c7b1890814558f8330f091c5788c848d07`.
+- Exact-SHA GitHub Actions run for implementation commit: `28339555463` — `success` — <https://github.com/jardas33/ascendant-realms/actions/runs/28339555463>.
+- Report closeout commit: generated after implementation publication; verify final branch HEAD in the chat handoff / GitHub Actions.
 - Scene: `res://scenes/salto_barrosan_playable_runtime_skin.tscn`.
 - Review pack: `artifacts/manual-review/v0262-barrosan-watchpost-awareness-layer/`.
 - Default runtime unchanged: yes.
