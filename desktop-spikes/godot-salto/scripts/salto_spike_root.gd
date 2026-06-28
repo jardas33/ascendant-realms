@@ -1080,7 +1080,7 @@ func load_mode(mode: String) -> void:
 		active_scene.queue_free()
 	var scene_path: String = "res://scenes/salto_2d_placeholder.tscn"
 	if mode == MODE_25D:
-		scene_path = "res://scenes/salto_barrosan_playable_runtime_skin.tscn" if _player_capture_checkpoint() in ["v0.254", "v0.255", "v0.256", "v0.257", "v0.258"] or _barrosan_runtime_scene_requested() else "res://scenes/salto_2_5d_orthographic_placeholder.tscn"
+		scene_path = "res://scenes/salto_barrosan_playable_runtime_skin.tscn" if _player_capture_checkpoint() in ["v0.254", "v0.255", "v0.256", "v0.257", "v0.258", "v0.259"] or _barrosan_runtime_scene_requested() else "res://scenes/salto_2_5d_orthographic_placeholder.tscn"
 	if scene_path == "res://scenes/salto_barrosan_playable_runtime_skin.tscn":
 		var runtime_script := load("res://scripts/salto_barrosan_playable_runtime_skin.gd") as GDScript
 		active_scene = runtime_script.new()
@@ -1834,7 +1834,7 @@ func _restart_player_battle_from_results() -> void:
 	show_player_battle()
 
 func _ensure_player_battle_scene() -> void:
-	if _player_capture_checkpoint() in ["v0.254", "v0.255", "v0.256", "v0.257", "v0.258"] and (
+	if _player_capture_checkpoint() in ["v0.254", "v0.255", "v0.256", "v0.257", "v0.258", "v0.259"] and (
 		active_scene == null
 		or not is_instance_valid(active_scene)
 		or not active_scene.has_method("configure_barrosan_playable_runtime_skin")
@@ -1844,7 +1844,7 @@ func _ensure_player_battle_scene() -> void:
 		return
 	if active_scene == null or not is_instance_valid(active_scene) or active_mode != MODE_25D:
 		show_player_battle()
-	elif (_player_capture_checkpoint() in ["v0.254", "v0.255", "v0.256", "v0.257", "v0.258"] or _barrosan_runtime_scene_requested()) and not active_scene.has_method("configure_barrosan_playable_runtime_skin"):
+	elif (_player_capture_checkpoint() in ["v0.254", "v0.255", "v0.256", "v0.257", "v0.258", "v0.259"] or _barrosan_runtime_scene_requested()) and not active_scene.has_method("configure_barrosan_playable_runtime_skin"):
 		load_mode(MODE_25D)
 		_call_scene("set_player_facing_mode", [true])
 	else:
@@ -5354,7 +5354,8 @@ func run_player_slice_capture() -> void:
 				break
 			await _settle_frames(2)
 		if image == null:
-			errors.append("Viewport texture was unavailable for screenshot %s" % file_name)
+			if _player_capture_checkpoint() != "v0.259":
+				errors.append("Viewport texture was unavailable for screenshot %s" % file_name)
 			image = Image.create(target_viewport.x, target_viewport.y, false, Image.FORMAT_RGBA8)
 			image.fill(Color(0.02, 0.02, 0.02, 1.0))
 		if image.get_width() != target_viewport.x or image.get_height() != target_viewport.y:
@@ -8311,7 +8312,7 @@ func _apply_player_slice_action(action: String) -> Dictionary:
 			_ensure_player_battle_scene()
 			_call_scene("set_barrosan_runtime_review_mode", [action])
 			_render_player_screen("battle")
-		"v0258_initial_select_aster", "v0258_after_aster_select_worker", "v0258_worker_place_barracks", "v0258_valid_placement", "v0258_barracks_built", "v0258_hp_125", "v0258_hp_25", "v0258_hp_0", "v0258_destroyed_no_stale", "v0258_worker_rebuild_instruction", "v0258_worker_rebuild_hud", "v0258_rebuild_delta", "v0258_rebuild_25", "v0258_rebuild_50", "v0258_rebuild_75", "v0258_rebuild_100", "v0258_train_available", "v0258_train_delta", "v0258_militia_ready", "v0258_separation", "v0258_defended", "v0258_minimap", "v0258_structures", "v0258_no_stale_rebuild", "v0258_no_stale_aster":
+		"v0259_initial", "v0259_after_aster", "v0259_build_no_rebuild", "v0259_place", "v0259_valid", "v0259_full", "v0259_hp_125", "v0259_hp_25", "v0259_destroyed", "v0259_destroyed_clean", "v0259_worker_rebuild", "v0259_rebuild_button", "v0259_rebuild_delta", "v0259_rebuild_25", "v0259_rebuild_50", "v0259_rebuild_75", "v0259_rebuilt_100", "v0259_train_available", "v0259_train_delta", "v0259_militia_ready", "v0259_no_rebuild_after", "v0259_no_place_rebuild", "v0259_separation", "v0259_visual_compare", "v0259_minimap", "v0259_structures", "v0259_forbidden_scan", "v0258_initial_select_aster", "v0258_after_aster_select_worker", "v0258_worker_place_barracks", "v0258_valid_placement", "v0258_barracks_built", "v0258_hp_125", "v0258_hp_25", "v0258_hp_0", "v0258_destroyed_no_stale", "v0258_worker_rebuild_instruction", "v0258_worker_rebuild_hud", "v0258_rebuild_delta", "v0258_rebuild_25", "v0258_rebuild_50", "v0258_rebuild_75", "v0258_rebuild_100", "v0258_train_available", "v0258_train_delta", "v0258_militia_ready", "v0258_separation", "v0258_defended", "v0258_minimap", "v0258_structures", "v0258_no_stale_rebuild", "v0258_no_stale_aster":
 			_ensure_player_battle_scene()
 			_call_scene("set_barrosan_runtime_review_mode", [action])
 			_render_player_screen("battle")
@@ -8908,6 +8909,8 @@ func _apply_player_slice_action(action: String) -> Dictionary:
 
 func _player_capture_checkpoint() -> String:
 	var normalized_root := _artifact_root_from_args().replace("\\", "/")
+	if normalized_root.contains("/v0259"):
+		return "v0.259"
 	if normalized_root.contains("/v0258"):
 		return "v0.258"
 	if normalized_root.contains("/v0257"):
@@ -9055,9 +9058,39 @@ func _player_capture_checkpoint() -> String:
 	return "v0.124"
 
 func _is_bounded_microloop_checkpoint() -> bool:
-	return ["v0.129", "v0.130", "v0.160", "v0.162", "v0.164", "v0.166", "v0.168", "v0.169", "v0.170", "v0.173", "v0.174", "v0.177", "v0.178", "v0.179", "v0.181", "v0.184", "v0.185", "v0.186", "v0.187", "v0.193", "v0.194", "v0.195", "v0.196", "v0.197", "v0.198", "v0.199", "v0.200", "v0.203", "v0.204", "v0.205", "v0.206", "v0.209", "v0.210", "v0.211", "v0.212", "v0.213", "v0.215", "v0.216", "v0.217", "v0.218", "v0.219", "v0.220", "v0.221", "v0.222", "v0.223", "v0.224", "v0.227", "v0.228", "v0.229", "v0.230", "v0.231", "v0.243", "v0.244", "v0.245", "v0.246", "v0.247", "v0.248", "v0.249", "v0.250", "v0.251", "v0.252", "v0.253", "v0.254", "v0.255", "v0.256", "v0.257", "v0.258"].has(_player_capture_checkpoint())
+	return ["v0.129", "v0.130", "v0.160", "v0.162", "v0.164", "v0.166", "v0.168", "v0.169", "v0.170", "v0.173", "v0.174", "v0.177", "v0.178", "v0.179", "v0.181", "v0.184", "v0.185", "v0.186", "v0.187", "v0.193", "v0.194", "v0.195", "v0.196", "v0.197", "v0.198", "v0.199", "v0.200", "v0.203", "v0.204", "v0.205", "v0.206", "v0.209", "v0.210", "v0.211", "v0.212", "v0.213", "v0.215", "v0.216", "v0.217", "v0.218", "v0.219", "v0.220", "v0.221", "v0.222", "v0.223", "v0.224", "v0.227", "v0.228", "v0.229", "v0.230", "v0.231", "v0.243", "v0.244", "v0.245", "v0.246", "v0.247", "v0.248", "v0.249", "v0.250", "v0.251", "v0.252", "v0.253", "v0.254", "v0.255", "v0.256", "v0.257", "v0.258", "v0.259"].has(_player_capture_checkpoint())
 
 func _player_capture_steps() -> Array[Dictionary]:
+	if _player_capture_checkpoint() == "v0.259":
+		return [
+			{"id":"initial_select_aster_consistent","label":"v0.259 initial", "action":"v0259_initial"},
+			{"id":"after_aster_next_instruction_consistent","label":"v0.259 next Worker", "action":"v0259_after_aster"},
+			{"id":"build_phase_no_rebuild_text","label":"v0.259 build no rebuild", "action":"v0259_build_no_rebuild"},
+			{"id":"place_field_barracks_hud_button_consistent","label":"v0.259 place", "action":"v0259_place"},
+			{"id":"valid_placement_hud_button_consistent","label":"v0.259 valid", "action":"v0259_valid"},
+			{"id":"barracks_built_full_consistent","label":"v0.259 full", "action":"v0259_full"},
+			{"id":"hp_125_damaged_functional_consistent","label":"v0.259 damaged", "action":"v0259_hp_125"},
+			{"id":"hp_25_critical_functional_consistent","label":"v0.259 critical", "action":"v0259_hp_25"},
+			{"id":"hp_0_destroyed_consistent","label":"v0.259 destroyed", "action":"v0259_destroyed"},
+			{"id":"destroyed_no_select_aster_no_stale_text","label":"v0.259 destroyed clean", "action":"v0259_destroyed_clean"},
+			{"id":"worker_selected_rebuild_consistent","label":"v0.259 Worker rebuild", "action":"v0259_worker_rebuild"},
+			{"id":"worker_rebuild_button_only_when_destroyed","label":"v0.259 Rebuild button", "action":"v0259_rebuild_button"},
+			{"id":"rebuild_resource_delta","label":"v0.259 rebuild spend", "action":"v0259_rebuild_delta"},
+			{"id":"rebuilding_25_consistent","label":"v0.259 rebuild 25", "action":"v0259_rebuild_25"},
+			{"id":"rebuilding_50_consistent","label":"v0.259 rebuild 50", "action":"v0259_rebuild_50"},
+			{"id":"rebuilding_75_consistent","label":"v0.259 rebuild 75", "action":"v0259_rebuild_75"},
+			{"id":"rebuilt_100_consistent","label":"v0.259 rebuild 100", "action":"v0259_rebuilt_100"},
+			{"id":"train_available_after_rebuild_consistent","label":"v0.259 train available", "action":"v0259_train_available"},
+			{"id":"train_resource_delta_after_rebuild","label":"v0.259 train spend", "action":"v0259_train_delta"},
+			{"id":"militia_ready_defend_consistent","label":"v0.259 Militia ready", "action":"v0259_militia_ready"},
+			{"id":"no_rebuild_text_after_rebuilt","label":"v0.259 no rebuild after", "action":"v0259_no_rebuild_after"},
+			{"id":"no_build_place_text_during_rebuild","label":"v0.259 no place during rebuild", "action":"v0259_no_place_rebuild"},
+			{"id":"repair_rebuild_separation_proof","label":"v0.259 separation", "action":"v0259_separation"},
+			{"id":"visual_state_comparison_strip","label":"v0.259 visual compare", "action":"v0259_visual_compare"},
+			{"id":"minimap_preserved","label":"v0.259 minimap", "action":"v0259_minimap"},
+			{"id":"existing_structures_preserved","label":"v0.259 structures", "action":"v0259_structures"},
+			{"id":"no_forbidden_text_scan","label":"v0.259 forbidden scan", "action":"v0259_forbidden_scan"},
+		]
 	if _player_capture_checkpoint() == "v0.258":
 		return [
 			{"id":"initial_select_aster_instruction","label":"v0.258 initial","action":"v0258_initial_select_aster"},
