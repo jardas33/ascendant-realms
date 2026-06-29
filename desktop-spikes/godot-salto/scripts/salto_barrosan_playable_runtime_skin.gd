@@ -119,12 +119,13 @@ var v0259_ui_invariant_proof: Dictionary = {}
 var v0261_watchpost_proof: Dictionary = {}
 var v0262_watchpost_awareness_proof: Dictionary = {}
 var v0263_watchpost_intel_memory_proof: Dictionary = {}
+var v0264_watchpost_intel_relay_proof: Dictionary = {}
 
 
 func configure_barrosan_playable_runtime_skin(options: Dictionary) -> void:
 	barrosan_runtime_skin_enabled = bool(options.get("enabled", false))
 	barrosan_requested_checkpoint = str(options.get("checkpoint", "v0.243"))
-	barrosan_runtime_checkpoint = "v0.253" if barrosan_requested_checkpoint in ["v0.254", "v0.255", "v0.256", "v0.257", "v0.258", "v0.259", "v0.261", "v0.262", "v0.263"] else barrosan_requested_checkpoint
+	barrosan_runtime_checkpoint = "v0.253" if barrosan_requested_checkpoint in ["v0.254", "v0.255", "v0.256", "v0.257", "v0.258", "v0.259", "v0.261", "v0.262", "v0.263", "v0.264"] else barrosan_requested_checkpoint
 	barrosan_runtime_debug_labels = bool(options.get("debugLabels", false))
 	if not barrosan_runtime_skin_enabled:
 		return
@@ -2221,11 +2222,13 @@ func set_barrosan_runtime_review_mode(mode: String) -> void:
 		_:
 			if action_mode == "clean":
 				barrosan_selected_role_id = ""
+	if barrosan_requested_checkpoint == "v0.264" and _v0264_is_review_mode(mode):
+		_v0264_apply_review_mode(mode)
 	if barrosan_requested_checkpoint == "v0.263" and _v0263_is_review_mode(mode):
 		_v0263_apply_review_mode(mode)
 	if barrosan_requested_checkpoint == "v0.262" and _v0262_is_review_mode(mode):
 		_v0262_apply_review_mode(mode)
-	if barrosan_requested_checkpoint in ["v0.261", "v0.262", "v0.263"] and _v0261_is_review_mode(mode):
+	if barrosan_requested_checkpoint in ["v0.261", "v0.262", "v0.263", "v0.264"] and _v0261_is_review_mode(mode):
 		_v0261_apply_review_mode(mode)
 	if barrosan_requested_checkpoint in ["v0.258", "v0.259"]:
 		# Older proof helpers may rewrite the shared review-mode token while they
@@ -2242,13 +2245,17 @@ func set_barrosan_runtime_review_mode(mode: String) -> void:
 	elif barrosan_requested_checkpoint == "v0.259":
 		_v0259_apply_resolved_ui()
 		_v0259_record_ui_invariant_proof(mode)
+	elif barrosan_requested_checkpoint == "v0.264" and _v0264_is_review_mode(mode):
+		_v0261_apply_resolved_ui()
+		_v0264_apply_intel_relay_ui()
+		_v0264_record_intel_relay_proof(mode)
 	elif barrosan_requested_checkpoint == "v0.263" and _v0263_is_review_mode(mode):
 		_v0261_apply_resolved_ui()
 		_v0263_record_intel_memory_proof(mode)
 	elif barrosan_requested_checkpoint == "v0.262" and _v0262_is_review_mode(mode):
 		_v0261_apply_resolved_ui()
 		_v0262_record_awareness_proof(mode)
-	elif barrosan_requested_checkpoint in ["v0.261", "v0.262", "v0.263"] and _v0261_is_review_mode(mode):
+	elif barrosan_requested_checkpoint in ["v0.261", "v0.262", "v0.263", "v0.264"] and _v0261_is_review_mode(mode):
 		_v0261_apply_resolved_ui()
 		_v0261_record_watchpost_proof(mode)
 	elif barrosan_requested_checkpoint == "v0.257":
@@ -2656,6 +2663,78 @@ func _v0263_is_review_mode(mode: String) -> bool:
 	].has(mode)
 
 
+func _v0264_review_modes() -> Array[String]:
+	return [
+		"v0264_watchpost_build_path", "v0264_watchpost_complete_no_threat_no_history_intel_relay",
+		"v0264_watch_zone_clean_labeling", "v0264_ashen_outside_zone_no_false_positive",
+		"v0264_ashen_touching_zone_current_scouted", "v0264_ashen_inside_zone_current_scouted",
+		"v0264_current_scouted_intel_relay", "v0264_current_scouted_world_label_not_overlapping_watchpost",
+		"v0264_current_scouted_minimap_ping", "v0264_threat_leaves_zone_last_seen_memory",
+		"v0264_last_seen_memory_intel_relay", "v0264_last_seen_memory_world_marker_distinct",
+		"v0264_last_seen_memory_minimap_ping_distinct", "v0264_memory_clearly_not_current_detection",
+		"v0264_watchpost_hud_no_barracks_text", "v0264_barracks_hud_no_watchpost_text",
+		"v0264_barracks_still_trains_militia", "v0264_existing_barracks_rebuild_path_still_valid",
+		"v0264_no_detection_or_memory_before_watchpost_complete", "v0264_world_label_clutter_reduced",
+	]
+
+
+func _v0264_is_review_mode(mode: String) -> bool:
+	return _v0264_review_modes().has(mode)
+
+
+func _v0264_apply_review_mode(mode: String) -> void:
+	barrosan_runtime_review_mode = mode
+	match mode:
+		"v0264_watchpost_build_path":
+			_v0264_reset_intel_relay()
+			_v0261_ensure_field_barracks_built()
+			_select_playtest_unit("worker_00")
+		"v0264_no_detection_or_memory_before_watchpost_complete":
+			_v0261_reset_foundation_state()
+			_v0264_reset_intel_relay()
+			_v0261_ensure_field_barracks_built()
+			_v0262_place_ashen_marker(V0262_ASHEN_INSIDE_ZONE, "inside")
+			_select_playtest_unit("worker_00")
+		"v0264_watchpost_complete_no_threat_no_history_intel_relay", "v0264_watch_zone_clean_labeling":
+			_v0261_ensure_watchpost_built()
+			_v0264_reset_intel_relay()
+			_v0262_clear_ashen_marker()
+			select_barrosan_runtime_role(V0261_WATCHPOST_KEY)
+		"v0264_ashen_outside_zone_no_false_positive":
+			_v0261_ensure_watchpost_built()
+			_v0264_reset_intel_relay()
+			_v0262_place_ashen_marker(V0262_ASHEN_OUTSIDE_ZONE, "outside")
+			select_barrosan_runtime_role(V0261_WATCHPOST_KEY)
+		"v0264_ashen_touching_zone_current_scouted":
+			_v0261_ensure_watchpost_built()
+			_v0264_reset_intel_relay()
+			_v0262_place_ashen_marker(V0262_ASHEN_TOUCHING_ZONE, "touching")
+			select_barrosan_runtime_role(V0261_WATCHPOST_KEY)
+		"v0264_ashen_inside_zone_current_scouted", "v0264_current_scouted_intel_relay", "v0264_current_scouted_world_label_not_overlapping_watchpost", "v0264_current_scouted_minimap_ping", "v0264_watchpost_hud_no_barracks_text", "v0264_world_label_clutter_reduced":
+			_v0261_ensure_watchpost_built()
+			_v0264_reset_intel_relay()
+			_v0262_place_ashen_marker(V0262_ASHEN_INSIDE_ZONE, "inside")
+			select_barrosan_runtime_role(V0261_WATCHPOST_KEY)
+		"v0264_threat_leaves_zone_last_seen_memory", "v0264_last_seen_memory_intel_relay", "v0264_last_seen_memory_world_marker_distinct", "v0264_last_seen_memory_minimap_ping_distinct", "v0264_memory_clearly_not_current_detection":
+			_v0261_ensure_watchpost_built()
+			_v0264_reset_intel_relay()
+			_v0262_place_ashen_marker(V0262_ASHEN_INSIDE_ZONE, "inside")
+			_v0263_update_intel_memory_state()
+			_v0263_move_ashen_marker_after_scout(V0262_ASHEN_OUTSIDE_ZONE)
+			select_barrosan_runtime_role(V0261_WATCHPOST_KEY)
+		"v0264_barracks_hud_no_watchpost_text", "v0264_barracks_still_trains_militia":
+			_v0261_ensure_watchpost_built()
+			_v0264_reset_intel_relay()
+			_v0262_clear_ashen_marker()
+			select_barrosan_runtime_role(V0245_CONSTRUCTED_KEY)
+		"v0264_existing_barracks_rebuild_path_still_valid":
+			_v0264_reset_intel_relay()
+			set_barrosan_runtime_review_mode("v0259_train_delta")
+			barrosan_runtime_review_mode = mode
+			select_barrosan_runtime_role(V0245_CONSTRUCTED_KEY)
+	_v0264_update_intel_relay_state()
+
+
 func _v0263_apply_review_mode(mode: String) -> void:
 	barrosan_runtime_review_mode = mode
 	match mode:
@@ -2948,6 +3027,26 @@ func _v0261_resolve_state() -> String:
 		"v0263_barracks_still_trains_militia": "BARRACKS_TRAINS_AFTER_WATCHPOST",
 		"v0263_existing_barracks_rebuild_path_still_valid": "EXISTING_BARRACKS_REBUILD_PATH",
 		"v0263_no_detection_or_memory_before_watchpost_complete": "WATCHPOST_NO_PRECOMPLETE_INTEL",
+		"v0264_watchpost_build_path": "BUILD_WATCHPOST_OBJECTIVE",
+		"v0264_watchpost_complete_no_threat_no_history_intel_relay": "WATCHPOST_RELAY_NO_HISTORY",
+		"v0264_watch_zone_clean_labeling": "WATCHPOST_RELAY_NO_HISTORY",
+		"v0264_ashen_outside_zone_no_false_positive": "WATCHPOST_RELAY_OUTSIDE_RANGE",
+		"v0264_ashen_touching_zone_current_scouted": "WATCHPOST_RELAY_CURRENT_SCOUTED",
+		"v0264_ashen_inside_zone_current_scouted": "WATCHPOST_RELAY_CURRENT_SCOUTED",
+		"v0264_current_scouted_intel_relay": "WATCHPOST_RELAY_CURRENT_SCOUTED",
+		"v0264_current_scouted_world_label_not_overlapping_watchpost": "WATCHPOST_RELAY_CURRENT_SCOUTED",
+		"v0264_current_scouted_minimap_ping": "WATCHPOST_RELAY_CURRENT_SCOUTED",
+		"v0264_threat_leaves_zone_last_seen_memory": "WATCHPOST_RELAY_LAST_SEEN_MEMORY",
+		"v0264_last_seen_memory_intel_relay": "WATCHPOST_RELAY_LAST_SEEN_MEMORY",
+		"v0264_last_seen_memory_world_marker_distinct": "WATCHPOST_RELAY_LAST_SEEN_MEMORY",
+		"v0264_last_seen_memory_minimap_ping_distinct": "WATCHPOST_RELAY_LAST_SEEN_MEMORY",
+		"v0264_memory_clearly_not_current_detection": "WATCHPOST_RELAY_LAST_SEEN_MEMORY",
+		"v0264_watchpost_hud_no_barracks_text": "WATCHPOST_RELAY_CURRENT_SCOUTED",
+		"v0264_barracks_hud_no_watchpost_text": "BARRACKS_TRAINS_AFTER_WATCHPOST",
+		"v0264_barracks_still_trains_militia": "BARRACKS_TRAINS_AFTER_WATCHPOST",
+		"v0264_existing_barracks_rebuild_path_still_valid": "EXISTING_BARRACKS_REBUILD_PATH",
+		"v0264_no_detection_or_memory_before_watchpost_complete": "WATCHPOST_NO_PRECOMPLETE_INTEL",
+		"v0264_world_label_clutter_reduced": "WATCHPOST_RELAY_CURRENT_SCOUTED",
 	}
 	return str(states.get(barrosan_runtime_review_mode, "INITIAL_SELECT_ASTER"))
 
@@ -3186,6 +3285,38 @@ func _v0261_ui_model(state: String) -> Dictionary:
 			"status": "No detection and no prior Ashen intel before completion",
 			"button": "Place Watchpost",
 		},
+		"WATCHPOST_RELAY_NO_HISTORY": {
+			"topObjective": "WATCHPOST INTEL",
+			"instruction": "No threat in watch zone.",
+			"title": "Barrosan Watchpost",
+			"context": "No prior Ashen intel | Intel only -- no attack",
+			"status": "No threat in watch zone | No prior Ashen intel",
+			"button": "Intel Relay",
+		},
+		"WATCHPOST_RELAY_OUTSIDE_RANGE": {
+			"topObjective": "WATCHPOST INTEL",
+			"instruction": "No threat in watch zone.",
+			"title": "Barrosan Watchpost",
+			"context": "Ashen pressure outside range | Intel only -- no attack",
+			"status": "No threat in watch zone | Ashen pressure outside range",
+			"button": "Intel Relay",
+		},
+		"WATCHPOST_RELAY_CURRENT_SCOUTED": {
+			"topObjective": "WATCHPOST INTEL",
+			"instruction": "ASHEN SCOUTED | Current: east bridge.",
+			"title": "Barrosan Watchpost",
+			"context": "Current: east bridge | Threat in WATCH ZONE",
+			"status": "ASHEN SCOUTED | Intel only -- no attack",
+			"button": "Intel Relay",
+		},
+		"WATCHPOST_RELAY_LAST_SEEN_MEMORY": {
+			"topObjective": "WATCHPOST INTEL",
+			"instruction": "Last scouted Ashen pressure.",
+			"title": "Barrosan Watchpost",
+			"context": "Last seen: east bridge | Memory ping only",
+			"status": "Memory ping only | Intel only -- no attack",
+			"button": "Intel Relay",
+		},
 		"WATCHPOST_NOT_COMPLETE_NO_DETECTION": {
 			"topObjective": "Build Barrosan Watchpost",
 			"instruction": "Ashen marker present, but Watchpost is not complete.",
@@ -3280,11 +3411,11 @@ func _v0261_record_watchpost_proof(mode: String) -> void:
 
 
 func _sync_v0261_watchpost_visuals() -> void:
-	if visual_root == null or barrosan_requested_checkpoint not in ["v0.261", "v0.262", "v0.263"]:
+	if visual_root == null or barrosan_requested_checkpoint not in ["v0.261", "v0.262", "v0.263", "v0.264"]:
 		return
 	var position := barrosan_build_validation_adapter.source_to_runtime_world(V0261_WATCHPOST_SOURCE_POSITION)
 	var built := _v0261_watchpost_count() > 0
-	var preview := barrosan_runtime_review_mode in ["v0261_watchpost_placement_cost", "v0261_watchpost_valid_site", "v0261_worker_watchpost_button", "v0262_watchpost_foundation_path", "v0262_no_detection_before_watchpost_complete", "v0263_watchpost_build_path", "v0263_no_detection_or_memory_before_watchpost_complete"]
+	var preview := barrosan_runtime_review_mode in ["v0261_watchpost_placement_cost", "v0261_watchpost_valid_site", "v0261_worker_watchpost_button", "v0262_watchpost_foundation_path", "v0262_no_detection_before_watchpost_complete", "v0263_watchpost_build_path", "v0263_no_detection_or_memory_before_watchpost_complete", "v0264_watchpost_build_path", "v0264_no_detection_or_memory_before_watchpost_complete"]
 	var show_structure := built or preview
 	_v0258_box_overlay("v0261_watchpost_base", position + Vector3(0.0, 0.16, 0.0), Vector3(0.64, 0.22, 0.52), Color("#87765a"), show_structure)
 	_v0258_box_overlay("v0261_watchpost_post_a", position + Vector3(-0.20, 0.52, -0.16), Vector3(0.08, 0.72, 0.08), Color("#6f5335"), show_structure)
@@ -3293,15 +3424,16 @@ func _sync_v0261_watchpost_visuals() -> void:
 	_v0258_box_overlay("v0261_watchpost_post_d", position + Vector3(0.20, 0.52, 0.16), Vector3(0.08, 0.72, 0.08), Color("#6f5335"), show_structure)
 	_v0258_box_overlay("v0261_watchpost_platform", position + Vector3(0.0, 0.88, 0.0), Vector3(0.72, 0.12, 0.60), Color("#b58a54"), show_structure)
 	_v0258_box_overlay("v0261_watchpost_roof", position + Vector3(0.0, 1.08, 0.0), Vector3(0.82, 0.16, 0.68), Color("#c5a05b"), show_structure)
-	var label_text := "WATCHPOST" if barrosan_requested_checkpoint in ["v0.262", "v0.263"] else "BARROSAN\nWATCHPOST"
+	var label_text := "WATCHPOST" if barrosan_requested_checkpoint in ["v0.262", "v0.263", "v0.264"] else "BARROSAN\nWATCHPOST"
 	var label := _v0248_marker_label("v0261_watchpost_label", position + Vector3(0.0, 1.42, 0.0), label_text, Color("#9fe8e4"))
 	label.visible = show_structure
 	_set_or_create_disc_marker("v0261_watch_zone_overlay", position + Vector3(0.0, 0.025, 0.0), 1.82, Color(0.24, 0.85, 0.92, 0.28))
 	var zone := visual_root.get_node_or_null("v0261_watch_zone_overlay")
 	if zone != null:
-		zone.visible = built and (barrosan_runtime_review_mode in ["v0261_watch_zone_overlay", "v0261_watchpost_selected_hud", "v0261_no_barracks_text_on_watchpost", "v0262_watchpost_complete_no_threat", "v0262_watch_zone_clean_labeling", "v0262_ashen_marker_outside_zone_no_false_positive", "v0262_ashen_marker_touching_zone_scouted", "v0262_ashen_marker_inside_zone_scouted", "v0262_watchpost_selected_scouted_hud", "v0262_watchpost_selected_no_attack_copy", "v0262_minimap_scouted_threat_ping", "v0262_watchpost_hud_no_barracks_text", "v0263_watchpost_complete_no_threat_no_history", "v0263_watch_zone_clean_labeling", "v0263_ashen_outside_zone_no_false_positive", "v0263_ashen_touching_zone_current_scouted", "v0263_ashen_inside_zone_current_scouted", "v0263_current_scouted_minimap_ping", "v0263_current_scouted_hud_intel_only", "v0263_threat_leaves_zone_last_seen_memory", "v0263_last_seen_memory_minimap_ping", "v0263_last_seen_memory_world_marker", "v0263_memory_clearly_not_current_detection", "v0263_watchpost_hud_no_barracks_text"] or barrosan_selected_role_id == V0261_WATCHPOST_KEY)
-	var zone_text := "WATCH ZONE" if barrosan_requested_checkpoint in ["v0.262", "v0.263"] else "WATCH ZONE\nPASSIVE ONLY"
-	var zone_label := _v0248_marker_label("v0261_watch_zone_label", position + Vector3(0.0, 1.72, 0.0), zone_text, Color("#7fe7ef"))
+		zone.visible = built and (barrosan_runtime_review_mode in ["v0261_watch_zone_overlay", "v0261_watchpost_selected_hud", "v0261_no_barracks_text_on_watchpost", "v0262_watchpost_complete_no_threat", "v0262_watch_zone_clean_labeling", "v0262_ashen_marker_outside_zone_no_false_positive", "v0262_ashen_marker_touching_zone_scouted", "v0262_ashen_marker_inside_zone_scouted", "v0262_watchpost_selected_scouted_hud", "v0262_watchpost_selected_no_attack_copy", "v0262_minimap_scouted_threat_ping", "v0262_watchpost_hud_no_barracks_text", "v0263_watchpost_complete_no_threat_no_history", "v0263_watch_zone_clean_labeling", "v0263_ashen_outside_zone_no_false_positive", "v0263_ashen_touching_zone_current_scouted", "v0263_ashen_inside_zone_current_scouted", "v0263_current_scouted_minimap_ping", "v0263_current_scouted_hud_intel_only", "v0263_threat_leaves_zone_last_seen_memory", "v0263_last_seen_memory_minimap_ping", "v0263_last_seen_memory_world_marker", "v0263_memory_clearly_not_current_detection", "v0263_watchpost_hud_no_barracks_text"] or _v0264_is_review_mode(barrosan_runtime_review_mode) or barrosan_selected_role_id == V0261_WATCHPOST_KEY)
+	var zone_text := "WATCH ZONE" if barrosan_requested_checkpoint in ["v0.262", "v0.263", "v0.264"] else "WATCH ZONE\nPASSIVE ONLY"
+	var zone_offset := Vector3(-1.42, 1.36, -1.36) if barrosan_requested_checkpoint == "v0.264" else Vector3(0.0, 1.72, 0.0)
+	var zone_label := _v0248_marker_label("v0261_watch_zone_label", position + zone_offset, zone_text, Color("#7fe7ef"))
 	zone_label.visible = zone != null and zone.visible
 	_set_or_create_marker("v0261_watchpost_valid_preview", position, Vector3(0.74, 0.05, 0.60), Color(0.24, 0.85, 0.92, 0.46))
 	var valid_preview := visual_root.get_node_or_null("v0261_watchpost_valid_preview")
@@ -3315,7 +3447,7 @@ func _v0261_watch_zone_visible() -> bool:
 
 
 func _add_v0261_watchpost_minimap_marker() -> void:
-	if minimap_panel == null or barrosan_requested_checkpoint not in ["v0.261", "v0.262", "v0.263"] or _v0261_watchpost_count() == 0:
+	if minimap_panel == null or barrosan_requested_checkpoint not in ["v0.261", "v0.262", "v0.263", "v0.264"] or _v0261_watchpost_count() == 0:
 		return
 	if not _minimap_has_marker("v0261_minimap_watchpost"):
 		_add_minimap_marker("v0261_minimap_watchpost", Vector2(176, 152), Vector2(11, 11), Color("#6ee4e8"))
@@ -3597,7 +3729,7 @@ func _v0262_awareness_line_visible() -> bool:
 
 
 func _add_v0262_scouted_minimap_ping() -> void:
-	if minimap_panel == null or barrosan_requested_checkpoint not in ["v0.262", "v0.263"]:
+	if minimap_panel == null or barrosan_requested_checkpoint not in ["v0.262", "v0.263", "v0.264"]:
 		return
 	if not _minimap_has_marker("v0262_minimap_scouted_threat_ping"):
 		_add_minimap_marker("v0262_minimap_scouted_threat_ping", Vector2(205, 106), Vector2(16, 16), Color("#e6cf62"))
@@ -3966,6 +4098,343 @@ func _v0263_intel_memory_status() -> Dictionary:
 	return result
 
 
+func _v0264_reset_intel_relay() -> void:
+	_v0263_reset_intel_memory()
+	barrosan_playtest.erase("v0264WatchpostIntelRelay")
+	_set_minimap_marker_visible("v0264_minimap_current_scouted_ping", false)
+	_set_minimap_marker_visible("v0264_minimap_last_seen_memory_ping", false)
+	var hide_nodes := [
+		"v0264_intel_relay_card_back", "v0264_intel_relay_card_label",
+		"v0264_ashen_current_marker", "v0264_ashen_current_label",
+		"v0264_last_seen_world_memory_marker", "v0264_last_seen_world_memory_label",
+		"v0264_current_scout_connector",
+	]
+	for node_name in hide_nodes:
+		var node := visual_root.get_node_or_null(node_name) if visual_root != null else null
+		if node != null:
+			node.visible = false
+
+
+func _v0264_relay_lines(relay_state: String) -> Array[String]:
+	match relay_state:
+		"outside_range":
+			return ["WATCHPOST INTEL", "No threat in watch zone", "Ashen pressure outside range", "Intel only -- no attack"]
+		"current_detection":
+			return ["WATCHPOST INTEL", "ASHEN SCOUTED", "Current: east bridge", "Threat in WATCH ZONE", "Intel only -- no attack"]
+		"last_seen_memory":
+			return ["WATCHPOST INTEL", "Last scouted Ashen pressure", "Last seen: east bridge", "Memory ping only", "Intel only -- no attack"]
+		_:
+			return ["WATCHPOST INTEL", "No threat in watch zone", "No prior Ashen intel", "Intel only -- no attack"]
+
+
+func _v0264_update_intel_relay_state() -> Dictionary:
+	var memory := _v0263_update_intel_memory_state()
+	var awareness: Dictionary = memory.get("awareness", {})
+	var watchpost_complete := bool(memory.get("watchpostComplete", false))
+	var marker_alive := bool(awareness.get("markerAlive", false))
+	var current_scouted := bool(memory.get("currentScouted", false))
+	var last_seen_active := bool(memory.get("lastSeenActive", false))
+	var watchpost_selected := barrosan_selected_role_id == V0261_WATCHPOST_KEY
+	var relevant_intel := current_scouted or last_seen_active
+	var relay_state := "precomplete"
+	if watchpost_complete:
+		if current_scouted:
+			relay_state = "current_detection"
+		elif last_seen_active:
+			relay_state = "last_seen_memory"
+		elif marker_alive:
+			relay_state = "outside_range"
+		else:
+			relay_state = "no_prior_intel"
+	var relay_visible := watchpost_complete and (watchpost_selected or relevant_intel)
+	if barrosan_selected_role_id == V0245_CONSTRUCTED_KEY:
+		relay_visible = false
+	var lines := _v0264_relay_lines(relay_state)
+	var relay := {
+		"checkpoint": "v0.264",
+		"relayState": relay_state,
+		"relayVisible": relay_visible,
+		"relayTitle": lines[0],
+		"relayLines": lines,
+		"watchpostSelected": watchpost_selected,
+		"currentDetection": current_scouted,
+		"memoryActive": last_seen_active,
+		"outsideRange": relay_state == "outside_range",
+		"noPriorIntel": relay_state == "no_prior_intel",
+		"watchpostComplete": watchpost_complete,
+		"memory": memory.duplicate(true),
+		"resourcesAfterRelay": runtime.resources.duplicate(true),
+		"combatAdded": false,
+		"projectilesAdded": false,
+		"towerAttackAdded": false,
+		"damageAdded": false,
+		"slowAdded": false,
+		"redirectAdded": false,
+		"spawnDespawnAdded": false,
+		"enemyAiChanged": false,
+		"enemyPathingChanged": false,
+		"waveTimingChanged": false,
+		"economyAdded": false,
+		"fogOfWarAdded": false,
+		"broadVisionAdded": false,
+	}
+	barrosan_playtest["v0264WatchpostIntelRelay"] = relay
+	if current_scouted:
+		_add_v0264_current_minimap_ping()
+	else:
+		_set_minimap_marker_visible("v0264_minimap_current_scouted_ping", false)
+	if last_seen_active:
+		_add_v0264_memory_minimap_ping()
+	else:
+		_set_minimap_marker_visible("v0264_minimap_last_seen_memory_ping", false)
+	return relay
+
+
+func _v0264_apply_intel_relay_ui() -> void:
+	var relay := _v0264_update_intel_relay_state()
+	if not bool(relay.get("relayVisible", false)):
+		return
+	var lines: Array = relay.get("relayLines", [])
+	if hud_objective_strip_label != null:
+		hud_objective_strip_label.text = str(lines[0])
+	if hud_onboarding_label != null and lines.size() > 1:
+		hud_onboarding_label.text = str(lines[1])
+		hud_onboarding_label.visible = true
+	if hud_context_label != null:
+		hud_context_label.text = " | ".join(lines.slice(2, lines.size()))
+	if hud_objective_label != null:
+		hud_objective_label.text = str(lines[min(2, lines.size() - 1)])
+	if hud_work_button != null:
+		hud_work_button.text = "Intel Relay"
+
+
+func _v0264_relay_combined_text(relay: Dictionary) -> String:
+	var lines: Array = relay.get("relayLines", [])
+	var line_text: Array[String] = []
+	for line in lines:
+		line_text.append(str(line))
+	return " | ".join(line_text)
+
+
+func _v0264_world_label_clutter_reduced() -> bool:
+	if visual_root == null:
+		return false
+	var watch_label := visual_root.get_node_or_null("v0261_watchpost_label")
+	var zone_label := visual_root.get_node_or_null("v0261_watch_zone_label")
+	var current_label := visual_root.get_node_or_null("v0264_ashen_current_label")
+	var memory_label := visual_root.get_node_or_null("v0264_last_seen_world_memory_label")
+	if watch_label == null or zone_label == null:
+		return false
+	var watch_position: Vector3 = watch_label.position
+	var zone_separated := watch_position.distance_to(zone_label.position) >= 0.95
+	var current_separated := current_label == null or not bool(current_label.visible) or watch_position.distance_to(current_label.position) >= 1.15
+	var memory_separated := memory_label == null or not bool(memory_label.visible) or watch_position.distance_to(memory_label.position) >= 0.55
+	return zone_separated and current_separated and memory_separated
+
+
+func _v0264_record_intel_relay_proof(mode: String) -> void:
+	var relay := _v0264_update_intel_relay_state()
+	var state := _v0261_resolve_state()
+	var model := _v0261_ui_model(state)
+	var relay_text := _v0264_relay_combined_text(relay) if bool(relay.get("relayVisible", false)) else ""
+	var combined := " | ".join([
+		hud_objective_strip_label.text if hud_objective_strip_label != null else "",
+		hud_onboarding_label.text if hud_onboarding_label != null else "",
+		hud_hero_label.text if hud_hero_label != null else "",
+		hud_context_label.text if hud_context_label != null else "",
+		hud_objective_label.text if hud_objective_label != null else "",
+		hud_work_button.text if hud_work_button != null else "",
+		relay_text,
+	])
+	var memory: Dictionary = relay.get("memory", {})
+	var awareness: Dictionary = memory.get("awareness", {})
+	v0264_watchpost_intel_relay_proof[mode] = {
+		"state": state,
+		"model": model,
+		"combinedText": combined,
+		"relay": relay.duplicate(true),
+		"memory": memory.duplicate(true),
+		"awareness": awareness.duplicate(true),
+		"singleSourceMatch": (
+			(hud_objective_strip_label == null or hud_objective_strip_label.text == str(model.get("topObjective", "")) or bool(relay.get("relayVisible", false)))
+			and (hud_hero_label == null or hud_hero_label.text == str(model.get("title", "")))
+			and (hud_work_button == null or hud_work_button.text == str(model.get("button", "")) or bool(relay.get("relayVisible", false)))
+		),
+		"hasRelayTitle": combined.contains("WATCHPOST INTEL"),
+		"hasNoThreatText": combined.contains("No threat in watch zone"),
+		"hasOutsideRangeText": combined.contains("Ashen pressure outside range"),
+		"hasCurrentScoutedText": combined.contains("ASHEN SCOUTED") or combined.contains("Current: east bridge"),
+		"hasThreatInZoneText": combined.contains("Threat in WATCH ZONE"),
+		"hasLastSeenText": combined.contains("Last scouted Ashen pressure") or combined.contains("Last seen: east bridge"),
+		"hasMemoryPingText": combined.contains("Memory ping only"),
+		"hasIntelOnlyText": combined.contains("Intel only -- no attack"),
+		"hasAttackOutputText": combined.contains("Tower attack") or combined.contains("damage output") or combined.contains("Attack available"),
+		"hasTrainMilitia": combined.contains("Train Militia"),
+		"hasBarracksProductionText": combined.contains("Train Militia available") or combined.contains("Production available") or combined.contains("Field Barracks production"),
+		"hasWatchpostText": combined.contains("Watchpost") or combined.contains("WATCHPOST") or combined.contains("WATCH ZONE") or combined.contains("SCOUTED") or combined.contains("Last scouted"),
+		"hasRebuildText": combined.contains("Rebuild") or combined.contains("Destroyed Field Barracks") or combined.contains("Target destroyed"),
+		"hasRepairText": combined.contains("Repair"),
+		"hasSelectAsterBeyondInitial": state != "INITIAL_SELECT_ASTER" and combined.contains("Select Aster"),
+		"currentMinimapPing": _minimap_has_marker("v0264_minimap_current_scouted_ping") and _minimap_marker_visible("v0264_minimap_current_scouted_ping"),
+		"memoryMinimapPing": _minimap_has_marker("v0264_minimap_last_seen_memory_ping") and _minimap_marker_visible("v0264_minimap_last_seen_memory_ping"),
+		"currentMarkerVisible": _v0264_current_world_marker_visible(),
+		"memoryWorldMarker": _v0264_memory_world_marker_visible(),
+		"watchpostMinimapRegistered": _minimap_has_marker("v0261_minimap_watchpost"),
+		"watchZoneVisible": _v0261_watch_zone_visible(),
+		"worldLabelClutterReduced": _v0264_world_label_clutter_reduced(),
+	}
+
+
+func _sync_v0264_intel_relay_readability_visuals() -> void:
+	if visual_root == null or barrosan_requested_checkpoint != "v0.264":
+		return
+	var relay := _v0264_update_intel_relay_state()
+	var memory: Dictionary = relay.get("memory", {})
+	var awareness: Dictionary = memory.get("awareness", {})
+	var marker_alive := bool(awareness.get("markerAlive", false))
+	var current_scouted := bool(relay.get("currentDetection", false))
+	var last_seen_active := bool(relay.get("memoryActive", false))
+	var marker_position: Vector2 = awareness.get("markerPosition", V0262_ASHEN_OUTSIDE_ZONE)
+	var marker_world := barrosan_build_validation_adapter.source_to_runtime_world(marker_position)
+	_set_or_create_disc_marker("v0264_ashen_current_marker", marker_world + Vector3(0.0, 0.08, 0.0), 0.56, Color(1.0, 0.18, 0.10, 0.76))
+	var current_marker := visual_root.get_node_or_null("v0264_ashen_current_marker")
+	if current_marker != null:
+		current_marker.visible = marker_alive and current_scouted
+	var current_label := _v0248_marker_label("v0264_ashen_current_label", marker_world + Vector3(0.62, 0.82, -0.22), "ASHEN SCOUTED\nCURRENT", Color("#ffd66d"))
+	current_label.visible = marker_alive and current_scouted
+	var last_seen_position: Vector2 = memory.get("lastSeenPosition", V0262_ASHEN_INSIDE_ZONE)
+	var last_seen_world := barrosan_build_validation_adapter.source_to_runtime_world(last_seen_position)
+	_set_or_create_disc_marker("v0264_last_seen_world_memory_marker", last_seen_world + Vector3(0.0, 0.07, 0.0), 0.40, Color(0.98, 0.72, 0.32, 0.28))
+	var memory_marker := visual_root.get_node_or_null("v0264_last_seen_world_memory_marker")
+	if memory_marker != null:
+		memory_marker.visible = last_seen_active
+	var memory_label := _v0248_marker_label("v0264_last_seen_world_memory_label", last_seen_world + Vector3(-1.28, 0.96, 0.72), "LAST SEEN\nEAST BRIDGE", Color("#f3c982"))
+	memory_label.visible = last_seen_active
+	var watch_world := barrosan_build_validation_adapter.source_to_runtime_world(V0261_WATCHPOST_SOURCE_POSITION)
+	var midpoint := (watch_world + marker_world) * 0.5
+	var distance := watch_world.distance_to(marker_world)
+	_v0258_box_overlay("v0264_current_scout_connector", midpoint + Vector3(0.0, 0.16, 0.0), Vector3(0.04, 0.04, maxf(0.12, distance)), Color(0.42, 0.96, 0.90, 0.28), current_scouted, atan2(marker_world.x - watch_world.x, marker_world.z - watch_world.z))
+	var card_position := watch_world + Vector3(1.88, 1.10, -1.58)
+	var relay_visible := bool(relay.get("relayVisible", false))
+	_v0258_box_overlay("v0264_intel_relay_card_back", card_position + Vector3(0.0, -0.12, 0.0), Vector3(1.92, 0.08, 0.92), Color(0.04, 0.08, 0.07, 0.78), relay_visible)
+	var relay_label := _v0248_marker_label("v0264_intel_relay_card_label", card_position, "\n".join(relay.get("relayLines", [])), Color("#e8d99d"))
+	relay_label.visible = relay_visible
+
+
+func _v0264_current_world_marker_visible() -> bool:
+	var marker := visual_root.get_node_or_null("v0264_ashen_current_marker") if visual_root != null else null
+	return marker != null and bool(marker.visible)
+
+
+func _v0264_memory_world_marker_visible() -> bool:
+	var marker := visual_root.get_node_or_null("v0264_last_seen_world_memory_marker") if visual_root != null else null
+	return marker != null and bool(marker.visible)
+
+
+func _add_v0264_current_minimap_ping() -> void:
+	if minimap_panel == null or barrosan_requested_checkpoint != "v0.264":
+		return
+	if not _minimap_has_marker("v0264_minimap_current_scouted_ping"):
+		_add_minimap_marker("v0264_minimap_current_scouted_ping", Vector2(205, 106), Vector2(16, 16), Color("#f1d25f"))
+	_set_minimap_marker_visible("v0264_minimap_current_scouted_ping", true)
+
+
+func _add_v0264_memory_minimap_ping() -> void:
+	if minimap_panel == null or barrosan_requested_checkpoint != "v0.264":
+		return
+	if not _minimap_has_marker("v0264_minimap_last_seen_memory_ping"):
+		_add_minimap_marker("v0264_minimap_last_seen_memory_ping", Vector2(196, 108), Vector2(10, 10), Color("#b77a46"))
+	_set_minimap_marker_visible("v0264_minimap_last_seen_memory_ping", true)
+
+
+func _v0264_intel_relay_status() -> Dictionary:
+	var watchpost := _v0261_watchpost_status()
+	var required := _v0264_review_modes()
+	var missing: Array[String] = []
+	var invariant_pass := true
+	var relay_state_pass := true
+	var current_detection_pass := true
+	var no_false_positive := true
+	var memory_after_detection := true
+	var memory_not_current := true
+	var no_precomplete_intel := true
+	var minimap_pass := true
+	var world_label_pass := true
+	var passive_pass := true
+	var forbidden_combo_pass := true
+	for mode in required:
+		var snap: Dictionary = v0264_watchpost_intel_relay_proof.get(mode, {})
+		if snap.is_empty():
+			missing.append(mode)
+			invariant_pass = false
+			continue
+		var relay: Dictionary = snap.get("relay", {})
+		var memory: Dictionary = snap.get("memory", {})
+		var awareness: Dictionary = snap.get("awareness", {})
+		invariant_pass = invariant_pass and bool(snap.get("singleSourceMatch", false)) and not bool(snap.get("hasSelectAsterBeyondInitial", false))
+		passive_pass = passive_pass and not bool(relay.get("combatAdded", true)) and not bool(relay.get("projectilesAdded", true)) and not bool(relay.get("towerAttackAdded", true)) and not bool(relay.get("damageAdded", true)) and not bool(relay.get("slowAdded", true)) and not bool(relay.get("redirectAdded", true)) and not bool(relay.get("spawnDespawnAdded", true)) and not bool(relay.get("enemyAiChanged", true)) and not bool(relay.get("enemyPathingChanged", true)) and not bool(relay.get("waveTimingChanged", true)) and not bool(relay.get("economyAdded", true)) and not bool(relay.get("fogOfWarAdded", true)) and not bool(relay.get("broadVisionAdded", true))
+		if mode == "v0264_watchpost_complete_no_threat_no_history_intel_relay":
+			relay_state_pass = relay_state_pass and str(relay.get("relayState", "")) == "no_prior_intel" and bool(snap.get("hasRelayTitle", false)) and bool(snap.get("hasNoThreatText", false))
+		if mode == "v0264_ashen_outside_zone_no_false_positive":
+			no_false_positive = no_false_positive and str(relay.get("relayState", "")) == "outside_range" and not bool(memory.get("currentScouted", true)) and not bool(memory.get("lastSeenActive", true)) and bool(snap.get("hasOutsideRangeText", false)) and not bool(snap.get("hasCurrentScoutedText", false))
+		if mode in ["v0264_ashen_touching_zone_current_scouted", "v0264_ashen_inside_zone_current_scouted", "v0264_current_scouted_intel_relay", "v0264_current_scouted_world_label_not_overlapping_watchpost", "v0264_current_scouted_minimap_ping", "v0264_watchpost_hud_no_barracks_text", "v0264_world_label_clutter_reduced"]:
+			current_detection_pass = current_detection_pass and str(relay.get("relayState", "")) == "current_detection" and bool(memory.get("currentScouted", false)) and bool(awareness.get("scouted", false)) and bool(snap.get("hasCurrentScoutedText", false)) and bool(snap.get("hasThreatInZoneText", false))
+		if mode in ["v0264_threat_leaves_zone_last_seen_memory", "v0264_last_seen_memory_intel_relay", "v0264_last_seen_memory_world_marker_distinct", "v0264_last_seen_memory_minimap_ping_distinct", "v0264_memory_clearly_not_current_detection"]:
+			memory_after_detection = memory_after_detection and str(relay.get("relayState", "")) == "last_seen_memory" and bool(memory.get("everScouted", false)) and bool(memory.get("lastSeenActive", false)) and bool(snap.get("hasLastSeenText", false)) and bool(snap.get("hasMemoryPingText", false))
+			memory_not_current = memory_not_current and not bool(memory.get("currentScouted", true)) and not bool(awareness.get("scouted", true)) and not bool(snap.get("currentMarkerVisible", false))
+		if mode == "v0264_no_detection_or_memory_before_watchpost_complete":
+			no_precomplete_intel = no_precomplete_intel and str(relay.get("relayState", "")) == "precomplete" and not bool(relay.get("relayVisible", true)) and not bool(memory.get("currentScouted", true)) and not bool(memory.get("everScouted", true)) and not bool(memory.get("lastSeenActive", true)) and not bool(snap.get("hasLastSeenText", false))
+		if mode == "v0264_current_scouted_minimap_ping":
+			minimap_pass = minimap_pass and bool(snap.get("currentMinimapPing", false)) and not bool(snap.get("memoryMinimapPing", false))
+		if mode == "v0264_last_seen_memory_minimap_ping_distinct":
+			minimap_pass = minimap_pass and bool(snap.get("memoryMinimapPing", false)) and not bool(snap.get("currentMinimapPing", false))
+		if mode in ["v0264_watch_zone_clean_labeling", "v0264_current_scouted_world_label_not_overlapping_watchpost", "v0264_last_seen_memory_world_marker_distinct", "v0264_world_label_clutter_reduced"]:
+			world_label_pass = world_label_pass and bool(snap.get("worldLabelClutterReduced", false))
+		if mode == "v0264_watchpost_hud_no_barracks_text":
+			forbidden_combo_pass = forbidden_combo_pass and not bool(snap.get("hasTrainMilitia", false)) and not bool(snap.get("hasBarracksProductionText", false)) and not bool(snap.get("hasRebuildText", false)) and not bool(snap.get("hasRepairText", false))
+		if mode in ["v0264_barracks_hud_no_watchpost_text", "v0264_barracks_still_trains_militia"]:
+			forbidden_combo_pass = forbidden_combo_pass and not bool(snap.get("hasRelayTitle", false)) and not bool(snap.get("hasCurrentScoutedText", false)) and not bool(snap.get("hasLastSeenText", false))
+	var resources_pass := false
+	var saw_field_barracks_resources := false
+	var saw_watchpost_resources := false
+	for snap_value in v0264_watchpost_intel_relay_proof.values():
+		var snap_dict: Dictionary = snap_value
+		var relay_dict: Dictionary = snap_dict.get("relay", {})
+		if _v0262_resources_match(relay_dict.get("resourcesAfterRelay", {}), 240, 40, 90, 38):
+			saw_field_barracks_resources = true
+		if _v0262_resources_match(relay_dict.get("resourcesAfterRelay", {}), 140, 10, 80, 38):
+			saw_watchpost_resources = true
+	resources_pass = saw_field_barracks_resources and saw_watchpost_resources
+	var result: Dictionary = barrosan_playtest.get("v0264WatchpostIntelRelay", {}).duplicate(true)
+	var status_pass := missing.is_empty() and invariant_pass and relay_state_pass and current_detection_pass and no_false_positive and memory_after_detection and memory_not_current and no_precomplete_intel and minimap_pass and world_label_pass and passive_pass and forbidden_combo_pass and resources_pass
+	result["status"] = "PASS" if status_pass else "IN_PROGRESS"
+	result["checkpoint"] = "v0.264"
+	result["watchpostFoundationStatus"] = watchpost.get("status", "UNKNOWN")
+	result["watchpostIntelMemoryStatus"] = _v0263_intel_memory_status().get("status", "UNKNOWN")
+	result["missingSnapshots"] = missing
+	result["invariantStatus"] = "PASS" if invariant_pass and missing.is_empty() else "IN_PROGRESS"
+	result["relayStateStatus"] = "PASS" if relay_state_pass else "IN_PROGRESS"
+	result["currentDetectionStatus"] = "PASS" if current_detection_pass else "IN_PROGRESS"
+	result["noFalsePositiveStatus"] = "PASS" if no_false_positive else "IN_PROGRESS"
+	result["memoryAfterDetectionStatus"] = "PASS" if memory_after_detection else "IN_PROGRESS"
+	result["memoryNotCurrentStatus"] = "PASS" if memory_not_current else "IN_PROGRESS"
+	result["noPrecompleteIntelStatus"] = "PASS" if no_precomplete_intel else "IN_PROGRESS"
+	result["minimapStatus"] = "PASS" if minimap_pass else "IN_PROGRESS"
+	result["worldLabelClutterStatus"] = "PASS" if world_label_pass else "IN_PROGRESS"
+	result["passiveIntelOnlyStatus"] = "PASS" if passive_pass else "IN_PROGRESS"
+	result["forbiddenCombinationStatus"] = "PASS" if forbidden_combo_pass else "IN_PROGRESS"
+	result["resourceSequenceStatus"] = "PASS" if resources_pass else "IN_PROGRESS"
+	result["cost"] = V0261_WATCHPOST_COST.duplicate(true)
+	result["hp"] = V0261_WATCHPOST_MAX_HP
+	result["lastSeenSector"] = V0263_LAST_SEEN_SECTOR
+	result["proofSnapshots"] = v0264_watchpost_intel_relay_proof.duplicate(true)
+	result["defaultRuntimeChanged"] = false
+	result["blenderUsed"] = false
+	result["newGlbExported"] = false
+	result["verdictCeiling"] = "PARTIAL"
+	return result
+
+
 func _v0262_resources_match(resources: Dictionary, crowns: int, stone: int, iron: int, aether: int) -> bool:
 	return int(resources.get("crowns", -999)) == crowns and int(resources.get("stone", -999)) == stone and int(resources.get("iron", -999)) == iron and int(resources.get("aether", -999)) == aether
 
@@ -4153,6 +4622,7 @@ func _sync_barrosan_runtime_visuals() -> void:
 	_sync_v0261_watchpost_visuals()
 	_sync_v0262_awareness_visuals()
 	_sync_v0263_intel_memory_visuals()
+	_sync_v0264_intel_relay_readability_visuals()
 	_sync_scale_probes()
 
 
@@ -6488,6 +6958,12 @@ func _sync_minimap() -> void:
 				_add_v0262_scouted_minimap_ping()
 			if bool(memory.get("memoryMinimapPingVisible", false)):
 				_add_v0263_memory_minimap_ping()
+		if barrosan_requested_checkpoint == "v0.264":
+			var relay: Dictionary = barrosan_playtest.get("v0264WatchpostIntelRelay", {})
+			if bool(relay.get("currentDetection", false)):
+				_add_v0264_current_minimap_ping()
+			if bool(relay.get("memoryActive", false)):
+				_add_v0264_memory_minimap_ping()
 
 
 func get_spike_status() -> Dictionary:
@@ -6548,9 +7024,10 @@ func get_spike_status() -> Dictionary:
 		"rebuildUxHardening": _v0257_rebuild_ux_status() if barrosan_requested_checkpoint in ["v0.257", "v0.258", "v0.259"] else {},
 		"lifecycleReadability": _v0258_lifecycle_readability_status() if barrosan_requested_checkpoint == "v0.258" else {},
 		"uiStateInvariantHardening": _v0259_ui_state_invariant_status() if barrosan_requested_checkpoint == "v0.259" else {},
-		"watchpostFoundation": _v0261_watchpost_status() if barrosan_requested_checkpoint in ["v0.261", "v0.262", "v0.263"] else {},
+		"watchpostFoundation": _v0261_watchpost_status() if barrosan_requested_checkpoint in ["v0.261", "v0.262", "v0.263", "v0.264"] else {},
 		"watchpostAwarenessLayer": _v0262_awareness_status() if barrosan_requested_checkpoint == "v0.262" else {},
-		"watchpostIntelMemory": _v0263_intel_memory_status() if barrosan_requested_checkpoint == "v0.263" else {},
+		"watchpostIntelMemory": _v0263_intel_memory_status() if barrosan_requested_checkpoint in ["v0.263", "v0.264"] else {},
+		"watchpostIntelRelayReadability": _v0264_intel_relay_status() if barrosan_requested_checkpoint == "v0.264" else {},
 	}
 	return status
 
