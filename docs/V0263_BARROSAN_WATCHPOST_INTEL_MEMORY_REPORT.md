@@ -5,9 +5,9 @@ Verdict: `PARTIAL`
 ## Exact facts
 
 - Base commit: `4f42d4dbdb21f8d28931b5be1192632f1a754fc4`.
-- Implementation commit: `PENDING_PUBLICATION`.
-- Final HEAD: `PENDING_PUBLICATION`.
-- Exact-SHA GitHub Actions run: PENDING_PUBLICATION.
+- Implementation commit: `df237826e4398523b24bb6d52bd2efcaf0d571c0`.
+- Final HEAD: `df237826e4398523b24bb6d52bd2efcaf0d571c0` before report closeout.
+- Exact-SHA GitHub Actions run: `28342078645` — https://github.com/jardas33/ascendant-realms/actions/runs/28342078645.
 - Scene: `res://scenes/salto_barrosan_playable_runtime_skin.tscn`.
 - Review pack: `artifacts/manual-review/v0263-barrosan-watchpost-intel-memory/`.
 - Default runtime unchanged: yes.
