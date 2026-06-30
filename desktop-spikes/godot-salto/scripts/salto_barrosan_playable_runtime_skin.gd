@@ -73,6 +73,8 @@ const V0261_WATCHPOST_MAX_HP := 120.0
 const V0261_WATCHPOST_SOURCE_POSITION := Vector2(1020, 1120)
 const V0267_EAST_BRIDGE_DEFENSE_SOURCE_POSITION := Vector2(1010, 1050)
 const V0267_EAST_BRIDGE_DEFENSE_RADIUS := 180.0
+const V0268_INTERCEPT_ENVELOPE_SOURCE_POSITION := Vector2(1140, 1060)
+const V0268_INTERCEPT_ENVELOPE_RADIUS := 145.0
 const V0262_WATCH_ZONE_RADIUS := 260.0
 const V0262_ASHEN_OUTSIDE_ZONE := Vector2(1360, 1120)
 const V0262_ASHEN_TOUCHING_ZONE := Vector2(1280, 1120)
@@ -125,12 +127,13 @@ var v0264_watchpost_intel_relay_proof: Dictionary = {}
 var v0265_watchpost_advisory_objectives_proof: Dictionary = {}
 var v0266_watchpost_defender_readiness_proof: Dictionary = {}
 var v0267_watchpost_defender_positioning_proof: Dictionary = {}
+var v0268_watchpost_militia_intercept_preview_proof: Dictionary = {}
 
 
 func configure_barrosan_playable_runtime_skin(options: Dictionary) -> void:
 	barrosan_runtime_skin_enabled = bool(options.get("enabled", false))
 	barrosan_requested_checkpoint = str(options.get("checkpoint", "v0.243"))
-	barrosan_runtime_checkpoint = "v0.253" if barrosan_requested_checkpoint in ["v0.254", "v0.255", "v0.256", "v0.257", "v0.258", "v0.259", "v0.261", "v0.262", "v0.263", "v0.264", "v0.265", "v0.266", "v0.267"] else barrosan_requested_checkpoint
+	barrosan_runtime_checkpoint = "v0.253" if barrosan_requested_checkpoint in ["v0.254", "v0.255", "v0.256", "v0.257", "v0.258", "v0.259", "v0.261", "v0.262", "v0.263", "v0.264", "v0.265", "v0.266", "v0.267", "v0.268"] else barrosan_requested_checkpoint
 	barrosan_runtime_debug_labels = bool(options.get("debugLabels", false))
 	if not barrosan_runtime_skin_enabled:
 		return
@@ -610,6 +613,8 @@ func _sync_hud() -> void:
 		_v0259_apply_resolved_ui()
 	if barrosan_requested_checkpoint in ["v0.261", "v0.262"]:
 		_v0261_apply_resolved_ui()
+	if barrosan_requested_checkpoint == "v0.268" and _v0268_is_review_mode(barrosan_runtime_review_mode):
+		_v0268_apply_intercept_preview_ui()
 	if barrosan_requested_checkpoint == "v0.267" and _v0267_is_review_mode(barrosan_runtime_review_mode):
 		_v0267_apply_defender_positioning_ui()
 
@@ -2229,6 +2234,8 @@ func set_barrosan_runtime_review_mode(mode: String) -> void:
 		_:
 			if action_mode == "clean":
 				barrosan_selected_role_id = ""
+	if barrosan_requested_checkpoint == "v0.268" and _v0268_is_review_mode(mode):
+		_v0268_apply_review_mode(mode)
 	if barrosan_requested_checkpoint == "v0.267" and _v0267_is_review_mode(mode):
 		_v0267_apply_review_mode(mode)
 	if barrosan_requested_checkpoint == "v0.266" and _v0266_is_review_mode(mode):
@@ -2241,7 +2248,7 @@ func set_barrosan_runtime_review_mode(mode: String) -> void:
 		_v0263_apply_review_mode(mode)
 	if barrosan_requested_checkpoint == "v0.262" and _v0262_is_review_mode(mode):
 		_v0262_apply_review_mode(mode)
-	if barrosan_requested_checkpoint in ["v0.261", "v0.262", "v0.263", "v0.264", "v0.265", "v0.266", "v0.267"] and _v0261_is_review_mode(mode):
+	if barrosan_requested_checkpoint in ["v0.261", "v0.262", "v0.263", "v0.264", "v0.265", "v0.266", "v0.267", "v0.268"] and _v0261_is_review_mode(mode):
 		_v0261_apply_review_mode(mode)
 	if barrosan_requested_checkpoint in ["v0.258", "v0.259"]:
 		# Older proof helpers may rewrite the shared review-mode token while they
@@ -2258,6 +2265,10 @@ func set_barrosan_runtime_review_mode(mode: String) -> void:
 	elif barrosan_requested_checkpoint == "v0.259":
 		_v0259_apply_resolved_ui()
 		_v0259_record_ui_invariant_proof(mode)
+	elif barrosan_requested_checkpoint == "v0.268" and _v0268_is_review_mode(mode):
+		_v0261_apply_resolved_ui()
+		_v0268_apply_intercept_preview_ui()
+		_v0268_record_intercept_preview_proof(mode)
 	elif barrosan_requested_checkpoint == "v0.267" and _v0267_is_review_mode(mode):
 		_v0261_apply_resolved_ui()
 		_v0267_apply_defender_positioning_ui()
@@ -2751,6 +2762,30 @@ func _v0267_is_review_mode(mode: String) -> bool:
 	return _v0267_review_modes().has(mode)
 
 
+func _v0268_review_modes() -> Array[String]:
+	return [
+		"v0268_watchpost_build_path", "v0268_watchpost_complete_no_intel_no_intercept_preview",
+		"v0268_ashen_outside_zone_no_false_intercept", "v0268_current_detection_no_militia_intercept_unavailable",
+		"v0268_current_detection_relay_intercept_unavailable", "v0268_barracks_train_militia_advisory_still",
+		"v0268_militia_training_intercept_pending", "v0268_current_detection_relay_intercept_pending",
+		"v0268_militia_ready_away_intercept_cannot", "v0268_current_detection_relay_cannot_intercept",
+		"v0268_objective_move_defender_to_east_bridge", "v0268_militia_holding_bridge_guarding_lane",
+		"v0268_current_detection_relay_guarding_lane", "v0268_ashen_inside_intercept_envelope",
+		"v0268_current_detection_relay_intercept_ready", "v0268_objective_intercept_ready_hold_bridge",
+		"v0268_no_damage_after_intercept_preview", "v0268_no_enemy_slow_or_redirect_after_intercept_preview",
+		"v0268_threat_leaves_memory_cannot_intercept", "v0268_threat_leaves_memory_guarding_last_seen_lane",
+		"v0268_last_seen_memory_marker_still_distinct", "v0268_current_vs_memory_vs_position_vs_intercept_not_confused",
+		"v0268_watchpost_hud_no_train_militia", "v0268_barracks_hud_no_watchpost_relay_card",
+		"v0268_existing_barracks_rebuild_path_still_valid", "v0268_existing_barracks_still_trains_militia",
+		"v0268_no_intercept_before_watchpost_complete", "v0268_no_intercept_ready_before_militia_holding_bridge",
+		"v0268_world_label_clutter_not_regressed",
+	]
+
+
+func _v0268_is_review_mode(mode: String) -> bool:
+	return _v0268_review_modes().has(mode)
+
+
 func _v0264_review_modes() -> Array[String]:
 	return [
 		"v0264_watchpost_build_path", "v0264_watchpost_complete_no_threat_no_history_intel_relay",
@@ -2768,6 +2803,94 @@ func _v0264_review_modes() -> Array[String]:
 
 func _v0264_is_review_mode(mode: String) -> bool:
 	return _v0264_review_modes().has(mode)
+
+
+func _v0268_apply_review_mode(mode: String) -> void:
+	barrosan_runtime_review_mode = mode
+	match mode:
+		"v0268_watchpost_build_path":
+			_v0268_reset_intercept_preview()
+			_v0261_ensure_field_barracks_built()
+			_select_playtest_unit("worker_00")
+		"v0268_no_intercept_before_watchpost_complete":
+			_v0261_reset_foundation_state()
+			_v0268_reset_intercept_preview()
+			_v0261_ensure_field_barracks_built()
+			_v0262_place_ashen_marker(V0262_ASHEN_INSIDE_ZONE, "inside")
+			_select_playtest_unit("worker_00")
+		"v0268_watchpost_complete_no_intel_no_intercept_preview":
+			_v0261_ensure_watchpost_built()
+			_v0268_reset_intercept_preview()
+			select_barrosan_runtime_role(V0261_WATCHPOST_KEY)
+		"v0268_ashen_outside_zone_no_false_intercept":
+			_v0261_ensure_watchpost_built()
+			_v0268_reset_intercept_preview()
+			_v0262_place_ashen_marker(V0262_ASHEN_OUTSIDE_ZONE, "outside")
+			select_barrosan_runtime_role(V0261_WATCHPOST_KEY)
+		"v0268_current_detection_no_militia_intercept_unavailable", "v0268_current_detection_relay_intercept_unavailable", "v0268_watchpost_hud_no_train_militia", "v0268_world_label_clutter_not_regressed":
+			_v0261_ensure_watchpost_built()
+			_v0268_reset_intercept_preview()
+			_v0262_place_ashen_marker(V0262_ASHEN_INSIDE_ZONE, "inside")
+			select_barrosan_runtime_role(V0261_WATCHPOST_KEY)
+		"v0268_barracks_train_militia_advisory_still", "v0268_barracks_hud_no_watchpost_relay_card":
+			_v0261_ensure_watchpost_built()
+			_v0268_reset_intercept_preview()
+			_v0262_place_ashen_marker(V0262_ASHEN_INSIDE_ZONE, "inside")
+			select_barrosan_runtime_role(V0245_CONSTRUCTED_KEY)
+		"v0268_militia_training_intercept_pending", "v0268_current_detection_relay_intercept_pending":
+			_v0261_ensure_watchpost_built()
+			_v0268_reset_intercept_preview()
+			_v0262_place_ashen_marker(V0262_ASHEN_INSIDE_ZONE, "inside")
+			_v0266_start_existing_militia_training()
+			select_barrosan_runtime_role(V0261_WATCHPOST_KEY)
+		"v0268_militia_ready_away_intercept_cannot", "v0268_current_detection_relay_cannot_intercept", "v0268_objective_move_defender_to_east_bridge", "v0268_no_intercept_ready_before_militia_holding_bridge":
+			_v0261_ensure_watchpost_built()
+			_v0268_reset_intercept_preview()
+			_v0262_place_ashen_marker(V0262_ASHEN_INSIDE_ZONE, "inside")
+			_v0266_complete_existing_militia_training()
+			_v0267_set_militia_source_position(Vector2(630, 1450))
+			select_barrosan_runtime_role(V0261_WATCHPOST_KEY)
+		"v0268_militia_holding_bridge_guarding_lane", "v0268_current_detection_relay_guarding_lane":
+			_v0261_ensure_watchpost_built()
+			_v0268_reset_intercept_preview()
+			_v0262_place_ashen_marker(V0262_ASHEN_TOUCHING_ZONE, "touching")
+			_v0266_complete_existing_militia_training()
+			_v0267_set_militia_source_position(V0267_EAST_BRIDGE_DEFENSE_SOURCE_POSITION)
+			select_barrosan_runtime_role(V0261_WATCHPOST_KEY)
+		"v0268_ashen_inside_intercept_envelope", "v0268_current_detection_relay_intercept_ready", "v0268_objective_intercept_ready_hold_bridge", "v0268_no_damage_after_intercept_preview", "v0268_no_enemy_slow_or_redirect_after_intercept_preview":
+			_v0261_ensure_watchpost_built()
+			_v0268_reset_intercept_preview()
+			_v0262_place_ashen_marker(V0262_ASHEN_INSIDE_ZONE, "inside")
+			_v0266_complete_existing_militia_training()
+			_v0267_set_militia_source_position(V0267_EAST_BRIDGE_DEFENSE_SOURCE_POSITION)
+			select_barrosan_runtime_role(V0261_WATCHPOST_KEY)
+		"v0268_threat_leaves_memory_cannot_intercept":
+			_v0261_ensure_watchpost_built()
+			_v0268_reset_intercept_preview()
+			_v0262_place_ashen_marker(V0262_ASHEN_INSIDE_ZONE, "inside")
+			_v0266_complete_existing_militia_training()
+			_v0267_set_militia_source_position(Vector2(630, 1450))
+			_v0263_move_ashen_marker_after_scout(V0262_ASHEN_OUTSIDE_ZONE)
+			select_barrosan_runtime_role(V0261_WATCHPOST_KEY)
+		"v0268_threat_leaves_memory_guarding_last_seen_lane", "v0268_last_seen_memory_marker_still_distinct", "v0268_current_vs_memory_vs_position_vs_intercept_not_confused":
+			_v0261_ensure_watchpost_built()
+			_v0268_reset_intercept_preview()
+			_v0262_place_ashen_marker(V0262_ASHEN_INSIDE_ZONE, "inside")
+			_v0266_complete_existing_militia_training()
+			_v0267_set_militia_source_position(V0267_EAST_BRIDGE_DEFENSE_SOURCE_POSITION)
+			_v0263_move_ashen_marker_after_scout(V0262_ASHEN_OUTSIDE_ZONE)
+			select_barrosan_runtime_role(V0261_WATCHPOST_KEY)
+		"v0268_existing_barracks_rebuild_path_still_valid":
+			_v0268_reset_intercept_preview()
+			set_barrosan_runtime_review_mode("v0259_train_delta")
+			barrosan_runtime_review_mode = mode
+			select_barrosan_runtime_role(V0245_CONSTRUCTED_KEY)
+		"v0268_existing_barracks_still_trains_militia":
+			_v0261_ensure_watchpost_built()
+			_v0268_reset_intercept_preview()
+			_v0266_start_existing_militia_training()
+			select_barrosan_runtime_role(V0245_CONSTRUCTED_KEY)
+	_v0268_update_intercept_preview_state()
 
 
 func _v0267_apply_review_mode(mode: String) -> void:
@@ -4491,6 +4614,477 @@ func _v0263_intel_memory_status() -> Dictionary:
 	result["hp"] = V0261_WATCHPOST_MAX_HP
 	result["lastSeenSector"] = V0263_LAST_SEEN_SECTOR
 	result["proofSnapshots"] = v0263_watchpost_intel_memory_proof.duplicate(true)
+	result["defaultRuntimeChanged"] = false
+	result["blenderUsed"] = false
+	result["newGlbExported"] = false
+	result["verdictCeiling"] = "PARTIAL"
+	return result
+
+
+func _v0268_reset_intercept_preview() -> void:
+	_v0267_reset_defender_positioning()
+	barrosan_playtest.erase("v0268WatchpostMilitiaInterceptPreview")
+	_set_minimap_marker_visible("v0268_minimap_current_intercept_ping", false)
+	_set_minimap_marker_visible("v0268_minimap_memory_intercept_ping", false)
+	_set_minimap_marker_visible("v0268_minimap_defender_position", false)
+	_set_minimap_marker_visible("v0268_minimap_intercept_ready", false)
+	var hide_nodes := [
+		"v0268_intercept_relay_card_back", "v0268_intercept_relay_card_label",
+		"v0268_ashen_current_marker", "v0268_ashen_current_label",
+		"v0268_last_seen_world_memory_marker", "v0268_last_seen_world_memory_label",
+		"v0268_defensive_area_marker", "v0268_defensive_area_label", "v0268_defender_position_label",
+		"v0268_intercept_envelope_marker", "v0268_intercept_envelope_label", "v0268_intercept_ready_label",
+		"v0268_current_scout_connector", "v0268_barracks_advisory_label",
+	]
+	for node_name in hide_nodes:
+		var node := visual_root.get_node_or_null(node_name) if visual_root != null else null
+		if node != null:
+			node.visible = false
+
+
+func _v0268_ashen_distance_to_intercept_envelope(awareness: Dictionary) -> float:
+	if not bool(awareness.get("markerAlive", false)):
+		return 99999.0
+	var marker_position: Vector2 = awareness.get("markerPosition", V0262_ASHEN_OUTSIDE_ZONE)
+	return marker_position.distance_to(V0268_INTERCEPT_ENVELOPE_SOURCE_POSITION)
+
+
+func _v0268_intercept_state(readiness_state: String, position_state: String, advisory_state: String, ashen_distance: float) -> String:
+	if advisory_state == "current_detection":
+		if readiness_state == "none":
+			return "unavailable"
+		if readiness_state == "training":
+			return "pending"
+		if position_state != "holding east bridge":
+			return "cannot intercept"
+		return "intercept ready" if ashen_distance <= V0268_INTERCEPT_ENVELOPE_RADIUS else "guarding lane"
+	if advisory_state == "last_seen_memory":
+		if readiness_state == "none":
+			return "unavailable"
+		if readiness_state == "training":
+			return "pending"
+		return "guarding last-seen lane" if position_state == "holding east bridge" else "cannot intercept"
+	return "none"
+
+
+func _v0268_intercept_lines(readiness_state: String, position_state: String, intercept_state: String, advisory_state: String) -> Array[String]:
+	var readiness := "Defender readiness: %s" % readiness_state
+	var position := "Defender position: %s" % position_state
+	var intercept := "Intercept preview: %s" % intercept_state
+	match advisory_state:
+		"outside_range":
+			return ["WATCHPOST INTEL", "No threat in watch zone", "Ashen pressure outside range", "Monitoring only", "Advisory only -- no attack"]
+		"current_detection":
+			return ["WATCHPOST INTEL", "ASHEN SCOUTED", "Current: east bridge", "Threat in WATCH ZONE", readiness, position, intercept, "Advisory only -- no attack"]
+		"last_seen_memory":
+			return ["WATCHPOST INTEL", "Last scouted Ashen pressure", "Last seen: east bridge", readiness, position, intercept, "Memory ping only", "Advisory only -- no attack"]
+		_:
+			return ["WATCHPOST INTEL", "No threat in watch zone", "No prior Ashen intel", "Advisory only -- no attack"]
+
+
+func _v0268_update_intercept_preview_state() -> Dictionary:
+	var positioning := _v0267_update_defender_positioning_state()
+	var memory: Dictionary = positioning.get("memory", {})
+	var awareness: Dictionary = positioning.get("awareness", {})
+	var advisory_state := str(positioning.get("advisoryState", "precomplete"))
+	var readiness_state := str(positioning.get("readinessState", "none"))
+	var position_state := str(positioning.get("positionState", "none"))
+	var watchpost_complete := bool(positioning.get("watchpostComplete", false))
+	var current_scouted := bool(positioning.get("currentDetection", false))
+	var last_seen_active := bool(positioning.get("memoryActive", false))
+	var ashen_distance := _v0268_ashen_distance_to_intercept_envelope(awareness)
+	var intercept_state := "none" if not watchpost_complete else _v0268_intercept_state(readiness_state, position_state, advisory_state, ashen_distance)
+	var lines := _v0268_intercept_lines(readiness_state, position_state, intercept_state, advisory_state)
+	var watchpost_selected := barrosan_selected_role_id == V0261_WATCHPOST_KEY
+	var barracks_selected := barrosan_selected_role_id == V0245_CONSTRUCTED_KEY
+	var barracks_advisory_visible := barracks_selected and watchpost_complete and current_scouted and readiness_state == "none"
+	var preview := positioning.duplicate(true)
+	preview["checkpoint"] = "v0.268"
+	preview["interceptPreviewState"] = intercept_state
+	preview["interceptRelayLines"] = lines
+	preview["relayLines"] = lines
+	preview["relayVisible"] = watchpost_complete and watchpost_selected
+	preview["barracksSelected"] = barracks_selected
+	preview["barracksAdvisoryVisible"] = barracks_advisory_visible
+	preview["barracksAdvisoryLine"] = "Watchpost advises: train Militia" if barracks_advisory_visible else ""
+	preview["interceptEnvelopeCenter"] = V0268_INTERCEPT_ENVELOPE_SOURCE_POSITION
+	preview["interceptEnvelopeRadius"] = V0268_INTERCEPT_ENVELOPE_RADIUS
+	preview["ashenDistanceToInterceptEnvelope"] = ashen_distance
+	preview["interceptReadyRequiresCurrentDetection"] = intercept_state == "intercept ready" and current_scouted
+	preview["interceptReadyRequiresReadyMilitia"] = intercept_state == "intercept ready" and readiness_state == "ready"
+	preview["interceptReadyRequiresHoldingEastBridge"] = intercept_state == "intercept ready" and position_state == "holding east bridge"
+	preview["interceptReadyRequiresAshenInsideEnvelope"] = intercept_state == "intercept ready" and ashen_distance <= V0268_INTERCEPT_ENVELOPE_RADIUS
+	preview["interceptPreviewOnly"] = true
+	preview["healthMutationAdded"] = false
+	preview["collisionChanged"] = false
+	preview["enemyStopped"] = false
+	preview["militiaHpBeforePreview"] = V0249_MILITIA_MAX_HP
+	preview["militiaHpAfterPreview"] = V0249_MILITIA_MAX_HP
+	preview["ashenHpBeforePreview"] = V0249_RAIDER_MAX_HP
+	preview["ashenHpAfterPreview"] = V0249_RAIDER_MAX_HP
+	barrosan_playtest["v0268WatchpostMilitiaInterceptPreview"] = preview
+	if current_scouted:
+		_add_v0268_current_minimap_ping()
+	else:
+		_set_minimap_marker_visible("v0268_minimap_current_intercept_ping", false)
+	if last_seen_active:
+		_add_v0268_memory_minimap_ping()
+	else:
+		_set_minimap_marker_visible("v0268_minimap_memory_intercept_ping", false)
+	if position_state == "holding east bridge":
+		_add_v0268_defender_position_minimap_marker()
+	else:
+		_set_minimap_marker_visible("v0268_minimap_defender_position", false)
+	if intercept_state == "intercept ready":
+		_add_v0268_intercept_ready_minimap_marker()
+	else:
+		_set_minimap_marker_visible("v0268_minimap_intercept_ready", false)
+	return preview
+
+
+func _v0268_apply_intercept_preview_ui() -> void:
+	var preview := _v0268_update_intercept_preview_state()
+	var readiness_state := str(preview.get("readinessState", "none"))
+	var position_state := str(preview.get("positionState", "none"))
+	var intercept_state := str(preview.get("interceptPreviewState", "none"))
+	if bool(preview.get("relayVisible", false)):
+		var lines: Array = preview.get("interceptRelayLines", [])
+		if hud_objective_strip_label != null:
+			if bool(preview.get("currentDetection", false)):
+				match intercept_state:
+					"intercept ready":
+						hud_objective_strip_label.text = "Intercept ready -- hold east bridge"
+					"guarding lane":
+						hud_objective_strip_label.text = "Defender holding -- watch the bridge"
+					"cannot intercept":
+						hud_objective_strip_label.text = "Militia ready -- move defender to east bridge"
+					"pending":
+						hud_objective_strip_label.text = "Militia training -- hold the bridge"
+					_:
+						hud_objective_strip_label.text = "ASHEN SCOUTED -- train Militia"
+			elif bool(preview.get("memoryActive", false)):
+				hud_objective_strip_label.text = "Defender holding last-seen bridge" if intercept_state == "guarding last-seen lane" else "Last seen east bridge -- move defender into position"
+			elif bool(preview.get("outsideRange", false)):
+				hud_objective_strip_label.text = "Watchpost monitoring"
+			else:
+				hud_objective_strip_label.text = "Watchpost online"
+		if hud_onboarding_label != null:
+			if bool(preview.get("currentDetection", false)) or bool(preview.get("memoryActive", false)):
+				hud_onboarding_label.text = "Readiness: %s. Position: %s. Intercept preview: %s. Advisory only." % [readiness_state, position_state, intercept_state]
+			elif bool(preview.get("outsideRange", false)):
+				hud_onboarding_label.text = "Ashen pressure outside range. No intercept preview."
+			else:
+				hud_onboarding_label.text = "No prior Ashen intel. No intercept preview."
+			hud_onboarding_label.visible = true
+		if hud_context_label != null:
+			hud_context_label.text = " | ".join(lines.slice(2, lines.size()))
+		if hud_objective_label != null:
+			hud_objective_label.text = "Intercept preview: %s" % intercept_state if bool(preview.get("currentDetection", false)) or bool(preview.get("memoryActive", false)) else str(lines[min(2, lines.size() - 1)])
+		if hud_work_button != null:
+			hud_work_button.text = "Intel Preview"
+	elif bool(preview.get("barracksAdvisoryVisible", false)):
+		if hud_onboarding_label != null:
+			hud_onboarding_label.text = str(preview.get("barracksAdvisoryLine", "Watchpost advises: train Militia"))
+			hud_onboarding_label.visible = true
+		if hud_context_label != null:
+			hud_context_label.text = "Operational | HP 200/200 | Watchpost advises: train Militia"
+		if hud_objective_label != null:
+			hud_objective_label.text = "Train Militia available | Existing Barracks production only"
+		if hud_work_button != null:
+			hud_work_button.text = "Train Militia"
+	elif bool(preview.get("barracksSelected", false)) and readiness_state == "training":
+		if hud_hero_label != null:
+			hud_hero_label.text = "Authoritative Field Barracks | Training"
+		if hud_onboarding_label != null:
+			hud_onboarding_label.text = "Militia training through existing Barracks queue."
+			hud_onboarding_label.visible = true
+		if hud_context_label != null:
+			hud_context_label.text = "Operational | HP 200/200 | Militia training..."
+		if hud_objective_label != null:
+			hud_objective_label.text = "Existing Barracks production only"
+		if hud_work_button != null:
+			hud_work_button.text = "Training"
+
+
+func _v0268_intercept_combined_text(preview: Dictionary) -> String:
+	var line_text: Array[String] = []
+	if bool(preview.get("relayVisible", false)):
+		var lines: Array = preview.get("interceptRelayLines", [])
+		for line in lines:
+			line_text.append(str(line))
+	if str(preview.get("barracksAdvisoryLine", "")) != "":
+		line_text.append(str(preview.get("barracksAdvisoryLine", "")))
+	return " | ".join(line_text)
+
+
+func _v0268_record_intercept_preview_proof(mode: String) -> void:
+	var preview := _v0268_update_intercept_preview_state()
+	var state := _v0261_resolve_state()
+	var model := _v0261_ui_model(state)
+	var relay_text := _v0268_intercept_combined_text(preview) if bool(preview.get("relayVisible", false)) or bool(preview.get("barracksAdvisoryVisible", false)) else ""
+	var combined := " | ".join([
+		hud_objective_strip_label.text if hud_objective_strip_label != null else "",
+		hud_onboarding_label.text if hud_onboarding_label != null else "",
+		hud_hero_label.text if hud_hero_label != null else "",
+		hud_context_label.text if hud_context_label != null else "",
+		hud_objective_label.text if hud_objective_label != null else "",
+		hud_work_button.text if hud_work_button != null else "",
+		relay_text,
+	])
+	var memory: Dictionary = preview.get("memory", {})
+	var awareness: Dictionary = preview.get("awareness", {})
+	v0268_watchpost_militia_intercept_preview_proof[mode] = {
+		"state": state,
+		"model": model,
+		"combinedText": combined,
+		"interceptPreview": preview.duplicate(true),
+		"positioning": preview.duplicate(true),
+		"readiness": preview.get("readiness", {}).duplicate(true),
+		"memory": memory.duplicate(true),
+		"awareness": awareness.duplicate(true),
+		"singleSourceMatch": true,
+		"hasRelayTitle": combined.contains("WATCHPOST INTEL"),
+		"hasNoThreatText": combined.contains("No threat in watch zone"),
+		"hasOutsideRangeText": combined.contains("Ashen pressure outside range") or combined.contains("Monitoring only"),
+		"hasCurrentScoutedText": combined.contains("ASHEN SCOUTED") or combined.contains("Current: east bridge"),
+		"hasThreatInZoneText": combined.contains("Threat in WATCH ZONE"),
+		"hasLastSeenText": combined.contains("Last scouted Ashen pressure") or combined.contains("Last seen: east bridge") or combined.contains("Last seen east bridge"),
+		"hasMemoryPingText": combined.contains("Memory ping only"),
+		"hasReadinessNone": combined.contains("Defender readiness: none"),
+		"hasReadinessTraining": combined.contains("Defender readiness: training"),
+		"hasReadinessReady": combined.contains("Defender readiness: ready"),
+		"hasPositionNone": combined.contains("Defender position: none"),
+		"hasPositionPending": combined.contains("Defender position: pending"),
+		"hasPositionNotInPosition": combined.contains("Defender position: not in position"),
+		"hasPositionHoldingEastBridge": combined.contains("Defender position: holding east bridge"),
+		"hasInterceptUnavailable": combined.contains("Intercept preview: unavailable"),
+		"hasInterceptPending": combined.contains("Intercept preview: pending"),
+		"hasCannotIntercept": combined.contains("Intercept preview: cannot intercept"),
+		"hasGuardingLane": combined.contains("Intercept preview: guarding lane"),
+		"hasInterceptReady": combined.contains("Intercept preview: intercept ready"),
+		"hasGuardingLastSeenLane": combined.contains("Intercept preview: guarding last-seen lane"),
+		"hasTrainMilitiaAdvisory": combined.contains("train Militia") or combined.contains("Train Militia"),
+		"hasTrainMilitia": combined.contains("Train Militia"),
+		"hasMilitiaTrainingText": combined.contains("Militia training") or combined.contains("Training"),
+		"hasBarracksProductionText": combined.contains("Barracks production") or combined.contains("Train Militia available"),
+		"hasWatchpostAttackText": combined.contains("Watchpost attack") or combined.contains("Tower attack"),
+		"hasDamageSlowRedirectSpawnText": combined.contains("damage") or combined.contains("slow") or combined.contains("redirect") or combined.contains("spawn") or combined.contains("despawn"),
+		"hasRebuildText": combined.contains("Rebuild"),
+		"hasRepairText": combined.contains("Repair"),
+		"hasStaleRebuildText": combined.contains("Rebuild not yet implemented"),
+		"currentMinimapPing": _minimap_has_marker("v0268_minimap_current_intercept_ping") and _minimap_marker_visible("v0268_minimap_current_intercept_ping"),
+		"memoryMinimapPing": _minimap_has_marker("v0268_minimap_memory_intercept_ping") and _minimap_marker_visible("v0268_minimap_memory_intercept_ping"),
+		"defenderPositionMinimap": _minimap_has_marker("v0268_minimap_defender_position") and _minimap_marker_visible("v0268_minimap_defender_position"),
+		"interceptReadyMinimap": _minimap_has_marker("v0268_minimap_intercept_ready") and _minimap_marker_visible("v0268_minimap_intercept_ready"),
+		"currentMarkerVisible": _v0268_current_world_marker_visible(),
+		"memoryWorldMarker": _v0268_memory_world_marker_visible(),
+		"defensiveAreaVisible": _v0268_defensive_area_visible(),
+		"interceptEnvelopeVisible": _v0268_intercept_envelope_visible(),
+		"interceptReadyWorldLabel": _v0268_intercept_ready_label_visible(),
+		"watchpostMinimapRegistered": _minimap_has_marker("v0261_minimap_watchpost"),
+		"watchZoneVisible": _v0261_watch_zone_visible(),
+		"worldLabelClutterReduced": _v0265_world_label_clutter_reduced(),
+		"relayCardVisible": _v0268_relay_card_visible(),
+		"barracksAdvisoryVisible": bool(preview.get("barracksAdvisoryVisible", false)),
+	}
+
+
+func _sync_v0268_watchpost_militia_intercept_preview_visuals() -> void:
+	if visual_root == null or barrosan_requested_checkpoint != "v0.268":
+		return
+	var preview := _v0268_update_intercept_preview_state()
+	var memory: Dictionary = preview.get("memory", {})
+	var awareness: Dictionary = preview.get("awareness", {})
+	var marker_alive := bool(awareness.get("markerAlive", false))
+	var current_scouted := bool(preview.get("currentDetection", false))
+	var last_seen_active := bool(preview.get("memoryActive", false))
+	var marker_position: Vector2 = awareness.get("markerPosition", V0262_ASHEN_OUTSIDE_ZONE)
+	var marker_world := barrosan_build_validation_adapter.source_to_runtime_world(marker_position)
+	_set_or_create_disc_marker("v0268_ashen_current_marker", marker_world + Vector3(0.0, 0.08, 0.0), 0.56, Color(1.0, 0.18, 0.10, 0.76))
+	var current_marker := visual_root.get_node_or_null("v0268_ashen_current_marker")
+	if current_marker != null:
+		current_marker.visible = marker_alive and current_scouted
+	var current_label := _v0248_marker_label("v0268_ashen_current_label", marker_world + Vector3(0.62, 0.82, -0.22), "ASHEN SCOUTED\nCURRENT", Color("#ffd66d"))
+	current_label.visible = marker_alive and current_scouted
+	var last_seen_position: Vector2 = memory.get("lastSeenPosition", V0262_ASHEN_INSIDE_ZONE)
+	var last_seen_world := barrosan_build_validation_adapter.source_to_runtime_world(last_seen_position)
+	_set_or_create_disc_marker("v0268_last_seen_world_memory_marker", last_seen_world + Vector3(0.0, 0.07, 0.0), 0.40, Color(0.98, 0.72, 0.32, 0.28))
+	var memory_marker := visual_root.get_node_or_null("v0268_last_seen_world_memory_marker")
+	if memory_marker != null:
+		memory_marker.visible = last_seen_active
+	var memory_label := _v0248_marker_label("v0268_last_seen_world_memory_label", last_seen_world + Vector3(-1.28, 0.96, 0.72), "LAST SEEN\nEAST BRIDGE", Color("#f3c982"))
+	memory_label.visible = last_seen_active
+	var watch_world := barrosan_build_validation_adapter.source_to_runtime_world(V0261_WATCHPOST_SOURCE_POSITION)
+	var midpoint := (watch_world + marker_world) * 0.5
+	var distance := watch_world.distance_to(marker_world)
+	_v0258_box_overlay("v0268_current_scout_connector", midpoint + Vector3(0.0, 0.16, 0.0), Vector3(0.04, 0.04, maxf(0.12, distance)), Color(0.42, 0.96, 0.90, 0.22), current_scouted, atan2(marker_world.x - watch_world.x, marker_world.z - watch_world.z))
+	var defense_world := barrosan_build_validation_adapter.source_to_runtime_world(V0267_EAST_BRIDGE_DEFENSE_SOURCE_POSITION)
+	_set_or_create_disc_marker("v0268_defensive_area_marker", defense_world + Vector3(0.0, 0.06, 0.0), 0.76, Color(0.34, 0.86, 0.56, 0.16))
+	var area_marker := visual_root.get_node_or_null("v0268_defensive_area_marker")
+	if area_marker != null:
+		area_marker.visible = bool(preview.get("watchpostComplete", false)) and str(preview.get("readinessState", "")) == "ready"
+	var area_label := _v0248_marker_label("v0268_defensive_area_label", defense_world + Vector3(0.74, 0.72, 0.22), "DEFENDER\nPOSITION", Color("#b8f0bb"))
+	area_label.visible = area_marker != null and bool(area_marker.visible)
+	var defender_label := _v0248_marker_label("v0268_defender_position_label", defense_world + Vector3(-1.15, 0.88, -0.68), str(preview.get("positionState", "none")).to_upper(), Color("#e1f0b2"))
+	defender_label.visible = area_label.visible
+	var envelope_world := barrosan_build_validation_adapter.source_to_runtime_world(V0268_INTERCEPT_ENVELOPE_SOURCE_POSITION)
+	_set_or_create_disc_marker("v0268_intercept_envelope_marker", envelope_world + Vector3(0.0, 0.09, 0.0), 0.50, Color(0.34, 0.92, 1.0, 0.18))
+	var envelope_marker := visual_root.get_node_or_null("v0268_intercept_envelope_marker")
+	if envelope_marker != null:
+		envelope_marker.visible = bool(preview.get("currentDetection", false)) and str(preview.get("positionState", "")) == "holding east bridge"
+	var envelope_label := _v0248_marker_label("v0268_intercept_envelope_label", envelope_world + Vector3(0.82, 0.72, 0.10), "INTERCEPT\nENVELOPE", Color("#9ee8ff"))
+	envelope_label.visible = envelope_marker != null and bool(envelope_marker.visible) and str(preview.get("interceptPreviewState", "")) != "intercept ready"
+	var ready_label := _v0248_marker_label("v0268_intercept_ready_label", envelope_world + Vector3(0.0, 1.02, -0.72), "INTERCEPT READY", Color("#9fffd8"))
+	ready_label.visible = str(preview.get("interceptPreviewState", "")) == "intercept ready"
+	var card_position := watch_world + Vector3(1.88, 1.10, -1.58)
+	var relay_visible := bool(preview.get("relayVisible", false))
+	_v0258_box_overlay("v0268_intercept_relay_card_back", card_position + Vector3(0.0, -0.12, 0.0), Vector3(2.48, 0.08, 1.34), Color(0.04, 0.08, 0.07, 0.82), relay_visible)
+	var relay_label := _v0248_marker_label("v0268_intercept_relay_card_label", card_position, "\n".join(preview.get("interceptRelayLines", [])), Color("#e8d99d"))
+	relay_label.visible = relay_visible
+	var barracks_world := barrosan_build_validation_adapter.source_to_runtime_world(Vector2(620, 1260))
+	var barracks_label := _v0248_marker_label("v0268_barracks_advisory_label", barracks_world + Vector3(0.0, 1.10, -0.62), str(preview.get("barracksAdvisoryLine", "")), Color("#f0d36f"))
+	barracks_label.visible = bool(preview.get("barracksAdvisoryVisible", false))
+
+
+func _v0268_current_world_marker_visible() -> bool:
+	var marker := visual_root.get_node_or_null("v0268_ashen_current_marker") if visual_root != null else null
+	return marker != null and bool(marker.visible)
+
+
+func _v0268_memory_world_marker_visible() -> bool:
+	var marker := visual_root.get_node_or_null("v0268_last_seen_world_memory_marker") if visual_root != null else null
+	return marker != null and bool(marker.visible)
+
+
+func _v0268_defensive_area_visible() -> bool:
+	var marker := visual_root.get_node_or_null("v0268_defensive_area_marker") if visual_root != null else null
+	return marker != null and bool(marker.visible)
+
+
+func _v0268_intercept_envelope_visible() -> bool:
+	var marker := visual_root.get_node_or_null("v0268_intercept_envelope_marker") if visual_root != null else null
+	return marker != null and bool(marker.visible)
+
+
+func _v0268_intercept_ready_label_visible() -> bool:
+	var label := visual_root.get_node_or_null("v0268_intercept_ready_label") if visual_root != null else null
+	return label != null and bool(label.visible)
+
+
+func _v0268_relay_card_visible() -> bool:
+	var card := visual_root.get_node_or_null("v0268_intercept_relay_card_back") if visual_root != null else null
+	return card != null and bool(card.visible)
+
+
+func _add_v0268_current_minimap_ping() -> void:
+	if minimap_panel == null or barrosan_requested_checkpoint != "v0.268":
+		return
+	if not _minimap_has_marker("v0268_minimap_current_intercept_ping"):
+		_add_minimap_marker("v0268_minimap_current_intercept_ping", Vector2(205, 106), Vector2(16, 16), Color("#f1d25f"))
+	_set_minimap_marker_visible("v0268_minimap_current_intercept_ping", true)
+
+
+func _add_v0268_memory_minimap_ping() -> void:
+	if minimap_panel == null or barrosan_requested_checkpoint != "v0.268":
+		return
+	if not _minimap_has_marker("v0268_minimap_memory_intercept_ping"):
+		_add_minimap_marker("v0268_minimap_memory_intercept_ping", Vector2(196, 108), Vector2(10, 10), Color("#b77a46"))
+	_set_minimap_marker_visible("v0268_minimap_memory_intercept_ping", true)
+
+
+func _add_v0268_defender_position_minimap_marker() -> void:
+	if minimap_panel == null or barrosan_requested_checkpoint != "v0.268":
+		return
+	if not _minimap_has_marker("v0268_minimap_defender_position"):
+		_add_minimap_marker("v0268_minimap_defender_position", Vector2(181, 121), Vector2(9, 9), Color("#8ee6a0"))
+	_set_minimap_marker_visible("v0268_minimap_defender_position", true)
+
+
+func _add_v0268_intercept_ready_minimap_marker() -> void:
+	if minimap_panel == null or barrosan_requested_checkpoint != "v0.268":
+		return
+	if not _minimap_has_marker("v0268_minimap_intercept_ready"):
+		_add_minimap_marker("v0268_minimap_intercept_ready", Vector2(201, 116), Vector2(8, 8), Color("#9fffd8"))
+	_set_minimap_marker_visible("v0268_minimap_intercept_ready", true)
+
+
+func _v0268_watchpost_militia_intercept_preview_status() -> Dictionary:
+	var watchpost := _v0261_watchpost_status()
+	var required := _v0268_review_modes()
+	var missing: Array[String] = []
+	var pass_all := true
+	for mode in required:
+		var snap: Dictionary = v0268_watchpost_militia_intercept_preview_proof.get(mode, {})
+		if snap.is_empty():
+			missing.append(mode)
+			pass_all = false
+			continue
+		var preview: Dictionary = snap.get("interceptPreview", {})
+		var memory: Dictionary = snap.get("memory", {})
+		var awareness: Dictionary = snap.get("awareness", {})
+		var readiness_state := str(preview.get("readinessState", ""))
+		var position_state := str(preview.get("positionState", ""))
+		var intercept_state := str(preview.get("interceptPreviewState", ""))
+		var ashen_distance := float(preview.get("ashenDistanceToInterceptEnvelope", 99999.0))
+		var passive := bool(preview.get("interceptPreviewOnly", false)) and not bool(preview.get("automaticMovementAdded", true)) and not bool(preview.get("combatAdded", true)) and not bool(preview.get("projectilesAdded", true)) and not bool(preview.get("towerAttackAdded", true)) and not bool(preview.get("damageAdded", true)) and not bool(preview.get("slowAdded", true)) and not bool(preview.get("redirectAdded", true)) and not bool(preview.get("spawnDespawnAddedByWatchpost", true)) and not bool(preview.get("enemyAiChanged", true)) and not bool(preview.get("enemyPathingChanged", true)) and not bool(preview.get("waveTimingChanged", true)) and not bool(preview.get("economyAdded", true)) and not bool(preview.get("fogOfWarAdded", true)) and not bool(preview.get("broadVisionAdded", true)) and not bool(preview.get("healthMutationAdded", true)) and not bool(preview.get("collisionChanged", true)) and not bool(preview.get("enemyStopped", true))
+		var health_same := float(preview.get("militiaHpBeforePreview", 0.0)) == float(preview.get("militiaHpAfterPreview", -1.0)) and float(preview.get("ashenHpBeforePreview", 0.0)) == float(preview.get("ashenHpAfterPreview", -1.0))
+		var mode_pass := bool(snap.get("singleSourceMatch", false)) and passive and health_same and not bool(snap.get("hasWatchpostAttackText", false)) and not bool(snap.get("hasDamageSlowRedirectSpawnText", false)) and not bool(snap.get("hasStaleRebuildText", false))
+		if mode == "v0268_watchpost_complete_no_intel_no_intercept_preview":
+			mode_pass = mode_pass and str(preview.get("advisoryState", "")) == "no_prior_intel" and intercept_state == "none" and bool(snap.get("hasNoThreatText", false)) and not bool(snap.get("hasInterceptUnavailable", false))
+		if mode == "v0268_ashen_outside_zone_no_false_intercept":
+			mode_pass = mode_pass and str(preview.get("advisoryState", "")) == "outside_range" and intercept_state == "none" and not bool(memory.get("currentScouted", true)) and not bool(memory.get("lastSeenActive", true)) and bool(snap.get("hasOutsideRangeText", false)) and not bool(snap.get("hasCurrentScoutedText", false)) and not bool(snap.get("hasInterceptReady", false))
+		if mode in ["v0268_current_detection_no_militia_intercept_unavailable", "v0268_current_detection_relay_intercept_unavailable", "v0268_watchpost_hud_no_train_militia", "v0268_world_label_clutter_not_regressed"]:
+			mode_pass = mode_pass and str(preview.get("advisoryState", "")) == "current_detection" and readiness_state == "none" and position_state == "none" and intercept_state == "unavailable" and bool(snap.get("hasInterceptUnavailable", false)) and bool(snap.get("hasCurrentScoutedText", false))
+		if mode in ["v0268_militia_training_intercept_pending", "v0268_current_detection_relay_intercept_pending"]:
+			mode_pass = mode_pass and str(preview.get("advisoryState", "")) == "current_detection" and readiness_state == "training" and position_state == "pending" and intercept_state == "pending" and bool(snap.get("hasInterceptPending", false))
+		if mode in ["v0268_militia_ready_away_intercept_cannot", "v0268_current_detection_relay_cannot_intercept", "v0268_objective_move_defender_to_east_bridge"]:
+			mode_pass = mode_pass and str(preview.get("advisoryState", "")) == "current_detection" and readiness_state == "ready" and position_state == "not in position" and intercept_state == "cannot intercept" and bool(snap.get("hasCannotIntercept", false)) and not bool(snap.get("hasInterceptReady", false))
+		if mode == "v0268_no_intercept_ready_before_militia_holding_bridge":
+			mode_pass = mode_pass and str(preview.get("advisoryState", "")) == "current_detection" and readiness_state == "ready" and position_state == "not in position" and intercept_state == "cannot intercept" and not bool(snap.get("hasInterceptReady", false))
+		if mode in ["v0268_militia_holding_bridge_guarding_lane", "v0268_current_detection_relay_guarding_lane"]:
+			mode_pass = mode_pass and str(preview.get("advisoryState", "")) == "current_detection" and readiness_state == "ready" and position_state == "holding east bridge" and intercept_state == "guarding lane" and ashen_distance > V0268_INTERCEPT_ENVELOPE_RADIUS and bool(snap.get("hasGuardingLane", false))
+		if mode in ["v0268_ashen_inside_intercept_envelope", "v0268_current_detection_relay_intercept_ready", "v0268_objective_intercept_ready_hold_bridge", "v0268_no_damage_after_intercept_preview", "v0268_no_enemy_slow_or_redirect_after_intercept_preview"]:
+			mode_pass = mode_pass and str(preview.get("advisoryState", "")) == "current_detection" and readiness_state == "ready" and position_state == "holding east bridge" and intercept_state == "intercept ready" and ashen_distance <= V0268_INTERCEPT_ENVELOPE_RADIUS and bool(snap.get("hasInterceptReady", false)) and bool(preview.get("interceptReadyRequiresCurrentDetection", false)) and bool(preview.get("interceptReadyRequiresReadyMilitia", false)) and bool(preview.get("interceptReadyRequiresHoldingEastBridge", false)) and bool(preview.get("interceptReadyRequiresAshenInsideEnvelope", false))
+		if mode == "v0268_threat_leaves_memory_cannot_intercept":
+			mode_pass = mode_pass and str(preview.get("advisoryState", "")) == "last_seen_memory" and readiness_state == "ready" and position_state == "not in position" and intercept_state == "cannot intercept" and bool(memory.get("lastSeenActive", false)) and not bool(snap.get("hasThreatInZoneText", false))
+		if mode in ["v0268_threat_leaves_memory_guarding_last_seen_lane", "v0268_last_seen_memory_marker_still_distinct", "v0268_current_vs_memory_vs_position_vs_intercept_not_confused"]:
+			mode_pass = mode_pass and str(preview.get("advisoryState", "")) == "last_seen_memory" and readiness_state == "ready" and position_state == "holding east bridge" and intercept_state == "guarding last-seen lane" and bool(memory.get("lastSeenActive", false)) and bool(snap.get("hasGuardingLastSeenLane", false)) and not bool(snap.get("hasThreatInZoneText", false)) and not bool(memory.get("currentScouted", true)) and not bool(awareness.get("scouted", true)) and not bool(snap.get("currentMarkerVisible", false)) and not bool(snap.get("hasInterceptReady", false))
+		if mode == "v0268_no_intercept_before_watchpost_complete":
+			mode_pass = mode_pass and str(preview.get("advisoryState", "")) == "precomplete" and not bool(preview.get("relayVisible", true)) and not bool(preview.get("barracksAdvisoryVisible", true)) and intercept_state == "none" and not bool(snap.get("hasInterceptUnavailable", false))
+		if mode == "v0268_barracks_train_militia_advisory_still":
+			mode_pass = mode_pass and bool(preview.get("barracksSelected", false)) and bool(preview.get("barracksAdvisoryVisible", false)) and bool(snap.get("hasTrainMilitiaAdvisory", false)) and not bool(snap.get("relayCardVisible", false))
+		if mode in ["v0268_existing_barracks_still_trains_militia", "v0268_barracks_train_militia_advisory_still"]:
+			mode_pass = mode_pass and bool(preview.get("barracksSelected", false)) and (bool(snap.get("hasTrainMilitia", false)) or bool(snap.get("hasMilitiaTrainingText", false)))
+		if mode == "v0268_watchpost_hud_no_train_militia":
+			mode_pass = mode_pass and not bool(snap.get("hasBarracksProductionText", false)) and not bool(snap.get("hasRebuildText", false)) and not bool(snap.get("hasRepairText", false))
+		if mode == "v0268_barracks_hud_no_watchpost_relay_card":
+			mode_pass = mode_pass and bool(preview.get("barracksSelected", false)) and not bool(snap.get("relayCardVisible", false)) and not bool(snap.get("hasRelayTitle", false))
+		pass_all = pass_all and mode_pass
+	var resources_pass := false
+	var saw_field_barracks_resources := false
+	var saw_watchpost_resources := false
+	for snap_value in v0268_watchpost_militia_intercept_preview_proof.values():
+		var snap_dict: Dictionary = snap_value
+		var preview_dict: Dictionary = snap_dict.get("interceptPreview", {})
+		if _v0262_resources_match(preview_dict.get("resourcesAfterPositioning", {}), 240, 40, 90, 38):
+			saw_field_barracks_resources = true
+		if _v0262_resources_match(preview_dict.get("resourcesAfterPositioning", {}), 140, 10, 80, 38):
+			saw_watchpost_resources = true
+	resources_pass = saw_field_barracks_resources and saw_watchpost_resources
+	var result: Dictionary = barrosan_playtest.get("v0268WatchpostMilitiaInterceptPreview", {}).duplicate(true)
+	var status_pass := missing.is_empty() and pass_all and resources_pass
+	result["status"] = "PASS" if status_pass else "IN_PROGRESS"
+	result["checkpoint"] = "v0.268"
+	result["watchpostFoundationStatus"] = watchpost.get("status", "UNKNOWN")
+	result["watchpostDefenderReadinessStatus"] = "RETAINED_BY_DEDICATED_V0266_VALIDATOR"
+	result["watchpostDefenderPositioningStatus"] = "RETAINED_BY_DEDICATED_V0267_VALIDATOR"
+	result["missingSnapshots"] = missing
+	result["invariantStatus"] = "PASS" if pass_all and missing.is_empty() else "IN_PROGRESS"
+	result["resourceSequenceStatus"] = "PASS" if resources_pass else "IN_PROGRESS"
+	result["passiveInterceptPreviewOnlyStatus"] = "PASS" if pass_all else "IN_PROGRESS"
+	result["cost"] = V0261_WATCHPOST_COST.duplicate(true)
+	result["hp"] = V0261_WATCHPOST_MAX_HP
+	result["proofSnapshots"] = v0268_watchpost_militia_intercept_preview_proof.duplicate(true)
 	result["defaultRuntimeChanged"] = false
 	result["blenderUsed"] = false
 	result["newGlbExported"] = false
@@ -6401,6 +6995,7 @@ func _sync_barrosan_runtime_visuals() -> void:
 	_sync_v0265_watchpost_advisory_visuals()
 	_sync_v0266_watchpost_defender_readiness_visuals()
 	_sync_v0267_watchpost_defender_positioning_visuals()
+	_sync_v0268_watchpost_militia_intercept_preview_visuals()
 	_sync_scale_probes()
 
 
@@ -8762,6 +9357,16 @@ func _sync_minimap() -> void:
 				_add_v0267_memory_minimap_ping()
 			if str(positioning.get("positionState", "")) == "holding east bridge":
 				_add_v0267_defender_position_minimap_marker()
+		if barrosan_requested_checkpoint == "v0.268":
+			var intercept: Dictionary = barrosan_playtest.get("v0268WatchpostMilitiaInterceptPreview", {})
+			if bool(intercept.get("currentDetection", false)):
+				_add_v0268_current_minimap_ping()
+			if bool(intercept.get("memoryActive", false)):
+				_add_v0268_memory_minimap_ping()
+			if str(intercept.get("positionState", "")) == "holding east bridge":
+				_add_v0268_defender_position_minimap_marker()
+			if str(intercept.get("interceptPreviewState", "")) == "intercept ready":
+				_add_v0268_intercept_ready_minimap_marker()
 
 
 func get_spike_status() -> Dictionary:
@@ -8822,13 +9427,14 @@ func get_spike_status() -> Dictionary:
 		"rebuildUxHardening": _v0257_rebuild_ux_status() if barrosan_requested_checkpoint in ["v0.257", "v0.258", "v0.259"] else {},
 		"lifecycleReadability": _v0258_lifecycle_readability_status() if barrosan_requested_checkpoint == "v0.258" else {},
 		"uiStateInvariantHardening": _v0259_ui_state_invariant_status() if barrosan_requested_checkpoint == "v0.259" else {},
-		"watchpostFoundation": _v0261_watchpost_status() if barrosan_requested_checkpoint in ["v0.261", "v0.262", "v0.263", "v0.264", "v0.265", "v0.266", "v0.267"] else {},
+		"watchpostFoundation": _v0261_watchpost_status() if barrosan_requested_checkpoint in ["v0.261", "v0.262", "v0.263", "v0.264", "v0.265", "v0.266", "v0.267", "v0.268"] else {},
 		"watchpostAwarenessLayer": _v0262_awareness_status() if barrosan_requested_checkpoint == "v0.262" else {},
-		"watchpostIntelMemory": _v0263_intel_memory_status() if barrosan_requested_checkpoint in ["v0.263", "v0.264", "v0.265", "v0.266", "v0.267"] else {},
+		"watchpostIntelMemory": _v0263_intel_memory_status() if barrosan_requested_checkpoint in ["v0.263", "v0.264", "v0.265", "v0.266", "v0.267", "v0.268"] else {},
 		"watchpostIntelRelayReadability": _v0264_intel_relay_status() if barrosan_requested_checkpoint == "v0.264" else {},
 		"watchpostAdvisoryObjectives": _v0265_watchpost_advisory_objectives_status() if barrosan_requested_checkpoint == "v0.265" else {},
 		"watchpostDefenderReadinessBridge": _v0266_watchpost_defender_readiness_status() if barrosan_requested_checkpoint == "v0.266" else {},
 		"watchpostDefenderPositioningBridge": _v0267_watchpost_defender_positioning_status() if barrosan_requested_checkpoint == "v0.267" else {},
+		"watchpostMilitiaInterceptPreviewBridge": _v0268_watchpost_militia_intercept_preview_status() if barrosan_requested_checkpoint == "v0.268" else {},
 	}
 	return status
 
