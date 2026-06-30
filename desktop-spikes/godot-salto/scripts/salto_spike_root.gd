@@ -8312,7 +8312,7 @@ func _apply_player_slice_action(action: String) -> Dictionary:
 			_ensure_player_battle_scene()
 			_call_scene("set_barrosan_runtime_review_mode", [action])
 			_render_player_screen("battle")
-		"v0268_watchpost_build_path", "v0268_watchpost_complete_no_intel_no_intercept_preview", "v0268_ashen_outside_zone_no_false_intercept", "v0268_current_detection_no_militia_intercept_unavailable", "v0268_current_detection_relay_intercept_unavailable", "v0268_barracks_train_militia_advisory_still", "v0268_militia_training_intercept_pending", "v0268_current_detection_relay_intercept_pending", "v0268_militia_ready_away_intercept_cannot", "v0268_current_detection_relay_cannot_intercept", "v0268_objective_move_defender_to_east_bridge", "v0268_militia_holding_bridge_guarding_lane", "v0268_current_detection_relay_guarding_lane", "v0268_ashen_inside_intercept_envelope", "v0268_current_detection_relay_intercept_ready", "v0268_objective_intercept_ready_hold_bridge", "v0268_no_damage_after_intercept_preview", "v0268_no_enemy_slow_or_redirect_after_intercept_preview", "v0268_threat_leaves_memory_cannot_intercept", "v0268_threat_leaves_memory_guarding_last_seen_lane", "v0268_last_seen_memory_marker_still_distinct", "v0268_current_vs_memory_vs_position_vs_intercept_not_confused", "v0268_watchpost_hud_no_train_militia", "v0268_barracks_hud_no_watchpost_relay_card", "v0268_existing_barracks_rebuild_path_still_valid", "v0268_existing_barracks_still_trains_militia", "v0268_no_intercept_before_watchpost_complete", "v0268_no_intercept_ready_before_militia_holding_bridge", "v0268_world_label_clutter_not_regressed":
+		"v0269_watchpost_build_path", "v0269_watchpost_complete_no_intel_no_contact", "v0269_ashen_outside_zone_no_contact", "v0269_current_detection_no_militia_contact_unavailable", "v0269_current_detection_militia_training_contact_pending", "v0269_militia_ready_away_contact_unavailable", "v0269_militia_holding_guarding_lane_no_contact", "v0269_intercept_ready_pre_contact_integrity_100", "v0269_contact_armed_no_damage_yet", "v0269_first_contact_engaged_integrity_90", "v0269_no_repeated_damage_below_90", "v0269_no_enemy_despawn_after_contact", "v0269_no_militia_hp_loss_after_contact", "v0269_no_watchpost_damage_or_attack", "v0269_no_projectile_or_tower_attack", "v0269_no_enemy_slow_or_redirect", "v0269_threat_leaves_after_contact_memory_integrity_90", "v0269_memory_only_no_new_contact_damage", "v0269_last_seen_memory_marker_distinct", "v0269_current_vs_memory_vs_position_vs_intercept_vs_contact_not_confused", "v0269_watchpost_hud_contact_state_no_train_militia", "v0269_barracks_hud_train_militia_no_watchpost_relay", "v0269_militia_selected_contact_state", "v0269_minimap_current_detection_contact_ping", "v0269_minimap_memory_no_contact_ping", "v0269_no_contact_before_watchpost_complete", "v0269_no_contact_before_militia_holding_bridge", "v0269_no_contact_when_ashen_only_outside_range", "v0269_label_declutter_intercept_ready", "v0269_label_declutter_contact_engaged", "v0269_existing_barracks_rebuild_path_still_valid", "v0269_existing_barracks_still_trains_militia", "v0268_watchpost_build_path", "v0268_watchpost_complete_no_intel_no_intercept_preview", "v0268_ashen_outside_zone_no_false_intercept", "v0268_current_detection_no_militia_intercept_unavailable", "v0268_current_detection_relay_intercept_unavailable", "v0268_barracks_train_militia_advisory_still", "v0268_militia_training_intercept_pending", "v0268_current_detection_relay_intercept_pending", "v0268_militia_ready_away_intercept_cannot", "v0268_current_detection_relay_cannot_intercept", "v0268_objective_move_defender_to_east_bridge", "v0268_militia_holding_bridge_guarding_lane", "v0268_current_detection_relay_guarding_lane", "v0268_ashen_inside_intercept_envelope", "v0268_current_detection_relay_intercept_ready", "v0268_objective_intercept_ready_hold_bridge", "v0268_no_damage_after_intercept_preview", "v0268_no_enemy_slow_or_redirect_after_intercept_preview", "v0268_threat_leaves_memory_cannot_intercept", "v0268_threat_leaves_memory_guarding_last_seen_lane", "v0268_last_seen_memory_marker_still_distinct", "v0268_current_vs_memory_vs_position_vs_intercept_not_confused", "v0268_watchpost_hud_no_train_militia", "v0268_barracks_hud_no_watchpost_relay_card", "v0268_existing_barracks_rebuild_path_still_valid", "v0268_existing_barracks_still_trains_militia", "v0268_no_intercept_before_watchpost_complete", "v0268_no_intercept_ready_before_militia_holding_bridge", "v0268_world_label_clutter_not_regressed":
 			_ensure_player_battle_scene()
 			_call_scene("set_barrosan_runtime_review_mode", [action])
 			_render_player_screen("battle")
@@ -8913,6 +8913,8 @@ func _apply_player_slice_action(action: String) -> Dictionary:
 
 func _player_capture_checkpoint() -> String:
 	var normalized_root := _artifact_root_from_args().replace("\\", "/")
+	if normalized_root.contains("/v0269"):
+		return "v0.269"
 	if normalized_root.contains("/v0268"):
 		return "v0.268"
 	if normalized_root.contains("/v0267"):
@@ -9078,9 +9080,44 @@ func _player_capture_checkpoint() -> String:
 	return "v0.124"
 
 func _is_bounded_microloop_checkpoint() -> bool:
-	return ["v0.129", "v0.130", "v0.160", "v0.162", "v0.164", "v0.166", "v0.168", "v0.169", "v0.170", "v0.173", "v0.174", "v0.177", "v0.178", "v0.179", "v0.181", "v0.184", "v0.185", "v0.186", "v0.187", "v0.193", "v0.194", "v0.195", "v0.196", "v0.197", "v0.198", "v0.199", "v0.200", "v0.203", "v0.204", "v0.205", "v0.206", "v0.209", "v0.210", "v0.211", "v0.212", "v0.213", "v0.215", "v0.216", "v0.217", "v0.218", "v0.219", "v0.220", "v0.221", "v0.222", "v0.223", "v0.224", "v0.227", "v0.228", "v0.229", "v0.230", "v0.231", "v0.243", "v0.244", "v0.245", "v0.246", "v0.247", "v0.248", "v0.249", "v0.250", "v0.251", "v0.252", "v0.253", "v0.254", "v0.255", "v0.256", "v0.257", "v0.258", "v0.259", "v0.261", "v0.262", "v0.263", "v0.264", "v0.265", "v0.266", "v0.267", "v0.268"].has(_player_capture_checkpoint())
+	return ["v0.129", "v0.130", "v0.160", "v0.162", "v0.164", "v0.166", "v0.168", "v0.169", "v0.170", "v0.173", "v0.174", "v0.177", "v0.178", "v0.179", "v0.181", "v0.184", "v0.185", "v0.186", "v0.187", "v0.193", "v0.194", "v0.195", "v0.196", "v0.197", "v0.198", "v0.199", "v0.200", "v0.203", "v0.204", "v0.205", "v0.206", "v0.209", "v0.210", "v0.211", "v0.212", "v0.213", "v0.215", "v0.216", "v0.217", "v0.218", "v0.219", "v0.220", "v0.221", "v0.222", "v0.223", "v0.224", "v0.227", "v0.228", "v0.229", "v0.230", "v0.231", "v0.243", "v0.244", "v0.245", "v0.246", "v0.247", "v0.248", "v0.249", "v0.250", "v0.251", "v0.252", "v0.253", "v0.254", "v0.255", "v0.256", "v0.257", "v0.258", "v0.259", "v0.261", "v0.262", "v0.263", "v0.264", "v0.265", "v0.266", "v0.267", "v0.268", "v0.269"].has(_player_capture_checkpoint())
 
 func _player_capture_steps() -> Array[Dictionary]:
+	if _player_capture_checkpoint() == "v0.269":
+		return [
+			{"id":"v0269_watchpost_build_path_visible","label":"v0.269 Watchpost build path", "action":"v0269_watchpost_build_path"},
+			{"id":"v0269_watchpost_complete_no_intel_no_contact_visible","label":"v0.269 no intel no contact", "action":"v0269_watchpost_complete_no_intel_no_contact"},
+			{"id":"v0269_ashen_outside_zone_no_contact_visible","label":"v0.269 outside no contact", "action":"v0269_ashen_outside_zone_no_contact"},
+			{"id":"v0269_current_detection_no_militia_contact_unavailable_visible","label":"v0.269 no Militia contact unavailable", "action":"v0269_current_detection_no_militia_contact_unavailable"},
+			{"id":"v0269_current_detection_militia_training_contact_pending_visible","label":"v0.269 training contact pending", "action":"v0269_current_detection_militia_training_contact_pending"},
+			{"id":"v0269_militia_ready_away_contact_unavailable_visible","label":"v0.269 ready away contact unavailable", "action":"v0269_militia_ready_away_contact_unavailable"},
+			{"id":"v0269_militia_holding_guarding_lane_no_contact_visible","label":"v0.269 guarding lane no contact", "action":"v0269_militia_holding_guarding_lane_no_contact"},
+			{"id":"v0269_intercept_ready_pre_contact_integrity_100_visible","label":"v0.269 intercept ready integrity 100", "action":"v0269_intercept_ready_pre_contact_integrity_100"},
+			{"id":"v0269_contact_armed_no_damage_yet_visible","label":"v0.269 contact armed no damage", "action":"v0269_contact_armed_no_damage_yet"},
+			{"id":"v0269_first_contact_engaged_integrity_90_visible","label":"v0.269 first contact 90", "action":"v0269_first_contact_engaged_integrity_90"},
+			{"id":"v0269_no_repeated_damage_below_90_visible","label":"v0.269 no repeated damage", "action":"v0269_no_repeated_damage_below_90"},
+			{"id":"v0269_no_enemy_despawn_after_contact_visible","label":"v0.269 no enemy despawn", "action":"v0269_no_enemy_despawn_after_contact"},
+			{"id":"v0269_no_militia_hp_loss_after_contact_visible","label":"v0.269 no Militia HP loss", "action":"v0269_no_militia_hp_loss_after_contact"},
+			{"id":"v0269_no_watchpost_damage_or_attack_visible","label":"v0.269 no Watchpost attack", "action":"v0269_no_watchpost_damage_or_attack"},
+			{"id":"v0269_no_projectile_or_tower_attack_visible","label":"v0.269 no projectile/tower", "action":"v0269_no_projectile_or_tower_attack"},
+			{"id":"v0269_no_enemy_slow_or_redirect_visible","label":"v0.269 no slow redirect", "action":"v0269_no_enemy_slow_or_redirect"},
+			{"id":"v0269_threat_leaves_after_contact_memory_integrity_90_visible","label":"v0.269 memory after contact 90", "action":"v0269_threat_leaves_after_contact_memory_integrity_90"},
+			{"id":"v0269_memory_only_no_new_contact_damage_visible","label":"v0.269 memory only no contact", "action":"v0269_memory_only_no_new_contact_damage"},
+			{"id":"v0269_last_seen_memory_marker_distinct_visible","label":"v0.269 memory marker distinct", "action":"v0269_last_seen_memory_marker_distinct"},
+			{"id":"v0269_current_vs_memory_vs_position_vs_intercept_vs_contact_not_confused_visible","label":"v0.269 layers distinct", "action":"v0269_current_vs_memory_vs_position_vs_intercept_vs_contact_not_confused"},
+			{"id":"v0269_watchpost_hud_contact_state_no_train_militia_visible","label":"v0.269 Watchpost HUD no Train Militia", "action":"v0269_watchpost_hud_contact_state_no_train_militia"},
+			{"id":"v0269_barracks_hud_train_militia_no_watchpost_relay_visible","label":"v0.269 Barracks HUD separated", "action":"v0269_barracks_hud_train_militia_no_watchpost_relay"},
+			{"id":"v0269_militia_selected_contact_state_visible","label":"v0.269 Militia selected contact", "action":"v0269_militia_selected_contact_state"},
+			{"id":"v0269_minimap_current_detection_contact_ping_visible","label":"v0.269 minimap contact ping", "action":"v0269_minimap_current_detection_contact_ping"},
+			{"id":"v0269_minimap_memory_no_contact_ping_visible","label":"v0.269 minimap memory no contact", "action":"v0269_minimap_memory_no_contact_ping"},
+			{"id":"v0269_no_contact_before_watchpost_complete_visible","label":"v0.269 no precomplete contact", "action":"v0269_no_contact_before_watchpost_complete"},
+			{"id":"v0269_no_contact_before_militia_holding_bridge_visible","label":"v0.269 no contact before holding", "action":"v0269_no_contact_before_militia_holding_bridge"},
+			{"id":"v0269_no_contact_when_ashen_only_outside_range_visible","label":"v0.269 no outside contact", "action":"v0269_no_contact_when_ashen_only_outside_range"},
+			{"id":"v0269_label_declutter_intercept_ready_visible","label":"v0.269 label declutter ready", "action":"v0269_label_declutter_intercept_ready"},
+			{"id":"v0269_label_declutter_contact_engaged_visible","label":"v0.269 label declutter engaged", "action":"v0269_label_declutter_contact_engaged"},
+			{"id":"v0269_existing_barracks_rebuild_path_still_valid_visible","label":"v0.269 Barracks rebuild retained", "action":"v0269_existing_barracks_rebuild_path_still_valid"},
+			{"id":"v0269_existing_barracks_still_trains_militia_visible","label":"v0.269 Barracks trains Militia", "action":"v0269_existing_barracks_still_trains_militia"},
+		]
 	if _player_capture_checkpoint() == "v0.268":
 		return [
 			{"id":"v0268_watchpost_build_path_visible","label":"v0.268 Watchpost build path", "action":"v0268_watchpost_build_path"},
@@ -11103,7 +11140,7 @@ func _barrosan_runtime_skin_requested() -> bool:
 
 
 func _barrosan_runtime_scene_requested() -> bool:
-	return _barrosan_runtime_skin_requested() or _player_capture_checkpoint() in ["v0.254", "v0.255", "v0.256", "v0.257", "v0.258", "v0.259", "v0.261", "v0.262", "v0.263", "v0.264", "v0.265", "v0.266", "v0.267", "v0.268"]
+	return _barrosan_runtime_skin_requested() or _player_capture_checkpoint() in ["v0.254", "v0.255", "v0.256", "v0.257", "v0.258", "v0.259", "v0.261", "v0.262", "v0.263", "v0.264", "v0.265", "v0.266", "v0.267", "v0.268", "v0.269"]
 
 
 func _script_args() -> PackedStringArray:
