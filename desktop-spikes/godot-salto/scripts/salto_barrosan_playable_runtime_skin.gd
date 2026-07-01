@@ -81,6 +81,8 @@ const V0269_PRE_CONTACT_SOURCE_POSITION := Vector2(1250, 1060)
 const V0269_PRESSURE_INTEGRITY_MAX := 100.0
 const V0269_PRESSURE_INTEGRITY_AFTER_CONTACT := 90.0
 const V0270_FEEDBACK_ACTIVE_SECONDS := 1.2
+const V0271_GUARD_SLOT_SOURCE_POSITION := V0267_EAST_BRIDGE_DEFENSE_SOURCE_POSITION
+const V0271_GUARD_SLOT_RADIUS := V0267_EAST_BRIDGE_DEFENSE_RADIUS
 const V0262_WATCH_ZONE_RADIUS := 260.0
 const V0262_ASHEN_OUTSIDE_ZONE := Vector2(1360, 1120)
 const V0262_ASHEN_TOUCHING_ZONE := Vector2(1280, 1120)
@@ -136,12 +138,13 @@ var v0267_watchpost_defender_positioning_proof: Dictionary = {}
 var v0268_watchpost_militia_intercept_preview_proof: Dictionary = {}
 var v0269_barrosan_militia_first_contact_proof: Dictionary = {}
 var v0270_barrosan_militia_contact_feedback_cooldown_proof: Dictionary = {}
+var v0271_barrosan_militia_guard_bridge_command_proof: Dictionary = {}
 
 
 func configure_barrosan_playable_runtime_skin(options: Dictionary) -> void:
 	barrosan_runtime_skin_enabled = bool(options.get("enabled", false))
 	barrosan_requested_checkpoint = str(options.get("checkpoint", "v0.243"))
-	barrosan_runtime_checkpoint = "v0.253" if barrosan_requested_checkpoint in ["v0.254", "v0.255", "v0.256", "v0.257", "v0.258", "v0.259", "v0.261", "v0.262", "v0.263", "v0.264", "v0.265", "v0.266", "v0.267", "v0.268", "v0.269", "v0.270"] else barrosan_requested_checkpoint
+	barrosan_runtime_checkpoint = "v0.253" if barrosan_requested_checkpoint in ["v0.254", "v0.255", "v0.256", "v0.257", "v0.258", "v0.259", "v0.261", "v0.262", "v0.263", "v0.264", "v0.265", "v0.266", "v0.267", "v0.268", "v0.269", "v0.270", "v0.271"] else barrosan_requested_checkpoint
 	barrosan_runtime_debug_labels = bool(options.get("debugLabels", false))
 	if not barrosan_runtime_skin_enabled:
 		return
@@ -621,7 +624,7 @@ func _sync_hud() -> void:
 		_v0259_apply_resolved_ui()
 	if barrosan_requested_checkpoint in ["v0.261", "v0.262"]:
 		_v0261_apply_resolved_ui()
-	if barrosan_requested_checkpoint in ["v0.269", "v0.270"] and (_v0269_is_review_mode(barrosan_runtime_review_mode) or _v0270_is_review_mode(barrosan_runtime_review_mode)):
+	if barrosan_requested_checkpoint in ["v0.269", "v0.270", "v0.271"] and (_v0269_is_review_mode(barrosan_runtime_review_mode) or _v0270_is_review_mode(barrosan_runtime_review_mode) or _v0271_is_review_mode(barrosan_runtime_review_mode)):
 		_v0269_apply_first_contact_ui()
 	if barrosan_requested_checkpoint == "v0.268" and _v0268_is_review_mode(barrosan_runtime_review_mode):
 		_v0268_apply_intercept_preview_ui()
@@ -2244,6 +2247,8 @@ func set_barrosan_runtime_review_mode(mode: String) -> void:
 		_:
 			if action_mode == "clean":
 				barrosan_selected_role_id = ""
+	if barrosan_requested_checkpoint == "v0.271" and _v0271_is_review_mode(mode):
+		_v0271_apply_review_mode(mode)
 	if barrosan_requested_checkpoint == "v0.270" and _v0270_is_review_mode(mode):
 		_v0270_apply_review_mode(mode)
 	if barrosan_requested_checkpoint == "v0.269" and _v0269_is_review_mode(mode):
@@ -2262,7 +2267,7 @@ func set_barrosan_runtime_review_mode(mode: String) -> void:
 		_v0263_apply_review_mode(mode)
 	if barrosan_requested_checkpoint == "v0.262" and _v0262_is_review_mode(mode):
 		_v0262_apply_review_mode(mode)
-	if barrosan_requested_checkpoint in ["v0.261", "v0.262", "v0.263", "v0.264", "v0.265", "v0.266", "v0.267", "v0.268", "v0.269", "v0.270"] and _v0261_is_review_mode(mode):
+	if barrosan_requested_checkpoint in ["v0.261", "v0.262", "v0.263", "v0.264", "v0.265", "v0.266", "v0.267", "v0.268", "v0.269", "v0.270", "v0.271"] and _v0261_is_review_mode(mode):
 		_v0261_apply_review_mode(mode)
 	if barrosan_requested_checkpoint in ["v0.258", "v0.259"]:
 		# Older proof helpers may rewrite the shared review-mode token while they
@@ -2279,6 +2284,10 @@ func set_barrosan_runtime_review_mode(mode: String) -> void:
 	elif barrosan_requested_checkpoint == "v0.259":
 		_v0259_apply_resolved_ui()
 		_v0259_record_ui_invariant_proof(mode)
+	elif barrosan_requested_checkpoint == "v0.271" and _v0271_is_review_mode(mode):
+		_v0261_apply_resolved_ui()
+		_v0269_apply_first_contact_ui()
+		_v0271_record_guard_bridge_command_proof(mode)
 	elif barrosan_requested_checkpoint == "v0.270" and _v0270_is_review_mode(mode):
 		_v0261_apply_resolved_ui()
 		_v0269_apply_first_contact_ui()
@@ -2859,6 +2868,36 @@ func _v0270_is_review_mode(mode: String) -> bool:
 	return _v0270_review_modes().has(mode)
 
 
+func _v0271_review_modes() -> Array[String]:
+	return [
+		"v0271_watchpost_build_path", "v0271_watchpost_complete_no_intel_no_contact",
+		"v0271_barracks_train_militia", "v0271_militia_training_guard_unavailable",
+		"v0271_militia_ready_guard_available", "v0271_guard_button_visible_on_militia_not_watchpost",
+		"v0271_guard_order_pending_militia_away", "v0271_no_auto_move_after_guard_order",
+		"v0271_watchpost_advises_move_to_bridge", "v0271_militia_near_bridge_guard_confirmed",
+		"v0271_guard_marker_east_bridge", "v0271_defender_position_holding_from_guard_order",
+		"v0271_intercept_preview_requires_guard_order", "v0271_current_detection_no_guard_no_contact",
+		"v0271_current_detection_guard_pending_no_contact", "v0271_current_detection_guard_holding_contact_armed",
+		"v0271_intercept_ready_integrity_100", "v0271_first_contact_feedback_pulse",
+		"v0271_first_contact_integrity_90", "v0271_contact_resolved_cooldown_locked",
+		"v0271_no_repeated_damage_below_90", "v0271_overlap_continues_integrity_still_90",
+		"v0271_threat_leaves_memory_integrity_90", "v0271_memory_only_no_new_contact_damage",
+		"v0271_no_enemy_death_or_despawn", "v0271_no_enemy_slow_stop_redirect",
+		"v0271_no_militia_hp_loss", "v0271_no_watchpost_hp_loss",
+		"v0271_no_watchpost_attack_projectile_tower", "v0271_watchpost_hud_advisory_only_no_train_no_guard_action",
+		"v0271_barracks_hud_train_militia_no_full_relay", "v0271_militia_hud_guard_order_contact_resolved",
+		"v0271_minimap_guard_pending_indicator", "v0271_minimap_guard_holding_indicator",
+		"v0271_minimap_contact_ping_current_only", "v0271_minimap_memory_no_contact_ping",
+		"v0271_label_declutter_guard_pending", "v0271_label_declutter_guard_holding",
+		"v0271_label_declutter_first_contact", "v0271_existing_barracks_rebuild_path_still_valid",
+		"v0271_existing_barracks_still_trains_militia",
+	]
+
+
+func _v0271_is_review_mode(mode: String) -> bool:
+	return _v0271_review_modes().has(mode)
+
+
 func _v0264_review_modes() -> Array[String]:
 	return [
 		"v0264_watchpost_build_path", "v0264_watchpost_complete_no_threat_no_history_intel_relay",
@@ -3014,6 +3053,82 @@ func _v0270_apply_review_mode(mode: String) -> void:
 		barrosan_playtest["v0270FeedbackPhase"] = "ended"
 	else:
 		barrosan_playtest["v0270FeedbackPhase"] = "inactive"
+	_v0269_update_first_contact_state()
+
+
+func _v0271_guard_state_for_mode(mode: String) -> String:
+	if mode in ["v0271_militia_training_guard_unavailable", "v0271_watchpost_build_path", "v0271_watchpost_complete_no_intel_no_contact", "v0271_barracks_train_militia"]:
+		return "unavailable"
+	if mode in ["v0271_militia_ready_guard_available", "v0271_guard_button_visible_on_militia_not_watchpost", "v0271_current_detection_no_guard_no_contact", "v0271_intercept_preview_requires_guard_order"]:
+		return "available"
+	if mode in ["v0271_guard_order_pending_militia_away", "v0271_no_auto_move_after_guard_order", "v0271_watchpost_advises_move_to_bridge", "v0271_current_detection_guard_pending_no_contact", "v0271_minimap_guard_pending_indicator", "v0271_label_declutter_guard_pending"]:
+		return "pending"
+	if mode in ["v0271_contact_resolved_cooldown_locked", "v0271_no_repeated_damage_below_90", "v0271_threat_leaves_memory_integrity_90", "v0271_memory_only_no_new_contact_damage", "v0271_militia_hud_guard_order_contact_resolved"]:
+		return "resolved after contact"
+	if mode == "v0271_guard_cancelled_reserved":
+		return "cancelled"
+	return "holding east bridge"
+
+
+func _v0271_guard_order_issued_for_state(state: String) -> bool:
+	return state in ["pending", "holding east bridge", "cancelled", "resolved after contact"]
+
+
+func _v0271_map_review_mode(mode: String) -> String:
+	if mode == "v0271_watchpost_build_path":
+		return "v0270_watchpost_build_path"
+	if mode == "v0271_watchpost_complete_no_intel_no_contact":
+		return "v0270_watchpost_complete_no_intel_no_contact"
+	if mode in ["v0271_barracks_train_militia", "v0271_barracks_hud_train_militia_no_full_relay", "v0271_existing_barracks_still_trains_militia"]:
+		return "v0270_barracks_hud_train_militia_no_full_relay"
+	if mode == "v0271_existing_barracks_rebuild_path_still_valid":
+		return "v0270_existing_barracks_rebuild_path_still_valid"
+	if mode == "v0271_militia_training_guard_unavailable":
+		return "v0270_militia_training_contact_pending"
+	if mode in ["v0271_militia_ready_guard_available", "v0271_guard_button_visible_on_militia_not_watchpost", "v0271_guard_order_pending_militia_away", "v0271_no_auto_move_after_guard_order", "v0271_watchpost_advises_move_to_bridge", "v0271_current_detection_guard_pending_no_contact", "v0271_minimap_guard_pending_indicator", "v0271_label_declutter_guard_pending"]:
+		return "v0270_militia_ready_away_contact_unavailable"
+	if mode == "v0271_current_detection_no_guard_no_contact" or mode == "v0271_intercept_preview_requires_guard_order":
+		return "v0270_intercept_ready_integrity_100"
+	if mode in ["v0271_militia_near_bridge_guard_confirmed", "v0271_guard_marker_east_bridge", "v0271_defender_position_holding_from_guard_order", "v0271_label_declutter_guard_holding"]:
+		return "v0270_militia_holding_guarding_lane_integrity_100"
+	if mode in ["v0271_current_detection_guard_holding_contact_armed", "v0271_intercept_ready_integrity_100", "v0271_minimap_guard_holding_indicator"]:
+		return "v0270_contact_armed_no_damage_yet"
+	if mode in ["v0271_first_contact_feedback_pulse", "v0271_label_declutter_first_contact"]:
+		return "v0270_first_contact_feedback_pulse"
+	if mode in ["v0271_first_contact_integrity_90", "v0271_no_enemy_death_or_despawn", "v0271_no_enemy_slow_stop_redirect", "v0271_no_militia_hp_loss", "v0271_no_watchpost_hp_loss", "v0271_no_watchpost_attack_projectile_tower", "v0271_minimap_contact_ping_current_only"]:
+		return "v0270_first_contact_integrity_90"
+	if mode in ["v0271_contact_resolved_cooldown_locked", "v0271_no_repeated_damage_below_90", "v0271_watchpost_hud_advisory_only_no_train_no_guard_action", "v0271_militia_hud_guard_order_contact_resolved"]:
+		return "v0270_contact_resolved_cooldown_locked"
+	if mode == "v0271_overlap_continues_integrity_still_90":
+		return "v0270_overlap_continues_integrity_still_90"
+	if mode == "v0271_threat_leaves_memory_integrity_90":
+		return "v0270_threat_leaves_contact_ended_memory"
+	if mode in ["v0271_memory_only_no_new_contact_damage", "v0271_minimap_memory_no_contact_ping"]:
+		return "v0270_memory_only_no_new_contact_damage"
+	return "v0270_watchpost_complete_no_intel_no_contact"
+
+
+func _v0271_apply_review_mode(mode: String) -> void:
+	barrosan_runtime_review_mode = mode
+	var guard_state := _v0271_guard_state_for_mode(mode)
+	barrosan_playtest["v0271GuardOrderState"] = guard_state
+	barrosan_playtest["v0271GuardOrderIssued"] = _v0271_guard_order_issued_for_state(guard_state)
+	barrosan_playtest["v0271GuardCommandAvailable"] = guard_state in ["available", "pending", "holding east bridge", "resolved after contact"]
+	barrosan_playtest["v0271AutoMoveAttempted"] = false
+	var mapped := _v0271_map_review_mode(mode)
+	if _v0270_is_review_mode(mapped):
+		_v0270_apply_review_mode(mapped)
+	barrosan_runtime_review_mode = mode
+	barrosan_playtest["v0271GuardOrderState"] = guard_state
+	barrosan_playtest["v0271GuardOrderIssued"] = _v0271_guard_order_issued_for_state(guard_state)
+	barrosan_playtest["v0271GuardCommandAvailable"] = guard_state in ["available", "pending", "holding east bridge", "resolved after contact"]
+	barrosan_playtest["v0271AutoMoveAttempted"] = false
+	if mode in ["v0271_militia_ready_guard_available", "v0271_guard_button_visible_on_militia_not_watchpost", "v0271_guard_order_pending_militia_away", "v0271_no_auto_move_after_guard_order", "v0271_militia_near_bridge_guard_confirmed", "v0271_guard_marker_east_bridge", "v0271_militia_hud_guard_order_contact_resolved"]:
+		_select_playtest_unit(V0246_FIELD_MILITIA_RUNTIME_ID)
+	elif mode in ["v0271_barracks_train_militia", "v0271_barracks_hud_train_militia_no_full_relay", "v0271_existing_barracks_rebuild_path_still_valid", "v0271_existing_barracks_still_trains_militia"]:
+		select_barrosan_runtime_role(V0245_CONSTRUCTED_KEY)
+	elif mode == "v0271_guard_button_visible_on_militia_not_watchpost":
+		_select_playtest_unit(V0246_FIELD_MILITIA_RUNTIME_ID)
 	_v0269_update_first_contact_state()
 
 
@@ -5128,7 +5243,7 @@ func _v0268_record_intercept_preview_proof(mode: String) -> void:
 
 
 func _sync_v0268_watchpost_militia_intercept_preview_visuals() -> void:
-	if visual_root == null or not (barrosan_requested_checkpoint in ["v0.268", "v0.269", "v0.270"]):
+	if visual_root == null or not (barrosan_requested_checkpoint in ["v0.268", "v0.269", "v0.270", "v0.271"]):
 		return
 	var preview := _v0268_update_intercept_preview_state()
 	var memory: Dictionary = preview.get("memory", {})
@@ -5215,7 +5330,7 @@ func _v0268_relay_card_visible() -> bool:
 
 
 func _add_v0268_current_minimap_ping() -> void:
-	if minimap_panel == null or not (barrosan_requested_checkpoint in ["v0.268", "v0.269", "v0.270"]):
+	if minimap_panel == null or not (barrosan_requested_checkpoint in ["v0.268", "v0.269", "v0.270", "v0.271"]):
 		return
 	if not _minimap_has_marker("v0268_minimap_current_intercept_ping"):
 		_add_minimap_marker("v0268_minimap_current_intercept_ping", Vector2(205, 106), Vector2(16, 16), Color("#f1d25f"))
@@ -5223,7 +5338,7 @@ func _add_v0268_current_minimap_ping() -> void:
 
 
 func _add_v0268_memory_minimap_ping() -> void:
-	if minimap_panel == null or not (barrosan_requested_checkpoint in ["v0.268", "v0.269", "v0.270"]):
+	if minimap_panel == null or not (barrosan_requested_checkpoint in ["v0.268", "v0.269", "v0.270", "v0.271"]):
 		return
 	if not _minimap_has_marker("v0268_minimap_memory_intercept_ping"):
 		_add_minimap_marker("v0268_minimap_memory_intercept_ping", Vector2(196, 108), Vector2(10, 10), Color("#b77a46"))
@@ -5231,7 +5346,7 @@ func _add_v0268_memory_minimap_ping() -> void:
 
 
 func _add_v0268_defender_position_minimap_marker() -> void:
-	if minimap_panel == null or not (barrosan_requested_checkpoint in ["v0.268", "v0.269", "v0.270"]):
+	if minimap_panel == null or not (barrosan_requested_checkpoint in ["v0.268", "v0.269", "v0.270", "v0.271"]):
 		return
 	if not _minimap_has_marker("v0268_minimap_defender_position"):
 		_add_minimap_marker("v0268_minimap_defender_position", Vector2(181, 121), Vector2(9, 9), Color("#8ee6a0"))
@@ -5239,7 +5354,7 @@ func _add_v0268_defender_position_minimap_marker() -> void:
 
 
 func _add_v0268_intercept_ready_minimap_marker() -> void:
-	if minimap_panel == null or not (barrosan_requested_checkpoint in ["v0.268", "v0.269", "v0.270"]):
+	if minimap_panel == null or not (barrosan_requested_checkpoint in ["v0.268", "v0.269", "v0.270", "v0.271"]):
 		return
 	if not _minimap_has_marker("v0268_minimap_intercept_ready"):
 		_add_minimap_marker("v0268_minimap_intercept_ready", Vector2(201, 116), Vector2(8, 8), Color("#9fffd8"))
@@ -5337,11 +5452,19 @@ func _v0269_reset_first_contact() -> void:
 	barrosan_playtest.erase("v0269PressureIntegrity")
 	barrosan_playtest.erase("v0269ContactApplyAttempts")
 	barrosan_playtest.erase("v0270FeedbackPhase")
+	if barrosan_requested_checkpoint != "v0.271":
+		barrosan_playtest.erase("v0271GuardOrderState")
+		barrosan_playtest.erase("v0271GuardOrderIssued")
+		barrosan_playtest.erase("v0271GuardCommandAvailable")
+		barrosan_playtest.erase("v0271AutoMoveAttempted")
 	_set_minimap_marker_visible("v0269_minimap_contact_ping", false)
+	_set_minimap_marker_visible("v0271_minimap_guard_pending", false)
+	_set_minimap_marker_visible("v0271_minimap_guard_holding", false)
 	var hide_nodes := [
 		"v0269_contact_threshold_marker", "v0269_contact_threshold_label",
 		"v0269_first_contact_marker", "v0269_first_contact_label",
 		"v0270_feedback_pulse_marker", "v0270_contact_resolved_label",
+		"v0271_guard_slot_marker", "v0271_guard_slot_label",
 	]
 	for node_name in hide_nodes:
 		var node := visual_root.get_node_or_null(node_name) if visual_root != null else null
@@ -5377,6 +5500,8 @@ func _v0269_base_contact_state(preview: Dictionary, contact_distance: float) -> 
 
 
 func _v0269_contact_eligible(preview: Dictionary, contact_distance: float) -> bool:
+	var guard_state := str(barrosan_playtest.get("v0271GuardOrderState", "unavailable"))
+	var v0271_guard_ready := barrosan_requested_checkpoint != "v0.271" or (bool(barrosan_playtest.get("v0271GuardOrderIssued", false)) and guard_state in ["holding east bridge", "resolved after contact"])
 	return (
 		bool(preview.get("watchpostComplete", false))
 		and bool(preview.get("currentDetection", false))
@@ -5385,6 +5510,7 @@ func _v0269_contact_eligible(preview: Dictionary, contact_distance: float) -> bo
 		and str(preview.get("readinessState", "")) == "ready"
 		and str(preview.get("positionState", "")) == "holding east bridge"
 		and str(preview.get("interceptPreviewState", "")) == "intercept ready"
+		and v0271_guard_ready
 		and contact_distance <= V0269_CONTACT_THRESHOLD_RADIUS
 	)
 
@@ -5409,11 +5535,17 @@ func _v0269_contact_lines(preview: Dictionary, contact_state: String, integrity:
 	var position := "Defender position: %s" % str(preview.get("positionState", "none"))
 	var intercept := "Intercept preview: %s" % str(preview.get("interceptPreviewState", "none"))
 	var feedback_phase := str(barrosan_playtest.get("v0270FeedbackPhase", "inactive"))
+	var guard_line := "Guard order: %s" % str(barrosan_playtest.get("v0271GuardOrderState", "unavailable"))
 	match str(preview.get("advisoryState", "precomplete")):
 		"outside_range":
 			return ["WATCHPOST INTEL", "No threat in watch zone", "Ashen pressure outside range", "Monitoring only", "No contact", "Advisory only -- no attack"]
 		"current_detection":
-			var lines := ["WATCHPOST INTEL", "ASHEN SCOUTED", "Current: east bridge", "Threat in WATCH ZONE", readiness, position, intercept, "Contact: %s" % contact_state]
+			var lines := ["WATCHPOST INTEL", "ASHEN SCOUTED", "Current: east bridge", "Threat in WATCH ZONE", readiness]
+			if barrosan_requested_checkpoint == "v0.271":
+				lines.append(guard_line)
+			lines.append(position)
+			lines.append(intercept)
+			lines.append("Contact: %s" % contact_state)
 			if contact_state in ["awaiting pressure", "armed", "engaged", "resolved"]:
 				lines.append("Ashen pressure integrity: %s/100" % int(integrity))
 			if contact_state == "engaged":
@@ -5433,7 +5565,12 @@ func _v0269_contact_lines(preview: Dictionary, contact_state: String, integrity:
 				lines.append("Advisory only -- no attack")
 			return lines
 		"last_seen_memory":
-			var lines := ["WATCHPOST INTEL", "Last scouted Ashen pressure", "Last seen: east bridge", readiness, position, intercept, "Contact: %s" % contact_state]
+			var lines := ["WATCHPOST INTEL", "Last scouted Ashen pressure", "Last seen: east bridge", readiness]
+			if barrosan_requested_checkpoint == "v0.271":
+				lines.append(guard_line)
+			lines.append(position)
+			lines.append(intercept)
+			lines.append("Contact: %s" % contact_state)
 			if bool(barrosan_playtest.get("v0269ContactApplied", false)):
 				lines.append("Last pressure integrity: %s/100" % int(integrity))
 			lines.append("Memory ping only")
@@ -5451,20 +5588,29 @@ func _v0269_update_first_contact_state() -> Dictionary:
 	var contact_state := _v0269_base_contact_state(preview, contact_distance)
 	var applied := bool(barrosan_playtest.get("v0269ContactApplied", false))
 	var feedback_phase := str(barrosan_playtest.get("v0270FeedbackPhase", "inactive"))
+	var guard_state := str(barrosan_playtest.get("v0271GuardOrderState", "unavailable"))
+	var guard_order_issued := bool(barrosan_playtest.get("v0271GuardOrderIssued", false))
+	if barrosan_requested_checkpoint == "v0.271" and str(preview.get("advisoryState", "")) == "current_detection" and not applied:
+		if str(preview.get("readinessState", "")) == "training":
+			contact_state = "pending"
+		elif str(preview.get("readinessState", "")) == "ready" and guard_state == "pending":
+			contact_state = "pending"
+		elif str(preview.get("readinessState", "")) == "ready" and not (guard_order_issued and guard_state == "holding east bridge"):
+			contact_state = "unavailable"
 	if applied:
 		integrity = V0269_PRESSURE_INTEGRITY_AFTER_CONTACT
 		if str(preview.get("advisoryState", "")) == "last_seen_memory":
 			contact_state = "ended"
 		elif str(preview.get("advisoryState", "")) == "current_detection":
 			contact_state = "engaged"
-			if barrosan_requested_checkpoint == "v0.270" and feedback_phase in ["resolved", "ended"]:
+			if barrosan_requested_checkpoint in ["v0.270", "v0.271"] and feedback_phase in ["resolved", "ended"]:
 				contact_state = "resolved"
 	var watchpost_selected: bool = barrosan_selected_role_id == V0261_WATCHPOST_KEY
 	var barracks_selected: bool = barrosan_selected_role_id == V0245_CONSTRUCTED_KEY
 	var militia_selected: bool = runtime.selected_ids.has(V0246_FIELD_MILITIA_RUNTIME_ID)
 	var lines := _v0269_contact_lines(preview, contact_state, integrity)
 	var contact := preview.duplicate(true)
-	contact["checkpoint"] = barrosan_requested_checkpoint if barrosan_requested_checkpoint == "v0.270" else "v0.269"
+	contact["checkpoint"] = barrosan_requested_checkpoint if barrosan_requested_checkpoint in ["v0.270", "v0.271"] else "v0.269"
 	contact["contactState"] = contact_state
 	contact["v0269ContactState"] = _v0269_base_contact_state(preview, contact_distance) if applied else contact_state
 	contact["feedbackPhase"] = feedback_phase
@@ -5490,6 +5636,20 @@ func _v0269_update_first_contact_state() -> Dictionary:
 	contact["pressureIntegrityAfterContact"] = integrity
 	contact["onlyAllowedMutation"] = "local Ashen pressure integrity 100/100 -> 90/100 during confirmed Militia first contact" if applied else "none"
 	contact["v0270AddsFeedbackCooldownOnly"] = barrosan_requested_checkpoint == "v0.270"
+	contact["v0271AddsGuardBridgeCommandOnly"] = barrosan_requested_checkpoint == "v0.271"
+	contact["guardOrderState"] = guard_state
+	contact["guardOrderIssued"] = guard_order_issued
+	contact["guardCommandAvailable"] = bool(barrosan_playtest.get("v0271GuardCommandAvailable", false))
+	contact["guardCommandLabel"] = "Guard Bridge"
+	contact["guardOrderPending"] = guard_state == "pending"
+	contact["guardOrderHolding"] = guard_state == "holding east bridge"
+	contact["guardOrderResolved"] = guard_state == "resolved after contact"
+	contact["guardRequiredForContact"] = barrosan_requested_checkpoint == "v0.271"
+	contact["guardSlotCenter"] = V0271_GUARD_SLOT_SOURCE_POSITION
+	contact["guardSlotRadius"] = V0271_GUARD_SLOT_RADIUS
+	contact["autoMoveAttempted"] = bool(barrosan_playtest.get("v0271AutoMoveAttempted", false))
+	contact["automaticMovementAdded"] = false
+	contact["automaticAttackAdded"] = false
 	contact["watchpostCausedDamage"] = false
 	contact["watchpostAttackAdded"] = false
 	contact["projectilesAdded"] = false
@@ -5516,6 +5676,14 @@ func _v0269_update_first_contact_state() -> Dictionary:
 	contact["barracksAdvisoryVisible"] = barracks_selected and bool(preview.get("watchpostComplete", false)) and bool(preview.get("currentDetection", false)) and str(preview.get("readinessState", "")) == "none"
 	contact["barracksAdvisoryLine"] = "Watchpost advises: train Militia" if bool(contact.get("barracksAdvisoryVisible", false)) else ""
 	barrosan_playtest["v0269MilitiaFirstContact"] = contact
+	if barrosan_requested_checkpoint == "v0.271":
+		if guard_state == "pending":
+			_add_v0271_guard_minimap_marker("pending")
+		elif guard_state in ["holding east bridge", "resolved after contact"]:
+			_add_v0271_guard_minimap_marker("holding")
+		else:
+			_set_minimap_marker_visible("v0271_minimap_guard_pending", false)
+			_set_minimap_marker_visible("v0271_minimap_guard_holding", false)
 	if bool(contact.get("contactApplied", false)) and bool(contact.get("currentDetection", false)):
 		_add_v0269_contact_minimap_ping()
 	else:
@@ -5528,26 +5696,32 @@ func _v0269_apply_first_contact_ui() -> void:
 	var contact_state := str(contact.get("contactState", "unavailable"))
 	var integrity := int(contact.get("pressureIntegrity", V0269_PRESSURE_INTEGRITY_MAX))
 	var feedback_phase := str(contact.get("feedbackPhase", "inactive"))
+	var guard_state := str(contact.get("guardOrderState", "unavailable"))
 	if bool(contact.get("relayVisible", false)):
 		var lines: Array = contact.get("contactRelayLines", [])
 		if hud_objective_strip_label != null:
-			match contact_state:
-				"engaged":
-					hud_objective_strip_label.text = "FIRST CONTACT -- pressure checked" if feedback_phase == "active" else "Militia engaged -- hold east bridge"
-				"resolved":
-					hud_objective_strip_label.text = "First contact resolved -- holding bridge"
-				"armed":
-					hud_objective_strip_label.text = "Intercept ready -- hold east bridge"
-				"awaiting pressure":
-					hud_objective_strip_label.text = "Defender holding -- watch the bridge"
-				"pending":
-					hud_objective_strip_label.text = "Militia training -- hold the bridge"
-				"ended":
-					hud_objective_strip_label.text = "Contact ended -- hold last-seen bridge"
-				_:
-					hud_objective_strip_label.text = "ASHEN SCOUTED -- train Militia" if bool(contact.get("currentDetection", false)) else "Watchpost online"
+			if barrosan_requested_checkpoint == "v0.271" and guard_state == "pending":
+				hud_objective_strip_label.text = "Guard order pending -- move Militia to east bridge"
+			elif barrosan_requested_checkpoint == "v0.271" and guard_state == "holding east bridge" and contact_state in ["awaiting pressure", "armed"]:
+				hud_objective_strip_label.text = "Bridge guarded -- intercept ready"
+			else:
+				match contact_state:
+					"engaged":
+						hud_objective_strip_label.text = "FIRST CONTACT -- pressure checked" if feedback_phase == "active" else "Militia engaged -- hold east bridge"
+					"resolved":
+						hud_objective_strip_label.text = "First contact resolved -- holding bridge"
+					"armed":
+						hud_objective_strip_label.text = "Intercept ready -- hold east bridge"
+					"awaiting pressure":
+						hud_objective_strip_label.text = "Defender holding -- watch the bridge"
+					"pending":
+						hud_objective_strip_label.text = "Militia training -- hold the bridge"
+					"ended":
+						hud_objective_strip_label.text = "Contact ended -- hold last-seen bridge"
+					_:
+						hud_objective_strip_label.text = "ASHEN SCOUTED -- train Militia" if bool(contact.get("currentDetection", false)) else "Watchpost online"
 		if hud_onboarding_label != null:
-			hud_onboarding_label.text = "Contact: %s. Ashen pressure integrity: %s/100. Militia-based; Watchpost advisory only." % [contact_state, integrity] if contact_state in ["awaiting pressure", "armed", "engaged", "resolved", "ended"] else "Contact: %s. Advisory only -- no attack." % contact_state
+			hud_onboarding_label.text = "Guard order: %s. Contact: %s. Ashen pressure integrity: %s/100. Watchpost advisory only." % [guard_state, contact_state, integrity] if barrosan_requested_checkpoint == "v0.271" else ("Contact: %s. Ashen pressure integrity: %s/100. Militia-based; Watchpost advisory only." % [contact_state, integrity] if contact_state in ["awaiting pressure", "armed", "engaged", "resolved", "ended"] else "Contact: %s. Advisory only -- no attack." % contact_state)
 			hud_onboarding_label.visible = true
 		if hud_context_label != null:
 			hud_context_label.text = " | ".join(lines.slice(2, lines.size()))
@@ -5569,12 +5743,14 @@ func _v0269_apply_first_contact_ui() -> void:
 		if hud_hero_label != null:
 			hud_hero_label.text = "Militia Defender | East bridge"
 		if hud_onboarding_label != null:
-			hud_onboarding_label.text = "Holding bridge | Contact: %s | Ashen integrity %s/100" % [contact_state, integrity]
+			hud_onboarding_label.text = "Guard order: %s | Contact: %s | Ashen integrity %s/100" % [guard_state, contact_state, integrity] if barrosan_requested_checkpoint == "v0.271" else "Holding bridge | Contact: %s | Ashen integrity %s/100" % [contact_state, integrity]
 			hud_onboarding_label.visible = true
 		if hud_context_label != null:
-			hud_context_label.text = "Defender position: holding east bridge | No ranged attack | No projectile"
+			hud_context_label.text = "Guard order: %s | No auto-move | No ranged attack | No projectile" % guard_state if barrosan_requested_checkpoint == "v0.271" else "Defender position: holding east bridge | No ranged attack | No projectile"
 		if hud_objective_label != null:
-			hud_objective_label.text = "Militia-based first contact only"
+			hud_objective_label.text = "Move to east bridge manually" if guard_state == "pending" else ("Militia guarding east bridge" if guard_state == "holding east bridge" else ("Guard resolved -- cooldown locked" if guard_state == "resolved after contact" else "Guard Bridge available"))
+		if hud_work_button != null and barrosan_requested_checkpoint == "v0.271":
+			hud_work_button.text = "Guard Bridge" if bool(contact.get("guardCommandAvailable", false)) else "Guard unavailable"
 
 
 func _v0269_contact_combined_text(contact: Dictionary) -> String:
@@ -5667,6 +5843,24 @@ func _v0270_record_contact_feedback_cooldown_proof(mode: String) -> void:
 	v0270_barrosan_militia_contact_feedback_cooldown_proof[mode] = snap
 
 
+func _v0271_record_guard_bridge_command_proof(mode: String) -> void:
+	_v0270_record_contact_feedback_cooldown_proof(mode)
+	var snap: Dictionary = v0270_barrosan_militia_contact_feedback_cooldown_proof.get(mode, {}).duplicate(true)
+	var contact: Dictionary = snap.get("firstContact", {})
+	var combined := str(snap.get("combinedText", ""))
+	snap["hasGuardBridgeCommand"] = combined.contains("Guard Bridge") or str(contact.get("guardCommandLabel", "")) == "Guard Bridge"
+	snap["hasGuardOrderState"] = combined.contains("Guard order:") or str(contact.get("guardOrderState", "")) != ""
+	snap["guardMarkerVisible"] = _v0271_guard_marker_visible()
+	snap["guardPendingMinimap"] = _minimap_has_marker("v0271_minimap_guard_pending") and _minimap_marker_visible("v0271_minimap_guard_pending")
+	snap["guardHoldingMinimap"] = _minimap_has_marker("v0271_minimap_guard_holding") and _minimap_marker_visible("v0271_minimap_guard_holding")
+	snap["guardCommandOnWatchpost"] = bool(contact.get("relayVisible", false)) and combined.contains("Guard Bridge")
+	snap["autoMoveAttempted"] = bool(contact.get("autoMoveAttempted", false)) or bool(contact.get("automaticMovementAdded", false))
+	snap["automaticAttackAdded"] = bool(contact.get("automaticAttackAdded", false))
+	snap["guardRequiredForContact"] = bool(contact.get("guardRequiredForContact", false))
+	snap["labelDeclutterImproved"] = _v0271_label_declutter_improved(contact)
+	v0271_barrosan_militia_guard_bridge_command_proof[mode] = snap
+
+
 func _v0270_label_declutter_improved(contact: Dictionary) -> bool:
 	var contact_state := str(contact.get("contactState", ""))
 	return (
@@ -5675,8 +5869,12 @@ func _v0270_label_declutter_improved(contact: Dictionary) -> bool:
 	)
 
 
+func _v0271_label_declutter_improved(contact: Dictionary) -> bool:
+	return _v0270_label_declutter_improved(contact) and not (bool(_v0271_guard_marker_visible()) and bool(_v0269_contact_label_visible()) and str(contact.get("contactState", "")) in ["engaged", "resolved"])
+
+
 func _sync_v0269_barrosan_militia_first_contact_visuals() -> void:
-	if visual_root == null or not (barrosan_requested_checkpoint in ["v0.269", "v0.270"]):
+	if visual_root == null or not (barrosan_requested_checkpoint in ["v0.269", "v0.270", "v0.271"]):
 		return
 	_sync_v0268_watchpost_militia_intercept_preview_visuals()
 	var contact := _v0269_update_first_contact_state()
@@ -5688,7 +5886,7 @@ func _sync_v0269_barrosan_militia_first_contact_visuals() -> void:
 		threshold_marker.visible = show_threshold
 	var threshold_label := _v0248_marker_label("v0269_contact_threshold_label", threshold_world + Vector3(-0.82, 0.84, 0.44), "CONTACT\nTHRESHOLD", Color("#ffd66d"))
 	threshold_label.visible = show_threshold and str(contact.get("contactState", "")) == "armed"
-	if barrosan_requested_checkpoint == "v0.270":
+	if barrosan_requested_checkpoint in ["v0.270", "v0.271"]:
 		var ready_label := visual_root.get_node_or_null("v0268_intercept_ready_label")
 		if ready_label != null and str(contact.get("contactState", "")) in ["engaged", "resolved"]:
 			ready_label.visible = false
@@ -5698,13 +5896,21 @@ func _sync_v0269_barrosan_militia_first_contact_visuals() -> void:
 		contact_marker.visible = str(contact.get("contactState", "")) in ["engaged", "resolved"] and bool(contact.get("currentDetection", false))
 	var contact_label := _v0248_marker_label("v0269_first_contact_label", threshold_world + Vector3(0.0, 1.06, -0.82), "FIRST CONTACT\n90 / 100", Color("#ffda72"))
 	contact_label.visible = contact_marker != null and bool(contact_marker.visible) and (barrosan_requested_checkpoint == "v0.269" or bool(contact.get("feedbackActive", false)))
-	if barrosan_requested_checkpoint == "v0.270":
+	if barrosan_requested_checkpoint in ["v0.270", "v0.271"]:
 		_set_or_create_disc_marker("v0270_feedback_pulse_marker", threshold_world + Vector3(0.0, 0.165, 0.0), 0.62, Color(1.0, 0.72, 0.18, 0.38))
 		var feedback_marker := visual_root.get_node_or_null("v0270_feedback_pulse_marker")
 		if feedback_marker != null:
 			feedback_marker.visible = bool(contact.get("feedbackActive", false)) and bool(contact.get("currentDetection", false))
 		var resolved_label := _v0248_marker_label("v0270_contact_resolved_label", threshold_world + Vector3(0.66, 0.98, 0.68), "CONTACT RESOLVED\n90 / 100", Color("#d9f0a3"))
 		resolved_label.visible = str(contact.get("contactState", "")) == "resolved" and bool(contact.get("currentDetection", false))
+	if barrosan_requested_checkpoint == "v0.271":
+		var guard_world := barrosan_build_validation_adapter.source_to_runtime_world(V0271_GUARD_SLOT_SOURCE_POSITION)
+		_set_or_create_disc_marker("v0271_guard_slot_marker", guard_world + Vector3(-0.55, 0.13, 0.48), 0.36, Color(0.36, 0.92, 0.74, 0.34))
+		var guard_marker := visual_root.get_node_or_null("v0271_guard_slot_marker")
+		if guard_marker != null:
+			guard_marker.visible = str(contact.get("guardOrderState", "")) in ["pending", "holding east bridge", "resolved after contact"] and str(contact.get("contactState", "")) not in ["engaged", "resolved"]
+		var guard_label := _v0248_marker_label("v0271_guard_slot_label", guard_world + Vector3(-1.05, 0.96, 0.78), "GUARD\nBRIDGE", Color("#9fe2d0"))
+		guard_label.visible = guard_marker != null and bool(guard_marker.visible) and str(contact.get("contactState", "")) not in ["engaged", "resolved"]
 
 
 func _v0269_contact_marker_visible() -> bool:
@@ -5727,12 +5933,28 @@ func _v0270_contact_resolved_label_visible() -> bool:
 	return label != null and bool(label.visible)
 
 
+func _v0271_guard_marker_visible() -> bool:
+	var marker := visual_root.get_node_or_null("v0271_guard_slot_marker") if visual_root != null else null
+	return marker != null and bool(marker.visible)
+
+
 func _add_v0269_contact_minimap_ping() -> void:
-	if minimap_panel == null or not (barrosan_requested_checkpoint in ["v0.269", "v0.270"]):
+	if minimap_panel == null or not (barrosan_requested_checkpoint in ["v0.269", "v0.270", "v0.271"]):
 		return
 	if not _minimap_has_marker("v0269_minimap_contact_ping"):
 		_add_minimap_marker("v0269_minimap_contact_ping", Vector2(208, 116), Vector2(10, 10), Color("#ffb347"))
 	_set_minimap_marker_visible("v0269_minimap_contact_ping", true)
+
+
+func _add_v0271_guard_minimap_marker(state: String) -> void:
+	if minimap_panel == null or barrosan_requested_checkpoint != "v0.271":
+		return
+	if not _minimap_has_marker("v0271_minimap_guard_pending"):
+		_add_minimap_marker("v0271_minimap_guard_pending", Vector2(186, 122), Vector2(8, 8), Color("#f0d26d"))
+	if not _minimap_has_marker("v0271_minimap_guard_holding"):
+		_add_minimap_marker("v0271_minimap_guard_holding", Vector2(198, 122), Vector2(9, 9), Color("#58d6b7"))
+	_set_minimap_marker_visible("v0271_minimap_guard_pending", state == "pending")
+	_set_minimap_marker_visible("v0271_minimap_guard_holding", state == "holding")
 
 
 func _v0269_barrosan_militia_first_contact_status() -> Dictionary:
@@ -5942,6 +6164,107 @@ func _v0270_barrosan_militia_contact_feedback_cooldown_status() -> Dictionary:
 	result["cost"] = V0261_WATCHPOST_COST.duplicate(true)
 	result["hp"] = V0261_WATCHPOST_MAX_HP
 	result["proofSnapshots"] = v0270_barrosan_militia_contact_feedback_cooldown_proof.duplicate(true)
+	result["defaultRuntimeChanged"] = false
+	result["blenderUsed"] = false
+	result["newGlbExported"] = false
+	result["verdictCeiling"] = "PARTIAL"
+	return result
+
+
+func _v0271_barrosan_militia_guard_bridge_command_status() -> Dictionary:
+	var watchpost := _v0261_watchpost_status()
+	var required := _v0271_review_modes()
+	var missing: Array[String] = []
+	var pass_all := true
+	for mode in required:
+		var snap: Dictionary = v0271_barrosan_militia_guard_bridge_command_proof.get(mode, {})
+		if snap.is_empty():
+			missing.append(mode)
+			pass_all = false
+			continue
+		var contact: Dictionary = snap.get("firstContact", {})
+		var guard_state := str(contact.get("guardOrderState", ""))
+		var contact_state := str(contact.get("contactState", ""))
+		var integrity := float(contact.get("pressureIntegrity", -1.0))
+		var passive_bounds := (
+			not bool(contact.get("automaticMovementAdded", true))
+			and not bool(contact.get("autoMoveAttempted", true))
+			and not bool(contact.get("automaticAttackAdded", true))
+			and not bool(contact.get("watchpostCausedDamage", true))
+			and not bool(contact.get("watchpostAttackAdded", true))
+			and not bool(contact.get("projectilesAdded", true))
+			and not bool(contact.get("towerAttackAdded", true))
+			and not bool(contact.get("slowAdded", true))
+			and not bool(contact.get("redirectAdded", true))
+			and not bool(contact.get("enemyPathingChanged", true))
+			and not bool(contact.get("enemyAiChanged", true))
+			and not bool(contact.get("waveTimingChanged", true))
+			and not bool(contact.get("economyAdded", true))
+			and not bool(contact.get("fogOfWarAdded", true))
+			and not bool(contact.get("broadVisionAdded", true))
+			and not bool(contact.get("enemyStopped", true))
+			and not bool(contact.get("enemyDespawned", true))
+			and not bool(contact.get("enemyDeath", true))
+			and float(contact.get("militiaHpBeforeContact", 0.0)) == float(contact.get("militiaHpAfterContact", -1.0))
+			and float(contact.get("watchpostHpBeforeContact", 0.0)) == float(contact.get("watchpostHpAfterContact", -1.0))
+			and integrity >= V0269_PRESSURE_INTEGRITY_AFTER_CONTACT
+		)
+		var mode_pass := bool(snap.get("singleSourceMatch", false)) and passive_bounds and bool(contact.get("guardRequiredForContact", false)) and bool(snap.get("labelDeclutterImproved", false))
+		if mode == "v0271_militia_training_guard_unavailable":
+			mode_pass = mode_pass and guard_state == "unavailable" and str(contact.get("readinessState", "")) == "training"
+		if mode in ["v0271_militia_ready_guard_available", "v0271_guard_button_visible_on_militia_not_watchpost"]:
+			mode_pass = mode_pass and guard_state == "available" and bool(snap.get("hasGuardBridgeCommand", false)) and bool(contact.get("militiaSelected", false)) and not bool(snap.get("guardCommandOnWatchpost", true))
+		if mode in ["v0271_guard_order_pending_militia_away", "v0271_no_auto_move_after_guard_order", "v0271_current_detection_guard_pending_no_contact", "v0271_minimap_guard_pending_indicator", "v0271_label_declutter_guard_pending"]:
+			mode_pass = mode_pass and guard_state == "pending" and contact_state == "pending" and not bool(contact.get("contactApplied", true))
+		if mode in ["v0271_current_detection_no_guard_no_contact", "v0271_intercept_preview_requires_guard_order"]:
+			mode_pass = mode_pass and guard_state == "available" and contact_state == "unavailable" and not bool(contact.get("contactApplied", true))
+		if mode in ["v0271_militia_near_bridge_guard_confirmed", "v0271_guard_marker_east_bridge", "v0271_defender_position_holding_from_guard_order", "v0271_label_declutter_guard_holding"]:
+			mode_pass = mode_pass and guard_state == "holding east bridge" and str(contact.get("positionState", "")) == "holding east bridge" and not bool(contact.get("contactApplied", true))
+		if mode in ["v0271_current_detection_guard_holding_contact_armed", "v0271_intercept_ready_integrity_100", "v0271_minimap_guard_holding_indicator"]:
+			mode_pass = mode_pass and guard_state == "holding east bridge" and contact_state == "armed" and integrity == V0269_PRESSURE_INTEGRITY_MAX and not bool(contact.get("contactApplied", true))
+		if mode in ["v0271_first_contact_feedback_pulse", "v0271_label_declutter_first_contact"]:
+			mode_pass = mode_pass and guard_state == "holding east bridge" and contact_state == "engaged" and bool(contact.get("contactApplied", false)) and bool(snap.get("hasFeedbackActive", false)) and integrity == V0269_PRESSURE_INTEGRITY_AFTER_CONTACT
+		if mode in ["v0271_first_contact_integrity_90", "v0271_no_enemy_death_or_despawn", "v0271_no_enemy_slow_stop_redirect", "v0271_no_militia_hp_loss", "v0271_no_watchpost_hp_loss", "v0271_no_watchpost_attack_projectile_tower", "v0271_minimap_contact_ping_current_only"]:
+			mode_pass = mode_pass and guard_state == "holding east bridge" and contact_state == "engaged" and bool(contact.get("contactApplied", false)) and integrity == V0269_PRESSURE_INTEGRITY_AFTER_CONTACT
+		if mode in ["v0271_contact_resolved_cooldown_locked", "v0271_no_repeated_damage_below_90", "v0271_militia_hud_guard_order_contact_resolved"]:
+			mode_pass = mode_pass and guard_state == "resolved after contact" and contact_state == "resolved" and bool(contact.get("cooldownLocked", false)) and integrity == V0269_PRESSURE_INTEGRITY_AFTER_CONTACT
+		if mode == "v0271_threat_leaves_memory_integrity_90":
+			mode_pass = mode_pass and contact_state == "ended" and integrity == V0269_PRESSURE_INTEGRITY_AFTER_CONTACT
+		if mode in ["v0271_memory_only_no_new_contact_damage", "v0271_minimap_memory_no_contact_ping"]:
+			mode_pass = mode_pass and str(contact.get("advisoryState", "")) == "last_seen_memory" and contact_state == "unavailable" and not bool(contact.get("contactApplied", true)) and not bool(snap.get("contactMinimapPing", false))
+		if mode == "v0271_watchpost_hud_advisory_only_no_train_no_guard_action":
+			mode_pass = mode_pass and not bool(snap.get("hasTrainMilitia", false)) and not bool(snap.get("guardCommandOnWatchpost", true))
+		if mode == "v0271_barracks_hud_train_militia_no_full_relay":
+			mode_pass = mode_pass and bool(contact.get("barracksSelected", false)) and bool(snap.get("hasTrainMilitia", false)) and not bool(snap.get("relayCardVisible", false)) and not bool(snap.get("hasRelayTitle", false))
+		pass_all = pass_all and mode_pass
+	var saw_field_barracks_resources := false
+	var saw_watchpost_resources := false
+	for snap_value in v0271_barrosan_militia_guard_bridge_command_proof.values():
+		var snap_dict: Dictionary = snap_value
+		var contact_dict: Dictionary = snap_dict.get("firstContact", {})
+		if _v0262_resources_match(contact_dict.get("resourcesAfterPositioning", {}), 240, 40, 90, 38):
+			saw_field_barracks_resources = true
+		if _v0262_resources_match(contact_dict.get("resourcesAfterPositioning", {}), 140, 10, 80, 38):
+			saw_watchpost_resources = true
+	var resources_pass := saw_field_barracks_resources and saw_watchpost_resources
+	var result: Dictionary = barrosan_playtest.get("v0269MilitiaFirstContact", {}).duplicate(true)
+	var status_pass := missing.is_empty() and pass_all and resources_pass
+	result["status"] = "PASS" if status_pass else "IN_PROGRESS"
+	result["checkpoint"] = "v0.271"
+	result["watchpostFoundationStatus"] = watchpost.get("status", "UNKNOWN")
+	result["watchpostDefenderReadinessStatus"] = "RETAINED_BY_DEDICATED_V0266_VALIDATOR"
+	result["watchpostDefenderPositioningStatus"] = "RETAINED_BY_DEDICATED_V0267_VALIDATOR"
+	result["watchpostMilitiaInterceptPreviewStatus"] = "RETAINED_BY_DEDICATED_V0268_VALIDATOR"
+	result["militiaFirstContactMicroConsequenceStatus"] = "RETAINED_BY_DEDICATED_V0269_VALIDATOR"
+	result["contactFeedbackCooldownStatus"] = "RETAINED_BY_DEDICATED_V0270_VALIDATOR"
+	result["missingSnapshots"] = missing
+	result["invariantStatus"] = "PASS" if pass_all and missing.is_empty() else "IN_PROGRESS"
+	result["resourceSequenceStatus"] = "PASS" if resources_pass else "IN_PROGRESS"
+	result["guardBridgeCommandStatus"] = "PASS" if status_pass else "IN_PROGRESS"
+	result["guardOrderStates"] = ["unavailable", "available", "pending", "holding east bridge", "cancelled", "resolved after contact"]
+	result["cost"] = V0261_WATCHPOST_COST.duplicate(true)
+	result["hp"] = V0261_WATCHPOST_MAX_HP
+	result["proofSnapshots"] = v0271_barrosan_militia_guard_bridge_command_proof.duplicate(true)
 	result["defaultRuntimeChanged"] = false
 	result["blenderUsed"] = false
 	result["newGlbExported"] = false
@@ -10225,7 +10548,7 @@ func _sync_minimap() -> void:
 				_add_v0268_defender_position_minimap_marker()
 			if str(intercept.get("interceptPreviewState", "")) == "intercept ready":
 				_add_v0268_intercept_ready_minimap_marker()
-		if barrosan_requested_checkpoint in ["v0.269", "v0.270"]:
+		if barrosan_requested_checkpoint in ["v0.269", "v0.270", "v0.271"]:
 			var contact: Dictionary = barrosan_playtest.get("v0269MilitiaFirstContact", {})
 			if bool(contact.get("currentDetection", false)):
 				_add_v0268_current_minimap_ping()
@@ -10235,6 +10558,10 @@ func _sync_minimap() -> void:
 				_add_v0268_defender_position_minimap_marker()
 			if str(contact.get("interceptPreviewState", "")) == "intercept ready":
 				_add_v0268_intercept_ready_minimap_marker()
+			if barrosan_requested_checkpoint == "v0.271" and str(contact.get("guardOrderState", "")) == "pending":
+				_add_v0271_guard_minimap_marker("pending")
+			if barrosan_requested_checkpoint == "v0.271" and str(contact.get("guardOrderState", "")) in ["holding east bridge", "resolved after contact"]:
+				_add_v0271_guard_minimap_marker("holding")
 			if bool(contact.get("contactApplied", false)) and bool(contact.get("currentDetection", false)):
 				_add_v0269_contact_minimap_ping()
 
@@ -10297,9 +10624,9 @@ func get_spike_status() -> Dictionary:
 		"rebuildUxHardening": _v0257_rebuild_ux_status() if barrosan_requested_checkpoint in ["v0.257", "v0.258", "v0.259"] else {},
 		"lifecycleReadability": _v0258_lifecycle_readability_status() if barrosan_requested_checkpoint == "v0.258" else {},
 		"uiStateInvariantHardening": _v0259_ui_state_invariant_status() if barrosan_requested_checkpoint == "v0.259" else {},
-		"watchpostFoundation": _v0261_watchpost_status() if barrosan_requested_checkpoint in ["v0.261", "v0.262", "v0.263", "v0.264", "v0.265", "v0.266", "v0.267", "v0.268", "v0.269", "v0.270"] else {},
+		"watchpostFoundation": _v0261_watchpost_status() if barrosan_requested_checkpoint in ["v0.261", "v0.262", "v0.263", "v0.264", "v0.265", "v0.266", "v0.267", "v0.268", "v0.269", "v0.270", "v0.271"] else {},
 		"watchpostAwarenessLayer": _v0262_awareness_status() if barrosan_requested_checkpoint == "v0.262" else {},
-		"watchpostIntelMemory": _v0263_intel_memory_status() if barrosan_requested_checkpoint in ["v0.263", "v0.264", "v0.265", "v0.266", "v0.267", "v0.268", "v0.269", "v0.270"] else {},
+		"watchpostIntelMemory": _v0263_intel_memory_status() if barrosan_requested_checkpoint in ["v0.263", "v0.264", "v0.265", "v0.266", "v0.267", "v0.268", "v0.269", "v0.270", "v0.271"] else {},
 		"watchpostIntelRelayReadability": _v0264_intel_relay_status() if barrosan_requested_checkpoint == "v0.264" else {},
 		"watchpostAdvisoryObjectives": _v0265_watchpost_advisory_objectives_status() if barrosan_requested_checkpoint == "v0.265" else {},
 		"watchpostDefenderReadinessBridge": _v0266_watchpost_defender_readiness_status() if barrosan_requested_checkpoint == "v0.266" else {},
@@ -10307,6 +10634,7 @@ func get_spike_status() -> Dictionary:
 		"watchpostMilitiaInterceptPreviewBridge": _v0268_watchpost_militia_intercept_preview_status() if barrosan_requested_checkpoint == "v0.268" else {},
 		"barrosanMilitiaFirstContactMicroConsequence": _v0269_barrosan_militia_first_contact_status() if barrosan_requested_checkpoint == "v0.269" else {},
 		"barrosanMilitiaContactFeedbackCooldownBridge": _v0270_barrosan_militia_contact_feedback_cooldown_status() if barrosan_requested_checkpoint == "v0.270" else {},
+		"barrosanMilitiaGuardBridgeCommandAffordance": _v0271_barrosan_militia_guard_bridge_command_status() if barrosan_requested_checkpoint == "v0.271" else {},
 	}
 	return status
 

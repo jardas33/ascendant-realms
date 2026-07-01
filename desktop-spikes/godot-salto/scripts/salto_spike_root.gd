@@ -7875,6 +7875,11 @@ func _apply_player_slice_action(action: String) -> Dictionary:
 	elif action == "v0212_viewport_marker" or action == "v0212_alerts" or action.begins_with("v0212_resolution"):
 		player_ui_shell_production_tab_override = "TRAIN"
 		player_ui_shell_production_focus_hint = "train_militia"
+	if action.begins_with("v0271_"):
+		_ensure_player_battle_scene()
+		_call_scene("set_barrosan_runtime_review_mode", [action])
+		_render_player_screen("battle")
+		return {"ok": true, "action": action}
 	match action:
 		"title":
 			show_player_title()
@@ -8913,6 +8918,8 @@ func _apply_player_slice_action(action: String) -> Dictionary:
 
 func _player_capture_checkpoint() -> String:
 	var normalized_root := _artifact_root_from_args().replace("\\", "/")
+	if normalized_root.contains("/v0271"):
+		return "v0.271"
 	if normalized_root.contains("/v0270"):
 		return "v0.270"
 	if normalized_root.contains("/v0269"):
@@ -9082,9 +9089,53 @@ func _player_capture_checkpoint() -> String:
 	return "v0.124"
 
 func _is_bounded_microloop_checkpoint() -> bool:
-	return ["v0.129", "v0.130", "v0.160", "v0.162", "v0.164", "v0.166", "v0.168", "v0.169", "v0.170", "v0.173", "v0.174", "v0.177", "v0.178", "v0.179", "v0.181", "v0.184", "v0.185", "v0.186", "v0.187", "v0.193", "v0.194", "v0.195", "v0.196", "v0.197", "v0.198", "v0.199", "v0.200", "v0.203", "v0.204", "v0.205", "v0.206", "v0.209", "v0.210", "v0.211", "v0.212", "v0.213", "v0.215", "v0.216", "v0.217", "v0.218", "v0.219", "v0.220", "v0.221", "v0.222", "v0.223", "v0.224", "v0.227", "v0.228", "v0.229", "v0.230", "v0.231", "v0.243", "v0.244", "v0.245", "v0.246", "v0.247", "v0.248", "v0.249", "v0.250", "v0.251", "v0.252", "v0.253", "v0.254", "v0.255", "v0.256", "v0.257", "v0.258", "v0.259", "v0.261", "v0.262", "v0.263", "v0.264", "v0.265", "v0.266", "v0.267", "v0.268", "v0.269", "v0.270"].has(_player_capture_checkpoint())
+	return ["v0.129", "v0.130", "v0.160", "v0.162", "v0.164", "v0.166", "v0.168", "v0.169", "v0.170", "v0.173", "v0.174", "v0.177", "v0.178", "v0.179", "v0.181", "v0.184", "v0.185", "v0.186", "v0.187", "v0.193", "v0.194", "v0.195", "v0.196", "v0.197", "v0.198", "v0.199", "v0.200", "v0.203", "v0.204", "v0.205", "v0.206", "v0.209", "v0.210", "v0.211", "v0.212", "v0.213", "v0.215", "v0.216", "v0.217", "v0.218", "v0.219", "v0.220", "v0.221", "v0.222", "v0.223", "v0.224", "v0.227", "v0.228", "v0.229", "v0.230", "v0.231", "v0.243", "v0.244", "v0.245", "v0.246", "v0.247", "v0.248", "v0.249", "v0.250", "v0.251", "v0.252", "v0.253", "v0.254", "v0.255", "v0.256", "v0.257", "v0.258", "v0.259", "v0.261", "v0.262", "v0.263", "v0.264", "v0.265", "v0.266", "v0.267", "v0.268", "v0.269", "v0.270", "v0.271"].has(_player_capture_checkpoint())
 
 func _player_capture_steps() -> Array[Dictionary]:
+	if _player_capture_checkpoint() == "v0.271":
+		return [
+			{"id":"v0271_watchpost_build_path_visible","label":"v0.271 Watchpost build path", "action":"v0271_watchpost_build_path"},
+			{"id":"v0271_watchpost_complete_no_intel_no_contact_visible","label":"v0.271 no intel no contact", "action":"v0271_watchpost_complete_no_intel_no_contact"},
+			{"id":"v0271_barracks_train_militia_visible","label":"v0.271 Barracks trains Militia", "action":"v0271_barracks_train_militia"},
+			{"id":"v0271_militia_training_guard_unavailable_visible","label":"v0.271 guard unavailable while training", "action":"v0271_militia_training_guard_unavailable"},
+			{"id":"v0271_militia_ready_guard_available_visible","label":"v0.271 guard available", "action":"v0271_militia_ready_guard_available"},
+			{"id":"v0271_guard_button_visible_on_militia_not_watchpost_visible","label":"v0.271 guard button Militia only", "action":"v0271_guard_button_visible_on_militia_not_watchpost"},
+			{"id":"v0271_guard_order_pending_militia_away_visible","label":"v0.271 guard pending away", "action":"v0271_guard_order_pending_militia_away"},
+			{"id":"v0271_no_auto_move_after_guard_order_visible","label":"v0.271 no auto move", "action":"v0271_no_auto_move_after_guard_order"},
+			{"id":"v0271_watchpost_advises_move_to_bridge_visible","label":"v0.271 Watchpost advises move", "action":"v0271_watchpost_advises_move_to_bridge"},
+			{"id":"v0271_militia_near_bridge_guard_confirmed_visible","label":"v0.271 guard confirmed", "action":"v0271_militia_near_bridge_guard_confirmed"},
+			{"id":"v0271_guard_marker_east_bridge_visible","label":"v0.271 guard marker", "action":"v0271_guard_marker_east_bridge"},
+			{"id":"v0271_defender_position_holding_from_guard_order_visible","label":"v0.271 holding from guard", "action":"v0271_defender_position_holding_from_guard_order"},
+			{"id":"v0271_intercept_preview_requires_guard_order_visible","label":"v0.271 intercept requires guard", "action":"v0271_intercept_preview_requires_guard_order"},
+			{"id":"v0271_current_detection_no_guard_no_contact_visible","label":"v0.271 no guard no contact", "action":"v0271_current_detection_no_guard_no_contact"},
+			{"id":"v0271_current_detection_guard_pending_no_contact_visible","label":"v0.271 pending no contact", "action":"v0271_current_detection_guard_pending_no_contact"},
+			{"id":"v0271_current_detection_guard_holding_contact_armed_visible","label":"v0.271 holding armed", "action":"v0271_current_detection_guard_holding_contact_armed"},
+			{"id":"v0271_intercept_ready_integrity_100_visible","label":"v0.271 intercept ready 100", "action":"v0271_intercept_ready_integrity_100"},
+			{"id":"v0271_first_contact_feedback_pulse_visible","label":"v0.271 first contact pulse", "action":"v0271_first_contact_feedback_pulse"},
+			{"id":"v0271_first_contact_integrity_90_visible","label":"v0.271 first contact 90", "action":"v0271_first_contact_integrity_90"},
+			{"id":"v0271_contact_resolved_cooldown_locked_visible","label":"v0.271 resolved cooldown", "action":"v0271_contact_resolved_cooldown_locked"},
+			{"id":"v0271_no_repeated_damage_below_90_visible","label":"v0.271 no repeat damage", "action":"v0271_no_repeated_damage_below_90"},
+			{"id":"v0271_overlap_continues_integrity_still_90_visible","label":"v0.271 overlap still 90", "action":"v0271_overlap_continues_integrity_still_90"},
+			{"id":"v0271_threat_leaves_memory_integrity_90_visible","label":"v0.271 memory after contact", "action":"v0271_threat_leaves_memory_integrity_90"},
+			{"id":"v0271_memory_only_no_new_contact_damage_visible","label":"v0.271 memory no new contact", "action":"v0271_memory_only_no_new_contact_damage"},
+			{"id":"v0271_no_enemy_death_or_despawn_visible","label":"v0.271 no death/despawn", "action":"v0271_no_enemy_death_or_despawn"},
+			{"id":"v0271_no_enemy_slow_stop_redirect_visible","label":"v0.271 no slow/stop/redirect", "action":"v0271_no_enemy_slow_stop_redirect"},
+			{"id":"v0271_no_militia_hp_loss_visible","label":"v0.271 no Militia HP loss", "action":"v0271_no_militia_hp_loss"},
+			{"id":"v0271_no_watchpost_hp_loss_visible","label":"v0.271 no Watchpost HP loss", "action":"v0271_no_watchpost_hp_loss"},
+			{"id":"v0271_no_watchpost_attack_projectile_tower_visible","label":"v0.271 no Watchpost attack", "action":"v0271_no_watchpost_attack_projectile_tower"},
+			{"id":"v0271_watchpost_hud_advisory_only_no_train_no_guard_action_visible","label":"v0.271 Watchpost advisory only", "action":"v0271_watchpost_hud_advisory_only_no_train_no_guard_action"},
+			{"id":"v0271_barracks_hud_train_militia_no_full_relay_visible","label":"v0.271 Barracks separated", "action":"v0271_barracks_hud_train_militia_no_full_relay"},
+			{"id":"v0271_militia_hud_guard_order_contact_resolved_visible","label":"v0.271 Militia HUD resolved", "action":"v0271_militia_hud_guard_order_contact_resolved"},
+			{"id":"v0271_minimap_guard_pending_indicator_visible","label":"v0.271 minimap guard pending", "action":"v0271_minimap_guard_pending_indicator"},
+			{"id":"v0271_minimap_guard_holding_indicator_visible","label":"v0.271 minimap guard holding", "action":"v0271_minimap_guard_holding_indicator"},
+			{"id":"v0271_minimap_contact_ping_current_only_visible","label":"v0.271 contact ping current only", "action":"v0271_minimap_contact_ping_current_only"},
+			{"id":"v0271_minimap_memory_no_contact_ping_visible","label":"v0.271 memory no contact ping", "action":"v0271_minimap_memory_no_contact_ping"},
+			{"id":"v0271_label_declutter_guard_pending_visible","label":"v0.271 declutter pending", "action":"v0271_label_declutter_guard_pending"},
+			{"id":"v0271_label_declutter_guard_holding_visible","label":"v0.271 declutter holding", "action":"v0271_label_declutter_guard_holding"},
+			{"id":"v0271_label_declutter_first_contact_visible","label":"v0.271 declutter contact", "action":"v0271_label_declutter_first_contact"},
+			{"id":"v0271_existing_barracks_rebuild_path_still_valid_visible","label":"v0.271 Barracks rebuild retained", "action":"v0271_existing_barracks_rebuild_path_still_valid"},
+			{"id":"v0271_existing_barracks_still_trains_militia_visible","label":"v0.271 Barracks trains retained", "action":"v0271_existing_barracks_still_trains_militia"},
+		]
 	if _player_capture_checkpoint() == "v0.270":
 		return [
 			{"id":"v0270_watchpost_build_path_visible","label":"v0.270 Watchpost build path", "action":"v0270_watchpost_build_path"},
@@ -11178,7 +11229,7 @@ func _barrosan_runtime_skin_requested() -> bool:
 
 
 func _barrosan_runtime_scene_requested() -> bool:
-	return _barrosan_runtime_skin_requested() or _player_capture_checkpoint() in ["v0.254", "v0.255", "v0.256", "v0.257", "v0.258", "v0.259", "v0.261", "v0.262", "v0.263", "v0.264", "v0.265", "v0.266", "v0.267", "v0.268", "v0.269", "v0.270"]
+	return _barrosan_runtime_skin_requested() or _player_capture_checkpoint() in ["v0.254", "v0.255", "v0.256", "v0.257", "v0.258", "v0.259", "v0.261", "v0.262", "v0.263", "v0.264", "v0.265", "v0.266", "v0.267", "v0.268", "v0.269", "v0.270", "v0.271"]
 
 
 func _script_args() -> PackedStringArray:
