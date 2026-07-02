@@ -1,10 +1,10 @@
 # v0.277 Barrosan Engage Armed Readability and HUD-First Arbitration Report
 
-- Verdict: `PARTIAL`.
+- Verdict: `PASS`.
 - Base commit: `4671036f5733d5f16f9d79efa03eecc132a9f523`.
-- Implementation commit: `PENDING_PUBLICATION`.
-- Final HEAD: `PENDING_PUBLICATION`.
-- Exact-SHA GitHub Actions run: `PENDING_PUBLICATION`.
+- Implementation commit: `1dae51592c5499d1e9986a6c2fa1decbac97f551`.
+- Final HEAD: `PENDING_PUBLICATION`; finalized in post-push handoff after exact-SHA CI completes.
+- Exact-SHA GitHub Actions run: `PENDING_PUBLICATION`; finalized in post-push handoff after exact-SHA CI completes.
 - Scene path: `res://scenes/salto_barrosan_playable_runtime_skin.tscn`.
 - Review pack path: `artifacts/manual-review/v0277-barrosan-engage-armed-readability-hud-first-arbitration/`.
 
