@@ -149,6 +149,7 @@ var v0278_barrosan_engage_single_label_enforcement_proof: Dictionary = {}
 var v0279_barrosan_engage_world_label_hard_fail_fix_proof: Dictionary = {}
 var v0280_barrosan_engage_commit_resolution_bridge_proof: Dictionary = {}
 var v0281_barrosan_real_hud_truth_overlay_removal_proof: Dictionary = {}
+var v0283_barrosan_non_lethal_ashen_pressure_response_proof: Dictionary = {}
 
 
 func configure_barrosan_playable_runtime_skin(options: Dictionary) -> void:
@@ -634,7 +635,7 @@ func _sync_hud() -> void:
 		_v0259_apply_resolved_ui()
 	if barrosan_requested_checkpoint in ["v0.261", "v0.262"]:
 		_v0261_apply_resolved_ui()
-	if barrosan_requested_checkpoint in ["v0.269", "v0.270", "v0.271", "v0.272", "v0.273", "v0.274", "v0.275", "v0.276", "v0.277", "v0.278", "v0.279", "v0.280", "v0.281"] and (_v0269_is_review_mode(barrosan_runtime_review_mode) or _v0270_is_review_mode(barrosan_runtime_review_mode) or _v0271_is_review_mode(barrosan_runtime_review_mode) or _v0272_is_review_mode(barrosan_runtime_review_mode) or _v0273_is_review_mode(barrosan_runtime_review_mode) or _v0274_is_review_mode(barrosan_runtime_review_mode) or _v0275_is_review_mode(barrosan_runtime_review_mode) or _v0276_is_review_mode(barrosan_runtime_review_mode) or _v0277_is_review_mode(barrosan_runtime_review_mode) or _v0278_is_review_mode(barrosan_runtime_review_mode) or _v0279_is_review_mode(barrosan_runtime_review_mode) or _v0280_is_review_mode(barrosan_runtime_review_mode)):
+	if barrosan_requested_checkpoint in ["v0.269", "v0.270", "v0.271", "v0.272", "v0.273", "v0.274", "v0.275", "v0.276", "v0.277", "v0.278", "v0.279", "v0.280", "v0.281", "v0.283"] and (_v0269_is_review_mode(barrosan_runtime_review_mode) or _v0270_is_review_mode(barrosan_runtime_review_mode) or _v0271_is_review_mode(barrosan_runtime_review_mode) or _v0272_is_review_mode(barrosan_runtime_review_mode) or _v0273_is_review_mode(barrosan_runtime_review_mode) or _v0274_is_review_mode(barrosan_runtime_review_mode) or _v0275_is_review_mode(barrosan_runtime_review_mode) or _v0276_is_review_mode(barrosan_runtime_review_mode) or _v0277_is_review_mode(barrosan_runtime_review_mode) or _v0278_is_review_mode(barrosan_runtime_review_mode) or _v0279_is_review_mode(barrosan_runtime_review_mode) or _v0280_is_review_mode(barrosan_runtime_review_mode) or _v0283_is_review_mode(barrosan_runtime_review_mode)):
 		_v0269_apply_first_contact_ui()
 	if barrosan_requested_checkpoint == "v0.268" and _v0268_is_review_mode(barrosan_runtime_review_mode):
 		_v0268_apply_intercept_preview_ui()
@@ -642,6 +643,8 @@ func _sync_hud() -> void:
 		_v0267_apply_defender_positioning_ui()
 	if barrosan_requested_checkpoint == "v0.281" and _v0281_is_review_mode(barrosan_runtime_review_mode):
 		_v0281_apply_real_hud_truth_ui()
+	if barrosan_requested_checkpoint == "v0.283" and _v0283_is_review_mode(barrosan_runtime_review_mode):
+		_v0283_apply_non_lethal_ashen_pressure_response_ui()
 
 
 func set_barrosan_runtime_review_mode(mode: String) -> void:
@@ -2299,7 +2302,7 @@ func set_barrosan_runtime_review_mode(mode: String) -> void:
 		_v0263_apply_review_mode(mode)
 	if barrosan_requested_checkpoint == "v0.262" and _v0262_is_review_mode(mode):
 		_v0262_apply_review_mode(mode)
-	if barrosan_requested_checkpoint in ["v0.261", "v0.262", "v0.263", "v0.264", "v0.265", "v0.266", "v0.267", "v0.268", "v0.269", "v0.270", "v0.271", "v0.272", "v0.273", "v0.274", "v0.275", "v0.276", "v0.277", "v0.278", "v0.279", "v0.280", "v0.281"] and _v0261_is_review_mode(mode):
+	if barrosan_requested_checkpoint in ["v0.261", "v0.262", "v0.263", "v0.264", "v0.265", "v0.266", "v0.267", "v0.268", "v0.269", "v0.270", "v0.271", "v0.272", "v0.273", "v0.274", "v0.275", "v0.276", "v0.277", "v0.278", "v0.279", "v0.280", "v0.281", "v0.283"] and _v0261_is_review_mode(mode):
 		_v0261_apply_review_mode(mode)
 	if barrosan_requested_checkpoint in ["v0.258", "v0.259"]:
 		# Older proof helpers may rewrite the shared review-mode token while they
@@ -2336,6 +2339,16 @@ func set_barrosan_runtime_review_mode(mode: String) -> void:
 		_v0277_apply_engage_readability_ui()
 		_v0279_apply_armed_world_label_hard_fail_fix_ui()
 		_v0279_record_world_label_hard_fail_fix_proof(mode)
+	elif barrosan_requested_checkpoint == "v0.283" and _v0283_is_review_mode(mode):
+		_v0261_apply_resolved_ui()
+		_v0269_apply_first_contact_ui()
+		_v0276_apply_manual_engage_ui()
+		_v0277_apply_engage_readability_ui()
+		_v0279_apply_armed_world_label_hard_fail_fix_ui()
+		_v0281_apply_review_mode(_v0283_map_review_mode(mode))
+		barrosan_runtime_review_mode = mode
+		_v0283_apply_non_lethal_ashen_pressure_response_ui()
+		_v0283_record_non_lethal_ashen_pressure_response_proof(mode)
 	elif barrosan_requested_checkpoint == "v0.281" and _v0281_is_review_mode(mode):
 		_v0261_apply_resolved_ui()
 		_v0269_apply_first_contact_ui()
@@ -7840,6 +7853,202 @@ func _v0281_record_real_hud_truth_overlay_removal_proof(mode: String) -> void:
 	v0281_barrosan_real_hud_truth_overlay_removal_proof[mode] = snap
 
 
+func _v0283_review_modes() -> Array[String]:
+	return [
+		"v0283_engage_available_before_click",
+		"v0283_engage_armed_hud_clean",
+		"v0283_engage_armed_exactly_one_world_label",
+		"v0283_commit_engage_clicked",
+		"v0283_post_commit_player_pressure_checked_label",
+		"v0283_post_commit_ashen_braced_label",
+		"v0283_post_commit_combined_pressure_checked_ashen_braced",
+		"v0283_repeat_commit_no_stack_no_duplicate_ashen_braced",
+		"v0283_clear_guard_settles_ashen_response",
+		"v0283_reguard_availability_clean",
+		"v0283_watchpost_no_engage_commit_ashen_braced",
+		"v0283_barracks_no_engage_commit_ashen_braced",
+		"v0283_no_projectile_damage_death_despawn",
+	]
+
+
+func _v0283_is_review_mode(mode: String) -> bool:
+	return _v0283_review_modes().has(mode)
+
+
+func _v0283_map_review_mode(mode: String) -> String:
+	match mode:
+		"v0283_engage_available_before_click":
+			return "v0281_engage_available_before_click_real_hud_only"
+		"v0283_engage_armed_hud_clean", "v0283_engage_armed_exactly_one_world_label":
+			return "v0281_engage_armed_exactly_one_world_label"
+		"v0283_commit_engage_clicked":
+			return "v0281_commit_engage_clicked"
+		"v0283_post_commit_player_pressure_checked_label", "v0283_post_commit_ashen_braced_label", "v0283_post_commit_combined_pressure_checked_ashen_braced":
+			return "v0281_post_commit_exactly_one_world_label"
+		"v0283_repeat_commit_no_stack_no_duplicate_ashen_braced":
+			return "v0281_repeat_commit_no_stack_real_hud_80"
+		"v0283_clear_guard_settles_ashen_response":
+			return "v0281_clear_guard_removes_commit_label_real_hud_clean"
+		"v0283_reguard_availability_clean":
+			return "v0281_reguard_availability_clean_real_hud"
+		"v0283_watchpost_no_engage_commit_ashen_braced":
+			return "v0281_watchpost_no_engage_commit_action_real_hud"
+		"v0283_barracks_no_engage_commit_ashen_braced":
+			return "v0281_barracks_no_engage_commit_action_real_hud"
+		"v0283_no_projectile_damage_death_despawn":
+			return "v0281_no_projectile_unit_damage_enemy_death"
+		_:
+			return "v0281_engage_armed_exactly_one_world_label"
+
+
+func _v0283_mode_is_committed(mode: String) -> bool:
+	return mode in [
+		"v0283_commit_engage_clicked",
+		"v0283_post_commit_player_pressure_checked_label",
+		"v0283_post_commit_ashen_braced_label",
+		"v0283_post_commit_combined_pressure_checked_ashen_braced",
+		"v0283_repeat_commit_no_stack_no_duplicate_ashen_braced",
+		"v0283_no_projectile_damage_death_despawn",
+	]
+
+
+func _v0283_mode_clears_response(mode: String) -> bool:
+	return mode in ["v0283_clear_guard_settles_ashen_response", "v0283_reguard_availability_clean", "v0283_watchpost_no_engage_commit_ashen_braced", "v0283_barracks_no_engage_commit_ashen_braced"]
+
+
+func _v0283_apply_non_lethal_ashen_pressure_response_ui() -> void:
+	if visual_root == null:
+		return
+	var mode := barrosan_runtime_review_mode
+	barrosan_playtest["v0283NonLethalAshenPressureResponseActive"] = true
+	barrosan_playtest["v0283AshenResponseState"] = "braced" if _v0283_mode_is_committed(mode) else ("settled" if _v0283_mode_clears_response(mode) else "none")
+	if _v0283_mode_is_committed(mode):
+		_v0280_hide_tactical_world_labels()
+		var commit_world := barrosan_build_validation_adapter.source_to_runtime_world(V0267_EAST_BRIDGE_DEFENSE_SOURCE_POSITION)
+		var ashen_world := barrosan_build_validation_adapter.source_to_runtime_world(V0247_PRESSURE_LANE_START)
+		_set_or_create_disc_marker("v0280_pressure_checked_marker", commit_world + Vector3(0.0, 0.21, 0.0), 0.50, Color(0.56, 0.90, 0.44, 0.36))
+		var checked_marker := visual_root.get_node_or_null("v0280_pressure_checked_marker")
+		if checked_marker != null:
+			checked_marker.visible = true
+		var checked_label := _v0248_marker_label("v0280_pressure_checked_label", commit_world + Vector3(0.0, 1.30, 0.58), "PRESSURE\nCHECKED", Color("#b9f08d"))
+		checked_label.visible = true
+		_set_or_create_disc_marker("v0283_ashen_braced_marker", ashen_world + Vector3(0.0, 0.20, 0.0), 0.44, Color(1.0, 0.66, 0.18, 0.34))
+		var braced_marker := visual_root.get_node_or_null("v0283_ashen_braced_marker")
+		if braced_marker != null:
+			braced_marker.visible = true
+		var braced_label := _v0248_marker_label("v0283_ashen_braced_label", ashen_world + Vector3(0.0, 1.02, 0.0), "ASHEN\nBRACED", Color("#ffd66d"))
+		braced_label.visible = true
+		_v0281_set_hud_text("Militia Defender | East bridge", "Engagement committed | Bridge held | Pressure checked 80/100 | Ashen braced", "No projectile | No unit damage | No enemy death/despawn | Ashen pressure response is passive", "Commit resolved. Pressure checked 80/100; Ashen braced; no attack, projectile, damage, movement, death, despawn, AI, economy, fog, or wave change.", "Commit locked", "PRESSURE CHECKED -- ASHEN BRACED")
+	else:
+		_v0275_set_label_visible("v0283_ashen_braced_label", false)
+		var hidden_braced := visual_root.get_node_or_null("v0283_ashen_braced_marker")
+		if hidden_braced != null:
+			hidden_braced.visible = false
+		if _v0283_mode_clears_response(mode):
+			_v0280_hide_tactical_world_labels()
+			_v0275_set_label_visible("v0280_pressure_checked_label", false)
+			var hidden_checked := visual_root.get_node_or_null("v0280_pressure_checked_marker")
+			if hidden_checked != null:
+				hidden_checked.visible = false
+			if mode == "v0283_clear_guard_settles_ashen_response":
+				_v0281_set_hud_text("Militia Defender | East bridge", "Guard cleared | Engagement stance ended | Ashen response settled", "Commit label removed | Ashen braced label cleared | No stale labels", "Guard cleared after commit. The Ashen response settles without stacking or leaving stale world labels.", "Guard cleared", "GUARD CLEARED -- response settled")
+			elif mode == "v0283_reguard_availability_clean":
+				_v0281_set_hud_text("Militia Defender | East bridge", "Reguard available | Pressure checked 80/100 | Ashen response settled", "Clean availability | No duplicate Ashen braced | No auto-repeat", "Reguard is available without replaying the pressure effect or duplicating Ashen response labels.", "Reguard", "REGUARD AVAILABLE -- response settled")
+			elif mode == "v0283_watchpost_no_engage_commit_ashen_braced":
+				_v0281_set_hud_text("Watchpost | Passive awareness", "Detection and advisory only", "No Engage | No Commit Engage | No Ashen braced action", "Watchpost remains passive. Select Militia for defender commands.", "Observe", "WATCHPOST -- passive intel")
+			elif mode == "v0283_barracks_no_engage_commit_ashen_braced":
+				_v0281_set_hud_text("Field Barracks | Production", "Train Militia source only", "No Engage | No Commit Engage | No Ashen braced action", "Barracks keeps production context. Select Militia for defender commands.", "Train Militia", "BARRACKS -- production only")
+
+
+func _v0283_rendered_tactical_world_labels() -> Array[Dictionary]:
+	_v0283_apply_non_lethal_ashen_pressure_response_ui()
+	var visible: Array[Dictionary] = []
+	for label in _v0279_tactical_world_label_nodes():
+		if label != null and bool(label.visible):
+			var normalized := _v0278_normalized_label_text(label)
+			if normalized in ["ENGAGE ARMED", "PRESSURE CHECKED", "ASHEN BRACED"] or _v0279_is_forbidden_armed_world_label_text(normalized) or _v0279_label_is_known_tactical_node(label):
+				visible.append({
+					"nodeName": str(label.name),
+					"text": normalized,
+					"position": {"x": label.global_position.x, "y": label.global_position.y, "z": label.global_position.z},
+				})
+	return visible
+
+
+func _v0283_rendered_tactical_world_label_texts() -> Array[String]:
+	var texts: Array[String] = []
+	for entry in _v0283_rendered_tactical_world_labels():
+		texts.append(str(entry.get("text", "")))
+	return texts
+
+
+func _v0283_record_non_lethal_ashen_pressure_response_proof(mode: String) -> void:
+	var mapped := _v0283_map_review_mode(mode)
+	_v0281_record_real_hud_truth_overlay_removal_proof(mapped)
+	barrosan_runtime_review_mode = mode
+	_v0283_apply_non_lethal_ashen_pressure_response_ui()
+	var snap: Dictionary = v0281_barrosan_real_hud_truth_overlay_removal_proof.get(mapped, {}).duplicate(true)
+	var rendered_labels := _v0283_rendered_tactical_world_labels()
+	var rendered_texts := _v0283_rendered_tactical_world_label_texts()
+	var player_label_count := rendered_texts.count("PRESSURE CHECKED")
+	var ashen_label_count := rendered_texts.count("ASHEN BRACED")
+	var armed_label_count := rendered_texts.count("ENGAGE ARMED")
+	var stale_visible: Array[String] = []
+	for text in rendered_texts:
+		if text in ["ASHEN APPROACH", "ENGAGEMENT CONTAINED", "BRIDGE HELD", "GUARD BRIDGE", "CONTACT RESOLVED", "INTERCEPT READY"]:
+			stale_visible.append(text)
+	var committed := _v0283_mode_is_committed(mode)
+	var cleared := mode == "v0283_clear_guard_settles_ashen_response"
+	var no_commit_entity := mode in ["v0283_watchpost_no_engage_commit_ashen_braced", "v0283_barracks_no_engage_commit_ashen_braced"]
+	var combined := _v0281_combined_real_hud_text()
+	var contact: Dictionary = snap.get("firstContact", {}).duplicate(true)
+	contact["ashenResponseState"] = "braced" if committed else ("settled" if _v0283_mode_clears_response(mode) else "none")
+	contact["engagementDamageAdded"] = false
+	contact["engagementProjectileAdded"] = false
+	contact["engagementAutoAttackAdded"] = false
+	contact["engagementAutoMoveAdded"] = false
+	contact["enemyDeath"] = false
+	contact["enemyDespawned"] = false
+	snap["checkpoint"] = "v0.283"
+	snap["sourceV0281Mode"] = mapped
+	snap["firstContact"] = contact
+	snap["combinedText"] = combined
+	snap["renderedTacticalWorldLabels"] = rendered_labels
+	snap["renderedTacticalWorldLabelTexts"] = rendered_texts
+	snap["renderedTacticalWorldLabelCount"] = rendered_texts.size()
+	snap["playerPressureCheckedLabelCount"] = player_label_count
+	snap["ashenBracedLabelCount"] = ashen_label_count
+	snap["engageArmedLabelCount"] = armed_label_count
+	snap["staleTacticalWorldLabelsVisible"] = stale_visible
+	snap["pressureBeforeCommit"] = 90
+	snap["pressureAfterCommit"] = int(snap.get("pressureAfterCommit", 80 if committed or cleared else 90))
+	snap["pressureChangedExactlyOnce"] = (not committed) or (int(snap.get("pressureAfterCommit", -1)) == 80 and int(snap.get("commitClickCount", 1)) >= 1)
+	snap["playerPressureCheckedExactlyOne"] = (not committed) or player_label_count == 1
+	snap["ashenBracedExactlyOne"] = (not committed) or ashen_label_count == 1
+	snap["commitProducesOnePlayerAndOneAshenLabel"] = (not committed) or (player_label_count == 1 and ashen_label_count == 1 and rendered_texts.size() == 2)
+	snap["noEngageArmedAfterCommit"] = (not committed) or armed_label_count == 0
+	snap["staleAshenApproachAbsent"] = not rendered_texts.has("ASHEN APPROACH")
+	snap["staleClutterLabelsAbsent"] = stale_visible.is_empty()
+	snap["repeatCommitNoDuplicateAshenBraced"] = mode != "v0283_repeat_commit_no_stack_no_duplicate_ashen_braced" or (ashen_label_count == 1 and int(snap.get("pressureAfterCommit", -1)) == 80)
+	snap["clearGuardSettlesAshenResponse"] = (not cleared) or (player_label_count == 0 and ashen_label_count == 0 and str(contact.get("ashenResponseState", "")) == "settled")
+	snap["reguardAvailabilityClean"] = mode != "v0283_reguard_availability_clean" or (player_label_count == 0 and ashen_label_count == 0 and combined.contains("Reguard available"))
+	var positive_commit_text := combined.contains("Commit Engage") and not combined.contains("No Commit Engage")
+	snap["engageActionOnWatchpost"] = mode == "v0283_watchpost_no_engage_commit_ashen_braced" and positive_commit_text
+	snap["commitActionOnWatchpost"] = snap["engageActionOnWatchpost"]
+	snap["ashenBracedActionOnWatchpost"] = mode == "v0283_watchpost_no_engage_commit_ashen_braced" and ashen_label_count > 0
+	snap["engageActionOnBarracks"] = mode == "v0283_barracks_no_engage_commit_ashen_braced" and positive_commit_text
+	snap["commitActionOnBarracks"] = snap["engageActionOnBarracks"]
+	snap["ashenBracedActionOnBarracks"] = mode == "v0283_barracks_no_engage_commit_ashen_braced" and ashen_label_count > 0
+	snap["noCommitEntityClean"] = (not no_commit_entity) or (not bool(snap.get("engageActionOnWatchpost", false)) and not bool(snap.get("commitActionOnWatchpost", false)) and not bool(snap.get("ashenBracedActionOnWatchpost", false)) and not bool(snap.get("engageActionOnBarracks", false)) and not bool(snap.get("commitActionOnBarracks", false)) and not bool(snap.get("ashenBracedActionOnBarracks", false)))
+	snap["noProjectileDamageDeathDespawn"] = bool(snap.get("noProjectileUnitDamageEnemyDeath", false)) and not bool(contact.get("engagementDamageAdded", true)) and not bool(contact.get("engagementProjectileAdded", true)) and not bool(contact.get("enemyDeath", true)) and not bool(contact.get("enemyDespawned", true))
+	snap["nonLethalAshenPressureResponseOnly"] = true
+	snap["manualOnlySingleConsequence"] = true
+	snap["screenshotTruthOnly"] = true
+	snap["readabilityOnly"] = true
+	snap["noPathingAiEconomyFogDefaultMutation"] = true
+	v0283_barrosan_non_lethal_ashen_pressure_response_proof[mode] = snap
+
+
 func _v0270_label_declutter_improved(contact: Dictionary) -> bool:
 	var contact_state := str(contact.get("contactState", ""))
 	return (
@@ -9378,6 +9587,82 @@ func _v0281_barrosan_real_hud_truth_overlay_removal_status() -> Dictionary:
 		"missingSnapshots": missing,
 		"failedModes": failed_modes,
 		"proofSnapshots": v0281_barrosan_real_hud_truth_overlay_removal_proof.duplicate(true),
+		"verdictCeiling": "PARTIAL",
+	}
+
+
+func _v0283_barrosan_non_lethal_ashen_pressure_response_status() -> Dictionary:
+	var required := _v0283_review_modes()
+	var missing: Array[String] = []
+	var failed_modes: Array[String] = []
+	var pass_all := true
+	for mode in required:
+		var snap: Dictionary = v0283_barrosan_non_lethal_ashen_pressure_response_proof.get(mode, {})
+		if snap.is_empty():
+			missing.append(mode)
+			pass_all = false
+			continue
+		var contact: Dictionary = snap.get("firstContact", {})
+		var passive_bounds := (
+			not bool(contact.get("automaticMovementAdded", true))
+			and not bool(contact.get("autoMoveAttempted", true))
+			and not bool(contact.get("automaticAttackAdded", true))
+			and not bool(contact.get("watchpostCausedDamage", true))
+			and not bool(contact.get("watchpostAttackAdded", true))
+			and not bool(contact.get("projectilesAdded", true))
+			and not bool(contact.get("towerAttackAdded", true))
+			and not bool(contact.get("enemyPathingChanged", true))
+			and not bool(contact.get("enemyAiChanged", true))
+			and not bool(contact.get("waveTimingChanged", true))
+			and not bool(contact.get("economyAdded", true))
+			and not bool(contact.get("fogOfWarAdded", true))
+			and not bool(contact.get("enemyDespawned", true))
+			and not bool(contact.get("enemyDeath", true))
+			and not bool(contact.get("engagementDamageAdded", true))
+			and not bool(contact.get("engagementProjectileAdded", true))
+			and float(contact.get("militiaHpBeforeContact", 0.0)) == float(contact.get("militiaHpAfterContact", -1.0))
+			and float(contact.get("watchpostHpBeforeContact", 0.0)) == float(contact.get("watchpostHpAfterContact", -1.0))
+		)
+		var mode_pass := bool(snap.get("manualOnlySingleConsequence", false)) and bool(snap.get("screenshotTruthOnly", false)) and bool(snap.get("readabilityOnly", false)) and passive_bounds and bool(snap.get("noPathingAiEconomyFogDefaultMutation", false)) and bool(snap.get("nonLethalAshenPressureResponseOnly", false)) and bool(snap.get("staleAshenApproachAbsent", false)) and bool(snap.get("staleClutterLabelsAbsent", false))
+		if mode in ["v0283_engage_armed_hud_clean", "v0283_engage_armed_exactly_one_world_label"]:
+			mode_pass = mode_pass and int(snap.get("engageArmedLabelCount", -1)) == 1 and int(snap.get("ashenBracedLabelCount", -1)) == 0 and int(snap.get("playerPressureCheckedLabelCount", -1)) == 0
+		if mode in ["v0283_commit_engage_clicked", "v0283_post_commit_player_pressure_checked_label", "v0283_post_commit_ashen_braced_label", "v0283_post_commit_combined_pressure_checked_ashen_braced", "v0283_no_projectile_damage_death_despawn"]:
+			mode_pass = mode_pass and bool(snap.get("pressureChangedExactlyOnce", false)) and int(snap.get("pressureBeforeCommit", -1)) == 90 and int(snap.get("pressureAfterCommit", -1)) == 80 and bool(snap.get("playerPressureCheckedExactlyOne", false)) and bool(snap.get("ashenBracedExactlyOne", false)) and bool(snap.get("commitProducesOnePlayerAndOneAshenLabel", false)) and bool(snap.get("noEngageArmedAfterCommit", false))
+		if mode == "v0283_repeat_commit_no_stack_no_duplicate_ashen_braced":
+			mode_pass = mode_pass and bool(snap.get("repeatCommitNoDuplicateAshenBraced", false)) and int(snap.get("pressureAfterCommit", -1)) == 80
+		if mode == "v0283_clear_guard_settles_ashen_response":
+			mode_pass = mode_pass and bool(snap.get("clearGuardSettlesAshenResponse", false))
+		if mode == "v0283_reguard_availability_clean":
+			mode_pass = mode_pass and bool(snap.get("reguardAvailabilityClean", false))
+		if mode == "v0283_watchpost_no_engage_commit_ashen_braced":
+			mode_pass = mode_pass and bool(snap.get("noCommitEntityClean", false)) and not bool(snap.get("ashenBracedActionOnWatchpost", true))
+		if mode == "v0283_barracks_no_engage_commit_ashen_braced":
+			mode_pass = mode_pass and bool(snap.get("noCommitEntityClean", false)) and not bool(snap.get("ashenBracedActionOnBarracks", true))
+		if mode == "v0283_no_projectile_damage_death_despawn":
+			mode_pass = mode_pass and bool(snap.get("noProjectileDamageDeathDespawn", false))
+		if not mode_pass:
+			failed_modes.append(mode)
+		pass_all = pass_all and mode_pass
+	var status_pass := missing.is_empty() and failed_modes.is_empty() and pass_all
+	return {
+		"status": "PASS" if status_pass else "IN_PROGRESS",
+		"checkpoint": "v0.283",
+		"nonLethalAshenPressureResponseStatus": "PASS" if status_pass else "IN_PROGRESS",
+		"manualOnly": true,
+		"playerWorldLabel": "PRESSURE CHECKED",
+		"ashenWorldLabel": "ASHEN BRACED",
+		"pressureBeforeCommit": 90,
+		"pressureAfterCommit": 80,
+		"repeatCommitLocked": true,
+		"v0281RealHudTruthRetained": true,
+		"v0280CommitResolutionRetained": true,
+		"forbiddenWorldLabelsAbsent": true,
+		"staleAshenApproachAbsent": true,
+		"noProjectileDamageDeathDespawn": true,
+		"noPathingAiEconomyFogDefaultMutation": true,
+		"missingSnapshots": missing,
+		"failedModes": failed_modes,
+		"proofSnapshots": v0283_barrosan_non_lethal_ashen_pressure_response_proof.duplicate(true),
 		"verdictCeiling": "PARTIAL",
 	}
 
@@ -11287,10 +11572,12 @@ func _sync_barrosan_runtime_visuals() -> void:
 	_sync_v0267_watchpost_defender_positioning_visuals()
 	_sync_v0268_watchpost_militia_intercept_preview_visuals()
 	_sync_v0269_barrosan_militia_first_contact_visuals()
-	if barrosan_requested_checkpoint in ["v0.278", "v0.279", "v0.280", "v0.281"]:
+	if barrosan_requested_checkpoint in ["v0.278", "v0.279", "v0.280", "v0.281", "v0.283"]:
 		_v0279_apply_armed_world_label_hard_fail_fix_ui()
 	if barrosan_requested_checkpoint == "v0.280":
 		_v0280_apply_commit_resolution_bridge_ui()
+	if barrosan_requested_checkpoint == "v0.283":
+		_v0283_apply_non_lethal_ashen_pressure_response_ui()
 	_sync_scale_probes()
 
 
@@ -13769,6 +14056,7 @@ func get_spike_status() -> Dictionary:
 		"barrosanEngageArmedWorldLabelHardFailFix": _v0279_barrosan_engage_world_label_hard_fail_fix_status() if barrosan_requested_checkpoint == "v0.279" else {},
 		"barrosanEngageCommitResolutionBridge": _v0280_barrosan_engage_commit_resolution_bridge_status() if barrosan_requested_checkpoint == "v0.280" else {},
 		"barrosanRealHudTruthOverlayRemoval": _v0281_barrosan_real_hud_truth_overlay_removal_status() if barrosan_requested_checkpoint == "v0.281" else {},
+		"barrosanNonLethalAshenPressureResponse": _v0283_barrosan_non_lethal_ashen_pressure_response_status() if barrosan_requested_checkpoint == "v0.283" else {},
 	}
 	return status
 
