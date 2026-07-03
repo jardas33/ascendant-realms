@@ -250,6 +250,8 @@
     "godot:capture:salto-barrosan-engage-armed-world-label-hard-fail-fix": "powershell -NoProfile -ExecutionPolicy Bypass -File tools/godot/captureGodotV0279BarrosanEngageArmedWorldLabelHardFailFixWindows.ps1",
     "godot:validate:salto-barrosan-engage-armed-world-label-hard-fail-fix": "powershell -NoProfile -ExecutionPolicy Bypass -File tools/godot/validateGodotV0279BarrosanEngageArmedWorldLabelHardFailFixWindows.ps1",
     "godot:validate:salto-barrosan-engage-armed-world-label-absence": "powershell -NoProfile -ExecutionPolicy Bypass -File tools/godot/validateGodotV0279BarrosanEngageArmedWorldLabelAbsenceWindows.ps1",
+    "godot:capture:salto-barrosan-engage-commit-resolution-bridge": "powershell -NoProfile -ExecutionPolicy Bypass -File tools/godot/captureGodotV0280BarrosanEngageCommitResolutionBridgeWindows.ps1",
+    "godot:validate:salto-barrosan-engage-commit-resolution-bridge": "powershell -NoProfile -ExecutionPolicy Bypass -File tools/godot/validateGodotV0280BarrosanEngageCommitResolutionBridgeWindows.ps1",
     "godot:capture:salto-environment-contrast": "powershell -NoProfile -ExecutionPolicy Bypass -File tools/godot/captureGodotSaltoEnvironmentContrastWindows.ps1",
     "godot:audit:player-slice": "powershell -NoProfile -ExecutionPolicy Bypass -File tools/godot/auditGodotPlayerSliceWindows.ps1",
     "godot:validate:player-slice": "powershell -NoProfile -ExecutionPolicy Bypass -File tools/godot/validateGodotPlayerSlice.ps1",
