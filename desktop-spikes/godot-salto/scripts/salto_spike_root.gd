@@ -4045,8 +4045,8 @@ func _live_ui_shell_state() -> Dictionary:
 	var objective_next_action := _v0211_next_action(mine_converted, worker_assigned, barracks_complete, militia_spawned, pressure_active, pressure_resolved)
 	var production_cards := _v0211_production_cards(active_tab, mine_converted, worker_assigned, barracks_complete, militia_queued, militia_spawned)
 	var tooltip_meta := _v0212_tooltip_meta(action, active_tab, player_ui_shell_production_focus_hint, tooltip, alert_severity)
-	if action.begins_with("v0280_") or action.begins_with("v0281_") or action.begins_with("v0283_"):
-		var v0281 := action.begins_with("v0281_") or action.begins_with("v0283_")
+	if action.begins_with("v0280_") or action.begins_with("v0281_") or action.begins_with("v0283_") or action.begins_with("v0284_"):
+		var v0281 := action.begins_with("v0281_") or action.begins_with("v0283_") or action.begins_with("v0284_")
 		var v0280_committed := action in [
 			"v0280_commit_engage_clicked",
 			"v0280_post_commit_exactly_one_world_label",
@@ -4064,10 +4064,16 @@ func _live_ui_shell_state() -> Dictionary:
 			"v0283_post_commit_combined_pressure_checked_ashen_braced",
 			"v0283_repeat_commit_no_stack_no_duplicate_ashen_braced",
 			"v0283_no_projectile_damage_death_despawn",
+			"v0284_commit_engage_clicked",
+			"v0284_post_commit_player_pressure_checked_label",
+			"v0284_post_commit_ashen_braced_label",
+			"v0284_post_commit_combined_pressure_checked_ashen_braced",
+			"v0284_repeat_commit_no_stack_no_duplicate_ashen_braced",
+			"v0284_no_projectile_damage_death_despawn",
 		]
-		var v0280_cleared := action in ["v0280_clear_guard_removes_commit_label", "v0281_clear_guard_removes_commit_label_real_hud_clean", "v0283_clear_guard_settles_ashen_response"]
-		var v0280_reguard := action in ["v0280_reguard_availability_clean", "v0281_reguard_availability_clean_real_hud", "v0283_reguard_availability_clean"]
-		var v0280_no_commit_entity := action in ["v0280_watchpost_no_engage_commit_action", "v0280_barracks_no_engage_commit_action", "v0280_default_runtime_unchanged_probe", "v0281_watchpost_no_engage_commit_action_real_hud", "v0281_barracks_no_engage_commit_action_real_hud", "v0281_default_runtime_unchanged_probe", "v0283_watchpost_no_engage_commit_ashen_braced", "v0283_barracks_no_engage_commit_ashen_braced"]
+		var v0280_cleared := action in ["v0280_clear_guard_removes_commit_label", "v0281_clear_guard_removes_commit_label_real_hud_clean", "v0283_clear_guard_settles_ashen_response", "v0284_clear_guard_settles_ashen_response"]
+		var v0280_reguard := action in ["v0280_reguard_availability_clean", "v0281_reguard_availability_clean_real_hud", "v0283_reguard_availability_clean", "v0284_reguard_availability_clean"]
+		var v0280_no_commit_entity := action in ["v0280_watchpost_no_engage_commit_action", "v0280_barracks_no_engage_commit_action", "v0280_default_runtime_unchanged_probe", "v0281_watchpost_no_engage_commit_action_real_hud", "v0281_barracks_no_engage_commit_action_real_hud", "v0281_default_runtime_unchanged_probe", "v0283_watchpost_no_engage_commit_ashen_braced", "v0283_barracks_no_engage_commit_ashen_braced", "v0284_watchpost_no_engage_commit_ashen_braced", "v0284_barracks_no_engage_commit_ashen_braced"]
 		active_tab = "TRAIN"
 		selected_title = "Militia Defender | East bridge" if v0281 else "Militia Defender"
 		selected_subtitle = "Engage armed | Engagement stance: contained | Bridge held | Pressure contained 90/100" if v0281 else "Engage armed | East bridge | Pressure contained 90/100"
@@ -4082,7 +4088,7 @@ func _live_ui_shell_state() -> Dictionary:
 		events = ["Engage armed", "Bridge held", "Commit available"]
 		if v0280_committed:
 			selected_title = "Militia Defender | East bridge" if v0281 else selected_title
-			selected_subtitle = "Engagement committed | Bridge held | Pressure checked 80/100 | Ashen braced | Commit locked" if action.begins_with("v0283_") else "Engagement committed | Bridge held | Pressure checked 80/100 | Commit locked"
+			selected_subtitle = "Engagement committed | Bridge held | Pressure checked 80/100 | Ashen braced | Commit locked" if (action.begins_with("v0283_") or action.begins_with("v0284_")) else "Engagement committed | Bridge held | Pressure checked 80/100 | Commit locked"
 			command_hint = "No projectile  No unit damage  No enemy death/despawn  No repeat pressure effect" if v0281 else "Commit locked  Clear Guard  Hold"
 			status_pip = "COMMITTED"
 			tooltip = "Engagement committed: pressure checked 80/100; no projectile, no unit damage, no enemy death/despawn; repeat commit locked."
@@ -4091,10 +4097,10 @@ func _live_ui_shell_state() -> Dictionary:
 			objective_next_action = "Commit locked; keep holding the bridge."
 			alert_text = "Pressure checked 80/100"
 			alert_severity = "info"
-			events = ["Engagement committed", "Pressure checked 80/100", "Ashen braced", "Commit locked"] if action.begins_with("v0283_") else ["Engagement committed", "Bridge held", "Pressure checked 80/100", "Commit locked"]
+			events = ["Engagement committed", "Pressure checked 80/100", "Ashen braced", "Commit locked"] if (action.begins_with("v0283_") or action.begins_with("v0284_")) else ["Engagement committed", "Bridge held", "Pressure checked 80/100", "Commit locked"]
 		elif v0280_cleared:
 			selected_title = "Militia Defender | East bridge" if v0281 else selected_title
-			selected_subtitle = "Guard cleared | Engagement stance ended | Ashen response settled" if action.begins_with("v0283_") else "Guard cleared | Engagement stance ended | Pressure checked 80/100"
+			selected_subtitle = "Guard cleared | Engagement stance ended | Ashen response settled" if (action.begins_with("v0283_") or action.begins_with("v0284_")) else "Guard cleared | Engagement stance ended | Pressure checked 80/100"
 			command_hint = "Commit label removed  No stale labels  No auto-repeat" if v0281 else "Guard cleared  Reguard available"
 			status_pip = "CLEAR"
 			tooltip = "Clear Guard removes the commit label and does not restore pressure."
@@ -4103,10 +4109,10 @@ func _live_ui_shell_state() -> Dictionary:
 			objective_next_action = "Reguard may re-arm without duplicating labels."
 			alert_text = "Pressure remains 80/100"
 			alert_severity = "info"
-			events = ["Guard cleared", "Commit label removed", "Ashen response settled"] if action.begins_with("v0283_") else ["Guard cleared", "Commit label removed", "Pressure remains 80/100"]
+			events = ["Guard cleared", "Commit label removed", "Ashen response settled"] if (action.begins_with("v0283_") or action.begins_with("v0284_")) else ["Guard cleared", "Commit label removed", "Pressure remains 80/100"]
 		elif v0280_reguard:
 			selected_title = "Militia Defender | East bridge" if v0281 else selected_title
-			selected_subtitle = "Reguard available | Pressure checked 80/100 | Ashen response settled" if action.begins_with("v0283_") else "Reguard available | Pressure checked 80/100 | Commit locked"
+			selected_subtitle = "Reguard available | Pressure checked 80/100 | Ashen response settled" if (action.begins_with("v0283_") or action.begins_with("v0284_")) else "Reguard available | Pressure checked 80/100 | Commit locked"
 			command_hint = "Clean availability  No auto-repeat  No stale commit label" if v0281 else "Reguard clean  Commit locked"
 			status_pip = "LOCKED"
 			tooltip = "Reguard is clean after commit; no duplicate labels and no repeat pressure effect."
@@ -4117,8 +4123,8 @@ func _live_ui_shell_state() -> Dictionary:
 			alert_severity = "info"
 			events = ["Reguard clean", "Commit locked", "No duplicate labels"]
 		elif v0280_no_commit_entity:
-			var is_watchpost_no_commit := action in ["v0281_watchpost_no_engage_commit_action_real_hud", "v0283_watchpost_no_engage_commit_ashen_braced"]
-			var is_barracks_no_commit := action in ["v0281_barracks_no_engage_commit_action_real_hud", "v0283_barracks_no_engage_commit_ashen_braced"]
+			var is_watchpost_no_commit := action in ["v0281_watchpost_no_engage_commit_action_real_hud", "v0283_watchpost_no_engage_commit_ashen_braced", "v0284_watchpost_no_engage_commit_ashen_braced"]
+			var is_barracks_no_commit := action in ["v0281_barracks_no_engage_commit_action_real_hud", "v0283_barracks_no_engage_commit_ashen_braced", "v0284_barracks_no_engage_commit_ashen_braced"]
 			selected_title = ("Watchpost | Passive awareness" if is_watchpost_no_commit else ("Field Barracks | Production" if is_barracks_no_commit else "Default runtime probe")) if v0281 else "No Commit Target"
 			selected_subtitle = ("Detection and advisory only" if is_watchpost_no_commit else ("Train Militia source only" if is_barracks_no_commit else "Opt-in Barrosan skin only")) if v0281 else "No Engage/Commit action | Default-safe probe"
 			command_hint = ("Observe" if is_watchpost_no_commit else ("Train Militia" if is_barracks_no_commit else "Default safe")) if v0281 else "No Commit"
@@ -4136,7 +4142,7 @@ func _live_ui_shell_state() -> Dictionary:
 		selection_panel_data["hpRatio"] = 0.80 if (v0280_committed or v0280_cleared or v0280_reguard) else (1.0 if v0280_no_commit_entity else 0.90)
 		selection_panel_data["status"] = status_pip
 		selection_panel_data["commands"] = [
-			_v0210_command_spec("Commit locked" if (v0280_committed or v0280_reguard) else (("Observe" if action in ["v0281_watchpost_no_engage_commit_action_real_hud", "v0283_watchpost_no_engage_commit_ashen_braced"] else ("Train" if action in ["v0281_barracks_no_engage_commit_action_real_hud", "v0283_barracks_no_engage_commit_ashen_braced"] else ("Ready" if action == "v0281_default_runtime_unchanged_probe" else "No Commit"))) if v0280_no_commit_entity else "Commit Engage"), "C", tooltip, "disabled" if (v0280_committed or v0280_reguard or v0280_no_commit_entity) else "ready", "_on_live_ui_shell_attack_pressed"),
+			_v0210_command_spec("Commit locked" if (v0280_committed or v0280_reguard) else (("Observe" if action in ["v0281_watchpost_no_engage_commit_action_real_hud", "v0283_watchpost_no_engage_commit_ashen_braced", "v0284_watchpost_no_engage_commit_ashen_braced"] else ("Train" if action in ["v0281_barracks_no_engage_commit_action_real_hud", "v0283_barracks_no_engage_commit_ashen_braced", "v0284_barracks_no_engage_commit_ashen_braced"] else ("Ready" if action == "v0281_default_runtime_unchanged_probe" else "No Commit"))) if v0280_no_commit_entity else "Commit Engage"), "C", tooltip, "disabled" if (v0280_committed or v0280_reguard or v0280_no_commit_entity) else "ready", "_on_live_ui_shell_attack_pressed"),
 			_v0210_command_spec("Clear Guard", "G", "Remove guard/commit label without restoring pressure.", "ready" if (v0280_committed or v0280_cleared or v0280_reguard) else "disabled", "_on_live_ui_shell_move_pressed"),
 			_v0210_command_spec("Hold", "H", "Hold east bridge.", "ready", "_on_live_ui_shell_move_pressed"),
 			_v0210_command_spec("No projectile", "-", "No projectile, damage, death or despawn added.", "disabled", "_on_live_ui_shell_attack_pressed"),
@@ -8027,11 +8033,11 @@ func _apply_player_slice_action(action: String) -> Dictionary:
 	elif action == "v0212_viewport_marker" or action == "v0212_alerts" or action.begins_with("v0212_resolution"):
 		player_ui_shell_production_tab_override = "TRAIN"
 		player_ui_shell_production_focus_hint = "train_militia"
-	if action.begins_with("v0271_") or action.begins_with("v0272_") or action.begins_with("v0273_") or action.begins_with("v0274_") or action.begins_with("v0275_") or action.begins_with("v0276_") or action.begins_with("v0277_") or action.begins_with("v0278_") or action.begins_with("v0279_") or action.begins_with("v0280_") or action.begins_with("v0281_") or action.begins_with("v0283_"):
+	if action.begins_with("v0271_") or action.begins_with("v0272_") or action.begins_with("v0273_") or action.begins_with("v0274_") or action.begins_with("v0275_") or action.begins_with("v0276_") or action.begins_with("v0277_") or action.begins_with("v0278_") or action.begins_with("v0279_") or action.begins_with("v0280_") or action.begins_with("v0281_") or action.begins_with("v0283_") or action.begins_with("v0284_"):
 		_ensure_player_battle_scene()
 		_call_scene("set_barrosan_runtime_review_mode", [action])
 		_render_player_screen("battle")
-		if action.begins_with("v0280_") or action.begins_with("v0281_") or action.begins_with("v0283_"):
+		if action.begins_with("v0280_") or action.begins_with("v0281_") or action.begins_with("v0283_") or action.begins_with("v0284_"):
 			_call_scene("set_barrosan_runtime_review_mode", [action])
 		if action.begins_with("v0280_"):
 			_draw_v0280_review_card_overlay(action)
@@ -9074,6 +9080,8 @@ func _apply_player_slice_action(action: String) -> Dictionary:
 
 func _player_capture_checkpoint() -> String:
 	var normalized_root := _artifact_root_from_args().replace("\\", "/")
+	if normalized_root.contains("/v0284"):
+		return "v0.284"
 	if normalized_root.contains("/v0283"):
 		return "v0.283"
 	if normalized_root.contains("/v0281"):
@@ -9267,7 +9275,7 @@ func _player_capture_checkpoint() -> String:
 	return "v0.124"
 
 func _is_bounded_microloop_checkpoint() -> bool:
-	return ["v0.129", "v0.130", "v0.160", "v0.162", "v0.164", "v0.166", "v0.168", "v0.169", "v0.170", "v0.173", "v0.174", "v0.177", "v0.178", "v0.179", "v0.181", "v0.184", "v0.185", "v0.186", "v0.187", "v0.193", "v0.194", "v0.195", "v0.196", "v0.197", "v0.198", "v0.199", "v0.200", "v0.203", "v0.204", "v0.205", "v0.206", "v0.209", "v0.210", "v0.211", "v0.212", "v0.213", "v0.215", "v0.216", "v0.217", "v0.218", "v0.219", "v0.220", "v0.221", "v0.222", "v0.223", "v0.224", "v0.227", "v0.228", "v0.229", "v0.230", "v0.231", "v0.243", "v0.244", "v0.245", "v0.246", "v0.247", "v0.248", "v0.249", "v0.250", "v0.251", "v0.252", "v0.253", "v0.254", "v0.255", "v0.256", "v0.257", "v0.258", "v0.259", "v0.261", "v0.262", "v0.263", "v0.264", "v0.265", "v0.266", "v0.267", "v0.268", "v0.269", "v0.270", "v0.271", "v0.272", "v0.273", "v0.274", "v0.275", "v0.276", "v0.277", "v0.278", "v0.279", "v0.280", "v0.281", "v0.283"].has(_player_capture_checkpoint())
+	return ["v0.129", "v0.130", "v0.160", "v0.162", "v0.164", "v0.166", "v0.168", "v0.169", "v0.170", "v0.173", "v0.174", "v0.177", "v0.178", "v0.179", "v0.181", "v0.184", "v0.185", "v0.186", "v0.187", "v0.193", "v0.194", "v0.195", "v0.196", "v0.197", "v0.198", "v0.199", "v0.200", "v0.203", "v0.204", "v0.205", "v0.206", "v0.209", "v0.210", "v0.211", "v0.212", "v0.213", "v0.215", "v0.216", "v0.217", "v0.218", "v0.219", "v0.220", "v0.221", "v0.222", "v0.223", "v0.224", "v0.227", "v0.228", "v0.229", "v0.230", "v0.231", "v0.243", "v0.244", "v0.245", "v0.246", "v0.247", "v0.248", "v0.249", "v0.250", "v0.251", "v0.252", "v0.253", "v0.254", "v0.255", "v0.256", "v0.257", "v0.258", "v0.259", "v0.261", "v0.262", "v0.263", "v0.264", "v0.265", "v0.266", "v0.267", "v0.268", "v0.269", "v0.270", "v0.271", "v0.272", "v0.273", "v0.274", "v0.275", "v0.276", "v0.277", "v0.278", "v0.279", "v0.280", "v0.281", "v0.283", "v0.284"].has(_player_capture_checkpoint())
 
 func _player_capture_steps() -> Array[Dictionary]:
 	if _player_capture_checkpoint() == "v0.283":
@@ -9285,6 +9293,23 @@ func _player_capture_steps() -> Array[Dictionary]:
 			{"id":"v0283_watchpost_no_engage_commit_ashen_braced_visible","label":"v0.283 Watchpost no Engage/Commit/Ashen braced", "action":"v0283_watchpost_no_engage_commit_ashen_braced"},
 			{"id":"v0283_barracks_no_engage_commit_ashen_braced_visible","label":"v0.283 Barracks no Engage/Commit/Ashen braced", "action":"v0283_barracks_no_engage_commit_ashen_braced"},
 			{"id":"v0283_no_projectile_damage_death_despawn_visible","label":"v0.283 no projectile/damage/death/despawn", "action":"v0283_no_projectile_damage_death_despawn"},
+		]
+	if _player_capture_checkpoint() == "v0.284":
+		return [
+			{"id":"v0284_manual_fixture_baseline_clean_select_aster_visible","label":"v0.284 manual fixture baseline clean Select Aster", "action":"v0284_manual_fixture_baseline_clean_select_aster"},
+			{"id":"v0284_engage_available_before_click_visible","label":"v0.284 Engage available before click readable HUD", "action":"v0284_engage_available_before_click"},
+			{"id":"v0284_engage_armed_hud_clean_visible","label":"v0.284 Engage armed readable HUD", "action":"v0284_engage_armed_hud_clean"},
+			{"id":"v0284_engage_armed_exactly_one_world_label_visible","label":"v0.284 Engage armed exactly one short world label", "action":"v0284_engage_armed_exactly_one_world_label"},
+			{"id":"v0284_commit_engage_clicked_visible","label":"v0.284 Commit Engage clicked readable HUD", "action":"v0284_commit_engage_clicked"},
+			{"id":"v0284_post_commit_player_pressure_checked_label_visible","label":"v0.284 post-commit PRESSURE CHECKED readable HUD", "action":"v0284_post_commit_player_pressure_checked_label"},
+			{"id":"v0284_post_commit_ashen_braced_label_visible","label":"v0.284 post-commit ASHEN BRACED readable HUD", "action":"v0284_post_commit_ashen_braced_label"},
+			{"id":"v0284_post_commit_combined_pressure_checked_ashen_braced_visible","label":"v0.284 combined labels readable HUD", "action":"v0284_post_commit_combined_pressure_checked_ashen_braced"},
+			{"id":"v0284_repeat_commit_no_stack_no_duplicate_ashen_braced_visible","label":"v0.284 repeat commit no duplicate readable HUD", "action":"v0284_repeat_commit_no_stack_no_duplicate_ashen_braced"},
+			{"id":"v0284_clear_guard_settles_ashen_response_visible","label":"v0.284 Clear Guard settles Ashen response readable HUD", "action":"v0284_clear_guard_settles_ashen_response"},
+			{"id":"v0284_reguard_availability_clean_visible","label":"v0.284 Reguard availability clean readable HUD", "action":"v0284_reguard_availability_clean"},
+			{"id":"v0284_watchpost_no_engage_commit_ashen_braced_visible","label":"v0.284 Watchpost no Engage/Commit/Ashen braced readable HUD", "action":"v0284_watchpost_no_engage_commit_ashen_braced"},
+			{"id":"v0284_barracks_no_engage_commit_ashen_braced_visible","label":"v0.284 Barracks no Engage/Commit/Ashen braced readable HUD", "action":"v0284_barracks_no_engage_commit_ashen_braced"},
+			{"id":"v0284_no_projectile_damage_death_despawn_visible","label":"v0.284 no projectile/damage/death/despawn readable HUD", "action":"v0284_no_projectile_damage_death_despawn"},
 		]
 	if _player_capture_checkpoint() == "v0.281":
 		return [
