@@ -1,0 +1,61 @@
+{
+  "checkpoint": "v0.282",
+  "title": "Barrosan default runtime baseline lock and review fixture separation",
+  "baseHead": "242815a1802521cb01670f9a14150f5829806707",
+  "records": {
+    "trueDefaultRuntimeStart": {
+      "description": "Unmodified playable runtime start captured without the Barrosan opt-in skin and without the Barrosan manual review fixture path.",
+      "hudResourceValues": {
+        "crowns": 420,
+        "stone": 160,
+        "iron": 90,
+        "aether": 38
+      },
+      "selectedUnitOrBuilding": "Aster of the Quiet Link",
+      "topLeftStatusStripText": "SALTO",
+      "barrosanOptInActive": false,
+      "manualReviewFixtureActive": false,
+      "engageOrCommitActive": false,
+      "pressureMarkerActive": false
+    },
+    "barrosanManualReviewFixtureStart": {
+      "description": "Manual review fixture capture path active for screenshot review only, with the Barrosan opt-in runtime skin intentionally absent.",
+      "hudResourceValues": {
+        "crowns": 80,
+        "stone": 10,
+        "iron": 60,
+        "aether": 38
+      },
+      "selectedUnitOrBuilding": "Default runtime probe",
+      "topLeftStatusStripText": "SALTO",
+      "barrosanOptInActive": false,
+      "manualReviewFixtureActive": true,
+      "engageOrCommitActive": false,
+      "pressureMarkerActive": false
+    },
+    "optInReadabilityRuntimeStart": {
+      "description": "Opt-in Barrosan readability runtime with the review fixture path active; this is the only lane that may show the v0.281 Engage/Commit readability states.",
+      "hudResourceValues": {
+        "crowns": 80,
+        "stone": 10,
+        "iron": 60,
+        "aether": 38
+      },
+      "selectedUnitOrBuilding": "Default runtime probe",
+      "topLeftStatusStripText": "SALTO",
+      "barrosanOptInActive": true,
+      "manualReviewFixtureActive": true,
+      "engageOrCommitActive": false,
+      "pressureMarkerActive": false
+    }
+  },
+  "invariants": {
+    "trueDefaultMayNotUseReviewFixture": true,
+    "manualFixtureMayNotEnableBarrosanOptIn": true,
+    "optInReadabilityMayUseFixture": true,
+    "defaultMayNotLeakV0281EngageCommit": true,
+    "defaultMayNotLeakReviewOverlay": true,
+    "v0281BehaviorRetained": true,
+    "noGameplayExpansion": true
+  }
+}
