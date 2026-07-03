@@ -7875,7 +7875,7 @@ func _apply_player_slice_action(action: String) -> Dictionary:
 	elif action == "v0212_viewport_marker" or action == "v0212_alerts" or action.begins_with("v0212_resolution"):
 		player_ui_shell_production_tab_override = "TRAIN"
 		player_ui_shell_production_focus_hint = "train_militia"
-	if action.begins_with("v0271_") or action.begins_with("v0272_") or action.begins_with("v0273_") or action.begins_with("v0274_") or action.begins_with("v0275_") or action.begins_with("v0276_") or action.begins_with("v0277_") or action.begins_with("v0278_"):
+	if action.begins_with("v0271_") or action.begins_with("v0272_") or action.begins_with("v0273_") or action.begins_with("v0274_") or action.begins_with("v0275_") or action.begins_with("v0276_") or action.begins_with("v0277_") or action.begins_with("v0278_") or action.begins_with("v0279_"):
 		_ensure_player_battle_scene()
 		_call_scene("set_barrosan_runtime_review_mode", [action])
 		_render_player_screen("battle")
@@ -8918,6 +8918,8 @@ func _apply_player_slice_action(action: String) -> Dictionary:
 
 func _player_capture_checkpoint() -> String:
 	var normalized_root := _artifact_root_from_args().replace("\\", "/")
+	if normalized_root.contains("/v0279"):
+		return "v0.279"
 	if normalized_root.contains("/v0278"):
 		return "v0.278"
 	if normalized_root.contains("/v0277"):
@@ -9103,9 +9105,26 @@ func _player_capture_checkpoint() -> String:
 	return "v0.124"
 
 func _is_bounded_microloop_checkpoint() -> bool:
-	return ["v0.129", "v0.130", "v0.160", "v0.162", "v0.164", "v0.166", "v0.168", "v0.169", "v0.170", "v0.173", "v0.174", "v0.177", "v0.178", "v0.179", "v0.181", "v0.184", "v0.185", "v0.186", "v0.187", "v0.193", "v0.194", "v0.195", "v0.196", "v0.197", "v0.198", "v0.199", "v0.200", "v0.203", "v0.204", "v0.205", "v0.206", "v0.209", "v0.210", "v0.211", "v0.212", "v0.213", "v0.215", "v0.216", "v0.217", "v0.218", "v0.219", "v0.220", "v0.221", "v0.222", "v0.223", "v0.224", "v0.227", "v0.228", "v0.229", "v0.230", "v0.231", "v0.243", "v0.244", "v0.245", "v0.246", "v0.247", "v0.248", "v0.249", "v0.250", "v0.251", "v0.252", "v0.253", "v0.254", "v0.255", "v0.256", "v0.257", "v0.258", "v0.259", "v0.261", "v0.262", "v0.263", "v0.264", "v0.265", "v0.266", "v0.267", "v0.268", "v0.269", "v0.270", "v0.271", "v0.272", "v0.273", "v0.274", "v0.275", "v0.276", "v0.277", "v0.278"].has(_player_capture_checkpoint())
+	return ["v0.129", "v0.130", "v0.160", "v0.162", "v0.164", "v0.166", "v0.168", "v0.169", "v0.170", "v0.173", "v0.174", "v0.177", "v0.178", "v0.179", "v0.181", "v0.184", "v0.185", "v0.186", "v0.187", "v0.193", "v0.194", "v0.195", "v0.196", "v0.197", "v0.198", "v0.199", "v0.200", "v0.203", "v0.204", "v0.205", "v0.206", "v0.209", "v0.210", "v0.211", "v0.212", "v0.213", "v0.215", "v0.216", "v0.217", "v0.218", "v0.219", "v0.220", "v0.221", "v0.222", "v0.223", "v0.224", "v0.227", "v0.228", "v0.229", "v0.230", "v0.231", "v0.243", "v0.244", "v0.245", "v0.246", "v0.247", "v0.248", "v0.249", "v0.250", "v0.251", "v0.252", "v0.253", "v0.254", "v0.255", "v0.256", "v0.257", "v0.258", "v0.259", "v0.261", "v0.262", "v0.263", "v0.264", "v0.265", "v0.266", "v0.267", "v0.268", "v0.269", "v0.270", "v0.271", "v0.272", "v0.273", "v0.274", "v0.275", "v0.276", "v0.277", "v0.278", "v0.279"].has(_player_capture_checkpoint())
 
 func _player_capture_steps() -> Array[Dictionary]:
+	if _player_capture_checkpoint() == "v0.279":
+		return [
+			{"id":"v0279_engage_available_before_click_visible","label":"v0.279 Engage available before click", "action":"v0279_engage_available_before_click"},
+			{"id":"v0279_engage_armed_exactly_one_label_visible","label":"v0.279 armed exactly one label", "action":"v0279_engage_armed_exactly_one_label"},
+			{"id":"v0279_engagement_contained_absent_close_visible","label":"v0.279 contained absent close proof", "action":"v0279_engagement_contained_absent_close"},
+			{"id":"v0279_bridge_held_absent_close_visible","label":"v0.279 bridge held absent close proof", "action":"v0279_bridge_held_absent_close"},
+			{"id":"v0279_hud_full_state_single_world_label_visible","label":"v0.279 HUD full state, single label", "action":"v0279_hud_full_state_single_world_label"},
+			{"id":"v0279_repeat_engage_no_duplicate_label_visible","label":"v0.279 repeat no duplicate label", "action":"v0279_repeat_engage_no_duplicate_label"},
+			{"id":"v0279_repeat_engage_hud_already_armed_visible","label":"v0.279 repeat HUD already armed", "action":"v0279_repeat_engage_hud_already_armed"},
+			{"id":"v0279_clear_guard_clean_cancel_label_visible","label":"v0.279 Clear Guard clean cancel", "action":"v0279_clear_guard_clean_cancel_label"},
+			{"id":"v0279_reguard_available_again_visible","label":"v0.279 Reguard available again", "action":"v0279_reguard_available_again"},
+			{"id":"v0279_reguard_rearm_exactly_one_label_visible","label":"v0.279 Reguard rearm exactly one", "action":"v0279_reguard_rearm_exactly_one_label"},
+			{"id":"v0279_watchpost_no_engage_action_visible","label":"v0.279 Watchpost no Engage", "action":"v0279_watchpost_no_engage_action"},
+			{"id":"v0279_barracks_no_engage_action_visible","label":"v0.279 Barracks no Engage", "action":"v0279_barracks_no_engage_action"},
+			{"id":"v0279_no_projectile_no_damage_visible","label":"v0.279 no projectile/no damage", "action":"v0279_no_projectile_no_damage"},
+			{"id":"v0279_default_runtime_unchanged_probe_visible","label":"v0.279 default runtime unchanged", "action":"v0279_default_runtime_unchanged_probe"},
+		]
 	if _player_capture_checkpoint() == "v0.278":
 		return [
 			{"id":"v0278_engage_available_before_click_visible","label":"v0.278 Engage available before click", "action":"v0278_engage_available_before_click"},
@@ -11505,7 +11524,7 @@ func _barrosan_runtime_skin_requested() -> bool:
 
 
 func _barrosan_runtime_scene_requested() -> bool:
-	return _barrosan_runtime_skin_requested() or _player_capture_checkpoint() in ["v0.254", "v0.255", "v0.256", "v0.257", "v0.258", "v0.259", "v0.261", "v0.262", "v0.263", "v0.264", "v0.265", "v0.266", "v0.267", "v0.268", "v0.269", "v0.270", "v0.271", "v0.272", "v0.273", "v0.274", "v0.275", "v0.276", "v0.277", "v0.278"]
+	return _barrosan_runtime_skin_requested() or _player_capture_checkpoint() in ["v0.254", "v0.255", "v0.256", "v0.257", "v0.258", "v0.259", "v0.261", "v0.262", "v0.263", "v0.264", "v0.265", "v0.266", "v0.267", "v0.268", "v0.269", "v0.270", "v0.271", "v0.272", "v0.273", "v0.274", "v0.275", "v0.276", "v0.277", "v0.278", "v0.279"]
 
 
 func _script_args() -> PackedStringArray:
