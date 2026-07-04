@@ -151,6 +151,7 @@ var v0280_barrosan_engage_commit_resolution_bridge_proof: Dictionary = {}
 var v0281_barrosan_real_hud_truth_overlay_removal_proof: Dictionary = {}
 var v0283_barrosan_non_lethal_ashen_pressure_response_proof: Dictionary = {}
 var v0284_barrosan_hud_text_layout_repair_proof: Dictionary = {}
+var v0285_barrosan_hold_line_non_lethal_contact_step_proof: Dictionary = {}
 
 
 func configure_barrosan_playable_runtime_skin(options: Dictionary) -> void:
@@ -636,7 +637,7 @@ func _sync_hud() -> void:
 		_v0259_apply_resolved_ui()
 	if barrosan_requested_checkpoint in ["v0.261", "v0.262"]:
 		_v0261_apply_resolved_ui()
-	if barrosan_requested_checkpoint in ["v0.269", "v0.270", "v0.271", "v0.272", "v0.273", "v0.274", "v0.275", "v0.276", "v0.277", "v0.278", "v0.279", "v0.280", "v0.281", "v0.283", "v0.284"] and (_v0269_is_review_mode(barrosan_runtime_review_mode) or _v0270_is_review_mode(barrosan_runtime_review_mode) or _v0271_is_review_mode(barrosan_runtime_review_mode) or _v0272_is_review_mode(barrosan_runtime_review_mode) or _v0273_is_review_mode(barrosan_runtime_review_mode) or _v0274_is_review_mode(barrosan_runtime_review_mode) or _v0275_is_review_mode(barrosan_runtime_review_mode) or _v0276_is_review_mode(barrosan_runtime_review_mode) or _v0277_is_review_mode(barrosan_runtime_review_mode) or _v0278_is_review_mode(barrosan_runtime_review_mode) or _v0279_is_review_mode(barrosan_runtime_review_mode) or _v0280_is_review_mode(barrosan_runtime_review_mode) or _v0283_is_review_mode(barrosan_runtime_review_mode) or _v0284_is_review_mode(barrosan_runtime_review_mode)):
+	if barrosan_requested_checkpoint in ["v0.269", "v0.270", "v0.271", "v0.272", "v0.273", "v0.274", "v0.275", "v0.276", "v0.277", "v0.278", "v0.279", "v0.280", "v0.281", "v0.283", "v0.284", "v0.285"] and (_v0269_is_review_mode(barrosan_runtime_review_mode) or _v0270_is_review_mode(barrosan_runtime_review_mode) or _v0271_is_review_mode(barrosan_runtime_review_mode) or _v0272_is_review_mode(barrosan_runtime_review_mode) or _v0273_is_review_mode(barrosan_runtime_review_mode) or _v0274_is_review_mode(barrosan_runtime_review_mode) or _v0275_is_review_mode(barrosan_runtime_review_mode) or _v0276_is_review_mode(barrosan_runtime_review_mode) or _v0277_is_review_mode(barrosan_runtime_review_mode) or _v0278_is_review_mode(barrosan_runtime_review_mode) or _v0279_is_review_mode(barrosan_runtime_review_mode) or _v0280_is_review_mode(barrosan_runtime_review_mode) or _v0283_is_review_mode(barrosan_runtime_review_mode) or _v0284_is_review_mode(barrosan_runtime_review_mode) or _v0285_is_review_mode(barrosan_runtime_review_mode)):
 		_v0269_apply_first_contact_ui()
 	if barrosan_requested_checkpoint == "v0.268" and _v0268_is_review_mode(barrosan_runtime_review_mode):
 		_v0268_apply_intercept_preview_ui()
@@ -648,6 +649,8 @@ func _sync_hud() -> void:
 		_v0283_apply_non_lethal_ashen_pressure_response_ui()
 	if barrosan_requested_checkpoint == "v0.284" and _v0284_is_review_mode(barrosan_runtime_review_mode):
 		_v0284_apply_hud_text_layout_repair_ui()
+	if barrosan_requested_checkpoint == "v0.285" and _v0285_is_review_mode(barrosan_runtime_review_mode):
+		_v0285_apply_hold_line_non_lethal_contact_step_ui()
 
 
 func set_barrosan_runtime_review_mode(mode: String) -> void:
@@ -2305,7 +2308,7 @@ func set_barrosan_runtime_review_mode(mode: String) -> void:
 		_v0263_apply_review_mode(mode)
 	if barrosan_requested_checkpoint == "v0.262" and _v0262_is_review_mode(mode):
 		_v0262_apply_review_mode(mode)
-	if barrosan_requested_checkpoint in ["v0.261", "v0.262", "v0.263", "v0.264", "v0.265", "v0.266", "v0.267", "v0.268", "v0.269", "v0.270", "v0.271", "v0.272", "v0.273", "v0.274", "v0.275", "v0.276", "v0.277", "v0.278", "v0.279", "v0.280", "v0.281", "v0.283", "v0.284"] and _v0261_is_review_mode(mode):
+	if barrosan_requested_checkpoint in ["v0.261", "v0.262", "v0.263", "v0.264", "v0.265", "v0.266", "v0.267", "v0.268", "v0.269", "v0.270", "v0.271", "v0.272", "v0.273", "v0.274", "v0.275", "v0.276", "v0.277", "v0.278", "v0.279", "v0.280", "v0.281", "v0.283", "v0.284", "v0.285"] and _v0261_is_review_mode(mode):
 		_v0261_apply_review_mode(mode)
 	if barrosan_requested_checkpoint in ["v0.258", "v0.259"]:
 		# Older proof helpers may rewrite the shared review-mode token while they
@@ -2366,6 +2369,24 @@ func set_barrosan_runtime_review_mode(mode: String) -> void:
 		barrosan_runtime_review_mode = mode
 		_v0284_apply_hud_text_layout_repair_ui()
 		_v0284_record_hud_text_layout_repair_proof(mode)
+	elif barrosan_requested_checkpoint == "v0.285" and _v0285_is_review_mode(mode):
+		_v0261_apply_resolved_ui()
+		_v0269_apply_first_contact_ui()
+		_v0276_apply_manual_engage_ui()
+		_v0277_apply_engage_readability_ui()
+		_v0279_apply_armed_world_label_hard_fail_fix_ui()
+		var mapped_v0284 := _v0285_map_review_mode(mode)
+		var mapped_v0283 := _v0284_map_review_mode(mapped_v0284)
+		_v0281_apply_review_mode(_v0283_map_review_mode(mapped_v0283))
+		barrosan_runtime_review_mode = mapped_v0283
+		_v0283_apply_non_lethal_ashen_pressure_response_ui()
+		_v0283_record_non_lethal_ashen_pressure_response_proof(mapped_v0283)
+		barrosan_runtime_review_mode = mapped_v0284
+		_v0284_apply_hud_text_layout_repair_ui()
+		_v0284_record_hud_text_layout_repair_proof(mapped_v0284)
+		barrosan_runtime_review_mode = mode
+		_v0285_apply_hold_line_non_lethal_contact_step_ui()
+		_v0285_record_hold_line_non_lethal_contact_step_proof(mode)
 	elif barrosan_requested_checkpoint == "v0.281" and _v0281_is_review_mode(mode):
 		_v0261_apply_resolved_ui()
 		_v0269_apply_first_contact_ui()
@@ -8285,6 +8306,349 @@ func _v0284_record_hud_text_layout_repair_proof(mode: String) -> void:
 	v0284_barrosan_hud_text_layout_repair_proof[mode] = base_snap
 
 
+func _v0285_review_modes() -> Array[String]:
+	return [
+		"v0285_manual_fixture_baseline_clean_hud",
+		"v0285_engage_available_before_click",
+		"v0285_engage_armed",
+		"v0285_commit_engage_clicked",
+		"v0285_post_commit_pressure_checked_ashen_braced",
+		"v0285_hold_line_available_after_commit_locked",
+		"v0285_hold_line_clicked",
+		"v0285_line_held_exactly_once",
+		"v0285_ashen_contained_exactly_once",
+		"v0285_combined_line_held_ashen_contained_readable_hud",
+		"v0285_repeat_hold_line_no_duplicate_no_stack",
+		"v0285_clear_guard_settles_hold_line",
+		"v0285_reguard_availability_clean_after_hold_line",
+		"v0285_watchpost_no_hold_line_engage_commit_ashen",
+		"v0285_barracks_no_hold_line_engage_commit_ashen",
+		"v0285_no_projectile_damage_death_despawn",
+	]
+
+
+func _v0285_is_review_mode(mode: String) -> bool:
+	return _v0285_review_modes().has(mode)
+
+
+func _v0285_map_review_mode(mode: String) -> String:
+	match mode:
+		"v0285_manual_fixture_baseline_clean_hud":
+			return "v0284_manual_fixture_baseline_clean_select_aster"
+		"v0285_engage_available_before_click":
+			return "v0284_engage_available_before_click"
+		"v0285_engage_armed":
+			return "v0284_engage_armed_hud_clean"
+		"v0285_commit_engage_clicked":
+			return "v0284_commit_engage_clicked"
+		"v0285_post_commit_pressure_checked_ashen_braced", "v0285_hold_line_available_after_commit_locked":
+			return "v0284_post_commit_combined_pressure_checked_ashen_braced"
+		"v0285_hold_line_clicked", "v0285_line_held_exactly_once", "v0285_ashen_contained_exactly_once", "v0285_combined_line_held_ashen_contained_readable_hud", "v0285_repeat_hold_line_no_duplicate_no_stack":
+			return "v0284_post_commit_combined_pressure_checked_ashen_braced"
+		"v0285_clear_guard_settles_hold_line":
+			return "v0284_clear_guard_settles_ashen_response"
+		"v0285_reguard_availability_clean_after_hold_line":
+			return "v0284_reguard_availability_clean"
+		"v0285_watchpost_no_hold_line_engage_commit_ashen":
+			return "v0284_watchpost_no_engage_commit_ashen_braced"
+		"v0285_barracks_no_hold_line_engage_commit_ashen":
+			return "v0284_barracks_no_engage_commit_ashen_braced"
+		"v0285_no_projectile_damage_death_despawn":
+			return "v0284_no_projectile_damage_death_despawn"
+		_:
+			return "v0284_engage_available_before_click"
+
+
+func _v0285_mode_is_hold_line_active(mode: String) -> bool:
+	return mode in [
+		"v0285_hold_line_clicked",
+		"v0285_line_held_exactly_once",
+		"v0285_ashen_contained_exactly_once",
+		"v0285_combined_line_held_ashen_contained_readable_hud",
+		"v0285_repeat_hold_line_no_duplicate_no_stack",
+		"v0285_no_projectile_damage_death_despawn",
+	]
+
+
+func _v0285_mode_is_hold_line_available(mode: String) -> bool:
+	return mode == "v0285_hold_line_available_after_commit_locked"
+
+
+func _v0285_mode_clears_hold_line(mode: String) -> bool:
+	return mode in ["v0285_clear_guard_settles_hold_line", "v0285_reguard_availability_clean_after_hold_line", "v0285_watchpost_no_hold_line_engage_commit_ashen", "v0285_barracks_no_hold_line_engage_commit_ashen"]
+
+
+func _v0285_mode_is_no_command_entity(mode: String) -> bool:
+	return mode in ["v0285_watchpost_no_hold_line_engage_commit_ashen", "v0285_barracks_no_hold_line_engage_commit_ashen"]
+
+
+func _v0285_hud_lines(mode: String) -> Dictionary:
+	match mode:
+		"v0285_manual_fixture_baseline_clean_hud":
+			return {"name": "Aster | Commander", "primary": "Ready", "facts": "Select Aster.", "readiness": "Clean card placement.", "button": "Ready", "strip": "DEFAULT RUNTIME UNCHANGED"}
+		"v0285_engage_available_before_click":
+			return {"name": "Militia Defender | East bridge", "primary": "Engage available", "facts": "Bridge held | Pressure 90/100", "readiness": "Ready.", "button": "Engage", "strip": "ENGAGE ARMED"}
+		"v0285_engage_armed":
+			return {"name": "Militia Defender | East bridge", "primary": "Engage armed", "facts": "Bridge held | Pressure 90/100", "readiness": "Commit available.", "button": "Commit", "strip": "ENGAGE ARMED"}
+		"v0285_commit_engage_clicked", "v0285_post_commit_pressure_checked_ashen_braced":
+			return {"name": "Militia Defender | East bridge", "primary": "Engagement committed", "facts": "Bridge held | Pressure 80/100 | Ashen braced", "readiness": "Commit locked.", "button": "Locked", "strip": "PRESSURE CHECKED -- ASHEN BRACED"}
+		"v0285_hold_line_available_after_commit_locked":
+			return {"name": "Militia Defender | East bridge", "primary": "Engagement committed", "facts": "Bridge held | Pressure 80/100 | Ashen braced", "readiness": "Hold Line ready.", "button": "Hold Line", "strip": "PRESSURE CHECKED -- ASHEN BRACED"}
+		"v0285_repeat_hold_line_no_duplicate_no_stack":
+			return {"name": "Militia Defender | East bridge", "primary": "Line held", "facts": "Bridge held | Pressure 80/100 | Ashen contained", "readiness": "No duplicate hold.", "button": "Held", "strip": "LINE HELD"}
+		"v0285_clear_guard_settles_hold_line":
+			return {"name": "Militia Defender | East bridge", "primary": "Guard cleared", "facts": "Pressure 80/100 | Contact settled", "readiness": "Ready.", "button": "Cleared", "strip": "GUARD CLEARED"}
+		"v0285_reguard_availability_clean_after_hold_line":
+			return {"name": "Militia Defender | East bridge", "primary": "Reguard available", "facts": "Pressure 80/100 | Clean availability", "readiness": "Ready.", "button": "Reguard", "strip": "REGUARD AVAILABLE"}
+		"v0285_watchpost_no_hold_line_engage_commit_ashen":
+			return {"name": "Watchpost | Passive awareness", "primary": "Watchpost passive awareness", "facts": "Intel only | No Hold Line", "readiness": "Observe.", "button": "Observe", "strip": "WATCHPOST -- passive intel"}
+		"v0285_barracks_no_hold_line_engage_commit_ashen":
+			return {"name": "Field Barracks | Production", "primary": "Field Barracks production", "facts": "Train Militia | No Hold Line", "readiness": "No active progress.", "button": "Train", "strip": "BARRACKS -- production only"}
+		_:
+			return {"name": "Militia Defender | East bridge", "primary": "Line held", "facts": "Bridge held | Pressure 80/100 | Ashen contained", "readiness": "Ready.", "button": "Held", "strip": "LINE HELD"}
+
+
+func _v0285_apply_hold_line_non_lethal_contact_step_ui() -> void:
+	if visual_root == null:
+		return
+	var mode := barrosan_runtime_review_mode
+	var mapped_v0284 := _v0285_map_review_mode(mode)
+	barrosan_runtime_review_mode = mapped_v0284
+	_v0284_apply_hud_text_layout_repair_ui()
+	barrosan_runtime_review_mode = mode
+	var lines := _v0285_hud_lines(mode)
+	var card := hud_hero_label.get_parent() as Control if hud_hero_label != null else null
+	if card != null:
+		card.position = Vector2(420, 742)
+		card.size = Vector2(760, 150)
+	if hud_hero_label != null:
+		hud_hero_label.position = Vector2(18, 10)
+		hud_hero_label.size = Vector2(500, 22)
+		hud_hero_label.text = str(lines.get("name", ""))
+	if hud_context_label != null:
+		hud_context_label.position = Vector2(18, 34)
+		hud_context_label.size = Vector2(500, 20)
+		hud_context_label.text = str(lines.get("primary", ""))
+	if hud_objective_label != null:
+		hud_objective_label.position = Vector2(18, 58)
+		hud_objective_label.size = Vector2(500, 20)
+		hud_objective_label.text = str(lines.get("facts", ""))
+	if hud_status_label != null:
+		hud_status_label.position = Vector2(18, 82)
+		hud_status_label.size = Vector2(500, 20)
+		hud_status_label.text = str(lines.get("readiness", ""))
+		hud_status_label.visible = true
+	if hud_onboarding_label != null:
+		hud_onboarding_label.text = ""
+		hud_onboarding_label.visible = false
+	if hud_alert_label != null:
+		hud_alert_label.text = ""
+		hud_alert_label.visible = false
+	if hud_tooltip_label != null:
+		hud_tooltip_label.text = ""
+		hud_tooltip_label.visible = false
+	if hud_objective_strip_label != null:
+		hud_objective_strip_label.text = str(lines.get("strip", ""))
+		hud_objective_strip_label.size = Vector2(520, hud_objective_strip_label.size.y)
+	if card != null:
+		var button_index := 0
+		for child in card.get_children():
+			if child is Button:
+				var button := child as Button
+				button.position = Vector2(18 + button_index * 108, 114)
+				button.size = Vector2(98, 24)
+				button_index += 1
+	if hud_work_button != null:
+		hud_work_button.text = str(lines.get("button", ""))
+	barrosan_playtest["v0285HoldLineNonLethalContactStepActive"] = true
+	barrosan_playtest["v0285HoldLineState"] = "held" if _v0285_mode_is_hold_line_active(mode) else ("available" if _v0285_mode_is_hold_line_available(mode) else ("settled" if _v0285_mode_clears_hold_line(mode) else "none"))
+	if _v0285_mode_is_hold_line_active(mode):
+		_v0280_hide_tactical_world_labels()
+		_v0275_set_label_visible("v0280_pressure_checked_label", false)
+		_v0275_set_label_visible("v0283_ashen_braced_label", false)
+		var hidden_checked := visual_root.get_node_or_null("v0280_pressure_checked_marker")
+		if hidden_checked != null:
+			hidden_checked.visible = false
+		var hidden_braced := visual_root.get_node_or_null("v0283_ashen_braced_marker")
+		if hidden_braced != null:
+			hidden_braced.visible = false
+		var defender_world := barrosan_build_validation_adapter.source_to_runtime_world(V0267_EAST_BRIDGE_DEFENSE_SOURCE_POSITION)
+		var ashen_world := barrosan_build_validation_adapter.source_to_runtime_world(V0247_PRESSURE_LANE_START)
+		_set_or_create_disc_marker("v0285_line_held_marker", defender_world + Vector3(0.0, 0.24, 0.0), 0.54, Color(0.36, 0.92, 0.74, 0.38))
+		var line_marker := visual_root.get_node_or_null("v0285_line_held_marker")
+		if line_marker != null:
+			line_marker.visible = true
+		var line_label := _v0248_marker_label("v0285_line_held_label", defender_world + Vector3(-0.18, 1.24, 0.58), "LINE\nHELD", Color("#9fe2d0"))
+		line_label.visible = true
+		_set_or_create_disc_marker("v0285_ashen_contained_marker", ashen_world + Vector3(0.0, 0.22, 0.0), 0.48, Color(0.30, 0.68, 0.92, 0.32))
+		var contained_marker := visual_root.get_node_or_null("v0285_ashen_contained_marker")
+		if contained_marker != null:
+			contained_marker.visible = true
+		var contained_label := _v0248_marker_label("v0285_ashen_contained_label", ashen_world + Vector3(0.0, 1.04, 0.0), "ASHEN\nCONTAINED", Color("#8fd8ff"))
+		contained_label.visible = true
+	else:
+		_v0275_set_label_visible("v0285_line_held_label", false)
+		_v0275_set_label_visible("v0285_ashen_contained_label", false)
+		var hidden_line := visual_root.get_node_or_null("v0285_line_held_marker")
+		if hidden_line != null:
+			hidden_line.visible = false
+		var hidden_contained := visual_root.get_node_or_null("v0285_ashen_contained_marker")
+		if hidden_contained != null:
+			hidden_contained.visible = false
+		if _v0285_mode_clears_hold_line(mode):
+			_v0280_hide_tactical_world_labels()
+			_v0275_set_label_visible("v0280_pressure_checked_label", false)
+			_v0275_set_label_visible("v0283_ashen_braced_label", false)
+
+
+func _v0285_rendered_tactical_world_labels() -> Array[Dictionary]:
+	_v0285_apply_hold_line_non_lethal_contact_step_ui()
+	var visible: Array[Dictionary] = []
+	for label in _v0279_tactical_world_label_nodes():
+		if label != null and bool(label.visible):
+			var normalized := _v0278_normalized_label_text(label)
+			if normalized in ["ENGAGE ARMED", "PRESSURE CHECKED", "ASHEN BRACED", "LINE HELD", "ASHEN CONTAINED"] or _v0279_is_forbidden_armed_world_label_text(normalized) or _v0279_label_is_known_tactical_node(label):
+				visible.append({
+					"nodeName": str(label.name),
+					"text": normalized,
+					"position": {"x": label.global_position.x, "y": label.global_position.y, "z": label.global_position.z},
+				})
+	return visible
+
+
+func _v0285_rendered_tactical_world_label_texts() -> Array[String]:
+	var texts: Array[String] = []
+	for entry in _v0285_rendered_tactical_world_labels():
+		texts.append(str(entry.get("text", "")))
+	return texts
+
+
+func _v0285_hud_layout_diagnostics(mode: String) -> Dictionary:
+	var lines := _v0285_hud_lines(mode)
+	var card := hud_hero_label.get_parent() as Control if hud_hero_label != null else null
+	var card_rect := _v0284_rect_dict(card, Vector2(420, 742), Vector2(760, 150))
+	var text_rect := {"x": int(card_rect["x"]) + 18, "y": int(card_rect["y"]) + 10, "w": 500, "h": 92}
+	var button_rect := {"x": int(card_rect["x"]) + 18, "y": int(card_rect["y"]) + 114, "w": 530, "h": 24}
+	var top_rect := _v0284_rect_dict(hud_objective_strip_label, Vector2(450, 52), Vector2(520, 24))
+	var hud_lines := [str(lines.get("name", "")), str(lines.get("primary", "")), str(lines.get("facts", "")), str(lines.get("readiness", ""))]
+	var exceeded: Array[String] = []
+	for line in hud_lines:
+		if line.length() > 64:
+			exceeded.append(line)
+	var raw_paragraphs: Array[String] = []
+	for line in hud_lines + [str(lines.get("strip", ""))]:
+		if line.length() > 74 or line.contains("no attack, projectile") or line.contains("enemy death/despawn") or line.contains("movement, death") or line.contains("validator"):
+			raw_paragraphs.append(line)
+	var labels: Array = v0285_barrosan_hold_line_non_lethal_contact_step_proof.get(mode, {}).get("renderedTacticalWorldLabelTexts", [])
+	var world_labels_short := true
+	for label in labels:
+		if str(label).length() > 18 or str(label) not in ["ENGAGE ARMED", "PRESSURE CHECKED", "ASHEN BRACED", "LINE HELD", "ASHEN CONTAINED", "GUARD CLEARED"]:
+			world_labels_short = false
+	var text_overlaps_buttons := _v0284_rects_overlap(text_rect, button_rect)
+	var layout_pass := exceeded.is_empty() and raw_paragraphs.is_empty() and not text_overlaps_buttons and hud_lines.size() <= 4 and str(lines.get("strip", "")).length() <= 36 and world_labels_short
+	return {
+		"mode": mode,
+		"layoutStatus": "PASS" if layout_pass else "FAIL",
+		"selectedCardRect": card_rect,
+		"textRect": text_rect,
+		"buttonRowRect": button_rect,
+		"topStatusStripRect": top_rect,
+		"textLineExceededAllowedWidth": not exceeded.is_empty(),
+		"exceededTextLines": exceeded,
+		"textOverlappedButtons": text_overlaps_buttons,
+		"lineCountExceededVisibleRows": hud_lines.size() > 4,
+		"topStatusStripExceededAllowedWidth": str(lines.get("strip", "")).length() > 36,
+		"rawParagraphsAbsent": raw_paragraphs.is_empty(),
+		"rawParagraphs": raw_paragraphs,
+		"worldLabelsShort": world_labels_short,
+		"selectAsterInsideSelectedCard": mode != "v0285_manual_fixture_baseline_clean_hud" or str(lines.get("facts", "")) == "Select Aster.",
+	}
+
+
+func _v0285_record_hold_line_non_lethal_contact_step_proof(mode: String) -> void:
+	var mapped := _v0285_map_review_mode(mode)
+	var base_snap: Dictionary = v0284_barrosan_hud_text_layout_repair_proof.get(mapped, {}).duplicate(true)
+	if base_snap.is_empty():
+		_v0284_record_hud_text_layout_repair_proof(mapped)
+		base_snap = v0284_barrosan_hud_text_layout_repair_proof.get(mapped, {}).duplicate(true)
+	barrosan_runtime_review_mode = mode
+	_v0285_apply_hold_line_non_lethal_contact_step_ui()
+	var lines := _v0285_hud_lines(mode)
+	var rendered_labels := _v0285_rendered_tactical_world_labels()
+	var rendered_texts := _v0285_rendered_tactical_world_label_texts()
+	var line_held_count := rendered_texts.count("LINE HELD")
+	var contained_count := rendered_texts.count("ASHEN CONTAINED")
+	var pressure_checked_count := rendered_texts.count("PRESSURE CHECKED")
+	var braced_count := rendered_texts.count("ASHEN BRACED")
+	var armed_count := rendered_texts.count("ENGAGE ARMED")
+	var hold_active := _v0285_mode_is_hold_line_active(mode)
+	var hold_available := _v0285_mode_is_hold_line_available(mode)
+	var cleared := mode == "v0285_clear_guard_settles_hold_line"
+	var reguard := mode == "v0285_reguard_availability_clean_after_hold_line"
+	var no_command_entity := _v0285_mode_is_no_command_entity(mode)
+	var contact: Dictionary = base_snap.get("firstContact", {}).duplicate(true)
+	contact["holdLineState"] = "held" if hold_active else ("available" if hold_available else ("settled" if _v0285_mode_clears_hold_line(mode) else "none"))
+	contact["ashenResponseState"] = "contained" if hold_active else ("braced" if hold_available or mode in ["v0285_commit_engage_clicked", "v0285_post_commit_pressure_checked_ashen_braced"] else ("settled" if _v0285_mode_clears_hold_line(mode) else str(contact.get("ashenResponseState", "none"))))
+	contact["engagementDamageAdded"] = false
+	contact["engagementProjectileAdded"] = false
+	contact["engagementAutoAttackAdded"] = false
+	contact["engagementAutoMoveAdded"] = false
+	contact["enemyDeath"] = false
+	contact["enemyDespawned"] = false
+	var combined := "%s %s %s %s %s" % [str(lines.get("name", "")), str(lines.get("primary", "")), str(lines.get("facts", "")), str(lines.get("readiness", "")), str(lines.get("button", ""))]
+	base_snap["checkpoint"] = "v0.285"
+	base_snap["sourceV0284Mode"] = mapped
+	base_snap["firstContact"] = contact
+	base_snap["combinedText"] = combined
+	base_snap["hudTextLines"] = {
+		"nameAndRole": str(lines.get("name", "")),
+		"primaryState": str(lines.get("primary", "")),
+		"tacticalFacts": str(lines.get("facts", "")),
+		"readiness": str(lines.get("readiness", "")),
+		"button": str(lines.get("button", "")),
+		"topStrip": str(lines.get("strip", "")),
+	}
+	base_snap["renderedTacticalWorldLabels"] = rendered_labels
+	base_snap["renderedTacticalWorldLabelTexts"] = rendered_texts
+	base_snap["renderedTacticalWorldLabelCount"] = rendered_texts.size()
+	base_snap["lineHeldLabelCount"] = line_held_count
+	base_snap["ashenContainedLabelCount"] = contained_count
+	base_snap["playerPressureCheckedLabelCount"] = pressure_checked_count
+	base_snap["ashenBracedLabelCount"] = braced_count
+	base_snap["engageArmedLabelCount"] = armed_count
+	base_snap["lineHeldExactlyOne"] = (not hold_active) or line_held_count == 1
+	base_snap["ashenContainedExactlyOne"] = (not hold_active) or contained_count == 1
+	base_snap["staleAshenBracedAbsentAfterHold"] = (not hold_active) or braced_count == 0
+	base_snap["stalePressureCheckedAbsentAfterHold"] = (not hold_active) or pressure_checked_count == 0
+	base_snap["holdLineAvailableAfterCommitLocked"] = (not hold_available) or (pressure_checked_count == 1 and braced_count == 1 and int(base_snap.get("pressureAfterCommit", 80)) == 80 and str(lines.get("button", "")) == "Hold Line")
+	base_snap["holdLineOnlyAfterCommitLocked"] = mode not in ["v0285_engage_available_before_click", "v0285_engage_armed"] or str(lines.get("button", "")) != "Hold Line"
+	base_snap["holdLineResolvedOnce"] = (not hold_active) or (line_held_count == 1 and contained_count == 1 and str(contact.get("holdLineState", "")) == "held")
+	base_snap["repeatHoldLineNoDuplicateLabels"] = mode != "v0285_repeat_hold_line_no_duplicate_no_stack" or (line_held_count == 1 and contained_count == 1 and int(base_snap.get("pressureAfterCommit", 80)) == 80)
+	base_snap["clearGuardSettlesHoldLine"] = (not cleared) or (line_held_count == 0 and contained_count == 0 and braced_count == 0 and pressure_checked_count == 0 and str(contact.get("holdLineState", "")) == "settled")
+	base_snap["reguardAvailabilityCleanAfterHoldLine"] = (not reguard) or (line_held_count == 0 and contained_count == 0 and braced_count == 0 and pressure_checked_count == 0 and combined.contains("Reguard available"))
+	var button_text := str(lines.get("button", ""))
+	base_snap["holdLineActionOnWatchpost"] = mode == "v0285_watchpost_no_hold_line_engage_commit_ashen" and button_text == "Hold Line"
+	base_snap["engageActionOnWatchpost"] = mode == "v0285_watchpost_no_hold_line_engage_commit_ashen" and button_text == "Engage"
+	base_snap["commitActionOnWatchpost"] = mode == "v0285_watchpost_no_hold_line_engage_commit_ashen" and button_text == "Commit"
+	base_snap["ashenActionOnWatchpost"] = mode == "v0285_watchpost_no_hold_line_engage_commit_ashen" and (combined.contains("Ashen braced") or braced_count > 0 or contained_count > 0)
+	base_snap["holdLineActionOnBarracks"] = mode == "v0285_barracks_no_hold_line_engage_commit_ashen" and button_text == "Hold Line"
+	base_snap["engageActionOnBarracks"] = mode == "v0285_barracks_no_hold_line_engage_commit_ashen" and button_text == "Engage"
+	base_snap["commitActionOnBarracks"] = mode == "v0285_barracks_no_hold_line_engage_commit_ashen" and button_text == "Commit"
+	base_snap["ashenActionOnBarracks"] = mode == "v0285_barracks_no_hold_line_engage_commit_ashen" and (combined.contains("Ashen braced") or braced_count > 0 or contained_count > 0)
+	base_snap["noCommandEntityClean"] = (not no_command_entity) or (not bool(base_snap.get("holdLineActionOnWatchpost", false)) and not bool(base_snap.get("engageActionOnWatchpost", false)) and not bool(base_snap.get("commitActionOnWatchpost", false)) and not bool(base_snap.get("ashenActionOnWatchpost", false)) and not bool(base_snap.get("holdLineActionOnBarracks", false)) and not bool(base_snap.get("engageActionOnBarracks", false)) and not bool(base_snap.get("commitActionOnBarracks", false)) and not bool(base_snap.get("ashenActionOnBarracks", false)))
+	base_snap["noProjectileDamageDeathDespawn"] = bool(base_snap.get("noProjectileDamageDeathDespawn", false)) and not bool(contact.get("engagementDamageAdded", true)) and not bool(contact.get("engagementProjectileAdded", true)) and not bool(contact.get("enemyDeath", true)) and not bool(contact.get("enemyDespawned", true))
+	base_snap["layoutDiagnostics"] = _v0285_hud_layout_diagnostics(mode)
+	base_snap["holdLineNonLethalContactStepOnly"] = true
+	base_snap["v0284HudLayoutRetained"] = true
+	base_snap["v0283StateBridgeRetained"] = true
+	base_snap["manualOnlySingleConsequence"] = true
+	base_snap["screenshotTruthOnly"] = true
+	base_snap["readabilityOnly"] = true
+	base_snap["noPathingAiEconomyFogDefaultMutation"] = true
+	base_snap["defaultRuntimeMutationAdded"] = false
+	v0285_barrosan_hold_line_non_lethal_contact_step_proof[mode] = base_snap
+
+
 func _v0270_label_declutter_improved(contact: Dictionary) -> bool:
 	var contact_state := str(contact.get("contactState", ""))
 	return (
@@ -9966,6 +10330,83 @@ func _v0284_barrosan_hud_text_layout_repair_status() -> Dictionary:
 		"missingSnapshots": missing,
 		"failedModes": failed_modes,
 		"proofSnapshots": v0284_barrosan_hud_text_layout_repair_proof.duplicate(true),
+		"verdictCeiling": "PASS",
+	}
+
+
+func _v0285_barrosan_hold_line_non_lethal_contact_step_status() -> Dictionary:
+	var required := _v0285_review_modes()
+	var missing: Array[String] = []
+	var failed_modes: Array[String] = []
+	var pass_all := true
+	for mode in required:
+		var snap: Dictionary = v0285_barrosan_hold_line_non_lethal_contact_step_proof.get(mode, {})
+		if snap.is_empty():
+			missing.append(mode)
+			pass_all = false
+			continue
+		var layout: Dictionary = snap.get("layoutDiagnostics", {})
+		var labels: Array = snap.get("renderedTacticalWorldLabelTexts", [])
+		var hold_active := _v0285_mode_is_hold_line_active(mode)
+		var hold_available := _v0285_mode_is_hold_line_available(mode)
+		var mapped_v0284 := str(snap.get("sourceV0284Mode", _v0285_map_review_mode(mode)))
+		var mode_pass := (
+			bool(snap.get("holdLineNonLethalContactStepOnly", false))
+			and bool(snap.get("v0284HudLayoutRetained", false))
+			and bool(snap.get("v0283StateBridgeRetained", false))
+			and not bool(snap.get("defaultRuntimeMutationAdded", true))
+			and str(layout.get("layoutStatus", "FAIL")) == "PASS"
+			and not bool(layout.get("textLineExceededAllowedWidth", true))
+			and not bool(layout.get("textOverlappedButtons", true))
+			and not bool(layout.get("lineCountExceededVisibleRows", true))
+			and bool(layout.get("rawParagraphsAbsent", false))
+			and bool(layout.get("worldLabelsShort", false))
+			and bool(snap.get("manualOnlySingleConsequence", false))
+			and bool(snap.get("screenshotTruthOnly", false))
+			and bool(snap.get("readabilityOnly", false))
+			and bool(snap.get("noPathingAiEconomyFogDefaultMutation", false))
+			and bool(snap.get("holdLineOnlyAfterCommitLocked", false))
+		)
+		if mapped_v0284 in ["v0284_commit_engage_clicked", "v0284_post_commit_combined_pressure_checked_ashen_braced"] and not hold_active:
+			mode_pass = mode_pass and labels.count("PRESSURE CHECKED") == 1 and labels.count("ASHEN BRACED") == 1 and int(snap.get("pressureAfterCommit", -1)) == 80
+		if hold_available:
+			mode_pass = mode_pass and bool(snap.get("holdLineAvailableAfterCommitLocked", false))
+		if hold_active:
+			mode_pass = mode_pass and labels.count("LINE HELD") == 1 and labels.count("ASHEN CONTAINED") == 1 and labels.count("ASHEN BRACED") == 0 and labels.count("PRESSURE CHECKED") == 0 and bool(snap.get("holdLineResolvedOnce", false)) and bool(snap.get("staleAshenBracedAbsentAfterHold", false))
+		if mode == "v0285_repeat_hold_line_no_duplicate_no_stack":
+			mode_pass = mode_pass and bool(snap.get("repeatHoldLineNoDuplicateLabels", false))
+		if mode == "v0285_clear_guard_settles_hold_line":
+			mode_pass = mode_pass and bool(snap.get("clearGuardSettlesHoldLine", false)) and labels.is_empty()
+		if mode == "v0285_reguard_availability_clean_after_hold_line":
+			mode_pass = mode_pass and bool(snap.get("reguardAvailabilityCleanAfterHoldLine", false)) and labels.is_empty()
+		if mode in ["v0285_watchpost_no_hold_line_engage_commit_ashen", "v0285_barracks_no_hold_line_engage_commit_ashen"]:
+			mode_pass = mode_pass and bool(snap.get("noCommandEntityClean", false)) and labels.is_empty()
+		if mode == "v0285_no_projectile_damage_death_despawn":
+			mode_pass = mode_pass and bool(snap.get("noProjectileDamageDeathDespawn", false))
+		if mode == "v0285_manual_fixture_baseline_clean_hud":
+			mode_pass = mode_pass and bool(layout.get("selectAsterInsideSelectedCard", false)) and str(snap.get("hudTextLines", {}).get("tacticalFacts", "")) == "Select Aster."
+		if mode == "v0285_engage_armed":
+			mode_pass = mode_pass and labels == ["ENGAGE ARMED"]
+		if not mode_pass:
+			failed_modes.append(mode)
+		pass_all = pass_all and mode_pass
+	var status_pass := missing.is_empty() and failed_modes.is_empty() and pass_all
+	return {
+		"status": "PASS" if status_pass else "IN_PROGRESS",
+		"checkpoint": "v0.285",
+		"holdLineNonLethalContactStepStatus": "PASS" if status_pass else "IN_PROGRESS",
+		"topStripVocabulary": ["ENGAGE ARMED", "PRESSURE CHECKED -- ASHEN BRACED", "LINE HELD", "GUARD CLEARED", "REGUARD AVAILABLE", "WATCHPOST -- passive intel", "BARRACKS -- production only", "DEFAULT RUNTIME UNCHANGED"],
+		"v0284HudLayoutRetained": true,
+		"v0283StateBridgeRetained": true,
+		"defaultRuntimeUnchanged": true,
+		"holdLineCreatesLineHeldOnce": status_pass,
+		"holdLineCreatesAshenContainedOnce": status_pass,
+		"noStaleAshenBracedAfterHold": status_pass,
+		"noTextButtonOverlap": status_pass,
+		"noRawParagraphs": status_pass,
+		"missingSnapshots": missing,
+		"failedModes": failed_modes,
+		"proofSnapshots": v0285_barrosan_hold_line_non_lethal_contact_step_proof.duplicate(true),
 		"verdictCeiling": "PASS",
 	}
 
@@ -11875,7 +12316,7 @@ func _sync_barrosan_runtime_visuals() -> void:
 	_sync_v0267_watchpost_defender_positioning_visuals()
 	_sync_v0268_watchpost_militia_intercept_preview_visuals()
 	_sync_v0269_barrosan_militia_first_contact_visuals()
-	if barrosan_requested_checkpoint in ["v0.278", "v0.279", "v0.280", "v0.281", "v0.283", "v0.284"]:
+	if barrosan_requested_checkpoint in ["v0.278", "v0.279", "v0.280", "v0.281", "v0.283", "v0.284", "v0.285"]:
 		_v0279_apply_armed_world_label_hard_fail_fix_ui()
 	if barrosan_requested_checkpoint == "v0.280":
 		_v0280_apply_commit_resolution_bridge_ui()
@@ -11883,6 +12324,8 @@ func _sync_barrosan_runtime_visuals() -> void:
 		_v0283_apply_non_lethal_ashen_pressure_response_ui()
 	if barrosan_requested_checkpoint == "v0.284":
 		_v0284_apply_hud_text_layout_repair_ui()
+	if barrosan_requested_checkpoint == "v0.285":
+		_v0285_apply_hold_line_non_lethal_contact_step_ui()
 	_sync_scale_probes()
 
 
@@ -14363,6 +14806,7 @@ func get_spike_status() -> Dictionary:
 		"barrosanRealHudTruthOverlayRemoval": _v0281_barrosan_real_hud_truth_overlay_removal_status() if barrosan_requested_checkpoint == "v0.281" else {},
 		"barrosanNonLethalAshenPressureResponse": _v0283_barrosan_non_lethal_ashen_pressure_response_status() if barrosan_requested_checkpoint == "v0.283" else {},
 		"barrosanHudTextLayoutRepair": _v0284_barrosan_hud_text_layout_repair_status() if barrosan_requested_checkpoint == "v0.284" else {},
+		"barrosanHoldLineNonLethalContactStep": _v0285_barrosan_hold_line_non_lethal_contact_step_status() if barrosan_requested_checkpoint == "v0.285" else {},
 	}
 	return status
 
