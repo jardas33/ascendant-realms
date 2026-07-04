@@ -1,0 +1,301 @@
+{
+  "stats": [
+    {
+      "fileName": "02_v0287_true_default_runtime_baseline_no_fixture_no_opt_in.png",
+      "bytes": 127932,
+      "width": 1600,
+      "height": 900,
+      "sampleUniqueColors": 1864,
+      "meanBrightness": 57.076,
+      "brightnessStdDev": 17.509,
+      "flatColor": false,
+      "nearBlackFlat": false
+    },
+    {
+      "fileName": "03_v0287_retained_v0282_v0284_baseline_ledger_proof.png",
+      "bytes": 39643,
+      "width": 1600,
+      "height": 900,
+      "sampleUniqueColors": 306,
+      "meanBrightness": 22.565,
+      "brightnessStdDev": 9.835,
+      "flatColor": false,
+      "nearBlackFlat": false
+    },
+    {
+      "fileName": "04_v0287_manual_fixture_baseline_clean_hud.png",
+      "bytes": 164342,
+      "width": 1600,
+      "height": 900,
+      "sampleUniqueColors": 1898,
+      "meanBrightness": 76.394,
+      "brightnessStdDev": 19.714,
+      "flatColor": false,
+      "nearBlackFlat": false
+    },
+    {
+      "fileName": "05_v0287_engage_available_before_click.png",
+      "bytes": 166896,
+      "width": 1600,
+      "height": 900,
+      "sampleUniqueColors": 1903,
+      "meanBrightness": 76.441,
+      "brightnessStdDev": 19.617,
+      "flatColor": false,
+      "nearBlackFlat": false
+    },
+    {
+      "fileName": "06_v0287_engage_armed.png",
+      "bytes": 174172,
+      "width": 1600,
+      "height": 900,
+      "sampleUniqueColors": 1967,
+      "meanBrightness": 76.567,
+      "brightnessStdDev": 19.754,
+      "flatColor": false,
+      "nearBlackFlat": false
+    },
+    {
+      "fileName": "07_v0287_commit_engage_clicked.png",
+      "bytes": 191248,
+      "width": 1600,
+      "height": 900,
+      "sampleUniqueColors": 2062,
+      "meanBrightness": 76.93,
+      "brightnessStdDev": 19.974,
+      "flatColor": false,
+      "nearBlackFlat": false
+    },
+    {
+      "fileName": "08_v0287_post_commit_pressure_checked_ashen_braced.png",
+      "bytes": 191248,
+      "width": 1600,
+      "height": 900,
+      "sampleUniqueColors": 2062,
+      "meanBrightness": 76.93,
+      "brightnessStdDev": 19.974,
+      "flatColor": false,
+      "nearBlackFlat": false
+    },
+    {
+      "fileName": "09_v0287_hold_line_available_after_commit_locked.png",
+      "bytes": 191483,
+      "width": 1600,
+      "height": 900,
+      "sampleUniqueColors": 2064,
+      "meanBrightness": 76.935,
+      "brightnessStdDev": 19.963,
+      "flatColor": false,
+      "nearBlackFlat": false
+    },
+    {
+      "fileName": "10_v0287_hold_line_clicked.png",
+      "bytes": 179377,
+      "width": 1600,
+      "height": 900,
+      "sampleUniqueColors": 2022,
+      "meanBrightness": 76.804,
+      "brightnessStdDev": 20.191,
+      "flatColor": false,
+      "nearBlackFlat": false
+    },
+    {
+      "fileName": "11_v0287_line_held_exactly_once.png",
+      "bytes": 179377,
+      "width": 1600,
+      "height": 900,
+      "sampleUniqueColors": 2022,
+      "meanBrightness": 76.804,
+      "brightnessStdDev": 20.191,
+      "flatColor": false,
+      "nearBlackFlat": false
+    },
+    {
+      "fileName": "12_v0287_ashen_contained_exactly_once.png",
+      "bytes": 179377,
+      "width": 1600,
+      "height": 900,
+      "sampleUniqueColors": 2022,
+      "meanBrightness": 76.804,
+      "brightnessStdDev": 20.191,
+      "flatColor": false,
+      "nearBlackFlat": false
+    },
+    {
+      "fileName": "13_v0287_select_field_barracks_after_hold_line.png",
+      "bytes": 178379,
+      "width": 1600,
+      "height": 900,
+      "sampleUniqueColors": 2018,
+      "meanBrightness": 76.777,
+      "brightnessStdDev": 20.268,
+      "flatColor": false,
+      "nearBlackFlat": false
+    },
+    {
+      "fileName": "14_v0287_train_militia_available_reserve_slot_empty.png",
+      "bytes": 178379,
+      "width": 1600,
+      "height": 900,
+      "sampleUniqueColors": 2018,
+      "meanBrightness": 76.777,
+      "brightnessStdDev": 20.268,
+      "flatColor": false,
+      "nearBlackFlat": false
+    },
+    {
+      "fileName": "15_v0287_train_clicked.png",
+      "bytes": 179448,
+      "width": 1600,
+      "height": 900,
+      "sampleUniqueColors": 2027,
+      "meanBrightness": 76.793,
+      "brightnessStdDev": 20.235,
+      "flatColor": false,
+      "nearBlackFlat": false
+    },
+    {
+      "fileName": "16_v0287_reserve_ready_exactly_once.png",
+      "bytes": 179448,
+      "width": 1600,
+      "height": 900,
+      "sampleUniqueColors": 2027,
+      "meanBrightness": 76.793,
+      "brightnessStdDev": 20.235,
+      "flatColor": false,
+      "nearBlackFlat": false
+    },
+    {
+      "fileName": "17_v0287_barracks_assign_to_bridge_available.png",
+      "bytes": 179448,
+      "width": 1600,
+      "height": 900,
+      "sampleUniqueColors": 2027,
+      "meanBrightness": 76.793,
+      "brightnessStdDev": 20.235,
+      "flatColor": false,
+      "nearBlackFlat": false
+    },
+    {
+      "fileName": "18_v0287_assign_clicked.png",
+      "bytes": 179104,
+      "width": 1600,
+      "height": 900,
+      "sampleUniqueColors": 2026,
+      "meanBrightness": 76.793,
+      "brightnessStdDev": 20.241,
+      "flatColor": false,
+      "nearBlackFlat": false
+    },
+    {
+      "fileName": "19_v0287_reserve_assigned_exactly_once.png",
+      "bytes": 179104,
+      "width": 1600,
+      "height": 900,
+      "sampleUniqueColors": 2026,
+      "meanBrightness": 76.793,
+      "brightnessStdDev": 20.241,
+      "flatColor": false,
+      "nearBlackFlat": false
+    },
+    {
+      "fileName": "20_v0287_barracks_card_reserve_assigned_bridge_support_pending.png",
+      "bytes": 179104,
+      "width": 1600,
+      "height": 900,
+      "sampleUniqueColors": 2026,
+      "meanBrightness": 76.793,
+      "brightnessStdDev": 20.241,
+      "flatColor": false,
+      "nearBlackFlat": false
+    },
+    {
+      "fileName": "21_v0287_defender_card_acknowledges_reserve_assigned.png",
+      "bytes": 177235,
+      "width": 1600,
+      "height": 900,
+      "sampleUniqueColors": 1990,
+      "meanBrightness": 76.653,
+      "brightnessStdDev": 20.082,
+      "flatColor": false,
+      "nearBlackFlat": false
+    },
+    {
+      "fileName": "22_v0287_repeat_assign_no_duplicate_assignment_no_stack.png",
+      "bytes": 179296,
+      "width": 1600,
+      "height": 900,
+      "sampleUniqueColors": 2020,
+      "meanBrightness": 76.793,
+      "brightnessStdDev": 20.239,
+      "flatColor": false,
+      "nearBlackFlat": false
+    },
+    {
+      "fileName": "23_v0287_resources_unchanged_after_train_and_assign.png",
+      "bytes": 179104,
+      "width": 1600,
+      "height": 900,
+      "sampleUniqueColors": 2026,
+      "meanBrightness": 76.793,
+      "brightnessStdDev": 20.241,
+      "flatColor": false,
+      "nearBlackFlat": false
+    },
+    {
+      "fileName": "24_v0287_reserve_marker_no_movement_pathing_attack_deploy_behavior.png",
+      "bytes": 179104,
+      "width": 1600,
+      "height": 900,
+      "sampleUniqueColors": 2026,
+      "meanBrightness": 76.793,
+      "brightnessStdDev": 20.241,
+      "flatColor": false,
+      "nearBlackFlat": false
+    },
+    {
+      "fileName": "25_v0287_watchpost_no_hold_line_engage_commit_ashen_reserve_assign.png",
+      "bytes": 170321,
+      "width": 1600,
+      "height": 900,
+      "sampleUniqueColors": 1896,
+      "meanBrightness": 76.388,
+      "brightnessStdDev": 19.479,
+      "flatColor": false,
+      "nearBlackFlat": false
+    },
+    {
+      "fileName": "26_v0287_clear_guard_settles_defender_contact_clean_after_assigned.png",
+      "bytes": 165517,
+      "width": 1600,
+      "height": 900,
+      "sampleUniqueColors": 1878,
+      "meanBrightness": 76.308,
+      "brightnessStdDev": 19.459,
+      "flatColor": false,
+      "nearBlackFlat": false
+    },
+    {
+      "fileName": "27_v0287_reguard_clean_after_assigned_no_auto_deploy.png",
+      "bytes": 167915,
+      "width": 1600,
+      "height": 900,
+      "sampleUniqueColors": 1888,
+      "meanBrightness": 76.339,
+      "brightnessStdDev": 19.41,
+      "flatColor": false,
+      "nearBlackFlat": false
+    },
+    {
+      "fileName": "28_v0287_no_projectile_damage_hp_loss_death_despawn.png",
+      "bytes": 179104,
+      "width": 1600,
+      "height": 900,
+      "sampleUniqueColors": 2026,
+      "meanBrightness": 76.793,
+      "brightnessStdDev": 20.241,
+      "flatColor": false,
+      "nearBlackFlat": false
+    }
+  ]
+}
