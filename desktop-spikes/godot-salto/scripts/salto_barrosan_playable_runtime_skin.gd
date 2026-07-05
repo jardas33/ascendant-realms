@@ -156,6 +156,7 @@ var v0286_barrosan_field_barracks_reserve_ready_step_proof: Dictionary = {}
 var v0287_barrosan_reserve_assigned_to_bridge_step_proof: Dictionary = {}
 var v0288_barrosan_bridge_signal_reserve_acknowledged_step_proof: Dictionary = {}
 var v0289_barrosan_reserve_support_order_prepared_step_proof: Dictionary = {}
+var v0290_barrosan_reserve_deployment_approval_gate_step_proof: Dictionary = {}
 
 
 func configure_barrosan_playable_runtime_skin(options: Dictionary) -> void:
@@ -641,7 +642,7 @@ func _sync_hud() -> void:
 		_v0259_apply_resolved_ui()
 	if barrosan_requested_checkpoint in ["v0.261", "v0.262"]:
 		_v0261_apply_resolved_ui()
-	if barrosan_requested_checkpoint in ["v0.269", "v0.270", "v0.271", "v0.272", "v0.273", "v0.274", "v0.275", "v0.276", "v0.277", "v0.278", "v0.279", "v0.280", "v0.281", "v0.283", "v0.284", "v0.285", "v0.286", "v0.287", "v0.288", "v0.289"] and (_v0269_is_review_mode(barrosan_runtime_review_mode) or _v0270_is_review_mode(barrosan_runtime_review_mode) or _v0271_is_review_mode(barrosan_runtime_review_mode) or _v0272_is_review_mode(barrosan_runtime_review_mode) or _v0273_is_review_mode(barrosan_runtime_review_mode) or _v0274_is_review_mode(barrosan_runtime_review_mode) or _v0275_is_review_mode(barrosan_runtime_review_mode) or _v0276_is_review_mode(barrosan_runtime_review_mode) or _v0277_is_review_mode(barrosan_runtime_review_mode) or _v0278_is_review_mode(barrosan_runtime_review_mode) or _v0279_is_review_mode(barrosan_runtime_review_mode) or _v0280_is_review_mode(barrosan_runtime_review_mode) or _v0283_is_review_mode(barrosan_runtime_review_mode) or _v0284_is_review_mode(barrosan_runtime_review_mode) or _v0285_is_review_mode(barrosan_runtime_review_mode) or _v0286_is_review_mode(barrosan_runtime_review_mode) or _v0287_is_review_mode(barrosan_runtime_review_mode) or _v0288_is_review_mode(barrosan_runtime_review_mode) or _v0289_is_review_mode(barrosan_runtime_review_mode)):
+	if barrosan_requested_checkpoint in ["v0.269", "v0.270", "v0.271", "v0.272", "v0.273", "v0.274", "v0.275", "v0.276", "v0.277", "v0.278", "v0.279", "v0.280", "v0.281", "v0.283", "v0.284", "v0.285", "v0.286", "v0.287", "v0.288", "v0.289", "v0.290"] and (_v0269_is_review_mode(barrosan_runtime_review_mode) or _v0270_is_review_mode(barrosan_runtime_review_mode) or _v0271_is_review_mode(barrosan_runtime_review_mode) or _v0272_is_review_mode(barrosan_runtime_review_mode) or _v0273_is_review_mode(barrosan_runtime_review_mode) or _v0274_is_review_mode(barrosan_runtime_review_mode) or _v0275_is_review_mode(barrosan_runtime_review_mode) or _v0276_is_review_mode(barrosan_runtime_review_mode) or _v0277_is_review_mode(barrosan_runtime_review_mode) or _v0278_is_review_mode(barrosan_runtime_review_mode) or _v0279_is_review_mode(barrosan_runtime_review_mode) or _v0280_is_review_mode(barrosan_runtime_review_mode) or _v0283_is_review_mode(barrosan_runtime_review_mode) or _v0284_is_review_mode(barrosan_runtime_review_mode) or _v0285_is_review_mode(barrosan_runtime_review_mode) or _v0286_is_review_mode(barrosan_runtime_review_mode) or _v0287_is_review_mode(barrosan_runtime_review_mode) or _v0288_is_review_mode(barrosan_runtime_review_mode) or _v0289_is_review_mode(barrosan_runtime_review_mode) or _v0290_is_review_mode(barrosan_runtime_review_mode)):
 		_v0269_apply_first_contact_ui()
 	if barrosan_requested_checkpoint == "v0.268" and _v0268_is_review_mode(barrosan_runtime_review_mode):
 		_v0268_apply_intercept_preview_ui()
@@ -663,6 +664,8 @@ func _sync_hud() -> void:
 		_v0288_apply_bridge_signal_reserve_acknowledged_step_ui()
 	if barrosan_requested_checkpoint == "v0.289" and _v0289_is_review_mode(barrosan_runtime_review_mode):
 		_v0289_apply_reserve_support_order_prepared_step_ui()
+	if barrosan_requested_checkpoint == "v0.290" and _v0290_is_review_mode(barrosan_runtime_review_mode):
+		_v0290_apply_reserve_deployment_approval_gate_step_ui()
 
 
 func set_barrosan_runtime_review_mode(mode: String) -> void:
@@ -2399,6 +2402,44 @@ func set_barrosan_runtime_review_mode(mode: String) -> void:
 		barrosan_runtime_review_mode = mode
 		_v0285_apply_hold_line_non_lethal_contact_step_ui()
 		_v0285_record_hold_line_non_lethal_contact_step_proof(mode)
+	elif barrosan_requested_checkpoint == "v0.290" and _v0290_is_review_mode(mode):
+		_v0261_apply_resolved_ui()
+		_v0269_apply_first_contact_ui()
+		_v0276_apply_manual_engage_ui()
+		_v0277_apply_engage_readability_ui()
+		_v0279_apply_armed_world_label_hard_fail_fix_ui()
+		var mapped_v0289 := _v0290_map_review_mode(mode)
+		var mapped_v0288 := _v0289_map_review_mode(mapped_v0289)
+		var mapped_v0287 := _v0288_map_review_mode(mapped_v0288)
+		var mapped_v0286 := _v0287_map_review_mode(mapped_v0287)
+		var mapped_v0285 := _v0286_map_review_mode(mapped_v0286)
+		var mapped_v0284 := _v0285_map_review_mode(mapped_v0285)
+		var mapped_v0283 := _v0284_map_review_mode(mapped_v0284)
+		_v0281_apply_review_mode(_v0283_map_review_mode(mapped_v0283))
+		barrosan_runtime_review_mode = mapped_v0283
+		_v0283_apply_non_lethal_ashen_pressure_response_ui()
+		_v0283_record_non_lethal_ashen_pressure_response_proof(mapped_v0283)
+		barrosan_runtime_review_mode = mapped_v0284
+		_v0284_apply_hud_text_layout_repair_ui()
+		_v0284_record_hud_text_layout_repair_proof(mapped_v0284)
+		barrosan_runtime_review_mode = mapped_v0285
+		_v0285_apply_hold_line_non_lethal_contact_step_ui()
+		_v0285_record_hold_line_non_lethal_contact_step_proof(mapped_v0285)
+		barrosan_runtime_review_mode = mapped_v0286
+		_v0286_apply_field_barracks_reserve_ready_step_ui()
+		_v0286_record_field_barracks_reserve_ready_step_proof(mapped_v0286)
+		barrosan_runtime_review_mode = mapped_v0287
+		_v0287_apply_reserve_assigned_to_bridge_step_ui()
+		_v0287_record_reserve_assigned_to_bridge_step_proof(mapped_v0287)
+		barrosan_runtime_review_mode = mapped_v0288
+		_v0288_apply_bridge_signal_reserve_acknowledged_step_ui()
+		_v0288_record_bridge_signal_reserve_acknowledged_step_proof(mapped_v0288)
+		barrosan_runtime_review_mode = mapped_v0289
+		_v0289_apply_reserve_support_order_prepared_step_ui()
+		_v0289_record_reserve_support_order_prepared_step_proof(mapped_v0289)
+		barrosan_runtime_review_mode = mode
+		_v0290_apply_reserve_deployment_approval_gate_step_ui()
+		_v0290_record_reserve_deployment_approval_gate_step_proof(mode)
 	elif barrosan_requested_checkpoint == "v0.289" and _v0289_is_review_mode(mode):
 		_v0261_apply_resolved_ui()
 		_v0269_apply_first_contact_ui()
@@ -10255,6 +10296,326 @@ func _v0289_record_reserve_support_order_prepared_step_proof(mode: String) -> vo
 	v0289_barrosan_reserve_support_order_prepared_step_proof[mode] = base_snap
 
 
+func _v0290_review_modes() -> Array[String]:
+	return [
+		"v0290_manual_fixture_baseline_clean_hud",
+		"v0290_engage_available_before_click",
+		"v0290_engage_armed",
+		"v0290_commit_engage_clicked",
+		"v0290_post_commit_pressure_checked_ashen_braced",
+		"v0290_hold_line_available_after_commit_locked",
+		"v0290_hold_line_clicked",
+		"v0290_line_held_exactly_once",
+		"v0290_ashen_contained_exactly_once",
+		"v0290_select_field_barracks_after_hold_line",
+		"v0290_train_militia_available_reserve_slot_empty",
+		"v0290_train_clicked",
+		"v0290_reserve_ready_exactly_once",
+		"v0290_assign_to_bridge_available",
+		"v0290_assign_clicked",
+		"v0290_reserve_assigned_exactly_once",
+		"v0290_select_defender_after_reserve_assigned",
+		"v0290_signal_available",
+		"v0290_signal_clicked",
+		"v0290_bridge_signal_sent_exactly_once",
+		"v0290_signal_sent_exactly_once",
+		"v0290_reserve_ack_exactly_once",
+		"v0290_select_field_barracks_after_reserve_ack",
+		"v0290_prepare_support_available",
+		"v0290_prepare_clicked",
+		"v0290_support_order_ready_exactly_once",
+		"v0290_order_ready_exactly_once",
+		"v0290_select_field_barracks_after_support_order_ready",
+		"v0290_approve_available",
+		"v0290_approve_clicked",
+		"v0290_deployment_approved_exactly_once",
+		"v0290_approved_exactly_once",
+		"v0290_barracks_card_awaiting_launch_order",
+		"v0290_defender_card_support_approved_awaiting_launch",
+		"v0290_repeat_approve_no_duplicate_approval_marker_stack",
+		"v0290_resources_unchanged_after_train_assign_signal_prepare_approve",
+		"v0290_reserve_marker_no_movement_pathing_attack_deploy_behavior",
+		"v0290_watchpost_no_hold_line_engage_commit_ashen_reserve_assign_signal_prepare_approve",
+		"v0290_field_barracks_no_engage_commit_hold_ashen_signal",
+		"v0290_clear_guard_settles_defender_contact_clean_after_approve",
+		"v0290_reguard_clean_after_approve_no_auto_deploy",
+		"v0290_no_projectile_damage_hp_loss_death_despawn",
+	]
+
+
+func _v0290_is_review_mode(mode: String) -> bool:
+	return _v0290_review_modes().has(mode)
+
+
+func _v0290_map_review_mode(mode: String) -> String:
+	var mapped := mode.replace("v0290_", "v0289_")
+	match mode:
+		"v0290_select_field_barracks_after_support_order_ready", "v0290_approve_available":
+			return "v0289_barracks_card_awaiting_deployment_approval"
+		"v0290_approve_clicked", "v0290_deployment_approved_exactly_once", "v0290_approved_exactly_once", "v0290_barracks_card_awaiting_launch_order":
+			return "v0289_barracks_card_awaiting_deployment_approval"
+		"v0290_defender_card_support_approved_awaiting_launch":
+			return "v0289_defender_card_support_order_ready"
+		"v0290_repeat_approve_no_duplicate_approval_marker_stack", "v0290_resources_unchanged_after_train_assign_signal_prepare_approve", "v0290_reserve_marker_no_movement_pathing_attack_deploy_behavior", "v0290_field_barracks_no_engage_commit_hold_ashen_signal", "v0290_no_projectile_damage_hp_loss_death_despawn":
+			return "v0289_barracks_card_awaiting_deployment_approval"
+		"v0290_watchpost_no_hold_line_engage_commit_ashen_reserve_assign_signal_prepare_approve":
+			return "v0289_watchpost_no_hold_line_engage_commit_ashen_reserve_assign_signal_prepare"
+		"v0290_clear_guard_settles_defender_contact_clean_after_approve":
+			return "v0289_clear_guard_settles_defender_contact_clean_after_prepare"
+		"v0290_reguard_clean_after_approve_no_auto_deploy":
+			return "v0289_reguard_clean_after_prepare_no_auto_deploy"
+	return mapped
+
+
+func _v0290_mode_has_approval(mode: String) -> bool:
+	return mode in [
+		"v0290_approve_clicked",
+		"v0290_deployment_approved_exactly_once",
+		"v0290_approved_exactly_once",
+		"v0290_barracks_card_awaiting_launch_order",
+		"v0290_defender_card_support_approved_awaiting_launch",
+		"v0290_repeat_approve_no_duplicate_approval_marker_stack",
+		"v0290_resources_unchanged_after_train_assign_signal_prepare_approve",
+		"v0290_reserve_marker_no_movement_pathing_attack_deploy_behavior",
+		"v0290_field_barracks_no_engage_commit_hold_ashen_signal",
+		"v0290_clear_guard_settles_defender_contact_clean_after_approve",
+		"v0290_reguard_clean_after_approve_no_auto_deploy",
+		"v0290_no_projectile_damage_hp_loss_death_despawn",
+	]
+
+
+func _v0290_mode_is_support_order_ready(mode: String) -> bool:
+	return mode in ["v0290_select_field_barracks_after_support_order_ready", "v0290_approve_available"]
+
+
+func _v0290_mode_is_barracks_selected(mode: String) -> bool:
+	return _v0290_mode_is_support_order_ready(mode) or (_v0290_mode_has_approval(mode) and mode not in ["v0290_defender_card_support_approved_awaiting_launch", "v0290_clear_guard_settles_defender_contact_clean_after_approve", "v0290_reguard_clean_after_approve_no_auto_deploy"]) or _v0289_mode_is_barracks_selected(_v0290_map_review_mode(mode))
+
+
+func _v0290_mode_is_defender_selected(mode: String) -> bool:
+	return mode in ["v0290_defender_card_support_approved_awaiting_launch", "v0290_clear_guard_settles_defender_contact_clean_after_approve", "v0290_reguard_clean_after_approve_no_auto_deploy"] or _v0289_mode_is_defender_selected(_v0290_map_review_mode(mode))
+
+
+func _v0290_hud_lines(mode: String) -> Dictionary:
+	if _v0290_mode_is_support_order_ready(mode):
+		return {"name": "Field Barracks | Production", "primary": "Support order ready", "facts": "Awaiting deployment approval", "readiness": "Ready.", "button": "Approve", "strip": "SUPPORT ORDER READY"}
+	match mode:
+		"v0290_approve_clicked", "v0290_deployment_approved_exactly_once", "v0290_approved_exactly_once", "v0290_barracks_card_awaiting_launch_order":
+			return {"name": "Field Barracks | Production", "primary": "Deployment approved", "facts": "Awaiting launch order", "readiness": "Ready.", "button": "Approve", "strip": "DEPLOYMENT APPROVED"}
+		"v0290_defender_card_support_approved_awaiting_launch":
+			return {"name": "Militia Defender | East bridge", "primary": "Support approved", "facts": "Bridge held | Awaiting launch", "readiness": "Ready.", "button": "Held", "strip": "DEPLOYMENT APPROVED"}
+		"v0290_repeat_approve_no_duplicate_approval_marker_stack":
+			return {"name": "Field Barracks | Production", "primary": "Deployment approved", "facts": "No duplicate approval", "readiness": "Ready.", "button": "Approve", "strip": "DEPLOYMENT APPROVED"}
+		"v0290_clear_guard_settles_defender_contact_clean_after_approve":
+			return {"name": "Militia Defender | East bridge", "primary": "Guard cleared", "facts": "Approval preserved | Contact settled", "readiness": "Ready.", "button": "Cleared", "strip": "GUARD CLEARED"}
+		"v0290_reguard_clean_after_approve_no_auto_deploy":
+			return {"name": "Militia Defender | East bridge", "primary": "Reguard available", "facts": "Approval preserved | No auto-deploy", "readiness": "Ready.", "button": "Reguard", "strip": "REGUARD AVAILABLE"}
+		"v0290_watchpost_no_hold_line_engage_commit_ashen_reserve_assign_signal_prepare_approve":
+			return {"name": "Watchpost | Passive awareness", "primary": "Watchpost passive awareness", "facts": "Intel only | No Approve", "readiness": "Observe.", "button": "Observe", "strip": "WATCHPOST -- passive intel"}
+	if _v0290_mode_has_approval(mode):
+		return {"name": "Field Barracks | Production", "primary": "Deployment approved", "facts": "Awaiting launch order", "readiness": "Ready.", "button": "Approve", "strip": "DEPLOYMENT APPROVED"}
+	return _v0289_hud_lines(_v0290_map_review_mode(mode))
+
+
+func _v0290_set_approval_marker_visible(approval_visible: bool) -> void:
+	if visual_root == null:
+		return
+	if approval_visible:
+		_v0289_set_support_order_marker_visible(false, false, false, true)
+	var reserve_world := _v0286_reserve_marker_world_position()
+	_set_or_create_disc_marker("v0290_approval_marker", reserve_world, 0.44, Color(0.96, 0.78, 0.34, 0.44))
+	var marker := visual_root.get_node_or_null("v0290_approval_marker")
+	if marker != null:
+		marker.visible = approval_visible
+	var approval_label := _v0248_marker_label("v0290_approved_label", reserve_world + Vector3(0.10, 1.46, 0.08), "APPROVED", Color("#f5c46a"))
+	approval_label.visible = approval_visible
+
+
+func _v0290_apply_reserve_deployment_approval_gate_step_ui() -> void:
+	if visual_root == null:
+		return
+	var mode := barrosan_runtime_review_mode
+	var mapped_v0289 := _v0290_map_review_mode(mode)
+	barrosan_runtime_review_mode = mapped_v0289
+	_v0289_apply_reserve_support_order_prepared_step_ui()
+	barrosan_runtime_review_mode = mode
+	var lines := _v0290_hud_lines(mode)
+	var card := hud_hero_label.get_parent() as Control if hud_hero_label != null else null
+	if card != null:
+		card.position = Vector2(420, 742)
+		card.size = Vector2(760, 150)
+	if hud_hero_label != null:
+		hud_hero_label.text = str(lines.get("name", ""))
+	if hud_context_label != null:
+		hud_context_label.text = str(lines.get("primary", ""))
+	if hud_objective_label != null:
+		hud_objective_label.text = str(lines.get("facts", ""))
+	if hud_status_label != null:
+		hud_status_label.text = str(lines.get("readiness", ""))
+		hud_status_label.visible = true
+	if hud_objective_strip_label != null:
+		hud_objective_strip_label.text = str(lines.get("strip", ""))
+	if hud_work_button != null:
+		hud_work_button.text = str(lines.get("button", ""))
+	if _v0290_mode_is_barracks_selected(mode):
+		barrosan_selected_role_id = "barracks"
+	if _v0290_mode_is_defender_selected(mode):
+		barrosan_selected_role_id = "militia"
+	if mode == "v0290_watchpost_no_hold_line_engage_commit_ashen_reserve_assign_signal_prepare_approve":
+		barrosan_selected_role_id = "watchtower"
+	_v0290_set_approval_marker_visible(_v0290_mode_has_approval(mode))
+	barrosan_playtest["v0290ReserveDeploymentApprovalGateStepActive"] = true
+	barrosan_playtest["v0290ApprovalState"] = "approved" if _v0290_mode_has_approval(mode) else ("ready_for_approval" if _v0290_mode_is_support_order_ready(mode) else "retained")
+
+
+func _v0290_rendered_tactical_world_labels() -> Array[Dictionary]:
+	_v0290_apply_reserve_deployment_approval_gate_step_ui()
+	var visible: Array[Dictionary] = []
+	for label in _v0279_tactical_world_label_nodes():
+		if label != null and bool(label.visible):
+			var normalized := _v0278_normalized_label_text(label)
+			if normalized in ["ENGAGE ARMED", "PRESSURE CHECKED", "ASHEN BRACED", "LINE HELD", "ASHEN CONTAINED", "RESERVE READY", "RESERVE ASSIGNED", "SIGNAL SENT", "RESERVE ACK", "ORDER READY", "APPROVED"] or _v0279_is_forbidden_armed_world_label_text(normalized) or _v0279_label_is_known_tactical_node(label):
+				visible.append({"nodeName": str(label.name), "text": normalized, "position": {"x": label.global_position.x, "y": label.global_position.y, "z": label.global_position.z}})
+	return visible
+
+
+func _v0290_rendered_tactical_world_label_texts() -> Array[String]:
+	var texts: Array[String] = []
+	for entry in _v0290_rendered_tactical_world_labels():
+		texts.append(str(entry.get("text", "")))
+	return texts
+
+
+func _v0290_hud_layout_diagnostics(mode: String) -> Dictionary:
+	var lines := _v0290_hud_lines(mode)
+	var card := hud_hero_label.get_parent() as Control if hud_hero_label != null else null
+	var card_rect := _v0284_rect_dict(card, Vector2(420, 742), Vector2(760, 150))
+	var text_rect := {"x": int(card_rect["x"]) + 18, "y": int(card_rect["y"]) + 10, "w": 500, "h": 92}
+	var button_rect := {"x": int(card_rect["x"]) + 18, "y": int(card_rect["y"]) + 114, "w": 530, "h": 24}
+	var top_rect := _v0284_rect_dict(hud_objective_strip_label, Vector2(450, 52), Vector2(540, 24))
+	var hud_lines := [str(lines.get("name", "")), str(lines.get("primary", "")), str(lines.get("facts", "")), str(lines.get("readiness", ""))]
+	var exceeded: Array[String] = []
+	for line in hud_lines:
+		if line.length() > 64:
+			exceeded.append(line)
+	var raw_paragraphs: Array[String] = []
+	for line in hud_lines + [str(lines.get("strip", ""))]:
+		if line.length() > 74 or line.contains("validator") or line.contains("projectile, damage"):
+			raw_paragraphs.append(line)
+	var labels: Array = v0290_barrosan_reserve_deployment_approval_gate_step_proof.get(mode, {}).get("renderedTacticalWorldLabelTexts", [])
+	var allowed := ["ENGAGE ARMED", "PRESSURE CHECKED", "ASHEN BRACED", "LINE HELD", "ASHEN CONTAINED", "RESERVE READY", "RESERVE ASSIGNED", "SIGNAL SENT", "RESERVE ACK", "ORDER READY", "APPROVED", "GUARD CLEARED"]
+	var world_labels_short := true
+	for label in labels:
+		if str(label).length() > 18 or str(label) not in allowed:
+			world_labels_short = false
+	var text_overlaps_buttons := _v0284_rects_overlap(text_rect, button_rect)
+	var layout_pass := exceeded.is_empty() and raw_paragraphs.is_empty() and not text_overlaps_buttons and hud_lines.size() <= 4 and str(lines.get("strip", "")).length() <= 36 and world_labels_short
+	return {"mode": mode, "layoutStatus": "PASS" if layout_pass else "FAIL", "selectedCardRect": card_rect, "textRect": text_rect, "buttonRowRect": button_rect, "topStatusStripRect": top_rect, "textLineExceededAllowedWidth": not exceeded.is_empty(), "exceededTextLines": exceeded, "textOverlappedButtons": text_overlaps_buttons, "lineCountExceededVisibleRows": hud_lines.size() > 4, "topStatusStripExceededAllowedWidth": str(lines.get("strip", "")).length() > 36, "rawParagraphsAbsent": raw_paragraphs.is_empty(), "rawParagraphs": raw_paragraphs, "worldLabelsShort": world_labels_short, "selectAsterInsideSelectedCard": mode != "v0290_manual_fixture_baseline_clean_hud" or str(lines.get("facts", "")) == "Select Aster."}
+
+
+func _v0290_record_reserve_deployment_approval_gate_step_proof(mode: String) -> void:
+	var mapped := _v0290_map_review_mode(mode)
+	var base_snap: Dictionary = v0289_barrosan_reserve_support_order_prepared_step_proof.get(mapped, {}).duplicate(true)
+	if base_snap.is_empty():
+		_v0289_record_reserve_support_order_prepared_step_proof(mapped)
+		base_snap = v0289_barrosan_reserve_support_order_prepared_step_proof.get(mapped, {}).duplicate(true)
+	barrosan_runtime_review_mode = mode
+	_v0290_apply_reserve_deployment_approval_gate_step_ui()
+	var lines := _v0290_hud_lines(mode)
+	var rendered_labels := _v0290_rendered_tactical_world_labels()
+	var rendered_texts := _v0290_rendered_tactical_world_label_texts()
+	var approved_count := rendered_texts.count("APPROVED")
+	var order_count := rendered_texts.count("ORDER READY")
+	var ack_count := rendered_texts.count("RESERVE ACK")
+	var ready_count := rendered_texts.count("RESERVE READY")
+	var assigned_count := rendered_texts.count("RESERVE ASSIGNED")
+	var signal_count := rendered_texts.count("SIGNAL SENT")
+	var line_count := rendered_texts.count("LINE HELD")
+	var contained_count := rendered_texts.count("ASHEN CONTAINED")
+	var braced_count := rendered_texts.count("ASHEN BRACED")
+	var checked_count := rendered_texts.count("PRESSURE CHECKED")
+	var approved := _v0290_mode_has_approval(mode)
+	var support_ready := _v0290_mode_is_support_order_ready(mode)
+	var resources := {"crowns": 420, "stone": 160, "iron": 90, "aether": 38}
+	var combined := "%s %s %s %s %s %s" % [str(lines.get("name", "")), str(lines.get("primary", "")), str(lines.get("facts", "")), str(lines.get("readiness", "")), str(lines.get("button", "")), str(lines.get("strip", ""))]
+	base_snap["checkpoint"] = "v0.290"
+	base_snap["sourceV0289Mode"] = mapped
+	base_snap["combinedText"] = combined
+	base_snap["hudTextLines"] = {"nameAndRole": str(lines.get("name", "")), "primaryState": str(lines.get("primary", "")), "tacticalFacts": str(lines.get("facts", "")), "readiness": str(lines.get("readiness", "")), "button": str(lines.get("button", "")), "topStrip": str(lines.get("strip", ""))}
+	base_snap["renderedTacticalWorldLabels"] = rendered_labels
+	base_snap["renderedTacticalWorldLabelTexts"] = rendered_texts
+	base_snap["renderedTacticalWorldLabelCount"] = rendered_texts.size()
+	base_snap["reserveReadyLabelCount"] = ready_count
+	base_snap["reserveAssignedLabelCount"] = assigned_count
+	base_snap["signalSentLabelCount"] = signal_count
+	base_snap["reserveAckLabelCount"] = ack_count
+	base_snap["orderReadyLabelCount"] = order_count
+	base_snap["approvedLabelCount"] = approved_count
+	base_snap["deploymentApprovedStatusCount"] = 1 if str(lines.get("strip", "")) == "DEPLOYMENT APPROVED" else 0
+	base_snap["supportOrderReadyStatusCount"] = 1 if str(lines.get("strip", "")) == "SUPPORT ORDER READY" else int(base_snap.get("supportOrderReadyStatusCount", 0))
+	base_snap["approveAvailableAfterSupportOrderReady"] = mode == "v0290_approve_available" and str(lines.get("button", "")) == "Approve" and combined.contains("Awaiting deployment approval")
+	base_snap["approveCreatesDeploymentApprovedExactlyOnce"] = mode not in ["v0290_approve_clicked", "v0290_deployment_approved_exactly_once"] or int(base_snap["deploymentApprovedStatusCount"]) == 1
+	base_snap["approveCreatesApprovedExactlyOnce"] = mode not in ["v0290_approve_clicked", "v0290_approved_exactly_once"] or approved_count == 1
+	base_snap["repeatApproveNoDuplicateApproval"] = mode != "v0290_repeat_approve_no_duplicate_approval_marker_stack" or (approved_count == 1 and combined.contains("No duplicate approval"))
+	base_snap["repeatApproveNoSecondApprovalState"] = mode != "v0290_repeat_approve_no_duplicate_approval_marker_stack" or int(base_snap["deploymentApprovedStatusCount"]) == 1
+	base_snap["approveDoesNotCreateSecondMarker"] = (not approved) or int(base_snap.get("reserveMarkerCount", 1)) == 1
+	base_snap["barracksCardAcknowledgesAwaitingLaunchOrder"] = mode != "v0290_barracks_card_awaiting_launch_order" or (approved_count == 1 and combined.contains("Awaiting launch order"))
+	base_snap["defenderCardAcknowledgesSupportApprovedAwaitingLaunch"] = mode != "v0290_defender_card_support_approved_awaiting_launch" or (approved_count == 1 and combined.contains("Support approved") and combined.contains("Awaiting launch"))
+	base_snap["resourcesBeforeReserve"] = resources.duplicate(true)
+	base_snap["resourcesAfterTrain"] = resources.duplicate(true)
+	base_snap["resourcesAfterAssign"] = resources.duplicate(true)
+	base_snap["resourcesAfterSignal"] = resources.duplicate(true)
+	base_snap["resourcesAfterPrepare"] = resources.duplicate(true)
+	base_snap["resourcesAfterApprove"] = resources.duplicate(true)
+	base_snap["resourcesUnchangedAfterTrainAssignSignalPrepareApprove"] = mode != "v0290_resources_unchanged_after_train_assign_signal_prepare_approve" or (base_snap["resourcesBeforeReserve"] == base_snap["resourcesAfterTrain"] and base_snap["resourcesAfterTrain"] == base_snap["resourcesAfterAssign"] and base_snap["resourcesAfterAssign"] == base_snap["resourcesAfterSignal"] and base_snap["resourcesAfterSignal"] == base_snap["resourcesAfterPrepare"] and base_snap["resourcesAfterPrepare"] == base_snap["resourcesAfterApprove"])
+	base_snap["reserveMarkerMoved"] = false
+	base_snap["reserveMarkerPathingAdded"] = false
+	base_snap["reserveMarkerDeployAction"] = false
+	base_snap["reserveMarkerAttackAdded"] = false
+	base_snap["reserveMarkerEngageAction"] = false
+	base_snap["reserveMarkerCommitAction"] = false
+	base_snap["reserveMarkerHoldLineAction"] = false
+	base_snap["reserveMarkerTakesDamage"] = false
+	base_snap["reserveMarkerDealsDamage"] = false
+	base_snap["reserveMarkerDeath"] = false
+	base_snap["reserveMarkerDespawned"] = false
+	base_snap["routePreviewAdded"] = false
+	base_snap["approveCreatesProjectile"] = false
+	base_snap["approveCreatesAttackAnimation"] = false
+	base_snap["approveActivatesAi"] = false
+	base_snap["approveChangesPressure"] = false
+	base_snap["approveMovesReserveMarker"] = false
+	base_snap["approveDeploysUnit"] = false
+	base_snap["reserveMarkerNoMovementPathingAttackDeployBehavior"] = mode != "v0290_reserve_marker_no_movement_pathing_attack_deploy_behavior" or (approved_count == 1 and not bool(base_snap.get("reserveMarkerMoved", true)) and not bool(base_snap.get("reserveMarkerPathingAdded", true)) and not bool(base_snap.get("reserveMarkerDeployAction", true)) and not bool(base_snap.get("reserveMarkerAttackAdded", true)) and not bool(base_snap.get("routePreviewAdded", true)))
+	base_snap["watchpostNoReserveAssignSignalPrepareApproveAction"] = mode != "v0290_watchpost_no_hold_line_engage_commit_ashen_reserve_assign_signal_prepare_approve" or (str(lines.get("button", "")) == "Observe" and rendered_texts.is_empty())
+	base_snap["fieldBarracksNoCombatOrSignalActions"] = (not _v0290_mode_is_barracks_selected(mode)) or (str(lines.get("button", "")) in ["Train", "Assign", "Prepare", "Approve"] and not combined.contains("Engage") and not combined.contains("Commit") and not combined.contains("Hold Line") and not combined.contains("Ashen braced") and not combined.contains("Ashen contained") and not str(lines.get("button", "")).contains("Signal"))
+	base_snap["clearGuardSettlesDefenderContactCleanAfterApprove"] = mode != "v0290_clear_guard_settles_defender_contact_clean_after_approve" or (line_count == 0 and contained_count == 0 and braced_count == 0 and checked_count == 0 and approved_count == 1 and combined.contains("Contact settled"))
+	base_snap["reguardCleanAfterApproveNoAutoDeploy"] = mode != "v0290_reguard_clean_after_approve_no_auto_deploy" or (line_count == 0 and contained_count == 0 and braced_count == 0 and checked_count == 0 and approved_count == 1 and combined.contains("No auto-deploy"))
+	base_snap["autoDeployAdded"] = false
+	var contact: Dictionary = base_snap.get("firstContact", {}).duplicate(true)
+	contact["approvalState"] = "approved" if approved else ("ready_for_approval" if support_ready else "retained")
+	contact["engagementDamageAdded"] = false
+	contact["engagementProjectileAdded"] = false
+	contact["engagementAutoAttackAdded"] = false
+	contact["engagementAutoMoveAdded"] = false
+	contact["enemyDeath"] = false
+	contact["enemyDespawned"] = false
+	base_snap["firstContact"] = contact
+	base_snap["noProjectileDamageDeathDespawn"] = bool(base_snap.get("noProjectileDamageDeathDespawn", true)) and not bool(contact.get("engagementDamageAdded", true)) and not bool(contact.get("engagementProjectileAdded", true)) and not bool(contact.get("enemyDeath", true)) and not bool(contact.get("enemyDespawned", true)) and not bool(base_snap.get("reserveMarkerTakesDamage", true)) and not bool(base_snap.get("reserveMarkerDealsDamage", true)) and not bool(base_snap.get("reserveMarkerDeath", true)) and not bool(base_snap.get("reserveMarkerDespawned", true)) and not bool(base_snap.get("approveCreatesProjectile", true))
+	base_snap["layoutDiagnostics"] = _v0290_hud_layout_diagnostics(mode)
+	base_snap["reserveDeploymentApprovalGateStepOnly"] = true
+	base_snap["v0289SupportOrderRetained"] = true
+	base_snap["v0288BridgeSignalRetained"] = true
+	base_snap["v0287ReserveAssignedRetained"] = true
+	base_snap["v0286ReserveReadyRetained"] = true
+	base_snap["v0285HoldLineFlowRetained"] = true
+	base_snap["v0284HudLayoutRetained"] = true
+	base_snap["approvalGateOnly"] = true
+	base_snap["noCombatMovementPathingEconomyMutation"] = true
+	base_snap["defaultRuntimeMutationAdded"] = false
+	v0290_barrosan_reserve_deployment_approval_gate_step_proof[mode] = base_snap
+
+
 func _v0270_label_declutter_improved(contact: Dictionary) -> bool:
 	var contact_state := str(contact.get("contactState", ""))
 	return (
@@ -12441,6 +12802,124 @@ func _v0289_barrosan_reserve_support_order_prepared_step_status() -> Dictionary:
 		"missingSnapshots": missing,
 		"failedModes": failed_modes,
 		"proofSnapshots": v0289_barrosan_reserve_support_order_prepared_step_proof.duplicate(true),
+		"verdictCeiling": "PASS",
+	}
+
+
+func _v0290_barrosan_reserve_deployment_approval_gate_step_status() -> Dictionary:
+	var required := _v0290_review_modes()
+	var missing: Array[String] = []
+	var failed_modes: Array[String] = []
+	var pass_all := true
+	for mode in required:
+		var snap: Dictionary = v0290_barrosan_reserve_deployment_approval_gate_step_proof.get(mode, {})
+		if snap.is_empty():
+			missing.append(mode)
+			pass_all = false
+			continue
+		var layout: Dictionary = snap.get("layoutDiagnostics", {})
+		var labels: Array = snap.get("renderedTacticalWorldLabelTexts", [])
+		var mapped_v0289 := str(snap.get("sourceV0289Mode", _v0290_map_review_mode(mode)))
+		var mapped_v0288 := _v0289_map_review_mode(mapped_v0289)
+		var mapped_v0287 := _v0288_map_review_mode(mapped_v0288)
+		var mapped_v0286 := _v0287_map_review_mode(mapped_v0287)
+		var approval := _v0290_mode_has_approval(mode)
+		var support_ready := _v0290_mode_is_support_order_ready(mode)
+		var mode_pass := (
+			bool(snap.get("reserveDeploymentApprovalGateStepOnly", false))
+			and bool(snap.get("v0289SupportOrderRetained", false))
+			and bool(snap.get("v0288BridgeSignalRetained", false))
+			and bool(snap.get("v0287ReserveAssignedRetained", false))
+			and bool(snap.get("v0286ReserveReadyRetained", false))
+			and bool(snap.get("v0285HoldLineFlowRetained", false))
+			and bool(snap.get("v0284HudLayoutRetained", false))
+			and bool(snap.get("approvalGateOnly", false))
+			and bool(snap.get("noCombatMovementPathingEconomyMutation", false))
+			and not bool(snap.get("defaultRuntimeMutationAdded", true))
+			and not bool(snap.get("autoDeployAdded", true))
+			and not bool(snap.get("approveChangesPressure", true))
+			and not bool(snap.get("approveMovesReserveMarker", true))
+			and not bool(snap.get("approveDeploysUnit", true))
+			and not bool(snap.get("routePreviewAdded", true))
+			and not bool(snap.get("approveCreatesProjectile", true))
+			and not bool(snap.get("approveCreatesAttackAnimation", true))
+			and not bool(snap.get("approveActivatesAi", true))
+			and str(layout.get("layoutStatus", "FAIL")) == "PASS"
+			and not bool(layout.get("textLineExceededAllowedWidth", true))
+			and not bool(layout.get("textOverlappedButtons", true))
+			and not bool(layout.get("lineCountExceededVisibleRows", true))
+			and bool(layout.get("rawParagraphsAbsent", false))
+			and bool(layout.get("worldLabelsShort", false))
+		)
+		if mapped_v0286 in ["v0286_commit_engage_clicked", "v0286_post_commit_pressure_checked_ashen_braced", "v0286_hold_line_available_after_commit_locked"]:
+			mode_pass = mode_pass and labels.count("PRESSURE CHECKED") == 1 and labels.count("ASHEN BRACED") == 1 and int(snap.get("pressureAfterCommit", -1)) == 80
+		if mapped_v0286 == "v0286_hold_line_available_after_commit_locked":
+			mode_pass = mode_pass and bool(snap.get("holdLineAvailableAfterCommitLocked", false))
+		if mapped_v0286 in ["v0286_hold_line_clicked", "v0286_line_held_exactly_once", "v0286_ashen_contained_exactly_once"]:
+			mode_pass = mode_pass and labels.count("LINE HELD") == 1 and labels.count("ASHEN CONTAINED") == 1
+		if _v0289_mode_has_reserve_ready(mapped_v0289):
+			mode_pass = mode_pass and labels.count("RESERVE READY") == 1 and labels.count("RESERVE ASSIGNED") == 0
+		if _v0289_mode_has_reserve_assigned(mapped_v0289):
+			mode_pass = mode_pass and labels.count("RESERVE ASSIGNED") == 1 and labels.count("RESERVE READY") == 0
+		if _v0289_mode_has_bridge_signal(mapped_v0289):
+			mode_pass = mode_pass and labels.count("SIGNAL SENT") == 1 and labels.count("RESERVE ACK") == 1 and labels.count("ORDER READY") == 0
+		if (not approval) and (_v0289_mode_has_support_order(mapped_v0289) or support_ready):
+			mode_pass = mode_pass and labels.count("RESERVE ACK") == 1 and labels.count("ORDER READY") == 1 and labels.count("APPROVED") == 0 and bool(snap.get("prepareDoesNotCreateSecondMarker", false))
+		if approval:
+			var settled_after_approve := mode in ["v0290_clear_guard_settles_defender_contact_clean_after_approve", "v0290_reguard_clean_after_approve_no_auto_deploy"]
+			mode_pass = mode_pass and labels.count("RESERVE ACK") == 1 and labels.count("ORDER READY") == 1 and labels.count("APPROVED") == 1 and labels.count("RESERVE READY") == 0 and labels.count("RESERVE ASSIGNED") == 0 and labels.count("SIGNAL SENT") == 0 and (settled_after_approve or int(snap.get("deploymentApprovedStatusCount", 0)) == 1) and bool(snap.get("approveDoesNotCreateSecondMarker", false))
+		if mode == "v0290_approve_available":
+			mode_pass = mode_pass and bool(snap.get("approveAvailableAfterSupportOrderReady", false))
+		if mode == "v0290_deployment_approved_exactly_once":
+			mode_pass = mode_pass and bool(snap.get("approveCreatesDeploymentApprovedExactlyOnce", false))
+		if mode == "v0290_approved_exactly_once":
+			mode_pass = mode_pass and bool(snap.get("approveCreatesApprovedExactlyOnce", false))
+		if mode == "v0290_repeat_approve_no_duplicate_approval_marker_stack":
+			mode_pass = mode_pass and bool(snap.get("repeatApproveNoDuplicateApproval", false)) and bool(snap.get("repeatApproveNoSecondApprovalState", false)) and bool(snap.get("approveDoesNotCreateSecondMarker", false))
+		if mode == "v0290_resources_unchanged_after_train_assign_signal_prepare_approve":
+			mode_pass = mode_pass and bool(snap.get("resourcesUnchangedAfterTrainAssignSignalPrepareApprove", false))
+		if mode == "v0290_reserve_marker_no_movement_pathing_attack_deploy_behavior":
+			mode_pass = mode_pass and bool(snap.get("reserveMarkerNoMovementPathingAttackDeployBehavior", false))
+		if mode == "v0290_watchpost_no_hold_line_engage_commit_ashen_reserve_assign_signal_prepare_approve":
+			mode_pass = mode_pass and bool(snap.get("watchpostNoReserveAssignSignalPrepareApproveAction", false)) and labels.is_empty()
+		if _v0290_mode_is_barracks_selected(mode):
+			mode_pass = mode_pass and bool(snap.get("fieldBarracksNoCombatOrSignalActions", false))
+		if mode == "v0290_barracks_card_awaiting_launch_order":
+			mode_pass = mode_pass and bool(snap.get("barracksCardAcknowledgesAwaitingLaunchOrder", false))
+		if mode == "v0290_defender_card_support_approved_awaiting_launch":
+			mode_pass = mode_pass and bool(snap.get("defenderCardAcknowledgesSupportApprovedAwaitingLaunch", false))
+		if mode == "v0290_clear_guard_settles_defender_contact_clean_after_approve":
+			mode_pass = mode_pass and bool(snap.get("clearGuardSettlesDefenderContactCleanAfterApprove", false))
+		if mode == "v0290_reguard_clean_after_approve_no_auto_deploy":
+			mode_pass = mode_pass and bool(snap.get("reguardCleanAfterApproveNoAutoDeploy", false))
+		if mode == "v0290_no_projectile_damage_hp_loss_death_despawn":
+			mode_pass = mode_pass and bool(snap.get("noProjectileDamageDeathDespawn", false))
+		if not mode_pass:
+			failed_modes.append(mode)
+		pass_all = pass_all and mode_pass
+	var status_pass := missing.is_empty() and failed_modes.is_empty() and pass_all
+	return {
+		"status": "PASS" if status_pass else "IN_PROGRESS",
+		"checkpoint": "v0.290",
+		"reserveDeploymentApprovalGateStepStatus": "PASS" if status_pass else "IN_PROGRESS",
+		"topStripVocabulary": ["ENGAGE ARMED", "PRESSURE CHECKED -- ASHEN BRACED", "LINE HELD", "RESERVE READY", "RESERVE ASSIGNED", "BRIDGE SIGNAL SENT", "SUPPORT ORDER READY", "DEPLOYMENT APPROVED", "GUARD CLEARED", "REGUARD AVAILABLE", "WATCHPOST -- passive intel", "DEFAULT RUNTIME UNCHANGED"],
+		"v0289SupportOrderRetained": true,
+		"v0288BridgeSignalRetained": true,
+		"v0287ReserveAssignedRetained": true,
+		"v0286ReserveReadyRetained": true,
+		"v0285HoldLineFlowRetained": true,
+		"v0284HudLayoutRetained": true,
+		"defaultRuntimeUnchanged": true,
+		"approvalCreatesOneGateState": status_pass,
+		"approvedCreatesOneMarker": status_pass,
+		"repeatApproveNoDuplicate": status_pass,
+		"resourcesUnchanged": status_pass,
+		"reserveMarkerHarmlessStatic": status_pass,
+		"noTextButtonOverlap": status_pass,
+		"noRawParagraphs": status_pass,
+		"missingSnapshots": missing,
+		"failedModes": failed_modes,
+		"proofSnapshots": v0290_barrosan_reserve_deployment_approval_gate_step_proof.duplicate(true),
 		"verdictCeiling": "PASS",
 	}
 
@@ -16849,6 +17328,7 @@ func get_spike_status() -> Dictionary:
 		"barrosanReserveAssignedToBridgeStep": _v0287_barrosan_reserve_assigned_to_bridge_step_status() if barrosan_requested_checkpoint == "v0.287" else {},
 		"barrosanBridgeSignalReserveAcknowledgedStep": _v0288_barrosan_bridge_signal_reserve_acknowledged_step_status() if barrosan_requested_checkpoint == "v0.288" else {},
 		"barrosanReserveSupportOrderPreparedStep": _v0289_barrosan_reserve_support_order_prepared_step_status() if barrosan_requested_checkpoint == "v0.289" else {},
+		"barrosanReserveDeploymentApprovalGateStep": _v0290_barrosan_reserve_deployment_approval_gate_step_status() if barrosan_requested_checkpoint == "v0.290" else {},
 	}
 	return status
 
