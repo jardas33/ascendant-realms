@@ -4045,8 +4045,8 @@ func _live_ui_shell_state() -> Dictionary:
 	var objective_next_action := _v0211_next_action(mine_converted, worker_assigned, barracks_complete, militia_spawned, pressure_active, pressure_resolved)
 	var production_cards := _v0211_production_cards(active_tab, mine_converted, worker_assigned, barracks_complete, militia_queued, militia_spawned)
 	var tooltip_meta := _v0212_tooltip_meta(action, active_tab, player_ui_shell_production_focus_hint, tooltip, alert_severity)
-	if action.begins_with("v0280_") or action.begins_with("v0281_") or action.begins_with("v0283_") or action.begins_with("v0284_") or action.begins_with("v0285_") or action.begins_with("v0286_") or action.begins_with("v0287_"):
-		var v0281 := action.begins_with("v0281_") or action.begins_with("v0283_") or action.begins_with("v0284_") or action.begins_with("v0285_") or action.begins_with("v0286_") or action.begins_with("v0287_")
+	if action.begins_with("v0280_") or action.begins_with("v0281_") or action.begins_with("v0283_") or action.begins_with("v0284_") or action.begins_with("v0285_") or action.begins_with("v0286_") or action.begins_with("v0287_") or action.begins_with("v0288_"):
+		var v0281 := action.begins_with("v0281_") or action.begins_with("v0283_") or action.begins_with("v0284_") or action.begins_with("v0285_") or action.begins_with("v0286_") or action.begins_with("v0287_") or action.begins_with("v0288_")
 		var v0280_committed := action in [
 			"v0280_commit_engage_clicked",
 			"v0280_post_commit_exactly_one_world_label",
@@ -4079,15 +4079,19 @@ func _live_ui_shell_state() -> Dictionary:
 			"v0287_commit_engage_clicked",
 			"v0287_post_commit_pressure_checked_ashen_braced",
 			"v0287_hold_line_available_after_commit_locked",
+			"v0288_commit_engage_clicked",
+			"v0288_post_commit_pressure_checked_ashen_braced",
+			"v0288_hold_line_available_after_commit_locked",
 		]
-		var v0285_held := action in ["v0285_hold_line_clicked", "v0285_line_held_exactly_once", "v0285_ashen_contained_exactly_once", "v0285_combined_line_held_ashen_contained_readable_hud", "v0285_repeat_hold_line_no_duplicate_no_stack", "v0285_no_projectile_damage_death_despawn", "v0286_hold_line_clicked", "v0286_line_held_exactly_once", "v0286_ashen_contained_exactly_once", "v0287_hold_line_clicked", "v0287_line_held_exactly_once", "v0287_ashen_contained_exactly_once"]
-		var v0286_reserve_ready := action in ["v0286_train_militia_clicked", "v0286_reserve_ready_exactly_once", "v0286_barracks_card_reserve_militia_ready", "v0286_repeat_train_no_duplicate_reserve_no_stack", "v0286_resources_unchanged_after_reserve_ready", "v0286_reserve_marker_no_movement_pathing_attack_actions", "v0286_no_projectile_damage_hp_loss_death_despawn", "v0287_train_clicked", "v0287_reserve_ready_exactly_once", "v0287_barracks_assign_to_bridge_available"]
-		var v0287_reserve_assigned := action in ["v0287_assign_clicked", "v0287_reserve_assigned_exactly_once", "v0287_barracks_card_reserve_assigned_bridge_support_pending", "v0287_defender_card_acknowledges_reserve_assigned", "v0287_repeat_assign_no_duplicate_assignment_no_stack", "v0287_resources_unchanged_after_train_and_assign", "v0287_reserve_marker_no_movement_pathing_attack_deploy_behavior", "v0287_no_projectile_damage_hp_loss_death_despawn"]
-		var v0287_defender_ack := action == "v0287_defender_card_acknowledges_reserve_assigned"
-		var v0286_barracks_pretrain := action in ["v0286_select_field_barracks_after_hold_line", "v0286_field_barracks_train_available_reserve_slot_empty", "v0287_select_field_barracks_after_hold_line", "v0287_train_militia_available_reserve_slot_empty"]
-		var v0280_cleared := action in ["v0280_clear_guard_removes_commit_label", "v0281_clear_guard_removes_commit_label_real_hud_clean", "v0283_clear_guard_settles_ashen_response", "v0284_clear_guard_settles_ashen_response", "v0285_clear_guard_settles_hold_line", "v0286_clear_guard_settles_defender_contact_clean", "v0287_clear_guard_settles_defender_contact_clean_after_assigned"]
-		var v0280_reguard := action in ["v0280_reguard_availability_clean", "v0281_reguard_availability_clean_real_hud", "v0283_reguard_availability_clean", "v0284_reguard_availability_clean", "v0285_reguard_availability_clean_after_hold_line", "v0286_reguard_clean_after_reserve_ready", "v0287_reguard_clean_after_assigned_no_auto_deploy"]
-		var v0280_no_commit_entity := action in ["v0280_watchpost_no_engage_commit_action", "v0280_barracks_no_engage_commit_action", "v0280_default_runtime_unchanged_probe", "v0281_watchpost_no_engage_commit_action_real_hud", "v0281_barracks_no_engage_commit_action_real_hud", "v0281_default_runtime_unchanged_probe", "v0283_watchpost_no_engage_commit_ashen_braced", "v0283_barracks_no_engage_commit_ashen_braced", "v0284_watchpost_no_engage_commit_ashen_braced", "v0284_barracks_no_engage_commit_ashen_braced", "v0285_watchpost_no_hold_line_engage_commit_ashen", "v0285_barracks_no_hold_line_engage_commit_ashen", "v0286_watchpost_no_hold_line_engage_commit_ashen_reserve", "v0287_watchpost_no_hold_line_engage_commit_ashen_reserve_assign"]
+		var v0285_held := action in ["v0285_hold_line_clicked", "v0285_line_held_exactly_once", "v0285_ashen_contained_exactly_once", "v0285_combined_line_held_ashen_contained_readable_hud", "v0285_repeat_hold_line_no_duplicate_no_stack", "v0285_no_projectile_damage_death_despawn", "v0286_hold_line_clicked", "v0286_line_held_exactly_once", "v0286_ashen_contained_exactly_once", "v0287_hold_line_clicked", "v0287_line_held_exactly_once", "v0287_ashen_contained_exactly_once", "v0288_hold_line_clicked", "v0288_line_held_exactly_once", "v0288_ashen_contained_exactly_once"]
+		var v0286_reserve_ready := action in ["v0286_train_militia_clicked", "v0286_reserve_ready_exactly_once", "v0286_barracks_card_reserve_militia_ready", "v0286_repeat_train_no_duplicate_reserve_no_stack", "v0286_resources_unchanged_after_reserve_ready", "v0286_reserve_marker_no_movement_pathing_attack_actions", "v0286_no_projectile_damage_hp_loss_death_despawn", "v0287_train_clicked", "v0287_reserve_ready_exactly_once", "v0287_barracks_assign_to_bridge_available", "v0288_train_clicked", "v0288_reserve_ready_exactly_once", "v0288_assign_to_bridge_available"]
+		var v0287_reserve_assigned := action in ["v0287_assign_clicked", "v0287_reserve_assigned_exactly_once", "v0287_barracks_card_reserve_assigned_bridge_support_pending", "v0287_defender_card_acknowledges_reserve_assigned", "v0287_repeat_assign_no_duplicate_assignment_no_stack", "v0287_resources_unchanged_after_train_and_assign", "v0287_reserve_marker_no_movement_pathing_attack_deploy_behavior", "v0287_no_projectile_damage_hp_loss_death_despawn", "v0288_assign_clicked", "v0288_reserve_assigned_exactly_once", "v0288_select_defender_after_reserve_assigned", "v0288_defender_card_signal_available"]
+		var v0288_signal_ack := action in ["v0288_signal_clicked", "v0288_bridge_signal_sent_exactly_once", "v0288_reserve_ack_exactly_once", "v0288_defender_card_reserve_acknowledged", "v0288_barracks_card_bridge_signal_received", "v0288_repeat_signal_no_duplicate_signal_ack_stack", "v0288_resources_unchanged_after_train_assign_signal", "v0288_reserve_marker_no_movement_pathing_attack_deploy_behavior", "v0288_field_barracks_no_engage_commit_hold_ashen_signal", "v0288_no_projectile_damage_hp_loss_death_despawn"]
+		var v0287_defender_ack := action == "v0287_defender_card_acknowledges_reserve_assigned" or action in ["v0288_select_defender_after_reserve_assigned", "v0288_defender_card_signal_available"]
+		var v0286_barracks_pretrain := action in ["v0286_select_field_barracks_after_hold_line", "v0286_field_barracks_train_available_reserve_slot_empty", "v0287_select_field_barracks_after_hold_line", "v0287_train_militia_available_reserve_slot_empty", "v0288_select_field_barracks_after_hold_line", "v0288_train_militia_available_reserve_slot_empty"]
+		var v0280_cleared := action in ["v0280_clear_guard_removes_commit_label", "v0281_clear_guard_removes_commit_label_real_hud_clean", "v0283_clear_guard_settles_ashen_response", "v0284_clear_guard_settles_ashen_response", "v0285_clear_guard_settles_hold_line", "v0286_clear_guard_settles_defender_contact_clean", "v0287_clear_guard_settles_defender_contact_clean_after_assigned", "v0288_clear_guard_settles_defender_contact_clean_after_signal"]
+		var v0280_reguard := action in ["v0280_reguard_availability_clean", "v0281_reguard_availability_clean_real_hud", "v0283_reguard_availability_clean", "v0284_reguard_availability_clean", "v0285_reguard_availability_clean_after_hold_line", "v0286_reguard_clean_after_reserve_ready", "v0287_reguard_clean_after_assigned_no_auto_deploy", "v0288_reguard_clean_after_signal_no_auto_deploy"]
+		var v0280_no_commit_entity := action in ["v0280_watchpost_no_engage_commit_action", "v0280_barracks_no_engage_commit_action", "v0280_default_runtime_unchanged_probe", "v0281_watchpost_no_engage_commit_action_real_hud", "v0281_barracks_no_engage_commit_action_real_hud", "v0281_default_runtime_unchanged_probe", "v0283_watchpost_no_engage_commit_ashen_braced", "v0283_barracks_no_engage_commit_ashen_braced", "v0284_watchpost_no_engage_commit_ashen_braced", "v0284_barracks_no_engage_commit_ashen_braced", "v0285_watchpost_no_hold_line_engage_commit_ashen", "v0285_barracks_no_hold_line_engage_commit_ashen", "v0286_watchpost_no_hold_line_engage_commit_ashen_reserve", "v0287_watchpost_no_hold_line_engage_commit_ashen_reserve_assign", "v0288_watchpost_no_hold_line_engage_commit_ashen_reserve_assign_signal"]
 		active_tab = "TRAIN"
 		selected_title = "Militia Defender | East bridge" if v0281 else "Militia Defender"
 		selected_subtitle = "Engage armed | Engagement stance: contained | Bridge held | Pressure contained 90/100" if v0281 else "Engage armed | East bridge | Pressure contained 90/100"
@@ -4100,7 +4104,19 @@ func _live_ui_shell_state() -> Dictionary:
 		alert_text = "Ashen pressure: 90/100"
 		alert_severity = "hostile"
 		events = ["Engage armed", "Bridge held", "Commit available"]
-		if v0285_held:
+		if v0288_signal_ack:
+			selected_title = "Field Barracks | Production" if action in ["v0288_barracks_card_bridge_signal_received", "v0288_resources_unchanged_after_train_assign_signal", "v0288_reserve_marker_no_movement_pathing_attack_deploy_behavior", "v0288_field_barracks_no_engage_commit_hold_ashen_signal", "v0288_no_projectile_damage_hp_loss_death_despawn"] else "Militia Defender | East bridge"
+			selected_subtitle = "Reserve acknowledged | Bridge signal received | No deployment" if selected_title.begins_with("Field") else ("Signal sent | No duplicate signal | Reserve acknowledged" if action == "v0288_repeat_signal_no_duplicate_signal_ack_stack" else "Signal sent | Bridge held | Reserve acknowledged")
+			command_hint = "Ack  No Signal action  No combat actions" if selected_title.begins_with("Field") else "Signal  Reserve ack  No movement"
+			status_pip = "BRIDGE SIGNAL SENT"
+			tooltip = "Bridge signal is acknowledgement only; it does not move, deploy, path, attack, damage or mutate resources."
+			objective = "Bridge signal sent"
+			objective_detail = "Reserve acknowledged.\nNo deployment.\nResources unchanged."
+			objective_next_action = "Repeat Signal stays locked to one acknowledgement."
+			alert_text = "BRIDGE SIGNAL SENT"
+			alert_severity = "info"
+			events = ["Signal sent", "Reserve ack", "No deployment"]
+		elif v0285_held:
 			selected_title = "Militia Defender | East bridge"
 			selected_subtitle = "Line held | Bridge held | Pressure 80/100 | Ashen contained"
 			command_hint = "Held  No duplicate hold  Clear Guard available"
@@ -4138,16 +4154,16 @@ func _live_ui_shell_state() -> Dictionary:
 			events = ["Reserve assigned", "No deployment", "Resources unchanged"] if v0287_reserve_assigned else (["Reserve ready", "Assign available", "Resources unchanged"] if v0286_reserve_ready else ["Barracks selected", "Train available", "Reserve slot empty"])
 		elif v0280_committed:
 			selected_title = "Militia Defender | East bridge" if v0281 else selected_title
-			selected_subtitle = "Engagement committed | Bridge held | Pressure checked 80/100 | Ashen braced | Commit locked" if (action.begins_with("v0283_") or action.begins_with("v0284_") or action.begins_with("v0285_") or action.begins_with("v0286_") or action.begins_with("v0287_")) else "Engagement committed | Bridge held | Pressure checked 80/100 | Commit locked"
-			command_hint = "Hold Line ready  No projectile  No unit damage" if action in ["v0285_hold_line_available_after_commit_locked", "v0286_hold_line_available_after_commit_locked", "v0287_hold_line_available_after_commit_locked"] else ("No projectile  No unit damage  No enemy death/despawn  No repeat pressure effect" if v0281 else "Commit locked  Clear Guard  Hold")
+			selected_subtitle = "Engagement committed | Bridge held | Pressure checked 80/100 | Ashen braced | Commit locked" if (action.begins_with("v0283_") or action.begins_with("v0284_") or action.begins_with("v0285_") or action.begins_with("v0286_") or action.begins_with("v0287_") or action.begins_with("v0288_")) else "Engagement committed | Bridge held | Pressure checked 80/100 | Commit locked"
+			command_hint = "Hold Line ready  No projectile  No unit damage" if action in ["v0285_hold_line_available_after_commit_locked", "v0286_hold_line_available_after_commit_locked", "v0287_hold_line_available_after_commit_locked", "v0288_hold_line_available_after_commit_locked"] else ("No projectile  No unit damage  No enemy death/despawn  No repeat pressure effect" if v0281 else "Commit locked  Clear Guard  Hold")
 			status_pip = "COMMITTED"
 			tooltip = "Engagement committed: pressure checked 80/100; no projectile, no unit damage, no enemy death/despawn; repeat commit locked."
 			objective = "Engagement committed"
 			objective_detail = "Pressure checked 80/100.\nCommit locked.\nBridge held.\nNo projectile, unit damage, enemy death/despawn, or repeat pressure effect." if v0281 else "Bridge held.\nPressure checked 80/100.\nNo projectile, unit damage, enemy death or despawn."
-			objective_next_action = "Use Hold Line to contain Ashen pressure." if action in ["v0285_hold_line_available_after_commit_locked", "v0286_hold_line_available_after_commit_locked", "v0287_hold_line_available_after_commit_locked"] else "Commit locked; keep holding the bridge."
+			objective_next_action = "Use Hold Line to contain Ashen pressure." if action in ["v0285_hold_line_available_after_commit_locked", "v0286_hold_line_available_after_commit_locked", "v0287_hold_line_available_after_commit_locked", "v0288_hold_line_available_after_commit_locked"] else "Commit locked; keep holding the bridge."
 			alert_text = "Pressure checked 80/100"
 			alert_severity = "info"
-			events = ["Engagement committed", "Pressure checked 80/100", "Ashen braced", "Hold Line ready"] if action in ["v0285_hold_line_available_after_commit_locked", "v0286_hold_line_available_after_commit_locked", "v0287_hold_line_available_after_commit_locked"] else (["Engagement committed", "Pressure checked 80/100", "Ashen braced", "Commit locked"] if (action.begins_with("v0283_") or action.begins_with("v0284_") or action.begins_with("v0285_") or action.begins_with("v0286_") or action.begins_with("v0287_")) else ["Engagement committed", "Bridge held", "Pressure checked 80/100", "Commit locked"])
+			events = ["Engagement committed", "Pressure checked 80/100", "Ashen braced", "Hold Line ready"] if action in ["v0285_hold_line_available_after_commit_locked", "v0286_hold_line_available_after_commit_locked", "v0287_hold_line_available_after_commit_locked", "v0288_hold_line_available_after_commit_locked"] else (["Engagement committed", "Pressure checked 80/100", "Ashen braced", "Commit locked"] if (action.begins_with("v0283_") or action.begins_with("v0284_") or action.begins_with("v0285_") or action.begins_with("v0286_") or action.begins_with("v0287_") or action.begins_with("v0288_")) else ["Engagement committed", "Bridge held", "Pressure checked 80/100", "Commit locked"])
 		elif v0280_cleared:
 			selected_title = "Militia Defender | East bridge" if v0281 else selected_title
 			selected_subtitle = "Guard cleared | Engagement stance ended | Ashen response settled" if (action.begins_with("v0283_") or action.begins_with("v0284_")) else "Guard cleared | Engagement stance ended | Pressure checked 80/100"
@@ -8083,11 +8099,11 @@ func _apply_player_slice_action(action: String) -> Dictionary:
 	elif action == "v0212_viewport_marker" or action == "v0212_alerts" or action.begins_with("v0212_resolution"):
 		player_ui_shell_production_tab_override = "TRAIN"
 		player_ui_shell_production_focus_hint = "train_militia"
-	if action.begins_with("v0271_") or action.begins_with("v0272_") or action.begins_with("v0273_") or action.begins_with("v0274_") or action.begins_with("v0275_") or action.begins_with("v0276_") or action.begins_with("v0277_") or action.begins_with("v0278_") or action.begins_with("v0279_") or action.begins_with("v0280_") or action.begins_with("v0281_") or action.begins_with("v0283_") or action.begins_with("v0284_") or action.begins_with("v0285_") or action.begins_with("v0286_") or action.begins_with("v0287_"):
+	if action.begins_with("v0271_") or action.begins_with("v0272_") or action.begins_with("v0273_") or action.begins_with("v0274_") or action.begins_with("v0275_") or action.begins_with("v0276_") or action.begins_with("v0277_") or action.begins_with("v0278_") or action.begins_with("v0279_") or action.begins_with("v0280_") or action.begins_with("v0281_") or action.begins_with("v0283_") or action.begins_with("v0284_") or action.begins_with("v0285_") or action.begins_with("v0286_") or action.begins_with("v0287_") or action.begins_with("v0288_"):
 		_ensure_player_battle_scene()
 		_call_scene("set_barrosan_runtime_review_mode", [action])
 		_render_player_screen("battle")
-		if action.begins_with("v0280_") or action.begins_with("v0281_") or action.begins_with("v0283_") or action.begins_with("v0284_") or action.begins_with("v0285_") or action.begins_with("v0286_") or action.begins_with("v0287_"):
+		if action.begins_with("v0280_") or action.begins_with("v0281_") or action.begins_with("v0283_") or action.begins_with("v0284_") or action.begins_with("v0285_") or action.begins_with("v0286_") or action.begins_with("v0287_") or action.begins_with("v0288_"):
 			_call_scene("set_barrosan_runtime_review_mode", [action])
 		if action.begins_with("v0280_"):
 			_draw_v0280_review_card_overlay(action)
@@ -9130,6 +9146,8 @@ func _apply_player_slice_action(action: String) -> Dictionary:
 
 func _player_capture_checkpoint() -> String:
 	var normalized_root := _artifact_root_from_args().replace("\\", "/")
+	if normalized_root.contains("/v0288"):
+		return "v0.288"
 	if normalized_root.contains("/v0287"):
 		return "v0.287"
 	if normalized_root.contains("/v0286"):
@@ -9331,9 +9349,43 @@ func _player_capture_checkpoint() -> String:
 	return "v0.124"
 
 func _is_bounded_microloop_checkpoint() -> bool:
-	return ["v0.129", "v0.130", "v0.160", "v0.162", "v0.164", "v0.166", "v0.168", "v0.169", "v0.170", "v0.173", "v0.174", "v0.177", "v0.178", "v0.179", "v0.181", "v0.184", "v0.185", "v0.186", "v0.187", "v0.193", "v0.194", "v0.195", "v0.196", "v0.197", "v0.198", "v0.199", "v0.200", "v0.203", "v0.204", "v0.205", "v0.206", "v0.209", "v0.210", "v0.211", "v0.212", "v0.213", "v0.215", "v0.216", "v0.217", "v0.218", "v0.219", "v0.220", "v0.221", "v0.222", "v0.223", "v0.224", "v0.227", "v0.228", "v0.229", "v0.230", "v0.231", "v0.243", "v0.244", "v0.245", "v0.246", "v0.247", "v0.248", "v0.249", "v0.250", "v0.251", "v0.252", "v0.253", "v0.254", "v0.255", "v0.256", "v0.257", "v0.258", "v0.259", "v0.261", "v0.262", "v0.263", "v0.264", "v0.265", "v0.266", "v0.267", "v0.268", "v0.269", "v0.270", "v0.271", "v0.272", "v0.273", "v0.274", "v0.275", "v0.276", "v0.277", "v0.278", "v0.279", "v0.280", "v0.281", "v0.283", "v0.284", "v0.285", "v0.286", "v0.287"].has(_player_capture_checkpoint())
+	return ["v0.129", "v0.130", "v0.160", "v0.162", "v0.164", "v0.166", "v0.168", "v0.169", "v0.170", "v0.173", "v0.174", "v0.177", "v0.178", "v0.179", "v0.181", "v0.184", "v0.185", "v0.186", "v0.187", "v0.193", "v0.194", "v0.195", "v0.196", "v0.197", "v0.198", "v0.199", "v0.200", "v0.203", "v0.204", "v0.205", "v0.206", "v0.209", "v0.210", "v0.211", "v0.212", "v0.213", "v0.215", "v0.216", "v0.217", "v0.218", "v0.219", "v0.220", "v0.221", "v0.222", "v0.223", "v0.224", "v0.227", "v0.228", "v0.229", "v0.230", "v0.231", "v0.243", "v0.244", "v0.245", "v0.246", "v0.247", "v0.248", "v0.249", "v0.250", "v0.251", "v0.252", "v0.253", "v0.254", "v0.255", "v0.256", "v0.257", "v0.258", "v0.259", "v0.261", "v0.262", "v0.263", "v0.264", "v0.265", "v0.266", "v0.267", "v0.268", "v0.269", "v0.270", "v0.271", "v0.272", "v0.273", "v0.274", "v0.275", "v0.276", "v0.277", "v0.278", "v0.279", "v0.280", "v0.281", "v0.283", "v0.284", "v0.285", "v0.286", "v0.287", "v0.288"].has(_player_capture_checkpoint())
 
 func _player_capture_steps() -> Array[Dictionary]:
+	if _player_capture_checkpoint() == "v0.288":
+		return [
+			{"id":"v0288_manual_fixture_baseline_clean_hud_visible","label":"v0.288 manual fixture baseline clean HUD", "action":"v0288_manual_fixture_baseline_clean_hud"},
+			{"id":"v0288_engage_available_before_click_visible","label":"v0.288 Engage available before click", "action":"v0288_engage_available_before_click"},
+			{"id":"v0288_engage_armed_visible","label":"v0.288 Engage armed", "action":"v0288_engage_armed"},
+			{"id":"v0288_commit_engage_clicked_visible","label":"v0.288 Commit Engage clicked", "action":"v0288_commit_engage_clicked"},
+			{"id":"v0288_post_commit_pressure_checked_ashen_braced_visible","label":"v0.288 post-commit PRESSURE CHECKED and ASHEN BRACED", "action":"v0288_post_commit_pressure_checked_ashen_braced"},
+			{"id":"v0288_hold_line_available_after_commit_locked_visible","label":"v0.288 Hold Line available after Commit locked", "action":"v0288_hold_line_available_after_commit_locked"},
+			{"id":"v0288_hold_line_clicked_visible","label":"v0.288 Hold Line clicked", "action":"v0288_hold_line_clicked"},
+			{"id":"v0288_line_held_exactly_once_visible","label":"v0.288 LINE HELD exactly once", "action":"v0288_line_held_exactly_once"},
+			{"id":"v0288_ashen_contained_exactly_once_visible","label":"v0.288 ASHEN CONTAINED exactly once", "action":"v0288_ashen_contained_exactly_once"},
+			{"id":"v0288_select_field_barracks_after_hold_line_visible","label":"v0.288 select Field Barracks after Hold Line", "action":"v0288_select_field_barracks_after_hold_line"},
+			{"id":"v0288_train_militia_available_reserve_slot_empty_visible","label":"v0.288 Train Militia available reserve slot empty", "action":"v0288_train_militia_available_reserve_slot_empty"},
+			{"id":"v0288_train_clicked_visible","label":"v0.288 Train clicked", "action":"v0288_train_clicked"},
+			{"id":"v0288_reserve_ready_exactly_once_visible","label":"v0.288 RESERVE READY exactly once", "action":"v0288_reserve_ready_exactly_once"},
+			{"id":"v0288_assign_to_bridge_available_visible","label":"v0.288 Assign to bridge available", "action":"v0288_assign_to_bridge_available"},
+			{"id":"v0288_assign_clicked_visible","label":"v0.288 Assign clicked", "action":"v0288_assign_clicked"},
+			{"id":"v0288_reserve_assigned_exactly_once_visible","label":"v0.288 RESERVE ASSIGNED exactly once", "action":"v0288_reserve_assigned_exactly_once"},
+			{"id":"v0288_select_defender_after_reserve_assigned_visible","label":"v0.288 select defender after reserve assigned", "action":"v0288_select_defender_after_reserve_assigned"},
+			{"id":"v0288_defender_card_signal_available_visible","label":"v0.288 defender Signal available", "action":"v0288_defender_card_signal_available"},
+			{"id":"v0288_signal_clicked_visible","label":"v0.288 Signal clicked", "action":"v0288_signal_clicked"},
+			{"id":"v0288_bridge_signal_sent_exactly_once_visible","label":"v0.288 BRIDGE SIGNAL SENT exactly once", "action":"v0288_bridge_signal_sent_exactly_once"},
+			{"id":"v0288_reserve_ack_exactly_once_visible","label":"v0.288 RESERVE ACK exactly once", "action":"v0288_reserve_ack_exactly_once"},
+			{"id":"v0288_defender_card_reserve_acknowledged_visible","label":"v0.288 defender card Reserve acknowledged", "action":"v0288_defender_card_reserve_acknowledged"},
+			{"id":"v0288_barracks_card_bridge_signal_received_visible","label":"v0.288 Barracks card Bridge signal received", "action":"v0288_barracks_card_bridge_signal_received"},
+			{"id":"v0288_repeat_signal_no_duplicate_signal_ack_stack_visible","label":"v0.288 repeat Signal no duplicate signal/ack stack", "action":"v0288_repeat_signal_no_duplicate_signal_ack_stack"},
+			{"id":"v0288_resources_unchanged_after_train_assign_signal_visible","label":"v0.288 resources unchanged after Train Assign Signal", "action":"v0288_resources_unchanged_after_train_assign_signal"},
+			{"id":"v0288_reserve_marker_no_movement_pathing_attack_deploy_behavior_visible","label":"v0.288 reserve marker no movement/pathing/attack/deploy behavior", "action":"v0288_reserve_marker_no_movement_pathing_attack_deploy_behavior"},
+			{"id":"v0288_watchpost_no_hold_line_engage_commit_ashen_reserve_assign_signal_visible","label":"v0.288 Watchpost no Hold/Engage/Commit/Ashen/Reserve/Assign/Signal", "action":"v0288_watchpost_no_hold_line_engage_commit_ashen_reserve_assign_signal"},
+			{"id":"v0288_field_barracks_no_engage_commit_hold_ashen_signal_visible","label":"v0.288 Field Barracks no combat or Signal action", "action":"v0288_field_barracks_no_engage_commit_hold_ashen_signal"},
+			{"id":"v0288_clear_guard_settles_defender_contact_clean_after_signal_visible","label":"v0.288 Clear Guard settles defender contact after Signal", "action":"v0288_clear_guard_settles_defender_contact_clean_after_signal"},
+			{"id":"v0288_reguard_clean_after_signal_no_auto_deploy_visible","label":"v0.288 Reguard clean after Signal no auto-deploy", "action":"v0288_reguard_clean_after_signal_no_auto_deploy"},
+			{"id":"v0288_no_projectile_damage_hp_loss_death_despawn_visible","label":"v0.288 no projectile/damage/HP loss/death/despawn", "action":"v0288_no_projectile_damage_hp_loss_death_despawn"},
+		]
 	if _player_capture_checkpoint() == "v0.287":
 		return [
 			{"id":"v0287_manual_fixture_baseline_clean_hud_visible","label":"v0.287 manual fixture baseline clean HUD", "action":"v0287_manual_fixture_baseline_clean_hud"},
@@ -11887,7 +11939,7 @@ func _barrosan_runtime_skin_requested() -> bool:
 
 
 func _barrosan_runtime_scene_requested() -> bool:
-	return _barrosan_runtime_skin_requested() or _player_capture_checkpoint() in ["v0.254", "v0.255", "v0.256", "v0.257", "v0.258", "v0.259", "v0.261", "v0.262", "v0.263", "v0.264", "v0.265", "v0.266", "v0.267", "v0.268", "v0.269", "v0.270", "v0.271", "v0.272", "v0.273", "v0.274", "v0.275", "v0.276", "v0.277", "v0.278", "v0.279", "v0.280", "v0.281", "v0.283", "v0.284", "v0.285", "v0.286", "v0.287"]
+	return _barrosan_runtime_skin_requested() or _player_capture_checkpoint() in ["v0.254", "v0.255", "v0.256", "v0.257", "v0.258", "v0.259", "v0.261", "v0.262", "v0.263", "v0.264", "v0.265", "v0.266", "v0.267", "v0.268", "v0.269", "v0.270", "v0.271", "v0.272", "v0.273", "v0.274", "v0.275", "v0.276", "v0.277", "v0.278", "v0.279", "v0.280", "v0.281", "v0.283", "v0.284", "v0.285", "v0.286", "v0.287", "v0.288"]
 
 
 func _script_args() -> PackedStringArray:
