@@ -1,0 +1,463 @@
+{
+  "stats": [
+    {
+      "fileName": "01_v0292_preflight_head_ci_resolution.png",
+      "bytes": 19237,
+      "width": 1600,
+      "height": 900,
+      "sampleUniqueColors": 210,
+      "meanBrightness": 21.847,
+      "brightnessStdDev": 5.418
+    },
+    {
+      "fileName": "02_v0292_true_default_runtime_baseline_unchanged.png",
+      "bytes": 127932,
+      "width": 1600,
+      "height": 900,
+      "sampleUniqueColors": 2235,
+      "meanBrightness": 57.073,
+      "brightnessStdDev": 19.628
+    },
+    {
+      "fileName": "04_v0292_manual_fixture_baseline_clean_hud_visible.png",
+      "bytes": 158244,
+      "width": 1600,
+      "height": 900,
+      "sampleUniqueColors": 2105,
+      "meanBrightness": 76.234,
+      "brightnessStdDev": 22.869
+    },
+    {
+      "fileName": "05_v0292_engage_available_before_click_visible.png",
+      "bytes": 161588,
+      "width": 1600,
+      "height": 900,
+      "sampleUniqueColors": 2127,
+      "meanBrightness": 76.291,
+      "brightnessStdDev": 22.795
+    },
+    {
+      "fileName": "06_v0292_engage_armed_visible.png",
+      "bytes": 162637,
+      "width": 1600,
+      "height": 900,
+      "sampleUniqueColors": 2139,
+      "meanBrightness": 76.302,
+      "brightnessStdDev": 22.774
+    },
+    {
+      "fileName": "07_v0292_commit_engage_clicked_visible.png",
+      "bytes": 184209,
+      "width": 1600,
+      "height": 900,
+      "sampleUniqueColors": 2271,
+      "meanBrightness": 76.721,
+      "brightnessStdDev": 23.033
+    },
+    {
+      "fileName": "08_v0292_post_commit_pressure_checked_ashen_braced_visible.png",
+      "bytes": 184209,
+      "width": 1600,
+      "height": 900,
+      "sampleUniqueColors": 2271,
+      "meanBrightness": 76.721,
+      "brightnessStdDev": 23.033
+    },
+    {
+      "fileName": "09_v0292_hold_line_available_after_commit_locked_visible.png",
+      "bytes": 184468,
+      "width": 1600,
+      "height": 900,
+      "sampleUniqueColors": 2274,
+      "meanBrightness": 76.726,
+      "brightnessStdDev": 23.025
+    },
+    {
+      "fileName": "10_v0292_hold_line_clicked_visible.png",
+      "bytes": 172633,
+      "width": 1600,
+      "height": 900,
+      "sampleUniqueColors": 2265,
+      "meanBrightness": 76.603,
+      "brightnessStdDev": 22.736
+    },
+    {
+      "fileName": "11_v0292_line_held_exactly_once_visible.png",
+      "bytes": 172633,
+      "width": 1600,
+      "height": 900,
+      "sampleUniqueColors": 2265,
+      "meanBrightness": 76.603,
+      "brightnessStdDev": 22.736
+    },
+    {
+      "fileName": "12_v0292_ashen_contained_exactly_once_visible.png",
+      "bytes": 172633,
+      "width": 1600,
+      "height": 900,
+      "sampleUniqueColors": 2265,
+      "meanBrightness": 76.603,
+      "brightnessStdDev": 22.736
+    },
+    {
+      "fileName": "13_v0292_select_field_barracks_after_hold_line_visible.png",
+      "bytes": 172954,
+      "width": 1600,
+      "height": 900,
+      "sampleUniqueColors": 2302,
+      "meanBrightness": 76.716,
+      "brightnessStdDev": 23.138
+    },
+    {
+      "fileName": "14_v0292_train_militia_available_reserve_slot_empty_visible.png",
+      "bytes": 172954,
+      "width": 1600,
+      "height": 900,
+      "sampleUniqueColors": 2302,
+      "meanBrightness": 76.716,
+      "brightnessStdDev": 23.138
+    },
+    {
+      "fileName": "15_v0292_train_clicked_visible.png",
+      "bytes": 179967,
+      "width": 1600,
+      "height": 900,
+      "sampleUniqueColors": 2335,
+      "meanBrightness": 76.865,
+      "brightnessStdDev": 23.061
+    },
+    {
+      "fileName": "16_v0292_reserve_ready_exactly_once_visible.png",
+      "bytes": 179967,
+      "width": 1600,
+      "height": 900,
+      "sampleUniqueColors": 2335,
+      "meanBrightness": 76.865,
+      "brightnessStdDev": 23.061
+    },
+    {
+      "fileName": "17_v0292_assign_to_bridge_available_visible.png",
+      "bytes": 179967,
+      "width": 1600,
+      "height": 900,
+      "sampleUniqueColors": 2335,
+      "meanBrightness": 76.865,
+      "brightnessStdDev": 23.061
+    },
+    {
+      "fileName": "18_v0292_assign_clicked_visible.png",
+      "bytes": 180215,
+      "width": 1600,
+      "height": 900,
+      "sampleUniqueColors": 2333,
+      "meanBrightness": 76.863,
+      "brightnessStdDev": 23.058
+    },
+    {
+      "fileName": "19_v0292_reserve_assigned_exactly_once_visible.png",
+      "bytes": 180215,
+      "width": 1600,
+      "height": 900,
+      "sampleUniqueColors": 2333,
+      "meanBrightness": 76.863,
+      "brightnessStdDev": 23.058
+    },
+    {
+      "fileName": "20_v0292_select_defender_after_reserve_assigned_visible.png",
+      "bytes": 180625,
+      "width": 1600,
+      "height": 900,
+      "sampleUniqueColors": 2309,
+      "meanBrightness": 76.746,
+      "brightnessStdDev": 22.68
+    },
+    {
+      "fileName": "21_v0292_signal_available_visible.png",
+      "bytes": 180625,
+      "width": 1600,
+      "height": 900,
+      "sampleUniqueColors": 2309,
+      "meanBrightness": 76.746,
+      "brightnessStdDev": 22.68
+    },
+    {
+      "fileName": "22_v0292_signal_clicked_visible.png",
+      "bytes": 182222,
+      "width": 1600,
+      "height": 900,
+      "sampleUniqueColors": 2312,
+      "meanBrightness": 76.758,
+      "brightnessStdDev": 22.705
+    },
+    {
+      "fileName": "23_v0292_bridge_signal_sent_exactly_once_visible.png",
+      "bytes": 182222,
+      "width": 1600,
+      "height": 900,
+      "sampleUniqueColors": 2312,
+      "meanBrightness": 76.758,
+      "brightnessStdDev": 22.705
+    },
+    {
+      "fileName": "24_v0292_signal_sent_exactly_once_visible.png",
+      "bytes": 182222,
+      "width": 1600,
+      "height": 900,
+      "sampleUniqueColors": 2312,
+      "meanBrightness": 76.758,
+      "brightnessStdDev": 22.705
+    },
+    {
+      "fileName": "25_v0292_reserve_ack_exactly_once_visible.png",
+      "bytes": 182222,
+      "width": 1600,
+      "height": 900,
+      "sampleUniqueColors": 2312,
+      "meanBrightness": 76.758,
+      "brightnessStdDev": 22.705
+    },
+    {
+      "fileName": "26_v0292_select_field_barracks_after_reserve_ack_visible.png",
+      "bytes": 186126,
+      "width": 1600,
+      "height": 900,
+      "sampleUniqueColors": 2367,
+      "meanBrightness": 76.923,
+      "brightnessStdDev": 23.02
+    },
+    {
+      "fileName": "27_v0292_prepare_support_available_visible.png",
+      "bytes": 186126,
+      "width": 1600,
+      "height": 900,
+      "sampleUniqueColors": 2367,
+      "meanBrightness": 76.923,
+      "brightnessStdDev": 23.02
+    },
+    {
+      "fileName": "28_v0292_prepare_clicked_visible.png",
+      "bytes": 184778,
+      "width": 1600,
+      "height": 900,
+      "sampleUniqueColors": 2355,
+      "meanBrightness": 76.915,
+      "brightnessStdDev": 23.037
+    },
+    {
+      "fileName": "29_v0292_support_order_ready_exactly_once_visible.png",
+      "bytes": 184778,
+      "width": 1600,
+      "height": 900,
+      "sampleUniqueColors": 2355,
+      "meanBrightness": 76.915,
+      "brightnessStdDev": 23.037
+    },
+    {
+      "fileName": "30_v0292_order_ready_exactly_once_visible.png",
+      "bytes": 184778,
+      "width": 1600,
+      "height": 900,
+      "sampleUniqueColors": 2355,
+      "meanBrightness": 76.915,
+      "brightnessStdDev": 23.037
+    },
+    {
+      "fileName": "31_v0292_select_field_barracks_after_support_order_ready_visible.png",
+      "bytes": 184894,
+      "width": 1600,
+      "height": 900,
+      "sampleUniqueColors": 2352,
+      "meanBrightness": 76.916,
+      "brightnessStdDev": 23.035
+    },
+    {
+      "fileName": "32_v0292_approve_available_visible.png",
+      "bytes": 184894,
+      "width": 1600,
+      "height": 900,
+      "sampleUniqueColors": 2352,
+      "meanBrightness": 76.916,
+      "brightnessStdDev": 23.035
+    },
+    {
+      "fileName": "33_v0292_approve_clicked_visible.png",
+      "bytes": 184923,
+      "width": 1600,
+      "height": 900,
+      "sampleUniqueColors": 2354,
+      "meanBrightness": 76.965,
+      "brightnessStdDev": 23.459
+    },
+    {
+      "fileName": "34_v0292_deployment_approved_exactly_once_visible.png",
+      "bytes": 184923,
+      "width": 1600,
+      "height": 900,
+      "sampleUniqueColors": 2354,
+      "meanBrightness": 76.965,
+      "brightnessStdDev": 23.459
+    },
+    {
+      "fileName": "35_v0292_approved_exactly_once_visible.png",
+      "bytes": 184923,
+      "width": 1600,
+      "height": 900,
+      "sampleUniqueColors": 2354,
+      "meanBrightness": 76.965,
+      "brightnessStdDev": 23.459
+    },
+    {
+      "fileName": "36_v0292_barracks_card_awaiting_launch_order_visible.png",
+      "bytes": 184923,
+      "width": 1600,
+      "height": 900,
+      "sampleUniqueColors": 2354,
+      "meanBrightness": 76.965,
+      "brightnessStdDev": 23.459
+    },
+    {
+      "fileName": "37_v0292_defender_card_support_approved_awaiting_launch_visible.png",
+      "bytes": 184324,
+      "width": 1600,
+      "height": 900,
+      "sampleUniqueColors": 2322,
+      "meanBrightness": 76.838,
+      "brightnessStdDev": 23.106
+    },
+    {
+      "fileName": "38_v0292_select_field_barracks_after_deployment_approved_visible.png",
+      "bytes": 184530,
+      "width": 1600,
+      "height": 900,
+      "sampleUniqueColors": 2351,
+      "meanBrightness": 76.959,
+      "brightnessStdDev": 23.468
+    },
+    {
+      "fileName": "39_v0292_stage_available_visible.png",
+      "bytes": 184530,
+      "width": 1600,
+      "height": 900,
+      "sampleUniqueColors": 2351,
+      "meanBrightness": 76.959,
+      "brightnessStdDev": 23.468
+    },
+    {
+      "fileName": "40_v0292_stage_clicked_visible.png",
+      "bytes": 188142,
+      "width": 1600,
+      "height": 900,
+      "sampleUniqueColors": 2374,
+      "meanBrightness": 77.007,
+      "brightnessStdDev": 23.262
+    },
+    {
+      "fileName": "41_v0292_launch_order_staged_exactly_once_visible.png",
+      "bytes": 188142,
+      "width": 1600,
+      "height": 900,
+      "sampleUniqueColors": 2374,
+      "meanBrightness": 77.007,
+      "brightnessStdDev": 23.262
+    },
+    {
+      "fileName": "42_v0292_launch_staged_exactly_once_visible.png",
+      "bytes": 188142,
+      "width": 1600,
+      "height": 900,
+      "sampleUniqueColors": 2374,
+      "meanBrightness": 77.007,
+      "brightnessStdDev": 23.262
+    },
+    {
+      "fileName": "43_v0292_barracks_card_awaiting_final_release_visible.png",
+      "bytes": 188142,
+      "width": 1600,
+      "height": 900,
+      "sampleUniqueColors": 2374,
+      "meanBrightness": 77.007,
+      "brightnessStdDev": 23.262
+    },
+    {
+      "fileName": "44_v0292_defender_card_launch_staged_awaiting_release_visible.png",
+      "bytes": 187477,
+      "width": 1600,
+      "height": 900,
+      "sampleUniqueColors": 2345,
+      "meanBrightness": 76.885,
+      "brightnessStdDev": 22.9
+    },
+    {
+      "fileName": "45_v0292_repeat_stage_no_duplicate_staging_marker_stack_visible.png",
+      "bytes": 188048,
+      "width": 1600,
+      "height": 900,
+      "sampleUniqueColors": 2378,
+      "meanBrightness": 77.007,
+      "brightnessStdDev": 23.266
+    },
+    {
+      "fileName": "46_v0292_resources_unchanged_after_train_assign_signal_prepare_approve_stage_visible.png",
+      "bytes": 188142,
+      "width": 1600,
+      "height": 900,
+      "sampleUniqueColors": 2374,
+      "meanBrightness": 77.007,
+      "brightnessStdDev": 23.262
+    },
+    {
+      "fileName": "47_v0292_reserve_marker_no_movement_pathing_attack_deploy_launch_behavior_visible.png",
+      "bytes": 188142,
+      "width": 1600,
+      "height": 900,
+      "sampleUniqueColors": 2374,
+      "meanBrightness": 77.007,
+      "brightnessStdDev": 23.262
+    },
+    {
+      "fileName": "48_v0292_watchpost_no_hold_line_engage_commit_ashen_reserve_assign_signal_prepare_approve_stage_visible.png",
+      "bytes": 166272,
+      "width": 1600,
+      "height": 900,
+      "sampleUniqueColors": 2161,
+      "meanBrightness": 76.368,
+      "brightnessStdDev": 22.89
+    },
+    {
+      "fileName": "49_v0292_field_barracks_no_engage_commit_hold_ashen_signal_visible.png",
+      "bytes": 176629,
+      "width": 1600,
+      "height": 900,
+      "sampleUniqueColors": 2239,
+      "meanBrightness": 76.687,
+      "brightnessStdDev": 23.306
+    },
+    {
+      "fileName": "50_v0292_clear_guard_settles_defender_contact_clean_after_stage_visible.png",
+      "bytes": 175374,
+      "width": 1600,
+      "height": 900,
+      "sampleUniqueColors": 2192,
+      "meanBrightness": 76.559,
+      "brightnessStdDev": 22.945
+    },
+    {
+      "fileName": "51_v0292_reguard_clean_after_stage_no_auto_launch_deploy_visible.png",
+      "bytes": 177470,
+      "width": 1600,
+      "height": 900,
+      "sampleUniqueColors": 2202,
+      "meanBrightness": 76.589,
+      "brightnessStdDev": 22.909
+    },
+    {
+      "fileName": "52_v0292_no_projectile_damage_hp_loss_death_despawn_visible.png",
+      "bytes": 176629,
+      "width": 1600,
+      "height": 900,
+      "sampleUniqueColors": 2239,
+      "meanBrightness": 76.687,
+      "brightnessStdDev": 23.306
+    }
+  ]
+}

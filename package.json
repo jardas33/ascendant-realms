@@ -274,6 +274,9 @@
     "godot:validate:salto-barrosan-reserve-deployment-approval-gate-step": "powershell -NoProfile -ExecutionPolicy Bypass -File tools/godot/validateGodotV0290BarrosanReserveDeploymentApprovalGateStepWindows.ps1",
     "godot:capture:salto-barrosan-reserve-launch-order-staged-step": "powershell -NoProfile -ExecutionPolicy Bypass -File tools/godot/captureGodotV0291BarrosanReserveLaunchOrderStagedStepWindows.ps1",
     "godot:validate:salto-barrosan-reserve-launch-order-staged-step": "powershell -NoProfile -ExecutionPolicy Bypass -File tools/godot/validateGodotV0291BarrosanReserveLaunchOrderStagedStepWindows.ps1",
+
+    "godot:capture:salto-barrosan-selected-card-message-format-repair": "powershell -NoProfile -ExecutionPolicy Bypass -File tools/godot/captureGodotV0292BarrosanSelectedCardMessageFormatRepairWindows.ps1",
+    "godot:validate:salto-barrosan-selected-card-message-format-repair": "powershell -NoProfile -ExecutionPolicy Bypass -File tools/godot/validateGodotV0292BarrosanSelectedCardMessageFormatRepairWindows.ps1",
     "godot:capture:salto-environment-contrast": "powershell -NoProfile -ExecutionPolicy Bypass -File tools/godot/captureGodotSaltoEnvironmentContrastWindows.ps1",
     "godot:audit:player-slice": "powershell -NoProfile -ExecutionPolicy Bypass -File tools/godot/auditGodotPlayerSliceWindows.ps1",
     "godot:validate:player-slice": "powershell -NoProfile -ExecutionPolicy Bypass -File tools/godot/validateGodotPlayerSlice.ps1",
