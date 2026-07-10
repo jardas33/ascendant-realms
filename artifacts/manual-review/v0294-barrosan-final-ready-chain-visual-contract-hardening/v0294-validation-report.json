@@ -1,0 +1,26 @@
+{
+  "status": "PASS_v0294_BARROSAN_FINAL_READY_CHAIN_VISUAL_CONTRACT_HARDENING_VALIDATION",
+  "errors": [],
+  "baseHead": "561611b7c6ef3f92fd1b0d0d3aafc2fd49ba5c5b",
+  "acceptedLabels": [
+    "PRESSURE CHECKED",
+    "ASHEN BRACED",
+    "LINE HELD",
+    "ASHEN CONTAINED",
+    "RESERVE READY",
+    "RESERVE ASSIGNED",
+    "BRIDGE SIGNAL SENT",
+    "SIGNAL SENT",
+    "RESERVE ACK",
+    "SUPPORT ORDER READY",
+    "ORDER READY",
+    "DEPLOYMENT APPROVED",
+    "APPROVED",
+    "LAUNCH ORDER STAGED",
+    "LAUNCH STAGED",
+    "FINAL RELEASE READY",
+    "RELEASE READY"
+  ],
+  "requiredCaptureCount": 47,
+  "runtimeChanged": false
+}
