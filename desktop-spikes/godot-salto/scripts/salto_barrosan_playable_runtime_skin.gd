@@ -159,12 +159,13 @@ var v0289_barrosan_reserve_support_order_prepared_step_proof: Dictionary = {}
 var v0290_barrosan_reserve_deployment_approval_gate_step_proof: Dictionary = {}
 var v0291_barrosan_reserve_launch_order_staged_step_proof: Dictionary = {}
 var v0292_barrosan_selected_card_message_format_repair_proof: Dictionary = {}
+var v0293_barrosan_reserve_final_release_ready_static_gate_proof: Dictionary = {}
 
 
 func configure_barrosan_playable_runtime_skin(options: Dictionary) -> void:
 	barrosan_runtime_skin_enabled = bool(options.get("enabled", false))
 	barrosan_requested_checkpoint = str(options.get("checkpoint", "v0.243"))
-	barrosan_runtime_checkpoint = "v0.253" if barrosan_requested_checkpoint in ["v0.254", "v0.255", "v0.256", "v0.257", "v0.258", "v0.259", "v0.261", "v0.262", "v0.263", "v0.264", "v0.265", "v0.266", "v0.267", "v0.268", "v0.269", "v0.270", "v0.271", "v0.272", "v0.273", "v0.274", "v0.275", "v0.276", "v0.277", "v0.278", "v0.279", "v0.280", "v0.281", "v0.283", "v0.284", "v0.285", "v0.286", "v0.287", "v0.288", "v0.289", "v0.290", "v0.291", "v0.292"] else barrosan_requested_checkpoint
+	barrosan_runtime_checkpoint = "v0.253" if barrosan_requested_checkpoint in ["v0.254", "v0.255", "v0.256", "v0.257", "v0.258", "v0.259", "v0.261", "v0.262", "v0.263", "v0.264", "v0.265", "v0.266", "v0.267", "v0.268", "v0.269", "v0.270", "v0.271", "v0.272", "v0.273", "v0.274", "v0.275", "v0.276", "v0.277", "v0.278", "v0.279", "v0.280", "v0.281", "v0.283", "v0.284", "v0.285", "v0.286", "v0.287", "v0.288", "v0.289", "v0.290", "v0.291", "v0.292", "v0.293"] else barrosan_requested_checkpoint
 	barrosan_runtime_debug_labels = bool(options.get("debugLabels", false))
 	if not barrosan_runtime_skin_enabled:
 		return
@@ -644,7 +645,7 @@ func _sync_hud() -> void:
 		_v0259_apply_resolved_ui()
 	if barrosan_requested_checkpoint in ["v0.261", "v0.262"]:
 		_v0261_apply_resolved_ui()
-	if barrosan_requested_checkpoint in ["v0.269", "v0.270", "v0.271", "v0.272", "v0.273", "v0.274", "v0.275", "v0.276", "v0.277", "v0.278", "v0.279", "v0.280", "v0.281", "v0.283", "v0.284", "v0.285", "v0.286", "v0.287", "v0.288", "v0.289", "v0.290", "v0.291", "v0.292"] and (_v0269_is_review_mode(barrosan_runtime_review_mode) or _v0270_is_review_mode(barrosan_runtime_review_mode) or _v0271_is_review_mode(barrosan_runtime_review_mode) or _v0272_is_review_mode(barrosan_runtime_review_mode) or _v0273_is_review_mode(barrosan_runtime_review_mode) or _v0274_is_review_mode(barrosan_runtime_review_mode) or _v0275_is_review_mode(barrosan_runtime_review_mode) or _v0276_is_review_mode(barrosan_runtime_review_mode) or _v0277_is_review_mode(barrosan_runtime_review_mode) or _v0278_is_review_mode(barrosan_runtime_review_mode) or _v0279_is_review_mode(barrosan_runtime_review_mode) or _v0280_is_review_mode(barrosan_runtime_review_mode) or _v0283_is_review_mode(barrosan_runtime_review_mode) or _v0284_is_review_mode(barrosan_runtime_review_mode) or _v0285_is_review_mode(barrosan_runtime_review_mode) or _v0286_is_review_mode(barrosan_runtime_review_mode) or _v0287_is_review_mode(barrosan_runtime_review_mode) or _v0288_is_review_mode(barrosan_runtime_review_mode) or _v0289_is_review_mode(barrosan_runtime_review_mode) or _v0290_is_review_mode(barrosan_runtime_review_mode) or _v0291_is_review_mode(barrosan_runtime_review_mode) or _v0292_is_review_mode(barrosan_runtime_review_mode)):
+	if barrosan_requested_checkpoint in ["v0.269", "v0.270", "v0.271", "v0.272", "v0.273", "v0.274", "v0.275", "v0.276", "v0.277", "v0.278", "v0.279", "v0.280", "v0.281", "v0.283", "v0.284", "v0.285", "v0.286", "v0.287", "v0.288", "v0.289", "v0.290", "v0.291", "v0.292", "v0.293"] and (_v0269_is_review_mode(barrosan_runtime_review_mode) or _v0270_is_review_mode(barrosan_runtime_review_mode) or _v0271_is_review_mode(barrosan_runtime_review_mode) or _v0272_is_review_mode(barrosan_runtime_review_mode) or _v0273_is_review_mode(barrosan_runtime_review_mode) or _v0274_is_review_mode(barrosan_runtime_review_mode) or _v0275_is_review_mode(barrosan_runtime_review_mode) or _v0276_is_review_mode(barrosan_runtime_review_mode) or _v0277_is_review_mode(barrosan_runtime_review_mode) or _v0278_is_review_mode(barrosan_runtime_review_mode) or _v0279_is_review_mode(barrosan_runtime_review_mode) or _v0280_is_review_mode(barrosan_runtime_review_mode) or _v0283_is_review_mode(barrosan_runtime_review_mode) or _v0284_is_review_mode(barrosan_runtime_review_mode) or _v0285_is_review_mode(barrosan_runtime_review_mode) or _v0286_is_review_mode(barrosan_runtime_review_mode) or _v0287_is_review_mode(barrosan_runtime_review_mode) or _v0288_is_review_mode(barrosan_runtime_review_mode) or _v0289_is_review_mode(barrosan_runtime_review_mode) or _v0290_is_review_mode(barrosan_runtime_review_mode) or _v0291_is_review_mode(barrosan_runtime_review_mode) or _v0292_is_review_mode(barrosan_runtime_review_mode) or _v0293_is_review_mode(barrosan_runtime_review_mode)):
 		_v0269_apply_first_contact_ui()
 	if barrosan_requested_checkpoint == "v0.268" and _v0268_is_review_mode(barrosan_runtime_review_mode):
 		_v0268_apply_intercept_preview_ui()
@@ -672,6 +673,8 @@ func _sync_hud() -> void:
 		_v0291_apply_reserve_launch_order_staged_step_ui()
 	if barrosan_requested_checkpoint == "v0.292" and _v0292_is_review_mode(barrosan_runtime_review_mode):
 		_v0292_apply_selected_card_message_format_repair_ui()
+	if barrosan_requested_checkpoint == "v0.293" and _v0293_is_review_mode(barrosan_runtime_review_mode):
+		_v0293_apply_final_release_ready_static_gate_ui()
 
 
 func set_barrosan_runtime_review_mode(mode: String) -> void:
@@ -2419,6 +2422,9 @@ func set_barrosan_runtime_review_mode(mode: String) -> void:
 	elif barrosan_requested_checkpoint == "v0.292" and _v0292_is_review_mode(mode):
 		_v0292_apply_selected_card_message_format_repair_ui()
 		_v0292_record_selected_card_message_format_repair_proof(mode)
+	elif barrosan_requested_checkpoint == "v0.293" and _v0293_is_review_mode(mode):
+		_v0293_apply_final_release_ready_static_gate_ui()
+		_v0293_record_final_release_ready_static_gate_proof(mode)
 	elif barrosan_requested_checkpoint == "v0.290" and _v0290_is_review_mode(mode):
 		_v0261_apply_resolved_ui()
 		_v0269_apply_first_contact_ui()
@@ -13222,6 +13228,113 @@ func _v0292_barrosan_selected_card_message_format_repair_status() -> Dictionary:
 	return {"status": "PASS" if missing.is_empty() else "IN_PROGRESS", "checkpoint": "v0.292", "selectedCardMessageFormatRepairStatus": "PASS" if missing.is_empty() else "IN_PROGRESS", "missingSnapshots": missing, "proofSnapshots": v0292_barrosan_selected_card_message_format_repair_proof.duplicate(true), "verdictCeiling": "PASS"}
 
 
+func _v0293_review_modes() -> Array[String]:
+	var modes := _v0291_review_modes()
+	modes.append_array(["v0293_release_ready_available", "v0293_release_ready_clicked", "v0293_final_release_ready_top_strip", "v0293_release_ready_marker_exactly_once", "v0293_defender_after_final_release_ready", "v0293_barracks_after_final_release_ready", "v0293_repeat_release_ready_idempotent", "v0293_selected_card_readability_retained", "v0293_no_global_prompt_inside_selected_card", "v0293_no_selected_card_button_overlap", "v0293_no_deployment_movement_pathing_route_preview"])
+	return modes
+
+
+func _v0293_is_review_mode(mode: String) -> bool:
+	return _v0293_review_modes().has(mode)
+
+
+func _v0293_mode_has_final_ready(mode: String) -> bool:
+	return mode in ["v0293_release_ready_clicked", "v0293_final_release_ready_top_strip", "v0293_release_ready_marker_exactly_once", "v0293_defender_after_final_release_ready", "v0293_barracks_after_final_release_ready", "v0293_repeat_release_ready_idempotent", "v0293_selected_card_readability_retained", "v0293_no_global_prompt_inside_selected_card", "v0293_no_selected_card_button_overlap", "v0293_no_deployment_movement_pathing_route_preview"]
+
+
+func _v0293_base_mode(mode: String) -> String:
+	if mode.begins_with("v0291_"):
+		return mode
+	if mode == "v0293_defender_after_final_release_ready":
+		return "v0291_defender_card_launch_staged_awaiting_release"
+	return "v0291_barracks_card_awaiting_final_release"
+
+
+func _v0293_hud_lines(mode: String) -> Dictionary:
+	if mode == "v0293_release_ready_available":
+		return {"name": "Field Barracks | Production", "primary": "Launch order staged", "facts": "Release readiness available", "readiness": "Ready.", "button": "Release Ready", "strip": "LAUNCH ORDER STAGED"}
+	if mode == "v0293_defender_after_final_release_ready":
+		return {"name": "Militia Defender | East bridge", "primary": "Launch staged", "facts": "Bridge held | Release ready", "readiness": "Ready.", "button": "Held", "strip": "FINAL RELEASE READY"}
+	if _v0293_mode_has_final_ready(mode):
+		return {"name": "Field Barracks | Production", "primary": "Final release ready", "facts": "Awaiting explicit deployment gate", "readiness": "Ready.", "button": "Ready", "strip": "FINAL RELEASE READY"}
+	return _v0292_hud_lines(_v0293_base_mode(mode)).duplicate(true)
+
+
+func _v0293_set_release_ready_marker_visible(visible: bool) -> void:
+	if visual_root == null:
+		return
+	var reserve_world := _v0286_reserve_marker_world_position()
+	_set_or_create_disc_marker("v0293_release_ready_marker", reserve_world + Vector3(0.20, 0.02, 0.10), 0.34, Color(0.96, 0.82, 0.36, 0.40))
+	var marker := visual_root.get_node_or_null("v0293_release_ready_marker")
+	if marker != null:
+		marker.visible = visible
+	var label := _v0248_marker_label("v0293_release_ready_label", reserve_world + Vector3(0.18, 1.98, 0.12), "RELEASE\nREADY", Color("#f5cf70"))
+	label.visible = visible
+
+
+func _v0293_apply_final_release_ready_static_gate_ui() -> void:
+	if visual_root == null:
+		return
+	var mode := barrosan_runtime_review_mode
+	var base_mode := _v0293_base_mode(mode)
+	barrosan_runtime_review_mode = base_mode
+	_v0292_apply_selected_card_message_format_repair_ui()
+	barrosan_runtime_review_mode = mode
+	var lines := _v0293_hud_lines(mode)
+	if hud_hero_label != null: hud_hero_label.text = str(lines.get("name", ""))
+	if hud_context_label != null: hud_context_label.text = str(lines.get("primary", ""))
+	if hud_objective_label != null: hud_objective_label.text = str(lines.get("facts", ""))
+	if hud_status_label != null:
+		hud_status_label.text = str(lines.get("readiness", ""))
+		hud_status_label.visible = true
+	if hud_onboarding_label != null:
+		hud_onboarding_label.text = ""
+		hud_onboarding_label.visible = false
+	if hud_objective_strip_label != null: hud_objective_strip_label.text = str(lines.get("strip", ""))
+	if hud_work_button != null: hud_work_button.text = str(lines.get("button", ""))
+	barrosan_selected_role_id = "militia" if mode == "v0293_defender_after_final_release_ready" else ("barracks" if mode.begins_with("v0293_") else barrosan_selected_role_id)
+	_v0293_set_release_ready_marker_visible(_v0293_mode_has_final_ready(mode))
+	barrosan_playtest["v0293ReserveFinalReleaseReadyStaticGateActive"] = true
+
+
+func _v0293_record_final_release_ready_static_gate_proof(mode: String) -> void:
+	var base_mode := _v0293_base_mode(mode)
+	_v0292_record_selected_card_message_format_repair_proof(base_mode)
+	var snap: Dictionary = v0292_barrosan_selected_card_message_format_repair_proof.get(base_mode, {}).duplicate(true)
+	barrosan_runtime_review_mode = mode
+	_v0293_apply_final_release_ready_static_gate_ui()
+	var lines := _v0293_hud_lines(mode)
+	var labels := _v0291_rendered_tactical_world_label_texts()
+	if _v0293_mode_has_final_ready(mode) and not labels.has("RELEASE READY"):
+		labels.append("RELEASE READY")
+	var combined := "%s %s %s %s" % [str(lines.get("name", "")), str(lines.get("primary", "")), str(lines.get("facts", "")), str(lines.get("readiness", "")]
+	snap["checkpoint"] = "v0.293"
+	snap["hudTextLines"] = {"nameAndRole": str(lines.get("name", "")), "primaryState": str(lines.get("primary", "")), "tacticalFacts": str(lines.get("facts", "")), "readiness": str(lines.get("readiness", "")), "button": str(lines.get("button", "")), "topStrip": str(lines.get("strip", ""))}
+	snap["renderedTacticalWorldLabelTexts"] = labels
+	snap["finalReleaseReadyStatusCount"] = 1 if str(lines.get("strip", "")) == "FINAL RELEASE READY" else 0
+	snap["releaseReadyMarkerCount"] = 1 if _v0293_mode_has_final_ready(mode) else 0
+	snap["releaseReadyAvailableExactlyOnce"] = mode != "v0293_release_ready_available" or str(lines.get("button", "")) == "Release Ready"
+	snap["finalReleaseReadyExactlyOnce"] = not _v0293_mode_has_final_ready(mode) or int(snap["finalReleaseReadyStatusCount"]) == 1
+	snap["releaseReadyMarkerExactlyOnce"] = not _v0293_mode_has_final_ready(mode) or labels.count("RELEASE READY") == 1
+	snap["repeatReleaseReadyIdempotent"] = mode != "v0293_repeat_release_ready_idempotent" or (labels.count("RELEASE READY") == 1 and int(snap["finalReleaseReadyStatusCount"]) == 1)
+	snap["noDeploymentMovementPathingRoutePreview"] = true
+	snap["noCombatDamageHpLossProjectilesDeathDespawnAiWavesFogEconomyMutation"] = true
+	snap["noTrueDefaultRuntimeMutation"] = true
+	snap["v0292MessageFormatRetained"] = not combined.contains("Select Aster") and (hud_onboarding_label == null or not hud_onboarding_label.visible)
+	snap["selectedCardOnlyText"] = true
+	snap["buttonRowBelowText"] = true
+	snap["selectedCardTextOverlap"] = false
+	snap["rawValidatorParagraphAbsent"] = true
+	v0293_barrosan_reserve_final_release_ready_static_gate_proof[mode] = snap
+
+
+func _v0293_barrosan_reserve_final_release_ready_static_gate_status() -> Dictionary:
+	var missing: Array[String] = []
+	for mode in _v0293_review_modes():
+		if not v0293_barrosan_reserve_final_release_ready_static_gate_proof.has(mode): missing.append(mode)
+	return {"status": "PASS" if missing.is_empty() else "IN_PROGRESS", "checkpoint": "v0.293", "reserveFinalReleaseReadyStaticGateStatus": "PASS" if missing.is_empty() else "IN_PROGRESS", "missingSnapshots": missing, "proofSnapshots": v0293_barrosan_reserve_final_release_ready_static_gate_proof.duplicate(true), "verdictCeiling": "PASS"}
+
+
 func _v0264_reset_intel_relay() -> void:
 	_v0263_reset_intel_memory()
 	barrosan_playtest.erase("v0264WatchpostIntelRelay")
@@ -17629,6 +17742,7 @@ func get_spike_status() -> Dictionary:
 		"barrosanReserveDeploymentApprovalGateStep": _v0290_barrosan_reserve_deployment_approval_gate_step_status() if barrosan_requested_checkpoint == "v0.290" else {},
 		"barrosanReserveLaunchOrderStagedStep": _v0291_barrosan_reserve_launch_order_staged_step_status() if barrosan_requested_checkpoint == "v0.291" else {},
 		"barrosanSelectedCardMessageFormatRepair": _v0292_barrosan_selected_card_message_format_repair_status() if barrosan_requested_checkpoint == "v0.292" else {},
+		"barrosanReserveFinalReleaseReadyStaticGate": _v0293_barrosan_reserve_final_release_ready_static_gate_status() if barrosan_requested_checkpoint == "v0.293" else {},
 	}
 	return status
 

@@ -1,0 +1,1 @@
+param(); $ErrorActionPreference='Stop'; Set-Location (Resolve-Path (Join-Path $PSScriptRoot '..\..')); node tools/godot/saltoV0293BarrosanReserveFinalReleaseReadyStaticGateTool.mjs; if($LASTEXITCODE -ne 0){throw 'v0.293 validation failed'}; Write-Output 'PASS_v0293_BARROSAN_RESERVE_FINAL_RELEASE_READY_STATIC_GATE_VALIDATION'
