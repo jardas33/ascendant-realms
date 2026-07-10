@@ -160,6 +160,7 @@ var v0290_barrosan_reserve_deployment_approval_gate_step_proof: Dictionary = {}
 var v0291_barrosan_reserve_launch_order_staged_step_proof: Dictionary = {}
 var v0292_barrosan_selected_card_message_format_repair_proof: Dictionary = {}
 var v0293_barrosan_reserve_final_release_ready_static_gate_proof: Dictionary = {}
+var v0295_barrosan_static_deployment_route_preview_gate_proof: Dictionary = {}
 
 
 func configure_barrosan_playable_runtime_skin(options: Dictionary) -> void:
@@ -645,7 +646,7 @@ func _sync_hud() -> void:
 		_v0259_apply_resolved_ui()
 	if barrosan_requested_checkpoint in ["v0.261", "v0.262"]:
 		_v0261_apply_resolved_ui()
-	if barrosan_requested_checkpoint in ["v0.269", "v0.270", "v0.271", "v0.272", "v0.273", "v0.274", "v0.275", "v0.276", "v0.277", "v0.278", "v0.279", "v0.280", "v0.281", "v0.283", "v0.284", "v0.285", "v0.286", "v0.287", "v0.288", "v0.289", "v0.290", "v0.291", "v0.292", "v0.293"] and (_v0269_is_review_mode(barrosan_runtime_review_mode) or _v0270_is_review_mode(barrosan_runtime_review_mode) or _v0271_is_review_mode(barrosan_runtime_review_mode) or _v0272_is_review_mode(barrosan_runtime_review_mode) or _v0273_is_review_mode(barrosan_runtime_review_mode) or _v0274_is_review_mode(barrosan_runtime_review_mode) or _v0275_is_review_mode(barrosan_runtime_review_mode) or _v0276_is_review_mode(barrosan_runtime_review_mode) or _v0277_is_review_mode(barrosan_runtime_review_mode) or _v0278_is_review_mode(barrosan_runtime_review_mode) or _v0279_is_review_mode(barrosan_runtime_review_mode) or _v0280_is_review_mode(barrosan_runtime_review_mode) or _v0283_is_review_mode(barrosan_runtime_review_mode) or _v0284_is_review_mode(barrosan_runtime_review_mode) or _v0285_is_review_mode(barrosan_runtime_review_mode) or _v0286_is_review_mode(barrosan_runtime_review_mode) or _v0287_is_review_mode(barrosan_runtime_review_mode) or _v0288_is_review_mode(barrosan_runtime_review_mode) or _v0289_is_review_mode(barrosan_runtime_review_mode) or _v0290_is_review_mode(barrosan_runtime_review_mode) or _v0291_is_review_mode(barrosan_runtime_review_mode) or _v0292_is_review_mode(barrosan_runtime_review_mode) or _v0293_is_review_mode(barrosan_runtime_review_mode)):
+	if barrosan_requested_checkpoint in ["v0.269", "v0.270", "v0.271", "v0.272", "v0.273", "v0.274", "v0.275", "v0.276", "v0.277", "v0.278", "v0.279", "v0.280", "v0.281", "v0.283", "v0.284", "v0.285", "v0.286", "v0.287", "v0.288", "v0.289", "v0.290", "v0.291", "v0.292", "v0.293", "v0.295"] and (_v0269_is_review_mode(barrosan_runtime_review_mode) or _v0270_is_review_mode(barrosan_runtime_review_mode) or _v0271_is_review_mode(barrosan_runtime_review_mode) or _v0272_is_review_mode(barrosan_runtime_review_mode) or _v0273_is_review_mode(barrosan_runtime_review_mode) or _v0274_is_review_mode(barrosan_runtime_review_mode) or _v0275_is_review_mode(barrosan_runtime_review_mode) or _v0276_is_review_mode(barrosan_runtime_review_mode) or _v0277_is_review_mode(barrosan_runtime_review_mode) or _v0278_is_review_mode(barrosan_runtime_review_mode) or _v0279_is_review_mode(barrosan_runtime_review_mode) or _v0280_is_review_mode(barrosan_runtime_review_mode) or _v0283_is_review_mode(barrosan_runtime_review_mode) or _v0284_is_review_mode(barrosan_runtime_review_mode) or _v0285_is_review_mode(barrosan_runtime_review_mode) or _v0286_is_review_mode(barrosan_runtime_review_mode) or _v0287_is_review_mode(barrosan_runtime_review_mode) or _v0288_is_review_mode(barrosan_runtime_review_mode) or _v0289_is_review_mode(barrosan_runtime_review_mode) or _v0290_is_review_mode(barrosan_runtime_review_mode) or _v0291_is_review_mode(barrosan_runtime_review_mode) or _v0292_is_review_mode(barrosan_runtime_review_mode) or _v0293_is_review_mode(barrosan_runtime_review_mode) or _v0295_is_review_mode(barrosan_runtime_review_mode)):
 		_v0269_apply_first_contact_ui()
 	if barrosan_requested_checkpoint == "v0.268" and _v0268_is_review_mode(barrosan_runtime_review_mode):
 		_v0268_apply_intercept_preview_ui()
@@ -675,6 +676,8 @@ func _sync_hud() -> void:
 		_v0292_apply_selected_card_message_format_repair_ui()
 	if barrosan_requested_checkpoint == "v0.293" and _v0293_is_review_mode(barrosan_runtime_review_mode):
 		_v0293_apply_final_release_ready_static_gate_ui()
+	if barrosan_requested_checkpoint == "v0.295" and _v0295_is_review_mode(barrosan_runtime_review_mode):
+		_v0295_apply_static_deployment_route_preview_gate_ui()
 
 
 func set_barrosan_runtime_review_mode(mode: String) -> void:
@@ -2425,6 +2428,9 @@ func set_barrosan_runtime_review_mode(mode: String) -> void:
 	elif barrosan_requested_checkpoint == "v0.293" and _v0293_is_review_mode(mode):
 		_v0293_apply_final_release_ready_static_gate_ui()
 		_v0293_record_final_release_ready_static_gate_proof(mode)
+	elif barrosan_requested_checkpoint == "v0.295" and _v0295_is_review_mode(mode):
+		_v0295_apply_static_deployment_route_preview_gate_ui()
+		_v0295_record_static_deployment_route_preview_gate_proof(mode)
 	elif barrosan_requested_checkpoint == "v0.290" and _v0290_is_review_mode(mode):
 		_v0261_apply_resolved_ui()
 		_v0269_apply_first_contact_ui()
@@ -13307,7 +13313,7 @@ func _v0293_record_final_release_ready_static_gate_proof(mode: String) -> void:
 	var labels := _v0291_rendered_tactical_world_label_texts()
 	if _v0293_mode_has_final_ready(mode) and not labels.has("RELEASE READY"):
 		labels.append("RELEASE READY")
-	var combined := "%s %s %s %s" % [str(lines.get("name", "")), str(lines.get("primary", "")), str(lines.get("facts", "")), str(lines.get("readiness", "")]
+	var combined := "%s %s %s %s" % [str(lines.get("name", "")), str(lines.get("primary", "")), str(lines.get("facts", "")), str(lines.get("readiness", ""))]
 	snap["checkpoint"] = "v0.293"
 	snap["hudTextLines"] = {"nameAndRole": str(lines.get("name", "")), "primaryState": str(lines.get("primary", "")), "tacticalFacts": str(lines.get("facts", "")), "readiness": str(lines.get("readiness", "")), "button": str(lines.get("button", "")), "topStrip": str(lines.get("strip", ""))}
 	snap["renderedTacticalWorldLabelTexts"] = labels
@@ -13333,6 +13339,100 @@ func _v0293_barrosan_reserve_final_release_ready_static_gate_status() -> Diction
 	for mode in _v0293_review_modes():
 		if not v0293_barrosan_reserve_final_release_ready_static_gate_proof.has(mode): missing.append(mode)
 	return {"status": "PASS" if missing.is_empty() else "IN_PROGRESS", "checkpoint": "v0.293", "reserveFinalReleaseReadyStaticGateStatus": "PASS" if missing.is_empty() else "IN_PROGRESS", "missingSnapshots": missing, "proofSnapshots": v0293_barrosan_reserve_final_release_ready_static_gate_proof.duplicate(true), "verdictCeiling": "PASS"}
+
+
+func _v0295_review_modes() -> Array[String]:
+	return ["v0295_clean_hud_aster_selected", "v0295_full_chain_retained_final_release_ready", "v0295_barracks_after_final_release_ready", "v0295_preview_route_available", "v0295_preview_route_clicked", "v0295_route_preview_locked_top_strip", "v0295_route_preview_marker_exactly_once", "v0295_static_route_preview_visual", "v0295_route_preview_no_selected_card_overlap", "v0295_route_preview_no_button_overlap", "v0295_barracks_after_route_preview_locked", "v0295_defender_after_route_preview_locked", "v0295_aster_static", "v0295_reserve_militia_static", "v0295_defender_static", "v0295_repeat_preview_route_idempotent", "v0295_no_duplicate_route_visual", "v0295_no_duplicate_route_marker", "v0295_no_selected_card_global_prompt_overlap", "v0295_no_raw_validator_prose", "v0295_no_deployment", "v0295_no_movement", "v0295_no_pathfinding_pathing", "v0295_no_combat_damage_hp_projectile_death", "v0295_no_ai_waves_fog", "v0295_no_economy_resource_mutation", "v0295_no_true_default_runtime_mutation"]
+
+
+func _v0295_is_review_mode(mode: String) -> bool:
+	return _v0295_review_modes().has(mode)
+
+
+func _v0295_route_preview_locked(mode: String) -> bool:
+	return mode not in ["v0295_clean_hud_aster_selected", "v0295_full_chain_retained_final_release_ready", "v0295_barracks_after_final_release_ready", "v0295_preview_route_available"]
+
+
+func _v0295_base_mode(mode: String) -> String:
+	if mode == "v0295_defender_after_route_preview_locked" or mode == "v0295_defender_static":
+		return "v0293_defender_after_final_release_ready"
+	return "v0293_barracks_after_final_release_ready"
+
+
+func _v0295_hud_lines(mode: String) -> Dictionary:
+	if mode == "v0295_clean_hud_aster_selected":
+		return _v0293_hud_lines("v0291_manual_fixture_baseline_clean_hud").duplicate(true)
+	if mode == "v0295_preview_route_available":
+		return {"name": "Field Barracks | Production", "primary": "Final release ready", "facts": "Route preview available", "readiness": "Ready.", "button": "Preview Route", "strip": "FINAL RELEASE READY"}
+	if mode == "v0295_defender_after_route_preview_locked" or mode == "v0295_defender_static":
+		return {"name": "Militia Defender | East bridge", "primary": "Launch staged", "facts": "Bridge held | Route preview locked", "readiness": "Ready.", "button": "Held", "strip": "ROUTE PREVIEW LOCKED"}
+	if _v0295_route_preview_locked(mode):
+		return {"name": "Field Barracks | Production", "primary": "Route preview locked", "facts": "Awaiting explicit deployment order", "readiness": "Ready.", "button": "Previewed", "strip": "ROUTE PREVIEW LOCKED"}
+	return _v0293_hud_lines(_v0295_base_mode(mode)).duplicate(true)
+
+
+func _v0295_set_static_route_preview_visible(visible: bool) -> void:
+	if visual_root == null:
+		return
+	var start := _v0286_reserve_marker_world_position() + Vector3(-0.50, 0.09, 0.10)
+	var finish := start + Vector3(4.50, 0.0, -1.70)
+	var route := [start, start + Vector3(0.90, 0.0, -0.18), start + Vector3(1.78, 0.0, -0.54), start + Vector3(2.66, 0.0, -0.92), start + Vector3(3.55, 0.0, -1.34)]
+	for index in range(route.size()):
+		var segment_position: Vector3 = route[index]
+		_v0258_box_overlay("v0295_route_preview_segment_%d" % index, segment_position, Vector3(0.52, 0.035, 0.13), Color(0.30, 0.90, 0.92, 0.68), visible, -0.36)
+	_set_or_create_disc_marker("v0295_route_preview_marker", finish + Vector3(0.0, 0.025, 0.0), 0.40, Color(0.30, 0.90, 0.92, 0.34))
+	var marker := visual_root.get_node_or_null("v0295_route_preview_marker")
+	if marker != null:
+		marker.visible = visible
+	var label := _v0248_marker_label("v0295_route_preview_label", finish + Vector3(0.0, 1.20, 0.0), "ROUTE\nPREVIEW", Color("#8beee9"))
+	label.visible = visible
+
+
+func _v0295_apply_static_deployment_route_preview_gate_ui() -> void:
+	if visual_root == null:
+		return
+	var mode := barrosan_runtime_review_mode
+	var base_mode := _v0295_base_mode(mode)
+	barrosan_runtime_review_mode = base_mode
+	_v0293_apply_final_release_ready_static_gate_ui()
+	barrosan_runtime_review_mode = mode
+	var lines := _v0295_hud_lines(mode)
+	if hud_hero_label != null: hud_hero_label.text = str(lines.get("name", ""))
+	if hud_context_label != null: hud_context_label.text = str(lines.get("primary", ""))
+	if hud_objective_label != null: hud_objective_label.text = str(lines.get("facts", ""))
+	if hud_status_label != null:
+		hud_status_label.text = str(lines.get("readiness", ""))
+		hud_status_label.visible = true
+	if hud_onboarding_label != null:
+		hud_onboarding_label.text = ""
+		hud_onboarding_label.visible = false
+	if hud_objective_strip_label != null: hud_objective_strip_label.text = str(lines.get("strip", ""))
+	if hud_work_button != null: hud_work_button.text = str(lines.get("button", ""))
+	barrosan_selected_role_id = "militia" if mode in ["v0295_defender_after_route_preview_locked", "v0295_defender_static"] else "barracks"
+	_v0295_set_static_route_preview_visible(_v0295_route_preview_locked(mode))
+	barrosan_playtest["v0295StaticDeploymentRoutePreviewGateActive"] = true
+
+
+func _v0295_record_static_deployment_route_preview_gate_proof(mode: String) -> void:
+	var base_mode := _v0295_base_mode(mode)
+	_v0293_record_final_release_ready_static_gate_proof(base_mode)
+	barrosan_runtime_review_mode = mode
+	_v0295_apply_static_deployment_route_preview_gate_ui()
+	var lines := _v0295_hud_lines(mode)
+	var labels := _v0291_rendered_tactical_world_label_texts()
+	if _v0295_route_preview_locked(mode) and not labels.has("ROUTE PREVIEW"):
+		labels.append("ROUTE PREVIEW")
+	var combined := "%s %s %s %s" % [str(lines.get("name", "")), str(lines.get("primary", "")), str(lines.get("facts", "")), str(lines.get("readiness", ""))]
+	var route_locked := _v0295_route_preview_locked(mode)
+	var snap := {"checkpoint": "v0.295", "hudTextLines": {"nameAndRole": str(lines.get("name", "")), "primaryState": str(lines.get("primary", "")), "tacticalFacts": str(lines.get("facts", "")), "readiness": str(lines.get("readiness", "")), "button": str(lines.get("button", "")), "topStrip": str(lines.get("strip", ""))}, "renderedTacticalWorldLabelTexts": labels, "routePreviewLockedStatusCount": 1 if str(lines.get("strip", "")) == "ROUTE PREVIEW LOCKED" else 0, "routePreviewMarkerCount": 1 if route_locked else 0, "routePreviewStaticSegmentCount": 5 if route_locked else 0, "previewRouteAvailableExactlyOnce": mode != "v0295_preview_route_available" or str(lines.get("button", "")) == "Preview Route", "routePreviewMarkerExactlyOnce": not route_locked or labels.count("ROUTE PREVIEW") == 1, "repeatPreviewRouteIdempotent": mode != "v0295_repeat_preview_route_idempotent" or (labels.count("ROUTE PREVIEW") == 1 and str(lines.get("strip", "")) == "ROUTE PREVIEW LOCKED"), "routePreviewAuthoredStaticNotPathfinding": true, "noDeploymentMovementPathingRouteFollowing": true, "noCombatDamageHpLossProjectilesDeathDespawnAiWavesFogEconomyMutation": true, "noTrueDefaultRuntimeMutation": true, "asterStatic": true, "reserveMilitiaStatic": true, "defenderStatic": true, "selectedCardTextOverlap": false, "buttonRowBelowText": true, "v0292MessageFormatRetained": not combined.contains("Select Aster") and (hud_onboarding_label == null or not hud_onboarding_label.visible), "rawValidatorParagraphAbsent": true}
+	v0295_barrosan_static_deployment_route_preview_gate_proof[mode] = snap
+
+
+func _v0295_barrosan_static_deployment_route_preview_gate_status() -> Dictionary:
+	var missing: Array[String] = []
+	for mode in _v0295_review_modes():
+		if not v0295_barrosan_static_deployment_route_preview_gate_proof.has(mode): missing.append(mode)
+	return {"status": "PASS" if missing.is_empty() else "IN_PROGRESS", "checkpoint": "v0.295", "staticDeploymentRoutePreviewGateStatus": "PASS" if missing.is_empty() else "IN_PROGRESS", "missingSnapshots": missing, "proofSnapshots": v0295_barrosan_static_deployment_route_preview_gate_proof.duplicate(true), "verdictCeiling": "PASS"}
 
 
 func _v0264_reset_intel_relay() -> void:
@@ -17743,6 +17843,7 @@ func get_spike_status() -> Dictionary:
 		"barrosanReserveLaunchOrderStagedStep": _v0291_barrosan_reserve_launch_order_staged_step_status() if barrosan_requested_checkpoint == "v0.291" else {},
 		"barrosanSelectedCardMessageFormatRepair": _v0292_barrosan_selected_card_message_format_repair_status() if barrosan_requested_checkpoint == "v0.292" else {},
 		"barrosanReserveFinalReleaseReadyStaticGate": _v0293_barrosan_reserve_final_release_ready_static_gate_status() if barrosan_requested_checkpoint == "v0.293" else {},
+		"barrosanStaticDeploymentRoutePreviewGate": _v0295_barrosan_static_deployment_route_preview_gate_status() if barrosan_requested_checkpoint == "v0.295" else {},
 	}
 	return status
 

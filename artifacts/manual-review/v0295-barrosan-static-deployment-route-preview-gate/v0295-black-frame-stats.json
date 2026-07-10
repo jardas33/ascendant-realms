@@ -1,0 +1,260 @@
+{
+  "stats": [
+    {
+      "file": "01_v0295_preflight_head_branch_proof.png",
+      "mean": [
+        18.15,
+        25.78,
+        23.05
+      ]
+    },
+    {
+      "file": "02_v0295_exact_base_commit_proof.png",
+      "mean": [
+        18.04,
+        25.68,
+        22.96
+      ]
+    },
+    {
+      "file": "03_v0295_true_default_runtime_unchanged.png",
+      "mean": [
+        29.3,
+        35.53,
+        28.48
+      ]
+    },
+    {
+      "file": "04_v0295_retained_v0294_ledger_proof.png",
+      "mean": [
+        18.04,
+        25.68,
+        22.96
+      ]
+    },
+    {
+      "file": "05_v0295_clean_hud_aster_selected.png",
+      "mean": [
+        71.7,
+        80.51,
+        53.03
+      ]
+    },
+    {
+      "file": "06_v0295_full_chain_retained_final_release_ready.png",
+      "mean": [
+        71.77,
+        80.58,
+        53.1
+      ]
+    },
+    {
+      "file": "07_v0295_barracks_after_final_release_ready_before_option.png",
+      "mean": [
+        71.77,
+        80.58,
+        53.1
+      ]
+    },
+    {
+      "file": "08_v0295_preview_route_available.png",
+      "mean": [
+        71.75,
+        80.57,
+        53.09
+      ]
+    },
+    {
+      "file": "09_v0295_preview_route_clicked.png",
+      "mean": [
+        71.74,
+        80.94,
+        53.52
+      ]
+    },
+    {
+      "file": "10_v0295_route_preview_locked_top_strip.png",
+      "mean": [
+        71.74,
+        80.94,
+        53.52
+      ]
+    },
+    {
+      "file": "11_v0295_route_preview_marker_exactly_once.png",
+      "mean": [
+        71.74,
+        80.94,
+        53.52
+      ]
+    },
+    {
+      "file": "12_v0295_static_route_preview_visual.png",
+      "mean": [
+        71.74,
+        80.94,
+        53.52
+      ]
+    },
+    {
+      "file": "13_v0295_route_preview_no_selected_card_overlap.png",
+      "mean": [
+        71.74,
+        80.94,
+        53.52
+      ]
+    },
+    {
+      "file": "14_v0295_route_preview_no_button_overlap.png",
+      "mean": [
+        71.74,
+        80.94,
+        53.52
+      ]
+    },
+    {
+      "file": "15_v0295_barracks_after_route_preview_locked.png",
+      "mean": [
+        71.74,
+        80.94,
+        53.52
+      ]
+    },
+    {
+      "file": "16_v0295_defender_after_route_preview_locked.png",
+      "mean": [
+        71.53,
+        80.78,
+        53.5
+      ]
+    },
+    {
+      "file": "17_v0295_aster_static.png",
+      "mean": [
+        71.74,
+        80.94,
+        53.52
+      ]
+    },
+    {
+      "file": "18_v0295_reserve_militia_static.png",
+      "mean": [
+        71.74,
+        80.94,
+        53.52
+      ]
+    },
+    {
+      "file": "19_v0295_defender_static.png",
+      "mean": [
+        71.53,
+        80.78,
+        53.5
+      ]
+    },
+    {
+      "file": "20_v0295_repeat_preview_route_idempotence.png",
+      "mean": [
+        71.74,
+        80.94,
+        53.52
+      ]
+    },
+    {
+      "file": "21_v0295_no_duplicate_route_visual.png",
+      "mean": [
+        71.74,
+        80.94,
+        53.52
+      ]
+    },
+    {
+      "file": "22_v0295_no_duplicate_route_marker.png",
+      "mean": [
+        71.74,
+        80.94,
+        53.52
+      ]
+    },
+    {
+      "file": "23_v0295_no_selected_card_global_prompt_overlap.png",
+      "mean": [
+        71.74,
+        80.94,
+        53.52
+      ]
+    },
+    {
+      "file": "24_v0295_no_raw_validator_prose.png",
+      "mean": [
+        71.74,
+        80.94,
+        53.52
+      ]
+    },
+    {
+      "file": "25_v0295_no_deployment.png",
+      "mean": [
+        71.74,
+        80.94,
+        53.52
+      ]
+    },
+    {
+      "file": "26_v0295_no_movement.png",
+      "mean": [
+        71.74,
+        80.94,
+        53.52
+      ]
+    },
+    {
+      "file": "27_v0295_no_pathfinding_pathing.png",
+      "mean": [
+        71.74,
+        80.94,
+        53.52
+      ]
+    },
+    {
+      "file": "28_v0295_no_combat_damage_hp_projectile_death.png",
+      "mean": [
+        71.74,
+        80.94,
+        53.52
+      ]
+    },
+    {
+      "file": "29_v0295_no_ai_waves_fog.png",
+      "mean": [
+        71.74,
+        80.94,
+        53.52
+      ]
+    },
+    {
+      "file": "30_v0295_no_economy_resource_mutation.png",
+      "mean": [
+        71.74,
+        80.94,
+        53.52
+      ]
+    },
+    {
+      "file": "31_v0295_no_true_default_runtime_mutation.png",
+      "mean": [
+        71.74,
+        80.94,
+        53.52
+      ]
+    },
+    {
+      "file": "32_v0295_contact_sheet.png",
+      "mean": [
+        59.77,
+        68.53,
+        46.78
+      ]
+    }
+  ]
+}

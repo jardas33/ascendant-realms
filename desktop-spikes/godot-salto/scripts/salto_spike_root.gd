@@ -8115,7 +8115,7 @@ func _apply_player_slice_action(action: String) -> Dictionary:
 	elif action == "v0212_viewport_marker" or action == "v0212_alerts" or action.begins_with("v0212_resolution"):
 		player_ui_shell_production_tab_override = "TRAIN"
 		player_ui_shell_production_focus_hint = "train_militia"
-	if action.begins_with("v0271_") or action.begins_with("v0272_") or action.begins_with("v0273_") or action.begins_with("v0274_") or action.begins_with("v0275_") or action.begins_with("v0276_") or action.begins_with("v0277_") or action.begins_with("v0278_") or action.begins_with("v0279_") or action.begins_with("v0280_") or action.begins_with("v0281_") or action.begins_with("v0283_") or action.begins_with("v0284_") or action.begins_with("v0285_") or action.begins_with("v0286_") or action.begins_with("v0287_") or action.begins_with("v0288_") or action.begins_with("v0289_") or action.begins_with("v0290_") or action.begins_with("v0291_"):
+	if action.begins_with("v0271_") or action.begins_with("v0272_") or action.begins_with("v0273_") or action.begins_with("v0274_") or action.begins_with("v0275_") or action.begins_with("v0276_") or action.begins_with("v0277_") or action.begins_with("v0278_") or action.begins_with("v0279_") or action.begins_with("v0280_") or action.begins_with("v0281_") or action.begins_with("v0283_") or action.begins_with("v0284_") or action.begins_with("v0285_") or action.begins_with("v0286_") or action.begins_with("v0287_") or action.begins_with("v0288_") or action.begins_with("v0289_") or action.begins_with("v0290_") or action.begins_with("v0291_") or action.begins_with("v0292_") or action.begins_with("v0293_") or action.begins_with("v0295_"):
 		_ensure_player_battle_scene()
 		_call_scene("set_barrosan_runtime_review_mode", [action])
 		_render_player_screen("battle")
@@ -9162,6 +9162,8 @@ func _apply_player_slice_action(action: String) -> Dictionary:
 
 func _player_capture_checkpoint() -> String:
 	var normalized_root := _artifact_root_from_args().replace("\\", "/")
+	if normalized_root.contains("/v0295"):
+		return "v0.295"
 	if normalized_root.contains("/v0293"):
 		return "v0.293"
 	if normalized_root.contains("/v0292"):
@@ -9375,9 +9377,39 @@ func _player_capture_checkpoint() -> String:
 	return "v0.124"
 
 func _is_bounded_microloop_checkpoint() -> bool:
-	return ["v0.129", "v0.130", "v0.160", "v0.162", "v0.164", "v0.166", "v0.168", "v0.169", "v0.170", "v0.173", "v0.174", "v0.177", "v0.178", "v0.179", "v0.181", "v0.184", "v0.185", "v0.186", "v0.187", "v0.193", "v0.194", "v0.195", "v0.196", "v0.197", "v0.198", "v0.199", "v0.200", "v0.203", "v0.204", "v0.205", "v0.206", "v0.209", "v0.210", "v0.211", "v0.212", "v0.213", "v0.215", "v0.216", "v0.217", "v0.218", "v0.219", "v0.220", "v0.221", "v0.222", "v0.223", "v0.224", "v0.227", "v0.228", "v0.229", "v0.230", "v0.231", "v0.243", "v0.244", "v0.245", "v0.246", "v0.247", "v0.248", "v0.249", "v0.250", "v0.251", "v0.252", "v0.253", "v0.254", "v0.255", "v0.256", "v0.257", "v0.258", "v0.259", "v0.261", "v0.262", "v0.263", "v0.264", "v0.265", "v0.266", "v0.267", "v0.268", "v0.269", "v0.270", "v0.271", "v0.272", "v0.273", "v0.274", "v0.275", "v0.276", "v0.277", "v0.278", "v0.279", "v0.280", "v0.281", "v0.283", "v0.284", "v0.285", "v0.286", "v0.287", "v0.288", "v0.289", "v0.290", "v0.291", "v0.292", "v0.293"].has(_player_capture_checkpoint())
+	return ["v0.129", "v0.130", "v0.160", "v0.162", "v0.164", "v0.166", "v0.168", "v0.169", "v0.170", "v0.173", "v0.174", "v0.177", "v0.178", "v0.179", "v0.181", "v0.184", "v0.185", "v0.186", "v0.187", "v0.193", "v0.194", "v0.195", "v0.196", "v0.197", "v0.198", "v0.199", "v0.200", "v0.203", "v0.204", "v0.205", "v0.206", "v0.209", "v0.210", "v0.211", "v0.212", "v0.213", "v0.215", "v0.216", "v0.217", "v0.218", "v0.219", "v0.220", "v0.221", "v0.222", "v0.223", "v0.224", "v0.227", "v0.228", "v0.229", "v0.230", "v0.231", "v0.243", "v0.244", "v0.245", "v0.246", "v0.247", "v0.248", "v0.249", "v0.250", "v0.251", "v0.252", "v0.253", "v0.254", "v0.255", "v0.256", "v0.257", "v0.258", "v0.259", "v0.261", "v0.262", "v0.263", "v0.264", "v0.265", "v0.266", "v0.267", "v0.268", "v0.269", "v0.270", "v0.271", "v0.272", "v0.273", "v0.274", "v0.275", "v0.276", "v0.277", "v0.278", "v0.279", "v0.280", "v0.281", "v0.283", "v0.284", "v0.285", "v0.286", "v0.287", "v0.288", "v0.289", "v0.290", "v0.291", "v0.292", "v0.293", "v0.295"].has(_player_capture_checkpoint())
 
 func _player_capture_steps() -> Array[Dictionary]:
+	if _player_capture_checkpoint() == "v0.295":
+		return [
+			{"id":"v0295_clean_hud_aster_selected_visible","label":"v0.295 clean HUD baseline","action":"v0295_clean_hud_aster_selected"},
+			{"id":"v0295_full_chain_retained_final_release_ready_visible","label":"v0.295 retained chain through FINAL RELEASE READY","action":"v0295_full_chain_retained_final_release_ready"},
+			{"id":"v0295_barracks_after_final_release_ready_visible","label":"v0.295 Barracks before Preview Route","action":"v0295_barracks_after_final_release_ready"},
+			{"id":"v0295_preview_route_available_visible","label":"v0.295 Preview Route available","action":"v0295_preview_route_available"},
+			{"id":"v0295_preview_route_clicked_visible","label":"v0.295 Preview Route clicked","action":"v0295_preview_route_clicked"},
+			{"id":"v0295_route_preview_locked_top_strip_visible","label":"v0.295 ROUTE PREVIEW LOCKED","action":"v0295_route_preview_locked_top_strip"},
+			{"id":"v0295_route_preview_marker_exactly_once_visible","label":"v0.295 ROUTE PREVIEW marker once","action":"v0295_route_preview_marker_exactly_once"},
+			{"id":"v0295_static_route_preview_visual_visible","label":"v0.295 static route preview visual","action":"v0295_static_route_preview_visual"},
+			{"id":"v0295_route_preview_no_selected_card_overlap_visible","label":"v0.295 route/card separation","action":"v0295_route_preview_no_selected_card_overlap"},
+			{"id":"v0295_route_preview_no_button_overlap_visible","label":"v0.295 route/button separation","action":"v0295_route_preview_no_button_overlap"},
+			{"id":"v0295_barracks_after_route_preview_locked_visible","label":"v0.295 Barracks route locked","action":"v0295_barracks_after_route_preview_locked"},
+			{"id":"v0295_defender_after_route_preview_locked_visible","label":"v0.295 Defender route locked","action":"v0295_defender_after_route_preview_locked"},
+			{"id":"v0295_aster_static_visible","label":"v0.295 Aster static","action":"v0295_aster_static"},
+			{"id":"v0295_reserve_militia_static_visible","label":"v0.295 reserve static","action":"v0295_reserve_militia_static"},
+			{"id":"v0295_defender_static_visible","label":"v0.295 defender static","action":"v0295_defender_static"},
+			{"id":"v0295_repeat_preview_route_idempotent_visible","label":"v0.295 repeat Preview Route idempotent","action":"v0295_repeat_preview_route_idempotent"},
+			{"id":"v0295_no_duplicate_route_visual_visible","label":"v0.295 route visual once","action":"v0295_no_duplicate_route_visual"},
+			{"id":"v0295_no_duplicate_route_marker_visible","label":"v0.295 route marker once","action":"v0295_no_duplicate_route_marker"},
+			{"id":"v0295_no_selected_card_global_prompt_overlap_visible","label":"v0.295 no card/global prompt overlap","action":"v0295_no_selected_card_global_prompt_overlap"},
+			{"id":"v0295_no_raw_validator_prose_visible","label":"v0.295 no raw validator prose","action":"v0295_no_raw_validator_prose"},
+			{"id":"v0295_no_deployment_visible","label":"v0.295 no deployment","action":"v0295_no_deployment"},
+			{"id":"v0295_no_movement_visible","label":"v0.295 no movement","action":"v0295_no_movement"},
+			{"id":"v0295_no_pathfinding_pathing_visible","label":"v0.295 no pathfinding","action":"v0295_no_pathfinding_pathing"},
+			{"id":"v0295_no_combat_damage_hp_projectile_death_visible","label":"v0.295 no combat","action":"v0295_no_combat_damage_hp_projectile_death"},
+			{"id":"v0295_no_ai_waves_fog_visible","label":"v0.295 no AI waves fog","action":"v0295_no_ai_waves_fog"},
+			{"id":"v0295_no_economy_resource_mutation_visible","label":"v0.295 no resource mutation","action":"v0295_no_economy_resource_mutation"},
+			{"id":"v0295_no_true_default_runtime_mutation_visible","label":"v0.295 default unchanged","action":"v0295_no_true_default_runtime_mutation"},
+		]
 	if _player_capture_checkpoint() == "v0.293":
 		return [
 			{"id":"v0291_manual_fixture_baseline_clean_hud_visible","label":"v0.293 clean HUD baseline","action":"v0291_manual_fixture_baseline_clean_hud"},
