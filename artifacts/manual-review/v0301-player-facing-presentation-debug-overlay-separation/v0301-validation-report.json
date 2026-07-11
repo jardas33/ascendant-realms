@@ -1,0 +1,8 @@
+{
+  "status": "PASS_v0301_BARROSAN_PLAYER_FACING_PRESENTATION_DEBUG_OVERLAY_SEPARATION_VALIDATION",
+  "errors": [],
+  "playerCaptureCount": 24,
+  "debugCaptureCount": 24,
+  "reviewPackNumberedPngCount": 48,
+  "blackFrameRejectionReport": "v0301-black-frame-stats.json"
+}

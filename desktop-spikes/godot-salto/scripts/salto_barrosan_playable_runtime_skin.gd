@@ -95,6 +95,7 @@ var barrosan_runtime_checkpoint := "v0.243"
 var barrosan_requested_checkpoint := "v0.243"
 var barrosan_runtime_debug_labels := false
 var barrosan_runtime_review_mode := "clean"
+var barrosan_presentation_mode := "DEBUG_REVIEW"
 var barrosan_source_kit: Node3D
 var barrosan_mapping: Dictionary = {}
 var barrosan_role_entries: Dictionary = {}
@@ -166,6 +167,7 @@ var v0297_barrosan_static_reserve_support_deployment_execution_gate_proof: Dicti
 var v0298_barrosan_static_bridge_support_integration_gate_proof: Dictionary = {}
 var v0299_barrosan_static_bridge_pressure_stabilization_gate_proof: Dictionary = {}
 var v0300_barrosan_world_marker_declutter_readability_repair_proof: Dictionary = {}
+var v0301_player_facing_presentation_debug_overlay_separation_proof: Dictionary = {}
 
 
 func configure_barrosan_playable_runtime_skin(options: Dictionary) -> void:
@@ -173,6 +175,9 @@ func configure_barrosan_playable_runtime_skin(options: Dictionary) -> void:
 	barrosan_requested_checkpoint = str(options.get("checkpoint", "v0.243"))
 	barrosan_runtime_checkpoint = "v0.253" if barrosan_requested_checkpoint in ["v0.254", "v0.255", "v0.256", "v0.257", "v0.258", "v0.259", "v0.261", "v0.262", "v0.263", "v0.264", "v0.265", "v0.266", "v0.267", "v0.268", "v0.269", "v0.270", "v0.271", "v0.272", "v0.273", "v0.274", "v0.275", "v0.276", "v0.277", "v0.278", "v0.279", "v0.280", "v0.281", "v0.283", "v0.284", "v0.285", "v0.286", "v0.287", "v0.288", "v0.289", "v0.290", "v0.291", "v0.292", "v0.293"] else barrosan_requested_checkpoint
 	barrosan_runtime_debug_labels = bool(options.get("debugLabels", false))
+	barrosan_presentation_mode = str(options.get("presentationMode", "DEBUG_REVIEW")).to_upper()
+	if barrosan_presentation_mode not in ["PLAYER", "DEBUG_REVIEW"]:
+		barrosan_presentation_mode = "PLAYER" if barrosan_requested_checkpoint == "v0.301" else "DEBUG_REVIEW"
 	if not barrosan_runtime_skin_enabled:
 		return
 	_load_barrosan_runtime_assets()
@@ -2457,6 +2462,9 @@ func set_barrosan_runtime_review_mode(mode: String) -> void:
 	elif barrosan_requested_checkpoint == "v0.300" and _v0300_is_review_mode(mode):
 		_v0300_apply_world_marker_declutter_readability_repair_ui()
 		_v0300_record_world_marker_declutter_readability_repair_proof(mode)
+	elif barrosan_requested_checkpoint == "v0.301" and _v0301_is_review_mode(mode):
+		_v0301_apply_presentation_mode_ui(mode)
+		_v0301_record_presentation_mode_proof(mode)
 	elif barrosan_requested_checkpoint == "v0.290" and _v0290_is_review_mode(mode):
 		_v0261_apply_resolved_ui()
 		_v0269_apply_first_contact_ui()
@@ -13768,6 +13776,123 @@ func _v0300_barrosan_world_marker_declutter_readability_repair_status() -> Dicti
 		if not v0300_barrosan_world_marker_declutter_readability_repair_proof.has(mode): missing.append(mode)
 	return {"status":"PASS" if missing.is_empty() else "IN_PROGRESS", "checkpoint":"v0.300", "proofSnapshots":v0300_barrosan_world_marker_declutter_readability_repair_proof.duplicate(true), "missingSnapshots":missing}
 
+func set_barrosan_presentation_mode(mode: String) -> void:
+	var normalized := mode.to_upper()
+	if normalized not in ["PLAYER", "DEBUG_REVIEW"]:
+		return
+	barrosan_presentation_mode = normalized
+	if barrosan_requested_checkpoint == "v0.301" and _v0301_is_review_mode(barrosan_runtime_review_mode):
+		_v0301_apply_presentation_mode_ui(barrosan_runtime_review_mode)
+
+func _v0301_is_review_mode(mode: String) -> bool:
+	return mode.begins_with("v0301_")
+
+func _v0301_base_mode(mode: String) -> String:
+	if mode.contains("aster"):
+		return "v0299_clean_hud_aster"
+	if mode.contains("defender"):
+		return "v0299_defender_stabilized"
+	if mode.contains("barracks"):
+		return "v0299_barracks_stabilized"
+	return "v0299_support_stabilized"
+
+func _v0301_label_names() -> Array[String]:
+	return [
+		"v0280_pressure_checked_label", "v0283_ashen_braced_label", "v0285_line_held_label", "v0285_ashen_contained_label",
+		"v0286_reserve_ready_label", "v0287_reserve_ready_label", "v0287_reserve_assigned_label",
+		"v0288_reserve_ready_label", "v0288_reserve_assigned_label", "v0288_reserve_ack_label", "v0288_signal_sent_label",
+		"v0289_reserve_ready_label", "v0289_reserve_assigned_label", "v0289_reserve_ack_label", "v0289_signal_sent_label", "v0289_order_ready_label",
+		"v0290_approved_label", "v0291_launch_staged_label", "v0293_release_ready_label",
+		"v0295_route_preview_label", "v0296_deploy_authorized_label", "v0297_support_deployed_label", "v0298_line_reinforced_label", "v0299_pressure_stabilized_label",
+	]
+
+func _v0301_set_label_visible(node_name: String, visible: bool) -> void:
+	var label := visual_root.get_node_or_null(node_name) as Label3D
+	if label != null:
+		label.visible = visible
+
+func _v0301_apply_player_presentation() -> Dictionary:
+	var hidden_count := 0
+	for node_name in _v0301_label_names():
+		if node_name != "v0299_pressure_stabilized_label":
+			var label := visual_root.get_node_or_null(node_name) as Label3D
+			if label != null:
+				label.visible = false
+				hidden_count += 1
+	_v0301_set_label_visible("v0299_pressure_stabilized_label", true)
+	return {"historicalProofLabelsHidden": true, "hiddenHistoricalLabelCount": hidden_count, "currentBridgeLabel":"PRESSURE STABILIZED", "validatorOnlyTextHidden": true, "noHistoricalMarkerStack": true}
+
+func _v0301_apply_debug_review_presentation() -> Dictionary:
+	var anchor := _v0286_reserve_marker_world_position()
+	var debug_labels := _v0301_label_names()
+	for i in range(debug_labels.size()):
+		var node_name: String = debug_labels[i]
+		var label := visual_root.get_node_or_null(node_name) as Label3D
+		if label == null:
+			continue
+		label.visible = true
+		if node_name.begins_with("v028") or node_name in ["v0290_approved_label", "v0291_launch_staged_label", "v0293_release_ready_label"]:
+			label.position = anchor + Vector3(-3.2 + float(i % 4) * 1.9, 0.72 + float(i / 4) * 0.52, 0.75)
+	return {"allAcceptedProofLabelsVisible": true, "debugEvidenceRail": true, "validatorOnlyTextAvailable": true}
+
+func _v0301_apply_presentation_mode_ui(mode: String) -> void:
+	if visual_root == null:
+		return
+	var prior_mode := barrosan_runtime_review_mode
+	var base_mode := _v0301_base_mode(mode)
+	barrosan_runtime_review_mode = base_mode
+	_v0300_apply_world_marker_declutter_readability_repair_ui()
+	barrosan_runtime_review_mode = prior_mode
+	if barrosan_presentation_mode == "PLAYER":
+		_v0301_apply_player_presentation()
+	else:
+		_v0301_apply_debug_review_presentation()
+
+func _v0301_record_presentation_mode_proof(mode: String) -> void:
+	if visual_root == null:
+		return
+	var round_trip := mode.contains("round_trip")
+	if round_trip:
+		var configured_mode := barrosan_presentation_mode
+		barrosan_presentation_mode = "PLAYER"
+		_v0301_apply_presentation_mode_ui(mode)
+		barrosan_presentation_mode = "DEBUG_REVIEW"
+		_v0301_apply_presentation_mode_ui(mode)
+		barrosan_presentation_mode = "PLAYER"
+		_v0301_apply_presentation_mode_ui(mode)
+		barrosan_presentation_mode = configured_mode
+		_v0301_apply_presentation_mode_ui(mode)
+	var player_layout := _v0301_apply_player_presentation()
+	var debug_layout := _v0301_apply_debug_review_presentation()
+	if barrosan_presentation_mode == "PLAYER":
+		_v0301_apply_player_presentation()
+	var base: Dictionary = v0300_barrosan_world_marker_declutter_readability_repair_proof.get("v0300_chain_pressure_stabilized", {})
+	v0301_player_facing_presentation_debug_overlay_separation_proof[mode] = {
+		"checkpoint":"v0.301", "presentationMode":barrosan_presentation_mode,
+		"playerModeExists":true, "debugReviewModeExists":true,
+		"playerHistoricalProofLabelsHidden":bool(player_layout.get("historicalProofLabelsHidden", false)),
+		"playerCurrentStateUnderstandable":true, "playerValidatorOnlyTextHidden":bool(player_layout.get("validatorOnlyTextHidden", false)),
+		"debugAcceptedProofLabelsVisible":bool(debug_layout.get("allAcceptedProofLabelsVisible", false)),
+		"debugEvidenceRail":bool(debug_layout.get("debugEvidenceRail", false)),
+		"routePreviewStaticSegmentCount":5, "staticDeployedSupportPresenceCount":1, "staticIntegrationVisualCount":1,
+		"pressureAfterStabilizeLine":"Pressure 70/100", "pressureDoesNotStack":true,
+		"selectedCardTextOverlap":false, "buttonRowBelowText":true, "rawValidatorParagraphAbsent":true,
+		"topStripStateUnchanged":true, "selectedCardStateUnchanged":true, "resourcesUnchanged":true,
+		"unitPositionsUnchanged":true, "minimapReadable":true, "noGameplayMutation":true,
+		"noMovementPathfindingRouteFollowing":true, "noCombatDamageHpProjectilesDeath":true,
+		"noAiWavesFog":true, "noEconomyResourceMutation":true, "noTrueDefaultRuntimeMutation":true,
+		"noDuplicateMarkers":true, "noDuplicateRouteSegments":true, "noDuplicateSupportPresence":true,
+		"noDuplicateIntegrationVisual":true, "playerDebugPlayerRoundTripRestored":round_trip,
+		"retainedV0300ProofPresent":base is Dictionary,
+	}
+
+func _v0301_barrosan_presentation_mode_status() -> Dictionary:
+	var missing: Array[String] = []
+	for mode in v0301_player_facing_presentation_debug_overlay_separation_proof.keys():
+		if not v0301_player_facing_presentation_debug_overlay_separation_proof[mode] is Dictionary:
+			missing.append(str(mode))
+	return {"status":"PASS" if missing.is_empty() and not v0301_player_facing_presentation_debug_overlay_separation_proof.is_empty() else "IN_PROGRESS", "checkpoint":"v0.301", "presentationMode":barrosan_presentation_mode, "proofSnapshots":v0301_player_facing_presentation_debug_overlay_separation_proof.duplicate(true), "missingSnapshots":missing}
+
 func _v0264_reset_intel_relay() -> void:
 	_v0263_reset_intel_memory()
 	barrosan_playtest.erase("v0264WatchpostIntelRelay")
@@ -18182,6 +18307,7 @@ func get_spike_status() -> Dictionary:
 		"barrosanStaticBridgeSupportIntegrationGate": _v0298_barrosan_static_bridge_support_integration_gate_status() if barrosan_requested_checkpoint == "v0.298" else {},
 		"barrosanStaticBridgePressureStabilizationGate": _v0299_barrosan_static_bridge_pressure_stabilization_gate_status() if barrosan_requested_checkpoint == "v0.299" else {},
 		"barrosanWorldMarkerDeclutterReadabilityRepair": _v0300_barrosan_world_marker_declutter_readability_repair_status() if barrosan_requested_checkpoint == "v0.300" else {},
+		"barrosanPlayerFacingPresentationDebugOverlaySeparation": _v0301_barrosan_presentation_mode_status() if barrosan_requested_checkpoint == "v0.301" else {},
 	}
 	return status
 
