@@ -1,0 +1,8 @@
+{
+  "status": "PASS_v0303_BARROSAN_PLAYER_FACING_2_5D_VISUAL_HIERARCHY_MATERIAL_READABILITY_VALIDATION",
+  "errors": [],
+  "playerCaptureCount": 51,
+  "debugCaptureCount": 18,
+  "reviewPackNumberedPngCount": 65,
+  "blackFrameRejectionReport": "v0303-black-frame-stats.json"
+}

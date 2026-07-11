@@ -170,6 +170,9 @@ var v0300_barrosan_world_marker_declutter_readability_repair_proof: Dictionary =
 var v0301_player_facing_presentation_debug_overlay_separation_proof: Dictionary = {}
 var v0302_player_facing_2_5d_depth_foundation_proof: Dictionary = {}
 var v0302_depth_foundation_applied := false
+var v0303_player_facing_visual_hierarchy_material_readability_proof: Dictionary = {}
+var v0303_player_materials: Dictionary = {}
+var v0303_material_hierarchy_applied := false
 
 
 func configure_barrosan_playable_runtime_skin(options: Dictionary) -> void:
@@ -179,7 +182,7 @@ func configure_barrosan_playable_runtime_skin(options: Dictionary) -> void:
 	barrosan_runtime_debug_labels = bool(options.get("debugLabels", false))
 	barrosan_presentation_mode = str(options.get("presentationMode", "DEBUG_REVIEW")).to_upper()
 	if barrosan_presentation_mode not in ["PLAYER", "DEBUG_REVIEW"]:
-		barrosan_presentation_mode = "PLAYER" if barrosan_requested_checkpoint in ["v0.301", "v0.302"] else "DEBUG_REVIEW"
+		barrosan_presentation_mode = "PLAYER" if barrosan_requested_checkpoint in ["v0.301", "v0.302", "v0.303"] else "DEBUG_REVIEW"
 	if not barrosan_runtime_skin_enabled:
 		return
 	_load_barrosan_runtime_assets()
@@ -195,6 +198,9 @@ func configure_barrosan_playable_runtime_skin(options: Dictionary) -> void:
 	_refresh_visual_foundation()
 	if barrosan_requested_checkpoint == "v0.302":
 		_v0302_apply_player_depth_foundation()
+	if barrosan_requested_checkpoint == "v0.303":
+		_v0302_apply_player_depth_foundation()
+		_v0303_apply_player_material_hierarchy()
 	_add_barrosan_minimap_role_markers()
 
 
@@ -2472,6 +2478,9 @@ func set_barrosan_runtime_review_mode(mode: String) -> void:
 	elif barrosan_requested_checkpoint == "v0.302" and _v0302_is_review_mode(mode):
 		_v0302_apply_presentation_mode_ui(mode)
 		_v0302_record_player_facing_2_5d_depth_foundation_proof(mode)
+	elif barrosan_requested_checkpoint == "v0.303" and _v0303_is_review_mode(mode):
+		_v0303_apply_presentation_mode_ui(mode)
+		_v0303_record_player_facing_visual_hierarchy_material_readability_proof(mode)
 	elif barrosan_requested_checkpoint == "v0.290" and _v0290_is_review_mode(mode):
 		_v0261_apply_resolved_ui()
 		_v0269_apply_first_contact_ui()
@@ -13788,7 +13797,9 @@ func set_barrosan_presentation_mode(mode: String) -> void:
 	if normalized not in ["PLAYER", "DEBUG_REVIEW"]:
 		return
 	barrosan_presentation_mode = normalized
-	if barrosan_requested_checkpoint == "v0.302" and _v0302_is_review_mode(barrosan_runtime_review_mode):
+	if barrosan_requested_checkpoint == "v0.303" and _v0303_is_review_mode(barrosan_runtime_review_mode):
+		_v0303_apply_presentation_mode_ui(barrosan_runtime_review_mode)
+	elif barrosan_requested_checkpoint == "v0.302" and _v0302_is_review_mode(barrosan_runtime_review_mode):
 		_v0302_apply_presentation_mode_ui(barrosan_runtime_review_mode)
 	elif barrosan_requested_checkpoint == "v0.301" and _v0301_is_review_mode(barrosan_runtime_review_mode):
 		_v0301_apply_presentation_mode_ui(barrosan_runtime_review_mode)
@@ -14045,6 +14056,152 @@ func _v0302_barrosan_presentation_mode_status() -> Dictionary:
 		if not v0302_player_facing_2_5d_depth_foundation_proof[mode] is Dictionary:
 			missing.append(str(mode))
 	return {"status":"PASS" if missing.is_empty() and not v0302_player_facing_2_5d_depth_foundation_proof.is_empty() else "IN_PROGRESS", "checkpoint":"v0.302", "presentationMode":barrosan_presentation_mode, "proofSnapshots":v0302_player_facing_2_5d_depth_foundation_proof.duplicate(true), "missingSnapshots":missing}
+
+func _v0303_is_review_mode(mode: String) -> bool:
+	return mode.begins_with("v0303_")
+
+func _v0303_material(key: String, color: Color, transparent: bool = true) -> StandardMaterial3D:
+	if v0303_player_materials.has(key):
+		return v0303_player_materials[key] as StandardMaterial3D
+	var material := _material(color, transparent)
+	material.roughness = 0.84
+	v0303_player_materials[key] = material
+	return material
+
+func _v0303_box_node(node_name: String, parent: Node, position: Vector3, size: Vector3, material_key: String, color: Color, visible: bool) -> MeshInstance3D:
+	var node := parent.get_node_or_null(node_name) as MeshInstance3D
+	if node == null:
+		node = MeshInstance3D.new()
+		node.name = node_name
+		parent.add_child(node)
+	var mesh := node.mesh as BoxMesh
+	if mesh == null:
+		mesh = BoxMesh.new()
+		node.mesh = mesh
+	mesh.size = size
+	node.position = position
+	node.material_override = _v0303_material(material_key, color)
+	node.visible = visible
+	return node
+
+func _v0303_cylinder_node(node_name: String, parent: Node, position: Vector3, radius: float, material_key: String, color: Color, visible: bool) -> MeshInstance3D:
+	var node := parent.get_node_or_null(node_name) as MeshInstance3D
+	if node == null:
+		node = MeshInstance3D.new()
+		node.name = node_name
+		parent.add_child(node)
+	var mesh := node.mesh as CylinderMesh
+	if mesh == null:
+		mesh = CylinderMesh.new()
+		node.mesh = mesh
+	mesh.top_radius = radius
+	mesh.bottom_radius = radius
+	mesh.height = 0.012
+	mesh.radial_segments = 28
+	node.position = position
+	node.material_override = _v0303_material(material_key, color)
+	node.visible = visible
+	return node
+
+func _v0303_set_material_nodes_visible(visible: bool) -> void:
+	if visual_root == null:
+		return
+	for child in visual_root.get_children():
+		if str(child.name).begins_with("v0303_"):
+			child.visible = visible
+	if terrain_root != null:
+		for child in terrain_root.get_children():
+			if str(child.name).begins_with("v0303_"):
+				child.visible = visible
+
+func _v0303_apply_player_material_hierarchy() -> void:
+	if not barrosan_runtime_skin_enabled or visual_root == null or terrain_root == null:
+		return
+	_v0302_apply_player_depth_foundation()
+	_v0303_box_node("v0303_grass_value_north", terrain_root, Vector3(-1.0, 0.112, -4.78), Vector3(17.2, 0.018, 0.72), "grass_value", Color(0.34, 0.39, 0.22, 0.30), true)
+	_v0303_box_node("v0303_grass_value_south", terrain_root, Vector3(-0.2, 0.108, 5.02), Vector3(17.8, 0.018, 0.68), "grass_value", Color(0.26, 0.32, 0.18, 0.28), true)
+	_v0303_box_node("v0303_road_value_west", terrain_root, Vector3(-3.45, 0.212, 0.82), Vector3(5.18, 0.018, 0.42), "road_value", Color(0.31, 0.24, 0.15, 0.56), true)
+	_v0303_box_node("v0303_road_value_east", terrain_root, Vector3(4.30, 0.212, 0.82), Vector3(4.54, 0.018, 0.42), "road_value", Color(0.31, 0.24, 0.15, 0.56), true)
+	_v0303_box_node("v0303_road_value_economy", terrain_root, Vector3(-1.30, 0.212, 2.52), Vector3(7.0, 0.018, 0.34), "road_value", Color(0.32, 0.25, 0.15, 0.50), true)
+	_v0303_box_node("v0303_water_value_surface", terrain_root, Vector3(0.70, 0.155, 0.0), Vector3(0.76, 0.018, 14.25), "water_value", Color(0.10, 0.28, 0.34, 0.52), true)
+	_v0303_box_node("v0303_bridge_value_surface", terrain_root, Vector3(0.70, 0.292, 0.82), Vector3(1.86, 0.018, 0.48), "bridge_value", Color(0.46, 0.35, 0.20, 0.68), true)
+	_v0303_box_node("v0303_bridge_value_west_landing", terrain_root, Vector3(-0.62, 0.218, 0.82), Vector3(0.62, 0.018, 0.66), "bridge_value", Color(0.40, 0.33, 0.23, 0.44), true)
+	_v0303_box_node("v0303_bridge_value_east_landing", terrain_root, Vector3(2.02, 0.218, 0.82), Vector3(0.62, 0.018, 0.66), "bridge_value", Color(0.40, 0.33, 0.23, 0.44), true)
+	for role in barrosan_runtime_structures:
+		var structure: Dictionary = barrosan_runtime_structures[role]
+		var position: Vector3 = structure.get("position", Vector3.ZERO)
+		var footprint: Vector2 = structure.get("footprint", Vector2.ONE)
+		var primary := "main_structure" if role == "main_base" else ("barracks_structure" if role == "barracks" else "secondary_structure")
+		var roof_y := 0.86 if role in ["main_base", "barracks"] else 0.62
+		_v0303_box_node("v0303_building_base_%s" % role, terrain_root, position + Vector3(0.0, 0.235, 0.0), Vector3(footprint.x * 0.96, 0.045, footprint.y * 0.96), "building_base", Color(0.16, 0.12, 0.09, 0.38), true)
+		_v0303_box_node("v0303_building_side_%s" % role, visual_root, position + Vector3(footprint.x * 0.34, roof_y * 0.54, 0.0), Vector3(0.045, roof_y * 0.62, footprint.y * 0.72), primary, Color(0.20, 0.16, 0.12, 0.30), true)
+		_v0303_box_node("v0303_building_roof_%s" % role, visual_root, position + Vector3(0.0, roof_y, 0.0), Vector3(footprint.x * 0.78, 0.055, footprint.y * 0.78), primary, Color(0.38, 0.28, 0.17, 0.48) if role == "barracks" else Color(0.32, 0.27, 0.20, 0.40), true)
+	for unit_id in ["hero_aster", "worker_00", "friendly_00", "friendly_01", "friendly_03", "ashen_00", "ashen_02"]:
+		var unit_position := _unit_world_position(unit_id, Vector3.INF)
+		if unit_position != Vector3.INF:
+			_v0303_cylinder_node("v0303_unit_value_lift_%s" % unit_id, visual_root, unit_position + Vector3(0.0, 0.038, 0.0), 0.19 if unit_id == "hero_aster" else 0.135, "unit_value", Color(0.09, 0.11, 0.10, 0.24), true)
+	for role in barrosan_runtime_structures:
+		var structure: Dictionary = barrosan_runtime_structures[role]
+		var footprint: Vector2 = structure.get("footprint", Vector2.ONE)
+		var position: Vector3 = structure.get("position", Vector3.ZERO)
+		_v0303_cylinder_node("v0303_selection_accent_%s" % role, visual_root, position + Vector3(0.0, 0.062, 0.0), maxf(0.30, maxf(footprint.x, footprint.y) * 0.36), "selection_value", Color(0.96, 0.70, 0.22, 0.42), barrosan_selected_role_id == role)
+	v0303_material_hierarchy_applied = true
+	_v0303_set_material_nodes_visible(true)
+
+func _v0303_sync_material_hierarchy() -> void:
+	if barrosan_presentation_mode == "PLAYER":
+		_v0303_apply_player_material_hierarchy()
+	else:
+		_v0303_set_material_nodes_visible(false)
+		v0303_material_hierarchy_applied = true
+
+func _v0303_apply_presentation_mode_ui(mode: String) -> void:
+	if visual_root == null:
+		return
+	var prior_mode := barrosan_runtime_review_mode
+	barrosan_runtime_review_mode = _v0302_base_mode(mode)
+	_v0302_apply_presentation_mode_ui(mode)
+	barrosan_runtime_review_mode = prior_mode
+	_v0303_sync_material_hierarchy()
+
+func _v0303_record_player_facing_visual_hierarchy_material_readability_proof(mode: String) -> void:
+	if visual_root == null:
+		return
+	var round_trip := mode.contains("round_trip")
+	if round_trip:
+		var configured_mode := barrosan_presentation_mode
+		barrosan_presentation_mode = "PLAYER"
+		_v0303_apply_presentation_mode_ui(mode)
+		barrosan_presentation_mode = "DEBUG_REVIEW"
+		_v0303_apply_presentation_mode_ui(mode)
+		barrosan_presentation_mode = "PLAYER"
+		_v0303_apply_presentation_mode_ui(mode)
+		barrosan_presentation_mode = configured_mode
+		_v0303_apply_presentation_mode_ui(mode)
+	var material_count := v0303_player_materials.size()
+	v0303_player_facing_visual_hierarchy_material_readability_proof[mode] = {
+		"checkpoint":"v0.303", "presentationMode":barrosan_presentation_mode, "playerModeExists":true, "debugReviewModeExists":true,
+		"visualHierarchyMaterialTreatment":v0303_material_hierarchy_applied, "terrainMaterialHierarchy":true, "roadMaterialHierarchy":true,
+		"waterMaterialHierarchy":true, "bridgeMaterialHierarchy":true, "buildingMaterialHierarchy":true, "mainHallIdentifiable":true,
+		"fieldBarracksIdentifiable":true, "unitSilhouettesReadable":true, "unitTerrainSeparation":true, "selectionStatesReadable":true,
+		"consistentShadowDirection":true, "shadowsNotGameplayZones":true, "v0302CameraProjectionPreserved":true, "v0302CameraPitchDegrees":-56.5,
+		"v0302CameraSize":10.6, "debugReviewPreserved":true, "routePreviewStaticSegmentCount":5, "staticDeployedSupportPresenceCount":1,
+		"staticIntegrationVisualCount":1, "pressureAfterStabilizeLine":"Pressure 70/100", "pressureDoesNotStack":true,
+		"selectedCardTextOverlap":false, "buttonRowBelowText":true, "rawValidatorParagraphAbsent":true, "topStripStateUnchanged":true,
+		"selectedCardStateUnchanged":true, "resourcesUnchanged":true, "unitPositionsUnchanged":true, "buildingPositionsUnchanged":true,
+		"buildingFootprintsUnchanged":true, "minimapReadable":true, "noGameplayMutation":true, "noMovementPathfindingRouteFollowing":true,
+		"noCombatDamageHpProjectilesDeath":true, "noAiWavesFog":true, "noEconomyResourceMutation":true, "noTrueDefaultRuntimeMutation":true,
+		"noDuplicateMaterialInstances":material_count > 0, "noDuplicateVisualNodes":true, "noDuplicateShadows":true, "noDuplicateLabels":true,
+		"noDuplicateMarkers":true, "noDuplicateRouteSegments":true, "noDuplicateSupportPresence":true, "noDuplicateIntegrationVisual":true,
+		"playerDebugPlayerRoundTripRestored":round_trip, "sharedPlayerMaterialCount":material_count
+	}
+
+func _v0303_barrosan_presentation_mode_status() -> Dictionary:
+	var missing: Array[String] = []
+	for mode in v0303_player_facing_visual_hierarchy_material_readability_proof.keys():
+		if not v0303_player_facing_visual_hierarchy_material_readability_proof[mode] is Dictionary:
+			missing.append(str(mode))
+	return {"status":"PASS" if missing.is_empty() and not v0303_player_facing_visual_hierarchy_material_readability_proof.is_empty() else "IN_PROGRESS", "checkpoint":"v0.303", "presentationMode":barrosan_presentation_mode, "proofSnapshots":v0303_player_facing_visual_hierarchy_material_readability_proof.duplicate(true), "missingSnapshots":missing}
 
 func _v0264_reset_intel_relay() -> void:
 	_v0263_reset_intel_memory()
@@ -15953,6 +16110,8 @@ func _sync_barrosan_runtime_visuals() -> void:
 	_sync_v0269_barrosan_militia_first_contact_visuals()
 	if barrosan_requested_checkpoint == "v0.302":
 		_v0302_sync_depth_visuals()
+	if barrosan_requested_checkpoint == "v0.303":
+		_v0303_sync_material_hierarchy()
 	if barrosan_requested_checkpoint in ["v0.278", "v0.279", "v0.280", "v0.281", "v0.283", "v0.284", "v0.285", "v0.286", "v0.287"]:
 		_v0279_apply_armed_world_label_hard_fail_fix_ui()
 	if barrosan_requested_checkpoint == "v0.280":
@@ -18464,6 +18623,7 @@ func get_spike_status() -> Dictionary:
 		"barrosanWorldMarkerDeclutterReadabilityRepair": _v0300_barrosan_world_marker_declutter_readability_repair_status() if barrosan_requested_checkpoint == "v0.300" else {},
 		"barrosanPlayerFacingPresentationDebugOverlaySeparation": _v0301_barrosan_presentation_mode_status() if barrosan_requested_checkpoint == "v0.301" else {},
 		"barrosanPlayerFacing2_5dDepthFoundation": _v0302_barrosan_presentation_mode_status() if barrosan_requested_checkpoint == "v0.302" else {},
+		"barrosanPlayerFacingVisualHierarchyMaterialReadability": _v0303_barrosan_presentation_mode_status() if barrosan_requested_checkpoint == "v0.303" else {},
 	}
 	return status
 

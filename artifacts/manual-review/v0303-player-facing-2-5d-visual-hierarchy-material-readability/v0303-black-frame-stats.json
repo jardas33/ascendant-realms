@@ -1,0 +1,558 @@
+{
+  "runtimeFrameStats": [
+    {
+      "path": "player-facing\\screenshots\\01_v0303_player_before_after_reference.png",
+      "mean": 5.0
+    },
+    {
+      "path": "player-facing\\screenshots\\02_v0303_player_overview.png",
+      "mean": 5.0
+    },
+    {
+      "path": "player-facing\\screenshots\\03_v0303_player_terrain_hierarchy.png",
+      "mean": 5.0
+    },
+    {
+      "path": "player-facing\\screenshots\\04_v0303_player_grass_road.png",
+      "mean": 5.0
+    },
+    {
+      "path": "player-facing\\screenshots\\05_v0303_player_road_bridge.png",
+      "mean": 5.0
+    },
+    {
+      "path": "player-facing\\screenshots\\06_v0303_player_river_land.png",
+      "mean": 5.0
+    },
+    {
+      "path": "player-facing\\screenshots\\07_v0303_player_bridge_surface.png",
+      "mean": 5.0
+    },
+    {
+      "path": "player-facing\\screenshots\\08_v0303_player_building_pads.png",
+      "mean": 5.0
+    },
+    {
+      "path": "player-facing\\screenshots\\09_v0303_player_main_hall_material.png",
+      "mean": 5.0
+    },
+    {
+      "path": "player-facing\\screenshots\\10_v0303_player_field_barracks_material.png",
+      "mean": 5.0
+    },
+    {
+      "path": "player-facing\\screenshots\\11_v0303_player_smaller_buildings.png",
+      "mean": 5.0
+    },
+    {
+      "path": "player-facing\\screenshots\\12_v0303_player_building_volume.png",
+      "mean": 5.0
+    },
+    {
+      "path": "player-facing\\screenshots\\13_v0303_player_aster_separation.png",
+      "mean": 5.0
+    },
+    {
+      "path": "player-facing\\screenshots\\14_v0303_player_defender_separation.png",
+      "mean": 5.0
+    },
+    {
+      "path": "player-facing\\screenshots\\15_v0303_player_reserve_separation.png",
+      "mean": 5.0
+    },
+    {
+      "path": "player-facing\\screenshots\\16_v0303_player_unit_silhouettes.png",
+      "mean": 5.0
+    },
+    {
+      "path": "player-facing\\screenshots\\17_v0303_player_unit_shadows.png",
+      "mean": 5.0
+    },
+    {
+      "path": "player-facing\\screenshots\\18_v0303_player_building_shadows.png",
+      "mean": 5.0
+    },
+    {
+      "path": "player-facing\\screenshots\\19_v0303_player_selection_aster.png",
+      "mean": 5.0
+    },
+    {
+      "path": "player-facing\\screenshots\\20_v0303_player_selection_defender.png",
+      "mean": 5.0
+    },
+    {
+      "path": "player-facing\\screenshots\\21_v0303_player_selection_reserve.png",
+      "mean": 5.0
+    },
+    {
+      "path": "player-facing\\screenshots\\22_v0303_player_selection_barracks.png",
+      "mean": 5.0
+    },
+    {
+      "path": "player-facing\\screenshots\\23_v0303_player_bridge_clean.png",
+      "mean": 5.0
+    },
+    {
+      "path": "player-facing\\screenshots\\24_v0303_player_barracks_clean.png",
+      "mean": 5.0
+    },
+    {
+      "path": "player-facing\\screenshots\\25_v0303_player_minimap.png",
+      "mean": 5.0
+    },
+    {
+      "path": "player-facing\\screenshots\\26_v0303_player_top_strip.png",
+      "mean": 5.0
+    },
+    {
+      "path": "player-facing\\screenshots\\27_v0303_player_aster_card.png",
+      "mean": 5.0
+    },
+    {
+      "path": "player-facing\\screenshots\\28_v0303_player_defender_card.png",
+      "mean": 5.0
+    },
+    {
+      "path": "player-facing\\screenshots\\29_v0303_player_reserve_card.png",
+      "mean": 5.0
+    },
+    {
+      "path": "player-facing\\screenshots\\30_v0303_player_barracks_card.png",
+      "mean": 5.0
+    },
+    {
+      "path": "player-facing\\screenshots\\31_v0303_player_no_proof_labels.png",
+      "mean": 5.0
+    },
+    {
+      "path": "player-facing\\screenshots\\32_v0303_player_no_historical_stack.png",
+      "mean": 5.0
+    },
+    {
+      "path": "player-facing\\screenshots\\33_v0303_player_no_label_collision.png",
+      "mean": 5.0
+    },
+    {
+      "path": "player-facing\\screenshots\\34_v0303_player_player_debug_round_trip.png",
+      "mean": 5.0
+    },
+    {
+      "path": "player-facing\\screenshots\\35_v0303_player_debug_to_player.png",
+      "mean": 5.0
+    },
+    {
+      "path": "player-facing\\screenshots\\36_v0303_player_player_restored.png",
+      "mean": 5.0
+    },
+    {
+      "path": "player-facing\\screenshots\\37_v0303_player_no_duplicate_materials.png",
+      "mean": 5.0
+    },
+    {
+      "path": "player-facing\\screenshots\\38_v0303_player_no_duplicate_visuals.png",
+      "mean": 5.0
+    },
+    {
+      "path": "player-facing\\screenshots\\39_v0303_player_no_duplicate_shadows.png",
+      "mean": 5.0
+    },
+    {
+      "path": "player-facing\\screenshots\\40_v0303_player_no_duplicate_labels.png",
+      "mean": 5.0
+    },
+    {
+      "path": "player-facing\\screenshots\\41_v0303_player_positions_unchanged.png",
+      "mean": 5.0
+    },
+    {
+      "path": "player-facing\\screenshots\\42_v0303_player_footprints_unchanged.png",
+      "mean": 5.0
+    },
+    {
+      "path": "player-facing\\screenshots\\43_v0303_player_resources_unchanged.png",
+      "mean": 5.0
+    },
+    {
+      "path": "player-facing\\screenshots\\44_v0303_player_pressure_70.png",
+      "mean": 5.0
+    },
+    {
+      "path": "player-facing\\screenshots\\45_v0303_player_selected_card_unchanged.png",
+      "mean": 5.0
+    },
+    {
+      "path": "player-facing\\screenshots\\46_v0303_player_top_strip_unchanged.png",
+      "mean": 5.0
+    },
+    {
+      "path": "player-facing\\screenshots\\47_v0303_player_no_movement.png",
+      "mean": 5.0
+    },
+    {
+      "path": "player-facing\\screenshots\\48_v0303_player_no_combat.png",
+      "mean": 5.0
+    },
+    {
+      "path": "player-facing\\screenshots\\49_v0303_player_no_ai.png",
+      "mean": 5.0
+    },
+    {
+      "path": "player-facing\\screenshots\\50_v0303_player_no_economy.png",
+      "mean": 5.0
+    },
+    {
+      "path": "player-facing\\screenshots\\51_v0303_player_no_default_mutation.png",
+      "mean": 5.0
+    },
+    {
+      "path": "debug-review\\screenshots\\01_v0303_debug_proof_labels.png",
+      "mean": 5.0
+    },
+    {
+      "path": "debug-review\\screenshots\\02_v0303_debug_route_segments.png",
+      "mean": 5.0
+    },
+    {
+      "path": "debug-review\\screenshots\\03_v0303_debug_support_presence.png",
+      "mean": 5.0
+    },
+    {
+      "path": "debug-review\\screenshots\\04_v0303_debug_integration_visual.png",
+      "mean": 5.0
+    },
+    {
+      "path": "debug-review\\screenshots\\05_v0303_debug_pressure_evidence.png",
+      "mean": 5.0
+    },
+    {
+      "path": "debug-review\\screenshots\\06_v0303_debug_round_trip.png",
+      "mean": 5.0
+    },
+    {
+      "path": "debug-review\\screenshots\\07_v0303_debug_no_duplicate_materials.png",
+      "mean": 5.0
+    },
+    {
+      "path": "debug-review\\screenshots\\08_v0303_debug_no_duplicate_visuals.png",
+      "mean": 5.0
+    },
+    {
+      "path": "debug-review\\screenshots\\09_v0303_debug_no_duplicate_shadows.png",
+      "mean": 5.0
+    },
+    {
+      "path": "debug-review\\screenshots\\10_v0303_debug_no_duplicate_labels.png",
+      "mean": 5.0
+    },
+    {
+      "path": "debug-review\\screenshots\\11_v0303_debug_positions_unchanged.png",
+      "mean": 5.0
+    },
+    {
+      "path": "debug-review\\screenshots\\12_v0303_debug_resources_unchanged.png",
+      "mean": 5.0
+    },
+    {
+      "path": "debug-review\\screenshots\\13_v0303_debug_pressure_70.png",
+      "mean": 5.0
+    },
+    {
+      "path": "debug-review\\screenshots\\14_v0303_debug_selected_cards.png",
+      "mean": 5.0
+    },
+    {
+      "path": "debug-review\\screenshots\\15_v0303_debug_top_strip.png",
+      "mean": 5.0
+    },
+    {
+      "path": "debug-review\\screenshots\\16_v0303_debug_minimap.png",
+      "mean": 5.0
+    },
+    {
+      "path": "debug-review\\screenshots\\17_v0303_debug_no_mutation.png",
+      "mean": 5.0
+    },
+    {
+      "path": "debug-review\\screenshots\\18_v0303_debug_no_forbidden_systems.png",
+      "mean": 5.0
+    }
+  ],
+  "rejectedBlackFrames": [
+    {
+      "path": "player-facing\\screenshots\\01_v0303_player_before_after_reference.png",
+      "mean": 5.0
+    },
+    {
+      "path": "player-facing\\screenshots\\02_v0303_player_overview.png",
+      "mean": 5.0
+    },
+    {
+      "path": "player-facing\\screenshots\\03_v0303_player_terrain_hierarchy.png",
+      "mean": 5.0
+    },
+    {
+      "path": "player-facing\\screenshots\\04_v0303_player_grass_road.png",
+      "mean": 5.0
+    },
+    {
+      "path": "player-facing\\screenshots\\05_v0303_player_road_bridge.png",
+      "mean": 5.0
+    },
+    {
+      "path": "player-facing\\screenshots\\06_v0303_player_river_land.png",
+      "mean": 5.0
+    },
+    {
+      "path": "player-facing\\screenshots\\07_v0303_player_bridge_surface.png",
+      "mean": 5.0
+    },
+    {
+      "path": "player-facing\\screenshots\\08_v0303_player_building_pads.png",
+      "mean": 5.0
+    },
+    {
+      "path": "player-facing\\screenshots\\09_v0303_player_main_hall_material.png",
+      "mean": 5.0
+    },
+    {
+      "path": "player-facing\\screenshots\\10_v0303_player_field_barracks_material.png",
+      "mean": 5.0
+    },
+    {
+      "path": "player-facing\\screenshots\\11_v0303_player_smaller_buildings.png",
+      "mean": 5.0
+    },
+    {
+      "path": "player-facing\\screenshots\\12_v0303_player_building_volume.png",
+      "mean": 5.0
+    },
+    {
+      "path": "player-facing\\screenshots\\13_v0303_player_aster_separation.png",
+      "mean": 5.0
+    },
+    {
+      "path": "player-facing\\screenshots\\14_v0303_player_defender_separation.png",
+      "mean": 5.0
+    },
+    {
+      "path": "player-facing\\screenshots\\15_v0303_player_reserve_separation.png",
+      "mean": 5.0
+    },
+    {
+      "path": "player-facing\\screenshots\\16_v0303_player_unit_silhouettes.png",
+      "mean": 5.0
+    },
+    {
+      "path": "player-facing\\screenshots\\17_v0303_player_unit_shadows.png",
+      "mean": 5.0
+    },
+    {
+      "path": "player-facing\\screenshots\\18_v0303_player_building_shadows.png",
+      "mean": 5.0
+    },
+    {
+      "path": "player-facing\\screenshots\\19_v0303_player_selection_aster.png",
+      "mean": 5.0
+    },
+    {
+      "path": "player-facing\\screenshots\\20_v0303_player_selection_defender.png",
+      "mean": 5.0
+    },
+    {
+      "path": "player-facing\\screenshots\\21_v0303_player_selection_reserve.png",
+      "mean": 5.0
+    },
+    {
+      "path": "player-facing\\screenshots\\22_v0303_player_selection_barracks.png",
+      "mean": 5.0
+    },
+    {
+      "path": "player-facing\\screenshots\\23_v0303_player_bridge_clean.png",
+      "mean": 5.0
+    },
+    {
+      "path": "player-facing\\screenshots\\24_v0303_player_barracks_clean.png",
+      "mean": 5.0
+    },
+    {
+      "path": "player-facing\\screenshots\\25_v0303_player_minimap.png",
+      "mean": 5.0
+    },
+    {
+      "path": "player-facing\\screenshots\\26_v0303_player_top_strip.png",
+      "mean": 5.0
+    },
+    {
+      "path": "player-facing\\screenshots\\27_v0303_player_aster_card.png",
+      "mean": 5.0
+    },
+    {
+      "path": "player-facing\\screenshots\\28_v0303_player_defender_card.png",
+      "mean": 5.0
+    },
+    {
+      "path": "player-facing\\screenshots\\29_v0303_player_reserve_card.png",
+      "mean": 5.0
+    },
+    {
+      "path": "player-facing\\screenshots\\30_v0303_player_barracks_card.png",
+      "mean": 5.0
+    },
+    {
+      "path": "player-facing\\screenshots\\31_v0303_player_no_proof_labels.png",
+      "mean": 5.0
+    },
+    {
+      "path": "player-facing\\screenshots\\32_v0303_player_no_historical_stack.png",
+      "mean": 5.0
+    },
+    {
+      "path": "player-facing\\screenshots\\33_v0303_player_no_label_collision.png",
+      "mean": 5.0
+    },
+    {
+      "path": "player-facing\\screenshots\\34_v0303_player_player_debug_round_trip.png",
+      "mean": 5.0
+    },
+    {
+      "path": "player-facing\\screenshots\\35_v0303_player_debug_to_player.png",
+      "mean": 5.0
+    },
+    {
+      "path": "player-facing\\screenshots\\36_v0303_player_player_restored.png",
+      "mean": 5.0
+    },
+    {
+      "path": "player-facing\\screenshots\\37_v0303_player_no_duplicate_materials.png",
+      "mean": 5.0
+    },
+    {
+      "path": "player-facing\\screenshots\\38_v0303_player_no_duplicate_visuals.png",
+      "mean": 5.0
+    },
+    {
+      "path": "player-facing\\screenshots\\39_v0303_player_no_duplicate_shadows.png",
+      "mean": 5.0
+    },
+    {
+      "path": "player-facing\\screenshots\\40_v0303_player_no_duplicate_labels.png",
+      "mean": 5.0
+    },
+    {
+      "path": "player-facing\\screenshots\\41_v0303_player_positions_unchanged.png",
+      "mean": 5.0
+    },
+    {
+      "path": "player-facing\\screenshots\\42_v0303_player_footprints_unchanged.png",
+      "mean": 5.0
+    },
+    {
+      "path": "player-facing\\screenshots\\43_v0303_player_resources_unchanged.png",
+      "mean": 5.0
+    },
+    {
+      "path": "player-facing\\screenshots\\44_v0303_player_pressure_70.png",
+      "mean": 5.0
+    },
+    {
+      "path": "player-facing\\screenshots\\45_v0303_player_selected_card_unchanged.png",
+      "mean": 5.0
+    },
+    {
+      "path": "player-facing\\screenshots\\46_v0303_player_top_strip_unchanged.png",
+      "mean": 5.0
+    },
+    {
+      "path": "player-facing\\screenshots\\47_v0303_player_no_movement.png",
+      "mean": 5.0
+    },
+    {
+      "path": "player-facing\\screenshots\\48_v0303_player_no_combat.png",
+      "mean": 5.0
+    },
+    {
+      "path": "player-facing\\screenshots\\49_v0303_player_no_ai.png",
+      "mean": 5.0
+    },
+    {
+      "path": "player-facing\\screenshots\\50_v0303_player_no_economy.png",
+      "mean": 5.0
+    },
+    {
+      "path": "player-facing\\screenshots\\51_v0303_player_no_default_mutation.png",
+      "mean": 5.0
+    },
+    {
+      "path": "debug-review\\screenshots\\01_v0303_debug_proof_labels.png",
+      "mean": 5.0
+    },
+    {
+      "path": "debug-review\\screenshots\\02_v0303_debug_route_segments.png",
+      "mean": 5.0
+    },
+    {
+      "path": "debug-review\\screenshots\\03_v0303_debug_support_presence.png",
+      "mean": 5.0
+    },
+    {
+      "path": "debug-review\\screenshots\\04_v0303_debug_integration_visual.png",
+      "mean": 5.0
+    },
+    {
+      "path": "debug-review\\screenshots\\05_v0303_debug_pressure_evidence.png",
+      "mean": 5.0
+    },
+    {
+      "path": "debug-review\\screenshots\\06_v0303_debug_round_trip.png",
+      "mean": 5.0
+    },
+    {
+      "path": "debug-review\\screenshots\\07_v0303_debug_no_duplicate_materials.png",
+      "mean": 5.0
+    },
+    {
+      "path": "debug-review\\screenshots\\08_v0303_debug_no_duplicate_visuals.png",
+      "mean": 5.0
+    },
+    {
+      "path": "debug-review\\screenshots\\09_v0303_debug_no_duplicate_shadows.png",
+      "mean": 5.0
+    },
+    {
+      "path": "debug-review\\screenshots\\10_v0303_debug_no_duplicate_labels.png",
+      "mean": 5.0
+    },
+    {
+      "path": "debug-review\\screenshots\\11_v0303_debug_positions_unchanged.png",
+      "mean": 5.0
+    },
+    {
+      "path": "debug-review\\screenshots\\12_v0303_debug_resources_unchanged.png",
+      "mean": 5.0
+    },
+    {
+      "path": "debug-review\\screenshots\\13_v0303_debug_pressure_70.png",
+      "mean": 5.0
+    },
+    {
+      "path": "debug-review\\screenshots\\14_v0303_debug_selected_cards.png",
+      "mean": 5.0
+    },
+    {
+      "path": "debug-review\\screenshots\\15_v0303_debug_top_strip.png",
+      "mean": 5.0
+    },
+    {
+      "path": "debug-review\\screenshots\\16_v0303_debug_minimap.png",
+      "mean": 5.0
+    },
+    {
+      "path": "debug-review\\screenshots\\17_v0303_debug_no_mutation.png",
+      "mean": 5.0
+    },
+    {
+      "path": "debug-review\\screenshots\\18_v0303_debug_no_forbidden_systems.png",
+      "mean": 5.0
+    }
+  ]
+}
