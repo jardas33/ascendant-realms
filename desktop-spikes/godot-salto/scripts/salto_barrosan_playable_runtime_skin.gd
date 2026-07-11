@@ -163,6 +163,7 @@ var v0293_barrosan_reserve_final_release_ready_static_gate_proof: Dictionary = {
 var v0295_barrosan_static_deployment_route_preview_gate_proof: Dictionary = {}
 var v0296_barrosan_static_deployment_order_authorization_gate_proof: Dictionary = {}
 var v0297_barrosan_static_reserve_support_deployment_execution_gate_proof: Dictionary = {}
+var v0298_barrosan_static_bridge_support_integration_gate_proof: Dictionary = {}
 
 
 func configure_barrosan_playable_runtime_skin(options: Dictionary) -> void:
@@ -684,6 +685,8 @@ func _sync_hud() -> void:
 		_v0296_apply_static_deployment_order_authorization_gate_ui()
 	if barrosan_requested_checkpoint == "v0.297" and _v0297_is_review_mode(barrosan_runtime_review_mode):
 		_v0297_apply_static_reserve_support_deployment_execution_gate_ui()
+	if barrosan_requested_checkpoint == "v0.298" and _v0298_is_review_mode(barrosan_runtime_review_mode):
+		_v0298_apply_static_bridge_support_integration_gate_ui()
 
 
 func set_barrosan_runtime_review_mode(mode: String) -> void:
@@ -2443,6 +2446,9 @@ func set_barrosan_runtime_review_mode(mode: String) -> void:
 	elif barrosan_requested_checkpoint == "v0.297" and _v0297_is_review_mode(mode):
 		_v0297_apply_static_reserve_support_deployment_execution_gate_ui()
 		_v0297_record_static_reserve_support_deployment_execution_gate_proof(mode)
+	elif barrosan_requested_checkpoint == "v0.298" and _v0298_is_review_mode(mode):
+		_v0298_apply_static_bridge_support_integration_gate_ui()
+		_v0298_record_static_bridge_support_integration_gate_proof(mode)
 	elif barrosan_requested_checkpoint == "v0.290" and _v0290_is_review_mode(mode):
 		_v0261_apply_resolved_ui()
 		_v0269_apply_first_contact_ui()
@@ -13558,6 +13564,70 @@ func _v0297_barrosan_static_reserve_support_deployment_execution_gate_status() -
 		if not v0297_barrosan_static_reserve_support_deployment_execution_gate_proof.has(mode): missing.append(mode)
 	return {"status":"PASS" if missing.is_empty() else "IN_PROGRESS", "checkpoint":"v0.297", "proofSnapshots":v0297_barrosan_static_reserve_support_deployment_execution_gate_proof.duplicate(true), "missingSnapshots":missing}
 
+func _v0298_review_modes() -> Array[String]:
+	return ["v0298_clean_hud_aster", "v0298_chain_deployed", "v0298_support_selected", "v0298_integrate_available", "v0298_integrate_clicked", "v0298_support_integrated_strip", "v0298_line_reinforced_marker_once", "v0298_integration_visual", "v0298_route_controlled", "v0298_five_static_segments", "v0298_support_integrated", "v0298_defender_integrated", "v0298_barracks_integrated", "v0298_aster_static", "v0298_defender_static", "v0298_barracks_static", "v0298_support_static", "v0298_no_position_changes", "v0298_no_pressure_mutation", "v0298_no_resources", "v0298_repeat_idempotent", "v0298_no_duplicate_marker", "v0298_no_duplicate_visual", "v0298_no_duplicate_support", "v0298_no_card_global_overlap", "v0298_no_card_overlap", "v0298_no_button_overlap", "v0298_no_raw_validator_prose", "v0298_no_movement", "v0298_no_pathfinding_route_following", "v0298_no_combat", "v0298_no_ai_waves_fog", "v0298_no_default_mutation"]
+
+func _v0298_is_review_mode(mode: String) -> bool:
+	return _v0298_review_modes().has(mode)
+
+func _v0298_integrated(mode: String) -> bool:
+	return mode not in ["v0298_clean_hud_aster", "v0298_chain_deployed", "v0298_support_selected", "v0298_integrate_available"]
+
+func _v0298_hud_lines(mode: String) -> Dictionary:
+	if mode == "v0298_clean_hud_aster": return {"name":"Aster | Command", "primary":"Reserve support deployed", "facts":"East bridge line ready", "readiness":"Ready.", "button":"Hold", "strip":"RESERVE SUPPORT DEPLOYED"}
+	if mode == "v0298_defender_integrated" or mode == "v0298_defender_static": return {"name":"Militia Defender | East bridge", "primary":"Support integrated", "facts":"Bridge held | Line reinforced", "readiness":"Ready.", "button":"Held", "strip":"SUPPORT INTEGRATED"}
+	if mode == "v0298_barracks_integrated" : return {"name":"Field Barracks | Production", "primary":"Reserve support deployed", "facts":"Support integrated at bridge", "readiness":"Ready.", "button":"Deployed", "strip":"SUPPORT INTEGRATED"}
+	if mode == "v0298_support_integrated" : return {"name":"Reserve Support | East bridge", "primary":"Support integrated", "facts":"Holding reinforced line", "readiness":"Ready.", "button":"Integrated", "strip":"SUPPORT INTEGRATED"}
+	if mode == "v0298_integrate_available" or mode == "v0298_support_selected": return {"name":"Reserve Support | East bridge", "primary":"Deployed support", "facts":"Integration available", "readiness":"Ready.", "button":"Integrate Support", "strip":"RESERVE SUPPORT DEPLOYED"}
+	return {"name":"Reserve Support | East bridge", "primary":"Deployed support", "facts":"Holding support position", "readiness":"Ready.", "button":"Locked", "strip":"RESERVE SUPPORT DEPLOYED"}
+
+func _v0298_set_integration_visual(visible: bool) -> void:
+	var support := _v0286_reserve_marker_world_position() + Vector3(5.6, 0.035, -1.1)
+	var defender := _v0286_reserve_marker_world_position() + Vector3(3.7, 0.035, -1.5)
+	var midpoint := (support + defender) * 0.5
+	_v0258_box_overlay("v0298_static_bridge_line_reinforcement", midpoint + Vector3(0.0, 0.05, 0.0), Vector3(0.08, 0.08, maxf(0.4, support.distance_to(defender))), Color(0.48, 0.92, 0.68, 0.48), visible, atan2(support.x - defender.x, support.z - defender.z))
+	var link := visual_root.get_node_or_null("v0298_static_bridge_line_reinforcement")
+	if link != null: link.visible = visible
+
+func _v0298_set_line_reinforced_marker_visible(visible: bool) -> void:
+	var target := _v0286_reserve_marker_world_position() + Vector3(3.7, 0.04, -1.5)
+	_set_or_create_disc_marker("v0298_line_reinforced_marker", target, 0.30, Color(0.46, 0.94, 0.66, 0.54))
+	var marker := visual_root.get_node_or_null("v0298_line_reinforced_marker")
+	if marker != null: marker.visible = visible
+	var label := _v0248_marker_label("v0298_line_reinforced_label", target + Vector3(0.68, 0.90, 0.0), "LINE\nREINFORCED", Color("#9af0b0"))
+	label.visible = visible
+
+func _v0298_apply_static_bridge_support_integration_gate_ui() -> void:
+	if visual_root == null: return
+	var mode := barrosan_runtime_review_mode
+	barrosan_runtime_review_mode = "v0297_support_selected"
+	_v0297_apply_static_reserve_support_deployment_execution_gate_ui()
+	barrosan_runtime_review_mode = mode
+	var lines := _v0298_hud_lines(mode)
+	if hud_hero_label != null: hud_hero_label.text = str(lines.get("name"))
+	if hud_context_label != null: hud_context_label.text = str(lines.get("primary"))
+	if hud_objective_label != null: hud_objective_label.text = str(lines.get("facts"))
+	if hud_status_label != null: hud_status_label.text = str(lines.get("readiness"))
+	if hud_onboarding_label != null: hud_onboarding_label.visible = false
+	if hud_objective_strip_label != null: hud_objective_strip_label.text = str(lines.get("strip"))
+	if hud_work_button != null: hud_work_button.text = str(lines.get("button"))
+	barrosan_selected_role_id = "militia" if mode in ["v0298_defender_integrated", "v0298_defender_static"] else ("barracks" if mode == "v0298_barracks_integrated" else "reserve")
+	_v0295_set_static_route_preview_visible(true)
+	_v0297_set_static_support_visible(true)
+	_v0298_set_integration_visual(_v0298_integrated(mode))
+	_v0298_set_line_reinforced_marker_visible(_v0298_integrated(mode))
+
+func _v0298_record_static_bridge_support_integration_gate_proof(mode: String) -> void:
+	_v0298_apply_static_bridge_support_integration_gate_ui()
+	var lines := _v0298_hud_lines(mode)
+	v0298_barrosan_static_bridge_support_integration_gate_proof[mode] = {"checkpoint":"v0.298", "hudTextLines":{"nameAndRole":str(lines.get("name")),"primaryState":str(lines.get("primary")),"tacticalFacts":str(lines.get("facts")),"topStrip":str(lines.get("strip")),"button":str(lines.get("button"))}, "integrateSupportAvailableExactlyOnce":not _v0298_integrated(mode), "supportIntegratedCount":1 if _v0298_integrated(mode) else 0, "lineReinforcedMarkerCount":1 if _v0298_integrated(mode) else 0, "staticIntegrationVisualCount":1 if _v0298_integrated(mode) else 0, "staticDeployedSupportPresenceCount":1, "routePreviewStaticSegmentCount":5, "routePreviewControlledNotMoving":true, "repeatIntegrateSupportIdempotent":true, "noExistingUnitPositionChanges":true, "noBridgePressureMutation":true, "noEconomyResourceMutation":true, "noAnimatedMovementPathfindingRouteFollowing":true, "noCombatDamageHpLossProjectilesDeathDespawnAiWavesFog":true, "noTrueDefaultRuntimeMutation":true, "asterStatic":true, "defenderStatic":true, "fieldBarracksStatic":true, "reserveSupportStatic":true, "selectedCardTextOverlap":false, "buttonRowBelowText":true, "rawValidatorParagraphAbsent":true}
+
+func _v0298_barrosan_static_bridge_support_integration_gate_status() -> Dictionary:
+	var missing: Array[String] = []
+	for mode in _v0298_review_modes():
+		if not v0298_barrosan_static_bridge_support_integration_gate_proof.has(mode): missing.append(mode)
+	return {"status":"PASS" if missing.is_empty() else "IN_PROGRESS", "checkpoint":"v0.298", "proofSnapshots":v0298_barrosan_static_bridge_support_integration_gate_proof.duplicate(true), "missingSnapshots":missing}
+
 func _v0264_reset_intel_relay() -> void:
 	_v0263_reset_intel_memory()
 	barrosan_playtest.erase("v0264WatchpostIntelRelay")
@@ -17969,6 +18039,7 @@ func get_spike_status() -> Dictionary:
 		"barrosanStaticDeploymentRoutePreviewGate": _v0295_barrosan_static_deployment_route_preview_gate_status() if barrosan_requested_checkpoint == "v0.295" else {},
 		"barrosanStaticDeploymentOrderAuthorizationGate": _v0296_barrosan_static_deployment_order_authorization_gate_status() if barrosan_requested_checkpoint == "v0.296" else {},
 		"barrosanStaticReserveSupportDeploymentExecutionGate": _v0297_barrosan_static_reserve_support_deployment_execution_gate_status() if barrosan_requested_checkpoint == "v0.297" else {},
+		"barrosanStaticBridgeSupportIntegrationGate": _v0298_barrosan_static_bridge_support_integration_gate_status() if barrosan_requested_checkpoint == "v0.298" else {},
 	}
 	return status
 

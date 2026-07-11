@@ -8116,7 +8116,7 @@ func _apply_player_slice_action(action: String) -> Dictionary:
 	elif action == "v0212_viewport_marker" or action == "v0212_alerts" or action.begins_with("v0212_resolution"):
 		player_ui_shell_production_tab_override = "TRAIN"
 		player_ui_shell_production_focus_hint = "train_militia"
-	if action.begins_with("v0271_") or action.begins_with("v0272_") or action.begins_with("v0273_") or action.begins_with("v0274_") or action.begins_with("v0275_") or action.begins_with("v0276_") or action.begins_with("v0277_") or action.begins_with("v0278_") or action.begins_with("v0279_") or action.begins_with("v0280_") or action.begins_with("v0281_") or action.begins_with("v0283_") or action.begins_with("v0284_") or action.begins_with("v0285_") or action.begins_with("v0286_") or action.begins_with("v0287_") or action.begins_with("v0288_") or action.begins_with("v0289_") or action.begins_with("v0290_") or action.begins_with("v0291_") or action.begins_with("v0292_") or action.begins_with("v0293_") or action.begins_with("v0295_") or action.begins_with("v0296_") or action.begins_with("v0297_"):
+	if action.begins_with("v0271_") or action.begins_with("v0272_") or action.begins_with("v0273_") or action.begins_with("v0274_") or action.begins_with("v0275_") or action.begins_with("v0276_") or action.begins_with("v0277_") or action.begins_with("v0278_") or action.begins_with("v0279_") or action.begins_with("v0280_") or action.begins_with("v0281_") or action.begins_with("v0283_") or action.begins_with("v0284_") or action.begins_with("v0285_") or action.begins_with("v0286_") or action.begins_with("v0287_") or action.begins_with("v0288_") or action.begins_with("v0289_") or action.begins_with("v0290_") or action.begins_with("v0291_") or action.begins_with("v0292_") or action.begins_with("v0293_") or action.begins_with("v0295_") or action.begins_with("v0296_") or action.begins_with("v0297_") or action.begins_with("v0298_"):
 		_ensure_player_battle_scene()
 		_call_scene("set_barrosan_runtime_review_mode", [action])
 		_render_player_screen("battle")
@@ -9163,6 +9163,8 @@ func _apply_player_slice_action(action: String) -> Dictionary:
 
 func _player_capture_checkpoint() -> String:
 	var normalized_root := _artifact_root_from_args().replace("\\", "/")
+	if normalized_root.contains("/v0298"):
+		return "v0.298"
 	if normalized_root.contains("/v0297"):
 		return "v0.297"
 	if normalized_root.contains("/v0296"):
@@ -9382,7 +9384,7 @@ func _player_capture_checkpoint() -> String:
 	return "v0.124"
 
 func _is_bounded_microloop_checkpoint() -> bool:
-	return ["v0.129", "v0.130", "v0.160", "v0.162", "v0.164", "v0.166", "v0.168", "v0.169", "v0.170", "v0.173", "v0.174", "v0.177", "v0.178", "v0.179", "v0.181", "v0.184", "v0.185", "v0.186", "v0.187", "v0.193", "v0.194", "v0.195", "v0.196", "v0.197", "v0.198", "v0.199", "v0.200", "v0.203", "v0.204", "v0.205", "v0.206", "v0.209", "v0.210", "v0.211", "v0.212", "v0.213", "v0.215", "v0.216", "v0.217", "v0.218", "v0.219", "v0.220", "v0.221", "v0.222", "v0.223", "v0.224", "v0.227", "v0.228", "v0.229", "v0.230", "v0.231", "v0.243", "v0.244", "v0.245", "v0.246", "v0.247", "v0.248", "v0.249", "v0.250", "v0.251", "v0.252", "v0.253", "v0.254", "v0.255", "v0.256", "v0.257", "v0.258", "v0.259", "v0.261", "v0.262", "v0.263", "v0.264", "v0.265", "v0.266", "v0.267", "v0.268", "v0.269", "v0.270", "v0.271", "v0.272", "v0.273", "v0.274", "v0.275", "v0.276", "v0.277", "v0.278", "v0.279", "v0.280", "v0.281", "v0.283", "v0.284", "v0.285", "v0.286", "v0.287", "v0.288", "v0.289", "v0.290", "v0.291", "v0.292", "v0.293", "v0.295", "v0.296", "v0.297"].has(_player_capture_checkpoint())
+	return ["v0.129", "v0.130", "v0.160", "v0.162", "v0.164", "v0.166", "v0.168", "v0.169", "v0.170", "v0.173", "v0.174", "v0.177", "v0.178", "v0.179", "v0.181", "v0.184", "v0.185", "v0.186", "v0.187", "v0.193", "v0.194", "v0.195", "v0.196", "v0.197", "v0.198", "v0.199", "v0.200", "v0.203", "v0.204", "v0.205", "v0.206", "v0.209", "v0.210", "v0.211", "v0.212", "v0.213", "v0.215", "v0.216", "v0.217", "v0.218", "v0.219", "v0.220", "v0.221", "v0.222", "v0.223", "v0.224", "v0.227", "v0.228", "v0.229", "v0.230", "v0.231", "v0.243", "v0.244", "v0.245", "v0.246", "v0.247", "v0.248", "v0.249", "v0.250", "v0.251", "v0.252", "v0.253", "v0.254", "v0.255", "v0.256", "v0.257", "v0.258", "v0.259", "v0.261", "v0.262", "v0.263", "v0.264", "v0.265", "v0.266", "v0.267", "v0.268", "v0.269", "v0.270", "v0.271", "v0.272", "v0.273", "v0.274", "v0.275", "v0.276", "v0.277", "v0.278", "v0.279", "v0.280", "v0.281", "v0.283", "v0.284", "v0.285", "v0.286", "v0.287", "v0.288", "v0.289", "v0.290", "v0.291", "v0.292", "v0.293", "v0.295", "v0.296", "v0.297", "v0.298"].has(_player_capture_checkpoint())
 
 func _v0297_capture_steps() -> Array[Dictionary]:
 	return [
@@ -9405,6 +9407,9 @@ func _v0297_capture_steps() -> Array[Dictionary]:
 	]
 
 func _player_capture_steps() -> Array[Dictionary]:
+	if _player_capture_checkpoint() == "v0.298":
+		return [
+			{"id":"v0298_clean_hud_aster_visible","label":"v0.298 clean Aster HUD","action":"v0298_clean_hud_aster"}, {"id":"v0298_chain_deployed_visible","label":"v0.298 chain through deployed","action":"v0298_chain_deployed"}, {"id":"v0298_support_selected_visible","label":"v0.298 support selected","action":"v0298_support_selected"}, {"id":"v0298_integrate_available_visible","label":"v0.298 Integrate Support available","action":"v0298_integrate_available"}, {"id":"v0298_integrate_clicked_visible","label":"v0.298 Integrate Support clicked","action":"v0298_integrate_clicked"}, {"id":"v0298_support_integrated_strip_visible","label":"v0.298 integrated strip","action":"v0298_support_integrated_strip"}, {"id":"v0298_line_reinforced_marker_once_visible","label":"v0.298 line reinforced marker","action":"v0298_line_reinforced_marker_once"}, {"id":"v0298_integration_visual_visible","label":"v0.298 integration visual","action":"v0298_integration_visual"}, {"id":"v0298_route_controlled_visible","label":"v0.298 route controlled","action":"v0298_route_controlled"}, {"id":"v0298_five_static_segments_visible","label":"v0.298 five static segments","action":"v0298_five_static_segments"}, {"id":"v0298_support_integrated_visible","label":"v0.298 support integrated","action":"v0298_support_integrated"}, {"id":"v0298_defender_integrated_visible","label":"v0.298 defender integrated","action":"v0298_defender_integrated"}, {"id":"v0298_barracks_integrated_visible","label":"v0.298 Barracks integrated","action":"v0298_barracks_integrated"}, {"id":"v0298_repeat_idempotent_visible","label":"v0.298 repeat idempotent","action":"v0298_repeat_idempotent"}, {"id":"v0298_no_duplicate_marker_visible","label":"v0.298 no duplicate marker","action":"v0298_no_duplicate_marker"}, {"id":"v0298_no_duplicate_visual_visible","label":"v0.298 no duplicate visual","action":"v0298_no_duplicate_visual"}]
 	if _player_capture_checkpoint() == "v0.297":
 		return _v0297_capture_steps()
 	if _player_capture_checkpoint() == "v0.297":
