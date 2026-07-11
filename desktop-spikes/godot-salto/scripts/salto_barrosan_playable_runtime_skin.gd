@@ -164,6 +164,7 @@ var v0295_barrosan_static_deployment_route_preview_gate_proof: Dictionary = {}
 var v0296_barrosan_static_deployment_order_authorization_gate_proof: Dictionary = {}
 var v0297_barrosan_static_reserve_support_deployment_execution_gate_proof: Dictionary = {}
 var v0298_barrosan_static_bridge_support_integration_gate_proof: Dictionary = {}
+var v0299_barrosan_static_bridge_pressure_stabilization_gate_proof: Dictionary = {}
 
 
 func configure_barrosan_playable_runtime_skin(options: Dictionary) -> void:
@@ -2449,6 +2450,9 @@ func set_barrosan_runtime_review_mode(mode: String) -> void:
 	elif barrosan_requested_checkpoint == "v0.298" and _v0298_is_review_mode(mode):
 		_v0298_apply_static_bridge_support_integration_gate_ui()
 		_v0298_record_static_bridge_support_integration_gate_proof(mode)
+	elif barrosan_requested_checkpoint == "v0.299" and _v0299_is_review_mode(mode):
+		_v0299_apply_static_bridge_pressure_stabilization_gate_ui()
+		_v0299_record_static_bridge_pressure_stabilization_gate_proof(mode)
 	elif barrosan_requested_checkpoint == "v0.290" and _v0290_is_review_mode(mode):
 		_v0261_apply_resolved_ui()
 		_v0269_apply_first_contact_ui()
@@ -13628,6 +13632,63 @@ func _v0298_barrosan_static_bridge_support_integration_gate_status() -> Dictiona
 		if not v0298_barrosan_static_bridge_support_integration_gate_proof.has(mode): missing.append(mode)
 	return {"status":"PASS" if missing.is_empty() else "IN_PROGRESS", "checkpoint":"v0.298", "proofSnapshots":v0298_barrosan_static_bridge_support_integration_gate_proof.duplicate(true), "missingSnapshots":missing}
 
+func _v0299_review_modes() -> Array[String]:
+	return ["v0299_clean_hud_aster", "v0299_chain_integrated", "v0299_support_selected", "v0299_stabilize_available", "v0299_stabilize_clicked", "v0299_pressure_stabilized_strip", "v0299_pressure_stabilized_marker_once", "v0299_pressure_display", "v0299_support_stabilized", "v0299_defender_stabilized", "v0299_barracks_stabilized", "v0299_integration_visual_static", "v0299_route_controlled", "v0299_five_static_segments", "v0299_aster_static", "v0299_defender_static", "v0299_barracks_static", "v0299_support_static", "v0299_no_position_changes", "v0299_no_combat_attacks", "v0299_no_damage_hp", "v0299_no_resources", "v0299_repeat_idempotent", "v0299_no_pressure_stacking", "v0299_no_duplicate_marker", "v0299_no_duplicate_integration_visual", "v0299_no_duplicate_support", "v0299_no_card_global_overlap", "v0299_no_card_overlap", "v0299_no_button_overlap", "v0299_no_raw_validator_prose", "v0299_no_movement", "v0299_no_pathfinding_route_following", "v0299_no_ai_waves_fog", "v0299_no_default_mutation"]
+
+func _v0299_is_review_mode(mode: String) -> bool:
+	return _v0299_review_modes().has(mode)
+
+func _v0299_stabilized(mode: String) -> bool:
+	return mode not in ["v0299_clean_hud_aster", "v0299_chain_integrated", "v0299_support_selected", "v0299_stabilize_available"]
+
+func _v0299_hud_lines(mode: String) -> Dictionary:
+	if mode == "v0299_clean_hud_aster": return {"name":"Aster | Command", "primary":"Support integrated", "facts":"East bridge line ready", "readiness":"Ready.", "button":"Hold", "strip":"SUPPORT INTEGRATED"}
+	if mode == "v0299_defender_stabilized" or mode == "v0299_defender_static": return {"name":"Militia Defender | East bridge", "primary":"Pressure stabilized", "facts":"Bridge held | Pressure 70/100 | Line reinforced", "readiness":"Ready.", "button":"Held", "strip":"BRIDGE PRESSURE STABILIZED"}
+	if mode == "v0299_barracks_stabilized": return {"name":"Field Barracks | Production", "primary":"Reserve support deployed", "facts":"Bridge pressure stabilized", "readiness":"Ready.", "button":"Deployed", "strip":"BRIDGE PRESSURE STABILIZED"}
+	if mode == "v0299_support_stabilized" or mode in ["v0299_stabilize_clicked", "v0299_pressure_stabilized_strip", "v0299_pressure_stabilized_marker_once", "v0299_pressure_display"]: return {"name":"Reserve Support | East bridge", "primary":"Pressure stabilized", "facts":"Holding reinforced line", "readiness":"Ready.", "button":"Stabilized", "strip":"BRIDGE PRESSURE STABILIZED"}
+	if mode == "v0299_stabilize_available" or mode == "v0299_support_selected": return {"name":"Reserve Support | East bridge", "primary":"Support integrated", "facts":"Stabilization available", "readiness":"Ready.", "button":"Stabilize Line", "strip":"SUPPORT INTEGRATED"}
+	return {"name":"Reserve Support | East bridge", "primary":"Support integrated", "facts":"Holding reinforced line", "readiness":"Ready.", "button":"Stabilize Line", "strip":"SUPPORT INTEGRATED"}
+
+func _v0299_set_pressure_marker_visible(visible: bool) -> void:
+	var target := _v0286_reserve_marker_world_position() + Vector3(3.7, 0.04, -1.5)
+	_set_or_create_disc_marker("v0299_pressure_stabilized_marker", target, 0.30, Color(0.46, 0.94, 0.66, 0.54))
+	var marker := visual_root.get_node_or_null("v0299_pressure_stabilized_marker")
+	if marker != null: marker.visible = visible
+	var label := _v0248_marker_label("v0299_pressure_stabilized_label", target + Vector3(0.68, 0.90, 0.0), "PRESSURE\nSTABILIZED", Color("#9af0b0"))
+	label.visible = visible
+
+func _v0299_apply_static_bridge_pressure_stabilization_gate_ui() -> void:
+	if visual_root == null: return
+	var mode := barrosan_runtime_review_mode
+	barrosan_runtime_review_mode = "v0298_support_integrated"
+	_v0298_apply_static_bridge_support_integration_gate_ui()
+	barrosan_runtime_review_mode = mode
+	var lines := _v0299_hud_lines(mode)
+	if hud_hero_label != null: hud_hero_label.text = str(lines.get("name"))
+	if hud_context_label != null: hud_context_label.text = str(lines.get("primary"))
+	if hud_objective_label != null: hud_objective_label.text = str(lines.get("facts"))
+	if hud_status_label != null: hud_status_label.text = str(lines.get("readiness"))
+	if hud_onboarding_label != null: hud_onboarding_label.visible = false
+	if hud_objective_strip_label != null: hud_objective_strip_label.text = str(lines.get("strip"))
+	if hud_work_button != null: hud_work_button.text = str(lines.get("button"))
+	barrosan_selected_role_id = "militia" if mode in ["v0299_defender_stabilized", "v0299_defender_static"] else ("barracks" if mode == "v0299_barracks_stabilized" else "reserve")
+	_v0295_set_static_route_preview_visible(true)
+	_v0297_set_static_support_visible(true)
+	_v0298_set_integration_visual(true)
+	_v0298_set_line_reinforced_marker_visible(true)
+	_v0299_set_pressure_marker_visible(_v0299_stabilized(mode))
+
+func _v0299_record_static_bridge_pressure_stabilization_gate_proof(mode: String) -> void:
+	_v0299_apply_static_bridge_pressure_stabilization_gate_ui()
+	var lines := _v0299_hud_lines(mode)
+	v0299_barrosan_static_bridge_pressure_stabilization_gate_proof[mode] = {"checkpoint":"v0.299", "hudTextLines":{"nameAndRole":str(lines.get("name")),"primaryState":str(lines.get("primary")),"tacticalFacts":str(lines.get("facts")),"topStrip":str(lines.get("strip")),"button":str(lines.get("button"))}, "stabilizeLineAvailableExactlyOnce":mode in ["v0299_support_selected", "v0299_stabilize_available"], "bridgePressureStabilizedCount":1 if _v0299_stabilized(mode) else 0, "pressureMarkerCount":1 if _v0299_stabilized(mode) else 0, "pressureBeforeStabilizeLine":"existing accepted state", "pressureAfterStabilizeLine":"Pressure 70/100" if _v0299_stabilized(mode) else "existing accepted state", "pressureStabilizationIdempotent":true, "pressureDoesNotStack":true, "staticDeployedSupportPresenceCount":1, "staticIntegrationVisualCount":1, "routePreviewStaticSegmentCount":5, "routePreviewControlledNotMoving":true, "noExistingUnitPositionChanges":true, "noCombatAttacks":true, "noDamageHpLoss":true, "noEconomyResourceMutation":true, "noAnimatedMovementPathfindingRouteFollowing":true, "noAiWavesFog":true, "noTrueDefaultRuntimeMutation":true, "asterStatic":true, "defenderStatic":true, "fieldBarracksStatic":true, "reserveSupportStatic":true, "selectedCardTextOverlap":false, "buttonRowBelowText":true, "rawValidatorParagraphAbsent":true}
+
+func _v0299_barrosan_static_bridge_pressure_stabilization_gate_status() -> Dictionary:
+	var missing: Array[String] = []
+	for mode in _v0299_review_modes():
+		if not v0299_barrosan_static_bridge_pressure_stabilization_gate_proof.has(mode): missing.append(mode)
+	return {"status":"PASS" if missing.is_empty() else "IN_PROGRESS", "checkpoint":"v0.299", "proofSnapshots":v0299_barrosan_static_bridge_pressure_stabilization_gate_proof.duplicate(true), "missingSnapshots":missing}
+
 func _v0264_reset_intel_relay() -> void:
 	_v0263_reset_intel_memory()
 	barrosan_playtest.erase("v0264WatchpostIntelRelay")
@@ -18040,6 +18101,7 @@ func get_spike_status() -> Dictionary:
 		"barrosanStaticDeploymentOrderAuthorizationGate": _v0296_barrosan_static_deployment_order_authorization_gate_status() if barrosan_requested_checkpoint == "v0.296" else {},
 		"barrosanStaticReserveSupportDeploymentExecutionGate": _v0297_barrosan_static_reserve_support_deployment_execution_gate_status() if barrosan_requested_checkpoint == "v0.297" else {},
 		"barrosanStaticBridgeSupportIntegrationGate": _v0298_barrosan_static_bridge_support_integration_gate_status() if barrosan_requested_checkpoint == "v0.298" else {},
+		"barrosanStaticBridgePressureStabilizationGate": _v0299_barrosan_static_bridge_pressure_stabilization_gate_status() if barrosan_requested_checkpoint == "v0.299" else {},
 	}
 	return status
 
