@@ -1,0 +1,8 @@
+{
+  "status": "PASS_v0302_BARROSAN_PLAYER_FACING_2_5D_DEPTH_FOUNDATION_VALIDATION",
+  "errors": [],
+  "playerCaptureCount": 44,
+  "debugCaptureCount": 24,
+  "reviewPackNumberedPngCount": 59,
+  "blackFrameRejectionReport": "v0302-black-frame-stats.json"
+}

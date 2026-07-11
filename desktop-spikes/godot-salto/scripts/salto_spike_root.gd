@@ -8121,7 +8121,7 @@ func _apply_player_slice_action(action: String) -> Dictionary:
 	elif action == "v0212_viewport_marker" or action == "v0212_alerts" or action.begins_with("v0212_resolution"):
 		player_ui_shell_production_tab_override = "TRAIN"
 		player_ui_shell_production_focus_hint = "train_militia"
-	if action.begins_with("v0271_") or action.begins_with("v0272_") or action.begins_with("v0273_") or action.begins_with("v0274_") or action.begins_with("v0275_") or action.begins_with("v0276_") or action.begins_with("v0277_") or action.begins_with("v0278_") or action.begins_with("v0279_") or action.begins_with("v0280_") or action.begins_with("v0281_") or action.begins_with("v0283_") or action.begins_with("v0284_") or action.begins_with("v0285_") or action.begins_with("v0286_") or action.begins_with("v0287_") or action.begins_with("v0288_") or action.begins_with("v0289_") or action.begins_with("v0290_") or action.begins_with("v0291_") or action.begins_with("v0292_") or action.begins_with("v0293_") or action.begins_with("v0295_") or action.begins_with("v0296_") or action.begins_with("v0297_") or action.begins_with("v0298_") or action.begins_with("v0299_") or action.begins_with("v0300_") or action.begins_with("v0301_"):
+	if action.begins_with("v0271_") or action.begins_with("v0272_") or action.begins_with("v0273_") or action.begins_with("v0274_") or action.begins_with("v0275_") or action.begins_with("v0276_") or action.begins_with("v0277_") or action.begins_with("v0278_") or action.begins_with("v0279_") or action.begins_with("v0280_") or action.begins_with("v0281_") or action.begins_with("v0283_") or action.begins_with("v0284_") or action.begins_with("v0285_") or action.begins_with("v0286_") or action.begins_with("v0287_") or action.begins_with("v0288_") or action.begins_with("v0289_") or action.begins_with("v0290_") or action.begins_with("v0291_") or action.begins_with("v0292_") or action.begins_with("v0293_") or action.begins_with("v0295_") or action.begins_with("v0296_") or action.begins_with("v0297_") or action.begins_with("v0298_") or action.begins_with("v0299_") or action.begins_with("v0300_") or action.begins_with("v0301_") or action.begins_with("v0302_"):
 		_ensure_player_battle_scene()
 		_call_scene("set_barrosan_runtime_review_mode", [action])
 		_render_player_screen("battle")
@@ -9168,6 +9168,8 @@ func _apply_player_slice_action(action: String) -> Dictionary:
 
 func _player_capture_checkpoint() -> String:
 	var normalized_root := _artifact_root_from_args().replace("\\", "/")
+	if normalized_root.contains("/v0302"):
+		return "v0.302"
 	if normalized_root.contains("/v0301"):
 		return "v0.301"
 	if normalized_root.contains("/v0300"):
@@ -9418,6 +9420,8 @@ func _v0297_capture_steps() -> Array[Dictionary]:
 	]
 
 func _player_capture_steps() -> Array[Dictionary]:
+	if _player_capture_checkpoint() == "v0.302":
+		return _v0302_player_capture_steps() if _barrosan_presentation_mode_from_args() == "PLAYER" else _v0302_debug_capture_steps()
 	if _player_capture_checkpoint() == "v0.301":
 		return _v0301_player_capture_steps() if _barrosan_presentation_mode_from_args() == "PLAYER" else _v0301_debug_capture_steps()
 	if _player_capture_checkpoint() == "v0.300":
@@ -12235,7 +12239,7 @@ func _barrosan_presentation_mode_from_args() -> String:
 		return "DEBUG_REVIEW"
 	if _script_args().has("--salto-barrosan-player-presentation"):
 		return "PLAYER"
-	return "PLAYER" if _player_capture_checkpoint() == "v0.301" else "DEBUG_REVIEW"
+	return "PLAYER" if _player_capture_checkpoint() in ["v0.301", "v0.302"] else "DEBUG_REVIEW"
 
 
 func _barrosan_runtime_scene_requested() -> bool:
@@ -12321,6 +12325,20 @@ func _v0301_debug_capture_steps() -> Array[Dictionary]:
 	var steps: Array[Dictionary] = []
 	for suffix in ids:
 		steps.append({"id":"v0301_debug_%s" % suffix, "label":"v0.301 DEBUG_REVIEW %s" % suffix.replace("_", " "), "action":"v0301_debug_%s" % suffix})
+	return steps
+
+func _v0302_player_capture_steps() -> Array[Dictionary]:
+	var ids := ["old_flat_reference", "overview", "camera_projection", "terrain_depth", "river_bridge_depth", "road_grass_pads", "main_building_volume", "field_barracks_volume", "smaller_building_volume", "aster_grounding", "defender_grounding", "reserve_grounding", "unit_contact_shadows", "building_shadow_consistency", "selection_aster", "selection_defender", "selection_barracks", "selection_support", "bridge_clean", "barracks_clean", "minimap", "top_strip", "aster_card", "defender_card", "support_card", "barracks_card", "no_proof_labels", "no_historical_stack", "player_to_debug_round_trip", "debug_to_player_round_trip", "player_restored", "no_duplicate_visuals", "no_duplicate_shadows", "no_duplicate_labels", "positions_unchanged", "resources_unchanged", "pressure_unchanged", "selected_card_unchanged", "top_strip_unchanged", "no_movement", "no_combat", "no_ai", "no_economy", "no_default_mutation"]
+	var steps: Array[Dictionary] = []
+	for suffix in ids:
+		steps.append({"id":"v0302_player_%s" % suffix, "label":"v0.302 PLAYER %s" % suffix.replace("_", " "), "action":"v0302_player_%s" % suffix})
+	return steps
+
+func _v0302_debug_capture_steps() -> Array[Dictionary]:
+	var ids := ["proof_labels", "route_segments", "support_presence", "integration_visual", "pressure_evidence", "retained_markers", "round_trip", "no_duplicate_visuals", "no_duplicate_shadows", "no_duplicate_labels", "positions_unchanged", "footprints_unchanged", "resources_unchanged", "pressure_70", "selected_cards", "top_strip", "minimap", "no_mutation", "no_forbidden_systems", "five_route_segments", "support_once", "integration_once", "pressure_marker", "debug_contact_sheet"]
+	var steps: Array[Dictionary] = []
+	for suffix in ids:
+		steps.append({"id":"v0302_debug_%s" % suffix, "label":"v0.302 DEBUG_REVIEW %s" % suffix.replace("_", " "), "action":"v0302_debug_%s" % suffix})
 	return steps
 
 func _friendly_mode(mode: String) -> String:
