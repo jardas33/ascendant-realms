@@ -281,6 +281,8 @@
     "godot:validate:salto-barrosan-final-ready-chain-visual-contract-hardening": "powershell -NoProfile -ExecutionPolicy Bypass -File tools/godot/validateGodotV0294BarrosanFinalReadyChainVisualContractHardeningWindows.ps1",
     "godot:capture:salto-barrosan-static-deployment-route-preview-gate": "powershell -NoProfile -ExecutionPolicy Bypass -File tools/godot/captureGodotV0295BarrosanStaticDeploymentRoutePreviewGateWindows.ps1",
     "godot:validate:salto-barrosan-static-deployment-route-preview-gate": "powershell -NoProfile -ExecutionPolicy Bypass -File tools/godot/validateGodotV0295BarrosanStaticDeploymentRoutePreviewGateWindows.ps1",
+    "godot:capture:salto-barrosan-static-deployment-order-authorization-gate": "powershell -NoProfile -ExecutionPolicy Bypass -File tools/godot/captureGodotV0296BarrosanStaticDeploymentOrderAuthorizationGateWindows.ps1",
+    "godot:validate:salto-barrosan-static-deployment-order-authorization-gate": "powershell -NoProfile -ExecutionPolicy Bypass -File tools/godot/validateGodotV0296BarrosanStaticDeploymentOrderAuthorizationGateWindows.ps1",
     "godot:capture:salto-environment-contrast": "powershell -NoProfile -ExecutionPolicy Bypass -File tools/godot/captureGodotSaltoEnvironmentContrastWindows.ps1",
     "godot:audit:player-slice": "powershell -NoProfile -ExecutionPolicy Bypass -File tools/godot/auditGodotPlayerSliceWindows.ps1",
     "godot:validate:player-slice": "powershell -NoProfile -ExecutionPolicy Bypass -File tools/godot/validateGodotPlayerSlice.ps1",

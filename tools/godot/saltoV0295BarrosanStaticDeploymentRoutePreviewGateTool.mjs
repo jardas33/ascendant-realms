@@ -21,7 +21,8 @@ else {
 }
 const skin = readFileSync(skinPath, "utf8");
 for (const label of requiredLabels) if (!skin.includes(label)) errors.push(`missing required label: ${label}`);
-for (const forbidden of ["NavigationAgent", "AStar", "move_toward", "route_follow", "deploy_unit", "spawn_deployed"]) if (skin.slice(skin.indexOf("func _v0295_review_modes()"), skin.indexOf("func _v0264_reset_intel_relay()")).includes(forbidden)) errors.push(`forbidden dynamic system in v0.295 gate: ${forbidden}`);
+const v0295Block = skin.slice(skin.indexOf("func _v0295_review_modes()"), skin.indexOf("func _v0296_review_modes()"));
+for (const forbidden of ["NavigationAgent", "AStar", "move_toward", "route_follow", "deploy_unit", "spawn_deployed"]) if (v0295Block.includes(forbidden)) errors.push(`forbidden dynamic system in v0.295 gate: ${forbidden}`);
 if (skin.includes('hud_onboarding_label.text = "Select Aster')) errors.push("stale global Select Aster prompt remains");
 if (!existsSync(manualRoot) || readdirSync(manualRoot).filter((name) => /^\d\d_v0295_.*\.png$/.test(name)).length !== 33) errors.push("v0.295 review pack is incomplete");
 const report = {status: errors.length ? "FAIL_v0295_VALIDATION" : "PASS_v0295_BARROSAN_STATIC_DEPLOYMENT_ROUTE_PREVIEW_GATE_VALIDATION", errors, requiredActions, routeVisual: "five authored static segments", trueDefaultRuntimeChanged: false};
