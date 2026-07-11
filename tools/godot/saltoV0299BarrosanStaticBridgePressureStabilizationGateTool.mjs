@@ -16,7 +16,7 @@ else{
 }
 const source=readFileSync(join(repo,'desktop-spikes/godot-salto/scripts/salto_barrosan_playable_runtime_skin.gd'),'utf8');
 for(const t of['Stabilize Line','BRIDGE PRESSURE STABILIZED','PRESSURE\\nSTABILIZED','Pressure 70/100','staticIntegrationVisualCount'])if(!source.includes(t))errors.push('missing '+t);
-const block=source.slice(source.indexOf('func _v0299_review_modes()'),source.indexOf('func _v0264_reset_intel_relay()'));
+const blockEnd=source.indexOf('func _v0300_review_modes()')>=0?source.indexOf('func _v0300_review_modes()'):source.indexOf('func _v0264_reset_intel_relay()');const block=source.slice(source.indexOf('func _v0299_review_modes()'),blockEnd);
 for(const f of['NavigationAgent','AStar','move_toward','spawn_deployed','damage_taken','projectile'])if(block.includes(f))errors.push('forbidden '+f);
 const numbered=existsSync(manual)?readdirSync(manual).filter(n=>/^\d\d_v0299_.*\.png$/.test(n)):[];
 if(numbered.length!==41)errors.push(`review pack must contain exactly 41 numbered PNGs; found ${numbered.length}`);

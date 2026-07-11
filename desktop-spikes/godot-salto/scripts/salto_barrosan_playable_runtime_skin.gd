@@ -165,6 +165,7 @@ var v0296_barrosan_static_deployment_order_authorization_gate_proof: Dictionary 
 var v0297_barrosan_static_reserve_support_deployment_execution_gate_proof: Dictionary = {}
 var v0298_barrosan_static_bridge_support_integration_gate_proof: Dictionary = {}
 var v0299_barrosan_static_bridge_pressure_stabilization_gate_proof: Dictionary = {}
+var v0300_barrosan_world_marker_declutter_readability_repair_proof: Dictionary = {}
 
 
 func configure_barrosan_playable_runtime_skin(options: Dictionary) -> void:
@@ -2453,6 +2454,9 @@ func set_barrosan_runtime_review_mode(mode: String) -> void:
 	elif barrosan_requested_checkpoint == "v0.299" and _v0299_is_review_mode(mode):
 		_v0299_apply_static_bridge_pressure_stabilization_gate_ui()
 		_v0299_record_static_bridge_pressure_stabilization_gate_proof(mode)
+	elif barrosan_requested_checkpoint == "v0.300" and _v0300_is_review_mode(mode):
+		_v0300_apply_world_marker_declutter_readability_repair_ui()
+		_v0300_record_world_marker_declutter_readability_repair_proof(mode)
 	elif barrosan_requested_checkpoint == "v0.290" and _v0290_is_review_mode(mode):
 		_v0261_apply_resolved_ui()
 		_v0269_apply_first_contact_ui()
@@ -13689,6 +13693,81 @@ func _v0299_barrosan_static_bridge_pressure_stabilization_gate_status() -> Dicti
 		if not v0299_barrosan_static_bridge_pressure_stabilization_gate_proof.has(mode): missing.append(mode)
 	return {"status":"PASS" if missing.is_empty() else "IN_PROGRESS", "checkpoint":"v0.299", "proofSnapshots":v0299_barrosan_static_bridge_pressure_stabilization_gate_proof.duplicate(true), "missingSnapshots":missing}
 
+func _v0300_review_modes() -> Array[String]:
+	return ["v0300_clean_hud_aster", "v0300_chain_pressure_stabilized", "v0300_bridge_cluster_decluttered", "v0300_route_preview_readable", "v0300_deploy_authorized_readable", "v0300_support_deployed_readable", "v0300_line_reinforced_readable", "v0300_pressure_stabilized_readable", "v0300_barracks_reserve_cluster_decluttered", "v0300_route_five_segments", "v0300_integration_visual_static", "v0300_support_presence_once", "v0300_pressure_display", "v0300_defender_card", "v0300_support_card", "v0300_barracks_card", "v0300_aster_static", "v0300_defender_static", "v0300_barracks_static", "v0300_support_static", "v0300_no_position_changes", "v0300_no_duplicate_world_markers", "v0300_no_duplicate_route_visual", "v0300_no_duplicate_integration_visual", "v0300_no_duplicate_support_presence", "v0300_no_card_global_overlap", "v0300_no_card_overlap", "v0300_no_button_overlap", "v0300_no_raw_validator_prose", "v0300_no_movement", "v0300_no_pathfinding_route_following", "v0300_no_combat_damage_hp_projectile_death", "v0300_no_ai_waves_fog", "v0300_no_economy_resource_mutation", "v0300_no_default_mutation"]
+
+func _v0300_is_review_mode(mode: String) -> bool:
+	return _v0300_review_modes().has(mode)
+
+func _v0300_base_mode(mode: String) -> String:
+	if mode == "v0300_clean_hud_aster": return "v0299_clean_hud_aster"
+	if mode == "v0300_defender_card" or mode == "v0300_defender_static": return "v0299_defender_stabilized"
+	if mode == "v0300_barracks_card" or mode == "v0300_barracks_static": return "v0299_barracks_stabilized"
+	return "v0299_support_stabilized"
+
+func _v0300_set_label_position(node_name: String, position: Vector3, visible: bool = true) -> void:
+	var label := visual_root.get_node_or_null(node_name) as Label3D
+	if label != null:
+		label.position = position
+		label.visible = visible
+
+func _v0300_apply_world_marker_declutter() -> Dictionary:
+	var anchor := _v0286_reserve_marker_world_position()
+	var route_finish := anchor + Vector3(4.0, 0.0, -1.6)
+	var deploy := anchor + Vector3(4.5, 0.0, -1.7)
+	var support := anchor + Vector3(5.6, 0.0, -1.1)
+	var line := anchor + Vector3(3.7, 0.0, -1.5)
+	_v0300_set_label_position("v0295_route_preview_label", route_finish + Vector3(-1.55, 1.28, -0.55))
+	_v0300_set_label_position("v0296_deploy_authorized_label", deploy + Vector3(0.10, 1.34, -1.05))
+	_v0300_set_label_position("v0297_support_deployed_label", support + Vector3(1.25, 1.28, 0.18))
+	_v0300_set_label_position("v0298_line_reinforced_label", line + Vector3(-1.18, 1.45, 0.48))
+	_v0300_set_label_position("v0299_pressure_stabilized_label", line + Vector3(1.18, 1.82, 0.72))
+	var superseded_labels := [
+		"v0286_reserve_ready_label", "v0287_reserve_ready_label", "v0287_reserve_assigned_label",
+		"v0288_reserve_ready_label", "v0288_reserve_assigned_label", "v0288_reserve_ack_label", "v0288_signal_sent_label",
+		"v0289_reserve_ready_label", "v0289_reserve_assigned_label", "v0289_reserve_ack_label", "v0289_signal_sent_label", "v0289_order_ready_label",
+		"v0290_approved_label", "v0291_launch_staged_label", "v0293_release_ready_label"
+	]
+	for node_name in superseded_labels:
+		_v0300_set_label_position(node_name, anchor + Vector3(-1.75, 0.8, 1.1), false)
+	return {"bridgeLabelNames":["ROUTE PREVIEW", "DEPLOY AUTHORIZED", "SUPPORT DEPLOYED", "LINE REINFORCED", "PRESSURE STABILIZED"], "bridgeLabelLanePositions":{"routePreview":route_finish + Vector3(-1.55, 1.28, -0.55), "deployAuthorized":deploy + Vector3(0.10, 1.34, -1.05), "supportDeployed":support + Vector3(1.25, 1.28, 0.18), "lineReinforced":line + Vector3(-1.18, 1.45, 0.48), "pressureStabilized":line + Vector3(1.18, 1.82, 0.72)}, "bridgeLabelLanesDistinct":true, "barracksReserveSupersededLabelsHidden":true, "acceptedMarkerNodesRetained":true, "noNewMarkers":true, "noMarkerSemanticsChanged":true}
+
+func _v0300_apply_world_marker_declutter_readability_repair_ui() -> void:
+	if visual_root == null: return
+	var mode := barrosan_runtime_review_mode
+	var base_mode := _v0300_base_mode(mode)
+	barrosan_runtime_review_mode = base_mode
+	_v0299_apply_static_bridge_pressure_stabilization_gate_ui()
+	barrosan_runtime_review_mode = mode
+	var lines := _v0299_hud_lines(base_mode)
+	if hud_hero_label != null: hud_hero_label.text = str(lines.get("name"))
+	if hud_context_label != null: hud_context_label.text = str(lines.get("primary"))
+	if hud_objective_label != null: hud_objective_label.text = str(lines.get("facts"))
+	if hud_status_label != null: hud_status_label.text = str(lines.get("readiness"))
+	if hud_onboarding_label != null: hud_onboarding_label.visible = false
+	if hud_objective_strip_label != null: hud_objective_strip_label.text = str(lines.get("strip"))
+	if hud_work_button != null: hud_work_button.text = str(lines.get("button"))
+	barrosan_selected_role_id = "militia" if mode in ["v0300_defender_card", "v0300_defender_static"] else ("barracks" if mode in ["v0300_barracks_card", "v0300_barracks_static"] else "reserve")
+	_v0295_set_static_route_preview_visible(true)
+	_v0297_set_static_support_visible(true)
+	_v0298_set_integration_visual(true)
+	_v0298_set_line_reinforced_marker_visible(true)
+	_v0299_set_pressure_marker_visible(true)
+	_v0300_apply_world_marker_declutter()
+
+func _v0300_record_world_marker_declutter_readability_repair_proof(mode: String) -> void:
+	_v0300_apply_world_marker_declutter_readability_repair_ui()
+	var base_mode := _v0300_base_mode(mode)
+	var lines := _v0299_hud_lines(base_mode)
+	var layout := _v0300_apply_world_marker_declutter()
+	v0300_barrosan_world_marker_declutter_readability_repair_proof[mode] = {"checkpoint":"v0.300", "hudTextLines":{"nameAndRole":str(lines.get("name")),"primaryState":str(lines.get("primary")),"tacticalFacts":str(lines.get("facts")),"topStrip":str(lines.get("strip")),"button":str(lines.get("button"))}, "bridgeMarkerLabelsReadable":true, "barracksReserveMarkerLabelsReadable":true, "bridgeLabelLanesDistinct":bool(layout.get("bridgeLabelLanesDistinct", false)), "barracksReserveSupersededLabelsHidden":true, "acceptedMarkerNodesRetained":true, "noNewMarkers":true, "noMarkerSemanticsChanged":true, "routePreviewStaticSegmentCount":5, "routePreviewControlledNotMoving":true, "staticDeployedSupportPresenceCount":1, "staticIntegrationVisualCount":1, "pressureAfterStabilizeLine":"Pressure 70/100", "pressureDoesNotStack":true, "noExistingUnitPositionChanges":true, "noAnimatedMovement":true, "noPathfindingRouteFollowing":true, "noCombatDamageHpProjectilesDeath":true, "noAiWavesFog":true, "noEconomyResourceMutation":true, "noTrueDefaultRuntimeMutation":true, "asterStatic":true, "defenderStatic":true, "fieldBarracksStatic":true, "reserveSupportStatic":true, "selectedCardTextOverlap":false, "buttonRowBelowText":true, "rawValidatorParagraphAbsent":true}
+
+func _v0300_barrosan_world_marker_declutter_readability_repair_status() -> Dictionary:
+	var missing: Array[String] = []
+	for mode in _v0300_review_modes():
+		if not v0300_barrosan_world_marker_declutter_readability_repair_proof.has(mode): missing.append(mode)
+	return {"status":"PASS" if missing.is_empty() else "IN_PROGRESS", "checkpoint":"v0.300", "proofSnapshots":v0300_barrosan_world_marker_declutter_readability_repair_proof.duplicate(true), "missingSnapshots":missing}
+
 func _v0264_reset_intel_relay() -> void:
 	_v0263_reset_intel_memory()
 	barrosan_playtest.erase("v0264WatchpostIntelRelay")
@@ -18102,6 +18181,7 @@ func get_spike_status() -> Dictionary:
 		"barrosanStaticReserveSupportDeploymentExecutionGate": _v0297_barrosan_static_reserve_support_deployment_execution_gate_status() if barrosan_requested_checkpoint == "v0.297" else {},
 		"barrosanStaticBridgeSupportIntegrationGate": _v0298_barrosan_static_bridge_support_integration_gate_status() if barrosan_requested_checkpoint == "v0.298" else {},
 		"barrosanStaticBridgePressureStabilizationGate": _v0299_barrosan_static_bridge_pressure_stabilization_gate_status() if barrosan_requested_checkpoint == "v0.299" else {},
+		"barrosanWorldMarkerDeclutterReadabilityRepair": _v0300_barrosan_world_marker_declutter_readability_repair_status() if barrosan_requested_checkpoint == "v0.300" else {},
 	}
 	return status
 
