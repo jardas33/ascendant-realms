@@ -60,8 +60,8 @@ Dedicated validator source: `tools/godot/saltoV0302BarrosanPlayerFacing25DDepthF
 
 Review pack: `artifacts/manual-review/v0302-player-facing-2-5d-depth-foundation/`
 
-The retained ladder covers v0.301 through v0.269 plus the v0.259 UI invariant validator. Full local validation includes tests, build, content/art/runtime checks, artifact retention, Godot aggregate validation, and `git diff --check`.
+The retained ladder covers v0.301 through v0.269 plus the v0.259 UI invariant validator. Full local validation includes 887 tests across 122 files, build, content/art/runtime checks, artifact retention, Godot aggregate validation, and `git diff --check`. The implementation commit `b240cbdaf461d5533ef126909dc7d83fd7083d4d` was pushed to `codex/v0215-v0226-recovery`; GitHub Actions run `29170442081` completed successfully for that exact SHA.
 
 ## Final repo state
 
-This report is completed as part of the v0.302 checkpoint and is updated with the final commit, exact-SHA GitHub Actions run, and clean/synced repository state during closeout.
+Final repository state: clean and synced with origin, 0 ahead / 0 behind after the final closeout documentation update and exact-SHA CI confirmation.
