@@ -102,6 +102,14 @@ Retained validators: v0.308, v0.307, v0.306, v0.305, v0.304 where compatible, an
 
 Full local validation includes tests, build, content/art/runtime checks, artifact retention, `npm run godot:all`, and `git diff --check`.
 
+## CI evidence
+
+Implementation commit: `60f9776593a622420038060ee542f9ac6dcb81f9`.
+
+Exact GitHub Actions run: `29204820318` (`CI Release Matrix Dry Run`) — completed successfully for the implementation SHA.
+
+The final report-bearing closeout commit and its exact-SHA run are recorded in the final task closeout after this documentation update.
+
 ## Final repo state
 
 Closeout requires the branch to be clean and synced with origin at 0 ahead / 0 behind.
