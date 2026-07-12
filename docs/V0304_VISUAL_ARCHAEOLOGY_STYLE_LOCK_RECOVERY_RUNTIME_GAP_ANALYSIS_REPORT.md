@@ -130,7 +130,9 @@ Exact closeout evidence:
 - Branch: `codex/v0215-v0226-recovery`.
 - Evidence checkpoint commit: `edb4d8333ef87b0cb36fe0f5bfddf1a38af93245`.
 - GitHub Actions run `29177645474`: completed successfully for that exact SHA.
+- Final report closeout commit: `c56b45b88a166931b2824122bf9d099d727b3d1d`.
+- GitHub Actions run `29177971314`: completed successfully for that exact SHA.
 
 ## Final repo state
 
-Recorded at closeout after commit, push and exact-SHA GitHub Actions verification: clean and synchronized with origin, 0 ahead / 0 behind at the evidence checkpoint before this final report-only closeout commit. The final report commit is validated and pushed separately with its own exact-SHA CI confirmation.
+Recorded at final closeout after commit, push and exact-SHA GitHub Actions verification: clean and synchronized with origin, 0 ahead / 0 behind.

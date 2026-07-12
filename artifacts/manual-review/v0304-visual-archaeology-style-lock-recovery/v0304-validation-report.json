@@ -2,7 +2,7 @@
   "status": "PASS_V0304_VISUAL_ARCHAEOLOGY_STYLE_LOCK_RECOVERY_VALIDATION",
   "indexedCandidates": 6,
   "indexedRuntimeEvidence": 11,
-  "requiredPackFiles": 10,
+  "requiredPackFiles": 11,
   "runtimeImplementationMutation": false,
   "errors": []
 }
