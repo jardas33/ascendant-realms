@@ -1,0 +1,13 @@
+{
+  "v0307Overall": 72,
+  "environment": 76,
+  "utilityBuilding": 80,
+  "U3W": 76,
+  "U3M": 78,
+  "mixedUnitReadability": 80,
+  "routeCReadiness": 74,
+  "U3TechnicalStrategy": 88,
+  "productionScalability": 78,
+  "decision": "REVISE_ONCE_MORE",
+  "recommendedV0309": "v0.309 \u2014 Route C final authored silhouette and terrain-edge correction before integration gate"
+}

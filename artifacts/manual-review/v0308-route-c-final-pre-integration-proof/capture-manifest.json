@@ -1,0 +1,11 @@
+{
+  "checkpoint": "v0.308",
+  "realRenderedCaptureCount": 29,
+  "contactSheetCount": 14,
+  "referenceOnly": [
+    "v0.141 R1",
+    "v0.307 U3",
+    "v0.303 fallback/debug"
+  ],
+  "decision": "REVISE_ONCE_MORE"
+}

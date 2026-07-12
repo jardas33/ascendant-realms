@@ -302,6 +302,8 @@
     "godot:validate:salto-route-c-barrosan-convergence": "node tools/godot/saltoV0306RouteCBarrosanConvergenceTool.mjs",
     "godot:capture:salto-route-c-production-viability": "powershell -NoProfile -ExecutionPolicy Bypass -File tools/godot/captureGodotV0307RouteCProductionViabilityWindows.ps1",
     "godot:validate:salto-route-c-production-viability": "node tools/godot/saltoV0307RouteCProductionViabilityTool.mjs",
+    "godot:capture:salto-route-c-final-pre-integration-proof": "powershell -NoProfile -ExecutionPolicy Bypass -File tools/godot/captureGodotV0308RouteCFinalPreIntegrationProofWindows.ps1",
+    "godot:validate:salto-route-c-final-pre-integration-proof": "node tools/godot/saltoV0308RouteCFinalPreIntegrationProofTool.mjs",
     "godot:capture:salto-route-c-representative-sector": "powershell -NoProfile -ExecutionPolicy Bypass -File tools/godot/captureGodotV0305RouteCRepresentativeSectorWindows.ps1",
     "godot:validate:salto-route-c-representative-sector": "node tools/godot/saltoV0305RouteCRepresentativeSectorTool.mjs",
     "godot:capture:salto-environment-contrast": "powershell -NoProfile -ExecutionPolicy Bypass -File tools/godot/captureGodotSaltoEnvironmentContrastWindows.ps1",
