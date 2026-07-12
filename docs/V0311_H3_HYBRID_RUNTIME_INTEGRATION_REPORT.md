@@ -90,4 +90,6 @@ Required local validation is recorded by the dedicated v0.311 validator, retaine
 
 ## CI and final state
 
-CI evidence is added after the v0.311 commit is pushed and the exact SHA workflow completes. Final closeout requires the branch to be clean and synced with origin at 0 ahead / 0 behind.
+The first v0.311 implementation commit `c34ed111e37e0b20d7356f05161aa6710a275ea1` was pushed to `codex/v0215-v0226-recovery`. GitHub Actions run `29211534108` (`CI Release Matrix Dry Run`, run 445) completed successfully for that exact SHA. The final documentation-only closeout commit records this evidence; its exact-SHA CI result is recorded in the repository handoff after the follow-up push.
+
+Final closeout requires the branch to be clean and synced with origin at 0 ahead / 0 behind.
