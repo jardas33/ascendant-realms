@@ -298,6 +298,8 @@
     "godot:capture:salto-barrosan-player-facing-2-5d-visual-hierarchy-material-readability": "powershell -NoProfile -ExecutionPolicy Bypass -File tools/godot/captureGodotV0303BarrosanPlayerFacing25DVisualHierarchyMaterialReadabilityWindows.ps1",
     "godot:validate:salto-barrosan-player-facing-2-5d-visual-hierarchy-material-readability": "powershell -NoProfile -ExecutionPolicy Bypass -File tools/godot/validateGodotV0303BarrosanPlayerFacing25DVisualHierarchyMaterialReadabilityWindows.ps1",
     "godot:validate:visual-archaeology-style-lock-recovery": "node tools/godot/saltoV0304VisualArchaeologyStyleLockRecoveryTool.mjs",
+    "godot:capture:salto-route-c-barrosan-convergence": "powershell -NoProfile -ExecutionPolicy Bypass -File tools/godot/captureGodotV0306RouteCBarrosanConvergenceWindows.ps1",
+    "godot:validate:salto-route-c-barrosan-convergence": "node tools/godot/saltoV0306RouteCBarrosanConvergenceTool.mjs",
     "godot:capture:salto-route-c-representative-sector": "powershell -NoProfile -ExecutionPolicy Bypass -File tools/godot/captureGodotV0305RouteCRepresentativeSectorWindows.ps1",
     "godot:validate:salto-route-c-representative-sector": "node tools/godot/saltoV0305RouteCRepresentativeSectorTool.mjs",
     "godot:capture:salto-environment-contrast": "powershell -NoProfile -ExecutionPolicy Bypass -File tools/godot/captureGodotSaltoEnvironmentContrastWindows.ps1",
