@@ -108,7 +108,11 @@ The pack contains real rendered captures, fourteen quality/technical contact she
 
 ## CI evidence
 
-The final implementation SHA and exact GitHub Actions run are recorded at closeout after commit/push and completion of the exact-SHA workflow.
+Implementation commit: `26058a420dd04fe416acb55f03fbb8a28dd0dea0`.
+
+Exact GitHub Actions run: `29200065237` (`CI Release Matrix Dry Run`) — completed successfully for that SHA.
+
+The final report-bearing documentation closeout commit and its exact-SHA CI result are recorded in the final repository audit.
 
 ## Final repo state
 
