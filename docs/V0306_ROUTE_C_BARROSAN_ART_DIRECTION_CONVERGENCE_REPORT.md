@@ -141,8 +141,8 @@ Required closeout validation:
 - `npm run godot:all`
 - `git diff --check`
 
-The v0.306 review pack contains the real non-blank rendered evidence and rejected-capture register. Exact CI evidence is recorded after the final pushed SHA completes.
+The v0.306 review pack contains the real non-blank rendered evidence and rejected-capture register. The implementation commit `addd771ab7f6cfab9c188a96c22484086fe82f22` was pushed to `codex/v0215-v0226-recovery`; GitHub Actions run `29194286673` (run 435, `CI Release Matrix Dry Run`) completed successfully for that exact SHA.
 
 ## Final repo state
 
-Recorded after commit, push, exact-SHA GitHub Actions verification, and clean-sync audit.
+The implementation commit was `addd771ab7f6cfab9c188a96c22484086fe82f22`. A documentation-only closeout commit records the final report state after the successful exact-SHA run. Final repository cleanliness and synchronization are verified after that closeout push.
