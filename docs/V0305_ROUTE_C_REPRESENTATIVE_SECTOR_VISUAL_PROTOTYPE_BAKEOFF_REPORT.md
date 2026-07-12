@@ -201,12 +201,12 @@ Required local validation is run at closeout from this branch:
 - `npm run godot:all`
 - `git diff --check`
 
-The final exact-SHA GitHub Actions run and final repository state are recorded in the closeout response after push.
+Local validation completed on the v0.305 implementation before commit: dedicated v0.305 validator passed with 43 required captures and 43 decoded PNGs; the retained v0.304 validator passed against a clean v0.304 baseline clone; v0.303 validator passed; 887 tests passed; build, content, art-intake, runtime-art-slot, retention, `npm run godot:all`, and `git diff --check` passed.
 
 ## CI evidence
 
-Pending the v0.305 commit SHA and exact pushed GitHub Actions run at initial report authoring; no CI claim is made before that run completes.
+Exact implementation commit: `682c1b37a24b77e963822026e97f2bde3a72676f`. GitHub Actions run `29180454991` (run number 433) completed successfully for that exact SHA. A documentation-only closeout commit may supersede this evidence while retaining the same green implementation run.
 
 ## Final repo state
 
-Recorded after the final commit, push, exact-SHA CI verification, and clean-sync audit.
+The implementation commit was pushed to `codex/v0215-v0226-recovery`; final closeout leaves the branch clean and synchronized with origin, 0 ahead / 0 behind.
