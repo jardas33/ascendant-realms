@@ -44,6 +44,8 @@ The mode round trip records PLAYER -> DEBUG_REVIEW -> PLAYER with shared materia
 
 The review pack includes the v0.302 PLAYER reference, v0.303 hierarchy captures, PLAYER and DEBUG_REVIEW contact sheets, a before/after comparison sheet, and a black-frame rejection report. Headless frames below mean 8 are rejected and replaced by explicit static contract cards.
 
+The actual rendered gameplay evidence is indexed in `artifacts/manual-review/v0303-player-facing-2-5d-visual-hierarchy-material-readability/v0303-rendered-evidence-index.md`. It contains non-headless PLAYER and DEBUG_REVIEW viewport captures plus a non-headless v0.302 PLAYER baseline; the numbered cards remain the deterministic contract layer.
+
 ## Accepted chain and preserved state
 
 The accepted v0.287-v0.302 chain remains intact through `BRIDGE PRESSURE STABILIZED / PRESSURE STABILIZED`. Pressure remains `70/100`; selected-card state, top-strip state, resources, unit positions, and building positions/footprints remain unchanged.
