@@ -1,0 +1,48 @@
+{
+  "schemaVersion": 1,
+  "candidateId": "v0138-env-a-tactical-clarity",
+  "briefId": "V0138_01_SALTO_2_5D_ENVIRONMENT_STYLE_FRAME",
+  "purpose": "Reference-only Salto 2.5D environment style review; candidate A tests tactical clarity first.",
+  "generator": "Codex built-in image_gen tool; provider not exposed by tool schema",
+  "model": "Not exposed by built-in image_gen tool; Codex feature image_generation reported stable true",
+  "date": "2026-06-06",
+  "source": {
+    "type": "generated-reference",
+    "promptDocument": "docs/art-prompts/V0138_01_SALTO_2_5D_ENVIRONMENT_STYLE_FRAME.md",
+    "candidateImagePath": "artifacts/art-review/v0138/candidates/v0138-env-a-tactical-clarity.png",
+    "notes": "Generated in v0.140 from the v0.138 Salto environment prompt plus the candidate-specific canary instructions; no source images, downloads, websites, or runtime assets were used."
+  },
+  "licencePosture": {
+    "status": "user-controlled-reference",
+    "terms": "Reference review only. No runtime, production, packaging, or derivative approval is granted by this metadata.",
+    "runtimeUse": "forbidden",
+    "notes": "runtimeIntegrationStatus is forbidden and runtimeIntegrationStatus = forbidden is a hard v0.140 boundary."
+  },
+  "protectedIpReview": {
+    "status": "pending",
+    "protectedLookalikeRisk": "unknown",
+    "notes": "Human protected-IP and style-lock review is required before any shortlisting or future art-intake decision."
+  },
+  "visualNotes": [
+    "Wide fixed-camera highland battlefield with readable wet-granite road, ford, quarry terraces, shrine, ruin, Barracks area, and Ashen approach lane.",
+    "Bright-enough overcast lighting and restrained teal Lume accents support tactical readability.",
+    "Human review should check whether the lower-right Ashen edge and quarry detail are readable enough at gameplay distance."
+  ],
+  "humanStatus": "pending-review",
+  "runtimeIntegrationStatus": "forbidden",
+  "hash": {
+    "algorithm": "sha256",
+    "value": "be8be7bb27c5e9c0d397f437fa2ecbdc99546198145ea7257b8d0d570a59b5c3"
+  },
+  "dimensions": {
+    "width": 1672,
+    "height": 941,
+    "unit": "px"
+  },
+  "aspect": "16:9 actual 1672x941",
+  "revisionLineage": {
+    "parentCandidateId": null,
+    "revision": 1,
+    "notes": "First v0.140 canary candidate from the Salto environment brief; tactical-clarity emphasis."
+  }
+}

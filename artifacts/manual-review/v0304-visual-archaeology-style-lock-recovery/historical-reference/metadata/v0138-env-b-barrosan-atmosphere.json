@@ -1,0 +1,48 @@
+{
+  "schemaVersion": 1,
+  "candidateId": "v0138-env-b-barrosan-atmosphere",
+  "briefId": "V0138_01_SALTO_2_5D_ENVIRONMENT_STYLE_FRAME",
+  "purpose": "Reference-only Salto 2.5D environment style review; candidate B tests Barrosan highland atmosphere.",
+  "generator": "Codex built-in image_gen tool; provider not exposed by tool schema",
+  "model": "Not exposed by built-in image_gen tool; Codex feature image_generation reported stable true",
+  "date": "2026-06-06",
+  "source": {
+    "type": "generated-reference",
+    "promptDocument": "docs/art-prompts/V0138_01_SALTO_2_5D_ENVIRONMENT_STYLE_FRAME.md",
+    "candidateImagePath": "artifacts/art-review/v0138/candidates/v0138-env-b-barrosan-atmosphere.png",
+    "notes": "Generated in v0.140 from the v0.138 Salto environment prompt plus the candidate-specific canary instructions; no source images, downloads, websites, or runtime assets were used."
+  },
+  "licencePosture": {
+    "status": "user-controlled-reference",
+    "terms": "Reference review only. No runtime, production, packaging, or derivative approval is granted by this metadata.",
+    "runtimeUse": "forbidden",
+    "notes": "runtimeIntegrationStatus is forbidden and runtimeIntegrationStatus = forbidden is a hard v0.140 boundary."
+  },
+  "protectedIpReview": {
+    "status": "pending",
+    "protectedLookalikeRisk": "unknown",
+    "notes": "Human protected-IP and style-lock review is required before any shortlisting or future art-intake decision."
+  },
+  "visualNotes": [
+    "Atmospheric highland foothold with wet granite, moss, worked earth, practical timber and stone construction, quarry mine, shrine glow, and Ashen pressure edge.",
+    "Warm hearth accents and restrained teal Lume glow give the scene a stronger Barrosan settlement mood.",
+    "Human review should check whether the darker upper-right Ashen region and denser tree cover preserve enough lane readability."
+  ],
+  "humanStatus": "pending-review",
+  "runtimeIntegrationStatus": "forbidden",
+  "hash": {
+    "algorithm": "sha256",
+    "value": "77454990a89cc4201981d37de7f8f7e268f457931a1e14084e898fe6a0ba5b5e"
+  },
+  "dimensions": {
+    "width": 1672,
+    "height": 941,
+    "unit": "px"
+  },
+  "aspect": "16:9 actual 1672x941",
+  "revisionLineage": {
+    "parentCandidateId": null,
+    "revision": 1,
+    "notes": "First v0.140 canary candidate from the Salto environment brief; Barrosan-atmosphere emphasis."
+  }
+}
