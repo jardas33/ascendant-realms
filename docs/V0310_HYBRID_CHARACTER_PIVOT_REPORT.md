@@ -156,7 +156,11 @@ Retained validation is required for v0.309, v0.308, v0.307, v0.306, v0.305, v0.3
 
 Base v0.309 exact CI: commit `cf2a363cacd49c6c2b255c7f24353f46bb44300f`, Actions run `29205134114`, success.
 
-The final v0.310 implementation SHA and exact Actions run will be recorded after the clean local validation, push, and final report closeout.
+v0.310 implementation commit: `1d8ec9e1376a9e47b46740913611c1a59f250e49`.
+
+Exact GitHub Actions run for the implementation SHA: `29207240239` (`CI Release Matrix Dry Run`) — success.
+
+The final report-bearing documentation closeout commit and its exact-SHA run are recorded in the final task closeout.
 
 ## Final repo state
 
