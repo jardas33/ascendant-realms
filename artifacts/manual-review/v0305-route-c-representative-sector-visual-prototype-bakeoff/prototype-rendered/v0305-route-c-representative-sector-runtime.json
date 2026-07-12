@@ -1,0 +1,270 @@
+{
+  "browserRuntimeChanged": false,
+  "camera": {
+    "alternate": "(-23.0, 19.0, 25.0)",
+    "orthoSize": 28.0,
+    "primary": "(24.0, 23.0, 27.0)",
+    "projection": "orthographic",
+    "topDown": "(0.0, 28.0, 0.01)"
+  },
+  "captures": [
+    {
+      "absolutePath": "D:/Code for projects/WB game like/ascendant-realms-v0223-recovery/artifacts/desktop-spikes/godot-salto/v0305/route-c-prototype/screenshots/06_route_c_full_overview.png",
+      "fileName": "06_route_c_full_overview.png",
+      "height": 900,
+      "orthographicSize": 28.0,
+      "width": 1600
+    },
+    {
+      "absolutePath": "D:/Code for projects/WB game like/ascendant-realms-v0223-recovery/artifacts/desktop-spikes/godot-salto/v0305/route-c-prototype/screenshots/08_route_c_oblique_gameplay_camera.png",
+      "fileName": "08_route_c_oblique_gameplay_camera.png",
+      "height": 900,
+      "orthographicSize": 24.0,
+      "width": 1600
+    },
+    {
+      "absolutePath": "D:/Code for projects/WB game like/ascendant-realms-v0223-recovery/artifacts/desktop-spikes/godot-salto/v0305/route-c-prototype/screenshots/09_route_c_direct_top_down_comparison.png",
+      "fileName": "09_route_c_direct_top_down_comparison.png",
+      "height": 900,
+      "orthographicSize": 28.0,
+      "width": 1600
+    },
+    {
+      "absolutePath": "D:/Code for projects/WB game like/ascendant-realms-v0223-recovery/artifacts/desktop-spikes/godot-salto/v0305/route-c-prototype/screenshots/10_route_c_river_below_land.png",
+      "fileName": "10_route_c_river_below_land.png",
+      "height": 900,
+      "orthographicSize": 19.0,
+      "width": 1600
+    },
+    {
+      "absolutePath": "D:/Code for projects/WB game like/ascendant-realms-v0223-recovery/artifacts/desktop-spikes/godot-salto/v0305/route-c-prototype/screenshots/14_route_c_bridge_structure_close.png",
+      "fileName": "14_route_c_bridge_structure_close.png",
+      "height": 900,
+      "orthographicSize": 11.0,
+      "width": 1600
+    },
+    {
+      "absolutePath": "D:/Code for projects/WB game like/ascendant-realms-v0223-recovery/artifacts/desktop-spikes/godot-salto/v0305/route-c-prototype/screenshots/16_route_c_field_barracks_full.png",
+      "fileName": "16_route_c_field_barracks_full.png",
+      "height": 900,
+      "orthographicSize": 13.0,
+      "width": 1600
+    },
+    {
+      "absolutePath": "D:/Code for projects/WB game like/ascendant-realms-v0223-recovery/artifacts/desktop-spikes/godot-salto/v0305/route-c-prototype/screenshots/17_route_c_field_barracks_volume.png",
+      "fileName": "17_route_c_field_barracks_volume.png",
+      "height": 900,
+      "orthographicSize": 8.5,
+      "width": 1600
+    },
+    {
+      "absolutePath": "D:/Code for projects/WB game like/ascendant-realms-v0223-recovery/artifacts/desktop-spikes/godot-salto/v0305/route-c-prototype/screenshots/18_route_c_support_building_full.png",
+      "fileName": "18_route_c_support_building_full.png",
+      "height": 900,
+      "orthographicSize": 10.0,
+      "width": 1600
+    },
+    {
+      "absolutePath": "D:/Code for projects/WB game like/ascendant-realms-v0223-recovery/artifacts/desktop-spikes/godot-salto/v0305/route-c-prototype/screenshots/20_route_c_aster_grounding.png",
+      "fileName": "20_route_c_aster_grounding.png",
+      "height": 900,
+      "orthographicSize": 7.0,
+      "width": 1600
+    },
+    {
+      "absolutePath": "D:/Code for projects/WB game like/ascendant-realms-v0223-recovery/artifacts/desktop-spikes/godot-salto/v0305/route-c-prototype/screenshots/21_route_c_defender_grounding.png",
+      "fileName": "21_route_c_defender_grounding.png",
+      "height": 900,
+      "orthographicSize": 7.0,
+      "width": 1600
+    },
+    {
+      "absolutePath": "D:/Code for projects/WB game like/ascendant-realms-v0223-recovery/artifacts/desktop-spikes/godot-salto/v0305/route-c-prototype/screenshots/22_route_c_reserve_grounding.png",
+      "fileName": "22_route_c_reserve_grounding.png",
+      "height": 900,
+      "orthographicSize": 7.0,
+      "width": 1600
+    },
+    {
+      "absolutePath": "D:/Code for projects/WB game like/ascendant-realms-v0223-recovery/artifacts/desktop-spikes/godot-salto/v0305/route-c-prototype/screenshots/23_route_c_unit_building_scale.png",
+      "fileName": "23_route_c_unit_building_scale.png",
+      "height": 900,
+      "orthographicSize": 15.0,
+      "width": 1600
+    },
+    {
+      "absolutePath": "D:/Code for projects/WB game like/ascendant-realms-v0223-recovery/artifacts/desktop-spikes/godot-salto/v0305/route-c-prototype/screenshots/24_route_c_unit_silhouettes.png",
+      "fileName": "24_route_c_unit_silhouettes.png",
+      "height": 900,
+      "orthographicSize": 10.0,
+      "width": 1600
+    },
+    {
+      "absolutePath": "D:/Code for projects/WB game like/ascendant-realms-v0223-recovery/artifacts/desktop-spikes/godot-salto/v0305/route-c-prototype/screenshots/25_route_c_selection_treatment.png",
+      "fileName": "25_route_c_selection_treatment.png",
+      "height": 900,
+      "orthographicSize": 8.0,
+      "width": 1600
+    },
+    {
+      "absolutePath": "D:/Code for projects/WB game like/ascendant-realms-v0223-recovery/artifacts/desktop-spikes/godot-salto/v0305/route-c-prototype/screenshots/26_route_c_directional_lighting.png",
+      "fileName": "26_route_c_directional_lighting.png",
+      "height": 900,
+      "orthographicSize": 28.0,
+      "width": 1600
+    },
+    {
+      "absolutePath": "D:/Code for projects/WB game like/ascendant-realms-v0223-recovery/artifacts/desktop-spikes/godot-salto/v0305/route-c-prototype/screenshots/28_route_c_no_debug_pads.png",
+      "fileName": "28_route_c_no_debug_pads.png",
+      "height": 900,
+      "orthographicSize": 28.0,
+      "width": 1600
+    },
+    {
+      "absolutePath": "D:/Code for projects/WB game like/ascendant-realms-v0223-recovery/artifacts/desktop-spikes/godot-salto/v0305/route-c-prototype/screenshots/29_route_c_barrosan_material_language.png",
+      "fileName": "29_route_c_barrosan_material_language.png",
+      "height": 900,
+      "orthographicSize": 18.0,
+      "width": 1600
+    },
+    {
+      "absolutePath": "D:/Code for projects/WB game like/ascendant-realms-v0223-recovery/artifacts/desktop-spikes/godot-salto/v0305/route-c-prototype/screenshots/30_route_c_gameplay_zoom.png",
+      "fileName": "30_route_c_gameplay_zoom.png",
+      "height": 900,
+      "orthographicSize": 20.0,
+      "width": 1600
+    },
+    {
+      "absolutePath": "D:/Code for projects/WB game like/ascendant-realms-v0223-recovery/artifacts/desktop-spikes/godot-salto/v0305/route-c-prototype/screenshots/32_route_c_selected_card_no_overlap.png",
+      "fileName": "32_route_c_selected_card_no_overlap.png",
+      "height": 900,
+      "orthographicSize": 28.0,
+      "width": 1600
+    },
+    {
+      "absolutePath": "D:/Code for projects/WB game like/ascendant-realms-v0223-recovery/artifacts/desktop-spikes/godot-salto/v0305/route-c-prototype/screenshots/33_route_c_select_aster_overlap_repaired.png",
+      "fileName": "33_route_c_select_aster_overlap_repaired.png",
+      "height": 900,
+      "orthographicSize": 28.0,
+      "width": 1600
+    },
+    {
+      "absolutePath": "D:/Code for projects/WB game like/ascendant-realms-v0223-recovery/artifacts/desktop-spikes/godot-salto/v0305/route-c-prototype/screenshots/34_route_c_debug_proof_renderer_retained.png",
+      "fileName": "34_route_c_debug_proof_renderer_retained.png",
+      "height": 900,
+      "orthographicSize": 28.0,
+      "width": 1600
+    },
+    {
+      "absolutePath": "D:/Code for projects/WB game like/ascendant-realms-v0223-recovery/artifacts/desktop-spikes/godot-salto/v0305/route-c-prototype/screenshots/35_route_c_v0303_fallback_retained_reference.png",
+      "fileName": "35_route_c_v0303_fallback_retained_reference.png",
+      "height": 900,
+      "orthographicSize": 28.0,
+      "width": 1600
+    },
+    {
+      "absolutePath": "D:/Code for projects/WB game like/ascendant-realms-v0223-recovery/artifacts/desktop-spikes/godot-salto/v0305/route-c-prototype/screenshots/36_route_c_no_movement_proof.png",
+      "fileName": "36_route_c_no_movement_proof.png",
+      "height": 900,
+      "orthographicSize": 28.0,
+      "width": 1600
+    },
+    {
+      "absolutePath": "D:/Code for projects/WB game like/ascendant-realms-v0223-recovery/artifacts/desktop-spikes/godot-salto/v0305/route-c-prototype/screenshots/37_route_c_no_pathfinding_proof.png",
+      "fileName": "37_route_c_no_pathfinding_proof.png",
+      "height": 900,
+      "orthographicSize": 28.0,
+      "width": 1600
+    },
+    {
+      "absolutePath": "D:/Code for projects/WB game like/ascendant-realms-v0223-recovery/artifacts/desktop-spikes/godot-salto/v0305/route-c-prototype/screenshots/38_route_c_no_combat_proof.png",
+      "fileName": "38_route_c_no_combat_proof.png",
+      "height": 900,
+      "orthographicSize": 28.0,
+      "width": 1600
+    },
+    {
+      "absolutePath": "D:/Code for projects/WB game like/ascendant-realms-v0223-recovery/artifacts/desktop-spikes/godot-salto/v0305/route-c-prototype/screenshots/39_route_c_no_economy_mutation_proof.png",
+      "fileName": "39_route_c_no_economy_mutation_proof.png",
+      "height": 900,
+      "orthographicSize": 28.0,
+      "width": 1600
+    },
+    {
+      "absolutePath": "D:/Code for projects/WB game like/ascendant-realms-v0223-recovery/artifacts/desktop-spikes/godot-salto/v0305/route-c-prototype/screenshots/40_route_c_no_true_default_mutation_proof.png",
+      "fileName": "40_route_c_no_true_default_mutation_proof.png",
+      "height": 900,
+      "orthographicSize": 28.0,
+      "width": 1600
+    }
+  ],
+  "checkpoint": "v0.305",
+  "combatChanged": false,
+  "defaultLauncherChanged": false,
+  "economyChanged": false,
+  "errors": [],
+  "gameplayChanged": false,
+  "geometryContract": {
+    "bridgeDeckY": 0.54,
+    "bridgeSpansRiver": true,
+    "buildingRoofSideBaseDepth": true,
+    "landTopY": 0.0,
+    "riverBankY": -0.16,
+    "riverWaterY": -0.42,
+    "roadEmbedded": true
+  },
+  "hudOverlap": {
+    "prototypeCapturePath": "isolated-clean",
+    "sharedV0303Runtime": "known-overlap-documented-not-mutated"
+  },
+  "movementChanged": false,
+  "newRuntimeArtSlots": 0,
+  "pathingChanged": false,
+  "pressureChanged": false,
+  "prototypeOnly": true,
+  "prototypeOptIn": true,
+  "resourceChanged": false,
+  "saveChanged": false,
+  "scenePath": "res://scenes/salto_v0305_route_c_representative_sector.tscn",
+  "schemaVersion": 1,
+  "shadowNodeCount": 3,
+  "sourceBlend": "art-source/blender/v0236/salto_barrosan_production_slice.blend",
+  "sourceGlb": "res://assets/v0236/salto_barrosan_production_slice.glb",
+  "sourceProvenance": "repository-authored v0.236 Barrosan kit reused; v0.305 sector geometry authored in GDScript",
+  "stableIdsChanged": false,
+  "status": "PASS_V0305_ROUTE_C_REPRESENTATIVE_SECTOR",
+  "unitNodes": [
+    {
+      "billboard": true,
+      "name": "Aster",
+      "position": {
+        "x": -3.0,
+        "y": 0.0700000002980232,
+        "z": 3.40000009536743
+      },
+      "selected": true
+    },
+    {
+      "billboard": true,
+      "name": "Defender",
+      "position": {
+        "x": 6.80000019073486,
+        "y": 0.0700000002980232,
+        "z": 3.20000004768372
+      },
+      "selected": false
+    },
+    {
+      "billboard": true,
+      "name": "ReserveSupport",
+      "position": {
+        "x": 11.1999998092651,
+        "y": 0.0700000002980232,
+        "z": 3.90000009536743
+      },
+      "selected": false
+    }
+  ],
+  "unitPresentation": "repository-authored SVG billboards with camera-facing StandardMaterial3D",
+  "visualNodeCount": 38
+}
