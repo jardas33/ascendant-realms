@@ -104,8 +104,8 @@ The prototype uses a small number of meshes, static materials, orthographic capt
 
 ## Validation
 
-Required v0.307 validation includes the dedicated validator, retained v0.306/v0.305/v0.304/v0.303 validators, tests, build, content/art/runtime checks, artifact retention, `npm run godot:all`, and `git diff --check`. Final exact-SHA CI evidence and repository state are recorded after commit and push.
+Required v0.307 validation includes the dedicated validator, retained v0.306/v0.305/v0.304/v0.303 validators, tests, build, content/art/runtime checks, artifact retention, `npm run godot:all`, and `git diff --check`. Implementation commit `7f9c8d4da6eefd5da444acc0028bd86abe3c1ef1` passed GitHub Actions run `29197430605` (run 437, `CI Release Matrix Dry Run`) for that exact SHA. A documentation-only closeout commit records the final report state after that successful run.
 
 ## Final repo state
 
-Recorded after the final pushed SHA completes exact GitHub Actions verification and the local branch is clean and synchronized with origin.
+The implementation commit is `7f9c8d4da6eefd5da444acc0028bd86abe3c1ef1`; the final report-bearing closeout commit is recorded after its exact-SHA CI completes. The local branch is then verified clean and synchronized with origin.
