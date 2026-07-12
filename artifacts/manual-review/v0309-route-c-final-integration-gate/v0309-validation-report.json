@@ -1,0 +1,15 @@
+{
+  "status": "PASS_V0309_ROUTE_C_FINAL_INTEGRATION_GATE",
+  "realRenderedCaptureCount": 35,
+  "contactSheetCount": 18,
+  "decision": "PIVOT ROUTE C",
+  "terrainContact": 78,
+  "water": 74,
+  "workerVariants": 79,
+  "militiaVariants": 80,
+  "mixedFormation": 78,
+  "storehouseCohesion": 82,
+  "gameplayOverview": 77,
+  "integrationReadiness": 62,
+  "errors": []
+}

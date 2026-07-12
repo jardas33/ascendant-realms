@@ -1,0 +1,17 @@
+{
+  "v0308Environment": 76,
+  "terrainContact": 78,
+  "water": 74,
+  "workerVariants": 79,
+  "militiaVariants": 80,
+  "mixedFormation": 78,
+  "storehouseCohesion": 82,
+  "atmosphere": 76,
+  "gameplayOverview": 77,
+  "visualReadiness": 76,
+  "integrationReadiness": 62,
+  "U3Strategy": 84,
+  "productionScalability": 72,
+  "decision": "PIVOT ROUTE C",
+  "recommendedV0310": "v0.310 \u2014 bounded hybrid environment/character pivot prototype for player-facing unit readability"
+}
