@@ -1,0 +1,53 @@
+{
+  "checkpoint": "v0.311",
+  "method": "H3 hybrid billboard runtime integration pilot",
+  "decision": "ACCEPT H3 RUNTIME INTEGRATION METHOD",
+  "prototypeOnly": false,
+  "prototypeOptIn": true,
+  "productionIntegration": "opt-in runtime pilot only",
+  "defaultRuntimeChanged": false,
+  "gameplayChanged": false,
+  "movementChanged": false,
+  "pathingChanged": false,
+  "combatChanged": false,
+  "economyChanged": false,
+  "resourceChanged": false,
+  "pressureChanged": false,
+  "stableIdsChanged": false,
+  "saveChanged": false,
+  "integratedRoles": [
+    "Worker",
+    "Militia"
+  ],
+  "authoritativeStateSource": "runtime.units",
+  "selectionSource": "runtime.selected_ids",
+  "directionContract": "one authored 3/4 source per role; mirrored/derived directions are explicitly labelled",
+  "animationLibraryPresent": false,
+  "captureCounts": {
+    "player": 43,
+    "debugReview": 43
+  },
+  "limitations": [
+    "single authored pose per role",
+    "in-memory mirrored/derived directional cards",
+    "no locomotion animation library",
+    "read-only save fixtures; rollback is visual fallback disable"
+  ],
+  "realGameplayEvidence": [
+    "selection",
+    "box selection",
+    "move order",
+    "authoritative position sync",
+    "bridge/road framing",
+    "worker context",
+    "militia ready context",
+    "camera framing"
+  ],
+  "retained": [
+    "v0.303 fallback/debug renderer",
+    "v0.309 rejected U3 proof",
+    "v0.310 hybrid prototype",
+    "accepted gameplay/state chain"
+  ],
+  "trueDefaultBaseline": "artifacts/desktop-spikes/godot-salto/v0311/default-runtime-baseline/screenshot-runtime-manifest.json"
+}

@@ -27,6 +27,7 @@ const SCRIPT_ARG_PREFIXES := [
 	"--salto-barrosan-runtime-debug-labels",
 	"--salto-barrosan-player-presentation",
 	"--salto-barrosan-debug-review-overlay",
+	"--salto-barrosan-h3-runtime-pilot",
 	"--worker-art-opt-in",
 	"--worker-art-opt-in-benchmark",
 	"--worker-art-source=",
@@ -1101,6 +1102,7 @@ func load_mode(mode: String) -> void:
 			"debugLabels": _script_args().has("--salto-barrosan-runtime-debug-labels"),
 			"presentationMode": _barrosan_presentation_mode_from_args(),
 			"checkpoint": _player_capture_checkpoint(),
+			"h3RuntimePilot": _script_args().has("--salto-barrosan-h3-runtime-pilot"),
 		})
 	if home_screen:
 		home_screen.visible = false
@@ -1227,6 +1229,7 @@ func _configure_worker_art_for_active_scene() -> void:
 			"debugLabels": _script_args().has("--salto-barrosan-runtime-debug-labels"),
 			"presentationMode": _barrosan_presentation_mode_from_args(),
 			"checkpoint": _player_capture_checkpoint(),
+			"h3RuntimePilot": _script_args().has("--salto-barrosan-h3-runtime-pilot"),
 		})
 
 func _apply_review_framing_for_active_scene() -> void:
@@ -1928,6 +1931,7 @@ func _load_v0254_capture_scene() -> void:
 			"debugLabels": _script_args().has("--salto-barrosan-runtime-debug-labels"),
 			"presentationMode": _barrosan_presentation_mode_from_args(),
 			"checkpoint": _player_capture_checkpoint(),
+			"h3RuntimePilot": _script_args().has("--salto-barrosan-h3-runtime-pilot"),
 		})
 	if home_screen:
 		home_screen.visible = false
@@ -5683,6 +5687,7 @@ func run_player_slice_capture() -> void:
 		"saltoAsterPortraitProductionSlotAdded": false,
 		"saltoAsterPortraitGeneratedImages": false,
 		"barrosanPlayableRuntimeSkin": final_status.get("barrosanPlayableRuntimeSkin", {}),
+		"h3RuntimePilotRequested": _script_args().has("--salto-barrosan-h3-runtime-pilot"),
 		"privateHarnessPreservedSeparately": captures.any(func(capture: Dictionary) -> bool: return bool(capture.get("privateHarnessCapture", false))) or ["v0.126", "v0.127", "v0.128", "v0.129", "v0.130", "v0.160", "v0.162", "v0.164", "v0.166", "v0.168", "v0.169", "v0.170", "v0.173", "v0.174", "v0.177", "v0.178", "v0.179", "v0.181", "v0.184", "v0.185", "v0.186", "v0.187", "v0.193", "v0.194", "v0.195", "v0.196", "v0.197", "v0.198", "v0.199", "v0.200", "v0.203", "v0.204", "v0.205", "v0.206", "v0.209", "v0.210", "v0.211", "v0.212", "v0.217", "v0.218", "v0.219", "v0.220", "v0.221", "v0.222"].has(_player_capture_checkpoint()),
 		"proceduralPrimitiveOnly": not worker_art_loaded and not barracks_material_loaded and not militia_art_loaded and not aster_art_loaded and not ashen_art_loaded and not ground_material_loaded and not road_material_loaded and not bridge_riverbank_material_loaded and not road_riverbank_water_material_loaded,
 		"generatedOrImportedArtIncluded": worker_art_loaded or barracks_material_loaded or militia_art_loaded or aster_art_loaded or ashen_art_loaded or ground_material_loaded or road_material_loaded or bridge_riverbank_material_loaded or road_riverbank_water_material_loaded,
@@ -8121,9 +8126,21 @@ func _apply_player_slice_action(action: String) -> Dictionary:
 	elif action == "v0212_viewport_marker" or action == "v0212_alerts" or action.begins_with("v0212_resolution"):
 		player_ui_shell_production_tab_override = "TRAIN"
 		player_ui_shell_production_focus_hint = "train_militia"
-	if action.begins_with("v0271_") or action.begins_with("v0272_") or action.begins_with("v0273_") or action.begins_with("v0274_") or action.begins_with("v0275_") or action.begins_with("v0276_") or action.begins_with("v0277_") or action.begins_with("v0278_") or action.begins_with("v0279_") or action.begins_with("v0280_") or action.begins_with("v0281_") or action.begins_with("v0283_") or action.begins_with("v0284_") or action.begins_with("v0285_") or action.begins_with("v0286_") or action.begins_with("v0287_") or action.begins_with("v0288_") or action.begins_with("v0289_") or action.begins_with("v0290_") or action.begins_with("v0291_") or action.begins_with("v0292_") or action.begins_with("v0293_") or action.begins_with("v0295_") or action.begins_with("v0296_") or action.begins_with("v0297_") or action.begins_with("v0298_") or action.begins_with("v0299_") or action.begins_with("v0300_") or action.begins_with("v0301_") or action.begins_with("v0302_") or action.begins_with("v0303_"):
+	if action.begins_with("v0271_") or action.begins_with("v0272_") or action.begins_with("v0273_") or action.begins_with("v0274_") or action.begins_with("v0275_") or action.begins_with("v0276_") or action.begins_with("v0277_") or action.begins_with("v0278_") or action.begins_with("v0279_") or action.begins_with("v0280_") or action.begins_with("v0281_") or action.begins_with("v0283_") or action.begins_with("v0284_") or action.begins_with("v0285_") or action.begins_with("v0286_") or action.begins_with("v0287_") or action.begins_with("v0288_") or action.begins_with("v0289_") or action.begins_with("v0290_") or action.begins_with("v0291_") or action.begins_with("v0292_") or action.begins_with("v0293_") or action.begins_with("v0295_") or action.begins_with("v0296_") or action.begins_with("v0297_") or action.begins_with("v0298_") or action.begins_with("v0299_") or action.begins_with("v0300_") or action.begins_with("v0301_") or action.begins_with("v0302_") or action.begins_with("v0303_") or action.begins_with("v0311_"):
 		_ensure_player_battle_scene()
 		_call_scene("set_barrosan_runtime_review_mode", [action])
+		if action == "v0311_worker_selected" or action == "v0311_selected_card_worker" or action == "v0311_worker_work_context":
+			_call_scene("select_entity", ["worker_00"])
+		elif action == "v0311_militia_selected" or action == "v0311_selected_card_militia" or action == "v0311_militia_ready_context":
+			_call_scene("select_entity", ["friendly_00"])
+		elif action == "v0311_box_selection":
+			_call_scene("box_select_squad")
+		elif action == "v0311_move_order":
+			_call_scene("select_entity", ["worker_00"])
+			_call_scene("_issue_real_order", [Vector2(760, 560)])
+		elif action == "v0311_bridge_crossing":
+			_call_scene("select_entity", ["worker_00"])
+			_call_scene("_issue_real_order", [Vector2(760, 560)])
 		_render_player_screen("battle")
 		if action.begins_with("v0280_") or action.begins_with("v0281_") or action.begins_with("v0283_") or action.begins_with("v0284_") or action.begins_with("v0285_") or action.begins_with("v0286_") or action.begins_with("v0287_") or action.begins_with("v0288_") or action.begins_with("v0289_") or action.begins_with("v0290_") or action.begins_with("v0291_"):
 			_call_scene("set_barrosan_runtime_review_mode", [action])
@@ -9168,6 +9185,8 @@ func _apply_player_slice_action(action: String) -> Dictionary:
 
 func _player_capture_checkpoint() -> String:
 	var normalized_root := _artifact_root_from_args().replace("\\", "/")
+	if normalized_root.contains("/v0311"):
+		return "v0.311"
 	if normalized_root.contains("/v0303"):
 		return "v0.303"
 	if normalized_root.contains("/v0302"):
@@ -9422,6 +9441,8 @@ func _v0297_capture_steps() -> Array[Dictionary]:
 	]
 
 func _player_capture_steps() -> Array[Dictionary]:
+	if _player_capture_checkpoint() == "v0.311":
+		return _v0311_capture_steps()
 	if _player_capture_checkpoint() == "v0.303":
 		return _v0303_player_capture_steps() if _barrosan_presentation_mode_from_args() == "PLAYER" else _v0303_debug_capture_steps()
 	if _player_capture_checkpoint() == "v0.302":
@@ -12243,7 +12264,7 @@ func _barrosan_presentation_mode_from_args() -> String:
 		return "DEBUG_REVIEW"
 	if _script_args().has("--salto-barrosan-player-presentation"):
 		return "PLAYER"
-	return "PLAYER" if _player_capture_checkpoint() in ["v0.301", "v0.302", "v0.303"] else "DEBUG_REVIEW"
+	return "PLAYER" if _player_capture_checkpoint() in ["v0.301", "v0.302", "v0.303", "v0.311"] else "DEBUG_REVIEW"
 
 
 func _barrosan_runtime_scene_requested() -> bool:
@@ -12357,6 +12378,13 @@ func _v0303_debug_capture_steps() -> Array[Dictionary]:
 	var steps: Array[Dictionary] = []
 	for suffix in ids:
 		steps.append({"id":"v0303_debug_%s" % suffix, "label":"v0.303 DEBUG_REVIEW %s" % suffix.replace("_", " "), "action":"v0303_debug_%s" % suffix})
+	return steps
+
+func _v0311_capture_steps() -> Array[Dictionary]:
+	var ids := ["preflight_runtime", "worker_idle", "militia_idle", "worker_selected", "militia_selected", "box_selection", "move_order", "movement_sync", "stop_hold_contract", "bridge_crossing", "road_occlusion", "storehouse_occlusion", "camera_pan", "camera_zoom", "worker_work_context", "militia_ready_context", "selected_card_worker", "selected_card_militia", "save_reload_readonly", "rollback_fallback", "default_flag_off", "h3_adapter_status", "one_authored_pose", "derived_direction_honesty", "grounding_shadows", "selection_readability", "player_clean", "debug_overlay_preserved", "no_duplicate_proxies", "no_duplicate_shadows", "stable_ids", "positions_authoritative", "resources_unchanged", "state_unchanged", "no_combat", "no_ai", "no_economy", "no_pathfinding", "no_true_default_mutation", "worker_militia_only", "real_gameplay_overview", "real_gameplay_bridge_view", "black_frame_rejection"]
+	var steps: Array[Dictionary] = []
+	for suffix in ids:
+		steps.append({"id":"v0311_%s" % suffix, "label":"v0.311 H3 %s" % suffix.replace("_", " "), "action":"v0311_%s" % suffix})
 	return steps
 
 func _friendly_mode(mode: String) -> String:

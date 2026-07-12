@@ -3,6 +3,7 @@ extends "res://scripts/salto_spike_scene_3d.gd"
 const V0240_MAPPING_PATH := "res://data/v0240_barrosan_playable_art_mapping.json"
 const V0239_KIT_PATH := "res://assets/v0239/salto_barrosan_roster_silhouette_beauty.glb"
 const BuildPlacementValidationAdapterScript = preload("res://scripts/adapters/build_placement_validation_adapter.gd")
+const BarrosanH3RuntimePresentationAdapterScript = preload("res://scripts/barrosan_h3_runtime_presentation_adapter_v0311.gd")
 const EXPECTED_ROLES := [
 	"main_base", "house", "farm", "lumber", "blacksmith",
 	"barracks", "mine", "watchtower", "market",
@@ -173,6 +174,9 @@ var v0302_depth_foundation_applied := false
 var v0303_player_facing_visual_hierarchy_material_readability_proof: Dictionary = {}
 var v0303_player_materials: Dictionary = {}
 var v0303_material_hierarchy_applied := false
+var barrosan_h3_runtime_pilot_enabled := false
+var barrosan_h3_runtime_pilot_requested := false
+var barrosan_h3_runtime_adapter
 
 
 func configure_barrosan_playable_runtime_skin(options: Dictionary) -> void:
@@ -181,6 +185,8 @@ func configure_barrosan_playable_runtime_skin(options: Dictionary) -> void:
 	barrosan_runtime_checkpoint = "v0.253" if barrosan_requested_checkpoint in ["v0.254", "v0.255", "v0.256", "v0.257", "v0.258", "v0.259", "v0.261", "v0.262", "v0.263", "v0.264", "v0.265", "v0.266", "v0.267", "v0.268", "v0.269", "v0.270", "v0.271", "v0.272", "v0.273", "v0.274", "v0.275", "v0.276", "v0.277", "v0.278", "v0.279", "v0.280", "v0.281", "v0.283", "v0.284", "v0.285", "v0.286", "v0.287", "v0.288", "v0.289", "v0.290", "v0.291", "v0.292", "v0.293"] else barrosan_requested_checkpoint
 	barrosan_runtime_debug_labels = bool(options.get("debugLabels", false))
 	barrosan_presentation_mode = str(options.get("presentationMode", "DEBUG_REVIEW")).to_upper()
+	barrosan_h3_runtime_pilot_requested = bool(options.get("h3RuntimePilot", false))
+	barrosan_h3_runtime_pilot_enabled = barrosan_h3_runtime_pilot_requested and barrosan_runtime_skin_enabled
 	if barrosan_presentation_mode not in ["PLAYER", "DEBUG_REVIEW"]:
 		barrosan_presentation_mode = "PLAYER" if barrosan_requested_checkpoint in ["v0.301", "v0.302", "v0.303"] else "DEBUG_REVIEW"
 	if not barrosan_runtime_skin_enabled:
@@ -202,6 +208,7 @@ func configure_barrosan_playable_runtime_skin(options: Dictionary) -> void:
 		_v0302_apply_player_depth_foundation()
 		_v0303_apply_player_material_hierarchy()
 	_add_barrosan_minimap_role_markers()
+	_configure_v0311_h3_runtime_adapter()
 
 
 func set_workload_tier(tier: String) -> bool:
@@ -15963,6 +15970,27 @@ func _record_v0257_hud_proof(mode: String) -> void:
 func _sync_unit_visuals() -> void:
 	super._sync_unit_visuals()
 	_sync_barrosan_runtime_visuals()
+	if barrosan_h3_runtime_pilot_enabled:
+		if barrosan_h3_runtime_adapter == null:
+			_configure_v0311_h3_runtime_adapter()
+		if barrosan_h3_runtime_adapter != null:
+			barrosan_h3_runtime_adapter.sync_authoritative_units()
+
+func _configure_v0311_h3_runtime_adapter() -> void:
+	if not barrosan_h3_runtime_pilot_enabled:
+		return
+	if visual_root == null:
+		return
+	if barrosan_h3_runtime_adapter == null or not is_instance_valid(barrosan_h3_runtime_adapter):
+		barrosan_h3_runtime_adapter = BarrosanH3RuntimePresentationAdapterScript.new()
+		barrosan_h3_runtime_adapter.name = "V0311H3RuntimePresentationAdapter"
+		visual_root.add_child(barrosan_h3_runtime_adapter)
+	barrosan_h3_runtime_adapter.configure(self, visual_root)
+
+func get_v0311_h3_runtime_status() -> Dictionary:
+	if not barrosan_h3_runtime_pilot_enabled or barrosan_h3_runtime_adapter == null:
+		return {"enabled": false, "pilotEnabled": barrosan_h3_runtime_pilot_enabled, "requested": barrosan_h3_runtime_pilot_requested, "adapterPresent": barrosan_h3_runtime_adapter != null, "skinEnabled": barrosan_runtime_skin_enabled, "defaultRuntimeUnchanged": true, "rollbackAvailable": true}
+	return barrosan_h3_runtime_adapter.status()
 
 
 func set_player_facing_mode(enabled: bool) -> bool:
@@ -18624,6 +18652,7 @@ func get_spike_status() -> Dictionary:
 		"barrosanPlayerFacingPresentationDebugOverlaySeparation": _v0301_barrosan_presentation_mode_status() if barrosan_requested_checkpoint == "v0.301" else {},
 		"barrosanPlayerFacing2_5dDepthFoundation": _v0302_barrosan_presentation_mode_status() if barrosan_requested_checkpoint == "v0.302" else {},
 		"barrosanPlayerFacingVisualHierarchyMaterialReadability": _v0303_barrosan_presentation_mode_status() if barrosan_requested_checkpoint == "v0.303" else {},
+		"h3RuntimePilot": get_v0311_h3_runtime_status(),
 	}
 	return status
 
