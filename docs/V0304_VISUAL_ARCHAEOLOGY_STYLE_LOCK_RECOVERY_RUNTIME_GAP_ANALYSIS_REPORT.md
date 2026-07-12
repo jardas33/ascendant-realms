@@ -125,8 +125,12 @@ Local results before commit:
 - `npm run godot:all`: PASS, including Godot 4.6.3 detection, fixture/parity checks, headless runtime validation, Windows export and package.
 - `git diff --check`: PASS.
 
-Exact pushed SHA and GitHub Actions run are recorded in the final closeout update after the evidence-only commit is pushed.
+Exact closeout evidence:
+
+- Branch: `codex/v0215-v0226-recovery`.
+- Evidence checkpoint commit: `edb4d8333ef87b0cb36fe0f5bfddf1a38af93245`.
+- GitHub Actions run `29177645474`: completed successfully for that exact SHA.
 
 ## Final repo state
 
-Recorded at closeout after commit, push and exact-SHA GitHub Actions verification: clean and synchronized with origin, 0 ahead / 0 behind.
+Recorded at closeout after commit, push and exact-SHA GitHub Actions verification: clean and synchronized with origin, 0 ahead / 0 behind at the evidence checkpoint before this final report-only closeout commit. The final report commit is validated and pushed separately with its own exact-SHA CI confirmation.
