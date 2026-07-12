@@ -1,0 +1,13 @@
+{
+  "checkpoint": "v0.307",
+  "realRenderedCaptureCount": 24,
+  "contactSheetCount": 12,
+  "referenceOnly": [
+    "v0.141 R1"
+  ],
+  "strategies": [
+    "U1",
+    "U2",
+    "U3"
+  ]
+}

@@ -300,6 +300,8 @@
     "godot:validate:visual-archaeology-style-lock-recovery": "node tools/godot/saltoV0304VisualArchaeologyStyleLockRecoveryTool.mjs",
     "godot:capture:salto-route-c-barrosan-convergence": "powershell -NoProfile -ExecutionPolicy Bypass -File tools/godot/captureGodotV0306RouteCBarrosanConvergenceWindows.ps1",
     "godot:validate:salto-route-c-barrosan-convergence": "node tools/godot/saltoV0306RouteCBarrosanConvergenceTool.mjs",
+    "godot:capture:salto-route-c-production-viability": "powershell -NoProfile -ExecutionPolicy Bypass -File tools/godot/captureGodotV0307RouteCProductionViabilityWindows.ps1",
+    "godot:validate:salto-route-c-production-viability": "node tools/godot/saltoV0307RouteCProductionViabilityTool.mjs",
     "godot:capture:salto-route-c-representative-sector": "powershell -NoProfile -ExecutionPolicy Bypass -File tools/godot/captureGodotV0305RouteCRepresentativeSectorWindows.ps1",
     "godot:validate:salto-route-c-representative-sector": "node tools/godot/saltoV0305RouteCRepresentativeSectorTool.mjs",
     "godot:capture:salto-environment-contrast": "powershell -NoProfile -ExecutionPolicy Bypass -File tools/godot/captureGodotSaltoEnvironmentContrastWindows.ps1",
