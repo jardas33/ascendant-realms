@@ -25,6 +25,7 @@ const SCRIPT_ARG_PREFIXES := [
 	"--player-slice-capture",
 	"--h3-semantic-evidence",
 	"--h3-supported-state-contract",
+	"--h3-directional-animation-micro-pilot",
 	"--salto-barrosan-playable-runtime-skin",
 	"--salto-barrosan-runtime-debug-labels",
 	"--salto-barrosan-player-presentation",
@@ -1014,6 +1015,18 @@ func _ready() -> void:
 		add_child(contract_capture)
 		contract_capture.call_deferred("start")
 		return
+	if args.has("--h3-directional-animation-micro-pilot"):
+		_create_player_slice_ui()
+		var animation_script := load("res://scripts/salto_v0314_h3_directional_animation_micro_pilot_capture.gd") as GDScript
+		if animation_script == null:
+			get_tree().quit(1)
+			return
+		var animation_capture := Node.new()
+		animation_capture.name = "V0314H3DirectionalAnimationMicroPilotCapture"
+		animation_capture.set_script(animation_script)
+		add_child(animation_capture)
+		animation_capture.call_deferred("start")
+		return
 	if args.has("--real-input-smoke") or args.has("--real-input-validate"):
 		_create_player_slice_ui()
 		await run_real_input_smoke()
@@ -1129,6 +1142,7 @@ func load_mode(mode: String) -> void:
 			"presentationMode": _barrosan_presentation_mode_from_args(),
 			"checkpoint": _player_capture_checkpoint(),
 			"h3RuntimePilot": _script_args().has("--salto-barrosan-h3-runtime-pilot"),
+			"h3DirectionalAnimationPilot": _script_args().has("--h3-directional-animation-micro-pilot"),
 		})
 	if home_screen:
 		home_screen.visible = false
@@ -1256,6 +1270,7 @@ func _configure_worker_art_for_active_scene() -> void:
 			"presentationMode": _barrosan_presentation_mode_from_args(),
 			"checkpoint": _player_capture_checkpoint(),
 			"h3RuntimePilot": _script_args().has("--salto-barrosan-h3-runtime-pilot"),
+			"h3DirectionalAnimationPilot": _script_args().has("--h3-directional-animation-micro-pilot"),
 		})
 
 func _apply_review_framing_for_active_scene() -> void:
@@ -1958,6 +1973,7 @@ func _load_v0254_capture_scene() -> void:
 			"presentationMode": _barrosan_presentation_mode_from_args(),
 			"checkpoint": _player_capture_checkpoint(),
 			"h3RuntimePilot": _script_args().has("--salto-barrosan-h3-runtime-pilot"),
+			"h3DirectionalAnimationPilot": _script_args().has("--h3-directional-animation-micro-pilot"),
 		})
 	if home_screen:
 		home_screen.visible = false
@@ -4566,7 +4582,30 @@ func _v0210_selection_panel_data(action: String, status: Dictionary) -> Dictiona
 		]
 		data["disabledReason"] = "Multi-select filters specialist commands instead of duplicating panels."
 		data["tooltip"] = "Multi-select summary keeps common commands readable and specialist actions labeled."
+	if _player_capture_checkpoint() == "v0.314" or _h3_directional_animation_micro_pilot_requested():
+		var player_mode := _barrosan_presentation_mode_from_args() == "PLAYER"
+		var filtered_abilities: Array = []
+		for ability in data["abilities"]:
+			if str(ability.get("label", "")) != "Hold":
+				filtered_abilities.append(ability)
+		data["abilities"] = filtered_abilities
+		var filtered_commands: Array = []
+		for command in data["commands"]:
+			var normalized: Dictionary = command.duplicate(true)
+			if str(normalized.get("label", "")) == "Hold":
+				if player_mode:
+					continue
+				normalized["shortcut"] = "-"
+				normalized["state"] = "disabled"
+				normalized["method"] = ""
+				normalized["tooltip"] = "Unavailable: no authoritative Hold/Ready state exists."
+			filtered_commands.append(normalized)
+		data["commands"] = filtered_commands
+		data["holdUiContract"] = "HIDDEN_WHEN_UNSUPPORTED"
 	return data
+
+func _h3_directional_animation_micro_pilot_requested() -> bool:
+	return _script_args().has("--h3-directional-animation-micro-pilot")
 
 func _v0210_icon_spec(id: String, label: String, shortcut: String, tooltip: String, state: String, cooldown: float, icon_name: String, method_name: String) -> Dictionary:
 	return {
@@ -4751,8 +4790,12 @@ func _live_ui_shell_selection_panel(root: Control, state: Dictionary) -> void:
 	_ui_architecture_label(panel, str(state["commandHint"]), Vector2(124, 112), Vector2(430, 20), 12, Color(0.86, 0.84, 0.66), HORIZONTAL_ALIGNMENT_LEFT)
 	_live_ui_shell_action_button(panel, Vector2(124, 132), Vector2(86, 24), "Move", "_on_live_ui_shell_move_pressed")
 	_live_ui_shell_action_button(panel, Vector2(220, 132), Vector2(86, 24), "Attack", "_on_live_ui_shell_attack_pressed")
-	_live_ui_shell_action_button(panel, Vector2(316, 132), Vector2(86, 24), str("Train" if state["activeTab"] == "TRAIN" else "Work"), "_on_live_ui_shell_work_pressed")
-	_live_ui_shell_action_button(panel, Vector2(412, 132), Vector2(86, 24), "Lume", "_on_live_ui_shell_lume_pressed")
+	if _player_capture_checkpoint() == "v0.314" or _h3_directional_animation_micro_pilot_requested():
+		_live_ui_shell_action_button(panel, Vector2(316, 132), Vector2(86, 24), str("Train" if state["activeTab"] == "TRAIN" else "Work"), "_on_live_ui_shell_work_pressed")
+		_live_ui_shell_action_button(panel, Vector2(412, 132), Vector2(86, 24), "Lume", "_on_live_ui_shell_lume_pressed")
+	else:
+		_live_ui_shell_action_button(panel, Vector2(316, 132), Vector2(86, 24), "Hold", "_on_live_ui_shell_move_pressed")
+		_live_ui_shell_action_button(panel, Vector2(412, 132), Vector2(86, 24), str("Train" if state["activeTab"] == "TRAIN" else "Work"), "_on_live_ui_shell_work_pressed")
 
 func _live_ui_shell_selection_panel_v0210(root: Control, state: Dictionary) -> void:
 	var data: Dictionary = state.get("selectionPanel", {})
@@ -9211,6 +9254,8 @@ func _apply_player_slice_action(action: String) -> Dictionary:
 
 func _player_capture_checkpoint() -> String:
 	var normalized_root := _artifact_root_from_args().replace("\\", "/")
+	if normalized_root.contains("/v0314"):
+		return "v0.314"
 	if normalized_root.contains("/v0312"):
 		return "v0.312"
 	if normalized_root.contains("/v0311"):
@@ -12292,7 +12337,7 @@ func _barrosan_presentation_mode_from_args() -> String:
 		return "DEBUG_REVIEW"
 	if _script_args().has("--salto-barrosan-player-presentation"):
 		return "PLAYER"
-	return "PLAYER" if _player_capture_checkpoint() in ["v0.301", "v0.302", "v0.303", "v0.311", "v0.312"] else "DEBUG_REVIEW"
+	return "PLAYER" if _player_capture_checkpoint() in ["v0.301", "v0.302", "v0.303", "v0.311", "v0.312", "v0.314"] else "DEBUG_REVIEW"
 
 
 func _barrosan_runtime_scene_requested() -> bool:

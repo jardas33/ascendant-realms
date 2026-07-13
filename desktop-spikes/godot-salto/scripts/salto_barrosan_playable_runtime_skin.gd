@@ -4,6 +4,7 @@ const V0240_MAPPING_PATH := "res://data/v0240_barrosan_playable_art_mapping.json
 const V0239_KIT_PATH := "res://assets/v0239/salto_barrosan_roster_silhouette_beauty.glb"
 const BuildPlacementValidationAdapterScript = preload("res://scripts/adapters/build_placement_validation_adapter.gd")
 const BarrosanH3RuntimePresentationAdapterScript = preload("res://scripts/barrosan_h3_runtime_presentation_adapter_v0311.gd")
+const BarrosanH3DirectionalAnimationAdapterScript = preload("res://scripts/barrosan_h3_directional_animation_adapter_v0314.gd")
 const EXPECTED_ROLES := [
 	"main_base", "house", "farm", "lumber", "blacksmith",
 	"barracks", "mine", "watchtower", "market",
@@ -177,6 +178,9 @@ var v0303_material_hierarchy_applied := false
 var barrosan_h3_runtime_pilot_enabled := false
 var barrosan_h3_runtime_pilot_requested := false
 var barrosan_h3_runtime_adapter
+var barrosan_h3_directional_animation_requested := false
+var barrosan_h3_directional_animation_enabled := false
+var barrosan_h3_directional_animation_adapter
 
 
 func configure_barrosan_playable_runtime_skin(options: Dictionary) -> void:
@@ -186,6 +190,7 @@ func configure_barrosan_playable_runtime_skin(options: Dictionary) -> void:
 	barrosan_runtime_debug_labels = bool(options.get("debugLabels", false))
 	barrosan_presentation_mode = str(options.get("presentationMode", "DEBUG_REVIEW")).to_upper()
 	barrosan_h3_runtime_pilot_requested = bool(options.get("h3RuntimePilot", false))
+	barrosan_h3_directional_animation_requested = bool(options.get("h3DirectionalAnimationPilot", false))
 	barrosan_h3_runtime_pilot_enabled = barrosan_h3_runtime_pilot_requested and barrosan_runtime_skin_enabled
 	if barrosan_presentation_mode not in ["PLAYER", "DEBUG_REVIEW"]:
 		barrosan_presentation_mode = "PLAYER" if barrosan_requested_checkpoint in ["v0.301", "v0.302", "v0.303"] else "DEBUG_REVIEW"
@@ -209,6 +214,8 @@ func configure_barrosan_playable_runtime_skin(options: Dictionary) -> void:
 		_v0303_apply_player_material_hierarchy()
 	_add_barrosan_minimap_role_markers()
 	_configure_v0311_h3_runtime_adapter()
+	if barrosan_h3_directional_animation_requested:
+		set_v0314_h3_directional_animation_enabled(true)
 
 
 func set_workload_tier(tier: String) -> bool:
@@ -15970,6 +15977,10 @@ func _record_v0257_hud_proof(mode: String) -> void:
 func _sync_unit_visuals() -> void:
 	super._sync_unit_visuals()
 	_sync_barrosan_runtime_visuals()
+	if barrosan_h3_directional_animation_enabled:
+		if barrosan_h3_directional_animation_adapter != null:
+			barrosan_h3_directional_animation_adapter.sync_authoritative_units()
+		return
 	if barrosan_h3_runtime_pilot_enabled:
 		if barrosan_h3_runtime_adapter == null:
 			_configure_v0311_h3_runtime_adapter()
@@ -16000,6 +16011,38 @@ func set_v0311_h3_runtime_pilot_enabled(enabled: bool) -> bool:
 		barrosan_h3_runtime_adapter.set_presentation_enabled(enabled)
 	_sync_unit_visuals()
 	return true
+
+func set_v0314_h3_directional_animation_enabled(enabled: bool) -> bool:
+	if not barrosan_h3_directional_animation_requested or not barrosan_h3_runtime_pilot_requested:
+		return false
+	barrosan_h3_directional_animation_enabled = enabled
+	if enabled:
+		if barrosan_h3_directional_animation_adapter == null or not is_instance_valid(barrosan_h3_directional_animation_adapter):
+			barrosan_h3_directional_animation_adapter = BarrosanH3DirectionalAnimationAdapterScript.new()
+			barrosan_h3_directional_animation_adapter.name = "V0314H3DirectionalAnimationAdapter"
+			visual_root.add_child(barrosan_h3_directional_animation_adapter)
+		if barrosan_h3_runtime_adapter != null and is_instance_valid(barrosan_h3_runtime_adapter):
+			barrosan_h3_runtime_adapter.set_presentation_enabled(false)
+		barrosan_h3_directional_animation_adapter.configure(self, visual_root)
+		barrosan_h3_directional_animation_adapter.set_presentation_enabled(true)
+	else:
+		if barrosan_h3_directional_animation_adapter != null and is_instance_valid(barrosan_h3_directional_animation_adapter):
+			barrosan_h3_directional_animation_adapter.set_presentation_enabled(false)
+		if barrosan_h3_runtime_adapter != null and is_instance_valid(barrosan_h3_runtime_adapter):
+			barrosan_h3_runtime_adapter.set_presentation_enabled(barrosan_h3_runtime_pilot_enabled)
+	_sync_unit_visuals()
+	return true
+
+func get_v0314_h3_directional_animation_status() -> Dictionary:
+	if barrosan_h3_directional_animation_adapter == null or not is_instance_valid(barrosan_h3_directional_animation_adapter):
+		return {"enabled": false, "requested": barrosan_h3_directional_animation_requested, "defaultRuntimeUnchanged": true, "rollbackAvailable": true}
+	var status: Dictionary = barrosan_h3_directional_animation_adapter.status()
+	status["requested"] = barrosan_h3_directional_animation_requested
+	status["enabled"] = barrosan_h3_directional_animation_enabled and bool(status.get("enabled", false))
+	status["holdUiContract"] = "HIDDEN_WHEN_UNSUPPORTED"
+	status["defaultRuntimeUnchanged"] = true
+	status["rollbackAvailable"] = true
+	return status
 
 
 func set_player_facing_mode(enabled: bool) -> bool:
