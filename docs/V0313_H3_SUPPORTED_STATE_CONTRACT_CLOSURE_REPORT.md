@@ -165,8 +165,12 @@ Scope: one bounded Worker atlas proof, one bounded Militia atlas proof, idle and
 
 ## Validation
 
-Required validation includes the dedicated v0.313 validator, v0.312 validator, retained v0.311–v0.303 validators, npm tests/build/content/art/runtime checks, artifact retention, `npm run godot:all`, and `git diff --check`. Exact CI evidence is recorded in the final handoff after push.
+Required validation passed: dedicated v0.313 validator, v0.312 validator, retained v0.311–v0.303 validators, 887 tests, production build, content/art/runtime checks, artifact retention, `npm run godot:all`, and `git diff --check`.
+
+## CI evidence
+
+The first pushed v0.313 commit was `fc753e9ec47e3dc72b9be15a2c35c9a9127f8df8`. GitHub Actions run `29221148439` completed successfully for that exact SHA.
 
 ## Final repository state
 
-Final closeout will record the pushed commit, exact GitHub Actions run, and clean/synced `0 ahead / 0 behind` state.
+The closeout report-sync commit is pushed after the initial exact-SHA success; the final exact-SHA run and clean/synced state are recorded in the final handoff.
