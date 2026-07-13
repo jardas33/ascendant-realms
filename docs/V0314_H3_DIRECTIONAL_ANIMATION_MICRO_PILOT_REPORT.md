@@ -116,8 +116,11 @@ The dedicated v0.314 validator passes with 48 runtime semantic records, 104 phys
 
 The retained ladder passes in a clean detached validation worktree at the accepted v0.313 HEAD (`3c23000abfd2fb60314672dee245fda2a5869aae`) with the required ignored runtime manifests restored: v0.303, v0.304, v0.305, v0.306, v0.307, v0.308, v0.309, and v0.310. The active checkout passes v0.311, v0.312, and v0.313. This isolation is required because the older validators intentionally reject unrelated working-tree mutations and write their own diagnostic JSON reports.
 
-The full local gates pass: `npm test` (887 tests), `npm run build`, `npm run validate:content`, `npm run validate:art-intake`, `npm run validate:runtime-art-slots`, `npm run godot:validate:salto-experimental-artifact-retention`, `npm run godot:all`, and `git diff --check`. Exact commit and GitHub Actions evidence are added at final closeout.
+The full local gates pass: `npm test` (887 tests), `npm run build`, `npm run validate:content`, `npm run validate:art-intake`, `npm run validate:runtime-art-slots`, `npm run godot:validate:salto-experimental-artifact-retention`, `npm run godot:all`, and `git diff --check`.
+
+Implementation commit: `57b6cbdefd006dd7a6860c323d2382abaf61287e`.
+Exact GitHub Actions run: `29246552854` — success for that SHA.
 
 ## Final repository state
 
-Final commit SHA, exact GitHub Actions run, and clean/synced branch state are filled after remote verification.
+The report-sync commit follows the implementation commit and is verified against its own exact-SHA Actions run before closeout. Final branch state is clean and synchronized at that point.
