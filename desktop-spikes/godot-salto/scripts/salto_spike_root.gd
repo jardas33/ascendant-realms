@@ -24,6 +24,7 @@ const SCRIPT_ARG_PREFIXES := [
 	"--player-slice-validate",
 	"--player-slice-capture",
 	"--h3-semantic-evidence",
+	"--h3-supported-state-contract",
 	"--salto-barrosan-playable-runtime-skin",
 	"--salto-barrosan-runtime-debug-labels",
 	"--salto-barrosan-player-presentation",
@@ -1000,6 +1001,18 @@ func _ready() -> void:
 		semantic_capture.set_script(semantic_script)
 		add_child(semantic_capture)
 		semantic_capture.call_deferred("start")
+		return
+	if args.has("--h3-supported-state-contract"):
+		_create_player_slice_ui()
+		var contract_script := load("res://scripts/salto_v0313_h3_supported_state_contract_capture.gd") as GDScript
+		if contract_script == null:
+			get_tree().quit(1)
+			return
+		var contract_capture := Node.new()
+		contract_capture.name = "V0313H3SupportedStateContractCapture"
+		contract_capture.set_script(contract_script)
+		add_child(contract_capture)
+		contract_capture.call_deferred("start")
 		return
 	if args.has("--real-input-smoke") or args.has("--real-input-validate"):
 		_create_player_slice_ui()

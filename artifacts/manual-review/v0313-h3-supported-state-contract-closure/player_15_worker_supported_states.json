@@ -1,0 +1,62 @@
+{
+  "accepted": true,
+  "cameraCoordinates": {
+    "x": 0.0,
+    "y": 11.6,
+    "z": 8.9
+  },
+  "cameraZoom": 10.8,
+  "captureFilename": "player_15_worker_supported_states.png",
+  "fallbackFlag": false,
+  "frameNumber": 15,
+  "gameplayMutation": false,
+  "h3Flag": true,
+  "lastOrder": "none",
+  "note": "idle selected supported-state overview",
+  "pairedViewId": "v0313-worker_supported_states",
+  "perceptualHash": "0f7f0b3ffb07f9a7fb37ffffff7fff27ff8ffe6fff738001fa25076d077107f1",
+  "playerDebugClassification": "player",
+  "presentationMode": "PLAYER",
+  "rejected": false,
+  "rejectionReason": null,
+  "runtimeTimestampMs": 26480,
+  "saveIdentifier": null,
+  "scenario": "worker_supported_states",
+  "screenshotSha256": "52d96cf04e33cd9e0a18a44f12a794a63ed94670e4aac0715131d599483a1875",
+  "selectedIds": [
+    "worker_00"
+  ],
+  "semanticEventId": "v0313-worker_supported_states",
+  "stableUnitIds": [
+    "worker_00"
+  ],
+  "stateSource": "runtime.units",
+  "units": [
+    {
+      "activityState": "idle",
+      "commandState": "idle",
+      "destination": {
+        "x": 265.0,
+        "y": 370.0
+      },
+      "facing": "south-east",
+      "hasDestination": false,
+      "id": "worker_00",
+      "orderState": "none",
+      "position": {
+        "x": 265.0,
+        "y": 370.0
+      },
+      "readyState": "unsupported",
+      "role": "Worker"
+    }
+  ],
+  "mode": "PLAYER",
+  "sourceDirectory": "player",
+  "packFilename": "player_15_worker_supported_states.png",
+  "physicalBytes": 185300,
+  "pixelDimensions": [
+    1920,
+    1009
+  ]
+}

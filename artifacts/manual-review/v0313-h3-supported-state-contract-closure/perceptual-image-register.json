@@ -1,0 +1,62 @@
+{
+  "0f7f0b3ffb07e9a7fb37ffffff7fff27ff8ffe6fff738001fa25076d077107f1": [
+    "player_01_militia_idle.png",
+    "debug_review_01_militia_idle.png"
+  ],
+  "0b7f0e2ffb0fdf6ff76ffffffe7fffafff0ffe7ffe430001fe65066d07f107f1": [
+    "player_02_militia_selected.png",
+    "debug_review_02_militia_selected.png"
+  ],
+  "0c7f061ffedfecdffffffcffff9ffe3ffdfffcff0003fce1fdf507ed07f107f1": [
+    "player_03_militia_unselected.png",
+    "debug_review_03_militia_unselected.png"
+  ],
+  "007c8b7cfb7cfbfcfffcff7cfdfcf3fcf7fc001cf390f3f0fbf407ec07f007f0": [
+    "player_04_militia_moving.png",
+    "debug_review_04_militia_moving.png"
+  ],
+  "00f80af8f7f8f7f8fff8fef8fbf8e7f8fff80038e7f0e7f0fff407ec07f007f0": [
+    "player_05_militia_stopped.png",
+    "player_07_militia_hold_invoked.png",
+    "player_08_militia_post_hold_state.png",
+    "player_09_militia_release_valid_command.png",
+    "debug_review_05_militia_stopped.png",
+    "debug_review_07_militia_hold_invoked.png",
+    "debug_review_08_militia_post_hold_state.png",
+    "debug_review_09_militia_release_valid_command.png"
+  ],
+  "087e0d7ef9fefffefffef97efcfef3fefbfe000ef192fbf0fbf407ec07f007f0": [
+    "player_06_militia_hold_invocation_before.png",
+    "debug_review_06_militia_hold_invocation_before.png"
+  ],
+  "0f7f0b3ffb07eba7fb37ffffffffffa7ff8ffe6fff738001f825076d077107f1": [
+    "player_10_before_save.png",
+    "debug_review_10_before_save.png"
+  ],
+  "0f7f0e2ff30fdf6ff76fffffffffffafff0ffe7ffe430001fe65066d07f107f1": [
+    "player_11_after_real_load.png",
+    "debug_review_11_after_real_load.png"
+  ],
+  "0f7f0b3ffb07eda7fb37ffffff7fff27ff8ffe6fff738001fa25076d077107f1": [
+    "player_12_h3_enabled.png",
+    "debug_review_12_h3_enabled.png"
+  ],
+  "0b7f0a2fff0fbf6ff76ffffffe7fff8ffe0ffe7f9a430001fe61066d07f107f1": [
+    "player_13_fallback_enabled.png",
+    "debug_review_13_fallback_enabled.png"
+  ],
+  "0eff061ff35ffefffffffffffe5fff1ffcfffeff00030001fcf504ed07f107f1": [
+    "player_14_h3_reconstructed.png",
+    "player_17_ordinary_gameplay_overview.png",
+    "debug_review_14_h3_reconstructed.png",
+    "debug_review_17_ordinary_gameplay_overview.png"
+  ],
+  "0f7f0b3ffb07f9a7fb37ffffff7fff27ff8ffe6fff738001fa25076d077107f1": [
+    "player_15_worker_supported_states.png",
+    "debug_review_15_worker_supported_states.png"
+  ],
+  "0b7f0e2ffb0fdf6ff76ffffffe7fffefff6ffe7ffe430001fe65066d07f107f1": [
+    "player_16_militia_supported_states.png",
+    "debug_review_16_militia_supported_states.png"
+  ]
+}

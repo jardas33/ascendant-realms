@@ -312,6 +312,8 @@
     "godot:validate:salto-h3-hybrid-runtime-integration": "node tools/godot/saltoV0311H3HybridRuntimeIntegrationTool.mjs",
     "godot:capture:salto-h3-evidence-integrity": "powershell -NoProfile -ExecutionPolicy Bypass -File tools/godot/captureGodotV0312H3EvidenceIntegrityWindows.ps1",
     "godot:validate:salto-h3-evidence-integrity": "node tools/godot/saltoV0312H3RuntimeEvidenceIntegrityTool.mjs validate",
+    "godot:capture:salto-h3-supported-state-contract": "powershell -NoProfile -ExecutionPolicy Bypass -File tools/godot/captureGodotV0313H3SupportedStateContractWindows.ps1",
+    "godot:validate:salto-h3-supported-state-contract": "node tools/godot/saltoV0313H3SupportedStateContractTool.mjs validate",
     "godot:capture:salto-route-c-representative-sector": "powershell -NoProfile -ExecutionPolicy Bypass -File tools/godot/captureGodotV0305RouteCRepresentativeSectorWindows.ps1",
     "godot:validate:salto-route-c-representative-sector": "node tools/godot/saltoV0305RouteCRepresentativeSectorTool.mjs",
     "godot:capture:salto-environment-contrast": "powershell -NoProfile -ExecutionPolicy Bypass -File tools/godot/captureGodotSaltoEnvironmentContrastWindows.ps1",

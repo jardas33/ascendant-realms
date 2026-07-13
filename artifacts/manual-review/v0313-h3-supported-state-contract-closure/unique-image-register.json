@@ -1,0 +1,70 @@
+{
+  "d7004f45c5bc33e95fb9b662ee3f1636a7052343157932c3a59f70334163bb55": [
+    "player_01_militia_idle.png",
+    "debug_review_01_militia_idle.png"
+  ],
+  "32748594401bbfc091c6ee393ad675d6d837efd7bd4483c098c00f01dc2843ac": [
+    "player_02_militia_selected.png",
+    "debug_review_02_militia_selected.png"
+  ],
+  "3cd4476b2ce4a2f0487a530300efc4fd1d5c563be4f0b92383307e8e40d51f3b": [
+    "player_03_militia_unselected.png",
+    "debug_review_03_militia_unselected.png"
+  ],
+  "3dfb2db6e582ae863aaaa41f22a1cae0c4fdfac7d16c485682508836b0d79bf1": [
+    "player_04_militia_moving.png",
+    "debug_review_04_militia_moving.png"
+  ],
+  "186eca4021a53e810b1d35ea25c8b7d116ec4ec78d4f118580b13bd66529a1c0": [
+    "player_05_militia_stopped.png",
+    "debug_review_05_militia_stopped.png"
+  ],
+  "632fd5b59afc3d4f0180181e853c7825f102f75eda77f3b453f1ee7211ef11ca": [
+    "player_06_militia_hold_invocation_before.png",
+    "debug_review_06_militia_hold_invocation_before.png"
+  ],
+  "e4cfb96cb0e7c92b01d1610ed852bcb69fa2d8d70a47d7873a41e279a5665b00": [
+    "player_07_militia_hold_invoked.png",
+    "debug_review_07_militia_hold_invoked.png"
+  ],
+  "5c275fc82c5816d54b012bde8c857956622bfe247191950dcb64cc9681a64a06": [
+    "player_08_militia_post_hold_state.png",
+    "debug_review_08_militia_post_hold_state.png"
+  ],
+  "a2dcc393f4b56989146ab63935e0a58be2b6eddcbfbb1ad36b3c199b123b1125": [
+    "player_09_militia_release_valid_command.png",
+    "debug_review_09_militia_release_valid_command.png"
+  ],
+  "00ae3f9957b4af629422fc3381f95dc602525b26b2e18131fafd76b4692cc1af": [
+    "player_10_before_save.png",
+    "debug_review_10_before_save.png"
+  ],
+  "6752cc2e679cd29a49d59b920eff50e02015f10c052641775842f13cdf507d03": [
+    "player_11_after_real_load.png",
+    "debug_review_11_after_real_load.png"
+  ],
+  "8579bdeaeb58056ca269cd32ee6f11c77a2f8a10cb28d8dd75487368a8d30797": [
+    "player_12_h3_enabled.png",
+    "debug_review_12_h3_enabled.png"
+  ],
+  "c2ab8878e94d56fe90d397af95294f71cd4631a804c9201a748559e643849f02": [
+    "player_13_fallback_enabled.png",
+    "debug_review_13_fallback_enabled.png"
+  ],
+  "cf70a2bdb30248615e4965a747304ee362e994cd7ab032a95855f0b8b2b1008d": [
+    "player_14_h3_reconstructed.png",
+    "debug_review_14_h3_reconstructed.png"
+  ],
+  "52d96cf04e33cd9e0a18a44f12a794a63ed94670e4aac0715131d599483a1875": [
+    "player_15_worker_supported_states.png",
+    "debug_review_15_worker_supported_states.png"
+  ],
+  "b7742fa5880fe3b162271d0679dcf2ae44a97de3e5aedda76d1163b5c1d315ce": [
+    "player_16_militia_supported_states.png",
+    "debug_review_16_militia_supported_states.png"
+  ],
+  "0c08ebfdbaba3a70ef51d81b1580108365674cd42830c2aa1202b9c2cc2a835d": [
+    "player_17_ordinary_gameplay_overview.png",
+    "debug_review_17_ordinary_gameplay_overview.png"
+  ]
+}

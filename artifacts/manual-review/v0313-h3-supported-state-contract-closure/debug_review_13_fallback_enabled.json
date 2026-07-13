@@ -1,0 +1,62 @@
+{
+  "accepted": true,
+  "cameraCoordinates": {
+    "x": 0.8,
+    "y": 11.6,
+    "z": 9.25
+  },
+  "cameraZoom": 10.8,
+  "captureFilename": "debug_review_13_fallback_enabled.png",
+  "fallbackFlag": true,
+  "frameNumber": 13,
+  "gameplayMutation": false,
+  "h3Flag": false,
+  "lastOrder": "none",
+  "note": "fallback presentation enabled",
+  "pairedViewId": "v0313-fallback_enabled",
+  "perceptualHash": "0b7f0a2fff0fbf6ff76ffffffe7fff8ffe0ffe7f9a430001fe61066d07f107f1",
+  "playerDebugClassification": "debug",
+  "presentationMode": "DEBUG_REVIEW",
+  "rejected": false,
+  "rejectionReason": null,
+  "runtimeTimestampMs": 21303,
+  "saveIdentifier": null,
+  "scenario": "presentation_rollback",
+  "screenshotSha256": "c2ab8878e94d56fe90d397af95294f71cd4631a804c9201a748559e643849f02",
+  "selectedIds": [
+    "friendly_00"
+  ],
+  "semanticEventId": "v0313-fallback_enabled",
+  "stableUnitIds": [
+    "friendly_00"
+  ],
+  "stateSource": "runtime.units",
+  "units": [
+    {
+      "activityState": "idle",
+      "commandState": "idle",
+      "destination": {
+        "x": 405.0,
+        "y": 315.0
+      },
+      "facing": "south-east",
+      "hasDestination": false,
+      "id": "friendly_00",
+      "orderState": "none",
+      "position": {
+        "x": 405.0,
+        "y": 315.0
+      },
+      "readyState": "unsupported",
+      "role": "Militia"
+    }
+  ],
+  "mode": "DEBUG_REVIEW",
+  "sourceDirectory": "debug-review",
+  "packFilename": "debug_review_13_fallback_enabled.png",
+  "physicalBytes": 148362,
+  "pixelDimensions": [
+    1920,
+    1009
+  ]
+}

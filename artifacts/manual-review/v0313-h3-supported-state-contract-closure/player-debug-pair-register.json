@@ -1,0 +1,257 @@
+[
+  {
+    "pairedViewId": "v0313-after_real_load",
+    "semanticEventId": "v0313-after_real_load",
+    "records": [
+      "player_11_after_real_load.png",
+      "debug_review_11_after_real_load.png"
+    ],
+    "modes": [
+      "DEBUG_REVIEW",
+      "PLAYER"
+    ],
+    "recordCount": 2,
+    "countsAsOneSemanticGameplayEvent": true,
+    "sameImageAcrossModes": true
+  },
+  {
+    "pairedViewId": "v0313-before_save",
+    "semanticEventId": "v0313-before_save",
+    "records": [
+      "player_10_before_save.png",
+      "debug_review_10_before_save.png"
+    ],
+    "modes": [
+      "DEBUG_REVIEW",
+      "PLAYER"
+    ],
+    "recordCount": 2,
+    "countsAsOneSemanticGameplayEvent": true,
+    "sameImageAcrossModes": true
+  },
+  {
+    "pairedViewId": "v0313-fallback_enabled",
+    "semanticEventId": "v0313-fallback_enabled",
+    "records": [
+      "player_13_fallback_enabled.png",
+      "debug_review_13_fallback_enabled.png"
+    ],
+    "modes": [
+      "DEBUG_REVIEW",
+      "PLAYER"
+    ],
+    "recordCount": 2,
+    "countsAsOneSemanticGameplayEvent": true,
+    "sameImageAcrossModes": true
+  },
+  {
+    "pairedViewId": "v0313-h3_enabled",
+    "semanticEventId": "v0313-h3_enabled",
+    "records": [
+      "player_12_h3_enabled.png",
+      "debug_review_12_h3_enabled.png"
+    ],
+    "modes": [
+      "DEBUG_REVIEW",
+      "PLAYER"
+    ],
+    "recordCount": 2,
+    "countsAsOneSemanticGameplayEvent": true,
+    "sameImageAcrossModes": true
+  },
+  {
+    "pairedViewId": "v0313-h3_reconstructed",
+    "semanticEventId": "v0313-h3_reconstructed",
+    "records": [
+      "player_14_h3_reconstructed.png",
+      "debug_review_14_h3_reconstructed.png"
+    ],
+    "modes": [
+      "DEBUG_REVIEW",
+      "PLAYER"
+    ],
+    "recordCount": 2,
+    "countsAsOneSemanticGameplayEvent": true,
+    "sameImageAcrossModes": true
+  },
+  {
+    "pairedViewId": "v0313-militia_hold_invocation_before",
+    "semanticEventId": "v0313-militia_hold_invocation_before",
+    "records": [
+      "player_06_militia_hold_invocation_before.png",
+      "debug_review_06_militia_hold_invocation_before.png"
+    ],
+    "modes": [
+      "DEBUG_REVIEW",
+      "PLAYER"
+    ],
+    "recordCount": 2,
+    "countsAsOneSemanticGameplayEvent": true,
+    "sameImageAcrossModes": true
+  },
+  {
+    "pairedViewId": "v0313-militia_hold_invoked",
+    "semanticEventId": "v0313-militia_hold_invoked",
+    "records": [
+      "player_07_militia_hold_invoked.png",
+      "debug_review_07_militia_hold_invoked.png"
+    ],
+    "modes": [
+      "DEBUG_REVIEW",
+      "PLAYER"
+    ],
+    "recordCount": 2,
+    "countsAsOneSemanticGameplayEvent": true,
+    "sameImageAcrossModes": true
+  },
+  {
+    "pairedViewId": "v0313-militia_idle",
+    "semanticEventId": "v0313-militia_idle",
+    "records": [
+      "player_01_militia_idle.png",
+      "debug_review_01_militia_idle.png"
+    ],
+    "modes": [
+      "DEBUG_REVIEW",
+      "PLAYER"
+    ],
+    "recordCount": 2,
+    "countsAsOneSemanticGameplayEvent": true,
+    "sameImageAcrossModes": true
+  },
+  {
+    "pairedViewId": "v0313-militia_moving",
+    "semanticEventId": "v0313-militia_moving",
+    "records": [
+      "player_04_militia_moving.png",
+      "debug_review_04_militia_moving.png"
+    ],
+    "modes": [
+      "DEBUG_REVIEW",
+      "PLAYER"
+    ],
+    "recordCount": 2,
+    "countsAsOneSemanticGameplayEvent": true,
+    "sameImageAcrossModes": true
+  },
+  {
+    "pairedViewId": "v0313-militia_post_hold_state",
+    "semanticEventId": "v0313-militia_post_hold_state",
+    "records": [
+      "player_08_militia_post_hold_state.png",
+      "debug_review_08_militia_post_hold_state.png"
+    ],
+    "modes": [
+      "DEBUG_REVIEW",
+      "PLAYER"
+    ],
+    "recordCount": 2,
+    "countsAsOneSemanticGameplayEvent": true,
+    "sameImageAcrossModes": true
+  },
+  {
+    "pairedViewId": "v0313-militia_release_valid_command",
+    "semanticEventId": "v0313-militia_release_valid_command",
+    "records": [
+      "player_09_militia_release_valid_command.png",
+      "debug_review_09_militia_release_valid_command.png"
+    ],
+    "modes": [
+      "DEBUG_REVIEW",
+      "PLAYER"
+    ],
+    "recordCount": 2,
+    "countsAsOneSemanticGameplayEvent": true,
+    "sameImageAcrossModes": true
+  },
+  {
+    "pairedViewId": "v0313-militia_selected",
+    "semanticEventId": "v0313-militia_selected",
+    "records": [
+      "player_02_militia_selected.png",
+      "debug_review_02_militia_selected.png"
+    ],
+    "modes": [
+      "DEBUG_REVIEW",
+      "PLAYER"
+    ],
+    "recordCount": 2,
+    "countsAsOneSemanticGameplayEvent": true,
+    "sameImageAcrossModes": true
+  },
+  {
+    "pairedViewId": "v0313-militia_stopped",
+    "semanticEventId": "v0313-militia_stopped",
+    "records": [
+      "player_05_militia_stopped.png",
+      "debug_review_05_militia_stopped.png"
+    ],
+    "modes": [
+      "DEBUG_REVIEW",
+      "PLAYER"
+    ],
+    "recordCount": 2,
+    "countsAsOneSemanticGameplayEvent": true,
+    "sameImageAcrossModes": true
+  },
+  {
+    "pairedViewId": "v0313-militia_supported_states",
+    "semanticEventId": "v0313-militia_supported_states",
+    "records": [
+      "player_16_militia_supported_states.png",
+      "debug_review_16_militia_supported_states.png"
+    ],
+    "modes": [
+      "DEBUG_REVIEW",
+      "PLAYER"
+    ],
+    "recordCount": 2,
+    "countsAsOneSemanticGameplayEvent": true,
+    "sameImageAcrossModes": true
+  },
+  {
+    "pairedViewId": "v0313-militia_unselected",
+    "semanticEventId": "v0313-militia_unselected",
+    "records": [
+      "player_03_militia_unselected.png",
+      "debug_review_03_militia_unselected.png"
+    ],
+    "modes": [
+      "DEBUG_REVIEW",
+      "PLAYER"
+    ],
+    "recordCount": 2,
+    "countsAsOneSemanticGameplayEvent": true,
+    "sameImageAcrossModes": true
+  },
+  {
+    "pairedViewId": "v0313-ordinary_gameplay_overview",
+    "semanticEventId": "v0313-ordinary_gameplay_overview",
+    "records": [
+      "player_17_ordinary_gameplay_overview.png",
+      "debug_review_17_ordinary_gameplay_overview.png"
+    ],
+    "modes": [
+      "DEBUG_REVIEW",
+      "PLAYER"
+    ],
+    "recordCount": 2,
+    "countsAsOneSemanticGameplayEvent": true,
+    "sameImageAcrossModes": true
+  },
+  {
+    "pairedViewId": "v0313-worker_supported_states",
+    "semanticEventId": "v0313-worker_supported_states",
+    "records": [
+      "player_15_worker_supported_states.png",
+      "debug_review_15_worker_supported_states.png"
+    ],
+    "modes": [
+      "DEBUG_REVIEW",
+      "PLAYER"
+    ],
+    "recordCount": 2,
+    "countsAsOneSemanticGameplayEvent": true,
+    "sameImageAcrossModes": true
+  }
+]

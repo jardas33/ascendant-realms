@@ -1,0 +1,62 @@
+{
+  "accepted": true,
+  "cameraCoordinates": {
+    "x": 5.8,
+    "y": 11.6,
+    "z": 10.4
+  },
+  "cameraZoom": 10.8,
+  "captureFilename": "debug_review_08_militia_post_hold_state.png",
+  "fallbackFlag": false,
+  "frameNumber": 8,
+  "gameplayMutation": false,
+  "h3Flag": true,
+  "lastOrder": "move:770.0:430.0",
+  "note": "actual state after Hold callback",
+  "pairedViewId": "v0313-militia_post_hold_state",
+  "perceptualHash": "00f80af8f7f8f7f8fff8fef8fbf8e7f8fff80038e7f0e7f0fff407ec07f007f0",
+  "playerDebugClassification": "debug",
+  "presentationMode": "DEBUG_REVIEW",
+  "rejected": false,
+  "rejectionReason": null,
+  "runtimeTimestampMs": 14724,
+  "saveIdentifier": null,
+  "scenario": "militia_post_hold",
+  "screenshotSha256": "5c275fc82c5816d54b012bde8c857956622bfe247191950dcb64cc9681a64a06",
+  "selectedIds": [
+    "friendly_00"
+  ],
+  "semanticEventId": "v0313-militia_post_hold_state",
+  "stableUnitIds": [
+    "friendly_00"
+  ],
+  "stateSource": "runtime.units",
+  "units": [
+    {
+      "activityState": "travelling",
+      "commandState": "move_ordered",
+      "destination": {
+        "x": 770.0,
+        "y": 430.0
+      },
+      "facing": "east",
+      "hasDestination": true,
+      "id": "friendly_00",
+      "orderState": "destination_set",
+      "position": {
+        "x": 519.45,
+        "y": 351.06
+      },
+      "readyState": "unsupported",
+      "role": "Militia"
+    }
+  ],
+  "mode": "DEBUG_REVIEW",
+  "sourceDirectory": "debug-review",
+  "packFilename": "debug_review_08_militia_post_hold_state.png",
+  "physicalBytes": 129389,
+  "pixelDimensions": [
+    1920,
+    1009
+  ]
+}

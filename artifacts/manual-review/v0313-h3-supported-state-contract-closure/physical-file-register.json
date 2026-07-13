@@ -1,0 +1,342 @@
+[
+  {
+    "file": "player_01_militia_idle.png",
+    "sha256": "d7004f45c5bc33e95fb9b662ee3f1636a7052343157932c3a59f70334163bb55",
+    "perceptualHash": "0f7f0b3ffb07e9a7fb37ffffff7fff27ff8ffe6fff738001fa25076d077107f1",
+    "bytes": 183125,
+    "dimensions": [
+      1920,
+      1009
+    ]
+  },
+  {
+    "file": "player_02_militia_selected.png",
+    "sha256": "32748594401bbfc091c6ee393ad675d6d837efd7bd4483c098c00f01dc2843ac",
+    "perceptualHash": "0b7f0e2ffb0fdf6ff76ffffffe7fffafff0ffe7ffe430001fe65066d07f107f1",
+    "bytes": 180428,
+    "dimensions": [
+      1920,
+      1009
+    ]
+  },
+  {
+    "file": "player_03_militia_unselected.png",
+    "sha256": "3cd4476b2ce4a2f0487a530300efc4fd1d5c563be4f0b92383307e8e40d51f3b",
+    "perceptualHash": "0c7f061ffedfecdffffffcffff9ffe3ffdfffcff0003fce1fdf507ed07f107f1",
+    "bytes": 149662,
+    "dimensions": [
+      1920,
+      1009
+    ]
+  },
+  {
+    "file": "player_04_militia_moving.png",
+    "sha256": "3dfb2db6e582ae863aaaa41f22a1cae0c4fdfac7d16c485682508836b0d79bf1",
+    "perceptualHash": "007c8b7cfb7cfbfcfffcff7cfdfcf3fcf7fc001cf390f3f0fbf407ec07f007f0",
+    "bytes": 132593,
+    "dimensions": [
+      1920,
+      1009
+    ]
+  },
+  {
+    "file": "player_05_militia_stopped.png",
+    "sha256": "186eca4021a53e810b1d35ea25c8b7d116ec4ec78d4f118580b13bd66529a1c0",
+    "perceptualHash": "00f80af8f7f8f7f8fff8fef8fbf8e7f8fff80038e7f0e7f0fff407ec07f007f0",
+    "bytes": 129860,
+    "dimensions": [
+      1920,
+      1009
+    ]
+  },
+  {
+    "file": "player_06_militia_hold_invocation_before.png",
+    "sha256": "632fd5b59afc3d4f0180181e853c7825f102f75eda77f3b453f1ee7211ef11ca",
+    "perceptualHash": "087e0d7ef9fefffefffef97efcfef3fefbfe000ef192fbf0fbf407ec07f007f0",
+    "bytes": 133900,
+    "dimensions": [
+      1920,
+      1009
+    ]
+  },
+  {
+    "file": "player_07_militia_hold_invoked.png",
+    "sha256": "e4cfb96cb0e7c92b01d1610ed852bcb69fa2d8d70a47d7873a41e279a5665b00",
+    "perceptualHash": "00f80af8f7f8f7f8fff8fef8fbf8e7f8fff80038e7f0e7f0fff407ec07f007f0",
+    "bytes": 127552,
+    "dimensions": [
+      1920,
+      1009
+    ]
+  },
+  {
+    "file": "player_08_militia_post_hold_state.png",
+    "sha256": "5c275fc82c5816d54b012bde8c857956622bfe247191950dcb64cc9681a64a06",
+    "perceptualHash": "00f80af8f7f8f7f8fff8fef8fbf8e7f8fff80038e7f0e7f0fff407ec07f007f0",
+    "bytes": 129389,
+    "dimensions": [
+      1920,
+      1009
+    ]
+  },
+  {
+    "file": "player_09_militia_release_valid_command.png",
+    "sha256": "a2dcc393f4b56989146ab63935e0a58be2b6eddcbfbb1ad36b3c199b123b1125",
+    "perceptualHash": "00f80af8f7f8f7f8fff8fef8fbf8e7f8fff80038e7f0e7f0fff407ec07f007f0",
+    "bytes": 129384,
+    "dimensions": [
+      1920,
+      1009
+    ]
+  },
+  {
+    "file": "player_10_before_save.png",
+    "sha256": "00ae3f9957b4af629422fc3381f95dc602525b26b2e18131fafd76b4692cc1af",
+    "perceptualHash": "0f7f0b3ffb07eba7fb37ffffffffffa7ff8ffe6fff738001f825076d077107f1",
+    "bytes": 194828,
+    "dimensions": [
+      1920,
+      1009
+    ]
+  },
+  {
+    "file": "player_11_after_real_load.png",
+    "sha256": "6752cc2e679cd29a49d59b920eff50e02015f10c052641775842f13cdf507d03",
+    "perceptualHash": "0f7f0e2ff30fdf6ff76fffffffffffafff0ffe7ffe430001fe65066d07f107f1",
+    "bytes": 192280,
+    "dimensions": [
+      1920,
+      1009
+    ]
+  },
+  {
+    "file": "player_12_h3_enabled.png",
+    "sha256": "8579bdeaeb58056ca269cd32ee6f11c77a2f8a10cb28d8dd75487368a8d30797",
+    "perceptualHash": "0f7f0b3ffb07eda7fb37ffffff7fff27ff8ffe6fff738001fa25076d077107f1",
+    "bytes": 184198,
+    "dimensions": [
+      1920,
+      1009
+    ]
+  },
+  {
+    "file": "player_13_fallback_enabled.png",
+    "sha256": "c2ab8878e94d56fe90d397af95294f71cd4631a804c9201a748559e643849f02",
+    "perceptualHash": "0b7f0a2fff0fbf6ff76ffffffe7fff8ffe0ffe7f9a430001fe61066d07f107f1",
+    "bytes": 148362,
+    "dimensions": [
+      1920,
+      1009
+    ]
+  },
+  {
+    "file": "player_14_h3_reconstructed.png",
+    "sha256": "cf70a2bdb30248615e4965a747304ee362e994cd7ab032a95855f0b8b2b1008d",
+    "perceptualHash": "0eff061ff35ffefffffffffffe5fff1ffcfffeff00030001fcf504ed07f107f1",
+    "bytes": 164804,
+    "dimensions": [
+      1920,
+      1009
+    ]
+  },
+  {
+    "file": "player_15_worker_supported_states.png",
+    "sha256": "52d96cf04e33cd9e0a18a44f12a794a63ed94670e4aac0715131d599483a1875",
+    "perceptualHash": "0f7f0b3ffb07f9a7fb37ffffff7fff27ff8ffe6fff738001fa25076d077107f1",
+    "bytes": 185300,
+    "dimensions": [
+      1920,
+      1009
+    ]
+  },
+  {
+    "file": "player_16_militia_supported_states.png",
+    "sha256": "b7742fa5880fe3b162271d0679dcf2ae44a97de3e5aedda76d1163b5c1d315ce",
+    "perceptualHash": "0b7f0e2ffb0fdf6ff76ffffffe7fffefff6ffe7ffe430001fe65066d07f107f1",
+    "bytes": 180207,
+    "dimensions": [
+      1920,
+      1009
+    ]
+  },
+  {
+    "file": "player_17_ordinary_gameplay_overview.png",
+    "sha256": "0c08ebfdbaba3a70ef51d81b1580108365674cd42830c2aa1202b9c2cc2a835d",
+    "perceptualHash": "0eff061ff35ffefffffffffffe5fff1ffcfffeff00030001fcf504ed07f107f1",
+    "bytes": 164769,
+    "dimensions": [
+      1920,
+      1009
+    ]
+  },
+  {
+    "file": "debug_review_01_militia_idle.png",
+    "sha256": "d7004f45c5bc33e95fb9b662ee3f1636a7052343157932c3a59f70334163bb55",
+    "perceptualHash": "0f7f0b3ffb07e9a7fb37ffffff7fff27ff8ffe6fff738001fa25076d077107f1",
+    "bytes": 183125,
+    "dimensions": [
+      1920,
+      1009
+    ]
+  },
+  {
+    "file": "debug_review_02_militia_selected.png",
+    "sha256": "32748594401bbfc091c6ee393ad675d6d837efd7bd4483c098c00f01dc2843ac",
+    "perceptualHash": "0b7f0e2ffb0fdf6ff76ffffffe7fffafff0ffe7ffe430001fe65066d07f107f1",
+    "bytes": 180428,
+    "dimensions": [
+      1920,
+      1009
+    ]
+  },
+  {
+    "file": "debug_review_03_militia_unselected.png",
+    "sha256": "3cd4476b2ce4a2f0487a530300efc4fd1d5c563be4f0b92383307e8e40d51f3b",
+    "perceptualHash": "0c7f061ffedfecdffffffcffff9ffe3ffdfffcff0003fce1fdf507ed07f107f1",
+    "bytes": 149662,
+    "dimensions": [
+      1920,
+      1009
+    ]
+  },
+  {
+    "file": "debug_review_04_militia_moving.png",
+    "sha256": "3dfb2db6e582ae863aaaa41f22a1cae0c4fdfac7d16c485682508836b0d79bf1",
+    "perceptualHash": "007c8b7cfb7cfbfcfffcff7cfdfcf3fcf7fc001cf390f3f0fbf407ec07f007f0",
+    "bytes": 132593,
+    "dimensions": [
+      1920,
+      1009
+    ]
+  },
+  {
+    "file": "debug_review_05_militia_stopped.png",
+    "sha256": "186eca4021a53e810b1d35ea25c8b7d116ec4ec78d4f118580b13bd66529a1c0",
+    "perceptualHash": "00f80af8f7f8f7f8fff8fef8fbf8e7f8fff80038e7f0e7f0fff407ec07f007f0",
+    "bytes": 129860,
+    "dimensions": [
+      1920,
+      1009
+    ]
+  },
+  {
+    "file": "debug_review_06_militia_hold_invocation_before.png",
+    "sha256": "632fd5b59afc3d4f0180181e853c7825f102f75eda77f3b453f1ee7211ef11ca",
+    "perceptualHash": "087e0d7ef9fefffefffef97efcfef3fefbfe000ef192fbf0fbf407ec07f007f0",
+    "bytes": 133900,
+    "dimensions": [
+      1920,
+      1009
+    ]
+  },
+  {
+    "file": "debug_review_07_militia_hold_invoked.png",
+    "sha256": "e4cfb96cb0e7c92b01d1610ed852bcb69fa2d8d70a47d7873a41e279a5665b00",
+    "perceptualHash": "00f80af8f7f8f7f8fff8fef8fbf8e7f8fff80038e7f0e7f0fff407ec07f007f0",
+    "bytes": 127552,
+    "dimensions": [
+      1920,
+      1009
+    ]
+  },
+  {
+    "file": "debug_review_08_militia_post_hold_state.png",
+    "sha256": "5c275fc82c5816d54b012bde8c857956622bfe247191950dcb64cc9681a64a06",
+    "perceptualHash": "00f80af8f7f8f7f8fff8fef8fbf8e7f8fff80038e7f0e7f0fff407ec07f007f0",
+    "bytes": 129389,
+    "dimensions": [
+      1920,
+      1009
+    ]
+  },
+  {
+    "file": "debug_review_09_militia_release_valid_command.png",
+    "sha256": "a2dcc393f4b56989146ab63935e0a58be2b6eddcbfbb1ad36b3c199b123b1125",
+    "perceptualHash": "00f80af8f7f8f7f8fff8fef8fbf8e7f8fff80038e7f0e7f0fff407ec07f007f0",
+    "bytes": 129384,
+    "dimensions": [
+      1920,
+      1009
+    ]
+  },
+  {
+    "file": "debug_review_10_before_save.png",
+    "sha256": "00ae3f9957b4af629422fc3381f95dc602525b26b2e18131fafd76b4692cc1af",
+    "perceptualHash": "0f7f0b3ffb07eba7fb37ffffffffffa7ff8ffe6fff738001f825076d077107f1",
+    "bytes": 194828,
+    "dimensions": [
+      1920,
+      1009
+    ]
+  },
+  {
+    "file": "debug_review_11_after_real_load.png",
+    "sha256": "6752cc2e679cd29a49d59b920eff50e02015f10c052641775842f13cdf507d03",
+    "perceptualHash": "0f7f0e2ff30fdf6ff76fffffffffffafff0ffe7ffe430001fe65066d07f107f1",
+    "bytes": 192280,
+    "dimensions": [
+      1920,
+      1009
+    ]
+  },
+  {
+    "file": "debug_review_12_h3_enabled.png",
+    "sha256": "8579bdeaeb58056ca269cd32ee6f11c77a2f8a10cb28d8dd75487368a8d30797",
+    "perceptualHash": "0f7f0b3ffb07eda7fb37ffffff7fff27ff8ffe6fff738001fa25076d077107f1",
+    "bytes": 184198,
+    "dimensions": [
+      1920,
+      1009
+    ]
+  },
+  {
+    "file": "debug_review_13_fallback_enabled.png",
+    "sha256": "c2ab8878e94d56fe90d397af95294f71cd4631a804c9201a748559e643849f02",
+    "perceptualHash": "0b7f0a2fff0fbf6ff76ffffffe7fff8ffe0ffe7f9a430001fe61066d07f107f1",
+    "bytes": 148362,
+    "dimensions": [
+      1920,
+      1009
+    ]
+  },
+  {
+    "file": "debug_review_14_h3_reconstructed.png",
+    "sha256": "cf70a2bdb30248615e4965a747304ee362e994cd7ab032a95855f0b8b2b1008d",
+    "perceptualHash": "0eff061ff35ffefffffffffffe5fff1ffcfffeff00030001fcf504ed07f107f1",
+    "bytes": 164804,
+    "dimensions": [
+      1920,
+      1009
+    ]
+  },
+  {
+    "file": "debug_review_15_worker_supported_states.png",
+    "sha256": "52d96cf04e33cd9e0a18a44f12a794a63ed94670e4aac0715131d599483a1875",
+    "perceptualHash": "0f7f0b3ffb07f9a7fb37ffffff7fff27ff8ffe6fff738001fa25076d077107f1",
+    "bytes": 185300,
+    "dimensions": [
+      1920,
+      1009
+    ]
+  },
+  {
+    "file": "debug_review_16_militia_supported_states.png",
+    "sha256": "b7742fa5880fe3b162271d0679dcf2ae44a97de3e5aedda76d1163b5c1d315ce",
+    "perceptualHash": "0b7f0e2ffb0fdf6ff76ffffffe7fffefff6ffe7ffe430001fe65066d07f107f1",
+    "bytes": 180207,
+    "dimensions": [
+      1920,
+      1009
+    ]
+  },
+  {
+    "file": "debug_review_17_ordinary_gameplay_overview.png",
+    "sha256": "0c08ebfdbaba3a70ef51d81b1580108365674cd42830c2aa1202b9c2cc2a835d",
+    "perceptualHash": "0eff061ff35ffefffffffffffe5fff1ffcfffeff00030001fcf504ed07f107f1",
+    "bytes": 164769,
+    "dimensions": [
+      1920,
+      1009
+    ]
+  }
+]

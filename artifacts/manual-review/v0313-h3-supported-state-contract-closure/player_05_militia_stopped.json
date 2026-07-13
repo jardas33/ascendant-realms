@@ -1,0 +1,62 @@
+{
+  "accepted": true,
+  "cameraCoordinates": {
+    "x": 5.8,
+    "y": 11.6,
+    "z": 10.4
+  },
+  "cameraZoom": 10.8,
+  "captureFilename": "player_05_militia_stopped.png",
+  "fallbackFlag": false,
+  "frameNumber": 5,
+  "gameplayMutation": false,
+  "h3Flag": true,
+  "lastOrder": "move:930.0:520.0",
+  "note": "destination reached and stopped",
+  "pairedViewId": "v0313-militia_stopped",
+  "perceptualHash": "00f80af8f7f8f7f8fff8fef8fbf8e7f8fff80038e7f0e7f0fff407ec07f007f0",
+  "playerDebugClassification": "player",
+  "presentationMode": "PLAYER",
+  "rejected": false,
+  "rejectionReason": null,
+  "runtimeTimestampMs": 11705,
+  "saveIdentifier": null,
+  "scenario": "militia_stopped",
+  "screenshotSha256": "186eca4021a53e810b1d35ea25c8b7d116ec4ec78d4f118580b13bd66529a1c0",
+  "selectedIds": [
+    "friendly_00"
+  ],
+  "semanticEventId": "v0313-militia_stopped",
+  "stableUnitIds": [
+    "friendly_00"
+  ],
+  "stateSource": "runtime.units",
+  "units": [
+    {
+      "activityState": "idle",
+      "commandState": "stopped",
+      "destination": {
+        "x": 930.0,
+        "y": 520.0
+      },
+      "facing": "east",
+      "hasDestination": false,
+      "id": "friendly_00",
+      "orderState": "none",
+      "position": {
+        "x": 930.0,
+        "y": 520.0
+      },
+      "readyState": "unsupported",
+      "role": "Militia"
+    }
+  ],
+  "mode": "PLAYER",
+  "sourceDirectory": "player",
+  "packFilename": "player_05_militia_stopped.png",
+  "physicalBytes": 129860,
+  "pixelDimensions": [
+    1920,
+    1009
+  ]
+}

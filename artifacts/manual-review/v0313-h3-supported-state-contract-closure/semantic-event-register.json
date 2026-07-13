@@ -1,0 +1,155 @@
+[
+  {
+    "semanticEventId": "v0313-after_real_load",
+    "pairedViewId": "v0313-after_real_load",
+    "recordCount": 2,
+    "physicalFileCount": 2,
+    "uniqueImageCount": 1,
+    "accepted": true,
+    "gameplayEvent": true
+  },
+  {
+    "semanticEventId": "v0313-before_save",
+    "pairedViewId": "v0313-before_save",
+    "recordCount": 2,
+    "physicalFileCount": 2,
+    "uniqueImageCount": 1,
+    "accepted": true,
+    "gameplayEvent": true
+  },
+  {
+    "semanticEventId": "v0313-fallback_enabled",
+    "pairedViewId": "v0313-fallback_enabled",
+    "recordCount": 2,
+    "physicalFileCount": 2,
+    "uniqueImageCount": 1,
+    "accepted": true,
+    "gameplayEvent": true
+  },
+  {
+    "semanticEventId": "v0313-h3_enabled",
+    "pairedViewId": "v0313-h3_enabled",
+    "recordCount": 2,
+    "physicalFileCount": 2,
+    "uniqueImageCount": 1,
+    "accepted": true,
+    "gameplayEvent": true
+  },
+  {
+    "semanticEventId": "v0313-h3_reconstructed",
+    "pairedViewId": "v0313-h3_reconstructed",
+    "recordCount": 2,
+    "physicalFileCount": 2,
+    "uniqueImageCount": 1,
+    "accepted": true,
+    "gameplayEvent": true
+  },
+  {
+    "semanticEventId": "v0313-militia_hold_invocation_before",
+    "pairedViewId": "v0313-militia_hold_invocation_before",
+    "recordCount": 2,
+    "physicalFileCount": 2,
+    "uniqueImageCount": 1,
+    "accepted": true,
+    "gameplayEvent": true
+  },
+  {
+    "semanticEventId": "v0313-militia_hold_invoked",
+    "pairedViewId": "v0313-militia_hold_invoked",
+    "recordCount": 2,
+    "physicalFileCount": 2,
+    "uniqueImageCount": 1,
+    "accepted": true,
+    "gameplayEvent": true
+  },
+  {
+    "semanticEventId": "v0313-militia_idle",
+    "pairedViewId": "v0313-militia_idle",
+    "recordCount": 2,
+    "physicalFileCount": 2,
+    "uniqueImageCount": 1,
+    "accepted": true,
+    "gameplayEvent": true
+  },
+  {
+    "semanticEventId": "v0313-militia_moving",
+    "pairedViewId": "v0313-militia_moving",
+    "recordCount": 2,
+    "physicalFileCount": 2,
+    "uniqueImageCount": 1,
+    "accepted": true,
+    "gameplayEvent": true
+  },
+  {
+    "semanticEventId": "v0313-militia_post_hold_state",
+    "pairedViewId": "v0313-militia_post_hold_state",
+    "recordCount": 2,
+    "physicalFileCount": 2,
+    "uniqueImageCount": 1,
+    "accepted": true,
+    "gameplayEvent": true
+  },
+  {
+    "semanticEventId": "v0313-militia_release_valid_command",
+    "pairedViewId": "v0313-militia_release_valid_command",
+    "recordCount": 2,
+    "physicalFileCount": 2,
+    "uniqueImageCount": 1,
+    "accepted": true,
+    "gameplayEvent": true
+  },
+  {
+    "semanticEventId": "v0313-militia_selected",
+    "pairedViewId": "v0313-militia_selected",
+    "recordCount": 2,
+    "physicalFileCount": 2,
+    "uniqueImageCount": 1,
+    "accepted": true,
+    "gameplayEvent": true
+  },
+  {
+    "semanticEventId": "v0313-militia_stopped",
+    "pairedViewId": "v0313-militia_stopped",
+    "recordCount": 2,
+    "physicalFileCount": 2,
+    "uniqueImageCount": 1,
+    "accepted": true,
+    "gameplayEvent": true
+  },
+  {
+    "semanticEventId": "v0313-militia_supported_states",
+    "pairedViewId": "v0313-militia_supported_states",
+    "recordCount": 2,
+    "physicalFileCount": 2,
+    "uniqueImageCount": 1,
+    "accepted": true,
+    "gameplayEvent": true
+  },
+  {
+    "semanticEventId": "v0313-militia_unselected",
+    "pairedViewId": "v0313-militia_unselected",
+    "recordCount": 2,
+    "physicalFileCount": 2,
+    "uniqueImageCount": 1,
+    "accepted": true,
+    "gameplayEvent": true
+  },
+  {
+    "semanticEventId": "v0313-ordinary_gameplay_overview",
+    "pairedViewId": "v0313-ordinary_gameplay_overview",
+    "recordCount": 2,
+    "physicalFileCount": 2,
+    "uniqueImageCount": 1,
+    "accepted": true,
+    "gameplayEvent": false
+  },
+  {
+    "semanticEventId": "v0313-worker_supported_states",
+    "pairedViewId": "v0313-worker_supported_states",
+    "recordCount": 2,
+    "physicalFileCount": 2,
+    "uniqueImageCount": 1,
+    "accepted": true,
+    "gameplayEvent": true
+  }
+]
