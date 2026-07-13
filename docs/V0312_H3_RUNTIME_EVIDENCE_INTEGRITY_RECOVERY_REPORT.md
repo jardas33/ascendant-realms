@@ -122,10 +122,12 @@ The method is not rejected solely because v0.311 evidence failed. Acceptance is 
 
 ## Validation
 
-The dedicated command `npm run godot:validate:salto-h3-evidence-integrity` passes with 154 physical PNGs, 127 unique SHA-256 images, and 128 accepted semantic gameplay records. The v0.311 validator passes. The v0.304-v0.310 retained validators pass from an isolated clean v0.311 validation worktree with the retained runtime evidence restored; v0.303 passes in the v0.312 worktree. The full repository gates also pass: 887 tests, production build, content validation, art-intake validation, runtime-art-slot validation, artifact-retention validation, `npm run godot:all`, and `git diff --check`. The final exact-SHA CI run is recorded after push.
+The dedicated command `npm run godot:validate:salto-h3-evidence-integrity` passes with 154 physical PNGs, 127 unique SHA-256 images, and 128 accepted semantic gameplay records. The v0.311 validator passes. The v0.304-v0.310 retained validators pass from an isolated clean v0.311 validation worktree with the retained runtime evidence restored; v0.303 passes in the v0.312 worktree. The full repository gates also pass: 887 tests, production build, content validation, art-intake validation, runtime-art-slot validation, artifact-retention validation, `npm run godot:all`, and `git diff --check`. GitHub Actions run `29217497013` completed successfully for exact commit `b42936d480498e75e3981b189fdb1af87628fd49`.
 
 ## Final repo state
 
 Branch: `codex/v0215-v0226-recovery`  
 Base HEAD: `47982ec6c2eb7d26ceae7e5a511a68402ccdde40`  
-Final state: clean and synced with origin, 0 ahead / 0 behind after commit and CI closeout.
+Verified implementation commit: `b42936d480498e75e3981b189fdb1af87628fd49`  
+GitHub Actions: `29217497013` — success for the verified implementation commit.  
+Final state: clean and synced with origin, 0 ahead / 0 behind after final report synchronization.
