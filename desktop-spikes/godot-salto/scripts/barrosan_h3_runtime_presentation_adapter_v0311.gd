@@ -15,6 +15,14 @@ var derived_materials: Dictionary = {}
 var proxy_nodes: Dictionary = {}
 var sync_count := 0
 var last_authoritative_snapshot: Dictionary = {}
+var presentation_scale := 1.0
+
+func set_presentation_enabled(enabled: bool) -> void:
+	visible = enabled
+	for id in proxy_nodes:
+		var proxy := proxy_nodes[id] as Node3D
+		if proxy != null and is_instance_valid(proxy):
+			proxy.visible = enabled
 
 func configure(owner_scene: Node, parent: Node3D) -> void:
 	host_scene = owner_scene
@@ -58,7 +66,7 @@ func sync_authoritative_units() -> Dictionary:
 		var sprite := proxy.get_node_or_null("H3Billboard") as MeshInstance3D
 		if sprite:
 			sprite.material_override = _material_for("Worker" if is_worker else "Militia", facing_index)
-			sprite.scale = Vector3.ONE * (1.04 if selected else 1.0)
+			sprite.scale = Vector3.ONE * presentation_scale * (1.04 if selected else 1.0)
 		var ring := proxy.get_node_or_null("H3SelectionRing") as MeshInstance3D
 		if ring:
 			ring.visible = proxy.visible and selected
@@ -87,7 +95,7 @@ func sync_authoritative_units() -> Dictionary:
 
 func status() -> Dictionary:
 	return {
-		"enabled": true,
+		"enabled": visible,
 		"adapter": "v0.311 H3 hybrid billboard runtime pilot",
 		"roles": ["Worker", "Militia"],
 		"authoritativeState": true,
@@ -99,7 +107,12 @@ func status() -> Dictionary:
 		"syncCount": sync_count,
 		"lastSnapshot": last_authoritative_snapshot.duplicate(true),
 		"rollbackAvailable": true,
+		"presentationScale": presentation_scale,
 	}
+
+func set_presentation_scale(scale_value: float) -> void:
+	presentation_scale = clampf(scale_value, 0.70, 1.0)
+	sync_authoritative_units()
 
 func _ensure_proxy(id: String, role: String) -> Node3D:
 	if proxy_nodes.has(id) and is_instance_valid(proxy_nodes[id]):

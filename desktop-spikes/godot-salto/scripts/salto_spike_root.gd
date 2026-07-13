@@ -23,6 +23,7 @@ const SCRIPT_ARG_PREFIXES := [
 	"--player-slice",
 	"--player-slice-validate",
 	"--player-slice-capture",
+	"--h3-semantic-evidence",
 	"--salto-barrosan-playable-runtime-skin",
 	"--salto-barrosan-runtime-debug-labels",
 	"--salto-barrosan-player-presentation",
@@ -987,6 +988,18 @@ func _ready() -> void:
 	if args.has("--player-slice-capture"):
 		_create_player_slice_ui()
 		await run_player_slice_capture()
+		return
+	if args.has("--h3-semantic-evidence"):
+		_create_player_slice_ui()
+		var semantic_script := load("res://scripts/salto_v0312_h3_semantic_evidence_capture.gd") as GDScript
+		if semantic_script == null:
+			get_tree().quit(1)
+			return
+		var semantic_capture := Node.new()
+		semantic_capture.name = "V0312H3SemanticEvidenceCapture"
+		semantic_capture.set_script(semantic_script)
+		add_child(semantic_capture)
+		semantic_capture.call_deferred("start")
 		return
 	if args.has("--real-input-smoke") or args.has("--real-input-validate"):
 		_create_player_slice_ui()
@@ -9185,6 +9198,8 @@ func _apply_player_slice_action(action: String) -> Dictionary:
 
 func _player_capture_checkpoint() -> String:
 	var normalized_root := _artifact_root_from_args().replace("\\", "/")
+	if normalized_root.contains("/v0312"):
+		return "v0.312"
 	if normalized_root.contains("/v0311"):
 		return "v0.311"
 	if normalized_root.contains("/v0303"):
@@ -12264,11 +12279,11 @@ func _barrosan_presentation_mode_from_args() -> String:
 		return "DEBUG_REVIEW"
 	if _script_args().has("--salto-barrosan-player-presentation"):
 		return "PLAYER"
-	return "PLAYER" if _player_capture_checkpoint() in ["v0.301", "v0.302", "v0.303", "v0.311"] else "DEBUG_REVIEW"
+	return "PLAYER" if _player_capture_checkpoint() in ["v0.301", "v0.302", "v0.303", "v0.311", "v0.312"] else "DEBUG_REVIEW"
 
 
 func _barrosan_runtime_scene_requested() -> bool:
-	return _barrosan_runtime_skin_requested() or _player_capture_checkpoint() in ["v0.254", "v0.255", "v0.256", "v0.257", "v0.258", "v0.259", "v0.261", "v0.262", "v0.263", "v0.264", "v0.265", "v0.266", "v0.267", "v0.268", "v0.269", "v0.270", "v0.271", "v0.272", "v0.273", "v0.274", "v0.275", "v0.276", "v0.277", "v0.278", "v0.279", "v0.280", "v0.281", "v0.283", "v0.284", "v0.285", "v0.286", "v0.287", "v0.288", "v0.289", "v0.290", "v0.291"]
+	return _barrosan_runtime_skin_requested() or _player_capture_checkpoint() in ["v0.254", "v0.255", "v0.256", "v0.257", "v0.258", "v0.259", "v0.261", "v0.262", "v0.263", "v0.264", "v0.265", "v0.266", "v0.267", "v0.268", "v0.269", "v0.270", "v0.271", "v0.272", "v0.273", "v0.274", "v0.275", "v0.276", "v0.277", "v0.278", "v0.279", "v0.280", "v0.281", "v0.283", "v0.284", "v0.285", "v0.286", "v0.287", "v0.288", "v0.289", "v0.290", "v0.291", "v0.312"]
 
 
 func _script_args() -> PackedStringArray:

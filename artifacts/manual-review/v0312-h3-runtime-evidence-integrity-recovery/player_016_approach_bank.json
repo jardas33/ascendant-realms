@@ -1,0 +1,54 @@
+{
+  "authoritativeUnitIds": [
+    "worker_00"
+  ],
+  "cameraWorldPosition": {
+    "x": 0.0,
+    "y": 11.6,
+    "z": 8.9
+  },
+  "cameraZoom": 10.8000001907349,
+  "captureFilename": "016_approach_bank.png",
+  "fallbackState": false,
+  "frameNumber": 16,
+  "h3Enabled": true,
+  "h3FlagState": true,
+  "note": "same stable ID bridge progression",
+  "pairedMomentId": "worker_bridge_16",
+  "pixelEvidenceRequired": true,
+  "presentationMode": "PLAYER",
+  "previousRelatedScreenshotSha256": null,
+  "runtimeTimestampMs": 23148,
+  "saveIdentifier": null,
+  "scenarioName": "worker_bridge",
+  "screenshotSha256": "35dedcc8284d38766556f1ef6eac783fbf9b0ed04e2bcce8f1730302fde404a6",
+  "selectedIds": [
+    "worker_00"
+  ],
+  "selectionSource": "authoritative runtime.selected_ids",
+  "semanticAccepted": true,
+  "stateSource": "authoritative runtime.units",
+  "units": [
+    {
+      "activityState": "travelling",
+      "alive": true,
+      "commandState": "move_ordered",
+      "destination": {
+        "x": 1100.0,
+        "y": 524.0
+      },
+      "facing": "east",
+      "fixtureId": "worker",
+      "hasDestination": true,
+      "health": 80.0,
+      "id": "worker_00",
+      "readyState": "unsupported",
+      "role": "Worker",
+      "worldPosition": {
+        "x": 265.0,
+        "y": 370.0
+      }
+    }
+  ],
+  "visualPoseLimitation": false
+}

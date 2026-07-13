@@ -1,0 +1,54 @@
+{
+  "authoritativeUnitIds": [
+    "worker_00"
+  ],
+  "cameraWorldPosition": {
+    "x": 0.0,
+    "y": 11.6,
+    "z": 8.9
+  },
+  "cameraZoom": 10.8000001907349,
+  "captureFilename": "004_worker_25_percent.png",
+  "fallbackState": false,
+  "frameNumber": 4,
+  "h3Enabled": true,
+  "h3FlagState": true,
+  "note": "authoritative movement sample",
+  "pairedMomentId": "worker_movement_4",
+  "pixelEvidenceRequired": true,
+  "presentationMode": "PLAYER",
+  "previousRelatedScreenshotSha256": "c2e772798f7e136c6f3b761147055500281ec2b1d1c3b637be05385b2603204f",
+  "runtimeTimestampMs": 12541,
+  "saveIdentifier": null,
+  "scenarioName": "worker_movement",
+  "screenshotSha256": "6dcb03685fbbd4a3b4aa35a6942813ff49d5ed4df5f5e3844f10dfc70c682f50",
+  "selectedIds": [
+    "worker_00"
+  ],
+  "selectionSource": "authoritative runtime.selected_ids",
+  "semanticAccepted": true,
+  "stateSource": "authoritative runtime.units",
+  "units": [
+    {
+      "activityState": "travelling",
+      "alive": true,
+      "commandState": "move_ordered",
+      "destination": {
+        "x": 1100.0,
+        "y": 524.0
+      },
+      "facing": "east",
+      "fixtureId": "worker",
+      "hasDestination": true,
+      "health": 80.0,
+      "id": "worker_00",
+      "readyState": "unsupported",
+      "role": "Worker",
+      "worldPosition": {
+        "x": 368.26,
+        "y": 389.04
+      }
+    }
+  ],
+  "visualPoseLimitation": false
+}

@@ -1,0 +1,54 @@
+{
+  "authoritativeUnitIds": [
+    "worker_00"
+  ],
+  "cameraWorldPosition": {
+    "x": 0.0,
+    "y": 11.6,
+    "z": 8.9
+  },
+  "cameraZoom": 10.8000001907349,
+  "captureFilename": "019_bridge_centre.png",
+  "fallbackState": false,
+  "frameNumber": 19,
+  "h3Enabled": true,
+  "h3FlagState": true,
+  "note": "same stable ID bridge progression",
+  "pairedMomentId": "worker_bridge_19",
+  "pixelEvidenceRequired": true,
+  "presentationMode": "DEBUG_REVIEW",
+  "previousRelatedScreenshotSha256": "ca0450c6eee04c302679208de5c5965029548395d95476268bf9b446453c03a1",
+  "runtimeTimestampMs": 23387,
+  "saveIdentifier": null,
+  "scenarioName": "worker_bridge",
+  "screenshotSha256": "8c141bdf36280d92dca0f700b35eeaad93de6d748900f29dfb505418118a1e4b",
+  "selectedIds": [
+    "worker_00"
+  ],
+  "selectionSource": "authoritative runtime.selected_ids",
+  "semanticAccepted": true,
+  "stateSource": "authoritative runtime.units",
+  "units": [
+    {
+      "activityState": "travelling",
+      "alive": true,
+      "commandState": "move_ordered",
+      "destination": {
+        "x": 1100.0,
+        "y": 524.0
+      },
+      "facing": "east",
+      "fixtureId": "worker",
+      "hasDestination": true,
+      "health": 80.0,
+      "id": "worker_00",
+      "readyState": "unsupported",
+      "role": "Worker",
+      "worldPosition": {
+        "x": 807.1,
+        "y": 469.98
+      }
+    }
+  ],
+  "visualPoseLimitation": false
+}

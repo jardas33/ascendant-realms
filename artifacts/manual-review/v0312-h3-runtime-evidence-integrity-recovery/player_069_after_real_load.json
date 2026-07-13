@@ -1,0 +1,76 @@
+{
+  "authoritativeUnitIds": [
+    "worker_00",
+    "friendly_00"
+  ],
+  "cameraWorldPosition": {
+    "x": 0.0,
+    "y": 11.6,
+    "z": 8.9
+  },
+  "cameraZoom": 10.8000001907349,
+  "captureFilename": "069_after_real_load.png",
+  "fallbackState": false,
+  "frameNumber": 69,
+  "h3Enabled": true,
+  "h3FlagState": true,
+  "note": "loaded written save",
+  "pairedMomentId": "save_write_reload_69",
+  "pixelEvidenceRequired": true,
+  "presentationMode": "PLAYER",
+  "previousRelatedScreenshotSha256": "cd4a4c2be652247fcb29d10f7c7ddc995f0a6af6a9d8f7cd2c74dcde0688834b",
+  "runtimeTimestampMs": 71810,
+  "saveChecksum": "9680dbaaf5a7eea9c6945280f6e49845f4e5505ea8a176c009dc2282a618b653",
+  "saveIdentifier": "user://v0312-h3-runtime-save.json",
+  "scenarioName": "save_write_reload",
+  "screenshotSha256": "e9d8fd1e6a00e66623de100b2fa0c7e5853836b51de79808448625c62c8b62cc",
+  "selectedIds": [
+    "friendly_00"
+  ],
+  "selectionSource": "authoritative runtime.selected_ids",
+  "semanticAccepted": true,
+  "stateSource": "authoritative runtime.units",
+  "units": [
+    {
+      "activityState": "travelling",
+      "alive": true,
+      "commandState": "move_ordered",
+      "destination": {
+        "x": 720.0,
+        "y": 470.0
+      },
+      "facing": "east",
+      "fixtureId": "worker",
+      "hasDestination": true,
+      "health": 80.0,
+      "id": "worker_00",
+      "readyState": "unsupported",
+      "role": "Worker",
+      "worldPosition": {
+        "x": 418.83,
+        "y": 403.81
+      }
+    },
+    {
+      "activityState": "idle",
+      "alive": true,
+      "commandState": "idle",
+      "destination": {
+        "x": 405.0,
+        "y": 315.0
+      },
+      "facing": "south-east",
+      "fixtureId": "militia",
+      "hasDestination": false,
+      "health": 100.0,
+      "id": "friendly_00",
+      "readyState": "unsupported",
+      "role": "Militia",
+      "worldPosition": {
+        "x": 405.0,
+        "y": 315.0
+      }
+    }
+  ],
+  "visualPoseLimitation": false
+}

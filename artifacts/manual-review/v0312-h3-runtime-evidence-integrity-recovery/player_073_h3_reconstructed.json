@@ -1,0 +1,76 @@
+{
+  "authoritativeUnitIds": [
+    "worker_00",
+    "friendly_00"
+  ],
+  "cameraWorldPosition": {
+    "x": 0.0,
+    "y": 11.6,
+    "z": 8.9
+  },
+  "cameraZoom": 10.8000001907349,
+  "captureFilename": "073_h3_reconstructed.png",
+  "fallbackState": false,
+  "frameNumber": 73,
+  "h3Enabled": true,
+  "h3FlagState": true,
+  "note": "H3 presentation reconstructed from same authoritative state",
+  "pairedMomentId": "rollback_73",
+  "pixelEvidenceRequired": true,
+  "presentationMode": "PLAYER",
+  "previousRelatedScreenshotSha256": "45fc2b791f69b9567a4f00c967396562ba30e7d007940a51b27c738039f68dc8",
+  "runtimeTimestampMs": 76418,
+  "saveIdentifier": null,
+  "scenarioName": "rollback",
+  "screenshotSha256": "ede580a2f803bbe14fa134efd7bfca5f6982797e044247fc4fd9462b643f5735",
+  "selectedIds": [
+    "worker_00"
+  ],
+  "selectionSource": "authoritative runtime.selected_ids",
+  "semanticAccepted": false,
+  "semanticRejectionReason": "exact screenshot duplicate within semantic scenario",
+  "stateSource": "authoritative runtime.units",
+  "units": [
+    {
+      "activityState": "travelling",
+      "alive": true,
+      "commandState": "move_ordered",
+      "destination": {
+        "x": 870.0,
+        "y": 520.0
+      },
+      "facing": "east",
+      "fixtureId": "worker",
+      "hasDestination": true,
+      "health": 80.0,
+      "id": "worker_00",
+      "readyState": "unsupported",
+      "role": "Worker",
+      "worldPosition": {
+        "x": 400.89,
+        "y": 403.69
+      }
+    },
+    {
+      "activityState": "idle",
+      "alive": true,
+      "commandState": "idle",
+      "destination": {
+        "x": 405.0,
+        "y": 315.0
+      },
+      "facing": "south-east",
+      "fixtureId": "militia",
+      "hasDestination": false,
+      "health": 100.0,
+      "id": "friendly_00",
+      "readyState": "unsupported",
+      "role": "Militia",
+      "worldPosition": {
+        "x": 405.0,
+        "y": 315.0
+      }
+    }
+  ],
+  "visualPoseLimitation": false
+}

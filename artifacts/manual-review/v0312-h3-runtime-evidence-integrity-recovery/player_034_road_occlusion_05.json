@@ -1,0 +1,54 @@
+{
+  "authoritativeUnitIds": [
+    "worker_00"
+  ],
+  "cameraWorldPosition": {
+    "x": 0.0,
+    "y": 11.6,
+    "z": 8.9
+  },
+  "cameraZoom": 10.8000001907349,
+  "captureFilename": "034_road_occlusion_05.png",
+  "fallbackState": false,
+  "frameNumber": 34,
+  "h3Enabled": true,
+  "h3FlagState": true,
+  "note": "depth interaction sample",
+  "pairedMomentId": "road_occlusion_34",
+  "pixelEvidenceRequired": true,
+  "presentationMode": "PLAYER",
+  "previousRelatedScreenshotSha256": "e725d01748381f73ffa04f6c3f4232a113120fadf1fc3f549e52becce8f97892",
+  "runtimeTimestampMs": 34086,
+  "saveIdentifier": null,
+  "scenarioName": "road_occlusion",
+  "screenshotSha256": "deac676f466e4beb7ce90c5a6aa2c027766e4e094b19407921ad7d5eb7e3e30f",
+  "selectedIds": [
+    "worker_00"
+  ],
+  "selectionSource": "authoritative runtime.selected_ids",
+  "semanticAccepted": true,
+  "stateSource": "authoritative runtime.units",
+  "units": [
+    {
+      "activityState": "idle",
+      "alive": true,
+      "commandState": "stopped",
+      "destination": {
+        "x": 520.0,
+        "y": 452.0
+      },
+      "facing": "east",
+      "fixtureId": "worker",
+      "hasDestination": false,
+      "health": 80.0,
+      "id": "worker_00",
+      "readyState": "unsupported",
+      "role": "Worker",
+      "worldPosition": {
+        "x": 520.0,
+        "y": 452.0
+      }
+    }
+  ],
+  "visualPoseLimitation": false
+}

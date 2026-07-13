@@ -1,0 +1,407 @@
+[
+  {
+    "left": "debug_01_01_v0311_preflight_runtime.png",
+    "right": "debug_02_02_v0311_worker_idle.png",
+    "changedPixelPercent": 0.0
+  },
+  {
+    "left": "debug_01_01_v0311_preflight_runtime.png",
+    "right": "debug_03_03_v0311_militia_idle.png",
+    "changedPixelPercent": 0.0
+  },
+  {
+    "left": "debug_01_01_v0311_preflight_runtime.png",
+    "right": "player_01_01_v0311_preflight_runtime.png",
+    "changedPixelPercent": 0.0
+  },
+  {
+    "left": "debug_01_01_v0311_preflight_runtime.png",
+    "right": "player_02_02_v0311_worker_idle.png",
+    "changedPixelPercent": 0.0
+  },
+  {
+    "left": "debug_01_01_v0311_preflight_runtime.png",
+    "right": "player_03_03_v0311_militia_idle.png",
+    "changedPixelPercent": 0.0
+  },
+  {
+    "left": "debug_04_04_v0311_worker_selected.png",
+    "right": "debug_07_07_v0311_move_order.png",
+    "changedPixelPercent": 0.0
+  },
+  {
+    "left": "debug_04_04_v0311_worker_selected.png",
+    "right": "debug_08_08_v0311_movement_sync.png",
+    "changedPixelPercent": 0.0
+  },
+  {
+    "left": "debug_04_04_v0311_worker_selected.png",
+    "right": "debug_09_09_v0311_stop_hold_contract.png",
+    "changedPixelPercent": 0.0
+  },
+  {
+    "left": "debug_04_04_v0311_worker_selected.png",
+    "right": "debug_10_10_v0311_bridge_crossing.png",
+    "changedPixelPercent": 0.0
+  },
+  {
+    "left": "debug_04_04_v0311_worker_selected.png",
+    "right": "debug_11_11_v0311_road_occlusion.png",
+    "changedPixelPercent": 0.0
+  },
+  {
+    "left": "debug_04_04_v0311_worker_selected.png",
+    "right": "debug_12_12_v0311_storehouse_occlusion.png",
+    "changedPixelPercent": 0.0
+  },
+  {
+    "left": "debug_04_04_v0311_worker_selected.png",
+    "right": "debug_13_13_v0311_camera_pan.png",
+    "changedPixelPercent": 0.0
+  },
+  {
+    "left": "debug_04_04_v0311_worker_selected.png",
+    "right": "debug_14_14_v0311_camera_zoom.png",
+    "changedPixelPercent": 0.0
+  },
+  {
+    "left": "debug_04_04_v0311_worker_selected.png",
+    "right": "debug_15_15_v0311_worker_work_context.png",
+    "changedPixelPercent": 0.0
+  },
+  {
+    "left": "debug_04_04_v0311_worker_selected.png",
+    "right": "debug_17_17_v0311_selected_card_worker.png",
+    "changedPixelPercent": 0.0
+  },
+  {
+    "left": "debug_04_04_v0311_worker_selected.png",
+    "right": "player_04_04_v0311_worker_selected.png",
+    "changedPixelPercent": 0.0
+  },
+  {
+    "left": "debug_04_04_v0311_worker_selected.png",
+    "right": "player_07_07_v0311_move_order.png",
+    "changedPixelPercent": 0.0
+  },
+  {
+    "left": "debug_04_04_v0311_worker_selected.png",
+    "right": "player_08_08_v0311_movement_sync.png",
+    "changedPixelPercent": 0.0
+  },
+  {
+    "left": "debug_04_04_v0311_worker_selected.png",
+    "right": "player_09_09_v0311_stop_hold_contract.png",
+    "changedPixelPercent": 0.0
+  },
+  {
+    "left": "debug_04_04_v0311_worker_selected.png",
+    "right": "player_10_10_v0311_bridge_crossing.png",
+    "changedPixelPercent": 0.0
+  },
+  {
+    "left": "debug_04_04_v0311_worker_selected.png",
+    "right": "player_11_11_v0311_road_occlusion.png",
+    "changedPixelPercent": 0.0
+  },
+  {
+    "left": "debug_04_04_v0311_worker_selected.png",
+    "right": "player_12_12_v0311_storehouse_occlusion.png",
+    "changedPixelPercent": 0.0
+  },
+  {
+    "left": "debug_04_04_v0311_worker_selected.png",
+    "right": "player_13_13_v0311_camera_pan.png",
+    "changedPixelPercent": 0.0
+  },
+  {
+    "left": "debug_04_04_v0311_worker_selected.png",
+    "right": "player_14_14_v0311_camera_zoom.png",
+    "changedPixelPercent": 0.0
+  },
+  {
+    "left": "debug_04_04_v0311_worker_selected.png",
+    "right": "player_15_15_v0311_worker_work_context.png",
+    "changedPixelPercent": 0.0
+  },
+  {
+    "left": "debug_04_04_v0311_worker_selected.png",
+    "right": "player_17_17_v0311_selected_card_worker.png",
+    "changedPixelPercent": 0.0
+  },
+  {
+    "left": "debug_05_05_v0311_militia_selected.png",
+    "right": "debug_16_16_v0311_militia_ready_context.png",
+    "changedPixelPercent": 0.0
+  },
+  {
+    "left": "debug_05_05_v0311_militia_selected.png",
+    "right": "debug_18_18_v0311_selected_card_militia.png",
+    "changedPixelPercent": 0.0
+  },
+  {
+    "left": "debug_05_05_v0311_militia_selected.png",
+    "right": "debug_19_19_v0311_save_reload_readonly.png",
+    "changedPixelPercent": 0.0
+  },
+  {
+    "left": "debug_05_05_v0311_militia_selected.png",
+    "right": "debug_20_20_v0311_rollback_fallback.png",
+    "changedPixelPercent": 0.0
+  },
+  {
+    "left": "debug_05_05_v0311_militia_selected.png",
+    "right": "debug_21_21_v0311_default_flag_off.png",
+    "changedPixelPercent": 0.0
+  },
+  {
+    "left": "debug_05_05_v0311_militia_selected.png",
+    "right": "debug_22_22_v0311_h3_adapter_status.png",
+    "changedPixelPercent": 0.0
+  },
+  {
+    "left": "debug_05_05_v0311_militia_selected.png",
+    "right": "debug_23_23_v0311_one_authored_pose.png",
+    "changedPixelPercent": 0.0
+  },
+  {
+    "left": "debug_05_05_v0311_militia_selected.png",
+    "right": "debug_25_25_v0311_grounding_shadows.png",
+    "changedPixelPercent": 0.0
+  },
+  {
+    "left": "debug_05_05_v0311_militia_selected.png",
+    "right": "debug_26_26_v0311_selection_readability.png",
+    "changedPixelPercent": 0.0
+  },
+  {
+    "left": "debug_05_05_v0311_militia_selected.png",
+    "right": "debug_27_27_v0311_player_clean.png",
+    "changedPixelPercent": 0.0
+  },
+  {
+    "left": "debug_05_05_v0311_militia_selected.png",
+    "right": "debug_30_30_v0311_no_duplicate_shadows.png",
+    "changedPixelPercent": 0.0
+  },
+  {
+    "left": "debug_05_05_v0311_militia_selected.png",
+    "right": "debug_31_31_v0311_stable_ids.png",
+    "changedPixelPercent": 0.0
+  },
+  {
+    "left": "debug_05_05_v0311_militia_selected.png",
+    "right": "debug_32_32_v0311_positions_authoritative.png",
+    "changedPixelPercent": 0.0
+  },
+  {
+    "left": "debug_05_05_v0311_militia_selected.png",
+    "right": "debug_33_33_v0311_resources_unchanged.png",
+    "changedPixelPercent": 0.0
+  },
+  {
+    "left": "debug_05_05_v0311_militia_selected.png",
+    "right": "debug_34_34_v0311_state_unchanged.png",
+    "changedPixelPercent": 0.0
+  },
+  {
+    "left": "debug_05_05_v0311_militia_selected.png",
+    "right": "debug_35_35_v0311_no_combat.png",
+    "changedPixelPercent": 0.0
+  },
+  {
+    "left": "debug_05_05_v0311_militia_selected.png",
+    "right": "debug_36_36_v0311_no_ai.png",
+    "changedPixelPercent": 0.0
+  },
+  {
+    "left": "debug_05_05_v0311_militia_selected.png",
+    "right": "debug_37_37_v0311_no_economy.png",
+    "changedPixelPercent": 0.0
+  },
+  {
+    "left": "debug_05_05_v0311_militia_selected.png",
+    "right": "debug_38_38_v0311_no_pathfinding.png",
+    "changedPixelPercent": 0.0
+  },
+  {
+    "left": "debug_05_05_v0311_militia_selected.png",
+    "right": "debug_39_39_v0311_no_true_default_mutation.png",
+    "changedPixelPercent": 0.0
+  },
+  {
+    "left": "debug_05_05_v0311_militia_selected.png",
+    "right": "debug_40_40_v0311_worker_militia_only.png",
+    "changedPixelPercent": 0.0
+  },
+  {
+    "left": "debug_05_05_v0311_militia_selected.png",
+    "right": "debug_41_41_v0311_real_gameplay_overview.png",
+    "changedPixelPercent": 0.0
+  },
+  {
+    "left": "debug_05_05_v0311_militia_selected.png",
+    "right": "debug_42_42_v0311_real_gameplay_bridge_view.png",
+    "changedPixelPercent": 0.0
+  },
+  {
+    "left": "debug_05_05_v0311_militia_selected.png",
+    "right": "debug_43_43_v0311_black_frame_rejection.png",
+    "changedPixelPercent": 0.0
+  },
+  {
+    "left": "debug_05_05_v0311_militia_selected.png",
+    "right": "player_05_05_v0311_militia_selected.png",
+    "changedPixelPercent": 0.0
+  },
+  {
+    "left": "debug_05_05_v0311_militia_selected.png",
+    "right": "player_16_16_v0311_militia_ready_context.png",
+    "changedPixelPercent": 0.0
+  },
+  {
+    "left": "debug_05_05_v0311_militia_selected.png",
+    "right": "player_18_18_v0311_selected_card_militia.png",
+    "changedPixelPercent": 0.0
+  },
+  {
+    "left": "debug_05_05_v0311_militia_selected.png",
+    "right": "player_19_19_v0311_save_reload_readonly.png",
+    "changedPixelPercent": 0.0
+  },
+  {
+    "left": "debug_05_05_v0311_militia_selected.png",
+    "right": "player_20_20_v0311_rollback_fallback.png",
+    "changedPixelPercent": 0.0
+  },
+  {
+    "left": "debug_05_05_v0311_militia_selected.png",
+    "right": "player_21_21_v0311_default_flag_off.png",
+    "changedPixelPercent": 0.0
+  },
+  {
+    "left": "debug_05_05_v0311_militia_selected.png",
+    "right": "player_22_22_v0311_h3_adapter_status.png",
+    "changedPixelPercent": 0.0
+  },
+  {
+    "left": "debug_05_05_v0311_militia_selected.png",
+    "right": "player_23_23_v0311_one_authored_pose.png",
+    "changedPixelPercent": 0.0
+  },
+  {
+    "left": "debug_05_05_v0311_militia_selected.png",
+    "right": "player_25_25_v0311_grounding_shadows.png",
+    "changedPixelPercent": 0.0
+  },
+  {
+    "left": "debug_05_05_v0311_militia_selected.png",
+    "right": "player_26_26_v0311_selection_readability.png",
+    "changedPixelPercent": 0.0
+  },
+  {
+    "left": "debug_05_05_v0311_militia_selected.png",
+    "right": "player_27_27_v0311_player_clean.png",
+    "changedPixelPercent": 0.0
+  },
+  {
+    "left": "debug_05_05_v0311_militia_selected.png",
+    "right": "player_30_30_v0311_no_duplicate_shadows.png",
+    "changedPixelPercent": 0.0
+  },
+  {
+    "left": "debug_05_05_v0311_militia_selected.png",
+    "right": "player_31_31_v0311_stable_ids.png",
+    "changedPixelPercent": 0.0
+  },
+  {
+    "left": "debug_05_05_v0311_militia_selected.png",
+    "right": "player_32_32_v0311_positions_authoritative.png",
+    "changedPixelPercent": 0.0
+  },
+  {
+    "left": "debug_05_05_v0311_militia_selected.png",
+    "right": "player_33_33_v0311_resources_unchanged.png",
+    "changedPixelPercent": 0.0
+  },
+  {
+    "left": "debug_05_05_v0311_militia_selected.png",
+    "right": "player_34_34_v0311_state_unchanged.png",
+    "changedPixelPercent": 0.0
+  },
+  {
+    "left": "debug_05_05_v0311_militia_selected.png",
+    "right": "player_35_35_v0311_no_combat.png",
+    "changedPixelPercent": 0.0
+  },
+  {
+    "left": "debug_05_05_v0311_militia_selected.png",
+    "right": "player_36_36_v0311_no_ai.png",
+    "changedPixelPercent": 0.0
+  },
+  {
+    "left": "debug_05_05_v0311_militia_selected.png",
+    "right": "player_37_37_v0311_no_economy.png",
+    "changedPixelPercent": 0.0
+  },
+  {
+    "left": "debug_05_05_v0311_militia_selected.png",
+    "right": "player_38_38_v0311_no_pathfinding.png",
+    "changedPixelPercent": 0.0
+  },
+  {
+    "left": "debug_05_05_v0311_militia_selected.png",
+    "right": "player_39_39_v0311_no_true_default_mutation.png",
+    "changedPixelPercent": 0.0
+  },
+  {
+    "left": "debug_05_05_v0311_militia_selected.png",
+    "right": "player_40_40_v0311_worker_militia_only.png",
+    "changedPixelPercent": 0.0
+  },
+  {
+    "left": "debug_05_05_v0311_militia_selected.png",
+    "right": "player_41_41_v0311_real_gameplay_overview.png",
+    "changedPixelPercent": 0.0
+  },
+  {
+    "left": "debug_05_05_v0311_militia_selected.png",
+    "right": "player_42_42_v0311_real_gameplay_bridge_view.png",
+    "changedPixelPercent": 0.0
+  },
+  {
+    "left": "debug_05_05_v0311_militia_selected.png",
+    "right": "player_43_43_v0311_black_frame_rejection.png",
+    "changedPixelPercent": 0.0
+  },
+  {
+    "left": "debug_06_06_v0311_box_selection.png",
+    "right": "player_06_06_v0311_box_selection.png",
+    "changedPixelPercent": 0.0
+  },
+  {
+    "left": "debug_24_24_v0311_derived_direction_honesty.png",
+    "right": "debug_28_28_v0311_debug_overlay_preserved.png",
+    "changedPixelPercent": 0.0
+  },
+  {
+    "left": "debug_24_24_v0311_derived_direction_honesty.png",
+    "right": "debug_29_29_v0311_no_duplicate_proxies.png",
+    "changedPixelPercent": 0.0
+  },
+  {
+    "left": "debug_24_24_v0311_derived_direction_honesty.png",
+    "right": "player_24_24_v0311_derived_direction_honesty.png",
+    "changedPixelPercent": 0.0
+  },
+  {
+    "left": "debug_24_24_v0311_derived_direction_honesty.png",
+    "right": "player_28_28_v0311_debug_overlay_preserved.png",
+    "changedPixelPercent": 0.0
+  },
+  {
+    "left": "debug_24_24_v0311_derived_direction_honesty.png",
+    "right": "player_29_29_v0311_no_duplicate_proxies.png",
+    "changedPixelPercent": 0.0
+  }
+]

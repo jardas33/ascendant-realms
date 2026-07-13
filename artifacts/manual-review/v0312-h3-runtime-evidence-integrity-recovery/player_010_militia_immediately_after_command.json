@@ -1,0 +1,54 @@
+{
+  "authoritativeUnitIds": [
+    "friendly_00"
+  ],
+  "cameraWorldPosition": {
+    "x": 0.0,
+    "y": 11.6,
+    "z": 8.9
+  },
+  "cameraZoom": 10.8000001907349,
+  "captureFilename": "010_militia_immediately_after_command.png",
+  "fallbackState": false,
+  "frameNumber": 10,
+  "h3Enabled": true,
+  "h3FlagState": true,
+  "note": "command accepted",
+  "pairedMomentId": "militia_movement_10",
+  "pixelEvidenceRequired": true,
+  "presentationMode": "PLAYER",
+  "previousRelatedScreenshotSha256": "fb35e1da69226eae0890dc9b97c4e9d60f84173e6e712a9c7fad5eaac0b3c32c",
+  "runtimeTimestampMs": 17747,
+  "saveIdentifier": null,
+  "scenarioName": "militia_movement",
+  "screenshotSha256": "32753d3fb13c57fbc200eeb8689dd130fef0149a0c55cbd424b2e45482e54d12",
+  "selectedIds": [
+    "friendly_00"
+  ],
+  "selectionSource": "authoritative runtime.selected_ids",
+  "semanticAccepted": true,
+  "stateSource": "authoritative runtime.units",
+  "units": [
+    {
+      "activityState": "travelling",
+      "alive": true,
+      "commandState": "move_ordered",
+      "destination": {
+        "x": 1100.0,
+        "y": 524.0
+      },
+      "facing": "east",
+      "fixtureId": "militia",
+      "hasDestination": true,
+      "health": 100.0,
+      "id": "friendly_00",
+      "readyState": "unsupported",
+      "role": "Militia",
+      "worldPosition": {
+        "x": 405.0,
+        "y": 315.0
+      }
+    }
+  ],
+  "visualPoseLimitation": false
+}

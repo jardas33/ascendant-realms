@@ -1,0 +1,54 @@
+{
+  "authoritativeUnitIds": [
+    "worker_00"
+  ],
+  "cameraWorldPosition": {
+    "x": 0.0,
+    "y": 11.6,
+    "z": 8.9
+  },
+  "cameraZoom": 10.8000001907349,
+  "captureFilename": "040_bridge_railing_occlusion_01.png",
+  "fallbackState": false,
+  "frameNumber": 40,
+  "h3Enabled": true,
+  "h3FlagState": true,
+  "note": "depth interaction sample",
+  "pairedMomentId": "bridge_railing_occlusion_40",
+  "pixelEvidenceRequired": true,
+  "presentationMode": "DEBUG_REVIEW",
+  "previousRelatedScreenshotSha256": null,
+  "runtimeTimestampMs": 41519,
+  "saveIdentifier": null,
+  "scenarioName": "bridge_railing_occlusion",
+  "screenshotSha256": "76871b4fa5f0c09dc0649cb63269f8174c0c158feb5c8f5de44871307b6470d2",
+  "selectedIds": [
+    "worker_00"
+  ],
+  "selectionSource": "authoritative runtime.selected_ids",
+  "semanticAccepted": true,
+  "stateSource": "authoritative runtime.units",
+  "units": [
+    {
+      "activityState": "travelling",
+      "alive": true,
+      "commandState": "move_ordered",
+      "destination": {
+        "x": 1100.0,
+        "y": 524.0
+      },
+      "facing": "east",
+      "fixtureId": "worker",
+      "hasDestination": true,
+      "health": 80.0,
+      "id": "worker_00",
+      "readyState": "unsupported",
+      "role": "Worker",
+      "worldPosition": {
+        "x": 265.0,
+        "y": 370.0
+      }
+    }
+  ],
+  "visualPoseLimitation": false
+}

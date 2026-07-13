@@ -1,0 +1,730 @@
+[
+  {
+    "filename": "debug-contact-sheet.png",
+    "sha256": "ee01cbe4fc57c0fb378aa2bfa59b327b36380b757ba92485e98529e54e804c80",
+    "width": 1280,
+    "height": 2222,
+    "fileSize": 296961,
+    "perceptualHash": "f777666666666666666666666666666666666666666666666666666766606660"
+  },
+  {
+    "filename": "debug_01_01_v0311_preflight_runtime.png",
+    "sha256": "65ece53fdee154ce1d56dab4e026b436a10dbc0e9fa3c7e1af232821f001a1aa",
+    "width": 1600,
+    "height": 900,
+    "fileSize": 169887,
+    "perceptualHash": "0ff30ff17ff17dfb7ff37ffb7fff7fe37ffd7ff07fe37ff17000040c07f107f1"
+  },
+  {
+    "filename": "debug_02_02_v0311_worker_idle.png",
+    "sha256": "65ece53fdee154ce1d56dab4e026b436a10dbc0e9fa3c7e1af232821f001a1aa",
+    "width": 1600,
+    "height": 900,
+    "fileSize": 169887,
+    "perceptualHash": "0ff30ff17ff17dfb7ff37ffb7fff7fe37ffd7ff07fe37ff17000040c07f107f1"
+  },
+  {
+    "filename": "debug_03_03_v0311_militia_idle.png",
+    "sha256": "65ece53fdee154ce1d56dab4e026b436a10dbc0e9fa3c7e1af232821f001a1aa",
+    "width": 1600,
+    "height": 900,
+    "fileSize": 169887,
+    "perceptualHash": "0ff30ff17ff17dfb7ff37ffb7fff7fe37ffd7ff07fe37ff17000040c07f107f1"
+  },
+  {
+    "filename": "debug_04_04_v0311_worker_selected.png",
+    "sha256": "f2153b3b5be8405f46427e784817fa4148f41157813f1e5d1917f1f71a3dde00",
+    "width": 1600,
+    "height": 900,
+    "fileSize": 172334,
+    "perceptualHash": "0ff30ff17ff17ffb7ff37ffb7fff7fe37ffd7ff07fe37ff17000040c07f107f1"
+  },
+  {
+    "filename": "debug_05_05_v0311_militia_selected.png",
+    "sha256": "3e91fec129083c3d1a6597afd9af779fb4e75fc07a32d3b49240d89d2ff45a8e",
+    "width": 1600,
+    "height": 900,
+    "fileSize": 169381,
+    "perceptualHash": "0ff30ff17ff17dfb7ff37ffb7fff7fe37ffd7ff07fe37ff17000040c07f107f1"
+  },
+  {
+    "filename": "debug_06_06_v0311_box_selection.png",
+    "sha256": "7da0f46b0d5eabe30e2d16829463ce4f791531d8398952137bb8cea98da7fd65",
+    "width": 1600,
+    "height": 900,
+    "fileSize": 183314,
+    "perceptualHash": "0ff30ff17ff17ffb7ff37ffb7fff7fe37ffd7ff07fe37ff17000040c07f107f1"
+  },
+  {
+    "filename": "debug_07_07_v0311_move_order.png",
+    "sha256": "f2153b3b5be8405f46427e784817fa4148f41157813f1e5d1917f1f71a3dde00",
+    "width": 1600,
+    "height": 900,
+    "fileSize": 172334,
+    "perceptualHash": "0ff30ff17ff17ffb7ff37ffb7fff7fe37ffd7ff07fe37ff17000040c07f107f1"
+  },
+  {
+    "filename": "debug_08_08_v0311_movement_sync.png",
+    "sha256": "f2153b3b5be8405f46427e784817fa4148f41157813f1e5d1917f1f71a3dde00",
+    "width": 1600,
+    "height": 900,
+    "fileSize": 172334,
+    "perceptualHash": "0ff30ff17ff17ffb7ff37ffb7fff7fe37ffd7ff07fe37ff17000040c07f107f1"
+  },
+  {
+    "filename": "debug_09_09_v0311_stop_hold_contract.png",
+    "sha256": "f2153b3b5be8405f46427e784817fa4148f41157813f1e5d1917f1f71a3dde00",
+    "width": 1600,
+    "height": 900,
+    "fileSize": 172334,
+    "perceptualHash": "0ff30ff17ff17ffb7ff37ffb7fff7fe37ffd7ff07fe37ff17000040c07f107f1"
+  },
+  {
+    "filename": "debug_10_10_v0311_bridge_crossing.png",
+    "sha256": "f2153b3b5be8405f46427e784817fa4148f41157813f1e5d1917f1f71a3dde00",
+    "width": 1600,
+    "height": 900,
+    "fileSize": 172334,
+    "perceptualHash": "0ff30ff17ff17ffb7ff37ffb7fff7fe37ffd7ff07fe37ff17000040c07f107f1"
+  },
+  {
+    "filename": "debug_11_11_v0311_road_occlusion.png",
+    "sha256": "f2153b3b5be8405f46427e784817fa4148f41157813f1e5d1917f1f71a3dde00",
+    "width": 1600,
+    "height": 900,
+    "fileSize": 172334,
+    "perceptualHash": "0ff30ff17ff17ffb7ff37ffb7fff7fe37ffd7ff07fe37ff17000040c07f107f1"
+  },
+  {
+    "filename": "debug_12_12_v0311_storehouse_occlusion.png",
+    "sha256": "f2153b3b5be8405f46427e784817fa4148f41157813f1e5d1917f1f71a3dde00",
+    "width": 1600,
+    "height": 900,
+    "fileSize": 172334,
+    "perceptualHash": "0ff30ff17ff17ffb7ff37ffb7fff7fe37ffd7ff07fe37ff17000040c07f107f1"
+  },
+  {
+    "filename": "debug_13_13_v0311_camera_pan.png",
+    "sha256": "f2153b3b5be8405f46427e784817fa4148f41157813f1e5d1917f1f71a3dde00",
+    "width": 1600,
+    "height": 900,
+    "fileSize": 172334,
+    "perceptualHash": "0ff30ff17ff17ffb7ff37ffb7fff7fe37ffd7ff07fe37ff17000040c07f107f1"
+  },
+  {
+    "filename": "debug_14_14_v0311_camera_zoom.png",
+    "sha256": "f2153b3b5be8405f46427e784817fa4148f41157813f1e5d1917f1f71a3dde00",
+    "width": 1600,
+    "height": 900,
+    "fileSize": 172334,
+    "perceptualHash": "0ff30ff17ff17ffb7ff37ffb7fff7fe37ffd7ff07fe37ff17000040c07f107f1"
+  },
+  {
+    "filename": "debug_15_15_v0311_worker_work_context.png",
+    "sha256": "f2153b3b5be8405f46427e784817fa4148f41157813f1e5d1917f1f71a3dde00",
+    "width": 1600,
+    "height": 900,
+    "fileSize": 172334,
+    "perceptualHash": "0ff30ff17ff17ffb7ff37ffb7fff7fe37ffd7ff07fe37ff17000040c07f107f1"
+  },
+  {
+    "filename": "debug_16_16_v0311_militia_ready_context.png",
+    "sha256": "3e91fec129083c3d1a6597afd9af779fb4e75fc07a32d3b49240d89d2ff45a8e",
+    "width": 1600,
+    "height": 900,
+    "fileSize": 169381,
+    "perceptualHash": "0ff30ff17ff17dfb7ff37ffb7fff7fe37ffd7ff07fe37ff17000040c07f107f1"
+  },
+  {
+    "filename": "debug_17_17_v0311_selected_card_worker.png",
+    "sha256": "f2153b3b5be8405f46427e784817fa4148f41157813f1e5d1917f1f71a3dde00",
+    "width": 1600,
+    "height": 900,
+    "fileSize": 172334,
+    "perceptualHash": "0ff30ff17ff17ffb7ff37ffb7fff7fe37ffd7ff07fe37ff17000040c07f107f1"
+  },
+  {
+    "filename": "debug_18_18_v0311_selected_card_militia.png",
+    "sha256": "3e91fec129083c3d1a6597afd9af779fb4e75fc07a32d3b49240d89d2ff45a8e",
+    "width": 1600,
+    "height": 900,
+    "fileSize": 169381,
+    "perceptualHash": "0ff30ff17ff17dfb7ff37ffb7fff7fe37ffd7ff07fe37ff17000040c07f107f1"
+  },
+  {
+    "filename": "debug_19_19_v0311_save_reload_readonly.png",
+    "sha256": "3e91fec129083c3d1a6597afd9af779fb4e75fc07a32d3b49240d89d2ff45a8e",
+    "width": 1600,
+    "height": 900,
+    "fileSize": 169381,
+    "perceptualHash": "0ff30ff17ff17dfb7ff37ffb7fff7fe37ffd7ff07fe37ff17000040c07f107f1"
+  },
+  {
+    "filename": "debug_20_20_v0311_rollback_fallback.png",
+    "sha256": "3e91fec129083c3d1a6597afd9af779fb4e75fc07a32d3b49240d89d2ff45a8e",
+    "width": 1600,
+    "height": 900,
+    "fileSize": 169381,
+    "perceptualHash": "0ff30ff17ff17dfb7ff37ffb7fff7fe37ffd7ff07fe37ff17000040c07f107f1"
+  },
+  {
+    "filename": "debug_21_21_v0311_default_flag_off.png",
+    "sha256": "3e91fec129083c3d1a6597afd9af779fb4e75fc07a32d3b49240d89d2ff45a8e",
+    "width": 1600,
+    "height": 900,
+    "fileSize": 169381,
+    "perceptualHash": "0ff30ff17ff17dfb7ff37ffb7fff7fe37ffd7ff07fe37ff17000040c07f107f1"
+  },
+  {
+    "filename": "debug_22_22_v0311_h3_adapter_status.png",
+    "sha256": "3e91fec129083c3d1a6597afd9af779fb4e75fc07a32d3b49240d89d2ff45a8e",
+    "width": 1600,
+    "height": 900,
+    "fileSize": 169381,
+    "perceptualHash": "0ff30ff17ff17dfb7ff37ffb7fff7fe37ffd7ff07fe37ff17000040c07f107f1"
+  },
+  {
+    "filename": "debug_23_23_v0311_one_authored_pose.png",
+    "sha256": "3e91fec129083c3d1a6597afd9af779fb4e75fc07a32d3b49240d89d2ff45a8e",
+    "width": 1600,
+    "height": 900,
+    "fileSize": 169381,
+    "perceptualHash": "0ff30ff17ff17dfb7ff37ffb7fff7fe37ffd7ff07fe37ff17000040c07f107f1"
+  },
+  {
+    "filename": "debug_24_24_v0311_derived_direction_honesty.png",
+    "sha256": "b6546317c7b4b27bce797b2e70f1bb79140733e43ee412b626878d1e0afaf477",
+    "width": 1600,
+    "height": 900,
+    "fileSize": 169375,
+    "perceptualHash": "0ff30ff17ff17dfb7ff37ffb7fff7fe37ffd7ff07fe37ff17000040c07f107f1"
+  },
+  {
+    "filename": "debug_25_25_v0311_grounding_shadows.png",
+    "sha256": "3e91fec129083c3d1a6597afd9af779fb4e75fc07a32d3b49240d89d2ff45a8e",
+    "width": 1600,
+    "height": 900,
+    "fileSize": 169381,
+    "perceptualHash": "0ff30ff17ff17dfb7ff37ffb7fff7fe37ffd7ff07fe37ff17000040c07f107f1"
+  },
+  {
+    "filename": "debug_26_26_v0311_selection_readability.png",
+    "sha256": "3e91fec129083c3d1a6597afd9af779fb4e75fc07a32d3b49240d89d2ff45a8e",
+    "width": 1600,
+    "height": 900,
+    "fileSize": 169381,
+    "perceptualHash": "0ff30ff17ff17dfb7ff37ffb7fff7fe37ffd7ff07fe37ff17000040c07f107f1"
+  },
+  {
+    "filename": "debug_27_27_v0311_player_clean.png",
+    "sha256": "3e91fec129083c3d1a6597afd9af779fb4e75fc07a32d3b49240d89d2ff45a8e",
+    "width": 1600,
+    "height": 900,
+    "fileSize": 169381,
+    "perceptualHash": "0ff30ff17ff17dfb7ff37ffb7fff7fe37ffd7ff07fe37ff17000040c07f107f1"
+  },
+  {
+    "filename": "debug_28_28_v0311_debug_overlay_preserved.png",
+    "sha256": "b6546317c7b4b27bce797b2e70f1bb79140733e43ee412b626878d1e0afaf477",
+    "width": 1600,
+    "height": 900,
+    "fileSize": 169375,
+    "perceptualHash": "0ff30ff17ff17dfb7ff37ffb7fff7fe37ffd7ff07fe37ff17000040c07f107f1"
+  },
+  {
+    "filename": "debug_29_29_v0311_no_duplicate_proxies.png",
+    "sha256": "b6546317c7b4b27bce797b2e70f1bb79140733e43ee412b626878d1e0afaf477",
+    "width": 1600,
+    "height": 900,
+    "fileSize": 169375,
+    "perceptualHash": "0ff30ff17ff17dfb7ff37ffb7fff7fe37ffd7ff07fe37ff17000040c07f107f1"
+  },
+  {
+    "filename": "debug_30_30_v0311_no_duplicate_shadows.png",
+    "sha256": "3e91fec129083c3d1a6597afd9af779fb4e75fc07a32d3b49240d89d2ff45a8e",
+    "width": 1600,
+    "height": 900,
+    "fileSize": 169381,
+    "perceptualHash": "0ff30ff17ff17dfb7ff37ffb7fff7fe37ffd7ff07fe37ff17000040c07f107f1"
+  },
+  {
+    "filename": "debug_31_31_v0311_stable_ids.png",
+    "sha256": "3e91fec129083c3d1a6597afd9af779fb4e75fc07a32d3b49240d89d2ff45a8e",
+    "width": 1600,
+    "height": 900,
+    "fileSize": 169381,
+    "perceptualHash": "0ff30ff17ff17dfb7ff37ffb7fff7fe37ffd7ff07fe37ff17000040c07f107f1"
+  },
+  {
+    "filename": "debug_32_32_v0311_positions_authoritative.png",
+    "sha256": "3e91fec129083c3d1a6597afd9af779fb4e75fc07a32d3b49240d89d2ff45a8e",
+    "width": 1600,
+    "height": 900,
+    "fileSize": 169381,
+    "perceptualHash": "0ff30ff17ff17dfb7ff37ffb7fff7fe37ffd7ff07fe37ff17000040c07f107f1"
+  },
+  {
+    "filename": "debug_33_33_v0311_resources_unchanged.png",
+    "sha256": "3e91fec129083c3d1a6597afd9af779fb4e75fc07a32d3b49240d89d2ff45a8e",
+    "width": 1600,
+    "height": 900,
+    "fileSize": 169381,
+    "perceptualHash": "0ff30ff17ff17dfb7ff37ffb7fff7fe37ffd7ff07fe37ff17000040c07f107f1"
+  },
+  {
+    "filename": "debug_34_34_v0311_state_unchanged.png",
+    "sha256": "3e91fec129083c3d1a6597afd9af779fb4e75fc07a32d3b49240d89d2ff45a8e",
+    "width": 1600,
+    "height": 900,
+    "fileSize": 169381,
+    "perceptualHash": "0ff30ff17ff17dfb7ff37ffb7fff7fe37ffd7ff07fe37ff17000040c07f107f1"
+  },
+  {
+    "filename": "debug_35_35_v0311_no_combat.png",
+    "sha256": "3e91fec129083c3d1a6597afd9af779fb4e75fc07a32d3b49240d89d2ff45a8e",
+    "width": 1600,
+    "height": 900,
+    "fileSize": 169381,
+    "perceptualHash": "0ff30ff17ff17dfb7ff37ffb7fff7fe37ffd7ff07fe37ff17000040c07f107f1"
+  },
+  {
+    "filename": "debug_36_36_v0311_no_ai.png",
+    "sha256": "3e91fec129083c3d1a6597afd9af779fb4e75fc07a32d3b49240d89d2ff45a8e",
+    "width": 1600,
+    "height": 900,
+    "fileSize": 169381,
+    "perceptualHash": "0ff30ff17ff17dfb7ff37ffb7fff7fe37ffd7ff07fe37ff17000040c07f107f1"
+  },
+  {
+    "filename": "debug_37_37_v0311_no_economy.png",
+    "sha256": "3e91fec129083c3d1a6597afd9af779fb4e75fc07a32d3b49240d89d2ff45a8e",
+    "width": 1600,
+    "height": 900,
+    "fileSize": 169381,
+    "perceptualHash": "0ff30ff17ff17dfb7ff37ffb7fff7fe37ffd7ff07fe37ff17000040c07f107f1"
+  },
+  {
+    "filename": "debug_38_38_v0311_no_pathfinding.png",
+    "sha256": "3e91fec129083c3d1a6597afd9af779fb4e75fc07a32d3b49240d89d2ff45a8e",
+    "width": 1600,
+    "height": 900,
+    "fileSize": 169381,
+    "perceptualHash": "0ff30ff17ff17dfb7ff37ffb7fff7fe37ffd7ff07fe37ff17000040c07f107f1"
+  },
+  {
+    "filename": "debug_39_39_v0311_no_true_default_mutation.png",
+    "sha256": "3e91fec129083c3d1a6597afd9af779fb4e75fc07a32d3b49240d89d2ff45a8e",
+    "width": 1600,
+    "height": 900,
+    "fileSize": 169381,
+    "perceptualHash": "0ff30ff17ff17dfb7ff37ffb7fff7fe37ffd7ff07fe37ff17000040c07f107f1"
+  },
+  {
+    "filename": "debug_40_40_v0311_worker_militia_only.png",
+    "sha256": "3e91fec129083c3d1a6597afd9af779fb4e75fc07a32d3b49240d89d2ff45a8e",
+    "width": 1600,
+    "height": 900,
+    "fileSize": 169381,
+    "perceptualHash": "0ff30ff17ff17dfb7ff37ffb7fff7fe37ffd7ff07fe37ff17000040c07f107f1"
+  },
+  {
+    "filename": "debug_41_41_v0311_real_gameplay_overview.png",
+    "sha256": "3e91fec129083c3d1a6597afd9af779fb4e75fc07a32d3b49240d89d2ff45a8e",
+    "width": 1600,
+    "height": 900,
+    "fileSize": 169381,
+    "perceptualHash": "0ff30ff17ff17dfb7ff37ffb7fff7fe37ffd7ff07fe37ff17000040c07f107f1"
+  },
+  {
+    "filename": "debug_42_42_v0311_real_gameplay_bridge_view.png",
+    "sha256": "3e91fec129083c3d1a6597afd9af779fb4e75fc07a32d3b49240d89d2ff45a8e",
+    "width": 1600,
+    "height": 900,
+    "fileSize": 169381,
+    "perceptualHash": "0ff30ff17ff17dfb7ff37ffb7fff7fe37ffd7ff07fe37ff17000040c07f107f1"
+  },
+  {
+    "filename": "debug_43_43_v0311_black_frame_rejection.png",
+    "sha256": "3e91fec129083c3d1a6597afd9af779fb4e75fc07a32d3b49240d89d2ff45a8e",
+    "width": 1600,
+    "height": 900,
+    "fileSize": 169381,
+    "perceptualHash": "0ff30ff17ff17dfb7ff37ffb7fff7fe37ffd7ff07fe37ff17000040c07f107f1"
+  },
+  {
+    "filename": "mode-comparison-contact-sheet.png",
+    "sha256": "fa3c4dd5f39e2ce174595a1d7f4414ba82c203fa2151225117a06398152bb35a",
+    "width": 1920,
+    "height": 388,
+    "fileSize": 60723,
+    "perceptualHash": "31ce79cfffffffffffffffffffffffdffbdff79ff39ee39c39c7318400000000"
+  },
+  {
+    "filename": "player-contact-sheet.png",
+    "sha256": "b073a695085cc6be34286886724798643e82451473d8e100a321c96e57d3359e",
+    "width": 1280,
+    "height": 2222,
+    "fileSize": 297119,
+    "perceptualHash": "f777666666666666666666666666666666666666666666666666666766606660"
+  },
+  {
+    "filename": "player_01_01_v0311_preflight_runtime.png",
+    "sha256": "65ece53fdee154ce1d56dab4e026b436a10dbc0e9fa3c7e1af232821f001a1aa",
+    "width": 1600,
+    "height": 900,
+    "fileSize": 169887,
+    "perceptualHash": "0ff30ff17ff17dfb7ff37ffb7fff7fe37ffd7ff07fe37ff17000040c07f107f1"
+  },
+  {
+    "filename": "player_02_02_v0311_worker_idle.png",
+    "sha256": "65ece53fdee154ce1d56dab4e026b436a10dbc0e9fa3c7e1af232821f001a1aa",
+    "width": 1600,
+    "height": 900,
+    "fileSize": 169887,
+    "perceptualHash": "0ff30ff17ff17dfb7ff37ffb7fff7fe37ffd7ff07fe37ff17000040c07f107f1"
+  },
+  {
+    "filename": "player_03_03_v0311_militia_idle.png",
+    "sha256": "65ece53fdee154ce1d56dab4e026b436a10dbc0e9fa3c7e1af232821f001a1aa",
+    "width": 1600,
+    "height": 900,
+    "fileSize": 169887,
+    "perceptualHash": "0ff30ff17ff17dfb7ff37ffb7fff7fe37ffd7ff07fe37ff17000040c07f107f1"
+  },
+  {
+    "filename": "player_04_04_v0311_worker_selected.png",
+    "sha256": "f2153b3b5be8405f46427e784817fa4148f41157813f1e5d1917f1f71a3dde00",
+    "width": 1600,
+    "height": 900,
+    "fileSize": 172334,
+    "perceptualHash": "0ff30ff17ff17ffb7ff37ffb7fff7fe37ffd7ff07fe37ff17000040c07f107f1"
+  },
+  {
+    "filename": "player_05_05_v0311_militia_selected.png",
+    "sha256": "3e91fec129083c3d1a6597afd9af779fb4e75fc07a32d3b49240d89d2ff45a8e",
+    "width": 1600,
+    "height": 900,
+    "fileSize": 169381,
+    "perceptualHash": "0ff30ff17ff17dfb7ff37ffb7fff7fe37ffd7ff07fe37ff17000040c07f107f1"
+  },
+  {
+    "filename": "player_06_06_v0311_box_selection.png",
+    "sha256": "7da0f46b0d5eabe30e2d16829463ce4f791531d8398952137bb8cea98da7fd65",
+    "width": 1600,
+    "height": 900,
+    "fileSize": 183314,
+    "perceptualHash": "0ff30ff17ff17ffb7ff37ffb7fff7fe37ffd7ff07fe37ff17000040c07f107f1"
+  },
+  {
+    "filename": "player_07_07_v0311_move_order.png",
+    "sha256": "f2153b3b5be8405f46427e784817fa4148f41157813f1e5d1917f1f71a3dde00",
+    "width": 1600,
+    "height": 900,
+    "fileSize": 172334,
+    "perceptualHash": "0ff30ff17ff17ffb7ff37ffb7fff7fe37ffd7ff07fe37ff17000040c07f107f1"
+  },
+  {
+    "filename": "player_08_08_v0311_movement_sync.png",
+    "sha256": "f2153b3b5be8405f46427e784817fa4148f41157813f1e5d1917f1f71a3dde00",
+    "width": 1600,
+    "height": 900,
+    "fileSize": 172334,
+    "perceptualHash": "0ff30ff17ff17ffb7ff37ffb7fff7fe37ffd7ff07fe37ff17000040c07f107f1"
+  },
+  {
+    "filename": "player_09_09_v0311_stop_hold_contract.png",
+    "sha256": "f2153b3b5be8405f46427e784817fa4148f41157813f1e5d1917f1f71a3dde00",
+    "width": 1600,
+    "height": 900,
+    "fileSize": 172334,
+    "perceptualHash": "0ff30ff17ff17ffb7ff37ffb7fff7fe37ffd7ff07fe37ff17000040c07f107f1"
+  },
+  {
+    "filename": "player_10_10_v0311_bridge_crossing.png",
+    "sha256": "f2153b3b5be8405f46427e784817fa4148f41157813f1e5d1917f1f71a3dde00",
+    "width": 1600,
+    "height": 900,
+    "fileSize": 172334,
+    "perceptualHash": "0ff30ff17ff17ffb7ff37ffb7fff7fe37ffd7ff07fe37ff17000040c07f107f1"
+  },
+  {
+    "filename": "player_11_11_v0311_road_occlusion.png",
+    "sha256": "f2153b3b5be8405f46427e784817fa4148f41157813f1e5d1917f1f71a3dde00",
+    "width": 1600,
+    "height": 900,
+    "fileSize": 172334,
+    "perceptualHash": "0ff30ff17ff17ffb7ff37ffb7fff7fe37ffd7ff07fe37ff17000040c07f107f1"
+  },
+  {
+    "filename": "player_12_12_v0311_storehouse_occlusion.png",
+    "sha256": "f2153b3b5be8405f46427e784817fa4148f41157813f1e5d1917f1f71a3dde00",
+    "width": 1600,
+    "height": 900,
+    "fileSize": 172334,
+    "perceptualHash": "0ff30ff17ff17ffb7ff37ffb7fff7fe37ffd7ff07fe37ff17000040c07f107f1"
+  },
+  {
+    "filename": "player_13_13_v0311_camera_pan.png",
+    "sha256": "f2153b3b5be8405f46427e784817fa4148f41157813f1e5d1917f1f71a3dde00",
+    "width": 1600,
+    "height": 900,
+    "fileSize": 172334,
+    "perceptualHash": "0ff30ff17ff17ffb7ff37ffb7fff7fe37ffd7ff07fe37ff17000040c07f107f1"
+  },
+  {
+    "filename": "player_14_14_v0311_camera_zoom.png",
+    "sha256": "f2153b3b5be8405f46427e784817fa4148f41157813f1e5d1917f1f71a3dde00",
+    "width": 1600,
+    "height": 900,
+    "fileSize": 172334,
+    "perceptualHash": "0ff30ff17ff17ffb7ff37ffb7fff7fe37ffd7ff07fe37ff17000040c07f107f1"
+  },
+  {
+    "filename": "player_15_15_v0311_worker_work_context.png",
+    "sha256": "f2153b3b5be8405f46427e784817fa4148f41157813f1e5d1917f1f71a3dde00",
+    "width": 1600,
+    "height": 900,
+    "fileSize": 172334,
+    "perceptualHash": "0ff30ff17ff17ffb7ff37ffb7fff7fe37ffd7ff07fe37ff17000040c07f107f1"
+  },
+  {
+    "filename": "player_16_16_v0311_militia_ready_context.png",
+    "sha256": "3e91fec129083c3d1a6597afd9af779fb4e75fc07a32d3b49240d89d2ff45a8e",
+    "width": 1600,
+    "height": 900,
+    "fileSize": 169381,
+    "perceptualHash": "0ff30ff17ff17dfb7ff37ffb7fff7fe37ffd7ff07fe37ff17000040c07f107f1"
+  },
+  {
+    "filename": "player_17_17_v0311_selected_card_worker.png",
+    "sha256": "f2153b3b5be8405f46427e784817fa4148f41157813f1e5d1917f1f71a3dde00",
+    "width": 1600,
+    "height": 900,
+    "fileSize": 172334,
+    "perceptualHash": "0ff30ff17ff17ffb7ff37ffb7fff7fe37ffd7ff07fe37ff17000040c07f107f1"
+  },
+  {
+    "filename": "player_18_18_v0311_selected_card_militia.png",
+    "sha256": "3e91fec129083c3d1a6597afd9af779fb4e75fc07a32d3b49240d89d2ff45a8e",
+    "width": 1600,
+    "height": 900,
+    "fileSize": 169381,
+    "perceptualHash": "0ff30ff17ff17dfb7ff37ffb7fff7fe37ffd7ff07fe37ff17000040c07f107f1"
+  },
+  {
+    "filename": "player_19_19_v0311_save_reload_readonly.png",
+    "sha256": "3e91fec129083c3d1a6597afd9af779fb4e75fc07a32d3b49240d89d2ff45a8e",
+    "width": 1600,
+    "height": 900,
+    "fileSize": 169381,
+    "perceptualHash": "0ff30ff17ff17dfb7ff37ffb7fff7fe37ffd7ff07fe37ff17000040c07f107f1"
+  },
+  {
+    "filename": "player_20_20_v0311_rollback_fallback.png",
+    "sha256": "3e91fec129083c3d1a6597afd9af779fb4e75fc07a32d3b49240d89d2ff45a8e",
+    "width": 1600,
+    "height": 900,
+    "fileSize": 169381,
+    "perceptualHash": "0ff30ff17ff17dfb7ff37ffb7fff7fe37ffd7ff07fe37ff17000040c07f107f1"
+  },
+  {
+    "filename": "player_21_21_v0311_default_flag_off.png",
+    "sha256": "3e91fec129083c3d1a6597afd9af779fb4e75fc07a32d3b49240d89d2ff45a8e",
+    "width": 1600,
+    "height": 900,
+    "fileSize": 169381,
+    "perceptualHash": "0ff30ff17ff17dfb7ff37ffb7fff7fe37ffd7ff07fe37ff17000040c07f107f1"
+  },
+  {
+    "filename": "player_22_22_v0311_h3_adapter_status.png",
+    "sha256": "3e91fec129083c3d1a6597afd9af779fb4e75fc07a32d3b49240d89d2ff45a8e",
+    "width": 1600,
+    "height": 900,
+    "fileSize": 169381,
+    "perceptualHash": "0ff30ff17ff17dfb7ff37ffb7fff7fe37ffd7ff07fe37ff17000040c07f107f1"
+  },
+  {
+    "filename": "player_23_23_v0311_one_authored_pose.png",
+    "sha256": "3e91fec129083c3d1a6597afd9af779fb4e75fc07a32d3b49240d89d2ff45a8e",
+    "width": 1600,
+    "height": 900,
+    "fileSize": 169381,
+    "perceptualHash": "0ff30ff17ff17dfb7ff37ffb7fff7fe37ffd7ff07fe37ff17000040c07f107f1"
+  },
+  {
+    "filename": "player_24_24_v0311_derived_direction_honesty.png",
+    "sha256": "b6546317c7b4b27bce797b2e70f1bb79140733e43ee412b626878d1e0afaf477",
+    "width": 1600,
+    "height": 900,
+    "fileSize": 169375,
+    "perceptualHash": "0ff30ff17ff17dfb7ff37ffb7fff7fe37ffd7ff07fe37ff17000040c07f107f1"
+  },
+  {
+    "filename": "player_25_25_v0311_grounding_shadows.png",
+    "sha256": "3e91fec129083c3d1a6597afd9af779fb4e75fc07a32d3b49240d89d2ff45a8e",
+    "width": 1600,
+    "height": 900,
+    "fileSize": 169381,
+    "perceptualHash": "0ff30ff17ff17dfb7ff37ffb7fff7fe37ffd7ff07fe37ff17000040c07f107f1"
+  },
+  {
+    "filename": "player_26_26_v0311_selection_readability.png",
+    "sha256": "3e91fec129083c3d1a6597afd9af779fb4e75fc07a32d3b49240d89d2ff45a8e",
+    "width": 1600,
+    "height": 900,
+    "fileSize": 169381,
+    "perceptualHash": "0ff30ff17ff17dfb7ff37ffb7fff7fe37ffd7ff07fe37ff17000040c07f107f1"
+  },
+  {
+    "filename": "player_27_27_v0311_player_clean.png",
+    "sha256": "3e91fec129083c3d1a6597afd9af779fb4e75fc07a32d3b49240d89d2ff45a8e",
+    "width": 1600,
+    "height": 900,
+    "fileSize": 169381,
+    "perceptualHash": "0ff30ff17ff17dfb7ff37ffb7fff7fe37ffd7ff07fe37ff17000040c07f107f1"
+  },
+  {
+    "filename": "player_28_28_v0311_debug_overlay_preserved.png",
+    "sha256": "b6546317c7b4b27bce797b2e70f1bb79140733e43ee412b626878d1e0afaf477",
+    "width": 1600,
+    "height": 900,
+    "fileSize": 169375,
+    "perceptualHash": "0ff30ff17ff17dfb7ff37ffb7fff7fe37ffd7ff07fe37ff17000040c07f107f1"
+  },
+  {
+    "filename": "player_29_29_v0311_no_duplicate_proxies.png",
+    "sha256": "b6546317c7b4b27bce797b2e70f1bb79140733e43ee412b626878d1e0afaf477",
+    "width": 1600,
+    "height": 900,
+    "fileSize": 169375,
+    "perceptualHash": "0ff30ff17ff17dfb7ff37ffb7fff7fe37ffd7ff07fe37ff17000040c07f107f1"
+  },
+  {
+    "filename": "player_30_30_v0311_no_duplicate_shadows.png",
+    "sha256": "3e91fec129083c3d1a6597afd9af779fb4e75fc07a32d3b49240d89d2ff45a8e",
+    "width": 1600,
+    "height": 900,
+    "fileSize": 169381,
+    "perceptualHash": "0ff30ff17ff17dfb7ff37ffb7fff7fe37ffd7ff07fe37ff17000040c07f107f1"
+  },
+  {
+    "filename": "player_31_31_v0311_stable_ids.png",
+    "sha256": "3e91fec129083c3d1a6597afd9af779fb4e75fc07a32d3b49240d89d2ff45a8e",
+    "width": 1600,
+    "height": 900,
+    "fileSize": 169381,
+    "perceptualHash": "0ff30ff17ff17dfb7ff37ffb7fff7fe37ffd7ff07fe37ff17000040c07f107f1"
+  },
+  {
+    "filename": "player_32_32_v0311_positions_authoritative.png",
+    "sha256": "3e91fec129083c3d1a6597afd9af779fb4e75fc07a32d3b49240d89d2ff45a8e",
+    "width": 1600,
+    "height": 900,
+    "fileSize": 169381,
+    "perceptualHash": "0ff30ff17ff17dfb7ff37ffb7fff7fe37ffd7ff07fe37ff17000040c07f107f1"
+  },
+  {
+    "filename": "player_33_33_v0311_resources_unchanged.png",
+    "sha256": "3e91fec129083c3d1a6597afd9af779fb4e75fc07a32d3b49240d89d2ff45a8e",
+    "width": 1600,
+    "height": 900,
+    "fileSize": 169381,
+    "perceptualHash": "0ff30ff17ff17dfb7ff37ffb7fff7fe37ffd7ff07fe37ff17000040c07f107f1"
+  },
+  {
+    "filename": "player_34_34_v0311_state_unchanged.png",
+    "sha256": "3e91fec129083c3d1a6597afd9af779fb4e75fc07a32d3b49240d89d2ff45a8e",
+    "width": 1600,
+    "height": 900,
+    "fileSize": 169381,
+    "perceptualHash": "0ff30ff17ff17dfb7ff37ffb7fff7fe37ffd7ff07fe37ff17000040c07f107f1"
+  },
+  {
+    "filename": "player_35_35_v0311_no_combat.png",
+    "sha256": "3e91fec129083c3d1a6597afd9af779fb4e75fc07a32d3b49240d89d2ff45a8e",
+    "width": 1600,
+    "height": 900,
+    "fileSize": 169381,
+    "perceptualHash": "0ff30ff17ff17dfb7ff37ffb7fff7fe37ffd7ff07fe37ff17000040c07f107f1"
+  },
+  {
+    "filename": "player_36_36_v0311_no_ai.png",
+    "sha256": "3e91fec129083c3d1a6597afd9af779fb4e75fc07a32d3b49240d89d2ff45a8e",
+    "width": 1600,
+    "height": 900,
+    "fileSize": 169381,
+    "perceptualHash": "0ff30ff17ff17dfb7ff37ffb7fff7fe37ffd7ff07fe37ff17000040c07f107f1"
+  },
+  {
+    "filename": "player_37_37_v0311_no_economy.png",
+    "sha256": "3e91fec129083c3d1a6597afd9af779fb4e75fc07a32d3b49240d89d2ff45a8e",
+    "width": 1600,
+    "height": 900,
+    "fileSize": 169381,
+    "perceptualHash": "0ff30ff17ff17dfb7ff37ffb7fff7fe37ffd7ff07fe37ff17000040c07f107f1"
+  },
+  {
+    "filename": "player_38_38_v0311_no_pathfinding.png",
+    "sha256": "3e91fec129083c3d1a6597afd9af779fb4e75fc07a32d3b49240d89d2ff45a8e",
+    "width": 1600,
+    "height": 900,
+    "fileSize": 169381,
+    "perceptualHash": "0ff30ff17ff17dfb7ff37ffb7fff7fe37ffd7ff07fe37ff17000040c07f107f1"
+  },
+  {
+    "filename": "player_39_39_v0311_no_true_default_mutation.png",
+    "sha256": "3e91fec129083c3d1a6597afd9af779fb4e75fc07a32d3b49240d89d2ff45a8e",
+    "width": 1600,
+    "height": 900,
+    "fileSize": 169381,
+    "perceptualHash": "0ff30ff17ff17dfb7ff37ffb7fff7fe37ffd7ff07fe37ff17000040c07f107f1"
+  },
+  {
+    "filename": "player_40_40_v0311_worker_militia_only.png",
+    "sha256": "3e91fec129083c3d1a6597afd9af779fb4e75fc07a32d3b49240d89d2ff45a8e",
+    "width": 1600,
+    "height": 900,
+    "fileSize": 169381,
+    "perceptualHash": "0ff30ff17ff17dfb7ff37ffb7fff7fe37ffd7ff07fe37ff17000040c07f107f1"
+  },
+  {
+    "filename": "player_41_41_v0311_real_gameplay_overview.png",
+    "sha256": "3e91fec129083c3d1a6597afd9af779fb4e75fc07a32d3b49240d89d2ff45a8e",
+    "width": 1600,
+    "height": 900,
+    "fileSize": 169381,
+    "perceptualHash": "0ff30ff17ff17dfb7ff37ffb7fff7fe37ffd7ff07fe37ff17000040c07f107f1"
+  },
+  {
+    "filename": "player_42_42_v0311_real_gameplay_bridge_view.png",
+    "sha256": "3e91fec129083c3d1a6597afd9af779fb4e75fc07a32d3b49240d89d2ff45a8e",
+    "width": 1600,
+    "height": 900,
+    "fileSize": 169381,
+    "perceptualHash": "0ff30ff17ff17dfb7ff37ffb7fff7fe37ffd7ff07fe37ff17000040c07f107f1"
+  },
+  {
+    "filename": "player_43_43_v0311_black_frame_rejection.png",
+    "sha256": "3e91fec129083c3d1a6597afd9af779fb4e75fc07a32d3b49240d89d2ff45a8e",
+    "width": 1600,
+    "height": 900,
+    "fileSize": 169381,
+    "perceptualHash": "0ff30ff17ff17dfb7ff37ffb7fff7fe37ffd7ff07fe37ff17000040c07f107f1"
+  },
+  {
+    "filename": "true-default-runtime-baseline.png",
+    "sha256": "6d73a9fce4dd2ba5e13a6bc0eed1073e388dd7a0578d55f4d3df2397510a28bb",
+    "width": 1600,
+    "height": 900,
+    "fileSize": 127739,
+    "perceptualHash": "07ff07b003f803f9037903ff07ff03860387038703c00008000c040c04000000"
+  },
+  {
+    "filename": "v0310_hybrid_method_reference.png",
+    "sha256": "40b6b33bc4307fa44a50bf2a5d7473a041f64b09f698e4588096fbdb0d709c3b",
+    "width": 1600,
+    "height": 900,
+    "fileSize": 465967,
+    "perceptualHash": "00700078f1fce07ec0ff91ff33ff43ff83ff23ff61fff7feffdbffc1ffc1ffff"
+  }
+]

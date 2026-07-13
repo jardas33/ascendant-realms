@@ -15992,6 +15992,15 @@ func get_v0311_h3_runtime_status() -> Dictionary:
 		return {"enabled": false, "pilotEnabled": barrosan_h3_runtime_pilot_enabled, "requested": barrosan_h3_runtime_pilot_requested, "adapterPresent": barrosan_h3_runtime_adapter != null, "skinEnabled": barrosan_runtime_skin_enabled, "defaultRuntimeUnchanged": true, "rollbackAvailable": true}
 	return barrosan_h3_runtime_adapter.status()
 
+func set_v0311_h3_runtime_pilot_enabled(enabled: bool) -> bool:
+	if not barrosan_h3_runtime_pilot_requested:
+		return false
+	barrosan_h3_runtime_pilot_enabled = enabled
+	if barrosan_h3_runtime_adapter != null and is_instance_valid(barrosan_h3_runtime_adapter):
+		barrosan_h3_runtime_adapter.set_presentation_enabled(enabled)
+	_sync_unit_visuals()
+	return true
+
 
 func set_player_facing_mode(enabled: bool) -> bool:
 	if barrosan_runtime_checkpoint in ["v0.249", "v0.250", "v0.251", "v0.252", "v0.253"] and enabled and player_facing_mode:

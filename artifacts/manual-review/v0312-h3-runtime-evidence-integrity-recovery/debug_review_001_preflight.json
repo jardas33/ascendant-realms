@@ -1,0 +1,73 @@
+{
+  "authoritativeUnitIds": [
+    "worker_00",
+    "friendly_00"
+  ],
+  "cameraWorldPosition": {
+    "x": 0.0,
+    "y": 11.6,
+    "z": 8.9
+  },
+  "cameraZoom": 10.8000001907349,
+  "captureFilename": "001_preflight.png",
+  "fallbackState": false,
+  "frameNumber": 1,
+  "h3Enabled": true,
+  "h3FlagState": true,
+  "note": "initial authoritative runtime",
+  "pairedMomentId": "preflight_1",
+  "pixelEvidenceRequired": true,
+  "presentationMode": "DEBUG_REVIEW",
+  "previousRelatedScreenshotSha256": null,
+  "runtimeTimestampMs": 8932,
+  "saveIdentifier": null,
+  "scenarioName": "preflight",
+  "screenshotSha256": "37634e581164a01a669d27e55eee8a58957bb59b0bc78bd43dcbec6681756071",
+  "selectedIds": [],
+  "selectionSource": "authoritative runtime.selected_ids",
+  "semanticAccepted": true,
+  "stateSource": "authoritative runtime.units",
+  "units": [
+    {
+      "activityState": "idle",
+      "alive": true,
+      "commandState": "idle",
+      "destination": {
+        "x": 265.0,
+        "y": 370.0
+      },
+      "facing": "south-east",
+      "fixtureId": "worker",
+      "hasDestination": false,
+      "health": 80.0,
+      "id": "worker_00",
+      "readyState": "unsupported",
+      "role": "Worker",
+      "worldPosition": {
+        "x": 265.0,
+        "y": 370.0
+      }
+    },
+    {
+      "activityState": "idle",
+      "alive": true,
+      "commandState": "idle",
+      "destination": {
+        "x": 405.0,
+        "y": 315.0
+      },
+      "facing": "south-east",
+      "fixtureId": "militia",
+      "hasDestination": false,
+      "health": 100.0,
+      "id": "friendly_00",
+      "readyState": "unsupported",
+      "role": "Militia",
+      "worldPosition": {
+        "x": 405.0,
+        "y": 315.0
+      }
+    }
+  ],
+  "visualPoseLimitation": false
+}

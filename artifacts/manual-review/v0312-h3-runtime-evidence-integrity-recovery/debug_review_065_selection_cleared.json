@@ -1,0 +1,73 @@
+{
+  "authoritativeUnitIds": [
+    "worker_00",
+    "friendly_00"
+  ],
+  "cameraWorldPosition": {
+    "x": 0.0,
+    "y": 11.6,
+    "z": 8.9
+  },
+  "cameraZoom": 10.8000001907349,
+  "captureFilename": "065_selection_cleared.png",
+  "fallbackState": false,
+  "frameNumber": 65,
+  "h3Enabled": true,
+  "h3FlagState": true,
+  "note": "selection cleared",
+  "pairedMomentId": "selection_65",
+  "pixelEvidenceRequired": true,
+  "presentationMode": "DEBUG_REVIEW",
+  "previousRelatedScreenshotSha256": "d5cb77fe4c5137e41a5c8450c62dfe550e140ddb6fb49e576da92d1a2cfb2ddc",
+  "runtimeTimestampMs": 62316,
+  "saveIdentifier": null,
+  "scenarioName": "selection",
+  "screenshotSha256": "c9c8c5bc08dc5d04291c094c49f1c3c8f44a1fa10e9dc388f238a2675dac936a",
+  "selectedIds": [],
+  "selectionSource": "authoritative runtime.selected_ids",
+  "semanticAccepted": true,
+  "stateSource": "authoritative runtime.units",
+  "units": [
+    {
+      "activityState": "idle",
+      "alive": true,
+      "commandState": "idle",
+      "destination": {
+        "x": 265.0,
+        "y": 370.0
+      },
+      "facing": "south-east",
+      "fixtureId": "worker",
+      "hasDestination": false,
+      "health": 80.0,
+      "id": "worker_00",
+      "readyState": "unsupported",
+      "role": "Worker",
+      "worldPosition": {
+        "x": 265.0,
+        "y": 370.0
+      }
+    },
+    {
+      "activityState": "idle",
+      "alive": true,
+      "commandState": "idle",
+      "destination": {
+        "x": 405.0,
+        "y": 315.0
+      },
+      "facing": "south-east",
+      "fixtureId": "militia",
+      "hasDestination": false,
+      "health": 100.0,
+      "id": "friendly_00",
+      "readyState": "unsupported",
+      "role": "Militia",
+      "worldPosition": {
+        "x": 405.0,
+        "y": 315.0
+      }
+    }
+  ],
+  "visualPoseLimitation": false
+}
