@@ -2,7 +2,9 @@
 
 ## Executive decision
 
-**ADOPT H3 DIRECTIONAL ANIMATION PIPELINE FOR WORKER AND MILITIA**.
+**EVIDENCE INVALID — H3 DIRECTIONAL ANIMATION PIPELINE REMAINS UNPROVEN**.
+
+This historical classification corrects the earlier overclaim. The v0.314 implementation remains in the repository and remains opt-in, but its per-event runtime evidence did not prove that the adapter was enabled during the requested semantic captures.
 
 This is a bounded, opt-in presentation pilot. It does not approve the animated assets as final player-facing art and does not enable them in the default runtime.
 
@@ -86,7 +88,9 @@ Worker locomotion: 82. Militia locomotion: 82. Grounding: 89. Directional cohere
 
 ## Engineering-method, current-art, and default-runtime status
 
-**H3 ANIMATION ENGINEERING METHOD: ADOPTED**
+**H3 ANIMATION ENGINEERING METHOD: UNPROVEN**
+
+**V0.314 CAPTURE ROOT CAUSE:** The v0.314 runner configured H3 during `load_mode`, then `_reset_runtime()` called `set_workload_tier("M")`. The playable-skin tier hook called `_refresh_visual_foundation()`, whose `_rebuild_visuals()` removes and frees every child under `visual_root`. That deleted the newly-created v0314 adapter (and static rollback adapter) after configuration but before the first capture. The requested flag remained true, so status reported `requested=true` while the adapter reference was invalid and `enabled=false`. The final rollback/reconstruction toggle recreated the adapter, which is why only the last records showed `enabled=true`. This was a capture-scene initialization/lifecycle teardown defect, not an atlas or gameplay-state defect.
 
 **CURRENT ANIMATED CHARACTER ASSETS: MICRO-PILOT ONLY — NOT FINAL PLAYER-FACING ART**
 
@@ -96,9 +100,9 @@ The v0.303 fallback/debug renderer, static H3 adapter, accepted state chain, mov
 
 ## Exact v0.315
 
-`v0.315 — H3 Barrosan Worker and Militia Animation Authoring Hardening and Variation Pilot`
+`v0.315 — H3 Animation Runtime Proof Recovery`
 
-Scope: harden the adopted atlas/rig pipeline, introduce bounded frame variation, reduce repeated silhouettes, preserve supported-state binding, and add no new gameplay states, factions, or default-runtime integration.
+Scope: recover honest runtime proof for the existing bounded atlas adapter, preserve supported-state binding, and add no new gameplay states, factions, or default-runtime integration.
 
 ## Review pack and validator
 

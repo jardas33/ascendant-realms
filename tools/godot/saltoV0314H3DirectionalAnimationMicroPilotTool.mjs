@@ -36,7 +36,7 @@ function validate() {
   if (!read(path.join(pack, "v0313-preserved-decision.md")).includes("ACCEPT H3 RUNTIME INTEGRATION METHOD FOR CURRENT SUPPORTED STATES")) errors.push("v0.313 accepted decision not preserved");
   if (!read(path.join(pack, "00_read_me_first.md")).includes("HOLD UI CONTRACT: HIDDEN_WHEN_UNSUPPORTED")) errors.push("Hold contract not recorded as hidden");
   if (!read(path.join(pack, "00_read_me_first.md")).includes("H3 PRESENTATION SCALE LOCK: CURRENT")) errors.push("scale lock is not CURRENT");
-  if (!read(path.join(pack, "final-decision.md")).includes("ADOPT H3 DIRECTIONAL ANIMATION PIPELINE FOR WORKER AND MILITIA")) errors.push("final decision is not exact adopted decision");
+  if (!read(path.join(pack, "final-decision.md")).includes("EVIDENCE INVALID — H3 DIRECTIONAL ANIMATION PIPELINE REMAINS UNPROVEN")) errors.push("v0.314 historical classification is not honest invalid/unproven decision");
   if (!adapterText.includes("M3_AUTHORED_MULTI_FRAME_ATLAS") || !adapterText.includes('"Worker"') || !adapterText.includes('"Militia"')) errors.push("adapter is not a Worker/Militia M3 adapter");
   if (!adapterText.includes("rootMotion") || !adapterText.includes("gameplayProxy")) errors.push("root-motion boundary missing");
   if (!skinText.includes("barrosan_h3_directional_animation_requested") || !skinText.includes("set_v0314_h3_directional_animation_enabled")) errors.push("opt-in skin seam missing");
@@ -60,7 +60,7 @@ function validate() {
     if (workloadDiff.trim()) errors.push("authoritative workload runtime changed");
   } catch (error) { errors.push(`git diff check failed: ${error.message}`); }
   const status = errors.length ? "FAIL_V0314_H3_DIRECTIONAL_ANIMATION_VALIDATION" : "PASS_V0314_H3_DIRECTIONAL_ANIMATION_VALIDATION";
-  const report = { status, errors, v0313Decision: "ACCEPT H3 RUNTIME INTEGRATION METHOD FOR CURRENT SUPPORTED STATES", holdUiContract: "HIDDEN_WHEN_UNSUPPORTED", scaleLock: "CURRENT", runtimeSemanticEvents: manifest.records.length, physicalAnimationFrames: frames.length, compactUploadFiles: exists(upload) ? fs.readdirSync(upload).length : 0, finalDecision: "ADOPT H3 DIRECTIONAL ANIMATION PIPELINE FOR WORKER AND MILITIA" };
+  const report = { status, errors, historicalClassification: "EVIDENCE INVALID — H3 DIRECTIONAL ANIMATION PIPELINE REMAINS UNPROVEN", v0313Decision: "ACCEPT H3 RUNTIME INTEGRATION METHOD FOR CURRENT SUPPORTED STATES", holdUiContract: "HIDDEN_WHEN_UNSUPPORTED", scaleLock: "CURRENT", runtimeSemanticEvents: manifest.records.length, physicalAnimationFrames: frames.length, compactUploadFiles: exists(upload) ? fs.readdirSync(upload).length : 0, finalDecision: "EVIDENCE INVALID — H3 DIRECTIONAL ANIMATION PIPELINE REMAINS UNPROVEN" };
   fs.writeFileSync(path.join(pack, "v0314-validation-report.json"), JSON.stringify(report, null, 2) + "\n");
   console.log(status);
   console.log(JSON.stringify(report));

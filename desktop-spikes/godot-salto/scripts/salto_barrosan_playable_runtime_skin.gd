@@ -225,6 +225,7 @@ func set_workload_tier(tier: String) -> bool:
 		_evaluate_barrosan_build_previews()
 		_refresh_visual_foundation()
 		_add_barrosan_minimap_role_markers()
+		_restore_h3_presentation_after_visual_rebuild()
 	return result
 
 
@@ -15998,6 +15999,16 @@ func _configure_v0311_h3_runtime_adapter() -> void:
 		visual_root.add_child(barrosan_h3_runtime_adapter)
 	barrosan_h3_runtime_adapter.configure(self, visual_root)
 
+func _restore_h3_presentation_after_visual_rebuild() -> void:
+	# The workload-tier refresh rebuilds visual_root and frees presentation-only
+	# children. Recreate both H3 adapters after that teardown while leaving the
+	# authoritative runtime and its state untouched.
+	if not barrosan_h3_runtime_pilot_enabled or visual_root == null:
+		return
+	_configure_v0311_h3_runtime_adapter()
+	if barrosan_h3_directional_animation_requested:
+		set_v0314_h3_directional_animation_enabled(true)
+
 func get_v0311_h3_runtime_status() -> Dictionary:
 	if not barrosan_h3_runtime_pilot_enabled or barrosan_h3_runtime_adapter == null:
 		return {"enabled": false, "pilotEnabled": barrosan_h3_runtime_pilot_enabled, "requested": barrosan_h3_runtime_pilot_requested, "adapterPresent": barrosan_h3_runtime_adapter != null, "skinEnabled": barrosan_runtime_skin_enabled, "defaultRuntimeUnchanged": true, "rollbackAvailable": true}
@@ -16043,6 +16054,12 @@ func get_v0314_h3_directional_animation_status() -> Dictionary:
 	status["defaultRuntimeUnchanged"] = true
 	status["rollbackAvailable"] = true
 	return status
+
+func set_v0314_h3_presentation_scale(scale_value: float) -> bool:
+	if barrosan_h3_directional_animation_adapter == null or not is_instance_valid(barrosan_h3_directional_animation_adapter):
+		return false
+	barrosan_h3_directional_animation_adapter.set_presentation_scale(scale_value)
+	return true
 
 
 func set_player_facing_mode(enabled: bool) -> bool:

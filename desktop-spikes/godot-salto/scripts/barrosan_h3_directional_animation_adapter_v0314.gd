@@ -21,6 +21,7 @@ var proxy_nodes: Dictionary = {}
 var unit_animation: Dictionary = {}
 var sync_count := 0
 var animation_clock := 0.0
+var animation_elapsed_time := 0.0
 var presentation_scale := 1.0
 var last_authoritative_snapshot: Dictionary = {}
 
@@ -37,6 +38,7 @@ func _process(delta: float) -> void:
 	if not visible or host_scene == null:
 		return
 	animation_clock += delta
+	animation_elapsed_time += delta
 	if animation_clock < FRAME_DURATION:
 		return
 	animation_clock = fmod(animation_clock, FRAME_DURATION)
@@ -143,7 +145,52 @@ func status() -> Dictionary:
 		"rollbackAvailable": true,
 		"presentationScale": presentation_scale,
 		"rootMotion": false,
+		"workerAnimationControllerActive": _active_role_count("Worker") > 0,
+		"militiaAnimationControllerActive": _active_role_count("Militia") > 0,
+		"stableUnitIds": proxy_nodes.keys(),
+		"animationElapsedTime": animation_elapsed_time,
 	}
+
+func runtime_unit_snapshot(id: String) -> Dictionary:
+	var state: Dictionary = unit_animation.get(id, {})
+	var proxy := proxy_nodes.get(id) as Node3D
+	if state.is_empty() or proxy == null or not is_instance_valid(proxy):
+		return {"id": id, "present": false}
+	var role := str(state.get("role", ""))
+	var direction := str(state.get("direction", "south-east"))
+	var phase := int(state.get("phase", 0))
+	var frame_count := int(state.get("frameCount", 1))
+	var atlas := MILITIA_ATLAS if role == "Militia" else WORKER_ATLAS
+	var family := int(FAMILY_FOR_DIRECTION.get(direction, 0))
+	var offset := int({"idle": 0, "locomotion": 4, "work": 10}.get(str(state.get("state", "idle")), 0))
+	var frame_index := family * (WORKER_MAX_FRAMES if role == "Worker" else MILITIA_MAX_FRAMES) + offset + phase
+	return {
+		"id": id,
+		"present": true,
+		"role": role,
+		"state": str(state.get("state", "idle")),
+		"direction": direction,
+		"directionFamily": family,
+		"atlasIdentifier": atlas,
+		"atlasCell": {"x": frame_index % 8, "y": frame_index / 8, "w": CELL_SIZE, "h": CELL_SIZE},
+		"frameIndex": frame_index,
+		"framePhase": phase,
+		"frameCount": frame_count,
+		"frameDurationSeconds": FRAME_DURATION,
+		"cycleDurationSeconds": float(frame_count) * FRAME_DURATION,
+		"animationElapsedTime": animation_elapsed_time,
+		"presentationScale": presentation_scale,
+		"rootMotion": false,
+		"authoritativePosition": proxy.get_meta("authoritative_position", Vector2.ZERO),
+		"groundAnchor": {"x": 0.0, "y": 0.025},
+	}
+
+func _active_role_count(role: String) -> int:
+	var count := 0
+	for state in unit_animation.values():
+		if str(state.get("role", "")) == role:
+			count += 1
+	return count
 
 func _load_atlases() -> void:
 	atlas_textures["Worker"] = load(WORKER_ATLAS) as Texture2D

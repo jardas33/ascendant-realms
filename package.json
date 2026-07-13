@@ -316,6 +316,8 @@
     "godot:validate:salto-h3-supported-state-contract": "node tools/godot/saltoV0313H3SupportedStateContractTool.mjs validate",
     "godot:capture:salto-h3-directional-animation-micro-pilot": "powershell -NoProfile -ExecutionPolicy Bypass -File tools/godot/captureGodotV0314H3DirectionalAnimationMicroPilotWindows.ps1",
     "godot:validate:salto-h3-directional-animation-micro-pilot": "node tools/godot/saltoV0314H3DirectionalAnimationMicroPilotTool.mjs validate",
+    "godot:capture:salto-h3-animation-runtime-proof-recovery": "powershell -NoProfile -ExecutionPolicy Bypass -File tools/godot/captureGodotV0315H3AnimationRuntimeProofRecoveryWindows.ps1",
+    "godot:validate:salto-h3-animation-runtime-proof-recovery": "node tools/godot/saltoV0315H3AnimationRuntimeProofRecoveryTool.mjs validate",
     "godot:capture:salto-route-c-representative-sector": "powershell -NoProfile -ExecutionPolicy Bypass -File tools/godot/captureGodotV0305RouteCRepresentativeSectorWindows.ps1",
     "godot:validate:salto-route-c-representative-sector": "node tools/godot/saltoV0305RouteCRepresentativeSectorTool.mjs",
     "godot:capture:salto-environment-contrast": "powershell -NoProfile -ExecutionPolicy Bypass -File tools/godot/captureGodotSaltoEnvironmentContrastWindows.ps1",

@@ -26,6 +26,7 @@ const SCRIPT_ARG_PREFIXES := [
 	"--h3-semantic-evidence",
 	"--h3-supported-state-contract",
 	"--h3-directional-animation-micro-pilot",
+	"--h3-directional-animation-runtime-proof-recovery",
 	"--salto-barrosan-playable-runtime-skin",
 	"--salto-barrosan-runtime-debug-labels",
 	"--salto-barrosan-player-presentation",
@@ -1027,6 +1028,18 @@ func _ready() -> void:
 		add_child(animation_capture)
 		animation_capture.call_deferred("start")
 		return
+	if args.has("--h3-directional-animation-runtime-proof-recovery"):
+		_create_player_slice_ui()
+		var recovery_script := load("res://scripts/salto_v0315_h3_animation_runtime_proof_recovery_capture.gd") as GDScript
+		if recovery_script == null:
+			get_tree().quit(1)
+			return
+		var recovery_capture := Node.new()
+		recovery_capture.name = "V0315H3AnimationRuntimeProofRecoveryCapture"
+		recovery_capture.set_script(recovery_script)
+		add_child(recovery_capture)
+		recovery_capture.call_deferred("start")
+		return
 	if args.has("--real-input-smoke") or args.has("--real-input-validate"):
 		_create_player_slice_ui()
 		await run_real_input_smoke()
@@ -1142,7 +1155,7 @@ func load_mode(mode: String) -> void:
 			"presentationMode": _barrosan_presentation_mode_from_args(),
 			"checkpoint": _player_capture_checkpoint(),
 			"h3RuntimePilot": _script_args().has("--salto-barrosan-h3-runtime-pilot"),
-			"h3DirectionalAnimationPilot": _script_args().has("--h3-directional-animation-micro-pilot"),
+			"h3DirectionalAnimationPilot": _script_args().has("--h3-directional-animation-micro-pilot") or _script_args().has("--h3-directional-animation-runtime-proof-recovery"),
 		})
 	if home_screen:
 		home_screen.visible = false
@@ -1270,7 +1283,7 @@ func _configure_worker_art_for_active_scene() -> void:
 			"presentationMode": _barrosan_presentation_mode_from_args(),
 			"checkpoint": _player_capture_checkpoint(),
 			"h3RuntimePilot": _script_args().has("--salto-barrosan-h3-runtime-pilot"),
-			"h3DirectionalAnimationPilot": _script_args().has("--h3-directional-animation-micro-pilot"),
+			"h3DirectionalAnimationPilot": _script_args().has("--h3-directional-animation-micro-pilot") or _script_args().has("--h3-directional-animation-runtime-proof-recovery"),
 		})
 
 func _apply_review_framing_for_active_scene() -> void:
@@ -1973,7 +1986,7 @@ func _load_v0254_capture_scene() -> void:
 			"presentationMode": _barrosan_presentation_mode_from_args(),
 			"checkpoint": _player_capture_checkpoint(),
 			"h3RuntimePilot": _script_args().has("--salto-barrosan-h3-runtime-pilot"),
-			"h3DirectionalAnimationPilot": _script_args().has("--h3-directional-animation-micro-pilot"),
+			"h3DirectionalAnimationPilot": _script_args().has("--h3-directional-animation-micro-pilot") or _script_args().has("--h3-directional-animation-runtime-proof-recovery"),
 		})
 	if home_screen:
 		home_screen.visible = false
@@ -9254,6 +9267,8 @@ func _apply_player_slice_action(action: String) -> Dictionary:
 
 func _player_capture_checkpoint() -> String:
 	var normalized_root := _artifact_root_from_args().replace("\\", "/")
+	if normalized_root.contains("/v0315"):
+		return "v0.315"
 	if normalized_root.contains("/v0314"):
 		return "v0.314"
 	if normalized_root.contains("/v0312"):
@@ -12337,7 +12352,7 @@ func _barrosan_presentation_mode_from_args() -> String:
 		return "DEBUG_REVIEW"
 	if _script_args().has("--salto-barrosan-player-presentation"):
 		return "PLAYER"
-	return "PLAYER" if _player_capture_checkpoint() in ["v0.301", "v0.302", "v0.303", "v0.311", "v0.312", "v0.314"] else "DEBUG_REVIEW"
+	return "PLAYER" if _player_capture_checkpoint() in ["v0.301", "v0.302", "v0.303", "v0.311", "v0.312", "v0.314", "v0.315"] else "DEBUG_REVIEW"
 
 
 func _barrosan_runtime_scene_requested() -> bool:
