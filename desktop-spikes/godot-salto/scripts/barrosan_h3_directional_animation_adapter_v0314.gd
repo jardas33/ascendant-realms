@@ -309,10 +309,10 @@ func _apply_frame(id: String, state: Dictionary) -> void:
 
 func _visible_animation_closure_requested() -> bool:
 	for arg in OS.get_cmdline_args():
-		if str(arg) == "--h3-visible-animation-directional-closure":
+		if str(arg) == "--h3-visible-animation-directional-closure" or str(arg) == "--h3-target-isolated-evidence-closure":
 			return true
 	for arg in OS.get_cmdline_user_args():
-		if str(arg) == "--h3-visible-animation-directional-closure":
+		if str(arg) == "--h3-visible-animation-directional-closure" or str(arg) == "--h3-target-isolated-evidence-closure":
 			return true
 	return false
 

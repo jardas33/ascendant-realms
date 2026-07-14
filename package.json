@@ -320,6 +320,8 @@
     "godot:validate:salto-h3-animation-runtime-proof-recovery": "node tools/godot/saltoV0315H3AnimationRuntimeProofRecoveryTool.mjs validate",
     "godot:capture:salto-h3-visible-animation-directional-closure": "powershell -NoProfile -ExecutionPolicy Bypass -File tools/godot/captureGodotV0316H3VisibleAnimationDirectionalClosureWindows.ps1",
     "godot:validate:salto-h3-visible-animation-directional-closure": "node tools/godot/saltoV0316H3VisibleAnimationDirectionalClosureTool.mjs validate",
+    "godot:capture:salto-h3-target-isolated-evidence-closure": "powershell -NoProfile -ExecutionPolicy Bypass -File tools/godot/captureGodotV0317H3TargetIsolatedEvidenceClosureWindows.ps1",
+    "godot:validate:salto-h3-target-isolated-evidence-closure": "node tools/godot/saltoV0317H3TargetIsolatedEvidenceClosureTool.mjs validate",
     "godot:capture:salto-route-c-representative-sector": "powershell -NoProfile -ExecutionPolicy Bypass -File tools/godot/captureGodotV0305RouteCRepresentativeSectorWindows.ps1",
     "godot:validate:salto-route-c-representative-sector": "node tools/godot/saltoV0305RouteCRepresentativeSectorTool.mjs",
     "godot:capture:salto-environment-contrast": "powershell -NoProfile -ExecutionPolicy Bypass -File tools/godot/captureGodotSaltoEnvironmentContrastWindows.ps1",
