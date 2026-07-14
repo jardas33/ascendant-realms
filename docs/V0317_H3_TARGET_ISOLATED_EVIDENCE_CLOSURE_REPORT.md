@@ -60,7 +60,7 @@ No movement system, pathfinding, route following, combat, attack, damage, HP, pr
 
 ## Validation evidence
 
-The local v0.317 capture sessions, pack, and validator are the primary evidence. Retained v0.316 through v0.303 validators, the v0.285 through v0.269 Barrosan ladder, and the v0.259 UI invariant validator all pass; missing retained black-frame files for v0.259 and v0.269 through v0.284 were regenerated only through their existing capture commands. Tests (887), build, content, art-intake, runtime-art-slot, artifact-retention, `npm run godot:all`, and `git diff --check` also pass. CI evidence and the final pushed SHA are recorded here during closeout.
+The local v0.317 capture sessions, pack, and validator are the primary evidence. Retained v0.316 through v0.303 validators, the v0.285 through v0.269 Barrosan ladder, and the v0.259 UI invariant validator all pass; missing retained black-frame files for v0.259 and v0.269 through v0.284 were regenerated only through their existing capture commands. Tests (887), build, content, art-intake, runtime-art-slot, artifact-retention, `npm run godot:all`, and `git diff --check` also pass. The implementation commit `d01bc1d864e916cc283e88e8cb8fae77ff54111c` was pushed to `codex/v0215-v0226-recovery`; GitHub Actions run `29322973174` (`CI Release Matrix Dry Run`, run 457) completed with `success` for that exact SHA. The decision remains `REJECT H3 DIRECTIONAL ANIMATION METHOD — PRESERVE STATIC H3 ADAPTER` because the Worker work target-isolated identity gate measured 2 of the required 4 identities.
 
 ## Final adoption statement
 
