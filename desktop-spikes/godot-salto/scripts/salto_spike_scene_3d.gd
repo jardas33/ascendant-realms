@@ -12693,9 +12693,9 @@ func _lume_color(link: Dictionary) -> Color:
 
 func _v0314_h3_directional_animation_micro_pilot_requested() -> bool:
 	for arg in OS.get_cmdline_args():
-		if str(arg) == "--h3-directional-animation-micro-pilot":
+		if str(arg) == "--h3-directional-animation-micro-pilot" or str(arg) == "--h3-visible-animation-directional-closure":
 			return true
 	for arg in OS.get_cmdline_user_args():
-		if str(arg) == "--h3-directional-animation-micro-pilot":
+		if str(arg) == "--h3-directional-animation-micro-pilot" or str(arg) == "--h3-visible-animation-directional-closure":
 			return true
 	return false

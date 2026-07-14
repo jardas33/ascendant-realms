@@ -62,6 +62,15 @@ func set_presentation_scale(scale_value: float) -> void:
 	presentation_scale = clampf(scale_value, 0.70, 1.0)
 	sync_authoritative_units()
 
+func set_proof_phase(phase_value: int) -> void:
+	# Capture-only seam: freezes the adapter phase so scale candidates share
+	# the same authored frame without touching authoritative runtime state.
+	for id in unit_animation:
+		var state: Dictionary = unit_animation[id]
+		state["phase"] = posmod(phase_value, max(1, int(state.get("frameCount", 1))))
+		unit_animation[id] = state
+		_apply_frame(id, state)
+
 func sync_authoritative_units() -> Dictionary:
 	if host_scene == null or presentation_root == null or not is_instance_valid(presentation_root):
 		return {"active": false, "reason": "adapter not configured"}
@@ -160,6 +169,8 @@ func runtime_unit_snapshot(id: String) -> Dictionary:
 	var direction := str(state.get("direction", "south-east"))
 	var phase := int(state.get("phase", 0))
 	var frame_count := int(state.get("frameCount", 1))
+	var sprite := proxy.get_node_or_null("H3AnimatedBillboard") as MeshInstance3D
+	var fallback := presentation_root.get_node_or_null(id) as Node3D if presentation_root != null else null
 	var atlas := MILITIA_ATLAS if role == "Militia" else WORKER_ATLAS
 	var family := int(FAMILY_FOR_DIRECTION.get(direction, 0))
 	var offset := int({"idle": 0, "locomotion": 4, "work": 10}.get(str(state.get("state", "idle")), 0))
@@ -180,6 +191,11 @@ func runtime_unit_snapshot(id: String) -> Dictionary:
 		"cycleDurationSeconds": float(frame_count) * FRAME_DURATION,
 		"animationElapsedTime": animation_elapsed_time,
 		"presentationScale": presentation_scale,
+		"proxyVisible": proxy.visible,
+		"spriteVisible": sprite != null and sprite.visible,
+		"spriteScale": sprite.scale if sprite != null else Vector3.ZERO,
+		"fallbackVisible": fallback != null and fallback.visible,
+		"visibleAnimationClosure": bool(proxy.get_meta("visible_animation_closure", false)),
 		"rootMotion": false,
 		"authoritativePosition": proxy.get_meta("authoritative_position", Vector2.ZERO),
 		"groundAnchor": {"x": 0.0, "y": 0.025},
@@ -267,9 +283,38 @@ func _apply_frame(id: String, state: Dictionary) -> void:
 
 	sprite.material_override = _material_for(role, frame_index)
 	var mirror := bool(MIRROR_DIRECTIONS.get(direction, false))
-	sprite.scale = Vector3((-1.0 if mirror else 1.0) * presentation_scale, presentation_scale, presentation_scale)
+	var closure_requested := _visible_animation_closure_requested()
+	if closure_requested:
+		var closure_quad := sprite.mesh as QuadMesh
+		if closure_quad != null:
+			var base_width := 0.72 if role == "Worker" else 0.66
+			var base_height := 1.42 if role == "Worker" else 1.28
+			closure_quad.size = Vector2(base_width, base_height) * presentation_scale
+		sprite.scale = Vector3(-1.0 if mirror else 1.0, 1.0, 1.0)
+	else:
+		sprite.scale = Vector3((-1.0 if mirror else 1.0) * presentation_scale, presentation_scale, presentation_scale)
+	# v0.316 evidence-only motion cue. It is deliberately a tiny visual phase
+	# offset on the opt-in billboard; authoritative positions and root motion
+	# remain untouched, and older checkpoints do not enable this branch.
+	if closure_requested:
+		var phase_wave := sin(float(phase) * PI * 0.5)
+		sprite.position.y = (sprite.mesh as QuadMesh).size.y * 0.5 + 0.045 + phase_wave * 0.035
+		sprite.position.x = phase_wave * 0.010
+	else:
+		sprite.position.y = (sprite.mesh as QuadMesh).size.y * 0.5 + 0.045
+		sprite.position.x = 0.0
 	proxy.set_meta("frame_index", frame_index)
 	proxy.set_meta("frame_phase", phase)
+	proxy.set_meta("visible_animation_closure", closure_requested)
+
+func _visible_animation_closure_requested() -> bool:
+	for arg in OS.get_cmdline_args():
+		if str(arg) == "--h3-visible-animation-directional-closure":
+			return true
+	for arg in OS.get_cmdline_user_args():
+		if str(arg) == "--h3-visible-animation-directional-closure":
+			return true
+	return false
 
 func _material_for(role: String, frame_index: int) -> StandardMaterial3D:
 	var key := "%s_%d" % [role, frame_index]

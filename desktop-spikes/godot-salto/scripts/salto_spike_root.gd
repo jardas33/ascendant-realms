@@ -27,6 +27,7 @@ const SCRIPT_ARG_PREFIXES := [
 	"--h3-supported-state-contract",
 	"--h3-directional-animation-micro-pilot",
 	"--h3-directional-animation-runtime-proof-recovery",
+	"--h3-visible-animation-directional-closure",
 	"--salto-barrosan-playable-runtime-skin",
 	"--salto-barrosan-runtime-debug-labels",
 	"--salto-barrosan-player-presentation",
@@ -1040,6 +1041,20 @@ func _ready() -> void:
 		add_child(recovery_capture)
 		recovery_capture.call_deferred("start")
 		return
+	if args.has("--h3-visible-animation-directional-closure"):
+		_create_player_slice_ui()
+		var closure_script := load("res://scripts/salto_v0316_h3_visible_animation_directional_closure_capture.gd") as GDScript
+		if closure_script == null:
+			_write_absolute_json(_path_join(_artifact_root_from_args(), "v0316-dispatch-failure.json"), {"status": "FAIL_V0316_CAPTURE_SCRIPT_LOAD", "script": "res://scripts/salto_v0316_h3_visible_animation_directional_closure_capture.gd"})
+			get_tree().quit(1)
+			return
+		var closure_capture := Node.new()
+		closure_capture.name = "V0316H3VisibleAnimationDirectionalClosureCapture"
+		closure_capture.set_script(closure_script)
+		add_child(closure_capture)
+		_write_absolute_json(_path_join(_artifact_root_from_args(), "v0316-dispatch-prestart.json"), {"status": "PASS_V0316_CAPTURE_DISPATCH", "hasStart": closure_capture.has_method("start")})
+		closure_capture.call("start")
+		return
 	if args.has("--real-input-smoke") or args.has("--real-input-validate"):
 		_create_player_slice_ui()
 		await run_real_input_smoke()
@@ -1155,7 +1170,7 @@ func load_mode(mode: String) -> void:
 			"presentationMode": _barrosan_presentation_mode_from_args(),
 			"checkpoint": _player_capture_checkpoint(),
 			"h3RuntimePilot": _script_args().has("--salto-barrosan-h3-runtime-pilot"),
-			"h3DirectionalAnimationPilot": _script_args().has("--h3-directional-animation-micro-pilot") or _script_args().has("--h3-directional-animation-runtime-proof-recovery"),
+			"h3DirectionalAnimationPilot": _script_args().has("--h3-directional-animation-micro-pilot") or _script_args().has("--h3-directional-animation-runtime-proof-recovery") or _script_args().has("--h3-visible-animation-directional-closure"),
 		})
 	if home_screen:
 		home_screen.visible = false
@@ -1283,7 +1298,7 @@ func _configure_worker_art_for_active_scene() -> void:
 			"presentationMode": _barrosan_presentation_mode_from_args(),
 			"checkpoint": _player_capture_checkpoint(),
 			"h3RuntimePilot": _script_args().has("--salto-barrosan-h3-runtime-pilot"),
-			"h3DirectionalAnimationPilot": _script_args().has("--h3-directional-animation-micro-pilot") or _script_args().has("--h3-directional-animation-runtime-proof-recovery"),
+			"h3DirectionalAnimationPilot": _script_args().has("--h3-directional-animation-micro-pilot") or _script_args().has("--h3-directional-animation-runtime-proof-recovery") or _script_args().has("--h3-visible-animation-directional-closure"),
 		})
 
 func _apply_review_framing_for_active_scene() -> void:
@@ -1986,7 +2001,7 @@ func _load_v0254_capture_scene() -> void:
 			"presentationMode": _barrosan_presentation_mode_from_args(),
 			"checkpoint": _player_capture_checkpoint(),
 			"h3RuntimePilot": _script_args().has("--salto-barrosan-h3-runtime-pilot"),
-			"h3DirectionalAnimationPilot": _script_args().has("--h3-directional-animation-micro-pilot") or _script_args().has("--h3-directional-animation-runtime-proof-recovery"),
+			"h3DirectionalAnimationPilot": _script_args().has("--h3-directional-animation-micro-pilot") or _script_args().has("--h3-directional-animation-runtime-proof-recovery") or _script_args().has("--h3-visible-animation-directional-closure"),
 		})
 	if home_screen:
 		home_screen.visible = false
@@ -9269,6 +9284,8 @@ func _player_capture_checkpoint() -> String:
 	var normalized_root := _artifact_root_from_args().replace("\\", "/")
 	if normalized_root.contains("/v0315"):
 		return "v0.315"
+	if normalized_root.contains("/v0316"):
+		return "v0.316"
 	if normalized_root.contains("/v0314"):
 		return "v0.314"
 	if normalized_root.contains("/v0312"):
