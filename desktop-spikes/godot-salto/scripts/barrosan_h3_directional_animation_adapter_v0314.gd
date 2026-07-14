@@ -175,6 +175,20 @@ func runtime_unit_snapshot(id: String) -> Dictionary:
 	var family := int(FAMILY_FOR_DIRECTION.get(direction, 0))
 	var offset := int({"idle": 0, "locomotion": 4, "work": 10}.get(str(state.get("state", "idle")), 0))
 	var frame_index := family * (WORKER_MAX_FRAMES if role == "Worker" else MILITIA_MAX_FRAMES) + offset + phase
+	var atlas_texture := atlas_textures.get(role) as Texture2D
+	var atlas_size := Vector2i(atlas_texture.get_width(), atlas_texture.get_height()) if atlas_texture != null else Vector2i(0, 0)
+	var cell_x := frame_index % 8
+	var cell_y := frame_index / 8
+	var uv_min := Vector2(float(cell_x * CELL_SIZE) / float(max(1, atlas_size.x)), float(cell_y * CELL_SIZE) / float(max(1, atlas_size.y)))
+	var uv_max := Vector2(float((cell_x + 1) * CELL_SIZE) / float(max(1, atlas_size.x)), float((cell_y + 1) * CELL_SIZE) / float(max(1, atlas_size.y)))
+	var visual_children := 0
+	var visible_visual_children := 0
+	for child in proxy.get_children():
+		if child is GeometryInstance3D and child.name != "H3ContactShadow" and child.name != "H3SelectionRing":
+			visual_children += 1
+			if child.visible:
+				visible_visual_children += 1
+	var material := sprite.material_override as StandardMaterial3D if sprite != null else null
 	return {
 		"id": id,
 		"present": true,
@@ -184,6 +198,18 @@ func runtime_unit_snapshot(id: String) -> Dictionary:
 		"directionFamily": family,
 		"atlasIdentifier": atlas,
 		"atlasCell": {"x": frame_index % 8, "y": frame_index / 8, "w": CELL_SIZE, "h": CELL_SIZE},
+		"atlasDimensions": {"w": atlas_size.x, "h": atlas_size.y},
+		"cellPixelRect": {"x": cell_x * CELL_SIZE, "y": cell_y * CELL_SIZE, "w": CELL_SIZE, "h": CELL_SIZE},
+		"uvMin": {"x": uv_min.x, "y": uv_min.y},
+		"uvMax": {"x": uv_max.x, "y": uv_max.y},
+		"activeUvCoverage": (uv_max.x - uv_min.x) * (uv_max.y - uv_min.y),
+		"visualChildCount": visual_children,
+		"visibleVisualChildCount": visible_visual_children,
+		"materialInstanceId": material.get_instance_id() if material != null else 0,
+		"shaderName": "StandardMaterial3D_UV_CELL" if material != null else "",
+		"regionEnabled": false,
+		"hframes": 0,
+		"vframes": 0,
 		"frameIndex": frame_index,
 		"framePhase": phase,
 		"frameCount": frame_count,
@@ -309,10 +335,10 @@ func _apply_frame(id: String, state: Dictionary) -> void:
 
 func _visible_animation_closure_requested() -> bool:
 	for arg in OS.get_cmdline_args():
-		if str(arg) == "--h3-visible-animation-directional-closure" or str(arg) == "--h3-target-isolated-evidence-closure":
+		if str(arg) == "--h3-visible-animation-directional-closure" or str(arg) == "--h3-target-isolated-evidence-closure" or str(arg) == "--h3-single-sprite-atlas-rendering-repair":
 			return true
 	for arg in OS.get_cmdline_user_args():
-		if str(arg) == "--h3-visible-animation-directional-closure" or str(arg) == "--h3-target-isolated-evidence-closure":
+		if str(arg) == "--h3-visible-animation-directional-closure" or str(arg) == "--h3-target-isolated-evidence-closure" or str(arg) == "--h3-single-sprite-atlas-rendering-repair":
 			return true
 	return false
 
@@ -326,11 +352,17 @@ func _material_for(role: String, frame_index: int) -> StandardMaterial3D:
 	var columns := 8
 	var cell_index := frame_index
 	var region := Rect2((cell_index % columns) * CELL_SIZE, (cell_index / columns) * CELL_SIZE, CELL_SIZE, CELL_SIZE)
-	var texture := AtlasTexture.new()
-	texture.atlas = atlas
-	texture.region = region
 	var material := StandardMaterial3D.new()
-	material.albedo_texture = texture
+	# The previous adapter assigned an AtlasTexture to a 3D material, but the
+	# live QuadMesh still sampled the complete atlas in the runtime renderer.
+	# Bind the source atlas directly and constrain the mesh UVs explicitly to
+	# the active cell. This keeps the proof tied to the live billboard while
+	# making neighbouring atlas cells impossible to sample.
+	var atlas_width := float(max(1, atlas.get_width()))
+	var atlas_height := float(max(1, atlas.get_height()))
+	material.albedo_texture = atlas
+	material.uv1_scale = Vector3(float(CELL_SIZE) / atlas_width, float(CELL_SIZE) / atlas_height, 1.0)
+	material.uv1_offset = Vector3(region.position.x / atlas_width, region.position.y / atlas_height, 0.0)
 	material.albedo_color = Color.WHITE
 	material.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
 	material.billboard_mode = BaseMaterial3D.BILLBOARD_ENABLED

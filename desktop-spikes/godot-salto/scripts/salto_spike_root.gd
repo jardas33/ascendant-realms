@@ -29,6 +29,7 @@ const SCRIPT_ARG_PREFIXES := [
 	"--h3-directional-animation-runtime-proof-recovery",
 	"--h3-visible-animation-directional-closure",
 	"--h3-target-isolated-evidence-closure",
+	"--h3-single-sprite-atlas-rendering-repair",
 	"--salto-barrosan-playable-runtime-skin",
 	"--salto-barrosan-runtime-debug-labels",
 	"--salto-barrosan-player-presentation",
@@ -1070,6 +1071,20 @@ func _ready() -> void:
 		_write_absolute_json(_path_join(_artifact_root_from_args(), "v0317-dispatch-prestart.json"), {"status": "PASS_V0317_CAPTURE_DISPATCH", "hasStart": target_capture.has_method("start"), "scriptMethods": target_script.get_script_method_list(), "canInstantiate": target_script.can_instantiate(), "scriptPath": target_script.resource_path})
 		target_capture.call("start")
 		return
+	if args.has("--h3-single-sprite-atlas-rendering-repair"):
+		_create_player_slice_ui()
+		var cell_script := load("res://scripts/salto_v0318_h3_single_sprite_atlas_rendering_repair_capture.gd") as GDScript
+		if cell_script == null:
+			_write_absolute_json(_path_join(_artifact_root_from_args(), "v0318-dispatch-failure.json"), {"status": "FAIL_V0318_CAPTURE_SCRIPT_LOAD", "script": "res://scripts/salto_v0318_h3_single_sprite_atlas_rendering_repair_capture.gd"})
+			get_tree().quit(1)
+			return
+		var cell_capture := Node.new()
+		cell_capture.name = "V0318H3SingleSpriteAtlasRenderingRepairCapture"
+		cell_capture.set_script(cell_script)
+		add_child(cell_capture)
+		_write_absolute_json(_path_join(_artifact_root_from_args(), "v0318-dispatch-prestart.json"), {"status": "PASS_V0318_CAPTURE_DISPATCH", "hasStart": cell_capture.has_method("start"), "scriptMethods": cell_script.get_script_method_list(), "canInstantiate": cell_script.can_instantiate(), "scriptPath": cell_script.resource_path})
+		cell_capture.call_deferred("start")
+		return
 	if args.has("--real-input-smoke") or args.has("--real-input-validate"):
 		_create_player_slice_ui()
 		await run_real_input_smoke()
@@ -1185,7 +1200,7 @@ func load_mode(mode: String) -> void:
 			"presentationMode": _barrosan_presentation_mode_from_args(),
 			"checkpoint": _player_capture_checkpoint(),
 			"h3RuntimePilot": _script_args().has("--salto-barrosan-h3-runtime-pilot"),
-			"h3DirectionalAnimationPilot": _script_args().has("--h3-directional-animation-micro-pilot") or _script_args().has("--h3-directional-animation-runtime-proof-recovery") or _script_args().has("--h3-visible-animation-directional-closure") or _script_args().has("--h3-target-isolated-evidence-closure"),
+			"h3DirectionalAnimationPilot": _script_args().has("--h3-directional-animation-micro-pilot") or _script_args().has("--h3-directional-animation-runtime-proof-recovery") or _script_args().has("--h3-visible-animation-directional-closure") or _script_args().has("--h3-target-isolated-evidence-closure") or _script_args().has("--h3-single-sprite-atlas-rendering-repair"),
 		})
 	if home_screen:
 		home_screen.visible = false
@@ -1313,7 +1328,7 @@ func _configure_worker_art_for_active_scene() -> void:
 			"presentationMode": _barrosan_presentation_mode_from_args(),
 			"checkpoint": _player_capture_checkpoint(),
 			"h3RuntimePilot": _script_args().has("--salto-barrosan-h3-runtime-pilot"),
-			"h3DirectionalAnimationPilot": _script_args().has("--h3-directional-animation-micro-pilot") or _script_args().has("--h3-directional-animation-runtime-proof-recovery") or _script_args().has("--h3-visible-animation-directional-closure") or _script_args().has("--h3-target-isolated-evidence-closure"),
+			"h3DirectionalAnimationPilot": _script_args().has("--h3-directional-animation-micro-pilot") or _script_args().has("--h3-directional-animation-runtime-proof-recovery") or _script_args().has("--h3-visible-animation-directional-closure") or _script_args().has("--h3-target-isolated-evidence-closure") or _script_args().has("--h3-single-sprite-atlas-rendering-repair"),
 		})
 
 func _apply_review_framing_for_active_scene() -> void:
@@ -2016,7 +2031,7 @@ func _load_v0254_capture_scene() -> void:
 			"presentationMode": _barrosan_presentation_mode_from_args(),
 			"checkpoint": _player_capture_checkpoint(),
 			"h3RuntimePilot": _script_args().has("--salto-barrosan-h3-runtime-pilot"),
-			"h3DirectionalAnimationPilot": _script_args().has("--h3-directional-animation-micro-pilot") or _script_args().has("--h3-directional-animation-runtime-proof-recovery") or _script_args().has("--h3-visible-animation-directional-closure") or _script_args().has("--h3-target-isolated-evidence-closure"),
+			"h3DirectionalAnimationPilot": _script_args().has("--h3-directional-animation-micro-pilot") or _script_args().has("--h3-directional-animation-runtime-proof-recovery") or _script_args().has("--h3-visible-animation-directional-closure") or _script_args().has("--h3-target-isolated-evidence-closure") or _script_args().has("--h3-single-sprite-atlas-rendering-repair"),
 		})
 	if home_screen:
 		home_screen.visible = false
@@ -4648,7 +4663,7 @@ func _v0210_selection_panel_data(action: String, status: Dictionary) -> Dictiona
 	return data
 
 func _h3_directional_animation_micro_pilot_requested() -> bool:
-	return _script_args().has("--h3-directional-animation-micro-pilot") or _script_args().has("--h3-directional-animation-runtime-proof-recovery") or _script_args().has("--h3-visible-animation-directional-closure") or _script_args().has("--h3-target-isolated-evidence-closure")
+	return _script_args().has("--h3-directional-animation-micro-pilot") or _script_args().has("--h3-directional-animation-runtime-proof-recovery") or _script_args().has("--h3-visible-animation-directional-closure") or _script_args().has("--h3-target-isolated-evidence-closure") or _script_args().has("--h3-single-sprite-atlas-rendering-repair")
 
 func _v0210_icon_spec(id: String, label: String, shortcut: String, tooltip: String, state: String, cooldown: float, icon_name: String, method_name: String) -> Dictionary:
 	return {

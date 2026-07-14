@@ -12693,9 +12693,9 @@ func _lume_color(link: Dictionary) -> Color:
 
 func _v0314_h3_directional_animation_micro_pilot_requested() -> bool:
 	for arg in OS.get_cmdline_args():
-		if str(arg) == "--h3-directional-animation-micro-pilot" or str(arg) == "--h3-visible-animation-directional-closure" or str(arg) == "--h3-target-isolated-evidence-closure":
+		if str(arg) == "--h3-directional-animation-micro-pilot" or str(arg) == "--h3-visible-animation-directional-closure" or str(arg) == "--h3-target-isolated-evidence-closure" or str(arg) == "--h3-single-sprite-atlas-rendering-repair":
 			return true
 	for arg in OS.get_cmdline_user_args():
-		if str(arg) == "--h3-directional-animation-micro-pilot" or str(arg) == "--h3-visible-animation-directional-closure" or str(arg) == "--h3-target-isolated-evidence-closure":
+		if str(arg) == "--h3-directional-animation-micro-pilot" or str(arg) == "--h3-visible-animation-directional-closure" or str(arg) == "--h3-target-isolated-evidence-closure" or str(arg) == "--h3-single-sprite-atlas-rendering-repair":
 			return true
 	return false
