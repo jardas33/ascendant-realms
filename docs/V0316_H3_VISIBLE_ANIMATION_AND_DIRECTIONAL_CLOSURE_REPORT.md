@@ -77,4 +77,4 @@ The retained v0.304-v0.309 validators were given narrow continuation allowlist e
 
 ## CI and final state
 
-Exact-SHA GitHub Actions evidence and the final commit SHA are recorded in the final closeout after push. The closeout is not considered complete until the branch is clean and synchronized at 0 ahead / 0 behind.
+Exact-SHA GitHub Actions evidence: commit `1154b30b38350f2c339bd0df286e6f23876d472d`, workflow run `29296545572`, `CI Release Matrix Dry Run`, conclusion `success`. A final documentation-only closeout commit records this evidence; its own exact-SHA Actions run is required before completion. The closeout is not considered complete until the branch is clean and synchronized at 0 ahead / 0 behind.
