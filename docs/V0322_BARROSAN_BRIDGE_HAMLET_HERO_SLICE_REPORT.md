@@ -44,4 +44,4 @@ Dedicated commands are `npm run godot:validate:salto-barrosan-bridge-hamlet-hero
 
 ## Validation and final state
 
-The dedicated v0.322 validator, corrected exact-upload media validator, retained v0.321-v0.303 validators, v0.259 invariant, tests, build, content/art/runtime checks, artifact retention, `npm run godot:all` and `git diff --check` are required before closeout. CI must pass for the exact pushed SHA. Final state must be clean and synced with origin at 0 ahead / 0 behind.
+The dedicated v0.322 validator, corrected exact-upload media validator, retained v0.321-v0.303 validators, v0.259 invariant, tests, build, content/art/runtime checks, artifact retention, `npm run godot:all` and `git diff --check` passed before closeout. The implementation commit `132f56d4668682b6892fa2752e1f999c42a44631` completed GitHub Actions run `29456133952` successfully for that exact SHA. Final state is clean and synced with origin at 0 ahead / 0 behind.
