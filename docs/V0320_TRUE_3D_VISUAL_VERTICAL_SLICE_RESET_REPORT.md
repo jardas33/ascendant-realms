@@ -99,4 +99,4 @@ Local validation evidence completed before commit:
 - `npm run godot:all`: pass;
 - `git diff --check`: pass.
 
-CI evidence is recorded against the exact pushed SHA in the final closeout after publication. Final repository state is required to be clean and synced, 0 ahead / 0 behind.
+Publication evidence for the implementation commit: `bb5d8cebc0705256449d30e11836bb25f093ebf4`; GitHub Actions run `29384389988` completed successfully for that exact SHA. The final report-only publication update is pushed after this evidence was captured. Final repository state is clean and synced, 0 ahead / 0 behind at closeout.
