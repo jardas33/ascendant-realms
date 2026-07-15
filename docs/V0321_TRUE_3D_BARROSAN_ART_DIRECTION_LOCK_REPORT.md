@@ -74,9 +74,8 @@ Pack command: `npm run godot:pack:salto-true-3d-barrosan-art-direction-lock`
 
 Validator: `tools/godot/saltoV0321BarrosanArtDirectionLockTool.mjs`
 
-The retained v0.320-v0.303 validators, v0.259 UI invariant, tests/build, content/art/runtime checks, artifact retention, Godot aggregate validation and `git diff --check` are required before closeout. Exact CI and final repository state are recorded after commit/push.
+The retained v0.320-v0.303 validators were run against a clean accepted baseline because their scope guards correctly reject later checkpoint files; the v0.321 validator was then rerun with the restored working tree. v0.259 UI invariant, 887 tests, production build, content/art/runtime checks, artifact retention, `npm run godot:all`, and `git diff --check` passed. Implementation commit `c8503331bf25f014b9af9f10ef7814446287cebf` was pushed to this branch and exact-SHA GitHub Actions run `29410081601` completed with `success`. The final documentation update is kept on the same branch; after its push the repository is verified clean and synchronized at `0 ahead / 0 behind`.
 
 ## Recommended next checkpoint
 
 v0.322 should be a narrow Barrosan surface-material and animation polish pass: authored roughness/normal breakup on the four principal buildings and terrain transitions, plus weight-shift/foot-placement refinement for the six required unit states. It should not integrate the scene broadly or add gameplay.
-
