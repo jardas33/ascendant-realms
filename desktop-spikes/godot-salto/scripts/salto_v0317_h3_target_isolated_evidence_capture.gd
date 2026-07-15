@@ -277,9 +277,9 @@ func _capture_save_load_v0317() -> void:
 func _capture_preservation_v0317() -> void:
 	await _reset_runtime()
 	_select(MILITIA_ID)
-	var before := _authoritative_digest()
+	var before: Dictionary = _authoritative_digest()
 	await _capture_record("hold_contract", "preservation", [MILITIA_ID], "H hidden and unsupported; digest unchanged", {"holdContract": "HIDDEN_WHEN_UNSUPPORTED"})
-	var after := _authoritative_digest()
+	var after: Dictionary = _authoritative_digest()
 	if before != after:
 		v0317_capture_errors.append("hold contract changed authoritative digest")
 

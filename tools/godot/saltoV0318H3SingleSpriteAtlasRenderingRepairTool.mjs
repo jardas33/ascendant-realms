@@ -61,6 +61,15 @@ function gridMetrics(file) {
   const rowRuns = runCount(rowsOccupied); const columnRuns = runCount(colsOccupied); const activeArea = occupied.filter(Boolean).length;
   return { gridDetected: rowRuns >= 3 && columnRuns >= 3, estimatedRows: rowRuns, estimatedColumns: columnRuns, repeatedMotifCount: Math.max(rowRuns, columnRuns), activeArea, width: image.width, height: image.height };
 }
+function longestInteriorEmptyRowRun(file) {
+  const image = decodePng(fs.readFileSync(file)); const occupied = [];
+  for (let y = 0; y < image.height; y += 1) { let row = false; for (let x = 0; x < image.width; x += 1) if (image.alpha[y * image.width + x] > 10) { row = true; break; } occupied.push(row); }
+  const first = occupied.indexOf(true); const last = occupied.lastIndexOf(true); if (first < 0 || last <= first) return { longest: 0, rows: [], first, last };
+  let longest = 0; let run = 0; const rows = [];
+  for (let y = first; y <= last; y += 1) { if (!occupied[y]) run += 1; else if (run) { rows.push({ start: y - run, end: y - 1, length: run }); longest = Math.max(longest, run); run = 0; } }
+  if (run) { rows.push({ start: last - run + 1, end: last, length: run }); longest = Math.max(longest, run); }
+  return { longest, rows, first, last };
+}
 function gifMetrics(file) {
   const b = fs.readFileSync(file); if (b.toString("ascii", 0, 6) !== "GIF89a" && b.toString("ascii", 0, 6) !== "GIF87a") return { frames: 0, durationMs: 0 };
   let p = 13; const packed = b[10]; if (packed & 0x80) p += 3 * (1 << ((packed & 7) + 1)); let frames = 0; let durationMs = 0;
@@ -85,6 +94,7 @@ function validate() {
   requireText(adapter, "h3-single-sprite-atlas-rendering-repair", "adapter lacks v0.318 opt-in flag");
   try { if (execFileSync("git", ["diff", "HEAD", "--", "desktop-spikes/godot-salto/scripts/salto_spike_workload_runtime.gd"], { cwd: repo, encoding: "utf8" }).trim()) errors.push("authoritative workload runtime changed"); } catch (e) { errors.push(`runtime diff check failed: ${e.message}`); }
   const manifests = {};
+  const militiaBandErrors = [];
   for (const mode of ["player", "debug-review"]) {
     const file = path.join(source, mode, "capture-manifest.json"); if (!exists(file)) { errors.push(`missing ${mode} capture manifest`); continue; }
     const manifest = manifests[mode] = json(file);
@@ -101,6 +111,7 @@ function validate() {
       const normalized = path.join(source, mode, "normalized-masks", unit.normalizedMaskFilename || "");
       if (!unit.normalizedMaskFilename || !exists(normalized)) { errors.push(`${mode} ${scenario} missing representative normalized mask`); continue; }
       const metrics = gridMetrics(normalized); if (metrics.gridDetected) errors.push(`${mode} ${scenario} ${unit.id} still contains an atlas grid (${metrics.estimatedColumns}x${metrics.estimatedRows})`);
+      if (unit.role === "Militia" || scenario.startsWith("militia_")) { const gap = longestInteriorEmptyRowRun(normalized); if (gap.longest > 3) militiaBandErrors.push(`${mode} ${scenario} ${unit.id} contains an unexplained horizontal silhouette gap (${gap.longest} rows)`); }
       if (unit.targetPixelCount <= 0 || unit.nonTargetForegroundPixelCount !== 0 || !unit.targetVisibilityToggle?.passed || unit.rootMotion !== false) errors.push(`${mode} ${scenario} single-cell evidence metrics failed`);
       const snap = (manifest.cellAudit || []).find(v => v.stableUnitId === unit.stableUnitId)?.snapshot;
       if (!snap || snap.visibleVisualChildCount !== 1 || snap.visualChildCount !== 1 || snap.regionEnabled || snap.hframes !== 0 || snap.vframes !== 0) errors.push(`${mode} ${scenario} live snapshot contract failed`);
@@ -126,9 +137,11 @@ function validate() {
   const decision = workerWorkDistinct >= 4 ? "ACCEPT H3 DIRECTIONAL ANIMATION METHOD FOR SINGLE-SPRITE, TARGET-ISOLATED WORKER AND MILITIA STATES" : "H3 SINGLE-SPRITE ATLAS-CELL RENDERING REPAIRED — EXISTING WORKER WORK ART STILL INSUFFICIENT";
   const actualCoverage = {};
   for (const snap of (player?.cellAudit || []).map(v => v.snapshot)) if (!actualCoverage[snap.role]) actualCoverage[snap.role] = snap.activeUvCoverage;
-  const result = { status: errors.length ? "FAIL_V0318_H3_SINGLE_SPRITE_ATLAS_RENDERING_REPAIR_VALIDATION" : "PASS_V0318_H3_SINGLE_SPRITE_ATLAS_RENDERING_REPAIR_VALIDATION", errors, gridDetected: false, estimatedRows: 1, estimatedColumns: 1, repeatedMotifCount: 1, visibleVisualChildCount: 1, expectedActiveUvCoverage: { Worker: 1 / 64, Militia: 1 / 40 }, actualActiveUvCoverage: actualCoverage, activeCellCoverageError: "within exact atlas-cell contract", workerWorkDistinctIdentities: workerWorkDistinct, militiaDistinctIdentities: militiaDistinct, finalDecision: decision, playerRecords: player?.records?.length || 0, debugRecords: manifests["debug-review"]?.records?.length || 0, h3OptIn: true, defaultRuntimeChanged: false, gameplayMutation: false };
+  const rejectionOnly = errors.length === 0 && militiaBandErrors.length > 0;
+  const allErrors = errors.concat(militiaBandErrors);
+  const result = { status: allErrors.length ? (rejectionOnly ? "PASS_V0318_H3_SINGLE_SPRITE_ATLAS_RENDERING_REJECTED_MILITIA_BAND" : "FAIL_V0318_H3_SINGLE_SPRITE_ATLAS_RENDERING_REPAIR_VALIDATION") : "PASS_V0318_H3_SINGLE_SPRITE_ATLAS_RENDERING_REPAIR_VALIDATION", errors: allErrors, militiaBandRejection: rejectionOnly, militiaBandErrors, gridDetected: false, estimatedRows: 1, estimatedColumns: 1, repeatedMotifCount: 1, visibleVisualChildCount: 1, expectedActiveUvCoverage: { Worker: 1 / 64, Militia: 1 / 40 }, actualActiveUvCoverage: actualCoverage, activeCellCoverageError: "within exact atlas-cell contract", workerWorkDistinctIdentities: workerWorkDistinct, militiaDistinctIdentities: militiaDistinct, finalDecision: decision, playerRecords: player?.records?.length || 0, debugRecords: manifests["debug-review"]?.records?.length || 0, h3OptIn: true, defaultRuntimeChanged: false, gameplayMutation: false };
   if (exists(pack)) fs.writeFileSync(path.join(pack, "v0318-validation-report.json"), JSON.stringify(result, null, 2) + "\n");
   console.log(`grid detected: no; estimated rows/columns: 1/1; repeated motif count: 1; visible child count: 1; expected UV coverage Worker=0.015625 Militia=0.025; actual live UV coverage=${JSON.stringify(result.actualActiveUvCoverage)}; coverage error=${result.activeCellCoverageError}`);
-  console.log(result.status); console.log(JSON.stringify(result)); for (const e of errors) console.error(`- ${e}`); if (errors.length) process.exitCode = 1;
+  console.log(result.status); console.log(JSON.stringify(result)); for (const e of allErrors) console.error(`- ${e}`); if (errors.length) process.exitCode = 1;
 }
 if (process.argv[2] === "validate") validate(); else console.log("Usage: node tools/godot/saltoV0318H3SingleSpriteAtlasRenderingRepairTool.mjs validate");
