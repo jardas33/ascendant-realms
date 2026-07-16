@@ -133,7 +133,7 @@ The validator rejects the checkpoint for road-like water cues, white marks, blac
 
 Dedicated v0.325 capture/pack/aggregate validation passed after direct inspection of the authoritative overview, upstream/downstream comparison, bank cross-section, yard/path, bridge-abutment, and v0.324 comparison images.
 
-The retained v0.324 through v0.303 validators, v0.259 invariant validator, tests, build, content/art/runtime checks, artifact retention, `npm run godot:all`, and `git diff --check` are required before closeout. Exact pushed-SHA CI evidence and final synchronized repository state are recorded at closeout.
+The retained v0.324 through v0.303 validators, v0.259 invariant validator, tests, build, content/art/runtime checks, artifact retention, `npm run godot:all`, and `git diff --check` all passed locally before closeout. The implementation commit `a1e3fccfa80f0b0f9d5e2b7edf9587bce4d74513` completed GitHub Actions run `29492514132` successfully for that exact pushed SHA. This documentation-only closeout records the final evidence; its own exact-SHA CI result and the final synchronized repository state are recorded in repository history.
 
 ## Files added
 
