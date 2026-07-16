@@ -148,4 +148,4 @@ The evidence proves a real isolated authored pipeline with genuine geometry, imp
 
 ## CI and final repo state
 
-The final commit SHA, exact pushed GitHub Actions run, and clean/synced repository state are recorded at closeout after all local validation, commit, push, and exact-SHA Actions completion.
+The implementation commit is `72a243bfb4a71ecdb7d0331f29827ba1413bf6d2`. GitHub Actions run `29540480328` completed with `success` for that exact SHA on `codex/v0215-v0226-recovery`. The working tree was clean and synchronized at the implementation closeout; the subsequent documentation-only closeout commit preserves the same runtime and evidence scope.
