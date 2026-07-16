@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource path="res://scripts/v0323_structural_geometry_repair.gd" type="Script" id="1"]
+
+[node name="V0323StructuralGeometryRepair" type="Node3D"]
+script = ExtResource("1")

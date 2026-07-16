@@ -94,6 +94,8 @@ func start() -> void:
 func _capture_record(event_id: String, scenario: String, ids: Array[String], note: String, extra: Dictionary) -> Dictionary:
 	v0317_capture_index += 1
 	var filename := "%s_%03d_%s.png" % [mode.to_lower(), v0317_capture_index, event_id]
+	if watermark == null or not is_instance_valid(watermark):
+		_add_v0318_watermark()
 	watermark.text = "V0.318 SINGLE SPRITE CELL | %s | %s | %s" % [mode, scenario, _caption_for(ids)]
 	await _settle(2)
 	var source_image: Image = await _render_image()
