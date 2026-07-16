@@ -148,4 +148,10 @@ Passed locally:
 
 ## CI and final state
 
-The checkpoint is opt-in and isolated from the default runtime. Exact pushed-SHA GitHub Actions evidence and the final clean/synced repository state will be recorded here at closeout.
+The checkpoint is opt-in and isolated from the default runtime. Implementation commit
+`743b01ad017bf973892dfadefe6d30bfcbd40cb3` completed GitHub Actions run
+`29464444739` successfully for the exact pushed SHA. The final documentation-only
+closeout commit and its exact-SHA CI result are recorded in the repository history.
+
+The final repository state is clean and synchronized with
+`origin/codex/v0215-v0226-recovery` at `0` ahead / `0` behind.
