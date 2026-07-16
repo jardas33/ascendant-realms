@@ -101,7 +101,11 @@ The aggregate validator inspects the runtime manifest/audit, source geometry anc
 
 No movement, pathfinding, bridge-crossing choreography, combat, AI, economy, resources, saves, stable IDs, pressure behavior, or default-runtime mutation is introduced. The new capture uses only visual evidence choreography inherited from the opt-in slice.
 
-The retained v0.323 through v0.303 validators and v0.259 UI invariant validator are required at closeout, alongside tests, build, content/art/runtime checks, artifact retention, `npm run godot:all`, and `git diff --check`. Exact pushed-SHA CI evidence and final synchronized repository state are recorded at closeout.
+The retained v0.323 through v0.303 validators and v0.259 UI invariant validator are required at closeout, alongside tests, build, content/art/runtime checks, artifact retention, `npm run godot:all`, and `git diff --check`.
+
+## CI evidence and final state
+
+Implementation commit `f135c22efb11e8cb4df116867aaec5fd968c6625` completed GitHub Actions run `29472746480` successfully for the exact pushed SHA. The documentation-only closeout commit and its exact-SHA CI result are recorded in repository history. Final verification requires the branch to remain clean and synchronized with `origin/codex/v0215-v0226-recovery` at 0 ahead / 0 behind.
 
 ## Files added
 
@@ -111,4 +115,3 @@ The retained v0.323 through v0.303 validators and v0.259 UI invariant validator 
 - `tools/godot/buildV0324EnvironmentGeometryClosurePack.py`
 - `tools/godot/saltoV0324EnvironmentGeometryClosureTool.mjs`
 - this report
-
