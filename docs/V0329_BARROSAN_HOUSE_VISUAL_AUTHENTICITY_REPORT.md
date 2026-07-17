@@ -60,4 +60,4 @@ The dedicated v0.329 gate passes with the measured metrics above. Retained v0.32
 
 ## CI and final state
 
-Exact commit, GitHub Actions run, and final clean/synced repository state are appended after commit/push and exact-SHA CI completion. No v0.330 work is included.
+The implementation commit is `605dae4649ecc1d80dd7005e72035518fcfefeed` (`v0.329 complete Barrosan house visual authenticity pass`). GitHub Actions run `29575705479` (`CI Release Matrix Dry Run`) completed successfully for that exact SHA. The branch is `codex/v0215-v0226-recovery`, and the repository was clean and synchronized after push at 0 ahead / 0 behind. No v0.330 work is included.
