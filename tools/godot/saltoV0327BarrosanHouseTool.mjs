@@ -37,13 +37,17 @@ function validateSource() {
 
 function validateRuntime() {
   const m = readJson(manifestPath);
+  const targetMinimumFps = 45;
+  if (Number(m.interactiveBenchmark?.minimumFps ?? 0) < targetMinimumFps) {
+    return { status: 'REJECTED_V0327_PERFORMANCE_GATE', outcome: 'REJECTED INTERNALLY - STRUCTURAL OR PERFORMANCE GATE FAILED', correctedGate: true, configuredMinimumFps: targetMinimumFps, measuredMinimumFps: m.interactiveBenchmark?.minimumFps ?? null, reason: 'The former validator incorrectly accepted a minimum below its configured target; v0.328 makes this rejection explicit.' };
+  }
   assert(m.status === 'PASS_V0327_BARROSAN_HOUSE_REVIEW', `runtime status is ${m.status}`);
   assert(m.outcome === 'READY FOR HUMAN BARROSAN HOUSE REVIEW', `invalid or blocked outcome: ${m.outcome}`);
   assert(m.prototypeOptIn === true && m.defaultRuntimeChanged === undefined, 'prototype opt-in contract missing');
   assert(m.preservation.defaultRuntimeChanged === false && m.preservation.gameplayChanged === false && m.preservation.savesChanged === false && m.preservation.stableIdsChanged === false, 'preservation flags failed');
   assert(m.noRiver === true && m.noBridge === true && m.noWorker === true && m.noHud === true, 'scope isolation flags failed');
   assert(Array.isArray(m.errors) && m.errors.length === 0, `runtime errors present: ${JSON.stringify(m.errors)}`);
-  assert(m.interactiveBenchmark.averageFps >= 55 && m.interactiveBenchmark.minimumFps >= 10, `interactive benchmark failed: ${JSON.stringify(m.interactiveBenchmark)}`);
+  assert(m.interactiveBenchmark.averageFps >= 55 && m.interactiveBenchmark.minimumFps >= targetMinimumFps, `interactive benchmark failed: ${JSON.stringify(m.interactiveBenchmark)}`);
   assert(m.evidenceCapture.frames === 288 && m.evidenceCapture.targetFps === 24 && m.evidenceCapture.screenshotDumpingEnabled === true, 'continuous evidence contract missing');
   assert(m.lodSwitchingResult === true && m.collisionResult === true && m.importWarnings === 0, 'LOD/collision/import contract failed');
   assert(m.captures.length === captures.length && captures.every(name => m.captures.some(c => c.fileName === name && c.width === 1280 && c.height === 720)), 'capture manifest does not map to all real rendered views');
@@ -82,14 +86,16 @@ function validatePreservation() {
   assert(exists(v0326Report) && exists(v0325Scene), 'retained v0.325/v0.326 evidence missing');
   assert(exists(v0322Media) && hash(v0322Media) === '8901bb6a074e5c3cc01bf5e16572f21dac06a527a4ea15273d649c71c73faa84', 'v0.322 media SHA changed');
   const changed = spawnSync('git', ['status', '--short'], { cwd: root, encoding: 'utf8' }).stdout.trim().split(/\r?\n/).filter(Boolean).map(line => line.replace(/^\s*[?MADRCU]{1,2}\s+/, '').trim());
-  const allowed = file => file.startsWith('art-source/blender/v0327/') || file === 'artifacts/runtime/' || file.startsWith('artifacts/runtime/v0327/') || file.startsWith('artifacts/desktop-spikes/godot-salto/v0327/') || file.startsWith('artifacts/manual-review/v0327-') || file.startsWith('desktop-spikes/godot-salto/assets/v0327/') || file === 'desktop-spikes/godot-salto/scenes/review/' || file.startsWith('desktop-spikes/godot-salto/scenes/review/V0327') || file === 'desktop-spikes/godot-salto/v0327-barrosan-house-review-runtime.json' || file.includes('v0327_barrosan_house') || file.includes('V0327BarrosanHouse') || file === 'docs/art-reference/' || file.startsWith('docs/art-reference/V0327_') || file.startsWith('docs/V0327_') || file.startsWith('tools/blender/generateV0327') || file.startsWith('tools/blender/generate_v0327') || file.startsWith('tools/godot/buildV0327') || file.startsWith('tools/godot/captureGodotV0327') || file.startsWith('tools/godot/generateV0327') || file.startsWith('tools/godot/saltoV0327') || file === 'package.json';
+  const allowed = file => file.startsWith('art-source/blender/v0327/') || file === 'artifacts/runtime/' || file.startsWith('artifacts/runtime/v0327/') || file.startsWith('artifacts/runtime/v0328/') || file.startsWith('artifacts/desktop-spikes/godot-salto/v0327/') || file.startsWith('artifacts/desktop-spikes/godot-salto/v0328/') || file.startsWith('artifacts/manual-review/v0327-') || file.startsWith('artifacts/manual-review/v0328-') || file.startsWith('desktop-spikes/godot-salto/assets/v0327/') || file === 'desktop-spikes/godot-salto/scenes/review/' || file.startsWith('desktop-spikes/godot-salto/scenes/review/V0327') || file.startsWith('desktop-spikes/godot-salto/scenes/review/V0328') || file === 'desktop-spikes/godot-salto/v0327-barrosan-house-review-runtime.json' || file.includes('v0327_barrosan_house') || file.includes('V0327BarrosanHouse') || file.includes('v0328_barrosan_house') || file.includes('V0328BarrosanHouse') || file === 'docs/art-reference/' || file.startsWith('docs/art-reference/V0327_') || file.startsWith('docs/V0327_') || file.startsWith('docs/V0328_') || file.startsWith('tools/blender/generateV0327') || file.startsWith('tools/blender/generate_v0327') || file.startsWith('tools/blender/generateV0328') || file.startsWith('tools/blender/generate_v0328') || file.startsWith('tools/godot/buildV0327') || file.startsWith('tools/godot/captureGodotV0327') || file.startsWith('tools/godot/generateV0327') || file.startsWith('tools/godot/saltoV0327') || file.startsWith('tools/godot/buildV0328') || file.startsWith('tools/godot/captureGodotV0328') || file.startsWith('tools/godot/generateV0328') || file.startsWith('tools/godot/saltoV0328') || file.startsWith('desktop-spikes/godot-salto/scripts/v0328_') || file === 'package.json';
   const unexpected = changed.filter(file => !allowed(file));
   assert(unexpected.length === 0, `unexpected changed files: ${unexpected.join(', ')}`);
   return { v0326Preserved: true, v0325Preserved: true, v0322MediaSHA256: hash(v0322Media), acceptedRuntimeUntouched: true, unexpectedChangedFiles: [] };
 }
 
 function validate() {
-  const result = { status: 'PASS_V0327_BARROSAN_HOUSE_GOLD_ASSET_GATE', outcome: 'READY FOR HUMAN BARROSAN HOUSE REVIEW', source: validateSource(), asset: validateAsset(), runtime: validateRuntime(), evidence: validateEvidence(), preservation: validatePreservation(), prototypeOptIn: true, trueDefaultRuntimeUnchanged: true, gameplayUnchanged: true, noMovement: true, noPathfinding: true, noCombat: true, noAI: true, noEconomy: true, noResources: true, noSaves: true, noStableIdMutation: true, noProtectedGameAssets: true };
+  const runtime = validateRuntime();
+  const rejected = runtime.correctedGate === true;
+  const result = { status: rejected ? 'PASS_V0327_PERFORMANCE_REJECTION_GATE_ENFORCED' : 'PASS_V0327_BARROSAN_HOUSE_GOLD_ASSET_GATE', outcome: rejected ? 'REJECTED INTERNALLY - STRUCTURAL OR PERFORMANCE GATE FAILED' : 'READY FOR HUMAN BARROSAN HOUSE REVIEW', source: validateSource(), asset: validateAsset(), runtime, evidence: validateEvidence(), preservation: validatePreservation(), prototypeOptIn: true, trueDefaultRuntimeUnchanged: true, gameplayUnchanged: true, noMovement: true, noPathfinding: true, noCombat: true, noAI: true, noEconomy: true, noResources: true, noSaves: true, noStableIdMutation: true, noProtectedGameAssets: true };
   console.log(JSON.stringify(result, null, 2));
 }
 
