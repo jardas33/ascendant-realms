@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/v0330_barrosan_house_02_review.gd" id="1_v0330"]
+
+[node name="V0330BarrosanHouse02Review" type="Node3D"]
+script = ExtResource("1_v0330")

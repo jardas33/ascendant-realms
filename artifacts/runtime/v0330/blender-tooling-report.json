@@ -1,0 +1,9 @@
+{
+  "status": "PASS_V0330_BARROSAN_HOUSE_02_CLEAN_ROOM_SOURCE",
+  "blenderAvailable": true,
+  "version": "5.1.2",
+  "sourceBlend": "art-source/blender/v0330/barrosan_house_gold_02.blend",
+  "glbPath": "desktop-spikes/godot-salto/assets/v0330/barrosan_house_gold_02.glb",
+  "house01Imported": false,
+  "documentaryRegister": "art-source/references/v0330/documentary/README.md"
+}
