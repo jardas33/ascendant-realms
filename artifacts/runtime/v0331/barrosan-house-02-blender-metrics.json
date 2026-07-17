@@ -120112,6 +120112,5 @@
     "collisionTrianglesMax": 100,
     "renderObjectsMax": 7,
     "drawCallsMax": 7
-  },
-  "blenderVersion": "5.1.2"
+  }
 }

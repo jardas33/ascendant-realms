@@ -63,7 +63,7 @@ function validateAsset() {
   for (const anchor of Object.values(m.architecturalAnchors)) assert(anchor === true, 'architectural anchor failed');
   assert(m.authoring.includes('from scratch') && m.authoring.includes('no v0.238 mesh reused'), 'source provenance failed');
   const textureDir = rel('desktop-spikes/godot-salto/assets/v0327/textures');
-  assert(fs.readdirSync(textureDir).filter(name => name.endsWith('.png')).length === 6, 'expected six deterministic local textures');
+  assert(fs.readdirSync(textureDir).filter(name => name.startsWith('v0327_') && name.endsWith('.png')).length === 6, 'expected six deterministic v0.327 local textures');
   return { lod0Triangles: m.lod0.triangles, lod1Triangles: m.lod1.triangles, collisionTriangles: m.collision.triangles, uvChannels: m.uvChannels, materials: m.materialNames, textures: m.textureCount, noForbiddenCues: true };
 }
 

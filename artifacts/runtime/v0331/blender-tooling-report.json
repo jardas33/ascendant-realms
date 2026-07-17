@@ -1,0 +1,11 @@
+{
+  "status": "PASS_V0331_BARROSAN_HOUSE_02_ROOF_MATERIAL_CLOSURE",
+  "blenderAvailable": true,
+  "version": "5.1.2",
+  "sourceBlend": "art-source/blender/v0330/barrosan_house_gold_02.blend",
+  "glbPath": "desktop-spikes/godot-salto/assets/v0330/barrosan_house_gold_02.glb",
+  "house01Imported": false,
+  "documentaryPath": "Path A \u2014 exterior-stair archetype",
+  "documentaryRegister": "art-source/references/v0331/documentary/README.md",
+  "moodTargetSeparated": true
+}
