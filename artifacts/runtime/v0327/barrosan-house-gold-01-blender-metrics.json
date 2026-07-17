@@ -1,0 +1,51 @@
+{
+  "checkpoint": "v0.327",
+  "sourceBlend": "art-source/blender/v0327/barrosan_house_gold_01.blend",
+  "glbPath": "desktop-spikes/godot-salto/assets/v0327/barrosan_house_gold_01.glb",
+  "assetName": "BARROSAN RURAL HOUSE - GOLD ASSET 01",
+  "authoring": "new Blender source authored from scratch; no v0.238 mesh reused",
+  "lod0": {
+    "vertices": 8664,
+    "triangles": 15884,
+    "objectCount": 361
+  },
+  "lod1": {
+    "vertices": 24,
+    "triangles": 44,
+    "objectCount": 1
+  },
+  "collision": {
+    "vertices": 24,
+    "triangles": 36,
+    "objectCount": 3
+  },
+  "uvChannels": [
+    "UVMap"
+  ],
+  "materialNames": [
+    "MAT_Barrosan_Foundation",
+    "MAT_Barrosan_Granite",
+    "MAT_Barrosan_Iron",
+    "MAT_Barrosan_Limewash",
+    "MAT_Barrosan_Slate",
+    "MAT_Barrosan_Timber"
+  ],
+  "textureCount": 6,
+  "invalidNormals": 0,
+  "nonManifoldEdgeCount": 0,
+  "unappliedTransformCount": 0,
+  "boundingDimensions": [
+    15.5,
+    13.75,
+    8.065000057220459
+  ],
+  "architecturalAnchors": {
+    "graniteDominant": true,
+    "recessedOpenings": true,
+    "agriculturalGroundFloor": true,
+    "slateRoofCourses": true,
+    "stoneStair": true,
+    "groundedChimney": true,
+    "allElevationsAuthored": true
+  }
+}

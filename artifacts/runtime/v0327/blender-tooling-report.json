@@ -1,0 +1,11 @@
+{
+  "status": "PASS_V0327_BLENDER_GLTF_EXPORT",
+  "blenderAvailable": true,
+  "executable": "C:\\Program Files\\Blender Foundation\\Blender 5.1\\blender.exe",
+  "version": "5.1.2",
+  "pythonVersion": "3.13.9",
+  "headlessPythonTest": true,
+  "headlessGlbExport": true,
+  "sourceBlend": "art-source/blender/v0327/barrosan_house_gold_01.blend",
+  "glbPath": "desktop-spikes/godot-salto/assets/v0327/barrosan_house_gold_01.glb"
+}

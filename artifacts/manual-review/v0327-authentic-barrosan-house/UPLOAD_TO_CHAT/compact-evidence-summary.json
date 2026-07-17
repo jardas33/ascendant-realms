@@ -1,0 +1,209 @@
+{
+  "checkpoint": "v0.327",
+  "outcome": "READY FOR HUMAN BARROSAN HOUSE REVIEW",
+  "prototypeOptIn": true,
+  "sourceBlend": "art-source/blender/v0327/barrosan_house_gold_01.blend",
+  "sourceGLB": "res://assets/v0327/barrosan_house_gold_01.glb",
+  "scenePath": "res://scenes/review/V0327BarrosanHouseReview.tscn",
+  "toolchain": {
+    "blender": "Blender 5.1.2 ec6e62d40fa9",
+    "godot": "Godot 4.6.3 stable",
+    "realOpenGLCapture": true
+  },
+  "assetMetrics": {
+    "checkpoint": "v0.327",
+    "sourceBlend": "art-source/blender/v0327/barrosan_house_gold_01.blend",
+    "glbPath": "desktop-spikes/godot-salto/assets/v0327/barrosan_house_gold_01.glb",
+    "assetName": "BARROSAN RURAL HOUSE - GOLD ASSET 01",
+    "authoring": "new Blender source authored from scratch; no v0.238 mesh reused",
+    "lod0": {
+      "vertices": 8664,
+      "triangles": 15884,
+      "objectCount": 361
+    },
+    "lod1": {
+      "vertices": 24,
+      "triangles": 44,
+      "objectCount": 1
+    },
+    "collision": {
+      "vertices": 24,
+      "triangles": 36,
+      "objectCount": 3
+    },
+    "uvChannels": [
+      "UVMap"
+    ],
+    "materialNames": [
+      "MAT_Barrosan_Foundation",
+      "MAT_Barrosan_Granite",
+      "MAT_Barrosan_Iron",
+      "MAT_Barrosan_Limewash",
+      "MAT_Barrosan_Slate",
+      "MAT_Barrosan_Timber"
+    ],
+    "textureCount": 6,
+    "invalidNormals": 0,
+    "nonManifoldEdgeCount": 0,
+    "unappliedTransformCount": 0,
+    "boundingDimensions": [
+      15.5,
+      13.75,
+      8.065000057220459
+    ],
+    "architecturalAnchors": {
+      "graniteDominant": true,
+      "recessedOpenings": true,
+      "agriculturalGroundFloor": true,
+      "slateRoofCourses": true,
+      "stoneStair": true,
+      "groundedChimney": true,
+      "allElevationsAuthored": true
+    }
+  },
+  "runtimeManifest": {
+    "assetMetrics": {
+      "objectCount": 361.0,
+      "triangles": 15884.0,
+      "vertices": 8664.0
+    },
+    "camera": "orthographic RTS plus close inspection views",
+    "captures": [
+      {
+        "camera": "(12.0, 9.0, -14.0)",
+        "fileName": "ordinary_rts.png",
+        "height": 720,
+        "orthographicSize": 14.5,
+        "path": "D:/Code for projects/WB game like/ascendant-realms-v0223-recovery/artifacts/desktop-spikes/godot-salto/v0327/screenshots/ordinary_rts.png",
+        "target": "(0.0, 2.7, 0.0)",
+        "width": 1280
+      },
+      {
+        "camera": "(11.5, 7.3, -13.2)",
+        "fileName": "front_three_quarter.png",
+        "height": 720,
+        "orthographicSize": 12.4,
+        "path": "D:/Code for projects/WB game like/ascendant-realms-v0223-recovery/artifacts/desktop-spikes/godot-salto/v0327/screenshots/front_three_quarter.png",
+        "target": "(0.0, 2.8, 0.0)",
+        "width": 1280
+      },
+      {
+        "camera": "(-11.5, 7.0, 13.6)",
+        "fileName": "rear_three_quarter.png",
+        "height": 720,
+        "orthographicSize": 12.4,
+        "path": "D:/Code for projects/WB game like/ascendant-realms-v0223-recovery/artifacts/desktop-spikes/godot-salto/v0327/screenshots/rear_three_quarter.png",
+        "target": "(0.0, 2.8, 0.0)",
+        "width": 1280
+      },
+      {
+        "camera": "(-14.0, 6.7, -1.0)",
+        "fileName": "left_elevation.png",
+        "height": 720,
+        "orthographicSize": 11.8,
+        "path": "D:/Code for projects/WB game like/ascendant-realms-v0223-recovery/artifacts/desktop-spikes/godot-salto/v0327/screenshots/left_elevation.png",
+        "target": "(0.0, 2.7, 0.0)",
+        "width": 1280
+      },
+      {
+        "camera": "(14.0, 6.7, 1.0)",
+        "fileName": "right_elevation.png",
+        "height": 720,
+        "orthographicSize": 11.8,
+        "path": "D:/Code for projects/WB game like/ascendant-realms-v0223-recovery/artifacts/desktop-spikes/godot-salto/v0327/screenshots/right_elevation.png",
+        "target": "(0.0, 2.7, 0.0)",
+        "width": 1280
+      },
+      {
+        "camera": "(7.3, 4.8, -9.2)",
+        "fileName": "material_closeup.png",
+        "height": 720,
+        "orthographicSize": 7.2,
+        "path": "D:/Code for projects/WB game like/ascendant-realms-v0223-recovery/artifacts/desktop-spikes/godot-salto/v0327/screenshots/material_closeup.png",
+        "target": "(0.7, 2.25, -2.3)",
+        "width": 1280
+      },
+      {
+        "camera": "(12.0, 10.5, -14.0)",
+        "fileName": "daylight.png",
+        "height": 720,
+        "orthographicSize": 14.5,
+        "path": "D:/Code for projects/WB game like/ascendant-realms-v0223-recovery/artifacts/desktop-spikes/godot-salto/v0327/screenshots/daylight.png",
+        "target": "(0.0, 2.4, 0.0)",
+        "width": 1280
+      },
+      {
+        "camera": "(-12.0, 8.0, 13.0)",
+        "fileName": "silhouette_overcast.png",
+        "height": 720,
+        "orthographicSize": 14.5,
+        "path": "D:/Code for projects/WB game like/ascendant-realms-v0223-recovery/artifacts/desktop-spikes/godot-salto/v0327/screenshots/silhouette_overcast.png",
+        "target": "(0.0, 2.5, 0.0)",
+        "width": 1280
+      }
+    ],
+    "checkpoint": "v0.327",
+    "collisionResult": true,
+    "errors": [],
+    "evidenceCapture": {
+      "frames": 288,
+      "screenshotDumpingEnabled": true,
+      "targetDurationSeconds": 12.0,
+      "targetFps": 24,
+      "throughputFps": 3.68889130602353,
+      "videoEncodingEnabledAfterCapture": true
+    },
+    "importWarnings": 0,
+    "interactiveBenchmark": {
+      "averageFps": 74.9712297905679,
+      "captureDisabled": true,
+      "minimumFps": 13.0,
+      "targetAverageFps": 55.0,
+      "targetMinimumFps": 45.0
+    },
+    "lodSwitchingResult": true,
+    "noBridge": true,
+    "noHud": true,
+    "noRiver": true,
+    "noWorker": true,
+    "outcome": "READY FOR HUMAN BARROSAN HOUSE REVIEW",
+    "preservation": {
+      "defaultRuntimeChanged": false,
+      "gameplayChanged": false,
+      "savesChanged": false,
+      "stableIdsChanged": false,
+      "v0322MediaSHA256": "8901bb6a074e5c3cc01bf5e16572f21dac06a527a4ea15273d649c71c73faa84",
+      "v0323RoofEvidencePreserved": true,
+      "v0325Preserved": true,
+      "v0326Preserved": true
+    },
+    "prototypeOptIn": true,
+    "scenePath": "res://scenes/review/V0327BarrosanHouseReview.tscn",
+    "schemaVersion": 1,
+    "sourceBlend": "art-source/blender/v0327/barrosan_house_gold_01.blend",
+    "sourceGLB": "res://assets/v0327/barrosan_house_gold_01.glb",
+    "status": "PASS_V0327_BARROSAN_HOUSE_REVIEW"
+  },
+  "finalMedia": {
+    "path": "artifacts/manual-review/v0327-authentic-barrosan-house/UPLOAD_TO_CHAT/08_CONTINUOUS_HOUSE_TURNTABLE.mp4",
+    "SHA256": "c92edaa2bb33d5584b6a836d072148ed0d0fc5001ec3882432a4d017e2186464",
+    "codec": "h264",
+    "width": 1280,
+    "height": 720,
+    "FPS": 24.0,
+    "duration": 12.0,
+    "decodedFrameCount": 288
+  },
+  "reviewPackFileCount": 10,
+  "reviewPackFiles": [
+    "00_READ_ME_FIRST.md",
+    "01_REFERENCE_TO_ASSET_COMPARISON.png",
+    "02_ORDINARY_RTS_VIEW.png",
+    "03_FRONT_AND_REAR.png",
+    "04_SIDE_ELEVATIONS.png",
+    "05_MATERIAL_CLOSEUP.png",
+    "06_WIREFRAME_UV_AND_LOD.png",
+    "07_LIGHTING_AND_SILHOUETTE.png",
+    "08_CONTINUOUS_HOUSE_TURNTABLE.mp4"
+  ]
+}
