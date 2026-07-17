@@ -140126,7 +140126,5 @@
     "collisionTrianglesMax": 100,
     "renderObjectsMax": 8,
     "drawCallsMax": 8
-  },
-  "headlessExport": true,
-  "blenderVersion": "5.1.2"
+  }
 }

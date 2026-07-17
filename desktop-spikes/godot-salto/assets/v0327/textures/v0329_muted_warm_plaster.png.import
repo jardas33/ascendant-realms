@@ -2,19 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://c7odylnaj025s"
-path="res://.godot/imported/barrosan_house_gold_01_v0327_dark_foundation_stone.png-195bf8f40f0b62a32635694492ce7e25.ctex"
+uid="uid://epwwwlwbt0b7"
+path="res://.godot/imported/v0329_muted_warm_plaster.png-a7e11f9cb6a0c1af7dd0dae156bdf3f2.ctex"
 metadata={
 "vram_texture": false
-}
-generator_parameters={
-"md5": "c8527f49635e6d33db53fba6393126b3"
 }
 
 [deps]
 
-source_file="res://assets/v0327/barrosan_house_gold_01_v0327_dark_foundation_stone.png"
-dest_files=["res://.godot/imported/barrosan_house_gold_01_v0327_dark_foundation_stone.png-195bf8f40f0b62a32635694492ce7e25.ctex"]
+source_file="res://assets/v0327/textures/v0329_muted_warm_plaster.png"
+dest_files=["res://.godot/imported/v0329_muted_warm_plaster.png-a7e11f9cb6a0c1af7dd0dae156bdf3f2.ctex"]
 
 [params]
 
@@ -26,7 +23,7 @@ compress/rdo_quality_loss=0.0
 compress/hdr_compression=1
 compress/normal_map=0
 compress/channel_pack=0
-mipmaps/generate=true
+mipmaps/generate=false
 mipmaps/limit=-1
 roughness/mode=0
 roughness/src_normal=""

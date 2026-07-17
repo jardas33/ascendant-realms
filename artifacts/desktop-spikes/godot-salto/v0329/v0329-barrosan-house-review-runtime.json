@@ -1,0 +1,158 @@
+{
+  "captures": [
+    {
+      "camera": "(12.0, 9.0, -14.0)",
+      "fileName": "ordinary_rts.png",
+      "height": 720,
+      "orthographicSize": 14.5,
+      "path": "D:/Code for projects/WB game like/ascendant-realms-v0223-recovery/artifacts/desktop-spikes/godot-salto/v0329/screenshots/ordinary_rts.png",
+      "target": "(0.0, 2.7, 0.0)",
+      "width": 1280
+    },
+    {
+      "camera": "(10.8, 7.0, -11.8)",
+      "fileName": "rts_near.png",
+      "height": 720,
+      "orthographicSize": 10.5,
+      "path": "D:/Code for projects/WB game like/ascendant-realms-v0223-recovery/artifacts/desktop-spikes/godot-salto/v0329/screenshots/rts_near.png",
+      "target": "(0.0, 2.8, 0.0)",
+      "width": 1280
+    },
+    {
+      "camera": "(12.0, 9.0, -14.0)",
+      "fileName": "rts_normal.png",
+      "height": 720,
+      "orthographicSize": 14.5,
+      "path": "D:/Code for projects/WB game like/ascendant-realms-v0223-recovery/artifacts/desktop-spikes/godot-salto/v0329/screenshots/rts_normal.png",
+      "target": "(0.0, 2.7, 0.0)",
+      "width": 1280
+    },
+    {
+      "camera": "(15.0, 11.0, -17.0)",
+      "fileName": "rts_far.png",
+      "height": 720,
+      "orthographicSize": 21.0,
+      "path": "D:/Code for projects/WB game like/ascendant-realms-v0223-recovery/artifacts/desktop-spikes/godot-salto/v0329/screenshots/rts_far.png",
+      "target": "(0.0, 2.6, 0.0)",
+      "width": 1280
+    },
+    {
+      "camera": "(11.5, 7.3, -13.2)",
+      "fileName": "front_elevation.png",
+      "height": 720,
+      "orthographicSize": 12.4,
+      "path": "D:/Code for projects/WB game like/ascendant-realms-v0223-recovery/artifacts/desktop-spikes/godot-salto/v0329/screenshots/front_elevation.png",
+      "target": "(0.0, 2.8, 0.0)",
+      "width": 1280
+    },
+    {
+      "camera": "(-11.5, 7.0, 13.6)",
+      "fileName": "rear_elevation.png",
+      "height": 720,
+      "orthographicSize": 12.4,
+      "path": "D:/Code for projects/WB game like/ascendant-realms-v0223-recovery/artifacts/desktop-spikes/godot-salto/v0329/screenshots/rear_elevation.png",
+      "target": "(0.0, 2.8, 0.0)",
+      "width": 1280
+    },
+    {
+      "camera": "(-14.0, 6.7, -1.0)",
+      "fileName": "left_elevation.png",
+      "height": 720,
+      "orthographicSize": 11.8,
+      "path": "D:/Code for projects/WB game like/ascendant-realms-v0223-recovery/artifacts/desktop-spikes/godot-salto/v0329/screenshots/left_elevation.png",
+      "target": "(0.0, 2.7, 0.0)",
+      "width": 1280
+    },
+    {
+      "camera": "(14.0, 6.7, 1.0)",
+      "fileName": "right_elevation.png",
+      "height": 720,
+      "orthographicSize": 11.8,
+      "path": "D:/Code for projects/WB game like/ascendant-realms-v0223-recovery/artifacts/desktop-spikes/godot-salto/v0329/screenshots/right_elevation.png",
+      "target": "(0.0, 2.7, 0.0)",
+      "width": 1280
+    },
+    {
+      "camera": "(10.8, 6.3, -11.8)",
+      "fileName": "roof_identity.png",
+      "height": 720,
+      "orthographicSize": 9.2,
+      "path": "D:/Code for projects/WB game like/ascendant-realms-v0223-recovery/artifacts/desktop-spikes/godot-salto/v0329/screenshots/roof_identity.png",
+      "target": "(0.0, 4.4, -0.5)",
+      "width": 1280
+    },
+    {
+      "camera": "(7.3, 4.8, -9.2)",
+      "fileName": "materials_openings.png",
+      "height": 720,
+      "orthographicSize": 7.2,
+      "path": "D:/Code for projects/WB game like/ascendant-realms-v0223-recovery/artifacts/desktop-spikes/godot-salto/v0329/screenshots/materials_openings.png",
+      "target": "(0.7, 2.25, -2.3)",
+      "width": 1280
+    },
+    {
+      "camera": "(12.0, 10.5, -14.0)",
+      "fileName": "daylight.png",
+      "height": 720,
+      "orthographicSize": 14.5,
+      "path": "D:/Code for projects/WB game like/ascendant-realms-v0223-recovery/artifacts/desktop-spikes/godot-salto/v0329/screenshots/daylight.png",
+      "target": "(0.0, 2.4, 0.0)",
+      "width": 1280
+    },
+    {
+      "camera": "(12.0, 9.0, -14.0)",
+      "fileName": "lod0_overview.png",
+      "height": 720,
+      "orthographicSize": 14.5,
+      "path": "D:/Code for projects/WB game like/ascendant-realms-v0223-recovery/artifacts/desktop-spikes/godot-salto/v0329/screenshots/lod0_overview.png",
+      "target": "(0.0, 2.7, 0.0)",
+      "width": 1280
+    },
+    {
+      "camera": "(12.0, 9.0, -14.0)",
+      "fileName": "lod1_overview.png",
+      "height": 720,
+      "orthographicSize": 18.0,
+      "path": "D:/Code for projects/WB game like/ascendant-realms-v0223-recovery/artifacts/desktop-spikes/godot-salto/v0329/screenshots/lod1_overview.png",
+      "target": "(0.0, 2.7, 0.0)",
+      "width": 1280
+    },
+    {
+      "camera": "(12.0, 9.0, -14.0)",
+      "fileName": "lod2_overview.png",
+      "height": 720,
+      "orthographicSize": 25.0,
+      "path": "D:/Code for projects/WB game like/ascendant-realms-v0223-recovery/artifacts/desktop-spikes/godot-salto/v0329/screenshots/lod2_overview.png",
+      "target": "(0.0, 2.7, 0.0)",
+      "width": 1280
+    },
+    {
+      "camera": "(12.0, 9.0, -14.0)",
+      "fileName": "collision_wireframe.png",
+      "height": 720,
+      "orthographicSize": 14.5,
+      "path": "D:/Code for projects/WB game like/ascendant-realms-v0223-recovery/artifacts/desktop-spikes/godot-salto/v0329/screenshots/collision_wireframe.png",
+      "target": "(0.0, 2.7, 0.0)",
+      "width": 1280
+    }
+  ],
+  "checkpoint": "v0.329",
+  "collisionResult": true,
+  "errors": [],
+  "lodSwitchingResult": true,
+  "noCombat": true,
+  "noEconomy": true,
+  "noGameplay": true,
+  "noHud": true,
+  "noMovement": true,
+  "noPathfinding": true,
+  "noResources": true,
+  "noSaves": true,
+  "outcome": "READY FOR HUMAN BARROSAN HOUSE VISUAL-AUTHENTICITY REVIEW",
+  "prototypeOptIn": true,
+  "scenePath": "res://scenes/review/V0329BarrosanHouseReview.tscn",
+  "schemaVersion": 1,
+  "sourceBlend": "art-source/blender/v0327/barrosan_house_gold_01.blend",
+  "sourceGLB": "res://assets/v0327/barrosan_house_gold_01.glb",
+  "status": "PASS_V0329_BARROSAN_HOUSE_VISUAL_AUTHENTICITY_GATE"
+}

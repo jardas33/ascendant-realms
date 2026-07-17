@@ -1,0 +1,19 @@
+{
+  "averageFps": 74.9748122118374,
+  "cameraMode": "static orthographic RTS",
+  "debugOverlaysEnabled": false,
+  "maximumFrameTimeMs": 19.865,
+  "measurementSeconds": 20.006719,
+  "medianFps": 74.9793806703157,
+  "medianFrameTimeMs": 13.337,
+  "minimumFps": 50.3397936068462,
+  "onePercentLowFps": 72.1656924298189,
+  "percentile99FrameTimeMs": 13.857,
+  "repeatedSpikeCountAbove50ms": 0,
+  "sampleCount": 1500,
+  "screenshotDumpingEnabled": false,
+  "videoEncodingEnabled": false,
+  "visibleTriangles": 11092,
+  "warmupSeconds": 5.0,
+  "zeroPointOnePercentLowFps": 50.3397936068462
+}
