@@ -105,4 +105,4 @@ Implementation commit: `2e3076a1b3a42e9791c79a6cc4d1f59ee11c74db`.
 
 Exact-SHA GitHub Actions: [run 29604761936](https://github.com/jardas33/ascendant-realms/actions/runs/29604761936) completed successfully for `2e3076a1b3a42e9791c79a6cc4d1f59ee11c74db`.
 
-The report closeout documentation is being pushed after that verified implementation run. Final repository state is required to remain clean and synced on `codex/v0215-v0226-recovery`, 0 ahead / 0 behind, with no changes to the accepted runtime or House 01 asset.
+The validation-evidence closeout was pushed as `27246acafcb69acd18ddb6bb0f3e800cdf357fc1`; [exact-SHA run 29605508500](https://github.com/jardas33/ascendant-realms/actions/runs/29605508500) completed successfully for that closeout. The repository is required to remain clean and synced on `codex/v0215-v0226-recovery`, 0 ahead / 0 behind, with no changes to the accepted runtime or House 01 asset.
