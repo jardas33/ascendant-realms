@@ -83,8 +83,15 @@ The validator rejects missing documentary metadata, fewer than four sources, mis
 - v0.330 Blender generator and Godot import/capture/pack: passed.
 - Exact ten-file upload count: passed.
 - Documentary-source count, primary-anchor, clean-room, architecture, LOD/collision, real-UV, benchmark, review-pack, and preservation aliases: all invoke the dedicated validator.
-- Retained v0.329 and earlier validators: to be recorded during final closeout.
-- `npm test`, `npm run build`, content/art/runtime validation, artifact retention, `npm run godot:all`, and `git diff --check`: to be recorded during final closeout.
+- Retained v0.329 dedicated validator: passed with `npm run godot:validate:salto-v0329-barrosan-house-visual-authenticity`.
+- `npm test`: passed (122 test files, 887 tests).
+- `npm run build`: passed.
+- `npm run validate:content`: passed.
+- `npm run validate:art-intake`: passed.
+- `npm run validate:runtime-art-slots`: passed (52 slots).
+- `npm run godot:validate:salto-experimental-artifact-retention`: passed.
+- `npm run godot:all`: passed, including the Windows package lane.
+- `git diff --check`: passed.
 
 ## Recommendation and v0.331 boundary
 
@@ -94,4 +101,8 @@ Proposed next checkpoint, only after human acceptance: **v0.331 House 02 human-r
 
 ## CI and final repository state
 
-Exact pushed commit and GitHub Actions evidence will be filled in during the final commit/push closeout. The final closeout must end with the branch clean and synced at 0 ahead / 0 behind.
+Implementation commit: `2e3076a1b3a42e9791c79a6cc4d1f59ee11c74db`.
+
+Exact-SHA GitHub Actions: [run 29604761936](https://github.com/jardas33/ascendant-realms/actions/runs/29604761936) completed successfully for `2e3076a1b3a42e9791c79a6cc4d1f59ee11c74db`.
+
+The report closeout documentation is being pushed after that verified implementation run. Final repository state is required to remain clean and synced on `codex/v0215-v0226-recovery`, 0 ahead / 0 behind, with no changes to the accepted runtime or House 01 asset.
