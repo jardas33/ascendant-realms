@@ -87,7 +87,18 @@ Preserved unchanged:
 
 ## Validation and CI
 
-Dedicated v0.333 validator: PASS, with human-review rejection intentionally retained. The retained v0.332 and v0.331 validators, project tests/build/content/art/runtime checks, artifact-retention validation, `npm run godot:all`, and `git diff --check` are run as part of the v0.333 closeout before commit. Exact commit and GitHub Actions evidence are recorded in the final closeout after push.
+The dedicated v0.333 validator passed with human-review rejection intentionally retained. The retained v0.332 and v0.331 validators passed. The full local closeout also passed:
+
+- `npm test` — 122 files / 887 tests passed;
+- `npm run build`;
+- `npm run validate:content`;
+- `npm run validate:art-intake`;
+- `npm run validate:runtime-art-slots`;
+- `npm run godot:validate:salto-experimental-artifact-retention`;
+- `npm run godot:all`;
+- `git diff --check`.
+
+The implementation commit `71cf3ccaf394e34d7721f41b5c7f88f4ca29d606` was pushed to the branch and exact-SHA GitHub Actions run `29627384515` completed with conclusion `success`. A final documentation-only revision is pushed after this report update and is separately verified before closeout.
 
 ## Recommended next decision
 
