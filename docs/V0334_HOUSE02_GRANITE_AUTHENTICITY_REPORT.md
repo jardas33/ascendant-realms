@@ -133,6 +133,9 @@ The full local validation set passed:
 
 ## CI and final repository state
 
-The v0.334 commit and exact pushed-SHA GitHub Actions run are the final remote
-closeout gates. The exact commit SHA, Actions run ID, and clean/synced 0/0
-state are recorded here after push without changing the implementation scope.
+The implementation commit is
+`be9e26d1cd9eb57479c061b463eaaab6c8e8e9bb`. GitHub Actions run `29630502089`
+completed successfully for that exact pushed SHA. The final report-only
+closeout commit records this evidence; the implementation scope is unchanged.
+The repository was clean and synced at the implementation closeout, 0 ahead /
+0 behind.
