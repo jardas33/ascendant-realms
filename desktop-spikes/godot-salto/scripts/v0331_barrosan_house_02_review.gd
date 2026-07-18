@@ -359,7 +359,11 @@ func _measure_benchmark() -> void:
 	for dt in frame_times:
 		if dt > 0.050:
 			spikes += 1
-	var benchmark := {"warmupSeconds": 5.0, "measurementSeconds": elapsed, "sampleCount": frame_times.size(), "averageFps": float(frame_times.size()) / elapsed, "medianFps": 1.0 / median_dt, "onePercentLowFps": 1.0 / p99_dt, "zeroPointOnePercentLowFps": 1.0 / p999_dt, "minimumFps": 1.0 / max_dt, "repeatedSpikeCountAbove50ms": spikes, "screenshotDumpingEnabled": false, "videoEncodingEnabled": false, "debugOverlaysEnabled": false, "cameraMode": "controlled oblique orthographic RTS", "visibleTriangles": 15644}
+	var frame_times_ms: Array[float] = []
+	var sample_stride := maxi(1, int(ceil(float(frame_times.size()) / 32.0)))
+	for index in range(0, frame_times.size(), sample_stride):
+		frame_times_ms.append(frame_times[index] * 1000.0)
+	var benchmark := {"warmupSeconds": 5.0, "measurementSeconds": elapsed, "sampleCount": frame_times.size(), "averageFps": float(frame_times.size()) / elapsed, "medianFps": 1.0 / median_dt, "onePercentLowFps": 1.0 / p99_dt, "zeroPointOnePercentLowFps": 1.0 / p999_dt, "minimumFps": 1.0 / max_dt, "repeatedSpikeCountAbove50ms": spikes, "screenshotDumpingEnabled": false, "videoEncodingEnabled": false, "debugOverlaysEnabled": false, "cameraMode": "controlled oblique orthographic RTS", "visibleTriangles": _mesh_triangles(house), "frameTimesMs": frame_times_ms}
 	var file := FileAccess.open(capture_root.path_join("v0331-benchmark.json"), FileAccess.WRITE)
 	if file != null:
 		file.store_string(JSON.stringify(benchmark, "  "))
@@ -381,4 +385,17 @@ func _mesh_count(node: Node) -> int:
 	var count := 1 if node is MeshInstance3D else 0
 	for child in node.get_children():
 		count += _mesh_count(child)
+	return count
+
+
+func _mesh_triangles(node: Node) -> int:
+	var count := 0
+	if node is MeshInstance3D and node.visible and node.mesh != null:
+		for surface in range(node.mesh.get_surface_count()):
+			var arrays: Array = node.mesh.surface_get_arrays(surface)
+			var indices: PackedInt32Array = arrays[Mesh.ARRAY_INDEX]
+			var vertices: PackedVector3Array = arrays[Mesh.ARRAY_VERTEX]
+			count += (indices.size() / 3) if indices.size() > 0 else (vertices.size() / 3)
+	for child in node.get_children():
+		count += _mesh_triangles(child)
 	return count

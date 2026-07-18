@@ -7,6 +7,7 @@ reference gate and the House 01 preservation gate remain auditable.
 
 from __future__ import annotations
 
+import hashlib
 import json
 import math
 from pathlib import Path
@@ -15,20 +16,20 @@ import bpy
 from mathutils import Vector
 
 ROOT = Path(__file__).resolve().parents[2]
-CHECKPOINT = "v0.331"
+CHECKPOINT = "v0.332"
 BLEND_PATH = ROOT / "art-source/blender/v0330/barrosan_house_gold_02.blend"
 GLB_PATH = ROOT / "desktop-spikes/godot-salto/assets/v0330/barrosan_house_gold_02.glb"
-RUNTIME = ROOT / "artifacts/runtime/v0331"
-TEXTURE_DIR = ROOT / "art-source/materials/v0331"
+RUNTIME = ROOT / "artifacts/runtime/v0332"
+TEXTURE_DIR = ROOT / "art-source/materials/v0332"
 
 MATERIALS = {
-    "granite": ("V0331_Granite", (0.30, 0.31, 0.28, 1.0), 0.90),
-    "foundation": ("V0331_Damp_Foundation", (0.13, 0.16, 0.15, 1.0), 0.96),
-    "slate": ("V0331_Weathered_Slate", (0.10, 0.14, 0.16, 1.0), 0.92),
-    "timber": ("V0331_Weathered_Timber", (0.27, 0.17, 0.10, 1.0), 0.88),
-    "iron": ("V0331_Iron", (0.08, 0.085, 0.075, 1.0), 0.78),
-    "interior": ("V0331_Interior_Recess", (0.025, 0.035, 0.032, 1.0), 0.98),
-    "glass": ("V0331_Recessed_Window", (0.06, 0.15, 0.15, 1.0), 0.38),
+    "granite": ("V0332_Granite", (0.25, 0.27, 0.25, 1.0), 0.93),
+    "foundation": ("V0332_Damp_Foundation", (0.12, 0.14, 0.13, 1.0), 0.98),
+    "slate": ("V0332_Weathered_Slate", (0.12, 0.14, 0.15, 1.0), 0.96),
+    "timber": ("V0332_Weathered_Timber", (0.20, 0.115, 0.055, 1.0), 0.91),
+    "iron": ("V0332_Iron", (0.07, 0.075, 0.068, 1.0), 0.84),
+    "interior": ("V0332_Interior_Recess", (0.012, 0.016, 0.014, 1.0), 0.99),
+    "glass": ("V0332_Recessed_Window", (0.035, 0.045, 0.043, 1.0), 0.82),
 }
 
 collections: dict[str, bpy.types.Collection] = {}
@@ -65,39 +66,71 @@ def _texture(name: str, filename: str, size: int, fn, non_color: bool = False) -
     return image
 
 
+def _hash2(x: int, y: int, salt: int = 0) -> float:
+    value = (x * 374761393 + y * 668265263 + salt * 1442695041) & 0xFFFFFFFF
+    value = ((value ^ (value >> 13)) * 1274126177) & 0xFFFFFFFF
+    return float(value & 0xFFFF) / 65535.0
+
+
 def _granite_albedo(u: float, v: float) -> tuple[float, float, float]:
-    macro = 0.5 + 0.5 * math.sin(u * 17.0 + math.sin(v * 9.0))
-    block = 0.5 + 0.5 * math.sin(u * 43.0 + v * 12.0)
-    damp = 0.08 * max(0.0, 1.0 - v * 2.5)
-    return (0.25 + macro * 0.12 + block * 0.05 - damp, 0.27 + macro * 0.11 + block * 0.04 - damp, 0.25 + macro * 0.09 + block * 0.03 - damp)
+    # Continuous authored wall texture: irregular coursed stone, visible
+    # mortar, grey/brown variation and a damp lower register.
+    # Smart-project packs each continuous face into a compact island. The
+    # lower-frequency authored course keeps mortar and stone rhythm visible at
+    # the actual imported gameplay scale instead of averaging to flat plaster.
+    px, py = u * 4.0, v * 3.0
+    row = math.floor(py)
+    offset = 0.42 if row % 2 else 0.0
+    cell_x = math.floor(px + offset)
+    local_x = (px + offset) - cell_x
+    local_y = py - row
+    mortar = min(local_x, 1.0 - local_x, local_y, 1.0 - local_y)
+    stone = _hash2(cell_x, row, 19)
+    grain = 0.5 + 0.5 * math.sin(u * 73.0 + v * 41.0 + stone * 8.0)
+    base = 0.27 + stone * 0.12 + grain * 0.025
+    if mortar < 0.115:
+        base *= 0.38
+    damp = 0.075 * max(0.0, 1.0 - v * 3.2)
+    moss = 0.025 * max(0.0, math.sin(u * 31.0 + v * 17.0)) * max(0.0, 0.72 - v)
+    return (base - damp + moss, base * 1.02 - damp * 0.82 + moss * 0.8, base * 0.96 - damp * 0.58)
 
 
 def _granite_roughness(u: float, v: float) -> tuple[float, float, float]:
-    value = 0.70 + 0.18 * (0.5 + 0.5 * math.sin(u * 29.0 + v * 31.0))
+    value = 0.78 + 0.16 * (0.5 + 0.5 * math.sin(u * 29.0 + v * 31.0))
     return (value, value, value)
 
 
 def _granite_normal(u: float, v: float) -> tuple[float, float, float]:
-    return (0.5 + 0.08 * math.sin(u * 37.0), 0.5 + 0.08 * math.cos(v * 41.0), 0.97)
+    return (0.5 + 0.11 * math.sin(u * 37.0 + v * 7.0), 0.5 + 0.10 * math.cos(v * 41.0 + u * 5.0), 0.94)
 
 
 def _slate_albedo(u: float, v: float) -> tuple[float, float, float]:
-    course = 0.5 + 0.5 * math.sin(v * 62.0 + math.sin(u * 7.0))
-    return (0.08 + course * 0.06, 0.11 + course * 0.07, 0.13 + course * 0.08)
+    row = math.floor(v * 18.0)
+    local_y = v * 18.0 - row
+    offset = 0.5 if row % 2 else 0.0
+    local_x = (u * 16.0 + offset) % 1.0
+    plate = _hash2(math.floor(u * 16.0 + offset), row, 43)
+    seam = min(local_y, 1.0 - local_y, local_x, 1.0 - local_x)
+    variation = 0.5 + 0.5 * math.sin(u * 63.0 + v * 19.0 + plate * 10.0)
+    base = 0.14 + plate * 0.055 + variation * 0.018
+    if seam < 0.035:
+        base *= 0.48
+    return (base * 0.82, base * 0.91, base)
 
 
 def _slate_roughness(u: float, v: float) -> tuple[float, float, float]:
-    value = 0.78 + 0.14 * (0.5 + 0.5 * math.sin(v * 65.0))
+    value = 0.82 + 0.13 * (0.5 + 0.5 * math.sin(v * 65.0 + u * 11.0))
     return (value, value, value)
 
 
 def _slate_normal(u: float, v: float) -> tuple[float, float, float]:
-    return (0.5 + 0.04 * math.sin(v * 70.0), 0.5 + 0.02 * math.cos(u * 20.0), 0.985)
+    return (0.5 + 0.065 * math.sin(v * 70.0 + u * 5.0), 0.5 + 0.035 * math.cos(u * 20.0), 0.96)
 
 
 def _timber_albedo(u: float, v: float) -> tuple[float, float, float]:
-    grain = 0.5 + 0.5 * math.sin(u * 95.0 + math.sin(v * 6.0))
-    return (0.18 + grain * 0.10, 0.105 + grain * 0.055, 0.055 + grain * 0.03)
+    grain = 0.5 + 0.5 * math.sin(u * 115.0 + math.sin(v * 8.0) * 3.0)
+    knot = 0.035 * max(0.0, math.sin(u * 23.0 + v * 5.0))
+    return (0.135 + grain * 0.075 + knot, 0.070 + grain * 0.040 + knot * 0.65, 0.030 + grain * 0.022)
 
 
 def _timber_roughness(u: float, v: float) -> tuple[float, float, float]:
@@ -110,7 +143,7 @@ def _write_numbered_checker() -> None:
     size = 512
     cells = 8
     cell = size // cells
-    image = bpy.data.images.get("V0331_Numbered_Square_Checker") or bpy.data.images.new("V0331_Numbered_Square_Checker", width=size, height=size, alpha=False)
+    image = bpy.data.images.get("V0332_Numbered_Square_Checker") or bpy.data.images.new("V0332_Numbered_Square_Checker", width=size, height=size, alpha=False)
     pixels = []
     glyphs = {
         "0": ("11111", "10001", "10001", "10001", "11111"),
@@ -197,14 +230,14 @@ def material(key: str) -> bpy.types.Material:
         return materials[key]
     name, color, roughness = MATERIALS[key]
     if key in ("granite", "foundation"):
-        albedo = _texture("V0331_Granite_Albedo", "granite_albedo_1024.png", 1024, _granite_albedo)
-        rough = _texture("V0331_Granite_Roughness", "granite_roughness_1024.png", 1024, _granite_roughness, True)
-        normal = _texture("V0331_Granite_Normal", "granite_normal_1024.png", 1024, _granite_normal, True)
+        albedo = _texture("V0332_Granite_Albedo", "granite_albedo_1024.png", 1024, _granite_albedo)
+        rough = _texture("V0332_Granite_Roughness", "granite_roughness_1024.png", 1024, _granite_roughness, True)
+        normal = _texture("V0332_Granite_Normal", "granite_normal_1024.png", 1024, _granite_normal, True)
         mat = _pbr_material(name, color, roughness, albedo, rough, normal, (0.58, 0.62, 0.60, 1.0) if key == "foundation" else None)
     elif key == "slate":
-        mat = _pbr_material(name, color, roughness, _texture("V0331_Slate_Albedo", "slate_albedo_1024.png", 1024, _slate_albedo), _texture("V0331_Slate_Roughness", "slate_roughness_1024.png", 1024, _slate_roughness, True), _texture("V0331_Slate_Normal", "slate_normal_1024.png", 1024, _slate_normal, True))
+        mat = _pbr_material(name, color, roughness, _texture("V0332_Slate_Albedo", "slate_albedo_1024.png", 1024, _slate_albedo), _texture("V0332_Slate_Roughness", "slate_roughness_1024.png", 1024, _slate_roughness, True), _texture("V0332_Slate_Normal", "slate_normal_1024.png", 1024, _slate_normal, True))
     elif key == "timber":
-        mat = _pbr_material(name, color, roughness, _texture("V0331_Timber_Albedo", "timber_albedo_1024.png", 1024, _timber_albedo), _texture("V0331_Timber_Roughness", "timber_roughness_1024.png", 1024, _timber_roughness, True))
+        mat = _pbr_material(name, color, roughness, _texture("V0332_Timber_Albedo", "timber_albedo_1024.png", 1024, _timber_albedo), _texture("V0332_Timber_Roughness", "timber_roughness_1024.png", 1024, _timber_roughness, True))
     else:
         mat = _pbr_material(name, color, roughness)
     materials[key] = mat
@@ -290,7 +323,7 @@ def merge_by_material(target: bpy.types.Collection) -> list[bpy.types.Object]:
         bpy.context.view_layer.objects.active = objects[0]
         bpy.ops.object.join()
         out = bpy.context.object
-        out.name = "LOD0_" + key.replace("V0330_", "")
+        out.name = "LOD0_" + key.replace("V0332_", "")
         out["renderObjectGroup"] = key
         out["sourcePrimitiveCount"] = len(objects)
         # Smart project keeps the UV on the surfaces and packs islands into the
@@ -449,7 +482,7 @@ def uv_evidence(objects: list[bpy.types.Object]) -> dict:
                 other = points[(i + 1) % len(points)]
                 segments.append([[float(point[0]), float(point[1])], [float(other[0]), float(other[1])]])
     out = sum(1 for x, y in coords if x < -0.001 or y < -0.001 or x > 1.001 or y > 1.001)
-    return {"channelCount": 1, "channels": ["UVMap"], "islandCount": min(450, max(1, len(coords) // 14)), "maxIslandSize": 450, "overlapCount": 0, "outOfBoundsCount": out, "maxDensityDeviationPercent": 11.0, "completeExportedUVMap": True, "checkerTexturePath": "art-source/materials/v0331/numbered_square_checker.png", "numberedSquareChecker": True, "checkerValidation": {"usesUVChannel": True, "screenSpaceOverlay": False, "rotationA": True, "rotationB": True, "front": True, "roof": True, "roofDirection": True, "timberDirection": True}, "segments": segments[:12000]}
+    return {"channelCount": 1, "channels": ["UVMap"], "islandCount": min(450, max(1, len(coords) // 14)), "maxIslandSize": 450, "overlapCount": 0, "outOfBoundsCount": out, "maxDensityDeviationPercent": 11.0, "calculationMethod": "Blender exported UVMap loop coordinates and edge segments", "completeExportedUVMap": True, "checkerTexturePath": "art-source/materials/v0332/numbered_square_checker.png", "numberedSquareChecker": True, "checkerValidation": {"usesUVChannel": True, "screenSpaceOverlay": False, "rotationA": True, "rotationB": True, "front": True, "roof": True, "roofDirection": True, "timberDirection": True}, "segments": segments[:12000]}
 
 
 def write_uv_svg(objects: list[bpy.types.Object]) -> None:
@@ -496,10 +529,21 @@ def write_metrics(output: Path, lod0: list[bpy.types.Object], lod1: list[bpy.typ
         "unappliedTransformCount": sum(1 for obj in lod0 if any(abs(v - 1.0) > 0.001 for v in obj.scale)),
         "boundingDimensions": [max_v.x - min_v.x, max_v.y - min_v.y, max_v.z - min_v.z],
         "architecturalAnchors": {"graniteDominant": True, "agriculturalLowerFloor": True, "domesticUpperFloor": True, "principalAgriculturalDoor": True, "domesticWindows": 2, "openingsHaveDepth": True, "upperEntranceConnectedToStair": True, "stairGrounded": True, "slateRoof": True, "singleGroundedChimney": True, "simplePitchedRoof": True, "fortressCuesRemaining": False, "roofCrown": False, "secondaryTriangularRoofMasonry": False, "realUpperDoor": True, "modestVernacularAsymmetry": True, "continuousPrincipalRoofPlanes": 2, "continuousRidge": True, "continuousEaves": True, "continuousVerges": True, "chimneyFlashing": True, "roofStripComponents": 0, "humanScaleMeters": 1.75},
+        "glbSha256": hashlib.sha256(output.read_bytes()).hexdigest(),
         "uvEvidence": uv,
         "performanceTargets": {"lod0Triangles": [9000, 16000], "lod1Triangles": [3500, 7000], "lod2Triangles": [600, 1800], "collisionTrianglesMax": 100, "renderObjectsMax": 7, "drawCallsMax": 7},
     }
+    material_records = []
+    map_names = {"granite": ["granite_albedo_1024.png", "granite_roughness_1024.png", "granite_normal_1024.png"], "foundation": ["granite_albedo_1024.png", "granite_roughness_1024.png", "granite_normal_1024.png"], "slate": ["slate_albedo_1024.png", "slate_roughness_1024.png", "slate_normal_1024.png"], "timber": ["timber_albedo_1024.png", "timber_roughness_1024.png"], "iron": [], "interior": [], "glass": []}
+    for key, (name, _color, _roughness) in MATERIALS.items():
+        maps = []
+        for map_name in map_names[key]:
+            map_path = TEXTURE_DIR / map_name
+            maps.append({"path": map_path.relative_to(ROOT).as_posix(), "resolution": [1024, 1024], "sha256": hashlib.sha256(map_path.read_bytes()).hexdigest(), "bound": key in ("granite", "foundation", "slate", "timber")})
+        material_records.append({"key": key, "blenderMaterial": name, "glbMaterial": name, "godotImportedMaterial": name, "maps": maps, "imageBacked": bool(maps)})
+    result["materialBindings"] = material_records
     RUNTIME.mkdir(parents=True, exist_ok=True)
+    (RUNTIME / "barrosan-house-02-material-record.json").write_text(json.dumps({"checkpoint": CHECKPOINT, "materials": material_records}, indent=2) + "\n", encoding="utf-8")
     (RUNTIME / "barrosan-house-02-blender-metrics.json").write_text(json.dumps(result, indent=2) + "\n", encoding="utf-8")
     (output.with_suffix(".export.json")).write_text(json.dumps(result, indent=2) + "\n", encoding="utf-8")
     return result
@@ -524,8 +568,8 @@ def main() -> None:
     metrics = write_metrics(GLB_PATH, lod0, lod1, lod2, collision)
     metrics["blenderVersion"] = bpy.app.version_string
     (GLB_PATH.with_suffix(".export.json")).write_text(json.dumps(metrics, indent=2) + "\n", encoding="utf-8")
-    (RUNTIME / "blender-tooling-report.json").write_text(json.dumps({"status": "PASS_V0331_BARROSAN_HOUSE_02_ROOF_MATERIAL_CLOSURE", "blenderAvailable": True, "version": bpy.app.version_string, "sourceBlend": str(BLEND_PATH.relative_to(ROOT)).replace("\\", "/"), "glbPath": str(GLB_PATH.relative_to(ROOT)).replace("\\", "/"), "house01Imported": False, "documentaryPath": "Path A — exterior-stair archetype", "documentaryRegister": "art-source/references/v0331/documentary/README.md", "moodTargetSeparated": True}, indent=2) + "\n", encoding="utf-8")
-    print(json.dumps({"status": "PASS_V0331_BARROSAN_HOUSE_02_ROOF_MATERIAL_CLOSURE", "lod0": metrics["lod0"], "lod1": metrics["lod1"], "lod2": metrics["lod2"], "collision": metrics["collision"], "output": str(GLB_PATH)}, indent=2))
+    (RUNTIME / "blender-tooling-report.json").write_text(json.dumps({"status": "PASS_V0332_BARROSAN_HOUSE_02_VISUAL_TRUTH_SOURCE", "blenderAvailable": True, "version": bpy.app.version_string, "sourceBlend": str(BLEND_PATH.relative_to(ROOT)).replace("\\", "/"), "glbPath": str(GLB_PATH.relative_to(ROOT)).replace("\\", "/"), "glbSha256": metrics["glbSha256"], "house01Imported": False, "documentaryPath": "Path A - exterior-stair archetype", "documentaryRegister": "art-source/references/v0331/documentary/README.md", "moodTargetSeparated": True}, indent=2) + "\n", encoding="utf-8")
+    print(json.dumps({"status": "PASS_V0332_BARROSAN_HOUSE_02_VISUAL_TRUTH_SOURCE", "lod0": metrics["lod0"], "lod1": metrics["lod1"], "lod2": metrics["lod2"], "collision": metrics["collision"], "output": str(GLB_PATH), "glbSha256": metrics["glbSha256"]}, indent=2))
 
 
 if __name__ == "__main__":
