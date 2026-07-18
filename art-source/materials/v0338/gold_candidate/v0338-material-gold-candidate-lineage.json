@@ -1,0 +1,51 @@
+{
+  "checkpoint": "v0.338",
+  "selectedCandidate": "candidate_a",
+  "sourceFamily": "v0.337 selected candidate_a derivative; no new source search",
+  "sourceDirectory": "art-source/materials/v0335/candidates/candidate_a",
+  "sourceMapHashes": {
+    "albedo": "fce2fe5350bb8ca1ded96b6c81eaacb19126b3bf7d9d59c493cca7f76753796a",
+    "height": "72325fddbf04962e6b79381d2293394e2714a58fa4b500a5bc8ab5c27688003f",
+    "normal": "a3b9c476b2306af9d0f1737f3a1e4abe4460be86dd451e31a99128edbadd590d",
+    "roughness": "1e59cd0b9fea11246fe42a2c96af89f7038910751c001470a6ca29baef934a41",
+    "ao": "280e29899f1a064f39719710fb7014014485e1edd0c3f75b163be2a59c4f298c"
+  },
+  "calibration": {
+    "wall": "medium grey-grey-brown, 0.52 exposure basis, saturation 0.24, deterministic local value variation, darker recessed mortar response",
+    "rear": "same family, 0.49 exposure basis, cooler/damper joint variation",
+    "gables": "same family, orientation-specific 0.51 exposure basis",
+    "dressed": "same family, modestly smoother/lighter 0.60 exposure basis",
+    "foundation": "same family, darker/desaturated 0.42 exposure basis with restrained lower-contact dampness",
+    "slateTimberWindows": "frozen geometry and source material family; no directional lighting baked into albedo",
+    "normal": "source OpenGL normal preserved; Blender/Godot strength 0.42",
+    "roughness": "bounded to 192..248 8-bit; no gloss painting",
+    "height": "source height retained and bounded to 28..228; parallax disabled",
+    "ao": "retained as evidence input; not baked into albedo"
+  },
+  "maps": {
+    "gold_candidate_ao": "12c77e4a41a055f618d9aa992c2950d8366a5b2cb554644eac215f5e814c8358",
+    "gold_candidate_dressed_albedo": "bb1baa9d0bbd10b351ca335f027431554933977cad3a99be72fcc82fc10ba180",
+    "gold_candidate_foundation_albedo": "f720e69a4e1ebfe85a51e443192c19748bccde7dfa0bd42a987686355df26c39",
+    "gold_candidate_gable_albedo": "5b4fed9ccc47c2db8937d33edcd4c46103f59c3168440b4b76fd3d80ffca8452",
+    "gold_candidate_height": "c26aac80be7b5fd5532dbccb3ccad12273cd7870ec97100889d9b0f368581120",
+    "gold_candidate_normal": "6588c8a3edab16d79b2ed7abb59ce25fca3fe6ad284bff08a1490e095b18f8fc",
+    "gold_candidate_rear_albedo": "56f81522abdde86722280cae4e8940384f30b954c5575eefaf0f9f41c6d9dd72",
+    "gold_candidate_roughness": "7b44a3b2b3aec8c4ede14f6bd48371950a5f306b57c1d1e01384f6b94e8c3efe",
+    "gold_candidate_rubble_albedo": "2b363f0b7cf1d023712d3a12041045f18890e0f4d4f5ed6f4ca3f48ef8d6d083"
+  },
+  "textureResolution": [
+    2048,
+    2048
+  ],
+  "normalStrength": 0.42,
+  "heightParallax": {
+    "enabled": false,
+    "reason": "protect openings, silhouette and motion truth"
+  },
+  "weathering": {
+    "mortar": "recessed low-value response without outline",
+    "foundation": "low coverage vertical damp variation",
+    "mossLichen": "not baked; coverage 0%",
+    "uniformDirtBand": false
+  }
+}
