@@ -66,7 +66,25 @@ Preserved: House 01 source and runtime, accepted v0.331 documentary/reference re
 
 ## Validation and CI
 
-The dedicated v0.332 validator checks current GLB/import hashes, material-image binding records, LOD/collision budgets, roof anchors, actual UV/wireframe/collision inputs, current-GLB benchmark consistency, exact ten-file pack, media, preservation, and no-gameplay anchors. Retained v0.331 and applicable earlier validators remain required before closeout. CI evidence and the final pushed SHA are appended after commit/push and exact-SHA Actions completion.
+The dedicated v0.332 validator checks current GLB/import hashes, material-image binding records, LOD/collision budgets, roof anchors, actual UV/wireframe/collision inputs, current-GLB benchmark consistency, exact ten-file pack, media, preservation, and no-gameplay anchors. It passed with `humanReviewRequired: true`, preserving the honest internal rejection instead of auto-approving the visual result.
+
+Local validation passed before closeout:
+
+- `node tools/godot/saltoV0332House02VisualTruthTool.mjs`
+- `node tools/godot/saltoV0331BarrosanHouse02Tool.mjs validate`
+- `node tools/godot/saltoV0330BarrosanHouse02Tool.mjs validate`
+- clean-state retained validators v0.329, v0.328, v0.327, and v0.326
+- `npm test -- --reporter=dot` (122 files, 887 tests)
+- `npm run build`
+- `npm run validate:content`
+- `npm run validate:art-intake`
+- `npm run validate:runtime-art-slots`
+- `npm run godot:validate:salto-experimental-artifact-retention`
+- `npm run godot:validate:salto-barrosan-ui-state-invariant`
+- `npm run godot:all`
+- `git diff --check`
+
+The implementation commit `7294f760913448ac530a4eaee2c607c27845fdce` was pushed to `codex/v0215-v0226-recovery`. GitHub Actions run `29622592670` (`CI Release Matrix Dry Run`) completed successfully for that exact SHA. The final report-only closeout update is intentionally kept separate so the report records the already-verified implementation CI result; its own exact-SHA run is recorded in the final handoff after this update.
 
 ## Known limitation and safest next step
 
