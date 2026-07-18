@@ -1,0 +1,57 @@
+{
+  "checkpoint": "v0.335",
+  "candidates": [
+    {
+      "method": "photo-scanned rubble",
+      "source": "Poly Haven stone_wall 2K originals",
+      "metrics": {
+        "visibleStoneCount": 118,
+        "medianStoneHeightM": 0.27,
+        "p90StoneHeightM": 0.52,
+        "stoneAreaCV": 0.61,
+        "highRectangularityShare": 0.08,
+        "nonAxisJointShare": 0.58,
+        "longestContinuousHorizontalMortarM": 0.74,
+        "maxInternalMortarFraction": 0.21,
+        "repeatedDimensionShare": 0.11,
+        "maxVerticalJointChain": 2,
+        "mortarWidthCV": 0.43
+      }
+    },
+    {
+      "method": "procedural polygonal rubble",
+      "source": "authored deterministic Voronoi-like polygon mask",
+      "metrics": {
+        "visibleStoneCount": 132,
+        "medianStoneHeightM": 0.25,
+        "p90StoneHeightM": 0.49,
+        "stoneAreaCV": 0.56,
+        "highRectangularityShare": 0.0,
+        "nonAxisJointShare": 0.79,
+        "longestContinuousHorizontalMortarM": 0.64,
+        "maxInternalMortarFraction": 0.18,
+        "repeatedDimensionShare": 0.09,
+        "maxVerticalJointChain": 2,
+        "mortarWidthCV": 0.51
+      }
+    },
+    {
+      "method": "hybrid scan plus low-poly relief",
+      "source": "Poly Haven stone_wall scan plus authored relief treatment",
+      "metrics": {
+        "visibleStoneCount": 126,
+        "medianStoneHeightM": 0.28,
+        "p90StoneHeightM": 0.55,
+        "stoneAreaCV": 0.59,
+        "highRectangularityShare": 0.1,
+        "nonAxisJointShare": 0.62,
+        "longestContinuousHorizontalMortarM": 0.82,
+        "maxInternalMortarFraction": 0.24,
+        "repeatedDimensionShare": 0.12,
+        "maxVerticalJointChain": 2,
+        "mortarWidthCV": 0.46
+      }
+    }
+  ],
+  "metricPolicy": "automated rejection aids only; no automated authenticity or winner selection"
+}

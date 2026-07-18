@@ -1,0 +1,120 @@
+{
+  "candidateCount": 3,
+  "captures": [
+    {
+      "cameraMode": "oblique_rts",
+      "fileName": "candidate_1_complete.png",
+      "height": 900,
+      "projection": "orthographic",
+      "width": 1600
+    },
+    {
+      "cameraMode": "oblique_rts",
+      "fileName": "candidate_2_complete.png",
+      "height": 900,
+      "projection": "orthographic",
+      "width": 1600
+    },
+    {
+      "cameraMode": "oblique_rts",
+      "fileName": "candidate_3_complete.png",
+      "height": 900,
+      "projection": "orthographic",
+      "width": 1600
+    },
+    {
+      "cameraMode": "oblique_rts",
+      "fileName": "blind_three_materials.png",
+      "height": 900,
+      "projection": "orthographic",
+      "width": 1600
+    },
+    {
+      "cameraMode": "oblique_rts",
+      "fileName": "normal_rts.png",
+      "height": 900,
+      "projection": "orthographic",
+      "width": 1600
+    },
+    {
+      "cameraMode": "near_corner_window",
+      "fileName": "near_corner_window.png",
+      "height": 900,
+      "projection": "orthographic",
+      "width": 1600
+    },
+    {
+      "cameraMode": "far_rts",
+      "fileName": "far_rts.png",
+      "height": 900,
+      "projection": "orthographic",
+      "width": 1600
+    },
+    {
+      "cameraMode": "direct_top_down",
+      "fileName": "direct_top_down.png",
+      "height": 900,
+      "projection": "orthographic",
+      "width": 1600
+    },
+    {
+      "cameraMode": "normal_only",
+      "fileName": "normal_only.png",
+      "height": 900,
+      "projection": "orthographic",
+      "width": 1600
+    },
+    {
+      "cameraMode": "neutral_overcast",
+      "fileName": "neutral_overcast.png",
+      "height": 900,
+      "projection": "orthographic",
+      "width": 1600
+    },
+    {
+      "cameraMode": "warm_directional",
+      "fileName": "warm_directional.png",
+      "height": 900,
+      "projection": "orthographic",
+      "width": 1600
+    },
+    {
+      "cameraMode": "albedo_only",
+      "fileName": "albedo_only.png",
+      "height": 900,
+      "projection": "orthographic",
+      "width": 1600
+    },
+    {
+      "cameraMode": "roughness_isolation",
+      "fileName": "roughness_isolation.png",
+      "height": 900,
+      "projection": "orthographic",
+      "width": 1600
+    }
+  ],
+  "checkpoint": "v0.335",
+  "errors": [],
+  "noCombat": true,
+  "noCompleteHouseExport": true,
+  "noEconomy": true,
+  "noGameplay": true,
+  "noMovement": true,
+  "noPathfinding": true,
+  "noResources": true,
+  "outcome": "READY FOR HUMAN GRANITE SOURCE SELECTION",
+  "prototypeOptIn": true,
+  "scenePath": "res://scenes/review/V0335GraniteSourceProof.tscn",
+  "status": "PASS_V0335_ISOLATED_GRANITE_SOURCE_PROOF",
+  "testStructure": {
+    "foundation": true,
+    "humanHeightM": 1.75,
+    "lintel": true,
+    "metricScaleBarM": 2.0,
+    "openingRecessed": true,
+    "principalWallHeightM": 3.0,
+    "principalWallWidthM": 4.0,
+    "sideWallLengthM": 1.8,
+    "sill": true
+  }
+}

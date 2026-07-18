@@ -1,0 +1,245 @@
+{
+  "checkpoint": "v0.335",
+  "outcome": "READY FOR HUMAN GRANITE SOURCE SELECTION",
+  "humanReviewRequired": true,
+  "automatedVisualApproval": false,
+  "house02Modified": false,
+  "v0334SourceGLBSha256": "f85cf2e7a448015638455f5de5cd49c18b085cbb1103a1fd5dfa8f7706d24be5",
+  "v0334ImportedResourceSha256": "b3be51e7d6e52fdfb829400afafbf26e9e0f9983b902b8ccba83f38306bba531",
+  "candidateBlindMapping": {
+    "MATERIAL 1": "candidate_c",
+    "MATERIAL 2": "candidate_a",
+    "MATERIAL 3": "candidate_b"
+  },
+  "sourceProvenance": {
+    "checkpoint": "v0.335",
+    "assetId": "stone_wall",
+    "sourcePage": "https://polyhaven.com/a/stone_wall",
+    "sourceApi": "https://api.polyhaven.com/files/stone_wall",
+    "author": {
+      "photography": "Charlotte Baglioni",
+      "processing": "Dario Barresi"
+    },
+    "license": "CC0 1.0",
+    "accessed": "2026-07-18",
+    "originalResolution": "2K maps, 2048x2048",
+    "modifications": "Candidate A preserves the original files in the vendored source directory and uses deterministic 1024px study derivatives in Godot. Candidate B is authored from deterministic polygon masks. Candidate C is a derived scan tint/height response plus limited merged relief in the isolated Godot study.",
+    "originalFiles": {
+      "stone_wall_ao_2k.png": {
+        "sha256": "feeff2a09430ff97a86036379a6548c0c4a516a1989e141695d99a7f7719b168",
+        "bytes": 6998755
+      },
+      "stone_wall_diff_2k.jpg": {
+        "sha256": "131494c5be0531bb230d4e47c21750d94d44555a66396d2b21da962ef635c0c2",
+        "bytes": 3180415
+      },
+      "stone_wall_disp_2k.png": {
+        "sha256": "d3349e1687d903b3b49679f67fe40192db07c591f0232c4a273f98c66e90d14b",
+        "bytes": 5479925
+      },
+      "stone_wall_nor_gl_2k.png": {
+        "sha256": "60e18d40607138c181027f728f78d01e31959e837e778f05716a10076ebd46b1",
+        "bytes": 22698994
+      },
+      "stone_wall_rough_2k.jpg": {
+        "sha256": "0e4512383fcdef01c0e4f85b7caaea09ec277aeb056f0723be88ef07785dd034",
+        "bytes": 1222030
+      }
+    },
+    "sourceBundleNote": "The vendored directory contains the unmodified downloaded 2K originals; the project records per-file hashes because Poly Haven generates download bundles on demand.",
+    "vendoredSourceBundleSha256": "133b624ec1cafc830ee18b00dc4ab10133245a8acb8c6631d20b16bce3bf9b6d",
+    "vendoredSourceBundle": "art-source/materials/v0335/source/polyhaven_stone_wall_original_2k.zip",
+    "candidates": [
+      {
+        "method": "photo-scanned rubble",
+        "source": "Poly Haven stone_wall 2K originals",
+        "metrics": {
+          "visibleStoneCount": 118,
+          "medianStoneHeightM": 0.27,
+          "p90StoneHeightM": 0.52,
+          "stoneAreaCV": 0.61,
+          "highRectangularityShare": 0.08,
+          "nonAxisJointShare": 0.58,
+          "longestContinuousHorizontalMortarM": 0.74,
+          "maxInternalMortarFraction": 0.21,
+          "repeatedDimensionShare": 0.11,
+          "maxVerticalJointChain": 2,
+          "mortarWidthCV": 0.43
+        }
+      },
+      {
+        "method": "procedural polygonal rubble",
+        "source": "authored deterministic Voronoi-like polygon mask",
+        "metrics": {
+          "visibleStoneCount": 132,
+          "medianStoneHeightM": 0.25,
+          "p90StoneHeightM": 0.49,
+          "stoneAreaCV": 0.56,
+          "highRectangularityShare": 0.0,
+          "nonAxisJointShare": 0.79,
+          "longestContinuousHorizontalMortarM": 0.64,
+          "maxInternalMortarFraction": 0.18,
+          "repeatedDimensionShare": 0.09,
+          "maxVerticalJointChain": 2,
+          "mortarWidthCV": 0.51
+        }
+      },
+      {
+        "method": "hybrid scan plus low-poly relief",
+        "source": "Poly Haven stone_wall scan plus authored relief treatment",
+        "metrics": {
+          "visibleStoneCount": 126,
+          "medianStoneHeightM": 0.28,
+          "p90StoneHeightM": 0.55,
+          "stoneAreaCV": 0.59,
+          "highRectangularityShare": 0.1,
+          "nonAxisJointShare": 0.62,
+          "longestContinuousHorizontalMortarM": 0.82,
+          "maxInternalMortarFraction": 0.24,
+          "repeatedDimensionShare": 0.12,
+          "maxVerticalJointChain": 2,
+          "mortarWidthCV": 0.46
+        }
+      }
+    ]
+  },
+  "candidateA": {
+    "method": "photo-scanned rubble",
+    "source": "Poly Haven stone_wall 2K originals",
+    "metrics": {
+      "visibleStoneCount": 118,
+      "medianStoneHeightM": 0.27,
+      "p90StoneHeightM": 0.52,
+      "stoneAreaCV": 0.61,
+      "highRectangularityShare": 0.08,
+      "nonAxisJointShare": 0.58,
+      "longestContinuousHorizontalMortarM": 0.74,
+      "maxInternalMortarFraction": 0.21,
+      "repeatedDimensionShare": 0.11,
+      "maxVerticalJointChain": 2,
+      "mortarWidthCV": 0.43
+    }
+  },
+  "candidateB": {
+    "method": "procedural polygonal rubble",
+    "source": "authored deterministic Voronoi-like polygon mask",
+    "metrics": {
+      "visibleStoneCount": 132,
+      "medianStoneHeightM": 0.25,
+      "p90StoneHeightM": 0.49,
+      "stoneAreaCV": 0.56,
+      "highRectangularityShare": 0.0,
+      "nonAxisJointShare": 0.79,
+      "longestContinuousHorizontalMortarM": 0.64,
+      "maxInternalMortarFraction": 0.18,
+      "repeatedDimensionShare": 0.09,
+      "maxVerticalJointChain": 2,
+      "mortarWidthCV": 0.51
+    }
+  },
+  "candidateC": {
+    "method": "hybrid scan plus low-poly relief",
+    "source": "Poly Haven stone_wall scan plus authored relief treatment",
+    "metrics": {
+      "visibleStoneCount": 126,
+      "medianStoneHeightM": 0.28,
+      "p90StoneHeightM": 0.55,
+      "stoneAreaCV": 0.59,
+      "highRectangularityShare": 0.1,
+      "nonAxisJointShare": 0.62,
+      "longestContinuousHorizontalMortarM": 0.82,
+      "maxInternalMortarFraction": 0.24,
+      "repeatedDimensionShare": 0.12,
+      "maxVerticalJointChain": 2,
+      "mortarWidthCV": 0.46
+    }
+  },
+  "stoneMetrics": "automated rejection aids only; no automated authenticity or winner selection",
+  "materialMaps": {
+    "candidateA": "art-source/materials/v0335/candidates/candidate_a",
+    "candidateB": "art-source/materials/v0335/candidates/candidate_b",
+    "candidateC": "art-source/materials/v0335/candidates/candidate_c"
+  },
+  "GodotImport": {
+    "scene": "desktop-spikes/godot-salto/scenes/review/V0335GraniteSourceProof.tscn",
+    "capture": "tools/godot/captureGodotV0335GraniteSourceProofWindows.ps1",
+    "runtimeManifest": "artifacts/desktop-spikes/godot-salto/v0335/v0335-granite-source-proof-runtime.json"
+  },
+  "normalOnlyEvidence": "artifacts/desktop-spikes/godot-salto/v0335/screenshots/normal_only.png",
+  "reviewImages": [
+    "albedo_only.png",
+    "blind_three_materials.png",
+    "candidate_1_complete.png",
+    "candidate_2_complete.png",
+    "candidate_3_complete.png",
+    "direct_top_down.png",
+    "far_rts.png",
+    "near_corner_window.png",
+    "neutral_overcast.png",
+    "normal_only.png",
+    "normal_rts.png",
+    "roughness_isolation.png",
+    "warm_directional.png"
+  ],
+  "finalMedia": "artifacts/manual-review/v0335-granite-source-proof/UPLOAD_TO_CHAT/08_CONTINUOUS_V0335_THREE_MATERIAL_TEST.mp4",
+  "preservation": {
+    "v0334Frozen": true,
+    "noCompleteHouseExport": true,
+    "noHouse02Application": true,
+    "noGameplay": true,
+    "noMovement": true,
+    "noPathfinding": true,
+    "noCombat": true,
+    "noEconomy": true,
+    "noResources": true,
+    "noStableIdsOrSavesMutation": true
+  },
+  "exactUploadFiles": [
+    {
+      "filename": "00_READ_ME_FIRST.md",
+      "bytes": 1071,
+      "sha256": "5be1a6ec86e9a7148d1c3e8a03a7b6ce48e8db1f0063ebd404ce77fcc714eb44"
+    },
+    {
+      "filename": "01_CC0_SOURCE_LICENCE_AND_DOCUMENTARY_TARGET.png",
+      "bytes": 1188948,
+      "sha256": "f4dae1a5bafe498e6563ff66b0b9f43a19177d52e3fe90bf9bbae4eed8397fc2"
+    },
+    {
+      "filename": "02_MATERIAL_1_COMPLETE_TEST_STRUCTURE.png",
+      "bytes": 441165,
+      "sha256": "1028518abb223749f8c9f1694264b2bef2e52305246dc9a0c2f59a249c829ffb"
+    },
+    {
+      "filename": "03_MATERIAL_2_COMPLETE_TEST_STRUCTURE.png",
+      "bytes": 414285,
+      "sha256": "6169f22245498cfe30d657bdccc3f57f858f47385c237bd4b0b86a91ecc21670"
+    },
+    {
+      "filename": "04_MATERIAL_3_COMPLETE_TEST_STRUCTURE.png",
+      "bytes": 404225,
+      "sha256": "b89567c24c8f3ea93a4b077dafc34ac7ebdc8317b7c47d20f15e1d3a9b9fb109"
+    },
+    {
+      "filename": "05_BLIND_THREE_MATERIAL_COMPARISON.png",
+      "bytes": 217550,
+      "sha256": "5991d3c308b09ee2fe78e5c03e23519ea47d4099dee912c6528db8b656018bf4"
+    },
+    {
+      "filename": "06_STONE_MASKS_AND_ANTI_BRICK_METRICS.png",
+      "bytes": 239065,
+      "sha256": "0ad46ad67590a186289ca8bec445b1cd8d8f3a6b0f3fb59b7f0be43208500a70"
+    },
+    {
+      "filename": "07_ACTUAL_PBR_MAPS_AND_GODOT_MATERIAL_RESPONSE.png",
+      "bytes": 708907,
+      "sha256": "04fb40d780d8b474d36f23884f471341687113f2c52cc52bbb65ee593c71a18d"
+    },
+    {
+      "filename": "08_CONTINUOUS_V0335_THREE_MATERIAL_TEST.mp4",
+      "bytes": 593373,
+      "sha256": "cbbdc8d24ac38a619eb1840250b3c810673f0ff0e6abfda6e9a97214b37582de"
+    }
+  ],
+  "manifestSha256": "d02e4c79cf8b88e976418d788007eae01dd6428bd2eaf9337bad425a64d3014b"
+}
