@@ -1,0 +1,40 @@
+{
+  "checkpoint": "v0.337",
+  "selectedCandidate": "candidate_a",
+  "method": "photo-scanned Poly Haven stone_wall rubble; calibrated derivative only",
+  "sourceDirectory": "art-source/materials/v0335/candidates/candidate_a",
+  "sourceMapHashes": {
+    "albedo": "fce2fe5350bb8ca1ded96b6c81eaacb19126b3bf7d9d59c493cca7f76753796a",
+    "height": "72325fddbf04962e6b79381d2293394e2714a58fa4b500a5bc8ab5c27688003f",
+    "normal": "a3b9c476b2306af9d0f1737f3a1e4abe4460be86dd451e31a99128edbadd590d",
+    "roughness": "1e59cd0b9fea11246fe42a2c96af89f7038910751c001470a6ca29baef934a41",
+    "ao": "280e29899f1a064f39719710fb7014014485e1edd0c3f75b163be2a59c4f298c"
+  },
+  "calibration": {
+    "albedo": "saturation 0.38, contrast 0.96, cool neutral tint, exposure 0.94; no baked directional shadow added",
+    "dressedAlbedo": "same source family, saturation 0.30, restrained value lift",
+    "foundationAlbedo": "same source family, cool darkened contact variant",
+    "normal": "source OpenGL normal preserved; Blender/Godot normal strength documented separately",
+    "roughness": "bounded to 185..246 8-bit (about 0.73..0.965), no gloss painting",
+    "height": "source height retained and bounded to 28..228; parallax disabled for this review asset",
+    "ao": "source AO retained as evidence and optional calibrated input; not baked into albedo"
+  },
+  "calibratedMapHashes": {
+    "selected_granite_albedo": "b3721a14ab1d6bab2f6afd15316f9de194de3d4ec5d0640e7524265c00818f06",
+    "selected_granite_ao": "12c77e4a41a055f618d9aa992c2950d8366a5b2cb554644eac215f5e814c8358",
+    "selected_granite_dressed_albedo": "29bb58016873f14dabc66c27ce757bfef8525be4eca919cdb673c0c59bb6dab8",
+    "selected_granite_foundation_albedo": "f32241fb1b0179effe59ede5ba6b7fe7a74280a0df1e609b24a09a3f19a27dfa",
+    "selected_granite_height": "c26aac80be7b5fd5532dbccb3ccad12273cd7870ec97100889d9b0f368581120",
+    "selected_granite_normal": "6588c8a3edab16d79b2ed7abb59ce25fca3fe6ad284bff08a1490e095b18f8fc",
+    "selected_granite_roughness": "49286d9cc33ab0ff63877588869ef201eb79633f605282e065847e006082507d"
+  },
+  "textureResolution": [
+    2048,
+    2048
+  ],
+  "normalStrength": 0.42,
+  "heightParallax": {
+    "enabled": false,
+    "reason": "avoid opening/silhouette distortion in matched review views"
+  }
+}
