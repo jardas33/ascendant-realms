@@ -1,0 +1,96 @@
+{
+  "pairs": [
+    {
+      "pair": "M1/M2",
+      "mapDifferences": {
+        "albedo": {
+          "leftSha256": "05a591cca26f3fd55c14d36c4acf853efa90cca4b66ab15b4974729bd32c061a",
+          "rightSha256": "a635755bdcf7b2fe0e732899bba3deca44660991954412ace83904a2208d0f8d",
+          "meanAbsoluteDifference": 66.292
+        },
+        "height": {
+          "leftSha256": "b603ac1513eb29cc8b6af7094d7eff39d1ca0c2f38e1259632eeff3c3f2b79bf",
+          "rightSha256": "81865332c482e5d69127d72e6388aca510f9ac696b11736066cb29d7620f889b",
+          "meanAbsoluteDifference": 157.648
+        },
+        "normal": {
+          "leftSha256": "5ae87dde4f2c80044507541a5af5b8126448176f1e0842860b6bd76f68e01323",
+          "rightSha256": "f24923594dbee47b30ec2ba0c57b3c4b4e0d5f7dbcf417e3fc8facbf437465a2",
+          "meanAbsoluteDifference": 3.614
+        },
+        "roughness": {
+          "leftSha256": "3c63b8c19f5d213f68b53bb4235430c15488297cee2f573d72770690387bf2d5",
+          "rightSha256": "14d49afd130c00ff20284e2cb523ae5f549f55a667ea73f8c242d0462a03f81b",
+          "meanAbsoluteDifference": 14.848
+        }
+      },
+      "materialResourceDifferent": true,
+      "renderedNearViewSSIM": 0.86759,
+      "renderedNormalRtsSSIM": 0.91675
+    },
+    {
+      "pair": "M1/M3",
+      "mapDifferences": {
+        "albedo": {
+          "leftSha256": "05a591cca26f3fd55c14d36c4acf853efa90cca4b66ab15b4974729bd32c061a",
+          "rightSha256": "fce2fe5350bb8ca1ded96b6c81eaacb19126b3bf7d9d59c493cca7f76753796a",
+          "meanAbsoluteDifference": 10.757
+        },
+        "height": {
+          "leftSha256": "b603ac1513eb29cc8b6af7094d7eff39d1ca0c2f38e1259632eeff3c3f2b79bf",
+          "rightSha256": "72325fddbf04962e6b79381d2293394e2714a58fa4b500a5bc8ab5c27688003f",
+          "meanAbsoluteDifference": 0.0
+        },
+        "normal": {
+          "leftSha256": "5ae87dde4f2c80044507541a5af5b8126448176f1e0842860b6bd76f68e01323",
+          "rightSha256": "a3b9c476b2306af9d0f1737f3a1e4abe4460be86dd451e31a99128edbadd590d",
+          "meanAbsoluteDifference": 16.221
+        },
+        "roughness": {
+          "leftSha256": "3c63b8c19f5d213f68b53bb4235430c15488297cee2f573d72770690387bf2d5",
+          "rightSha256": "1e59cd0b9fea11246fe42a2c96af89f7038910751c001470a6ca29baef934a41",
+          "meanAbsoluteDifference": 0.569
+        }
+      },
+      "materialResourceDifferent": true,
+      "renderedNearViewSSIM": 0.98693,
+      "renderedNormalRtsSSIM": 0.99386
+    },
+    {
+      "pair": "M2/M3",
+      "mapDifferences": {
+        "albedo": {
+          "leftSha256": "a635755bdcf7b2fe0e732899bba3deca44660991954412ace83904a2208d0f8d",
+          "rightSha256": "fce2fe5350bb8ca1ded96b6c81eaacb19126b3bf7d9d59c493cca7f76753796a",
+          "meanAbsoluteDifference": 76.924
+        },
+        "height": {
+          "leftSha256": "81865332c482e5d69127d72e6388aca510f9ac696b11736066cb29d7620f889b",
+          "rightSha256": "72325fddbf04962e6b79381d2293394e2714a58fa4b500a5bc8ab5c27688003f",
+          "meanAbsoluteDifference": 157.648
+        },
+        "normal": {
+          "leftSha256": "f24923594dbee47b30ec2ba0c57b3c4b4e0d5f7dbcf417e3fc8facbf437465a2",
+          "rightSha256": "a3b9c476b2306af9d0f1737f3a1e4abe4460be86dd451e31a99128edbadd590d",
+          "meanAbsoluteDifference": 17.435
+        },
+        "roughness": {
+          "leftSha256": "14d49afd130c00ff20284e2cb523ae5f549f55a667ea73f8c242d0462a03f81b",
+          "rightSha256": "1e59cd0b9fea11246fe42a2c96af89f7038910751c001470a6ca29baef934a41",
+          "meanAbsoluteDifference": 15.306
+        }
+      },
+      "materialResourceDifferent": true,
+      "renderedNearViewSSIM": 0.84208,
+      "renderedNormalRtsSSIM": 0.89771
+    }
+  ],
+  "hybrid": {
+    "material": "MATERIAL 1",
+    "reliefMeshName": "HybridMergedLimitedRelief",
+    "mergedObjectCount": 1,
+    "reliefBoxCount": 7,
+    "reliefTriangleCount": 84,
+    "visibleAtRts": true
+  }
+}

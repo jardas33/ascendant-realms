@@ -1,0 +1,360 @@
+{
+  "candidateBindingLedger": "artifacts/runtime/v0336/candidate-binding-ledger.json",
+  "candidateSets": 3,
+  "captureCountPerCandidate": 14,
+  "captures": [
+    {
+      "displayedLabel": "MATERIAL 1",
+      "fileName": "01_near_corner_window.png",
+      "height": 1009,
+      "material": 1,
+      "mode": "near",
+      "width": 1920
+    },
+    {
+      "displayedLabel": "MATERIAL 1",
+      "fileName": "02_front_material_inspection.png",
+      "height": 1009,
+      "material": 1,
+      "mode": "front",
+      "width": 1920
+    },
+    {
+      "displayedLabel": "MATERIAL 1",
+      "fileName": "03_normal_rts.png",
+      "height": 1009,
+      "material": 1,
+      "mode": "normal",
+      "width": 1920
+    },
+    {
+      "displayedLabel": "MATERIAL 1",
+      "fileName": "04_far_rts.png",
+      "height": 1009,
+      "material": 1,
+      "mode": "far",
+      "width": 1920
+    },
+    {
+      "displayedLabel": "MATERIAL 1",
+      "fileName": "05_greyscale_normal_rts.png",
+      "height": 1009,
+      "material": 1,
+      "mode": "normal",
+      "width": 1920
+    },
+    {
+      "displayedLabel": "MATERIAL 1",
+      "fileName": "06_thumbnail_256.png",
+      "height": 144,
+      "material": 1,
+      "mode": "thumbnail",
+      "width": 256
+    },
+    {
+      "displayedLabel": "MATERIAL 1",
+      "fileName": "07_neutral_overcast.png",
+      "height": 1009,
+      "material": 1,
+      "mode": "neutral",
+      "width": 1920
+    },
+    {
+      "displayedLabel": "MATERIAL 1",
+      "fileName": "08_warm_directional.png",
+      "height": 1009,
+      "material": 1,
+      "mode": "warm",
+      "width": 1920
+    },
+    {
+      "displayedLabel": "MATERIAL 1",
+      "fileName": "09_albedo_only.png",
+      "height": 1009,
+      "material": 1,
+      "mode": "albedo",
+      "width": 1920
+    },
+    {
+      "displayedLabel": "MATERIAL 1",
+      "fileName": "10_normal_only.png",
+      "height": 1009,
+      "material": 1,
+      "mode": "normal_only",
+      "width": 1920
+    },
+    {
+      "displayedLabel": "MATERIAL 1",
+      "fileName": "11_normal_disabled.png",
+      "height": 1009,
+      "material": 1,
+      "mode": "normal_disabled",
+      "width": 1920
+    },
+    {
+      "displayedLabel": "MATERIAL 1",
+      "fileName": "12_roughness_isolation.png",
+      "height": 1009,
+      "material": 1,
+      "mode": "roughness",
+      "width": 1920
+    },
+    {
+      "displayedLabel": "MATERIAL 1",
+      "fileName": "13_top_down.png",
+      "height": 1009,
+      "material": 1,
+      "mode": "top",
+      "width": 1920
+    },
+    {
+      "displayedLabel": "MATERIAL 1",
+      "fileName": "14_side_view.png",
+      "height": 1009,
+      "material": 1,
+      "mode": "side",
+      "width": 1920
+    },
+    {
+      "displayedLabel": "MATERIAL 2",
+      "fileName": "01_near_corner_window.png",
+      "height": 1009,
+      "material": 2,
+      "mode": "near",
+      "width": 1920
+    },
+    {
+      "displayedLabel": "MATERIAL 2",
+      "fileName": "02_front_material_inspection.png",
+      "height": 1009,
+      "material": 2,
+      "mode": "front",
+      "width": 1920
+    },
+    {
+      "displayedLabel": "MATERIAL 2",
+      "fileName": "03_normal_rts.png",
+      "height": 1009,
+      "material": 2,
+      "mode": "normal",
+      "width": 1920
+    },
+    {
+      "displayedLabel": "MATERIAL 2",
+      "fileName": "04_far_rts.png",
+      "height": 1009,
+      "material": 2,
+      "mode": "far",
+      "width": 1920
+    },
+    {
+      "displayedLabel": "MATERIAL 2",
+      "fileName": "05_greyscale_normal_rts.png",
+      "height": 1009,
+      "material": 2,
+      "mode": "normal",
+      "width": 1920
+    },
+    {
+      "displayedLabel": "MATERIAL 2",
+      "fileName": "06_thumbnail_256.png",
+      "height": 144,
+      "material": 2,
+      "mode": "thumbnail",
+      "width": 256
+    },
+    {
+      "displayedLabel": "MATERIAL 2",
+      "fileName": "07_neutral_overcast.png",
+      "height": 1009,
+      "material": 2,
+      "mode": "neutral",
+      "width": 1920
+    },
+    {
+      "displayedLabel": "MATERIAL 2",
+      "fileName": "08_warm_directional.png",
+      "height": 1009,
+      "material": 2,
+      "mode": "warm",
+      "width": 1920
+    },
+    {
+      "displayedLabel": "MATERIAL 2",
+      "fileName": "09_albedo_only.png",
+      "height": 1009,
+      "material": 2,
+      "mode": "albedo",
+      "width": 1920
+    },
+    {
+      "displayedLabel": "MATERIAL 2",
+      "fileName": "10_normal_only.png",
+      "height": 1009,
+      "material": 2,
+      "mode": "normal_only",
+      "width": 1920
+    },
+    {
+      "displayedLabel": "MATERIAL 2",
+      "fileName": "11_normal_disabled.png",
+      "height": 1009,
+      "material": 2,
+      "mode": "normal_disabled",
+      "width": 1920
+    },
+    {
+      "displayedLabel": "MATERIAL 2",
+      "fileName": "12_roughness_isolation.png",
+      "height": 1009,
+      "material": 2,
+      "mode": "roughness",
+      "width": 1920
+    },
+    {
+      "displayedLabel": "MATERIAL 2",
+      "fileName": "13_top_down.png",
+      "height": 1009,
+      "material": 2,
+      "mode": "top",
+      "width": 1920
+    },
+    {
+      "displayedLabel": "MATERIAL 2",
+      "fileName": "14_side_view.png",
+      "height": 1009,
+      "material": 2,
+      "mode": "side",
+      "width": 1920
+    },
+    {
+      "displayedLabel": "MATERIAL 3",
+      "fileName": "01_near_corner_window.png",
+      "height": 1009,
+      "material": 3,
+      "mode": "near",
+      "width": 1920
+    },
+    {
+      "displayedLabel": "MATERIAL 3",
+      "fileName": "02_front_material_inspection.png",
+      "height": 1009,
+      "material": 3,
+      "mode": "front",
+      "width": 1920
+    },
+    {
+      "displayedLabel": "MATERIAL 3",
+      "fileName": "03_normal_rts.png",
+      "height": 1009,
+      "material": 3,
+      "mode": "normal",
+      "width": 1920
+    },
+    {
+      "displayedLabel": "MATERIAL 3",
+      "fileName": "04_far_rts.png",
+      "height": 1009,
+      "material": 3,
+      "mode": "far",
+      "width": 1920
+    },
+    {
+      "displayedLabel": "MATERIAL 3",
+      "fileName": "05_greyscale_normal_rts.png",
+      "height": 1009,
+      "material": 3,
+      "mode": "normal",
+      "width": 1920
+    },
+    {
+      "displayedLabel": "MATERIAL 3",
+      "fileName": "06_thumbnail_256.png",
+      "height": 144,
+      "material": 3,
+      "mode": "thumbnail",
+      "width": 256
+    },
+    {
+      "displayedLabel": "MATERIAL 3",
+      "fileName": "07_neutral_overcast.png",
+      "height": 1009,
+      "material": 3,
+      "mode": "neutral",
+      "width": 1920
+    },
+    {
+      "displayedLabel": "MATERIAL 3",
+      "fileName": "08_warm_directional.png",
+      "height": 1009,
+      "material": 3,
+      "mode": "warm",
+      "width": 1920
+    },
+    {
+      "displayedLabel": "MATERIAL 3",
+      "fileName": "09_albedo_only.png",
+      "height": 1009,
+      "material": 3,
+      "mode": "albedo",
+      "width": 1920
+    },
+    {
+      "displayedLabel": "MATERIAL 3",
+      "fileName": "10_normal_only.png",
+      "height": 1009,
+      "material": 3,
+      "mode": "normal_only",
+      "width": 1920
+    },
+    {
+      "displayedLabel": "MATERIAL 3",
+      "fileName": "11_normal_disabled.png",
+      "height": 1009,
+      "material": 3,
+      "mode": "normal_disabled",
+      "width": 1920
+    },
+    {
+      "displayedLabel": "MATERIAL 3",
+      "fileName": "12_roughness_isolation.png",
+      "height": 1009,
+      "material": 3,
+      "mode": "roughness",
+      "width": 1920
+    },
+    {
+      "displayedLabel": "MATERIAL 3",
+      "fileName": "13_top_down.png",
+      "height": 1009,
+      "material": 3,
+      "mode": "top",
+      "width": 1920
+    },
+    {
+      "displayedLabel": "MATERIAL 3",
+      "fileName": "14_side_view.png",
+      "height": 1009,
+      "material": 3,
+      "mode": "side",
+      "width": 1920
+    }
+  ],
+  "checkpoint": "v0.336",
+  "noCombat": true,
+  "noEconomy": true,
+  "noGameplay": true,
+  "noHouse02Application": true,
+  "noMovement": true,
+  "noPathfinding": true,
+  "noResources": true,
+  "outcome": "READY FOR HUMAN FINAL GRANITE CANDIDATE SELECTION",
+  "prototypeOptIn": true,
+  "scenePath": "res://scenes/review/V0336GraniteEvidenceRepair.tscn",
+  "status": "PASS_V0336_RUNTIME_EVIDENCE_CAPTURE",
+  "videoFrames": 432,
+  "viewport": {
+    "height": 720,
+    "width": 1280
+  }
+}
