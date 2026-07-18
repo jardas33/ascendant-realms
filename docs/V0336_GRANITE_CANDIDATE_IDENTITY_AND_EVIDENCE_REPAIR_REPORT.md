@@ -48,7 +48,7 @@ The v0.335 video looped a single visible candidate. v0.336 creates a continuous 
 
 `artifacts/manual-review/v0336-granite-evidence-repair/UPLOAD_TO_CHAT/08_CONTINUOUS_V0336_THREE_MATERIAL_COMPARISON.mp4`
 
-It is H.264, 1280x720, 24 fps, 18 seconds, exactly 432 decoded frames, and has six seconds per material. The MP4 SHA-256 is `69bf274d79cc854b76c6c04f8d8720e15a7bdd5183e268777bdca27312087e15`. Equivalent-frame mean absolute differences between Material 1 and Material 2 are 2.347, 2.346, and 2.344 at the three sampled offsets; the Material 2 segment visibly retains the colored polygon candidate.
+It is H.264, 1280x720, 24 fps, 18 seconds, exactly 432 decoded frames, and has six seconds per material. The MP4 SHA-256 is `69bf274d79cc854b76c6c04f8d8720e15a7bdd5183e268777bdca27312087e15`. Equivalent-frame mean absolute differences between Material 1 and Material 2 are 2.347, 2.346, and 2.344 at the three sampled offsets; the Material 2 segment visibly retains the colored polygon candidate. A direct decoded-frame audit found 0 black frames and 0 frozen adjacent frames.
 
 ## 9. Candidate A PBR
 
@@ -129,4 +129,4 @@ It contains exactly ten files. The compact summary is 11,668 bytes. The manifest
 ## Validation and closeout
 
 Dedicated command: `npm run godot:granite-evidence:v0336:validate`.
-Local validation includes the v0.336 runtime capture and validator, frozen v0.334 hash checks, candidate-specific provenance checks, matched-camera checks, PBR/normal diagnostics, video frame/duration checks, exact ten-file pack checks, no-reuse checks, and gameplay/House 02 isolation checks. The v0.335 validator and the repository test/build/content/art/runtime/retention/Godot gates are run before commit. Exact pushed-SHA CI evidence and the final clean/synced repository state are recorded in the final closeout after publication.
+Local validation includes the v0.336 runtime capture and validator, frozen v0.334 hash checks, candidate-specific provenance checks, matched-camera checks, PBR/normal diagnostics, video frame/duration checks, exact ten-file pack checks, no-reuse checks, and gameplay/House 02 isolation checks. The v0.334, v0.335, and v0.336 dedicated validators passed; repository tests/build/content/art/runtime/retention/Godot gates and `git diff --check` also passed. Commit `7abc6e4e02ef74c456b319baaf606f91c49dcb0e` was pushed to `codex/v0215-v0226-recovery`; GitHub Actions run `29649306665` completed successfully for that exact SHA. The repository is clean and synced with origin at 0 ahead / 0 behind.
