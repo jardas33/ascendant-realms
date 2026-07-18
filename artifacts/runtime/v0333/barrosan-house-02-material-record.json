@@ -1,0 +1,270 @@
+{
+  "checkpoint": "v0.333",
+  "materials": [
+    {
+      "key": "granite",
+      "blenderMaterial": "V0333_Granite",
+      "glbMaterial": "V0333_Granite",
+      "godotImportedMaterial": "V0333_Granite",
+      "maps": [
+        {
+          "path": "art-source/materials/v0333/granite_albedo_1024.png",
+          "resolution": [
+            1024,
+            1024
+          ],
+          "sha256": "022bebd5c0a566a4ad757951763178eb8a52d179e365a3142719b570a94d550e",
+          "bound": true,
+          "role": "granite_albedo",
+          "colorSpace": "sRGB",
+          "compression": "PNG source; Godot imported lossless",
+          "mipmap": true,
+          "filtering": true,
+          "repeat": true,
+          "normalStrength": null,
+          "roughnessScalar": null,
+          "uvScale": "surface-group normalized"
+        },
+        {
+          "path": "art-source/materials/v0333/granite_roughness_1024.png",
+          "resolution": [
+            1024,
+            1024
+          ],
+          "sha256": "6ad49f7f93b1c81af95048df995f020a705b4f053381543a0ec29c31ff4018b1",
+          "bound": true,
+          "role": "granite_roughness",
+          "colorSpace": "Non-Color",
+          "compression": "PNG source; Godot imported lossless",
+          "mipmap": true,
+          "filtering": true,
+          "repeat": true,
+          "normalStrength": null,
+          "roughnessScalar": 0.93,
+          "uvScale": "surface-group normalized"
+        },
+        {
+          "path": "art-source/materials/v0333/granite_normal_1024.png",
+          "resolution": [
+            1024,
+            1024
+          ],
+          "sha256": "7aff5fc9ca7e10005ed6c738f030ecb71788f48398ccaa30c3032d2dfdaafd1e",
+          "bound": true,
+          "role": "granite_normal",
+          "colorSpace": "Non-Color",
+          "compression": "PNG source; Godot imported lossless",
+          "mipmap": true,
+          "filtering": true,
+          "repeat": true,
+          "normalStrength": 0.58,
+          "roughnessScalar": null,
+          "uvScale": "surface-group normalized"
+        }
+      ],
+      "imageBacked": true
+    },
+    {
+      "key": "foundation",
+      "blenderMaterial": "V0333_Damp_Foundation",
+      "glbMaterial": "V0333_Damp_Foundation",
+      "godotImportedMaterial": "V0333_Damp_Foundation",
+      "maps": [
+        {
+          "path": "art-source/materials/v0333/granite_albedo_1024.png",
+          "resolution": [
+            1024,
+            1024
+          ],
+          "sha256": "022bebd5c0a566a4ad757951763178eb8a52d179e365a3142719b570a94d550e",
+          "bound": true,
+          "role": "granite_albedo",
+          "colorSpace": "sRGB",
+          "compression": "PNG source; Godot imported lossless",
+          "mipmap": true,
+          "filtering": true,
+          "repeat": true,
+          "normalStrength": null,
+          "roughnessScalar": null,
+          "uvScale": "surface-group normalized"
+        },
+        {
+          "path": "art-source/materials/v0333/granite_roughness_1024.png",
+          "resolution": [
+            1024,
+            1024
+          ],
+          "sha256": "6ad49f7f93b1c81af95048df995f020a705b4f053381543a0ec29c31ff4018b1",
+          "bound": true,
+          "role": "granite_roughness",
+          "colorSpace": "Non-Color",
+          "compression": "PNG source; Godot imported lossless",
+          "mipmap": true,
+          "filtering": true,
+          "repeat": true,
+          "normalStrength": null,
+          "roughnessScalar": 0.93,
+          "uvScale": "surface-group normalized"
+        },
+        {
+          "path": "art-source/materials/v0333/granite_normal_1024.png",
+          "resolution": [
+            1024,
+            1024
+          ],
+          "sha256": "7aff5fc9ca7e10005ed6c738f030ecb71788f48398ccaa30c3032d2dfdaafd1e",
+          "bound": true,
+          "role": "granite_normal",
+          "colorSpace": "Non-Color",
+          "compression": "PNG source; Godot imported lossless",
+          "mipmap": true,
+          "filtering": true,
+          "repeat": true,
+          "normalStrength": 0.58,
+          "roughnessScalar": null,
+          "uvScale": "surface-group normalized"
+        }
+      ],
+      "imageBacked": true
+    },
+    {
+      "key": "slate",
+      "blenderMaterial": "V0333_Weathered_Slate",
+      "glbMaterial": "V0333_Weathered_Slate",
+      "godotImportedMaterial": "V0333_Weathered_Slate",
+      "maps": [
+        {
+          "path": "art-source/materials/v0333/slate_albedo_1024.png",
+          "resolution": [
+            1024,
+            1024
+          ],
+          "sha256": "ba738cf170fb1c3f3872fd77ad596b47d3071e51ef3bbe586932ab3aa6707919",
+          "bound": true,
+          "role": "slate_albedo",
+          "colorSpace": "sRGB",
+          "compression": "PNG source; Godot imported lossless",
+          "mipmap": true,
+          "filtering": true,
+          "repeat": true,
+          "normalStrength": null,
+          "roughnessScalar": null,
+          "uvScale": "surface-group normalized"
+        },
+        {
+          "path": "art-source/materials/v0333/slate_roughness_1024.png",
+          "resolution": [
+            1024,
+            1024
+          ],
+          "sha256": "85fa2d173c412ae1927edbb909c66e6f39b342e328f9a3fd154f501a4cea8fa4",
+          "bound": true,
+          "role": "slate_roughness",
+          "colorSpace": "Non-Color",
+          "compression": "PNG source; Godot imported lossless",
+          "mipmap": true,
+          "filtering": true,
+          "repeat": true,
+          "normalStrength": null,
+          "roughnessScalar": 0.93,
+          "uvScale": "surface-group normalized"
+        },
+        {
+          "path": "art-source/materials/v0333/slate_normal_1024.png",
+          "resolution": [
+            1024,
+            1024
+          ],
+          "sha256": "b82718b50b9dd1f9fc44a0c08536270d1c6c27c1b89b81a78fbc17f1430cb242",
+          "bound": true,
+          "role": "slate_normal",
+          "colorSpace": "Non-Color",
+          "compression": "PNG source; Godot imported lossless",
+          "mipmap": true,
+          "filtering": true,
+          "repeat": true,
+          "normalStrength": 0.58,
+          "roughnessScalar": null,
+          "uvScale": "surface-group normalized"
+        }
+      ],
+      "imageBacked": true
+    },
+    {
+      "key": "timber",
+      "blenderMaterial": "V0333_Weathered_Timber",
+      "glbMaterial": "V0333_Weathered_Timber",
+      "godotImportedMaterial": "V0333_Weathered_Timber",
+      "maps": [
+        {
+          "path": "art-source/materials/v0333/timber_albedo_1024.png",
+          "resolution": [
+            1024,
+            1024
+          ],
+          "sha256": "a28bd7ccc7357c22f72bd28b3d5721e73b71e03355e72c622de345f9dc7c48cd",
+          "bound": true,
+          "role": "timber_albedo",
+          "colorSpace": "sRGB",
+          "compression": "PNG source; Godot imported lossless",
+          "mipmap": true,
+          "filtering": true,
+          "repeat": true,
+          "normalStrength": null,
+          "roughnessScalar": null,
+          "uvScale": "surface-group normalized"
+        },
+        {
+          "path": "art-source/materials/v0333/timber_roughness_1024.png",
+          "resolution": [
+            1024,
+            1024
+          ],
+          "sha256": "5c41f1145e5ecc149c33207d9dd6c5220d4564400cfc1035a19c862450f2e2b8",
+          "bound": true,
+          "role": "timber_roughness",
+          "colorSpace": "Non-Color",
+          "compression": "PNG source; Godot imported lossless",
+          "mipmap": true,
+          "filtering": true,
+          "repeat": true,
+          "normalStrength": null,
+          "roughnessScalar": 0.93,
+          "uvScale": "surface-group normalized"
+        }
+      ],
+      "imageBacked": true
+    },
+    {
+      "key": "iron",
+      "blenderMaterial": "V0333_Iron",
+      "glbMaterial": "V0333_Iron",
+      "godotImportedMaterial": "V0333_Iron",
+      "maps": [],
+      "imageBacked": false
+    },
+    {
+      "key": "interior",
+      "blenderMaterial": "V0333_Interior_Recess",
+      "glbMaterial": "V0333_Interior_Recess",
+      "godotImportedMaterial": "V0333_Interior_Recess",
+      "maps": [],
+      "imageBacked": false
+    },
+    {
+      "key": "glass",
+      "blenderMaterial": "V0333_Recessed_Window",
+      "glbMaterial": "V0333_Recessed_Window",
+      "godotImportedMaterial": "V0333_Recessed_Window",
+      "maps": [],
+      "imageBacked": false
+    }
+  ],
+  "diagnosis": {
+    "fullLighting": "current imported PBR",
+    "albedoOnly": "authored granite albedo sampled through UV",
+    "normalNeutralGrey": "neutral grey albedo with authored normal map",
+    "normalDisabled": "authored albedo with normal disabled",
+    "cause": "v0.332 Smart Project assigned long wall faces to tiny per-face UV islands, so the bound granite map sampled nearly constant regions and flattened visually; v0.333 uses coherent house-scale wall/side UV mapping plus limited relief"
+  }
+}

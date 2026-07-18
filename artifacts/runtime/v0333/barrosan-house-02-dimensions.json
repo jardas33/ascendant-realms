@@ -1,0 +1,17 @@
+{
+  "units": "metres",
+  "overallWidth": 9.96,
+  "overallDepth": 6.24,
+  "overallHeight": 7.26,
+  "eaveHeight": 4.52,
+  "ridgeHeight": 6.2,
+  "chimneyTopHeight": 7.26,
+  "lowerDoorHeight": 2.32,
+  "upperDoorHeight": 1.65,
+  "windowSillHeight": 3.14,
+  "stairRise": 0.25,
+  "stairRun": 0.44,
+  "landingHeight": 2.0,
+  "humanFigureHeight": 1.75,
+  "method": "authored Blender dimensions from bounded geometry and named architectural anchors"
+}
