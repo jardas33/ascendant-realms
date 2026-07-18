@@ -120,7 +120,7 @@ The local closeout gates passed before commit: `npm test` (122 files, 887 tests)
 
 ## CI and final repo state
 
-The first feature commit `b50768a3f94cd8050f4c9c4923163beaddd50ccc` was pushed and verified by GitHub Actions run `29655197631` (run number 493, `CI Release Matrix Dry Run`), which completed with `success` for that exact SHA. This report amendment records that remote evidence. The final closeout must also confirm the final documentation commit, its exact-SHA run, a clean working tree, and `0 ahead / 0 behind` on `codex/v0215-v0226-recovery`.
+The feature commit `b50768a3f94cd8050f4c9c4923163beaddd50ccc` was pushed and verified by GitHub Actions run `29655197631` (run number 493, `CI Release Matrix Dry Run`), which completed with `success` for that exact SHA. The documentation closeout commit `e746fad6cd1b81ceb16b24110b6b394f817364ea` was then pushed and verified by exact-SHA run `29655581700` (run number 494), also `success`. The final closeout must confirm the final documentation-evidence commit, its exact-SHA run, a clean working tree, and `0 ahead / 0 behind` on `codex/v0215-v0226-recovery`.
 
 ## Outcome
 
