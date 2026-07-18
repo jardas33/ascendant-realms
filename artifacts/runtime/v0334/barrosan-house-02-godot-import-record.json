@@ -1,0 +1,16 @@
+{
+  "sourceGLB": "desktop-spikes/godot-salto/assets/v0334/barrosan_house_gold_02.glb",
+  "sourceGLBSha256": "f85cf2e7a448015638455f5de5cd49c18b085cbb1103a1fd5dfa8f7706d24be5",
+  "importFile": "desktop-spikes/godot-salto/assets/v0334/barrosan_house_gold_02.glb.import",
+  "normalMapImportConfiguration": {
+    "normalMap": true,
+    "colorSpace": "Non-Color",
+    "filter": true,
+    "mipmaps": true
+  },
+  "importedResource": {
+    "path": "desktop-spikes/godot-salto/.godot/imported/barrosan_house_gold_02.glb-f4c27e3031bdf8cae7d5d65c95d00b3c.scn",
+    "sha256": "b3be51e7d6e52fdfb829400afafbf26e9e0f9983b902b8ccba83f38306bba531",
+    "size": 790724
+  }
+}
