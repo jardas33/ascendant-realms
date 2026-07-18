@@ -120,7 +120,7 @@ The local closeout gates passed before commit: `npm test` (122 files, 887 tests)
 
 ## CI and final repo state
 
-CI evidence is recorded in the final closeout amendment after the exact pushed SHA GitHub Actions run completes. The final closeout must confirm the pushed SHA, successful Actions run, clean working tree, and `0 ahead / 0 behind` on `codex/v0215-v0226-recovery`.
+The first feature commit `b50768a3f94cd8050f4c9c4923163beaddd50ccc` was pushed and verified by GitHub Actions run `29655197631` (run number 493, `CI Release Matrix Dry Run`), which completed with `success` for that exact SHA. This report amendment records that remote evidence. The final closeout must also confirm the final documentation commit, its exact-SHA run, a clean working tree, and `0 ahead / 0 behind` on `codex/v0215-v0226-recovery`.
 
 ## Outcome
 
