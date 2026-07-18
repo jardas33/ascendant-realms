@@ -110,7 +110,20 @@ The validator covers frozen source hashes, candidate_a-only lineage, no candidat
 
 Current dedicated result: **PASS**, 76 checks, human review required, automated visual approval false.
 
-Retained v0.337 validator and the repository’s retained art/runtime checks remain part of the closeout ladder. The final report will record the exact command results, CI run, and final repository state after commit/push.
+Retained ladder evidence:
+
+- v0.303 through v0.332 dedicated validators: passed from the clean accepted baseline.
+- v0.333 dedicated validator: passed at its own historical base with its complete v0.333 evidence overlay; the ordinary current-branch invocation correctly rejects later accepted v0.334 files as out-of-scope under v0.333’s historical scope contract.
+- v0.334 dedicated validator: passed, 30 checks.
+- v0.335 granite-source validator: passed, 50 checks.
+- v0.336 granite-evidence validator: passed, 62 checks.
+- v0.337 dedicated validator: passed, 57 checks.
+- v0.259 UI-state-invariant validator: passed.
+- v0.338 dedicated validator: passed, 76 checks.
+
+Full local validation also passed: 887 tests, production build, content validation, art-intake validation, runtime-art-slot validation, experimental-artifact retention, `npm run godot:all`, and `git diff --check`.
+
+The first pushed implementation commit `7c9e24aeffa652dc4d3c915ec204301b8bb8229f` completed exact-SHA GitHub Actions run `29659106215` successfully. The final documentation closeout commit is validated separately before completion.
 
 ## Recommendation
 
