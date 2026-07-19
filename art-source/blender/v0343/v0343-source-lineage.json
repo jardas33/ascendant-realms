@@ -1,0 +1,19 @@
+{
+  "checkpoint": "v0.343",
+  "originalFrozenSource": "art-source/blender/v0338/barrosan_house_02_material_gold_candidate.blend",
+  "originalFrozenHash": "3da7c2cf71509e07c900001fd0b277e9af4584a074552ac1d929a4f37e0d78b6",
+  "copiedSource": "art-source/blender/v0343/house02_source_duplicate_initial.blend",
+  "copiedSourceInitialHash": "3da7c2cf71509e07c900001fd0b277e9af4584a074552ac1d929a4f37e0d78b6",
+  "finalModifiedSource": "art-source/blender/v0343/house02_derived_barrosan_barn_visual_preflight.blend",
+  "finalModifiedHash": "ecb268c7a4f69c914951a0dbd9494fb332003566073b2311b47a348ba9f831e9",
+  "sourceGLB": "desktop-spikes/godot-salto/assets/v0343/house02_derived_barrosan_barn_visual_preflight.glb",
+  "constructionGrammar": [
+    "House 02 granite material response",
+    "House 02 slate roof and eave vocabulary",
+    "House 02 timber/lintel/sill/jamb language"
+  ],
+  "visibleDependencies": {
+    "v0341": false,
+    "v0342": false
+  }
+}
