@@ -69,8 +69,8 @@ The v0.343 validator remains retained and is run separately. Full local validati
 
 ## Final state
 
-- Commit: `af8be2729809e7d62576ca0cc20b5972191719c6`
-- GitHub Actions: run `29695889999` — success for the exact SHA.
+- Commit: `38b7e3fddd0962816d6ce07a909e69d39e4baa1b`
+- GitHub Actions: run `29696310880` — success for the exact SHA.
 - Repository: clean and synced with origin, 0 ahead / 0 behind.
 
 <!-- V0344_CAPTURE_LEDGER_JSON
