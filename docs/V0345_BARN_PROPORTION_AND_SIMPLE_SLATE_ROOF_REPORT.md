@@ -115,8 +115,9 @@ The retained v0.344 validator and the required repository validation ladder are 
 - `npm run godot:validate:salto-experimental-artifact-retention`: PASS.
 - `npm run godot:all`: PASS.
 - `git diff --check`: PASS.
-- Commit: pending.
-- GitHub Actions exact-SHA run: pending.
-- Final repo state: pending clean/synced confirmation.
+- Implementation commit: `212682615da285b9eb3d8d1814d4b32dc1c98066`.
+- GitHub Actions: `29701136994` (`CI Release Matrix Dry Run`) succeeded for the exact implementation SHA above.
+- This report update is metadata-only; the final closeout commit is verified by its own exact-SHA CI run and the final repository check.
+- Final repo state: verified after the final metadata-only closeout push.
 
 This report intentionally does not mark the barn production-ready or human-approved.
