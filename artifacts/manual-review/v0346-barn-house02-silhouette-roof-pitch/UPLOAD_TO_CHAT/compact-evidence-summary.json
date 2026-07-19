@@ -1,0 +1,81 @@
+﻿{
+    "checkpoint":  "v0.346",
+    "outcome":  "READY FOR HUMAN V0346 BARN HOUSE02-FAMILY SILHOUETTE REVIEW",
+    "automatedVisualApproval":  false,
+    "humanReviewRequired":  true,
+    "sourceCaptureCount":  5,
+    "sourceCaptures":  [
+                           "01_front_three_quarter.png",
+                           "02_rear_three_quarter.png",
+                           "03_direct_side_gable.png",
+                           "04_close_roof_front_material.png",
+                           "05_true_matched_512x256_house02_barn.png"
+                       ],
+    "frontCapture":  "01_front_three_quarter.png",
+    "rearCapture":  "02_rear_three_quarter.png",
+    "trueComparison":  {
+                           "file":  "05_true_matched_512x256_house02_barn.png",
+                           "width":  512,
+                           "height":  256,
+                           "leftPanel":  "frozen House02 rendered directly",
+                           "rightPanel":  "v0.346 barn rendered directly",
+                           "eachPanel":  "256x256"
+                       },
+    "ratiosAfter":  {
+                        "ridgeHeight":  1.04,
+                        "eaveHeight":  1.04,
+                        "frontWidth":  1.379,
+                        "depth":  1.188
+                    },
+    "v0345Comparison":  {
+                            "roofPitchDegrees":  28.34,
+                            "ridge":  7.8408,
+                            "eave":  4.68,
+                            "frontWidth":  12.464,
+                            "depth":  11.157
+                        },
+    "v0346RoofPitchDegrees":  27.77,
+    "roof":  {
+                 "principalSlopes":  2,
+                 "frontSlope":  true,
+                 "rearSlope":  true,
+                 "straightRidge":  true,
+                 "secondaryRoofNodes":  0,
+                 "pedimentNodes":  0,
+                 "blackGableVoids":  0,
+                 "orangeEdgeFaces":  0,
+                 "graniteRoofFaces":  0,
+                 "floatingRoofPieces":  0,
+                 "intersectingSecondaryRoofPieces":  0,
+                 "closedGraniteGables":  2,
+                 "eaveOverhangM":  0.28,
+                 "vergeOverhangM":  0.22,
+                 "fasciaThicknessM":  0.085,
+                 "slateValueCalibration":  "darkened accepted v0.345 slate with low-saturation multiply; rough non-metallic"
+             },
+    "reviewPackFiles":  [
+                            "00_READ_ME_FIRST.md",
+                            "01_HOUSE02_FAMILY_PROPORTION_RESET.png",
+                            "02_UNLABELLED_FRONT_REAR_GABLE.png",
+                            "03_LOWER_ROOF_PITCH_AND_DARK_SLATE.png",
+                            "04_TRUE_MATCHED_512X256_COMPARISON.png",
+                            "compact-evidence-summary.json"
+                        ],
+    "exactlySixReviewFiles":  true,
+    "exactlyFourPng":  true,
+    "noVideo":  true,
+    "v0345GraniteLineagePreserved":  true,
+    "noDefaultRuntimeIntegration":  true,
+    "noGameplay":  true,
+    "noHumanApproval":  true,
+    "sourceHashes":  {
+                         "v0345Blend":  "f620e472cfbac2f0800f07e8e1bc4e840eccada971fedd5776268986c74c34ba",
+                         "v0345GLB":  "14df5b448db8257b695b00716ec6d3999f75a26ebe6cc03bd4e313399a53058c",
+                         "v0345CopiedForV0346":  "f620e472cfbac2f0800f07e8e1bc4e840eccada971fedd5776268986c74c34ba",
+                         "v0344Blend":  "d63a8364f3edb10d20926a45dd52a41c8d0b8042fe707cf2aae267fbc63ac198",
+                         "v0343Blend":  "ecb268c7a4f69c914951a0dbd9494fb332003566073b2311b47a348ba9f831e9",
+                         "v0343GLB":  "d4d780510b1812e7e4f082f24dfee049ab21f905acbaaeaa4f54d6f67b4118b9",
+                         "house02Blend":  "3da7c2cf71509e07c900001fd0b277e9af4584a074552ac1d929a4f37e0d78b6",
+                         "house02GLB":  "ceab23ff3cfb580cc63ce917ec1ff675a1cd318f8fe3390fc836166015ebba89"
+                     }
+}

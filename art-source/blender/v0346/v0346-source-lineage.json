@@ -1,0 +1,21 @@
+{
+  "checkpoint": "v0.346",
+  "derivedFrom": "art-source/blender/v0345/barn_proportion_simple_slate_roof_reset.blend",
+  "copiedV0345Source": "art-source/blender/v0346/v0345_source_duplicate_for_v0346.blend",
+  "copiedV0345SourceSha256": "f620e472cfbac2f0800f07e8e1bc4e840eccada971fedd5776268986c74c34ba",
+  "v0345BlendSha256": "f620e472cfbac2f0800f07e8e1bc4e840eccada971fedd5776268986c74c34ba",
+  "v0345GLBSha256": "14df5b448db8257b695b00716ec6d3999f75a26ebe6cc03bd4e313399a53058c",
+  "v0344BlendSha256": "d63a8364f3edb10d20926a45dd52a41c8d0b8042fe707cf2aae267fbc63ac198",
+  "v0343BlendSha256": "ecb268c7a4f69c914951a0dbd9494fb332003566073b2311b47a348ba9f831e9",
+  "v0343GLBSha256": "d4d780510b1812e7e4f082f24dfee049ab21f905acbaaeaa4f54d6f67b4118b9",
+  "frozenHouse02BlendSha256": "3da7c2cf71509e07c900001fd0b277e9af4584a074552ac1d929a4f37e0d78b6",
+  "frozenHouse02GLBSha256": "ceab23ff3cfb580cc63ce917ec1ff675a1cd318f8fe3390fc836166015ebba89",
+  "finalBlendSha256": "fbc5e6de4155d0cf1dcd8902751fc26405090c2de714296cddf68306c02ca3df",
+  "finalGLBSha256": "11c974596413b1548c471d3ae5786ccd81cdcb613a79c47a94cd8280a3927da3",
+  "v0345Untouched": true,
+  "v0344Untouched": true,
+  "v0343Untouched": true,
+  "house02Untouched": true,
+  "noV0341VisibleDependency": true,
+  "noV0342VisibleDependency": true
+}
