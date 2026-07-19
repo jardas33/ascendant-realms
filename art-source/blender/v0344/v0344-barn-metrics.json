@@ -1,0 +1,65 @@
+{
+  "checkpoint": "v0.344",
+  "sourceBlend": "art-source/blender/v0344/barn_front_granite_roof_edge_visual_preflight.blend",
+  "sourceGLB": "desktop-spikes/godot-salto/assets/v0344/barn_front_granite_roof_edge_visual_preflight.glb",
+  "boundsMeters": {
+    "width": 8.04,
+    "depth": 6.115,
+    "height": 6.57
+  },
+  "materialSlots": 6,
+  "usedMaterials": [
+    "V0334_Weathered_Slate",
+    "V0343_House02Derived_Iron",
+    "V0343_House02Derived_Recess",
+    "V0343_House02Derived_Weathered_Timber",
+    "V0344_Dark_Weathered_Timber_Roof_Edge",
+    "V0344_House02Derived_Granite_Continuous"
+  ],
+  "renderObjects": 1,
+  "drawCalls": 1,
+  "visibleTriangles": 3288,
+  "architecture": {
+    "principalRoofSlopes": 2,
+    "straightRidge": true,
+    "secondaryRoofNodes": 0,
+    "pedimentNodes": 0,
+    "lowerDoubleDoor": true,
+    "upperHayLoadingOpening": true,
+    "rearServiceOpening": true,
+    "terrainPedestal": false
+  },
+  "reusedHouse02Resources": {
+    "granite": "V0338_GoldCandidate_Rubble_Rear",
+    "slate": "V0334_Weathered_Slate",
+    "timber": "V0334_Weathered_Timber"
+  },
+  "texturePaths": {
+    "granite": [
+      "D:/Code for projects/WB game like/ascendant-realms-v0223-recovery/art-source/materials/v0338/gold_candidate/gold_candidate_normal.png",
+      "D:/Code for projects/WB game like/ascendant-realms-v0223-recovery/art-source/materials/v0338/gold_candidate/gold_candidate_rear_albedo.png",
+      "D:/Code for projects/WB game like/ascendant-realms-v0223-recovery/art-source/materials/v0338/gold_candidate/gold_candidate_roughness.png"
+    ],
+    "slate": [
+      "D:/Code for projects/WB game like/ascendant-realms-v0223-recovery/art-source/blender/v0344/../../materials/v0334/slate_albedo_1024.png",
+      "D:/Code for projects/WB game like/ascendant-realms-v0223-recovery/art-source/blender/v0344/../../materials/v0334/slate_normal_1024.png",
+      "D:/Code for projects/WB game like/ascendant-realms-v0223-recovery/art-source/blender/v0344/../../materials/v0334/slate_roughness_1024.png"
+    ],
+    "timber": [
+      "D:/Code for projects/WB game like/ascendant-realms-v0223-recovery/art-source/blender/v0344/../../materials/v0334/timber_albedo_1024.png",
+      "D:/Code for projects/WB game like/ascendant-realms-v0223-recovery/art-source/blender/v0344/../../materials/v0334/timber_roughness_1024.png"
+    ]
+  },
+  "sourceHashes": {
+    "v0343Blend": "ecb268c7a4f69c914951a0dbd9494fb332003566073b2311b47a348ba9f831e9",
+    "v0343GLB": "d4d780510b1812e7e4f082f24dfee049ab21f905acbaaeaa4f54d6f67b4118b9",
+    "v0343CopiedForRepair": "ecb268c7a4f69c914951a0dbd9494fb332003566073b2311b47a348ba9f831e9",
+    "house02Blend": "3da7c2cf71509e07c900001fd0b277e9af4584a074552ac1d929a4f37e0d78b6",
+    "house02GLB": "ceab23ff3cfb580cc63ce917ec1ff675a1cd318f8fe3390fc836166015ebba89"
+  },
+  "prototypeOnly": true,
+  "defaultRuntimeIntegrated": false,
+  "noGameplay": true,
+  "noTechnicalProduction": true,
+  "assetProvenance": "repository-authored surgical transformation from copied v0.343 House02-derived barn; no protected game assets"
+}
