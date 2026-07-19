@@ -1,0 +1,73 @@
+﻿{
+    "checkpoint":  "v0.345",
+    "outcome":  "READY FOR HUMAN V0345 BARN PROPORTION-AND-ROOF VISUAL REVIEW",
+    "automatedVisualApproval":  false,
+    "humanReviewRequired":  true,
+    "sourceCaptureCount":  5,
+    "sourceCaptures":  [
+                           "01_front_three_quarter.png",
+                           "02_rear_three_quarter.png",
+                           "03_direct_side_gable.png",
+                           "04_close_roof_front_material.png",
+                           "05_true_matched_512x256_house02_barn.png"
+                       ],
+    "trueComparison":  {
+                           "file":  "05_true_matched_512x256_house02_barn.png",
+                           "width":  512,
+                           "height":  256,
+                           "leftPanel":  "frozen House02 rendered directly",
+                           "rightPanel":  "v0.345 barn rendered directly",
+                           "eachPanel":  "256x256"
+                       },
+    "ratiosBefore":  {
+                         "ridgeHeight":  0.934,
+                         "eaveHeight":  1.188,
+                         "frontWidth":  0.802,
+                         "depth":  0.63
+                     },
+    "ratiosAfter":  {
+                        "ridgeHeight":  1.08,
+                        "eaveHeight":  1.073,
+                        "frontWidth":  1.244,
+                        "depth":  1.149
+                    },
+    "roof":  {
+                 "principalSlopes":  2,
+                 "frontSlope":  true,
+                 "rearSlope":  true,
+                 "straightRidge":  true,
+                 "secondaryRoofNodes":  0,
+                 "pedimentNodes":  0,
+                 "paleRoofFaces":  0,
+                 "graniteRoofFaces":  0,
+                 "placeholderRoofFaces":  0,
+                 "floatingRoofPieces":  0,
+                 "intersectingSecondaryRoofPieces":  0,
+                 "restoredLeftGraniteGable":  true,
+                 "eaveOverhangM":  0.28,
+                 "vergeOverhangM":  0.22,
+                 "fasciaThicknessM":  0.11,
+                 "finalSlateMaterial":  "V0345_Simple_Weathered_Slate",
+                 "finalUndersideMaterial":  "V0345_Simple_Weathered_Slate_Underside",
+                 "finalEdgeMaterial":  "V0345_Subordinate_Dark_Timber_Roof_Edge"
+             },
+    "reviewPackFiles":  [
+                            "01_PROPORTION_RESET_AND_HOUSE02_SCALE.png",
+                            "02_UNLABELLED_FRONT_REAR_AND_GABLE.png",
+                            "03_SIMPLE_TWO_SLOPE_SLATE_ROOF.png",
+                            "04_TRUE_MATCHED_512X256_COMPARISON.png"
+                        ],
+    "exactlySixReviewFiles":  false,
+    "exactlyFourPng":  true,
+    "noVideo":  true,
+    "noDefaultRuntimeIntegration":  true,
+    "noGameplay":  true,
+    "sourceHashes":  {
+                         "v0344Blend":  "d63a8364f3edb10d20926a45dd52a41c8d0b8042fe707cf2aae267fbc63ac198",
+                         "v0344CopiedForV0345":  "d63a8364f3edb10d20926a45dd52a41c8d0b8042fe707cf2aae267fbc63ac198",
+                         "house02Blend":  "3da7c2cf71509e07c900001fd0b277e9af4584a074552ac1d929a4f37e0d78b6",
+                         "house02GLB":  "ceab23ff3cfb580cc63ce917ec1ff675a1cd318f8fe3390fc836166015ebba89",
+                         "v0345Blend":  "6368b3c20d894986c01a328fef1d25f3030ccf16f332ded89ff7ec6ddee07774",
+                         "v0345GLB":  "14df5b448db8257b695b00716ec6d3999f75a26ebe6cc03bd4e313399a53058c"
+                     }
+}

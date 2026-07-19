@@ -1,0 +1,240 @@
+{
+  "checkpoint": "v0.345",
+  "sourceCheckpoint": "v0.344",
+  "records": [
+    {
+      "objectName": "V0344_House02_Derived_Barrosan_Barn_Repaired_Visual",
+      "meshName": "Cube.066",
+      "materialSlot": 0,
+      "materialResource": "V0344_House02Derived_Granite_Continuous",
+      "materialKind": "granite",
+      "surfaceType": "gable wall triangle",
+      "worldBounds": {
+        "min": [
+          -4.02,
+          -3.13,
+          0.21
+        ],
+        "max": [
+          4.02,
+          2.985,
+          6.62
+        ]
+      },
+      "faceNormalRanges": {
+        "x": [
+          -1.0,
+          1.0
+        ],
+        "y": [
+          -1.0,
+          1.0
+        ],
+        "z": [
+          -1.0,
+          1.0
+        ]
+      },
+      "parent": "V0344_House02_Derived_Barrosan_Barn_Repaired",
+      "sourceLineage": "v0.344 merged visual mesh derived from copied v0.343 House02-derived barn",
+      "classification": "gable wall / retained granite wall volume",
+      "faceCount": 868
+    },
+    {
+      "objectName": "V0344_House02_Derived_Barrosan_Barn_Repaired_Visual",
+      "meshName": "Cube.066",
+      "materialSlot": 1,
+      "materialResource": "V0343_House02Derived_Recess",
+      "materialKind": "trim",
+      "surfaceType": "opening trim",
+      "worldBounds": {
+        "min": [
+          -2.625,
+          -2.89,
+          0.4
+        ],
+        "max": [
+          1.73,
+          2.88,
+          4.95
+        ]
+      },
+      "faceNormalRanges": {
+        "x": [
+          -1.0,
+          1.0
+        ],
+        "y": [
+          -1.0,
+          1.0
+        ],
+        "z": [
+          -1.0,
+          1.0
+        ]
+      },
+      "parent": "V0344_House02_Derived_Barrosan_Barn_Repaired",
+      "sourceLineage": "v0.344 merged visual mesh derived from copied v0.343 House02-derived barn",
+      "classification": "retained opening/recess/iron trim",
+      "faceCount": 104
+    },
+    {
+      "objectName": "V0344_House02_Derived_Barrosan_Barn_Repaired_Visual",
+      "meshName": "Cube.066",
+      "materialSlot": 2,
+      "materialResource": "V0343_House02Derived_Weathered_Timber",
+      "materialKind": "timber",
+      "surfaceType": "door or timber opening frame",
+      "worldBounds": {
+        "min": [
+          -2.6025,
+          -2.9925,
+          0.44
+        ],
+        "max": [
+          1.3875,
+          2.805,
+          4.91
+        ]
+      },
+      "faceNormalRanges": {
+        "x": [
+          -1.0,
+          1.0
+        ],
+        "y": [
+          -1.0,
+          1.0
+        ],
+        "z": [
+          -1.0,
+          1.0
+        ]
+      },
+      "parent": "V0344_House02_Derived_Barrosan_Barn_Repaired",
+      "sourceLineage": "v0.344 merged visual mesh derived from copied v0.343 House02-derived barn",
+      "classification": "retained agricultural opening/door timber",
+      "faceCount": 780
+    },
+    {
+      "objectName": "V0344_House02_Derived_Barrosan_Barn_Repaired_Visual",
+      "meshName": "Cube.066",
+      "materialSlot": 3,
+      "materialResource": "V0343_House02Derived_Iron",
+      "materialKind": "trim",
+      "surfaceType": "opening trim",
+      "worldBounds": {
+        "min": [
+          -2.5593,
+          -3.0213,
+          1.2515
+        ],
+        "max": [
+          1.2646,
+          2.6913,
+          4.2785
+        ]
+      },
+      "faceNormalRanges": {
+        "x": [
+          -1.0,
+          1.0
+        ],
+        "y": [
+          -0.9397,
+          0.9397
+        ],
+        "z": [
+          -0.9397,
+          0.9397
+        ]
+      },
+      "parent": "V0344_House02_Derived_Barrosan_Barn_Repaired",
+      "sourceLineage": "v0.344 merged visual mesh derived from copied v0.343 House02-derived barn",
+      "classification": "retained opening/recess/iron trim",
+      "faceCount": 156
+    },
+    {
+      "objectName": "V0344_House02_Derived_Barrosan_Barn_Repaired_Visual",
+      "meshName": "Cube.066",
+      "materialSlot": 4,
+      "materialResource": "V0334_Weathered_Slate",
+      "materialKind": "slate",
+      "surfaceType": "slate roof or roof edge",
+      "worldBounds": {
+        "min": [
+          -3.96,
+          -2.8303,
+          5.1812
+        ],
+        "max": [
+          3.96,
+          2.8303,
+          6.7788
+        ]
+      },
+      "faceNormalRanges": {
+        "x": [
+          -1.0,
+          1.0
+        ],
+        "y": [
+          -0.8891,
+          0.8891
+        ],
+        "z": [
+          -0.8891,
+          0.8891
+        ]
+      },
+      "parent": "V0344_House02_Derived_Barrosan_Barn_Repaired",
+      "sourceLineage": "v0.344 merged visual mesh derived from copied v0.343 House02-derived barn",
+      "classification": "roof plane",
+      "faceCount": 12
+    },
+    {
+      "objectName": "V0344_House02_Derived_Barrosan_Barn_Repaired_Visual",
+      "meshName": "Cube.066",
+      "materialSlot": 5,
+      "materialResource": "V0344_Dark_Weathered_Timber_Roof_Edge",
+      "materialKind": "timber",
+      "surfaceType": "door or timber opening frame",
+      "worldBounds": {
+        "min": [
+          -4.02,
+          -2.81,
+          5.18
+        ],
+        "max": [
+          4.02,
+          2.81,
+          6.78
+        ]
+      },
+      "faceNormalRanges": {
+        "x": [
+          -1.0,
+          1.0
+        ],
+        "y": [
+          -1.0,
+          1.0
+        ],
+        "z": [
+          -1.0,
+          1.0
+        ]
+      },
+      "parent": "V0344_House02_Derived_Barrosan_Barn_Repaired",
+      "sourceLineage": "v0.344 merged visual mesh derived from copied v0.343 House02-derived barn",
+      "classification": "retained agricultural opening/door timber",
+      "faceCount": 18
+    }
+  ],
+  "causes": {
+    "largeSmoothDarkCentralRoof": "v0.344 slate and roof-edge material groups form broad low-detail roof faces; their faces are removed and replaced by two explicit slope surfaces using the accepted slate material.",
+    "paleTriangularPatches": "the inherited merged surface contains retained high-elevation granite/gable faces adjacent to the old roof boundary; the new roof is kept separate and slate-only so gable wall triangles cannot become roof patches.",
+    "thickOrangeOutlines": "the v0.344 roof-edge group is a separate visual group with an overly strong edge read; it is removed and replaced by a thin dark timber fascia/ridge material.",
+    "intersectingOrFloatingPieces": "the v0.344 slate and roof-edge face groups are removed as a unit before new roof geometry is authored; the replacement has one front slope, one rear slope, one straight ridge, and restrained eaves only."
+  }
+}
