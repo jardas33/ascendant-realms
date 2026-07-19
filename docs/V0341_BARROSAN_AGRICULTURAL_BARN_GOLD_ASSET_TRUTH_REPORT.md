@@ -40,4 +40,11 @@ This is an opt-in review scene and asset path. The true default runtime, accepte
 
 Dedicated validation is `tools/godot/saltoV0341BarrosanAgriculturalBarnGoldAssetTool.mjs`. It checks source identity, function hierarchy, two-slope roof, masonry/materials, terrain contact, Worker clearance, UV/LOD/collision, numerical performance, genuine capture/video integrity, exact ten-file pack hashes and default-runtime isolation. Retained v0.340 and repository validators are run before commit, together with tests/build/content/art/runtime/Godot checks and `git diff --check`.
 
-Final CI evidence and final clean/synced repository state are appended after the exact pushed SHA completes.
+Final closeout evidence:
+
+- Implementation commit: `e16caad02297c5b2badc8def5f3162a89b3e03bc` (`v0.341 author Barrosan agricultural barn gold asset truth gate`).
+- Exact-SHA GitHub Actions run: `29672535146`, `CI Release Matrix Dry Run`, success for `e16caad02297c5b2badc8def5f3162a89b3e03bc`.
+- The Fast confidence job completed successfully; release simulator, full release e2e, release matrix, and optional visual QA were skipped by the workflow configuration.
+- Final branch: `codex/v0215-v0226-recovery`.
+- Final repository state after transient runtime-capture cleanup: clean and synced with origin, `0 ahead / 0 behind`.
+- The exact ten-file `UPLOAD_TO_CHAT` pack remains committed; the full 38-still/360-frame runtime capture was used for local visual validation and intentionally kept out of the repository as transient evidence.
