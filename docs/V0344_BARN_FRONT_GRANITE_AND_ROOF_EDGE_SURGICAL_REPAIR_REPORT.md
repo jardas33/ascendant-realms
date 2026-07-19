@@ -69,7 +69,9 @@ The v0.343 validator remains retained and is run separately. Full local validati
 
 ## Final state
 
-The final state will be recorded after commit, exact-SHA GitHub Actions completion, and the clean/synced repository check.
+- Commit: `af8be2729809e7d62576ca0cc20b5972191719c6`
+- GitHub Actions: run `29695889999` — success for the exact SHA.
+- Repository: clean and synced with origin, 0 ahead / 0 behind.
 
 <!-- V0344_CAPTURE_LEDGER_JSON
 {"captures":[{"fileName":"01_front_three_quarter_granite_roof.png","sha256":"f0ba71cf698f76c6155a6e5aa63a5297de262050388591d474b2680838b830cc","bytes":486562},{"fileName":"02_rear_three_quarter_granite_roof.png","sha256":"bb2fb12f71ad09670ea08aa2de7253f773d6c0e4f1110e88f783774ccca3974a","bytes":431080},{"fileName":"03_front_close_granite_continuity.png","sha256":"e8da2d62ed8a996636e0f59f0af895f66348af796dc299f936b06f2f211ffa0e","bytes":1302357},{"fileName":"04_direct_side_gable_roof.png","sha256":"0302b97cff78af426dcebcff5b2fb886a63d53636a17b05a3f94c3f01cac73bf","bytes":778252},{"fileName":"05_house02_barn_matched_true_256.png","sha256":"39c8a9cbaf54b3244a92522b31c67fbb228f91a454a7fa969f699c0ad459b8c1","bytes":37449,"width":256,"height":256}]}
