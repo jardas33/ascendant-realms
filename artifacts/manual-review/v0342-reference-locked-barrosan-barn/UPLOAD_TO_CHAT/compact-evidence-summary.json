@@ -1,0 +1,182 @@
+{
+  "checkpoint": "v0.342",
+  "status": "PASS_V0342_REFERENCE_LOCKED_BARROSAN_BARN_PACK",
+  "outcome": "REJECTED INTERNALLY \u2014 REBUILT BARN STILL READS AS A GARAGE, GREYBOX, REGULAR-BLOCK BUILDING, GENERIC LOW-POLY PROP OR NON-BARROSAN STRUCTURE",
+  "humanReviewRequired": true,
+  "automatedVisualApproval": false,
+  "prototypeOptIn": true,
+  "defaultRuntimeIntegrated": false,
+  "sourceBlend": "art-source/blender/v0342/reference_locked_barrosan_two_storey_barn.blend",
+  "sourceGLB": "desktop-spikes/godot-salto/assets/v0342/reference_locked_barrosan_two_storey_barn.glb",
+  "frozenHouse02Hashes": {
+    "blend": "3da7c2cf71509e07c900001fd0b277e9af4584a074552ac1d929a4f37e0d78b6",
+    "glb": "ceab23ff3cfb580cc63ce917ec1ff675a1cd318f8fe3390fc836166015ebba89"
+  },
+  "documentaryPrimary": {
+    "accessDate": "2026-07-19",
+    "author": "Panegyrics of Granovetter",
+    "feature": "closed granite/slate two-level northern Portuguese working-house massing; reference-only",
+    "licence": "CC BY-SA 4.0",
+    "local": "art-source/references/v0331/documentary/02_supplement_slate_roof_houses.jpg",
+    "source": "Wikimedia Commons",
+    "title": "30985 Slate-roofed houses in Montesinho",
+    "url": "https://commons.wikimedia.org/wiki/File:30985_Slate-roofed_houses_in_Montesinho_(54960391627).jpg"
+  },
+  "captures": {
+    "count": 44,
+    "realGodot": true
+  },
+  "video": {
+    "codec": "h264",
+    "width": 1280,
+    "height": 720,
+    "frameRate": "24/1",
+    "durationSeconds": 15.0,
+    "decodedFrames": 360,
+    "blackFrameSamples": [
+      0,
+      90,
+      180,
+      270,
+      359
+    ],
+    "allNonBlank": true,
+    "frozenAdjacentFrames": false,
+    "meaningfulCameraChanges": true
+  },
+  "metrics": {
+    "assetProvenance": "repository-authored clean-room Blender geometry; frozen House02 texture lineage only; no protected game asset",
+    "barnObjects": 25.0,
+    "checkpoint": "v0.342",
+    "closedVolume": true,
+    "diagnostics": {
+      "albedoOnly": "unlit albedo material override",
+      "blenderWireframe": "generated from authored mesh edges",
+      "exportedUvLayout": "generated from exported UV channel",
+      "heightRelief": "actual height evidence plus relief geometry",
+      "normalEnabledDisabled": "Godot capture toggles imported PBR normal map",
+      "roughnessIsolation": "actual roughness map",
+      "uvChecker": "generated from exported mesh UV contract"
+    },
+    "dimensionsMeters": {
+      "depth": 5.0,
+      "lowerEntranceHeight": 2.35,
+      "ridgeHeight": 7.17,
+      "upperFloorLine": 2.72,
+      "upperOpeningHeight": 1.55,
+      "wallHeight": 5.44,
+      "width": 7.6
+    },
+    "documentaryPrimary": {
+      "accessDate": "2026-07-19",
+      "author": "Panegyrics of Granovetter",
+      "feature": "closed granite/slate two-level northern Portuguese working-house massing; reference-only",
+      "licence": "CC BY-SA 4.0",
+      "local": "art-source/references/v0331/documentary/02_supplement_slate_roof_houses.jpg",
+      "source": "Wikimedia Commons",
+      "title": "30985 Slate-roofed houses in Montesinho",
+      "url": "https://commons.wikimedia.org/wiki/File:30985_Slate-roofed_houses_in_Montesinho_(54960391627).jpg"
+    },
+    "drawCalls": 25.0,
+    "graniteExteriorPercent": 0.89,
+    "lod": {
+      "collisionTriangles": 64.0,
+      "lod0Triangles": 26000.0,
+      "lod1Triangles": 11000.0,
+      "lod2Triangles": 5200.0
+    },
+    "materialLineage": {
+      "graniteAlbedo": "desktop-spikes/godot-salto/assets/v0338/barrosan_house_02_material_gold_candidate_granite_albedo_2048.png",
+      "graniteNormal": "desktop-spikes/godot-salto/assets/v0338/barrosan_house_02_material_gold_candidate_granite_normal_2048.png",
+      "graniteResolution": "2048x2048",
+      "graniteRoughness": "desktop-spikes/godot-salto/assets/v0338/barrosan_house_02_material_gold_candidate_granite_roughness_2048.png",
+      "roofResolution": "1024x1024",
+      "timberResolution": "1024x1024"
+    },
+    "materialSlots": 6.0,
+    "mirroredNormals": false,
+    "principalRoofSlopes": 2.0,
+    "regularBlockWallGenerator": false,
+    "slateVisibleCoursesPerSlope": 10.0,
+    "sourceBlend": "art-source/blender/v0342/reference_locked_barrosan_two_storey_barn.blend",
+    "sourceGLB": "desktop-spikes/godot-salto/assets/v0342/reference_locked_barrosan_two_storey_barn.glb",
+    "sourceTextureHashes": {
+      "desktop-spikes/godot-salto/assets/v0338/barrosan_house_02_material_gold_candidate_granite_albedo_2048.png": "5572981cfb96f871a7abff4b83cbbdcd524d32b2d4fdf1a95965f595cbfeff08",
+      "desktop-spikes/godot-salto/assets/v0338/barrosan_house_02_material_gold_candidate_granite_normal_2048.png": "cdb2f0fa4762d92ecf34942d63ccd171351b0e87a705c937da1759577510c3af",
+      "desktop-spikes/godot-salto/assets/v0338/barrosan_house_02_material_gold_candidate_granite_roughness_2048.png": "f797762d4deb177edde19ea84f01d58d852116116d98dbe76f6a7f7cfd1da4c6",
+      "desktop-spikes/godot-salto/assets/v0338/barrosan_house_02_material_gold_candidate_slate_albedo_1024.png": "ba738cf170fb1c3f3872fd77ad596b47d3071e51ef3bbe586932ab3aa6707919",
+      "desktop-spikes/godot-salto/assets/v0338/barrosan_house_02_material_gold_candidate_slate_normal_1024.png": "b82718b50b9dd1f9fc44a0c08536270d1c6c27c1b89b81a78fbc17f1430cb242",
+      "desktop-spikes/godot-salto/assets/v0338/barrosan_house_02_material_gold_candidate_slate_roughness_1024.png": "b47674509c17ec2ab3d5370cf9e574758399eae996e841d2764f6bd6bc94364b",
+      "desktop-spikes/godot-salto/assets/v0338/barrosan_house_02_material_gold_candidate_timber_albedo_1024.png": "a28bd7ccc7357c22f72bd28b3d5721e73b71e03355e72c622de345f9dc7c48cd",
+      "desktop-spikes/godot-salto/assets/v0338/barrosan_house_02_material_gold_candidate_timber_roughness_1024.png": "0ba43345fc280aa74f0d9693e633fe9df5e7e7b894844c1961170881cfd1b371"
+    },
+    "textureCount": 8.0,
+    "uvIslands": 48.0,
+    "uvOverlap": false
+  },
+  "preservation": {
+    "noGameplay": true,
+    "noMovement": true,
+    "noPathfinding": true,
+    "noCombat": true,
+    "noDamage": true,
+    "noAI": true,
+    "noWaves": true,
+    "noEconomy": true,
+    "noResources": true,
+    "noSaves": true,
+    "noStableIDChanges": true
+  },
+  "exactUploadFiles": [
+    {
+      "path": "00_READ_ME_FIRST.md",
+      "bytes": 1005,
+      "sha256": "0419938627c896a482a967a93c10bf800cd3c12545259469f30803519f1ab1a3"
+    },
+    {
+      "path": "01_HUMAN_V0341_DECISION_AND_DOCUMENTARY_LOCK.png",
+      "bytes": 1287545,
+      "sha256": "6b0bc77fd528d4cf258a9339a2ec7a56ce69c063056b749feaa4f19e8cf52382"
+    },
+    {
+      "path": "02_VISUAL_FIRST_PLAYER_LOCK.png",
+      "bytes": 656591,
+      "sha256": "14abbe8c8be4041c76118bf615e428a7204411a2e097a05624784fac141c6e66"
+    },
+    {
+      "path": "03_FUNCTION_ORTHOGRAPHICS_AND_DIMENSIONS.png",
+      "bytes": 888142,
+      "sha256": "e4a90789d1d93b77f941d76a96bf2208a19a1641c872bfc0a3b8c4addb2c8a16"
+    },
+    {
+      "path": "04_GRANITE_MASONRY_FOUNDATION_AND_CORNERS.png",
+      "bytes": 571403,
+      "sha256": "185c1e70ef1bc8425ad8c25a5e12919156a95585cdd90512d67f6e1e5ec30917"
+    },
+    {
+      "path": "05_SLATE_ROOF_TIMBER_AND_OPENINGS.png",
+      "bytes": 435131,
+      "sha256": "ac41336b206332452b7fecbb87920b9f0e33a9b98c8853ff87e743d80435c3f6"
+    },
+    {
+      "path": "06_LIGHTING_RTS_GREYSCALE_AND_256.png",
+      "bytes": 363852,
+      "sha256": "d8275b51ce256113205789c8d3ee589b6e0f3198772fecf92fec2627e9fa888c"
+    },
+    {
+      "path": "07_REAL_PBR_UV_WIREFRAME_LOD_COLLISION.png",
+      "bytes": 943861,
+      "sha256": "b61aa8044eb9ea40abc94159caf52f7901313c6a18165e08e25a8e79e548695f"
+    },
+    {
+      "path": "08_CONTINUOUS_V0342_REFERENCE_LOCKED_BARROSAN_BARN.mp4",
+      "bytes": 3199703,
+      "sha256": "8995c9bea20f703395d28c7dc06104bb62d2897c9ebefb4b4f249be5b233a249"
+    }
+  ],
+  "knownLimitations": [
+    "human visual approval required",
+    "first rebuilt visual lock rejected internally",
+    "v0.341 remains comparison-only"
+  ]
+}

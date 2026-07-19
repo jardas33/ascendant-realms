@@ -1,0 +1,70 @@
+{
+  "checkpoint": "v0.342",
+  "sourceBlend": "art-source/blender/v0342/reference_locked_barrosan_two_storey_barn.blend",
+  "sourceGLB": "desktop-spikes/godot-salto/assets/v0342/reference_locked_barrosan_two_storey_barn.glb",
+  "dimensionsMeters": {
+    "width": 7.6,
+    "depth": 5.0,
+    "wallHeight": 5.44,
+    "ridgeHeight": 7.17,
+    "lowerEntranceHeight": 2.35,
+    "upperOpeningHeight": 1.55,
+    "upperFloorLine": 2.72
+  },
+  "closedVolume": true,
+  "principalRoofSlopes": 2,
+  "slateVisibleCoursesPerSlope": 10,
+  "graniteExteriorPercent": 0.89,
+  "regularBlockWallGenerator": false,
+  "materialLineage": {
+    "graniteAlbedo": "desktop-spikes/godot-salto/assets/v0338/barrosan_house_02_material_gold_candidate_granite_albedo_2048.png",
+    "graniteNormal": "desktop-spikes/godot-salto/assets/v0338/barrosan_house_02_material_gold_candidate_granite_normal_2048.png",
+    "graniteRoughness": "desktop-spikes/godot-salto/assets/v0338/barrosan_house_02_material_gold_candidate_granite_roughness_2048.png",
+    "graniteResolution": "2048x2048",
+    "timberResolution": "1024x1024",
+    "roofResolution": "1024x1024"
+  },
+  "lod": {
+    "lod0Triangles": 26000,
+    "lod1Triangles": 11000,
+    "lod2Triangles": 5200,
+    "collisionTriangles": 64
+  },
+  "materialSlots": 6,
+  "barnObjects": 25,
+  "drawCalls": 25,
+  "textureCount": 8,
+  "uvIslands": 48,
+  "uvOverlap": false,
+  "mirroredNormals": false,
+  "assetProvenance": "repository-authored clean-room Blender geometry; frozen House02 texture lineage only; no protected game asset",
+  "documentaryPrimary": {
+    "local": "art-source/references/v0331/documentary/02_supplement_slate_roof_houses.jpg",
+    "title": "30985 Slate-roofed houses in Montesinho",
+    "source": "Wikimedia Commons",
+    "author": "Panegyrics of Granovetter",
+    "url": "https://commons.wikimedia.org/wiki/File:30985_Slate-roofed_houses_in_Montesinho_(54960391627).jpg",
+    "licence": "CC BY-SA 4.0",
+    "accessDate": "2026-07-19",
+    "feature": "closed granite/slate two-level northern Portuguese working-house massing; reference-only"
+  },
+  "diagnostics": {
+    "normalEnabledDisabled": "Godot capture toggles imported PBR normal map",
+    "albedoOnly": "unlit albedo material override",
+    "roughnessIsolation": "actual roughness map",
+    "heightRelief": "actual height evidence plus relief geometry",
+    "uvChecker": "generated from exported mesh UV contract",
+    "blenderWireframe": "generated from authored mesh edges",
+    "exportedUvLayout": "generated from exported UV channel"
+  },
+  "sourceTextureHashes": {
+    "desktop-spikes/godot-salto/assets/v0338/barrosan_house_02_material_gold_candidate_granite_albedo_2048.png": "5572981cfb96f871a7abff4b83cbbdcd524d32b2d4fdf1a95965f595cbfeff08",
+    "desktop-spikes/godot-salto/assets/v0338/barrosan_house_02_material_gold_candidate_granite_normal_2048.png": "cdb2f0fa4762d92ecf34942d63ccd171351b0e87a705c937da1759577510c3af",
+    "desktop-spikes/godot-salto/assets/v0338/barrosan_house_02_material_gold_candidate_granite_roughness_2048.png": "f797762d4deb177edde19ea84f01d58d852116116d98dbe76f6a7f7cfd1da4c6",
+    "desktop-spikes/godot-salto/assets/v0338/barrosan_house_02_material_gold_candidate_slate_albedo_1024.png": "ba738cf170fb1c3f3872fd77ad596b47d3071e51ef3bbe586932ab3aa6707919",
+    "desktop-spikes/godot-salto/assets/v0338/barrosan_house_02_material_gold_candidate_slate_normal_1024.png": "b82718b50b9dd1f9fc44a0c08536270d1c6c27c1b89b81a78fbc17f1430cb242",
+    "desktop-spikes/godot-salto/assets/v0338/barrosan_house_02_material_gold_candidate_slate_roughness_1024.png": "b47674509c17ec2ab3d5370cf9e574758399eae996e841d2764f6bd6bc94364b",
+    "desktop-spikes/godot-salto/assets/v0338/barrosan_house_02_material_gold_candidate_timber_albedo_1024.png": "a28bd7ccc7357c22f72bd28b3d5721e73b71e03355e72c622de345f9dc7c48cd",
+    "desktop-spikes/godot-salto/assets/v0338/barrosan_house_02_material_gold_candidate_timber_roughness_1024.png": "0ba43345fc280aa74f0d9693e633fe9df5e7e7b894844c1961170881cfd1b371"
+  }
+}
