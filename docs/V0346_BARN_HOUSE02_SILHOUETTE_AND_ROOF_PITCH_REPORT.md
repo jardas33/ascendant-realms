@@ -78,6 +78,11 @@ The accepted `V0344_House02Derived_Granite_Continuous` material remains on wall/
 
 Local validation completed before closeout: dedicated v0.346 and retained v0.345 validators, `npm test` (887 tests), `npm run build`, `npm run validate:content`, `npm run validate:art-intake`, `npm run validate:runtime-art-slots`, `npm run godot:validate:salto-experimental-artifact-retention`, `npm run godot:all`, and `git diff --check`.
 
+## CI evidence
+
+- Implementation commit: `0432da2250ea1ece38f374a308d4693c63a33d61`.
+- Exact GitHub Actions run: `29704565216` (`CI Release Matrix Dry Run`) completed successfully for that commit.
+
 ## Default-runtime and gameplay preservation
 
 The scene is an opt-in review-only Node3D fixture. It loads the frozen House02 anchor and the new barn directly for capture, but it is not referenced by the true default runtime. The generator and fixture contain no movement, pathfinding, route following, combat, damage, HP, projectile, death, AI, wave, economy, resource, save, or stable-ID behavior. The current runtime and accepted visual chain remain unchanged.
