@@ -1,0 +1,133 @@
+{
+  "automatedVisualApproval": false,
+  "captures": [
+    {
+      "camera": {
+        "position": "(-15.0, 8.4, 15.0)",
+        "projection": "orthographic",
+        "size": 16.5,
+        "target": "(0.0, 2.65, 0.0)"
+      },
+      "fileName": "01_front_three_quarter.png",
+      "purpose": "front three-quarter: lower agricultural double door, upper loading opening, granite band",
+      "rendered": true,
+      "size": {
+        "height": 1009,
+        "width": 1920
+      },
+      "technicalOverlay": false,
+      "unlabelled": true
+    },
+    {
+      "camera": {
+        "position": "(0.0, 7.0, 18.0)",
+        "projection": "orthographic",
+        "size": 15.0,
+        "target": "(0.0, 2.55, 0.0)"
+      },
+      "fileName": "02_direct_front_orthographic.png",
+      "purpose": "direct front orthographic: compact broad facade and openings",
+      "rendered": true,
+      "size": {
+        "height": 1009,
+        "width": 1920
+      },
+      "technicalOverlay": false,
+      "unlabelled": true
+    },
+    {
+      "camera": {
+        "position": "(-18.0, 6.4, 0.0)",
+        "projection": "orthographic",
+        "size": 13.0,
+        "target": "(0.0, 2.7, 0.0)"
+      },
+      "fileName": "03_direct_side_gable.png",
+      "purpose": "direct side/gable: complete granite triangle and measured roof silhouette",
+      "rendered": true,
+      "size": {
+        "height": 1009,
+        "width": 1920
+      },
+      "technicalOverlay": false,
+      "unlabelled": true
+    },
+    {
+      "camera": {
+        "position": "(-10.5, 5.7, 12.0)",
+        "projection": "orthographic",
+        "size": 10.5,
+        "target": "(0.0, 4.0, 0.0)"
+      },
+      "fileName": "04_roof_close_up.png",
+      "purpose": "roof close-up: House02 slate tile scale, UV rows, ridge and granite gable",
+      "rendered": true,
+      "size": {
+        "height": 1009,
+        "width": 1920
+      },
+      "technicalOverlay": false,
+      "unlabelled": true
+    },
+    {
+      "camera": {
+        "position": "(-15.0, 8.4, 15.0)",
+        "projection": "orthographic",
+        "size": 13.2,
+        "target": "(0.0, 2.65, 0.0)"
+      },
+      "fileName": "05_true_matched_front_512x256.png",
+      "leftPanel": {
+        "height": 256,
+        "source": "frozen House02 rendered directly",
+        "width": 256
+      },
+      "purpose": "true frozen House02 front-left and v0.347 barn front-right comparison",
+      "rendered": true,
+      "rightPanel": {
+        "height": 256,
+        "source": "v0.347 barn rendered directly",
+        "width": 256
+      },
+      "size": {
+        "height": 256,
+        "width": 512
+      },
+      "technicalOverlay": false,
+      "unlabelled": true
+    }
+  ],
+  "checkpoint": "v0.347",
+  "defaultRuntimeIntegrated": false,
+  "errors": [],
+  "frontCaptureShowsAgriculturalOpenings": true,
+  "godotImportedBounds": {
+    "maxX": 7.86999940872192,
+    "maxY": 6.10292053222656,
+    "maxZ": 5.45500040054321,
+    "minX": -7.87000036239624,
+    "minY": 0.389999985694885,
+    "minZ": -5.30999898910522
+  },
+  "house02RenderedDirectlyInCapture5": true,
+  "humanReviewRequired": true,
+  "noCombat": true,
+  "noEconomy": true,
+  "noGameplay": true,
+  "noLabels": true,
+  "noMovement": true,
+  "noOverlays": true,
+  "noPathfinding": true,
+  "noResources": true,
+  "noRuntimeIntegration": true,
+  "noVideo": true,
+  "outcome": "READY FOR HUMAN V0347 BARN RENDERED-GEOMETRY REVIEW",
+  "prototypeOnly": true,
+  "prototypeOptIn": true,
+  "rawCaptureCount": 5,
+  "scenePath": "res://scenes/review/V0347BarnRenderedGeometryTruth.tscn",
+  "schemaVersion": 1,
+  "sourceBlend": "art-source/blender/v0347/barn_rendered_geometry_truth.blend",
+  "sourceGLB": "res://assets/v0347/barn_rendered_geometry_truth.glb",
+  "status": "PASS_V0347_BARN_RENDERED_GEOMETRY_TRUTH"
+}

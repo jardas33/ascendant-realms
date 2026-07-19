@@ -1,0 +1,188 @@
+﻿{
+    "checkpoint":  "v0.347",
+    "outcome":  "READY FOR HUMAN V0347 BARN RENDERED-GEOMETRY REVIEW",
+    "automatedVisualApproval":  false,
+    "humanReviewRequired":  true,
+    "sourceCaptureCount":  5,
+    "sourceCaptures":  [
+                           "01_front_three_quarter.png",
+                           "02_direct_front_orthographic.png",
+                           "03_direct_side_gable.png",
+                           "04_roof_close_up.png",
+                           "05_true_matched_front_512x256.png"
+                       ],
+    "exactSourceCountBeforePackaging":  5,
+    "finalRawSourceSet":  "artifacts/runtime/v0347/screenshots/",
+    "finalRawSourceSetFiles":  [
+                                   "01_front_three_quarter.png",
+                                   "02_direct_front_orthographic.png",
+                                   "03_direct_side_gable.png",
+                                   "04_roof_close_up.png",
+                                   "05_true_matched_front_512x256.png"
+                               ],
+    "worldSpaceSlopes":  [
+                             {
+                                 "slope":  "front",
+                                 "eaveWorldZ":  3.94,
+                                 "ridgeWorldZ":  5.88542,
+                                 "rise":  1.94542,
+                                 "run":  5.345,
+                                 "pitchDegrees":  20.0,
+                                 "faceCount":  1
+                             },
+                             {
+                                 "slope":  "rear",
+                                 "eaveWorldZ":  3.94,
+                                 "ridgeWorldZ":  5.88542,
+                                 "rise":  1.94542,
+                                 "run":  5.345,
+                                 "pitchDegrees":  20.0,
+                                 "faceCount":  1
+                             }
+                         ],
+    "v0346ActualSourceGeometry":  {
+                                      "material":  "V0346_House02_Family_Dark_Weathered_Slate",
+                                      "slopes":  [
+                                                     {
+                                                         "slope":  "front",
+                                                         "eaveWorldZ":  4.5344,
+                                                         "ridgeWorldZ":  7.5504,
+                                                         "rise":  3.016,
+                                                         "run":  5.72731,
+                                                         "pitchDegrees":  27.7713,
+                                                         "faceCount":  1
+                                                     },
+                                                     {
+                                                         "slope":  "rear",
+                                                         "eaveWorldZ":  4.5344,
+                                                         "ridgeWorldZ":  7.5504,
+                                                         "rise":  3.016,
+                                                         "run":  5.72731,
+                                                         "pitchDegrees":  27.7713,
+                                                         "faceCount":  1
+                                                     }
+                                                 ],
+                                      "pitchDegrees":  [
+                                                           27.7713,
+                                                           27.7713
+                                                       ],
+                                      "measuredFrom":  "final v0.346 world-space roof faces before removal"
+                                  },
+    "frontWidth":  15.74,
+    "wallEaveHeight":  3.73,
+    "totalRidgeHeight":  5.92292,
+    "roofPercentOfTotalHeight":  34.05,
+    "roof":  {
+                 "principalSlopes":  2,
+                 "straightRidge":  true,
+                 "secondaryRoofNodes":  0,
+                 "completeGraniteGables":  2,
+                 "roofMaterial":  "V0347_House02_Frozen_Weathered_Slate",
+                 "roofMaterialLineage":  "V0334_Weathered_Slate from frozen House02 material library",
+                 "roofMaterialTileUV":  true,
+                 "greyPlaceholderRoof":  false,
+                 "smoothGenericRoof":  false,
+                 "roofMaterialOnGables":  false
+             },
+    "openings":  {
+                     "lowerDoubleAgriculturalDoor":  true,
+                     "upperHayLoadingOpening":  true,
+                     "rearServiceOpening":  true
+                 },
+    "trueMatchedComparison":  {
+                                  "file":  "05_true_matched_front_512x256.png",
+                                  "width":  512,
+                                  "height":  256,
+                                  "leftPanel":  "frozen House02 rendered directly",
+                                  "rightPanel":  "v0.347 barn rendered directly",
+                                  "eachPanel":  "256x256"
+                              },
+    "transformDiagnosis":  {
+                               "scaleOperation":  {
+                                                      "x":  1.1288285319644564,
+                                                      "y":  0.9591890360480458,
+                                                      "z":  0.8625474088416193,
+                                                      "sourceBounds":  {
+                                                                           "minX":  -6.688350200653076,
+                                                                           "maxX":  6.68834924697876,
+                                                                           "minY":  -5.519810676574707,
+                                                                           "maxY":  5.374809265136719,
+                                                                           "minZ":  0.20999997854232788,
+                                                                           "maxZ":  4.53439998626709
+                                                                       }
+                                                  },
+                               "removedOldRoofAndGableFaces":  28,
+                               "transformsApplied":  true,
+                               "objectScaleAfterApply":  [
+                                                             1.0,
+                                                             1.0,
+                                                             1.0
+                                                         ],
+                               "worldBounds":  {
+                                                   "minX":  -7.87,
+                                                   "maxX":  7.87,
+                                                   "minY":  -5.455,
+                                                   "maxY":  5.31,
+                                                   "minZ":  0.21,
+                                                   "maxZ":  5.92292
+                                               },
+                               "worldSpaceSlopes":  [
+                                                        {
+                                                            "slope":  "front",
+                                                            "eaveWorldZ":  3.94,
+                                                            "ridgeWorldZ":  5.88542,
+                                                            "rise":  1.94542,
+                                                            "run":  5.345,
+                                                            "pitchDegrees":  20.0,
+                                                            "faceCount":  1
+                                                        },
+                                                        {
+                                                            "slope":  "rear",
+                                                            "eaveWorldZ":  3.94,
+                                                            "ridgeWorldZ":  5.88542,
+                                                            "rise":  1.94542,
+                                                            "run":  5.345,
+                                                            "pitchDegrees":  20.0,
+                                                            "faceCount":  1
+                                                        }
+                                                    ],
+                               "roofAxis":  "Y; eave-to-ridge horizontal run measured in world space",
+                               "uvDiagnosis":  {
+                                                   "roofMaterial":  "frozen House02 V0334_Weathered_Slate",
+                                                   "uvSource":  "explicit V0347_House02_Slate_Tiled_UV active layer",
+                                                   "rowsFollow":  "eave-to-ridge roof run",
+                                                   "ridge":  "separate geometric edge",
+                                                   "normals":  "flat roof/gable shading; no smoothing across ridge"
+                                               },
+                               "blenderGLBAgreement":  "same baked world-space vertex bounds exported to GLB; Godot bounds recorded by capture manifest"
+                           },
+    "reviewPackFiles":  [
+                            "00_READ_ME_FIRST.md",
+                            "01_FINAL_FRONT_AND_HORIZONTAL_MASS.png",
+                            "02_COMPLETE_GRANITE_GABLES.png",
+                            "03_HOUSE02_SLATE_AND_ROOF_PITCH.png",
+                            "04_TRUE_MATCHED_FRONT_512X256.png",
+                            "compact-evidence-summary.json"
+                        ],
+    "exactlySixReviewFiles":  true,
+    "exactlyFourPng":  true,
+    "noVideo":  true,
+    "noTitleCardOnlyEvidence":  true,
+    "noDefaultRuntimeIntegration":  true,
+    "noGameplay":  true,
+    "sourceHashes":  {
+                         "v0346Blend":  "fbc5e6de4155d0cf1dcd8902751fc26405090c2de714296cddf68306c02ca3df",
+                         "v0346GLB":  "11c974596413b1548c471d3ae5786ccd81cdcb613a79c47a94cd8280a3927da3",
+                         "v0345Blend":  "f620e472cfbac2f0800f07e8e1bc4e840eccada971fedd5776268986c74c34ba",
+                         "v0345GLB":  "14df5b448db8257b695b00716ec6d3999f75a26ebe6cc03bd4e313399a53058c",
+                         "v0344Blend":  "d63a8364f3edb10d20926a45dd52a41c8d0b8042fe707cf2aae267fbc63ac198",
+                         "v0343Blend":  "ecb268c7a4f69c914951a0dbd9494fb332003566073b2311b47a348ba9f831e9",
+                         "v0343GLB":  "d4d780510b1812e7e4f082f24dfee049ab21f905acbaaeaa4f54d6f67b4118b9",
+                         "house02Blend":  "3da7c2cf71509e07c900001fd0b277e9af4584a074552ac1d929a4f37e0d78b6",
+                         "house02GLB":  "ceab23ff3cfb580cc63ce917ec1ff675a1cd318f8fe3390fc836166015ebba89"
+                     },
+    "finalHashes":  {
+                        "blend":  "e5c8c9d561fc921f97a971110b34b706ed8dbd1824e4e451addab2ac1573a69a",
+                        "glb":  "0b4944d8a15006664dad84cec5e8b41546497588d14194d5b2e49621071e209c"
+                    }
+}

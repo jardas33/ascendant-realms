@@ -1,0 +1,130 @@
+{
+  "checkpoint": "v0.347",
+  "humanV0346Rejection": "REJECTED BY HUMAN REVIEW - V0.346 PASSES PACKAGING AND DECLARED ROOF METRICS, BUT THE RENDERED BARN STILL HAS AN OVERSIZED ROOF, TOWER-LIKE MASS, NON-GRANITE-READING GABLES AND A SMOOTH GENERIC ROOF MATERIAL THAT DOES NOT MATCH HOUSE02",
+  "v0346Source": {
+    "objectScale": [
+      1.0,
+      1.0,
+      1.0
+    ],
+    "parentMatrixWorld": [
+      [
+        1.0,
+        0.0,
+        0.0,
+        -3.7699999809265137
+      ],
+      [
+        0.0,
+        1.0,
+        0.0,
+        -2.680000066757202
+      ],
+      [
+        0.0,
+        0.0,
+        1.0,
+        0.8199999928474426
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ],
+    "worldBounds": {
+      "minX": -6.908349990844727,
+      "maxX": 6.908348560333252,
+      "minY": -5.842310905456543,
+      "maxY": 5.697308540344238,
+      "minZ": 0.20999997854232788,
+      "maxZ": 7.592899799346924
+    },
+    "declaredPitchDegrees": 27.77,
+    "actualSourceMaterial": "V0346_House02_Family_Dark_Weathered_Slate",
+    "actualSourceSlopes": [
+      {
+        "slope": "front",
+        "eaveWorldZ": 4.5344,
+        "ridgeWorldZ": 7.5504,
+        "rise": 3.016,
+        "run": 5.72731,
+        "pitchDegrees": 27.7713,
+        "faceCount": 1
+      },
+      {
+        "slope": "rear",
+        "eaveWorldZ": 4.5344,
+        "ridgeWorldZ": 7.5504,
+        "rise": 3.016,
+        "run": 5.72731,
+        "pitchDegrees": 27.7713,
+        "faceCount": 1
+      }
+    ],
+    "geometryPitchRecomputed": "measured from final v0.346 world-space roof faces before removal; no declared metadata trusted"
+  },
+  "v0347": {
+    "scaleOperation": {
+      "x": 1.1288285319644564,
+      "y": 0.9591890360480458,
+      "z": 0.8625474088416193,
+      "sourceBounds": {
+        "minX": -6.688350200653076,
+        "maxX": 6.68834924697876,
+        "minY": -5.519810676574707,
+        "maxY": 5.374809265136719,
+        "minZ": 0.20999997854232788,
+        "maxZ": 4.53439998626709
+      }
+    },
+    "removedOldRoofAndGableFaces": 28,
+    "transformsApplied": true,
+    "objectScaleAfterApply": [
+      1.0,
+      1.0,
+      1.0
+    ],
+    "worldBounds": {
+      "minX": -7.87,
+      "maxX": 7.87,
+      "minY": -5.455,
+      "maxY": 5.31,
+      "minZ": 0.21,
+      "maxZ": 5.92292
+    },
+    "worldSpaceSlopes": [
+      {
+        "slope": "front",
+        "eaveWorldZ": 3.94,
+        "ridgeWorldZ": 5.88542,
+        "rise": 1.94542,
+        "run": 5.345,
+        "pitchDegrees": 20.0,
+        "faceCount": 1
+      },
+      {
+        "slope": "rear",
+        "eaveWorldZ": 3.94,
+        "ridgeWorldZ": 5.88542,
+        "rise": 1.94542,
+        "run": 5.345,
+        "pitchDegrees": 20.0,
+        "faceCount": 1
+      }
+    ],
+    "roofAxis": "Y; eave-to-ridge horizontal run measured in world space",
+    "uvDiagnosis": {
+      "roofMaterial": "frozen House02 V0334_Weathered_Slate",
+      "uvSource": "explicit V0347_House02_Slate_Tiled_UV active layer",
+      "rowsFollow": "eave-to-ridge roof run",
+      "ridge": "separate geometric edge",
+      "normals": "flat roof/gable shading; no smoothing across ridge"
+    },
+    "blenderGLBAgreement": "same baked world-space vertex bounds exported to GLB; Godot bounds recorded by capture manifest"
+  },
+  "house02SlateMaterial": "V0334_Weathered_Slate",
+  "prototypeOnly": true,
+  "defaultRuntimeIntegrated": false
+}
