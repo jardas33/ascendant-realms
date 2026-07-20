@@ -1,0 +1,165 @@
+{
+  "checkpoint": "v0.350",
+  "status": "PASS_V0350_FINAL_HOUSE02_BARN_MATERIAL_UNITY_DERIVATIVE",
+  "derivedFromV0347": true,
+  "prototypeOnly": true,
+  "defaultRuntimeIntegrated": false,
+  "noGameplay": true,
+  "sourceHashes": {
+    "v0347Blend": "e5c8c9d561fc921f97a971110b34b706ed8dbd1824e4e451addab2ac1573a69a",
+    "v0347GLB": "0b4944d8a15006664dad84cec5e8b41546497588d14194d5b2e49621071e209c",
+    "house02Blend": "3da7c2cf71509e07c900001fd0b277e9af4584a074552ac1d929a4f37e0d78b6"
+  },
+  "finalHashes": {
+    "blend": "1d0645cc258e76fea3f3af744b04314e1e692f0db81d3710123857a594199d6b",
+    "glb": "0b4944d8a15006664dad84cec5e8b41546497588d14194d5b2e49621071e209c"
+  },
+  "v0347FrozenGeometryHash": "842932490cd0065d49e21c74b61924faa256603a051fa69cef918ca652d9231a",
+  "godotGeometryCarrier": "v0347 GLB copied unchanged; v0348 material skin applied only by opt-in review scene",
+  "geometryUnchanged": true,
+  "beforeBounds": {
+    "minX": -7.87000036239624,
+    "maxX": 7.869999885559082,
+    "minY": -5.455000400543213,
+    "maxY": 5.309998989105225,
+    "minZ": 0.20999997854232788,
+    "maxZ": 5.9229207038879395
+  },
+  "afterBounds": {
+    "minX": -7.87000036239624,
+    "maxX": 7.869999885559082,
+    "minY": -5.455000400543213,
+    "maxY": 5.309998989105225,
+    "minZ": 0.20999997854232788,
+    "maxZ": 5.9229207038879395
+  },
+  "frontWidth": 15.74,
+  "depth": 10.765,
+  "eaveWorldZ": 3.94,
+  "ridgeWorldZ": 5.89907,
+  "roof": {
+    "pitchDegrees": [
+      20.0,
+      20.0
+    ],
+    "principalSlopes": 2,
+    "straightRidge": true,
+    "secondaryRoofNodes": 0,
+    "completeGraniteGables": 2,
+    "roofMaterialOnGables": false,
+    "activeUv": "V0348_Explicit_Roof_And_Gable_UV",
+    "roofFacesExplicitlyUvMapped": 2,
+    "gableFacesExplicitlyUvMapped": 4
+  },
+  "slateScale": {
+    "house02TexelDensityRecorded": "House02 V0334 1024px source measured against 10.24m roof width",
+    "house02VisibleTileWidthWorldM": 0.56,
+    "barnVisibleTileWidthWorldM": 0.58,
+    "house02CourseHeightWorldM": 0.45,
+    "barnCourseHeightWorldM": 0.47,
+    "apparentScaleDeltaPercent": 3.57,
+    "visibleCoursesEaveToRidge": 9,
+    "uvRotationFrontDegrees": 0.0,
+    "uvRotationRearDegrees": 0.0,
+    "uvProgression": "eave-to-ridge, independent front/rear slopes"
+  },
+  "granite": {
+    "lineage": "V0344_House02Derived_Granite_Continuous",
+    "valueTreatment": "medium grey / grey-brown, matched scale",
+    "normalStrength": 0.0
+  },
+  "openings": {
+    "lowerDoorDominant": true,
+    "upperOpeningSubordinate": true,
+    "oldDimensionsRecorded": true,
+    "oldUpperOpeningDimensions": {
+      "width": 3.82,
+      "height": 1.02
+    },
+    "newUpperOpeningDimensions": {
+      "width": 3.32,
+      "height": 0.92
+    },
+    "reductionPercent": {
+      "width": 13.0,
+      "height": 9.8
+    },
+    "lowerUpperAreaRatio": 3.64,
+    "lowerUpperAreaRatioRecorded": true
+  },
+  "materials": {
+    "granite": "V0348_Barrosan_House02_Harmony_Granite",
+    "timber": "V0348_Aged_Agricultural_Timber",
+    "iron": "V0348_Aged_Iron",
+    "recess": "V0348_Recessed_Mortar_And_Weathering",
+    "edge": "V0348_Subordinate_Charcoal_Brown_Roof_Edge",
+    "slate": "V0350_Barrosan_Albedo_First_Weathered_Slate"
+  },
+  "materialSlotsBefore": [
+    "V0344_House02Derived_Granite_Continuous",
+    "V0343_House02Derived_Recess",
+    "V0343_House02Derived_Weathered_Timber",
+    "V0343_House02Derived_Iron",
+    "V0334_Weathered_Slate",
+    "V0344_Dark_Weathered_Timber_Roof_Edge",
+    "V0345_Simple_Weathered_Slate",
+    "V0345_Simple_Weathered_Slate_Underside",
+    "V0345_Subordinate_Dark_Timber_Roof_Edge",
+    "V0346_House02_Family_Dark_Weathered_Slate",
+    "V0346_House02_Family_Slate_Underside",
+    "V0346_Subordinate_Charcoal_Brown_Roof_Edge",
+    "V0347_House02_Frozen_Weathered_Slate",
+    "V0347_Subordinate_Charcoal_Brown_Roof_Edge"
+  ],
+  "diagnostics": {
+    "normalEnabled": true,
+    "normalDisabledCaptureRequired": true,
+    "albedoOnlyCaptureRequired": true,
+    "roughnessIsolationCaptureRequired": true,
+    "uvChecker": "art-source/blender/v0350/v0350_roof_uv_checker.png",
+    "uvLayout": "art-source/blender/v0350/v0350_roof_uv_layout.png"
+  },
+  "humanReviewRequired": true,
+  "automatedVisualApproval": false,
+  "outcome": "READY FOR HUMAN V0350 FINAL HOUSE02/BARN MATERIAL-UNITY REVIEW",
+  "v0348Preserved": true,
+  "v0349MaterialBaselinePreserved": true,
+  "albedoFirst": true,
+  "normalIntensity": 0.08,
+  "normalDisabledIdentity": "same albedo and roughness resources; normal contribution removed only",
+  "slatePalette": {
+    "base": "calibrated charcoal blue-grey",
+    "roughness": 0.95,
+    "metallic": 0.0,
+    "pattern": "staggered traditional courses with three restrained widths, subtle height variation and limited chipped lower edges"
+  },
+  "roofEdge": {
+    "material": "near-black weathered charcoal timber",
+    "rtsVisibility": "subordinate"
+  },
+  "foundationWeathering": {
+    "mode": "bounded lower-wall damp/soil response",
+    "lowerBandCm": [
+      20,
+      35
+    ],
+    "uniformStripe": false,
+    "floatingGeometry": false
+  },
+  "timber": {
+    "tone": "aged chestnut muted red",
+    "roughness": 0.95,
+    "metallic": 0.0
+  },
+  "iron": {
+    "tone": "near-black",
+    "metallic": 0.0
+  },
+  "externalTextureResources": [
+    "res://assets/v0350/v0350_traditional_slate_courses_albedo.png",
+    "res://assets/v0350/v0350_traditional_slate_courses_normal.png",
+    "res://assets/v0350/v0350_traditional_slate_courses_roughness.png"
+  ],
+  "embeddedImageDependency": false,
+  "fallbackMaterial": false
+}

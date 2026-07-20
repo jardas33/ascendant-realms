@@ -1,0 +1,10 @@
+{
+  "checkpoint": "v0.350",
+  "derivedFrom": "v0.349",
+  "v0347GeometryPreserved": true,
+  "v0348UvInfrastructurePreserved": true,
+  "v0349MaterialBaselinePreserved": true,
+  "upperOpeningReduction": "13% width, 9.8% height opt-in exterior geometry patch",
+  "defaultRuntimeIntegrated": false,
+  "humanApprovalRequired": true
+}

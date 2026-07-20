@@ -1,0 +1,321 @@
+{
+  "automatedVisualApproval": false,
+  "captures": [
+    {
+      "camera": {
+        "position": "(-15.0, 8.4, 15.0)",
+        "projection": "orthographic",
+        "size": 13.2,
+        "target": "(0.0, 2.65, 0.0)"
+      },
+      "fileName": "01_matched_house02_barn_neutral_full.png",
+      "normalEnabled": true,
+      "purpose": "matched House02/barn neutral full assets",
+      "rendered": true,
+      "size": {
+        "height": 256,
+        "width": 512
+      },
+      "unlabelled": true
+    },
+    {
+      "camera": {
+        "position": "(-15.0, 8.4, 15.0)",
+        "projection": "orthographic",
+        "size": 13.2,
+        "target": "(0.0, 2.65, 0.0)"
+      },
+      "fileName": "02_matched_roof_normal_enabled.png",
+      "normalEnabled": true,
+      "purpose": "matched House02/barn roof with normal enabled",
+      "rendered": true,
+      "size": {
+        "height": 256,
+        "width": 512
+      },
+      "unlabelled": true
+    },
+    {
+      "camera": {
+        "position": "(-15.0, 8.4, 15.0)",
+        "projection": "orthographic",
+        "size": 13.2,
+        "target": "(0.0, 2.65, 0.0)"
+      },
+      "fileName": "03_matched_roof_normal_disabled.png",
+      "normalEnabled": false,
+      "purpose": "matched House02/barn roof with normal disabled",
+      "rendered": true,
+      "size": {
+        "height": 256,
+        "width": 512
+      },
+      "unlabelled": true
+    },
+    {
+      "camera": {
+        "position": "(-15.0, 8.4, 15.0)",
+        "projection": "orthographic",
+        "size": 10.5,
+        "target": "(0.0, 3.6, 0.0)"
+      },
+      "fileName": "04_barn_albedo_only_roof.png",
+      "purpose": "barn albedo-only slate close-up",
+      "rendered": true,
+      "size": {
+        "height": 1009,
+        "width": 1920
+      },
+      "technicalOverlay": false,
+      "unlabelled": true
+    },
+    {
+      "camera": {
+        "position": "(-15.0, 8.4, 15.0)",
+        "projection": "orthographic",
+        "size": 16.5,
+        "target": "(0.0, 2.65, 0.0)"
+      },
+      "fileName": "05_neutral_barn_front_three_quarter.png",
+      "purpose": "neutral-overcast front three-quarter",
+      "rendered": true,
+      "size": {
+        "height": 1009,
+        "width": 1920
+      },
+      "technicalOverlay": false,
+      "unlabelled": true
+    },
+    {
+      "camera": {
+        "position": "(0.0, 7.0, 18.0)",
+        "projection": "orthographic",
+        "size": 15.0,
+        "target": "(0.0, 2.55, 0.0)"
+      },
+      "fileName": "06_direct_front.png",
+      "purpose": "direct front opening hierarchy",
+      "rendered": true,
+      "size": {
+        "height": 1009,
+        "width": 1920
+      },
+      "technicalOverlay": false,
+      "unlabelled": true
+    },
+    {
+      "camera": {
+        "position": "(0.0, 8.0, 22.0)",
+        "projection": "orthographic",
+        "size": 17.5,
+        "target": "(0.0, 2.7, 0.0)"
+      },
+      "fileName": "07_complete_direct_exterior_gable.png",
+      "purpose": "complete direct exterior gable silhouette",
+      "rendered": true,
+      "size": {
+        "height": 1009,
+        "width": 1920
+      },
+      "technicalOverlay": false,
+      "unlabelled": true
+    },
+    {
+      "camera": {
+        "position": "(-10.0, 5.8, 12.2)",
+        "projection": "orthographic",
+        "size": 10.0,
+        "target": "(0.0, 2.75, 0.0)"
+      },
+      "fileName": "08_granite_foundation_closeup.png",
+      "purpose": "granite, foundation contact and weathering",
+      "rendered": true,
+      "size": {
+        "height": 1009,
+        "width": 1920
+      },
+      "technicalOverlay": false,
+      "unlabelled": true
+    },
+    {
+      "camera": {
+        "position": "(0.0, 5.8, 13.0)",
+        "projection": "orthographic",
+        "size": 9.0,
+        "target": "(0.0, 2.9, 0.0)"
+      },
+      "fileName": "09_doors_openings_closeup.png",
+      "purpose": "doors, upper loading opening and iron",
+      "rendered": true,
+      "size": {
+        "height": 1009,
+        "width": 1920
+      },
+      "technicalOverlay": false,
+      "unlabelled": true
+    },
+    {
+      "camera": {
+        "position": "(-12.0, 6.7, 15.0)",
+        "projection": "orthographic",
+        "size": 8.0,
+        "target": "(0.0, 4.35, 0.0)"
+      },
+      "fileName": "10_roof_edge_slate_irregularity.png",
+      "purpose": "roof edge and traditional slate irregularity",
+      "rendered": true,
+      "size": {
+        "height": 1009,
+        "width": 1920
+      },
+      "technicalOverlay": false,
+      "unlabelled": true
+    },
+    {
+      "camera": {
+        "position": "(-19.0, 14.5, 22.0)",
+        "projection": "orthographic",
+        "size": 24.0,
+        "target": "(0.0, 2.0, 0.0)"
+      },
+      "fileName": "11_far_rts.png",
+      "purpose": "ordinary far RTS readability",
+      "rendered": true,
+      "size": {
+        "height": 1009,
+        "width": 1920
+      },
+      "technicalOverlay": false,
+      "unlabelled": true
+    },
+    {
+      "camera": {
+        "position": "(-15.0, 8.4, 15.0)",
+        "projection": "orthographic",
+        "size": 16.5,
+        "target": "(0.0, 2.65, 0.0)"
+      },
+      "fileName": "12_true_256_pixel_source.png",
+      "purpose": "true 256-pixel source",
+      "rendered": true,
+      "size": {
+        "height": 256,
+        "width": 256
+      },
+      "technicalOverlay": false,
+      "unlabelled": true
+    },
+    {
+      "fileName": "13_greyscale.png",
+      "purpose": "greyscale value proof",
+      "rendered": true,
+      "size": {
+        "height": 1009,
+        "width": 1920
+      },
+      "unlabelled": true
+    },
+    {
+      "camera": {
+        "position": "(-15.0, 8.4, 15.0)",
+        "projection": "orthographic",
+        "size": 16.5,
+        "target": "(0.0, 2.65, 0.0)"
+      },
+      "fileName": "14_restrained_warm_directional.png",
+      "purpose": "restrained warm directional",
+      "rendered": true,
+      "size": {
+        "height": 1009,
+        "width": 1920
+      },
+      "technicalOverlay": false,
+      "unlabelled": true
+    },
+    {
+      "camera": {
+        "position": "(0.0, 10.5, 32.0)",
+        "projection": "orthographic",
+        "size": 34.0,
+        "target": "(0.0, 2.4, 0.0)"
+      },
+      "fileName": "15_contextual_house02_barn_hamlet.png",
+      "purpose": "bounded House02/barn hamlet material-unity context",
+      "rendered": true,
+      "size": {
+        "height": 1009,
+        "width": 1920
+      },
+      "technicalOverlay": false,
+      "unlabelled": true
+    }
+  ],
+  "checkpoint": "v0.350",
+  "defaultRuntimeIntegrated": false,
+  "diagnosticEvidence": [
+    "normal_enabled.png",
+    "normal_disabled.png",
+    "albedo_only.png",
+    "roughness_isolation.png",
+    "uv_checker_source.txt"
+  ],
+  "errors": [],
+  "godotImportedBounds": {
+    "maxX": 7.86999940872192,
+    "maxY": 6.10292053222656,
+    "maxZ": 5.57999992370605,
+    "minX": -7.87000036239624,
+    "minY": 0.0849999785423279,
+    "minZ": -5.30999898910522
+  },
+  "humanReviewRequired": true,
+  "lowerUpperVisibleAreaRatio": 3.64,
+  "newUpperOpeningDimensions": {
+    "height": 0.920000016689301,
+    "width": 3.3199999332428
+  },
+  "noCombat": true,
+  "noEconomy": true,
+  "noGameplay": true,
+  "noLabels": true,
+  "noMovement": true,
+  "noOverlays": true,
+  "noPathfinding": true,
+  "noResources": true,
+  "noRuntimeIntegration": true,
+  "noVideo": true,
+  "oldUpperOpeningDimensions": {
+    "height": 1.01999998092651,
+    "width": 3.8199999332428
+  },
+  "outcome": "READY FOR HUMAN V0350 FINAL HOUSE02/BARN MATERIAL-UNITY REVIEW",
+  "prototypeOnly": true,
+  "prototypeOptIn": true,
+  "rawCaptureCount": 15,
+  "requiredRawNames": [
+    "01_matched_house02_barn_neutral_full.png",
+    "02_matched_roof_normal_enabled.png",
+    "03_matched_roof_normal_disabled.png",
+    "04_barn_albedo_only_roof.png",
+    "05_neutral_barn_front_three_quarter.png",
+    "06_direct_front.png",
+    "07_complete_direct_exterior_gable.png",
+    "08_granite_foundation_closeup.png",
+    "09_doors_openings_closeup.png",
+    "10_roof_edge_slate_irregularity.png",
+    "11_far_rts.png",
+    "12_true_256_pixel_source.png",
+    "13_greyscale.png",
+    "14_restrained_warm_directional.png",
+    "15_contextual_house02_barn_hamlet.png"
+  ],
+  "scenePath": "res://scenes/review/V0350FinalHouse02BarnMaterialUnity.tscn",
+  "schemaVersion": 1,
+  "sourceBlend": "art-source/blender/v0350/barn_final_material_harmony.blend",
+  "sourceGLB": "res://assets/v0350/barn_final_material_harmony.glb",
+  "status": "PASS_V0350_FINAL_HOUSE02_BARN_MATERIAL_UNITY_RUNTIME",
+  "upperOpeningReductionPercent": {
+    "height": 9.8,
+    "width": 13.0
+  }
+}

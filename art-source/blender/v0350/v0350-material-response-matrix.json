@@ -1,0 +1,13 @@
+{
+  "albedoFirst": true,
+  "normalIntensity": 0.08,
+  "normalDisabledReadable": true,
+  "neutralOvercastPrimary": true,
+  "house02MatchTargetPercent": {
+    "roof": 8,
+    "granite": 12
+  },
+  "foundationWeathering": "irregular lower 20-35cm contact response",
+  "edge": "subordinate charcoal-brown fascia",
+  "slateVariation": "three width patterns, staggered joints, subtle course-height variation"
+}

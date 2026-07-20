@@ -1,0 +1,85 @@
+﻿{
+    "checkpoint":  "v0.350",
+    "outcome":  "READY FOR HUMAN V0350 FINAL HOUSE02/BARN MATERIAL-UNITY REVIEW",
+    "automatedVisualApproval":  false,
+    "humanReviewRequired":  true,
+    "rawCaptureCount":  15,
+    "rawCaptures":  [
+                        "01_matched_house02_barn_neutral_full.png",
+                        "02_matched_roof_normal_enabled.png",
+                        "03_matched_roof_normal_disabled.png",
+                        "04_barn_albedo_only_roof.png",
+                        "05_neutral_barn_front_three_quarter.png",
+                        "06_direct_front.png",
+                        "07_complete_direct_exterior_gable.png",
+                        "08_granite_foundation_closeup.png",
+                        "09_doors_openings_closeup.png",
+                        "10_roof_edge_slate_irregularity.png",
+                        "11_far_rts.png",
+                        "12_true_256_pixel_source.png",
+                        "13_greyscale.png",
+                        "14_restrained_warm_directional.png",
+                        "15_contextual_house02_barn_hamlet.png"
+                    ],
+    "requiredRawSet":  [
+                           "01_matched_house02_barn_neutral_full.png",
+                           "02_matched_roof_normal_enabled.png",
+                           "03_matched_roof_normal_disabled.png",
+                           "04_barn_albedo_only_roof.png",
+                           "05_neutral_barn_front_three_quarter.png",
+                           "06_direct_front.png",
+                           "07_complete_direct_exterior_gable.png",
+                           "08_granite_foundation_closeup.png",
+                           "09_doors_openings_closeup.png",
+                           "10_roof_edge_slate_irregularity.png",
+                           "11_far_rts.png",
+                           "12_true_256_pixel_source.png",
+                           "13_greyscale.png",
+                           "14_restrained_warm_directional.png",
+                           "15_contextual_house02_barn_hamlet.png"
+                       ],
+    "geometryCarrierPreserved":  true,
+    "v0348Preserved":  true,
+    "v0349MaterialBaselinePreserved":  true,
+    "albedoFirst":  true,
+    "normalIntensity":  0.08,
+    "slatePalette":  {
+                         "base":  "calibrated charcoal blue-grey",
+                         "roughness":  0.95,
+                         "metallic":  0.0,
+                         "pattern":  "staggered traditional courses with three restrained widths, subtle height variation and limited chipped lower edges"
+                     },
+    "foundationWeathering":  {
+                                 "mode":  "bounded lower-wall damp/soil response",
+                                 "lowerBandCm":  [
+                                                     20,
+                                                     35
+                                                 ],
+                                 "uniformStripe":  false,
+                                 "floatingGeometry":  false
+                             },
+    "openings":  {
+                     "lowerDoorDominant":  true,
+                     "upperOpeningSubordinate":  true,
+                     "oldDimensionsRecorded":  true,
+                     "oldUpperOpeningDimensions":  {
+                                                       "width":  3.82,
+                                                       "height":  1.02
+                                                   },
+                     "newUpperOpeningDimensions":  {
+                                                       "width":  3.32,
+                                                       "height":  0.92
+                                                   },
+                     "reductionPercent":  {
+                                              "width":  13.0,
+                                              "height":  9.8
+                                          },
+                     "lowerUpperAreaRatio":  3.64,
+                     "lowerUpperAreaRatioRecorded":  true
+                 },
+    "exactTenFiles":  true,
+    "exactlyEightPng":  true,
+    "noVideo":  true,
+    "noDefaultRuntimeIntegration":  true,
+    "noGameplay":  true
+}
