@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource path="res://scripts/v0354_barn_final_evidence.gd" type="Script" id="1_v0354"]
+
+[node name="V0354BarnFinalEvidence" type="Node3D"]
+script = ExtResource("1_v0354")

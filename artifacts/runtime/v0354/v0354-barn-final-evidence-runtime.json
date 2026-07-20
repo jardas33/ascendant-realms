@@ -1,0 +1,277 @@
+{
+  "actual256HorizontalCentreError": 0.5,
+  "actual256MinimumEdgeMargin": 32,
+  "actual256PixelAspectRatio": 1.0,
+  "actual256SourceDimensions": "256x256",
+  "actual256SubjectBoundingBox": {
+    "height": 92,
+    "heightPercentage": 35.9375,
+    "horizontalCentreError": 0.5,
+    "minEdgeMargin": 32,
+    "subjectPixels": 11176,
+    "verticalCentreError": 3.0,
+    "width": 191,
+    "widthPercentage": 74.609375,
+    "x": 33,
+    "y": 79
+  },
+  "actual256SubjectHeightPercentage": 35.9375,
+  "actual256SubjectWidthPercentage": 74.609375,
+  "actual256VerticalCentreError": 3.0,
+  "automatedVisualApproval": false,
+  "captures": [
+    {
+      "camera": {
+        "position": "(-15.0, 8.4, 15.0)",
+        "projection": "orthographic",
+        "size": 16.5,
+        "target": "(0.0, 2.65, 0.0)"
+      },
+      "fileName": "01_accepted_barn_neutral_front_three_quarter.png",
+      "purpose": "accepted barn neutral front three-quarter",
+      "rendered": true,
+      "size": {
+        "height": 1009,
+        "width": 1920
+      },
+      "technicalOverlay": false
+    },
+    {
+      "camera": {
+        "position": "(-18.0, 10.5, 26.0)",
+        "projection": "orthographic",
+        "size": 24.0,
+        "target": "(0.0, 2.2, 0.0)"
+      },
+      "fileName": "02_accepted_contextual_player.png",
+      "purpose": "accepted contextual PLAYER view",
+      "rendered": true,
+      "size": {
+        "height": 1009,
+        "width": 1920
+      },
+      "technicalOverlay": false
+    },
+    {
+      "camera": {
+        "position": "(-15.0, 7.4, 20.0)",
+        "projection": "orthographic",
+        "size": 17.0,
+        "target": "(0.0, 1.7, 0.0)"
+      },
+      "fileName": "03_accepted_worker_integrity.png",
+      "purpose": "accepted complete worker integrity confirmation",
+      "rendered": true,
+      "size": {
+        "height": 1009,
+        "width": 1920
+      },
+      "technicalOverlay": false
+    },
+    {
+      "camera": {
+        "position": "(-10.0, 5.8, 12.2)",
+        "projection": "orthographic",
+        "size": 8.3,
+        "target": "(-2.8, 1.0, 0.0)"
+      },
+      "fileName": "04_accepted_natural_contact.png",
+      "purpose": "accepted natural terrain contact confirmation",
+      "rendered": true,
+      "size": {
+        "height": 1009,
+        "width": 1920
+      },
+      "technicalOverlay": false
+    },
+    {
+      "camera": {
+        "position": "(15.0, 8.4, 15.0)",
+        "projection": "orthographic",
+        "size": 16.5,
+        "target": "(0.0, 2.65, 0.0)"
+      },
+      "fileName": "05_accepted_exterior_roof.png",
+      "purpose": "accepted exterior roof and shutters confirmation",
+      "rendered": true,
+      "size": {
+        "height": 1009,
+        "width": 1920
+      },
+      "technicalOverlay": false
+    },
+    {
+      "cameraHash": "61ce13d05c5ab632213256450449924dae4f1c02585a57168189cfaf4019c4dd",
+      "captureMethod": "256x256 SubViewport direct read; no crop; no stretch",
+      "fileName": "06_square_neutral_256.png",
+      "pixelAspectRatio": 1.0,
+      "purpose": "direct square viewport source",
+      "rendered": true,
+      "size": {
+        "height": 256,
+        "width": 256
+      },
+      "technicalOverlay": false
+    },
+    {
+      "cameraHash": "61ce13d05c5ab632213256450449924dae4f1c02585a57168189cfaf4019c4dd",
+      "fileName": "07_square_greyscale_256.png",
+      "pixelAspectRatio": 1.0,
+      "purpose": "same square camera greyscale source",
+      "rendered": true,
+      "size": {
+        "height": 256,
+        "width": 256
+      },
+      "technicalOverlay": false
+    },
+    {
+      "cameraHash": "61ce13d05c5ab632213256450449924dae4f1c02585a57168189cfaf4019c4dd",
+      "captureMethod": "256x256 SubViewport direct read; no crop; no stretch",
+      "fileName": "08_square_warm_256.png",
+      "pixelAspectRatio": 1.0,
+      "purpose": "direct square viewport source",
+      "rendered": true,
+      "size": {
+        "height": 256,
+        "width": 256
+      },
+      "technicalOverlay": false
+    },
+    {
+      "cameraHash": "61ce13d05c5ab632213256450449924dae4f1c02585a57168189cfaf4019c4dd",
+      "fileName": "08_square_warm_256.png",
+      "pixelAspectRatio": 1.0,
+      "purpose": "same square camera restrained warm source",
+      "rendered": true,
+      "size": {
+        "height": 256,
+        "width": 256
+      },
+      "technicalOverlay": false
+    },
+    {
+      "crop": false,
+      "displayAspectRatio": 1.0,
+      "fileName": "09_square_512_integer_neutral.png",
+      "nonUniformScale": false,
+      "purpose": "2x integer-scaled neutral square display proof",
+      "rendered": true,
+      "size": {
+        "height": 512,
+        "width": 512
+      },
+      "technicalOverlay": false
+    },
+    {
+      "camera": {
+        "position": "(-15.0, 8.4, 15.0)",
+        "projection": "orthographic",
+        "size": 25.0,
+        "target": "(0.0, 2.65, 0.0)"
+      },
+      "fileName": "10_debug_projected_bounds.png",
+      "purpose": "DEBUG_REVIEW projected barn bounds and margin proof",
+      "rendered": true,
+      "size": {
+        "height": 1009,
+        "width": 1920
+      },
+      "technicalOverlay": true
+    },
+    {
+      "camera": {
+        "position": "(-15.0, 8.4, 15.0)",
+        "projection": "orthographic",
+        "size": 25.0,
+        "target": "(0.0, 2.65, 0.0)"
+      },
+      "fileName": "11_debug_camera_state_identity.png",
+      "purpose": "DEBUG_REVIEW identical square camera state proof",
+      "rendered": true,
+      "size": {
+        "height": 1009,
+        "width": 1920
+      },
+      "technicalOverlay": true
+    },
+    {
+      "camera": {
+        "position": "(-15.0, 8.4, 15.0)",
+        "projection": "orthographic",
+        "size": 25.0,
+        "target": "(0.0, 2.65, 0.0)"
+      },
+      "fileName": "12_debug_source_board_hash.png",
+      "purpose": "DEBUG_REVIEW raw source to board hash proof",
+      "rendered": true,
+      "size": {
+        "height": 1009,
+        "width": 1920
+      },
+      "technicalOverlay": true
+    }
+  ],
+  "checkpoint": "v0.354",
+  "clipped256EvidenceCount": 0,
+  "completeWorkerCount": 2,
+  "contextualCameraMode": "three-quarter RTS",
+  "cropped256EvidenceCount": 0,
+  "detachedWorkerPartCount": 0,
+  "disassembledWorkerCount": 0,
+  "errors": [],
+  "exactTenFiles": true,
+  "exactlyEightPng": true,
+  "floatingFoundationGeometryCount": 0,
+  "foundationContactMethod": "engine directional shadow and ambient fill only; no artificial ground geometry",
+  "frozenRoofRepairHash": "0077e19143517e2850aee3bdb6ce9408d55bc7e2bfdc958d61ac1b141ab684f9",
+  "frozenV0350MaterialBaseline": true,
+  "frozenV0351Shutters": true,
+  "frozenV0352RoofRepair": true,
+  "frozenV0353TerrainContact": true,
+  "frozenV0353Workers": true,
+  "horizontalWorkerCount": 0,
+  "humanReviewRequired": true,
+  "minimumContextWorkerPixelHeight": 24,
+  "noDefaultRuntimeMutation": true,
+  "noGameplay": true,
+  "noVideo": true,
+  "offCentre256EvidenceCount": 0,
+  "outcome": "READY FOR HUMAN V0354 BARN FINAL EVIDENCE REVIEW",
+  "raw256SourceHash": "13a761a2b60658a0d261c89d9046b752f052a5e32924381075a4b24ca7c3d6a3",
+  "rawCaptureCount": 12,
+  "requiredRawNames": [
+    "01_accepted_barn_neutral_front_three_quarter.png",
+    "02_accepted_contextual_player.png",
+    "03_accepted_worker_integrity.png",
+    "04_accepted_natural_contact.png",
+    "05_accepted_exterior_roof.png",
+    "06_square_neutral_256.png",
+    "07_square_greyscale_256.png",
+    "08_square_warm_256.png",
+    "09_square_512_integer_neutral.png",
+    "10_debug_projected_bounds.png",
+    "11_debug_camera_state_identity.png",
+    "12_debug_source_board_hash.png"
+  ],
+  "reviewBoard256DisplayAspectRatio": 1.0,
+  "reviewBoard256DisplayDimensions": "512x512",
+  "reviewBoardDisplayed256SourceHash": "13a761a2b60658a0d261c89d9046b752f052a5e32924381075a4b24ca7c3d6a3",
+  "scenePath": "res://scenes/review/V0354BarnFinalEvidence.tscn",
+  "schemaVersion": 1,
+  "sourceOfFailedV0353Square": "artifacts/runtime/v0353/screenshots/14_true_256_pixel_source.png",
+  "squareCameraFailureDiagnosis": "v0.353 created an independent local SubViewport camera and reused wide-camera framing; its transform did not copy the accepted camera global transform in the shared World3D, leaving the barn off-centre and clipped. v0.354 copies global transform, uses KEEP_HEIGHT, and calculates square bounds.",
+  "squareGreyscaleCameraHash": "61ce13d05c5ab632213256450449924dae4f1c02585a57168189cfaf4019c4dd",
+  "squareNeutralCameraHash": "61ce13d05c5ab632213256450449924dae4f1c02585a57168189cfaf4019c4dd",
+  "squareWarmCameraHash": "61ce13d05c5ab632213256450449924dae4f1c02585a57168189cfaf4019c4dd",
+  "status": "PASS_V0354_BARN_FINAL_EVIDENCE_RUNTIME",
+  "stretched256EvidenceCount": 0,
+  "uprightWorkerCount": 2,
+  "visibleContactBlobCount": 0,
+  "visibleDecalBoundaryCount": 0,
+  "visibleElongatedStainCount": 0,
+  "visibleOvalStainCount": 0,
+  "visibleRectangularContactArtifactCount": 0,
+  "workerInstantiationMethod": "PackedScene.instantiate_once_per_worker",
+  "workerScenePath": "res://scenes/review/V0353CompleteBarrosanWorker.tscn"
+}
