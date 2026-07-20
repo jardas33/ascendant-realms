@@ -73,10 +73,20 @@ It verifies the frozen v0.353 files and v0.350 material hashes, the direct squar
 
 ## Validation evidence
 
-Local v0.354 capture and pack generation pass. The dedicated validator passes after the pack is generated. The full retained repository validation is run before commit and recorded in the final closeout.
+Local v0.354 capture and pack generation pass. The dedicated validator passes after the pack is generated. Full local validation passed before commit:
+
+- `npm run godot:validate:salto-v0354-barn-final-evidence`
+- `npm test` — 887 tests passed
+- `npm run build`
+- `npm run validate:content`
+- `npm run validate:art-intake`
+- `npm run validate:runtime-art-slots`
+- `npm run validate:artifact-retention`
+- `npm run godot:all`
+- `git diff --check`
 
 ## CI and final repo state
 
-CI evidence is recorded after the v0.354 commit is pushed and the exact commit SHA workflow completes successfully. The final closeout will report the exact commit, workflow run, and the required clean/synced `0 ahead / 0 behind` state.
+The implementation commit `c06f0d67dc6799c3b0518e46f3bff58ff678b890` was pushed to `codex/v0215-v0226-recovery`. GitHub Actions run `29781772706` (`CI Release Matrix Dry Run`, run 522) completed with `success` for that exact implementation SHA. The final documentation closeout push is validated separately before handoff. The working tree is kept clean and synchronized with origin at closeout.
 
 Human review remains required. v0.354 does not claim automatic gold approval or production approval.
