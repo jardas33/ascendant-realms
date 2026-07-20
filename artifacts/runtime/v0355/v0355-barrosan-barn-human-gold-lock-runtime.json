@@ -1,0 +1,134 @@
+{
+  "acceptedV0354Raw256SourceHash": "13a761a2b60658a0d261c89d9046b752f052a5e32924381075a4b24ca7c3d6a3",
+  "automatedVisualApproval": false,
+  "canonical256SourceHash": "13a761a2b60658a0d261c89d9046b752f052a5e32924381075a4b24ca7c3d6a3",
+  "canonicalCaptureScenePath": "res://scenes/review/V0355BarrosanBarnHumanGoldLock.tscn",
+  "canonicalMatchesAcceptedSource": true,
+  "canonicalResourcePaths": [
+    "res://scenes/gold/barrosan/BarrosanBarnGold.tscn",
+    "res://scripts/v0355_barrosan_barn_gold_authoring.gd"
+  ],
+  "canonicalScenePath": "res://scenes/gold/barrosan/BarrosanBarnGold.tscn",
+  "captures": [
+    {
+      "camera": {
+        "position": "(-15.0, 8.4, 15.0)",
+        "projection": "orthographic",
+        "size": 16.5,
+        "target": "(0.0, 2.65, 0.0)"
+      },
+      "fileName": "01_canonical_barn_neutral_front_three_quarter.png",
+      "purpose": "canonical passive barn neutral front three-quarter",
+      "rendered": true,
+      "size": {
+        "height": 1009,
+        "width": 1920
+      },
+      "technicalOverlay": false
+    },
+    {
+      "camera": {
+        "position": "(0.0, 7.0, 18.0)",
+        "projection": "orthographic",
+        "size": 15.0,
+        "target": "(0.0, 2.55, 0.0)"
+      },
+      "fileName": "02_canonical_barn_direct_front.png",
+      "purpose": "canonical passive barn direct front",
+      "rendered": true,
+      "size": {
+        "height": 1009,
+        "width": 1920
+      },
+      "technicalOverlay": false
+    },
+    {
+      "camera": {
+        "position": "(0.0, 7.0, -18.0)",
+        "projection": "orthographic",
+        "size": 15.0,
+        "target": "(0.0, 2.55, 0.0)"
+      },
+      "fileName": "03_canonical_barn_direct_rear.png",
+      "purpose": "canonical passive barn direct rear",
+      "rendered": true,
+      "size": {
+        "height": 1009,
+        "width": 1920
+      },
+      "technicalOverlay": false
+    },
+    {
+      "cameraHash": "61ce13d05c5ab632213256450449924dae4f1c02585a57168189cfaf4019c4dd",
+      "captureMethod": "direct 256x256 SubViewport; no crop; no stretch",
+      "fileName": "04_canonical_barn_square_256.png",
+      "pixelAspectRatio": 1.0,
+      "purpose": "fresh canonical 256x256 source in accepted v0.354 neutral world/camera",
+      "rendered": true,
+      "size": {
+        "height": 256,
+        "width": 256
+      },
+      "technicalOverlay": false
+    }
+  ],
+  "checkpoint": "v0.355",
+  "collisionIntegrated": false,
+  "defaultRuntimeIntegrated": false,
+  "deferredWork": [
+    "production/default integration",
+    "gameplay building registration",
+    "collision/navigation",
+    "animation",
+    "workers/props/vegetation integration"
+  ],
+  "errors": [],
+  "exactCanonical256Source": true,
+  "frozenRoofRepairHash": "0077e19143517e2850aee3bdb6ce9408d55bc7e2bfdc958d61ac1b141ab684f9",
+  "gameplayIntegrated": false,
+  "geometryHash": "frozen-v0.347-v0.352-runtime-bake",
+  "humanApprovalCheckpoint": "v0.354",
+  "humanApprovalCommit": "3e557032976075b06a20f45213d6949c68add314",
+  "humanApprovedAtCheckpoint": "v0.354",
+  "humanDecision": "V0.354 HUMAN-APPROVED — BARROSAN BARN VISUAL GOLD AND FINAL EVIDENCE CLOSEOUT ACCEPTED; ALL ACCEPTED LINEAGE FROZEN",
+  "lineage": {
+    "canonicalRegistration": "v0.355",
+    "finalEvidence": "v0.354",
+    "geometry": "v0.347",
+    "material": "v0.350",
+    "roof": "v0.352",
+    "shutters": "v0.351",
+    "workersAndNaturalContact": "v0.353"
+  },
+  "manifestHash": "pending-after-write",
+  "materialHash": "frozen-v0.350-material-baseline",
+  "materialPaths": [
+    "res://assets/v0350/v0350_traditional_slate_courses_albedo.png",
+    "res://assets/v0338/barrosan_house_02_material_gold_candidate_gold_candidate_rubble_albedo.png"
+  ],
+  "noGameplayInCanonicalScene": true,
+  "noLabelsInCanonicalScene": true,
+  "noLightsInCanonicalScene": true,
+  "noReviewCameraInCanonicalScene": true,
+  "noTerrainInCanonicalScene": true,
+  "noWorkersInCanonicalScene": true,
+  "outcome": "READY FOR HUMAN V0355 BARROSAN BARN GOLD-LOCK RECORD REVIEW",
+  "passiveVisualOnly": true,
+  "productionIntegrated": false,
+  "prototypeOptIn": true,
+  "rawCaptureCount": 4,
+  "requiredRawNames": [
+    "01_canonical_barn_neutral_front_three_quarter.png",
+    "02_canonical_barn_direct_front.png",
+    "03_canonical_barn_direct_rear.png",
+    "04_canonical_barn_square_256.png"
+  ],
+  "sceneHash": "ffaf4c4eeb7c0dabc3a483b0137ad2d92d2b2f6dd496b84b86584ae4a7e86a4a",
+  "schemaVersion": 1,
+  "sourceBlend": "art-source/blender/v0350/barn_final_material_harmony.blend",
+  "sourceGLB": "res://assets/v0350/barn_final_material_harmony.glb",
+  "stableGameplayId": null,
+  "status": "PASS_V0355_BARROSAN_BARN_HUMAN_GOLD_LOCK_RUNTIME",
+  "textureHash": "frozen-v0.350-texture-baseline",
+  "visualGold": true
+}
