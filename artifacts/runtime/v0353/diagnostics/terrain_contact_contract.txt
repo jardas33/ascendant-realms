@@ -1,0 +1,3 @@
+engine directional shadow and ambient fill only
+visible artificial contact geometry: 0
+visible decal boundary: 0

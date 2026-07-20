@@ -1,0 +1,37 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="Texture2D" path="res://assets/v0314/h3/worker_directional_animation_atlas.png" id="1_worker_atlas"]
+
+[sub_resource type="QuadMesh" id="Quad_worker"]
+size = Vector2(0.9, 1.7)
+
+[sub_resource type="CylinderMesh" id="Cylinder_contact"]
+top_radius = 0.28
+bottom_radius = 0.31
+height = 0.018
+radial_segments = 24
+
+[sub_resource type="StandardMaterial3D" id="Material_contact"]
+resource_name = "V0353_Engine_Shadow_Only"
+albedo_color = Color(0.06, 0.07, 0.06, 0.2)
+transparency = 1
+shading_mode = 0
+cull_mode = 2
+
+[node name="V0353CompleteBarrosanWorker" type="Node3D"]
+metadata/_worker_scene_contract = "one complete accepted atlas-cell worker; scene owns local transforms"
+metadata/_worker_source = "res://assets/v0314/h3/worker_directional_animation_atlas.png"
+metadata/_worker_local_transform_preserved = true
+metadata/_upright_vector = Vector3(0, 1, 0)
+metadata/_disassembled = false
+
+[node name="WorkerBillboard" type="MeshInstance3D" parent="."]
+mesh = SubResource("Quad_worker")
+position = Vector3(0, 0.86, 0)
+cast_shadow = 0
+
+[node name="WorkerContactShadow" type="MeshInstance3D" parent="."]
+mesh = SubResource("Cylinder_contact")
+material_override = SubResource("Material_contact")
+position = Vector3(0, 0.02, 0)
+cast_shadow = 0
