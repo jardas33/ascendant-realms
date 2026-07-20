@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource path="res://scripts/v0351_barn_gold_closeout.gd" type="Script" id="1_v0351"]
+
+[node name="V0351BarnGoldCloseout" type="Node3D"]
+script = ExtResource("1_v0351")
