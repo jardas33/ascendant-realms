@@ -1,0 +1,52 @@
+﻿{
+    "checkpoint":  "v0.352",
+    "outcome":  "READY FOR HUMAN V0352 BARN FINAL-GOLD REVIEW",
+    "automatedVisualApproval":  false,
+    "humanReviewRequired":  true,
+    "frozenV0351Shutters":  true,
+    "frozenV0350MaterialBaseline":  true,
+    "oldRoofGeometryHash":  "0b4944d8a15006664dad84cec5e8b41546497588d14194d5b2e49621071e209c",
+    "newRoofGeometryHash":  "0077e19143517e2850aee3bdb6ce9408d55bc7e2bfdc958d61ac1b141ab684f9",
+    "roofRepairReason":  "closed two-slope underside inside frozen eave/ridge bounds; ordinary backface culling retained",
+    "roofExteriorBoundsBefore":  {
+                                     "maxX":  7.87,
+                                     "maxY":  5.88542,
+                                     "maxZ":  5.345,
+                                     "minX":  -7.87,
+                                     "minY":  3.94,
+                                     "minZ":  -5.345
+                                 },
+    "roofExteriorBoundsAfter":  {
+                                    "maxX":  7.87,
+                                    "maxY":  5.88542,
+                                    "maxZ":  5.345,
+                                    "minX":  -7.87,
+                                    "minY":  3.94,
+                                    "minZ":  -5.345
+                                },
+    "roofExteriorOrbitViewCount":  9,
+    "missingRoofSlopeCount":  0,
+    "exteriorCutawayCount":  0,
+    "roofInteriorExposureCount":  0,
+    "upperOpeningExteriorDimensions":  {
+                                           "height":  0.92,
+                                           "width":  3.32
+                                       },
+    "shutterLeafCount":  2,
+    "shutterPrimaryBoardOrientation":  "vertical",
+    "lowerUpperAreaRatio":  3.64,
+    "visibleRectangularContactArtifactCount":  0,
+    "visibleDecalBoundaryCount":  0,
+    "floatingFoundationGeometryCount":  0,
+    "foundationContactMethod":  "five rounded transparent contact-shadow blobs plus irregular rounded doorway soil response; no rectangular plane",
+    "contextualCameraMode":  "three-quarter RTS",
+    "completeWorkerCount":  2,
+    "minimumContextWorkerPixelHeight":  20,
+    "actual256SourceDimensions":  "256x256",
+    "rawCaptureCount":  20,
+    "exactTenFiles":  true,
+    "exactlyEightPng":  true,
+    "noVideo":  true,
+    "noDefaultRuntimeIntegration":  true,
+    "noGameplay":  true
+}
