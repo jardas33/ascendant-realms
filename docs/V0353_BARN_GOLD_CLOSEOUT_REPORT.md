@@ -81,7 +81,10 @@ The dedicated v0.353 validator passed after the real Godot capture and exact pac
 
 ## CI and final state
 
-The exact pushed commit and GitHub Actions run are recorded in the final closeout response and in the final revision of this report. The checkpoint is not considered closed until the branch is clean and synced with origin at 0 ahead / 0 behind.
+- First v0.353 implementation commit: `295f9f14371061270e39177e86d31b8994e4f0a6`
+- Exact-SHA GitHub Actions run for that commit: `29773632455` — success.
+- The final report revision is pushed after recording that evidence; its exact-SHA run is confirmed in the closeout response.
+- Final branch requirement: clean and synced with origin at 0 ahead / 0 behind.
 
 ## Human review status
 
