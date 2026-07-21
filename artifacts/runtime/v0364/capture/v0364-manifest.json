@@ -1,0 +1,166 @@
+{
+  "acceptedBarnRootTransform": {
+    "x": 4.0,
+    "y": 0.180000007152557,
+    "z": -1.0
+  },
+  "benchmarkRerunCount": 0,
+  "canonicalBarnMutationCount": 0,
+  "captures": [
+    {
+      "camera": "orthographic wide",
+      "file": "original.png",
+      "purpose": "unmodified accepted v0.363 opt-in player presentation",
+      "rendered": true,
+      "sha256": "",
+      "source": "Godot viewport"
+    },
+    {
+      "camera": "orthographic wide",
+      "file": "callouts.png",
+      "purpose": "clean source view used by documentary callout board",
+      "rendered": true,
+      "sha256": "",
+      "source": "Godot viewport"
+    },
+    {
+      "file": "house-a.png",
+      "originalUntouched": true,
+      "previewRoot": "V0364_REVIEW_ONLY_House02_Preview_Hidden_LOD0_Granite",
+      "purpose": "A House02 ground-front candidate; parent mesh diagnostic; review-only duplicate visibility test",
+      "rendered": true,
+      "sha256": "",
+      "source": "Godot viewport",
+      "toggledNode": "V0358_House02_Shared_Baseline_Unmodified/LOD0_Granite"
+    },
+    {
+      "file": "house-b.png",
+      "originalUntouched": true,
+      "previewRoot": "V0364_REVIEW_ONLY_House02_Preview_Hidden_LOD0_Weathered_Timber",
+      "purpose": "B House02 upper timber candidate; exact authored node; preview-only hidden duplicate",
+      "rendered": true,
+      "sha256": "",
+      "source": "Godot viewport",
+      "toggledNode": "V0358_House02_Shared_Baseline_Unmodified/LOD0_Weathered_Timber"
+    },
+    {
+      "file": "barn-c.png",
+      "merged": true,
+      "nodePath": "/V0358_Barrosan_Barn_Gold_OptIn_Single_Instance/V0347_Barn_Rendered_Geometry_Truth",
+      "purpose": "C Barn front-right timber; merged parent evidence; no independent toggle fabricated",
+      "rendered": true,
+      "sha256": "",
+      "source": "Godot viewport"
+    },
+    {
+      "camera": "orthographic wide",
+      "file": "combined-original.png",
+      "purpose": "accepted original side of combined preview",
+      "rendered": true,
+      "sha256": "",
+      "source": "Godot viewport"
+    },
+    {
+      "file": "combined-preview.png",
+      "previewOnly": true,
+      "purpose": "original left and review-only hidden-candidate preview right; merged Barn unchanged",
+      "rendered": true,
+      "sha256": "",
+      "source": "Godot viewport",
+      "toggledNodes": [
+        "V0358_House02_Shared_Baseline_Unmodified/LOD0_Granite",
+        "V0358_House02_Shared_Baseline_Unmodified/LOD0_Weathered_Timber"
+      ]
+    },
+    {
+      "camera": "orthographic wide",
+      "file": "r0r1r2.png",
+      "purpose": "retained v0.363 R0/R1/R2 source evidence context",
+      "rendered": true,
+      "sha256": "",
+      "source": "Godot viewport"
+    }
+  ],
+  "checkpoint": "v0.364",
+  "collisionMutationCount": 0,
+  "combinedPreviewCreated": true,
+  "combinedPreviewReviewOnly": true,
+  "combinedPreviewRuntimeMutationCount": 0,
+  "defaultRuntimeMutationCount": 0,
+  "gameplayMutationCount": 0,
+  "geometryMutationCount": 0,
+  "house02SourceMutationCount": 0,
+  "humanReviewStop": true,
+  "materialMutationCount": 0,
+  "navigationMutationCount": 0,
+  "objectAFound": true,
+  "objectAIndependentToggle": false,
+  "objectAMergedFinding": "MERGED WITH PARENT ASSET — FUTURE ASSET REWORK REQUIRED",
+  "objectANodePaths": [
+    "/V0358_House02_Shared_Baseline_Unmodified/LOD0_Granite"
+  ],
+  "objectAOwnerClassification": "House02 canonical active LOD0 parent render mesh; purpose not established from source",
+  "objectAPresentStates": [
+    "R0",
+    "R1",
+    "R2"
+  ],
+  "objectARecommendation": "REWORK ASSET LATER",
+  "objectBFound": true,
+  "objectBIndependentToggle": true,
+  "objectBNodePaths": [
+    "/V0358_House02_Shared_Baseline_Unmodified/LOD0_Weathered_Timber"
+  ],
+  "objectBOwnerClassification": "House02 canonical active LOD0 mesh component; purpose not established from source",
+  "objectBPresentStates": [
+    "R0",
+    "R1",
+    "R2"
+  ],
+  "objectBRecommendation": "INSUFFICIENT EVIDENCE",
+  "objectCFound": true,
+  "objectCIndependentToggle": false,
+  "objectCMergedFinding": "MERGED WITH PARENT ASSET — FUTURE ASSET REWORK REQUIRED",
+  "objectCNodePaths": [
+    "/V0358_Barrosan_Barn_Gold_OptIn_Single_Instance/V0347_Barn_Rendered_Geometry_Truth"
+  ],
+  "objectCOwnerClassification": "Canonical Barn single merged render mesh",
+  "objectCPresentStates": [
+    "R0",
+    "R1",
+    "R2"
+  ],
+  "objectCRecommendation": "REWORK ASSET LATER",
+  "placementMutationCount": 0,
+  "r0BarnRootCount": 0,
+  "r0R2RawCaptureMatch": true,
+  "r0R2StateSignatureMatch": true,
+  "r1BarnRootCount": 1,
+  "r1DuplicateBarnRootCount": 0,
+  "r2BarnRootCount": 0,
+  "requiredWorkerGap": 1.875,
+  "retainedBarnNodeCountAfterRollback": 0,
+  "roofEaveGap": 2.51,
+  "saveMutationCount": 0,
+  "scenePath": "res://scenes/review/V0364BarrosanForegroundPropProvenance.tscn",
+  "schemaVersion": 1,
+  "sourceAuthority": {
+    "ledgerPath": "D:/Code for projects/WB game like/ascendant-realms-v0223-recovery/docs/gold/V0355_BARROSAN_BARN_ACCEPTANCE_LEDGER.md",
+    "manifestPath": "D:/Code for projects/WB game like/ascendant-realms-v0223-recovery/docs/gold/V0355_BARROSAN_BARN_GOLD_MANIFEST.json",
+    "observedSourceHash": "13a761a2b60658a0d261c89d9046b752f052a5e32924381075a4b24ca7c3d6a3",
+    "roofHash": "0077e19143517e2850aee3bdb6ce9408d55bc7e2bfdc958d61ac1b141ab684f9",
+    "slotId": "barrosan_barn_gold_v0355",
+    "sourcePath": "D:/Code for projects/WB game like/ascendant-realms-v0223-recovery/artifacts/runtime/v0355/screenshots/04_canonical_barn_square_256.png",
+    "valid": true
+  },
+  "sourceHashes": {
+    "canonicalBarnAcceptedSource": "13a761a2b60658a0d261c89d9046b752f052a5e32924381075a4b24ca7c3d6a3",
+    "frozenRoof": "0077e19143517e2850aee3bdb6ce9408d55bc7e2bfdc958d61ac1b141ab684f9",
+    "house02Glb": ""
+  },
+  "stableIdMutationCount": 0,
+  "status": "PASS_PROVENANCE_AND_PREVIEW",
+  "structuralGap": 2.48,
+  "textureMutationCount": 0,
+  "transformMutationCount": 0
+}
