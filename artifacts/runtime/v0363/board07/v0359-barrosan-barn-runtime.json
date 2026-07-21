@@ -1,0 +1,156 @@
+{
+  "addedNodePaths": [
+    "V0358_Barrosan_Barn_Gold_OptIn_Single_Instance",
+    "V0358_Barrosan_Barn_Gold_OptIn_Single_Instance/V0346_House02_Family_Barn_Silhouette_Roof_Pitch",
+    "V0358_Barrosan_Barn_Gold_OptIn_Single_Instance/V0347_Barn_Rendered_Geometry_Truth",
+    "V0358_Barrosan_Barn_Gold_OptIn_Single_Instance/V0351_Upper_Loading_Shutters_Two_Closed_Leaves",
+    "V0358_Barrosan_Barn_Gold_OptIn_Single_Instance/V0351_Upper_Loading_Shutters_Two_Closed_Leaves/V0351_Shutter_Central_Meeting_Seam",
+    "V0358_Barrosan_Barn_Gold_OptIn_Single_Instance/V0351_Upper_Loading_Shutters_Two_Closed_Leaves/V0351_Shutter_Left_Closed_Timber_Leaf",
+    "V0358_Barrosan_Barn_Gold_OptIn_Single_Instance/V0351_Upper_Loading_Shutters_Two_Closed_Leaves/V0351_Shutter_Left_Single_Iron_Strap",
+    "V0358_Barrosan_Barn_Gold_OptIn_Single_Instance/V0351_Upper_Loading_Shutters_Two_Closed_Leaves/V0351_Shutter_Practical_Timber_Lintel",
+    "V0358_Barrosan_Barn_Gold_OptIn_Single_Instance/V0351_Upper_Loading_Shutters_Two_Closed_Leaves/V0351_Shutter_Practical_Timber_Sill",
+    "V0358_Barrosan_Barn_Gold_OptIn_Single_Instance/V0351_Upper_Loading_Shutters_Two_Closed_Leaves/V0351_Shutter_Right_Closed_Timber_Leaf",
+    "V0358_Barrosan_Barn_Gold_OptIn_Single_Instance/V0351_Upper_Loading_Shutters_Two_Closed_Leaves/V0351_Shutter_Right_Single_Iron_Strap",
+    "V0358_Barrosan_Barn_Gold_OptIn_Single_Instance/V0351_Upper_Loading_Shutters_Two_Closed_Leaves/V0351_Shutter_Vertical_Board_Seam_-0_48",
+    "V0358_Barrosan_Barn_Gold_OptIn_Single_Instance/V0351_Upper_Loading_Shutters_Two_Closed_Leaves/V0351_Shutter_Vertical_Board_Seam_-0_88",
+    "V0358_Barrosan_Barn_Gold_OptIn_Single_Instance/V0351_Upper_Loading_Shutters_Two_Closed_Leaves/V0351_Shutter_Vertical_Board_Seam_-1_27",
+    "V0358_Barrosan_Barn_Gold_OptIn_Single_Instance/V0351_Upper_Loading_Shutters_Two_Closed_Leaves/V0351_Shutter_Vertical_Board_Seam_0_48",
+    "V0358_Barrosan_Barn_Gold_OptIn_Single_Instance/V0351_Upper_Loading_Shutters_Two_Closed_Leaves/V0351_Shutter_Vertical_Board_Seam_0_88",
+    "V0358_Barrosan_Barn_Gold_OptIn_Single_Instance/V0351_Upper_Loading_Shutters_Two_Closed_Leaves/V0351_Shutter_Vertical_Board_Seam_1_27",
+    "V0358_Barrosan_Barn_Gold_OptIn_Single_Instance/V0352_Roof_Visibility_Repair_Closed_Underside_Only",
+    "V0358_Barrosan_Barn_Gold_OptIn_Single_Instance/V0352_Roof_Visibility_Repair_Closed_Underside_Only/V0352_Roof_Left_Closed_Exterior_Slope",
+    "V0358_Barrosan_Barn_Gold_OptIn_Single_Instance/V0352_Roof_Visibility_Repair_Closed_Underside_Only/V0352_Roof_Right_Closed_Exterior_Slope",
+    "V0358_Barrosan_Barn_Gold_OptIn_Single_Instance/V0357_Terrain_Contact_Engine_Shadow_Only"
+  ],
+  "barnInstanceCount": 0,
+  "baselineNodeSignature": "9bcd99953af16716425b157cdfbfc9630ca0bfe60ed1bccea489f61639414af4",
+  "baselineRollbackStateMatch": true,
+  "browserMutationCount": 0,
+  "canonicalAssetMutationCount": 0,
+  "captures": [
+    {
+      "barnRootCount": 0,
+      "cameraPosition": {
+        "x": -26.0,
+        "y": 16.0,
+        "z": 30.0
+      },
+      "cameraRotation": {
+        "x": -20.9108734130859,
+        "y": -46.548152923584,
+        "z": 0.0
+      },
+      "cameraTarget": {
+        "x": 2.5,
+        "y": 1.0,
+        "z": 3.0
+      },
+      "frameNumberAfterCameraTransition": 7,
+      "house02Count": 1,
+      "orthographicSize": 36.0,
+      "panelId": "v0363-board07_r0",
+      "projectionType": "orthographic",
+      "rawCapturePath": "D:/Code for projects/WB game like/ascendant-realms-v0223-recovery/artifacts/runtime/v0363/board07/screenshots/r0.png",
+      "rawCaptureSha256": "dca0980d8a3f1e3e2c12a7db72bccf212df68986289f5ae6ac55ca5b72f2143d",
+      "sceneStateSignature": "9bcd99953af16716425b157cdfbfc9630ca0bfe60ed1bccea489f61639414af4",
+      "semanticPurpose": "R0 deterministic baseline; Barn count 0",
+      "settleFrames": 8,
+      "timestampSequence": 1,
+      "viewportHeight": 1009,
+      "viewportWidth": 1920
+    },
+    {
+      "barnRootCount": 1,
+      "cameraPosition": {
+        "x": -26.0,
+        "y": 16.0,
+        "z": 30.0
+      },
+      "cameraRotation": {
+        "x": -20.9108734130859,
+        "y": -46.548152923584,
+        "z": 0.0
+      },
+      "cameraTarget": {
+        "x": 2.5,
+        "y": 1.0,
+        "z": 3.0
+      },
+      "frameNumberAfterCameraTransition": 15,
+      "house02Count": 1,
+      "orthographicSize": 36.0,
+      "panelId": "v0363-board07_r1",
+      "projectionType": "orthographic",
+      "rawCapturePath": "D:/Code for projects/WB game like/ascendant-realms-v0223-recovery/artifacts/runtime/v0363/board07/screenshots/r1.png",
+      "rawCaptureSha256": "159b260b5f784340bc3c8b88e14a3bcea19fa13736617a157d68e1ec78e295ad",
+      "sceneStateSignature": "b8d27628fea08d307300490685546f348ec4394f819490dcd094a5d6090b24f7",
+      "semanticPurpose": "R1 canonical Barn loaded once; Barn count 1",
+      "settleFrames": 8,
+      "timestampSequence": 2,
+      "viewportHeight": 1009,
+      "viewportWidth": 1920
+    },
+    {
+      "barnRootCount": 0,
+      "cameraPosition": {
+        "x": -26.0,
+        "y": 16.0,
+        "z": 30.0
+      },
+      "cameraRotation": {
+        "x": -20.9108734130859,
+        "y": -46.548152923584,
+        "z": 0.0
+      },
+      "cameraTarget": {
+        "x": 2.5,
+        "y": 1.0,
+        "z": 3.0
+      },
+      "frameNumberAfterCameraTransition": 24,
+      "house02Count": 1,
+      "orthographicSize": 36.0,
+      "panelId": "v0363-board07_r2",
+      "projectionType": "orthographic",
+      "rawCapturePath": "D:/Code for projects/WB game like/ascendant-realms-v0223-recovery/artifacts/runtime/v0363/board07/screenshots/r2.png",
+      "rawCaptureSha256": "dca0980d8a3f1e3e2c12a7db72bccf212df68986289f5ae6ac55ca5b72f2143d",
+      "sceneStateSignature": "9bcd99953af16716425b157cdfbfc9630ca0bfe60ed1bccea489f61639414af4",
+      "semanticPurpose": "R2 Barn removed; rollback complete",
+      "settleFrames": 8,
+      "timestampSequence": 3,
+      "viewportHeight": 1009,
+      "viewportWidth": 1920
+    },
+    {
+      "rollbackR0Hash": "dca0980d8a3f1e3e2c12a7db72bccf212df68986289f5ae6ac55ca5b72f2143d",
+      "rollbackR0R2PixelMatch": true,
+      "rollbackR0StateSignature": "9bcd99953af16716425b157cdfbfc9630ca0bfe60ed1bccea489f61639414af4",
+      "rollbackR1Hash": "159b260b5f784340bc3c8b88e14a3bcea19fa13736617a157d68e1ec78e295ad",
+      "rollbackR2Hash": "dca0980d8a3f1e3e2c12a7db72bccf212df68986289f5ae6ac55ca5b72f2143d",
+      "rollbackR2StateSignature": "9bcd99953af16716425b157cdfbfc9630ca0bfe60ed1bccea489f61639414af4"
+    }
+  ],
+  "changedNonBarnNodeCount": 0,
+  "checkpoint": "v0.359",
+  "defaultRuntimeMutationCount": 0,
+  "duplicateInstanceCount": 0,
+  "failureCode": "",
+  "fallbackAssetUsed": false,
+  "gameplayMutationCount": 0,
+  "humanDiagnosticsReadable": false,
+  "loadAttempted": true,
+  "loadSucceeded": true,
+  "optInNodeSignature": "9bcd99953af16716425b157cdfbfc9630ca0bfe60ed1bccea489f61639414af4",
+  "removedNodePaths": [],
+  "retainedBarnNodeCount": 0,
+  "rollbackClean": true,
+  "rollbackNodeSignature": "9bcd99953af16716425b157cdfbfc9630ca0bfe60ed1bccea489f61639414af4",
+  "roofHashValid": false,
+  "runtimeContinued": true,
+  "saveMutationCount": 0,
+  "scenario": "v0363-board07",
+  "schemaVersion": 1,
+  "sourceHashValid": false,
+  "stableIdMutationCount": 0,
+  "statusDetail": "ROLLED_BACK_CLEAN"
+}
