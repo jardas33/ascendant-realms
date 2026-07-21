@@ -88,8 +88,11 @@ check(packFiles.filter((file) => file.toLowerCase().endsWith('.png')).length ===
 check(!packFiles.some((file) => /\.mp4$|\.webm$|\.mov$/i.test(file)), 'v0.355 pack contains video');
 for (const file of packFiles.filter((file) => file.endsWith('.png'))) check(fs.statSync(rel(`${packDir}/${file}`)).size > 1024, `review board is empty: ${file}`);
 const summary = exists(`${packDir}/compact-evidence-summary.json`) ? json(`${packDir}/compact-evidence-summary.json`) : {};
-for (const [key,value] of Object.entries({checkpoint:'v0.355',outcome:'READY FOR HUMAN V0355 BARROSAN BARN GOLD-LOCK RECORD REVIEW',visualGold:true,productionIntegrated:false,defaultRuntimeIntegrated:false,gameplayIntegrated:false,canonicalMatchesAcceptedSource:true,exactEightFiles:true,exactlySixPng:true,noVideo:true,automatedVisualApproval:false})) check(summary[key] === value, `compact summary field invalid: ${key}`);
-check(JSON.stringify(summary.mutationCounts) === JSON.stringify({ gameplay:0, defaultRuntime:0, economy:0, resources:0, stableIds:0 }), 'compact summary mutation counts are not zero');
+const repairedSummary = summary.checkpoint === 'v0.356' && summary.outcome === 'READY FOR HUMAN V0356 BARROSAN BARN RECORD-CLOSEOUT REVIEW';
+const legacySummary = summary.checkpoint === 'v0.355' && summary.outcome === 'READY FOR HUMAN V0355 BARROSAN BARN GOLD-LOCK RECORD REVIEW';
+check(repairedSummary || legacySummary, 'compact summary checkpoint/outcome invalid');
+for (const [key,value] of Object.entries({visualGold:true,productionIntegrated:false,defaultRuntimeIntegrated:false,gameplayIntegrated:false,canonicalMatchesAcceptedSource:true,exactEightFiles:true,exactlySixPng:true,noVideo:true,automatedVisualApproval:false})) check(summary[key] === value, `compact summary field invalid: ${key}`);
+check((summary.mutationCounts && JSON.stringify(summary.mutationCounts) === JSON.stringify({ gameplay:0, defaultRuntime:0, economy:0, resources:0, stableIds:0 })) || (summary.geometryMutationCount === 0 && summary.materialMutationCount === 0 && summary.textureMutationCount === 0 && summary.transformMutationCount === 0 && summary.gameplayMutationCount === 0 && summary.defaultRuntimeMutationCount === 0), 'compact summary mutation counts are not zero');
 
 if (failures.length) { console.error('FAIL_V0355_BARROSAN_BARN_HUMAN_GOLD_LOCK_VALIDATION'); for (const failure of failures) console.error(`- ${failure}`); process.exit(1); }
 console.log('PASS_V0355_BARROSAN_BARN_HUMAN_GOLD_LOCK_VALIDATION');

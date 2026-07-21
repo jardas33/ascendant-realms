@@ -173,6 +173,8 @@
     "godot:capture:salto-v0355-barrosan-barn-human-gold-lock": "powershell -NoProfile -ExecutionPolicy Bypass -File tools/godot/captureGodotV0355BarrosanBarnHumanGoldLockWindows.ps1",
     "godot:pack:salto-v0355-barrosan-barn-human-gold-lock": "powershell -NoProfile -ExecutionPolicy Bypass -File tools/godot/buildV0355BarrosanBarnHumanGoldLockPack.ps1",
     "godot:validate:salto-v0355-barrosan-barn-human-gold-lock": "node tools/godot/saltoV0355BarrosanBarnHumanGoldLockTool.mjs validate",
+    "godot:repair:salto-v0356-barrosan-barn-gold-record-closeout": "powershell -NoProfile -ExecutionPolicy Bypass -File tools/godot/repairV0356BarrosanBarnGoldRecordWindows.ps1",
+    "godot:validate:salto-v0356-barrosan-barn-gold-record-closeout": "node tools/godot/saltoV0356BarrosanBarnGoldRecordCloseoutTool.mjs validate",
     "godot:capture:player-slice": "powershell -NoProfile -ExecutionPolicy Bypass -File tools/godot/captureGodotPlayerSliceWindows.ps1",
     "godot:capture:salto-worker-art-experiment": "powershell -NoProfile -ExecutionPolicy Bypass -File tools/godot/captureGodotSaltoWorkerArtExperimentWindows.ps1",
     "godot:capture:salto-worker-barracks-art-experiment": "powershell -NoProfile -ExecutionPolicy Bypass -File tools/godot/captureGodotSaltoWorkerBarracksArtExperimentWindows.ps1",
