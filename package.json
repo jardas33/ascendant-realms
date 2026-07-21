@@ -770,6 +770,8 @@
     "godot:hybrid-mixed-combat:audit": "powershell -NoProfile -ExecutionPolicy Bypass -File tools/godot/runGodotHybridMixedCombatReadabilityStressAudit.ps1",
     "godot:hybrid-mixed-combat:benchmark:headed": "powershell -NoProfile -ExecutionPolicy Bypass -File tools/godot/runGodotHybridMixedCombatReadabilityStressBenchmarkWindows.ps1",
     "godot:hybrid-mixed-combat:capture": "powershell -NoProfile -ExecutionPolicy Bypass -File tools/godot/captureGodotHybridMixedCombatReadabilityStressWindows.ps1",
+    "godot:pack:salto-v0360-barrosan-barn-evidence-pack-truth-closeout": "powershell -NoProfile -ExecutionPolicy Bypass -File tools/godot/buildV0360BarrosanBarnEvidencePackTruthCloseoutPack.ps1",
+    "godot:validate:salto-v0360-barrosan-barn-evidence-pack-truth-closeout": "node tools/godot/saltoV0360BarrosanBarnEvidencePackTruthCloseoutTool.mjs validate",
     "godot:all": "powershell -NoProfile -ExecutionPolicy Bypass -File tools/godot/runGodotAll.ps1",
     "godot:fresh-checkout:validate": "powershell -NoProfile -ExecutionPolicy Bypass -File tools/godot/validateGodotFreshCheckout.ps1",
     "godot:ci-style:windows": "powershell -NoProfile -ExecutionPolicy Bypass -File tools/godot/runGodotCiStyleWindows.ps1",
