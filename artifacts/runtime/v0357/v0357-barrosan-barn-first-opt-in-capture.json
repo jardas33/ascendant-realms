@@ -1,0 +1,168 @@
+﻿{
+    "schemaVersion":  1,
+    "checkpoint":  "v0.357",
+    "status":  "PASS_V0357_BARROSAN_BARN_FIRST_OPT_IN_CAPTURE",
+    "slotId":  "barrosan_barn_gold_v0355",
+    "canonicalScenePath":  "desktop-spikes/godot-salto/scenes/gold/barrosan/BarrosanBarnGold.tscn",
+    "optInOnly":  true,
+    "defaultRuntimeIntegrated":  false,
+    "productionIntegrated":  false,
+    "gameplayIntegrated":  false,
+    "browserIntegrated":  false,
+    "defaultMedianFps":  1,
+    "optInMedianFps":  1,
+    "medianFpsRatio":  1,
+    "defaultP95FrameTimeMs":  1000,
+    "optInP95FrameTimeMs":  1000,
+    "p95FrameTimeRatio":  1,
+    "gameplayMutationCount":  0,
+    "defaultRuntimeMutationCount":  0,
+    "canonicalAssetMutationCount":  0,
+    "geometryMutationCount":  0,
+    "materialMutationCount":  0,
+    "textureMutationCount":  0,
+    "canonicalTransformMutationCount":  0,
+    "validOptInLoadedOnce":  true,
+    "missingSceneFailClosed":  true,
+    "hashMismatchFailClosed":  true,
+    "invalidAuthorityFailClosed":  true,
+    "unknownSlotRejected":  true,
+    "rollbackClean":  true,
+    "duplicateInstanceCount":  0,
+    "scenarios":  [
+                      {
+                          "id":  "default-off",
+                          "expected":  "OFF_DEFAULT_NO_BARN_LOAD",
+                          "status":  "OFF_DEFAULT_NO_BARN_LOAD",
+                          "exitCode":  null,
+                          "screenshotCount":  1,
+                          "screenshots":  [
+                                              "default_off.png"
+                                          ],
+                          "runtimeManifest":  "artifacts/runtime/v0357/default-off/v0357-barrosan-barn-runtime.json"
+                      },
+                      {
+                          "id":  "opt-in-front",
+                          "expected":  "LOADED_ONCE",
+                          "status":  "LOADED_ONCE",
+                          "exitCode":  null,
+                          "screenshotCount":  1,
+                          "screenshots":  [
+                                              "opt_in_front.png"
+                                          ],
+                          "runtimeManifest":  "artifacts/runtime/v0357/opt-in-front/v0357-barrosan-barn-runtime.json"
+                      },
+                      {
+                          "id":  "opt-in-rts",
+                          "expected":  "LOADED_ONCE",
+                          "status":  "LOADED_ONCE",
+                          "exitCode":  null,
+                          "screenshotCount":  1,
+                          "screenshots":  [
+                                              "opt_in_rts.png"
+                                          ],
+                          "runtimeManifest":  "artifacts/runtime/v0357/opt-in-rts/v0357-barrosan-barn-runtime.json"
+                      },
+                      {
+                          "id":  "opt-in-contact",
+                          "expected":  "LOADED_ONCE",
+                          "status":  "LOADED_ONCE",
+                          "exitCode":  null,
+                          "screenshotCount":  1,
+                          "screenshots":  [
+                                              "opt_in_contact.png"
+                                          ],
+                          "runtimeManifest":  "artifacts/runtime/v0357/opt-in-contact/v0357-barrosan-barn-runtime.json"
+                      },
+                      {
+                          "id":  "opt-in-rear",
+                          "expected":  "LOADED_ONCE",
+                          "status":  "LOADED_ONCE",
+                          "exitCode":  null,
+                          "screenshotCount":  1,
+                          "screenshots":  [
+                                              "opt_in_rear.png"
+                                          ],
+                          "runtimeManifest":  "artifacts/runtime/v0357/opt-in-rear/v0357-barrosan-barn-runtime.json"
+                      },
+                      {
+                          "id":  "opt-in-roof",
+                          "expected":  "LOADED_ONCE",
+                          "status":  "LOADED_ONCE",
+                          "exitCode":  null,
+                          "screenshotCount":  1,
+                          "screenshots":  [
+                                              "opt_in_roof.png"
+                                          ],
+                          "runtimeManifest":  "artifacts/runtime/v0357/opt-in-roof/v0357-barrosan-barn-runtime.json"
+                      },
+                      {
+                          "id":  "debug-review",
+                          "expected":  "LOADED_ONCE",
+                          "status":  "LOADED_ONCE",
+                          "exitCode":  null,
+                          "screenshotCount":  1,
+                          "screenshots":  [
+                                              "debug_review.png"
+                                          ],
+                          "runtimeManifest":  "artifacts/runtime/v0357/debug-review/v0357-barrosan-barn-runtime.json"
+                      },
+                      {
+                          "id":  "rollback",
+                          "expected":  "ROLLED_BACK_CLEAN",
+                          "status":  "ROLLED_BACK_CLEAN",
+                          "exitCode":  null,
+                          "screenshotCount":  1,
+                          "screenshots":  [
+                                              "rollback.png"
+                                          ],
+                          "runtimeManifest":  "artifacts/runtime/v0357/rollback/v0357-barrosan-barn-runtime.json"
+                      },
+                      {
+                          "id":  "missing-scene-fail-closed",
+                          "expected":  "FAIL_CLOSED_MISSING_SCENE",
+                          "status":  "FAIL_CLOSED_MISSING_SCENE",
+                          "exitCode":  null,
+                          "screenshotCount":  0,
+                          "screenshots":  [
+
+                                          ],
+                          "runtimeManifest":  "artifacts/runtime/v0357/missing-scene-fail-closed/v0357-barrosan-barn-runtime.json"
+                      },
+                      {
+                          "id":  "hash-mismatch-fail-closed",
+                          "expected":  "FAIL_CLOSED_HASH_MISMATCH",
+                          "status":  "FAIL_CLOSED_HASH_MISMATCH",
+                          "exitCode":  null,
+                          "screenshotCount":  0,
+                          "screenshots":  [
+
+                                          ],
+                          "runtimeManifest":  "artifacts/runtime/v0357/hash-mismatch-fail-closed/v0357-barrosan-barn-runtime.json"
+                      },
+                      {
+                          "id":  "invalid-authority-fail-closed",
+                          "expected":  "FAIL_CLOSED_INVALID_AUTHORITY",
+                          "status":  "FAIL_CLOSED_INVALID_AUTHORITY",
+                          "exitCode":  null,
+                          "screenshotCount":  0,
+                          "screenshots":  [
+
+                                          ],
+                          "runtimeManifest":  "artifacts/runtime/v0357/invalid-authority-fail-closed/v0357-barrosan-barn-runtime.json"
+                      },
+                      {
+                          "id":  "unknown-slot-rejected",
+                          "expected":  "FAIL_CLOSED_UNKNOWN_SLOT_REJECTED",
+                          "status":  "FAIL_CLOSED_UNKNOWN_SLOT_REJECTED",
+                          "exitCode":  null,
+                          "screenshotCount":  0,
+                          "screenshots":  [
+
+                                          ],
+                          "runtimeManifest":  "artifacts/runtime/v0357/unknown-slot-rejected/v0357-barrosan-barn-runtime.json"
+                      }
+                  ],
+    "genuineNonHeadlessCaptures":  true,
+    "noVideo":  true
+}

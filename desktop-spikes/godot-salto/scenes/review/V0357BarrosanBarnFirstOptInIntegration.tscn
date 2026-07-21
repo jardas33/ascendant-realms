@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource path="res://scripts/v0357_barrosan_barn_first_opt_in_integration.gd" type="Script" id="1_v0357"]
+
+[node name="V0357BarrosanBarnFirstOptInIntegration" type="Node3D"]
+script = ExtResource("1_v0357")
