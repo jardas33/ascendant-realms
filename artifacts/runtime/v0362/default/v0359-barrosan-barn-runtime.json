@@ -1,0 +1,64 @@
+{
+  "addedNodePaths": [],
+  "barnInstanceCount": 0,
+  "baselineNodeSignature": "9bcd99953af16716425b157cdfbfc9630ca0bfe60ed1bccea489f61639414af4",
+  "baselineRollbackStateMatch": false,
+  "browserMutationCount": 0,
+  "canonicalAssetMutationCount": 0,
+  "captures": [
+    {
+      "barnRootCount": 0,
+      "cameraPosition": {
+        "x": -22.0,
+        "y": 11.5,
+        "z": 25.0
+      },
+      "cameraRotation": {
+        "x": -17.3698997497559,
+        "y": -41.9225463867188,
+        "z": 0.0
+      },
+      "cameraTarget": {
+        "x": 0.0,
+        "y": 1.20000004768372,
+        "z": 0.5
+      },
+      "frameNumberAfterCameraTransition": 7,
+      "house02Count": 1,
+      "orthographicSize": 28.0,
+      "panelId": "default_default",
+      "projectionType": "orthographic",
+      "rawCapturePath": "D:/Code for projects/WB game like/ascendant-realms-v0223-recovery/artifacts/runtime/v0362/default/screenshots/default.png",
+      "rawCaptureSha256": "85df3d9f677682f7fa5ce13cfb1befc9cfefab97604e0a2543979cadb6837569",
+      "sceneStateSignature": "9bcd99953af16716425b157cdfbfc9630ca0bfe60ed1bccea489f61639414af4",
+      "semanticPurpose": "default opt-in slot disabled; zero Barn instances",
+      "settleFrames": 8,
+      "timestampSequence": 1,
+      "viewportHeight": 1009,
+      "viewportWidth": 1920
+    }
+  ],
+  "changedNonBarnNodeCount": 0,
+  "checkpoint": "v0.359",
+  "defaultRuntimeMutationCount": 0,
+  "duplicateInstanceCount": 0,
+  "failureCode": "",
+  "fallbackAssetUsed": false,
+  "gameplayMutationCount": 0,
+  "humanDiagnosticsReadable": false,
+  "loadAttempted": false,
+  "loadSucceeded": false,
+  "optInNodeSignature": "",
+  "removedNodePaths": [],
+  "retainedBarnNodeCount": 0,
+  "rollbackClean": false,
+  "rollbackNodeSignature": "",
+  "roofHashValid": false,
+  "runtimeContinued": true,
+  "saveMutationCount": 0,
+  "scenario": "default",
+  "schemaVersion": 1,
+  "sourceHashValid": false,
+  "stableIdMutationCount": 0,
+  "statusDetail": "BASELINE_HOUSE02_NO_BARN"
+}

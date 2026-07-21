@@ -1,0 +1,157 @@
+{
+  "baselineRollbackStateMatch": false,
+  "browserMutationCount": 0,
+  "canonicalAssetMutationCount": 0,
+  "canonicalTransformMutationCount": 0,
+  "changedNonBarnNodeCount": 0,
+  "checkpoint": "v0.362",
+  "defaultBarnInstanceCount": 0,
+  "defaultRuntimeMutationCount": 0,
+  "duplicateBarnRootCount": 0,
+  "fixtureBarnRootPositionMutationCount": 0,
+  "fixtureBarnRootRotationMutationCount": 0,
+  "fixtureBarnRootScaleMutationCount": 0,
+  "fixtureBarnRotationChanged": false,
+  "fixtureBarnScaleChanged": false,
+  "fixtureBarnTranslationDelta": {
+    "x": 0.0,
+    "y": 0.0,
+    "z": 0.0
+  },
+  "gameplayMutationCount": 0,
+  "genuineNonHeadlessCapture": true,
+  "geometryMutationCount": 0,
+  "materialMutationCount": 0,
+  "measurement": {
+    "barnCombinedWorldAabb": {
+      "max": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "min": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "size": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      }
+    },
+    "barnMeshCount": 0,
+    "barnRoofMeshCount": 0,
+    "barnRoofWorldAabb": {
+      "max": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "min": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "size": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      }
+    },
+    "beforeVariant": false,
+    "closestHorizontalClearance": 6.35000038146973,
+    "closestRoofEaveClearance": 6.38000011444092,
+    "horizontalOverlapDepth": 0.0,
+    "house02CombinedWorldAabb": {
+      "max": {
+        "x": -6.35000038146973,
+        "y": 7.25999975204468,
+        "z": 4.6100001335144
+      },
+      "min": {
+        "x": -16.6499996185303,
+        "y": 0.0,
+        "z": -5.09999990463257
+      },
+      "size": {
+        "x": 10.2999992370605,
+        "y": 7.25999975204468,
+        "z": 9.71000003814697
+      }
+    },
+    "house02MeshCount": 24,
+    "house02RoofMeshCount": 4,
+    "house02RoofWorldAabb": {
+      "max": {
+        "x": -6.38000011444092,
+        "y": 7.25999975204468,
+        "z": 1.98000001907349
+      },
+      "min": {
+        "x": -16.6199989318848,
+        "y": 4.23999977111816,
+        "z": -4.98000001907349
+      },
+      "size": {
+        "x": 10.2399988174438,
+        "y": 3.01999998092651,
+        "z": 6.96000003814697
+      }
+    },
+    "measurementMethod": "world-space transformed mesh AABBs; XZ interval relation; roof/eave subset by authored mesh-name tokens",
+    "ordinaryRtsGapVisible": true,
+    "requiredWorkerClearance": 1.875,
+    "roofEaveIntersection": false,
+    "roofEaveOverlapDepth": 0.0,
+    "structuralAabbIntersection": false,
+    "workerClearancePassed": true,
+    "workerWidthReference": 1.25
+  },
+  "newFixtureBarnTransform": {
+    "position": {
+      "x": -1.79999995231628,
+      "y": 0.180000007152557,
+      "z": -1.0
+    },
+    "rotation": {
+      "x": 0.0,
+      "y": 0.0,
+      "z": 0.0
+    },
+    "scale": {
+      "x": 1.0,
+      "y": 1.0,
+      "z": 1.0
+    }
+  },
+  "oldFixtureBarnTransform": {
+    "position": {
+      "x": -1.79999995231628,
+      "y": 0.180000007152557,
+      "z": -1.0
+    },
+    "rotation": {
+      "x": 0.0,
+      "y": 0.0,
+      "z": 0.0
+    },
+    "scale": {
+      "x": 1.0,
+      "y": 1.0,
+      "z": 1.0
+    }
+  },
+  "performanceBenchmarkRerunCount": 0,
+  "placementVariant": "repaired-final",
+  "retainedBarnNodeCount": 0,
+  "rollbackClean": false,
+  "roofHash": "0077e19143517e2850aee3bdb6ce9408d55bc7e2bfdc958d61ac1b141ab684f9",
+  "saveMutationCount": 0,
+  "scenePath": "res://scenes/review/V0362BarrosanBarnContextualPlacementSeparation.tscn",
+  "schemaVersion": 1,
+  "sourceHash": "13a761a2b60658a0d261c89d9046b752f052a5e32924381075a4b24ca7c3d6a3",
+  "stableIdMutationCount": 0,
+  "textureMutationCount": 0,
+  "validOptInLoadedOnce": false
+}
