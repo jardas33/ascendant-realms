@@ -1,0 +1,64 @@
+{
+  "addedNodePaths": [],
+  "barnInstanceCount": 0,
+  "baselineNodeSignature": "9bcd99953af16716425b157cdfbfc9630ca0bfe60ed1bccea489f61639414af4",
+  "baselineRollbackStateMatch": false,
+  "browserMutationCount": 0,
+  "canonicalAssetMutationCount": 0,
+  "captures": [
+    {
+      "barnRootCount": 0,
+      "cameraPosition": {
+        "x": -26.0,
+        "y": 16.0,
+        "z": 30.0
+      },
+      "cameraRotation": {
+        "x": -20.9108734130859,
+        "y": -46.548152923584,
+        "z": 0.0
+      },
+      "cameraTarget": {
+        "x": 2.5,
+        "y": 1.0,
+        "z": 3.0
+      },
+      "frameNumberAfterCameraTransition": 7,
+      "house02Count": 1,
+      "orthographicSize": 36.0,
+      "panelId": "baseline_baseline",
+      "projectionType": "orthographic",
+      "rawCapturePath": "D:/Code for projects/WB game like/ascendant-realms-v0223-recovery/artifacts/runtime/v0359/baseline/screenshots/baseline.png",
+      "rawCaptureSha256": "dca0980d8a3f1e3e2c12a7db72bccf212df68986289f5ae6ac55ca5b72f2143d",
+      "sceneStateSignature": "9bcd99953af16716425b157cdfbfc9630ca0bfe60ed1bccea489f61639414af4",
+      "semanticPurpose": "shared House02 comparison baseline; not true default runtime",
+      "settleFrames": 8,
+      "timestampSequence": 1,
+      "viewportHeight": 1009,
+      "viewportWidth": 1920
+    }
+  ],
+  "changedNonBarnNodeCount": 0,
+  "checkpoint": "v0.359",
+  "defaultRuntimeMutationCount": 0,
+  "duplicateInstanceCount": 0,
+  "failureCode": "",
+  "fallbackAssetUsed": false,
+  "gameplayMutationCount": 0,
+  "humanDiagnosticsReadable": false,
+  "loadAttempted": false,
+  "loadSucceeded": false,
+  "optInNodeSignature": "",
+  "removedNodePaths": [],
+  "retainedBarnNodeCount": 0,
+  "rollbackClean": false,
+  "rollbackNodeSignature": "",
+  "roofHashValid": false,
+  "runtimeContinued": true,
+  "saveMutationCount": 0,
+  "scenario": "baseline",
+  "schemaVersion": 1,
+  "sourceHashValid": false,
+  "stableIdMutationCount": 0,
+  "statusDetail": "BASELINE_HOUSE02_NO_BARN"
+}
