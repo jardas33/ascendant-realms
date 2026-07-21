@@ -4,7 +4,7 @@ READY FOR HUMAN V0357 BARROSAN BARN FIRST OPT-IN INTEGRATION REVIEW.
 
 This upload pack contains exactly the eight rendered review boards and the compact evidence summary. The first opt-in slot is $barrosan_barn_gold_v0355 and is available only through the dedicated Godot v0.357 capture/launch path. The true default runtime remains off and unchanged.
 
-Human authority: V0.354 HUMAN-APPROVED â€” BARROSAN BARN VISUAL GOLD AND FINAL EVIDENCE CLOSEOUT ACCEPTED; ALL ACCEPTED LINEAGE FROZEN
+Human authority: V0.354 HUMAN-APPROVED — BARROSAN BARN VISUAL GOLD AND FINAL EVIDENCE CLOSEOUT ACCEPTED; ALL ACCEPTED LINEAGE FROZEN
 Canonical scene: desktop-spikes/godot-salto/scenes/gold/barrosan/BarrosanBarnGold.tscn
 Capture command: npm run godot:capture:salto-v0357-barrosan-barn-opt-in
 Pack command: npm run godot:pack:salto-v0357-barrosan-barn-opt-in

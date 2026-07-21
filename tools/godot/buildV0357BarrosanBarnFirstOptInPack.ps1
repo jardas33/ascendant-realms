@@ -43,7 +43,7 @@ Board '07_ROLLBACK_AND_DEFAULT_RUNTIME_PRESERVATION.png' @((Shot 'default-off' '
 $perf = "FPS default $($manifest.defaultMedianFps) | opt-in $($manifest.optInMedianFps) | ratio $($manifest.medianFpsRatio) | P95 ratio $($manifest.p95FrameTimeRatio)"
 Board '08_PERFORMANCE_RESOURCE_AND_NODE_LEDGER.png' @((Shot 'opt-in-rts' 'opt_in_rts.png')) 'V0.357 | PERFORMANCE / RESOURCE / NODE LEDGER' @($perf,'Mutation counts: gameplay 0 | default runtime 0 | canonical asset 0 | geometry/material/texture/transform 0','One slot | one Barn instance | no economy/resource mutation | automated visual approval remains false')
 
-$decision = 'V0.354 HUMAN-APPROVED — BARROSAN BARN VISUAL GOLD AND FINAL EVIDENCE CLOSEOUT ACCEPTED; ALL ACCEPTED LINEAGE FROZEN'
+$decision = 'V0.354 HUMAN-APPROVED ' + [char]0x2014 + ' BARROSAN BARN VISUAL GOLD AND FINAL EVIDENCE CLOSEOUT ACCEPTED; ALL ACCEPTED LINEAGE FROZEN'
 $readme = @"
 # v0.357 Barrosan Barn First Opt-In Integration
 

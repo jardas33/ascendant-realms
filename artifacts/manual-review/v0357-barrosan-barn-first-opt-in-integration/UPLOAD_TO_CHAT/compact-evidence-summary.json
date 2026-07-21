@@ -1,7 +1,7 @@
 ﻿{
     "checkpoint":  "v0.357",
     "outcome":  "READY FOR HUMAN V0357 BARROSAN BARN FIRST OPT-IN INTEGRATION REVIEW",
-    "humanDecision":  "V0.354 HUMAN-APPROVED â€” BARROSAN BARN VISUAL GOLD AND FINAL EVIDENCE CLOSEOUT ACCEPTED; ALL ACCEPTED LINEAGE FROZEN",
+    "humanDecision":  "V0.354 HUMAN-APPROVED — BARROSAN BARN VISUAL GOLD AND FINAL EVIDENCE CLOSEOUT ACCEPTED; ALL ACCEPTED LINEAGE FROZEN",
     "authorizedSlotId":  "barrosan_barn_gold_v0355",
     "canonicalScenePath":  "desktop-spikes/godot-salto/scenes/gold/barrosan/BarrosanBarnGold.tscn",
     "goldManifestPath":  "docs/gold/V0355_BARROSAN_BARN_GOLD_MANIFEST.json",
