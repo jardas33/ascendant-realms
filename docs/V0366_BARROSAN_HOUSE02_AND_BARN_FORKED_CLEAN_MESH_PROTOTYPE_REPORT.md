@@ -64,6 +64,6 @@ The derived meshes are not approved production replacements. Human review must d
 
 ## Validation and closeout
 
-The dedicated validator checks the exact base, source paths, canonical Barn hash, real derived triangle deltas, surface/material preservation, no parent-hide trick, no gameplay integration, zero mutation ledger, exact ten-file pack, readable UTF-8, nonblank PNG dimensions, and human-review stop. Retained v0.365 and earlier validators plus repository test/build/content/art/runtime/Godot gates are run before closeout. CI is required for the exact pushed SHA; this report is finalized with its run evidence after push.
+The dedicated validator checks the exact base, source paths, canonical Barn hash, real derived triangle deltas, surface/material preservation, no parent-hide trick, no gameplay integration, zero mutation ledger, exact ten-file pack, readable UTF-8, nonblank PNG dimensions, and human-review stop. Retained v0.365 and earlier validators plus repository test/build/content/art/runtime/Godot gates are run before closeout. The implementation commit `2bb029de31988c08cc7d2be433c6b9973e0449a2` passed exact-SHA GitHub Actions run `29884265263` (`CI Release Matrix Dry Run`, run 535) with conclusion `success`; the final documentation-only closeout commit is separately verified by its own exact-SHA run and recorded in the closeout response.
 
 Final state requirement: clean and synced with origin, `0 ahead / 0 behind`.
