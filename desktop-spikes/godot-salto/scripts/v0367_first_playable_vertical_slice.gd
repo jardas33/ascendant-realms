@@ -294,7 +294,7 @@ func _start_match() -> void:
 	_spawn_workers(); _spawn_enemy_camp(); _build_hud(); _refresh_hud()
 
 func _build_hud() -> void:
-	hud_ui = Control.new(); hud_ui.name = "V0367PlayerHUD"; hud_ui.set_anchors_preset(Control.PRESET_FULL_RECT); add_child(hud_ui)
+	hud_ui = Control.new(); hud_ui.name = "V0367PlayerHUD"; hud_ui.set_anchors_preset(Control.PRESET_FULL_RECT); hud_ui.mouse_filter = Control.MOUSE_FILTER_IGNORE; add_child(hud_ui)
 	var top := Panel.new(); top.position = Vector2(24, 20); top.size = Vector2(820, 96); top.add_theme_stylebox_override("panel", _panel_style(Color(0.03, 0.055, 0.05, 0.92), Color("#6d9a83"))); hud_ui.add_child(top)
 	gold_label = Label.new(); gold_label.position = Vector2(22, 14); gold_label.add_theme_font_size_override("font_size", 24); top.add_child(gold_label)
 	objective_label = Label.new(); objective_label.position = Vector2(22, 52); objective_label.add_theme_font_size_override("font_size", 16); objective_label.add_theme_color_override("font_color", Color("#d5d7c2")); top.add_child(objective_label)
