@@ -26,6 +26,9 @@ const SCRIPT_ARG_PREFIXES := [
 	"--v0367-playable",
 	"--v0367-smoke",
 	"--v0367-capture",
+	"--v0368-playable",
+	"--v0368-smoke",
+	"--v0368-capture",
 	"--h3-semantic-evidence",
 	"--h3-supported-state-contract",
 	"--h3-directional-animation-micro-pilot",
@@ -248,6 +251,14 @@ func _ready() -> void:
 			return
 		var v0367_slice := v0367_scene.instantiate()
 		add_child(v0367_slice)
+		return
+	if args.has("--v0368-playable") or args.has("--v0368-smoke") or args.has("--v0368-capture"):
+		var v0368_scene := load("res://scenes/v0368_playable_slice_visual_coherence.tscn") as PackedScene
+		if v0368_scene == null:
+			get_tree().quit(1)
+			return
+		var v0368_slice := v0368_scene.instantiate()
+		add_child(v0368_slice)
 		return
 	if args.has("--salto-production-target-spike"):
 		var spike_scene := load("res://scenes/salto_production_target_spike.tscn") as PackedScene
@@ -1793,7 +1804,8 @@ func _create_review_ui() -> void:
 		{"text": "Squad", "action": "box_select"},
 		{"text": "Site", "action": "capture_site"},
 		{"text": "Results", "action": "results"}
-		,{"text": "PLAY SLICE", "action": "play_v0367"}
+		,{"text": "PLAY SLICE", "action": "play_v0368"}
+		,{"text": "V0367", "action": "play_v0367"}
 	]:
 		var button := Button.new()
 		button.text = str(item["text"])
@@ -2084,6 +2096,16 @@ func _apply_review_action(action: String) -> Dictionary:
 				if home_screen: home_screen.visible = false
 				if review_panel: review_panel.visible = false
 				current_step_id = "play_v0367"
+			active_mode = MODE_25D
+		"play_v0368":
+			var v0368_scene := load("res://scenes/v0368_playable_slice_visual_coherence.tscn") as PackedScene
+			if v0368_scene != null:
+				if active_scene and is_instance_valid(active_scene): active_scene.queue_free()
+				active_scene = v0368_scene.instantiate()
+				add_child(active_scene)
+				if home_screen: home_screen.visible = false
+				if review_panel: review_panel.visible = false
+				current_step_id = "play_v0368"
 				active_mode = MODE_25D
 		"launch_25d":
 			load_mode(MODE_25D)
