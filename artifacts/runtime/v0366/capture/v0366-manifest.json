@@ -1,0 +1,144 @@
+{
+  "barnSource": "res://scenes/gold/barrosan/BarrosanBarnGold.tscn",
+  "barnSourceHash": "ffaf4c4eeb7c0dabc3a483b0137ad2d92d2b2f6dd496b84b86584ae4a7e86a4a",
+  "barnTarget": {
+    "C": "front timber cluster across merged material surfaces"
+  },
+  "baseHead": "82a0dfb1f58bbb1651c29893b9414fa6b73a553a",
+  "canonicalAssetMutationCount": 0,
+  "canonicalSceneMutationCount": 0,
+  "captures": [
+    {
+      "file": "01_decision_scope.png",
+      "purpose": "canonical and clean forks, exact paired transforms",
+      "rendered": true,
+      "sha256": "3eb78b6a964b6efb684c6368652cfe3ce7884943ccbcf4d6db57062e3fb5a08b"
+    },
+    {
+      "file": "02_original_vs_clean.png",
+      "purpose": "original left / derived clean right",
+      "rendered": true,
+      "sha256": "8df3fa49f38898e78a367fb07210857c36807ce97fe4e101aabfbb379dc893b8"
+    },
+    {
+      "file": "03_house_a.png",
+      "purpose": "House02 A ground-front stone component removed",
+      "rendered": true,
+      "sha256": "80a78650f1fdf281a7c6e172c3bca08f464bb0868de8b6c8b163c1641ca3749b"
+    },
+    {
+      "file": "04_house_b.png",
+      "purpose": "House02 B upper timber bracket islands removed",
+      "rendered": true,
+      "sha256": "0865825e4020a1e7a6d2440f6f8f2d0d6b3a2e2324520332ffc5e3ef03c495cd"
+    },
+    {
+      "file": "05_house_preservation.png",
+      "purpose": "House02 clean fork preserves roof, walls, doors and windows",
+      "rendered": true,
+      "sha256": "de5a53a42c7077f1acfc42edc000f90ed0e49a4008e69c638093474f54af8aec"
+    },
+    {
+      "file": "06_barn_c.png",
+      "purpose": "Barn C front timber cluster removed",
+      "rendered": true,
+      "sha256": "b3d618cdc473c0b3d5ba33add8fc37adafd0c8148c24789d46c4233871ba0a0b"
+    },
+    {
+      "file": "07_barn_preservation.png",
+      "purpose": "Barn clean fork preserves roof, walls and structural mass",
+      "rendered": true,
+      "sha256": "13d65da5b085b061528df4b26f4b3f9c2b23d16da2558d5c55a120db7c4538ce"
+    },
+    {
+      "file": "08_ledger.png",
+      "purpose": "derived mesh hash and mutation ledger",
+      "rendered": true,
+      "sha256": "29f02f341374616d7b4b496c3d4cd04bf3cdc0531bb3a5e2cba570f1008bc523"
+    }
+  ],
+  "checkpoint": "v0.366",
+  "defaultRuntimeMutationCount": 0,
+  "derivedRecords": [
+    {
+      "canonicalMeshSignature": "dfcf448410bee1aa71c17e6603bcea6e02e01e643ab9f50b85782bd46f9bdb39",
+      "deltaIsGeometry": true,
+      "derivedMeshSignature": "2d1f890a23a5907ffeb51eeca34f7644b32db5a0151f6b25d548f07484ff0d82",
+      "derivedSurfaceCount": 4,
+      "derivedTriangleCount": 6836,
+      "removedComponents": [
+        "HOUSE_A:s0:c26",
+        "HOUSE_A:s1:c26",
+        "HOUSE_A:s2:c26",
+        "HOUSE_A:s3:c26"
+      ],
+      "removedTriangleCount": 188,
+      "sourceSurfaceCount": 4,
+      "sourceTriangleCount": 7024,
+      "target": "HOUSE_A"
+    },
+    {
+      "canonicalMeshSignature": "8a2ff8f42c7f3dc64c3a6e473112a926ace8d12fce653720bba486a7447b311b",
+      "deltaIsGeometry": true,
+      "derivedMeshSignature": "d6333792ad2c42177a6593b252555a6a1b21c77581c32834a8a3b3d1212eb3b6",
+      "derivedSurfaceCount": 1,
+      "derivedTriangleCount": 3384,
+      "removedComponents": [
+        "HOUSE_B:s0:c10",
+        "HOUSE_B:s0:c19",
+        "HOUSE_B:s0:c20",
+        "HOUSE_B:s0:c21",
+        "HOUSE_B:s0:c22"
+      ],
+      "removedTriangleCount": 940,
+      "sourceSurfaceCount": 1,
+      "sourceTriangleCount": 4324,
+      "target": "HOUSE_B"
+    },
+    {
+      "canonicalMeshSignature": "8bebc42a56c3a1259cc0debd7541988df4471d85eff4624fa19afc12f211364e",
+      "deltaIsGeometry": true,
+      "derivedMeshSignature": "a93c0307e787cd4f7c17dde87c8f3326dd3b2694af9fb7c25aff4c18b0f55f4c",
+      "derivedSurfaceCount": 6,
+      "derivedTriangleCount": 2504,
+      "removedComponents": [
+        "BARN_C:s0:c20",
+        "BARN_C:s0:c21",
+        "BARN_C:s0:c22",
+        "BARN_C:s0:c23",
+        "BARN_C:s1:c2",
+        "BARN_C:s2:c20",
+        "BARN_C:s2:c21",
+        "BARN_C:s2:c22",
+        "BARN_C:s2:c23",
+        "BARN_C:s2:c24",
+        "BARN_C:s2:c25",
+        "BARN_C:s2:c26",
+        "BARN_C:s2:c27",
+        "BARN_C:s2:c28",
+        "BARN_C:s2:c29",
+        "BARN_C:s3:c4",
+        "BARN_C:s3:c5"
+      ],
+      "removedTriangleCount": 748,
+      "sourceSurfaceCount": 6,
+      "sourceTriangleCount": 3252,
+      "target": "BARN_C"
+    }
+  ],
+  "gameplayMutationCount": 0,
+  "houseSource": "res://assets/v0338/barrosan_house_02_material_gold_candidate.glb",
+  "houseSourceHash": "ceab23ff3cfb580cc63ce917ec1ff675a1cd318f8fe3390fc836166015ebba89",
+  "houseTargets": {
+    "A": "component envelope on LOD0_Granite",
+    "B": "upper bracket/scaffold component envelope on LOD0_Weathered_Timber"
+  },
+  "humanReviewStop": true,
+  "meshDerivationMethod": "surface-preserving ArrayMesh fork; triangle-connected component AABB exclusion; canonical nodes remain present in left comparison",
+  "placementMutationCount": 0,
+  "productionIntegrationCount": 0,
+  "saveMutationCount": 0,
+  "stableIdMutationCount": 0,
+  "status": "PASS_V0366_DERIVED_MESH_CAPTURE",
+  "transformMutationCount": 0
+}
