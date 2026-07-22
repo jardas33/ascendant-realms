@@ -1,0 +1,123 @@
+{
+  "checkpoint": "v0.365",
+  "r0BarnRootCount": 0,
+  "r1BarnRootCount": 1,
+  "r2BarnRootCount": 0,
+  "statePresence": {
+    "A": {
+      "exactOwnerTargetPath": "/V0358_House02_Shared_Baseline_Unmodified/LOD0_Granite",
+      "presentStates": [
+        "R0",
+        "R1",
+        "R2"
+      ],
+      "statePresenceDerived": true,
+      "statePresenceProof": {
+        "R0": {
+          "absenceReason": "",
+          "ownerRootInstantiated": true,
+          "ownerRootPath": "/V0358_House02_Shared_Baseline_Unmodified",
+          "present": true,
+          "state": "R0",
+          "targetNodeExists": true,
+          "targetNodePath": "/V0358_House02_Shared_Baseline_Unmodified/LOD0_Granite"
+        },
+        "R1": {
+          "absenceReason": "",
+          "ownerRootInstantiated": true,
+          "ownerRootPath": "/V0358_House02_Shared_Baseline_Unmodified",
+          "present": true,
+          "state": "R1",
+          "targetNodeExists": true,
+          "targetNodePath": "/V0358_House02_Shared_Baseline_Unmodified/LOD0_Granite"
+        },
+        "R2": {
+          "absenceReason": "",
+          "ownerRootInstantiated": true,
+          "ownerRootPath": "/V0358_House02_Shared_Baseline_Unmodified",
+          "present": true,
+          "state": "R2",
+          "targetNodeExists": true,
+          "targetNodePath": "/V0358_House02_Shared_Baseline_Unmodified/LOD0_Granite"
+        }
+      },
+      "targetLocalPath": "LOD0_Granite"
+    },
+    "B": {
+      "exactOwnerTargetPath": "/V0358_House02_Shared_Baseline_Unmodified/LOD0_Weathered_Timber",
+      "presentStates": [
+        "R0",
+        "R1",
+        "R2"
+      ],
+      "statePresenceDerived": true,
+      "statePresenceProof": {
+        "R0": {
+          "absenceReason": "",
+          "ownerRootInstantiated": true,
+          "ownerRootPath": "/V0358_House02_Shared_Baseline_Unmodified",
+          "present": true,
+          "state": "R0",
+          "targetNodeExists": true,
+          "targetNodePath": "/V0358_House02_Shared_Baseline_Unmodified/LOD0_Weathered_Timber"
+        },
+        "R1": {
+          "absenceReason": "",
+          "ownerRootInstantiated": true,
+          "ownerRootPath": "/V0358_House02_Shared_Baseline_Unmodified",
+          "present": true,
+          "state": "R1",
+          "targetNodeExists": true,
+          "targetNodePath": "/V0358_House02_Shared_Baseline_Unmodified/LOD0_Weathered_Timber"
+        },
+        "R2": {
+          "absenceReason": "",
+          "ownerRootInstantiated": true,
+          "ownerRootPath": "/V0358_House02_Shared_Baseline_Unmodified",
+          "present": true,
+          "state": "R2",
+          "targetNodeExists": true,
+          "targetNodePath": "/V0358_House02_Shared_Baseline_Unmodified/LOD0_Weathered_Timber"
+        }
+      },
+      "targetLocalPath": "LOD0_Weathered_Timber"
+    },
+    "C": {
+      "exactOwnerTargetPath": "/V0358_Barrosan_Barn_Gold_OptIn_Single_Instance/V0347_Barn_Rendered_Geometry_Truth",
+      "presentStates": [
+        "R1"
+      ],
+      "statePresenceDerived": true,
+      "statePresenceProof": {
+        "R0": {
+          "absenceReason": "BARN_ROOT_NOT_INSTANTIATED",
+          "ownerRootInstantiated": false,
+          "ownerRootPath": "",
+          "present": false,
+          "state": "R0",
+          "targetNodeExists": false,
+          "targetNodePath": ""
+        },
+        "R1": {
+          "absenceReason": "",
+          "ownerRootInstantiated": true,
+          "ownerRootPath": "/V0358_Barrosan_Barn_Gold_OptIn_Single_Instance",
+          "present": true,
+          "state": "R1",
+          "targetNodeExists": true,
+          "targetNodePath": "/V0358_Barrosan_Barn_Gold_OptIn_Single_Instance/V0347_Barn_Rendered_Geometry_Truth"
+        },
+        "R2": {
+          "absenceReason": "BARN_ROOT_REMOVED_BY_ROLLBACK",
+          "ownerRootInstantiated": false,
+          "ownerRootPath": "",
+          "present": false,
+          "state": "R2",
+          "targetNodeExists": false,
+          "targetNodePath": ""
+        }
+      },
+      "targetLocalPath": "V0347_Barn_Rendered_Geometry_Truth"
+    }
+  }
+}

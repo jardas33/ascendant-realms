@@ -1,0 +1,5 @@
+READY FOR HUMAN V0365 BARROSAN FOREGROUND PROP PRESENCE-STATE AND PREVIEW-BOARD TRUTH REPAIR REVIEW.
+
+v0.364 provenance findings remain valid. v0.365 repairs the incorrect object C state-presence record from R0/R1/R2 to R1 only. C is present only in R1 because the Barn is instantiated only in R1. Board 06 is explicitly a broad-node visibility diagnostic, not a cleanup preview: hiding LOD0_Weathered_Timber also removes House02 doors, windows and other timber surfaces. A and C require future forked-asset rework. B requires targeted mesh separation before a human can judge an isolated removal. No canonical, production or default-runtime mutation occurred. Human review remains required.
+
+Pack contents are eight PNG boards plus this README and compact-evidence-summary.json. Raw Godot captures remain under artifacts/runtime/v0365/capture. This checkpoint stops before asset cleanup, mesh splitting, replacement assets, new art slots and gameplay work.
