@@ -23,6 +23,9 @@ const SCRIPT_ARG_PREFIXES := [
 	"--player-slice",
 	"--player-slice-validate",
 	"--player-slice-capture",
+	"--v0367-playable",
+	"--v0367-smoke",
+	"--v0367-capture",
 	"--h3-semantic-evidence",
 	"--h3-supported-state-contract",
 	"--h3-directional-animation-micro-pilot",
@@ -238,6 +241,14 @@ func _ready() -> void:
 	current_viewport_size = _viewport_from_args(VIEWPORT_SIZE)
 	active_visual_preset = _visual_preset_from_args()
 	_configure_window()
+	if args.has("--v0367-playable") or args.has("--v0367-smoke") or args.has("--v0367-capture"):
+		var v0367_scene := load("res://scenes/v0367_first_playable_vertical_slice.tscn") as PackedScene
+		if v0367_scene == null:
+			get_tree().quit(1)
+			return
+		var v0367_slice := v0367_scene.instantiate()
+		add_child(v0367_slice)
+		return
 	if args.has("--salto-production-target-spike"):
 		var spike_scene := load("res://scenes/salto_production_target_spike.tscn") as PackedScene
 		if spike_scene == null:
@@ -1768,7 +1779,7 @@ func _create_review_ui() -> void:
 	var grid := GridContainer.new()
 	grid.position = Vector2(14, 74)
 	grid.size = Vector2(870, 38)
-	grid.columns = 11
+	grid.columns = 12
 	review_panel.add_child(grid)
 	for item in [
 		{"text": "Home", "action": "home"},
@@ -1782,6 +1793,7 @@ func _create_review_ui() -> void:
 		{"text": "Squad", "action": "box_select"},
 		{"text": "Site", "action": "capture_site"},
 		{"text": "Results", "action": "results"}
+		,{"text": "PLAY SLICE", "action": "play_v0367"}
 	]:
 		var button := Button.new()
 		button.text = str(item["text"])
@@ -2063,6 +2075,16 @@ func _apply_review_action(action: String) -> Dictionary:
 			load_home()
 		"launch_2d":
 			load_mode(MODE_2D)
+		"play_v0367":
+			var v0367_scene := load("res://scenes/v0367_first_playable_vertical_slice.tscn") as PackedScene
+			if v0367_scene != null:
+				if active_scene and is_instance_valid(active_scene): active_scene.queue_free()
+				active_scene = v0367_scene.instantiate()
+				add_child(active_scene)
+				if home_screen: home_screen.visible = false
+				if review_panel: review_panel.visible = false
+				current_step_id = "play_v0367"
+				active_mode = MODE_25D
 		"launch_25d":
 			load_mode(MODE_25D)
 		"launch_25d_clean":
