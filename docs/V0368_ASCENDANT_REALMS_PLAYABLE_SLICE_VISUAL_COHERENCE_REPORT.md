@@ -48,4 +48,8 @@ This is a small authored slice, not a production-wide art conversion. The bridge
 
 ## Closeout
 
-Final commit and exact GitHub Actions run are recorded in this section after publication. Final repo state is required to be clean and synced with origin.
+Implementation commit: `5cd0c4cab31a37b0d34cbf4ce54a63ed1c4e8be8`
+
+Exact GitHub Actions run: `29936962700` (`CI Release Matrix Dry Run`, run 539) — success for the exact implementation SHA. The Fast confidence job passed unit/pure-rule tests, production build, content validation, art-intake validation, E2E fast smoke, and production preview smoke.
+
+The final documentation amendment is published after this run so the report remains truthful for the final pushed SHA. The repository is required to end clean and synchronized with `origin/codex/v0215-v0226-recovery`.
