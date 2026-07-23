@@ -35,6 +35,9 @@ const SCRIPT_ARG_PREFIXES := [
 	"--v0371-playable",
 	"--v0371-smoke",
 	"--v0371-capture",
+	"--v0372-quaternius-visual-recovery",
+	"--v0372-quaternius-smoke",
+	"--v0372-quaternius-capture",
 	"--h3-semantic-evidence",
 	"--h3-supported-state-contract",
 	"--h3-directional-animation-micro-pilot",
@@ -281,6 +284,15 @@ func _ready() -> void:
 			var v0371_slice := v0371_scene.instantiate()
 			v0371_slice.name = "V0371FirstCohesiveQuaterniusRtsSector"
 			add_child(v0371_slice)
+		return
+	if args.has("--v0372-quaternius-visual-recovery") or args.has("--v0372-quaternius-smoke") or args.has("--v0372-quaternius-capture"):
+		var v0372_scene := load("res://scenes/v0372_quaternius_rts_visual_recovery.tscn") as PackedScene
+		if v0372_scene == null:
+			push_error("v0.372 scene failed to load")
+		else:
+			var v0372_recovery := v0372_scene.instantiate()
+			v0372_recovery.name = "V0372QuaterniusRtsVisualRecovery"
+			add_child(v0372_recovery)
 		return
 	if args.has("--salto-production-target-spike"):
 		var spike_scene := load("res://scenes/salto_production_target_spike.tscn") as PackedScene
