@@ -38,6 +38,9 @@ const SCRIPT_ARG_PREFIXES := [
 	"--v0372-quaternius-visual-recovery",
 	"--v0372-quaternius-smoke",
 	"--v0372-quaternius-capture",
+	"--v0373-autonomous-visual-direction",
+	"--v0373-autonomous-smoke",
+	"--v0373-autonomous-capture",
 	"--h3-semantic-evidence",
 	"--h3-supported-state-contract",
 	"--h3-directional-animation-micro-pilot",
@@ -293,6 +296,15 @@ func _ready() -> void:
 			var v0372_recovery := v0372_scene.instantiate()
 			v0372_recovery.name = "V0372QuaterniusRtsVisualRecovery"
 			add_child(v0372_recovery)
+		return
+	if args.has("--v0373-autonomous-visual-direction") or args.has("--v0373-autonomous-smoke") or args.has("--v0373-autonomous-capture"):
+		var v0373_scene := load("res://scenes/v0373_autonomous_visual_direction_rts_sector.tscn") as PackedScene
+		if v0373_scene == null:
+			push_error("v0.373 scene failed to load")
+		else:
+			var v0373_slice := v0373_scene.instantiate()
+			v0373_slice.name = "V0373AutonomousVisualDirectionRtsSector"
+			add_child(v0373_slice)
 		return
 	if args.has("--salto-production-target-spike"):
 		var spike_scene := load("res://scenes/salto_production_target_spike.tscn") as PackedScene
