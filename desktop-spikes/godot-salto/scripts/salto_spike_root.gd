@@ -32,6 +32,9 @@ const SCRIPT_ARG_PREFIXES := [
 	"--v0370-quaternius-proof",
 	"--v0370-quaternius-smoke",
 	"--v0370-quaternius-capture",
+	"--v0371-playable",
+	"--v0371-smoke",
+	"--v0371-capture",
 	"--h3-semantic-evidence",
 	"--h3-supported-state-contract",
 	"--h3-directional-animation-micro-pilot",
@@ -270,6 +273,14 @@ func _ready() -> void:
 			return
 		var v0370_proof := v0370_scene.instantiate()
 		add_child(v0370_proof)
+	if args.has("--v0371-playable") or args.has("--v0371-smoke") or args.has("--v0371-capture"):
+		var v0371_scene := load("res://scenes/v0371_first_cohesive_quaternius_rts_sector.tscn") as PackedScene
+		if v0371_scene == null:
+			push_error("v0.371 scene failed to load")
+		else:
+			var v0371_slice := v0371_scene.instantiate()
+			v0371_slice.name = "V0371FirstCohesiveQuaterniusRtsSector"
+			add_child(v0371_slice)
 		return
 	if args.has("--salto-production-target-spike"):
 		var spike_scene := load("res://scenes/salto_production_target_spike.tscn") as PackedScene
