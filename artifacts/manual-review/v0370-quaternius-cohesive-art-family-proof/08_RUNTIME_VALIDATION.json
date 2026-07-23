@@ -1,0 +1,17 @@
+{
+  "checkpoint": "v0.370",
+  "scene": "desktop-spikes/godot-salto/scenes/v0370_quaternius_visual_proof.tscn",
+  "root_node": "AscendantRealmsQuaterniusVisualProof",
+  "mode": "opt-in PLAYER visual proof",
+  "capture_count": 5,
+  "raw_capture_root": "artifacts/runtime/v0370/",
+  "selected_asset_manifest": "docs/V0370_QUATERNIUS_SELECTED_ASSET_MANIFEST.md",
+  "imported_asset_family": "Quaternius",
+  "selected_imported_gltf_count": 33,
+  "composed_elements": ["timber bridge", "organic route", "recessed stream", "terrain bed", "settlement", "resource site", "hostile camp"],
+  "player_capture_rules": ["no HUD", "no debug labels", "no selection rings", "no placeholder primitives"],
+  "default_runtime": "unchanged",
+  "gameplay_integration": "not production-integrated",
+  "visual_gate": "passed for isolated feasibility proof",
+  "limitations": ["engine-authored terrain treatment remains provisional", "Quaternius palette is a direction study, not final Barrosan material authoring"]
+}
