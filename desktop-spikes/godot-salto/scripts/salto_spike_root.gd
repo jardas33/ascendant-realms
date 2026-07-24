@@ -44,6 +44,9 @@ const SCRIPT_ARG_PREFIXES := [
 	"--v0375-original-barrosan-proof",
 	"--v0375-original-barrosan-smoke",
 	"--v0375-original-barrosan-capture",
+	"--v0376-original-barrosan-quality-pass",
+	"--v0376-original-barrosan-smoke",
+	"--v0376-original-barrosan-capture",
 	"--h3-semantic-evidence",
 	"--h3-supported-state-contract",
 	"--h3-directional-animation-micro-pilot",
@@ -317,6 +320,15 @@ func _ready() -> void:
 			var v0375_proof := v0375_scene.instantiate()
 			v0375_proof.name = "V0375OriginalBarrosanVisualProof"
 			add_child(v0375_proof)
+		return
+	if args.has("--v0376-original-barrosan-quality-pass") or args.has("--v0376-original-barrosan-smoke") or args.has("--v0376-original-barrosan-capture"):
+		var v0376_scene := load("res://scenes/v0376_original_barrosan_art_quality_pass.tscn") as PackedScene
+		if v0376_scene == null:
+			push_error("v0.376 original Barrosan art-quality scene failed to load")
+		else:
+			var v0376_pass := v0376_scene.instantiate()
+			v0376_pass.name = "V0376OriginalBarrosanArtQualityPass"
+			add_child(v0376_pass)
 		return
 	if args.has("--salto-production-target-spike"):
 		var spike_scene := load("res://scenes/salto_production_target_spike.tscn") as PackedScene
