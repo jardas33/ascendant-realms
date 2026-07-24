@@ -1,0 +1,368 @@
+/goal v0.379 — IMPORT THE PROVIDED AUTHORED HIGHLAND INFRASTRUCTURE KIT AND PREPARE A HUMAN VISUAL REVIEW
+
+BASE
+
+Branch:
+codex/v0215-v0226-recovery
+
+Expected starting HEAD:
+3c1a7d13fc921f83f73fb16d6f38a5036cd0f0b4
+
+==================================================
+PRECONDITIONS
+==================================================
+
+Before changing anything:
+
+1. Verify the current branch is exactly:
+   codex/v0215-v0226-recovery
+
+2. Verify HEAD is exactly:
+   3c1a7d13fc921f83f73fb16d6f38a5036cd0f0b4
+
+3. Verify tracked repository state and branch synchronization.
+
+4. Preserve all pre-existing/generated untracked files.
+
+5. Verify these supplied files exist:
+
+   external-art-intake/original-barrosan/v0379-authored-highland-infrastructure/exports/barrosan_highland_infrastructure_v0379.glb
+
+   external-art-intake/original-barrosan/v0379-authored-highland-infrastructure/source/generate_v0379_highland_infrastructure.py
+
+   external-art-intake/original-barrosan/v0379-authored-highland-infrastructure/documentation/README.md
+
+   external-art-intake/original-barrosan/v0379-authored-highland-infrastructure/previews/01_SCHEMATIC_TOPDOWN.png
+
+6. Read:
+
+   docs/V0378_PROVIDED_INFRASTRUCTURE_KIT_VISUAL_GATE_REPORT.md
+
+   external-art-intake/original-barrosan/v0379-authored-highland-infrastructure/documentation/README.md
+
+   external-art-intake/original-barrosan/v0379-authored-highland-infrastructure/documentation/DESIGN_NOTES.md
+
+7. Inspect the supplied schematic previews.
+
+Stop and report honestly if any precondition fails.
+
+==================================================
+HUMAN DECISION
+==================================================
+
+V0.378 is accepted only as proof that the supplied-asset intake, bounded repair,
+Godot import and capture pipeline work.
+
+V0.378 is NOT accepted as the visual infrastructure foundation.
+
+The human reviewer rejects the v0.378 visible result because it remains:
+
+- too flat;
+- too empty;
+- too uniformly pale;
+- too diagrammatic;
+- insufficiently integrated at the road, bank and terrain level.
+
+The numerical 72/100 score must not override this human visual decision.
+
+V0.379 supplies a new exact GLB authored outside Codex. Your task is to import,
+present and inspect that supplied GLB faithfully.
+
+Do not redesign the terrain from prose.
+Do not generate a replacement terrain kit.
+Do not create a checkerboard material.
+Do not replace the embedded road with a separate road ribbon.
+Do not convert the river into a flat blue strip.
+Do not start buildings, gameplay or v0.380.
+
+==================================================
+SUPPLIED SOURCE
+==================================================
+
+Source root:
+
+external-art-intake/original-barrosan/v0379-authored-highland-infrastructure/
+
+Primary GLB:
+
+external-art-intake/original-barrosan/v0379-authored-highland-infrastructure/exports/barrosan_highland_infrastructure_v0379.glb
+
+The GLB already contains:
+
+- one continuous highland terrain mesh;
+- embedded terrain-colour road treatment;
+- recessed curved river valley;
+- wet-bank colour transitions;
+- water below the land level;
+- timber bridge;
+- individual planks;
+- under-beams;
+- edge courses;
+- restrained rails and posts;
+- granite abutments and footings;
+- rocks, reeds and shrubs.
+
+Preserve the source GLB and source generator unchanged.
+
+Copy/import through a new versioned Godot path.
+
+Suggested imported root:
+
+desktop-spikes/godot-salto/assets/v0379/authored-highland-infrastructure/
+
+Suggested scene:
+
+desktop-spikes/godot-salto/scenes/v0379_authored_highland_infrastructure.tscn
+
+Suggested launch:
+
+npm run godot:play:v0379-highland-infrastructure
+
+Suggested capture:
+
+npm run godot:capture:v0379-highland-infrastructure
+
+==================================================
+PRIMARY OBJECTIVE
+==================================================
+
+Create one isolated, opt-in Godot visual-review scene using the exact supplied
+v0.379 GLB.
+
+The scene must make it possible for the human reviewer to judge:
+
+1. terrain elevation and continuity;
+2. road embedding and colour transition;
+3. river recession and bank depth;
+4. bridge deck, supports, rails and landings;
+5. contact between infrastructure and surrounding terrain;
+6. whether v0.379 is visibly better than v0.378.
+
+No buildings, units, HUD, gameplay or debug overlays may appear.
+
+==================================================
+IMPORT RULES
+==================================================
+
+1. Preserve the supplied original GLB and source script.
+
+2. Record SHA-256 for:
+   - supplied GLB;
+   - imported GLB;
+   - source generator.
+
+3. Do not silently re-export or overwrite the source GLB.
+
+4. Use vertex colours from the supplied terrain mesh.
+
+5. Do not flatten, remesh or replace the terrain.
+
+6. Do not detach the road into a separate broad mesh.
+
+7. Do not apply a global material override that destroys the supplied vertex
+   colour variation.
+
+8. Bounded Godot-side material tuning is allowed only when it preserves the
+   authored colour hierarchy.
+
+9. Bounded import correction is allowed only for:
+   - Y-up orientation;
+   - metric scale;
+   - material import settings;
+   - shadow settings;
+   - obvious importer-generated transparency or culling defects.
+
+10. If a source-geometry defect prevents a valid render, report it. Do not
+    invent another terrain system.
+
+==================================================
+CAMERA AND PRESENTATION
+==================================================
+
+Use one restrained orthographic-oblique RTS camera.
+
+Primary view requirements:
+
+- pitch approximately 38–48 degrees from horizontal;
+- terrain fills the complete frame;
+- no terrain boundary visible;
+- road crossing and river curve both readable;
+- bridge large enough to inspect but not filling the whole image;
+- no giant empty foreground;
+- no near-vertical audit camera as the primary view;
+- no extreme wide shot;
+- no perspective distortion;
+- 1920x1080 output.
+
+Also create focused detail cameras for:
+
+- embedded road and terrain;
+- riverbank depth and wet transition;
+- bridge and landings;
+- elevated spacing audit;
+- grayscale role/value read.
+
+==================================================
+LIGHTING
+==================================================
+
+Use restrained daylight presentation:
+
+- warm directional key;
+- cool low-intensity environment fill;
+- soft contact shadows;
+- modest ambient occlusion when supported;
+- no bloom;
+- no heavy fog;
+- no washed-out global exposure;
+- no fluorescent grass;
+- no cyan-dominant water.
+
+The terrain relief and bank depth must remain visible.
+
+==================================================
+AUTONOMOUS REVIEW LOOP
+==================================================
+
+Perform at most three focused presentation iterations.
+
+Each iteration must:
+
+1. import or present the supplied GLB;
+2. capture five real 1920x1080 PNGs;
+3. open and inspect all five images;
+4. identify the three most damaging visible presentation problems;
+5. correct camera, lighting, import or material-presentation issues;
+6. rerender.
+
+Do not rewrite the supplied terrain geometry between iterations.
+
+Do not run the complete repository validation matrix between iterations.
+
+==================================================
+HUMAN-REVIEW CONDITIONS
+==================================================
+
+The final captures must show all of the following:
+
+- continuous non-checkerboard terrain;
+- visible highland relief;
+- road embedded in the ground rather than floating above it;
+- road edges feathered through authored vertex colour;
+- river below surrounding land;
+- darker wet-bank transition;
+- bridge abutments visibly meeting the landing terrain;
+- individual deck planks;
+- restrained rail hierarchy;
+- no floating strip;
+- no torn triangle;
+- no visible map edge;
+- no debug text;
+- no HUD.
+
+Automatic rejection conditions:
+
+- terrain appears flat despite authored relief;
+- vertex colours are missing or replaced;
+- road becomes a single uniform rectangular strip;
+- water is level with the land;
+- bank depth is unreadable;
+- bridge is clipped, floating, transparent or misoriented;
+- terrain boundary is visible;
+- capture is too distant to judge;
+- scene looks visually equal to or worse than v0.378.
+
+Do not use a numerical score to overrule an obvious failure.
+
+==================================================
+DELIVERABLES
+==================================================
+
+Create:
+
+docs/V0379_AUTHORED_HIGHLAND_INFRASTRUCTURE_REVIEW_REPORT.md
+
+artifacts/manual-review/v0379-authored-highland-infrastructure/
+
+Exactly these files:
+
+00_READ_ME_FIRST.md
+01_PRIMARY_RTS_VIEW.png
+02_ROAD_AND_TERRAIN_DETAIL.png
+03_RIVERBANK_DEPTH_DETAIL.png
+04_BRIDGE_AND_LANDINGS.png
+05_ELEVATED_SPACING_AUDIT.png
+06_GRAYSCALE_PRIMARY.png
+07_SOURCE_HASH_AND_IMPORT_REPORT.md
+08_PRESENTATION_REVIEW.md
+09_VALIDATION.json
+
+The primary README must use only one of these statuses:
+
+READY FOR HUMAN V0379 AUTHORED HIGHLAND INFRASTRUCTURE REVIEW
+
+or
+
+BLOCKED — V0379 AUTHORED HIGHLAND INFRASTRUCTURE COULD NOT BE PRESENTED VALIDLY
+
+Do not claim production acceptance. The human reviewer makes the visual decision.
+
+==================================================
+VALIDATION
+==================================================
+
+After the final presentation is captured, run only the checks needed to prove:
+
+- source and imported hashes;
+- import resolves;
+- isolated scene loads;
+- captures are real 1920x1080 PNGs;
+- no missing resources;
+- default runtime unchanged;
+- v0.378 preserved;
+- exact ten-file review pack;
+- npm test;
+- npm run build;
+- npm run godot:all;
+- git diff --check.
+
+Do not create another large historical validator ladder.
+
+==================================================
+COMMIT AND DELIVERY
+==================================================
+
+Commit and push the isolated import, scene, capture tooling, report and review
+pack after the presentation is valid.
+
+Report:
+
+- branch;
+- exact commit;
+- exact-SHA GitHub Actions run;
+- launch command;
+- capture command;
+- report path;
+- review-pack path;
+- whether vertex colours imported correctly;
+- whether source geometry was left unchanged;
+- remaining visible limitations.
+
+Use exactly one final status:
+
+READY FOR HUMAN V0379 AUTHORED HIGHLAND INFRASTRUCTURE REVIEW
+
+or
+
+BLOCKED — V0379 AUTHORED HIGHLAND INFRASTRUCTURE COULD NOT BE PRESENTED VALIDLY
+
+==================================================
+HARD STOP
+==================================================
+
+Do not create buildings.
+Do not add units.
+Do not connect gameplay.
+Do not modify the true default runtime.
+Do not begin v0.380.
+Wait for human review.

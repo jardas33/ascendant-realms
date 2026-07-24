@@ -1,0 +1,19 @@
+{
+  "buildings": false,
+  "checkpoint": "v0.379",
+  "debugOverlays": false,
+  "defaultRuntime": "unchanged",
+  "gameplay": false,
+  "glbSha256": "9a2bdc63488f1a226deb6c312f4dd6fadde7fb93764e17ae58a73d077e5a2315",
+  "hud": false,
+  "iteration": 1,
+  "prototype": "external-art-intake/original-barrosan/v0379-authored-highland-infrastructure/exports/barrosan_highland_infrastructure_v0379.glb",
+  "resolution": "1920x1080",
+  "route": "opt-in-only",
+  "sourceSha256": "071f91c776a8e19ebc0dabdd35d86280b70f319ad15e088630e843877f375e46",
+  "stage": "authored-highland-terrain-road-riverbanks-bridge",
+  "status": "RENDERED",
+  "suppliedGeometry": true,
+  "units": false,
+  "vertexColours": "preserved"
+}
