@@ -2,6 +2,8 @@
 
 # v0.378 supplied infrastructure kit visual gate blocker report
 
+> Historical note: this blocker records the original, first-repair, and second-repair failures only. The final bounded repair cleared the gate; see `docs/V0378_PROVIDED_INFRASTRUCTURE_KIT_VISUAL_GATE_REPORT.md` for the current result.
+
 ## Scope
 
 v0.378 imports the supplied authored infrastructure GLB into an isolated, opt-in Godot scene for a bounded terrain/road/riverbank/bridge visual gate. The scene contains no buildings, units, gameplay, HUD, or production-runtime mutation.

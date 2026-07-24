@@ -58,7 +58,8 @@ function validate() {
   const evidenceSets = [
     { prefix: 'v0378-iteration-0', hash: expectedOriginal, label: 'original' },
     { prefix: 'v0378-repaired-iteration-0', hash: 'a6b73bc6252b4d6cfa19cdd4c08d40468e6f1ab1ff723d5d2405ec5b2f5f6418', label: 'repaired-1' },
-    { prefix: 'v0378-repaired2-iteration-0', hash: expectedGlb, label: 'repaired-2' },
+    { prefix: 'v0378-repaired2-iteration-0', hash: '91cf29f5a964cf6b43f67fd1f9ac98d3bd6d3ea27623bb313479d362deef7e88', label: 'repaired-2' },
+    { prefix: 'v0378-final-iteration-0', hash: expectedGlb, label: 'final-repair' },
   ];
   for (const evidenceSet of evidenceSets) for (let i = 1; i <= 4; i += 1) {
     const dir = path.join(work, `${evidenceSet.prefix}${i}`);

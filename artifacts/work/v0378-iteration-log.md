@@ -85,4 +85,24 @@ All five required frames were rendered and manually inspected for each second-re
 - Primary: `artifacts/work/v0378-repaired2-iteration-04/01_PRIMARY_RTS_VIEW.png`
 - Defects: road remains a coherent worn surface; bridge structure is visible but the deck is still visually buried behind the near side/rails; grayscale confirms bridge/material hierarchy remains below the gate.
 
-The second repair is retained as the best rejected evidence. It fixes the road failure but does not clear the bridge, riverbank, and overall score thresholds. No v0.378 success review pack was created.
+The second repair is retained as rejected historical evidence. It fixes the road failure but does not clear the bridge, riverbank, and overall score thresholds.
+
+## Final bounded repair
+
+- Evaluated GLB: `external-art-intake/original-barrosan/v0378-authored-infrastructure/exports/barrosan_infrastructure_v0378.glb`
+- Evaluated GLB SHA-256: `5d27feaabd61f4ab05063b860d19405b45a9ef2219ee27ee256972275ade40e9`
+- Generator source SHA-256: `28f5de34e24700f9bff58e18510d5ee87f47d41c9b9b0d5031e21e2d77a755a1`
+- Primary evidence: `artifacts/work/v0378-final-iteration-01/` through `-04/`
+
+The final bounded repair lightened and narrowed the bridge deck treatment, added a shallow continuous deck edge course, pulled rails inward, reduced rail mass, and kept the repaired continuous road/riverbank surfaces. All four iterations rendered as real 1920x1080 PNGs and were manually inspected.
+
+### Final iteration 4 findings
+
+- Road: continuous worn surface with graded shoulders; no checkerboard, tears, repeated striping, or floating strips.
+- River and banks: continuous recessed water with shaped bank transition and restrained authored rocks/reeds; no parallel painted bank ribbons.
+- Bridge: deck planks, edge course, rails, posts, abutments, and landings read as one crossing with no exposed boundary or black-frame failure.
+- Grayscale: bridge, road, water, and land remain separable at a glance.
+
+## Final decision
+
+The final bounded repair clears the strict visual gate. Final scorecard: terrain 72, road 75, river/banks 70, bridge 72, overall 72. The result is intentionally a sparse stage-1 infrastructure kit with no buildings, units, gameplay, HUD, or production-runtime mutation. The original supplied GLB and all rejected iterations remain preserved for audit.

@@ -6,7 +6,7 @@ extends Node3D
 const CHECKPOINT := "v0.378"
 const KIT_PATH := "res://assets/v0378/provided-infrastructure/barrosan_infrastructure_v0378.glb"
 const CAPTURE_ROOT := "artifacts/runtime/v0378"
-const INTAKE_GLB_SHA256 := "91cf29f5a964cf6b43f67fd1f9ac98d3bd6d3ea27623bb313479d362deef7e88"
+const INTAKE_GLB_SHA256 := "5d27feaabd61f4ab05063b860d19405b45a9ef2219ee27ee256972275ade40e9"
 
 var capture_mode := false
 var smoke_mode := false
@@ -90,16 +90,16 @@ func _build_camera() -> void:
 func _capture_sequence() -> void:
 	var root := ProjectSettings.globalize_path(capture_root)
 	DirAccess.make_dir_recursive_absolute(root)
-	var primary_position := Vector3(30.0, 31.0, 34.0)
+	var primary_position := Vector3(28.0, 38.0, 38.0)
 	var primary_size := 31.0
 	if iteration == 2:
-		primary_position = Vector3(24.0, 40.0, 30.0)
+		primary_position = Vector3(24.0, 44.0, 34.0)
 		primary_size = 30.0
 	elif iteration == 4:
-		primary_position = Vector3(27.0, 32.0, 28.0)
+		primary_position = Vector3(27.0, 38.0, 34.0)
 		primary_size = 29.5
 	elif iteration >= 3:
-		primary_position = Vector3(18.0, 45.0, 24.0)
+		primary_position = Vector3(18.0, 50.0, 30.0)
 		primary_size = 30.0
 	camera.size = primary_size
 	var primary := await _capture_view("01_PRIMARY_RTS_VIEW.png", primary_position, Vector3(0.0, 0.0, 0.0), root)
@@ -108,7 +108,7 @@ func _capture_sequence() -> void:
 	camera.size = 17.0
 	await _capture_view("03_RIVERBANK_DETAIL.png", Vector3(16.0, 27.0, 19.0) if iteration >= 2 else Vector3(18.0, 21.0, 21.0), Vector3(0.0, 5.0, 0.0), root)
 	camera.size = 13.0
-	await _capture_view("04_BRIDGE_AND_LANDINGS.png", Vector3(12.0, 20.0, 15.0) if iteration >= 2 else Vector3(14.0, 16.0, 17.0), Vector3(0.0, 0.0, 0.45), root)
+	await _capture_view("04_BRIDGE_AND_LANDINGS.png", Vector3(11.0, 23.0, 23.0) if iteration >= 2 else Vector3(13.0, 19.0, 21.0), Vector3(0.0, 0.0, 0.35), root)
 	var grayscale := primary.duplicate()
 	grayscale.convert(Image.FORMAT_L8)
 	grayscale.save_png(root.path_join("05_GRAYSCALE_PRIMARY.png"))

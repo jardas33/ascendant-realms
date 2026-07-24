@@ -4,7 +4,7 @@
   "defaultRuntime": "unchanged",
   "gameplay": false,
   "glbSha256": "5d27feaabd61f4ab05063b860d19405b45a9ef2219ee27ee256972275ade40e9",
-  "iteration": 4,
+  "iteration": 3,
   "prototype": "external-art-intake/original-barrosan/v0378-authored-infrastructure/exports/barrosan_infrastructure_v0378.glb",
   "resolution": "1920x1080",
   "route": "opt-in-only",

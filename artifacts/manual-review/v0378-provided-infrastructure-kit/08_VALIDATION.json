@@ -1,0 +1,18 @@
+{
+  "checkpoint": "v0.378",
+  "status": "PASS_V0378_PROVIDED_INFRASTRUCTURE_VISUAL_GATE",
+  "glbSha256": "5d27feaabd61f4ab05063b860d19405b45a9ef2219ee27ee256972275ade40e9",
+  "originalSuppliedGlbSha256": "557653dbda28a350046ef9ac08ec41d0a5b1eaf496238fde3c2a5784a321b078",
+  "sourceSha256": "28f5de34e24700f9bff58e18510d5ee87f47d41c9b9b0d5031e21e2d77a755a1",
+  "iterations": 4,
+  "renderedPngsValidated": 80,
+  "resolution": "1920x1080",
+  "route": "opt-in-only",
+  "buildings": false,
+  "units": false,
+  "gameplay": false,
+  "defaultRuntime": "unchanged",
+  "score": 72,
+  "delivery": "READY FOR HUMAN V0378 PROVIDED INFRASTRUCTURE KIT REVIEW",
+  "marker": "READY FOR HUMAN V0378 PROVIDED INFRASTRUCTURE KIT REVIEW"
+}

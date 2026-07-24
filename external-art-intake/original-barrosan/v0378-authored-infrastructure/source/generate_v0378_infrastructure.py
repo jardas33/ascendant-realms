@@ -136,7 +136,7 @@ for seg in [(-36,-6.5),(6.5,36)]:
 # Bridge components
 stone_mat=PBRMaterial(name='Granite_Block',baseColorFactor=[0.35,0.36,0.34,1],roughnessFactor=0.9)
 wood_mat=PBRMaterial(name='Weathered_Timber',baseColorFactor=[0.34,0.17,0.08,1],roughnessFactor=0.9)
-wood_light=PBRMaterial(name='Worn_Deck_Timber',baseColorFactor=[0.49,0.28,0.12,1],roughnessFactor=0.86)
+wood_light=PBRMaterial(name='Worn_Deck_Timber',baseColorFactor=[0.58,0.38,0.19,1],roughnessFactor=0.86)
 scene=trimesh.Scene()
 scene.add_geometry(terrain,node_name='Terrain')
 scene.add_geometry(water,node_name='Water')
@@ -156,16 +156,21 @@ for y in (-1.25,0,1.25):
 # planks across length x
 plank_positions=np.linspace(-5.7,5.7,18)
 for i,x in enumerate(plank_positions):
-    p=trimesh.creation.box(extents=[0.58,3.6,0.20]); p.apply_translation([x,0,bridge_z]); p.visual.material=wood_light
+    p=trimesh.creation.box(extents=[0.58,3.18,0.12]); p.apply_translation([x,0,bridge_z+0.04]); p.visual.material=wood_light
     scene.add_geometry(p,node_name=f'DeckPlank_{i:02d}')
+# A shallow continuous edge course keeps the deck readable as a bridge surface
+# without recreating the supplied crossing as a broad procedural ribbon.
+for side in (-1.58,1.58):
+    edge=trimesh.creation.box(extents=[11.5,0.10,0.14]); edge.apply_translation([0,side,bridge_z+0.04]); edge.visual.material=wood_light
+    scene.add_geometry(edge,node_name=f'DeckEdge_{side}')
 # rail posts and rails
-for side in (-1.62,1.62):
+for side in (-1.43,1.43):
     for i,x in enumerate(np.linspace(-5.6,5.6,7)):
-        post=trimesh.creation.cylinder(radius=0.10,height=0.95,sections=8)
-        post.apply_translation([x,side,bridge_z+0.55]); post.visual.material=wood_mat
+        post=trimesh.creation.cylinder(radius=0.09,height=0.72,sections=8)
+        post.apply_translation([x,side,bridge_z+0.43]); post.visual.material=wood_mat
         scene.add_geometry(post,node_name=f'RailPost_{side}_{i}')
-    for zoff in (0.44,0.80):
-        rail=trimesh.creation.box(extents=[11.5,0.16,0.16]); rail.apply_translation([0,side,bridge_z+zoff]); rail.visual.material=wood_mat
+    for zoff in (0.32,0.60):
+        rail=trimesh.creation.box(extents=[11.5,0.14,0.13]); rail.apply_translation([0,side,bridge_z+zoff]); rail.visual.material=wood_mat
         scene.add_geometry(rail,node_name=f'Rail_{side}_{zoff}')
 # central stone pier hints under bridge
 for x in (-2.0,2.0):
