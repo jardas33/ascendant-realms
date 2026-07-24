@@ -1,0 +1,158 @@
+/goal v0.378 — IMPORT THE PROVIDED AUTHORED INFRASTRUCTURE KIT AND RUN A STRICT VISUAL GATE
+
+BASE
+
+Branch:
+codex/v0215-v0226-recovery
+
+Expected HEAD:
+9d9ef05a72068565683ac35296226a416a524904
+
+Before work:
+- verify branch and exact HEAD;
+- verify tracked tree state;
+- preserve existing/generated untracked files;
+- preserve v0.377 and all earlier routes;
+- stop honestly if the expected base differs.
+
+HUMAN DECISION
+
+v0.377 is rejected visually. Its checkerboard terrain, torn road spikes, overly broad diagrammatic shoulders and smooth sparse banks must not be reused.
+
+A new authored Stage 1 kit has been supplied locally at:
+
+external-art-intake/original-barrosan/v0378-authored-infrastructure/
+
+Read first:
+
+external-art-intake/original-barrosan/v0378-authored-infrastructure/docs/README.md
+external-art-intake/original-barrosan/v0378-authored-infrastructure/docs/SHA256.json
+
+Inspect these preview images:
+
+external-art-intake/original-barrosan/v0378-authored-infrastructure/previews/overview.png
+external-art-intake/original-barrosan/v0378-authored-infrastructure/previews/bridge_detail.png
+
+PRIMARY OBJECTIVE
+
+Import and evaluate the supplied exact GLB:
+
+external-art-intake/original-barrosan/v0378-authored-infrastructure/exports/barrosan_infrastructure_v0378.glb
+
+Do not regenerate the terrain, road, river or bridge from scratch.
+Do not reinterpret the concept sheet procedurally.
+Do not reuse the v0.377 checkerboard or torn-road geometry.
+Do not add buildings, units, gameplay, HUD, mine or hostile camp.
+
+Create an isolated opt-in v0.378 Godot scene that presents the supplied authored kit with:
+- a stable orthographic-oblique RTS camera;
+- soft directional daylight;
+- restrained ambient fill;
+- clean contact shadows;
+- terrain edges outside the approved primary frame;
+- no debug overlays.
+
+ALLOWED ADJUSTMENTS
+
+You may:
+- normalize metric scale and orientation;
+- fix import materials if they do not resolve correctly;
+- adjust camera, world environment, shadows and fog;
+- make bounded non-destructive Godot material overrides;
+- reposition the entire kit as one unit;
+- add a small number of existing non-primitive scale-reference markers only in DEBUG captures, not PLAYER captures.
+
+You may not:
+- replace supplied geometry with new procedural geometry;
+- create broad ribbon roads or riverbanks;
+- create checkerboard terrain variation;
+- add torn triangular path fragments;
+- change the default runtime;
+- connect gameplay.
+
+VISUAL REVIEW LOOP
+
+Perform up to four iterations. For each:
+1. render a 1920x1080 primary RTS view;
+2. render a road/terrain detail;
+3. render a riverbank detail;
+4. render a bridge/landing detail;
+5. open and inspect the actual renders;
+6. record the three largest visible defects;
+7. correct only defects possible through the supplied source or bounded presentation changes.
+
+If source geometry genuinely requires repair, edit only:
+
+external-art-intake/original-barrosan/v0378-authored-infrastructure/source/generate_v0378_infrastructure.py
+
+Regenerate the GLB reproducibly and record the changed hash. Do not invent a parallel implementation.
+
+PASS GATE
+
+Pass only if:
+- no checkerboard pattern is visible;
+- no torn triangular road geometry is visible;
+- terrain reads as continuous authored land;
+- river is visibly recessed;
+- banks read as shaped terrain rather than parallel painted ribbons;
+- road reads as worn earth and joins the bridge logically;
+- bridge deck, abutments, rails and supports read cleanly;
+- no floating/intersecting critical geometry;
+- primary frame hides map boundaries;
+- overall visual score is at least 70/100;
+- terrain credibility, road integration, riverbank credibility and bridge credibility are each at least 65/100.
+
+FAIL CLOSED
+
+If the supplied kit cannot meet the gate after four serious iterations:
+- do not create a success review pack;
+- preserve the best rejected renders;
+- create an honest blocker report stating the exact remaining geometry or presentation defects;
+- do not begin v0.379.
+
+Use exactly:
+BLOCKED — V0378 PROVIDED INFRASTRUCTURE KIT VISUAL GATE NOT MET
+
+SUCCESS PACK
+
+Only if passed, create exactly:
+- 00_READ_ME_FIRST.md
+- 01_PRIMARY_RTS_VIEW.png
+- 02_ROAD_AND_TERRAIN_DETAIL.png
+- 03_RIVERBANK_DETAIL.png
+- 04_BRIDGE_AND_LANDINGS.png
+- 05_GRAYSCALE_PRIMARY.png
+- 06_SOURCE_HASH_AND_IMPORT_REPORT.md
+- 07_SCORECARD.md
+- 08_VALIDATION.json
+
+VALIDATION
+
+After visual pass only:
+- focused v0.378 validator;
+- source/hash verification;
+- Godot missing-resource and smoke checks;
+- npm test;
+- npm run build;
+- npm run validate:content;
+- npm run validate:art-intake;
+- npm run validate:runtime-art-slots;
+- npm run godot:all;
+- git diff --check;
+- exact-SHA CI.
+
+DELIVERY
+
+If passed, use exactly:
+READY FOR HUMAN V0378 PROVIDED INFRASTRUCTURE KIT REVIEW
+
+If blocked, use exactly:
+BLOCKED — V0378 PROVIDED INFRASTRUCTURE KIT VISUAL GATE NOT MET
+
+HARD STOP
+
+Do not add buildings.
+Do not add units.
+Do not connect gameplay.
+Do not modify default runtime.
+Do not begin v0.379.

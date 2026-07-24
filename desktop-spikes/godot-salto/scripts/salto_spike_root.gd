@@ -50,6 +50,9 @@ const SCRIPT_ARG_PREFIXES := [
 	"--v0377-terrain-infrastructure",
 	"--v0377-terrain-infrastructure-smoke",
 	"--v0377-terrain-infrastructure-capture",
+	"--v0378-provided-infrastructure",
+	"--v0378-provided-infrastructure-smoke",
+	"--v0378-provided-infrastructure-capture",
 	"--h3-semantic-evidence",
 	"--h3-supported-state-contract",
 	"--h3-directional-animation-micro-pilot",
@@ -341,6 +344,15 @@ func _ready() -> void:
 			var v0377_pass := v0377_scene.instantiate()
 			v0377_pass.name = "V0377ReferenceDrivenTerrainInfrastructure"
 			add_child(v0377_pass)
+		return
+	if args.has("--v0378-provided-infrastructure") or args.has("--v0378-provided-infrastructure-smoke") or args.has("--v0378-provided-infrastructure-capture"):
+		var v0378_scene := load("res://scenes/v0378_provided_infrastructure.tscn") as PackedScene
+		if v0378_scene == null:
+			push_error("v0.378 provided infrastructure scene failed to load")
+		else:
+			var v0378_pass := v0378_scene.instantiate()
+			v0378_pass.name = "V0378ProvidedInfrastructure"
+			add_child(v0378_pass)
 		return
 	if args.has("--salto-production-target-spike"):
 		var spike_scene := load("res://scenes/salto_production_target_spike.tscn") as PackedScene
