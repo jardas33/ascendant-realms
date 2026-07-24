@@ -25,4 +25,4 @@ Codex must import this exact GLB and evaluate it. It must not regenerate the ter
 
 ## v0.378 bounded source repair record
 
-The first supplied GLB was preserved as `exports/barrosan_infrastructure_v0378_original_supplied.glb` with SHA-256 `557653dbda28a350046ef9ac08ec41d0a5b1eaf496238fde3c2a5784a321b078`. The current evaluated GLB is a reproducible source repair: narrower and smoother road shoulders, raised/conformed road surfaces with a bridge-end blend, and shorter abutment slabs. The repaired GLB SHA-256 is `a6b73bc6252b4d6cfa19cdd4c08d40468e6f1ab1ff723d5d2405ec5b2f5f6418`; the repaired source SHA-256 is `4d0571cdf414ddc134f006f407218a1f7d9416cd4725f595a4eb0c84f69a0cff`.
+The first supplied GLB was preserved as `exports/barrosan_infrastructure_v0378_original_supplied.glb` with SHA-256 `557653dbda28a350046ef9ac08ec41d0a5b1eaf496238fde3c2a5784a321b078`. The current evaluated GLB is a reproducible source repair: graded four-row road surfaces, a lower bridge deck and rails, and shorter abutment slabs. The repaired GLB SHA-256 is `91cf29f5a964cf6b43f67fd1f9ac98d3bd6d3ea27623bb313479d362deef7e88`; the repaired source SHA-256 is recorded in `docs/SHA256.json`.

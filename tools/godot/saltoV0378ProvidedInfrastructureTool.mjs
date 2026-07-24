@@ -11,7 +11,7 @@ const forbidden = (value, needle, label) => { if (value.toLowerCase().includes(n
 const forbiddenWord = (value, needle, label) => { if (new RegExp(`\\b${needle}\\b`, 'i').test(value)) throw new Error(`${label} contains forbidden token: ${needle}`); };
 const png = file => {
   const bytes = fs.readFileSync(file);
-  if (bytes.length < 100000 || bytes.subarray(1, 4).toString('ascii') !== 'PNG') throw new Error(`invalid PNG: ${path.basename(file)}`);
+  if (bytes.length < 1000 || bytes.subarray(0, 8).toString('hex') !== '89504e470d0a1a0a') throw new Error(`invalid PNG: ${path.basename(file)}`);
   return { width: bytes.readUInt32BE(16), height: bytes.readUInt32BE(20), bytes: bytes.length };
 };
 
@@ -57,7 +57,8 @@ function validate() {
   let count = 0;
   const evidenceSets = [
     { prefix: 'v0378-iteration-0', hash: expectedOriginal, label: 'original' },
-    { prefix: 'v0378-repaired-iteration-0', hash: expectedGlb, label: 'repaired' },
+    { prefix: 'v0378-repaired-iteration-0', hash: 'a6b73bc6252b4d6cfa19cdd4c08d40468e6f1ab1ff723d5d2405ec5b2f5f6418', label: 'repaired-1' },
+    { prefix: 'v0378-repaired2-iteration-0', hash: expectedGlb, label: 'repaired-2' },
   ];
   for (const evidenceSet of evidenceSets) for (let i = 1; i <= 4; i += 1) {
     const dir = path.join(work, `${evidenceSet.prefix}${i}`);

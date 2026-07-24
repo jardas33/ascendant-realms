@@ -88,35 +88,50 @@ water=trimesh.Trimesh(wv,np.array(wf),process=False); water.visual.material=wate
 # The authored crossing is elevated; keep road surfaces above the sampled
 # terrain and blend the final approach into the bridge deck instead of leaving
 # an abrupt, intersecting strip at each landing.
-BRIDGE_Z=0.48
+BRIDGE_Z=0.32
+ROAD_BRIDGE_SURFACE_Z=BRIDGE_Z+0.10
 
 def make_road_segment(x0,x1,kind='core'):
     xv=np.linspace(x0,x1,120)
-    pts=[]
+    rows=[]
     for x in xv:
         yc=road_center(x)
-        hw=road_half_width(x)*(1.0 if kind=='core' else 1.28)
-        # irregular edges
-        irr=0.06*np.sin(x*1.17)+0.03*np.sin(x*2.41)
-        for s in (-1,1):
-            y=yc+s*(hw+irr*s*0.25)
-            z=float(terrain_height(x,y)) + (0.045 if kind=='core' else 0.032)
-            landing_blend=np.clip((abs(x)-5.7)/0.8,0.0,1.0)
-            z=(1.0-landing_blend)*z + landing_blend*BRIDGE_Z
-            pts.append((x,y,z))
-    fs=[]
-    for i in range(len(xv)-1):
-        a=2*i; fs += [[a,a+2,a+1],[a+1,a+2,a+3]]
-    m=trimesh.Trimesh(np.array(pts),np.array(fs),process=False)
-    if kind=='core':
-        m.visual.material=PBRMaterial(name='Road_Compacted_Earth',baseColorFactor=[0.38,0.23,0.12,1],roughnessFactor=0.95)
-    else:
-        m.visual.material=PBRMaterial(name='Road_Worn_Shoulder',baseColorFactor=[0.47,0.34,0.18,1],roughnessFactor=1.0)
-    return m
+        core_hw=road_half_width(x)
+        shoulder_hw=core_hw*1.22
+        # Small authored edge variation, with a four-row cross section so the
+        # road is a raised, graded surface instead of a z-fighting ribbon.
+        irr=0.045*np.sin(x*1.17)+0.02*np.sin(x*2.41)
+        ylo=yc-shoulder_hw-irr
+        yli=yc-core_hw-irr*0.5
+        yri=yc+core_hw+irr*0.5
+        yro=yc+shoulder_hw+irr
+        zlo=float(terrain_height(x,ylo))+0.025
+        zli=float(terrain_height(x,yli))+0.14
+        zri=float(terrain_height(x,yri))+0.14
+        zro=float(terrain_height(x,yro))+0.025
+        ztop=max(zli,zri)
+        landing_blend=np.clip((abs(x)-5.7)/0.8,0.0,1.0)
+        zli=(1.0-landing_blend)*zli+landing_blend*ROAD_BRIDGE_SURFACE_Z
+        zri=(1.0-landing_blend)*zri+landing_blend*ROAD_BRIDGE_SURFACE_Z
+        rows.append([(x,ylo,zlo),(x,yli,zli),(x,yri,zri),(x,yro,zro)])
+
+    def strip(left_index,right_index,material):
+        pts=[]
+        for row in rows:
+            pts.extend([row[left_index],row[right_index]])
+        fs=[]
+        for i in range(len(xv)-1):
+            a=2*i; fs += [[a,a+2,a+1],[a+1,a+2,a+3]]
+        mesh=trimesh.Trimesh(np.array(pts),np.array(fs),process=False)
+        mesh.visual.material=material
+        return mesh
+
+    shoulder_mat=PBRMaterial(name='Road_Worn_Shoulder',baseColorFactor=[0.43,0.30,0.16,1],roughnessFactor=1.0)
+    core_mat=PBRMaterial(name='Road_Compacted_Earth',baseColorFactor=[0.35,0.22,0.12,1],roughnessFactor=0.95)
+    return [strip(0,1,shoulder_mat),strip(1,2,core_mat),strip(2,3,shoulder_mat)]
 road_meshes=[]
 for seg in [(-36,-6.5),(6.5,36)]:
-    road_meshes.append(make_road_segment(*seg,'shoulder'))
-    road_meshes.append(make_road_segment(*seg,'core'))
+    road_meshes.extend(make_road_segment(*seg))
 
 # Bridge components
 stone_mat=PBRMaterial(name='Granite_Block',baseColorFactor=[0.35,0.36,0.34,1],roughnessFactor=0.9)
@@ -131,8 +146,8 @@ for idx,m in enumerate(road_meshes): scene.add_geometry(m,node_name=f'Road_{idx}
 bridge_z=BRIDGE_Z
 # abutments
 for x in (-6.2,6.2):
-    box=trimesh.creation.box(extents=[1.8,4.0,0.84])
-    box.apply_translation([x,0,bridge_z-0.42]); box.visual.material=stone_mat
+    box=trimesh.creation.box(extents=[1.3,4.2,0.58])
+    box.apply_translation([x,0,bridge_z-0.29]); box.visual.material=stone_mat
     scene.add_geometry(box,node_name=f'Abutment_{x}')
 # under beams
 for y in (-1.25,0,1.25):
@@ -146,10 +161,10 @@ for i,x in enumerate(plank_positions):
 # rail posts and rails
 for side in (-1.62,1.62):
     for i,x in enumerate(np.linspace(-5.6,5.6,7)):
-        post=trimesh.creation.cylinder(radius=0.10,height=1.55,sections=8)
-        post.apply_translation([x,side,bridge_z+0.72]); post.visual.material=wood_mat
+        post=trimesh.creation.cylinder(radius=0.10,height=0.95,sections=8)
+        post.apply_translation([x,side,bridge_z+0.55]); post.visual.material=wood_mat
         scene.add_geometry(post,node_name=f'RailPost_{side}_{i}')
-    for zoff in (0.65,1.25):
+    for zoff in (0.44,0.80):
         rail=trimesh.creation.box(extents=[11.5,0.16,0.16]); rail.apply_translation([0,side,bridge_z+zoff]); rail.visual.material=wood_mat
         scene.add_geometry(rail,node_name=f'Rail_{side}_{zoff}')
 # central stone pier hints under bridge

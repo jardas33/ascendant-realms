@@ -2,7 +2,8 @@
 
 Base: `9d9ef05a72068565683ac35296226a416a524904`
 Original supplied GLB: `557653dbda28a350046ef9ac08ec41d0a5b1eaf496238fde3c2a5784a321b078`
-Repaired evaluated GLB: `a6b73bc6252b4d6cfa19cdd4c08d40468e6f1ab1ff723d5d2405ec5b2f5f6418`
+Repaired evaluated GLB: `91cf29f5a964cf6b43f67fd1f9ac98d3bd6d3ea27623bb313479d362deef7e88`
+Earlier repaired GLB: `a6b73bc6252b4d6cfa19cdd4c08d40468e6f1ab1ff723d5d2405ec5b2f5f6418`
 
 All four iterations rendered at 1920x1080 from the isolated opt-in scene and were inspected as real PNGs. No checkerboard or blank/black frame was accepted.
 
@@ -57,3 +58,31 @@ All five required frames were rendered and manually inspected for each repaired 
 - Defects: the same road striping is visible at the alternate framing; bridge sidewall remains dominant; grayscale confirms the crossing lacks a clean surface hierarchy.
 
 The repaired rerun is therefore also rejected. No v0.378 success review pack was created.
+
+## Bounded source-repair rerun 2
+
+The second repair replaced the overlapping road strips with a four-row graded shoulder/core cross-section, lowered the bridge deck and rails, and shortened the abutments. The reproducibly regenerated evaluated GLB is SHA-256 `91cf29f5a964cf6b43f67fd1f9ac98d3bd6d3ea27623bb313479d362deef7e88`; the generator source is SHA-256 `45645bd357002946050bffa7efc5331be930bd3cd1e57286e50b33b8b96b1144`.
+
+All five required frames were rendered and manually inspected for each second-repair iteration:
+
+### Repaired-2 iteration 1
+
+- Primary: `artifacts/work/v0378-repaired2-iteration-01/01_PRIMARY_RTS_VIEW.png`
+- Defects: road continuity is restored with no tears or striping; bridge remains dark and sidewall-dominant; terrain and bank material remain sparse and flat.
+
+### Repaired-2 iteration 2
+
+- Primary: `artifacts/work/v0378-repaired2-iteration-02/01_PRIMARY_RTS_VIEW.png`
+- Defects: continuous road and recessed river read clearly; bridge deck/rails still have weak value separation; the crossing lacks a convincing landing hierarchy.
+
+### Repaired-2 iteration 3
+
+- Primary: `artifacts/work/v0378-repaired2-iteration-03/01_PRIMARY_RTS_VIEW.png`
+- Defects: alternate oblique view confirms the road repair; bridge near side still reads as a deep slab; sparse dressing does not establish a production riverbank read.
+
+### Repaired-2 iteration 4
+
+- Primary: `artifacts/work/v0378-repaired2-iteration-04/01_PRIMARY_RTS_VIEW.png`
+- Defects: road remains a coherent worn surface; bridge structure is visible but the deck is still visually buried behind the near side/rails; grayscale confirms bridge/material hierarchy remains below the gate.
+
+The second repair is retained as the best rejected evidence. It fixes the road failure but does not clear the bridge, riverbank, and overall score thresholds. No v0.378 success review pack was created.
