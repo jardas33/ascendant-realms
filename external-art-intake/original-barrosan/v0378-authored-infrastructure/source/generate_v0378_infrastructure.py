@@ -9,7 +9,7 @@ matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d.art3d import Poly3DCollection
 
-ROOT = Path('/mnt/data/v0378_pack')
+ROOT = Path(os.environ.get('V0378_PACK_ROOT', '/mnt/data/v0378_pack'))
 if ROOT.exists(): shutil.rmtree(ROOT)
 EXPORT = ROOT/'external-art-intake/original-barrosan/v0378-authored-infrastructure/exports'
 SOURCE = ROOT/'external-art-intake/original-barrosan/v0378-authored-infrastructure/source'
@@ -85,18 +85,24 @@ water_mat=PBRMaterial(name='Water_BlueGreen',baseColorFactor=[0.16,0.42,0.43,0.9
 water=trimesh.Trimesh(wv,np.array(wf),process=False); water.visual.material=water_mat
 
 # Road shoulder and core meshes, split around river corridor
+# The authored crossing is elevated; keep road surfaces above the sampled
+# terrain and blend the final approach into the bridge deck instead of leaving
+# an abrupt, intersecting strip at each landing.
+BRIDGE_Z=0.48
 
 def make_road_segment(x0,x1,kind='core'):
     xv=np.linspace(x0,x1,120)
     pts=[]
     for x in xv:
         yc=road_center(x)
-        hw=road_half_width(x)*(1.0 if kind=='core' else 1.55)
+        hw=road_half_width(x)*(1.0 if kind=='core' else 1.28)
         # irregular edges
-        irr=0.16*np.sin(x*1.17)+0.08*np.sin(x*2.41)
+        irr=0.06*np.sin(x*1.17)+0.03*np.sin(x*2.41)
         for s in (-1,1):
             y=yc+s*(hw+irr*s*0.25)
-            z=float(terrain_height(x,y)) + (0.018 if kind=='core' else 0.010)
+            z=float(terrain_height(x,y)) + (0.045 if kind=='core' else 0.032)
+            landing_blend=np.clip((abs(x)-5.7)/0.8,0.0,1.0)
+            z=(1.0-landing_blend)*z + landing_blend*BRIDGE_Z
             pts.append((x,y,z))
     fs=[]
     for i in range(len(xv)-1):
@@ -122,11 +128,11 @@ scene.add_geometry(water,node_name='Water')
 for idx,m in enumerate(road_meshes): scene.add_geometry(m,node_name=f'Road_{idx}')
 
 # Bridge elevation and dimensions
-bridge_z=0.48
+bridge_z=BRIDGE_Z
 # abutments
 for x in (-6.2,6.2):
-    box=trimesh.creation.box(extents=[2.1,4.4,1.2])
-    box.apply_translation([x,0,bridge_z-0.45]); box.visual.material=stone_mat
+    box=trimesh.creation.box(extents=[1.8,4.0,0.84])
+    box.apply_translation([x,0,bridge_z-0.42]); box.visual.material=stone_mat
     scene.add_geometry(box,node_name=f'Abutment_{x}')
 # under beams
 for y in (-1.25,0,1.25):
@@ -210,7 +216,7 @@ def draw_plan(path, detail=False):
     # roads
     for x0,x1 in [(-36,-6.5),(6.5,36)]:
         xr=np.linspace(x0,x1,160); yc=road_center(xr); hw=road_half_width(xr)
-        sh=hw*1.55
+        sh=hw*1.28
         shoulder=np.vstack([np.column_stack([xr,yc-sh]),np.column_stack([xr[::-1],(yc+sh)[::-1]])])
         core=np.vstack([np.column_stack([xr,yc-hw]),np.column_stack([xr[::-1],(yc+hw)[::-1]])])
         ax.add_patch(Polygon(shoulder,closed=True,facecolor='#81603a',edgecolor='none',alpha=.75,zorder=7))
@@ -247,7 +253,7 @@ draw_plan(PREV/'overview.png',False)
 draw_plan(PREV/'bridge_detail.png',True)
 
 # Source script copy
-shutil.copy2('/mnt/data/generate_v0378_pack.py', SOURCE/'generate_v0378_infrastructure.py')
+shutil.copy2(os.environ.get('V0378_SOURCE_FILE', '/mnt/data/generate_v0378_pack.py'), SOURCE/'generate_v0378_infrastructure.py')
 
 # Docs
 readme=f'''# v0.378 Authored Barrosan Infrastructure Kit

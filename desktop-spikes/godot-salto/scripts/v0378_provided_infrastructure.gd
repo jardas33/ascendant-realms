@@ -6,7 +6,7 @@ extends Node3D
 const CHECKPOINT := "v0.378"
 const KIT_PATH := "res://assets/v0378/provided-infrastructure/barrosan_infrastructure_v0378.glb"
 const CAPTURE_ROOT := "artifacts/runtime/v0378"
-const INTAKE_GLB_SHA256 := "557653dbda28a350046ef9ac08ec41d0a5b1eaf496238fde3c2a5784a321b078"
+const INTAKE_GLB_SHA256 := "a6b73bc6252b4d6cfa19cdd4c08d40468e6f1ab1ff723d5d2405ec5b2f5f6418"
 
 var capture_mode := false
 var smoke_mode := false

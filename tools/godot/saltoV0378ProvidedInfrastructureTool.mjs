@@ -19,6 +19,7 @@ const intakeRoot = path.join(repo, 'external-art-intake/original-barrosan/v0378-
 const intakeReadme = path.join(intakeRoot, 'docs/README.md');
 const intakeShaFile = path.join(intakeRoot, 'docs/SHA256.json');
 const intakeGlb = path.join(intakeRoot, 'exports/barrosan_infrastructure_v0378.glb');
+const originalIntakeGlb = path.join(intakeRoot, 'exports/barrosan_infrastructure_v0378_original_supplied.glb');
 const intakeSource = path.join(intakeRoot, 'source/generate_v0378_infrastructure.py');
 const importedGlb = path.join(repo, 'desktop-spikes/godot-salto/assets/v0378/provided-infrastructure/barrosan_infrastructure_v0378.glb');
 const scene = path.join(repo, 'desktop-spikes/godot-salto/scenes/v0378_provided_infrastructure.tscn');
@@ -31,11 +32,14 @@ const blockerReport = path.join(repo, 'docs/V0378_PROVIDED_INFRASTRUCTURE_KIT_VI
 const successPack = path.join(repo, 'artifacts/manual-review/v0378-provided-infrastructure-kit/');
 
 function validate() {
-  for (const [file, label] of [[intakeReadme, 'intake README'], [intakeShaFile, 'intake SHA manifest'], [intakeGlb, 'intake GLB'], [intakeSource, 'intake source'], [importedGlb, 'imported GLB'], [scene, 'v0.378 scene'], [script, 'v0.378 Godot script'], [rootScript, 'opt-in root route'], [packageJson, 'package']]) must(file, label);
+  for (const [file, label] of [[intakeReadme, 'intake README'], [intakeShaFile, 'intake SHA manifest'], [intakeGlb, 'repaired intake GLB'], [originalIntakeGlb, 'original supplied GLB'], [intakeSource, 'intake source'], [importedGlb, 'imported GLB'], [scene, 'v0.378 scene'], [script, 'v0.378 Godot script'], [rootScript, 'opt-in root route'], [packageJson, 'package']]) must(file, label);
   const s = read(scene), g = read(script), r = read(rootScript), pkg = JSON.parse(read(packageJson));
   const intakeSums = JSON.parse(read(intakeShaFile));
   const expectedGlb = intakeSums['external-art-intake/original-barrosan/v0378-authored-infrastructure/exports/barrosan_infrastructure_v0378.glb'];
   if (expectedGlb !== sha256(intakeGlb) || expectedGlb !== sha256(importedGlb)) throw new Error('supplied GLB hash does not match intake manifest or imported copy');
+  const expectedOriginal = intakeSums['external-art-intake/original-barrosan/v0378-authored-infrastructure/exports/barrosan_infrastructure_v0378_original_supplied.glb'];
+  if (expectedOriginal !== '557653dbda28a350046ef9ac08ec41d0a5b1eaf496238fde3c2a5784a321b078' || expectedOriginal !== sha256(originalIntakeGlb)) throw new Error('original supplied GLB provenance hash is not preserved');
+  includes(read(intakeReadme), 'bounded source repair record', 'intake README');
   includes(s, 'V0378ProvidedInfrastructure', 'scene');
   includes(g, 'res://assets/v0378/provided-infrastructure/barrosan_infrastructure_v0378.glb', 'supplied kit path');
   includes(g, 'Camera3D.PROJECTION_ORTHOGONAL', 'orthographic camera');
@@ -51,8 +55,12 @@ function validate() {
   }
   const names = ['01_PRIMARY_RTS_VIEW.png', '02_ROAD_AND_TERRAIN_DETAIL.png', '03_RIVERBANK_DETAIL.png', '04_BRIDGE_AND_LANDINGS.png', '05_GRAYSCALE_PRIMARY.png'];
   let count = 0;
-  for (let i = 1; i <= 4; i += 1) {
-    const dir = path.join(work, `v0378-iteration-0${i}`);
+  const evidenceSets = [
+    { prefix: 'v0378-iteration-0', hash: expectedOriginal, label: 'original' },
+    { prefix: 'v0378-repaired-iteration-0', hash: expectedGlb, label: 'repaired' },
+  ];
+  for (const evidenceSet of evidenceSets) for (let i = 1; i <= 4; i += 1) {
+    const dir = path.join(work, `${evidenceSet.prefix}${i}`);
     must(dir, `iteration ${i} evidence folder`);
     for (const name of names) {
       const file = path.join(dir, name); must(file, `iteration ${i} ${name}`);
@@ -60,7 +68,7 @@ function validate() {
     }
     const manifestFile = path.join(dir, 'v0378-provided-infrastructure.json'); must(manifestFile, `iteration ${i} manifest`);
     const manifest = JSON.parse(read(manifestFile));
-    if (manifest.suppliedGeometry !== true || manifest.buildings !== false || manifest.units !== false || manifest.gameplay !== false || manifest.defaultRuntime !== 'unchanged' || manifest.glbSha256 !== expectedGlb) throw new Error(`iteration ${i} manifest boundary failed`);
+    if (manifest.suppliedGeometry !== true || manifest.buildings !== false || manifest.units !== false || manifest.gameplay !== false || manifest.defaultRuntime !== 'unchanged' || manifest.glbSha256 !== evidenceSet.hash) throw new Error(`${evidenceSet.label} iteration ${i} manifest boundary failed`);
   }
   if (fs.existsSync(successPack)) {
     const successNames = ['00_READ_ME_FIRST.md', '01_PRIMARY_RTS_VIEW.png', '02_ROAD_AND_TERRAIN_DETAIL.png', '03_RIVERBANK_DETAIL.png', '04_BRIDGE_AND_LANDINGS.png', '05_GRAYSCALE_PRIMARY.png', '06_SOURCE_HASH_AND_IMPORT_REPORT.md', '07_SCORECARD.md', '08_VALIDATION.json'];
