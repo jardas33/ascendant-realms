@@ -47,6 +47,9 @@ const SCRIPT_ARG_PREFIXES := [
 	"--v0376-original-barrosan-quality-pass",
 	"--v0376-original-barrosan-smoke",
 	"--v0376-original-barrosan-capture",
+	"--v0377-terrain-infrastructure",
+	"--v0377-terrain-infrastructure-smoke",
+	"--v0377-terrain-infrastructure-capture",
 	"--h3-semantic-evidence",
 	"--h3-supported-state-contract",
 	"--h3-directional-animation-micro-pilot",
@@ -329,6 +332,15 @@ func _ready() -> void:
 			var v0376_pass := v0376_scene.instantiate()
 			v0376_pass.name = "V0376OriginalBarrosanArtQualityPass"
 			add_child(v0376_pass)
+		return
+	if args.has("--v0377-terrain-infrastructure") or args.has("--v0377-terrain-infrastructure-smoke") or args.has("--v0377-terrain-infrastructure-capture"):
+		var v0377_scene := load("res://scenes/v0377_reference_driven_terrain_infrastructure.tscn") as PackedScene
+		if v0377_scene == null:
+			push_error("v0.377 terrain infrastructure scene failed to load")
+		else:
+			var v0377_pass := v0377_scene.instantiate()
+			v0377_pass.name = "V0377ReferenceDrivenTerrainInfrastructure"
+			add_child(v0377_pass)
 		return
 	if args.has("--salto-production-target-spike"):
 		var spike_scene := load("res://scenes/salto_production_target_spike.tscn") as PackedScene

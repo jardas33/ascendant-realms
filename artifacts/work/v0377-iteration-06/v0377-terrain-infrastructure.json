@@ -1,0 +1,13 @@
+{
+  "buildings": false,
+  "checkpoint": "v0.377",
+  "defaultRuntime": "unchanged",
+  "gameplay": false,
+  "iteration": 6,
+  "prototype": "original-reference-driven-infrastructure-kit",
+  "resolution": "1920x1080",
+  "route": "opt-in-only",
+  "stage": "stage-1-terrain-road-riverbanks-bridge",
+  "status": "RENDERED",
+  "units": false
+}
