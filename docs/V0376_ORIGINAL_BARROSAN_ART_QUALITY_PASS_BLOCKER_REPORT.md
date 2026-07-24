@@ -118,5 +118,7 @@ Exact blocked delivery string:
 
 ## Closeout evidence
 
-- CI evidence: recorded after the exact pushed commit is available.
-- Final repo state: tracked changes committed and pushed; pre-existing untracked generated artifacts preserved and not deleted.
+- Exact pushed commit: `68147dee719a51e6f378fbd1ffdaf53448c909ce`.
+- GitHub Actions: run `30063761821` completed with `success` for that exact SHA.
+- The report update below is documentary only; it does not change the prototype or its visual verdict.
+- Final repo state after the documentary update: tracked changes committed and pushed; pre-existing untracked generated artifacts preserved and not deleted.
