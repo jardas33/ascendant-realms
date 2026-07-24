@@ -41,6 +41,9 @@ const SCRIPT_ARG_PREFIXES := [
 	"--v0373-autonomous-visual-direction",
 	"--v0373-autonomous-smoke",
 	"--v0373-autonomous-capture",
+	"--v0375-original-barrosan-proof",
+	"--v0375-original-barrosan-smoke",
+	"--v0375-original-barrosan-capture",
 	"--h3-semantic-evidence",
 	"--h3-supported-state-contract",
 	"--h3-directional-animation-micro-pilot",
@@ -305,6 +308,15 @@ func _ready() -> void:
 			var v0373_slice := v0373_scene.instantiate()
 			v0373_slice.name = "V0373AutonomousVisualDirectionRtsSector"
 			add_child(v0373_slice)
+		return
+	if args.has("--v0375-original-barrosan-proof") or args.has("--v0375-original-barrosan-smoke") or args.has("--v0375-original-barrosan-capture"):
+		var v0375_scene := load("res://scenes/v0375_original_barrosan_visual_proof.tscn") as PackedScene
+		if v0375_scene == null:
+			push_error("v0.375 original Barrosan proof scene failed to load")
+		else:
+			var v0375_proof := v0375_scene.instantiate()
+			v0375_proof.name = "V0375OriginalBarrosanVisualProof"
+			add_child(v0375_proof)
 		return
 	if args.has("--salto-production-target-spike"):
 		var spike_scene := load("res://scenes/salto_production_target_spike.tscn") as PackedScene
