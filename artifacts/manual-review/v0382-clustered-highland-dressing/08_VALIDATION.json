@@ -1,0 +1,18 @@
+{
+  "status": "READY FOR HUMAN V0382 CLUSTERED HIGHLAND DRESSING REVIEW",
+  "checkpoint": "v0.382",
+  "baseHead": "a5173d23b6fa7845817e28795f9daa72d6d15def",
+  "acceptedInfrastructureCommit": "06f45ce1428af5baeac77d542fa1e0811b52c88a",
+  "baseGlbSha256": "746b27eb0e0d52470ce090cf58b7e8515ffa900267d5479649e105262afcd5fb",
+  "sourceGeneratorSha256": "4b8eafeac69f16a87bd6899a69ab6c6bb8cb5d49103c5ba9cb3da325f38f3e19",
+  "primaryResolution": "1920x1080",
+  "riverbankClusters": 6,
+  "highlandMasses": 2,
+  "rockClusters": 5,
+  "isolatedAuthoredRocks": 0,
+  "defaultRuntime": "unchanged",
+  "route": "opt-in-only",
+  "gameplay": false,
+  "externalAssets": false,
+  "realRenderedEvidence": true
+}
