@@ -10,6 +10,8 @@ v0.380 is an isolated human visual-review checkpoint. It imports the supplied co
 
 - Branch: `codex/v0215-v0226-recovery`
 - Starting HEAD: `eaa2bd2a684f3f28f161dc873e657aed57df519f`
+- Implementation commit: `5f2d0f5a3287d4e47466c4634ef3fa14f87d89bd`
+- Exact-SHA GitHub Actions: run `30174957949` — success
 - Prototype scene: `desktop-spikes/godot-salto/scenes/v0380_corrected_highland_infrastructure.tscn`
 - Prototype script: `desktop-spikes/godot-salto/scripts/v0380_corrected_highland_infrastructure.gd`
 - Exact imported asset: `desktop-spikes/godot-salto/assets/v0380/corrected-highland-infrastructure/barrosan_highland_infrastructure_v0380.glb`
@@ -56,4 +58,4 @@ The pack has exactly ten files: one read-me, six rendered images, one source/imp
 
 The focused v0.380 validator passed with exact GLB/source hashes, six runtime captures, exact ten-file pack membership, opt-in/default-runtime boundaries, and real 1920x1080 PNG checks. The focused smoke passed with Godot 4.6.3. The full local suite also passed: `npm test`, `npm run build`, `npm run validate:content`, `npm run validate:art-intake`, `npm run validate:runtime-art-slots`, `npm run validate:artifact-retention`, `npm run godot:all`, and `git diff --check`.
 
-The final commit and exact-SHA GitHub Actions result are recorded in this report at closeout after push.
+The implementation commit `5f2d0f5a3287d4e47466c4634ef3fa14f87d89bd` was pushed to `codex/v0215-v0226-recovery`; exact-SHA GitHub Actions run `30174957949` completed successfully.

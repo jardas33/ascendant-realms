@@ -3,6 +3,12 @@
   "checkpoint": "v0.380",
   "branch": "codex/v0215-v0226-recovery",
   "startingHead": "eaa2bd2a684f3f28f161dc873e657aed57df519f",
+  "implementationCommit": "5f2d0f5a3287d4e47466c4634ef3fa14f87d89bd",
+  "githubActions": {
+    "runId": 30174957949,
+    "conclusion": "success",
+    "exactSha": true
+  },
   "route": "opt-in-only",
   "defaultRuntime": "unchanged",
   "suppliedGeometry": true,
