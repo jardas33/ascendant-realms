@@ -57,7 +57,11 @@ The scene is opt-in only through `--v0382-clustered-dressing`, `--v0382-clustere
 
 ## Validation and CI
 
-The dedicated validator asserts opt-in routing, exact accepted GLB provenance, clustered scene structure, real 1920x1080 captures, the review-pack file contract, and no gameplay tokens. v0.380 validation remains part of the closeout ladder. Full local validation and exact-SHA GitHub Actions results are recorded at closeout after commit.
+The dedicated validator asserts opt-in routing, exact accepted GLB provenance, clustered scene structure, real 1920x1080 captures, the review-pack file contract, and no gameplay tokens. v0.380 and v0.381 validation remain green. Local validation passed: focused v0.382/v0.380/v0.381 validators and smoke, 887 tests, production build, content validation, art-intake validation, runtime-art-slot validation, artifact-retention validation, `npm run godot:all`, and `git diff --check`.
+
+The feature commit `51dcda5d` was pushed to `codex/v0215-v0226-recovery`. GitHub Actions run `30177818057` completed successfully for that exact SHA; Fast confidence, E2E fast smoke, and production preview smoke passed, while the optional/release matrix jobs were correctly skipped by the workflow contract.
+
+Final closeout state for the feature commit: clean tracked tree and branch synchronized with `origin/codex/v0215-v0226-recovery`. Pre-existing unrelated untracked files were preserved and were not staged.
 
 ## Recommendation
 
