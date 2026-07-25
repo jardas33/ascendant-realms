@@ -65,6 +65,9 @@ const SCRIPT_ARG_PREFIXES := [
 	"--v0382-clustered-dressing",
 	"--v0382-clustered-dressing-smoke",
 	"--v0382-clustered-dressing-capture",
+	"--v0383-style-coherence",
+	"--v0383-style-coherence-smoke",
+	"--v0383-style-coherence-capture",
 	"--h3-semantic-evidence",
 	"--h3-supported-state-contract",
 	"--h3-directional-animation-micro-pilot",
@@ -401,6 +404,15 @@ func _ready() -> void:
 			var v0382_pass := v0382_scene.instantiate()
 			v0382_pass.name = "V0382ClusteredHighlandDressing"
 			add_child(v0382_pass)
+		return
+	if args.has("--v0383-style-coherence") or args.has("--v0383-style-coherence-smoke") or args.has("--v0383-style-coherence-capture"):
+		var v0383_scene := load("res://scenes/v0383_highland_style_coherence.tscn") as PackedScene
+		if v0383_scene == null:
+			push_error("v0.383 highland style-coherence scene failed to load")
+		else:
+			var v0383_pass := v0383_scene.instantiate()
+			v0383_pass.name = "V0383HighlandStyleCoherence"
+			add_child(v0383_pass)
 		return
 	if args.has("--salto-production-target-spike"):
 		var spike_scene := load("res://scenes/salto_production_target_spike.tscn") as PackedScene

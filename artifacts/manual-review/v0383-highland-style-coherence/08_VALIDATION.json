@@ -1,0 +1,31 @@
+{
+  "checkpoint": "v0.383",
+  "status": "READY FOR HUMAN V0383 HIGHLAND STYLE-COHERENCE REVIEW",
+  "baseHead": "6d6a3e21a4b651ba7f9b7825d95fe1d4ce08f9cd",
+  "acceptedInfrastructureCommit": "06f45ce1428af5baeac77d542fa1e0811b52c88a",
+  "baseGlbSha256": "746b27eb0e0d52470ce090cf58b7e8515ffa900267d5479649e105262afcd5fb",
+  "sourceGeneratorSha256": "4b8eafeac69f16a87bd6899a69ab6c6bb8cb5d49103c5ba9cb3da325f38f3e19",
+  "scene": "desktop-spikes/godot-salto/scenes/v0383_highland_style_coherence.tscn",
+  "optInOnly": true,
+  "acceptedInfrastructureUnchanged": true,
+  "sceneLevelNonStructuralScatterSubdued": true,
+  "protectedBridgeClearance": true,
+  "riverbankClusters": 6,
+  "bankPatterns": 3,
+  "highlandMasses": 2,
+  "rockClusters": 4,
+  "strongRedAccents": 0,
+  "iterationsInspected": 3,
+  "resolution": "1920x1080",
+  "gameplay": false,
+  "defaultRuntime": "unchanged",
+  "externalAssetsImported": false,
+  "captures": [
+    "01_PRIMARY_RTS_VIEW.png",
+    "02_BRIDGE_CLEARANCE_AUDIT.png",
+    "03_RIVERBANK_VARIATION_DETAIL.png",
+    "04_VEGETATION_MASS_SPACING.png",
+    "05_DRESSING_DISTRIBUTION_AUDIT.png",
+    "06_GRAYSCALE_PRIMARY.png"
+  ]
+}
