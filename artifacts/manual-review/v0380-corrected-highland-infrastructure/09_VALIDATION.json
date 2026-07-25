@@ -1,0 +1,38 @@
+{
+  "status": "READY FOR HUMAN V0380 CORRECTED HIGHLAND INFRASTRUCTURE REVIEW",
+  "checkpoint": "v0.380",
+  "branch": "codex/v0215-v0226-recovery",
+  "startingHead": "eaa2bd2a684f3f28f161dc873e657aed57df519f",
+  "route": "opt-in-only",
+  "defaultRuntime": "unchanged",
+  "suppliedGeometry": true,
+  "importedGlbByteIdentical": true,
+  "resolution": "1920x1080",
+  "iteration": 3,
+  "criticalVisualChecks": {
+    "smoothTerrain": true,
+    "continuousRiver": true,
+    "waterUnderBridge": true,
+    "restrainedRoadApproaches": true,
+    "bridgeAndLandingsReadAsOneCrossing": true,
+    "primaryHasNoVisibleMapBoundary": true,
+    "noBlackOrTitleCardFrames": true
+  },
+  "humanReviewOnly": true,
+  "productionAcceptance": false,
+  "glbSha256": "746b27eb0e0d52470ce090cf58b7e8515ffa900267d5479649e105262afcd5fb",
+  "importedGlbSha256": "746b27eb0e0d52470ce090cf58b7e8515ffa900267d5479649e105262afcd5fb",
+  "sourceSha256": "4b8eafeac69f16a87bd6899a69ab6c6bb8cb5d49103c5ba9cb3da325f38f3e19",
+  "reviewFiles": [
+    "00_READ_ME_FIRST.md",
+    "01_PRIMARY_RTS_VIEW.png",
+    "02_ROAD_AND_TERRAIN_DETAIL.png",
+    "03_CONTINUOUS_RIVER_CROSSING.png",
+    "04_BRIDGE_AND_LANDINGS.png",
+    "05_ELEVATED_TOPOLOGY_AUDIT.png",
+    "06_GRAYSCALE_PRIMARY.png",
+    "07_SOURCE_HASH_AND_IMPORT_REPORT.md",
+    "08_PRESENTATION_REVIEW.md",
+    "09_VALIDATION.json"
+  ]
+}

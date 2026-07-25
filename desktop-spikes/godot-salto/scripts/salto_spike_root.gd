@@ -56,6 +56,9 @@ const SCRIPT_ARG_PREFIXES := [
 	"--v0379-highland-infrastructure",
 	"--v0379-highland-infrastructure-smoke",
 	"--v0379-highland-infrastructure-capture",
+	"--v0380-highland-infrastructure",
+	"--v0380-highland-infrastructure-smoke",
+	"--v0380-highland-infrastructure-capture",
 	"--h3-semantic-evidence",
 	"--h3-supported-state-contract",
 	"--h3-directional-animation-micro-pilot",
@@ -365,6 +368,15 @@ func _ready() -> void:
 			var v0379_pass := v0379_scene.instantiate()
 			v0379_pass.name = "V0379AuthoredHighlandInfrastructure"
 			add_child(v0379_pass)
+		return
+	if args.has("--v0380-highland-infrastructure") or args.has("--v0380-highland-infrastructure-smoke") or args.has("--v0380-highland-infrastructure-capture"):
+		var v0380_scene := load("res://scenes/v0380_corrected_highland_infrastructure.tscn") as PackedScene
+		if v0380_scene == null:
+			push_error("v0.380 corrected highland infrastructure scene failed to load")
+		else:
+			var v0380_pass := v0380_scene.instantiate()
+			v0380_pass.name = "V0380CorrectedHighlandInfrastructure"
+			add_child(v0380_pass)
 		return
 	if args.has("--salto-production-target-spike"):
 		var spike_scene := load("res://scenes/salto_production_target_spike.tscn") as PackedScene
