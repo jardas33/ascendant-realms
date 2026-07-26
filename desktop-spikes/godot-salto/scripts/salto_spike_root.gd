@@ -83,6 +83,9 @@ const SCRIPT_ARG_PREFIXES := [
 	"--v0388-inhabited-crossing",
 	"--v0388-inhabited-crossing-smoke",
 	"--v0388-inhabited-crossing-capture",
+	"--v0389-inhabited-crossing",
+	"--v0389-inhabited-crossing-smoke",
+	"--v0389-inhabited-crossing-capture",
 	"--h3-semantic-evidence",
 	"--h3-supported-state-contract",
 	"--h3-directional-animation-micro-pilot",
@@ -473,6 +476,15 @@ func _ready() -> void:
 			var v0388_pass := v0388_scene.instantiate()
 			v0388_pass.name = "V0388InhabitedCrossingSettlementCohesionRepair"
 			add_child(v0388_pass)
+		return
+	if args.has("--v0389-inhabited-crossing") or args.has("--v0389-inhabited-crossing-smoke") or args.has("--v0389-inhabited-crossing-capture"):
+		var v0389_scene := load("res://scenes/v0389_inhabited_crossing_farmyard_readability_repair.tscn") as PackedScene
+		if v0389_scene == null:
+			push_error("v0.389 inhabited crossing farmyard readability repair scene failed to load")
+		else:
+			var v0389_pass := v0389_scene.instantiate()
+			v0389_pass.name = "V0389InhabitedCrossingFarmyardReadabilityRepair"
+			add_child(v0389_pass)
 		return
 	if args.has("--salto-production-target-spike"):
 		var spike_scene := load("res://scenes/salto_production_target_spike.tscn") as PackedScene

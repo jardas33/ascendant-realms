@@ -1,0 +1,28 @@
+{
+  "checkpoint": "v0.389",
+  "status": "REJECTED BY INDEPENDENT V0389 VISUAL REVIEW",
+  "evidence": "real-rendered",
+  "resolution": "1920x1080",
+  "rejectedReference": "v0.388",
+  "repairs": [
+    "raised dark-earth route and warm inlay",
+    "closer non-overlapping farmyard barn relationship",
+    "independent authored working surfaces",
+    "open-yard role spacing",
+    "restored settlement grayscale hierarchy"
+  ],
+  "blackFrameRejected": true,
+  "titleCardOnlyRejected": true,
+  "gameplay": false,
+  "defaultRuntime": "unchanged",
+  "route": "opt-in-only",
+  "independentVerdict": "REJECT",
+  "nextCheckpoint": "v0.390 Natural Yard Grounding and Settlement Value Repair",
+  "rejectionReasons": [
+    "route remains visually disconnected",
+    "raised rectangular yard pads read as debug geometry",
+    "barn remains detached from the shared farmyard",
+    "five yard functions are not independently legible",
+    "bridge still dominates grayscale hierarchy"
+  ]
+}
