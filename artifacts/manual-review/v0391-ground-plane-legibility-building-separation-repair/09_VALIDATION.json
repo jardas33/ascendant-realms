@@ -1,0 +1,23 @@
+{
+  "checkpoint": "v0.391",
+  "status": "REJECTED BY INDEPENDENT V0391 VISUAL REVIEW",
+  "evidence": "real-rendered",
+  "resolution": "1920x1080",
+  "rejectedReference": "v0.390",
+  "repairs": [
+    "one clearly visible flush irregular worn-earth yard surface",
+    "short branch toward barn entrance",
+    "remaining artificial workstation slab removed",
+    "barn roof silhouettes separated and yard-facing",
+    "five functions directly grounded with open gate",
+    "bridge value reduced and settlement midtones lifted"
+  ],
+  "blackFrameRejected": true,
+  "titleCardOnlyRejected": true,
+  "gameplay": false,
+  "defaultRuntime": "unchanged",
+  "route": "opt-in-only",
+  "independentVerdict": "REJECT",
+  "independentReview": "The workstation slab is gone, the barn is separated, and all three characters are unobstructed, but the worn-earth route is visually absent, the fence does not read as an open gate, and bridge/landing value still competes with the settlement.",
+  "nextCheckpoint": "v0.392 Worn-Earth Route and Open-Gate Readability Repair"
+}
