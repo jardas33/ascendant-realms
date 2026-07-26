@@ -1,0 +1,18 @@
+{
+  "status": "READY FOR HUMAN V0386 INHABITED CROSSING REVIEW",
+  "checkpoint": "v0.386",
+  "resolution": "1920x1080",
+  "realRenderedCaptures": 7,
+  "iterationCaptures": 3,
+  "primaryBuildings": 1,
+  "subordinateBuildings": 1,
+  "yardGroups": 5,
+  "visibleCharacterRoles": 3,
+  "characterSources": ["Farmer.gltf", "Worker.gltf", "Adventurer.gltf"],
+  "bridgeRiverInfrastructurePreserved": true,
+  "roadYardEntranceConnection": true,
+  "defaultRuntimeUnchanged": true,
+  "gameplay": false,
+  "blackFrameRejected": true,
+  "humanReviewRequired": true
+}

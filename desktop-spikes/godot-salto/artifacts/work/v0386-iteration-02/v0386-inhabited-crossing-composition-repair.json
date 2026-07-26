@@ -1,0 +1,25 @@
+{
+  "acceptedGlbSha256": "746b27eb0e0d52470ce090cf58b7e8515ffa900267d5479649e105262afcd5fb",
+  "bridgePreserved": true,
+  "characterRoles": 3,
+  "checkpoint": "v0.386",
+  "defaultRuntime": "unchanged",
+  "gameplay": false,
+  "iteration": 2,
+  "primaryBuildings": 1,
+  "resolution": "1920x1080",
+  "riverPreserved": true,
+  "roadToYardConnection": true,
+  "route": "opt-in-only",
+  "selectedAssets": [
+    "res://assets/v0338/barrosan_house_02_material_gold_candidate.glb",
+    "res://scenes/gold/barrosan/BarrosanBarnGold.tscn",
+    "res://assets/third_party/quaternius/v0370/men/Farmer.gltf",
+    "res://assets/third_party/quaternius/v0370/men/Adventurer.gltf",
+    "res://assets/third_party/quaternius/v0370/men/Worker.gltf"
+  ],
+  "sourceSha256": "4b8eafeac69f16a87bd6899a69ab6c6bb8cb5d49103c5ba9cb3da325f38f3e19",
+  "status": "RENDERED",
+  "subordinateBuildings": 1,
+  "yardGroups": 5
+}
