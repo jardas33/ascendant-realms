@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/v0388_inhabited_crossing_settlement_cohesion_repair.gd" id="1_v0388"]
+
+[node name="V0388InhabitedCrossingSettlementCohesionRepair" type="Node3D"]
+script = ExtResource("1_v0388")

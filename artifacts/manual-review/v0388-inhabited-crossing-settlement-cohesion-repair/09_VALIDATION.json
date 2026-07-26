@@ -1,0 +1,19 @@
+{
+  "checkpoint": "v0.388",
+  "status": "READY FOR HUMAN V0388 INHABITED CROSSING REVIEW",
+  "evidence": "real-rendered",
+  "resolution": "1920x1080",
+  "rejectedReference": "v0.387",
+  "repairs": [
+    "single continuous bridge-to-yard-to-door route ribbon",
+    "physically separated L-positioned house and barn",
+    "five spatially separated yard functions",
+    "unobstructed worker in open yard",
+    "settlement fill rebalanced against bridge value"
+  ],
+  "blackFrameRejected": true,
+  "titleCardOnlyRejected": true,
+  "gameplay": false,
+  "defaultRuntime": "unchanged",
+  "route": "opt-in-only"
+}
