@@ -1,0 +1,12 @@
+{
+  "bridge": true,
+  "checkpoint": "v0.396",
+  "defaultRuntime": "unchanged",
+  "diagnostic": "inherited main route hidden before final capture; V0394_Bridge_Desaturated_Value override identified",
+  "elevation": "v0395-flush-preserved",
+  "gameplay": false,
+  "material": "compacted-warm-worn-earth-unified",
+  "status": "RENDERED",
+  "terrain": true,
+  "topology": "v0394-preserved"
+}

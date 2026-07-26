@@ -101,6 +101,12 @@ const SCRIPT_ARG_PREFIXES := [
 	"--v0394-route-only",
 	"--v0394-route-only-smoke",
 	"--v0394-route-only-capture",
+	"--v0395-route-material",
+	"--v0395-route-material-smoke",
+	"--v0395-route-material-capture",
+	"--v0396-route-mesh-capture",
+	"--v0396-route-mesh-smoke",
+	"--v0396-route-mesh-diagnostic",
 	"--h3-semantic-evidence",
 	"--h3-supported-state-contract",
 	"--h3-directional-animation-micro-pilot",
@@ -556,6 +562,31 @@ func _ready() -> void:
 		v0394_pass.set_meta("v0394_capture_mode", args.has("--v0394-route-only-capture"))
 		v0394_pass.set_meta("v0394_smoke_mode", args.has("--v0394-route-only-smoke"))
 		add_child(v0394_pass)
+		return
+	if args.has("--v0395-route-material") or args.has("--v0395-route-material-smoke") or args.has("--v0395-route-material-capture"):
+		var v0395_script := load("res://scripts/v0395_natural_worn_earth_route_material_edge_integration.gd") as Script
+		if v0395_script == null:
+			push_error("v0.395 script failed to load")
+			return
+		var v0395_pass := Node3D.new()
+		v0395_pass.set_script(v0395_script)
+		v0395_pass.name = "V0395NaturalWornEarthRouteMaterialEdgeIntegration"
+		v0395_pass.set_meta("v0395_capture_mode", args.has("--v0395-route-material-capture"))
+		v0395_pass.set_meta("v0395_smoke_mode", args.has("--v0395-route-material-smoke"))
+		add_child(v0395_pass)
+		return
+	if args.has("--v0396-route-mesh-capture") or args.has("--v0396-route-mesh-smoke") or args.has("--v0396-route-mesh-diagnostic"):
+		var v0396_script := load("res://scripts/v0396_inherited_route_mesh_deduplication_material_unification.gd") as Script
+		if v0396_script == null:
+			push_error("v0.396 script failed to load")
+			return
+		var v0396_pass := Node3D.new()
+		v0396_pass.set_script(v0396_script)
+		v0396_pass.name = "V0396InheritedRouteMeshDeduplicationMaterialUnification"
+		v0396_pass.set_meta("v0396_capture_mode", args.has("--v0396-route-mesh-capture"))
+		v0396_pass.set_meta("v0396_smoke_mode", args.has("--v0396-route-mesh-smoke"))
+		v0396_pass.set_meta("v0396_diagnostic_mode", args.has("--v0396-route-mesh-diagnostic"))
+		add_child(v0396_pass)
 		return
 	if args.has("--salto-production-target-spike"):
 		var spike_scene := load("res://scenes/salto_production_target_spike.tscn") as PackedScene

@@ -1,0 +1,12 @@
+{
+  "checkpoint": "v0.396",
+  "status": "ACCEPTED BY INDEPENDENT V0396 VISUAL REVIEW",
+  "evidence": "real Godot renders",
+  "diagnosis": "V0395 main route carried inherited V0394_Bridge_Desaturated_Value override",
+  "repair": "unified compacted warm worn-earth material only",
+  "topology": "v0.394 preserved",
+  "elevation": "v0.395 flush baseline preserved",
+  "gameplay": false,
+  "defaultRuntime": "unchanged",
+  "independentVerdict": "ACCEPT"
+}
