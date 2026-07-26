@@ -98,6 +98,9 @@ const SCRIPT_ARG_PREFIXES := [
 	"--v0393-explicit-route",
 	"--v0393-explicit-route-smoke",
 	"--v0393-explicit-route-capture",
+	"--v0394-route-only",
+	"--v0394-route-only-smoke",
+	"--v0394-route-only-capture",
 	"--h3-semantic-evidence",
 	"--h3-supported-state-contract",
 	"--h3-directional-animation-micro-pilot",
@@ -541,6 +544,18 @@ func _ready() -> void:
 		v0393_pass.set_meta("v0393_capture_mode", args.has("--v0393-explicit-route-capture"))
 		v0393_pass.set_meta("v0393_smoke_mode", args.has("--v0393-explicit-route-smoke"))
 		add_child(v0393_pass)
+		return
+	if args.has("--v0394-route-only") or args.has("--v0394-route-only-smoke") or args.has("--v0394-route-only-capture"):
+		var v0394_script := load("res://scripts/v0394_route_only_visibility_repair_fence_regression_rollback.gd") as Script
+		if v0394_script == null:
+			push_error("v0.394 script failed to load")
+			return
+		var v0394_pass := Node3D.new()
+		v0394_pass.set_script(v0394_script)
+		v0394_pass.name = "V0394RouteOnlyVisibilityRepairFenceRegressionRollback"
+		v0394_pass.set_meta("v0394_capture_mode", args.has("--v0394-route-only-capture"))
+		v0394_pass.set_meta("v0394_smoke_mode", args.has("--v0394-route-only-smoke"))
+		add_child(v0394_pass)
 		return
 	if args.has("--salto-production-target-spike"):
 		var spike_scene := load("res://scenes/salto_production_target_spike.tscn") as PackedScene
