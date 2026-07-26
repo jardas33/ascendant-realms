@@ -68,6 +68,9 @@ const SCRIPT_ARG_PREFIXES := [
 	"--v0383-style-coherence",
 	"--v0383-style-coherence-smoke",
 	"--v0383-style-coherence-capture",
+	"--v0384-inhabited-crossing",
+	"--v0384-inhabited-crossing-smoke",
+	"--v0384-inhabited-crossing-capture",
 	"--h3-semantic-evidence",
 	"--h3-supported-state-contract",
 	"--h3-directional-animation-micro-pilot",
@@ -413,6 +416,15 @@ func _ready() -> void:
 			var v0383_pass := v0383_scene.instantiate()
 			v0383_pass.name = "V0383HighlandStyleCoherence"
 			add_child(v0383_pass)
+		return
+	if args.has("--v0384-inhabited-crossing") or args.has("--v0384-inhabited-crossing-smoke") or args.has("--v0384-inhabited-crossing-capture"):
+		var v0384_scene := load("res://scenes/v0384_first_inhabited_crossing.tscn") as PackedScene
+		if v0384_scene == null:
+			push_error("v0.384 first inhabited crossing scene failed to load")
+		else:
+			var v0384_pass := v0384_scene.instantiate()
+			v0384_pass.name = "V0384FirstInhabitedCrossing"
+			add_child(v0384_pass)
 		return
 	if args.has("--salto-production-target-spike"):
 		var spike_scene := load("res://scenes/salto_production_target_spike.tscn") as PackedScene
