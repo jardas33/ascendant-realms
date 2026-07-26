@@ -1,0 +1,21 @@
+{
+  "checkpoint": "v0.393",
+  "status": "REJECTED BY INDEPENDENT V0393 VISUAL REVIEW",
+  "evidence": "real-rendered",
+  "resolution": "1920x1080",
+  "rejectedReference": "v0.392",
+  "repairs": [
+    "one explicit flush route silhouette from western bridge landing to doorway",
+    "visible barn-facing branch",
+    "two coherent foreground fence runs with paired open-gate posts",
+    "gateway aligned with the route"
+  ],
+  "blackFrameRejected": true,
+  "titleCardOnlyRejected": true,
+  "gameplay": false,
+  "defaultRuntime": "unchanged",
+  "route": "opt-in-only",
+  "independentVerdict": "REJECT",
+  "independentReview": "The route repair remains absent in both primary and grayscale. The new fence work is a severe regression: large brown beams float around the barn, penetrate or protrude through roofs, do not form coherent runs, and expose no readable gateway or paired posts. The bridge still dominates because route and boundary structure remain unreadable.",
+  "nextCheckpoint": "v0.394 Route-Only Visibility Repair and Fence Regression Rollback"
+}

@@ -92,6 +92,12 @@ const SCRIPT_ARG_PREFIXES := [
 	"--v0391-ground-plane",
 	"--v0391-ground-plane-smoke",
 	"--v0391-ground-plane-capture",
+	"--v0392-worn-earth",
+	"--v0392-worn-earth-smoke",
+	"--v0392-worn-earth-capture",
+	"--v0393-explicit-route",
+	"--v0393-explicit-route-smoke",
+	"--v0393-explicit-route-capture",
 	"--h3-semantic-evidence",
 	"--h3-supported-state-contract",
 	"--h3-directional-animation-micro-pilot",
@@ -509,6 +515,32 @@ func _ready() -> void:
 		var v0391_pass := v0391_scene.instantiate()
 		v0391_pass.name = "V0391GroundPlaneLegibilityBuildingSeparationRepair"
 		add_child(v0391_pass)
+		return
+	if args.has("--v0392-worn-earth") or args.has("--v0392-worn-earth-smoke") or args.has("--v0392-worn-earth-capture"):
+		var v0392_scene := load("res://scenes/v0392_worn_earth_route_open_gate_readability_repair.tscn") as PackedScene
+		if v0392_scene == null:
+			push_error("v0.392 scene failed to load")
+			return
+		var v0392_pass := v0392_scene.instantiate()
+		v0392_pass.name = "V0392WornEarthRouteOpenGateReadabilityRepair"
+		add_child(v0392_pass)
+		return
+	if args.has("--v0393-explicit-route") or args.has("--v0393-explicit-route-smoke") or args.has("--v0393-explicit-route-capture"):
+		var v0393_scene := load("res://scenes/v0393_explicit_route_silhouette_front_yard_gate_repair.tscn") as PackedScene
+		var v0393_pass: Node3D
+		if v0393_scene != null:
+			v0393_pass = v0393_scene.instantiate()
+		else:
+			var v0393_script := load("res://scripts/v0393_explicit_route_silhouette_front_yard_gate_repair.gd") as Script
+			if v0393_script == null:
+				push_error("v0.393 scene and script failed to load")
+				return
+			v0393_pass = Node3D.new()
+			v0393_pass.set_script(v0393_script)
+		v0393_pass.name = "V0393ExplicitRouteSilhouetteFrontYardGateRepair"
+		v0393_pass.set_meta("v0393_capture_mode", args.has("--v0393-explicit-route-capture"))
+		v0393_pass.set_meta("v0393_smoke_mode", args.has("--v0393-explicit-route-smoke"))
+		add_child(v0393_pass)
 		return
 	if args.has("--salto-production-target-spike"):
 		var spike_scene := load("res://scenes/salto_production_target_spike.tscn") as PackedScene
