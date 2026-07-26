@@ -113,6 +113,8 @@ const SCRIPT_ARG_PREFIXES := [
 	"--v0398-route-edge-smoke",
 	"--v0399-barn-structure-capture",
 	"--v0399-barn-structure-smoke",
+	"--v0400-house-roof-capture",
+	"--v0400-house-roof-smoke",
 	"--h3-semantic-evidence",
 	"--h3-supported-state-contract",
 	"--h3-directional-animation-micro-pilot",
@@ -629,6 +631,18 @@ func _ready() -> void:
 		v0399_pass.set_meta("v0399_capture_mode", args.has("--v0399-barn-structure-capture"))
 		v0399_pass.set_meta("v0399_smoke_mode", args.has("--v0399-barn-structure-smoke"))
 		add_child(v0399_pass)
+		return
+	if args.has("--v0400-house-roof-capture") or args.has("--v0400-house-roof-smoke"):
+		var v0400_script := load("res://scripts/v0400_main_house_roof_silhouette_cleanup.gd") as Script
+		if v0400_script == null:
+			push_error("v0.400 script failed to load")
+			return
+		var v0400_pass := Node3D.new()
+		v0400_pass.set_script(v0400_script)
+		v0400_pass.name = "V0400MainHouseRoofSilhouetteCleanup"
+		v0400_pass.set_meta("v0400_capture_mode", args.has("--v0400-house-roof-capture"))
+		v0400_pass.set_meta("v0400_smoke_mode", args.has("--v0400-house-roof-smoke"))
+		add_child(v0400_pass)
 		return
 	if args.has("--salto-production-target-spike"):
 		var spike_scene := load("res://scenes/salto_production_target_spike.tscn") as PackedScene

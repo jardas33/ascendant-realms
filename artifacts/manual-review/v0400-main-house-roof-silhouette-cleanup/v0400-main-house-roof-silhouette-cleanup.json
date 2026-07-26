@@ -1,0 +1,20 @@
+{
+  "barn": "v0399-preserved",
+  "bridge": "unchanged",
+  "camera": "unchanged",
+  "characters": "unchanged",
+  "checkpoint": "v0.400",
+  "chimneyPreserved": true,
+  "consistentEaves": true,
+  "defaultRuntime": "unchanged",
+  "gameplay": false,
+  "grayscale": true,
+  "hiddenRoofMeshes": 4,
+  "layout": "unchanged",
+  "priorVerdict": "v0399-ACCEPTED",
+  "props": "unchanged",
+  "route": "preserved",
+  "scope": "primary-house-roof-silhouette-only",
+  "singleRidge": true,
+  "status": "ACCEPTED BY INDEPENDENT V0400 VISUAL REVIEW"
+}

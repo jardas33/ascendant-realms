@@ -1,0 +1,12 @@
+{
+  "checkpoint": "v0.400",
+  "status": "ACCEPTED BY INDEPENDENT V0400 VISUAL REVIEW",
+  "scope": "primary-house-roof-silhouette-only",
+  "realGodotRenders": true,
+  "singleRidge": true,
+  "consistentEaves": true,
+  "chimneyPreserved": true,
+  "v0399Accepted": true,
+  "gameplayMutation": false,
+  "defaultRuntimeChanged": false
+}
