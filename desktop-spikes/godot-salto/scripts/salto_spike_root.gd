@@ -107,6 +107,10 @@ const SCRIPT_ARG_PREFIXES := [
 	"--v0396-route-mesh-capture",
 	"--v0396-route-mesh-smoke",
 	"--v0396-route-mesh-diagnostic",
+	"--v0397-terrain-route-capture",
+	"--v0397-terrain-route-smoke",
+	"--v0398-route-edge-capture",
+	"--v0398-route-edge-smoke",
 	"--h3-semantic-evidence",
 	"--h3-supported-state-contract",
 	"--h3-directional-animation-micro-pilot",
@@ -587,6 +591,30 @@ func _ready() -> void:
 		v0396_pass.set_meta("v0396_smoke_mode", args.has("--v0396-route-mesh-smoke"))
 		v0396_pass.set_meta("v0396_diagnostic_mode", args.has("--v0396-route-mesh-diagnostic"))
 		add_child(v0396_pass)
+		return
+	if args.has("--v0397-terrain-route-capture") or args.has("--v0397-terrain-route-smoke"):
+		var v0397_script := load("res://scripts/v0397_terrain_route_integration.gd") as Script
+		if v0397_script == null:
+			push_error("v0.397 script failed to load")
+			return
+		var v0397_pass := Node3D.new()
+		v0397_pass.set_script(v0397_script)
+		v0397_pass.name = "V0397TerrainRouteIntegration"
+		v0397_pass.set_meta("v0397_capture_mode", args.has("--v0397-terrain-route-capture"))
+		v0397_pass.set_meta("v0397_smoke_mode", args.has("--v0397-terrain-route-smoke"))
+		add_child(v0397_pass)
+		return
+	if args.has("--v0398-route-edge-capture") or args.has("--v0398-route-edge-smoke"):
+		var v0398_script := load("res://scripts/v0398_route_edge_bedding_cleanup.gd") as Script
+		if v0398_script == null:
+			push_error("v0.398 script failed to load")
+			return
+		var v0398_pass := Node3D.new()
+		v0398_pass.set_script(v0398_script)
+		v0398_pass.name = "V0398RouteEdgeBeddingCleanup"
+		v0398_pass.set_meta("v0398_capture_mode", args.has("--v0398-route-edge-capture"))
+		v0398_pass.set_meta("v0398_smoke_mode", args.has("--v0398-route-edge-smoke"))
+		add_child(v0398_pass)
 		return
 	if args.has("--salto-production-target-spike"):
 		var spike_scene := load("res://scenes/salto_production_target_spike.tscn") as PackedScene

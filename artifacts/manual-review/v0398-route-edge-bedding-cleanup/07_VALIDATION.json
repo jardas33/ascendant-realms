@@ -1,0 +1,10 @@
+{
+  "checkpoint": "v0.398",
+  "status": "ACCEPTED BY INDEPENDENT V0398 VISUAL REVIEW",
+  "captures": "real Godot renders",
+  "priorVerdict": "v0.397 REVISE ONCE",
+  "contactHalos": "removed",
+  "routeGeometry": "v0.396 preserved",
+  "gameplay": false,
+  "defaultRuntime": "unchanged"
+}

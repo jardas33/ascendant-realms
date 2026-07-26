@@ -1,0 +1,9 @@
+{
+  "checkpoint": "v0.397",
+  "status": "READY FOR INDEPENDENT V0397 VISUAL REVIEW",
+  "captures": "real Godot renders",
+  "routeGeometry": "v0.396 preserved",
+  "treatment": "low-opacity grass bedding and contact grounding",
+  "gameplay": false,
+  "defaultRuntime": "unchanged"
+}

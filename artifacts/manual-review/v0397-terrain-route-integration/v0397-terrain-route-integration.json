@@ -1,0 +1,13 @@
+{
+  "bridge": "unchanged",
+  "camera": "unchanged",
+  "checkpoint": "v0.397",
+  "contactGrounding": "restrained-visual-only",
+  "defaultRuntime": "unchanged",
+  "gameplay": false,
+  "grayscale": true,
+  "routeGeometry": "v0396-preserved",
+  "routeTreatment": "warm-earth-with-grass-bedding",
+  "status": "RENDERED",
+  "terrain": "unchanged"
+}
