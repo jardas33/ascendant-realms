@@ -111,6 +111,8 @@ const SCRIPT_ARG_PREFIXES := [
 	"--v0397-terrain-route-smoke",
 	"--v0398-route-edge-capture",
 	"--v0398-route-edge-smoke",
+	"--v0399-barn-structure-capture",
+	"--v0399-barn-structure-smoke",
 	"--h3-semantic-evidence",
 	"--h3-supported-state-contract",
 	"--h3-directional-animation-micro-pilot",
@@ -615,6 +617,18 @@ func _ready() -> void:
 		v0398_pass.set_meta("v0398_capture_mode", args.has("--v0398-route-edge-capture"))
 		v0398_pass.set_meta("v0398_smoke_mode", args.has("--v0398-route-edge-smoke"))
 		add_child(v0398_pass)
+		return
+	if args.has("--v0399-barn-structure-capture") or args.has("--v0399-barn-structure-smoke"):
+		var v0399_script := load("res://scripts/v0399_barn_outbuilding_structural_readability.gd") as Script
+		if v0399_script == null:
+			push_error("v0.399 script failed to load")
+			return
+		var v0399_pass := Node3D.new()
+		v0399_pass.set_script(v0399_script)
+		v0399_pass.name = "V0399BarnOutbuildingStructuralReadability"
+		v0399_pass.set_meta("v0399_capture_mode", args.has("--v0399-barn-structure-capture"))
+		v0399_pass.set_meta("v0399_smoke_mode", args.has("--v0399-barn-structure-smoke"))
+		add_child(v0399_pass)
 		return
 	if args.has("--salto-production-target-spike"):
 		var spike_scene := load("res://scenes/salto_production_target_spike.tscn") as PackedScene
