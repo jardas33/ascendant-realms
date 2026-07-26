@@ -40,7 +40,8 @@ The primary and subordinate are existing repository-authored/accepted Barrosan a
 - Smoke command: `npm run godot:smoke:v0387-inhabited-crossing`
 - Review pack: `artifacts/manual-review/v0387-inhabited-crossing-route-hierarchy-repair/`
 - Iteration evidence: `artifacts/work/v0387-iteration-01/` through `-03/`
-- Retained v0.385, v0.383, and v0.380 validators remain required in closeout.
+- Retained validators passed: v0.386, v0.385, v0.384, v0.383, v0.382, v0.381, and v0.380.
+- Full local checks passed: `npm test` (887 tests), `npm run build`, content validation, art-intake validation, runtime-art-slot validation, artifact retention, `npm run godot:all`, and `git diff --check`.
 
 ## Provisional evaluation for external review
 
@@ -48,4 +49,10 @@ The composition is technically viable and materially improves v0.386's bounded r
 
 ## Final state
 
-This report is prepared before commit/push. Exact commit, CI, and final repository state are recorded only after local validation, commit, push, and exact-SHA Actions success.
+## Confirmed closeout
+
+- Commit: `b72c5c60a62eeccfdb3c7ddce627f1bd0fee5cd6`
+- GitHub Actions: run `30186632225` — success for the exact commit SHA.
+- Branch: `codex/v0215-v0226-recovery`.
+- Tracked working tree: clean and synchronized with origin at 0 ahead / 0 behind.
+- Pre-existing untracked generated artifacts were intentionally left untouched.
