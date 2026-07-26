@@ -1,0 +1,58 @@
+{
+  "bridge": "unchanged",
+  "buildings": "unchanged",
+  "camera": "unchanged",
+  "checkpoint": "v0.401",
+  "defaultRuntime": "unchanged",
+  "figures": [
+    {
+      "groundingCorrection": -0.03,
+      "name": "V0389_Resident_Worker",
+      "posePreserved": true,
+      "position": {
+        "x": -5.34999990463257,
+        "y": 0.790000021457672,
+        "z": 4.05000019073486
+      },
+      "role": "resident worker",
+      "scale": 0.899999976158142,
+      "xzPreserved": true
+    },
+    {
+      "groundingCorrection": -0.03,
+      "name": "V0389_Crossing_Guard",
+      "posePreserved": true,
+      "position": {
+        "x": -0.949999988079071,
+        "y": 0.75,
+        "z": 1.60000002384186
+      },
+      "role": "crossing guard",
+      "scale": 0.870000004768372,
+      "xzPreserved": true
+    },
+    {
+      "groundingCorrection": -0.04,
+      "name": "V0389_Traveller_Porter",
+      "posePreserved": true,
+      "position": {
+        "x": -2.25,
+        "y": 0.879999995231628,
+        "z": 3.79999995231628
+      },
+      "role": "traveller porter",
+      "scale": 0.889999985694885,
+      "xzPreserved": true
+    }
+  ],
+  "gameplay": false,
+  "grayscale": true,
+  "layout": "unchanged",
+  "pose": "unchanged",
+  "props": "unchanged",
+  "route": "unchanged",
+  "scope": "three-existing-character-scale-and-ground-contact-only",
+  "status": "RENDERED",
+  "verticalContactOnly": true,
+  "xzPositions": "unchanged"
+}

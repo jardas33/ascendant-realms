@@ -115,6 +115,8 @@ const SCRIPT_ARG_PREFIXES := [
 	"--v0399-barn-structure-smoke",
 	"--v0400-house-roof-capture",
 	"--v0400-house-roof-smoke",
+	"--v0401-character-grounding-capture",
+	"--v0401-character-grounding-smoke",
 	"--h3-semantic-evidence",
 	"--h3-supported-state-contract",
 	"--h3-directional-animation-micro-pilot",
@@ -643,6 +645,18 @@ func _ready() -> void:
 		v0400_pass.set_meta("v0400_capture_mode", args.has("--v0400-house-roof-capture"))
 		v0400_pass.set_meta("v0400_smoke_mode", args.has("--v0400-house-roof-smoke"))
 		add_child(v0400_pass)
+		return
+	if args.has("--v0401-character-grounding-capture") or args.has("--v0401-character-grounding-smoke"):
+		var v0401_script := load("res://scripts/v0401_character_scale_grounding_calibration.gd") as Script
+		if v0401_script == null:
+			push_error("v0.401 script failed to load")
+			return
+		var v0401_pass := Node3D.new()
+		v0401_pass.set_script(v0401_script)
+		v0401_pass.name = "V0401CharacterScaleGroundingCalibration"
+		v0401_pass.set_meta("v0401_capture_mode", args.has("--v0401-character-grounding-capture"))
+		v0401_pass.set_meta("v0401_smoke_mode", args.has("--v0401-character-grounding-smoke"))
+		add_child(v0401_pass)
 		return
 	if args.has("--salto-production-target-spike"):
 		var spike_scene := load("res://scenes/salto_production_target_spike.tscn") as PackedScene
