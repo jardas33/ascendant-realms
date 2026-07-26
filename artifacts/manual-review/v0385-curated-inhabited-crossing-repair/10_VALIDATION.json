@@ -1,0 +1,29 @@
+{
+  "status": "READY FOR HUMAN V0385 CURATED INHABITED CROSSING REVIEW",
+  "checkpoint": "v0.385 curated inhabited crossing asset replacement and hierarchy repair",
+  "branch": "codex/v0215-v0226-recovery",
+  "starting_head": "c334c74d313565be0ba5189f8df39b96a639d45b",
+  "final_commit": "pending-closeout",
+  "github_actions": "pending-closeout",
+  "accepted_v0380_commit": "06f45ce1428af5baeac77d542fa1e0811b52c88a",
+  "accepted_v0383_commit": "01926e7391ed537c29559c5d2f6e4dec62176ac6",
+  "accepted_glb_sha256": "746b27eb0e0d52470ce090cf58b7e8515ffa900267d5479649e105262afcd5fb",
+  "selected_assets": {
+    "primary": "res://assets/v0338/barrosan_house_02_material_gold_candidate.glb",
+    "subordinate": "res://scenes/gold/barrosan/BarrosanBarnGold.tscn",
+    "character_sources": ["res://assets/third_party/quaternius/v0370/men/Farmer.gltf", "res://assets/third_party/quaternius/v0370/men/Adventurer.gltf"],
+    "yard_groups": 5,
+    "character_roles": 3
+  },
+  "scene": "desktop-spikes/godot-salto/scenes/v0385_curated_inhabited_crossing.tscn",
+  "report": "docs/V0385_CURATED_INHABITED_CROSSING_ASSET_REPLACEMENT_AND_HIERARCHY_REPAIR_REPORT.md",
+  "review_pack": "artifacts/manual-review/v0385-curated-inhabited-crossing-repair/",
+  "commands": ["npm run godot:play:v0385-inhabited-crossing", "npm run godot:smoke:v0385-inhabited-crossing", "npm run godot:capture:v0385-inhabited-crossing", "npm run godot:validate:v0385-inhabited-crossing"],
+  "visual_score": 84,
+  "visual_gate": true,
+  "default_runtime_modified": false,
+  "gameplay_modified": false,
+  "v0384_remains_rejected_evidence": true,
+  "iterations_inspected": 4,
+  "final_worktree": "pending-closeout"
+}

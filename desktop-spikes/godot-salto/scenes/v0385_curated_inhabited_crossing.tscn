@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/v0385_curated_inhabited_crossing.gd" id="1_v0385"]
+
+[node name="V0385CuratedInhabitedCrossing" type="Node3D"]
+script = ExtResource("1_v0385")
