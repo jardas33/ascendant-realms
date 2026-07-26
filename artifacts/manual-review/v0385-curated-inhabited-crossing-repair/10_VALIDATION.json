@@ -3,8 +3,8 @@
   "checkpoint": "v0.385 curated inhabited crossing asset replacement and hierarchy repair",
   "branch": "codex/v0215-v0226-recovery",
   "starting_head": "c334c74d313565be0ba5189f8df39b96a639d45b",
-  "final_commit": "pending-closeout",
-  "github_actions": "pending-closeout",
+  "final_commit": "59530cfc3cb24d2e06d49928c01dd57de0dd5e41",
+  "github_actions": "30183546596 — success for exact SHA",
   "accepted_v0380_commit": "06f45ce1428af5baeac77d542fa1e0811b52c88a",
   "accepted_v0383_commit": "01926e7391ed537c29559c5d2f6e4dec62176ac6",
   "accepted_glb_sha256": "746b27eb0e0d52470ce090cf58b7e8515ffa900267d5479649e105262afcd5fb",
@@ -25,5 +25,5 @@
   "gameplay_modified": false,
   "v0384_remains_rejected_evidence": true,
   "iterations_inspected": 4,
-  "final_worktree": "pending-closeout"
+  "final_worktree": "clean and synced after validation"
 }

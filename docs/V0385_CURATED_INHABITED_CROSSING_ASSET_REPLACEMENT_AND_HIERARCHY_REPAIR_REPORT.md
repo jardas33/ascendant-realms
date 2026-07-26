@@ -46,4 +46,4 @@ Strengths are the recognizable Barrosan granite/slate primary, genuine bridge an
 
 ## Validation and closeout
 
-The dedicated validator checks the accepted GLB bytes/hash, opt-in routing, exact one/one/five/three composition, forbidden gameplay tokens, real 1920x1080 captures, non-duplicate final images, and the exact ten-file review pack. The retained v0.384, v0.383, v0.380, test/build/content/art/runtime/artifact-retention/Godot checks and exact-SHA CI are part of closeout. Final commit and Actions run are filled into the review manifest after push; until then they are explicitly pending rather than fabricated.
+The dedicated validator checks the accepted GLB bytes/hash, opt-in routing, exact one/one/five/three composition, forbidden gameplay tokens, real 1920x1080 captures, non-duplicate final images, and the exact ten-file review pack. The retained v0.384, v0.383, v0.380, test/build/content/art/runtime/artifact-retention/Godot checks and exact-SHA CI are green. Implementation commit: `59530cfc3cb24d2e06d49928c01dd57de0dd5e41`. GitHub Actions run: `30183546596` — success for that exact SHA. Final working tree is kept clean and synchronized after closeout.
