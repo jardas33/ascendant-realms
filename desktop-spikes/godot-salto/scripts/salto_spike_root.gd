@@ -121,6 +121,8 @@ const SCRIPT_ARG_PREFIXES := [
 	"--v0406-western-footing-smoke",
 	"--v0407-eastern-landing-capture",
 	"--v0407-eastern-landing-smoke",
+	"--v0408-main-house-roof-capture",
+	"--v0408-main-house-roof-smoke",
 	"--h3-semantic-evidence",
 	"--h3-supported-state-contract",
 	"--h3-directional-animation-micro-pilot",
@@ -684,6 +686,18 @@ func _ready() -> void:
 		v0407_pass.set_meta("v0407_capture_mode", args.has("--v0407-eastern-landing-capture"))
 		v0407_pass.set_meta("v0407_smoke_mode", args.has("--v0407-eastern-landing-smoke"))
 		add_child(v0407_pass)
+		return
+	if args.has("--v0408-main-house-roof-capture") or args.has("--v0408-main-house-roof-smoke"):
+		var v0408_script := load("res://scripts/v0408_main_house_roof_surface_readability.gd") as Script
+		if v0408_script == null:
+			push_error("v0.408 main-house roof script failed to load")
+			return
+		var v0408_pass := Node3D.new()
+		v0408_pass.set_script(v0408_script)
+		v0408_pass.name = "V0408MainHouseRoofSurfaceReadability"
+		v0408_pass.set_meta("v0408_capture_mode", args.has("--v0408-main-house-roof-capture"))
+		v0408_pass.set_meta("v0408_smoke_mode", args.has("--v0408-main-house-roof-smoke"))
+		add_child(v0408_pass)
 		return
 	if args.has("--salto-production-target-spike"):
 		var spike_scene := load("res://scenes/salto_production_target_spike.tscn") as PackedScene
