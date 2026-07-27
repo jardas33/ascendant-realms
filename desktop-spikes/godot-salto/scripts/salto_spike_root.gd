@@ -117,6 +117,8 @@ const SCRIPT_ARG_PREFIXES := [
 	"--v0400-house-roof-smoke",
 	"--v0401-character-grounding-capture",
 	"--v0401-character-grounding-smoke",
+	"--v0406-western-footing-capture",
+	"--v0406-western-footing-smoke",
 	"--h3-semantic-evidence",
 	"--h3-supported-state-contract",
 	"--h3-directional-animation-micro-pilot",
@@ -657,6 +659,18 @@ func _ready() -> void:
 		v0401_pass.set_meta("v0401_capture_mode", args.has("--v0401-character-grounding-capture"))
 		v0401_pass.set_meta("v0401_smoke_mode", args.has("--v0401-character-grounding-smoke"))
 		add_child(v0401_pass)
+		return
+	if args.has("--v0406-western-footing-capture") or args.has("--v0406-western-footing-smoke"):
+		var v0406_script := load("res://scripts/v0406_exact_western_footing_ring_extension.gd") as Script
+		if v0406_script == null:
+			push_error("v0.406 script failed to load")
+			return
+		var v0406_pass := Node3D.new()
+		v0406_pass.set_script(v0406_script)
+		v0406_pass.name = "V0406ExactWesternFootingRingExtension"
+		v0406_pass.set_meta("v0406_capture_mode", args.has("--v0406-western-footing-capture"))
+		v0406_pass.set_meta("v0406_smoke_mode", args.has("--v0406-western-footing-smoke"))
+		add_child(v0406_pass)
 		return
 	if args.has("--salto-production-target-spike"):
 		var spike_scene := load("res://scenes/salto_production_target_spike.tscn") as PackedScene
