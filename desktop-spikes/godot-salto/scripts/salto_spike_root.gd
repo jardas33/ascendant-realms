@@ -125,6 +125,8 @@ const SCRIPT_ARG_PREFIXES := [
 	"--v0408-main-house-roof-smoke",
 	"--v0409-secondary-barn-roof-capture",
 	"--v0409-secondary-barn-roof-smoke",
+	"--v0410-bridge-deck-capture",
+	"--v0410-bridge-deck-smoke",
 	"--h3-semantic-evidence",
 	"--h3-supported-state-contract",
 	"--h3-directional-animation-micro-pilot",
@@ -712,6 +714,18 @@ func _ready() -> void:
 		v0409_pass.set_meta("v0409_capture_mode", args.has("--v0409-secondary-barn-roof-capture"))
 		v0409_pass.set_meta("v0409_smoke_mode", args.has("--v0409-secondary-barn-roof-smoke"))
 		add_child(v0409_pass)
+		return
+	if args.has("--v0410-bridge-deck-capture") or args.has("--v0410-bridge-deck-smoke"):
+		var v0410_script := load("res://scripts/v0410_bridge_deck_timber_surface_readability.gd") as Script
+		if v0410_script == null:
+			push_error("v0.410 bridge-deck timber script failed to load")
+			return
+		var v0410_pass := Node3D.new()
+		v0410_pass.set_script(v0410_script)
+		v0410_pass.name = "V0410BridgeDeckTimberSurfaceReadability"
+		v0410_pass.set_meta("v0410_capture_mode", args.has("--v0410-bridge-deck-capture"))
+		v0410_pass.set_meta("v0410_smoke_mode", args.has("--v0410-bridge-deck-smoke"))
+		add_child(v0410_pass)
 		return
 	if args.has("--salto-production-target-spike"):
 		var spike_scene := load("res://scenes/salto_production_target_spike.tscn") as PackedScene
