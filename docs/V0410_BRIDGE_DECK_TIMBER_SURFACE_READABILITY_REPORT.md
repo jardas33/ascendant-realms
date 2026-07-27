@@ -26,8 +26,15 @@ v0.409's `ASSET_UV_LIMITATION_SECONDARY_BARN_ROOF` result remains preserved. Thi
 
 The dedicated validator is `npm run godot:validate:v0410-bridge-deck-timber`. It verifies all 18 deck names, material-only contracts, UV/mesh preservation, bridge structural preservation, evidence dimensions, and the fail-closed or retained-candidate audit state. The review pack is `artifacts/manual-review/v0410-bridge-deck-timber-surface-readability/`.
 
-The retained ladder is v0.409, v0.408, v0.407, v0.406, v0.401, and v0.400. Full repository validation includes tests, build, content/art/runtime checks, artifact retention, `npm run godot:all`, and `git diff --check`. Exact local and CI results are recorded at closeout after rendered inspection.
+The retained ladder passed: `npm run godot:validate:v0409-secondary-barn-roof`, `npm run godot:validate:v0408-main-house-roof`, `npm run godot:validate:v0407-eastern-landing`, `npm run godot:validate:v0406-western-footing`, `npm run godot:validate:v0401-character-grounding`, and `npm run godot:validate:v0400-house-roof`. The dedicated v0.410 validator and smoke/capture commands passed, with the audit in the fail-closed UV-limitation state. Full repository validation passed: `npm test` (887 tests / 122 files), `npm run build`, `npm run validate:content`, `npm run validate:art-intake`, `npm run validate:runtime-art-slots`, `npm run validate:artifact-retention`, `npm run godot:all`, and `git diff --check`. The rendered wide, close, grayscale, diagnostic, and comparison frames were manually inspected; they are real non-blank captures, and no rejected material candidate was retained.
 
 ## Final review rule
 
 This is a material feasibility checkpoint, not an automatic adoption. If the authored UV/material path produces a stretched or structurally contaminated deck, the truthful result is `ASSET_UV_LIMITATION_BRIDGE_DECK` and the accepted v0.409 baseline remains the player-facing result. No black or otherwise rejected candidate is packaged as a success.
+
+## CI and final state
+
+- Implementation commit: `c0e6cb1cca08f52d9608cc51ea35733fb23aeabe`
+- Exact-SHA GitHub Actions: run `30244302470` — success
+- The final documentation closeout commit and its exact-SHA CI run are recorded here after push.
+- The intended tracked checkpoint files are committed; unrelated pre-existing untracked artifact backlog remains untouched.
