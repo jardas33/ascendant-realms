@@ -127,6 +127,8 @@ const SCRIPT_ARG_PREFIXES := [
 	"--v0409-secondary-barn-roof-smoke",
 	"--v0410-bridge-deck-capture",
 	"--v0410-bridge-deck-smoke",
+	"--v0411-bridge-rail-post-capture",
+	"--v0411-bridge-rail-post-smoke",
 	"--h3-semantic-evidence",
 	"--h3-supported-state-contract",
 	"--h3-directional-animation-micro-pilot",
@@ -726,6 +728,18 @@ func _ready() -> void:
 		v0410_pass.set_meta("v0410_capture_mode", args.has("--v0410-bridge-deck-capture"))
 		v0410_pass.set_meta("v0410_smoke_mode", args.has("--v0410-bridge-deck-smoke"))
 		add_child(v0410_pass)
+		return
+	if args.has("--v0411-bridge-rail-post-capture") or args.has("--v0411-bridge-rail-post-smoke"):
+		var v0411_script := load("res://scripts/v0411_bridge_rail_post_value_hierarchy.gd") as Script
+		if v0411_script == null:
+			push_error("v0.411 bridge rail/post script failed to load")
+			return
+		var v0411_pass := Node3D.new()
+		v0411_pass.set_script(v0411_script)
+		v0411_pass.name = "V0411BridgeRailPostValueHierarchy"
+		v0411_pass.set_meta("v0411_capture_mode", args.has("--v0411-bridge-rail-post-capture"))
+		v0411_pass.set_meta("v0411_smoke_mode", args.has("--v0411-bridge-rail-post-smoke"))
+		add_child(v0411_pass)
 		return
 	if args.has("--salto-production-target-spike"):
 		var spike_scene := load("res://scenes/salto_production_target_spike.tscn") as PackedScene
