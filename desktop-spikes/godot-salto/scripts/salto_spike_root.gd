@@ -123,6 +123,8 @@ const SCRIPT_ARG_PREFIXES := [
 	"--v0407-eastern-landing-smoke",
 	"--v0408-main-house-roof-capture",
 	"--v0408-main-house-roof-smoke",
+	"--v0409-secondary-barn-roof-capture",
+	"--v0409-secondary-barn-roof-smoke",
 	"--h3-semantic-evidence",
 	"--h3-supported-state-contract",
 	"--h3-directional-animation-micro-pilot",
@@ -698,6 +700,18 @@ func _ready() -> void:
 		v0408_pass.set_meta("v0408_capture_mode", args.has("--v0408-main-house-roof-capture"))
 		v0408_pass.set_meta("v0408_smoke_mode", args.has("--v0408-main-house-roof-smoke"))
 		add_child(v0408_pass)
+		return
+	if args.has("--v0409-secondary-barn-roof-capture") or args.has("--v0409-secondary-barn-roof-smoke"):
+		var v0409_script := load("res://scripts/v0409_secondary_barn_roof_surface_readability.gd") as Script
+		if v0409_script == null:
+			push_error("v0.409 secondary barn roof script failed to load")
+			return
+		var v0409_pass := Node3D.new()
+		v0409_pass.set_script(v0409_script)
+		v0409_pass.name = "V0409SecondaryBarnRoofSurfaceReadability"
+		v0409_pass.set_meta("v0409_capture_mode", args.has("--v0409-secondary-barn-roof-capture"))
+		v0409_pass.set_meta("v0409_smoke_mode", args.has("--v0409-secondary-barn-roof-smoke"))
+		add_child(v0409_pass)
 		return
 	if args.has("--salto-production-target-spike"):
 		var spike_scene := load("res://scenes/salto_production_target_spike.tscn") as PackedScene
