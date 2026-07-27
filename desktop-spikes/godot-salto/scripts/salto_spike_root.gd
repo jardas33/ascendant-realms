@@ -119,6 +119,8 @@ const SCRIPT_ARG_PREFIXES := [
 	"--v0401-character-grounding-smoke",
 	"--v0406-western-footing-capture",
 	"--v0406-western-footing-smoke",
+	"--v0407-eastern-landing-capture",
+	"--v0407-eastern-landing-smoke",
 	"--h3-semantic-evidence",
 	"--h3-supported-state-contract",
 	"--h3-directional-animation-micro-pilot",
@@ -671,6 +673,17 @@ func _ready() -> void:
 		v0406_pass.set_meta("v0406_capture_mode", args.has("--v0406-western-footing-capture"))
 		v0406_pass.set_meta("v0406_smoke_mode", args.has("--v0406-western-footing-smoke"))
 		add_child(v0406_pass)
+	if args.has("--v0407-eastern-landing-capture") or args.has("--v0407-eastern-landing-smoke"):
+		var v0407_script := load("res://scripts/v0407_eastern_bridge_landing_footprint_cleanup.gd") as Script
+		if v0407_script == null:
+			push_error("v0.407 eastern landing script failed to load")
+			return
+		var v0407_pass := Node3D.new()
+		v0407_pass.set_script(v0407_script)
+		v0407_pass.name = "V0407EasternBridgeLandingFootprintCleanup"
+		v0407_pass.set_meta("v0407_capture_mode", args.has("--v0407-eastern-landing-capture"))
+		v0407_pass.set_meta("v0407_smoke_mode", args.has("--v0407-eastern-landing-smoke"))
+		add_child(v0407_pass)
 		return
 	if args.has("--salto-production-target-spike"):
 		var spike_scene := load("res://scenes/salto_production_target_spike.tscn") as PackedScene

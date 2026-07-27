@@ -1,0 +1,72 @@
+{
+  "aabbAfter": {
+    "position": {
+      "x": 4.625,
+      "y": -0.625,
+      "z": -2.32500004768372
+    },
+    "size": {
+      "x": 1.25,
+      "y": 1.35000002384186,
+      "z": 4.65000009536743
+    }
+  },
+  "aabbBefore": {
+    "position": {
+      "x": 4.625,
+      "y": -0.625,
+      "z": -2.32500004768372
+    },
+    "size": {
+      "x": 1.25,
+      "y": 1.35000002384186,
+      "z": 4.65000009536743
+    }
+  },
+  "baselineCommit": "f109828e0827ba0ee8eb35ab5f8c5cc71f0b4149",
+  "checkpoint": "v0.407",
+  "debugRenderer": "unchanged",
+  "decals": false,
+  "defaultRuntime": "unchanged",
+  "duplicateMeshes": false,
+  "fallbackRenderer": "unchanged",
+  "gameplay": false,
+  "indexCountAfter": 36,
+  "indexCountBefore": 36,
+  "indicesChanged": false,
+  "materialAfter": "V0407_Eastern_Landing_Warm_Earth",
+  "materialAssignmentOnly": true,
+  "materialBefore": "V0394_Bridge_Desaturated_Value",
+  "materialSource": "accepted_v0396_warm_earth_route_material_with_vertex_tint_disabled",
+  "maxPermittedVerticalCorrection": 0.08,
+  "newGeometry": false,
+  "overlays": false,
+  "responsibleComponent": "Bridge_Abutment_+1",
+  "status": "RENDERED_CANDIDATE",
+  "surfaceCountAfter": 1,
+  "surfaceCountBefore": 1,
+  "topologyChanged": false,
+  "transformAfter": {
+    "basis": "[X: (1.0, 0.0, 0.0), Y: (0.0, 1.0, 0.0), Z: (0.0, 0.0, 1.0)]",
+    "origin": {
+      "x": 0.0,
+      "y": 0.0,
+      "z": 0.0
+    }
+  },
+  "transformBefore": {
+    "basis": "[X: (1.0, 0.0, 0.0), Y: (0.0, 1.0, 0.0), Z: (0.0, 0.0, 1.0)]",
+    "origin": {
+      "x": 0.0,
+      "y": 0.0,
+      "z": 0.0
+    }
+  },
+  "triangleCountAfter": 12,
+  "triangleCountBefore": 12,
+  "vertexCountAfter": 8,
+  "vertexCountBefore": 8,
+  "verticalCorrection": 0.0,
+  "xCoordinatesChanged": false,
+  "zCoordinatesChanged": false
+}
