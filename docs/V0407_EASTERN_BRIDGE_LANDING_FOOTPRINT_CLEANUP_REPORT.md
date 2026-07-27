@@ -52,4 +52,7 @@ The v0.407 smoke and rendered capture pass. The dedicated validator checks the e
 
 ## Closeout
 
-Commit, exact pushed SHA, GitHub Actions result, and final clean/synced repository state are added here after the local validation ladder and remote CI complete.
+- Implementation commit: `edadbe8db15245839b52d8b66e7eca77a50b2a31`
+- GitHub Actions: run `30236892564`, success for the exact implementation SHA
+- Final documentation closeout commit is the commit containing this report update.
+- Final repository state is verified clean for tracked files and synchronized with `origin/codex/v0215-v0226-recovery`.
