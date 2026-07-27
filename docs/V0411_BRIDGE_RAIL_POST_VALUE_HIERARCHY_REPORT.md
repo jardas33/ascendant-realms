@@ -25,4 +25,11 @@ The audit records original/final materials, counts, transforms, AABBs, affected 
 
 ## Validation and closeout
 
-The retained ladder is the v0.410 fail-closed validator, v0.409 fail-closed validator, and v0.408 through v0.400 accepted validators, followed by repository tests/build/content/art/runtime/artifact/Godot checks and `git diff --check`. Exact local and CI results are recorded at closeout after manual inspection of the real colour and grayscale renders.
+The retained ladder passed: `npm run godot:validate:v0410-bridge-deck-timber` (fail-closed `ASSET_UV_LIMITATION_BRIDGE_DECK`), `npm run godot:validate:v0409-secondary-barn-roof` (fail-closed `ASSET_UV_LIMITATION_SECONDARY_BARN_ROOF`), and the v0.408, v0.407, v0.406, v0.401, and v0.400 validators. The dedicated v0.411 validator and smoke/capture commands passed with a retained 16-node candidate. Full local validation passed: `npm test` (887 tests / 122 files), `npm run build`, `npm run validate:content`, `npm run validate:art-intake`, `npm run validate:runtime-art-slots`, `npm run validate:artifact-retention`, `npm run godot:all`, and `git diff --check`. Real wide/close colour, grayscale, diagnostic, and comparison frames were manually inspected; no black or washed-out rail mass was retained.
+
+## CI and final state
+
+- Implementation commit: `ca6cf44ed71171c8202aeda50ade28aaa402b7fc`
+- Exact-SHA GitHub Actions: run `30247786969` — success
+- Final documentation closeout commit and its exact-SHA CI run are recorded after push.
+- Unrelated pre-existing untracked artifact backlog remains untouched.
