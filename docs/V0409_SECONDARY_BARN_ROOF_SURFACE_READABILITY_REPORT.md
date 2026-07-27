@@ -37,4 +37,20 @@ The candidate is accepted only if the wide view reads the subordinate barn as a 
 
 ## Validation and closeout
 
-The dedicated v0.409 validator accepts this fail-closed status only when the audit explicitly retains no candidate and identifies the missing UV arrays. Retained validators, repository test/build/content/art/runtime checks, `npm run godot:all`, and `git diff --check` are run before commit. Exact commit, GitHub Actions, and final clean/synced repository state are recorded here after remote CI completes.
+The dedicated v0.409 validator accepts this fail-closed status only when the audit explicitly retains no candidate and identifies the missing UV arrays. It passed with `ASSET_UV_LIMITATION_SECONDARY_BARN_ROOF`. The retained validators passed:
+
+- `npm run godot:validate:v0408-main-house-roof`
+- `npm run godot:validate:v0407-eastern-landing`
+- `npm run godot:validate:v0406-western-footing`
+- `npm run godot:validate:v0401-character-grounding`
+- `npm run godot:validate:v0400-house-roof`
+
+Full local validation passed: `npm test` (887 tests), `npm run build`, `npm run validate:content`, `npm run validate:art-intake`, `npm run validate:runtime-art-slots`, `npm run validate:artifact-retention`, `npm run godot:all`, and `git diff --check`. The capture and smoke commands also passed, and the rendered close/diagnostic frames were manually inspected; no black candidate was retained.
+
+Closeout:
+
+- Commit: `706e01deb14f09d379049106870c3eb4ac5bd7d1`
+- GitHub Actions: run `30241855859` — success for the exact SHA
+- Final tracked repository state after push: clean and synced, 0 ahead / 0 behind
+
+The checkpoint is intentionally not a successful roof-material adoption. It is a truthful, removable, opt-in fail-closed record that preserves v0.408 and identifies the smallest safe prerequisite for a future retry: author UV support for the existing visible `V0399_Barn_Front_Gable` surface or provide an approved existing face/material path that can cover it coherently.
