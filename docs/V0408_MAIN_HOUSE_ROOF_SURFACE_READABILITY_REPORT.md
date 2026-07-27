@@ -37,4 +37,21 @@ The initial flat-texture candidate failed visual inspection and was not retained
 
 ## Validation and closeout
 
-The dedicated v0.408 validator, retained v0.407/v0.406 validators, repository test/build/content/art/runtime checks, `npm run godot:all`, and `git diff --check` are run before commit. Exact commit, GitHub Actions, and final clean/synced repository state are recorded here after remote CI completes.
+Passed before commit:
+
+- `npm run godot:validate:v0408-main-house-roof`
+- retained `npm run godot:validate:v0407-eastern-landing`, `npm run godot:validate:v0406-western-footing`, `npm run godot:validate:v0401-character-grounding`, and `npm run godot:validate:v0400-house-roof`
+- `npm test` — 887 tests passed
+- `npm run build`
+- `npm run validate:content`
+- `npm run validate:art-intake`
+- `npm run validate:runtime-art-slots`
+- `npm run validate:artifact-retention`
+- `npm run godot:all`
+- `git diff --check`
+
+Implementation commit: `d1eee30db49c12a126d95c57153ce8d29c84587e`.
+
+GitHub Actions exact-SHA proof: [run 30239141995](https://github.com/jardas33/ascendant-realms/actions/runs/30239141995) completed with `success` for `d1eee30db49c12a126d95c57153ce8d29c84587e`.
+
+Final repository state at implementation closeout: branch `codex/v0215-v0226-recovery`, clean tracked working tree, `0 ahead / 0 behind` origin. Existing unrelated untracked artifact backlog was preserved and not included in the checkpoint.
