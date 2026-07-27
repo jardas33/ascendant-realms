@@ -36,5 +36,6 @@ This is a material feasibility checkpoint, not an automatic adoption. If the aut
 
 - Implementation commit: `c0e6cb1cca08f52d9608cc51ea35733fb23aeabe`
 - Exact-SHA GitHub Actions: run `30244302470` — success
-- The final documentation closeout commit and its exact-SHA CI run are recorded here after push.
+- Documentation closeout commit: `6d54a826ea49af12e0a6f2fb390232d337d1fc38`
+- Documentation closeout exact-SHA GitHub Actions: run `30244989415` — success
 - The intended tracked checkpoint files are committed; unrelated pre-existing untracked artifact backlog remains untouched.
