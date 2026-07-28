@@ -1,0 +1,737 @@
+{
+  "aabbChanged": false,
+  "affectedNodeCount": 3,
+  "affectedNodeInventory": [
+    {
+      "material": "V0399_Barn_Door",
+      "mesh": "",
+      "name": "V0399_Barn_Entrance_Door",
+      "parent": "V0399_Barn_Structural_Readability",
+      "uvCount": 0,
+      "visible": true
+    },
+    {
+      "material": "V0399_Barn_Door",
+      "mesh": "",
+      "name": "V0399_Barn_Front_Window_-2_25",
+      "parent": "V0399_Barn_Structural_Readability",
+      "uvCount": 0,
+      "visible": true
+    },
+    {
+      "material": "V0399_Barn_Door",
+      "mesh": "",
+      "name": "V0399_Barn_Front_Window_2_25",
+      "parent": "V0399_Barn_Structural_Readability",
+      "uvCount": 0,
+      "visible": true
+    }
+  ],
+  "affectedNodeNames": [
+    "V0399_Barn_Entrance_Door",
+    "V0399_Barn_Front_Window_-2_25",
+    "V0399_Barn_Front_Window_2_25"
+  ],
+  "baselineCommit": "02edf9d0e469bf11ea9d3597a5768f62c422e757",
+  "branch": "codex/v0215-v0226-recovery",
+  "bridge": "preserved",
+  "camera": "unchanged",
+  "candidateRetained": true,
+  "characters": "preserved",
+  "checkpoint": "v0.418",
+  "debugRenderer": "unchanged",
+  "decals": false,
+  "defaultRuntime": "unchanged",
+  "duplicateMeshes": false,
+  "excludedAdjacentInventory": [
+    {
+      "material": "V0399_Barn_Contact_Shadow",
+      "mesh": "",
+      "name": "V0399_Barn_Contact_Shadow",
+      "parent": "V0399_Barn_Structural_Readability",
+      "uvCount": 0,
+      "visible": true
+    },
+    {
+      "material": "V0399_Warm_Weathered_Stone",
+      "mesh": "",
+      "name": "V0399_Barn_Stone_Base",
+      "parent": "V0399_Barn_Structural_Readability",
+      "uvCount": 0,
+      "visible": true
+    },
+    {
+      "material": "V0417_Secondary_Barn_Wall_Body",
+      "mesh": "",
+      "name": "V0399_Barn_Main_Walls",
+      "parent": "V0399_Barn_Structural_Readability",
+      "uvCount": 0,
+      "visible": true
+    },
+    {
+      "material": "V0399_Sunlit_Stone",
+      "mesh": "",
+      "name": "V0399_Barn_Front_Gable",
+      "parent": "V0399_Barn_Structural_Readability",
+      "uvCount": 0,
+      "visible": true
+    },
+    {
+      "material": "V0399_Charcoal_Slate",
+      "mesh": "",
+      "name": "V0399_Barn_Roof_Left",
+      "parent": "V0399_Barn_Structural_Readability",
+      "uvCount": 0,
+      "visible": true
+    },
+    {
+      "material": "V0399_Charcoal_Slate",
+      "mesh": "",
+      "name": "V0399_Barn_Roof_Right",
+      "parent": "V0399_Barn_Structural_Readability",
+      "uvCount": 0,
+      "visible": true
+    },
+    {
+      "material": "V0399_Weathered_Timber",
+      "mesh": "",
+      "name": "V0399_Barn_Ridge_Beam",
+      "parent": "V0399_Barn_Structural_Readability",
+      "uvCount": 0,
+      "visible": true
+    },
+    {
+      "material": "V0399_Weathered_Timber",
+      "mesh": "",
+      "name": "V0399_Barn_Left_Eave",
+      "parent": "V0399_Barn_Structural_Readability",
+      "uvCount": 0,
+      "visible": true
+    },
+    {
+      "material": "V0399_Weathered_Timber",
+      "mesh": "",
+      "name": "V0399_Barn_Right_Eave",
+      "parent": "V0399_Barn_Structural_Readability",
+      "uvCount": 0,
+      "visible": true
+    },
+    {
+      "material": "V0399_Dry_Timber_Edge",
+      "mesh": "",
+      "name": "V0399_Barn_Door_Left_Post",
+      "parent": "V0399_Barn_Structural_Readability",
+      "uvCount": 0,
+      "visible": true
+    },
+    {
+      "material": "V0399_Dry_Timber_Edge",
+      "mesh": "",
+      "name": "V0399_Barn_Door_Right_Post",
+      "parent": "V0399_Barn_Structural_Readability",
+      "uvCount": 0,
+      "visible": true
+    },
+    {
+      "material": "V0399_Dry_Timber_Edge",
+      "mesh": "",
+      "name": "V0399_Barn_Door_Lintel",
+      "parent": "V0399_Barn_Structural_Readability",
+      "uvCount": 0,
+      "visible": true
+    },
+    {
+      "material": "V0399_Weathered_Timber",
+      "mesh": "",
+      "name": "V0399_Barn_Front_Beam",
+      "parent": "V0399_Barn_Structural_Readability",
+      "uvCount": 0,
+      "visible": true
+    },
+    {
+      "material": "V0399_Weathered_Timber",
+      "mesh": "",
+      "name": "V0399_Barn_Front_Post_-2_25",
+      "parent": "V0399_Barn_Structural_Readability",
+      "uvCount": 0,
+      "visible": true
+    },
+    {
+      "material": "V0399_Weathered_Timber",
+      "mesh": "",
+      "name": "V0399_Barn_Front_Post_2_25",
+      "parent": "V0399_Barn_Structural_Readability",
+      "uvCount": 0,
+      "visible": true
+    },
+    {
+      "material": "V0399_Dry_Timber_Edge",
+      "mesh": "",
+      "name": "V0399_Barn_Side_Beam_-1_8",
+      "parent": "V0399_Barn_Structural_Readability",
+      "uvCount": 0,
+      "visible": true
+    },
+    {
+      "material": "V0399_Dry_Timber_Edge",
+      "mesh": "",
+      "name": "V0399_Barn_Side_Beam_1_8",
+      "parent": "V0399_Barn_Structural_Readability",
+      "uvCount": 0,
+      "visible": true
+    }
+  ],
+  "excludedFramesAndStructure": "preserved",
+  "expectedInventory": [
+    "V0399_Barn_Entrance_Door",
+    "V0399_Barn_Front_Window_-2_25",
+    "V0399_Barn_Front_Window_2_25"
+  ],
+  "fallbackRenderer": "unchanged",
+  "finalMaterialParameters": [
+    "entrance door albedo=#4a3b32 roughness=0.97 specular=0.08",
+    "both window recesses albedo=#454946 roughness=0.93 specular=0.12"
+  ],
+  "finalMaterials": [
+    "V0399_Barn_Entrance_Door=V0418_Secondary_Barn_Entrance_Door",
+    "V0399_Barn_Front_Window_-2_25=V0418_Secondary_Barn_Window_Recess",
+    "V0399_Barn_Front_Window_2_25=V0418_Secondary_Barn_Window_Recess"
+  ],
+  "finalSnapshots": {
+    "V0399_Barn_Entrance_Door": {
+      "aabb": {
+        "position": {
+          "x": -0.524999976158142,
+          "y": -0.959999978542328,
+          "z": -0.0700000002980232
+        },
+        "size": {
+          "x": 1.04999995231628,
+          "y": 1.91999995708466,
+          "z": 0.140000000596046
+        }
+      },
+      "indexCount": 0,
+      "material": "V0418_Secondary_Barn_Entrance_Door",
+      "meshType": "BoxMesh",
+      "surfaceCount": 1,
+      "transform": {
+        "basis": "[X: (1.0, 0.0, 0.0), Y: (0.0, 1.0, 0.0), Z: (0.0, 0.0, 1.0)]",
+        "origin": {
+          "x": 0.0,
+          "y": 1.32000005245209,
+          "z": -2.48000001907349
+        }
+      },
+      "triangleCount": 0,
+      "uvCount": 0,
+      "vertexCount": 0
+    },
+    "V0399_Barn_Front_Window_-2_25": {
+      "aabb": {
+        "position": {
+          "x": -0.310000002384186,
+          "y": -0.230000004172325,
+          "z": -0.0500000007450581
+        },
+        "size": {
+          "x": 0.620000004768372,
+          "y": 0.46000000834465,
+          "z": 0.100000001490116
+        }
+      },
+      "indexCount": 0,
+      "material": "V0418_Secondary_Barn_Window_Recess",
+      "meshType": "BoxMesh",
+      "surfaceCount": 1,
+      "transform": {
+        "basis": "[X: (1.0, 0.0, 0.0), Y: (0.0, 1.0, 0.0), Z: (0.0, 0.0, 1.0)]",
+        "origin": {
+          "x": -2.25,
+          "y": 2.04999995231628,
+          "z": -2.50999999046326
+        }
+      },
+      "triangleCount": 0,
+      "uvCount": 0,
+      "vertexCount": 0
+    },
+    "V0399_Barn_Front_Window_2_25": {
+      "aabb": {
+        "position": {
+          "x": -0.310000002384186,
+          "y": -0.230000004172325,
+          "z": -0.0500000007450581
+        },
+        "size": {
+          "x": 0.620000004768372,
+          "y": 0.46000000834465,
+          "z": 0.100000001490116
+        }
+      },
+      "indexCount": 0,
+      "material": "V0418_Secondary_Barn_Window_Recess",
+      "meshType": "BoxMesh",
+      "surfaceCount": 1,
+      "transform": {
+        "basis": "[X: (1.0, 0.0, 0.0), Y: (0.0, 1.0, 0.0), Z: (0.0, 0.0, 1.0)]",
+        "origin": {
+          "x": 2.25,
+          "y": 2.04999995231628,
+          "z": -2.50999999046326
+        }
+      },
+      "triangleCount": 0,
+      "uvCount": 0,
+      "vertexCount": 0
+    }
+  },
+  "foundation": "preserved",
+  "functionalClassification": {
+    "V0399_Barn_Entrance_Door": "BARN_ENTRANCE",
+    "V0399_Barn_Front_Window_-2_25": "BARN_WINDOW_RECESS",
+    "V0399_Barn_Front_Window_2_25": "BARN_WINDOW_RECESS"
+  },
+  "gable": "preserved",
+  "gameplay": false,
+  "geometryChanged": false,
+  "indicesChanged": false,
+  "lighting": "unchanged",
+  "mainHouse": "preserved",
+  "materialOnly": true,
+  "meshInstanceCountAfter": 292,
+  "meshInstanceCountBefore": 292,
+  "newMeshInstances": 0,
+  "originalMaterials": [
+    "V0399_Barn_Entrance_Door=V0399_Barn_Door",
+    "V0399_Barn_Front_Window_-2_25=V0399_Barn_Door",
+    "V0399_Barn_Front_Window_2_25=V0399_Barn_Door"
+  ],
+  "originalSnapshots": {
+    "V0399_Barn_Entrance_Door": {
+      "aabb": {
+        "position": {
+          "x": -0.524999976158142,
+          "y": -0.959999978542328,
+          "z": -0.0700000002980232
+        },
+        "size": {
+          "x": 1.04999995231628,
+          "y": 1.91999995708466,
+          "z": 0.140000000596046
+        }
+      },
+      "indexCount": 0,
+      "material": "V0399_Barn_Door",
+      "meshType": "BoxMesh",
+      "surfaceCount": 1,
+      "transform": {
+        "basis": "[X: (1.0, 0.0, 0.0), Y: (0.0, 1.0, 0.0), Z: (0.0, 0.0, 1.0)]",
+        "origin": {
+          "x": 0.0,
+          "y": 1.32000005245209,
+          "z": -2.48000001907349
+        }
+      },
+      "triangleCount": 0,
+      "uvCount": 0,
+      "vertexCount": 0
+    },
+    "V0399_Barn_Front_Window_-2_25": {
+      "aabb": {
+        "position": {
+          "x": -0.310000002384186,
+          "y": -0.230000004172325,
+          "z": -0.0500000007450581
+        },
+        "size": {
+          "x": 0.620000004768372,
+          "y": 0.46000000834465,
+          "z": 0.100000001490116
+        }
+      },
+      "indexCount": 0,
+      "material": "V0399_Barn_Door",
+      "meshType": "BoxMesh",
+      "surfaceCount": 1,
+      "transform": {
+        "basis": "[X: (1.0, 0.0, 0.0), Y: (0.0, 1.0, 0.0), Z: (0.0, 0.0, 1.0)]",
+        "origin": {
+          "x": -2.25,
+          "y": 2.04999995231628,
+          "z": -2.50999999046326
+        }
+      },
+      "triangleCount": 0,
+      "uvCount": 0,
+      "vertexCount": 0
+    },
+    "V0399_Barn_Front_Window_2_25": {
+      "aabb": {
+        "position": {
+          "x": -0.310000002384186,
+          "y": -0.230000004172325,
+          "z": -0.0500000007450581
+        },
+        "size": {
+          "x": 0.620000004768372,
+          "y": 0.46000000834465,
+          "z": 0.100000001490116
+        }
+      },
+      "indexCount": 0,
+      "material": "V0399_Barn_Door",
+      "meshType": "BoxMesh",
+      "surfaceCount": 1,
+      "transform": {
+        "basis": "[X: (1.0, 0.0, 0.0), Y: (0.0, 1.0, 0.0), Z: (0.0, 0.0, 1.0)]",
+        "origin": {
+          "x": 2.25,
+          "y": 2.04999995231628,
+          "z": -2.50999999046326
+        }
+      },
+      "triangleCount": 0,
+      "uvCount": 0,
+      "vertexCount": 0
+    }
+  },
+  "overlays": false,
+  "props": "preserved",
+  "roof": "preserved",
+  "route": "preserved",
+  "scope": "existing_visible_secondary_barn_entrance_and_two_window_materials_only",
+  "stateBehavior": "unchanged",
+  "status": "RENDERED_CANDIDATE",
+  "surfacesChanged": false,
+  "terrain": "preserved",
+  "topologyChanged": false,
+  "transformsChanged": false,
+  "unexpectedVisibleOpeningNames": [],
+  "uvArraysChanged": false,
+  "uvCountEveryAffectedMesh": {
+    "V0399_Barn_Entrance_Door": 0,
+    "V0399_Barn_Front_Window_-2_25": 0,
+    "V0399_Barn_Front_Window_2_25": 0
+  },
+  "v0417Audit": {
+    "aabbChanged": false,
+    "affectedNodeCount": 1,
+    "affectedNodeInventory": [
+      {
+        "material": "V0399_Warm_Weathered_Stone",
+        "mesh": "",
+        "name": "V0399_Barn_Main_Walls",
+        "parent": "V0399_Barn_Structural_Readability",
+        "uvCount": 0,
+        "visible": true
+      }
+    ],
+    "affectedNodeNames": [
+      "V0399_Barn_Main_Walls"
+    ],
+    "baselineCommit": "ca50f2a4ab547d0f9210cd59e378cbf0670a991d",
+    "bridge": "v0412-preserved",
+    "camera": "unchanged",
+    "candidateDebugNames": [
+      "V0399_Barn_Contact_Shadow",
+      "V0399_Barn_Stone_Base",
+      "V0399_Barn_Main_Walls",
+      "V0399_Barn_Front_Gable",
+      "V0399_Barn_Roof_Left",
+      "V0399_Barn_Roof_Right",
+      "V0399_Barn_Ridge_Beam",
+      "V0399_Barn_Left_Eave",
+      "V0399_Barn_Right_Eave",
+      "V0399_Barn_Entrance_Door",
+      "V0399_Barn_Door_Left_Post",
+      "V0399_Barn_Door_Right_Post",
+      "V0399_Barn_Door_Lintel",
+      "V0399_Barn_Front_Beam",
+      "V0399_Barn_Front_Window_-2_25",
+      "V0399_Barn_Front_Post_-2_25",
+      "V0399_Barn_Front_Window_2_25",
+      "V0399_Barn_Front_Post_2_25",
+      "V0399_Barn_Side_Beam_-1_8",
+      "V0399_Barn_Side_Beam_1_8"
+    ],
+    "candidateRetained": true,
+    "characters": "preserved",
+    "checkpoint": "v0.417",
+    "debugRenderer": "unchanged",
+    "decals": false,
+    "defaultRuntime": "unchanged",
+    "duplicateMeshes": false,
+    "excludedAdjacentInventory": [
+      {
+        "material": "V0399_Barn_Contact_Shadow",
+        "mesh": "",
+        "name": "V0399_Barn_Contact_Shadow",
+        "parent": "V0399_Barn_Structural_Readability",
+        "uvCount": 0,
+        "visible": true
+      },
+      {
+        "material": "V0399_Warm_Weathered_Stone",
+        "mesh": "",
+        "name": "V0399_Barn_Stone_Base",
+        "parent": "V0399_Barn_Structural_Readability",
+        "uvCount": 0,
+        "visible": true
+      },
+      {
+        "material": "V0399_Sunlit_Stone",
+        "mesh": "",
+        "name": "V0399_Barn_Front_Gable",
+        "parent": "V0399_Barn_Structural_Readability",
+        "uvCount": 0,
+        "visible": true
+      },
+      {
+        "material": "V0399_Charcoal_Slate",
+        "mesh": "",
+        "name": "V0399_Barn_Roof_Left",
+        "parent": "V0399_Barn_Structural_Readability",
+        "uvCount": 0,
+        "visible": true
+      },
+      {
+        "material": "V0399_Charcoal_Slate",
+        "mesh": "",
+        "name": "V0399_Barn_Roof_Right",
+        "parent": "V0399_Barn_Structural_Readability",
+        "uvCount": 0,
+        "visible": true
+      },
+      {
+        "material": "V0399_Weathered_Timber",
+        "mesh": "",
+        "name": "V0399_Barn_Ridge_Beam",
+        "parent": "V0399_Barn_Structural_Readability",
+        "uvCount": 0,
+        "visible": true
+      },
+      {
+        "material": "V0399_Weathered_Timber",
+        "mesh": "",
+        "name": "V0399_Barn_Left_Eave",
+        "parent": "V0399_Barn_Structural_Readability",
+        "uvCount": 0,
+        "visible": true
+      },
+      {
+        "material": "V0399_Weathered_Timber",
+        "mesh": "",
+        "name": "V0399_Barn_Right_Eave",
+        "parent": "V0399_Barn_Structural_Readability",
+        "uvCount": 0,
+        "visible": true
+      },
+      {
+        "material": "V0399_Barn_Door",
+        "mesh": "",
+        "name": "V0399_Barn_Entrance_Door",
+        "parent": "V0399_Barn_Structural_Readability",
+        "uvCount": 0,
+        "visible": true
+      },
+      {
+        "material": "V0399_Dry_Timber_Edge",
+        "mesh": "",
+        "name": "V0399_Barn_Door_Left_Post",
+        "parent": "V0399_Barn_Structural_Readability",
+        "uvCount": 0,
+        "visible": true
+      },
+      {
+        "material": "V0399_Dry_Timber_Edge",
+        "mesh": "",
+        "name": "V0399_Barn_Door_Right_Post",
+        "parent": "V0399_Barn_Structural_Readability",
+        "uvCount": 0,
+        "visible": true
+      },
+      {
+        "material": "V0399_Dry_Timber_Edge",
+        "mesh": "",
+        "name": "V0399_Barn_Door_Lintel",
+        "parent": "V0399_Barn_Structural_Readability",
+        "uvCount": 0,
+        "visible": true
+      },
+      {
+        "material": "V0399_Weathered_Timber",
+        "mesh": "",
+        "name": "V0399_Barn_Front_Beam",
+        "parent": "V0399_Barn_Structural_Readability",
+        "uvCount": 0,
+        "visible": true
+      },
+      {
+        "material": "V0399_Barn_Door",
+        "mesh": "",
+        "name": "V0399_Barn_Front_Window_-2_25",
+        "parent": "V0399_Barn_Structural_Readability",
+        "uvCount": 0,
+        "visible": true
+      },
+      {
+        "material": "V0399_Weathered_Timber",
+        "mesh": "",
+        "name": "V0399_Barn_Front_Post_-2_25",
+        "parent": "V0399_Barn_Structural_Readability",
+        "uvCount": 0,
+        "visible": true
+      },
+      {
+        "material": "V0399_Barn_Door",
+        "mesh": "",
+        "name": "V0399_Barn_Front_Window_2_25",
+        "parent": "V0399_Barn_Structural_Readability",
+        "uvCount": 0,
+        "visible": true
+      },
+      {
+        "material": "V0399_Weathered_Timber",
+        "mesh": "",
+        "name": "V0399_Barn_Front_Post_2_25",
+        "parent": "V0399_Barn_Structural_Readability",
+        "uvCount": 0,
+        "visible": true
+      },
+      {
+        "material": "V0399_Dry_Timber_Edge",
+        "mesh": "",
+        "name": "V0399_Barn_Side_Beam_-1_8",
+        "parent": "V0399_Barn_Structural_Readability",
+        "uvCount": 0,
+        "visible": true
+      },
+      {
+        "material": "V0399_Dry_Timber_Edge",
+        "mesh": "",
+        "name": "V0399_Barn_Side_Beam_1_8",
+        "parent": "V0399_Barn_Structural_Readability",
+        "uvCount": 0,
+        "visible": true
+      }
+    ],
+    "fallbackRenderer": "unchanged",
+    "finalMaterialParameters": [
+      "barn wall body albedo=#5b5147 roughness=0.96 specular=0.08"
+    ],
+    "finalMaterials": [
+      "V0399_Barn_Main_Walls=V0417_Secondary_Barn_Wall_Body"
+    ],
+    "finalSnapshots": {
+      "V0399_Barn_Main_Walls": {
+        "aabb": {
+          "position": {
+            "x": -3.59999990463257,
+            "y": -1.72500002384186,
+            "z": -2.40000009536743
+          },
+          "size": {
+            "x": 7.19999980926514,
+            "y": 3.45000004768372,
+            "z": 4.80000019073486
+          }
+        },
+        "indexCount": 0,
+        "material": "V0417_Secondary_Barn_Wall_Body",
+        "meshType": "BoxMesh",
+        "surfaceCount": 1,
+        "transform": {
+          "basis": "[X: (1.0, 0.0, 0.0), Y: (0.0, 1.0, 0.0), Z: (0.0, 0.0, 1.0)]",
+          "origin": {
+            "x": 0.0,
+            "y": 2.08500003814697,
+            "z": 0.0
+          }
+        },
+        "triangleCount": 0,
+        "uvCount": 0,
+        "vertexCount": 0
+      }
+    },
+    "functionalClassification": {
+      "V0399_Barn_Main_Walls": "BARN_WALL_BODY"
+    },
+    "gameplay": false,
+    "geometryChanged": false,
+    "indicesChanged": false,
+    "lighting": "unchanged",
+    "mainHouse": "preserved",
+    "materialOnly": true,
+    "meshInstanceCountAfter": 292,
+    "meshInstanceCountBefore": 292,
+    "newMeshInstances": 0,
+    "originalMaterials": [
+      "V0399_Barn_Main_Walls=V0399_Warm_Weathered_Stone"
+    ],
+    "originalSnapshots": {
+      "V0399_Barn_Main_Walls": {
+        "aabb": {
+          "position": {
+            "x": -3.59999990463257,
+            "y": -1.72500002384186,
+            "z": -2.40000009536743
+          },
+          "size": {
+            "x": 7.19999980926514,
+            "y": 3.45000004768372,
+            "z": 4.80000019073486
+          }
+        },
+        "indexCount": 0,
+        "material": "V0399_Warm_Weathered_Stone",
+        "meshType": "BoxMesh",
+        "surfaceCount": 1,
+        "transform": {
+          "basis": "[X: (1.0, 0.0, 0.0), Y: (0.0, 1.0, 0.0), Z: (0.0, 0.0, 1.0)]",
+          "origin": {
+            "x": 0.0,
+            "y": 2.08500003814697,
+            "z": 0.0
+          }
+        },
+        "triangleCount": 0,
+        "uvCount": 0,
+        "vertexCount": 0
+      }
+    },
+    "overlays": false,
+    "props": "preserved",
+    "roofGableDoorFoundation": "preserved",
+    "route": "preserved",
+    "scope": "existing_visible_secondary_barn_wall_body_materials_only",
+    "stateBehavior": "unchanged",
+    "status": "RENDERED_CANDIDATE",
+    "surfacesChanged": false,
+    "terrain": "preserved",
+    "topologyChanged": false,
+    "transformsChanged": false,
+    "uvArraysChanged": false,
+    "uvCountEveryAffectedMesh": {
+      "V0399_Barn_Main_Walls": 0
+    },
+    "v0416Audit": {
+
+    },
+    "verticesChanged": false,
+    "worldHashesAfter": {
+      "V0399_Barn_Front_Gable": "fd27036bc74f6afca789b9cb644691ce8ad38ca7114bfada102a516d30f70ae6"
+    },
+    "worldHashesBefore": {
+      "V0399_Barn_Front_Gable": "fd27036bc74f6afca789b9cb644691ce8ad38ca7114bfada102a516d30f70ae6"
+    }
+  },
+  "v0417WallBody": "preserved",
+  "verticesChanged": false,
+  "worldHashesAfter": {
+    "V0399_Barn_Front_Gable": "fd27036bc74f6afca789b9cb644691ce8ad38ca7114bfada102a516d30f70ae6"
+  },
+  "worldHashesBefore": {
+    "V0399_Barn_Front_Gable": "fd27036bc74f6afca789b9cb644691ce8ad38ca7114bfada102a516d30f70ae6"
+  }
+}

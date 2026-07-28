@@ -1,0 +1,8 @@
+param([string]$Repo = (Resolve-Path (Join-Path $PSScriptRoot '..\..')).Path)
+$godot = if ($env:GODOT_BIN -and (Test-Path $env:GODOT_BIN)) { $env:GODOT_BIN } else { Join-Path $Repo '.tools\godot\Godot_v4.6.3-stable_win64.exe' }
+if (-not (Test-Path -LiteralPath $godot)) { throw "Missing Godot executable: $godot" }
+$root = Join-Path $Repo 'desktop-spikes\godot-salto\artifacts\runtime\v0418'
+$process = Start-Process -FilePath $godot -ArgumentList @('--path','desktop-spikes/godot-salto','--v0418-secondary-barn-openings-smoke','--artifact-root=artifacts/runtime/v0418') -WorkingDirectory $Repo -PassThru -Wait
+if ($process.ExitCode -ne 0) { throw "Godot v0.418 smoke exited $($process.ExitCode)" }
+if (-not (Test-Path -LiteralPath (Join-Path $root 'v0418-secondary-barn-openings-smoke.json'))) { throw 'Missing v0.418 smoke audit' }
+Write-Output 'PASS_V0418_SECONDARY_BARN_OPENINGS_SMOKE'
