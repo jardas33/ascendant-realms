@@ -31,7 +31,7 @@ The dedicated validator accepts the fail-closed limitation, including the record
 ## Final evidence
 
 - Implementation commit: `5d7e572bc3a15af026e077538ce9343464a19394`
-- Exact-SHA GitHub Actions: run `30388869527` (`CI Release Matrix Dry Run`) — success
+- Exact-SHA GitHub Actions: run `30388869527` (`CI Release Matrix Dry Run`) - success
 - Final branch: `codex/v0215-v0226-recovery`
 - Final tracked repository state: clean and synchronized with origin (`0 ahead / 0 behind`)
 - Unrelated pre-existing untracked artifacts were preserved and were not included in the checkpoint commit.
