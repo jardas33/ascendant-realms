@@ -64,8 +64,9 @@ v0.402-v0.405 have no repository-provided dedicated validator commands, matching
 
 - Implementation commit: `a3bc3c136d41a0c736ef464a6a54c8e756aede39`.
 - Exact GitHub Actions run: `30403193921` — `CI Release Matrix Dry Run`, success for the implementation SHA.
-- Documentation closeout commit: pending.
-- Final repository state: verified after the documentation closeout commit.
+- Documentation closeout commit: `480b92fc6c58acb15e08b628a4efca4a98d8baff`.
+- Exact GitHub Actions run for the documentation closeout: `30403924829` — success.
+- Final repository state: tracked tree clean, HEAD equals origin, and `0 0` ahead/behind; pre-existing untracked backlog preserved.
 
 ## Review pack
 
