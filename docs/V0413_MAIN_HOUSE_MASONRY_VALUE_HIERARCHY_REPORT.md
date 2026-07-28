@@ -38,8 +38,24 @@ The audit records original/final materials, every affected mesh UV count, vertex
 
 Dedicated validator: `npm run godot:validate:v0413-main-house-masonry` (`tools/godot/saltoV0413MainHouseMasonryValueHierarchyTool.mjs`). The retained v0.412/v0.411/v0.410/v0.409/v0.408/v0.407/v0.406/v0.401/v0.400 validators, full local validation, and CI evidence are recorded here after closeout.
 
+Local validation passed:
+
+- v0.413 dedicated validator: material-only candidate; 3 dynamic wall nodes; 7 real captures.
+- v0.412 and v0.411 dedicated validators: material-only bridge candidates retained.
+- v0.410 and v0.409 dedicated validators: accepted fail-closed limitations retained.
+- v0.408, v0.407, v0.406, v0.401, and v0.400 dedicated validators.
+- `npm test`: 887 tests across 122 files.
+- `npm run build`.
+- `npm run validate:content`.
+- `npm run validate:art-intake`.
+- `npm run validate:runtime-art-slots`.
+- artifact-retention validator.
+- `npm run godot:all`.
+- `git diff --check`.
+
 ## Closeout
 
-- Implementation CI: pending until commit/push.
-- Documentation closeout CI: pending.
-- Final repository state: pending final commit/push verification.
+- Implementation commit: `91cc16f14a76a0493fd93f4ea5c2a96030f1d95b`.
+- Implementation GitHub Actions: run `30378457274` — success for the exact implementation SHA.
+- Documentation closeout CI: pending the documentation-only commit.
+- Final repository state: pending the documentation-only commit and exact-SHA verification.
