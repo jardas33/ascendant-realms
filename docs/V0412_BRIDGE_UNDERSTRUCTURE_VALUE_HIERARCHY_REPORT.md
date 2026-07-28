@@ -50,3 +50,13 @@ The preservation audit explicitly records `materialOnly: true`, geometry/topolog
 ## Closeout
 
 The candidate is retained only when real colour and grayscale captures satisfy the layered-bridge criteria. No v0.413 work begins in this checkpoint.
+
+## Final evidence
+
+The live rendered candidate retained exactly four affected nodes: two underbeams (`Bridge_Underbeam_-1_28`, `Bridge_Underbeam_+1_28`) and two edge courses (`Bridge_EdgeCourse_-1`, `Bridge_EdgeCourse_+1`). Wide colour, close colour, wide grayscale, close grayscale, temporary identification, and both comparison captures were manually inspected as nonblank real renders. The close view shows the darker supporting underbeams below the deck and the intermediate edge courses at the deck boundary while the accepted v0.411 rails/posts remain the upper frame.
+
+Local validation passed: dedicated v0.412, retained v0.411/v0.410/v0.409/v0.408/v0.407/v0.406/v0.401/v0.400 validators, 887 tests across 122 files, production build, content validation, art-intake validation, runtime-art-slot validation, artifact retention, `npm run godot:all`, and `git diff --check`.
+
+Implementation commit: `1cee6c0a92f1b6404f85860eee1f021e4083a162`.
+
+GitHub Actions exact-SHA proof: run `30374208912` (`CI Release Matrix Dry Run`) completed successfully for the implementation commit.
