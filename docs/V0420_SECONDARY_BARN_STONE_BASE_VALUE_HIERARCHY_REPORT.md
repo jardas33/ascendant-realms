@@ -34,8 +34,10 @@ The real colour, grayscale, diagnostic and comparison captures were inspected be
 
 ## Final closeout
 
-- Commit: `808267fdaf80fcfa589258c765b523670a76d325`
-- Exact GitHub Actions run: `30406607767` - `CI Release Matrix Dry Run` - success
+- Implementation commit: `808267fdaf80fcfa589258c765b523670a76d325`
+- Implementation exact GitHub Actions run: `30406607767` - `CI Release Matrix Dry Run` - success
+- Final documentation-closeout commit: `939103ce0fd262e02f58805cc2730de070d4acba`
+- Final documentation-closeout exact GitHub Actions run: `30407290805` - `CI Release Matrix Dry Run` - success
 - Branch: `codex/v0215-v0226-recovery`
 - Review pack: `artifacts/manual-review/v0420-secondary-barn-stone-base-value-hierarchy/`
 - Final repository state: clean tracked tree and synchronized branch after the documentation closeout push.
