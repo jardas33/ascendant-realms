@@ -30,4 +30,12 @@ The closeout ran the retained v0.419-v0.400 ladder including fail-closed gates, 
 
 ## Closeout
 
-The real colour, grayscale, diagnostic and comparison captures were inspected before acceptance. The candidate is retained as a one-node material-only change. Implementation commit and exact CI evidence are recorded in the final closeout amendment after push.
+The real colour, grayscale, diagnostic and comparison captures were inspected before acceptance. The candidate is retained as a one-node material-only change.
+
+## Final closeout
+
+- Commit: `808267fdaf80fcfa589258c765b523670a76d325`
+- Exact GitHub Actions run: `30406607767` - `CI Release Matrix Dry Run` - success
+- Branch: `codex/v0215-v0226-recovery`
+- Review pack: `artifacts/manual-review/v0420-secondary-barn-stone-base-value-hierarchy/`
+- Final repository state: clean tracked tree and synchronized branch after the documentation closeout push.
