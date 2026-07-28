@@ -27,3 +27,11 @@ The audit records affected and excluded inventories, functional classification, 
 ## Validation and closeout
 
 The dedicated validator accepts the exact fail-closed limitation and checks that the v0.415 nested audit, material-only preservation flags, complete inventory fields, and no-new-mesh contract remain present. The review pack contains seven nonblank real captures plus `v0416-preservation-audit.json`. Retained v0.415 through v0.400 validators are green, including the v0.409, v0.410, and v0.415 fail-closed gates. Full tests/build/content/art/runtime/artifact validation, `npm run godot:all`, and `git diff --check` are green locally. Exact commit and Actions evidence are added during closeout.
+
+## Final evidence
+
+- Implementation commit: `abcf228532ae4773a5b129beb674a85e2145f3ef`
+- Exact-SHA GitHub Actions: run `30392928292` (`CI Release Matrix Dry Run`) - success
+- Final branch: `codex/v0215-v0226-recovery`
+- Final tracked repository state: clean and synchronized with origin (`0 ahead / 0 behind`)
+- Unrelated pre-existing untracked artifacts were preserved and were not included in the checkpoint commit.
