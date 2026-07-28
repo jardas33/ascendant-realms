@@ -145,6 +145,8 @@ const SCRIPT_ARG_PREFIXES := [
 	"--v0418-secondary-barn-openings-smoke",
 	"--v0419-secondary-barn-front-gable-capture",
 	"--v0419-secondary-barn-front-gable-smoke",
+	"--v0420-secondary-barn-stone-base-capture",
+	"--v0420-secondary-barn-stone-base-smoke",
 	"--h3-semantic-evidence",
 	"--h3-supported-state-contract",
 	"--h3-directional-animation-micro-pilot",
@@ -852,6 +854,18 @@ func _ready() -> void:
 		v0419_pass.set_meta("v0419_capture_mode", args.has("--v0419-secondary-barn-front-gable-capture"))
 		v0419_pass.set_meta("v0419_smoke_mode", args.has("--v0419-secondary-barn-front-gable-smoke"))
 		add_child(v0419_pass)
+		return
+	if args.has("--v0420-secondary-barn-stone-base-capture") or args.has("--v0420-secondary-barn-stone-base-smoke"):
+		var v0420_script := load("res://scripts/v0420_secondary_barn_stone_base_value_hierarchy.gd") as Script
+		if v0420_script == null:
+			push_error("v0.420 secondary-barn stone-base script failed to load")
+			return
+		var v0420_pass := Node3D.new()
+		v0420_pass.set_script(v0420_script)
+		v0420_pass.name = "V0420SecondaryBarnStoneBaseValueHierarchy"
+		v0420_pass.set_meta("v0420_capture_mode", args.has("--v0420-secondary-barn-stone-base-capture"))
+		v0420_pass.set_meta("v0420_smoke_mode", args.has("--v0420-secondary-barn-stone-base-smoke"))
+		add_child(v0420_pass)
 		return
 	if args.has("--salto-production-target-spike"):
 		var spike_scene := load("res://scenes/salto_production_target_spike.tscn") as PackedScene
