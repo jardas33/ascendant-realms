@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/v0419_secondary_barn_front_gable_value_integration.gd" id="1_v0419"]
+
+[node name="V0419SecondaryBarnFrontGableValueIntegration" type="Node3D"]
+script = ExtResource("1_v0419")

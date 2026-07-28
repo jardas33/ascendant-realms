@@ -143,6 +143,8 @@ const SCRIPT_ARG_PREFIXES := [
 	"--v0417-secondary-barn-walls-smoke",
 	"--v0418-secondary-barn-openings-capture",
 	"--v0418-secondary-barn-openings-smoke",
+	"--v0419-secondary-barn-front-gable-capture",
+	"--v0419-secondary-barn-front-gable-smoke",
 	"--h3-semantic-evidence",
 	"--h3-supported-state-contract",
 	"--h3-directional-animation-micro-pilot",
@@ -838,6 +840,18 @@ func _ready() -> void:
 		v0418_pass.set_meta("v0418_capture_mode", args.has("--v0418-secondary-barn-openings-capture"))
 		v0418_pass.set_meta("v0418_smoke_mode", args.has("--v0418-secondary-barn-openings-smoke"))
 		add_child(v0418_pass)
+		return
+	if args.has("--v0419-secondary-barn-front-gable-capture") or args.has("--v0419-secondary-barn-front-gable-smoke"):
+		var v0419_script := load("res://scripts/v0419_secondary_barn_front_gable_value_integration.gd") as Script
+		if v0419_script == null:
+			push_error("v0.419 secondary-barn front-gable script failed to load")
+			return
+		var v0419_pass := Node3D.new()
+		v0419_pass.set_script(v0419_script)
+		v0419_pass.name = "V0419SecondaryBarnFrontGableValueIntegration"
+		v0419_pass.set_meta("v0419_capture_mode", args.has("--v0419-secondary-barn-front-gable-capture"))
+		v0419_pass.set_meta("v0419_smoke_mode", args.has("--v0419-secondary-barn-front-gable-smoke"))
+		add_child(v0419_pass)
 		return
 	if args.has("--salto-production-target-spike"):
 		var spike_scene := load("res://scenes/salto_production_target_spike.tscn") as PackedScene
