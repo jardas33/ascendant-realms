@@ -61,7 +61,11 @@ The repository-provided package has no v0.402-v0.405 dedicated validator command
 
 ## Closeout evidence
 
-Commit and exact GitHub Actions evidence are recorded at push closeout. The intended final state is the tracked tree clean and synchronized with `origin/codex/v0215-v0226-recovery`; the unrelated pre-existing untracked artifact backlog remains untouched.
+- Implementation commit: `69bb230515133b9fa8e39cc13d2f3ef44e2537ff`
+- Exact GitHub Actions run: `30399715318` — `CI Release Matrix Dry Run` — success for that SHA
+- Branch: `codex/v0215-v0226-recovery`
+
+The tracked tree is kept clean and synchronized with `origin/codex/v0215-v0226-recovery`; the unrelated pre-existing untracked artifact backlog remains untouched.
 
 ## Decision
 
