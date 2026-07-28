@@ -133,6 +133,8 @@ const SCRIPT_ARG_PREFIXES := [
 	"--v0412-bridge-understructure-smoke",
 	"--v0413-main-house-masonry-capture",
 	"--v0413-main-house-masonry-smoke",
+	"--v0414-main-house-openings-trim-capture",
+	"--v0414-main-house-openings-trim-smoke",
 	"--h3-semantic-evidence",
 	"--h3-supported-state-contract",
 	"--h3-directional-animation-micro-pilot",
@@ -768,6 +770,18 @@ func _ready() -> void:
 		v0413_pass.set_meta("v0413_capture_mode", args.has("--v0413-main-house-masonry-capture"))
 		v0413_pass.set_meta("v0413_smoke_mode", args.has("--v0413-main-house-masonry-smoke"))
 		add_child(v0413_pass)
+		return
+	if args.has("--v0414-main-house-openings-trim-capture") or args.has("--v0414-main-house-openings-trim-smoke"):
+		var v0414_script := load("res://scripts/v0414_main_house_openings_trim_value_hierarchy.gd") as Script
+		if v0414_script == null:
+			push_error("v0.414 main-house openings/trim script failed to load")
+			return
+		var v0414_pass := Node3D.new()
+		v0414_pass.set_script(v0414_script)
+		v0414_pass.name = "V0414MainHouseOpeningsTrimValueHierarchy"
+		v0414_pass.set_meta("v0414_capture_mode", args.has("--v0414-main-house-openings-trim-capture"))
+		v0414_pass.set_meta("v0414_smoke_mode", args.has("--v0414-main-house-openings-trim-smoke"))
+		add_child(v0414_pass)
 		return
 	if args.has("--salto-production-target-spike"):
 		var spike_scene := load("res://scenes/salto_production_target_spike.tscn") as PackedScene
