@@ -137,6 +137,8 @@ const SCRIPT_ARG_PREFIXES := [
 	"--v0414-main-house-openings-trim-smoke",
 	"--v0415-main-house-foundation-step-capture",
 	"--v0415-main-house-foundation-step-smoke",
+	"--v0416-main-house-chimney-capture",
+	"--v0416-main-house-chimney-smoke",
 	"--h3-semantic-evidence",
 	"--h3-supported-state-contract",
 	"--h3-directional-animation-micro-pilot",
@@ -796,6 +798,18 @@ func _ready() -> void:
 		v0415_pass.set_meta("v0415_capture_mode", args.has("--v0415-main-house-foundation-step-capture"))
 		v0415_pass.set_meta("v0415_smoke_mode", args.has("--v0415-main-house-foundation-step-smoke"))
 		add_child(v0415_pass)
+		return
+	if args.has("--v0416-main-house-chimney-capture") or args.has("--v0416-main-house-chimney-smoke"):
+		var v0416_script := load("res://scripts/v0416_main_house_chimney_material_hierarchy.gd") as Script
+		if v0416_script == null:
+			push_error("v0.416 main-house chimney script failed to load")
+			return
+		var v0416_pass := Node3D.new()
+		v0416_pass.set_script(v0416_script)
+		v0416_pass.name = "V0416MainHouseChimneyMaterialHierarchy"
+		v0416_pass.set_meta("v0416_capture_mode", args.has("--v0416-main-house-chimney-capture"))
+		v0416_pass.set_meta("v0416_smoke_mode", args.has("--v0416-main-house-chimney-smoke"))
+		add_child(v0416_pass)
 		return
 	if args.has("--salto-production-target-spike"):
 		var spike_scene := load("res://scenes/salto_production_target_spike.tscn") as PackedScene

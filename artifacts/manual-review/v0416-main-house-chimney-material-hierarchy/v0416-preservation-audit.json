@@ -1,0 +1,2934 @@
+{
+  "aabbChanged": false,
+  "affectedNodeCount": 0,
+  "affectedNodeInventory": [
+    {
+      "material": "null",
+      "mesh": "barrosan_house_02_material_gold_candidate_Cube",
+      "name": "LOD0_Granite",
+      "parent": "V0394_One_Primary_Barrosan_Homestead",
+      "uvCount": 9054,
+      "visible": true
+    },
+    {
+      "material": "V0414_Main_House_Door",
+      "mesh": "barrosan_house_02_material_gold_candidate_Cube_008",
+      "name": "LOD0_Interior_Recess",
+      "parent": "V0394_One_Primary_Barrosan_Homestead",
+      "uvCount": 768,
+      "visible": true
+    },
+    {
+      "material": "V0414_Main_House_Timber_Trim",
+      "mesh": "barrosan_house_02_material_gold_candidate_Cube_009",
+      "name": "LOD0_Weathered_Timber",
+      "parent": "V0394_One_Primary_Barrosan_Homestead",
+      "uvCount": 8832,
+      "visible": true
+    },
+    {
+      "material": "null",
+      "mesh": "barrosan_house_02_material_gold_candidate_Cube_013",
+      "name": "LOD0_Iron",
+      "parent": "V0394_One_Primary_Barrosan_Homestead",
+      "uvCount": 1152,
+      "visible": true
+    },
+    {
+      "material": "V0414_Main_House_Window_Frame",
+      "mesh": "barrosan_house_02_material_gold_candidate_Cube_016",
+      "name": "LOD0_Recessed_Window",
+      "parent": "V0394_One_Primary_Barrosan_Homestead",
+      "uvCount": 1536,
+      "visible": true
+    },
+    {
+      "material": "null",
+      "mesh": "barrosan_house_02_material_gold_candidate_Cube_059",
+      "name": "LOD0_Damp_Foundation",
+      "parent": "V0394_One_Primary_Barrosan_Homestead",
+      "uvCount": 1536,
+      "visible": true
+    },
+    {
+      "material": "null",
+      "mesh": "",
+      "name": "LOD0_Weathered_Slate",
+      "parent": "V0394_One_Primary_Barrosan_Homestead",
+      "uvCount": 0,
+      "visible": false
+    },
+    {
+      "material": "null",
+      "mesh": "barrosan_house_02_material_gold_candidate_Cube_098",
+      "name": "LOD1_Granite",
+      "parent": "V0394_One_Primary_Barrosan_Homestead",
+      "uvCount": 4057,
+      "visible": true
+    },
+    {
+      "material": "V0414_Main_House_Door",
+      "mesh": "barrosan_house_02_material_gold_candidate_Cube_099",
+      "name": "LOD1_Interior_Recess",
+      "parent": "V0394_One_Primary_Barrosan_Homestead",
+      "uvCount": 380,
+      "visible": true
+    },
+    {
+      "material": "V0414_Main_House_Timber_Trim",
+      "mesh": "barrosan_house_02_material_gold_candidate_Cube_100",
+      "name": "LOD1_Weathered_Timber",
+      "parent": "V0394_One_Primary_Barrosan_Homestead",
+      "uvCount": 4436,
+      "visible": true
+    },
+    {
+      "material": "null",
+      "mesh": "barrosan_house_02_material_gold_candidate_Cube_101",
+      "name": "LOD1_Iron",
+      "parent": "V0394_One_Primary_Barrosan_Homestead",
+      "uvCount": 596,
+      "visible": true
+    },
+    {
+      "material": "V0414_Main_House_Window_Frame",
+      "mesh": "barrosan_house_02_material_gold_candidate_Cube_102",
+      "name": "LOD1_Recessed_Window",
+      "parent": "V0394_One_Primary_Barrosan_Homestead",
+      "uvCount": 762,
+      "visible": true
+    },
+    {
+      "material": "null",
+      "mesh": "barrosan_house_02_material_gold_candidate_Cube_103",
+      "name": "LOD1_Damp_Foundation",
+      "parent": "V0394_One_Primary_Barrosan_Homestead",
+      "uvCount": 766,
+      "visible": true
+    },
+    {
+      "material": "null",
+      "mesh": "",
+      "name": "LOD1_Weathered_Slate",
+      "parent": "V0394_One_Primary_Barrosan_Homestead",
+      "uvCount": 0,
+      "visible": false
+    },
+    {
+      "material": "null",
+      "mesh": "barrosan_house_02_material_gold_candidate_Cube_104",
+      "name": "LOD2_Granite",
+      "parent": "V0394_One_Primary_Barrosan_Homestead",
+      "uvCount": 806,
+      "visible": true
+    },
+    {
+      "material": "V0414_Main_House_Door",
+      "mesh": "barrosan_house_02_material_gold_candidate_Cube_105",
+      "name": "LOD2_Interior_Recess",
+      "parent": "V0394_One_Primary_Barrosan_Homestead",
+      "uvCount": 96,
+      "visible": true
+    },
+    {
+      "material": "V0414_Main_House_Timber_Trim",
+      "mesh": "barrosan_house_02_material_gold_candidate_Cube_106",
+      "name": "LOD2_Weathered_Timber",
+      "parent": "V0394_One_Primary_Barrosan_Homestead",
+      "uvCount": 1024,
+      "visible": true
+    },
+    {
+      "material": "null",
+      "mesh": "barrosan_house_02_material_gold_candidate_Cube_107",
+      "name": "LOD2_Iron",
+      "parent": "V0394_One_Primary_Barrosan_Homestead",
+      "uvCount": 140,
+      "visible": true
+    },
+    {
+      "material": "V0414_Main_House_Window_Frame",
+      "mesh": "barrosan_house_02_material_gold_candidate_Cube_108",
+      "name": "LOD2_Recessed_Window",
+      "parent": "V0394_One_Primary_Barrosan_Homestead",
+      "uvCount": 196,
+      "visible": true
+    },
+    {
+      "material": "null",
+      "mesh": "barrosan_house_02_material_gold_candidate_Cube_109",
+      "name": "LOD2_Damp_Foundation",
+      "parent": "V0394_One_Primary_Barrosan_Homestead",
+      "uvCount": 196,
+      "visible": true
+    },
+    {
+      "material": "null",
+      "mesh": "",
+      "name": "LOD2_Weathered_Slate",
+      "parent": "V0394_One_Primary_Barrosan_Homestead",
+      "uvCount": 0,
+      "visible": false
+    },
+    {
+      "material": "null",
+      "mesh": "barrosan_house_02_material_gold_candidate_Cube_110",
+      "name": "Collision_LowerVolume",
+      "parent": "V0394_One_Primary_Barrosan_Homestead",
+      "uvCount": 24,
+      "visible": true
+    },
+    {
+      "material": "null",
+      "mesh": "barrosan_house_02_material_gold_candidate_Cube_111",
+      "name": "Collision_UpperVolume",
+      "parent": "V0394_One_Primary_Barrosan_Homestead",
+      "uvCount": 24,
+      "visible": true
+    },
+    {
+      "material": "null",
+      "mesh": "",
+      "name": "Collision_RoofVolume",
+      "parent": "V0394_One_Primary_Barrosan_Homestead",
+      "uvCount": 0,
+      "visible": false
+    },
+    {
+      "material": "V0408_Main_House_Weathered_Slate",
+      "mesh": "",
+      "name": "V0400_Main_House_Roof_Left_Plane",
+      "parent": "V0400_Main_House_Roof_Silhouette",
+      "uvCount": 0,
+      "visible": true
+    },
+    {
+      "material": "V0408_Main_House_Weathered_Slate",
+      "mesh": "",
+      "name": "V0400_Main_House_Roof_Right_Plane",
+      "parent": "V0400_Main_House_Roof_Silhouette",
+      "uvCount": 0,
+      "visible": true
+    },
+    {
+      "material": "V0408_Main_House_Weathered_Eave_Timber",
+      "mesh": "",
+      "name": "V0400_Main_House_Left_Roof_Visual_Closure",
+      "parent": "V0400_Main_House_Roof_Silhouette",
+      "uvCount": 0,
+      "visible": true
+    },
+    {
+      "material": "V0408_Main_House_Weathered_Eave_Timber",
+      "mesh": "",
+      "name": "V0400_Main_House_Right_Roof_Visual_Closure",
+      "parent": "V0400_Main_House_Roof_Silhouette",
+      "uvCount": 0,
+      "visible": true
+    },
+    {
+      "material": "V0408_Main_House_Slate_Ridge",
+      "mesh": "",
+      "name": "V0400_Main_House_Ridge_Beam",
+      "parent": "V0400_Main_House_Roof_Silhouette",
+      "uvCount": 0,
+      "visible": true
+    },
+    {
+      "material": "V0408_Main_House_Weathered_Eave_Timber",
+      "mesh": "",
+      "name": "V0400_Main_House_Left_Eave",
+      "parent": "V0400_Main_House_Roof_Silhouette",
+      "uvCount": 0,
+      "visible": true
+    },
+    {
+      "material": "V0408_Main_House_Weathered_Eave_Timber",
+      "mesh": "",
+      "name": "V0400_Main_House_Right_Eave",
+      "parent": "V0400_Main_House_Roof_Silhouette",
+      "uvCount": 0,
+      "visible": true
+    }
+  ],
+  "affectedNodeNames": [],
+  "baselineCommit": "73bbc22d0137a11b4a2cd0f377dbe9157e6f2c7c",
+  "candidateDebugNames": [],
+  "candidateRetained": false,
+  "checkpoint": "v0.416",
+  "debugRenderer": "unchanged",
+  "decals": false,
+  "defaultRuntime": "unchanged",
+  "duplicateMeshes": false,
+  "excludedAdjacentInventory": [
+    {
+      "material": "null",
+      "mesh": "barrosan_house_02_material_gold_candidate_Cube",
+      "name": "LOD0_Granite",
+      "parent": "V0394_One_Primary_Barrosan_Homestead",
+      "uvCount": 9054,
+      "visible": true
+    },
+    {
+      "material": "V0414_Main_House_Door",
+      "mesh": "barrosan_house_02_material_gold_candidate_Cube_008",
+      "name": "LOD0_Interior_Recess",
+      "parent": "V0394_One_Primary_Barrosan_Homestead",
+      "uvCount": 768,
+      "visible": true
+    },
+    {
+      "material": "V0414_Main_House_Timber_Trim",
+      "mesh": "barrosan_house_02_material_gold_candidate_Cube_009",
+      "name": "LOD0_Weathered_Timber",
+      "parent": "V0394_One_Primary_Barrosan_Homestead",
+      "uvCount": 8832,
+      "visible": true
+    },
+    {
+      "material": "null",
+      "mesh": "barrosan_house_02_material_gold_candidate_Cube_013",
+      "name": "LOD0_Iron",
+      "parent": "V0394_One_Primary_Barrosan_Homestead",
+      "uvCount": 1152,
+      "visible": true
+    },
+    {
+      "material": "V0414_Main_House_Window_Frame",
+      "mesh": "barrosan_house_02_material_gold_candidate_Cube_016",
+      "name": "LOD0_Recessed_Window",
+      "parent": "V0394_One_Primary_Barrosan_Homestead",
+      "uvCount": 1536,
+      "visible": true
+    },
+    {
+      "material": "null",
+      "mesh": "barrosan_house_02_material_gold_candidate_Cube_059",
+      "name": "LOD0_Damp_Foundation",
+      "parent": "V0394_One_Primary_Barrosan_Homestead",
+      "uvCount": 1536,
+      "visible": true
+    },
+    {
+      "material": "null",
+      "mesh": "",
+      "name": "LOD0_Weathered_Slate",
+      "parent": "V0394_One_Primary_Barrosan_Homestead",
+      "uvCount": 0,
+      "visible": false
+    },
+    {
+      "material": "null",
+      "mesh": "barrosan_house_02_material_gold_candidate_Cube_098",
+      "name": "LOD1_Granite",
+      "parent": "V0394_One_Primary_Barrosan_Homestead",
+      "uvCount": 4057,
+      "visible": true
+    },
+    {
+      "material": "V0414_Main_House_Door",
+      "mesh": "barrosan_house_02_material_gold_candidate_Cube_099",
+      "name": "LOD1_Interior_Recess",
+      "parent": "V0394_One_Primary_Barrosan_Homestead",
+      "uvCount": 380,
+      "visible": true
+    },
+    {
+      "material": "V0414_Main_House_Timber_Trim",
+      "mesh": "barrosan_house_02_material_gold_candidate_Cube_100",
+      "name": "LOD1_Weathered_Timber",
+      "parent": "V0394_One_Primary_Barrosan_Homestead",
+      "uvCount": 4436,
+      "visible": true
+    },
+    {
+      "material": "null",
+      "mesh": "barrosan_house_02_material_gold_candidate_Cube_101",
+      "name": "LOD1_Iron",
+      "parent": "V0394_One_Primary_Barrosan_Homestead",
+      "uvCount": 596,
+      "visible": true
+    },
+    {
+      "material": "V0414_Main_House_Window_Frame",
+      "mesh": "barrosan_house_02_material_gold_candidate_Cube_102",
+      "name": "LOD1_Recessed_Window",
+      "parent": "V0394_One_Primary_Barrosan_Homestead",
+      "uvCount": 762,
+      "visible": true
+    },
+    {
+      "material": "null",
+      "mesh": "barrosan_house_02_material_gold_candidate_Cube_103",
+      "name": "LOD1_Damp_Foundation",
+      "parent": "V0394_One_Primary_Barrosan_Homestead",
+      "uvCount": 766,
+      "visible": true
+    },
+    {
+      "material": "null",
+      "mesh": "",
+      "name": "LOD1_Weathered_Slate",
+      "parent": "V0394_One_Primary_Barrosan_Homestead",
+      "uvCount": 0,
+      "visible": false
+    },
+    {
+      "material": "null",
+      "mesh": "barrosan_house_02_material_gold_candidate_Cube_104",
+      "name": "LOD2_Granite",
+      "parent": "V0394_One_Primary_Barrosan_Homestead",
+      "uvCount": 806,
+      "visible": true
+    },
+    {
+      "material": "V0414_Main_House_Door",
+      "mesh": "barrosan_house_02_material_gold_candidate_Cube_105",
+      "name": "LOD2_Interior_Recess",
+      "parent": "V0394_One_Primary_Barrosan_Homestead",
+      "uvCount": 96,
+      "visible": true
+    },
+    {
+      "material": "V0414_Main_House_Timber_Trim",
+      "mesh": "barrosan_house_02_material_gold_candidate_Cube_106",
+      "name": "LOD2_Weathered_Timber",
+      "parent": "V0394_One_Primary_Barrosan_Homestead",
+      "uvCount": 1024,
+      "visible": true
+    },
+    {
+      "material": "null",
+      "mesh": "barrosan_house_02_material_gold_candidate_Cube_107",
+      "name": "LOD2_Iron",
+      "parent": "V0394_One_Primary_Barrosan_Homestead",
+      "uvCount": 140,
+      "visible": true
+    },
+    {
+      "material": "V0414_Main_House_Window_Frame",
+      "mesh": "barrosan_house_02_material_gold_candidate_Cube_108",
+      "name": "LOD2_Recessed_Window",
+      "parent": "V0394_One_Primary_Barrosan_Homestead",
+      "uvCount": 196,
+      "visible": true
+    },
+    {
+      "material": "null",
+      "mesh": "barrosan_house_02_material_gold_candidate_Cube_109",
+      "name": "LOD2_Damp_Foundation",
+      "parent": "V0394_One_Primary_Barrosan_Homestead",
+      "uvCount": 196,
+      "visible": true
+    },
+    {
+      "material": "null",
+      "mesh": "",
+      "name": "LOD2_Weathered_Slate",
+      "parent": "V0394_One_Primary_Barrosan_Homestead",
+      "uvCount": 0,
+      "visible": false
+    },
+    {
+      "material": "null",
+      "mesh": "barrosan_house_02_material_gold_candidate_Cube_110",
+      "name": "Collision_LowerVolume",
+      "parent": "V0394_One_Primary_Barrosan_Homestead",
+      "uvCount": 24,
+      "visible": true
+    },
+    {
+      "material": "null",
+      "mesh": "barrosan_house_02_material_gold_candidate_Cube_111",
+      "name": "Collision_UpperVolume",
+      "parent": "V0394_One_Primary_Barrosan_Homestead",
+      "uvCount": 24,
+      "visible": true
+    },
+    {
+      "material": "null",
+      "mesh": "",
+      "name": "Collision_RoofVolume",
+      "parent": "V0394_One_Primary_Barrosan_Homestead",
+      "uvCount": 0,
+      "visible": false
+    },
+    {
+      "material": "V0408_Main_House_Weathered_Slate",
+      "mesh": "",
+      "name": "V0400_Main_House_Roof_Left_Plane",
+      "parent": "V0400_Main_House_Roof_Silhouette",
+      "uvCount": 0,
+      "visible": true
+    },
+    {
+      "material": "V0408_Main_House_Weathered_Slate",
+      "mesh": "",
+      "name": "V0400_Main_House_Roof_Right_Plane",
+      "parent": "V0400_Main_House_Roof_Silhouette",
+      "uvCount": 0,
+      "visible": true
+    },
+    {
+      "material": "V0408_Main_House_Weathered_Eave_Timber",
+      "mesh": "",
+      "name": "V0400_Main_House_Left_Roof_Visual_Closure",
+      "parent": "V0400_Main_House_Roof_Silhouette",
+      "uvCount": 0,
+      "visible": true
+    },
+    {
+      "material": "V0408_Main_House_Weathered_Eave_Timber",
+      "mesh": "",
+      "name": "V0400_Main_House_Right_Roof_Visual_Closure",
+      "parent": "V0400_Main_House_Roof_Silhouette",
+      "uvCount": 0,
+      "visible": true
+    },
+    {
+      "material": "V0408_Main_House_Slate_Ridge",
+      "mesh": "",
+      "name": "V0400_Main_House_Ridge_Beam",
+      "parent": "V0400_Main_House_Roof_Silhouette",
+      "uvCount": 0,
+      "visible": true
+    },
+    {
+      "material": "V0408_Main_House_Weathered_Eave_Timber",
+      "mesh": "",
+      "name": "V0400_Main_House_Left_Eave",
+      "parent": "V0400_Main_House_Roof_Silhouette",
+      "uvCount": 0,
+      "visible": true
+    },
+    {
+      "material": "V0408_Main_House_Weathered_Eave_Timber",
+      "mesh": "",
+      "name": "V0400_Main_House_Right_Eave",
+      "parent": "V0400_Main_House_Roof_Silhouette",
+      "uvCount": 0,
+      "visible": true
+    }
+  ],
+  "fallbackRenderer": "unchanged",
+  "functionalClassification": {
+
+  },
+  "gameplay": false,
+  "geometryChanged": false,
+  "indicesChanged": false,
+  "materialOnly": true,
+  "newMeshInstances": 0,
+  "overlays": false,
+  "reason": "incomplete visible CHIMNEY_BODY/CHIMNEY_CAP_OR_CROWN inventory",
+  "stateBehavior": "unchanged",
+  "status": "ASSET_MATERIAL_LIMITATION_MAIN_HOUSE_CHIMNEY",
+  "surfacesChanged": false,
+  "topologyChanged": false,
+  "transformsChanged": false,
+  "uvArraysChanged": false,
+  "v0415Audit": {
+    "aabbChanged": false,
+    "affectedNodeCount": 3,
+    "affectedNodeInventory": [
+      {
+        "material": "null",
+        "mesh": "barrosan_house_02_material_gold_candidate_Cube_059",
+        "name": "LOD0_Damp_Foundation",
+        "uvCount": 1536,
+        "visible": true
+      },
+      {
+        "material": "null",
+        "mesh": "barrosan_house_02_material_gold_candidate_Cube_103",
+        "name": "LOD1_Damp_Foundation",
+        "uvCount": 766,
+        "visible": true
+      },
+      {
+        "material": "null",
+        "mesh": "barrosan_house_02_material_gold_candidate_Cube_109",
+        "name": "LOD2_Damp_Foundation",
+        "uvCount": 196,
+        "visible": true
+      }
+    ],
+    "affectedNodeNames": [
+      "LOD0_Damp_Foundation",
+      "LOD1_Damp_Foundation",
+      "LOD2_Damp_Foundation"
+    ],
+    "baselineCommit": "25990fcc63513cacb08dc7b1310b418f58d92bf2",
+    "candidateDebugNames": [
+      "LOD0_Damp_Foundation",
+      "LOD1_Damp_Foundation",
+      "LOD2_Damp_Foundation",
+      "V0395_Door_Threshold_Stone"
+    ],
+    "candidateRetained": false,
+    "checkpoint": "v0.415",
+    "debugRenderer": "unchanged",
+    "decals": false,
+    "defaultRuntime": "unchanged",
+    "duplicateMeshes": false,
+    "excludedAdjacentInventory": [
+      {
+        "material": "null",
+        "mesh": "barrosan_house_02_material_gold_candidate_Cube",
+        "name": "LOD0_Granite",
+        "parent": "V0394_One_Primary_Barrosan_Homestead",
+        "uvCount": 9054,
+        "visible": true
+      },
+      {
+        "material": "V0414_Main_House_Door",
+        "mesh": "barrosan_house_02_material_gold_candidate_Cube_008",
+        "name": "LOD0_Interior_Recess",
+        "parent": "V0394_One_Primary_Barrosan_Homestead",
+        "uvCount": 768,
+        "visible": true
+      },
+      {
+        "material": "V0414_Main_House_Timber_Trim",
+        "mesh": "barrosan_house_02_material_gold_candidate_Cube_009",
+        "name": "LOD0_Weathered_Timber",
+        "parent": "V0394_One_Primary_Barrosan_Homestead",
+        "uvCount": 8832,
+        "visible": true
+      },
+      {
+        "material": "null",
+        "mesh": "barrosan_house_02_material_gold_candidate_Cube_013",
+        "name": "LOD0_Iron",
+        "parent": "V0394_One_Primary_Barrosan_Homestead",
+        "uvCount": 1152,
+        "visible": true
+      },
+      {
+        "material": "V0414_Main_House_Window_Frame",
+        "mesh": "barrosan_house_02_material_gold_candidate_Cube_016",
+        "name": "LOD0_Recessed_Window",
+        "parent": "V0394_One_Primary_Barrosan_Homestead",
+        "uvCount": 1536,
+        "visible": true
+      },
+      {
+        "material": "null",
+        "mesh": "",
+        "name": "LOD0_Weathered_Slate",
+        "parent": "V0394_One_Primary_Barrosan_Homestead",
+        "uvCount": 0,
+        "visible": false
+      },
+      {
+        "material": "null",
+        "mesh": "barrosan_house_02_material_gold_candidate_Cube_098",
+        "name": "LOD1_Granite",
+        "parent": "V0394_One_Primary_Barrosan_Homestead",
+        "uvCount": 4057,
+        "visible": true
+      },
+      {
+        "material": "V0414_Main_House_Door",
+        "mesh": "barrosan_house_02_material_gold_candidate_Cube_099",
+        "name": "LOD1_Interior_Recess",
+        "parent": "V0394_One_Primary_Barrosan_Homestead",
+        "uvCount": 380,
+        "visible": true
+      },
+      {
+        "material": "V0414_Main_House_Timber_Trim",
+        "mesh": "barrosan_house_02_material_gold_candidate_Cube_100",
+        "name": "LOD1_Weathered_Timber",
+        "parent": "V0394_One_Primary_Barrosan_Homestead",
+        "uvCount": 4436,
+        "visible": true
+      },
+      {
+        "material": "null",
+        "mesh": "barrosan_house_02_material_gold_candidate_Cube_101",
+        "name": "LOD1_Iron",
+        "parent": "V0394_One_Primary_Barrosan_Homestead",
+        "uvCount": 596,
+        "visible": true
+      },
+      {
+        "material": "V0414_Main_House_Window_Frame",
+        "mesh": "barrosan_house_02_material_gold_candidate_Cube_102",
+        "name": "LOD1_Recessed_Window",
+        "parent": "V0394_One_Primary_Barrosan_Homestead",
+        "uvCount": 762,
+        "visible": true
+      },
+      {
+        "material": "null",
+        "mesh": "",
+        "name": "LOD1_Weathered_Slate",
+        "parent": "V0394_One_Primary_Barrosan_Homestead",
+        "uvCount": 0,
+        "visible": false
+      },
+      {
+        "material": "null",
+        "mesh": "barrosan_house_02_material_gold_candidate_Cube_104",
+        "name": "LOD2_Granite",
+        "parent": "V0394_One_Primary_Barrosan_Homestead",
+        "uvCount": 806,
+        "visible": true
+      },
+      {
+        "material": "V0414_Main_House_Door",
+        "mesh": "barrosan_house_02_material_gold_candidate_Cube_105",
+        "name": "LOD2_Interior_Recess",
+        "parent": "V0394_One_Primary_Barrosan_Homestead",
+        "uvCount": 96,
+        "visible": true
+      },
+      {
+        "material": "V0414_Main_House_Timber_Trim",
+        "mesh": "barrosan_house_02_material_gold_candidate_Cube_106",
+        "name": "LOD2_Weathered_Timber",
+        "parent": "V0394_One_Primary_Barrosan_Homestead",
+        "uvCount": 1024,
+        "visible": true
+      },
+      {
+        "material": "null",
+        "mesh": "barrosan_house_02_material_gold_candidate_Cube_107",
+        "name": "LOD2_Iron",
+        "parent": "V0394_One_Primary_Barrosan_Homestead",
+        "uvCount": 140,
+        "visible": true
+      },
+      {
+        "material": "V0414_Main_House_Window_Frame",
+        "mesh": "barrosan_house_02_material_gold_candidate_Cube_108",
+        "name": "LOD2_Recessed_Window",
+        "parent": "V0394_One_Primary_Barrosan_Homestead",
+        "uvCount": 196,
+        "visible": true
+      },
+      {
+        "material": "null",
+        "mesh": "",
+        "name": "LOD2_Weathered_Slate",
+        "parent": "V0394_One_Primary_Barrosan_Homestead",
+        "uvCount": 0,
+        "visible": false
+      },
+      {
+        "material": "null",
+        "mesh": "barrosan_house_02_material_gold_candidate_Cube_110",
+        "name": "Collision_LowerVolume",
+        "parent": "V0394_One_Primary_Barrosan_Homestead",
+        "uvCount": 24,
+        "visible": true
+      },
+      {
+        "material": "null",
+        "mesh": "barrosan_house_02_material_gold_candidate_Cube_111",
+        "name": "Collision_UpperVolume",
+        "parent": "V0394_One_Primary_Barrosan_Homestead",
+        "uvCount": 24,
+        "visible": true
+      },
+      {
+        "material": "null",
+        "mesh": "",
+        "name": "Collision_RoofVolume",
+        "parent": "V0394_One_Primary_Barrosan_Homestead",
+        "uvCount": 0,
+        "visible": false
+      },
+      {
+        "material": "V0408_Main_House_Weathered_Slate",
+        "mesh": "",
+        "name": "V0400_Main_House_Roof_Left_Plane",
+        "parent": "V0400_Main_House_Roof_Silhouette",
+        "uvCount": 0,
+        "visible": true
+      },
+      {
+        "material": "V0408_Main_House_Weathered_Slate",
+        "mesh": "",
+        "name": "V0400_Main_House_Roof_Right_Plane",
+        "parent": "V0400_Main_House_Roof_Silhouette",
+        "uvCount": 0,
+        "visible": true
+      },
+      {
+        "material": "V0408_Main_House_Weathered_Eave_Timber",
+        "mesh": "",
+        "name": "V0400_Main_House_Left_Roof_Visual_Closure",
+        "parent": "V0400_Main_House_Roof_Silhouette",
+        "uvCount": 0,
+        "visible": true
+      },
+      {
+        "material": "V0408_Main_House_Weathered_Eave_Timber",
+        "mesh": "",
+        "name": "V0400_Main_House_Right_Roof_Visual_Closure",
+        "parent": "V0400_Main_House_Roof_Silhouette",
+        "uvCount": 0,
+        "visible": true
+      },
+      {
+        "material": "V0408_Main_House_Slate_Ridge",
+        "mesh": "",
+        "name": "V0400_Main_House_Ridge_Beam",
+        "parent": "V0400_Main_House_Roof_Silhouette",
+        "uvCount": 0,
+        "visible": true
+      },
+      {
+        "material": "V0408_Main_House_Weathered_Eave_Timber",
+        "mesh": "",
+        "name": "V0400_Main_House_Left_Eave",
+        "parent": "V0400_Main_House_Roof_Silhouette",
+        "uvCount": 0,
+        "visible": true
+      },
+      {
+        "material": "V0408_Main_House_Weathered_Eave_Timber",
+        "mesh": "",
+        "name": "V0400_Main_House_Right_Eave",
+        "parent": "V0400_Main_House_Roof_Silhouette",
+        "uvCount": 0,
+        "visible": true
+      },
+      {
+        "material": "null",
+        "mesh": "barrosan_highland_infrastructure_v0380_Terrain_Highland_Continuous",
+        "name": "Terrain_Highland_Continuous",
+        "parent": "world",
+        "uvCount": 0,
+        "visible": true
+      },
+      {
+        "material": "null",
+        "mesh": "barrosan_highland_infrastructure_v0380_Water_Recessed_River",
+        "name": "Water_Recessed_River",
+        "parent": "world",
+        "uvCount": 0,
+        "visible": true
+      },
+      {
+        "material": "V0394_Bridge_Desaturated_Value",
+        "mesh": "barrosan_highland_infrastructure_v0380_Bridge_Abutment_-1",
+        "name": "Bridge_Abutment_-1",
+        "parent": "world",
+        "uvCount": 0,
+        "visible": true
+      },
+      {
+        "material": "V0394_Bridge_Desaturated_Value",
+        "mesh": "barrosan_highland_infrastructure_v0380_Bridge_Footing_-1",
+        "name": "Bridge_Footing_-1",
+        "parent": "world",
+        "uvCount": 0,
+        "visible": true
+      },
+      {
+        "material": "V0407_Eastern_Landing_Warm_Earth",
+        "mesh": "barrosan_highland_infrastructure_v0380_Bridge_Abutment_+1",
+        "name": "Bridge_Abutment_+1",
+        "parent": "world",
+        "uvCount": 0,
+        "visible": true
+      },
+      {
+        "material": "V0394_Bridge_Desaturated_Value",
+        "mesh": "barrosan_highland_infrastructure_v0380_Bridge_Footing_+1",
+        "name": "Bridge_Footing_+1",
+        "parent": "world",
+        "uvCount": 0,
+        "visible": true
+      },
+      {
+        "material": "V0394_Bridge_Desaturated_Value",
+        "mesh": "barrosan_highland_infrastructure_v0380_Bridge_Underbeam_-1_28",
+        "name": "Bridge_Underbeam_-1_28",
+        "parent": "world",
+        "uvCount": 0,
+        "visible": true
+      },
+      {
+        "material": "V0394_Bridge_Desaturated_Value",
+        "mesh": "barrosan_highland_infrastructure_v0380_Bridge_Underbeam_+1_28",
+        "name": "Bridge_Underbeam_+1_28",
+        "parent": "world",
+        "uvCount": 0,
+        "visible": true
+      },
+      {
+        "material": "V0394_Bridge_Desaturated_Value",
+        "mesh": "barrosan_highland_infrastructure_v0380_Bridge_Crossbeam_-2_50",
+        "name": "Bridge_Crossbeam_-2_50",
+        "parent": "world",
+        "uvCount": 0,
+        "visible": true
+      },
+      {
+        "material": "V0394_Bridge_Desaturated_Value",
+        "mesh": "barrosan_highland_infrastructure_v0380_Bridge_Crossbeam_+0_00",
+        "name": "Bridge_Crossbeam_+0_00",
+        "parent": "world",
+        "uvCount": 0,
+        "visible": true
+      },
+      {
+        "material": "V0394_Bridge_Desaturated_Value",
+        "mesh": "barrosan_highland_infrastructure_v0380_Bridge_Crossbeam_+2_50",
+        "name": "Bridge_Crossbeam_+2_50",
+        "parent": "world",
+        "uvCount": 0,
+        "visible": true
+      },
+      {
+        "material": "V0394_Bridge_Desaturated_Value",
+        "mesh": "barrosan_highland_infrastructure_v0380_Bridge_Deck_Plank_00",
+        "name": "Bridge_Deck_Plank_00",
+        "parent": "world",
+        "uvCount": 0,
+        "visible": true
+      },
+      {
+        "material": "V0394_Bridge_Desaturated_Value",
+        "mesh": "barrosan_highland_infrastructure_v0380_Bridge_Deck_Plank_01",
+        "name": "Bridge_Deck_Plank_01",
+        "parent": "world",
+        "uvCount": 0,
+        "visible": true
+      },
+      {
+        "material": "V0394_Bridge_Desaturated_Value",
+        "mesh": "barrosan_highland_infrastructure_v0380_Bridge_Deck_Plank_02",
+        "name": "Bridge_Deck_Plank_02",
+        "parent": "world",
+        "uvCount": 0,
+        "visible": true
+      },
+      {
+        "material": "V0394_Bridge_Desaturated_Value",
+        "mesh": "barrosan_highland_infrastructure_v0380_Bridge_Deck_Plank_03",
+        "name": "Bridge_Deck_Plank_03",
+        "parent": "world",
+        "uvCount": 0,
+        "visible": true
+      },
+      {
+        "material": "V0394_Bridge_Desaturated_Value",
+        "mesh": "barrosan_highland_infrastructure_v0380_Bridge_Deck_Plank_04",
+        "name": "Bridge_Deck_Plank_04",
+        "parent": "world",
+        "uvCount": 0,
+        "visible": true
+      },
+      {
+        "material": "V0394_Bridge_Desaturated_Value",
+        "mesh": "barrosan_highland_infrastructure_v0380_Bridge_Deck_Plank_05",
+        "name": "Bridge_Deck_Plank_05",
+        "parent": "world",
+        "uvCount": 0,
+        "visible": true
+      },
+      {
+        "material": "V0394_Bridge_Desaturated_Value",
+        "mesh": "barrosan_highland_infrastructure_v0380_Bridge_Deck_Plank_06",
+        "name": "Bridge_Deck_Plank_06",
+        "parent": "world",
+        "uvCount": 0,
+        "visible": true
+      },
+      {
+        "material": "V0394_Bridge_Desaturated_Value",
+        "mesh": "barrosan_highland_infrastructure_v0380_Bridge_Deck_Plank_07",
+        "name": "Bridge_Deck_Plank_07",
+        "parent": "world",
+        "uvCount": 0,
+        "visible": true
+      },
+      {
+        "material": "V0394_Bridge_Desaturated_Value",
+        "mesh": "barrosan_highland_infrastructure_v0380_Bridge_Deck_Plank_08",
+        "name": "Bridge_Deck_Plank_08",
+        "parent": "world",
+        "uvCount": 0,
+        "visible": true
+      },
+      {
+        "material": "V0394_Bridge_Desaturated_Value",
+        "mesh": "barrosan_highland_infrastructure_v0380_Bridge_Deck_Plank_09",
+        "name": "Bridge_Deck_Plank_09",
+        "parent": "world",
+        "uvCount": 0,
+        "visible": true
+      },
+      {
+        "material": "V0394_Bridge_Desaturated_Value",
+        "mesh": "barrosan_highland_infrastructure_v0380_Bridge_Deck_Plank_10",
+        "name": "Bridge_Deck_Plank_10",
+        "parent": "world",
+        "uvCount": 0,
+        "visible": true
+      },
+      {
+        "material": "V0394_Bridge_Desaturated_Value",
+        "mesh": "barrosan_highland_infrastructure_v0380_Bridge_Deck_Plank_11",
+        "name": "Bridge_Deck_Plank_11",
+        "parent": "world",
+        "uvCount": 0,
+        "visible": true
+      },
+      {
+        "material": "V0394_Bridge_Desaturated_Value",
+        "mesh": "barrosan_highland_infrastructure_v0380_Bridge_Deck_Plank_12",
+        "name": "Bridge_Deck_Plank_12",
+        "parent": "world",
+        "uvCount": 0,
+        "visible": true
+      },
+      {
+        "material": "V0394_Bridge_Desaturated_Value",
+        "mesh": "barrosan_highland_infrastructure_v0380_Bridge_Deck_Plank_13",
+        "name": "Bridge_Deck_Plank_13",
+        "parent": "world",
+        "uvCount": 0,
+        "visible": true
+      },
+      {
+        "material": "V0394_Bridge_Desaturated_Value",
+        "mesh": "barrosan_highland_infrastructure_v0380_Bridge_Deck_Plank_14",
+        "name": "Bridge_Deck_Plank_14",
+        "parent": "world",
+        "uvCount": 0,
+        "visible": true
+      },
+      {
+        "material": "V0394_Bridge_Desaturated_Value",
+        "mesh": "barrosan_highland_infrastructure_v0380_Bridge_Deck_Plank_15",
+        "name": "Bridge_Deck_Plank_15",
+        "parent": "world",
+        "uvCount": 0,
+        "visible": true
+      },
+      {
+        "material": "V0394_Bridge_Desaturated_Value",
+        "mesh": "barrosan_highland_infrastructure_v0380_Bridge_Deck_Plank_16",
+        "name": "Bridge_Deck_Plank_16",
+        "parent": "world",
+        "uvCount": 0,
+        "visible": true
+      },
+      {
+        "material": "V0394_Bridge_Desaturated_Value",
+        "mesh": "barrosan_highland_infrastructure_v0380_Bridge_Deck_Plank_17",
+        "name": "Bridge_Deck_Plank_17",
+        "parent": "world",
+        "uvCount": 0,
+        "visible": true
+      },
+      {
+        "material": "V0394_Bridge_Desaturated_Value",
+        "mesh": "barrosan_highland_infrastructure_v0380_Bridge_Post_-1_00",
+        "name": "Bridge_Post_-1_00",
+        "parent": "world",
+        "uvCount": 0,
+        "visible": true
+      },
+      {
+        "material": "V0394_Bridge_Desaturated_Value",
+        "mesh": "barrosan_highland_infrastructure_v0380_Bridge_Post_-1_01",
+        "name": "Bridge_Post_-1_01",
+        "parent": "world",
+        "uvCount": 0,
+        "visible": true
+      },
+      {
+        "material": "V0394_Bridge_Desaturated_Value",
+        "mesh": "barrosan_highland_infrastructure_v0380_Bridge_Post_-1_02",
+        "name": "Bridge_Post_-1_02",
+        "parent": "world",
+        "uvCount": 0,
+        "visible": true
+      },
+      {
+        "material": "V0394_Bridge_Desaturated_Value",
+        "mesh": "barrosan_highland_infrastructure_v0380_Bridge_Post_-1_03",
+        "name": "Bridge_Post_-1_03",
+        "parent": "world",
+        "uvCount": 0,
+        "visible": true
+      },
+      {
+        "material": "V0394_Bridge_Desaturated_Value",
+        "mesh": "barrosan_highland_infrastructure_v0380_Bridge_Post_-1_04",
+        "name": "Bridge_Post_-1_04",
+        "parent": "world",
+        "uvCount": 0,
+        "visible": true
+      },
+      {
+        "material": "V0394_Bridge_Desaturated_Value",
+        "mesh": "barrosan_highland_infrastructure_v0380_Bridge_Post_-1_05",
+        "name": "Bridge_Post_-1_05",
+        "parent": "world",
+        "uvCount": 0,
+        "visible": true
+      },
+      {
+        "material": "V0394_Bridge_Desaturated_Value",
+        "mesh": "barrosan_highland_infrastructure_v0380_Bridge_Rail_-1_Low",
+        "name": "Bridge_Rail_-1_Low",
+        "parent": "world",
+        "uvCount": 0,
+        "visible": true
+      },
+      {
+        "material": "V0394_Bridge_Desaturated_Value",
+        "mesh": "barrosan_highland_infrastructure_v0380_Bridge_Rail_-1_High",
+        "name": "Bridge_Rail_-1_High",
+        "parent": "world",
+        "uvCount": 0,
+        "visible": true
+      },
+      {
+        "material": "V0394_Bridge_Desaturated_Value",
+        "mesh": "barrosan_highland_infrastructure_v0380_Bridge_Post_+1_00",
+        "name": "Bridge_Post_+1_00",
+        "parent": "world",
+        "uvCount": 0,
+        "visible": true
+      },
+      {
+        "material": "V0394_Bridge_Desaturated_Value",
+        "mesh": "barrosan_highland_infrastructure_v0380_Bridge_Post_+1_01",
+        "name": "Bridge_Post_+1_01",
+        "parent": "world",
+        "uvCount": 0,
+        "visible": true
+      },
+      {
+        "material": "V0394_Bridge_Desaturated_Value",
+        "mesh": "barrosan_highland_infrastructure_v0380_Bridge_Post_+1_02",
+        "name": "Bridge_Post_+1_02",
+        "parent": "world",
+        "uvCount": 0,
+        "visible": true
+      },
+      {
+        "material": "V0394_Bridge_Desaturated_Value",
+        "mesh": "barrosan_highland_infrastructure_v0380_Bridge_Post_+1_03",
+        "name": "Bridge_Post_+1_03",
+        "parent": "world",
+        "uvCount": 0,
+        "visible": true
+      },
+      {
+        "material": "V0394_Bridge_Desaturated_Value",
+        "mesh": "barrosan_highland_infrastructure_v0380_Bridge_Post_+1_04",
+        "name": "Bridge_Post_+1_04",
+        "parent": "world",
+        "uvCount": 0,
+        "visible": true
+      },
+      {
+        "material": "V0394_Bridge_Desaturated_Value",
+        "mesh": "barrosan_highland_infrastructure_v0380_Bridge_Post_+1_05",
+        "name": "Bridge_Post_+1_05",
+        "parent": "world",
+        "uvCount": 0,
+        "visible": true
+      },
+      {
+        "material": "V0394_Bridge_Desaturated_Value",
+        "mesh": "barrosan_highland_infrastructure_v0380_Bridge_Rail_+1_Low",
+        "name": "Bridge_Rail_+1_Low",
+        "parent": "world",
+        "uvCount": 0,
+        "visible": true
+      },
+      {
+        "material": "V0394_Bridge_Desaturated_Value",
+        "mesh": "barrosan_highland_infrastructure_v0380_Bridge_Rail_+1_High",
+        "name": "Bridge_Rail_+1_High",
+        "parent": "world",
+        "uvCount": 0,
+        "visible": true
+      },
+      {
+        "material": "V0394_Bridge_Desaturated_Value",
+        "mesh": "barrosan_highland_infrastructure_v0380_Bridge_EdgeCourse_-1",
+        "name": "Bridge_EdgeCourse_-1",
+        "parent": "world",
+        "uvCount": 0,
+        "visible": true
+      },
+      {
+        "material": "V0394_Bridge_Desaturated_Value",
+        "mesh": "barrosan_highland_infrastructure_v0380_Bridge_EdgeCourse_+1",
+        "name": "Bridge_EdgeCourse_+1",
+        "parent": "world",
+        "uvCount": 0,
+        "visible": true
+      },
+      {
+        "material": "null",
+        "mesh": "barrosan_highland_infrastructure_v0380_Rock_000",
+        "name": "Rock_000",
+        "parent": "world",
+        "uvCount": 0,
+        "visible": false
+      },
+      {
+        "material": "null",
+        "mesh": "barrosan_highland_infrastructure_v0380_Rock_001",
+        "name": "Rock_001",
+        "parent": "world",
+        "uvCount": 0,
+        "visible": false
+      },
+      {
+        "material": "null",
+        "mesh": "barrosan_highland_infrastructure_v0380_Rock_002",
+        "name": "Rock_002",
+        "parent": "world",
+        "uvCount": 0,
+        "visible": false
+      },
+      {
+        "material": "null",
+        "mesh": "barrosan_highland_infrastructure_v0380_Rock_003",
+        "name": "Rock_003",
+        "parent": "world",
+        "uvCount": 0,
+        "visible": false
+      },
+      {
+        "material": "null",
+        "mesh": "barrosan_highland_infrastructure_v0380_Rock_004",
+        "name": "Rock_004",
+        "parent": "world",
+        "uvCount": 0,
+        "visible": false
+      },
+      {
+        "material": "null",
+        "mesh": "barrosan_highland_infrastructure_v0380_Rock_005",
+        "name": "Rock_005",
+        "parent": "world",
+        "uvCount": 0,
+        "visible": false
+      },
+      {
+        "material": "null",
+        "mesh": "barrosan_highland_infrastructure_v0380_Rock_006",
+        "name": "Rock_006",
+        "parent": "world",
+        "uvCount": 0,
+        "visible": false
+      },
+      {
+        "material": "null",
+        "mesh": "barrosan_highland_infrastructure_v0380_Rock_007",
+        "name": "Rock_007",
+        "parent": "world",
+        "uvCount": 0,
+        "visible": false
+      },
+      {
+        "material": "null",
+        "mesh": "barrosan_highland_infrastructure_v0380_Rock_008",
+        "name": "Rock_008",
+        "parent": "world",
+        "uvCount": 0,
+        "visible": false
+      },
+      {
+        "material": "null",
+        "mesh": "barrosan_highland_infrastructure_v0380_Rock_009",
+        "name": "Rock_009",
+        "parent": "world",
+        "uvCount": 0,
+        "visible": false
+      },
+      {
+        "material": "null",
+        "mesh": "barrosan_highland_infrastructure_v0380_Rock_010",
+        "name": "Rock_010",
+        "parent": "world",
+        "uvCount": 0,
+        "visible": false
+      },
+      {
+        "material": "null",
+        "mesh": "barrosan_highland_infrastructure_v0380_Rock_011",
+        "name": "Rock_011",
+        "parent": "world",
+        "uvCount": 0,
+        "visible": false
+      },
+      {
+        "material": "null",
+        "mesh": "barrosan_highland_infrastructure_v0380_Rock_012",
+        "name": "Rock_012",
+        "parent": "world",
+        "uvCount": 0,
+        "visible": false
+      },
+      {
+        "material": "null",
+        "mesh": "barrosan_highland_infrastructure_v0380_Rock_013",
+        "name": "Rock_013",
+        "parent": "world",
+        "uvCount": 0,
+        "visible": false
+      },
+      {
+        "material": "null",
+        "mesh": "barrosan_highland_infrastructure_v0380_Rock_014",
+        "name": "Rock_014",
+        "parent": "world",
+        "uvCount": 0,
+        "visible": false
+      },
+      {
+        "material": "null",
+        "mesh": "barrosan_highland_infrastructure_v0380_Rock_015",
+        "name": "Rock_015",
+        "parent": "world",
+        "uvCount": 0,
+        "visible": false
+      },
+      {
+        "material": "null",
+        "mesh": "barrosan_highland_infrastructure_v0380_Rock_016",
+        "name": "Rock_016",
+        "parent": "world",
+        "uvCount": 0,
+        "visible": false
+      },
+      {
+        "material": "null",
+        "mesh": "barrosan_highland_infrastructure_v0380_Rock_017",
+        "name": "Rock_017",
+        "parent": "world",
+        "uvCount": 0,
+        "visible": false
+      },
+      {
+        "material": "null",
+        "mesh": "barrosan_highland_infrastructure_v0380_Rock_018",
+        "name": "Rock_018",
+        "parent": "world",
+        "uvCount": 0,
+        "visible": false
+      },
+      {
+        "material": "null",
+        "mesh": "barrosan_highland_infrastructure_v0380_Rock_019",
+        "name": "Rock_019",
+        "parent": "world",
+        "uvCount": 0,
+        "visible": false
+      },
+      {
+        "material": "null",
+        "mesh": "barrosan_highland_infrastructure_v0380_Rock_020",
+        "name": "Rock_020",
+        "parent": "world",
+        "uvCount": 0,
+        "visible": false
+      },
+      {
+        "material": "null",
+        "mesh": "barrosan_highland_infrastructure_v0380_Rock_021",
+        "name": "Rock_021",
+        "parent": "world",
+        "uvCount": 0,
+        "visible": false
+      },
+      {
+        "material": "null",
+        "mesh": "barrosan_highland_infrastructure_v0380_Rock_022",
+        "name": "Rock_022",
+        "parent": "world",
+        "uvCount": 0,
+        "visible": false
+      },
+      {
+        "material": "null",
+        "mesh": "barrosan_highland_infrastructure_v0380_Rock_023",
+        "name": "Rock_023",
+        "parent": "world",
+        "uvCount": 0,
+        "visible": false
+      },
+      {
+        "material": "null",
+        "mesh": "barrosan_highland_infrastructure_v0380_Rock_024",
+        "name": "Rock_024",
+        "parent": "world",
+        "uvCount": 0,
+        "visible": false
+      },
+      {
+        "material": "null",
+        "mesh": "barrosan_highland_infrastructure_v0380_Rock_025",
+        "name": "Rock_025",
+        "parent": "world",
+        "uvCount": 0,
+        "visible": false
+      },
+      {
+        "material": "null",
+        "mesh": "barrosan_highland_infrastructure_v0380_Rock_026",
+        "name": "Rock_026",
+        "parent": "world",
+        "uvCount": 0,
+        "visible": false
+      },
+      {
+        "material": "null",
+        "mesh": "barrosan_highland_infrastructure_v0380_Rock_027",
+        "name": "Rock_027",
+        "parent": "world",
+        "uvCount": 0,
+        "visible": false
+      },
+      {
+        "material": "null",
+        "mesh": "barrosan_highland_infrastructure_v0380_Rock_028",
+        "name": "Rock_028",
+        "parent": "world",
+        "uvCount": 0,
+        "visible": false
+      },
+      {
+        "material": "null",
+        "mesh": "barrosan_highland_infrastructure_v0380_Rock_029",
+        "name": "Rock_029",
+        "parent": "world",
+        "uvCount": 0,
+        "visible": false
+      },
+      {
+        "material": "null",
+        "mesh": "barrosan_highland_infrastructure_v0380_Rock_030",
+        "name": "Rock_030",
+        "parent": "world",
+        "uvCount": 0,
+        "visible": false
+      },
+      {
+        "material": "null",
+        "mesh": "barrosan_highland_infrastructure_v0380_Rock_031",
+        "name": "Rock_031",
+        "parent": "world",
+        "uvCount": 0,
+        "visible": false
+      },
+      {
+        "material": "null",
+        "mesh": "barrosan_highland_infrastructure_v0380_Rock_032",
+        "name": "Rock_032",
+        "parent": "world",
+        "uvCount": 0,
+        "visible": false
+      },
+      {
+        "material": "null",
+        "mesh": "barrosan_highland_infrastructure_v0380_Rock_033",
+        "name": "Rock_033",
+        "parent": "world",
+        "uvCount": 0,
+        "visible": false
+      },
+      {
+        "material": "null",
+        "mesh": "barrosan_highland_infrastructure_v0380_Rock_034",
+        "name": "Rock_034",
+        "parent": "world",
+        "uvCount": 0,
+        "visible": false
+      },
+      {
+        "material": "null",
+        "mesh": "barrosan_highland_infrastructure_v0380_Rock_035",
+        "name": "Rock_035",
+        "parent": "world",
+        "uvCount": 0,
+        "visible": false
+      },
+      {
+        "material": "null",
+        "mesh": "barrosan_highland_infrastructure_v0380_Rock_036",
+        "name": "Rock_036",
+        "parent": "world",
+        "uvCount": 0,
+        "visible": false
+      },
+      {
+        "material": "null",
+        "mesh": "barrosan_highland_infrastructure_v0380_Rock_037",
+        "name": "Rock_037",
+        "parent": "world",
+        "uvCount": 0,
+        "visible": false
+      },
+      {
+        "material": "null",
+        "mesh": "barrosan_highland_infrastructure_v0380_Rock_038",
+        "name": "Rock_038",
+        "parent": "world",
+        "uvCount": 0,
+        "visible": false
+      },
+      {
+        "material": "null",
+        "mesh": "barrosan_highland_infrastructure_v0380_Rock_039",
+        "name": "Rock_039",
+        "parent": "world",
+        "uvCount": 0,
+        "visible": false
+      },
+      {
+        "material": "null",
+        "mesh": "barrosan_highland_infrastructure_v0380_Rock_040",
+        "name": "Rock_040",
+        "parent": "world",
+        "uvCount": 0,
+        "visible": false
+      },
+      {
+        "material": "null",
+        "mesh": "barrosan_highland_infrastructure_v0380_Rock_041",
+        "name": "Rock_041",
+        "parent": "world",
+        "uvCount": 0,
+        "visible": false
+      },
+      {
+        "material": "null",
+        "mesh": "barrosan_highland_infrastructure_v0380_Reed_000_0",
+        "name": "Reed_000_0",
+        "parent": "world",
+        "uvCount": 0,
+        "visible": false
+      },
+      {
+        "material": "null",
+        "mesh": "barrosan_highland_infrastructure_v0380_Reed_000_1",
+        "name": "Reed_000_1",
+        "parent": "world",
+        "uvCount": 0,
+        "visible": false
+      },
+      {
+        "material": "null",
+        "mesh": "barrosan_highland_infrastructure_v0380_Reed_000_2",
+        "name": "Reed_000_2",
+        "parent": "world",
+        "uvCount": 0,
+        "visible": false
+      },
+      {
+        "material": "null",
+        "mesh": "barrosan_highland_infrastructure_v0380_Reed_000_3",
+        "name": "Reed_000_3",
+        "parent": "world",
+        "uvCount": 0,
+        "visible": false
+      },
+      {
+        "material": "null",
+        "mesh": "barrosan_highland_infrastructure_v0380_Reed_001_0",
+        "name": "Reed_001_0",
+        "parent": "world",
+        "uvCount": 0,
+        "visible": false
+      },
+      {
+        "material": "null",
+        "mesh": "barrosan_highland_infrastructure_v0380_Reed_001_1",
+        "name": "Reed_001_1",
+        "parent": "world",
+        "uvCount": 0,
+        "visible": false
+      },
+      {
+        "material": "null",
+        "mesh": "barrosan_highland_infrastructure_v0380_Reed_001_2",
+        "name": "Reed_001_2",
+        "parent": "world",
+        "uvCount": 0,
+        "visible": false
+      },
+      {
+        "material": "null",
+        "mesh": "barrosan_highland_infrastructure_v0380_Reed_001_3",
+        "name": "Reed_001_3",
+        "parent": "world",
+        "uvCount": 0,
+        "visible": false
+      },
+      {
+        "material": "null",
+        "mesh": "barrosan_highland_infrastructure_v0380_Reed_001_4",
+        "name": "Reed_001_4",
+        "parent": "world",
+        "uvCount": 0,
+        "visible": false
+      },
+      {
+        "material": "null",
+        "mesh": "barrosan_highland_infrastructure_v0380_Reed_002_0",
+        "name": "Reed_002_0",
+        "parent": "world",
+        "uvCount": 0,
+        "visible": false
+      },
+      {
+        "material": "null",
+        "mesh": "barrosan_highland_infrastructure_v0380_Reed_002_1",
+        "name": "Reed_002_1",
+        "parent": "world",
+        "uvCount": 0,
+        "visible": false
+      },
+      {
+        "material": "null",
+        "mesh": "barrosan_highland_infrastructure_v0380_Reed_002_2",
+        "name": "Reed_002_2",
+        "parent": "world",
+        "uvCount": 0,
+        "visible": false
+      },
+      {
+        "material": "null",
+        "mesh": "barrosan_highland_infrastructure_v0380_Reed_003_0",
+        "name": "Reed_003_0",
+        "parent": "world",
+        "uvCount": 0,
+        "visible": false
+      },
+      {
+        "material": "null",
+        "mesh": "barrosan_highland_infrastructure_v0380_Reed_003_1",
+        "name": "Reed_003_1",
+        "parent": "world",
+        "uvCount": 0,
+        "visible": false
+      },
+      {
+        "material": "null",
+        "mesh": "barrosan_highland_infrastructure_v0380_Reed_003_2",
+        "name": "Reed_003_2",
+        "parent": "world",
+        "uvCount": 0,
+        "visible": false
+      },
+      {
+        "material": "null",
+        "mesh": "barrosan_highland_infrastructure_v0380_Reed_003_3",
+        "name": "Reed_003_3",
+        "parent": "world",
+        "uvCount": 0,
+        "visible": false
+      },
+      {
+        "material": "null",
+        "mesh": "barrosan_highland_infrastructure_v0380_Reed_003_4",
+        "name": "Reed_003_4",
+        "parent": "world",
+        "uvCount": 0,
+        "visible": false
+      },
+      {
+        "material": "null",
+        "mesh": "barrosan_highland_infrastructure_v0380_Reed_004_0",
+        "name": "Reed_004_0",
+        "parent": "world",
+        "uvCount": 0,
+        "visible": false
+      },
+      {
+        "material": "null",
+        "mesh": "barrosan_highland_infrastructure_v0380_Reed_004_1",
+        "name": "Reed_004_1",
+        "parent": "world",
+        "uvCount": 0,
+        "visible": false
+      },
+      {
+        "material": "null",
+        "mesh": "barrosan_highland_infrastructure_v0380_Reed_004_2",
+        "name": "Reed_004_2",
+        "parent": "world",
+        "uvCount": 0,
+        "visible": false
+      },
+      {
+        "material": "null",
+        "mesh": "barrosan_highland_infrastructure_v0380_Reed_004_3",
+        "name": "Reed_004_3",
+        "parent": "world",
+        "uvCount": 0,
+        "visible": false
+      },
+      {
+        "material": "null",
+        "mesh": "barrosan_highland_infrastructure_v0380_Reed_004_4",
+        "name": "Reed_004_4",
+        "parent": "world",
+        "uvCount": 0,
+        "visible": false
+      },
+      {
+        "material": "null",
+        "mesh": "barrosan_highland_infrastructure_v0380_Reed_005_0",
+        "name": "Reed_005_0",
+        "parent": "world",
+        "uvCount": 0,
+        "visible": false
+      },
+      {
+        "material": "null",
+        "mesh": "barrosan_highland_infrastructure_v0380_Reed_005_1",
+        "name": "Reed_005_1",
+        "parent": "world",
+        "uvCount": 0,
+        "visible": false
+      },
+      {
+        "material": "null",
+        "mesh": "barrosan_highland_infrastructure_v0380_Reed_005_2",
+        "name": "Reed_005_2",
+        "parent": "world",
+        "uvCount": 0,
+        "visible": false
+      },
+      {
+        "material": "null",
+        "mesh": "barrosan_highland_infrastructure_v0380_Reed_005_3",
+        "name": "Reed_005_3",
+        "parent": "world",
+        "uvCount": 0,
+        "visible": false
+      },
+      {
+        "material": "null",
+        "mesh": "barrosan_highland_infrastructure_v0380_Reed_005_4",
+        "name": "Reed_005_4",
+        "parent": "world",
+        "uvCount": 0,
+        "visible": false
+      },
+      {
+        "material": "null",
+        "mesh": "barrosan_highland_infrastructure_v0380_Reed_006_0",
+        "name": "Reed_006_0",
+        "parent": "world",
+        "uvCount": 0,
+        "visible": false
+      },
+      {
+        "material": "null",
+        "mesh": "barrosan_highland_infrastructure_v0380_Reed_006_1",
+        "name": "Reed_006_1",
+        "parent": "world",
+        "uvCount": 0,
+        "visible": false
+      },
+      {
+        "material": "null",
+        "mesh": "barrosan_highland_infrastructure_v0380_Reed_006_2",
+        "name": "Reed_006_2",
+        "parent": "world",
+        "uvCount": 0,
+        "visible": false
+      },
+      {
+        "material": "null",
+        "mesh": "barrosan_highland_infrastructure_v0380_Reed_007_0",
+        "name": "Reed_007_0",
+        "parent": "world",
+        "uvCount": 0,
+        "visible": false
+      },
+      {
+        "material": "null",
+        "mesh": "barrosan_highland_infrastructure_v0380_Reed_007_1",
+        "name": "Reed_007_1",
+        "parent": "world",
+        "uvCount": 0,
+        "visible": false
+      },
+      {
+        "material": "null",
+        "mesh": "barrosan_highland_infrastructure_v0380_Reed_007_2",
+        "name": "Reed_007_2",
+        "parent": "world",
+        "uvCount": 0,
+        "visible": false
+      },
+      {
+        "material": "null",
+        "mesh": "barrosan_highland_infrastructure_v0380_Reed_008_0",
+        "name": "Reed_008_0",
+        "parent": "world",
+        "uvCount": 0,
+        "visible": false
+      },
+      {
+        "material": "null",
+        "mesh": "barrosan_highland_infrastructure_v0380_Reed_008_1",
+        "name": "Reed_008_1",
+        "parent": "world",
+        "uvCount": 0,
+        "visible": false
+      },
+      {
+        "material": "null",
+        "mesh": "barrosan_highland_infrastructure_v0380_Reed_008_2",
+        "name": "Reed_008_2",
+        "parent": "world",
+        "uvCount": 0,
+        "visible": false
+      },
+      {
+        "material": "null",
+        "mesh": "barrosan_highland_infrastructure_v0380_Reed_009_0",
+        "name": "Reed_009_0",
+        "parent": "world",
+        "uvCount": 0,
+        "visible": false
+      },
+      {
+        "material": "null",
+        "mesh": "barrosan_highland_infrastructure_v0380_Reed_009_1",
+        "name": "Reed_009_1",
+        "parent": "world",
+        "uvCount": 0,
+        "visible": false
+      },
+      {
+        "material": "null",
+        "mesh": "barrosan_highland_infrastructure_v0380_Reed_009_2",
+        "name": "Reed_009_2",
+        "parent": "world",
+        "uvCount": 0,
+        "visible": false
+      },
+      {
+        "material": "null",
+        "mesh": "barrosan_highland_infrastructure_v0380_Reed_009_3",
+        "name": "Reed_009_3",
+        "parent": "world",
+        "uvCount": 0,
+        "visible": false
+      },
+      {
+        "material": "null",
+        "mesh": "barrosan_highland_infrastructure_v0380_Reed_009_4",
+        "name": "Reed_009_4",
+        "parent": "world",
+        "uvCount": 0,
+        "visible": false
+      },
+      {
+        "material": "null",
+        "mesh": "barrosan_highland_infrastructure_v0380_Reed_010_0",
+        "name": "Reed_010_0",
+        "parent": "world",
+        "uvCount": 0,
+        "visible": false
+      },
+      {
+        "material": "null",
+        "mesh": "barrosan_highland_infrastructure_v0380_Reed_010_1",
+        "name": "Reed_010_1",
+        "parent": "world",
+        "uvCount": 0,
+        "visible": false
+      },
+      {
+        "material": "null",
+        "mesh": "barrosan_highland_infrastructure_v0380_Reed_010_2",
+        "name": "Reed_010_2",
+        "parent": "world",
+        "uvCount": 0,
+        "visible": false
+      },
+      {
+        "material": "null",
+        "mesh": "barrosan_highland_infrastructure_v0380_Reed_011_0",
+        "name": "Reed_011_0",
+        "parent": "world",
+        "uvCount": 0,
+        "visible": false
+      },
+      {
+        "material": "null",
+        "mesh": "barrosan_highland_infrastructure_v0380_Reed_011_1",
+        "name": "Reed_011_1",
+        "parent": "world",
+        "uvCount": 0,
+        "visible": false
+      },
+      {
+        "material": "null",
+        "mesh": "barrosan_highland_infrastructure_v0380_Reed_011_2",
+        "name": "Reed_011_2",
+        "parent": "world",
+        "uvCount": 0,
+        "visible": false
+      },
+      {
+        "material": "null",
+        "mesh": "barrosan_highland_infrastructure_v0380_Shrub_0_0",
+        "name": "Shrub_0_0",
+        "parent": "world",
+        "uvCount": 0,
+        "visible": false
+      },
+      {
+        "material": "null",
+        "mesh": "barrosan_highland_infrastructure_v0380_Shrub_0_1",
+        "name": "Shrub_0_1",
+        "parent": "world",
+        "uvCount": 0,
+        "visible": false
+      },
+      {
+        "material": "null",
+        "mesh": "barrosan_highland_infrastructure_v0380_Shrub_0_2",
+        "name": "Shrub_0_2",
+        "parent": "world",
+        "uvCount": 0,
+        "visible": false
+      },
+      {
+        "material": "null",
+        "mesh": "barrosan_highland_infrastructure_v0380_Shrub_0_3",
+        "name": "Shrub_0_3",
+        "parent": "world",
+        "uvCount": 0,
+        "visible": false
+      },
+      {
+        "material": "null",
+        "mesh": "barrosan_highland_infrastructure_v0380_Shrub_0_4",
+        "name": "Shrub_0_4",
+        "parent": "world",
+        "uvCount": 0,
+        "visible": false
+      },
+      {
+        "material": "null",
+        "mesh": "barrosan_highland_infrastructure_v0380_Shrub_1_0",
+        "name": "Shrub_1_0",
+        "parent": "world",
+        "uvCount": 0,
+        "visible": false
+      },
+      {
+        "material": "null",
+        "mesh": "barrosan_highland_infrastructure_v0380_Shrub_1_1",
+        "name": "Shrub_1_1",
+        "parent": "world",
+        "uvCount": 0,
+        "visible": false
+      },
+      {
+        "material": "null",
+        "mesh": "barrosan_highland_infrastructure_v0380_Shrub_1_2",
+        "name": "Shrub_1_2",
+        "parent": "world",
+        "uvCount": 0,
+        "visible": false
+      },
+      {
+        "material": "null",
+        "mesh": "barrosan_highland_infrastructure_v0380_Shrub_1_3",
+        "name": "Shrub_1_3",
+        "parent": "world",
+        "uvCount": 0,
+        "visible": false
+      },
+      {
+        "material": "null",
+        "mesh": "barrosan_highland_infrastructure_v0380_Shrub_1_4",
+        "name": "Shrub_1_4",
+        "parent": "world",
+        "uvCount": 0,
+        "visible": false
+      },
+      {
+        "material": "null",
+        "mesh": "barrosan_highland_infrastructure_v0380_Shrub_2_0",
+        "name": "Shrub_2_0",
+        "parent": "world",
+        "uvCount": 0,
+        "visible": false
+      },
+      {
+        "material": "null",
+        "mesh": "barrosan_highland_infrastructure_v0380_Shrub_2_1",
+        "name": "Shrub_2_1",
+        "parent": "world",
+        "uvCount": 0,
+        "visible": false
+      },
+      {
+        "material": "null",
+        "mesh": "barrosan_highland_infrastructure_v0380_Shrub_2_2",
+        "name": "Shrub_2_2",
+        "parent": "world",
+        "uvCount": 0,
+        "visible": false
+      },
+      {
+        "material": "null",
+        "mesh": "barrosan_highland_infrastructure_v0380_Shrub_2_3",
+        "name": "Shrub_2_3",
+        "parent": "world",
+        "uvCount": 0,
+        "visible": false
+      },
+      {
+        "material": "null",
+        "mesh": "barrosan_highland_infrastructure_v0380_Shrub_2_4",
+        "name": "Shrub_2_4",
+        "parent": "world",
+        "uvCount": 0,
+        "visible": false
+      },
+      {
+        "material": "null",
+        "mesh": "barrosan_highland_infrastructure_v0380_Shrub_3_0",
+        "name": "Shrub_3_0",
+        "parent": "world",
+        "uvCount": 0,
+        "visible": false
+      },
+      {
+        "material": "null",
+        "mesh": "barrosan_highland_infrastructure_v0380_Shrub_3_1",
+        "name": "Shrub_3_1",
+        "parent": "world",
+        "uvCount": 0,
+        "visible": false
+      },
+      {
+        "material": "null",
+        "mesh": "barrosan_highland_infrastructure_v0380_Shrub_3_2",
+        "name": "Shrub_3_2",
+        "parent": "world",
+        "uvCount": 0,
+        "visible": false
+      },
+      {
+        "material": "null",
+        "mesh": "barrosan_highland_infrastructure_v0380_Shrub_3_3",
+        "name": "Shrub_3_3",
+        "parent": "world",
+        "uvCount": 0,
+        "visible": false
+      },
+      {
+        "material": "null",
+        "mesh": "barrosan_highland_infrastructure_v0380_Shrub_3_4",
+        "name": "Shrub_3_4",
+        "parent": "world",
+        "uvCount": 0,
+        "visible": false
+      },
+      {
+        "material": "null",
+        "mesh": "barrosan_highland_infrastructure_v0380_Shrub_4_0",
+        "name": "Shrub_4_0",
+        "parent": "world",
+        "uvCount": 0,
+        "visible": false
+      },
+      {
+        "material": "null",
+        "mesh": "barrosan_highland_infrastructure_v0380_Shrub_4_1",
+        "name": "Shrub_4_1",
+        "parent": "world",
+        "uvCount": 0,
+        "visible": false
+      },
+      {
+        "material": "null",
+        "mesh": "barrosan_highland_infrastructure_v0380_Shrub_4_2",
+        "name": "Shrub_4_2",
+        "parent": "world",
+        "uvCount": 0,
+        "visible": false
+      },
+      {
+        "material": "null",
+        "mesh": "barrosan_highland_infrastructure_v0380_Shrub_4_3",
+        "name": "Shrub_4_3",
+        "parent": "world",
+        "uvCount": 0,
+        "visible": false
+      },
+      {
+        "material": "null",
+        "mesh": "barrosan_highland_infrastructure_v0380_Shrub_4_4",
+        "name": "Shrub_4_4",
+        "parent": "world",
+        "uvCount": 0,
+        "visible": false
+      },
+      {
+        "material": "null",
+        "mesh": "barrosan_highland_infrastructure_v0380_Shrub_5_0",
+        "name": "Shrub_5_0",
+        "parent": "world",
+        "uvCount": 0,
+        "visible": false
+      },
+      {
+        "material": "null",
+        "mesh": "barrosan_highland_infrastructure_v0380_Shrub_5_1",
+        "name": "Shrub_5_1",
+        "parent": "world",
+        "uvCount": 0,
+        "visible": false
+      },
+      {
+        "material": "null",
+        "mesh": "barrosan_highland_infrastructure_v0380_Shrub_5_2",
+        "name": "Shrub_5_2",
+        "parent": "world",
+        "uvCount": 0,
+        "visible": false
+      },
+      {
+        "material": "null",
+        "mesh": "barrosan_highland_infrastructure_v0380_Shrub_5_3",
+        "name": "Shrub_5_3",
+        "parent": "world",
+        "uvCount": 0,
+        "visible": false
+      },
+      {
+        "material": "null",
+        "mesh": "barrosan_highland_infrastructure_v0380_Shrub_5_4",
+        "name": "Shrub_5_4",
+        "parent": "world",
+        "uvCount": 0,
+        "visible": false
+      },
+      {
+        "material": "null",
+        "mesh": "Rock_Medium_2_Cube_004_Retopology_001",
+        "name": "Rock_Medium_2",
+        "parent": "Rock_Medium_2",
+        "uvCount": 249,
+        "visible": true
+      },
+      {
+        "material": "null",
+        "mesh": "Rock_Medium_3_Cube_002_Retopology_001",
+        "name": "Rock_Medium_3",
+        "parent": "Rock_Medium_3",
+        "uvCount": 531,
+        "visible": true
+      },
+      {
+        "material": "null",
+        "mesh": "Rock_Medium_2_Cube_004_Retopology_001",
+        "name": "Rock_Medium_2",
+        "parent": "Rock_Medium_2",
+        "uvCount": 249,
+        "visible": true
+      },
+      {
+        "material": "null",
+        "mesh": "Rock_Medium_3_Cube_002_Retopology_001",
+        "name": "Rock_Medium_3",
+        "parent": "Rock_Medium_3",
+        "uvCount": 531,
+        "visible": true
+      },
+      {
+        "material": "null",
+        "mesh": "Rock_Medium_2_Cube_004_Retopology_001",
+        "name": "Rock_Medium_2",
+        "parent": "Rock_Medium_2",
+        "uvCount": 249,
+        "visible": true
+      },
+      {
+        "material": "null",
+        "mesh": "Rock_Medium_3_Cube_002_Retopology_001",
+        "name": "Rock_Medium_3",
+        "parent": "Rock_Medium_3",
+        "uvCount": 531,
+        "visible": true
+      },
+      {
+        "material": "null",
+        "mesh": "Rock_Medium_2_Cube_004_Retopology_001",
+        "name": "Rock_Medium_2",
+        "parent": "Rock_Medium_2",
+        "uvCount": 249,
+        "visible": true
+      },
+      {
+        "material": "null",
+        "mesh": "Rock_Medium_3_Cube_002_Retopology_001",
+        "name": "Rock_Medium_3",
+        "parent": "Rock_Medium_3",
+        "uvCount": 531,
+        "visible": true
+      },
+      {
+        "material": "null",
+        "mesh": "CommonTree_1_tree_023",
+        "name": "CommonTree_1",
+        "parent": "CommonTree_1",
+        "uvCount": 5618,
+        "visible": true
+      },
+      {
+        "material": "null",
+        "mesh": "Pine_2_tree_029",
+        "name": "Pine_2",
+        "parent": "Pine_2",
+        "uvCount": 3616,
+        "visible": true
+      },
+      {
+        "material": "null",
+        "mesh": "CommonTree_3_tree_025",
+        "name": "CommonTree_3",
+        "parent": "CommonTree_3",
+        "uvCount": 2149,
+        "visible": true
+      },
+      {
+        "material": "null",
+        "mesh": "Grass_Common_Tall_Plane_013",
+        "name": "Grass_Common_Tall",
+        "parent": "Grass_Common_Tall",
+        "uvCount": 303,
+        "visible": true
+      },
+      {
+        "material": "null",
+        "mesh": "Grass_Wispy_Short_Plane_033",
+        "name": "Grass_Wispy_Short",
+        "parent": "Grass_Wispy_Short",
+        "uvCount": 559,
+        "visible": true
+      },
+      {
+        "material": "null",
+        "mesh": "Pine_2_tree_029",
+        "name": "Pine_2",
+        "parent": "Pine_2",
+        "uvCount": 3616,
+        "visible": true
+      },
+      {
+        "material": "null",
+        "mesh": "CommonTree_1_tree_023",
+        "name": "CommonTree_1",
+        "parent": "CommonTree_1",
+        "uvCount": 5618,
+        "visible": true
+      },
+      {
+        "material": "null",
+        "mesh": "CommonTree_3_tree_025",
+        "name": "CommonTree_3",
+        "parent": "CommonTree_3",
+        "uvCount": 2149,
+        "visible": true
+      },
+      {
+        "material": "null",
+        "mesh": "Grass_Common_Tall_Plane_013",
+        "name": "Grass_Common_Tall",
+        "parent": "Grass_Common_Tall",
+        "uvCount": 303,
+        "visible": true
+      },
+      {
+        "material": "null",
+        "mesh": "Grass_Wispy_Short_Plane_033",
+        "name": "Grass_Wispy_Short",
+        "parent": "Grass_Wispy_Short",
+        "uvCount": 559,
+        "visible": true
+      },
+      {
+        "material": "null",
+        "mesh": "Grass_Common_Tall_Plane_013",
+        "name": "Grass_Common_Tall",
+        "parent": "Grass_Common_Tall",
+        "uvCount": 303,
+        "visible": true
+      },
+      {
+        "material": "null",
+        "mesh": "Grass_Wispy_Short_Plane_033",
+        "name": "Grass_Wispy_Short",
+        "parent": "Grass_Wispy_Short",
+        "uvCount": 559,
+        "visible": true
+      },
+      {
+        "material": "null",
+        "mesh": "Rock_Medium_2_Cube_004_Retopology_001",
+        "name": "Rock_Medium_2",
+        "parent": "Rock_Medium_2",
+        "uvCount": 249,
+        "visible": true
+      },
+      {
+        "material": "null",
+        "mesh": "Rock_Medium_2_Cube_004_Retopology_001",
+        "name": "Rock_Medium_2",
+        "parent": "Rock_Medium_2",
+        "uvCount": 249,
+        "visible": true
+      },
+      {
+        "material": "null",
+        "mesh": "Rock_Medium_3_Cube_002_Retopology_001",
+        "name": "Rock_Medium_3",
+        "parent": "Rock_Medium_3",
+        "uvCount": 531,
+        "visible": true
+      },
+      {
+        "material": "null",
+        "mesh": "Grass_Wispy_Short_Plane_033",
+        "name": "Grass_Wispy_Short",
+        "parent": "Grass_Wispy_Short",
+        "uvCount": 559,
+        "visible": true
+      },
+      {
+        "material": "null",
+        "mesh": "Grass_Wispy_Short_Plane_033",
+        "name": "Grass_Wispy_Short",
+        "parent": "Grass_Wispy_Short",
+        "uvCount": 559,
+        "visible": true
+      },
+      {
+        "material": "null",
+        "mesh": "Grass_Wispy_Short_Plane_033",
+        "name": "Grass_Wispy_Short",
+        "parent": "@Node3D@2",
+        "uvCount": 559,
+        "visible": true
+      },
+      {
+        "material": "null",
+        "mesh": "Rock_Medium_3_Cube_002_Retopology_001",
+        "name": "Rock_Medium_3",
+        "parent": "Rock_Medium_3",
+        "uvCount": 531,
+        "visible": true
+      },
+      {
+        "material": "null",
+        "mesh": "Grass_Common_Tall_Plane_013",
+        "name": "Grass_Common_Tall",
+        "parent": "Grass_Common_Tall",
+        "uvCount": 303,
+        "visible": true
+      },
+      {
+        "material": "null",
+        "mesh": "Grass_Wispy_Short_Plane_033",
+        "name": "Grass_Wispy_Short",
+        "parent": "Grass_Wispy_Short",
+        "uvCount": 559,
+        "visible": true
+      },
+      {
+        "material": "null",
+        "mesh": "Rock_Medium_2_Cube_004_Retopology_001",
+        "name": "Rock_Medium_2",
+        "parent": "Rock_Medium_2",
+        "uvCount": 249,
+        "visible": true
+      },
+      {
+        "material": "null",
+        "mesh": "Rock_Medium_2_Cube_004_Retopology_001",
+        "name": "Rock_Medium_2",
+        "parent": "Rock_Medium_2",
+        "uvCount": 249,
+        "visible": true
+      },
+      {
+        "material": "null",
+        "mesh": "Rock_Medium_3_Cube_002_Retopology_001",
+        "name": "Rock_Medium_3",
+        "parent": "Rock_Medium_3",
+        "uvCount": 531,
+        "visible": true
+      },
+      {
+        "material": "null",
+        "mesh": "Grass_Wispy_Short_Plane_033",
+        "name": "Grass_Wispy_Short",
+        "parent": "Grass_Wispy_Short",
+        "uvCount": 559,
+        "visible": true
+      },
+      {
+        "material": "null",
+        "mesh": "Grass_Wispy_Short_Plane_033",
+        "name": "Grass_Wispy_Short",
+        "parent": "Grass_Wispy_Short",
+        "uvCount": 559,
+        "visible": true
+      },
+      {
+        "material": "null",
+        "mesh": "Grass_Wispy_Short_Plane_033",
+        "name": "Grass_Wispy_Short",
+        "parent": "@Node3D@3",
+        "uvCount": 559,
+        "visible": true
+      },
+      {
+        "material": "null",
+        "mesh": "Rock_Medium_3_Cube_002_Retopology_001",
+        "name": "Rock_Medium_3",
+        "parent": "Rock_Medium_3",
+        "uvCount": 531,
+        "visible": true
+      },
+      {
+        "material": "null",
+        "mesh": "Prop_WoodenFence_Single_Cube_097",
+        "name": "Prop_WoodenFence_Single",
+        "parent": "Prop_WoodenFence_Single",
+        "uvCount": 80,
+        "visible": true
+      },
+      {
+        "material": "null",
+        "mesh": "Crate_Wooden_Cube_017",
+        "name": "Crate_Wooden",
+        "parent": "Crate_Wooden",
+        "uvCount": 610,
+        "visible": true
+      },
+      {
+        "material": "V0396_Compacted_Warm_Earth_Unified_Main_Route_Material",
+        "mesh": "",
+        "name": "V0395_One_Compacted_Warm_Earth_Bridge_Yard_Door_Route",
+        "parent": "V0395_Natural_Worn_Earth_Route_Material_Edge_Integration",
+        "uvCount": 0,
+        "visible": true
+      },
+      {
+        "material": "V0395_Short_Compacted_Warm_Earth_Barn_Entrance_Branch_Material",
+        "mesh": "",
+        "name": "V0395_Short_Compacted_Warm_Earth_Barn_Entrance_Branch",
+        "parent": "V0395_Natural_Worn_Earth_Route_Material_Edge_Integration",
+        "uvCount": 0,
+        "visible": true
+      },
+      {
+        "material": "V0395_Door_Threshold_Stone_Material",
+        "mesh": "",
+        "name": "V0395_Door_Threshold_Stone",
+        "parent": "V0395_Natural_Worn_Earth_Route_Material_Edge_Integration",
+        "uvCount": 0,
+        "visible": true
+      },
+      {
+        "material": "V0397_Route_Grass_Bedding_Material",
+        "mesh": "",
+        "name": "V0397_Route_Grass_Bedding",
+        "parent": "V0395_Natural_Worn_Earth_Route_Material_Edge_Integration",
+        "uvCount": 0,
+        "visible": false
+      },
+      {
+        "material": "V0397_Barn_Branch_Grass_Bedding_Material",
+        "mesh": "",
+        "name": "V0397_Barn_Branch_Grass_Bedding",
+        "parent": "V0395_Natural_Worn_Earth_Route_Material_Edge_Integration",
+        "uvCount": 0,
+        "visible": false
+      },
+      {
+        "material": "V0398_Narrow_Route_Edge_Bedding_Material",
+        "mesh": "",
+        "name": "V0398_Narrow_Route_Edge_Bedding",
+        "parent": "V0395_Natural_Worn_Earth_Route_Material_Edge_Integration",
+        "uvCount": 0,
+        "visible": true
+      },
+      {
+        "material": "V0398_Narrow_Barn_Branch_Edge_Bedding_Material",
+        "mesh": "",
+        "name": "V0398_Narrow_Barn_Branch_Edge_Bedding",
+        "parent": "V0395_Natural_Worn_Earth_Route_Material_Edge_Integration",
+        "uvCount": 0,
+        "visible": true
+      },
+      {
+        "material": "House_Contact_Material",
+        "mesh": "",
+        "name": "House_Contact",
+        "parent": "V0397_Contact_Grounding",
+        "uvCount": 0,
+        "visible": true
+      },
+      {
+        "material": "Barn_Contact_Material",
+        "mesh": "",
+        "name": "Barn_Contact",
+        "parent": "V0397_Contact_Grounding",
+        "uvCount": 0,
+        "visible": true
+      },
+      {
+        "material": "Cart_Contact_Material",
+        "mesh": "",
+        "name": "Cart_Contact",
+        "parent": "V0397_Contact_Grounding",
+        "uvCount": 0,
+        "visible": true
+      },
+      {
+        "material": "Workbench_Contact_Material",
+        "mesh": "",
+        "name": "Workbench_Contact",
+        "parent": "V0397_Contact_Grounding",
+        "uvCount": 0,
+        "visible": true
+      },
+      {
+        "material": "Western_Landing_Contact_Material",
+        "mesh": "",
+        "name": "Western_Landing_Contact",
+        "parent": "V0397_Contact_Grounding",
+        "uvCount": 0,
+        "visible": true
+      },
+      {
+        "material": "Eastern_Landing_Contact_Material",
+        "mesh": "",
+        "name": "Eastern_Landing_Contact",
+        "parent": "V0397_Contact_Grounding",
+        "uvCount": 0,
+        "visible": true
+      },
+      {
+        "material": "null",
+        "mesh": "Prop_Wagon_Cube_043",
+        "name": "Prop_Wagon",
+        "parent": "Cart_Visible",
+        "uvCount": 2331,
+        "visible": true
+      },
+      {
+        "material": "null",
+        "mesh": "Crate_Wooden_Cube_017",
+        "name": "Crate_Wooden",
+        "parent": "Lumber_Crate_0",
+        "uvCount": 610,
+        "visible": true
+      },
+      {
+        "material": "null",
+        "mesh": "Crate_Wooden_Cube_017",
+        "name": "Crate_Wooden",
+        "parent": "Lumber_Crate_1",
+        "uvCount": 610,
+        "visible": true
+      },
+      {
+        "material": "null",
+        "mesh": "Crate_Wooden_Cube_017",
+        "name": "Crate_Wooden",
+        "parent": "Lumber_Crate_2",
+        "uvCount": 610,
+        "visible": true
+      },
+      {
+        "material": "null",
+        "mesh": "Barrel_Apples_Cylinder_054",
+        "name": "Barrel_Apples",
+        "parent": "Storage_Barrel",
+        "uvCount": 473,
+        "visible": true
+      },
+      {
+        "material": "null",
+        "mesh": "Crate_Wooden_Cube_017",
+        "name": "Crate_Wooden",
+        "parent": "Storage_Crate",
+        "uvCount": 610,
+        "visible": true
+      },
+      {
+        "material": "null",
+        "mesh": "Whetstone_Cube_125",
+        "name": "Whetstone",
+        "parent": "Workstone",
+        "uvCount": 272,
+        "visible": true
+      },
+      {
+        "material": "Workbench_Leg_A_Material",
+        "mesh": "",
+        "name": "Workbench_Leg_A",
+        "parent": "V0394_Yard_Group_04_Trough_Workbench_Direct_Ground",
+        "uvCount": 0,
+        "visible": true
+      },
+      {
+        "material": "Workbench_Leg_B_Material",
+        "mesh": "",
+        "name": "Workbench_Leg_B",
+        "parent": "V0394_Yard_Group_04_Trough_Workbench_Direct_Ground",
+        "uvCount": 0,
+        "visible": true
+      },
+      {
+        "material": "Workbench_Narrow_Top_Material",
+        "mesh": "",
+        "name": "Workbench_Narrow_Top",
+        "parent": "V0394_Yard_Group_04_Trough_Workbench_Direct_Ground",
+        "uvCount": 0,
+        "visible": true
+      },
+      {
+        "material": "null",
+        "mesh": "barn_final_material_harmony_Cube_066",
+        "name": "V0347_Barn_Rendered_Geometry_Truth",
+        "parent": "V0394_One_Subordinate_Agricultural_Barn_Separate",
+        "uvCount": 3156,
+        "visible": false
+      },
+      {
+        "material": "V0399_Barn_Contact_Shadow",
+        "mesh": "",
+        "name": "V0399_Barn_Contact_Shadow",
+        "parent": "V0399_Barn_Structural_Readability",
+        "uvCount": 0,
+        "visible": true
+      },
+      {
+        "material": "V0399_Warm_Weathered_Stone",
+        "mesh": "",
+        "name": "V0399_Barn_Stone_Base",
+        "parent": "V0399_Barn_Structural_Readability",
+        "uvCount": 0,
+        "visible": true
+      },
+      {
+        "material": "V0399_Warm_Weathered_Stone",
+        "mesh": "",
+        "name": "V0399_Barn_Main_Walls",
+        "parent": "V0399_Barn_Structural_Readability",
+        "uvCount": 0,
+        "visible": true
+      },
+      {
+        "material": "V0399_Sunlit_Stone",
+        "mesh": "",
+        "name": "V0399_Barn_Front_Gable",
+        "parent": "V0399_Barn_Structural_Readability",
+        "uvCount": 0,
+        "visible": true
+      },
+      {
+        "material": "V0399_Charcoal_Slate",
+        "mesh": "",
+        "name": "V0399_Barn_Roof_Left",
+        "parent": "V0399_Barn_Structural_Readability",
+        "uvCount": 0,
+        "visible": true
+      },
+      {
+        "material": "V0399_Charcoal_Slate",
+        "mesh": "",
+        "name": "V0399_Barn_Roof_Right",
+        "parent": "V0399_Barn_Structural_Readability",
+        "uvCount": 0,
+        "visible": true
+      },
+      {
+        "material": "V0399_Weathered_Timber",
+        "mesh": "",
+        "name": "V0399_Barn_Ridge_Beam",
+        "parent": "V0399_Barn_Structural_Readability",
+        "uvCount": 0,
+        "visible": true
+      },
+      {
+        "material": "V0399_Weathered_Timber",
+        "mesh": "",
+        "name": "V0399_Barn_Left_Eave",
+        "parent": "V0399_Barn_Structural_Readability",
+        "uvCount": 0,
+        "visible": true
+      },
+      {
+        "material": "V0399_Weathered_Timber",
+        "mesh": "",
+        "name": "V0399_Barn_Right_Eave",
+        "parent": "V0399_Barn_Structural_Readability",
+        "uvCount": 0,
+        "visible": true
+      },
+      {
+        "material": "V0399_Barn_Door",
+        "mesh": "",
+        "name": "V0399_Barn_Entrance_Door",
+        "parent": "V0399_Barn_Structural_Readability",
+        "uvCount": 0,
+        "visible": true
+      },
+      {
+        "material": "V0399_Dry_Timber_Edge",
+        "mesh": "",
+        "name": "V0399_Barn_Door_Left_Post",
+        "parent": "V0399_Barn_Structural_Readability",
+        "uvCount": 0,
+        "visible": true
+      },
+      {
+        "material": "V0399_Dry_Timber_Edge",
+        "mesh": "",
+        "name": "V0399_Barn_Door_Right_Post",
+        "parent": "V0399_Barn_Structural_Readability",
+        "uvCount": 0,
+        "visible": true
+      },
+      {
+        "material": "V0399_Dry_Timber_Edge",
+        "mesh": "",
+        "name": "V0399_Barn_Door_Lintel",
+        "parent": "V0399_Barn_Structural_Readability",
+        "uvCount": 0,
+        "visible": true
+      },
+      {
+        "material": "V0399_Weathered_Timber",
+        "mesh": "",
+        "name": "V0399_Barn_Front_Beam",
+        "parent": "V0399_Barn_Structural_Readability",
+        "uvCount": 0,
+        "visible": true
+      },
+      {
+        "material": "V0399_Barn_Door",
+        "mesh": "",
+        "name": "V0399_Barn_Front_Window_-2_25",
+        "parent": "V0399_Barn_Structural_Readability",
+        "uvCount": 0,
+        "visible": true
+      },
+      {
+        "material": "V0399_Weathered_Timber",
+        "mesh": "",
+        "name": "V0399_Barn_Front_Post_-2_25",
+        "parent": "V0399_Barn_Structural_Readability",
+        "uvCount": 0,
+        "visible": true
+      },
+      {
+        "material": "V0399_Barn_Door",
+        "mesh": "",
+        "name": "V0399_Barn_Front_Window_2_25",
+        "parent": "V0399_Barn_Structural_Readability",
+        "uvCount": 0,
+        "visible": true
+      },
+      {
+        "material": "V0399_Weathered_Timber",
+        "mesh": "",
+        "name": "V0399_Barn_Front_Post_2_25",
+        "parent": "V0399_Barn_Structural_Readability",
+        "uvCount": 0,
+        "visible": true
+      },
+      {
+        "material": "V0399_Dry_Timber_Edge",
+        "mesh": "",
+        "name": "V0399_Barn_Side_Beam_-1_8",
+        "parent": "V0399_Barn_Structural_Readability",
+        "uvCount": 0,
+        "visible": true
+      },
+      {
+        "material": "V0399_Dry_Timber_Edge",
+        "mesh": "",
+        "name": "V0399_Barn_Side_Beam_1_8",
+        "parent": "V0399_Barn_Structural_Readability",
+        "uvCount": 0,
+        "visible": true
+      },
+      {
+        "material": "null",
+        "mesh": "Farmer_Cube_036",
+        "name": "Farmer_Body",
+        "parent": "Skeleton3D",
+        "uvCount": 576,
+        "visible": true
+      },
+      {
+        "material": "null",
+        "mesh": "Farmer_Cube_035",
+        "name": "Farmer_Feet",
+        "parent": "Skeleton3D",
+        "uvCount": 464,
+        "visible": true
+      },
+      {
+        "material": "null",
+        "mesh": "Farmer_Cube_032",
+        "name": "Farmer_Head",
+        "parent": "Skeleton3D",
+        "uvCount": 606,
+        "visible": true
+      },
+      {
+        "material": "null",
+        "mesh": "Farmer_Cube_034",
+        "name": "Farmer_Pants",
+        "parent": "Skeleton3D",
+        "uvCount": 1862,
+        "visible": true
+      },
+      {
+        "material": "null",
+        "mesh": "Adventurer_Cube_063",
+        "name": "Adventurer_Body",
+        "parent": "Skeleton3D",
+        "uvCount": 4202,
+        "visible": true
+      },
+      {
+        "material": "null",
+        "mesh": "Adventurer_Cube_052",
+        "name": "Adventurer_Feet",
+        "parent": "Skeleton3D",
+        "uvCount": 640,
+        "visible": true
+      },
+      {
+        "material": "null",
+        "mesh": "Adventurer_Cube_039",
+        "name": "Adventurer_Head",
+        "parent": "Skeleton3D",
+        "uvCount": 886,
+        "visible": true
+      },
+      {
+        "material": "null",
+        "mesh": "Adventurer_Cube_020",
+        "name": "Adventurer_Legs",
+        "parent": "Skeleton3D",
+        "uvCount": 1458,
+        "visible": true
+      },
+      {
+        "material": "null",
+        "mesh": "Adventurer_Plane",
+        "name": "Backpack",
+        "parent": "Skeleton3D",
+        "uvCount": 0,
+        "visible": true
+      },
+      {
+        "material": "null",
+        "mesh": "Worker_Cube_027",
+        "name": "Worker_Body",
+        "parent": "Skeleton3D",
+        "uvCount": 4156,
+        "visible": true
+      },
+      {
+        "material": "null",
+        "mesh": "Worker_Cube_028",
+        "name": "Worker_Feet",
+        "parent": "Skeleton3D",
+        "uvCount": 624,
+        "visible": true
+      },
+      {
+        "material": "null",
+        "mesh": "Worker_Cube_031",
+        "name": "Worker_Head",
+        "parent": "Skeleton3D",
+        "uvCount": 606,
+        "visible": true
+      },
+      {
+        "material": "null",
+        "mesh": "Worker_Cube_029",
+        "name": "Worker_Legs",
+        "parent": "Skeleton3D",
+        "uvCount": 1338,
+        "visible": true
+      }
+    ],
+    "fallbackRenderer": "unchanged",
+    "functionalClassification": {
+      "LOD0_Damp_Foundation": "FOUNDATION_OR_PLINTH",
+      "LOD1_Damp_Foundation": "FOUNDATION_OR_PLINTH",
+      "LOD2_Damp_Foundation": "FOUNDATION_OR_PLINTH"
+    },
+    "gameplay": false,
+    "geometryChanged": false,
+    "indicesChanged": false,
+    "inheritedVertexColourChanged": false,
+    "materialOnly": true,
+    "newMeshInstances": 0,
+    "overlays": false,
+    "parentFoundationInventory": [
+      {
+        "material": "null",
+        "mesh": "barrosan_house_02_material_gold_candidate_Cube_059",
+        "name": "LOD0_Damp_Foundation",
+        "uvCount": 1536,
+        "visible": true
+      },
+      {
+        "material": "null",
+        "mesh": "barrosan_house_02_material_gold_candidate_Cube_103",
+        "name": "LOD1_Damp_Foundation",
+        "uvCount": 766,
+        "visible": true
+      },
+      {
+        "material": "null",
+        "mesh": "barrosan_house_02_material_gold_candidate_Cube_109",
+        "name": "LOD2_Damp_Foundation",
+        "uvCount": 196,
+        "visible": true
+      }
+    ],
+    "reason": "incomplete visible FOUNDATION_OR_PLINTH/ENTRY_STEP_OR_THRESHOLD inventory",
+    "stateBehavior": "unchanged",
+    "status": "ASSET_MATERIAL_LIMITATION_MAIN_HOUSE_FOUNDATION_STEPS",
+    "surfacesChanged": false,
+    "topologyChanged": false,
+    "transformsChanged": false,
+    "uvArraysChanged": false,
+    "verticesChanged": false
+  },
+  "verticesChanged": false
+}
