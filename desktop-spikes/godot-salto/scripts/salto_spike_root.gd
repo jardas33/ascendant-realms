@@ -135,6 +135,8 @@ const SCRIPT_ARG_PREFIXES := [
 	"--v0413-main-house-masonry-smoke",
 	"--v0414-main-house-openings-trim-capture",
 	"--v0414-main-house-openings-trim-smoke",
+	"--v0415-main-house-foundation-step-capture",
+	"--v0415-main-house-foundation-step-smoke",
 	"--h3-semantic-evidence",
 	"--h3-supported-state-contract",
 	"--h3-directional-animation-micro-pilot",
@@ -782,6 +784,18 @@ func _ready() -> void:
 		v0414_pass.set_meta("v0414_capture_mode", args.has("--v0414-main-house-openings-trim-capture"))
 		v0414_pass.set_meta("v0414_smoke_mode", args.has("--v0414-main-house-openings-trim-smoke"))
 		add_child(v0414_pass)
+		return
+	if args.has("--v0415-main-house-foundation-step-capture") or args.has("--v0415-main-house-foundation-step-smoke"):
+		var v0415_script := load("res://scripts/v0415_main_house_foundation_step_grounding.gd") as Script
+		if v0415_script == null:
+			push_error("v0.415 main-house foundation/step script failed to load")
+			return
+		var v0415_pass := Node3D.new()
+		v0415_pass.set_script(v0415_script)
+		v0415_pass.name = "V0415MainHouseFoundationStepGrounding"
+		v0415_pass.set_meta("v0415_capture_mode", args.has("--v0415-main-house-foundation-step-capture"))
+		v0415_pass.set_meta("v0415_smoke_mode", args.has("--v0415-main-house-foundation-step-smoke"))
+		add_child(v0415_pass)
 		return
 	if args.has("--salto-production-target-spike"):
 		var spike_scene := load("res://scenes/salto_production_target_spike.tscn") as PackedScene
