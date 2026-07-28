@@ -1,0 +1,170 @@
+{
+  "aabbChanged": false,
+  "affectedNodeCount": 4,
+  "affectedNodeInventory": [
+    {
+      "classification": "UNDERBEAM",
+      "material": "V0394_Bridge_Desaturated_Value",
+      "name": "Bridge_Underbeam_-1_28",
+      "uvCount": 0,
+      "visible": true
+    },
+    {
+      "classification": "UNDERBEAM",
+      "material": "V0394_Bridge_Desaturated_Value",
+      "name": "Bridge_Underbeam_+1_28",
+      "uvCount": 0,
+      "visible": true
+    },
+    {
+      "classification": "EDGE_COURSE",
+      "material": "V0394_Bridge_Desaturated_Value",
+      "name": "Bridge_EdgeCourse_-1",
+      "uvCount": 0,
+      "visible": true
+    },
+    {
+      "classification": "EDGE_COURSE",
+      "material": "V0394_Bridge_Desaturated_Value",
+      "name": "Bridge_EdgeCourse_+1",
+      "uvCount": 0,
+      "visible": true
+    }
+  ],
+  "affectedNodeNames": [
+    "Bridge_Underbeam_-1_28",
+    "Bridge_Underbeam_+1_28",
+    "Bridge_EdgeCourse_-1",
+    "Bridge_EdgeCourse_+1"
+  ],
+  "barn": "preserved",
+  "baselineCommit": "7f73ded8743f415392f2eea2d08cfa4578432728",
+  "bridgeHashesAfter": {
+    "Bridge_EdgeCourse_+1": "ffd4a5d23d83a10aa45637e865a7b8e677d207336d9e2586c4e4c4ebde0aa3d3",
+    "Bridge_EdgeCourse_-1": "6e492cd9bc5dd24acf56fe15e597a5dfbef0d10f41bd2a42939db7974dcb008f",
+    "Bridge_Underbeam_+1_28": "283eb7b65e61ad9e47add92a07e38326dbe945939de59b623a0722850bb7bff4",
+    "Bridge_Underbeam_-1_28": "120884cbfa0dd7d1093610276031e346ef362b6ac5c62c55b7ab3c86f0208c6f"
+  },
+  "bridgeHashesBefore": {
+    "Bridge_EdgeCourse_+1": "ffd4a5d23d83a10aa45637e865a7b8e677d207336d9e2586c4e4c4ebde0aa3d3",
+    "Bridge_EdgeCourse_-1": "6e492cd9bc5dd24acf56fe15e597a5dfbef0d10f41bd2a42939db7974dcb008f",
+    "Bridge_Underbeam_+1_28": "283eb7b65e61ad9e47add92a07e38326dbe945939de59b623a0722850bb7bff4",
+    "Bridge_Underbeam_-1_28": "120884cbfa0dd7d1093610276031e346ef362b6ac5c62c55b7ab3c86f0208c6f"
+  },
+  "building": "preserved",
+  "camera": "unchanged",
+  "candidateRetained": true,
+  "characters": "preserved",
+  "checkpoint": "v0.412",
+  "debugRenderer": "unchanged",
+  "decals": false,
+  "deck": "preserved",
+  "deckHashesBeforeAfter": {
+    "Bridge_Deck_Plank_00": "14d33bdc1e2741155f1865bfa671088eafd3a923649d1fddd8f93c2ae8c2ef95",
+    "Bridge_Deck_Plank_01": "a0178aca658693dc0317b1c9b33496db88ca963b110d1118f8b3208c0c19e9f9",
+    "Bridge_Deck_Plank_02": "1fe1d0730e2cabb205f97e4168289d756b675e86d7ba6368b9279b6d2bbdd3eb",
+    "Bridge_Deck_Plank_03": "e6cd02b0a1fd2eeecc0f9a00e1c0dad3684c62ee71c7272fbf36e31efb2949e9",
+    "Bridge_Deck_Plank_04": "26462ef1e453cb17ce21273df32a70fa8caaadbfc1f1d72bd521b04ad03c8b8d",
+    "Bridge_Deck_Plank_05": "a0ac9d66a3f33516925e8072d2591c302d33e314c2a4d45d79682f97e03d2d6b",
+    "Bridge_Deck_Plank_06": "830b971a0ef835e52b27f05902285613b9abd9227f1e65efbbff4ac21f682f6c",
+    "Bridge_Deck_Plank_07": "376cc43aefaaa7a0f919dbf5cacd69c37c76ae48ae9caee2d4788d26f89b6185",
+    "Bridge_Deck_Plank_08": "985afdad47d6dd7526329eb7870e1cc248dd60923f7e90ef1b64d5c1bebd8611",
+    "Bridge_Deck_Plank_09": "491d6733798eba7a57250495aca0ccd54ddd11e4fdf3ebda7c640870ed7eeb43",
+    "Bridge_Deck_Plank_10": "998d6710bc69146a19fc8257907bf150b60403f47dc19c8a0972e94d6acef9ec",
+    "Bridge_Deck_Plank_11": "36925eac885fc9321f3ebdc91f7e3b939e99578deece50142d9d9e99cc5e29f3",
+    "Bridge_Deck_Plank_12": "2d4b9b4c09ef74b7f5f08c3b44bad874864240a804386428b839cef54316a139",
+    "Bridge_Deck_Plank_13": "b409c0758488e72e7db3e32eaa7fed8e90457a22cf67f3a3e30224576bda3109",
+    "Bridge_Deck_Plank_14": "5f3691afa170d99f177da30d1f5fbcb62bf8902f1788e09fbc6db7474af9d574",
+    "Bridge_Deck_Plank_15": "95bf342d83bcd2dc443e228f46ca2074b6399a6ac916709722886d08879bfc30",
+    "Bridge_Deck_Plank_16": "b35b682780884052611755daa97fef1a2fc6741017ec53d9bf5f3d9e808f2564",
+    "Bridge_Deck_Plank_17": "c99cb39fceffc54f73c34d6cbebd5adaeb89667ea83022b718b393051c60cde0"
+  },
+  "defaultRuntime": "unchanged",
+  "duplicateMeshes": false,
+  "edgeCourses": "calibrated",
+  "fallbackRenderer": "unchanged",
+  "finalMaterialParameters": [
+    "underbeams albedo=#43342a roughness=0.94 specular=0.10 vertexColorAsAlbedo=false",
+    "edgeCourses albedo=#6a513a roughness=0.92 specular=0.14 vertexColorAsAlbedo=false"
+  ],
+  "finalMaterials": [
+    "Bridge_Underbeam_-1_28=V0412_Bridge_Underbeam",
+    "Bridge_Underbeam_+1_28=V0412_Bridge_Underbeam",
+    "Bridge_EdgeCourse_-1=V0412_Bridge_EdgeCourse",
+    "Bridge_EdgeCourse_+1=V0412_Bridge_EdgeCourse"
+  ],
+  "finalSnapshots": {
+    "Bridge_EdgeCourse_+1": {
+
+    },
+    "Bridge_EdgeCourse_-1": {
+
+    },
+    "Bridge_Underbeam_+1_28": {
+
+    },
+    "Bridge_Underbeam_-1_28": {
+
+    }
+  },
+  "footingAbutmentHashesBeforeAfter": {
+
+  },
+  "footingsAbutments": "preserved",
+  "functionalClassification": {
+    "Bridge_EdgeCourse_+1": "EDGE_COURSE",
+    "Bridge_EdgeCourse_-1": "EDGE_COURSE",
+    "Bridge_Underbeam_+1_28": "UNDERBEAM",
+    "Bridge_Underbeam_-1_28": "UNDERBEAM"
+  },
+  "gameplay": false,
+  "geometryChanged": false,
+  "indicesChanged": false,
+  "inheritedVertexColourChanged": false,
+  "landings": "preserved",
+  "lighting": "unchanged",
+  "materialOnly": true,
+  "meshInstanceCountAfter": 292,
+  "meshInstanceCountBefore": 292,
+  "newGeometry": false,
+  "newMeshInstances": 0,
+  "originalMaterials": [
+    "Bridge_Underbeam_-1_28=V0394_Bridge_Desaturated_Value",
+    "Bridge_Underbeam_+1_28=V0394_Bridge_Desaturated_Value",
+    "Bridge_EdgeCourse_-1=V0394_Bridge_Desaturated_Value",
+    "Bridge_EdgeCourse_+1=V0394_Bridge_Desaturated_Value"
+  ],
+  "originalSnapshots": {
+    "Bridge_EdgeCourse_+1": {
+
+    },
+    "Bridge_EdgeCourse_-1": {
+
+    },
+    "Bridge_Underbeam_+1_28": {
+
+    },
+    "Bridge_Underbeam_-1_28": {
+
+    }
+  },
+  "overlays": false,
+  "props": "preserved",
+  "railPostHashesBeforeAfter": {
+
+  },
+  "railsPosts": "v0411-preserved",
+  "reason": "",
+  "route": "preserved",
+  "routeLandingHashesBeforeAfter": {
+
+  },
+  "scope": "existing_bridge_underbeam_and_edge_course_materials_only",
+  "stateBehavior": "unchanged",
+  "status": "RENDERED_CANDIDATE",
+  "topologyChanged": false,
+  "transformsChanged": false,
+  "underbeams": "calibrated",
+  "uvArraysChanged": false,
+  "verticesChanged": false
+}

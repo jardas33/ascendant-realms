@@ -129,6 +129,8 @@ const SCRIPT_ARG_PREFIXES := [
 	"--v0410-bridge-deck-smoke",
 	"--v0411-bridge-rail-post-capture",
 	"--v0411-bridge-rail-post-smoke",
+	"--v0412-bridge-understructure-capture",
+	"--v0412-bridge-understructure-smoke",
 	"--h3-semantic-evidence",
 	"--h3-supported-state-contract",
 	"--h3-directional-animation-micro-pilot",
@@ -740,6 +742,18 @@ func _ready() -> void:
 		v0411_pass.set_meta("v0411_capture_mode", args.has("--v0411-bridge-rail-post-capture"))
 		v0411_pass.set_meta("v0411_smoke_mode", args.has("--v0411-bridge-rail-post-smoke"))
 		add_child(v0411_pass)
+		return
+	if args.has("--v0412-bridge-understructure-capture") or args.has("--v0412-bridge-understructure-smoke"):
+		var v0412_script := load("res://scripts/v0412_bridge_understructure_value_hierarchy.gd") as Script
+		if v0412_script == null:
+			push_error("v0.412 bridge understructure script failed to load")
+			return
+		var v0412_pass := Node3D.new()
+		v0412_pass.set_script(v0412_script)
+		v0412_pass.name = "V0412BridgeUnderstructureValueHierarchy"
+		v0412_pass.set_meta("v0412_capture_mode", args.has("--v0412-bridge-understructure-capture"))
+		v0412_pass.set_meta("v0412_smoke_mode", args.has("--v0412-bridge-understructure-smoke"))
+		add_child(v0412_pass)
 		return
 	if args.has("--salto-production-target-spike"):
 		var spike_scene := load("res://scenes/salto_production_target_spike.tscn") as PackedScene
