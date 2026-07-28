@@ -27,4 +27,10 @@ The audit records complete affected and excluded inventories, role classificatio
 
 Dedicated validator: `npm run godot:validate:v0414-main-house-openings-trim` — PASS (`RENDERED_CANDIDATE`, 9 dynamic opening/trim nodes, 7 real captures). The retained v0.413 through v0.400 ladder is green, including the accepted fail-closed v0.409 and v0.410 validators. Repository validation is green: 887 tests across 122 files, production build, content validation, art-intake validation, runtime-art-slot validation, artifact-retention validation, `npm run godot:all`, and `git diff --check`.
 
-The implementation commit, exact GitHub Actions result, and final clean/synced repository evidence are added after the bounded v0.414 files are committed and pushed.
+Implementation commit: `4cdf61e6127530f6466a090869d647e58c84cbff` (`v0.414 calibrate main-house openings and timber trim`). Exact GitHub Actions run `30382865998` completed successfully for that SHA. The final documentation-evidence commit and its exact-SHA CI result are recorded below after this report update.
+
+## Final repository evidence
+
+- Final branch: `codex/v0215-v0226-recovery`
+- Review pack: `artifacts/manual-review/v0414-main-house-openings-trim-value-hierarchy/`
+- Final repository state is verified after the documentation-evidence push as clean and synchronized with origin (`0` ahead, `0` behind).
