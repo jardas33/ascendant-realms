@@ -139,6 +139,8 @@ const SCRIPT_ARG_PREFIXES := [
 	"--v0415-main-house-foundation-step-smoke",
 	"--v0416-main-house-chimney-capture",
 	"--v0416-main-house-chimney-smoke",
+	"--v0417-secondary-barn-walls-capture",
+	"--v0417-secondary-barn-walls-smoke",
 	"--h3-semantic-evidence",
 	"--h3-supported-state-contract",
 	"--h3-directional-animation-micro-pilot",
@@ -810,6 +812,18 @@ func _ready() -> void:
 		v0416_pass.set_meta("v0416_capture_mode", args.has("--v0416-main-house-chimney-capture"))
 		v0416_pass.set_meta("v0416_smoke_mode", args.has("--v0416-main-house-chimney-smoke"))
 		add_child(v0416_pass)
+		return
+	if args.has("--v0417-secondary-barn-walls-capture") or args.has("--v0417-secondary-barn-walls-smoke"):
+		var v0417_script := load("res://scripts/v0417_secondary_barn_wall_value_hierarchy.gd") as Script
+		if v0417_script == null:
+			push_error("v0.417 secondary-barn wall script failed to load")
+			return
+		var v0417_pass := Node3D.new()
+		v0417_pass.set_script(v0417_script)
+		v0417_pass.name = "V0417SecondaryBarnWallValueHierarchy"
+		v0417_pass.set_meta("v0417_capture_mode", args.has("--v0417-secondary-barn-walls-capture"))
+		v0417_pass.set_meta("v0417_smoke_mode", args.has("--v0417-secondary-barn-walls-smoke"))
+		add_child(v0417_pass)
 		return
 	if args.has("--salto-production-target-spike"):
 		var spike_scene := load("res://scenes/salto_production_target_spike.tscn") as PackedScene
