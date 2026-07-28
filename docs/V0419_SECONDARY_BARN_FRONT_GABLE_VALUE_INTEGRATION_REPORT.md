@@ -62,9 +62,10 @@ v0.402-v0.405 have no repository-provided dedicated validator commands, matching
 
 ## Closeout
 
-- Implementation commit: pending commit/push.
-- Exact GitHub Actions run: pending push.
-- Final repository state: pending final clean/synchronized proof.
+- Implementation commit: `a3bc3c136d41a0c736ef464a6a54c8e756aede39`.
+- Exact GitHub Actions run: `30403193921` — `CI Release Matrix Dry Run`, success for the implementation SHA.
+- Documentation closeout commit: pending.
+- Final repository state: verified after the documentation closeout commit.
 
 ## Review pack
 
