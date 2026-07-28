@@ -27,3 +27,11 @@ The audit records complete affected and excluded inventories, classifications, o
 ## Validation and closeout
 
 The dedicated validator accepts the fail-closed limitation, including the recorded three-node foundation inventory and the absence of a falsely classified entry-step surface. Retained v0.414 through v0.400 validators are green; this includes the accepted v0.409/v0.410 fail-closed gates. The refreshed review pack contains seven nonblank real scene/diagnostic/comparison captures and the preservation audit. Full tests, production build, content/art/runtime/artifact validation, `npm run godot:all`, and `git diff --check` are green locally. No v0.415 candidate is retained: the exact result is `ASSET_MATERIAL_LIMITATION_MAIN_HOUSE_FOUNDATION_STEPS` because `V0395_Door_Threshold_Stone` exposes no mesh surface for a permitted material-only assignment. Exact commit and GitHub Actions evidence are added during closeout.
+
+## Final evidence
+
+- Implementation commit: `5d7e572bc3a15af026e077538ce9343464a19394`
+- Exact-SHA GitHub Actions: run `30388869527` (`CI Release Matrix Dry Run`) — success
+- Final branch: `codex/v0215-v0226-recovery`
+- Final tracked repository state: clean and synchronized with origin (`0 ahead / 0 behind`)
+- Unrelated pre-existing untracked artifacts were preserved and were not included in the checkpoint commit.
