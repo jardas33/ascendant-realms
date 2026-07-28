@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/v0413_main_house_masonry_value_hierarchy.gd" id="1_v0413"]
+
+[node name="V0413MainHouseMasonryValueHierarchy" type="Node3D"]
+script = ExtResource("1_v0413")

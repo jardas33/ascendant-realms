@@ -131,6 +131,8 @@ const SCRIPT_ARG_PREFIXES := [
 	"--v0411-bridge-rail-post-smoke",
 	"--v0412-bridge-understructure-capture",
 	"--v0412-bridge-understructure-smoke",
+	"--v0413-main-house-masonry-capture",
+	"--v0413-main-house-masonry-smoke",
 	"--h3-semantic-evidence",
 	"--h3-supported-state-contract",
 	"--h3-directional-animation-micro-pilot",
@@ -754,6 +756,18 @@ func _ready() -> void:
 		v0412_pass.set_meta("v0412_capture_mode", args.has("--v0412-bridge-understructure-capture"))
 		v0412_pass.set_meta("v0412_smoke_mode", args.has("--v0412-bridge-understructure-smoke"))
 		add_child(v0412_pass)
+		return
+	if args.has("--v0413-main-house-masonry-capture") or args.has("--v0413-main-house-masonry-smoke"):
+		var v0413_script := load("res://scripts/v0413_main_house_masonry_value_hierarchy.gd") as Script
+		if v0413_script == null:
+			push_error("v0.413 main-house masonry script failed to load")
+			return
+		var v0413_pass := Node3D.new()
+		v0413_pass.set_script(v0413_script)
+		v0413_pass.name = "V0413MainHouseMasonryValueHierarchy"
+		v0413_pass.set_meta("v0413_capture_mode", args.has("--v0413-main-house-masonry-capture"))
+		v0413_pass.set_meta("v0413_smoke_mode", args.has("--v0413-main-house-masonry-smoke"))
+		add_child(v0413_pass)
 		return
 	if args.has("--salto-production-target-spike"):
 		var spike_scene := load("res://scenes/salto_production_target_spike.tscn") as PackedScene
