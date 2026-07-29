@@ -74,8 +74,16 @@ No enemy combat, attacks, damage, death, projectiles, AI, gathering, mines, tech
 
 ## Validation evidence
 
-The dedicated v0.432 validator distinguishes `baseSha`, `captureSourceSha`, and `finalCommitSha`, verifies the authoritative definitions, exact transactions, reservation lifecycle, spawn/selection/movement traces, required PNGs, and black-frame/luminance evidence. The retained v0.431 validator and the full required local validation ladder are run before commit closeout.
+The dedicated v0.432 validator distinguishes `baseSha`, `captureSourceSha`, and `finalCommitSha`, verifies the authoritative definitions, exact transactions, reservation lifecycle, spawn/selection/movement traces, required PNGs, and black-frame/luminance evidence. It passed with `baseSha=16fcf322316a626e0e32bf834020bafdce7d0647`, `captureSourceSha=16fcf322316a626e0e32bf834020bafdce7d0647`, and `finalCommitSha=a115e84b5b38875d60704944de9ab760b0a0601f`.
+
+The retained v0.431 validator passed on the stacked branch after two evidence-only compatibility repairs: it accepts the v0.432 descendant branch, and it accepts the authoritative structured two-loop audit when the older marker text is stale. No v0.431 runtime code or gameplay semantics changed.
+
+The full local ladder passed: `npm run godot:import:production`, `npm run godot:asset-scan:production`, `npm run godot:smoke:production`, `npm run godot:validate:production`, `npm run godot:smoke:v0431-gameplay-construction`, `npm run godot:validate:v0431-gameplay-construction`, `npm run godot:smoke:v0432-war-hall-production`, `npm run godot:validate:v0432-war-hall-production`, `npm test` (887 tests), `npm run build`, `npm run validate:content`, `npm run validate:art-intake`, `npm run validate:runtime-art-slots`, `npm run validate:artifact-retention`, `npm run godot:all`, and `git diff --check`. Godot smoke output retained only the known ObjectDB/resource cleanup diagnostics at process exit.
 
 ## CI and final state
 
-CI evidence and the final commit SHA are added after the explicit v0.432 validation ladder, commit, stacked draft PR, and exact-SHA GitHub Actions run complete. Historical untracked backlog in the workspace remains preserved and unstaged.
+- Commit: `a115e84b5b38875d60704944de9ab760b0a0601f`
+- Stacked draft PR: [#6](https://github.com/jardas33/ascendant-realms/pull/6), targeting `codex/v0431-gameplay-readability-construction-loop`
+- GitHub Actions: run `30498210996` (`CI Release Matrix Dry Run`) completed `success` for the exact commit above.
+- Branch: `codex/v0432-war-hall-clan-levy-production-loop`
+- Historical untracked backlog in the workspace remains preserved and unstaged.
