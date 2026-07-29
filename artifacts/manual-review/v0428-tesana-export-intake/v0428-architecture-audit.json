@@ -1,0 +1,79 @@
+{
+  "schema": "v0.428-architecture-audit",
+  "generatedUtc": "2026-07-29T15:07:27.897Z",
+  "entryPoints": [
+    "scenes/main.tscn",
+    "scripts/world/game_root.gd",
+    "scripts/world/game_world.gd"
+  ],
+  "modules": [
+    "autoloads",
+    "world",
+    "units",
+    "buildings",
+    "ai",
+    "ui",
+    "editor-addon"
+  ],
+  "scriptCount": 40,
+  "topSourceFiles": [
+    {
+      "path": "scripts/game/unit_defs.gd",
+      "bytes": 37090
+    },
+    {
+      "path": "addons/tesana_world_editor/scene_export.gd",
+      "bytes": 36879
+    },
+    {
+      "path": "scripts/game/skill_defs.gd",
+      "bytes": 35952
+    },
+    {
+      "path": "scripts/ui/hud.gd",
+      "bytes": 34599
+    },
+    {
+      "path": "scripts/world/game_world.gd",
+      "bytes": 29639
+    },
+    {
+      "path": "scripts/game/building_defs.gd",
+      "bytes": 25567
+    },
+    {
+      "path": "scripts/units/unit.gd",
+      "bytes": 24220
+    },
+    {
+      "path": "scripts/autoloads/loading_screen.gd",
+      "bytes": 22679
+    },
+    {
+      "path": "scripts/world/rts_controller.gd",
+      "bytes": 18598
+    },
+    {
+      "path": "scripts/ui/hero_creation.gd",
+      "bytes": 17130
+    }
+  ],
+  "fragileModules": [
+    "addons/tesana_world_editor/scene_export.gd",
+    "scripts/world/game_world.gd",
+    "scripts/world/rts_controller.gd",
+    "scripts/world/game_root.gd",
+    "scripts/units/unit.gd",
+    "scripts/autoloads/loading_screen.gd",
+    "scripts/ui/hud.gd",
+    "scripts/autoloads/profile_manager.gd",
+    "scripts/buildings/building.gd",
+    "scripts/ai/enemy_ai.gd"
+  ],
+  "risks": [
+    "Godot 4.3 architecture differs from accepted Phaser/Vite runtime",
+    "autoload loopback editor service",
+    "generated/import cache files mixed with source export",
+    "runtime behavior unverified"
+  ]
+}

@@ -1,0 +1,60 @@
+{
+  "schema": "v0.428-canonical-base-decision-matrix",
+  "generatedUtc": "2026-07-29T15:07:27.961Z",
+  "strategies": {
+    "A_newCanonicalBase": {
+      "benefits": [
+        "Godot-native asset/runtime alignment"
+      ],
+      "risks": [
+        "abandons accepted chain; unverified; license risk"
+      ],
+      "score": 1
+    },
+    "B_donorOnly": {
+      "benefits": [
+        "preserves accepted runtime; can mine candidate assets after provenance review"
+      ],
+      "risks": [
+        "asset compatibility and provenance work remains"
+      ],
+      "score": 4
+    },
+    "C_controlledHybrid": {
+      "benefits": [
+        "could reuse selected assets later"
+      ],
+      "risks": [
+        "high integration burden and runtime-boundary risk"
+      ],
+      "score": 2
+    },
+    "D_reject": {
+      "benefits": [
+        "zero migration risk"
+      ],
+      "risks": [
+        "loses potentially useful assets"
+      ],
+      "score": 3
+    }
+  },
+  "projectScores": {
+    "existingAcceptedBase": {
+      "architecture": 5,
+      "stateChain": 5,
+      "licenseClarity": 4,
+      "runtimeProof": 5,
+      "migrationRisk": 5
+    },
+    "tesanaExport": {
+      "architecture": 2,
+      "visualAssetBreadth": 4,
+      "licenseClarity": 0,
+      "runtimeProof": 0,
+      "migrationRisk": 1
+    }
+  },
+  "recommendation": "B_DONOR_ONLY",
+  "recommendationReason": "Tesana is a Godot 4.3 plain export with broad candidate content but unverified local runtime and HIGH_UNCLEAR_PROVENANCE; keep it immutable and do not make it canonical."
+}

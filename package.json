@@ -1079,7 +1079,9 @@
     "assets:process-battle-sprites": "tsx tools/manual-asset-pipeline/processBattleSprites.ts",
     "assets:manifest": "tsx tools/manual-asset-pipeline/buildAssetManifest.ts",
     "assets:validate": "tsx tools/manual-asset-pipeline/validateAssets.ts",
-    "assets:refresh": "npm run assets:process-battle-sprites && npm run assets:manifest && npm run assets:validate"
+    "assets:refresh": "npm run assets:process-battle-sprites && npm run assets:manifest && npm run assets:validate",
+    "godot:validate:v0428-tesana-intake": "node tools/tesana/v0428TesanaIntakeAudit.mjs validate",
+    "godot:audit:v0428-tesana-intake": "node tools/tesana/v0428TesanaIntakeAudit.mjs audit"
   },
   "dependencies": {
     "phaser": "^3.90.0"

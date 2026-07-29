@@ -1,0 +1,18 @@
+{
+  "schema": "v0.428-source-preservation-audit",
+  "generatedUtc": "2026-07-29T15:07:27.985Z",
+  "baselineCommit": "4a2de384b2f0c3f348f24ff549ab2293f29e3b7f",
+  "auditBranch": "codex/v0428-tesana-intake-audit",
+  "acceptedTrackedImplementationUnchanged": true,
+  "tesanaSourceHashUnchanged": true,
+  "preAuditManifestAvailable": true,
+  "tesanaCopiedIntoAccepted": false,
+  "acceptedCopiedIntoTesana": false,
+  "sourceEdited": false,
+  "cachesDeleted": false,
+  "dependenciesInstalled": false,
+  "runtimeExecutedFromSource": false,
+  "runtimeExecutedFromDisposableCopy": false,
+  "preservationStatus": "PASS_SOURCE_UNCHANGED",
+  "runtimeStatus": "BLOCKED_GODOT_EXECUTABLE_NOT_FOUND"
+}

@@ -1,0 +1,62 @@
+{
+  "schema": "v0.428-project-type-audit",
+  "generatedUtc": "2026-07-29T15:07:27.545Z",
+  "projectType": "Godot project export",
+  "engine": "Godot 4.3",
+  "renderer": "Forward Plus",
+  "mainScene": "res://scenes/main.tscn",
+  "nativeExportPresets": [
+    "Web"
+  ],
+  "trueDefault": false,
+  "sourceIsGitRepository": false,
+  "autoloads": [
+    {
+      "name": "LoadingScreen",
+      "path": "scripts/autoloads/loading_screen.gd"
+    },
+    {
+      "name": "GameData",
+      "path": "scripts/game/game_data.gd"
+    },
+    {
+      "name": "AudioManager",
+      "path": "scripts/autoloads/audio_manager.gd"
+    },
+    {
+      "name": "Sfx",
+      "path": "scripts/autoloads/sfx.gd"
+    },
+    {
+      "name": "ProfileManager",
+      "path": "scripts/autoloads/profile_manager.gd"
+    },
+    {
+      "name": "Match",
+      "path": "scripts/autoloads/match_config.gd"
+    },
+    {
+      "name": "TesanaWorldEditor",
+      "path": "addons/tesana_world_editor/scene_export.gd"
+    }
+  ],
+  "loopbackServices": [
+    {
+      "protocol": "WebSocket",
+      "host": "127.0.0.1",
+      "port": 5180
+    },
+    {
+      "protocol": "HTTP",
+      "host": "127.0.0.1",
+      "port": 5181
+    }
+  ],
+  "exportPresetEvidence": true,
+  "safety": {
+    "noPackageScriptsFound": true,
+    "noNodeLockfile": true,
+    "noExternalInstallerFound": true,
+    "loopbackEditorServiceRequiresIsolation": true
+  }
+}

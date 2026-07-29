@@ -1,0 +1,6 @@
+v0.428 local runtime evidence is fail-closed.
+Status: BLOCKED_GODOT_EXECUTABLE_NOT_FOUND
+No Godot executable was found on PATH or supplied through V0428_GODOT_BIN.
+WB_tesana was not executed from its source directory.
+No runtime screenshot is being fabricated from a title card, hosted preview, or static asset.
+Next safe action: provide or install a reviewed Godot 4.3 executable, then run only from a disposable copy and regenerate captures.
