@@ -1,0 +1,17 @@
+{
+  "full_refund": true,
+  "reserved_after": 0,
+  "reserved_before": 0,
+  "resources_after_cancel": {
+    "food": 200,
+    "gold": 180,
+    "stone": 120,
+    "timber": 150
+  },
+  "resources_before_queue": {
+    "food": 200,
+    "gold": 180,
+    "stone": 120,
+    "timber": 150
+  }
+}

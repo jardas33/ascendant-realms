@@ -1,0 +1,9 @@
+{
+  "building_id": "barrosan_clan_croft",
+  "completed": false,
+  "cost": {
+    "stone": 20,
+    "timber": 60
+  },
+  "real_path": true
+}

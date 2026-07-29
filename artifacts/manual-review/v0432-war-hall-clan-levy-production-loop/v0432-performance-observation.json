@@ -1,0 +1,15 @@
+{
+  "average_fps": 75,
+  "cancellation_requeue_seconds": "bounded",
+  "clan_levy_training_seconds": 14,
+  "duplicate_queue_items": 0,
+  "duplicate_spawned_units": 0,
+  "manual_movement_seconds": "bounded",
+  "minimum_fps": "not instrumented",
+  "navigation_failures": 0,
+  "rally_arrival_seconds": "bounded",
+  "runtime_warnings": "see headed runtime log",
+  "spawn_latency_seconds": "bounded",
+  "title_to_gameplay_seconds": "headed capture measured by runtime log",
+  "war_hall_build_seconds": 30
+}

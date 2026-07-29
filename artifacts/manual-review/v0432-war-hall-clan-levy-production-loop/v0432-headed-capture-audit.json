@@ -1,0 +1,15 @@
+﻿{
+    "schema":  "v0432-headed-capture-audit-v1",
+    "executable":  "C:\\Users\\barro\\AppData\\Local\\AscendantRealms\\tools\\godot-4.3-stable\\Godot_v4.3-stable_win64.exe",
+    "executableSha256":  "B554BA80FB2AD8F1817BC21242AC8ADBB9E41F806C49AD5CC73603DB71FEE32F",
+    "displayDriver":  "headed Windows display",
+    "renderingMethod":  "Forward Plus",
+    "viewport":  "1920x1080",
+    "processExitStatus":  0,
+    "firstRenderedFrame":  "01_V0432_INITIAL_GAMEPLAY_STATE.png",
+    "requiredGate":  [
+                         "05_V0432_WAR_HALL_VALID_PREVIEW.png",
+                         "07_V0432_WAR_HALL_COMPLETE_SELECTED.png",
+                         "13_V0432_CLAN_LEVY_SPAWNED.png"
+                     ]
+}

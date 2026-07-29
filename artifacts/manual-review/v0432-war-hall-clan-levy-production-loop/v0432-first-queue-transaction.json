@@ -1,0 +1,32 @@
+{
+  "cancelled": true,
+  "cost": {
+    "food": 60,
+    "timber": 10
+  },
+  "requeued": {
+    "ok": true
+  },
+  "resources_after_cancel": {
+    "food": 200,
+    "gold": 180,
+    "stone": 120,
+    "timber": 150
+  },
+  "resources_after_queue": {
+    "food": 140,
+    "gold": 180,
+    "stone": 120,
+    "timber": 140
+  },
+  "resources_before": {
+    "food": 200,
+    "gold": 180,
+    "stone": 120,
+    "timber": 150
+  },
+  "result": {
+    "ok": true
+  },
+  "training_seconds": 14
+}

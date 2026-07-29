@@ -1,0 +1,21 @@
+{
+  "build_time": 30,
+  "cost": {
+    "stone": 60,
+    "timber": 150
+  },
+  "footprint": 5,
+  "id": "barrosan_war_hall",
+  "kind": "barracks",
+  "model": "res://assets/environment/buildings/barrosan_war_hall.glb",
+  "model_resolves": true,
+  "name": "War Hall",
+  "produces": [
+    "barrosan_clan_levy",
+    "barrosan_spear_guard",
+    "barrosan_crag_archer",
+    "barrosan_outrider",
+    "barrosan_anvil_breaker",
+    "barrosan_ballista"
+  ]
+}

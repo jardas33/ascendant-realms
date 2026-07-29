@@ -1,0 +1,8 @@
+{
+  "arrived_or_progressed": true,
+  "movement_system": "Unit.command_move from Building rally path",
+  "rally": {
+    "x": -112,
+    "z": -98
+  }
+}

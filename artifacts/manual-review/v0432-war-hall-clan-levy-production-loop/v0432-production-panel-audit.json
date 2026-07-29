@@ -1,0 +1,14 @@
+{
+  "building": "War Hall",
+  "higher_tier_disabled": [
+    "Highland Outrider",
+    "Anvil Breaker",
+    "Clan Ballista"
+  ],
+  "production_ui": "selected completed building command card",
+  "tier_one": [
+    "Clan Levy",
+    "Stoneward Spears",
+    "Crag Archer"
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "cancel_deduction": true,
+  "cost": {
+    "stone": 60,
+    "timber": 150
+  },
+  "deductions": 1,
+  "invalid_position": {
+    "x": -100,
+    "z": -100
+  },
+  "real_path": "RTSController._try_place_building -> GameWorld.place_building",
+  "resources_after": {
+    "food": 200,
+    "gold": 180,
+    "stone": 120,
+    "timber": 150
+  },
+  "resources_before": {
+    "food": 200,
+    "gold": 180,
+    "stone": 180,
+    "timber": 300
+  },
+  "valid_position": {
+    "x": -124,
+    "z": -108
+  }
+}

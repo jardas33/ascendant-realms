@@ -1,0 +1,11 @@
+{
+  "outside_war_hall": true,
+  "selected": true,
+  "spawn": {
+    "x": -123.328895568848,
+    "y": 0,
+    "z": -100.994155883789
+  },
+  "spawned_exactly_once": true,
+  "unit_id": "barrosan_clan_levy"
+}

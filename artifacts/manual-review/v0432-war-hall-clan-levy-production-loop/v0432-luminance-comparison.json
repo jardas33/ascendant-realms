@@ -1,0 +1,182 @@
+﻿[
+    {
+        "file":  "01_V0432_INITIAL_GAMEPLAY_STATE.png",
+        "width":  1920,
+        "height":  1061,
+        "bytes":  4650087,
+        "meanLuma":  106.242,
+        "lumaVariance":  1353,
+        "nonBlack":  true,
+        "meaningfulVariance":  true
+    },
+    {
+        "file":  "02_V0432_WORKER_SELECTED.png",
+        "width":  1920,
+        "height":  1061,
+        "bytes":  4650087,
+        "meanLuma":  106.242,
+        "lumaVariance":  1353,
+        "nonBlack":  true,
+        "meaningfulVariance":  true
+    },
+    {
+        "file":  "03_V0432_WAR_HALL_BUILD_MENU.png",
+        "width":  1920,
+        "height":  1061,
+        "bytes":  4650087,
+        "meanLuma":  106.242,
+        "lumaVariance":  1353,
+        "nonBlack":  true,
+        "meaningfulVariance":  true
+    },
+    {
+        "file":  "04_V0432_WAR_HALL_INVALID_PREVIEW.png",
+        "width":  1920,
+        "height":  1061,
+        "bytes":  4401384,
+        "meanLuma":  99.2,
+        "lumaVariance":  1816,
+        "nonBlack":  true,
+        "meaningfulVariance":  true
+    },
+    {
+        "file":  "05_V0432_WAR_HALL_VALID_PREVIEW.png",
+        "width":  1920,
+        "height":  1061,
+        "bytes":  4392229,
+        "meanLuma":  99.173,
+        "lumaVariance":  1819,
+        "nonBlack":  true,
+        "meaningfulVariance":  true
+    },
+    {
+        "file":  "06_V0432_WAR_HALL_CONSTRUCTION_PROGRESS.png",
+        "width":  1920,
+        "height":  1061,
+        "bytes":  4402457,
+        "meanLuma":  99.469,
+        "lumaVariance":  1810,
+        "nonBlack":  true,
+        "meaningfulVariance":  true
+    },
+    {
+        "file":  "07_V0432_WAR_HALL_COMPLETE_SELECTED.png",
+        "width":  1920,
+        "height":  1061,
+        "bytes":  4391094,
+        "meanLuma":  99.223,
+        "lumaVariance":  1817,
+        "nonBlack":  true,
+        "meaningfulVariance":  true
+    },
+    {
+        "file":  "08_V0432_PRODUCTION_PANEL_TIER_STATES.png",
+        "width":  1920,
+        "height":  1061,
+        "bytes":  4391094,
+        "meanLuma":  99.223,
+        "lumaVariance":  1817,
+        "nonBlack":  true,
+        "meaningfulVariance":  true
+    },
+    {
+        "file":  "09_V0432_CLAN_LEVY_QUEUE_STARTED.png",
+        "width":  1920,
+        "height":  1061,
+        "bytes":  4391094,
+        "meanLuma":  99.223,
+        "lumaVariance":  1817,
+        "nonBlack":  true,
+        "meaningfulVariance":  true
+    },
+    {
+        "file":  "10_V0432_CLAN_LEVY_QUEUE_CANCELLED_REFUND.png",
+        "width":  1920,
+        "height":  1061,
+        "bytes":  4391094,
+        "meanLuma":  99.223,
+        "lumaVariance":  1817,
+        "nonBlack":  true,
+        "meaningfulVariance":  true
+    },
+    {
+        "file":  "11_V0432_CLAN_LEVY_QUEUE_RESTARTED.png",
+        "width":  1920,
+        "height":  1061,
+        "bytes":  4391094,
+        "meanLuma":  99.223,
+        "lumaVariance":  1817,
+        "nonBlack":  true,
+        "meaningfulVariance":  true
+    },
+    {
+        "file":  "12_V0432_CLAN_LEVY_TRAINING_PROGRESS.png",
+        "width":  1920,
+        "height":  1061,
+        "bytes":  4376541,
+        "meanLuma":  99.222,
+        "lumaVariance":  1821,
+        "nonBlack":  true,
+        "meaningfulVariance":  true
+    },
+    {
+        "file":  "13_V0432_CLAN_LEVY_SPAWNED.png",
+        "width":  1920,
+        "height":  1061,
+        "bytes":  4376625,
+        "meanLuma":  99.226,
+        "lumaVariance":  1821,
+        "nonBlack":  true,
+        "meaningfulVariance":  true
+    },
+    {
+        "file":  "14_V0432_CLAN_LEVY_SELECTED.png",
+        "width":  1920,
+        "height":  1061,
+        "bytes":  4376625,
+        "meanLuma":  99.226,
+        "lumaVariance":  1821,
+        "nonBlack":  true,
+        "meaningfulVariance":  true
+    },
+    {
+        "file":  "15_V0432_CLAN_LEVY_RALLY_MOVEMENT.png",
+        "width":  1920,
+        "height":  1061,
+        "bytes":  4549400,
+        "meanLuma":  103.348,
+        "lumaVariance":  1577,
+        "nonBlack":  true,
+        "meaningfulVariance":  true
+    },
+    {
+        "file":  "16_V0432_CLAN_LEVY_MANUAL_MOVEMENT_RESULT.png",
+        "width":  1920,
+        "height":  1061,
+        "bytes":  4549435,
+        "meanLuma":  103.348,
+        "lumaVariance":  1577,
+        "nonBlack":  true,
+        "meaningfulVariance":  true
+    },
+    {
+        "file":  "17_V0432_SECOND_LOOP_CLAN_LEVY_SPAWNED.png",
+        "width":  1920,
+        "height":  1061,
+        "bytes":  4390829,
+        "meanLuma":  99.242,
+        "lumaVariance":  1817,
+        "nonBlack":  true,
+        "meaningfulVariance":  true
+    },
+    {
+        "file":  "18_V0432_CLAN_CROFT_REGRESSION.png",
+        "width":  1920,
+        "height":  1061,
+        "bytes":  4542423,
+        "meanLuma":  103.229,
+        "lumaVariance":  1577,
+        "nonBlack":  true,
+        "meaningfulVariance":  true
+    }
+]

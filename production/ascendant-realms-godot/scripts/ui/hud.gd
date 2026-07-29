@@ -382,7 +382,7 @@ func _poll_top_bar() -> void:
 	if not is_instance_valid(_commander):
 		return
 	_on_resources_changed(_commander.resources)
-	_on_pop_changed(_commander.pop_used, _commander.pop_cap)
+	_on_pop_changed(_commander.pop_used + _commander.reserved_pop, _commander.pop_cap)
 	_on_tier_changed(_commander.tier)
 
 
@@ -819,7 +819,11 @@ func _build_building_card(b) -> void:
 			var label := "%s  (T%d)%s" % [udef.get("name", uid), int(udef.get("tier", 1)), _cost_string(cost)]
 			var btn := _mk_button(label, 16)
 			btn.custom_minimum_size = Vector2(0, 38)
-			btn.tooltip_text = udef.get("desc", "")
+			var tier := int(udef.get("tier", 1))
+			var affordable: bool = _commander.can_afford(cost)
+			var housed: bool = _commander.has_pop_for(udef)
+			btn.disabled = tier > _commander.tier or not affordable or not housed
+			btn.tooltip_text = "Requires Age %d" % tier if tier > _commander.tier else ("Need more housing" if not housed else ("Need " + _commander.missing_resource(cost) if not affordable else udef.get("desc", "")))
 			var cap_b = b
 			var cap_uid := String(uid)
 			btn.pressed.connect(func(): _try_queue_unit(cap_b, cap_uid))

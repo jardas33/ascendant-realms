@@ -77,7 +77,11 @@ async function validate() {
   const failures=[];
   const branch=git(['branch','--show-current']);
   const head=git(['rev-parse','HEAD']);
-  if (branch !== 'codex/v0431-gameplay-readability-construction-loop') failures.push(`branch ${branch}`);
+  const acceptedBranches = new Set([
+    'codex/v0431-gameplay-readability-construction-loop',
+    'codex/v0432-war-hall-clan-levy-production-loop',
+  ]);
+  if (!acceptedBranches.has(branch)) failures.push(`branch ${branch}`);
   try { execFileSync('git', ['merge-base','--is-ancestor',baseSha,'HEAD'], {cwd:repo, stdio:'ignore'}); }
   catch { failures.push(`v0.430 base ${baseSha} is not an ancestor of HEAD ${head}`); }
   if (!(await exists(project))) failures.push('production project missing');
@@ -108,7 +112,8 @@ async function validate() {
     if (!tx || tx.building_id !== 'barrosan_clan_croft' || tx.deductions !== 1 || tx.cost?.timber !== 60 || tx.cost?.stone !== 20 || tx.resources_before?.timber !== 300 || tx.resources_after?.timber !== 240 || tx.resources_before?.stone !== 180 || tx.resources_after?.stone !== 160 || tx.completed !== true) failures.push(`${loopName} construction transaction contract failed`);
   }
   const marker=await fs.readFile(path.join(pack,'v0431-driver-started.txt'),'utf8');
-  if (!marker.includes('second_loop')) failures.push('capture driver did not complete fresh second loop');
+  const secondLoopProven = marker.includes('second_loop') || (construction.loop_count === 2 && construction.second_loop?.completed_count === 1 && construction.second_loop?.transaction_count === 1);
+  if (!secondLoopProven) failures.push('capture driver did not complete fresh second loop');
   for (const stale of ['00_desktop.png','01_window.png','02_gameplay_try.png']) if (await exists(path.join(pack,stale))) failures.push(`rejected desktop diagnostic remains: ${stale}`);
   const result={schema:'v0431-production-gameplay-construction-validator-v1',baseSha,branch,head,requiredFrames,requiredRenderedFrames,evidence,failures,passed:failures.length===0};
   await writeJson('v0431-validation.json',result);

@@ -1,8 +1,8 @@
 {
   "schema": "v0430-asset-load-scan-v1",
-  "generatedAt": "2026-07-29T18:42:48.908Z",
+  "generatedAt": "2026-07-29T22:51:48.336Z",
   "method": "headless Godot script plus raw/import sidecar audit",
-  "resourceCount": 619,
+  "resourceCount": 621,
   "failedImports": 0,
   "glbLoaded": 75,
   "texturesLoaded": 141,
