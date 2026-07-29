@@ -1,8 +1,8 @@
 {
   "schema": "v0431-production-gameplay-construction-validator-v1",
   "baseSha": "044a14de65c4b1308a21f402d04f89b881f291a6",
-  "branch": "codex/v0431-gameplay-readability-construction-loop",
-  "head": "044a14de65c4b1308a21f402d04f89b881f291a6",
+  "branch": "codex/v0432-war-hall-clan-levy-production-loop",
+  "head": "16fcf322316a626e0e32bf834020bafdce7d0647",
   "requiredFrames": [
     "01_V0430_GAMEPLAY_BASELINE.png",
     "02_V0431_GAMEPLAY_READABILITY_AFTER.png",

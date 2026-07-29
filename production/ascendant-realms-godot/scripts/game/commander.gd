@@ -15,6 +15,7 @@ var color: Color = Color.WHITE
 var resources := {"food": 0, "timber": 0, "stone": 0, "gold": 0}
 var pop_used: int = 0
 var pop_cap: int = 0
+var reserved_pop: int = 0
 const POP_HARD_CAP := 80
 
 var tier: int = 1
@@ -86,10 +87,23 @@ func recompute_pop() -> void:
 			cap += int(b.def.get("grants_pop", 0))
 	pop_used = used
 	pop_cap = min(cap, POP_HARD_CAP)
-	emit_signal("pop_changed", pop_used, pop_cap)
+	emit_signal("pop_changed", pop_used + reserved_pop, pop_cap)
 
 func has_pop_for(def: Dictionary) -> bool:
-	return pop_used + int(def.get("pop", 1)) <= pop_cap
+	return pop_used + reserved_pop + int(def.get("pop", 1)) <= pop_cap
+
+func reserve_pop(def: Dictionary) -> bool:
+	var amount := int(def.get("pop", 1))
+	if amount < 1 or not has_pop_for(def):
+		return false
+	reserved_pop += amount
+	emit_signal("pop_changed", pop_used + reserved_pop, pop_cap)
+	return true
+
+func release_reserved_pop(def: Dictionary) -> void:
+	var amount := int(def.get("pop", 1))
+	reserved_pop = max(0, reserved_pop - amount)
+	emit_signal("pop_changed", pop_used + reserved_pop, pop_cap)
 
 func train_speed_mult() -> float:
 	return 1.0 - float(build_flags.get("train_speed", 0.0))

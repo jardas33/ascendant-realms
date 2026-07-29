@@ -27,6 +27,7 @@ var build_time := 30.0
 var queue: Array = []          # array of {id, kind:"unit"|"tech", time_left, total}
 var rally_point := Vector3.ZERO
 var _has_rally := false
+var _last_queue_frame := -1
 
 # tower
 var _tower_cd := 0.0
@@ -162,19 +163,26 @@ func can_produce(unit_id: String) -> bool:
 func queue_unit(unit_id: String) -> Dictionary:
 	if not is_built or is_dead:
 		return {"ok": false, "reason": "Not ready"}
+	if not can_produce(unit_id):
+		return {"ok": false, "reason": "Not produced here"}
+	if Engine.get_process_frames() == _last_queue_frame:
+		return {"ok": false, "reason": "Already queued"}
 	var udef := GameData.get_unit(unit_id)
 	if udef.is_empty():
 		return {"ok": false, "reason": "Unknown"}
 	# tier gate
 	if int(udef.get("tier", 1)) > commander.tier:
 		return {"ok": false, "reason": "Requires higher Age"}
-	if not commander.has_pop_for(udef):
-		return {"ok": false, "reason": "Need more housing"}
 	if not commander.can_afford(udef.get("cost", {})):
 		return {"ok": false, "reason": "Need " + commander.missing_resource(udef.get("cost", {}))}
-	commander.spend(udef.get("cost", {}))
+	if not commander.reserve_pop(udef):
+		return {"ok": false, "reason": "Need more housing"}
+	if not commander.spend(udef.get("cost", {})):
+		commander.release_reserved_pop(udef)
+		return {"ok": false, "reason": "Cannot pay cost"}
+	_last_queue_frame = Engine.get_process_frames()
 	var t: float = float(udef.get("build_time", 15)) * commander.train_speed_mult()
-	queue.append({"id": unit_id, "kind": "unit", "time_left": t, "total": t})
+	queue.append({"id": unit_id, "kind": "unit", "time_left": t, "total": t, "pop_reserved": true})
 	emit_signal("production_updated")
 	return {"ok": true}
 
@@ -198,11 +206,15 @@ func cancel_queue_item(index: int) -> void:
 		return
 	var item = queue[index]
 	if item["kind"] == "unit":
-		commander.refund(GameData.get_unit(item["id"]).get("cost", {}), 1.0)
+		var udef := GameData.get_unit(item["id"])
+		commander.refund(udef.get("cost", {}), 1.0)
+		if item.get("pop_reserved", false):
+			commander.release_reserved_pop(udef)
 	else:
 		commander.refund(GameData.get_tech(item["id"]).get("cost", {}), 1.0)
 		commander.researching.erase(item["id"])
 	queue.remove_at(index)
+	_last_queue_frame = -1
 	emit_signal("production_updated")
 
 func _process_production(delta: float) -> void:
@@ -212,7 +224,12 @@ func _process_production(delta: float) -> void:
 	item["time_left"] -= delta
 	if item["time_left"] <= 0.0:
 		if item["kind"] == "unit":
-			_spawn_unit(item["id"])
+			var spawned := _spawn_unit(item["id"])
+			var udef := GameData.get_unit(item["id"])
+			if item.get("pop_reserved", false):
+				commander.release_reserved_pop(udef)
+			if not spawned:
+				commander.refund(udef.get("cost", {}), 1.0)
 		else:
 			commander.researching.erase(item["id"])
 			commander.apply_tech(item["id"])
@@ -221,14 +238,40 @@ func _process_production(delta: float) -> void:
 	else:
 		emit_signal("production_updated")
 
-func _spawn_unit(unit_id: String) -> void:
-	if world:
-		var spawn := global_position + (rally_point - global_position).normalized() * (footprint + 1.5)
-		var u = world.spawn_unit(unit_id, team, spawn)
+func _spawn_unit(unit_id: String) -> bool:
+	if not world:
+		return false
+	var forward := (rally_point - global_position).normalized()
+	if forward.length_squared() < 0.1:
+		forward = Vector3(0, 0, 1)
+	var candidates: Array[Vector3] = []
+	for radius in [footprint + 1.5, footprint + 3.0, footprint + 4.5, footprint + 6.0]:
+		for i in range(12):
+			var angle := atan2(forward.z, forward.x) + TAU * float(i) / 12.0
+			candidates.append(global_position + Vector3(cos(angle), 0, sin(angle)) * radius)
+	for candidate in candidates:
+		if abs(candidate.x) > MapDefs.MAP_SIZE - 4.0 or abs(candidate.z) > MapDefs.MAP_SIZE - 4.0:
+			continue
+		var blocked := false
+		for b in world.all_buildings():
+			if is_instance_valid(b) and not b.is_dead and b != self and candidate.distance_to(b.global_position) < footprint + float(b.def.get("footprint", 4.0)) * 0.75:
+				blocked = true
+				break
+		if blocked:
+			continue
+		for r in world.get_tree().get_nodes_in_group("resources"):
+			if is_instance_valid(r) and candidate.distance_to(r.global_position) < footprint + 1.0:
+				blocked = true
+				break
+		if blocked:
+			continue
+		var u = world.spawn_unit(unit_id, team, candidate)
 		if u:
 			Sfx.play("ready", -6.0) if commander.is_human else null
-			if _has_rally or true:
+			if _has_rally:
 				u.command_move(rally_point)
+			return true
+	return false
 
 func set_rally(pos: Vector3) -> void:
 	rally_point = pos

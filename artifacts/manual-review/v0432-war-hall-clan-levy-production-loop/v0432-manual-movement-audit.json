@@ -1,0 +1,12 @@
+{
+  "arrived": false,
+  "movement_system": "RTSController context command",
+  "start": {
+    "x": -123.328895568848,
+    "z": -100.994155883789
+  },
+  "target": {
+    "x": -106,
+    "z": -116
+  }
+}

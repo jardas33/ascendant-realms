@@ -1,0 +1,42 @@
+{
+  "schema": "v0432-production-root-cause-audit-v1",
+  "baseSha": "16fcf322316a626e0e32bf834020bafdce7d0647",
+  "branch": "codex/v0432-war-hall-clan-levy-production-loop",
+  "components": {
+    "warHallBuildMenuEntry": "already functional",
+    "buildingPlacementPath": "already functional",
+    "warHallCompletion": "already functional",
+    "selectedBuildingHud": "already functional",
+    "productionButtonGeneration": "partially functional",
+    "buildingCanProduce": "broken: queue_unit did not enforce it",
+    "buildingQueueUnit": "partially functional",
+    "affordabilityChecks": "already functional",
+    "tierChecks": "already functional",
+    "populationChecks": "broken: queued population was not reserved",
+    "queueMutation": "partially functional",
+    "progressDisplay": "already functional",
+    "cancellation": "partially functional: refund existed, reservation release missing",
+    "unitSpawnPosition": "partially functional: fixed point without bounded collision search",
+    "rallyBehavior": "already functional",
+    "gameWorldSpawnUnit": "already functional",
+    "commanderPopulationRecomputation": "partially functional: live units only",
+    "minimapRegistration": "already functional through unit/building groups",
+    "selection": "already functional",
+    "movement": "already functional"
+  },
+  "minimalRepairPlan": [
+    "add Commander.reserved_pop with reserve/release lifecycle",
+    "enforce Building.can_produce and same-frame queue transaction guard",
+    "release reservations on cancellation, completion, failed spawn, and destruction",
+    "use bounded spawn-ring search outside building/resource footprints",
+    "disable production controls for unavailable tier/cost/population states",
+    "retain existing production, movement, selection, and HUD architecture"
+  ],
+  "forbiddenChanges": [
+    "no direct driver spawn",
+    "no timer reduction",
+    "no injected queue items",
+    "no gameplay-system rewrite",
+    "no combat or enemy behavior changes"
+  ]
+}

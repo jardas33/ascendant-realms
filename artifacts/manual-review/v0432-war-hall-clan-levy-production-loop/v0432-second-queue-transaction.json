@@ -1,0 +1,13 @@
+{
+  "queue_size_after": 0,
+  "queued": {
+    "ok": true
+  },
+  "resources": {
+    "food": 140,
+    "gold": 180,
+    "stone": 120,
+    "timber": 140
+  },
+  "spawned": true
+}
