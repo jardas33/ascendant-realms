@@ -69,4 +69,6 @@ Implementation commit: `75c7e085d932cea405b47c28d4f27e0dde5e0311` (`v0.426 restr
 
 Documentation-only confirmation commit: `8e19365334f48d37d57a6277c21bde3e086c5aa5` (`docs: record v0.426 validation and CI evidence`). Exact-SHA GitHub Actions run: `30424059032` — success for `8e19365334f48d37d57a6277c21bde3e086c5aa5` (`CI Release Matrix Dry Run`, pull-request synchronize, Fast confidence passed; optional visual/release groups skipped by event policy).
 
-The final report confirmation commit and its exact-SHA Actions result will be appended after this final evidence update. The pre-existing untracked artifact backlog is intentionally preserved and is not part of this checkpoint.
+Final report confirmation commit: `7893e710bfb0d4325391e482f4b8a89aec83e4f2` (`docs: finalize v0.426 closeout evidence`). Exact-SHA GitHub Actions run: `30424636543` — success for `7893e710bfb0d4325391e482f4b8a89aec83e4f2` (`CI Release Matrix Dry Run`, pull-request synchronize, Fast confidence passed; optional visual/release groups skipped by event policy).
+
+This final ledger append is documentation-only; no implementation or runtime files changed after the material-only candidate was validated. The pre-existing untracked artifact backlog is intentionally preserved and is not part of this checkpoint.
