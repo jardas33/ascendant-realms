@@ -1,0 +1,34 @@
+{
+  "schema": "v0431-capture-command-v3",
+  "productionScene": "scenes/main.tscn",
+  "method": "headed official Godot runtime using production Forward Plus renderer; capture driver over real GameWorld, RTSController, HUD, Unit and Building runtime nodes; no final-state injection",
+  "executable": "C:\\Users\\barro\\AppData\\Local\\AscendantRealms\\tools\\godot-4.3-stable\\Godot_v4.3-stable_win64.exe",
+  "displayDriver": "headed Windows display",
+  "renderingMethod": "Forward Plus",
+  "viewport": "1920x1080",
+  "requiredFrames": [
+    "01_V0430_GAMEPLAY_BASELINE.png",
+    "02_V0431_GAMEPLAY_READABILITY_AFTER.png",
+    "03_V0430_V0431_MATCHED_GAMEPLAY_COMPARISON.png",
+    "04_V0431_WORKER_SELECTED.png",
+    "05_V0431_WORKER_MOVEMENT_DESTINATION.png",
+    "06_V0431_CLAN_CROFT_BUILD_MENU.png",
+    "07_V0431_CLAN_CROFT_VALID_PREVIEW.png",
+    "08_V0431_CLAN_CROFT_INVALID_PREVIEW.png",
+    "09_V0431_PLACEMENT_CONFIRMED_RESOURCE_DEDUCTION.png",
+    "10_V0431_CONSTRUCTION_EARLY_PROGRESS.png",
+    "11_V0431_CONSTRUCTION_LATE_PROGRESS.png",
+    "12_V0431_CLAN_CROFT_COMPLETE.png",
+    "13_V0431_COMPLETED_CLAN_CROFT_SELECTED.png",
+    "14_V0431_REPLAY_SECOND_LOOP_COMPLETE.png",
+    "15_V0431_TITLE_PRESERVATION.png",
+    "16_V0431_SKIRMISH_PRESERVATION.png",
+    "17_V0431_CAMPAIGN_PRESERVATION.png",
+    "18_V0431_GAMEPLAY_CONSTRUCTION_CONTACT_SHEET.png"
+  ],
+  "seededReferences": [
+    "01_V0430_GAMEPLAY_BASELINE.png"
+  ],
+  "runtimeLog": "v0431-headed-runtime.log",
+  "status": "completed"
+}

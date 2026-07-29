@@ -1,0 +1,23 @@
+﻿{
+    "schema":  "v0431-gameplay-visual-root-cause-audit-v1",
+    "before":  {
+                   "ambient":  0.6,
+                   "tonemapWhite":  6,
+                   "fogDensity":  0.0016,
+                   "sunEnergy":  1.15,
+                   "glow":  true
+               },
+    "after":  {
+                  "ambient":  0.42,
+                  "tonemapWhite":  3.2,
+                  "fogDensity":  0.00045,
+                  "sunEnergy":  1,
+                  "glow":  false
+              },
+    "diagnosis":  "washed-out production gameplay came from excessive ambient/tonemap/glow/fog/sun values in GameWorld; menu/campaign/settings were not changed",
+    "evidence":  [
+                     "v0430 runtime baseline",
+                     "02_V0431_GAMEPLAY_READABILITY_AFTER.png",
+                     "v0431-environment-settings-before-after.json"
+                 ]
+}

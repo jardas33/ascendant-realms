@@ -1,0 +1,20 @@
+﻿{
+    "schema":  "v0431-black-frame-rejection-v1",
+    "inspected":  [
+                      "01_V0430_GAMEPLAY_BASELINE.png",
+                      "02_V0431_GAMEPLAY_READABILITY_AFTER.png",
+                      "07_V0431_CLAN_CROFT_VALID_PREVIEW.png",
+                      "04_V0431_WORKER_SELECTED.png",
+                      "05_V0431_WORKER_MOVEMENT_DESTINATION.png",
+                      "09_V0431_PLACEMENT_CONFIRMED_RESOURCE_DEDUCTION.png",
+                      "12_V0431_CLAN_CROFT_COMPLETE.png",
+                      "13_V0431_COMPLETED_CLAN_CROFT_SELECTED.png",
+                      "14_V0431_REPLAY_SECOND_LOOP_COMPLETE.png"
+                  ],
+    "rejected":  [
+
+                 ],
+    "rule":  "every gameplay evidence source must be non-black and have meaningful sampled luminance variance",
+    "passed":  true,
+    "note":  "The headed Godot client image is 1920 pixels wide with a 1061 pixel client viewport after the Windows frame; the capture command requests the project 1920x1080 viewport."
+}

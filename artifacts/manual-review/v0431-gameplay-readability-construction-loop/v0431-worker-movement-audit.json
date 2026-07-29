@@ -1,0 +1,13 @@
+{
+  "command": "Unit.command_move",
+  "movement_system": "production Unit state machine",
+  "start": {
+    "x": -117.431861877441,
+    "z": -116.786331176758
+  },
+  "target": {
+    "x": -116,
+    "z": -116
+  },
+  "worker_id": "barrosan_worker"
+}
