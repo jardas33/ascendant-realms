@@ -95,6 +95,14 @@ Local validation completed before commit:
 
 The retained checks validate the canonical project and audit tooling; they do not substitute for the fail-closed Tesana runtime evidence.
 
+## Publish and exact-SHA CI closeout
+
+- Implementation commit: `e655e5aee0aa4a4da628ee7fed22e9360fe0a2c6` (`v0.429 audit Tesana disposable runtime provenance`).
+- Draft PR: [#3](https://github.com/jardas33/ascendant-realms/pull/3), targeting `codex/v0428-tesana-intake-audit` from `codex/v0429-tesana-disposable-runtime-provenance`.
+- Exact-SHA GitHub Actions: run `30470104892` / workflow run `633`, `CI Release Matrix Dry Run`, completed with `success` for `e655e5aee0aa4a4da628ee7fed22e9360fe0a2c6`.
+- The PR remains draft and open; v0.428 PR #2 was not modified.
+- The working tree has no tracked modifications. The pre-existing untracked backlog remains intentionally preserved and is not part of v0.429.
+
 ## Final state requirement
 
 Audit-owned processes were stopped after capture and the disposable Run A directory was removed after evidence extraction. The intentional pre-existing untracked backlog was preserved. Only explicit v0.429 files are to be committed. The final closeout must record the implementation commit, draft PR targeting `codex/v0428-tesana-intake-audit`, exact-SHA GitHub Actions success, clean tracked working tree, and unchanged pre-existing untracked backlog.
