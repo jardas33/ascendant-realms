@@ -1,0 +1,25 @@
+﻿{
+    "schema":  "v0431-headed-capture-audit-v1",
+    "previousFailedCommand":  "Godot --headless --path production/ascendant-realms-godot --quit-after 120",
+    "previousDisplayDriver":  "headless",
+    "previousRenderingMethod":  "dummy",
+    "reasonViewportUnavailable":  "dummy renderer produced invalid/empty viewport textures",
+    "newCommand":  "Godot_v4.3-stable_win64.exe --path production/ascendant-realms-godot --resolution 1920x1080 --verbose --log-file v0431-headed-runtime.log",
+    "executable":  "C:\\Users\\barro\\AppData\\Local\\AscendantRealms\\tools\\godot-4.3-stable\\Godot_v4.3-stable_win64.exe",
+    "executableSha256":  "B554BA80FB2AD8F1817BC21242AC8ADBB9E41F806C49AD5CC73603DB71FEE32F",
+    "displayDriver":  "headed Windows display",
+    "renderingMethod":  "Forward Plus",
+    "viewport":  "1920x1080",
+    "screenshotMethod":  "Godot viewport texture after scene readiness and RenderingServer.frame_post_draw",
+    "retryPolicy":  "bounded rendered-frame synchronization",
+    "retryCount":  0,
+    "meshDiagnosticClassification":  "HEADLESS_RENDERER_DIAGNOSTIC_NOT_REPRODUCED_IN_HEADED_CAPTURE",
+    "processExitStatus":  0,
+    "cleanup":  "Godot capture-owned process exited; no persistent process retained",
+    "firstRenderedFrame":  "02_V0431_GAMEPLAY_READABILITY_AFTER.png",
+    "requiredGate":  [
+                         "02_V0431_GAMEPLAY_READABILITY_AFTER.png",
+                         "04_V0431_WORKER_SELECTED.png",
+                         "07_V0431_CLAN_CROFT_VALID_PREVIEW.png"
+                     ]
+}

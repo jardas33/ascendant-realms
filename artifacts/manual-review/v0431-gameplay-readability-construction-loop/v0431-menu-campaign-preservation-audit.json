@@ -1,0 +1,9 @@
+﻿{
+    "schema":  "v0431-menu-campaign-preservation-audit-v1",
+    "title":  "15_V0431_TITLE_PRESERVATION.png",
+    "skirmish":  "16_V0431_SKIRMISH_PRESERVATION.png",
+    "campaign":  "17_V0431_CAMPAIGN_PRESERVATION.png",
+    "sourceCheckpoint":  "v0430 real production captures",
+    "trueDefaultUnchanged":  true,
+    "productionGameplayOnlyReadabilityChange":  true
+}

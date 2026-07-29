@@ -1,0 +1,92 @@
+﻿[
+    {
+        "file":  "01_V0430_GAMEPLAY_BASELINE.png",
+        "width":  1920,
+        "height":  1062,
+        "bytes":  505961,
+        "meanLuma":  121.999,
+        "lumaVariance":  1059,
+        "nonBlack":  true,
+        "meaningfulVariance":  true
+    },
+    {
+        "file":  "02_V0431_GAMEPLAY_READABILITY_AFTER.png",
+        "width":  1920,
+        "height":  1061,
+        "bytes":  4650082,
+        "meanLuma":  106.242,
+        "lumaVariance":  1353,
+        "nonBlack":  true,
+        "meaningfulVariance":  true
+    },
+    {
+        "file":  "07_V0431_CLAN_CROFT_VALID_PREVIEW.png",
+        "width":  1920,
+        "height":  1061,
+        "bytes":  4419666,
+        "meanLuma":  99.523,
+        "lumaVariance":  1781,
+        "nonBlack":  true,
+        "meaningfulVariance":  true
+    },
+    {
+        "file":  "04_V0431_WORKER_SELECTED.png",
+        "width":  1920,
+        "height":  1061,
+        "bytes":  4405906,
+        "meanLuma":  99.581,
+        "lumaVariance":  1810,
+        "nonBlack":  true,
+        "meaningfulVariance":  true
+    },
+    {
+        "file":  "05_V0431_WORKER_MOVEMENT_DESTINATION.png",
+        "width":  1920,
+        "height":  1061,
+        "bytes":  4419672,
+        "meanLuma":  99.529,
+        "lumaVariance":  1782,
+        "nonBlack":  true,
+        "meaningfulVariance":  true
+    },
+    {
+        "file":  "09_V0431_PLACEMENT_CONFIRMED_RESOURCE_DEDUCTION.png",
+        "width":  1920,
+        "height":  1061,
+        "bytes":  4423821,
+        "meanLuma":  99.47,
+        "lumaVariance":  1775,
+        "nonBlack":  true,
+        "meaningfulVariance":  true
+    },
+    {
+        "file":  "12_V0431_CLAN_CROFT_COMPLETE.png",
+        "width":  1920,
+        "height":  1061,
+        "bytes":  4419402,
+        "meanLuma":  99.493,
+        "lumaVariance":  1773,
+        "nonBlack":  true,
+        "meaningfulVariance":  true
+    },
+    {
+        "file":  "13_V0431_COMPLETED_CLAN_CROFT_SELECTED.png",
+        "width":  1920,
+        "height":  1061,
+        "bytes":  4419402,
+        "meanLuma":  99.493,
+        "lumaVariance":  1773,
+        "nonBlack":  true,
+        "meaningfulVariance":  true
+    },
+    {
+        "file":  "14_V0431_REPLAY_SECOND_LOOP_COMPLETE.png",
+        "width":  1920,
+        "height":  1061,
+        "bytes":  4419596,
+        "meanLuma":  99.503,
+        "lumaVariance":  1772,
+        "nonBlack":  true,
+        "meaningfulVariance":  true
+    }
+]

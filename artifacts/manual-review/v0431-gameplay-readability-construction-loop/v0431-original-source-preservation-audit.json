@@ -1,0 +1,9 @@
+﻿{
+    "schema":  "v0431-original-source-preservation-audit-v1",
+    "baseCommit":  "044a14de65c4b1308a21f402d04f89b881f291a6",
+    "originalSource":  "D:/Code for projects/WB game like/WB_tesana",
+    "productionCopy":  "production/ascendant-realms-godot",
+    "originalSourceModified":  false,
+    "acceptedProductionRebasePreserved":  true,
+    "note":  "v0.431 changes are limited to production runtime readability, construction audit hooks, headed capture tooling and evidence."
+}

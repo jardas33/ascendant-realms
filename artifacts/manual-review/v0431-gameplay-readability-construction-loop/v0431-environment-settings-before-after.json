@@ -1,0 +1,17 @@
+{
+  "after": {
+    "ambient_energy": 0.42,
+    "fog_density": 0.00045,
+    "glow_enabled": false,
+    "sun_energy": 1,
+    "tonemap_white": 3.2
+  },
+  "before": {
+    "ambient_energy": 0.6,
+    "fog_density": 0.0016,
+    "glow_enabled": true,
+    "sun_energy": 1.15,
+    "tonemap_white": 6
+  },
+  "scope": "production GameWorld only; menu/campaign environments unchanged"
+}

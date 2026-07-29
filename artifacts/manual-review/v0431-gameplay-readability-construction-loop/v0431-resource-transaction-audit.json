@@ -1,0 +1,103 @@
+{
+  "first_loop": {
+    "active_transaction": "",
+    "completed_count": 1,
+    "construction_events": [
+      {
+        "building_id": "barrosan_clan_croft",
+        "event": "completed",
+        "hp": 550,
+        "id": "v0431-clan-croft-001",
+        "is_built": true,
+        "position": {
+          "x": -115.32307434082,
+          "y": 0,
+          "z": -115.498168945313
+        }
+      }
+    ],
+    "transaction_count": 1,
+    "transactions": [
+      {
+        "building_id": "barrosan_clan_croft",
+        "completed": true,
+        "cost": {
+          "stone": 20,
+          "timber": 60
+        },
+        "deductions": 1,
+        "id": "v0431-clan-croft-001",
+        "position": {
+          "x": -115.32307434082,
+          "y": 0,
+          "z": -115.498168945313
+        },
+        "resources_after": {
+          "food": 200,
+          "gold": 180,
+          "stone": 160,
+          "timber": 240
+        },
+        "resources_before": {
+          "food": 200,
+          "gold": 180,
+          "stone": 180,
+          "timber": 300
+        },
+        "status": "completed",
+        "team": 0
+      }
+    ]
+  },
+  "loop_count": 2,
+  "second_loop": {
+    "active_transaction": "",
+    "completed_count": 1,
+    "construction_events": [
+      {
+        "building_id": "barrosan_clan_croft",
+        "event": "completed",
+        "hp": 550,
+        "id": "v0431-clan-croft-001",
+        "is_built": true,
+        "position": {
+          "x": -115.32307434082,
+          "y": 0,
+          "z": -115.498168945313
+        }
+      }
+    ],
+    "transaction_count": 1,
+    "transactions": [
+      {
+        "building_id": "barrosan_clan_croft",
+        "completed": true,
+        "cost": {
+          "stone": 20,
+          "timber": 60
+        },
+        "deductions": 1,
+        "id": "v0431-clan-croft-001",
+        "position": {
+          "x": -115.32307434082,
+          "y": 0,
+          "z": -115.498168945313
+        },
+        "resources_after": {
+          "food": 200,
+          "gold": 180,
+          "stone": 160,
+          "timber": 240
+        },
+        "resources_before": {
+          "food": 200,
+          "gold": 180,
+          "stone": 180,
+          "timber": 300
+        },
+        "status": "completed",
+        "team": 0
+      }
+    ]
+  }
+}

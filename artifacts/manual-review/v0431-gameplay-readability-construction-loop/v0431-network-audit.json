@@ -1,0 +1,9 @@
+﻿{
+    "schema":  "v0431-network-audit-v1",
+    "externalNetworkDependency":  false,
+    "localServicesStarted":  [
+
+                             ],
+    "productionRuntimeNetworkMutation":  false,
+    "source":  "headed local Godot capture"
+}

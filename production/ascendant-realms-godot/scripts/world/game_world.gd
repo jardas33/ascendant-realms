@@ -32,6 +32,13 @@ var _combat_intensity := 0.0
 var match_time := 0.0
 var kills_by_player := 0
 
+# v0.431 runtime evidence: this is an audit trail around the existing
+# construction transaction, not a second economy or construction system.
+var build_transactions: Array = []
+var construction_events: Array = []
+var _active_build_transaction := ""
+var _build_transaction_seq := 0
+
 # combat spatial helpers (rebuilt cheaply)
 var _unit_cache_timer := 0.0
 
@@ -70,16 +77,19 @@ func _setup_environment() -> void:
 	else:
 		env.background_mode = Environment.BG_COLOR
 		env.background_color = Color(0.5, 0.6, 0.7)
-	env.ambient_light_energy = float(_theme.get("ambient_energy", 0.6))
+	# The Tesana export's sky fill, ACES white point, glow and fog compounded
+	# into a pale gameplay image. Keep this correction local to the production
+	# battle world; title, campaign and settings environments are unchanged.
+	env.ambient_light_energy = float(_theme.get("ambient_energy", 0.42))
 	env.tonemap_mode = Environment.TONE_MAPPER_ACES
-	env.tonemap_white = 6.0
-	env.glow_enabled = true
-	env.glow_intensity = 0.35
-	env.glow_bloom = 0.15
+	env.tonemap_white = 3.2
+	env.glow_enabled = false
+	env.glow_intensity = 0.0
+	env.glow_bloom = 0.0
 	env.fog_enabled = true
 	env.fog_light_color = _theme.get("fog_color", Color(0.72, 0.78, 0.85))
-	env.fog_density = float(_theme.get("fog_density", 0.0016))
-	env.fog_sky_affect = 0.25
+	env.fog_density = float(_theme.get("fog_density", 0.00045))
+	env.fog_sky_affect = 0.12
 	var we := WorldEnvironment.new()
 	we.name = "WorldEnvironment"
 	we.environment = env
@@ -88,8 +98,8 @@ func _setup_environment() -> void:
 	var sun := DirectionalLight3D.new()
 	sun.name = "Sun"
 	sun.rotation_degrees = Vector3(-52, 40, 0)
-	sun.light_energy = float(_theme.get("sun_energy", 1.15))
-	sun.light_color = _theme.get("sun_color", Color(1.0, 0.96, 0.88))
+	sun.light_energy = float(_theme.get("sun_energy", 1.0))
+	sun.light_color = _theme.get("sun_color", Color(0.96, 0.94, 0.88))
 	sun.shadow_enabled = true
 	sun.directional_shadow_max_distance = 200.0
 	sun.directional_shadow_split_1 = 0.08
@@ -384,11 +394,41 @@ func place_building(building_id: String, team: int, pos: Vector3):
 	if bdef.is_empty():
 		return null
 	bdef["id"] = building_id
+	if team < 0 or team >= commanders.size():
+		return null
 	var cmd = commanders[team]
+	var is_v0431_target := building_id == "barrosan_clan_croft" and team == 0
+	# One live transaction per confirmed placement. Preview and invalid clicks
+	# never reach this function; the guard also makes repeated input idempotent.
+	if is_v0431_target and _active_build_transaction != "":
+		return null
 	if not cmd.can_afford(bdef.get("cost", {})):
 		return null
-	cmd.spend(bdef.get("cost", {}))
+	if not is_v0431_target:
+		if not cmd.spend(bdef.get("cost", {}).duplicate()):
+			return null
+		return _create_building(bdef, team, pos, false)
+	var before: Dictionary = cmd.resources.duplicate()
+	var cost: Dictionary = bdef.get("cost", {}).duplicate()
+	if not cmd.spend(cost):
+		return null
+	_build_transaction_seq += 1
+	var tx_id := "v0431-clan-croft-%03d" % _build_transaction_seq
+	_active_build_transaction = tx_id
+	var after: Dictionary = cmd.resources.duplicate()
+	var audit := {"id": tx_id, "building_id": building_id, "team": team,
+		"position": {"x": pos.x, "y": pos.y, "z": pos.z},
+		"cost": cost, "resources_before": before, "resources_after": after,
+		"deductions": 1, "status": "placed", "completed": false}
+	build_transactions.append(audit)
 	var b = _create_building(bdef, team, pos, false)
+	if b == null:
+		_active_build_transaction = ""
+		cmd.refund(cost)
+		build_transactions.pop_back()
+		return null
+	b.set_meta("v0431_transaction_id", tx_id)
+	b.set_meta("v0431_cost", cost)
 	return b
 
 func spawn_projectile(from: Vector3, target, dmg: float, dtype: String, team: int, kind: String, splash: float, source) -> void:
@@ -673,7 +713,29 @@ func _on_building_died(building) -> void:
 		commanders[building.team].recompute_pop()
 
 func on_building_completed(building) -> void:
-	pass
+	var tx_id := String(building.get_meta("v0431_transaction_id", ""))
+	if tx_id == "":
+		return
+	for tx in build_transactions:
+		if tx.get("id", "") == tx_id:
+			if tx.get("completed", false):
+				return
+			tx["completed"] = true
+			tx["status"] = "completed"
+			construction_events.append({"id": tx_id, "event": "completed",
+				"building_id": building.def.get("id", ""),
+				"is_built": building.is_built, "hp": building.hp,
+				"position": {"x": building.global_position.x,
+					"y": building.global_position.y, "z": building.global_position.z}})
+			_active_build_transaction = ""
+			return
+
+func get_v0431_construction_audit() -> Dictionary:
+	return {"transactions": build_transactions.duplicate(true),
+		"construction_events": construction_events.duplicate(true),
+		"active_transaction": _active_build_transaction,
+		"transaction_count": build_transactions.size(),
+		"completed_count": construction_events.size()}
 
 func on_building_destroyed(building) -> void:
 	if building.team == player_team:

@@ -1,0 +1,12 @@
+{
+  "invalid_deducts": 0,
+  "invalid_position": {
+    "x": -100,
+    "z": -100
+  },
+  "valid_position": {
+    "x": -116,
+    "z": -116
+  },
+  "valid_preview_uses": "barrosan_clan_croft model"
+}

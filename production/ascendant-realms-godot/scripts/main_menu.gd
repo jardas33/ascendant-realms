@@ -14,6 +14,11 @@ func _ready() -> void:
 		theme = load("res://assets/ui/theme.tres") as Theme
 	AudioManager.play_music_path(Sfx.music_key("menu"), -8.0, true)
 	_build()
+	if OS.get_environment("ASCENDANT_V0431_CAPTURE") == "1":
+		call_deferred("_start_v0431_capture_scene")
+
+func _start_v0431_capture_scene() -> void:
+	LoadingScreen.preload_and_change_scene("res://scenes/game_world.tscn", 0.1)
 
 func _build() -> void:
 	var bg := TextureRect.new()

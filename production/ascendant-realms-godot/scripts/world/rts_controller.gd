@@ -509,6 +509,10 @@ func _update_build_ghost() -> void:
 
 func _is_build_spot_valid(pos: Vector3) -> bool:
 	var bdef := GameData.get_building(_build_id)
+	if bdef.is_empty() or not world or not is_instance_valid(world.player_commander):
+		return false
+	if not world.player_commander.can_afford(bdef.get("cost", {})):
+		return false
 	var fp := float(bdef.get("footprint", 4.0))
 	var lim := MapDefs.MAP_SIZE - 6.0
 	if abs(pos.x) > lim or abs(pos.z) > lim:

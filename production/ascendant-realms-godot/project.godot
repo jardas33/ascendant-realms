@@ -27,6 +27,7 @@ AudioManager="*res://scripts/autoloads/audio_manager.gd"
 Sfx="*res://scripts/autoloads/sfx.gd"
 ProfileManager="*res://scripts/autoloads/profile_manager.gd"
 Match="*res://scripts/autoloads/match_config.gd"
+V0431Capture="*res://tests/v0431_capture.gd"
 
 [debug]
 

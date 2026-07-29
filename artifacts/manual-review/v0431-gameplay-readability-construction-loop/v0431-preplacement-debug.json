@@ -1,0 +1,46 @@
+{
+  "build_def": {
+    "armor": 2,
+    "armor_class": "medium",
+    "build_time": 18,
+    "cost": {
+      "stone": 20,
+      "timber": 60
+    },
+    "desc": "Highland homestead. Raises your population capacity.",
+    "footprint": 3.6,
+    "grants_pop": 8,
+    "hp": 550,
+    "kind": "house",
+    "model": "res://assets/environment/buildings/barrosan_clan_croft.glb",
+    "name": "Clan Croft",
+    "produces": [],
+    "race": "barrosan"
+  },
+  "build_id": "barrosan_clan_croft",
+  "direct_target_def": {
+    "armor": 2,
+    "armor_class": "medium",
+    "build_time": 18,
+    "cost": {
+      "stone": 20,
+      "timber": 60
+    },
+    "desc": "Highland homestead. Raises your population capacity.",
+    "footprint": 3.6,
+    "grants_pop": 8,
+    "hp": 550,
+    "kind": "house",
+    "model": "res://assets/environment/buildings/barrosan_clan_croft.glb",
+    "name": "Clan Croft",
+    "produces": [],
+    "race": "barrosan"
+  },
+  "player_commander_valid": true,
+  "player_resources": {
+    "food": 200,
+    "gold": 180,
+    "stone": 180,
+    "timber": 300
+  }
+}
