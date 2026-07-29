@@ -1,0 +1,16 @@
+{
+  "schema": "v0.429-v0.430-decision",
+  "exactlyOneOutcome": "C_TESANA_DONOR_REJECTED",
+  "outcome": {
+    "code": "C",
+    "name": "TESANA_DONOR_REJECTED",
+    "reason": "Authentic local runtime only proved the title screen; downstream runtime breadth is unverified and asset provenance remains uncleared."
+  },
+  "proposedV0430": {
+    "exactTitle": "v0.430 canonical Barrosan vertical-slice continuation without Tesana donor integration",
+    "boundedScope": "Use accepted canonical runtime and documentary-cleared authored assets only; no further Tesana audit and no Tesana asset integration."
+  },
+  "integrationOccurred": false,
+  "acceptedRuntimeChanged": false,
+  "sourceChanged": false
+}

@@ -1,0 +1,26 @@
+{
+  "schema": "v0.429-content-runtime-verification",
+  "generatedUtc": "2026-07-29T16:04:11.723Z",
+  "staticCounts": {
+    "scenes": 10,
+    "scripts": 40,
+    "models": 75,
+    "textures": 141,
+    "audio": 14,
+    "fonts": 1,
+    "addons": 2
+  },
+  "runtimeVerified": {
+    "title": "PASS",
+    "skirmish": "BLOCKED",
+    "campaign": "BLOCKED",
+    "gameplay": "NOT_REACHED",
+    "workerBuild": "NOT_REACHED",
+    "movement": "NOT_REACHED",
+    "construction": "NOT_REACHED",
+    "production": "NOT_REACHED",
+    "aiCombat": "NOT_REACHED",
+    "saveLoad": "NOT_REACHED"
+  },
+  "status": "PARTIAL_RUNTIME_EVIDENCE_FAIL_CLOSED"
+}

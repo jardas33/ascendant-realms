@@ -1,0 +1,6 @@
+{
+  "schema": "v0.429-service-isolated-copy-diff",
+  "status": "NOT_USED",
+  "reason": "Run A was not blocked specifically by the Tesana editor-service addon; only missing first-import caches were observed.",
+  "changedFiles": []
+}

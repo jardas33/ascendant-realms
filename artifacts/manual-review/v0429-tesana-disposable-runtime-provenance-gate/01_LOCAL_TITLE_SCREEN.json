@@ -1,0 +1,13 @@
+{
+  "png": "01_LOCAL_TITLE_SCREEN.png",
+  "metadata": "01_LOCAL_TITLE_SCREEN.json",
+  "realLocalRuntime": true,
+  "run": "A",
+  "timestampUtc": "2026-07-29T16:04:04.174Z",
+  "viewport": "1920x1080",
+  "scene": "res://scenes/main.tscn",
+  "flow": "title boot",
+  "status": "PASS",
+  "input": "headed Godot launch; title menu observed",
+  "logRange": "runA.stdout.log/runA.stderr.log"
+}

@@ -1,0 +1,35 @@
+{
+  "schema": "v0.429-capture-index",
+  "realCaptureCount": 1,
+  "captures": [
+    {
+      "png": "01_LOCAL_TITLE_SCREEN.png",
+      "metadata": "01_LOCAL_TITLE_SCREEN.json",
+      "realLocalRuntime": true,
+      "run": "A",
+      "timestampUtc": "2026-07-29T16:04:04.174Z",
+      "viewport": "1920x1080",
+      "scene": "res://scenes/main.tscn",
+      "flow": "title boot",
+      "status": "PASS",
+      "input": "headed Godot launch; title menu observed",
+      "logRange": "runA.stdout.log/runA.stderr.log"
+    }
+  ],
+  "unavailable": [
+    "02_LOCAL_SKIRMISH_SETUP.png",
+    "03_LOCAL_CAMPAIGN_MAP.png",
+    "04_LOCAL_GAMEPLAY_INITIAL_STATE.png",
+    "05_LOCAL_WORKER_SELECTED_BUILD_MENU.png",
+    "06_LOCAL_WORKER_MOVEMENT_RESULT.png",
+    "07_LOCAL_BUILD_PLACEMENT_PREVIEW.png",
+    "08_LOCAL_BUILDING_PLACED_OR_FAILURE.png",
+    "09_LOCAL_UNIT_PRODUCTION_OR_FAILURE.png",
+    "10_LOCAL_AI_COMBAT_OR_FAILURE.png",
+    "11_LOCAL_SAVE_LOAD_OR_FAILURE.png",
+    "12_LOCAL_RUNTIME_ERROR_EVIDENCE.png",
+    "13_LOCAL_ASSET_VARIETY_CONTACT_SHEET.png",
+    "14_LOCAL_RUNTIME_FLOW_CONTACT_SHEET.png"
+  ],
+  "unavailableReason": "Authentic Run A did not progress beyond title; no fabricated or static-source substitutes admitted."
+}

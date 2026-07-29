@@ -1,0 +1,95 @@
+{
+  "schema": "v0.429-runtime-flow-matrix",
+  "runA": [
+    {
+      "flow": "title boot",
+      "status": "PASS",
+      "run": "A",
+      "reproduction": "headed 1920x1080, real menu input only",
+      "note": "Run A headed window displayed the local title menu; no hosted preview used."
+    },
+    {
+      "flow": "skirmish setup",
+      "status": "BLOCKED",
+      "run": "A",
+      "reproduction": "headed 1920x1080, real menu input only",
+      "note": "Real click on Skirmish did not transition; Run A logged missing imported UI resources."
+    },
+    {
+      "flow": "campaign map",
+      "status": "BLOCKED",
+      "run": "A",
+      "reproduction": "headed 1920x1080, real menu input only",
+      "note": "Not reached after authentic title navigation remained blocked by missing imported resources."
+    },
+    {
+      "flow": "gameplay boot",
+      "status": "NOT_PRESENT",
+      "run": "A",
+      "reproduction": "headed 1920x1080, real menu input only",
+      "note": "Not reached; no fabricated state."
+    },
+    {
+      "flow": "worker selection/build menu",
+      "status": "NOT_PRESENT",
+      "run": "A",
+      "reproduction": "headed 1920x1080, real menu input only",
+      "note": "Not reached; no fabricated state."
+    },
+    {
+      "flow": "movement",
+      "status": "NOT_PRESENT",
+      "run": "A",
+      "reproduction": "headed 1920x1080, real menu input only",
+      "note": "Not reached; no input/result claimed."
+    },
+    {
+      "flow": "build placement",
+      "status": "NOT_PRESENT",
+      "run": "A",
+      "reproduction": "headed 1920x1080, real menu input only",
+      "note": "Not reached; no input/result claimed."
+    },
+    {
+      "flow": "build completion",
+      "status": "NOT_PRESENT",
+      "run": "A",
+      "reproduction": "headed 1920x1080, real menu input only",
+      "note": "Not reached; no input/result claimed."
+    },
+    {
+      "flow": "unit production",
+      "status": "NOT_PRESENT",
+      "run": "A",
+      "reproduction": "headed 1920x1080, real menu input only",
+      "note": "Not reached; no input/result claimed."
+    },
+    {
+      "flow": "AI/combat",
+      "status": "NOT_PRESENT",
+      "run": "A",
+      "reproduction": "headed 1920x1080, real menu input only",
+      "note": "Not reached; no input/result claimed."
+    },
+    {
+      "flow": "save/load",
+      "status": "NOT_PRESENT",
+      "run": "A",
+      "reproduction": "headed 1920x1080, real menu input only",
+      "note": "Not reached; no input/result claimed."
+    },
+    {
+      "flow": "clean exit",
+      "status": "PASS",
+      "run": "A",
+      "reproduction": "headed 1920x1080, real menu input only",
+      "note": "Audit-owned Godot process was terminated after evidence capture; source was never executed."
+    }
+  ],
+  "runB": "NOT_USED",
+  "counts": {
+    "PASS": 2,
+    "BLOCKED": 2,
+    "NOT_PRESENT": 8
+  }
+}
