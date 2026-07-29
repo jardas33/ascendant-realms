@@ -74,7 +74,7 @@ No enemy combat, attacks, damage, death, projectiles, AI, gathering, mines, tech
 
 ## Validation evidence
 
-The dedicated v0.432 validator distinguishes `baseSha`, `captureSourceSha`, and `finalCommitSha`, verifies the authoritative definitions, exact transactions, reservation lifecycle, spawn/selection/movement traces, required PNGs, and black-frame/luminance evidence. It passed with `baseSha=16fcf322316a626e0e32bf834020bafdce7d0647`, `captureSourceSha=16fcf322316a626e0e32bf834020bafdce7d0647`, and `finalCommitSha=a115e84b5b38875d60704944de9ab760b0a0601f`.
+The dedicated v0.432 validator distinguishes `baseSha`, `captureSourceSha`, and `finalCommitSha`, verifies the authoritative definitions, exact transactions, reservation lifecycle, spawn/selection/movement traces, required PNGs, and black-frame/luminance evidence. It passed with `baseSha=16fcf322316a626e0e32bf834020bafdce7d0647`, `captureSourceSha=16fcf322316a626e0e32bf834020bafdce7d0647`, and implementation `finalCommitSha=dead54729a7a63c69b0166301ef842d38e839bf8`.
 
 The retained v0.431 validator passed on the stacked branch after two evidence-only compatibility repairs: it accepts the v0.432 descendant branch, and it accepts the authoritative structured two-loop audit when the older marker text is stale. No v0.431 runtime code or gameplay semantics changed.
 
@@ -82,8 +82,9 @@ The full local ladder passed: `npm run godot:import:production`, `npm run godot:
 
 ## CI and final state
 
-- Commit: `a115e84b5b38875d60704944de9ab760b0a0601f`
+- Implementation/report commit: `dead54729a7a63c69b0166301ef842d38e839bf8`
+- Final documentation correction is intentionally isolated and is validated by its own exact-SHA Actions run in the closeout handoff.
 - Stacked draft PR: [#6](https://github.com/jardas33/ascendant-realms/pull/6), targeting `codex/v0431-gameplay-readability-construction-loop`
-- GitHub Actions: run `30498210996` (`CI Release Matrix Dry Run`) completed `success` for the exact commit above.
+- GitHub Actions: run `30498815753` (`CI Release Matrix Dry Run`) completed `success` for the exact implementation/report commit above.
 - Branch: `codex/v0432-war-hall-clan-levy-production-loop`
 - Historical untracked backlog in the workspace remains preserved and unstaged.
