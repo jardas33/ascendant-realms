@@ -1,0 +1,969 @@
+{
+  "schema": "v0.428-reference-integrity-audit",
+  "generatedUtc": "2026-07-29T15:07:27.838Z",
+  "referenceCount": 327,
+  "missingReferences": [
+    {
+      "from": "addons/tesana_world_editor/scene_export.gd",
+      "reference": "res://assets/foo.png`."
+    },
+    {
+      "from": "addons/tesana_world_editor/scene_export.gd",
+      "reference": "res://.../zombie.glb::ArrayMesh_xxx`."
+    },
+    {
+      "from": "addons/tesana_world_editor/scene_export.gd",
+      "reference": "res://assets/foo.png"
+    },
+    {
+      "from": "scripts/game/building_defs.gd",
+      "reference": "res://assets/environment/buildings/%s.glb"
+    },
+    {
+      "from": "scripts/game/unit_defs.gd",
+      "reference": "res://assets/characters/%s/%s.glb"
+    },
+    {
+      "from": "scripts/ui/hero_creation.gd",
+      "reference": "res://assets/characters/%s/%s.glb"
+    },
+    {
+      "from": "scripts/units/unit.gd",
+      "reference": "res://assets/characters/%s/%s_animations.tres"
+    }
+  ],
+  "caseMismatches": [],
+  "externalUrls": [
+    {
+      "from": "addons/tesana_world_editor/scene_export.gd",
+      "url": "http://127.0.0.1:5181/assets/foo.png`"
+    },
+    {
+      "from": "README_EXPORT.md",
+      "url": "https://godotengine.org/download>."
+    },
+    {
+      "from": "README_EXPORT.md",
+      "url": "https://tesana.ai/terms>"
+    },
+    {
+      "from": "README_EXPORT.md",
+      "url": "https://tesana.ai/help>."
+    },
+    {
+      "from": "README_EXPORT.md",
+      "url": "https://tesana.ai/help>"
+    },
+    {
+      "from": "README_EXPORT.md",
+      "url": "https://discord.gg/tesana>"
+    }
+  ],
+  "absolutePaths": [
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/characters/lioraen_hero_warden/lioraen_hero_warden.glb"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/characters/lioraen_hero_warden/lioraen_hero_warden_animations.tres"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/characters/lioraen_hero_warden/lioraen_hero_warden_animations.tres"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/characters/lioraen_hero_warden/lioraen_hero_warden_animations.tres"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/characters/lioraen_hero_warden/lioraen_hero_warden_animations.tres"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/characters/lioraen_hero_warden/lioraen_hero_warden_animations.tres"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/characters/lioraen_hero_warden/lioraen_hero_warden_animations.tres"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/characters/barrosan_hero_thane/barrosan_hero_thane.glb"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/characters/barrosan_hero_thane/barrosan_hero_thane_animations.tres"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/characters/barrosan_hero_thane/barrosan_hero_thane_animations.tres"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/characters/barrosan_hero_thane/barrosan_hero_thane_animations.tres"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/characters/barrosan_hero_thane/barrosan_hero_thane_animations.tres"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/characters/barrosan_hero_thane/barrosan_hero_thane_animations.tres"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/characters/barrosan_hero_thane/barrosan_hero_thane_animations.tres"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/characters/vorthak_hero_binder/vorthak_hero_binder.glb"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/characters/vorthak_hero_binder/vorthak_hero_binder_animations.tres"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/characters/vorthak_hero_binder/vorthak_hero_binder_animations.tres"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/characters/vorthak_hero_binder/vorthak_hero_binder_animations.tres"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/characters/vorthak_hero_binder/vorthak_hero_binder_animations.tres"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/characters/vorthak_hero_binder/vorthak_hero_binder_animations.tres"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/characters/barrosan_spear_guard/barrosan_spear_guard.glb"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/characters/barrosan_spear_guard/barrosan_spear_guard_animations.tres"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/characters/barrosan_spear_guard/barrosan_spear_guard_animations.tres"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/characters/barrosan_spear_guard/barrosan_spear_guard_animations.tres"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/characters/barrosan_spear_guard/barrosan_spear_guard_animations.tres"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/characters/barrosan_highlander_worker/barrosan_highlander_worker.glb"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/characters/barrosan_highlander_worker/barrosan_highlander_worker_animations.tres"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/characters/barrosan_highlander_worker/barrosan_highlander_worker_animations.tres"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/characters/barrosan_highlander_worker/barrosan_highlander_worker_animations.tres"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/characters/barrosan_highlander_worker/barrosan_highlander_worker_animations.tres"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/characters/vorthak_ash_thrall/vorthak_ash_thrall.glb"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/characters/vorthak_ash_thrall/vorthak_ash_thrall_animations.tres"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/characters/vorthak_ash_thrall/vorthak_ash_thrall_animations.tres"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/characters/vorthak_ash_thrall/vorthak_ash_thrall_animations.tres"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/characters/vorthak_ash_thrall/vorthak_ash_thrall_animations.tres"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/characters/lioraen_thorn_ranger/lioraen_thorn_ranger.glb"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/characters/lioraen_thorn_ranger/lioraen_thorn_ranger_animations.tres"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/characters/lioraen_thorn_ranger/lioraen_thorn_ranger_animations.tres"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/characters/lioraen_thorn_ranger/lioraen_thorn_ranger_animations.tres"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/characters/lioraen_thorn_ranger/lioraen_thorn_ranger_animations.tres"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/characters/barrosan_crag_archer/barrosan_crag_archer.glb"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/characters/barrosan_crag_archer/barrosan_crag_archer_animations.tres"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/characters/barrosan_crag_archer/barrosan_crag_archer_animations.tres"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/characters/barrosan_crag_archer/barrosan_crag_archer_animations.tres"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/characters/barrosan_crag_archer/barrosan_crag_archer_animations.tres"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/characters/lioraen_canopy_mender/lioraen_canopy_mender.glb"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/characters/lioraen_canopy_mender/lioraen_canopy_mender_animations.tres"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/characters/lioraen_canopy_mender/lioraen_canopy_mender_animations.tres"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/characters/lioraen_canopy_mender/lioraen_canopy_mender_animations.tres"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/characters/lioraen_canopy_mender/lioraen_canopy_mender_animations.tres"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/characters/barrosan_anvil_breaker/barrosan_anvil_breaker.glb"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/characters/barrosan_anvil_breaker/barrosan_anvil_breaker_animations.tres"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/characters/barrosan_anvil_breaker/barrosan_anvil_breaker_animations.tres"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/characters/barrosan_anvil_breaker/barrosan_anvil_breaker_animations.tres"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/characters/barrosan_anvil_breaker/barrosan_anvil_breaker_animations.tres"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/characters/vorthak_bondservant_worker/vorthak_bondservant_worker.glb"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/characters/vorthak_bondservant_worker/vorthak_bondservant_worker_animations.tres"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/characters/vorthak_bondservant_worker/vorthak_bondservant_worker_animations.tres"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/characters/vorthak_bondservant_worker/vorthak_bondservant_worker_animations.tres"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/characters/vorthak_bondservant_worker/vorthak_bondservant_worker_animations.tres"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/characters/lioraen_seedkeeper_worker/lioraen_seedkeeper_worker.glb"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/characters/lioraen_seedkeeper_worker/lioraen_seedkeeper_worker_animations.tres"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/characters/lioraen_seedkeeper_worker/lioraen_seedkeeper_worker_animations.tres"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/characters/lioraen_seedkeeper_worker/lioraen_seedkeeper_worker_animations.tres"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/characters/lioraen_seedkeeper_worker/lioraen_seedkeeper_worker_animations.tres"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/characters/lioraen_rootwarden_guard/lioraen_rootwarden_guard.glb"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/characters/lioraen_rootwarden_guard/lioraen_rootwarden_guard_animations.tres"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/characters/lioraen_rootwarden_guard/lioraen_rootwarden_guard_animations.tres"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/characters/lioraen_rootwarden_guard/lioraen_rootwarden_guard_animations.tres"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/characters/lioraen_rootwarden_guard/lioraen_rootwarden_guard_animations.tres"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/characters/vorthak_veil_warlock/vorthak_veil_warlock.glb"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/characters/vorthak_veil_warlock/vorthak_veil_warlock_animations.tres"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/characters/vorthak_veil_warlock/vorthak_veil_warlock_animations.tres"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/characters/vorthak_veil_warlock/vorthak_veil_warlock_animations.tres"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/characters/vorthak_veil_warlock/vorthak_veil_warlock_animations.tres"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/characters/vorthak_rift_blade/vorthak_rift_blade.glb"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/characters/vorthak_rift_blade/vorthak_rift_blade_animations.tres"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/characters/vorthak_rift_blade/vorthak_rift_blade_animations.tres"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/characters/vorthak_rift_blade/vorthak_rift_blade_animations.tres"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/characters/vorthak_rift_blade/vorthak_rift_blade_animations.tres"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/characters/vorthak_gloom_hound/vorthak_gloom_hound.glb"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/characters/vorthak_gloom_hound/vorthak_gloom_hound_animations.tres"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/characters/vorthak_gloom_hound/vorthak_gloom_hound_animations.tres"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/characters/vorthak_gloom_hound/vorthak_gloom_hound_animations.tres"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/characters/vorthak_gloom_hound/vorthak_gloom_hound_animations.tres"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/characters/barrosan_outrider/barrosan_outrider.glb"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/characters/barrosan_outrider/barrosan_outrider_animations.tres"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/characters/barrosan_outrider/barrosan_outrider_animations.tres"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/characters/barrosan_outrider/barrosan_outrider_animations.tres"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/characters/barrosan_outrider/barrosan_outrider_animations.tres"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/characters/lioraen_windstrider/lioraen_windstrider.glb"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/characters/lioraen_windstrider/lioraen_windstrider_animations.tres"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/characters/lioraen_windstrider/lioraen_windstrider_animations.tres"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/characters/lioraen_windstrider/lioraen_windstrider_animations.tres"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/characters/lioraen_windstrider/lioraen_windstrider_animations.tres"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/characters/vorthak_cinder_spitter/vorthak_cinder_spitter.glb"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/characters/vorthak_cinder_spitter/vorthak_cinder_spitter_animations.tres"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/characters/vorthak_cinder_spitter/vorthak_cinder_spitter_animations.tres"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/characters/vorthak_cinder_spitter/vorthak_cinder_spitter_animations.tres"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/characters/vorthak_cinder_spitter/vorthak_cinder_spitter_animations.tres"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/characters/barrosan_clan_levy/barrosan_clan_levy.glb"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/characters/barrosan_clan_levy/barrosan_clan_levy_animations.tres"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/characters/barrosan_clan_levy/barrosan_clan_levy_animations.tres"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/characters/barrosan_clan_levy/barrosan_clan_levy_animations.tres"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/characters/barrosan_clan_levy/barrosan_clan_levy_animations.tres"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/characters/lioraen_bloomdancer/lioraen_bloomdancer.glb"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/characters/lioraen_bloomdancer/lioraen_bloomdancer_animations.tres"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/characters/lioraen_bloomdancer/lioraen_bloomdancer_animations.tres"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/characters/lioraen_bloomdancer/lioraen_bloomdancer_animations.tres"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/characters/lioraen_bloomdancer/lioraen_bloomdancer_animations.tres"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/characters/highelf_archer/highelf_archer.glb"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/characters/highelf_archer/highelf_archer_animations.tres"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/characters/highelf_archer/highelf_archer_animations.tres"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/characters/highelf_archer/highelf_archer_animations.tres"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/characters/highelf_archer/highelf_archer_animations.tres"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/characters/frostborn_warrior/frostborn_warrior.glb"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/characters/frostborn_warrior/frostborn_warrior_animations.tres"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/characters/frostborn_warrior/frostborn_warrior_animations.tres"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/characters/frostborn_warrior/frostborn_warrior_animations.tres"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/characters/frostborn_warrior/frostborn_warrior_animations.tres"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/characters/sylvan_hero_archon/sylvan_hero_archon.glb"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/characters/sylvan_hero_archon/sylvan_hero_archon_animations.tres"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/characters/sylvan_hero_archon/sylvan_hero_archon_animations.tres"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/characters/sylvan_hero_archon/sylvan_hero_archon_animations.tres"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/characters/sylvan_hero_archon/sylvan_hero_archon_animations.tres"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/characters/sunspear_legionary/sunspear_legionary.glb"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/characters/sunspear_legionary/sunspear_legionary_animations.tres"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/characters/sunspear_legionary/sunspear_legionary_animations.tres"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/characters/sunspear_legionary/sunspear_legionary_animations.tres"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/characters/sunspear_legionary/sunspear_legionary_animations.tres"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/characters/beastfolk_wolf_warrior/beastfolk_wolf_warrior.glb"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/characters/beastfolk_wolf_warrior/beastfolk_wolf_warrior_animations.tres"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/characters/beastfolk_wolf_warrior/beastfolk_wolf_warrior_animations.tres"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/characters/beastfolk_wolf_warrior/beastfolk_wolf_warrior_animations.tres"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/characters/beastfolk_wolf_warrior/beastfolk_wolf_warrior_animations.tres"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/characters/grimtusk_hero_warlord/grimtusk_hero_warlord.glb"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/characters/grimtusk_hero_warlord/grimtusk_hero_warlord_animations.tres"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/characters/grimtusk_hero_warlord/grimtusk_hero_warlord_animations.tres"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/characters/grimtusk_hero_warlord/grimtusk_hero_warlord_animations.tres"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/characters/grimtusk_hero_warlord/grimtusk_hero_warlord_animations.tres"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/characters/orc_grunt/orc_grunt.glb"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/characters/orc_grunt/orc_grunt_animations.tres"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/characters/orc_grunt/orc_grunt_animations.tres"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/characters/orc_grunt/orc_grunt_animations.tres"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/characters/orc_grunt/orc_grunt_animations.tres"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/characters/undead_skeleton/undead_skeleton.glb"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/characters/undead_skeleton/undead_skeleton_animations.tres"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/characters/undead_skeleton/undead_skeleton_animations.tres"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/characters/undead_skeleton/undead_skeleton_animations.tres"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/characters/undead_skeleton/undead_skeleton_animations.tres"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/characters/sunspear_hero_pharaoh/sunspear_hero_pharaoh.glb"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/characters/sunspear_hero_pharaoh/sunspear_hero_pharaoh_animations.tres"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/characters/sunspear_hero_pharaoh/sunspear_hero_pharaoh_animations.tres"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/characters/sunspear_hero_pharaoh/sunspear_hero_pharaoh_animations.tres"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/characters/sunspear_hero_pharaoh/sunspear_hero_pharaoh_animations.tres"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/characters/frostborn_hero_jarl/frostborn_hero_jarl.glb"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/characters/frostborn_hero_jarl/frostborn_hero_jarl_animations.tres"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/characters/frostborn_hero_jarl/frostborn_hero_jarl_animations.tres"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/characters/frostborn_hero_jarl/frostborn_hero_jarl_animations.tres"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/characters/frostborn_hero_jarl/frostborn_hero_jarl_animations.tres"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/characters/dwarf_warrior/dwarf_warrior.glb"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/characters/dwarf_warrior/dwarf_warrior_animations.tres"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/characters/dwarf_warrior/dwarf_warrior_animations.tres"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/characters/dwarf_warrior/dwarf_warrior_animations.tres"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/characters/dwarf_warrior/dwarf_warrior_animations.tres"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/characters/wyldkin_hero_alpha/wyldkin_hero_alpha.glb"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/characters/wyldkin_hero_alpha/wyldkin_hero_alpha_animations.tres"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/characters/wyldkin_hero_alpha/wyldkin_hero_alpha_animations.tres"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/characters/wyldkin_hero_alpha/wyldkin_hero_alpha_animations.tres"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/characters/wyldkin_hero_alpha/wyldkin_hero_alpha_animations.tres"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/characters/karak_hero_thanelord/karak_hero_thanelord.glb"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/characters/karak_hero_thanelord/karak_hero_thanelord_animations.tres"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/characters/karak_hero_thanelord/karak_hero_thanelord_animations.tres"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/characters/karak_hero_thanelord/karak_hero_thanelord_animations.tres"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/characters/karak_hero_thanelord/karak_hero_thanelord_animations.tres"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/characters/hollow_hero_lich/hollow_hero_lich.glb"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/characters/hollow_hero_lich/hollow_hero_lich_animations.tres"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/characters/hollow_hero_lich/hollow_hero_lich_animations.tres"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/characters/hollow_hero_lich/hollow_hero_lich_animations.tres"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/characters/hollow_hero_lich/hollow_hero_lich_animations.tres"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/props/weapons/lioraen_bloomblade.glb"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/props/weapons/barrosan_claymore.glb"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/props/weapons/vorthak_rift_staff.glb"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/props/misc/resource_stone_quarry_chunk.glb"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/props/items/hero_relic_amulet.glb"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/props/items/lume_shard_crystal.glb"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/props/containers/resource_timber_pile.glb"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/props/vehicles/barrosan_ballista.glb"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/props/vehicles/lioraen_thornthrower.glb"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/props/vehicles/vorthak_fracture_engine.glb"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/environment/buildings/barrosan_clanhold.glb"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/environment/structures/lume_spire_ruin.glb"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/environment/buildings/lioraen_groveheart.glb"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/environment/buildings/vorthak_nighthold.glb"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/environment/buildings/barrosan_watchtower.glb"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/environment/buildings/vorthak_rift_obelisk.glb"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/environment/rocks/gold_mine_lumevein.glb"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/environment/structures/highland_crossing_bridge.glb"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/environment/buildings/lioraen_bloom_spire.glb"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/environment/buildings/vorthak_warlock_spire.glb"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/environment/buildings/lioraen_spirit_glade.glb"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/environment/buildings/barrosan_war_hall.glb"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/environment/buildings/barrosan_clan_croft.glb"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/environment/buildings/vorthak_ash_forge.glb"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/environment/buildings/barrosan_iron_forge.glb"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/environment/buildings/lioraen_thornhall.glb"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/environment/buildings/lioraen_lifewell.glb"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/environment/buildings/vorthak_bone_barracks.glb"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/environment/vegetation/highland_pine.glb"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/environment/rocks/mossy_boulder.glb"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/environment/rocks/highland_rock_cluster.glb"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/environment/structures/ancient_ruin_pillar.glb"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/environment/vegetation/broadleaf_oak.glb"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/environment/buildings/wyldkin_denhold.glb"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/environment/buildings/frostborn_mead_hall.glb"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/environment/buildings/karak_hold.glb"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/environment/buildings/hollow_necropolis.glb"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/environment/buildings/sunspear_palace.glb"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/environment/buildings/sylvan_court.glb"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/environment/buildings/grimtusk_stronghold.glb"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/props/weapons/lioraen_bloomblade.glb"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/props/weapons/barrosan_claymore.glb"
+    },
+    {
+      "from": "assets/manifest.json",
+      "value": "/var/games/game-20260729-9c88f83b/assets/props/weapons/vorthak_rift_staff.glb"
+    }
+  ],
+  "duplicateBasenames": [],
+  "unreachableOrUnused": "not fully inferable without executing Godot",
+  "remoteRuntimeDownloads": [
+    {
+      "from": "addons/tesana_world_editor/scene_export.gd",
+      "url": "http://127.0.0.1:5181/assets/foo.png`"
+    },
+    {
+      "from": "README_EXPORT.md",
+      "url": "https://godotengine.org/download>."
+    }
+  ],
+  "status": "REVIEW_REQUIRED"
+}

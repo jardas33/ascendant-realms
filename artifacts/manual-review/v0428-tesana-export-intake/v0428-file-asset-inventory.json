@@ -1,0 +1,81 @@
+{
+  "schema": "v0.428-file-asset-inventory",
+  "generatedUtc": "2026-07-29T15:07:27.541Z",
+  "byCategory": {
+    "metadata-or-other": {
+      "files": 25,
+      "bytes": 316227
+    },
+    "addons": {
+      "files": 2,
+      "bytes": 36899
+    },
+    "assets-other": {
+      "files": 3,
+      "bytes": 133294
+    },
+    "audio": {
+      "files": 28,
+      "bytes": 3055156
+    },
+    "characters": {
+      "files": 107,
+      "bytes": 26835798
+    },
+    "environment": {
+      "files": 240,
+      "bytes": 27775764
+    },
+    "fonts": {
+      "files": 2,
+      "bytes": 126224
+    },
+    "props": {
+      "files": 80,
+      "bytes": 7764078
+    },
+    "shaders": {
+      "files": 4,
+      "bytes": 6410
+    },
+    "textures": {
+      "files": 13,
+      "bytes": 13720976
+    },
+    "ui": {
+      "files": 38,
+      "bytes": 5080829
+    },
+    "scenes": {
+      "files": 10,
+      "bytes": 4012
+    },
+    "scripts": {
+      "files": 76,
+      "bytes": 427493
+    }
+  },
+  "concepts": {
+    "scenes": 10,
+    "scripts": 40,
+    "models": 75,
+    "textures": 141,
+    "materials": 45,
+    "shaders": 2,
+    "animations": 36,
+    "audio": 14,
+    "fonts": 1,
+    "campaign": 3,
+    "skirmish": 8,
+    "ai": 2,
+    "units": 119,
+    "buildings": 206,
+    "props": 80,
+    "uiImages": 15,
+    "localization": 0,
+    "saves": 3,
+    "tests": 17,
+    "editor": 2,
+    "generatedBundles": 273
+  }
+}

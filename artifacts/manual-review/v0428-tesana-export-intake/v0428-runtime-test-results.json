@@ -1,0 +1,52 @@
+{
+  "schema": "v0.428-runtime-test-results",
+  "generatedUtc": "2026-07-29T15:07:27.541Z",
+  "status": "BLOCKED_GODOT_EXECUTABLE_NOT_FOUND",
+  "godotExecutable": null,
+  "disposableCopyRequired": true,
+  "sourceExecuted": false,
+  "tests": [
+    {
+      "name": "title",
+      "status": "blocked",
+      "evidence": "Godot executable not available on PATH or explicit V0428_GODOT_BIN."
+    },
+    {
+      "name": "skirmish setup",
+      "status": "blocked",
+      "evidence": "Godot executable not available on PATH or explicit V0428_GODOT_BIN."
+    },
+    {
+      "name": "campaign map",
+      "status": "blocked",
+      "evidence": "Godot executable not available on PATH or explicit V0428_GODOT_BIN."
+    },
+    {
+      "name": "initial gameplay",
+      "status": "blocked",
+      "evidence": "Godot executable not available on PATH or explicit V0428_GODOT_BIN."
+    },
+    {
+      "name": "worker/build menu",
+      "status": "blocked",
+      "evidence": "Godot executable not available on PATH or explicit V0428_GODOT_BIN."
+    },
+    {
+      "name": "placement/resource/population",
+      "status": "blocked",
+      "evidence": "Godot executable not available on PATH or explicit V0428_GODOT_BIN."
+    },
+    {
+      "name": "unit/combat/AI/victory",
+      "status": "blocked",
+      "evidence": "Godot executable not available on PATH or explicit V0428_GODOT_BIN."
+    },
+    {
+      "name": "menu/campaign/progression/hero/settings/save-load/exit",
+      "status": "blocked",
+      "evidence": "Godot executable not available on PATH or explicit V0428_GODOT_BIN."
+    }
+  ],
+  "localRuntimeCaptureStatus": "not-captured",
+  "failClosed": true
+}

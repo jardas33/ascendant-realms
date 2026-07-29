@@ -1,0 +1,1 @@
+CAPTURE BLOCKED: local Godot runtime unavailable; required real screenshots intentionally not fabricated.

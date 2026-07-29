@@ -1,0 +1,54 @@
+{
+  "schema": "v0.428-content-feature-matrix",
+  "generatedUtc": "2026-07-29T15:07:27.840Z",
+  "features": [
+    {
+      "name": "title",
+      "status": "fully",
+      "evidence": "scenes/ui/main_menu.tscn",
+      "note": "Static scene exists; runtime not executed."
+    },
+    {
+      "name": "skirmish setup",
+      "status": "fully",
+      "evidence": "scenes/ui/skirmish_setup.tscn",
+      "note": "Static scene/script exists; runtime not executed."
+    },
+    {
+      "name": "campaign map",
+      "status": "fully",
+      "evidence": "scenes/ui/campaign_map.tscn",
+      "note": "Static scene/script exists; runtime not executed."
+    },
+    {
+      "name": "gameplay world",
+      "status": "partially",
+      "evidence": "scenes/game_world.tscn; scripts/world",
+      "note": "Runtime state not verified."
+    },
+    {
+      "name": "workers/building",
+      "status": "partially",
+      "evidence": "scripts/units; scripts/buildings",
+      "note": "Static systems present; behavior not verified."
+    },
+    {
+      "name": "AI/combat",
+      "status": "partially",
+      "evidence": "scripts/ai; scripts/units/projectile.gd",
+      "note": "Present in source; not run."
+    },
+    {
+      "name": "save/load",
+      "status": "partially",
+      "evidence": "scripts/autoloads/profile_manager.gd",
+      "note": "Writes user:// only; not exercised."
+    },
+    {
+      "name": "localization",
+      "status": "unable_to_verify",
+      "evidence": "inventory scan",
+      "note": "No dedicated localization inventory found."
+    }
+  ]
+}

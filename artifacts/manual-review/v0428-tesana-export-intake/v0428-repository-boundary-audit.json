@@ -1,0 +1,29 @@
+{
+  "schema": "v0.428-repository-boundary-audit",
+  "generatedUtc": "2026-07-29T15:07:27.541Z",
+  "workspaceRoot": "D:\\Code for projects\\WB game like",
+  "workspaceGit": "NOT_A_GIT_REPOSITORY_OR_EMPTY_GIT_DIRECTORY",
+  "candidate": {
+    "path": "D:\\Code for projects\\WB game like\\WB_tesana",
+    "git": "NOT_A_GIT_REPOSITORY",
+    "nestedUnderWorkspace": true,
+    "trackedByAcceptedCheckout": false,
+    "immutableSource": true
+  },
+  "acceptedCheckouts": [
+    {
+      "path": "D:\\Code for projects\\WB game like\\ascendant-realms",
+      "git": "INDEPENDENT_GIT_CHECKOUT"
+    },
+    {
+      "path": "D:\\Code for projects\\WB game like\\ascendant-realms-v0223-recovery",
+      "git": "INDEPENDENT_GIT_CHECKOUT",
+      "expectedHead": "4a2de384b2f0c3f348f24ff549ab2293f29e3b7f"
+    }
+  ],
+  "acceptedBranch": "codex/v0215-v0226-recovery",
+  "auditBranch": "codex/v0428-tesana-intake-audit",
+  "mergePerformed": false,
+  "stagePerformed": false,
+  "status": "BOUNDARIES_PROVEN"
+}

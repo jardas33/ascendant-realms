@@ -1,0 +1,27 @@
+{
+  "schema": "v0.428-license-provenance-audit",
+  "generatedUtc": "2026-07-29T15:07:27.959Z",
+  "licenseFiles": [],
+  "provenanceFiles": [
+    "assets/generation-meta.json",
+    "assets/manifest.json",
+    "readme_export.md"
+  ],
+  "tripoNamedAssetCount": 240,
+  "classifications": {
+    "sourceCode": "unclear",
+    "authoredGeometry": "unclear",
+    "generatedOrImportedModels": "unclear",
+    "textures": "unclear",
+    "fonts": "unclear",
+    "audio": "unclear",
+    "packages": "no package manifest found"
+  },
+  "risk": "HIGH_UNCLEAR_PROVENANCE",
+  "requiredBeforeIntegration": [
+    "license/attribution evidence",
+    "source URLs/authors for generated/imported assets",
+    "font/audio terms",
+    "asset-by-asset redistribution permission"
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "schema": "v0.428-engine-compatibility-matrix",
+  "generatedUtc": "2026-07-29T15:07:27.960Z",
+  "acceptedProject": {
+    "engine": "Phaser 3.90 + TypeScript + Vite",
+    "optionalGodot": "Godot spike tooling"
+  },
+  "tesana": {
+    "engine": "Godot 4.3",
+    "renderer": "Forward Plus",
+    "export": "Web"
+  },
+  "compatibility": {
+    "directRuntimeReplacement": "low",
+    "assetDonor": "medium",
+    "controlledHybrid": "medium-low",
+    "migrationBurden": "high",
+    "trueDefaultRisk": "high if copied directly"
+  },
+  "conclusion": "No direct runtime replacement during v0.428."
+}
