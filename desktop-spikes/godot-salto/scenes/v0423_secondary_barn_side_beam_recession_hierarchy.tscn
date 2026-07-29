@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/v0423_secondary_barn_side_beam_recession_hierarchy.gd" id="1_v0423"]
+
+[node name="V0423SecondaryBarnSideBeamRecessionHierarchy" type="Node3D"]
+script = ExtResource("1_v0423")
