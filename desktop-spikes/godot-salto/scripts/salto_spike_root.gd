@@ -153,6 +153,8 @@ const SCRIPT_ARG_PREFIXES := [
 	"--v0422-secondary-barn-front-structure-smoke",
 	"--v0423-secondary-barn-side-beams-capture",
 	"--v0423-secondary-barn-side-beams-smoke",
+	"--v0424-secondary-barn-ridge-beam-capture",
+	"--v0424-secondary-barn-ridge-beam-smoke",
 	"--h3-semantic-evidence",
 	"--h3-supported-state-contract",
 	"--h3-directional-animation-micro-pilot",
@@ -908,6 +910,18 @@ func _ready() -> void:
 		v0423_pass.set_meta("v0423_capture_mode", args.has("--v0423-secondary-barn-side-beams-capture"))
 		v0423_pass.set_meta("v0423_smoke_mode", args.has("--v0423-secondary-barn-side-beams-smoke"))
 		add_child(v0423_pass)
+		return
+	if args.has("--v0424-secondary-barn-ridge-beam-capture") or args.has("--v0424-secondary-barn-ridge-beam-smoke"):
+		var v0424_script := load("res://scripts/v0424_secondary_barn_ridge_beam_value_hierarchy.gd") as Script
+		if v0424_script == null:
+			push_error("v0.424 secondary-barn ridge-beam script failed to load")
+			return
+		var v0424_pass := Node3D.new()
+		v0424_pass.set_script(v0424_script)
+		v0424_pass.name = "V0424SecondaryBarnRidgeBeamValueHierarchy"
+		v0424_pass.set_meta("v0424_capture_mode", args.has("--v0424-secondary-barn-ridge-beam-capture"))
+		v0424_pass.set_meta("v0424_smoke_mode", args.has("--v0424-secondary-barn-ridge-beam-smoke"))
+		add_child(v0424_pass)
 		return
 	if args.has("--salto-production-target-spike"):
 		var spike_scene := load("res://scenes/salto_production_target_spike.tscn") as PackedScene
