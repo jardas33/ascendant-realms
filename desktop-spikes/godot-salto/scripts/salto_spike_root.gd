@@ -149,6 +149,8 @@ const SCRIPT_ARG_PREFIXES := [
 	"--v0420-secondary-barn-stone-base-smoke",
 	"--v0421-secondary-barn-entrance-frame-capture",
 	"--v0421-secondary-barn-entrance-frame-smoke",
+	"--v0422-secondary-barn-front-structure-capture",
+	"--v0422-secondary-barn-front-structure-smoke",
 	"--h3-semantic-evidence",
 	"--h3-supported-state-contract",
 	"--h3-directional-animation-micro-pilot",
@@ -880,6 +882,18 @@ func _ready() -> void:
 		v0421_pass.set_meta("v0421_capture_mode", args.has("--v0421-secondary-barn-entrance-frame-capture"))
 		v0421_pass.set_meta("v0421_smoke_mode", args.has("--v0421-secondary-barn-entrance-frame-smoke"))
 		add_child(v0421_pass)
+		return
+	if args.has("--v0422-secondary-barn-front-structure-capture") or args.has("--v0422-secondary-barn-front-structure-smoke"):
+		var v0422_script := load("res://scripts/v0422_secondary_barn_front_structure_value_hierarchy.gd") as Script
+		if v0422_script == null:
+			push_error("v0.422 secondary-barn front-structure script failed to load")
+			return
+		var v0422_pass := Node3D.new()
+		v0422_pass.set_script(v0422_script)
+		v0422_pass.name = "V0422SecondaryBarnFrontStructureValueHierarchy"
+		v0422_pass.set_meta("v0422_capture_mode", args.has("--v0422-secondary-barn-front-structure-capture"))
+		v0422_pass.set_meta("v0422_smoke_mode", args.has("--v0422-secondary-barn-front-structure-smoke"))
+		add_child(v0422_pass)
 		return
 	if args.has("--salto-production-target-spike"):
 		var spike_scene := load("res://scenes/salto_production_target_spike.tscn") as PackedScene
