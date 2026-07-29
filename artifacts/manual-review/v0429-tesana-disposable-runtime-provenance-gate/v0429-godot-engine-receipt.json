@@ -1,0 +1,25 @@
+{
+  "schema": "v0.429-godot-engine-receipt",
+  "reviewedUtc": "2026-07-29T16:04:03.455Z",
+  "official": true,
+  "executable": "C:/Users/barro/AppData/Local/AscendantRealms/tools/godot-4.3-stable/Godot_v4.3-stable_win64.exe",
+  "version": "4.3.stable.official.77dcf97d8",
+  "binaryFound": true,
+  "executableBytes": 132918392,
+  "executableSha256": "b554ba80fb2ad8f1817bc21242ac8adbb9e41f806c49ad5cc73603db71fee32f",
+  "executableSha512": "c29176730d2aeddaa73b9a23301536eeb077f237f5d9fbdb13bca41333f506b7c4f7e9466974163945a40fc7284e9c87efd14bcd41e6e81a8c1cd29a503ae97f",
+  "archive": {
+    "filename": "Godot_v4.3-stable_win64.exe.zip",
+    "officialDownloadUrl": "https://github.com/godotengine/godot/releases/download/4.3-stable/Godot_v4.3-stable_win64.exe.zip",
+    "sha256": "8f2c75b734bd956027ae3ca92c41f78b5d5a255dacc0f20e4e3c523c545ad410",
+    "sha512": "ad09b7e19949327700dfbe64e35880a2a08091c0751277f5cc21b915e5df9b4fe93fb43c50d6bdfb9d16b46168592491aa698e0d2dbe9f92132e163dd77b97e1",
+    "officialExpectedSha512": "ad09b7e19949327700dfbe64e35880a2a08091c0751277f5cc21b915e5df9b4fe93fb43c50d6bdfb9d16b46168592491aa698e0d2dbe9f92132e163dd77b97e1",
+    "verification": "PASS"
+  },
+  "source": "Godot_v4.3-stable_win64.exe --version",
+  "verification": "PASS",
+  "checksumVerification": "PASS",
+  "outsideGitAndSourceProjects": true,
+  "consolePair": "not present in official standard Windows archive",
+  "failClosedIfMissing": true
+}

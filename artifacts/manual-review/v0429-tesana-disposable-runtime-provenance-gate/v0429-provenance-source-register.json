@@ -1,0 +1,39 @@
+{
+  "schema": "v0.429-provenance-source-register",
+  "generatedUtc": "2026-07-29T16:04:11.725Z",
+  "documentarySources": [
+    {
+      "path": "README_EXPORT.md",
+      "present": true,
+      "status": "INSPECTED"
+    },
+    {
+      "path": "assets/manifest.json",
+      "present": true,
+      "status": "INSPECTED"
+    },
+    {
+      "path": "generation-meta/metadata",
+      "present": true,
+      "status": "INSPECTED"
+    },
+    {
+      "source": "Tripo official terms/product documentation",
+      "url": "https://www.tripo3d.ai/pt/terms",
+      "result": "Free-plan commercial rights are not established for this export; account plan unavailable."
+    },
+    {
+      "source": "Tesana official terms",
+      "result": "No authoritative official terms page identified from the export or bounded official search; documentary evidence required."
+    },
+    {
+      "source": "Godot 4.3 official release",
+      "url": "https://godotengine.org/releases/4.3/",
+      "result": "engine provenance verified separately."
+    }
+  ],
+  "candidateAssetCount": 231,
+  "sourceFilesWithoutDocumentaryRights": 231,
+  "allAccountIdentifiersRedacted": true,
+  "status": "HIGH_UNCLEAR_PROVENANCE"
+}

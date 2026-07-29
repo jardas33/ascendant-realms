@@ -1,0 +1,21 @@
+{
+  "schema": "v0.429-network-port-audit",
+  "generatedUtc": "2026-07-29T16:04:11.722Z",
+  "expected": [
+    {
+      "host": "127.0.0.1",
+      "port": 5180,
+      "protocol": "WebSocket"
+    },
+    {
+      "host": "127.0.0.1",
+      "port": 5181,
+      "protocol": "HTTP"
+    }
+  ],
+  "observed": "[{\"LocalAddress\":\"127.0.0.1\",\"LocalPort\":5181,\"OwningProcess\":18280},{\"LocalAddress\":\"127.0.0.1\",\"LocalPort\":5180,\"OwningProcess\":18280}]",
+  "nonLoopbackObserved": false,
+  "unexpectedNetworkActivity": false,
+  "auditOwnedProcesses": "Godot Run A only",
+  "status": "PASS_LOOPBACK_ONLY_DURING_RUN"
+}

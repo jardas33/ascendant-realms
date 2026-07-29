@@ -1081,7 +1081,9 @@
     "assets:validate": "tsx tools/manual-asset-pipeline/validateAssets.ts",
     "assets:refresh": "npm run assets:process-battle-sprites && npm run assets:manifest && npm run assets:validate",
     "godot:validate:v0428-tesana-intake": "node tools/tesana/v0428TesanaIntakeAudit.mjs validate",
-    "godot:audit:v0428-tesana-intake": "node tools/tesana/v0428TesanaIntakeAudit.mjs audit"
+    "godot:audit:v0428-tesana-intake": "node tools/tesana/v0428TesanaIntakeAudit.mjs audit",
+    "godot:validate:v0429-tesana-runtime-provenance": "node tools/tesana/v0429TesanaRuntimeProvenance.mjs validate",
+    "godot:audit:v0429-tesana-runtime-provenance": "node tools/tesana/v0429TesanaRuntimeProvenance.mjs audit"
   },
   "dependencies": {
     "phaser": "^3.90.0"

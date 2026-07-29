@@ -1,0 +1,15 @@
+{
+  "schema": "v0.429-runtime-performance",
+  "runA": {
+    "viewport": "1920x1080",
+    "startupSeconds": "bounded observation only",
+    "avgFps": "not captured",
+    "minFps": "not captured",
+    "memory": "not captured",
+    "transitions": "title only",
+    "activeUnits": "not reached",
+    "drawCalls": "not captured",
+    "errors": "missing imported resources"
+  },
+  "status": "PARTIAL_NOT_ENOUGH_WORLD_RUNTIME"
+}

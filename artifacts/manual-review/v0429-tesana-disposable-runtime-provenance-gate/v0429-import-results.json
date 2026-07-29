@@ -1,0 +1,12 @@
+{
+  "schema": "v0.429-import-results",
+  "runA": {
+    "projectPath": "C:/Users/barro/AppData/Local/Temp/ascendant-realms-v0429-tesana-authentic",
+    "mainScene": "res://scenes/main.tscn",
+    "firstImportAttempted": true,
+    "importedCacheCount": 0,
+    "status": "PARTIAL_IMPORT_CACHE_NOT_READY",
+    "errors": "Run A log records missing .godot/imported resources."
+  },
+  "runB": "NOT_USED"
+}
