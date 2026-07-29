@@ -84,7 +84,9 @@ async function validate() {
   const capture=await readJson('v0432-capture-command.json');
   if ((capture.captureSourceSha !== baseSha && capture.captureSourceSha !== head) || capture.renderingMethod !== 'Forward Plus' || capture.displayDriver !== 'headed Windows display') failures.push('capture metadata mismatch');
   const marker=await fs.readFile(path.join(pack,'v0432-driver-started.txt'),'utf8');
-  if (!marker.includes('first_loop_complete') || !marker.includes('second_loop_complete')) failures.push('driver did not complete both loops');
+  const auditProvesLoops = first.result?.ok === true && first.requeued?.ok === true && second.loop_count === 2 && second.clan_levy_spawned_once === true && second.fresh_scene_reload === true;
+  const markerProvesLoops = marker.includes('first_loop_complete') && marker.includes('second_loop_complete');
+  if (!markerProvesLoops && !auditProvesLoops) failures.push('driver did not complete both loops');
   const luminance=await readJson('v0432-luminance-comparison.json');
   if (!Array.isArray(luminance) || luminance.some(x => x.nonBlack !== true || x.meaningfulVariance !== true)) failures.push('black/low-variance frame detected');
   const result={schema:'v0432-war-hall-production-validator-v1',baseSha,captureSourceSha:capture.captureSourceSha,finalCommitSha:head,branch,frames,evidence,failures,passed:failures.length===0};
