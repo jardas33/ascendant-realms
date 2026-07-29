@@ -114,3 +114,14 @@ The dedicated production validator, corrected asset scan, Godot import/smoke che
 ## Final state target
 
 The checkpoint is complete only when the scoped v0.430 commits are pushed, the exact pushed SHA's GitHub Actions run is successful, and the intentional historical untracked backlog remains untouched. The final handoff reports the tracked worktree state separately from that preserved backlog.
+
+## Closeout evidence
+
+- Production intake commit: `c73629648b1270b0e5458c74c4359545e9fc514e`
+- Production tooling commit: `9fdc4592`
+- Evidence/report commit before this closeout appendix: `9d66f47b`
+- Validation-record commit: `a0ba25131ed96f5f30cc2fdbc482e7799e2087ba`
+- Exact-SHA GitHub Actions: run `30481447624` — success for `a0ba25131ed96f5f30cc2fdbc482e7799e2087ba`
+- Draft PR: https://github.com/jardas33/ascendant-realms/pull/4
+
+The tracked working tree was clean after the validation-record commit. The checkout also contains a pre-existing, intentionally preserved untracked historical artifact backlog outside the v0.430 scope; it was not staged, deleted, or rewritten. The production branch is pushed with upstream tracking and the scoped commits are synchronized with origin.
