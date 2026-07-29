@@ -65,4 +65,6 @@ The full local validation passed:
 
 The direct opt-in smoke and capture runs exited successfully. The smoke audit reported `RENDERED_CANDIDATE`, `candidateRetained: true`, `affectedNodeCount: 1`, and no unexpected visible contact-shadow names. Human inspection confirmed real non-black colour, grayscale, diagnostic, and comparison renders; the close shadow remains quiet and footprint-bound without a dark slab, oval, rectangle, detached halo or gameplay-zone appearance. The diagnostic identifies `V0399_Barn_Contact_Shadow` and explicitly excludes `V0399_Barn_Stone_Base`.
 
-Implementation and exact-SHA CI evidence will be appended after the bounded files are committed and pushed. The pre-existing untracked artifact backlog is intentionally preserved and is not part of this checkpoint.
+Implementation commit: `75c7e085d932cea405b47c28d4f27e0dde5e0311` (`v0.426 restrain secondary barn contact shadow hierarchy`). Exact-SHA GitHub Actions run: `30423546153` — success for `75c7e085d932cea405b47c28d4f27e0dde5e0311` (`CI Release Matrix Dry Run`, pull-request synchronize, Fast confidence passed; optional visual/release groups skipped by event policy).
+
+A documentation-only confirmation commit and its exact-SHA Actions result will be appended after this report update. The pre-existing untracked artifact backlog is intentionally preserved and is not part of this checkpoint.
