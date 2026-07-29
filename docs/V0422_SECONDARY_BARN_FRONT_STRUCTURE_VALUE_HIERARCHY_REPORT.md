@@ -34,4 +34,10 @@ Commands:
 
 Retained validators passed explicitly: v0.421, v0.420, v0.419, v0.418, v0.417, v0.416, v0.415, v0.414, v0.413, v0.412, v0.411, v0.410, v0.409, v0.408, v0.407, v0.406, v0.401 and v0.400. No dedicated v0.402-v0.405 package commands exist in the repository. The full local batch also passed `npm test`, `npm run build`, `npm run validate:content`, `npm run validate:art-intake`, `npm run validate:runtime-art-slots`, `npm run validate:artifact-retention`, `npm run godot:all`, and `git diff --check`.
 
-The review pack is `artifacts/manual-review/v0422-secondary-barn-front-structure-value-hierarchy/`. The candidate passed real-render inspection and the dedicated validator. Commit/CI evidence is added after the bounded files are committed and pushed.
+The review pack is `artifacts/manual-review/v0422-secondary-barn-front-structure-value-hierarchy/`. The candidate passed real-render inspection and the dedicated validator.
+
+## Closeout evidence
+
+- Implementation commit: `3f7bc3d42f3c7bd49f4cf7851099c8deb34aec5a`.
+- Exact GitHub Actions run: `30412201507` — `CI Release Matrix Dry Run`, success for the implementation commit.
+- The final documentation follow-up records this CI result without changing runtime scope.
