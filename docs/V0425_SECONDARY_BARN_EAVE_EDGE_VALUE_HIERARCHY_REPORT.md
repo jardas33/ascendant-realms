@@ -40,4 +40,4 @@ The dedicated validator asserts the exact two-node eave inventory, functional eq
 
 ## Closeout
 
-The v0.425 implementation and real review pack are ready for the scoped commit. Record the implementation commit, exact-SHA Actions run, final report follow-up if needed, and final tracked repository state after push. The pre-existing untracked artifact backlog is intentionally preserved and is not part of this checkpoint.
+The v0.425 implementation and real review pack were committed as `6f91a0a08c44d48a6994dd9a463456e520b7259b` with message `v0.425 calibrate secondary barn eave-edge value hierarchy`. GitHub Actions run `30420945906` (`CI Release Matrix Dry Run`) completed successfully for that exact SHA. This report update is a documentation-only follow-up; after it is committed and pushed, its exact-SHA Actions run will also be confirmed. The pre-existing untracked artifact backlog is intentionally preserved and is not part of this checkpoint.
