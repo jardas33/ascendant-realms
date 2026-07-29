@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/v0426_secondary_barn_contact_shadow_restraint_hierarchy.gd" id="1_v0426"]
+
+[node name="V0426SecondaryBarnContactShadowRestraintHierarchy" type="Node3D"]
+script = ExtResource("1_v0426")

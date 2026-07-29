@@ -157,6 +157,8 @@ const SCRIPT_ARG_PREFIXES := [
 	"--v0424-secondary-barn-ridge-beam-smoke",
 	"--v0425-secondary-barn-eaves-capture",
 	"--v0425-secondary-barn-eaves-smoke",
+	"--v0426-secondary-barn-contact-shadow-capture",
+	"--v0426-secondary-barn-contact-shadow-smoke",
 	"--h3-semantic-evidence",
 	"--h3-supported-state-contract",
 	"--h3-directional-animation-micro-pilot",
@@ -936,6 +938,18 @@ func _ready() -> void:
 		v0425_pass.set_meta("v0425_capture_mode", args.has("--v0425-secondary-barn-eaves-capture"))
 		v0425_pass.set_meta("v0425_smoke_mode", args.has("--v0425-secondary-barn-eaves-smoke"))
 		add_child(v0425_pass)
+		return
+	if args.has("--v0426-secondary-barn-contact-shadow-capture") or args.has("--v0426-secondary-barn-contact-shadow-smoke"):
+		var v0426_script := load("res://scripts/v0426_secondary_barn_contact_shadow_restraint_hierarchy.gd") as Script
+		if v0426_script == null:
+			push_error("v0.426 secondary-barn contact-shadow script failed to load")
+			return
+		var v0426_pass := Node3D.new()
+		v0426_pass.set_script(v0426_script)
+		v0426_pass.name = "V0426SecondaryBarnContactShadowRestraintHierarchy"
+		v0426_pass.set_meta("v0426_capture_mode", args.has("--v0426-secondary-barn-contact-shadow-capture"))
+		v0426_pass.set_meta("v0426_smoke_mode", args.has("--v0426-secondary-barn-contact-shadow-smoke"))
+		add_child(v0426_pass)
 		return
 	if args.has("--salto-production-target-spike"):
 		var spike_scene := load("res://scenes/salto_production_target_spike.tscn") as PackedScene
