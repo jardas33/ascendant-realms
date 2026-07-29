@@ -71,4 +71,8 @@ The full local validation passed:
 
 The implementation is limited to the opt-in router, package commands, v0.427 scene/script/wrappers, validator, report and generated v0.427 evidence. Commit and exact-SHA Actions evidence are appended after the explicit-file commit and push.
 
+Implementation commit: `335bae953d647dc2145b813e60b6ac1af1be54ef` (`v0.427 calibrate resident worker primary garment hierarchy`). Exact-SHA GitHub Actions run `30427751240` completed successfully for that SHA. The Fast confidence job passed; release/visual jobs were skipped by the repository pull-request event policy.
+
+The final documentation confirmation commit and its exact-SHA Actions result are appended below after the report update. The final tracked checkout is expected to remain clean and synchronized with origin while the intentional pre-existing untracked runtime artifact backlog remains preserved.
+
 Record the final dedicated validator output, retained ladder, full local validation, exact commit, exact-SHA GitHub Actions result, report/review-pack paths, and final clean synchronized state here before closeout.
