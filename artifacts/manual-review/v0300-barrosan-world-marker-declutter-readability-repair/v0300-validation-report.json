@@ -1,0 +1,24 @@
+{
+  "status": "PASS_v0300_BARROSAN_WORLD_MARKER_DECLUTTER_READABILITY_REPAIR_VALIDATION",
+  "errors": [],
+  "captureCount": 16,
+  "runtimeCaptureStatus": "FAIL_PLAYER_SLICE_CAPTURE",
+  "requiredActions": [
+    "v0300_bridge_cluster_decluttered",
+    "v0300_route_preview_readable",
+    "v0300_deploy_authorized_readable",
+    "v0300_support_deployed_readable",
+    "v0300_line_reinforced_readable",
+    "v0300_pressure_stabilized_readable",
+    "v0300_barracks_reserve_cluster_decluttered",
+    "v0300_route_five_segments",
+    "v0300_integration_visual_static",
+    "v0300_support_presence_once",
+    "v0300_pressure_display",
+    "v0300_defender_card",
+    "v0300_support_card",
+    "v0300_barracks_card"
+  ],
+  "reviewPackNumberedPngCount": 41,
+  "blackFrameRejectionReport": "v0300-black-frame-stats.json"
+}

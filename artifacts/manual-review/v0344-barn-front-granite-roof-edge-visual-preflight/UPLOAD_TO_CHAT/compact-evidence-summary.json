@@ -1,0 +1,23 @@
+{
+  "checkpoint": "v0.344",
+  "outcome": "READY FOR HUMAN V0344 BARN MATERIAL-AND-ROOF VISUAL PREFLIGHT REVIEW",
+  "automatedVisualApproval": false,
+  "humanReviewRequired": true,
+  "exactUploadFileCount": 6,
+  "sourceCaptureCount": 5,
+  "sourceCaptures": [
+    {"fileName":"01_front_three_quarter_granite_roof.png","sha256":"f0ba71cf698f76c6155a6e5aa63a5297de262050388591d474b2680838b830cc","bytes":486562},
+    {"fileName":"02_rear_three_quarter_granite_roof.png","sha256":"bb2fb12f71ad09670ea08aa2de7253f773d6c0e4f1110e88f783774ccca3974a","bytes":431080},
+    {"fileName":"03_front_close_granite_continuity.png","sha256":"e8da2d62ed8a996636e0f59f0af895f66348af796dc299f936b06f2f211ffa0e","bytes":1302357},
+    {"fileName":"04_direct_side_gable_roof.png","sha256":"0302b97cff78af426dcebcff5b2fb886a63d53636a17b05a3f94c3f01cac73bf","bytes":778252},
+    {"fileName":"05_house02_barn_matched_true_256.png","sha256":"39c8a9cbaf54b3244a92522b31c67fbb228f91a454a7fa969f699c0ad459b8c1","bytes":37449,"width":256,"height":256}
+  ],
+  "prototypeOnly": true,
+  "defaultRuntimeIntegrated": false,
+  "noVideo": true,
+  "noTechnicalDiagnostics": true,
+  "frozenHouse02BlendSha256": "3da7c2cf71509e07c900001fd0b277e9af4584a074552ac1d929a4f37e0d78b6",
+  "frozenHouse02GLBSha256": "ceab23ff3cfb580cc63ce917ec1ff675a1cd318f8fe3390fc836166015ebba89",
+  "v0343DerivedBlendSha256": "ecb268c7a4f69c914951a0dbd9494fb332003566073b2311b47a348ba9f831e9",
+  "v0343DerivedGLBSha256": "d4d780510b1812e7e4f082f24dfee049ab21f905acbaaeaa4f54d6f67b4118b9"
+}

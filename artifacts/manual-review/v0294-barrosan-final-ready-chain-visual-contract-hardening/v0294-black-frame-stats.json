@@ -1,0 +1,380 @@
+{
+  "stats": [
+    {
+      "file": "01_v0294_preflight_head_branch_proof.png",
+      "mean": [
+        18.16,
+        25.79,
+        23.06
+      ]
+    },
+    {
+      "file": "02_v0294_exact_base_commit_proof.png",
+      "mean": [
+        18.08,
+        25.72,
+        22.99
+      ]
+    },
+    {
+      "file": "03_v0294_true_default_runtime_unchanged.png",
+      "mean": [
+        49.38,
+        60.41,
+        46.61
+      ]
+    },
+    {
+      "file": "04_v0294_retained_v0293_ledger_proof.png",
+      "mean": [
+        18.13,
+        25.76,
+        23.03
+      ]
+    },
+    {
+      "file": "05_v0294_clean_hud_aster_selected.png",
+      "mean": [
+        71.37,
+        80.02,
+        52.75
+      ]
+    },
+    {
+      "file": "06_v0294_aster_selected_card_readability.png",
+      "mean": [
+        71.42,
+        80.08,
+        52.81
+      ]
+    },
+    {
+      "file": "07_v0294_defender_engage_available.png",
+      "mean": [
+        71.42,
+        80.08,
+        52.81
+      ]
+    },
+    {
+      "file": "08_v0294_commit_engage_clicked.png",
+      "mean": [
+        71.86,
+        80.54,
+        52.98
+      ]
+    },
+    {
+      "file": "09_v0294_pressure_checked_ashen_braced.png",
+      "mean": [
+        71.86,
+        80.54,
+        52.98
+      ]
+    },
+    {
+      "file": "10_v0294_hold_line_available.png",
+      "mean": [
+        71.86,
+        80.54,
+        52.99
+      ]
+    },
+    {
+      "file": "11_v0294_hold_line_clicked.png",
+      "mean": [
+        71.39,
+        80.47,
+        53.38
+      ]
+    },
+    {
+      "file": "12_v0294_line_held_ashen_contained.png",
+      "mean": [
+        71.39,
+        80.47,
+        53.38
+      ]
+    },
+    {
+      "file": "13_v0294_barracks_after_hold_line.png",
+      "mean": [
+        71.53,
+        80.59,
+        53.36
+      ]
+    },
+    {
+      "file": "14_v0294_train_available_reserve_empty.png",
+      "mean": [
+        71.53,
+        80.59,
+        53.36
+      ]
+    },
+    {
+      "file": "15_v0294_train_clicked.png",
+      "mean": [
+        71.52,
+        80.79,
+        53.51
+      ]
+    },
+    {
+      "file": "16_v0294_reserve_ready.png",
+      "mean": [
+        71.52,
+        80.79,
+        53.51
+      ]
+    },
+    {
+      "file": "17_v0294_assign_available.png",
+      "mean": [
+        71.52,
+        80.79,
+        53.51
+      ]
+    },
+    {
+      "file": "18_v0294_assign_clicked.png",
+      "mean": [
+        71.52,
+        80.78,
+        53.52
+      ]
+    },
+    {
+      "file": "19_v0294_reserve_assigned.png",
+      "mean": [
+        71.52,
+        80.78,
+        53.52
+      ]
+    },
+    {
+      "file": "20_v0294_defender_after_reserve_assigned.png",
+      "mean": [
+        71.36,
+        80.66,
+        53.54
+      ]
+    },
+    {
+      "file": "21_v0294_signal_available.png",
+      "mean": [
+        71.36,
+        80.66,
+        53.54
+      ]
+    },
+    {
+      "file": "22_v0294_signal_clicked.png",
+      "mean": [
+        71.39,
+        80.67,
+        53.53
+      ]
+    },
+    {
+      "file": "23_v0294_bridge_signal_sent_signal_sent_reserve_ack.png",
+      "mean": [
+        71.39,
+        80.67,
+        53.53
+      ]
+    },
+    {
+      "file": "24_v0294_barracks_after_reserve_ack.png",
+      "mean": [
+        71.59,
+        80.84,
+        53.57
+      ]
+    },
+    {
+      "file": "25_v0294_prepare_available.png",
+      "mean": [
+        71.59,
+        80.84,
+        53.57
+      ]
+    },
+    {
+      "file": "26_v0294_prepare_clicked.png",
+      "mean": [
+        71.58,
+        80.83,
+        53.55
+      ]
+    },
+    {
+      "file": "27_v0294_support_order_ready_order_ready.png",
+      "mean": [
+        71.58,
+        80.83,
+        53.55
+      ]
+    },
+    {
+      "file": "28_v0294_approve_available.png",
+      "mean": [
+        71.59,
+        80.83,
+        53.55
+      ]
+    },
+    {
+      "file": "29_v0294_approve_clicked.png",
+      "mean": [
+        71.75,
+        80.86,
+        53.52
+      ]
+    },
+    {
+      "file": "30_v0294_deployment_approved_approved.png",
+      "mean": [
+        71.75,
+        80.86,
+        53.52
+      ]
+    },
+    {
+      "file": "31_v0294_stage_available.png",
+      "mean": [
+        71.75,
+        80.85,
+        53.51
+      ]
+    },
+    {
+      "file": "32_v0294_stage_clicked.png",
+      "mean": [
+        71.65,
+        80.93,
+        53.66
+      ]
+    },
+    {
+      "file": "33_v0294_launch_order_staged_launch_staged.png",
+      "mean": [
+        71.65,
+        80.93,
+        53.66
+      ]
+    },
+    {
+      "file": "34_v0294_release_ready_available.png",
+      "mean": [
+        63.0,
+        63.0,
+        63.0
+      ]
+    },
+    {
+      "file": "35_v0294_release_ready_clicked.png",
+      "mean": [
+        63.0,
+        63.0,
+        63.0
+      ]
+    },
+    {
+      "file": "36_v0294_final_release_ready_release_ready.png",
+      "mean": [
+        63.0,
+        63.0,
+        63.0
+      ]
+    },
+    {
+      "file": "37_v0294_defender_after_final_release_ready.png",
+      "mean": [
+        63.0,
+        63.0,
+        63.0
+      ]
+    },
+    {
+      "file": "38_v0294_barracks_after_final_release_ready.png",
+      "mean": [
+        63.0,
+        63.0,
+        63.0
+      ]
+    },
+    {
+      "file": "39_v0294_repeat_release_ready_idempotence.png",
+      "mean": [
+        63.0,
+        63.0,
+        63.0
+      ]
+    },
+    {
+      "file": "40_v0294_repeat_prior_action_idempotence.png",
+      "mean": [
+        71.65,
+        80.93,
+        53.66
+      ]
+    },
+    {
+      "file": "41_v0294_no_selected_card_text_overlap.png",
+      "mean": [
+        63.0,
+        63.0,
+        63.0
+      ]
+    },
+    {
+      "file": "42_v0294_no_global_prompt_inside_selected_card.png",
+      "mean": [
+        63.0,
+        63.0,
+        63.0
+      ]
+    },
+    {
+      "file": "43_v0294_no_button_row_overlap.png",
+      "mean": [
+        63.0,
+        63.0,
+        63.0
+      ]
+    },
+    {
+      "file": "44_v0294_no_raw_validator_prose.png",
+      "mean": [
+        63.0,
+        63.0,
+        63.0
+      ]
+    },
+    {
+      "file": "45_v0294_no_deployment_movement_pathing_route_preview.png",
+      "mean": [
+        63.0,
+        63.0,
+        63.0
+      ]
+    },
+    {
+      "file": "46_v0294_contact_sheet.png",
+      "mean": [
+        62.79,
+        69.66,
+        51.97
+      ]
+    },
+    {
+      "file": "47_v0294_black_frame_rejection_report.png",
+      "mean": [
+        18.09,
+        25.73,
+        23.0
+      ]
+    }
+  ]
+}

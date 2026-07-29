@@ -1,0 +1,21 @@
+{
+  "checkpoint": "v0.392",
+  "status": "REJECTED BY INDEPENDENT V0392 VISUAL REVIEW",
+  "evidence": "real-rendered",
+  "resolution": "1920x1080",
+  "rejectedReference": "v0.391",
+  "repairs": [
+    "one flush contrasting worn-earth route bridge landing to doorway",
+    "short flush barn entrance branch",
+    "coherent fence line with open gate gap",
+    "lower bridge and homestead value for local contrast"
+  ],
+  "blackFrameRejected": true,
+  "titleCardOnlyRejected": true,
+  "gameplay": false,
+  "defaultRuntime": "unchanged",
+  "route": "opt-in-only"
+  ,"independentVerdict": "REJECT"
+  ,"independentReview": "The principal v0.392 repair is not visible in the rendered evidence: no clearly contrasting route can be followed from the western bridge landing to the house doorway, no readable yard widening or barn branch appears, and the fence still reads as disconnected rails rather than a coherent open gate. The house, barn, five functions, and three characters remain readable; the darker bridge is an improvement but still competes with the settlement."
+  ,"nextCheckpoint": "v0.393 Explicit Route Silhouette and Front-Yard Gate Repair"
+}

@@ -1,0 +1,28 @@
+{
+  "v0312": {
+    "source": "v0.312 semantic-capture-register.json",
+    "physicalPngFiles": 154,
+    "playerViewPngFiles": 77,
+    "debugViewPngFiles": 77,
+    "playerDebugPairedMoments": 77,
+    "exactUniqueSha256Images": 127,
+    "perceptuallyUniqueImages": 48,
+    "acceptedSemanticRecords": 128,
+    "acceptedSemanticGameplayEvents": 62,
+    "rejectedExactDuplicateRecords": 26,
+    "rejectedNearDuplicateRecords": 0,
+    "rejectedMislabeledFrames": 0,
+    "informationalNonGameplayRecords": 4,
+    "acceptedPairedMoments": 64,
+    "rejectedPairedMoments": 13,
+    "acceptedDuplicateClassification": "one accepted PLAYER/DEBUG_REVIEW pair shares one exact SHA and is explicitly paired; it counts as one event",
+    "mathematicalReconciliation": "154 = 77 PLAYER + 77 DEBUG; 77 paired moments = 64 accepted paired moments + 13 rejected duplicate moments; 128 accepted records = 2 x 64; 62 gameplay events = 64 accepted paired moments - 2 informational paired moments"
+  },
+  "focusedV0313": {
+    "physicalPngFiles": 34,
+    "playerViewPngFiles": 17,
+    "debugViewPngFiles": 17,
+    "pairedMoments": 17,
+    "semanticGameplayEvents": 16
+  }
+}

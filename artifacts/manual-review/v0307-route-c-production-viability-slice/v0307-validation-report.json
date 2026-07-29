@@ -1,0 +1,11 @@
+{
+  "status": "PASS_V0307_ROUTE_C_PRODUCTION_VIABILITY",
+  "realRenderedCaptureCount": 24,
+  "v0306Score": 68,
+  "v0307Score": 78,
+  "U1": 55,
+  "U2": 74,
+  "U3": 82,
+  "recommended": "U3",
+  "errors": []
+}

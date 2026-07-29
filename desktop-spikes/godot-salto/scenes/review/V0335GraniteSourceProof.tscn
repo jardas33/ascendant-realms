@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource path="res://scripts/v0335_granite_source_proof.gd" type="Script" id="1_v0335"]
+
+[node name="V0335GraniteSourceProof" type="Node3D"]
+script = ExtResource("1_v0335")

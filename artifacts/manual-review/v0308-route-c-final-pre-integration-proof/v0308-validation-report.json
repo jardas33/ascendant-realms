@@ -1,0 +1,15 @@
+{
+  "status": "PASS_V0308_ROUTE_C_FINAL_PRE_INTEGRATION_PROOF",
+  "realRenderedCaptureCount": 29,
+  "decision": "REVISE_ONCE_MORE",
+  "v0307Overall": 72,
+  "environment": 76,
+  "utilityBuilding": 80,
+  "U3W": 76,
+  "U3M": 78,
+  "mixedUnitReadability": 80,
+  "routeCReadiness": 74,
+  "U3TechnicalStrategy": 88,
+  "productionScalability": 78,
+  "errors": []
+}

@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource path="res://scripts/v0346_barn_house02_silhouette_roof_pitch.gd" type="Script" id="1_v0346"]
+
+[node name="V0346BarnHouse02SilhouetteRoofPitch" type="Node3D"]
+script = ExtResource("1_v0346")

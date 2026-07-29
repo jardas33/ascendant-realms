@@ -1,0 +1,18 @@
+{
+  "checkpoint": "v0.399",
+  "status": "ACCEPTED BY INDEPENDENT V0399 VISUAL REVIEW",
+  "visualVerdict": "ACCEPT",
+  "visualReview": "Complete secondary barn in colour and grayscale; visible wall mass, roof thickness/eaves, entrance-side face, and grounding contact shadow; accepted route, bridge, camera, characters, props, and layout preserved.",
+  "captures": "real Godot renders",
+  "priorVerdict": "v0.398 ACCEPTED",
+  "scope": "left subordinate outbuilding only",
+  "barnStructure": "walls eaves entrance roof base contact shadow",
+  "route": "v0.398 preserved",
+  "bridge": "unchanged",
+  "camera": "unchanged",
+  "characters": "unchanged",
+  "props": "unchanged",
+  "layout": "unchanged",
+  "gameplay": false,
+  "defaultRuntime": "unchanged"
+}

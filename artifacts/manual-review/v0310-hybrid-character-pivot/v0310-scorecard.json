@@ -1,0 +1,22 @@
+{
+  "h1Worker": 53,
+  "h1Militia": 55,
+  "h2Worker": 82,
+  "h2Militia": 84,
+  "h3Worker": 86,
+  "h3Militia": 87,
+  "directionCoherence": 78,
+  "animationProof": 61,
+  "grounding": 84,
+  "occlusion": 82,
+  "selectionClarity": 85,
+  "mixed12": 84,
+  "mixed24": 78,
+  "gameplayOverview": 82,
+  "environmentCoherence": 80,
+  "h1Technical": 72,
+  "h2Technical": 81,
+  "h3Technical": 84,
+  "productionReadiness": 78,
+  "decision": "ADOPT HYBRID BILLBOARD CHARACTERS"
+}

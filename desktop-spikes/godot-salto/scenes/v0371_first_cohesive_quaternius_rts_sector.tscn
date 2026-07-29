@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/v0371_first_cohesive_quaternius_rts_sector.gd" id="1_v0371"]
+
+[node name="V0371FirstCohesiveQuaterniusRtsSector" type="Node3D"]
+script = ExtResource("1_v0371")

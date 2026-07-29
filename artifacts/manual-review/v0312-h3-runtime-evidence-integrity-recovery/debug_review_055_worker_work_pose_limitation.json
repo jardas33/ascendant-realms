@@ -1,0 +1,55 @@
+{
+  "authoritativeUnitIds": [
+    "worker_00"
+  ],
+  "cameraWorldPosition": {
+    "x": 0.0,
+    "y": 11.6,
+    "z": 8.9
+  },
+  "cameraZoom": 10.8000001907349,
+  "captureFilename": "055_worker_work_pose_limitation.png",
+  "fallbackState": false,
+  "frameNumber": 55,
+  "h3Enabled": true,
+  "h3FlagState": true,
+  "note": "visual pose remains authored idle source",
+  "pairedMomentId": "worker_work_state_55",
+  "pixelEvidenceRequired": true,
+  "presentationMode": "DEBUG_REVIEW",
+  "previousRelatedScreenshotSha256": "f5c7c45fd8f8e242bfc6393f531f21ca983233316df06f5a793c630908f84240",
+  "runtimeTimestampMs": 53739,
+  "saveIdentifier": null,
+  "scenarioName": "worker_work_state",
+  "screenshotSha256": "f5c7c45fd8f8e242bfc6393f531f21ca983233316df06f5a793c630908f84240",
+  "selectedIds": [
+    "worker_00"
+  ],
+  "selectionSource": "authoritative runtime.selected_ids",
+  "semanticAccepted": false,
+  "semanticRejectionReason": "exact screenshot duplicate within semantic scenario",
+  "stateSource": "authoritative runtime.units",
+  "units": [
+    {
+      "activityState": "working",
+      "alive": true,
+      "commandState": "work",
+      "destination": {
+        "x": 650.0,
+        "y": 460.0
+      },
+      "facing": "south-east",
+      "fixtureId": "worker",
+      "hasDestination": false,
+      "health": 80.0,
+      "id": "worker_00",
+      "readyState": "unsupported",
+      "role": "Worker",
+      "worldPosition": {
+        "x": 618.0,
+        "y": 438.0
+      }
+    }
+  ],
+  "visualPoseLimitation": true
+}

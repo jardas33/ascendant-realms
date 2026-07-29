@@ -1,0 +1,20 @@
+{
+  "checkpoint": "v0.341",
+  "classification": "reference-only documentary architecture/material sources",
+  "accessDate": "2026-07-18",
+  "references": [
+    {
+      "source": "v0.304 recovered Barrosan/Montesinho documentary reference lineage",
+      "author": "documented in repository archaeology pack",
+      "licence": "reference-only; no asset import",
+      "feature": "granite agricultural massing, slate roof, damp highland contact"
+    },
+    {
+      "source": "repository art bible and candidate_a geological lineage",
+      "author": "Ascendant Realms project",
+      "licence": "repository-authored",
+      "feature": "medium-dark grey-brown granite, weathered timber, restrained iron"
+    }
+  ],
+  "assetPolicy": "clean-room mesh; no copied complete building; no protected game asset"
+}

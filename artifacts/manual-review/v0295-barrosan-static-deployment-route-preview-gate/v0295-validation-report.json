@@ -1,0 +1,23 @@
+{
+  "status": "PASS_v0295_BARROSAN_STATIC_DEPLOYMENT_ROUTE_PREVIEW_GATE_VALIDATION",
+  "errors": [],
+  "requiredActions": [
+    "v0295_preview_route_available",
+    "v0295_preview_route_clicked",
+    "v0295_route_preview_locked_top_strip",
+    "v0295_route_preview_marker_exactly_once",
+    "v0295_static_route_preview_visual",
+    "v0295_barracks_after_route_preview_locked",
+    "v0295_defender_after_route_preview_locked",
+    "v0295_repeat_preview_route_idempotent",
+    "v0295_no_duplicate_route_visual",
+    "v0295_no_duplicate_route_marker",
+    "v0295_no_deployment",
+    "v0295_no_movement",
+    "v0295_no_pathfinding_pathing",
+    "v0295_no_economy_resource_mutation",
+    "v0295_no_true_default_runtime_mutation"
+  ],
+  "routeVisual": "five authored static segments",
+  "trueDefaultRuntimeChanged": false
+}

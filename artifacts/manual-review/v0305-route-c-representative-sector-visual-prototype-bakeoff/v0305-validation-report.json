@@ -1,0 +1,10 @@
+{
+  "status": "PASS_V0305_ROUTE_C_REPRESENTATIVE_SECTOR_VALIDATION",
+  "requiredCapturePrefixes": 43,
+  "renderedCaptureFiles": 43,
+  "prototypeOptIn": true,
+  "runtimeMutation": false,
+  "routeCScore": 79,
+  "visualVerdict": "revise once",
+  "errors": []
+}

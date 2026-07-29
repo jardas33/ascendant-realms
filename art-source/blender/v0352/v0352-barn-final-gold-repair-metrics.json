@@ -1,0 +1,57 @@
+{
+  "checkpoint": "v0.352",
+  "baseHead": "c029305be963353e122da669e67d7d33b8d06c0a",
+  "humanDecision": "V0.351 HUMAN-REJECTED AS FINAL GOLD — AGRICULTURAL SHUTTER REPAIR ACCEPTED; EXTERIOR ROOF VISIBILITY, ORGANIC FOUNDATION CONTACT AND CONTEXTUAL PLAYER PROOF FAILED",
+  "outcome": "READY FOR HUMAN V0352 BARN FINAL-GOLD REVIEW",
+  "automatedVisualApproval": false,
+  "humanReviewRequired": true,
+  "frozenV0351Shutters": true,
+  "shutterLeafCount": 2,
+  "shutterPrimaryBoardOrientation": "vertical",
+  "frozenV0350MaterialBaseline": true,
+  "frozenSourceGLB": "desktop-spikes/godot-salto/assets/v0350/barn_final_material_harmony.glb",
+  "roof": {
+    "principalSlopes": 2,
+    "straightRidge": true,
+    "pitchDegrees": [20, 20],
+    "oldGeometryHash": "0b4944d8a15006664dad84cec5e8b41546497588d14194d5b2e49621071e209c",
+    "newGeometryHash": "0077e19143517e2850aee3bdb6ce9408d55bc7e2bfdc958d61ac1b141ab684f9",
+    "repair": "minimal closed two-slope underside inside frozen eave/ridge bounds; corrected exterior visibility under ordinary backface culling",
+    "roofExteriorBoundsBefore": {"minX": -7.87, "maxX": 7.87, "minY": 3.94, "maxY": 5.88542, "minZ": -5.345, "maxZ": 5.345},
+    "roofExteriorBoundsAfter": {"minX": -7.87, "maxX": 7.87, "minY": 3.94, "maxY": 5.88542, "minZ": -5.345, "maxZ": 5.345},
+    "exteriorOrbitViewCount": 9,
+    "missingRoofSlopeCount": 0,
+    "exteriorCutawayCount": 0,
+    "roofInteriorExposureCount": 0,
+    "hiddenRoofNodeCount": 0,
+    "culling": "ordinary backface culling retained"
+  },
+  "shutters": {
+    "leafCount": 2,
+    "primaryBoardOrientation": "vertical",
+    "centralMeetingSeam": true,
+    "lowerUpperAreaRatio": 3.64
+  },
+  "lowerUpperAreaRatio": 3.64,
+  "foundation": {
+    "visibleRectangularContactArtifactCount": 0,
+    "visibleDecalBoundaryCount": 0,
+    "floatingFoundationGeometryCount": 0,
+    "method": "five rounded transparent contact-shadow blobs plus irregular rounded doorway soil response; no rectangular plane"
+  },
+  "context": {
+    "cameraMode": "three-quarter RTS",
+    "completeWorkerCount": 2,
+    "minimumWorkerPixelHeight": 20,
+    "workerParts": ["Head", "Body", "Arm_Left", "Arm_Right", "Leg_Left", "Leg_Right", "Base_Grounding"]
+  },
+  "actual256SourceDimensions": "256x256",
+  "defaultRuntimeIntegrated": false,
+  "noGameplay": true,
+  "noMovement": true,
+  "noPathfinding": true,
+  "noCombat": true,
+  "noEconomy": true,
+  "noResources": true,
+  "noSaveOrStableIdMutation": true
+}

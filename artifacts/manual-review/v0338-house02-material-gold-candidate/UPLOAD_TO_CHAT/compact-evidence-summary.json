@@ -1,0 +1,535 @@
+{
+  "checkpoint": "v0.338",
+  "status": "PASS_V0338_HOUSE02_MATERIAL_GOLD_CANDIDATE_PACK",
+  "outcome": "READY FOR HUMAN HOUSE 02 GOLD-CANDIDATE MATERIAL REVIEW",
+  "humanReviewRequired": true,
+  "automatedVisualApproval": false,
+  "selectedSource": {
+    "label": "Material 3",
+    "candidate": "candidate_a",
+    "sourceDirectory": "art-source/materials/v0335/candidates/candidate_a",
+    "lineage": {
+      "checkpoint": "v0.338",
+      "selectedCandidate": "candidate_a",
+      "sourceFamily": "v0.337 selected candidate_a derivative; no new source search",
+      "sourceDirectory": "art-source/materials/v0335/candidates/candidate_a",
+      "sourceMapHashes": {
+        "albedo": "fce2fe5350bb8ca1ded96b6c81eaacb19126b3bf7d9d59c493cca7f76753796a",
+        "height": "72325fddbf04962e6b79381d2293394e2714a58fa4b500a5bc8ab5c27688003f",
+        "normal": "a3b9c476b2306af9d0f1737f3a1e4abe4460be86dd451e31a99128edbadd590d",
+        "roughness": "1e59cd0b9fea11246fe42a2c96af89f7038910751c001470a6ca29baef934a41",
+        "ao": "280e29899f1a064f39719710fb7014014485e1edd0c3f75b163be2a59c4f298c"
+      },
+      "calibration": {
+        "wall": "medium grey-grey-brown, 0.52 exposure basis, saturation 0.24, deterministic local value variation, darker recessed mortar response",
+        "rear": "same family, 0.49 exposure basis, cooler/damper joint variation",
+        "gables": "same family, orientation-specific 0.51 exposure basis",
+        "dressed": "same family, modestly smoother/lighter 0.60 exposure basis",
+        "foundation": "same family, darker/desaturated 0.42 exposure basis with restrained lower-contact dampness",
+        "slateTimberWindows": "frozen geometry and source material family; no directional lighting baked into albedo",
+        "normal": "source OpenGL normal preserved; Blender/Godot strength 0.42",
+        "roughness": "bounded to 192..248 8-bit; no gloss painting",
+        "height": "source height retained and bounded to 28..228; parallax disabled",
+        "ao": "retained as evidence input; not baked into albedo"
+      },
+      "maps": {
+        "gold_candidate_ao": "12c77e4a41a055f618d9aa992c2950d8366a5b2cb554644eac215f5e814c8358",
+        "gold_candidate_dressed_albedo": "bb1baa9d0bbd10b351ca335f027431554933977cad3a99be72fcc82fc10ba180",
+        "gold_candidate_foundation_albedo": "f720e69a4e1ebfe85a51e443192c19748bccde7dfa0bd42a987686355df26c39",
+        "gold_candidate_gable_albedo": "5b4fed9ccc47c2db8937d33edcd4c46103f59c3168440b4b76fd3d80ffca8452",
+        "gold_candidate_height": "c26aac80be7b5fd5532dbccb3ccad12273cd7870ec97100889d9b0f368581120",
+        "gold_candidate_normal": "6588c8a3edab16d79b2ed7abb59ce25fca3fe6ad284bff08a1490e095b18f8fc",
+        "gold_candidate_rear_albedo": "56f81522abdde86722280cae4e8940384f30b954c5575eefaf0f9f41c6d9dd72",
+        "gold_candidate_roughness": "7b44a3b2b3aec8c4ede14f6bd48371950a5f306b57c1d1e01384f6b94e8c3efe",
+        "gold_candidate_rubble_albedo": "2b363f0b7cf1d023712d3a12041045f18890e0f4d4f5ed6f4ca3f48ef8d6d083"
+      },
+      "textureResolution": [
+        2048,
+        2048
+      ],
+      "normalStrength": 0.42,
+      "heightParallax": {
+        "enabled": false,
+        "reason": "protect openings, silhouette and motion truth"
+      },
+      "weathering": {
+        "mortar": "recessed low-value response without outline",
+        "foundation": "low coverage vertical damp variation",
+        "mossLichen": "not baked; coverage 0%",
+        "uniformDirtBand": false
+      }
+    }
+  },
+  "v0334FrozenHashes": {
+    "sourceGLB": "f85cf2e7a448015638455f5de5cd49c18b085cbb1103a1fd5dfa8f7706d24be5",
+    "importedResource": "b3be51e7d6e52fdfb829400afafbf26e9e0f9983b902b8ccba83f38306bba531"
+  },
+  "v0337FrozenHashes": {
+    "blend": "517a9aaa6d9debe2bcf8047de774bdfa252e0376709b2ddafa0c7f9cc72bfe79",
+    "glb": "ad700395cf0fbc7e396d0f1ef7babff3710f01ce268b34c9720e2d70b24c5dbb"
+  },
+  "v0338BlendSha256": "3da7c2cf71509e07c900001fd0b277e9af4584a074552ac1d929a4f37e0d78b6",
+  "v0338GLBSha256": "ceab23ff3cfb580cc63ce917ec1ff675a1cd318f8fe3390fc836166015ebba89",
+  "architectureComparison": "v0337-v0338-architecture-fingerprint-comparison.json; geometrically identical before export",
+  "defaultRuntimeIntegrated": false,
+  "materialBindings": {
+    "wall": "medium grey-grey-brown, 0.52 exposure basis, saturation 0.24, deterministic local value variation, darker recessed mortar response",
+    "rear": "same family, 0.49 exposure basis, cooler/damper joint variation",
+    "gables": "same family, orientation-specific 0.51 exposure basis",
+    "dressed": "same family, modestly smoother/lighter 0.60 exposure basis",
+    "foundation": "same family, darker/desaturated 0.42 exposure basis with restrained lower-contact dampness",
+    "slateTimberWindows": "frozen geometry and source material family; no directional lighting baked into albedo",
+    "normal": "source OpenGL normal preserved; Blender/Godot strength 0.42",
+    "roughness": "bounded to 192..248 8-bit; no gloss painting",
+    "height": "source height retained and bounded to 28..228; parallax disabled",
+    "ao": "retained as evidence input; not baked into albedo"
+  },
+  "mortarStatistics": {
+    "recessed": true,
+    "stoneFacesDarkerMortar": true,
+    "graphicOutline": false
+  },
+  "dressedStoneCalibration": "same candidate_a family, modest smoother value separation",
+  "foundationWeathering": {
+    "mortar": "recessed low-value response without outline",
+    "foundation": "low coverage vertical damp variation",
+    "mossLichen": "not baked; coverage 0%",
+    "uniformDirtBand": false
+  },
+  "wallSpecificVariation": "front/rear/left-gable/right-gable deterministic offsets and variants",
+  "slateCalibration": "preserved charcoal slate family; no granite contamination",
+  "timberCalibration": "preserved warm brown family; no gloss override",
+  "lightingSetups": [
+    "neutral overcast",
+    "cool highland daylight",
+    "restrained warm directional"
+  ],
+  "PBRMaps": {
+    "gold_candidate_ao": "12c77e4a41a055f618d9aa992c2950d8366a5b2cb554644eac215f5e814c8358",
+    "gold_candidate_dressed_albedo": "bb1baa9d0bbd10b351ca335f027431554933977cad3a99be72fcc82fc10ba180",
+    "gold_candidate_foundation_albedo": "f720e69a4e1ebfe85a51e443192c19748bccde7dfa0bd42a987686355df26c39",
+    "gold_candidate_gable_albedo": "5b4fed9ccc47c2db8937d33edcd4c46103f59c3168440b4b76fd3d80ffca8452",
+    "gold_candidate_height": "c26aac80be7b5fd5532dbccb3ccad12273cd7870ec97100889d9b0f368581120",
+    "gold_candidate_normal": "6588c8a3edab16d79b2ed7abb59ce25fca3fe6ad284bff08a1490e095b18f8fc",
+    "gold_candidate_rear_albedo": "56f81522abdde86722280cae4e8940384f30b954c5575eefaf0f9f41c6d9dd72",
+    "gold_candidate_roughness": "7b44a3b2b3aec8c4ede14f6bd48371950a5f306b57c1d1e01384f6b94e8c3efe",
+    "gold_candidate_rubble_albedo": "2b363f0b7cf1d023712d3a12041045f18890e0f4d4f5ed6f4ca3f48ef8d6d083"
+  },
+  "UV": {
+    "textureResolution": [
+      2048,
+      2048
+    ],
+    "texelDensity": "inherited approximately 220..240 px/m",
+    "collapsedIslands": false
+  },
+  "repetitionAnalysis": {
+    "wallSpecificOffsets": true,
+    "frontRearMatchedComparison": true,
+    "cornerContinuity": true,
+    "mirroredNormal": false
+  },
+  "normalDiagnostics": {
+    "wallRegionBox": [
+      120,
+      50,
+      1160,
+      700
+    ],
+    "meanAbsoluteDifference": 25.6997,
+    "ssimNormalVsDisabled": 0.994,
+    "luminanceMean": 97.728,
+    "luminanceStdDev": 44.15,
+    "clippedWhitePercent": 0.0,
+    "clippedBlackPercent": 0.0,
+    "normalResponsePass": true
+  },
+  "colourStatistics": {
+    "direction": "medium grey to grey-brown with restrained cool character and muted warm variation",
+    "targetRelativeToV0337": "approximately 10..18 percent darker midtone by human review"
+  },
+  "clippingStatistics": {
+    "whiteBelowOnePercent": true,
+    "blackBelowOnePercent": true
+  },
+  "captures": {
+    "count": 31,
+    "errors": []
+  },
+  "video": {
+    "codec": "h264",
+    "width": 1280,
+    "height": 720,
+    "frameRate": "24/1",
+    "durationSeconds": 18.0,
+    "decodedFrames": 432,
+    "blackFrameSamples": [
+      0,
+      108,
+      216,
+      324,
+      431
+    ],
+    "allNonBlank": true,
+    "frozenAdjacentFrames": 0
+  },
+  "performance": {
+    "warmupSeconds": 5.0,
+    "measurementSeconds": 20.007188,
+    "sampleCount": 1500,
+    "averageFps": 74.9730546841465,
+    "medianFps": 74.9625187406297,
+    "onePercentLowFps": 71.7669011052103,
+    "minimumFps": 44.7727781508843,
+    "medianFrameTimeMs": 13.34,
+    "repeatedSpikeCountAbove50ms": 0,
+    "shaderWarmupExcluded": true,
+    "visibleTriangles": 14944,
+    "renderObjects": 24,
+    "materialCount": 7,
+    "textureCount": 10
+  },
+  "preservation": {
+    "automatedVisualApproval": false,
+    "candidateBRejected": true,
+    "candidateCNotSelected": true,
+    "captures": [
+      {
+        "cameraMode": "neutral_overcast_normal_rts",
+        "fileName": "01_neutral_overcast_normal_rts.png",
+        "height": 720,
+        "path": "D:/Code for projects/WB game like/ascendant-realms-v0223-recovery/artifacts/runtime/v0338/screenshots/01_neutral_overcast_normal_rts.png",
+        "projection": "orthographic",
+        "width": 1280
+      },
+      {
+        "cameraMode": "cool_highland_normal_rts",
+        "fileName": "02_cool_highland_normal_rts.png",
+        "height": 720,
+        "path": "D:/Code for projects/WB game like/ascendant-realms-v0223-recovery/artifacts/runtime/v0338/screenshots/02_cool_highland_normal_rts.png",
+        "projection": "orthographic",
+        "width": 1280
+      },
+      {
+        "cameraMode": "warm_directional_normal_rts",
+        "fileName": "03_warm_directional_normal_rts.png",
+        "height": 720,
+        "path": "D:/Code for projects/WB game like/ascendant-realms-v0223-recovery/artifacts/runtime/v0338/screenshots/03_warm_directional_normal_rts.png",
+        "projection": "orthographic",
+        "width": 1280
+      },
+      {
+        "cameraMode": "near_front",
+        "fileName": "04_near_front.png",
+        "height": 720,
+        "path": "D:/Code for projects/WB game like/ascendant-realms-v0223-recovery/artifacts/runtime/v0338/screenshots/04_near_front.png",
+        "projection": "orthographic",
+        "width": 1280
+      },
+      {
+        "cameraMode": "near_rear",
+        "fileName": "05_near_rear.png",
+        "height": 720,
+        "path": "D:/Code for projects/WB game like/ascendant-realms-v0223-recovery/artifacts/runtime/v0338/screenshots/05_near_rear.png",
+        "projection": "orthographic",
+        "width": 1280
+      },
+      {
+        "cameraMode": "far_rts",
+        "fileName": "06_far_rts.png",
+        "height": 720,
+        "path": "D:/Code for projects/WB game like/ascendant-realms-v0223-recovery/artifacts/runtime/v0338/screenshots/06_far_rts.png",
+        "projection": "orthographic",
+        "width": 1280
+      },
+      {
+        "cameraMode": "256_readability_source",
+        "fileName": "07_256_readability_source.png",
+        "height": 720,
+        "path": "D:/Code for projects/WB game like/ascendant-realms-v0223-recovery/artifacts/runtime/v0338/screenshots/07_256_readability_source.png",
+        "projection": "orthographic",
+        "width": 1280
+      },
+      {
+        "cameraMode": "greyscale_rts",
+        "fileName": "08_greyscale_rts.png",
+        "height": 720,
+        "path": "D:/Code for projects/WB game like/ascendant-realms-v0223-recovery/artifacts/runtime/v0338/screenshots/08_greyscale_rts.png",
+        "projection": "orthographic",
+        "width": 1280
+      },
+      {
+        "cameraMode": "front_orthographic",
+        "fileName": "09_front_orthographic.png",
+        "height": 720,
+        "path": "D:/Code for projects/WB game like/ascendant-realms-v0223-recovery/artifacts/runtime/v0338/screenshots/09_front_orthographic.png",
+        "projection": "orthographic",
+        "width": 1280
+      },
+      {
+        "cameraMode": "rear_orthographic",
+        "fileName": "10_rear_orthographic.png",
+        "height": 720,
+        "path": "D:/Code for projects/WB game like/ascendant-realms-v0223-recovery/artifacts/runtime/v0338/screenshots/10_rear_orthographic.png",
+        "projection": "orthographic",
+        "width": 1280
+      },
+      {
+        "cameraMode": "left_orthographic",
+        "fileName": "11_left_orthographic.png",
+        "height": 720,
+        "path": "D:/Code for projects/WB game like/ascendant-realms-v0223-recovery/artifacts/runtime/v0338/screenshots/11_left_orthographic.png",
+        "projection": "orthographic",
+        "width": 1280
+      },
+      {
+        "cameraMode": "right_orthographic",
+        "fileName": "12_right_orthographic.png",
+        "height": 720,
+        "path": "D:/Code for projects/WB game like/ascendant-realms-v0223-recovery/artifacts/runtime/v0338/screenshots/12_right_orthographic.png",
+        "projection": "orthographic",
+        "width": 1280
+      },
+      {
+        "cameraMode": "direct_top_down",
+        "fileName": "13_direct_top_down.png",
+        "height": 720,
+        "path": "D:/Code for projects/WB game like/ascendant-realms-v0223-recovery/artifacts/runtime/v0338/screenshots/13_direct_top_down.png",
+        "projection": "orthographic",
+        "width": 1280
+      },
+      {
+        "cameraMode": "front_rubble_closeup",
+        "fileName": "14_front_rubble_closeup.png",
+        "height": 720,
+        "path": "D:/Code for projects/WB game like/ascendant-realms-v0223-recovery/artifacts/runtime/v0338/screenshots/14_front_rubble_closeup.png",
+        "projection": "orthographic",
+        "width": 1280
+      },
+      {
+        "cameraMode": "rear_rubble_closeup",
+        "fileName": "15_rear_rubble_closeup.png",
+        "height": 720,
+        "path": "D:/Code for projects/WB game like/ascendant-realms-v0223-recovery/artifacts/runtime/v0338/screenshots/15_rear_rubble_closeup.png",
+        "projection": "orthographic",
+        "width": 1280
+      },
+      {
+        "cameraMode": "corner_seam",
+        "fileName": "16_corner_seam.png",
+        "height": 720,
+        "path": "D:/Code for projects/WB game like/ascendant-realms-v0223-recovery/artifacts/runtime/v0338/screenshots/16_corner_seam.png",
+        "projection": "orthographic",
+        "width": 1280
+      },
+      {
+        "cameraMode": "dressed_lintel_sill_jamb",
+        "fileName": "17_dressed_lintel_sill_jamb.png",
+        "height": 720,
+        "path": "D:/Code for projects/WB game like/ascendant-realms-v0223-recovery/artifacts/runtime/v0338/screenshots/17_dressed_lintel_sill_jamb.png",
+        "projection": "orthographic",
+        "width": 1280
+      },
+      {
+        "cameraMode": "foundation_dampness",
+        "fileName": "18_foundation_dampness.png",
+        "height": 720,
+        "path": "D:/Code for projects/WB game like/ascendant-realms-v0223-recovery/artifacts/runtime/v0338/screenshots/18_foundation_dampness.png",
+        "projection": "orthographic",
+        "width": 1280
+      },
+      {
+        "cameraMode": "stair_landing",
+        "fileName": "19_stair_landing.png",
+        "height": 720,
+        "path": "D:/Code for projects/WB game like/ascendant-realms-v0223-recovery/artifacts/runtime/v0338/screenshots/19_stair_landing.png",
+        "projection": "orthographic",
+        "width": 1280
+      },
+      {
+        "cameraMode": "timber_and_openings",
+        "fileName": "20_timber_and_openings.png",
+        "height": 720,
+        "path": "D:/Code for projects/WB game like/ascendant-realms-v0223-recovery/artifacts/runtime/v0338/screenshots/20_timber_and_openings.png",
+        "projection": "orthographic",
+        "width": 1280
+      },
+      {
+        "cameraMode": "slate_closeup",
+        "fileName": "21_slate_closeup.png",
+        "height": 720,
+        "path": "D:/Code for projects/WB game like/ascendant-realms-v0223-recovery/artifacts/runtime/v0338/screenshots/21_slate_closeup.png",
+        "projection": "orthographic",
+        "width": 1280
+      },
+      {
+        "cameraMode": "normal_only",
+        "fileName": "22_normal_only.png",
+        "height": 720,
+        "path": "D:/Code for projects/WB game like/ascendant-realms-v0223-recovery/artifacts/runtime/v0338/screenshots/22_normal_only.png",
+        "projection": "orthographic",
+        "width": 1280
+      },
+      {
+        "cameraMode": "normal_disabled",
+        "fileName": "23_normal_disabled.png",
+        "height": 720,
+        "path": "D:/Code for projects/WB game like/ascendant-realms-v0223-recovery/artifacts/runtime/v0338/screenshots/23_normal_disabled.png",
+        "projection": "orthographic",
+        "width": 1280
+      },
+      {
+        "cameraMode": "albedo_only",
+        "fileName": "24_albedo_only.png",
+        "height": 720,
+        "path": "D:/Code for projects/WB game like/ascendant-realms-v0223-recovery/artifacts/runtime/v0338/screenshots/24_albedo_only.png",
+        "projection": "orthographic",
+        "width": 1280
+      },
+      {
+        "cameraMode": "roughness_isolation",
+        "fileName": "25_roughness_isolation.png",
+        "height": 720,
+        "path": "D:/Code for projects/WB game like/ascendant-realms-v0223-recovery/artifacts/runtime/v0338/screenshots/25_roughness_isolation.png",
+        "projection": "orthographic",
+        "width": 1280
+      },
+      {
+        "cameraMode": "uv_checker_front_rear",
+        "fileName": "26_uv_checker_front_rear.png",
+        "height": 720,
+        "path": "D:/Code for projects/WB game like/ascendant-realms-v0223-recovery/artifacts/runtime/v0338/screenshots/26_uv_checker_front_rear.png",
+        "projection": "orthographic",
+        "width": 1280
+      },
+      {
+        "cameraMode": "uv_checker_gables",
+        "fileName": "27_uv_checker_gables.png",
+        "height": 720,
+        "path": "D:/Code for projects/WB game like/ascendant-realms-v0223-recovery/artifacts/runtime/v0338/screenshots/27_uv_checker_gables.png",
+        "projection": "orthographic",
+        "width": 1280
+      },
+      {
+        "cameraMode": "repetition_heat_map",
+        "fileName": "28_repetition_heat_map.png",
+        "height": 720,
+        "path": "D:/Code for projects/WB game like/ascendant-realms-v0223-recovery/artifacts/runtime/v0338/screenshots/28_repetition_heat_map.png",
+        "projection": "orthographic",
+        "width": 1280
+      },
+      {
+        "cameraMode": "v0337_v0338_matched_rts",
+        "fileName": "29_v0337_v0338_matched_rts.png",
+        "height": 720,
+        "path": "D:/Code for projects/WB game like/ascendant-realms-v0223-recovery/artifacts/runtime/v0338/screenshots/29_v0337_v0338_matched_rts.png",
+        "projection": "orthographic",
+        "width": 1280
+      },
+      {
+        "cameraMode": "v0337_v0338_matched_closeup",
+        "fileName": "30_v0337_v0338_matched_closeup.png",
+        "height": 720,
+        "path": "D:/Code for projects/WB game like/ascendant-realms-v0223-recovery/artifacts/runtime/v0338/screenshots/30_v0337_v0338_matched_closeup.png",
+        "projection": "orthographic",
+        "width": 1280
+      },
+      {
+        "cameraMode": "documentary_value_comparison",
+        "fileName": "31_documentary_value_comparison.png",
+        "height": 720,
+        "path": "D:/Code for projects/WB game like/ascendant-realms-v0223-recovery/artifacts/runtime/v0338/screenshots/31_documentary_value_comparison.png",
+        "projection": "orthographic",
+        "width": 1280
+      }
+    ],
+    "checkpoint": "v0.338",
+    "continuousFrames": 432,
+    "defaultRuntimeIntegrated": false,
+    "derivedBlend": "art-source/blender/v0338/barrosan_house_02_material_gold_candidate.blend",
+    "errors": [],
+    "humanReviewRequired": true,
+    "lightSetups": [
+      "neutral overcast",
+      "cool highland daylight",
+      "restrained warm directional"
+    ],
+    "lineage": "res://assets/v0338/gold_candidate/v0338-material-gold-candidate-lineage.json",
+    "noAI": true,
+    "noCombat": true,
+    "noEconomy": true,
+    "noGameplay": true,
+    "noMovement": true,
+    "noPathfinding": true,
+    "noResources": true,
+    "noSaves": true,
+    "noStableIDChanges": true,
+    "outcome": "READY FOR HUMAN HOUSE 02 GOLD-CANDIDATE MATERIAL REVIEW",
+    "prototypeOptIn": true,
+    "scenePath": "res://scenes/review/V0338BarrosanHouse02MaterialGoldCandidateReview.tscn",
+    "schemaVersion": 1,
+    "selectedCandidate": "candidate_a",
+    "sourceBlend": "art-source/blender/v0337/barrosan_house_02_selected_granite.blend",
+    "sourceGLB": "res://assets/v0338/barrosan_house_02_material_gold_candidate.glb",
+    "status": "PASS_V0338_HOUSE02_MATERIAL_GOLD_CANDIDATE_REVIEW",
+    "videoSeconds": 18.0
+  },
+  "knownLimitations": [
+    "human visual approval remains required",
+    "opt-in review asset only",
+    "moss/lichen coverage is zero in this checkpoint",
+    "runtime settlement art is unchanged"
+  ],
+  "exactUploadFiles": [
+    {
+      "path": "00_READ_ME_FIRST.md",
+      "bytes": 1140,
+      "sha256": "4a9bb3d5517a9adf15f6dfa0b516b066918474a0541215d2ff37f4a5e8ef6021"
+    },
+    {
+      "path": "01_HUMAN_DECISION_AND_DERIVED_LINEAGE.png",
+      "bytes": 200123,
+      "sha256": "101c6ed45d99407aa828683908e5632f813a54757e863c56b265ea1c5ce64bd6"
+    },
+    {
+      "path": "02_FULL_HOUSE_LIGHTING_AND_RTS.png",
+      "bytes": 166633,
+      "sha256": "4e7674fb2da74b730ebee67a9972f0e1e1cdd31221ed282d613fa44276ef8872"
+    },
+    {
+      "path": "03_ORTHOGRAPHIC_AND_ARCHITECTURE_PRESERVATION.png",
+      "bytes": 372370,
+      "sha256": "4ac609ce278de90d4c3f4ac549a3b5b6bab655f3f0458a0abc5339e7f1c5ab85"
+    },
+    {
+      "path": "04_RUBBLE_MORTAR_AND_CORNER_CLOSEUPS.png",
+      "bytes": 472555,
+      "sha256": "263b0953bfb1de5625e4856e769bfc0cb2163d3b7a0caf056cb7fc2ee837e81e"
+    },
+    {
+      "path": "05_DRESSED_STONE_FOUNDATION_AND_STAIR.png",
+      "bytes": 467948,
+      "sha256": "cc002471791480969857702efc8e03af2580d9dd435bff863f54ebaf2bdae5a1"
+    },
+    {
+      "path": "06_SLATE_TIMBER_AND_MATERIAL_HARMONY.png",
+      "bytes": 308400,
+      "sha256": "ec760061e1f0af0b7a0c087ce7e097c1fa4f3f5ca267b186df6b0ae4a752b949"
+    },
+    {
+      "path": "07_V0337_VERSUS_V0338_MATCHED_COMPARISON.png",
+      "bytes": 384868,
+      "sha256": "01b2581447c000d38082249de9cfa2b61875f7276d0265b987ca59a744892462"
+    },
+    {
+      "path": "08_CONTINUOUS_V0338_HOUSE02_MATERIAL_GOLD_CANDIDATE.mp4",
+      "bytes": 2073370,
+      "sha256": "5f21a5f455d1afe3ace7965f021c3ae5c221eb18be9b657ca69444d79633b278"
+    },
+    {
+      "path": "09_PBR_UV_NORMAL_REPETITION_AND_PERFORMANCE.png",
+      "bytes": 525269,
+      "sha256": "17836b9686c074439124b7a81b1c5dce1a3c3d0791fdf60daeaebef536419497"
+    }
+  ]
+}

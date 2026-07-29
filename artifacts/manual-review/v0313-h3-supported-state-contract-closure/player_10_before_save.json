@@ -1,0 +1,62 @@
+{
+  "accepted": true,
+  "cameraCoordinates": {
+    "x": 0.0,
+    "y": 11.6,
+    "z": 8.9
+  },
+  "cameraZoom": 10.8,
+  "captureFilename": "player_10_before_save.png",
+  "fallbackFlag": false,
+  "frameNumber": 10,
+  "gameplayMutation": false,
+  "h3Flag": true,
+  "lastOrder": "move:930.0:520.0",
+  "note": "real writable save before reset",
+  "pairedViewId": "v0313-before_save",
+  "perceptualHash": "0f7f0b3ffb07eba7fb37ffffffffffa7ff8ffe6fff738001f825076d077107f1",
+  "playerDebugClassification": "player",
+  "presentationMode": "PLAYER",
+  "rejected": false,
+  "rejectionReason": null,
+  "runtimeTimestampMs": 18956,
+  "saveIdentifier": "user://v0313-h3-supported-state-save.json",
+  "scenario": "save_reload",
+  "screenshotSha256": "00ae3f9957b4af629422fc3381f95dc602525b26b2e18131fafd76b4692cc1af",
+  "selectedIds": [
+    "friendly_00"
+  ],
+  "semanticEventId": "v0313-before_save",
+  "stableUnitIds": [
+    "friendly_00"
+  ],
+  "stateSource": "runtime.units",
+  "units": [
+    {
+      "activityState": "travelling",
+      "commandState": "move_ordered",
+      "destination": {
+        "x": 930.0,
+        "y": 520.0
+      },
+      "facing": "east",
+      "hasDestination": true,
+      "id": "friendly_00",
+      "orderState": "destination_set",
+      "position": {
+        "x": 628.56,
+        "y": 402.3
+      },
+      "readyState": "unsupported",
+      "role": "Militia"
+    }
+  ],
+  "mode": "PLAYER",
+  "sourceDirectory": "player",
+  "packFilename": "player_10_before_save.png",
+  "physicalBytes": 194828,
+  "pixelDimensions": [
+    1920,
+    1009
+  ]
+}

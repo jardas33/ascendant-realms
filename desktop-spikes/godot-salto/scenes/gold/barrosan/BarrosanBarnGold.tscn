@@ -1,0 +1,11 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource path="res://assets/v0350/barn_final_material_harmony.glb" type="PackedScene" id="1_barn"]
+
+[node name="BarrosanBarnGold" instance=ExtResource("1_barn")]
+metadata/asset_name = "Barrosan Barn"
+metadata/asset_family = "Barrosan Human Settlement"
+metadata/asset_status = "HUMAN_APPROVED_VISUAL_GOLD"
+metadata/human_approval_checkpoint = "v0.354"
+metadata/passive_visual_only = true
+metadata/no_gameplay = true

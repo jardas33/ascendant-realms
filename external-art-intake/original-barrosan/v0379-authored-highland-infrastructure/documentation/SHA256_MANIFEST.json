@@ -1,0 +1,10 @@
+{
+  "documentation/ASSET_MANIFEST.json": "47f9d64ee04b049d05cf7986e0b23d9e623aba4a932e98a7b6b081b86b48f833",
+  "documentation/DESIGN_NOTES.md": "3a42a4c15744a51ef7e1a93b22e0615b23269cc7581de282a14ae42f8ac463f9",
+  "documentation/README.md": "6cd8c6f3e60cf43a50e71ce9dbb8c1dec5bc1c706101d8b66c47d513bf018675",
+  "exports/barrosan_highland_infrastructure_v0379.glb": "9a2bdc63488f1a226deb6c312f4dd6fadde7fb93764e17ae58a73d077e5a2315",
+  "previews/01_SCHEMATIC_TOPDOWN.png": "6210a629d4840f508a378ad74fe2e24ef66728821dafa64d7f75f120c0978259",
+  "previews/02_HEIGHT_AND_BANK_PROFILE.png": "41807f40cd9df485a447595a166d91312e28652bbce05cb4f3f9aa4623f2e495",
+  "previews/03_BRIDGE_ASSEMBLY_SCHEMATIC.png": "ce020d9658bb983dac4dbacf2d12a338a8f5928f271120b8d073caa1ceb86f68",
+  "source/generate_v0379_highland_infrastructure.py": "071f91c776a8e19ebc0dabdd35d86280b70f319ad15e088630e843877f375e46"
+}

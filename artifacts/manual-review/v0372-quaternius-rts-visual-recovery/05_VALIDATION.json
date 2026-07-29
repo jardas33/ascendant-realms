@@ -1,0 +1,46 @@
+{
+  "checkpoint": "v0.372",
+  "status": "READY_FOR_HUMAN_REVIEW",
+  "primary": {
+    "file": "01_PRIMARY_RTS_COMPOSITION.png",
+    "width": 1920,
+    "height": 1080,
+    "bytes": 665095,
+    "rendered": true
+  },
+  "hud": false,
+  "captures": [
+    {
+      "file": "01_PRIMARY_RTS_COMPOSITION.png",
+      "width": 1920,
+      "height": 1080,
+      "bytes": 665095,
+      "rendered": true
+    },
+    {
+      "file": "02_CLOSER_SETTLEMENT_AND_RESOURCE.png",
+      "width": 1920,
+      "height": 1080,
+      "bytes": 611764,
+      "rendered": true
+    },
+    {
+      "file": "03_BRIDGE_AND_HOSTILE_CAMP.png",
+      "width": 1920,
+      "height": 1080,
+      "bytes": 592338,
+      "rendered": true
+    },
+    {
+      "file": "04_TOPDOWN_SPACING_AUDIT.png",
+      "width": 1920,
+      "height": 1080,
+      "bytes": 692674,
+      "rendered": true
+    }
+  ],
+  "packFiles": 6,
+  "source": "v0.370 Quaternius assets, isolated world-only composition",
+  "defaultRuntime": "unchanged",
+  "gameplay": "not connected"
+}

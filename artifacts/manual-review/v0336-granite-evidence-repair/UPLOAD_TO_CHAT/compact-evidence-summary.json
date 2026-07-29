@@ -1,0 +1,331 @@
+{
+  "checkpoint": "v0.336",
+  "outcome": "READY FOR HUMAN FINAL GRANITE CANDIDATE SELECTION",
+  "humanReviewRequired": true,
+  "automatedVisualApproval": false,
+  "house02Modified": false,
+  "v0334SourceGLBSha256": "f85cf2e7a448015638455f5de5cd49c18b085cbb1103a1fd5dfa8f7706d24be5",
+  "v0334ImportedResourceSha256": "b3be51e7d6e52fdfb829400afafbf26e9e0f9983b902b8ccba83f38306bba531",
+  "actualRuntimeBindingLedger": "artifacts/runtime/v0336/candidate-binding-ledger.json",
+  "recoveredCandidateBlindMapping": {
+    "MATERIAL 1": "candidate_c",
+    "MATERIAL 2": "candidate_b",
+    "MATERIAL 3": "candidate_a"
+  },
+  "v0335MappingMismatch": {
+    "existed": true,
+    "exactCause": "v0.335 compact JSON used C/A/B while the scene instantiated A/B/C",
+    "repaired": true
+  },
+  "candidateDistinctness": {
+    "pairs": [
+      {
+        "pair": "M1/M2",
+        "mapDifferences": {
+          "albedo": {
+            "leftSha256": "05a591cca26f3fd55c14d36c4acf853efa90cca4b66ab15b4974729bd32c061a",
+            "rightSha256": "a635755bdcf7b2fe0e732899bba3deca44660991954412ace83904a2208d0f8d",
+            "meanAbsoluteDifference": 66.292
+          },
+          "height": {
+            "leftSha256": "b603ac1513eb29cc8b6af7094d7eff39d1ca0c2f38e1259632eeff3c3f2b79bf",
+            "rightSha256": "81865332c482e5d69127d72e6388aca510f9ac696b11736066cb29d7620f889b",
+            "meanAbsoluteDifference": 157.648
+          },
+          "normal": {
+            "leftSha256": "5ae87dde4f2c80044507541a5af5b8126448176f1e0842860b6bd76f68e01323",
+            "rightSha256": "f24923594dbee47b30ec2ba0c57b3c4b4e0d5f7dbcf417e3fc8facbf437465a2",
+            "meanAbsoluteDifference": 3.614
+          },
+          "roughness": {
+            "leftSha256": "3c63b8c19f5d213f68b53bb4235430c15488297cee2f573d72770690387bf2d5",
+            "rightSha256": "14d49afd130c00ff20284e2cb523ae5f549f55a667ea73f8c242d0462a03f81b",
+            "meanAbsoluteDifference": 14.848
+          }
+        },
+        "materialResourceDifferent": true,
+        "renderedNearViewSSIM": 0.86759,
+        "renderedNormalRtsSSIM": 0.91675
+      },
+      {
+        "pair": "M1/M3",
+        "mapDifferences": {
+          "albedo": {
+            "leftSha256": "05a591cca26f3fd55c14d36c4acf853efa90cca4b66ab15b4974729bd32c061a",
+            "rightSha256": "fce2fe5350bb8ca1ded96b6c81eaacb19126b3bf7d9d59c493cca7f76753796a",
+            "meanAbsoluteDifference": 10.757
+          },
+          "height": {
+            "leftSha256": "b603ac1513eb29cc8b6af7094d7eff39d1ca0c2f38e1259632eeff3c3f2b79bf",
+            "rightSha256": "72325fddbf04962e6b79381d2293394e2714a58fa4b500a5bc8ab5c27688003f",
+            "meanAbsoluteDifference": 0.0
+          },
+          "normal": {
+            "leftSha256": "5ae87dde4f2c80044507541a5af5b8126448176f1e0842860b6bd76f68e01323",
+            "rightSha256": "a3b9c476b2306af9d0f1737f3a1e4abe4460be86dd451e31a99128edbadd590d",
+            "meanAbsoluteDifference": 16.221
+          },
+          "roughness": {
+            "leftSha256": "3c63b8c19f5d213f68b53bb4235430c15488297cee2f573d72770690387bf2d5",
+            "rightSha256": "1e59cd0b9fea11246fe42a2c96af89f7038910751c001470a6ca29baef934a41",
+            "meanAbsoluteDifference": 0.569
+          }
+        },
+        "materialResourceDifferent": true,
+        "renderedNearViewSSIM": 0.98693,
+        "renderedNormalRtsSSIM": 0.99386
+      },
+      {
+        "pair": "M2/M3",
+        "mapDifferences": {
+          "albedo": {
+            "leftSha256": "a635755bdcf7b2fe0e732899bba3deca44660991954412ace83904a2208d0f8d",
+            "rightSha256": "fce2fe5350bb8ca1ded96b6c81eaacb19126b3bf7d9d59c493cca7f76753796a",
+            "meanAbsoluteDifference": 76.924
+          },
+          "height": {
+            "leftSha256": "81865332c482e5d69127d72e6388aca510f9ac696b11736066cb29d7620f889b",
+            "rightSha256": "72325fddbf04962e6b79381d2293394e2714a58fa4b500a5bc8ab5c27688003f",
+            "meanAbsoluteDifference": 157.648
+          },
+          "normal": {
+            "leftSha256": "f24923594dbee47b30ec2ba0c57b3c4b4e0d5f7dbcf417e3fc8facbf437465a2",
+            "rightSha256": "a3b9c476b2306af9d0f1737f3a1e4abe4460be86dd451e31a99128edbadd590d",
+            "meanAbsoluteDifference": 17.435
+          },
+          "roughness": {
+            "leftSha256": "14d49afd130c00ff20284e2cb523ae5f549f55a667ea73f8c242d0462a03f81b",
+            "rightSha256": "1e59cd0b9fea11246fe42a2c96af89f7038910751c001470a6ca29baef934a41",
+            "meanAbsoluteDifference": 15.306
+          }
+        },
+        "materialResourceDifferent": true,
+        "renderedNearViewSSIM": 0.84208,
+        "renderedNormalRtsSSIM": 0.89771
+      }
+    ],
+    "hybrid": {
+      "material": "MATERIAL 1",
+      "reliefMeshName": "HybridMergedLimitedRelief",
+      "mergedObjectCount": 1,
+      "reliefBoxCount": 7,
+      "reliefTriangleCount": 84,
+      "visibleAtRts": true
+    }
+  },
+  "matchedCameraLedger": "artifacts/runtime/v0336/matched-camera-ledger.json",
+  "stoneMasks": {
+    "material1": [
+      "artifacts\\runtime\\v0336\\stone-masks\\material-1-source-stone-mask.png",
+      "artifacts\\runtime\\v0336\\stone-masks\\material-1-authored-relief-selection-mask.png"
+    ],
+    "material2": [
+      "artifacts\\runtime\\v0336\\stone-masks\\material-2-authored-polygon-mask.png"
+    ],
+    "material3": [
+      "artifacts\\runtime\\v0336\\stone-masks\\material-3-source-stone-mask.png"
+    ]
+  },
+  "stoneMetrics": {
+    "candidateMetrics": [
+      {
+        "method": "photo-scanned rubble",
+        "source": "Poly Haven stone_wall 2K originals",
+        "metrics": {
+          "visibleStoneCount": 118,
+          "medianStoneHeightM": 0.27,
+          "p90StoneHeightM": 0.52,
+          "stoneAreaCV": 0.61,
+          "highRectangularityShare": 0.08,
+          "nonAxisJointShare": 0.58,
+          "longestContinuousHorizontalMortarM": 0.74,
+          "maxInternalMortarFraction": 0.21,
+          "repeatedDimensionShare": 0.11,
+          "maxVerticalJointChain": 2,
+          "mortarWidthCV": 0.43
+        }
+      },
+      {
+        "method": "procedural polygonal rubble",
+        "source": "authored deterministic Voronoi-like polygon mask",
+        "metrics": {
+          "visibleStoneCount": 132,
+          "medianStoneHeightM": 0.25,
+          "p90StoneHeightM": 0.49,
+          "stoneAreaCV": 0.56,
+          "highRectangularityShare": 0.0,
+          "nonAxisJointShare": 0.79,
+          "longestContinuousHorizontalMortarM": 0.64,
+          "maxInternalMortarFraction": 0.18,
+          "repeatedDimensionShare": 0.09,
+          "maxVerticalJointChain": 2,
+          "mortarWidthCV": 0.51
+        }
+      },
+      {
+        "method": "hybrid scan plus low-poly relief",
+        "source": "Poly Haven stone_wall scan plus authored relief treatment",
+        "metrics": {
+          "visibleStoneCount": 126,
+          "medianStoneHeightM": 0.28,
+          "p90StoneHeightM": 0.55,
+          "stoneAreaCV": 0.59,
+          "highRectangularityShare": 0.1,
+          "nonAxisJointShare": 0.62,
+          "longestContinuousHorizontalMortarM": 0.82,
+          "maxInternalMortarFraction": 0.24,
+          "repeatedDimensionShare": 0.12,
+          "maxVerticalJointChain": 2,
+          "mortarWidthCV": 0.46
+        }
+      }
+    ],
+    "metricPolicy": "automated rejection aids only; no automated authenticity or winner selection"
+  },
+  "materialMaps": {
+    "material1": "art-source/materials/v0335/candidates/candidate_c",
+    "material2": "art-source/materials/v0335/candidates/candidate_b",
+    "material3": "art-source/materials/v0335/candidates/candidate_a"
+  },
+  "normalOnlyDiagnostics": {
+    "material1": {
+      "luminanceMean": 122.382,
+      "luminanceStdDev": 29.75,
+      "clippedWhitePercent": 0.195,
+      "clippedBlackPercent": 0.0,
+      "differenceFromNormalDisabled": 0.504
+    },
+    "material2": {
+      "luminanceMean": 122.529,
+      "luminanceStdDev": 29.929,
+      "clippedWhitePercent": 0.174,
+      "clippedBlackPercent": 0.0,
+      "differenceFromNormalDisabled": 0.502
+    },
+    "material3": {
+      "luminanceMean": 122.472,
+      "luminanceStdDev": 29.739,
+      "clippedWhitePercent": 0.065,
+      "clippedBlackPercent": 0.0,
+      "differenceFromNormalDisabled": 0.508
+    }
+  },
+  "videoFrameComparisons": {
+    "equivalentFramePairs": [
+      {
+        "frames": [
+          12,
+          156,
+          300
+        ],
+        "meanLuminance": [
+          123.692,
+          121.555,
+          124.109
+        ],
+        "meanAbsoluteDifferenceM1M2": 2.347
+      },
+      {
+        "frames": [
+          60,
+          204,
+          348
+        ],
+        "meanLuminance": [
+          123.424,
+          121.288,
+          123.849
+        ],
+        "meanAbsoluteDifferenceM1M2": 2.346
+      },
+      {
+        "frames": [
+          108,
+          252,
+          396
+        ],
+        "meanLuminance": [
+          123.173,
+          121.018,
+          123.602
+        ],
+        "meanAbsoluteDifferenceM1M2": 2.344
+      }
+    ],
+    "segments": {
+      "material1": [
+        0,
+        143
+      ],
+      "material2": [
+        144,
+        287
+      ],
+      "material3": [
+        288,
+        431
+      ]
+    }
+  },
+  "finalMedia": "artifacts/manual-review/v0336-granite-evidence-repair/UPLOAD_TO_CHAT/08_CONTINUOUS_V0336_THREE_MATERIAL_COMPARISON.mp4",
+  "preservation": {
+    "v0334Frozen": true,
+    "noHouse02Application": true,
+    "noCompleteHouseAsset": true,
+    "noGameplay": true,
+    "noMovement": true,
+    "noPathfinding": true,
+    "noCombat": true,
+    "noEconomy": true,
+    "noResources": true,
+    "noStableIdsOrSavesMutation": true
+  },
+  "exactUploadFiles": [
+    {
+      "filename": "00_READ_ME_FIRST.md",
+      "bytes": 725,
+      "sha256": "caee22d58733d303db7113aba7a94d29b4996a6b53996427701a4a69cc8ad7f2"
+    },
+    {
+      "filename": "01_ACTUAL_RUNTIME_BINDING_LEDGER.png",
+      "bytes": 139450,
+      "sha256": "fe7b84790a7b38e7a4e7ca4c347691ca74f5e775fea86af7fc7564c11397c8ca"
+    },
+    {
+      "filename": "02_MATERIAL_1_COMPLETE_EVIDENCE.png",
+      "bytes": 308188,
+      "sha256": "275be6a42d3419bdfd6d926b9599d025c9f2aa8f9ffca8c8175d9256c5182d62"
+    },
+    {
+      "filename": "03_MATERIAL_2_COMPLETE_EVIDENCE.png",
+      "bytes": 296771,
+      "sha256": "94d5a6aca37052e9865d27b349c7e92aee531febf4428754037f437a906b53f3"
+    },
+    {
+      "filename": "04_MATERIAL_3_COMPLETE_EVIDENCE.png",
+      "bytes": 309064,
+      "sha256": "06413721a1b610e68fe16523637d57263384765600f774bfb025f3c53bce035a"
+    },
+    {
+      "filename": "05_MATCHED_BLIND_COMPARISON.png",
+      "bytes": 322324,
+      "sha256": "96f812c8f10192db20557bbc0cd00b307bc6e9356fb3068644e63677bc0440d4"
+    },
+    {
+      "filename": "06_THREE_STONE_MASKS_AND_METRICS.png",
+      "bytes": 70664,
+      "sha256": "da4d9ced3eab064955dcdca3ac7e4c95b1e6c6eee6c5ffaf5cb51a7abb0ad9ec"
+    },
+    {
+      "filename": "07_ALL_THREE_PBR_SETS_AND_NORMAL_DIAGNOSTICS.png",
+      "bytes": 782575,
+      "sha256": "9e4576197f3436df4ea68cbb99053d10d9686174ccceae058ec08bc4d68aab8b"
+    },
+    {
+      "filename": "08_CONTINUOUS_V0336_THREE_MATERIAL_COMPARISON.mp4",
+      "bytes": 634604,
+      "sha256": "69bf274d79cc854b76c6c04f8d8720e15a7bdd5183e268777bdca27312087e15"
+    }
+  ],
+  "manifestSha256": "c21416bad1f1d47a5ec1d86a060990a9bef525e6c985aeadcc4e20f417a13383"
+}

@@ -1,0 +1,687 @@
+{
+  "aabbChanged": false,
+  "affectedNodeCount": 3,
+  "affectedNodeInventory": [
+    {
+      "material": "null",
+      "mesh": "barrosan_house_02_material_gold_candidate_Cube",
+      "name": "LOD0_Granite",
+      "uvCount": 9054,
+      "visible": true
+    },
+    {
+      "material": "null",
+      "mesh": "barrosan_house_02_material_gold_candidate_Cube_098",
+      "name": "LOD1_Granite",
+      "uvCount": 4057,
+      "visible": true
+    },
+    {
+      "material": "null",
+      "mesh": "barrosan_house_02_material_gold_candidate_Cube_104",
+      "name": "LOD2_Granite",
+      "uvCount": 806,
+      "visible": true
+    }
+  ],
+  "affectedNodeNames": [
+    "LOD0_Granite",
+    "LOD1_Granite",
+    "LOD2_Granite"
+  ],
+  "barn": "v0409-preserved",
+  "baselineCommit": "5a064c8df089336f71324b0c477d5b48578f560b",
+  "bridge": "v0412-preserved",
+  "camera": "unchanged",
+  "candidateRetained": true,
+  "characters": "preserved",
+  "checkpoint": "v0.413",
+  "chimney": "preserved",
+  "debugRenderer": "unchanged",
+  "decals": false,
+  "defaultRuntime": "unchanged",
+  "doorsWindowsTimber": "preserved",
+  "duplicateMeshes": false,
+  "eaves": "v0408-preserved",
+  "excludedNearbyHouseInventory": [
+    {
+      "material": "null",
+      "mesh": "barrosan_house_02_material_gold_candidate_Cube_008",
+      "name": "LOD0_Interior_Recess",
+      "uvCount": 768,
+      "visible": true
+    },
+    {
+      "material": "null",
+      "mesh": "barrosan_house_02_material_gold_candidate_Cube_009",
+      "name": "LOD0_Weathered_Timber",
+      "uvCount": 8832,
+      "visible": true
+    },
+    {
+      "material": "null",
+      "mesh": "barrosan_house_02_material_gold_candidate_Cube_013",
+      "name": "LOD0_Iron",
+      "uvCount": 1152,
+      "visible": true
+    },
+    {
+      "material": "null",
+      "mesh": "barrosan_house_02_material_gold_candidate_Cube_016",
+      "name": "LOD0_Recessed_Window",
+      "uvCount": 1536,
+      "visible": true
+    },
+    {
+      "material": "null",
+      "mesh": "barrosan_house_02_material_gold_candidate_Cube_059",
+      "name": "LOD0_Damp_Foundation",
+      "uvCount": 1536,
+      "visible": true
+    },
+    {
+      "material": "null",
+      "mesh": "",
+      "name": "LOD0_Weathered_Slate",
+      "uvCount": 0,
+      "visible": false
+    },
+    {
+      "material": "null",
+      "mesh": "barrosan_house_02_material_gold_candidate_Cube_099",
+      "name": "LOD1_Interior_Recess",
+      "uvCount": 380,
+      "visible": true
+    },
+    {
+      "material": "null",
+      "mesh": "barrosan_house_02_material_gold_candidate_Cube_100",
+      "name": "LOD1_Weathered_Timber",
+      "uvCount": 4436,
+      "visible": true
+    },
+    {
+      "material": "null",
+      "mesh": "barrosan_house_02_material_gold_candidate_Cube_101",
+      "name": "LOD1_Iron",
+      "uvCount": 596,
+      "visible": true
+    },
+    {
+      "material": "null",
+      "mesh": "barrosan_house_02_material_gold_candidate_Cube_102",
+      "name": "LOD1_Recessed_Window",
+      "uvCount": 762,
+      "visible": true
+    },
+    {
+      "material": "null",
+      "mesh": "barrosan_house_02_material_gold_candidate_Cube_103",
+      "name": "LOD1_Damp_Foundation",
+      "uvCount": 766,
+      "visible": true
+    },
+    {
+      "material": "null",
+      "mesh": "",
+      "name": "LOD1_Weathered_Slate",
+      "uvCount": 0,
+      "visible": false
+    },
+    {
+      "material": "null",
+      "mesh": "barrosan_house_02_material_gold_candidate_Cube_105",
+      "name": "LOD2_Interior_Recess",
+      "uvCount": 96,
+      "visible": true
+    },
+    {
+      "material": "null",
+      "mesh": "barrosan_house_02_material_gold_candidate_Cube_106",
+      "name": "LOD2_Weathered_Timber",
+      "uvCount": 1024,
+      "visible": true
+    },
+    {
+      "material": "null",
+      "mesh": "barrosan_house_02_material_gold_candidate_Cube_107",
+      "name": "LOD2_Iron",
+      "uvCount": 140,
+      "visible": true
+    },
+    {
+      "material": "null",
+      "mesh": "barrosan_house_02_material_gold_candidate_Cube_108",
+      "name": "LOD2_Recessed_Window",
+      "uvCount": 196,
+      "visible": true
+    },
+    {
+      "material": "null",
+      "mesh": "barrosan_house_02_material_gold_candidate_Cube_109",
+      "name": "LOD2_Damp_Foundation",
+      "uvCount": 196,
+      "visible": true
+    },
+    {
+      "material": "null",
+      "mesh": "",
+      "name": "LOD2_Weathered_Slate",
+      "uvCount": 0,
+      "visible": false
+    },
+    {
+      "material": "null",
+      "mesh": "barrosan_house_02_material_gold_candidate_Cube_110",
+      "name": "Collision_LowerVolume",
+      "uvCount": 24,
+      "visible": true
+    },
+    {
+      "material": "null",
+      "mesh": "barrosan_house_02_material_gold_candidate_Cube_111",
+      "name": "Collision_UpperVolume",
+      "uvCount": 24,
+      "visible": true
+    },
+    {
+      "material": "null",
+      "mesh": "",
+      "name": "Collision_RoofVolume",
+      "uvCount": 0,
+      "visible": false
+    },
+    {
+      "material": "V0408_Main_House_Weathered_Slate",
+      "mesh": "",
+      "name": "V0400_Main_House_Roof_Left_Plane",
+      "uvCount": 0,
+      "visible": true
+    },
+    {
+      "material": "V0408_Main_House_Weathered_Slate",
+      "mesh": "",
+      "name": "V0400_Main_House_Roof_Right_Plane",
+      "uvCount": 0,
+      "visible": true
+    },
+    {
+      "material": "V0408_Main_House_Weathered_Eave_Timber",
+      "mesh": "",
+      "name": "V0400_Main_House_Left_Roof_Visual_Closure",
+      "uvCount": 0,
+      "visible": true
+    },
+    {
+      "material": "V0408_Main_House_Weathered_Eave_Timber",
+      "mesh": "",
+      "name": "V0400_Main_House_Right_Roof_Visual_Closure",
+      "uvCount": 0,
+      "visible": true
+    },
+    {
+      "material": "V0408_Main_House_Slate_Ridge",
+      "mesh": "",
+      "name": "V0400_Main_House_Ridge_Beam",
+      "uvCount": 0,
+      "visible": true
+    },
+    {
+      "material": "V0408_Main_House_Weathered_Eave_Timber",
+      "mesh": "",
+      "name": "V0400_Main_House_Left_Eave",
+      "uvCount": 0,
+      "visible": true
+    },
+    {
+      "material": "V0408_Main_House_Weathered_Eave_Timber",
+      "mesh": "",
+      "name": "V0400_Main_House_Right_Eave",
+      "uvCount": 0,
+      "visible": true
+    }
+  ],
+  "fallbackRenderer": "unchanged",
+  "finalMaterialParameters": [
+    "albedo=#81786d",
+    "roughness=0.96",
+    "specular=0.10",
+    "vertexColorAsAlbedo=false"
+  ],
+  "finalMaterials": [
+    "LOD0_Granite=V0413_Main_House_Restrained_Masonry",
+    "LOD1_Granite=V0413_Main_House_Restrained_Masonry",
+    "LOD2_Granite=V0413_Main_House_Restrained_Masonry"
+  ],
+  "finalSnapshots": {
+    "LOD0_Granite": {
+      "aabb": {
+        "position": {
+          "x": -5.01000022888184,
+          "y": -1.27499997615814,
+          "z": -6.5
+        },
+        "size": {
+          "x": 10.0200004577637,
+          "y": 7.12000036239624,
+          "z": 9.71000003814697
+        }
+      },
+      "indexCount": 13146,
+      "material": "V0413_Main_House_Restrained_Masonry",
+      "meshType": "ArrayMesh",
+      "surfaceCount": 4,
+      "transform": {
+        "basis": "[X: (1.0, 0.0, 0.0), Y: (0.0, 1.0, 0.0), Z: (0.0, 0.0, 1.0)]",
+        "origin": {
+          "x": 0.0,
+          "y": 1.27999997138977,
+          "z": 2.90000009536743
+        }
+      },
+      "triangleCount": 4382,
+      "uvCount": 9054,
+      "vertexCount": 9054
+    },
+    "LOD1_Granite": {
+      "aabb": {
+        "position": {
+          "x": -5.01000022888184,
+          "y": -1.27499997615814,
+          "z": -6.49703311920166
+        },
+        "size": {
+          "x": 10.0200004577637,
+          "y": 7.11720323562622,
+          "z": 9.70493507385254
+        }
+      },
+      "indexCount": 5043,
+      "material": "V0413_Main_House_Restrained_Masonry",
+      "meshType": "ArrayMesh",
+      "surfaceCount": 4,
+      "transform": {
+        "basis": "[X: (1.0, 0.0, 0.0), Y: (0.0, 1.0, 0.0), Z: (0.0, 0.0, 1.0)]",
+        "origin": {
+          "x": 0.0,
+          "y": 1.27999997138977,
+          "z": 2.90000009536743
+        }
+      },
+      "triangleCount": 1681,
+      "uvCount": 4057,
+      "vertexCount": 4057
+    },
+    "LOD2_Granite": {
+      "aabb": {
+        "position": {
+          "x": -4.99778318405151,
+          "y": -1.2627946138382,
+          "z": -6.4870457649231
+        },
+        "size": {
+          "x": 9.99958992004395,
+          "y": 7.09214639663696,
+          "z": 9.68247222900391
+        }
+      },
+      "indexCount": 1158,
+      "material": "V0413_Main_House_Restrained_Masonry",
+      "meshType": "ArrayMesh",
+      "surfaceCount": 4,
+      "transform": {
+        "basis": "[X: (1.0, 0.0, 0.0), Y: (0.0, 1.0, 0.0), Z: (0.0, 0.0, 1.0)]",
+        "origin": {
+          "x": 0.0,
+          "y": 1.27999997138977,
+          "z": 2.90000009536743
+        }
+      },
+      "triangleCount": 386,
+      "uvCount": 806,
+      "vertexCount": 806
+    }
+  },
+  "foundationStairsGround": "preserved",
+  "functionalClassification": {
+    "LOD0_Granite": "MAIN_HOUSE_MASONRY_WALL",
+    "LOD1_Granite": "MAIN_HOUSE_MASONRY_WALL",
+    "LOD2_Granite": "MAIN_HOUSE_MASONRY_WALL"
+  },
+  "gameplay": false,
+  "geometryChanged": false,
+  "houseHashesAfter": {
+    "Collision_LowerVolume": "92e92621f9dde9349e312e320acdb268ad3b91825595afaf36b99184ba782a63",
+    "Collision_UpperVolume": "5c409d6d373ec799a9d8fc006e2c979f0f47aa6e75366d9f4c895f26069b6433",
+    "LOD0_Damp_Foundation": "125a0c63dcf9ea1ded932fa7519527c28c99de0f8804c6a9b8103e4a9e7d8ddf",
+    "LOD0_Granite": "8768b04408543ae12b446045d205ffb10c9b0d4646dbc45efda90b03b7627298",
+    "LOD0_Interior_Recess": "2188d5ff2578c4a33eba4704807cfb930f483eaeb76fcf8238486ad9e6e1fb28",
+    "LOD0_Iron": "0b6a7b2c47bf55cbc785743c08bd1df6eda34eda3e0fb47ff623e3abb3ee7361",
+    "LOD0_Recessed_Window": "34433c5e766ea06ac5af1153f28cec831a664c93691266cf9d55fff61270cb04",
+    "LOD0_Weathered_Timber": "7ccfa9e579673a7fae443a2748e0c9ae194c5452f2e835620cbd77aed89018fc",
+    "LOD1_Damp_Foundation": "56b9c0411ca072920c5b3b53777a182ba9fb6cdfa6c97b5b636dff0cdba671fb",
+    "LOD1_Granite": "9229a3165f4238141e1c72b3cf1986a830c8680db703397f2befc4e84fecb829",
+    "LOD1_Interior_Recess": "7ca6f34c80bdbb97b70ba44b699765247b3330f9151ec87246afbfdf41769140",
+    "LOD1_Iron": "08ab1a131a1c1389bd8eeef45616621edd45b3fa0343c7ff2e54b0f90f3a6117",
+    "LOD1_Recessed_Window": "b90a6d2e69246dcce5356f522bfbe7b01bce22b83036a86e3e2f4631e363fe8a",
+    "LOD1_Weathered_Timber": "8739dbdc62cf2cca76d290b06e046799af6210708f525bb0c97bd152a337be5a",
+    "LOD2_Damp_Foundation": "66899cbec063d878663910bfa6d8d278b7eaf376efcb626e4654210f14171dc8",
+    "LOD2_Granite": "41eec956dd3233317eddb9c91376ff2d45755b1d9ee35efb9cf0919a0cc9d32d",
+    "LOD2_Interior_Recess": "058d176933549eb7dce0b7d077a2b152a5fde4fd625eb0c6b57f7e63b8596547",
+    "LOD2_Iron": "582fa46b0502fcc76ba28e0de84f99c719a2d37281698269774e184b05a0aa62",
+    "LOD2_Recessed_Window": "632a52d45aadd53210d21330817e7eb1adf84267a2cb4de29e9e9d1e08afa8ec",
+    "LOD2_Weathered_Timber": "11a82fc80d1daa63b8c464259c1f9c1c34acb27a8f368d62d44395962a20d7df"
+  },
+  "houseHashesBefore": {
+    "Collision_LowerVolume": "92e92621f9dde9349e312e320acdb268ad3b91825595afaf36b99184ba782a63",
+    "Collision_UpperVolume": "5c409d6d373ec799a9d8fc006e2c979f0f47aa6e75366d9f4c895f26069b6433",
+    "LOD0_Damp_Foundation": "125a0c63dcf9ea1ded932fa7519527c28c99de0f8804c6a9b8103e4a9e7d8ddf",
+    "LOD0_Granite": "8768b04408543ae12b446045d205ffb10c9b0d4646dbc45efda90b03b7627298",
+    "LOD0_Interior_Recess": "2188d5ff2578c4a33eba4704807cfb930f483eaeb76fcf8238486ad9e6e1fb28",
+    "LOD0_Iron": "0b6a7b2c47bf55cbc785743c08bd1df6eda34eda3e0fb47ff623e3abb3ee7361",
+    "LOD0_Recessed_Window": "34433c5e766ea06ac5af1153f28cec831a664c93691266cf9d55fff61270cb04",
+    "LOD0_Weathered_Timber": "7ccfa9e579673a7fae443a2748e0c9ae194c5452f2e835620cbd77aed89018fc",
+    "LOD1_Damp_Foundation": "56b9c0411ca072920c5b3b53777a182ba9fb6cdfa6c97b5b636dff0cdba671fb",
+    "LOD1_Granite": "9229a3165f4238141e1c72b3cf1986a830c8680db703397f2befc4e84fecb829",
+    "LOD1_Interior_Recess": "7ca6f34c80bdbb97b70ba44b699765247b3330f9151ec87246afbfdf41769140",
+    "LOD1_Iron": "08ab1a131a1c1389bd8eeef45616621edd45b3fa0343c7ff2e54b0f90f3a6117",
+    "LOD1_Recessed_Window": "b90a6d2e69246dcce5356f522bfbe7b01bce22b83036a86e3e2f4631e363fe8a",
+    "LOD1_Weathered_Timber": "8739dbdc62cf2cca76d290b06e046799af6210708f525bb0c97bd152a337be5a",
+    "LOD2_Damp_Foundation": "66899cbec063d878663910bfa6d8d278b7eaf376efcb626e4654210f14171dc8",
+    "LOD2_Granite": "41eec956dd3233317eddb9c91376ff2d45755b1d9ee35efb9cf0919a0cc9d32d",
+    "LOD2_Interior_Recess": "058d176933549eb7dce0b7d077a2b152a5fde4fd625eb0c6b57f7e63b8596547",
+    "LOD2_Iron": "582fa46b0502fcc76ba28e0de84f99c719a2d37281698269774e184b05a0aa62",
+    "LOD2_Recessed_Window": "632a52d45aadd53210d21330817e7eb1adf84267a2cb4de29e9e9d1e08afa8ec",
+    "LOD2_Weathered_Timber": "11a82fc80d1daa63b8c464259c1f9c1c34acb27a8f368d62d44395962a20d7df"
+  },
+  "indicesChanged": false,
+  "inheritedVertexColourBeforeAfter": "unchanged",
+  "lighting": "unchanged",
+  "materialOnly": true,
+  "meshInstanceCountAfter": 292,
+  "meshInstanceCountBefore": 292,
+  "newGeometry": false,
+  "newMeshInstances": 0,
+  "originalMaterials": [
+    "LOD0_Granite=null",
+    "LOD1_Granite=null",
+    "LOD2_Granite=null"
+  ],
+  "originalSnapshots": {
+    "LOD0_Granite": {
+      "aabb": {
+        "position": {
+          "x": -5.01000022888184,
+          "y": -1.27499997615814,
+          "z": -6.5
+        },
+        "size": {
+          "x": 10.0200004577637,
+          "y": 7.12000036239624,
+          "z": 9.71000003814697
+        }
+      },
+      "indexCount": 13146,
+      "material": "null",
+      "meshType": "ArrayMesh",
+      "surfaceCount": 4,
+      "transform": {
+        "basis": "[X: (1.0, 0.0, 0.0), Y: (0.0, 1.0, 0.0), Z: (0.0, 0.0, 1.0)]",
+        "origin": {
+          "x": 0.0,
+          "y": 1.27999997138977,
+          "z": 2.90000009536743
+        }
+      },
+      "triangleCount": 4382,
+      "uvCount": 9054,
+      "vertexCount": 9054
+    },
+    "LOD1_Granite": {
+      "aabb": {
+        "position": {
+          "x": -5.01000022888184,
+          "y": -1.27499997615814,
+          "z": -6.49703311920166
+        },
+        "size": {
+          "x": 10.0200004577637,
+          "y": 7.11720323562622,
+          "z": 9.70493507385254
+        }
+      },
+      "indexCount": 5043,
+      "material": "null",
+      "meshType": "ArrayMesh",
+      "surfaceCount": 4,
+      "transform": {
+        "basis": "[X: (1.0, 0.0, 0.0), Y: (0.0, 1.0, 0.0), Z: (0.0, 0.0, 1.0)]",
+        "origin": {
+          "x": 0.0,
+          "y": 1.27999997138977,
+          "z": 2.90000009536743
+        }
+      },
+      "triangleCount": 1681,
+      "uvCount": 4057,
+      "vertexCount": 4057
+    },
+    "LOD2_Granite": {
+      "aabb": {
+        "position": {
+          "x": -4.99778318405151,
+          "y": -1.2627946138382,
+          "z": -6.4870457649231
+        },
+        "size": {
+          "x": 9.99958992004395,
+          "y": 7.09214639663696,
+          "z": 9.68247222900391
+        }
+      },
+      "indexCount": 1158,
+      "material": "null",
+      "meshType": "ArrayMesh",
+      "surfaceCount": 4,
+      "transform": {
+        "basis": "[X: (1.0, 0.0, 0.0), Y: (0.0, 1.0, 0.0), Z: (0.0, 0.0, 1.0)]",
+        "origin": {
+          "x": 0.0,
+          "y": 1.27999997138977,
+          "z": 2.90000009536743
+        }
+      },
+      "triangleCount": 386,
+      "uvCount": 806,
+      "vertexCount": 806
+    }
+  },
+  "overlays": false,
+  "props": "preserved",
+  "ridge": "v0408-preserved",
+  "roof": "v0408-preserved",
+  "route": "preserved",
+  "scope": "existing_visible_main_house_masonry_wall_materials_only",
+  "stateBehavior": "unchanged",
+  "status": "RENDERED_CANDIDATE",
+  "surfacesChanged": false,
+  "topologyChanged": false,
+  "transformsChanged": false,
+  "uvArraysChanged": false,
+  "uvCountEveryAffectedMesh": {
+    "LOD0_Granite": 9054,
+    "LOD1_Granite": 4057,
+    "LOD2_Granite": 806
+  },
+  "v0412Audit": {
+    "aabbChanged": false,
+    "affectedNodeCount": 4,
+    "affectedNodeInventory": [
+      {
+        "classification": "UNDERBEAM",
+        "material": "V0394_Bridge_Desaturated_Value",
+        "name": "Bridge_Underbeam_-1_28",
+        "uvCount": 0,
+        "visible": true
+      },
+      {
+        "classification": "UNDERBEAM",
+        "material": "V0394_Bridge_Desaturated_Value",
+        "name": "Bridge_Underbeam_+1_28",
+        "uvCount": 0,
+        "visible": true
+      },
+      {
+        "classification": "EDGE_COURSE",
+        "material": "V0394_Bridge_Desaturated_Value",
+        "name": "Bridge_EdgeCourse_-1",
+        "uvCount": 0,
+        "visible": true
+      },
+      {
+        "classification": "EDGE_COURSE",
+        "material": "V0394_Bridge_Desaturated_Value",
+        "name": "Bridge_EdgeCourse_+1",
+        "uvCount": 0,
+        "visible": true
+      }
+    ],
+    "affectedNodeNames": [
+      "Bridge_Underbeam_-1_28",
+      "Bridge_Underbeam_+1_28",
+      "Bridge_EdgeCourse_-1",
+      "Bridge_EdgeCourse_+1"
+    ],
+    "barn": "preserved",
+    "baselineCommit": "7f73ded8743f415392f2eea2d08cfa4578432728",
+    "bridgeHashesAfter": {
+      "Bridge_EdgeCourse_+1": "ffd4a5d23d83a10aa45637e865a7b8e677d207336d9e2586c4e4c4ebde0aa3d3",
+      "Bridge_EdgeCourse_-1": "6e492cd9bc5dd24acf56fe15e597a5dfbef0d10f41bd2a42939db7974dcb008f",
+      "Bridge_Underbeam_+1_28": "283eb7b65e61ad9e47add92a07e38326dbe945939de59b623a0722850bb7bff4",
+      "Bridge_Underbeam_-1_28": "120884cbfa0dd7d1093610276031e346ef362b6ac5c62c55b7ab3c86f0208c6f"
+    },
+    "bridgeHashesBefore": {
+      "Bridge_EdgeCourse_+1": "ffd4a5d23d83a10aa45637e865a7b8e677d207336d9e2586c4e4c4ebde0aa3d3",
+      "Bridge_EdgeCourse_-1": "6e492cd9bc5dd24acf56fe15e597a5dfbef0d10f41bd2a42939db7974dcb008f",
+      "Bridge_Underbeam_+1_28": "283eb7b65e61ad9e47add92a07e38326dbe945939de59b623a0722850bb7bff4",
+      "Bridge_Underbeam_-1_28": "120884cbfa0dd7d1093610276031e346ef362b6ac5c62c55b7ab3c86f0208c6f"
+    },
+    "building": "preserved",
+    "camera": "unchanged",
+    "candidateRetained": true,
+    "characters": "preserved",
+    "checkpoint": "v0.412",
+    "debugRenderer": "unchanged",
+    "decals": false,
+    "deck": "preserved",
+    "deckHashesBeforeAfter": {
+      "Bridge_Deck_Plank_00": "14d33bdc1e2741155f1865bfa671088eafd3a923649d1fddd8f93c2ae8c2ef95",
+      "Bridge_Deck_Plank_01": "a0178aca658693dc0317b1c9b33496db88ca963b110d1118f8b3208c0c19e9f9",
+      "Bridge_Deck_Plank_02": "1fe1d0730e2cabb205f97e4168289d756b675e86d7ba6368b9279b6d2bbdd3eb",
+      "Bridge_Deck_Plank_03": "e6cd02b0a1fd2eeecc0f9a00e1c0dad3684c62ee71c7272fbf36e31efb2949e9",
+      "Bridge_Deck_Plank_04": "26462ef1e453cb17ce21273df32a70fa8caaadbfc1f1d72bd521b04ad03c8b8d",
+      "Bridge_Deck_Plank_05": "a0ac9d66a3f33516925e8072d2591c302d33e314c2a4d45d79682f97e03d2d6b",
+      "Bridge_Deck_Plank_06": "830b971a0ef835e52b27f05902285613b9abd9227f1e65efbbff4ac21f682f6c",
+      "Bridge_Deck_Plank_07": "376cc43aefaaa7a0f919dbf5cacd69c37c76ae48ae9caee2d4788d26f89b6185",
+      "Bridge_Deck_Plank_08": "985afdad47d6dd7526329eb7870e1cc248dd60923f7e90ef1b64d5c1bebd8611",
+      "Bridge_Deck_Plank_09": "491d6733798eba7a57250495aca0ccd54ddd11e4fdf3ebda7c640870ed7eeb43",
+      "Bridge_Deck_Plank_10": "998d6710bc69146a19fc8257907bf150b60403f47dc19c8a0972e94d6acef9ec",
+      "Bridge_Deck_Plank_11": "36925eac885fc9321f3ebdc91f7e3b939e99578deece50142d9d9e99cc5e29f3",
+      "Bridge_Deck_Plank_12": "2d4b9b4c09ef74b7f5f08c3b44bad874864240a804386428b839cef54316a139",
+      "Bridge_Deck_Plank_13": "b409c0758488e72e7db3e32eaa7fed8e90457a22cf67f3a3e30224576bda3109",
+      "Bridge_Deck_Plank_14": "5f3691afa170d99f177da30d1f5fbcb62bf8902f1788e09fbc6db7474af9d574",
+      "Bridge_Deck_Plank_15": "95bf342d83bcd2dc443e228f46ca2074b6399a6ac916709722886d08879bfc30",
+      "Bridge_Deck_Plank_16": "b35b682780884052611755daa97fef1a2fc6741017ec53d9bf5f3d9e808f2564",
+      "Bridge_Deck_Plank_17": "c99cb39fceffc54f73c34d6cbebd5adaeb89667ea83022b718b393051c60cde0"
+    },
+    "defaultRuntime": "unchanged",
+    "duplicateMeshes": false,
+    "edgeCourses": "calibrated",
+    "fallbackRenderer": "unchanged",
+    "finalMaterialParameters": [
+      "underbeams albedo=#43342a roughness=0.94 specular=0.10 vertexColorAsAlbedo=false",
+      "edgeCourses albedo=#6a513a roughness=0.92 specular=0.14 vertexColorAsAlbedo=false"
+    ],
+    "finalMaterials": [
+      "Bridge_Underbeam_-1_28=V0412_Bridge_Underbeam",
+      "Bridge_Underbeam_+1_28=V0412_Bridge_Underbeam",
+      "Bridge_EdgeCourse_-1=V0412_Bridge_EdgeCourse",
+      "Bridge_EdgeCourse_+1=V0412_Bridge_EdgeCourse"
+    ],
+    "finalSnapshots": {
+      "Bridge_EdgeCourse_+1": {
+
+      },
+      "Bridge_EdgeCourse_-1": {
+
+      },
+      "Bridge_Underbeam_+1_28": {
+
+      },
+      "Bridge_Underbeam_-1_28": {
+
+      }
+    },
+    "footingAbutmentHashesBeforeAfter": {
+
+    },
+    "footingsAbutments": "preserved",
+    "functionalClassification": {
+      "Bridge_EdgeCourse_+1": "EDGE_COURSE",
+      "Bridge_EdgeCourse_-1": "EDGE_COURSE",
+      "Bridge_Underbeam_+1_28": "UNDERBEAM",
+      "Bridge_Underbeam_-1_28": "UNDERBEAM"
+    },
+    "gameplay": false,
+    "geometryChanged": false,
+    "indicesChanged": false,
+    "inheritedVertexColourChanged": false,
+    "landings": "preserved",
+    "lighting": "unchanged",
+    "materialOnly": true,
+    "meshInstanceCountAfter": 292,
+    "meshInstanceCountBefore": 292,
+    "newGeometry": false,
+    "newMeshInstances": 0,
+    "originalMaterials": [
+      "Bridge_Underbeam_-1_28=V0394_Bridge_Desaturated_Value",
+      "Bridge_Underbeam_+1_28=V0394_Bridge_Desaturated_Value",
+      "Bridge_EdgeCourse_-1=V0394_Bridge_Desaturated_Value",
+      "Bridge_EdgeCourse_+1=V0394_Bridge_Desaturated_Value"
+    ],
+    "originalSnapshots": {
+      "Bridge_EdgeCourse_+1": {
+
+      },
+      "Bridge_EdgeCourse_-1": {
+
+      },
+      "Bridge_Underbeam_+1_28": {
+
+      },
+      "Bridge_Underbeam_-1_28": {
+
+      }
+    },
+    "overlays": false,
+    "props": "preserved",
+    "railPostHashesBeforeAfter": {
+
+    },
+    "railsPosts": "v0411-preserved",
+    "reason": "",
+    "route": "preserved",
+    "routeLandingHashesBeforeAfter": {
+
+    },
+    "scope": "existing_bridge_underbeam_and_edge_course_materials_only",
+    "stateBehavior": "unchanged",
+    "status": "RENDERED_CANDIDATE",
+    "topologyChanged": false,
+    "transformsChanged": false,
+    "underbeams": "calibrated",
+    "uvArraysChanged": false,
+    "verticesChanged": false
+  },
+  "verticesChanged": false
+}

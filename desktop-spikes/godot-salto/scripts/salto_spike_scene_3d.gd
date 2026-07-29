@@ -10279,8 +10279,8 @@ func _create_hud() -> void:
 	hud_status_label.add_theme_color_override("font_color", Color(0.66, 0.84, 0.78))
 	frame.add_child(hud_status_label)
 
-	var command_labels := ["Move", "Attack", "Hold", "Work", "Lume"]
-	var command_names := ["CommandButtonMove", "CommandButtonAttack", "CommandButtonHold", "CommandButtonWork", "CommandButtonLume"]
+	var command_labels := ["Move", "Attack", "Work", "Lume"] if _v0314_h3_directional_animation_micro_pilot_requested() else ["Move", "Attack", "Hold", "Work", "Lume"]
+	var command_names := ["CommandButtonMove", "CommandButtonAttack", "CommandButtonWork", "CommandButtonLume"] if _v0314_h3_directional_animation_micro_pilot_requested() else ["CommandButtonMove", "CommandButtonAttack", "CommandButtonHold", "CommandButtonWork", "CommandButtonLume"]
 	for index in range(command_labels.size()):
 		var button := Button.new()
 		button.name = command_names[index]
@@ -12690,3 +12690,12 @@ func _lume_color(link: Dictionary) -> Color:
 	if state == "restored":
 		return Color(0.72, 0.96, 0.82)
 	return _lume_core_color()
+
+func _v0314_h3_directional_animation_micro_pilot_requested() -> bool:
+	for arg in OS.get_cmdline_args():
+		if str(arg) == "--h3-directional-animation-micro-pilot" or str(arg) == "--h3-visible-animation-directional-closure" or str(arg) == "--h3-target-isolated-evidence-closure" or str(arg) == "--h3-single-sprite-atlas-rendering-repair" or str(arg) == "--h3-militia-silhouette-integrity":
+			return true
+	for arg in OS.get_cmdline_user_args():
+		if str(arg) == "--h3-directional-animation-micro-pilot" or str(arg) == "--h3-visible-animation-directional-closure" or str(arg) == "--h3-target-isolated-evidence-closure" or str(arg) == "--h3-single-sprite-atlas-rendering-repair" or str(arg) == "--h3-militia-silhouette-integrity":
+			return true
+	return false

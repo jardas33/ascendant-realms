@@ -1,0 +1,48 @@
+{
+  "schemaVersion": 1,
+  "candidateId": "v0141-env-r3-modern-balanced-ashen-contrast",
+  "briefId": "V0138_01_SALTO_2_5D_ENVIRONMENT_STYLE_FRAME",
+  "purpose": "Reference-only Salto environment style-lock revision; R3 tests the most polished modern 2.5D balance with readable Ashen contrast.",
+  "generator": "Codex built-in image_gen tool; provider not exposed by tool schema",
+  "model": "Not exposed by built-in image_gen tool; Codex feature image_generation reported stable true",
+  "date": "2026-06-06",
+  "source": {
+    "type": "generated-reference",
+    "promptDocument": "docs/art-prompts/V0138_01_SALTO_2_5D_ENVIRONMENT_STYLE_FRAME.md",
+    "candidateImagePath": "artifacts/art-review/v0138/candidates/v0141-env-r3-modern-balanced-ashen-contrast.png",
+    "notes": "Generated in v0.141 from the v0.138 Salto environment prompt and the v0.141 revision instructions, using v0.140 A as primary visual base, C as tactical layout reference, and B only for restrained atmosphere."
+  },
+  "licencePosture": {
+    "status": "user-controlled-reference",
+    "terms": "Reference review only. No runtime, production, packaging, or derivative approval is granted by this metadata.",
+    "runtimeUse": "forbidden",
+    "notes": "runtimeIntegrationStatus remains forbidden and runtimeIntegrationStatus = forbidden is a hard v0.141 boundary."
+  },
+  "protectedIpReview": {
+    "status": "pending",
+    "protectedLookalikeRisk": "unknown",
+    "notes": "Human protected-IP and style-lock review is required before any shortlisting or future art-intake decision."
+  },
+  "visualNotes": [
+    "Most modern tactical-layout emphasis with clear lane hierarchy, open build area, bridge/ford network, mine, shrine, ruin, subtle Lume path, and strong UI-safe composition.",
+    "Ashen corruption is readable as one threat edge without taking over the whole frame, though it remains the strongest dark-zone contrast of the three revisions.",
+    "Human review should check whether the Lume pillars feel mystical and land-bound enough rather than technological."
+  ],
+  "humanStatus": "pending-review",
+  "runtimeIntegrationStatus": "forbidden",
+  "hash": {
+    "algorithm": "sha256",
+    "value": "97fcedfb8565c7c9b522192221612b24d3d92165d2790952bbfe5c28445daa8e"
+  },
+  "dimensions": {
+    "width": 1672,
+    "height": 941,
+    "unit": "px"
+  },
+  "aspect": "16:9 actual 1672x941",
+  "revisionLineage": {
+    "parentCandidateId": "v0138-env-a-tactical-clarity; v0138-env-c-modern-2_5d-balance; v0138-env-b-barrosan-atmosphere",
+    "revision": 1,
+    "notes": "v0.141 revision R3: Candidate A primary visual base, Candidate C tactical layout reference, Candidate B restrained atmosphere reference."
+  }
+}

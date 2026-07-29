@@ -1,0 +1,14 @@
+{
+  "completeWorkerCount": 2,
+  "detachedWorkerPartCount": 0,
+  "disassembledWorkerCount": 0,
+  "horizontalWorkerCount": 0,
+  "localTransformsOwnedByScene": true,
+  "uprightWorkerCount": 2,
+  "workerAtlas": "res://assets/v0314/h3/worker_directional_animation_atlas.png",
+  "workerChildren": [
+    "WorkerBillboard",
+    "WorkerContactShadow"
+  ],
+  "workerScene": "res://scenes/review/V0353CompleteBarrosanWorker.tscn"
+}

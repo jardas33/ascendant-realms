@@ -1,0 +1,54 @@
+{
+  "checkpoint": "v0.343",
+  "sourceBlend": "art-source/blender/v0343/house02_derived_barrosan_barn_visual_preflight.blend",
+  "sourceGLB": "desktop-spikes/godot-salto/assets/v0343/house02_derived_barrosan_barn_visual_preflight.glb",
+  "dimensionsMeters": {
+    "width": 7.6,
+    "depth": 5.2,
+    "wallHeight": 5.28,
+    "ridgeHeight": 6.68,
+    "lowerDoorHeight": 2.32,
+    "upperLoadingHeight": 1.4
+  },
+  "materialSlots": 6,
+  "visibleRenderObjects": 76,
+  "drawCalls": 76,
+  "visibleTriangles": 4380,
+  "reusedHouse02MaterialResources": [
+    "V0338_GoldCandidate_Rubble_Front",
+    "V0338_GoldCandidate_Rubble_Rear",
+    "V0338_GoldCandidate_Rubble_LeftGable",
+    "V0334_Weathered_Slate",
+    "V0334_Weathered_Timber",
+    "V0334_Iron"
+  ],
+  "sourceTexturePaths": [
+    "desktop-spikes/godot-salto/assets/v0338/barrosan_house_02_material_gold_candidate_granite_albedo_2048.png",
+    "desktop-spikes/godot-salto/assets/v0338/barrosan_house_02_material_gold_candidate_slate_albedo_1024.png",
+    "desktop-spikes/godot-salto/assets/v0338/barrosan_house_02_material_gold_candidate_timber_albedo_1024.png"
+  ],
+  "architecture": {
+    "closedRectangularVolume": true,
+    "principalRoofSlopes": 2,
+    "straightRidge": true,
+    "lowerDoubleDoor": true,
+    "upperHayLoadingOpening": true,
+    "resolvedRear": true,
+    "resolvedBothGables": true,
+    "terrainPedestal": false
+  },
+  "sourceLineage": {
+    "frozenHouse02Blend": "art-source/blender/v0338/barrosan_house_02_material_gold_candidate.blend",
+    "frozenHouse02BlendSha256": "3da7c2cf71509e07c900001fd0b277e9af4584a074552ac1d929a4f37e0d78b6",
+    "frozenHouse02GLBSha256": "ceab23ff3cfb580cc63ce917ec1ff675a1cd318f8fe3390fc836166015ebba89",
+    "copiedSource": "art-source/blender/v0343/house02_source_duplicate_initial.blend",
+    "copiedSourceInitialSha256": "3da7c2cf71509e07c900001fd0b277e9af4584a074552ac1d929a4f37e0d78b6",
+    "finalModifiedSha256": "ecb268c7a4f69c914951a0dbd9494fb332003566073b2311b47a348ba9f831e9",
+    "noV0341VisibleDependency": true,
+    "noV0342VisibleDependency": true
+  },
+  "prototypeOnly": true,
+  "defaultRuntimeIntegrated": false,
+  "noGameplay": true,
+  "assetProvenance": "repository-authored transformation from duplicated House 02 source; no protected game assets"
+}

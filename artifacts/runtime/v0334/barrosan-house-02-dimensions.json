@@ -1,0 +1,42 @@
+{
+  "units": "metres",
+  "principalHouseBodyBounds": {
+    "width": 9.96,
+    "depth": 6.24,
+    "height": 7.26
+  },
+  "housePlusStairLandingBounds": {
+    "width": 10.3,
+    "depth": 9.71,
+    "height": 7.26
+  },
+  "completeArchitecturalAssetBounds": {
+    "width": 10.3,
+    "depth": 9.71,
+    "height": 7.26
+  },
+  "collisionBounds": {
+    "width": 9.96,
+    "depth": 6.24,
+    "height": 7.26
+  },
+  "reviewSceneBounds": {
+    "width": 28.0,
+    "depth": 22.0,
+    "height": 9.0
+  },
+  "overallWidth": 9.96,
+  "overallDepth": 6.24,
+  "overallHeight": 7.26,
+  "eaveHeight": 4.52,
+  "ridgeHeight": 6.2,
+  "chimneyTopHeight": 7.26,
+  "lowerDoorHeight": 2.32,
+  "upperDoorHeight": 1.65,
+  "windowSillHeight": 3.14,
+  "stairRise": 0.25,
+  "stairRun": 0.44,
+  "landingHeight": 2.0,
+  "humanFigureHeight": 1.75,
+  "method": "separate principal body, stair/landing, complete asset, collision and review-scene bounds; no silent depth mixing"
+}

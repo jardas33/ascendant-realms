@@ -1,0 +1,824 @@
+[
+  {
+    "scenario": "bridge_railing_occlusion",
+    "left": "player_040_bridge_railing_occlusion_01.png",
+    "right": "player_041_bridge_railing_occlusion_02.png",
+    "changedPixelPercent": 0.2879
+  },
+  {
+    "scenario": "bridge_railing_occlusion",
+    "left": "player_041_bridge_railing_occlusion_02.png",
+    "right": "player_042_bridge_railing_occlusion_03.png",
+    "changedPixelPercent": 0.3463
+  },
+  {
+    "scenario": "bridge_railing_occlusion",
+    "left": "player_042_bridge_railing_occlusion_03.png",
+    "right": "player_043_bridge_railing_occlusion_04.png",
+    "changedPixelPercent": 0.4542
+  },
+  {
+    "scenario": "bridge_railing_occlusion",
+    "left": "player_043_bridge_railing_occlusion_04.png",
+    "right": "player_044_bridge_railing_occlusion_05.png",
+    "changedPixelPercent": 0.4763
+  },
+  {
+    "scenario": "bridge_railing_occlusion",
+    "left": "player_044_bridge_railing_occlusion_05.png",
+    "right": "debug_review_040_bridge_railing_occlusion_01.png",
+    "changedPixelPercent": 1.0674
+  },
+  {
+    "scenario": "bridge_railing_occlusion",
+    "left": "debug_review_040_bridge_railing_occlusion_01.png",
+    "right": "debug_review_041_bridge_railing_occlusion_02.png",
+    "changedPixelPercent": 0.5324
+  },
+  {
+    "scenario": "bridge_railing_occlusion",
+    "left": "debug_review_041_bridge_railing_occlusion_02.png",
+    "right": "debug_review_042_bridge_railing_occlusion_03.png",
+    "changedPixelPercent": 0.3962
+  },
+  {
+    "scenario": "bridge_railing_occlusion",
+    "left": "debug_review_042_bridge_railing_occlusion_03.png",
+    "right": "debug_review_043_bridge_railing_occlusion_04.png",
+    "changedPixelPercent": 0.504
+  },
+  {
+    "scenario": "bridge_railing_occlusion",
+    "left": "debug_review_043_bridge_railing_occlusion_04.png",
+    "right": "debug_review_044_bridge_railing_occlusion_05.png",
+    "changedPixelPercent": 0.5239
+  },
+  {
+    "scenario": "camera_pan",
+    "left": "player_045_camera_initial.png",
+    "right": "player_046_camera_pan_left.png",
+    "changedPixelPercent": 36.8965
+  },
+  {
+    "scenario": "camera_pan",
+    "left": "player_046_camera_pan_left.png",
+    "right": "player_047_camera_pan_final.png",
+    "changedPixelPercent": 35.5778
+  },
+  {
+    "scenario": "camera_pan",
+    "left": "player_047_camera_pan_final.png",
+    "right": "debug_review_045_camera_initial.png",
+    "changedPixelPercent": 47.1175
+  },
+  {
+    "scenario": "camera_pan",
+    "left": "debug_review_045_camera_initial.png",
+    "right": "debug_review_046_camera_pan_left.png",
+    "changedPixelPercent": 36.9038
+  },
+  {
+    "scenario": "camera_pan",
+    "left": "debug_review_046_camera_pan_left.png",
+    "right": "debug_review_047_camera_pan_final.png",
+    "changedPixelPercent": 35.5981
+  },
+  {
+    "scenario": "camera_zoom",
+    "left": "player_048_camera_zoom_ordinary.png",
+    "right": "player_049_camera_zoom_minimum.png",
+    "changedPixelPercent": 66.9736
+  },
+  {
+    "scenario": "camera_zoom",
+    "left": "player_049_camera_zoom_minimum.png",
+    "right": "player_050_camera_zoom_maximum.png",
+    "changedPixelPercent": 76.4428
+  },
+  {
+    "scenario": "camera_zoom",
+    "left": "player_050_camera_zoom_maximum.png",
+    "right": "debug_review_048_camera_zoom_ordinary.png",
+    "changedPixelPercent": 49.5262
+  },
+  {
+    "scenario": "camera_zoom",
+    "left": "debug_review_048_camera_zoom_ordinary.png",
+    "right": "debug_review_049_camera_zoom_minimum.png",
+    "changedPixelPercent": 66.9371
+  },
+  {
+    "scenario": "camera_zoom",
+    "left": "debug_review_049_camera_zoom_minimum.png",
+    "right": "debug_review_050_camera_zoom_maximum.png",
+    "changedPixelPercent": 76.3811
+  },
+  {
+    "scenario": "clean_gameplay",
+    "left": "player_077_clean_player_gameplay.png",
+    "right": "debug_review_077_debug_metadata_gameplay.png",
+    "changedPixelPercent": 0.9037
+  },
+  {
+    "scenario": "militia_bridge",
+    "left": "player_023_approach_bank.png",
+    "right": "player_024_bridge_entry.png",
+    "changedPixelPercent": 0.3046
+  },
+  {
+    "scenario": "militia_bridge",
+    "left": "player_024_bridge_entry.png",
+    "right": "player_025_bridge_first_quarter.png",
+    "changedPixelPercent": 0.2769
+  },
+  {
+    "scenario": "militia_bridge",
+    "left": "player_025_bridge_first_quarter.png",
+    "right": "player_026_bridge_centre.png",
+    "changedPixelPercent": 0.147
+  },
+  {
+    "scenario": "militia_bridge",
+    "left": "player_026_bridge_centre.png",
+    "right": "player_027_bridge_third_quarter.png",
+    "changedPixelPercent": 0.1466
+  },
+  {
+    "scenario": "militia_bridge",
+    "left": "player_027_bridge_third_quarter.png",
+    "right": "player_028_bridge_exit.png",
+    "changedPixelPercent": 0.0
+  },
+  {
+    "scenario": "militia_bridge",
+    "left": "player_028_bridge_exit.png",
+    "right": "player_029_beyond_bridge.png",
+    "changedPixelPercent": 0.0
+  },
+  {
+    "scenario": "militia_bridge",
+    "left": "player_029_beyond_bridge.png",
+    "right": "debug_review_023_approach_bank.png",
+    "changedPixelPercent": 0.8268
+  },
+  {
+    "scenario": "militia_bridge",
+    "left": "debug_review_023_approach_bank.png",
+    "right": "debug_review_024_bridge_entry.png",
+    "changedPixelPercent": 0.5534
+  },
+  {
+    "scenario": "militia_bridge",
+    "left": "debug_review_024_bridge_entry.png",
+    "right": "debug_review_025_bridge_first_quarter.png",
+    "changedPixelPercent": 0.5146
+  },
+  {
+    "scenario": "militia_bridge",
+    "left": "debug_review_025_bridge_first_quarter.png",
+    "right": "debug_review_026_bridge_centre.png",
+    "changedPixelPercent": 0.416
+  },
+  {
+    "scenario": "militia_bridge",
+    "left": "debug_review_026_bridge_centre.png",
+    "right": "debug_review_027_bridge_third_quarter.png",
+    "changedPixelPercent": 0.3996
+  },
+  {
+    "scenario": "militia_bridge",
+    "left": "debug_review_027_bridge_third_quarter.png",
+    "right": "debug_review_028_bridge_exit.png",
+    "changedPixelPercent": 0.0
+  },
+  {
+    "scenario": "militia_bridge",
+    "left": "debug_review_028_bridge_exit.png",
+    "right": "debug_review_029_beyond_bridge.png",
+    "changedPixelPercent": 0.0
+  },
+  {
+    "scenario": "militia_movement",
+    "left": "player_009_militia_before_command.png",
+    "right": "player_010_militia_immediately_after_command.png",
+    "changedPixelPercent": 0.5903
+  },
+  {
+    "scenario": "militia_movement",
+    "left": "player_010_militia_immediately_after_command.png",
+    "right": "player_011_militia_25_percent.png",
+    "changedPixelPercent": 0.2992
+  },
+  {
+    "scenario": "militia_movement",
+    "left": "player_011_militia_25_percent.png",
+    "right": "player_012_militia_50_percent.png",
+    "changedPixelPercent": 0.3118
+  },
+  {
+    "scenario": "militia_movement",
+    "left": "player_012_militia_50_percent.png",
+    "right": "player_013_militia_75_percent.png",
+    "changedPixelPercent": 0.1871
+  },
+  {
+    "scenario": "militia_movement",
+    "left": "player_013_militia_75_percent.png",
+    "right": "player_014_militia_destination_reached.png",
+    "changedPixelPercent": 0.0
+  },
+  {
+    "scenario": "militia_movement",
+    "left": "player_014_militia_destination_reached.png",
+    "right": "player_015_militia_stopped.png",
+    "changedPixelPercent": 0.0
+  },
+  {
+    "scenario": "militia_movement",
+    "left": "player_015_militia_stopped.png",
+    "right": "debug_review_009_militia_before_command.png",
+    "changedPixelPercent": 1.236
+  },
+  {
+    "scenario": "militia_movement",
+    "left": "debug_review_009_militia_before_command.png",
+    "right": "debug_review_010_militia_immediately_after_command.png",
+    "changedPixelPercent": 1.0137
+  },
+  {
+    "scenario": "militia_movement",
+    "left": "debug_review_010_militia_immediately_after_command.png",
+    "right": "debug_review_011_militia_25_percent.png",
+    "changedPixelPercent": 0.5413
+  },
+  {
+    "scenario": "militia_movement",
+    "left": "debug_review_011_militia_25_percent.png",
+    "right": "debug_review_012_militia_50_percent.png",
+    "changedPixelPercent": 0.3669
+  },
+  {
+    "scenario": "militia_movement",
+    "left": "debug_review_012_militia_50_percent.png",
+    "right": "debug_review_013_militia_75_percent.png",
+    "changedPixelPercent": 0.4207
+  },
+  {
+    "scenario": "militia_movement",
+    "left": "debug_review_013_militia_75_percent.png",
+    "right": "debug_review_014_militia_destination_reached.png",
+    "changedPixelPercent": 0.0
+  },
+  {
+    "scenario": "militia_movement",
+    "left": "debug_review_014_militia_destination_reached.png",
+    "right": "debug_review_015_militia_stopped.png",
+    "changedPixelPercent": 0.0
+  },
+  {
+    "scenario": "militia_ready_state",
+    "left": "player_056_militia_idle.png",
+    "right": "player_057_militia_move_command.png",
+    "changedPixelPercent": 0.3756
+  },
+  {
+    "scenario": "militia_ready_state",
+    "left": "player_057_militia_move_command.png",
+    "right": "player_058_militia_arrival.png",
+    "changedPixelPercent": 0.1746
+  },
+  {
+    "scenario": "militia_ready_state",
+    "left": "player_058_militia_arrival.png",
+    "right": "player_059_militia_ready_unsupported.png",
+    "changedPixelPercent": 0.0
+  },
+  {
+    "scenario": "militia_ready_state",
+    "left": "player_059_militia_ready_unsupported.png",
+    "right": "debug_review_056_militia_idle.png",
+    "changedPixelPercent": 1.1811
+  },
+  {
+    "scenario": "militia_ready_state",
+    "left": "debug_review_056_militia_idle.png",
+    "right": "debug_review_057_militia_move_command.png",
+    "changedPixelPercent": 0.5426
+  },
+  {
+    "scenario": "militia_ready_state",
+    "left": "debug_review_057_militia_move_command.png",
+    "right": "debug_review_058_militia_arrival.png",
+    "changedPixelPercent": 0.369
+  },
+  {
+    "scenario": "militia_ready_state",
+    "left": "debug_review_058_militia_arrival.png",
+    "right": "debug_review_059_militia_ready_unsupported.png",
+    "changedPixelPercent": 0.0
+  },
+  {
+    "scenario": "preflight",
+    "left": "player_001_preflight.png",
+    "right": "debug_review_001_preflight.png",
+    "changedPixelPercent": 0.8488
+  },
+  {
+    "scenario": "road_occlusion",
+    "left": "player_030_road_occlusion_01.png",
+    "right": "player_031_road_occlusion_02.png",
+    "changedPixelPercent": 0.2998
+  },
+  {
+    "scenario": "road_occlusion",
+    "left": "player_031_road_occlusion_02.png",
+    "right": "player_032_road_occlusion_03.png",
+    "changedPixelPercent": 0.3579
+  },
+  {
+    "scenario": "road_occlusion",
+    "left": "player_032_road_occlusion_03.png",
+    "right": "player_033_road_occlusion_04.png",
+    "changedPixelPercent": 0.4185
+  },
+  {
+    "scenario": "road_occlusion",
+    "left": "player_033_road_occlusion_04.png",
+    "right": "player_034_road_occlusion_05.png",
+    "changedPixelPercent": 0.3389
+  },
+  {
+    "scenario": "road_occlusion",
+    "left": "player_034_road_occlusion_05.png",
+    "right": "debug_review_030_road_occlusion_01.png",
+    "changedPixelPercent": 1.0118
+  },
+  {
+    "scenario": "road_occlusion",
+    "left": "debug_review_030_road_occlusion_01.png",
+    "right": "debug_review_031_road_occlusion_02.png",
+    "changedPixelPercent": 0.5448
+  },
+  {
+    "scenario": "road_occlusion",
+    "left": "debug_review_031_road_occlusion_02.png",
+    "right": "debug_review_032_road_occlusion_03.png",
+    "changedPixelPercent": 0.4066
+  },
+  {
+    "scenario": "road_occlusion",
+    "left": "debug_review_032_road_occlusion_03.png",
+    "right": "debug_review_033_road_occlusion_04.png",
+    "changedPixelPercent": 0.4507
+  },
+  {
+    "scenario": "road_occlusion",
+    "left": "debug_review_033_road_occlusion_04.png",
+    "right": "debug_review_034_road_occlusion_05.png",
+    "changedPixelPercent": 0.5946
+  },
+  {
+    "scenario": "rollback",
+    "left": "player_071_h3_enabled.png",
+    "right": "player_072_fallback_disabled_h3.png",
+    "changedPixelPercent": 1.161
+  },
+  {
+    "scenario": "rollback",
+    "left": "player_072_fallback_disabled_h3.png",
+    "right": "player_073_h3_reconstructed.png",
+    "changedPixelPercent": 1.161
+  },
+  {
+    "scenario": "rollback",
+    "left": "player_073_h3_reconstructed.png",
+    "right": "debug_review_071_h3_enabled.png",
+    "changedPixelPercent": 0.9154
+  },
+  {
+    "scenario": "rollback",
+    "left": "debug_review_071_h3_enabled.png",
+    "right": "debug_review_072_fallback_disabled_h3.png",
+    "changedPixelPercent": 1.1598
+  },
+  {
+    "scenario": "rollback",
+    "left": "debug_review_072_fallback_disabled_h3.png",
+    "right": "debug_review_073_h3_reconstructed.png",
+    "changedPixelPercent": 1.1598
+  },
+  {
+    "scenario": "save_write_reload",
+    "left": "player_067_before_real_save.png",
+    "right": "player_068_after_runtime_reset.png",
+    "changedPixelPercent": 1.305
+  },
+  {
+    "scenario": "save_write_reload",
+    "left": "player_068_after_runtime_reset.png",
+    "right": "player_069_after_real_load.png",
+    "changedPixelPercent": 0.2607
+  },
+  {
+    "scenario": "save_write_reload",
+    "left": "player_069_after_real_load.png",
+    "right": "player_070_selected_state_after_load.png",
+    "changedPixelPercent": 0.0
+  },
+  {
+    "scenario": "save_write_reload",
+    "left": "player_070_selected_state_after_load.png",
+    "right": "debug_review_067_before_real_save.png",
+    "changedPixelPercent": 1.9856
+  },
+  {
+    "scenario": "save_write_reload",
+    "left": "debug_review_067_before_real_save.png",
+    "right": "debug_review_068_after_runtime_reset.png",
+    "changedPixelPercent": 1.8172
+  },
+  {
+    "scenario": "save_write_reload",
+    "left": "debug_review_068_after_runtime_reset.png",
+    "right": "debug_review_069_after_real_load.png",
+    "changedPixelPercent": 0.7728
+  },
+  {
+    "scenario": "save_write_reload",
+    "left": "debug_review_069_after_real_load.png",
+    "right": "debug_review_070_selected_state_after_load.png",
+    "changedPixelPercent": 0.0
+  },
+  {
+    "scenario": "scale_comparison",
+    "left": "player_074_scale_current_v0311.png",
+    "right": "player_075_scale_12_percent_smaller.png",
+    "changedPixelPercent": 0.0
+  },
+  {
+    "scenario": "scale_comparison",
+    "left": "player_075_scale_12_percent_smaller.png",
+    "right": "player_076_scale_24_percent_smaller.png",
+    "changedPixelPercent": 0.0
+  },
+  {
+    "scenario": "scale_comparison",
+    "left": "player_076_scale_24_percent_smaller.png",
+    "right": "debug_review_074_scale_current_v0311.png",
+    "changedPixelPercent": 0.9068
+  },
+  {
+    "scenario": "scale_comparison",
+    "left": "debug_review_074_scale_current_v0311.png",
+    "right": "debug_review_075_scale_12_percent_smaller.png",
+    "changedPixelPercent": 0.0
+  },
+  {
+    "scenario": "scale_comparison",
+    "left": "debug_review_075_scale_12_percent_smaller.png",
+    "right": "debug_review_076_scale_24_percent_smaller.png",
+    "changedPixelPercent": 0.0
+  },
+  {
+    "scenario": "selection",
+    "left": "player_060_worker_unselected.png",
+    "right": "player_061_worker_selected.png",
+    "changedPixelPercent": 0.1916
+  },
+  {
+    "scenario": "selection",
+    "left": "player_061_worker_selected.png",
+    "right": "player_062_militia_selected.png",
+    "changedPixelPercent": 0.2282
+  },
+  {
+    "scenario": "selection",
+    "left": "player_062_militia_selected.png",
+    "right": "player_063_mixed_selected.png",
+    "changedPixelPercent": 0.0854
+  },
+  {
+    "scenario": "selection",
+    "left": "player_063_mixed_selected.png",
+    "right": "player_064_box_selection_completed.png",
+    "changedPixelPercent": 1.1217
+  },
+  {
+    "scenario": "selection",
+    "left": "player_064_box_selection_completed.png",
+    "right": "player_065_selection_cleared.png",
+    "changedPixelPercent": 1.1924
+  },
+  {
+    "scenario": "selection",
+    "left": "player_065_selection_cleared.png",
+    "right": "player_066_selection_after_movement.png",
+    "changedPixelPercent": 0.7991
+  },
+  {
+    "scenario": "selection",
+    "left": "player_066_selection_after_movement.png",
+    "right": "debug_review_060_worker_unselected.png",
+    "changedPixelPercent": 1.4052
+  },
+  {
+    "scenario": "selection",
+    "left": "debug_review_060_worker_unselected.png",
+    "right": "debug_review_061_worker_selected.png",
+    "changedPixelPercent": 0.475
+  },
+  {
+    "scenario": "selection",
+    "left": "debug_review_061_worker_selected.png",
+    "right": "debug_review_062_militia_selected.png",
+    "changedPixelPercent": 0.8445
+  },
+  {
+    "scenario": "selection",
+    "left": "debug_review_062_militia_selected.png",
+    "right": "debug_review_063_mixed_selected.png",
+    "changedPixelPercent": 1.0095
+  },
+  {
+    "scenario": "selection",
+    "left": "debug_review_063_mixed_selected.png",
+    "right": "debug_review_064_box_selection_completed.png",
+    "changedPixelPercent": 1.7676
+  },
+  {
+    "scenario": "selection",
+    "left": "debug_review_064_box_selection_completed.png",
+    "right": "debug_review_065_selection_cleared.png",
+    "changedPixelPercent": 1.83
+  },
+  {
+    "scenario": "selection",
+    "left": "debug_review_065_selection_cleared.png",
+    "right": "debug_review_066_selection_after_movement.png",
+    "changedPixelPercent": 1.5419
+  },
+  {
+    "scenario": "storehouse_occlusion",
+    "left": "player_035_storehouse_occlusion_01.png",
+    "right": "player_036_storehouse_occlusion_02.png",
+    "changedPixelPercent": 0.2381
+  },
+  {
+    "scenario": "storehouse_occlusion",
+    "left": "player_036_storehouse_occlusion_02.png",
+    "right": "player_037_storehouse_occlusion_03.png",
+    "changedPixelPercent": 0.1546
+  },
+  {
+    "scenario": "storehouse_occlusion",
+    "left": "player_037_storehouse_occlusion_03.png",
+    "right": "player_038_storehouse_occlusion_04.png",
+    "changedPixelPercent": 0.0
+  },
+  {
+    "scenario": "storehouse_occlusion",
+    "left": "player_038_storehouse_occlusion_04.png",
+    "right": "player_039_storehouse_occlusion_05.png",
+    "changedPixelPercent": 0.0
+  },
+  {
+    "scenario": "storehouse_occlusion",
+    "left": "player_039_storehouse_occlusion_05.png",
+    "right": "debug_review_035_storehouse_occlusion_01.png",
+    "changedPixelPercent": 0.925
+  },
+  {
+    "scenario": "storehouse_occlusion",
+    "left": "debug_review_035_storehouse_occlusion_01.png",
+    "right": "debug_review_036_storehouse_occlusion_02.png",
+    "changedPixelPercent": 0.4848
+  },
+  {
+    "scenario": "storehouse_occlusion",
+    "left": "debug_review_036_storehouse_occlusion_02.png",
+    "right": "debug_review_037_storehouse_occlusion_03.png",
+    "changedPixelPercent": 0.3991
+  },
+  {
+    "scenario": "storehouse_occlusion",
+    "left": "debug_review_037_storehouse_occlusion_03.png",
+    "right": "debug_review_038_storehouse_occlusion_04.png",
+    "changedPixelPercent": 0.0
+  },
+  {
+    "scenario": "storehouse_occlusion",
+    "left": "debug_review_038_storehouse_occlusion_04.png",
+    "right": "debug_review_039_storehouse_occlusion_05.png",
+    "changedPixelPercent": 0.0
+  },
+  {
+    "scenario": "worker_bridge",
+    "left": "player_016_approach_bank.png",
+    "right": "player_017_bridge_entry.png",
+    "changedPixelPercent": 0.3592
+  },
+  {
+    "scenario": "worker_bridge",
+    "left": "player_017_bridge_entry.png",
+    "right": "player_018_bridge_first_quarter.png",
+    "changedPixelPercent": 0.3123
+  },
+  {
+    "scenario": "worker_bridge",
+    "left": "player_018_bridge_first_quarter.png",
+    "right": "player_019_bridge_centre.png",
+    "changedPixelPercent": 0.2111
+  },
+  {
+    "scenario": "worker_bridge",
+    "left": "player_019_bridge_centre.png",
+    "right": "player_020_bridge_third_quarter.png",
+    "changedPixelPercent": 0.22
+  },
+  {
+    "scenario": "worker_bridge",
+    "left": "player_020_bridge_third_quarter.png",
+    "right": "player_021_bridge_exit.png",
+    "changedPixelPercent": 0.2141
+  },
+  {
+    "scenario": "worker_bridge",
+    "left": "player_021_bridge_exit.png",
+    "right": "player_022_beyond_bridge.png",
+    "changedPixelPercent": 0.2047
+  },
+  {
+    "scenario": "worker_bridge",
+    "left": "player_022_beyond_bridge.png",
+    "right": "debug_review_016_approach_bank.png",
+    "changedPixelPercent": 0.9066
+  },
+  {
+    "scenario": "worker_bridge",
+    "left": "debug_review_016_approach_bank.png",
+    "right": "debug_review_017_bridge_entry.png",
+    "changedPixelPercent": 0.584
+  },
+  {
+    "scenario": "worker_bridge",
+    "left": "debug_review_017_bridge_entry.png",
+    "right": "debug_review_018_bridge_first_quarter.png",
+    "changedPixelPercent": 0.5737
+  },
+  {
+    "scenario": "worker_bridge",
+    "left": "debug_review_018_bridge_first_quarter.png",
+    "right": "debug_review_019_bridge_centre.png",
+    "changedPixelPercent": 0.4688
+  },
+  {
+    "scenario": "worker_bridge",
+    "left": "debug_review_019_bridge_centre.png",
+    "right": "debug_review_020_bridge_third_quarter.png",
+    "changedPixelPercent": 0.4731
+  },
+  {
+    "scenario": "worker_bridge",
+    "left": "debug_review_020_bridge_third_quarter.png",
+    "right": "debug_review_021_bridge_exit.png",
+    "changedPixelPercent": 0.4851
+  },
+  {
+    "scenario": "worker_bridge",
+    "left": "debug_review_021_bridge_exit.png",
+    "right": "debug_review_022_beyond_bridge.png",
+    "changedPixelPercent": 0.4622
+  },
+  {
+    "scenario": "worker_movement",
+    "left": "player_002_worker_before_command.png",
+    "right": "player_003_worker_immediately_after_command.png",
+    "changedPixelPercent": 0.5672
+  },
+  {
+    "scenario": "worker_movement",
+    "left": "player_003_worker_immediately_after_command.png",
+    "right": "player_004_worker_25_percent.png",
+    "changedPixelPercent": 0.3021
+  },
+  {
+    "scenario": "worker_movement",
+    "left": "player_004_worker_25_percent.png",
+    "right": "player_005_worker_50_percent.png",
+    "changedPixelPercent": 0.2769
+  },
+  {
+    "scenario": "worker_movement",
+    "left": "player_005_worker_50_percent.png",
+    "right": "player_006_worker_75_percent.png",
+    "changedPixelPercent": 0.2283
+  },
+  {
+    "scenario": "worker_movement",
+    "left": "player_006_worker_75_percent.png",
+    "right": "player_007_worker_destination_reached.png",
+    "changedPixelPercent": 0.2066
+  },
+  {
+    "scenario": "worker_movement",
+    "left": "player_007_worker_destination_reached.png",
+    "right": "player_008_worker_stopped.png",
+    "changedPixelPercent": 0.0
+  },
+  {
+    "scenario": "worker_movement",
+    "left": "player_008_worker_stopped.png",
+    "right": "debug_review_002_worker_before_command.png",
+    "changedPixelPercent": 1.3299
+  },
+  {
+    "scenario": "worker_movement",
+    "left": "debug_review_002_worker_before_command.png",
+    "right": "debug_review_003_worker_immediately_after_command.png",
+    "changedPixelPercent": 0.9987
+  },
+  {
+    "scenario": "worker_movement",
+    "left": "debug_review_003_worker_immediately_after_command.png",
+    "right": "debug_review_004_worker_25_percent.png",
+    "changedPixelPercent": 0.5456
+  },
+  {
+    "scenario": "worker_movement",
+    "left": "debug_review_004_worker_25_percent.png",
+    "right": "debug_review_005_worker_50_percent.png",
+    "changedPixelPercent": 0.3323
+  },
+  {
+    "scenario": "worker_movement",
+    "left": "debug_review_005_worker_50_percent.png",
+    "right": "debug_review_006_worker_75_percent.png",
+    "changedPixelPercent": 0.3036
+  },
+  {
+    "scenario": "worker_movement",
+    "left": "debug_review_006_worker_75_percent.png",
+    "right": "debug_review_007_worker_destination_reached.png",
+    "changedPixelPercent": 0.4548
+  },
+  {
+    "scenario": "worker_movement",
+    "left": "debug_review_007_worker_destination_reached.png",
+    "right": "debug_review_008_worker_stopped.png",
+    "changedPixelPercent": 0.0
+  },
+  {
+    "scenario": "worker_work_state",
+    "left": "player_051_worker_idle.png",
+    "right": "player_052_worker_work_command.png",
+    "changedPixelPercent": 0.3756
+  },
+  {
+    "scenario": "worker_work_state",
+    "left": "player_052_worker_work_command.png",
+    "right": "player_053_worker_travelling_to_work.png",
+    "changedPixelPercent": 0.3486
+  },
+  {
+    "scenario": "worker_work_state",
+    "left": "player_053_worker_travelling_to_work.png",
+    "right": "player_054_worker_working_state.png",
+    "changedPixelPercent": 0.8757
+  },
+  {
+    "scenario": "worker_work_state",
+    "left": "player_054_worker_working_state.png",
+    "right": "player_055_worker_work_pose_limitation.png",
+    "changedPixelPercent": 0.0
+  },
+  {
+    "scenario": "worker_work_state",
+    "left": "player_055_worker_work_pose_limitation.png",
+    "right": "debug_review_051_worker_idle.png",
+    "changedPixelPercent": 1.4946
+  },
+  {
+    "scenario": "worker_work_state",
+    "left": "debug_review_051_worker_idle.png",
+    "right": "debug_review_052_worker_work_command.png",
+    "changedPixelPercent": 0.5237
+  },
+  {
+    "scenario": "worker_work_state",
+    "left": "debug_review_052_worker_work_command.png",
+    "right": "debug_review_053_worker_travelling_to_work.png",
+    "changedPixelPercent": 0.5969
+  },
+  {
+    "scenario": "worker_work_state",
+    "left": "debug_review_053_worker_travelling_to_work.png",
+    "right": "debug_review_054_worker_working_state.png",
+    "changedPixelPercent": 1.1372
+  },
+  {
+    "scenario": "worker_work_state",
+    "left": "debug_review_054_worker_working_state.png",
+    "right": "debug_review_055_worker_work_pose_limitation.png",
+    "changedPixelPercent": 0.0
+  }
+]

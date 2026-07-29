@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource path="res://scripts/v0344_barn_front_granite_roof_edge_visual_preflight.gd" type="Script" id="1_v0344"]
+
+[node name="V0344BarnFrontGraniteRoofEdgeVisualPreflight" type="Node3D"]
+script = ExtResource("1_v0344")

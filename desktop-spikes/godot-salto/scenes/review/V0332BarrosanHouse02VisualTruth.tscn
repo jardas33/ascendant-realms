@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/v0332_barrosan_house_02_visual_truth.gd" id="1_truth"]
+
+[node name="V0332BarrosanHouse02VisualTruth" type="Node3D"]
+script = ExtResource("1_truth")

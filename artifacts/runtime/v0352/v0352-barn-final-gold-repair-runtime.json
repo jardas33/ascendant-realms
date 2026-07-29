@@ -1,0 +1,449 @@
+{
+  "actual256SourceDimensions": "256x256",
+  "automatedVisualApproval": false,
+  "balconyRailNode": false,
+  "captures": [
+    {
+      "camera": {
+        "position": "(-15.0, 8.4, 15.0)",
+        "projection": "orthographic",
+        "size": 16.5,
+        "target": "(0.0, 2.65, 0.0)"
+      },
+      "fileName": "01_front_three_quarter_left.png",
+      "purpose": "clean exterior orbit front three-quarter left",
+      "rendered": true,
+      "size": {
+        "height": 1009,
+        "width": 1920
+      },
+      "technicalOverlay": false,
+      "unlabelled": true
+    },
+    {
+      "camera": {
+        "position": "(15.0, 8.4, 15.0)",
+        "projection": "orthographic",
+        "size": 16.5,
+        "target": "(0.0, 2.65, 0.0)"
+      },
+      "fileName": "02_front_three_quarter_right.png",
+      "purpose": "clean exterior orbit front three-quarter right",
+      "rendered": true,
+      "size": {
+        "height": 1009,
+        "width": 1920
+      },
+      "technicalOverlay": false,
+      "unlabelled": true
+    },
+    {
+      "camera": {
+        "position": "(0.0, 7.0, 18.0)",
+        "projection": "orthographic",
+        "size": 15.0,
+        "target": "(0.0, 2.55, 0.0)"
+      },
+      "fileName": "03_direct_front.png",
+      "purpose": "clean direct front with complete roof",
+      "rendered": true,
+      "size": {
+        "height": 1009,
+        "width": 1920
+      },
+      "technicalOverlay": false,
+      "unlabelled": true
+    },
+    {
+      "camera": {
+        "position": "(0.0, 7.0, -18.0)",
+        "projection": "orthographic",
+        "size": 15.0,
+        "target": "(0.0, 2.55, 0.0)"
+      },
+      "fileName": "04_direct_rear.png",
+      "purpose": "clean direct rear with complete roof",
+      "rendered": true,
+      "size": {
+        "height": 1009,
+        "width": 1920
+      },
+      "technicalOverlay": false,
+      "unlabelled": true
+    },
+    {
+      "camera": {
+        "position": "(-15.0, 8.4, -15.0)",
+        "projection": "orthographic",
+        "size": 16.5,
+        "target": "(0.0, 2.65, 0.0)"
+      },
+      "fileName": "05_rear_three_quarter_left.png",
+      "purpose": "rear three-quarter left roof closure proof",
+      "rendered": true,
+      "size": {
+        "height": 1009,
+        "width": 1920
+      },
+      "technicalOverlay": false,
+      "unlabelled": true
+    },
+    {
+      "camera": {
+        "position": "(15.0, 8.4, -15.0)",
+        "projection": "orthographic",
+        "size": 16.5,
+        "target": "(0.0, 2.65, 0.0)"
+      },
+      "fileName": "06_rear_three_quarter_right.png",
+      "purpose": "rear three-quarter right roof closure proof",
+      "rendered": true,
+      "size": {
+        "height": 1009,
+        "width": 1920
+      },
+      "technicalOverlay": false,
+      "unlabelled": true
+    },
+    {
+      "camera": {
+        "position": "(-18.0, 6.5, 0.0)",
+        "projection": "orthographic",
+        "size": 15.0,
+        "target": "(0.0, 2.8, 0.0)"
+      },
+      "fileName": "07_direct_left_gable.png",
+      "purpose": "direct left gable exterior roof proof",
+      "rendered": true,
+      "size": {
+        "height": 1009,
+        "width": 1920
+      },
+      "technicalOverlay": false,
+      "unlabelled": true
+    },
+    {
+      "camera": {
+        "position": "(18.0, 6.5, 0.0)",
+        "projection": "orthographic",
+        "size": 15.0,
+        "target": "(0.0, 2.8, 0.0)"
+      },
+      "fileName": "08_direct_right_gable.png",
+      "purpose": "direct right gable exterior roof proof",
+      "rendered": true,
+      "size": {
+        "height": 1009,
+        "width": 1920
+      },
+      "technicalOverlay": false,
+      "unlabelled": true
+    },
+    {
+      "camera": {
+        "position": "(-17.0, 13.0, 20.0)",
+        "projection": "orthographic",
+        "size": 20.0,
+        "target": "(0.0, 2.4, 0.0)"
+      },
+      "fileName": "09_elevated_complete_roof_orbit.png",
+      "purpose": "moderately elevated complete-roof orbit",
+      "rendered": true,
+      "size": {
+        "height": 1009,
+        "width": 1920
+      },
+      "technicalOverlay": false,
+      "unlabelled": true
+    },
+    {
+      "camera": {
+        "position": "(-10.0, 5.8, 12.2)",
+        "projection": "orthographic",
+        "size": 8.3,
+        "target": "(-2.8, 1.0, 0.0)"
+      },
+      "fileName": "10_foundation_front_left_organic.png",
+      "purpose": "front-left organic ground contact",
+      "rendered": true,
+      "size": {
+        "height": 1009,
+        "width": 1920
+      },
+      "technicalOverlay": false,
+      "unlabelled": true
+    },
+    {
+      "camera": {
+        "position": "(10.0, 5.8, 12.2)",
+        "projection": "orthographic",
+        "size": 8.3,
+        "target": "(2.8, 1.0, 0.0)"
+      },
+      "fileName": "11_foundation_front_right_organic.png",
+      "purpose": "front-right organic ground contact",
+      "rendered": true,
+      "size": {
+        "height": 1009,
+        "width": 1920
+      },
+      "technicalOverlay": false,
+      "unlabelled": true
+    },
+    {
+      "camera": {
+        "position": "(10.0, 5.8, -12.2)",
+        "projection": "orthographic",
+        "size": 8.3,
+        "target": "(2.8, 1.0, 0.0)"
+      },
+      "fileName": "12_foundation_rear_organic.png",
+      "purpose": "rear organic ground contact",
+      "rendered": true,
+      "size": {
+        "height": 1009,
+        "width": 1920
+      },
+      "technicalOverlay": false,
+      "unlabelled": true
+    },
+    {
+      "camera": {
+        "position": "(-19.0, 14.5, 22.0)",
+        "projection": "orthographic",
+        "size": 24.0,
+        "target": "(0.0, 2.0, 0.0)"
+      },
+      "fileName": "13_ordinary_far_rts.png",
+      "purpose": "ordinary elevated RTS readability",
+      "rendered": true,
+      "size": {
+        "height": 1009,
+        "width": 1920
+      },
+      "technicalOverlay": false,
+      "unlabelled": true
+    },
+    {
+      "camera": {
+        "position": "(-15.0, 8.4, 15.0)",
+        "projection": "orthographic",
+        "size": 16.5,
+        "target": "(0.0, 2.65, 0.0)"
+      },
+      "fileName": "14_true_256_pixel_source.png",
+      "purpose": "true 256-pixel source",
+      "rendered": true,
+      "size": {
+        "height": 256,
+        "width": 256
+      },
+      "technicalOverlay": false,
+      "unlabelled": true
+    },
+    {
+      "fileName": "15_greyscale_value_proof.png",
+      "purpose": "greyscale value proof",
+      "rendered": true,
+      "size": {
+        "height": 1009,
+        "width": 1920
+      },
+      "unlabelled": true
+    },
+    {
+      "camera": {
+        "position": "(-15.0, 8.4, 15.0)",
+        "projection": "orthographic",
+        "size": 16.5,
+        "target": "(0.0, 2.65, 0.0)"
+      },
+      "fileName": "16_restrained_warm_directional.png",
+      "purpose": "restrained warm directional with normal camera family",
+      "rendered": true,
+      "size": {
+        "height": 1009,
+        "width": 1920
+      },
+      "technicalOverlay": false,
+      "unlabelled": true
+    },
+    {
+      "camera": {
+        "position": "(-15.0, 8.4, 15.0)",
+        "projection": "orthographic",
+        "size": 13.2,
+        "target": "(0.0, 2.65, 0.0)"
+      },
+      "fileName": "17_matched_house02_barn_neutral.png",
+      "normalEnabled": true,
+      "purpose": "matched frozen House02 and v0.350 barn neutral relationship",
+      "rendered": true,
+      "size": {
+        "height": 256,
+        "width": 512
+      },
+      "unlabelled": true
+    },
+    {
+      "camera": {
+        "position": "(-18.0, 10.5, 26.0)",
+        "projection": "orthographic",
+        "size": 24.0,
+        "target": "(0.0, 2.2, 0.0)"
+      },
+      "fileName": "18_contextual_three_quarter_player.png",
+      "purpose": "bounded clean PLAYER three-quarter House02/barn context with two complete workers",
+      "rendered": true,
+      "size": {
+        "height": 1009,
+        "width": 1920
+      },
+      "technicalOverlay": false,
+      "unlabelled": true
+    },
+    {
+      "camera": {
+        "position": "(-15.0, 7.4, 20.0)",
+        "projection": "orthographic",
+        "size": 17.0,
+        "target": "(0.0, 1.7, 0.0)"
+      },
+      "fileName": "19_contextual_worker_completeness.png",
+      "purpose": "bounded clean PLAYER three-quarter House02/barn context with two complete workers",
+      "rendered": true,
+      "size": {
+        "height": 1009,
+        "width": 1920
+      },
+      "technicalOverlay": false,
+      "unlabelled": true
+    },
+    {
+      "camera": {
+        "position": "(0.0, 8.0, 18.0)",
+        "projection": "orthographic",
+        "size": 15.0,
+        "target": "(0.0, 3.0, 0.0)"
+      },
+      "fileName": "20_debug_review_roof_normals_contact.png",
+      "purpose": "DEBUG_REVIEW roof normals, culling, orbit, contact and worker evidence",
+      "rendered": true,
+      "size": {
+        "height": 1009,
+        "width": 1920
+      },
+      "technicalOverlay": true,
+      "unlabelled": true
+    }
+  ],
+  "checkpoint": "v0.352",
+  "completeWorkerCount": 2,
+  "contextualCameraMode": "three-quarter RTS",
+  "defaultRuntimeIntegrated": false,
+  "diagnosticEvidence": [
+    "normal_enabled.png",
+    "normal_disabled.png",
+    "albedo_only.png",
+    "roughness_isolation.png",
+    "uv_checker_source.txt"
+  ],
+  "duplicateShutterRows": false,
+  "errors": [],
+  "exteriorCutawayCount": 0,
+  "floatingFoundationGeometryCount": 0,
+  "foundationContactMethod": "five rounded transparent contact-shadow blobs plus irregular rounded doorway soil response; no rectangular plane",
+  "frozenV0350Hashes": true,
+  "frozenV0351Shutters": true,
+  "godotImportedBounds": {
+    "maxX": 8.77885627746582,
+    "maxY": 6.10292053222656,
+    "maxZ": 5.5625,
+    "minX": -8.58031463623047,
+    "minY": 0.113000012934208,
+    "minZ": -5.34499979019165
+  },
+  "grilleNode": false,
+  "hiddenRoofNodeCount": 0,
+  "humanReviewRequired": true,
+  "lowerUpperVisibleAreaRatio": 3.64,
+  "minimumContextWorkerPixelHeight": 20,
+  "missingRoofSlopeCount": 0,
+  "newRoofGeometryHash": "0077e19143517e2850aee3bdb6ce9408d55bc7e2bfdc958d61ac1b141ab684f9",
+  "noCombat": true,
+  "noEconomy": true,
+  "noGameplay": true,
+  "noLabels": true,
+  "noMovement": true,
+  "noOverlays": true,
+  "noPathfinding": true,
+  "noResources": true,
+  "noRuntimeIntegration": true,
+  "noVideo": true,
+  "oldRoofGeometryHash": "0b4944d8a15006664dad84cec5e8b41546497588d14194d5b2e49621071e209c",
+  "outcome": "READY FOR HUMAN V0352 BARN FINAL-GOLD REVIEW",
+  "playerEvidenceDebrisCount": 0,
+  "prototypeOnly": true,
+  "prototypeOptIn": true,
+  "rawCaptureCount": 20,
+  "requiredRawNames": [
+    "01_front_three_quarter_left.png",
+    "02_front_three_quarter_right.png",
+    "03_direct_front.png",
+    "04_direct_rear.png",
+    "05_rear_three_quarter_left.png",
+    "06_rear_three_quarter_right.png",
+    "07_direct_left_gable.png",
+    "08_direct_right_gable.png",
+    "09_elevated_complete_roof_orbit.png",
+    "10_foundation_front_left_organic.png",
+    "11_foundation_front_right_organic.png",
+    "12_foundation_rear_organic.png",
+    "13_ordinary_far_rts.png",
+    "14_true_256_pixel_source.png",
+    "15_greyscale_value_proof.png",
+    "16_restrained_warm_directional.png",
+    "17_matched_house02_barn_neutral.png",
+    "18_contextual_three_quarter_player.png",
+    "19_contextual_worker_completeness.png",
+    "20_debug_review_roof_normals_contact.png"
+  ],
+  "roofCulling": "ordinary backface culling retained",
+  "roofExteriorBoundsAfter": {
+    "maxX": 7.87,
+    "maxY": 5.88542,
+    "maxZ": 5.345,
+    "minX": -7.87,
+    "minY": 3.94,
+    "minZ": -5.345
+  },
+  "roofExteriorBoundsBefore": {
+    "maxX": 7.87,
+    "maxY": 5.88542,
+    "maxZ": 5.345,
+    "minX": -7.87,
+    "minY": 3.94,
+    "minZ": -5.345
+  },
+  "roofExteriorOrbitViewCount": 9,
+  "roofInteriorExposureCount": 0,
+  "roofPitchDegrees": [
+    20.0,
+    20.0
+  ],
+  "roofRepairDescriptor": "v0.352:closed-roof-underside:15.74x0.08x5.69:20deg:two-slopes:ordinary-backface-culling",
+  "scenePath": "res://scenes/review/V0352BarnFinalGoldRepair.tscn",
+  "schemaVersion": 1,
+  "shutterLeafCount": 2,
+  "shutterPrimaryBoardOrientation": "vertical",
+  "sourceBlend": "art-source/blender/v0350/barn_final_material_harmony.blend",
+  "sourceGLB": "res://assets/v0350/barn_final_material_harmony.glb",
+  "status": "PASS_V0352_BARN_FINAL_GOLD_REPAIR_RUNTIME",
+  "upperOpeningExteriorDimensions": {
+    "height": 0.920000016689301,
+    "width": 3.3199999332428
+  },
+  "ventNode": false,
+  "visibleDecalBoundaryCount": 0,
+  "visibleRectangularContactArtifactCount": 0
+}

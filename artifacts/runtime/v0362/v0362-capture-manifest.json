@@ -1,0 +1,2165 @@
+﻿{
+    "schemaVersion":  1,
+    "checkpoint":  "v0.362",
+    "status":  "PASS_V0362_BARROSAN_BARN_CONTEXTUAL_PLACEMENT_SEPARATION_CAPTURE",
+    "scenePath":  "res://scenes/review/V0362BarrosanBarnContextualPlacementSeparation.tscn",
+    "genuineNonHeadlessCaptures":  true,
+    "beforeRejectedPlacementCaptured":  true,
+    "results":  [
+                    "Godot Engine v4.6.3.stable.official.7d41c59c4 - https://godotengine.org",
+                    "OpenGL API 3.3.0 NVIDIA 582.28 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce GTX 1070",
+                    "",
+                    "V0362_READY",
+                    "V0359_READY",
+                    {
+                        "id":  "before-rejected",
+                        "expected":  "LOADED_ONCE",
+                        "status":  "LOADED_ONCE",
+                        "exitCode":  0,
+                        "placementManifest":  "artifacts/runtime/v0362/before-rejected/v0362-barrosan-barn-placement-runtime.json",
+                        "screenshots":  [
+                                            "before.png"
+                                        ],
+                        "report":  {
+                                       "baselineRollbackStateMatch":  false,
+                                       "browserMutationCount":  0,
+                                       "canonicalAssetMutationCount":  0,
+                                       "canonicalTransformMutationCount":  0,
+                                       "changedNonBarnNodeCount":  0,
+                                       "checkpoint":  "v0.362",
+                                       "defaultBarnInstanceCount":  0,
+                                       "defaultRuntimeMutationCount":  0,
+                                       "duplicateBarnRootCount":  0,
+                                       "fixtureBarnRootPositionMutationCount":  0,
+                                       "fixtureBarnRootRotationMutationCount":  0,
+                                       "fixtureBarnRootScaleMutationCount":  0,
+                                       "fixtureBarnRotationChanged":  false,
+                                       "fixtureBarnScaleChanged":  false,
+                                       "fixtureBarnTranslationDelta":  {
+                                                                           "x":  0.0,
+                                                                           "y":  0.0,
+                                                                           "z":  0.0
+                                                                       },
+                                       "gameplayMutationCount":  0,
+                                       "genuineNonHeadlessCapture":  true,
+                                       "geometryMutationCount":  0,
+                                       "materialMutationCount":  0,
+                                       "measurement":  {
+                                                           "barnCombinedWorldAabb":  {
+                                                                                         "max":  {
+                                                                                                     "x":  6.06999969482422,
+                                                                                                     "y":  6.10292053222656,
+                                                                                                     "z":  4.56249952316284
+                                                                                                 },
+                                                                                         "min":  {
+                                                                                                     "x":  -9.67000007629395,
+                                                                                                     "y":  0.389999985694885,
+                                                                                                     "z":  -6.34499979019165
+                                                                                                 },
+                                                                                         "size":  {
+                                                                                                      "x":  15.7399997711182,
+                                                                                                      "y":  5.71292066574097,
+                                                                                                      "z":  10.9074993133545
+                                                                                                  }
+                                                                                     },
+                                                           "barnMeshCount":  16,
+                                                           "barnRoofMeshCount":  15,
+                                                           "barnRoofWorldAabb":  {
+                                                                                     "max":  {
+                                                                                                 "x":  6.06999969482422,
+                                                                                                 "y":  6.0404200553894,
+                                                                                                 "z":  4.56249952316284
+                                                                                             },
+                                                                                     "min":  {
+                                                                                                 "x":  -9.67000007629395,
+                                                                                                 "y":  2.85000014305115,
+                                                                                                 "z":  -6.34499979019165
+                                                                                             },
+                                                                                     "size":  {
+                                                                                                  "x":  15.7399997711182,
+                                                                                                  "y":  3.19041991233826,
+                                                                                                  "z":  10.9074993133545
+                                                                                              }
+                                                                                 },
+                                                           "beforeVariant":  true,
+                                                           "closestHorizontalClearance":  0.0,
+                                                           "closestRoofEaveClearance":  0.0,
+                                                           "horizontalOverlapDepth":  3.31999969482422,
+                                                           "house02CombinedWorldAabb":  {
+                                                                                            "max":  {
+                                                                                                        "x":  -6.35000038146973,
+                                                                                                        "y":  7.25999975204468,
+                                                                                                        "z":  4.6100001335144
+                                                                                                    },
+                                                                                            "min":  {
+                                                                                                        "x":  -16.6499996185303,
+                                                                                                        "y":  0.0,
+                                                                                                        "z":  -5.09999990463257
+                                                                                                    },
+                                                                                            "size":  {
+                                                                                                         "x":  10.2999992370605,
+                                                                                                         "y":  7.25999975204468,
+                                                                                                         "z":  9.71000003814697
+                                                                                                     }
+                                                                                        },
+                                                           "house02MeshCount":  24,
+                                                           "house02RoofMeshCount":  4,
+                                                           "house02RoofWorldAabb":  {
+                                                                                        "max":  {
+                                                                                                    "x":  -6.38000011444092,
+                                                                                                    "y":  7.25999975204468,
+                                                                                                    "z":  1.98000001907349
+                                                                                                },
+                                                                                        "min":  {
+                                                                                                    "x":  -16.6199989318848,
+                                                                                                    "y":  4.23999977111816,
+                                                                                                    "z":  -4.98000001907349
+                                                                                                },
+                                                                                        "size":  {
+                                                                                                     "x":  10.2399988174438,
+                                                                                                     "y":  3.01999998092651,
+                                                                                                     "z":  6.96000003814697
+                                                                                                 }
+                                                                                    },
+                                                           "measurementMethod":  "world-space transformed mesh AABBs; XZ interval relation; roof/eave subset by authored mesh-name tokens",
+                                                           "ordinaryRtsGapVisible":  false,
+                                                           "requiredWorkerClearance":  1.875,
+                                                           "roofEaveIntersection":  true,
+                                                           "roofEaveOverlapDepth":  3.28999996185303,
+                                                           "structuralAabbIntersection":  true,
+                                                           "workerClearancePassed":  false,
+                                                           "workerWidthReference":  1.25
+                                                       },
+                                       "newFixtureBarnTransform":  {
+                                                                       "position":  {
+                                                                                        "x":  -1.79999995231628,
+                                                                                        "y":  0.180000007152557,
+                                                                                        "z":  -1.0
+                                                                                    },
+                                                                       "rotation":  {
+                                                                                        "x":  0.0,
+                                                                                        "y":  0.0,
+                                                                                        "z":  0.0
+                                                                                    },
+                                                                       "scale":  {
+                                                                                     "x":  1.0,
+                                                                                     "y":  1.0,
+                                                                                     "z":  1.0
+                                                                                 }
+                                                                   },
+                                       "oldFixtureBarnTransform":  {
+                                                                       "position":  {
+                                                                                        "x":  -1.79999995231628,
+                                                                                        "y":  0.180000007152557,
+                                                                                        "z":  -1.0
+                                                                                    },
+                                                                       "rotation":  {
+                                                                                        "x":  0.0,
+                                                                                        "y":  0.0,
+                                                                                        "z":  0.0
+                                                                                    },
+                                                                       "scale":  {
+                                                                                     "x":  1.0,
+                                                                                     "y":  1.0,
+                                                                                     "z":  1.0
+                                                                                 }
+                                                                   },
+                                       "performanceBenchmarkRerunCount":  0,
+                                       "placementVariant":  "before-rejected",
+                                       "retainedBarnNodeCount":  0,
+                                       "rollbackClean":  false,
+                                       "roofHash":  "0077e19143517e2850aee3bdb6ce9408d55bc7e2bfdc958d61ac1b141ab684f9",
+                                       "saveMutationCount":  0,
+                                       "scenePath":  "res://scenes/review/V0362BarrosanBarnContextualPlacementSeparation.tscn",
+                                       "schemaVersion":  1,
+                                       "sourceHash":  "13a761a2b60658a0d261c89d9046b752f052a5e32924381075a4b24ca7c3d6a3",
+                                       "stableIdMutationCount":  0,
+                                       "textureMutationCount":  0,
+                                       "validOptInLoadedOnce":  false
+                                   }
+                    },
+                    "Godot Engine v4.6.3.stable.official.7d41c59c4 - https://godotengine.org",
+                    "OpenGL API 3.3.0 NVIDIA 582.28 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce GTX 1070",
+                    "",
+                    "V0362_READY",
+                    "V0359_READY",
+                    {
+                        "id":  "default",
+                        "expected":  "BASELINE_HOUSE02_NO_BARN",
+                        "status":  "BASELINE_HOUSE02_NO_BARN",
+                        "exitCode":  0,
+                        "placementManifest":  "artifacts/runtime/v0362/default/v0362-barrosan-barn-placement-runtime.json",
+                        "screenshots":  [
+                                            "default.png"
+                                        ],
+                        "report":  {
+                                       "baselineRollbackStateMatch":  false,
+                                       "browserMutationCount":  0,
+                                       "canonicalAssetMutationCount":  0,
+                                       "canonicalTransformMutationCount":  0,
+                                       "changedNonBarnNodeCount":  0,
+                                       "checkpoint":  "v0.362",
+                                       "defaultBarnInstanceCount":  0,
+                                       "defaultRuntimeMutationCount":  0,
+                                       "duplicateBarnRootCount":  0,
+                                       "fixtureBarnRootPositionMutationCount":  0,
+                                       "fixtureBarnRootRotationMutationCount":  0,
+                                       "fixtureBarnRootScaleMutationCount":  0,
+                                       "fixtureBarnRotationChanged":  false,
+                                       "fixtureBarnScaleChanged":  false,
+                                       "fixtureBarnTranslationDelta":  {
+                                                                           "x":  0.0,
+                                                                           "y":  0.0,
+                                                                           "z":  0.0
+                                                                       },
+                                       "gameplayMutationCount":  0,
+                                       "genuineNonHeadlessCapture":  true,
+                                       "geometryMutationCount":  0,
+                                       "materialMutationCount":  0,
+                                       "measurement":  {
+                                                           "barnCombinedWorldAabb":  {
+                                                                                         "max":  {
+                                                                                                     "x":  0.0,
+                                                                                                     "y":  0.0,
+                                                                                                     "z":  0.0
+                                                                                                 },
+                                                                                         "min":  {
+                                                                                                     "x":  0.0,
+                                                                                                     "y":  0.0,
+                                                                                                     "z":  0.0
+                                                                                                 },
+                                                                                         "size":  {
+                                                                                                      "x":  0.0,
+                                                                                                      "y":  0.0,
+                                                                                                      "z":  0.0
+                                                                                                  }
+                                                                                     },
+                                                           "barnMeshCount":  0,
+                                                           "barnRoofMeshCount":  0,
+                                                           "barnRoofWorldAabb":  {
+                                                                                     "max":  {
+                                                                                                 "x":  0.0,
+                                                                                                 "y":  0.0,
+                                                                                                 "z":  0.0
+                                                                                             },
+                                                                                     "min":  {
+                                                                                                 "x":  0.0,
+                                                                                                 "y":  0.0,
+                                                                                                 "z":  0.0
+                                                                                             },
+                                                                                     "size":  {
+                                                                                                  "x":  0.0,
+                                                                                                  "y":  0.0,
+                                                                                                  "z":  0.0
+                                                                                              }
+                                                                                 },
+                                                           "beforeVariant":  false,
+                                                           "closestHorizontalClearance":  6.35000038146973,
+                                                           "closestRoofEaveClearance":  6.38000011444092,
+                                                           "horizontalOverlapDepth":  0.0,
+                                                           "house02CombinedWorldAabb":  {
+                                                                                            "max":  {
+                                                                                                        "x":  -6.35000038146973,
+                                                                                                        "y":  7.25999975204468,
+                                                                                                        "z":  4.6100001335144
+                                                                                                    },
+                                                                                            "min":  {
+                                                                                                        "x":  -16.6499996185303,
+                                                                                                        "y":  0.0,
+                                                                                                        "z":  -5.09999990463257
+                                                                                                    },
+                                                                                            "size":  {
+                                                                                                         "x":  10.2999992370605,
+                                                                                                         "y":  7.25999975204468,
+                                                                                                         "z":  9.71000003814697
+                                                                                                     }
+                                                                                        },
+                                                           "house02MeshCount":  24,
+                                                           "house02RoofMeshCount":  4,
+                                                           "house02RoofWorldAabb":  {
+                                                                                        "max":  {
+                                                                                                    "x":  -6.38000011444092,
+                                                                                                    "y":  7.25999975204468,
+                                                                                                    "z":  1.98000001907349
+                                                                                                },
+                                                                                        "min":  {
+                                                                                                    "x":  -16.6199989318848,
+                                                                                                    "y":  4.23999977111816,
+                                                                                                    "z":  -4.98000001907349
+                                                                                                },
+                                                                                        "size":  {
+                                                                                                     "x":  10.2399988174438,
+                                                                                                     "y":  3.01999998092651,
+                                                                                                     "z":  6.96000003814697
+                                                                                                 }
+                                                                                    },
+                                                           "measurementMethod":  "world-space transformed mesh AABBs; XZ interval relation; roof/eave subset by authored mesh-name tokens",
+                                                           "ordinaryRtsGapVisible":  true,
+                                                           "requiredWorkerClearance":  1.875,
+                                                           "roofEaveIntersection":  false,
+                                                           "roofEaveOverlapDepth":  0.0,
+                                                           "structuralAabbIntersection":  false,
+                                                           "workerClearancePassed":  true,
+                                                           "workerWidthReference":  1.25
+                                                       },
+                                       "newFixtureBarnTransform":  {
+                                                                       "position":  {
+                                                                                        "x":  -1.79999995231628,
+                                                                                        "y":  0.180000007152557,
+                                                                                        "z":  -1.0
+                                                                                    },
+                                                                       "rotation":  {
+                                                                                        "x":  0.0,
+                                                                                        "y":  0.0,
+                                                                                        "z":  0.0
+                                                                                    },
+                                                                       "scale":  {
+                                                                                     "x":  1.0,
+                                                                                     "y":  1.0,
+                                                                                     "z":  1.0
+                                                                                 }
+                                                                   },
+                                       "oldFixtureBarnTransform":  {
+                                                                       "position":  {
+                                                                                        "x":  -1.79999995231628,
+                                                                                        "y":  0.180000007152557,
+                                                                                        "z":  -1.0
+                                                                                    },
+                                                                       "rotation":  {
+                                                                                        "x":  0.0,
+                                                                                        "y":  0.0,
+                                                                                        "z":  0.0
+                                                                                    },
+                                                                       "scale":  {
+                                                                                     "x":  1.0,
+                                                                                     "y":  1.0,
+                                                                                     "z":  1.0
+                                                                                 }
+                                                                   },
+                                       "performanceBenchmarkRerunCount":  0,
+                                       "placementVariant":  "repaired-final",
+                                       "retainedBarnNodeCount":  0,
+                                       "rollbackClean":  false,
+                                       "roofHash":  "0077e19143517e2850aee3bdb6ce9408d55bc7e2bfdc958d61ac1b141ab684f9",
+                                       "saveMutationCount":  0,
+                                       "scenePath":  "res://scenes/review/V0362BarrosanBarnContextualPlacementSeparation.tscn",
+                                       "schemaVersion":  1,
+                                       "sourceHash":  "13a761a2b60658a0d261c89d9046b752f052a5e32924381075a4b24ca7c3d6a3",
+                                       "stableIdMutationCount":  0,
+                                       "textureMutationCount":  0,
+                                       "validOptInLoadedOnce":  false
+                                   }
+                    },
+                    "Godot Engine v4.6.3.stable.official.7d41c59c4 - https://godotengine.org",
+                    "OpenGL API 3.3.0 NVIDIA 582.28 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce GTX 1070",
+                    "",
+                    "V0362_READY",
+                    "V0359_READY",
+                    {
+                        "id":  "opt-in-wide",
+                        "expected":  "LOADED_ONCE",
+                        "status":  "LOADED_ONCE",
+                        "exitCode":  0,
+                        "placementManifest":  "artifacts/runtime/v0362/opt-in-wide/v0362-barrosan-barn-placement-runtime.json",
+                        "screenshots":  [
+                                            "wide.png"
+                                        ],
+                        "report":  {
+                                       "baselineRollbackStateMatch":  false,
+                                       "browserMutationCount":  0,
+                                       "canonicalAssetMutationCount":  0,
+                                       "canonicalTransformMutationCount":  0,
+                                       "changedNonBarnNodeCount":  0,
+                                       "checkpoint":  "v0.362",
+                                       "defaultBarnInstanceCount":  0,
+                                       "defaultRuntimeMutationCount":  0,
+                                       "duplicateBarnRootCount":  0,
+                                       "fixtureBarnRootPositionMutationCount":  1,
+                                       "fixtureBarnRootRotationMutationCount":  0,
+                                       "fixtureBarnRootScaleMutationCount":  0,
+                                       "fixtureBarnRotationChanged":  false,
+                                       "fixtureBarnScaleChanged":  false,
+                                       "fixtureBarnTranslationDelta":  {
+                                                                           "x":  5.79999995231628,
+                                                                           "y":  0.0,
+                                                                           "z":  0.0
+                                                                       },
+                                       "gameplayMutationCount":  0,
+                                       "genuineNonHeadlessCapture":  true,
+                                       "geometryMutationCount":  0,
+                                       "materialMutationCount":  0,
+                                       "measurement":  {
+                                                           "barnCombinedWorldAabb":  {
+                                                                                         "max":  {
+                                                                                                     "x":  11.8699989318848,
+                                                                                                     "y":  6.10292053222656,
+                                                                                                     "z":  4.56249952316284
+                                                                                                 },
+                                                                                         "min":  {
+                                                                                                     "x":  -3.87000036239624,
+                                                                                                     "y":  0.389999985694885,
+                                                                                                     "z":  -6.34499979019165
+                                                                                                 },
+                                                                                         "size":  {
+                                                                                                      "x":  15.7399997711182,
+                                                                                                      "y":  5.71292066574097,
+                                                                                                      "z":  10.9074993133545
+                                                                                                  }
+                                                                                     },
+                                                           "barnMeshCount":  16,
+                                                           "barnRoofMeshCount":  15,
+                                                           "barnRoofWorldAabb":  {
+                                                                                     "max":  {
+                                                                                                 "x":  11.8699998855591,
+                                                                                                 "y":  6.0404200553894,
+                                                                                                 "z":  4.56249952316284
+                                                                                             },
+                                                                                     "min":  {
+                                                                                                 "x":  -3.86999988555908,
+                                                                                                 "y":  2.85000014305115,
+                                                                                                 "z":  -6.34499979019165
+                                                                                             },
+                                                                                     "size":  {
+                                                                                                  "x":  15.7399997711182,
+                                                                                                  "y":  3.19041991233826,
+                                                                                                  "z":  10.9074993133545
+                                                                                              }
+                                                                                 },
+                                                           "beforeVariant":  false,
+                                                           "closestHorizontalClearance":  2.48000001907349,
+                                                           "closestRoofEaveClearance":  2.51000022888184,
+                                                           "horizontalOverlapDepth":  0.0,
+                                                           "house02CombinedWorldAabb":  {
+                                                                                            "max":  {
+                                                                                                        "x":  -6.35000038146973,
+                                                                                                        "y":  7.25999975204468,
+                                                                                                        "z":  4.6100001335144
+                                                                                                    },
+                                                                                            "min":  {
+                                                                                                        "x":  -16.6499996185303,
+                                                                                                        "y":  0.0,
+                                                                                                        "z":  -5.09999990463257
+                                                                                                    },
+                                                                                            "size":  {
+                                                                                                         "x":  10.2999992370605,
+                                                                                                         "y":  7.25999975204468,
+                                                                                                         "z":  9.71000003814697
+                                                                                                     }
+                                                                                        },
+                                                           "house02MeshCount":  24,
+                                                           "house02RoofMeshCount":  4,
+                                                           "house02RoofWorldAabb":  {
+                                                                                        "max":  {
+                                                                                                    "x":  -6.38000011444092,
+                                                                                                    "y":  7.25999975204468,
+                                                                                                    "z":  1.98000001907349
+                                                                                                },
+                                                                                        "min":  {
+                                                                                                    "x":  -16.6199989318848,
+                                                                                                    "y":  4.23999977111816,
+                                                                                                    "z":  -4.98000001907349
+                                                                                                },
+                                                                                        "size":  {
+                                                                                                     "x":  10.2399988174438,
+                                                                                                     "y":  3.01999998092651,
+                                                                                                     "z":  6.96000003814697
+                                                                                                 }
+                                                                                    },
+                                                           "measurementMethod":  "world-space transformed mesh AABBs; XZ interval relation; roof/eave subset by authored mesh-name tokens",
+                                                           "ordinaryRtsGapVisible":  true,
+                                                           "requiredWorkerClearance":  1.875,
+                                                           "roofEaveIntersection":  false,
+                                                           "roofEaveOverlapDepth":  0.0,
+                                                           "structuralAabbIntersection":  false,
+                                                           "workerClearancePassed":  true,
+                                                           "workerWidthReference":  1.25
+                                                       },
+                                       "newFixtureBarnTransform":  {
+                                                                       "position":  {
+                                                                                        "x":  4.0,
+                                                                                        "y":  0.180000007152557,
+                                                                                        "z":  -1.0
+                                                                                    },
+                                                                       "rotation":  {
+                                                                                        "x":  0.0,
+                                                                                        "y":  0.0,
+                                                                                        "z":  0.0
+                                                                                    },
+                                                                       "scale":  {
+                                                                                     "x":  1.0,
+                                                                                     "y":  1.0,
+                                                                                     "z":  1.0
+                                                                                 }
+                                                                   },
+                                       "oldFixtureBarnTransform":  {
+                                                                       "position":  {
+                                                                                        "x":  -1.79999995231628,
+                                                                                        "y":  0.180000007152557,
+                                                                                        "z":  -1.0
+                                                                                    },
+                                                                       "rotation":  {
+                                                                                        "x":  0.0,
+                                                                                        "y":  0.0,
+                                                                                        "z":  0.0
+                                                                                    },
+                                                                       "scale":  {
+                                                                                     "x":  1.0,
+                                                                                     "y":  1.0,
+                                                                                     "z":  1.0
+                                                                                 }
+                                                                   },
+                                       "performanceBenchmarkRerunCount":  0,
+                                       "placementVariant":  "repaired-final",
+                                       "retainedBarnNodeCount":  0,
+                                       "rollbackClean":  false,
+                                       "roofHash":  "0077e19143517e2850aee3bdb6ce9408d55bc7e2bfdc958d61ac1b141ab684f9",
+                                       "saveMutationCount":  0,
+                                       "scenePath":  "res://scenes/review/V0362BarrosanBarnContextualPlacementSeparation.tscn",
+                                       "schemaVersion":  1,
+                                       "sourceHash":  "13a761a2b60658a0d261c89d9046b752f052a5e32924381075a4b24ca7c3d6a3",
+                                       "stableIdMutationCount":  0,
+                                       "textureMutationCount":  0,
+                                       "validOptInLoadedOnce":  true
+                                   }
+                    },
+                    "Godot Engine v4.6.3.stable.official.7d41c59c4 - https://godotengine.org",
+                    "OpenGL API 3.3.0 NVIDIA 582.28 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce GTX 1070",
+                    "",
+                    "V0362_READY",
+                    "V0359_READY",
+                    {
+                        "id":  "opt-in-gap",
+                        "expected":  "LOADED_ONCE",
+                        "status":  "LOADED_ONCE",
+                        "exitCode":  0,
+                        "placementManifest":  "artifacts/runtime/v0362/opt-in-gap/v0362-barrosan-barn-placement-runtime.json",
+                        "screenshots":  [
+                                            "gap.png"
+                                        ],
+                        "report":  {
+                                       "baselineRollbackStateMatch":  false,
+                                       "browserMutationCount":  0,
+                                       "canonicalAssetMutationCount":  0,
+                                       "canonicalTransformMutationCount":  0,
+                                       "changedNonBarnNodeCount":  0,
+                                       "checkpoint":  "v0.362",
+                                       "defaultBarnInstanceCount":  0,
+                                       "defaultRuntimeMutationCount":  0,
+                                       "duplicateBarnRootCount":  0,
+                                       "fixtureBarnRootPositionMutationCount":  1,
+                                       "fixtureBarnRootRotationMutationCount":  0,
+                                       "fixtureBarnRootScaleMutationCount":  0,
+                                       "fixtureBarnRotationChanged":  false,
+                                       "fixtureBarnScaleChanged":  false,
+                                       "fixtureBarnTranslationDelta":  {
+                                                                           "x":  5.79999995231628,
+                                                                           "y":  0.0,
+                                                                           "z":  0.0
+                                                                       },
+                                       "gameplayMutationCount":  0,
+                                       "genuineNonHeadlessCapture":  true,
+                                       "geometryMutationCount":  0,
+                                       "materialMutationCount":  0,
+                                       "measurement":  {
+                                                           "barnCombinedWorldAabb":  {
+                                                                                         "max":  {
+                                                                                                     "x":  11.8699989318848,
+                                                                                                     "y":  6.10292053222656,
+                                                                                                     "z":  4.56249952316284
+                                                                                                 },
+                                                                                         "min":  {
+                                                                                                     "x":  -3.87000036239624,
+                                                                                                     "y":  0.389999985694885,
+                                                                                                     "z":  -6.34499979019165
+                                                                                                 },
+                                                                                         "size":  {
+                                                                                                      "x":  15.7399997711182,
+                                                                                                      "y":  5.71292066574097,
+                                                                                                      "z":  10.9074993133545
+                                                                                                  }
+                                                                                     },
+                                                           "barnMeshCount":  16,
+                                                           "barnRoofMeshCount":  15,
+                                                           "barnRoofWorldAabb":  {
+                                                                                     "max":  {
+                                                                                                 "x":  11.8699998855591,
+                                                                                                 "y":  6.0404200553894,
+                                                                                                 "z":  4.56249952316284
+                                                                                             },
+                                                                                     "min":  {
+                                                                                                 "x":  -3.86999988555908,
+                                                                                                 "y":  2.85000014305115,
+                                                                                                 "z":  -6.34499979019165
+                                                                                             },
+                                                                                     "size":  {
+                                                                                                  "x":  15.7399997711182,
+                                                                                                  "y":  3.19041991233826,
+                                                                                                  "z":  10.9074993133545
+                                                                                              }
+                                                                                 },
+                                                           "beforeVariant":  false,
+                                                           "closestHorizontalClearance":  2.48000001907349,
+                                                           "closestRoofEaveClearance":  2.51000022888184,
+                                                           "horizontalOverlapDepth":  0.0,
+                                                           "house02CombinedWorldAabb":  {
+                                                                                            "max":  {
+                                                                                                        "x":  -6.35000038146973,
+                                                                                                        "y":  7.25999975204468,
+                                                                                                        "z":  4.6100001335144
+                                                                                                    },
+                                                                                            "min":  {
+                                                                                                        "x":  -16.6499996185303,
+                                                                                                        "y":  0.0,
+                                                                                                        "z":  -5.09999990463257
+                                                                                                    },
+                                                                                            "size":  {
+                                                                                                         "x":  10.2999992370605,
+                                                                                                         "y":  7.25999975204468,
+                                                                                                         "z":  9.71000003814697
+                                                                                                     }
+                                                                                        },
+                                                           "house02MeshCount":  24,
+                                                           "house02RoofMeshCount":  4,
+                                                           "house02RoofWorldAabb":  {
+                                                                                        "max":  {
+                                                                                                    "x":  -6.38000011444092,
+                                                                                                    "y":  7.25999975204468,
+                                                                                                    "z":  1.98000001907349
+                                                                                                },
+                                                                                        "min":  {
+                                                                                                    "x":  -16.6199989318848,
+                                                                                                    "y":  4.23999977111816,
+                                                                                                    "z":  -4.98000001907349
+                                                                                                },
+                                                                                        "size":  {
+                                                                                                     "x":  10.2399988174438,
+                                                                                                     "y":  3.01999998092651,
+                                                                                                     "z":  6.96000003814697
+                                                                                                 }
+                                                                                    },
+                                                           "measurementMethod":  "world-space transformed mesh AABBs; XZ interval relation; roof/eave subset by authored mesh-name tokens",
+                                                           "ordinaryRtsGapVisible":  true,
+                                                           "requiredWorkerClearance":  1.875,
+                                                           "roofEaveIntersection":  false,
+                                                           "roofEaveOverlapDepth":  0.0,
+                                                           "structuralAabbIntersection":  false,
+                                                           "workerClearancePassed":  true,
+                                                           "workerWidthReference":  1.25
+                                                       },
+                                       "newFixtureBarnTransform":  {
+                                                                       "position":  {
+                                                                                        "x":  4.0,
+                                                                                        "y":  0.180000007152557,
+                                                                                        "z":  -1.0
+                                                                                    },
+                                                                       "rotation":  {
+                                                                                        "x":  0.0,
+                                                                                        "y":  0.0,
+                                                                                        "z":  0.0
+                                                                                    },
+                                                                       "scale":  {
+                                                                                     "x":  1.0,
+                                                                                     "y":  1.0,
+                                                                                     "z":  1.0
+                                                                                 }
+                                                                   },
+                                       "oldFixtureBarnTransform":  {
+                                                                       "position":  {
+                                                                                        "x":  -1.79999995231628,
+                                                                                        "y":  0.180000007152557,
+                                                                                        "z":  -1.0
+                                                                                    },
+                                                                       "rotation":  {
+                                                                                        "x":  0.0,
+                                                                                        "y":  0.0,
+                                                                                        "z":  0.0
+                                                                                    },
+                                                                       "scale":  {
+                                                                                     "x":  1.0,
+                                                                                     "y":  1.0,
+                                                                                     "z":  1.0
+                                                                                 }
+                                                                   },
+                                       "performanceBenchmarkRerunCount":  0,
+                                       "placementVariant":  "repaired-final",
+                                       "retainedBarnNodeCount":  0,
+                                       "rollbackClean":  false,
+                                       "roofHash":  "0077e19143517e2850aee3bdb6ce9408d55bc7e2bfdc958d61ac1b141ab684f9",
+                                       "saveMutationCount":  0,
+                                       "scenePath":  "res://scenes/review/V0362BarrosanBarnContextualPlacementSeparation.tscn",
+                                       "schemaVersion":  1,
+                                       "sourceHash":  "13a761a2b60658a0d261c89d9046b752f052a5e32924381075a4b24ca7c3d6a3",
+                                       "stableIdMutationCount":  0,
+                                       "textureMutationCount":  0,
+                                       "validOptInLoadedOnce":  true
+                                   }
+                    },
+                    "Godot Engine v4.6.3.stable.official.7d41c59c4 - https://godotengine.org",
+                    "OpenGL API 3.3.0 NVIDIA 582.28 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce GTX 1070",
+                    "",
+                    "V0362_READY",
+                    "V0359_READY",
+                    {
+                        "id":  "opt-in-rear-roof",
+                        "expected":  "LOADED_ONCE",
+                        "status":  "LOADED_ONCE",
+                        "exitCode":  0,
+                        "placementManifest":  "artifacts/runtime/v0362/opt-in-rear-roof/v0362-barrosan-barn-placement-runtime.json",
+                        "screenshots":  [
+                                            "rear.png"
+                                        ],
+                        "report":  {
+                                       "baselineRollbackStateMatch":  false,
+                                       "browserMutationCount":  0,
+                                       "canonicalAssetMutationCount":  0,
+                                       "canonicalTransformMutationCount":  0,
+                                       "changedNonBarnNodeCount":  0,
+                                       "checkpoint":  "v0.362",
+                                       "defaultBarnInstanceCount":  0,
+                                       "defaultRuntimeMutationCount":  0,
+                                       "duplicateBarnRootCount":  0,
+                                       "fixtureBarnRootPositionMutationCount":  1,
+                                       "fixtureBarnRootRotationMutationCount":  0,
+                                       "fixtureBarnRootScaleMutationCount":  0,
+                                       "fixtureBarnRotationChanged":  false,
+                                       "fixtureBarnScaleChanged":  false,
+                                       "fixtureBarnTranslationDelta":  {
+                                                                           "x":  5.79999995231628,
+                                                                           "y":  0.0,
+                                                                           "z":  0.0
+                                                                       },
+                                       "gameplayMutationCount":  0,
+                                       "genuineNonHeadlessCapture":  true,
+                                       "geometryMutationCount":  0,
+                                       "materialMutationCount":  0,
+                                       "measurement":  {
+                                                           "barnCombinedWorldAabb":  {
+                                                                                         "max":  {
+                                                                                                     "x":  11.8699989318848,
+                                                                                                     "y":  6.10292053222656,
+                                                                                                     "z":  4.56249952316284
+                                                                                                 },
+                                                                                         "min":  {
+                                                                                                     "x":  -3.87000036239624,
+                                                                                                     "y":  0.389999985694885,
+                                                                                                     "z":  -6.34499979019165
+                                                                                                 },
+                                                                                         "size":  {
+                                                                                                      "x":  15.7399997711182,
+                                                                                                      "y":  5.71292066574097,
+                                                                                                      "z":  10.9074993133545
+                                                                                                  }
+                                                                                     },
+                                                           "barnMeshCount":  16,
+                                                           "barnRoofMeshCount":  15,
+                                                           "barnRoofWorldAabb":  {
+                                                                                     "max":  {
+                                                                                                 "x":  11.8699998855591,
+                                                                                                 "y":  6.0404200553894,
+                                                                                                 "z":  4.56249952316284
+                                                                                             },
+                                                                                     "min":  {
+                                                                                                 "x":  -3.86999988555908,
+                                                                                                 "y":  2.85000014305115,
+                                                                                                 "z":  -6.34499979019165
+                                                                                             },
+                                                                                     "size":  {
+                                                                                                  "x":  15.7399997711182,
+                                                                                                  "y":  3.19041991233826,
+                                                                                                  "z":  10.9074993133545
+                                                                                              }
+                                                                                 },
+                                                           "beforeVariant":  false,
+                                                           "closestHorizontalClearance":  2.48000001907349,
+                                                           "closestRoofEaveClearance":  2.51000022888184,
+                                                           "horizontalOverlapDepth":  0.0,
+                                                           "house02CombinedWorldAabb":  {
+                                                                                            "max":  {
+                                                                                                        "x":  -6.35000038146973,
+                                                                                                        "y":  7.25999975204468,
+                                                                                                        "z":  4.6100001335144
+                                                                                                    },
+                                                                                            "min":  {
+                                                                                                        "x":  -16.6499996185303,
+                                                                                                        "y":  0.0,
+                                                                                                        "z":  -5.09999990463257
+                                                                                                    },
+                                                                                            "size":  {
+                                                                                                         "x":  10.2999992370605,
+                                                                                                         "y":  7.25999975204468,
+                                                                                                         "z":  9.71000003814697
+                                                                                                     }
+                                                                                        },
+                                                           "house02MeshCount":  24,
+                                                           "house02RoofMeshCount":  4,
+                                                           "house02RoofWorldAabb":  {
+                                                                                        "max":  {
+                                                                                                    "x":  -6.38000011444092,
+                                                                                                    "y":  7.25999975204468,
+                                                                                                    "z":  1.98000001907349
+                                                                                                },
+                                                                                        "min":  {
+                                                                                                    "x":  -16.6199989318848,
+                                                                                                    "y":  4.23999977111816,
+                                                                                                    "z":  -4.98000001907349
+                                                                                                },
+                                                                                        "size":  {
+                                                                                                     "x":  10.2399988174438,
+                                                                                                     "y":  3.01999998092651,
+                                                                                                     "z":  6.96000003814697
+                                                                                                 }
+                                                                                    },
+                                                           "measurementMethod":  "world-space transformed mesh AABBs; XZ interval relation; roof/eave subset by authored mesh-name tokens",
+                                                           "ordinaryRtsGapVisible":  true,
+                                                           "requiredWorkerClearance":  1.875,
+                                                           "roofEaveIntersection":  false,
+                                                           "roofEaveOverlapDepth":  0.0,
+                                                           "structuralAabbIntersection":  false,
+                                                           "workerClearancePassed":  true,
+                                                           "workerWidthReference":  1.25
+                                                       },
+                                       "newFixtureBarnTransform":  {
+                                                                       "position":  {
+                                                                                        "x":  4.0,
+                                                                                        "y":  0.180000007152557,
+                                                                                        "z":  -1.0
+                                                                                    },
+                                                                       "rotation":  {
+                                                                                        "x":  0.0,
+                                                                                        "y":  0.0,
+                                                                                        "z":  0.0
+                                                                                    },
+                                                                       "scale":  {
+                                                                                     "x":  1.0,
+                                                                                     "y":  1.0,
+                                                                                     "z":  1.0
+                                                                                 }
+                                                                   },
+                                       "oldFixtureBarnTransform":  {
+                                                                       "position":  {
+                                                                                        "x":  -1.79999995231628,
+                                                                                        "y":  0.180000007152557,
+                                                                                        "z":  -1.0
+                                                                                    },
+                                                                       "rotation":  {
+                                                                                        "x":  0.0,
+                                                                                        "y":  0.0,
+                                                                                        "z":  0.0
+                                                                                    },
+                                                                       "scale":  {
+                                                                                     "x":  1.0,
+                                                                                     "y":  1.0,
+                                                                                     "z":  1.0
+                                                                                 }
+                                                                   },
+                                       "performanceBenchmarkRerunCount":  0,
+                                       "placementVariant":  "repaired-final",
+                                       "retainedBarnNodeCount":  0,
+                                       "rollbackClean":  false,
+                                       "roofHash":  "0077e19143517e2850aee3bdb6ce9408d55bc7e2bfdc958d61ac1b141ab684f9",
+                                       "saveMutationCount":  0,
+                                       "scenePath":  "res://scenes/review/V0362BarrosanBarnContextualPlacementSeparation.tscn",
+                                       "schemaVersion":  1,
+                                       "sourceHash":  "13a761a2b60658a0d261c89d9046b752f052a5e32924381075a4b24ca7c3d6a3",
+                                       "stableIdMutationCount":  0,
+                                       "textureMutationCount":  0,
+                                       "validOptInLoadedOnce":  true
+                                   }
+                    },
+                    "Godot Engine v4.6.3.stable.official.7d41c59c4 - https://godotengine.org",
+                    "OpenGL API 3.3.0 NVIDIA 582.28 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce GTX 1070",
+                    "",
+                    "V0362_READY",
+                    "V0359_READY",
+                    {
+                        "id":  "opt-in-roof",
+                        "expected":  "LOADED_ONCE",
+                        "status":  "LOADED_ONCE",
+                        "exitCode":  0,
+                        "placementManifest":  "artifacts/runtime/v0362/opt-in-roof/v0362-barrosan-barn-placement-runtime.json",
+                        "screenshots":  [
+                                            "roof.png"
+                                        ],
+                        "report":  {
+                                       "baselineRollbackStateMatch":  false,
+                                       "browserMutationCount":  0,
+                                       "canonicalAssetMutationCount":  0,
+                                       "canonicalTransformMutationCount":  0,
+                                       "changedNonBarnNodeCount":  0,
+                                       "checkpoint":  "v0.362",
+                                       "defaultBarnInstanceCount":  0,
+                                       "defaultRuntimeMutationCount":  0,
+                                       "duplicateBarnRootCount":  0,
+                                       "fixtureBarnRootPositionMutationCount":  1,
+                                       "fixtureBarnRootRotationMutationCount":  0,
+                                       "fixtureBarnRootScaleMutationCount":  0,
+                                       "fixtureBarnRotationChanged":  false,
+                                       "fixtureBarnScaleChanged":  false,
+                                       "fixtureBarnTranslationDelta":  {
+                                                                           "x":  5.79999995231628,
+                                                                           "y":  0.0,
+                                                                           "z":  0.0
+                                                                       },
+                                       "gameplayMutationCount":  0,
+                                       "genuineNonHeadlessCapture":  true,
+                                       "geometryMutationCount":  0,
+                                       "materialMutationCount":  0,
+                                       "measurement":  {
+                                                           "barnCombinedWorldAabb":  {
+                                                                                         "max":  {
+                                                                                                     "x":  11.8699989318848,
+                                                                                                     "y":  6.10292053222656,
+                                                                                                     "z":  4.56249952316284
+                                                                                                 },
+                                                                                         "min":  {
+                                                                                                     "x":  -3.87000036239624,
+                                                                                                     "y":  0.389999985694885,
+                                                                                                     "z":  -6.34499979019165
+                                                                                                 },
+                                                                                         "size":  {
+                                                                                                      "x":  15.7399997711182,
+                                                                                                      "y":  5.71292066574097,
+                                                                                                      "z":  10.9074993133545
+                                                                                                  }
+                                                                                     },
+                                                           "barnMeshCount":  16,
+                                                           "barnRoofMeshCount":  15,
+                                                           "barnRoofWorldAabb":  {
+                                                                                     "max":  {
+                                                                                                 "x":  11.8699998855591,
+                                                                                                 "y":  6.0404200553894,
+                                                                                                 "z":  4.56249952316284
+                                                                                             },
+                                                                                     "min":  {
+                                                                                                 "x":  -3.86999988555908,
+                                                                                                 "y":  2.85000014305115,
+                                                                                                 "z":  -6.34499979019165
+                                                                                             },
+                                                                                     "size":  {
+                                                                                                  "x":  15.7399997711182,
+                                                                                                  "y":  3.19041991233826,
+                                                                                                  "z":  10.9074993133545
+                                                                                              }
+                                                                                 },
+                                                           "beforeVariant":  false,
+                                                           "closestHorizontalClearance":  2.48000001907349,
+                                                           "closestRoofEaveClearance":  2.51000022888184,
+                                                           "horizontalOverlapDepth":  0.0,
+                                                           "house02CombinedWorldAabb":  {
+                                                                                            "max":  {
+                                                                                                        "x":  -6.35000038146973,
+                                                                                                        "y":  7.25999975204468,
+                                                                                                        "z":  4.6100001335144
+                                                                                                    },
+                                                                                            "min":  {
+                                                                                                        "x":  -16.6499996185303,
+                                                                                                        "y":  0.0,
+                                                                                                        "z":  -5.09999990463257
+                                                                                                    },
+                                                                                            "size":  {
+                                                                                                         "x":  10.2999992370605,
+                                                                                                         "y":  7.25999975204468,
+                                                                                                         "z":  9.71000003814697
+                                                                                                     }
+                                                                                        },
+                                                           "house02MeshCount":  24,
+                                                           "house02RoofMeshCount":  4,
+                                                           "house02RoofWorldAabb":  {
+                                                                                        "max":  {
+                                                                                                    "x":  -6.38000011444092,
+                                                                                                    "y":  7.25999975204468,
+                                                                                                    "z":  1.98000001907349
+                                                                                                },
+                                                                                        "min":  {
+                                                                                                    "x":  -16.6199989318848,
+                                                                                                    "y":  4.23999977111816,
+                                                                                                    "z":  -4.98000001907349
+                                                                                                },
+                                                                                        "size":  {
+                                                                                                     "x":  10.2399988174438,
+                                                                                                     "y":  3.01999998092651,
+                                                                                                     "z":  6.96000003814697
+                                                                                                 }
+                                                                                    },
+                                                           "measurementMethod":  "world-space transformed mesh AABBs; XZ interval relation; roof/eave subset by authored mesh-name tokens",
+                                                           "ordinaryRtsGapVisible":  true,
+                                                           "requiredWorkerClearance":  1.875,
+                                                           "roofEaveIntersection":  false,
+                                                           "roofEaveOverlapDepth":  0.0,
+                                                           "structuralAabbIntersection":  false,
+                                                           "workerClearancePassed":  true,
+                                                           "workerWidthReference":  1.25
+                                                       },
+                                       "newFixtureBarnTransform":  {
+                                                                       "position":  {
+                                                                                        "x":  4.0,
+                                                                                        "y":  0.180000007152557,
+                                                                                        "z":  -1.0
+                                                                                    },
+                                                                       "rotation":  {
+                                                                                        "x":  0.0,
+                                                                                        "y":  0.0,
+                                                                                        "z":  0.0
+                                                                                    },
+                                                                       "scale":  {
+                                                                                     "x":  1.0,
+                                                                                     "y":  1.0,
+                                                                                     "z":  1.0
+                                                                                 }
+                                                                   },
+                                       "oldFixtureBarnTransform":  {
+                                                                       "position":  {
+                                                                                        "x":  -1.79999995231628,
+                                                                                        "y":  0.180000007152557,
+                                                                                        "z":  -1.0
+                                                                                    },
+                                                                       "rotation":  {
+                                                                                        "x":  0.0,
+                                                                                        "y":  0.0,
+                                                                                        "z":  0.0
+                                                                                    },
+                                                                       "scale":  {
+                                                                                     "x":  1.0,
+                                                                                     "y":  1.0,
+                                                                                     "z":  1.0
+                                                                                 }
+                                                                   },
+                                       "performanceBenchmarkRerunCount":  0,
+                                       "placementVariant":  "repaired-final",
+                                       "retainedBarnNodeCount":  0,
+                                       "rollbackClean":  false,
+                                       "roofHash":  "0077e19143517e2850aee3bdb6ce9408d55bc7e2bfdc958d61ac1b141ab684f9",
+                                       "saveMutationCount":  0,
+                                       "scenePath":  "res://scenes/review/V0362BarrosanBarnContextualPlacementSeparation.tscn",
+                                       "schemaVersion":  1,
+                                       "sourceHash":  "13a761a2b60658a0d261c89d9046b752f052a5e32924381075a4b24ca7c3d6a3",
+                                       "stableIdMutationCount":  0,
+                                       "textureMutationCount":  0,
+                                       "validOptInLoadedOnce":  true
+                                   }
+                    },
+                    "Godot Engine v4.6.3.stable.official.7d41c59c4 - https://godotengine.org",
+                    "OpenGL API 3.3.0 NVIDIA 582.28 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce GTX 1070",
+                    "",
+                    "V0362_READY",
+                    "V0359_READY",
+                    {
+                        "id":  "opt-in-measurement",
+                        "expected":  "LOADED_ONCE",
+                        "status":  "LOADED_ONCE",
+                        "exitCode":  0,
+                        "placementManifest":  "artifacts/runtime/v0362/opt-in-measurement/v0362-barrosan-barn-placement-runtime.json",
+                        "screenshots":  [
+                                            "measurement.png"
+                                        ],
+                        "report":  {
+                                       "baselineRollbackStateMatch":  false,
+                                       "browserMutationCount":  0,
+                                       "canonicalAssetMutationCount":  0,
+                                       "canonicalTransformMutationCount":  0,
+                                       "changedNonBarnNodeCount":  0,
+                                       "checkpoint":  "v0.362",
+                                       "defaultBarnInstanceCount":  0,
+                                       "defaultRuntimeMutationCount":  0,
+                                       "duplicateBarnRootCount":  0,
+                                       "fixtureBarnRootPositionMutationCount":  1,
+                                       "fixtureBarnRootRotationMutationCount":  0,
+                                       "fixtureBarnRootScaleMutationCount":  0,
+                                       "fixtureBarnRotationChanged":  false,
+                                       "fixtureBarnScaleChanged":  false,
+                                       "fixtureBarnTranslationDelta":  {
+                                                                           "x":  5.79999995231628,
+                                                                           "y":  0.0,
+                                                                           "z":  0.0
+                                                                       },
+                                       "gameplayMutationCount":  0,
+                                       "genuineNonHeadlessCapture":  true,
+                                       "geometryMutationCount":  0,
+                                       "materialMutationCount":  0,
+                                       "measurement":  {
+                                                           "barnCombinedWorldAabb":  {
+                                                                                         "max":  {
+                                                                                                     "x":  11.8699989318848,
+                                                                                                     "y":  6.10292053222656,
+                                                                                                     "z":  4.56249952316284
+                                                                                                 },
+                                                                                         "min":  {
+                                                                                                     "x":  -3.87000036239624,
+                                                                                                     "y":  0.389999985694885,
+                                                                                                     "z":  -6.34499979019165
+                                                                                                 },
+                                                                                         "size":  {
+                                                                                                      "x":  15.7399997711182,
+                                                                                                      "y":  5.71292066574097,
+                                                                                                      "z":  10.9074993133545
+                                                                                                  }
+                                                                                     },
+                                                           "barnMeshCount":  16,
+                                                           "barnRoofMeshCount":  15,
+                                                           "barnRoofWorldAabb":  {
+                                                                                     "max":  {
+                                                                                                 "x":  11.8699998855591,
+                                                                                                 "y":  6.0404200553894,
+                                                                                                 "z":  4.56249952316284
+                                                                                             },
+                                                                                     "min":  {
+                                                                                                 "x":  -3.86999988555908,
+                                                                                                 "y":  2.85000014305115,
+                                                                                                 "z":  -6.34499979019165
+                                                                                             },
+                                                                                     "size":  {
+                                                                                                  "x":  15.7399997711182,
+                                                                                                  "y":  3.19041991233826,
+                                                                                                  "z":  10.9074993133545
+                                                                                              }
+                                                                                 },
+                                                           "beforeVariant":  false,
+                                                           "closestHorizontalClearance":  2.48000001907349,
+                                                           "closestRoofEaveClearance":  2.51000022888184,
+                                                           "horizontalOverlapDepth":  0.0,
+                                                           "house02CombinedWorldAabb":  {
+                                                                                            "max":  {
+                                                                                                        "x":  -6.35000038146973,
+                                                                                                        "y":  7.25999975204468,
+                                                                                                        "z":  4.6100001335144
+                                                                                                    },
+                                                                                            "min":  {
+                                                                                                        "x":  -16.6499996185303,
+                                                                                                        "y":  0.0,
+                                                                                                        "z":  -5.09999990463257
+                                                                                                    },
+                                                                                            "size":  {
+                                                                                                         "x":  10.2999992370605,
+                                                                                                         "y":  7.25999975204468,
+                                                                                                         "z":  9.71000003814697
+                                                                                                     }
+                                                                                        },
+                                                           "house02MeshCount":  24,
+                                                           "house02RoofMeshCount":  4,
+                                                           "house02RoofWorldAabb":  {
+                                                                                        "max":  {
+                                                                                                    "x":  -6.38000011444092,
+                                                                                                    "y":  7.25999975204468,
+                                                                                                    "z":  1.98000001907349
+                                                                                                },
+                                                                                        "min":  {
+                                                                                                    "x":  -16.6199989318848,
+                                                                                                    "y":  4.23999977111816,
+                                                                                                    "z":  -4.98000001907349
+                                                                                                },
+                                                                                        "size":  {
+                                                                                                     "x":  10.2399988174438,
+                                                                                                     "y":  3.01999998092651,
+                                                                                                     "z":  6.96000003814697
+                                                                                                 }
+                                                                                    },
+                                                           "measurementMethod":  "world-space transformed mesh AABBs; XZ interval relation; roof/eave subset by authored mesh-name tokens",
+                                                           "ordinaryRtsGapVisible":  true,
+                                                           "requiredWorkerClearance":  1.875,
+                                                           "roofEaveIntersection":  false,
+                                                           "roofEaveOverlapDepth":  0.0,
+                                                           "structuralAabbIntersection":  false,
+                                                           "workerClearancePassed":  true,
+                                                           "workerWidthReference":  1.25
+                                                       },
+                                       "newFixtureBarnTransform":  {
+                                                                       "position":  {
+                                                                                        "x":  4.0,
+                                                                                        "y":  0.180000007152557,
+                                                                                        "z":  -1.0
+                                                                                    },
+                                                                       "rotation":  {
+                                                                                        "x":  0.0,
+                                                                                        "y":  0.0,
+                                                                                        "z":  0.0
+                                                                                    },
+                                                                       "scale":  {
+                                                                                     "x":  1.0,
+                                                                                     "y":  1.0,
+                                                                                     "z":  1.0
+                                                                                 }
+                                                                   },
+                                       "oldFixtureBarnTransform":  {
+                                                                       "position":  {
+                                                                                        "x":  -1.79999995231628,
+                                                                                        "y":  0.180000007152557,
+                                                                                        "z":  -1.0
+                                                                                    },
+                                                                       "rotation":  {
+                                                                                        "x":  0.0,
+                                                                                        "y":  0.0,
+                                                                                        "z":  0.0
+                                                                                    },
+                                                                       "scale":  {
+                                                                                     "x":  1.0,
+                                                                                     "y":  1.0,
+                                                                                     "z":  1.0
+                                                                                 }
+                                                                   },
+                                       "performanceBenchmarkRerunCount":  0,
+                                       "placementVariant":  "repaired-final",
+                                       "retainedBarnNodeCount":  0,
+                                       "rollbackClean":  false,
+                                       "roofHash":  "0077e19143517e2850aee3bdb6ce9408d55bc7e2bfdc958d61ac1b141ab684f9",
+                                       "saveMutationCount":  0,
+                                       "scenePath":  "res://scenes/review/V0362BarrosanBarnContextualPlacementSeparation.tscn",
+                                       "schemaVersion":  1,
+                                       "sourceHash":  "13a761a2b60658a0d261c89d9046b752f052a5e32924381075a4b24ca7c3d6a3",
+                                       "stableIdMutationCount":  0,
+                                       "textureMutationCount":  0,
+                                       "validOptInLoadedOnce":  true
+                                   }
+                    },
+                    "Godot Engine v4.6.3.stable.official.7d41c59c4 - https://godotengine.org",
+                    "OpenGL API 3.3.0 NVIDIA 582.28 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce GTX 1070",
+                    "",
+                    "V0362_READY",
+                    "V0359_READY",
+                    {
+                        "id":  "rollback",
+                        "expected":  "ROLLED_BACK_CLEAN",
+                        "status":  "ROLLED_BACK_CLEAN",
+                        "exitCode":  0,
+                        "placementManifest":  "artifacts/runtime/v0362/rollback/v0362-barrosan-barn-placement-runtime.json",
+                        "screenshots":  [
+                                            "r0.png",
+                                            "r1.png",
+                                            "r2.png"
+                                        ],
+                        "report":  {
+                                       "baselineRollbackStateMatch":  true,
+                                       "browserMutationCount":  0,
+                                       "canonicalAssetMutationCount":  0,
+                                       "canonicalTransformMutationCount":  0,
+                                       "changedNonBarnNodeCount":  0,
+                                       "checkpoint":  "v0.362",
+                                       "defaultBarnInstanceCount":  0,
+                                       "defaultRuntimeMutationCount":  0,
+                                       "duplicateBarnRootCount":  0,
+                                       "fixtureBarnRootPositionMutationCount":  0,
+                                       "fixtureBarnRootRotationMutationCount":  0,
+                                       "fixtureBarnRootScaleMutationCount":  0,
+                                       "fixtureBarnRotationChanged":  false,
+                                       "fixtureBarnScaleChanged":  false,
+                                       "fixtureBarnTranslationDelta":  {
+                                                                           "x":  0.0,
+                                                                           "y":  0.0,
+                                                                           "z":  0.0
+                                                                       },
+                                       "gameplayMutationCount":  0,
+                                       "genuineNonHeadlessCapture":  true,
+                                       "geometryMutationCount":  0,
+                                       "materialMutationCount":  0,
+                                       "measurement":  {
+                                                           "barnCombinedWorldAabb":  {
+                                                                                         "max":  {
+                                                                                                     "x":  0.0,
+                                                                                                     "y":  0.0,
+                                                                                                     "z":  0.0
+                                                                                                 },
+                                                                                         "min":  {
+                                                                                                     "x":  0.0,
+                                                                                                     "y":  0.0,
+                                                                                                     "z":  0.0
+                                                                                                 },
+                                                                                         "size":  {
+                                                                                                      "x":  0.0,
+                                                                                                      "y":  0.0,
+                                                                                                      "z":  0.0
+                                                                                                  }
+                                                                                     },
+                                                           "barnMeshCount":  0,
+                                                           "barnRoofMeshCount":  0,
+                                                           "barnRoofWorldAabb":  {
+                                                                                     "max":  {
+                                                                                                 "x":  0.0,
+                                                                                                 "y":  0.0,
+                                                                                                 "z":  0.0
+                                                                                             },
+                                                                                     "min":  {
+                                                                                                 "x":  0.0,
+                                                                                                 "y":  0.0,
+                                                                                                 "z":  0.0
+                                                                                             },
+                                                                                     "size":  {
+                                                                                                  "x":  0.0,
+                                                                                                  "y":  0.0,
+                                                                                                  "z":  0.0
+                                                                                              }
+                                                                                 },
+                                                           "beforeVariant":  false,
+                                                           "closestHorizontalClearance":  6.35000038146973,
+                                                           "closestRoofEaveClearance":  6.38000011444092,
+                                                           "horizontalOverlapDepth":  0.0,
+                                                           "house02CombinedWorldAabb":  {
+                                                                                            "max":  {
+                                                                                                        "x":  -6.35000038146973,
+                                                                                                        "y":  7.25999975204468,
+                                                                                                        "z":  4.6100001335144
+                                                                                                    },
+                                                                                            "min":  {
+                                                                                                        "x":  -16.6499996185303,
+                                                                                                        "y":  0.0,
+                                                                                                        "z":  -5.09999990463257
+                                                                                                    },
+                                                                                            "size":  {
+                                                                                                         "x":  10.2999992370605,
+                                                                                                         "y":  7.25999975204468,
+                                                                                                         "z":  9.71000003814697
+                                                                                                     }
+                                                                                        },
+                                                           "house02MeshCount":  24,
+                                                           "house02RoofMeshCount":  4,
+                                                           "house02RoofWorldAabb":  {
+                                                                                        "max":  {
+                                                                                                    "x":  -6.38000011444092,
+                                                                                                    "y":  7.25999975204468,
+                                                                                                    "z":  1.98000001907349
+                                                                                                },
+                                                                                        "min":  {
+                                                                                                    "x":  -16.6199989318848,
+                                                                                                    "y":  4.23999977111816,
+                                                                                                    "z":  -4.98000001907349
+                                                                                                },
+                                                                                        "size":  {
+                                                                                                     "x":  10.2399988174438,
+                                                                                                     "y":  3.01999998092651,
+                                                                                                     "z":  6.96000003814697
+                                                                                                 }
+                                                                                    },
+                                                           "measurementMethod":  "world-space transformed mesh AABBs; XZ interval relation; roof/eave subset by authored mesh-name tokens",
+                                                           "ordinaryRtsGapVisible":  true,
+                                                           "requiredWorkerClearance":  1.875,
+                                                           "roofEaveIntersection":  false,
+                                                           "roofEaveOverlapDepth":  0.0,
+                                                           "structuralAabbIntersection":  false,
+                                                           "workerClearancePassed":  true,
+                                                           "workerWidthReference":  1.25
+                                                       },
+                                       "newFixtureBarnTransform":  {
+                                                                       "position":  {
+                                                                                        "x":  -1.79999995231628,
+                                                                                        "y":  0.180000007152557,
+                                                                                        "z":  -1.0
+                                                                                    },
+                                                                       "rotation":  {
+                                                                                        "x":  0.0,
+                                                                                        "y":  0.0,
+                                                                                        "z":  0.0
+                                                                                    },
+                                                                       "scale":  {
+                                                                                     "x":  1.0,
+                                                                                     "y":  1.0,
+                                                                                     "z":  1.0
+                                                                                 }
+                                                                   },
+                                       "oldFixtureBarnTransform":  {
+                                                                       "position":  {
+                                                                                        "x":  -1.79999995231628,
+                                                                                        "y":  0.180000007152557,
+                                                                                        "z":  -1.0
+                                                                                    },
+                                                                       "rotation":  {
+                                                                                        "x":  0.0,
+                                                                                        "y":  0.0,
+                                                                                        "z":  0.0
+                                                                                    },
+                                                                       "scale":  {
+                                                                                     "x":  1.0,
+                                                                                     "y":  1.0,
+                                                                                     "z":  1.0
+                                                                                 }
+                                                                   },
+                                       "performanceBenchmarkRerunCount":  0,
+                                       "placementVariant":  "repaired-final",
+                                       "retainedBarnNodeCount":  0,
+                                       "rollbackClean":  true,
+                                       "roofHash":  "0077e19143517e2850aee3bdb6ce9408d55bc7e2bfdc958d61ac1b141ab684f9",
+                                       "saveMutationCount":  0,
+                                       "scenePath":  "res://scenes/review/V0362BarrosanBarnContextualPlacementSeparation.tscn",
+                                       "schemaVersion":  1,
+                                       "sourceHash":  "13a761a2b60658a0d261c89d9046b752f052a5e32924381075a4b24ca7c3d6a3",
+                                       "stableIdMutationCount":  0,
+                                       "textureMutationCount":  0,
+                                       "validOptInLoadedOnce":  true
+                                   }
+                    },
+                    "Godot Engine v4.6.3.stable.official.7d41c59c4 - https://godotengine.org",
+                    "OpenGL API 3.3.0 NVIDIA 582.28 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce GTX 1070",
+                    "",
+                    "V0362_READY",
+                    "V0359_READY",
+                    {
+                        "id":  "missing-scene-fail-closed",
+                        "expected":  "FAIL_CLOSED_MISSING_SCENE",
+                        "status":  "FAIL_CLOSED_MISSING_SCENE",
+                        "exitCode":  0,
+                        "placementManifest":  "artifacts/runtime/v0362/missing-scene-fail-closed/v0362-barrosan-barn-placement-runtime.json",
+                        "screenshots":  [
+
+                                        ],
+                        "report":  {
+                                       "baselineRollbackStateMatch":  false,
+                                       "browserMutationCount":  0,
+                                       "canonicalAssetMutationCount":  0,
+                                       "canonicalTransformMutationCount":  0,
+                                       "changedNonBarnNodeCount":  0,
+                                       "checkpoint":  "v0.362",
+                                       "defaultBarnInstanceCount":  0,
+                                       "defaultRuntimeMutationCount":  0,
+                                       "duplicateBarnRootCount":  0,
+                                       "fixtureBarnRootPositionMutationCount":  0,
+                                       "fixtureBarnRootRotationMutationCount":  0,
+                                       "fixtureBarnRootScaleMutationCount":  0,
+                                       "fixtureBarnRotationChanged":  false,
+                                       "fixtureBarnScaleChanged":  false,
+                                       "fixtureBarnTranslationDelta":  {
+                                                                           "x":  0.0,
+                                                                           "y":  0.0,
+                                                                           "z":  0.0
+                                                                       },
+                                       "gameplayMutationCount":  0,
+                                       "genuineNonHeadlessCapture":  false,
+                                       "geometryMutationCount":  0,
+                                       "materialMutationCount":  0,
+                                       "measurement":  {
+                                                           "barnCombinedWorldAabb":  {
+                                                                                         "max":  {
+                                                                                                     "x":  0.0,
+                                                                                                     "y":  0.0,
+                                                                                                     "z":  0.0
+                                                                                                 },
+                                                                                         "min":  {
+                                                                                                     "x":  0.0,
+                                                                                                     "y":  0.0,
+                                                                                                     "z":  0.0
+                                                                                                 },
+                                                                                         "size":  {
+                                                                                                      "x":  0.0,
+                                                                                                      "y":  0.0,
+                                                                                                      "z":  0.0
+                                                                                                  }
+                                                                                     },
+                                                           "barnMeshCount":  0,
+                                                           "barnRoofMeshCount":  0,
+                                                           "barnRoofWorldAabb":  {
+                                                                                     "max":  {
+                                                                                                 "x":  0.0,
+                                                                                                 "y":  0.0,
+                                                                                                 "z":  0.0
+                                                                                             },
+                                                                                     "min":  {
+                                                                                                 "x":  0.0,
+                                                                                                 "y":  0.0,
+                                                                                                 "z":  0.0
+                                                                                             },
+                                                                                     "size":  {
+                                                                                                  "x":  0.0,
+                                                                                                  "y":  0.0,
+                                                                                                  "z":  0.0
+                                                                                              }
+                                                                                 },
+                                                           "beforeVariant":  false,
+                                                           "closestHorizontalClearance":  6.35000038146973,
+                                                           "closestRoofEaveClearance":  6.38000011444092,
+                                                           "horizontalOverlapDepth":  0.0,
+                                                           "house02CombinedWorldAabb":  {
+                                                                                            "max":  {
+                                                                                                        "x":  -6.35000038146973,
+                                                                                                        "y":  7.25999975204468,
+                                                                                                        "z":  4.6100001335144
+                                                                                                    },
+                                                                                            "min":  {
+                                                                                                        "x":  -16.6499996185303,
+                                                                                                        "y":  0.0,
+                                                                                                        "z":  -5.09999990463257
+                                                                                                    },
+                                                                                            "size":  {
+                                                                                                         "x":  10.2999992370605,
+                                                                                                         "y":  7.25999975204468,
+                                                                                                         "z":  9.71000003814697
+                                                                                                     }
+                                                                                        },
+                                                           "house02MeshCount":  24,
+                                                           "house02RoofMeshCount":  4,
+                                                           "house02RoofWorldAabb":  {
+                                                                                        "max":  {
+                                                                                                    "x":  -6.38000011444092,
+                                                                                                    "y":  7.25999975204468,
+                                                                                                    "z":  1.98000001907349
+                                                                                                },
+                                                                                        "min":  {
+                                                                                                    "x":  -16.6199989318848,
+                                                                                                    "y":  4.23999977111816,
+                                                                                                    "z":  -4.98000001907349
+                                                                                                },
+                                                                                        "size":  {
+                                                                                                     "x":  10.2399988174438,
+                                                                                                     "y":  3.01999998092651,
+                                                                                                     "z":  6.96000003814697
+                                                                                                 }
+                                                                                    },
+                                                           "measurementMethod":  "world-space transformed mesh AABBs; XZ interval relation; roof/eave subset by authored mesh-name tokens",
+                                                           "ordinaryRtsGapVisible":  true,
+                                                           "requiredWorkerClearance":  1.875,
+                                                           "roofEaveIntersection":  false,
+                                                           "roofEaveOverlapDepth":  0.0,
+                                                           "structuralAabbIntersection":  false,
+                                                           "workerClearancePassed":  true,
+                                                           "workerWidthReference":  1.25
+                                                       },
+                                       "newFixtureBarnTransform":  {
+                                                                       "position":  {
+                                                                                        "x":  -1.79999995231628,
+                                                                                        "y":  0.180000007152557,
+                                                                                        "z":  -1.0
+                                                                                    },
+                                                                       "rotation":  {
+                                                                                        "x":  0.0,
+                                                                                        "y":  0.0,
+                                                                                        "z":  0.0
+                                                                                    },
+                                                                       "scale":  {
+                                                                                     "x":  1.0,
+                                                                                     "y":  1.0,
+                                                                                     "z":  1.0
+                                                                                 }
+                                                                   },
+                                       "oldFixtureBarnTransform":  {
+                                                                       "position":  {
+                                                                                        "x":  -1.79999995231628,
+                                                                                        "y":  0.180000007152557,
+                                                                                        "z":  -1.0
+                                                                                    },
+                                                                       "rotation":  {
+                                                                                        "x":  0.0,
+                                                                                        "y":  0.0,
+                                                                                        "z":  0.0
+                                                                                    },
+                                                                       "scale":  {
+                                                                                     "x":  1.0,
+                                                                                     "y":  1.0,
+                                                                                     "z":  1.0
+                                                                                 }
+                                                                   },
+                                       "performanceBenchmarkRerunCount":  0,
+                                       "placementVariant":  "repaired-final",
+                                       "retainedBarnNodeCount":  0,
+                                       "rollbackClean":  false,
+                                       "roofHash":  "0077e19143517e2850aee3bdb6ce9408d55bc7e2bfdc958d61ac1b141ab684f9",
+                                       "saveMutationCount":  0,
+                                       "scenePath":  "res://scenes/review/V0362BarrosanBarnContextualPlacementSeparation.tscn",
+                                       "schemaVersion":  1,
+                                       "sourceHash":  "13a761a2b60658a0d261c89d9046b752f052a5e32924381075a4b24ca7c3d6a3",
+                                       "stableIdMutationCount":  0,
+                                       "textureMutationCount":  0,
+                                       "validOptInLoadedOnce":  false
+                                   }
+                    },
+                    "Godot Engine v4.6.3.stable.official.7d41c59c4 - https://godotengine.org",
+                    "OpenGL API 3.3.0 NVIDIA 582.28 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce GTX 1070",
+                    "",
+                    "V0362_READY",
+                    "V0359_READY",
+                    {
+                        "id":  "hash-mismatch-fail-closed",
+                        "expected":  "FAIL_CLOSED_HASH_MISMATCH",
+                        "status":  "FAIL_CLOSED_HASH_MISMATCH",
+                        "exitCode":  0,
+                        "placementManifest":  "artifacts/runtime/v0362/hash-mismatch-fail-closed/v0362-barrosan-barn-placement-runtime.json",
+                        "screenshots":  [
+
+                                        ],
+                        "report":  {
+                                       "baselineRollbackStateMatch":  false,
+                                       "browserMutationCount":  0,
+                                       "canonicalAssetMutationCount":  0,
+                                       "canonicalTransformMutationCount":  0,
+                                       "changedNonBarnNodeCount":  0,
+                                       "checkpoint":  "v0.362",
+                                       "defaultBarnInstanceCount":  0,
+                                       "defaultRuntimeMutationCount":  0,
+                                       "duplicateBarnRootCount":  0,
+                                       "fixtureBarnRootPositionMutationCount":  0,
+                                       "fixtureBarnRootRotationMutationCount":  0,
+                                       "fixtureBarnRootScaleMutationCount":  0,
+                                       "fixtureBarnRotationChanged":  false,
+                                       "fixtureBarnScaleChanged":  false,
+                                       "fixtureBarnTranslationDelta":  {
+                                                                           "x":  0.0,
+                                                                           "y":  0.0,
+                                                                           "z":  0.0
+                                                                       },
+                                       "gameplayMutationCount":  0,
+                                       "genuineNonHeadlessCapture":  false,
+                                       "geometryMutationCount":  0,
+                                       "materialMutationCount":  0,
+                                       "measurement":  {
+                                                           "barnCombinedWorldAabb":  {
+                                                                                         "max":  {
+                                                                                                     "x":  0.0,
+                                                                                                     "y":  0.0,
+                                                                                                     "z":  0.0
+                                                                                                 },
+                                                                                         "min":  {
+                                                                                                     "x":  0.0,
+                                                                                                     "y":  0.0,
+                                                                                                     "z":  0.0
+                                                                                                 },
+                                                                                         "size":  {
+                                                                                                      "x":  0.0,
+                                                                                                      "y":  0.0,
+                                                                                                      "z":  0.0
+                                                                                                  }
+                                                                                     },
+                                                           "barnMeshCount":  0,
+                                                           "barnRoofMeshCount":  0,
+                                                           "barnRoofWorldAabb":  {
+                                                                                     "max":  {
+                                                                                                 "x":  0.0,
+                                                                                                 "y":  0.0,
+                                                                                                 "z":  0.0
+                                                                                             },
+                                                                                     "min":  {
+                                                                                                 "x":  0.0,
+                                                                                                 "y":  0.0,
+                                                                                                 "z":  0.0
+                                                                                             },
+                                                                                     "size":  {
+                                                                                                  "x":  0.0,
+                                                                                                  "y":  0.0,
+                                                                                                  "z":  0.0
+                                                                                              }
+                                                                                 },
+                                                           "beforeVariant":  false,
+                                                           "closestHorizontalClearance":  6.35000038146973,
+                                                           "closestRoofEaveClearance":  6.38000011444092,
+                                                           "horizontalOverlapDepth":  0.0,
+                                                           "house02CombinedWorldAabb":  {
+                                                                                            "max":  {
+                                                                                                        "x":  -6.35000038146973,
+                                                                                                        "y":  7.25999975204468,
+                                                                                                        "z":  4.6100001335144
+                                                                                                    },
+                                                                                            "min":  {
+                                                                                                        "x":  -16.6499996185303,
+                                                                                                        "y":  0.0,
+                                                                                                        "z":  -5.09999990463257
+                                                                                                    },
+                                                                                            "size":  {
+                                                                                                         "x":  10.2999992370605,
+                                                                                                         "y":  7.25999975204468,
+                                                                                                         "z":  9.71000003814697
+                                                                                                     }
+                                                                                        },
+                                                           "house02MeshCount":  24,
+                                                           "house02RoofMeshCount":  4,
+                                                           "house02RoofWorldAabb":  {
+                                                                                        "max":  {
+                                                                                                    "x":  -6.38000011444092,
+                                                                                                    "y":  7.25999975204468,
+                                                                                                    "z":  1.98000001907349
+                                                                                                },
+                                                                                        "min":  {
+                                                                                                    "x":  -16.6199989318848,
+                                                                                                    "y":  4.23999977111816,
+                                                                                                    "z":  -4.98000001907349
+                                                                                                },
+                                                                                        "size":  {
+                                                                                                     "x":  10.2399988174438,
+                                                                                                     "y":  3.01999998092651,
+                                                                                                     "z":  6.96000003814697
+                                                                                                 }
+                                                                                    },
+                                                           "measurementMethod":  "world-space transformed mesh AABBs; XZ interval relation; roof/eave subset by authored mesh-name tokens",
+                                                           "ordinaryRtsGapVisible":  true,
+                                                           "requiredWorkerClearance":  1.875,
+                                                           "roofEaveIntersection":  false,
+                                                           "roofEaveOverlapDepth":  0.0,
+                                                           "structuralAabbIntersection":  false,
+                                                           "workerClearancePassed":  true,
+                                                           "workerWidthReference":  1.25
+                                                       },
+                                       "newFixtureBarnTransform":  {
+                                                                       "position":  {
+                                                                                        "x":  -1.79999995231628,
+                                                                                        "y":  0.180000007152557,
+                                                                                        "z":  -1.0
+                                                                                    },
+                                                                       "rotation":  {
+                                                                                        "x":  0.0,
+                                                                                        "y":  0.0,
+                                                                                        "z":  0.0
+                                                                                    },
+                                                                       "scale":  {
+                                                                                     "x":  1.0,
+                                                                                     "y":  1.0,
+                                                                                     "z":  1.0
+                                                                                 }
+                                                                   },
+                                       "oldFixtureBarnTransform":  {
+                                                                       "position":  {
+                                                                                        "x":  -1.79999995231628,
+                                                                                        "y":  0.180000007152557,
+                                                                                        "z":  -1.0
+                                                                                    },
+                                                                       "rotation":  {
+                                                                                        "x":  0.0,
+                                                                                        "y":  0.0,
+                                                                                        "z":  0.0
+                                                                                    },
+                                                                       "scale":  {
+                                                                                     "x":  1.0,
+                                                                                     "y":  1.0,
+                                                                                     "z":  1.0
+                                                                                 }
+                                                                   },
+                                       "performanceBenchmarkRerunCount":  0,
+                                       "placementVariant":  "repaired-final",
+                                       "retainedBarnNodeCount":  0,
+                                       "rollbackClean":  false,
+                                       "roofHash":  "0077e19143517e2850aee3bdb6ce9408d55bc7e2bfdc958d61ac1b141ab684f9",
+                                       "saveMutationCount":  0,
+                                       "scenePath":  "res://scenes/review/V0362BarrosanBarnContextualPlacementSeparation.tscn",
+                                       "schemaVersion":  1,
+                                       "sourceHash":  "13a761a2b60658a0d261c89d9046b752f052a5e32924381075a4b24ca7c3d6a3",
+                                       "stableIdMutationCount":  0,
+                                       "textureMutationCount":  0,
+                                       "validOptInLoadedOnce":  false
+                                   }
+                    },
+                    "Godot Engine v4.6.3.stable.official.7d41c59c4 - https://godotengine.org",
+                    "OpenGL API 3.3.0 NVIDIA 582.28 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce GTX 1070",
+                    "",
+                    "V0362_READY",
+                    "V0359_READY",
+                    {
+                        "id":  "invalid-authority-fail-closed",
+                        "expected":  "FAIL_CLOSED_INVALID_AUTHORITY",
+                        "status":  "FAIL_CLOSED_INVALID_AUTHORITY",
+                        "exitCode":  0,
+                        "placementManifest":  "artifacts/runtime/v0362/invalid-authority-fail-closed/v0362-barrosan-barn-placement-runtime.json",
+                        "screenshots":  [
+
+                                        ],
+                        "report":  {
+                                       "baselineRollbackStateMatch":  false,
+                                       "browserMutationCount":  0,
+                                       "canonicalAssetMutationCount":  0,
+                                       "canonicalTransformMutationCount":  0,
+                                       "changedNonBarnNodeCount":  0,
+                                       "checkpoint":  "v0.362",
+                                       "defaultBarnInstanceCount":  0,
+                                       "defaultRuntimeMutationCount":  0,
+                                       "duplicateBarnRootCount":  0,
+                                       "fixtureBarnRootPositionMutationCount":  0,
+                                       "fixtureBarnRootRotationMutationCount":  0,
+                                       "fixtureBarnRootScaleMutationCount":  0,
+                                       "fixtureBarnRotationChanged":  false,
+                                       "fixtureBarnScaleChanged":  false,
+                                       "fixtureBarnTranslationDelta":  {
+                                                                           "x":  0.0,
+                                                                           "y":  0.0,
+                                                                           "z":  0.0
+                                                                       },
+                                       "gameplayMutationCount":  0,
+                                       "genuineNonHeadlessCapture":  false,
+                                       "geometryMutationCount":  0,
+                                       "materialMutationCount":  0,
+                                       "measurement":  {
+                                                           "barnCombinedWorldAabb":  {
+                                                                                         "max":  {
+                                                                                                     "x":  0.0,
+                                                                                                     "y":  0.0,
+                                                                                                     "z":  0.0
+                                                                                                 },
+                                                                                         "min":  {
+                                                                                                     "x":  0.0,
+                                                                                                     "y":  0.0,
+                                                                                                     "z":  0.0
+                                                                                                 },
+                                                                                         "size":  {
+                                                                                                      "x":  0.0,
+                                                                                                      "y":  0.0,
+                                                                                                      "z":  0.0
+                                                                                                  }
+                                                                                     },
+                                                           "barnMeshCount":  0,
+                                                           "barnRoofMeshCount":  0,
+                                                           "barnRoofWorldAabb":  {
+                                                                                     "max":  {
+                                                                                                 "x":  0.0,
+                                                                                                 "y":  0.0,
+                                                                                                 "z":  0.0
+                                                                                             },
+                                                                                     "min":  {
+                                                                                                 "x":  0.0,
+                                                                                                 "y":  0.0,
+                                                                                                 "z":  0.0
+                                                                                             },
+                                                                                     "size":  {
+                                                                                                  "x":  0.0,
+                                                                                                  "y":  0.0,
+                                                                                                  "z":  0.0
+                                                                                              }
+                                                                                 },
+                                                           "beforeVariant":  false,
+                                                           "closestHorizontalClearance":  6.35000038146973,
+                                                           "closestRoofEaveClearance":  6.38000011444092,
+                                                           "horizontalOverlapDepth":  0.0,
+                                                           "house02CombinedWorldAabb":  {
+                                                                                            "max":  {
+                                                                                                        "x":  -6.35000038146973,
+                                                                                                        "y":  7.25999975204468,
+                                                                                                        "z":  4.6100001335144
+                                                                                                    },
+                                                                                            "min":  {
+                                                                                                        "x":  -16.6499996185303,
+                                                                                                        "y":  0.0,
+                                                                                                        "z":  -5.09999990463257
+                                                                                                    },
+                                                                                            "size":  {
+                                                                                                         "x":  10.2999992370605,
+                                                                                                         "y":  7.25999975204468,
+                                                                                                         "z":  9.71000003814697
+                                                                                                     }
+                                                                                        },
+                                                           "house02MeshCount":  24,
+                                                           "house02RoofMeshCount":  4,
+                                                           "house02RoofWorldAabb":  {
+                                                                                        "max":  {
+                                                                                                    "x":  -6.38000011444092,
+                                                                                                    "y":  7.25999975204468,
+                                                                                                    "z":  1.98000001907349
+                                                                                                },
+                                                                                        "min":  {
+                                                                                                    "x":  -16.6199989318848,
+                                                                                                    "y":  4.23999977111816,
+                                                                                                    "z":  -4.98000001907349
+                                                                                                },
+                                                                                        "size":  {
+                                                                                                     "x":  10.2399988174438,
+                                                                                                     "y":  3.01999998092651,
+                                                                                                     "z":  6.96000003814697
+                                                                                                 }
+                                                                                    },
+                                                           "measurementMethod":  "world-space transformed mesh AABBs; XZ interval relation; roof/eave subset by authored mesh-name tokens",
+                                                           "ordinaryRtsGapVisible":  true,
+                                                           "requiredWorkerClearance":  1.875,
+                                                           "roofEaveIntersection":  false,
+                                                           "roofEaveOverlapDepth":  0.0,
+                                                           "structuralAabbIntersection":  false,
+                                                           "workerClearancePassed":  true,
+                                                           "workerWidthReference":  1.25
+                                                       },
+                                       "newFixtureBarnTransform":  {
+                                                                       "position":  {
+                                                                                        "x":  -1.79999995231628,
+                                                                                        "y":  0.180000007152557,
+                                                                                        "z":  -1.0
+                                                                                    },
+                                                                       "rotation":  {
+                                                                                        "x":  0.0,
+                                                                                        "y":  0.0,
+                                                                                        "z":  0.0
+                                                                                    },
+                                                                       "scale":  {
+                                                                                     "x":  1.0,
+                                                                                     "y":  1.0,
+                                                                                     "z":  1.0
+                                                                                 }
+                                                                   },
+                                       "oldFixtureBarnTransform":  {
+                                                                       "position":  {
+                                                                                        "x":  -1.79999995231628,
+                                                                                        "y":  0.180000007152557,
+                                                                                        "z":  -1.0
+                                                                                    },
+                                                                       "rotation":  {
+                                                                                        "x":  0.0,
+                                                                                        "y":  0.0,
+                                                                                        "z":  0.0
+                                                                                    },
+                                                                       "scale":  {
+                                                                                     "x":  1.0,
+                                                                                     "y":  1.0,
+                                                                                     "z":  1.0
+                                                                                 }
+                                                                   },
+                                       "performanceBenchmarkRerunCount":  0,
+                                       "placementVariant":  "repaired-final",
+                                       "retainedBarnNodeCount":  0,
+                                       "rollbackClean":  false,
+                                       "roofHash":  "0077e19143517e2850aee3bdb6ce9408d55bc7e2bfdc958d61ac1b141ab684f9",
+                                       "saveMutationCount":  0,
+                                       "scenePath":  "res://scenes/review/V0362BarrosanBarnContextualPlacementSeparation.tscn",
+                                       "schemaVersion":  1,
+                                       "sourceHash":  "13a761a2b60658a0d261c89d9046b752f052a5e32924381075a4b24ca7c3d6a3",
+                                       "stableIdMutationCount":  0,
+                                       "textureMutationCount":  0,
+                                       "validOptInLoadedOnce":  false
+                                   }
+                    },
+                    "Godot Engine v4.6.3.stable.official.7d41c59c4 - https://godotengine.org",
+                    "OpenGL API 3.3.0 NVIDIA 582.28 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce GTX 1070",
+                    "",
+                    "V0362_READY",
+                    "V0359_READY",
+                    {
+                        "id":  "unknown-slot-rejected",
+                        "expected":  "FAIL_CLOSED_UNKNOWN_SLOT_REJECTED",
+                        "status":  "FAIL_CLOSED_UNKNOWN_SLOT_REJECTED",
+                        "exitCode":  0,
+                        "placementManifest":  "artifacts/runtime/v0362/unknown-slot-rejected/v0362-barrosan-barn-placement-runtime.json",
+                        "screenshots":  [
+
+                                        ],
+                        "report":  {
+                                       "baselineRollbackStateMatch":  false,
+                                       "browserMutationCount":  0,
+                                       "canonicalAssetMutationCount":  0,
+                                       "canonicalTransformMutationCount":  0,
+                                       "changedNonBarnNodeCount":  0,
+                                       "checkpoint":  "v0.362",
+                                       "defaultBarnInstanceCount":  0,
+                                       "defaultRuntimeMutationCount":  0,
+                                       "duplicateBarnRootCount":  0,
+                                       "fixtureBarnRootPositionMutationCount":  0,
+                                       "fixtureBarnRootRotationMutationCount":  0,
+                                       "fixtureBarnRootScaleMutationCount":  0,
+                                       "fixtureBarnRotationChanged":  false,
+                                       "fixtureBarnScaleChanged":  false,
+                                       "fixtureBarnTranslationDelta":  {
+                                                                           "x":  0.0,
+                                                                           "y":  0.0,
+                                                                           "z":  0.0
+                                                                       },
+                                       "gameplayMutationCount":  0,
+                                       "genuineNonHeadlessCapture":  false,
+                                       "geometryMutationCount":  0,
+                                       "materialMutationCount":  0,
+                                       "measurement":  {
+                                                           "barnCombinedWorldAabb":  {
+                                                                                         "max":  {
+                                                                                                     "x":  0.0,
+                                                                                                     "y":  0.0,
+                                                                                                     "z":  0.0
+                                                                                                 },
+                                                                                         "min":  {
+                                                                                                     "x":  0.0,
+                                                                                                     "y":  0.0,
+                                                                                                     "z":  0.0
+                                                                                                 },
+                                                                                         "size":  {
+                                                                                                      "x":  0.0,
+                                                                                                      "y":  0.0,
+                                                                                                      "z":  0.0
+                                                                                                  }
+                                                                                     },
+                                                           "barnMeshCount":  0,
+                                                           "barnRoofMeshCount":  0,
+                                                           "barnRoofWorldAabb":  {
+                                                                                     "max":  {
+                                                                                                 "x":  0.0,
+                                                                                                 "y":  0.0,
+                                                                                                 "z":  0.0
+                                                                                             },
+                                                                                     "min":  {
+                                                                                                 "x":  0.0,
+                                                                                                 "y":  0.0,
+                                                                                                 "z":  0.0
+                                                                                             },
+                                                                                     "size":  {
+                                                                                                  "x":  0.0,
+                                                                                                  "y":  0.0,
+                                                                                                  "z":  0.0
+                                                                                              }
+                                                                                 },
+                                                           "beforeVariant":  false,
+                                                           "closestHorizontalClearance":  6.35000038146973,
+                                                           "closestRoofEaveClearance":  6.38000011444092,
+                                                           "horizontalOverlapDepth":  0.0,
+                                                           "house02CombinedWorldAabb":  {
+                                                                                            "max":  {
+                                                                                                        "x":  -6.35000038146973,
+                                                                                                        "y":  7.25999975204468,
+                                                                                                        "z":  4.6100001335144
+                                                                                                    },
+                                                                                            "min":  {
+                                                                                                        "x":  -16.6499996185303,
+                                                                                                        "y":  0.0,
+                                                                                                        "z":  -5.09999990463257
+                                                                                                    },
+                                                                                            "size":  {
+                                                                                                         "x":  10.2999992370605,
+                                                                                                         "y":  7.25999975204468,
+                                                                                                         "z":  9.71000003814697
+                                                                                                     }
+                                                                                        },
+                                                           "house02MeshCount":  24,
+                                                           "house02RoofMeshCount":  4,
+                                                           "house02RoofWorldAabb":  {
+                                                                                        "max":  {
+                                                                                                    "x":  -6.38000011444092,
+                                                                                                    "y":  7.25999975204468,
+                                                                                                    "z":  1.98000001907349
+                                                                                                },
+                                                                                        "min":  {
+                                                                                                    "x":  -16.6199989318848,
+                                                                                                    "y":  4.23999977111816,
+                                                                                                    "z":  -4.98000001907349
+                                                                                                },
+                                                                                        "size":  {
+                                                                                                     "x":  10.2399988174438,
+                                                                                                     "y":  3.01999998092651,
+                                                                                                     "z":  6.96000003814697
+                                                                                                 }
+                                                                                    },
+                                                           "measurementMethod":  "world-space transformed mesh AABBs; XZ interval relation; roof/eave subset by authored mesh-name tokens",
+                                                           "ordinaryRtsGapVisible":  true,
+                                                           "requiredWorkerClearance":  1.875,
+                                                           "roofEaveIntersection":  false,
+                                                           "roofEaveOverlapDepth":  0.0,
+                                                           "structuralAabbIntersection":  false,
+                                                           "workerClearancePassed":  true,
+                                                           "workerWidthReference":  1.25
+                                                       },
+                                       "newFixtureBarnTransform":  {
+                                                                       "position":  {
+                                                                                        "x":  -1.79999995231628,
+                                                                                        "y":  0.180000007152557,
+                                                                                        "z":  -1.0
+                                                                                    },
+                                                                       "rotation":  {
+                                                                                        "x":  0.0,
+                                                                                        "y":  0.0,
+                                                                                        "z":  0.0
+                                                                                    },
+                                                                       "scale":  {
+                                                                                     "x":  1.0,
+                                                                                     "y":  1.0,
+                                                                                     "z":  1.0
+                                                                                 }
+                                                                   },
+                                       "oldFixtureBarnTransform":  {
+                                                                       "position":  {
+                                                                                        "x":  -1.79999995231628,
+                                                                                        "y":  0.180000007152557,
+                                                                                        "z":  -1.0
+                                                                                    },
+                                                                       "rotation":  {
+                                                                                        "x":  0.0,
+                                                                                        "y":  0.0,
+                                                                                        "z":  0.0
+                                                                                    },
+                                                                       "scale":  {
+                                                                                     "x":  1.0,
+                                                                                     "y":  1.0,
+                                                                                     "z":  1.0
+                                                                                 }
+                                                                   },
+                                       "performanceBenchmarkRerunCount":  0,
+                                       "placementVariant":  "repaired-final",
+                                       "retainedBarnNodeCount":  0,
+                                       "rollbackClean":  false,
+                                       "roofHash":  "0077e19143517e2850aee3bdb6ce9408d55bc7e2bfdc958d61ac1b141ab684f9",
+                                       "saveMutationCount":  0,
+                                       "scenePath":  "res://scenes/review/V0362BarrosanBarnContextualPlacementSeparation.tscn",
+                                       "schemaVersion":  1,
+                                       "sourceHash":  "13a761a2b60658a0d261c89d9046b752f052a5e32924381075a4b24ca7c3d6a3",
+                                       "stableIdMutationCount":  0,
+                                       "textureMutationCount":  0,
+                                       "validOptInLoadedOnce":  false
+                                   }
+                    }
+                ],
+    "finalMeasurement":  {
+                             "barnCombinedWorldAabb":  {
+                                                           "max":  {
+                                                                       "x":  11.8699989318848,
+                                                                       "y":  6.10292053222656,
+                                                                       "z":  4.56249952316284
+                                                                   },
+                                                           "min":  {
+                                                                       "x":  -3.87000036239624,
+                                                                       "y":  0.389999985694885,
+                                                                       "z":  -6.34499979019165
+                                                                   },
+                                                           "size":  {
+                                                                        "x":  15.7399997711182,
+                                                                        "y":  5.71292066574097,
+                                                                        "z":  10.9074993133545
+                                                                    }
+                                                       },
+                             "barnMeshCount":  16,
+                             "barnRoofMeshCount":  15,
+                             "barnRoofWorldAabb":  {
+                                                       "max":  {
+                                                                   "x":  11.8699998855591,
+                                                                   "y":  6.0404200553894,
+                                                                   "z":  4.56249952316284
+                                                               },
+                                                       "min":  {
+                                                                   "x":  -3.86999988555908,
+                                                                   "y":  2.85000014305115,
+                                                                   "z":  -6.34499979019165
+                                                               },
+                                                       "size":  {
+                                                                    "x":  15.7399997711182,
+                                                                    "y":  3.19041991233826,
+                                                                    "z":  10.9074993133545
+                                                                }
+                                                   },
+                             "beforeVariant":  false,
+                             "closestHorizontalClearance":  2.48000001907349,
+                             "closestRoofEaveClearance":  2.51000022888184,
+                             "horizontalOverlapDepth":  0.0,
+                             "house02CombinedWorldAabb":  {
+                                                              "max":  {
+                                                                          "x":  -6.35000038146973,
+                                                                          "y":  7.25999975204468,
+                                                                          "z":  4.6100001335144
+                                                                      },
+                                                              "min":  {
+                                                                          "x":  -16.6499996185303,
+                                                                          "y":  0.0,
+                                                                          "z":  -5.09999990463257
+                                                                      },
+                                                              "size":  {
+                                                                           "x":  10.2999992370605,
+                                                                           "y":  7.25999975204468,
+                                                                           "z":  9.71000003814697
+                                                                       }
+                                                          },
+                             "house02MeshCount":  24,
+                             "house02RoofMeshCount":  4,
+                             "house02RoofWorldAabb":  {
+                                                          "max":  {
+                                                                      "x":  -6.38000011444092,
+                                                                      "y":  7.25999975204468,
+                                                                      "z":  1.98000001907349
+                                                                  },
+                                                          "min":  {
+                                                                      "x":  -16.6199989318848,
+                                                                      "y":  4.23999977111816,
+                                                                      "z":  -4.98000001907349
+                                                                  },
+                                                          "size":  {
+                                                                       "x":  10.2399988174438,
+                                                                       "y":  3.01999998092651,
+                                                                       "z":  6.96000003814697
+                                                                   }
+                                                      },
+                             "measurementMethod":  "world-space transformed mesh AABBs; XZ interval relation; roof/eave subset by authored mesh-name tokens",
+                             "ordinaryRtsGapVisible":  true,
+                             "requiredWorkerClearance":  1.875,
+                             "roofEaveIntersection":  false,
+                             "roofEaveOverlapDepth":  0.0,
+                             "structuralAabbIntersection":  false,
+                             "workerClearancePassed":  true,
+                             "workerWidthReference":  1.25
+                         },
+    "rollbackR0R2PixelMatch":  true,
+    "failClosedCount":  4,
+    "noVideo":  true
+}

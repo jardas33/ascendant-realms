@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource path="res://scripts/v0322_barrosan_bridge_hamlet_hero_slice.gd" type="Script" id="1"]
+
+[node name="V0322BarrosanBridgeHamletHeroSlice" type="Node3D"]
+script = ExtResource("1")

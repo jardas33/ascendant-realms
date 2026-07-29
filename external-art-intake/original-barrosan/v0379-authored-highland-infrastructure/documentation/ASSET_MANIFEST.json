@@ -1,0 +1,25 @@
+{
+  "name": "barrosan_highland_infrastructure_v0379",
+  "seed": 379,
+  "export": "exports/barrosan_highland_infrastructure_v0379.glb",
+  "units": "metres",
+  "up_axis": "Y",
+  "geometry_count": 163,
+  "scope": [
+    "terrain",
+    "embedded-road",
+    "recessed-river",
+    "riverbanks",
+    "bridge",
+    "rocks",
+    "reeds",
+    "shrubs"
+  ],
+  "design_intent": [
+    "continuous non-checkerboard highland terrain",
+    "road embedded by terrain shaping and vertex colour",
+    "recessed curved river with dark wet-bank transition",
+    "timber bridge with granite abutments, under-beams, planks, edge course and restrained rails",
+    "clustered rocks, reeds and shrubs"
+  ]
+}

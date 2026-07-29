@@ -1,0 +1,15 @@
+{
+  "checkpoint": "v0.310",
+  "realRenderedCaptureCount": 43,
+  "contactSheetCount": 19,
+  "decision": "ADOPT HYBRID BILLBOARD CHARACTERS",
+  "sourceProvenance": [
+    "v0.147 Worker",
+    "v0.155 Militia"
+  ],
+  "referenceOnly": [
+    "v0.141",
+    "v0.309 U3 control",
+    "v0.303 fallback"
+  ]
+}

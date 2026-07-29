@@ -1,0 +1,662 @@
+{
+    "checkpoint":  "v0.361",
+    "outcome":  "READY FOR HUMAN V0361 BARROSAN BARN AGGREGATE-METRIC AND UTF-8 TRUTH CLOSEOUT REVIEW",
+    "humanDecision":  "V0.354 HUMAN-APPROVED — BARROSAN BARN VISUAL GOLD AND FINAL EVIDENCE CLOSEOUT ACCEPTED; ALL ACCEPTED LINEAGE FROZEN",
+    "authorizedSlotId":  "barrosan_barn_gold_v0355",
+    "canonicalScenePath":  "desktop-spikes/godot-salto/scenes/gold/barrosan/BarrosanBarnGold.tscn",
+    "goldManifestPath":  "docs/gold/V0355_BARROSAN_BARN_GOLD_MANIFEST.json",
+    "acceptanceLedgerPath":  "docs/gold/V0355_BARROSAN_BARN_ACCEPTANCE_LEDGER.md",
+    "requiredSourceHash":  "13a761a2b60658a0d261c89d9046b752f052a5e32924381075a4b24ca7c3d6a3",
+    "observedSourceHash":  "13a761a2b60658a0d261c89d9046b752f052a5e32924381075a4b24ca7c3d6a3",
+    "sourceHashMatch":  true,
+    "requiredRoofHash":  "0077e19143517e2850aee3bdb6ce9408d55bc7e2bfdc958d61ac1b141ab684f9",
+    "observedRoofHash":  "0077e19143517e2850aee3bdb6ce9408d55bc7e2bfdc958d61ac1b141ab684f9",
+    "roofHashMatch":  true,
+    "optInOnly":  true,
+    "defaultRuntimeIntegrated":  false,
+    "productionIntegrated":  false,
+    "gameplayIntegrated":  false,
+    "browserIntegrated":  false,
+    "canonicalAssetMutationCount":  0,
+    "geometryMutationCount":  0,
+    "materialMutationCount":  0,
+    "textureMutationCount":  0,
+    "canonicalTransformMutationCount":  0,
+    "gameplayMutationCount":  0,
+    "defaultRuntimeMutationCount":  0,
+    "baselineNodeSignature":  "9bcd99953af16716425b157cdfbfc9630ca0bfe60ed1bccea489f61639414af4",
+    "optInNodeSignature":  "bcac38fcf7faa44826585cc1b2f38c08960ac4622eda40f68180505dbec73b0c",
+    "rollbackNodeSignature":  "9bcd99953af16716425b157cdfbfc9630ca0bfe60ed1bccea489f61639414af4",
+    "addedNodePaths":  [
+                           "V0358_Barrosan_Barn_Gold_OptIn_Single_Instance",
+                           "V0358_Barrosan_Barn_Gold_OptIn_Single_Instance/V0346_House02_Family_Barn_Silhouette_Roof_Pitch",
+                           "V0358_Barrosan_Barn_Gold_OptIn_Single_Instance/V0347_Barn_Rendered_Geometry_Truth",
+                           "V0358_Barrosan_Barn_Gold_OptIn_Single_Instance/V0351_Upper_Loading_Shutters_Two_Closed_Leaves",
+                           "V0358_Barrosan_Barn_Gold_OptIn_Single_Instance/V0351_Upper_Loading_Shutters_Two_Closed_Leaves/V0351_Shutter_Central_Meeting_Seam",
+                           "V0358_Barrosan_Barn_Gold_OptIn_Single_Instance/V0351_Upper_Loading_Shutters_Two_Closed_Leaves/V0351_Shutter_Left_Closed_Timber_Leaf",
+                           "V0358_Barrosan_Barn_Gold_OptIn_Single_Instance/V0351_Upper_Loading_Shutters_Two_Closed_Leaves/V0351_Shutter_Left_Single_Iron_Strap",
+                           "V0358_Barrosan_Barn_Gold_OptIn_Single_Instance/V0351_Upper_Loading_Shutters_Two_Closed_Leaves/V0351_Shutter_Practical_Timber_Lintel",
+                           "V0358_Barrosan_Barn_Gold_OptIn_Single_Instance/V0351_Upper_Loading_Shutters_Two_Closed_Leaves/V0351_Shutter_Practical_Timber_Sill",
+                           "V0358_Barrosan_Barn_Gold_OptIn_Single_Instance/V0351_Upper_Loading_Shutters_Two_Closed_Leaves/V0351_Shutter_Right_Closed_Timber_Leaf",
+                           "V0358_Barrosan_Barn_Gold_OptIn_Single_Instance/V0351_Upper_Loading_Shutters_Two_Closed_Leaves/V0351_Shutter_Right_Single_Iron_Strap",
+                           "V0358_Barrosan_Barn_Gold_OptIn_Single_Instance/V0351_Upper_Loading_Shutters_Two_Closed_Leaves/V0351_Shutter_Vertical_Board_Seam_-0_48",
+                           "V0358_Barrosan_Barn_Gold_OptIn_Single_Instance/V0351_Upper_Loading_Shutters_Two_Closed_Leaves/V0351_Shutter_Vertical_Board_Seam_-0_88",
+                           "V0358_Barrosan_Barn_Gold_OptIn_Single_Instance/V0351_Upper_Loading_Shutters_Two_Closed_Leaves/V0351_Shutter_Vertical_Board_Seam_-1_27",
+                           "V0358_Barrosan_Barn_Gold_OptIn_Single_Instance/V0351_Upper_Loading_Shutters_Two_Closed_Leaves/V0351_Shutter_Vertical_Board_Seam_0_48",
+                           "V0358_Barrosan_Barn_Gold_OptIn_Single_Instance/V0351_Upper_Loading_Shutters_Two_Closed_Leaves/V0351_Shutter_Vertical_Board_Seam_0_88",
+                           "V0358_Barrosan_Barn_Gold_OptIn_Single_Instance/V0351_Upper_Loading_Shutters_Two_Closed_Leaves/V0351_Shutter_Vertical_Board_Seam_1_27",
+                           "V0358_Barrosan_Barn_Gold_OptIn_Single_Instance/V0352_Roof_Visibility_Repair_Closed_Underside_Only",
+                           "V0358_Barrosan_Barn_Gold_OptIn_Single_Instance/V0352_Roof_Visibility_Repair_Closed_Underside_Only/V0352_Roof_Left_Closed_Exterior_Slope",
+                           "V0358_Barrosan_Barn_Gold_OptIn_Single_Instance/V0352_Roof_Visibility_Repair_Closed_Underside_Only/V0352_Roof_Right_Closed_Exterior_Slope",
+                           "V0358_Barrosan_Barn_Gold_OptIn_Single_Instance/V0357_Terrain_Contact_Engine_Shadow_Only"
+                       ],
+    "removedNodePaths":  [
+
+                         ],
+    "changedNonBarnNodeCount":  0,
+    "validOptInLoadedOnce":  true,
+    "duplicateInstanceCount":  0,
+    "missingSceneFailClosed":  true,
+    "hashMismatchFailClosed":  true,
+    "invalidAuthorityFailClosed":  true,
+    "unknownSlotRejected":  true,
+    "failClosedBarnInstanceCount":  0,
+    "failClosedFallbackAssetCount":  0,
+    "rollbackClean":  true,
+    "rollbackBarnInstanceCount":  0,
+    "retainedBarnNodeCount":  0,
+    "baselineRollbackStateMatch":  true,
+    "baselineRollbackPixelMatch":  true,
+    "performanceMeasurementValid":  true,
+    "performanceProtocol":  "v0.359 retained uncapped non-headless continuous rendering; VSync disabled; Engine.max_fps 0; warm-up 600 frames; 3 passes x 1200 measurement frames; no screenshot during sampling",
+    "warmupFrames":  600,
+    "measurementFramesPerPass":  1200,
+    "performancePassCount":  3,
+    "performanceSampleCountDefault":  3600,
+    "performanceSampleCountOptIn":  3600,
+    "defaultMedianFps":  1461.98830409357,
+    "optInMedianFps":  1451.37880986938,
+    "medianFpsRatio":  0.992743105950653,
+    "defaultOnePercentLowFps":  623.138273033618,
+    "optInOnePercentLowFps":  580.501026458428,
+    "defaultMedianFrameTimeMs":  0.685,
+    "optInMedianFrameTimeMs":  0.689,
+    "defaultP95FrameTimeMs":  1.271,
+    "optInP95FrameTimeMs":  1.349,
+    "p95FrameTimeRatio":  1.06136900078678,
+    "defaultP99FrameTimeMs":  1.475,
+    "optInP99FrameTimeMs":  1.603,
+    "defaultOver50MsSpikeCount":  0,
+    "optInOver50MsSpikeCount":  0,
+    "defaultDrawCalls":  74,
+    "optInDrawCalls":  116,
+    "drawCallDelta":  42,
+    "defaultTriangleOrPrimitiveCount":  26956,
+    "optInTriangleOrPrimitiveCount":  31676,
+    "defaultLoadedResourceCount":  53,
+    "optInLoadedResourceCount":  73,
+    "resourceDelta":  20,
+    "barnSceneLoadTimeMs":  376.718,
+    "exactTenFiles":  true,
+    "exactlyEightPng":  true,
+    "noVideo":  true,
+    "genuineNonHeadlessCaptures":  true,
+    "utf8Valid":  true,
+    "mojibakeCount":  0,
+    "automatedVisualApproval":  false,
+    "humanReviewStop":  true,
+    "captureManifestPath":  "artifacts/runtime/v0359/capture-manifest.json",
+    "externalRawPerformancePath":  "artifacts/performance/v0359-barrosan-barn/v0359-performance.json",
+    "externalLoadTimeSource":  "artifacts/runtime/v0358/performance/v0358-performance.json",
+    "retainedV0358TopLevelKeyCount":  82,
+    "missingRetainedV0358FieldCount":  0,
+    "rawBenchmarkArrayKeyCount":  6,
+    "rawBenchmarkEntryCount":  21600,
+    "rawArraysInsidePack":  0,
+    "rawBenchmarkDataFilesInsidePack":  0,
+    "noRawBenchmarkDataInPack":  true,
+    "compactSummaryUnder100KB":  true,
+    "board03WideHash":  "5f2a52ca002c2995cf3e0a75fdac4cf267cecefc42fc3753fcbba789834b063c",
+    "board03CloseScaleHash":  "b2d2a18484150ac39513802a97543c56d25ddb7e21ae0ac80126db28f25ca579",
+    "board03PanelsDistinct":  true,
+    "board04RtsHash":  "d178c86651bbbd782c45583fd146ea2e419a29bab37959b581d24fb62fbd67b6",
+    "board04TerrainContactHash":  "078a236181f961f3f7af04d463cbf44c92336426dfac88dd9f4f33c889e83b20",
+    "board04PanelsDistinct":  true,
+    "board05FrontHash":  "bbead8ed8c59d51f8f6301e585c0e105594055f6e29b284c660aaf35a9ec2c28",
+    "board05RearHash":  "e2ccd5d1b1b4077a139c0930f731a1d80966afddff324a5b8426b8ea65759d29",
+    "board05RoofHash":  "282e990f357f3e78af735c0cd70d0d4a2c857e45a2f55cb8a907c6e5e6dd8781",
+    "board05AllViewsDistinct":  true,
+    "board07R0Hash":  "dca0980d8a3f1e3e2c12a7db72bccf212df68986289f5ae6ac55ca5b72f2143d",
+    "board07R1Hash":  "d178c86651bbbd782c45583fd146ea2e419a29bab37959b581d24fb62fbd67b6",
+    "board07R2Hash":  "dca0980d8a3f1e3e2c12a7db72bccf212df68986289f5ae6ac55ca5b72f2143d",
+    "board07R0R2PixelMatch":  true,
+    "board06DiagnosticsReadable":  true,
+    "board06Layout":  "2x2",
+    "board06ScenarioHeadingFontPx":  30,
+    "board06BodyFontPx":  18,
+    "board06PanelHashesDistinct":  true,
+    "board08BarnLoadTimeSeparate":  true,
+    "board08BarnLoadTimeMs":  376.718,
+    "board08BarnLoadTimeMeasurementValid":  true,
+    "board08RequiredRows":  [
+                                "Barn scene load time",
+                                "Barn load-time validity",
+                                "Median FPS",
+                                "P95 frame ms",
+                                "Barn nodes",
+                                "Raw benchmark arrays"
+                            ],
+    "barnSceneLoadTimeMeasurementValid":  true,
+    "barnSceneLoadTimeProtocol":  "v0.358 retained non-headless continuous rendering; Time.get_ticks_usec around authorized canonical load() + instantiate + add_child; warm-up 300 frames; 3 passes x 600 measurement frames; no screenshot during sampling",
+    "stableIdMutationCount":  0,
+    "saveMutationCount":  0,
+    "failClosedScenarios":  [
+                                {
+                                    "scenario":  "missing-scene-fail-closed",
+                                    "requestedSlotId":  "barrosan_barn_gold_v0355",
+                                    "failureCode":  "MISSING_SCENE_FAIL_CLOSED",
+                                    "loadAttempted":  true,
+                                    "canonicalInstantiationAttempted":  false,
+                                    "loadSucceeded":  false,
+                                    "barnInstanceCount":  0,
+                                    "fallbackAssetUsed":  false,
+                                    "runtimeContinued":  true
+                                },
+                                {
+                                    "scenario":  "hash-mismatch-fail-closed",
+                                    "requestedSlotId":  "barrosan_barn_gold_v0355",
+                                    "failureCode":  "HASH_MISMATCH_FAIL_CLOSED",
+                                    "loadAttempted":  true,
+                                    "canonicalInstantiationAttempted":  false,
+                                    "loadSucceeded":  false,
+                                    "barnInstanceCount":  0,
+                                    "fallbackAssetUsed":  false,
+                                    "runtimeContinued":  true
+                                },
+                                {
+                                    "scenario":  "invalid-authority-fail-closed",
+                                    "requestedSlotId":  "barrosan_barn_gold_v0355",
+                                    "failureCode":  "INVALID_AUTHORITY_FAIL_CLOSED",
+                                    "loadAttempted":  true,
+                                    "canonicalInstantiationAttempted":  false,
+                                    "loadSucceeded":  false,
+                                    "barnInstanceCount":  0,
+                                    "fallbackAssetUsed":  false,
+                                    "runtimeContinued":  true
+                                },
+                                {
+                                    "scenario":  "unknown-slot-rejected",
+                                    "requestedSlotId":  "unknown_slot_v0359",
+                                    "failureCode":  "UNKNOWN_SLOT_REJECTED",
+                                    "loadAttempted":  true,
+                                    "canonicalInstantiationAttempted":  false,
+                                    "loadSucceeded":  false,
+                                    "barnInstanceCount":  0,
+                                    "fallbackAssetUsed":  false,
+                                    "runtimeContinued":  true
+                                }
+                            ],
+    "compactSummaryByteSize":  37457,
+    "performanceAggregateSourcePath":  "artifacts/performance/v0359-barrosan-barn/v0359-performance.json",
+    "performanceAggregateProtocolVersion":  "v0.359-uncapped-v1",
+    "performanceAggregatesRecomputed":  true,
+    "performanceAggregateMismatchCount":  0,
+    "staleCappedMetricCountBeforeRepair":  6,
+    "staleCappedMetricCountAfterRepair":  0,
+    "board08AggregateMatch":  true,
+    "compactSummaryAggregateMatch":  true,
+    "reportAggregateMatch":  true,
+    "board08SourceSha256":  "bd7a49b0aab6cc878f006fb4482425c6ef1dad48158a1e2791774ba95a204b9f",
+    "board08RetainedByteIdentical":  true,
+    "aggregateCalculationMethod":  "Copy exact aggregate scalars from the retained v0.359 uncapped source; verify 3,600 rawDrawCalls, rawFrameTimesMs and rawTriangleOrPrimitiveCounts samples per mode; compute deltas and ratios from the same source values; display Board 08 rounded to 3 decimals for frame times and 2 decimals for FPS while retaining exact summary scalars.",
+    "staleCappedMetricFieldsBeforeRepair":  [
+                                                "defaultOnePercentLowFps",
+                                                "optInOnePercentLowFps",
+                                                "defaultMedianFrameTimeMs",
+                                                "optInMedianFrameTimeMs",
+                                                "defaultP99FrameTimeMs",
+                                                "optInP99FrameTimeMs"
+                                            ],
+    "defaultMaximumFrameTimeMs":  2.211,
+    "optInMaximumFrameTimeMs":  2.419,
+    "primitiveDelta":  4720,
+    "defaultTotalNodeCount":  61,
+    "optInTotalNodeCount":  82,
+    "nodeDelta":  21,
+    "board08DisplayValues":  {
+                                 "defaultMedianFps":  1461.99,
+                                 "optInMedianFps":  1451.38,
+                                 "defaultOnePercentLowFps":  623.14,
+                                 "optInOnePercentLowFps":  580.5,
+                                 "defaultMedianFrameTimeMs":  0.685,
+                                 "optInMedianFrameTimeMs":  0.689,
+                                 "defaultP95FrameTimeMs":  1.271,
+                                 "optInP95FrameTimeMs":  1.349,
+                                 "defaultP99FrameTimeMs":  1.475,
+                                 "optInP99FrameTimeMs":  1.603,
+                                 "defaultMaximumFrameTimeMs":  2.211,
+                                 "optInMaximumFrameTimeMs":  2.419
+                             },
+    "retainedKeyCoverage":  [
+                                {
+                                    "key":  "checkpoint",
+                                    "preserved":  true,
+                                    "valueCopiedUnchanged":  false
+                                },
+                                {
+                                    "key":  "outcome",
+                                    "preserved":  true,
+                                    "valueCopiedUnchanged":  false
+                                },
+                                {
+                                    "key":  "humanDecision",
+                                    "preserved":  true,
+                                    "valueCopiedUnchanged":  true
+                                },
+                                {
+                                    "key":  "authorizedSlotId",
+                                    "preserved":  true,
+                                    "valueCopiedUnchanged":  true
+                                },
+                                {
+                                    "key":  "canonicalScenePath",
+                                    "preserved":  true,
+                                    "valueCopiedUnchanged":  true
+                                },
+                                {
+                                    "key":  "goldManifestPath",
+                                    "preserved":  true,
+                                    "valueCopiedUnchanged":  true
+                                },
+                                {
+                                    "key":  "acceptanceLedgerPath",
+                                    "preserved":  true,
+                                    "valueCopiedUnchanged":  true
+                                },
+                                {
+                                    "key":  "requiredSourceHash",
+                                    "preserved":  true,
+                                    "valueCopiedUnchanged":  true
+                                },
+                                {
+                                    "key":  "observedSourceHash",
+                                    "preserved":  true,
+                                    "valueCopiedUnchanged":  true
+                                },
+                                {
+                                    "key":  "sourceHashMatch",
+                                    "preserved":  true,
+                                    "valueCopiedUnchanged":  true
+                                },
+                                {
+                                    "key":  "requiredRoofHash",
+                                    "preserved":  true,
+                                    "valueCopiedUnchanged":  true
+                                },
+                                {
+                                    "key":  "observedRoofHash",
+                                    "preserved":  true,
+                                    "valueCopiedUnchanged":  true
+                                },
+                                {
+                                    "key":  "roofHashMatch",
+                                    "preserved":  true,
+                                    "valueCopiedUnchanged":  true
+                                },
+                                {
+                                    "key":  "optInOnly",
+                                    "preserved":  true,
+                                    "valueCopiedUnchanged":  true
+                                },
+                                {
+                                    "key":  "defaultRuntimeIntegrated",
+                                    "preserved":  true,
+                                    "valueCopiedUnchanged":  true
+                                },
+                                {
+                                    "key":  "productionIntegrated",
+                                    "preserved":  true,
+                                    "valueCopiedUnchanged":  true
+                                },
+                                {
+                                    "key":  "gameplayIntegrated",
+                                    "preserved":  true,
+                                    "valueCopiedUnchanged":  true
+                                },
+                                {
+                                    "key":  "browserIntegrated",
+                                    "preserved":  true,
+                                    "valueCopiedUnchanged":  true
+                                },
+                                {
+                                    "key":  "canonicalAssetMutationCount",
+                                    "preserved":  true,
+                                    "valueCopiedUnchanged":  true
+                                },
+                                {
+                                    "key":  "geometryMutationCount",
+                                    "preserved":  true,
+                                    "valueCopiedUnchanged":  true
+                                },
+                                {
+                                    "key":  "materialMutationCount",
+                                    "preserved":  true,
+                                    "valueCopiedUnchanged":  true
+                                },
+                                {
+                                    "key":  "textureMutationCount",
+                                    "preserved":  true,
+                                    "valueCopiedUnchanged":  true
+                                },
+                                {
+                                    "key":  "canonicalTransformMutationCount",
+                                    "preserved":  true,
+                                    "valueCopiedUnchanged":  true
+                                },
+                                {
+                                    "key":  "gameplayMutationCount",
+                                    "preserved":  true,
+                                    "valueCopiedUnchanged":  true
+                                },
+                                {
+                                    "key":  "defaultRuntimeMutationCount",
+                                    "preserved":  true,
+                                    "valueCopiedUnchanged":  true
+                                },
+                                {
+                                    "key":  "baselineNodeSignature",
+                                    "preserved":  true,
+                                    "valueCopiedUnchanged":  true
+                                },
+                                {
+                                    "key":  "optInNodeSignature",
+                                    "preserved":  true,
+                                    "valueCopiedUnchanged":  true
+                                },
+                                {
+                                    "key":  "rollbackNodeSignature",
+                                    "preserved":  true,
+                                    "valueCopiedUnchanged":  true
+                                },
+                                {
+                                    "key":  "addedNodePaths",
+                                    "preserved":  true,
+                                    "valueCopiedUnchanged":  [
+
+                                                             ]
+                                },
+                                {
+                                    "key":  "removedNodePaths",
+                                    "preserved":  true,
+                                    "valueCopiedUnchanged":  [
+
+                                                             ]
+                                },
+                                {
+                                    "key":  "changedNonBarnNodeCount",
+                                    "preserved":  true,
+                                    "valueCopiedUnchanged":  true
+                                },
+                                {
+                                    "key":  "validOptInLoadedOnce",
+                                    "preserved":  true,
+                                    "valueCopiedUnchanged":  true
+                                },
+                                {
+                                    "key":  "duplicateInstanceCount",
+                                    "preserved":  true,
+                                    "valueCopiedUnchanged":  true
+                                },
+                                {
+                                    "key":  "missingSceneFailClosed",
+                                    "preserved":  true,
+                                    "valueCopiedUnchanged":  true
+                                },
+                                {
+                                    "key":  "hashMismatchFailClosed",
+                                    "preserved":  true,
+                                    "valueCopiedUnchanged":  true
+                                },
+                                {
+                                    "key":  "invalidAuthorityFailClosed",
+                                    "preserved":  true,
+                                    "valueCopiedUnchanged":  true
+                                },
+                                {
+                                    "key":  "unknownSlotRejected",
+                                    "preserved":  true,
+                                    "valueCopiedUnchanged":  true
+                                },
+                                {
+                                    "key":  "failClosedBarnInstanceCount",
+                                    "preserved":  true,
+                                    "valueCopiedUnchanged":  true
+                                },
+                                {
+                                    "key":  "failClosedFallbackAssetCount",
+                                    "preserved":  true,
+                                    "valueCopiedUnchanged":  true
+                                },
+                                {
+                                    "key":  "rollbackClean",
+                                    "preserved":  true,
+                                    "valueCopiedUnchanged":  true
+                                },
+                                {
+                                    "key":  "rollbackBarnInstanceCount",
+                                    "preserved":  true,
+                                    "valueCopiedUnchanged":  true
+                                },
+                                {
+                                    "key":  "retainedBarnNodeCount",
+                                    "preserved":  true,
+                                    "valueCopiedUnchanged":  true
+                                },
+                                {
+                                    "key":  "baselineRollbackStateMatch",
+                                    "preserved":  true,
+                                    "valueCopiedUnchanged":  true
+                                },
+                                {
+                                    "key":  "baselineRollbackPixelMatch",
+                                    "preserved":  true,
+                                    "valueCopiedUnchanged":  true
+                                },
+                                {
+                                    "key":  "performanceMeasurementValid",
+                                    "preserved":  true,
+                                    "valueCopiedUnchanged":  true
+                                },
+                                {
+                                    "key":  "performanceProtocol",
+                                    "preserved":  true,
+                                    "valueCopiedUnchanged":  false
+                                },
+                                {
+                                    "key":  "warmupFrames",
+                                    "preserved":  true,
+                                    "valueCopiedUnchanged":  false
+                                },
+                                {
+                                    "key":  "measurementFramesPerPass",
+                                    "preserved":  true,
+                                    "valueCopiedUnchanged":  false
+                                },
+                                {
+                                    "key":  "performancePassCount",
+                                    "preserved":  true,
+                                    "valueCopiedUnchanged":  true
+                                },
+                                {
+                                    "key":  "performanceSampleCountDefault",
+                                    "preserved":  true,
+                                    "valueCopiedUnchanged":  false
+                                },
+                                {
+                                    "key":  "performanceSampleCountOptIn",
+                                    "preserved":  true,
+                                    "valueCopiedUnchanged":  false
+                                },
+                                {
+                                    "key":  "defaultMedianFps",
+                                    "preserved":  true,
+                                    "valueCopiedUnchanged":  false
+                                },
+                                {
+                                    "key":  "optInMedianFps",
+                                    "preserved":  true,
+                                    "valueCopiedUnchanged":  false
+                                },
+                                {
+                                    "key":  "medianFpsRatio",
+                                    "preserved":  true,
+                                    "valueCopiedUnchanged":  false
+                                },
+                                {
+                                    "key":  "defaultOnePercentLowFps",
+                                    "preserved":  true,
+                                    "valueCopiedUnchanged":  false
+                                },
+                                {
+                                    "key":  "optInOnePercentLowFps",
+                                    "preserved":  true,
+                                    "valueCopiedUnchanged":  false
+                                },
+                                {
+                                    "key":  "defaultMedianFrameTimeMs",
+                                    "preserved":  true,
+                                    "valueCopiedUnchanged":  false
+                                },
+                                {
+                                    "key":  "optInMedianFrameTimeMs",
+                                    "preserved":  true,
+                                    "valueCopiedUnchanged":  false
+                                },
+                                {
+                                    "key":  "defaultP95FrameTimeMs",
+                                    "preserved":  true,
+                                    "valueCopiedUnchanged":  false
+                                },
+                                {
+                                    "key":  "optInP95FrameTimeMs",
+                                    "preserved":  true,
+                                    "valueCopiedUnchanged":  false
+                                },
+                                {
+                                    "key":  "p95FrameTimeRatio",
+                                    "preserved":  true,
+                                    "valueCopiedUnchanged":  false
+                                },
+                                {
+                                    "key":  "defaultP99FrameTimeMs",
+                                    "preserved":  true,
+                                    "valueCopiedUnchanged":  false
+                                },
+                                {
+                                    "key":  "optInP99FrameTimeMs",
+                                    "preserved":  true,
+                                    "valueCopiedUnchanged":  false
+                                },
+                                {
+                                    "key":  "defaultOver50MsSpikeCount",
+                                    "preserved":  true,
+                                    "valueCopiedUnchanged":  true
+                                },
+                                {
+                                    "key":  "optInOver50MsSpikeCount",
+                                    "preserved":  true,
+                                    "valueCopiedUnchanged":  true
+                                },
+                                {
+                                    "key":  "defaultDrawCalls",
+                                    "preserved":  true,
+                                    "valueCopiedUnchanged":  true
+                                },
+                                {
+                                    "key":  "optInDrawCalls",
+                                    "preserved":  true,
+                                    "valueCopiedUnchanged":  true
+                                },
+                                {
+                                    "key":  "drawCallDelta",
+                                    "preserved":  true,
+                                    "valueCopiedUnchanged":  true
+                                },
+                                {
+                                    "key":  "defaultTriangleOrPrimitiveCount",
+                                    "preserved":  true,
+                                    "valueCopiedUnchanged":  false
+                                },
+                                {
+                                    "key":  "optInTriangleOrPrimitiveCount",
+                                    "preserved":  true,
+                                    "valueCopiedUnchanged":  false
+                                },
+                                {
+                                    "key":  "defaultLoadedResourceCount",
+                                    "preserved":  true,
+                                    "valueCopiedUnchanged":  true
+                                },
+                                {
+                                    "key":  "optInLoadedResourceCount",
+                                    "preserved":  true,
+                                    "valueCopiedUnchanged":  true
+                                },
+                                {
+                                    "key":  "resourceDelta",
+                                    "preserved":  true,
+                                    "valueCopiedUnchanged":  true
+                                },
+                                {
+                                    "key":  "barnSceneLoadTimeMs",
+                                    "preserved":  true,
+                                    "valueCopiedUnchanged":  true
+                                },
+                                {
+                                    "key":  "exactTenFiles",
+                                    "preserved":  true,
+                                    "valueCopiedUnchanged":  true
+                                },
+                                {
+                                    "key":  "exactlyEightPng",
+                                    "preserved":  true,
+                                    "valueCopiedUnchanged":  true
+                                },
+                                {
+                                    "key":  "noVideo",
+                                    "preserved":  true,
+                                    "valueCopiedUnchanged":  true
+                                },
+                                {
+                                    "key":  "genuineNonHeadlessCaptures",
+                                    "preserved":  true,
+                                    "valueCopiedUnchanged":  true
+                                },
+                                {
+                                    "key":  "utf8Valid",
+                                    "preserved":  true,
+                                    "valueCopiedUnchanged":  true
+                                },
+                                {
+                                    "key":  "mojibakeCount",
+                                    "preserved":  true,
+                                    "valueCopiedUnchanged":  true
+                                },
+                                {
+                                    "key":  "automatedVisualApproval",
+                                    "preserved":  true,
+                                    "valueCopiedUnchanged":  true
+                                },
+                                {
+                                    "key":  "humanReviewStop",
+                                    "preserved":  true,
+                                    "valueCopiedUnchanged":  true
+                                }
+                            ],
+    "browserMutationCount":  0,
+    "captureMutationCount":  0,
+    "benchmarkRerunCount":  0,
+    "controlCharacterCount":  0,
+    "replacementCharacterCount":  0,
+    "bomLeakCount":  0
+}

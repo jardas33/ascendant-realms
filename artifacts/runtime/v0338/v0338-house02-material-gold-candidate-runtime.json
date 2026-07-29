@@ -1,0 +1,285 @@
+{
+  "automatedVisualApproval": false,
+  "candidateBRejected": true,
+  "candidateCNotSelected": true,
+  "captures": [
+    {
+      "cameraMode": "neutral_overcast_normal_rts",
+      "fileName": "01_neutral_overcast_normal_rts.png",
+      "height": 720,
+      "path": "D:/Code for projects/WB game like/ascendant-realms-v0223-recovery/artifacts/runtime/v0338/screenshots/01_neutral_overcast_normal_rts.png",
+      "projection": "orthographic",
+      "width": 1280
+    },
+    {
+      "cameraMode": "cool_highland_normal_rts",
+      "fileName": "02_cool_highland_normal_rts.png",
+      "height": 720,
+      "path": "D:/Code for projects/WB game like/ascendant-realms-v0223-recovery/artifacts/runtime/v0338/screenshots/02_cool_highland_normal_rts.png",
+      "projection": "orthographic",
+      "width": 1280
+    },
+    {
+      "cameraMode": "warm_directional_normal_rts",
+      "fileName": "03_warm_directional_normal_rts.png",
+      "height": 720,
+      "path": "D:/Code for projects/WB game like/ascendant-realms-v0223-recovery/artifacts/runtime/v0338/screenshots/03_warm_directional_normal_rts.png",
+      "projection": "orthographic",
+      "width": 1280
+    },
+    {
+      "cameraMode": "near_front",
+      "fileName": "04_near_front.png",
+      "height": 720,
+      "path": "D:/Code for projects/WB game like/ascendant-realms-v0223-recovery/artifacts/runtime/v0338/screenshots/04_near_front.png",
+      "projection": "orthographic",
+      "width": 1280
+    },
+    {
+      "cameraMode": "near_rear",
+      "fileName": "05_near_rear.png",
+      "height": 720,
+      "path": "D:/Code for projects/WB game like/ascendant-realms-v0223-recovery/artifacts/runtime/v0338/screenshots/05_near_rear.png",
+      "projection": "orthographic",
+      "width": 1280
+    },
+    {
+      "cameraMode": "far_rts",
+      "fileName": "06_far_rts.png",
+      "height": 720,
+      "path": "D:/Code for projects/WB game like/ascendant-realms-v0223-recovery/artifacts/runtime/v0338/screenshots/06_far_rts.png",
+      "projection": "orthographic",
+      "width": 1280
+    },
+    {
+      "cameraMode": "256_readability_source",
+      "fileName": "07_256_readability_source.png",
+      "height": 720,
+      "path": "D:/Code for projects/WB game like/ascendant-realms-v0223-recovery/artifacts/runtime/v0338/screenshots/07_256_readability_source.png",
+      "projection": "orthographic",
+      "width": 1280
+    },
+    {
+      "cameraMode": "greyscale_rts",
+      "fileName": "08_greyscale_rts.png",
+      "height": 720,
+      "path": "D:/Code for projects/WB game like/ascendant-realms-v0223-recovery/artifacts/runtime/v0338/screenshots/08_greyscale_rts.png",
+      "projection": "orthographic",
+      "width": 1280
+    },
+    {
+      "cameraMode": "front_orthographic",
+      "fileName": "09_front_orthographic.png",
+      "height": 720,
+      "path": "D:/Code for projects/WB game like/ascendant-realms-v0223-recovery/artifacts/runtime/v0338/screenshots/09_front_orthographic.png",
+      "projection": "orthographic",
+      "width": 1280
+    },
+    {
+      "cameraMode": "rear_orthographic",
+      "fileName": "10_rear_orthographic.png",
+      "height": 720,
+      "path": "D:/Code for projects/WB game like/ascendant-realms-v0223-recovery/artifacts/runtime/v0338/screenshots/10_rear_orthographic.png",
+      "projection": "orthographic",
+      "width": 1280
+    },
+    {
+      "cameraMode": "left_orthographic",
+      "fileName": "11_left_orthographic.png",
+      "height": 720,
+      "path": "D:/Code for projects/WB game like/ascendant-realms-v0223-recovery/artifacts/runtime/v0338/screenshots/11_left_orthographic.png",
+      "projection": "orthographic",
+      "width": 1280
+    },
+    {
+      "cameraMode": "right_orthographic",
+      "fileName": "12_right_orthographic.png",
+      "height": 720,
+      "path": "D:/Code for projects/WB game like/ascendant-realms-v0223-recovery/artifacts/runtime/v0338/screenshots/12_right_orthographic.png",
+      "projection": "orthographic",
+      "width": 1280
+    },
+    {
+      "cameraMode": "direct_top_down",
+      "fileName": "13_direct_top_down.png",
+      "height": 720,
+      "path": "D:/Code for projects/WB game like/ascendant-realms-v0223-recovery/artifacts/runtime/v0338/screenshots/13_direct_top_down.png",
+      "projection": "orthographic",
+      "width": 1280
+    },
+    {
+      "cameraMode": "front_rubble_closeup",
+      "fileName": "14_front_rubble_closeup.png",
+      "height": 720,
+      "path": "D:/Code for projects/WB game like/ascendant-realms-v0223-recovery/artifacts/runtime/v0338/screenshots/14_front_rubble_closeup.png",
+      "projection": "orthographic",
+      "width": 1280
+    },
+    {
+      "cameraMode": "rear_rubble_closeup",
+      "fileName": "15_rear_rubble_closeup.png",
+      "height": 720,
+      "path": "D:/Code for projects/WB game like/ascendant-realms-v0223-recovery/artifacts/runtime/v0338/screenshots/15_rear_rubble_closeup.png",
+      "projection": "orthographic",
+      "width": 1280
+    },
+    {
+      "cameraMode": "corner_seam",
+      "fileName": "16_corner_seam.png",
+      "height": 720,
+      "path": "D:/Code for projects/WB game like/ascendant-realms-v0223-recovery/artifacts/runtime/v0338/screenshots/16_corner_seam.png",
+      "projection": "orthographic",
+      "width": 1280
+    },
+    {
+      "cameraMode": "dressed_lintel_sill_jamb",
+      "fileName": "17_dressed_lintel_sill_jamb.png",
+      "height": 720,
+      "path": "D:/Code for projects/WB game like/ascendant-realms-v0223-recovery/artifacts/runtime/v0338/screenshots/17_dressed_lintel_sill_jamb.png",
+      "projection": "orthographic",
+      "width": 1280
+    },
+    {
+      "cameraMode": "foundation_dampness",
+      "fileName": "18_foundation_dampness.png",
+      "height": 720,
+      "path": "D:/Code for projects/WB game like/ascendant-realms-v0223-recovery/artifacts/runtime/v0338/screenshots/18_foundation_dampness.png",
+      "projection": "orthographic",
+      "width": 1280
+    },
+    {
+      "cameraMode": "stair_landing",
+      "fileName": "19_stair_landing.png",
+      "height": 720,
+      "path": "D:/Code for projects/WB game like/ascendant-realms-v0223-recovery/artifacts/runtime/v0338/screenshots/19_stair_landing.png",
+      "projection": "orthographic",
+      "width": 1280
+    },
+    {
+      "cameraMode": "timber_and_openings",
+      "fileName": "20_timber_and_openings.png",
+      "height": 720,
+      "path": "D:/Code for projects/WB game like/ascendant-realms-v0223-recovery/artifacts/runtime/v0338/screenshots/20_timber_and_openings.png",
+      "projection": "orthographic",
+      "width": 1280
+    },
+    {
+      "cameraMode": "slate_closeup",
+      "fileName": "21_slate_closeup.png",
+      "height": 720,
+      "path": "D:/Code for projects/WB game like/ascendant-realms-v0223-recovery/artifacts/runtime/v0338/screenshots/21_slate_closeup.png",
+      "projection": "orthographic",
+      "width": 1280
+    },
+    {
+      "cameraMode": "normal_only",
+      "fileName": "22_normal_only.png",
+      "height": 720,
+      "path": "D:/Code for projects/WB game like/ascendant-realms-v0223-recovery/artifacts/runtime/v0338/screenshots/22_normal_only.png",
+      "projection": "orthographic",
+      "width": 1280
+    },
+    {
+      "cameraMode": "normal_disabled",
+      "fileName": "23_normal_disabled.png",
+      "height": 720,
+      "path": "D:/Code for projects/WB game like/ascendant-realms-v0223-recovery/artifacts/runtime/v0338/screenshots/23_normal_disabled.png",
+      "projection": "orthographic",
+      "width": 1280
+    },
+    {
+      "cameraMode": "albedo_only",
+      "fileName": "24_albedo_only.png",
+      "height": 720,
+      "path": "D:/Code for projects/WB game like/ascendant-realms-v0223-recovery/artifacts/runtime/v0338/screenshots/24_albedo_only.png",
+      "projection": "orthographic",
+      "width": 1280
+    },
+    {
+      "cameraMode": "roughness_isolation",
+      "fileName": "25_roughness_isolation.png",
+      "height": 720,
+      "path": "D:/Code for projects/WB game like/ascendant-realms-v0223-recovery/artifacts/runtime/v0338/screenshots/25_roughness_isolation.png",
+      "projection": "orthographic",
+      "width": 1280
+    },
+    {
+      "cameraMode": "uv_checker_front_rear",
+      "fileName": "26_uv_checker_front_rear.png",
+      "height": 720,
+      "path": "D:/Code for projects/WB game like/ascendant-realms-v0223-recovery/artifacts/runtime/v0338/screenshots/26_uv_checker_front_rear.png",
+      "projection": "orthographic",
+      "width": 1280
+    },
+    {
+      "cameraMode": "uv_checker_gables",
+      "fileName": "27_uv_checker_gables.png",
+      "height": 720,
+      "path": "D:/Code for projects/WB game like/ascendant-realms-v0223-recovery/artifacts/runtime/v0338/screenshots/27_uv_checker_gables.png",
+      "projection": "orthographic",
+      "width": 1280
+    },
+    {
+      "cameraMode": "repetition_heat_map",
+      "fileName": "28_repetition_heat_map.png",
+      "height": 720,
+      "path": "D:/Code for projects/WB game like/ascendant-realms-v0223-recovery/artifacts/runtime/v0338/screenshots/28_repetition_heat_map.png",
+      "projection": "orthographic",
+      "width": 1280
+    },
+    {
+      "cameraMode": "v0337_v0338_matched_rts",
+      "fileName": "29_v0337_v0338_matched_rts.png",
+      "height": 720,
+      "path": "D:/Code for projects/WB game like/ascendant-realms-v0223-recovery/artifacts/runtime/v0338/screenshots/29_v0337_v0338_matched_rts.png",
+      "projection": "orthographic",
+      "width": 1280
+    },
+    {
+      "cameraMode": "v0337_v0338_matched_closeup",
+      "fileName": "30_v0337_v0338_matched_closeup.png",
+      "height": 720,
+      "path": "D:/Code for projects/WB game like/ascendant-realms-v0223-recovery/artifacts/runtime/v0338/screenshots/30_v0337_v0338_matched_closeup.png",
+      "projection": "orthographic",
+      "width": 1280
+    },
+    {
+      "cameraMode": "documentary_value_comparison",
+      "fileName": "31_documentary_value_comparison.png",
+      "height": 720,
+      "path": "D:/Code for projects/WB game like/ascendant-realms-v0223-recovery/artifacts/runtime/v0338/screenshots/31_documentary_value_comparison.png",
+      "projection": "orthographic",
+      "width": 1280
+    }
+  ],
+  "checkpoint": "v0.338",
+  "continuousFrames": 432,
+  "defaultRuntimeIntegrated": false,
+  "derivedBlend": "art-source/blender/v0338/barrosan_house_02_material_gold_candidate.blend",
+  "errors": [],
+  "humanReviewRequired": true,
+  "lightSetups": [
+    "neutral overcast",
+    "cool highland daylight",
+    "restrained warm directional"
+  ],
+  "lineage": "res://assets/v0338/gold_candidate/v0338-material-gold-candidate-lineage.json",
+  "noAI": true,
+  "noCombat": true,
+  "noEconomy": true,
+  "noGameplay": true,
+  "noMovement": true,
+  "noPathfinding": true,
+  "noResources": true,
+  "noSaves": true,
+  "noStableIDChanges": true,
+  "outcome": "READY FOR HUMAN HOUSE 02 GOLD-CANDIDATE MATERIAL REVIEW",
+  "prototypeOptIn": true,
+  "scenePath": "res://scenes/review/V0338BarrosanHouse02MaterialGoldCandidateReview.tscn",
+  "schemaVersion": 1,
+  "selectedCandidate": "candidate_a",
+  "sourceBlend": "art-source/blender/v0337/barrosan_house_02_selected_granite.blend",
+  "sourceGLB": "res://assets/v0338/barrosan_house_02_material_gold_candidate.glb",
+  "status": "PASS_V0338_HOUSE02_MATERIAL_GOLD_CANDIDATE_REVIEW",
+  "videoSeconds": 18.0
+}

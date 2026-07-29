@@ -1,0 +1,55 @@
+{
+  "authoritativeUnitIds": [
+    "friendly_00"
+  ],
+  "cameraWorldPosition": {
+    "x": 0.0,
+    "y": 11.6,
+    "z": 8.9
+  },
+  "cameraZoom": 10.8000001907349,
+  "captureFilename": "059_militia_ready_unsupported.png",
+  "fallbackState": false,
+  "frameNumber": 59,
+  "h3Enabled": true,
+  "h3FlagState": true,
+  "note": "ready/hold state is not supported by current runtime",
+  "pairedMomentId": "militia_ready_state_59",
+  "pixelEvidenceRequired": true,
+  "presentationMode": "DEBUG_REVIEW",
+  "previousRelatedScreenshotSha256": "13ff6e3d146a675a91a5d37565c9c577d5e139d93838d0fb9e0c5a4331cb1a2c",
+  "runtimeTimestampMs": 58292,
+  "saveIdentifier": null,
+  "scenarioName": "militia_ready_state",
+  "screenshotSha256": "13ff6e3d146a675a91a5d37565c9c577d5e139d93838d0fb9e0c5a4331cb1a2c",
+  "selectedIds": [
+    "friendly_00"
+  ],
+  "selectionSource": "authoritative runtime.selected_ids",
+  "semanticAccepted": false,
+  "semanticRejectionReason": "exact screenshot duplicate within semantic scenario",
+  "stateSource": "authoritative runtime.units",
+  "units": [
+    {
+      "activityState": "idle",
+      "alive": true,
+      "commandState": "stopped",
+      "destination": {
+        "x": 760.0,
+        "y": 524.0
+      },
+      "facing": "south-east",
+      "fixtureId": "militia",
+      "hasDestination": false,
+      "health": 100.0,
+      "id": "friendly_00",
+      "readyState": "unsupported",
+      "role": "Militia",
+      "worldPosition": {
+        "x": 760.0,
+        "y": 524.0
+      }
+    }
+  ],
+  "visualPoseLimitation": false
+}

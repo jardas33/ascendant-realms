@@ -1,0 +1,3 @@
+CHECKPOINT: v0.381 ACCEPTED HIGHLAND INFRASTRUCTURE ENVIRONMENT DRESSING PASS
+
+Bounded scope: add only sparse environmental context around the accepted v0.380 corrected bridge/river/road crossing using existing in-repository assets. Keep the v0.380 infrastructure GLB unchanged. Preserve gameplay, state, IDs, saves, default runtime, and the v0.380 crossing read. Capture exactly six real rendered images: primary RTS view, crossing context, riverbank/reeds detail, bridge/landings detail, dressing distribution audit, and grayscale primary. Fail closed if dressing harms river continuity, recessed banks, smooth terrain, or bridge focal readability.

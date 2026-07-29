@@ -1,0 +1,13 @@
+{
+  "checkpoint": "v0.346",
+  "humanV0345Rejection": "REJECTED BY HUMAN REVIEW \u2014 V0.345 ACHIEVES A CLEAN TWO-SLOPE ROOF AND TRUE MATCHED COMPARISON, BUT THE BARN STILL READS AS TOO NARROW, TOO VERTICAL AND EXCESSIVELY STEEP-ROOFED FOR THE HOUSE02 BARROSAN FAMILY",
+  "surgicalRepairs": [
+    "wider horizontal mass",
+    "lower restrained pitch",
+    "closed granite gables",
+    "thin charcoal-brown edges",
+    "darker low-saturation slate",
+    "correct front/rear source orientation"
+  ],
+  "roofContract": "exactly two principal slopes, one straight ridge, no secondary roof or pediment"
+}

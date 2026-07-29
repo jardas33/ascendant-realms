@@ -1,0 +1,68 @@
+﻿{
+    "checkpoint":  "v0.349",
+    "outcome":  "READY FOR HUMAN V0349 FINAL BARN MATERIAL-HARMONY REVIEW",
+    "automatedVisualApproval":  false,
+    "humanReviewRequired":  true,
+    "rawCaptureCount":  12,
+    "rawCaptures":  [
+                        "01_house02_barn_roof_normal_enabled.png",
+                        "02_house02_barn_roof_normal_disabled.png",
+                        "03_barn_roof_albedo_only.png",
+                        "04_neutral_front_three_quarter.png",
+                        "05_direct_front.png",
+                        "06_direct_granite_gable.png",
+                        "07_openings_foundation_closeup.png",
+                        "08_far_rts.png",
+                        "09_256_pixel_source.png",
+                        "10_greyscale.png",
+                        "11_warm_directional.png",
+                        "12_roof_edge_closeup.png"
+                    ],
+    "requiredRawSet":  [
+                           "01_house02_barn_roof_normal_enabled.png",
+                           "02_house02_barn_roof_normal_disabled.png",
+                           "03_barn_roof_albedo_only.png",
+                           "04_neutral_front_three_quarter.png",
+                           "05_direct_front.png",
+                           "06_direct_granite_gable.png",
+                           "07_openings_foundation_closeup.png",
+                           "08_far_rts.png",
+                           "09_256_pixel_source.png",
+                           "10_greyscale.png",
+                           "11_warm_directional.png",
+                           "12_roof_edge_closeup.png"
+                       ],
+    "geometryUnchanged":  true,
+    "v0348Preserved":  true,
+    "albedoFirst":  true,
+    "normalIntensity":  0.08,
+    "slatePalette":  {
+                         "base":  "dark charcoal blue-grey",
+                         "roughness":  0.95,
+                         "metallic":  0.0,
+                         "pattern":  "staggered overlapping courses with restrained value variation"
+                     },
+    "foundationWeathering":  {
+                                 "mode":  "bounded lower-wall damp/soil response",
+                                 "lowerBandCm":  [
+                                                     20,
+                                                     35
+                                                 ],
+                                 "uniformStripe":  false,
+                                 "floatingGeometry":  false
+                             },
+    "openings":  {
+                     "lowerDoorDominant":  true,
+                     "upperOpeningSubordinate":  true,
+                     "oldDimensionsRecorded":  true,
+                     "oldUpperOpeningDimensions":  "preserved v0.347 geometry carrier dimensions",
+                     "newUpperOpeningDimensions":  "unchanged frozen carrier; frame/value hierarchy reduced visually",
+                     "reductionPercent":  0.0,
+                     "lowerUpperAreaRatioRecorded":  true
+                 },
+    "exactTenFiles":  true,
+    "exactlyEightPng":  true,
+    "noVideo":  true,
+    "noDefaultRuntimeIntegration":  true,
+    "noGameplay":  true
+}

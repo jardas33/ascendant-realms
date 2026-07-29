@@ -1,0 +1,25 @@
+{
+  "checkpoint": "v0.371",
+  "status": "PASS",
+  "loop": [
+    "opening",
+    "gathering",
+    "construction",
+    "recruitment",
+    "bridge-crossing",
+    "combat",
+    "victory"
+  ],
+  "captures": [
+    "01_OPENING_GAMEPLAY.png",
+    "02_WORKER_GATHERING_GOLD.png",
+    "03_FIELD_BARRACKS_CONSTRUCTION.png",
+    "04_COMPLETED_BARRACKS_RECRUITMENT.png",
+    "05_MILITIA_CROSSING_BRIDGE.png",
+    "06_COMBAT_AT_HOSTILE_CAMP.png",
+    "07_VICTORY_STATE.png"
+  ],
+  "defaultRuntime": "unchanged",
+  "source": "v0.367 bounded semantics + v0.370 Quaternius family",
+  "restart": true
+}

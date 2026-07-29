@@ -1,0 +1,33 @@
+{
+  "checkpoint": "v0.351",
+  "acceptedOutcome": "READY FOR HUMAN V0351 BARN GOLD-CLOSEOUT REVIEW",
+  "derivedFromV0350": true,
+  "defaultRuntimeIntegrated": false,
+  "noGameplay": true,
+  "frozenV0350": {
+    "blend": "1d0645cc258e76fea3f3af744b04314e1e692f0db81d3710123857a594199d6b",
+    "glb": "0b4944d8a15006664dad84cec5e8b41546497588d14194d5b2e49621071e209c",
+    "slateAlbedo": "cb14b8726702843f8b8811068d9f9d0c17abf3cc278c82070916813bb4ec4f34",
+    "slateNormal": "97909dac106323b1cb8de95b98c8a95afd67a3ea4bfae86eb1385fa541d4f8ca",
+    "slateRoughness": "fc7f2113d44ab1ef6e1a9968c7c0b4c971c8611a5a98684e8880b7a0499916cf",
+    "granite": "2b363f0b7cf1d023712d3a12041045f18890e0f4d4f5ed6f4ca3f48ef8d6d083",
+    "timber": "a28bd7ccc7357c22f72bd28b3d5721e73b71e03355e72c622de345f9dc7c48cd",
+    "timberRoughness": "0ba43345fc280aa74f0d9693e633fe9df5e7e7b894844c1961170881cfd1b371"
+  },
+  "roofGeometryPreserved": true,
+  "sharedLightPreserved": true,
+  "upperOpeningExteriorDimensions": { "width": 3.32, "height": 0.92 },
+  "shutterLeafCount": 2,
+  "shutterPrimaryBoardOrientation": "vertical",
+  "duplicateShutterRows": false,
+  "grilleNode": false,
+  "ventNode": false,
+  "balconyRailNode": false,
+  "lowerUpperAreaRatio": 3.64,
+  "foundationContactMethod": "coplanar contact shadow plus irregular bounded door soil stain; no floating blocks",
+  "playerEvidenceDebrisCount": 0,
+  "completeWorkerCount": 2,
+  "humanReviewRequired": true,
+  "automatedVisualApproval": false,
+  "outcome": "READY FOR HUMAN V0351 BARN GOLD-CLOSEOUT REVIEW"
+}

@@ -1,0 +1,17 @@
+{
+  "checkpoint": "v0.401",
+  "status": "ACCEPTED BY INDEPENDENT V0401 VISUAL REVIEW",
+  "scope": "three existing character scale and foot-grounding calibration",
+  "optInOnly": true,
+  "realRenderedEvidenceRequired": true,
+  "xZPositionsPreserved": true,
+  "posesPreserved": true,
+  "routePreserved": true,
+  "buildingsPreserved": true,
+  "bridgePreserved": true,
+  "gameplayChanged": false,
+  "defaultRuntimeChanged": false,
+  "blackFramesRejected": true,
+  "independentVerdict": "ACCEPT",
+  "independentReason": "Three characters read at a coherent adult-human scale with clean ground contact; roles remain distinct and the route, props, bridge, and layout remain preserved."
+}

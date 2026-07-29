@@ -1,0 +1,23 @@
+{
+  "material1": {
+    "luminanceMean": 122.382,
+    "luminanceStdDev": 29.75,
+    "clippedWhitePercent": 0.195,
+    "clippedBlackPercent": 0.0,
+    "differenceFromNormalDisabled": 0.504
+  },
+  "material2": {
+    "luminanceMean": 122.529,
+    "luminanceStdDev": 29.929,
+    "clippedWhitePercent": 0.174,
+    "clippedBlackPercent": 0.0,
+    "differenceFromNormalDisabled": 0.502
+  },
+  "material3": {
+    "luminanceMean": 122.472,
+    "luminanceStdDev": 29.739,
+    "clippedWhitePercent": 0.065,
+    "clippedBlackPercent": 0.0,
+    "differenceFromNormalDisabled": 0.508
+  }
+}

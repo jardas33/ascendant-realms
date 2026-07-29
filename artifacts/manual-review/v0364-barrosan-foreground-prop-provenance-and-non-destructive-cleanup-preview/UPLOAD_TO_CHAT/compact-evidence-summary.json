@@ -1,0 +1,76 @@
+{
+    "humanReviewStop":  true,
+    "objectBNodePaths":  [
+                             "/V0358_House02_Shared_Baseline_Unmodified/LOD0_Weathered_Timber"
+                         ],
+    "combinedPreviewReviewOnly":  true,
+    "objectAFound":  true,
+    "roofEaveGap":  2.51,
+    "objectCFound":  true,
+    "r1BarnRootCount":  1,
+    "r2BarnRootCount":  0,
+    "requiredWorkerGap":  1.875,
+    "collisionMutationCount":  0,
+    "objectCRecommendation":  "REWORK ASSET LATER",
+    "objectCIndependentToggle":  false,
+    "checkpoint":  "v0.364",
+    "retainedBarnNodeCountAfterRollback":  0,
+    "objectBFound":  true,
+    "r0R2StateSignatureMatch":  true,
+    "r0BarnRootCount":  0,
+    "objectARecommendation":  "REWORK ASSET LATER",
+    "combinedPreviewCreated":  true,
+    "r1DuplicateBarnRootCount":  0,
+    "objectCOwnerClassification":  "Canonical Barn single merged render mesh",
+    "objectBRecommendation":  "INSUFFICIENT EVIDENCE",
+    "placementStillAccepted":  true,
+    "objectBIndependentToggle":  true,
+    "saveMutationCount":  0,
+    "objectAOwnerClassification":  "House02 canonical merged parent render mesh",
+    "objectBOwnerClassification":  "House02 canonical active LOD0 mesh component",
+    "structuralGap":  2.48,
+    "textureMutationCount":  0,
+    "r0R2RawCaptureMatch":  true,
+    "canonicalBarnMutationCount":  0,
+    "navigationMutationCount":  0,
+    "transformMutationCount":  0,
+    "previousCommit":  "277f4d1d5a44660c0e9132efc45a001a319669df",
+    "stableIdMutationCount":  0,
+    "objectANodePaths":  [
+                             "/V0358_House02_Shared_Baseline_Unmodified/LOD0_Granite"
+                         ],
+    "defaultRuntimeMutationCount":  0,
+    "objectAPresentStates":  [
+                                 "R0",
+                                 "R1",
+                                 "R2"
+                             ],
+    "objectBPresentStates":  [
+                                 "R0",
+                                 "R1",
+                                 "R2"
+                             ],
+    "materialMutationCount":  0,
+    "gameplayMutationCount":  0,
+    "objectCNodePaths":  [
+                             "/V0358_Barrosan_Barn_Gold_OptIn_Single_Instance/V0347_Barn_Rendered_Geometry_Truth"
+                         ],
+    "benchmarkRerunCount":  0,
+    "geometryMutationCount":  0,
+    "house02SourceMutationCount":  0,
+    "v0363Accepted":  true,
+    "objectAIndependentToggle":  false,
+    "placementMutationCount":  0,
+    "combinedPreviewRuntimeMutationCount":  0,
+    "objectCPresentStates":  [
+                                 "R0",
+                                 "R1",
+                                 "R2"
+                             ],
+    "previousCheckpoint":  "v0.363",
+    "acceptedBarnRootTransform":  {
+                                      "y":  0.18,
+                                      "z":  -1,
+                                      "x":  4
+                                  }
+}

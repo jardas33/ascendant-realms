@@ -1,0 +1,57 @@
+{
+  "equivalentFramePairs": [
+    {
+      "frames": [
+        12,
+        156,
+        300
+      ],
+      "meanLuminance": [
+        123.692,
+        121.555,
+        124.109
+      ],
+      "meanAbsoluteDifferenceM1M2": 2.347
+    },
+    {
+      "frames": [
+        60,
+        204,
+        348
+      ],
+      "meanLuminance": [
+        123.424,
+        121.288,
+        123.849
+      ],
+      "meanAbsoluteDifferenceM1M2": 2.346
+    },
+    {
+      "frames": [
+        108,
+        252,
+        396
+      ],
+      "meanLuminance": [
+        123.173,
+        121.018,
+        123.602
+      ],
+      "meanAbsoluteDifferenceM1M2": 2.344
+    }
+  ],
+  "segments": {
+    "material1": [
+      0,
+      143
+    ],
+    "material2": [
+      144,
+      287
+    ],
+    "material3": [
+      288,
+      431
+    ]
+  }
+}

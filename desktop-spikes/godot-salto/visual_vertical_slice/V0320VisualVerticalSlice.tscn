@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/v0320_true_3d_visual_vertical_slice.gd" id="1_v0320"]
+
+[node name="V0320VisualVerticalSlice" type="Node3D"]
+script = ExtResource("1_v0320")

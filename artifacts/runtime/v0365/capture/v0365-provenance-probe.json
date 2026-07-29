@@ -1,0 +1,2684 @@
+{
+  "checkpoint": "v0.365",
+  "records": [
+    {
+      "classification": "House02",
+      "humanRegion": "A",
+      "independentlyAddressable": false,
+      "instancedScenePath": "res://assets/v0338/barrosan_house_02_material_gold_candidate.glb",
+      "localAabb": {
+        "max": {
+          "x": 5.01000022888184,
+          "y": 5.84500026702881,
+          "z": 3.21000003814697
+        },
+        "min": {
+          "x": -5.01000022888184,
+          "y": -1.27499997615814,
+          "z": -6.5
+        },
+        "size": {
+          "x": 10.0200004577637,
+          "y": 7.12000036239624,
+          "z": 9.71000003814697
+        }
+      },
+      "localTransform": {
+        "basisX": {
+          "x": 1.0,
+          "y": 0.0,
+          "z": 0.0
+        },
+        "basisY": {
+          "x": 0.0,
+          "y": 1.0,
+          "z": 0.0
+        },
+        "basisZ": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 1.0
+        },
+        "origin": {
+          "x": 0.0,
+          "y": 1.27999997138977,
+          "z": 2.90000009536743
+        }
+      },
+      "materialIdentity": [
+        {
+          "class": "StandardMaterial3D",
+          "resourceName": "V0338_GoldCandidate_Rubble_Front",
+          "resourcePath": "res://assets/v0338/barrosan_house_02_material_gold_candidate.glb::StandardMaterial3D_tyiyq",
+          "surface": 0
+        },
+        {
+          "class": "StandardMaterial3D",
+          "resourceName": "V0338_GoldCandidate_Rubble_Rear",
+          "resourcePath": "res://assets/v0338/barrosan_house_02_material_gold_candidate.glb::StandardMaterial3D_so6h1",
+          "surface": 1
+        },
+        {
+          "class": "StandardMaterial3D",
+          "resourceName": "V0338_GoldCandidate_Rubble_LeftGable",
+          "resourcePath": "res://assets/v0338/barrosan_house_02_material_gold_candidate.glb::StandardMaterial3D_eyx22",
+          "surface": 2
+        },
+        {
+          "class": "StandardMaterial3D",
+          "resourceName": "V0338_GoldCandidate_Rubble_RightGable",
+          "resourcePath": "res://assets/v0338/barrosan_house_02_material_gold_candidate.glb::StandardMaterial3D_oat3q",
+          "surface": 3
+        }
+      ],
+      "mergedFinding": "MERGED WITH PARENT ASSET — FUTURE ASSET REWORK REQUIRED",
+      "meshResourceName": "barrosan_house_02_material_gold_candidate_Cube",
+      "meshResourcePath": "res://assets/v0338/barrosan_house_02_material_gold_candidate.glb::ArrayMesh_7576m",
+      "nodeName": "LOD0_Granite",
+      "nodePath": "/V0358_House02_Shared_Baseline_Unmodified/LOD0_Granite",
+      "nodeType": "MeshInstance3D",
+      "ownerScene": "res://assets/v0338/barrosan_house_02_material_gold_candidate.glb",
+      "parentNodePath": "/V0358_House02_Shared_Baseline_Unmodified/.",
+      "presentInStates": [
+        "R0",
+        "R1",
+        "R2"
+      ],
+      "purpose": "PURPOSE NOT ESTABLISHED FROM SOURCE; observed slab is carried by the parent House02 granite render mesh",
+      "recommendation": "REWORK ASSET LATER",
+      "statePresenceDerived": true,
+      "statePresenceProof": {
+        "R0": {
+          "absenceReason": "",
+          "ownerRootInstantiated": true,
+          "ownerRootPath": "/V0358_House02_Shared_Baseline_Unmodified",
+          "present": true,
+          "state": "R0",
+          "targetNodeExists": true,
+          "targetNodePath": "/V0358_House02_Shared_Baseline_Unmodified/LOD0_Granite"
+        },
+        "R1": {
+          "absenceReason": "",
+          "ownerRootInstantiated": true,
+          "ownerRootPath": "/V0358_House02_Shared_Baseline_Unmodified",
+          "present": true,
+          "state": "R1",
+          "targetNodeExists": true,
+          "targetNodePath": "/V0358_House02_Shared_Baseline_Unmodified/LOD0_Granite"
+        },
+        "R2": {
+          "absenceReason": "",
+          "ownerRootInstantiated": true,
+          "ownerRootPath": "/V0358_House02_Shared_Baseline_Unmodified",
+          "present": true,
+          "state": "R2",
+          "targetNodeExists": true,
+          "targetNodePath": "/V0358_House02_Shared_Baseline_Unmodified/LOD0_Granite"
+        }
+      },
+      "visibilityOverrideSafeInDuplicate": true,
+      "worldAabb": {
+        "max": {
+          "x": -6.48999977111816,
+          "y": 7.125,
+          "z": 4.6100001335144
+        },
+        "min": {
+          "x": -16.5100002288818,
+          "y": 0.00499999523162842,
+          "z": -5.09999990463257
+        },
+        "size": {
+          "x": 10.0200004577637,
+          "y": 7.11999988555908,
+          "z": 9.71000003814697
+        }
+      },
+      "worldTransform": {
+        "basisX": {
+          "x": 1.0,
+          "y": 0.0,
+          "z": 0.0
+        },
+        "basisY": {
+          "x": 0.0,
+          "y": 1.0,
+          "z": 0.0
+        },
+        "basisZ": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 1.0
+        },
+        "origin": {
+          "x": -11.5,
+          "y": 1.27999997138977,
+          "z": 1.40000009536743
+        }
+      }
+    },
+    {
+      "classification": "House02",
+      "humanRegion": "context",
+      "independentlyAddressable": true,
+      "instancedScenePath": "res://assets/v0338/barrosan_house_02_material_gold_candidate.glb",
+      "localAabb": {
+        "max": {
+          "x": 3.75500011444092,
+          "y": 3.02499985694885,
+          "z": 0.129999965429306
+        },
+        "min": {
+          "x": -1.39999997615814,
+          "y": -1.07500004768372,
+          "z": -0.109999999403954
+        },
+        "size": {
+          "x": 5.15500020980835,
+          "y": 4.09999990463257,
+          "z": 0.23999996483326
+        }
+      },
+      "localTransform": {
+        "basisX": {
+          "x": 1.0,
+          "y": 0.0,
+          "z": 0.0
+        },
+        "basisY": {
+          "x": 0.0,
+          "y": 1.0,
+          "z": 0.0
+        },
+        "basisZ": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 1.0
+        },
+        "origin": {
+          "x": 0.0,
+          "y": 1.35000002384186,
+          "z": 3.29999995231628
+        }
+      },
+      "materialIdentity": [
+        {
+          "class": "StandardMaterial3D",
+          "resourceName": "V0334_Interior_Recess",
+          "resourcePath": "res://assets/v0338/barrosan_house_02_material_gold_candidate.glb::StandardMaterial3D_fwx32",
+          "surface": 0
+        }
+      ],
+      "meshResourceName": "barrosan_house_02_material_gold_candidate_Cube_008",
+      "meshResourcePath": "res://assets/v0338/barrosan_house_02_material_gold_candidate.glb::ArrayMesh_jb42q",
+      "nodeName": "LOD0_Interior_Recess",
+      "nodePath": "/V0358_House02_Shared_Baseline_Unmodified/LOD0_Interior_Recess",
+      "nodeType": "MeshInstance3D",
+      "ownerScene": "res://assets/v0338/barrosan_house_02_material_gold_candidate.glb",
+      "parentNodePath": "/V0358_House02_Shared_Baseline_Unmodified/.",
+      "presentInStates": [
+        "R0",
+        "R1",
+        "R2"
+      ],
+      "visibilityOverrideSafeInDuplicate": true,
+      "worldAabb": {
+        "max": {
+          "x": -7.74499988555908,
+          "y": 4.375,
+          "z": 1.92999994754791
+        },
+        "min": {
+          "x": -12.8999996185303,
+          "y": 0.274999976158142,
+          "z": 1.68999993801117
+        },
+        "size": {
+          "x": 5.15499973297119,
+          "y": 4.09999990463257,
+          "z": 0.240000009536743
+        }
+      },
+      "worldTransform": {
+        "basisX": {
+          "x": 1.0,
+          "y": 0.0,
+          "z": 0.0
+        },
+        "basisY": {
+          "x": 0.0,
+          "y": 1.0,
+          "z": 0.0
+        },
+        "basisZ": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 1.0
+        },
+        "origin": {
+          "x": -11.5,
+          "y": 1.35000002384186,
+          "z": 1.79999995231628
+        }
+      }
+    },
+    {
+      "classification": "House02",
+      "humanRegion": "B",
+      "independentlyAddressable": true,
+      "instancedScenePath": "res://assets/v0338/barrosan_house_02_material_gold_candidate.glb",
+      "localAabb": {
+        "max": {
+          "x": 5.76999998092651,
+          "y": 2.90999984741211,
+          "z": 0.25
+        },
+        "min": {
+          "x": -1.59999990463257,
+          "y": -1.10000002384186,
+          "z": -7.03000020980835
+        },
+        "size": {
+          "x": 7.36999988555908,
+          "y": 4.00999975204468,
+          "z": 7.28000020980835
+        }
+      },
+      "localTransform": {
+        "basisX": {
+          "x": 1.0,
+          "y": 0.0,
+          "z": 0.0
+        },
+        "basisY": {
+          "x": 0.0,
+          "y": 1.0,
+          "z": 0.0
+        },
+        "basisZ": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 1.0
+        },
+        "origin": {
+          "x": -0.680000007152557,
+          "y": 1.35000002384186,
+          "z": 3.45000004768372
+        }
+      },
+      "materialIdentity": [
+        {
+          "class": "StandardMaterial3D",
+          "resourceName": "V0334_Weathered_Timber",
+          "resourcePath": "res://assets/v0338/barrosan_house_02_material_gold_candidate.glb::StandardMaterial3D_80uh1",
+          "surface": 0
+        }
+      ],
+      "meshResourceName": "barrosan_house_02_material_gold_candidate_Cube_009",
+      "meshResourcePath": "res://assets/v0338/barrosan_house_02_material_gold_candidate.glb::ArrayMesh_nr4pr",
+      "nodeName": "LOD0_Weathered_Timber",
+      "nodePath": "/V0358_House02_Shared_Baseline_Unmodified/LOD0_Weathered_Timber",
+      "nodeType": "MeshInstance3D",
+      "ownerScene": "res://assets/v0338/barrosan_house_02_material_gold_candidate.glb",
+      "parentNodePath": "/V0358_House02_Shared_Baseline_Unmodified/.",
+      "presentInStates": [
+        "R0",
+        "R1",
+        "R2"
+      ],
+      "purpose": "PURPOSE NOT ESTABLISHED FROM SOURCE; authored material identity is V0334_Weathered_Timber",
+      "recommendation": "INSUFFICIENT EVIDENCE",
+      "statePresenceDerived": true,
+      "statePresenceProof": {
+        "R0": {
+          "absenceReason": "",
+          "ownerRootInstantiated": true,
+          "ownerRootPath": "/V0358_House02_Shared_Baseline_Unmodified",
+          "present": true,
+          "state": "R0",
+          "targetNodeExists": true,
+          "targetNodePath": "/V0358_House02_Shared_Baseline_Unmodified/LOD0_Weathered_Timber"
+        },
+        "R1": {
+          "absenceReason": "",
+          "ownerRootInstantiated": true,
+          "ownerRootPath": "/V0358_House02_Shared_Baseline_Unmodified",
+          "present": true,
+          "state": "R1",
+          "targetNodeExists": true,
+          "targetNodePath": "/V0358_House02_Shared_Baseline_Unmodified/LOD0_Weathered_Timber"
+        },
+        "R2": {
+          "absenceReason": "",
+          "ownerRootInstantiated": true,
+          "ownerRootPath": "/V0358_House02_Shared_Baseline_Unmodified",
+          "present": true,
+          "state": "R2",
+          "targetNodeExists": true,
+          "targetNodePath": "/V0358_House02_Shared_Baseline_Unmodified/LOD0_Weathered_Timber"
+        }
+      },
+      "visibilityOverrideSafeInDuplicate": true,
+      "worldAabb": {
+        "max": {
+          "x": -6.41000032424927,
+          "y": 4.25999975204468,
+          "z": 2.19999980926514
+        },
+        "min": {
+          "x": -13.7800006866455,
+          "y": 0.25,
+          "z": -5.07999992370605
+        },
+        "size": {
+          "x": 7.37000036239624,
+          "y": 4.00999975204468,
+          "z": 7.27999973297119
+        }
+      },
+      "worldTransform": {
+        "basisX": {
+          "x": 1.0,
+          "y": 0.0,
+          "z": 0.0
+        },
+        "basisY": {
+          "x": 0.0,
+          "y": 1.0,
+          "z": 0.0
+        },
+        "basisZ": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 1.0
+        },
+        "origin": {
+          "x": -12.1800003051758,
+          "y": 1.35000002384186,
+          "z": 1.95000004768372
+        }
+      }
+    },
+    {
+      "classification": "House02",
+      "humanRegion": "context",
+      "independentlyAddressable": true,
+      "instancedScenePath": "res://assets/v0338/barrosan_house_02_material_gold_candidate.glb",
+      "localAabb": {
+        "max": {
+          "x": 4.61499977111816,
+          "y": 2.28999996185303,
+          "z": 0.0399999916553497
+        },
+        "min": {
+          "x": -0.0399999991059303,
+          "y": -0.174999997019768,
+          "z": -0.0299999993294477
+        },
+        "size": {
+          "x": 4.65499973297119,
+          "y": 2.46499991416931,
+          "z": 0.0699999928474426
+        }
+      },
+      "localTransform": {
+        "basisX": {
+          "x": 1.0,
+          "y": 0.0,
+          "z": 0.0
+        },
+        "basisY": {
+          "x": 0.0,
+          "y": 1.0,
+          "z": 0.0
+        },
+        "basisZ": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 1.0
+        },
+        "origin": {
+          "x": -1.12999999523163,
+          "y": 1.35000002384186,
+          "z": 3.5699999332428
+        }
+      },
+      "materialIdentity": [
+        {
+          "class": "StandardMaterial3D",
+          "resourceName": "V0334_Iron",
+          "resourcePath": "res://assets/v0338/barrosan_house_02_material_gold_candidate.glb::StandardMaterial3D_77cmf",
+          "surface": 0
+        }
+      ],
+      "meshResourceName": "barrosan_house_02_material_gold_candidate_Cube_013",
+      "meshResourcePath": "res://assets/v0338/barrosan_house_02_material_gold_candidate.glb::ArrayMesh_26dth",
+      "nodeName": "LOD0_Iron",
+      "nodePath": "/V0358_House02_Shared_Baseline_Unmodified/LOD0_Iron",
+      "nodeType": "MeshInstance3D",
+      "ownerScene": "res://assets/v0338/barrosan_house_02_material_gold_candidate.glb",
+      "parentNodePath": "/V0358_House02_Shared_Baseline_Unmodified/.",
+      "presentInStates": [
+        "R0",
+        "R1",
+        "R2"
+      ],
+      "visibilityOverrideSafeInDuplicate": true,
+      "worldAabb": {
+        "max": {
+          "x": -8.01500034332275,
+          "y": 3.6399998664856,
+          "z": 2.10999989509583
+        },
+        "min": {
+          "x": -12.6700000762939,
+          "y": 1.17500007152557,
+          "z": 2.03999996185303
+        },
+        "size": {
+          "x": 4.65499973297119,
+          "y": 2.46499967575073,
+          "z": 0.0699999332427979
+        }
+      },
+      "worldTransform": {
+        "basisX": {
+          "x": 1.0,
+          "y": 0.0,
+          "z": 0.0
+        },
+        "basisY": {
+          "x": 0.0,
+          "y": 1.0,
+          "z": 0.0
+        },
+        "basisZ": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 1.0
+        },
+        "origin": {
+          "x": -12.6300001144409,
+          "y": 1.35000002384186,
+          "z": 2.0699999332428
+        }
+      }
+    },
+    {
+      "classification": "House02",
+      "humanRegion": "context",
+      "independentlyAddressable": true,
+      "instancedScenePath": "res://assets/v0338/barrosan_house_02_material_gold_candidate.glb",
+      "localAabb": {
+        "max": {
+          "x": 3.92500019073486,
+          "y": 0.5,
+          "z": 0.0799999237060547
+        },
+        "min": {
+          "x": -0.524999976158142,
+          "y": -0.5,
+          "z": -6.75999975204468
+        },
+        "size": {
+          "x": 4.45000028610229,
+          "y": 1.0,
+          "z": 6.83999967575073
+        }
+      },
+      "localTransform": {
+        "basisX": {
+          "x": 1.0,
+          "y": 0.0,
+          "z": 0.0
+        },
+        "basisY": {
+          "x": 0.0,
+          "y": 1.0,
+          "z": 0.0
+        },
+        "basisZ": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 1.0
+        },
+        "origin": {
+          "x": -1.75,
+          "y": 3.70000004768372,
+          "z": 3.33999991416931
+        }
+      },
+      "materialIdentity": [
+        {
+          "class": "StandardMaterial3D",
+          "resourceName": "V0334_Recessed_Window",
+          "resourcePath": "res://assets/v0338/barrosan_house_02_material_gold_candidate.glb::StandardMaterial3D_idoal",
+          "surface": 0
+        }
+      ],
+      "meshResourceName": "barrosan_house_02_material_gold_candidate_Cube_016",
+      "meshResourcePath": "res://assets/v0338/barrosan_house_02_material_gold_candidate.glb::ArrayMesh_pixbp",
+      "nodeName": "LOD0_Recessed_Window",
+      "nodePath": "/V0358_House02_Shared_Baseline_Unmodified/LOD0_Recessed_Window",
+      "nodeType": "MeshInstance3D",
+      "ownerScene": "res://assets/v0338/barrosan_house_02_material_gold_candidate.glb",
+      "parentNodePath": "/V0358_House02_Shared_Baseline_Unmodified/.",
+      "presentInStates": [
+        "R0",
+        "R1",
+        "R2"
+      ],
+      "visibilityOverrideSafeInDuplicate": true,
+      "worldAabb": {
+        "max": {
+          "x": -9.32499980926514,
+          "y": 4.19999980926514,
+          "z": 1.92000007629395
+        },
+        "min": {
+          "x": -13.7749996185303,
+          "y": 3.20000004768372,
+          "z": -4.92000007629395
+        },
+        "size": {
+          "x": 4.44999980926514,
+          "y": 0.999999761581421,
+          "z": 6.84000015258789
+        }
+      },
+      "worldTransform": {
+        "basisX": {
+          "x": 1.0,
+          "y": 0.0,
+          "z": 0.0
+        },
+        "basisY": {
+          "x": 0.0,
+          "y": 1.0,
+          "z": 0.0
+        },
+        "basisZ": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 1.0
+        },
+        "origin": {
+          "x": -13.25,
+          "y": 3.70000004768372,
+          "z": 1.83999991416931
+        }
+      }
+    },
+    {
+      "classification": "House02",
+      "humanRegion": "context",
+      "independentlyAddressable": true,
+      "instancedScenePath": "res://assets/v0338/barrosan_house_02_material_gold_candidate.glb",
+      "localAabb": {
+        "max": {
+          "x": 5.15000009536743,
+          "y": 0.180000007152557,
+          "z": 0.170000076293945
+        },
+        "min": {
+          "x": -5.15000009536743,
+          "y": -0.180000007152557,
+          "z": -6.40999984741211
+        },
+        "size": {
+          "x": 10.3000001907349,
+          "y": 0.360000014305115,
+          "z": 6.57999992370605
+        }
+      },
+      "localTransform": {
+        "basisX": {
+          "x": 1.0,
+          "y": 0.0,
+          "z": 0.0
+        },
+        "basisY": {
+          "x": 0.0,
+          "y": 1.0,
+          "z": 0.0
+        },
+        "basisZ": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 1.0
+        },
+        "origin": {
+          "x": 0.0,
+          "y": 0.180000007152557,
+          "z": 3.11999988555908
+        }
+      },
+      "materialIdentity": [
+        {
+          "class": "StandardMaterial3D",
+          "resourceName": "V0338_GoldCandidate_DampFoundation",
+          "resourcePath": "res://assets/v0338/barrosan_house_02_material_gold_candidate.glb::StandardMaterial3D_oisud",
+          "surface": 0
+        }
+      ],
+      "meshResourceName": "barrosan_house_02_material_gold_candidate_Cube_059",
+      "meshResourcePath": "res://assets/v0338/barrosan_house_02_material_gold_candidate.glb::ArrayMesh_u7yyj",
+      "nodeName": "LOD0_Damp_Foundation",
+      "nodePath": "/V0358_House02_Shared_Baseline_Unmodified/LOD0_Damp_Foundation",
+      "nodeType": "MeshInstance3D",
+      "ownerScene": "res://assets/v0338/barrosan_house_02_material_gold_candidate.glb",
+      "parentNodePath": "/V0358_House02_Shared_Baseline_Unmodified/.",
+      "presentInStates": [
+        "R0",
+        "R1",
+        "R2"
+      ],
+      "visibilityOverrideSafeInDuplicate": true,
+      "worldAabb": {
+        "max": {
+          "x": -6.35000038146973,
+          "y": 0.360000014305115,
+          "z": 1.78999996185303
+        },
+        "min": {
+          "x": -16.6499996185303,
+          "y": 0.0,
+          "z": -4.78999996185303
+        },
+        "size": {
+          "x": 10.2999992370605,
+          "y": 0.360000014305115,
+          "z": 6.57999992370605
+        }
+      },
+      "worldTransform": {
+        "basisX": {
+          "x": 1.0,
+          "y": 0.0,
+          "z": 0.0
+        },
+        "basisY": {
+          "x": 0.0,
+          "y": 1.0,
+          "z": 0.0
+        },
+        "basisZ": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 1.0
+        },
+        "origin": {
+          "x": -11.5,
+          "y": 0.180000007152557,
+          "z": 1.61999988555908
+        }
+      }
+    },
+    {
+      "classification": "House02",
+      "humanRegion": "context",
+      "independentlyAddressable": true,
+      "instancedScenePath": "res://assets/v0338/barrosan_house_02_material_gold_candidate.glb",
+      "localAabb": {
+        "max": {
+          "x": 5.11999988555908,
+          "y": 7.25999975204468,
+          "z": 3.48000001907349
+        },
+        "min": {
+          "x": -5.11999988555908,
+          "y": 4.3600001335144,
+          "z": -3.48000001907349
+        },
+        "size": {
+          "x": 10.2399997711182,
+          "y": 2.89999961853027,
+          "z": 6.96000003814697
+        }
+      },
+      "localTransform": {
+        "basisX": {
+          "x": 1.0,
+          "y": 0.0,
+          "z": 0.0
+        },
+        "basisY": {
+          "x": 0.0,
+          "y": 1.0,
+          "z": 0.0
+        },
+        "basisZ": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 1.0
+        },
+        "origin": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0
+        }
+      },
+      "materialIdentity": [
+        {
+          "class": "StandardMaterial3D",
+          "resourceName": "V0334_Weathered_Slate",
+          "resourcePath": "res://assets/v0338/barrosan_house_02_material_gold_candidate.glb::StandardMaterial3D_bwxik",
+          "surface": 0
+        }
+      ],
+      "meshResourceName": "barrosan_house_02_material_gold_candidate_Roof_Front_Slate_Plane_Mesh",
+      "meshResourcePath": "res://assets/v0338/barrosan_house_02_material_gold_candidate.glb::ArrayMesh_n0b56",
+      "nodeName": "LOD0_Weathered_Slate",
+      "nodePath": "/V0358_House02_Shared_Baseline_Unmodified/LOD0_Weathered_Slate",
+      "nodeType": "MeshInstance3D",
+      "ownerScene": "res://assets/v0338/barrosan_house_02_material_gold_candidate.glb",
+      "parentNodePath": "/V0358_House02_Shared_Baseline_Unmodified/.",
+      "presentInStates": [
+        "R0",
+        "R1",
+        "R2"
+      ],
+      "visibilityOverrideSafeInDuplicate": true,
+      "worldAabb": {
+        "max": {
+          "x": -6.38000011444092,
+          "y": 7.25999975204468,
+          "z": 1.98000001907349
+        },
+        "min": {
+          "x": -16.6199989318848,
+          "y": 4.3600001335144,
+          "z": -4.98000001907349
+        },
+        "size": {
+          "x": 10.2399988174438,
+          "y": 2.89999961853027,
+          "z": 6.96000003814697
+        }
+      },
+      "worldTransform": {
+        "basisX": {
+          "x": 1.0,
+          "y": 0.0,
+          "z": 0.0
+        },
+        "basisY": {
+          "x": 0.0,
+          "y": 1.0,
+          "z": 0.0
+        },
+        "basisZ": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 1.0
+        },
+        "origin": {
+          "x": -11.5,
+          "y": 0.0,
+          "z": -1.5
+        }
+      }
+    },
+    {
+      "classification": "Barn",
+      "humanRegion": "C",
+      "independentlyAddressable": false,
+      "instancedScenePath": "res://scenes/gold/barrosan/BarrosanBarnGold.tscn",
+      "localAabb": {
+        "max": {
+          "x": 7.86999940872192,
+          "y": 5.92292070388794,
+          "z": 5.45500040054321
+        },
+        "min": {
+          "x": -7.87000036239624,
+          "y": 0.209999978542328,
+          "z": -5.30999898910522
+        },
+        "size": {
+          "x": 15.7399997711182,
+          "y": 5.71292066574097,
+          "z": 10.7649993896484
+        }
+      },
+      "localTransform": {
+        "basisX": {
+          "x": 1.0,
+          "y": 0.0,
+          "z": 0.0
+        },
+        "basisY": {
+          "x": 0.0,
+          "y": 1.0,
+          "z": 0.0
+        },
+        "basisZ": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 1.0
+        },
+        "origin": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0
+        }
+      },
+      "materialIdentity": [
+        {
+          "class": "StandardMaterial3D",
+          "resourceName": "V0350_Barrosan_House02_Harmony_Granite",
+          "resourcePath": "",
+          "surface": 0
+        },
+        {
+          "class": "StandardMaterial3D",
+          "resourceName": "V0350_Barrosan_House02_Harmony_Granite",
+          "resourcePath": "",
+          "surface": 1
+        },
+        {
+          "class": "StandardMaterial3D",
+          "resourceName": "V0350_Aged_Agricultural_Timber",
+          "resourcePath": "",
+          "surface": 2
+        },
+        {
+          "class": "StandardMaterial3D",
+          "resourceName": "V0350_Aged_Iron",
+          "resourcePath": "",
+          "surface": 3
+        },
+        {
+          "class": "StandardMaterial3D",
+          "resourceName": "V0350_Barrosan_Albedo_First_Weathered_Slate",
+          "resourcePath": "",
+          "surface": 4
+        },
+        {
+          "class": "StandardMaterial3D",
+          "resourceName": "V0350_Subordinate_Charcoal_Brown_Roof_Edge",
+          "resourcePath": "",
+          "surface": 5
+        }
+      ],
+      "mergedFinding": "MERGED WITH PARENT ASSET — FUTURE ASSET REWORK REQUIRED",
+      "meshResourceName": "barn_final_material_harmony_Cube_066",
+      "meshResourcePath": "res://assets/v0350/barn_final_material_harmony.glb::ArrayMesh_axb10",
+      "nodeName": "V0347_Barn_Rendered_Geometry_Truth",
+      "nodePath": "/V0358_Barrosan_Barn_Gold_OptIn_Single_Instance/V0347_Barn_Rendered_Geometry_Truth",
+      "nodeType": "MeshInstance3D",
+      "ownerScene": "res://scenes/gold/barrosan/BarrosanBarnGold.tscn",
+      "parentNodePath": "/V0358_Barrosan_Barn_Gold_OptIn_Single_Instance/.",
+      "presentInStates": [
+        "R1"
+      ],
+      "purpose": "PURPOSE NOT ESTABLISHED FROM SOURCE; one merged Barn render mesh contains the observed foreground timber",
+      "recommendation": "REWORK ASSET LATER",
+      "statePresenceDerived": true,
+      "statePresenceProof": {
+        "R0": {
+          "absenceReason": "BARN_ROOT_NOT_INSTANTIATED",
+          "ownerRootInstantiated": false,
+          "ownerRootPath": "",
+          "present": false,
+          "state": "R0",
+          "targetNodeExists": false,
+          "targetNodePath": ""
+        },
+        "R1": {
+          "absenceReason": "",
+          "ownerRootInstantiated": true,
+          "ownerRootPath": "/V0358_Barrosan_Barn_Gold_OptIn_Single_Instance",
+          "present": true,
+          "state": "R1",
+          "targetNodeExists": true,
+          "targetNodePath": "/V0358_Barrosan_Barn_Gold_OptIn_Single_Instance/V0347_Barn_Rendered_Geometry_Truth"
+        },
+        "R2": {
+          "absenceReason": "BARN_ROOT_REMOVED_BY_ROLLBACK",
+          "ownerRootInstantiated": false,
+          "ownerRootPath": "",
+          "present": false,
+          "state": "R2",
+          "targetNodeExists": false,
+          "targetNodePath": ""
+        }
+      },
+      "visibilityOverrideSafeInDuplicate": true,
+      "worldAabb": {
+        "max": {
+          "x": 11.8699989318848,
+          "y": 6.10292053222656,
+          "z": 4.45500040054321
+        },
+        "min": {
+          "x": -3.87000036239624,
+          "y": 0.389999985694885,
+          "z": -6.30999898910522
+        },
+        "size": {
+          "x": 15.7399997711182,
+          "y": 5.71292066574097,
+          "z": 10.7649993896484
+        }
+      },
+      "worldTransform": {
+        "basisX": {
+          "x": 1.0,
+          "y": 0.0,
+          "z": 0.0
+        },
+        "basisY": {
+          "x": 0.0,
+          "y": 1.0,
+          "z": 0.0
+        },
+        "basisZ": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 1.0
+        },
+        "origin": {
+          "x": 4.0,
+          "y": 0.180000007152557,
+          "z": -1.0
+        }
+      }
+    },
+    {
+      "classification": "Barn",
+      "humanRegion": "context",
+      "independentlyAddressable": true,
+      "instancedScenePath": "res://scenes/gold/barrosan/BarrosanBarnGold.tscn",
+      "localAabb": {
+        "max": {
+          "x": 7.86999988555908,
+          "y": 5.88541984558105,
+          "z": 0.0
+        },
+        "min": {
+          "x": -7.86999988555908,
+          "y": 3.94000005722046,
+          "z": -5.34499979019165
+        },
+        "size": {
+          "x": 15.7399997711182,
+          "y": 1.9454197883606,
+          "z": 5.34499979019165
+        }
+      },
+      "localTransform": {
+        "basisX": {
+          "x": 1.0,
+          "y": 0.0,
+          "z": 0.0
+        },
+        "basisY": {
+          "x": 0.0,
+          "y": 1.0,
+          "z": 0.0
+        },
+        "basisZ": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 1.0
+        },
+        "origin": {
+          "x": 0.0,
+          "y": -0.025000000372529,
+          "z": 0.0
+        }
+      },
+      "materialIdentity": [
+        {
+          "class": "StandardMaterial3D",
+          "resourceName": "V0350_Barrosan_Albedo_First_Weathered_Slate",
+          "resourcePath": "",
+          "surface": 0
+        }
+      ],
+      "meshResourceName": "",
+      "meshResourcePath": "",
+      "nodeName": "V0352_Roof_Left_Closed_Exterior_Slope",
+      "nodePath": "/V0358_Barrosan_Barn_Gold_OptIn_Single_Instance/V0352_Roof_Visibility_Repair_Closed_Underside_Only/V0352_Roof_Left_Closed_Exterior_Slope",
+      "nodeType": "MeshInstance3D",
+      "ownerScene": "res://scenes/gold/barrosan/BarrosanBarnGold.tscn",
+      "parentNodePath": "/V0358_Barrosan_Barn_Gold_OptIn_Single_Instance/V0352_Roof_Visibility_Repair_Closed_Underside_Only",
+      "presentInStates": [
+        "R0",
+        "R1",
+        "R2"
+      ],
+      "visibilityOverrideSafeInDuplicate": true,
+      "worldAabb": {
+        "max": {
+          "x": 11.8699998855591,
+          "y": 6.0404200553894,
+          "z": -1.0
+        },
+        "min": {
+          "x": -3.86999988555908,
+          "y": 4.09500026702881,
+          "z": -6.34499979019165
+        },
+        "size": {
+          "x": 15.7399997711182,
+          "y": 1.9454197883606,
+          "z": 5.34499979019165
+        }
+      },
+      "worldTransform": {
+        "basisX": {
+          "x": 1.0,
+          "y": 0.0,
+          "z": 0.0
+        },
+        "basisY": {
+          "x": 0.0,
+          "y": 1.0,
+          "z": 0.0
+        },
+        "basisZ": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 1.0
+        },
+        "origin": {
+          "x": 4.0,
+          "y": 0.155000001192093,
+          "z": -1.0
+        }
+      }
+    },
+    {
+      "classification": "Barn",
+      "humanRegion": "context",
+      "independentlyAddressable": true,
+      "instancedScenePath": "res://scenes/gold/barrosan/BarrosanBarnGold.tscn",
+      "localAabb": {
+        "max": {
+          "x": 7.86999988555908,
+          "y": 5.88541984558105,
+          "z": 5.34499979019165
+        },
+        "min": {
+          "x": -7.86999988555908,
+          "y": 3.94000005722046,
+          "z": 0.0
+        },
+        "size": {
+          "x": 15.7399997711182,
+          "y": 1.9454197883606,
+          "z": 5.34499979019165
+        }
+      },
+      "localTransform": {
+        "basisX": {
+          "x": 1.0,
+          "y": 0.0,
+          "z": 0.0
+        },
+        "basisY": {
+          "x": 0.0,
+          "y": 1.0,
+          "z": 0.0
+        },
+        "basisZ": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 1.0
+        },
+        "origin": {
+          "x": 0.0,
+          "y": -0.025000000372529,
+          "z": 0.0
+        }
+      },
+      "materialIdentity": [
+        {
+          "class": "StandardMaterial3D",
+          "resourceName": "V0350_Barrosan_Albedo_First_Weathered_Slate",
+          "resourcePath": "",
+          "surface": 0
+        }
+      ],
+      "meshResourceName": "",
+      "meshResourcePath": "",
+      "nodeName": "V0352_Roof_Right_Closed_Exterior_Slope",
+      "nodePath": "/V0358_Barrosan_Barn_Gold_OptIn_Single_Instance/V0352_Roof_Visibility_Repair_Closed_Underside_Only/V0352_Roof_Right_Closed_Exterior_Slope",
+      "nodeType": "MeshInstance3D",
+      "ownerScene": "res://scenes/gold/barrosan/BarrosanBarnGold.tscn",
+      "parentNodePath": "/V0358_Barrosan_Barn_Gold_OptIn_Single_Instance/V0352_Roof_Visibility_Repair_Closed_Underside_Only",
+      "presentInStates": [
+        "R0",
+        "R1",
+        "R2"
+      ],
+      "visibilityOverrideSafeInDuplicate": true,
+      "worldAabb": {
+        "max": {
+          "x": 11.8699998855591,
+          "y": 6.0404200553894,
+          "z": 4.34499979019165
+        },
+        "min": {
+          "x": -3.86999988555908,
+          "y": 4.09500026702881,
+          "z": -1.0
+        },
+        "size": {
+          "x": 15.7399997711182,
+          "y": 1.9454197883606,
+          "z": 5.34499979019165
+        }
+      },
+      "worldTransform": {
+        "basisX": {
+          "x": 1.0,
+          "y": 0.0,
+          "z": 0.0
+        },
+        "basisY": {
+          "x": 0.0,
+          "y": 1.0,
+          "z": 0.0
+        },
+        "basisZ": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 1.0
+        },
+        "origin": {
+          "x": 4.0,
+          "y": 0.155000001192093,
+          "z": -1.0
+        }
+      }
+    },
+    {
+      "classification": "Barn",
+      "humanRegion": "context",
+      "independentlyAddressable": true,
+      "instancedScenePath": "res://scenes/gold/barrosan/BarrosanBarnGold.tscn",
+      "localAabb": {
+        "max": {
+          "x": 0.790000021457672,
+          "y": 0.409999996423721,
+          "z": 0.0549999997019768
+        },
+        "min": {
+          "x": -0.790000021457672,
+          "y": -0.409999996423721,
+          "z": -0.0549999997019768
+        },
+        "size": {
+          "x": 1.58000004291534,
+          "y": 0.819999992847443,
+          "z": 0.109999999403954
+        }
+      },
+      "localTransform": {
+        "basisX": {
+          "x": 1.0,
+          "y": 0.0,
+          "z": 0.0
+        },
+        "basisY": {
+          "x": 0.0,
+          "y": 1.0,
+          "z": 0.0
+        },
+        "basisZ": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 1.0
+        },
+        "origin": {
+          "x": -0.810000002384186,
+          "y": 3.1800000667572,
+          "z": 5.46000003814697
+        }
+      },
+      "materialIdentity": [
+        {
+          "class": "StandardMaterial3D",
+          "resourceName": "V0350_Aged_Agricultural_Timber",
+          "resourcePath": "",
+          "surface": 0
+        }
+      ],
+      "meshResourceName": "",
+      "meshResourcePath": "",
+      "nodeName": "V0351_Shutter_Left_Closed_Timber_Leaf",
+      "nodePath": "/V0358_Barrosan_Barn_Gold_OptIn_Single_Instance/V0351_Upper_Loading_Shutters_Two_Closed_Leaves/V0351_Shutter_Left_Closed_Timber_Leaf",
+      "nodeType": "MeshInstance3D",
+      "ownerScene": "res://scenes/gold/barrosan/BarrosanBarnGold.tscn",
+      "parentNodePath": "/V0358_Barrosan_Barn_Gold_OptIn_Single_Instance/V0351_Upper_Loading_Shutters_Two_Closed_Leaves",
+      "presentInStates": [
+        "R0",
+        "R1",
+        "R2"
+      ],
+      "visibilityOverrideSafeInDuplicate": true,
+      "worldAabb": {
+        "max": {
+          "x": 3.98000001907349,
+          "y": 3.77000021934509,
+          "z": 4.5149998664856
+        },
+        "min": {
+          "x": 2.40000009536743,
+          "y": 2.95000004768372,
+          "z": 4.40500020980835
+        },
+        "size": {
+          "x": 1.57999992370605,
+          "y": 0.820000171661377,
+          "z": 0.109999656677246
+        }
+      },
+      "worldTransform": {
+        "basisX": {
+          "x": 1.0,
+          "y": 0.0,
+          "z": 0.0
+        },
+        "basisY": {
+          "x": 0.0,
+          "y": 1.0,
+          "z": 0.0
+        },
+        "basisZ": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 1.0
+        },
+        "origin": {
+          "x": 3.19000005722046,
+          "y": 3.3600001335144,
+          "z": 4.46000003814697
+        }
+      }
+    },
+    {
+      "classification": "Barn",
+      "humanRegion": "context",
+      "independentlyAddressable": true,
+      "instancedScenePath": "res://scenes/gold/barrosan/BarrosanBarnGold.tscn",
+      "localAabb": {
+        "max": {
+          "x": 0.790000021457672,
+          "y": 0.409999996423721,
+          "z": 0.0549999997019768
+        },
+        "min": {
+          "x": -0.790000021457672,
+          "y": -0.409999996423721,
+          "z": -0.0549999997019768
+        },
+        "size": {
+          "x": 1.58000004291534,
+          "y": 0.819999992847443,
+          "z": 0.109999999403954
+        }
+      },
+      "localTransform": {
+        "basisX": {
+          "x": 1.0,
+          "y": 0.0,
+          "z": 0.0
+        },
+        "basisY": {
+          "x": 0.0,
+          "y": 1.0,
+          "z": 0.0
+        },
+        "basisZ": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 1.0
+        },
+        "origin": {
+          "x": 0.810000002384186,
+          "y": 3.1800000667572,
+          "z": 5.46000003814697
+        }
+      },
+      "materialIdentity": [
+        {
+          "class": "StandardMaterial3D",
+          "resourceName": "V0350_Aged_Agricultural_Timber",
+          "resourcePath": "",
+          "surface": 0
+        }
+      ],
+      "meshResourceName": "",
+      "meshResourcePath": "",
+      "nodeName": "V0351_Shutter_Right_Closed_Timber_Leaf",
+      "nodePath": "/V0358_Barrosan_Barn_Gold_OptIn_Single_Instance/V0351_Upper_Loading_Shutters_Two_Closed_Leaves/V0351_Shutter_Right_Closed_Timber_Leaf",
+      "nodeType": "MeshInstance3D",
+      "ownerScene": "res://scenes/gold/barrosan/BarrosanBarnGold.tscn",
+      "parentNodePath": "/V0358_Barrosan_Barn_Gold_OptIn_Single_Instance/V0351_Upper_Loading_Shutters_Two_Closed_Leaves",
+      "presentInStates": [
+        "R0",
+        "R1",
+        "R2"
+      ],
+      "visibilityOverrideSafeInDuplicate": true,
+      "worldAabb": {
+        "max": {
+          "x": 5.59999990463257,
+          "y": 3.77000021934509,
+          "z": 4.5149998664856
+        },
+        "min": {
+          "x": 4.01999998092651,
+          "y": 2.95000004768372,
+          "z": 4.40500020980835
+        },
+        "size": {
+          "x": 1.57999992370605,
+          "y": 0.820000171661377,
+          "z": 0.109999656677246
+        }
+      },
+      "worldTransform": {
+        "basisX": {
+          "x": 1.0,
+          "y": 0.0,
+          "z": 0.0
+        },
+        "basisY": {
+          "x": 0.0,
+          "y": 1.0,
+          "z": 0.0
+        },
+        "basisZ": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 1.0
+        },
+        "origin": {
+          "x": 4.80999994277954,
+          "y": 3.3600001335144,
+          "z": 4.46000003814697
+        }
+      }
+    },
+    {
+      "classification": "Barn",
+      "humanRegion": "context",
+      "independentlyAddressable": true,
+      "instancedScenePath": "res://scenes/gold/barrosan/BarrosanBarnGold.tscn",
+      "localAabb": {
+        "max": {
+          "x": 0.0175000000745058,
+          "y": 0.419999986886978,
+          "z": 0.00999999977648258
+        },
+        "min": {
+          "x": -0.0175000000745058,
+          "y": -0.419999986886978,
+          "z": -0.00999999977648258
+        },
+        "size": {
+          "x": 0.0350000001490116,
+          "y": 0.839999973773956,
+          "z": 0.0199999995529652
+        }
+      },
+      "localTransform": {
+        "basisX": {
+          "x": 1.0,
+          "y": 0.0,
+          "z": 0.0
+        },
+        "basisY": {
+          "x": 0.0,
+          "y": 1.0,
+          "z": 0.0
+        },
+        "basisZ": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 1.0
+        },
+        "origin": {
+          "x": 0.0,
+          "y": 3.1800000667572,
+          "z": 5.53000020980835
+        }
+      },
+      "materialIdentity": [
+        {
+          "class": "StandardMaterial3D",
+          "resourceName": "V0351_Shutter_Board_Seam",
+          "resourcePath": "",
+          "surface": 0
+        }
+      ],
+      "meshResourceName": "",
+      "meshResourcePath": "",
+      "nodeName": "V0351_Shutter_Central_Meeting_Seam",
+      "nodePath": "/V0358_Barrosan_Barn_Gold_OptIn_Single_Instance/V0351_Upper_Loading_Shutters_Two_Closed_Leaves/V0351_Shutter_Central_Meeting_Seam",
+      "nodeType": "MeshInstance3D",
+      "ownerScene": "res://scenes/gold/barrosan/BarrosanBarnGold.tscn",
+      "parentNodePath": "/V0358_Barrosan_Barn_Gold_OptIn_Single_Instance/V0351_Upper_Loading_Shutters_Two_Closed_Leaves",
+      "presentInStates": [
+        "R0",
+        "R1",
+        "R2"
+      ],
+      "visibilityOverrideSafeInDuplicate": true,
+      "worldAabb": {
+        "max": {
+          "x": 4.01749992370605,
+          "y": 3.78000020980835,
+          "z": 4.54000043869019
+        },
+        "min": {
+          "x": 3.98250007629395,
+          "y": 2.94000005722046,
+          "z": 4.51999998092651
+        },
+        "size": {
+          "x": 0.0349998474121094,
+          "y": 0.840000152587891,
+          "z": 0.0200004577636719
+        }
+      },
+      "worldTransform": {
+        "basisX": {
+          "x": 1.0,
+          "y": 0.0,
+          "z": 0.0
+        },
+        "basisY": {
+          "x": 0.0,
+          "y": 1.0,
+          "z": 0.0
+        },
+        "basisZ": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 1.0
+        },
+        "origin": {
+          "x": 4.0,
+          "y": 3.3600001335144,
+          "z": 4.53000020980835
+        }
+      }
+    },
+    {
+      "classification": "Barn",
+      "humanRegion": "context",
+      "independentlyAddressable": true,
+      "instancedScenePath": "res://scenes/gold/barrosan/BarrosanBarnGold.tscn",
+      "localAabb": {
+        "max": {
+          "x": 0.00899999961256981,
+          "y": 0.379999995231628,
+          "z": 0.00899999961256981
+        },
+        "min": {
+          "x": -0.00899999961256981,
+          "y": -0.379999995231628,
+          "z": -0.00899999961256981
+        },
+        "size": {
+          "x": 0.0179999992251396,
+          "y": 0.759999990463257,
+          "z": 0.0179999992251396
+        }
+      },
+      "localTransform": {
+        "basisX": {
+          "x": 1.0,
+          "y": 0.0,
+          "z": 0.0
+        },
+        "basisY": {
+          "x": 0.0,
+          "y": 1.0,
+          "z": 0.0
+        },
+        "basisZ": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 1.0
+        },
+        "origin": {
+          "x": -1.26999998092651,
+          "y": 3.1800000667572,
+          "z": 5.53999996185303
+        }
+      },
+      "materialIdentity": [
+        {
+          "class": "StandardMaterial3D",
+          "resourceName": "V0351_Shutter_Board_Seam",
+          "resourcePath": "",
+          "surface": 0
+        }
+      ],
+      "meshResourceName": "",
+      "meshResourcePath": "",
+      "nodeName": "V0351_Shutter_Vertical_Board_Seam_-1_27",
+      "nodePath": "/V0358_Barrosan_Barn_Gold_OptIn_Single_Instance/V0351_Upper_Loading_Shutters_Two_Closed_Leaves/V0351_Shutter_Vertical_Board_Seam_-1_27",
+      "nodeType": "MeshInstance3D",
+      "ownerScene": "res://scenes/gold/barrosan/BarrosanBarnGold.tscn",
+      "parentNodePath": "/V0358_Barrosan_Barn_Gold_OptIn_Single_Instance/V0351_Upper_Loading_Shutters_Two_Closed_Leaves",
+      "presentInStates": [
+        "R0",
+        "R1",
+        "R2"
+      ],
+      "visibilityOverrideSafeInDuplicate": true,
+      "worldAabb": {
+        "max": {
+          "x": 2.73900008201599,
+          "y": 3.74000024795532,
+          "z": 4.54899978637695
+        },
+        "min": {
+          "x": 2.72099995613098,
+          "y": 2.98000001907349,
+          "z": 4.5310001373291
+        },
+        "size": {
+          "x": 0.0180001258850098,
+          "y": 0.760000228881836,
+          "z": 0.0179996490478516
+        }
+      },
+      "worldTransform": {
+        "basisX": {
+          "x": 1.0,
+          "y": 0.0,
+          "z": 0.0
+        },
+        "basisY": {
+          "x": 0.0,
+          "y": 1.0,
+          "z": 0.0
+        },
+        "basisZ": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 1.0
+        },
+        "origin": {
+          "x": 2.73000001907349,
+          "y": 3.3600001335144,
+          "z": 4.53999996185303
+        }
+      }
+    },
+    {
+      "classification": "Barn",
+      "humanRegion": "context",
+      "independentlyAddressable": true,
+      "instancedScenePath": "res://scenes/gold/barrosan/BarrosanBarnGold.tscn",
+      "localAabb": {
+        "max": {
+          "x": 0.00899999961256981,
+          "y": 0.379999995231628,
+          "z": 0.00899999961256981
+        },
+        "min": {
+          "x": -0.00899999961256981,
+          "y": -0.379999995231628,
+          "z": -0.00899999961256981
+        },
+        "size": {
+          "x": 0.0179999992251396,
+          "y": 0.759999990463257,
+          "z": 0.0179999992251396
+        }
+      },
+      "localTransform": {
+        "basisX": {
+          "x": 1.0,
+          "y": 0.0,
+          "z": 0.0
+        },
+        "basisY": {
+          "x": 0.0,
+          "y": 1.0,
+          "z": 0.0
+        },
+        "basisZ": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 1.0
+        },
+        "origin": {
+          "x": -0.879999995231628,
+          "y": 3.1800000667572,
+          "z": 5.53999996185303
+        }
+      },
+      "materialIdentity": [
+        {
+          "class": "StandardMaterial3D",
+          "resourceName": "V0351_Shutter_Board_Seam",
+          "resourcePath": "",
+          "surface": 0
+        }
+      ],
+      "meshResourceName": "",
+      "meshResourcePath": "",
+      "nodeName": "V0351_Shutter_Vertical_Board_Seam_-0_88",
+      "nodePath": "/V0358_Barrosan_Barn_Gold_OptIn_Single_Instance/V0351_Upper_Loading_Shutters_Two_Closed_Leaves/V0351_Shutter_Vertical_Board_Seam_-0_88",
+      "nodeType": "MeshInstance3D",
+      "ownerScene": "res://scenes/gold/barrosan/BarrosanBarnGold.tscn",
+      "parentNodePath": "/V0358_Barrosan_Barn_Gold_OptIn_Single_Instance/V0351_Upper_Loading_Shutters_Two_Closed_Leaves",
+      "presentInStates": [
+        "R0",
+        "R1",
+        "R2"
+      ],
+      "visibilityOverrideSafeInDuplicate": true,
+      "worldAabb": {
+        "max": {
+          "x": 3.12899994850159,
+          "y": 3.74000024795532,
+          "z": 4.54899978637695
+        },
+        "min": {
+          "x": 3.11099982261658,
+          "y": 2.98000001907349,
+          "z": 4.5310001373291
+        },
+        "size": {
+          "x": 0.0180001258850098,
+          "y": 0.760000228881836,
+          "z": 0.0179996490478516
+        }
+      },
+      "worldTransform": {
+        "basisX": {
+          "x": 1.0,
+          "y": 0.0,
+          "z": 0.0
+        },
+        "basisY": {
+          "x": 0.0,
+          "y": 1.0,
+          "z": 0.0
+        },
+        "basisZ": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 1.0
+        },
+        "origin": {
+          "x": 3.11999988555908,
+          "y": 3.3600001335144,
+          "z": 4.53999996185303
+        }
+      }
+    },
+    {
+      "classification": "Barn",
+      "humanRegion": "context",
+      "independentlyAddressable": true,
+      "instancedScenePath": "res://scenes/gold/barrosan/BarrosanBarnGold.tscn",
+      "localAabb": {
+        "max": {
+          "x": 0.00899999961256981,
+          "y": 0.379999995231628,
+          "z": 0.00899999961256981
+        },
+        "min": {
+          "x": -0.00899999961256981,
+          "y": -0.379999995231628,
+          "z": -0.00899999961256981
+        },
+        "size": {
+          "x": 0.0179999992251396,
+          "y": 0.759999990463257,
+          "z": 0.0179999992251396
+        }
+      },
+      "localTransform": {
+        "basisX": {
+          "x": 1.0,
+          "y": 0.0,
+          "z": 0.0
+        },
+        "basisY": {
+          "x": 0.0,
+          "y": 1.0,
+          "z": 0.0
+        },
+        "basisZ": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 1.0
+        },
+        "origin": {
+          "x": -0.479999989271164,
+          "y": 3.1800000667572,
+          "z": 5.53999996185303
+        }
+      },
+      "materialIdentity": [
+        {
+          "class": "StandardMaterial3D",
+          "resourceName": "V0351_Shutter_Board_Seam",
+          "resourcePath": "",
+          "surface": 0
+        }
+      ],
+      "meshResourceName": "",
+      "meshResourcePath": "",
+      "nodeName": "V0351_Shutter_Vertical_Board_Seam_-0_48",
+      "nodePath": "/V0358_Barrosan_Barn_Gold_OptIn_Single_Instance/V0351_Upper_Loading_Shutters_Two_Closed_Leaves/V0351_Shutter_Vertical_Board_Seam_-0_48",
+      "nodeType": "MeshInstance3D",
+      "ownerScene": "res://scenes/gold/barrosan/BarrosanBarnGold.tscn",
+      "parentNodePath": "/V0358_Barrosan_Barn_Gold_OptIn_Single_Instance/V0351_Upper_Loading_Shutters_Two_Closed_Leaves",
+      "presentInStates": [
+        "R0",
+        "R1",
+        "R2"
+      ],
+      "visibilityOverrideSafeInDuplicate": true,
+      "worldAabb": {
+        "max": {
+          "x": 3.52900004386902,
+          "y": 3.74000024795532,
+          "z": 4.54899978637695
+        },
+        "min": {
+          "x": 3.51099991798401,
+          "y": 2.98000001907349,
+          "z": 4.5310001373291
+        },
+        "size": {
+          "x": 0.0180001258850098,
+          "y": 0.760000228881836,
+          "z": 0.0179996490478516
+        }
+      },
+      "worldTransform": {
+        "basisX": {
+          "x": 1.0,
+          "y": 0.0,
+          "z": 0.0
+        },
+        "basisY": {
+          "x": 0.0,
+          "y": 1.0,
+          "z": 0.0
+        },
+        "basisZ": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 1.0
+        },
+        "origin": {
+          "x": 3.51999998092651,
+          "y": 3.3600001335144,
+          "z": 4.53999996185303
+        }
+      }
+    },
+    {
+      "classification": "Barn",
+      "humanRegion": "context",
+      "independentlyAddressable": true,
+      "instancedScenePath": "res://scenes/gold/barrosan/BarrosanBarnGold.tscn",
+      "localAabb": {
+        "max": {
+          "x": 0.00899999961256981,
+          "y": 0.379999995231628,
+          "z": 0.00899999961256981
+        },
+        "min": {
+          "x": -0.00899999961256981,
+          "y": -0.379999995231628,
+          "z": -0.00899999961256981
+        },
+        "size": {
+          "x": 0.0179999992251396,
+          "y": 0.759999990463257,
+          "z": 0.0179999992251396
+        }
+      },
+      "localTransform": {
+        "basisX": {
+          "x": 1.0,
+          "y": 0.0,
+          "z": 0.0
+        },
+        "basisY": {
+          "x": 0.0,
+          "y": 1.0,
+          "z": 0.0
+        },
+        "basisZ": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 1.0
+        },
+        "origin": {
+          "x": 0.479999989271164,
+          "y": 3.1800000667572,
+          "z": 5.53999996185303
+        }
+      },
+      "materialIdentity": [
+        {
+          "class": "StandardMaterial3D",
+          "resourceName": "V0351_Shutter_Board_Seam",
+          "resourcePath": "",
+          "surface": 0
+        }
+      ],
+      "meshResourceName": "",
+      "meshResourcePath": "",
+      "nodeName": "V0351_Shutter_Vertical_Board_Seam_0_48",
+      "nodePath": "/V0358_Barrosan_Barn_Gold_OptIn_Single_Instance/V0351_Upper_Loading_Shutters_Two_Closed_Leaves/V0351_Shutter_Vertical_Board_Seam_0_48",
+      "nodeType": "MeshInstance3D",
+      "ownerScene": "res://scenes/gold/barrosan/BarrosanBarnGold.tscn",
+      "parentNodePath": "/V0358_Barrosan_Barn_Gold_OptIn_Single_Instance/V0351_Upper_Loading_Shutters_Two_Closed_Leaves",
+      "presentInStates": [
+        "R0",
+        "R1",
+        "R2"
+      ],
+      "visibilityOverrideSafeInDuplicate": true,
+      "worldAabb": {
+        "max": {
+          "x": 4.48899984359741,
+          "y": 3.74000024795532,
+          "z": 4.54899978637695
+        },
+        "min": {
+          "x": 4.47100019454956,
+          "y": 2.98000001907349,
+          "z": 4.5310001373291
+        },
+        "size": {
+          "x": 0.0179996490478516,
+          "y": 0.760000228881836,
+          "z": 0.0179996490478516
+        }
+      },
+      "worldTransform": {
+        "basisX": {
+          "x": 1.0,
+          "y": 0.0,
+          "z": 0.0
+        },
+        "basisY": {
+          "x": 0.0,
+          "y": 1.0,
+          "z": 0.0
+        },
+        "basisZ": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 1.0
+        },
+        "origin": {
+          "x": 4.48000001907349,
+          "y": 3.3600001335144,
+          "z": 4.53999996185303
+        }
+      }
+    },
+    {
+      "classification": "Barn",
+      "humanRegion": "context",
+      "independentlyAddressable": true,
+      "instancedScenePath": "res://scenes/gold/barrosan/BarrosanBarnGold.tscn",
+      "localAabb": {
+        "max": {
+          "x": 0.00899999961256981,
+          "y": 0.379999995231628,
+          "z": 0.00899999961256981
+        },
+        "min": {
+          "x": -0.00899999961256981,
+          "y": -0.379999995231628,
+          "z": -0.00899999961256981
+        },
+        "size": {
+          "x": 0.0179999992251396,
+          "y": 0.759999990463257,
+          "z": 0.0179999992251396
+        }
+      },
+      "localTransform": {
+        "basisX": {
+          "x": 1.0,
+          "y": 0.0,
+          "z": 0.0
+        },
+        "basisY": {
+          "x": 0.0,
+          "y": 1.0,
+          "z": 0.0
+        },
+        "basisZ": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 1.0
+        },
+        "origin": {
+          "x": 0.879999995231628,
+          "y": 3.1800000667572,
+          "z": 5.53999996185303
+        }
+      },
+      "materialIdentity": [
+        {
+          "class": "StandardMaterial3D",
+          "resourceName": "V0351_Shutter_Board_Seam",
+          "resourcePath": "",
+          "surface": 0
+        }
+      ],
+      "meshResourceName": "",
+      "meshResourcePath": "",
+      "nodeName": "V0351_Shutter_Vertical_Board_Seam_0_88",
+      "nodePath": "/V0358_Barrosan_Barn_Gold_OptIn_Single_Instance/V0351_Upper_Loading_Shutters_Two_Closed_Leaves/V0351_Shutter_Vertical_Board_Seam_0_88",
+      "nodeType": "MeshInstance3D",
+      "ownerScene": "res://scenes/gold/barrosan/BarrosanBarnGold.tscn",
+      "parentNodePath": "/V0358_Barrosan_Barn_Gold_OptIn_Single_Instance/V0351_Upper_Loading_Shutters_Two_Closed_Leaves",
+      "presentInStates": [
+        "R0",
+        "R1",
+        "R2"
+      ],
+      "visibilityOverrideSafeInDuplicate": true,
+      "worldAabb": {
+        "max": {
+          "x": 4.88899993896484,
+          "y": 3.74000024795532,
+          "z": 4.54899978637695
+        },
+        "min": {
+          "x": 4.87100028991699,
+          "y": 2.98000001907349,
+          "z": 4.5310001373291
+        },
+        "size": {
+          "x": 0.0179996490478516,
+          "y": 0.760000228881836,
+          "z": 0.0179996490478516
+        }
+      },
+      "worldTransform": {
+        "basisX": {
+          "x": 1.0,
+          "y": 0.0,
+          "z": 0.0
+        },
+        "basisY": {
+          "x": 0.0,
+          "y": 1.0,
+          "z": 0.0
+        },
+        "basisZ": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 1.0
+        },
+        "origin": {
+          "x": 4.88000011444092,
+          "y": 3.3600001335144,
+          "z": 4.53999996185303
+        }
+      }
+    },
+    {
+      "classification": "Barn",
+      "humanRegion": "context",
+      "independentlyAddressable": true,
+      "instancedScenePath": "res://scenes/gold/barrosan/BarrosanBarnGold.tscn",
+      "localAabb": {
+        "max": {
+          "x": 0.00899999961256981,
+          "y": 0.379999995231628,
+          "z": 0.00899999961256981
+        },
+        "min": {
+          "x": -0.00899999961256981,
+          "y": -0.379999995231628,
+          "z": -0.00899999961256981
+        },
+        "size": {
+          "x": 0.0179999992251396,
+          "y": 0.759999990463257,
+          "z": 0.0179999992251396
+        }
+      },
+      "localTransform": {
+        "basisX": {
+          "x": 1.0,
+          "y": 0.0,
+          "z": 0.0
+        },
+        "basisY": {
+          "x": 0.0,
+          "y": 1.0,
+          "z": 0.0
+        },
+        "basisZ": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 1.0
+        },
+        "origin": {
+          "x": 1.26999998092651,
+          "y": 3.1800000667572,
+          "z": 5.53999996185303
+        }
+      },
+      "materialIdentity": [
+        {
+          "class": "StandardMaterial3D",
+          "resourceName": "V0351_Shutter_Board_Seam",
+          "resourcePath": "",
+          "surface": 0
+        }
+      ],
+      "meshResourceName": "",
+      "meshResourcePath": "",
+      "nodeName": "V0351_Shutter_Vertical_Board_Seam_1_27",
+      "nodePath": "/V0358_Barrosan_Barn_Gold_OptIn_Single_Instance/V0351_Upper_Loading_Shutters_Two_Closed_Leaves/V0351_Shutter_Vertical_Board_Seam_1_27",
+      "nodeType": "MeshInstance3D",
+      "ownerScene": "res://scenes/gold/barrosan/BarrosanBarnGold.tscn",
+      "parentNodePath": "/V0358_Barrosan_Barn_Gold_OptIn_Single_Instance/V0351_Upper_Loading_Shutters_Two_Closed_Leaves",
+      "presentInStates": [
+        "R0",
+        "R1",
+        "R2"
+      ],
+      "visibilityOverrideSafeInDuplicate": true,
+      "worldAabb": {
+        "max": {
+          "x": 5.27899980545044,
+          "y": 3.74000024795532,
+          "z": 4.54899978637695
+        },
+        "min": {
+          "x": 5.26100015640259,
+          "y": 2.98000001907349,
+          "z": 4.5310001373291
+        },
+        "size": {
+          "x": 0.0179996490478516,
+          "y": 0.760000228881836,
+          "z": 0.0179996490478516
+        }
+      },
+      "worldTransform": {
+        "basisX": {
+          "x": 1.0,
+          "y": 0.0,
+          "z": 0.0
+        },
+        "basisY": {
+          "x": 0.0,
+          "y": 1.0,
+          "z": 0.0
+        },
+        "basisZ": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 1.0
+        },
+        "origin": {
+          "x": 5.26999998092651,
+          "y": 3.3600001335144,
+          "z": 4.53999996185303
+        }
+      }
+    },
+    {
+      "classification": "Barn",
+      "humanRegion": "context",
+      "independentlyAddressable": true,
+      "instancedScenePath": "res://scenes/gold/barrosan/BarrosanBarnGold.tscn",
+      "localAabb": {
+        "max": {
+          "x": 0.670000016689301,
+          "y": 0.0225000008940697,
+          "z": 0.0125000001862645
+        },
+        "min": {
+          "x": -0.670000016689301,
+          "y": -0.0225000008940697,
+          "z": -0.0125000001862645
+        },
+        "size": {
+          "x": 1.3400000333786,
+          "y": 0.0450000017881393,
+          "z": 0.025000000372529
+        }
+      },
+      "localTransform": {
+        "basisX": {
+          "x": 1.0,
+          "y": 0.0,
+          "z": 0.0
+        },
+        "basisY": {
+          "x": 0.0,
+          "y": 1.0,
+          "z": 0.0
+        },
+        "basisZ": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 1.0
+        },
+        "origin": {
+          "x": -0.810000002384186,
+          "y": 3.1800000667572,
+          "z": 5.55000019073486
+        }
+      },
+      "materialIdentity": [
+        {
+          "class": "StandardMaterial3D",
+          "resourceName": "V0351_Restrained_Shutter_Iron_Straps",
+          "resourcePath": "",
+          "surface": 0
+        }
+      ],
+      "meshResourceName": "",
+      "meshResourcePath": "",
+      "nodeName": "V0351_Shutter_Left_Single_Iron_Strap",
+      "nodePath": "/V0358_Barrosan_Barn_Gold_OptIn_Single_Instance/V0351_Upper_Loading_Shutters_Two_Closed_Leaves/V0351_Shutter_Left_Single_Iron_Strap",
+      "nodeType": "MeshInstance3D",
+      "ownerScene": "res://scenes/gold/barrosan/BarrosanBarnGold.tscn",
+      "parentNodePath": "/V0358_Barrosan_Barn_Gold_OptIn_Single_Instance/V0351_Upper_Loading_Shutters_Two_Closed_Leaves",
+      "presentInStates": [
+        "R0",
+        "R1",
+        "R2"
+      ],
+      "visibilityOverrideSafeInDuplicate": true,
+      "worldAabb": {
+        "max": {
+          "x": 3.8600001335144,
+          "y": 3.38250017166138,
+          "z": 4.5625
+        },
+        "min": {
+          "x": 2.51999998092651,
+          "y": 3.33750009536743,
+          "z": 4.53750038146973
+        },
+        "size": {
+          "x": 1.34000015258789,
+          "y": 0.0450000762939453,
+          "z": 0.0249996185302734
+        }
+      },
+      "worldTransform": {
+        "basisX": {
+          "x": 1.0,
+          "y": 0.0,
+          "z": 0.0
+        },
+        "basisY": {
+          "x": 0.0,
+          "y": 1.0,
+          "z": 0.0
+        },
+        "basisZ": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 1.0
+        },
+        "origin": {
+          "x": 3.19000005722046,
+          "y": 3.3600001335144,
+          "z": 4.55000019073486
+        }
+      }
+    },
+    {
+      "classification": "Barn",
+      "humanRegion": "context",
+      "independentlyAddressable": true,
+      "instancedScenePath": "res://scenes/gold/barrosan/BarrosanBarnGold.tscn",
+      "localAabb": {
+        "max": {
+          "x": 0.670000016689301,
+          "y": 0.0225000008940697,
+          "z": 0.0125000001862645
+        },
+        "min": {
+          "x": -0.670000016689301,
+          "y": -0.0225000008940697,
+          "z": -0.0125000001862645
+        },
+        "size": {
+          "x": 1.3400000333786,
+          "y": 0.0450000017881393,
+          "z": 0.025000000372529
+        }
+      },
+      "localTransform": {
+        "basisX": {
+          "x": 1.0,
+          "y": 0.0,
+          "z": 0.0
+        },
+        "basisY": {
+          "x": 0.0,
+          "y": 1.0,
+          "z": 0.0
+        },
+        "basisZ": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 1.0
+        },
+        "origin": {
+          "x": 0.810000002384186,
+          "y": 3.1800000667572,
+          "z": 5.55000019073486
+        }
+      },
+      "materialIdentity": [
+        {
+          "class": "StandardMaterial3D",
+          "resourceName": "V0351_Restrained_Shutter_Iron_Straps",
+          "resourcePath": "",
+          "surface": 0
+        }
+      ],
+      "meshResourceName": "",
+      "meshResourcePath": "",
+      "nodeName": "V0351_Shutter_Right_Single_Iron_Strap",
+      "nodePath": "/V0358_Barrosan_Barn_Gold_OptIn_Single_Instance/V0351_Upper_Loading_Shutters_Two_Closed_Leaves/V0351_Shutter_Right_Single_Iron_Strap",
+      "nodeType": "MeshInstance3D",
+      "ownerScene": "res://scenes/gold/barrosan/BarrosanBarnGold.tscn",
+      "parentNodePath": "/V0358_Barrosan_Barn_Gold_OptIn_Single_Instance/V0351_Upper_Loading_Shutters_Two_Closed_Leaves",
+      "presentInStates": [
+        "R0",
+        "R1",
+        "R2"
+      ],
+      "visibilityOverrideSafeInDuplicate": true,
+      "worldAabb": {
+        "max": {
+          "x": 5.48000001907349,
+          "y": 3.38250017166138,
+          "z": 4.5625
+        },
+        "min": {
+          "x": 4.1399998664856,
+          "y": 3.33750009536743,
+          "z": 4.53750038146973
+        },
+        "size": {
+          "x": 1.34000015258789,
+          "y": 0.0450000762939453,
+          "z": 0.0249996185302734
+        }
+      },
+      "worldTransform": {
+        "basisX": {
+          "x": 1.0,
+          "y": 0.0,
+          "z": 0.0
+        },
+        "basisY": {
+          "x": 0.0,
+          "y": 1.0,
+          "z": 0.0
+        },
+        "basisZ": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 1.0
+        },
+        "origin": {
+          "x": 4.80999994277954,
+          "y": 3.3600001335144,
+          "z": 4.55000019073486
+        }
+      }
+    },
+    {
+      "classification": "Barn",
+      "humanRegion": "context",
+      "independentlyAddressable": true,
+      "instancedScenePath": "res://scenes/gold/barrosan/BarrosanBarnGold.tscn",
+      "localAabb": {
+        "max": {
+          "x": 1.64999997615814,
+          "y": 0.0649999976158142,
+          "z": 0.0649999976158142
+        },
+        "min": {
+          "x": -1.64999997615814,
+          "y": -0.0649999976158142,
+          "z": -0.0649999976158142
+        },
+        "size": {
+          "x": 3.29999995231628,
+          "y": 0.129999995231628,
+          "z": 0.129999995231628
+        }
+      },
+      "localTransform": {
+        "basisX": {
+          "x": 1.0,
+          "y": 0.0,
+          "z": 0.0
+        },
+        "basisY": {
+          "x": 0.0,
+          "y": 1.0,
+          "z": 0.0
+        },
+        "basisZ": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 1.0
+        },
+        "origin": {
+          "x": 0.0,
+          "y": 3.65000009536743,
+          "z": 5.46999979019165
+        }
+      },
+      "materialIdentity": [
+        {
+          "class": "StandardMaterial3D",
+          "resourceName": "V0350_Aged_Agricultural_Timber",
+          "resourcePath": "",
+          "surface": 0
+        }
+      ],
+      "meshResourceName": "",
+      "meshResourcePath": "",
+      "nodeName": "V0351_Shutter_Practical_Timber_Lintel",
+      "nodePath": "/V0358_Barrosan_Barn_Gold_OptIn_Single_Instance/V0351_Upper_Loading_Shutters_Two_Closed_Leaves/V0351_Shutter_Practical_Timber_Lintel",
+      "nodeType": "MeshInstance3D",
+      "ownerScene": "res://scenes/gold/barrosan/BarrosanBarnGold.tscn",
+      "parentNodePath": "/V0358_Barrosan_Barn_Gold_OptIn_Single_Instance/V0351_Upper_Loading_Shutters_Two_Closed_Leaves",
+      "presentInStates": [
+        "R0",
+        "R1",
+        "R2"
+      ],
+      "visibilityOverrideSafeInDuplicate": true,
+      "worldAabb": {
+        "max": {
+          "x": 5.65000009536743,
+          "y": 3.89500021934509,
+          "z": 4.53499984741211
+        },
+        "min": {
+          "x": 2.34999990463257,
+          "y": 3.76500010490417,
+          "z": 4.40499973297119
+        },
+        "size": {
+          "x": 3.30000019073486,
+          "y": 0.130000114440918,
+          "z": 0.130000114440918
+        }
+      },
+      "worldTransform": {
+        "basisX": {
+          "x": 1.0,
+          "y": 0.0,
+          "z": 0.0
+        },
+        "basisY": {
+          "x": 0.0,
+          "y": 1.0,
+          "z": 0.0
+        },
+        "basisZ": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 1.0
+        },
+        "origin": {
+          "x": 4.0,
+          "y": 3.83000016212463,
+          "z": 4.46999979019165
+        }
+      }
+    },
+    {
+      "classification": "Barn",
+      "humanRegion": "context",
+      "independentlyAddressable": true,
+      "instancedScenePath": "res://scenes/gold/barrosan/BarrosanBarnGold.tscn",
+      "localAabb": {
+        "max": {
+          "x": 1.625,
+          "y": 0.0500000007450581,
+          "z": 0.0599999986588955
+        },
+        "min": {
+          "x": -1.625,
+          "y": -0.0500000007450581,
+          "z": -0.0599999986588955
+        },
+        "size": {
+          "x": 3.25,
+          "y": 0.100000001490116,
+          "z": 0.119999997317791
+        }
+      },
+      "localTransform": {
+        "basisX": {
+          "x": 1.0,
+          "y": 0.0,
+          "z": 0.0
+        },
+        "basisY": {
+          "x": 0.0,
+          "y": 1.0,
+          "z": 0.0
+        },
+        "basisZ": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 1.0
+        },
+        "origin": {
+          "x": 0.0,
+          "y": 2.72000002861023,
+          "z": 5.46999979019165
+        }
+      },
+      "materialIdentity": [
+        {
+          "class": "StandardMaterial3D",
+          "resourceName": "V0350_Aged_Agricultural_Timber",
+          "resourcePath": "",
+          "surface": 0
+        }
+      ],
+      "meshResourceName": "",
+      "meshResourcePath": "",
+      "nodeName": "V0351_Shutter_Practical_Timber_Sill",
+      "nodePath": "/V0358_Barrosan_Barn_Gold_OptIn_Single_Instance/V0351_Upper_Loading_Shutters_Two_Closed_Leaves/V0351_Shutter_Practical_Timber_Sill",
+      "nodeType": "MeshInstance3D",
+      "ownerScene": "res://scenes/gold/barrosan/BarrosanBarnGold.tscn",
+      "parentNodePath": "/V0358_Barrosan_Barn_Gold_OptIn_Single_Instance/V0351_Upper_Loading_Shutters_Two_Closed_Leaves",
+      "presentInStates": [
+        "R0",
+        "R1",
+        "R2"
+      ],
+      "visibilityOverrideSafeInDuplicate": true,
+      "worldAabb": {
+        "max": {
+          "x": 5.625,
+          "y": 2.95000004768372,
+          "z": 4.52999973297119
+        },
+        "min": {
+          "x": 2.375,
+          "y": 2.85000014305115,
+          "z": 4.40999984741211
+        },
+        "size": {
+          "x": 3.25,
+          "y": 0.0999999046325684,
+          "z": 0.119999885559082
+        }
+      },
+      "worldTransform": {
+        "basisX": {
+          "x": 1.0,
+          "y": 0.0,
+          "z": 0.0
+        },
+        "basisY": {
+          "x": 0.0,
+          "y": 1.0,
+          "z": 0.0
+        },
+        "basisZ": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 1.0
+        },
+        "origin": {
+          "x": 4.0,
+          "y": 2.90000009536743,
+          "z": 4.46999979019165
+        }
+      }
+    }
+  ],
+  "scenePath": "res://scenes/review/V0365BarrosanForegroundPropPresenceStateTruth.tscn",
+  "statePresence": {
+    "A": {
+      "exactOwnerTargetPath": "/V0358_House02_Shared_Baseline_Unmodified/LOD0_Granite",
+      "presentStates": [
+        "R0",
+        "R1",
+        "R2"
+      ],
+      "statePresenceDerived": true,
+      "statePresenceProof": {
+        "R0": {
+          "absenceReason": "",
+          "ownerRootInstantiated": true,
+          "ownerRootPath": "/V0358_House02_Shared_Baseline_Unmodified",
+          "present": true,
+          "state": "R0",
+          "targetNodeExists": true,
+          "targetNodePath": "/V0358_House02_Shared_Baseline_Unmodified/LOD0_Granite"
+        },
+        "R1": {
+          "absenceReason": "",
+          "ownerRootInstantiated": true,
+          "ownerRootPath": "/V0358_House02_Shared_Baseline_Unmodified",
+          "present": true,
+          "state": "R1",
+          "targetNodeExists": true,
+          "targetNodePath": "/V0358_House02_Shared_Baseline_Unmodified/LOD0_Granite"
+        },
+        "R2": {
+          "absenceReason": "",
+          "ownerRootInstantiated": true,
+          "ownerRootPath": "/V0358_House02_Shared_Baseline_Unmodified",
+          "present": true,
+          "state": "R2",
+          "targetNodeExists": true,
+          "targetNodePath": "/V0358_House02_Shared_Baseline_Unmodified/LOD0_Granite"
+        }
+      },
+      "targetLocalPath": "LOD0_Granite"
+    },
+    "B": {
+      "exactOwnerTargetPath": "/V0358_House02_Shared_Baseline_Unmodified/LOD0_Weathered_Timber",
+      "presentStates": [
+        "R0",
+        "R1",
+        "R2"
+      ],
+      "statePresenceDerived": true,
+      "statePresenceProof": {
+        "R0": {
+          "absenceReason": "",
+          "ownerRootInstantiated": true,
+          "ownerRootPath": "/V0358_House02_Shared_Baseline_Unmodified",
+          "present": true,
+          "state": "R0",
+          "targetNodeExists": true,
+          "targetNodePath": "/V0358_House02_Shared_Baseline_Unmodified/LOD0_Weathered_Timber"
+        },
+        "R1": {
+          "absenceReason": "",
+          "ownerRootInstantiated": true,
+          "ownerRootPath": "/V0358_House02_Shared_Baseline_Unmodified",
+          "present": true,
+          "state": "R1",
+          "targetNodeExists": true,
+          "targetNodePath": "/V0358_House02_Shared_Baseline_Unmodified/LOD0_Weathered_Timber"
+        },
+        "R2": {
+          "absenceReason": "",
+          "ownerRootInstantiated": true,
+          "ownerRootPath": "/V0358_House02_Shared_Baseline_Unmodified",
+          "present": true,
+          "state": "R2",
+          "targetNodeExists": true,
+          "targetNodePath": "/V0358_House02_Shared_Baseline_Unmodified/LOD0_Weathered_Timber"
+        }
+      },
+      "targetLocalPath": "LOD0_Weathered_Timber"
+    },
+    "C": {
+      "exactOwnerTargetPath": "/V0358_Barrosan_Barn_Gold_OptIn_Single_Instance/V0347_Barn_Rendered_Geometry_Truth",
+      "presentStates": [
+        "R1"
+      ],
+      "statePresenceDerived": true,
+      "statePresenceProof": {
+        "R0": {
+          "absenceReason": "BARN_ROOT_NOT_INSTANTIATED",
+          "ownerRootInstantiated": false,
+          "ownerRootPath": "",
+          "present": false,
+          "state": "R0",
+          "targetNodeExists": false,
+          "targetNodePath": ""
+        },
+        "R1": {
+          "absenceReason": "",
+          "ownerRootInstantiated": true,
+          "ownerRootPath": "/V0358_Barrosan_Barn_Gold_OptIn_Single_Instance",
+          "present": true,
+          "state": "R1",
+          "targetNodeExists": true,
+          "targetNodePath": "/V0358_Barrosan_Barn_Gold_OptIn_Single_Instance/V0347_Barn_Rendered_Geometry_Truth"
+        },
+        "R2": {
+          "absenceReason": "BARN_ROOT_REMOVED_BY_ROLLBACK",
+          "ownerRootInstantiated": false,
+          "ownerRootPath": "",
+          "present": false,
+          "state": "R2",
+          "targetNodeExists": false,
+          "targetNodePath": ""
+        }
+      },
+      "targetLocalPath": "V0347_Barn_Rendered_Geometry_Truth"
+    }
+  },
+  "statePresenceDerivation": "actual owner-root instantiation plus target-node existence across R0/R1/R2",
+  "status": "PASS_V0365_PROVENANCE_PROBE"
+}

@@ -23,8 +23,157 @@ const SCRIPT_ARG_PREFIXES := [
 	"--player-slice",
 	"--player-slice-validate",
 	"--player-slice-capture",
+	"--v0367-playable",
+	"--v0367-smoke",
+	"--v0367-capture",
+	"--v0368-playable",
+	"--v0368-smoke",
+	"--v0368-capture",
+	"--v0370-quaternius-proof",
+	"--v0370-quaternius-smoke",
+	"--v0370-quaternius-capture",
+	"--v0371-playable",
+	"--v0371-smoke",
+	"--v0371-capture",
+	"--v0372-quaternius-visual-recovery",
+	"--v0372-quaternius-smoke",
+	"--v0372-quaternius-capture",
+	"--v0373-autonomous-visual-direction",
+	"--v0373-autonomous-smoke",
+	"--v0373-autonomous-capture",
+	"--v0375-original-barrosan-proof",
+	"--v0375-original-barrosan-smoke",
+	"--v0375-original-barrosan-capture",
+	"--v0376-original-barrosan-quality-pass",
+	"--v0376-original-barrosan-smoke",
+	"--v0376-original-barrosan-capture",
+	"--v0377-terrain-infrastructure",
+	"--v0377-terrain-infrastructure-smoke",
+	"--v0377-terrain-infrastructure-capture",
+	"--v0378-provided-infrastructure",
+	"--v0378-provided-infrastructure-smoke",
+	"--v0378-provided-infrastructure-capture",
+	"--v0379-highland-infrastructure",
+	"--v0379-highland-infrastructure-smoke",
+	"--v0379-highland-infrastructure-capture",
+	"--v0380-highland-infrastructure",
+	"--v0380-highland-infrastructure-smoke",
+	"--v0380-highland-infrastructure-capture",
+	"--v0381-highland-dressing",
+	"--v0381-highland-dressing-smoke",
+	"--v0381-highland-dressing-capture",
+	"--v0382-clustered-dressing",
+	"--v0382-clustered-dressing-smoke",
+	"--v0382-clustered-dressing-capture",
+	"--v0383-style-coherence",
+	"--v0383-style-coherence-smoke",
+	"--v0383-style-coherence-capture",
+	"--v0384-inhabited-crossing",
+	"--v0384-inhabited-crossing-smoke",
+	"--v0384-inhabited-crossing-capture",
+	"--v0385-inhabited-crossing",
+	"--v0385-inhabited-crossing-smoke",
+	"--v0385-inhabited-crossing-capture",
+	"--v0386-inhabited-crossing",
+	"--v0386-inhabited-crossing-smoke",
+	"--v0386-inhabited-crossing-capture",
+	"--v0387-inhabited-crossing",
+	"--v0387-inhabited-crossing-smoke",
+	"--v0387-inhabited-crossing-capture",
+	"--v0388-inhabited-crossing",
+	"--v0388-inhabited-crossing-smoke",
+	"--v0388-inhabited-crossing-capture",
+	"--v0389-inhabited-crossing",
+	"--v0389-inhabited-crossing-smoke",
+	"--v0389-inhabited-crossing-capture",
+	"--v0390-inhabited-crossing",
+	"--v0390-inhabited-crossing-smoke",
+	"--v0390-inhabited-crossing-capture",
+	"--v0391-ground-plane",
+	"--v0391-ground-plane-smoke",
+	"--v0391-ground-plane-capture",
+	"--v0392-worn-earth",
+	"--v0392-worn-earth-smoke",
+	"--v0392-worn-earth-capture",
+	"--v0393-explicit-route",
+	"--v0393-explicit-route-smoke",
+	"--v0393-explicit-route-capture",
+	"--v0394-route-only",
+	"--v0394-route-only-smoke",
+	"--v0394-route-only-capture",
+	"--v0395-route-material",
+	"--v0395-route-material-smoke",
+	"--v0395-route-material-capture",
+	"--v0396-route-mesh-capture",
+	"--v0396-route-mesh-smoke",
+	"--v0396-route-mesh-diagnostic",
+	"--v0397-terrain-route-capture",
+	"--v0397-terrain-route-smoke",
+	"--v0398-route-edge-capture",
+	"--v0398-route-edge-smoke",
+	"--v0399-barn-structure-capture",
+	"--v0399-barn-structure-smoke",
+	"--v0400-house-roof-capture",
+	"--v0400-house-roof-smoke",
+	"--v0401-character-grounding-capture",
+	"--v0401-character-grounding-smoke",
+	"--v0406-western-footing-capture",
+	"--v0406-western-footing-smoke",
+	"--v0407-eastern-landing-capture",
+	"--v0407-eastern-landing-smoke",
+	"--v0408-main-house-roof-capture",
+	"--v0408-main-house-roof-smoke",
+	"--v0409-secondary-barn-roof-capture",
+	"--v0409-secondary-barn-roof-smoke",
+	"--v0410-bridge-deck-capture",
+	"--v0410-bridge-deck-smoke",
+	"--v0411-bridge-rail-post-capture",
+	"--v0411-bridge-rail-post-smoke",
+	"--v0412-bridge-understructure-capture",
+	"--v0412-bridge-understructure-smoke",
+	"--v0413-main-house-masonry-capture",
+	"--v0413-main-house-masonry-smoke",
+	"--v0414-main-house-openings-trim-capture",
+	"--v0414-main-house-openings-trim-smoke",
+	"--v0415-main-house-foundation-step-capture",
+	"--v0415-main-house-foundation-step-smoke",
+	"--v0416-main-house-chimney-capture",
+	"--v0416-main-house-chimney-smoke",
+	"--v0417-secondary-barn-walls-capture",
+	"--v0417-secondary-barn-walls-smoke",
+	"--v0418-secondary-barn-openings-capture",
+	"--v0418-secondary-barn-openings-smoke",
+	"--v0419-secondary-barn-front-gable-capture",
+	"--v0419-secondary-barn-front-gable-smoke",
+	"--v0420-secondary-barn-stone-base-capture",
+	"--v0420-secondary-barn-stone-base-smoke",
+	"--v0421-secondary-barn-entrance-frame-capture",
+	"--v0421-secondary-barn-entrance-frame-smoke",
+	"--v0422-secondary-barn-front-structure-capture",
+	"--v0422-secondary-barn-front-structure-smoke",
+	"--v0423-secondary-barn-side-beams-capture",
+	"--v0423-secondary-barn-side-beams-smoke",
+	"--v0424-secondary-barn-ridge-beam-capture",
+	"--v0424-secondary-barn-ridge-beam-smoke",
+	"--v0425-secondary-barn-eaves-capture",
+	"--v0425-secondary-barn-eaves-smoke",
+	"--v0426-secondary-barn-contact-shadow-capture",
+	"--v0426-secondary-barn-contact-shadow-smoke",
+	"--v0427-resident-worker-primary-garment-capture",
+	"--v0427-resident-worker-primary-garment-smoke",
+	"--h3-semantic-evidence",
+	"--h3-supported-state-contract",
+	"--h3-directional-animation-micro-pilot",
+	"--h3-directional-animation-runtime-proof-recovery",
+	"--h3-visible-animation-directional-closure",
+	"--h3-target-isolated-evidence-closure",
+	"--h3-single-sprite-atlas-rendering-repair",
+	"--h3-militia-silhouette-integrity",
 	"--salto-barrosan-playable-runtime-skin",
 	"--salto-barrosan-runtime-debug-labels",
+	"--salto-barrosan-player-presentation",
+	"--salto-barrosan-debug-review-overlay",
+	"--salto-barrosan-h3-runtime-pilot",
 	"--worker-art-opt-in",
 	"--worker-art-opt-in-benchmark",
 	"--worker-art-source=",
@@ -227,6 +376,595 @@ func _ready() -> void:
 	current_viewport_size = _viewport_from_args(VIEWPORT_SIZE)
 	active_visual_preset = _visual_preset_from_args()
 	_configure_window()
+	if args.has("--v0367-playable") or args.has("--v0367-smoke") or args.has("--v0367-capture"):
+		var v0367_scene := load("res://scenes/v0367_first_playable_vertical_slice.tscn") as PackedScene
+		if v0367_scene == null:
+			get_tree().quit(1)
+			return
+		var v0367_slice := v0367_scene.instantiate()
+		add_child(v0367_slice)
+		return
+	if args.has("--v0368-playable") or args.has("--v0368-smoke") or args.has("--v0368-capture"):
+		var v0368_scene := load("res://scenes/v0368_playable_slice_visual_coherence.tscn") as PackedScene
+		if v0368_scene == null:
+			get_tree().quit(1)
+			return
+		var v0368_slice := v0368_scene.instantiate()
+		add_child(v0368_slice)
+		return
+	if args.has("--v0370-quaternius-proof") or args.has("--v0370-quaternius-smoke") or args.has("--v0370-quaternius-capture"):
+		var v0370_scene := load("res://scenes/v0370_quaternius_visual_proof.tscn") as PackedScene
+		if v0370_scene == null:
+			get_tree().quit(1)
+			return
+		var v0370_proof := v0370_scene.instantiate()
+		add_child(v0370_proof)
+	if args.has("--v0371-playable") or args.has("--v0371-smoke") or args.has("--v0371-capture"):
+		var v0371_scene := load("res://scenes/v0371_first_cohesive_quaternius_rts_sector.tscn") as PackedScene
+		if v0371_scene == null:
+			push_error("v0.371 scene failed to load")
+		else:
+			var v0371_slice := v0371_scene.instantiate()
+			v0371_slice.name = "V0371FirstCohesiveQuaterniusRtsSector"
+			add_child(v0371_slice)
+		return
+	if args.has("--v0372-quaternius-visual-recovery") or args.has("--v0372-quaternius-smoke") or args.has("--v0372-quaternius-capture"):
+		var v0372_scene := load("res://scenes/v0372_quaternius_rts_visual_recovery.tscn") as PackedScene
+		if v0372_scene == null:
+			push_error("v0.372 scene failed to load")
+		else:
+			var v0372_recovery := v0372_scene.instantiate()
+			v0372_recovery.name = "V0372QuaterniusRtsVisualRecovery"
+			add_child(v0372_recovery)
+		return
+	if args.has("--v0373-autonomous-visual-direction") or args.has("--v0373-autonomous-smoke") or args.has("--v0373-autonomous-capture"):
+		var v0373_scene := load("res://scenes/v0373_autonomous_visual_direction_rts_sector.tscn") as PackedScene
+		if v0373_scene == null:
+			push_error("v0.373 scene failed to load")
+		else:
+			var v0373_slice := v0373_scene.instantiate()
+			v0373_slice.name = "V0373AutonomousVisualDirectionRtsSector"
+			add_child(v0373_slice)
+		return
+	if args.has("--v0375-original-barrosan-proof") or args.has("--v0375-original-barrosan-smoke") or args.has("--v0375-original-barrosan-capture"):
+		var v0375_scene := load("res://scenes/v0375_original_barrosan_visual_proof.tscn") as PackedScene
+		if v0375_scene == null:
+			push_error("v0.375 original Barrosan proof scene failed to load")
+		else:
+			var v0375_proof := v0375_scene.instantiate()
+			v0375_proof.name = "V0375OriginalBarrosanVisualProof"
+			add_child(v0375_proof)
+		return
+	if args.has("--v0376-original-barrosan-quality-pass") or args.has("--v0376-original-barrosan-smoke") or args.has("--v0376-original-barrosan-capture"):
+		var v0376_scene := load("res://scenes/v0376_original_barrosan_art_quality_pass.tscn") as PackedScene
+		if v0376_scene == null:
+			push_error("v0.376 original Barrosan art-quality scene failed to load")
+		else:
+			var v0376_pass := v0376_scene.instantiate()
+			v0376_pass.name = "V0376OriginalBarrosanArtQualityPass"
+			add_child(v0376_pass)
+		return
+	if args.has("--v0377-terrain-infrastructure") or args.has("--v0377-terrain-infrastructure-smoke") or args.has("--v0377-terrain-infrastructure-capture"):
+		var v0377_scene := load("res://scenes/v0377_reference_driven_terrain_infrastructure.tscn") as PackedScene
+		if v0377_scene == null:
+			push_error("v0.377 terrain infrastructure scene failed to load")
+		else:
+			var v0377_pass := v0377_scene.instantiate()
+			v0377_pass.name = "V0377ReferenceDrivenTerrainInfrastructure"
+			add_child(v0377_pass)
+		return
+	if args.has("--v0378-provided-infrastructure") or args.has("--v0378-provided-infrastructure-smoke") or args.has("--v0378-provided-infrastructure-capture"):
+		var v0378_scene := load("res://scenes/v0378_provided_infrastructure.tscn") as PackedScene
+		if v0378_scene == null:
+			push_error("v0.378 provided infrastructure scene failed to load")
+		else:
+			var v0378_pass := v0378_scene.instantiate()
+			v0378_pass.name = "V0378ProvidedInfrastructure"
+			add_child(v0378_pass)
+		return
+	if args.has("--v0379-highland-infrastructure") or args.has("--v0379-highland-infrastructure-smoke") or args.has("--v0379-highland-infrastructure-capture"):
+		var v0379_scene := load("res://scenes/v0379_authored_highland_infrastructure.tscn") as PackedScene
+		if v0379_scene == null:
+			push_error("v0.379 authored highland infrastructure scene failed to load")
+		else:
+			var v0379_pass := v0379_scene.instantiate()
+			v0379_pass.name = "V0379AuthoredHighlandInfrastructure"
+			add_child(v0379_pass)
+		return
+	if args.has("--v0380-highland-infrastructure") or args.has("--v0380-highland-infrastructure-smoke") or args.has("--v0380-highland-infrastructure-capture"):
+		var v0380_scene := load("res://scenes/v0380_corrected_highland_infrastructure.tscn") as PackedScene
+		if v0380_scene == null:
+			push_error("v0.380 corrected highland infrastructure scene failed to load")
+		else:
+			var v0380_pass := v0380_scene.instantiate()
+			v0380_pass.name = "V0380CorrectedHighlandInfrastructure"
+			add_child(v0380_pass)
+		return
+	if args.has("--v0381-highland-dressing") or args.has("--v0381-highland-dressing-smoke") or args.has("--v0381-highland-dressing-capture"):
+		var v0381_scene := load("res://scenes/v0381_highland_infrastructure_dressing.tscn") as PackedScene
+		if v0381_scene == null:
+			push_error("v0.381 highland infrastructure dressing scene failed to load")
+		else:
+			var v0381_pass := v0381_scene.instantiate()
+			v0381_pass.name = "V0381HighlandInfrastructureDressing"
+			add_child(v0381_pass)
+		return
+	if args.has("--v0382-clustered-dressing") or args.has("--v0382-clustered-dressing-smoke") or args.has("--v0382-clustered-dressing-capture"):
+		var v0382_scene := load("res://scenes/v0382_clustered_highland_dressing.tscn") as PackedScene
+		if v0382_scene == null:
+			push_error("v0.382 clustered highland dressing scene failed to load")
+		else:
+			var v0382_pass := v0382_scene.instantiate()
+			v0382_pass.name = "V0382ClusteredHighlandDressing"
+			add_child(v0382_pass)
+		return
+	if args.has("--v0383-style-coherence") or args.has("--v0383-style-coherence-smoke") or args.has("--v0383-style-coherence-capture"):
+		var v0383_scene := load("res://scenes/v0383_highland_style_coherence.tscn") as PackedScene
+		if v0383_scene == null:
+			push_error("v0.383 highland style-coherence scene failed to load")
+		else:
+			var v0383_pass := v0383_scene.instantiate()
+			v0383_pass.name = "V0383HighlandStyleCoherence"
+			add_child(v0383_pass)
+		return
+	if args.has("--v0384-inhabited-crossing") or args.has("--v0384-inhabited-crossing-smoke") or args.has("--v0384-inhabited-crossing-capture"):
+		var v0384_scene := load("res://scenes/v0384_first_inhabited_crossing.tscn") as PackedScene
+		if v0384_scene == null:
+			push_error("v0.384 first inhabited crossing scene failed to load")
+		else:
+			var v0384_pass := v0384_scene.instantiate()
+			v0384_pass.name = "V0384FirstInhabitedCrossing"
+			add_child(v0384_pass)
+		return
+	if args.has("--v0385-inhabited-crossing") or args.has("--v0385-inhabited-crossing-smoke") or args.has("--v0385-inhabited-crossing-capture"):
+		var v0385_scene := load("res://scenes/v0385_curated_inhabited_crossing.tscn") as PackedScene
+		if v0385_scene == null:
+			push_error("v0.385 curated inhabited crossing scene failed to load")
+		else:
+			var v0385_pass := v0385_scene.instantiate()
+			v0385_pass.name = "V0385CuratedInhabitedCrossing"
+			add_child(v0385_pass)
+		return
+	if args.has("--v0386-inhabited-crossing") or args.has("--v0386-inhabited-crossing-smoke") or args.has("--v0386-inhabited-crossing-capture"):
+		var v0386_scene := load("res://scenes/v0386_inhabited_crossing_composition_repair.tscn") as PackedScene
+		if v0386_scene == null:
+			push_error("v0.386 inhabited crossing composition repair scene failed to load")
+		else:
+			var v0386_pass := v0386_scene.instantiate()
+			v0386_pass.name = "V0386InhabitedCrossingCompositionRepair"
+			add_child(v0386_pass)
+		return
+	if args.has("--v0387-inhabited-crossing") or args.has("--v0387-inhabited-crossing-smoke") or args.has("--v0387-inhabited-crossing-capture"):
+		var v0387_scene := load("res://scenes/v0387_inhabited_crossing_route_hierarchy_repair.tscn") as PackedScene
+		if v0387_scene == null:
+			push_error("v0.387 inhabited crossing route hierarchy repair scene failed to load")
+		else:
+			var v0387_pass := v0387_scene.instantiate()
+			v0387_pass.name = "V0387InhabitedCrossingRouteHierarchyRepair"
+			add_child(v0387_pass)
+		return
+	if args.has("--v0388-inhabited-crossing") or args.has("--v0388-inhabited-crossing-smoke") or args.has("--v0388-inhabited-crossing-capture"):
+		var v0388_scene := load("res://scenes/v0388_inhabited_crossing_settlement_cohesion_repair.tscn") as PackedScene
+		if v0388_scene == null:
+			push_error("v0.388 inhabited crossing settlement cohesion repair scene failed to load")
+		else:
+			var v0388_pass := v0388_scene.instantiate()
+			v0388_pass.name = "V0388InhabitedCrossingSettlementCohesionRepair"
+			add_child(v0388_pass)
+		return
+	if args.has("--v0389-inhabited-crossing") or args.has("--v0389-inhabited-crossing-smoke") or args.has("--v0389-inhabited-crossing-capture"):
+		var v0389_scene := load("res://scenes/v0389_inhabited_crossing_farmyard_readability_repair.tscn") as PackedScene
+		if v0389_scene == null:
+			push_error("v0.389 inhabited crossing farmyard readability repair scene failed to load")
+		else:
+			var v0389_pass := v0389_scene.instantiate()
+			v0389_pass.name = "V0389InhabitedCrossingFarmyardReadabilityRepair"
+			add_child(v0389_pass)
+		return
+	if args.has("--v0390-inhabited-crossing") or args.has("--v0390-inhabited-crossing-smoke") or args.has("--v0390-inhabited-crossing-capture"):
+		var v0390_scene := load("res://scenes/v0390_inhabited_crossing_natural_yard_grounding_value_repair.tscn") as PackedScene
+		if v0390_scene == null:
+			push_error("v0.390 inhabited crossing natural yard grounding value repair scene failed to load")
+		else:
+			var v0390_pass := v0390_scene.instantiate()
+			v0390_pass.name = "V0390InhabitedCrossingNaturalYardGroundingValueRepair"
+			add_child(v0390_pass)
+		return
+	if args.has("--v0391-ground-plane") or args.has("--v0391-ground-plane-smoke") or args.has("--v0391-ground-plane-capture"):
+		var v0391_scene := load("res://scenes/v0391_ground_plane_legibility_building_separation_repair.tscn") as PackedScene
+		if v0391_scene == null:
+			push_error("v0.391 scene failed to load")
+			return
+		var v0391_pass := v0391_scene.instantiate()
+		v0391_pass.name = "V0391GroundPlaneLegibilityBuildingSeparationRepair"
+		add_child(v0391_pass)
+		return
+	if args.has("--v0392-worn-earth") or args.has("--v0392-worn-earth-smoke") or args.has("--v0392-worn-earth-capture"):
+		var v0392_scene := load("res://scenes/v0392_worn_earth_route_open_gate_readability_repair.tscn") as PackedScene
+		if v0392_scene == null:
+			push_error("v0.392 scene failed to load")
+			return
+		var v0392_pass := v0392_scene.instantiate()
+		v0392_pass.name = "V0392WornEarthRouteOpenGateReadabilityRepair"
+		add_child(v0392_pass)
+		return
+	if args.has("--v0393-explicit-route") or args.has("--v0393-explicit-route-smoke") or args.has("--v0393-explicit-route-capture"):
+		var v0393_scene := load("res://scenes/v0393_explicit_route_silhouette_front_yard_gate_repair.tscn") as PackedScene
+		var v0393_pass: Node3D
+		if v0393_scene != null:
+			v0393_pass = v0393_scene.instantiate()
+		else:
+			var v0393_script := load("res://scripts/v0393_explicit_route_silhouette_front_yard_gate_repair.gd") as Script
+			if v0393_script == null:
+				push_error("v0.393 scene and script failed to load")
+				return
+			v0393_pass = Node3D.new()
+			v0393_pass.set_script(v0393_script)
+		v0393_pass.name = "V0393ExplicitRouteSilhouetteFrontYardGateRepair"
+		v0393_pass.set_meta("v0393_capture_mode", args.has("--v0393-explicit-route-capture"))
+		v0393_pass.set_meta("v0393_smoke_mode", args.has("--v0393-explicit-route-smoke"))
+		add_child(v0393_pass)
+		return
+	if args.has("--v0394-route-only") or args.has("--v0394-route-only-smoke") or args.has("--v0394-route-only-capture"):
+		var v0394_script := load("res://scripts/v0394_route_only_visibility_repair_fence_regression_rollback.gd") as Script
+		if v0394_script == null:
+			push_error("v0.394 script failed to load")
+			return
+		var v0394_pass := Node3D.new()
+		v0394_pass.set_script(v0394_script)
+		v0394_pass.name = "V0394RouteOnlyVisibilityRepairFenceRegressionRollback"
+		v0394_pass.set_meta("v0394_capture_mode", args.has("--v0394-route-only-capture"))
+		v0394_pass.set_meta("v0394_smoke_mode", args.has("--v0394-route-only-smoke"))
+		add_child(v0394_pass)
+		return
+	if args.has("--v0395-route-material") or args.has("--v0395-route-material-smoke") or args.has("--v0395-route-material-capture"):
+		var v0395_script := load("res://scripts/v0395_natural_worn_earth_route_material_edge_integration.gd") as Script
+		if v0395_script == null:
+			push_error("v0.395 script failed to load")
+			return
+		var v0395_pass := Node3D.new()
+		v0395_pass.set_script(v0395_script)
+		v0395_pass.name = "V0395NaturalWornEarthRouteMaterialEdgeIntegration"
+		v0395_pass.set_meta("v0395_capture_mode", args.has("--v0395-route-material-capture"))
+		v0395_pass.set_meta("v0395_smoke_mode", args.has("--v0395-route-material-smoke"))
+		add_child(v0395_pass)
+		return
+	if args.has("--v0396-route-mesh-capture") or args.has("--v0396-route-mesh-smoke") or args.has("--v0396-route-mesh-diagnostic"):
+		var v0396_script := load("res://scripts/v0396_inherited_route_mesh_deduplication_material_unification.gd") as Script
+		if v0396_script == null:
+			push_error("v0.396 script failed to load")
+			return
+		var v0396_pass := Node3D.new()
+		v0396_pass.set_script(v0396_script)
+		v0396_pass.name = "V0396InheritedRouteMeshDeduplicationMaterialUnification"
+		v0396_pass.set_meta("v0396_capture_mode", args.has("--v0396-route-mesh-capture"))
+		v0396_pass.set_meta("v0396_smoke_mode", args.has("--v0396-route-mesh-smoke"))
+		v0396_pass.set_meta("v0396_diagnostic_mode", args.has("--v0396-route-mesh-diagnostic"))
+		add_child(v0396_pass)
+		return
+	if args.has("--v0397-terrain-route-capture") or args.has("--v0397-terrain-route-smoke"):
+		var v0397_script := load("res://scripts/v0397_terrain_route_integration.gd") as Script
+		if v0397_script == null:
+			push_error("v0.397 script failed to load")
+			return
+		var v0397_pass := Node3D.new()
+		v0397_pass.set_script(v0397_script)
+		v0397_pass.name = "V0397TerrainRouteIntegration"
+		v0397_pass.set_meta("v0397_capture_mode", args.has("--v0397-terrain-route-capture"))
+		v0397_pass.set_meta("v0397_smoke_mode", args.has("--v0397-terrain-route-smoke"))
+		add_child(v0397_pass)
+		return
+	if args.has("--v0398-route-edge-capture") or args.has("--v0398-route-edge-smoke"):
+		var v0398_script := load("res://scripts/v0398_route_edge_bedding_cleanup.gd") as Script
+		if v0398_script == null:
+			push_error("v0.398 script failed to load")
+			return
+		var v0398_pass := Node3D.new()
+		v0398_pass.set_script(v0398_script)
+		v0398_pass.name = "V0398RouteEdgeBeddingCleanup"
+		v0398_pass.set_meta("v0398_capture_mode", args.has("--v0398-route-edge-capture"))
+		v0398_pass.set_meta("v0398_smoke_mode", args.has("--v0398-route-edge-smoke"))
+		add_child(v0398_pass)
+		return
+	if args.has("--v0399-barn-structure-capture") or args.has("--v0399-barn-structure-smoke"):
+		var v0399_script := load("res://scripts/v0399_barn_outbuilding_structural_readability.gd") as Script
+		if v0399_script == null:
+			push_error("v0.399 script failed to load")
+			return
+		var v0399_pass := Node3D.new()
+		v0399_pass.set_script(v0399_script)
+		v0399_pass.name = "V0399BarnOutbuildingStructuralReadability"
+		v0399_pass.set_meta("v0399_capture_mode", args.has("--v0399-barn-structure-capture"))
+		v0399_pass.set_meta("v0399_smoke_mode", args.has("--v0399-barn-structure-smoke"))
+		add_child(v0399_pass)
+		return
+	if args.has("--v0400-house-roof-capture") or args.has("--v0400-house-roof-smoke"):
+		var v0400_script := load("res://scripts/v0400_main_house_roof_silhouette_cleanup.gd") as Script
+		if v0400_script == null:
+			push_error("v0.400 script failed to load")
+			return
+		var v0400_pass := Node3D.new()
+		v0400_pass.set_script(v0400_script)
+		v0400_pass.name = "V0400MainHouseRoofSilhouetteCleanup"
+		v0400_pass.set_meta("v0400_capture_mode", args.has("--v0400-house-roof-capture"))
+		v0400_pass.set_meta("v0400_smoke_mode", args.has("--v0400-house-roof-smoke"))
+		add_child(v0400_pass)
+		return
+	if args.has("--v0401-character-grounding-capture") or args.has("--v0401-character-grounding-smoke"):
+		var v0401_script := load("res://scripts/v0401_character_scale_grounding_calibration.gd") as Script
+		if v0401_script == null:
+			push_error("v0.401 script failed to load")
+			return
+		var v0401_pass := Node3D.new()
+		v0401_pass.set_script(v0401_script)
+		v0401_pass.name = "V0401CharacterScaleGroundingCalibration"
+		v0401_pass.set_meta("v0401_capture_mode", args.has("--v0401-character-grounding-capture"))
+		v0401_pass.set_meta("v0401_smoke_mode", args.has("--v0401-character-grounding-smoke"))
+		add_child(v0401_pass)
+		return
+	if args.has("--v0406-western-footing-capture") or args.has("--v0406-western-footing-smoke"):
+		var v0406_script := load("res://scripts/v0406_exact_western_footing_ring_extension.gd") as Script
+		if v0406_script == null:
+			push_error("v0.406 script failed to load")
+			return
+		var v0406_pass := Node3D.new()
+		v0406_pass.set_script(v0406_script)
+		v0406_pass.name = "V0406ExactWesternFootingRingExtension"
+		v0406_pass.set_meta("v0406_capture_mode", args.has("--v0406-western-footing-capture"))
+		v0406_pass.set_meta("v0406_smoke_mode", args.has("--v0406-western-footing-smoke"))
+		add_child(v0406_pass)
+	if args.has("--v0407-eastern-landing-capture") or args.has("--v0407-eastern-landing-smoke"):
+		var v0407_script := load("res://scripts/v0407_eastern_bridge_landing_footprint_cleanup.gd") as Script
+		if v0407_script == null:
+			push_error("v0.407 eastern landing script failed to load")
+			return
+		var v0407_pass := Node3D.new()
+		v0407_pass.set_script(v0407_script)
+		v0407_pass.name = "V0407EasternBridgeLandingFootprintCleanup"
+		v0407_pass.set_meta("v0407_capture_mode", args.has("--v0407-eastern-landing-capture"))
+		v0407_pass.set_meta("v0407_smoke_mode", args.has("--v0407-eastern-landing-smoke"))
+		add_child(v0407_pass)
+		return
+	if args.has("--v0408-main-house-roof-capture") or args.has("--v0408-main-house-roof-smoke"):
+		var v0408_script := load("res://scripts/v0408_main_house_roof_surface_readability.gd") as Script
+		if v0408_script == null:
+			push_error("v0.408 main-house roof script failed to load")
+			return
+		var v0408_pass := Node3D.new()
+		v0408_pass.set_script(v0408_script)
+		v0408_pass.name = "V0408MainHouseRoofSurfaceReadability"
+		v0408_pass.set_meta("v0408_capture_mode", args.has("--v0408-main-house-roof-capture"))
+		v0408_pass.set_meta("v0408_smoke_mode", args.has("--v0408-main-house-roof-smoke"))
+		add_child(v0408_pass)
+		return
+	if args.has("--v0409-secondary-barn-roof-capture") or args.has("--v0409-secondary-barn-roof-smoke"):
+		var v0409_script := load("res://scripts/v0409_secondary_barn_roof_surface_readability.gd") as Script
+		if v0409_script == null:
+			push_error("v0.409 secondary barn roof script failed to load")
+			return
+		var v0409_pass := Node3D.new()
+		v0409_pass.set_script(v0409_script)
+		v0409_pass.name = "V0409SecondaryBarnRoofSurfaceReadability"
+		v0409_pass.set_meta("v0409_capture_mode", args.has("--v0409-secondary-barn-roof-capture"))
+		v0409_pass.set_meta("v0409_smoke_mode", args.has("--v0409-secondary-barn-roof-smoke"))
+		add_child(v0409_pass)
+		return
+	if args.has("--v0410-bridge-deck-capture") or args.has("--v0410-bridge-deck-smoke"):
+		var v0410_script := load("res://scripts/v0410_bridge_deck_timber_surface_readability.gd") as Script
+		if v0410_script == null:
+			push_error("v0.410 bridge-deck timber script failed to load")
+			return
+		var v0410_pass := Node3D.new()
+		v0410_pass.set_script(v0410_script)
+		v0410_pass.name = "V0410BridgeDeckTimberSurfaceReadability"
+		v0410_pass.set_meta("v0410_capture_mode", args.has("--v0410-bridge-deck-capture"))
+		v0410_pass.set_meta("v0410_smoke_mode", args.has("--v0410-bridge-deck-smoke"))
+		add_child(v0410_pass)
+		return
+	if args.has("--v0411-bridge-rail-post-capture") or args.has("--v0411-bridge-rail-post-smoke"):
+		var v0411_script := load("res://scripts/v0411_bridge_rail_post_value_hierarchy.gd") as Script
+		if v0411_script == null:
+			push_error("v0.411 bridge rail/post script failed to load")
+			return
+		var v0411_pass := Node3D.new()
+		v0411_pass.set_script(v0411_script)
+		v0411_pass.name = "V0411BridgeRailPostValueHierarchy"
+		v0411_pass.set_meta("v0411_capture_mode", args.has("--v0411-bridge-rail-post-capture"))
+		v0411_pass.set_meta("v0411_smoke_mode", args.has("--v0411-bridge-rail-post-smoke"))
+		add_child(v0411_pass)
+		return
+	if args.has("--v0412-bridge-understructure-capture") or args.has("--v0412-bridge-understructure-smoke"):
+		var v0412_script := load("res://scripts/v0412_bridge_understructure_value_hierarchy.gd") as Script
+		if v0412_script == null:
+			push_error("v0.412 bridge understructure script failed to load")
+			return
+		var v0412_pass := Node3D.new()
+		v0412_pass.set_script(v0412_script)
+		v0412_pass.name = "V0412BridgeUnderstructureValueHierarchy"
+		v0412_pass.set_meta("v0412_capture_mode", args.has("--v0412-bridge-understructure-capture"))
+		v0412_pass.set_meta("v0412_smoke_mode", args.has("--v0412-bridge-understructure-smoke"))
+		add_child(v0412_pass)
+		return
+	if args.has("--v0413-main-house-masonry-capture") or args.has("--v0413-main-house-masonry-smoke"):
+		var v0413_script := load("res://scripts/v0413_main_house_masonry_value_hierarchy.gd") as Script
+		if v0413_script == null:
+			push_error("v0.413 main-house masonry script failed to load")
+			return
+		var v0413_pass := Node3D.new()
+		v0413_pass.set_script(v0413_script)
+		v0413_pass.name = "V0413MainHouseMasonryValueHierarchy"
+		v0413_pass.set_meta("v0413_capture_mode", args.has("--v0413-main-house-masonry-capture"))
+		v0413_pass.set_meta("v0413_smoke_mode", args.has("--v0413-main-house-masonry-smoke"))
+		add_child(v0413_pass)
+		return
+	if args.has("--v0414-main-house-openings-trim-capture") or args.has("--v0414-main-house-openings-trim-smoke"):
+		var v0414_script := load("res://scripts/v0414_main_house_openings_trim_value_hierarchy.gd") as Script
+		if v0414_script == null:
+			push_error("v0.414 main-house openings/trim script failed to load")
+			return
+		var v0414_pass := Node3D.new()
+		v0414_pass.set_script(v0414_script)
+		v0414_pass.name = "V0414MainHouseOpeningsTrimValueHierarchy"
+		v0414_pass.set_meta("v0414_capture_mode", args.has("--v0414-main-house-openings-trim-capture"))
+		v0414_pass.set_meta("v0414_smoke_mode", args.has("--v0414-main-house-openings-trim-smoke"))
+		add_child(v0414_pass)
+		return
+	if args.has("--v0415-main-house-foundation-step-capture") or args.has("--v0415-main-house-foundation-step-smoke"):
+		var v0415_script := load("res://scripts/v0415_main_house_foundation_step_grounding.gd") as Script
+		if v0415_script == null:
+			push_error("v0.415 main-house foundation/step script failed to load")
+			return
+		var v0415_pass := Node3D.new()
+		v0415_pass.set_script(v0415_script)
+		v0415_pass.name = "V0415MainHouseFoundationStepGrounding"
+		v0415_pass.set_meta("v0415_capture_mode", args.has("--v0415-main-house-foundation-step-capture"))
+		v0415_pass.set_meta("v0415_smoke_mode", args.has("--v0415-main-house-foundation-step-smoke"))
+		add_child(v0415_pass)
+		return
+	if args.has("--v0416-main-house-chimney-capture") or args.has("--v0416-main-house-chimney-smoke"):
+		var v0416_script := load("res://scripts/v0416_main_house_chimney_material_hierarchy.gd") as Script
+		if v0416_script == null:
+			push_error("v0.416 main-house chimney script failed to load")
+			return
+		var v0416_pass := Node3D.new()
+		v0416_pass.set_script(v0416_script)
+		v0416_pass.name = "V0416MainHouseChimneyMaterialHierarchy"
+		v0416_pass.set_meta("v0416_capture_mode", args.has("--v0416-main-house-chimney-capture"))
+		v0416_pass.set_meta("v0416_smoke_mode", args.has("--v0416-main-house-chimney-smoke"))
+		add_child(v0416_pass)
+		return
+	if args.has("--v0417-secondary-barn-walls-capture") or args.has("--v0417-secondary-barn-walls-smoke"):
+		var v0417_script := load("res://scripts/v0417_secondary_barn_wall_value_hierarchy.gd") as Script
+		if v0417_script == null:
+			push_error("v0.417 secondary-barn wall script failed to load")
+			return
+		var v0417_pass := Node3D.new()
+		v0417_pass.set_script(v0417_script)
+		v0417_pass.name = "V0417SecondaryBarnWallValueHierarchy"
+		v0417_pass.set_meta("v0417_capture_mode", args.has("--v0417-secondary-barn-walls-capture"))
+		v0417_pass.set_meta("v0417_smoke_mode", args.has("--v0417-secondary-barn-walls-smoke"))
+		add_child(v0417_pass)
+		return
+	if args.has("--v0418-secondary-barn-openings-capture") or args.has("--v0418-secondary-barn-openings-smoke"):
+		var v0418_script := load("res://scripts/v0418_secondary_barn_openings_value_hierarchy.gd") as Script
+		if v0418_script == null:
+			push_error("v0.418 secondary-barn openings script failed to load")
+			return
+		var v0418_pass := Node3D.new()
+		v0418_pass.set_script(v0418_script)
+		v0418_pass.name = "V0418SecondaryBarnOpeningsValueHierarchy"
+		v0418_pass.set_meta("v0418_capture_mode", args.has("--v0418-secondary-barn-openings-capture"))
+		v0418_pass.set_meta("v0418_smoke_mode", args.has("--v0418-secondary-barn-openings-smoke"))
+		add_child(v0418_pass)
+		return
+	if args.has("--v0419-secondary-barn-front-gable-capture") or args.has("--v0419-secondary-barn-front-gable-smoke"):
+		var v0419_script := load("res://scripts/v0419_secondary_barn_front_gable_value_integration.gd") as Script
+		if v0419_script == null:
+			push_error("v0.419 secondary-barn front-gable script failed to load")
+			return
+		var v0419_pass := Node3D.new()
+		v0419_pass.set_script(v0419_script)
+		v0419_pass.name = "V0419SecondaryBarnFrontGableValueIntegration"
+		v0419_pass.set_meta("v0419_capture_mode", args.has("--v0419-secondary-barn-front-gable-capture"))
+		v0419_pass.set_meta("v0419_smoke_mode", args.has("--v0419-secondary-barn-front-gable-smoke"))
+		add_child(v0419_pass)
+		return
+	if args.has("--v0420-secondary-barn-stone-base-capture") or args.has("--v0420-secondary-barn-stone-base-smoke"):
+		var v0420_script := load("res://scripts/v0420_secondary_barn_stone_base_value_hierarchy.gd") as Script
+		if v0420_script == null:
+			push_error("v0.420 secondary-barn stone-base script failed to load")
+			return
+		var v0420_pass := Node3D.new()
+		v0420_pass.set_script(v0420_script)
+		v0420_pass.name = "V0420SecondaryBarnStoneBaseValueHierarchy"
+		v0420_pass.set_meta("v0420_capture_mode", args.has("--v0420-secondary-barn-stone-base-capture"))
+		v0420_pass.set_meta("v0420_smoke_mode", args.has("--v0420-secondary-barn-stone-base-smoke"))
+		add_child(v0420_pass)
+		return
+	if args.has("--v0421-secondary-barn-entrance-frame-capture") or args.has("--v0421-secondary-barn-entrance-frame-smoke"):
+		var v0421_script := load("res://scripts/v0421_secondary_barn_entrance_frame_value_hierarchy.gd") as Script
+		if v0421_script == null:
+			push_error("v0.421 secondary-barn entrance-frame script failed to load")
+			return
+		var v0421_pass := Node3D.new()
+		v0421_pass.set_script(v0421_script)
+		v0421_pass.name = "V0421SecondaryBarnEntranceFrameValueHierarchy"
+		v0421_pass.set_meta("v0421_capture_mode", args.has("--v0421-secondary-barn-entrance-frame-capture"))
+		v0421_pass.set_meta("v0421_smoke_mode", args.has("--v0421-secondary-barn-entrance-frame-smoke"))
+		add_child(v0421_pass)
+		return
+	if args.has("--v0422-secondary-barn-front-structure-capture") or args.has("--v0422-secondary-barn-front-structure-smoke"):
+		var v0422_script := load("res://scripts/v0422_secondary_barn_front_structure_value_hierarchy.gd") as Script
+		if v0422_script == null:
+			push_error("v0.422 secondary-barn front-structure script failed to load")
+			return
+		var v0422_pass := Node3D.new()
+		v0422_pass.set_script(v0422_script)
+		v0422_pass.name = "V0422SecondaryBarnFrontStructureValueHierarchy"
+		v0422_pass.set_meta("v0422_capture_mode", args.has("--v0422-secondary-barn-front-structure-capture"))
+		v0422_pass.set_meta("v0422_smoke_mode", args.has("--v0422-secondary-barn-front-structure-smoke"))
+		add_child(v0422_pass)
+		return
+	if args.has("--v0423-secondary-barn-side-beams-capture") or args.has("--v0423-secondary-barn-side-beams-smoke"):
+		var v0423_script := load("res://scripts/v0423_secondary_barn_side_beam_recession_hierarchy.gd") as Script
+		if v0423_script == null:
+			push_error("v0.423 secondary-barn side-beams script failed to load")
+			return
+		var v0423_pass := Node3D.new()
+		v0423_pass.set_script(v0423_script)
+		v0423_pass.name = "V0423SecondaryBarnSideBeamRecessionHierarchy"
+		v0423_pass.set_meta("v0423_capture_mode", args.has("--v0423-secondary-barn-side-beams-capture"))
+		v0423_pass.set_meta("v0423_smoke_mode", args.has("--v0423-secondary-barn-side-beams-smoke"))
+		add_child(v0423_pass)
+		return
+	if args.has("--v0424-secondary-barn-ridge-beam-capture") or args.has("--v0424-secondary-barn-ridge-beam-smoke"):
+		var v0424_script := load("res://scripts/v0424_secondary_barn_ridge_beam_value_hierarchy.gd") as Script
+		if v0424_script == null:
+			push_error("v0.424 secondary-barn ridge-beam script failed to load")
+			return
+		var v0424_pass := Node3D.new()
+		v0424_pass.set_script(v0424_script)
+		v0424_pass.name = "V0424SecondaryBarnRidgeBeamValueHierarchy"
+		v0424_pass.set_meta("v0424_capture_mode", args.has("--v0424-secondary-barn-ridge-beam-capture"))
+		v0424_pass.set_meta("v0424_smoke_mode", args.has("--v0424-secondary-barn-ridge-beam-smoke"))
+		add_child(v0424_pass)
+		return
+	if args.has("--v0425-secondary-barn-eaves-capture") or args.has("--v0425-secondary-barn-eaves-smoke"):
+		var v0425_script := load("res://scripts/v0425_secondary_barn_eave_edge_value_hierarchy.gd") as Script
+		if v0425_script == null:
+			push_error("v0.425 secondary-barn eave script failed to load")
+			return
+		var v0425_pass := Node3D.new()
+		v0425_pass.set_script(v0425_script)
+		v0425_pass.name = "V0425SecondaryBarnEaveEdgeValueHierarchy"
+		v0425_pass.set_meta("v0425_capture_mode", args.has("--v0425-secondary-barn-eaves-capture"))
+		v0425_pass.set_meta("v0425_smoke_mode", args.has("--v0425-secondary-barn-eaves-smoke"))
+		add_child(v0425_pass)
+		return
+	if args.has("--v0426-secondary-barn-contact-shadow-capture") or args.has("--v0426-secondary-barn-contact-shadow-smoke"):
+		var v0426_script := load("res://scripts/v0426_secondary_barn_contact_shadow_restraint_hierarchy.gd") as Script
+		if v0426_script == null:
+			push_error("v0.426 secondary-barn contact-shadow script failed to load")
+			return
+		var v0426_pass := Node3D.new()
+		v0426_pass.set_script(v0426_script)
+		v0426_pass.name = "V0426SecondaryBarnContactShadowRestraintHierarchy"
+		v0426_pass.set_meta("v0426_capture_mode", args.has("--v0426-secondary-barn-contact-shadow-capture"))
+		v0426_pass.set_meta("v0426_smoke_mode", args.has("--v0426-secondary-barn-contact-shadow-smoke"))
+		add_child(v0426_pass)
+		return
+	if args.has("--v0427-resident-worker-primary-garment-capture") or args.has("--v0427-resident-worker-primary-garment-smoke"):
+		var v0427_script := load("res://scripts/v0427_resident_worker_primary_garment_value_hierarchy.gd") as Script
+		if v0427_script == null:
+			push_error("v0.427 resident-worker primary-garment script failed to load")
+			return
+		var v0427_pass := Node3D.new()
+		v0427_pass.set_script(v0427_script)
+		v0427_pass.name = "V0427ResidentWorkerPrimaryGarmentValueHierarchy"
+		v0427_pass.set_meta("v0427_capture_mode", args.has("--v0427-resident-worker-primary-garment-capture"))
+		v0427_pass.set_meta("v0427_smoke_mode", args.has("--v0427-resident-worker-primary-garment-smoke"))
+		add_child(v0427_pass)
+		return
 	if args.has("--salto-production-target-spike"):
 		var spike_scene := load("res://scenes/salto_production_target_spike.tscn") as PackedScene
 		if spike_scene == null:
@@ -985,6 +1723,110 @@ func _ready() -> void:
 		_create_player_slice_ui()
 		await run_player_slice_capture()
 		return
+	if args.has("--h3-semantic-evidence"):
+		_create_player_slice_ui()
+		var semantic_script := load("res://scripts/salto_v0312_h3_semantic_evidence_capture.gd") as GDScript
+		if semantic_script == null:
+			get_tree().quit(1)
+			return
+		var semantic_capture := Node.new()
+		semantic_capture.name = "V0312H3SemanticEvidenceCapture"
+		semantic_capture.set_script(semantic_script)
+		add_child(semantic_capture)
+		semantic_capture.call_deferred("start")
+		return
+	if args.has("--h3-supported-state-contract"):
+		_create_player_slice_ui()
+		var contract_script := load("res://scripts/salto_v0313_h3_supported_state_contract_capture.gd") as GDScript
+		if contract_script == null:
+			get_tree().quit(1)
+			return
+		var contract_capture := Node.new()
+		contract_capture.name = "V0313H3SupportedStateContractCapture"
+		contract_capture.set_script(contract_script)
+		add_child(contract_capture)
+		contract_capture.call_deferred("start")
+		return
+	if args.has("--h3-directional-animation-micro-pilot"):
+		_create_player_slice_ui()
+		var animation_script := load("res://scripts/salto_v0314_h3_directional_animation_micro_pilot_capture.gd") as GDScript
+		if animation_script == null:
+			get_tree().quit(1)
+			return
+		var animation_capture := Node.new()
+		animation_capture.name = "V0314H3DirectionalAnimationMicroPilotCapture"
+		animation_capture.set_script(animation_script)
+		add_child(animation_capture)
+		animation_capture.call_deferred("start")
+		return
+	if args.has("--h3-directional-animation-runtime-proof-recovery"):
+		_create_player_slice_ui()
+		var recovery_script := load("res://scripts/salto_v0315_h3_animation_runtime_proof_recovery_capture.gd") as GDScript
+		if recovery_script == null:
+			get_tree().quit(1)
+			return
+		var recovery_capture := Node.new()
+		recovery_capture.name = "V0315H3AnimationRuntimeProofRecoveryCapture"
+		recovery_capture.set_script(recovery_script)
+		add_child(recovery_capture)
+		recovery_capture.call_deferred("start")
+		return
+	if args.has("--h3-visible-animation-directional-closure"):
+		_create_player_slice_ui()
+		var closure_script := load("res://scripts/salto_v0316_h3_visible_animation_directional_closure_capture.gd") as GDScript
+		if closure_script == null:
+			_write_absolute_json(_path_join(_artifact_root_from_args(), "v0316-dispatch-failure.json"), {"status": "FAIL_V0316_CAPTURE_SCRIPT_LOAD", "script": "res://scripts/salto_v0316_h3_visible_animation_directional_closure_capture.gd"})
+			get_tree().quit(1)
+			return
+		var closure_capture := Node.new()
+		closure_capture.name = "V0316H3VisibleAnimationDirectionalClosureCapture"
+		closure_capture.set_script(closure_script)
+		add_child(closure_capture)
+		_write_absolute_json(_path_join(_artifact_root_from_args(), "v0316-dispatch-prestart.json"), {"status": "PASS_V0316_CAPTURE_DISPATCH", "hasStart": closure_capture.has_method("start")})
+		closure_capture.call("start")
+		return
+	if args.has("--h3-target-isolated-evidence-closure"):
+		_create_player_slice_ui()
+		var target_script := load("res://scripts/salto_v0317_h3_target_isolated_evidence_capture.gd") as GDScript
+		if target_script == null:
+			_write_absolute_json(_path_join(_artifact_root_from_args(), "v0317-dispatch-failure.json"), {"status": "FAIL_V0317_CAPTURE_SCRIPT_LOAD", "script": "res://scripts/salto_v0317_h3_target_isolated_evidence_capture.gd"})
+			get_tree().quit(1)
+			return
+		var target_capture := Node.new()
+		target_capture.name = "V0317H3TargetIsolatedEvidenceCapture"
+		target_capture.set_script(target_script)
+		add_child(target_capture)
+		_write_absolute_json(_path_join(_artifact_root_from_args(), "v0317-dispatch-prestart.json"), {"status": "PASS_V0317_CAPTURE_DISPATCH", "hasStart": target_capture.has_method("start"), "scriptMethods": target_script.get_script_method_list(), "canInstantiate": target_script.can_instantiate(), "scriptPath": target_script.resource_path})
+		target_capture.call("start")
+		return
+	if args.has("--h3-single-sprite-atlas-rendering-repair"):
+		_create_player_slice_ui()
+		var cell_script := load("res://scripts/salto_v0318_h3_single_sprite_atlas_rendering_repair_capture.gd") as GDScript
+		if cell_script == null:
+			_write_absolute_json(_path_join(_artifact_root_from_args(), "v0318-dispatch-failure.json"), {"status": "FAIL_V0318_CAPTURE_SCRIPT_LOAD", "script": "res://scripts/salto_v0318_h3_single_sprite_atlas_rendering_repair_capture.gd"})
+			get_tree().quit(1)
+			return
+		var cell_capture := Node.new()
+		cell_capture.name = "V0318H3SingleSpriteAtlasRenderingRepairCapture"
+		cell_capture.set_script(cell_script)
+		add_child(cell_capture)
+		_write_absolute_json(_path_join(_artifact_root_from_args(), "v0318-dispatch-prestart.json"), {"status": "PASS_V0318_CAPTURE_DISPATCH", "hasStart": cell_capture.has_method("start"), "scriptMethods": cell_script.get_script_method_list(), "canInstantiate": cell_script.can_instantiate(), "scriptPath": cell_script.resource_path})
+		cell_capture.call_deferred("start")
+		return
+	if args.has("--h3-militia-silhouette-integrity"):
+		_create_player_slice_ui()
+		var silhouette_script := load("res://scripts/salto_v0319_h3_militia_silhouette_integrity_capture.gd") as GDScript
+		if silhouette_script == null:
+			_write_absolute_json(_path_join(_artifact_root_from_args(), "v0319-dispatch-failure.json"), {"status": "FAIL_V0319_CAPTURE_SCRIPT_LOAD", "script": "res://scripts/salto_v0319_h3_militia_silhouette_integrity_capture.gd"})
+			get_tree().quit(1)
+			return
+		var silhouette_capture := Node.new()
+		silhouette_capture.name = "V0319H3MilitiaSilhouetteIntegrityCapture"
+		silhouette_capture.set_script(silhouette_script)
+		add_child(silhouette_capture)
+		_write_absolute_json(_path_join(_artifact_root_from_args(), "v0319-dispatch-prestart.json"), {"status": "PASS_V0319_CAPTURE_DISPATCH", "hasStart": silhouette_capture.has_method("start"), "scriptMethods": silhouette_script.get_script_method_list(), "canInstantiate": silhouette_script.can_instantiate(), "scriptPath": silhouette_script.resource_path})
+		silhouette_capture.call_deferred("start")
+		return
 	if args.has("--real-input-smoke") or args.has("--real-input-validate"):
 		_create_player_slice_ui()
 		await run_real_input_smoke()
@@ -1097,7 +1939,10 @@ func load_mode(mode: String) -> void:
 		active_scene.configure_barrosan_playable_runtime_skin({
 			"enabled": _barrosan_runtime_skin_requested(),
 			"debugLabels": _script_args().has("--salto-barrosan-runtime-debug-labels"),
+			"presentationMode": _barrosan_presentation_mode_from_args(),
 			"checkpoint": _player_capture_checkpoint(),
+			"h3RuntimePilot": _script_args().has("--salto-barrosan-h3-runtime-pilot"),
+			"h3DirectionalAnimationPilot": _script_args().has("--h3-directional-animation-micro-pilot") or _script_args().has("--h3-directional-animation-runtime-proof-recovery") or _script_args().has("--h3-visible-animation-directional-closure") or _script_args().has("--h3-target-isolated-evidence-closure") or _script_args().has("--h3-single-sprite-atlas-rendering-repair") or _script_args().has("--h3-militia-silhouette-integrity"),
 		})
 	if home_screen:
 		home_screen.visible = false
@@ -1222,7 +2067,10 @@ func _configure_worker_art_for_active_scene() -> void:
 		active_scene.configure_barrosan_playable_runtime_skin({
 			"enabled": _barrosan_runtime_skin_requested(),
 			"debugLabels": _script_args().has("--salto-barrosan-runtime-debug-labels"),
+			"presentationMode": _barrosan_presentation_mode_from_args(),
 			"checkpoint": _player_capture_checkpoint(),
+			"h3RuntimePilot": _script_args().has("--salto-barrosan-h3-runtime-pilot"),
+			"h3DirectionalAnimationPilot": _script_args().has("--h3-directional-animation-micro-pilot") or _script_args().has("--h3-directional-animation-runtime-proof-recovery") or _script_args().has("--h3-visible-animation-directional-closure") or _script_args().has("--h3-target-isolated-evidence-closure") or _script_args().has("--h3-single-sprite-atlas-rendering-repair") or _script_args().has("--h3-militia-silhouette-integrity"),
 		})
 
 func _apply_review_framing_for_active_scene() -> void:
@@ -1647,7 +2495,7 @@ func _create_review_ui() -> void:
 	var grid := GridContainer.new()
 	grid.position = Vector2(14, 74)
 	grid.size = Vector2(870, 38)
-	grid.columns = 11
+	grid.columns = 12
 	review_panel.add_child(grid)
 	for item in [
 		{"text": "Home", "action": "home"},
@@ -1661,6 +2509,8 @@ func _create_review_ui() -> void:
 		{"text": "Squad", "action": "box_select"},
 		{"text": "Site", "action": "capture_site"},
 		{"text": "Results", "action": "results"}
+		,{"text": "PLAY SLICE", "action": "play_v0368"}
+		,{"text": "V0367", "action": "play_v0367"}
 	]:
 		var button := Button.new()
 		button.text = str(item["text"])
@@ -1799,6 +2649,62 @@ func _add_player_label(text: String, position: Vector2, size: Vector2, font_size
 	player_screen.add_child(label)
 	player_visible_texts.append(text)
 
+
+func _draw_v0280_review_card_overlay(action: String) -> void:
+	if player_screen == null:
+		return
+	var committed := action in [
+		"v0280_commit_engage_clicked",
+		"v0280_post_commit_exactly_one_world_label",
+		"v0280_hud_card_post_commit_details",
+		"v0280_repeat_commit_no_stack_pressure_effects",
+		"v0280_no_projectile_unit_damage_enemy_death",
+	]
+	var cleared := action == "v0280_clear_guard_removes_commit_label"
+	var reguard := action == "v0280_reguard_availability_clean"
+	var no_commit := action in ["v0280_watchpost_no_engage_commit_action", "v0280_barracks_no_engage_commit_action", "v0280_default_runtime_unchanged_probe"]
+	var panel := Panel.new()
+	panel.name = "V0280EngageCommitReviewCard"
+	panel.position = Vector2(18, 734)
+	panel.size = Vector2(720, 132)
+	panel.z_index = 240
+	panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	panel.add_theme_stylebox_override("panel", _ui_architecture_panel_style(Color(0.020, 0.026, 0.022, 0.94), Color(0.42, 0.82, 0.70, 0.92)))
+	player_screen.add_child(panel)
+	var title := "Militia Defender | Engage armed"
+	var detail := "Commit Engage available | Bridge held | Pressure contained 90/100"
+	var safety := "Manual only | No projectile | No unit damage | No enemy death/despawn"
+	var action_text := "Commit Engage"
+	if committed:
+		title = "Militia Defender | Engagement committed"
+		detail = "Bridge held | Pressure checked 80/100 | Commit locked"
+		safety = "No projectile | No unit damage | No enemy death/despawn | No pathing/AI/economy/fog mutation"
+		action_text = "Commit locked"
+	elif cleared:
+		title = "Militia Defender | Guard cleared"
+		detail = "Commit label removed | Pressure remains 80/100"
+		safety = "No duplicate labels | No repeat consequence"
+		action_text = "Reguard available"
+	elif reguard:
+		title = "Militia Defender | Reguard clean"
+		detail = "Commit result locked | Pressure remains 80/100"
+		safety = "No duplicate labels | Commit cannot stack"
+		action_text = "Commit locked"
+	elif no_commit:
+		title = "No Commit Target | Default-safe probe"
+		detail = "No Engage action | No Commit action"
+		safety = "Only Militia at east bridge can Commit Engage"
+		action_text = "No Commit"
+	_v0222_label(panel, title, Vector2(18, 10), Vector2(430, 22), 15, Color(0.92, 0.88, 0.66))
+	_v0222_label(panel, detail, Vector2(18, 38), Vector2(664, 22), 12, Color(0.82, 0.92, 0.74))
+	_v0222_label(panel, safety, Vector2(18, 66), Vector2(664, 20), 11, Color(0.74, 0.86, 0.78))
+	_ui_architecture_rect(panel, "V0280CommitRail", Vector2(18, 100), Vector2(260, 8), Color(0.46, 0.78, 0.54, 0.86) if committed or cleared or reguard else Color(0.88, 0.68, 0.32, 0.86))
+	_v0222_label(panel, action_text, Vector2(302, 88), Vector2(172, 30), 13, Color(0.96, 0.82, 0.44), HORIZONTAL_ALIGNMENT_CENTER)
+	player_visible_texts.append(title)
+	player_visible_texts.append(detail)
+	player_visible_texts.append(safety)
+
+
 func _add_player_button(text: String, position: Vector2, method_name: String) -> void:
 	var button := Button.new()
 	button.text = text
@@ -1866,7 +2772,10 @@ func _load_v0254_capture_scene() -> void:
 		active_scene.configure_barrosan_playable_runtime_skin({
 			"enabled": _barrosan_runtime_skin_requested(),
 			"debugLabels": _script_args().has("--salto-barrosan-runtime-debug-labels"),
+			"presentationMode": _barrosan_presentation_mode_from_args(),
 			"checkpoint": _player_capture_checkpoint(),
+			"h3RuntimePilot": _script_args().has("--salto-barrosan-h3-runtime-pilot"),
+			"h3DirectionalAnimationPilot": _script_args().has("--h3-directional-animation-micro-pilot") or _script_args().has("--h3-directional-animation-runtime-proof-recovery") or _script_args().has("--h3-visible-animation-directional-closure") or _script_args().has("--h3-target-isolated-evidence-closure") or _script_args().has("--h3-single-sprite-atlas-rendering-repair") or _script_args().has("--h3-militia-silhouette-integrity"),
 		})
 	if home_screen:
 		home_screen.visible = false
@@ -1883,6 +2792,26 @@ func _apply_review_action(action: String) -> Dictionary:
 			load_home()
 		"launch_2d":
 			load_mode(MODE_2D)
+		"play_v0367":
+			var v0367_scene := load("res://scenes/v0367_first_playable_vertical_slice.tscn") as PackedScene
+			if v0367_scene != null:
+				if active_scene and is_instance_valid(active_scene): active_scene.queue_free()
+				active_scene = v0367_scene.instantiate()
+				add_child(active_scene)
+				if home_screen: home_screen.visible = false
+				if review_panel: review_panel.visible = false
+				current_step_id = "play_v0367"
+			active_mode = MODE_25D
+		"play_v0368":
+			var v0368_scene := load("res://scenes/v0368_playable_slice_visual_coherence.tscn") as PackedScene
+			if v0368_scene != null:
+				if active_scene and is_instance_valid(active_scene): active_scene.queue_free()
+				active_scene = v0368_scene.instantiate()
+				add_child(active_scene)
+				if home_screen: home_screen.visible = false
+				if review_panel: review_panel.visible = false
+				current_step_id = "play_v0368"
+				active_mode = MODE_25D
 		"launch_25d":
 			load_mode(MODE_25D)
 		"launch_25d_clean":
@@ -3989,6 +4918,190 @@ func _live_ui_shell_state() -> Dictionary:
 	var objective_next_action := _v0211_next_action(mine_converted, worker_assigned, barracks_complete, militia_spawned, pressure_active, pressure_resolved)
 	var production_cards := _v0211_production_cards(active_tab, mine_converted, worker_assigned, barracks_complete, militia_queued, militia_spawned)
 	var tooltip_meta := _v0212_tooltip_meta(action, active_tab, player_ui_shell_production_focus_hint, tooltip, alert_severity)
+	if action.begins_with("v0280_") or action.begins_with("v0281_") or action.begins_with("v0283_") or action.begins_with("v0284_") or action.begins_with("v0285_") or action.begins_with("v0286_") or action.begins_with("v0287_") or action.begins_with("v0288_") or action.begins_with("v0289_") or action.begins_with("v0290_") or action.begins_with("v0291_"):
+		var v0281 := action.begins_with("v0281_") or action.begins_with("v0283_") or action.begins_with("v0284_") or action.begins_with("v0285_") or action.begins_with("v0286_") or action.begins_with("v0287_") or action.begins_with("v0288_") or action.begins_with("v0289_") or action.begins_with("v0290_") or action.begins_with("v0291_")
+		var v0280_committed := action in [
+			"v0280_commit_engage_clicked",
+			"v0280_post_commit_exactly_one_world_label",
+			"v0280_hud_card_post_commit_details",
+			"v0280_repeat_commit_no_stack_pressure_effects",
+			"v0280_no_projectile_unit_damage_enemy_death",
+			"v0281_commit_engage_clicked",
+			"v0281_post_commit_real_hud_clean_truthful",
+			"v0281_post_commit_exactly_one_world_label",
+			"v0281_repeat_commit_no_stack_real_hud_80",
+			"v0281_no_projectile_unit_damage_enemy_death",
+			"v0283_commit_engage_clicked",
+			"v0283_post_commit_player_pressure_checked_label",
+			"v0283_post_commit_ashen_braced_label",
+			"v0283_post_commit_combined_pressure_checked_ashen_braced",
+			"v0283_repeat_commit_no_stack_no_duplicate_ashen_braced",
+			"v0283_no_projectile_damage_death_despawn",
+			"v0284_commit_engage_clicked",
+			"v0284_post_commit_player_pressure_checked_label",
+			"v0284_post_commit_ashen_braced_label",
+			"v0284_post_commit_combined_pressure_checked_ashen_braced",
+			"v0284_repeat_commit_no_stack_no_duplicate_ashen_braced",
+			"v0284_no_projectile_damage_death_despawn",
+			"v0285_commit_engage_clicked",
+			"v0285_post_commit_pressure_checked_ashen_braced",
+			"v0285_hold_line_available_after_commit_locked",
+			"v0286_commit_engage_clicked",
+			"v0286_post_commit_pressure_checked_ashen_braced",
+			"v0286_hold_line_available_after_commit_locked",
+			"v0287_commit_engage_clicked",
+			"v0287_post_commit_pressure_checked_ashen_braced",
+			"v0287_hold_line_available_after_commit_locked",
+			"v0288_commit_engage_clicked",
+			"v0288_post_commit_pressure_checked_ashen_braced",
+			"v0288_hold_line_available_after_commit_locked",
+			"v0289_commit_engage_clicked",
+			"v0289_post_commit_pressure_checked_ashen_braced",
+			"v0289_hold_line_available_after_commit_locked",
+		]
+		var v0285_held := action in ["v0285_hold_line_clicked", "v0285_line_held_exactly_once", "v0285_ashen_contained_exactly_once", "v0285_combined_line_held_ashen_contained_readable_hud", "v0285_repeat_hold_line_no_duplicate_no_stack", "v0285_no_projectile_damage_death_despawn", "v0286_hold_line_clicked", "v0286_line_held_exactly_once", "v0286_ashen_contained_exactly_once", "v0287_hold_line_clicked", "v0287_line_held_exactly_once", "v0287_ashen_contained_exactly_once", "v0288_hold_line_clicked", "v0288_line_held_exactly_once", "v0288_ashen_contained_exactly_once", "v0289_hold_line_clicked", "v0289_line_held_exactly_once", "v0289_ashen_contained_exactly_once"]
+		var v0286_reserve_ready := action in ["v0286_train_militia_clicked", "v0286_reserve_ready_exactly_once", "v0286_barracks_card_reserve_militia_ready", "v0286_repeat_train_no_duplicate_reserve_no_stack", "v0286_resources_unchanged_after_reserve_ready", "v0286_reserve_marker_no_movement_pathing_attack_actions", "v0286_no_projectile_damage_hp_loss_death_despawn", "v0287_train_clicked", "v0287_reserve_ready_exactly_once", "v0287_barracks_assign_to_bridge_available", "v0288_train_clicked", "v0288_reserve_ready_exactly_once", "v0288_assign_to_bridge_available", "v0289_train_clicked", "v0289_reserve_ready_exactly_once", "v0289_assign_to_bridge_available"]
+		var v0287_reserve_assigned := action in ["v0287_assign_clicked", "v0287_reserve_assigned_exactly_once", "v0287_barracks_card_reserve_assigned_bridge_support_pending", "v0287_defender_card_acknowledges_reserve_assigned", "v0287_repeat_assign_no_duplicate_assignment_no_stack", "v0287_resources_unchanged_after_train_and_assign", "v0287_reserve_marker_no_movement_pathing_attack_deploy_behavior", "v0287_no_projectile_damage_hp_loss_death_despawn", "v0288_assign_clicked", "v0288_reserve_assigned_exactly_once", "v0288_select_defender_after_reserve_assigned", "v0288_defender_card_signal_available", "v0289_assign_clicked", "v0289_reserve_assigned_exactly_once", "v0289_select_defender_after_reserve_assigned", "v0289_signal_available"]
+		var v0288_signal_ack := action in ["v0288_signal_clicked", "v0288_bridge_signal_sent_exactly_once", "v0288_reserve_ack_exactly_once", "v0288_defender_card_reserve_acknowledged", "v0288_barracks_card_bridge_signal_received", "v0288_repeat_signal_no_duplicate_signal_ack_stack", "v0288_resources_unchanged_after_train_assign_signal", "v0288_reserve_marker_no_movement_pathing_attack_deploy_behavior", "v0288_field_barracks_no_engage_commit_hold_ashen_signal", "v0288_no_projectile_damage_hp_loss_death_despawn", "v0289_signal_clicked", "v0289_bridge_signal_sent_exactly_once", "v0289_signal_sent_exactly_once", "v0289_reserve_ack_exactly_once", "v0289_select_field_barracks_after_reserve_ack", "v0289_prepare_support_available"]
+		var v0289_support_order := action in ["v0289_prepare_clicked", "v0289_support_order_ready_exactly_once", "v0289_order_ready_exactly_once", "v0289_barracks_card_awaiting_deployment_approval", "v0289_defender_card_support_order_ready", "v0289_repeat_prepare_no_duplicate_order_marker_stack", "v0289_resources_unchanged_after_train_assign_signal_prepare", "v0289_reserve_marker_no_movement_pathing_attack_deploy_behavior", "v0289_field_barracks_no_engage_commit_hold_ashen_signal", "v0289_no_projectile_damage_hp_loss_death_despawn"]
+		var v0287_defender_ack := action == "v0287_defender_card_acknowledges_reserve_assigned" or action in ["v0288_select_defender_after_reserve_assigned", "v0288_defender_card_signal_available", "v0289_select_defender_after_reserve_assigned", "v0289_signal_available"]
+		var v0286_barracks_pretrain := action in ["v0286_select_field_barracks_after_hold_line", "v0286_field_barracks_train_available_reserve_slot_empty", "v0287_select_field_barracks_after_hold_line", "v0287_train_militia_available_reserve_slot_empty", "v0288_select_field_barracks_after_hold_line", "v0288_train_militia_available_reserve_slot_empty", "v0289_select_field_barracks_after_hold_line", "v0289_train_militia_available_reserve_slot_empty"]
+		var v0280_cleared := action in ["v0280_clear_guard_removes_commit_label", "v0281_clear_guard_removes_commit_label_real_hud_clean", "v0283_clear_guard_settles_ashen_response", "v0284_clear_guard_settles_ashen_response", "v0285_clear_guard_settles_hold_line", "v0286_clear_guard_settles_defender_contact_clean", "v0287_clear_guard_settles_defender_contact_clean_after_assigned", "v0288_clear_guard_settles_defender_contact_clean_after_signal", "v0289_clear_guard_settles_defender_contact_clean_after_prepare"]
+		var v0280_reguard := action in ["v0280_reguard_availability_clean", "v0281_reguard_availability_clean_real_hud", "v0283_reguard_availability_clean", "v0284_reguard_availability_clean", "v0285_reguard_availability_clean_after_hold_line", "v0286_reguard_clean_after_reserve_ready", "v0287_reguard_clean_after_assigned_no_auto_deploy", "v0288_reguard_clean_after_signal_no_auto_deploy", "v0289_reguard_clean_after_prepare_no_auto_deploy"]
+		var v0280_no_commit_entity := action in ["v0280_watchpost_no_engage_commit_action", "v0280_barracks_no_engage_commit_action", "v0280_default_runtime_unchanged_probe", "v0281_watchpost_no_engage_commit_action_real_hud", "v0281_barracks_no_engage_commit_action_real_hud", "v0281_default_runtime_unchanged_probe", "v0283_watchpost_no_engage_commit_ashen_braced", "v0283_barracks_no_engage_commit_ashen_braced", "v0284_watchpost_no_engage_commit_ashen_braced", "v0284_barracks_no_engage_commit_ashen_braced", "v0285_watchpost_no_hold_line_engage_commit_ashen", "v0285_barracks_no_hold_line_engage_commit_ashen", "v0286_watchpost_no_hold_line_engage_commit_ashen_reserve", "v0287_watchpost_no_hold_line_engage_commit_ashen_reserve_assign", "v0288_watchpost_no_hold_line_engage_commit_ashen_reserve_assign_signal", "v0289_watchpost_no_hold_line_engage_commit_ashen_reserve_assign_signal_prepare"]
+		active_tab = "TRAIN"
+		selected_title = "Militia Defender | East bridge" if v0281 else "Militia Defender"
+		selected_subtitle = "Engage armed | Engagement stance: contained | Bridge held | Pressure contained 90/100" if v0281 else "Engage armed | East bridge | Pressure contained 90/100"
+		command_hint = "No auto-move  No ranged attack  No projectile  No attack committed  Commit Engage available" if v0281 else "Commit Engage  Clear Guard  Hold"
+		status_pip = "ARMED"
+		tooltip = "Commit Engage is manual only; it checks pressure once without projectile, unit damage, enemy death, pathing or AI changes."
+		objective = "Commit Engage available"
+		objective_detail = "No auto-move.\nNo ranged attack.\nNo projectile.\nNo attack committed." if v0281 else "Manual commit only.\nNo projectile, damage, death, pathing, AI, economy or fog change."
+		objective_next_action = "Click Commit Engage once; repeat is locked."
+		alert_text = "Ashen pressure: 90/100"
+		alert_severity = "hostile"
+		events = ["Engage armed", "Bridge held", "Commit available"]
+		if v0289_support_order:
+			selected_title = "Militia Defender | East bridge" if action == "v0289_defender_card_support_order_ready" else "Field Barracks | Production"
+			selected_subtitle = "Signal sent | Bridge held | Support order ready" if action == "v0289_defender_card_support_order_ready" else ("Support order ready | No duplicate order | Ready" if action == "v0289_repeat_prepare_no_duplicate_order_marker_stack" else "Support order ready | Awaiting deployment approval | Ready")
+			command_hint = "Prepare locked  No deployment  No movement"
+			status_pip = "SUPPORT ORDER READY"
+			tooltip = "Support order is prepared only; no deploy, movement, pathing, route preview, projectile, attack, damage, AI or resource change."
+			objective = "Support order ready"
+			objective_detail = "Awaiting deployment approval.\nNo deployment.\nResources unchanged."
+			objective_next_action = "Repeat Prepare remains a no-duplicate acknowledgement."
+			alert_text = "SUPPORT ORDER READY"
+			alert_severity = "info"
+			events = ["Support order ready", "Order ready", "No deployment"]
+		elif v0288_signal_ack:
+			selected_title = "Field Barracks | Production" if action in ["v0288_barracks_card_bridge_signal_received", "v0288_resources_unchanged_after_train_assign_signal", "v0288_reserve_marker_no_movement_pathing_attack_deploy_behavior", "v0288_field_barracks_no_engage_commit_hold_ashen_signal", "v0288_no_projectile_damage_hp_loss_death_despawn", "v0289_select_field_barracks_after_reserve_ack", "v0289_prepare_support_available"] else "Militia Defender | East bridge"
+			selected_subtitle = "Reserve acknowledged | Bridge signal received | No deployment" if selected_title.begins_with("Field") else ("Signal sent | No duplicate signal | Reserve acknowledged" if action == "v0288_repeat_signal_no_duplicate_signal_ack_stack" else "Signal sent | Bridge held | Reserve acknowledged")
+			command_hint = "Ack  No Signal action  No combat actions" if selected_title.begins_with("Field") else "Signal  Reserve ack  No movement"
+			status_pip = "BRIDGE SIGNAL SENT"
+			tooltip = "Bridge signal is acknowledgement only; it does not move, deploy, path, attack, damage or mutate resources."
+			objective = "Bridge signal sent"
+			objective_detail = "Reserve acknowledged.\nNo deployment.\nResources unchanged."
+			objective_next_action = "Repeat Signal stays locked to one acknowledgement."
+			alert_text = "BRIDGE SIGNAL SENT"
+			alert_severity = "info"
+			events = ["Signal sent", "Reserve ack", "No deployment"]
+		elif v0285_held:
+			selected_title = "Militia Defender | East bridge"
+			selected_subtitle = "Line held | Bridge held | Pressure 80/100 | Ashen contained"
+			command_hint = "Held  No duplicate hold  Clear Guard available"
+			status_pip = "LINE HELD"
+			tooltip = "Hold Line contains Ashen pressure without projectile, unit damage, enemy death/despawn, movement, pathing, AI, fog, waves, or economy change."
+			objective = "Line held"
+			objective_detail = "Bridge held.\nPressure 80/100.\nAshen contained.\nNo damage or projectile."
+			objective_next_action = "Repeat Hold Line is locked; Clear Guard can settle the state."
+			alert_text = "Ashen contained"
+			alert_severity = "info"
+			events = ["Line held", "Ashen contained", "No duplicate hold"]
+		elif v0287_defender_ack:
+			selected_title = "Militia Defender | East bridge"
+			selected_subtitle = "Line held | Bridge held | Reserve assigned"
+			command_hint = "Held  Reserve assigned  No deployment"
+			status_pip = "RESERVE ASSIGNED"
+			tooltip = "Defender acknowledges pending reserve support without changing combat behavior."
+			objective = "Reserve assigned"
+			objective_detail = "Bridge held.\nSupport pending.\nNo behavior change."
+			objective_next_action = "Hold the bridge; reserve remains static."
+			alert_text = "RESERVE ASSIGNED"
+			alert_severity = "info"
+			events = ["Line held", "Bridge held", "Reserve assigned"]
+		elif v0286_barracks_pretrain or v0286_reserve_ready or v0287_reserve_assigned:
+			selected_title = "Field Barracks | Production"
+			selected_subtitle = "Reserve assigned | Bridge support pending | No deployment" if v0287_reserve_assigned else ("Reserve militia ready | Assign to bridge available" if v0286_reserve_ready else "Train Militia available | Reserve slot empty")
+			command_hint = "No duplicate assignment  No deployment  No economy mutation" if v0287_reserve_assigned else ("Assign to bridge  No deployment  No economy mutation" if v0286_reserve_ready else "Train Militia  Reserve slot empty  Ready")
+			status_pip = "RESERVE ASSIGNED" if v0287_reserve_assigned else ("RESERVE READY" if v0286_reserve_ready else "READY")
+			tooltip = "Field Barracks assigns one static reserve marker as bridge-support intent only; no movement, pathing, combat, deployment, damage or resource mutation."
+			objective = "Reserve assigned" if v0287_reserve_assigned else ("Reserve ready" if v0286_reserve_ready else "Train Militia available")
+			objective_detail = "Bridge support pending.\nNo deployment.\nResources unchanged." if v0287_reserve_assigned else ("One reserve marker.\nAssign available.\nResources unchanged." if v0286_reserve_ready else "Reserve slot empty.\nProduction readiness only.")
+			objective_next_action = "Repeat Assign stays locked to one assigned state." if v0287_reserve_assigned else ("Click Assign once to mark bridge support pending." if v0286_reserve_ready else "Click Train once to prepare a reserve marker.")
+			alert_text = "RESERVE ASSIGNED" if v0287_reserve_assigned else ("RESERVE READY" if v0286_reserve_ready else "Barracks ready")
+			alert_severity = "info"
+			events = ["Reserve assigned", "No deployment", "Resources unchanged"] if v0287_reserve_assigned else (["Reserve ready", "Assign available", "Resources unchanged"] if v0286_reserve_ready else ["Barracks selected", "Train available", "Reserve slot empty"])
+		elif v0280_committed:
+			selected_title = "Militia Defender | East bridge" if v0281 else selected_title
+			selected_subtitle = "Engagement committed | Bridge held | Pressure checked 80/100 | Ashen braced | Commit locked" if (action.begins_with("v0283_") or action.begins_with("v0284_") or action.begins_with("v0285_") or action.begins_with("v0286_") or action.begins_with("v0287_") or action.begins_with("v0288_") or action.begins_with("v0289_") or action.begins_with("v0290_") or action.begins_with("v0291_")) else "Engagement committed | Bridge held | Pressure checked 80/100 | Commit locked"
+			command_hint = "Hold Line ready  No projectile  No unit damage" if action in ["v0285_hold_line_available_after_commit_locked", "v0286_hold_line_available_after_commit_locked", "v0287_hold_line_available_after_commit_locked", "v0288_hold_line_available_after_commit_locked", "v0289_hold_line_available_after_commit_locked"] else ("No projectile  No unit damage  No enemy death/despawn  No repeat pressure effect" if v0281 else "Commit locked  Clear Guard  Hold")
+			status_pip = "COMMITTED"
+			tooltip = "Engagement committed: pressure checked 80/100; no projectile, no unit damage, no enemy death/despawn; repeat commit locked."
+			objective = "Engagement committed"
+			objective_detail = "Pressure checked 80/100.\nCommit locked.\nBridge held.\nNo projectile, unit damage, enemy death/despawn, or repeat pressure effect." if v0281 else "Bridge held.\nPressure checked 80/100.\nNo projectile, unit damage, enemy death or despawn."
+			objective_next_action = "Use Hold Line to contain Ashen pressure." if action in ["v0285_hold_line_available_after_commit_locked", "v0286_hold_line_available_after_commit_locked", "v0287_hold_line_available_after_commit_locked", "v0288_hold_line_available_after_commit_locked", "v0289_hold_line_available_after_commit_locked"] else "Commit locked; keep holding the bridge."
+			alert_text = "Pressure checked 80/100"
+			alert_severity = "info"
+			events = ["Engagement committed", "Pressure checked 80/100", "Ashen braced", "Hold Line ready"] if action in ["v0285_hold_line_available_after_commit_locked", "v0286_hold_line_available_after_commit_locked", "v0287_hold_line_available_after_commit_locked", "v0288_hold_line_available_after_commit_locked", "v0289_hold_line_available_after_commit_locked"] else (["Engagement committed", "Pressure checked 80/100", "Ashen braced", "Commit locked"] if (action.begins_with("v0283_") or action.begins_with("v0284_") or action.begins_with("v0285_") or action.begins_with("v0286_") or action.begins_with("v0287_") or action.begins_with("v0288_") or action.begins_with("v0289_") or action.begins_with("v0290_") or action.begins_with("v0291_")) else ["Engagement committed", "Bridge held", "Pressure checked 80/100", "Commit locked"])
+		elif v0280_cleared:
+			selected_title = "Militia Defender | East bridge" if v0281 else selected_title
+			selected_subtitle = "Guard cleared | Engagement stance ended | Ashen response settled" if (action.begins_with("v0283_") or action.begins_with("v0284_")) else "Guard cleared | Engagement stance ended | Pressure checked 80/100"
+			command_hint = "Commit label removed  No stale labels  No auto-repeat" if v0281 else "Guard cleared  Reguard available"
+			status_pip = "CLEAR"
+			tooltip = "Clear Guard removes the commit label and does not restore pressure."
+			objective = "Guard cleared"
+			objective_detail = "Stance ended.\nCommit label removed.\nNo stale labels."
+			objective_next_action = "Reguard may re-arm without duplicating labels."
+			alert_text = "Pressure remains 80/100"
+			alert_severity = "info"
+			events = ["Guard cleared", "Commit label removed", "Ashen response settled"] if (action.begins_with("v0283_") or action.begins_with("v0284_")) else ["Guard cleared", "Commit label removed", "Pressure remains 80/100"]
+		elif v0280_reguard:
+			selected_title = "Militia Defender | East bridge" if v0281 else selected_title
+			selected_subtitle = "Reguard available | Pressure checked 80/100 | Ashen response settled" if (action.begins_with("v0283_") or action.begins_with("v0284_")) else "Reguard available | Pressure checked 80/100 | Commit locked"
+			command_hint = "Clean availability  No auto-repeat  No stale commit label" if v0281 else "Reguard clean  Commit locked"
+			status_pip = "LOCKED"
+			tooltip = "Reguard is clean after commit; no duplicate labels and no repeat pressure effect."
+			objective = "Reguard clean"
+			objective_detail = "Commit result locked.\nNo duplicate world labels."
+			objective_next_action = "Hold; commit cannot stack."
+			alert_text = "Commit locked"
+			alert_severity = "info"
+			events = ["Reguard clean", "Commit locked", "No duplicate labels"]
+		elif v0280_no_commit_entity:
+			var is_watchpost_no_commit := action in ["v0281_watchpost_no_engage_commit_action_real_hud", "v0283_watchpost_no_engage_commit_ashen_braced", "v0284_watchpost_no_engage_commit_ashen_braced", "v0285_watchpost_no_hold_line_engage_commit_ashen", "v0286_watchpost_no_hold_line_engage_commit_ashen_reserve", "v0287_watchpost_no_hold_line_engage_commit_ashen_reserve_assign"]
+			var is_barracks_no_commit := action in ["v0281_barracks_no_engage_commit_action_real_hud", "v0283_barracks_no_engage_commit_ashen_braced", "v0284_barracks_no_engage_commit_ashen_braced", "v0285_barracks_no_hold_line_engage_commit_ashen"]
+			selected_title = ("Watchpost | Passive awareness" if is_watchpost_no_commit else ("Field Barracks | Production" if is_barracks_no_commit else "Default runtime probe")) if v0281 else "No Commit Target"
+			selected_subtitle = ("Detection and advisory only" if is_watchpost_no_commit else ("Train Militia source only" if is_barracks_no_commit else "Opt-in Barrosan skin only")) if v0281 else "No Engage/Commit action | Default-safe probe"
+			command_hint = ("Observe" if is_watchpost_no_commit else ("Train Militia" if is_barracks_no_commit else "Default safe")) if v0281 else "No Commit"
+			status_pip = "SAFE"
+			tooltip = "Watchpost, Barracks and default probes do not receive Engage or Commit actions."
+			objective = ("Passive role" if is_watchpost_no_commit else ("Production role" if is_barracks_no_commit else "Default runtime unchanged")) if v0281 else "No Commit action"
+			objective_detail = ("No attack order.\nNo pressure action." if v0281 else "Entity is not Militia.\nDefault runtime remains unchanged.")
+			objective_next_action = "Only Militia at east bridge can commit."
+			alert_text = "Passive/prod role" if v0281 else "No commit action"
+			alert_severity = "info"
+			events = ["Passive only", "Production separated", "Default safe"] if v0281 else ["No Engage action", "No Commit action", "Default safe"]
+		selection_panel_data["name"] = selected_title
+		selection_panel_data["summary"] = selected_subtitle
+		selection_panel_data["hpText"] = "Pressure 80/100" if (v0280_committed or v0280_cleared or v0280_reguard) else ("Pressure 100/100" if v0280_no_commit_entity else "Pressure 90/100")
+		selection_panel_data["hpRatio"] = 0.80 if (v0280_committed or v0280_cleared or v0280_reguard) else (1.0 if v0280_no_commit_entity else 0.90)
+		selection_panel_data["status"] = status_pip
+		selection_panel_data["commands"] = [
+			_v0210_command_spec("Train" if v0286_barracks_pretrain else ("Assign" if (v0286_reserve_ready or v0287_reserve_assigned) else ("Held" if v0285_held else ("Hold Line" if action in ["v0285_hold_line_available_after_commit_locked", "v0286_hold_line_available_after_commit_locked", "v0287_hold_line_available_after_commit_locked"] else ("Commit locked" if (v0280_committed or v0280_reguard) else (("Observe" if action in ["v0281_watchpost_no_engage_commit_action_real_hud", "v0283_watchpost_no_engage_commit_ashen_braced", "v0284_watchpost_no_engage_commit_ashen_braced", "v0285_watchpost_no_hold_line_engage_commit_ashen", "v0286_watchpost_no_hold_line_engage_commit_ashen_reserve", "v0287_watchpost_no_hold_line_engage_commit_ashen_reserve_assign"] else ("Train" if action in ["v0281_barracks_no_engage_commit_action_real_hud", "v0283_barracks_no_engage_commit_ashen_braced", "v0284_barracks_no_engage_commit_ashen_braced", "v0285_barracks_no_hold_line_engage_commit_ashen"] else ("Ready" if action == "v0281_default_runtime_unchanged_probe" else "No Commit"))) if v0280_no_commit_entity else "Commit Engage"))))), "C", tooltip, "ready" if (v0286_barracks_pretrain or v0286_reserve_ready) else ("disabled" if (v0285_held or v0287_reserve_assigned or (v0280_committed and action not in ["v0285_hold_line_available_after_commit_locked", "v0286_hold_line_available_after_commit_locked", "v0287_hold_line_available_after_commit_locked"]) or v0280_reguard or v0280_no_commit_entity) else "ready"), "_on_live_ui_shell_attack_pressed"),
+			_v0210_command_spec("Clear Guard", "G", "Remove guard/commit label without restoring pressure.", "ready" if (v0280_committed or v0280_cleared or v0280_reguard) else "disabled", "_on_live_ui_shell_move_pressed"),
+			_v0210_command_spec("Hold", "H", "Hold east bridge.", "ready", "_on_live_ui_shell_move_pressed"),
+			_v0210_command_spec("No projectile", "-", "No projectile, damage, death or despawn added.", "disabled", "_on_live_ui_shell_attack_pressed"),
+		]
 	return {
 		"resources": resources,
 		"objective": objective,
@@ -4291,7 +5404,30 @@ func _v0210_selection_panel_data(action: String, status: Dictionary) -> Dictiona
 		]
 		data["disabledReason"] = "Multi-select filters specialist commands instead of duplicating panels."
 		data["tooltip"] = "Multi-select summary keeps common commands readable and specialist actions labeled."
+	if _player_capture_checkpoint() == "v0.314" or _h3_directional_animation_micro_pilot_requested():
+		var player_mode := _barrosan_presentation_mode_from_args() == "PLAYER"
+		var filtered_abilities: Array = []
+		for ability in data["abilities"]:
+			if str(ability.get("label", "")) != "Hold":
+				filtered_abilities.append(ability)
+		data["abilities"] = filtered_abilities
+		var filtered_commands: Array = []
+		for command in data["commands"]:
+			var normalized: Dictionary = command.duplicate(true)
+			if str(normalized.get("label", "")) == "Hold":
+				if player_mode:
+					continue
+				normalized["shortcut"] = "-"
+				normalized["state"] = "disabled"
+				normalized["method"] = ""
+				normalized["tooltip"] = "Unavailable: no authoritative Hold/Ready state exists."
+			filtered_commands.append(normalized)
+		data["commands"] = filtered_commands
+		data["holdUiContract"] = "HIDDEN_WHEN_UNSUPPORTED"
 	return data
+
+func _h3_directional_animation_micro_pilot_requested() -> bool:
+	return _script_args().has("--h3-directional-animation-micro-pilot") or _script_args().has("--h3-directional-animation-runtime-proof-recovery") or _script_args().has("--h3-visible-animation-directional-closure") or _script_args().has("--h3-target-isolated-evidence-closure") or _script_args().has("--h3-single-sprite-atlas-rendering-repair") or _script_args().has("--h3-militia-silhouette-integrity")
 
 func _v0210_icon_spec(id: String, label: String, shortcut: String, tooltip: String, state: String, cooldown: float, icon_name: String, method_name: String) -> Dictionary:
 	return {
@@ -4476,8 +5612,12 @@ func _live_ui_shell_selection_panel(root: Control, state: Dictionary) -> void:
 	_ui_architecture_label(panel, str(state["commandHint"]), Vector2(124, 112), Vector2(430, 20), 12, Color(0.86, 0.84, 0.66), HORIZONTAL_ALIGNMENT_LEFT)
 	_live_ui_shell_action_button(panel, Vector2(124, 132), Vector2(86, 24), "Move", "_on_live_ui_shell_move_pressed")
 	_live_ui_shell_action_button(panel, Vector2(220, 132), Vector2(86, 24), "Attack", "_on_live_ui_shell_attack_pressed")
-	_live_ui_shell_action_button(panel, Vector2(316, 132), Vector2(86, 24), str("Train" if state["activeTab"] == "TRAIN" else "Work"), "_on_live_ui_shell_work_pressed")
-	_live_ui_shell_action_button(panel, Vector2(412, 132), Vector2(86, 24), "Lume", "_on_live_ui_shell_lume_pressed")
+	if _player_capture_checkpoint() == "v0.314" or _h3_directional_animation_micro_pilot_requested():
+		_live_ui_shell_action_button(panel, Vector2(316, 132), Vector2(86, 24), str("Train" if state["activeTab"] == "TRAIN" else "Work"), "_on_live_ui_shell_work_pressed")
+		_live_ui_shell_action_button(panel, Vector2(412, 132), Vector2(86, 24), "Lume", "_on_live_ui_shell_lume_pressed")
+	else:
+		_live_ui_shell_action_button(panel, Vector2(316, 132), Vector2(86, 24), "Hold", "_on_live_ui_shell_move_pressed")
+		_live_ui_shell_action_button(panel, Vector2(412, 132), Vector2(86, 24), str("Train" if state["activeTab"] == "TRAIN" else "Work"), "_on_live_ui_shell_work_pressed")
 
 func _live_ui_shell_selection_panel_v0210(root: Control, state: Dictionary) -> void:
 	var data: Dictionary = state.get("selectionPanel", {})
@@ -5329,9 +6469,10 @@ func _capture_step_viewport(step: Dictionary) -> Vector2i:
 func run_player_slice_capture() -> void:
 	var artifact_root := _artifact_root_from_args()
 	var screenshot_root := _path_join(artifact_root, "screenshots")
+	var v0297_fast_capture := _player_capture_checkpoint() == "v0.297"
 	DirAccess.make_dir_recursive_absolute(screenshot_root)
 	_set_capture_viewport(VIEWPORT_SIZE)
-	await _settle_frames(8)
+	await _settle_frames(1 if v0297_fast_capture else 8)
 	var errors: Array[String] = []
 	var captures: Array[Dictionary] = []
 	var capture_steps := _player_capture_steps()
@@ -5339,20 +6480,20 @@ func run_player_slice_capture() -> void:
 	for step in capture_steps:
 		var target_viewport := _capture_step_viewport(step)
 		_set_capture_viewport(target_viewport)
-		await _settle_frames(4)
+		await _settle_frames(1 if v0297_fast_capture else 4)
 		var action := str(step["action"])
 		var status := _apply_player_slice_action(action)
-		await _settle_frames(6)
+		await _settle_frames(1 if v0297_fast_capture else 6)
 		var file_name := "%02d_%s.png" % [index + 1, str(step["id"])]
 		var target := _path_join(screenshot_root, file_name)
 		var image: Image = null
-		for attempt in range(20):
+		for attempt in range(1 if v0297_fast_capture else 20):
 			var texture := get_viewport().get_texture()
 			if texture != null:
 				image = texture.get_image()
 			if image != null:
 				break
-			await _settle_frames(2)
+			await _settle_frames(1 if v0297_fast_capture else 2)
 		if image == null:
 			if _player_capture_checkpoint() != "v0.259":
 				errors.append("Viewport texture was unavailable for screenshot %s" % file_name)
@@ -5437,6 +6578,7 @@ func run_player_slice_capture() -> void:
 		"saltoAsterPortraitProductionSlotAdded": false,
 		"saltoAsterPortraitGeneratedImages": false,
 		"barrosanPlayableRuntimeSkin": final_status.get("barrosanPlayableRuntimeSkin", {}),
+		"h3RuntimePilotRequested": _script_args().has("--salto-barrosan-h3-runtime-pilot"),
 		"privateHarnessPreservedSeparately": captures.any(func(capture: Dictionary) -> bool: return bool(capture.get("privateHarnessCapture", false))) or ["v0.126", "v0.127", "v0.128", "v0.129", "v0.130", "v0.160", "v0.162", "v0.164", "v0.166", "v0.168", "v0.169", "v0.170", "v0.173", "v0.174", "v0.177", "v0.178", "v0.179", "v0.181", "v0.184", "v0.185", "v0.186", "v0.187", "v0.193", "v0.194", "v0.195", "v0.196", "v0.197", "v0.198", "v0.199", "v0.200", "v0.203", "v0.204", "v0.205", "v0.206", "v0.209", "v0.210", "v0.211", "v0.212", "v0.217", "v0.218", "v0.219", "v0.220", "v0.221", "v0.222"].has(_player_capture_checkpoint()),
 		"proceduralPrimitiveOnly": not worker_art_loaded and not barracks_material_loaded and not militia_art_loaded and not aster_art_loaded and not ashen_art_loaded and not ground_material_loaded and not road_material_loaded and not bridge_riverbank_material_loaded and not road_riverbank_water_material_loaded,
 		"generatedOrImportedArtIncluded": worker_art_loaded or barracks_material_loaded or militia_art_loaded or aster_art_loaded or ashen_art_loaded or ground_material_loaded or road_material_loaded or bridge_riverbank_material_loaded or road_riverbank_water_material_loaded,
@@ -7875,10 +9017,26 @@ func _apply_player_slice_action(action: String) -> Dictionary:
 	elif action == "v0212_viewport_marker" or action == "v0212_alerts" or action.begins_with("v0212_resolution"):
 		player_ui_shell_production_tab_override = "TRAIN"
 		player_ui_shell_production_focus_hint = "train_militia"
-	if action.begins_with("v0271_") or action.begins_with("v0272_"):
+	if action.begins_with("v0271_") or action.begins_with("v0272_") or action.begins_with("v0273_") or action.begins_with("v0274_") or action.begins_with("v0275_") or action.begins_with("v0276_") or action.begins_with("v0277_") or action.begins_with("v0278_") or action.begins_with("v0279_") or action.begins_with("v0280_") or action.begins_with("v0281_") or action.begins_with("v0283_") or action.begins_with("v0284_") or action.begins_with("v0285_") or action.begins_with("v0286_") or action.begins_with("v0287_") or action.begins_with("v0288_") or action.begins_with("v0289_") or action.begins_with("v0290_") or action.begins_with("v0291_") or action.begins_with("v0292_") or action.begins_with("v0293_") or action.begins_with("v0295_") or action.begins_with("v0296_") or action.begins_with("v0297_") or action.begins_with("v0298_") or action.begins_with("v0299_") or action.begins_with("v0300_") or action.begins_with("v0301_") or action.begins_with("v0302_") or action.begins_with("v0303_") or action.begins_with("v0311_"):
 		_ensure_player_battle_scene()
 		_call_scene("set_barrosan_runtime_review_mode", [action])
+		if action == "v0311_worker_selected" or action == "v0311_selected_card_worker" or action == "v0311_worker_work_context":
+			_call_scene("select_entity", ["worker_00"])
+		elif action == "v0311_militia_selected" or action == "v0311_selected_card_militia" or action == "v0311_militia_ready_context":
+			_call_scene("select_entity", ["friendly_00"])
+		elif action == "v0311_box_selection":
+			_call_scene("box_select_squad")
+		elif action == "v0311_move_order":
+			_call_scene("select_entity", ["worker_00"])
+			_call_scene("_issue_real_order", [Vector2(760, 560)])
+		elif action == "v0311_bridge_crossing":
+			_call_scene("select_entity", ["worker_00"])
+			_call_scene("_issue_real_order", [Vector2(760, 560)])
 		_render_player_screen("battle")
+		if action.begins_with("v0280_") or action.begins_with("v0281_") or action.begins_with("v0283_") or action.begins_with("v0284_") or action.begins_with("v0285_") or action.begins_with("v0286_") or action.begins_with("v0287_") or action.begins_with("v0288_") or action.begins_with("v0289_") or action.begins_with("v0290_") or action.begins_with("v0291_"):
+			_call_scene("set_barrosan_runtime_review_mode", [action])
+		if action.begins_with("v0280_"):
+			_draw_v0280_review_card_overlay(action)
 		return {"ok": true, "action": action}
 	match action:
 		"title":
@@ -8918,6 +10076,74 @@ func _apply_player_slice_action(action: String) -> Dictionary:
 
 func _player_capture_checkpoint() -> String:
 	var normalized_root := _artifact_root_from_args().replace("\\", "/")
+	if normalized_root.contains("/v0315"):
+		return "v0.315"
+	if normalized_root.contains("/v0316"):
+		return "v0.316"
+	if normalized_root.contains("/v0314"):
+		return "v0.314"
+	if normalized_root.contains("/v0312"):
+		return "v0.312"
+	if normalized_root.contains("/v0311"):
+		return "v0.311"
+	if normalized_root.contains("/v0303"):
+		return "v0.303"
+	if normalized_root.contains("/v0302"):
+		return "v0.302"
+	if normalized_root.contains("/v0301"):
+		return "v0.301"
+	if normalized_root.contains("/v0300"):
+		return "v0.300"
+	if normalized_root.contains("/v0299"):
+		return "v0.299"
+	if normalized_root.contains("/v0298"):
+		return "v0.298"
+	if normalized_root.contains("/v0297"):
+		return "v0.297"
+	if normalized_root.contains("/v0296"):
+		return "v0.296"
+	if normalized_root.contains("/v0295"):
+		return "v0.295"
+	if normalized_root.contains("/v0293"):
+		return "v0.293"
+	if normalized_root.contains("/v0292"):
+		return "v0.292"
+	if normalized_root.contains("/v0291"):
+		return "v0.291"
+	if normalized_root.contains("/v0290"):
+		return "v0.290"
+	if normalized_root.contains("/v0289"):
+		return "v0.289"
+	if normalized_root.contains("/v0288"):
+		return "v0.288"
+	if normalized_root.contains("/v0287"):
+		return "v0.287"
+	if normalized_root.contains("/v0286"):
+		return "v0.286"
+	if normalized_root.contains("/v0285"):
+		return "v0.285"
+	if normalized_root.contains("/v0284"):
+		return "v0.284"
+	if normalized_root.contains("/v0283"):
+		return "v0.283"
+	if normalized_root.contains("/v0281"):
+		return "v0.281"
+	if normalized_root.contains("/v0280"):
+		return "v0.280"
+	if normalized_root.contains("/v0279"):
+		return "v0.279"
+	if normalized_root.contains("/v0278"):
+		return "v0.278"
+	if normalized_root.contains("/v0277"):
+		return "v0.277"
+	if normalized_root.contains("/v0276"):
+		return "v0.276"
+	if normalized_root.contains("/v0275"):
+		return "v0.275"
+	if normalized_root.contains("/v0274"):
+		return "v0.274"
+	if normalized_root.contains("/v0273"):
+		return "v0.273"
 	if normalized_root.contains("/v0272"):
 		return "v0.272"
 	if normalized_root.contains("/v0271"):
@@ -9091,9 +10317,664 @@ func _player_capture_checkpoint() -> String:
 	return "v0.124"
 
 func _is_bounded_microloop_checkpoint() -> bool:
-	return ["v0.129", "v0.130", "v0.160", "v0.162", "v0.164", "v0.166", "v0.168", "v0.169", "v0.170", "v0.173", "v0.174", "v0.177", "v0.178", "v0.179", "v0.181", "v0.184", "v0.185", "v0.186", "v0.187", "v0.193", "v0.194", "v0.195", "v0.196", "v0.197", "v0.198", "v0.199", "v0.200", "v0.203", "v0.204", "v0.205", "v0.206", "v0.209", "v0.210", "v0.211", "v0.212", "v0.213", "v0.215", "v0.216", "v0.217", "v0.218", "v0.219", "v0.220", "v0.221", "v0.222", "v0.223", "v0.224", "v0.227", "v0.228", "v0.229", "v0.230", "v0.231", "v0.243", "v0.244", "v0.245", "v0.246", "v0.247", "v0.248", "v0.249", "v0.250", "v0.251", "v0.252", "v0.253", "v0.254", "v0.255", "v0.256", "v0.257", "v0.258", "v0.259", "v0.261", "v0.262", "v0.263", "v0.264", "v0.265", "v0.266", "v0.267", "v0.268", "v0.269", "v0.270", "v0.271", "v0.272"].has(_player_capture_checkpoint())
+	return ["v0.129", "v0.130", "v0.160", "v0.162", "v0.164", "v0.166", "v0.168", "v0.169", "v0.170", "v0.173", "v0.174", "v0.177", "v0.178", "v0.179", "v0.181", "v0.184", "v0.185", "v0.186", "v0.187", "v0.193", "v0.194", "v0.195", "v0.196", "v0.197", "v0.198", "v0.199", "v0.200", "v0.203", "v0.204", "v0.205", "v0.206", "v0.209", "v0.210", "v0.211", "v0.212", "v0.213", "v0.215", "v0.216", "v0.217", "v0.218", "v0.219", "v0.220", "v0.221", "v0.222", "v0.223", "v0.224", "v0.227", "v0.228", "v0.229", "v0.230", "v0.231", "v0.243", "v0.244", "v0.245", "v0.246", "v0.247", "v0.248", "v0.249", "v0.250", "v0.251", "v0.252", "v0.253", "v0.254", "v0.255", "v0.256", "v0.257", "v0.258", "v0.259", "v0.261", "v0.262", "v0.263", "v0.264", "v0.265", "v0.266", "v0.267", "v0.268", "v0.269", "v0.270", "v0.271", "v0.272", "v0.273", "v0.274", "v0.275", "v0.276", "v0.277", "v0.278", "v0.279", "v0.280", "v0.281", "v0.283", "v0.284", "v0.285", "v0.286", "v0.287", "v0.288", "v0.289", "v0.290", "v0.291", "v0.292", "v0.293", "v0.295", "v0.296", "v0.297", "v0.298"].has(_player_capture_checkpoint())
+
+func _v0297_capture_steps() -> Array[Dictionary]:
+	return [
+		{"id":"v0297_clean_hud_aster_visible","label":"v0.297 clean Aster HUD","action":"v0297_clean_hud_aster"},
+		{"id":"v0297_chain_authorized_visible","label":"v0.297 chain authorized","action":"v0297_chain_authorized"},
+		{"id":"v0297_barracks_authorized_visible","label":"v0.297 Barracks authorized","action":"v0297_barracks_authorized"},
+		{"id":"v0297_execute_deploy_available_visible","label":"v0.297 Execute Deploy available","action":"v0297_execute_deploy_available"},
+		{"id":"v0297_execute_deploy_clicked_visible","label":"v0.297 Execute Deploy clicked","action":"v0297_execute_deploy_clicked"},
+		{"id":"v0297_reserve_support_deployed_strip_visible","label":"v0.297 deployed strip","action":"v0297_reserve_support_deployed_strip"},
+		{"id":"v0297_support_deployed_marker_once_visible","label":"v0.297 marker once","action":"v0297_support_deployed_marker_once"},
+		{"id":"v0297_static_support_presence_visible","label":"v0.297 static support presence","action":"v0297_static_support_presence"},
+		{"id":"v0297_route_controlled_visible","label":"v0.297 route controlled","action":"v0297_route_controlled"},
+		{"id":"v0297_five_static_segments_visible","label":"v0.297 five static segments","action":"v0297_five_static_segments"},
+		{"id":"v0297_barracks_deployed_visible","label":"v0.297 Barracks deployed","action":"v0297_barracks_deployed"},
+		{"id":"v0297_defender_deployed_visible","label":"v0.297 Defender deployed","action":"v0297_defender_deployed"},
+		{"id":"v0297_support_selected_visible","label":"v0.297 support card","action":"v0297_support_selected"},
+		{"id":"v0297_repeat_idempotent_visible","label":"v0.297 repeat idempotent","action":"v0297_repeat_idempotent"},
+		{"id":"v0297_no_movement_visible","label":"v0.297 no movement","action":"v0297_no_movement"},
+		{"id":"v0297_no_default_mutation_visible","label":"v0.297 default unchanged","action":"v0297_no_default_mutation"}
+	]
 
 func _player_capture_steps() -> Array[Dictionary]:
+	if _player_capture_checkpoint() == "v0.311":
+		return _v0311_capture_steps()
+	if _player_capture_checkpoint() == "v0.303":
+		return _v0303_player_capture_steps() if _barrosan_presentation_mode_from_args() == "PLAYER" else _v0303_debug_capture_steps()
+	if _player_capture_checkpoint() == "v0.302":
+		return _v0302_player_capture_steps() if _barrosan_presentation_mode_from_args() == "PLAYER" else _v0302_debug_capture_steps()
+	if _player_capture_checkpoint() == "v0.301":
+		return _v0301_player_capture_steps() if _barrosan_presentation_mode_from_args() == "PLAYER" else _v0301_debug_capture_steps()
+	if _player_capture_checkpoint() == "v0.300":
+		return [
+			{"id":"v0300_clean_hud_aster_visible","label":"v0.300 clean Aster HUD","action":"v0300_clean_hud_aster"}, {"id":"v0300_chain_pressure_stabilized_visible","label":"v0.300 accepted chain through pressure","action":"v0300_chain_pressure_stabilized"}, {"id":"v0300_bridge_cluster_decluttered_visible","label":"v0.300 bridge cluster decluttered","action":"v0300_bridge_cluster_decluttered"}, {"id":"v0300_route_preview_readable_visible","label":"v0.300 Route Preview readable","action":"v0300_route_preview_readable"}, {"id":"v0300_deploy_authorized_readable_visible","label":"v0.300 Deploy Authorized readable","action":"v0300_deploy_authorized_readable"}, {"id":"v0300_support_deployed_readable_visible","label":"v0.300 Support Deployed readable","action":"v0300_support_deployed_readable"}, {"id":"v0300_line_reinforced_readable_visible","label":"v0.300 Line Reinforced readable","action":"v0300_line_reinforced_readable"}, {"id":"v0300_pressure_stabilized_readable_visible","label":"v0.300 Pressure Stabilized readable","action":"v0300_pressure_stabilized_readable"}, {"id":"v0300_barracks_reserve_cluster_decluttered_visible","label":"v0.300 Barracks reserve cluster decluttered","action":"v0300_barracks_reserve_cluster_decluttered"}, {"id":"v0300_route_five_segments_visible","label":"v0.300 five static route segments","action":"v0300_route_five_segments"}, {"id":"v0300_integration_visual_static_visible","label":"v0.300 integration visual static","action":"v0300_integration_visual_static"}, {"id":"v0300_support_presence_once_visible","label":"v0.300 support presence once","action":"v0300_support_presence_once"}, {"id":"v0300_pressure_display_visible","label":"v0.300 Pressure 70/100","action":"v0300_pressure_display"}, {"id":"v0300_defender_card_visible","label":"v0.300 Defender card","action":"v0300_defender_card"}, {"id":"v0300_support_card_visible","label":"v0.300 Reserve Support card","action":"v0300_support_card"}, {"id":"v0300_barracks_card_visible","label":"v0.300 Field Barracks card","action":"v0300_barracks_card"}
+		]
+	if _player_capture_checkpoint() == "v0.299":
+		return [
+			{"id":"v0299_clean_hud_aster_visible","label":"v0.299 clean Aster HUD","action":"v0299_clean_hud_aster"}, {"id":"v0299_chain_integrated_visible","label":"v0.299 chain through integration","action":"v0299_chain_integrated"}, {"id":"v0299_support_selected_visible","label":"v0.299 support selected","action":"v0299_support_selected"}, {"id":"v0299_stabilize_available_visible","label":"v0.299 Stabilize Line available","action":"v0299_stabilize_available"}, {"id":"v0299_stabilize_clicked_visible","label":"v0.299 Stabilize Line clicked","action":"v0299_stabilize_clicked"}, {"id":"v0299_pressure_stabilized_strip_visible","label":"v0.299 stabilized strip","action":"v0299_pressure_stabilized_strip"}, {"id":"v0299_pressure_stabilized_marker_once_visible","label":"v0.299 pressure marker","action":"v0299_pressure_stabilized_marker_once"}, {"id":"v0299_pressure_display_visible","label":"v0.299 Pressure 70/100","action":"v0299_pressure_display"}, {"id":"v0299_support_stabilized_visible","label":"v0.299 support stabilized","action":"v0299_support_stabilized"}, {"id":"v0299_defender_stabilized_visible","label":"v0.299 Defender stabilized","action":"v0299_defender_stabilized"}, {"id":"v0299_barracks_stabilized_visible","label":"v0.299 Barracks stabilized","action":"v0299_barracks_stabilized"}, {"id":"v0299_integration_visual_static_visible","label":"v0.299 integration visual","action":"v0299_integration_visual_static"}, {"id":"v0299_route_controlled_visible","label":"v0.299 route controlled","action":"v0299_route_controlled"}, {"id":"v0299_five_static_segments_visible","label":"v0.299 five static segments","action":"v0299_five_static_segments"}, {"id":"v0299_repeat_idempotent_visible","label":"v0.299 repeat idempotent","action":"v0299_repeat_idempotent"}, {"id":"v0299_no_pressure_stacking_visible","label":"v0.299 no pressure stacking","action":"v0299_no_pressure_stacking"}
+		]
+	if _player_capture_checkpoint() == "v0.298":
+		return [
+			{"id":"v0298_clean_hud_aster_visible","label":"v0.298 clean Aster HUD","action":"v0298_clean_hud_aster"}, {"id":"v0298_chain_deployed_visible","label":"v0.298 chain through deployed","action":"v0298_chain_deployed"}, {"id":"v0298_support_selected_visible","label":"v0.298 support selected","action":"v0298_support_selected"}, {"id":"v0298_integrate_available_visible","label":"v0.298 Integrate Support available","action":"v0298_integrate_available"}, {"id":"v0298_integrate_clicked_visible","label":"v0.298 Integrate Support clicked","action":"v0298_integrate_clicked"}, {"id":"v0298_support_integrated_strip_visible","label":"v0.298 integrated strip","action":"v0298_support_integrated_strip"}, {"id":"v0298_line_reinforced_marker_once_visible","label":"v0.298 line reinforced marker","action":"v0298_line_reinforced_marker_once"}, {"id":"v0298_integration_visual_visible","label":"v0.298 integration visual","action":"v0298_integration_visual"}, {"id":"v0298_route_controlled_visible","label":"v0.298 route controlled","action":"v0298_route_controlled"}, {"id":"v0298_five_static_segments_visible","label":"v0.298 five static segments","action":"v0298_five_static_segments"}, {"id":"v0298_support_integrated_visible","label":"v0.298 support integrated","action":"v0298_support_integrated"}, {"id":"v0298_defender_integrated_visible","label":"v0.298 defender integrated","action":"v0298_defender_integrated"}, {"id":"v0298_barracks_integrated_visible","label":"v0.298 Barracks integrated","action":"v0298_barracks_integrated"}, {"id":"v0298_repeat_idempotent_visible","label":"v0.298 repeat idempotent","action":"v0298_repeat_idempotent"}, {"id":"v0298_no_duplicate_marker_visible","label":"v0.298 no duplicate marker","action":"v0298_no_duplicate_marker"}, {"id":"v0298_no_duplicate_visual_visible","label":"v0.298 no duplicate visual","action":"v0298_no_duplicate_visual"}]
+	if _player_capture_checkpoint() == "v0.297":
+		return _v0297_capture_steps()
+	if _player_capture_checkpoint() == "v0.297":
+		return [
+			{"id":"v0297_clean_hud_aster_visible","label":"v0.297 clean Aster HUD","action":"v0297_clean_hud_aster"}, {"id":"v0297_chain_authorized_visible","label":"v0.297 chain authorized","action":"v0297_chain_authorized"}, {"id":"v0297_barracks_authorized_visible","label":"v0.297 Barracks authorized","action":"v0297_barracks_authorized"}, {"id":"v0297_execute_deploy_available_visible","label":"v0.297 Execute Deploy available","action":"v0297_execute_deploy_available"}, {"id":"v0297_execute_deploy_clicked_visible","label":"v0.297 Execute Deploy clicked","action":"v0297_execute_deploy_clicked"}, {"id":"v0297_reserve_support_deployed_strip_visible","label":"v0.297 deployed strip","action":"v0297_reserve_support_deployed_strip"}, {"id":"v0297_support_deployed_marker_once_visible","label":"v0.297 marker once","action":"v0297_support_deployed_marker_once"}, {"id":"v0297_static_support_presence_visible","label":"v0.297 static support presence","action":"v0297_static_support_presence"}, {"id":"v0297_route_controlled_visible","label":"v0.297 route controlled","action":"v0297_route_controlled"}, {"id":"v0297_five_static_segments_visible","label":"v0.297 five static segments","action":"v0297_five_static_segments"}, {"id":"v0297_barracks_deployed_visible","label":"v0.297 Barracks deployed","action":"v0297_barracks_deployed"}, {"id":"v0297_defender_deployed_visible","label":"v0.297 Defender deployed","action":"v0297_defender_deployed"}, {"id":"v0297_support_selected_visible","label":"v0.297 support card","action":"v0297_support_selected"}, {"id":"v0297_aster_static_visible","label":"v0.297 Aster static","action":"v0297_aster_static"}, {"id":"v0297_defender_static_visible","label":"v0.297 defender static","action":"v0297_defender_static"}, {"id":"v0297_barracks_static_visible","label":"v0.297 Barracks static","action":"v0297_barracks_static"}, {"id":"v0297_no_position_changes_visible","label":"v0.297 no position changes","action":"v0297_no_position_changes"}, {"id":"v0297_no_pressure_mutation_visible","label":"v0.297 no pressure mutation","action":"v0297_no_pressure_mutation"}, {"id":"v0297_no_resources_visible","label":"v0.297 no resources","action":"v0297_no_resources"}, {"id":"v0297_repeat_idempotent_visible","label":"v0.297 repeat idempotent","action":"v0297_repeat_idempotent"}, {"id":"v0297_no_duplicate_support_visible","label":"v0.297 support once","action":"v0297_no_duplicate_support"}, {"id":"v0297_no_duplicate_marker_visible","label":"v0.297 marker once","action":"v0297_no_duplicate_marker"}, {"id":"v0297_no_duplicate_route_visible","label":"v0.297 route once","action":"v0297_no_duplicate_route"}, {"id":"v0297_no_card_global_overlap_visible","label":"v0.297 no card/global overlap","action":"v0297_no_card_global_overlap"}, {"id":"v0297_no_card_overlap_visible","label":"v0.297 no card overlap","action":"v0297_no_card_overlap"}, {"id":"v0297_no_button_overlap_visible","label":"v0.297 no button overlap","action":"v0297_no_button_overlap"}, {"id":"v0297_no_raw_validator_prose_visible","label":"v0.297 no validator prose","action":"v0297_no_raw_validator_prose"}, {"id":"v0297_no_movement_visible","label":"v0.297 no movement","action":"v0297_no_movement"}, {"id":"v0297_no_pathfinding_route_following_visible","label":"v0.297 no pathfinding","action":"v0297_no_pathfinding_route_following"}, {"id":"v0297_no_combat_visible","label":"v0.297 no combat","action":"v0297_no_combat"}, {"id":"v0297_no_ai_waves_fog_visible","label":"v0.297 no AI","action":"v0297_no_ai_waves_fog"}, {"id":"v0297_no_default_mutation_visible","label":"v0.297 default unchanged","action":"v0297_no_default_mutation"}
+		].slice(0, 15)
+	if _player_capture_checkpoint() == "v0.296":
+		return [
+			{"id":"v0296_authorize_deploy_available_visible","label":"v0.296 Authorize Deploy available","action":"v0296_authorize_deploy_available"},
+			{"id":"v0296_authorize_deploy_clicked_visible","label":"v0.296 Authorize Deploy clicked","action":"v0296_authorize_deploy_clicked"},
+			{"id":"v0296_deployment_order_authorized_top_strip_visible","label":"v0.296 authorization strip","action":"v0296_deployment_order_authorized_top_strip"},
+			{"id":"v0296_deploy_authorized_marker_exactly_once_visible","label":"v0.296 authorization marker","action":"v0296_deploy_authorized_marker_exactly_once"},
+			{"id":"v0296_route_preview_preserved_visible","label":"v0.296 route preserved","action":"v0296_route_preview_preserved"},
+			{"id":"v0296_five_static_segments_visible","label":"v0.296 five static segments","action":"v0296_five_static_segments"},
+			{"id":"v0296_barracks_authorized_visible","label":"v0.296 Barracks authorized","action":"v0296_barracks_authorized"},
+			{"id":"v0296_defender_authorized_visible","label":"v0.296 Defender authorized","action":"v0296_defender_authorized"},
+			{"id":"v0296_aster_static_visible","label":"v0.296 Aster static","action":"v0296_aster_static"},
+			{"id":"v0296_reserve_static_visible","label":"v0.296 reserve static","action":"v0296_reserve_static"},
+			{"id":"v0296_defender_static_visible","label":"v0.296 defender static","action":"v0296_defender_static"},
+			{"id":"v0296_barracks_static_visible","label":"v0.296 Barracks static","action":"v0296_barracks_static"},
+			{"id":"v0296_repeat_authorize_idempotent_visible","label":"v0.296 repeat authorized","action":"v0296_repeat_authorize_idempotent"},
+			{"id":"v0296_no_duplicate_authorized_marker_visible","label":"v0.296 marker once","action":"v0296_no_duplicate_authorized_marker"},
+			{"id":"v0296_no_duplicate_route_visual_visible","label":"v0.296 route once","action":"v0296_no_duplicate_route_visual"},
+			{"id":"v0296_no_deployment_visible","label":"v0.296 no deployment","action":"v0296_no_deployment"},
+			{"id":"v0296_no_movement_visible","label":"v0.296 no movement","action":"v0296_no_movement"},
+			{"id":"v0296_no_pathfinding_route_following_visible","label":"v0.296 no pathing","action":"v0296_no_pathfinding_route_following"},
+			{"id":"v0296_no_combat_visible","label":"v0.296 no combat","action":"v0296_no_combat"},
+			{"id":"v0296_no_ai_waves_fog_visible","label":"v0.296 no AI","action":"v0296_no_ai_waves_fog"},
+			{"id":"v0296_no_resources_visible","label":"v0.296 no resources","action":"v0296_no_resources"},
+			{"id":"v0296_no_default_mutation_visible","label":"v0.296 default unchanged","action":"v0296_no_default_mutation"},
+		]
+	if _player_capture_checkpoint() == "v0.295":
+		return [
+			{"id":"v0295_clean_hud_aster_selected_visible","label":"v0.295 clean HUD baseline","action":"v0295_clean_hud_aster_selected"},
+			{"id":"v0295_full_chain_retained_final_release_ready_visible","label":"v0.295 retained chain through FINAL RELEASE READY","action":"v0295_full_chain_retained_final_release_ready"},
+			{"id":"v0295_barracks_after_final_release_ready_visible","label":"v0.295 Barracks before Preview Route","action":"v0295_barracks_after_final_release_ready"},
+			{"id":"v0295_preview_route_available_visible","label":"v0.295 Preview Route available","action":"v0295_preview_route_available"},
+			{"id":"v0295_preview_route_clicked_visible","label":"v0.295 Preview Route clicked","action":"v0295_preview_route_clicked"},
+			{"id":"v0295_route_preview_locked_top_strip_visible","label":"v0.295 ROUTE PREVIEW LOCKED","action":"v0295_route_preview_locked_top_strip"},
+			{"id":"v0295_route_preview_marker_exactly_once_visible","label":"v0.295 ROUTE PREVIEW marker once","action":"v0295_route_preview_marker_exactly_once"},
+			{"id":"v0295_static_route_preview_visual_visible","label":"v0.295 static route preview visual","action":"v0295_static_route_preview_visual"},
+			{"id":"v0295_route_preview_no_selected_card_overlap_visible","label":"v0.295 route/card separation","action":"v0295_route_preview_no_selected_card_overlap"},
+			{"id":"v0295_route_preview_no_button_overlap_visible","label":"v0.295 route/button separation","action":"v0295_route_preview_no_button_overlap"},
+			{"id":"v0295_barracks_after_route_preview_locked_visible","label":"v0.295 Barracks route locked","action":"v0295_barracks_after_route_preview_locked"},
+			{"id":"v0295_defender_after_route_preview_locked_visible","label":"v0.295 Defender route locked","action":"v0295_defender_after_route_preview_locked"},
+			{"id":"v0295_aster_static_visible","label":"v0.295 Aster static","action":"v0295_aster_static"},
+			{"id":"v0295_reserve_militia_static_visible","label":"v0.295 reserve static","action":"v0295_reserve_militia_static"},
+			{"id":"v0295_defender_static_visible","label":"v0.295 defender static","action":"v0295_defender_static"},
+			{"id":"v0295_repeat_preview_route_idempotent_visible","label":"v0.295 repeat Preview Route idempotent","action":"v0295_repeat_preview_route_idempotent"},
+			{"id":"v0295_no_duplicate_route_visual_visible","label":"v0.295 route visual once","action":"v0295_no_duplicate_route_visual"},
+			{"id":"v0295_no_duplicate_route_marker_visible","label":"v0.295 route marker once","action":"v0295_no_duplicate_route_marker"},
+			{"id":"v0295_no_selected_card_global_prompt_overlap_visible","label":"v0.295 no card/global prompt overlap","action":"v0295_no_selected_card_global_prompt_overlap"},
+			{"id":"v0295_no_raw_validator_prose_visible","label":"v0.295 no raw validator prose","action":"v0295_no_raw_validator_prose"},
+			{"id":"v0295_no_deployment_visible","label":"v0.295 no deployment","action":"v0295_no_deployment"},
+			{"id":"v0295_no_movement_visible","label":"v0.295 no movement","action":"v0295_no_movement"},
+			{"id":"v0295_no_pathfinding_pathing_visible","label":"v0.295 no pathfinding","action":"v0295_no_pathfinding_pathing"},
+			{"id":"v0295_no_combat_damage_hp_projectile_death_visible","label":"v0.295 no combat","action":"v0295_no_combat_damage_hp_projectile_death"},
+			{"id":"v0295_no_ai_waves_fog_visible","label":"v0.295 no AI waves fog","action":"v0295_no_ai_waves_fog"},
+			{"id":"v0295_no_economy_resource_mutation_visible","label":"v0.295 no resource mutation","action":"v0295_no_economy_resource_mutation"},
+			{"id":"v0295_no_true_default_runtime_mutation_visible","label":"v0.295 default unchanged","action":"v0295_no_true_default_runtime_mutation"},
+		]
+	if _player_capture_checkpoint() == "v0.293":
+		return [
+			{"id":"v0291_manual_fixture_baseline_clean_hud_visible","label":"v0.293 clean HUD baseline","action":"v0291_manual_fixture_baseline_clean_hud"},
+			{"id":"v0291_barracks_card_awaiting_final_release_visible","label":"v0.293 Stage retained before release readiness","action":"v0291_barracks_card_awaiting_final_release"},
+			{"id":"v0293_release_ready_available_visible","label":"v0.293 Release Ready available","action":"v0293_release_ready_available"},
+			{"id":"v0293_release_ready_clicked_visible","label":"v0.293 Release Ready clicked","action":"v0293_release_ready_clicked"},
+			{"id":"v0293_final_release_ready_top_strip_visible","label":"v0.293 FINAL RELEASE READY","action":"v0293_final_release_ready_top_strip"},
+			{"id":"v0293_release_ready_marker_exactly_once_visible","label":"v0.293 RELEASE READY marker once","action":"v0293_release_ready_marker_exactly_once"},
+			{"id":"v0293_defender_after_final_release_ready_visible","label":"v0.293 Defender release ready","action":"v0293_defender_after_final_release_ready"},
+			{"id":"v0293_barracks_after_final_release_ready_visible","label":"v0.293 Barracks final release ready","action":"v0293_barracks_after_final_release_ready"},
+			{"id":"v0293_repeat_release_ready_idempotent_visible","label":"v0.293 repeat Release Ready idempotent","action":"v0293_repeat_release_ready_idempotent"},
+			{"id":"v0293_selected_card_readability_retained_visible","label":"v0.293 selected-card readability retained","action":"v0293_selected_card_readability_retained"},
+			{"id":"v0293_no_global_prompt_inside_selected_card_visible","label":"v0.293 no global prompt in card","action":"v0293_no_global_prompt_inside_selected_card"},
+			{"id":"v0293_no_selected_card_button_overlap_visible","label":"v0.293 no card/button overlap","action":"v0293_no_selected_card_button_overlap"},
+			{"id":"v0293_no_deployment_movement_pathing_route_preview_visible","label":"v0.293 no deployment or movement","action":"v0293_no_deployment_movement_pathing_route_preview"},
+		]
+	if _player_capture_checkpoint() == "v0.291" or _player_capture_checkpoint() == "v0.292":
+		return [
+			{"id":"v0291_manual_fixture_baseline_clean_hud_visible","label":"v0.291 manual fixture baseline clean HUD", "action":"v0291_manual_fixture_baseline_clean_hud"},
+			{"id":"v0291_engage_available_before_click_visible","label":"v0.291 Engage available before click", "action":"v0291_engage_available_before_click"},
+			{"id":"v0291_engage_armed_visible","label":"v0.291 Engage armed", "action":"v0291_engage_armed"},
+			{"id":"v0291_commit_engage_clicked_visible","label":"v0.291 Commit Engage clicked", "action":"v0291_commit_engage_clicked"},
+			{"id":"v0291_post_commit_pressure_checked_ashen_braced_visible","label":"v0.291 post-commit PRESSURE CHECKED and ASHEN BRACED", "action":"v0291_post_commit_pressure_checked_ashen_braced"},
+			{"id":"v0291_hold_line_available_after_commit_locked_visible","label":"v0.291 Hold Line available after Commit locked", "action":"v0291_hold_line_available_after_commit_locked"},
+			{"id":"v0291_hold_line_clicked_visible","label":"v0.291 Hold Line clicked", "action":"v0291_hold_line_clicked"},
+			{"id":"v0291_line_held_exactly_once_visible","label":"v0.291 LINE HELD exactly once", "action":"v0291_line_held_exactly_once"},
+			{"id":"v0291_ashen_contained_exactly_once_visible","label":"v0.291 ASHEN CONTAINED exactly once", "action":"v0291_ashen_contained_exactly_once"},
+			{"id":"v0291_select_field_barracks_after_hold_line_visible","label":"v0.291 select Field Barracks after Hold Line", "action":"v0291_select_field_barracks_after_hold_line"},
+			{"id":"v0291_train_militia_available_reserve_slot_empty_visible","label":"v0.291 Train Militia available reserve slot empty", "action":"v0291_train_militia_available_reserve_slot_empty"},
+			{"id":"v0291_train_clicked_visible","label":"v0.291 Train clicked", "action":"v0291_train_clicked"},
+			{"id":"v0291_reserve_ready_exactly_once_visible","label":"v0.291 RESERVE READY exactly once", "action":"v0291_reserve_ready_exactly_once"},
+			{"id":"v0291_assign_to_bridge_available_visible","label":"v0.291 Assign to bridge available", "action":"v0291_assign_to_bridge_available"},
+			{"id":"v0291_assign_clicked_visible","label":"v0.291 Assign clicked", "action":"v0291_assign_clicked"},
+			{"id":"v0291_reserve_assigned_exactly_once_visible","label":"v0.291 RESERVE ASSIGNED exactly once", "action":"v0291_reserve_assigned_exactly_once"},
+			{"id":"v0291_select_defender_after_reserve_assigned_visible","label":"v0.291 select defender after reserve assigned", "action":"v0291_select_defender_after_reserve_assigned"},
+			{"id":"v0291_signal_available_visible","label":"v0.291 Signal available", "action":"v0291_signal_available"},
+			{"id":"v0291_signal_clicked_visible","label":"v0.291 Signal clicked", "action":"v0291_signal_clicked"},
+			{"id":"v0291_bridge_signal_sent_exactly_once_visible","label":"v0.291 BRIDGE SIGNAL SENT exactly once", "action":"v0291_bridge_signal_sent_exactly_once"},
+			{"id":"v0291_signal_sent_exactly_once_visible","label":"v0.291 SIGNAL SENT exactly once", "action":"v0291_signal_sent_exactly_once"},
+			{"id":"v0291_reserve_ack_exactly_once_visible","label":"v0.291 RESERVE ACK exactly once", "action":"v0291_reserve_ack_exactly_once"},
+			{"id":"v0291_select_field_barracks_after_reserve_ack_visible","label":"v0.291 select Field Barracks after RESERVE ACK", "action":"v0291_select_field_barracks_after_reserve_ack"},
+			{"id":"v0291_prepare_support_available_visible","label":"v0.291 Prepare support available", "action":"v0291_prepare_support_available"},
+			{"id":"v0291_prepare_clicked_visible","label":"v0.291 Prepare clicked", "action":"v0291_prepare_clicked"},
+			{"id":"v0291_support_order_ready_exactly_once_visible","label":"v0.291 SUPPORT ORDER READY exactly once", "action":"v0291_support_order_ready_exactly_once"},
+			{"id":"v0291_order_ready_exactly_once_visible","label":"v0.291 ORDER READY exactly once", "action":"v0291_order_ready_exactly_once"},
+			{"id":"v0291_select_field_barracks_after_support_order_ready_visible","label":"v0.291 select Field Barracks after SUPPORT ORDER READY", "action":"v0291_select_field_barracks_after_support_order_ready"},
+			{"id":"v0291_approve_available_visible","label":"v0.291 Approve available", "action":"v0291_approve_available"},
+			{"id":"v0291_approve_clicked_visible","label":"v0.291 Approve clicked", "action":"v0291_approve_clicked"},
+			{"id":"v0291_deployment_approved_exactly_once_visible","label":"v0.291 DEPLOYMENT APPROVED exactly once", "action":"v0291_deployment_approved_exactly_once"},
+			{"id":"v0291_approved_exactly_once_visible","label":"v0.291 APPROVED exactly once", "action":"v0291_approved_exactly_once"},
+			{"id":"v0291_barracks_card_awaiting_launch_order_visible","label":"v0.291 Barracks card awaiting launch order", "action":"v0291_barracks_card_awaiting_launch_order"},
+			{"id":"v0291_defender_card_support_approved_awaiting_launch_visible","label":"v0.291 defender card Support approved awaiting launch", "action":"v0291_defender_card_support_approved_awaiting_launch"},
+			{"id":"v0291_select_field_barracks_after_deployment_approved_visible","label":"v0.291 select Field Barracks after DEPLOYMENT APPROVED", "action":"v0291_select_field_barracks_after_deployment_approved"},
+			{"id":"v0291_stage_available_visible","label":"v0.291 Stage available after DEPLOYMENT APPROVED", "action":"v0291_stage_available"},
+			{"id":"v0291_stage_clicked_visible","label":"v0.291 Stage clicked", "action":"v0291_stage_clicked"},
+			{"id":"v0291_launch_order_staged_exactly_once_visible","label":"v0.291 LAUNCH ORDER STAGED exactly once", "action":"v0291_launch_order_staged_exactly_once"},
+			{"id":"v0291_launch_staged_exactly_once_visible","label":"v0.291 LAUNCH STAGED exactly once", "action":"v0291_launch_staged_exactly_once"},
+			{"id":"v0291_barracks_card_awaiting_final_release_visible","label":"v0.291 Barracks card awaiting final release", "action":"v0291_barracks_card_awaiting_final_release"},
+			{"id":"v0291_defender_card_launch_staged_awaiting_release_visible","label":"v0.291 defender card Launch staged awaiting release", "action":"v0291_defender_card_launch_staged_awaiting_release"},
+			{"id":"v0291_repeat_stage_no_duplicate_staging_marker_stack_visible","label":"v0.291 repeat Stage no duplicate staging/marker/stack", "action":"v0291_repeat_stage_no_duplicate_staging_marker_stack"},
+			{"id":"v0291_resources_unchanged_after_train_assign_signal_prepare_approve_stage_visible","label":"v0.291 resources unchanged after Train Assign Signal Prepare Approve Stage", "action":"v0291_resources_unchanged_after_train_assign_signal_prepare_approve_stage"},
+			{"id":"v0291_reserve_marker_no_movement_pathing_attack_deploy_launch_behavior_visible","label":"v0.291 reserve marker no movement/pathing/attack/deploy/launch behavior", "action":"v0291_reserve_marker_no_movement_pathing_attack_deploy_launch_behavior"},
+			{"id":"v0291_watchpost_no_hold_line_engage_commit_ashen_reserve_assign_signal_prepare_approve_stage_visible","label":"v0.291 Watchpost no Hold/Engage/Commit/Ashen/Reserve/Assign/Signal/Prepare/Approve/Stage", "action":"v0291_watchpost_no_hold_line_engage_commit_ashen_reserve_assign_signal_prepare_approve_stage"},
+			{"id":"v0291_field_barracks_no_engage_commit_hold_ashen_signal_visible","label":"v0.291 Field Barracks no combat or Signal action", "action":"v0291_field_barracks_no_engage_commit_hold_ashen_signal"},
+			{"id":"v0291_clear_guard_settles_defender_contact_clean_after_stage_visible","label":"v0.291 Clear Guard settles defender contact after Stage", "action":"v0291_clear_guard_settles_defender_contact_clean_after_stage"},
+			{"id":"v0291_reguard_clean_after_stage_no_auto_launch_deploy_visible","label":"v0.291 Reguard clean after Stage no auto-launch/deploy", "action":"v0291_reguard_clean_after_stage_no_auto_launch_deploy"},
+			{"id":"v0291_no_projectile_damage_hp_loss_death_despawn_visible","label":"v0.291 no projectile/damage/HP loss/death/despawn", "action":"v0291_no_projectile_damage_hp_loss_death_despawn"},
+		]
+	if _player_capture_checkpoint() == "v0.290":
+		return [
+			{"id":"v0290_manual_fixture_baseline_clean_hud_visible","label":"v0.290 manual fixture baseline clean HUD", "action":"v0290_manual_fixture_baseline_clean_hud"},
+			{"id":"v0290_engage_available_before_click_visible","label":"v0.290 Engage available before click", "action":"v0290_engage_available_before_click"},
+			{"id":"v0290_engage_armed_visible","label":"v0.290 Engage armed", "action":"v0290_engage_armed"},
+			{"id":"v0290_commit_engage_clicked_visible","label":"v0.290 Commit Engage clicked", "action":"v0290_commit_engage_clicked"},
+			{"id":"v0290_post_commit_pressure_checked_ashen_braced_visible","label":"v0.290 post-commit PRESSURE CHECKED and ASHEN BRACED", "action":"v0290_post_commit_pressure_checked_ashen_braced"},
+			{"id":"v0290_hold_line_available_after_commit_locked_visible","label":"v0.290 Hold Line available after Commit locked", "action":"v0290_hold_line_available_after_commit_locked"},
+			{"id":"v0290_hold_line_clicked_visible","label":"v0.290 Hold Line clicked", "action":"v0290_hold_line_clicked"},
+			{"id":"v0290_line_held_exactly_once_visible","label":"v0.290 LINE HELD exactly once", "action":"v0290_line_held_exactly_once"},
+			{"id":"v0290_ashen_contained_exactly_once_visible","label":"v0.290 ASHEN CONTAINED exactly once", "action":"v0290_ashen_contained_exactly_once"},
+			{"id":"v0290_select_field_barracks_after_hold_line_visible","label":"v0.290 select Field Barracks after Hold Line", "action":"v0290_select_field_barracks_after_hold_line"},
+			{"id":"v0290_train_militia_available_reserve_slot_empty_visible","label":"v0.290 Train Militia available reserve slot empty", "action":"v0290_train_militia_available_reserve_slot_empty"},
+			{"id":"v0290_train_clicked_visible","label":"v0.290 Train clicked", "action":"v0290_train_clicked"},
+			{"id":"v0290_reserve_ready_exactly_once_visible","label":"v0.290 RESERVE READY exactly once", "action":"v0290_reserve_ready_exactly_once"},
+			{"id":"v0290_assign_to_bridge_available_visible","label":"v0.290 Assign to bridge available", "action":"v0290_assign_to_bridge_available"},
+			{"id":"v0290_assign_clicked_visible","label":"v0.290 Assign clicked", "action":"v0290_assign_clicked"},
+			{"id":"v0290_reserve_assigned_exactly_once_visible","label":"v0.290 RESERVE ASSIGNED exactly once", "action":"v0290_reserve_assigned_exactly_once"},
+			{"id":"v0290_select_defender_after_reserve_assigned_visible","label":"v0.290 select defender after reserve assigned", "action":"v0290_select_defender_after_reserve_assigned"},
+			{"id":"v0290_signal_available_visible","label":"v0.290 Signal available", "action":"v0290_signal_available"},
+			{"id":"v0290_signal_clicked_visible","label":"v0.290 Signal clicked", "action":"v0290_signal_clicked"},
+			{"id":"v0290_bridge_signal_sent_exactly_once_visible","label":"v0.290 BRIDGE SIGNAL SENT exactly once", "action":"v0290_bridge_signal_sent_exactly_once"},
+			{"id":"v0290_signal_sent_exactly_once_visible","label":"v0.290 SIGNAL SENT exactly once", "action":"v0290_signal_sent_exactly_once"},
+			{"id":"v0290_reserve_ack_exactly_once_visible","label":"v0.290 RESERVE ACK exactly once", "action":"v0290_reserve_ack_exactly_once"},
+			{"id":"v0290_select_field_barracks_after_reserve_ack_visible","label":"v0.290 select Field Barracks after RESERVE ACK", "action":"v0290_select_field_barracks_after_reserve_ack"},
+			{"id":"v0290_prepare_support_available_visible","label":"v0.290 Prepare support available", "action":"v0290_prepare_support_available"},
+			{"id":"v0290_prepare_clicked_visible","label":"v0.290 Prepare clicked", "action":"v0290_prepare_clicked"},
+			{"id":"v0290_support_order_ready_exactly_once_visible","label":"v0.290 SUPPORT ORDER READY exactly once", "action":"v0290_support_order_ready_exactly_once"},
+			{"id":"v0290_order_ready_exactly_once_visible","label":"v0.290 ORDER READY exactly once", "action":"v0290_order_ready_exactly_once"},
+			{"id":"v0290_select_field_barracks_after_support_order_ready_visible","label":"v0.290 select Field Barracks after SUPPORT ORDER READY", "action":"v0290_select_field_barracks_after_support_order_ready"},
+			{"id":"v0290_approve_available_visible","label":"v0.290 Approve available", "action":"v0290_approve_available"},
+			{"id":"v0290_approve_clicked_visible","label":"v0.290 Approve clicked", "action":"v0290_approve_clicked"},
+			{"id":"v0290_deployment_approved_exactly_once_visible","label":"v0.290 DEPLOYMENT APPROVED exactly once", "action":"v0290_deployment_approved_exactly_once"},
+			{"id":"v0290_approved_exactly_once_visible","label":"v0.290 APPROVED exactly once", "action":"v0290_approved_exactly_once"},
+			{"id":"v0290_barracks_card_awaiting_launch_order_visible","label":"v0.290 Barracks card awaiting launch order", "action":"v0290_barracks_card_awaiting_launch_order"},
+			{"id":"v0290_defender_card_support_approved_awaiting_launch_visible","label":"v0.290 defender card Support approved awaiting launch", "action":"v0290_defender_card_support_approved_awaiting_launch"},
+			{"id":"v0290_repeat_approve_no_duplicate_approval_marker_stack_visible","label":"v0.290 repeat Approve no duplicate approval/marker/stack", "action":"v0290_repeat_approve_no_duplicate_approval_marker_stack"},
+			{"id":"v0290_resources_unchanged_after_train_assign_signal_prepare_approve_visible","label":"v0.290 resources unchanged after Train Assign Signal Prepare Approve", "action":"v0290_resources_unchanged_after_train_assign_signal_prepare_approve"},
+			{"id":"v0290_reserve_marker_no_movement_pathing_attack_deploy_behavior_visible","label":"v0.290 reserve marker no movement/pathing/attack/deploy behavior", "action":"v0290_reserve_marker_no_movement_pathing_attack_deploy_behavior"},
+			{"id":"v0290_watchpost_no_hold_line_engage_commit_ashen_reserve_assign_signal_prepare_approve_visible","label":"v0.290 Watchpost no Hold/Engage/Commit/Ashen/Reserve/Assign/Signal/Prepare/Approve", "action":"v0290_watchpost_no_hold_line_engage_commit_ashen_reserve_assign_signal_prepare_approve"},
+			{"id":"v0290_field_barracks_no_engage_commit_hold_ashen_signal_visible","label":"v0.290 Field Barracks no combat or Signal action", "action":"v0290_field_barracks_no_engage_commit_hold_ashen_signal"},
+			{"id":"v0290_clear_guard_settles_defender_contact_clean_after_approve_visible","label":"v0.290 Clear Guard settles defender contact after Approve", "action":"v0290_clear_guard_settles_defender_contact_clean_after_approve"},
+			{"id":"v0290_reguard_clean_after_approve_no_auto_deploy_visible","label":"v0.290 Reguard clean after Approve no auto-deploy", "action":"v0290_reguard_clean_after_approve_no_auto_deploy"},
+			{"id":"v0290_no_projectile_damage_hp_loss_death_despawn_visible","label":"v0.290 no projectile/damage/HP loss/death/despawn", "action":"v0290_no_projectile_damage_hp_loss_death_despawn"},
+		]
+	if _player_capture_checkpoint() == "v0.289":
+		return [
+			{"id":"v0289_manual_fixture_baseline_clean_hud_visible","label":"v0.289 manual fixture baseline clean HUD", "action":"v0289_manual_fixture_baseline_clean_hud"},
+			{"id":"v0289_engage_available_before_click_visible","label":"v0.289 Engage available before click", "action":"v0289_engage_available_before_click"},
+			{"id":"v0289_engage_armed_visible","label":"v0.289 Engage armed", "action":"v0289_engage_armed"},
+			{"id":"v0289_commit_engage_clicked_visible","label":"v0.289 Commit Engage clicked", "action":"v0289_commit_engage_clicked"},
+			{"id":"v0289_post_commit_pressure_checked_ashen_braced_visible","label":"v0.289 post-commit PRESSURE CHECKED and ASHEN BRACED", "action":"v0289_post_commit_pressure_checked_ashen_braced"},
+			{"id":"v0289_hold_line_available_after_commit_locked_visible","label":"v0.289 Hold Line available after Commit locked", "action":"v0289_hold_line_available_after_commit_locked"},
+			{"id":"v0289_hold_line_clicked_visible","label":"v0.289 Hold Line clicked", "action":"v0289_hold_line_clicked"},
+			{"id":"v0289_line_held_exactly_once_visible","label":"v0.289 LINE HELD exactly once", "action":"v0289_line_held_exactly_once"},
+			{"id":"v0289_ashen_contained_exactly_once_visible","label":"v0.289 ASHEN CONTAINED exactly once", "action":"v0289_ashen_contained_exactly_once"},
+			{"id":"v0289_select_field_barracks_after_hold_line_visible","label":"v0.289 select Field Barracks after Hold Line", "action":"v0289_select_field_barracks_after_hold_line"},
+			{"id":"v0289_train_militia_available_reserve_slot_empty_visible","label":"v0.289 Train Militia available reserve slot empty", "action":"v0289_train_militia_available_reserve_slot_empty"},
+			{"id":"v0289_train_clicked_visible","label":"v0.289 Train clicked", "action":"v0289_train_clicked"},
+			{"id":"v0289_reserve_ready_exactly_once_visible","label":"v0.289 RESERVE READY exactly once", "action":"v0289_reserve_ready_exactly_once"},
+			{"id":"v0289_assign_to_bridge_available_visible","label":"v0.289 Assign to bridge available", "action":"v0289_assign_to_bridge_available"},
+			{"id":"v0289_assign_clicked_visible","label":"v0.289 Assign clicked", "action":"v0289_assign_clicked"},
+			{"id":"v0289_reserve_assigned_exactly_once_visible","label":"v0.289 RESERVE ASSIGNED exactly once", "action":"v0289_reserve_assigned_exactly_once"},
+			{"id":"v0289_select_defender_after_reserve_assigned_visible","label":"v0.289 select defender after reserve assigned", "action":"v0289_select_defender_after_reserve_assigned"},
+			{"id":"v0289_signal_available_visible","label":"v0.289 Signal available", "action":"v0289_signal_available"},
+			{"id":"v0289_signal_clicked_visible","label":"v0.289 Signal clicked", "action":"v0289_signal_clicked"},
+			{"id":"v0289_bridge_signal_sent_exactly_once_visible","label":"v0.289 BRIDGE SIGNAL SENT exactly once", "action":"v0289_bridge_signal_sent_exactly_once"},
+			{"id":"v0289_signal_sent_exactly_once_visible","label":"v0.289 SIGNAL SENT exactly once", "action":"v0289_signal_sent_exactly_once"},
+			{"id":"v0289_reserve_ack_exactly_once_visible","label":"v0.289 RESERVE ACK exactly once", "action":"v0289_reserve_ack_exactly_once"},
+			{"id":"v0289_select_field_barracks_after_reserve_ack_visible","label":"v0.289 select Field Barracks after RESERVE ACK", "action":"v0289_select_field_barracks_after_reserve_ack"},
+			{"id":"v0289_prepare_support_available_visible","label":"v0.289 Prepare support available", "action":"v0289_prepare_support_available"},
+			{"id":"v0289_prepare_clicked_visible","label":"v0.289 Prepare clicked", "action":"v0289_prepare_clicked"},
+			{"id":"v0289_support_order_ready_exactly_once_visible","label":"v0.289 SUPPORT ORDER READY exactly once", "action":"v0289_support_order_ready_exactly_once"},
+			{"id":"v0289_order_ready_exactly_once_visible","label":"v0.289 ORDER READY exactly once", "action":"v0289_order_ready_exactly_once"},
+			{"id":"v0289_barracks_card_awaiting_deployment_approval_visible","label":"v0.289 Barracks card awaiting deployment approval", "action":"v0289_barracks_card_awaiting_deployment_approval"},
+			{"id":"v0289_defender_card_support_order_ready_visible","label":"v0.289 defender card Support order ready", "action":"v0289_defender_card_support_order_ready"},
+			{"id":"v0289_repeat_prepare_no_duplicate_order_marker_stack_visible","label":"v0.289 repeat Prepare no duplicate order/marker/stack", "action":"v0289_repeat_prepare_no_duplicate_order_marker_stack"},
+			{"id":"v0289_resources_unchanged_after_train_assign_signal_prepare_visible","label":"v0.289 resources unchanged after Train Assign Signal Prepare", "action":"v0289_resources_unchanged_after_train_assign_signal_prepare"},
+			{"id":"v0289_reserve_marker_no_movement_pathing_attack_deploy_behavior_visible","label":"v0.289 reserve marker no movement/pathing/attack/deploy behavior", "action":"v0289_reserve_marker_no_movement_pathing_attack_deploy_behavior"},
+			{"id":"v0289_watchpost_no_hold_line_engage_commit_ashen_reserve_assign_signal_prepare_visible","label":"v0.289 Watchpost no Hold/Engage/Commit/Ashen/Reserve/Assign/Signal/Prepare", "action":"v0289_watchpost_no_hold_line_engage_commit_ashen_reserve_assign_signal_prepare"},
+			{"id":"v0289_field_barracks_no_engage_commit_hold_ashen_signal_visible","label":"v0.289 Field Barracks no combat or Signal action", "action":"v0289_field_barracks_no_engage_commit_hold_ashen_signal"},
+			{"id":"v0289_clear_guard_settles_defender_contact_clean_after_prepare_visible","label":"v0.289 Clear Guard settles defender contact after Prepare", "action":"v0289_clear_guard_settles_defender_contact_clean_after_prepare"},
+			{"id":"v0289_reguard_clean_after_prepare_no_auto_deploy_visible","label":"v0.289 Reguard clean after Prepare no auto-deploy", "action":"v0289_reguard_clean_after_prepare_no_auto_deploy"},
+			{"id":"v0289_no_projectile_damage_hp_loss_death_despawn_visible","label":"v0.289 no projectile/damage/HP loss/death/despawn", "action":"v0289_no_projectile_damage_hp_loss_death_despawn"},
+		]
+	if _player_capture_checkpoint() == "v0.288":
+		return [
+			{"id":"v0288_manual_fixture_baseline_clean_hud_visible","label":"v0.288 manual fixture baseline clean HUD", "action":"v0288_manual_fixture_baseline_clean_hud"},
+			{"id":"v0288_engage_available_before_click_visible","label":"v0.288 Engage available before click", "action":"v0288_engage_available_before_click"},
+			{"id":"v0288_engage_armed_visible","label":"v0.288 Engage armed", "action":"v0288_engage_armed"},
+			{"id":"v0288_commit_engage_clicked_visible","label":"v0.288 Commit Engage clicked", "action":"v0288_commit_engage_clicked"},
+			{"id":"v0288_post_commit_pressure_checked_ashen_braced_visible","label":"v0.288 post-commit PRESSURE CHECKED and ASHEN BRACED", "action":"v0288_post_commit_pressure_checked_ashen_braced"},
+			{"id":"v0288_hold_line_available_after_commit_locked_visible","label":"v0.288 Hold Line available after Commit locked", "action":"v0288_hold_line_available_after_commit_locked"},
+			{"id":"v0288_hold_line_clicked_visible","label":"v0.288 Hold Line clicked", "action":"v0288_hold_line_clicked"},
+			{"id":"v0288_line_held_exactly_once_visible","label":"v0.288 LINE HELD exactly once", "action":"v0288_line_held_exactly_once"},
+			{"id":"v0288_ashen_contained_exactly_once_visible","label":"v0.288 ASHEN CONTAINED exactly once", "action":"v0288_ashen_contained_exactly_once"},
+			{"id":"v0288_select_field_barracks_after_hold_line_visible","label":"v0.288 select Field Barracks after Hold Line", "action":"v0288_select_field_barracks_after_hold_line"},
+			{"id":"v0288_train_militia_available_reserve_slot_empty_visible","label":"v0.288 Train Militia available reserve slot empty", "action":"v0288_train_militia_available_reserve_slot_empty"},
+			{"id":"v0288_train_clicked_visible","label":"v0.288 Train clicked", "action":"v0288_train_clicked"},
+			{"id":"v0288_reserve_ready_exactly_once_visible","label":"v0.288 RESERVE READY exactly once", "action":"v0288_reserve_ready_exactly_once"},
+			{"id":"v0288_assign_to_bridge_available_visible","label":"v0.288 Assign to bridge available", "action":"v0288_assign_to_bridge_available"},
+			{"id":"v0288_assign_clicked_visible","label":"v0.288 Assign clicked", "action":"v0288_assign_clicked"},
+			{"id":"v0288_reserve_assigned_exactly_once_visible","label":"v0.288 RESERVE ASSIGNED exactly once", "action":"v0288_reserve_assigned_exactly_once"},
+			{"id":"v0288_select_defender_after_reserve_assigned_visible","label":"v0.288 select defender after reserve assigned", "action":"v0288_select_defender_after_reserve_assigned"},
+			{"id":"v0288_defender_card_signal_available_visible","label":"v0.288 defender Signal available", "action":"v0288_defender_card_signal_available"},
+			{"id":"v0288_signal_clicked_visible","label":"v0.288 Signal clicked", "action":"v0288_signal_clicked"},
+			{"id":"v0288_bridge_signal_sent_exactly_once_visible","label":"v0.288 BRIDGE SIGNAL SENT exactly once", "action":"v0288_bridge_signal_sent_exactly_once"},
+			{"id":"v0288_reserve_ack_exactly_once_visible","label":"v0.288 RESERVE ACK exactly once", "action":"v0288_reserve_ack_exactly_once"},
+			{"id":"v0288_defender_card_reserve_acknowledged_visible","label":"v0.288 defender card Reserve acknowledged", "action":"v0288_defender_card_reserve_acknowledged"},
+			{"id":"v0288_barracks_card_bridge_signal_received_visible","label":"v0.288 Barracks card Bridge signal received", "action":"v0288_barracks_card_bridge_signal_received"},
+			{"id":"v0288_repeat_signal_no_duplicate_signal_ack_stack_visible","label":"v0.288 repeat Signal no duplicate signal/ack stack", "action":"v0288_repeat_signal_no_duplicate_signal_ack_stack"},
+			{"id":"v0288_resources_unchanged_after_train_assign_signal_visible","label":"v0.288 resources unchanged after Train Assign Signal", "action":"v0288_resources_unchanged_after_train_assign_signal"},
+			{"id":"v0288_reserve_marker_no_movement_pathing_attack_deploy_behavior_visible","label":"v0.288 reserve marker no movement/pathing/attack/deploy behavior", "action":"v0288_reserve_marker_no_movement_pathing_attack_deploy_behavior"},
+			{"id":"v0288_watchpost_no_hold_line_engage_commit_ashen_reserve_assign_signal_visible","label":"v0.288 Watchpost no Hold/Engage/Commit/Ashen/Reserve/Assign/Signal", "action":"v0288_watchpost_no_hold_line_engage_commit_ashen_reserve_assign_signal"},
+			{"id":"v0288_field_barracks_no_engage_commit_hold_ashen_signal_visible","label":"v0.288 Field Barracks no combat or Signal action", "action":"v0288_field_barracks_no_engage_commit_hold_ashen_signal"},
+			{"id":"v0288_clear_guard_settles_defender_contact_clean_after_signal_visible","label":"v0.288 Clear Guard settles defender contact after Signal", "action":"v0288_clear_guard_settles_defender_contact_clean_after_signal"},
+			{"id":"v0288_reguard_clean_after_signal_no_auto_deploy_visible","label":"v0.288 Reguard clean after Signal no auto-deploy", "action":"v0288_reguard_clean_after_signal_no_auto_deploy"},
+			{"id":"v0288_no_projectile_damage_hp_loss_death_despawn_visible","label":"v0.288 no projectile/damage/HP loss/death/despawn", "action":"v0288_no_projectile_damage_hp_loss_death_despawn"},
+		]
+	if _player_capture_checkpoint() == "v0.287":
+		return [
+			{"id":"v0287_manual_fixture_baseline_clean_hud_visible","label":"v0.287 manual fixture baseline clean HUD", "action":"v0287_manual_fixture_baseline_clean_hud"},
+			{"id":"v0287_engage_available_before_click_visible","label":"v0.287 Engage available before click", "action":"v0287_engage_available_before_click"},
+			{"id":"v0287_engage_armed_visible","label":"v0.287 Engage armed", "action":"v0287_engage_armed"},
+			{"id":"v0287_commit_engage_clicked_visible","label":"v0.287 Commit Engage clicked", "action":"v0287_commit_engage_clicked"},
+			{"id":"v0287_post_commit_pressure_checked_ashen_braced_visible","label":"v0.287 post-commit PRESSURE CHECKED and ASHEN BRACED", "action":"v0287_post_commit_pressure_checked_ashen_braced"},
+			{"id":"v0287_hold_line_available_after_commit_locked_visible","label":"v0.287 Hold Line available after Commit locked", "action":"v0287_hold_line_available_after_commit_locked"},
+			{"id":"v0287_hold_line_clicked_visible","label":"v0.287 Hold Line clicked", "action":"v0287_hold_line_clicked"},
+			{"id":"v0287_line_held_exactly_once_visible","label":"v0.287 LINE HELD exactly once", "action":"v0287_line_held_exactly_once"},
+			{"id":"v0287_ashen_contained_exactly_once_visible","label":"v0.287 ASHEN CONTAINED exactly once", "action":"v0287_ashen_contained_exactly_once"},
+			{"id":"v0287_select_field_barracks_after_hold_line_visible","label":"v0.287 select Field Barracks after Hold Line", "action":"v0287_select_field_barracks_after_hold_line"},
+			{"id":"v0287_train_militia_available_reserve_slot_empty_visible","label":"v0.287 Train Militia available reserve slot empty", "action":"v0287_train_militia_available_reserve_slot_empty"},
+			{"id":"v0287_train_clicked_visible","label":"v0.287 Train clicked", "action":"v0287_train_clicked"},
+			{"id":"v0287_reserve_ready_exactly_once_visible","label":"v0.287 RESERVE READY exactly once", "action":"v0287_reserve_ready_exactly_once"},
+			{"id":"v0287_barracks_assign_to_bridge_available_visible","label":"v0.287 Barracks Assign to bridge available", "action":"v0287_barracks_assign_to_bridge_available"},
+			{"id":"v0287_assign_clicked_visible","label":"v0.287 Assign clicked", "action":"v0287_assign_clicked"},
+			{"id":"v0287_reserve_assigned_exactly_once_visible","label":"v0.287 RESERVE ASSIGNED exactly once", "action":"v0287_reserve_assigned_exactly_once"},
+			{"id":"v0287_barracks_card_reserve_assigned_bridge_support_pending_visible","label":"v0.287 Barracks card reserve assigned bridge support pending", "action":"v0287_barracks_card_reserve_assigned_bridge_support_pending"},
+			{"id":"v0287_defender_card_acknowledges_reserve_assigned_visible","label":"v0.287 defender card acknowledges Reserve assigned", "action":"v0287_defender_card_acknowledges_reserve_assigned"},
+			{"id":"v0287_repeat_assign_no_duplicate_assignment_no_stack_visible","label":"v0.287 repeat Assign no duplicate assignment/no stack", "action":"v0287_repeat_assign_no_duplicate_assignment_no_stack"},
+			{"id":"v0287_resources_unchanged_after_train_and_assign_visible","label":"v0.287 resources unchanged after Train and Assign", "action":"v0287_resources_unchanged_after_train_and_assign"},
+			{"id":"v0287_reserve_marker_no_movement_pathing_attack_deploy_behavior_visible","label":"v0.287 reserve marker no movement/pathing/attack/deploy behavior", "action":"v0287_reserve_marker_no_movement_pathing_attack_deploy_behavior"},
+			{"id":"v0287_watchpost_no_hold_line_engage_commit_ashen_reserve_assign_visible","label":"v0.287 Watchpost no Hold Line/Engage/Commit/Ashen/Reserve/Assign", "action":"v0287_watchpost_no_hold_line_engage_commit_ashen_reserve_assign"},
+			{"id":"v0287_clear_guard_settles_defender_contact_clean_after_assigned_visible","label":"v0.287 Clear Guard settles defender contact after assigned", "action":"v0287_clear_guard_settles_defender_contact_clean_after_assigned"},
+			{"id":"v0287_reguard_clean_after_assigned_no_auto_deploy_visible","label":"v0.287 Reguard clean after assigned no auto-deploy", "action":"v0287_reguard_clean_after_assigned_no_auto_deploy"},
+			{"id":"v0287_no_projectile_damage_hp_loss_death_despawn_visible","label":"v0.287 no projectile/damage/HP loss/death/despawn", "action":"v0287_no_projectile_damage_hp_loss_death_despawn"},
+		]
+	if _player_capture_checkpoint() == "v0.286":
+		return [
+			{"id":"v0286_manual_fixture_baseline_clean_hud_visible","label":"v0.286 manual fixture baseline clean HUD", "action":"v0286_manual_fixture_baseline_clean_hud"},
+			{"id":"v0286_engage_available_before_click_visible","label":"v0.286 Engage available before click", "action":"v0286_engage_available_before_click"},
+			{"id":"v0286_engage_armed_visible","label":"v0.286 Engage armed", "action":"v0286_engage_armed"},
+			{"id":"v0286_commit_engage_clicked_visible","label":"v0.286 Commit Engage clicked", "action":"v0286_commit_engage_clicked"},
+			{"id":"v0286_post_commit_pressure_checked_ashen_braced_visible","label":"v0.286 post-commit PRESSURE CHECKED and ASHEN BRACED", "action":"v0286_post_commit_pressure_checked_ashen_braced"},
+			{"id":"v0286_hold_line_available_after_commit_locked_visible","label":"v0.286 Hold Line available after Commit locked", "action":"v0286_hold_line_available_after_commit_locked"},
+			{"id":"v0286_hold_line_clicked_visible","label":"v0.286 Hold Line clicked", "action":"v0286_hold_line_clicked"},
+			{"id":"v0286_line_held_exactly_once_visible","label":"v0.286 LINE HELD exactly once", "action":"v0286_line_held_exactly_once"},
+			{"id":"v0286_ashen_contained_exactly_once_visible","label":"v0.286 ASHEN CONTAINED exactly once", "action":"v0286_ashen_contained_exactly_once"},
+			{"id":"v0286_select_field_barracks_after_hold_line_visible","label":"v0.286 select Field Barracks after Hold Line", "action":"v0286_select_field_barracks_after_hold_line"},
+			{"id":"v0286_field_barracks_train_available_reserve_slot_empty_visible","label":"v0.286 Field Barracks Train available reserve slot empty", "action":"v0286_field_barracks_train_available_reserve_slot_empty"},
+			{"id":"v0286_train_militia_clicked_visible","label":"v0.286 Train Militia clicked", "action":"v0286_train_militia_clicked"},
+			{"id":"v0286_reserve_ready_exactly_once_visible","label":"v0.286 RESERVE READY exactly once", "action":"v0286_reserve_ready_exactly_once"},
+			{"id":"v0286_barracks_card_reserve_militia_ready_visible","label":"v0.286 Barracks card reserve militia ready", "action":"v0286_barracks_card_reserve_militia_ready"},
+			{"id":"v0286_repeat_train_no_duplicate_reserve_no_stack_visible","label":"v0.286 repeat Train no duplicate reserve/no stack", "action":"v0286_repeat_train_no_duplicate_reserve_no_stack"},
+			{"id":"v0286_resources_unchanged_after_reserve_ready_visible","label":"v0.286 resources unchanged after reserve ready", "action":"v0286_resources_unchanged_after_reserve_ready"},
+			{"id":"v0286_reserve_marker_no_movement_pathing_attack_actions_visible","label":"v0.286 reserve marker no movement/pathing/attack actions", "action":"v0286_reserve_marker_no_movement_pathing_attack_actions"},
+			{"id":"v0286_watchpost_no_hold_line_engage_commit_ashen_reserve_visible","label":"v0.286 Watchpost no Hold Line/Engage/Commit/Ashen/Reserve action", "action":"v0286_watchpost_no_hold_line_engage_commit_ashen_reserve"},
+			{"id":"v0286_clear_guard_settles_defender_contact_clean_visible","label":"v0.286 Clear Guard settles defender contact clean", "action":"v0286_clear_guard_settles_defender_contact_clean"},
+			{"id":"v0286_reguard_clean_after_reserve_ready_visible","label":"v0.286 Reguard clean after reserve-ready state", "action":"v0286_reguard_clean_after_reserve_ready"},
+			{"id":"v0286_no_projectile_damage_hp_loss_death_despawn_visible","label":"v0.286 no projectile/damage/HP loss/death/despawn", "action":"v0286_no_projectile_damage_hp_loss_death_despawn"},
+		]
+	if _player_capture_checkpoint() == "v0.285":
+		return [
+			{"id":"v0285_manual_fixture_baseline_clean_hud_visible","label":"v0.285 manual fixture baseline clean HUD", "action":"v0285_manual_fixture_baseline_clean_hud"},
+			{"id":"v0285_engage_available_before_click_visible","label":"v0.285 Engage available before click", "action":"v0285_engage_available_before_click"},
+			{"id":"v0285_engage_armed_visible","label":"v0.285 Engage armed", "action":"v0285_engage_armed"},
+			{"id":"v0285_commit_engage_clicked_visible","label":"v0.285 Commit Engage clicked", "action":"v0285_commit_engage_clicked"},
+			{"id":"v0285_post_commit_pressure_checked_ashen_braced_visible","label":"v0.285 post-commit PRESSURE CHECKED and ASHEN BRACED", "action":"v0285_post_commit_pressure_checked_ashen_braced"},
+			{"id":"v0285_hold_line_available_after_commit_locked_visible","label":"v0.285 Hold Line available after Commit locked", "action":"v0285_hold_line_available_after_commit_locked"},
+			{"id":"v0285_hold_line_clicked_visible","label":"v0.285 Hold Line clicked", "action":"v0285_hold_line_clicked"},
+			{"id":"v0285_line_held_exactly_once_visible","label":"v0.285 LINE HELD exactly once", "action":"v0285_line_held_exactly_once"},
+			{"id":"v0285_ashen_contained_exactly_once_visible","label":"v0.285 ASHEN CONTAINED exactly once", "action":"v0285_ashen_contained_exactly_once"},
+			{"id":"v0285_combined_line_held_ashen_contained_readable_hud_visible","label":"v0.285 LINE HELD and ASHEN CONTAINED readable HUD", "action":"v0285_combined_line_held_ashen_contained_readable_hud"},
+			{"id":"v0285_repeat_hold_line_no_duplicate_no_stack_visible","label":"v0.285 repeat Hold Line no duplicate/no stack", "action":"v0285_repeat_hold_line_no_duplicate_no_stack"},
+			{"id":"v0285_clear_guard_settles_hold_line_visible","label":"v0.285 Clear Guard settles held/contained state", "action":"v0285_clear_guard_settles_hold_line"},
+			{"id":"v0285_reguard_availability_clean_after_hold_line_visible","label":"v0.285 Reguard availability clean after Hold Line", "action":"v0285_reguard_availability_clean_after_hold_line"},
+			{"id":"v0285_watchpost_no_hold_line_engage_commit_ashen_visible","label":"v0.285 Watchpost no Hold Line/Engage/Commit/Ashen action", "action":"v0285_watchpost_no_hold_line_engage_commit_ashen"},
+			{"id":"v0285_barracks_no_hold_line_engage_commit_ashen_visible","label":"v0.285 Barracks no Hold Line/Engage/Commit/Ashen action", "action":"v0285_barracks_no_hold_line_engage_commit_ashen"},
+			{"id":"v0285_no_projectile_damage_death_despawn_visible","label":"v0.285 no projectile/damage/death/despawn", "action":"v0285_no_projectile_damage_death_despawn"},
+		]
+	if _player_capture_checkpoint() == "v0.283":
+		return [
+			{"id":"v0283_engage_available_before_click_visible","label":"v0.283 Engage available before click", "action":"v0283_engage_available_before_click"},
+			{"id":"v0283_engage_armed_hud_clean_visible","label":"v0.283 Engage armed HUD clean", "action":"v0283_engage_armed_hud_clean"},
+			{"id":"v0283_engage_armed_exactly_one_world_label_visible","label":"v0.283 Engage armed exactly one world label", "action":"v0283_engage_armed_exactly_one_world_label"},
+			{"id":"v0283_commit_engage_clicked_visible","label":"v0.283 Commit Engage clicked", "action":"v0283_commit_engage_clicked"},
+			{"id":"v0283_post_commit_player_pressure_checked_label_visible","label":"v0.283 post-commit player PRESSURE CHECKED", "action":"v0283_post_commit_player_pressure_checked_label"},
+			{"id":"v0283_post_commit_ashen_braced_label_visible","label":"v0.283 post-commit ASHEN BRACED", "action":"v0283_post_commit_ashen_braced_label"},
+			{"id":"v0283_post_commit_combined_pressure_checked_ashen_braced_visible","label":"v0.283 combined PRESSURE CHECKED and ASHEN BRACED", "action":"v0283_post_commit_combined_pressure_checked_ashen_braced"},
+			{"id":"v0283_repeat_commit_no_stack_no_duplicate_ashen_braced_visible","label":"v0.283 repeat commit no duplicate Ashen braced", "action":"v0283_repeat_commit_no_stack_no_duplicate_ashen_braced"},
+			{"id":"v0283_clear_guard_settles_ashen_response_visible","label":"v0.283 Clear Guard settles Ashen response", "action":"v0283_clear_guard_settles_ashen_response"},
+			{"id":"v0283_reguard_availability_clean_visible","label":"v0.283 Reguard availability clean", "action":"v0283_reguard_availability_clean"},
+			{"id":"v0283_watchpost_no_engage_commit_ashen_braced_visible","label":"v0.283 Watchpost no Engage/Commit/Ashen braced", "action":"v0283_watchpost_no_engage_commit_ashen_braced"},
+			{"id":"v0283_barracks_no_engage_commit_ashen_braced_visible","label":"v0.283 Barracks no Engage/Commit/Ashen braced", "action":"v0283_barracks_no_engage_commit_ashen_braced"},
+			{"id":"v0283_no_projectile_damage_death_despawn_visible","label":"v0.283 no projectile/damage/death/despawn", "action":"v0283_no_projectile_damage_death_despawn"},
+		]
+	if _player_capture_checkpoint() == "v0.284":
+		return [
+			{"id":"v0284_manual_fixture_baseline_clean_select_aster_visible","label":"v0.284 manual fixture baseline clean Select Aster", "action":"v0284_manual_fixture_baseline_clean_select_aster"},
+			{"id":"v0284_engage_available_before_click_visible","label":"v0.284 Engage available before click readable HUD", "action":"v0284_engage_available_before_click"},
+			{"id":"v0284_engage_armed_hud_clean_visible","label":"v0.284 Engage armed readable HUD", "action":"v0284_engage_armed_hud_clean"},
+			{"id":"v0284_engage_armed_exactly_one_world_label_visible","label":"v0.284 Engage armed exactly one short world label", "action":"v0284_engage_armed_exactly_one_world_label"},
+			{"id":"v0284_commit_engage_clicked_visible","label":"v0.284 Commit Engage clicked readable HUD", "action":"v0284_commit_engage_clicked"},
+			{"id":"v0284_post_commit_player_pressure_checked_label_visible","label":"v0.284 post-commit PRESSURE CHECKED readable HUD", "action":"v0284_post_commit_player_pressure_checked_label"},
+			{"id":"v0284_post_commit_ashen_braced_label_visible","label":"v0.284 post-commit ASHEN BRACED readable HUD", "action":"v0284_post_commit_ashen_braced_label"},
+			{"id":"v0284_post_commit_combined_pressure_checked_ashen_braced_visible","label":"v0.284 combined labels readable HUD", "action":"v0284_post_commit_combined_pressure_checked_ashen_braced"},
+			{"id":"v0284_repeat_commit_no_stack_no_duplicate_ashen_braced_visible","label":"v0.284 repeat commit no duplicate readable HUD", "action":"v0284_repeat_commit_no_stack_no_duplicate_ashen_braced"},
+			{"id":"v0284_clear_guard_settles_ashen_response_visible","label":"v0.284 Clear Guard settles Ashen response readable HUD", "action":"v0284_clear_guard_settles_ashen_response"},
+			{"id":"v0284_reguard_availability_clean_visible","label":"v0.284 Reguard availability clean readable HUD", "action":"v0284_reguard_availability_clean"},
+			{"id":"v0284_watchpost_no_engage_commit_ashen_braced_visible","label":"v0.284 Watchpost no Engage/Commit/Ashen braced readable HUD", "action":"v0284_watchpost_no_engage_commit_ashen_braced"},
+			{"id":"v0284_barracks_no_engage_commit_ashen_braced_visible","label":"v0.284 Barracks no Engage/Commit/Ashen braced readable HUD", "action":"v0284_barracks_no_engage_commit_ashen_braced"},
+			{"id":"v0284_no_projectile_damage_death_despawn_visible","label":"v0.284 no projectile/damage/death/despawn readable HUD", "action":"v0284_no_projectile_damage_death_despawn"},
+		]
+	if _player_capture_checkpoint() == "v0.281":
+		return [
+			{"id":"v0281_engage_available_before_click_real_hud_only_visible","label":"v0.281 Engage available before click, real HUD only", "action":"v0281_engage_available_before_click_real_hud_only"},
+			{"id":"v0281_engage_armed_real_hud_clean_visible","label":"v0.281 armed real HUD clean", "action":"v0281_engage_armed_real_hud_clean"},
+			{"id":"v0281_engage_armed_exactly_one_world_label_visible","label":"v0.281 armed exactly one world label", "action":"v0281_engage_armed_exactly_one_world_label"},
+			{"id":"v0281_commit_engage_button_available_real_hud_visible","label":"v0.281 Commit Engage available in real HUD", "action":"v0281_commit_engage_button_available_real_hud"},
+			{"id":"v0281_commit_engage_clicked_visible","label":"v0.281 Commit Engage clicked", "action":"v0281_commit_engage_clicked"},
+			{"id":"v0281_post_commit_real_hud_clean_truthful_visible","label":"v0.281 post-commit real HUD clean and truthful", "action":"v0281_post_commit_real_hud_clean_truthful"},
+			{"id":"v0281_post_commit_exactly_one_world_label_visible","label":"v0.281 post-commit exactly one world label", "action":"v0281_post_commit_exactly_one_world_label"},
+			{"id":"v0281_repeat_commit_no_stack_real_hud_80_visible","label":"v0.281 repeat commit no stack, real HUD still 80", "action":"v0281_repeat_commit_no_stack_real_hud_80"},
+			{"id":"v0281_clear_guard_removes_commit_label_real_hud_clean_visible","label":"v0.281 Clear Guard removes commit label and real HUD clean", "action":"v0281_clear_guard_removes_commit_label_real_hud_clean"},
+			{"id":"v0281_reguard_availability_clean_real_hud_visible","label":"v0.281 Reguard availability clean real HUD", "action":"v0281_reguard_availability_clean_real_hud"},
+			{"id":"v0281_watchpost_no_engage_commit_action_real_hud_visible","label":"v0.281 Watchpost no Engage/Commit in real HUD", "action":"v0281_watchpost_no_engage_commit_action_real_hud"},
+			{"id":"v0281_barracks_no_engage_commit_action_real_hud_visible","label":"v0.281 Barracks no Engage/Commit in real HUD", "action":"v0281_barracks_no_engage_commit_action_real_hud"},
+			{"id":"v0281_no_projectile_unit_damage_enemy_death_visible","label":"v0.281 no projectile/damage/death", "action":"v0281_no_projectile_unit_damage_enemy_death"},
+			{"id":"v0281_default_runtime_unchanged_probe_visible","label":"v0.281 default runtime unchanged", "action":"v0281_default_runtime_unchanged_probe"},
+		]
+	if _player_capture_checkpoint() == "v0.280":
+		return [
+			{"id":"v0280_engage_available_before_click_visible","label":"v0.280 Engage available before click", "action":"v0280_engage_available_before_click"},
+			{"id":"v0280_engage_armed_exactly_one_world_label_visible","label":"v0.280 armed exactly one world label", "action":"v0280_engage_armed_exactly_one_world_label"},
+			{"id":"v0280_commit_engage_button_available_visible","label":"v0.280 Commit Engage available", "action":"v0280_commit_engage_button_available"},
+			{"id":"v0280_commit_engage_clicked_visible","label":"v0.280 Commit Engage clicked", "action":"v0280_commit_engage_clicked"},
+			{"id":"v0280_post_commit_exactly_one_world_label_visible","label":"v0.280 post-commit one world label", "action":"v0280_post_commit_exactly_one_world_label"},
+			{"id":"v0280_hud_card_post_commit_details_visible","label":"v0.280 post-commit HUD/card details", "action":"v0280_hud_card_post_commit_details"},
+			{"id":"v0280_repeat_commit_no_stack_pressure_effects_visible","label":"v0.280 repeat commit no stack", "action":"v0280_repeat_commit_no_stack_pressure_effects"},
+			{"id":"v0280_clear_guard_removes_commit_label_visible","label":"v0.280 Clear Guard removes commit label", "action":"v0280_clear_guard_removes_commit_label"},
+			{"id":"v0280_reguard_availability_clean_visible","label":"v0.280 Reguard availability clean", "action":"v0280_reguard_availability_clean"},
+			{"id":"v0280_watchpost_no_engage_commit_action_visible","label":"v0.280 Watchpost no Engage/Commit", "action":"v0280_watchpost_no_engage_commit_action"},
+			{"id":"v0280_barracks_no_engage_commit_action_visible","label":"v0.280 Barracks no Engage/Commit", "action":"v0280_barracks_no_engage_commit_action"},
+			{"id":"v0280_no_projectile_unit_damage_enemy_death_visible","label":"v0.280 no projectile/damage/death", "action":"v0280_no_projectile_unit_damage_enemy_death"},
+			{"id":"v0280_default_runtime_unchanged_probe_visible","label":"v0.280 default runtime unchanged", "action":"v0280_default_runtime_unchanged_probe"},
+		]
+	if _player_capture_checkpoint() == "v0.279":
+		return [
+			{"id":"v0279_engage_available_before_click_visible","label":"v0.279 Engage available before click", "action":"v0279_engage_available_before_click"},
+			{"id":"v0279_engage_armed_exactly_one_label_visible","label":"v0.279 armed exactly one label", "action":"v0279_engage_armed_exactly_one_label"},
+			{"id":"v0279_engagement_contained_absent_close_visible","label":"v0.279 contained absent close proof", "action":"v0279_engagement_contained_absent_close"},
+			{"id":"v0279_bridge_held_absent_close_visible","label":"v0.279 bridge held absent close proof", "action":"v0279_bridge_held_absent_close"},
+			{"id":"v0279_hud_full_state_single_world_label_visible","label":"v0.279 HUD full state, single label", "action":"v0279_hud_full_state_single_world_label"},
+			{"id":"v0279_repeat_engage_no_duplicate_label_visible","label":"v0.279 repeat no duplicate label", "action":"v0279_repeat_engage_no_duplicate_label"},
+			{"id":"v0279_repeat_engage_hud_already_armed_visible","label":"v0.279 repeat HUD already armed", "action":"v0279_repeat_engage_hud_already_armed"},
+			{"id":"v0279_clear_guard_clean_cancel_label_visible","label":"v0.279 Clear Guard clean cancel", "action":"v0279_clear_guard_clean_cancel_label"},
+			{"id":"v0279_reguard_available_again_visible","label":"v0.279 Reguard available again", "action":"v0279_reguard_available_again"},
+			{"id":"v0279_reguard_rearm_exactly_one_label_visible","label":"v0.279 Reguard rearm exactly one", "action":"v0279_reguard_rearm_exactly_one_label"},
+			{"id":"v0279_watchpost_no_engage_action_visible","label":"v0.279 Watchpost no Engage", "action":"v0279_watchpost_no_engage_action"},
+			{"id":"v0279_barracks_no_engage_action_visible","label":"v0.279 Barracks no Engage", "action":"v0279_barracks_no_engage_action"},
+			{"id":"v0279_no_projectile_no_damage_visible","label":"v0.279 no projectile/no damage", "action":"v0279_no_projectile_no_damage"},
+			{"id":"v0279_default_runtime_unchanged_probe_visible","label":"v0.279 default runtime unchanged", "action":"v0279_default_runtime_unchanged_probe"},
+		]
+	if _player_capture_checkpoint() == "v0.278":
+		return [
+			{"id":"v0278_engage_available_before_click_visible","label":"v0.278 Engage available before click", "action":"v0278_engage_available_before_click"},
+			{"id":"v0278_engage_armed_exactly_one_label_visible","label":"v0.278 armed exactly one label", "action":"v0278_engage_armed_exactly_one_label"},
+			{"id":"v0278_engagement_contained_absent_while_armed_visible","label":"v0.278 contained absent while armed", "action":"v0278_engagement_contained_absent_while_armed"},
+			{"id":"v0278_bridge_held_absent_while_armed_visible","label":"v0.278 bridge held absent while armed", "action":"v0278_bridge_held_absent_while_armed"},
+			{"id":"v0278_hud_full_state_single_world_label_visible","label":"v0.278 HUD full state, single label", "action":"v0278_hud_full_state_single_world_label"},
+			{"id":"v0278_repeat_engage_no_duplicate_label_visible","label":"v0.278 repeat no duplicate label", "action":"v0278_repeat_engage_no_duplicate_label"},
+			{"id":"v0278_repeat_engage_hud_already_armed_visible","label":"v0.278 repeat HUD already armed", "action":"v0278_repeat_engage_hud_already_armed"},
+			{"id":"v0278_clear_guard_clean_cancel_label_visible","label":"v0.278 Clear Guard clean cancel", "action":"v0278_clear_guard_clean_cancel_label"},
+			{"id":"v0278_reguard_available_again_visible","label":"v0.278 Reguard available again", "action":"v0278_reguard_available_again"},
+			{"id":"v0278_reguard_rearm_exactly_one_label_visible","label":"v0.278 Reguard rearm exactly one", "action":"v0278_reguard_rearm_exactly_one_label"},
+			{"id":"v0278_watchpost_no_engage_action_visible","label":"v0.278 Watchpost no Engage", "action":"v0278_watchpost_no_engage_action"},
+			{"id":"v0278_barracks_no_engage_action_visible","label":"v0.278 Barracks no Engage", "action":"v0278_barracks_no_engage_action"},
+			{"id":"v0278_no_projectile_no_damage_visible","label":"v0.278 no projectile/no damage", "action":"v0278_no_projectile_no_damage"},
+			{"id":"v0278_default_runtime_unchanged_probe_visible","label":"v0.278 default runtime unchanged", "action":"v0278_default_runtime_unchanged_probe"},
+		]
+	if _player_capture_checkpoint() == "v0.277":
+		return [
+			{"id":"v0277_engage_available_hud_first_visible","label":"v0.277 Engage available HUD-first", "action":"v0277_engage_available_hud_first"},
+			{"id":"v0277_engage_armed_single_world_label_visible","label":"v0.277 Engage armed single label", "action":"v0277_engage_armed_single_world_label"},
+			{"id":"v0277_engage_armed_suppresses_engagement_contained_visible","label":"v0.277 suppress contained label", "action":"v0277_engage_armed_suppresses_engagement_contained"},
+			{"id":"v0277_engage_armed_suppresses_bridge_held_visible","label":"v0.277 suppress bridge held label", "action":"v0277_engage_armed_suppresses_bridge_held"},
+			{"id":"v0277_engage_armed_hud_full_state_visible","label":"v0.277 HUD carries full state", "action":"v0277_engage_armed_hud_full_state"},
+			{"id":"v0277_repeat_engage_no_duplicate_label_visible","label":"v0.277 repeat no duplicate label", "action":"v0277_repeat_engage_no_duplicate_label"},
+			{"id":"v0277_repeat_engage_hud_already_armed_visible","label":"v0.277 repeat HUD already armed", "action":"v0277_repeat_engage_hud_already_armed"},
+			{"id":"v0277_clear_guard_clean_cancel_label_visible","label":"v0.277 Clear Guard clean cancel", "action":"v0277_clear_guard_clean_cancel_label"},
+			{"id":"v0277_reguard_available_clean_visible","label":"v0.277 Reguard available clean", "action":"v0277_reguard_available_clean"},
+			{"id":"v0277_reguard_rearm_single_label_visible","label":"v0.277 Reguard rearm single label", "action":"v0277_reguard_rearm_single_label"},
+			{"id":"v0277_watchpost_no_engage_action_visible","label":"v0.277 Watchpost no Engage", "action":"v0277_watchpost_no_engage_action"},
+			{"id":"v0277_barracks_no_engage_action_visible","label":"v0.277 Barracks no Engage", "action":"v0277_barracks_no_engage_action"},
+			{"id":"v0277_no_projectile_no_damage_visible","label":"v0.277 no projectile/no damage", "action":"v0277_no_projectile_no_damage"},
+			{"id":"v0277_default_runtime_unchanged_probe_visible","label":"v0.277 default runtime unchanged", "action":"v0277_default_runtime_unchanged_probe"},
+		]
+	if _player_capture_checkpoint() == "v0.276":
+		return [
+			{"id":"v0276_engage_unavailable_before_contact_visible","label":"v0.276 Engage unavailable before contact", "action":"v0276_engage_unavailable_before_contact"},
+			{"id":"v0276_engage_unavailable_militia_training_visible","label":"v0.276 Engage unavailable while training", "action":"v0276_engage_unavailable_militia_training"},
+			{"id":"v0276_engage_unavailable_no_guard_order_visible","label":"v0.276 Engage unavailable no guard", "action":"v0276_engage_unavailable_no_guard_order"},
+			{"id":"v0276_engage_unavailable_guard_pending_visible","label":"v0.276 Engage unavailable guard pending", "action":"v0276_engage_unavailable_guard_pending"},
+			{"id":"v0276_engage_unavailable_guard_cleared_before_contact_visible","label":"v0.276 Engage unavailable guard cleared", "action":"v0276_engage_unavailable_guard_cleared_before_contact"},
+			{"id":"v0276_engage_unavailable_not_holding_bridge_visible","label":"v0.276 Engage unavailable not holding", "action":"v0276_engage_unavailable_not_holding_bridge"},
+			{"id":"v0276_engage_unavailable_contact_not_resolved_visible","label":"v0.276 Engage unavailable contact unresolved", "action":"v0276_engage_unavailable_contact_not_resolved"},
+			{"id":"v0276_engage_available_bridge_held_visible","label":"v0.276 Engage available Bridge Held", "action":"v0276_engage_available_bridge_held"},
+			{"id":"v0276_engage_available_engagement_contained_visible","label":"v0.276 Engage available Engagement Contained", "action":"v0276_engage_available_engagement_contained"},
+			{"id":"v0276_engage_click_arms_no_damage_visible","label":"v0.276 Engage click arms no damage", "action":"v0276_engage_click_arms_no_damage"},
+			{"id":"v0276_engage_repeat_click_no_stack_no_damage_visible","label":"v0.276 Engage repeat no stack", "action":"v0276_engage_repeat_click_no_stack_no_damage"},
+			{"id":"v0276_engage_armed_label_clean_visible","label":"v0.276 Engage armed label clean", "action":"v0276_engage_armed_label_clean"},
+			{"id":"v0276_engage_armed_hud_no_attack_projectile_damage_visible","label":"v0.276 Engage armed HUD no attack", "action":"v0276_engage_armed_hud_no_attack_projectile_damage"},
+			{"id":"v0276_clear_guard_cancels_engage_visible","label":"v0.276 Clear Guard cancels Engage", "action":"v0276_clear_guard_cancels_engage"},
+			{"id":"v0276_reguard_engage_available_again_visible","label":"v0.276 Reguard Engage available again", "action":"v0276_reguard_engage_available_again"},
+			{"id":"v0276_reguard_rearm_no_damage_visible","label":"v0.276 Reguard rearm no damage", "action":"v0276_reguard_rearm_no_damage"},
+			{"id":"v0276_watchpost_no_engage_action_visible","label":"v0.276 Watchpost no Engage", "action":"v0276_watchpost_no_engage_action"},
+			{"id":"v0276_barracks_no_engage_action_visible","label":"v0.276 Barracks no Engage", "action":"v0276_barracks_no_engage_action"},
+			{"id":"v0276_label_arbitration_retained_visible","label":"v0.276 Label arbitration retained", "action":"v0276_label_arbitration_retained"},
+			{"id":"v0276_minimap_contact_ping_current_only_visible","label":"v0.276 Minimap current-only ping", "action":"v0276_minimap_contact_ping_current_only"},
+			{"id":"v0276_no_projectile_no_tower_visible","label":"v0.276 No projectile no tower", "action":"v0276_no_projectile_no_tower"},
+			{"id":"v0276_no_auto_move_no_auto_attack_visible","label":"v0.276 No auto move/attack", "action":"v0276_no_auto_move_no_auto_attack"},
+			{"id":"v0276_no_repeated_damage_below_90_visible","label":"v0.276 No repeated damage below 90", "action":"v0276_no_repeated_damage_below_90"},
+			{"id":"v0276_default_runtime_unchanged_probe_visible","label":"v0.276 Default runtime unchanged probe", "action":"v0276_default_runtime_unchanged_probe"},
+			{"id":"v0276_existing_barracks_still_trains_militia_visible","label":"v0.276 Barracks trains retained", "action":"v0276_existing_barracks_still_trains_militia"},
+		]
+	if _player_capture_checkpoint() == "v0.275":
+		return [
+			{"id":"v0275_watchpost_build_path_visible","label":"v0.275 Watchpost build path", "action":"v0275_watchpost_build_path"},
+			{"id":"v0275_watchpost_complete_no_intel_no_contact_visible","label":"v0.275 no intel no contact", "action":"v0275_watchpost_complete_no_intel_no_contact"},
+			{"id":"v0275_barracks_train_militia_visible","label":"v0.275 Barracks trains Militia", "action":"v0275_barracks_train_militia"},
+			{"id":"v0275_militia_training_guard_unavailable_visible","label":"v0.275 guard unavailable while training", "action":"v0275_militia_training_guard_unavailable"},
+			{"id":"v0275_militia_ready_guard_available_visible","label":"v0.275 guard available", "action":"v0275_militia_ready_guard_available"},
+			{"id":"v0275_guard_order_pending_label_clean_visible","label":"v0.275 pending guard label clean", "action":"v0275_guard_order_pending_label_clean"},
+			{"id":"v0275_clear_pending_guard_blocks_contact_visible","label":"v0.275 clear pending blocks contact", "action":"v0275_clear_pending_guard_blocks_contact"},
+			{"id":"v0275_guard_reissued_after_clear_visible","label":"v0.275 guard reissued after clear", "action":"v0275_guard_reissued_after_clear"},
+			{"id":"v0275_guard_holding_intercept_ready_single_priority_label_visible","label":"v0.275 intercept ready single label", "action":"v0275_guard_holding_intercept_ready_single_priority_label"},
+			{"id":"v0275_current_detection_no_guard_no_contact_label_clean_visible","label":"v0.275 no guard label clean", "action":"v0275_current_detection_no_guard_no_contact_label_clean"},
+			{"id":"v0275_guard_pending_no_contact_label_clean_visible","label":"v0.275 pending no contact clean", "action":"v0275_guard_pending_no_contact_label_clean"},
+			{"id":"v0275_guard_holding_contact_armed_label_clean_visible","label":"v0.275 armed label clean", "action":"v0275_guard_holding_contact_armed_label_clean"},
+			{"id":"v0275_first_contact_feedback_suppresses_lower_labels_visible","label":"v0.275 first contact suppresses lower labels", "action":"v0275_first_contact_feedback_suppresses_lower_labels"},
+			{"id":"v0275_first_contact_integrity_90_visible","label":"v0.275 first contact 90", "action":"v0275_first_contact_integrity_90"},
+			{"id":"v0275_contact_resolved_single_label_visible","label":"v0.275 contact resolved single label", "action":"v0275_contact_resolved_single_label"},
+			{"id":"v0275_contact_resolved_cooldown_locked_visible","label":"v0.275 resolved cooldown", "action":"v0275_contact_resolved_cooldown_locked"},
+			{"id":"v0275_bridge_held_single_world_label_visible","label":"v0.275 Bridge Held single label", "action":"v0275_bridge_held_single_world_label"},
+			{"id":"v0275_bridge_held_no_defender_position_overlap_visible","label":"v0.275 Bridge Held no overlap", "action":"v0275_bridge_held_no_defender_position_overlap"},
+			{"id":"v0275_engagement_contained_single_priority_label_visible","label":"v0.275 engagement contained label", "action":"v0275_engagement_contained_single_priority_label"},
+			{"id":"v0275_engagement_line_static_not_projectile_visible","label":"v0.275 static stance line", "action":"v0275_engagement_line_static_not_projectile"},
+			{"id":"v0275_militia_hud_engagement_contained_no_attack_visible","label":"v0.275 Militia HUD no attack", "action":"v0275_militia_hud_engagement_contained_no_attack"},
+			{"id":"v0275_watchpost_hud_engagement_observed_advisory_only_visible","label":"v0.275 Watchpost advisory", "action":"v0275_watchpost_hud_engagement_observed_advisory_only"},
+			{"id":"v0275_minimap_engagement_indicator_distinct_visible","label":"v0.275 minimap engagement distinct", "action":"v0275_minimap_engagement_indicator_distinct"},
+			{"id":"v0275_contact_ping_not_active_after_resolved_visible","label":"v0.275 no resolved contact ping", "action":"v0275_contact_ping_not_active_after_resolved"},
+			{"id":"v0275_bridge_held_and_engagement_no_repeated_damage_visible","label":"v0.275 held engagement no repeat", "action":"v0275_bridge_held_and_engagement_no_repeated_damage"},
+			{"id":"v0275_clear_guard_after_contact_label_clean_visible","label":"v0.275 clear after contact clean", "action":"v0275_clear_guard_after_contact_label_clean"},
+			{"id":"v0275_engagement_marker_removed_after_clear_visible","label":"v0.275 engagement marker removed", "action":"v0275_engagement_marker_removed_after_clear"},
+			{"id":"v0275_minimap_engagement_indicator_removed_after_clear_visible","label":"v0.275 engagement minimap removed", "action":"v0275_minimap_engagement_indicator_removed_after_clear"},
+			{"id":"v0275_pressure_still_90_after_clear_visible","label":"v0.275 pressure remains 90", "action":"v0275_pressure_still_90_after_clear"},
+			{"id":"v0275_reguard_after_contact_label_clean_visible","label":"v0.275 reguard clean", "action":"v0275_reguard_after_contact_label_clean"},
+			{"id":"v0275_reguard_after_contact_no_first_contact_relabel_visible","label":"v0.275 reguard no first-contact relabel", "action":"v0275_reguard_after_contact_no_first_contact_relabel"},
+			{"id":"v0275_no_repeated_damage_after_reguard_visible","label":"v0.275 no repeat after reguard", "action":"v0275_no_repeated_damage_after_reguard"},
+			{"id":"v0275_overlap_continues_integrity_still_90_visible","label":"v0.275 overlap still 90", "action":"v0275_overlap_continues_integrity_still_90"},
+			{"id":"v0275_memory_only_no_new_contact_damage_label_clean_visible","label":"v0.275 memory label clean", "action":"v0275_memory_only_no_new_contact_damage_label_clean"},
+			{"id":"v0275_outside_zone_no_false_contact_label_clean_visible","label":"v0.275 outside-zone clean", "action":"v0275_outside_zone_no_false_contact_label_clean"},
+			{"id":"v0275_no_enemy_death_or_despawn_visible","label":"v0.275 no enemy death/despawn", "action":"v0275_no_enemy_death_or_despawn"},
+			{"id":"v0275_no_enemy_slow_stop_redirect_visible","label":"v0.275 no slow/stop/redirect", "action":"v0275_no_enemy_slow_stop_redirect"},
+			{"id":"v0275_no_militia_hp_loss_visible","label":"v0.275 no Militia HP loss", "action":"v0275_no_militia_hp_loss"},
+			{"id":"v0275_no_watchpost_hp_loss_visible","label":"v0.275 no Watchpost HP loss", "action":"v0275_no_watchpost_hp_loss"},
+			{"id":"v0275_no_watchpost_attack_projectile_tower_visible","label":"v0.275 no Watchpost attack", "action":"v0275_no_watchpost_attack_projectile_tower"},
+			{"id":"v0275_watchpost_no_train_no_guard_no_clear_no_brace_no_engagement_action_visible","label":"v0.275 Watchpost no actions", "action":"v0275_watchpost_no_train_no_guard_no_clear_no_brace_no_engagement_action"},
+			{"id":"v0275_barracks_hud_train_militia_no_full_relay_visible","label":"v0.275 Barracks separated", "action":"v0275_barracks_hud_train_militia_no_full_relay"},
+			{"id":"v0275_militia_hud_no_ranged_attack_no_projectile_visible","label":"v0.275 Militia no ranged/projectile", "action":"v0275_militia_hud_no_ranged_attack_no_projectile"},
+			{"id":"v0275_label_priority_table_debug_visible","label":"v0.275 label priority table", "action":"v0275_label_priority_table_debug"},
+			{"id":"v0275_label_declutter_first_contact_visible","label":"v0.275 declutter first contact", "action":"v0275_label_declutter_first_contact"},
+			{"id":"v0275_label_declutter_contact_resolved_visible","label":"v0.275 declutter resolved", "action":"v0275_label_declutter_contact_resolved"},
+			{"id":"v0275_label_declutter_bridge_held_visible","label":"v0.275 declutter Bridge Held", "action":"v0275_label_declutter_bridge_held"},
+			{"id":"v0275_label_declutter_engagement_contained_visible","label":"v0.275 declutter engagement", "action":"v0275_label_declutter_engagement_contained"},
+			{"id":"v0275_label_declutter_after_clear_visible","label":"v0.275 declutter after clear", "action":"v0275_label_declutter_after_clear"},
+			{"id":"v0275_existing_barracks_rebuild_path_still_valid_visible","label":"v0.275 Barracks rebuild retained", "action":"v0275_existing_barracks_rebuild_path_still_valid"},
+			{"id":"v0275_existing_barracks_still_trains_militia_visible","label":"v0.275 Barracks trains retained", "action":"v0275_existing_barracks_still_trains_militia"},
+		]
+	if _player_capture_checkpoint() == "v0.274":
+		return [
+			{"id":"v0274_watchpost_build_path_visible","label":"v0.274 Watchpost build path", "action":"v0274_watchpost_build_path"},
+			{"id":"v0274_watchpost_complete_no_intel_no_contact_visible","label":"v0.274 no intel no contact", "action":"v0274_watchpost_complete_no_intel_no_contact"},
+			{"id":"v0274_barracks_train_militia_visible","label":"v0.274 Barracks trains Militia", "action":"v0274_barracks_train_militia"},
+			{"id":"v0274_militia_training_guard_unavailable_visible","label":"v0.274 guard unavailable while training", "action":"v0274_militia_training_guard_unavailable"},
+			{"id":"v0274_militia_ready_guard_available_visible","label":"v0.274 guard available", "action":"v0274_militia_ready_guard_available"},
+			{"id":"v0274_guard_order_pending_clear_guard_button_visible","label":"v0.274 pending Clear Guard", "action":"v0274_guard_order_pending_clear_guard_button"},
+			{"id":"v0274_clear_pending_guard_blocks_contact_visible","label":"v0.274 clear pending blocks contact", "action":"v0274_clear_pending_guard_blocks_contact"},
+			{"id":"v0274_guard_reissued_after_clear_visible","label":"v0.274 guard reissued after clear", "action":"v0274_guard_reissued_after_clear"},
+			{"id":"v0274_guard_holding_intercept_ready_visible","label":"v0.274 holding intercept ready", "action":"v0274_guard_holding_intercept_ready"},
+			{"id":"v0274_current_detection_no_guard_no_contact_visible","label":"v0.274 current no guard no contact", "action":"v0274_current_detection_no_guard_no_contact"},
+			{"id":"v0274_guard_pending_no_contact_visible","label":"v0.274 pending no contact", "action":"v0274_guard_pending_no_contact"},
+			{"id":"v0274_guard_holding_contact_armed_visible","label":"v0.274 holding contact armed", "action":"v0274_guard_holding_contact_armed"},
+			{"id":"v0274_first_contact_feedback_pulse_visible","label":"v0.274 first contact pulse", "action":"v0274_first_contact_feedback_pulse"},
+			{"id":"v0274_first_contact_integrity_90_visible","label":"v0.274 first contact 90", "action":"v0274_first_contact_integrity_90"},
+			{"id":"v0274_contact_resolved_cooldown_locked_visible","label":"v0.274 resolved cooldown", "action":"v0274_contact_resolved_cooldown_locked"},
+			{"id":"v0274_brace_available_after_contact_visible","label":"v0.274 brace available", "action":"v0274_brace_available_after_contact"},
+			{"id":"v0274_bridge_held_marker_visible","label":"v0.274 Bridge Held marker", "action":"v0274_bridge_held_marker"},
+			{"id":"v0274_militia_hud_bridge_held_pressure_90_visible","label":"v0.274 Militia Bridge Held HUD", "action":"v0274_militia_hud_bridge_held_pressure_90"},
+			{"id":"v0274_engagement_stance_available_visible","label":"v0.274 engagement available", "action":"v0274_engagement_stance_available"},
+			{"id":"v0274_engagement_stance_active_visible","label":"v0.274 engagement active", "action":"v0274_engagement_stance_active"},
+			{"id":"v0274_engagement_stance_line_not_projectile_visible","label":"v0.274 static stance line", "action":"v0274_engagement_stance_line_not_projectile"},
+			{"id":"v0274_militia_hud_engagement_contained_no_attack_visible","label":"v0.274 Militia engagement HUD", "action":"v0274_militia_hud_engagement_contained_no_attack"},
+			{"id":"v0274_watchpost_hud_engagement_observed_advisory_only_visible","label":"v0.274 Watchpost engagement advisory", "action":"v0274_watchpost_hud_engagement_observed_advisory_only"},
+			{"id":"v0274_minimap_engagement_indicator_visible","label":"v0.274 minimap engagement", "action":"v0274_minimap_engagement_indicator"},
+			{"id":"v0274_contact_ping_not_active_after_resolved_visible","label":"v0.274 no resolved contact ping", "action":"v0274_contact_ping_not_active_after_resolved"},
+			{"id":"v0274_bridge_held_and_engagement_no_repeated_damage_visible","label":"v0.274 held engagement no repeat", "action":"v0274_bridge_held_and_engagement_no_repeated_damage"},
+			{"id":"v0274_clear_guard_after_contact_visible","label":"v0.274 clear after contact", "action":"v0274_clear_guard_after_contact"},
+			{"id":"v0274_engagement_marker_removed_after_clear_visible","label":"v0.274 engagement marker removed", "action":"v0274_engagement_marker_removed_after_clear"},
+			{"id":"v0274_minimap_engagement_indicator_removed_after_clear_visible","label":"v0.274 engagement minimap removed", "action":"v0274_minimap_engagement_indicator_removed_after_clear"},
+			{"id":"v0274_pressure_still_90_after_clear_visible","label":"v0.274 pressure remains 90", "action":"v0274_pressure_still_90_after_clear"},
+			{"id":"v0274_reguard_after_contact_engagement_restored_visible","label":"v0.274 reguard engagement restored", "action":"v0274_reguard_after_contact_engagement_restored"},
+			{"id":"v0274_no_repeated_damage_after_reguard_visible","label":"v0.274 no repeat after reguard", "action":"v0274_no_repeated_damage_after_reguard"},
+			{"id":"v0274_overlap_continues_integrity_still_90_visible","label":"v0.274 overlap still 90", "action":"v0274_overlap_continues_integrity_still_90"},
+			{"id":"v0274_memory_only_no_new_contact_damage_visible","label":"v0.274 memory no new contact", "action":"v0274_memory_only_no_new_contact_damage"},
+			{"id":"v0274_outside_zone_no_false_contact_visible","label":"v0.274 outside zone no contact", "action":"v0274_outside_zone_no_false_contact"},
+			{"id":"v0274_no_enemy_death_or_despawn_visible","label":"v0.274 no enemy death/despawn", "action":"v0274_no_enemy_death_or_despawn"},
+			{"id":"v0274_no_enemy_slow_stop_redirect_visible","label":"v0.274 no slow/stop/redirect", "action":"v0274_no_enemy_slow_stop_redirect"},
+			{"id":"v0274_no_militia_hp_loss_visible","label":"v0.274 no Militia HP loss", "action":"v0274_no_militia_hp_loss"},
+			{"id":"v0274_no_watchpost_hp_loss_visible","label":"v0.274 no Watchpost HP loss", "action":"v0274_no_watchpost_hp_loss"},
+			{"id":"v0274_no_watchpost_attack_projectile_tower_visible","label":"v0.274 no Watchpost attack", "action":"v0274_no_watchpost_attack_projectile_tower"},
+			{"id":"v0274_watchpost_no_train_no_guard_no_clear_no_brace_no_engagement_action_visible","label":"v0.274 Watchpost no actions", "action":"v0274_watchpost_no_train_no_guard_no_clear_no_brace_no_engagement_action"},
+			{"id":"v0274_barracks_hud_train_militia_no_full_relay_visible","label":"v0.274 Barracks separated", "action":"v0274_barracks_hud_train_militia_no_full_relay"},
+			{"id":"v0274_militia_hud_no_ranged_attack_no_projectile_visible","label":"v0.274 Militia no ranged/projectile", "action":"v0274_militia_hud_no_ranged_attack_no_projectile"},
+			{"id":"v0274_label_declutter_first_contact_visible","label":"v0.274 declutter first contact", "action":"v0274_label_declutter_first_contact"},
+			{"id":"v0274_label_declutter_bridge_held_visible","label":"v0.274 declutter Bridge Held", "action":"v0274_label_declutter_bridge_held"},
+			{"id":"v0274_label_declutter_engagement_stance_visible","label":"v0.274 declutter engagement", "action":"v0274_label_declutter_engagement_stance"},
+			{"id":"v0274_label_declutter_after_clear_visible","label":"v0.274 declutter after clear", "action":"v0274_label_declutter_after_clear"},
+			{"id":"v0274_existing_barracks_rebuild_path_still_valid_visible","label":"v0.274 Barracks rebuild retained", "action":"v0274_existing_barracks_rebuild_path_still_valid"},
+			{"id":"v0274_existing_barracks_still_trains_militia_visible","label":"v0.274 Barracks trains retained", "action":"v0274_existing_barracks_still_trains_militia"},
+		]
+	if _player_capture_checkpoint() == "v0.273":
+		return [
+			{"id":"v0273_watchpost_build_path_visible","label":"v0.273 Watchpost build path", "action":"v0273_watchpost_build_path"},
+			{"id":"v0273_watchpost_complete_no_intel_no_contact_visible","label":"v0.273 no intel no contact", "action":"v0273_watchpost_complete_no_intel_no_contact"},
+			{"id":"v0273_barracks_train_militia_visible","label":"v0.273 Barracks trains Militia", "action":"v0273_barracks_train_militia"},
+			{"id":"v0273_militia_training_guard_unavailable_visible","label":"v0.273 guard unavailable while training", "action":"v0273_militia_training_guard_unavailable"},
+			{"id":"v0273_militia_ready_guard_available_visible","label":"v0.273 guard available", "action":"v0273_militia_ready_guard_available"},
+			{"id":"v0273_guard_order_pending_clear_guard_button_visible","label":"v0.273 pending Clear Guard", "action":"v0273_guard_order_pending_clear_guard_button"},
+			{"id":"v0273_clear_pending_guard_blocks_contact_visible","label":"v0.273 clear pending blocks contact", "action":"v0273_clear_pending_guard_blocks_contact"},
+			{"id":"v0273_guard_reissued_after_clear_visible","label":"v0.273 guard reissued after clear", "action":"v0273_guard_reissued_after_clear"},
+			{"id":"v0273_guard_holding_intercept_ready_visible","label":"v0.273 holding intercept ready", "action":"v0273_guard_holding_intercept_ready"},
+			{"id":"v0273_current_detection_no_guard_no_contact_visible","label":"v0.273 current no guard no contact", "action":"v0273_current_detection_no_guard_no_contact"},
+			{"id":"v0273_guard_pending_no_contact_visible","label":"v0.273 pending no contact", "action":"v0273_guard_pending_no_contact"},
+			{"id":"v0273_guard_holding_contact_armed_visible","label":"v0.273 holding contact armed", "action":"v0273_guard_holding_contact_armed"},
+			{"id":"v0273_first_contact_feedback_pulse_visible","label":"v0.273 first contact pulse", "action":"v0273_first_contact_feedback_pulse"},
+			{"id":"v0273_first_contact_integrity_90_visible","label":"v0.273 first contact 90", "action":"v0273_first_contact_integrity_90"},
+			{"id":"v0273_contact_resolved_cooldown_locked_visible","label":"v0.273 resolved cooldown", "action":"v0273_contact_resolved_cooldown_locked"},
+			{"id":"v0273_brace_available_after_contact_visible","label":"v0.273 brace available", "action":"v0273_brace_available_after_contact"},
+			{"id":"v0273_bridge_held_marker_visible","label":"v0.273 Bridge Held marker", "action":"v0273_bridge_held_marker"},
+			{"id":"v0273_militia_hud_bridge_held_pressure_90_visible","label":"v0.273 Militia Bridge Held HUD", "action":"v0273_militia_hud_bridge_held_pressure_90"},
+			{"id":"v0273_watchpost_hud_bridge_held_advisory_only_visible","label":"v0.273 Watchpost advisory held", "action":"v0273_watchpost_hud_bridge_held_advisory_only"},
+			{"id":"v0273_minimap_bridge_held_indicator_visible","label":"v0.273 minimap Bridge Held", "action":"v0273_minimap_bridge_held_indicator"},
+			{"id":"v0273_contact_ping_not_active_after_resolved_visible","label":"v0.273 no resolved contact ping", "action":"v0273_contact_ping_not_active_after_resolved"},
+			{"id":"v0273_clear_guard_after_contact_visible","label":"v0.273 clear after contact", "action":"v0273_clear_guard_after_contact"},
+			{"id":"v0273_bridge_held_marker_removed_after_clear_visible","label":"v0.273 held marker removed", "action":"v0273_bridge_held_marker_removed_after_clear"},
+			{"id":"v0273_minimap_bridge_held_indicator_removed_after_clear_visible","label":"v0.273 held minimap removed", "action":"v0273_minimap_bridge_held_indicator_removed_after_clear"},
+			{"id":"v0273_pressure_still_90_after_clear_visible","label":"v0.273 pressure remains 90", "action":"v0273_pressure_still_90_after_clear"},
+			{"id":"v0273_reguard_after_contact_bridge_held_visible","label":"v0.273 reguard Bridge Held", "action":"v0273_reguard_after_contact_bridge_held"},
+			{"id":"v0273_no_repeated_damage_after_reguard_visible","label":"v0.273 no repeat after reguard", "action":"v0273_no_repeated_damage_after_reguard"},
+			{"id":"v0273_overlap_continues_integrity_still_90_visible","label":"v0.273 overlap still 90", "action":"v0273_overlap_continues_integrity_still_90"},
+			{"id":"v0273_memory_only_no_new_contact_damage_visible","label":"v0.273 memory no new contact", "action":"v0273_memory_only_no_new_contact_damage"},
+			{"id":"v0273_outside_zone_no_false_contact_visible","label":"v0.273 outside zone no contact", "action":"v0273_outside_zone_no_false_contact"},
+			{"id":"v0273_no_enemy_death_or_despawn_visible","label":"v0.273 no enemy death/despawn", "action":"v0273_no_enemy_death_or_despawn"},
+			{"id":"v0273_no_enemy_slow_stop_redirect_visible","label":"v0.273 no slow/stop/redirect", "action":"v0273_no_enemy_slow_stop_redirect"},
+			{"id":"v0273_no_militia_hp_loss_visible","label":"v0.273 no Militia HP loss", "action":"v0273_no_militia_hp_loss"},
+			{"id":"v0273_no_watchpost_hp_loss_visible","label":"v0.273 no Watchpost HP loss", "action":"v0273_no_watchpost_hp_loss"},
+			{"id":"v0273_no_watchpost_attack_projectile_tower_visible","label":"v0.273 no Watchpost attack", "action":"v0273_no_watchpost_attack_projectile_tower"},
+			{"id":"v0273_watchpost_no_train_no_guard_no_clear_no_brace_action_visible","label":"v0.273 Watchpost no actions", "action":"v0273_watchpost_no_train_no_guard_no_clear_no_brace_action"},
+			{"id":"v0273_barracks_hud_train_militia_no_full_relay_visible","label":"v0.273 Barracks separated", "action":"v0273_barracks_hud_train_militia_no_full_relay"},
+			{"id":"v0273_militia_hud_no_ranged_attack_no_projectile_visible","label":"v0.273 Militia no ranged/projectile", "action":"v0273_militia_hud_no_ranged_attack_no_projectile"},
+			{"id":"v0273_label_declutter_first_contact_visible","label":"v0.273 declutter first contact", "action":"v0273_label_declutter_first_contact"},
+			{"id":"v0273_label_declutter_bridge_held_visible","label":"v0.273 declutter Bridge Held", "action":"v0273_label_declutter_bridge_held"},
+			{"id":"v0273_label_declutter_after_clear_visible","label":"v0.273 declutter after clear", "action":"v0273_label_declutter_after_clear"},
+			{"id":"v0273_existing_barracks_rebuild_path_still_valid_visible","label":"v0.273 Barracks rebuild retained", "action":"v0273_existing_barracks_rebuild_path_still_valid"},
+			{"id":"v0273_existing_barracks_still_trains_militia_visible","label":"v0.273 Barracks trains retained", "action":"v0273_existing_barracks_still_trains_militia"},
+		]
 	if _player_capture_checkpoint() == "v0.272":
 		return [
 			{"id":"v0272_watchpost_build_path_visible","label":"v0.272 Watchpost build path", "action":"v0272_watchpost_build_path"},
@@ -11277,9 +13158,16 @@ func _artifact_root_from_args() -> String:
 func _barrosan_runtime_skin_requested() -> bool:
 	return _script_args().has("--salto-barrosan-playable-runtime-skin")
 
+func _barrosan_presentation_mode_from_args() -> String:
+	if _script_args().has("--salto-barrosan-debug-review-overlay"):
+		return "DEBUG_REVIEW"
+	if _script_args().has("--salto-barrosan-player-presentation"):
+		return "PLAYER"
+	return "PLAYER" if _player_capture_checkpoint() in ["v0.301", "v0.302", "v0.303", "v0.311", "v0.312", "v0.314", "v0.315"] else "DEBUG_REVIEW"
+
 
 func _barrosan_runtime_scene_requested() -> bool:
-	return _barrosan_runtime_skin_requested() or _player_capture_checkpoint() in ["v0.254", "v0.255", "v0.256", "v0.257", "v0.258", "v0.259", "v0.261", "v0.262", "v0.263", "v0.264", "v0.265", "v0.266", "v0.267", "v0.268", "v0.269", "v0.270", "v0.271", "v0.272"]
+	return _barrosan_runtime_skin_requested() or _player_capture_checkpoint() in ["v0.254", "v0.255", "v0.256", "v0.257", "v0.258", "v0.259", "v0.261", "v0.262", "v0.263", "v0.264", "v0.265", "v0.266", "v0.267", "v0.268", "v0.269", "v0.270", "v0.271", "v0.272", "v0.273", "v0.274", "v0.275", "v0.276", "v0.277", "v0.278", "v0.279", "v0.280", "v0.281", "v0.283", "v0.284", "v0.285", "v0.286", "v0.287", "v0.288", "v0.289", "v0.290", "v0.291", "v0.312"]
 
 
 func _script_args() -> PackedStringArray:
@@ -11348,6 +13236,55 @@ func _fixture_hash() -> Variant:
 	if typeof(parsed) == TYPE_DICTIONARY:
 		return parsed.get("fixtureHash")
 	return null
+
+func _v0301_player_capture_steps() -> Array[Dictionary]:
+	var ids := ["clean_baseline", "bridge_clean", "barracks_clean", "support_card", "defender_card", "barracks_card", "top_strip", "no_historical_stack", "no_validator_text", "to_debug_round_trip", "debug_to_player_round_trip", "restored", "no_duplicate_markers", "no_duplicate_route", "no_duplicate_support", "no_duplicate_integration", "card_unchanged", "top_strip_unchanged", "pressure_unchanged", "units_unchanged", "resources_unchanged", "minimap", "hud_no_overlap", "no_gameplay_mutation"]
+	var steps: Array[Dictionary] = []
+	for suffix in ids:
+		steps.append({"id":"v0301_player_%s" % suffix, "label":"v0.301 PLAYER %s" % suffix.replace("_", " "), "action":"v0301_player_%s" % suffix})
+	return steps
+
+func _v0301_debug_capture_steps() -> Array[Dictionary]:
+	var ids := ["bridge_labels", "barracks_labels", "route", "support", "integration", "pressure", "marker_nodes", "player_to_debug", "debug_to_player", "round_trip_restore", "no_duplicate_markers", "no_duplicate_route", "no_duplicate_support", "no_duplicate_integration", "card_unchanged", "top_strip_unchanged", "pressure_unchanged", "units_unchanged", "resources_unchanged", "minimap", "hud_no_overlap", "no_raw_validator", "no_mutation", "no_forbidden_systems"]
+	var steps: Array[Dictionary] = []
+	for suffix in ids:
+		steps.append({"id":"v0301_debug_%s" % suffix, "label":"v0.301 DEBUG_REVIEW %s" % suffix.replace("_", " "), "action":"v0301_debug_%s" % suffix})
+	return steps
+
+func _v0302_player_capture_steps() -> Array[Dictionary]:
+	var ids := ["old_flat_reference", "overview", "camera_projection", "terrain_depth", "river_bridge_depth", "road_grass_pads", "main_building_volume", "field_barracks_volume", "smaller_building_volume", "aster_grounding", "defender_grounding", "reserve_grounding", "unit_contact_shadows", "building_shadow_consistency", "selection_aster", "selection_defender", "selection_barracks", "selection_support", "bridge_clean", "barracks_clean", "minimap", "top_strip", "aster_card", "defender_card", "support_card", "barracks_card", "no_proof_labels", "no_historical_stack", "player_to_debug_round_trip", "debug_to_player_round_trip", "player_restored", "no_duplicate_visuals", "no_duplicate_shadows", "no_duplicate_labels", "positions_unchanged", "resources_unchanged", "pressure_unchanged", "selected_card_unchanged", "top_strip_unchanged", "no_movement", "no_combat", "no_ai", "no_economy", "no_default_mutation"]
+	var steps: Array[Dictionary] = []
+	for suffix in ids:
+		steps.append({"id":"v0302_player_%s" % suffix, "label":"v0.302 PLAYER %s" % suffix.replace("_", " "), "action":"v0302_player_%s" % suffix})
+	return steps
+
+func _v0302_debug_capture_steps() -> Array[Dictionary]:
+	var ids := ["proof_labels", "route_segments", "support_presence", "integration_visual", "pressure_evidence", "retained_markers", "round_trip", "no_duplicate_visuals", "no_duplicate_shadows", "no_duplicate_labels", "positions_unchanged", "footprints_unchanged", "resources_unchanged", "pressure_70", "selected_cards", "top_strip", "minimap", "no_mutation", "no_forbidden_systems", "five_route_segments", "support_once", "integration_once", "pressure_marker", "debug_contact_sheet"]
+	var steps: Array[Dictionary] = []
+	for suffix in ids:
+		steps.append({"id":"v0302_debug_%s" % suffix, "label":"v0.302 DEBUG_REVIEW %s" % suffix.replace("_", " "), "action":"v0302_debug_%s" % suffix})
+	return steps
+
+func _v0303_player_capture_steps() -> Array[Dictionary]:
+	var ids := ["before_after_reference", "overview", "terrain_hierarchy", "grass_road", "road_bridge", "river_land", "bridge_surface", "building_pads", "main_hall_material", "field_barracks_material", "smaller_buildings", "building_volume", "aster_separation", "defender_separation", "reserve_separation", "unit_silhouettes", "unit_shadows", "building_shadows", "selection_aster", "selection_defender", "selection_reserve", "selection_barracks", "bridge_clean", "barracks_clean", "minimap", "top_strip", "aster_card", "defender_card", "reserve_card", "barracks_card", "no_proof_labels", "no_historical_stack", "no_label_collision", "player_debug_round_trip", "debug_to_player", "player_restored", "no_duplicate_materials", "no_duplicate_visuals", "no_duplicate_shadows", "no_duplicate_labels", "positions_unchanged", "footprints_unchanged", "resources_unchanged", "pressure_70", "selected_card_unchanged", "top_strip_unchanged", "no_movement", "no_combat", "no_ai", "no_economy", "no_default_mutation"]
+	var steps: Array[Dictionary] = []
+	for suffix in ids:
+		steps.append({"id":"v0303_player_%s" % suffix, "label":"v0.303 PLAYER %s" % suffix.replace("_", " "), "action":"v0303_player_%s" % suffix})
+	return steps
+
+func _v0303_debug_capture_steps() -> Array[Dictionary]:
+	var ids := ["proof_labels", "route_segments", "support_presence", "integration_visual", "pressure_evidence", "round_trip", "no_duplicate_materials", "no_duplicate_visuals", "no_duplicate_shadows", "no_duplicate_labels", "positions_unchanged", "resources_unchanged", "pressure_70", "selected_cards", "top_strip", "minimap", "no_mutation", "no_forbidden_systems"]
+	var steps: Array[Dictionary] = []
+	for suffix in ids:
+		steps.append({"id":"v0303_debug_%s" % suffix, "label":"v0.303 DEBUG_REVIEW %s" % suffix.replace("_", " "), "action":"v0303_debug_%s" % suffix})
+	return steps
+
+func _v0311_capture_steps() -> Array[Dictionary]:
+	var ids := ["preflight_runtime", "worker_idle", "militia_idle", "worker_selected", "militia_selected", "box_selection", "move_order", "movement_sync", "stop_hold_contract", "bridge_crossing", "road_occlusion", "storehouse_occlusion", "camera_pan", "camera_zoom", "worker_work_context", "militia_ready_context", "selected_card_worker", "selected_card_militia", "save_reload_readonly", "rollback_fallback", "default_flag_off", "h3_adapter_status", "one_authored_pose", "derived_direction_honesty", "grounding_shadows", "selection_readability", "player_clean", "debug_overlay_preserved", "no_duplicate_proxies", "no_duplicate_shadows", "stable_ids", "positions_authoritative", "resources_unchanged", "state_unchanged", "no_combat", "no_ai", "no_economy", "no_pathfinding", "no_true_default_mutation", "worker_militia_only", "real_gameplay_overview", "real_gameplay_bridge_view", "black_frame_rejection"]
+	var steps: Array[Dictionary] = []
+	for suffix in ids:
+		steps.append({"id":"v0311_%s" % suffix, "label":"v0.311 H3 %s" % suffix.replace("_", " "), "action":"v0311_%s" % suffix})
+	return steps
 
 func _friendly_mode(mode: String) -> String:
 	if mode == MODE_25D:

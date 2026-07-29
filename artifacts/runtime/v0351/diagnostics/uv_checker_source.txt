@@ -1,0 +1,1 @@
+res://../art-source/blender/v0348/v0348_roof_uv_checker.png

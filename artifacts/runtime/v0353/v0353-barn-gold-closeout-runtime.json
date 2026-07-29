@@ -1,0 +1,408 @@
+{
+  "actual256SourceDimensions": "256x256",
+  "automatedVisualApproval": false,
+  "captures": [
+    {
+      "camera": {
+        "position": "(-15.0, 8.4, 15.0)",
+        "projection": "orthographic",
+        "size": 16.5,
+        "target": "(0.0, 2.65, 0.0)"
+      },
+      "fileName": "01_frozen_barn_neutral_front_three_quarter.png",
+      "purpose": "frozen barn neutral front three-quarter",
+      "rendered": true,
+      "size": {
+        "height": 1009,
+        "width": 1920
+      },
+      "technicalOverlay": false,
+      "unlabelled": true
+    },
+    {
+      "camera": {
+        "position": "(0.0, 7.0, 18.0)",
+        "projection": "orthographic",
+        "size": 15.0,
+        "target": "(0.0, 2.55, 0.0)"
+      },
+      "fileName": "02_frozen_barn_direct_front.png",
+      "purpose": "frozen barn direct front",
+      "rendered": true,
+      "size": {
+        "height": 1009,
+        "width": 1920
+      },
+      "technicalOverlay": false,
+      "unlabelled": true
+    },
+    {
+      "camera": {
+        "position": "(0.0, 7.0, -18.0)",
+        "projection": "orthographic",
+        "size": 15.0,
+        "target": "(0.0, 2.55, 0.0)"
+      },
+      "fileName": "03_retained_rear_roof_confirmation.png",
+      "purpose": "retained exterior roof rear confirmation",
+      "rendered": true,
+      "size": {
+        "height": 1009,
+        "width": 1920
+      },
+      "technicalOverlay": false,
+      "unlabelled": true
+    },
+    {
+      "camera": {
+        "position": "(-10.0, 5.8, 12.2)",
+        "projection": "orthographic",
+        "size": 8.3,
+        "target": "(-2.8, 1.0, 0.0)"
+      },
+      "fileName": "04_clean_foundation_front_left.png",
+      "purpose": "clean natural foundation front left",
+      "rendered": true,
+      "size": {
+        "height": 1009,
+        "width": 1920
+      },
+      "technicalOverlay": false,
+      "unlabelled": true
+    },
+    {
+      "camera": {
+        "position": "(10.0, 5.8, 12.2)",
+        "projection": "orthographic",
+        "size": 8.3,
+        "target": "(2.8, 1.0, 0.0)"
+      },
+      "fileName": "05_clean_foundation_front_right.png",
+      "purpose": "clean natural foundation front right",
+      "rendered": true,
+      "size": {
+        "height": 1009,
+        "width": 1920
+      },
+      "technicalOverlay": false,
+      "unlabelled": true
+    },
+    {
+      "camera": {
+        "position": "(10.0, 5.8, -12.2)",
+        "projection": "orthographic",
+        "size": 8.3,
+        "target": "(2.8, 1.0, 0.0)"
+      },
+      "fileName": "06_clean_foundation_rear.png",
+      "purpose": "clean natural foundation rear",
+      "rendered": true,
+      "size": {
+        "height": 1009,
+        "width": 1920
+      },
+      "technicalOverlay": false,
+      "unlabelled": true
+    },
+    {
+      "camera": {
+        "position": "(-10.5, 3.18, 11.8)",
+        "projection": "orthographic",
+        "size": 3.8,
+        "target": "(-6.5, 1.0, 5.8)"
+      },
+      "fileName": "07_worker_house02_close_three_quarter.png",
+      "purpose": "complete worker close to House02",
+      "rendered": true,
+      "size": {
+        "height": 1009,
+        "width": 1920
+      },
+      "technicalOverlay": false,
+      "unlabelled": true
+    },
+    {
+      "camera": {
+        "position": "(10.5, 3.18, 11.8)",
+        "projection": "orthographic",
+        "size": 3.8,
+        "target": "(6.5, 1.0, 5.8)"
+      },
+      "fileName": "08_worker_barn_close_three_quarter.png",
+      "purpose": "complete worker close to barn",
+      "rendered": true,
+      "size": {
+        "height": 1009,
+        "width": 1920
+      },
+      "technicalOverlay": false,
+      "unlabelled": true
+    },
+    {
+      "camera": {
+        "position": "(-6.5, 2.78, 12.8)",
+        "projection": "orthographic",
+        "size": 3.8,
+        "target": "(-6.5, 1.0, 5.8)"
+      },
+      "fileName": "09_worker_front_silhouette.png",
+      "purpose": "complete worker front silhouette",
+      "rendered": true,
+      "size": {
+        "height": 1009,
+        "width": 1920
+      },
+      "technicalOverlay": false,
+      "unlabelled": true
+    },
+    {
+      "camera": {
+        "position": "(13.5, 2.88, 5.8)",
+        "projection": "orthographic",
+        "size": 3.8,
+        "target": "(6.5, 1.0, 5.8)"
+      },
+      "fileName": "10_worker_side_silhouette.png",
+      "purpose": "complete worker side silhouette",
+      "rendered": true,
+      "size": {
+        "height": 1009,
+        "width": 1920
+      },
+      "technicalOverlay": false,
+      "unlabelled": true
+    },
+    {
+      "camera": {
+        "position": "(-18.0, 10.5, 26.0)",
+        "projection": "orthographic",
+        "size": 24.0,
+        "target": "(0.0, 2.2, 0.0)"
+      },
+      "fileName": "11_contextual_three_quarter_player.png",
+      "purpose": "clean contextual PLAYER proof",
+      "rendered": true,
+      "size": {
+        "height": 1009,
+        "width": 1920
+      },
+      "technicalOverlay": false,
+      "unlabelled": true
+    },
+    {
+      "camera": {
+        "position": "(-15.0, 7.4, 20.0)",
+        "projection": "orthographic",
+        "size": 17.0,
+        "target": "(0.0, 1.7, 0.0)"
+      },
+      "fileName": "12_contextual_worker_completeness_player.png",
+      "purpose": "contextual PLAYER complete-worker proof",
+      "rendered": true,
+      "size": {
+        "height": 1009,
+        "width": 1920
+      },
+      "technicalOverlay": false,
+      "unlabelled": true
+    },
+    {
+      "camera": {
+        "position": "(-19.0, 14.5, 22.0)",
+        "projection": "orthographic",
+        "size": 24.0,
+        "target": "(0.0, 2.0, 0.0)"
+      },
+      "fileName": "13_ordinary_far_rts.png",
+      "purpose": "ordinary far RTS context",
+      "rendered": true,
+      "size": {
+        "height": 1009,
+        "width": 1920
+      },
+      "technicalOverlay": false,
+      "unlabelled": true
+    },
+    {
+      "captureMethod": "dedicated 256x256 SubViewport direct read",
+      "fileName": "14_true_256_pixel_source.png",
+      "pixelAspectRatio": 1.0,
+      "purpose": "actual square viewport source; no crop or stretch",
+      "rendered": true,
+      "size": {
+        "height": 256,
+        "width": 256
+      },
+      "technicalOverlay": false,
+      "unlabelled": true
+    },
+    {
+      "captureMethod": "same camera family rendered through 256x256 SubViewport",
+      "fileName": "15_true_aspect_square_presentation.png",
+      "pixelAspectRatio": 1.0,
+      "purpose": "square presentation board source restored without stretch",
+      "rendered": true,
+      "size": {
+        "height": 256,
+        "width": 256
+      },
+      "technicalOverlay": false,
+      "unlabelled": true
+    },
+    {
+      "fileName": "16_greyscale_value_proof.png",
+      "purpose": "greyscale value proof",
+      "rendered": true,
+      "size": {
+        "height": 1009,
+        "width": 1920
+      },
+      "technicalOverlay": false,
+      "unlabelled": true
+    },
+    {
+      "camera": {
+        "position": "(-15.0, 8.4, 15.0)",
+        "projection": "orthographic",
+        "size": 16.5,
+        "target": "(0.0, 2.65, 0.0)"
+      },
+      "fileName": "17_restrained_warm_directional.png",
+      "purpose": "restrained warm directional",
+      "rendered": true,
+      "size": {
+        "height": 1009,
+        "width": 1920
+      },
+      "technicalOverlay": false,
+      "unlabelled": true
+    },
+    {
+      "camera": {
+        "position": "(-15.0, 8.4, 15.0)",
+        "projection": "orthographic",
+        "size": 13.2,
+        "target": "(0.0, 2.65, 0.0)"
+      },
+      "fileName": "18_matched_house02_barn_material_unity.png",
+      "normalEnabled": true,
+      "purpose": "matched frozen House02 and barn material unity",
+      "rendered": true,
+      "size": {
+        "height": 256,
+        "width": 512
+      },
+      "unlabelled": true
+    },
+    {
+      "camera": {
+        "position": "(-18.0, 10.5, 26.0)",
+        "projection": "orthographic",
+        "size": 24.0,
+        "target": "(0.0, 2.2, 0.0)"
+      },
+      "fileName": "19_debug_review_worker_hierarchy.png",
+      "purpose": "DEBUG_REVIEW complete worker hierarchy",
+      "rendered": true,
+      "size": {
+        "height": 1009,
+        "width": 1920
+      },
+      "technicalOverlay": true,
+      "unlabelled": true
+    },
+    {
+      "camera": {
+        "position": "(-15.0, 8.4, 15.0)",
+        "projection": "orthographic",
+        "size": 16.5,
+        "target": "(0.0, 2.65, 0.0)"
+      },
+      "fileName": "20_debug_review_terrain_contact.png",
+      "purpose": "DEBUG_REVIEW terrain contact engine-shadow contract",
+      "rendered": true,
+      "size": {
+        "height": 1009,
+        "width": 1920
+      },
+      "technicalOverlay": true,
+      "unlabelled": true
+    },
+    {
+      "camera": {
+        "position": "(15.0, 8.4, 15.0)",
+        "projection": "orthographic",
+        "size": 16.5,
+        "target": "(0.0, 2.65, 0.0)"
+      },
+      "fileName": "21_retained_roof_front_three_quarter.png",
+      "purpose": "retained exterior roof front three-quarter",
+      "rendered": true,
+      "size": {
+        "height": 1009,
+        "width": 1920
+      },
+      "technicalOverlay": false,
+      "unlabelled": true
+    }
+  ],
+  "checkpoint": "v0.353",
+  "completeWorkerCount": 2,
+  "defaultRuntimeIntegrated": false,
+  "detachedWorkerPartCount": 0,
+  "disassembledWorkerCount": 0,
+  "errors": [],
+  "floatingFoundationGeometryCount": 0,
+  "foundationContactMethod": "engine directional shadow and ambient fill only; no artificial ground geometry",
+  "frozenV0352RoofRepairHash": "0077e19143517e2850aee3bdb6ce9408d55bc7e2bfdc958d61ac1b141ab684f9",
+  "horizontalWorkerCount": 0,
+  "humanReviewRequired": true,
+  "minimumContextWorkerPixelHeight": 24,
+  "noCombat": true,
+  "noDefaultRuntimeMutation": true,
+  "noEconomy": true,
+  "noGameplay": true,
+  "noMovement": true,
+  "noPathfinding": true,
+  "noResources": true,
+  "outcome": "READY FOR HUMAN V0353 BARN GOLD-CLOSEOUT REVIEW",
+  "pixelAspectRatio": 1.0,
+  "prototypeOnly": true,
+  "prototypeOptIn": true,
+  "rawCaptureCount": 21,
+  "requiredRawNames": [
+    "01_frozen_barn_neutral_front_three_quarter.png",
+    "02_frozen_barn_direct_front.png",
+    "03_retained_rear_roof_confirmation.png",
+    "04_clean_foundation_front_left.png",
+    "05_clean_foundation_front_right.png",
+    "06_clean_foundation_rear.png",
+    "07_worker_house02_close_three_quarter.png",
+    "08_worker_barn_close_three_quarter.png",
+    "09_worker_front_silhouette.png",
+    "10_worker_side_silhouette.png",
+    "11_contextual_three_quarter_player.png",
+    "12_contextual_worker_completeness_player.png",
+    "13_ordinary_far_rts.png",
+    "14_true_256_pixel_source.png",
+    "15_true_aspect_square_presentation.png",
+    "16_greyscale_value_proof.png",
+    "17_restrained_warm_directional.png",
+    "18_matched_house02_barn_material_unity.png",
+    "19_debug_review_worker_hierarchy.png",
+    "20_debug_review_terrain_contact.png",
+    "21_retained_roof_front_three_quarter.png"
+  ],
+  "scenePath": "res://scenes/review/V0353BarnGoldCloseout.tscn",
+  "schemaVersion": 1,
+  "squareCaptureMethod": "direct square viewport read without crop or stretch",
+  "status": "PASS_V0353_BARN_GOLD_CLOSEOUT_RUNTIME",
+  "uprightWorkerCount": 2,
+  "visibleContactBlobCount": 0,
+  "visibleDecalBoundaryCount": 0,
+  "visibleRectangularContactArtifactCount": 0,
+  "workerAtlasPath": "res://assets/v0314/h3/worker_directional_animation_atlas.png",
+  "workerInstantiationMethod": "PackedScene.instantiate_once_per_worker",
+  "workerLocalTransformsPreserved": true,
+  "workerScenePath": "res://scenes/review/V0353CompleteBarrosanWorker.tscn"
+}

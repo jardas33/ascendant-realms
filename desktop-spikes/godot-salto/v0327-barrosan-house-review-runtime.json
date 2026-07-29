@@ -1,0 +1,50 @@
+{
+  "assetMetrics": {
+    "objectCount": 359.0,
+    "triangles": 15796.0,
+    "vertices": 8616.0
+  },
+  "camera": "orthographic RTS plus close inspection views",
+  "captures": [],
+  "checkpoint": "v0.327",
+  "collisionResult": true,
+  "errors": [],
+  "evidenceCapture": {
+    "frames": 288,
+    "screenshotDumpingEnabled": true,
+    "targetDurationSeconds": 12.0,
+    "targetFps": 24,
+    "throughputFps": 0.0,
+    "videoEncodingEnabledAfterCapture": true
+  },
+  "importWarnings": 0,
+  "interactiveBenchmark": {
+    "averageFps": 74.9765385914658,
+    "captureDisabled": true,
+    "minimumFps": 7.0,
+    "targetAverageFps": 55.0,
+    "targetMinimumFps": 45.0
+  },
+  "lodSwitchingResult": true,
+  "noBridge": true,
+  "noHud": true,
+  "noRiver": true,
+  "noWorker": true,
+  "outcome": "READY FOR HUMAN BARROSAN HOUSE REVIEW",
+  "preservation": {
+    "defaultRuntimeChanged": false,
+    "gameplayChanged": false,
+    "savesChanged": false,
+    "stableIdsChanged": false,
+    "v0322MediaSHA256": "8901bb6a074e5c3cc01bf5e16572f21dac06a527a4ea15273d649c71c73faa84",
+    "v0323RoofEvidencePreserved": true,
+    "v0325Preserved": true,
+    "v0326Preserved": true
+  },
+  "prototypeOptIn": true,
+  "scenePath": "res://scenes/review/V0327BarrosanHouseReview.tscn",
+  "schemaVersion": 1,
+  "sourceBlend": "art-source/blender/v0327/barrosan_house_gold_01.blend",
+  "sourceGLB": "res://assets/v0327/barrosan_house_gold_01.glb",
+  "status": "PASS_V0327_BARROSAN_HOUSE_REVIEW"
+}

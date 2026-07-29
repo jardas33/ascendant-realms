@@ -1,0 +1,164 @@
+{
+  "checkpoint": "v0.332",
+  "materials": [
+    {
+      "key": "granite",
+      "blenderMaterial": "V0332_Granite",
+      "glbMaterial": "V0332_Granite",
+      "godotImportedMaterial": "V0332_Granite",
+      "maps": [
+        {
+          "path": "art-source/materials/v0332/granite_albedo_1024.png",
+          "resolution": [
+            1024,
+            1024
+          ],
+          "sha256": "1a6417d089bb799bda37ef5b4b6d38bb3b1baf1b68fe0af3da27f3f45016a014",
+          "bound": true
+        },
+        {
+          "path": "art-source/materials/v0332/granite_roughness_1024.png",
+          "resolution": [
+            1024,
+            1024
+          ],
+          "sha256": "6ad49f7f93b1c81af95048df995f020a705b4f053381543a0ec29c31ff4018b1",
+          "bound": true
+        },
+        {
+          "path": "art-source/materials/v0332/granite_normal_1024.png",
+          "resolution": [
+            1024,
+            1024
+          ],
+          "sha256": "7aff5fc9ca7e10005ed6c738f030ecb71788f48398ccaa30c3032d2dfdaafd1e",
+          "bound": true
+        }
+      ],
+      "imageBacked": true
+    },
+    {
+      "key": "foundation",
+      "blenderMaterial": "V0332_Damp_Foundation",
+      "glbMaterial": "V0332_Damp_Foundation",
+      "godotImportedMaterial": "V0332_Damp_Foundation",
+      "maps": [
+        {
+          "path": "art-source/materials/v0332/granite_albedo_1024.png",
+          "resolution": [
+            1024,
+            1024
+          ],
+          "sha256": "1a6417d089bb799bda37ef5b4b6d38bb3b1baf1b68fe0af3da27f3f45016a014",
+          "bound": true
+        },
+        {
+          "path": "art-source/materials/v0332/granite_roughness_1024.png",
+          "resolution": [
+            1024,
+            1024
+          ],
+          "sha256": "6ad49f7f93b1c81af95048df995f020a705b4f053381543a0ec29c31ff4018b1",
+          "bound": true
+        },
+        {
+          "path": "art-source/materials/v0332/granite_normal_1024.png",
+          "resolution": [
+            1024,
+            1024
+          ],
+          "sha256": "7aff5fc9ca7e10005ed6c738f030ecb71788f48398ccaa30c3032d2dfdaafd1e",
+          "bound": true
+        }
+      ],
+      "imageBacked": true
+    },
+    {
+      "key": "slate",
+      "blenderMaterial": "V0332_Weathered_Slate",
+      "glbMaterial": "V0332_Weathered_Slate",
+      "godotImportedMaterial": "V0332_Weathered_Slate",
+      "maps": [
+        {
+          "path": "art-source/materials/v0332/slate_albedo_1024.png",
+          "resolution": [
+            1024,
+            1024
+          ],
+          "sha256": "e0ffbd330b290a084997956b256830832b0389e146a0a1a474d9f16ee872eb78",
+          "bound": true
+        },
+        {
+          "path": "art-source/materials/v0332/slate_roughness_1024.png",
+          "resolution": [
+            1024,
+            1024
+          ],
+          "sha256": "85fa2d173c412ae1927edbb909c66e6f39b342e328f9a3fd154f501a4cea8fa4",
+          "bound": true
+        },
+        {
+          "path": "art-source/materials/v0332/slate_normal_1024.png",
+          "resolution": [
+            1024,
+            1024
+          ],
+          "sha256": "b82718b50b9dd1f9fc44a0c08536270d1c6c27c1b89b81a78fbc17f1430cb242",
+          "bound": true
+        }
+      ],
+      "imageBacked": true
+    },
+    {
+      "key": "timber",
+      "blenderMaterial": "V0332_Weathered_Timber",
+      "glbMaterial": "V0332_Weathered_Timber",
+      "godotImportedMaterial": "V0332_Weathered_Timber",
+      "maps": [
+        {
+          "path": "art-source/materials/v0332/timber_albedo_1024.png",
+          "resolution": [
+            1024,
+            1024
+          ],
+          "sha256": "a28bd7ccc7357c22f72bd28b3d5721e73b71e03355e72c622de345f9dc7c48cd",
+          "bound": true
+        },
+        {
+          "path": "art-source/materials/v0332/timber_roughness_1024.png",
+          "resolution": [
+            1024,
+            1024
+          ],
+          "sha256": "5c41f1145e5ecc149c33207d9dd6c5220d4564400cfc1035a19c862450f2e2b8",
+          "bound": true
+        }
+      ],
+      "imageBacked": true
+    },
+    {
+      "key": "iron",
+      "blenderMaterial": "V0332_Iron",
+      "glbMaterial": "V0332_Iron",
+      "godotImportedMaterial": "V0332_Iron",
+      "maps": [],
+      "imageBacked": false
+    },
+    {
+      "key": "interior",
+      "blenderMaterial": "V0332_Interior_Recess",
+      "glbMaterial": "V0332_Interior_Recess",
+      "godotImportedMaterial": "V0332_Interior_Recess",
+      "maps": [],
+      "imageBacked": false
+    },
+    {
+      "key": "glass",
+      "blenderMaterial": "V0332_Recessed_Window",
+      "glbMaterial": "V0332_Recessed_Window",
+      "godotImportedMaterial": "V0332_Recessed_Window",
+      "maps": [],
+      "imageBacked": false
+    }
+  ]
+}

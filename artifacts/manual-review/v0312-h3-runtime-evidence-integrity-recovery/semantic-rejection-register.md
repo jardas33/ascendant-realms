@@ -1,0 +1,28 @@
+# Semantic rejection register
+
+- player_008_worker_stopped.png: stopped after destination; distinctness audited
+- player_014_militia_destination_reached.png: authoritative movement sample
+- player_015_militia_stopped.png: stopped after destination; distinctness audited
+- player_028_bridge_exit.png: same stable ID bridge progression
+- player_029_beyond_bridge.png: same stable ID bridge progression
+- player_038_storehouse_occlusion_04.png: depth interaction sample
+- player_039_storehouse_occlusion_05.png: depth interaction sample
+- player_055_worker_work_pose_limitation.png: visual pose remains authored idle source
+- player_059_militia_ready_unsupported.png: ready/hold state is not supported by current runtime
+- player_070_selected_state_after_load.png: selection restored from save
+- player_073_h3_reconstructed.png: H3 presentation reconstructed from same authoritative state
+- player_075_scale_12_percent_smaller.png: bounded presentation scale
+- player_076_scale_24_percent_smaller.png: bounded presentation scale
+- debug_review_008_worker_stopped.png: stopped after destination; distinctness audited
+- debug_review_014_militia_destination_reached.png: authoritative movement sample
+- debug_review_015_militia_stopped.png: stopped after destination; distinctness audited
+- debug_review_028_bridge_exit.png: same stable ID bridge progression
+- debug_review_029_beyond_bridge.png: same stable ID bridge progression
+- debug_review_038_storehouse_occlusion_04.png: depth interaction sample
+- debug_review_039_storehouse_occlusion_05.png: depth interaction sample
+- debug_review_055_worker_work_pose_limitation.png: visual pose remains authored idle source
+- debug_review_059_militia_ready_unsupported.png: ready/hold state is not supported by current runtime
+- debug_review_070_selected_state_after_load.png: selection restored from save
+- debug_review_073_h3_reconstructed.png: H3 presentation reconstructed from same authoritative state
+- debug_review_075_scale_12_percent_smaller.png: bounded presentation scale
+- debug_review_076_scale_24_percent_smaller.png: bounded presentation scale

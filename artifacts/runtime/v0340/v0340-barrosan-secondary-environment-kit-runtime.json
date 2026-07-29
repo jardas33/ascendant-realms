@@ -1,0 +1,634 @@
+{
+  "LOD": {
+    "collisionSimpler": true,
+    "lod0": true,
+    "lod1": true,
+    "lod2": true
+  },
+  "UV": {
+    "mirroredNormals": false,
+    "overlap": false,
+    "stretching": "not observed"
+  },
+  "assetLineage": "repository-authored Blender v0.340 meshes; frozen v0.338 House 02 anchor",
+  "automatedVisualApproval": false,
+  "camera": {
+    "directTopDown": true,
+    "fourObliques": true,
+    "oblique": true,
+    "projection": "orthographic"
+  },
+  "captureCount": 42,
+  "captures": [
+    {
+      "camera": {
+        "orthoSize": 28.0,
+        "position": "(24.0, 19.0, 25.0)",
+        "projection": "orthographic",
+        "target": "(-1.0, 1.4, 2.0)"
+      },
+      "file": "01_primary_player_neutral_overcast_rts.png",
+      "mode": "PLAYER",
+      "purpose": "primary PLAYER environment kit",
+      "rendered": true
+    },
+    {
+      "camera": {
+        "orthoSize": 28.0,
+        "position": "(24.0, 19.0, 25.0)",
+        "projection": "orthographic",
+        "target": "(-1.0, 1.4, 2.0)"
+      },
+      "file": "02_cool_daylight_rts.png",
+      "mode": "PLAYER",
+      "purpose": "cool daylight",
+      "rendered": true
+    },
+    {
+      "camera": {
+        "orthoSize": 28.0,
+        "position": "(24.0, 19.0, 25.0)",
+        "projection": "orthographic",
+        "target": "(-1.0, 1.4, 2.0)"
+      },
+      "file": "03_warm_directional_rts.png",
+      "mode": "PLAYER",
+      "purpose": "warm directional",
+      "rendered": true
+    },
+    {
+      "camera": {
+        "orthoSize": 38.0,
+        "position": "(33.0, 26.0, 34.0)",
+        "projection": "orthographic",
+        "target": "(-1.0, 1.0, 2.0)"
+      },
+      "file": "04_far_rts.png",
+      "mode": "PLAYER",
+      "purpose": "far RTS",
+      "rendered": true
+    },
+    {
+      "camera": {
+        "orthoSize": 14.0,
+        "position": "(12.0, 9.0, 13.0)",
+        "projection": "orthographic",
+        "target": "(-5.0, 1.5, 4.0)"
+      },
+      "file": "05_near_inspection.png",
+      "mode": "PLAYER",
+      "purpose": "near inspection",
+      "rendered": true
+    },
+    {
+      "camera": {
+        "orthoSize": 28.0,
+        "position": "(24.0, 19.0, 25.0)",
+        "projection": "orthographic",
+        "target": "(-1.0, 1.4, 2.0)"
+      },
+      "file": "06_256_readability_source.png",
+      "mode": "PLAYER",
+      "purpose": "256px source",
+      "rendered": true
+    },
+    {
+      "camera": {
+        "orthoSize": 28.0,
+        "position": "(24.0, 19.0, 25.0)",
+        "projection": "orthographic",
+        "target": "(-1.0, 1.4, 2.0)"
+      },
+      "file": "07_grayscale_rts.png",
+      "mode": "PLAYER",
+      "purpose": "greyscale value hierarchy",
+      "rendered": true
+    },
+    {
+      "camera": {
+        "orthoSize": 34.0,
+        "position": "(0.0, 44.0, 2.0)",
+        "projection": "orthographic",
+        "target": "(-1.0, 0.0, 2.0)"
+      },
+      "file": "08_direct_top_down.png",
+      "mode": "PLAYER",
+      "purpose": "direct top-down diagnostic",
+      "rendered": true
+    },
+    {
+      "camera": {
+        "orthoSize": 28.0,
+        "position": "(25.0, 18.0, 25.0)",
+        "projection": "orthographic",
+        "target": "(0.0, 1.0, 2.0)"
+      },
+      "file": "09_oblique_northeast.png",
+      "mode": "PLAYER",
+      "purpose": "north-east oblique",
+      "rendered": true
+    },
+    {
+      "camera": {
+        "orthoSize": 28.0,
+        "position": "(25.0, 18.0, -25.0)",
+        "projection": "orthographic",
+        "target": "(0.0, 1.0, 2.0)"
+      },
+      "file": "10_oblique_southeast.png",
+      "mode": "PLAYER",
+      "purpose": "south-east oblique",
+      "rendered": true
+    },
+    {
+      "camera": {
+        "orthoSize": 28.0,
+        "position": "(-25.0, 18.0, -25.0)",
+        "projection": "orthographic",
+        "target": "(0.0, 1.0, 2.0)"
+      },
+      "file": "11_oblique_southwest.png",
+      "mode": "PLAYER",
+      "purpose": "south-west oblique",
+      "rendered": true
+    },
+    {
+      "camera": {
+        "orthoSize": 28.0,
+        "position": "(-25.0, 18.0, 25.0)",
+        "projection": "orthographic",
+        "target": "(0.0, 1.0, 2.0)"
+      },
+      "file": "12_oblique_northwest.png",
+      "mode": "PLAYER",
+      "purpose": "north-west oblique",
+      "rendered": true
+    },
+    {
+      "camera": {
+        "orthoSize": 20.0,
+        "position": "(18.0, 12.0, 20.0)",
+        "projection": "orthographic",
+        "target": "(-8.0, 1.5, 5.0)"
+      },
+      "file": "13_house02_vs_barn_harmony.png",
+      "mode": "PLAYER",
+      "purpose": "House 02 and barn harmony",
+      "rendered": true
+    },
+    {
+      "camera": {
+        "orthoSize": 10.0,
+        "position": "(-2.0, 6.0, 11.0)",
+        "projection": "orthographic",
+        "target": "(-7.0, 2.5, 4.8)"
+      },
+      "file": "14_barn_front.png",
+      "mode": "PLAYER",
+      "purpose": "barn front",
+      "rendered": true
+    },
+    {
+      "camera": {
+        "orthoSize": 10.0,
+        "position": "(-13.0, 7.0, 0.0)",
+        "projection": "orthographic",
+        "target": "(-7.0, 2.5, 4.8)"
+      },
+      "file": "15_barn_rear.png",
+      "mode": "PLAYER",
+      "purpose": "barn rear",
+      "rendered": true
+    },
+    {
+      "camera": {
+        "orthoSize": 9.0,
+        "position": "(-5.0, 7.0, 10.0)",
+        "projection": "orthographic",
+        "target": "(-7.0, 2.7, 4.8)"
+      },
+      "file": "16_barn_roof_entrance.png",
+      "mode": "PLAYER",
+      "purpose": "barn roof and entrance",
+      "rendered": true
+    },
+    {
+      "camera": {
+        "orthoSize": 9.0,
+        "position": "(11.0, 6.0, 12.0)",
+        "projection": "orthographic",
+        "target": "(4.7, 2.0, 6.0)"
+      },
+      "file": "17_shed_front.png",
+      "mode": "PLAYER",
+      "purpose": "shed front",
+      "rendered": true
+    },
+    {
+      "camera": {
+        "orthoSize": 7.0,
+        "position": "(9.0, 5.0, 8.0)",
+        "projection": "orthographic",
+        "target": "(4.7, 1.8, 6.0)"
+      },
+      "file": "18_shed_structural_timber.png",
+      "mode": "PLAYER",
+      "purpose": "shed structural timber",
+      "rendered": true
+    },
+    {
+      "camera": {
+        "orthoSize": 7.0,
+        "position": "(5.0, 5.0, 5.0)",
+        "projection": "orthographic",
+        "target": "(5.5, 1.3, 5.5)"
+      },
+      "file": "19_shed_storage_function.png",
+      "mode": "PLAYER",
+      "purpose": "shed storage function",
+      "rendered": true
+    },
+    {
+      "camera": {
+        "orthoSize": 16.0,
+        "position": "(13.0, 10.0, 16.0)",
+        "projection": "orthographic",
+        "target": "(4.0, 1.0, 9.0)"
+      },
+      "file": "20_wall_kit_complete.png",
+      "mode": "PLAYER",
+      "purpose": "complete wall kit",
+      "rendered": true
+    },
+    {
+      "camera": {
+        "orthoSize": 8.0,
+        "position": "(10.0, 6.0, 15.0)",
+        "projection": "orthographic",
+        "target": "(3.0, 1.0, 9.0)"
+      },
+      "file": "21_wall_corner_gateway.png",
+      "mode": "PLAYER",
+      "purpose": "wall corner and gateway",
+      "rendered": true
+    },
+    {
+      "camera": {
+        "orthoSize": 10.0,
+        "position": "(17.0, 10.0, 15.0)",
+        "projection": "orthographic",
+        "target": "(9.0, 1.0, 8.0)"
+      },
+      "file": "22_wall_terrain_following.png",
+      "mode": "PLAYER",
+      "purpose": "wall terrain following",
+      "rendered": true
+    },
+    {
+      "camera": {
+        "orthoSize": 7.0,
+        "position": "(17.0, 7.0, 11.0)",
+        "projection": "orthographic",
+        "target": "(12.0, 1.0, 7.0)"
+      },
+      "file": "23_wall_collapsed_section.png",
+      "mode": "PLAYER",
+      "purpose": "wall collapsed section",
+      "rendered": true
+    },
+    {
+      "camera": {
+        "orthoSize": 7.0,
+        "position": "(13.0, 7.0, 10.0)",
+        "projection": "orthographic",
+        "target": "(7.0, 1.0, 3.0)"
+      },
+      "file": "24_trough_overflow.png",
+      "mode": "PLAYER",
+      "purpose": "trough and overflow",
+      "rendered": true
+    },
+    {
+      "camera": {
+        "orthoSize": 11.0,
+        "position": "(11.0, 8.0, 7.0)",
+        "projection": "orthographic",
+        "target": "(2.0, 1.0, -2.0)"
+      },
+      "file": "25_crossing_abutments.png",
+      "mode": "PLAYER",
+      "purpose": "crossing and abutments",
+      "rendered": true
+    },
+    {
+      "camera": {
+        "orthoSize": 16.0,
+        "position": "(14.0, 11.0, 14.0)",
+        "projection": "orthographic",
+        "target": "(1.0, 1.0, -1.0)"
+      },
+      "file": "26_road_surface.png",
+      "mode": "PLAYER",
+      "purpose": "road surface",
+      "rendered": true
+    },
+    {
+      "camera": {
+        "orthoSize": 12.0,
+        "position": "(9.0, 7.0, 13.0)",
+        "projection": "orthographic",
+        "target": "(-6.0, 1.0, 4.0)"
+      },
+      "file": "27_secondary_path_entrance.png",
+      "mode": "PLAYER",
+      "purpose": "secondary path and entrance",
+      "rendered": true
+    },
+    {
+      "camera": {
+        "orthoSize": 12.0,
+        "position": "(10.0, 9.0, 12.0)",
+        "projection": "orthographic",
+        "target": "(2.0, 0.0, -2.0)"
+      },
+      "file": "28_water_and_banks.png",
+      "mode": "PLAYER",
+      "purpose": "water and banks",
+      "rendered": true
+    },
+    {
+      "camera": {
+        "orthoSize": 20.0,
+        "position": "(17.0, 11.0, 17.0)",
+        "projection": "orthographic",
+        "target": "(4.0, 1.0, 3.0)"
+      },
+      "file": "29_vegetation_family.png",
+      "mode": "PLAYER",
+      "purpose": "vegetation family",
+      "rendered": true
+    },
+    {
+      "camera": {
+        "orthoSize": 25.0,
+        "position": "(22.0, 16.0, 22.0)",
+        "projection": "orthographic",
+        "target": "(0.0, 1.0, 4.0)"
+      },
+      "file": "30_terrain_elevation_grounding.png",
+      "mode": "PLAYER",
+      "purpose": "terrain elevation and grounding",
+      "rendered": true
+    },
+    {
+      "camera": {
+        "orthoSize": 10.0,
+        "position": "(10.0, 7.0, 12.0)",
+        "projection": "orthographic",
+        "target": "(-5.0, 1.0, 2.0)"
+      },
+      "file": "31_worker_scale.png",
+      "mode": "PLAYER",
+      "purpose": "Worker scale",
+      "rendered": true
+    },
+    {
+      "camera": {
+        "orthoSize": 17.0,
+        "position": "(16.0, 10.0, 16.0)",
+        "projection": "orthographic",
+        "target": "(-3.0, 1.0, 4.0)"
+      },
+      "file": "32_normal_enabled.png",
+      "mode": "PLAYER",
+      "purpose": "normal enabled",
+      "rendered": true
+    },
+    {
+      "camera": {
+        "orthoSize": 17.0,
+        "position": "(16.0, 10.0, 16.0)",
+        "projection": "orthographic",
+        "target": "(-3.0, 1.0, 4.0)"
+      },
+      "file": "33_normal_disabled.png",
+      "mode": "PLAYER",
+      "purpose": "normal disabled comparison",
+      "rendered": true
+    },
+    {
+      "camera": {
+        "orthoSize": 17.0,
+        "position": "(16.0, 10.0, 16.0)",
+        "projection": "orthographic",
+        "target": "(-3.0, 1.0, 4.0)"
+      },
+      "file": "34_albedo_only.png",
+      "mode": "PLAYER",
+      "purpose": "albedo material evidence",
+      "rendered": true
+    },
+    {
+      "camera": {
+        "orthoSize": 17.0,
+        "position": "(16.0, 10.0, 16.0)",
+        "projection": "orthographic",
+        "target": "(-3.0, 1.0, 4.0)"
+      },
+      "file": "35_roughness_isolation.png",
+      "mode": "PLAYER",
+      "purpose": "roughness isolation",
+      "rendered": true
+    },
+    {
+      "camera": {
+        "orthoSize": 17.0,
+        "position": "(16.0, 10.0, 16.0)",
+        "projection": "orthographic",
+        "target": "(-3.0, 1.0, 4.0)"
+      },
+      "file": "36_uv_checker.png",
+      "mode": "PLAYER",
+      "purpose": "UV checker evidence",
+      "rendered": true
+    },
+    {
+      "camera": {
+        "orthoSize": 28.0,
+        "position": "(24.0, 18.0, 24.0)",
+        "projection": "orthographic",
+        "target": "(-1.0, 1.0, 3.0)"
+      },
+      "file": "37_lod_comparison.png",
+      "mode": "PLAYER",
+      "purpose": "LOD comparison",
+      "rendered": true
+    },
+    {
+      "camera": {
+        "orthoSize": 18.0,
+        "position": "(16.0, 12.0, 16.0)",
+        "projection": "orthographic",
+        "target": "(1.0, 1.0, 2.0)"
+      },
+      "file": "38_isolated_collision.png",
+      "mode": "PLAYER",
+      "purpose": "isolated collision proof",
+      "rendered": true
+    },
+    {
+      "camera": {
+        "orthoSize": 28.0,
+        "position": "(24.0, 19.0, 25.0)",
+        "projection": "orthographic",
+        "target": "(-1.0, 1.4, 2.0)"
+      },
+      "file": "39_performance_draw_calls.png",
+      "mode": "PLAYER",
+      "purpose": "actual performance evidence",
+      "rendered": true
+    },
+    {
+      "camera": {
+        "orthoSize": 28.0,
+        "position": "(24.0, 19.0, 25.0)",
+        "projection": "orthographic",
+        "target": "(-1.0, 1.4, 2.0)"
+      },
+      "file": "40_documentary_target_comparison.png",
+      "mode": "PLAYER",
+      "purpose": "documentary material target comparison",
+      "rendered": true
+    },
+    {
+      "camera": {
+        "orthoSize": 28.0,
+        "position": "(24.0, 19.0, 25.0)",
+        "projection": "orthographic",
+        "target": "(-1.0, 1.4, 2.0)"
+      },
+      "file": "41_rejected_v0339_vs_v0340.png",
+      "mode": "PLAYER",
+      "purpose": "rejected v0339 versus v0340",
+      "rendered": true
+    },
+    {
+      "camera": {
+        "orthoSize": 28.0,
+        "position": "(24.0, 19.0, 25.0)",
+        "projection": "orthographic",
+        "target": "(-1.0, 1.4, 2.0)"
+      },
+      "file": "42_debug_review_technical_evidence.png",
+      "mode": "DEBUG_REVIEW",
+      "purpose": "DEBUG_REVIEW technical evidence",
+      "rendered": true
+    }
+  ],
+  "checkpoint": "v0.340",
+  "collision": {
+    "crossingContinuous": true,
+    "troughNonBlocking": true,
+    "wallUsable": true
+  },
+  "continuousFrames": 504,
+  "debugReviewMode": "IDs, dimensions, material, contact, clearance and terrain evidence",
+  "defaultRuntimeIntegrated": false,
+  "errors": [],
+  "families": {
+    "banks": true,
+    "barn": true,
+    "crossing": true,
+    "path": true,
+    "road": true,
+    "shed": true,
+    "terrain": true,
+    "trough": true,
+    "vegetation": true,
+    "wallKit": {
+      "elevationFollowing": true,
+      "endCap": true,
+      "externalCorner": true,
+      "gateway": true,
+      "internalCorner": true,
+      "long": true,
+      "low": true,
+      "partiallyCollapsed": true,
+      "short": true
+    },
+    "water": true
+  },
+  "frozenV0338BlendSha256": "3da7c2cf71509e07c900001fd0b277e9af4584a074552ac1d929a4f37e0d78b6",
+  "frozenV0338GLBSha256": "ceab23ff3cfb580cc63ce917ec1ff675a1cd318f8fe3390fc836166015ebba89",
+  "house02Modified": false,
+  "humanReviewRequired": true,
+  "materials": [
+    "candidate_a dark rubble granite",
+    "charcoal slate",
+    "weathered timber",
+    "dark iron",
+    "subdued grass",
+    "cool water"
+  ],
+  "noAI": true,
+  "noCombat": true,
+  "noEconomy": true,
+  "noGameplay": true,
+  "noMovement": true,
+  "noPathfinding": true,
+  "noPressureMutation": true,
+  "noResources": true,
+  "noSaves": true,
+  "noStableIDChanges": true,
+  "outcome": "READY FOR HUMAN BARROSAN SECONDARY ENVIRONMENT KIT REVIEW",
+  "performance": {
+    "averageFps": 75.8,
+    "drawCalls": "captured by Godot frame; no repeated spikes",
+    "estimatedTextureMemoryBytes": 0,
+    "materialCount": 16,
+    "measurementSeconds": 1.188,
+    "medianFps": 75.8,
+    "medianFrameTimeMs": 13.2,
+    "minimumFps": 68.9,
+    "onePercentLowFps": 71.2,
+    "p99FrameTimeMs": 14.51,
+    "renderObjects": 344,
+    "repeatedSpikesAbove50ms": 0,
+    "sampleCount": 90,
+    "shaderCompilationExcluded": true,
+    "textureCount": 0,
+    "visibleTriangles": 0,
+    "warmupSeconds": 0.25
+  },
+  "playerMode": "clean unlabelled environment; no review guides",
+  "prototypeOnly": true,
+  "prototypeOptIn": true,
+  "road": {
+    "connected": true,
+    "crowned": true,
+    "primaryWidthMeters": 3.0,
+    "secondaryWidthMeters": 1.1
+  },
+  "scenePath": "res://scenes/review/V0340BarrosanSecondaryEnvironmentKitReview.tscn",
+  "schemaVersion": 1,
+  "status": "PASS_V0340_BARROSAN_SECONDARY_ENVIRONMENT_KIT",
+  "terrain": {
+    "elevationDifferenceMeters": 1.8,
+    "embedded": true,
+    "hardBoundaryHidden": true,
+    "raisedAgriculturalEdge": true,
+    "valley": true
+  },
+  "videoSeconds": 21.0,
+  "water": {
+    "belowBanks": true,
+    "crossingSeated": true,
+    "nonRectangular": true,
+    "shallowAndDeep": true
+  },
+  "workerScale": {
+    "clearanceMeters": 1.25,
+    "entranceMeters": 1.25,
+    "silhouettes": 2
+  }
+}

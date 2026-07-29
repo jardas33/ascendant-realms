@@ -1,0 +1,5 @@
+READY FOR HUMAN V0364 BARROSAN FOREGROUND PROP PROVENANCE AND NON-DESTRUCTIVE CLEANUP PREVIEW REVIEW.
+
+v0.363 evidence repair and the accepted Barn placement remain accepted. This pack audits three ambiguous foreground regions without cleaning any canonical or production asset. Hidden examples are review-only duplicate-instance visibility previews. Object A and object C are merged parent meshes and therefore receive annotated evidence instead of a fabricated removal. Object B is independently addressable in a duplicate, but its authored node is broader than the visually ambiguous bracket and its purpose is not established from source. Human disposition is required before any actual presentation or asset mutation.
+
+Pack contents are eight PNG boards plus this README and compact-evidence-summary.json. Raw Godot captures remain under artifacts/runtime/v0364/capture and are not part of the exact upload pack.

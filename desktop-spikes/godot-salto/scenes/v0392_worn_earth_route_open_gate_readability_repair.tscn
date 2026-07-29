@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/v0392_worn_earth_route_open_gate_readability_repair.gd" id="1_v0392"]
+
+[node name="V0392WornEarthRouteOpenGateReadabilityRepair" type="Node3D"]
+script = ExtResource("1_v0392")

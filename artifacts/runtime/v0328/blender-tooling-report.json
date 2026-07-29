@@ -1,0 +1,9 @@
+{
+  "status": "PASS_V0328_BLENDER_REPAIRED_GOLD_ASSET",
+  "blenderAvailable": true,
+  "executable": "C:\\Program Files\\Blender Foundation\\Blender 5.1\\blender.exe",
+  "version": "5.1.2",
+  "sourceBlend": "art-source/blender/v0327/barrosan_house_gold_01.blend",
+  "glbPath": "desktop-spikes/godot-salto/assets/v0327/barrosan_house_gold_01.glb",
+  "v0327SourceRecoverableAt": "09be641b73b01357741f1f2c497dad06edc4777b"
+}

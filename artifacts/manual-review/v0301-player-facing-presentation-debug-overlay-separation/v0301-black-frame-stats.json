@@ -1,0 +1,870 @@
+{
+  "runtimeFrameStats": [
+    {
+      "mode": "PLAYER",
+      "file": "01_v0301_player_clean_baseline.png",
+      "mean": [
+        5.0,
+        5.0,
+        5.0
+      ]
+    },
+    {
+      "mode": "PLAYER",
+      "file": "02_v0301_player_bridge_clean.png",
+      "mean": [
+        5.0,
+        5.0,
+        5.0
+      ]
+    },
+    {
+      "mode": "PLAYER",
+      "file": "03_v0301_player_barracks_clean.png",
+      "mean": [
+        5.0,
+        5.0,
+        5.0
+      ]
+    },
+    {
+      "mode": "PLAYER",
+      "file": "04_v0301_player_support_card.png",
+      "mean": [
+        5.0,
+        5.0,
+        5.0
+      ]
+    },
+    {
+      "mode": "PLAYER",
+      "file": "05_v0301_player_defender_card.png",
+      "mean": [
+        5.0,
+        5.0,
+        5.0
+      ]
+    },
+    {
+      "mode": "PLAYER",
+      "file": "06_v0301_player_barracks_card.png",
+      "mean": [
+        5.0,
+        5.0,
+        5.0
+      ]
+    },
+    {
+      "mode": "PLAYER",
+      "file": "07_v0301_player_top_strip.png",
+      "mean": [
+        5.0,
+        5.0,
+        5.0
+      ]
+    },
+    {
+      "mode": "PLAYER",
+      "file": "08_v0301_player_no_historical_stack.png",
+      "mean": [
+        5.0,
+        5.0,
+        5.0
+      ]
+    },
+    {
+      "mode": "PLAYER",
+      "file": "09_v0301_player_no_validator_text.png",
+      "mean": [
+        5.0,
+        5.0,
+        5.0
+      ]
+    },
+    {
+      "mode": "PLAYER",
+      "file": "10_v0301_player_to_debug_round_trip.png",
+      "mean": [
+        5.0,
+        5.0,
+        5.0
+      ]
+    },
+    {
+      "mode": "PLAYER",
+      "file": "11_v0301_player_debug_to_player_round_trip.png",
+      "mean": [
+        5.0,
+        5.0,
+        5.0
+      ]
+    },
+    {
+      "mode": "PLAYER",
+      "file": "12_v0301_player_restored.png",
+      "mean": [
+        5.0,
+        5.0,
+        5.0
+      ]
+    },
+    {
+      "mode": "PLAYER",
+      "file": "13_v0301_player_no_duplicate_markers.png",
+      "mean": [
+        5.0,
+        5.0,
+        5.0
+      ]
+    },
+    {
+      "mode": "PLAYER",
+      "file": "14_v0301_player_no_duplicate_route.png",
+      "mean": [
+        5.0,
+        5.0,
+        5.0
+      ]
+    },
+    {
+      "mode": "PLAYER",
+      "file": "15_v0301_player_no_duplicate_support.png",
+      "mean": [
+        5.0,
+        5.0,
+        5.0
+      ]
+    },
+    {
+      "mode": "PLAYER",
+      "file": "16_v0301_player_no_duplicate_integration.png",
+      "mean": [
+        5.0,
+        5.0,
+        5.0
+      ]
+    },
+    {
+      "mode": "PLAYER",
+      "file": "17_v0301_player_card_unchanged.png",
+      "mean": [
+        5.0,
+        5.0,
+        5.0
+      ]
+    },
+    {
+      "mode": "PLAYER",
+      "file": "18_v0301_player_top_strip_unchanged.png",
+      "mean": [
+        5.0,
+        5.0,
+        5.0
+      ]
+    },
+    {
+      "mode": "PLAYER",
+      "file": "19_v0301_player_pressure_unchanged.png",
+      "mean": [
+        5.0,
+        5.0,
+        5.0
+      ]
+    },
+    {
+      "mode": "PLAYER",
+      "file": "20_v0301_player_units_unchanged.png",
+      "mean": [
+        5.0,
+        5.0,
+        5.0
+      ]
+    },
+    {
+      "mode": "PLAYER",
+      "file": "21_v0301_player_resources_unchanged.png",
+      "mean": [
+        5.0,
+        5.0,
+        5.0
+      ]
+    },
+    {
+      "mode": "PLAYER",
+      "file": "22_v0301_player_minimap.png",
+      "mean": [
+        5.0,
+        5.0,
+        5.0
+      ]
+    },
+    {
+      "mode": "PLAYER",
+      "file": "23_v0301_player_hud_no_overlap.png",
+      "mean": [
+        5.0,
+        5.0,
+        5.0
+      ]
+    },
+    {
+      "mode": "PLAYER",
+      "file": "24_v0301_player_no_gameplay_mutation.png",
+      "mean": [
+        5.0,
+        5.0,
+        5.0
+      ]
+    },
+    {
+      "mode": "DEBUG_REVIEW",
+      "file": "01_v0301_debug_bridge_labels.png",
+      "mean": [
+        5.0,
+        5.0,
+        5.0
+      ]
+    },
+    {
+      "mode": "DEBUG_REVIEW",
+      "file": "02_v0301_debug_barracks_labels.png",
+      "mean": [
+        5.0,
+        5.0,
+        5.0
+      ]
+    },
+    {
+      "mode": "DEBUG_REVIEW",
+      "file": "03_v0301_debug_route.png",
+      "mean": [
+        5.0,
+        5.0,
+        5.0
+      ]
+    },
+    {
+      "mode": "DEBUG_REVIEW",
+      "file": "04_v0301_debug_support.png",
+      "mean": [
+        5.0,
+        5.0,
+        5.0
+      ]
+    },
+    {
+      "mode": "DEBUG_REVIEW",
+      "file": "05_v0301_debug_integration.png",
+      "mean": [
+        5.0,
+        5.0,
+        5.0
+      ]
+    },
+    {
+      "mode": "DEBUG_REVIEW",
+      "file": "06_v0301_debug_pressure.png",
+      "mean": [
+        5.0,
+        5.0,
+        5.0
+      ]
+    },
+    {
+      "mode": "DEBUG_REVIEW",
+      "file": "07_v0301_debug_marker_nodes.png",
+      "mean": [
+        5.0,
+        5.0,
+        5.0
+      ]
+    },
+    {
+      "mode": "DEBUG_REVIEW",
+      "file": "08_v0301_debug_player_to_debug.png",
+      "mean": [
+        5.0,
+        5.0,
+        5.0
+      ]
+    },
+    {
+      "mode": "DEBUG_REVIEW",
+      "file": "09_v0301_debug_debug_to_player.png",
+      "mean": [
+        5.0,
+        5.0,
+        5.0
+      ]
+    },
+    {
+      "mode": "DEBUG_REVIEW",
+      "file": "10_v0301_debug_round_trip_restore.png",
+      "mean": [
+        5.0,
+        5.0,
+        5.0
+      ]
+    },
+    {
+      "mode": "DEBUG_REVIEW",
+      "file": "11_v0301_debug_no_duplicate_markers.png",
+      "mean": [
+        5.0,
+        5.0,
+        5.0
+      ]
+    },
+    {
+      "mode": "DEBUG_REVIEW",
+      "file": "12_v0301_debug_no_duplicate_route.png",
+      "mean": [
+        5.0,
+        5.0,
+        5.0
+      ]
+    },
+    {
+      "mode": "DEBUG_REVIEW",
+      "file": "13_v0301_debug_no_duplicate_support.png",
+      "mean": [
+        5.0,
+        5.0,
+        5.0
+      ]
+    },
+    {
+      "mode": "DEBUG_REVIEW",
+      "file": "14_v0301_debug_no_duplicate_integration.png",
+      "mean": [
+        5.0,
+        5.0,
+        5.0
+      ]
+    },
+    {
+      "mode": "DEBUG_REVIEW",
+      "file": "15_v0301_debug_card_unchanged.png",
+      "mean": [
+        5.0,
+        5.0,
+        5.0
+      ]
+    },
+    {
+      "mode": "DEBUG_REVIEW",
+      "file": "16_v0301_debug_top_strip_unchanged.png",
+      "mean": [
+        5.0,
+        5.0,
+        5.0
+      ]
+    },
+    {
+      "mode": "DEBUG_REVIEW",
+      "file": "17_v0301_debug_pressure_unchanged.png",
+      "mean": [
+        5.0,
+        5.0,
+        5.0
+      ]
+    },
+    {
+      "mode": "DEBUG_REVIEW",
+      "file": "18_v0301_debug_units_unchanged.png",
+      "mean": [
+        5.0,
+        5.0,
+        5.0
+      ]
+    },
+    {
+      "mode": "DEBUG_REVIEW",
+      "file": "19_v0301_debug_resources_unchanged.png",
+      "mean": [
+        5.0,
+        5.0,
+        5.0
+      ]
+    },
+    {
+      "mode": "DEBUG_REVIEW",
+      "file": "20_v0301_debug_minimap.png",
+      "mean": [
+        5.0,
+        5.0,
+        5.0
+      ]
+    },
+    {
+      "mode": "DEBUG_REVIEW",
+      "file": "21_v0301_debug_hud_no_overlap.png",
+      "mean": [
+        5.0,
+        5.0,
+        5.0
+      ]
+    },
+    {
+      "mode": "DEBUG_REVIEW",
+      "file": "22_v0301_debug_no_raw_validator.png",
+      "mean": [
+        5.0,
+        5.0,
+        5.0
+      ]
+    },
+    {
+      "mode": "DEBUG_REVIEW",
+      "file": "23_v0301_debug_no_mutation.png",
+      "mean": [
+        5.0,
+        5.0,
+        5.0
+      ]
+    },
+    {
+      "mode": "DEBUG_REVIEW",
+      "file": "24_v0301_debug_no_forbidden_systems.png",
+      "mean": [
+        5.0,
+        5.0,
+        5.0
+      ]
+    }
+  ],
+  "rejectedBlackFrames": [
+    {
+      "mode": "PLAYER",
+      "file": "01_v0301_player_clean_baseline.png",
+      "mean": [
+        5.0,
+        5.0,
+        5.0
+      ]
+    },
+    {
+      "mode": "PLAYER",
+      "file": "02_v0301_player_bridge_clean.png",
+      "mean": [
+        5.0,
+        5.0,
+        5.0
+      ]
+    },
+    {
+      "mode": "PLAYER",
+      "file": "03_v0301_player_barracks_clean.png",
+      "mean": [
+        5.0,
+        5.0,
+        5.0
+      ]
+    },
+    {
+      "mode": "PLAYER",
+      "file": "04_v0301_player_support_card.png",
+      "mean": [
+        5.0,
+        5.0,
+        5.0
+      ]
+    },
+    {
+      "mode": "PLAYER",
+      "file": "05_v0301_player_defender_card.png",
+      "mean": [
+        5.0,
+        5.0,
+        5.0
+      ]
+    },
+    {
+      "mode": "PLAYER",
+      "file": "06_v0301_player_barracks_card.png",
+      "mean": [
+        5.0,
+        5.0,
+        5.0
+      ]
+    },
+    {
+      "mode": "PLAYER",
+      "file": "07_v0301_player_top_strip.png",
+      "mean": [
+        5.0,
+        5.0,
+        5.0
+      ]
+    },
+    {
+      "mode": "PLAYER",
+      "file": "08_v0301_player_no_historical_stack.png",
+      "mean": [
+        5.0,
+        5.0,
+        5.0
+      ]
+    },
+    {
+      "mode": "PLAYER",
+      "file": "09_v0301_player_no_validator_text.png",
+      "mean": [
+        5.0,
+        5.0,
+        5.0
+      ]
+    },
+    {
+      "mode": "PLAYER",
+      "file": "10_v0301_player_to_debug_round_trip.png",
+      "mean": [
+        5.0,
+        5.0,
+        5.0
+      ]
+    },
+    {
+      "mode": "PLAYER",
+      "file": "11_v0301_player_debug_to_player_round_trip.png",
+      "mean": [
+        5.0,
+        5.0,
+        5.0
+      ]
+    },
+    {
+      "mode": "PLAYER",
+      "file": "12_v0301_player_restored.png",
+      "mean": [
+        5.0,
+        5.0,
+        5.0
+      ]
+    },
+    {
+      "mode": "PLAYER",
+      "file": "13_v0301_player_no_duplicate_markers.png",
+      "mean": [
+        5.0,
+        5.0,
+        5.0
+      ]
+    },
+    {
+      "mode": "PLAYER",
+      "file": "14_v0301_player_no_duplicate_route.png",
+      "mean": [
+        5.0,
+        5.0,
+        5.0
+      ]
+    },
+    {
+      "mode": "PLAYER",
+      "file": "15_v0301_player_no_duplicate_support.png",
+      "mean": [
+        5.0,
+        5.0,
+        5.0
+      ]
+    },
+    {
+      "mode": "PLAYER",
+      "file": "16_v0301_player_no_duplicate_integration.png",
+      "mean": [
+        5.0,
+        5.0,
+        5.0
+      ]
+    },
+    {
+      "mode": "PLAYER",
+      "file": "17_v0301_player_card_unchanged.png",
+      "mean": [
+        5.0,
+        5.0,
+        5.0
+      ]
+    },
+    {
+      "mode": "PLAYER",
+      "file": "18_v0301_player_top_strip_unchanged.png",
+      "mean": [
+        5.0,
+        5.0,
+        5.0
+      ]
+    },
+    {
+      "mode": "PLAYER",
+      "file": "19_v0301_player_pressure_unchanged.png",
+      "mean": [
+        5.0,
+        5.0,
+        5.0
+      ]
+    },
+    {
+      "mode": "PLAYER",
+      "file": "20_v0301_player_units_unchanged.png",
+      "mean": [
+        5.0,
+        5.0,
+        5.0
+      ]
+    },
+    {
+      "mode": "PLAYER",
+      "file": "21_v0301_player_resources_unchanged.png",
+      "mean": [
+        5.0,
+        5.0,
+        5.0
+      ]
+    },
+    {
+      "mode": "PLAYER",
+      "file": "22_v0301_player_minimap.png",
+      "mean": [
+        5.0,
+        5.0,
+        5.0
+      ]
+    },
+    {
+      "mode": "PLAYER",
+      "file": "23_v0301_player_hud_no_overlap.png",
+      "mean": [
+        5.0,
+        5.0,
+        5.0
+      ]
+    },
+    {
+      "mode": "PLAYER",
+      "file": "24_v0301_player_no_gameplay_mutation.png",
+      "mean": [
+        5.0,
+        5.0,
+        5.0
+      ]
+    },
+    {
+      "mode": "DEBUG_REVIEW",
+      "file": "01_v0301_debug_bridge_labels.png",
+      "mean": [
+        5.0,
+        5.0,
+        5.0
+      ]
+    },
+    {
+      "mode": "DEBUG_REVIEW",
+      "file": "02_v0301_debug_barracks_labels.png",
+      "mean": [
+        5.0,
+        5.0,
+        5.0
+      ]
+    },
+    {
+      "mode": "DEBUG_REVIEW",
+      "file": "03_v0301_debug_route.png",
+      "mean": [
+        5.0,
+        5.0,
+        5.0
+      ]
+    },
+    {
+      "mode": "DEBUG_REVIEW",
+      "file": "04_v0301_debug_support.png",
+      "mean": [
+        5.0,
+        5.0,
+        5.0
+      ]
+    },
+    {
+      "mode": "DEBUG_REVIEW",
+      "file": "05_v0301_debug_integration.png",
+      "mean": [
+        5.0,
+        5.0,
+        5.0
+      ]
+    },
+    {
+      "mode": "DEBUG_REVIEW",
+      "file": "06_v0301_debug_pressure.png",
+      "mean": [
+        5.0,
+        5.0,
+        5.0
+      ]
+    },
+    {
+      "mode": "DEBUG_REVIEW",
+      "file": "07_v0301_debug_marker_nodes.png",
+      "mean": [
+        5.0,
+        5.0,
+        5.0
+      ]
+    },
+    {
+      "mode": "DEBUG_REVIEW",
+      "file": "08_v0301_debug_player_to_debug.png",
+      "mean": [
+        5.0,
+        5.0,
+        5.0
+      ]
+    },
+    {
+      "mode": "DEBUG_REVIEW",
+      "file": "09_v0301_debug_debug_to_player.png",
+      "mean": [
+        5.0,
+        5.0,
+        5.0
+      ]
+    },
+    {
+      "mode": "DEBUG_REVIEW",
+      "file": "10_v0301_debug_round_trip_restore.png",
+      "mean": [
+        5.0,
+        5.0,
+        5.0
+      ]
+    },
+    {
+      "mode": "DEBUG_REVIEW",
+      "file": "11_v0301_debug_no_duplicate_markers.png",
+      "mean": [
+        5.0,
+        5.0,
+        5.0
+      ]
+    },
+    {
+      "mode": "DEBUG_REVIEW",
+      "file": "12_v0301_debug_no_duplicate_route.png",
+      "mean": [
+        5.0,
+        5.0,
+        5.0
+      ]
+    },
+    {
+      "mode": "DEBUG_REVIEW",
+      "file": "13_v0301_debug_no_duplicate_support.png",
+      "mean": [
+        5.0,
+        5.0,
+        5.0
+      ]
+    },
+    {
+      "mode": "DEBUG_REVIEW",
+      "file": "14_v0301_debug_no_duplicate_integration.png",
+      "mean": [
+        5.0,
+        5.0,
+        5.0
+      ]
+    },
+    {
+      "mode": "DEBUG_REVIEW",
+      "file": "15_v0301_debug_card_unchanged.png",
+      "mean": [
+        5.0,
+        5.0,
+        5.0
+      ]
+    },
+    {
+      "mode": "DEBUG_REVIEW",
+      "file": "16_v0301_debug_top_strip_unchanged.png",
+      "mean": [
+        5.0,
+        5.0,
+        5.0
+      ]
+    },
+    {
+      "mode": "DEBUG_REVIEW",
+      "file": "17_v0301_debug_pressure_unchanged.png",
+      "mean": [
+        5.0,
+        5.0,
+        5.0
+      ]
+    },
+    {
+      "mode": "DEBUG_REVIEW",
+      "file": "18_v0301_debug_units_unchanged.png",
+      "mean": [
+        5.0,
+        5.0,
+        5.0
+      ]
+    },
+    {
+      "mode": "DEBUG_REVIEW",
+      "file": "19_v0301_debug_resources_unchanged.png",
+      "mean": [
+        5.0,
+        5.0,
+        5.0
+      ]
+    },
+    {
+      "mode": "DEBUG_REVIEW",
+      "file": "20_v0301_debug_minimap.png",
+      "mean": [
+        5.0,
+        5.0,
+        5.0
+      ]
+    },
+    {
+      "mode": "DEBUG_REVIEW",
+      "file": "21_v0301_debug_hud_no_overlap.png",
+      "mean": [
+        5.0,
+        5.0,
+        5.0
+      ]
+    },
+    {
+      "mode": "DEBUG_REVIEW",
+      "file": "22_v0301_debug_no_raw_validator.png",
+      "mean": [
+        5.0,
+        5.0,
+        5.0
+      ]
+    },
+    {
+      "mode": "DEBUG_REVIEW",
+      "file": "23_v0301_debug_no_mutation.png",
+      "mean": [
+        5.0,
+        5.0,
+        5.0
+      ]
+    },
+    {
+      "mode": "DEBUG_REVIEW",
+      "file": "24_v0301_debug_no_forbidden_systems.png",
+      "mean": [
+        5.0,
+        5.0,
+        5.0
+      ]
+    }
+  ]
+}

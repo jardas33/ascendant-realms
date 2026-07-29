@@ -1,0 +1,60 @@
+{
+  "accepted": true,
+  "cameraCoordinates": {
+    "x": 0.0,
+    "y": 11.6,
+    "z": 8.9
+  },
+  "cameraZoom": 10.8,
+  "captureFilename": "player_01_militia_idle.png",
+  "fallbackFlag": false,
+  "frameNumber": 1,
+  "gameplayMutation": false,
+  "h3Flag": true,
+  "lastOrder": "none",
+  "note": "authoritative idle",
+  "pairedViewId": "v0313-militia_idle",
+  "perceptualHash": "0f7f0b3ffb07e9a7fb37ffffff7fff27ff8ffe6fff738001fa25076d077107f1",
+  "playerDebugClassification": "player",
+  "presentationMode": "PLAYER",
+  "rejected": false,
+  "rejectionReason": null,
+  "runtimeTimestampMs": 10933,
+  "saveIdentifier": null,
+  "scenario": "militia_idle",
+  "screenshotSha256": "d7004f45c5bc33e95fb9b662ee3f1636a7052343157932c3a59f70334163bb55",
+  "selectedIds": [],
+  "semanticEventId": "v0313-militia_idle",
+  "stableUnitIds": [
+    "friendly_00"
+  ],
+  "stateSource": "runtime.units",
+  "units": [
+    {
+      "activityState": "idle",
+      "commandState": "idle",
+      "destination": {
+        "x": 405.0,
+        "y": 315.0
+      },
+      "facing": "south-east",
+      "hasDestination": false,
+      "id": "friendly_00",
+      "orderState": "none",
+      "position": {
+        "x": 405.0,
+        "y": 315.0
+      },
+      "readyState": "unsupported",
+      "role": "Militia"
+    }
+  ],
+  "mode": "PLAYER",
+  "sourceDirectory": "player",
+  "packFilename": "player_01_militia_idle.png",
+  "physicalBytes": 183125,
+  "pixelDimensions": [
+    1920,
+    1009
+  ]
+}

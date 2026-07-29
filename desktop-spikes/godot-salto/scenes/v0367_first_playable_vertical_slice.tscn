@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/v0367_first_playable_vertical_slice.gd" id="1_v0367"]
+
+[node name="V0367FirstPlayableVerticalSlice" type="Node3D"]
+script = ExtResource("1_v0367")

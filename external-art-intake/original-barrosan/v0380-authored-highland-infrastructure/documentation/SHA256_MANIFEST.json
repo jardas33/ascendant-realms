@@ -1,0 +1,6 @@
+{
+  "sha256": {
+    "source/generate_v0380_highland_infrastructure.py": "4b8eafeac69f16a87bd6899a69ab6c6bb8cb5d49103c5ba9cb3da325f38f3e19",
+    "exports/barrosan_highland_infrastructure_v0380.glb": "746b27eb0e0d52470ce090cf58b7e8515ffa900267d5479649e105262afcd5fb"
+  }
+}

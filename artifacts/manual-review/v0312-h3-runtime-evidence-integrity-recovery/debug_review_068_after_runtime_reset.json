@@ -1,0 +1,74 @@
+{
+  "authoritativeUnitIds": [
+    "worker_00",
+    "friendly_00"
+  ],
+  "cameraWorldPosition": {
+    "x": 0.0,
+    "y": 11.6,
+    "z": 8.9
+  },
+  "cameraZoom": 10.8000001907349,
+  "captureFilename": "068_after_runtime_reset.png",
+  "fallbackState": false,
+  "frameNumber": 68,
+  "h3Enabled": true,
+  "h3FlagState": true,
+  "note": "runtime reset before load",
+  "pairedMomentId": "save_write_reload_68",
+  "pixelEvidenceRequired": true,
+  "presentationMode": "DEBUG_REVIEW",
+  "previousRelatedScreenshotSha256": "11674555ba9f58afe7d0f54a53f332f6f09046809dc1a531ab923781c56f183b",
+  "runtimeTimestampMs": 69762,
+  "saveChecksum": "9680dbaaf5a7eea9c6945280f6e49845f4e5505ea8a176c009dc2282a618b653",
+  "saveIdentifier": "user://v0312-h3-runtime-save.json",
+  "scenarioName": "save_write_reload",
+  "screenshotSha256": "957e99e7fb81d218e36f41eb6a4148c12d82240b785130ebb9cc6b6dd6c40f1d",
+  "selectedIds": [],
+  "selectionSource": "authoritative runtime.selected_ids",
+  "semanticAccepted": true,
+  "stateSource": "authoritative runtime.units",
+  "units": [
+    {
+      "activityState": "idle",
+      "alive": true,
+      "commandState": "idle",
+      "destination": {
+        "x": 265.0,
+        "y": 370.0
+      },
+      "facing": "south-east",
+      "fixtureId": "worker",
+      "hasDestination": false,
+      "health": 80.0,
+      "id": "worker_00",
+      "readyState": "unsupported",
+      "role": "Worker",
+      "worldPosition": {
+        "x": 265.0,
+        "y": 370.0
+      }
+    },
+    {
+      "activityState": "idle",
+      "alive": true,
+      "commandState": "idle",
+      "destination": {
+        "x": 405.0,
+        "y": 315.0
+      },
+      "facing": "south-east",
+      "fixtureId": "militia",
+      "hasDestination": false,
+      "health": 100.0,
+      "id": "friendly_00",
+      "readyState": "unsupported",
+      "role": "Militia",
+      "worldPosition": {
+        "x": 405.0,
+        "y": 315.0
+      }
+    }
+  ],
+  "visualPoseLimitation": false
+}

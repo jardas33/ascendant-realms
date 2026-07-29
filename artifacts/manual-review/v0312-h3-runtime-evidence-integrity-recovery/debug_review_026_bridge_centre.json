@@ -1,0 +1,54 @@
+{
+  "authoritativeUnitIds": [
+    "friendly_00"
+  ],
+  "cameraWorldPosition": {
+    "x": 0.0,
+    "y": 11.6,
+    "z": 8.9
+  },
+  "cameraZoom": 10.8000001907349,
+  "captureFilename": "026_bridge_centre.png",
+  "fallbackState": false,
+  "frameNumber": 26,
+  "h3Enabled": true,
+  "h3FlagState": true,
+  "note": "same stable ID bridge progression",
+  "pairedMomentId": "militia_bridge_26",
+  "pixelEvidenceRequired": true,
+  "presentationMode": "DEBUG_REVIEW",
+  "previousRelatedScreenshotSha256": "f1a651eec3869b1340c61f0f021f64b875864086c214ccb92001b8c0a98ef80f",
+  "runtimeTimestampMs": 27925,
+  "saveIdentifier": null,
+  "scenarioName": "militia_bridge",
+  "screenshotSha256": "d4415029d9bfebe92ad0ad529653311ce6e3976732ca3e212c61a0a6a3d15e89",
+  "selectedIds": [
+    "friendly_00"
+  ],
+  "selectionSource": "authoritative runtime.selected_ids",
+  "semanticAccepted": true,
+  "stateSource": "authoritative runtime.units",
+  "units": [
+    {
+      "activityState": "travelling",
+      "alive": true,
+      "commandState": "move_ordered",
+      "destination": {
+        "x": 1100.0,
+        "y": 524.0
+      },
+      "facing": "east",
+      "fixtureId": "militia",
+      "hasDestination": true,
+      "health": 100.0,
+      "id": "friendly_00",
+      "readyState": "unsupported",
+      "role": "Militia",
+      "worldPosition": {
+        "x": 1008.31,
+        "y": 496.43
+      }
+    }
+  ],
+  "visualPoseLimitation": false
+}

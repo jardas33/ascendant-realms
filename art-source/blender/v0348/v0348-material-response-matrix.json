@@ -1,0 +1,9 @@
+{
+  "normal": "rough non-metallic slate with restrained normal",
+  "normalDisabled": "capture variant required",
+  "albedoOnly": "capture variant required",
+  "roughnessIsolation": "capture variant required",
+  "neutralOvercast": true,
+  "coolDaylight": true,
+  "warmDirectional": true
+}

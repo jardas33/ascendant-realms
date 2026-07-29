@@ -1,0 +1,54 @@
+{
+  "authoritativeUnitIds": [
+    "worker_00"
+  ],
+  "cameraWorldPosition": {
+    "x": 0.0,
+    "y": 11.6,
+    "z": 8.9
+  },
+  "cameraZoom": 10.8000001907349,
+  "captureFilename": "022_beyond_bridge.png",
+  "fallbackState": false,
+  "frameNumber": 22,
+  "h3Enabled": true,
+  "h3FlagState": true,
+  "note": "same stable ID bridge progression",
+  "pairedMomentId": "worker_bridge_22",
+  "pixelEvidenceRequired": true,
+  "presentationMode": "PLAYER",
+  "previousRelatedScreenshotSha256": "8813978efbb05eeaaca1a0d027ac2786c9af864c75376fc726b0e2c487ad8f26",
+  "runtimeTimestampMs": 24632,
+  "saveIdentifier": null,
+  "scenarioName": "worker_bridge",
+  "screenshotSha256": "9b51fe0e900abbafba5cc5bd98f57ef5953d53ff3cbedc04685363cf1dd61b5f",
+  "selectedIds": [
+    "worker_00"
+  ],
+  "selectionSource": "authoritative runtime.selected_ids",
+  "semanticAccepted": true,
+  "stateSource": "authoritative runtime.units",
+  "units": [
+    {
+      "activityState": "idle",
+      "alive": true,
+      "commandState": "stopped",
+      "destination": {
+        "x": 1100.0,
+        "y": 524.0
+      },
+      "facing": "east",
+      "fixtureId": "worker",
+      "hasDestination": false,
+      "health": 80.0,
+      "id": "worker_00",
+      "readyState": "unsupported",
+      "role": "Worker",
+      "worldPosition": {
+        "x": 1100.0,
+        "y": 524.0
+      }
+    }
+  ],
+  "visualPoseLimitation": false
+}

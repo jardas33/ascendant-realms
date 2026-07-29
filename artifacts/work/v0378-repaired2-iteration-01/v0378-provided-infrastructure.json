@@ -1,0 +1,15 @@
+{
+  "buildings": false,
+  "checkpoint": "v0.378",
+  "defaultRuntime": "unchanged",
+  "gameplay": false,
+  "glbSha256": "91cf29f5a964cf6b43f67fd1f9ac98d3bd6d3ea27623bb313479d362deef7e88",
+  "iteration": 1,
+  "prototype": "external-art-intake/original-barrosan/v0378-authored-infrastructure/exports/barrosan_infrastructure_v0378.glb",
+  "resolution": "1920x1080",
+  "route": "opt-in-only",
+  "stage": "stage-1-provided-terrain-road-riverbanks-bridge",
+  "status": "RENDERED",
+  "suppliedGeometry": true,
+  "units": false
+}

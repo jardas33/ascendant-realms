@@ -1,0 +1,14 @@
+{
+  "bridge": "unchanged",
+  "camera": "unchanged",
+  "checkpoint": "v0.398",
+  "contactHalos": "removed",
+  "defaultRuntime": "unchanged",
+  "gameplay": false,
+  "grayscale": true,
+  "priorVerdict": "v0397-REVISE-ONCE",
+  "routeGeometry": "v0396-preserved",
+  "routeTreatment": "narrow-low-opacity-edge-bedding",
+  "status": "RENDERED",
+  "terrain": "unchanged"
+}

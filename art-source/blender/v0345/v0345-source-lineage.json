@@ -1,0 +1,19 @@
+{
+  "checkpoint": "v0.345",
+  "derivedFrom": "art-source/blender/v0344/barn_front_granite_roof_edge_visual_preflight.blend",
+  "copiedV0344Source": "art-source/blender/v0345/v0344_source_duplicate_for_v0345.blend",
+  "copiedV0344SourceSha256": "d63a8364f3edb10d20926a45dd52a41c8d0b8042fe707cf2aae267fbc63ac198",
+  "v0344BlendSha256": "d63a8364f3edb10d20926a45dd52a41c8d0b8042fe707cf2aae267fbc63ac198",
+  "v0344GLBSha256": "76cd62330d4cb4073469fe51e510557d93dcc0d9a07e9f234a539561abda7015",
+  "frozenHouse02BlendSha256": "3da7c2cf71509e07c900001fd0b277e9af4584a074552ac1d929a4f37e0d78b6",
+  "frozenHouse02GLBSha256": "ceab23ff3cfb580cc63ce917ec1ff675a1cd318f8fe3390fc836166015ebba89",
+  "v0343BlendSha256": "ecb268c7a4f69c914951a0dbd9494fb332003566073b2311b47a348ba9f831e9",
+  "v0343GLBSha256": "d4d780510b1812e7e4f082f24dfee049ab21f905acbaaeaa4f54d6f67b4118b9",
+  "finalBlendSha256": "f620e472cfbac2f0800f07e8e1bc4e840eccada971fedd5776268986c74c34ba",
+  "finalGLBSha256": "14df5b448db8257b695b00716ec6d3999f75a26ebe6cc03bd4e313399a53058c",
+  "v0344Untouched": true,
+  "v0343Untouched": true,
+  "house02Untouched": true,
+  "noV0341VisibleDependency": true,
+  "noV0342VisibleDependency": true
+}

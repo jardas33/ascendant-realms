@@ -1,0 +1,25 @@
+﻿{
+    "checkpoint":  "v0.351",
+    "outcome":  "READY FOR HUMAN V0351 BARN GOLD-CLOSEOUT REVIEW",
+    "automatedVisualApproval":  false,
+    "humanReviewRequired":  true,
+    "frozenV0350MaterialBaseline":  true,
+    "frozenV0350RoofHashes":  true,
+    "frozenV0350SharedLight":  true,
+    "upperOpeningExteriorDimensions":  {
+                                           "height":  0.92,
+                                           "width":  3.32
+                                       },
+    "shutterLeafCount":  2,
+    "shutterPrimaryBoardOrientation":  "vertical",
+    "lowerUpperAreaRatio":  3.64,
+    "foundationContactMethod":  "coplanar contact shadow plus irregular bounded door soil stain; no floating blocks",
+    "playerEvidenceDebrisCount":  0,
+    "completeWorkerCount":  2,
+    "rawCaptureCount":  16,
+    "exactTenFiles":  true,
+    "exactlyEightPng":  true,
+    "noVideo":  true,
+    "noDefaultRuntimeIntegration":  true,
+    "noGameplay":  true
+}

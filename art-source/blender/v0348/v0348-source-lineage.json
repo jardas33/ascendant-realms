@@ -1,0 +1,11 @@
+{
+  "checkpoint": "v0.348",
+  "derivedFrom": "v0.347",
+  "v0347BlendSha256": "e5c8c9d561fc921f97a971110b34b706ed8dbd1824e4e451addab2ac1573a69a",
+  "v0347GLBSha256": "0b4944d8a15006664dad84cec5e8b41546497588d14194d5b2e49621071e209c",
+  "house02BlendSha256": "3da7c2cf71509e07c900001fd0b277e9af4584a074552ac1d929a4f37e0d78b6",
+  "geometryUnchanged": true,
+  "primaryGeometryHash": "842932490cd0065d49e21c74b61924faa256603a051fa69cef918ca652d9231a",
+  "defaultRuntimeIntegrated": false,
+  "humanApprovalRequired": true
+}

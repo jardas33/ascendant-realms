@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource path="res://scripts/v0355_barrosan_barn_human_gold_lock.gd" type="Script" id="1_v0355"]
+
+[node name="V0355BarrosanBarnHumanGoldLock" type="Node3D"]
+script = ExtResource("1_v0355")

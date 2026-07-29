@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/v0376_original_barrosan_art_quality_pass.gd" id="1_v0376"]
+
+[node name="V0376OriginalBarrosanArtQualityPass" type="Node3D"]
+script = ExtResource("1_v0376")

@@ -1,0 +1,24 @@
+{
+  "status": "PASS_V0313_H3_SUPPORTED_STATE_CONTRACT_VALIDATION",
+  "errors": [],
+  "v0312": {
+    "physical": 154,
+    "player": 77,
+    "debug": 77,
+    "paired": 77,
+    "uniqueSha256": 127,
+    "acceptedRecords": 128,
+    "acceptedGameplayEvents": 62,
+    "rejectedExactDuplicates": 26,
+    "perceptuallyUnique": 48
+  },
+  "focusedV0313": {
+    "physical": 34,
+    "paired": 17,
+    "semanticEvents": 17,
+    "compactUploadFiles": 14
+  },
+  "holdClassification": "not applicable",
+  "finalDecision": "ACCEPT H3 RUNTIME INTEGRATION METHOD FOR CURRENT SUPPORTED STATES",
+  "scaleLock": "CURRENT"
+}

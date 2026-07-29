@@ -1,0 +1,22 @@
+{
+  "overallScore": 79,
+  "visualVerdict": "revise once",
+  "recommendation": "proceed with Route C after one contained water/material and unit-billboard refinement pass",
+  "scores": {
+    "attractiveness": 78,
+    "historicalTargetCloseness": 70,
+    "rtsReadability": 87,
+    "terrainCredibility": 82,
+    "bridgeCredibility": 88,
+    "buildingVolume": 90,
+    "unitReadability": 68,
+    "lightingShadows": 82,
+    "barrosanIdentity": 78,
+    "technicalFeasibility": 86,
+    "maintainability": 85,
+    "performanceRisk": 82,
+    "assetBurden": 90,
+    "animationBurden": 92,
+    "fullSaltoSuitability": 78
+  }
+}

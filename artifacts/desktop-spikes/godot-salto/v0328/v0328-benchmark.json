@@ -1,0 +1,22 @@
+{
+  "averageFps": 74.9740702178152,
+  "cameraMode": "static orthographic RTS",
+  "debugOverlaysEnabled": false,
+  "drawCalls": 8,
+  "materialSwitches": 8,
+  "maximumFrameTimeMs": 18.466,
+  "measurementSeconds": 20.006917,
+  "medianFps": 74.9793806703157,
+  "medianFrameTimeMs": 13.337,
+  "minimumFps": 54.1535795516084,
+  "onePercentLowFps": 73.2064421669107,
+  "percentile99FrameTimeMs": 13.66,
+  "renderObjects": 8,
+  "repeatedSpikeCountAbove50ms": 0,
+  "sampleCount": 1500,
+  "screenshotDumpingEnabled": false,
+  "videoEncodingEnabled": false,
+  "visibleTriangles": 13096,
+  "warmupSeconds": 5.0,
+  "zeroPointOnePercentLowFps": 54.1535795516084
+}

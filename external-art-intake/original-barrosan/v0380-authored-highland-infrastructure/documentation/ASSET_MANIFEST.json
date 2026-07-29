@@ -1,0 +1,28 @@
+{
+  "name": "barrosan_highland_infrastructure_v0380",
+  "seed": 380,
+  "units": "metres",
+  "up_axis": "Y",
+  "source": "source/generate_v0380_highland_infrastructure.py",
+  "export": "exports/barrosan_highland_infrastructure_v0380.glb",
+  "source_sha256": "4b8eafeac69f16a87bd6899a69ab6c6bb8cb5d49103c5ba9cb3da325f38f3e19",
+  "glb_sha256": "746b27eb0e0d52470ce090cf58b7e8515ffa900267d5479649e105262afcd5fb",
+  "scope": [
+    "terrain",
+    "embedded-road",
+    "continuous-recessed-river",
+    "wet-banks",
+    "bridge",
+    "rocks",
+    "reeds",
+    "shrubs"
+  ],
+  "critical_fixes": [
+    "explicit-vertex-normals",
+    "consistent-triangulation",
+    "continuous-water-under-bridge",
+    "river-protected-road-grading",
+    "narrower-road",
+    "darker-palette"
+  ]
+}

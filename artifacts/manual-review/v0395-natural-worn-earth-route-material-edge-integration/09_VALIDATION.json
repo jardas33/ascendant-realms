@@ -1,0 +1,13 @@
+{
+  "checkpoint": "v0.395",
+  "status": "READY FOR INDEPENDENT V0395 VISUAL REVIEW",
+  "evidence": "real-rendered",
+  "resolution": "1920x1080",
+  "baseline": "v0.394 accepted route topology",
+  "routeTopology": "western bridge landing -> working yard -> house doorway, with barn branch",
+  "material": "compacted warm worn earth, darker than terrain, not black",
+  "widthProfile": "narrow transitions, controlled working-yard widening",
+  "gameplay": false,
+  "defaultRuntime": "unchanged",
+  "independentVerdict": null
+}

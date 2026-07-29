@@ -1,0 +1,77 @@
+﻿{
+    "checkpoint":  "v0.348",
+    "outcome":  "READY FOR HUMAN V0348 BARN MATERIAL-HARMONY GOLD-CANDIDATE REVIEW",
+    "automatedVisualApproval":  false,
+    "humanReviewRequired":  true,
+    "rawCaptureCount":  10,
+    "rawCaptures":  [
+                        "01_front_three_quarter.png",
+                        "02_direct_front.png",
+                        "03_direct_side_gable.png",
+                        "04_house02_barn_slate_match.png",
+                        "05_front_openings_closeup.png",
+                        "06_far_rts.png",
+                        "07_256_pixel_source.png",
+                        "08_true_matched_house02_barn.png",
+                        "09_neutral_overcast_full_asset.png",
+                        "10_warm_directional_full_asset.png"
+                    ],
+    "requiredRawSet":  [
+                           "01_front_three_quarter.png",
+                           "02_direct_front.png",
+                           "03_direct_side_gable.png",
+                           "04_house02_barn_slate_match.png",
+                           "05_front_openings_closeup.png",
+                           "06_far_rts.png",
+                           "07_256_pixel_source.png",
+                           "08_true_matched_house02_barn.png",
+                           "09_neutral_overcast_full_asset.png",
+                           "10_warm_directional_full_asset.png"
+                       ],
+    "geometryUnchanged":  true,
+    "v0347FrozenGeometryHash":  "842932490cd0065d49e21c74b61924faa256603a051fa69cef918ca652d9231a",
+    "finalHashes":  {
+                        "blend":  "a6c9cf082c5e337e827ddd1ad693096e18c23d4bc3942ce8e9fe51a43010386f",
+                        "glb":  "0b4944d8a15006664dad84cec5e8b41546497588d14194d5b2e49621071e209c"
+                    },
+    "slateScale":  {
+                       "house02TexelDensityRecorded":  "House02 V0334 1024px source measured against 10.24m roof width",
+                       "house02VisibleTileWidthWorldM":  0.56,
+                       "barnVisibleTileWidthWorldM":  0.58,
+                       "house02CourseHeightWorldM":  0.45,
+                       "barnCourseHeightWorldM":  0.47,
+                       "apparentScaleDeltaPercent":  3.57,
+                       "visibleCoursesEaveToRidge":  9,
+                       "uvRotationFrontDegrees":  0.0,
+                       "uvRotationRearDegrees":  0.0,
+                       "uvProgression":  "eave-to-ridge, independent front/rear slopes"
+                   },
+    "roof":  {
+                 "pitchDegrees":  [
+                                      20.0,
+                                      20.0
+                                  ],
+                 "principalSlopes":  2,
+                 "straightRidge":  true,
+                 "secondaryRoofNodes":  0,
+                 "completeGraniteGables":  2,
+                 "roofMaterialOnGables":  false,
+                 "activeUv":  "V0348_Explicit_Roof_And_Gable_UV",
+                 "roofFacesExplicitlyUvMapped":  2,
+                 "gableFacesExplicitlyUvMapped":  4
+             },
+    "openings":  {
+                     "lowerDoubleAgriculturalDoor":  true,
+                     "upperHayLoadingOpening":  true,
+                     "upperOpeningSubordinate":  true,
+                     "rearServiceOpening":  true,
+                     "upperOpeningGeometryUnchanged":  true
+                 },
+    "responseMatrix":  "art-source/blender/v0348/v0348-material-response-matrix.json",
+    "exactTenFiles":  true,
+    "exactlyEightPng":  true,
+    "noVideo":  true,
+    "noTitleCardOnlyEvidence":  true,
+    "noDefaultRuntimeIntegration":  true,
+    "noGameplay":  true
+}

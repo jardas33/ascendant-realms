@@ -1,0 +1,61 @@
+{
+  "holdAudit": {
+    "adapterDefect": false,
+    "authoritativeRuntimeMethod": "issue_move_order",
+    "authoritativeStateAfter": {
+      "activityState": "travelling",
+      "commandState": "move_ordered",
+      "destination": {
+        "x": 770.0,
+        "y": 430.0
+      },
+      "facing": "east",
+      "hasDestination": true,
+      "id": "friendly_00",
+      "orderState": "destination_set",
+      "position": {
+        "x": 405.0,
+        "y": 315.0
+      },
+      "readyState": "unsupported",
+      "role": "Militia"
+    },
+    "authoritativeStateBefore": {
+      "activityState": "idle",
+      "commandState": "idle",
+      "destination": {
+        "x": 405.0,
+        "y": 315.0
+      },
+      "facing": "south-east",
+      "hasDestination": false,
+      "id": "friendly_00",
+      "orderState": "none",
+      "position": {
+        "x": 405.0,
+        "y": 315.0
+      },
+      "readyState": "unsupported",
+      "role": "Militia"
+    },
+    "classification": "not applicable",
+    "distinctReadyStateExists": false,
+    "exactClassification": "MILITIA READY VISUAL STATE: NOT APPLICABLE — NO AUTHORITATIVE GAMEPLAY STATE EXISTS",
+    "gameplayAdded": false,
+    "holdSemanticResult": "visible Hold currently aliases the existing move-order callback; no distinct Militia ready/hold gameplay state exists",
+    "selectedIdsAfter": [
+      "friendly_00"
+    ],
+    "selectedIdsBefore": [
+      "friendly_00"
+    ],
+    "stateChanged": true,
+    "uiCallback": "_on_live_ui_shell_move_pressed",
+    "uiCallbackReached": true,
+    "uiCommandPresent": true,
+    "uiLabel": "Hold",
+    "uiShortcut": "H"
+  },
+  "worker": "supported",
+  "militia": "idle/selected/unselected/moving/stopped supported; ready/hold not applicable"
+}

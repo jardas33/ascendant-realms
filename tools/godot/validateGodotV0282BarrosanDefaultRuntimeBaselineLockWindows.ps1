@@ -1,0 +1,6 @@
+param()
+$ErrorActionPreference = "Stop"
+Set-Location (Resolve-Path (Join-Path $PSScriptRoot "..\.."))
+node tools/godot/saltoV0282BarrosanDefaultRuntimeBaselineLockTool.mjs validation "--artifact-root=artifacts/desktop-spikes/godot-salto/v0282"
+if ($LASTEXITCODE -ne 0) { throw "FAIL_V0282_BARROSAN_DEFAULT_RUNTIME_BASELINE_LOCK_VALIDATION" }
+Write-Output "PASS_V0282_BARROSAN_DEFAULT_RUNTIME_BASELINE_LOCK_VALIDATION"

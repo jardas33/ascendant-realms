@@ -35,6 +35,9 @@ bundle-analysis/
 .DS_Store
 Thumbs.db
 
+# Blender keeps a transient save-backup beside authored sources during export.
+art-source/blender/**/*.blend1
+
 # Non-runtime art intake: track docs/templates/metadata, ignore raw candidate binaries by default.
 art-review/cinderfen-style-frames/inbox/*
 art-review/cinderfen-style-frames/reviewed/*

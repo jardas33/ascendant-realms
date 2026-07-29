@@ -1,0 +1,9 @@
+{
+  "albedoFirst": true,
+  "normalIntensity": 0.08,
+  "normalDisabledReadable": true,
+  "neutralOvercastPrimary": true,
+  "house02MatchTargetPercent": 10,
+  "foundationWeathering": "bounded lower-wall damp/soil response",
+  "edge": "subordinate charcoal"
+}

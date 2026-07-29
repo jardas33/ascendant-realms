@@ -1,0 +1,19 @@
+{
+  "bridge": "unchanged",
+  "camera": "unchanged",
+  "characters": "unchanged",
+  "checkpoint": "v0.399",
+  "contactShadow": "visible",
+  "defaultRuntime": "unchanged",
+  "eaves": "visible",
+  "entrance": "visible",
+  "gameplay": false,
+  "grayscale": true,
+  "layout": "unchanged",
+  "priorVerdict": "v0398-ACCEPTED",
+  "props": "unchanged",
+  "route": "v0398-preserved",
+  "scope": "left-subordinate-outbuilding-only",
+  "status": "RENDERED",
+  "walls": "visible"
+}

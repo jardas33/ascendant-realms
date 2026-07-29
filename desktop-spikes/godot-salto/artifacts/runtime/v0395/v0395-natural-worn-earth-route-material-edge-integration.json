@@ -1,0 +1,19 @@
+{
+  "bridgePreserved": true,
+  "buildingsPreserved": true,
+  "cameraPreserved": true,
+  "charactersPreserved": true,
+  "checkpoint": "v0.395",
+  "defaultRuntime": "unchanged",
+  "gameplay": false,
+  "iteration": 1,
+  "propsPreserved": true,
+  "resolution": "1920x1080",
+  "riverPreserved": true,
+  "route": "opt-in-only",
+  "routeMaterial": "compacted-warm-worn-earth",
+  "routeTopology": "v0394-preserved",
+  "routeValue": "darker-than-terrain-not-black",
+  "status": "RENDERED",
+  "widthProfile": "narrow-landings-wide-working-yard-narrow-door-and-branch"
+}

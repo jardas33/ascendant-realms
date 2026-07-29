@@ -1,0 +1,662 @@
+﻿{
+    "schemaVersion":  1,
+    "checkpoint":  "v0.359",
+    "captureDuplicationRootCause":  "v0.358 passed v0358-view arguments while the inherited parser read only v0357-view, so requested view changes were ignored before render; board composition then selected those duplicate raw files",
+    "duplicationWasInRawCaptures":  true,
+    "duplicationWasInBoardComposition":  true,
+    "correctedCaptureSequencing":  "v0359 parses v0359-view, applies camera transform, waits 8 rendered frames, then reads the viewport",
+    "panels":  [
+                   {
+                       "boardPanelId":  "authority_authority",
+                       "scenario":  "authority",
+                       "semanticPurpose":  "authority and one-slot DEBUG_REVIEW",
+                       "rawCapturePath":  "artifacts/runtime/v0359/authority/screenshots/authority.png",
+                       "rawCaptureSha256":  "7330660e56f0eda8f7607f00310c51471b31f9ccda4a82afd1f182ad7e652b3f",
+                       "cameraPosition":  {
+                                              "x":  -26.0,
+                                              "y":  16.0,
+                                              "z":  30.0
+                                          },
+                       "cameraTarget":  {
+                                            "x":  2.5,
+                                            "y":  1.0,
+                                            "z":  3.0
+                                        },
+                       "cameraRotation":  {
+                                              "x":  -20.9108734130859,
+                                              "y":  -46.548152923584,
+                                              "z":  0.0
+                                          },
+                       "projectionType":  "orthographic",
+                       "orthographicSize":  36.0,
+                       "viewportWidth":  1920,
+                       "viewportHeight":  1009,
+                       "sceneStateSignature":  "52287c9a3080798525d2be65aed26c008a9868d21d8194f54d8afe0aa36cd081",
+                       "barnRootCount":  1,
+                       "house02Count":  1,
+                       "frameNumberAfterCameraTransition":  7,
+                       "settleFrames":  8,
+                       "timestampSequence":  1
+                   },
+                   {
+                       "boardPanelId":  "baseline_baseline",
+                       "scenario":  "baseline",
+                       "semanticPurpose":  "shared House02 comparison baseline; not true default runtime",
+                       "rawCapturePath":  "artifacts/runtime/v0359/baseline/screenshots/baseline.png",
+                       "rawCaptureSha256":  "dca0980d8a3f1e3e2c12a7db72bccf212df68986289f5ae6ac55ca5b72f2143d",
+                       "cameraPosition":  {
+                                              "x":  -26.0,
+                                              "y":  16.0,
+                                              "z":  30.0
+                                          },
+                       "cameraTarget":  {
+                                            "x":  2.5,
+                                            "y":  1.0,
+                                            "z":  3.0
+                                        },
+                       "cameraRotation":  {
+                                              "x":  -20.9108734130859,
+                                              "y":  -46.548152923584,
+                                              "z":  0.0
+                                          },
+                       "projectionType":  "orthographic",
+                       "orthographicSize":  36.0,
+                       "viewportWidth":  1920,
+                       "viewportHeight":  1009,
+                       "sceneStateSignature":  "9bcd99953af16716425b157cdfbfc9630ca0bfe60ed1bccea489f61639414af4",
+                       "barnRootCount":  0,
+                       "house02Count":  1,
+                       "frameNumberAfterCameraTransition":  7,
+                       "settleFrames":  8,
+                       "timestampSequence":  1
+                   },
+                   {
+                       "boardPanelId":  "opt-in_opt_in",
+                       "scenario":  "opt-in",
+                       "semanticPurpose":  "exact single-slot differential; Barn only",
+                       "rawCapturePath":  "artifacts/runtime/v0359/opt-in/screenshots/opt_in.png",
+                       "rawCaptureSha256":  "d178c86651bbbd782c45583fd146ea2e419a29bab37959b581d24fb62fbd67b6",
+                       "cameraPosition":  {
+                                              "x":  -26.0,
+                                              "y":  16.0,
+                                              "z":  30.0
+                                          },
+                       "cameraTarget":  {
+                                            "x":  2.5,
+                                            "y":  1.0,
+                                            "z":  3.0
+                                        },
+                       "cameraRotation":  {
+                                              "x":  -20.9108734130859,
+                                              "y":  -46.548152923584,
+                                              "z":  0.0
+                                          },
+                       "projectionType":  "orthographic",
+                       "orthographicSize":  36.0,
+                       "viewportWidth":  1920,
+                       "viewportHeight":  1009,
+                       "sceneStateSignature":  "bcac38fcf7faa44826585cc1b2f38c08960ac4622eda40f68180505dbec73b0c",
+                       "barnRootCount":  1,
+                       "house02Count":  1,
+                       "frameNumberAfterCameraTransition":  7,
+                       "settleFrames":  8,
+                       "timestampSequence":  1
+                   },
+                   {
+                       "boardPanelId":  "wide_wide",
+                       "scenario":  "wide",
+                       "semanticPurpose":  "ordinary wide three-quarter context",
+                       "rawCapturePath":  "artifacts/runtime/v0359/wide/screenshots/wide.png",
+                       "rawCaptureSha256":  "5f2a52ca002c2995cf3e0a75fdac4cf267cecefc42fc3753fcbba789834b063c",
+                       "cameraPosition":  {
+                                              "x":  -22.0,
+                                              "y":  11.5,
+                                              "z":  25.0
+                                          },
+                       "cameraTarget":  {
+                                            "x":  0.0,
+                                            "y":  1.20000004768372,
+                                            "z":  0.5
+                                        },
+                       "cameraRotation":  {
+                                              "x":  -17.3698997497559,
+                                              "y":  -41.9225463867188,
+                                              "z":  0.0
+                                          },
+                       "projectionType":  "orthographic",
+                       "orthographicSize":  28.0,
+                       "viewportWidth":  1920,
+                       "viewportHeight":  1009,
+                       "sceneStateSignature":  "bcac38fcf7faa44826585cc1b2f38c08960ac4622eda40f68180505dbec73b0c",
+                       "barnRootCount":  1,
+                       "house02Count":  1,
+                       "frameNumberAfterCameraTransition":  7,
+                       "settleFrames":  8,
+                       "timestampSequence":  1
+                   },
+                   {
+                       "boardPanelId":  "close-scale_close_scale",
+                       "scenario":  "close-scale",
+                       "semanticPurpose":  "closer House02 Barn worker scale context",
+                       "rawCapturePath":  "artifacts/runtime/v0359/close-scale/screenshots/close_scale.png",
+                       "rawCaptureSha256":  "b2d2a18484150ac39513802a97543c56d25ddb7e21ae0ac80126db28f25ca579",
+                       "cameraPosition":  {
+                                              "x":  -11.0,
+                                              "y":  6.80000019073486,
+                                              "z":  14.0
+                                          },
+                       "cameraTarget":  {
+                                            "x":  -0.800000011920929,
+                                            "y":  1.5,
+                                            "z":  0.200000002980232
+                                        },
+                       "cameraRotation":  {
+                                              "x":  -17.1633167266846,
+                                              "y":  -36.4692344665527,
+                                              "z":  0.0
+                                          },
+                       "projectionType":  "orthographic",
+                       "orthographicSize":  15.0,
+                       "viewportWidth":  1920,
+                       "viewportHeight":  1009,
+                       "sceneStateSignature":  "bcac38fcf7faa44826585cc1b2f38c08960ac4622eda40f68180505dbec73b0c",
+                       "barnRootCount":  1,
+                       "house02Count":  1,
+                       "frameNumberAfterCameraTransition":  7,
+                       "settleFrames":  8,
+                       "timestampSequence":  1
+                   },
+                   {
+                       "boardPanelId":  "rts-distance_rts_distance",
+                       "scenario":  "rts-distance",
+                       "semanticPurpose":  "ordinary RTS gameplay-distance framing",
+                       "rawCapturePath":  "artifacts/runtime/v0359/rts-distance/screenshots/rts_distance.png",
+                       "rawCaptureSha256":  "d178c86651bbbd782c45583fd146ea2e419a29bab37959b581d24fb62fbd67b6",
+                       "cameraPosition":  {
+                                              "x":  -26.0,
+                                              "y":  16.0,
+                                              "z":  30.0
+                                          },
+                       "cameraTarget":  {
+                                            "x":  2.5,
+                                            "y":  1.0,
+                                            "z":  3.0
+                                        },
+                       "cameraRotation":  {
+                                              "x":  -20.9108734130859,
+                                              "y":  -46.548152923584,
+                                              "z":  0.0
+                                          },
+                       "projectionType":  "orthographic",
+                       "orthographicSize":  36.0,
+                       "viewportWidth":  1920,
+                       "viewportHeight":  1009,
+                       "sceneStateSignature":  "bcac38fcf7faa44826585cc1b2f38c08960ac4622eda40f68180505dbec73b0c",
+                       "barnRootCount":  1,
+                       "house02Count":  1,
+                       "frameNumberAfterCameraTransition":  7,
+                       "settleFrames":  8,
+                       "timestampSequence":  1
+                   },
+                   {
+                       "boardPanelId":  "terrain-contact_terrain_contact",
+                       "scenario":  "terrain-contact",
+                       "semanticPurpose":  "closer Barn foundation and engine contact shadow framing",
+                       "rawCapturePath":  "artifacts/runtime/v0359/terrain-contact/screenshots/terrain_contact.png",
+                       "rawCaptureSha256":  "078a236181f961f3f7af04d463cbf44c92336426dfac88dd9f4f33c889e83b20",
+                       "cameraPosition":  {
+                                              "x":  -7.5,
+                                              "y":  4.80000019073486,
+                                              "z":  10.5
+                                          },
+                       "cameraTarget":  {
+                                            "x":  -1.79999995231628,
+                                            "y":  0.75,
+                                            "z":  0.800000011920929
+                                        },
+                       "cameraRotation":  {
+                                              "x":  -19.7976131439209,
+                                              "y":  -30.4397239685059,
+                                              "z":  0.0
+                                          },
+                       "projectionType":  "orthographic",
+                       "orthographicSize":  10.5,
+                       "viewportWidth":  1920,
+                       "viewportHeight":  1009,
+                       "sceneStateSignature":  "bcac38fcf7faa44826585cc1b2f38c08960ac4622eda40f68180505dbec73b0c",
+                       "barnRootCount":  1,
+                       "house02Count":  1,
+                       "frameNumberAfterCameraTransition":  7,
+                       "settleFrames":  8,
+                       "timestampSequence":  1
+                   },
+                   {
+                       "boardPanelId":  "front_front",
+                       "scenario":  "front",
+                       "semanticPurpose":  "front three-quarter agricultural door and shutter view",
+                       "rawCapturePath":  "artifacts/runtime/v0359/front/screenshots/front.png",
+                       "rawCaptureSha256":  "bbead8ed8c59d51f8f6301e585c0e105594055f6e29b284c660aaf35a9ec2c28",
+                       "cameraPosition":  {
+                                              "x":  -15.0,
+                                              "y":  8.39999961853027,
+                                              "z":  17.0
+                                          },
+                       "cameraTarget":  {
+                                            "x":  -1.0,
+                                            "y":  2.5,
+                                            "z":  0.0
+                                        },
+                       "cameraRotation":  {
+                                              "x":  -14.9976463317871,
+                                              "y":  -39.4724578857422,
+                                              "z":  0.0
+                                          },
+                       "projectionType":  "orthographic",
+                       "orthographicSize":  24.0,
+                       "viewportWidth":  1920,
+                       "viewportHeight":  1009,
+                       "sceneStateSignature":  "bcac38fcf7faa44826585cc1b2f38c08960ac4622eda40f68180505dbec73b0c",
+                       "barnRootCount":  1,
+                       "house02Count":  1,
+                       "frameNumberAfterCameraTransition":  7,
+                       "settleFrames":  8,
+                       "timestampSequence":  1
+                   },
+                   {
+                       "boardPanelId":  "rear_rear",
+                       "scenario":  "rear",
+                       "semanticPurpose":  "rear wall and roof closure view",
+                       "rawCapturePath":  "artifacts/runtime/v0359/rear/screenshots/rear.png",
+                       "rawCaptureSha256":  "e2ccd5d1b1b4077a139c0930f731a1d80966afddff324a5b8426b8ea65759d29",
+                       "cameraPosition":  {
+                                              "x":  16.0,
+                                              "y":  8.0,
+                                              "z":  -18.0
+                                          },
+                       "cameraTarget":  {
+                                            "x":  0.0,
+                                            "y":  2.0,
+                                            "z":  0.0
+                                        },
+                       "cameraRotation":  {
+                                              "x":  -13.9896640777588,
+                                              "y":  138.366455078125,
+                                              "z":  0.0
+                                          },
+                       "projectionType":  "orthographic",
+                       "orthographicSize":  22.0,
+                       "viewportWidth":  1920,
+                       "viewportHeight":  1009,
+                       "sceneStateSignature":  "bcac38fcf7faa44826585cc1b2f38c08960ac4622eda40f68180505dbec73b0c",
+                       "barnRootCount":  1,
+                       "house02Count":  1,
+                       "frameNumberAfterCameraTransition":  7,
+                       "settleFrames":  8,
+                       "timestampSequence":  1
+                   },
+                   {
+                       "boardPanelId":  "roof_roof",
+                       "scenario":  "roof",
+                       "semanticPurpose":  "elevated exterior roof slopes and ridge view",
+                       "rawCapturePath":  "artifacts/runtime/v0359/roof/screenshots/roof.png",
+                       "rawCaptureSha256":  "282e990f357f3e78af735c0cd70d0d4a2c857e45a2f55cb8a907c6e5e6dd8781",
+                       "cameraPosition":  {
+                                              "x":  -7.0,
+                                              "y":  14.0,
+                                              "z":  18.0
+                                          },
+                       "cameraTarget":  {
+                                            "x":  -1.5,
+                                            "y":  2.40000009536743,
+                                            "z":  -0.300000011920929
+                                        },
+                       "cameraRotation":  {
+                                              "x":  -31.2600708007813,
+                                              "y":  -16.7279663085938,
+                                              "z":  0.0
+                                          },
+                       "projectionType":  "orthographic",
+                       "orthographicSize":  15.0,
+                       "viewportWidth":  1920,
+                       "viewportHeight":  1009,
+                       "sceneStateSignature":  "bcac38fcf7faa44826585cc1b2f38c08960ac4622eda40f68180505dbec73b0c",
+                       "barnRootCount":  1,
+                       "house02Count":  1,
+                       "frameNumberAfterCameraTransition":  7,
+                       "settleFrames":  8,
+                       "timestampSequence":  1
+                   },
+                   {
+                       "boardPanelId":  "missing-scene-fail-closed_missing_scene",
+                       "scenario":  "missing-scene-fail-closed",
+                       "semanticPurpose":  "F1 missing canonical scene fail closed",
+                       "rawCapturePath":  "artifacts/runtime/v0359/missing-scene-fail-closed/screenshots/missing_scene.png",
+                       "rawCaptureSha256":  "5789e19d1a752dda3de76523aa3176f7fda172c255ccf640bb4a081f57871da9",
+                       "cameraPosition":  {
+                                              "x":  -26.0,
+                                              "y":  16.0,
+                                              "z":  30.0
+                                          },
+                       "cameraTarget":  {
+                                            "x":  2.5,
+                                            "y":  1.0,
+                                            "z":  3.0
+                                        },
+                       "cameraRotation":  {
+                                              "x":  -20.9108734130859,
+                                              "y":  -46.548152923584,
+                                              "z":  0.0
+                                          },
+                       "projectionType":  "orthographic",
+                       "orthographicSize":  36.0,
+                       "viewportWidth":  1920,
+                       "viewportHeight":  1009,
+                       "sceneStateSignature":  "a18a90b56bdd15a8cc5edc4eb2e88dbf53d87ee707cc8718e356d5900f5829c6",
+                       "barnRootCount":  0,
+                       "house02Count":  1,
+                       "frameNumberAfterCameraTransition":  7,
+                       "settleFrames":  8,
+                       "timestampSequence":  1
+                   },
+                   {
+                       "boardPanelId":  "hash-mismatch-fail-closed_hash_mismatch",
+                       "scenario":  "hash-mismatch-fail-closed",
+                       "semanticPurpose":  "F2 source hash mismatch fail closed",
+                       "rawCapturePath":  "artifacts/runtime/v0359/hash-mismatch-fail-closed/screenshots/hash_mismatch.png",
+                       "rawCaptureSha256":  "82562ef425cc07db1633ec50f6f9ef292e3602f02fa073295c0804a5b3c0073f",
+                       "cameraPosition":  {
+                                              "x":  -26.0,
+                                              "y":  16.0,
+                                              "z":  30.0
+                                          },
+                       "cameraTarget":  {
+                                            "x":  2.5,
+                                            "y":  1.0,
+                                            "z":  3.0
+                                        },
+                       "cameraRotation":  {
+                                              "x":  -20.9108734130859,
+                                              "y":  -46.548152923584,
+                                              "z":  0.0
+                                          },
+                       "projectionType":  "orthographic",
+                       "orthographicSize":  36.0,
+                       "viewportWidth":  1920,
+                       "viewportHeight":  1009,
+                       "sceneStateSignature":  "a18a90b56bdd15a8cc5edc4eb2e88dbf53d87ee707cc8718e356d5900f5829c6",
+                       "barnRootCount":  0,
+                       "house02Count":  1,
+                       "frameNumberAfterCameraTransition":  7,
+                       "settleFrames":  8,
+                       "timestampSequence":  1
+                   },
+                   {
+                       "boardPanelId":  "invalid-authority-fail-closed_invalid_authority",
+                       "scenario":  "invalid-authority-fail-closed",
+                       "semanticPurpose":  "F3 invalid authority fail closed",
+                       "rawCapturePath":  "artifacts/runtime/v0359/invalid-authority-fail-closed/screenshots/invalid_authority.png",
+                       "rawCaptureSha256":  "9f6d85a88ade989b13bd7d1dacc731259648f8dd3899a10a6cfa63a43109241a",
+                       "cameraPosition":  {
+                                              "x":  -26.0,
+                                              "y":  16.0,
+                                              "z":  30.0
+                                          },
+                       "cameraTarget":  {
+                                            "x":  2.5,
+                                            "y":  1.0,
+                                            "z":  3.0
+                                        },
+                       "cameraRotation":  {
+                                              "x":  -20.9108734130859,
+                                              "y":  -46.548152923584,
+                                              "z":  0.0
+                                          },
+                       "projectionType":  "orthographic",
+                       "orthographicSize":  36.0,
+                       "viewportWidth":  1920,
+                       "viewportHeight":  1009,
+                       "sceneStateSignature":  "a18a90b56bdd15a8cc5edc4eb2e88dbf53d87ee707cc8718e356d5900f5829c6",
+                       "barnRootCount":  0,
+                       "house02Count":  1,
+                       "frameNumberAfterCameraTransition":  7,
+                       "settleFrames":  8,
+                       "timestampSequence":  1
+                   },
+                   {
+                       "boardPanelId":  "unknown-slot-rejected_unknown_slot",
+                       "scenario":  "unknown-slot-rejected",
+                       "semanticPurpose":  "F4 unknown slot fail closed",
+                       "rawCapturePath":  "artifacts/runtime/v0359/unknown-slot-rejected/screenshots/unknown_slot.png",
+                       "rawCaptureSha256":  "d3eaa72ccb109860b079b7368028161e73fffe013dd6b20edd35489cee7045fb",
+                       "cameraPosition":  {
+                                              "x":  -26.0,
+                                              "y":  16.0,
+                                              "z":  30.0
+                                          },
+                       "cameraTarget":  {
+                                            "x":  2.5,
+                                            "y":  1.0,
+                                            "z":  3.0
+                                        },
+                       "cameraRotation":  {
+                                              "x":  -20.9108734130859,
+                                              "y":  -46.548152923584,
+                                              "z":  0.0
+                                          },
+                       "projectionType":  "orthographic",
+                       "orthographicSize":  36.0,
+                       "viewportWidth":  1920,
+                       "viewportHeight":  1009,
+                       "sceneStateSignature":  "a18a90b56bdd15a8cc5edc4eb2e88dbf53d87ee707cc8718e356d5900f5829c6",
+                       "barnRootCount":  0,
+                       "house02Count":  1,
+                       "frameNumberAfterCameraTransition":  7,
+                       "settleFrames":  8,
+                       "timestampSequence":  1
+                   },
+                   {
+                       "boardPanelId":  "rollback_r0",
+                       "scenario":  "rollback",
+                       "semanticPurpose":  "R0 deterministic baseline; Barn count 0",
+                       "rawCapturePath":  "artifacts/runtime/v0359/rollback/screenshots/r0.png",
+                       "rawCaptureSha256":  "dca0980d8a3f1e3e2c12a7db72bccf212df68986289f5ae6ac55ca5b72f2143d",
+                       "cameraPosition":  {
+                                              "x":  -26.0,
+                                              "y":  16.0,
+                                              "z":  30.0
+                                          },
+                       "cameraTarget":  {
+                                            "x":  2.5,
+                                            "y":  1.0,
+                                            "z":  3.0
+                                        },
+                       "cameraRotation":  {
+                                              "x":  -20.9108734130859,
+                                              "y":  -46.548152923584,
+                                              "z":  0.0
+                                          },
+                       "projectionType":  "orthographic",
+                       "orthographicSize":  36.0,
+                       "viewportWidth":  1920,
+                       "viewportHeight":  1009,
+                       "sceneStateSignature":  "9bcd99953af16716425b157cdfbfc9630ca0bfe60ed1bccea489f61639414af4",
+                       "barnRootCount":  0,
+                       "house02Count":  1,
+                       "frameNumberAfterCameraTransition":  7,
+                       "settleFrames":  8,
+                       "timestampSequence":  1
+                   },
+                   {
+                       "boardPanelId":  "rollback_r1",
+                       "scenario":  "rollback",
+                       "semanticPurpose":  "R1 canonical Barn loaded once; Barn count 1",
+                       "rawCapturePath":  "artifacts/runtime/v0359/rollback/screenshots/r1.png",
+                       "rawCaptureSha256":  "d178c86651bbbd782c45583fd146ea2e419a29bab37959b581d24fb62fbd67b6",
+                       "cameraPosition":  {
+                                              "x":  -26.0,
+                                              "y":  16.0,
+                                              "z":  30.0
+                                          },
+                       "cameraTarget":  {
+                                            "x":  2.5,
+                                            "y":  1.0,
+                                            "z":  3.0
+                                        },
+                       "cameraRotation":  {
+                                              "x":  -20.9108734130859,
+                                              "y":  -46.548152923584,
+                                              "z":  0.0
+                                          },
+                       "projectionType":  "orthographic",
+                       "orthographicSize":  36.0,
+                       "viewportWidth":  1920,
+                       "viewportHeight":  1009,
+                       "sceneStateSignature":  "bcac38fcf7faa44826585cc1b2f38c08960ac4622eda40f68180505dbec73b0c",
+                       "barnRootCount":  1,
+                       "house02Count":  1,
+                       "frameNumberAfterCameraTransition":  15,
+                       "settleFrames":  8,
+                       "timestampSequence":  2
+                   },
+                   {
+                       "boardPanelId":  "rollback_r2",
+                       "scenario":  "rollback",
+                       "semanticPurpose":  "R2 Barn removed; rollback complete",
+                       "rawCapturePath":  "artifacts/runtime/v0359/rollback/screenshots/r2.png",
+                       "rawCaptureSha256":  "dca0980d8a3f1e3e2c12a7db72bccf212df68986289f5ae6ac55ca5b72f2143d",
+                       "cameraPosition":  {
+                                              "x":  -26.0,
+                                              "y":  16.0,
+                                              "z":  30.0
+                                          },
+                       "cameraTarget":  {
+                                            "x":  2.5,
+                                            "y":  1.0,
+                                            "z":  3.0
+                                        },
+                       "cameraRotation":  {
+                                              "x":  -20.9108734130859,
+                                              "y":  -46.548152923584,
+                                              "z":  0.0
+                                          },
+                       "projectionType":  "orthographic",
+                       "orthographicSize":  36.0,
+                       "viewportWidth":  1920,
+                       "viewportHeight":  1009,
+                       "sceneStateSignature":  "9bcd99953af16716425b157cdfbfc9630ca0bfe60ed1bccea489f61639414af4",
+                       "barnRootCount":  0,
+                       "house02Count":  1,
+                       "frameNumberAfterCameraTransition":  24,
+                       "settleFrames":  8,
+                       "timestampSequence":  3
+                   }
+               ],
+    "scenarios":  [
+                      {
+                          "id":  "baseline",
+                          "expected":  "BASELINE_HOUSE02_NO_BARN",
+                          "status":  "BASELINE_HOUSE02_NO_BARN",
+                          "exitCode":  0,
+                          "runtimeManifest":  "artifacts/runtime/v0359/baseline/v0359-barrosan-barn-runtime.json"
+                      },
+                      {
+                          "id":  "opt-in",
+                          "expected":  "LOADED_ONCE",
+                          "status":  "LOADED_ONCE",
+                          "exitCode":  0,
+                          "runtimeManifest":  "artifacts/runtime/v0359/opt-in/v0359-barrosan-barn-runtime.json"
+                      },
+                      {
+                          "id":  "authority",
+                          "expected":  "LOADED_ONCE",
+                          "status":  "LOADED_ONCE",
+                          "exitCode":  0,
+                          "runtimeManifest":  "artifacts/runtime/v0359/authority/v0359-barrosan-barn-runtime.json"
+                      },
+                      {
+                          "id":  "wide",
+                          "expected":  "LOADED_ONCE",
+                          "status":  "LOADED_ONCE",
+                          "exitCode":  0,
+                          "runtimeManifest":  "artifacts/runtime/v0359/wide/v0359-barrosan-barn-runtime.json"
+                      },
+                      {
+                          "id":  "close-scale",
+                          "expected":  "LOADED_ONCE",
+                          "status":  "LOADED_ONCE",
+                          "exitCode":  0,
+                          "runtimeManifest":  "artifacts/runtime/v0359/close-scale/v0359-barrosan-barn-runtime.json"
+                      },
+                      {
+                          "id":  "rts-distance",
+                          "expected":  "LOADED_ONCE",
+                          "status":  "LOADED_ONCE",
+                          "exitCode":  0,
+                          "runtimeManifest":  "artifacts/runtime/v0359/rts-distance/v0359-barrosan-barn-runtime.json"
+                      },
+                      {
+                          "id":  "terrain-contact",
+                          "expected":  "LOADED_ONCE",
+                          "status":  "LOADED_ONCE",
+                          "exitCode":  0,
+                          "runtimeManifest":  "artifacts/runtime/v0359/terrain-contact/v0359-barrosan-barn-runtime.json"
+                      },
+                      {
+                          "id":  "front",
+                          "expected":  "LOADED_ONCE",
+                          "status":  "LOADED_ONCE",
+                          "exitCode":  0,
+                          "runtimeManifest":  "artifacts/runtime/v0359/front/v0359-barrosan-barn-runtime.json"
+                      },
+                      {
+                          "id":  "rear",
+                          "expected":  "LOADED_ONCE",
+                          "status":  "LOADED_ONCE",
+                          "exitCode":  0,
+                          "runtimeManifest":  "artifacts/runtime/v0359/rear/v0359-barrosan-barn-runtime.json"
+                      },
+                      {
+                          "id":  "roof",
+                          "expected":  "LOADED_ONCE",
+                          "status":  "LOADED_ONCE",
+                          "exitCode":  0,
+                          "runtimeManifest":  "artifacts/runtime/v0359/roof/v0359-barrosan-barn-runtime.json"
+                      },
+                      {
+                          "id":  "rollback",
+                          "expected":  "ROLLED_BACK_CLEAN",
+                          "status":  "ROLLED_BACK_CLEAN",
+                          "exitCode":  0,
+                          "runtimeManifest":  "artifacts/runtime/v0359/rollback/v0359-barrosan-barn-runtime.json"
+                      },
+                      {
+                          "id":  "missing-scene-fail-closed",
+                          "expected":  "FAIL_CLOSED_MISSING_SCENE",
+                          "status":  "FAIL_CLOSED_MISSING_SCENE",
+                          "exitCode":  0,
+                          "runtimeManifest":  "artifacts/runtime/v0359/missing-scene-fail-closed/v0359-barrosan-barn-runtime.json"
+                      },
+                      {
+                          "id":  "hash-mismatch-fail-closed",
+                          "expected":  "FAIL_CLOSED_HASH_MISMATCH",
+                          "status":  "FAIL_CLOSED_HASH_MISMATCH",
+                          "exitCode":  0,
+                          "runtimeManifest":  "artifacts/runtime/v0359/hash-mismatch-fail-closed/v0359-barrosan-barn-runtime.json"
+                      },
+                      {
+                          "id":  "invalid-authority-fail-closed",
+                          "expected":  "FAIL_CLOSED_INVALID_AUTHORITY",
+                          "status":  "FAIL_CLOSED_INVALID_AUTHORITY",
+                          "exitCode":  0,
+                          "runtimeManifest":  "artifacts/runtime/v0359/invalid-authority-fail-closed/v0359-barrosan-barn-runtime.json"
+                      },
+                      {
+                          "id":  "unknown-slot-rejected",
+                          "expected":  "FAIL_CLOSED_UNKNOWN_SLOT_REJECTED",
+                          "status":  "FAIL_CLOSED_UNKNOWN_SLOT_REJECTED",
+                          "exitCode":  0,
+                          "runtimeManifest":  "artifacts/runtime/v0359/unknown-slot-rejected/v0359-barrosan-barn-runtime.json"
+                      }
+                  ],
+    "performanceManifest":  "artifacts/performance/v0359-barrosan-barn/v0359-performance.json"
+}

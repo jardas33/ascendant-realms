@@ -1,0 +1,341 @@
+{
+  "automatedVisualApproval": false,
+  "balconyRailNode": false,
+  "captures": [
+    {
+      "camera": {
+        "position": "(-15.0, 8.4, 15.0)",
+        "projection": "orthographic",
+        "size": 16.5,
+        "target": "(0.0, 2.65, 0.0)"
+      },
+      "fileName": "01_clean_neutral_front_three_quarter.png",
+      "purpose": "clean PLAYER neutral front three-quarter",
+      "rendered": true,
+      "size": {
+        "height": 1009,
+        "width": 1920
+      },
+      "technicalOverlay": false,
+      "unlabelled": true
+    },
+    {
+      "camera": {
+        "position": "(0.0, 7.0, 18.0)",
+        "projection": "orthographic",
+        "size": 15.0,
+        "target": "(0.0, 2.55, 0.0)"
+      },
+      "fileName": "02_clean_direct_front.png",
+      "purpose": "clean PLAYER direct front",
+      "rendered": true,
+      "size": {
+        "height": 1009,
+        "width": 1920
+      },
+      "technicalOverlay": false,
+      "unlabelled": true
+    },
+    {
+      "camera": {
+        "position": "(0.0, 5.8, 13.0)",
+        "projection": "orthographic",
+        "size": 8.3,
+        "target": "(0.0, 3.22, 0.0)"
+      },
+      "fileName": "03_upper_loading_shutters_closeup.png",
+      "purpose": "two closed vertical-board agricultural shutter leaves",
+      "rendered": true,
+      "size": {
+        "height": 1009,
+        "width": 1920
+      },
+      "technicalOverlay": false,
+      "unlabelled": true
+    },
+    {
+      "camera": {
+        "position": "(0.0, 5.8, 13.0)",
+        "projection": "orthographic",
+        "size": 9.0,
+        "target": "(0.0, 2.9, 0.0)"
+      },
+      "fileName": "04_lower_upper_opening_hierarchy.png",
+      "purpose": "lower double door dominant and upper hatch subordinate",
+      "rendered": true,
+      "size": {
+        "height": 1009,
+        "width": 1920
+      },
+      "technicalOverlay": false,
+      "unlabelled": true
+    },
+    {
+      "camera": {
+        "position": "(0.0, 8.0, 22.0)",
+        "projection": "orthographic",
+        "size": 17.5,
+        "target": "(0.0, 2.7, 0.0)"
+      },
+      "fileName": "05_complete_exterior_gable.png",
+      "purpose": "complete direct exterior gable silhouette",
+      "rendered": true,
+      "size": {
+        "height": 1009,
+        "width": 1920
+      },
+      "technicalOverlay": false,
+      "unlabelled": true
+    },
+    {
+      "camera": {
+        "position": "(15.0, 8.4, -15.0)",
+        "projection": "orthographic",
+        "size": 16.5,
+        "target": "(0.0, 2.65, 0.0)"
+      },
+      "fileName": "06_opposite_rear_three_quarter.png",
+      "purpose": "opposite rear three-quarter roof lock",
+      "rendered": true,
+      "size": {
+        "height": 1009,
+        "width": 1920
+      },
+      "technicalOverlay": false,
+      "unlabelled": true
+    },
+    {
+      "camera": {
+        "position": "(-10.0, 5.8, 12.2)",
+        "projection": "orthographic",
+        "size": 8.3,
+        "target": "(-2.8, 1.0, 0.0)"
+      },
+      "fileName": "07_foundation_front_left_contact.png",
+      "purpose": "front-left grounded contact and irregular weathering",
+      "rendered": true,
+      "size": {
+        "height": 1009,
+        "width": 1920
+      },
+      "technicalOverlay": false,
+      "unlabelled": true
+    },
+    {
+      "camera": {
+        "position": "(10.0, 5.8, 12.2)",
+        "projection": "orthographic",
+        "size": 8.3,
+        "target": "(2.8, 1.0, 0.0)"
+      },
+      "fileName": "08_foundation_front_right_contact.png",
+      "purpose": "front-right grounded contact and irregular weathering",
+      "rendered": true,
+      "size": {
+        "height": 1009,
+        "width": 1920
+      },
+      "technicalOverlay": false,
+      "unlabelled": true
+    },
+    {
+      "camera": {
+        "position": "(-19.0, 14.5, 22.0)",
+        "projection": "orthographic",
+        "size": 24.0,
+        "target": "(0.0, 2.0, 0.0)"
+      },
+      "fileName": "09_neutral_far_rts.png",
+      "purpose": "clean PLAYER far RTS readability",
+      "rendered": true,
+      "size": {
+        "height": 1009,
+        "width": 1920
+      },
+      "technicalOverlay": false,
+      "unlabelled": true
+    },
+    {
+      "camera": {
+        "position": "(-15.0, 8.4, 15.0)",
+        "projection": "orthographic",
+        "size": 16.5,
+        "target": "(0.0, 2.65, 0.0)"
+      },
+      "fileName": "10_true_256_pixel_source.png",
+      "purpose": "true 256-pixel source",
+      "rendered": true,
+      "size": {
+        "height": 256,
+        "width": 256
+      },
+      "technicalOverlay": false,
+      "unlabelled": true
+    },
+    {
+      "fileName": "11_greyscale_value_proof.png",
+      "purpose": "greyscale value proof",
+      "rendered": true,
+      "size": {
+        "height": 1009,
+        "width": 1920
+      },
+      "unlabelled": true
+    },
+    {
+      "camera": {
+        "position": "(-15.0, 8.4, 15.0)",
+        "projection": "orthographic",
+        "size": 16.5,
+        "target": "(0.0, 2.65, 0.0)"
+      },
+      "fileName": "12_restrained_warm_directional.png",
+      "purpose": "restrained warm directional",
+      "rendered": true,
+      "size": {
+        "height": 1009,
+        "width": 1920
+      },
+      "technicalOverlay": false,
+      "unlabelled": true
+    },
+    {
+      "camera": {
+        "position": "(-15.0, 8.4, 15.0)",
+        "projection": "orthographic",
+        "size": 13.2,
+        "target": "(0.0, 2.65, 0.0)"
+      },
+      "fileName": "13_matched_house02_barn_neutral.png",
+      "normalEnabled": true,
+      "purpose": "matched frozen House02 and v0.351 barn neutral relationship",
+      "rendered": true,
+      "size": {
+        "height": 256,
+        "width": 512
+      },
+      "unlabelled": true
+    },
+    {
+      "camera": {
+        "position": "(0.0, 10.5, 32.0)",
+        "projection": "orthographic",
+        "size": 34.0,
+        "target": "(0.0, 2.4, 0.0)"
+      },
+      "fileName": "14_contextual_house02_barn_player.png",
+      "purpose": "bounded clean PLAYER House02/barn hamlet material-unity context",
+      "rendered": true,
+      "size": {
+        "height": 1009,
+        "width": 1920
+      },
+      "technicalOverlay": false,
+      "unlabelled": true
+    },
+    {
+      "camera": {
+        "position": "(0.0, 6.2, 13.0)",
+        "projection": "orthographic",
+        "size": 10.0,
+        "target": "(0.0, 3.0, 0.0)"
+      },
+      "fileName": "15_debug_review_dimensions_contact_mask.png",
+      "purpose": "DEBUG_REVIEW dimensions and bounded contact-mask evidence",
+      "rendered": true,
+      "size": {
+        "height": 1009,
+        "width": 1920
+      },
+      "technicalOverlay": true,
+      "unlabelled": true
+    },
+    {
+      "camera": {
+        "position": "(0.0, 10.5, 32.0)",
+        "projection": "orthographic",
+        "size": 34.0,
+        "target": "(0.0, 2.4, 0.0)"
+      },
+      "fileName": "16_contextual_house02_barn_hamlet.png",
+      "purpose": "bounded clean PLAYER House02/barn hamlet material-unity context",
+      "rendered": true,
+      "size": {
+        "height": 1009,
+        "width": 1920
+      },
+      "technicalOverlay": false,
+      "unlabelled": true
+    }
+  ],
+  "checkpoint": "v0.351",
+  "completeWorkerCount": 2,
+  "defaultRuntimeIntegrated": false,
+  "diagnosticEvidence": [
+    "normal_enabled.png",
+    "normal_disabled.png",
+    "albedo_only.png",
+    "roughness_isolation.png",
+    "uv_checker_source.txt"
+  ],
+  "duplicateShutterRows": false,
+  "errors": [],
+  "foundationContactMethod": "coplanar contact shadow plus irregular bounded door soil stain; no floating blocks",
+  "frozenV0350Hashes": true,
+  "godotImportedBounds": {
+    "maxX": 7.86999940872192,
+    "maxY": 6.10292053222656,
+    "maxZ": 5.5625,
+    "minX": -7.87000036239624,
+    "minY": 0.164999946951866,
+    "minZ": -5.30999898910522
+  },
+  "grilleNode": false,
+  "humanReviewRequired": true,
+  "lowerUpperVisibleAreaRatio": 3.64,
+  "noCombat": true,
+  "noEconomy": true,
+  "noGameplay": true,
+  "noLabels": true,
+  "noMovement": true,
+  "noOverlays": true,
+  "noPathfinding": true,
+  "noResources": true,
+  "noRuntimeIntegration": true,
+  "noVideo": true,
+  "outcome": "READY FOR HUMAN V0351 BARN GOLD-CLOSEOUT REVIEW",
+  "playerEvidenceDebrisCount": 0,
+  "prototypeOnly": true,
+  "prototypeOptIn": true,
+  "rawCaptureCount": 16,
+  "requiredRawNames": [
+    "01_clean_neutral_front_three_quarter.png",
+    "02_clean_direct_front.png",
+    "03_upper_loading_shutters_closeup.png",
+    "04_lower_upper_opening_hierarchy.png",
+    "05_complete_exterior_gable.png",
+    "06_opposite_rear_three_quarter.png",
+    "07_foundation_front_left_contact.png",
+    "08_foundation_front_right_contact.png",
+    "09_neutral_far_rts.png",
+    "10_true_256_pixel_source.png",
+    "11_greyscale_value_proof.png",
+    "12_restrained_warm_directional.png",
+    "13_matched_house02_barn_neutral.png",
+    "14_contextual_house02_barn_player.png",
+    "15_debug_review_dimensions_contact_mask.png",
+    "16_contextual_house02_barn_hamlet.png"
+  ],
+  "scenePath": "res://scenes/review/V0351BarnGoldCloseout.tscn",
+  "schemaVersion": 1,
+  "shutterLeafCount": 2,
+  "shutterPrimaryBoardOrientation": "vertical",
+  "sourceBlend": "art-source/blender/v0350/barn_final_material_harmony.blend",
+  "sourceGLB": "res://assets/v0350/barn_final_material_harmony.glb",
+  "status": "PASS_V0351_BARN_GOLD_CLOSEOUT_RUNTIME",
+  "upperOpeningExteriorDimensions": {
+    "height": 0.920000016689301,
+    "width": 3.3199999332428
+  },
+  "ventNode": false
+}

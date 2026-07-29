@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource path="res://scripts/v0350_final_house02_barn_material_unity.gd" type="Script" id="1_v0350"]
+
+[node name="V0350FinalHouse02BarnMaterialUnity" type="Node3D"]
+script = ExtResource("1_v0350")

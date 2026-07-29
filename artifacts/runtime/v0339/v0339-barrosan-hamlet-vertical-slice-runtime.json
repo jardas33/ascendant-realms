@@ -1,0 +1,453 @@
+{
+  "architecture": {
+    "agriculturalBarn": true,
+    "dryStoneWallKit": true,
+    "house02Anchor": true,
+    "timberStoneShed": true,
+    "trough": true
+  },
+  "baseCheckpoint": "v0.338",
+  "camera": {
+    "pitchDegrees": 42.0,
+    "projection": "orthographic",
+    "stableScale": true,
+    "yawDegrees": 45.0
+  },
+  "captureCount": 31,
+  "captures": [
+    {
+      "camera": {
+        "orthoSize": 25.0,
+        "position": "(22.0, 18.5, 23.0)",
+        "projection": "orthographic",
+        "target": "(0.0, 1.0, 3.0)"
+      },
+      "file": "01_primary_player_neutral_overcast_rts.png",
+      "mode": "PLAYER",
+      "purpose": "primary PLAYER neutral-overcast RTS",
+      "rendered": true
+    },
+    {
+      "camera": {
+        "orthoSize": 25.0,
+        "position": "(22.0, 18.5, 23.0)",
+        "projection": "orthographic",
+        "target": "(0.0, 1.0, 3.0)"
+      },
+      "file": "02_cool_daylight_rts.png",
+      "mode": "PLAYER",
+      "purpose": "cool daylight",
+      "rendered": true
+    },
+    {
+      "camera": {
+        "orthoSize": 25.0,
+        "position": "(22.0, 18.5, 23.0)",
+        "projection": "orthographic",
+        "target": "(0.0, 1.0, 3.0)"
+      },
+      "file": "03_warm_directional_rts.png",
+      "mode": "PLAYER",
+      "purpose": "warm directional",
+      "rendered": true
+    },
+    {
+      "camera": {
+        "orthoSize": 34.0,
+        "position": "(30.0, 24.0, 31.0)",
+        "projection": "orthographic",
+        "target": "(0.0, 1.0, 3.0)"
+      },
+      "file": "04_far_rts.png",
+      "mode": "PLAYER",
+      "purpose": "far RTS",
+      "rendered": true
+    },
+    {
+      "camera": {
+        "orthoSize": 13.0,
+        "position": "(12.0, 10.5, 13.0)",
+        "projection": "orthographic",
+        "target": "(-2.0, 1.8, 3.0)"
+      },
+      "file": "05_near_rts.png",
+      "mode": "PLAYER",
+      "purpose": "near RTS",
+      "rendered": true
+    },
+    {
+      "camera": {
+        "orthoSize": 25.0,
+        "position": "(22.0, 18.5, 23.0)",
+        "projection": "orthographic",
+        "target": "(0.0, 1.0, 3.0)"
+      },
+      "file": "06_256_readability_source.png",
+      "mode": "PLAYER",
+      "purpose": "256px source",
+      "rendered": true
+    },
+    {
+      "camera": {
+        "orthoSize": 25.0,
+        "position": "(22.0, 18.5, 23.0)",
+        "projection": "orthographic",
+        "target": "(0.0, 1.0, 3.0)"
+      },
+      "file": "07_grayscale_rts.png",
+      "mode": "PLAYER",
+      "purpose": "grayscale value hierarchy",
+      "rendered": true
+    },
+    {
+      "camera": {
+        "orthoSize": 30.0,
+        "position": "(0.0, 45.0, 3.0)",
+        "projection": "orthographic",
+        "target": "(0.0, 0.0, 3.0)"
+      },
+      "file": "08_direct_top_down.png",
+      "mode": "PLAYER",
+      "purpose": "direct top-down comparison",
+      "rendered": true
+    },
+    {
+      "camera": {
+        "orthoSize": 25.0,
+        "position": "(-23.0, 17.0, 21.0)",
+        "projection": "orthographic",
+        "target": "(0.0, 1.0, 3.0)"
+      },
+      "file": "09_oblique_northwest.png",
+      "mode": "PLAYER",
+      "purpose": "oblique northwest",
+      "rendered": true
+    },
+    {
+      "camera": {
+        "orthoSize": 25.0,
+        "position": "(23.0, 17.0, 21.0)",
+        "projection": "orthographic",
+        "target": "(0.0, 1.0, 3.0)"
+      },
+      "file": "10_oblique_northeast.png",
+      "mode": "PLAYER",
+      "purpose": "oblique northeast",
+      "rendered": true
+    },
+    {
+      "camera": {
+        "orthoSize": 25.0,
+        "position": "(23.0, 17.0, -21.0)",
+        "projection": "orthographic",
+        "target": "(0.0, 1.0, 3.0)"
+      },
+      "file": "11_oblique_southeast.png",
+      "mode": "PLAYER",
+      "purpose": "oblique southeast",
+      "rendered": true
+    },
+    {
+      "camera": {
+        "orthoSize": 25.0,
+        "position": "(-23.0, 17.0, -21.0)",
+        "projection": "orthographic",
+        "target": "(0.0, 1.0, 3.0)"
+      },
+      "file": "12_oblique_southwest.png",
+      "mode": "PLAYER",
+      "purpose": "oblique southwest",
+      "rendered": true
+    },
+    {
+      "camera": {
+        "orthoSize": 10.0,
+        "position": "(-14.0, 8.0, 13.0)",
+        "projection": "orthographic",
+        "target": "(-8.0, 1.9, 5.0)"
+      },
+      "file": "13_house02_grounding.png",
+      "mode": "PLAYER",
+      "purpose": "House 02 grounding",
+      "rendered": true
+    },
+    {
+      "camera": {
+        "orthoSize": 8.0,
+        "position": "(11.0, 7.0, 12.0)",
+        "projection": "orthographic",
+        "target": "(6.0, 1.9, 5.2)"
+      },
+      "file": "14_barn_close.png",
+      "mode": "PLAYER",
+      "purpose": "agricultural barn",
+      "rendered": true
+    },
+    {
+      "camera": {
+        "orthoSize": 6.0,
+        "position": "(14.0, 6.0, 9.0)",
+        "projection": "orthographic",
+        "target": "(11.7, 1.3, 5.8)"
+      },
+      "file": "15_shed_close.png",
+      "mode": "PLAYER",
+      "purpose": "timber stone shed",
+      "rendered": true
+    },
+    {
+      "camera": {
+        "orthoSize": 9.0,
+        "position": "(9.0, 6.0, 4.0)",
+        "projection": "orthographic",
+        "target": "(5.5, 1.1, 2.2)"
+      },
+      "file": "16_wall_kit.png",
+      "mode": "PLAYER",
+      "purpose": "dry-stone wall kit",
+      "rendered": true
+    },
+    {
+      "camera": {
+        "orthoSize": 15.0,
+        "position": "(15.0, 11.0, 16.0)",
+        "projection": "orthographic",
+        "target": "(2.0, 0.9, 3.0)"
+      },
+      "file": "17_road_path_hierarchy.png",
+      "mode": "PLAYER",
+      "purpose": "primary and secondary paths",
+      "rendered": true
+    },
+    {
+      "camera": {
+        "orthoSize": 10.0,
+        "position": "(12.0, 9.0, 12.0)",
+        "projection": "orthographic",
+        "target": "(1.8, 0.8, 0.0)"
+      },
+      "file": "18_water_crossing.png",
+      "mode": "PLAYER",
+      "purpose": "river and bridge crossing",
+      "rendered": true
+    },
+    {
+      "camera": {
+        "orthoSize": 7.0,
+        "position": "(15.0, 8.0, 11.0)",
+        "projection": "orthographic",
+        "target": "(10.8, 1.0, 3.8)"
+      },
+      "file": "19_trough_props.png",
+      "mode": "PLAYER",
+      "purpose": "trough and props",
+      "rendered": true
+    },
+    {
+      "camera": {
+        "orthoSize": 11.0,
+        "position": "(13.0, 10.0, 16.0)",
+        "projection": "orthographic",
+        "target": "(8.0, 1.0, 8.0)"
+      },
+      "file": "20_vegetation.png",
+      "mode": "PLAYER",
+      "purpose": "highland vegetation",
+      "rendered": true
+    },
+    {
+      "camera": {
+        "orthoSize": 10.0,
+        "position": "(13.0, 7.0, 12.0)",
+        "projection": "orthographic",
+        "target": "(-3.8, 1.0, -1.8)"
+      },
+      "file": "21_worker_scale_and_entrances.png",
+      "mode": "PLAYER",
+      "purpose": "Worker scale and entrances",
+      "rendered": true
+    },
+    {
+      "camera": {
+        "orthoSize": 25.0,
+        "position": "(22.0, 18.5, 23.0)",
+        "projection": "orthographic",
+        "target": "(0.0, 1.0, 3.0)"
+      },
+      "file": "22_footprint_compatibility.png",
+      "mode": "PLAYER",
+      "purpose": "footprint compatibility",
+      "rendered": true
+    },
+    {
+      "camera": {
+        "orthoSize": 18.0,
+        "position": "(16.0, 12.0, 16.0)",
+        "projection": "orthographic",
+        "target": "(0.0, 1.0, 3.0)"
+      },
+      "file": "23_collision_debug.png",
+      "mode": "PLAYER",
+      "purpose": "DEBUG_REVIEW collision proof",
+      "rendered": true
+    },
+    {
+      "camera": {
+        "orthoSize": 14.0,
+        "position": "(16.0, 12.0, 16.0)",
+        "projection": "orthographic",
+        "target": "(4.0, 1.0, 4.0)"
+      },
+      "file": "24_prospective_navigation_clearance.png",
+      "mode": "PLAYER",
+      "purpose": "DEBUG_REVIEW navigation clearance proof",
+      "rendered": true
+    },
+    {
+      "camera": {
+        "orthoSize": 12.0,
+        "position": "(14.0, 9.0, 14.0)",
+        "projection": "orthographic",
+        "target": "(0.0, 1.8, 4.0)"
+      },
+      "file": "25_material_harmony.png",
+      "mode": "PLAYER",
+      "purpose": "Barrosan material harmony",
+      "rendered": true
+    },
+    {
+      "camera": {
+        "orthoSize": 8.0,
+        "position": "(11.0, 7.0, 11.0)",
+        "projection": "orthographic",
+        "target": "(6.0, 1.7, 5.0)"
+      },
+      "file": "26_neutral_overcast_closeup.png",
+      "mode": "PLAYER",
+      "purpose": "neutral overcast closeup",
+      "rendered": true
+    },
+    {
+      "camera": {
+        "orthoSize": 8.0,
+        "position": "(11.0, 7.0, 11.0)",
+        "projection": "orthographic",
+        "target": "(6.0, 1.7, 5.0)"
+      },
+      "file": "27_cool_daylight_closeup.png",
+      "mode": "PLAYER",
+      "purpose": "cool daylight closeup",
+      "rendered": true
+    },
+    {
+      "camera": {
+        "orthoSize": 8.0,
+        "position": "(11.0, 7.0, 11.0)",
+        "projection": "orthographic",
+        "target": "(6.0, 1.7, 5.0)"
+      },
+      "file": "28_warm_directional_closeup.png",
+      "mode": "PLAYER",
+      "purpose": "warm directional closeup",
+      "rendered": true
+    },
+    {
+      "camera": {
+        "orthoSize": 21.0,
+        "position": "(22.0, 18.5, 23.0)",
+        "projection": "orthographic",
+        "target": "(-4.0, 1.0, 4.0)"
+      },
+      "file": "29_house02_empty_vs_contextual.png",
+      "mode": "PLAYER",
+      "purpose": "House 02 contextual integration",
+      "rendered": true
+    },
+    {
+      "camera": {
+        "orthoSize": 25.0,
+        "position": "(22.0, 18.5, 23.0)",
+        "projection": "orthographic",
+        "target": "(0.0, 1.0, 3.0)"
+      },
+      "file": "30_v0141_target_vs_v0339_mood.png",
+      "mode": "PLAYER",
+      "purpose": "v0.141 mood comparison source",
+      "rendered": true
+    },
+    {
+      "camera": {
+        "orthoSize": 25.0,
+        "position": "(22.0, 18.5, 23.0)",
+        "projection": "orthographic",
+        "target": "(0.0, 1.0, 3.0)"
+      },
+      "file": "31_performance_draw_call_evidence.png",
+      "mode": "PLAYER",
+      "purpose": "performance and draw-call evidence",
+      "rendered": true
+    }
+  ],
+  "checkpoint": "v0.339",
+  "continuousFrames": 504,
+  "debugReviewMode": "technical marker and route evidence available",
+  "defaultRuntimeIntegrated": false,
+  "errors": [],
+  "hud": {
+    "globalInstructionInsideSelectedCard": false,
+    "selectedCardOverlap": false
+  },
+  "lighting": [
+    "neutral overcast",
+    "cool daylight",
+    "warm directional"
+  ],
+  "noAI": true,
+  "noCombat": true,
+  "noEconomy": true,
+  "noGameplay": true,
+  "noMovement": true,
+  "noPathfinding": true,
+  "noPressureMutation": true,
+  "noResources": true,
+  "noSaves": true,
+  "noStableIDChanges": true,
+  "outcome": "READY FOR HUMAN BARROSAN HAMLET VERTICAL-SLICE REVIEW",
+  "performance": {
+    "averageFpsTarget": 60.0,
+    "meshNodeCount": 209,
+    "repeatedSpikesAbove50msTarget": 0
+  },
+  "playerMode": "clean PLAYER view; no technical overlay",
+  "prototypeOnly": true,
+  "prototypeOptIn": true,
+  "scenePath": "res://scenes/review/V0339BarrosanHamletVerticalSliceReview.tscn",
+  "schemaVersion": 1,
+  "secondaryAssetFamily": "repository-authored Blender v0.339 barn/shed/wall/trough/rock GLB",
+  "status": "PASS_V0339_BARROSAN_HAMLET_VERTICAL_SLICE",
+  "terrain": {
+    "embeddedStone": true,
+    "noTranslucentDebugPads": true,
+    "riverBelowLand": true,
+    "roadsConnected": true,
+    "true3D": true
+  },
+  "units": {
+    "defender": 1,
+    "positionsMutated": false,
+    "reserveSupport": 1,
+    "workers": 2
+  },
+  "v0338House02BlendSha256": "3da7c2cf71509e07c900001fd0b277e9af4584a074552ac1d929a4f37e0d78b6",
+  "v0338House02GLBSha256": "ceab23ff3cfb580cc63ce917ec1ff675a1cd318f8fe3390fc836166015ebba89",
+  "v0338House02InstancedUnmodified": true,
+  "vegetation": {
+    "restrainedHighland": true
+  },
+  "videoSeconds": 21.0,
+  "water": {
+    "banks": true,
+    "crossing": true,
+    "minorWatercourse": true
+  }
+}

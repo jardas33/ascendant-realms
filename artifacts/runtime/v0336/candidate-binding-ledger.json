@@ -1,0 +1,66 @@
+{
+  "checkpoint": "v0.336",
+  "generatedBy": "instantiated Godot scene",
+  "records": [
+    {
+      "albedoTexturePath": "art-source/materials/v0335/candidates/candidate_c/albedo.png",
+      "candidateKey": "candidate_c",
+      "displayedLabel": "MATERIAL 1",
+      "heightTexturePath": "art-source/materials/v0335/candidates/candidate_c/height.png",
+      "materialOverrideResource": "res://assets/v0336/materials/material_1.tres",
+      "materialResourceSha256": "485ec2520bf16c12c35e366b7c20d7cb0089844de6910ed1e29f22d7ed3e680b",
+      "meshInstanceNodePath": "/root/V0336GraniteEvidenceRepair/MATERIAL_1_RuntimeStructure/PrincipalWall_Left",
+      "meshResource": "BoxMesh(1.10m x 3.00m x 0.42m)",
+      "normalTexturePath": "art-source/materials/v0335/candidates/candidate_c/normal.png",
+      "roughnessTexturePath": "art-source/materials/v0335/candidates/candidate_c/roughness.png",
+      "runtimeVisible": true,
+      "sourceCandidateDirectory": "art-source/materials/v0335/candidates/candidate_c",
+      "textureSha256": {
+        "albedo": "05a591cca26f3fd55c14d36c4acf853efa90cca4b66ab15b4974729bd32c061a",
+        "height": "b603ac1513eb29cc8b6af7094d7eff39d1ca0c2f38e1259632eeff3c3f2b79bf",
+        "normal": "5ae87dde4f2c80044507541a5af5b8126448176f1e0842860b6bd76f68e01323",
+        "roughness": "3c63b8c19f5d213f68b53bb4235430c15488297cee2f573d72770690387bf2d5"
+      }
+    },
+    {
+      "albedoTexturePath": "art-source/materials/v0335/candidates/candidate_b/albedo.png",
+      "candidateKey": "candidate_b",
+      "displayedLabel": "MATERIAL 2",
+      "heightTexturePath": "art-source/materials/v0335/candidates/candidate_b/height.png",
+      "materialOverrideResource": "res://assets/v0336/materials/material_2.tres",
+      "materialResourceSha256": "cc7f556ef7f612460dfed68a207f72b70c351947be1da142c81d6dbb7858377e",
+      "meshInstanceNodePath": "/root/V0336GraniteEvidenceRepair/MATERIAL_2_RuntimeStructure/PrincipalWall_Left",
+      "meshResource": "BoxMesh(1.10m x 3.00m x 0.42m)",
+      "normalTexturePath": "art-source/materials/v0335/candidates/candidate_b/normal.png",
+      "roughnessTexturePath": "art-source/materials/v0335/candidates/candidate_b/roughness.png",
+      "runtimeVisible": false,
+      "sourceCandidateDirectory": "art-source/materials/v0335/candidates/candidate_b",
+      "textureSha256": {
+        "albedo": "a635755bdcf7b2fe0e732899bba3deca44660991954412ace83904a2208d0f8d",
+        "height": "81865332c482e5d69127d72e6388aca510f9ac696b11736066cb29d7620f889b",
+        "normal": "f24923594dbee47b30ec2ba0c57b3c4b4e0d5f7dbcf417e3fc8facbf437465a2",
+        "roughness": "14d49afd130c00ff20284e2cb523ae5f549f55a667ea73f8c242d0462a03f81b"
+      }
+    },
+    {
+      "albedoTexturePath": "art-source/materials/v0335/candidates/candidate_a/albedo.jpg",
+      "candidateKey": "candidate_a",
+      "displayedLabel": "MATERIAL 3",
+      "heightTexturePath": "art-source/materials/v0335/candidates/candidate_a/height.png",
+      "materialOverrideResource": "res://assets/v0336/materials/material_3.tres",
+      "materialResourceSha256": "3ab5e44cce88c4af6e0828bbb32cece6e140e3f48bb1e03b6a103adf36e6f7c0",
+      "meshInstanceNodePath": "/root/V0336GraniteEvidenceRepair/MATERIAL_3_RuntimeStructure/PrincipalWall_Left",
+      "meshResource": "BoxMesh(1.10m x 3.00m x 0.42m)",
+      "normalTexturePath": "art-source/materials/v0335/candidates/candidate_a/normal.png",
+      "roughnessTexturePath": "art-source/materials/v0335/candidates/candidate_a/roughness.jpg",
+      "runtimeVisible": false,
+      "sourceCandidateDirectory": "art-source/materials/v0335/candidates/candidate_a",
+      "textureSha256": {
+        "albedo": "fce2fe5350bb8ca1ded96b6c81eaacb19126b3bf7d9d59c493cca7f76753796a",
+        "height": "72325fddbf04962e6b79381d2293394e2714a58fa4b500a5bc8ab5c27688003f",
+        "normal": "a3b9c476b2306af9d0f1737f3a1e4abe4460be86dd451e31a99128edbadd590d",
+        "roughness": "1e59cd0b9fea11246fe42a2c96af89f7038910751c001470a6ca29baef934a41"
+      }
+    }
+  ]
+}

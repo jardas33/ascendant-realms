@@ -1,0 +1,85 @@
+{
+    "humanReviewStop":  true,
+    "board06CroppingDetected":  false,
+    "canonicalBarnMutationCount":  0,
+    "placementMutationCount":  0,
+    "objectCR2AbsenceReason":  "BARN_ROOT_REMOVED_BY_ROLLBACK",
+    "objectBFound":  true,
+    "objectAFound":  true,
+    "objectCFound":  true,
+    "r2BarnRootCount":  0,
+    "requiredWorkerGap":  1.875,
+    "objectCRecommendation":  "REWORK ASSET LATER",
+    "board06ExtraDuplicateSceneObjects":  0,
+    "v0364PresenceStateContradictionFound":  true,
+    "objectCR0AbsenceReason":  "BARN_ROOT_NOT_INSTANTIATED",
+    "objectCIndependentToggle":  false,
+    "checkpoint":  "v0.365",
+    "retainedBarnNodeCountAfterRollback":  0,
+    "board06EqualPanelDimensions":  true,
+    "v0365PresenceStateContradictionRepaired":  true,
+    "r0BarnRootCount":  0,
+    "objectARecommendation":  "REWORK ASSET LATER",
+    "navigationMutationCount":  0,
+    "objectAStatePresenceDerived":  true,
+    "objectCOwnerClassification":  "Canonical Barn single merged render mesh",
+    "objectBRecommendation":  "INSUFFICIENT EVIDENCE - REQUIRES TARGETED MESH SEPARATION BEFORE DECISION",
+    "objectBNodePaths":  [
+                             "/V0358_House02_Shared_Baseline_Unmodified/LOD0_Weathered_Timber"
+                         ],
+    "objectBIndependentToggle":  true,
+    "saveMutationCount":  0,
+    "board06SameCamera":  true,
+    "r1DuplicateBarnRootCount":  0,
+    "materialMutationCount":  0,
+    "collisionMutationCount":  0,
+    "objectAOwnerClassification":  "House02 canonical merged parent render mesh",
+    "objectBBroadNodeWarning":  true,
+    "structuralGap":  2.48,
+    "board06Title":  "BROAD HOUSE02 TIMBER-NODE VISIBILITY DIAGNOSTIC",
+    "r0R2StateSignatureMatch":  true,
+    "r0R2RawCaptureMatch":  true,
+    "board06DiagnosticOnly":  true,
+    "board06Warning":  "HIDING LOD0_WEATHERED_TIMBER ALSO REMOVES HOUSE02 DOORS, WINDOWS AND OTHER TIMBER SURFACES",
+    "previousCommit":  "6f22894958ddf5de9b850037d498694dd3dab30d",
+    "stableIdMutationCount":  0,
+    "objectBStatePresenceDerived":  true,
+    "objectANodePaths":  [
+                             "/V0358_House02_Shared_Baseline_Unmodified/LOD0_Granite"
+                         ],
+    "defaultRuntimeMutationCount":  0,
+    "objectAPresentStates":  [
+                                 "R0",
+                                 "R1",
+                                 "R2"
+                             ],
+    "objectBPresentStates":  [
+                                 "R0",
+                                 "R1",
+                                 "R2"
+                             ],
+    "v0364ProvenanceFindingsRetained":  true,
+    "textureMutationCount":  0,
+    "gameplayMutationCount":  0,
+    "objectCNodePaths":  [
+                             "/V0358_Barrosan_Barn_Gold_OptIn_Single_Instance/V0347_Barn_Rendered_Geometry_Truth"
+                         ],
+    "benchmarkRerunCount":  0,
+    "geometryMutationCount":  0,
+    "house02SourceMutationCount":  0,
+    "transformMutationCount":  0,
+    "objectAIndependentToggle":  false,
+    "acceptedBarnRootTransform":  {
+                                      "y":  0.18,
+                                      "z":  -1,
+                                      "x":  4
+                                  },
+    "r1BarnRootCount":  1,
+    "objectCPresentStates":  [
+                                 "R1"
+                             ],
+    "previousCheckpoint":  "v0.364",
+    "objectBOwnerClassification":  "House02 canonical active LOD0 broad timber component",
+    "objectCStatePresenceDerived":  true,
+    "roofEaveGap":  2.51
+}

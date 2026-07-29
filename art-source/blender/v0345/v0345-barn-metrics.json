@@ -1,0 +1,103 @@
+{
+  "checkpoint": "v0.345",
+  "sourceBlend": "art-source/blender/v0345/barn_proportion_simple_slate_roof_reset.blend",
+  "sourceGLB": "desktop-spikes/godot-salto/assets/v0345/barn_proportion_simple_slate_roof_reset.glb",
+  "beforeV0344": {
+    "width": 8.04,
+    "depth": 6.115,
+    "eave": 5.18,
+    "ridge": 6.78
+  },
+  "afterV0345": {
+    "width": 12.464,
+    "depth": 11.157,
+    "height": 7.691,
+    "eave": 4.68,
+    "ridge": 7.840800000000001
+  },
+  "house02Anchor": {
+    "ridge": 7.26,
+    "eave": 4.36,
+    "frontWidth": 10.02,
+    "depth": 9.71
+  },
+  "ratiosBefore": {
+    "ridgeHeight": 0.934,
+    "eaveHeight": 1.188,
+    "frontWidth": 0.802,
+    "depth": 0.63
+  },
+  "ratiosAfter": {
+    "ridgeHeight": 1.08,
+    "eaveHeight": 1.073,
+    "frontWidth": 1.244,
+    "depth": 1.149
+  },
+  "scaleAppliedToRetainedV0344Mesh": {
+    "x": 1.4955223951554293,
+    "y": 1.7149304960989618,
+    "z": 0.9307172998916975,
+    "minZ": 0.20999997854232788,
+    "centerX": 0.0,
+    "centerY": -0.07250010967254639
+  },
+  "roof": {
+    "principalSlopes": 2,
+    "frontSlope": true,
+    "rearSlope": true,
+    "straightRidge": true,
+    "secondaryRoofNodes": 0,
+    "pedimentNodes": 0,
+    "paleRoofFaces": 0,
+    "graniteRoofFaces": 0,
+    "placeholderRoofFaces": 0,
+    "floatingRoofPieces": 0,
+    "intersectingSecondaryRoofPieces": 0,
+    "restoredLeftGraniteGable": true,
+    "eaveOverhangM": 0.28,
+    "vergeOverhangM": 0.22,
+    "fasciaThicknessM": 0.11,
+    "finalSlateMaterial": "V0345_Simple_Weathered_Slate",
+    "finalUndersideMaterial": "V0345_Simple_Weathered_Slate_Underside",
+    "finalEdgeMaterial": "V0345_Subordinate_Dark_Timber_Roof_Edge"
+  },
+  "openings": {
+    "lowerDoubleLivestockDoor": true,
+    "upperHayLoadingOpening": true,
+    "rearServiceOpening": true,
+    "agriculturalLevels": 2
+  },
+  "usedMaterials": [
+    "V0343_House02Derived_Iron",
+    "V0343_House02Derived_Recess",
+    "V0343_House02Derived_Weathered_Timber",
+    "V0344_House02Derived_Granite_Continuous",
+    "V0345_Simple_Weathered_Slate",
+    "V0345_Simple_Weathered_Slate_Underside",
+    "V0345_Subordinate_Dark_Timber_Roof_Edge"
+  ],
+  "visibleTriangles": 3241,
+  "sourceHashes": {
+    "v0344Blend": "d63a8364f3edb10d20926a45dd52a41c8d0b8042fe707cf2aae267fbc63ac198",
+    "v0344GLB": "76cd62330d4cb4073469fe51e510557d93dcc0d9a07e9f234a539561abda7015",
+    "v0344CopiedForV0345": "d63a8364f3edb10d20926a45dd52a41c8d0b8042fe707cf2aae267fbc63ac198",
+    "v0343Blend": "ecb268c7a4f69c914951a0dbd9494fb332003566073b2311b47a348ba9f831e9",
+    "v0343GLB": "d4d780510b1812e7e4f082f24dfee049ab21f905acbaaeaa4f54d6f67b4118b9",
+    "house02Blend": "3da7c2cf71509e07c900001fd0b277e9af4584a074552ac1d929a4f37e0d78b6",
+    "house02GLB": "ceab23ff3cfb580cc63ce917ec1ff675a1cd318f8fe3390fc836166015ebba89"
+  },
+  "acceptedResourcesRetained": {
+    "granite": "V0344_House02Derived_Granite_Continuous",
+    "slateSource": "V0334_Weathered_Slate",
+    "timberSource": "V0343_House02Derived_Weathered_Timber"
+  },
+  "prototypeOnly": true,
+  "defaultRuntimeIntegrated": false,
+  "noGameplay": true,
+  "noMovement": true,
+  "noPathfinding": true,
+  "noCombat": true,
+  "noEconomy": true,
+  "noStableIdOrSaveMutation": true,
+  "assetProvenance": "repository-authored v0.344 derivative; accepted House02 granite/slate/timber resources; no protected game assets"
+}

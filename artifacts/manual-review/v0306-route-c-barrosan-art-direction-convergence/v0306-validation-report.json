@@ -1,0 +1,8 @@
+{
+  "status": "PASS_V0306_ROUTE_C_BARROSAN_CONVERGENCE_VALIDATION",
+  "realRenderedCaptureCount": 25,
+  "v0305Score": 55,
+  "v0306Score": 68,
+  "visualStatus": "revise again",
+  "errors": []
+}

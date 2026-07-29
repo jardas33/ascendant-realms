@@ -1,0 +1,177 @@
+{
+  "checkpoint": "v0.341",
+  "status": "PASS_V0341_BARROSAN_AGRICULTURAL_BARN_GOLD_ASSET_PACK",
+  "outcome": "READY FOR HUMAN BARROSAN AGRICULTURAL BARN GOLD-ASSET REVIEW",
+  "humanReviewRequired": true,
+  "automatedVisualApproval": false,
+  "baseHead": "6d147d7efb602e87d406d2cdd48915cdda0e6101",
+  "prototypeOptIn": true,
+  "defaultRuntimeIntegrated": false,
+  "scenePath": "desktop-spikes/godot-salto/scenes/review/V0341BarrosanAgriculturalBarnGoldAssetReview.tscn",
+  "sourceBlend": "art-source/blender/v0341/barrosan_agricultural_barn_gold_asset.blend",
+  "sourceGLB": "desktop-spikes/godot-salto/assets/v0341/barrosan_agricultural_barn_gold_asset.glb",
+  "sourceIdentity": "clean-room authored Barrosan agricultural barn; not derived from visible v0.340 barn",
+  "frozenHouse02Hashes": {
+    "blend": "3da7c2cf71509e07c900001fd0b277e9af4584a074552ac1d929a4f37e0d78b6",
+    "glb": "ceab23ff3cfb580cc63ce917ec1ff675a1cd318f8fe3390fc836166015ebba89"
+  },
+  "house02Modified": false,
+  "documentaryTarget": "v0.304 recovered Barrosan/Montesinho reference lineage; reference-only, no imported protected asset",
+  "barn": {
+    "candidateLineage": "candidate_a geological granite",
+    "dimensionsMeters": {
+      "depth": 4.8,
+      "lowerEntranceHeight": 2.42,
+      "ridgeHeight": 6.61,
+      "upperLoadingHeight": 1.55,
+      "wallHeight": 4.85,
+      "width": 7.2
+    },
+    "identity": "production candidate Barrosan granite agricultural barn",
+    "lowerFunction": "livestock and storage",
+    "masonry": "irregular authored granite relief with recessed mortar and structural corner stones",
+    "materials": [
+      "candidate_a granite",
+      "charcoal slate",
+      "weathered timber",
+      "limited dark iron"
+    ],
+    "roofPrincipalSlopes": 2,
+    "upperFunction": "hay and crop storage"
+  },
+  "terrainContact": {
+    "brightGreenBoard": false,
+    "darkDampContact": true,
+    "embeddedGraniteRocks": 5,
+    "gentleSlopeMeters": 0.65,
+    "pedestal": false
+  },
+  "workerScale": {
+    "clearanceMeters": 1.75,
+    "referenceHeightMeters": 1.75,
+    "silhouettes": 2
+  },
+  "metrics": {
+    "boundsMeters": "7.2 x 4.8 x 6.61",
+    "collisionTriangles": 64,
+    "drawCalls": 241,
+    "lod0Triangles": 22000,
+    "lod1Triangles": 11000,
+    "lod2Triangles": 5500,
+    "materialSlots": 12,
+    "mirroredNormals": false,
+    "renderObjects": 241,
+    "texelDensity": "documented 128px/m equivalent review ledger",
+    "textureCount": 3,
+    "textureResolution": "128x128 authored albedo ledgers embedded in GLB",
+    "uvIslands": 34,
+    "uvOverlap": false,
+    "workerClearanceMeters": 1.75
+  },
+  "performance": {
+    "averageFps": 75.0043896319031,
+    "drawCalls": 241,
+    "estimatedTextureMemoryBytes": 196608,
+    "materialCount": 12,
+    "measurementSeconds": 13.33789,
+    "medianFps": 75.007500750075,
+    "medianFrameTimeMs": 13.332,
+    "minimumFps": 63.1831680040437,
+    "onePercentLowFps": 73.9426205264715,
+    "p99FrameTimeMs": 13.524,
+    "renderObjects": 241,
+    "repeatedSpikesAbove50ms": 0,
+    "sampleCount": 1000,
+    "textureCount": 3,
+    "visibleTriangles": 22000,
+    "warmupSeconds": 5.0
+  },
+  "captures": {
+    "count": 38,
+    "realGodot": true,
+    "errors": []
+  },
+  "video": {
+    "codec": "h264",
+    "width": 1280,
+    "height": 720,
+    "frameRate": "24/1",
+    "durationSeconds": 15.0,
+    "decodedFrames": 360,
+    "blackFrameSamples": [
+      0,
+      90,
+      180,
+      270,
+      359
+    ],
+    "allNonBlank": true,
+    "frozenAdjacentFrames": 0,
+    "meaningfulCameraChanges": true
+  },
+  "preservation": {
+    "noGameplay": true,
+    "noMovement": true,
+    "noPathfinding": true,
+    "noCombat": true,
+    "noDamage": true,
+    "noAI": true,
+    "noWaves": true,
+    "noEconomy": true,
+    "noResources": true,
+    "noSaves": true,
+    "noStableIDChanges": true
+  },
+  "exactUploadFiles": [
+    {
+      "path": "00_READ_ME_FIRST.md",
+      "bytes": 1099,
+      "sha256": "6d4b27da842b278deaa8fa95f9c561f23270eb4b80b6ac2a4fed47617d468c2b"
+    },
+    {
+      "path": "01_HUMAN_V0340_DECISION_AND_DOCUMENTARY_TARGET.png",
+      "bytes": 697567,
+      "sha256": "ce624e020ad400a11933d7e2beb0e003a43f25c9f010aa302e8277e9d4804415"
+    },
+    {
+      "path": "02_PRIMARY_PLAYER_AND_HOUSE02_COMPARISON.png",
+      "bytes": 217212,
+      "sha256": "577eff26484509d49b2fbc62bf3de1c8b146d60ed049f494a18fe18678f81460"
+    },
+    {
+      "path": "03_ORTHOGRAPHICS_DIMENSIONS_AND_FUNCTION.png",
+      "bytes": 254853,
+      "sha256": "dffb7bbe82ccb111f859b7bfbbbfe385c3e1d73a906ba092be12b5ab123625da"
+    },
+    {
+      "path": "04_GRANITE_MASONRY_AND_FOUNDATION.png",
+      "bytes": 323410,
+      "sha256": "4574f8d25125cc070de76198d4e7a8cb08074b9a11fad1df2dac4024080ddfb4"
+    },
+    {
+      "path": "05_SLATE_ROOF_TIMBER_AND_OPENINGS.png",
+      "bytes": 299231,
+      "sha256": "8aea47f8f33375edf07fcfbb1dd4f6485bc6931fb19efb68ab1a6dc68efae3fd"
+    },
+    {
+      "path": "06_LIGHTING_RTS_AND_256_READABILITY.png",
+      "bytes": 343265,
+      "sha256": "f3423a703f33428abc30bfcd20c460b8f8638dfbc7d394c7145db76aba0c870b"
+    },
+    {
+      "path": "07_PBR_UV_WIREFRAME_LOD_COLLISION.png",
+      "bytes": 564583,
+      "sha256": "f6f1aa496874d982cc99cc731a295ee7a349d4f07837b4d8fa796363ac6b2dfe"
+    },
+    {
+      "path": "08_CONTINUOUS_V0341_BARROSAN_BARN_GOLD_ASSET.mp4",
+      "bytes": 1629150,
+      "sha256": "c526d17d078bc210236f5b39afe3822e957d0a101bcfe3f3b71f736aa2061c3e"
+    }
+  ],
+  "knownLimitations": [
+    "human visual approval remains required",
+    "gold asset is review-only and not production-wide conversion",
+    "no later environment work is authorised by this checkpoint"
+  ]
+}

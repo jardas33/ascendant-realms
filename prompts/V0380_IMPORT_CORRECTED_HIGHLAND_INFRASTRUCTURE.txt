@@ -1,0 +1,208 @@
+/goal v0.380 — IMPORT THE PROVIDED CORRECTED HIGHLAND INFRASTRUCTURE KIT AND PREPARE A STRICT HUMAN VISUAL REVIEW
+
+Branch:
+codex/v0215-v0226-recovery
+
+Expected starting HEAD:
+eaa2bd2a684f3f28f161dc873e657aed57df519f
+
+==================================================
+PRECONDITIONS
+==================================================
+
+Before work:
+
+1. Verify the exact branch and HEAD above.
+2. Verify tracked state is clean and synchronized.
+3. Preserve all existing/generated untracked files.
+4. Confirm these supplied files exist:
+
+external-art-intake/original-barrosan/v0380-authored-highland-infrastructure/exports/barrosan_highland_infrastructure_v0380.glb
+
+external-art-intake/original-barrosan/v0380-authored-highland-infrastructure/source/generate_v0380_highland_infrastructure.py
+
+5. Read:
+
+external-art-intake/original-barrosan/v0380-authored-highland-infrastructure/documentation/README.md
+
+external-art-intake/original-barrosan/v0380-authored-highland-infrastructure/documentation/DESIGN_NOTES.md
+
+external-art-intake/original-barrosan/v0380-authored-highland-infrastructure/documentation/SHA256_MANIFEST.json
+
+Stop honestly if any precondition fails.
+
+==================================================
+HUMAN DECISION AND SCOPE
+==================================================
+
+The v0.379 human review is rejected visually because the rendered terrain showed strong repeated triangular/corrugated shading and the river appeared split into disconnected water segments around the bridge.
+
+v0.380 supplies a corrected authored source and GLB. This checkpoint must import and present the exact supplied GLB. It must not redesign the terrain.
+
+Scope is limited to:
+
+- continuous terrain;
+- embedded road;
+- one continuous recessed river and wet banks;
+- timber bridge with granite landings;
+- sparse rocks, reeds and shrubs.
+
+No buildings, units, HUD, gameplay or production migration.
+
+==================================================
+SOURCE PRESERVATION
+==================================================
+
+Copy the supplied GLB byte-for-byte into a new versioned Godot asset path.
+
+Record SHA-256 for:
+
+- supplied GLB;
+- imported GLB;
+- source generator.
+
+The supplied and imported GLB hashes must match exactly.
+
+Do not:
+
+- regenerate the GLB;
+- edit source geometry;
+- remesh;
+- flatten;
+- replace vertex colours;
+- add a separate road plane;
+- add replacement water strips;
+- repair the scene with primitive substitutes.
+
+Only bounded presentation changes are allowed:
+
+- camera;
+- directional light;
+- environment/ambient energy;
+- background colour;
+- exposure;
+- shadow settings.
+
+==================================================
+ISOLATED ROUTE
+==================================================
+
+Create an isolated opt-in route, for example:
+
+desktop-spikes/godot-salto/scenes/v0380_corrected_highland_infrastructure.tscn
+
+desktop-spikes/godot-salto/scripts/v0380_corrected_highland_infrastructure.gd
+
+desktop-spikes/godot-salto/assets/v0380/corrected-highland-infrastructure/barrosan_highland_infrastructure_v0380.glb
+
+Suggested commands:
+
+npm run godot:play:v0380-highland-infrastructure
+npm run godot:smoke:v0380-highland-infrastructure
+npm run godot:capture:v0380-highland-infrastructure
+npm run godot:validate:v0380-highland-infrastructure
+
+Do not change the true default runtime or retained v0.378/v0.379 routes.
+
+==================================================
+MANDATORY VISUAL PRESENTATION LOOP
+==================================================
+
+Perform up to three deterministic presentation iterations using the exact same GLB.
+
+For every iteration render and open these six real 1920×1080 frames:
+
+1. primary orthographic-oblique RTS view;
+2. road and terrain detail;
+3. continuous river-through-crossing detail;
+4. bridge and landings close-up;
+5. elevated topology/spacing audit;
+6. grayscale primary.
+
+Use camera and lighting only to reveal the supplied geometry honestly.
+
+Do not hide defects with fog, bloom, extreme angle, darkness or distant framing.
+
+==================================================
+HUMAN-REVIEW CRITICAL CHECKS
+==================================================
+
+The final images must visibly prove all of the following:
+
+- no repeating diagonal/corrugated terrain shading;
+- broad smooth low-poly relief rather than ribbed fabric;
+- one continuous water surface from one side of the frame to the other;
+- water visibly continues beneath the bridge;
+- no land plug blocks or splits the river at the crossing;
+- road approaches both bridge landings without occupying the river channel;
+- road width is restrained and readable;
+- riverbanks have depth and a darker wet transition;
+- bridge deck, planks, rails, beams, abutments and landings read as one crossing;
+- no visible map boundary in the primary frame;
+- no black/blank frame, title card, debug overlay or HUD.
+
+Any of these defects forces a blocked result:
+
+- corrugated or striped terrain;
+- disconnected water pieces;
+- terrain visible through or above water in the channel;
+- road continuing as land underneath the bridge;
+- floating bridge component;
+- bridge/road misalignment;
+- visible map edge in primary view;
+- washed-out presentation that prevents judgment.
+
+Do not award a production score. This is a human presentation review.
+
+==================================================
+DELIVERY
+==================================================
+
+If all critical checks are visibly met, create exactly:
+
+artifacts/manual-review/v0380-corrected-highland-infrastructure/
+
+00_READ_ME_FIRST.md
+01_PRIMARY_RTS_VIEW.png
+02_ROAD_AND_TERRAIN_DETAIL.png
+03_CONTINUOUS_RIVER_CROSSING.png
+04_BRIDGE_AND_LANDINGS.png
+05_ELEVATED_TOPOLOGY_AUDIT.png
+06_GRAYSCALE_PRIMARY.png
+07_SOURCE_HASH_AND_IMPORT_REPORT.md
+08_PRESENTATION_REVIEW.md
+09_VALIDATION.json
+
+Use exactly:
+
+READY FOR HUMAN V0380 CORRECTED HIGHLAND INFRASTRUCTURE REVIEW
+
+If any critical source defect remains, do not create a success pack. Preserve evidence under artifacts/work/, create an honest blocker report and use exactly:
+
+BLOCKED — V0380 CORRECTED HIGHLAND INFRASTRUCTURE PRESENTATION FAILED
+
+==================================================
+VALIDATION AND CLOSEOUT
+==================================================
+
+After presentation acceptance:
+
+- focused v0.380 validator;
+- focused smoke;
+- exact source/import hashes;
+- exact review-pack membership;
+- genuine 1920×1080 PNG checks;
+- npm test;
+- npm run build;
+- npm run validate:content;
+- npm run validate:art-intake;
+- npm run validate:runtime-art-slots;
+- npm run validate:artifact-retention;
+- npm run godot:all;
+- git diff --check.
+
+Commit, push and wait for exact-SHA CI.
+
+Report branch, commit, CI, commands, hashes, report and review-pack path.
+
+Do not begin v0.381.

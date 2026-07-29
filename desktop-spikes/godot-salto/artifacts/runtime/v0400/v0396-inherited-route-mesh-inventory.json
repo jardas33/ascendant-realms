@@ -1,0 +1,3127 @@
+{
+  "captureMode": false,
+  "checkpoint": "v0.396",
+  "identifiedLegacyOverride": "V0395_One_Compacted_Warm_Earth_Bridge_Yard_Door_Route -> V0394_Bridge_Desaturated_Value",
+  "meshCount": 255,
+  "meshes": [
+    {
+      "aabb": "AABB(-44, -1.6813709, -33, 88, 3.4909544, 66)",
+      "materialOverride": "null",
+      "name": "Terrain_Highland_Continuous",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0380_Accepted_Corrected_Highland_Infrastructure_Unchanged/world/Terrain_Highland_Continuous",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        ""
+      ],
+      "visible": true,
+      "worldPosition": "Vector3(0, 0, 0)"
+    },
+    {
+      "aabb": "AABB(-5.817447, -0.6879992, -36, 11.673752, 0.035998404, 72)",
+      "materialOverride": "null",
+      "name": "Water_Recessed_River",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0380_Accepted_Corrected_Highland_Infrastructure_Unchanged/world/Water_Recessed_River",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        ""
+      ],
+      "visible": true,
+      "worldPosition": "Vector3(0, 0, 0)"
+    },
+    {
+      "aabb": "AABB(-5.875, -0.625, -2.325, 1.25, 1.35, 4.65)",
+      "materialOverride": "V0394_Bridge_Desaturated_Value",
+      "name": "Bridge_Abutment_-1",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0380_Accepted_Corrected_Highland_Infrastructure_Unchanged/world/Bridge_Abutment_-1",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        ""
+      ],
+      "visible": true,
+      "worldPosition": "Vector3(0, 0, 0)"
+    },
+    {
+      "aabb": "AABB(-6.025, -0.76, -2.5, 1.5500002, 0.28, 5)",
+      "materialOverride": "V0394_Bridge_Desaturated_Value",
+      "name": "Bridge_Footing_-1",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0380_Accepted_Corrected_Highland_Infrastructure_Unchanged/world/Bridge_Footing_-1",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        ""
+      ],
+      "visible": true,
+      "worldPosition": "Vector3(0, 0, 0)"
+    },
+    {
+      "aabb": "AABB(4.625, -0.625, -2.325, 1.25, 1.35, 4.65)",
+      "materialOverride": "V0394_Bridge_Desaturated_Value",
+      "name": "Bridge_Abutment_+1",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0380_Accepted_Corrected_Highland_Infrastructure_Unchanged/world/Bridge_Abutment_+1",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        ""
+      ],
+      "visible": true,
+      "worldPosition": "Vector3(0, 0, 0)"
+    },
+    {
+      "aabb": "AABB(4.475, -0.76, -2.5, 1.5500002, 0.28, 5)",
+      "materialOverride": "V0394_Bridge_Desaturated_Value",
+      "name": "Bridge_Footing_+1",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0380_Accepted_Corrected_Highland_Infrastructure_Unchanged/world/Bridge_Footing_+1",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        ""
+      ],
+      "visible": true,
+      "worldPosition": "Vector3(0, 0, 0)"
+    },
+    {
+      "aabb": "AABB(-4.7, 0.17, -1.42, 9.4, 0.3, 0.27999997)",
+      "materialOverride": "V0394_Bridge_Desaturated_Value",
+      "name": "Bridge_Underbeam_-1_28",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0380_Accepted_Corrected_Highland_Infrastructure_Unchanged/world/Bridge_Underbeam_-1_28",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        ""
+      ],
+      "visible": true,
+      "worldPosition": "Vector3(0, 0, 0)"
+    },
+    {
+      "aabb": "AABB(-4.7, 0.17, 1.14, 9.4, 0.3, 0.27999997)",
+      "materialOverride": "V0394_Bridge_Desaturated_Value",
+      "name": "Bridge_Underbeam_+1_28",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0380_Accepted_Corrected_Highland_Infrastructure_Unchanged/world/Bridge_Underbeam_+1_28",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        ""
+      ],
+      "visible": true,
+      "worldPosition": "Vector3(0, 0, 0)"
+    },
+    {
+      "aabb": "AABB(-2.64, 0.26, -1.825, 0.2800002, 0.28000003, 3.65)",
+      "materialOverride": "V0394_Bridge_Desaturated_Value",
+      "name": "Bridge_Crossbeam_-2_50",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0380_Accepted_Corrected_Highland_Infrastructure_Unchanged/world/Bridge_Crossbeam_-2_50",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        ""
+      ],
+      "visible": true,
+      "worldPosition": "Vector3(0, 0, 0)"
+    },
+    {
+      "aabb": "AABB(-0.14, 0.26, -1.825, 0.28, 0.28000003, 3.65)",
+      "materialOverride": "V0394_Bridge_Desaturated_Value",
+      "name": "Bridge_Crossbeam_+0_00",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0380_Accepted_Corrected_Highland_Infrastructure_Unchanged/world/Bridge_Crossbeam_+0_00",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        ""
+      ],
+      "visible": true,
+      "worldPosition": "Vector3(0, 0, 0)"
+    },
+    {
+      "aabb": "AABB(2.36, 0.26, -1.825, 0.2800002, 0.28000003, 3.65)",
+      "materialOverride": "V0394_Bridge_Desaturated_Value",
+      "name": "Bridge_Crossbeam_+2_50",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0380_Accepted_Corrected_Highland_Infrastructure_Unchanged/world/Bridge_Crossbeam_+2_50",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        ""
+      ],
+      "visible": true,
+      "worldPosition": "Vector3(0, 0, 0)"
+    },
+    {
+      "aabb": "AABB(-4.6843333, 0.6, -1.625, 0.49088907, 0.17999995, 3.25)",
+      "materialOverride": "V0394_Bridge_Desaturated_Value",
+      "name": "Bridge_Deck_Plank_00",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0380_Accepted_Corrected_Highland_Infrastructure_Unchanged/world/Bridge_Deck_Plank_00",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        ""
+      ],
+      "visible": true,
+      "worldPosition": "Vector3(0, 0, 0)"
+    },
+    {
+      "aabb": "AABB(-4.1621113, 0.6, -1.625, 0.49088907, 0.17999995, 3.25)",
+      "materialOverride": "V0394_Bridge_Desaturated_Value",
+      "name": "Bridge_Deck_Plank_01",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0380_Accepted_Corrected_Highland_Infrastructure_Unchanged/world/Bridge_Deck_Plank_01",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        ""
+      ],
+      "visible": true,
+      "worldPosition": "Vector3(0, 0, 0)"
+    },
+    {
+      "aabb": "AABB(-3.639889, 0.6, -1.625, 0.49088907, 0.17999995, 3.25)",
+      "materialOverride": "V0394_Bridge_Desaturated_Value",
+      "name": "Bridge_Deck_Plank_02",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0380_Accepted_Corrected_Highland_Infrastructure_Unchanged/world/Bridge_Deck_Plank_02",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        ""
+      ],
+      "visible": true,
+      "worldPosition": "Vector3(0, 0, 0)"
+    },
+    {
+      "aabb": "AABB(-3.1176667, 0.6, -1.625, 0.49088883, 0.17999995, 3.25)",
+      "materialOverride": "V0394_Bridge_Desaturated_Value",
+      "name": "Bridge_Deck_Plank_03",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0380_Accepted_Corrected_Highland_Infrastructure_Unchanged/world/Bridge_Deck_Plank_03",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        ""
+      ],
+      "visible": true,
+      "worldPosition": "Vector3(0, 0, 0)"
+    },
+    {
+      "aabb": "AABB(-2.5954444, 0.6, -1.625, 0.49088883, 0.17999995, 3.25)",
+      "materialOverride": "V0394_Bridge_Desaturated_Value",
+      "name": "Bridge_Deck_Plank_04",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0380_Accepted_Corrected_Highland_Infrastructure_Unchanged/world/Bridge_Deck_Plank_04",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        ""
+      ],
+      "visible": true,
+      "worldPosition": "Vector3(0, 0, 0)"
+    },
+    {
+      "aabb": "AABB(-2.0732222, 0.6, -1.625, 0.49088883, 0.17999995, 3.25)",
+      "materialOverride": "V0394_Bridge_Desaturated_Value",
+      "name": "Bridge_Deck_Plank_05",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0380_Accepted_Corrected_Highland_Infrastructure_Unchanged/world/Bridge_Deck_Plank_05",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        ""
+      ],
+      "visible": true,
+      "worldPosition": "Vector3(0, 0, 0)"
+    },
+    {
+      "aabb": "AABB(-1.551, 0.6, -1.625, 0.49088883, 0.17999995, 3.25)",
+      "materialOverride": "V0394_Bridge_Desaturated_Value",
+      "name": "Bridge_Deck_Plank_06",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0380_Accepted_Corrected_Highland_Infrastructure_Unchanged/world/Bridge_Deck_Plank_06",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        ""
+      ],
+      "visible": true,
+      "worldPosition": "Vector3(0, 0, 0)"
+    },
+    {
+      "aabb": "AABB(-1.0287777, 0.6, -1.625, 0.49088883, 0.17999995, 3.25)",
+      "materialOverride": "V0394_Bridge_Desaturated_Value",
+      "name": "Bridge_Deck_Plank_07",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0380_Accepted_Corrected_Highland_Infrastructure_Unchanged/world/Bridge_Deck_Plank_07",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        ""
+      ],
+      "visible": true,
+      "worldPosition": "Vector3(0, 0, 0)"
+    },
+    {
+      "aabb": "AABB(-0.50655556, 0.6, -1.625, 0.4908889, 0.17999995, 3.25)",
+      "materialOverride": "V0394_Bridge_Desaturated_Value",
+      "name": "Bridge_Deck_Plank_08",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0380_Accepted_Corrected_Highland_Infrastructure_Unchanged/world/Bridge_Deck_Plank_08",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        ""
+      ],
+      "visible": true,
+      "worldPosition": "Vector3(0, 0, 0)"
+    },
+    {
+      "aabb": "AABB(0.015666667, 0.6, -1.625, 0.4908889, 0.17999995, 3.25)",
+      "materialOverride": "V0394_Bridge_Desaturated_Value",
+      "name": "Bridge_Deck_Plank_09",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0380_Accepted_Corrected_Highland_Infrastructure_Unchanged/world/Bridge_Deck_Plank_09",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        ""
+      ],
+      "visible": true,
+      "worldPosition": "Vector3(0, 0, 0)"
+    },
+    {
+      "aabb": "AABB(0.5378889, 0.6, -1.625, 0.49088883, 0.17999995, 3.25)",
+      "materialOverride": "V0394_Bridge_Desaturated_Value",
+      "name": "Bridge_Deck_Plank_10",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0380_Accepted_Corrected_Highland_Infrastructure_Unchanged/world/Bridge_Deck_Plank_10",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        ""
+      ],
+      "visible": true,
+      "worldPosition": "Vector3(0, 0, 0)"
+    },
+    {
+      "aabb": "AABB(1.0601112, 0.6, -1.625, 0.49088883, 0.17999995, 3.25)",
+      "materialOverride": "V0394_Bridge_Desaturated_Value",
+      "name": "Bridge_Deck_Plank_11",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0380_Accepted_Corrected_Highland_Infrastructure_Unchanged/world/Bridge_Deck_Plank_11",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        ""
+      ],
+      "visible": true,
+      "worldPosition": "Vector3(0, 0, 0)"
+    },
+    {
+      "aabb": "AABB(1.5823333, 0.6, -1.625, 0.49088883, 0.17999995, 3.25)",
+      "materialOverride": "V0394_Bridge_Desaturated_Value",
+      "name": "Bridge_Deck_Plank_12",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0380_Accepted_Corrected_Highland_Infrastructure_Unchanged/world/Bridge_Deck_Plank_12",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        ""
+      ],
+      "visible": true,
+      "worldPosition": "Vector3(0, 0, 0)"
+    },
+    {
+      "aabb": "AABB(2.1045556, 0.6, -1.625, 0.49088883, 0.17999995, 3.25)",
+      "materialOverride": "V0394_Bridge_Desaturated_Value",
+      "name": "Bridge_Deck_Plank_13",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0380_Accepted_Corrected_Highland_Infrastructure_Unchanged/world/Bridge_Deck_Plank_13",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        ""
+      ],
+      "visible": true,
+      "worldPosition": "Vector3(0, 0, 0)"
+    },
+    {
+      "aabb": "AABB(2.626778, 0.6, -1.625, 0.49088883, 0.17999995, 3.25)",
+      "materialOverride": "V0394_Bridge_Desaturated_Value",
+      "name": "Bridge_Deck_Plank_14",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0380_Accepted_Corrected_Highland_Infrastructure_Unchanged/world/Bridge_Deck_Plank_14",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        ""
+      ],
+      "visible": true,
+      "worldPosition": "Vector3(0, 0, 0)"
+    },
+    {
+      "aabb": "AABB(3.149, 0.6, -1.625, 0.49088907, 0.17999995, 3.25)",
+      "materialOverride": "V0394_Bridge_Desaturated_Value",
+      "name": "Bridge_Deck_Plank_15",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0380_Accepted_Corrected_Highland_Infrastructure_Unchanged/world/Bridge_Deck_Plank_15",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        ""
+      ],
+      "visible": true,
+      "worldPosition": "Vector3(0, 0, 0)"
+    },
+    {
+      "aabb": "AABB(3.6712222, 0.6, -1.625, 0.49088907, 0.17999995, 3.25)",
+      "materialOverride": "V0394_Bridge_Desaturated_Value",
+      "name": "Bridge_Deck_Plank_16",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0380_Accepted_Corrected_Highland_Infrastructure_Unchanged/world/Bridge_Deck_Plank_16",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        ""
+      ],
+      "visible": true,
+      "worldPosition": "Vector3(0, 0, 0)"
+    },
+    {
+      "aabb": "AABB(4.1934443, 0.6, -1.625, 0.49088907, 0.17999995, 3.25)",
+      "materialOverride": "V0394_Bridge_Desaturated_Value",
+      "name": "Bridge_Deck_Plank_17",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0380_Accepted_Corrected_Highland_Infrastructure_Unchanged/world/Bridge_Deck_Plank_17",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        ""
+      ],
+      "visible": true,
+      "worldPosition": "Vector3(0, 0, 0)"
+    },
+    {
+      "aabb": "AABB(-4.395, 0.685, -1.56, 0.19000006, 1.45, 0.18999994)",
+      "materialOverride": "V0394_Bridge_Desaturated_Value",
+      "name": "Bridge_Post_-1_00",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0380_Accepted_Corrected_Highland_Infrastructure_Unchanged/world/Bridge_Post_-1_00",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        ""
+      ],
+      "visible": true,
+      "worldPosition": "Vector3(0, 0, 0)"
+    },
+    {
+      "aabb": "AABB(-2.675, 0.685, -1.56, 0.19000006, 1.45, 0.18999994)",
+      "materialOverride": "V0394_Bridge_Desaturated_Value",
+      "name": "Bridge_Post_-1_01",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0380_Accepted_Corrected_Highland_Infrastructure_Unchanged/world/Bridge_Post_-1_01",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        ""
+      ],
+      "visible": true,
+      "worldPosition": "Vector3(0, 0, 0)"
+    },
+    {
+      "aabb": "AABB(-0.955, 0.685, -1.56, 0.19, 1.45, 0.18999994)",
+      "materialOverride": "V0394_Bridge_Desaturated_Value",
+      "name": "Bridge_Post_-1_02",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0380_Accepted_Corrected_Highland_Infrastructure_Unchanged/world/Bridge_Post_-1_02",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        ""
+      ],
+      "visible": true,
+      "worldPosition": "Vector3(0, 0, 0)"
+    },
+    {
+      "aabb": "AABB(0.765, 0.685, -1.56, 0.19, 1.45, 0.18999994)",
+      "materialOverride": "V0394_Bridge_Desaturated_Value",
+      "name": "Bridge_Post_-1_03",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0380_Accepted_Corrected_Highland_Infrastructure_Unchanged/world/Bridge_Post_-1_03",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        ""
+      ],
+      "visible": true,
+      "worldPosition": "Vector3(0, 0, 0)"
+    },
+    {
+      "aabb": "AABB(2.485, 0.685, -1.56, 0.19000006, 1.45, 0.18999994)",
+      "materialOverride": "V0394_Bridge_Desaturated_Value",
+      "name": "Bridge_Post_-1_04",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0380_Accepted_Corrected_Highland_Infrastructure_Unchanged/world/Bridge_Post_-1_04",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        ""
+      ],
+      "visible": true,
+      "worldPosition": "Vector3(0, 0, 0)"
+    },
+    {
+      "aabb": "AABB(4.205, 0.685, -1.56, 0.19000006, 1.45, 0.18999994)",
+      "materialOverride": "V0394_Bridge_Desaturated_Value",
+      "name": "Bridge_Post_-1_05",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0380_Accepted_Corrected_Highland_Infrastructure_Unchanged/world/Bridge_Post_-1_05",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        ""
+      ],
+      "visible": true,
+      "worldPosition": "Vector3(0, 0, 0)"
+    },
+    {
+      "aabb": "AABB(-4.475, 1.17, -1.525, 8.95, 0.120000005, 0.120000005)",
+      "materialOverride": "V0394_Bridge_Desaturated_Value",
+      "name": "Bridge_Rail_-1_Low",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0380_Accepted_Corrected_Highland_Infrastructure_Unchanged/world/Bridge_Rail_-1_Low",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        ""
+      ],
+      "visible": true,
+      "worldPosition": "Vector3(0, 0, 0)"
+    },
+    {
+      "aabb": "AABB(-4.475, 1.65, -1.525, 8.95, 0.120000005, 0.120000005)",
+      "materialOverride": "V0394_Bridge_Desaturated_Value",
+      "name": "Bridge_Rail_-1_High",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0380_Accepted_Corrected_Highland_Infrastructure_Unchanged/world/Bridge_Rail_-1_High",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        ""
+      ],
+      "visible": true,
+      "worldPosition": "Vector3(0, 0, 0)"
+    },
+    {
+      "aabb": "AABB(-4.395, 0.685, 1.37, 0.19000006, 1.45, 0.18999994)",
+      "materialOverride": "V0394_Bridge_Desaturated_Value",
+      "name": "Bridge_Post_+1_00",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0380_Accepted_Corrected_Highland_Infrastructure_Unchanged/world/Bridge_Post_+1_00",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        ""
+      ],
+      "visible": true,
+      "worldPosition": "Vector3(0, 0, 0)"
+    },
+    {
+      "aabb": "AABB(-2.675, 0.685, 1.37, 0.19000006, 1.45, 0.18999994)",
+      "materialOverride": "V0394_Bridge_Desaturated_Value",
+      "name": "Bridge_Post_+1_01",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0380_Accepted_Corrected_Highland_Infrastructure_Unchanged/world/Bridge_Post_+1_01",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        ""
+      ],
+      "visible": true,
+      "worldPosition": "Vector3(0, 0, 0)"
+    },
+    {
+      "aabb": "AABB(-0.955, 0.685, 1.37, 0.19, 1.45, 0.18999994)",
+      "materialOverride": "V0394_Bridge_Desaturated_Value",
+      "name": "Bridge_Post_+1_02",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0380_Accepted_Corrected_Highland_Infrastructure_Unchanged/world/Bridge_Post_+1_02",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        ""
+      ],
+      "visible": true,
+      "worldPosition": "Vector3(0, 0, 0)"
+    },
+    {
+      "aabb": "AABB(0.765, 0.685, 1.37, 0.19, 1.45, 0.18999994)",
+      "materialOverride": "V0394_Bridge_Desaturated_Value",
+      "name": "Bridge_Post_+1_03",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0380_Accepted_Corrected_Highland_Infrastructure_Unchanged/world/Bridge_Post_+1_03",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        ""
+      ],
+      "visible": true,
+      "worldPosition": "Vector3(0, 0, 0)"
+    },
+    {
+      "aabb": "AABB(2.485, 0.685, 1.37, 0.19000006, 1.45, 0.18999994)",
+      "materialOverride": "V0394_Bridge_Desaturated_Value",
+      "name": "Bridge_Post_+1_04",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0380_Accepted_Corrected_Highland_Infrastructure_Unchanged/world/Bridge_Post_+1_04",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        ""
+      ],
+      "visible": true,
+      "worldPosition": "Vector3(0, 0, 0)"
+    },
+    {
+      "aabb": "AABB(4.205, 0.685, 1.37, 0.19000006, 1.45, 0.18999994)",
+      "materialOverride": "V0394_Bridge_Desaturated_Value",
+      "name": "Bridge_Post_+1_05",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0380_Accepted_Corrected_Highland_Infrastructure_Unchanged/world/Bridge_Post_+1_05",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        ""
+      ],
+      "visible": true,
+      "worldPosition": "Vector3(0, 0, 0)"
+    },
+    {
+      "aabb": "AABB(-4.475, 1.17, 1.405, 8.95, 0.120000005, 0.120000005)",
+      "materialOverride": "V0394_Bridge_Desaturated_Value",
+      "name": "Bridge_Rail_+1_Low",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0380_Accepted_Corrected_Highland_Infrastructure_Unchanged/world/Bridge_Rail_+1_Low",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        ""
+      ],
+      "visible": true,
+      "worldPosition": "Vector3(0, 0, 0)"
+    },
+    {
+      "aabb": "AABB(-4.475, 1.65, 1.405, 8.95, 0.120000005, 0.120000005)",
+      "materialOverride": "V0394_Bridge_Desaturated_Value",
+      "name": "Bridge_Rail_+1_High",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0380_Accepted_Corrected_Highland_Infrastructure_Unchanged/world/Bridge_Rail_+1_High",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        ""
+      ],
+      "visible": true,
+      "worldPosition": "Vector3(0, 0, 0)"
+    },
+    {
+      "aabb": "AABB(-4.7, 0.76, -1.66, 9.4, 0.13999999, 0.14999998)",
+      "materialOverride": "V0394_Bridge_Desaturated_Value",
+      "name": "Bridge_EdgeCourse_-1",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0380_Accepted_Corrected_Highland_Infrastructure_Unchanged/world/Bridge_EdgeCourse_-1",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        ""
+      ],
+      "visible": true,
+      "worldPosition": "Vector3(0, 0, 0)"
+    },
+    {
+      "aabb": "AABB(-4.7, 0.76, 1.51, 9.4, 0.13999999, 0.14999998)",
+      "materialOverride": "V0394_Bridge_Desaturated_Value",
+      "name": "Bridge_EdgeCourse_+1",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0380_Accepted_Corrected_Highland_Infrastructure_Unchanged/world/Bridge_EdgeCourse_+1",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        ""
+      ],
+      "visible": true,
+      "worldPosition": "Vector3(0, 0, 0)"
+    },
+    {
+      "aabb": "AABB(-1.4970725, -1.2169163, -29.524284, 1.4023861, 1.3119391, 1.0485687)",
+      "materialOverride": "null",
+      "name": "Rock_000",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0380_Accepted_Corrected_Highland_Infrastructure_Unchanged/world/Rock_000",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        ""
+      ],
+      "visible": false,
+      "worldPosition": "Vector3(0, 0, 0)"
+    },
+    {
+      "aabb": "AABB(-0.6165626, -0.57168025, -25.758095, 1.3508348, 0.93944216, 1.2495232)",
+      "materialOverride": "null",
+      "name": "Rock_001",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0380_Accepted_Corrected_Highland_Infrastructure_Unchanged/world/Rock_001",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        ""
+      ],
+      "visible": false,
+      "worldPosition": "Vector3(0, 0, 0)"
+    },
+    {
+      "aabb": "AABB(-7.9504757, -0.7161148, -22.121723, 0.94066477, 0.76147306, 1.7101135)",
+      "materialOverride": "null",
+      "name": "Rock_002",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0380_Accepted_Corrected_Highland_Infrastructure_Unchanged/world/Rock_002",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        ""
+      ],
+      "visible": false,
+      "worldPosition": "Vector3(0, 0, 0)"
+    },
+    {
+      "aabb": "AABB(-0.04571487, -0.18600224, -22.10147, 1.3806708, 0.80397975, 1.6696091)",
+      "materialOverride": "null",
+      "name": "Rock_003",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0380_Accepted_Corrected_Highland_Infrastructure_Unchanged/world/Rock_003",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        ""
+      ],
+      "visible": false,
+      "worldPosition": "Vector3(0, 0, 0)"
+    },
+    {
+      "aabb": "AABB(-8.612695, -0.32651377, -18.317808, 1.5714731, 0.7585534, 1.8356171)",
+      "materialOverride": "null",
+      "name": "Rock_004",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0380_Accepted_Corrected_Highland_Infrastructure_Unchanged/world/Rock_004",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        ""
+      ],
+      "visible": false,
+      "worldPosition": "Vector3(0, 0, 0)"
+    },
+    {
+      "aabb": "AABB(0.029936178, -0.52335876, -18.066664, 1.1054237, 1.3387051, 1.3333282)",
+      "materialOverride": "null",
+      "name": "Rock_005",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0380_Accepted_Corrected_Highland_Infrastructure_Unchanged/world/Rock_005",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        ""
+      ],
+      "visible": false,
+      "worldPosition": "Vector3(0, 0, 0)"
+    },
+    {
+      "aabb": "AABB(-7.461262, -0.37682685, -13.934814, 0.87491846, 0.84399307, 0.8029623)",
+      "materialOverride": "null",
+      "name": "Rock_006",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0380_Accepted_Corrected_Highland_Infrastructure_Unchanged/world/Rock_006",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        ""
+      ],
+      "visible": false,
+      "worldPosition": "Vector3(0, 0, 0)"
+    },
+    {
+      "aabb": "AABB(1.3144164, 0.13326953, -10.350464, 1.3799958, 0.5938198, 1.3675947)",
+      "materialOverride": "null",
+      "name": "Rock_007",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0380_Accepted_Corrected_Highland_Infrastructure_Unchanged/world/Rock_007",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        ""
+      ],
+      "visible": false,
+      "worldPosition": "Vector3(0, 0, 0)"
+    },
+    {
+      "aabb": "AABB(-5.950079, -0.64212114, -6.629008, 1.5549884, 1.3852758, 1.6580157)",
+      "materialOverride": "null",
+      "name": "Rock_008",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0380_Accepted_Corrected_Highland_Infrastructure_Unchanged/world/Rock_008",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        ""
+      ],
+      "visible": false,
+      "worldPosition": "Vector3(0, 0, 0)"
+    },
+    {
+      "aabb": "AABB(1.7650573, -0.109364636, -6.775251, 1.1143239, 0.66348934, 1.9505019)",
+      "materialOverride": "null",
+      "name": "Rock_009",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0380_Accepted_Corrected_Highland_Infrastructure_Unchanged/world/Rock_009",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        ""
+      ],
+      "visible": false,
+      "worldPosition": "Vector3(0, 0, 0)"
+    },
+    {
+      "aabb": "AABB(-2.7488475, -0.5302369, 4.9513016, 0.9139558, 1.0408773, 1.6973968)",
+      "materialOverride": "null",
+      "name": "Rock_010",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0380_Accepted_Corrected_Highland_Infrastructure_Unchanged/world/Rock_010",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        ""
+      ],
+      "visible": false,
+      "worldPosition": "Vector3(0, 0, 0)"
+    },
+    {
+      "aabb": "AABB(5.2316713, 0.11729557, 4.8749456, 1.1595502, 0.6447005, 1.8501086)",
+      "materialOverride": "null",
+      "name": "Rock_011",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0380_Accepted_Corrected_Highland_Infrastructure_Unchanged/world/Rock_011",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        ""
+      ],
+      "visible": false,
+      "worldPosition": "Vector3(0, 0, 0)"
+    },
+    {
+      "aabb": "AABB(-3.3960717, -0.18551676, 9.064618, 1.7348406, 1.1853397, 1.2040968)",
+      "materialOverride": "null",
+      "name": "Rock_012",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0380_Accepted_Corrected_Highland_Infrastructure_Unchanged/world/Rock_012",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        ""
+      ],
+      "visible": false,
+      "worldPosition": "Vector3(0, 0, 0)"
+    },
+    {
+      "aabb": "AABB(5.7019334, -0.07838815, 9.074907, 1.5814533, 0.83661264, 1.1835184)",
+      "materialOverride": "null",
+      "name": "Rock_013",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0380_Accepted_Corrected_Highland_Infrastructure_Unchanged/world/Rock_013",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        ""
+      ],
+      "visible": false,
+      "worldPosition": "Vector3(0, 0, 0)"
+    },
+    {
+      "aabb": "AABB(-1.6772103, -0.4696207, 13.055012, 1.8612666, 0.87670577, 0.9566431)",
+      "materialOverride": "null",
+      "name": "Rock_014",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0380_Accepted_Corrected_Highland_Infrastructure_Unchanged/world/Rock_014",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        ""
+      ],
+      "visible": false,
+      "worldPosition": "Vector3(0, 0, 0)"
+    },
+    {
+      "aabb": "AABB(6.1222305, -0.28691587, 12.8074255, 1.6158628, 1.0025223, 1.4518156)",
+      "materialOverride": "null",
+      "name": "Rock_015",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0380_Accepted_Corrected_Highland_Infrastructure_Unchanged/world/Rock_015",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        ""
+      ],
+      "visible": false,
+      "worldPosition": "Vector3(0, 0, 0)"
+    },
+    {
+      "aabb": "AABB(-1.5374218, -0.38580155, 16.732439, 1.6440856, 1.0918512, 1.3351212)",
+      "materialOverride": "null",
+      "name": "Rock_016",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0380_Accepted_Corrected_Highland_Infrastructure_Unchanged/world/Rock_016",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        ""
+      ],
+      "visible": false,
+      "worldPosition": "Vector3(0, 0, 0)"
+    },
+    {
+      "aabb": "AABB(6.992158, -0.4952801, 16.590055, 1.077241, 1.475604, 1.6198883)",
+      "materialOverride": "null",
+      "name": "Rock_017",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0380_Accepted_Corrected_Highland_Infrastructure_Unchanged/world/Rock_017",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        ""
+      ],
+      "visible": false,
+      "worldPosition": "Vector3(0, 0, 0)"
+    },
+    {
+      "aabb": "AABB(-0.13895442, -0.65825, 20.58663, 1.5037591, 0.8379153, 1.3600731)",
+      "materialOverride": "null",
+      "name": "Rock_018",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0380_Accepted_Corrected_Highland_Infrastructure_Unchanged/world/Rock_018",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        ""
+      ],
+      "visible": false,
+      "worldPosition": "Vector3(0, 0, 0)"
+    },
+    {
+      "aabb": "AABB(-0.13767882, -1.1212349, 28.119469, 1.6611985, 1.4646479, 1.7610626)",
+      "materialOverride": "null",
+      "name": "Rock_019",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0380_Accepted_Corrected_Highland_Infrastructure_Unchanged/world/Rock_019",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        ""
+      ],
+      "visible": false,
+      "worldPosition": "Vector3(0, 0, 0)"
+    },
+    {
+      "aabb": "AABB(7.492217, -0.33373505, 28.261885, 1.7081537, 1.3652506, 1.4762306)",
+      "materialOverride": "null",
+      "name": "Rock_020",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0380_Accepted_Corrected_Highland_Infrastructure_Unchanged/world/Rock_020",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        ""
+      ],
+      "visible": false,
+      "worldPosition": "Vector3(0, 0, 0)"
+    },
+    {
+      "aabb": "AABB(-24.829403, 0.08612212, 14.932087, 0.87926865, 0.9757486, 0.87547207)",
+      "materialOverride": "null",
+      "name": "Rock_021",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0380_Accepted_Corrected_Highland_Infrastructure_Unchanged/world/Rock_021",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        ""
+      ],
+      "visible": false,
+      "worldPosition": "Vector3(0, 0, 0)"
+    },
+    {
+      "aabb": "AABB(-13.4352, 0.288369, 7.5981746, 0.7217264, 1.1876981, 0.9088359)",
+      "materialOverride": "null",
+      "name": "Rock_022",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0380_Accepted_Corrected_Highland_Infrastructure_Unchanged/world/Rock_022",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        ""
+      ],
+      "visible": false,
+      "worldPosition": "Vector3(0, 0, 0)"
+    },
+    {
+      "aabb": "AABB(14.50456, 0.43271658, 27.722097, 1.1506605, 1.2642405, 1.8658352)",
+      "materialOverride": "null",
+      "name": "Rock_023",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0380_Accepted_Corrected_Highland_Infrastructure_Unchanged/world/Rock_023",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        ""
+      ],
+      "visible": false,
+      "worldPosition": "Vector3(0, 0, 0)"
+    },
+    {
+      "aabb": "AABB(-13.136185, 0.13898402, 27.866451, 1.1294098, 0.77542144, 1.4141865)",
+      "materialOverride": "null",
+      "name": "Rock_024",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0380_Accepted_Corrected_Highland_Infrastructure_Unchanged/world/Rock_024",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        ""
+      ],
+      "visible": false,
+      "worldPosition": "Vector3(0, 0, 0)"
+    },
+    {
+      "aabb": "AABB(-37.774624, -0.39140832, 27.123144, 1.3152924, 1.3146148, 1.3519917)",
+      "materialOverride": "null",
+      "name": "Rock_025",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0380_Accepted_Corrected_Highland_Infrastructure_Unchanged/world/Rock_025",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        ""
+      ],
+      "visible": false,
+      "worldPosition": "Vector3(0, 0, 0)"
+    },
+    {
+      "aabb": "AABB(-22.32571, -0.0066861613, 4.477914, 1.313591, 1.4684432, 1.0902805)",
+      "materialOverride": "null",
+      "name": "Rock_026",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0380_Accepted_Corrected_Highland_Infrastructure_Unchanged/world/Rock_026",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        ""
+      ],
+      "visible": false,
+      "worldPosition": "Vector3(0, 0, 0)"
+    },
+    {
+      "aabb": "AABB(12.771035, 0.7678892, -14.480928, 1.2765827, 0.9527839, 1.9207296)",
+      "materialOverride": "null",
+      "name": "Rock_027",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0380_Accepted_Corrected_Highland_Infrastructure_Unchanged/world/Rock_027",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        ""
+      ],
+      "visible": false,
+      "worldPosition": "Vector3(0, 0, 0)"
+    },
+    {
+      "aabb": "AABB(10.522979, 0.58127916, -13.692495, 1.4009104, 1.3039408, 1.48808)",
+      "materialOverride": "null",
+      "name": "Rock_028",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0380_Accepted_Corrected_Highland_Infrastructure_Unchanged/world/Rock_028",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        ""
+      ],
+      "visible": false,
+      "worldPosition": "Vector3(0, 0, 0)"
+    },
+    {
+      "aabb": "AABB(32.829735, 0.5470648, -21.076246, 0.8980942, 0.9106294, 1.6325569)",
+      "materialOverride": "null",
+      "name": "Rock_029",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0380_Accepted_Corrected_Highland_Infrastructure_Unchanged/world/Rock_029",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        ""
+      ],
+      "visible": false,
+      "worldPosition": "Vector3(0, 0, 0)"
+    },
+    {
+      "aabb": "AABB(-26.204906, -0.24329728, -23.741207, 1.5495701, 1.0407468, 0.95224)",
+      "materialOverride": "null",
+      "name": "Rock_030",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0380_Accepted_Corrected_Highland_Infrastructure_Unchanged/world/Rock_030",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        ""
+      ],
+      "visible": false,
+      "worldPosition": "Vector3(0, 0, 0)"
+    },
+    {
+      "aabb": "AABB(-33.936317, -0.20984079, -21.211681, 1.6592903, 0.9764461, 0.8328419)",
+      "materialOverride": "null",
+      "name": "Rock_031",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0380_Accepted_Corrected_Highland_Infrastructure_Unchanged/world/Rock_031",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        ""
+      ],
+      "visible": false,
+      "worldPosition": "Vector3(0, 0, 0)"
+    },
+    {
+      "aabb": "AABB(-25.771334, 0.23884903, 2.6561246, 1.0199986, 0.8835255, 1.4525328)",
+      "materialOverride": "null",
+      "name": "Rock_032",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0380_Accepted_Corrected_Highland_Infrastructure_Unchanged/world/Rock_032",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        ""
+      ],
+      "visible": false,
+      "worldPosition": "Vector3(0, 0, 0)"
+    },
+    {
+      "aabb": "AABB(22.08045, 0.75249827, -18.812683, 1.7981834, 0.8382671, 1.8007183)",
+      "materialOverride": "null",
+      "name": "Rock_033",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0380_Accepted_Corrected_Highland_Infrastructure_Unchanged/world/Rock_033",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        ""
+      ],
+      "visible": false,
+      "worldPosition": "Vector3(0, 0, 0)"
+    },
+    {
+      "aabb": "AABB(-14.742234, 0.3744744, 13.267034, 1.4572935, 0.8296305, 1.205616)",
+      "materialOverride": "null",
+      "name": "Rock_034",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0380_Accepted_Corrected_Highland_Infrastructure_Unchanged/world/Rock_034",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        ""
+      ],
+      "visible": false,
+      "worldPosition": "Vector3(0, 0, 0)"
+    },
+    {
+      "aabb": "AABB(11.598127, 0.63745296, -7.303145, 0.7551527, 1.4397737, 1.8141246)",
+      "materialOverride": "null",
+      "name": "Rock_035",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0380_Accepted_Corrected_Highland_Infrastructure_Unchanged/world/Rock_035",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        ""
+      ],
+      "visible": false,
+      "worldPosition": "Vector3(0, 0, 0)"
+    },
+    {
+      "aabb": "AABB(31.766407, 0.74329376, -18.53579, 0.8490715, 0.6592386, 1.4152985)",
+      "materialOverride": "null",
+      "name": "Rock_036",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0380_Accepted_Corrected_Highland_Infrastructure_Unchanged/world/Rock_036",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        ""
+      ],
+      "visible": false,
+      "worldPosition": "Vector3(0, 0, 0)"
+    },
+    {
+      "aabb": "AABB(4.1042666, 0.48045823, -9.591692, 1.6677642, 1.4718428, 1.9065738)",
+      "materialOverride": "null",
+      "name": "Rock_037",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0380_Accepted_Corrected_Highland_Infrastructure_Unchanged/world/Rock_037",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        ""
+      ],
+      "visible": false,
+      "worldPosition": "Vector3(0, 0, 0)"
+    },
+    {
+      "aabb": "AABB(-34.40367, -0.08991071, 16.96688, 1.6366234, 1.1324018, 0.74191856)",
+      "materialOverride": "null",
+      "name": "Rock_038",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0380_Accepted_Corrected_Highland_Infrastructure_Unchanged/world/Rock_038",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        ""
+      ],
+      "visible": false,
+      "worldPosition": "Vector3(0, 0, 0)"
+    },
+    {
+      "aabb": "AABB(23.279572, 0.7013166, 7.176963, 1.1005688, 1.475332, 1.203618)",
+      "materialOverride": "null",
+      "name": "Rock_039",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0380_Accepted_Corrected_Highland_Infrastructure_Unchanged/world/Rock_039",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        ""
+      ],
+      "visible": false,
+      "worldPosition": "Vector3(0, 0, 0)"
+    },
+    {
+      "aabb": "AABB(9.534319, 0.984753, 4.757752, 1.8096113, 0.83808315, 1.5830293)",
+      "materialOverride": "null",
+      "name": "Rock_040",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0380_Accepted_Corrected_Highland_Infrastructure_Unchanged/world/Rock_040",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        ""
+      ],
+      "visible": false,
+      "worldPosition": "Vector3(0, 0, 0)"
+    },
+    {
+      "aabb": "AABB(33.742767, 0.5746305, 19.604996, 0.81275177, 1.0922464, 0.726799)",
+      "materialOverride": "null",
+      "name": "Rock_041",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0380_Accepted_Corrected_Highland_Infrastructure_Unchanged/world/Rock_041",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        ""
+      ],
+      "visible": false,
+      "worldPosition": "Vector3(0, 0, 0)"
+    },
+    {
+      "aabb": "AABB(-6.146197, -1.0602124, -30.2248, 0.034999847, 0.7845144, 0.034999847)",
+      "materialOverride": "null",
+      "name": "Reed_000_0",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0380_Accepted_Corrected_Highland_Infrastructure_Unchanged/world/Reed_000_0",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        ""
+      ],
+      "visible": false,
+      "worldPosition": "Vector3(0, 0, 0)"
+    },
+    {
+      "aabb": "AABB(-6.181455, -1.0602124, -30.080389, 0.035000324, 0.88670546, 0.034999847)",
+      "materialOverride": "null",
+      "name": "Reed_000_1",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0380_Accepted_Corrected_Highland_Infrastructure_Unchanged/world/Reed_000_1",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        ""
+      ],
+      "visible": false,
+      "worldPosition": "Vector3(0, 0, 0)"
+    },
+    {
+      "aabb": "AABB(-6.4686384, -1.0602124, -30.175926, 0.034999847, 0.82322896, 0.034999847)",
+      "materialOverride": "null",
+      "name": "Reed_000_2",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0380_Accepted_Corrected_Highland_Infrastructure_Unchanged/world/Reed_000_2",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        ""
+      ],
+      "visible": false,
+      "worldPosition": "Vector3(0, 0, 0)"
+    },
+    {
+      "aabb": "AABB(-6.068577, -1.0602124, -29.805853, 0.034999847, 0.54151374, 0.035001755)",
+      "materialOverride": "null",
+      "name": "Reed_000_3",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0380_Accepted_Corrected_Highland_Infrastructure_Unchanged/world/Reed_000_3",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        ""
+      ],
+      "visible": false,
+      "worldPosition": "Vector3(0, 0, 0)"
+    },
+    {
+      "aabb": "AABB(-1.4872211, -0.895058, -24.457253, 0.034999967, 0.675319, 0.034999847)",
+      "materialOverride": "null",
+      "name": "Reed_001_0",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0380_Accepted_Corrected_Highland_Infrastructure_Unchanged/world/Reed_001_0",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        ""
+      ],
+      "visible": false,
+      "worldPosition": "Vector3(0, 0, 0)"
+    },
+    {
+      "aabb": "AABB(-1.5000328, -0.895058, -24.210604, 0.035000086, 0.60665786, 0.034999847)",
+      "materialOverride": "null",
+      "name": "Reed_001_1",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0380_Accepted_Corrected_Highland_Infrastructure_Unchanged/world/Reed_001_1",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        ""
+      ],
+      "visible": false,
+      "worldPosition": "Vector3(0, 0, 0)"
+    },
+    {
+      "aabb": "AABB(-1.6374626, -0.895058, -24.46284, 0.034999967, 0.77293044, 0.034999847)",
+      "materialOverride": "null",
+      "name": "Reed_001_2",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0380_Accepted_Corrected_Highland_Infrastructure_Unchanged/world/Reed_001_2",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        ""
+      ],
+      "visible": false,
+      "worldPosition": "Vector3(0, 0, 0)"
+    },
+    {
+      "aabb": "AABB(-1.4965501, -0.895058, -24.17084, 0.034999967, 0.5249212, 0.034999847)",
+      "materialOverride": "null",
+      "name": "Reed_001_3",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0380_Accepted_Corrected_Highland_Infrastructure_Unchanged/world/Reed_001_3",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        ""
+      ],
+      "visible": false,
+      "worldPosition": "Vector3(0, 0, 0)"
+    },
+    {
+      "aabb": "AABB(-1.5260961, -0.895058, -24.278053, 0.034999967, 0.53549373, 0.034999847)",
+      "materialOverride": "null",
+      "name": "Reed_001_4",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0380_Accepted_Corrected_Highland_Infrastructure_Unchanged/world/Reed_001_4",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        ""
+      ],
+      "visible": false,
+      "worldPosition": "Vector3(0, 0, 0)"
+    },
+    {
+      "aabb": "AABB(-1.3865291, -0.785196, -21.51734, 0.034999967, 0.5140933, 0.034999847)",
+      "materialOverride": "null",
+      "name": "Reed_002_0",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0380_Accepted_Corrected_Highland_Infrastructure_Unchanged/world/Reed_002_0",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        ""
+      ],
+      "visible": false,
+      "worldPosition": "Vector3(0, 0, 0)"
+    },
+    {
+      "aabb": "AABB(-1.2618799, -0.785196, -21.599216, 0.035000086, 0.7255353, 0.034999847)",
+      "materialOverride": "null",
+      "name": "Reed_002_1",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0380_Accepted_Corrected_Highland_Infrastructure_Unchanged/world/Reed_002_1",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        ""
+      ],
+      "visible": false,
+      "worldPosition": "Vector3(0, 0, 0)"
+    },
+    {
+      "aabb": "AABB(-1.2155821, -0.785196, -21.34607, 0.035000086, 0.89902735, 0.034999847)",
+      "materialOverride": "null",
+      "name": "Reed_002_2",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0380_Accepted_Corrected_Highland_Infrastructure_Unchanged/world/Reed_002_2",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        ""
+      ],
+      "visible": false,
+      "worldPosition": "Vector3(0, 0, 0)"
+    },
+    {
+      "aabb": "AABB(-1.1317068, -0.66064364, -18.678984, 0.035000086, 0.5260233, 0.035001755)",
+      "materialOverride": "null",
+      "name": "Reed_003_0",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0380_Accepted_Corrected_Highland_Infrastructure_Unchanged/world/Reed_003_0",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        ""
+      ],
+      "visible": false,
+      "worldPosition": "Vector3(0, 0, 0)"
+    },
+    {
+      "aabb": "AABB(-0.88115245, -0.66064364, -18.636292, 0.034999967, 0.50364655, 0.034999847)",
+      "materialOverride": "null",
+      "name": "Reed_003_1",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0380_Accepted_Corrected_Highland_Infrastructure_Unchanged/world/Reed_003_1",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        ""
+      ],
+      "visible": false,
+      "worldPosition": "Vector3(0, 0, 0)"
+    },
+    {
+      "aabb": "AABB(-1.081574, -0.66064364, -18.599348, 0.034999967, 0.79084355, 0.034999847)",
+      "materialOverride": "null",
+      "name": "Reed_003_2",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0380_Accepted_Corrected_Highland_Infrastructure_Unchanged/world/Reed_003_2",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        ""
+      ],
+      "visible": false,
+      "worldPosition": "Vector3(0, 0, 0)"
+    },
+    {
+      "aabb": "AABB(-0.72650737, -0.66064364, -18.71533, 0.035000026, 0.8724391, 0.034999847)",
+      "materialOverride": "null",
+      "name": "Reed_003_3",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0380_Accepted_Corrected_Highland_Infrastructure_Unchanged/world/Reed_003_3",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        ""
+      ],
+      "visible": false,
+      "worldPosition": "Vector3(0, 0, 0)"
+    },
+    {
+      "aabb": "AABB(-0.74083626, -0.66064364, -18.637793, 0.034999967, 0.4857052, 0.034999847)",
+      "materialOverride": "null",
+      "name": "Reed_003_4",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0380_Accepted_Corrected_Highland_Infrastructure_Unchanged/world/Reed_003_4",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        ""
+      ],
+      "visible": false,
+      "worldPosition": "Vector3(0, 0, 0)"
+    },
+    {
+      "aabb": "AABB(-0.4650738, -0.5473857, -12.821322, 0.034999996, 0.69542885, 0.034999847)",
+      "materialOverride": "null",
+      "name": "Reed_004_0",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0380_Accepted_Corrected_Highland_Infrastructure_Unchanged/world/Reed_004_0",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        ""
+      ],
+      "visible": false,
+      "worldPosition": "Vector3(0, 0, 0)"
+    },
+    {
+      "aabb": "AABB(-0.40706822, -0.5473857, -12.786258, 0.034999996, 0.58171433, 0.034999847)",
+      "materialOverride": "null",
+      "name": "Reed_004_1",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0380_Accepted_Corrected_Highland_Infrastructure_Unchanged/world/Reed_004_1",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        ""
+      ],
+      "visible": false,
+      "worldPosition": "Vector3(0, 0, 0)"
+    },
+    {
+      "aabb": "AABB(-0.450427, -0.5473857, -12.787644, 0.034999996, 0.73343253, 0.034999847)",
+      "materialOverride": "null",
+      "name": "Reed_004_2",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0380_Accepted_Corrected_Highland_Infrastructure_Unchanged/world/Reed_004_2",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        ""
+      ],
+      "visible": false,
+      "worldPosition": "Vector3(0, 0, 0)"
+    },
+    {
+      "aabb": "AABB(-0.14656235, -0.5473857, -13.020423, 0.034999996, 0.53759617, 0.034999847)",
+      "materialOverride": "null",
+      "name": "Reed_004_3",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0380_Accepted_Corrected_Highland_Infrastructure_Unchanged/world/Reed_004_3",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        ""
+      ],
+      "visible": false,
+      "worldPosition": "Vector3(0, 0, 0)"
+    },
+    {
+      "aabb": "AABB(-0.34664905, -0.5473857, -12.909998, 0.034999996, 0.88529813, 0.034999847)",
+      "materialOverride": "null",
+      "name": "Reed_004_4",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0380_Accepted_Corrected_Highland_Infrastructure_Unchanged/world/Reed_004_4",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        ""
+      ],
+      "visible": false,
+      "worldPosition": "Vector3(0, 0, 0)"
+    },
+    {
+      "aabb": "AABB(-4.1910334, -0.5456073, -7.1466236, 0.034999847, 0.63582826, 0.034999847)",
+      "materialOverride": "null",
+      "name": "Reed_005_0",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0380_Accepted_Corrected_Highland_Infrastructure_Unchanged/world/Reed_005_0",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        ""
+      ],
+      "visible": false,
+      "worldPosition": "Vector3(0, 0, 0)"
+    },
+    {
+      "aabb": "AABB(-4.381732, -0.5456073, -6.9924817, 0.035000324, 0.5881889, 0.034999847)",
+      "materialOverride": "null",
+      "name": "Reed_005_1",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0380_Accepted_Corrected_Highland_Infrastructure_Unchanged/world/Reed_005_1",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        ""
+      ],
+      "visible": false,
+      "worldPosition": "Vector3(0, 0, 0)"
+    },
+    {
+      "aabb": "AABB(-4.490396, -0.5456073, -7.109494, 0.034999847, 0.7314017, 0.034999847)",
+      "materialOverride": "null",
+      "name": "Reed_005_2",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0380_Accepted_Corrected_Highland_Infrastructure_Unchanged/world/Reed_005_2",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        ""
+      ],
+      "visible": false,
+      "worldPosition": "Vector3(0, 0, 0)"
+    },
+    {
+      "aabb": "AABB(-4.487037, -0.5456073, -7.204607, 0.034999847, 0.6279366, 0.035000324)",
+      "materialOverride": "null",
+      "name": "Reed_005_3",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0380_Accepted_Corrected_Highland_Infrastructure_Unchanged/world/Reed_005_3",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        ""
+      ],
+      "visible": false,
+      "worldPosition": "Vector3(0, 0, 0)"
+    },
+    {
+      "aabb": "AABB(-4.582351, -0.5456073, -6.986318, 0.034999847, 0.72946215, 0.035000324)",
+      "materialOverride": "null",
+      "name": "Reed_005_4",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0380_Accepted_Corrected_Highland_Infrastructure_Unchanged/world/Reed_005_4",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        ""
+      ],
+      "visible": false,
+      "worldPosition": "Vector3(0, 0, 0)"
+    },
+    {
+      "aabb": "AABB(-0.63706607, -0.3879284, 12.6945, 0.034999967, 0.6043662, 0.034999847)",
+      "materialOverride": "null",
+      "name": "Reed_006_0",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0380_Accepted_Corrected_Highland_Infrastructure_Unchanged/world/Reed_006_0",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        ""
+      ],
+      "visible": false,
+      "worldPosition": "Vector3(0, 0, 0)"
+    },
+    {
+      "aabb": "AABB(-0.42555225, -0.3879284, 12.781977, 0.035000026, 0.6498228, 0.0350008)",
+      "materialOverride": "null",
+      "name": "Reed_006_1",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0380_Accepted_Corrected_Highland_Infrastructure_Unchanged/world/Reed_006_1",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        ""
+      ],
+      "visible": false,
+      "worldPosition": "Vector3(0, 0, 0)"
+    },
+    {
+      "aabb": "AABB(-0.56457275, -0.3879284, 12.977491, 0.035000026, 0.6784514, 0.034999847)",
+      "materialOverride": "null",
+      "name": "Reed_006_2",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0380_Accepted_Corrected_Highland_Infrastructure_Unchanged/world/Reed_006_2",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        ""
+      ],
+      "visible": false,
+      "worldPosition": "Vector3(0, 0, 0)"
+    },
+    {
+      "aabb": "AABB(0.1990774, -0.46709344, 15.6556015, 0.034999996, 0.72075915, 0.034999847)",
+      "materialOverride": "null",
+      "name": "Reed_007_0",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0380_Accepted_Corrected_Highland_Infrastructure_Unchanged/world/Reed_007_0",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        ""
+      ],
+      "visible": false,
+      "worldPosition": "Vector3(0, 0, 0)"
+    },
+    {
+      "aabb": "AABB(0.14194873, -0.46709344, 15.526068, 0.034999996, 0.62935495, 0.034999847)",
+      "materialOverride": "null",
+      "name": "Reed_007_1",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0380_Accepted_Corrected_Highland_Infrastructure_Unchanged/world/Reed_007_1",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        ""
+      ],
+      "visible": false,
+      "worldPosition": "Vector3(0, 0, 0)"
+    },
+    {
+      "aabb": "AABB(0.08344805, -0.46709344, 15.87997, 0.035000004, 0.56710386, 0.034999847)",
+      "materialOverride": "null",
+      "name": "Reed_007_2",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0380_Accepted_Corrected_Highland_Infrastructure_Unchanged/world/Reed_007_2",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        ""
+      ],
+      "visible": false,
+      "worldPosition": "Vector3(0, 0, 0)"
+    },
+    {
+      "aabb": "AABB(6.4881, -0.3941162, 18.753647, 0.035000324, 0.78270626, 0.034999847)",
+      "materialOverride": "null",
+      "name": "Reed_008_0",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0380_Accepted_Corrected_Highland_Infrastructure_Unchanged/world/Reed_008_0",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        ""
+      ],
+      "visible": false,
+      "worldPosition": "Vector3(0, 0, 0)"
+    },
+    {
+      "aabb": "AABB(6.444444, -0.3941162, 18.655123, 0.035000324, 0.6108657, 0.034999847)",
+      "materialOverride": "null",
+      "name": "Reed_008_1",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0380_Accepted_Corrected_Highland_Infrastructure_Unchanged/world/Reed_008_1",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        ""
+      ],
+      "visible": false,
+      "worldPosition": "Vector3(0, 0, 0)"
+    },
+    {
+      "aabb": "AABB(6.38659, -0.3941162, 18.352129, 0.034999847, 0.4880443, 0.034999847)",
+      "materialOverride": "null",
+      "name": "Reed_008_2",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0380_Accepted_Corrected_Highland_Infrastructure_Unchanged/world/Reed_008_2",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        ""
+      ],
+      "visible": false,
+      "worldPosition": "Vector3(0, 0, 0)"
+    },
+    {
+      "aabb": "AABB(6.5020976, -0.5132825, 21.606306, 0.035000324, 0.6260804, 0.034999847)",
+      "materialOverride": "null",
+      "name": "Reed_009_0",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0380_Accepted_Corrected_Highland_Infrastructure_Unchanged/world/Reed_009_0",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        ""
+      ],
+      "visible": false,
+      "worldPosition": "Vector3(0, 0, 0)"
+    },
+    {
+      "aabb": "AABB(6.17589, -0.5132825, 21.289257, 0.035000324, 0.5091068, 0.034999847)",
+      "materialOverride": "null",
+      "name": "Reed_009_1",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0380_Accepted_Corrected_Highland_Infrastructure_Unchanged/world/Reed_009_1",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        ""
+      ],
+      "visible": false,
+      "worldPosition": "Vector3(0, 0, 0)"
+    },
+    {
+      "aabb": "AABB(6.328437, -0.5132825, 21.27088, 0.034999847, 0.61787724, 0.034999847)",
+      "materialOverride": "null",
+      "name": "Reed_009_2",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0380_Accepted_Corrected_Highland_Infrastructure_Unchanged/world/Reed_009_2",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        ""
+      ],
+      "visible": false,
+      "worldPosition": "Vector3(0, 0, 0)"
+    },
+    {
+      "aabb": "AABB(6.43337, -0.5132825, 21.248554, 0.034999847, 0.641742, 0.034999847)",
+      "materialOverride": "null",
+      "name": "Reed_009_3",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0380_Accepted_Corrected_Highland_Infrastructure_Unchanged/world/Reed_009_3",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        ""
+      ],
+      "visible": false,
+      "worldPosition": "Vector3(0, 0, 0)"
+    },
+    {
+      "aabb": "AABB(6.264545, -0.5132825, 21.38071, 0.035000324, 0.6749527, 0.034999847)",
+      "materialOverride": "null",
+      "name": "Reed_009_4",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0380_Accepted_Corrected_Highland_Infrastructure_Unchanged/world/Reed_009_4",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        ""
+      ],
+      "visible": false,
+      "worldPosition": "Vector3(0, 0, 0)"
+    },
+    {
+      "aabb": "AABB(6.0434246, -0.5961706, 24.165527, 0.035000324, 0.49905092, 0.034999847)",
+      "materialOverride": "null",
+      "name": "Reed_010_0",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0380_Accepted_Corrected_Highland_Infrastructure_Unchanged/world/Reed_010_0",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        ""
+      ],
+      "visible": false,
+      "worldPosition": "Vector3(0, 0, 0)"
+    },
+    {
+      "aabb": "AABB(6.070168, -0.5961706, 24.127527, 0.035000324, 0.5003985, 0.035001755)",
+      "materialOverride": "null",
+      "name": "Reed_010_1",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0380_Accepted_Corrected_Highland_Infrastructure_Unchanged/world/Reed_010_1",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        ""
+      ],
+      "visible": false,
+      "worldPosition": "Vector3(0, 0, 0)"
+    },
+    {
+      "aabb": "AABB(6.211344, -0.5961706, 24.128868, 0.034999847, 0.6751326, 0.034999847)",
+      "materialOverride": "null",
+      "name": "Reed_010_2",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0380_Accepted_Corrected_Highland_Infrastructure_Unchanged/world/Reed_010_2",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        ""
+      ],
+      "visible": false,
+      "worldPosition": "Vector3(0, 0, 0)"
+    },
+    {
+      "aabb": "AABB(1.2879251, -0.80690247, 30.086405, 0.034999967, 0.6605038, 0.034999847)",
+      "materialOverride": "null",
+      "name": "Reed_011_0",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0380_Accepted_Corrected_Highland_Infrastructure_Unchanged/world/Reed_011_0",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        ""
+      ],
+      "visible": false,
+      "worldPosition": "Vector3(0, 0, 0)"
+    },
+    {
+      "aabb": "AABB(1.5691682, -0.80690247, 29.899946, 0.034999967, 0.49393064, 0.034999847)",
+      "materialOverride": "null",
+      "name": "Reed_011_1",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0380_Accepted_Corrected_Highland_Infrastructure_Unchanged/world/Reed_011_1",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        ""
+      ],
+      "visible": false,
+      "worldPosition": "Vector3(0, 0, 0)"
+    },
+    {
+      "aabb": "AABB(1.2192372, -0.80690247, 30.136473, 0.034999967, 0.78253263, 0.034999847)",
+      "materialOverride": "null",
+      "name": "Reed_011_2",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0380_Accepted_Corrected_Highland_Infrastructure_Unchanged/world/Reed_011_2",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        ""
+      ],
+      "visible": false,
+      "worldPosition": "Vector3(0, 0, 0)"
+    },
+    {
+      "aabb": "AABB(-28.029856, 0.1468006, 18.49341, 0.8999996, 0.9, 0.8999996)",
+      "materialOverride": "null",
+      "name": "Shrub_0_0",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0380_Accepted_Corrected_Highland_Infrastructure_Unchanged/world/Shrub_0_0",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        ""
+      ],
+      "visible": false,
+      "worldPosition": "Vector3(0, 0, 0)"
+    },
+    {
+      "aabb": "AABB(-28.198074, 0.1468006, 19.06107, 0.8999996, 0.9, 0.8999996)",
+      "materialOverride": "null",
+      "name": "Shrub_0_1",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0380_Accepted_Corrected_Highland_Infrastructure_Unchanged/world/Shrub_0_1",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        ""
+      ],
+      "visible": false,
+      "worldPosition": "Vector3(0, 0, 0)"
+    },
+    {
+      "aabb": "AABB(-28.684494, 0.1468006, 18.741158, 0.8999996, 0.9, 0.8999996)",
+      "materialOverride": "null",
+      "name": "Shrub_0_2",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0380_Accepted_Corrected_Highland_Infrastructure_Unchanged/world/Shrub_0_2",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        ""
+      ],
+      "visible": false,
+      "worldPosition": "Vector3(0, 0, 0)"
+    },
+    {
+      "aabb": "AABB(-28.839708, 0.1468006, 18.305796, 0.8999996, 0.9, 0.8999996)",
+      "materialOverride": "null",
+      "name": "Shrub_0_3",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0380_Accepted_Corrected_Highland_Infrastructure_Unchanged/world/Shrub_0_3",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        ""
+      ],
+      "visible": false,
+      "worldPosition": "Vector3(0, 0, 0)"
+    },
+    {
+      "aabb": "AABB(-28.343462, 0.1468006, 18.066673, 0.8999996, 0.9, 0.9000015)",
+      "materialOverride": "null",
+      "name": "Shrub_0_4",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0380_Accepted_Corrected_Highland_Infrastructure_Unchanged/world/Shrub_0_4",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        ""
+      ],
+      "visible": false,
+      "worldPosition": "Vector3(0, 0, 0)"
+    },
+    {
+      "aabb": "AABB(-24.077293, 0.0841016, -18.497559, 0.8999996, 0.9, 0.8999996)",
+      "materialOverride": "null",
+      "name": "Shrub_1_0",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0380_Accepted_Corrected_Highland_Infrastructure_Unchanged/world/Shrub_1_0",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        ""
+      ],
+      "visible": false,
+      "worldPosition": "Vector3(0, 0, 0)"
+    },
+    {
+      "aabb": "AABB(-24.265278, 0.0841016, -17.876656, 0.9000015, 0.9, 0.8999996)",
+      "materialOverride": "null",
+      "name": "Shrub_1_1",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0380_Accepted_Corrected_Highland_Infrastructure_Unchanged/world/Shrub_1_1",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        ""
+      ],
+      "visible": false,
+      "worldPosition": "Vector3(0, 0, 0)"
+    },
+    {
+      "aabb": "AABB(-25.039513, 0.0841016, -18.096674, 0.9000015, 0.9, 0.8999996)",
+      "materialOverride": "null",
+      "name": "Shrub_1_2",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0380_Accepted_Corrected_Highland_Infrastructure_Unchanged/world/Shrub_1_2",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        ""
+      ],
+      "visible": false,
+      "worldPosition": "Vector3(0, 0, 0)"
+    },
+    {
+      "aabb": "AABB(-24.790241, 0.0841016, -18.64413, 0.8999996, 0.9, 0.9000015)",
+      "materialOverride": "null",
+      "name": "Shrub_1_3",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0380_Accepted_Corrected_Highland_Infrastructure_Unchanged/world/Shrub_1_3",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        ""
+      ],
+      "visible": false,
+      "worldPosition": "Vector3(0, 0, 0)"
+    },
+    {
+      "aabb": "AABB(-24.341652, 0.0841016, -18.82415, 0.8999996, 0.9, 0.8999996)",
+      "materialOverride": "null",
+      "name": "Shrub_1_4",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0380_Accepted_Corrected_Highland_Infrastructure_Unchanged/world/Shrub_1_4",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        ""
+      ],
+      "visible": false,
+      "worldPosition": "Vector3(0, 0, 0)"
+    },
+    {
+      "aabb": "AABB(26.95416, 0.92528844, 18.509418, 0.8999996, 0.9, 0.8999996)",
+      "materialOverride": "null",
+      "name": "Shrub_2_0",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0380_Accepted_Corrected_Highland_Infrastructure_Unchanged/world/Shrub_2_0",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        ""
+      ],
+      "visible": false,
+      "worldPosition": "Vector3(0, 0, 0)"
+    },
+    {
+      "aabb": "AABB(26.627789, 0.92528844, 18.92376, 0.8999996, 0.9, 0.9000015)",
+      "materialOverride": "null",
+      "name": "Shrub_2_1",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0380_Accepted_Corrected_Highland_Infrastructure_Unchanged/world/Shrub_2_1",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        ""
+      ],
+      "visible": false,
+      "worldPosition": "Vector3(0, 0, 0)"
+    },
+    {
+      "aabb": "AABB(26.303154, 0.92528844, 18.73881, 0.8999996, 0.9, 0.8999996)",
+      "materialOverride": "null",
+      "name": "Shrub_2_2",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0380_Accepted_Corrected_Highland_Infrastructure_Unchanged/world/Shrub_2_2",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        ""
+      ],
+      "visible": false,
+      "worldPosition": "Vector3(0, 0, 0)"
+    },
+    {
+      "aabb": "AABB(26.21766, 0.92528844, 18.392368, 0.8999996, 0.9, 0.9000015)",
+      "materialOverride": "null",
+      "name": "Shrub_2_3",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0380_Accepted_Corrected_Highland_Infrastructure_Unchanged/world/Shrub_2_3",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        ""
+      ],
+      "visible": false,
+      "worldPosition": "Vector3(0, 0, 0)"
+    },
+    {
+      "aabb": "AABB(26.703285, 0.92528844, 18.267212, 0.8999996, 0.9, 0.9000015)",
+      "materialOverride": "null",
+      "name": "Shrub_2_4",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0380_Accepted_Corrected_Highland_Infrastructure_Unchanged/world/Shrub_2_4",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        ""
+      ],
+      "visible": false,
+      "worldPosition": "Vector3(0, 0, 0)"
+    },
+    {
+      "aabb": "AABB(30.780079, 0.8111665, -16.408384, 0.8999996, 0.9, 0.8999996)",
+      "materialOverride": "null",
+      "name": "Shrub_3_0",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0380_Accepted_Corrected_Highland_Infrastructure_Unchanged/world/Shrub_3_0",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        ""
+      ],
+      "visible": false,
+      "worldPosition": "Vector3(0, 0, 0)"
+    },
+    {
+      "aabb": "AABB(30.681854, 0.8111665, -16.031143, 0.9000015, 0.9, 0.8999996)",
+      "materialOverride": "null",
+      "name": "Shrub_3_1",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0380_Accepted_Corrected_Highland_Infrastructure_Unchanged/world/Shrub_3_1",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        ""
+      ],
+      "visible": false,
+      "worldPosition": "Vector3(0, 0, 0)"
+    },
+    {
+      "aabb": "AABB(30.24008, 0.8111665, -16.257677, 0.8999996, 0.9, 0.8999996)",
+      "materialOverride": "null",
+      "name": "Shrub_3_2",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0380_Accepted_Corrected_Highland_Infrastructure_Unchanged/world/Shrub_3_2",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        ""
+      ],
+      "visible": false,
+      "worldPosition": "Vector3(0, 0, 0)"
+    },
+    {
+      "aabb": "AABB(30.364445, 0.8111665, -16.59743, 0.8999996, 0.9, 0.8999996)",
+      "materialOverride": "null",
+      "name": "Shrub_3_3",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0380_Accepted_Corrected_Highland_Infrastructure_Unchanged/world/Shrub_3_3",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        ""
+      ],
+      "visible": false,
+      "worldPosition": "Vector3(0, 0, 0)"
+    },
+    {
+      "aabb": "AABB(30.695555, 0.8111665, -16.758085, 0.8999996, 0.9, 0.9000006)",
+      "materialOverride": "null",
+      "name": "Shrub_3_4",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0380_Accepted_Corrected_Highland_Infrastructure_Unchanged/world/Shrub_3_4",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        ""
+      ],
+      "visible": false,
+      "worldPosition": "Vector3(0, 0, 0)"
+    },
+    {
+      "aabb": "AABB(-13.169138, 0.24962541, 25.574614, 0.8999996, 0.9, 0.8999996)",
+      "materialOverride": "null",
+      "name": "Shrub_4_0",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0380_Accepted_Corrected_Highland_Infrastructure_Unchanged/world/Shrub_4_0",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        ""
+      ],
+      "visible": false,
+      "worldPosition": "Vector3(0, 0, 0)"
+    },
+    {
+      "aabb": "AABB(-13.398152, 0.24962541, 25.744995, 0.9000006, 0.9, 0.8999996)",
+      "materialOverride": "null",
+      "name": "Shrub_4_1",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0380_Accepted_Corrected_Highland_Infrastructure_Unchanged/world/Shrub_4_1",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        ""
+      ],
+      "visible": false,
+      "worldPosition": "Vector3(0, 0, 0)"
+    },
+    {
+      "aabb": "AABB(-13.854785, 0.24962541, 25.756107, 0.9000006, 0.9, 0.8999996)",
+      "materialOverride": "null",
+      "name": "Shrub_4_2",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0380_Accepted_Corrected_Highland_Infrastructure_Unchanged/world/Shrub_4_2",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        ""
+      ],
+      "visible": false,
+      "worldPosition": "Vector3(0, 0, 0)"
+    },
+    {
+      "aabb": "AABB(-13.718288, 0.24962541, 25.26731, 0.9000006, 0.9, 0.8999996)",
+      "materialOverride": "null",
+      "name": "Shrub_4_3",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0380_Accepted_Corrected_Highland_Infrastructure_Unchanged/world/Shrub_4_3",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        ""
+      ],
+      "visible": false,
+      "worldPosition": "Vector3(0, 0, 0)"
+    },
+    {
+      "aabb": "AABB(-13.30611, 0.24962541, 25.09904, 0.9000006, 0.9, 0.8999996)",
+      "materialOverride": "null",
+      "name": "Shrub_4_4",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0380_Accepted_Corrected_Highland_Infrastructure_Unchanged/world/Shrub_4_4",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        ""
+      ],
+      "visible": false,
+      "worldPosition": "Vector3(0, 0, 0)"
+    },
+    {
+      "aabb": "AABB(16.773363, 0.71053976, -25.448795, 0.8999996, 0.90000004, 0.8999996)",
+      "materialOverride": "null",
+      "name": "Shrub_5_0",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0380_Accepted_Corrected_Highland_Infrastructure_Unchanged/world/Shrub_5_0",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        ""
+      ],
+      "visible": false,
+      "worldPosition": "Vector3(0, 0, 0)"
+    },
+    {
+      "aabb": "AABB(16.862822, 0.71053976, -24.893473, 0.8999996, 0.90000004, 0.8999996)",
+      "materialOverride": "null",
+      "name": "Shrub_5_1",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0380_Accepted_Corrected_Highland_Infrastructure_Unchanged/world/Shrub_5_1",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        ""
+      ],
+      "visible": false,
+      "worldPosition": "Vector3(0, 0, 0)"
+    },
+    {
+      "aabb": "AABB(16.00778, 0.71053976, -25.064041, 0.8999996, 0.90000004, 0.8999996)",
+      "materialOverride": "null",
+      "name": "Shrub_5_2",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0380_Accepted_Corrected_Highland_Infrastructure_Unchanged/world/Shrub_5_2",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        ""
+      ],
+      "visible": false,
+      "worldPosition": "Vector3(0, 0, 0)"
+    },
+    {
+      "aabb": "AABB(16.266947, 0.71053976, -25.704393, 0.8999996, 0.90000004, 0.8999996)",
+      "materialOverride": "null",
+      "name": "Shrub_5_3",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0380_Accepted_Corrected_Highland_Infrastructure_Unchanged/world/Shrub_5_3",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        ""
+      ],
+      "visible": false,
+      "worldPosition": "Vector3(0, 0, 0)"
+    },
+    {
+      "aabb": "AABB(16.670336, 0.71053976, -25.789375, 0.9000015, 0.90000004, 0.8999996)",
+      "materialOverride": "null",
+      "name": "Shrub_5_4",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0380_Accepted_Corrected_Highland_Infrastructure_Unchanged/world/Shrub_5_4",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        ""
+      ],
+      "visible": false,
+      "worldPosition": "Vector3(0, 0, 0)"
+    },
+    {
+      "aabb": "AABB(-1.7136419, -0.05084159, -1.1591253, 3.0487604, 1.8989749, 2.4790716)",
+      "materialOverride": "null",
+      "name": "Rock_Medium_2",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0383_Restricted_Dressing_Only/V0383_Dark_Grouped_Geological_Rocks/RockGroup_WestOuter/Rock_Medium_2/Rock_Medium_2",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        "Rocks"
+      ],
+      "visible": true,
+      "worldPosition": "Vector3(-9.18, 0.22, -7.1800003)"
+    },
+    {
+      "aabb": "AABB(-1.8242793, -0.3156444, -0.89046204, 3.4200847, 2.3162827, 3.47611)",
+      "materialOverride": "null",
+      "name": "Rock_Medium_3",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0383_Restricted_Dressing_Only/V0383_Dark_Grouped_Geological_Rocks/RockGroup_WestOuter/Rock_Medium_3/Rock_Medium_3",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        "Rocks"
+      ],
+      "visible": true,
+      "worldPosition": "Vector3(-8.52, 0.22, -7.52)"
+    },
+    {
+      "aabb": "AABB(-1.7136419, -0.05084159, -1.1591253, 3.0487604, 1.8989749, 2.4790716)",
+      "materialOverride": "null",
+      "name": "Rock_Medium_2",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0383_Restricted_Dressing_Only/V0383_Dark_Grouped_Geological_Rocks/RockGroup_EastOuter/Rock_Medium_2/Rock_Medium_2",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        "Rocks"
+      ],
+      "visible": true,
+      "worldPosition": "Vector3(7.22, 0.22, 7.12)"
+    },
+    {
+      "aabb": "AABB(-1.8242793, -0.3156444, -0.89046204, 3.4200847, 2.3162827, 3.47611)",
+      "materialOverride": "null",
+      "name": "Rock_Medium_3",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0383_Restricted_Dressing_Only/V0383_Dark_Grouped_Geological_Rocks/RockGroup_EastOuter/Rock_Medium_3/Rock_Medium_3",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        "Rocks"
+      ],
+      "visible": true,
+      "worldPosition": "Vector3(7.88, 0.22, 6.78)"
+    },
+    {
+      "aabb": "AABB(-1.7136419, -0.05084159, -1.1591253, 3.0487604, 1.8989749, 2.4790716)",
+      "materialOverride": "null",
+      "name": "Rock_Medium_2",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0383_Restricted_Dressing_Only/V0383_Dark_Grouped_Geological_Rocks/RockGroup_WestDry/Rock_Medium_2/Rock_Medium_2",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        "Rocks"
+      ],
+      "visible": true,
+      "worldPosition": "Vector3(-7.38, 0.2, 6.52)"
+    },
+    {
+      "aabb": "AABB(-1.8242793, -0.3156444, -0.89046204, 3.4200847, 2.3162827, 3.47611)",
+      "materialOverride": "null",
+      "name": "Rock_Medium_3",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0383_Restricted_Dressing_Only/V0383_Dark_Grouped_Geological_Rocks/RockGroup_WestDry/Rock_Medium_3/Rock_Medium_3",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        "Rocks"
+      ],
+      "visible": true,
+      "worldPosition": "Vector3(-6.72, 0.2, 6.1800003)"
+    },
+    {
+      "aabb": "AABB(-1.7136419, -0.05084159, -1.1591253, 3.0487604, 1.8989749, 2.4790716)",
+      "materialOverride": "null",
+      "name": "Rock_Medium_2",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0383_Restricted_Dressing_Only/V0383_Dark_Grouped_Geological_Rocks/RockGroup_EastDry/Rock_Medium_2/Rock_Medium_2",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        "Rocks"
+      ],
+      "visible": true,
+      "worldPosition": "Vector3(8.0199995, 0.2, -6.38)"
+    },
+    {
+      "aabb": "AABB(-1.8242793, -0.3156444, -0.89046204, 3.4200847, 2.3162827, 3.47611)",
+      "materialOverride": "null",
+      "name": "Rock_Medium_3",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0383_Restricted_Dressing_Only/V0383_Dark_Grouped_Geological_Rocks/RockGroup_EastDry/Rock_Medium_3/Rock_Medium_3",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        "Rocks"
+      ],
+      "visible": true,
+      "worldPosition": "Vector3(8.679999, 0.2, -6.72)"
+    },
+    {
+      "aabb": "AABB(-2.1944587, -0.24277201, -2.224519, 4.311423, 7.264786, 4.577714)",
+      "materialOverride": "null",
+      "name": "CommonTree_1",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0383_Restricted_Dressing_Only/V0383_Spaced_Asymmetrical_Landscape_Masses/UpperBank_MassA/CommonTree_1/CommonTree_1",
+      "surfaceCount": 2,
+      "surfaceMaterials": [
+        "Bark_NormalTree",
+        "Leaves_NormalTree"
+      ],
+      "visible": true,
+      "worldPosition": "Vector3(-10.8, 0.38, -4.7999997)"
+    },
+    {
+      "aabb": "AABB(-2.8919582, -0.2350886, -2.693699, 5.7280846, 7.3762383, 5.2212067)",
+      "materialOverride": "null",
+      "name": "Pine_2",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0383_Restricted_Dressing_Only/V0383_Spaced_Asymmetrical_Landscape_Masses/UpperBank_MassA/Pine_2/Pine_2",
+      "surfaceCount": 2,
+      "surfaceMaterials": [
+        "Bark_NormalTree",
+        "Leaves_Pine"
+      ],
+      "visible": true,
+      "worldPosition": "Vector3(-9.1, 0.38, -3.3999999)"
+    },
+    {
+      "aabb": "AABB(-1.9864652, -0.24277201, -2.0609655, 4.062846, 9.42519, 4.241077)",
+      "materialOverride": "null",
+      "name": "CommonTree_3",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0383_Restricted_Dressing_Only/V0383_Spaced_Asymmetrical_Landscape_Masses/UpperBank_MassA/CommonTree_3/CommonTree_3",
+      "surfaceCount": 2,
+      "surfaceMaterials": [
+        "Bark_NormalTree",
+        "Leaves_NormalTree"
+      ],
+      "visible": true,
+      "worldPosition": "Vector3(-7.6000004, 0.38, -4.3999996)"
+    },
+    {
+      "aabb": "AABB(-0.40356767, -0.03136225, -0.47903335, 0.89508927, 1.8726953, 0.99311185)",
+      "materialOverride": "null",
+      "name": "Grass_Common_Tall",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0383_Restricted_Dressing_Only/V0383_Spaced_Asymmetrical_Landscape_Masses/UpperBank_MassA/Grass_Common_Tall/Grass_Common_Tall",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        "Grass"
+      ],
+      "visible": true,
+      "worldPosition": "Vector3(-10.400001, 0.33999997, -2.9999998)"
+    },
+    {
+      "aabb": "AABB(-0.72804356, -0.08575009, -0.582811, 1.322186, 1.0718468, 1.2097443)",
+      "materialOverride": "null",
+      "name": "Grass_Wispy_Short",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0383_Restricted_Dressing_Only/V0383_Spaced_Asymmetrical_Landscape_Masses/UpperBank_MassA/Grass_Wispy_Short/Grass_Wispy_Short",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        "Grass"
+      ],
+      "visible": true,
+      "worldPosition": "Vector3(-8.6, 0.32, -5.2999997)"
+    },
+    {
+      "aabb": "AABB(-2.8919582, -0.2350886, -2.693699, 5.7280846, 7.3762383, 5.2212067)",
+      "materialOverride": "null",
+      "name": "Pine_2",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0383_Restricted_Dressing_Only/V0383_Spaced_Asymmetrical_Landscape_Masses/LowerBank_MassB/Pine_2/Pine_2",
+      "surfaceCount": 2,
+      "surfaceMaterials": [
+        "Bark_NormalTree",
+        "Leaves_Pine"
+      ],
+      "visible": true,
+      "worldPosition": "Vector3(9, 0.38, 9)"
+    },
+    {
+      "aabb": "AABB(-2.1944587, -0.24277201, -2.224519, 4.311423, 7.264786, 4.577714)",
+      "materialOverride": "null",
+      "name": "CommonTree_1",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0383_Restricted_Dressing_Only/V0383_Spaced_Asymmetrical_Landscape_Masses/LowerBank_MassB/CommonTree_1/CommonTree_1",
+      "surfaceCount": 2,
+      "surfaceMaterials": [
+        "Bark_NormalTree",
+        "Leaves_NormalTree"
+      ],
+      "visible": true,
+      "worldPosition": "Vector3(10.7, 0.38, 7.9000006)"
+    },
+    {
+      "aabb": "AABB(-1.9864652, -0.24277201, -2.0609655, 4.062846, 9.42519, 4.241077)",
+      "materialOverride": "null",
+      "name": "CommonTree_3",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0383_Restricted_Dressing_Only/V0383_Spaced_Asymmetrical_Landscape_Masses/LowerBank_MassB/CommonTree_3/CommonTree_3",
+      "surfaceCount": 2,
+      "surfaceMaterials": [
+        "Bark_NormalTree",
+        "Leaves_NormalTree"
+      ],
+      "visible": true,
+      "worldPosition": "Vector3(12, 0.38, 9.3)"
+    },
+    {
+      "aabb": "AABB(-0.40356767, -0.03136225, -0.47903335, 0.89508927, 1.8726953, 0.99311185)",
+      "materialOverride": "null",
+      "name": "Grass_Common_Tall",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0383_Restricted_Dressing_Only/V0383_Spaced_Asymmetrical_Landscape_Masses/LowerBank_MassB/Grass_Common_Tall/Grass_Common_Tall",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        "Grass"
+      ],
+      "visible": true,
+      "worldPosition": "Vector3(8.9, 0.33999997, 9.8)"
+    },
+    {
+      "aabb": "AABB(-0.72804356, -0.08575009, -0.582811, 1.322186, 1.0718468, 1.2097443)",
+      "materialOverride": "null",
+      "name": "Grass_Wispy_Short",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0383_Restricted_Dressing_Only/V0383_Spaced_Asymmetrical_Landscape_Masses/LowerBank_MassB/Grass_Wispy_Short/Grass_Wispy_Short",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        "Grass"
+      ],
+      "visible": true,
+      "worldPosition": "Vector3(10.7, 0.32, 7.5000005)"
+    },
+    {
+      "aabb": "AABB(-0.40356767, -0.03136225, -0.47903335, 0.89508927, 1.8726953, 0.99311185)",
+      "materialOverride": "null",
+      "name": "Grass_Common_Tall",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0383_Restricted_Dressing_Only/V0383_Six_NonRepeating_Riverbank_Clusters/Cluster_A_ReedsLowGrassRock/Grass_Common_Tall/Grass_Common_Tall",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        "Grass"
+      ],
+      "visible": true,
+      "worldPosition": "Vector3(0.53999996, 0.22999999, -6.38)"
+    },
+    {
+      "aabb": "AABB(-0.72804356, -0.08575009, -0.582811, 1.322186, 1.0718468, 1.2097443)",
+      "materialOverride": "null",
+      "name": "Grass_Wispy_Short",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0383_Restricted_Dressing_Only/V0383_Six_NonRepeating_Riverbank_Clusters/Cluster_A_ReedsLowGrassRock/Grass_Wispy_Short/Grass_Wispy_Short",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        "Grass"
+      ],
+      "visible": true,
+      "worldPosition": "Vector3(1.14, 0.21, -6.7799997)"
+    },
+    {
+      "aabb": "AABB(-1.7136419, -0.05084159, -1.1591253, 3.0487604, 1.8989749, 2.4790716)",
+      "materialOverride": "null",
+      "name": "Rock_Medium_2",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0383_Restricted_Dressing_Only/V0383_Six_NonRepeating_Riverbank_Clusters/Cluster_A_ReedsLowGrassRock/Rock_Medium_2/Rock_Medium_2",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        "Rocks"
+      ],
+      "visible": true,
+      "worldPosition": "Vector3(1.48, 0.19, -6.2799997)"
+    },
+    {
+      "aabb": "AABB(-1.7136419, -0.05084159, -1.1591253, 3.0487604, 1.8989749, 2.4790716)",
+      "materialOverride": "null",
+      "name": "Rock_Medium_2",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0383_Restricted_Dressing_Only/V0383_Six_NonRepeating_Riverbank_Clusters/Cluster_B_RocksSparseReeds/Rock_Medium_2/Rock_Medium_2",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        "Rocks"
+      ],
+      "visible": true,
+      "worldPosition": "Vector3(0.5, 0.19, -3.3200002)"
+    },
+    {
+      "aabb": "AABB(-1.8242793, -0.3156444, -0.89046204, 3.4200847, 2.3162827, 3.47611)",
+      "materialOverride": "null",
+      "name": "Rock_Medium_3",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0383_Restricted_Dressing_Only/V0383_Six_NonRepeating_Riverbank_Clusters/Cluster_B_RocksSparseReeds/Rock_Medium_3/Rock_Medium_3",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        "Rocks"
+      ],
+      "visible": true,
+      "worldPosition": "Vector3(1.34, 0.19999999, -3.66)"
+    },
+    {
+      "aabb": "AABB(-0.72804356, -0.08575009, -0.582811, 1.322186, 1.0718468, 1.2097443)",
+      "materialOverride": "null",
+      "name": "Grass_Wispy_Short",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0383_Restricted_Dressing_Only/V0383_Six_NonRepeating_Riverbank_Clusters/Cluster_B_RocksSparseReeds/Grass_Wispy_Short/Grass_Wispy_Short",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        "Grass"
+      ],
+      "visible": true,
+      "worldPosition": "Vector3(0.97, 0.21, -2.88)"
+    },
+    {
+      "aabb": "AABB(-0.72804356, -0.08575009, -0.582811, 1.322186, 1.0718468, 1.2097443)",
+      "materialOverride": "null",
+      "name": "Grass_Wispy_Short",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0383_Restricted_Dressing_Only/V0383_Six_NonRepeating_Riverbank_Clusters/Cluster_C_LowShrubBuriedRock/Grass_Wispy_Short/Grass_Wispy_Short",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        "Grass"
+      ],
+      "visible": true,
+      "worldPosition": "Vector3(0.62, 0.22, 5.28)"
+    },
+    {
+      "aabb": "AABB(-0.72804356, -0.08575009, -0.582811, 1.322186, 1.0718468, 1.2097443)",
+      "materialOverride": "null",
+      "name": "Grass_Wispy_Short",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0383_Restricted_Dressing_Only/V0383_Six_NonRepeating_Riverbank_Clusters/Cluster_C_LowShrubBuriedRock/@Node3D@2/Grass_Wispy_Short",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        "Grass"
+      ],
+      "visible": true,
+      "worldPosition": "Vector3(1.26, 0.21, 5.7000003)"
+    },
+    {
+      "aabb": "AABB(-1.8242793, -0.3156444, -0.89046204, 3.4200847, 2.3162827, 3.47611)",
+      "materialOverride": "null",
+      "name": "Rock_Medium_3",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0383_Restricted_Dressing_Only/V0383_Six_NonRepeating_Riverbank_Clusters/Cluster_C_LowShrubBuriedRock/Rock_Medium_3/Rock_Medium_3",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        "Rocks"
+      ],
+      "visible": true,
+      "worldPosition": "Vector3(0.3, 0.19, 5.78)"
+    },
+    {
+      "aabb": "AABB(-0.40356767, -0.03136225, -0.47903335, 0.89508927, 1.8726953, 0.99311185)",
+      "materialOverride": "null",
+      "name": "Grass_Common_Tall",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0383_Restricted_Dressing_Only/V0383_Six_NonRepeating_Riverbank_Clusters/Cluster_D_RocksSparseReeds/Grass_Common_Tall/Grass_Common_Tall",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        "Grass"
+      ],
+      "visible": true,
+      "worldPosition": "Vector3(4.7999997, 0.22999999, -5.78)"
+    },
+    {
+      "aabb": "AABB(-0.72804356, -0.08575009, -0.582811, 1.322186, 1.0718468, 1.2097443)",
+      "materialOverride": "null",
+      "name": "Grass_Wispy_Short",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0383_Restricted_Dressing_Only/V0383_Six_NonRepeating_Riverbank_Clusters/Cluster_D_RocksSparseReeds/Grass_Wispy_Short/Grass_Wispy_Short",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        "Grass"
+      ],
+      "visible": true,
+      "worldPosition": "Vector3(5.4, 0.21, -6.18)"
+    },
+    {
+      "aabb": "AABB(-1.7136419, -0.05084159, -1.1591253, 3.0487604, 1.8989749, 2.4790716)",
+      "materialOverride": "null",
+      "name": "Rock_Medium_2",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0383_Restricted_Dressing_Only/V0383_Six_NonRepeating_Riverbank_Clusters/Cluster_D_RocksSparseReeds/Rock_Medium_2/Rock_Medium_2",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        "Rocks"
+      ],
+      "visible": true,
+      "worldPosition": "Vector3(5.74, 0.19, -5.68)"
+    },
+    {
+      "aabb": "AABB(-1.7136419, -0.05084159, -1.1591253, 3.0487604, 1.8989749, 2.4790716)",
+      "materialOverride": "null",
+      "name": "Rock_Medium_2",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0383_Restricted_Dressing_Only/V0383_Six_NonRepeating_Riverbank_Clusters/Cluster_E_ReedsLowGrassRock/Rock_Medium_2/Rock_Medium_2",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        "Rocks"
+      ],
+      "visible": true,
+      "worldPosition": "Vector3(4.58, 0.19, 3.58)"
+    },
+    {
+      "aabb": "AABB(-1.8242793, -0.3156444, -0.89046204, 3.4200847, 2.3162827, 3.47611)",
+      "materialOverride": "null",
+      "name": "Rock_Medium_3",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0383_Restricted_Dressing_Only/V0383_Six_NonRepeating_Riverbank_Clusters/Cluster_E_ReedsLowGrassRock/Rock_Medium_3/Rock_Medium_3",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        "Rocks"
+      ],
+      "visible": true,
+      "worldPosition": "Vector3(5.42, 0.19999999, 3.24)"
+    },
+    {
+      "aabb": "AABB(-0.72804356, -0.08575009, -0.582811, 1.322186, 1.0718468, 1.2097443)",
+      "materialOverride": "null",
+      "name": "Grass_Wispy_Short",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0383_Restricted_Dressing_Only/V0383_Six_NonRepeating_Riverbank_Clusters/Cluster_E_ReedsLowGrassRock/Grass_Wispy_Short/Grass_Wispy_Short",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        "Grass"
+      ],
+      "visible": true,
+      "worldPosition": "Vector3(5.05, 0.21, 4.02)"
+    },
+    {
+      "aabb": "AABB(-0.72804356, -0.08575009, -0.582811, 1.322186, 1.0718468, 1.2097443)",
+      "materialOverride": "null",
+      "name": "Grass_Wispy_Short",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0383_Restricted_Dressing_Only/V0383_Six_NonRepeating_Riverbank_Clusters/Cluster_F_LowShrubBuriedRock/Grass_Wispy_Short/Grass_Wispy_Short",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        "Grass"
+      ],
+      "visible": true,
+      "worldPosition": "Vector3(4.82, 0.22, 6.48)"
+    },
+    {
+      "aabb": "AABB(-0.72804356, -0.08575009, -0.582811, 1.322186, 1.0718468, 1.2097443)",
+      "materialOverride": "null",
+      "name": "Grass_Wispy_Short",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0383_Restricted_Dressing_Only/V0383_Six_NonRepeating_Riverbank_Clusters/Cluster_F_LowShrubBuriedRock/@Node3D@3/Grass_Wispy_Short",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        "Grass"
+      ],
+      "visible": true,
+      "worldPosition": "Vector3(5.46, 0.21, 6.9)"
+    },
+    {
+      "aabb": "AABB(-1.8242793, -0.3156444, -0.89046204, 3.4200847, 2.3162827, 3.47611)",
+      "materialOverride": "null",
+      "name": "Rock_Medium_3",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0383_Restricted_Dressing_Only/V0383_Six_NonRepeating_Riverbank_Clusters/Cluster_F_LowShrubBuriedRock/Rock_Medium_3/Rock_Medium_3",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        "Rocks"
+      ],
+      "visible": true,
+      "worldPosition": "Vector3(4.5, 0.19, 6.98)"
+    },
+    {
+      "aabb": "AABB(-1.0314507, -0.02825252, -0.05990997, 2.0640998, 0.8381091, 0.119820006)",
+      "materialOverride": "null",
+      "name": "Prop_WoodenFence_Single",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0383_Restricted_Dressing_Only/V0383_Minimal_Approach_Dressing/Prop_WoodenFence_Single/Prop_WoodenFence_Single",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        "MI_WoodTrim"
+      ],
+      "visible": true,
+      "worldPosition": "Vector3(-7.4, 0.2, -5.2)"
+    },
+    {
+      "aabb": "AABB(-0.5459548, -0.06721999, -0.5822393, 1.0798186, 1.1934973, 1.1644785)",
+      "materialOverride": "null",
+      "name": "Crate_Wooden",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0383_Restricted_Dressing_Only/V0383_Minimal_Approach_Dressing/Crate_Wooden/Crate_Wooden",
+      "surfaceCount": 2,
+      "surfaceMaterials": [
+        "MI_Trim_Furniture",
+        "MI_Trim_Metal"
+      ],
+      "visible": true,
+      "worldPosition": "Vector3(7, 0.24, 5)"
+    },
+    {
+      "aabb": "AABB(-6.5773487, 0, 0.13666445, 6.3980775, 1e-05, 3.7007215)",
+      "materialOverride": "V0394_Bridge_Desaturated_Value",
+      "name": "V0395_One_Compacted_Warm_Earth_Bridge_Yard_Door_Route",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0394_Route_Only_Visibility_Repair_Fence_Regression_Rollback/V0394_Five_Functional_Yard_Groups/V0395_Natural_Worn_Earth_Route_Material_Edge_Integration/V0395_One_Compacted_Warm_Earth_Bridge_Yard_Door_Route",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        "null"
+      ],
+      "visible": true,
+      "worldPosition": "Vector3(-2.2, 1.12, 1.1)"
+    },
+    {
+      "aabb": "AABB(-8.360344, 0, 2.1507804, 4.7415943, 1e-05, 2.4108536)",
+      "materialOverride": "V0395_Short_Compacted_Warm_Earth_Barn_Entrance_Branch_Material",
+      "name": "V0395_Short_Compacted_Warm_Earth_Barn_Entrance_Branch",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0394_Route_Only_Visibility_Repair_Fence_Regression_Rollback/V0394_Five_Functional_Yard_Groups/V0395_Natural_Worn_Earth_Route_Material_Edge_Integration/V0395_Short_Compacted_Warm_Earth_Barn_Entrance_Branch",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        "null"
+      ],
+      "visible": true,
+      "worldPosition": "Vector3(-2.2, 1.125, 1.1)"
+    },
+    {
+      "aabb": "AABB(-0.675, -0.06, -0.21, 1.35, 0.12, 0.42)",
+      "materialOverride": "V0395_Door_Threshold_Stone_Material",
+      "name": "V0395_Door_Threshold_Stone",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0394_Route_Only_Visibility_Repair_Fence_Regression_Rollback/V0394_Five_Functional_Yard_Groups/V0395_Natural_Worn_Earth_Route_Material_Edge_Integration/V0395_Door_Threshold_Stone",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        "null"
+      ],
+      "visible": true,
+      "worldPosition": "Vector3(-8.18, 1.14, 2.18)"
+    },
+    {
+      "aabb": "AABB(-0.97935915, 0.0031298436, -3.150432, 1.9514084, 1.5291971, 4.0240164)",
+      "materialOverride": "null",
+      "name": "Prop_Wagon",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0394_Route_Only_Visibility_Repair_Fence_Regression_Rollback/V0394_Direct_Grounded_Yard_Functions/V0394_Yard_Group_01_Cart_Direct_Ground/Cart_Visible/Prop_Wagon",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        "MI_WoodTrim_Wear"
+      ],
+      "visible": true,
+      "worldPosition": "Vector3(-5.2, 0.84, 5.45)"
+    },
+    {
+      "aabb": "AABB(-0.5459548, -0.06721999, -0.5822393, 1.0798186, 1.1934973, 1.1644785)",
+      "materialOverride": "null",
+      "name": "Crate_Wooden",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0394_Route_Only_Visibility_Repair_Fence_Regression_Rollback/V0394_Direct_Grounded_Yard_Functions/V0394_Yard_Group_02_Stacked_Firewood_Direct_Ground/Lumber_Crate_0/Crate_Wooden",
+      "surfaceCount": 2,
+      "surfaceMaterials": [
+        "MI_Trim_Furniture",
+        "MI_Trim_Metal"
+      ],
+      "visible": true,
+      "worldPosition": "Vector3(-10.62, 0.76, 5.12)"
+    },
+    {
+      "aabb": "AABB(-0.5459548, -0.06721999, -0.5822393, 1.0798186, 1.1934973, 1.1644785)",
+      "materialOverride": "null",
+      "name": "Crate_Wooden",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0394_Route_Only_Visibility_Repair_Fence_Regression_Rollback/V0394_Direct_Grounded_Yard_Functions/V0394_Yard_Group_02_Stacked_Firewood_Direct_Ground/Lumber_Crate_1/Crate_Wooden",
+      "surfaceCount": 2,
+      "surfaceMaterials": [
+        "MI_Trim_Furniture",
+        "MI_Trim_Metal"
+      ],
+      "visible": true,
+      "worldPosition": "Vector3(-10.14, 0.92, 5.12)"
+    },
+    {
+      "aabb": "AABB(-0.5459548, -0.06721999, -0.5822393, 1.0798186, 1.1934973, 1.1644785)",
+      "materialOverride": "null",
+      "name": "Crate_Wooden",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0394_Route_Only_Visibility_Repair_Fence_Regression_Rollback/V0394_Direct_Grounded_Yard_Functions/V0394_Yard_Group_02_Stacked_Firewood_Direct_Ground/Lumber_Crate_2/Crate_Wooden",
+      "surfaceCount": 2,
+      "surfaceMaterials": [
+        "MI_Trim_Furniture",
+        "MI_Trim_Metal"
+      ],
+      "visible": true,
+      "worldPosition": "Vector3(-9.66, 0.76, 5.12)"
+    },
+    {
+      "aabb": "AABB(-0.34901556, 0.0034367442, -0.34901547, 0.698031, 0.89795834, 0.69803095)",
+      "materialOverride": "null",
+      "name": "Barrel_Apples",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0394_Route_Only_Visibility_Repair_Fence_Regression_Rollback/V0394_Direct_Grounded_Yard_Functions/V0394_Yard_Group_03_Barrel_Crate_Storage_Direct_Ground/Storage_Barrel/Barrel_Apples",
+      "surfaceCount": 3,
+      "surfaceMaterials": [
+        "MI_Trim_Furniture",
+        "MI_Trim_Metal",
+        "MI_Trim_Props_Vertex"
+      ],
+      "visible": true,
+      "worldPosition": "Vector3(-3.92, 0.86, 6.02)"
+    },
+    {
+      "aabb": "AABB(-0.5459548, -0.06721999, -0.5822393, 1.0798186, 1.1934973, 1.1644785)",
+      "materialOverride": "null",
+      "name": "Crate_Wooden",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0394_Route_Only_Visibility_Repair_Fence_Regression_Rollback/V0394_Direct_Grounded_Yard_Functions/V0394_Yard_Group_03_Barrel_Crate_Storage_Direct_Ground/Storage_Crate/Crate_Wooden",
+      "surfaceCount": 2,
+      "surfaceMaterials": [
+        "MI_Trim_Furniture",
+        "MI_Trim_Metal"
+      ],
+      "visible": true,
+      "worldPosition": "Vector3(-3.25, 0.8, 5.98)"
+    },
+    {
+      "aabb": "AABB(-0.56274915, 0.0029109623, -0.374839, 1.1408882, 1.1698833, 0.9017547)",
+      "materialOverride": "null",
+      "name": "Whetstone",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0394_Route_Only_Visibility_Repair_Fence_Regression_Rollback/V0394_Direct_Grounded_Yard_Functions/V0394_Yard_Group_04_Trough_Workbench_Direct_Ground/Workstone/Whetstone",
+      "surfaceCount": 3,
+      "surfaceMaterials": [
+        "MI_Trim_Furniture",
+        "MI_Trim_Metal",
+        "MI_Trim_Props_Vertex"
+      ],
+      "visible": true,
+      "worldPosition": "Vector3(-6.9800005, 0.8, 4.52)"
+    },
+    {
+      "aabb": "AABB(-0.07, -0.21, -0.07, 0.14, 0.42, 0.14)",
+      "materialOverride": "Workbench_Leg_A_Material",
+      "name": "Workbench_Leg_A",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0394_Route_Only_Visibility_Repair_Fence_Regression_Rollback/V0394_Direct_Grounded_Yard_Functions/V0394_Yard_Group_04_Trough_Workbench_Direct_Ground/Workbench_Leg_A",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        "null"
+      ],
+      "visible": true,
+      "worldPosition": "Vector3(-6.62, 0.98, 4.52)"
+    },
+    {
+      "aabb": "AABB(-0.07, -0.21, -0.07, 0.14, 0.42, 0.14)",
+      "materialOverride": "Workbench_Leg_B_Material",
+      "name": "Workbench_Leg_B",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0394_Route_Only_Visibility_Repair_Fence_Regression_Rollback/V0394_Direct_Grounded_Yard_Functions/V0394_Yard_Group_04_Trough_Workbench_Direct_Ground/Workbench_Leg_B",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        "null"
+      ],
+      "visible": true,
+      "worldPosition": "Vector3(-6.02, 0.98, 4.52)"
+    },
+    {
+      "aabb": "AABB(-0.43, -0.05, -0.17, 0.86, 0.1, 0.34)",
+      "materialOverride": "Workbench_Narrow_Top_Material",
+      "name": "Workbench_Narrow_Top",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0394_Route_Only_Visibility_Repair_Fence_Regression_Rollback/V0394_Direct_Grounded_Yard_Functions/V0394_Yard_Group_04_Trough_Workbench_Direct_Ground/Workbench_Narrow_Top",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        "null"
+      ],
+      "visible": true,
+      "worldPosition": "Vector3(-6.3199997, 1.22, 4.52)"
+    },
+    {
+      "aabb": "AABB(-5.01, -1.275, -6.5, 10.02, 7.1200004, 9.71)",
+      "materialOverride": "null",
+      "name": "LOD0_Granite",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0394_Route_Only_Visibility_Repair_Fence_Regression_Rollback/V0394_One_Primary_Barrosan_Homestead/LOD0_Granite",
+      "surfaceCount": 4,
+      "surfaceMaterials": [
+        "V0338_GoldCandidate_Rubble_Front",
+        "V0338_GoldCandidate_Rubble_Rear",
+        "V0338_GoldCandidate_Rubble_LeftGable",
+        "V0338_GoldCandidate_Rubble_RightGable"
+      ],
+      "visible": true,
+      "worldPosition": "Vector3(-8.05, 1.172, 3.41)"
+    },
+    {
+      "aabb": "AABB(-1.4, -1.075, -0.11, 5.155, 4.1, 0.23999996)",
+      "materialOverride": "null",
+      "name": "LOD0_Interior_Recess",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0394_Route_Only_Visibility_Repair_Fence_Regression_Rollback/V0394_One_Primary_Barrosan_Homestead/LOD0_Interior_Recess",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        "V0334_Interior_Recess"
+      ],
+      "visible": true,
+      "worldPosition": "Vector3(-8.05, 1.2, 3.5700002)"
+    },
+    {
+      "aabb": "AABB(-1.5999999, -1.1, -7.03, 7.37, 4.0099998, 7.28)",
+      "materialOverride": "null",
+      "name": "LOD0_Weathered_Timber",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0394_Route_Only_Visibility_Repair_Fence_Regression_Rollback/V0394_One_Primary_Barrosan_Homestead/LOD0_Weathered_Timber",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        "V0334_Weathered_Timber"
+      ],
+      "visible": true,
+      "worldPosition": "Vector3(-8.3220005, 1.2, 3.63)"
+    },
+    {
+      "aabb": "AABB(-0.04, -0.175, -0.03, 4.6549997, 2.465, 0.06999999)",
+      "materialOverride": "null",
+      "name": "LOD0_Iron",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0394_Route_Only_Visibility_Repair_Fence_Regression_Rollback/V0394_One_Primary_Barrosan_Homestead/LOD0_Iron",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        "V0334_Iron"
+      ],
+      "visible": true,
+      "worldPosition": "Vector3(-8.502, 1.2, 3.678)"
+    },
+    {
+      "aabb": "AABB(-0.525, -0.5, -6.7599998, 4.4500003, 1, 6.8399997)",
+      "materialOverride": "null",
+      "name": "LOD0_Recessed_Window",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0394_Route_Only_Visibility_Repair_Fence_Regression_Rollback/V0394_One_Primary_Barrosan_Homestead/LOD0_Recessed_Window",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        "V0334_Recessed_Window"
+      ],
+      "visible": true,
+      "worldPosition": "Vector3(-8.75, 2.14, 3.586)"
+    },
+    {
+      "aabb": "AABB(-5.15, -0.18, -6.41, 10.3, 0.36, 6.58)",
+      "materialOverride": "null",
+      "name": "LOD0_Damp_Foundation",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0394_Route_Only_Visibility_Repair_Fence_Regression_Rollback/V0394_One_Primary_Barrosan_Homestead/LOD0_Damp_Foundation",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        "V0338_GoldCandidate_DampFoundation"
+      ],
+      "visible": true,
+      "worldPosition": "Vector3(-8.05, 0.73200005, 3.4980001)"
+    },
+    {
+      "aabb": "AABB(-5.12, 4.36, -3.48, 10.24, 2.8999996, 6.96)",
+      "materialOverride": "null",
+      "name": "LOD0_Weathered_Slate",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0394_Route_Only_Visibility_Repair_Fence_Regression_Rollback/V0394_One_Primary_Barrosan_Homestead/LOD0_Weathered_Slate",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        "V0334_Weathered_Slate"
+      ],
+      "visible": true,
+      "worldPosition": "Vector3(-8.05, 0.66, 2.25)"
+    },
+    {
+      "aabb": "AABB(-5.01, -1.275, -6.497033, 10.02, 7.117203, 9.704935)",
+      "materialOverride": "null",
+      "name": "LOD1_Granite",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0394_Route_Only_Visibility_Repair_Fence_Regression_Rollback/V0394_One_Primary_Barrosan_Homestead/LOD1_Granite",
+      "surfaceCount": 4,
+      "surfaceMaterials": [
+        "V0338_GoldCandidate_Rubble_Front",
+        "V0338_GoldCandidate_Rubble_Rear",
+        "V0338_GoldCandidate_Rubble_LeftGable",
+        "V0338_GoldCandidate_Rubble_RightGable"
+      ],
+      "visible": true,
+      "worldPosition": "Vector3(-8.05, 1.172, 3.41)"
+    },
+    {
+      "aabb": "AABB(-1.3983113, -1.0736016, -0.108311325, 5.1519127, 4.097038, 0.23691276)",
+      "materialOverride": "null",
+      "name": "LOD1_Interior_Recess",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0394_Route_Only_Visibility_Repair_Fence_Regression_Rollback/V0394_One_Primary_Barrosan_Homestead/LOD1_Interior_Recess",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        "V0334_Interior_Recess"
+      ],
+      "visible": true,
+      "worldPosition": "Vector3(-8.05, 1.2, 3.5700002)"
+    },
+    {
+      "aabb": "AABB(-1.5990676, -1.1, -7.0288744, 7.3690677, 4.0083685, 7.277709)",
+      "materialOverride": "null",
+      "name": "LOD1_Weathered_Timber",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0394_Route_Only_Visibility_Repair_Fence_Regression_Rollback/V0394_One_Primary_Barrosan_Homestead/LOD1_Weathered_Timber",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        "V0334_Weathered_Timber"
+      ],
+      "visible": true,
+      "worldPosition": "Vector3(-8.3220005, 1.2, 3.63)"
+    },
+    {
+      "aabb": "AABB(-0.039300725, -0.17415568, -0.029233096, 4.653277, 2.4635928, 0.06871171)",
+      "materialOverride": "null",
+      "name": "LOD1_Iron",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0394_Route_Only_Visibility_Repair_Fence_Regression_Rollback/V0394_One_Primary_Barrosan_Homestead/LOD1_Iron",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        "V0334_Iron"
+      ],
+      "visible": true,
+      "worldPosition": "Vector3(-8.502, 1.2, 3.678)"
+    },
+    {
+      "aabb": "AABB(-0.5235928, -0.49883455, -6.7586966, 4.4474277, 0.9976691, 6.837531)",
+      "materialOverride": "null",
+      "name": "LOD1_Recessed_Window",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0394_Route_Only_Visibility_Repair_Fence_Regression_Rollback/V0394_One_Primary_Barrosan_Homestead/LOD1_Recessed_Window",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        "V0334_Recessed_Window"
+      ],
+      "visible": true,
+      "worldPosition": "Vector3(-8.75, 2.14, 3.586)"
+    },
+    {
+      "aabb": "AABB(-5.1481357, -0.17813535, -6.407748, 10.296271, 0.3562707, 6.5756626)",
+      "materialOverride": "null",
+      "name": "LOD1_Damp_Foundation",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0394_Route_Only_Visibility_Repair_Fence_Regression_Rollback/V0394_One_Primary_Barrosan_Homestead/LOD1_Damp_Foundation",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        "V0338_GoldCandidate_DampFoundation"
+      ],
+      "visible": true,
+      "worldPosition": "Vector3(-8.05, 0.73200005, 3.4980001)"
+    },
+    {
+      "aabb": "AABB(-5.12, 4.36, -3.48, 10.24, 2.8988342, 6.96)",
+      "materialOverride": "null",
+      "name": "LOD1_Weathered_Slate",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0394_Route_Only_Visibility_Repair_Fence_Regression_Rollback/V0394_One_Primary_Barrosan_Homestead/LOD1_Weathered_Slate",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        "V0334_Weathered_Slate"
+      ],
+      "visible": true,
+      "worldPosition": "Vector3(-8.05, 0.66, 2.25)"
+    },
+    {
+      "aabb": "AABB(-4.997783, -1.2627946, -6.487046, 9.99959, 7.0921464, 9.682472)",
+      "materialOverride": "null",
+      "name": "LOD2_Granite",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0394_Route_Only_Visibility_Repair_Fence_Regression_Rollback/V0394_One_Primary_Barrosan_Homestead/LOD2_Granite",
+      "surfaceCount": 4,
+      "surfaceMaterials": [
+        "V0338_GoldCandidate_Rubble_Front",
+        "V0338_GoldCandidate_Rubble_Rear",
+        "V0338_GoldCandidate_Rubble_LeftGable",
+        "V0338_GoldCandidate_Rubble_RightGable"
+      ],
+      "visible": true,
+      "worldPosition": "Vector3(-8.05, 1.172, 3.41)"
+    },
+    {
+      "aabb": "AABB(-1.3917911, -1.0671756, -0.10542296, 5.1384516, 4.084262, 0.23235014)",
+      "materialOverride": "null",
+      "name": "LOD2_Interior_Recess",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0394_Route_Only_Visibility_Repair_Fence_Regression_Rollback/V0394_One_Primary_Barrosan_Homestead/LOD2_Interior_Recess",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        "V0334_Interior_Recess"
+      ],
+      "visible": true,
+      "worldPosition": "Vector3(-8.05, 1.2, 3.5700002)"
+    },
+    {
+      "aabb": "AABB(-1.5945276, -1.095903, -7.023663, 7.3604307, 4.002318, 7.271102)",
+      "materialOverride": "null",
+      "name": "LOD2_Weathered_Timber",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0394_Route_Only_Visibility_Repair_Fence_Regression_Rollback/V0394_One_Primary_Barrosan_Homestead/LOD2_Weathered_Timber",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        "V0334_Weathered_Timber"
+      ],
+      "visible": true,
+      "worldPosition": "Vector3(-8.3220005, 1.2, 3.63)"
+    },
+    {
+      "aabb": "AABB(-0.035993185, -0.17272687, -0.027218409, 4.647825, 2.4594884, 0.063979805)",
+      "materialOverride": "null",
+      "name": "LOD2_Iron",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0394_Route_Only_Visibility_Repair_Fence_Regression_Rollback/V0394_One_Primary_Barrosan_Homestead/LOD2_Iron",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        "V0334_Iron"
+      ],
+      "visible": true,
+      "worldPosition": "Vector3(-8.502, 1.2, 3.678)"
+    },
+    {
+      "aabb": "AABB(-0.5181594, -0.49386102, -6.7561855, 4.436324, 0.99004686, 6.833625)",
+      "materialOverride": "null",
+      "name": "LOD2_Recessed_Window",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0394_Route_Only_Visibility_Repair_Fence_Regression_Rollback/V0394_One_Primary_Barrosan_Homestead/LOD2_Recessed_Window",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        "V0334_Recessed_Window"
+      ],
+      "visible": true,
+      "worldPosition": "Vector3(-8.75, 2.14, 3.586)"
+    },
+    {
+      "aabb": "AABB(-5.145903, -0.17389745, -6.4001765, 10.284362, 0.3477949, 6.564068)",
+      "materialOverride": "null",
+      "name": "LOD2_Damp_Foundation",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0394_Route_Only_Visibility_Repair_Fence_Regression_Rollback/V0394_One_Primary_Barrosan_Homestead/LOD2_Damp_Foundation",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        "V0338_GoldCandidate_DampFoundation"
+      ],
+      "visible": true,
+      "worldPosition": "Vector3(-8.05, 0.73200005, 3.4980001)"
+    },
+    {
+      "aabb": "AABB(-5.12, 4.36, -3.48, 10.24, 2.8934793, 6.96)",
+      "materialOverride": "null",
+      "name": "LOD2_Weathered_Slate",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0394_Route_Only_Visibility_Repair_Fence_Regression_Rollback/V0394_One_Primary_Barrosan_Homestead/LOD2_Weathered_Slate",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        "V0334_Weathered_Slate"
+      ],
+      "visible": true,
+      "worldPosition": "Vector3(-8.05, 0.66, 2.25)"
+    },
+    {
+      "aabb": "AABB(-4.75, -1.35, -2.75, 9.5, 2.7, 5.5)",
+      "materialOverride": "null",
+      "name": "Collision_LowerVolume",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0394_Route_Only_Visibility_Repair_Fence_Regression_Rollback/V0394_One_Primary_Barrosan_Homestead/Collision_LowerVolume",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        "V0334_Damp_Foundation"
+      ],
+      "visible": true,
+      "worldPosition": "Vector3(-8.05, 1.2, 2.25)"
+    },
+    {
+      "aabb": "AABB(-4.75, -0.95, -2.75, 9.5, 1.9, 5.5)",
+      "materialOverride": "null",
+      "name": "Collision_UpperVolume",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0394_Route_Only_Visibility_Repair_Fence_Regression_Rollback/V0394_One_Primary_Barrosan_Homestead/Collision_UpperVolume",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        "V0334_Damp_Foundation"
+      ],
+      "visible": true,
+      "worldPosition": "Vector3(-8.05, 2.08, 2.25)"
+    },
+    {
+      "aabb": "AABB(-5, 4.24, -3.4, 10, 1.7600002, 6.8)",
+      "materialOverride": "null",
+      "name": "Collision_RoofVolume",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0394_Route_Only_Visibility_Repair_Fence_Regression_Rollback/V0394_One_Primary_Barrosan_Homestead/Collision_RoofVolume",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        "V0334_Damp_Foundation"
+      ],
+      "visible": true,
+      "worldPosition": "Vector3(-8.05, 0.66, 2.25)"
+    },
+    {
+      "aabb": "AABB(-7.8700004, 0.20999998, -5.309999, 15.74, 5.7129207, 10.764999)",
+      "materialOverride": "null",
+      "name": "V0347_Barn_Rendered_Geometry_Truth",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0394_Route_Only_Visibility_Repair_Fence_Regression_Rollback/V0394_One_Subordinate_Agricultural_Barn_Separate/V0347_Barn_Rendered_Geometry_Truth",
+      "surfaceCount": 6,
+      "surfaceMaterials": [
+        "V0344_House02Derived_Granite_Continuous",
+        "V0343_House02Derived_Recess",
+        "V0343_House02Derived_Weathered_Timber",
+        "V0343_House02Derived_Iron",
+        "V0347_House02_Frozen_Weathered_Slate",
+        "V0347_Subordinate_Charcoal_Brown_Roof_Edge"
+      ],
+      "visible": true,
+      "worldPosition": "Vector3(-11.099999, 0.42, 5.6)"
+    },
+    {
+      "aabb": "AABB(-0.8377335, 1.0003642, -0.0691345, 1.675467, 0.5548408, 0.26270056)",
+      "materialOverride": "null",
+      "name": "Farmer_Body",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0394_Route_Only_Visibility_Repair_Fence_Regression_Rollback/V0388_Exactly_Three_Distinct_Character_Roles/V0389_Resident_Worker/CharacterArmature/Skeleton3D/Farmer_Body",
+      "surfaceCount": 4,
+      "surfaceMaterials": [
+        "Skin",
+        "LightBlue",
+        "Brown",
+        "Beige"
+      ],
+      "visible": true,
+      "worldPosition": "Vector3(-7.55, 0.82, 5.15)"
+    },
+    {
+      "aabb": "AABB(-0.19155636, -0.00037368335, 0.0077761086, 0.38311273, 0.21271762, 0.27891234)",
+      "materialOverride": "null",
+      "name": "Farmer_Feet",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0394_Route_Only_Visibility_Repair_Fence_Regression_Rollback/V0388_Exactly_Three_Distinct_Character_Roles/V0389_Resident_Worker/CharacterArmature/Skeleton3D/Farmer_Feet",
+      "surfaceCount": 2,
+      "surfaceMaterials": [
+        "Brown",
+        "Brown2"
+      ],
+      "visible": true,
+      "worldPosition": "Vector3(-7.55, 0.82, 5.15)"
+    },
+    {
+      "aabb": "AABB(-0.17681152, 1.4545083, -0.113259636, 0.35362303, 0.40109563, 0.35748518)",
+      "materialOverride": "null",
+      "name": "Farmer_Head",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0394_Route_Only_Visibility_Repair_Fence_Regression_Rollback/V0388_Exactly_Three_Distinct_Character_Roles/V0389_Resident_Worker/CharacterArmature/Skeleton3D/Farmer_Head",
+      "surfaceCount": 5,
+      "surfaceMaterials": [
+        "Skin",
+        "Eyebrows",
+        "Beige",
+        "Red",
+        "Eye"
+      ],
+      "visible": true,
+      "worldPosition": "Vector3(-7.55, 0.82, 5.15)"
+    },
+    {
+      "aabb": "AABB(-0.198873, 0.124205925, -0.06539339, 0.397746, 0.9129356, 0.22346385)",
+      "materialOverride": "null",
+      "name": "Farmer_Pants",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0394_Route_Only_Visibility_Repair_Fence_Regression_Rollback/V0388_Exactly_Three_Distinct_Character_Roles/V0389_Resident_Worker/CharacterArmature/Skeleton3D/Farmer_Pants",
+      "surfaceCount": 1,
+      "surfaceMaterials": [
+        "LightBlue"
+      ],
+      "visible": true,
+      "worldPosition": "Vector3(-7.55, 0.82, 5.15)"
+    },
+    {
+      "aabb": "AABB(-0.8377335, 0.98983914, -0.06643083, 1.675467, 0.56710106, 0.2599969)",
+      "materialOverride": "null",
+      "name": "Adventurer_Body",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0394_Route_Only_Visibility_Repair_Fence_Regression_Rollback/V0388_Exactly_Three_Distinct_Character_Roles/V0389_Crossing_Guard/CharacterArmature/Skeleton3D/Adventurer_Body",
+      "surfaceCount": 3,
+      "surfaceMaterials": [
+        "Skin",
+        "Green",
+        "LightGreen"
+      ],
+      "visible": true,
+      "worldPosition": "Vector3(-3.15, 0.78, 2.7)"
+    },
+    {
+      "aabb": "AABB(-0.19155636, -0.0012230937, 0.0077761086, 0.38311273, 0.22093254, 0.27891234)",
+      "materialOverride": "null",
+      "name": "Adventurer_Feet",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0394_Route_Only_Visibility_Repair_Fence_Regression_Rollback/V0388_Exactly_Three_Distinct_Character_Roles/V0389_Crossing_Guard/CharacterArmature/Skeleton3D/Adventurer_Feet",
+      "surfaceCount": 2,
+      "surfaceMaterials": [
+        "Grey",
+        "Black"
+      ],
+      "visible": true,
+      "worldPosition": "Vector3(-3.15, 0.78, 2.7)"
+    },
+    {
+      "aabb": "AABB(-0.108423434, 1.4417195, -0.09363836, 0.22004262, 0.4142214, 0.26868904)",
+      "materialOverride": "null",
+      "name": "Adventurer_Head",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0394_Route_Only_Visibility_Repair_Fence_Regression_Rollback/V0388_Exactly_Three_Distinct_Character_Roles/V0389_Crossing_Guard/CharacterArmature/Skeleton3D/Adventurer_Head",
+      "surfaceCount": 4,
+      "surfaceMaterials": [
+        "Skin",
+        "Eyebrows",
+        "Hair",
+        "Eye"
+      ],
+      "visible": true,
+      "worldPosition": "Vector3(-3.15, 0.78, 2.7)"
+    },
+    {
+      "aabb": "AABB(-0.18878436, 0.13698946, -0.06539502, 0.37756872, 0.89655304, 0.23452565)",
+      "materialOverride": "null",
+      "name": "Adventurer_Legs",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0394_Route_Only_Visibility_Repair_Fence_Regression_Rollback/V0388_Exactly_Three_Distinct_Character_Roles/V0389_Crossing_Guard/CharacterArmature/Skeleton3D/Adventurer_Legs",
+      "surfaceCount": 2,
+      "surfaceMaterials": [
+        "Brown",
+        "Brown2"
+      ],
+      "visible": true,
+      "worldPosition": "Vector3(-3.15, 0.78, 2.7)"
+    },
+    {
+      "aabb": "AABB(-0.21908653, 1.1806742, -0.2630161, 0.43817306, 0.40887082, 0.2288175)",
+      "materialOverride": "null",
+      "name": "Backpack",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0394_Route_Only_Visibility_Repair_Fence_Regression_Rollback/V0388_Exactly_Three_Distinct_Character_Roles/V0389_Crossing_Guard/CharacterArmature/Skeleton3D/Backpack",
+      "surfaceCount": 4,
+      "surfaceMaterials": [
+        "Brown",
+        "LightGreen",
+        "Gold",
+        "Green"
+      ],
+      "visible": true,
+      "worldPosition": "Vector3(-3.15, 0.78, 2.7)"
+    },
+    {
+      "aabb": "AABB(-0.8377335, 1.0088857, -0.059693813, 1.675467, 0.54805446, 0.25325987)",
+      "materialOverride": "null",
+      "name": "Worker_Body",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0394_Route_Only_Visibility_Repair_Fence_Regression_Rollback/V0388_Exactly_Three_Distinct_Character_Roles/V0389_Traveller_Porter/CharacterArmature/Skeleton3D/Worker_Body",
+      "surfaceCount": 4,
+      "surfaceMaterials": [
+        "Skin",
+        "Worker_Yellow",
+        "Worker_Vest",
+        "LightBrown"
+      ],
+      "visible": true,
+      "worldPosition": "Vector3(-4.45, 0.92, 4.9)"
+    },
+    {
+      "aabb": "AABB(-0.19155636, -0.0036725954, 0.0077761086, 0.38311273, 0.27681807, 0.27891234)",
+      "materialOverride": "null",
+      "name": "Worker_Feet",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0394_Route_Only_Visibility_Repair_Fence_Regression_Rollback/V0388_Exactly_Three_Distinct_Character_Roles/V0389_Traveller_Porter/CharacterArmature/Skeleton3D/Worker_Feet",
+      "surfaceCount": 2,
+      "surfaceMaterials": [
+        "Grey",
+        "Black"
+      ],
+      "visible": true,
+      "worldPosition": "Vector3(-4.45, 0.92, 4.9)"
+    },
+    {
+      "aabb": "AABB(-0.11912065, 1.454745, -0.10256111, 0.2382413, 0.40801346, 0.33581874)",
+      "materialOverride": "null",
+      "name": "Worker_Head",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0394_Route_Only_Visibility_Repair_Fence_Regression_Rollback/V0388_Exactly_Three_Distinct_Character_Roles/V0389_Traveller_Porter/CharacterArmature/Skeleton3D/Worker_Head",
+      "surfaceCount": 5,
+      "surfaceMaterials": [
+        "Skin",
+        "Eyebrows",
+        "Worker_Yellow",
+        "Moustache",
+        "Eye"
+      ],
+      "visible": true,
+      "worldPosition": "Vector3(-4.45, 0.92, 4.9)"
+    },
+    {
+      "aabb": "AABB(-0.18878436, 0.13698946, -0.06539303, 0.37756872, 0.90174377, 0.22097369)",
+      "materialOverride": "null",
+      "name": "Worker_Legs",
+      "path": "/root/SaltoSpikeRoot/V0400MainHouseRoofSilhouetteCleanup/V0383_Bridge_First_Highland_Style_Coherence/V0394_Route_Only_Visibility_Repair_Fence_Regression_Rollback/V0388_Exactly_Three_Distinct_Character_Roles/V0389_Traveller_Porter/CharacterArmature/Skeleton3D/Worker_Legs",
+      "surfaceCount": 2,
+      "surfaceMaterials": [
+        "Brown",
+        "Brown2"
+      ],
+      "visible": true,
+      "worldPosition": "Vector3(-4.45, 0.92, 4.9)"
+    }
+  ],
+  "smokeMode": false,
+  "v0388CaptureMode": true,
+  "v0388CaptureRoot": "artifacts/runtime/v0400"
+}

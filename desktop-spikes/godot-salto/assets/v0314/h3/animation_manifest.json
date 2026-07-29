@@ -1,0 +1,118 @@
+{
+  "schemaVersion": 1,
+  "method": "M3_AUTHORED_MULTI_FRAME_ATLAS",
+  "roles": {
+    "worker": {
+      "atlas": "res://assets/v0314/h3/worker_directional_animation_atlas.png",
+      "cellSize": 128,
+      "columns": 8,
+      "rows": 8,
+      "maxFramesPerFamily": 16,
+      "families": [
+        "south",
+        "east",
+        "north",
+        "west"
+      ],
+      "states": {
+        "south:idle": {
+          "start": 0,
+          "count": 4
+        },
+        "south:locomotion": {
+          "start": 4,
+          "count": 6
+        },
+        "south:work": {
+          "start": 10,
+          "count": 6
+        },
+        "east:idle": {
+          "start": 16,
+          "count": 4
+        },
+        "east:locomotion": {
+          "start": 20,
+          "count": 6
+        },
+        "east:work": {
+          "start": 26,
+          "count": 6
+        },
+        "north:idle": {
+          "start": 32,
+          "count": 4
+        },
+        "north:locomotion": {
+          "start": 36,
+          "count": 6
+        },
+        "north:work": {
+          "start": 42,
+          "count": 6
+        },
+        "west:idle": {
+          "start": 48,
+          "count": 4
+        },
+        "west:locomotion": {
+          "start": 52,
+          "count": 6
+        },
+        "west:work": {
+          "start": 58,
+          "count": 6
+        }
+      },
+      "sourceCard": "barrosan_worker_v0147_source.png"
+    },
+    "militia": {
+      "atlas": "res://assets/v0314/h3/militia_directional_animation_atlas.png",
+      "cellSize": 128,
+      "columns": 8,
+      "rows": 5,
+      "maxFramesPerFamily": 10,
+      "families": [
+        "south",
+        "east",
+        "north",
+        "west"
+      ],
+      "states": {
+        "south:idle": {
+          "start": 0,
+          "count": 4
+        },
+        "south:locomotion": {
+          "start": 4,
+          "count": 6
+        },
+        "east:idle": {
+          "start": 10,
+          "count": 4
+        },
+        "east:locomotion": {
+          "start": 14,
+          "count": 6
+        },
+        "north:idle": {
+          "start": 20,
+          "count": 4
+        },
+        "north:locomotion": {
+          "start": 24,
+          "count": 6
+        },
+        "west:idle": {
+          "start": 30,
+          "count": 4
+        },
+        "west:locomotion": {
+          "start": 34,
+          "count": 6
+        }
+      },
+      "sourceCard": "barrosan_militia_v0154_source.png"
+    }
+  }
+}

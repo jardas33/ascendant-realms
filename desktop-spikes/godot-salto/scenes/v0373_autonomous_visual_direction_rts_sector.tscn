@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/v0373_autonomous_visual_direction_rts_sector.gd" id="1_v0373"]
+
+[node name="V0373AutonomousVisualDirectionRtsSector" type="Node3D"]
+script = ExtResource("1_v0373")

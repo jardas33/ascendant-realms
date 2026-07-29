@@ -1,0 +1,227 @@
+{
+  "automatedVisualApproval": false,
+  "captures": [
+    {
+      "camera": {
+        "position": "(-15.0, 8.4, 15.0)",
+        "projection": "orthographic",
+        "size": 16.5,
+        "target": "(0.0, 2.65, 0.0)"
+      },
+      "fileName": "01_front_three_quarter.png",
+      "purpose": "front three-quarter: broad agricultural mass, lower door, upper opening, slate roof",
+      "rendered": true,
+      "size": {
+        "height": 1009,
+        "width": 1920
+      },
+      "technicalOverlay": false,
+      "unlabelled": true
+    },
+    {
+      "camera": {
+        "position": "(0.0, 7.0, 18.0)",
+        "projection": "orthographic",
+        "size": 15.0,
+        "target": "(0.0, 2.55, 0.0)"
+      },
+      "fileName": "02_direct_front.png",
+      "purpose": "direct front: granite gables, lower agricultural door and subordinate upper loading opening",
+      "rendered": true,
+      "size": {
+        "height": 1009,
+        "width": 1920
+      },
+      "technicalOverlay": false,
+      "unlabelled": true
+    },
+    {
+      "camera": {
+        "position": "(-18.0, 6.4, 0.0)",
+        "projection": "orthographic",
+        "size": 13.0,
+        "target": "(0.0, 2.7, 0.0)"
+      },
+      "fileName": "03_direct_side_gable.png",
+      "purpose": "direct side: continuous granite gable and two-slope roof profile",
+      "rendered": true,
+      "size": {
+        "height": 1009,
+        "width": 1920
+      },
+      "technicalOverlay": false,
+      "unlabelled": true
+    },
+    {
+      "camera": {
+        "position": "(-22.0, 9.0, 22.0)",
+        "projection": "orthographic",
+        "size": 27.0,
+        "target": "(0.0, 3.4, 0.0)"
+      },
+      "fileName": "04_house02_barn_slate_match.png",
+      "purpose": "matched camera roof comparison beside frozen House02",
+      "rendered": true,
+      "size": {
+        "height": 1009,
+        "width": 1920
+      },
+      "technicalOverlay": false,
+      "unlabelled": true
+    },
+    {
+      "camera": {
+        "position": "(-10.0, 5.8, 12.2)",
+        "projection": "orthographic",
+        "size": 10.0,
+        "target": "(0.0, 2.75, 0.0)"
+      },
+      "fileName": "05_front_openings_closeup.png",
+      "purpose": "close front opening hierarchy and foundation contact",
+      "rendered": true,
+      "size": {
+        "height": 1009,
+        "width": 1920
+      },
+      "technicalOverlay": false,
+      "unlabelled": true
+    },
+    {
+      "camera": {
+        "position": "(-19.0, 14.5, 22.0)",
+        "projection": "orthographic",
+        "size": 24.0,
+        "target": "(0.0, 2.0, 0.0)"
+      },
+      "fileName": "06_far_rts.png",
+      "purpose": "ordinary far RTS readability",
+      "rendered": true,
+      "size": {
+        "height": 1009,
+        "width": 1920
+      },
+      "technicalOverlay": false,
+      "unlabelled": true
+    },
+    {
+      "camera": {
+        "position": "(-15.0, 8.4, 15.0)",
+        "projection": "orthographic",
+        "size": 16.5,
+        "target": "(0.0, 2.65, 0.0)"
+      },
+      "fileName": "07_256_pixel_source.png",
+      "purpose": "true 256-pixel square source",
+      "rendered": true,
+      "size": {
+        "height": 256,
+        "width": 256
+      },
+      "technicalOverlay": false,
+      "unlabelled": true
+    },
+    {
+      "camera": {
+        "position": "(-15.0, 8.4, 15.0)",
+        "projection": "orthographic",
+        "size": 13.2,
+        "target": "(0.0, 2.65, 0.0)"
+      },
+      "fileName": "08_true_matched_house02_barn.png",
+      "leftPanel": "frozen House02 rendered directly",
+      "purpose": "true frozen House02 left and v0.348 barn right front comparison",
+      "rendered": true,
+      "rightPanel": "v0.348 barn rendered directly",
+      "size": {
+        "height": 256,
+        "width": 512
+      },
+      "technicalOverlay": false,
+      "unlabelled": true
+    },
+    {
+      "camera": {
+        "position": "(-15.0, 8.4, 15.0)",
+        "projection": "orthographic",
+        "size": 16.5,
+        "target": "(0.0, 2.65, 0.0)"
+      },
+      "fileName": "09_neutral_overcast_full_asset.png",
+      "purpose": "neutral overcast full asset",
+      "rendered": true,
+      "size": {
+        "height": 1009,
+        "width": 1920
+      },
+      "technicalOverlay": false,
+      "unlabelled": true
+    },
+    {
+      "camera": {
+        "position": "(-15.0, 8.4, 15.0)",
+        "projection": "orthographic",
+        "size": 16.5,
+        "target": "(0.0, 2.65, 0.0)"
+      },
+      "fileName": "10_warm_directional_full_asset.png",
+      "purpose": "restrained warm directional full asset",
+      "rendered": true,
+      "size": {
+        "height": 1009,
+        "width": 1920
+      },
+      "technicalOverlay": false,
+      "unlabelled": true
+    }
+  ],
+  "checkpoint": "v0.348",
+  "defaultRuntimeIntegrated": false,
+  "diagnosticEvidence": [
+    "normal_enabled.png",
+    "normal_disabled.png",
+    "albedo_only.png",
+    "roughness_isolation.png",
+    "uv_checker_source.txt"
+  ],
+  "errors": [],
+  "godotImportedBounds": {
+    "maxX": 7.86999940872192,
+    "maxY": 6.10292053222656,
+    "maxZ": 5.45500040054321,
+    "minX": -7.87000036239624,
+    "minY": 0.389999985694885,
+    "minZ": -5.30999898910522
+  },
+  "humanReviewRequired": true,
+  "noCombat": true,
+  "noEconomy": true,
+  "noGameplay": true,
+  "noLabels": true,
+  "noMovement": true,
+  "noOverlays": true,
+  "noPathfinding": true,
+  "noResources": true,
+  "noRuntimeIntegration": true,
+  "noVideo": true,
+  "outcome": "READY FOR HUMAN V0348 BARN MATERIAL-HARMONY GOLD-CANDIDATE REVIEW",
+  "prototypeOnly": true,
+  "prototypeOptIn": true,
+  "rawCaptureCount": 10,
+  "requiredRawNames": [
+    "01_front_three_quarter.png",
+    "02_direct_front.png",
+    "03_direct_side_gable.png",
+    "04_house02_barn_slate_match.png",
+    "05_front_openings_closeup.png",
+    "06_far_rts.png",
+    "07_256_pixel_source.png",
+    "08_true_matched_house02_barn.png",
+    "09_neutral_overcast_full_asset.png",
+    "10_warm_directional_full_asset.png"
+  ],
+  "scenePath": "res://scenes/review/V0348BarnBarrosanMaterialHarmony.tscn",
+  "schemaVersion": 1,
+  "sourceBlend": "art-source/blender/v0348/barn_barrosan_material_harmony.blend",
+  "sourceGLB": "res://assets/v0348/barn_barrosan_material_harmony.glb",
+  "status": "PASS_V0348_MATERIAL_HARMONY_RUNTIME"
+}

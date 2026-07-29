@@ -1,0 +1,22 @@
+{
+  "checkpoint": "v0.390",
+  "status": "REJECTED BY INDEPENDENT V0390 VISUAL REVIEW",
+  "evidence": "real-rendered",
+  "resolution": "1920x1080",
+  "rejectedReference": "v0.389",
+  "repairs": [
+    "one flush irregular worn-earth yard surface",
+    "one continuous bridge-yard-door route",
+    "five direct-grounded yard functions",
+    "barn moved toward shared yard with visible gap",
+    "settlement value raised against bridge dominance"
+  ],
+  "blackFrameRejected": true,
+  "titleCardOnlyRejected": true,
+  "gameplay": false,
+  "defaultRuntime": "unchanged",
+  "route": "opt-in-only",
+  "independentVerdict": "REJECT",
+  "independentReview": "The route remains too pale and diffuse, a rectangular workstation slab remains, the five functions are not independently legible, the barn roofs merge, and grayscale still gives the bridge dominance.",
+  "nextCheckpoint": "v0.391 Ground-Plane Legibility and Building Separation Repair"
+}

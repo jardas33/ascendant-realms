@@ -212,6 +212,9 @@ func issue_move_order(target: Vector2 = Vector2.INF) -> bool:
 		unit["destination"] = adjusted
 		unit["hasDestination"] = true
 		unit["lastPosition"] = unit["position"]
+		unit["commandState"] = "move_ordered"
+		unit["activityState"] = "travelling"
+		unit["facing"] = _facing_for_delta(adjusted - unit["position"])
 		index += 1
 	last_order = "move:%s:%s" % [snappedf(destination.x, 0.1), snappedf(destination.y, 0.1)]
 	return index > 0
@@ -486,6 +489,9 @@ func assign_worker_to_mine(worker_id: String = "worker_00") -> bool:
 	worker["destination"] = Vector2(650, 460)
 	worker["position"] = Vector2(618, 438)
 	worker["hasDestination"] = false
+	worker["commandState"] = "work"
+	worker["activityState"] = "working"
+	worker["facing"] = "south-east"
 	worker_assigned_to_mine = true
 	last_order = "worker-assigned:west_stone_cut"
 	return true
@@ -976,8 +982,77 @@ func _unit(id: String, fixture_id: String, team: String, role: String, position:
 		"cooldown": 0.0,
 		"attackTarget": "",
 		"speed": speed,
-		"alive": true
+		"alive": true,
+		"commandState": "idle",
+		"activityState": "idle",
+		"facing": "south-east",
+		"readyState": "unsupported"
 	}
+
+func capture_save_state() -> Dictionary:
+	var saved_units: Array[Dictionary] = []
+	for unit in units:
+		var row: Dictionary = unit.duplicate(true)
+		for key in ["position", "lastPosition", "destination"]:
+			var value: Vector2 = row.get(key, Vector2.ZERO)
+			row[key] = {"x": value.x, "y": value.y}
+		saved_units.append(row)
+	return {
+		"schemaVersion": 1,
+		"workloadTier": workload_tier,
+		"units": saved_units,
+		"selectedIds": selected_ids.duplicate(),
+		"resources": resources.duplicate(true),
+		"lastOrder": last_order,
+		"pressureWaveState": pressure_wave_state,
+		"pressureWaveDefeated": pressure_wave_defeated,
+		"workerAssignedToMine": worker_assigned_to_mine,
+		"mineWorkerAssignments": mine_worker_assignments.duplicate(),
+		"mineConverted": mine_converted,
+		"barracksConstructionProgress": barracks_construction_progress,
+		"barracksComplete": barracks_complete,
+		"resultsReady": results_ready
+	}
+
+func restore_capture_save_state(snapshot: Dictionary) -> bool:
+	if int(snapshot.get("schemaVersion", 0)) != 1 or not snapshot.has("units"):
+		return false
+	var restored_units: Array[Dictionary] = []
+	for row in snapshot.get("units", []):
+		if row is Dictionary:
+			restored_units.append(row.duplicate(true))
+	units = restored_units
+	for unit in units:
+		for key in ["position", "lastPosition", "destination"]:
+			var value = unit.get(key, {})
+			if value is Dictionary:
+				unit[key] = Vector2(float(value.get("x", 0.0)), float(value.get("y", 0.0)))
+	var restored_selected_ids: Array[String] = []
+	for id in snapshot.get("selectedIds", []):
+		restored_selected_ids.append(str(id))
+	selected_ids = restored_selected_ids
+	resources = snapshot.get("resources", {}).duplicate(true)
+	last_order = str(snapshot.get("lastOrder", "none"))
+	pressure_wave_state = str(snapshot.get("pressureWaveState", "dormant"))
+	pressure_wave_defeated = bool(snapshot.get("pressureWaveDefeated", false))
+	worker_assigned_to_mine = bool(snapshot.get("workerAssignedToMine", false))
+	var restored_assignments: Array[String] = []
+	for id in snapshot.get("mineWorkerAssignments", []):
+		restored_assignments.append(str(id))
+	mine_worker_assignments = restored_assignments
+	mine_converted = bool(snapshot.get("mineConverted", false))
+	barracks_construction_progress = float(snapshot.get("barracksConstructionProgress", 0.0))
+	barracks_complete = bool(snapshot.get("barracksComplete", false))
+	results_ready = bool(snapshot.get("resultsReady", false))
+	initial_placement_signature = placement_signature()
+	return true
+
+func _facing_for_delta(delta: Vector2) -> String:
+	if delta.length_squared() < 0.001:
+		return "south-east"
+	var angle := atan2(delta.y, delta.x)
+	var index := posmod(int(round((angle + PI * 0.5) / (PI * 0.25))), 8)
+	return ["north", "north-east", "east", "south-east", "south", "south-west", "west", "north-west"][index]
 
 func _create_structures(tier: String) -> Array[Dictionary]:
 	var config := get_tier_config(tier)
@@ -1220,9 +1295,13 @@ func _move_unit(unit: Dictionary) -> void:
 	var destination: Vector2 = _avoid_obstacles(unit["destination"])
 	var delta: Vector2 = destination - position
 	var distance: float = delta.length()
+	if distance > 0.001:
+		unit["facing"] = _facing_for_delta(delta)
 	if distance <= 1.2:
 		unit["position"] = destination
 		unit["hasDestination"] = false
+		unit["commandState"] = "stopped"
+		unit["activityState"] = "idle"
 		movement_completed_count += 1
 		return
 	var step: float = min(float(unit["speed"]) / 60.0, distance)

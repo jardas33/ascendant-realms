@@ -1,0 +1,304 @@
+{
+  "aabbChanged": false,
+  "after": {
+    "V0400_Main_House_Left_Eave": {
+      "aabb": {
+
+      },
+      "indexCount": 0,
+      "material": "V0408_Main_House_Weathered_Eave_Timber",
+      "surfaceCount": 0,
+      "transform": {
+        "basis": "[X: (1.0, 0.0, 0.0), Y: (0.0, 1.0, 0.0), Z: (0.0, 0.0, 1.0)]",
+        "origin": {
+          "x": -5.55999994277954,
+          "y": 4.01999998092651,
+          "z": 0.0
+        }
+      },
+      "triangleCount": 0,
+      "uvCount": 0,
+      "vertexCount": 0
+    },
+    "V0400_Main_House_Left_Roof_Visual_Closure": {
+      "aabb": {
+
+      },
+      "indexCount": 0,
+      "material": "V0408_Main_House_Weathered_Eave_Timber",
+      "surfaceCount": 0,
+      "transform": {
+        "basis": "[X: (0.871913, 0.489661, 0.0), Y: (-0.489661, 0.871913, 0.0), Z: (0.0, 0.0, 1.0)]",
+        "origin": {
+          "x": -2.75999999046326,
+          "y": 5.63000011444092,
+          "z": 0.0
+        }
+      },
+      "triangleCount": 0,
+      "uvCount": 0,
+      "vertexCount": 0
+    },
+    "V0400_Main_House_Ridge_Beam": {
+      "aabb": {
+
+      },
+      "indexCount": 0,
+      "material": "V0408_Main_House_Slate_Ridge",
+      "surfaceCount": 0,
+      "transform": {
+        "basis": "[X: (1.0, 0.0, 0.0), Y: (0.0, 1.0, 0.0), Z: (0.0, 0.0, 1.0)]",
+        "origin": {
+          "x": 0.0,
+          "y": 7.26000022888184,
+          "z": 0.0
+        }
+      },
+      "triangleCount": 0,
+      "uvCount": 0,
+      "vertexCount": 0
+    },
+    "V0400_Main_House_Right_Eave": {
+      "aabb": {
+
+      },
+      "indexCount": 0,
+      "material": "V0408_Main_House_Weathered_Eave_Timber",
+      "surfaceCount": 0,
+      "transform": {
+        "basis": "[X: (1.0, 0.0, 0.0), Y: (0.0, 1.0, 0.0), Z: (0.0, 0.0, 1.0)]",
+        "origin": {
+          "x": 5.55999994277954,
+          "y": 4.01999998092651,
+          "z": 0.0
+        }
+      },
+      "triangleCount": 0,
+      "uvCount": 0,
+      "vertexCount": 0
+    },
+    "V0400_Main_House_Right_Roof_Visual_Closure": {
+      "aabb": {
+
+      },
+      "indexCount": 0,
+      "material": "V0408_Main_House_Weathered_Eave_Timber",
+      "surfaceCount": 0,
+      "transform": {
+        "basis": "[X: (0.871913, -0.489661, 0.0), Y: (0.489661, 0.871913, 0.0), Z: (0.0, 0.0, 1.0)]",
+        "origin": {
+          "x": 2.75999999046326,
+          "y": 5.63000011444092,
+          "z": 0.0
+        }
+      },
+      "triangleCount": 0,
+      "uvCount": 0,
+      "vertexCount": 0
+    },
+    "V0400_Main_House_Roof_Left_Plane": {
+      "aabb": {
+
+      },
+      "indexCount": 0,
+      "material": "V0408_Main_House_Weathered_Slate",
+      "surfaceCount": 0,
+      "transform": {
+        "basis": "[X: (0.871913, 0.489661, 0.0), Y: (-0.489661, 0.871913, 0.0), Z: (0.0, 0.0, 1.0)]",
+        "origin": {
+          "x": -2.75999999046326,
+          "y": 5.63000011444092,
+          "z": 0.0
+        }
+      },
+      "triangleCount": 0,
+      "uvCount": 0,
+      "vertexCount": 0
+    },
+    "V0400_Main_House_Roof_Right_Plane": {
+      "aabb": {
+
+      },
+      "indexCount": 0,
+      "material": "V0408_Main_House_Weathered_Slate",
+      "surfaceCount": 0,
+      "transform": {
+        "basis": "[X: (0.871913, -0.489661, 0.0), Y: (0.489661, 0.871913, 0.0), Z: (0.0, 0.0, 1.0)]",
+        "origin": {
+          "x": 2.75999999046326,
+          "y": 5.63000011444092,
+          "z": 0.0
+        }
+      },
+      "triangleCount": 0,
+      "uvCount": 0,
+      "vertexCount": 0
+    }
+  },
+  "baselineCommit": "9c6b763d6d0e62cb9f13c214e852b93faa4c07a4",
+  "before": {
+    "V0400_Main_House_Left_Eave": {
+      "aabb": {
+
+      },
+      "indexCount": 0,
+      "material": "V0400_Roof_Eave_Timber",
+      "surfaceCount": 0,
+      "transform": {
+        "basis": "[X: (1.0, 0.0, 0.0), Y: (0.0, 1.0, 0.0), Z: (0.0, 0.0, 1.0)]",
+        "origin": {
+          "x": -5.55999994277954,
+          "y": 4.01999998092651,
+          "z": 0.0
+        }
+      },
+      "triangleCount": 0,
+      "uvCount": 0,
+      "vertexCount": 0
+    },
+    "V0400_Main_House_Left_Roof_Visual_Closure": {
+      "aabb": {
+
+      },
+      "indexCount": 0,
+      "material": "V0400_Slate_Gable_Occlusion",
+      "surfaceCount": 0,
+      "transform": {
+        "basis": "[X: (0.871913, 0.489661, 0.0), Y: (-0.489661, 0.871913, 0.0), Z: (0.0, 0.0, 1.0)]",
+        "origin": {
+          "x": -2.75999999046326,
+          "y": 5.63000011444092,
+          "z": 0.0
+        }
+      },
+      "triangleCount": 0,
+      "uvCount": 0,
+      "vertexCount": 0
+    },
+    "V0400_Main_House_Ridge_Beam": {
+      "aabb": {
+
+      },
+      "indexCount": 0,
+      "material": "V0400_Slate_Edge",
+      "surfaceCount": 0,
+      "transform": {
+        "basis": "[X: (1.0, 0.0, 0.0), Y: (0.0, 1.0, 0.0), Z: (0.0, 0.0, 1.0)]",
+        "origin": {
+          "x": 0.0,
+          "y": 7.26000022888184,
+          "z": 0.0
+        }
+      },
+      "triangleCount": 0,
+      "uvCount": 0,
+      "vertexCount": 0
+    },
+    "V0400_Main_House_Right_Eave": {
+      "aabb": {
+
+      },
+      "indexCount": 0,
+      "material": "V0400_Roof_Eave_Timber",
+      "surfaceCount": 0,
+      "transform": {
+        "basis": "[X: (1.0, 0.0, 0.0), Y: (0.0, 1.0, 0.0), Z: (0.0, 0.0, 1.0)]",
+        "origin": {
+          "x": 5.55999994277954,
+          "y": 4.01999998092651,
+          "z": 0.0
+        }
+      },
+      "triangleCount": 0,
+      "uvCount": 0,
+      "vertexCount": 0
+    },
+    "V0400_Main_House_Right_Roof_Visual_Closure": {
+      "aabb": {
+
+      },
+      "indexCount": 0,
+      "material": "V0400_Slate_Gable_Occlusion",
+      "surfaceCount": 0,
+      "transform": {
+        "basis": "[X: (0.871913, -0.489661, 0.0), Y: (0.489661, 0.871913, 0.0), Z: (0.0, 0.0, 1.0)]",
+        "origin": {
+          "x": 2.75999999046326,
+          "y": 5.63000011444092,
+          "z": 0.0
+        }
+      },
+      "triangleCount": 0,
+      "uvCount": 0,
+      "vertexCount": 0
+    },
+    "V0400_Main_House_Roof_Left_Plane": {
+      "aabb": {
+
+      },
+      "indexCount": 0,
+      "material": "V0400_Continuous_Weathered_Slate",
+      "surfaceCount": 0,
+      "transform": {
+        "basis": "[X: (0.871913, 0.489661, 0.0), Y: (-0.489661, 0.871913, 0.0), Z: (0.0, 0.0, 1.0)]",
+        "origin": {
+          "x": -2.75999999046326,
+          "y": 5.63000011444092,
+          "z": 0.0
+        }
+      },
+      "triangleCount": 0,
+      "uvCount": 0,
+      "vertexCount": 0
+    },
+    "V0400_Main_House_Roof_Right_Plane": {
+      "aabb": {
+
+      },
+      "indexCount": 0,
+      "material": "V0400_Continuous_Weathered_Slate",
+      "surfaceCount": 0,
+      "transform": {
+        "basis": "[X: (0.871913, -0.489661, 0.0), Y: (0.489661, 0.871913, 0.0), Z: (0.0, 0.0, 1.0)]",
+        "origin": {
+          "x": 2.75999999046326,
+          "y": 5.63000011444092,
+          "z": 0.0
+        }
+      },
+      "triangleCount": 0,
+      "uvCount": 0,
+      "vertexCount": 0
+    }
+  },
+  "bridge": "unchanged",
+  "camera": "unchanged",
+  "checkpoint": "v0.408",
+  "chimney": "preserved",
+  "debugRenderer": "unchanged",
+  "decals": false,
+  "defaultRuntime": "unchanged",
+  "duplicateMeshes": false,
+  "duplicateSurfaces": false,
+  "eaves": "preserved_geometry_material_refined",
+  "fallbackRenderer": "unchanged",
+  "gameplay": false,
+  "geometryChanged": false,
+  "indicesChanged": false,
+  "lighting": "unchanged",
+  "materialOnly": true,
+  "materializedExistingNodes": 7,
+  "newGeometry": false,
+  "overlays": false,
+  "requiredRoofNodes": 5,
+  "ridge": "preserved_geometry_material_refined",
+  "route": "unchanged",
+  "scope": "existing_main_house_roof_materials_only",
+  "status": "RENDERED_CANDIDATE",
+  "texture": "res://assets/v0338/barrosan_house_02_material_gold_candidate_slate_albedo_1024.png",
+  "topologyChanged": false,
+  "transformsChanged": false,
+  "uvArraysChanged": false,
+  "verticesChanged": false,
+  "visibleRoofFaceNodes": 2
+}

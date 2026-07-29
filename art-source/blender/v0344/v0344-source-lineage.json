@@ -1,0 +1,13 @@
+{
+  "checkpoint": "v0.344",
+  "copiedV0343Source": "art-source/blender/v0344/v0343_source_duplicate_for_v0344.blend",
+  "copiedV0343SourceSha256": "ecb268c7a4f69c914951a0dbd9494fb332003566073b2311b47a348ba9f831e9",
+  "v0343BlendSha256": "ecb268c7a4f69c914951a0dbd9494fb332003566073b2311b47a348ba9f831e9",
+  "v0343GLBSha256": "d4d780510b1812e7e4f082f24dfee049ab21f905acbaaeaa4f54d6f67b4118b9",
+  "house02BlendSha256": "3da7c2cf71509e07c900001fd0b277e9af4584a074552ac1d929a4f37e0d78b6",
+  "house02GLBSha256": "ceab23ff3cfb580cc63ce917ec1ff675a1cd318f8fe3390fc836166015ebba89",
+  "finalBlendSha256": "d63a8364f3edb10d20926a45dd52a41c8d0b8042fe707cf2aae267fbc63ac198",
+  "finalGLBSha256": "76cd62330d4cb4073469fe51e510557d93dcc0d9a07e9f234a539561abda7015",
+  "noV0341VisibleDependency": true,
+  "noV0342VisibleDependency": true
+}

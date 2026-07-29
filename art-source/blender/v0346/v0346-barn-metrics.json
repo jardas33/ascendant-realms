@@ -1,0 +1,101 @@
+{
+  "checkpoint": "v0.346",
+  "sourceBlend": "art-source/blender/v0346/barn_house02_silhouette_roof_pitch.blend",
+  "sourceGLB": "desktop-spikes/godot-salto/assets/v0346/barn_house02_silhouette_roof_pitch.glb",
+  "derivedFromV0345": true,
+  "afterV0346": {
+    "width": 13.817,
+    "depth": 11.54,
+    "height": 7.383,
+    "eave": 4.5344,
+    "ridge": 7.5504
+  },
+  "house02Anchor": {
+    "ridge": 7.26,
+    "eave": 4.36,
+    "frontWidth": 10.02,
+    "depth": 9.71
+  },
+  "ratiosAfter": {
+    "ridgeHeight": 1.04,
+    "eaveHeight": 1.04,
+    "frontWidth": 1.379,
+    "depth": 1.188
+  },
+  "v0345Comparison": {
+    "roofPitchDegrees": 28.34,
+    "ridge": 7.8408,
+    "eave": 4.68,
+    "frontWidth": 12.464,
+    "depth": 11.157
+  },
+  "v0346RoofPitchDegrees": 27.77,
+  "roof": {
+    "principalSlopes": 2,
+    "frontSlope": true,
+    "rearSlope": true,
+    "straightRidge": true,
+    "secondaryRoofNodes": 0,
+    "pedimentNodes": 0,
+    "blackGableVoids": 0,
+    "orangeEdgeFaces": 0,
+    "graniteRoofFaces": 0,
+    "floatingRoofPieces": 0,
+    "intersectingSecondaryRoofPieces": 0,
+    "closedGraniteGables": 2,
+    "eaveOverhangM": 0.28,
+    "vergeOverhangM": 0.22,
+    "fasciaThicknessM": 0.085,
+    "slateValueCalibration": "darkened accepted v0.345 slate with low-saturation multiply; rough non-metallic"
+  },
+  "openings": {
+    "lowerDoubleLivestockDoor": true,
+    "upperHayLoadingOpening": true,
+    "rearServiceOpening": true,
+    "agriculturalLevels": 2
+  },
+  "scaleAppliedToV0345RetainedMesh": {
+    "x": 1.1125000285888154,
+    "y": 1.0388889169296704,
+    "z": 0.9164317250368572,
+    "retainedMinZ": 0.20999997854232788,
+    "retainedTopBeforeScale": 4.928736686706543
+  },
+  "removedRejectedV0345RoofFaces": 28,
+  "usedMaterials": [
+    "V0343_House02Derived_Iron",
+    "V0343_House02Derived_Recess",
+    "V0343_House02Derived_Weathered_Timber",
+    "V0344_House02Derived_Granite_Continuous",
+    "V0346_House02_Family_Dark_Weathered_Slate",
+    "V0346_Subordinate_Charcoal_Brown_Roof_Edge"
+  ],
+  "availableMaterials": [
+    "V0343_House02Derived_Iron",
+    "V0343_House02Derived_Recess",
+    "V0343_House02Derived_Weathered_Timber",
+    "V0344_House02Derived_Granite_Continuous",
+    "V0346_House02_Family_Dark_Weathered_Slate",
+    "V0346_Subordinate_Charcoal_Brown_Roof_Edge",
+    "V0346_House02_Family_Slate_Underside"
+  ],
+  "sourceHashes": {
+    "v0345Blend": "f620e472cfbac2f0800f07e8e1bc4e840eccada971fedd5776268986c74c34ba",
+    "v0345GLB": "14df5b448db8257b695b00716ec6d3999f75a26ebe6cc03bd4e313399a53058c",
+    "v0345CopiedForV0346": "f620e472cfbac2f0800f07e8e1bc4e840eccada971fedd5776268986c74c34ba",
+    "v0344Blend": "d63a8364f3edb10d20926a45dd52a41c8d0b8042fe707cf2aae267fbc63ac198",
+    "v0343Blend": "ecb268c7a4f69c914951a0dbd9494fb332003566073b2311b47a348ba9f831e9",
+    "v0343GLB": "d4d780510b1812e7e4f082f24dfee049ab21f905acbaaeaa4f54d6f67b4118b9",
+    "house02Blend": "3da7c2cf71509e07c900001fd0b277e9af4584a074552ac1d929a4f37e0d78b6",
+    "house02GLB": "ceab23ff3cfb580cc63ce917ec1ff675a1cd318f8fe3390fc836166015ebba89"
+  },
+  "prototypeOnly": true,
+  "defaultRuntimeIntegrated": false,
+  "noGameplay": true,
+  "noMovement": true,
+  "noPathfinding": true,
+  "noCombat": true,
+  "noEconomy": true,
+  "noStableIdOrSaveMutation": true,
+  "assetProvenance": "repository-authored v0.345 derivative; accepted House02 granite/openings and slate lineage; no protected game assets"
+}

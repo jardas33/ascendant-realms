@@ -1,0 +1,42 @@
+{
+  "checkpoint": "v0.353",
+  "baseHead": "30810baa9c3dce41b115eb97c4546438a7fe30de",
+  "humanDecision": "V0.352 HUMAN-REJECTED AS FINAL GOLD — EXTERIOR ROOF REPAIR ACCEPTED AND FROZEN; WORKER INTEGRITY, NATURAL FOUNDATION CONTACT AND TRUE-ASPECT 256 PROOF FAILED",
+  "outcome": "READY FOR HUMAN V0353 BARN GOLD-CLOSEOUT REVIEW",
+  "automatedVisualApproval": false,
+  "humanReviewRequired": true,
+  "frozenV0352Content": true,
+  "frozenRoofRepairHash": "0077e19143517e2850aee3bdb6ce9408d55bc7e2bfdc958d61ac1b141ab684f9",
+  "worker": {
+    "scene": "desktop-spikes/godot-salto/scenes/review/V0353CompleteBarrosanWorker.tscn",
+    "sourceAtlas": "desktop-spikes/godot-salto/assets/v0314/h3/worker_directional_animation_atlas.png",
+    "instantiationMethod": "PackedScene.instantiate_once_per_worker",
+    "completeWorkerCount": 2,
+    "disassembledWorkerCount": 0,
+    "detachedWorkerPartCount": 0,
+    "horizontalWorkerCount": 0,
+    "uprightWorkerCount": 2,
+    "minimumContextWorkerPixelHeight": 24,
+    "localTransformsOwnedByScene": true
+  },
+  "foundation": {
+    "visibleContactBlobCount": 0,
+    "visibleRectangularContactArtifactCount": 0,
+    "visibleDecalBoundaryCount": 0,
+    "floatingFoundationGeometryCount": 0,
+    "method": "engine directional shadow and ambient fill only; no artificial ground geometry"
+  },
+  "squareEvidence": {
+    "actualSourceDimensions": "256x256",
+    "pixelAspectRatio": 1.0,
+    "captureMethod": "direct square viewport read without crop or stretch"
+  },
+  "defaultRuntimeIntegrated": false,
+  "noGameplay": true,
+  "noMovement": true,
+  "noPathfinding": true,
+  "noCombat": true,
+  "noEconomy": true,
+  "noResources": true,
+  "noSaveOrStableIdMutation": true
+}

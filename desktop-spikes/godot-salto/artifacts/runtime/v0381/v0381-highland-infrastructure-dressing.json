@@ -1,0 +1,18 @@
+{
+  "assets": "in-repo Quaternius v0370 kit; THIRD_PARTY_NOTICE.md retained",
+  "baseKit": "res://assets/v0380/corrected-highland-infrastructure/barrosan_highland_infrastructure_v0380.glb",
+  "baseKitUnchanged": true,
+  "buildings": false,
+  "checkpoint": "v0.381",
+  "defaultRuntime": "unchanged",
+  "dressingOnly": true,
+  "gameplay": false,
+  "glbSha256": "746b27eb0e0d52470ce090cf58b7e8515ffa900267d5479649e105262afcd5fb",
+  "hud": false,
+  "resolution": "1920x1080",
+  "route": "opt-in-only",
+  "sourceSha256": "4b8eafeac69f16a87bd6899a69ab6c6bb8cb5d49103c5ba9cb3da325f38f3e19",
+  "stage": "v0380-accepted-crossing-with-sparse-environment-dressing",
+  "status": "RENDERED",
+  "units": false
+}

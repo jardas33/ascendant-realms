@@ -1,0 +1,791 @@
+[
+  {
+    "sha256": "cbe83893eb4526387bbe890b7d6477089e11bb9ec7b18d9289bcebfb920e8fdf",
+    "records": [
+      "player_001_preflight.png"
+    ]
+  },
+  {
+    "sha256": "d7004f45c5bc33e95fb9b662ee3f1636a7052343157932c3a59f70334163bb55",
+    "records": [
+      "player_002_worker_before_command.png"
+    ]
+  },
+  {
+    "sha256": "c2e772798f7e136c6f3b761147055500281ec2b1d1c3b637be05385b2603204f",
+    "records": [
+      "player_003_worker_immediately_after_command.png"
+    ]
+  },
+  {
+    "sha256": "6dcb03685fbbd4a3b4aa35a6942813ff49d5ed4df5f5e3844f10dfc70c682f50",
+    "records": [
+      "player_004_worker_25_percent.png"
+    ]
+  },
+  {
+    "sha256": "df09bcbab9abf0fda7e87dabade1b2a2c036405a02766f32c27c49fa56e58113",
+    "records": [
+      "player_005_worker_50_percent.png"
+    ]
+  },
+  {
+    "sha256": "ec40063da76f4e2613d9300fd86afa288f51b341778a41da85b5c8606dff9f2e",
+    "records": [
+      "player_006_worker_75_percent.png"
+    ]
+  },
+  {
+    "sha256": "7ed9605ea9a35127bf8a2661dffdb49b7ebc150fe303a55440c3e9e00f8c1acb",
+    "records": [
+      "player_007_worker_destination_reached.png",
+      "player_008_worker_stopped.png"
+    ]
+  },
+  {
+    "sha256": "fb35e1da69226eae0890dc9b97c4e9d60f84173e6e712a9c7fad5eaac0b3c32c",
+    "records": [
+      "player_009_militia_before_command.png"
+    ]
+  },
+  {
+    "sha256": "32753d3fb13c57fbc200eeb8689dd130fef0149a0c55cbd424b2e45482e54d12",
+    "records": [
+      "player_010_militia_immediately_after_command.png"
+    ]
+  },
+  {
+    "sha256": "7c97dce9cab3f6171f9ef2a284d8a7d9ecf17376c247d3ee427efddf15794369",
+    "records": [
+      "player_011_militia_25_percent.png"
+    ]
+  },
+  {
+    "sha256": "e017f1b92e2fb27f696223add9d85cac794f5f076228fab296f10982908a8509",
+    "records": [
+      "player_012_militia_50_percent.png"
+    ]
+  },
+  {
+    "sha256": "27ffa5e1d11a64138a80b9a9f8d24a5cbceddd470a0ab361dc2f7e0ed6cf911e",
+    "records": [
+      "player_013_militia_75_percent.png",
+      "player_014_militia_destination_reached.png",
+      "player_015_militia_stopped.png"
+    ]
+  },
+  {
+    "sha256": "35dedcc8284d38766556f1ef6eac783fbf9b0ed04e2bcce8f1730302fde404a6",
+    "records": [
+      "player_016_approach_bank.png"
+    ]
+  },
+  {
+    "sha256": "2ae9305da750cacda4e63c2f8aed466d93ed1d2e871abc57aa6d1bfb9cb46ca8",
+    "records": [
+      "player_017_bridge_entry.png"
+    ]
+  },
+  {
+    "sha256": "0887915cc3a0662f6529319a113a7b99bc4b8c7f274c6d97a3ca791e81fb1253",
+    "records": [
+      "player_018_bridge_first_quarter.png"
+    ]
+  },
+  {
+    "sha256": "56f3f23d68e76b92990b17812a09702b1febec6de20b0a38db8fbd6143f29c70",
+    "records": [
+      "player_019_bridge_centre.png"
+    ]
+  },
+  {
+    "sha256": "c870bacaa2fa121ef2eb70b867d2990e3703d5cd89cf8a4b7ec603d9b1477374",
+    "records": [
+      "player_020_bridge_third_quarter.png"
+    ]
+  },
+  {
+    "sha256": "8813978efbb05eeaaca1a0d027ac2786c9af864c75376fc726b0e2c487ad8f26",
+    "records": [
+      "player_021_bridge_exit.png"
+    ]
+  },
+  {
+    "sha256": "9b51fe0e900abbafba5cc5bd98f57ef5953d53ff3cbedc04685363cf1dd61b5f",
+    "records": [
+      "player_022_beyond_bridge.png"
+    ]
+  },
+  {
+    "sha256": "40445b9dba06196bf38b4a8bc6bb2ef30cf25752ea89619d6afb8375c0776830",
+    "records": [
+      "player_023_approach_bank.png"
+    ]
+  },
+  {
+    "sha256": "ed4c6f45bc6beb840b742fe12da610f331de52f340b883865f62584a433bd6a9",
+    "records": [
+      "player_024_bridge_entry.png"
+    ]
+  },
+  {
+    "sha256": "318bebba9d8c9b7c8a667cd9d524d9b207daf123d526d358738bc4f80faa4712",
+    "records": [
+      "player_025_bridge_first_quarter.png"
+    ]
+  },
+  {
+    "sha256": "1eb86d9c42358fcd061fa05e5b09dd66b7bdd4271d1392d0f1d231757222d38e",
+    "records": [
+      "player_026_bridge_centre.png"
+    ]
+  },
+  {
+    "sha256": "22af02390d7e4f6487efd45cc7578ec0b66c95dd962ee6f3235897a7adc32a4c",
+    "records": [
+      "player_027_bridge_third_quarter.png",
+      "player_028_bridge_exit.png",
+      "player_029_beyond_bridge.png"
+    ]
+  },
+  {
+    "sha256": "45807bbe144915c95ac14a84cbeda75834a21ed9d69bcab0831c7fb1e37e635f",
+    "records": [
+      "player_030_road_occlusion_01.png"
+    ]
+  },
+  {
+    "sha256": "b298a1fee8ccd9d6243918c1117dfd6b3d31b109c555df14dce73007fafb48d7",
+    "records": [
+      "player_031_road_occlusion_02.png"
+    ]
+  },
+  {
+    "sha256": "f39714551d8cbc0eddc24f6b0eea450beb33d9397f0ed777dfe2160598678dcf",
+    "records": [
+      "player_032_road_occlusion_03.png"
+    ]
+  },
+  {
+    "sha256": "e725d01748381f73ffa04f6c3f4232a113120fadf1fc3f549e52becce8f97892",
+    "records": [
+      "player_033_road_occlusion_04.png"
+    ]
+  },
+  {
+    "sha256": "deac676f466e4beb7ce90c5a6aa2c027766e4e094b19407921ad7d5eb7e3e30f",
+    "records": [
+      "player_034_road_occlusion_05.png"
+    ]
+  },
+  {
+    "sha256": "91bcde6e3c44021c231a7cd54b8ce319ac2c1274252304dc1ff149e0178469a4",
+    "records": [
+      "player_035_storehouse_occlusion_01.png"
+    ]
+  },
+  {
+    "sha256": "6fe18ab45d9902738227237ed02509f3e556f6b1d4e00c9e4437037f5f71dfc7",
+    "records": [
+      "player_036_storehouse_occlusion_02.png"
+    ]
+  },
+  {
+    "sha256": "18df5177dca6fde1e6d2ce5dc7856b5667bec62aa8ac1eda25ff32cdfd00e3f6",
+    "records": [
+      "player_037_storehouse_occlusion_03.png",
+      "player_038_storehouse_occlusion_04.png",
+      "player_039_storehouse_occlusion_05.png"
+    ]
+  },
+  {
+    "sha256": "87a505bad14317f6a8d0b47a01b0e9a2e0c7e95ffb9b5e3740d49c75de7185d8",
+    "records": [
+      "player_040_bridge_railing_occlusion_01.png"
+    ]
+  },
+  {
+    "sha256": "17f58dbfea360f2bb22957f67e4d7e8bd7a5ae4e44571cd882b6a9c3d05c9bc0",
+    "records": [
+      "player_041_bridge_railing_occlusion_02.png"
+    ]
+  },
+  {
+    "sha256": "4c167567409324fd27ad0d9799797695f40838b92682fb22d1ebb37163f6e5a3",
+    "records": [
+      "player_042_bridge_railing_occlusion_03.png"
+    ]
+  },
+  {
+    "sha256": "8b07ccd8e86874d4e01d80b1dcaeb504b644680be8042c62a3b789cc7d86fbaf",
+    "records": [
+      "player_043_bridge_railing_occlusion_04.png"
+    ]
+  },
+  {
+    "sha256": "32bf175723ef60c3c916690c2aa5ef34e4de0125300369a05bb62c3945e6fb5a",
+    "records": [
+      "player_044_bridge_railing_occlusion_05.png"
+    ]
+  },
+  {
+    "sha256": "0e330ae3478c667062f075f41bbaa4791c53591d9102231e893f215c9c8fcadc",
+    "records": [
+      "player_045_camera_initial.png"
+    ]
+  },
+  {
+    "sha256": "a13c77211d1a577e3e0f4494b5c62ce919234a2c3746c605923c965fcb7f8ce2",
+    "records": [
+      "player_046_camera_pan_left.png"
+    ]
+  },
+  {
+    "sha256": "50de7fe8dfe7a03e1d1d52f8ccaebb084ce1b42b490a35f3d4587fc77c9e065d",
+    "records": [
+      "player_047_camera_pan_final.png"
+    ]
+  },
+  {
+    "sha256": "57d9f437bc03d50dc54c17e3f19c72d2123e271dc3a7b326e5f792a24099280e",
+    "records": [
+      "player_048_camera_zoom_ordinary.png"
+    ]
+  },
+  {
+    "sha256": "7af23b39eca22996394b4e5239554f5e77c4643e43abb09a6363460a32e6fa3c",
+    "records": [
+      "player_049_camera_zoom_minimum.png"
+    ]
+  },
+  {
+    "sha256": "3273710dd538a449cc0c8a0a650b337b7cb620db15a4ea92d55d24bf4906d6e6",
+    "records": [
+      "player_050_camera_zoom_maximum.png"
+    ]
+  },
+  {
+    "sha256": "b59d1b81b07e92ded8f6f57e66a88672212cd50f7bfcd3a661cb8ae1c8ecc15c",
+    "records": [
+      "player_051_worker_idle.png"
+    ]
+  },
+  {
+    "sha256": "d3984126ed3f5fc4e839021189d86b2ac8349621dd54824d42923f07cd98ec40",
+    "records": [
+      "player_052_worker_work_command.png"
+    ]
+  },
+  {
+    "sha256": "cbf8acc1aae1780b9d8f6f67ae7b7ebe1784f23497dfbdbdd60d50570057fe9a",
+    "records": [
+      "player_053_worker_travelling_to_work.png"
+    ]
+  },
+  {
+    "sha256": "c1fb2e1b5fa5d1e20deab4310fff99eb3ba41687e4e05c8f6dc98afb4243adb1",
+    "records": [
+      "player_054_worker_working_state.png",
+      "player_055_worker_work_pose_limitation.png"
+    ]
+  },
+  {
+    "sha256": "9b1e28ba87f5ee2d03de2003d95c0b5fa26047bd710b3e1ca40eb30301c9dccb",
+    "records": [
+      "player_056_militia_idle.png"
+    ]
+  },
+  {
+    "sha256": "e36fa34faff737f9cfcafc56f7abbeba866993d14f6d2c556b5aa93f1a3c5432",
+    "records": [
+      "player_057_militia_move_command.png"
+    ]
+  },
+  {
+    "sha256": "edb58d6d5621f1475747207e049f131b26018848e4bb1a5f83f8f88025db97e4",
+    "records": [
+      "player_058_militia_arrival.png",
+      "player_059_militia_ready_unsupported.png"
+    ]
+  },
+  {
+    "sha256": "5f715d1b5c173c5df8947efdf19ac89edecd0da719600905381c6c4ecc877def",
+    "records": [
+      "player_060_worker_unselected.png"
+    ]
+  },
+  {
+    "sha256": "b0cbf262fc1ff75c294ac0107ef142882e4433f90e7ea798ecdf23d39ac4e963",
+    "records": [
+      "player_061_worker_selected.png"
+    ]
+  },
+  {
+    "sha256": "f9da28442e49c243b6abe644ddf7c60aed94a14c9ada68a632c819132ed96e5d",
+    "records": [
+      "player_062_militia_selected.png"
+    ]
+  },
+  {
+    "sha256": "d6dad1158db641e75a455e572559635ffd3be081fdec8d8081622b62e16b24b1",
+    "records": [
+      "player_063_mixed_selected.png"
+    ]
+  },
+  {
+    "sha256": "7a5f75500cdc9186a90429a914ff78129c73c58b30a33eb5b695cc378a87a1d9",
+    "records": [
+      "player_064_box_selection_completed.png"
+    ]
+  },
+  {
+    "sha256": "b9a7b68f359dc243ae82e3c2b518a06ea4c6897399c768e5417a179ad618df78",
+    "records": [
+      "player_065_selection_cleared.png"
+    ]
+  },
+  {
+    "sha256": "e9961794865a01370e072084c73cf0d994f919c6c0d0a4312d95fb5dc2280209",
+    "records": [
+      "player_066_selection_after_movement.png"
+    ]
+  },
+  {
+    "sha256": "e385c7ff0c5d8de1a000be06a57143fa2dfdd33e443b12be80b88fb21970416d",
+    "records": [
+      "player_067_before_real_save.png"
+    ]
+  },
+  {
+    "sha256": "cd4a4c2be652247fcb29d10f7c7ddc995f0a6af6a9d8f7cd2c74dcde0688834b",
+    "records": [
+      "player_068_after_runtime_reset.png"
+    ]
+  },
+  {
+    "sha256": "e9d8fd1e6a00e66623de100b2fa0c7e5853836b51de79808448625c62c8b62cc",
+    "records": [
+      "player_069_after_real_load.png",
+      "player_070_selected_state_after_load.png"
+    ]
+  },
+  {
+    "sha256": "ede580a2f803bbe14fa134efd7bfca5f6982797e044247fc4fd9462b643f5735",
+    "records": [
+      "player_071_h3_enabled.png",
+      "player_073_h3_reconstructed.png"
+    ]
+  },
+  {
+    "sha256": "45fc2b791f69b9567a4f00c967396562ba30e7d007940a51b27c738039f68dc8",
+    "records": [
+      "player_072_fallback_disabled_h3.png"
+    ]
+  },
+  {
+    "sha256": "9b6eec3086483fb3fcc5bbf5d049f6f10062cb6994f018747b3b2f54ab7f6e50",
+    "records": [
+      "player_074_scale_current_v0311.png",
+      "player_075_scale_12_percent_smaller.png",
+      "player_076_scale_24_percent_smaller.png",
+      "player_077_clean_player_gameplay.png"
+    ]
+  },
+  {
+    "sha256": "37634e581164a01a669d27e55eee8a58957bb59b0bc78bd43dcbec6681756071",
+    "records": [
+      "debug_review_001_preflight.png"
+    ]
+  },
+  {
+    "sha256": "9f4e5f7c1273aae2421425188e4b7203ab328e08c49afac24432a5e224510a4a",
+    "records": [
+      "debug_review_002_worker_before_command.png"
+    ]
+  },
+  {
+    "sha256": "d6540c1adfc62d4ef4c647e238637bb08903a6e85de0a4b7a29270ba95abc108",
+    "records": [
+      "debug_review_003_worker_immediately_after_command.png"
+    ]
+  },
+  {
+    "sha256": "bb02da8523178b1fdc71f734d42d7ab2271cd632cf0245df986c2ddb0467ee04",
+    "records": [
+      "debug_review_004_worker_25_percent.png"
+    ]
+  },
+  {
+    "sha256": "a3e9dcb654d925660aaa39a5f414d5214c758c0a454fd093a3d95789a82c020c",
+    "records": [
+      "debug_review_005_worker_50_percent.png"
+    ]
+  },
+  {
+    "sha256": "6e6217c04a49ab9f704b563c6708febc2818cfcbea4f8b3bb7e2b47bdfb2c64a",
+    "records": [
+      "debug_review_006_worker_75_percent.png"
+    ]
+  },
+  {
+    "sha256": "d6a07a9a5be5a925e7664887f8a1222db8c704133f195fdd80d2433586804fb0",
+    "records": [
+      "debug_review_007_worker_destination_reached.png",
+      "debug_review_008_worker_stopped.png"
+    ]
+  },
+  {
+    "sha256": "93ff6283f1c37b0befa7af77e90c3fe9e543b36f6d495640c3d1955a91a1cbc8",
+    "records": [
+      "debug_review_009_militia_before_command.png"
+    ]
+  },
+  {
+    "sha256": "4c9235b757cbd5612d0fdf4bd6d0c54aba80452b86d3f684751e58b53758ad0a",
+    "records": [
+      "debug_review_010_militia_immediately_after_command.png"
+    ]
+  },
+  {
+    "sha256": "6b4a9ca922bd38d4828ef0398db17328898dce07639c54679187987074ebff44",
+    "records": [
+      "debug_review_011_militia_25_percent.png"
+    ]
+  },
+  {
+    "sha256": "126aafa9b6a73525c291dd250b57730639885f55f8f9de61dbca8e2c257de981",
+    "records": [
+      "debug_review_012_militia_50_percent.png"
+    ]
+  },
+  {
+    "sha256": "4fa9828f6a94002056d7cd289db27db474e797207fd88198a3579cb49aebd0a7",
+    "records": [
+      "debug_review_013_militia_75_percent.png",
+      "debug_review_014_militia_destination_reached.png",
+      "debug_review_015_militia_stopped.png"
+    ]
+  },
+  {
+    "sha256": "4da24d2a4ace475eeea87327d651fd7b7ad7d2de73caaaee776a46a1be21a2ba",
+    "records": [
+      "debug_review_016_approach_bank.png"
+    ]
+  },
+  {
+    "sha256": "0b48084adaf512d816d3a419db0ca0cf1331398d34b1e4e6b7567e9f615c0aab",
+    "records": [
+      "debug_review_017_bridge_entry.png"
+    ]
+  },
+  {
+    "sha256": "ca0450c6eee04c302679208de5c5965029548395d95476268bf9b446453c03a1",
+    "records": [
+      "debug_review_018_bridge_first_quarter.png"
+    ]
+  },
+  {
+    "sha256": "8c141bdf36280d92dca0f700b35eeaad93de6d748900f29dfb505418118a1e4b",
+    "records": [
+      "debug_review_019_bridge_centre.png"
+    ]
+  },
+  {
+    "sha256": "b8a9aa83e17b3361a5f6d4799e56e2f8e725cacb8df3ae2220fc5f6ae51fb5a2",
+    "records": [
+      "debug_review_020_bridge_third_quarter.png"
+    ]
+  },
+  {
+    "sha256": "47992af145fff749826358f9b0cb71d9adf0319f7f13a490929c0675ef82e116",
+    "records": [
+      "debug_review_021_bridge_exit.png"
+    ]
+  },
+  {
+    "sha256": "9963d7c0a43703fee197730c710f6f4f8d0ffc75e282c21eb96e7e1f278cc810",
+    "records": [
+      "debug_review_022_beyond_bridge.png"
+    ]
+  },
+  {
+    "sha256": "ad3e828d1a6641152fdd03aeb61719641d30591d57261e6dff68afc1ed477d71",
+    "records": [
+      "debug_review_023_approach_bank.png"
+    ]
+  },
+  {
+    "sha256": "2cf104086f8cd3a260e5b3f297f2e976f61ad18160a828ad1913f9bba7e3ee2f",
+    "records": [
+      "debug_review_024_bridge_entry.png"
+    ]
+  },
+  {
+    "sha256": "f1a651eec3869b1340c61f0f021f64b875864086c214ccb92001b8c0a98ef80f",
+    "records": [
+      "debug_review_025_bridge_first_quarter.png"
+    ]
+  },
+  {
+    "sha256": "d4415029d9bfebe92ad0ad529653311ce6e3976732ca3e212c61a0a6a3d15e89",
+    "records": [
+      "debug_review_026_bridge_centre.png"
+    ]
+  },
+  {
+    "sha256": "8170f24545eba7609dc122919285f5d8c90917de18f8bfe6f54c31eced4a698f",
+    "records": [
+      "debug_review_027_bridge_third_quarter.png",
+      "debug_review_028_bridge_exit.png",
+      "debug_review_029_beyond_bridge.png"
+    ]
+  },
+  {
+    "sha256": "7a8df180a248b3c6fd6e9d4ddd42bf4bfb570e0e5f46cb362937859da3c1524b",
+    "records": [
+      "debug_review_030_road_occlusion_01.png"
+    ]
+  },
+  {
+    "sha256": "f94e1333e76f32c82c6d90ff7639902d74df3098fc29c4ba14915aab8d5bd8ce",
+    "records": [
+      "debug_review_031_road_occlusion_02.png"
+    ]
+  },
+  {
+    "sha256": "92f0539289d5bffe759c049975db7999af9d7b81f222dac8ba100bf5f6a9bcb2",
+    "records": [
+      "debug_review_032_road_occlusion_03.png"
+    ]
+  },
+  {
+    "sha256": "6dd14a23d03eb483399df5969aafe2e8d4c1f205040a57111cdc738514cc71ec",
+    "records": [
+      "debug_review_033_road_occlusion_04.png"
+    ]
+  },
+  {
+    "sha256": "9f487725037c6657077c107ea70a48ba90253407ef6abcd1c1a2541d2eb18901",
+    "records": [
+      "debug_review_034_road_occlusion_05.png"
+    ]
+  },
+  {
+    "sha256": "ffd013cbd8ec5987a96f2cb33044206374d49296020f03a663cd3801372d0d3b",
+    "records": [
+      "debug_review_035_storehouse_occlusion_01.png"
+    ]
+  },
+  {
+    "sha256": "57786bf3eb0148683168eee2628c9a0f8416e91a2961988cf4cfa09fe7d7374f",
+    "records": [
+      "debug_review_036_storehouse_occlusion_02.png"
+    ]
+  },
+  {
+    "sha256": "debc07a89e8cac9d66105579d9996b511de399bef2a5f349378a740096e923c8",
+    "records": [
+      "debug_review_037_storehouse_occlusion_03.png",
+      "debug_review_038_storehouse_occlusion_04.png",
+      "debug_review_039_storehouse_occlusion_05.png"
+    ]
+  },
+  {
+    "sha256": "76871b4fa5f0c09dc0649cb63269f8174c0c158feb5c8f5de44871307b6470d2",
+    "records": [
+      "debug_review_040_bridge_railing_occlusion_01.png"
+    ]
+  },
+  {
+    "sha256": "9abfd7ef99a377befdf4bede734520cb86df15aa466959598d977e481de6869b",
+    "records": [
+      "debug_review_041_bridge_railing_occlusion_02.png"
+    ]
+  },
+  {
+    "sha256": "b89863174d5612a3356b7a0d9644dec470743b1ec2c84172a5838b5f926976dd",
+    "records": [
+      "debug_review_042_bridge_railing_occlusion_03.png"
+    ]
+  },
+  {
+    "sha256": "2077bb5648e757a1dfc96efbb0128c472bd79170610180a9d5dc0dad5a5c75c3",
+    "records": [
+      "debug_review_043_bridge_railing_occlusion_04.png"
+    ]
+  },
+  {
+    "sha256": "8aca7074f8bd81c5e245f414a95c6eb5fd6f4435cacae020d394c0cf65ec00d1",
+    "records": [
+      "debug_review_044_bridge_railing_occlusion_05.png"
+    ]
+  },
+  {
+    "sha256": "c0791fe9291339836586976fbbe8d677e799d870155db056e6db0de9f8a35a57",
+    "records": [
+      "debug_review_045_camera_initial.png"
+    ]
+  },
+  {
+    "sha256": "5a17a4a3eba039f7e15f8a0ba7c056abc4d4093dffe13fc329319fda3b8acebd",
+    "records": [
+      "debug_review_046_camera_pan_left.png"
+    ]
+  },
+  {
+    "sha256": "65e046b5956b0f3123c088875bf5c55bc6eae85af6ad16743df11e5657935a65",
+    "records": [
+      "debug_review_047_camera_pan_final.png"
+    ]
+  },
+  {
+    "sha256": "edd75e8b79c7402202fe118de08eed8350d2a7b93acebcbada7b4d666847996b",
+    "records": [
+      "debug_review_048_camera_zoom_ordinary.png"
+    ]
+  },
+  {
+    "sha256": "072849f0adc224b8ea595882cdd5fdf6f0d4185259679ec2c807c87655ec6d06",
+    "records": [
+      "debug_review_049_camera_zoom_minimum.png"
+    ]
+  },
+  {
+    "sha256": "aea8e406b316eb49394f95bc0d631e3d56eb5f6f5cee1e6e5f3ed64672a1a4bc",
+    "records": [
+      "debug_review_050_camera_zoom_maximum.png"
+    ]
+  },
+  {
+    "sha256": "358ecabe30d4dd1be6b04605fa16f1ef67d2f991c535a08cf324cdf5df2aa64d",
+    "records": [
+      "debug_review_051_worker_idle.png"
+    ]
+  },
+  {
+    "sha256": "8c185d4c5b832b81c5e4c47371345c51e9feb0ee8dc10e54da1c204b12aa978d",
+    "records": [
+      "debug_review_052_worker_work_command.png"
+    ]
+  },
+  {
+    "sha256": "1cdee7791b18a562beae7eb908f53af0a98514ecedbe8aabdbb938d9f624abcf",
+    "records": [
+      "debug_review_053_worker_travelling_to_work.png"
+    ]
+  },
+  {
+    "sha256": "f5c7c45fd8f8e242bfc6393f531f21ca983233316df06f5a793c630908f84240",
+    "records": [
+      "debug_review_054_worker_working_state.png",
+      "debug_review_055_worker_work_pose_limitation.png"
+    ]
+  },
+  {
+    "sha256": "8f93250ceb0d11dfb66cb6c47ad8511cbe971267ef1aa45fd33f2d4ca9fff743",
+    "records": [
+      "debug_review_056_militia_idle.png"
+    ]
+  },
+  {
+    "sha256": "193a308111bdca6f2e45b25d21a0767235c643e2238023e7658ca535eadad1f9",
+    "records": [
+      "debug_review_057_militia_move_command.png"
+    ]
+  },
+  {
+    "sha256": "13ff6e3d146a675a91a5d37565c9c577d5e139d93838d0fb9e0c5a4331cb1a2c",
+    "records": [
+      "debug_review_058_militia_arrival.png",
+      "debug_review_059_militia_ready_unsupported.png"
+    ]
+  },
+  {
+    "sha256": "d957bd4e63b119892fe7b7bdf7f1390a29ca23d0eb6a01975fe289b96a91babc",
+    "records": [
+      "debug_review_060_worker_unselected.png"
+    ]
+  },
+  {
+    "sha256": "5efd783b2e691ac38f07366ff3a4c79a3ba56a2dc4a4ecf055634b3748faa9a1",
+    "records": [
+      "debug_review_061_worker_selected.png"
+    ]
+  },
+  {
+    "sha256": "faa8ae8b803bf0562b187a740f58929580a2b5f07d6a7a3d0127c4c045c8f62b",
+    "records": [
+      "debug_review_062_militia_selected.png"
+    ]
+  },
+  {
+    "sha256": "c418478bd78e7dfefcfb7fa8bebc5569545c47ca07def696f8aaf56b298dc767",
+    "records": [
+      "debug_review_063_mixed_selected.png"
+    ]
+  },
+  {
+    "sha256": "d5cb77fe4c5137e41a5c8450c62dfe550e140ddb6fb49e576da92d1a2cfb2ddc",
+    "records": [
+      "debug_review_064_box_selection_completed.png"
+    ]
+  },
+  {
+    "sha256": "c9c8c5bc08dc5d04291c094c49f1c3c8f44a1fa10e9dc388f238a2675dac936a",
+    "records": [
+      "debug_review_065_selection_cleared.png"
+    ]
+  },
+  {
+    "sha256": "9bf37d89da943ed8160053c4300bd747d525d5caae87f33f2c24921e38de2a27",
+    "records": [
+      "debug_review_066_selection_after_movement.png"
+    ]
+  },
+  {
+    "sha256": "11674555ba9f58afe7d0f54a53f332f6f09046809dc1a531ab923781c56f183b",
+    "records": [
+      "debug_review_067_before_real_save.png"
+    ]
+  },
+  {
+    "sha256": "957e99e7fb81d218e36f41eb6a4148c12d82240b785130ebb9cc6b6dd6c40f1d",
+    "records": [
+      "debug_review_068_after_runtime_reset.png"
+    ]
+  },
+  {
+    "sha256": "020eb5410a8d8a624ffc6652a441a9a767e3bc9db845752c0ab7cb268a06c5db",
+    "records": [
+      "debug_review_069_after_real_load.png",
+      "debug_review_070_selected_state_after_load.png"
+    ]
+  },
+  {
+    "sha256": "5f154e5cd68fe493adfff91548652324c61b454c1212a9f89c992dd80ded911b",
+    "records": [
+      "debug_review_071_h3_enabled.png",
+      "debug_review_073_h3_reconstructed.png"
+    ]
+  },
+  {
+    "sha256": "de7fe643f32a69241b4aa77f37903e905cf366b02605d241b2a4cd86df4bfd59",
+    "records": [
+      "debug_review_072_fallback_disabled_h3.png"
+    ]
+  },
+  {
+    "sha256": "0988863509a69e55ad67da6b34ea0815552b5b27f0d11c846c1bc9591a8cbff2",
+    "records": [
+      "debug_review_074_scale_current_v0311.png",
+      "debug_review_075_scale_12_percent_smaller.png",
+      "debug_review_076_scale_24_percent_smaller.png"
+    ]
+  },
+  {
+    "sha256": "4a3c712a7703a27765c1f866f36e933a35eb974ca4bf6c26f5351dffa3e7a843",
+    "records": [
+      "debug_review_077_debug_metadata_gameplay.png"
+    ]
+  }
+]

@@ -1,0 +1,12 @@
+{
+  "status": "PASS_V0332_BARROSAN_HOUSE_02_VISUAL_TRUTH_SOURCE",
+  "blenderAvailable": true,
+  "version": "5.1.2",
+  "sourceBlend": "art-source/blender/v0330/barrosan_house_gold_02.blend",
+  "glbPath": "desktop-spikes/godot-salto/assets/v0330/barrosan_house_gold_02.glb",
+  "glbSha256": "2b49c03aef0d5c378503c362937c3f3b44241f395c505cd6cb69814b8cdf6575",
+  "house01Imported": false,
+  "documentaryPath": "Path A - exterior-stair archetype",
+  "documentaryRegister": "art-source/references/v0331/documentary/README.md",
+  "moodTargetSeparated": true
+}

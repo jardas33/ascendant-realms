@@ -1,0 +1,20 @@
+{
+  "checkpoint": "v0.394",
+  "status": "ACCEPTED BY INDEPENDENT V0394 VISUAL REVIEW",
+  "independentVerdict": "ACCEPT",
+  "independentReview": "ChatGPT independently confirmed the continuous route is visible from the western bridge landing through the yard to the house doorway and barn branch in primary and grayscale, with all v0.393 fence geometry gone.",
+  "evidence": "real-rendered",
+  "resolution": "1920x1080",
+  "rejectedReference": "v0.393",
+  "repairs": [
+    "single cull-safe flush continuous worn-earth route",
+    "route touches western landing and doorway",
+    "visible barn branch",
+    "v0.393 fence regression removed"
+  ],
+  "blackFrameRejected": true,
+  "titleCardOnlyRejected": true,
+  "gameplay": false,
+  "defaultRuntime": "unchanged",
+  "route": "opt-in-only"
+}
