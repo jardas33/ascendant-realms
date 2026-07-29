@@ -26,4 +26,8 @@ The review pack is `artifacts/manual-review/v0421-secondary-barn-entrance-frame-
 
 ## Final closeout
 
-Implementation commit and exact GitHub Actions evidence are recorded here after the scoped source and review-pack commit is pushed. The final repository remains a clean tracked tree synchronized with `origin/codex/v0215-v0226-recovery`; the pre-existing untracked artifact backlog is preserved and not staged.
+Implementation commit: `55d24607f2edf848396616bfb5a47b86d26fdcb5`.
+
+Implementation exact GitHub Actions run: `30409768011` - `CI Release Matrix Dry Run` - success.
+
+The final repository remains a clean tracked tree synchronized with `origin/codex/v0215-v0226-recovery`; the pre-existing untracked artifact backlog is preserved and not staged.
