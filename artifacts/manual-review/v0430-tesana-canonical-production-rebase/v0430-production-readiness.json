@@ -1,0 +1,19 @@
+{
+  "schema": "v0430-production-validator-v1",
+  "generatedAt": "2026-07-29T18:34:40.854Z",
+  "checks": {
+    "productionDirectory": true,
+    "requiredFiles": true,
+    "engineFeature43": true,
+    "mainScene": true,
+    "tesanaAutoloadAbsent": true,
+    "originalSourceUnchanged": true,
+    "productionFileCount": 632,
+    "productionBytes": 85520384,
+    "rawAssetsRetained": true,
+    "networkAddonNotAutoloaded": true
+  },
+  "failed": [],
+  "branch": "codex/v0430-tesana-canonical-production-rebase",
+  "baseSha": "4a2de384b2f0c3f348f24ff549ab2293f29e3b7f"
+}

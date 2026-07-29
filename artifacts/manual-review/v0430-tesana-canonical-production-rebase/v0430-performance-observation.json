@@ -1,0 +1,17 @@
+{
+  "schema": "v0430-performance-observation-v1",
+  "engine": "4.3.stable.official.77dcf97d8",
+  "importPasses": 3,
+  "titleStartup": "observed headed launch",
+  "menuTransition": "observed",
+  "battleLoading": "observed",
+  "averageGameplayFps": "not instrumented; no blocking frame issue observed",
+  "minimumGameplayFps": "not instrumented",
+  "memoryWorkingSet": "not instrumented",
+  "parserErrors": 0,
+  "missingResources": 0,
+  "failedAssetImports": 0,
+  "successfullyLoadedGLBs": 75,
+  "successfullyLoadedTextures": 141,
+  "successfullyLoadedAudio": 14
+}

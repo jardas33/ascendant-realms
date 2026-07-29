@@ -1,0 +1,18 @@
+{
+  "schema": "v0430-resource-repair-log-v1",
+  "repairs": [
+    {
+      "path": "production/ascendant-realms-godot/project.godot",
+      "change": "Removed TesanaWorldEditor autoload from standalone production startup; retained addon source for opt-in editor use."
+    },
+    {
+      "path": "production/ascendant-realms-godot/scripts/main_menu.gd",
+      "change": "Reworded non-player-facing source comment to Ascendant Realms."
+    },
+    {
+      "path": "production/ascendant-realms-godot/tests/asset_load_scan.gd",
+      "change": "Added headless raw/import resource load verification."
+    }
+  ],
+  "rawAssetsFabricated": false
+}

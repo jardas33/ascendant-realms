@@ -1,0 +1,8 @@
+{
+  "schema": "v0430-branding-removal-audit-v1",
+  "playerFacingName": "Ascendant Realms",
+  "playerFacingTesanaWatermark": false,
+  "sourceCommentsRetained": true,
+  "editorAddonRetained": true,
+  "webExportTemplatePlatformScript": "documented as non-player export template and not used by headed local runtime"
+}

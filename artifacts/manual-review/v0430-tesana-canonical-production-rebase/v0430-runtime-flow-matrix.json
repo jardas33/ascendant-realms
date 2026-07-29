@@ -1,0 +1,57 @@
+{
+  "schema": "v0430-runtime-flow-matrix-v1",
+  "flows": {
+    "title": {
+      "status": "passed",
+      "capture": "01_PRODUCTION_TITLE_SCREEN.png"
+    },
+    "skirmishSetup": {
+      "status": "passed",
+      "capture": "02_PRODUCTION_SKIRMISH_SETUP.png"
+    },
+    "raceChanged": {
+      "status": "observed",
+      "capture": "03_PRODUCTION_RACE_SELECTION_CHANGED.png"
+    },
+    "battlefieldChanged": {
+      "status": "observed",
+      "capture": "04_PRODUCTION_BATTLEFIELD_SELECTION_CHANGED.png"
+    },
+    "campaignMap": {
+      "status": "passed",
+      "capture": "05_PRODUCTION_CAMPAIGN_MAP.png"
+    },
+    "firstCampaignNode": {
+      "status": "passed",
+      "capture": "06_PRODUCTION_FIRST_CAMPAIGN_NODE.png"
+    },
+    "gameplay": {
+      "status": "passed",
+      "capture": "07_PRODUCTION_GAMEPLAY_INITIAL_STATE.png"
+    },
+    "workerSelected": {
+      "status": "passed",
+      "capture": "08_PRODUCTION_WORKER_SELECTED.png"
+    },
+    "workerMovement": {
+      "status": "passed",
+      "capture": "09_PRODUCTION_WORKER_MOVEMENT.png"
+    },
+    "buildMenu": {
+      "status": "passed",
+      "capture": "10_PRODUCTION_BUILD_MENU.png"
+    },
+    "buildPlacement": {
+      "status": "passed",
+      "capture": "11_PRODUCTION_BUILD_PLACEMENT.png"
+    },
+    "hero": {
+      "status": "passed",
+      "capture": "12_PRODUCTION_HERO_SCREEN.png"
+    },
+    "settings": {
+      "status": "passed",
+      "capture": "13_PRODUCTION_SETTINGS_SCREEN.png"
+    }
+  }
+}
