@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/v0425_secondary_barn_eave_edge_value_hierarchy.gd" id="1_v0425"]
+
+[node name="V0425SecondaryBarnEaveEdgeValueHierarchy" type="Node3D"]
+script = ExtResource("1_v0425")

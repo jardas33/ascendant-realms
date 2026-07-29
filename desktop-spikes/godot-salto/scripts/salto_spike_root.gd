@@ -155,6 +155,8 @@ const SCRIPT_ARG_PREFIXES := [
 	"--v0423-secondary-barn-side-beams-smoke",
 	"--v0424-secondary-barn-ridge-beam-capture",
 	"--v0424-secondary-barn-ridge-beam-smoke",
+	"--v0425-secondary-barn-eaves-capture",
+	"--v0425-secondary-barn-eaves-smoke",
 	"--h3-semantic-evidence",
 	"--h3-supported-state-contract",
 	"--h3-directional-animation-micro-pilot",
@@ -922,6 +924,18 @@ func _ready() -> void:
 		v0424_pass.set_meta("v0424_capture_mode", args.has("--v0424-secondary-barn-ridge-beam-capture"))
 		v0424_pass.set_meta("v0424_smoke_mode", args.has("--v0424-secondary-barn-ridge-beam-smoke"))
 		add_child(v0424_pass)
+		return
+	if args.has("--v0425-secondary-barn-eaves-capture") or args.has("--v0425-secondary-barn-eaves-smoke"):
+		var v0425_script := load("res://scripts/v0425_secondary_barn_eave_edge_value_hierarchy.gd") as Script
+		if v0425_script == null:
+			push_error("v0.425 secondary-barn eave script failed to load")
+			return
+		var v0425_pass := Node3D.new()
+		v0425_pass.set_script(v0425_script)
+		v0425_pass.name = "V0425SecondaryBarnEaveEdgeValueHierarchy"
+		v0425_pass.set_meta("v0425_capture_mode", args.has("--v0425-secondary-barn-eaves-capture"))
+		v0425_pass.set_meta("v0425_smoke_mode", args.has("--v0425-secondary-barn-eaves-smoke"))
+		add_child(v0425_pass)
 		return
 	if args.has("--salto-production-target-spike"):
 		var spike_scene := load("res://scenes/salto_production_target_spike.tscn") as PackedScene
