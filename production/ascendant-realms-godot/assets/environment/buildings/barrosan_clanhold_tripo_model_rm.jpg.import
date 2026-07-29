@@ -1,0 +1,37 @@
+[remap]
+
+importer="texture"
+type="CompressedTexture2D"
+uid="uid://btugv7udfaj4c"
+path="res://.godot/imported/barrosan_clanhold_tripo_model_rm.jpg-b15b876a3ca30aa4c674f5a6797466b5.ctex"
+metadata={
+"vram_texture": false
+}
+generator_parameters={
+"md5": "2a21a8a9761bd16ebc766212dbcce94a"
+}
+
+[deps]
+
+source_file="res://assets/environment/buildings/barrosan_clanhold_tripo_model_rm.jpg"
+dest_files=["res://.godot/imported/barrosan_clanhold_tripo_model_rm.jpg-b15b876a3ca30aa4c674f5a6797466b5.ctex"]
+
+[params]
+
+compress/mode=1
+compress/high_quality=false
+compress/lossy_quality=0.75
+compress/hdr_compression=1
+compress/normal_map=0
+compress/channel_pack=0
+mipmaps/generate=true
+mipmaps/limit=-1
+roughness/mode=0
+roughness/src_normal=""
+process/fix_alpha_border=true
+process/premult_alpha=false
+process/normal_map_invert_y=false
+process/hdr_as_srgb=false
+process/hdr_clamp_exposure=false
+process/size_limit=1024
+detect_3d/compress_to=1

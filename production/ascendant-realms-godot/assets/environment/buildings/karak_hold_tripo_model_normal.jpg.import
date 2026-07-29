@@ -1,0 +1,37 @@
+[remap]
+
+importer="texture"
+type="CompressedTexture2D"
+uid="uid://om6glvrfdrca"
+path="res://.godot/imported/karak_hold_tripo_model_normal.jpg-8653bb1ff89947b0d83fffe4cb64610a.ctex"
+metadata={
+"vram_texture": false
+}
+generator_parameters={
+"md5": "0b5b39609cdf62b00edc0e4b60172aaa"
+}
+
+[deps]
+
+source_file="res://assets/environment/buildings/karak_hold_tripo_model_normal.jpg"
+dest_files=["res://.godot/imported/karak_hold_tripo_model_normal.jpg-8653bb1ff89947b0d83fffe4cb64610a.ctex"]
+
+[params]
+
+compress/mode=1
+compress/high_quality=false
+compress/lossy_quality=0.75
+compress/hdr_compression=1
+compress/normal_map=0
+compress/channel_pack=0
+mipmaps/generate=true
+mipmaps/limit=-1
+roughness/mode=0
+roughness/src_normal=""
+process/fix_alpha_border=true
+process/premult_alpha=false
+process/normal_map_invert_y=false
+process/hdr_as_srgb=false
+process/hdr_clamp_exposure=false
+process/size_limit=1024
+detect_3d/compress_to=1

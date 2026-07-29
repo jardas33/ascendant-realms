@@ -1,0 +1,37 @@
+[remap]
+
+importer="texture"
+type="CompressedTexture2D"
+uid="uid://bxq6ptlfhggjh"
+path="res://.godot/imported/vorthak_fracture_engine_tripo_image_4d488b6b-48e9-4669-83a2-5520fb153bc4_0.jpg-2f57bb5bfaa28cf949c2b380f8d26f73.ctex"
+metadata={
+"vram_texture": false
+}
+generator_parameters={
+"md5": "f5006898e1a50451b1cd93cb6a5e09df"
+}
+
+[deps]
+
+source_file="res://assets/props/vehicles/vorthak_fracture_engine_tripo_image_4d488b6b-48e9-4669-83a2-5520fb153bc4_0.jpg"
+dest_files=["res://.godot/imported/vorthak_fracture_engine_tripo_image_4d488b6b-48e9-4669-83a2-5520fb153bc4_0.jpg-2f57bb5bfaa28cf949c2b380f8d26f73.ctex"]
+
+[params]
+
+compress/mode=1
+compress/high_quality=false
+compress/lossy_quality=0.75
+compress/hdr_compression=1
+compress/normal_map=0
+compress/channel_pack=0
+mipmaps/generate=true
+mipmaps/limit=-1
+roughness/mode=0
+roughness/src_normal=""
+process/fix_alpha_border=true
+process/premult_alpha=false
+process/normal_map_invert_y=false
+process/hdr_as_srgb=false
+process/hdr_clamp_exposure=false
+process/size_limit=1024
+detect_3d/compress_to=1

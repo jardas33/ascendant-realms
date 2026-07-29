@@ -1,0 +1,3170 @@
+{
+  "schema": "v0430-source-manifest-v2",
+  "label": "production_candidate_final",
+  "root": "D:\\Code for projects\\WB game like\\ascendant-realms-v0223-recovery\\production\\ascendant-realms-godot",
+  "generatedAt": "2026-07-29T18:34:36.101Z",
+  "fileCount": 632,
+  "totalBytes": 85520384,
+  "files": [
+    {
+      "path": ".engine_turns.json",
+      "size": 51,
+      "sha256": "b6aa5368fa18cf9a30f5aa5459a38d725dfae242418e83f78c5b209103e6247e"
+    },
+    {
+      "path": ".gitignore",
+      "size": 723,
+      "sha256": "d719c617d63e790eeaf826bc85fa5b3cb9ab1998f9fbf50659413425092d0684"
+    },
+    {
+      "path": ".qa/.gdignore",
+      "size": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".qa/20260729T031933-152965fe/console.log",
+      "size": 5747,
+      "sha256": "a74551badf92343b1257238e2506509140c545a9cb599d046a0a0b0d2e30d21a"
+    },
+    {
+      "path": ".qa/20260729T031933-152965fe/report.json",
+      "size": 1738,
+      "sha256": "257f496efb8395152529aae6fcb8eecb0d477ceffd109d7fe6618dec6fc32a0d"
+    },
+    {
+      "path": ".qa/20260729T032720-0594b71f/console.log",
+      "size": 1660,
+      "sha256": "e9cf79e06387600b62ac29b894e7d2b647e9890c97657a42d3a7480ed1b4df61"
+    },
+    {
+      "path": ".qa/20260729T032720-0594b71f/report.json",
+      "size": 731,
+      "sha256": "9ffa095ae9beef3653ec7e2cd11a1f88654ffc773ef2b77bf8a9f90fb57873da"
+    },
+    {
+      "path": ".qa/20260729T040845-a0026983/console.log",
+      "size": 575,
+      "sha256": "e646b4b1a638c07d1a399b91dcde27029c2fd2959cdf82b8c1c42ce20844a0d4"
+    },
+    {
+      "path": ".qa/20260729T040845-a0026983/report.json",
+      "size": 351,
+      "sha256": "e9c04e1838d7d07b6b86ee9ce446069c4a599f70c6ad14693226936986364e70"
+    },
+    {
+      "path": ".qa/20260729T042434-00ceb3be/console.log",
+      "size": 575,
+      "sha256": "e646b4b1a638c07d1a399b91dcde27029c2fd2959cdf82b8c1c42ce20844a0d4"
+    },
+    {
+      "path": ".qa/20260729T042434-00ceb3be/report.json",
+      "size": 351,
+      "sha256": "0f9963bdd6f4db9f30451b83b1ed90d4df6ec2a307145f355d285d51e66ad541"
+    },
+    {
+      "path": ".qa/20260729T052609-3f297704/console.log",
+      "size": 575,
+      "sha256": "e646b4b1a638c07d1a399b91dcde27029c2fd2959cdf82b8c1c42ce20844a0d4"
+    },
+    {
+      "path": ".qa/20260729T052609-3f297704/report.json",
+      "size": 351,
+      "sha256": "ce1677401c23e6520cc2ea22ba1073e71ccec598ecbbb5f001d0c6a881f30f7d"
+    },
+    {
+      "path": ".qa/20260729T115329-099af0b3/console.log",
+      "size": 575,
+      "sha256": "e646b4b1a638c07d1a399b91dcde27029c2fd2959cdf82b8c1c42ce20844a0d4"
+    },
+    {
+      "path": ".qa/20260729T115329-099af0b3/report.json",
+      "size": 351,
+      "sha256": "48ceece8558d7eebba2006df85d8f23b560639917bc167824e925f112384972d"
+    },
+    {
+      "path": ".qa/20260729T122413-a338ddba/console.log",
+      "size": 575,
+      "sha256": "e646b4b1a638c07d1a399b91dcde27029c2fd2959cdf82b8c1c42ce20844a0d4"
+    },
+    {
+      "path": ".qa/20260729T122413-a338ddba/report.json",
+      "size": 351,
+      "sha256": "904665424106eb0233ce2b73fc3e0dbc4ebc8fe4ad6a42de302d24c9492e1d52"
+    },
+    {
+      "path": ".qa/20260729T124949-b89b6a50/console.log",
+      "size": 575,
+      "sha256": "e646b4b1a638c07d1a399b91dcde27029c2fd2959cdf82b8c1c42ce20844a0d4"
+    },
+    {
+      "path": ".qa/20260729T124949-b89b6a50/report.json",
+      "size": 351,
+      "sha256": "076f73be0eb8d2b9a053810d8148250130dcb3dc80c9ccebb4288654bcf0a01d"
+    },
+    {
+      "path": ".tesana_storage_state.json",
+      "size": 363,
+      "sha256": "f44965a2ede3b6f327e9d668ced2b57ec8409bc562a824b6d078d27ad6ad9e41"
+    },
+    {
+      "path": ".tools_shrink_glb.py",
+      "size": 3805,
+      "sha256": "2cfd4c76dea8ff45318a838a9b20235a41ca4884e222e3a7b1cd61ce5da1f161"
+    },
+    {
+      "path": "addons/tesana_world_editor/scene_export.gd",
+      "size": 36879,
+      "sha256": "77e8f8160e3c22bbf7279c96ea7b587b97bacd7a774dba0cace1a2de4823ccfd"
+    },
+    {
+      "path": "addons/tesana_world_editor/scene_export.gd.uid",
+      "size": 20,
+      "sha256": "06a69ea9efa4ec584c4328d134f8383620b5a2ffcc86b84fb5df556dc4b6703c"
+    },
+    {
+      "path": "assets/animations/humanoid_profile_bone_map.tres",
+      "size": 2647,
+      "sha256": "6cb55281a122bc1936fcc9acb5318c2a3d77c079bb81609f1e4ad335c3437667"
+    },
+    {
+      "path": "assets/audio/ambient/ambient_mountain_highland_with_distant_magical_a_highland_wind_lume.mp3",
+      "size": 321036,
+      "sha256": "fd6960a8505427e78469ba12cadbf0a80a37cf7d8cd68740441f84bb6b7d3ef1"
+    },
+    {
+      "path": "assets/audio/ambient/ambient_mountain_highland_with_distant_magical_a_highland_wind_lume.mp3.import",
+      "size": 551,
+      "sha256": "e17867a2bbc47a84b0ef401b67f6cccbb5df71b4d603a394b712d5d443c6e64c"
+    },
+    {
+      "path": "assets/audio/music/jingle_defeat_defeat_dirge.mp3",
+      "size": 96593,
+      "sha256": "a2bf4b5f59f8804f76eec0a6d82a623c3fa3ba9fb72b80b1fab71ce4d2d63564"
+    },
+    {
+      "path": "assets/audio/music/jingle_defeat_defeat_dirge.mp3.import",
+      "size": 425,
+      "sha256": "a01f0948001c9f06849c01ed655ae9174b368afc068e446f4ae905604b10d811"
+    },
+    {
+      "path": "assets/audio/music/jingle_victory_victory_fanfare.mp3",
+      "size": 80711,
+      "sha256": "021d6b1ee866c8a5466788eb2587ed3ebdb591ab32e221349d413938ac8ed6e0"
+    },
+    {
+      "path": "assets/audio/music/jingle_victory_victory_fanfare.mp3.import",
+      "size": 438,
+      "sha256": "eb0ed076fa0a3f9b473e49b470ee679037faefbdcffe02309662de7dbab68ca7"
+    },
+    {
+      "path": "assets/audio/music/music_combat_skirmish_battle_rise.mp3",
+      "size": 960515,
+      "sha256": "b376a96df96466d03e003558ce68d23fd0a2a722acf024ff268a7db6753fd9de"
+    },
+    {
+      "path": "assets/audio/music/music_combat_skirmish_battle_rise.mp3.import",
+      "size": 447,
+      "sha256": "a4d42817b82da0355cc4ea445c8fb78a8aa03bff26e2f91db98c0c63bf78d21d"
+    },
+    {
+      "path": "assets/audio/music/music_menu_ascendant_main_theme.mp3",
+      "size": 1440750,
+      "sha256": "3c44e84f93a26c24e5238be5b0bc01f59eecceb4a71274df4fea40821d708c8b"
+    },
+    {
+      "path": "assets/audio/music/music_menu_ascendant_main_theme.mp3.import",
+      "size": 441,
+      "sha256": "e52444ebc136cca7a936d6dbedbf2165624c2f9691f20fab37c1370bdae983a3"
+    },
+    {
+      "path": "assets/audio/sfx/combat/combat_arrow_shot.mp3",
+      "size": 8821,
+      "sha256": "ff91ea9524ceb4f3b6d5c4a23607c86721aadd079b510f762f42c0598552cf6c"
+    },
+    {
+      "path": "assets/audio/sfx/combat/combat_arrow_shot.mp3.import",
+      "size": 404,
+      "sha256": "48618836c8069c7553a352f725d945c12f1da80e8bfe4404a82a4bbf493e3d28"
+    },
+    {
+      "path": "assets/audio/sfx/combat/combat_spell_cast.mp3",
+      "size": 15090,
+      "sha256": "16cb0ddd76b1175269a69d15ecc4e86a9ec8b4d24693200168e5e22724a8ae2e"
+    },
+    {
+      "path": "assets/audio/sfx/combat/combat_spell_cast.mp3.import",
+      "size": 403,
+      "sha256": "2e08d256050eab86abe6cffb30298757dea0193e3aa64cf5ff4e765fd04db43f"
+    },
+    {
+      "path": "assets/audio/sfx/combat/combat_sword_hit.mp3",
+      "size": 8821,
+      "sha256": "3fd8a70c8778e011243a4951d32d56186d1db03f383ed465ebd17526629b37f1"
+    },
+    {
+      "path": "assets/audio/sfx/combat/combat_sword_hit.mp3.import",
+      "size": 401,
+      "sha256": "09406299c03ed5919e2391638cdca77ea3f3fb8f4a0c94e94d575c9044b7a52b"
+    },
+    {
+      "path": "assets/audio/sfx/combat/combat_unit_death.mp3",
+      "size": 12164,
+      "sha256": "4b400af0da191b72b5712cc82b2e6eedf559bb211847e98ec1f1377ba3a10a05"
+    },
+    {
+      "path": "assets/audio/sfx/combat/combat_unit_death.mp3.import",
+      "size": 404,
+      "sha256": "056579239b14c8a764c69f2d6d6609e8b7c8bd11b88d75a21512d7f25054820d"
+    },
+    {
+      "path": "assets/audio/sfx/pickup/pickup_hero_level_up.mp3",
+      "size": 24703,
+      "sha256": "31ad20c1460837de73979cb34a560874ada04fb30b076addaa4324c2f74a4b8d"
+    },
+    {
+      "path": "assets/audio/sfx/pickup/pickup_hero_level_up.mp3.import",
+      "size": 413,
+      "sha256": "75ce9848ae43d325b6a03094328f5f6dc6d34d29224e929228c17c81bbc2df13"
+    },
+    {
+      "path": "assets/audio/sfx/ui/ui_base_under_attack.mp3",
+      "size": 26793,
+      "sha256": "46390d9b88020d2ed053122ddc900665c58bbffdd98aca90aff381909c73a9cb"
+    },
+    {
+      "path": "assets/audio/sfx/ui/ui_base_under_attack.mp3.import",
+      "size": 409,
+      "sha256": "40244837bb8b96d9da4acca43d1c01fb6e20d5e3a9c58931b68577d27851232d"
+    },
+    {
+      "path": "assets/audio/sfx/ui/ui_building_complete.mp3",
+      "size": 29301,
+      "sha256": "26b69b07b7b7eeb7cf4292fbcacad559ad35f1ae37f494ddff9d40520fe396b3"
+    },
+    {
+      "path": "assets/audio/sfx/ui/ui_building_complete.mp3.import",
+      "size": 409,
+      "sha256": "25b3a73a34af9a1e5356ab4f06160546cbe2f32a2e4c37da73adf59a3a4c691a"
+    },
+    {
+      "path": "assets/audio/sfx/ui/ui_unit_ready.mp3",
+      "size": 15090,
+      "sha256": "f8a2e653ed9ead1f38aa23d71cc84177b7fe9c85bf06553a79eac27b17530b0f"
+    },
+    {
+      "path": "assets/audio/sfx/ui/ui_unit_ready.mp3.import",
+      "size": 388,
+      "sha256": "9097190ac6e58d9c4b6b147d560d816b08ad9f979e8cb7590131923db952d33a"
+    },
+    {
+      "path": "assets/audio/sfx/ui/ui_unit_select_confirm.mp3",
+      "size": 8821,
+      "sha256": "967a7e1600586e6708c288a8ccacbfadf0c7d50b93510bd2ea903cf566aaf9b5"
+    },
+    {
+      "path": "assets/audio/sfx/ui/ui_unit_select_confirm.mp3.import",
+      "size": 414,
+      "sha256": "d4b6dbbfef88987584743a6dd7c728b220a5eb54e8a1eb512bfc63eee3d60e5a"
+    },
+    {
+      "path": "assets/characters/_orient_fix.gd",
+      "size": 729,
+      "sha256": "83b3fae91385c48ffabff033a4253100fb7a429bb18401648f2af62ca83bcd10"
+    },
+    {
+      "path": "assets/characters/_orient_fix.gd.uid",
+      "size": 20,
+      "sha256": "9642b148b899647dd8c915cefb5600c26e72f19ac248dd049b978864c8dfae40"
+    },
+    {
+      "path": "assets/characters/barrosan_anvil_breaker/barrosan_anvil_breaker_animations.tres",
+      "size": 366998,
+      "sha256": "c0edb8577f46e29565d8fb784d29fbec8415146fbb63a3325516f68f59a2c24a"
+    },
+    {
+      "path": "assets/characters/barrosan_anvil_breaker/barrosan_anvil_breaker.glb",
+      "size": 285880,
+      "sha256": "371dca0d20afd35861d282264d0d84cfd86c3997311b78e8cac516717f9fe3c5"
+    },
+    {
+      "path": "assets/characters/barrosan_anvil_breaker/barrosan_anvil_breaker.glb.import",
+      "size": 1626,
+      "sha256": "9ad77979c318543b92c4a4be9900eeb98869b04dcc8ae4ce8014c4342a2083f6"
+    },
+    {
+      "path": "assets/characters/barrosan_clan_levy/barrosan_clan_levy_animations.tres",
+      "size": 366998,
+      "sha256": "c0edb8577f46e29565d8fb784d29fbec8415146fbb63a3325516f68f59a2c24a"
+    },
+    {
+      "path": "assets/characters/barrosan_clan_levy/barrosan_clan_levy.glb",
+      "size": 302132,
+      "sha256": "538209788069f07c64c8d26f2ad0d8342b4c4eb7a57a7c7806e468e2bd4a3645"
+    },
+    {
+      "path": "assets/characters/barrosan_clan_levy/barrosan_clan_levy.glb.import",
+      "size": 1610,
+      "sha256": "bedfbe954b04d7dc98036af65806b30533a1c81233033a6b8a6fb2d1e7fb194d"
+    },
+    {
+      "path": "assets/characters/barrosan_crag_archer/barrosan_crag_archer_animations.tres",
+      "size": 344110,
+      "sha256": "56e0e293c0be1d6ddeb361e8e048d776526a4876697819d07a3d1bd81612914b"
+    },
+    {
+      "path": "assets/characters/barrosan_crag_archer/barrosan_crag_archer.glb",
+      "size": 498260,
+      "sha256": "46ad0f8878b27e261a020faa1be0fcfc9579068292953dab5ced732370ef5dde"
+    },
+    {
+      "path": "assets/characters/barrosan_crag_archer/barrosan_crag_archer.glb.import",
+      "size": 1617,
+      "sha256": "aa86abbf1e32a9223f5fa93bb05cce89f4cb4130e5fcd0f2495e2db8b476fd3c"
+    },
+    {
+      "path": "assets/characters/barrosan_hero_thane/barrosan_hero_thane_animations.tres",
+      "size": 366998,
+      "sha256": "c0edb8577f46e29565d8fb784d29fbec8415146fbb63a3325516f68f59a2c24a"
+    },
+    {
+      "path": "assets/characters/barrosan_hero_thane/barrosan_hero_thane.glb",
+      "size": 292196,
+      "sha256": "0e0b6a16f66b07e3af8adf521ef4f166b13ff8ee601fa853c0c38582cd73d1e7"
+    },
+    {
+      "path": "assets/characters/barrosan_hero_thane/barrosan_hero_thane.glb.import",
+      "size": 1613,
+      "sha256": "567caee055bbc3b50e8db814b94fecd7281fa1d4ec035b761a9551bf81f62f5f"
+    },
+    {
+      "path": "assets/characters/barrosan_highlander_worker/barrosan_highlander_worker_animations.tres",
+      "size": 341191,
+      "sha256": "1d3e98c76f57d33802b999e753c037da7ecfc997338c86dcfa477f3bec313375"
+    },
+    {
+      "path": "assets/characters/barrosan_highlander_worker/barrosan_highlander_worker.glb",
+      "size": 443556,
+      "sha256": "b2aa25b2beed1efb910cdc7c21e4161cadc768d755bc291717e2032278c55171"
+    },
+    {
+      "path": "assets/characters/barrosan_highlander_worker/barrosan_highlander_worker.glb.import",
+      "size": 1641,
+      "sha256": "61f759954288793788450ebc140eef633b3ac928ee090c28053794db42640892"
+    },
+    {
+      "path": "assets/characters/barrosan_outrider/barrosan_outrider_animations.tres",
+      "size": 366998,
+      "sha256": "c0edb8577f46e29565d8fb784d29fbec8415146fbb63a3325516f68f59a2c24a"
+    },
+    {
+      "path": "assets/characters/barrosan_outrider/barrosan_outrider.glb",
+      "size": 539408,
+      "sha256": "f2a51b45a23dd3721c625a0c936b1765e06d683249973706b9a097a1a36e73a0"
+    },
+    {
+      "path": "assets/characters/barrosan_outrider/barrosan_outrider.glb.import",
+      "size": 1605,
+      "sha256": "fd12eb8af5d3be2e21c66bcff24a8394b8acf23703237dbab34d69b86205aea6"
+    },
+    {
+      "path": "assets/characters/barrosan_spear_guard/barrosan_spear_guard_animations.tres",
+      "size": 366998,
+      "sha256": "c0edb8577f46e29565d8fb784d29fbec8415146fbb63a3325516f68f59a2c24a"
+    },
+    {
+      "path": "assets/characters/barrosan_spear_guard/barrosan_spear_guard.glb",
+      "size": 466952,
+      "sha256": "69b43743820f45a10611c8f71e7c796d5d633c04cc4c4544b6aa8eba2767ee52"
+    },
+    {
+      "path": "assets/characters/barrosan_spear_guard/barrosan_spear_guard.glb.import",
+      "size": 1618,
+      "sha256": "fc7df206311ce3a26068c66e05a2cb1e278a88f4d822a3da9e142c2cc4cb5988"
+    },
+    {
+      "path": "assets/characters/beastfolk_wolf_warrior/beastfolk_wolf_warrior_animations.tres",
+      "size": 344174,
+      "sha256": "7874422f2ed1a8d46d7ecce5686b56902d525a6920c7a06502b8d2223e68c5ff"
+    },
+    {
+      "path": "assets/characters/beastfolk_wolf_warrior/beastfolk_wolf_warrior.glb",
+      "size": 454040,
+      "sha256": "4b2c77ec71d4e5dce10d0c112e764a88ee9b8dfd2e0032f661f67bfa34123ab1"
+    },
+    {
+      "path": "assets/characters/beastfolk_wolf_warrior/beastfolk_wolf_warrior.glb.import",
+      "size": 1625,
+      "sha256": "e9eadce28dbf2065acb1132d619f3fb3f0d4556453c0f5e3aadc28a6b29f492b"
+    },
+    {
+      "path": "assets/characters/dwarf_warrior/dwarf_warrior_animations.tres",
+      "size": 344174,
+      "sha256": "7874422f2ed1a8d46d7ecce5686b56902d525a6920c7a06502b8d2223e68c5ff"
+    },
+    {
+      "path": "assets/characters/dwarf_warrior/dwarf_warrior.glb",
+      "size": 304372,
+      "sha256": "3185980d98baaef6c89c89a43966b9535af08c68c38f9ed2f4b931c2f3d7a5a6"
+    },
+    {
+      "path": "assets/characters/dwarf_warrior/dwarf_warrior.glb.import",
+      "size": 1590,
+      "sha256": "3a04e848b2e3c92190817b8190651046c4f8bb9326bd7459465cc6f32b0f81f8"
+    },
+    {
+      "path": "assets/characters/frostborn_hero_jarl/frostborn_hero_jarl_animations.tres",
+      "size": 344174,
+      "sha256": "7874422f2ed1a8d46d7ecce5686b56902d525a6920c7a06502b8d2223e68c5ff"
+    },
+    {
+      "path": "assets/characters/frostborn_hero_jarl/frostborn_hero_jarl.glb",
+      "size": 499912,
+      "sha256": "e691ea8b8fe3e45f358e88c73ad4448d1914291bdec24daa7b41217dd42be4d1"
+    },
+    {
+      "path": "assets/characters/frostborn_hero_jarl/frostborn_hero_jarl.glb.import",
+      "size": 1613,
+      "sha256": "37d571da1daaf36e31bf9be3d44d25aca14ba9e2e3261a2252e796ad5b19c49c"
+    },
+    {
+      "path": "assets/characters/frostborn_warrior/frostborn_warrior_animations.tres",
+      "size": 344174,
+      "sha256": "7874422f2ed1a8d46d7ecce5686b56902d525a6920c7a06502b8d2223e68c5ff"
+    },
+    {
+      "path": "assets/characters/frostborn_warrior/frostborn_warrior.glb",
+      "size": 448184,
+      "sha256": "f37e64e58d53ad3cd83ad71869b16dd289eba9622baca5178998ac9d6a3ca4c2"
+    },
+    {
+      "path": "assets/characters/frostborn_warrior/frostborn_warrior.glb.import",
+      "size": 1606,
+      "sha256": "070b64f4afb68d09f493100ab872a03269bc5756706ec0c1bf71f0fef92e34ed"
+    },
+    {
+      "path": "assets/characters/grimtusk_hero_warlord/grimtusk_hero_warlord_animations.tres",
+      "size": 344174,
+      "sha256": "7874422f2ed1a8d46d7ecce5686b56902d525a6920c7a06502b8d2223e68c5ff"
+    },
+    {
+      "path": "assets/characters/grimtusk_hero_warlord/grimtusk_hero_warlord.glb",
+      "size": 471892,
+      "sha256": "437dc035c802f7cb9db765474f6e6c172efa2e4cc1bdda4e4b824caa65620478"
+    },
+    {
+      "path": "assets/characters/grimtusk_hero_warlord/grimtusk_hero_warlord.glb.import",
+      "size": 1622,
+      "sha256": "056e96fc1decdb8e1aac6a592599b6f5622bcdb7a45362c333cff966722e49bd"
+    },
+    {
+      "path": "assets/characters/highelf_archer/highelf_archer_animations.tres",
+      "size": 344174,
+      "sha256": "7874422f2ed1a8d46d7ecce5686b56902d525a6920c7a06502b8d2223e68c5ff"
+    },
+    {
+      "path": "assets/characters/highelf_archer/highelf_archer.glb",
+      "size": 296124,
+      "sha256": "4ca648a790c42530d8d6b3652053ceee0caffae321c94b138dcaf3e21e65ec9a"
+    },
+    {
+      "path": "assets/characters/highelf_archer/highelf_archer.glb.import",
+      "size": 1593,
+      "sha256": "534fb600a7d87764a4bcd2e2074d3e064ebec4b65414d7c183b0f0d050b83031"
+    },
+    {
+      "path": "assets/characters/hollow_hero_lich/hollow_hero_lich_animations.tres",
+      "size": 344174,
+      "sha256": "7874422f2ed1a8d46d7ecce5686b56902d525a6920c7a06502b8d2223e68c5ff"
+    },
+    {
+      "path": "assets/characters/hollow_hero_lich/hollow_hero_lich.glb",
+      "size": 255236,
+      "sha256": "cb57c5e3e9a5b7a27f0e5d27a47920378fc2f36511afcf234e0f9b9664ad6f20"
+    },
+    {
+      "path": "assets/characters/hollow_hero_lich/hollow_hero_lich.glb.import",
+      "size": 1601,
+      "sha256": "43d067dc231e571dec498cde6ebd61bd91fb0f6ef77a08e6c17234f4d5ee1fa9"
+    },
+    {
+      "path": "assets/characters/karak_hero_thanelord/karak_hero_thanelord_animations.tres",
+      "size": 344174,
+      "sha256": "7874422f2ed1a8d46d7ecce5686b56902d525a6920c7a06502b8d2223e68c5ff"
+    },
+    {
+      "path": "assets/characters/karak_hero_thanelord/karak_hero_thanelord.glb",
+      "size": 297956,
+      "sha256": "dc5c0efbbb2f924a4477ff84bc82a9a1f781f3e94872dad7e8e0a3366c520944"
+    },
+    {
+      "path": "assets/characters/karak_hero_thanelord/karak_hero_thanelord.glb.import",
+      "size": 1618,
+      "sha256": "a3c263cd43d169ca92bec48336b875c4eb9d5e4cfa718979bf0edf3ba27b09da"
+    },
+    {
+      "path": "assets/characters/lioraen_bloomdancer/lioraen_bloomdancer_animations.tres",
+      "size": 366998,
+      "sha256": "c0edb8577f46e29565d8fb784d29fbec8415146fbb63a3325516f68f59a2c24a"
+    },
+    {
+      "path": "assets/characters/lioraen_bloomdancer/lioraen_bloomdancer.glb",
+      "size": 503264,
+      "sha256": "f7fdc06ab4c521b3e5bc52906684cfaa1e79344cf1feb7a172fb59f286f7b250"
+    },
+    {
+      "path": "assets/characters/lioraen_bloomdancer/lioraen_bloomdancer.glb.import",
+      "size": 1614,
+      "sha256": "38971285940546605a817be062f3b32f6d46fa21ea2786990c51210868520e74"
+    },
+    {
+      "path": "assets/characters/lioraen_canopy_mender/lioraen_canopy_mender_animations.tres",
+      "size": 350537,
+      "sha256": "d195f491cfca9fae2450bb065d3c0c131fbbead7a8204fae6df82779b9389831"
+    },
+    {
+      "path": "assets/characters/lioraen_canopy_mender/lioraen_canopy_mender.glb",
+      "size": 331184,
+      "sha256": "439bea17236ea7b5b2c201aa03c812ce7a28ba1baf99c530f02427cf5991f776"
+    },
+    {
+      "path": "assets/characters/lioraen_canopy_mender/lioraen_canopy_mender.glb.import",
+      "size": 1621,
+      "sha256": "778071dd24c6ded371b765b484bea9d07d0e5371841d3f1a6ce05797c795b515"
+    },
+    {
+      "path": "assets/characters/lioraen_hero_warden/lioraen_hero_warden_animations.tres",
+      "size": 417808,
+      "sha256": "72c94605eda22004739bea59b130a8b7ad660e2c54628fa1b91e158dca1f809a"
+    },
+    {
+      "path": "assets/characters/lioraen_hero_warden/lioraen_hero_warden.glb",
+      "size": 498732,
+      "sha256": "78c9fe6846249a9da21669d15536186541ae5038d63221b1dbb48c8b671c5549"
+    },
+    {
+      "path": "assets/characters/lioraen_hero_warden/lioraen_hero_warden.glb.import",
+      "size": 1614,
+      "sha256": "629cdb76c0f7ad37d7c00084e9917af7777033f01f87dbce578b98ff7dff2900"
+    },
+    {
+      "path": "assets/characters/lioraen_rootwarden_guard/lioraen_rootwarden_guard_animations.tres",
+      "size": 366998,
+      "sha256": "c0edb8577f46e29565d8fb784d29fbec8415146fbb63a3325516f68f59a2c24a"
+    },
+    {
+      "path": "assets/characters/lioraen_rootwarden_guard/lioraen_rootwarden_guard.glb",
+      "size": 321460,
+      "sha256": "d6ff7b2a36fce5fa49934dcbf6317487920a37847f3bfb5ad1fde7a27f97d832"
+    },
+    {
+      "path": "assets/characters/lioraen_rootwarden_guard/lioraen_rootwarden_guard.glb.import",
+      "size": 1634,
+      "sha256": "b62774f830f716ce88afedd32cdf3f190e318c4c9623a49a7a40d1bd0fb5d2fc"
+    },
+    {
+      "path": "assets/characters/lioraen_seedkeeper_worker/lioraen_seedkeeper_worker_animations.tres",
+      "size": 341191,
+      "sha256": "1d3e98c76f57d33802b999e753c037da7ecfc997338c86dcfa477f3bec313375"
+    },
+    {
+      "path": "assets/characters/lioraen_seedkeeper_worker/lioraen_seedkeeper_worker.glb",
+      "size": 510840,
+      "sha256": "486e360054fa590f7d2e4ca1f5729e31ab38cffc5c686a50f3708b35bd5a1874"
+    },
+    {
+      "path": "assets/characters/lioraen_seedkeeper_worker/lioraen_seedkeeper_worker.glb.import",
+      "size": 1638,
+      "sha256": "ffd7b48eb49e7295471d3a2eee7449ea44e71440d9b01331e3b7c360a4f8a896"
+    },
+    {
+      "path": "assets/characters/lioraen_thorn_ranger/lioraen_thorn_ranger_animations.tres",
+      "size": 344110,
+      "sha256": "56e0e293c0be1d6ddeb361e8e048d776526a4876697819d07a3d1bd81612914b"
+    },
+    {
+      "path": "assets/characters/lioraen_thorn_ranger/lioraen_thorn_ranger.glb",
+      "size": 468868,
+      "sha256": "6679cb4e5af1ff663985a1112ee0dad17ef1dbc5c5a88ebe231bfb31a36797b1"
+    },
+    {
+      "path": "assets/characters/lioraen_thorn_ranger/lioraen_thorn_ranger.glb.import",
+      "size": 1618,
+      "sha256": "d23f0ea658c140651881c169b229a21fefeb033decb6d9f6fb24e013ce607b34"
+    },
+    {
+      "path": "assets/characters/lioraen_windstrider/lioraen_windstrider_animations.tres",
+      "size": 366998,
+      "sha256": "c0edb8577f46e29565d8fb784d29fbec8415146fbb63a3325516f68f59a2c24a"
+    },
+    {
+      "path": "assets/characters/lioraen_windstrider/lioraen_windstrider.glb",
+      "size": 315080,
+      "sha256": "57751ff8c0aaecbf5235946aea43e7acdaaec7361add1bc140b70507991911c5"
+    },
+    {
+      "path": "assets/characters/lioraen_windstrider/lioraen_windstrider.glb.import",
+      "size": 1614,
+      "sha256": "9f42031a4c9d6841b9c740bcf94499c0ffdf4ea57554a1810e57a51ba1204cde"
+    },
+    {
+      "path": "assets/characters/orc_grunt/orc_grunt_animations.tres",
+      "size": 344174,
+      "sha256": "7874422f2ed1a8d46d7ecce5686b56902d525a6920c7a06502b8d2223e68c5ff"
+    },
+    {
+      "path": "assets/characters/orc_grunt/orc_grunt.glb",
+      "size": 499500,
+      "sha256": "c27962acf72832fb597b5a91f1bc22eec767a52327d46acd864b848b1ac979f8"
+    },
+    {
+      "path": "assets/characters/orc_grunt/orc_grunt.glb.import",
+      "size": 1574,
+      "sha256": "005c1c06c1abfafdff1593411ab54c610c00626d4086a1ca4482db9328841d4b"
+    },
+    {
+      "path": "assets/characters/sunspear_hero_pharaoh/sunspear_hero_pharaoh_animations.tres",
+      "size": 344174,
+      "sha256": "7874422f2ed1a8d46d7ecce5686b56902d525a6920c7a06502b8d2223e68c5ff"
+    },
+    {
+      "path": "assets/characters/sunspear_hero_pharaoh/sunspear_hero_pharaoh.glb",
+      "size": 463468,
+      "sha256": "8b0774fc616bda5f05e2bb403d16d80492b633db7640169c5cf274e649208a1f"
+    },
+    {
+      "path": "assets/characters/sunspear_hero_pharaoh/sunspear_hero_pharaoh.glb.import",
+      "size": 1622,
+      "sha256": "9848d162d9039d8ce5f7a61ed5d7fa394dcc89dcb89b292fbc3d6d7058a58233"
+    },
+    {
+      "path": "assets/characters/sunspear_legionary/sunspear_legionary_animations.tres",
+      "size": 344174,
+      "sha256": "7874422f2ed1a8d46d7ecce5686b56902d525a6920c7a06502b8d2223e68c5ff"
+    },
+    {
+      "path": "assets/characters/sunspear_legionary/sunspear_legionary.glb",
+      "size": 407724,
+      "sha256": "04e630a4024787e3259cb9d27f22f92838f1de51a609419fb3640ee6e9ad9746"
+    },
+    {
+      "path": "assets/characters/sunspear_legionary/sunspear_legionary.glb.import",
+      "size": 1610,
+      "sha256": "e4571750c984b9f297284e820c8bd03153f4f2e094f4e5e21ce89fc8438bea7e"
+    },
+    {
+      "path": "assets/characters/sylvan_hero_archon/sylvan_hero_archon_animations.tres",
+      "size": 344174,
+      "sha256": "7874422f2ed1a8d46d7ecce5686b56902d525a6920c7a06502b8d2223e68c5ff"
+    },
+    {
+      "path": "assets/characters/sylvan_hero_archon/sylvan_hero_archon.glb",
+      "size": 476900,
+      "sha256": "de0decbee1f63c3e8689609dfc8f34f3d89b1827d4b93478fb7891210edb858a"
+    },
+    {
+      "path": "assets/characters/sylvan_hero_archon/sylvan_hero_archon.glb.import",
+      "size": 1609,
+      "sha256": "ce93d4ef5be8a462e0d36612ac0d23423072e253bc6d050cce26b23e4bf3f903"
+    },
+    {
+      "path": "assets/characters/undead_skeleton/undead_skeleton_animations.tres",
+      "size": 344174,
+      "sha256": "7874422f2ed1a8d46d7ecce5686b56902d525a6920c7a06502b8d2223e68c5ff"
+    },
+    {
+      "path": "assets/characters/undead_skeleton/undead_skeleton.glb",
+      "size": 319332,
+      "sha256": "1baf063032e97c3c829b5b80e5d81ea57019aff74ee2bcc3c2267f77d94c6ba7"
+    },
+    {
+      "path": "assets/characters/undead_skeleton/undead_skeleton.glb.import",
+      "size": 1597,
+      "sha256": "b488fc53438b18e527d54ea85cc3572a5f5a17a0a1e6054bcdb981444a9c6f2f"
+    },
+    {
+      "path": "assets/characters/vorthak_ash_thrall/vorthak_ash_thrall_animations.tres",
+      "size": 366998,
+      "sha256": "c0edb8577f46e29565d8fb784d29fbec8415146fbb63a3325516f68f59a2c24a"
+    },
+    {
+      "path": "assets/characters/vorthak_ash_thrall/vorthak_ash_thrall.glb",
+      "size": 424420,
+      "sha256": "78f7abd113c40b7eb3d7154b406730f939fdfab07c081f1f9c3073bf19f7c040"
+    },
+    {
+      "path": "assets/characters/vorthak_ash_thrall/vorthak_ash_thrall.glb.import",
+      "size": 1609,
+      "sha256": "9fbc38716a8145f812ac15f30c4d5ce209b58d2ed2d84b48c8b3b45503ee536e"
+    },
+    {
+      "path": "assets/characters/vorthak_bondservant_worker/vorthak_bondservant_worker_animations.tres",
+      "size": 341191,
+      "sha256": "1d3e98c76f57d33802b999e753c037da7ecfc997338c86dcfa477f3bec313375"
+    },
+    {
+      "path": "assets/characters/vorthak_bondservant_worker/vorthak_bondservant_worker.glb",
+      "size": 491632,
+      "sha256": "73ac3377074c46b056496fe607abf343c5d2fc7f26e1531fa27e92d63e3416d9"
+    },
+    {
+      "path": "assets/characters/vorthak_bondservant_worker/vorthak_bondservant_worker.glb.import",
+      "size": 1642,
+      "sha256": "6a02e355c06df0a34db4a8e475dc5340db624b3386abee28f3ea92d34678bdac"
+    },
+    {
+      "path": "assets/characters/vorthak_cinder_spitter/vorthak_cinder_spitter_animations.tres",
+      "size": 350537,
+      "sha256": "d195f491cfca9fae2450bb065d3c0c131fbbead7a8204fae6df82779b9389831"
+    },
+    {
+      "path": "assets/characters/vorthak_cinder_spitter/vorthak_cinder_spitter.glb",
+      "size": 422136,
+      "sha256": "3b1be5ba0d8e0e9687ff0a7484947e339494a24c1e14a2b5e8246a7958305e9a"
+    },
+    {
+      "path": "assets/characters/vorthak_cinder_spitter/vorthak_cinder_spitter.glb.import",
+      "size": 1626,
+      "sha256": "8c44ca45c90a0b34eef09ba189d28b232ac0b278f2df4a960c125063b2920f6c"
+    },
+    {
+      "path": "assets/characters/vorthak_gloom_hound/vorthak_gloom_hound_animations.tres",
+      "size": 366998,
+      "sha256": "c0edb8577f46e29565d8fb784d29fbec8415146fbb63a3325516f68f59a2c24a"
+    },
+    {
+      "path": "assets/characters/vorthak_gloom_hound/vorthak_gloom_hound.glb",
+      "size": 254312,
+      "sha256": "7ae7c20947f073e3607c8b44ca9229af183119df9345d3f160d205ab671b4d63"
+    },
+    {
+      "path": "assets/characters/vorthak_gloom_hound/vorthak_gloom_hound.glb.import",
+      "size": 1614,
+      "sha256": "60869c925d74c10c490c1dbabc95b2ce9efba7aad1d5c5d4077f84979e3d4bb4"
+    },
+    {
+      "path": "assets/characters/vorthak_hero_binder/vorthak_hero_binder_animations.tres",
+      "size": 350537,
+      "sha256": "d195f491cfca9fae2450bb065d3c0c131fbbead7a8204fae6df82779b9389831"
+    },
+    {
+      "path": "assets/characters/vorthak_hero_binder/vorthak_hero_binder.glb",
+      "size": 468632,
+      "sha256": "af210abfea73a0e8992a570a651a7eeab467ecd895633afff7f0472ed2fdbf29"
+    },
+    {
+      "path": "assets/characters/vorthak_hero_binder/vorthak_hero_binder.glb.import",
+      "size": 1614,
+      "sha256": "3c4c9561ff75f978fbd79b6f66c957d0a7e2c9d75320366408366e6907a814f3"
+    },
+    {
+      "path": "assets/characters/vorthak_rift_blade/vorthak_rift_blade_animations.tres",
+      "size": 366998,
+      "sha256": "c0edb8577f46e29565d8fb784d29fbec8415146fbb63a3325516f68f59a2c24a"
+    },
+    {
+      "path": "assets/characters/vorthak_rift_blade/vorthak_rift_blade.glb",
+      "size": 432232,
+      "sha256": "49510affaad09a5b0992cab54ed86aa5ca9a7384d1a9e1437dc5dc0a520219ce"
+    },
+    {
+      "path": "assets/characters/vorthak_rift_blade/vorthak_rift_blade.glb.import",
+      "size": 1610,
+      "sha256": "6aeb3868b40484ba024fda0002133d01d7f8c69865b8ebbb8a38e9f840eaac30"
+    },
+    {
+      "path": "assets/characters/vorthak_veil_warlock/vorthak_veil_warlock_animations.tres",
+      "size": 350537,
+      "sha256": "d195f491cfca9fae2450bb065d3c0c131fbbead7a8204fae6df82779b9389831"
+    },
+    {
+      "path": "assets/characters/vorthak_veil_warlock/vorthak_veil_warlock.glb",
+      "size": 399188,
+      "sha256": "f2f3559e633b5c1f4f8b2c2c2f7119ca07f37c9c0ba0e0782eb22f87718d03c3"
+    },
+    {
+      "path": "assets/characters/vorthak_veil_warlock/vorthak_veil_warlock.glb.import",
+      "size": 1617,
+      "sha256": "c4bc62d03749295ac227bbef5fd115cd9f84fe47977c0f2bad4a43f2509cc6cc"
+    },
+    {
+      "path": "assets/characters/wyldkin_hero_alpha/wyldkin_hero_alpha_animations.tres",
+      "size": 344174,
+      "sha256": "7874422f2ed1a8d46d7ecce5686b56902d525a6920c7a06502b8d2223e68c5ff"
+    },
+    {
+      "path": "assets/characters/wyldkin_hero_alpha/wyldkin_hero_alpha.glb",
+      "size": 520812,
+      "sha256": "904c10c4bad168c852c09a0b128ae2036d578ea83c58d5e0e83d56d0ba563803"
+    },
+    {
+      "path": "assets/characters/wyldkin_hero_alpha/wyldkin_hero_alpha.glb.import",
+      "size": 1610,
+      "sha256": "4078e911c673c2df85dff692018601597020dc4289dd7af76f29631ae13be210"
+    },
+    {
+      "path": "assets/environment/buildings/barrosan_clan_croft_tripo_model_basecolor.jpg",
+      "size": 169562,
+      "sha256": "f32cb5e799bec5ee5c9961b4e3ab51c51504bc9572bcb69246df82eaf7a139b8"
+    },
+    {
+      "path": "assets/environment/buildings/barrosan_clan_croft_tripo_model_basecolor.jpg.import",
+      "size": 956,
+      "sha256": "7402210cd7768d90145f8afe2b2a00b940a01f0a296aa9b6b1ba443295e7dd4e"
+    },
+    {
+      "path": "assets/environment/buildings/barrosan_clan_croft_tripo_model_normal.jpg",
+      "size": 30452,
+      "sha256": "17450b019a5a6127afd7db9e91dea8793ab54771500bc6dc70c0a842819b83a2"
+    },
+    {
+      "path": "assets/environment/buildings/barrosan_clan_croft_tripo_model_normal.jpg.import",
+      "size": 947,
+      "sha256": "9512e1a5fd8a96febb478848d2b35e16ae817a95a96ce21110a56c8627acb005"
+    },
+    {
+      "path": "assets/environment/buildings/barrosan_clan_croft_tripo_model_rm.jpg",
+      "size": 121322,
+      "sha256": "c2fe46e090ebecb464b89498f9916e8719ff75a69763b988bdb984670ebba18c"
+    },
+    {
+      "path": "assets/environment/buildings/barrosan_clan_croft_tripo_model_rm.jpg.import",
+      "size": 934,
+      "sha256": "7d9c01894f48049d1753ef3acb17565dd900f072021212f3a0a1003384ab75e9"
+    },
+    {
+      "path": "assets/environment/buildings/barrosan_clan_croft.glb",
+      "size": 558816,
+      "sha256": "1027098e0fcbe1ffc6045558d75a16ec5063cdaa02ced7161e721cd7cde450d4"
+    },
+    {
+      "path": "assets/environment/buildings/barrosan_clan_croft.glb.import",
+      "size": 933,
+      "sha256": "d1b11b5a02653bb592ad77002520bf735b40913d0526aec0a8270996cd4738be"
+    },
+    {
+      "path": "assets/environment/buildings/barrosan_clanhold_tripo_model_basecolor.jpg",
+      "size": 192384,
+      "sha256": "a7442587083c1d5d96ac11398624e18327c077490deb946a58dda08d120cc68a"
+    },
+    {
+      "path": "assets/environment/buildings/barrosan_clanhold_tripo_model_basecolor.jpg.import",
+      "size": 949,
+      "sha256": "1aa597701a5b1dda3b9cfc16f7592d835f3723a71246b017c961c49d282202dd"
+    },
+    {
+      "path": "assets/environment/buildings/barrosan_clanhold_tripo_model_normal.jpg",
+      "size": 27448,
+      "sha256": "21dee489e2735f1a977b396677f162c3ad432bb404a2b5fe6c102911e373999c"
+    },
+    {
+      "path": "assets/environment/buildings/barrosan_clanhold_tripo_model_normal.jpg.import",
+      "size": 940,
+      "sha256": "87a603344466ab63c2cb474df207a556e4591bdbebc23cb9655912e3e846a9ec"
+    },
+    {
+      "path": "assets/environment/buildings/barrosan_clanhold_tripo_model_rm.jpg",
+      "size": 162515,
+      "sha256": "db3018357394effeb47d90a0192288ad1bca186185caf35c183c6577d1a353c5"
+    },
+    {
+      "path": "assets/environment/buildings/barrosan_clanhold_tripo_model_rm.jpg.import",
+      "size": 929,
+      "sha256": "56c3f3a75a22a7c2f42d69a7c6b22cb8e56555bb6dd62d4814bb0f663270d309"
+    },
+    {
+      "path": "assets/environment/buildings/barrosan_clanhold.glb",
+      "size": 641928,
+      "sha256": "9e2e74a5533f4133f8dfdec50997925d031d817b2b499848dd663db9836734e1"
+    },
+    {
+      "path": "assets/environment/buildings/barrosan_clanhold.glb.import",
+      "size": 927,
+      "sha256": "2d2add0d18e01a3f5b4055c1eb1c0aff1a80c4e03c5ff5e7692a64f87daf7ebd"
+    },
+    {
+      "path": "assets/environment/buildings/barrosan_iron_forge_tripo_model_basecolor.jpg",
+      "size": 169422,
+      "sha256": "6830dd45b1bfc4190e21983f651b63096afb89dee8fecc40fd402e11b90c5fbf"
+    },
+    {
+      "path": "assets/environment/buildings/barrosan_iron_forge_tripo_model_basecolor.jpg.import",
+      "size": 956,
+      "sha256": "1aab55235121d5ebacc6892fedc6586e3d69f9317f8442d3d31205aa5036ff9e"
+    },
+    {
+      "path": "assets/environment/buildings/barrosan_iron_forge_tripo_model_normal.jpg",
+      "size": 59884,
+      "sha256": "1d9c39929a76834fd04a16a8e99743029de8b2faffb9219e30e4fa776412af2c"
+    },
+    {
+      "path": "assets/environment/buildings/barrosan_iron_forge_tripo_model_normal.jpg.import",
+      "size": 946,
+      "sha256": "761d4fcccff9f9537ebe656c0d5a8d0dcaa2ec61496a4131c7e44545d38883d6"
+    },
+    {
+      "path": "assets/environment/buildings/barrosan_iron_forge_tripo_model_rm.jpg",
+      "size": 45177,
+      "sha256": "f48fcc20f7d8f46b79ff1cb267ae211224c9fbbc6cac7ea59b14aac6fe021808"
+    },
+    {
+      "path": "assets/environment/buildings/barrosan_iron_forge_tripo_model_rm.jpg.import",
+      "size": 935,
+      "sha256": "f7615d6c6628a45a18b6fb69c97e68aa04e303d8c69209d4e676524d628cb76f"
+    },
+    {
+      "path": "assets/environment/buildings/barrosan_iron_forge.glb",
+      "size": 538056,
+      "sha256": "1a20b9b54a2ed968a11e883f0c2fd5977ea42046a2d6846a7949316261cdb5c6"
+    },
+    {
+      "path": "assets/environment/buildings/barrosan_iron_forge.glb.import",
+      "size": 933,
+      "sha256": "e8ece798e5643afa426ddb487262dbec47296476e1ade30dc5019c67be1cdef3"
+    },
+    {
+      "path": "assets/environment/buildings/barrosan_war_hall_tripo_model_basecolor.jpg",
+      "size": 155356,
+      "sha256": "2e14714971900bab0cd08b248fd65541faa4eb1c3038bc681e1b0e24e92fd162"
+    },
+    {
+      "path": "assets/environment/buildings/barrosan_war_hall_tripo_model_basecolor.jpg.import",
+      "size": 950,
+      "sha256": "d2dddcfc372db1afd03864f2639ed5e595f7a324b2943bb22982ee95fc6d701b"
+    },
+    {
+      "path": "assets/environment/buildings/barrosan_war_hall_tripo_model_normal.jpg",
+      "size": 28112,
+      "sha256": "d689b9c1d1d0eec0af4de2e11d19de5a5b687a6076a114cf74c8b771f391739e"
+    },
+    {
+      "path": "assets/environment/buildings/barrosan_war_hall_tripo_model_normal.jpg.import",
+      "size": 941,
+      "sha256": "d5a8460071f0352caebb7aaa0a8d12e9d748f02750a0401adc0e03ab4fc2e043"
+    },
+    {
+      "path": "assets/environment/buildings/barrosan_war_hall_tripo_model_rm.jpg",
+      "size": 190089,
+      "sha256": "21b268614c29eb503d346dd00855c892731cc311ff8c30cc05bac36ef545ba21"
+    },
+    {
+      "path": "assets/environment/buildings/barrosan_war_hall_tripo_model_rm.jpg.import",
+      "size": 928,
+      "sha256": "3cd71d24bde70df81af9f19f90e581b5ac8ae98f4fdbaab401eef29a60c9c663"
+    },
+    {
+      "path": "assets/environment/buildings/barrosan_war_hall.glb",
+      "size": 618888,
+      "sha256": "a4b2c07f2ae9c61496d44ceb98d8d6e376be57792431ea440ff564a1c293f8b8"
+    },
+    {
+      "path": "assets/environment/buildings/barrosan_war_hall.glb.import",
+      "size": 927,
+      "sha256": "c6afa08cdbdbd1c6950484b12984b6380dd6757cba814b7e974f612520d55762"
+    },
+    {
+      "path": "assets/environment/buildings/barrosan_watchtower_tripo_model_basecolor.jpg",
+      "size": 192384,
+      "sha256": "a7442587083c1d5d96ac11398624e18327c077490deb946a58dda08d120cc68a"
+    },
+    {
+      "path": "assets/environment/buildings/barrosan_watchtower_tripo_model_basecolor.jpg.import",
+      "size": 955,
+      "sha256": "a602b78d8389afaa45aedbdc05ea5a99a7b3354e56bf03a0f36a457e7ed7842d"
+    },
+    {
+      "path": "assets/environment/buildings/barrosan_watchtower_tripo_model_normal.jpg",
+      "size": 27448,
+      "sha256": "21dee489e2735f1a977b396677f162c3ad432bb404a2b5fe6c102911e373999c"
+    },
+    {
+      "path": "assets/environment/buildings/barrosan_watchtower_tripo_model_normal.jpg.import",
+      "size": 947,
+      "sha256": "48a93269a55d17b9586c3ac2ec8a8375e3a18f26870cf7b86b1c4a3bf8cf4a6c"
+    },
+    {
+      "path": "assets/environment/buildings/barrosan_watchtower_tripo_model_rm.jpg",
+      "size": 162515,
+      "sha256": "db3018357394effeb47d90a0192288ad1bca186185caf35c183c6577d1a353c5"
+    },
+    {
+      "path": "assets/environment/buildings/barrosan_watchtower_tripo_model_rm.jpg.import",
+      "size": 934,
+      "sha256": "ed698c9567f9bc838302e5b4619fa2a8f9cad65efed70a9746323da349f095ba"
+    },
+    {
+      "path": "assets/environment/buildings/barrosan_watchtower.glb",
+      "size": 641928,
+      "sha256": "9e2e74a5533f4133f8dfdec50997925d031d817b2b499848dd663db9836734e1"
+    },
+    {
+      "path": "assets/environment/buildings/barrosan_watchtower.glb.import",
+      "size": 933,
+      "sha256": "079afc82b73b696e8a13a291243d227586a2489742804c8eed7ee31f91eac770"
+    },
+    {
+      "path": "assets/environment/buildings/frostborn_mead_hall_tripo_model_basecolor.jpg",
+      "size": 255612,
+      "sha256": "6c57686b18e9fc417f1a2a5381e4b41958440fa7531404a94107de4a7c3945ea"
+    },
+    {
+      "path": "assets/environment/buildings/frostborn_mead_hall_tripo_model_basecolor.jpg.import",
+      "size": 956,
+      "sha256": "5b7b521d614075936c31d4059d444da6b62377cf3686f8c1faa94ca7741c10c3"
+    },
+    {
+      "path": "assets/environment/buildings/frostborn_mead_hall_tripo_model_normal.jpg",
+      "size": 55407,
+      "sha256": "9470606b8fef76df2b85b0fd315e5924795697ec394a49ca8f3e3b22a3708ad9"
+    },
+    {
+      "path": "assets/environment/buildings/frostborn_mead_hall_tripo_model_normal.jpg.import",
+      "size": 947,
+      "sha256": "f932c0402394110490df5bc14d08542adc8d01120a6294b7149280f59d455952"
+    },
+    {
+      "path": "assets/environment/buildings/frostborn_mead_hall_tripo_model_rm.jpg",
+      "size": 149608,
+      "sha256": "ca574393b6b76d84212a215e70f6d53060ab9d7320695a0b9679e3441b2c338f"
+    },
+    {
+      "path": "assets/environment/buildings/frostborn_mead_hall_tripo_model_rm.jpg.import",
+      "size": 934,
+      "sha256": "b162db3528c0fcfbd7b7d157dc2ca582899ba3eb03be97bf62b1e856bc7dc8e4"
+    },
+    {
+      "path": "assets/environment/buildings/frostborn_mead_hall.glb",
+      "size": 686212,
+      "sha256": "e33c2fa8affba9752e1db374ba616e6c9b8b8ff2f4b95143d0dbdd90d3dbb9ed"
+    },
+    {
+      "path": "assets/environment/buildings/frostborn_mead_hall.glb.import",
+      "size": 933,
+      "sha256": "62766dec6210bda90feab73d14c6973f77263af3d7e8da26377244e3081d569d"
+    },
+    {
+      "path": "assets/environment/buildings/grimtusk_stronghold_tripo_model_basecolor.jpg",
+      "size": 184083,
+      "sha256": "32edaf060d6fcf9edf5ae510f184442b2d19c370533858156b7cbf8f09aed220"
+    },
+    {
+      "path": "assets/environment/buildings/grimtusk_stronghold_tripo_model_basecolor.jpg.import",
+      "size": 956,
+      "sha256": "994800dd4291f7f3707ddca4d2369b72c395394703a723fd25023d35827757fe"
+    },
+    {
+      "path": "assets/environment/buildings/grimtusk_stronghold_tripo_model_normal.jpg",
+      "size": 50005,
+      "sha256": "5a712e558be28c3a8b96b83e776e3eb4960a75b5baa0f9c69bc1d7c97d044975"
+    },
+    {
+      "path": "assets/environment/buildings/grimtusk_stronghold_tripo_model_normal.jpg.import",
+      "size": 947,
+      "sha256": "c4e8bab93fbf307c51bba29030037b1a67648e443cef4d148d775543bb05f97a"
+    },
+    {
+      "path": "assets/environment/buildings/grimtusk_stronghold_tripo_model_rm.jpg",
+      "size": 161288,
+      "sha256": "567e9fd0c6af2918ba22033504e60805082e28401af826590107579849a46b12"
+    },
+    {
+      "path": "assets/environment/buildings/grimtusk_stronghold_tripo_model_rm.jpg.import",
+      "size": 935,
+      "sha256": "36c82d211fe598d7794ed24decbc13ca25deba37cc96d30bd4c532734cd96c83"
+    },
+    {
+      "path": "assets/environment/buildings/grimtusk_stronghold.glb",
+      "size": 674780,
+      "sha256": "c06984b8703409eeef901ae02adb23e7fb600739cbcea71281274acfaec7e033"
+    },
+    {
+      "path": "assets/environment/buildings/grimtusk_stronghold.glb.import",
+      "size": 933,
+      "sha256": "3d96e463f8eb92ddbac16639be348656a2a0935e980e15600207657dac03853e"
+    },
+    {
+      "path": "assets/environment/buildings/hollow_necropolis_tripo_model_basecolor.jpg",
+      "size": 229871,
+      "sha256": "46f9c9538e9778e691e26b45a15bf61f236327743e2be8ed01de0fcda54f2e63"
+    },
+    {
+      "path": "assets/environment/buildings/hollow_necropolis_tripo_model_basecolor.jpg.import",
+      "size": 950,
+      "sha256": "f0bf5000a190a16167760152a18f0b65761d9e9ce8987dc8509b3595ea32f429"
+    },
+    {
+      "path": "assets/environment/buildings/hollow_necropolis_tripo_model_normal.jpg",
+      "size": 43181,
+      "sha256": "ced741246b6b8fa6c76dfb112d072acfc049a094ca38705846dbfe7c3ba17868"
+    },
+    {
+      "path": "assets/environment/buildings/hollow_necropolis_tripo_model_normal.jpg.import",
+      "size": 941,
+      "sha256": "c76e66adc96b464ff34ea1e04b8e830018f4de10e90d62a98f27e445455df896"
+    },
+    {
+      "path": "assets/environment/buildings/hollow_necropolis_tripo_model_rm.jpg",
+      "size": 112870,
+      "sha256": "607ed045716d4c8c3eecd6fd0196035f882de47598d054b5cde2b4b5ec77e554"
+    },
+    {
+      "path": "assets/environment/buildings/hollow_necropolis_tripo_model_rm.jpg.import",
+      "size": 929,
+      "sha256": "587564799032c77fc6c1aa0a40a24cdbbf6f98d9986a23ca6dbf0f70d6a9c1e0"
+    },
+    {
+      "path": "assets/environment/buildings/hollow_necropolis.glb",
+      "size": 659928,
+      "sha256": "d7de066b617a4bbc5d75ca9c9a7bb43c7e22cbe3ed4e9e82a7ce94831ac1c3c5"
+    },
+    {
+      "path": "assets/environment/buildings/hollow_necropolis.glb.import",
+      "size": 927,
+      "sha256": "f1f3149bdb3acb73f058ad1b306245e46bd3ca970b30bd94dc3f1461965d7203"
+    },
+    {
+      "path": "assets/environment/buildings/karak_hold_tripo_model_basecolor.jpg",
+      "size": 178283,
+      "sha256": "0db48e1d7f52209cd9cab24cf2e23f5164a25c4e547f2afc532fe5663e8791d4"
+    },
+    {
+      "path": "assets/environment/buildings/karak_hold_tripo_model_basecolor.jpg.import",
+      "size": 929,
+      "sha256": "ba67d32d958d5d68b21ef3a59cd0852eb779a4a2678d4b10fd3309efce5e344c"
+    },
+    {
+      "path": "assets/environment/buildings/karak_hold_tripo_model_normal.jpg",
+      "size": 31539,
+      "sha256": "8277a002f103d8401be71241ba448b3e5b10ea27ee1f6bbb41e7d41bc412e1f3"
+    },
+    {
+      "path": "assets/environment/buildings/karak_hold_tripo_model_normal.jpg.import",
+      "size": 919,
+      "sha256": "3ef1083a9c5613ef31adfe9517435aad40a89e8568e92c3482603c53957402b8"
+    },
+    {
+      "path": "assets/environment/buildings/karak_hold_tripo_model_rm.jpg",
+      "size": 125469,
+      "sha256": "af90d19872da51f5495f10b27f59714a83c3a3d5c045ea8c33c54c0ba7d5d002"
+    },
+    {
+      "path": "assets/environment/buildings/karak_hold_tripo_model_rm.jpg.import",
+      "size": 908,
+      "sha256": "d7c68477b631642e1086b9539eb8f82e1d57598ac8dab69bd3dff16b8bdaf59b"
+    },
+    {
+      "path": "assets/environment/buildings/karak_hold.glb",
+      "size": 424732,
+      "sha256": "ab18db4d3d8b33b95e9b8be82f02727d5c5dad413492b6a80cbd454db13a6ce3"
+    },
+    {
+      "path": "assets/environment/buildings/karak_hold.glb.import",
+      "size": 906,
+      "sha256": "a861c1d7ea1ac938c84ad43d0f565af0486892855f2cf6c752d93e6ebe127e29"
+    },
+    {
+      "path": "assets/environment/buildings/lioraen_bloom_spire_tripo_model_basecolor.jpg",
+      "size": 215879,
+      "sha256": "40ce86714f63662a8dd663e0c9e81d320202b9e28bc0764566798792dfa7a365"
+    },
+    {
+      "path": "assets/environment/buildings/lioraen_bloom_spire_tripo_model_basecolor.jpg.import",
+      "size": 955,
+      "sha256": "38db68f2e6f5b0b3d97ea4fbf0ac491479cf831cbe5c67559ebe2bea142fb404"
+    },
+    {
+      "path": "assets/environment/buildings/lioraen_bloom_spire_tripo_model_normal.jpg",
+      "size": 50863,
+      "sha256": "0d23859bac5a25399d22aec591fa95f4ac185d502ca577c95ac163e1ac25c5ad"
+    },
+    {
+      "path": "assets/environment/buildings/lioraen_bloom_spire_tripo_model_normal.jpg.import",
+      "size": 947,
+      "sha256": "ceb7a0d8c64c50a19e7047685b66fc2d62b803e174d54e5bb173fa4ccb680537"
+    },
+    {
+      "path": "assets/environment/buildings/lioraen_bloom_spire_tripo_model_rm.jpg",
+      "size": 112612,
+      "sha256": "69acbfc94f209c413edfc215fcae67ae4d1308017e84b4ccbde38ffcbc7fe35d"
+    },
+    {
+      "path": "assets/environment/buildings/lioraen_bloom_spire_tripo_model_rm.jpg.import",
+      "size": 934,
+      "sha256": "deabd85e120e80c727d509cc5598be30087eb907d2565c08a64502cb4ade465f"
+    },
+    {
+      "path": "assets/environment/buildings/lioraen_bloom_spire.glb",
+      "size": 646316,
+      "sha256": "d54027f63a7de0e996b6890a9933b70b20a6996a25d55024ecc1b6a67d5f5605"
+    },
+    {
+      "path": "assets/environment/buildings/lioraen_bloom_spire.glb.import",
+      "size": 933,
+      "sha256": "990a9bc3f6388a9180c16e05c1bfdaed4fa363f7f0f030aeda6f7648620365a2"
+    },
+    {
+      "path": "assets/environment/buildings/lioraen_groveheart_tripo_model_basecolor.jpg",
+      "size": 157699,
+      "sha256": "3f9a0ec7b5160e3e5a011add6faa36d8800b70e96f9cbaf6f14a500e306d0e15"
+    },
+    {
+      "path": "assets/environment/buildings/lioraen_groveheart_tripo_model_basecolor.jpg.import",
+      "size": 952,
+      "sha256": "a3f076455896cd565433a6347b117d52f2bd5431ec2141dcc5046fe694748484"
+    },
+    {
+      "path": "assets/environment/buildings/lioraen_groveheart_tripo_model_normal.jpg",
+      "size": 22535,
+      "sha256": "8c5bdfe9deb2c8483487f87d9791b87f1b31f6715107c6359c9cb001ca44d647"
+    },
+    {
+      "path": "assets/environment/buildings/lioraen_groveheart_tripo_model_normal.jpg.import",
+      "size": 944,
+      "sha256": "d07245416a7a571016da78c00f5a815d9970ccf99616d484a537cbfa0872a650"
+    },
+    {
+      "path": "assets/environment/buildings/lioraen_groveheart_tripo_model_rm.jpg",
+      "size": 108932,
+      "sha256": "a9284e56da164c31f43f77a4c8019fcb7f14b671bbe976dbaf38393cad59f501"
+    },
+    {
+      "path": "assets/environment/buildings/lioraen_groveheart_tripo_model_rm.jpg.import",
+      "size": 932,
+      "sha256": "1f69f05c334d188cb747d0afe95ae0c180ae922898bdf8df5dcdc8bee77803e1"
+    },
+    {
+      "path": "assets/environment/buildings/lioraen_groveheart.glb",
+      "size": 565284,
+      "sha256": "76e5ae6b1df00d4f4e10db88cff2cc09cbf49c1a80b5015c6a04d67ed6baf027"
+    },
+    {
+      "path": "assets/environment/buildings/lioraen_groveheart.glb.import",
+      "size": 930,
+      "sha256": "118eaa409063c50accc5e33126a0a22ba40ee1b473fb44adab2c906fa69c510a"
+    },
+    {
+      "path": "assets/environment/buildings/lioraen_lifewell_tripo_model_basecolor.jpg",
+      "size": 243616,
+      "sha256": "46754bb169941e3f8b04cc1e137e40e13263beddaa57962f0dcf70756fefc8d6"
+    },
+    {
+      "path": "assets/environment/buildings/lioraen_lifewell_tripo_model_basecolor.jpg.import",
+      "size": 947,
+      "sha256": "a7d0128bc04c40628135da28a5e6e8504a852572be06b765af7dfb0dbbf24c7e"
+    },
+    {
+      "path": "assets/environment/buildings/lioraen_lifewell_tripo_model_normal.jpg",
+      "size": 79511,
+      "sha256": "68d54b8f34ef5cfc64c82650507cfc91663e39607f3e67a35944152077fda595"
+    },
+    {
+      "path": "assets/environment/buildings/lioraen_lifewell_tripo_model_normal.jpg.import",
+      "size": 938,
+      "sha256": "84d3c4fe8487b247db2420e3cfc40710ce020f15320157628545e6725543095f"
+    },
+    {
+      "path": "assets/environment/buildings/lioraen_lifewell_tripo_model_rm.jpg",
+      "size": 61417,
+      "sha256": "38201ce8d09ac21ade96cbbd0383090381dc7de1bfb1c0ef789fe92d425084c9"
+    },
+    {
+      "path": "assets/environment/buildings/lioraen_lifewell_tripo_model_rm.jpg.import",
+      "size": 926,
+      "sha256": "a9e0d4eb858c0612a1e76f75d07f03ec51441f6a422a8537d2b24d111d67776c"
+    },
+    {
+      "path": "assets/environment/buildings/lioraen_lifewell.glb",
+      "size": 665512,
+      "sha256": "379d0102011859f65b1a7a549528c912bb4475f1afd7b5f069b1c3a11c34cba5"
+    },
+    {
+      "path": "assets/environment/buildings/lioraen_lifewell.glb.import",
+      "size": 924,
+      "sha256": "70419d9e294e44dde3fe1c5ded068193650c6adaee06263832e39ec5c1f955a1"
+    },
+    {
+      "path": "assets/environment/buildings/lioraen_spirit_glade_tripo_model_basecolor.jpg",
+      "size": 140567,
+      "sha256": "0580f3eadf0310bc70b66c75c0071f39600713b69ce4ac1a09b3ad64ab2a81ee"
+    },
+    {
+      "path": "assets/environment/buildings/lioraen_spirit_glade_tripo_model_basecolor.jpg.import",
+      "size": 959,
+      "sha256": "ce6993c85ad850f313f712786a849c1731c05f4b3bfea0ee77ef8e3e7df8f037"
+    },
+    {
+      "path": "assets/environment/buildings/lioraen_spirit_glade_tripo_model_normal.jpg",
+      "size": 16108,
+      "sha256": "036c48deecf8fe1aaa9dca68d7571e975e5708540e264e48cf3029fe2b7b6182"
+    },
+    {
+      "path": "assets/environment/buildings/lioraen_spirit_glade_tripo_model_normal.jpg.import",
+      "size": 950,
+      "sha256": "b47334c1150f0d73bc519e0a35d83f0da96ef3838674061a94589a5b83256152"
+    },
+    {
+      "path": "assets/environment/buildings/lioraen_spirit_glade_tripo_model_rm.jpg",
+      "size": 122962,
+      "sha256": "ad61376e01e822785721b36c99809f1c820a0a51f96d9fbf389412baa7b74deb"
+    },
+    {
+      "path": "assets/environment/buildings/lioraen_spirit_glade_tripo_model_rm.jpg.import",
+      "size": 938,
+      "sha256": "f119d5721719f215e539b1b7e662b1dfce9ba1a7d1a342188051ba494caf312b"
+    },
+    {
+      "path": "assets/environment/buildings/lioraen_spirit_glade.glb",
+      "size": 403432,
+      "sha256": "8a27bbab798d3cd4876880d2f653a319e6160ce8f6eed5993bb3eedfe1fe905d"
+    },
+    {
+      "path": "assets/environment/buildings/lioraen_spirit_glade.glb.import",
+      "size": 936,
+      "sha256": "fa4572ac3db76bf317010a56acd0dc4d6a3198f95c485003f1c56f4074de1c74"
+    },
+    {
+      "path": "assets/environment/buildings/lioraen_thornhall_tripo_model_basecolor.jpg",
+      "size": 263682,
+      "sha256": "2cbd9c06ee04472f5182cd711da27c1484e1390c2581359afd0309df82177560"
+    },
+    {
+      "path": "assets/environment/buildings/lioraen_thornhall_tripo_model_basecolor.jpg.import",
+      "size": 949,
+      "sha256": "edf60eca043aa410076f05fca162f282dfa2d4cfac9b5d7d4ddd4f05dc83291f"
+    },
+    {
+      "path": "assets/environment/buildings/lioraen_thornhall_tripo_model_normal.jpg",
+      "size": 120895,
+      "sha256": "27224008edf48a3d36cdd54a208d9514fb7a1bde8cdde31fd4bbd8f2e79eb980"
+    },
+    {
+      "path": "assets/environment/buildings/lioraen_thornhall_tripo_model_normal.jpg.import",
+      "size": 941,
+      "sha256": "7f24cac086514b3a22361c19c54b5840154c48e26a9b228df2eb5f2cd03a0d65"
+    },
+    {
+      "path": "assets/environment/buildings/lioraen_thornhall_tripo_model_rm.jpg",
+      "size": 48995,
+      "sha256": "c049525b8b3a3e98b570818b8afc86eb5a88ecade0a478cb9341eacfc659e790"
+    },
+    {
+      "path": "assets/environment/buildings/lioraen_thornhall_tripo_model_rm.jpg.import",
+      "size": 928,
+      "sha256": "c65c8a1311d97aeb1a38e450a6bca34077addbbccc2232274a65a5c9a10308e6"
+    },
+    {
+      "path": "assets/environment/buildings/lioraen_thornhall.glb",
+      "size": 725444,
+      "sha256": "83784d63e43e85c17b8d6658542d024e9a4742735f053c63909e7fd75034429f"
+    },
+    {
+      "path": "assets/environment/buildings/lioraen_thornhall.glb.import",
+      "size": 927,
+      "sha256": "66eee91f761ba3e4ace07b89d1f13f07825d778db2f9b90531ea7fdb2434a542"
+    },
+    {
+      "path": "assets/environment/buildings/sunspear_palace_tripo_model_basecolor.jpg",
+      "size": 184718,
+      "sha256": "f141e3944357c11fdb4a614988d6864f8b15a228b3fbb1c173e2a101a05d7042"
+    },
+    {
+      "path": "assets/environment/buildings/sunspear_palace_tripo_model_basecolor.jpg.import",
+      "size": 944,
+      "sha256": "c377e295b50b6f8afa87d40ec787a12c6de48a31408e9ab6aa5f922b71ebc7dd"
+    },
+    {
+      "path": "assets/environment/buildings/sunspear_palace_tripo_model_normal.jpg",
+      "size": 115626,
+      "sha256": "dd02cde63a9572b8d1ec0df3c5b670d8b764d193bc4361b65c8f9d6a42c3431f"
+    },
+    {
+      "path": "assets/environment/buildings/sunspear_palace_tripo_model_normal.jpg.import",
+      "size": 935,
+      "sha256": "577063ee4c8c8101cecb2a07e0cfae94279c6e4cb1697d8d23dca5f5bf64697b"
+    },
+    {
+      "path": "assets/environment/buildings/sunspear_palace_tripo_model_rm.jpg",
+      "size": 75396,
+      "sha256": "4b3f4dabc7523b3e45e8a3b23cd6626bb5edad1228a5e3db9341fbabb717245b"
+    },
+    {
+      "path": "assets/environment/buildings/sunspear_palace_tripo_model_rm.jpg.import",
+      "size": 923,
+      "sha256": "98dd634cf8b11d7f4dad758d6e22511f1a93235d84c57713ca7de813bd385493"
+    },
+    {
+      "path": "assets/environment/buildings/sunspear_palace.glb",
+      "size": 632252,
+      "sha256": "6350b5219b6a9e4a5a256952435620639ab1b72b65510c5fc0d6c0b73d183c3c"
+    },
+    {
+      "path": "assets/environment/buildings/sunspear_palace.glb.import",
+      "size": 921,
+      "sha256": "70c634d3d81124eed412255f48246bd54a71791f3ddb2c2c34e91fee90a1ae83"
+    },
+    {
+      "path": "assets/environment/buildings/sylvan_court_tripo_model_basecolor.jpg",
+      "size": 222374,
+      "sha256": "7143f69d848b52029c886171f72a161b04ffae3a1a7d30b0b5206e7e5826c42e"
+    },
+    {
+      "path": "assets/environment/buildings/sylvan_court_tripo_model_basecolor.jpg.import",
+      "size": 934,
+      "sha256": "e77cac52e02c53e1f27d8b2c6a0b1d4ae4907c25ea8c87b92612582e9496c27b"
+    },
+    {
+      "path": "assets/environment/buildings/sylvan_court_tripo_model_normal.jpg",
+      "size": 74684,
+      "sha256": "09543486dc8a64abc3993a4118f5e20ef618eeed53178a6c64e9f4eaaf063adf"
+    },
+    {
+      "path": "assets/environment/buildings/sylvan_court_tripo_model_normal.jpg.import",
+      "size": 926,
+      "sha256": "102710fb79aea2b47e33e830dab55039afe30d33fa0f03dd9a83d05fc0d3c775"
+    },
+    {
+      "path": "assets/environment/buildings/sylvan_court_tripo_model_rm.jpg",
+      "size": 74767,
+      "sha256": "72cb82f030022e22964047d4eef7453538634c04b6ee1519358bf4a67519d132"
+    },
+    {
+      "path": "assets/environment/buildings/sylvan_court_tripo_model_rm.jpg.import",
+      "size": 914,
+      "sha256": "027e2bef1af9ce2023bea2edf0394b47dc42db91a0dcdd6ea8345615cf9dc668"
+    },
+    {
+      "path": "assets/environment/buildings/sylvan_court.glb",
+      "size": 633872,
+      "sha256": "96afb00efe01d4abe099ad771143260e43cbd25be5b30c469ae91e384113f84d"
+    },
+    {
+      "path": "assets/environment/buildings/sylvan_court.glb.import",
+      "size": 912,
+      "sha256": "592716a65111c1b77d21fe669ae6e393d106f1f6bcb0783b091f59fefea2ee5b"
+    },
+    {
+      "path": "assets/environment/buildings/vorthak_ash_forge_tripo_model_basecolor.jpg",
+      "size": 208696,
+      "sha256": "3b35a3f0ff8de725e7e5462a486424fc38bec1804e47c2f24dba08dfe22531fc"
+    },
+    {
+      "path": "assets/environment/buildings/vorthak_ash_forge_tripo_model_basecolor.jpg.import",
+      "size": 950,
+      "sha256": "c94c050e4a312b2a4156161105f52a475954cf3e82cf5bbb62090faee7de28c4"
+    },
+    {
+      "path": "assets/environment/buildings/vorthak_ash_forge_tripo_model_normal.jpg",
+      "size": 65691,
+      "sha256": "a21e21d605003c6aaee826b624adf73fcfa768dddb7856a11891a6468d3890bf"
+    },
+    {
+      "path": "assets/environment/buildings/vorthak_ash_forge_tripo_model_normal.jpg.import",
+      "size": 941,
+      "sha256": "7fb84f2d155c8d3bbf3575c5b02d54e21c8d9c4f15e9291c79deaf25a8bb202a"
+    },
+    {
+      "path": "assets/environment/buildings/vorthak_ash_forge_tripo_model_rm.jpg",
+      "size": 138662,
+      "sha256": "b4fceaf09a0fc0f8399dae3f37f6efe9f51b716246f1b7dba244eb446e5a9c65"
+    },
+    {
+      "path": "assets/environment/buildings/vorthak_ash_forge_tripo_model_rm.jpg.import",
+      "size": 929,
+      "sha256": "bfb52853e5b4814ba8120c625e5b1d827d8d5e377a3b02b94290626548495880"
+    },
+    {
+      "path": "assets/environment/buildings/vorthak_ash_forge.glb",
+      "size": 688256,
+      "sha256": "29ef6384f1fd5d0d51f8e60f978f09c6888654dce0f2c660e63d200d159b7c43"
+    },
+    {
+      "path": "assets/environment/buildings/vorthak_ash_forge.glb.import",
+      "size": 927,
+      "sha256": "aaf5175bd4fcb6b92ad11966d813fc469c4aebcfc5d5cb8ffbff81af78f2204f"
+    },
+    {
+      "path": "assets/environment/buildings/vorthak_bone_barracks_tripo_model_basecolor.jpg",
+      "size": 126843,
+      "sha256": "fb96732aa971f5ae341ef5fc53925a1d9a897a293d67ee42c5eb1ab1692a9e40"
+    },
+    {
+      "path": "assets/environment/buildings/vorthak_bone_barracks_tripo_model_basecolor.jpg.import",
+      "size": 962,
+      "sha256": "e35aeddeec3e50939c31159671b69609a95d1754d77e1d2bf869193f72875410"
+    },
+    {
+      "path": "assets/environment/buildings/vorthak_bone_barracks_tripo_model_normal.jpg",
+      "size": 28296,
+      "sha256": "f91c8af31253d49828c1e03a380d3902cf8a46413c846fb515a2692472de9ab0"
+    },
+    {
+      "path": "assets/environment/buildings/vorthak_bone_barracks_tripo_model_normal.jpg.import",
+      "size": 953,
+      "sha256": "ed5c1e00cb77ba62fa5db6612bdc935177fec615ab837f896f6d064d03019a9c"
+    },
+    {
+      "path": "assets/environment/buildings/vorthak_bone_barracks_tripo_model_rm.jpg",
+      "size": 85765,
+      "sha256": "c53be8a2d483d76e3b22847f5d078f73ee1f06619c86e7875b6f83287c2073ab"
+    },
+    {
+      "path": "assets/environment/buildings/vorthak_bone_barracks_tripo_model_rm.jpg.import",
+      "size": 940,
+      "sha256": "e461ddf400e4a7aa22a2e3832fca0414a1435bc7a4bd2ffdec0a019841546ee9"
+    },
+    {
+      "path": "assets/environment/buildings/vorthak_bone_barracks.glb",
+      "size": 519756,
+      "sha256": "88ce32e8643db073de68403b1987d94795b03db25b6051a7e3c78ad26f1b4417"
+    },
+    {
+      "path": "assets/environment/buildings/vorthak_bone_barracks.glb.import",
+      "size": 939,
+      "sha256": "4878220432642d8fea660a48cfee64ca391b12411ba3c037fdcbf9446ffedd69"
+    },
+    {
+      "path": "assets/environment/buildings/vorthak_nighthold_tripo_model_basecolor.jpg",
+      "size": 167727,
+      "sha256": "6681ef3206bb4fafc1641cfefa71336a04790006ccb26c8da1a5efff4179d6ee"
+    },
+    {
+      "path": "assets/environment/buildings/vorthak_nighthold_tripo_model_basecolor.jpg.import",
+      "size": 950,
+      "sha256": "10606ddce30fd8484375f5fd3947eadc10b53e5decfa14b71f8b1d153c14266e"
+    },
+    {
+      "path": "assets/environment/buildings/vorthak_nighthold_tripo_model_normal.jpg",
+      "size": 68524,
+      "sha256": "0e32a01c5e72ad795ed2b882fdac3d08c856dcabb1ccbd80ec421e3be9f619fd"
+    },
+    {
+      "path": "assets/environment/buildings/vorthak_nighthold_tripo_model_normal.jpg.import",
+      "size": 941,
+      "sha256": "4dbfb8a3d65d925e3b64d6d4a5aa7273d111358ff80c2998d138090f0c90e4fa"
+    },
+    {
+      "path": "assets/environment/buildings/vorthak_nighthold_tripo_model_rm.jpg",
+      "size": 165627,
+      "sha256": "ab23305b2580091b478e6aa002e63e8e430ecaac0c0827b4d0971b7c617ed4a1"
+    },
+    {
+      "path": "assets/environment/buildings/vorthak_nighthold_tripo_model_rm.jpg.import",
+      "size": 929,
+      "sha256": "6bd44db698b62ca577cdca244117ab953264dab19e5fa76e55b642e43dc44ee5"
+    },
+    {
+      "path": "assets/environment/buildings/vorthak_nighthold.glb",
+      "size": 534120,
+      "sha256": "0a4d01724e5f2da524f27315fca1c740533b16b5947ca22c2bd1fb3650a9ab11"
+    },
+    {
+      "path": "assets/environment/buildings/vorthak_nighthold.glb.import",
+      "size": 927,
+      "sha256": "09336c40ee94b67eebfb218c45ab0df3912f444b9bfbd64feb7df83635f2df0d"
+    },
+    {
+      "path": "assets/environment/buildings/vorthak_rift_obelisk_tripo_model_basecolor.jpg",
+      "size": 191112,
+      "sha256": "9953e11c9e54f8d0d552859b17c24bebf24818d7750244c42bedae707f17c3ec"
+    },
+    {
+      "path": "assets/environment/buildings/vorthak_rift_obelisk_tripo_model_basecolor.jpg.import",
+      "size": 959,
+      "sha256": "79b3b0b97c4327876558f0559fe2a6123e6c938533939fc65da22f613cb651fb"
+    },
+    {
+      "path": "assets/environment/buildings/vorthak_rift_obelisk_tripo_model_normal.jpg",
+      "size": 31279,
+      "sha256": "ba64c4de02f8cfd291cfa4346d801ec376283272c70d4be26d2b3844543b8f5d"
+    },
+    {
+      "path": "assets/environment/buildings/vorthak_rift_obelisk_tripo_model_normal.jpg.import",
+      "size": 949,
+      "sha256": "cf80ca0f7f4312ce4a666c463216f5aa5ca7ffc871899a9a27d00a131533952c"
+    },
+    {
+      "path": "assets/environment/buildings/vorthak_rift_obelisk_tripo_model_rm.jpg",
+      "size": 119255,
+      "sha256": "e4ae5e3fceb09e51c4d92961a2977750f8b2bd7d0b50b3748a51f99b8ebc69c4"
+    },
+    {
+      "path": "assets/environment/buildings/vorthak_rift_obelisk_tripo_model_rm.jpg.import",
+      "size": 938,
+      "sha256": "0966ca3c361d23cdf226e63afcf7bc249692ce0e71e0d4c73e6065a2b28654ec"
+    },
+    {
+      "path": "assets/environment/buildings/vorthak_rift_obelisk.glb",
+      "size": 623364,
+      "sha256": "67b09d2739f9d7612c2e8104c007230d298390025f9dd9997737f2e1c569fbee"
+    },
+    {
+      "path": "assets/environment/buildings/vorthak_rift_obelisk.glb.import",
+      "size": 935,
+      "sha256": "3bc242aaca6d6c15e249136226f1dd94165f9439f129939bc803d695ba26a73f"
+    },
+    {
+      "path": "assets/environment/buildings/vorthak_warlock_spire_tripo_model_basecolor.jpg",
+      "size": 227100,
+      "sha256": "f089adaaae58475af9d4d19e85c1259f059bd6f0f13fe1ed04b864cfc8a9da97"
+    },
+    {
+      "path": "assets/environment/buildings/vorthak_warlock_spire_tripo_model_basecolor.jpg.import",
+      "size": 962,
+      "sha256": "ed51e4d4494e9e62e5f2d05c4e067f62ee1b75a1587de67c345a7c40eddd8c63"
+    },
+    {
+      "path": "assets/environment/buildings/vorthak_warlock_spire_tripo_model_normal.jpg",
+      "size": 38374,
+      "sha256": "87c124f81c25fae2a086e037b3ab6f6f1c4d85e0d36e2d5bd059923e1499c23b"
+    },
+    {
+      "path": "assets/environment/buildings/vorthak_warlock_spire_tripo_model_normal.jpg.import",
+      "size": 953,
+      "sha256": "265d0206615652a6ab1d0ddbfd4f2d5f853c0c5b6a4a189203d9e04289ac03b8"
+    },
+    {
+      "path": "assets/environment/buildings/vorthak_warlock_spire_tripo_model_rm.jpg",
+      "size": 168370,
+      "sha256": "640b935cdc9fe4f37929f8b87842c1fcf7ef8ca013863adaf069f9531193cef5"
+    },
+    {
+      "path": "assets/environment/buildings/vorthak_warlock_spire_tripo_model_rm.jpg.import",
+      "size": 941,
+      "sha256": "dbfc7a2a462d1b9623867ae1574202aafa3de79f8de52afe682888553933d885"
+    },
+    {
+      "path": "assets/environment/buildings/vorthak_warlock_spire.glb",
+      "size": 530648,
+      "sha256": "ad43221a77dd9985cac438cda21f2fc88a7e0eb55a9513176e423d254d44747b"
+    },
+    {
+      "path": "assets/environment/buildings/vorthak_warlock_spire.glb.import",
+      "size": 939,
+      "sha256": "549ece6bb13656e506efb77622359898e059c637a325a526fec6ce09ef1b2f8a"
+    },
+    {
+      "path": "assets/environment/buildings/wyldkin_denhold_tripo_model_basecolor.jpg",
+      "size": 195538,
+      "sha256": "cc3b3e76006628aee672802f064e6e2bbc81987a9be6a0e6d6c3e776f0e6c9da"
+    },
+    {
+      "path": "assets/environment/buildings/wyldkin_denhold_tripo_model_basecolor.jpg.import",
+      "size": 944,
+      "sha256": "94580898d6ebadd95156b80efa483985b431284d39d5563745ef6850af2cc1de"
+    },
+    {
+      "path": "assets/environment/buildings/wyldkin_denhold_tripo_model_normal.jpg",
+      "size": 34003,
+      "sha256": "dbd77fc6680204dc4e279e947363725f0db02baae878af4a8f6549a1f953907a"
+    },
+    {
+      "path": "assets/environment/buildings/wyldkin_denhold_tripo_model_normal.jpg.import",
+      "size": 934,
+      "sha256": "658cce8f6d330def7908a74ab2941eab799590e8a1398a70bb75c399af988412"
+    },
+    {
+      "path": "assets/environment/buildings/wyldkin_denhold_tripo_model_rm.jpg",
+      "size": 157391,
+      "sha256": "8895aaf80ecd97e19446b46ebd1ce743568cd926f66ab79a561f2686602fca9e"
+    },
+    {
+      "path": "assets/environment/buildings/wyldkin_denhold_tripo_model_rm.jpg.import",
+      "size": 922,
+      "sha256": "c4d685373304f913175d9404b952ac599a57457c143f08ea975b9b9a4a9c778a"
+    },
+    {
+      "path": "assets/environment/buildings/wyldkin_denhold.glb",
+      "size": 678892,
+      "sha256": "a2b64b7d60d9bcb7014e4950770e469ce4ca34f1ea898e7dd010c4880f286d3e"
+    },
+    {
+      "path": "assets/environment/buildings/wyldkin_denhold.glb.import",
+      "size": 920,
+      "sha256": "539039503ef8b5bf21d2d670841a2116cab15067705eb1a6423ce7bc4493299d"
+    },
+    {
+      "path": "assets/environment/rocks/gold_mine_lumevein_tripo_model_basecolor.jpg",
+      "size": 188020,
+      "sha256": "4b787b2ebf4c9c3f99139b51d88e681102e3024357f1a1a62f5a7287a8a798c8"
+    },
+    {
+      "path": "assets/environment/rocks/gold_mine_lumevein_tripo_model_basecolor.jpg.import",
+      "size": 949,
+      "sha256": "a9b1ab7feda4be917bba142b3eeff5dc6a2ee3e84ffc40c810ad1593deca080c"
+    },
+    {
+      "path": "assets/environment/rocks/gold_mine_lumevein_tripo_model_normal.jpg",
+      "size": 29568,
+      "sha256": "f7a0c29e469e9fcedce763e4559eb47dea6416a52a67226842460d5170ecc336"
+    },
+    {
+      "path": "assets/environment/rocks/gold_mine_lumevein_tripo_model_normal.jpg.import",
+      "size": 939,
+      "sha256": "d655705611d6e5682b761fa6b595f5d9952c16ac15b9283fa5e5e97dd7383e8d"
+    },
+    {
+      "path": "assets/environment/rocks/gold_mine_lumevein_tripo_model_rm.jpg",
+      "size": 130061,
+      "sha256": "a6a3a07a94eb16f7bc219cd32e6314f2e4352e7a5d8b9f023273b339ad191d82"
+    },
+    {
+      "path": "assets/environment/rocks/gold_mine_lumevein_tripo_model_rm.jpg.import",
+      "size": 928,
+      "sha256": "598a6e46dcf02f70dea87013baef5ac41d14377f59f0b2a8163338c55ee800e2"
+    },
+    {
+      "path": "assets/environment/rocks/gold_mine_lumevein.glb",
+      "size": 632636,
+      "sha256": "b48da668f2247f99024cee10ff557f8c40cd2f3f5d42df146955c7d70659862b"
+    },
+    {
+      "path": "assets/environment/rocks/gold_mine_lumevein.glb.import",
+      "size": 926,
+      "sha256": "dd482b7acf65263c21011775fb2b89faa75c8548afb3e04c0afd7748f61bd88d"
+    },
+    {
+      "path": "assets/environment/rocks/highland_rock_cluster_tripo_model_basecolor.jpg",
+      "size": 206582,
+      "sha256": "2a422822d364f7df8f3a76df9b6fc9b5df07dfbc27d3215043a6b6b69ded5460"
+    },
+    {
+      "path": "assets/environment/rocks/highland_rock_cluster_tripo_model_basecolor.jpg.import",
+      "size": 958,
+      "sha256": "344dbe7f7cff4dd5f698ced47fe8195b70d62a3b4437e8e78619ba6b20d6a5a7"
+    },
+    {
+      "path": "assets/environment/rocks/highland_rock_cluster_tripo_model_normal.jpg",
+      "size": 49722,
+      "sha256": "63e02c786341f0de043e74ed2cd448938f772eeb436a9b1dd225266c46ad0fcb"
+    },
+    {
+      "path": "assets/environment/rocks/highland_rock_cluster_tripo_model_normal.jpg.import",
+      "size": 948,
+      "sha256": "b38b855be697608395bd3ebc80ff3ecd1443340e473d0cc067023eb3e4d4616b"
+    },
+    {
+      "path": "assets/environment/rocks/highland_rock_cluster_tripo_model_rm.jpg",
+      "size": 69544,
+      "sha256": "efdb6d4811ed8e6c2be44667ca5c4919efb9427f646c707cc3bf76ab9a435bb1"
+    },
+    {
+      "path": "assets/environment/rocks/highland_rock_cluster_tripo_model_rm.jpg.import",
+      "size": 937,
+      "sha256": "dfa3ab8d7caaf0eb5f53e985248dd7ec548c5ac9f2bfa00810c89604ee277437"
+    },
+    {
+      "path": "assets/environment/rocks/highland_rock_cluster.glb",
+      "size": 622464,
+      "sha256": "4ae858de3c3919f7b03117178659fd58cdadca9e9909c7926c95ff1bea526162"
+    },
+    {
+      "path": "assets/environment/rocks/highland_rock_cluster.glb.import",
+      "size": 934,
+      "sha256": "35069787ab82cbc6ec3c110f06ae77a9f4ff595ad4cecc52648719ec45bbb2cb"
+    },
+    {
+      "path": "assets/environment/rocks/mossy_boulder_tripo_model_basecolor.jpg",
+      "size": 47342,
+      "sha256": "21708685ef23a47ba61b6e444fc653f18bf1f690afa9345278a4e213a680b204"
+    },
+    {
+      "path": "assets/environment/rocks/mossy_boulder_tripo_model_basecolor.jpg.import",
+      "size": 934,
+      "sha256": "beda32842c3d34b3614fba3262c7c5b90815686ee68952f26679c6457fa7f9ca"
+    },
+    {
+      "path": "assets/environment/rocks/mossy_boulder_tripo_model_normal.jpg",
+      "size": 15198,
+      "sha256": "06697639b2eccd10794cb6d0338bf6f84bfda44523568489300066e4690841c9"
+    },
+    {
+      "path": "assets/environment/rocks/mossy_boulder_tripo_model_normal.jpg.import",
+      "size": 925,
+      "sha256": "f4d69758f14200e6e117904f2deebcd9f0674297fd1b64d713b25a0d8e386a4d"
+    },
+    {
+      "path": "assets/environment/rocks/mossy_boulder_tripo_model_rm.jpg",
+      "size": 24768,
+      "sha256": "efc3c12607e6302bdfaad5b015ccc94ad661f3c20db42a1880e394614f48b1d4"
+    },
+    {
+      "path": "assets/environment/rocks/mossy_boulder_tripo_model_rm.jpg.import",
+      "size": 913,
+      "sha256": "62d01bae22ea3c7cfd25fe556ce0bf6f90b4f2650ccda1fdc7982d3bef754577"
+    },
+    {
+      "path": "assets/environment/rocks/mossy_boulder.glb",
+      "size": 292864,
+      "sha256": "04ad073ba7cf30a50351b1053f1a25ea2e41d941b3c93d5f076b5a558646cb81"
+    },
+    {
+      "path": "assets/environment/rocks/mossy_boulder.glb.import",
+      "size": 910,
+      "sha256": "9db00a4773f1a9f71e72506007481999d40b106194b8c691a4fb5d70a40e43c6"
+    },
+    {
+      "path": "assets/environment/structures/ancient_ruin_pillar_tripo_model_basecolor.jpg",
+      "size": 135341,
+      "sha256": "a6bd5b7f2a378a48e595958efee191cfa8eba1ccda2ac667bc917a78f9412a55"
+    },
+    {
+      "path": "assets/environment/structures/ancient_ruin_pillar_tripo_model_basecolor.jpg.import",
+      "size": 957,
+      "sha256": "f1f50da07f49824fd04e071642dcabe8990f7362db00124624881b5c0c3ad659"
+    },
+    {
+      "path": "assets/environment/structures/ancient_ruin_pillar_tripo_model_normal.jpg",
+      "size": 44635,
+      "sha256": "461cbd72b412ac5b81a9477e78af5bb85cd45f359584c371e3ee5293b774a61f"
+    },
+    {
+      "path": "assets/environment/structures/ancient_ruin_pillar_tripo_model_normal.jpg.import",
+      "size": 948,
+      "sha256": "b4bced4ae474fbe85dac818926dd18d9a2a56f82e452922db9bd7c955c7de3e0"
+    },
+    {
+      "path": "assets/environment/structures/ancient_ruin_pillar_tripo_model_rm.jpg",
+      "size": 36361,
+      "sha256": "ea336dc1d780b877f9818e6f6939def4b8cd37669a687a0e05e5db7c17561df8"
+    },
+    {
+      "path": "assets/environment/structures/ancient_ruin_pillar_tripo_model_rm.jpg.import",
+      "size": 935,
+      "sha256": "1a4854d8bcc162171fcc832e23bd652e5dcdccca5cabfd89c80a9f00a3a8a752"
+    },
+    {
+      "path": "assets/environment/structures/ancient_ruin_pillar.glb",
+      "size": 375056,
+      "sha256": "4506056f3168242bf6b9c5f7fc1f47bbc6ed87144624a2b6a7f971633ba3b715"
+    },
+    {
+      "path": "assets/environment/structures/ancient_ruin_pillar.glb.import",
+      "size": 933,
+      "sha256": "d8e9b783826e09dee0888a80db50a1c872ee56fbf07bd6eeb6ecefc4029660a5"
+    },
+    {
+      "path": "assets/environment/structures/highland_crossing_bridge_tripo_model_basecolor.jpg",
+      "size": 156947,
+      "sha256": "83625d9b5268c91c16249124899e83b0e0240fb4e9f3d9e674ae6de7e92880f7"
+    },
+    {
+      "path": "assets/environment/structures/highland_crossing_bridge_tripo_model_basecolor.jpg.import",
+      "size": 972,
+      "sha256": "a0a794d99d75aa3a84033f9ff406bd486a6e540dc1b0766c753d0d987f5f2acb"
+    },
+    {
+      "path": "assets/environment/structures/highland_crossing_bridge_tripo_model_normal.jpg",
+      "size": 26176,
+      "sha256": "4f9eed698a711d879ae0ffd8300fc52e13ba47966eada2d20f4ff01f4ce7458e"
+    },
+    {
+      "path": "assets/environment/structures/highland_crossing_bridge_tripo_model_normal.jpg.import",
+      "size": 963,
+      "sha256": "0c804bdf7bce4a0579746b0ced607f34dff8d1dcb2ea0e2dd2bd1bba494d6c35"
+    },
+    {
+      "path": "assets/environment/structures/highland_crossing_bridge_tripo_model_rm.jpg",
+      "size": 81767,
+      "sha256": "c0268add1662c32d8eaf07512147b811b1d632979677f6368faaf1be96e9228b"
+    },
+    {
+      "path": "assets/environment/structures/highland_crossing_bridge_tripo_model_rm.jpg.import",
+      "size": 951,
+      "sha256": "863570bc5fcb7bb257776a00cc2a0d7d79460b37e9d02c34565380aaee163b04"
+    },
+    {
+      "path": "assets/environment/structures/highland_crossing_bridge.glb",
+      "size": 527752,
+      "sha256": "430c09aac03f29c80a834715cc5ef161bcf4c72ce853eab49bef00e55deaa040"
+    },
+    {
+      "path": "assets/environment/structures/highland_crossing_bridge.glb.import",
+      "size": 949,
+      "sha256": "2f9ac449f8c33fc7529af2549c0749747f1dbe16b35342c992c7475207f207d0"
+    },
+    {
+      "path": "assets/environment/structures/lume_spire_ruin_tripo_model_basecolor.jpg",
+      "size": 140567,
+      "sha256": "0580f3eadf0310bc70b66c75c0071f39600713b69ce4ac1a09b3ad64ab2a81ee"
+    },
+    {
+      "path": "assets/environment/structures/lume_spire_ruin_tripo_model_basecolor.jpg.import",
+      "size": 945,
+      "sha256": "aca3dc250766c02bb3a2e22c4b08b947e9307157288c301c08513e128d8fd4ae"
+    },
+    {
+      "path": "assets/environment/structures/lume_spire_ruin_tripo_model_normal.jpg",
+      "size": 16108,
+      "sha256": "036c48deecf8fe1aaa9dca68d7571e975e5708540e264e48cf3029fe2b7b6182"
+    },
+    {
+      "path": "assets/environment/structures/lume_spire_ruin_tripo_model_normal.jpg.import",
+      "size": 935,
+      "sha256": "84218a3178a70fc0607bcb386da5e17c06e573758256de0e56983bb6a7ae75fc"
+    },
+    {
+      "path": "assets/environment/structures/lume_spire_ruin_tripo_model_rm.jpg",
+      "size": 122962,
+      "sha256": "ad61376e01e822785721b36c99809f1c820a0a51f96d9fbf389412baa7b74deb"
+    },
+    {
+      "path": "assets/environment/structures/lume_spire_ruin_tripo_model_rm.jpg.import",
+      "size": 924,
+      "sha256": "76fdde22e89420dbd2e58db3fba76440ff3a85726df83ea2111694406b823331"
+    },
+    {
+      "path": "assets/environment/structures/lume_spire_ruin.glb",
+      "size": 403432,
+      "sha256": "8a27bbab798d3cd4876880d2f653a319e6160ce8f6eed5993bb3eedfe1fe905d"
+    },
+    {
+      "path": "assets/environment/structures/lume_spire_ruin.glb.import",
+      "size": 922,
+      "sha256": "9338cfac2beaeb58909a81fda3c741e83fa68917f71c450da43525b7ed331a9f"
+    },
+    {
+      "path": "assets/environment/vegetation/broadleaf_oak_tripo_model_basecolor.jpg",
+      "size": 239442,
+      "sha256": "8f7d12aeee4560b1a0f14e331fcecb604866c8655cefe69cf275fbc0832123ff"
+    },
+    {
+      "path": "assets/environment/vegetation/broadleaf_oak_tripo_model_basecolor.jpg.import",
+      "size": 939,
+      "sha256": "0ca0d17a93b23dd4f6979d2b2368bac70872ecb7db5675c33425d67741781e39"
+    },
+    {
+      "path": "assets/environment/vegetation/broadleaf_oak_tripo_model_normal.jpg",
+      "size": 48430,
+      "sha256": "5de34a2500ba3d2e1dd9357dd6e5f33eb9a88a75fec53c574119283ba54fe413"
+    },
+    {
+      "path": "assets/environment/vegetation/broadleaf_oak_tripo_model_normal.jpg.import",
+      "size": 929,
+      "sha256": "ba9b8c7610e5f9eac284e972b7f0ed46d71571a77e7ec2c8f1880fde70a0d93b"
+    },
+    {
+      "path": "assets/environment/vegetation/broadleaf_oak_tripo_model_rm.jpg",
+      "size": 75867,
+      "sha256": "ecc5c4a2370fc5f359f85a6ad93bad551c4f27f3d4cc837131fbc5319bc51307"
+    },
+    {
+      "path": "assets/environment/vegetation/broadleaf_oak_tripo_model_rm.jpg.import",
+      "size": 918,
+      "sha256": "c57e0ea9f37c40a4fe4714f4f38acc26f00a4a2f3f776dba12448b00371a2370"
+    },
+    {
+      "path": "assets/environment/vegetation/broadleaf_oak.glb",
+      "size": 721136,
+      "sha256": "c554a3c928789b108d52b4c2c3c24e6f694d1b63f8a5346c3631ab5d07cc0449"
+    },
+    {
+      "path": "assets/environment/vegetation/broadleaf_oak.glb.import",
+      "size": 916,
+      "sha256": "7b4b39ca73e6321dd99c896a8aa72b8df075cbeb9e49533c6ea25b15e40e74ef"
+    },
+    {
+      "path": "assets/environment/vegetation/highland_pine_tripo_model_basecolor.jpg",
+      "size": 86551,
+      "sha256": "c8218e446643d490a5cddb6a7761286842963855f8ab19fcfeb71dfd00c03028"
+    },
+    {
+      "path": "assets/environment/vegetation/highland_pine_tripo_model_basecolor.jpg.import",
+      "size": 939,
+      "sha256": "2dce0601ca29100ddfcb66bd82d1165d482147acda49eaaa77098687feb4e35d"
+    },
+    {
+      "path": "assets/environment/vegetation/highland_pine_tripo_model_normal.jpg",
+      "size": 27214,
+      "sha256": "a4e355da96a7088d8b4fcf9a47c9fd658c01b56168cbe9cc171bb387323f1e9a"
+    },
+    {
+      "path": "assets/environment/vegetation/highland_pine_tripo_model_normal.jpg.import",
+      "size": 930,
+      "sha256": "14ef942f7934cb034fdcab60b3c1c4ca124f893201ae7b34b2d63eb599cc58ed"
+    },
+    {
+      "path": "assets/environment/vegetation/highland_pine_tripo_model_rm.jpg",
+      "size": 208930,
+      "sha256": "348b2716e743b5970f42db7e7f36a41601de838badc889f6a0d228c5f7172925"
+    },
+    {
+      "path": "assets/environment/vegetation/highland_pine_tripo_model_rm.jpg.import",
+      "size": 918,
+      "sha256": "919eb4f3d8997d15e10475f1b19769133b32e6bb3eb38f52787adc09d84d24f3"
+    },
+    {
+      "path": "assets/environment/vegetation/highland_pine.glb",
+      "size": 523896,
+      "sha256": "ccf1cf59aaf25687f3875fef6277cfda495eaf6c717dba898e82f62e3cc27bd0"
+    },
+    {
+      "path": "assets/environment/vegetation/highland_pine.glb.import",
+      "size": 915,
+      "sha256": "cc9f6018d021ad4bf5d5ff61ee5afc07e9b3f94c8e58fa5a4f7cbb2a05bcecf1"
+    },
+    {
+      "path": "assets/fonts/cinzel.ttf",
+      "size": 125468,
+      "sha256": "f4d83d34d1f6c741193e4acf4b3dff9531e5a67b6aa65228d00a7db72a4e0f34"
+    },
+    {
+      "path": "assets/fonts/cinzel.ttf.import",
+      "size": 698,
+      "sha256": "79fcb9e407560ba514a1ba7c8b93f41b562be1a4342615bd1168e6a1f3fa86e3"
+    },
+    {
+      "path": "assets/generation-meta.json",
+      "size": 91293,
+      "sha256": "1e9e6cc66da654ec5ba09b0122fc01a82bb2b877dab9a0a0f17aa800a23252db"
+    },
+    {
+      "path": "assets/manifest.json",
+      "size": 39354,
+      "sha256": "457c421def8f93f334578a97504706175269002be500d8664faf71090f123e0c"
+    },
+    {
+      "path": "assets/props/containers/resource_timber_pile_tripo_image_638c8fc4-0756-4d59-adea-dc3cbeb1ac30_0.jpg",
+      "size": 146602,
+      "sha256": "17970403aa8f0a300f51404948662edd51f00b742b8f20961a925979d09606d3"
+    },
+    {
+      "path": "assets/props/containers/resource_timber_pile_tripo_image_638c8fc4-0756-4d59-adea-dc3cbeb1ac30_0.jpg.import",
+      "size": 1040,
+      "sha256": "f5cedf5cbf4fc8703678e734dc8bd105f1b9a60c65498902d1ee104b8f3aad2a"
+    },
+    {
+      "path": "assets/props/containers/resource_timber_pile_tripo_image_638c8fc4-0756-4d59-adea-dc3cbeb1ac30_1.jpg",
+      "size": 79993,
+      "sha256": "f12e4432502c5793af1a379f05e4470727f14c0eae69c2152e70ea2d42b8f4ff"
+    },
+    {
+      "path": "assets/props/containers/resource_timber_pile_tripo_image_638c8fc4-0756-4d59-adea-dc3cbeb1ac30_1.jpg.import",
+      "size": 1041,
+      "sha256": "1ccb15c7c4802663ee81bf2893f677453ae8188269a984b3845cb77e47ca9036"
+    },
+    {
+      "path": "assets/props/containers/resource_timber_pile_tripo_image_638c8fc4-0756-4d59-adea-dc3cbeb1ac30_2.jpg",
+      "size": 29069,
+      "sha256": "c7200ccd01c4253e9bd8ac803673eb6926bf1a38cb637d2386baf97e0e362a3e"
+    },
+    {
+      "path": "assets/props/containers/resource_timber_pile_tripo_image_638c8fc4-0756-4d59-adea-dc3cbeb1ac30_2.jpg.import",
+      "size": 1041,
+      "sha256": "ac2bb0a7086d996a85a4a1567576e0d260e5b7fb93887f8325ec395ff6471393"
+    },
+    {
+      "path": "assets/props/containers/resource_timber_pile.glb",
+      "size": 556376,
+      "sha256": "0a9de8eaf422a8ca28e36b5ba11c5824742646cf24da23c52c33e534224b03e0"
+    },
+    {
+      "path": "assets/props/containers/resource_timber_pile.glb.import",
+      "size": 930,
+      "sha256": "bdec30ebe731285d7e5735d425fa09fefafd5c41497d772eafd2ac6970f19ea1"
+    },
+    {
+      "path": "assets/props/items/hero_relic_amulet_tripo_image_69811146-03da-4fda-bc3e-db721c99ca1c_0.jpg",
+      "size": 96948,
+      "sha256": "555d7978c081ef2971b3a8bdbd8f1631ab98269eaeb7b55c927fa79232df0342"
+    },
+    {
+      "path": "assets/props/items/hero_relic_amulet_tripo_image_69811146-03da-4fda-bc3e-db721c99ca1c_0.jpg.import",
+      "size": 1027,
+      "sha256": "83a29c6326bb022fc66d3c9744f2ec05db1c613db8a57460351a5c5f707c7ac7"
+    },
+    {
+      "path": "assets/props/items/hero_relic_amulet_tripo_image_69811146-03da-4fda-bc3e-db721c99ca1c_1.jpg",
+      "size": 94117,
+      "sha256": "d2c501fde56e7af8f0d924872a5480d953df9b744600adbff47d4e8bc49f1ddf"
+    },
+    {
+      "path": "assets/props/items/hero_relic_amulet_tripo_image_69811146-03da-4fda-bc3e-db721c99ca1c_1.jpg.import",
+      "size": 1027,
+      "sha256": "95e0530ffa28e6bdc5eed595c5dab7b44c98f616c881aebcd626df7d7abf8f17"
+    },
+    {
+      "path": "assets/props/items/hero_relic_amulet_tripo_image_69811146-03da-4fda-bc3e-db721c99ca1c_2.jpg",
+      "size": 19948,
+      "sha256": "0039ff6c910f7e831e3815679ebf528e44aa9ab49cf9288c020d44998f79be15"
+    },
+    {
+      "path": "assets/props/items/hero_relic_amulet_tripo_image_69811146-03da-4fda-bc3e-db721c99ca1c_2.jpg.import",
+      "size": 1027,
+      "sha256": "6ccb48b74e7233aa2c5dd1d2a700d6e25ed851e9c3c735e6c3f563de7b5fcfb4"
+    },
+    {
+      "path": "assets/props/items/hero_relic_amulet.glb",
+      "size": 310416,
+      "sha256": "c73d8867521bd946b36c9c21cb4351a49f7b0df8f6a707d45fe48a5a588983d5"
+    },
+    {
+      "path": "assets/props/items/hero_relic_amulet.glb.import",
+      "size": 917,
+      "sha256": "c921cc84c02ca91958dee9d488bd12c67be15cc46b9c6800a91e4f97d1cfa52d"
+    },
+    {
+      "path": "assets/props/items/lume_shard_crystal_tripo_image_2c1668fa-13fb-44d0-a8ad-7ae29e235dfa_0.jpg",
+      "size": 52019,
+      "sha256": "05888e91a949a18f0b395ed2e896febaf9f40d364196d2dc159aa1ea55416cdd"
+    },
+    {
+      "path": "assets/props/items/lume_shard_crystal_tripo_image_2c1668fa-13fb-44d0-a8ad-7ae29e235dfa_0.jpg.import",
+      "size": 1029,
+      "sha256": "7c0258a5be4c21c875a1c331ce31ae3d8adaedfcfdef7ff262cc40cc72be9aff"
+    },
+    {
+      "path": "assets/props/items/lume_shard_crystal_tripo_image_2c1668fa-13fb-44d0-a8ad-7ae29e235dfa_1.jpg",
+      "size": 28263,
+      "sha256": "a98de3097f3fb6d61695274beb62431f3e1137205ddbfa95d815d7ae9fd41c3d"
+    },
+    {
+      "path": "assets/props/items/lume_shard_crystal_tripo_image_2c1668fa-13fb-44d0-a8ad-7ae29e235dfa_1.jpg.import",
+      "size": 1029,
+      "sha256": "42a4b663c67c4e735c1520ea6ed7251a21de367bd0a61c6714e73bb61b77d65d"
+    },
+    {
+      "path": "assets/props/items/lume_shard_crystal_tripo_image_2c1668fa-13fb-44d0-a8ad-7ae29e235dfa_2.jpg",
+      "size": 10446,
+      "sha256": "52168e5e5ec5d505c002a69a71aa9a3a4a5e6a212a5cd2f9c603edb05b7d151b"
+    },
+    {
+      "path": "assets/props/items/lume_shard_crystal_tripo_image_2c1668fa-13fb-44d0-a8ad-7ae29e235dfa_2.jpg.import",
+      "size": 1030,
+      "sha256": "2c4ba3b68dd415b67f7d3cd6655dc452dac105cf78f544c4c52611cee6fe9428"
+    },
+    {
+      "path": "assets/props/items/lume_shard_crystal.glb",
+      "size": 250596,
+      "sha256": "e120ab6a3f0b1403340cb50cc3e960cfc66d42217e6d4c3f4a6d0cc6d5ea8a3d"
+    },
+    {
+      "path": "assets/props/items/lume_shard_crystal.glb.import",
+      "size": 920,
+      "sha256": "00b56928de66f045a7b36dbc19e5847311057d09171af2577ec0ba093a621084"
+    },
+    {
+      "path": "assets/props/misc/resource_stone_quarry_chunk_tripo_image_f5f21f0c-2af3-43ac-9dd6-56f13eb5211a_0.jpg",
+      "size": 12682,
+      "sha256": "9507b4598013b9895491dffd53ba09d99ec6c57a6038548b615eca02554b8845"
+    },
+    {
+      "path": "assets/props/misc/resource_stone_quarry_chunk_tripo_image_f5f21f0c-2af3-43ac-9dd6-56f13eb5211a_0.jpg.import",
+      "size": 1056,
+      "sha256": "a441ecc9b197be8666407e52cce8b37b3ef453c2794f2ebcad0c6ae4597d98cb"
+    },
+    {
+      "path": "assets/props/misc/resource_stone_quarry_chunk_tripo_image_f5f21f0c-2af3-43ac-9dd6-56f13eb5211a_1.jpg",
+      "size": 17726,
+      "sha256": "89a1202722d9c8f02f11441d81ee3a1a8c05e44283de9bf311fe7c21e34d3adf"
+    },
+    {
+      "path": "assets/props/misc/resource_stone_quarry_chunk_tripo_image_f5f21f0c-2af3-43ac-9dd6-56f13eb5211a_1.jpg.import",
+      "size": 1056,
+      "sha256": "f6b676c106295f64f726f69a030ec68131c130ae14caa2f388b0ef4274143981"
+    },
+    {
+      "path": "assets/props/misc/resource_stone_quarry_chunk_tripo_image_f5f21f0c-2af3-43ac-9dd6-56f13eb5211a_2.jpg",
+      "size": 6769,
+      "sha256": "ec48e2b0164cc68d7d3f964550f6f54bc41ed4cc5124e2fd1e20fb19cc5712c7"
+    },
+    {
+      "path": "assets/props/misc/resource_stone_quarry_chunk_tripo_image_f5f21f0c-2af3-43ac-9dd6-56f13eb5211a_2.jpg.import",
+      "size": 1056,
+      "sha256": "5573b905b10ead4ff13097154e4bd7e3190cebd49c89b800be1b23c3111114e0"
+    },
+    {
+      "path": "assets/props/misc/resource_stone_quarry_chunk.glb",
+      "size": 168940,
+      "sha256": "c7327da512c7aa38fa35a4ed93448b53335ee8869422f82e6675f2dc5f99c03c"
+    },
+    {
+      "path": "assets/props/misc/resource_stone_quarry_chunk.glb.import",
+      "size": 945,
+      "sha256": "b7faa6660941ed276c11bbde1178c38455ec2b2361e72d7e41d7d68988660183"
+    },
+    {
+      "path": "assets/props/vehicles/barrosan_ballista_tripo_image_7eacbfb6-e37d-4429-9a5c-6af2063f8e8c_0.jpg",
+      "size": 161425,
+      "sha256": "e81b905f8f0c1d818ec9315e46399b32d16e0d5d8b4af09eb6fa7242539f4871"
+    },
+    {
+      "path": "assets/props/vehicles/barrosan_ballista_tripo_image_7eacbfb6-e37d-4429-9a5c-6af2063f8e8c_0.jpg.import",
+      "size": 1030,
+      "sha256": "e66e6467f0bad2a44218aeae6237843c64db8dcd60c1f3199a75f44557dc8dc4"
+    },
+    {
+      "path": "assets/props/vehicles/barrosan_ballista_tripo_image_7eacbfb6-e37d-4429-9a5c-6af2063f8e8c_1.jpg",
+      "size": 113923,
+      "sha256": "7dda5711d248336a1b7cc93bad92cd8409da34ea95be6e9798ab20fc474efd3f"
+    },
+    {
+      "path": "assets/props/vehicles/barrosan_ballista_tripo_image_7eacbfb6-e37d-4429-9a5c-6af2063f8e8c_1.jpg.import",
+      "size": 1029,
+      "sha256": "0b208f35669218370e55ff642889ec163d0b7932b05772d9c7a77b2d24de177b"
+    },
+    {
+      "path": "assets/props/vehicles/barrosan_ballista_tripo_image_7eacbfb6-e37d-4429-9a5c-6af2063f8e8c_2.jpg",
+      "size": 57759,
+      "sha256": "2815e033c8cb381e7619b93446469cabd40f04ca09d0be05a82c82d0a8c97cfe"
+    },
+    {
+      "path": "assets/props/vehicles/barrosan_ballista_tripo_image_7eacbfb6-e37d-4429-9a5c-6af2063f8e8c_2.jpg.import",
+      "size": 1029,
+      "sha256": "656b99d01de86585dab26b4a653142b41c98decbd8fd6d78319473ed2dc0c4f2"
+    },
+    {
+      "path": "assets/props/vehicles/barrosan_ballista.glb",
+      "size": 566112,
+      "sha256": "042a1be93cf4570fdace62fbb3a86cb60a8832bbfb379a7e337c6fa0a4f1bc23"
+    },
+    {
+      "path": "assets/props/vehicles/barrosan_ballista.glb.import",
+      "size": 920,
+      "sha256": "cfce67abc0643637af92536ce8ea41f40226f98d3b99064e49cc552ea28b5b53"
+    },
+    {
+      "path": "assets/props/vehicles/lioraen_thornthrower_tripo_image_7eacbfb6-e37d-4429-9a5c-6af2063f8e8c_0.jpg",
+      "size": 161425,
+      "sha256": "e81b905f8f0c1d818ec9315e46399b32d16e0d5d8b4af09eb6fa7242539f4871"
+    },
+    {
+      "path": "assets/props/vehicles/lioraen_thornthrower_tripo_image_7eacbfb6-e37d-4429-9a5c-6af2063f8e8c_0.jpg.import",
+      "size": 1038,
+      "sha256": "16ba01dc7d02db9d9c60c18432f2810c45cfef6de87dedca0f57a989360d7149"
+    },
+    {
+      "path": "assets/props/vehicles/lioraen_thornthrower_tripo_image_7eacbfb6-e37d-4429-9a5c-6af2063f8e8c_1.jpg",
+      "size": 113923,
+      "sha256": "7dda5711d248336a1b7cc93bad92cd8409da34ea95be6e9798ab20fc474efd3f"
+    },
+    {
+      "path": "assets/props/vehicles/lioraen_thornthrower_tripo_image_7eacbfb6-e37d-4429-9a5c-6af2063f8e8c_1.jpg.import",
+      "size": 1038,
+      "sha256": "b00cf94e0806873e19295f35e22f8f2fa97890655b45f8eb37b1bd44875a7475"
+    },
+    {
+      "path": "assets/props/vehicles/lioraen_thornthrower_tripo_image_7eacbfb6-e37d-4429-9a5c-6af2063f8e8c_2.jpg",
+      "size": 57759,
+      "sha256": "2815e033c8cb381e7619b93446469cabd40f04ca09d0be05a82c82d0a8c97cfe"
+    },
+    {
+      "path": "assets/props/vehicles/lioraen_thornthrower_tripo_image_7eacbfb6-e37d-4429-9a5c-6af2063f8e8c_2.jpg.import",
+      "size": 1039,
+      "sha256": "59bede4cf7444939e26e8a8f23ccb0c24e054ea51426f3954f606daf2f1ca0bd"
+    },
+    {
+      "path": "assets/props/vehicles/lioraen_thornthrower.glb",
+      "size": 566112,
+      "sha256": "042a1be93cf4570fdace62fbb3a86cb60a8832bbfb379a7e337c6fa0a4f1bc23"
+    },
+    {
+      "path": "assets/props/vehicles/lioraen_thornthrower.glb.import",
+      "size": 929,
+      "sha256": "9a49f41da5cea62b6791cf011f60e35ece9e2b5d701cdb733e9c517f1219c722"
+    },
+    {
+      "path": "assets/props/vehicles/vorthak_fracture_engine_tripo_image_4d488b6b-48e9-4669-83a2-5520fb153bc4_0.jpg",
+      "size": 143718,
+      "sha256": "a4ffcb8651736e8e4b43929f59eeda433cc77b7e1da47eda280ed8c64a50c964"
+    },
+    {
+      "path": "assets/props/vehicles/vorthak_fracture_engine_tripo_image_4d488b6b-48e9-4669-83a2-5520fb153bc4_0.jpg.import",
+      "size": 1048,
+      "sha256": "728eb832d81e7916e2d586f192bfb987ed39400936a1443215a2d17edd63f39b"
+    },
+    {
+      "path": "assets/props/vehicles/vorthak_fracture_engine_tripo_image_4d488b6b-48e9-4669-83a2-5520fb153bc4_1.jpg",
+      "size": 67581,
+      "sha256": "21e3c184a6ad6a012bb78643918df113be237427ec1bc363206816e949264c6d"
+    },
+    {
+      "path": "assets/props/vehicles/vorthak_fracture_engine_tripo_image_4d488b6b-48e9-4669-83a2-5520fb153bc4_1.jpg.import",
+      "size": 1048,
+      "sha256": "a1c115e9a37747246b15401baa1ab208b4a999035aff78aa0cd114b1391f44e3"
+    },
+    {
+      "path": "assets/props/vehicles/vorthak_fracture_engine_tripo_image_4d488b6b-48e9-4669-83a2-5520fb153bc4_2.jpg",
+      "size": 33102,
+      "sha256": "8c0987c417bd68b4945ec210126bff5875b6ab640b57eba757bd7849a4f29804"
+    },
+    {
+      "path": "assets/props/vehicles/vorthak_fracture_engine_tripo_image_4d488b6b-48e9-4669-83a2-5520fb153bc4_2.jpg.import",
+      "size": 1048,
+      "sha256": "f8f015078e2e0c1ffb4e62d82d00ddab22efc577cb3783eb33f24e81ad1e5942"
+    },
+    {
+      "path": "assets/props/vehicles/vorthak_fracture_engine.glb",
+      "size": 462360,
+      "sha256": "29867219cf449485f4dbb85528b5cd0b8525fbe92701eb05fa0992a11b4ec823"
+    },
+    {
+      "path": "assets/props/vehicles/vorthak_fracture_engine.glb.import",
+      "size": 938,
+      "sha256": "9f45fd62ac1c84e7d250a2f1ce5138b2c8cbba3434ae7f8fb634261e259e3af3"
+    },
+    {
+      "path": "assets/props/weapons/barrosan_claymore_tripo_model_basecolor.jpg",
+      "size": 165357,
+      "sha256": "c935d8f89b17b603e10ff07f4e8a6db932aedba542335d7e8dafe230e3f15398"
+    },
+    {
+      "path": "assets/props/weapons/barrosan_claymore_tripo_model_basecolor.jpg.import",
+      "size": 942,
+      "sha256": "c2889a8478924f57d59b75473374d3c35aeed95c3a55c3cd31b60db0ac8d31f2"
+    },
+    {
+      "path": "assets/props/weapons/barrosan_claymore_tripo_model_normal.jpg",
+      "size": 88126,
+      "sha256": "4d39ee25f2e0e2996dd8d1f6e2fd7472cd2ecf8f85fefd66bc19f84d656eb0ef"
+    },
+    {
+      "path": "assets/props/weapons/barrosan_claymore_tripo_model_normal.jpg.import",
+      "size": 933,
+      "sha256": "603032bc696529607f732477bdda1b9b04e9319973c02a8f7ab0ea4b190807ba"
+    },
+    {
+      "path": "assets/props/weapons/barrosan_claymore_tripo_model_rm.jpg",
+      "size": 117984,
+      "sha256": "763ff5c95706e2e94a967a72c137db8747f681a9f1d6f2b1691fbe90ae13328e"
+    },
+    {
+      "path": "assets/props/weapons/barrosan_claymore_tripo_model_rm.jpg.import",
+      "size": 921,
+      "sha256": "79ca2f6a3d269ffcd4c4009e20ef3855fa924a94886b71923f141c03ecd9d190"
+    },
+    {
+      "path": "assets/props/weapons/barrosan_claymore.glb",
+      "size": 605524,
+      "sha256": "95a9bd79486f1a591998427f5f87f3c49f5e5d6a71acbde82e704c6f5dc793a6"
+    },
+    {
+      "path": "assets/props/weapons/barrosan_claymore.glb.import",
+      "size": 918,
+      "sha256": "4a406f32a6098171651b22a919998e9bee671871bbb289059fbb6d57be8c44a8"
+    },
+    {
+      "path": "assets/props/weapons/lioraen_bloomblade_tripo_model_basecolor.jpg",
+      "size": 229539,
+      "sha256": "037b2dfbc0f817868bdf59f10086d40f4e89561bb694ed5ec07cfb217d8c54a3"
+    },
+    {
+      "path": "assets/props/weapons/lioraen_bloomblade_tripo_model_basecolor.jpg.import",
+      "size": 945,
+      "sha256": "88f4859b6e2304bcc2d2943e392661e6b8a831b08a77602e6a353f818e08cf74"
+    },
+    {
+      "path": "assets/props/weapons/lioraen_bloomblade_tripo_model_normal.jpg",
+      "size": 114823,
+      "sha256": "ced6fb856d6fd0fdfb12b36e30be2e41714559841b7e8f227f4bedb7b8a49ac2"
+    },
+    {
+      "path": "assets/props/weapons/lioraen_bloomblade_tripo_model_normal.jpg.import",
+      "size": 936,
+      "sha256": "81f84f7b9c9b5de0ad28ea702464b097ec3dabf9cf8dcfc98918f8a22351233e"
+    },
+    {
+      "path": "assets/props/weapons/lioraen_bloomblade_tripo_model_rm.jpg",
+      "size": 105961,
+      "sha256": "9e01640564375e6431c0390e76c0f3e2a1a7e1cbc8d3c72147054c33f24b85aa"
+    },
+    {
+      "path": "assets/props/weapons/lioraen_bloomblade_tripo_model_rm.jpg.import",
+      "size": 923,
+      "sha256": "ee7903cacfc333cbd95d25551fc5e33476aaac40908cd08e7c0033533bb3bdb7"
+    },
+    {
+      "path": "assets/props/weapons/lioraen_bloomblade.glb",
+      "size": 729760,
+      "sha256": "210908cfc2502f933134a1a00985d797bd69141bd36bcc613f9421a86a55f98b"
+    },
+    {
+      "path": "assets/props/weapons/lioraen_bloomblade.glb.import",
+      "size": 922,
+      "sha256": "e4cfa8b2eb407319980a8caa5a3876c10b02cb69f060c50774529ed9c472efe2"
+    },
+    {
+      "path": "assets/props/weapons/vorthak_rift_staff_tripo_model_basecolor.jpg",
+      "size": 230777,
+      "sha256": "af3d9dc19e39cabe537c647742562cf93019588d7517c55b24ac6aff9ec4b9e0"
+    },
+    {
+      "path": "assets/props/weapons/vorthak_rift_staff_tripo_model_basecolor.jpg.import",
+      "size": 944,
+      "sha256": "00eb7ac4ff8b42bce9166852002edf41ca209ce514848a40d53fdbecada96362"
+    },
+    {
+      "path": "assets/props/weapons/vorthak_rift_staff_tripo_model_normal.jpg",
+      "size": 107230,
+      "sha256": "a6d59646ad927234a963886c32c667ac8be5afb6bff469bb2ad0676908a76261"
+    },
+    {
+      "path": "assets/props/weapons/vorthak_rift_staff_tripo_model_normal.jpg.import",
+      "size": 936,
+      "sha256": "24c6688a02df3b4ea4a726d28eae2f25fa699ce3f68246c90b60e1fa22b70fb6"
+    },
+    {
+      "path": "assets/props/weapons/vorthak_rift_staff_tripo_model_rm.jpg",
+      "size": 114606,
+      "sha256": "7bcd42b6f57bd72ff255072c68b983a908eced144d045e663b3d44fadf61a05d"
+    },
+    {
+      "path": "assets/props/weapons/vorthak_rift_staff_tripo_model_rm.jpg.import",
+      "size": 924,
+      "sha256": "b65072da6ed8b7ddf9a0c348c93930339b451584f6e35a3df3e426d7a6d71294"
+    },
+    {
+      "path": "assets/props/weapons/vorthak_rift_staff.glb",
+      "size": 722092,
+      "sha256": "271c6b8a17b2234f25dc0c47be78b18a3cfa4eb3b04b768d94f351748425ce2f"
+    },
+    {
+      "path": "assets/props/weapons/vorthak_rift_staff.glb.import",
+      "size": 921,
+      "sha256": "9c2a7d61c4ebdd5c7ab088dfeb6d05686d3ecce4f26c164707df5484e4733d4d"
+    },
+    {
+      "path": "assets/shaders/ground_blend.gdshader",
+      "size": 3934,
+      "sha256": "d91179b4b09c976634c58325897a4bcfb1bb74bcd078a984e165910314951f6e"
+    },
+    {
+      "path": "assets/shaders/ground_blend.gdshader.uid",
+      "size": 20,
+      "sha256": "79e0747baf550e12e84b38bbe7b0269db25952130dce7fb6700fe52bf1d618d1"
+    },
+    {
+      "path": "assets/shaders/toon_water.gdshader",
+      "size": 2436,
+      "sha256": "df9edc33b23eaef2207adf0071a8eb2a8da2e7068164508e1f2304365d754457"
+    },
+    {
+      "path": "assets/shaders/toon_water.gdshader.uid",
+      "size": 20,
+      "sha256": "ae090d47f5b6f444d2831be1d68fb964e61b18bbeb8b6294117301b0345c55cb"
+    },
+    {
+      "path": "assets/textures/backgrounds/main_menu_bg.png",
+      "size": 4983086,
+      "sha256": "331d8d6751e86d3801259a567f458f91fce9eb7df6615d184809b8c233e30c7f"
+    },
+    {
+      "path": "assets/textures/backgrounds/main_menu_bg.png.import",
+      "size": 802,
+      "sha256": "773ce2571414f13bb071767283f5f1e99b424f3b51a5765c172016a87ac6f339"
+    },
+    {
+      "path": "assets/textures/nature/highland_dirt_path.png",
+      "size": 1736304,
+      "sha256": "364b09262842a3620e014c96d7c25ea132f924ada331bddda1fb357e9e034dcc"
+    },
+    {
+      "path": "assets/textures/nature/highland_dirt_path.png.import",
+      "size": 815,
+      "sha256": "e74bd65ac98c5ab607da325affd7dfc6a283eab253e30d0f527ef16c2261a802"
+    },
+    {
+      "path": "assets/textures/nature/highland_grass.png",
+      "size": 1702534,
+      "sha256": "722cb25fcb0048b5788cbbcd1ea49d8a406ce605f99f0e9f26df922f3ad38365"
+    },
+    {
+      "path": "assets/textures/nature/highland_grass.png.import",
+      "size": 803,
+      "sha256": "8b59a287107c2affe0852c7eb0b1436f87a4933adcebcc050f92b298852f5927"
+    },
+    {
+      "path": "assets/textures/nature/highland_meadow_grass.png",
+      "size": 2311048,
+      "sha256": "8e4b348a9011166cbceeb09235a408ddc6c31b1b9d609f0a96042b07d101fba4"
+    },
+    {
+      "path": "assets/textures/nature/highland_meadow_grass.png.import",
+      "size": 824,
+      "sha256": "f0c4d55b97fc7b1980f092ef4850a69dfb98a5f1a78d2c89ef3e9bfce25a81b7"
+    },
+    {
+      "path": "assets/textures/skyboxes/highland_storm_sky_sky.tres",
+      "size": 317,
+      "sha256": "35f8435babb26aafe1b1ebe78f0e600bc3699bd16d2d6cd5f96f4e43acec669a"
+    },
+    {
+      "path": "assets/textures/skyboxes/highland_storm_sky_skybox.png",
+      "size": 2084864,
+      "sha256": "3a53d048df8366b79400991f1ac2a63cd87208ccc298b674cb7497227bb5da78"
+    },
+    {
+      "path": "assets/textures/skyboxes/highland_storm_sky_skybox.png.import",
+      "size": 832,
+      "sha256": "e02316eb7b7f59aa19fddddaff6adf6813411a164bef2d4285282654806e9e39"
+    },
+    {
+      "path": "assets/textures/stone/highland_rock.png",
+      "size": 896928,
+      "sha256": "f5a88ffd0eb25da587b16f39d2e3859c8ab253181a2019340637f5665cf97bf8"
+    },
+    {
+      "path": "assets/textures/stone/highland_rock.png.import",
+      "size": 799,
+      "sha256": "80aa8955c6fbc6e6945afe10e03e13f6799b9e26c56d453f9226fc84a1722f2c"
+    },
+    {
+      "path": "assets/ui/btn_play.png",
+      "size": 52133,
+      "sha256": "d1efa6bf4fa4fed4a49bfe3395bce8bc01947c90a0e6f325cf80fd5beaaa7ab9"
+    },
+    {
+      "path": "assets/ui/btn_play.png.import",
+      "size": 771,
+      "sha256": "8b1c6bcaf8be3a5852e1bc16c62a06d69b9b9e1839f742e62af9ea580da9651e"
+    },
+    {
+      "path": "assets/ui/btn_play.tres",
+      "size": 292,
+      "sha256": "eb2741acdb180fa8def2029cb2b73b33b1ebaa524dc241861b0a029e7478c96c"
+    },
+    {
+      "path": "assets/ui/btn_skirmish.png",
+      "size": 52317,
+      "sha256": "7fdd72ff203095e71e383ca0231f87e9a68e4e1da3481f3517dc67c27ca340bb"
+    },
+    {
+      "path": "assets/ui/btn_skirmish.png.import",
+      "size": 784,
+      "sha256": "7d9ea509aea4d274801065738407e5bebd5ba83d6c1c01c750d007bc3445be77"
+    },
+    {
+      "path": "assets/ui/btn_skirmish.tres",
+      "size": 296,
+      "sha256": "740acce0a75c6582ffda4ba5ee2abe8d4fa05c022c61ed9a21b64c2c5fa0cdbd"
+    },
+    {
+      "path": "assets/ui/frame_portrait.png",
+      "size": 52491,
+      "sha256": "e9ef65c090dab4f25369fa09897d36f293fc5f46ac4d196502a224b96805adec"
+    },
+    {
+      "path": "assets/ui/frame_portrait.png.import",
+      "size": 790,
+      "sha256": "9997371e9f7008bfca9cc231ab52e9c0f8777bdcf69d8967bae6b6793181e2b3"
+    },
+    {
+      "path": "assets/ui/frame_portrait.tres",
+      "size": 298,
+      "sha256": "4543dace4a3652d1dceb02435a448eccb944afad04fcc62a96f66581d5014507"
+    },
+    {
+      "path": "assets/ui/icon_food.png",
+      "size": 16270,
+      "sha256": "d16fa59230cd70f9fb760f218898c31bf9925307500f97f6616a592a89758d25"
+    },
+    {
+      "path": "assets/ui/icon_food.png.import",
+      "size": 775,
+      "sha256": "23aa64ca72f07fd18db30facd7d266cc2f002bb3644eea0f3cbcfed4e8cc06f0"
+    },
+    {
+      "path": "assets/ui/icon_gold.png",
+      "size": 17132,
+      "sha256": "2f3af13f2032c7c94fae5fe55e6a12d2521af686e0709f5c335ada7eee46b18d"
+    },
+    {
+      "path": "assets/ui/icon_gold.png.import",
+      "size": 775,
+      "sha256": "1e6f1f251c0cf1011635244c794edf4f2d78b1502dcf67e0a158460d059b8deb"
+    },
+    {
+      "path": "assets/ui/icon_lume.png",
+      "size": 36721,
+      "sha256": "228c6f8c28f6fc155a75e08b98ccfc686b440b0c6ccf5e257cf8cd7996d7c84a"
+    },
+    {
+      "path": "assets/ui/icon_lume.png.import",
+      "size": 775,
+      "sha256": "44c6e33f8f78e09c952ae6ec21b1ba93b31b687948342b44a7266aa51c838c39"
+    },
+    {
+      "path": "assets/ui/icon_stone.png",
+      "size": 16796,
+      "sha256": "a86360be143649b8ad2d3190515b8b33606e0635f1941e8da6cd116c68480688"
+    },
+    {
+      "path": "assets/ui/icon_stone.png.import",
+      "size": 778,
+      "sha256": "78109a8ca7c01c8b0dd1f87173656ffeaa4b16f20203ab422443b886f7a94896"
+    },
+    {
+      "path": "assets/ui/icon_timber.png",
+      "size": 17646,
+      "sha256": "35828f0aa7212a2126eeb488a7da291bbfffac5b47cafa465c5e9e1a4eac97e2"
+    },
+    {
+      "path": "assets/ui/icon_timber.png.import",
+      "size": 780,
+      "sha256": "13cb27ee5b2b6eacb04ea4700a392c60f693902d06f0424ad6774256966bfe1f"
+    },
+    {
+      "path": "assets/ui/loading_bar_accent.tres",
+      "size": 104,
+      "sha256": "ac62fd7ec781b5ffe65530b73706e10ab24fb5c41a7f21a351b87581828d873e"
+    },
+    {
+      "path": "assets/ui/loading_screen.png",
+      "size": 3627920,
+      "sha256": "eb8d83fc4f8b29cf07bc13a673e28fcaf58c290d6757ad754255f43369dee430"
+    },
+    {
+      "path": "assets/ui/loading_screen.png.import",
+      "size": 790,
+      "sha256": "8a11404785723c827c7b4e856dac20e86dac079d31c20b869d095b49d18d5c6d"
+    },
+    {
+      "path": "assets/ui/panel_command.png",
+      "size": 107441,
+      "sha256": "d16b8eba617419ad0544323e84831ae57fdb0c7d31aa991576c19bf2ce557a01"
+    },
+    {
+      "path": "assets/ui/panel_command.png.import",
+      "size": 787,
+      "sha256": "07651fd7a4890090508ea8a5fd99b6b334309aeeef29bbcb7df61d4b83a7b8bc"
+    },
+    {
+      "path": "assets/ui/panel_command.tres",
+      "size": 297,
+      "sha256": "bbf91c5b25af96d18255f9164f6767a2c173466b5f925bd8172c17ebd4a7caf6"
+    },
+    {
+      "path": "assets/ui/panel_hud.png",
+      "size": 102732,
+      "sha256": "3da0c1b5f094a0a3ee3e72f459bfaaa183398364b984fb35fd4b48927a4d4ea0"
+    },
+    {
+      "path": "assets/ui/panel_hud.png.import",
+      "size": 775,
+      "sha256": "3a138969579675691c6f79337f9bd91e8271a8a60ece4f58d2b8af9a2c7bd91c"
+    },
+    {
+      "path": "assets/ui/panel_hud.tres",
+      "size": 293,
+      "sha256": "19a45c60ee1d3502b36aae1fbc2cb9f55df1a6087100f7b078e502f34a3c6e7c"
+    },
+    {
+      "path": "assets/ui/panel_main.png",
+      "size": 290339,
+      "sha256": "14c739d65e4a5aa9cec4b8c54a4b6c0d771fac96231b4bf8580afaf9c03b04e3"
+    },
+    {
+      "path": "assets/ui/panel_main.png.import",
+      "size": 777,
+      "sha256": "1b0e0eeaac71c5492b64aa67a1cf6c62fb5d09ee26f327b1586f89b9ba23dccf"
+    },
+    {
+      "path": "assets/ui/panel_main.tres",
+      "size": 294,
+      "sha256": "78d23dcccd7051ff903aedfae2948eb0910b8796d3a0f5701dfd98739b213c90"
+    },
+    {
+      "path": "assets/ui/theme.tres",
+      "size": 5093,
+      "sha256": "4b7ba8c15a44ea9a53f2bbb890595229addd3681aff29359ab2a2918a4b7d210"
+    },
+    {
+      "path": "assets/ui/title_poster_sm.webp",
+      "size": 24762,
+      "sha256": "61afa57f71e7fe1d2a9fe19d142a998da9c628dec3a345ab30fb7b8514e964fa"
+    },
+    {
+      "path": "assets/ui/title_poster_sm.webp.import",
+      "size": 795,
+      "sha256": "47dbea5307035d4e1ea429f6755757023e24c6445b39dd9da381635d392fbad6"
+    },
+    {
+      "path": "assets/ui/title_poster.webp",
+      "size": 141014,
+      "sha256": "570a698c519949bccb08239810983c7cb6801ae63beb5f4366610115b67363aa"
+    },
+    {
+      "path": "assets/ui/title_poster.webp.import",
+      "size": 787,
+      "sha256": "dd79148da6281814c42ab09c8a2e835c0b11e129eef1ebc9f89facbcb99dec58"
+    },
+    {
+      "path": "assets/ui/wordmark_title.png",
+      "size": 503869,
+      "sha256": "8ae72c0820efb7b33967dc0602ccff6027c50467f3bb7029da8c6552dc67a162"
+    },
+    {
+      "path": "assets/ui/wordmark_title.png.import",
+      "size": 790,
+      "sha256": "6625363c8b4f4d5646f8015549476df890e5a513206f375d87e41ed9961b4c92"
+    },
+    {
+      "path": "docs/ASSET_CATALOG.json",
+      "size": 271040,
+      "sha256": "d792cd2ebe469150af86be1e51b1a3f154d347fa4131bc4818d80789d00e07b2"
+    },
+    {
+      "path": "export_presets.cfg",
+      "size": 280750,
+      "sha256": "7efcc57841cd360322c83565efaf1ec374637f4452408238d277c9ca038d77e2"
+    },
+    {
+      "path": "project.godot",
+      "size": 10630,
+      "sha256": "f84ab23d6bf91238e6b1e0e72e994b3453c35f71a5b1f1911b0fde47ed7a2605"
+    },
+    {
+      "path": "README_EXPORT.md",
+      "size": 4516,
+      "sha256": "687284cb23af80794b3d7a229728b73af8c632acd115d67391a16ffc4b15d9e5"
+    },
+    {
+      "path": "scenes/dev/asset_gallery.gd",
+      "size": 429,
+      "sha256": "3918006372ae39a57772b7b0d1bcbc364c9cd93fda64969c1da6da959a95f16d"
+    },
+    {
+      "path": "scenes/dev/asset_gallery.tscn",
+      "size": 309,
+      "sha256": "a9f7ca7c50221cfd5391d0ccb85c193325a5fcc7fc814df07b78f5bb434e58ff"
+    },
+    {
+      "path": "scenes/game_world.tscn",
+      "size": 214,
+      "sha256": "ac7e807d704d60efe8f8da058834f3150128065297c1d4e928dae95b781a2689"
+    },
+    {
+      "path": "scenes/main.tscn",
+      "size": 328,
+      "sha256": "a33c30e5b9f595f846609fcb1a1134443f3144235bb8b888fb38945f6783b8dc"
+    },
+    {
+      "path": "scenes/ui/campaign_map.tscn",
+      "size": 440,
+      "sha256": "7ae45f15869a1ea391c4a2ab621f2bdc8b98e03875f5e8a20065eb9a8d95f0fa"
+    },
+    {
+      "path": "scenes/ui/hero_creation.tscn",
+      "size": 444,
+      "sha256": "4c8881d14969b785bf49cca4b8517c6bb27445ed641e392c7871beb08218a41d"
+    },
+    {
+      "path": "scenes/ui/hero_sheet.tscn",
+      "size": 437,
+      "sha256": "7384f9c1c7ea8a1e29732094762c6450e01ed709086259f676c7c42f888af471"
+    },
+    {
+      "path": "scenes/ui/inventory.tscn",
+      "size": 436,
+      "sha256": "7bc8e099a6a6b8e32043bf232529e90a7253f277efdc6e2d1f1c7eb50434ce1c"
+    },
+    {
+      "path": "scenes/ui/main_menu.tscn",
+      "size": 434,
+      "sha256": "76ad282f2dc5ab9ffe6f87f65fe1aa25039cf8e1a2ff30e721e2202860cc6863"
+    },
+    {
+      "path": "scenes/ui/settings.tscn",
+      "size": 433,
+      "sha256": "cc165be2fbc4611f2acb308bb945f78ae07b34f2573f6a8a0d6828c5d73b3383"
+    },
+    {
+      "path": "scenes/ui/skill_tree.tscn",
+      "size": 437,
+      "sha256": "081bda80fbb2cf85adae70706ae7379281da56076624bbd3712b77b94294ac67"
+    },
+    {
+      "path": "scenes/ui/skirmish_setup.tscn",
+      "size": 444,
+      "sha256": "298b723aad12b7c542b6a7caccdf2cd3b2089338c16c3e76627c14a8ad3e176f"
+    },
+    {
+      "path": "scripts/ai/enemy_ai.gd",
+      "size": 11241,
+      "sha256": "a643fb8c9609b7fc71c583d55f4753f869f90bab30896f437ca819f3858b3e33"
+    },
+    {
+      "path": "scripts/ai/enemy_ai.gd.uid",
+      "size": 20,
+      "sha256": "8df0842370df9c2fb070fe75755a79595dd8d42e6b894ec2536df17022528d14"
+    },
+    {
+      "path": "scripts/autoloads/audio_manager.gd",
+      "size": 3266,
+      "sha256": "82d942a55b8bd7123fe8e93184ff3a84b009e4a56bcea8da29a3dabe6ad0d0de"
+    },
+    {
+      "path": "scripts/autoloads/audio_manager.gd.uid",
+      "size": 20,
+      "sha256": "1b46002ab0a4113fe9feb627552bc50f48d981a98935bd40a5af869ca9cc3d74"
+    },
+    {
+      "path": "scripts/autoloads/loading_screen.gd",
+      "size": 22679,
+      "sha256": "785a597d9dbcf63a4d19e48517b24b32a75bdd78769c8d1bcd4a9ce2369fe884"
+    },
+    {
+      "path": "scripts/autoloads/loading_screen.gd.uid",
+      "size": 20,
+      "sha256": "cfef1f8564de5a6099e43bb0b4c0d82748d85b7b92eb330e34098752976e9ac6"
+    },
+    {
+      "path": "scripts/autoloads/match_config.gd",
+      "size": 1044,
+      "sha256": "101ce2de7d611cca8f1cc99db368d83b1fd4c8d1b7e08b122c2edffd564381b1"
+    },
+    {
+      "path": "scripts/autoloads/match_config.gd.uid",
+      "size": 20,
+      "sha256": "c9e097487475a51349d13c7e075dc9662ade288f6d62cbf9cdae5c25ad146359"
+    },
+    {
+      "path": "scripts/autoloads/profile_manager.gd",
+      "size": 9761,
+      "sha256": "0d3e422135807fcc4fc86931046d5e86c97f908ae79c00e1f25e9bb7642a710d"
+    },
+    {
+      "path": "scripts/autoloads/profile_manager.gd.uid",
+      "size": 20,
+      "sha256": "11fd1689d6ecd70013647f668acf3a6f9a995dc98b4f24a45774181959e9fa29"
+    },
+    {
+      "path": "scripts/autoloads/sfx.gd",
+      "size": 1151,
+      "sha256": "1f5b7290f910c058a05b6e735b5d2bdd66ba0f59564697513f73bb17ae523e2f"
+    },
+    {
+      "path": "scripts/autoloads/sfx.gd.uid",
+      "size": 19,
+      "sha256": "d089d4b5e703807a9417a714c17034000842d9a0d6881775d73d8527c5ad3284"
+    },
+    {
+      "path": "scripts/buildings/building.gd",
+      "size": 9892,
+      "sha256": "955d5bfc3be1a26fa3587252b1a2edd5bc164f974a3f75dbf93c800b64786b2f"
+    },
+    {
+      "path": "scripts/buildings/building.gd.uid",
+      "size": 20,
+      "sha256": "08e96a6775e3ecfc565c19d21c17a46a6273eb8f94e2188e0917f31ca473b289"
+    },
+    {
+      "path": "scripts/game/building_defs.gd",
+      "size": 25567,
+      "sha256": "cd5e64ad834a1595a0d968f0c76b9afbaa42deaf1b29798a269775a109133904"
+    },
+    {
+      "path": "scripts/game/building_defs.gd.uid",
+      "size": 20,
+      "sha256": "a506a51bb7fbf3fe7712070162025f4528554f2b6d6c7173143075511dbfaed9"
+    },
+    {
+      "path": "scripts/game/commander.gd",
+      "size": 4260,
+      "sha256": "8febc0e8a4abea3e4c8f6512ea8111eb05daa5b6860ba98e66541675843a371b"
+    },
+    {
+      "path": "scripts/game/commander.gd.uid",
+      "size": 20,
+      "sha256": "c7fbb60db27c074426eff5ae5050cc120a5a3da619556c5b524c6ad6336f85a6"
+    },
+    {
+      "path": "scripts/game/game_data.gd",
+      "size": 8495,
+      "sha256": "4f5c81ba0b4783121369a2db8d6d079a14c1ac2223b938de2fbf934efb34df32"
+    },
+    {
+      "path": "scripts/game/game_data.gd.uid",
+      "size": 20,
+      "sha256": "a796b74835c26476a934de70f979353409e3e03c8ae6afabd7e076a4c8aa82b8"
+    },
+    {
+      "path": "scripts/game/hero_progression.gd",
+      "size": 4600,
+      "sha256": "22b5f9d8ce284477def5ffaa705ba4b357391455c0cccd25d45da47e412cb2fd"
+    },
+    {
+      "path": "scripts/game/hero_progression.gd.uid",
+      "size": 19,
+      "sha256": "860e6b25404b2f62cd8a288504a4cb14ec31cdbb78489e7a6e58a365d38fe094"
+    },
+    {
+      "path": "scripts/game/skill_defs.gd",
+      "size": 35952,
+      "sha256": "dfd4066ec921652ee7dedc0a0655b5c729332e8e35100539b99a9fd40b6b22f8"
+    },
+    {
+      "path": "scripts/game/skill_defs.gd.uid",
+      "size": 19,
+      "sha256": "90c13898df8f7a6b9f8d5c25ea1e140f1651b36be0bbbe2e97dda007530466cf"
+    },
+    {
+      "path": "scripts/game/tech_defs.gd",
+      "size": 1084,
+      "sha256": "889a506c70f0c150d0c5739dff05305500042fdf14745c497a6d250231caee65"
+    },
+    {
+      "path": "scripts/game/tech_defs.gd.uid",
+      "size": 18,
+      "sha256": "ccb99e8eee02abe22721e240af3b279562a1aa4683916f67410f84cc6d1bf7ed"
+    },
+    {
+      "path": "scripts/game/unit_defs.gd",
+      "size": 37090,
+      "sha256": "6b48be68aa78a692b7651da410513cf958aac7e90d00dd1b230bc23272d544c4"
+    },
+    {
+      "path": "scripts/game/unit_defs.gd.uid",
+      "size": 20,
+      "sha256": "0ea976305ab8e063b9e885b162124ff741ecad61e525d8432a33c9d192bc0235"
+    },
+    {
+      "path": "scripts/main_menu.gd",
+      "size": 4399,
+      "sha256": "96c2af2c9fc06a48ff870fee31ad7459fb9c4daa040626e6f8be4889f1e23a9e"
+    },
+    {
+      "path": "scripts/main_menu.gd.uid",
+      "size": 20,
+      "sha256": "d869db39275c0f55bcd9620043cdf21a0f2f40654d72ee87178b491291cf63f7"
+    },
+    {
+      "path": "scripts/ui/campaign_map.gd",
+      "size": 13471,
+      "sha256": "c00c6c34db5cb561ed7900daf9b8664b8fb1db2aa985a97022c7b3baaef7db9b"
+    },
+    {
+      "path": "scripts/ui/campaign_map.gd.uid",
+      "size": 20,
+      "sha256": "73da476b1bc09dce92cb212f1c65280ada04951ab59bc026bea4711027a726bd"
+    },
+    {
+      "path": "scripts/ui/debug_overlay.gd",
+      "size": 3493,
+      "sha256": "3d68b79c7faaf872e98394593925b22c1205c948e27882dd561f41d565fdd340"
+    },
+    {
+      "path": "scripts/ui/debug_overlay.gd.uid",
+      "size": 20,
+      "sha256": "8f7bde6db5e241e88d0ea61332304739036e6b183776f1cdbe24e29ea9504137"
+    },
+    {
+      "path": "scripts/ui/hero_creation.gd",
+      "size": 17130,
+      "sha256": "b14cf695196cdc29f1040c8da1728676667fa630de9d2d172ed9dd7de3f15fe0"
+    },
+    {
+      "path": "scripts/ui/hero_creation.gd.uid",
+      "size": 20,
+      "sha256": "68ea49672af7eaf50b5ea2549d08a31658d01dd4789152d60ccae6849eba2739"
+    },
+    {
+      "path": "scripts/ui/hero_sheet.gd",
+      "size": 8840,
+      "sha256": "a192d564d528bc336ad44d56a991715a1295f4c0315f4f7fd51c98792d13fbf4"
+    },
+    {
+      "path": "scripts/ui/hero_sheet.gd.uid",
+      "size": 20,
+      "sha256": "b183e8a013d6bbdc0c2ca35f847bf178448db2ee5f80d7799ea683f013664331"
+    },
+    {
+      "path": "scripts/ui/hud.gd",
+      "size": 34599,
+      "sha256": "3e207d0fb9e2253355f959413bfce218287e89b0429f7528e37f19255d2d7320"
+    },
+    {
+      "path": "scripts/ui/hud.gd.uid",
+      "size": 20,
+      "sha256": "44f3327afcb1f52586f574d72b90a5852bbb8d8afde31ca6d1b41f87b9b33de6"
+    },
+    {
+      "path": "scripts/ui/inventory.gd",
+      "size": 9046,
+      "sha256": "cdbf92bdbe77801d5ee552f07ce3c1cdc0f5945d6db45c37a0878f7f2ea21c34"
+    },
+    {
+      "path": "scripts/ui/inventory.gd.uid",
+      "size": 19,
+      "sha256": "57fc62c53b920f1a5c8350be7e6ea86e00770b3dc914a7155bee2d5c89b7e49b"
+    },
+    {
+      "path": "scripts/ui/main_menu.gd",
+      "size": 4086,
+      "sha256": "7ef9946638ff7de73fba27b7b1f02cd0bc8d07ceeffd4bdf05906f5c8bc3812c"
+    },
+    {
+      "path": "scripts/ui/main_menu.gd.uid",
+      "size": 20,
+      "sha256": "105b78c339ad7eb3fbe62b12e832f029b44daf3ca9b308afe388aafd59b93cab"
+    },
+    {
+      "path": "scripts/ui/pause_menu.gd",
+      "size": 3194,
+      "sha256": "0fc554129e13bb818996aaecc58f0a80a5e1f4bdcae4fb5feb924d7e3d0e0e62"
+    },
+    {
+      "path": "scripts/ui/pause_menu.gd.uid",
+      "size": 20,
+      "sha256": "101d61d69c48883023284e00fcd9cc2a6ef30e587c61242218c33e98afe0a28e"
+    },
+    {
+      "path": "scripts/ui/settings.gd",
+      "size": 7875,
+      "sha256": "d52be4930a3df5b0140d15fa14d53a78a415d56793e6609166f070417d11bc13"
+    },
+    {
+      "path": "scripts/ui/settings.gd.uid",
+      "size": 19,
+      "sha256": "e5f03d1d7ac4281718976117baf392f71c08251637e0acca082a27ef15174ab6"
+    },
+    {
+      "path": "scripts/ui/skill_tree.gd",
+      "size": 9528,
+      "sha256": "accccced465f89f83c2c21c1c8a6f18668cb0a00385ce77b2a89e0ba271214e0"
+    },
+    {
+      "path": "scripts/ui/skill_tree.gd.uid",
+      "size": 20,
+      "sha256": "1d63aa11a3d308c43e6d555e40be304acd114330acaedc33afb58e6f1291d945"
+    },
+    {
+      "path": "scripts/ui/skirmish_setup.gd",
+      "size": 10674,
+      "sha256": "5dc4ad8c0ac80157327c35306f53f30fd9db3c62e6dda7b3f4538441783fd727"
+    },
+    {
+      "path": "scripts/ui/skirmish_setup.gd.uid",
+      "size": 20,
+      "sha256": "1f90afb37e0fcef5bdb7d1253926b64644645c7a0cf75a49b474b8108789c9f6"
+    },
+    {
+      "path": "scripts/ui/tutorial.gd",
+      "size": 5760,
+      "sha256": "94f42a2eab020dc5fa4fd346021ae326ee96d090120ae742a711683f88f15bda"
+    },
+    {
+      "path": "scripts/ui/tutorial.gd.uid",
+      "size": 20,
+      "sha256": "499f65f3491cdb51e1a172e52867b349b548915c7ca1055095fced9646c1c875"
+    },
+    {
+      "path": "scripts/units/projectile.gd",
+      "size": 2654,
+      "sha256": "cf3d24afec7cbab61f7a0e83cf63baa95897b7976679cbb32a87397cdd7a5daa"
+    },
+    {
+      "path": "scripts/units/projectile.gd.uid",
+      "size": 20,
+      "sha256": "94eab65cb91e732c484640ae554fbc635715bd00891114196d6ca0ab5672c458"
+    },
+    {
+      "path": "scripts/units/unit.gd",
+      "size": 24220,
+      "sha256": "3332ead274f80c3ebdf8b01c5b7d714e884abcb39d3488a95e7ba8a0cfc92d94"
+    },
+    {
+      "path": "scripts/units/unit.gd.uid",
+      "size": 20,
+      "sha256": "d94395386a9510caf0a21bf5f4f3c728830c9ed51da0be26fed948bc4fba17c5"
+    },
+    {
+      "path": "scripts/utils/model_utils.gd",
+      "size": 3715,
+      "sha256": "16551682e518e5f9def157e88a1ef7378793b039c24527001719edec33818f57"
+    },
+    {
+      "path": "scripts/utils/model_utils.gd.uid",
+      "size": 20,
+      "sha256": "76b80b7ad3dde54f0664f3f0874d8a69845a315a903ed2f5ca0105a88da6d59a"
+    },
+    {
+      "path": "scripts/weapon_grip.gd",
+      "size": 8785,
+      "sha256": "66609f4ca70c456730989e1caf45d706ca50ac2382ce833ffea7c87f9f04ffcb"
+    },
+    {
+      "path": "scripts/weapon_grip.gd.uid",
+      "size": 20,
+      "sha256": "3791cbf96583f82a50543be1b5030dda3c7c61bc897b2bc14de8e9acfa09bd89"
+    },
+    {
+      "path": "scripts/world/capture_point.gd",
+      "size": 4146,
+      "sha256": "98920c3f5783c628316f44e290d639c0fb0aea0fcb5a4c93ec0f3a865cb6159e"
+    },
+    {
+      "path": "scripts/world/capture_point.gd.uid",
+      "size": 19,
+      "sha256": "c858a5d4a42e0a1fa1dfe61d1d9b95e11ae907483120a6dbbbe60865102d0d93"
+    },
+    {
+      "path": "scripts/world/game_root.gd",
+      "size": 3769,
+      "sha256": "8997dd0a790a4ee8f9b3d379240537f66b555450c6f8590fdbd40697980bd1c5"
+    },
+    {
+      "path": "scripts/world/game_root.gd.uid",
+      "size": 20,
+      "sha256": "0b314091019f701f02506815d7f368c7e1ed9aeec6f4f7390b84f4cbd77b44df"
+    },
+    {
+      "path": "scripts/world/game_world.gd",
+      "size": 29639,
+      "sha256": "1d5668dfa1a098fa1d85cb3b8d3b80dcf9ee0b38a69306621ce042f46570cff5"
+    },
+    {
+      "path": "scripts/world/game_world.gd.uid",
+      "size": 20,
+      "sha256": "fd82b7fff699ceb5d57695e387fae4ab0310dd3f06293b7569a77022005239b4"
+    },
+    {
+      "path": "scripts/world/map_defs.gd",
+      "size": 12949,
+      "sha256": "2abf2a5f2e36a429605e3ca4b6240243954a759a7e6dca4b0d0e7afb66dc15fa"
+    },
+    {
+      "path": "scripts/world/map_defs.gd.uid",
+      "size": 20,
+      "sha256": "2646e8bd31f29a9301aab4bd9feb8e0369900b7f8000437bef5e02bbffd8b1f5"
+    },
+    {
+      "path": "scripts/world/resource_node.gd",
+      "size": 1358,
+      "sha256": "bfdf245a7a849b5c0e9360f3a1892f13e2e3fe08699f3275bf18b5288f1dcb39"
+    },
+    {
+      "path": "scripts/world/resource_node.gd.uid",
+      "size": 20,
+      "sha256": "5e13e61ea45d6f186eee96c14b60b1f5f0a4765d90f62e13d58601d0d0309181"
+    },
+    {
+      "path": "scripts/world/rts_controller.gd",
+      "size": 18598,
+      "sha256": "6deb240029689010129123b9c0558445cf9d8c490d45e2903b3cb4f547fa5615"
+    },
+    {
+      "path": "scripts/world/rts_controller.gd.uid",
+      "size": 20,
+      "sha256": "94c21c8046580ad6f00d3fa63fe77c3fad85520b641d6ea090373936b9eb407f"
+    },
+    {
+      "path": "scripts/world/terrain_builder.gd",
+      "size": 8742,
+      "sha256": "84b7d239f87c5a5bb28a6178b8fb3a0f7a5a886c9b8ce94eb68cd4c4c675f5fc"
+    },
+    {
+      "path": "scripts/world/terrain_builder.gd.uid",
+      "size": 20,
+      "sha256": "7f3771ca2e3d83754d5772e06c08515385cc22d65e2fafbfe50150af4db6ab87"
+    },
+    {
+      "path": "slot-0.lock",
+      "size": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "tests/asset_load_scan.gd",
+      "size": 1430,
+      "sha256": "a2248d036484b6d9cefaa5d2dbac3bd59c7b579a88e007b8c75868b0d05018f1"
+    }
+  ]
+}

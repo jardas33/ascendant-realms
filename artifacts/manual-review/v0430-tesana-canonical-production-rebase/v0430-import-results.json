@@ -1,0 +1,26 @@
+{
+  "schema": "v0430-import-results-v1",
+  "engine": "4.3.stable.official.77dcf97d8",
+  "passes": [
+    {
+      "name": "pass-1",
+      "status": "completed",
+      "log": "v0430-import-pass-1.log",
+      "blockingErrors": 0
+    },
+    {
+      "name": "pass-2",
+      "status": "completed",
+      "log": "v0430-import-pass-2.log",
+      "blockingErrors": 0
+    },
+    {
+      "name": "pass-3",
+      "status": "stable",
+      "log": "v0430-import-pass-3.log",
+      "blockingErrors": 0
+    }
+  ],
+  "assetLoadScan": "v0430-asset-load-scan.json",
+  "parserErrorsAfterRepair": 0
+}

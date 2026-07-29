@@ -1,0 +1,3 @@
+Post-rehabilitation blocking parser errors: 0
+Post-rehabilitation blocking missing-resource errors: 0
+The first scanner pass was superseded after correcting it to exclude source GDScript compilation from resource-load enumeration.

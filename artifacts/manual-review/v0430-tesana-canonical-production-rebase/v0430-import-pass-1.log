@@ -1,0 +1,12 @@
+Godot Engine v4.3.stable.official.77dcf97d8 - https://godotengine.org
+
+USER ERROR: The target vector and up vector can't be parallel to each other.
+   at: looking_at (core/math/basis.cpp:1053)
+USER ERROR: The target vector and up vector can't be parallel to each other.
+   at: looking_at (core/math/basis.cpp:1053)
+USER ERROR: The target vector and up vector can't be parallel to each other.
+   at: looking_at (core/math/basis.cpp:1053)
+USER ERROR: The target vector and up vector can't be parallel to each other.
+   at: looking_at (core/math/basis.cpp:1053)
+USER WARNING: Ignoring face with non-finite normal in LOD generation.
+   at: generate_lods (scene/resources/3d/importer_mesh.cpp:521)

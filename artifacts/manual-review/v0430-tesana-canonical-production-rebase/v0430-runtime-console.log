@@ -1,0 +1,1 @@
+Headless production smoke completed after TesanaWorldEditor autoload removal. No 127.0.0.1:5180/5181 listeners were started. Godot exited with only normal ObjectDB/resource cleanup diagnostics.
