@@ -159,6 +159,8 @@ const SCRIPT_ARG_PREFIXES := [
 	"--v0425-secondary-barn-eaves-smoke",
 	"--v0426-secondary-barn-contact-shadow-capture",
 	"--v0426-secondary-barn-contact-shadow-smoke",
+	"--v0427-resident-worker-primary-garment-capture",
+	"--v0427-resident-worker-primary-garment-smoke",
 	"--h3-semantic-evidence",
 	"--h3-supported-state-contract",
 	"--h3-directional-animation-micro-pilot",
@@ -950,6 +952,18 @@ func _ready() -> void:
 		v0426_pass.set_meta("v0426_capture_mode", args.has("--v0426-secondary-barn-contact-shadow-capture"))
 		v0426_pass.set_meta("v0426_smoke_mode", args.has("--v0426-secondary-barn-contact-shadow-smoke"))
 		add_child(v0426_pass)
+		return
+	if args.has("--v0427-resident-worker-primary-garment-capture") or args.has("--v0427-resident-worker-primary-garment-smoke"):
+		var v0427_script := load("res://scripts/v0427_resident_worker_primary_garment_value_hierarchy.gd") as Script
+		if v0427_script == null:
+			push_error("v0.427 resident-worker primary-garment script failed to load")
+			return
+		var v0427_pass := Node3D.new()
+		v0427_pass.set_script(v0427_script)
+		v0427_pass.name = "V0427ResidentWorkerPrimaryGarmentValueHierarchy"
+		v0427_pass.set_meta("v0427_capture_mode", args.has("--v0427-resident-worker-primary-garment-capture"))
+		v0427_pass.set_meta("v0427_smoke_mode", args.has("--v0427-resident-worker-primary-garment-smoke"))
+		add_child(v0427_pass)
 		return
 	if args.has("--salto-production-target-spike"):
 		var spike_scene := load("res://scenes/salto_production_target_spike.tscn") as PackedScene
