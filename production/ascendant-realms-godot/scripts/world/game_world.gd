@@ -1,0 +1,840 @@
+extends Node3D
+## GameWorld — the battle orchestrator. Builds terrain, navigation, environment,
+## commanders, resource nodes, capture points; runs combat resolution, auras,
+## fog-of-war bookkeeping, and victory/defeat. UI and input live in child nodes.
+
+const Unit := preload("res://scripts/units/unit.gd")
+const Building := preload("res://scripts/buildings/building.gd")
+const ProjectileScript := preload("res://scripts/units/projectile.gd")
+const ResourceNodeScript := preload("res://scripts/world/resource_node.gd")
+const CapturePointScript := preload("res://scripts/world/capture_point.gd")
+
+signal game_over(victory: bool)
+signal hero_leveled(level: int)
+signal alert(message: String, pos: Vector3)
+
+var map := {}
+var commanders := []            # Commander instances indexed by team
+var player_team := 0
+var player_commander = null
+
+var nav_region: NavigationRegion3D
+var terrain_mesh: MeshInstance3D
+var _projectile_container: Node3D
+var _fx_container: Node3D
+
+var game_running := false
+var _victory_kind := "conquest"
+var _aura_timer := 0.0
+var _slow_timer := 0.0
+var _battle_music := false
+var _combat_intensity := 0.0
+var match_time := 0.0
+var kills_by_player := 0
+
+# combat spatial helpers (rebuilt cheaply)
+var _unit_cache_timer := 0.0
+
+var _theme := {}
+
+func _ready() -> void:
+	var cfg := Match.get_config()
+	map = MapDefs.get_map(cfg.get("map", "hollowspan"))
+	_theme = MapDefs.theme(map.get("theme", "highland"))
+	_projectile_container = Node3D.new()
+	_projectile_container.name = "Projectiles"
+	add_child(_projectile_container)
+	_fx_container = Node3D.new()
+	_fx_container.name = "FX"
+	add_child(_fx_container)
+	_setup_environment()
+	_build_terrain()
+	_build_navigation()
+	_scatter_environment()
+	_setup_commanders()
+	_spawn_resources()
+	_spawn_capture_points()
+	call_deferred("_start_match")
+
+# --------------------------------------------------------------------------
+# Environment
+# --------------------------------------------------------------------------
+func _setup_environment() -> void:
+	var env := Environment.new()
+	env.background_mode = Environment.BG_SKY
+	var sky_path := "res://assets/textures/skyboxes/highland_storm_sky_sky.tres"
+	if ResourceLoader.exists(sky_path):
+		env.sky = load(sky_path)
+		env.ambient_light_source = Environment.AMBIENT_SOURCE_SKY
+		env.reflected_light_source = Environment.REFLECTION_SOURCE_SKY
+	else:
+		env.background_mode = Environment.BG_COLOR
+		env.background_color = Color(0.5, 0.6, 0.7)
+	env.ambient_light_energy = float(_theme.get("ambient_energy", 0.6))
+	env.tonemap_mode = Environment.TONE_MAPPER_ACES
+	env.tonemap_white = 6.0
+	env.glow_enabled = true
+	env.glow_intensity = 0.35
+	env.glow_bloom = 0.15
+	env.fog_enabled = true
+	env.fog_light_color = _theme.get("fog_color", Color(0.72, 0.78, 0.85))
+	env.fog_density = float(_theme.get("fog_density", 0.0016))
+	env.fog_sky_affect = 0.25
+	var we := WorldEnvironment.new()
+	we.name = "WorldEnvironment"
+	we.environment = env
+	add_child(we)
+
+	var sun := DirectionalLight3D.new()
+	sun.name = "Sun"
+	sun.rotation_degrees = Vector3(-52, 40, 0)
+	sun.light_energy = float(_theme.get("sun_energy", 1.15))
+	sun.light_color = _theme.get("sun_color", Color(1.0, 0.96, 0.88))
+	sun.shadow_enabled = true
+	sun.directional_shadow_max_distance = 200.0
+	sun.directional_shadow_split_1 = 0.08
+	sun.directional_shadow_split_2 = 0.25
+	add_child(sun)
+
+func _build_terrain() -> void:
+	var size: float = map["size"] * 2.0
+
+	# Scenery: textured path-veined ground, mountain ring, forest foothills, lake.
+	# All decoration around a flat playable core — pathing is unchanged.
+	var tb := TerrainBuilder.new()
+	tb.name = "Scenery"
+	add_child(tb)
+	tb.build(map)
+
+	# flat ground collision under the whole play field (units ride the navmesh)
+	var body := StaticBody3D.new()
+	body.collision_layer = 1
+	body.collision_mask = 0
+	var col := CollisionShape3D.new()
+	var shape := BoxShape3D.new()
+	shape.size = Vector3(size + 80.0, 1.0, size + 80.0)
+	col.shape = shape
+	col.position.y = -0.5
+	body.add_child(col)
+	add_child(body)
+
+	# perimeter invisible bounds keeping units on the play field
+	_build_bounds(size)
+
+func _build_bounds(size: float) -> void:
+	var half := size * 0.5
+	var wall_positions := [
+		[Vector3(0, 0, -half), Vector3(size, 40, 4)],
+		[Vector3(0, 0, half), Vector3(size, 40, 4)],
+		[Vector3(-half, 0, 0), Vector3(4, 40, size)],
+		[Vector3(half, 0, 0), Vector3(4, 40, size)],
+	]
+	for w in wall_positions:
+		var body := StaticBody3D.new()
+		body.collision_layer = 1
+		body.collision_mask = 0
+		body.position = w[0]
+		var col := CollisionShape3D.new()
+		var shape := BoxShape3D.new()
+		shape.size = w[1]
+		col.shape = shape
+		col.position.y = 20
+		body.add_child(col)
+		add_child(body)
+
+func _scatter_environment() -> void:
+	# Fill the battlefield with trees, boulders and ruins so it reads as a living
+	# highland warfront instead of an empty plain. Decoration only (no collision,
+	# no shadow-casting) so units path freely on the flat navmesh and web stays fast.
+	var rng := RandomNumberGenerator.new()
+	rng.seed = 20260729 + int(Match.get_config().get("campaign_node", 0)) * 17
+
+	# bridge centerpiece
+	var bridge = map.get("bridge", {})
+	if bridge and ResourceLoader.exists(bridge.get("model", "")):
+		var b = load(bridge["model"]).instantiate()
+		add_child(b)
+		b.position = bridge["pos"]
+		ModelUtils.scale_to_height(b, 8.0)
+		ModelUtils.ground_model(b)
+
+	var decor := Node3D.new()
+	decor.name = "Decor"
+	add_child(decor)
+
+	var trees := []
+	for p in ["res://assets/environment/vegetation/highland_pine.glb",
+			"res://assets/environment/vegetation/broadleaf_oak.glb"]:
+		if ResourceLoader.exists(p):
+			trees.append(p)
+	var rocks := []
+	for p in ["res://assets/environment/rocks/mossy_boulder.glb",
+			"res://assets/environment/rocks/highland_rock_cluster.glb",
+			"res://assets/environment/structures/ancient_ruin_pillar.glb"]:
+		if ResourceLoader.exists(p):
+			rocks.append(p)
+	if trees.is_empty() and rocks.is_empty():
+		return
+
+	var half: float = map["size"]
+	var starts: Array = map.get("start_positions", [])
+	var density: float = float(_theme.get("decor_density", 1.0))
+	var has_water: bool = _theme.get("water", {}).get("enabled", false)
+
+	# Dense perimeter belt of woodland ringing the play field.
+	for i in int(54 * density):
+		var ang := rng.randf() * TAU
+		var rad := half * rng.randf_range(0.70, 0.97)
+		var pos := Vector3(cos(ang) * rad, 0.0, sin(ang) * rad)
+		_place_decor(decor, (trees if rng.randf() < 0.62 else rocks), pos, rng)
+
+	# Outer foothill forest bridging the walls out to the mountain bases (all
+	# decoration beyond the ±140 bounds; skips the northern lake bay when present).
+	for i in int(84 * density):
+		var ang := rng.randf() * TAU
+		var nrm := ang
+		while nrm > PI: nrm -= TAU
+		while nrm < -PI: nrm += TAU
+		if has_water and nrm > 0.95 and nrm < 2.19:  # leave the north lake shore open
+			continue
+		var rad := half * rng.randf_range(1.03, 1.37)
+		var pos := Vector3(cos(ang) * rad, 0.0, sin(ang) * rad)
+		_place_decor(decor, (trees if rng.randf() < 0.72 else rocks), pos, rng)
+
+	# Sparser interior groves and outcrops, kept clear of bases, center and objectives.
+	var placed := 0
+	var attempts := 0
+	var interior_target: int = int(46 * density)
+	while placed < interior_target and attempts < 400:
+		attempts += 1
+		var pos := Vector3(rng.randf_range(-half, half) * 0.62, 0.0, rng.randf_range(-half, half) * 0.62)
+		if _too_close_to_key(pos, starts):
+			continue
+		_place_decor(decor, (trees if rng.randf() < 0.68 else rocks), pos, rng)
+		placed += 1
+
+func _too_close_to_key(pos: Vector3, starts: Array) -> bool:
+	for s in starts:
+		if pos.distance_to(s) < 34.0:
+			return true
+	if pos.distance_to(Vector3.ZERO) < 26.0:
+		return true
+	for c in map.get("capture_points", []):
+		if pos.distance_to(c.get("pos", Vector3.ZERO)) < 16.0:
+			return true
+	return false
+
+func _place_decor(parent: Node3D, pool: Array, pos: Vector3, rng: RandomNumberGenerator) -> void:
+	if pool.is_empty():
+		return
+	var path: String = pool[rng.randi() % pool.size()]
+	var inst = load(path).instantiate()
+	parent.add_child(inst)
+	inst.position = pos
+	var is_tree: bool = "vegetation" in path
+	var h: float = rng.randf_range(6.5, 10.5) if is_tree else rng.randf_range(1.6, 3.6)
+	ModelUtils.scale_to_height(inst, h)
+	ModelUtils.ground_model(inst)
+	inst.rotation.y = rng.randf() * TAU
+	_prep_decor(inst)
+
+func _prep_decor(n: Node) -> void:
+	if n is CollisionObject3D:
+		n.set_deferred("collision_layer", 0)
+		n.set_deferred("collision_mask", 0)
+	if n is GeometryInstance3D:
+		n.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	for c in n.get_children():
+		_prep_decor(c)
+
+func _build_navigation() -> void:
+	nav_region = NavigationRegion3D.new()
+	nav_region.name = "NavRegion"
+	var nav := NavigationMesh.new()
+	nav.agent_radius = 0.6
+	nav.agent_height = 1.8
+	nav.agent_max_climb = 0.5
+	nav.agent_max_slope = 45.0
+	nav.cell_size = 0.4
+	nav.cell_height = 0.3
+	var size: float = map["size"] * 2.0
+	# Define the walkable region as a big box; bake from terrain plane.
+	nav.filter_baking_aabb = AABB(Vector3(-size*0.5, -2, -size*0.5), Vector3(size, 10, size))
+	nav_region.navigation_mesh = nav
+	add_child(nav_region)
+	# Build a simple flat navmesh procedurally (no baking needed for a flat plane).
+	_build_flat_navmesh(nav, map["size"])
+
+func _build_flat_navmesh(nav: NavigationMesh, half: float) -> void:
+	# Create a single quad navmesh covering the play field.
+	var verts := PackedVector3Array([
+		Vector3(-half, 0.05, -half),
+		Vector3(half, 0.05, -half),
+		Vector3(half, 0.05, half),
+		Vector3(-half, 0.05, half),
+	])
+	nav.vertices = verts
+	nav.add_polygon(PackedInt32Array([0, 1, 2]))
+	nav.add_polygon(PackedInt32Array([0, 2, 3]))
+
+# --------------------------------------------------------------------------
+# Commanders & starting bases
+# --------------------------------------------------------------------------
+func _setup_commanders() -> void:
+	var cfg := Match.get_config()
+	player_team = 0
+	_victory_kind = cfg.get("victory", "conquest")
+	var bank := Match.starting_bank(cfg.get("start_resources", "standard"))
+
+	# hero stats from persistent profile
+	var hero_stats := {}
+	if ProfileManager.has_hero():
+		hero_stats = HeroProgression.compute(ProfileManager.hero())
+
+	# player
+	var pc := Commander.new()
+	pc.name = "Commander_0"
+	add_child(pc)
+	pc.setup(0, cfg.get("player_race", "barrosan"), true, bank.duplicate(), hero_stats)
+	commanders.append(pc)
+	player_commander = pc
+
+	# opponents
+	var opps: Array = cfg.get("opponents", [{"race": "vorthak", "difficulty": "normal"}])
+	var t := 1
+	for o in opps:
+		var ec := Commander.new()
+		ec.name = "Commander_%d" % t
+		add_child(ec)
+		ec.setup(t, o.get("race", "vorthak"), false, bank.duplicate(), {})
+		commanders.append(ec)
+		t += 1
+
+	# build starting bases
+	for i in commanders.size():
+		_build_starting_base(commanders[i], map["start_positions"][i])
+
+func _build_starting_base(cmd, pos: Vector3) -> void:
+	var race := GameData.get_race(cmd.race)
+	var main_id: String = race.get("main_building", "")
+	var main_def := GameData.get_building(main_id)
+	var hq = _create_building(main_def, cmd.team, pos, true)
+	cmd.hero_ref = null
+	# starting workers + one soldier + hero
+	var start_units: Array = race.get("start_units", [])
+	var angle := 0.0
+	var i := 0
+	for uid_key in start_units:
+		var uid := _resolve_unit_id(cmd.race, uid_key)
+		var sp := pos + Vector3(cos(angle) * 10.0, 0, sin(angle) * 10.0)
+		spawn_unit(uid, cmd.team, sp)
+		angle += TAU / max(1, start_units.size())
+		i += 1
+	# hero
+	var hero_id: String = race.get("hero", "")
+	var hero = spawn_unit(hero_id, cmd.team, pos + Vector3(6, 0, 6))
+	if hero:
+		cmd.hero_ref = hero
+		if ProfileManager.has_hero() and cmd.is_human:
+			hero.def = hero.def  # name already set from def
+
+func _resolve_unit_id(race: String, key: String) -> String:
+	# start_units use short keys; map to actual ids
+	match key:
+		"barrosan_worker", "lioraen_worker", "vorthak_worker":
+			return key
+		"barrosan_spears": return "barrosan_spear_guard"
+		"lioraen_thorns": return "lioraen_thorn_ranger"
+		"vorthak_thrall": return "vorthak_ash_thrall"
+		_:
+			return key
+
+# --------------------------------------------------------------------------
+# Spawning
+# --------------------------------------------------------------------------
+func spawn_unit(unit_id: String, team: int, pos: Vector3):
+	var udef := GameData.get_unit(unit_id).duplicate()
+	if udef.is_empty():
+		return null
+	udef["id"] = unit_id
+	var u = Unit.new()
+	nav_region.add_child(u) if nav_region else add_child(u)
+	u.global_position = pos + Vector3(0, 0.1, 0)
+	u.configure(udef, team, commanders[team] if team < commanders.size() else null, self)
+	u.died.connect(_on_unit_died)
+	if team < commanders.size():
+		commanders[team].units.append(u)
+		commanders[team].recompute_pop()
+	return u
+
+func _create_building(bdef: Dictionary, team: int, pos: Vector3, prebuilt: bool):
+	var d := bdef.duplicate()
+	var b = Building.new()
+	add_child(b)
+	b.global_position = pos
+	b.configure(d, team, commanders[team] if team < commanders.size() else null, self, prebuilt)
+	b.died.connect(_on_building_died)
+	if team < commanders.size():
+		commanders[team].buildings.append(b)
+		commanders[team].recompute_pop()
+	return b
+
+func place_building(building_id: String, team: int, pos: Vector3):
+	var bdef := GameData.get_building(building_id).duplicate()
+	if bdef.is_empty():
+		return null
+	bdef["id"] = building_id
+	var cmd = commanders[team]
+	if not cmd.can_afford(bdef.get("cost", {})):
+		return null
+	cmd.spend(bdef.get("cost", {}))
+	var b = _create_building(bdef, team, pos, false)
+	return b
+
+func spawn_projectile(from: Vector3, target, dmg: float, dtype: String, team: int, kind: String, splash: float, source) -> void:
+	var p = ProjectileScript.new()
+	_projectile_container.add_child(p)
+	p.setup(from, target, dmg, dtype, team, self, kind, splash)
+	# speed by kind
+	if kind in ["arrow", "bolt", "thorn"]:
+		p.speed = 34.0
+	else:
+		p.speed = 22.0
+
+# --------------------------------------------------------------------------
+# Combat resolution callbacks (from projectiles / units)
+# --------------------------------------------------------------------------
+func projectile_impact(pos: Vector3, target, dmg: float, dtype: String, team: int, splash: float, kind: String) -> void:
+	spawn_hit_fx(pos, kind)
+	if is_instance_valid(target) and not _is_dead(target) and target.team != team:
+		var ac = target.armor_class if "armor_class" in target else "medium"
+		var ar = target.cur_armor() if target.has_method("cur_armor") else 0.0
+		var final = GameData.compute_damage(dmg, dtype, ac, ar)
+		target.take_damage(final, null)
+	if splash > 0.0:
+		apply_splash(pos, splash, dmg * 0.5, dtype, team, target)
+
+func apply_splash(center: Vector3, radius: float, dmg: float, dtype: String, team: int, exclude) -> void:
+	for u in all_units():
+		if u == exclude or not is_instance_valid(u) or u.is_dead:
+			continue
+		if u.team != team and u.global_position.distance_to(center) <= radius:
+			var final = GameData.compute_damage(dmg, dtype, u.armor_class, u.cur_armor())
+			u.take_damage(final, null)
+
+func _is_dead(n) -> bool:
+	return "is_dead" in n and n.is_dead
+
+# --------------------------------------------------------------------------
+# Queries used by unit AI
+# --------------------------------------------------------------------------
+func all_units() -> Array:
+	return get_tree().get_nodes_in_group("units")
+
+func all_buildings() -> Array:
+	return get_tree().get_nodes_in_group("buildings")
+
+func find_enemy_in_range(unit, rng: float):
+	var best = null
+	var best_d := rng * rng
+	var p: Vector3 = unit.global_position
+	for u in all_units():
+		if not is_instance_valid(u) or u.is_dead or u.team == unit.team:
+			continue
+		var d = p.distance_squared_to(u.global_position)
+		if d < best_d:
+			best_d = d
+			best = u
+	# also consider buildings if no unit and unit is combat
+	if best == null and not unit.is_worker:
+		for b in all_buildings():
+			if not is_instance_valid(b) or b.is_dead or b.team == unit.team:
+				continue
+			var d = p.distance_squared_to(b.global_position)
+			if d < best_d:
+				best_d = d
+				best = b
+	return best
+
+func find_enemy_near(pos: Vector3, rng: float, team: int):
+	var best = null
+	var best_d := rng * rng
+	for u in all_units():
+		if not is_instance_valid(u) or u.is_dead or u.team == team:
+			continue
+		var d = pos.distance_squared_to(u.global_position)
+		if d < best_d:
+			best_d = d
+			best = u
+	return best
+
+func find_wounded_ally(unit, rng: float):
+	var best = null
+	var best_ratio := 0.95
+	for u in all_units():
+		if not is_instance_valid(u) or u.is_dead or u.team != unit.team or u == unit:
+			continue
+		if u.global_position.distance_to(unit.global_position) <= rng:
+			var r = u.get_hp_ratio()
+			if r < best_ratio:
+				best_ratio = r
+				best = u
+	return best
+
+func find_nearest_resource(pos: Vector3, kind: String):
+	var best = null
+	var best_d := INF
+	for r in get_tree().get_nodes_in_group("resources"):
+		if not is_instance_valid(r) or r.depleted:
+			continue
+		if kind != "" and r.resource_kind != kind:
+			continue
+		var d = pos.distance_squared_to(r.global_position)
+		if d < best_d:
+			best_d = d
+			best = r
+	if best == null and kind != "":
+		return find_nearest_resource(pos, "")
+	return best
+
+func find_nearest_dropoff(pos: Vector3, team: int):
+	var best = null
+	var best_d := INF
+	for b in all_buildings():
+		if not is_instance_valid(b) or b.is_dead or b.team != team:
+			continue
+		if not b.is_built or not b.def.get("drop_off", false):
+			continue
+		var d = pos.distance_squared_to(b.global_position)
+		if d < best_d:
+			best_d = d
+			best = b
+	return best
+
+func near_friendly_hq(pos: Vector3, team: int, rng: float) -> bool:
+	for b in all_buildings():
+		if not is_instance_valid(b) or b.is_dead or b.team != team:
+			continue
+		if b.def.get("is_hq", false) and pos.distance_to(b.global_position) <= rng:
+			return true
+	return false
+
+func heal_allies_near(center: Vector3, rng: float, amt: float, team: int) -> void:
+	for u in all_units():
+		if is_instance_valid(u) and not u.is_dead and u.team == team:
+			if u.global_position.distance_to(center) <= rng:
+				u.heal(amt)
+
+func commander_for_team(team: int):
+	if team >= 0 and team < commanders.size():
+		return commanders[team]
+	return null
+
+# --------------------------------------------------------------------------
+# Resources & capture points
+# --------------------------------------------------------------------------
+func _spawn_resources() -> void:
+	var models := {
+		"timber": "res://assets/props/containers/resource_timber_pile.glb",
+		"stone": "res://assets/props/misc/resource_stone_quarry_chunk.glb",
+		"gold": "res://assets/environment/rocks/gold_mine_lumevein.glb",
+		"food": "res://assets/props/containers/resource_timber_pile.glb",
+	}
+	var amounts := {"timber": 800, "stone": 700, "gold": 900, "food": 600}
+	var heights := {"timber": 2.0, "stone": 2.2, "gold": 3.0, "food": 2.0}
+	for r in map.get("resources", []):
+		var kind: String = r["kind"]
+		var node = ResourceNodeScript.new()
+		add_child(node)
+		node.global_position = r["pos"]
+		node.configure(kind, amounts.get(kind, 800), models.get(kind, ""), heights.get(kind, 2.0))
+
+func _spawn_capture_points() -> void:
+	for c in map.get("capture_points", []):
+		var cp = CapturePointScript.new()
+		add_child(cp)
+		cp.global_position = c["pos"]
+		cp.configure(c["name"], c["benefit"], c.get("model", ""), self)
+		cp.captured.connect(_on_point_captured_signal)
+
+func on_point_captured(point, team: int) -> void:
+	if team == player_team:
+		emit_signal("alert", "You captured %s!" % point.point_name, point.global_position)
+
+func _on_point_captured_signal(point, team: int) -> void:
+	pass
+
+# --------------------------------------------------------------------------
+# Match lifecycle
+# --------------------------------------------------------------------------
+func _start_match() -> void:
+	game_running = true
+	AudioManager.play_music_path(Sfx.music_key("battle"), -10.0, true)
+	_battle_music = true
+	emit_signal("alert", "The battle for Hollowspan Crossing begins!", Vector3.ZERO)
+
+func _physics_process(delta: float) -> void:
+	if not game_running:
+		return
+	match_time += delta
+	_aura_timer += delta
+	if _aura_timer >= 0.4:
+		_update_command_auras()
+		_aura_timer = 0.0
+	_check_victory()
+
+func _update_command_auras() -> void:
+	# reset then apply hero command auras
+	for u in all_units():
+		if is_instance_valid(u) and not u.is_dead:
+			u.set_aura_bonus(0.0, 0.0)
+	for cmd in commanders:
+		var hero = cmd.hero_ref
+		if not is_instance_valid(hero) or hero.is_dead:
+			continue
+		var rng: float = 12.0 + hero.aura_range
+		if hero.aura_dmg <= 0.0 and hero.aura_armor <= 0.0:
+			continue
+		for u in cmd.units:
+			if is_instance_valid(u) and not u.is_dead and u != hero:
+				if u.is_siege and not cmd.build_flags.get("aura_siege", false):
+					continue
+				if hero.global_position.distance_to(u.global_position) <= rng:
+					u.set_aura_bonus(hero.aura_dmg, hero.aura_armor)
+
+func _check_victory() -> void:
+	# a team is defeated when it has no HQ and no units capable of building
+	for cmd in commanders:
+		if cmd.defeated:
+			continue
+		if not cmd.has_hq() and _no_workers(cmd) and cmd.alive_buildings() == 0:
+			cmd.defeated = true
+			if cmd.team == player_team:
+				_end_game(false)
+				return
+	# domination victory: hold all capture points for a while — simplified to conquest here
+	var alive_teams := 0
+	var player_alive := false
+	for cmd in commanders:
+		if not cmd.defeated:
+			alive_teams += 1
+			if cmd.team == player_team:
+				player_alive = true
+	if player_alive and alive_teams == 1:
+		_end_game(true)
+
+func _no_workers(cmd) -> bool:
+	for u in cmd.units:
+		if is_instance_valid(u) and not u.is_dead and u.is_worker:
+			return false
+	return true
+
+func _end_game(victory: bool) -> void:
+	if not game_running:
+		return
+	game_running = false
+	AudioManager.play_music_path(Sfx.music_key("victory" if victory else "defeat"), -6.0, false)
+	# rewards
+	var xp := 200.0 + float(kills_by_player) * 12.0 + match_time * 0.5
+	if victory:
+		xp *= 1.6
+	if ProfileManager.has_hero():
+		ProfileManager.record_battle(victory, kills_by_player, xp)
+	Match.last_result = {"victory": victory, "kills": kills_by_player, "xp": xp, "time": match_time}
+	emit_signal("game_over", victory)
+
+# --------------------------------------------------------------------------
+# Damage / death notifications
+# --------------------------------------------------------------------------
+func on_unit_damaged(unit, from) -> void:
+	if unit.team == player_team and unit.is_worker:
+		emit_signal("alert", "Workers under attack!", unit.global_position)
+
+func on_building_damaged(building, from) -> void:
+	if building.team == player_team:
+		if randf() < 0.02:
+			Sfx.play("under_attack", -6.0)
+			emit_signal("alert", "Your base is under attack!", building.global_position)
+
+func _on_unit_died(unit) -> void:
+	if unit.team != player_team:
+		kills_by_player += 1
+	if unit.team < commanders.size():
+		commanders[unit.team].units.erase(unit)
+		commanders[unit.team].recompute_pop()
+	# hero down handling
+	for cmd in commanders:
+		if cmd.hero_ref == unit:
+			cmd.hero_ref = null
+
+func _on_building_died(building) -> void:
+	if building.team < commanders.size():
+		commanders[building.team].buildings.erase(building)
+		commanders[building.team].recompute_pop()
+
+func on_building_completed(building) -> void:
+	pass
+
+func on_building_destroyed(building) -> void:
+	if building.team == player_team:
+		emit_signal("alert", "You lost a %s!" % building.def.get("name", "building"), building.global_position)
+
+# --------------------------------------------------------------------------
+# Hero abilities
+# --------------------------------------------------------------------------
+func execute_hero_ability(hero, id: String, target_pos: Vector3, level: int) -> void:
+	var ab := SkillDefs.get_abilities().get(id, {})
+	match id:
+		"rally":
+			heal_allies_near(hero.global_position, ab.get("range", 14.0), 40.0 + hero.heal_power, hero.team)
+			for u in commander_for_team(hero.team).units:
+				if is_instance_valid(u) and not u.is_dead:
+					if u.global_position.distance_to(hero.global_position) <= ab.get("range", 14.0):
+						u.apply_slow(-1.0)  # no-op clear
+			spawn_ring_fx(hero.global_position, Color(1, 0.9, 0.4), ab.get("range", 14.0))
+		"slam":
+			var dmg = ab.get("dmg", 60) * (1.5 if level >= 2 else 1.0)
+			var rng = ab.get("range", 8.0) * (1.4 if level >= 2 else 1.0)
+			for u in all_units():
+				if is_instance_valid(u) and not u.is_dead and u.team != hero.team:
+					if u.global_position.distance_to(hero.global_position) <= rng:
+						u.take_damage(GameData.compute_damage(dmg, "blunt", u.armor_class, u.cur_armor()), hero)
+						u.apply_stun(1.5)
+			spawn_ring_fx(hero.global_position, Color(0.9, 0.6, 0.2), rng)
+		"charge":
+			var dir = (target_pos - hero.global_position)
+			dir.y = 0
+			var dist = min(dir.length(), ab.get("range", 18.0))
+			var dest = hero.global_position + dir.normalized() * dist
+			var dmg = ab.get("dmg", 50) * (1.4 if level >= 2 else 1.0)
+			for u in all_units():
+				if is_instance_valid(u) and not u.is_dead and u.team != hero.team:
+					if _point_near_segment(u.global_position, hero.global_position, dest, 3.0):
+						u.take_damage(GameData.compute_damage(dmg, "slash", u.armor_class, u.cur_armor()), hero)
+			hero.command_move(dest)
+			spawn_ring_fx(dest, hero.commander.color, 3.0)
+		"bolt":
+			var arcs = 1
+			if level == 2: arcs = 2
+			elif level >= 3: arcs = 3
+			var hit := []
+			for a in arcs:
+				var tgt = _nearest_enemy_to(target_pos, hero.team, hit)
+				if tgt:
+					hit.append(tgt)
+					spawn_projectile(hero.global_position + Vector3.UP * 1.5, tgt, ab.get("dmg", 70), "arcane", hero.team, "lume_bolt", 0.0, hero)
+		"heal":
+			heal_allies_near(hero.global_position, ab.get("range", 14.0), ab.get("heal", 120) + hero.heal_power, hero.team)
+			spawn_ring_fx(hero.global_position, Color(0.4, 1.0, 0.6), ab.get("range", 14.0))
+		"root":
+			for u in all_units():
+				if is_instance_valid(u) and not u.is_dead and u.team != hero.team:
+					if u.global_position.distance_to(target_pos) <= ab.get("range", 16.0):
+						u.apply_root(4.0)
+			spawn_ring_fx(target_pos, Color(0.4, 0.8, 0.4), ab.get("range", 16.0))
+		"avatar":
+			hero.max_hp *= 1.5
+			hero.hp = hero.max_hp
+			hero.base_dmg *= 1.6
+			if hero.model_root:
+				var t := create_tween()
+				t.tween_property(hero.model_root, "scale", hero.model_root.scale * 1.4, 0.4)
+			spawn_ring_fx(hero.global_position, Color(1, 0.5, 0.9), 6.0)
+			get_tree().create_timer(12.0).timeout.connect(func():
+				if is_instance_valid(hero) and not hero.is_dead:
+					hero.max_hp /= 1.5
+					hero.hp = min(hero.hp, hero.max_hp)
+					hero.base_dmg /= 1.6
+					if hero.model_root:
+						var t2 = hero.create_tween()
+						t2.tween_property(hero.model_root, "scale", hero.model_root.scale / 1.4, 0.4)
+			)
+
+func _nearest_enemy_to(pos: Vector3, team: int, exclude: Array):
+	var best = null
+	var best_d := 22.0 * 22.0
+	for u in all_units():
+		if not is_instance_valid(u) or u.is_dead or u.team == team or u in exclude:
+			continue
+		var d = pos.distance_squared_to(u.global_position)
+		if d < best_d:
+			best_d = d
+			best = u
+	return best
+
+func _point_near_segment(p: Vector3, a: Vector3, b: Vector3, tol: float) -> bool:
+	var ab := b - a
+	var t := 0.0
+	if ab.length_squared() > 0.0001:
+		t = clamp((p - a).dot(ab) / ab.length_squared(), 0.0, 1.0)
+	var closest := a + ab * t
+	return p.distance_to(closest) <= tol
+
+# --------------------------------------------------------------------------
+# FX (lightweight procedural)
+# --------------------------------------------------------------------------
+func spawn_hit_fx(pos: Vector3, kind: String) -> void:
+	var col := Color(1, 0.8, 0.4)
+	match kind:
+		"cinder": col = Color(1, 0.5, 0.15)
+		"void_bolt", "rift_shell": col = Color(0.7, 0.3, 0.9)
+		"thorn", "thornpod": col = Color(0.5, 0.8, 0.4)
+	_burst(pos, col, 6, 0.4)
+
+func spawn_heal_fx(pos: Vector3) -> void:
+	_burst(pos + Vector3.UP, Color(0.4, 1.0, 0.6), 5, 0.6)
+
+func spawn_ring_fx(pos: Vector3, col: Color, radius: float) -> void:
+	var ring := MeshInstance3D.new()
+	var torus := TorusMesh.new()
+	torus.inner_radius = radius * 0.7
+	torus.outer_radius = radius
+	ring.mesh = torus
+	var mat := StandardMaterial3D.new()
+	mat.albedo_color = col
+	mat.emission_enabled = true
+	mat.emission = col
+	mat.emission_energy_multiplier = 3.0
+	mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	ring.material_override = mat
+	_fx_container.add_child(ring)
+	ring.global_position = pos + Vector3.UP * 0.3
+	ring.scale = Vector3(0.2, 0.2, 0.2)
+	var t := create_tween()
+	t.set_parallel(true)
+	t.tween_property(ring, "scale", Vector3.ONE, 0.5)
+	t.tween_property(mat, "albedo_color:a", 0.0, 0.6)
+	t.chain().tween_callback(ring.queue_free)
+
+func _burst(pos: Vector3, col: Color, count: int, life: float) -> void:
+	var p := GPUParticles3D.new()
+	var mat := ParticleProcessMaterial.new()
+	mat.direction = Vector3(0, 1, 0)
+	mat.spread = 60.0
+	mat.initial_velocity_min = 2.0
+	mat.initial_velocity_max = 5.0
+	mat.gravity = Vector3(0, -6, 0)
+	mat.scale_min = 0.15
+	mat.scale_max = 0.35
+	mat.color = col
+	p.process_material = mat
+	var mesh := SphereMesh.new()
+	mesh.radius = 0.12
+	mesh.height = 0.24
+	var mm := StandardMaterial3D.new()
+	mm.albedo_color = col
+	mm.emission_enabled = true
+	mm.emission = col
+	mm.emission_energy_multiplier = 2.0
+	mm.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	mesh.material = mm
+	p.draw_pass_1 = mesh
+	p.amount = count
+	p.lifetime = life
+	p.one_shot = true
+	p.explosiveness = 0.9
+	_fx_container.add_child(p)
+	p.global_position = pos
+	p.emitting = true
+	get_tree().create_timer(life + 0.5).timeout.connect(p.queue_free)

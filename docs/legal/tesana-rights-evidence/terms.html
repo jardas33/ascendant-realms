@@ -1,0 +1,285 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <!-- FAVICON BLOCK — START
+         The Express SSR (node/index.js) replaces everything between
+         these markers (inclusive) with per-game favicon +
+         apple-touch-icon links on /launch/:gameId and /play/:gameId so
+         the OS shows the game's app icon in the Mac dock, Windows
+         taskbar, iOS home-screen bookmark, and browser tab. On all
+         other routes (and in Vite dev mode where there's no SSR) the
+         block stays as-is and the default Tesana logo is used. -->
+    <link rel="icon" type="image/png" href="/logos/logo.png" />
+    <link rel="apple-touch-icon" href="/logos/logo.png" />
+    <!-- FAVICON BLOCK — END -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#161616" />
+    <!-- Apply the saved theme class to <html> before first paint so the
+         initial loader (and the whole app's CSS variables) render in the
+         right theme with no flash. ThemeContext reconciles this on mount. -->
+    <script>
+      (function () {
+        try {
+          var t = localStorage.getItem('onetap_theme');
+          if (t !== 'light' && t !== 'dark') t = 'dark';
+          document.documentElement.classList.add(t);
+        } catch (e) {}
+      })();
+    </script>
+    <title>Terms of Service | Tesana</title>
+    <meta name="description" content="Read the Tesana Terms of Service to understand the rules, rights, and responsibilities governing your use of the platform." />
+    <link rel="canonical" href="https://tesana.ai/en/terms" />
+    
+
+    <!-- OpenGraph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://tesana.ai/en/terms" />
+    <meta property="og:title" content="Terms of Service | Tesana" />
+    <meta property="og:description" content="Read the Tesana Terms of Service to understand the rules, rights, and responsibilities governing your use of the platform." />
+    <meta property="og:image" content="https://tesana.ai/og-image.jpg" />
+    <meta property="og:site_name" content="Tesana" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Terms of Service | Tesana" />
+    <meta name="twitter:description" content="Read the Tesana Terms of Service to understand the rules, rights, and responsibilities governing your use of the platform." />
+    <meta name="twitter:image" content="https://tesana.ai/og-image.jpg" />
+
+    <link rel="alternate" hreflang="en" href="https://tesana.ai/en/terms" />
+    <link rel="alternate" hreflang="ru" href="https://tesana.ai/ru/terms" />
+    <link rel="alternate" hreflang="zh" href="https://tesana.ai/zh/terms" />
+    <link rel="alternate" hreflang="ja" href="https://tesana.ai/ja/terms" />
+    <link rel="alternate" hreflang="ko" href="https://tesana.ai/ko/terms" />
+    <link rel="alternate" hreflang="pt-BR" href="https://tesana.ai/pt-BR/terms" />
+    <link rel="alternate" hreflang="x-default" href="https://tesana.ai/en/terms" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebPage","name":"Tesana Terms of Service","url":"https://tesana.ai/en/terms","description":"Terms governing your use of the Tesana platform and services."}</script>
+    
+
+    <!-- Preload critical above-fold assets -->
+    <link rel="preload" href="/fonts/inter-400-latin.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/logos/tessala-logo.svg" as="image" />
+
+    <!-- Google Tag Manager -->
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer','GTM-MN5SQGK5');</script>
+    <!-- End Google Tag Manager -->
+     
+    <!-- Web-only third-party analytics scripts.
+         Skipped entirely when loaded inside the Tauri desktop bundle:
+           - GTM, Mixpanel CDN, and Facebook Pixel all hit endpoints that
+             CORS-reject the `tauri://localhost` origin (3rd-party servers
+             can't add a Tauri-specific allowlist), so they're effectively
+             dead weight in the .app — and worse, they pollute the console
+             with CSP / network errors that drown out our own logs.
+           - The Mixpanel snippet specifically tries to load
+             `//cdn.mxpnl.com/...` which Tauri resolves to `tauri:` scheme
+             (404). Setting MIXPANEL_CUSTOM_LIB_URL would only mask that
+             one error, not the underlying CORS dead-end.
+         The empty `mixpanel` / `dataLayer` / `fbq` globals defined later
+         (inside the if-not-Tauri block) keep app-side `mixpanel.track(…)`
+         calls safely no-op'd in Tauri. -->
+    <script>
+      window.__TESANA_IS_TAURI = !!window.__TAURI_INTERNALS__;
+      if (window.__TESANA_IS_TAURI) {
+        // Tag the document so CSS can target Tauri builds (e.g. to
+        // disable WebKit overscroll/rubberband bounce — see the
+        // `html.tesana-tauri` block in src/styles/index.css).
+        document.documentElement.classList.add('tesana-tauri');
+        // No-op stubs so app code can keep calling mixpanel.* / fbq() / etc.
+        // without runtime errors.
+        //
+        // CRITICAL: the mixpanel stub MUST be recursive. App code calls
+        // chained APIs like `mixpanel.people.set({...})`,
+        // `mixpanel.register(...)`, `mixpanel.get_group(...).set(...)`.
+        // A flat `{ get: () => fn }` proxy returns a plain function for
+        // `mixpanel.people` and then `.set` on that function is
+        // `undefined` → `TypeError: ...is not a function`. That
+        // TypeError gets caught by `AuthContext.initAuth`'s try/catch
+        // (which only looks for HTTP 401/403 to mean "auth error"),
+        // falls into the generic `else` branch, and triggers the
+        // "Unable to reach our servers" overlay even though every API
+        // call actually succeeded with 200.
+        //
+        // The recursive proxy below makes every property access AND
+        // every call return another no-op proxy, so any chain depth
+        // works. We also nullify `then` so async code that does
+        // `await mixpanel.something()` doesn't accidentally treat the
+        // proxy as a thenable and hang.
+        var __noopProxyHandler = {
+          get: function (target, prop) {
+            if (prop === 'then') return undefined;
+            if (prop === Symbol.toPrimitive) return function () { return '[mixpanel-stub]'; };
+            return new Proxy(function () {}, __noopProxyHandler);
+          },
+          // Also return a chainable stub on call so patterns like
+          // `mixpanel.get_group('id').set('k', 'v')` don't crash on the
+          // intermediate `(...)` returning undefined.
+          apply: function () {
+            return new Proxy(function () {}, __noopProxyHandler);
+          },
+        };
+        window.mixpanel = new Proxy(function () {}, __noopProxyHandler);
+        window.dataLayer = window.dataLayer || [];
+        window.fbq = function () {};
+        window.fbq.queue = [];
+
+        // (Removed in Phase A.5, May 2026: the cross-game-relaunch
+        // pre-React overlay. The subprocess libgodot architecture
+        // means cross-game switches no longer require a Tesana
+        // relaunch — `RunnerSupervisor::boot()` kills + respawns
+        // the runner subprocess for the new project, which the
+        // standard "Starting engine…" overlay in
+        // `EmbeddedGameViewport` already covers visually.)
+      }
+    </script>
+
+    <script type="text/javascript">
+      if (!window.__TESANA_IS_TAURI) {
+      (function(e,c){if(!c.__SV){var l,h;window.mixpanel=c;c._i=[];c.init=function(q,r,f){function t(d,a){var g=a.split(".");2==g.length&&(d=d[g[0]],a=g[1]);d[a]=function(){d.push([a].concat(Array.prototype.slice.call(arguments,0)))}}var b=c;"undefined"!==typeof f?b=c[f]=[]:f="mixpanel";b.people=b.people||[];b.toString=function(d){var a="mixpanel";"mixpanel"!==f&&(a+="."+f);d||(a+=" (stub)");return a};b.people.toString=function(){return b.toString(1)+".people (stub)"};l="disable time_event track track_pageview track_links track_forms track_with_groups add_group set_group remove_group register register_once alias unregister identify name_tag set_config reset opt_in_tracking opt_out_tracking has_opted_in_tracking has_opted_out_tracking clear_opt_in_out_tracking start_batch_senders start_session_recording stop_session_recording people.set people.set_once people.unset people.increment people.append people.union people.track_charge people.clear_charges people.delete_user people.remove".split(" ");
+      for(h=0;h<l.length;h++)t(b,l[h]);var n="set set_once union unset remove delete".split(" ");b.get_group=function(){function d(p){a[p]=function(){b.push([g,[p].concat(Array.prototype.slice.call(arguments,0))])}}for(var a={},g=["get_group"].concat(Array.prototype.slice.call(arguments,0)),m=0;m<n.length;m++)d(n[m]);return a};c._i.push([q,r,f])};c.__SV=1.2;var k=e.createElement("script");k.type="text/javascript";k.async=!0;k.src="undefined"!==typeof MIXPANEL_CUSTOM_LIB_URL?MIXPANEL_CUSTOM_LIB_URL:"file:"===
+      e.location.protocol&&"//cdn.mxpnl.com/libs/mixpanel-2-latest.min.js".match(/^\/\//)?"https://cdn.mxpnl.com/libs/mixpanel-2-latest.min.js":"//cdn.mxpnl.com/libs/mixpanel-2-latest.min.js";e=e.getElementsByTagName("script")[0];e.parentNode.insertBefore(k,e)}})(document,window.mixpanel||[])
+      }
+
+      if (!window.__TESANA_IS_TAURI) {
+      mixpanel.init('58796b6270bbfcff93403caaf515001a', {
+        autocapture: true,
+        track_pageview: false,
+        record_sessions_percent: 25,
+      })
+      }
+
+      // CRITICAL — Register attribution super properties BEFORE the first $mp_web_page_view
+      // fires. We disable Mixpanel's automatic page view (track_pageview: false) and fire
+      // it manually below, AFTER UTM + click-ID super properties are queued. This guarantees
+      // every Mixpanel event (autocapture included) carries the correct attribution context
+      // for ad-spend measurement.
+      ;(function () {
+        try {
+          var loc = window.location || {}
+          var search = loc.search || ''
+          var params = null
+          try { params = new URLSearchParams(search) } catch (_e) { params = null }
+
+          var ATTR_KEYS = [
+            'utm_source','utm_medium','utm_campaign','utm_term','utm_content','utm_id',
+            'gclid','fbclid','msclkid','ttclid','twclid','li_fat_id','igshid','yclid','dclid',
+            'wbraid','gbraid','rdt_cid','epik','_kx','ref','referrer','source'
+          ]
+
+          var sessionAttr = {
+            platform: 'web',
+            page_hostname: loc.hostname || null,
+            page_host: loc.host || null,
+            page_origin: loc.origin || null,
+          }
+          var firstTouchAttr = {
+            first_touch_url: loc.href || null,
+            first_touch_path: loc.pathname || null,
+            first_touch_referrer: (document && document.referrer) || null,
+          }
+
+          if (params) {
+            ATTR_KEYS.forEach(function (k) {
+              var v = params.get(k)
+              if (v != null && v !== '' && v !== 'undefined' && v !== 'null') {
+                sessionAttr[k] = v
+                firstTouchAttr['first_touch_' + k] = v
+              }
+            })
+          }
+
+          if (window.__TESANA_IS_TAURI) {
+            // Skip — Mixpanel doesn't accept tauri://localhost as an origin
+            // and these calls would just queue events that never flush.
+            return
+          }
+
+          mixpanel.register(sessionAttr)
+          mixpanel.register_once(firstTouchAttr)
+
+          // Fire the initial page view AFTER super properties are queued so the very
+          // first $mp_web_page_view carries utm_source / rdt_cid / etc.
+          mixpanel.track_pageview()
+        } catch (e) {
+          // Tracking must never break the page; swallow any errors.
+        }
+      })();
+
+    </script>
+    <script type="module" crossorigin src="/assets/index-Duvqmg3T.js"></script>
+    <link rel="modulepreload" crossorigin href="/assets/vendor-react-rObrSjEd.js">
+    <link rel="modulepreload" crossorigin href="/assets/vendor-motion-CoDMGvu3.js">
+    <link rel="modulepreload" crossorigin href="/assets/vendor-fa-BHlad3Oc.js">
+    <link rel="modulepreload" crossorigin href="/assets/vendor-query-57Psv0JE.js">
+    <link rel="stylesheet" crossorigin href="/assets/index-LLdlf-IE.css">
+  <script id="vite-plugin-pwa:register-sw" src="/registerSW.js"></script></head>
+  <body>
+    <!-- Google Tag Manager (noscript) -->
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-MN5SQGK5"
+    height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    <!-- End Google Tag Manager (noscript) -->
+    
+    <div id="root">
+      <!-- First-paint branded loader. React replaces #root's children on
+           mount, so this only shows while the app bundle downloads/parses.
+           Defaults to the dark video; the script below swaps to the light
+           video when the saved theme is light. -->
+      <div id="initial-loader" style="position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:#161616;">
+        <div style="position:relative;width:48px;height:48px;opacity:0.3;">
+          <video id="initial-loader-video" src="/loading/tesana-loading-128-black.mp4" autoplay loop muted playsinline style="width:48px;height:48px;object-fit:cover;"></video>
+          <div id="initial-loader-overlay" style="position:absolute;inset:0;background:rgba(255,255,255,0.087);"></div>
+        </div>
+      </div>
+    </div>
+    <script>
+      (function () {
+        try {
+          if (document.documentElement.classList.contains('light')) {
+            var v = document.getElementById('initial-loader-video');
+            var loader = document.getElementById('initial-loader');
+            var overlay = document.getElementById('initial-loader-overlay');
+            if (v) v.src = '/loading/tesana-loading-128-white.mp4';
+            if (loader) loader.style.background = '#ffffff';
+            if (overlay) overlay.style.display = 'none';
+          }
+        } catch (e) {}
+      })();
+    </script>
+
+    <!-- Deferred: Mixpanel CDN + init, Facebook Pixel (loaded after first paint) -->
+    <script>
+      function __loadDeferredAnalytics() {
+        if (window.__analyticsLoaded) return;
+        if (window.__TESANA_IS_TAURI) return;  // see comment in <head>
+        window.__analyticsLoaded = true;
+
+        // Facebook Pixel
+        !function(f,b,e,v,n,t,s)
+        {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+        n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+        if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+        n.queue=[];t=b.createElement(e);t.async=!0;
+        t.src=v;s=b.getElementsByTagName(e)[0];
+        s.parentNode.insertBefore(t,s)}(window, document,'script',
+        'https://connect.facebook.net/en_US/fbevents.js');
+        fbq('init', '1570988284201631');
+        fbq('track', 'PageView');
+      }
+      if ('requestIdleCallback' in window) {
+        requestIdleCallback(__loadDeferredAnalytics, { timeout: 4000 });
+      } else {
+        setTimeout(__loadDeferredAnalytics, 3000);
+      }
+    </script>
+    <noscript>
+      <img height="1" width="1" style="display:none"
+      src="https://www.facebook.com/tr?id=1570988284201631&ev=PageView&noscript=1"
+      ></img>
+    </noscript>
+  <script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v4513226cdae34746b4dedf0b4dfa099e1781791509496" integrity="sha512-ZE9pZaUXND66v380QUtch/5sE9tPFh2zg45pR2PB0CVkCtOREv2AJKkSidISWkysEuQ0EH8faUU5du78bx87UQ==" data-cf-beacon='{"version":"2024.11.0","token":"59976873f82e4b4b9f52f26f5b812438"}' crossorigin="anonymous"></script>
+</body>
+</html>

@@ -1,0 +1,37 @@
+[remap]
+
+importer="texture"
+type="CompressedTexture2D"
+uid="uid://do54rwyknq0h0"
+path="res://.godot/imported/resource_stone_quarry_chunk_tripo_image_f5f21f0c-2af3-43ac-9dd6-56f13eb5211a_1.jpg-30b6c356e1ffdbcdde574761587675c2.ctex"
+metadata={
+"vram_texture": false
+}
+generator_parameters={
+"md5": "23156c380bffe3f1bb94cef238cc45e1"
+}
+
+[deps]
+
+source_file="res://assets/props/misc/resource_stone_quarry_chunk_tripo_image_f5f21f0c-2af3-43ac-9dd6-56f13eb5211a_1.jpg"
+dest_files=["res://.godot/imported/resource_stone_quarry_chunk_tripo_image_f5f21f0c-2af3-43ac-9dd6-56f13eb5211a_1.jpg-30b6c356e1ffdbcdde574761587675c2.ctex"]
+
+[params]
+
+compress/mode=1
+compress/high_quality=false
+compress/lossy_quality=0.75
+compress/hdr_compression=1
+compress/normal_map=0
+compress/channel_pack=0
+mipmaps/generate=true
+mipmaps/limit=-1
+roughness/mode=0
+roughness/src_normal=""
+process/fix_alpha_border=true
+process/premult_alpha=false
+process/normal_map_invert_y=false
+process/hdr_as_srgb=false
+process/hdr_clamp_exposure=false
+process/size_limit=1024
+detect_3d/compress_to=1

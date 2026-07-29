@@ -1,0 +1,1382 @@
+{
+  "version": 1,
+  "assets": {
+    "assets/ui/title_poster.webp": {
+      "tool": "mcp__game-assets__generate_2d_images_batch",
+      "primary_prompt": "epic high-fantasy world powered by glowing amber-white Lume energy, three warring civilizations clashing across ancient highland passes and luminous ruins, Fantasy RTS RPG, epic, majestic, grounded, wondrous, modern, rugged highland clan warrior in carved stone armor with clan banners, living-wood nature champion wreathed in teal Lume bloom, dark cabal battle-mage with ash-glass staff and floating runes, three distinct settlements on a misty mountain plateau, ancient luminous archways channeling golden Lume light, armies massing beneath storm-split skies",
+      "raw_input": {
+        "type": "title_poster",
+        "gameName": "Ascendant Realms",
+        "theme": "epic high-fantasy world powered by glowing amber-white Lume energy, three warring civilizations clashing across ancient highland passes and luminous ruins",
+        "genre": "Fantasy RTS RPG",
+        "style": "modern",
+        "mood": "epic, majestic, grounded, wondrous",
+        "elements": [
+          "rugged highland clan warrior in carved stone armor with clan banners",
+          "living-wood nature champion wreathed in teal Lume bloom",
+          "dark cabal battle-mage with ash-glass staff and floating runes",
+          "three distinct settlements on a misty mountain plateau",
+          "ancient luminous archways channeling golden Lume light",
+          "armies massing beneath storm-split skies"
+        ]
+      },
+      "tool_use_id": "call-ed4c1c92-7bf8-4031-9bb4-9d4e02fa5d80-3",
+      "updated_at": "2026-07-29T01:15:48.675699"
+    },
+    "assets/ui/loading_screen.png": {
+      "tool": "mcp__game-assets__generate_2d_images_batch",
+      "primary_prompt": "ancient highland pass under amber Lume auroras, distant fortress silhouettes, army banners in the mist, modern",
+      "raw_input": {
+        "type": "loading_screen",
+        "gameName": "Ascendant Realms",
+        "theme": "ancient highland pass under amber Lume auroras, distant fortress silhouettes, army banners in the mist",
+        "style": "modern",
+        "includeProgressBar": true
+      },
+      "tool_use_id": "call-ed4c1c92-7bf8-4031-9bb4-9d4e02fa5d80-3",
+      "updated_at": "2026-07-29T01:15:48.675699"
+    },
+    "assets/textures/backgrounds/main_menu_bg.png": {
+      "tool": "mcp__game-assets__generate_2d_images_batch",
+      "primary_prompt": "cinematic elevated view of a contested fantasy highland realm with three colored army territorial lights \u2014 stone gray-gold, living teal-green, ash-violet purple \u2014 converging on a glowing Lume ruin, epic strategic tension, modern, mountain ranges, settlements, Lume pillars, army camps, storm light",
+      "raw_input": {
+        "type": "background",
+        "name": "main_menu_bg",
+        "theme": "cinematic elevated view of a contested fantasy highland realm with three colored army territorial lights \u2014 stone gray-gold, living teal-green, ash-violet purple \u2014 converging on a glowing Lume ruin",
+        "style": "modern",
+        "mood": "epic strategic tension",
+        "perspective": "isometric",
+        "elements": [
+          "mountain ranges",
+          "settlements",
+          "Lume pillars",
+          "army camps",
+          "storm light"
+        ]
+      },
+      "tool_use_id": "call-ed4c1c92-7bf8-4031-9bb4-9d4e02fa5d80-3",
+      "updated_at": "2026-07-29T01:15:48.675699"
+    },
+    "assets/characters/barrosan_hero_thane/barrosan_hero_thane.glb": {
+      "tool": "mcp__game-3d-models__generate_characters_batch",
+      "primary_prompt": "Full body T-pose fantasy highland clan war-thane hero, rugged middle-aged human commander, weathered iron scale armor over thick wool and leather, heavy carved stone pauldrons with clan knotwork, slate-gray cloak fastened with bronze brooch, short braided beard, stern determined face, empty hands visible, practical mountain warrior aesthetic, highly detailed stylized 3D game character, strong silhouette, no weapons held",
+      "raw_input": {
+        "name": "barrosan_hero_thane",
+        "prompt": "Full body T-pose fantasy highland clan war-thane hero, rugged middle-aged human commander, weathered iron scale armor over thick wool and leather, heavy carved stone pauldrons with clan knotwork, slate-gray cloak fastened with bronze brooch, short braided beard, stern determined face, empty hands visible, practical mountain warrior aesthetic, highly detailed stylized 3D game character, strong silhouette, no weapons held",
+        "style": "stylized"
+      },
+      "tool_use_id": "call-ed4c1c92-7bf8-4031-9bb4-9d4e02fa5d80-4",
+      "updated_at": "2026-07-29T01:18:55.150631"
+    },
+    "assets/characters/lioraen_hero_warden/lioraen_hero_warden.glb": {
+      "tool": "mcp__game-3d-models__generate_characters_batch",
+      "primary_prompt": "Full body T-pose fantasy nature realm warden hero, elegant androgynous forest guardian, living wooden armor grown with teal leaf-scales and glowing amber Lume veins, flowing moss-green cloak that looks organic, antler-like crown of living branches with soft light, kind but fierce expression, empty visible hands, mystical nature mage-ranger hybrid, highly detailed stylized 3D game character, strong silhouette, no weapons held",
+      "raw_input": {
+        "name": "lioraen_hero_warden",
+        "prompt": "Full body T-pose fantasy nature realm warden hero, elegant androgynous forest guardian, living wooden armor grown with teal leaf-scales and glowing amber Lume veins, flowing moss-green cloak that looks organic, antler-like crown of living branches with soft light, kind but fierce expression, empty visible hands, mystical nature mage-ranger hybrid, highly detailed stylized 3D game character, strong silhouette, no weapons held",
+        "style": "stylized"
+      },
+      "tool_use_id": "call-ed4c1c92-7bf8-4031-9bb4-9d4e02fa5d80-4",
+      "updated_at": "2026-07-29T01:18:55.150631"
+    },
+    "assets/characters/vorthak_hero_binder/vorthak_hero_binder.glb": {
+      "tool": "mcp__game-3d-models__generate_characters_batch",
+      "primary_prompt": "Full body T-pose fantasy dark cabal battle-binder hero, tall imposing spellcaster always on the edge of power, ash-gray skin with faint violet rune scars, segmented blackened iron and glass-shard armor with glowing magenta Lume cracks, high-collared ragged mantle, sharp angular features and glowing eyes, empty hands visible, dangerous risk-reward warlock aesthetic, highly detailed stylized 3D game character, strong silhouette, no weapons held",
+      "raw_input": {
+        "name": "vorthak_hero_binder",
+        "prompt": "Full body T-pose fantasy dark cabal battle-binder hero, tall imposing spellcaster always on the edge of power, ash-gray skin with faint violet rune scars, segmented blackened iron and glass-shard armor with glowing magenta Lume cracks, high-collared ragged mantle, sharp angular features and glowing eyes, empty hands visible, dangerous risk-reward warlock aesthetic, highly detailed stylized 3D game character, strong silhouette, no weapons held",
+        "style": "stylized"
+      },
+      "tool_use_id": "call-ed4c1c92-7bf8-4031-9bb4-9d4e02fa5d80-4",
+      "updated_at": "2026-07-29T01:18:55.150631"
+    },
+    "assets/environment/buildings/barrosan_clanhold.glb": {
+      "tool": "mcp__game-3d-models__generate_environment_batch",
+      "primary_prompt": "Fantasy highland clan main keep building for RTS, compact stone fortress hall with slate roof, heavy timber beams, carved clan knot symbols on walls, watchtower attached, weathered iron fittings, practical mountain stronghold architecture, readable freestanding game building on flat base, stylized high quality, neutral staged lighting",
+      "raw_input": {
+        "name": "barrosan_clanhold",
+        "prompt": "Fantasy highland clan main keep building for RTS, compact stone fortress hall with slate roof, heavy timber beams, carved clan knot symbols on walls, watchtower attached, weathered iron fittings, practical mountain stronghold architecture, readable freestanding game building on flat base, stylized high quality, neutral staged lighting",
+        "category": "buildings",
+        "style": "stylized"
+      },
+      "tool_use_id": "call-ed4c1c92-7bf8-4031-9bb4-9d4e02fa5d80-5",
+      "updated_at": "2026-07-29T01:19:01.757422"
+    },
+    "assets/environment/buildings/lioraen_groveheart.glb": {
+      "tool": "mcp__game-3d-models__generate_environment_batch",
+      "primary_prompt": "Fantasy living nature main settlement building for RTS, giant hollow living tree-hall with woven root walls, glowing teal Lume blossoms, canopy roof of translucent leaves, organic architecture that looks grown not built, mystical forest palace core, readable freestanding game building on mossy base, stylized high quality",
+      "raw_input": {
+        "name": "lioraen_groveheart",
+        "prompt": "Fantasy living nature main settlement building for RTS, giant hollow living tree-hall with woven root walls, glowing teal Lume blossoms, canopy roof of translucent leaves, organic architecture that looks grown not built, mystical forest palace core, readable freestanding game building on mossy base, stylized high quality",
+        "category": "buildings",
+        "style": "fantasy"
+      },
+      "tool_use_id": "call-ed4c1c92-7bf8-4031-9bb4-9d4e02fa5d80-5",
+      "updated_at": "2026-07-29T01:19:01.757422"
+    },
+    "assets/environment/buildings/vorthak_nighthold.glb": {
+      "tool": "mcp__game-3d-models__generate_environment_batch",
+      "primary_prompt": "Fantasy dark cabal main citadel building for RTS, jagged ash-glass and bone-iron tower grown from corrupted ground, violet Lume cracks pulsing through black stone, spiky occult silhouette, risk-dark fortress aesthetic, ceremonial spikes and rune rings, readable freestanding game building on cratered base, stylized high quality",
+      "raw_input": {
+        "name": "vorthak_nighthold",
+        "prompt": "Fantasy dark cabal main citadel building for RTS, jagged ash-glass and bone-iron tower grown from corrupted ground, violet Lume cracks pulsing through black stone, spiky occult silhouette, risk-dark fortress aesthetic, ceremonial spikes and rune rings, readable freestanding game building on cratered base, stylized high quality",
+        "category": "buildings",
+        "style": "fantasy"
+      },
+      "tool_use_id": "call-ed4c1c92-7bf8-4031-9bb4-9d4e02fa5d80-5",
+      "updated_at": "2026-07-29T01:19:01.757422"
+    },
+    "assets/environment/structures/lume_spire_ruin.glb": {
+      "tool": "mcp__game-3d-models__generate_environment_batch",
+      "primary_prompt": "Ancient fantasy strategic capture point, broken luminous stone spire channeling vertical beam of amber-white Lume energy, floating runic rings, cracked marble and gold veining, mysterious high-fantasy ruin marker suitable as map objective, readable freestanding prop, stylized high quality",
+      "raw_input": {
+        "name": "lume_spire_ruin",
+        "prompt": "Ancient fantasy strategic capture point, broken luminous stone spire channeling vertical beam of amber-white Lume energy, floating runic rings, cracked marble and gold veining, mysterious high-fantasy ruin marker suitable as map objective, readable freestanding prop, stylized high quality",
+        "category": "structures",
+        "style": "fantasy"
+      },
+      "tool_use_id": "call-ed4c1c92-7bf8-4031-9bb4-9d4e02fa5d80-5",
+      "updated_at": "2026-07-29T01:19:01.757422"
+    },
+    "assets/props/weapons/barrosan_claymore.glb": {
+      "tool": "mcp__game-3d-models__generate_weapons_batch",
+      "primary_prompt": "Massive highland clan claymore sword, broad double-edged iron blade with stone-etched clan knotwork near the crossguard, weathered leather-wrapped two-hand grip, bronze pommel disk with carved mountain symbol, rugged practical fantasy greatsword",
+      "raw_input": {
+        "name": "barrosan_claymore",
+        "prompt": "Massive highland clan claymore sword, broad double-edged iron blade with stone-etched clan knotwork near the crossguard, weathered leather-wrapped two-hand grip, bronze pommel disk with carved mountain symbol, rugged practical fantasy greatsword",
+        "weaponType": "melee"
+      },
+      "tool_use_id": "call-ed4c1c92-7bf8-4031-9bb4-9d4e02fa5d80-6",
+      "updated_at": "2026-07-29T01:19:07.329066"
+    },
+    "assets/props/weapons/lioraen_bloomblade.glb": {
+      "tool": "mcp__game-3d-models__generate_weapons_batch",
+      "primary_prompt": "Elegant living-wood saber with leaf-veined teal blade edge that faintly glows, organic root guard, amber Lume crystal set in handle, nature fantasy hero sword",
+      "raw_input": {
+        "name": "lioraen_bloomblade",
+        "prompt": "Elegant living-wood saber with leaf-veined teal blade edge that faintly glows, organic root guard, amber Lume crystal set in handle, nature fantasy hero sword",
+        "weaponType": "melee"
+      },
+      "tool_use_id": "call-ed4c1c92-7bf8-4031-9bb4-9d4e02fa5d80-6",
+      "updated_at": "2026-07-29T01:19:07.329066"
+    },
+    "assets/props/weapons/vorthak_rift_staff.glb": {
+      "tool": "mcp__game-3d-models__generate_weapons_batch",
+      "primary_prompt": "Dark cabal ritual staff of blackened iron and cracked ash-glass, crowning shard that bleeds magenta-violet energy, sharp dangerous fantasy mage staff, elongated shaft",
+      "raw_input": {
+        "name": "vorthak_rift_staff",
+        "prompt": "Dark cabal ritual staff of blackened iron and cracked ash-glass, crowning shard that bleeds magenta-violet energy, sharp dangerous fantasy mage staff, elongated shaft",
+        "weaponType": "melee"
+      },
+      "tool_use_id": "call-ed4c1c92-7bf8-4031-9bb4-9d4e02fa5d80-6",
+      "updated_at": "2026-07-29T01:19:07.329066"
+    },
+    "assets/characters/barrosan_spear_guard/barrosan_spear_guard.glb": {
+      "tool": "mcp__game-3d-models__generate_characters_batch",
+      "primary_prompt": "Full body T-pose fantasy highland clan heavy infantry soldier, stocky human in layered stone-gray plate and wool kilts, iron helm with clan knot crest, leather straps and weathered bronze fittings, empty hands visible, disciplined defensive footman silhouette, stylized 3D game unit, no weapons held",
+      "raw_input": {
+        "name": "barrosan_spear_guard",
+        "prompt": "Full body T-pose fantasy highland clan heavy infantry soldier, stocky human in layered stone-gray plate and wool kilts, iron helm with clan knot crest, leather straps and weathered bronze fittings, empty hands visible, disciplined defensive footman silhouette, stylized 3D game unit, no weapons held",
+        "style": "stylized"
+      },
+      "tool_use_id": "call-f36e3cea-7c1e-4262-8706-6ea38d9071b5-7",
+      "updated_at": "2026-07-29T01:22:21.000208"
+    },
+    "assets/characters/lioraen_thorn_ranger/lioraen_thorn_ranger.glb": {
+      "tool": "mcp__game-3d-models__generate_characters_batch",
+      "primary_prompt": "Full body T-pose fantasy nature realm light ranger skirmisher, lithe woodland humanoid with bark-plate vest and leaf cape, soft teal Lume accent lines, animal-bone ornaments, empty hands visible, mobile guerrilla silhouette, stylized 3D game unit, no weapons held",
+      "raw_input": {
+        "name": "lioraen_thorn_ranger",
+        "prompt": "Full body T-pose fantasy nature realm light ranger skirmisher, lithe woodland humanoid with bark-plate vest and leaf cape, soft teal Lume accent lines, animal-bone ornaments, empty hands visible, mobile guerrilla silhouette, stylized 3D game unit, no weapons held",
+        "style": "stylized"
+      },
+      "tool_use_id": "call-f36e3cea-7c1e-4262-8706-6ea38d9071b5-7",
+      "updated_at": "2026-07-29T01:22:21.000208"
+    },
+    "assets/characters/vorthak_ash_thrall/vorthak_ash_thrall.glb": {
+      "tool": "mcp__game-3d-models__generate_characters_batch",
+      "primary_prompt": "Full body T-pose fantasy dark cabal expendable thrall soldier, gaunt humanoid with cracked ash-skin armor plates, violet Lume fractures across chest, ragged dark wraps, hollow glowing eyes, empty hands visible, aggressive swarm infantry silhouette, stylized 3D game unit, no weapons held",
+      "raw_input": {
+        "name": "vorthak_ash_thrall",
+        "prompt": "Full body T-pose fantasy dark cabal expendable thrall soldier, gaunt humanoid with cracked ash-skin armor plates, violet Lume fractures across chest, ragged dark wraps, hollow glowing eyes, empty hands visible, aggressive swarm infantry silhouette, stylized 3D game unit, no weapons held",
+        "style": "stylized"
+      },
+      "tool_use_id": "call-f36e3cea-7c1e-4262-8706-6ea38d9071b5-7",
+      "updated_at": "2026-07-29T01:22:21.000208"
+    },
+    "assets/characters/barrosan_highlander_worker/barrosan_highlander_worker.glb": {
+      "tool": "mcp__game-3d-models__generate_characters_batch",
+      "primary_prompt": "Full body T-pose fantasy highland clan worker builder, sturdy human laborer in wool tunic leather apron stone-dust apron, tool belt, simple leather cap, empty hands visible, practical peasant-engineer silhouette, stylized 3D game unit, no tools held",
+      "raw_input": {
+        "name": "barrosan_highlander_worker",
+        "prompt": "Full body T-pose fantasy highland clan worker builder, sturdy human laborer in wool tunic leather apron stone-dust apron, tool belt, simple leather cap, empty hands visible, practical peasant-engineer silhouette, stylized 3D game unit, no tools held",
+        "style": "stylized"
+      },
+      "tool_use_id": "call-f36e3cea-7c1e-4262-8706-6ea38d9071b5-7",
+      "updated_at": "2026-07-29T01:22:21.000208"
+    },
+    "assets/environment/buildings/barrosan_watchtower.glb": {
+      "tool": "mcp__game-3d-models__generate_environment_batch",
+      "primary_prompt": "Fantasy highland stone watchtower defensive building for RTS, slate roof, iron torch baskets, carved clan symbols, thick buttresses, archery slits, freestanding readable game tower, stylized",
+      "raw_input": {
+        "name": "barrosan_watchtower",
+        "prompt": "Fantasy highland stone watchtower defensive building for RTS, slate roof, iron torch baskets, carved clan symbols, thick buttresses, archery slits, freestanding readable game tower, stylized",
+        "category": "buildings",
+        "style": "stylized"
+      },
+      "tool_use_id": "call-f36e3cea-7c1e-4262-8706-6ea38d9071b5-8",
+      "updated_at": "2026-07-29T01:24:36.585512"
+    },
+    "assets/environment/buildings/lioraen_bloom_spire.glb": {
+      "tool": "mcp__game-3d-models__generate_environment_batch",
+      "primary_prompt": "Fantasy living plant tower defensive building for RTS, twisted living trunk with flower-petal battle platform, glowing pollen orbs, thorn barricade roots, freestanding readable nature tower, stylized fantasy",
+      "raw_input": {
+        "name": "lioraen_bloom_spire",
+        "prompt": "Fantasy living plant tower defensive building for RTS, twisted living trunk with flower-petal battle platform, glowing pollen orbs, thorn barricade roots, freestanding readable nature tower, stylized fantasy",
+        "category": "buildings",
+        "style": "fantasy"
+      },
+      "tool_use_id": "call-f36e3cea-7c1e-4262-8706-6ea38d9071b5-8",
+      "updated_at": "2026-07-29T01:24:36.585512"
+    },
+    "assets/environment/buildings/vorthak_rift_obelisk.glb": {
+      "tool": "mcp__game-3d-models__generate_environment_batch",
+      "primary_prompt": "Fantasy dark cabal defensive tower for RTS, cracked black obelisk channeling magenta energy beam aperture, floating ash shards, dangerous occult silhouette, freestanding readable tower, stylized fantasy",
+      "raw_input": {
+        "name": "vorthak_rift_obelisk",
+        "prompt": "Fantasy dark cabal defensive tower for RTS, cracked black obelisk channeling magenta energy beam aperture, floating ash shards, dangerous occult silhouette, freestanding readable tower, stylized fantasy",
+        "category": "buildings",
+        "style": "fantasy"
+      },
+      "tool_use_id": "call-f36e3cea-7c1e-4262-8706-6ea38d9071b5-8",
+      "updated_at": "2026-07-29T01:24:36.585512"
+    },
+    "assets/environment/rocks/gold_mine_lumevein.glb": {
+      "tool": "mcp__game-3d-models__generate_environment_batch",
+      "primary_prompt": "Fantasy gold and amber Lume-veined mining node resource deposit for RTS, rocky outcrop with glowing gold crystals and miners access ledge, freestanding readable resource landmark, stylized",
+      "raw_input": {
+        "name": "gold_mine_lumevein",
+        "prompt": "Fantasy gold and amber Lume-veined mining node resource deposit for RTS, rocky outcrop with glowing gold crystals and miners access ledge, freestanding readable resource landmark, stylized",
+        "category": "rocks",
+        "style": "stylized"
+      },
+      "tool_use_id": "call-f36e3cea-7c1e-4262-8706-6ea38d9071b5-8",
+      "updated_at": "2026-07-29T01:24:36.585512"
+    },
+    "assets/environment/structures/highland_crossing_bridge.glb": {
+      "tool": "mcp__game-3d-models__generate_environment_batch",
+      "primary_prompt": "Fantasy strategic mountain stone bridge over deep gorge for RTS map choke point, weathered highland masonry with carved rails, freestanding long bridge segment, stylized high fantasy",
+      "raw_input": {
+        "name": "highland_crossing_bridge",
+        "prompt": "Fantasy strategic mountain stone bridge over deep gorge for RTS map choke point, weathered highland masonry with carved rails, freestanding long bridge segment, stylized high fantasy",
+        "category": "structures",
+        "style": "stylized"
+      },
+      "tool_use_id": "call-f36e3cea-7c1e-4262-8706-6ea38d9071b5-8",
+      "updated_at": "2026-07-29T01:24:36.585512"
+    },
+    "assets/props/containers/resource_timber_pile.glb": {
+      "tool": "mcp__game-3d-models__generate_props_batch",
+      "primary_prompt": "Neat fantasy timber log stack resource pile for RTS, cut highland pine logs with rope binders, readable game prop, stylized",
+      "raw_input": {
+        "name": "resource_timber_pile",
+        "category": "containers",
+        "prompt": "Neat fantasy timber log stack resource pile for RTS, cut highland pine logs with rope binders, readable game prop, stylized",
+        "style": "stylized"
+      },
+      "tool_use_id": "call-f36e3cea-7c1e-4262-8706-6ea38d9071b5-9",
+      "updated_at": "2026-07-29T01:26:53.528362"
+    },
+    "assets/props/misc/resource_stone_quarry_chunk.glb": {
+      "tool": "mcp__game-3d-models__generate_props_batch",
+      "primary_prompt": "Chunky cut stone block pile public resource nodemarker for fantasy RTS, gray highland granite, freestanding readable prop, stylized",
+      "raw_input": {
+        "name": "resource_stone_quarry_chunk",
+        "category": "misc",
+        "prompt": "Chunky cut stone block pile public resource nodemarker for fantasy RTS, gray highland granite, freestanding readable prop, stylized",
+        "style": "stylized"
+      },
+      "tool_use_id": "call-f36e3cea-7c1e-4262-8706-6ea38d9071b5-9",
+      "updated_at": "2026-07-29T01:26:53.528362"
+    },
+    "assets/props/items/lume_shard_crystal.glb": {
+      "tool": "mcp__game-3d-models__generate_props_batch",
+      "primary_prompt": "Floating amber-white Lume energy crystal shard with soft glow and cracked golden geometric facets, collectible fantasy power crystal, stylized",
+      "raw_input": {
+        "name": "lume_shard_crystal",
+        "category": "items",
+        "prompt": "Floating amber-white Lume energy crystal shard with soft glow and cracked golden geometric facets, collectible fantasy power crystal, stylized",
+        "style": "stylized"
+      },
+      "tool_use_id": "call-f36e3cea-7c1e-4262-8706-6ea38d9071b5-9",
+      "updated_at": "2026-07-29T01:26:53.528362"
+    },
+    "assets/props/items/hero_relic_amulet.glb": {
+      "tool": "mcp__game-3d-models__generate_props_batch",
+      "primary_prompt": "Ornate fantasy heroic relic amulet of bronze and amber Lume glass, clan knot and vine motif hybrid, inventory treasure item, stylized",
+      "raw_input": {
+        "name": "hero_relic_amulet",
+        "category": "items",
+        "prompt": "Ornate fantasy heroic relic amulet of bronze and amber Lume glass, clan knot and vine motif hybrid, inventory treasure item, stylized",
+        "style": "stylized"
+      },
+      "tool_use_id": "call-f36e3cea-7c1e-4262-8706-6ea38d9071b5-9",
+      "updated_at": "2026-07-29T01:26:53.528362"
+    },
+    "assets/audio/music/music_menu_ascendant_main_theme.mp3": {
+      "tool": "mcp__game-audio__generate_audio_batch",
+      "primary_prompt": "orchestral fantasy with highland pipes, living wood flutes, and dark brass, epic majestic hopeful with undercurrent of war, moderate 100 BPM",
+      "raw_input": {
+        "type": "music",
+        "name": "ascendant_main_theme",
+        "gameState": "menu",
+        "style": "orchestral fantasy with highland pipes, living wood flutes, and dark brass",
+        "mood": "epic majestic hopeful with undercurrent of war",
+        "tempo": "moderate 100 BPM",
+        "instruments": "strings, highland pipes, woodwinds, low brass, soft choir, light percussion",
+        "durationSeconds": 40
+      },
+      "tool_use_id": "call-f36e3cea-7c1e-4262-8706-6ea38d9071b5-10",
+      "updated_at": "2026-07-29T01:27:05.097928"
+    },
+    "assets/audio/music/music_combat_skirmish_battle_rise.mp3": {
+      "tool": "mcp__game-audio__generate_audio_batch",
+      "primary_prompt": "orchestral battle fantasy, intense surging conflict, fast 132 BPM",
+      "raw_input": {
+        "type": "music",
+        "name": "skirmish_battle_rise",
+        "gameState": "combat",
+        "style": "orchestral battle fantasy",
+        "mood": "intense surging conflict",
+        "tempo": "fast 132 BPM",
+        "instruments": "war drums, brass, strings, distorted low choir",
+        "durationSeconds": 36
+      },
+      "tool_use_id": "call-f36e3cea-7c1e-4262-8706-6ea38d9071b5-10",
+      "updated_at": "2026-07-29T01:27:05.097928"
+    },
+    "assets/audio/ambient/ambient_mountain_highland_with_distant_magical_ambience_highland_wind_lume.mp3": {
+      "tool": "mcp__game-audio__generate_audio_batch",
+      "primary_prompt": "Cold mountain wind through stone fortifications mixed with soft distant amber magical hum of Lume energy",
+      "raw_input": {
+        "type": "ambient",
+        "name": "highland_wind_lume",
+        "environment": "mountain highland with distant magical ambience",
+        "description": "Cold mountain wind through stone fortifications mixed with soft distant amber magical hum of Lume energy",
+        "duration": 12
+      },
+      "tool_use_id": "call-f36e3cea-7c1e-4262-8706-6ea38d9071b5-10",
+      "updated_at": "2026-07-29T01:27:05.097928"
+    },
+    "assets/audio/sfx/ui/ui_unit_select_confirm.mp3": {
+      "tool": "mcp__game-audio__generate_audio_batch",
+      "primary_prompt": "Clean fantasy RTS unit selection confirmation, short metallic wood click with soft magical chime",
+      "raw_input": {
+        "type": "sfx",
+        "name": "unit_select_confirm",
+        "category": "ui",
+        "description": "Clean fantasy RTS unit selection confirmation, short metallic wood click with soft magical chime",
+        "duration": 0.6
+      },
+      "tool_use_id": "call-f36e3cea-7c1e-4262-8706-6ea38d9071b5-10",
+      "updated_at": "2026-07-29T01:27:05.097928"
+    },
+    "assets/audio/sfx/ui/ui_building_complete.mp3": {
+      "tool": "mcp__game-audio__generate_audio_batch",
+      "primary_prompt": "Satisfying stone and timber structure completion fanfare sting for fantasy RTS",
+      "raw_input": {
+        "type": "sfx",
+        "name": "building_complete",
+        "category": "ui",
+        "description": "Satisfying stone and timber structure completion fanfare sting for fantasy RTS",
+        "duration": 1.8
+      },
+      "tool_use_id": "call-f36e3cea-7c1e-4262-8706-6ea38d9071b5-10",
+      "updated_at": "2026-07-29T01:27:05.097928"
+    },
+    "assets/audio/sfx/pickup/pickup_hero_level_up.mp3": {
+      "tool": "mcp__game-audio__generate_audio_batch",
+      "primary_prompt": "Heroic ascending magical chime and brass swell for level up in fantasy game",
+      "raw_input": {
+        "type": "sfx",
+        "name": "hero_level_up",
+        "category": "pickup",
+        "description": "Heroic ascending magical chime and brass swell for level up in fantasy game",
+        "duration": 2.5
+      },
+      "tool_use_id": "call-f36e3cea-7c1e-4262-8706-6ea38d9071b5-10",
+      "updated_at": "2026-07-29T01:27:05.097928"
+    },
+    "assets/audio/music/jingle_victory_victory_fanfare.mp3": {
+      "tool": "mcp__game-audio__generate_audio_batch",
+      "primary_prompt": "orchestral fantasy, triumphant",
+      "raw_input": {
+        "type": "jingle",
+        "name": "victory_fanfare",
+        "purpose": "victory",
+        "style": "orchestral fantasy",
+        "mood": "triumphant",
+        "durationSeconds": 8
+      },
+      "tool_use_id": "call-f36e3cea-7c1e-4262-8706-6ea38d9071b5-10",
+      "updated_at": "2026-07-29T01:27:05.097928"
+    },
+    "assets/ui/wordmark_title.png": {
+      "tool": "mcp__game-assets__generate_ui_kit",
+      "primary_prompt": "Ascendant Realms \u2014 Premium fantasy RTS interface, weathered highland bronze and dark slate stone panels with amber Lume energy trim lines, carved inlay borders, readable mature strategy UI, deep navy-ink backgrounds, warm gold accents, teal nature-lume secondary, violet cabal tertiary, clean legible hierarchy, no cartoon gloss",
+      "raw_input": {
+        "element": {
+          "id": "wordmark_title",
+          "type": "wordmark",
+          "label": "Ascendant Realms",
+          "size": {
+            "width": 900,
+            "height": 300
+          },
+          "aspect": "wide_3_1"
+        },
+        "kit_styleBrief": "Premium fantasy RTS interface, weathered highland bronze and dark slate stone panels with amber Lume energy trim lines, carved inlay borders, readable mature strategy UI, deep navy-ink backgrounds, warm gold accents, teal nature-lume secondary, violet cabal tertiary, clean legible hierarchy, no cartoon gloss"
+      },
+      "tool_use_id": "call-ea1c948e-e18f-45d7-9b0e-4544a78fbfbe-14",
+      "updated_at": "2026-07-29T01:28:02.433630"
+    },
+    "assets/ui/btn_play.png": {
+      "tool": "mcp__game-assets__generate_ui_kit",
+      "primary_prompt": "Play \u2014 Premium fantasy RTS interface, weathered highland bronze and dark slate stone panels with amber Lume energy trim lines, carved inlay borders, readable mature strategy UI, deep navy-ink backgrounds, warm gold accents, teal nature-lume secondary, violet cabal tertiary, clean legible hierarchy, no cartoon gloss",
+      "raw_input": {
+        "element": {
+          "id": "btn_play",
+          "type": "button_9slice",
+          "label": "Play",
+          "size": {
+            "width": 256,
+            "height": 96
+          },
+          "aspect": "wide_3_1"
+        },
+        "kit_styleBrief": "Premium fantasy RTS interface, weathered highland bronze and dark slate stone panels with amber Lume energy trim lines, carved inlay borders, readable mature strategy UI, deep navy-ink backgrounds, warm gold accents, teal nature-lume secondary, violet cabal tertiary, clean legible hierarchy, no cartoon gloss"
+      },
+      "tool_use_id": "call-ea1c948e-e18f-45d7-9b0e-4544a78fbfbe-14",
+      "updated_at": "2026-07-29T01:28:02.433630"
+    },
+    "assets/ui/btn_skirmish.png": {
+      "tool": "mcp__game-assets__generate_ui_kit",
+      "primary_prompt": "Skirmish \u2014 Premium fantasy RTS interface, weathered highland bronze and dark slate stone panels with amber Lume energy trim lines, carved inlay borders, readable mature strategy UI, deep navy-ink backgrounds, warm gold accents, teal nature-lume secondary, violet cabal tertiary, clean legible hierarchy, no cartoon gloss",
+      "raw_input": {
+        "element": {
+          "id": "btn_skirmish",
+          "type": "button_9slice",
+          "label": "Skirmish",
+          "size": {
+            "width": 256,
+            "height": 96
+          },
+          "aspect": "wide_3_1"
+        },
+        "kit_styleBrief": "Premium fantasy RTS interface, weathered highland bronze and dark slate stone panels with amber Lume energy trim lines, carved inlay borders, readable mature strategy UI, deep navy-ink backgrounds, warm gold accents, teal nature-lume secondary, violet cabal tertiary, clean legible hierarchy, no cartoon gloss"
+      },
+      "tool_use_id": "call-ea1c948e-e18f-45d7-9b0e-4544a78fbfbe-14",
+      "updated_at": "2026-07-29T01:28:02.433630"
+    },
+    "assets/ui/panel_main.png": {
+      "tool": "mcp__game-assets__generate_ui_kit",
+      "primary_prompt": "Premium fantasy RTS interface, weathered highland bronze and dark slate stone panels with amber Lume energy trim lines, carved inlay borders, readable mature strategy UI, deep navy-ink backgrounds, warm gold accents, teal nature-lume secondary, violet cabal tertiary, clean legible hierarchy, no cartoon gloss",
+      "raw_input": {
+        "element": {
+          "id": "panel_main",
+          "type": "panel_9slice",
+          "size": {
+            "width": 480,
+            "height": 360
+          },
+          "aspect": "landscape_4_3"
+        },
+        "kit_styleBrief": "Premium fantasy RTS interface, weathered highland bronze and dark slate stone panels with amber Lume energy trim lines, carved inlay borders, readable mature strategy UI, deep navy-ink backgrounds, warm gold accents, teal nature-lume secondary, violet cabal tertiary, clean legible hierarchy, no cartoon gloss"
+      },
+      "tool_use_id": "call-ea1c948e-e18f-45d7-9b0e-4544a78fbfbe-14",
+      "updated_at": "2026-07-29T01:28:02.433630"
+    },
+    "assets/ui/panel_hud.png": {
+      "tool": "mcp__game-assets__generate_ui_kit",
+      "primary_prompt": "Premium fantasy RTS interface, weathered highland bronze and dark slate stone panels with amber Lume energy trim lines, carved inlay borders, readable mature strategy UI, deep navy-ink backgrounds, warm gold accents, teal nature-lume secondary, violet cabal tertiary, clean legible hierarchy, no cartoon gloss",
+      "raw_input": {
+        "element": {
+          "id": "panel_hud",
+          "type": "panel_9slice",
+          "size": {
+            "width": 480,
+            "height": 180
+          },
+          "aspect": "landscape_16_9"
+        },
+        "kit_styleBrief": "Premium fantasy RTS interface, weathered highland bronze and dark slate stone panels with amber Lume energy trim lines, carved inlay borders, readable mature strategy UI, deep navy-ink backgrounds, warm gold accents, teal nature-lume secondary, violet cabal tertiary, clean legible hierarchy, no cartoon gloss"
+      },
+      "tool_use_id": "call-ea1c948e-e18f-45d7-9b0e-4544a78fbfbe-14",
+      "updated_at": "2026-07-29T01:28:02.433630"
+    },
+    "assets/ui/panel_command.png": {
+      "tool": "mcp__game-assets__generate_ui_kit",
+      "primary_prompt": "Premium fantasy RTS interface, weathered highland bronze and dark slate stone panels with amber Lume energy trim lines, carved inlay borders, readable mature strategy UI, deep navy-ink backgrounds, warm gold accents, teal nature-lume secondary, violet cabal tertiary, clean legible hierarchy, no cartoon gloss",
+      "raw_input": {
+        "element": {
+          "id": "panel_command",
+          "type": "panel_9slice",
+          "size": {
+            "width": 420,
+            "height": 220
+          },
+          "aspect": "landscape_4_3"
+        },
+        "kit_styleBrief": "Premium fantasy RTS interface, weathered highland bronze and dark slate stone panels with amber Lume energy trim lines, carved inlay borders, readable mature strategy UI, deep navy-ink backgrounds, warm gold accents, teal nature-lume secondary, violet cabal tertiary, clean legible hierarchy, no cartoon gloss"
+      },
+      "tool_use_id": "call-ea1c948e-e18f-45d7-9b0e-4544a78fbfbe-14",
+      "updated_at": "2026-07-29T01:28:02.433630"
+    },
+    "assets/ui/frame_portrait.png": {
+      "tool": "mcp__game-assets__generate_ui_kit",
+      "primary_prompt": "Premium fantasy RTS interface, weathered highland bronze and dark slate stone panels with amber Lume energy trim lines, carved inlay borders, readable mature strategy UI, deep navy-ink backgrounds, warm gold accents, teal nature-lume secondary, violet cabal tertiary, clean legible hierarchy, no cartoon gloss",
+      "raw_input": {
+        "element": {
+          "id": "frame_portrait",
+          "type": "frame",
+          "size": {
+            "width": 192,
+            "height": 192
+          },
+          "aspect": "square"
+        },
+        "kit_styleBrief": "Premium fantasy RTS interface, weathered highland bronze and dark slate stone panels with amber Lume energy trim lines, carved inlay borders, readable mature strategy UI, deep navy-ink backgrounds, warm gold accents, teal nature-lume secondary, violet cabal tertiary, clean legible hierarchy, no cartoon gloss"
+      },
+      "tool_use_id": "call-ea1c948e-e18f-45d7-9b0e-4544a78fbfbe-14",
+      "updated_at": "2026-07-29T01:28:02.433630"
+    },
+    "assets/ui/icon_lume.png": {
+      "tool": "mcp__game-assets__generate_ui_kit",
+      "primary_prompt": "Premium fantasy RTS interface, weathered highland bronze and dark slate stone panels with amber Lume energy trim lines, carved inlay borders, readable mature strategy UI, deep navy-ink backgrounds, warm gold accents, teal nature-lume secondary, violet cabal tertiary, clean legible hierarchy, no cartoon gloss",
+      "raw_input": {
+        "element": {
+          "id": "icon_lume",
+          "type": "icon",
+          "size": {
+            "width": 128,
+            "height": 128
+          },
+          "aspect": "square"
+        },
+        "kit_styleBrief": "Premium fantasy RTS interface, weathered highland bronze and dark slate stone panels with amber Lume energy trim lines, carved inlay borders, readable mature strategy UI, deep navy-ink backgrounds, warm gold accents, teal nature-lume secondary, violet cabal tertiary, clean legible hierarchy, no cartoon gloss"
+      },
+      "tool_use_id": "call-ea1c948e-e18f-45d7-9b0e-4544a78fbfbe-14",
+      "updated_at": "2026-07-29T01:28:02.433630"
+    },
+    "assets/ui/icon_food.png": {
+      "tool": "mcp__game-assets__generate_ui_kit",
+      "primary_prompt": "Premium fantasy RTS interface, weathered highland bronze and dark slate stone panels with amber Lume energy trim lines, carved inlay borders, readable mature strategy UI, deep navy-ink backgrounds, warm gold accents, teal nature-lume secondary, violet cabal tertiary, clean legible hierarchy, no cartoon gloss",
+      "raw_input": {
+        "element": {
+          "id": "icon_food",
+          "type": "icon",
+          "size": {
+            "width": 96,
+            "height": 96
+          },
+          "aspect": "square"
+        },
+        "kit_styleBrief": "Premium fantasy RTS interface, weathered highland bronze and dark slate stone panels with amber Lume energy trim lines, carved inlay borders, readable mature strategy UI, deep navy-ink backgrounds, warm gold accents, teal nature-lume secondary, violet cabal tertiary, clean legible hierarchy, no cartoon gloss"
+      },
+      "tool_use_id": "call-ea1c948e-e18f-45d7-9b0e-4544a78fbfbe-14",
+      "updated_at": "2026-07-29T01:28:02.433630"
+    },
+    "assets/ui/icon_timber.png": {
+      "tool": "mcp__game-assets__generate_ui_kit",
+      "primary_prompt": "Premium fantasy RTS interface, weathered highland bronze and dark slate stone panels with amber Lume energy trim lines, carved inlay borders, readable mature strategy UI, deep navy-ink backgrounds, warm gold accents, teal nature-lume secondary, violet cabal tertiary, clean legible hierarchy, no cartoon gloss",
+      "raw_input": {
+        "element": {
+          "id": "icon_timber",
+          "type": "icon",
+          "size": {
+            "width": 96,
+            "height": 96
+          },
+          "aspect": "square"
+        },
+        "kit_styleBrief": "Premium fantasy RTS interface, weathered highland bronze and dark slate stone panels with amber Lume energy trim lines, carved inlay borders, readable mature strategy UI, deep navy-ink backgrounds, warm gold accents, teal nature-lume secondary, violet cabal tertiary, clean legible hierarchy, no cartoon gloss"
+      },
+      "tool_use_id": "call-ea1c948e-e18f-45d7-9b0e-4544a78fbfbe-14",
+      "updated_at": "2026-07-29T01:28:02.433630"
+    },
+    "assets/ui/icon_stone.png": {
+      "tool": "mcp__game-assets__generate_ui_kit",
+      "primary_prompt": "Premium fantasy RTS interface, weathered highland bronze and dark slate stone panels with amber Lume energy trim lines, carved inlay borders, readable mature strategy UI, deep navy-ink backgrounds, warm gold accents, teal nature-lume secondary, violet cabal tertiary, clean legible hierarchy, no cartoon gloss",
+      "raw_input": {
+        "element": {
+          "id": "icon_stone",
+          "type": "icon",
+          "size": {
+            "width": 96,
+            "height": 96
+          },
+          "aspect": "square"
+        },
+        "kit_styleBrief": "Premium fantasy RTS interface, weathered highland bronze and dark slate stone panels with amber Lume energy trim lines, carved inlay borders, readable mature strategy UI, deep navy-ink backgrounds, warm gold accents, teal nature-lume secondary, violet cabal tertiary, clean legible hierarchy, no cartoon gloss"
+      },
+      "tool_use_id": "call-ea1c948e-e18f-45d7-9b0e-4544a78fbfbe-14",
+      "updated_at": "2026-07-29T01:28:02.433630"
+    },
+    "assets/ui/icon_gold.png": {
+      "tool": "mcp__game-assets__generate_ui_kit",
+      "primary_prompt": "Premium fantasy RTS interface, weathered highland bronze and dark slate stone panels with amber Lume energy trim lines, carved inlay borders, readable mature strategy UI, deep navy-ink backgrounds, warm gold accents, teal nature-lume secondary, violet cabal tertiary, clean legible hierarchy, no cartoon gloss",
+      "raw_input": {
+        "element": {
+          "id": "icon_gold",
+          "type": "icon",
+          "size": {
+            "width": 96,
+            "height": 96
+          },
+          "aspect": "square"
+        },
+        "kit_styleBrief": "Premium fantasy RTS interface, weathered highland bronze and dark slate stone panels with amber Lume energy trim lines, carved inlay borders, readable mature strategy UI, deep navy-ink backgrounds, warm gold accents, teal nature-lume secondary, violet cabal tertiary, clean legible hierarchy, no cartoon gloss"
+      },
+      "tool_use_id": "call-ea1c948e-e18f-45d7-9b0e-4544a78fbfbe-14",
+      "updated_at": "2026-07-29T01:28:02.433630"
+    },
+    "assets/characters/lioraen_seedkeeper_worker/lioraen_seedkeeper_worker.glb": {
+      "tool": "mcp__game-3d-models__generate_characters_batch",
+      "primary_prompt": "Full body T-pose fantasy nature realm worker gardener, slender woodland humanoid in woven bark-fiber smock with seed pouches and vine tool-belt, soft teal Lume leaf accents, gentle caretaker silhouette, empty hands visible, stylized 3D game unit, no tools held",
+      "raw_input": {
+        "name": "lioraen_seedkeeper_worker",
+        "prompt": "Full body T-pose fantasy nature realm worker gardener, slender woodland humanoid in woven bark-fiber smock with seed pouches and vine tool-belt, soft teal Lume leaf accents, gentle caretaker silhouette, empty hands visible, stylized 3D game unit, no tools held",
+        "style": "stylized"
+      },
+      "tool_use_id": "toolu_01YPhcWbj33SfL4BC9Qgx8bE",
+      "updated_at": "2026-07-29T01:59:09.889631"
+    },
+    "assets/characters/vorthak_bondservant_worker/vorthak_bondservant_worker.glb": {
+      "tool": "mcp__game-3d-models__generate_characters_batch",
+      "primary_prompt": "Full body T-pose fantasy dark cabal worker drudge, hunched gaunt ash-skinned servant in tattered dark wraps and iron shackle-harness, faint violet Lume cracks, hollow eyes, oppressed laborer silhouette, empty hands visible, stylized 3D game unit, no tools held",
+      "raw_input": {
+        "name": "vorthak_bondservant_worker",
+        "prompt": "Full body T-pose fantasy dark cabal worker drudge, hunched gaunt ash-skinned servant in tattered dark wraps and iron shackle-harness, faint violet Lume cracks, hollow eyes, oppressed laborer silhouette, empty hands visible, stylized 3D game unit, no tools held",
+        "style": "stylized"
+      },
+      "tool_use_id": "toolu_01YPhcWbj33SfL4BC9Qgx8bE",
+      "updated_at": "2026-07-29T01:59:09.889631"
+    },
+    "assets/characters/barrosan_crag_archer/barrosan_crag_archer.glb": {
+      "tool": "mcp__game-3d-models__generate_characters_batch",
+      "primary_prompt": "Full body T-pose fantasy highland clan archer, lean human in leather-and-wool light armor with fur mantle and quiver on back, stone-gray and bronze tones, iron-rimmed cap, empty hands visible, agile ranged skirmisher silhouette, stylized 3D game unit, no weapons held",
+      "raw_input": {
+        "name": "barrosan_crag_archer",
+        "prompt": "Full body T-pose fantasy highland clan archer, lean human in leather-and-wool light armor with fur mantle and quiver on back, stone-gray and bronze tones, iron-rimmed cap, empty hands visible, agile ranged skirmisher silhouette, stylized 3D game unit, no weapons held",
+        "style": "stylized"
+      },
+      "tool_use_id": "toolu_01YPhcWbj33SfL4BC9Qgx8bE",
+      "updated_at": "2026-07-29T01:59:09.889631"
+    },
+    "assets/characters/barrosan_anvil_breaker/barrosan_anvil_breaker.glb": {
+      "tool": "mcp__game-3d-models__generate_characters_batch",
+      "primary_prompt": "Full body T-pose fantasy highland clan heavy shock trooper, massive broad-shouldered human in thick iron plate and stone pauldrons with fur trim, horned iron helm, weathered war aesthetic, empty hands visible, powerful anti-armor silhouette, stylized 3D game unit, no weapons held",
+      "raw_input": {
+        "name": "barrosan_anvil_breaker",
+        "prompt": "Full body T-pose fantasy highland clan heavy shock trooper, massive broad-shouldered human in thick iron plate and stone pauldrons with fur trim, horned iron helm, weathered war aesthetic, empty hands visible, powerful anti-armor silhouette, stylized 3D game unit, no weapons held",
+        "style": "stylized"
+      },
+      "tool_use_id": "toolu_01YPhcWbj33SfL4BC9Qgx8bE",
+      "updated_at": "2026-07-29T01:59:09.889631"
+    },
+    "assets/characters/lioraen_rootwarden_guard/lioraen_rootwarden_guard.glb": {
+      "tool": "mcp__game-3d-models__generate_characters_batch",
+      "primary_prompt": "Full body T-pose fantasy nature realm heavy defender, tall humanoid encased in thick living-bark plate armor with mossy shield-like shoulder growths and amber Lume knots, sturdy rooted silhouette, empty hands visible, stylized 3D game unit, no weapons held",
+      "raw_input": {
+        "name": "lioraen_rootwarden_guard",
+        "prompt": "Full body T-pose fantasy nature realm heavy defender, tall humanoid encased in thick living-bark plate armor with mossy shield-like shoulder growths and amber Lume knots, sturdy rooted silhouette, empty hands visible, stylized 3D game unit, no weapons held",
+        "style": "stylized"
+      },
+      "tool_use_id": "toolu_01YPhcWbj33SfL4BC9Qgx8bE",
+      "updated_at": "2026-07-29T01:59:09.889631"
+    },
+    "assets/characters/lioraen_canopy_mender/lioraen_canopy_mender.glb": {
+      "tool": "mcp__game-3d-models__generate_characters_batch",
+      "primary_prompt": "Full body T-pose fantasy nature realm healer priestess, graceful robed humanoid in flowing leaf-silk vestments with glowing teal Lume blossom halo and antler circlet, serene supportive caster silhouette, empty hands visible, stylized 3D game unit, no staff held",
+      "raw_input": {
+        "name": "lioraen_canopy_mender",
+        "prompt": "Full body T-pose fantasy nature realm healer priestess, graceful robed humanoid in flowing leaf-silk vestments with glowing teal Lume blossom halo and antler circlet, serene supportive caster silhouette, empty hands visible, stylized 3D game unit, no staff held",
+        "style": "stylized"
+      },
+      "tool_use_id": "toolu_01YPhcWbj33SfL4BC9Qgx8bE",
+      "updated_at": "2026-07-29T01:59:09.889631"
+    },
+    "assets/characters/vorthak_veil_warlock/vorthak_veil_warlock.glb": {
+      "tool": "mcp__game-3d-models__generate_characters_batch",
+      "primary_prompt": "Full body T-pose fantasy dark cabal warlock spellcaster, robed ash-skinned figure in layered black-and-violet ritual robes with floating rune shards and cracked glass mask, dangerous arcane silhouette, empty hands visible, stylized 3D game unit, no staff held",
+      "raw_input": {
+        "name": "vorthak_veil_warlock",
+        "prompt": "Full body T-pose fantasy dark cabal warlock spellcaster, robed ash-skinned figure in layered black-and-violet ritual robes with floating rune shards and cracked glass mask, dangerous arcane silhouette, empty hands visible, stylized 3D game unit, no staff held",
+        "style": "stylized"
+      },
+      "tool_use_id": "toolu_01YPhcWbj33SfL4BC9Qgx8bE",
+      "updated_at": "2026-07-29T01:59:09.889631"
+    },
+    "assets/characters/vorthak_rift_blade/vorthak_rift_blade.glb": {
+      "tool": "mcp__game-3d-models__generate_characters_batch",
+      "primary_prompt": "Full body T-pose fantasy dark cabal elite melee warrior, agile armored figure in segmented black-glass plate with glowing magenta Lume edges and bladed gauntlets, sinister fast-striker silhouette, empty hands visible, stylized 3D game unit, no weapons held",
+      "raw_input": {
+        "name": "vorthak_rift_blade",
+        "prompt": "Full body T-pose fantasy dark cabal elite melee warrior, agile armored figure in segmented black-glass plate with glowing magenta Lume edges and bladed gauntlets, sinister fast-striker silhouette, empty hands visible, stylized 3D game unit, no weapons held",
+        "style": "stylized"
+      },
+      "tool_use_id": "toolu_01YPhcWbj33SfL4BC9Qgx8bE",
+      "updated_at": "2026-07-29T01:59:09.889631"
+    },
+    "assets/environment/buildings/barrosan_war_hall.glb": {
+      "tool": "mcp__game-3d-models__generate_environment_batch",
+      "primary_prompt": "Fantasy highland clan barracks military hall for RTS, long stone-and-timber longhouse with slate roof, weapon racks and training banners outside, weathered iron doors, readable freestanding game building on flat base, stylized",
+      "raw_input": {
+        "name": "barrosan_war_hall",
+        "prompt": "Fantasy highland clan barracks military hall for RTS, long stone-and-timber longhouse with slate roof, weapon racks and training banners outside, weathered iron doors, readable freestanding game building on flat base, stylized",
+        "category": "buildings",
+        "style": "stylized"
+      },
+      "tool_use_id": "toolu_01QJrLPuR7y7x8uFR3GQJbtn",
+      "updated_at": "2026-07-29T02:02:25.687596"
+    },
+    "assets/environment/buildings/barrosan_iron_forge.glb": {
+      "tool": "mcp__game-3d-models__generate_environment_batch",
+      "primary_prompt": "Fantasy highland clan forge economy building for RTS, stout stone smithy with big chimney and glowing forge light, anvils and ore piles, slate roof, readable freestanding game building, stylized",
+      "raw_input": {
+        "name": "barrosan_iron_forge",
+        "prompt": "Fantasy highland clan forge economy building for RTS, stout stone smithy with big chimney and glowing forge light, anvils and ore piles, slate roof, readable freestanding game building, stylized",
+        "category": "buildings",
+        "style": "stylized"
+      },
+      "tool_use_id": "toolu_01QJrLPuR7y7x8uFR3GQJbtn",
+      "updated_at": "2026-07-29T02:02:25.687596"
+    },
+    "assets/environment/buildings/barrosan_clan_croft.glb": {
+      "tool": "mcp__game-3d-models__generate_environment_batch",
+      "primary_prompt": "Fantasy highland clan house population building for RTS, small sturdy stone cottage with slate roof, wool smoke chimney, wooden fence, readable freestanding game building, stylized",
+      "raw_input": {
+        "name": "barrosan_clan_croft",
+        "prompt": "Fantasy highland clan house population building for RTS, small sturdy stone cottage with slate roof, wool smoke chimney, wooden fence, readable freestanding game building, stylized",
+        "category": "buildings",
+        "style": "stylized"
+      },
+      "tool_use_id": "toolu_01QJrLPuR7y7x8uFR3GQJbtn",
+      "updated_at": "2026-07-29T02:02:25.687596"
+    },
+    "assets/environment/buildings/lioraen_thornhall.glb": {
+      "tool": "mcp__game-3d-models__generate_environment_batch",
+      "primary_prompt": "Fantasy living nature barracks for RTS, grown archway hall of woven thorned branches and bark walls with teal Lume blossoms, organic training grove, readable freestanding nature building, stylized fantasy",
+      "raw_input": {
+        "name": "lioraen_thornhall",
+        "prompt": "Fantasy living nature barracks for RTS, grown archway hall of woven thorned branches and bark walls with teal Lume blossoms, organic training grove, readable freestanding nature building, stylized fantasy",
+        "category": "buildings",
+        "style": "fantasy"
+      },
+      "tool_use_id": "toolu_01QJrLPuR7y7x8uFR3GQJbtn",
+      "updated_at": "2026-07-29T02:02:25.687596"
+    },
+    "assets/environment/buildings/lioraen_lifewell.glb": {
+      "tool": "mcp__game-3d-models__generate_environment_batch",
+      "primary_prompt": "Fantasy living nature economy building for RTS, glowing spring pool ringed by curved living-wood arches with amber Lume lilies, organic fountain structure, readable freestanding nature building, stylized fantasy",
+      "raw_input": {
+        "name": "lioraen_lifewell",
+        "prompt": "Fantasy living nature economy building for RTS, glowing spring pool ringed by curved living-wood arches with amber Lume lilies, organic fountain structure, readable freestanding nature building, stylized fantasy",
+        "category": "buildings",
+        "style": "fantasy"
+      },
+      "tool_use_id": "toolu_01QJrLPuR7y7x8uFR3GQJbtn",
+      "updated_at": "2026-07-29T02:02:25.687596"
+    },
+    "assets/environment/buildings/lioraen_spirit_glade.glb": {
+      "tool": "mcp__game-3d-models__generate_environment_batch",
+      "primary_prompt": "Fantasy living nature magic research building for RTS, floating luminous crystal seed cradled in a spiral of living branches with teal glow, mystical organic structure, readable freestanding nature building, stylized fantasy",
+      "raw_input": {
+        "name": "lioraen_spirit_glade",
+        "prompt": "Fantasy living nature magic research building for RTS, floating luminous crystal seed cradled in a spiral of living branches with teal glow, mystical organic structure, readable freestanding nature building, stylized fantasy",
+        "category": "buildings",
+        "style": "fantasy"
+      },
+      "tool_use_id": "toolu_01QJrLPuR7y7x8uFR3GQJbtn",
+      "updated_at": "2026-07-29T02:02:25.687596"
+    },
+    "assets/environment/buildings/vorthak_bone_barracks.glb": {
+      "tool": "mcp__game-3d-models__generate_environment_batch",
+      "primary_prompt": "Fantasy dark cabal barracks for RTS, jagged black-iron and bone hall with violet Lume forge-glow and spiked ramparts, ominous training pit, readable freestanding dark building, stylized fantasy",
+      "raw_input": {
+        "name": "vorthak_bone_barracks",
+        "prompt": "Fantasy dark cabal barracks for RTS, jagged black-iron and bone hall with violet Lume forge-glow and spiked ramparts, ominous training pit, readable freestanding dark building, stylized fantasy",
+        "category": "buildings",
+        "style": "fantasy"
+      },
+      "tool_use_id": "toolu_01QJrLPuR7y7x8uFR3GQJbtn",
+      "updated_at": "2026-07-29T02:02:25.687596"
+    },
+    "assets/environment/buildings/vorthak_warlock_spire.glb": {
+      "tool": "mcp__game-3d-models__generate_environment_batch",
+      "primary_prompt": "Fantasy dark cabal magic tower building for RTS, twisted ash-glass spire with floating rune rings and pulsing magenta Lume core, occult research structure, readable freestanding dark building, stylized fantasy",
+      "raw_input": {
+        "name": "vorthak_warlock_spire",
+        "prompt": "Fantasy dark cabal magic tower building for RTS, twisted ash-glass spire with floating rune rings and pulsing magenta Lume core, occult research structure, readable freestanding dark building, stylized fantasy",
+        "category": "buildings",
+        "style": "fantasy"
+      },
+      "tool_use_id": "toolu_01QJrLPuR7y7x8uFR3GQJbtn",
+      "updated_at": "2026-07-29T02:02:25.687596"
+    },
+    "assets/environment/buildings/vorthak_ash_forge.glb": {
+      "tool": "mcp__game-3d-models__generate_environment_batch",
+      "primary_prompt": "Fantasy dark cabal economy building for RTS, brooding black furnace structure venting violet embers with cracked glass panels and iron gargoyles, readable freestanding dark building, stylized fantasy",
+      "raw_input": {
+        "name": "vorthak_ash_forge",
+        "prompt": "Fantasy dark cabal economy building for RTS, brooding black furnace structure venting violet embers with cracked glass panels and iron gargoyles, readable freestanding dark building, stylized fantasy",
+        "category": "buildings",
+        "style": "fantasy"
+      },
+      "tool_use_id": "toolu_01QJrLPuR7y7x8uFR3GQJbtn",
+      "updated_at": "2026-07-29T02:02:25.687596"
+    },
+    "assets/textures/nature/highland_grass.png": {
+      "tool": "mcp__game-assets__generate_textures_batch",
+      "primary_prompt": "Seamless stylized highland mountain grass and moss ground texture, muted green with earthy patches and small stones, top-down tileable RTS terrain",
+      "raw_input": {
+        "name": "highland_grass",
+        "category": "nature",
+        "prompt": "Seamless stylized highland mountain grass and moss ground texture, muted green with earthy patches and small stones, top-down tileable RTS terrain",
+        "seamless": true
+      },
+      "tool_use_id": "toolu_01PJg4JvAk2RpuHE4cmtH96q",
+      "updated_at": "2026-07-29T02:02:27.297629"
+    },
+    "assets/textures/stone/highland_rock.png": {
+      "tool": "mcp__game-assets__generate_textures_batch",
+      "primary_prompt": "Seamless stylized gray highland granite rock ground texture, weathered stone with cracks, top-down tileable RTS terrain",
+      "raw_input": {
+        "name": "highland_rock",
+        "category": "stone",
+        "prompt": "Seamless stylized gray highland granite rock ground texture, weathered stone with cracks, top-down tileable RTS terrain",
+        "seamless": true
+      },
+      "tool_use_id": "toolu_01PJg4JvAk2RpuHE4cmtH96q",
+      "updated_at": "2026-07-29T02:02:27.297629"
+    },
+    "assets/textures/nature/highland_dirt_path.png": {
+      "tool": "mcp__game-assets__generate_textures_batch",
+      "primary_prompt": "Seamless stylized packed dirt and gravel path texture, brown earthy trail, top-down tileable RTS terrain",
+      "raw_input": {
+        "name": "highland_dirt_path",
+        "category": "nature",
+        "prompt": "Seamless stylized packed dirt and gravel path texture, brown earthy trail, top-down tileable RTS terrain",
+        "seamless": true
+      },
+      "tool_use_id": "toolu_01PJg4JvAk2RpuHE4cmtH96q",
+      "updated_at": "2026-07-29T02:02:27.297629"
+    },
+    "assets/audio/sfx/combat/combat_sword_hit.mp3": {
+      "tool": "mcp__game-audio__generate_audio_batch",
+      "primary_prompt": "Sharp metallic sword impact hit on armor, meaty fantasy melee clash",
+      "raw_input": {
+        "type": "sfx",
+        "name": "sword_hit",
+        "category": "combat",
+        "description": "Sharp metallic sword impact hit on armor, meaty fantasy melee clash",
+        "duration": 0.5
+      },
+      "tool_use_id": "toolu_01TKwhQfS5L5YmJdQkEjALSN",
+      "updated_at": "2026-07-29T02:03:21.403332"
+    },
+    "assets/audio/sfx/combat/combat_arrow_shot.mp3": {
+      "tool": "mcp__game-audio__generate_audio_batch",
+      "primary_prompt": "Bow release and arrow whoosh, fantasy ranged attack",
+      "raw_input": {
+        "type": "sfx",
+        "name": "arrow_shot",
+        "category": "combat",
+        "description": "Bow release and arrow whoosh, fantasy ranged attack",
+        "duration": 0.5
+      },
+      "tool_use_id": "toolu_01TKwhQfS5L5YmJdQkEjALSN",
+      "updated_at": "2026-07-29T02:03:21.403332"
+    },
+    "assets/audio/sfx/combat/combat_spell_cast.mp3": {
+      "tool": "mcp__game-audio__generate_audio_batch",
+      "primary_prompt": "Arcane fantasy spell cast with magical shimmer and low whoosh",
+      "raw_input": {
+        "type": "sfx",
+        "name": "spell_cast",
+        "category": "combat",
+        "description": "Arcane fantasy spell cast with magical shimmer and low whoosh",
+        "duration": 0.9
+      },
+      "tool_use_id": "toolu_01TKwhQfS5L5YmJdQkEjALSN",
+      "updated_at": "2026-07-29T02:03:21.403332"
+    },
+    "assets/audio/sfx/combat/combat_unit_death.mp3": {
+      "tool": "mcp__game-audio__generate_audio_batch",
+      "primary_prompt": "Short fantasy soldier death grunt and body fall",
+      "raw_input": {
+        "type": "sfx",
+        "name": "unit_death",
+        "category": "combat",
+        "description": "Short fantasy soldier death grunt and body fall",
+        "duration": 0.7
+      },
+      "tool_use_id": "toolu_01TKwhQfS5L5YmJdQkEjALSN",
+      "updated_at": "2026-07-29T02:03:21.403332"
+    },
+    "assets/audio/sfx/ui/ui_unit_ready.mp3": {
+      "tool": "mcp__game-audio__generate_audio_batch",
+      "primary_prompt": "Short affirmative fantasy horn note for unit trained ready",
+      "raw_input": {
+        "type": "sfx",
+        "name": "unit_ready",
+        "category": "ui",
+        "description": "Short affirmative fantasy horn note for unit trained ready",
+        "duration": 0.9
+      },
+      "tool_use_id": "toolu_01TKwhQfS5L5YmJdQkEjALSN",
+      "updated_at": "2026-07-29T02:03:21.403332"
+    },
+    "assets/audio/sfx/ui/ui_base_under_attack.mp3": {
+      "tool": "mcp__game-audio__generate_audio_batch",
+      "primary_prompt": "Urgent warning war horn and drum hit alert for base under attack",
+      "raw_input": {
+        "type": "sfx",
+        "name": "base_under_attack",
+        "category": "ui",
+        "description": "Urgent warning war horn and drum hit alert for base under attack",
+        "duration": 1.6
+      },
+      "tool_use_id": "toolu_01TKwhQfS5L5YmJdQkEjALSN",
+      "updated_at": "2026-07-29T02:03:21.403332"
+    },
+    "assets/audio/music/jingle_defeat_defeat_dirge.mp3": {
+      "tool": "mcp__game-audio__generate_audio_batch",
+      "primary_prompt": "orchestral fantasy, somber tragic",
+      "raw_input": {
+        "type": "jingle",
+        "name": "defeat_dirge",
+        "purpose": "defeat",
+        "style": "orchestral fantasy",
+        "mood": "somber tragic",
+        "durationSeconds": 6
+      },
+      "tool_use_id": "toolu_01TKwhQfS5L5YmJdQkEjALSN",
+      "updated_at": "2026-07-29T02:03:21.403332"
+    },
+    "assets/characters/barrosan_outrider/barrosan_outrider.glb": {
+      "tool": "mcp__game-3d-models__generate_characters_batch",
+      "primary_prompt": "Full body T-pose fantasy highland clan fast raider skirmisher, lean agile human in light leather and fur with kilt and small round shield harness, war-paint, iron half-helm, quick flanker silhouette, empty hands visible, stylized 3D game unit, no weapons held",
+      "raw_input": {
+        "name": "barrosan_outrider",
+        "prompt": "Full body T-pose fantasy highland clan fast raider skirmisher, lean agile human in light leather and fur with kilt and small round shield harness, war-paint, iron half-helm, quick flanker silhouette, empty hands visible, stylized 3D game unit, no weapons held",
+        "style": "stylized"
+      },
+      "tool_use_id": "toolu_018Hp1kegBKqTqXwNuPdeSar",
+      "updated_at": "2026-07-29T02:12:58.497568"
+    },
+    "assets/characters/lioraen_windstrider/lioraen_windstrider.glb": {
+      "tool": "mcp__game-3d-models__generate_characters_batch",
+      "primary_prompt": "Full body T-pose fantasy nature realm fast lancer, graceful lithe humanoid in streamlined leaf-plate with flowing wind-sash and teal Lume glow trails, aerodynamic swift silhouette, empty hands visible, stylized 3D game unit, no weapons held",
+      "raw_input": {
+        "name": "lioraen_windstrider",
+        "prompt": "Full body T-pose fantasy nature realm fast lancer, graceful lithe humanoid in streamlined leaf-plate with flowing wind-sash and teal Lume glow trails, aerodynamic swift silhouette, empty hands visible, stylized 3D game unit, no weapons held",
+        "style": "stylized"
+      },
+      "tool_use_id": "toolu_018Hp1kegBKqTqXwNuPdeSar",
+      "updated_at": "2026-07-29T02:12:58.497568"
+    },
+    "assets/characters/vorthak_gloom_hound/vorthak_gloom_hound.glb": {
+      "tool": "mcp__game-3d-models__generate_characters_batch",
+      "primary_prompt": "Full body T-pose fantasy dark cabal beast, quadruped shadow-hound of ash and black glass with glowing magenta Lume eyes and spined back, feral fast predator silhouette on four legs, stylized 3D game creature",
+      "raw_input": {
+        "name": "vorthak_gloom_hound",
+        "prompt": "Full body T-pose fantasy dark cabal beast, quadruped shadow-hound of ash and black glass with glowing magenta Lume eyes and spined back, feral fast predator silhouette on four legs, stylized 3D game creature",
+        "style": "stylized"
+      },
+      "tool_use_id": "toolu_018Hp1kegBKqTqXwNuPdeSar",
+      "updated_at": "2026-07-29T02:12:58.497568"
+    },
+    "assets/props/vehicles/barrosan_ballista.glb": {
+      "tool": "mcp__game-3d-models__generate_props_batch",
+      "primary_prompt": "Fantasy highland clan siege ballista war machine, heavy timber and iron bolt-thrower on wooden wheels with stone counterweights and clan carvings, readable freestanding RTS siege engine, stylized",
+      "raw_input": {
+        "name": "barrosan_ballista",
+        "category": "vehicles",
+        "prompt": "Fantasy highland clan siege ballista war machine, heavy timber and iron bolt-thrower on wooden wheels with stone counterweights and clan carvings, readable freestanding RTS siege engine, stylized",
+        "style": "stylized"
+      },
+      "tool_use_id": "toolu_01AHvagZSEVN66ivxWSSXdXy",
+      "updated_at": "2026-07-29T02:15:43.157378"
+    },
+    "assets/props/vehicles/lioraen_thornthrower.glb": {
+      "tool": "mcp__game-3d-models__generate_props_batch",
+      "primary_prompt": "Fantasy nature realm living siege catapult, grown wooden thrower-arm with thorn-pod ammunition and vine tension cords on root-wheels, glowing teal Lume sap, readable freestanding RTS siege engine, organic stylized fantasy",
+      "raw_input": {
+        "name": "lioraen_thornthrower",
+        "category": "vehicles",
+        "prompt": "Fantasy nature realm living siege catapult, grown wooden thrower-arm with thorn-pod ammunition and vine tension cords on root-wheels, glowing teal Lume sap, readable freestanding RTS siege engine, organic stylized fantasy",
+        "style": "stylized"
+      },
+      "tool_use_id": "toolu_01AHvagZSEVN66ivxWSSXdXy",
+      "updated_at": "2026-07-29T02:15:43.157378"
+    },
+    "assets/props/vehicles/vorthak_fracture_engine.glb": {
+      "tool": "mcp__game-3d-models__generate_props_batch",
+      "primary_prompt": "Fantasy dark cabal siege engine, menacing black-iron and ash-glass mortar spewing violet Lume energy, spiked wheels and bone plating, readable freestanding RTS siege engine, stylized dark fantasy",
+      "raw_input": {
+        "name": "vorthak_fracture_engine",
+        "category": "vehicles",
+        "prompt": "Fantasy dark cabal siege engine, menacing black-iron and ash-glass mortar spewing violet Lume energy, spiked wheels and bone plating, readable freestanding RTS siege engine, stylized dark fantasy",
+        "style": "stylized"
+      },
+      "tool_use_id": "toolu_01AHvagZSEVN66ivxWSSXdXy",
+      "updated_at": "2026-07-29T02:15:43.157378"
+    },
+    "assets/characters/barrosan_clan_levy/barrosan_clan_levy.glb": {
+      "tool": "mcp__game-3d-models__generate_characters_batch",
+      "primary_prompt": "Full body T-pose fantasy highland clan basic warrior levy, average build human in simple wool tunic leather jerkin and iron cap, stone-gray and bronze tones, cheap frontline soldier silhouette, empty hands visible, stylized 3D game unit, no weapons held",
+      "raw_input": {
+        "name": "barrosan_clan_levy",
+        "prompt": "Full body T-pose fantasy highland clan basic warrior levy, average build human in simple wool tunic leather jerkin and iron cap, stone-gray and bronze tones, cheap frontline soldier silhouette, empty hands visible, stylized 3D game unit, no weapons held",
+        "style": "stylized"
+      },
+      "tool_use_id": "toolu_01U1Dz8ERHzXp8V57d5kpJq7",
+      "updated_at": "2026-07-29T02:19:00.832407"
+    },
+    "assets/characters/lioraen_bloomdancer/lioraen_bloomdancer.glb": {
+      "tool": "mcp__game-3d-models__generate_characters_batch",
+      "primary_prompt": "Full body T-pose fantasy nature realm agile melee dancer warrior, graceful humanoid in petal-layered light armor with teal Lume vine wraps and flower-crown, flowing offensive blade-dancer silhouette, empty hands visible, stylized 3D game unit, no weapons held",
+      "raw_input": {
+        "name": "lioraen_bloomdancer",
+        "prompt": "Full body T-pose fantasy nature realm agile melee dancer warrior, graceful humanoid in petal-layered light armor with teal Lume vine wraps and flower-crown, flowing offensive blade-dancer silhouette, empty hands visible, stylized 3D game unit, no weapons held",
+        "style": "stylized"
+      },
+      "tool_use_id": "toolu_01U1Dz8ERHzXp8V57d5kpJq7",
+      "updated_at": "2026-07-29T02:19:00.832407"
+    },
+    "assets/characters/vorthak_cinder_spitter/vorthak_cinder_spitter.glb": {
+      "tool": "mcp__game-3d-models__generate_characters_batch",
+      "primary_prompt": "Full body T-pose fantasy dark cabal ranged fire-caster, hunched ash-skinned figure in charred leather with glowing violet Lume ember-vents on forearms and shoulders, cracked glass mask, ranged spitter silhouette, empty hands visible, stylized 3D game unit, no weapons held",
+      "raw_input": {
+        "name": "vorthak_cinder_spitter",
+        "prompt": "Full body T-pose fantasy dark cabal ranged fire-caster, hunched ash-skinned figure in charred leather with glowing violet Lume ember-vents on forearms and shoulders, cracked glass mask, ranged spitter silhouette, empty hands visible, stylized 3D game unit, no weapons held",
+        "style": "stylized"
+      },
+      "tool_use_id": "toolu_01U1Dz8ERHzXp8V57d5kpJq7",
+      "updated_at": "2026-07-29T02:19:00.832407"
+    },
+    "assets/textures/nature/highland_meadow_grass.png": {
+      "tool": "mcp__game-assets__generate_textures_batch",
+      "primary_prompt": "Lush green highland meadow grass ground, seamless tileable top-down texture, vibrant short grass blades with subtle wildflowers, patches of moss and a little dirt, hand-painted stylized epic fantasy, even lighting, no shadows",
+      "raw_input": {
+        "name": "highland_meadow_grass",
+        "category": "nature",
+        "style": "hand_painted",
+        "size": "1024",
+        "seamless": true,
+        "prompt": "Lush green highland meadow grass ground, seamless tileable top-down texture, vibrant short grass blades with subtle wildflowers, patches of moss and a little dirt, hand-painted stylized epic fantasy, even lighting, no shadows"
+      },
+      "tool_use_id": "toolu_01JFA5ie4Fu3oagUoHhuJVz9",
+      "updated_at": "2026-07-29T04:54:13.708315"
+    },
+    "assets/environment/vegetation/highland_pine.glb": {
+      "tool": "mcp__game-3d-models__generate_environment_batch",
+      "primary_prompt": "A tall stylized highland pine tree with dark blue-green needle canopy and rugged brown bark trunk, painterly epic fantasy, game-ready",
+      "raw_input": {
+        "name": "highland_pine",
+        "category": "vegetation",
+        "style": "fantasy",
+        "prompt": "A tall stylized highland pine tree with dark blue-green needle canopy and rugged brown bark trunk, painterly epic fantasy, game-ready"
+      },
+      "tool_use_id": "toolu_015doeEC1mzMtwZpTso7TXYy",
+      "updated_at": "2026-07-29T04:54:25.446569"
+    },
+    "assets/environment/vegetation/broadleaf_oak.glb": {
+      "tool": "mcp__game-3d-models__generate_environment_batch",
+      "primary_prompt": "A large stylized broadleaf oak tree with a full rounded leafy green canopy and twisted trunk, painterly epic fantasy, game-ready",
+      "raw_input": {
+        "name": "broadleaf_oak",
+        "category": "vegetation",
+        "style": "fantasy",
+        "prompt": "A large stylized broadleaf oak tree with a full rounded leafy green canopy and twisted trunk, painterly epic fantasy, game-ready"
+      },
+      "tool_use_id": "toolu_015doeEC1mzMtwZpTso7TXYy",
+      "updated_at": "2026-07-29T04:54:25.446569"
+    },
+    "assets/environment/rocks/mossy_boulder.glb": {
+      "tool": "mcp__game-3d-models__generate_environment_batch",
+      "primary_prompt": "A large mossy grey granite boulder with lichen, cracks and green moss patches, stylized epic fantasy, game-ready",
+      "raw_input": {
+        "name": "mossy_boulder",
+        "category": "rocks",
+        "style": "fantasy",
+        "prompt": "A large mossy grey granite boulder with lichen, cracks and green moss patches, stylized epic fantasy, game-ready"
+      },
+      "tool_use_id": "toolu_015doeEC1mzMtwZpTso7TXYy",
+      "updated_at": "2026-07-29T04:54:25.446569"
+    },
+    "assets/environment/rocks/highland_rock_cluster.glb": {
+      "tool": "mcp__game-3d-models__generate_environment_batch",
+      "primary_prompt": "A cluster of jagged grey highland rocks and stones with moss patches, stylized epic fantasy, game-ready",
+      "raw_input": {
+        "name": "highland_rock_cluster",
+        "category": "rocks",
+        "style": "fantasy",
+        "prompt": "A cluster of jagged grey highland rocks and stones with moss patches, stylized epic fantasy, game-ready"
+      },
+      "tool_use_id": "toolu_015doeEC1mzMtwZpTso7TXYy",
+      "updated_at": "2026-07-29T04:54:25.446569"
+    },
+    "assets/environment/structures/ancient_ruin_pillar.glb": {
+      "tool": "mcp__game-3d-models__generate_environment_batch",
+      "primary_prompt": "A broken weathered ancient stone ruin pillar with carved runes and moss, half-crumbled, stylized epic fantasy, game-ready",
+      "raw_input": {
+        "name": "ancient_ruin_pillar",
+        "category": "structures",
+        "style": "fantasy",
+        "prompt": "A broken weathered ancient stone ruin pillar with carved runes and moss, half-crumbled, stylized epic fantasy, game-ready"
+      },
+      "tool_use_id": "toolu_015doeEC1mzMtwZpTso7TXYy",
+      "updated_at": "2026-07-29T04:54:25.446569"
+    },
+    "assets/characters/grimtusk_hero_warlord/grimtusk_hero_warlord.glb": {
+      "tool": "mcp__game-3d-models__generate_characters_batch",
+      "primary_prompt": "A towering muscular orc warlord chieftain with green-grey skin and large tusks, wearing spiked blackened iron plate armor and a heavy fur shoulder mantle, war-scarred fierce face. Full body, standing upright, empty hands.",
+      "raw_input": {
+        "name": "grimtusk_hero_warlord",
+        "style": "stylized",
+        "prompt": "A towering muscular orc warlord chieftain with green-grey skin and large tusks, wearing spiked blackened iron plate armor and a heavy fur shoulder mantle, war-scarred fierce face. Full body, standing upright, empty hands."
+      },
+      "tool_use_id": "toolu_01KXq4mh4aJ2TdAW8quYDmLf",
+      "updated_at": "2026-07-29T05:00:05.927250"
+    },
+    "assets/characters/sylvan_hero_archon/sylvan_hero_archon.glb": {
+      "tool": "mcp__game-3d-models__generate_characters_batch",
+      "primary_prompt": "A noble high-elf archon in ornate silver and gold filigree armor with a flowing emerald cape, long pointed ears, glowing runic accents, regal posture. Full body, standing upright, empty hands.",
+      "raw_input": {
+        "name": "sylvan_hero_archon",
+        "style": "stylized",
+        "prompt": "A noble high-elf archon in ornate silver and gold filigree armor with a flowing emerald cape, long pointed ears, glowing runic accents, regal posture. Full body, standing upright, empty hands."
+      },
+      "tool_use_id": "toolu_01KXq4mh4aJ2TdAW8quYDmLf",
+      "updated_at": "2026-07-29T05:00:05.927250"
+    },
+    "assets/characters/karak_hero_thanelord/karak_hero_thanelord.glb": {
+      "tool": "mcp__game-3d-models__generate_characters_batch",
+      "primary_prompt": "A stout dwarven thane-lord king with a thick braided golden beard, wearing heavy rune-engraved steel plate armor and a winged crown-helm, broad and sturdy. Full body, standing upright, empty hands.",
+      "raw_input": {
+        "name": "karak_hero_thanelord",
+        "style": "stylized",
+        "prompt": "A stout dwarven thane-lord king with a thick braided golden beard, wearing heavy rune-engraved steel plate armor and a winged crown-helm, broad and sturdy. Full body, standing upright, empty hands."
+      },
+      "tool_use_id": "toolu_01KXq4mh4aJ2TdAW8quYDmLf",
+      "updated_at": "2026-07-29T05:00:05.927250"
+    },
+    "assets/characters/sunspear_hero_pharaoh/sunspear_hero_pharaoh.glb": {
+      "tool": "mcp__game-3d-models__generate_characters_batch",
+      "primary_prompt": "A desert warrior-pharaoh with tanned skin in gleaming bronze and gold scale armor and a blue and gold striped headdress with sun-disc emblems. Full body, standing upright, empty hands.",
+      "raw_input": {
+        "name": "sunspear_hero_pharaoh",
+        "style": "stylized",
+        "prompt": "A desert warrior-pharaoh with tanned skin in gleaming bronze and gold scale armor and a blue and gold striped headdress with sun-disc emblems. Full body, standing upright, empty hands."
+      },
+      "tool_use_id": "toolu_01KXq4mh4aJ2TdAW8quYDmLf",
+      "updated_at": "2026-07-29T05:00:05.927250"
+    },
+    "assets/characters/wyldkin_hero_alpha/wyldkin_hero_alpha.glb": {
+      "tool": "mcp__game-3d-models__generate_characters_batch",
+      "primary_prompt": "An anthropomorphic grey wolf beastfolk alpha warrior standing upright, muscular, wearing tribal leather and bone armor with warpaint, fierce feral expression. Full body, standing upright, empty hands.",
+      "raw_input": {
+        "name": "wyldkin_hero_alpha",
+        "style": "stylized",
+        "prompt": "An anthropomorphic grey wolf beastfolk alpha warrior standing upright, muscular, wearing tribal leather and bone armor with warpaint, fierce feral expression. Full body, standing upright, empty hands."
+      },
+      "tool_use_id": "toolu_01KXq4mh4aJ2TdAW8quYDmLf",
+      "updated_at": "2026-07-29T05:00:05.927250"
+    },
+    "assets/characters/hollow_hero_lich/hollow_hero_lich.glb": {
+      "tool": "mcp__game-3d-models__generate_characters_batch",
+      "primary_prompt": "An undead lich sorcerer-king, a gaunt skeletal figure in tattered dark royal robes with an ornate bone crown and glowing violet eyes. Full body, standing upright, empty hands.",
+      "raw_input": {
+        "name": "hollow_hero_lich",
+        "style": "stylized",
+        "prompt": "An undead lich sorcerer-king, a gaunt skeletal figure in tattered dark royal robes with an ornate bone crown and glowing violet eyes. Full body, standing upright, empty hands."
+      },
+      "tool_use_id": "toolu_01KXq4mh4aJ2TdAW8quYDmLf",
+      "updated_at": "2026-07-29T05:00:05.927250"
+    },
+    "assets/characters/frostborn_hero_jarl/frostborn_hero_jarl.glb": {
+      "tool": "mcp__game-3d-models__generate_characters_batch",
+      "primary_prompt": "A giant-blooded Norse frost jarl warrior with pale blue-tinged skin, heavy furs over frost-etched iron plate armor, a long braided white beard and ice-crystal accents. Full body, standing upright, empty hands.",
+      "raw_input": {
+        "name": "frostborn_hero_jarl",
+        "style": "stylized",
+        "prompt": "A giant-blooded Norse frost jarl warrior with pale blue-tinged skin, heavy furs over frost-etched iron plate armor, a long braided white beard and ice-crystal accents. Full body, standing upright, empty hands."
+      },
+      "tool_use_id": "toolu_01KXq4mh4aJ2TdAW8quYDmLf",
+      "updated_at": "2026-07-29T05:00:05.927250"
+    },
+    "assets/characters/orc_grunt/orc_grunt.glb": {
+      "tool": "mcp__game-3d-models__generate_characters_batch",
+      "primary_prompt": "A brawny orc grunt warrior with green skin and tusks, wearing crude leather and scrap-metal armor, hunched aggressive stance. Full body, standing upright, empty hands.",
+      "raw_input": {
+        "name": "orc_grunt",
+        "style": "stylized",
+        "prompt": "A brawny orc grunt warrior with green skin and tusks, wearing crude leather and scrap-metal armor, hunched aggressive stance. Full body, standing upright, empty hands."
+      },
+      "tool_use_id": "toolu_01KXq4mh4aJ2TdAW8quYDmLf",
+      "updated_at": "2026-07-29T05:00:05.927250"
+    },
+    "assets/characters/highelf_archer/highelf_archer.glb": {
+      "tool": "mcp__game-3d-models__generate_characters_batch",
+      "primary_prompt": "A slender high-elf archer soldier in light silver-green scout armor with a hooded cloak and quiver, graceful, long pointed ears. Full body, standing upright, empty hands.",
+      "raw_input": {
+        "name": "highelf_archer",
+        "style": "stylized",
+        "prompt": "A slender high-elf archer soldier in light silver-green scout armor with a hooded cloak and quiver, graceful, long pointed ears. Full body, standing upright, empty hands."
+      },
+      "tool_use_id": "toolu_01KXq4mh4aJ2TdAW8quYDmLf",
+      "updated_at": "2026-07-29T05:00:05.927250"
+    },
+    "assets/characters/dwarf_warrior/dwarf_warrior.glb": {
+      "tool": "mcp__game-3d-models__generate_characters_batch",
+      "primary_prompt": "A sturdy dwarf warrior soldier with a braided brown beard wearing iron plate armor and a horned helm, broad-shouldered. Full body, standing upright, empty hands.",
+      "raw_input": {
+        "name": "dwarf_warrior",
+        "style": "stylized",
+        "prompt": "A sturdy dwarf warrior soldier with a braided brown beard wearing iron plate armor and a horned helm, broad-shouldered. Full body, standing upright, empty hands."
+      },
+      "tool_use_id": "toolu_01KXq4mh4aJ2TdAW8quYDmLf",
+      "updated_at": "2026-07-29T05:00:05.927250"
+    },
+    "assets/characters/sunspear_legionary/sunspear_legionary.glb": {
+      "tool": "mcp__game-3d-models__generate_characters_batch",
+      "primary_prompt": "A desert legionary soldier with tanned skin in bronze scale armor over a blue tunic with a cloth head-wrap, disciplined stance. Full body, standing upright, empty hands.",
+      "raw_input": {
+        "name": "sunspear_legionary",
+        "style": "stylized",
+        "prompt": "A desert legionary soldier with tanned skin in bronze scale armor over a blue tunic with a cloth head-wrap, disciplined stance. Full body, standing upright, empty hands."
+      },
+      "tool_use_id": "toolu_01KXq4mh4aJ2TdAW8quYDmLf",
+      "updated_at": "2026-07-29T05:00:05.927250"
+    },
+    "assets/characters/beastfolk_wolf_warrior/beastfolk_wolf_warrior.glb": {
+      "tool": "mcp__game-3d-models__generate_characters_batch",
+      "primary_prompt": "An anthropomorphic brown wolf beastfolk warrior standing upright, lean and agile, wearing tribal leather armor and bone ornaments. Full body, standing upright, empty hands.",
+      "raw_input": {
+        "name": "beastfolk_wolf_warrior",
+        "style": "stylized",
+        "prompt": "An anthropomorphic brown wolf beastfolk warrior standing upright, lean and agile, wearing tribal leather armor and bone ornaments. Full body, standing upright, empty hands."
+      },
+      "tool_use_id": "toolu_01KXq4mh4aJ2TdAW8quYDmLf",
+      "updated_at": "2026-07-29T05:00:05.927250"
+    },
+    "assets/characters/undead_skeleton/undead_skeleton.glb": {
+      "tool": "mcp__game-3d-models__generate_characters_batch",
+      "primary_prompt": "An undead skeleton warrior with weathered bones and rusted armor scraps, glowing green eye sockets and tattered cloth. Full body, standing upright, empty hands.",
+      "raw_input": {
+        "name": "undead_skeleton",
+        "style": "stylized",
+        "prompt": "An undead skeleton warrior with weathered bones and rusted armor scraps, glowing green eye sockets and tattered cloth. Full body, standing upright, empty hands."
+      },
+      "tool_use_id": "toolu_01KXq4mh4aJ2TdAW8quYDmLf",
+      "updated_at": "2026-07-29T05:00:05.927250"
+    },
+    "assets/characters/frostborn_warrior/frostborn_warrior.glb": {
+      "tool": "mcp__game-3d-models__generate_characters_batch",
+      "primary_prompt": "A Norse frostborn viking warrior with pale skin and a braided blond beard, wearing a fur cloak over frost-iron chainmail and plate, rugged. Full body, standing upright, empty hands.",
+      "raw_input": {
+        "name": "frostborn_warrior",
+        "style": "stylized",
+        "prompt": "A Norse frostborn viking warrior with pale skin and a braided blond beard, wearing a fur cloak over frost-iron chainmail and plate, rugged. Full body, standing upright, empty hands."
+      },
+      "tool_use_id": "toolu_01KXq4mh4aJ2TdAW8quYDmLf",
+      "updated_at": "2026-07-29T05:00:05.927250"
+    },
+    "assets/environment/buildings/grimtusk_stronghold.glb": {
+      "tool": "mcp__game-3d-models__generate_environment_batch",
+      "primary_prompt": "A brutal orc war-stronghold fortress built of jagged blackened iron plates and crude timber, topped with wooden spikes, skull totems and tattered red war-banners, hulking and menacing, stylized epic fantasy, game-ready single building",
+      "raw_input": {
+        "name": "grimtusk_stronghold",
+        "category": "buildings",
+        "style": "fantasy",
+        "prompt": "A brutal orc war-stronghold fortress built of jagged blackened iron plates and crude timber, topped with wooden spikes, skull totems and tattered red war-banners, hulking and menacing, stylized epic fantasy, game-ready single building"
+      },
+      "tool_use_id": "toolu_01NabmQxufW55Frr6z1PQ21M",
+      "updated_at": "2026-07-29T11:51:45.833780"
+    },
+    "assets/environment/buildings/sylvan_court.glb": {
+      "tool": "mcp__game-3d-models__generate_environment_batch",
+      "primary_prompt": "An elegant high-elf palace hall of white and silver stone with graceful tall arches, gold filigree trim, glowing blue crystals and living green vines, serene and regal, stylized epic fantasy, game-ready single building",
+      "raw_input": {
+        "name": "sylvan_court",
+        "category": "buildings",
+        "style": "fantasy",
+        "prompt": "An elegant high-elf palace hall of white and silver stone with graceful tall arches, gold filigree trim, glowing blue crystals and living green vines, serene and regal, stylized epic fantasy, game-ready single building"
+      },
+      "tool_use_id": "toolu_01NabmQxufW55Frr6z1PQ21M",
+      "updated_at": "2026-07-29T11:51:45.833780"
+    },
+    "assets/environment/buildings/karak_hold.glb": {
+      "tool": "mcp__game-3d-models__generate_environment_batch",
+      "primary_prompt": "A mighty dwarven mountain hold gateway carved from grey stone with massive rune-engraved doors, gold trim, angular fortified blocky architecture, stylized epic fantasy, game-ready single building",
+      "raw_input": {
+        "name": "karak_hold",
+        "category": "buildings",
+        "style": "fantasy",
+        "prompt": "A mighty dwarven mountain hold gateway carved from grey stone with massive rune-engraved doors, gold trim, angular fortified blocky architecture, stylized epic fantasy, game-ready single building"
+      },
+      "tool_use_id": "toolu_01NabmQxufW55Frr6z1PQ21M",
+      "updated_at": "2026-07-29T11:51:45.833780"
+    },
+    "assets/environment/buildings/sunspear_palace.glb": {
+      "tool": "mcp__game-3d-models__generate_environment_batch",
+      "primary_prompt": "A desert sandstone palace with golden domes, blue and gold striped banners, sun-disc emblems and tall carved pillars, warm Egyptian-inspired, stylized epic fantasy, game-ready single building",
+      "raw_input": {
+        "name": "sunspear_palace",
+        "category": "buildings",
+        "style": "fantasy",
+        "prompt": "A desert sandstone palace with golden domes, blue and gold striped banners, sun-disc emblems and tall carved pillars, warm Egyptian-inspired, stylized epic fantasy, game-ready single building"
+      },
+      "tool_use_id": "toolu_01NabmQxufW55Frr6z1PQ21M",
+      "updated_at": "2026-07-29T11:51:45.833780"
+    },
+    "assets/environment/buildings/wyldkin_denhold.glb": {
+      "tool": "mcp__game-3d-models__generate_environment_batch",
+      "primary_prompt": "A primal beastfolk den-hall built of huge timber logs, bone, stitched hide roofing and carved totem poles, wild and organic, stylized epic fantasy, game-ready single building",
+      "raw_input": {
+        "name": "wyldkin_denhold",
+        "category": "buildings",
+        "style": "fantasy",
+        "prompt": "A primal beastfolk den-hall built of huge timber logs, bone, stitched hide roofing and carved totem poles, wild and organic, stylized epic fantasy, game-ready single building"
+      },
+      "tool_use_id": "toolu_01NabmQxufW55Frr6z1PQ21M",
+      "updated_at": "2026-07-29T11:51:45.833780"
+    },
+    "assets/environment/buildings/hollow_necropolis.glb": {
+      "tool": "mcp__game-3d-models__generate_environment_batch",
+      "primary_prompt": "A haunted undead necropolis mausoleum of cracked black stone with bone spires, green glowing runes and rusted iron gates, eerie and grim, stylized epic fantasy, game-ready single building",
+      "raw_input": {
+        "name": "hollow_necropolis",
+        "category": "buildings",
+        "style": "fantasy",
+        "prompt": "A haunted undead necropolis mausoleum of cracked black stone with bone spires, green glowing runes and rusted iron gates, eerie and grim, stylized epic fantasy, game-ready single building"
+      },
+      "tool_use_id": "toolu_01NabmQxufW55Frr6z1PQ21M",
+      "updated_at": "2026-07-29T11:51:45.833780"
+    },
+    "assets/environment/buildings/frostborn_mead_hall.glb": {
+      "tool": "mcp__game-3d-models__generate_environment_batch",
+      "primary_prompt": "A Norse frost jarl great mead-hall of dark timber and frost-rimed grey stone with carved dragon-head roof beams, snow and hanging icicles, stylized epic fantasy, game-ready single building",
+      "raw_input": {
+        "name": "frostborn_mead_hall",
+        "category": "buildings",
+        "style": "fantasy",
+        "prompt": "A Norse frost jarl great mead-hall of dark timber and frost-rimed grey stone with carved dragon-head roof beams, snow and hanging icicles, stylized epic fantasy, game-ready single building"
+      },
+      "tool_use_id": "toolu_01NabmQxufW55Frr6z1PQ21M",
+      "updated_at": "2026-07-29T11:51:45.833780"
+    }
+  }
+}

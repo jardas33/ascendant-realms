@@ -1,0 +1,37 @@
+[remap]
+
+importer="texture"
+type="CompressedTexture2D"
+uid="uid://ddcd2dqnql6lp"
+path="res://.godot/imported/vorthak_ash_forge_tripo_model_normal.jpg-73e31ddce2ed5284167a815d16b1b5c4.ctex"
+metadata={
+"vram_texture": false
+}
+generator_parameters={
+"md5": "a0a758b4b03cb0d0867b98565f961107"
+}
+
+[deps]
+
+source_file="res://assets/environment/buildings/vorthak_ash_forge_tripo_model_normal.jpg"
+dest_files=["res://.godot/imported/vorthak_ash_forge_tripo_model_normal.jpg-73e31ddce2ed5284167a815d16b1b5c4.ctex"]
+
+[params]
+
+compress/mode=1
+compress/high_quality=false
+compress/lossy_quality=0.75
+compress/hdr_compression=1
+compress/normal_map=0
+compress/channel_pack=0
+mipmaps/generate=true
+mipmaps/limit=-1
+roughness/mode=0
+roughness/src_normal=""
+process/fix_alpha_border=true
+process/premult_alpha=false
+process/normal_map_invert_y=false
+process/hdr_as_srgb=false
+process/hdr_clamp_exposure=false
+process/size_limit=1024
+detect_3d/compress_to=1

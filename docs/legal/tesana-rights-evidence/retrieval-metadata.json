@@ -1,0 +1,11 @@
+{
+  "retrievedAt": "2026-07-29",
+  "sources": [
+    {"url": "https://tesana.ai/en/terms", "kind": "official_terms"},
+    {"url": "https://docs.tesana.ai/building/exports", "kind": "official_exports"},
+    {"url": "https://docs.tesana.ai/support/faq", "kind": "official_faq"},
+    {"url": "https://docs.tesana.ai/building/remixing", "kind": "official_remixing"}
+  ],
+  "privateDataStored": false,
+  "rightsBasis": "USER_PRO_PAID_PLAN_DECLARATION_PLUS_OFFICIAL_DOCUMENTATION"
+}

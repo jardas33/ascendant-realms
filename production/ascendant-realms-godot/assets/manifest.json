@@ -1,0 +1,570 @@
+{
+  "characters": {
+    "lioraen_hero_warden": {
+      "baseModel": "/var/games/game-20260729-9c88f83b/assets/characters/lioraen_hero_warden/lioraen_hero_warden.glb",
+      "rigTaskId": "8af47af5-84bb-4e7e-9161-810108f1a162",
+      "animations": {
+        "ual1_Idle": "/var/games/game-20260729-9c88f83b/assets/characters/lioraen_hero_warden/lioraen_hero_warden_animations.tres",
+        "ual1_Walk": "/var/games/game-20260729-9c88f83b/assets/characters/lioraen_hero_warden/lioraen_hero_warden_animations.tres",
+        "ual1_Sprint": "/var/games/game-20260729-9c88f83b/assets/characters/lioraen_hero_warden/lioraen_hero_warden_animations.tres",
+        "ual1_Death01": "/var/games/game-20260729-9c88f83b/assets/characters/lioraen_hero_warden/lioraen_hero_warden_animations.tres",
+        "ual1_Sword_Attack_Standing": "/var/games/game-20260729-9c88f83b/assets/characters/lioraen_hero_warden/lioraen_hero_warden_animations.tres",
+        "ual1_Spell_Simple_Shoot": "/var/games/game-20260729-9c88f83b/assets/characters/lioraen_hero_warden/lioraen_hero_warden_animations.tres"
+      }
+    },
+    "barrosan_hero_thane": {
+      "baseModel": "/var/games/game-20260729-9c88f83b/assets/characters/barrosan_hero_thane/barrosan_hero_thane.glb",
+      "rigTaskId": "331e9a9b-a591-40b1-ac06-866131073567",
+      "animations": {
+        "ual1_Idle": "/var/games/game-20260729-9c88f83b/assets/characters/barrosan_hero_thane/barrosan_hero_thane_animations.tres",
+        "ual1_Walk": "/var/games/game-20260729-9c88f83b/assets/characters/barrosan_hero_thane/barrosan_hero_thane_animations.tres",
+        "ual1_Sprint": "/var/games/game-20260729-9c88f83b/assets/characters/barrosan_hero_thane/barrosan_hero_thane_animations.tres",
+        "ual1_Death01": "/var/games/game-20260729-9c88f83b/assets/characters/barrosan_hero_thane/barrosan_hero_thane_animations.tres",
+        "ual1_Idle_LookAround": "/var/games/game-20260729-9c88f83b/assets/characters/barrosan_hero_thane/barrosan_hero_thane_animations.tres",
+        "ual1_Sword_Attack_Standing": "/var/games/game-20260729-9c88f83b/assets/characters/barrosan_hero_thane/barrosan_hero_thane_animations.tres"
+      }
+    },
+    "vorthak_hero_binder": {
+      "baseModel": "/var/games/game-20260729-9c88f83b/assets/characters/vorthak_hero_binder/vorthak_hero_binder.glb",
+      "rigTaskId": "53e8f773-262b-44c9-9d73-c683106e92a8",
+      "animations": {
+        "ual1_Idle": "/var/games/game-20260729-9c88f83b/assets/characters/vorthak_hero_binder/vorthak_hero_binder_animations.tres",
+        "ual1_Walk": "/var/games/game-20260729-9c88f83b/assets/characters/vorthak_hero_binder/vorthak_hero_binder_animations.tres",
+        "ual1_Sprint": "/var/games/game-20260729-9c88f83b/assets/characters/vorthak_hero_binder/vorthak_hero_binder_animations.tres",
+        "ual1_Death01": "/var/games/game-20260729-9c88f83b/assets/characters/vorthak_hero_binder/vorthak_hero_binder_animations.tres",
+        "ual1_Spell_Simple_Shoot": "/var/games/game-20260729-9c88f83b/assets/characters/vorthak_hero_binder/vorthak_hero_binder_animations.tres"
+      }
+    },
+    "barrosan_spear_guard": {
+      "baseModel": "/var/games/game-20260729-9c88f83b/assets/characters/barrosan_spear_guard/barrosan_spear_guard.glb",
+      "rigTaskId": "ec179be7-ff09-4a68-b0bf-54978821de62",
+      "animations": {
+        "ual1_Idle": "/var/games/game-20260729-9c88f83b/assets/characters/barrosan_spear_guard/barrosan_spear_guard_animations.tres",
+        "ual1_Walk": "/var/games/game-20260729-9c88f83b/assets/characters/barrosan_spear_guard/barrosan_spear_guard_animations.tres",
+        "ual1_Death01": "/var/games/game-20260729-9c88f83b/assets/characters/barrosan_spear_guard/barrosan_spear_guard_animations.tres",
+        "ual1_Sword_Attack_Standing": "/var/games/game-20260729-9c88f83b/assets/characters/barrosan_spear_guard/barrosan_spear_guard_animations.tres"
+      }
+    },
+    "barrosan_highlander_worker": {
+      "baseModel": "/var/games/game-20260729-9c88f83b/assets/characters/barrosan_highlander_worker/barrosan_highlander_worker.glb",
+      "rigTaskId": "f9ccb41b-a40f-4814-9d91-5963bf5eb5a2",
+      "animations": {
+        "ual1_Idle": "/var/games/game-20260729-9c88f83b/assets/characters/barrosan_highlander_worker/barrosan_highlander_worker_animations.tres",
+        "ual1_Walk": "/var/games/game-20260729-9c88f83b/assets/characters/barrosan_highlander_worker/barrosan_highlander_worker_animations.tres",
+        "ual1_Punch_Jab": "/var/games/game-20260729-9c88f83b/assets/characters/barrosan_highlander_worker/barrosan_highlander_worker_animations.tres",
+        "ual1_Death01": "/var/games/game-20260729-9c88f83b/assets/characters/barrosan_highlander_worker/barrosan_highlander_worker_animations.tres"
+      }
+    },
+    "vorthak_ash_thrall": {
+      "baseModel": "/var/games/game-20260729-9c88f83b/assets/characters/vorthak_ash_thrall/vorthak_ash_thrall.glb",
+      "rigTaskId": "0d4e8089-d722-4a83-bddd-fe5e25a39b13",
+      "animations": {
+        "ual1_Idle": "/var/games/game-20260729-9c88f83b/assets/characters/vorthak_ash_thrall/vorthak_ash_thrall_animations.tres",
+        "ual1_Walk": "/var/games/game-20260729-9c88f83b/assets/characters/vorthak_ash_thrall/vorthak_ash_thrall_animations.tres",
+        "ual1_Death01": "/var/games/game-20260729-9c88f83b/assets/characters/vorthak_ash_thrall/vorthak_ash_thrall_animations.tres",
+        "ual1_Sword_Attack_Standing": "/var/games/game-20260729-9c88f83b/assets/characters/vorthak_ash_thrall/vorthak_ash_thrall_animations.tres"
+      }
+    },
+    "lioraen_thorn_ranger": {
+      "baseModel": "/var/games/game-20260729-9c88f83b/assets/characters/lioraen_thorn_ranger/lioraen_thorn_ranger.glb",
+      "rigTaskId": "ea743c7e-6150-47a8-9cdf-ed3febe10217",
+      "animations": {
+        "ual1_Idle": "/var/games/game-20260729-9c88f83b/assets/characters/lioraen_thorn_ranger/lioraen_thorn_ranger_animations.tres",
+        "ual1_Walk": "/var/games/game-20260729-9c88f83b/assets/characters/lioraen_thorn_ranger/lioraen_thorn_ranger_animations.tres",
+        "ual2_Bow_Shoot": "/var/games/game-20260729-9c88f83b/assets/characters/lioraen_thorn_ranger/lioraen_thorn_ranger_animations.tres",
+        "ual1_Death01": "/var/games/game-20260729-9c88f83b/assets/characters/lioraen_thorn_ranger/lioraen_thorn_ranger_animations.tres"
+      }
+    },
+    "barrosan_crag_archer": {
+      "baseModel": "/var/games/game-20260729-9c88f83b/assets/characters/barrosan_crag_archer/barrosan_crag_archer.glb",
+      "rigTaskId": "1f7eff89-0865-4e1b-9b3e-2b18fedc0bcc",
+      "animations": {
+        "ual1_Idle": "/var/games/game-20260729-9c88f83b/assets/characters/barrosan_crag_archer/barrosan_crag_archer_animations.tres",
+        "ual1_Walk": "/var/games/game-20260729-9c88f83b/assets/characters/barrosan_crag_archer/barrosan_crag_archer_animations.tres",
+        "ual2_Bow_Shoot": "/var/games/game-20260729-9c88f83b/assets/characters/barrosan_crag_archer/barrosan_crag_archer_animations.tres",
+        "ual1_Death01": "/var/games/game-20260729-9c88f83b/assets/characters/barrosan_crag_archer/barrosan_crag_archer_animations.tres"
+      }
+    },
+    "lioraen_canopy_mender": {
+      "baseModel": "/var/games/game-20260729-9c88f83b/assets/characters/lioraen_canopy_mender/lioraen_canopy_mender.glb",
+      "rigTaskId": "c2c96859-fb55-43a1-9290-a32dcc7ab879",
+      "animations": {
+        "ual1_Idle": "/var/games/game-20260729-9c88f83b/assets/characters/lioraen_canopy_mender/lioraen_canopy_mender_animations.tres",
+        "ual1_Walk": "/var/games/game-20260729-9c88f83b/assets/characters/lioraen_canopy_mender/lioraen_canopy_mender_animations.tres",
+        "ual1_Spell_Simple_Shoot": "/var/games/game-20260729-9c88f83b/assets/characters/lioraen_canopy_mender/lioraen_canopy_mender_animations.tres",
+        "ual1_Death01": "/var/games/game-20260729-9c88f83b/assets/characters/lioraen_canopy_mender/lioraen_canopy_mender_animations.tres"
+      }
+    },
+    "barrosan_anvil_breaker": {
+      "baseModel": "/var/games/game-20260729-9c88f83b/assets/characters/barrosan_anvil_breaker/barrosan_anvil_breaker.glb",
+      "rigTaskId": "eae8adfb-6362-4039-90b7-7dd5dee42fb8",
+      "animations": {
+        "ual1_Idle": "/var/games/game-20260729-9c88f83b/assets/characters/barrosan_anvil_breaker/barrosan_anvil_breaker_animations.tres",
+        "ual1_Walk": "/var/games/game-20260729-9c88f83b/assets/characters/barrosan_anvil_breaker/barrosan_anvil_breaker_animations.tres",
+        "ual1_Death01": "/var/games/game-20260729-9c88f83b/assets/characters/barrosan_anvil_breaker/barrosan_anvil_breaker_animations.tres",
+        "ual1_Sword_Attack_Standing": "/var/games/game-20260729-9c88f83b/assets/characters/barrosan_anvil_breaker/barrosan_anvil_breaker_animations.tres"
+      }
+    },
+    "vorthak_bondservant_worker": {
+      "baseModel": "/var/games/game-20260729-9c88f83b/assets/characters/vorthak_bondservant_worker/vorthak_bondservant_worker.glb",
+      "rigTaskId": "d3588e2e-4ccd-4ce5-b4cc-25161f499569",
+      "animations": {
+        "ual1_Idle": "/var/games/game-20260729-9c88f83b/assets/characters/vorthak_bondservant_worker/vorthak_bondservant_worker_animations.tres",
+        "ual1_Walk": "/var/games/game-20260729-9c88f83b/assets/characters/vorthak_bondservant_worker/vorthak_bondservant_worker_animations.tres",
+        "ual1_Punch_Jab": "/var/games/game-20260729-9c88f83b/assets/characters/vorthak_bondservant_worker/vorthak_bondservant_worker_animations.tres",
+        "ual1_Death01": "/var/games/game-20260729-9c88f83b/assets/characters/vorthak_bondservant_worker/vorthak_bondservant_worker_animations.tres"
+      }
+    },
+    "lioraen_seedkeeper_worker": {
+      "baseModel": "/var/games/game-20260729-9c88f83b/assets/characters/lioraen_seedkeeper_worker/lioraen_seedkeeper_worker.glb",
+      "rigTaskId": "3fb64430-4235-4243-b5d7-454f867be64f",
+      "animations": {
+        "ual1_Idle": "/var/games/game-20260729-9c88f83b/assets/characters/lioraen_seedkeeper_worker/lioraen_seedkeeper_worker_animations.tres",
+        "ual1_Walk": "/var/games/game-20260729-9c88f83b/assets/characters/lioraen_seedkeeper_worker/lioraen_seedkeeper_worker_animations.tres",
+        "ual1_Punch_Jab": "/var/games/game-20260729-9c88f83b/assets/characters/lioraen_seedkeeper_worker/lioraen_seedkeeper_worker_animations.tres",
+        "ual1_Death01": "/var/games/game-20260729-9c88f83b/assets/characters/lioraen_seedkeeper_worker/lioraen_seedkeeper_worker_animations.tres"
+      }
+    },
+    "lioraen_rootwarden_guard": {
+      "baseModel": "/var/games/game-20260729-9c88f83b/assets/characters/lioraen_rootwarden_guard/lioraen_rootwarden_guard.glb",
+      "rigTaskId": "06bcaf29-fc47-43da-9a81-37a0a58fb4fd",
+      "animations": {
+        "ual1_Idle": "/var/games/game-20260729-9c88f83b/assets/characters/lioraen_rootwarden_guard/lioraen_rootwarden_guard_animations.tres",
+        "ual1_Walk": "/var/games/game-20260729-9c88f83b/assets/characters/lioraen_rootwarden_guard/lioraen_rootwarden_guard_animations.tres",
+        "ual1_Death01": "/var/games/game-20260729-9c88f83b/assets/characters/lioraen_rootwarden_guard/lioraen_rootwarden_guard_animations.tres",
+        "ual1_Sword_Attack_Standing": "/var/games/game-20260729-9c88f83b/assets/characters/lioraen_rootwarden_guard/lioraen_rootwarden_guard_animations.tres"
+      }
+    },
+    "vorthak_veil_warlock": {
+      "baseModel": "/var/games/game-20260729-9c88f83b/assets/characters/vorthak_veil_warlock/vorthak_veil_warlock.glb",
+      "rigTaskId": "44debfad-42ee-40a4-8df1-c63c4e22368a",
+      "animations": {
+        "ual1_Idle": "/var/games/game-20260729-9c88f83b/assets/characters/vorthak_veil_warlock/vorthak_veil_warlock_animations.tres",
+        "ual1_Walk": "/var/games/game-20260729-9c88f83b/assets/characters/vorthak_veil_warlock/vorthak_veil_warlock_animations.tres",
+        "ual1_Spell_Simple_Shoot": "/var/games/game-20260729-9c88f83b/assets/characters/vorthak_veil_warlock/vorthak_veil_warlock_animations.tres",
+        "ual1_Death01": "/var/games/game-20260729-9c88f83b/assets/characters/vorthak_veil_warlock/vorthak_veil_warlock_animations.tres"
+      }
+    },
+    "vorthak_rift_blade": {
+      "baseModel": "/var/games/game-20260729-9c88f83b/assets/characters/vorthak_rift_blade/vorthak_rift_blade.glb",
+      "rigTaskId": "a8993df0-0f77-43b9-b1b2-5359c08f3374",
+      "animations": {
+        "ual1_Idle": "/var/games/game-20260729-9c88f83b/assets/characters/vorthak_rift_blade/vorthak_rift_blade_animations.tres",
+        "ual1_Walk": "/var/games/game-20260729-9c88f83b/assets/characters/vorthak_rift_blade/vorthak_rift_blade_animations.tres",
+        "ual1_Death01": "/var/games/game-20260729-9c88f83b/assets/characters/vorthak_rift_blade/vorthak_rift_blade_animations.tres",
+        "ual1_Sword_Attack_Standing": "/var/games/game-20260729-9c88f83b/assets/characters/vorthak_rift_blade/vorthak_rift_blade_animations.tres"
+      }
+    },
+    "vorthak_gloom_hound": {
+      "baseModel": "/var/games/game-20260729-9c88f83b/assets/characters/vorthak_gloom_hound/vorthak_gloom_hound.glb",
+      "rigTaskId": "0960d425-1bea-4cf1-b7e1-ba84f9902cc1",
+      "animations": {
+        "ual1_Idle": "/var/games/game-20260729-9c88f83b/assets/characters/vorthak_gloom_hound/vorthak_gloom_hound_animations.tres",
+        "ual1_Walk": "/var/games/game-20260729-9c88f83b/assets/characters/vorthak_gloom_hound/vorthak_gloom_hound_animations.tres",
+        "ual1_Sword_Attack_Standing": "/var/games/game-20260729-9c88f83b/assets/characters/vorthak_gloom_hound/vorthak_gloom_hound_animations.tres",
+        "ual1_Death01": "/var/games/game-20260729-9c88f83b/assets/characters/vorthak_gloom_hound/vorthak_gloom_hound_animations.tres"
+      }
+    },
+    "barrosan_outrider": {
+      "baseModel": "/var/games/game-20260729-9c88f83b/assets/characters/barrosan_outrider/barrosan_outrider.glb",
+      "rigTaskId": "d1f9c198-a73a-46ce-b4a7-fd941359b25a",
+      "animations": {
+        "ual1_Idle": "/var/games/game-20260729-9c88f83b/assets/characters/barrosan_outrider/barrosan_outrider_animations.tres",
+        "ual1_Walk": "/var/games/game-20260729-9c88f83b/assets/characters/barrosan_outrider/barrosan_outrider_animations.tres",
+        "ual1_Sword_Attack_Standing": "/var/games/game-20260729-9c88f83b/assets/characters/barrosan_outrider/barrosan_outrider_animations.tres",
+        "ual1_Death01": "/var/games/game-20260729-9c88f83b/assets/characters/barrosan_outrider/barrosan_outrider_animations.tres"
+      }
+    },
+    "lioraen_windstrider": {
+      "baseModel": "/var/games/game-20260729-9c88f83b/assets/characters/lioraen_windstrider/lioraen_windstrider.glb",
+      "rigTaskId": "fffb10ce-c1be-46a1-a5f4-373560ed3097",
+      "animations": {
+        "ual1_Idle": "/var/games/game-20260729-9c88f83b/assets/characters/lioraen_windstrider/lioraen_windstrider_animations.tres",
+        "ual1_Walk": "/var/games/game-20260729-9c88f83b/assets/characters/lioraen_windstrider/lioraen_windstrider_animations.tres",
+        "ual1_Sword_Attack_Standing": "/var/games/game-20260729-9c88f83b/assets/characters/lioraen_windstrider/lioraen_windstrider_animations.tres",
+        "ual1_Death01": "/var/games/game-20260729-9c88f83b/assets/characters/lioraen_windstrider/lioraen_windstrider_animations.tres"
+      }
+    },
+    "vorthak_cinder_spitter": {
+      "baseModel": "/var/games/game-20260729-9c88f83b/assets/characters/vorthak_cinder_spitter/vorthak_cinder_spitter.glb",
+      "rigTaskId": "f090f87b-eaf6-406e-a7ff-2e3076771bc4",
+      "animations": {
+        "ual1_Idle": "/var/games/game-20260729-9c88f83b/assets/characters/vorthak_cinder_spitter/vorthak_cinder_spitter_animations.tres",
+        "ual1_Walk": "/var/games/game-20260729-9c88f83b/assets/characters/vorthak_cinder_spitter/vorthak_cinder_spitter_animations.tres",
+        "ual1_Spell_Simple_Shoot": "/var/games/game-20260729-9c88f83b/assets/characters/vorthak_cinder_spitter/vorthak_cinder_spitter_animations.tres",
+        "ual1_Death01": "/var/games/game-20260729-9c88f83b/assets/characters/vorthak_cinder_spitter/vorthak_cinder_spitter_animations.tres"
+      }
+    },
+    "barrosan_clan_levy": {
+      "baseModel": "/var/games/game-20260729-9c88f83b/assets/characters/barrosan_clan_levy/barrosan_clan_levy.glb",
+      "rigTaskId": "0eba6f5f-0ff7-4bb4-9465-9b9818af2808",
+      "animations": {
+        "ual1_Idle": "/var/games/game-20260729-9c88f83b/assets/characters/barrosan_clan_levy/barrosan_clan_levy_animations.tres",
+        "ual1_Walk": "/var/games/game-20260729-9c88f83b/assets/characters/barrosan_clan_levy/barrosan_clan_levy_animations.tres",
+        "ual1_Sword_Attack_Standing": "/var/games/game-20260729-9c88f83b/assets/characters/barrosan_clan_levy/barrosan_clan_levy_animations.tres",
+        "ual1_Death01": "/var/games/game-20260729-9c88f83b/assets/characters/barrosan_clan_levy/barrosan_clan_levy_animations.tres"
+      }
+    },
+    "lioraen_bloomdancer": {
+      "baseModel": "/var/games/game-20260729-9c88f83b/assets/characters/lioraen_bloomdancer/lioraen_bloomdancer.glb",
+      "rigTaskId": "2afb5d1f-2bf5-40bb-8360-709417779c81",
+      "animations": {
+        "ual1_Idle": "/var/games/game-20260729-9c88f83b/assets/characters/lioraen_bloomdancer/lioraen_bloomdancer_animations.tres",
+        "ual1_Walk": "/var/games/game-20260729-9c88f83b/assets/characters/lioraen_bloomdancer/lioraen_bloomdancer_animations.tres",
+        "ual1_Sword_Attack_Standing": "/var/games/game-20260729-9c88f83b/assets/characters/lioraen_bloomdancer/lioraen_bloomdancer_animations.tres",
+        "ual1_Death01": "/var/games/game-20260729-9c88f83b/assets/characters/lioraen_bloomdancer/lioraen_bloomdancer_animations.tres"
+      }
+    },
+    "highelf_archer": {
+      "baseModel": "/var/games/game-20260729-9c88f83b/assets/characters/highelf_archer/highelf_archer.glb",
+      "rigTaskId": "b80e336d-36cf-4ea7-aaec-a86584d37164",
+      "animations": {
+        "ual1_Idle": "/var/games/game-20260729-9c88f83b/assets/characters/highelf_archer/highelf_archer_animations.tres",
+        "ual1_Walk": "/var/games/game-20260729-9c88f83b/assets/characters/highelf_archer/highelf_archer_animations.tres",
+        "ual1_Punch_Cross": "/var/games/game-20260729-9c88f83b/assets/characters/highelf_archer/highelf_archer_animations.tres",
+        "ual1_Death01": "/var/games/game-20260729-9c88f83b/assets/characters/highelf_archer/highelf_archer_animations.tres"
+      }
+    },
+    "frostborn_warrior": {
+      "baseModel": "/var/games/game-20260729-9c88f83b/assets/characters/frostborn_warrior/frostborn_warrior.glb",
+      "rigTaskId": "43c8ebf5-d496-4435-a1b3-eabe58817a30",
+      "animations": {
+        "ual1_Idle": "/var/games/game-20260729-9c88f83b/assets/characters/frostborn_warrior/frostborn_warrior_animations.tres",
+        "ual1_Walk": "/var/games/game-20260729-9c88f83b/assets/characters/frostborn_warrior/frostborn_warrior_animations.tres",
+        "ual1_Punch_Cross": "/var/games/game-20260729-9c88f83b/assets/characters/frostborn_warrior/frostborn_warrior_animations.tres",
+        "ual1_Death01": "/var/games/game-20260729-9c88f83b/assets/characters/frostborn_warrior/frostborn_warrior_animations.tres"
+      }
+    },
+    "sylvan_hero_archon": {
+      "baseModel": "/var/games/game-20260729-9c88f83b/assets/characters/sylvan_hero_archon/sylvan_hero_archon.glb",
+      "rigTaskId": "524a2489-7582-4761-ac31-2296fa9e0c59",
+      "animations": {
+        "ual1_Idle": "/var/games/game-20260729-9c88f83b/assets/characters/sylvan_hero_archon/sylvan_hero_archon_animations.tres",
+        "ual1_Walk": "/var/games/game-20260729-9c88f83b/assets/characters/sylvan_hero_archon/sylvan_hero_archon_animations.tres",
+        "ual1_Punch_Cross": "/var/games/game-20260729-9c88f83b/assets/characters/sylvan_hero_archon/sylvan_hero_archon_animations.tres",
+        "ual1_Death01": "/var/games/game-20260729-9c88f83b/assets/characters/sylvan_hero_archon/sylvan_hero_archon_animations.tres"
+      }
+    },
+    "sunspear_legionary": {
+      "baseModel": "/var/games/game-20260729-9c88f83b/assets/characters/sunspear_legionary/sunspear_legionary.glb",
+      "rigTaskId": "9921fd5c-f95a-41c7-b0c9-74bce91901a5",
+      "animations": {
+        "ual1_Idle": "/var/games/game-20260729-9c88f83b/assets/characters/sunspear_legionary/sunspear_legionary_animations.tres",
+        "ual1_Walk": "/var/games/game-20260729-9c88f83b/assets/characters/sunspear_legionary/sunspear_legionary_animations.tres",
+        "ual1_Punch_Cross": "/var/games/game-20260729-9c88f83b/assets/characters/sunspear_legionary/sunspear_legionary_animations.tres",
+        "ual1_Death01": "/var/games/game-20260729-9c88f83b/assets/characters/sunspear_legionary/sunspear_legionary_animations.tres"
+      }
+    },
+    "beastfolk_wolf_warrior": {
+      "baseModel": "/var/games/game-20260729-9c88f83b/assets/characters/beastfolk_wolf_warrior/beastfolk_wolf_warrior.glb",
+      "rigTaskId": "4e2a8c54-7aae-4877-93aa-9032f9c12ba3",
+      "animations": {
+        "ual1_Idle": "/var/games/game-20260729-9c88f83b/assets/characters/beastfolk_wolf_warrior/beastfolk_wolf_warrior_animations.tres",
+        "ual1_Walk": "/var/games/game-20260729-9c88f83b/assets/characters/beastfolk_wolf_warrior/beastfolk_wolf_warrior_animations.tres",
+        "ual1_Punch_Cross": "/var/games/game-20260729-9c88f83b/assets/characters/beastfolk_wolf_warrior/beastfolk_wolf_warrior_animations.tres",
+        "ual1_Death01": "/var/games/game-20260729-9c88f83b/assets/characters/beastfolk_wolf_warrior/beastfolk_wolf_warrior_animations.tres"
+      }
+    },
+    "grimtusk_hero_warlord": {
+      "baseModel": "/var/games/game-20260729-9c88f83b/assets/characters/grimtusk_hero_warlord/grimtusk_hero_warlord.glb",
+      "rigTaskId": "9540e40b-0004-47e3-8854-3386ffcf378a",
+      "animations": {
+        "ual1_Idle": "/var/games/game-20260729-9c88f83b/assets/characters/grimtusk_hero_warlord/grimtusk_hero_warlord_animations.tres",
+        "ual1_Walk": "/var/games/game-20260729-9c88f83b/assets/characters/grimtusk_hero_warlord/grimtusk_hero_warlord_animations.tres",
+        "ual1_Punch_Cross": "/var/games/game-20260729-9c88f83b/assets/characters/grimtusk_hero_warlord/grimtusk_hero_warlord_animations.tres",
+        "ual1_Death01": "/var/games/game-20260729-9c88f83b/assets/characters/grimtusk_hero_warlord/grimtusk_hero_warlord_animations.tres"
+      }
+    },
+    "orc_grunt": {
+      "baseModel": "/var/games/game-20260729-9c88f83b/assets/characters/orc_grunt/orc_grunt.glb",
+      "rigTaskId": "f5f727ba-566e-4856-9f80-0eee84de1385",
+      "animations": {
+        "ual1_Idle": "/var/games/game-20260729-9c88f83b/assets/characters/orc_grunt/orc_grunt_animations.tres",
+        "ual1_Walk": "/var/games/game-20260729-9c88f83b/assets/characters/orc_grunt/orc_grunt_animations.tres",
+        "ual1_Punch_Cross": "/var/games/game-20260729-9c88f83b/assets/characters/orc_grunt/orc_grunt_animations.tres",
+        "ual1_Death01": "/var/games/game-20260729-9c88f83b/assets/characters/orc_grunt/orc_grunt_animations.tres"
+      }
+    },
+    "undead_skeleton": {
+      "baseModel": "/var/games/game-20260729-9c88f83b/assets/characters/undead_skeleton/undead_skeleton.glb",
+      "rigTaskId": "ce0ab623-e732-4f61-91a4-161abc7d24fa",
+      "animations": {
+        "ual1_Idle": "/var/games/game-20260729-9c88f83b/assets/characters/undead_skeleton/undead_skeleton_animations.tres",
+        "ual1_Walk": "/var/games/game-20260729-9c88f83b/assets/characters/undead_skeleton/undead_skeleton_animations.tres",
+        "ual1_Punch_Cross": "/var/games/game-20260729-9c88f83b/assets/characters/undead_skeleton/undead_skeleton_animations.tres",
+        "ual1_Death01": "/var/games/game-20260729-9c88f83b/assets/characters/undead_skeleton/undead_skeleton_animations.tres"
+      }
+    },
+    "sunspear_hero_pharaoh": {
+      "baseModel": "/var/games/game-20260729-9c88f83b/assets/characters/sunspear_hero_pharaoh/sunspear_hero_pharaoh.glb",
+      "rigTaskId": "7543821b-674a-4c32-bc71-cd5eecd5ecff",
+      "animations": {
+        "ual1_Idle": "/var/games/game-20260729-9c88f83b/assets/characters/sunspear_hero_pharaoh/sunspear_hero_pharaoh_animations.tres",
+        "ual1_Walk": "/var/games/game-20260729-9c88f83b/assets/characters/sunspear_hero_pharaoh/sunspear_hero_pharaoh_animations.tres",
+        "ual1_Punch_Cross": "/var/games/game-20260729-9c88f83b/assets/characters/sunspear_hero_pharaoh/sunspear_hero_pharaoh_animations.tres",
+        "ual1_Death01": "/var/games/game-20260729-9c88f83b/assets/characters/sunspear_hero_pharaoh/sunspear_hero_pharaoh_animations.tres"
+      }
+    },
+    "frostborn_hero_jarl": {
+      "baseModel": "/var/games/game-20260729-9c88f83b/assets/characters/frostborn_hero_jarl/frostborn_hero_jarl.glb",
+      "rigTaskId": "c48c318f-04d1-435e-8347-1349d87e7460",
+      "animations": {
+        "ual1_Idle": "/var/games/game-20260729-9c88f83b/assets/characters/frostborn_hero_jarl/frostborn_hero_jarl_animations.tres",
+        "ual1_Walk": "/var/games/game-20260729-9c88f83b/assets/characters/frostborn_hero_jarl/frostborn_hero_jarl_animations.tres",
+        "ual1_Punch_Cross": "/var/games/game-20260729-9c88f83b/assets/characters/frostborn_hero_jarl/frostborn_hero_jarl_animations.tres",
+        "ual1_Death01": "/var/games/game-20260729-9c88f83b/assets/characters/frostborn_hero_jarl/frostborn_hero_jarl_animations.tres"
+      }
+    },
+    "dwarf_warrior": {
+      "baseModel": "/var/games/game-20260729-9c88f83b/assets/characters/dwarf_warrior/dwarf_warrior.glb",
+      "rigTaskId": "e7d6892f-ff1b-48e5-956c-2be1bfb5f441",
+      "animations": {
+        "ual1_Idle": "/var/games/game-20260729-9c88f83b/assets/characters/dwarf_warrior/dwarf_warrior_animations.tres",
+        "ual1_Walk": "/var/games/game-20260729-9c88f83b/assets/characters/dwarf_warrior/dwarf_warrior_animations.tres",
+        "ual1_Punch_Cross": "/var/games/game-20260729-9c88f83b/assets/characters/dwarf_warrior/dwarf_warrior_animations.tres",
+        "ual1_Death01": "/var/games/game-20260729-9c88f83b/assets/characters/dwarf_warrior/dwarf_warrior_animations.tres"
+      }
+    },
+    "wyldkin_hero_alpha": {
+      "baseModel": "/var/games/game-20260729-9c88f83b/assets/characters/wyldkin_hero_alpha/wyldkin_hero_alpha.glb",
+      "rigTaskId": "63b22f28-2a8c-4f91-8fd2-24b746ceb603",
+      "animations": {
+        "ual1_Idle": "/var/games/game-20260729-9c88f83b/assets/characters/wyldkin_hero_alpha/wyldkin_hero_alpha_animations.tres",
+        "ual1_Walk": "/var/games/game-20260729-9c88f83b/assets/characters/wyldkin_hero_alpha/wyldkin_hero_alpha_animations.tres",
+        "ual1_Punch_Cross": "/var/games/game-20260729-9c88f83b/assets/characters/wyldkin_hero_alpha/wyldkin_hero_alpha_animations.tres",
+        "ual1_Death01": "/var/games/game-20260729-9c88f83b/assets/characters/wyldkin_hero_alpha/wyldkin_hero_alpha_animations.tres"
+      }
+    },
+    "karak_hero_thanelord": {
+      "baseModel": "/var/games/game-20260729-9c88f83b/assets/characters/karak_hero_thanelord/karak_hero_thanelord.glb",
+      "rigTaskId": "a9f435fb-9dc9-45a9-bad2-d7da8450ff28",
+      "animations": {
+        "ual1_Idle": "/var/games/game-20260729-9c88f83b/assets/characters/karak_hero_thanelord/karak_hero_thanelord_animations.tres",
+        "ual1_Walk": "/var/games/game-20260729-9c88f83b/assets/characters/karak_hero_thanelord/karak_hero_thanelord_animations.tres",
+        "ual1_Punch_Cross": "/var/games/game-20260729-9c88f83b/assets/characters/karak_hero_thanelord/karak_hero_thanelord_animations.tres",
+        "ual1_Death01": "/var/games/game-20260729-9c88f83b/assets/characters/karak_hero_thanelord/karak_hero_thanelord_animations.tres"
+      }
+    },
+    "hollow_hero_lich": {
+      "baseModel": "/var/games/game-20260729-9c88f83b/assets/characters/hollow_hero_lich/hollow_hero_lich.glb",
+      "rigTaskId": "c69d6159-d2dc-4383-9d51-79f7db74a959",
+      "animations": {
+        "ual1_Idle": "/var/games/game-20260729-9c88f83b/assets/characters/hollow_hero_lich/hollow_hero_lich_animations.tres",
+        "ual1_Walk": "/var/games/game-20260729-9c88f83b/assets/characters/hollow_hero_lich/hollow_hero_lich_animations.tres",
+        "ual1_Punch_Cross": "/var/games/game-20260729-9c88f83b/assets/characters/hollow_hero_lich/hollow_hero_lich_animations.tres",
+        "ual1_Death01": "/var/games/game-20260729-9c88f83b/assets/characters/hollow_hero_lich/hollow_hero_lich_animations.tres"
+      }
+    }
+  },
+  "props": {
+    "lioraen_bloomblade": {
+      "model": "/var/games/game-20260729-9c88f83b/assets/props/weapons/lioraen_bloomblade.glb",
+      "taskId": "876b6725-3ca3-4b02-b5b2-a54977c77f38"
+    },
+    "barrosan_claymore": {
+      "model": "/var/games/game-20260729-9c88f83b/assets/props/weapons/barrosan_claymore.glb",
+      "taskId": "7bcc10a4-15c4-4742-8a62-710dee50db31"
+    },
+    "vorthak_rift_staff": {
+      "model": "/var/games/game-20260729-9c88f83b/assets/props/weapons/vorthak_rift_staff.glb",
+      "taskId": "6b640e0e-34ab-4407-97cf-50b1cf2780e7"
+    },
+    "resource_stone_quarry_chunk": {
+      "model": "/var/games/game-20260729-9c88f83b/assets/props/misc/resource_stone_quarry_chunk.glb",
+      "taskId": "library:4207cad6be0617c88232d25e25b6a35a0625dbe7ed08f066d31a485521d2eeb3"
+    },
+    "hero_relic_amulet": {
+      "model": "/var/games/game-20260729-9c88f83b/assets/props/items/hero_relic_amulet.glb",
+      "taskId": "library:b1405470bc70727ebb01d5e7876fb28fe9f3925950784782c6c580788ce39566"
+    },
+    "lume_shard_crystal": {
+      "model": "/var/games/game-20260729-9c88f83b/assets/props/items/lume_shard_crystal.glb",
+      "taskId": "library:9044b36baf5a7e08d0c946a46a3c7a8704df7bd76a7b0c72ae2ae1603fd2cccf"
+    },
+    "resource_timber_pile": {
+      "model": "/var/games/game-20260729-9c88f83b/assets/props/containers/resource_timber_pile.glb",
+      "taskId": "638c8fc4-0756-4d59-adea-dc3cbeb1ac30"
+    },
+    "barrosan_ballista": {
+      "model": "/var/games/game-20260729-9c88f83b/assets/props/vehicles/barrosan_ballista.glb",
+      "taskId": "library:050c73a6e7faddf66d4562131d47b920006ae83f72c267d2b5c569a0c28935c2"
+    },
+    "lioraen_thornthrower": {
+      "model": "/var/games/game-20260729-9c88f83b/assets/props/vehicles/lioraen_thornthrower.glb",
+      "taskId": "library:050c73a6e7faddf66d4562131d47b920006ae83f72c267d2b5c569a0c28935c2"
+    },
+    "vorthak_fracture_engine": {
+      "model": "/var/games/game-20260729-9c88f83b/assets/props/vehicles/vorthak_fracture_engine.glb",
+      "taskId": "4d488b6b-48e9-4669-83a2-5520fb153bc4"
+    }
+  },
+  "environment": {
+    "barrosan_clanhold": {
+      "model": "/var/games/game-20260729-9c88f83b/assets/environment/buildings/barrosan_clanhold.glb",
+      "taskId": "library:c4a19f0e5ae09f44f699e4f10789cf4178c06de1f971c889577d641726cb102b"
+    },
+    "lume_spire_ruin": {
+      "model": "/var/games/game-20260729-9c88f83b/assets/environment/structures/lume_spire_ruin.glb",
+      "taskId": "library:6bf904b2e8322f6de717c3515bf68dd17ae908333295e8ff24640b744aa578c3"
+    },
+    "lioraen_groveheart": {
+      "model": "/var/games/game-20260729-9c88f83b/assets/environment/buildings/lioraen_groveheart.glb",
+      "taskId": "library:af8c8a278d7f604a367171ca0bae305f17e83e4fa47631e5bc9e74ef28c03c4e"
+    },
+    "vorthak_nighthold": {
+      "model": "/var/games/game-20260729-9c88f83b/assets/environment/buildings/vorthak_nighthold.glb",
+      "taskId": "library:69d3f7c92d79f7921552d62fd5e2f909ec2a904399491e5b483459b1d8d7eae9"
+    },
+    "barrosan_watchtower": {
+      "model": "/var/games/game-20260729-9c88f83b/assets/environment/buildings/barrosan_watchtower.glb",
+      "taskId": "library:c4a19f0e5ae09f44f699e4f10789cf4178c06de1f971c889577d641726cb102b"
+    },
+    "vorthak_rift_obelisk": {
+      "model": "/var/games/game-20260729-9c88f83b/assets/environment/buildings/vorthak_rift_obelisk.glb",
+      "taskId": "library:d732c46be5bbecd7e8bcfa255b101b5f39897a0acf2c36c291fcdb614ff60533"
+    },
+    "gold_mine_lumevein": {
+      "model": "/var/games/game-20260729-9c88f83b/assets/environment/rocks/gold_mine_lumevein.glb",
+      "taskId": "library:d022727b64ff47d9515e9c965e02dfd388277abeee8ae22efa97081aa1dc4356"
+    },
+    "highland_crossing_bridge": {
+      "model": "/var/games/game-20260729-9c88f83b/assets/environment/structures/highland_crossing_bridge.glb",
+      "taskId": "library:843546763e144eff3ce226de09eaacb927f85e15e000e89d861cc5bf1f2440a7"
+    },
+    "lioraen_bloom_spire": {
+      "model": "/var/games/game-20260729-9c88f83b/assets/environment/buildings/lioraen_bloom_spire.glb",
+      "taskId": "649dc579-0114-4fb4-817e-f8ccf21cb4b9"
+    },
+    "vorthak_warlock_spire": {
+      "model": "/var/games/game-20260729-9c88f83b/assets/environment/buildings/vorthak_warlock_spire.glb",
+      "taskId": "library:4bd20b9d584534f6b0a35c129458042bc6981f2670fc651a0e78fcc2cb76aa6f"
+    },
+    "lioraen_spirit_glade": {
+      "model": "/var/games/game-20260729-9c88f83b/assets/environment/buildings/lioraen_spirit_glade.glb",
+      "taskId": "library:6bf904b2e8322f6de717c3515bf68dd17ae908333295e8ff24640b744aa578c3"
+    },
+    "barrosan_war_hall": {
+      "model": "/var/games/game-20260729-9c88f83b/assets/environment/buildings/barrosan_war_hall.glb",
+      "taskId": "library:b1aa30b4f2f542da15e11d933081b76c707997a4bbb6dcaa929f45a4f45bfa71"
+    },
+    "barrosan_clan_croft": {
+      "model": "/var/games/game-20260729-9c88f83b/assets/environment/buildings/barrosan_clan_croft.glb",
+      "taskId": "library:6f2d6ce6a6b88a390717a43a1d26c6df3d071c0fe98002ba280d8ec33e8801d5"
+    },
+    "vorthak_ash_forge": {
+      "model": "/var/games/game-20260729-9c88f83b/assets/environment/buildings/vorthak_ash_forge.glb",
+      "taskId": "library:2b67460aa4b3faaf8b8e9052379e78ebcf8c4dd2337bf89e17215a0fc0dee57b"
+    },
+    "barrosan_iron_forge": {
+      "model": "/var/games/game-20260729-9c88f83b/assets/environment/buildings/barrosan_iron_forge.glb",
+      "taskId": "e582122c-44a6-43b0-98a4-106d6db0bde3"
+    },
+    "lioraen_thornhall": {
+      "model": "/var/games/game-20260729-9c88f83b/assets/environment/buildings/lioraen_thornhall.glb",
+      "taskId": "17d100da-e8f5-4871-a8be-9f48944d4105"
+    },
+    "lioraen_lifewell": {
+      "model": "/var/games/game-20260729-9c88f83b/assets/environment/buildings/lioraen_lifewell.glb",
+      "taskId": "82bcf18b-9c46-428a-a35f-f6cba8a088de"
+    },
+    "vorthak_bone_barracks": {
+      "model": "/var/games/game-20260729-9c88f83b/assets/environment/buildings/vorthak_bone_barracks.glb",
+      "taskId": "c6bb8438-ae13-42dc-8f85-343a680d2698"
+    },
+    "highland_pine": {
+      "model": "/var/games/game-20260729-9c88f83b/assets/environment/vegetation/highland_pine.glb",
+      "taskId": "library:593999b155845cfc7255bfc498d49b380eb61b828f19ce46086aa1ff6c0df8cd"
+    },
+    "mossy_boulder": {
+      "model": "/var/games/game-20260729-9c88f83b/assets/environment/rocks/mossy_boulder.glb",
+      "taskId": "library:04ad073ba7cf30a50351b1053f1a25ea2e41d941b3c93d5f076b5a558646cb81"
+    },
+    "highland_rock_cluster": {
+      "model": "/var/games/game-20260729-9c88f83b/assets/environment/rocks/highland_rock_cluster.glb",
+      "taskId": "library:4ae858de3c3919f7b03117178659fd58cdadca9e9909c7926c95ff1bea526162"
+    },
+    "ancient_ruin_pillar": {
+      "model": "/var/games/game-20260729-9c88f83b/assets/environment/structures/ancient_ruin_pillar.glb",
+      "taskId": "library:4506056f3168242bf6b9c5f7fc1f47bbc6ed87144624a2b6a7f971633ba3b715"
+    },
+    "broadleaf_oak": {
+      "model": "/var/games/game-20260729-9c88f83b/assets/environment/vegetation/broadleaf_oak.glb",
+      "taskId": "library:572e0b8670942a09c45ab8c53396ceed1308cb68928696b2e36b49d17aacd694"
+    },
+    "wyldkin_denhold": {
+      "model": "/var/games/game-20260729-9c88f83b/assets/environment/buildings/wyldkin_denhold.glb",
+      "taskId": "library:a2b64b7d60d9bcb7014e4950770e469ce4ca34f1ea898e7dd010c4880f286d3e"
+    },
+    "frostborn_mead_hall": {
+      "model": "/var/games/game-20260729-9c88f83b/assets/environment/buildings/frostborn_mead_hall.glb",
+      "taskId": "library:0a61ba1ae5b1a037c1d5e2049c3ca9442052f6042199ef1d5e23139b3b0ae04f"
+    },
+    "karak_hold": {
+      "model": "/var/games/game-20260729-9c88f83b/assets/environment/buildings/karak_hold.glb",
+      "taskId": "library:6ea41159b015f0d3c2c0c4c046f8b111b92e406bb77ab7ed018a21b7899d124b"
+    },
+    "hollow_necropolis": {
+      "model": "/var/games/game-20260729-9c88f83b/assets/environment/buildings/hollow_necropolis.glb",
+      "taskId": "library:b2b475995638ede80b3052ef74adb8a5b11f5bc3a4898d24f6b446609775825c"
+    },
+    "sunspear_palace": {
+      "model": "/var/games/game-20260729-9c88f83b/assets/environment/buildings/sunspear_palace.glb",
+      "taskId": "7f919687-095a-455e-8ee4-328b91102026"
+    },
+    "sylvan_court": {
+      "model": "/var/games/game-20260729-9c88f83b/assets/environment/buildings/sylvan_court.glb",
+      "taskId": "517b7eae-3828-4cc5-9ce4-1bab1cecc855"
+    },
+    "grimtusk_stronghold": {
+      "model": "/var/games/game-20260729-9c88f83b/assets/environment/buildings/grimtusk_stronghold.glb",
+      "taskId": "0e0913be-f497-43f8-ae3a-1bdfdae9d4c0"
+    }
+  },
+  "weapons": {
+    "lioraen_bloomblade": {
+      "model": "/var/games/game-20260729-9c88f83b/assets/props/weapons/lioraen_bloomblade.glb",
+      "sha256": "4b98a9d8a0c74c0f2a09e93fe6bd0765ba9bae7570bb69878878f3b038c6a705",
+      "driver_image_sha256": "9e75f9e8228737527db2628da00e1525b93f79e318f45209070493a4a791b2bd",
+      "weapon_type": "melee",
+      "weapon_class": "melee",
+      "pipeline_version": 1,
+      "pipeline_contract": "tesana-held-weapon-canonical-v1",
+      "tripo_model_version": "P1-20260311",
+      "model_task_id": "c31d8dbe-dd53-428f-8aad-cdd9760f12d5",
+      "convert_task_id": "876b6725-3ca3-4b02-b5b2-a54977c77f38",
+      "orientation_contract": "tripo-p1-align-image-axes-v1",
+      "grip_version": 3,
+      "grip_sha256": "66609f4ca70c456730989e1caf45d706ca50ac2382ce833ffea7c87f9f04ffcb"
+    },
+    "barrosan_claymore": {
+      "model": "/var/games/game-20260729-9c88f83b/assets/props/weapons/barrosan_claymore.glb",
+      "sha256": "900555d4025f1bc2bd13ba7bd4a42f1f91559a25a87634760dd7bc771a66234f",
+      "driver_image_sha256": "585f206c4030ac3ff5122707305e7d97f8e73effc3e993eda222a19a97aa63ad",
+      "weapon_type": "melee",
+      "weapon_class": "melee",
+      "pipeline_version": 1,
+      "pipeline_contract": "tesana-held-weapon-canonical-v1",
+      "tripo_model_version": "P1-20260311",
+      "model_task_id": "6b32b38c-8774-448d-9a71-9c38bcaf62b7",
+      "convert_task_id": "7bcc10a4-15c4-4742-8a62-710dee50db31",
+      "orientation_contract": "tripo-p1-align-image-axes-v1",
+      "grip_version": 3,
+      "grip_sha256": "66609f4ca70c456730989e1caf45d706ca50ac2382ce833ffea7c87f9f04ffcb"
+    },
+    "vorthak_rift_staff": {
+      "model": "/var/games/game-20260729-9c88f83b/assets/props/weapons/vorthak_rift_staff.glb",
+      "sha256": "402f5c745fa5ac9776a38bbe8976d2735280427d5bca72f203c9ef36b01a256a",
+      "driver_image_sha256": "e802965d09d772480779601977f01c814aa01ad341599a89d607215ae9516277",
+      "weapon_type": "melee",
+      "weapon_class": "melee",
+      "pipeline_version": 1,
+      "pipeline_contract": "tesana-held-weapon-canonical-v1",
+      "tripo_model_version": "P1-20260311",
+      "model_task_id": "ac4425ba-86c9-4b96-9fbb-1bfc02a9dde6",
+      "convert_task_id": "6b640e0e-34ab-4407-97cf-50b1cf2780e7",
+      "orientation_contract": "tripo-p1-align-image-axes-v1",
+      "grip_version": 3,
+      "grip_sha256": "66609f4ca70c456730989e1caf45d706ca50ac2382ce833ffea7c87f9f04ffcb"
+    }
+  }
+}

@@ -1,0 +1,810 @@
+class_name Unit
+extends CharacterBody3D
+## The universal combat/worker unit. Data-driven from a unit def dictionary.
+## Handles movement (NavigationAgent3D), combat, gathering, states, selection.
+
+signal died(unit)
+
+enum State { IDLE, MOVING, ATTACK_MOVE, ATTACKING, GATHERING, RETURNING, BUILDING, HOLD, PATROL, FOLLOW, DEAD }
+
+# --- identity ---
+var def := {}
+var unit_id := ""
+var team := 0
+var commander = null
+var world = null
+var is_hero := false
+var is_worker := false
+var is_siege := false
+
+# --- stats ---
+var max_hp := 100.0
+var hp := 100.0
+var base_dmg := 10.0
+var dmg_type := "slash"
+var armor_class := "medium"
+var base_armor := 0.0
+var atk_range := 0.0
+var attack_cd := 1.0
+var move_speed := 3.5
+var vision := 20.0
+var pop := 1
+var splash := 0.0
+
+# --- hero extras ---
+var mana := 0.0
+var max_mana := 0.0
+var mana_regen := 0.0
+var abilities := {}          # id -> level
+var ability_cd := {}         # id -> time remaining
+var aura_dmg := 0.0
+var aura_armor := 0.0
+var aura_range := 0.0
+var regen := 0.0
+var hero_flags := {}
+var heal_power := 0.0
+var _last_stand_used := false
+
+# --- runtime ---
+var state: int = State.IDLE
+var is_dead := false
+var is_built := true
+var _attack_timer := 0.0
+var _target = null            # attack target (Unit or Building)
+var _move_target := Vector3.ZERO
+var _patrol_a := Vector3.ZERO
+var _patrol_b := Vector3.ZERO
+var _follow_target = null
+var _hold_position := false
+var _stun := 0.0
+var _rooted := 0.0
+var _slow := 0.0
+var _upg_dmg := 0.0
+var _upg_armor := 0.0
+var _aura_bonus_dmg := 0.0
+var _aura_bonus_armor := 0.0
+var _veterancy := 0
+var _kills := 0
+
+# gather
+var _gather_node = null
+var _carry := 0
+var _carry_kind := ""
+const CARRY_MAX := 10
+var _gather_timer := 0.0
+
+# build
+var _build_target = null
+
+# nodes
+var agent: NavigationAgent3D
+var model_root: Node3D
+var anim: AnimationPlayer
+var selection_ring: MeshInstance3D
+var _anim_names := {}
+var _cur_anim := ""
+var _repath := 0.0
+
+const ARRIVE_DIST := 1.2
+
+func _ready() -> void:
+	add_to_group("units")
+	collision_layer = 2       # units layer
+	collision_mask = 0        # we resolve avoidance via nav; no physics collisions
+	floor_max_angle = deg_to_rad(60)
+
+func configure(p_def: Dictionary, p_team: int, p_commander, p_world) -> void:
+	def = p_def
+	unit_id = p_def.get("id", "")
+	team = p_team
+	commander = p_commander
+	world = p_world
+	is_hero = p_def.get("is_hero", false)
+	is_worker = p_def.get("role", "") == "worker"
+	is_siege = p_def.get("is_siege", false)
+	pop = int(p_def.get("pop", 1))
+
+	max_hp = float(p_def.get("hp", 100))
+	hp = max_hp
+	base_dmg = float(p_def.get("dmg", 10))
+	dmg_type = p_def.get("dmg_type", "slash")
+	armor_class = p_def.get("armor_class", "medium")
+	base_armor = float(p_def.get("armor", 0))
+	atk_range = float(p_def.get("range", 0.0))
+	attack_cd = float(p_def.get("attack_cd", 1.0))
+	move_speed = float(p_def.get("speed", 3.5))
+	vision = float(p_def.get("vision", 20.0))
+	splash = float(p_def.get("splash", 0.0))
+	heal_power = float(p_def.get("heal", 0.0))
+
+	if is_hero:
+		_apply_hero_stats()
+
+	_apply_race_passive()
+
+	_setup_nav()
+	_build_model()
+	_add_pick_shape()
+	_build_selection_ring()
+	refresh_upgrade_bonuses()
+
+## A capsule shape purely so mouse raycasts can pick this unit for selection.
+## The body's collision_mask stays 0, so this never causes physical collisions.
+func _add_pick_shape() -> void:
+	var h: float = maxf(1.2, float(def.get("height", 1.8)))
+	var cs := CollisionShape3D.new()
+	var cap := CapsuleShape3D.new()
+	cap.radius = 0.55 if not is_hero else 0.7
+	cap.height = h
+	cs.shape = cap
+	cs.position.y = h * 0.5
+	add_child(cs)
+
+func _apply_hero_stats() -> void:
+	var hs = commander.hero_stats if commander else {}
+	max_hp += float(hs.get("bonus_hp", 0.0))
+	hp = max_hp
+	base_dmg += float(hs.get("bonus_dmg", 0.0))
+	base_armor += float(hs.get("bonus_armor", 0.0))
+	move_speed += float(hs.get("bonus_speed", 0.0))
+	vision += float(hs.get("bonus_vision", 0.0))
+	atk_range += float(hs.get("bonus_range", 0.0))
+	attack_cd = max(0.35, attack_cd * (1.0 - float(hs.get("attack_speed", 0.0))))
+	max_mana = float(hs.get("max_mana", 100.0))
+	mana = max_mana
+	mana_regen = float(hs.get("mana_regen", 5.0))
+	aura_dmg = float(hs.get("aura_dmg", 0.0))
+	aura_armor = float(hs.get("aura_armor", 0.0))
+	aura_range = float(hs.get("aura_range", 0.0))
+	regen = float(hs.get("regen", 0.0))
+	heal_power += float(hs.get("heal_power", 0.0))
+	abilities = hs.get("abilities", {}).duplicate()
+	hero_flags = hs.get("flags", {}).duplicate()
+	for id in abilities:
+		ability_cd[id] = 0.0
+
+## Signature race power — a real, functioning identity passive applied to every
+## unit of the race (Barrosan Fortify and Lioraen Bloomfields are handled
+## dynamically elsewhere: cur_armor() near the Clanhold, and the Groveheart heal aura).
+func _apply_race_passive() -> void:
+	if commander == null:
+		return
+	match commander.race:
+		"grimtusk":                       # Bloodfury — harder-hitting green tide
+			base_dmg *= 1.12
+		"sylvan":                         # Precision — keener sight and reach
+			vision += 5.0
+			if atk_range > 0.0:
+				atk_range += 2.0
+		"karak":                          # Stone Resolve — armored and hardy
+			base_armor += 2.0
+			max_hp *= 1.12
+			hp = max_hp
+		"sunspear":                       # Sunfire — resilient morale (steady healing)
+			regen += 2.0
+		"wyldkin":                        # Pack Hunt — the swiftest army in the realm
+			move_speed *= 1.15
+		"hollow":                         # Undying — every warrior drains life on hit
+			hero_flags["lifesteal"] = maxf(float(hero_flags.get("lifesteal", 0.0)), 0.12)
+		"frostborn":                      # Winter's Wrath — towering, hard-hitting
+			base_dmg *= 1.12
+			max_hp *= 1.10
+			hp = max_hp
+		"vorthak":                        # Rift Toll — thralls move a touch faster
+			move_speed *= 1.06
+		_:
+			pass
+
+func _setup_nav() -> void:
+	agent = NavigationAgent3D.new()
+	agent.path_desired_distance = 0.8
+	agent.target_desired_distance = ARRIVE_DIST
+	agent.radius = 0.5
+	agent.avoidance_enabled = true
+	agent.max_speed = move_speed
+	agent.neighbor_distance = 4.0
+	agent.max_neighbors = 8
+	agent.time_horizon_agents = 1.5
+	agent.avoidance_priority = 0.9 if is_hero else 0.5
+	add_child(agent)
+	agent.velocity_computed.connect(_on_velocity_computed)
+
+func _build_model() -> void:
+	model_root = Node3D.new()
+	model_root.name = "MeshRoot"
+	add_child(model_root)
+	var path: String = def.get("model", "")
+	if path != "" and ResourceLoader.exists(path):
+		var scn = load(path)
+		var m = scn.instantiate()
+		model_root.add_child(m)
+		ModelUtils.setup_character_for_movement(m, float(def.get("height", 1.8)))
+		# animation
+		anim = m.find_child("AnimationPlayer", true, false)
+		if not anim:
+			var lib_path := _anim_lib_path()
+			if lib_path != "" and ResourceLoader.exists(lib_path):
+				anim = AnimationPlayer.new()
+				m.add_child(anim)
+				var lib = load(lib_path)
+				if lib:
+					anim.add_animation_library("", lib)
+		if anim:
+			ModelUtils.set_animation_loops(anim)
+			_map_anims()
+			_play("idle")
+	else:
+		# fallback capsule so the unit is always visible
+		var mi := MeshInstance3D.new()
+		var cap := CapsuleMesh.new()
+		cap.radius = 0.4
+		cap.height = float(def.get("height", 1.8))
+		mi.mesh = cap
+		mi.position.y = float(def.get("height", 1.8)) * 0.5
+		var mat := StandardMaterial3D.new()
+		mat.albedo_color = commander.color if commander else Color.GRAY
+		mi.material_override = mat
+		model_root.add_child(mi)
+	# team-color banner tint indicator
+	_add_team_marker()
+
+func _anim_lib_path() -> String:
+	var path: String = def.get("model", "")
+	# characters live at assets/characters/<name>/<name>.glb
+	var file := path.get_file().get_basename()
+	var lib := "res://assets/characters/%s/%s_animations.tres" % [file, file]
+	return lib
+
+func _map_anims() -> void:
+	if not anim:
+		return
+	for a in anim.get_animation_list():
+		var low := a.to_lower()
+		if "idle" in low and not _anim_names.has("idle"):
+			_anim_names["idle"] = a
+		elif "walk" in low and not _anim_names.has("walk"):
+			_anim_names["walk"] = a
+		elif ("attack" in low or "shoot" in low or "punch" in low or "spell" in low) and not _anim_names.has("attack"):
+			_anim_names["attack"] = a
+		elif "death" in low and not _anim_names.has("death"):
+			_anim_names["death"] = a
+
+func _play(key: String, force: bool = false) -> void:
+	if not anim:
+		return
+	var name: String = _anim_names.get(key, "")
+	if name == "":
+		return
+	if _cur_anim == name and not force:
+		return
+	_cur_anim = name
+	anim.play(name)
+
+func _add_team_marker() -> void:
+	# small floating banner ring color already on selection ring; add a shoulder pip
+	pass
+
+func _build_selection_ring() -> void:
+	selection_ring = MeshInstance3D.new()
+	var torus := TorusMesh.new()
+	var r: float = 0.7 if not is_hero else 1.0
+	if def.get("footprint"):
+		r = float(def["footprint"])
+	torus.inner_radius = r * 0.85
+	torus.outer_radius = r
+	selection_ring.mesh = torus
+	var mat := StandardMaterial3D.new()
+	mat.albedo_color = commander.color if commander else Color.WHITE
+	mat.emission_enabled = true
+	mat.emission = commander.color if commander else Color.WHITE
+	mat.emission_energy_multiplier = 1.5
+	mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	selection_ring.material_override = mat
+	selection_ring.position.y = 0.08
+	selection_ring.visible = false
+	add_child(selection_ring)
+
+func set_selected(sel: bool) -> void:
+	if selection_ring:
+		selection_ring.visible = sel
+
+func refresh_upgrade_bonuses() -> void:
+	if commander:
+		_upg_dmg = commander.dmg_bonus
+		_upg_armor = commander.armor_bonus
+
+# --------------------------------------------------------------------------
+# Stat accessors (with upgrades, veterancy, auras, fortify)
+# --------------------------------------------------------------------------
+func cur_dmg() -> float:
+	var d := base_dmg + _upg_dmg + _aura_bonus_dmg + float(_veterancy) * 2.0
+	if hero_flags.get("execute", false) and is_instance_valid(_target) and _target.has_method("get_hp_ratio"):
+		if _target.get_hp_ratio() < 0.3:
+			d *= 1.5
+	return d
+
+func cur_armor() -> float:
+	var a := base_armor + _upg_armor + _aura_bonus_armor + float(_veterancy) * 0.5
+	# Barrosan fortify: bonus near own HQ
+	if commander and commander.race == "barrosan":
+		if world and world.near_friendly_hq(global_position, team, 22.0):
+			a += 3.0 if not commander.build_flags.get("fortify_boost", false) else 6.0
+	return a
+
+func get_hp_ratio() -> float:
+	return hp / max_hp if max_hp > 0 else 0.0
+
+# --------------------------------------------------------------------------
+# Commands
+# --------------------------------------------------------------------------
+func command_move(pos: Vector3, attack_move: bool = false, queue: bool = false) -> void:
+	if is_dead:
+		return
+	_hold_position = false
+	_target = null
+	_gather_node = null
+	_build_target = null
+	_follow_target = null
+	_move_target = pos
+	_set_agent_target(pos)
+	state = State.ATTACK_MOVE if attack_move else State.MOVING
+
+func command_stop() -> void:
+	if is_dead: return
+	_target = null
+	_gather_node = null
+	_build_target = null
+	_follow_target = null
+	state = State.IDLE
+	velocity = Vector3.ZERO
+	if agent: agent.set_velocity(Vector3.ZERO)
+
+func command_hold() -> void:
+	if is_dead: return
+	command_stop()
+	_hold_position = true
+	state = State.HOLD
+
+func command_attack(tgt) -> void:
+	if is_dead or not is_instance_valid(tgt):
+		return
+	_hold_position = false
+	_gather_node = null
+	_build_target = null
+	_target = tgt
+	state = State.ATTACKING
+
+func command_patrol(pos: Vector3) -> void:
+	if is_dead: return
+	_patrol_a = global_position
+	_patrol_b = pos
+	state = State.PATROL
+	_set_agent_target(_patrol_b)
+
+func command_guard(tgt) -> void:
+	if is_dead or not is_instance_valid(tgt): return
+	_follow_target = tgt
+	state = State.FOLLOW
+
+func command_gather(node) -> void:
+	if is_dead or not is_worker or not is_instance_valid(node):
+		return
+	_hold_position = false
+	_target = null
+	_gather_node = node
+	if _carry >= CARRY_MAX and _carry_kind != node.resource_kind:
+		pass
+	state = State.GATHERING
+
+func command_build(building) -> void:
+	if is_dead or not is_worker or not is_instance_valid(building):
+		return
+	_hold_position = false
+	_target = null
+	_gather_node = null
+	_build_target = building
+	state = State.BUILDING
+
+func _set_agent_target(pos: Vector3) -> void:
+	if agent:
+		agent.target_position = pos
+
+# --------------------------------------------------------------------------
+# Main loop
+# --------------------------------------------------------------------------
+func _physics_process(delta: float) -> void:
+	if is_dead:
+		return
+	# timers
+	if _attack_timer > 0.0: _attack_timer -= delta
+	if _stun > 0.0:
+		_stun -= delta
+		velocity = Vector3.ZERO
+		move_and_slide()
+		return
+	if _rooted > 0.0: _rooted -= delta
+	if _slow > 0.0: _slow -= delta
+
+	# regen / mana
+	if regen > 0.0 and hp < max_hp:
+		hp = min(max_hp, hp + regen * delta)
+	if is_hero and max_mana > 0.0:
+		mana = min(max_mana, mana + mana_regen * delta)
+		for id in ability_cd:
+			if ability_cd[id] > 0.0:
+				ability_cd[id] -= delta
+	if not is_hero and heal_power > 0.0:
+		_healer_tick(delta)
+
+	# Flat-ground RTS: units are navmesh-driven and carry no ground collision
+	# (unit avoidance handles spacing), so physics gravity has no floor to stop
+	# it and would sink every unit through the terrain. Keep them planted on the
+	# battlefield at ground height instead.
+	velocity.y = 0.0
+	if global_position.y != 0.0:
+		global_position.y = 0.0
+
+	match state:
+		State.IDLE, State.HOLD:
+			_state_idle(delta)
+		State.MOVING:
+			_state_move(delta, false)
+		State.ATTACK_MOVE:
+			_state_move(delta, true)
+		State.ATTACKING:
+			_state_attack(delta)
+		State.GATHERING:
+			_state_gather(delta)
+		State.RETURNING:
+			_state_return(delta)
+		State.BUILDING:
+			_state_build(delta)
+		State.PATROL:
+			_state_patrol(delta)
+		State.FOLLOW:
+			_state_follow(delta)
+
+func _state_idle(delta: float) -> void:
+	velocity.x = 0
+	velocity.z = 0
+	move_and_slide()
+	_play("idle")
+	# auto-acquire nearby enemies if not holding fire and not worker
+	if not is_worker or is_hero:
+		var e = world.find_enemy_in_range(self, vision) if world else null
+		if e and not _hold_position:
+			command_attack(e)
+		elif e and _hold_position:
+			# hold: attack only if within attack range
+			if global_position.distance_to(e.global_position) <= _engage_range() + 1.0:
+				_target = e
+				state = State.ATTACKING
+
+func _state_move(delta: float, attack_move: bool) -> void:
+	if attack_move:
+		var e = world.find_enemy_in_range(self, vision * 0.7) if world else null
+		if e:
+			_target = e
+			state = State.ATTACKING
+			return
+	if _move_along_path(delta):
+		state = State.IDLE
+
+func _state_patrol(delta: float) -> void:
+	var e = world.find_enemy_in_range(self, vision * 0.7) if world else null
+	if e:
+		_target = e
+		state = State.ATTACKING
+		return
+	if _move_along_path(delta):
+		var tmp := _patrol_a
+		_patrol_a = _patrol_b
+		_patrol_b = tmp
+		_set_agent_target(_patrol_b)
+
+func _state_follow(delta: float) -> void:
+	if not is_instance_valid(_follow_target) or _follow_target.is_dead:
+		state = State.IDLE
+		return
+	var e = world.find_enemy_in_range(self, vision * 0.6) if world else null
+	if e:
+		_target = e
+		state = State.ATTACKING
+		return
+	var d := global_position.distance_to(_follow_target.global_position)
+	if d > 5.0:
+		_set_agent_target(_follow_target.global_position)
+		_move_along_path(delta)
+	else:
+		velocity.x = 0; velocity.z = 0
+		move_and_slide()
+		_play("idle")
+
+func _engage_range() -> float:
+	return atk_range if atk_range > 0.0 else 1.6
+
+func _state_attack(delta: float) -> void:
+	if not is_instance_valid(_target) or _target.is_dead:
+		_target = null
+		# after kill, look for next enemy nearby
+		var e = world.find_enemy_in_range(self, vision) if world else null
+		if e and not _hold_position:
+			_target = e
+		else:
+			state = State.HOLD if _hold_position else State.IDLE
+		return
+	var d := global_position.distance_to(_target.global_position)
+	var er := _engage_range()
+	if d > er:
+		if _hold_position:
+			# don't chase far when holding
+			if d > er + 4.0:
+				_target = null
+				state = State.HOLD
+				return
+		_set_agent_target(_target.global_position)
+		_move_along_path(delta)
+	else:
+		# in range: face + attack
+		velocity.x = 0; velocity.z = 0
+		move_and_slide()
+		_face(_target.global_position)
+		if _attack_timer <= 0.0:
+			_do_attack()
+
+func _do_attack() -> void:
+	_attack_timer = attack_cd
+	_play("attack", true)
+	if atk_range > 0.0 and def.has("projectile"):
+		_spawn_projectile()
+		Sfx.play("arrow" if dmg_type == "pierce" else "spell", -8.0)
+	else:
+		# melee: apply after small delay
+		Sfx.play("sword", -8.0)
+		var tgt = _target
+		get_tree().create_timer(0.25).timeout.connect(func():
+			if is_instance_valid(tgt) and not tgt.is_dead and not is_dead:
+				var dealt = _resolve_damage(tgt, cur_dmg())
+				_on_dealt_damage(dealt, tgt)
+				if splash > 0.0:
+					world.apply_splash(tgt.global_position, splash, cur_dmg() * 0.5, dmg_type, team, tgt)
+		)
+
+func _spawn_projectile() -> void:
+	if not world:
+		return
+	var muzzle := global_position + Vector3.UP * 1.2
+	world.spawn_projectile(muzzle, _target, cur_dmg(), dmg_type, team,
+		def.get("projectile", "arrow"), splash, self)
+
+func _on_dealt_damage(dealt: float, tgt) -> void:
+	# lifesteal
+	if hero_flags.get("lifesteal", 0.0) > 0.0:
+		hp = min(max_hp, hp + dealt * float(hero_flags["lifesteal"]))
+
+func _resolve_damage(tgt, raw: float) -> float:
+	var ac: String = tgt.armor_class if "armor_class" in tgt else "medium"
+	var ar: float = tgt.cur_armor() if tgt.has_method("cur_armor") else 0.0
+	var dmg := GameData.compute_damage(raw, dmg_type, ac, ar)
+	tgt.take_damage(dmg, self)
+	return dmg
+
+# --- worker: gathering ----------------------------------------------------
+func _state_gather(delta: float) -> void:
+	if not is_instance_valid(_gather_node) or _gather_node.depleted:
+		# find nearby node of same kind
+		var n = world.find_nearest_resource(global_position, _carry_kind) if world else null
+		if n:
+			_gather_node = n
+		else:
+			state = State.RETURNING if _carry > 0 else State.IDLE
+			return
+	var d := global_position.distance_to(_gather_node.global_position)
+	if d > 2.2:
+		_set_agent_target(_gather_node.global_position)
+		_move_along_path(delta)
+	else:
+		velocity.x = 0; velocity.z = 0
+		move_and_slide()
+		_face(_gather_node.global_position)
+		_play("attack")
+		_gather_timer += delta
+		if _gather_timer >= 1.0:
+			_gather_timer = 0.0
+			var got: int = _gather_node.extract(3)
+			_carry_kind = _gather_node.resource_kind
+			_carry += got
+			if _carry >= CARRY_MAX or _gather_node.depleted:
+				state = State.RETURNING
+
+func _state_return(delta: float) -> void:
+	var drop = world.find_nearest_dropoff(global_position, team) if world else null
+	if not is_instance_valid(drop):
+		state = State.IDLE
+		return
+	var d := global_position.distance_to(drop.global_position)
+	if d > (float(drop.def.get("footprint", 4.0)) + 1.0):
+		_set_agent_target(drop.global_position)
+		_move_along_path(delta)
+	else:
+		if _carry > 0 and commander:
+			commander.add_resources(_carry_kind, int(round(_carry * commander.gather_mult())))
+			_carry = 0
+		# go back to gathering
+		state = State.GATHERING
+
+# --- worker: building -----------------------------------------------------
+func _state_build(delta: float) -> void:
+	if not is_instance_valid(_build_target) or _build_target.is_dead:
+		_build_target = null
+		state = State.IDLE
+		return
+	if _build_target.is_built:
+		_build_target = null
+		state = State.IDLE
+		return
+	var reach: float = float(_build_target.def.get("footprint", 4.0)) + 1.2
+	var d := global_position.distance_to(_build_target.global_position)
+	if d > reach:
+		_set_agent_target(_build_target.global_position)
+		_move_along_path(delta)
+	else:
+		velocity.x = 0; velocity.z = 0
+		move_and_slide()
+		_face(_build_target.global_position)
+		_play("attack")
+		_build_target.add_build_progress(delta, self)
+
+# --- healer support unit --------------------------------------------------
+func _healer_tick(delta: float) -> void:
+	# handled inside attack/idle by targeting wounded allies
+	if state == State.IDLE or state == State.HOLD:
+		var ally = world.find_wounded_ally(self, float(def.get("heal_range", 12.0))) if world else null
+		if ally:
+			_face(ally.global_position)
+			if _attack_timer <= 0.0:
+				_attack_timer = float(def.get("heal_cd", 1.2))
+				ally.heal(float(def.get("heal", 12.0)))
+				world.spawn_heal_fx(ally.global_position)
+
+# --------------------------------------------------------------------------
+# Movement helpers
+# --------------------------------------------------------------------------
+func _move_along_path(delta: float) -> bool:
+	if not agent:
+		return true
+	if agent.is_navigation_finished():
+		velocity.x = 0; velocity.z = 0
+		move_and_slide()
+		_play("idle")
+		return true
+	var next := agent.get_next_path_position()
+	var dir := (next - global_position)
+	dir.y = 0
+	if dir.length() < 0.05:
+		return false
+	dir = dir.normalized()
+	var spd := move_speed
+	if _slow > 0.0: spd *= 0.5
+	if _rooted > 0.0: spd = 0.0
+	var desired := dir * spd
+	if agent.avoidance_enabled:
+		agent.set_velocity(desired)
+	else:
+		velocity.x = desired.x
+		velocity.z = desired.z
+		move_and_slide()
+	if desired.length() > 0.1:
+		_face(global_position + dir)
+		_play("walk")
+	return false
+
+func _on_velocity_computed(safe_vel: Vector3) -> void:
+	velocity.x = safe_vel.x
+	velocity.z = safe_vel.z
+	move_and_slide()
+
+func _face(target_pos: Vector3) -> void:
+	var to := target_pos - global_position
+	to.y = 0
+	if to.length() < 0.01:
+		return
+	var yaw := atan2(-to.x, -to.z)
+	if model_root:
+		model_root.rotation.y = lerp_angle(model_root.rotation.y, yaw, 0.25)
+
+# --------------------------------------------------------------------------
+# Damage / death / heal
+# --------------------------------------------------------------------------
+func take_damage(amount: float, from = null) -> void:
+	if is_dead:
+		return
+	hp -= amount
+	if world:
+		world.on_unit_damaged(self, from)
+	if hp <= 0.0:
+		if hero_flags.get("last_stand", false) and not _last_stand_used:
+			_last_stand_used = true
+			hp = 1.0
+			return
+		_die(from)
+
+func heal(amount: float) -> void:
+	if is_dead: return
+	hp = min(max_hp, hp + amount)
+
+func apply_stun(t: float) -> void:
+	_stun = max(_stun, t)
+
+func apply_root(t: float) -> void:
+	if hero_flags.get("unstoppable", false):
+		return
+	_rooted = max(_rooted, t)
+
+func apply_slow(t: float) -> void:
+	if hero_flags.get("unstoppable", false):
+		return
+	_slow = max(_slow, t)
+
+func gain_veterancy() -> void:
+	_kills += 1
+	if _kills % 3 == 0 and _veterancy < 3:
+		_veterancy += 1
+		max_hp += 15.0
+		hp += 15.0
+
+func set_aura_bonus(d: float, a: float) -> void:
+	_aura_bonus_dmg = d
+	_aura_bonus_armor = a
+
+func _die(from = null) -> void:
+	if is_dead:
+		return
+	is_dead = true
+	state = State.DEAD
+	set_selected(false)
+	collision_layer = 0
+	Sfx.play("death", -12.0)
+	if from and is_instance_valid(from):
+		if from.has_method("gain_veterancy"):
+			from.gain_veterancy()
+		if from.commander and from.commander.build_flags.get("bounty", false):
+			from.commander.add_resources("gold", 3)
+	if is_hero:
+		# heroes are downed, not deleted from the profile — just removed from field
+		pass
+	emit_signal("died", self)
+	if anim and _anim_names.has("death"):
+		_play("death", true)
+		await get_tree().create_timer(1.6).timeout
+	else:
+		await get_tree().create_timer(0.1).timeout
+	# sink then free
+	var t := create_tween()
+	t.tween_property(self, "position:y", position.y - 2.0, 1.0)
+	await t.finished
+	queue_free()
+
+# --------------------------------------------------------------------------
+# Hero abilities
+# --------------------------------------------------------------------------
+func can_cast(id: String) -> bool:
+	if not is_hero or not abilities.has(id):
+		return false
+	var ab := SkillDefs.get_abilities().get(id, {})
+	if mana < float(ab.get("mana", 0)):
+		return false
+	if ability_cd.get(id, 0.0) > 0.0:
+		return false
+	return true
+
+func cast_ability(id: String, target_pos: Vector3) -> bool:
+	if not can_cast(id):
+		return false
+	var ab := SkillDefs.get_abilities().get(id, {})
+	mana -= float(ab.get("mana", 0))
+	ability_cd[id] = float(ab.get("cd", 10.0))
+	Sfx.play("spell", -4.0)
+	if world:
+		world.execute_hero_ability(self, id, target_pos, abilities.get(id, 1))
+	return true

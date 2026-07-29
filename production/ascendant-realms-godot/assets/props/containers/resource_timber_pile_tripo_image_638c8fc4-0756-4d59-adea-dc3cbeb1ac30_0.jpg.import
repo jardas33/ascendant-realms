@@ -1,0 +1,37 @@
+[remap]
+
+importer="texture"
+type="CompressedTexture2D"
+uid="uid://e10r5y3igeth"
+path="res://.godot/imported/resource_timber_pile_tripo_image_638c8fc4-0756-4d59-adea-dc3cbeb1ac30_0.jpg-3dbd7235c9c1463cc6ed293f13f360d3.ctex"
+metadata={
+"vram_texture": false
+}
+generator_parameters={
+"md5": "493a9a1b31891d2756c5bc7911e7fe73"
+}
+
+[deps]
+
+source_file="res://assets/props/containers/resource_timber_pile_tripo_image_638c8fc4-0756-4d59-adea-dc3cbeb1ac30_0.jpg"
+dest_files=["res://.godot/imported/resource_timber_pile_tripo_image_638c8fc4-0756-4d59-adea-dc3cbeb1ac30_0.jpg-3dbd7235c9c1463cc6ed293f13f360d3.ctex"]
+
+[params]
+
+compress/mode=1
+compress/high_quality=false
+compress/lossy_quality=0.75
+compress/hdr_compression=1
+compress/normal_map=0
+compress/channel_pack=0
+mipmaps/generate=true
+mipmaps/limit=-1
+roughness/mode=0
+roughness/src_normal=""
+process/fix_alpha_border=true
+process/premult_alpha=false
+process/normal_map_invert_y=false
+process/hdr_as_srgb=false
+process/hdr_clamp_exposure=false
+process/size_limit=1024
+detect_3d/compress_to=1
