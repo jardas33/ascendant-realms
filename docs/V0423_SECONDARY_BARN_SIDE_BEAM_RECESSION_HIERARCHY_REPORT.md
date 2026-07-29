@@ -43,4 +43,4 @@ Full local validation passed: `npm test` (887 tests), `npm run build`, `npm run 
 
 ## Closeout
 
-Implementation commit and exact-SHA GitHub Actions evidence are recorded in the final closeout update after the explicit v0.423 files and review pack are committed and pushed. The final tracked repository state must be clean and synchronized with `origin/codex/v0215-v0226-recovery`; the pre-existing untracked artifact backlog is intentionally preserved and is not part of this checkpoint.
+Implementation commit: `c5fa5d5dc33218011079e804640773940aee9357` (`v0.423 calibrate secondary barn side-beam recession hierarchy`). Exact-SHA GitHub Actions run `30416049374` completed successfully for that commit. This report update is a documentation-only closeout follow-up; the implementation and review-pack contents are unchanged. The final tracked repository state must be clean and synchronized with `origin/codex/v0215-v0226-recovery`; the pre-existing untracked artifact backlog is intentionally preserved and is not part of this checkpoint.
