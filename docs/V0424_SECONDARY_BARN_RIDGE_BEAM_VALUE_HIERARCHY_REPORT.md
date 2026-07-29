@@ -46,4 +46,4 @@ Human render inspection confirmed that the wide frame is a real non-black RTS re
 
 ## Closeout
 
-Implementation commit and exact-SHA Actions evidence are recorded after the scoped files and review pack are committed. A docs-only follow-up may update this section with the final commit/run identifiers after the implementation run succeeds. The final tracked repository must be clean and synchronized at 0 ahead / 0 behind; the pre-existing untracked artifact backlog is intentionally preserved and is not part of this checkpoint.
+The scoped implementation and review pack were committed as `dad5b8a6a24f8e18758f1cee2377ae2b6361e57d` with message `v0.424 calibrate secondary barn ridge-beam value hierarchy`. GitHub Actions run `30418243137` (`CI Release Matrix Dry Run`) completed successfully for that exact SHA. This report update is a documentation-only follow-up; after it is committed and pushed, its exact-SHA Actions run will also be confirmed. The final tracked repository must be clean and synchronized at 0 ahead / 0 behind; the pre-existing untracked artifact backlog is intentionally preserved and is not part of this checkpoint.
