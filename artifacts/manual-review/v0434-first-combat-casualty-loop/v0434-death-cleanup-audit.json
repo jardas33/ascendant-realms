@@ -1,0 +1,35 @@
+{
+  "death_count": 3,
+  "death_events": [
+    {
+      "credited_to_player": true,
+      "kind": "melee",
+      "source_id": "barrosan_spear_guard",
+      "source_team": 0,
+      "victim_id": "lioraen_thorn_ranger",
+      "victim_runtime_id": "169248557864",
+      "victim_team": 1
+    },
+    {
+      "credited_to_player": true,
+      "kind": "arrow",
+      "source_id": "barrosan_crag_archer",
+      "source_team": 0,
+      "victim_id": "lioraen_worker",
+      "victim_runtime_id": "167889603299",
+      "victim_team": 1
+    },
+    {
+      "credited_to_player": true,
+      "kind": "arrow",
+      "source_id": "barrosan_crag_archer",
+      "source_team": 0,
+      "victim_id": "lioraen_worker",
+      "victim_runtime_id": "168342588154",
+      "victim_team": 1
+    }
+  ],
+  "exactly_once": true,
+  "roster_removed": true,
+  "selection_removed": true
+}

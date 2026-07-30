@@ -31,6 +31,9 @@ var _battle_music := false
 var _combat_intensity := 0.0
 var match_time := 0.0
 var kills_by_player := 0
+var combat_damage_events: Array = []
+var combat_death_events: Array = []
+var combat_kill_events: Array = []
 
 # v0.431 runtime evidence: this is an audit trail around the existing
 # construction transaction, not a second economy or construction system.
@@ -444,7 +447,7 @@ func place_building(building_id: String, team: int, pos: Vector3):
 func spawn_projectile(from: Vector3, target, dmg: float, dtype: String, team: int, kind: String, splash: float, source) -> void:
 	var p = ProjectileScript.new()
 	_projectile_container.add_child(p)
-	p.setup(from, target, dmg, dtype, team, self, kind, splash)
+	p.setup(from, target, dmg, dtype, team, self, kind, splash, source)
 	# speed by kind
 	if kind in ["arrow", "bolt", "thorn"]:
 		p.speed = 34.0
@@ -454,23 +457,26 @@ func spawn_projectile(from: Vector3, target, dmg: float, dtype: String, team: in
 # --------------------------------------------------------------------------
 # Combat resolution callbacks (from projectiles / units)
 # --------------------------------------------------------------------------
-func projectile_impact(pos: Vector3, target, dmg: float, dtype: String, team: int, splash: float, kind: String) -> void:
+func projectile_impact(pos: Vector3, target, dmg: float, dtype: String, team: int, splash: float, kind: String, projectile = null) -> void:
 	spawn_hit_fx(pos, kind)
 	if is_instance_valid(target) and not _is_dead(target) and target.team != team:
 		var ac = target.armor_class if "armor_class" in target else "medium"
 		var ar = target.cur_armor() if target.has_method("cur_armor") else 0.0
 		var final = GameData.compute_damage(dmg, dtype, ac, ar)
-		target.take_damage(final, null)
+		var source_unit = projectile.source if is_instance_valid(projectile) and is_instance_valid(projectile.source) else null
+		var source_payload = {"source_unit": source_unit, "source_team": team, "source_unit_id": String(projectile.source_unit_id) if is_instance_valid(projectile) else "", "source_runtime_id": String(projectile.source_runtime_id) if is_instance_valid(projectile) else "", "projectile_kind": kind, "damage_type": dtype}
+		target.take_damage(final, source_payload)
 	if splash > 0.0:
-		apply_splash(pos, splash, dmg * 0.5, dtype, team, target)
+		var splash_source = {"source_unit": projectile.source if is_instance_valid(projectile) and is_instance_valid(projectile.source) else null, "source_team": team, "source_unit_id": String(projectile.source_unit_id) if is_instance_valid(projectile) else "", "source_runtime_id": String(projectile.source_runtime_id) if is_instance_valid(projectile) else "", "projectile_kind": kind, "damage_type": dtype}
+		apply_splash(pos, splash, dmg * 0.5, dtype, team, target, splash_source, kind)
 
-func apply_splash(center: Vector3, radius: float, dmg: float, dtype: String, team: int, exclude) -> void:
+func apply_splash(center: Vector3, radius: float, dmg: float, dtype: String, team: int, exclude, source = null, kind: String = "splash") -> void:
 	for u in all_units():
 		if u == exclude or not is_instance_valid(u) or u.is_dead:
 			continue
 		if u.team != team and u.global_position.distance_to(center) <= radius:
 			var final = GameData.compute_damage(dmg, dtype, u.armor_class, u.cur_armor())
-			u.take_damage(final, null)
+			u.take_damage(final, source)
 
 func _is_dead(n) -> bool:
 	return "is_dead" in n and n.is_dead
@@ -754,6 +760,23 @@ func on_unit_damaged(unit, from) -> void:
 	if unit.team == player_team and unit.is_worker:
 		emit_signal("alert", "Workers under attack!", unit.global_position)
 
+func record_combat_damage(victim, source, final_damage: float, hp_before: float, hp_after: float) -> void:
+	var source_team := -1
+	var source_id := ""
+	var source_runtime_id := ""
+	var kind := "environment"
+	if source is Dictionary:
+		source_team = int(source.get("source_team", -1))
+		source_id = String(source.get("source_unit_id", source.get("source_id", "")))
+		source_runtime_id = String(source.get("source_runtime_id", ""))
+		kind = String(source.get("projectile_kind", "melee"))
+	elif is_instance_valid(source):
+		source_team = int(source.source_team) if "source_team" in source else int(source.team) if "team" in source else -1
+		source_id = String(source.unit_id) if "unit_id" in source else String(source.source_unit_id) if "source_unit_id" in source else ""
+		source_runtime_id = str(source.get_instance_id())
+		kind = String(source.projectile_kind) if "projectile_kind" in source else "melee"
+	combat_damage_events.append({"victim_id": String(victim.unit_id), "victim_runtime_id": str(victim.get_instance_id()), "source_id": source_id, "source_runtime_id": source_runtime_id, "source_team": source_team, "damage_type": String(victim._last_damage_type), "kind": kind, "final_damage": final_damage, "hp_before": hp_before, "hp_after": hp_after, "killing_blow": hp_after <= 0.0, "timestamp": Time.get_ticks_msec()})
+
 func on_building_damaged(building, from) -> void:
 	if building.team == player_team:
 		if randf() < 0.02:
@@ -761,8 +784,15 @@ func on_building_damaged(building, from) -> void:
 			emit_signal("alert", "Your base is under attack!", building.global_position)
 
 func _on_unit_died(unit) -> void:
-	if unit.team != player_team:
+	if unit.get_meta("v0434_death_handled", false):
+		return
+	unit.set_meta("v0434_death_handled", true)
+	var source_team := int(unit._last_damage_source_team)
+	var credited := source_team == player_team
+	if credited:
 		kills_by_player += 1
+		combat_kill_events.append({"victim_id": String(unit.unit_id), "victim_runtime_id": str(unit.get_instance_id()), "source_id": String(unit._last_damage_source_id), "source_team": source_team, "kind": String(unit._last_damage_kind), "kill_index": kills_by_player})
+	combat_death_events.append({"victim_id": String(unit.unit_id), "victim_runtime_id": str(unit.get_instance_id()), "victim_team": unit.team, "source_id": String(unit._last_damage_source_id), "source_team": source_team, "kind": String(unit._last_damage_kind), "credited_to_player": credited})
 	if unit.team < commanders.size():
 		commanders[unit.team].units.erase(unit)
 		commanders[unit.team].recompute_pop()

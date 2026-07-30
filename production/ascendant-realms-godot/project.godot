@@ -30,6 +30,7 @@ Match="*res://scripts/autoloads/match_config.gd"
 V0431Capture="*res://tests/v0431_capture.gd"
 V0432Capture="*res://tests/v0432_capture.gd"
 V0433Capture="*res://tests/v0433_capture.gd"
+V0434Capture="*res://tests/v0434_capture.gd"
 
 [debug]
 

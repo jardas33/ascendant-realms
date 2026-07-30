@@ -11,11 +11,16 @@ var team: int = 0
 var splash: float = 0.0
 var world = null
 var kind: String = "arrow"
+var source = null
+var source_team := -1
+var source_unit_id := ""
+var source_runtime_id := ""
+var projectile_kind := "arrow"
 var _alive_time := 0.0
 
 var _mesh: MeshInstance3D
 
-func setup(from: Vector3, tgt, dmg: float, dtype: String, p_team: int, p_world, p_kind: String, p_splash: float = 0.0) -> void:
+func setup(from: Vector3, tgt, dmg: float, dtype: String, p_team: int, p_world, p_kind: String, p_splash: float = 0.0, p_source = null) -> void:
 	global_position = from
 	target = tgt
 	damage = dmg
@@ -23,6 +28,12 @@ func setup(from: Vector3, tgt, dmg: float, dtype: String, p_team: int, p_world, 
 	team = p_team
 	world = p_world
 	kind = p_kind
+	projectile_kind = p_kind
+	source = p_source if is_instance_valid(p_source) else null
+	source_team = p_team
+	if is_instance_valid(p_source):
+		source_unit_id = String(p_source.unit_id) if "unit_id" in p_source else ""
+		source_runtime_id = str(p_source.get_instance_id())
 	splash = p_splash
 	if is_instance_valid(tgt):
 		target_pos = tgt.global_position + Vector3.UP * 0.8
@@ -92,5 +103,5 @@ func _physics_process(delta: float) -> void:
 
 func _impact() -> void:
 	if world and world.has_method("projectile_impact"):
-		world.projectile_impact(global_position, target, damage, dmg_type, team, splash, kind)
+		world.projectile_impact(global_position, target, damage, dmg_type, team, splash, kind, self)
 	queue_free()

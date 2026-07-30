@@ -1,0 +1,9 @@
+{
+  "combat_events": 0,
+  "fresh_scene": true,
+  "replay_direct_attack_issued": true,
+  "stale_attack_move": false,
+  "stale_projectile": false,
+  "stale_selection": false,
+  "stale_target": false
+}

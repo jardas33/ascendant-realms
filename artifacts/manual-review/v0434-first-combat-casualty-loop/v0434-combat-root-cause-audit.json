@@ -1,0 +1,8 @@
+{
+  "attack_move_continuation": "broken -> repaired",
+  "command_attack_validation": "partial -> repaired",
+  "health_presentation": "selected HUD plus reusable world-space bar",
+  "kill_credit": "incorrect -> repaired",
+  "melee_delayed_range": "partial -> repaired",
+  "projectile_source": "broken -> repaired"
+}

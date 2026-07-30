@@ -52,6 +52,8 @@ var is_built := true
 var _attack_timer := 0.0
 var _target = null            # attack target (Unit or Building)
 var _move_target := Vector3.ZERO
+var _attack_move_ordered := false
+var _attack_move_destination := Vector3.ZERO
 var _patrol_a := Vector3.ZERO
 var _patrol_b := Vector3.ZERO
 var _follow_target = null
@@ -65,6 +67,12 @@ var _aura_bonus_dmg := 0.0
 var _aura_bonus_armor := 0.0
 var _veterancy := 0
 var _kills := 0
+var _last_damage_source = null
+var _last_damage_source_team := -1
+var _last_damage_source_id := ""
+var _last_damage_kind := ""
+var _last_damage_type := ""
+var _death_recorded := false
 
 # gather
 var _gather_node = null
@@ -92,6 +100,9 @@ var selection_ring: MeshInstance3D
 var _anim_names := {}
 var _cur_anim := ""
 var _repath := 0.0
+var _health_bar_root: Node3D
+var _health_bar_fill: MeshInstance3D
+var _health_bar_back: MeshInstance3D
 
 const ARRIVE_DIST := 1.2
 
@@ -134,6 +145,7 @@ func configure(p_def: Dictionary, p_team: int, p_commander, p_world) -> void:
 	_build_model()
 	_add_pick_shape()
 	_build_selection_ring()
+	_build_health_bar()
 	refresh_upgrade_bonuses()
 
 ## A capsule shape purely so mouse raycasts can pick this unit for selection.
@@ -288,6 +300,11 @@ func _play(key: String, force: bool = false) -> void:
 	_cur_anim = name
 	anim.play(name)
 
+func _play_sfx(key: String, volume_db: float) -> void:
+	var sfx = get_node_or_null("/root/Sfx")
+	if sfx and sfx.has_method("play"):
+		sfx.play(key, volume_db)
+
 func _add_team_marker() -> void:
 	# small floating banner ring color already on selection ring; add a shoulder pip
 	pass
@@ -315,6 +332,44 @@ func _build_selection_ring() -> void:
 func set_selected(sel: bool) -> void:
 	if selection_ring:
 		selection_ring.visible = sel
+	_update_health_bar()
+
+func _build_health_bar() -> void:
+	_health_bar_root = Node3D.new()
+	_health_bar_root.name = "CombatHealthBar"
+	_health_bar_root.position.y = float(def.get("height", 1.8)) + 0.45
+	add_child(_health_bar_root)
+	_health_bar_back = MeshInstance3D.new()
+	_health_bar_back.name = "HealthBarBackground"
+	var back_mesh := BoxMesh.new()
+	back_mesh.size = Vector3(1.25, 0.09, 0.035)
+	_health_bar_back.mesh = back_mesh
+	var back_mat := StandardMaterial3D.new()
+	back_mat.albedo_color = Color(0.03, 0.04, 0.04, 0.9)
+	back_mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	_health_bar_back.material_override = back_mat
+	_health_bar_root.add_child(_health_bar_back)
+	_health_bar_fill = MeshInstance3D.new()
+	_health_bar_fill.name = "HealthBarFill"
+	var fill_mesh := BoxMesh.new()
+	fill_mesh.size = Vector3(1.15, 0.055, 0.045)
+	_health_bar_fill.mesh = fill_mesh
+	var fill_mat := StandardMaterial3D.new()
+	fill_mat.albedo_color = Color(0.25, 0.8, 0.35) if team == 0 else Color(0.85, 0.25, 0.2)
+	fill_mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	_health_bar_fill.material_override = fill_mat
+	_health_bar_root.add_child(_health_bar_fill)
+	_update_health_bar()
+
+func _update_health_bar() -> void:
+	if not is_instance_valid(_health_bar_root) or is_dead:
+		return
+	var ratio := clamp(get_hp_ratio(), 0.0, 1.0)
+	var show_bar: bool = ratio < 0.999 or (is_instance_valid(selection_ring) and selection_ring.visible)
+	_health_bar_root.visible = show_bar
+	if is_instance_valid(_health_bar_fill):
+		_health_bar_fill.scale.x = maxf(0.02, ratio)
+		_health_bar_fill.position.x = -0.575 * (1.0 - ratio)
 
 func refresh_upgrade_bonuses() -> void:
 	if commander:
@@ -356,6 +411,8 @@ func command_move(pos: Vector3, attack_move: bool = false, queue: bool = false) 
 	_build_target = null
 	_follow_target = null
 	_move_target = pos
+	_attack_move_ordered = attack_move
+	_attack_move_destination = pos if attack_move else Vector3.ZERO
 	_set_agent_target(pos)
 	state = State.ATTACK_MOVE if attack_move else State.MOVING
 
@@ -367,6 +424,8 @@ func command_stop() -> void:
 	_pending_gather_node = null
 	_build_target = null
 	_follow_target = null
+	_attack_move_ordered = false
+	_attack_move_destination = Vector3.ZERO
 	state = State.IDLE
 	velocity = Vector3.ZERO
 	if agent: agent.set_velocity(Vector3.ZERO)
@@ -378,16 +437,33 @@ func command_hold() -> void:
 	state = State.HOLD
 
 func command_attack(tgt) -> void:
-	if is_dead or not is_instance_valid(tgt):
+	if not _can_attack_target(tgt):
 		return
 	_hold_position = false
 	_gather_node = null
 	_build_target = null
+	_attack_move_ordered = false
+	_attack_move_destination = Vector3.ZERO
 	_target = tgt
 	state = State.ATTACKING
 
+func _can_attack_target(tgt) -> bool:
+	if is_dead or not is_instance_valid(tgt) or tgt == self:
+		return false
+	if not (tgt is Unit or tgt is Building):
+		return false
+	if not ("team" in tgt) or not ("is_dead" in tgt) or tgt.is_dead:
+		return false
+	if int(tgt.team) == team:
+		return false
+	if tgt is Building and not tgt.is_built:
+		return false
+	return tgt.has_method("take_damage") and tgt.has_method("get_hp_ratio")
+
 func command_patrol(pos: Vector3) -> void:
 	if is_dead: return
+	_attack_move_ordered = false
+	_attack_move_destination = Vector3.ZERO
 	_patrol_a = global_position
 	_patrol_b = pos
 	state = State.PATROL
@@ -395,6 +471,8 @@ func command_patrol(pos: Vector3) -> void:
 
 func command_guard(tgt) -> void:
 	if is_dead or not is_instance_valid(tgt): return
+	_attack_move_ordered = false
+	_attack_move_destination = Vector3.ZERO
 	_follow_target = tgt
 	state = State.FOLLOW
 
@@ -410,6 +488,8 @@ func command_gather(node) -> void:
 	_hold_position = false
 	_target = null
 	_build_target = null
+	_attack_move_ordered = false
+	_attack_move_destination = Vector3.ZERO
 	_carry_hold = false
 	_desired_gather_kind = node.resource_kind
 	_gather_timer = 0.0
@@ -429,6 +509,8 @@ func command_gather(node) -> void:
 func command_build(building) -> void:
 	if is_dead or not is_worker or not is_instance_valid(building):
 		return
+	_attack_move_ordered = false
+	_attack_move_destination = Vector3.ZERO
 	_hold_position = false
 	_target = null
 	_gather_node = null
@@ -444,7 +526,10 @@ func _set_agent_target(pos: Vector3) -> void:
 # --------------------------------------------------------------------------
 func _physics_process(delta: float) -> void:
 	if is_dead:
+		if is_instance_valid(_health_bar_root):
+			_health_bar_root.visible = false
 		return
+	_update_health_bar()
 	# timers
 	if _attack_timer > 0.0: _attack_timer -= delta
 	if _stun > 0.0:
@@ -517,13 +602,15 @@ func _state_idle(delta: float) -> void:
 				state = State.ATTACKING
 
 func _state_move(delta: float, attack_move: bool) -> void:
-	if attack_move:
+	if attack_move and _attack_move_ordered:
 		var e = world.find_enemy_in_range(self, vision * 0.7) if world else null
-		if e:
+		if e and _can_attack_target(e):
 			_target = e
 			state = State.ATTACKING
 			return
 	if _move_along_path(delta):
+		_attack_move_ordered = false
+		_attack_move_destination = Vector3.ZERO
 		state = State.IDLE
 
 func _state_patrol(delta: float) -> void:
@@ -560,12 +647,16 @@ func _engage_range() -> float:
 	return atk_range if atk_range > 0.0 else 1.6
 
 func _state_attack(delta: float) -> void:
-	if not is_instance_valid(_target) or _target.is_dead:
+	if not _can_attack_target(_target):
 		_target = null
 		# after kill, look for next enemy nearby
 		var e = world.find_enemy_in_range(self, vision) if world else null
-		if e and not _hold_position:
+		if e and not _hold_position and _can_attack_target(e):
 			_target = e
+		elif _attack_move_ordered:
+			_move_target = _attack_move_destination
+			_set_agent_target(_attack_move_destination)
+			state = State.ATTACK_MOVE
 		else:
 			state = State.HOLD if _hold_position else State.IDLE
 		return
@@ -593,17 +684,17 @@ func _do_attack() -> void:
 	_play("attack", true)
 	if atk_range > 0.0 and def.has("projectile"):
 		_spawn_projectile()
-		Sfx.play("arrow" if dmg_type == "pierce" else "spell", -8.0)
+		_play_sfx("arrow" if dmg_type == "pierce" else "spell", -8.0)
 	else:
 		# melee: apply after small delay
-		Sfx.play("sword", -8.0)
+		_play_sfx("sword", -8.0)
 		var tgt = _target
 		get_tree().create_timer(0.25).timeout.connect(func():
-			if is_instance_valid(tgt) and not tgt.is_dead and not is_dead:
+			if not is_dead and _can_attack_target(tgt) and global_position.distance_to(tgt.global_position) <= _engage_range() + 0.15:
 				var dealt = _resolve_damage(tgt, cur_dmg())
 				_on_dealt_damage(dealt, tgt)
 				if splash > 0.0:
-					world.apply_splash(tgt.global_position, splash, cur_dmg() * 0.5, dmg_type, team, tgt)
+					world.apply_splash(tgt.global_position, splash, cur_dmg() * 0.5, dmg_type, team, tgt, self, "melee")
 		)
 
 func _spawn_projectile() -> void:
@@ -619,6 +710,8 @@ func _on_dealt_damage(dealt: float, tgt) -> void:
 		hp = min(max_hp, hp + dealt * float(hero_flags["lifesteal"]))
 
 func _resolve_damage(tgt, raw: float) -> float:
+	if not _can_attack_target(tgt):
+		return 0.0
 	var ac: String = tgt.armor_class if "armor_class" in tgt else "medium"
 	var ar: float = tgt.cur_armor() if tgt.has_method("cur_armor") else 0.0
 	var dmg := GameData.compute_damage(raw, dmg_type, ac, ar)
@@ -833,9 +926,21 @@ func _face(target_pos: Vector3) -> void:
 func take_damage(amount: float, from = null) -> void:
 	if is_dead:
 		return
-	hp -= amount
+	var source_team := _combat_source_team(from)
+	if source_team == team:
+		return
+	var hp_before := hp
+	var applied := maxf(0.0, amount)
+	hp = maxf(0.0, hp - applied)
+	_last_damage_source = from if from is Unit and is_instance_valid(from) else from.get("source_unit", null) if from is Dictionary and is_instance_valid(from.get("source_unit", null)) else null
+	_last_damage_source_team = source_team
+	_last_damage_source_id = _combat_source_id(from)
+	_last_damage_kind = _combat_source_kind(from)
+	_last_damage_type = _combat_source_type(from)
 	if world:
 		world.on_unit_damaged(self, from)
+		if world.has_method("record_combat_damage"):
+			world.record_combat_damage(self, from, applied, hp_before, hp)
 	if hp <= 0.0:
 		if hero_flags.get("last_stand", false) and not _last_stand_used:
 			_last_stand_used = true
@@ -878,12 +983,13 @@ func _die(from = null) -> void:
 	state = State.DEAD
 	set_selected(false)
 	collision_layer = 0
-	Sfx.play("death", -12.0)
-	if from and is_instance_valid(from):
-		if from.has_method("gain_veterancy"):
-			from.gain_veterancy()
-		if from.commander and from.commander.build_flags.get("bounty", false):
-			from.commander.add_resources("gold", 3)
+	_play_sfx("death", -12.0)
+	var credit_source = _last_damage_source if is_instance_valid(_last_damage_source) else from
+	if is_instance_valid(credit_source):
+		if credit_source.has_method("gain_veterancy"):
+			credit_source.gain_veterancy()
+		if credit_source is Unit and credit_source.commander and credit_source.commander.build_flags.get("bounty", false):
+			credit_source.commander.add_resources("gold", 3)
 	if is_hero:
 		# heroes are downed, not deleted from the profile — just removed from field
 		pass
@@ -898,6 +1004,46 @@ func _die(from = null) -> void:
 	t.tween_property(self, "position:y", position.y - 2.0, 1.0)
 	await t.finished
 	queue_free()
+
+func _combat_source_team(from) -> int:
+	if from == null:
+		return -1
+	if from is Dictionary:
+		return int(from.get("source_team", -1))
+	if "source_team" in from:
+		return int(from.source_team)
+	if "team" in from:
+		return int(from.team)
+	return -1
+
+func _combat_source_id(from) -> String:
+	if from == null:
+		return ""
+	if from is Dictionary:
+		return String(from.get("source_unit_id", from.get("source_id", "")))
+	if "source_unit_id" in from:
+		return String(from.source_unit_id)
+	if "unit_id" in from:
+		return String(from.unit_id)
+	return ""
+
+func _combat_source_kind(from) -> String:
+	if from == null:
+		return "environment"
+	if from is Dictionary:
+		return String(from.get("projectile_kind", "melee"))
+	if "projectile_kind" in from:
+		return String(from.projectile_kind)
+	return "melee"
+
+func _combat_source_type(from) -> String:
+	if from == null:
+		return ""
+	if from is Dictionary:
+		return String(from.get("damage_type", ""))
+	if "dmg_type" in from:
+		return String(from.dmg_type)
+	return ""
 
 # --------------------------------------------------------------------------
 # Hero abilities
@@ -918,7 +1064,7 @@ func cast_ability(id: String, target_pos: Vector3) -> bool:
 	var ab := SkillDefs.get_abilities().get(id, {})
 	mana -= float(ab.get("mana", 0))
 	ability_cd[id] = float(ab.get("cd", 10.0))
-	Sfx.play("spell", -4.0)
+	_play_sfx("spell", -4.0)
 	if world:
 		world.execute_hero_ability(self, id, target_pos, abilities.get(id, 1))
 	return true

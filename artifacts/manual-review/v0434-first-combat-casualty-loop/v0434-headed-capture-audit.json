@@ -1,0 +1,9 @@
+{
+  "direct_death_injection": false,
+  "direct_hp_injection": false,
+  "direct_projectile_creation": false,
+  "forward_plus": true,
+  "production_scene": "scenes/main.tscn",
+  "public_rts_paths": true,
+  "real_units": true
+}

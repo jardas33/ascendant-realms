@@ -1,0 +1,7 @@
+{
+  "accepted_enemy": true,
+  "public_attack_path": "RTSController.issue_attack_target -> Unit.command_attack",
+  "rejected_dead": true,
+  "rejected_friendly": true,
+  "rejected_self": true
+}

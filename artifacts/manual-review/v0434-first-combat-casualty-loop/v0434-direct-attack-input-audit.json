@@ -1,0 +1,6 @@
+{
+  "controller_public_path": "RTSController.issue_attack_target",
+  "direct_unit_call_from_driver": false,
+  "enemy_only_controller_gate": true,
+  "right_click_path": true
+}
