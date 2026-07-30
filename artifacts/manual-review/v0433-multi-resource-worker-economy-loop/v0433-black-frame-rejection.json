@@ -1,0 +1,29 @@
+﻿{
+    "schema":  "v0433-black-frame-rejection-v1",
+    "inspected":  [
+                      "01_V0433_INITIAL_BANK_AND_WORKERS.png",
+                      "02_V0433_TIMBER_WORKER_ASSIGNED.png",
+                      "03_V0433_STONE_WORKER_ASSIGNED.png",
+                      "04_V0433_FOOD_WORKER_ASSIGNED.png",
+                      "05_V0433_WORKERS_GATHERING_CONCURRENTLY.png",
+                      "06_V0433_WORKER_CARRY_10_OF_10.png",
+                      "07_V0433_TIMBER_RETURNING.png",
+                      "08_V0433_TIMBER_DEPOSIT_BANK_UPDATED.png",
+                      "09_V0433_STONE_DEPOSIT_BANK_UPDATED.png",
+                      "10_V0433_FOOD_CARRIED_GOLD_SWITCH_REQUESTED.png",
+                      "11_V0433_FOOD_DEPOSIT_BEFORE_SWITCH.png",
+                      "12_V0433_WORKER_GATHERING_GOLD_AFTER_SWITCH.png",
+                      "13_V0433_GOLD_DEPOSIT_BANK_UPDATED.png",
+                      "14_V0433_PAUSED_GATHERING_STATE.png",
+                      "15_V0433_UNPAUSED_GATHERING_RESUMED.png",
+                      "16_V0433_MULTI_WORKER_SAME_NODE_AUDIT.png",
+                      "17_V0433_SHARED_BANK_SPEND_RESULT.png",
+                      "18_V0433_FRESH_SCENE_TIMBER_REPLAY.png",
+                      "19_V0433_V0432_REGRESSION_PRESERVATION.png"
+                  ],
+    "rejected":  [
+
+                 ],
+    "passed":  true,
+    "rule":  "every production evidence frame must be non-black, nonblank and have meaningful sampled luminance variance"
+}

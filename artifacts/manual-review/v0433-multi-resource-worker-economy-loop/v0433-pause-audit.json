@@ -1,0 +1,9 @@
+{
+  "carry_before": 6,
+  "carry_during": 6,
+  "extraction_stopped": true,
+  "node_amount_before": 764,
+  "node_amount_during": 764,
+  "paused": true,
+  "resumed": true
+}

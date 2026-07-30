@@ -1,0 +1,8 @@
+{
+  "command_path": "RTSController._issue_context_command -> Unit.command_gather",
+  "food": true,
+  "right_click_path_used": true,
+  "stone": true,
+  "timber": true,
+  "workers": 3
+}

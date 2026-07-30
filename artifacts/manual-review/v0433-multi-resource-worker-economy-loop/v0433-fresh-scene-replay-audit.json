@@ -1,0 +1,20 @@
+{
+  "bank_after": {
+    "food": 200,
+    "gold": 180,
+    "stone": 180,
+    "timber": 310
+  },
+  "bank_before": {
+    "food": 200,
+    "gold": 180,
+    "stone": 180,
+    "timber": 300
+  },
+  "command_ok": true,
+  "deposit_count": 1,
+  "nodes_reset": true,
+  "reload_path": "LoadingScreen.change_scene -> scenes/game_world.tscn",
+  "stale_cargo": false,
+  "stale_targets": false
+}

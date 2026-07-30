@@ -36,6 +36,9 @@ var kills_by_player := 0
 # construction transaction, not a second economy or construction system.
 var build_transactions: Array = []
 var construction_events: Array = []
+var resource_transactions: Array = []
+var resource_rejections: Array = []
+var resource_extractions: Array = []
 var _active_build_transaction := ""
 var _build_transaction_seq := 0
 
@@ -328,6 +331,8 @@ func _build_starting_base(cmd, pos: Vector3) -> void:
 	var race := GameData.get_race(cmd.race)
 	var main_id: String = race.get("main_building", "")
 	var main_def := GameData.get_building(main_id)
+	main_def = main_def.duplicate()
+	main_def["id"] = main_id
 	var hq = _create_building(main_def, cmd.team, pos, true)
 	cmd.hero_ref = null
 	# starting workers + one soldier + hero
@@ -379,6 +384,11 @@ func spawn_unit(unit_id: String, team: int, pos: Vector3):
 
 func _create_building(bdef: Dictionary, team: int, pos: Vector3, prebuilt: bool):
 	var d := bdef.duplicate()
+	var authoritative_id := String(d.get("id", "")).strip_edges()
+	if authoritative_id == "":
+		push_error("Cannot create building without an authoritative definition ID")
+		return null
+	d["id"] = authoritative_id
 	var b = Building.new()
 	add_child(b)
 	b.global_position = pos
@@ -536,6 +546,60 @@ func find_nearest_resource(pos: Vector3, kind: String):
 	if best == null and kind != "":
 		return find_nearest_resource(pos, "")
 	return best
+
+func find_nearest_resource_exact(pos: Vector3, kind: String):
+	var best = null
+	var best_d := INF
+	for r in get_tree().get_nodes_in_group("resources"):
+		if not is_instance_valid(r) or r.depleted or r.resource_kind != kind:
+			continue
+		var d = pos.distance_squared_to(r.global_position)
+		if d < best_d:
+			best_d = d
+			best = r
+	return best
+
+func is_resource_command_valid(node, worker) -> bool:
+	if not is_instance_valid(node) or not (node is ResourceNode) or node.depleted:
+		return false
+	if not is_instance_valid(worker) or not worker.is_worker or worker.is_dead or worker.team != player_team:
+		return false
+	var half := float(map.get("size", MapDefs.MAP_SIZE))
+	return abs(node.global_position.x) <= half and abs(node.global_position.z) <= half
+
+func record_resource_command_rejection(worker, node, reason: String) -> void:
+	resource_rejections.append({"worker_id": worker.unit_id if is_instance_valid(worker) else "", "node_id": str(node.get_instance_id()) if is_instance_valid(node) else "", "reason": reason})
+
+func record_resource_extraction(worker, node, before_amount: int, after_amount: int, granted: int) -> void:
+	resource_extractions.append({"worker_id": worker.unit_id, "worker_runtime_id": str(worker.get_instance_id()), "node_id": str(node.get_instance_id()), "kind": node.resource_kind, "node_before": before_amount, "node_after": after_amount, "granted": granted, "capacity": worker.CARRY_MAX, "carry_after": worker.get_economy_snapshot().carry})
+
+func record_resource_deposit(worker, drop, kind: String, carried: int, multiplier: float, deposited: int, bank_before: Dictionary, bank_after: Dictionary) -> void:
+	var snap: Dictionary = worker.get_economy_snapshot()
+	var drop_valid := is_instance_valid(drop) and drop is Building
+	var drop_id := String(drop.building_id).strip_edges() if drop_valid else ""
+	var drop_position := {"x": drop.global_position.x, "y": drop.global_position.y, "z": drop.global_position.z} if drop_valid else {"x": 0.0, "y": 0.0, "z": 0.0}
+	resource_transactions.append({
+		"worker_id": worker.unit_id,
+		"worker_runtime_id": str(worker.get_instance_id()),
+		"resource_node_runtime_id": snap.get("source_node_id", ""),
+		"kind": kind,
+		"carried_amount": carried,
+		"gather_multiplier": multiplier,
+		"deposited_amount": deposited,
+		"bank_before": bank_before,
+		"bank_after": bank_after,
+		"deposit_count": snap.get("deposit_sequence", 0),
+		"timestamp_msec": Time.get_ticks_msec(),
+		"dropoff_id": drop_id,
+		"dropoff_building_id": drop_id,
+		"dropoff_runtime_id": str(drop.get_instance_id()) if drop_valid else "",
+		"dropoff_team": int(drop.team) if drop_valid else -1,
+		"dropoff_position": drop_position,
+		"dropoff_is_built": bool(drop.is_built) if drop_valid else false,
+		"dropoff_is_friendly": bool(drop_valid and drop.team == worker.team),
+		"dropoff_definition_name": String(drop.def.get("name", "")) if drop_valid else "",
+		"next_target": snap.get("target", "None")
+	})
 
 func find_nearest_dropoff(pos: Vector3, team: int):
 	var best = null

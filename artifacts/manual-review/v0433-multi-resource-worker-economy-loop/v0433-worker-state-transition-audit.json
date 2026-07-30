@@ -1,0 +1,13 @@
+{
+  "expected": [
+    "IDLE",
+    "MOVING_TO_RESOURCE",
+    "GATHERING",
+    "RETURNING",
+    "DEPOSITING",
+    "MOVING_TO_RESOURCE"
+  ],
+  "gold_started": true,
+  "implementation": "existing Unit states with explicit pending target and bounded drop-off retry",
+  "switch_ok": true
+}

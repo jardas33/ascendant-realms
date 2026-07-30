@@ -68,10 +68,18 @@ var _kills := 0
 
 # gather
 var _gather_node = null
+var _pending_gather_node = null
+var _desired_gather_kind := ""
 var _carry := 0
 var _carry_kind := ""
 const CARRY_MAX := 10
 var _gather_timer := 0.0
+var _dropoff_retry := 0.0
+var _carry_hold := false
+var _last_source_node_id := ""
+var _last_source_amount_before := 0
+var _last_source_amount_after := 0
+var _last_deposit_sequence := 0
 
 # build
 var _build_target = null
@@ -340,9 +348,11 @@ func get_hp_ratio() -> float:
 func command_move(pos: Vector3, attack_move: bool = false, queue: bool = false) -> void:
 	if is_dead:
 		return
+	_carry_hold = _carry > 0
 	_hold_position = false
 	_target = null
 	_gather_node = null
+	_pending_gather_node = null
 	_build_target = null
 	_follow_target = null
 	_move_target = pos
@@ -351,8 +361,10 @@ func command_move(pos: Vector3, attack_move: bool = false, queue: bool = false) 
 
 func command_stop() -> void:
 	if is_dead: return
+	_carry_hold = _carry > 0
 	_target = null
 	_gather_node = null
+	_pending_gather_node = null
 	_build_target = null
 	_follow_target = null
 	state = State.IDLE
@@ -387,13 +399,31 @@ func command_guard(tgt) -> void:
 	state = State.FOLLOW
 
 func command_gather(node) -> void:
-	if is_dead or not is_worker or not is_instance_valid(node):
+	if is_dead or not is_worker or not is_instance_valid(node) or not (node is ResourceNode):
+		if world and world.has_method("record_resource_command_rejection"):
+			world.record_resource_command_rejection(self, node, "not_a_live_resource_node")
+		return
+	if node.depleted or (world and world.has_method("is_resource_command_valid") and not world.is_resource_command_valid(node, self)):
+		if world and world.has_method("record_resource_command_rejection"):
+			world.record_resource_command_rejection(self, node, "depleted_or_unreachable")
 		return
 	_hold_position = false
 	_target = null
+	_build_target = null
+	_carry_hold = false
+	_desired_gather_kind = node.resource_kind
+	_gather_timer = 0.0
+	_dropoff_retry = 0.0
+	if _carry > 0 and _carry_kind != node.resource_kind:
+		_pending_gather_node = node
+		_gather_node = null
+		state = State.RETURNING
+		return
+	_pending_gather_node = null
 	_gather_node = node
-	if _carry >= CARRY_MAX and _carry_kind != node.resource_kind:
-		pass
+	if _carry >= CARRY_MAX:
+		state = State.RETURNING
+		return
 	state = State.GATHERING
 
 func command_build(building) -> void:
@@ -469,6 +499,12 @@ func _state_idle(delta: float) -> void:
 	velocity.z = 0
 	move_and_slide()
 	_play("idle")
+	if is_worker and _carry > 0 and not _carry_hold:
+		if _dropoff_retry > 0.0:
+			_dropoff_retry -= delta
+		else:
+			state = State.RETURNING
+		return
 	# auto-acquire nearby enemies if not holding fire and not worker
 	if not is_worker or is_hero:
 		var e = world.find_enemy_in_range(self, vision) if world else null
@@ -591,9 +627,12 @@ func _resolve_damage(tgt, raw: float) -> float:
 
 # --- worker: gathering ----------------------------------------------------
 func _state_gather(delta: float) -> void:
+	if _carry >= CARRY_MAX:
+		state = State.RETURNING
+		return
 	if not is_instance_valid(_gather_node) or _gather_node.depleted:
-		# find nearby node of same kind
-		var n = world.find_nearest_resource(global_position, _carry_kind) if world else null
+		# Retarget only the requested resource kind; never silently switch kinds.
+		var n = world.find_nearest_resource_exact(global_position, _desired_gather_kind) if world and world.has_method("find_nearest_resource_exact") else null
 		if n:
 			_gather_node = n
 		else:
@@ -611,15 +650,30 @@ func _state_gather(delta: float) -> void:
 		_gather_timer += delta
 		if _gather_timer >= 1.0:
 			_gather_timer = 0.0
-			var got: int = _gather_node.extract(3)
-			_carry_kind = _gather_node.resource_kind
-			_carry += got
+			var remaining_capacity := CARRY_MAX - _carry
+			if remaining_capacity <= 0:
+				state = State.RETURNING
+				return
+			var before_amount: int = _gather_node.amount
+			var got: int = _gather_node.extract(min(3, remaining_capacity))
+			if got > 0:
+				_carry_kind = _gather_node.resource_kind
+				_carry += got
+				_last_source_node_id = str(_gather_node.get_instance_id())
+				_last_source_amount_before = before_amount
+				_last_source_amount_after = _gather_node.amount
+				if world and world.has_method("record_resource_extraction"):
+					world.record_resource_extraction(self, _gather_node, before_amount, _gather_node.amount, got)
 			if _carry >= CARRY_MAX or _gather_node.depleted:
 				state = State.RETURNING
+			elif got == 0:
+				state = State.RETURNING if _carry > 0 else State.IDLE
 
 func _state_return(delta: float) -> void:
 	var drop = world.find_nearest_dropoff(global_position, team) if world else null
 	if not is_instance_valid(drop):
+		_dropoff_retry = 2.0
+		_carry_hold = false
 		state = State.IDLE
 		return
 	var d := global_position.distance_to(drop.global_position)
@@ -628,10 +682,70 @@ func _state_return(delta: float) -> void:
 		_move_along_path(delta)
 	else:
 		if _carry > 0 and commander:
-			commander.add_resources(_carry_kind, int(round(_carry * commander.gather_mult())))
+			var carried_before := _carry
+			var kind_before := _carry_kind
+			var multiplier: float = commander.gather_mult()
+			var bank_before: Dictionary = commander.resources.duplicate()
+			var deposited := int(round(carried_before * multiplier))
+			commander.add_resources(kind_before, deposited)
+			_last_deposit_sequence += 1
+			if world and world.has_method("record_resource_deposit"):
+				world.record_resource_deposit(self, drop, kind_before, carried_before, multiplier, deposited, bank_before, commander.resources.duplicate())
 			_carry = 0
-		# go back to gathering
-		state = State.GATHERING
+			_carry_kind = ""
+		_carry_hold = false
+		_dropoff_retry = 0.0
+		if is_instance_valid(_pending_gather_node) and not _pending_gather_node.depleted:
+			_gather_node = _pending_gather_node
+			_pending_gather_node = null
+			_desired_gather_kind = _gather_node.resource_kind
+			state = State.GATHERING
+		elif is_instance_valid(_gather_node) and not _gather_node.depleted:
+			state = State.GATHERING
+		else:
+			var next = world.find_nearest_resource_exact(global_position, _desired_gather_kind) if world and world.has_method("find_nearest_resource_exact") else null
+			if next:
+				_gather_node = next
+				state = State.GATHERING
+			else:
+				state = State.IDLE
+
+func get_economy_snapshot() -> Dictionary:
+	var activity := "Idle"
+	match state:
+		State.GATHERING: activity = "Gathering"
+		State.RETURNING: activity = "Returning"
+		State.MOVING: activity = "Moving"
+		State.BUILDING: activity = "Building"
+		State.HOLD: activity = "Holding"
+	var target_kind := _desired_gather_kind.capitalize() if _desired_gather_kind != "" else ""
+	var target_text := target_kind
+	if is_instance_valid(_gather_node):
+		target_text = _gather_node.resource_kind.capitalize()
+	elif is_instance_valid(_pending_gather_node):
+		target_text = _pending_gather_node.resource_kind.capitalize()
+	return {
+		"activity": activity,
+		"carry_kind": _carry_kind.capitalize() if _carry_kind != "" else "None",
+		"carry": _carry,
+		"capacity": CARRY_MAX,
+		"target": target_text if target_text != "" else "None",
+		"pending_target": _pending_gather_node.resource_kind.capitalize() if is_instance_valid(_pending_gather_node) else "",
+		"source_node_id": _last_source_node_id,
+		"source_before": _last_source_amount_before,
+		"source_after": _last_source_amount_after,
+		"deposit_sequence": _last_deposit_sequence,
+	}
+
+func get_economy_text() -> String:
+	var s: Dictionary = get_economy_snapshot()
+	var carry_text := "%s %d / %d" % [s["carry_kind"], s["carry"], s["capacity"]] if int(s["carry"]) > 0 else "Empty"
+	var line := "%s   Carry: %s" % [s["activity"], carry_text]
+	if s["pending_target"] != "":
+		line += "   Next: %s" % s["pending_target"]
+	elif s["target"] != "None":
+		line += "   Target: %s" % s["target"]
+	return line
 
 # --- worker: building -----------------------------------------------------
 func _state_build(delta: float) -> void:

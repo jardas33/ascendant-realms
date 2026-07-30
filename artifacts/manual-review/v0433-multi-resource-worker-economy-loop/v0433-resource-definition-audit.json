@@ -1,0 +1,18 @@
+{
+  "cadence_seconds": 1,
+  "carry_max": 10,
+  "dropoff_rule": "friendly completed building with drop_off=true",
+  "nodes": {
+    "food": 600,
+    "gold": 900,
+    "stone": 700,
+    "timber": 800
+  },
+  "nominal_rate": 3,
+  "resource_types": [
+    "food",
+    "timber",
+    "stone",
+    "gold"
+  ]
+}

@@ -1,0 +1,118 @@
+{
+  "all_race_hqs_valid": true,
+  "blank_ids": 0,
+  "race_count": 10,
+  "races": [
+    {
+      "building_id": "barrosan_clanhold",
+      "completed": true,
+      "definition_id": "barrosan_clanhold",
+      "drop_off": true,
+      "main_building": "barrosan_clanhold",
+      "prebuilt": true,
+      "race": "barrosan",
+      "runtime_id": "identity-test-0",
+      "team": 0
+    },
+    {
+      "building_id": "lioraen_groveheart",
+      "completed": true,
+      "definition_id": "lioraen_groveheart",
+      "drop_off": true,
+      "main_building": "lioraen_groveheart",
+      "prebuilt": true,
+      "race": "lioraen",
+      "runtime_id": "identity-test-1",
+      "team": 0
+    },
+    {
+      "building_id": "vorthak_nighthold",
+      "completed": true,
+      "definition_id": "vorthak_nighthold",
+      "drop_off": true,
+      "main_building": "vorthak_nighthold",
+      "prebuilt": true,
+      "race": "vorthak",
+      "runtime_id": "identity-test-2",
+      "team": 0
+    },
+    {
+      "building_id": "grimtusk_stronghold",
+      "completed": true,
+      "definition_id": "grimtusk_stronghold",
+      "drop_off": true,
+      "main_building": "grimtusk_stronghold",
+      "prebuilt": true,
+      "race": "grimtusk",
+      "runtime_id": "identity-test-3",
+      "team": 0
+    },
+    {
+      "building_id": "sylvan_court",
+      "completed": true,
+      "definition_id": "sylvan_court",
+      "drop_off": true,
+      "main_building": "sylvan_court",
+      "prebuilt": true,
+      "race": "sylvan",
+      "runtime_id": "identity-test-4",
+      "team": 0
+    },
+    {
+      "building_id": "karak_hold",
+      "completed": true,
+      "definition_id": "karak_hold",
+      "drop_off": true,
+      "main_building": "karak_hold",
+      "prebuilt": true,
+      "race": "karak",
+      "runtime_id": "identity-test-5",
+      "team": 0
+    },
+    {
+      "building_id": "sunspear_palace",
+      "completed": true,
+      "definition_id": "sunspear_palace",
+      "drop_off": true,
+      "main_building": "sunspear_palace",
+      "prebuilt": true,
+      "race": "sunspear",
+      "runtime_id": "identity-test-6",
+      "team": 0
+    },
+    {
+      "building_id": "wyldkin_denhold",
+      "completed": true,
+      "definition_id": "wyldkin_denhold",
+      "drop_off": true,
+      "main_building": "wyldkin_denhold",
+      "prebuilt": true,
+      "race": "wyldkin",
+      "runtime_id": "identity-test-7",
+      "team": 0
+    },
+    {
+      "building_id": "hollow_necropolis",
+      "completed": true,
+      "definition_id": "hollow_necropolis",
+      "drop_off": true,
+      "main_building": "hollow_necropolis",
+      "prebuilt": true,
+      "race": "hollow",
+      "runtime_id": "identity-test-8",
+      "team": 0
+    },
+    {
+      "building_id": "frostborn_mead_hall",
+      "completed": true,
+      "definition_id": "frostborn_mead_hall",
+      "drop_off": true,
+      "main_building": "frostborn_mead_hall",
+      "prebuilt": true,
+      "race": "frostborn",
+      "runtime_id": "identity-test-9",
+      "team": 0
+    }
+  ],
+  "schema": "v0433-starting-hq-identity-matrix-v1"
+}
