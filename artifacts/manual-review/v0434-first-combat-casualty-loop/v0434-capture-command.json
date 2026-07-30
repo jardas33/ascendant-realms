@@ -1,0 +1,10 @@
+{
+  "schema": "v0434-capture-command-v1",
+  "baseSha": "3b09035fc1001acd423801d46c557852daec8f70",
+  "captureSourceSha": "9d5035443ccd5cafa39a555a3197cefc33893502",
+  "productionScene": "scenes/main.tscn",
+  "method": "headed official Godot Forward Plus runtime using real RTSController commands, real War Hall production and real unit combat",
+  "executable": "C:\\Users\\barro\\AppData\\Local\\AscendantRealms\\tools\\godot-4.3-stable\\Godot_v4.3-stable_win64.exe",
+  "captureGeneratedAfterCombatRepair": true,
+  "status": "completed"
+}

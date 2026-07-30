@@ -1,0 +1,10 @@
+{
+  "destination": {
+    "x": 18,
+    "y": 0,
+    "z": 8
+  },
+  "destination_stored": true,
+  "engagement_observed": true,
+  "resumed_after_kill": true
+}

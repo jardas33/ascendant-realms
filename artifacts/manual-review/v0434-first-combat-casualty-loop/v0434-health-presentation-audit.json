@@ -1,0 +1,6 @@
+{
+  "damaged_visible": true,
+  "dead_hidden": true,
+  "selected_hp_panel_preserved": true,
+  "world_space_health_bar": "Unit/CombatHealthBar reusable children"
+}

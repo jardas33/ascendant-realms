@@ -1,0 +1,5 @@
+{
+  "delayed_strike_rechecks_range": true,
+  "out_of_range_damage": 0,
+  "tolerance": 0.15
+}

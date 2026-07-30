@@ -1,0 +1,10 @@
+{
+  "damage_event_count": 11,
+  "death_event_count": 3,
+  "passed": true,
+  "player_kill_count": 3,
+  "player_kills": 3,
+  "real_casualties_observed": true,
+  "real_damage_observed": true,
+  "real_kill_credit_observed": true
+}
