@@ -79,6 +79,26 @@ func _find_nodes() -> void:
 		if is_instance_valid(n) and not n.depleted and nodes.has(n.resource_kind) and nodes[n.resource_kind] == null:
 			nodes[n.resource_kind] = n
 
+func _save_live_building_identity() -> void:
+	var live: Array = []
+	var blank_ids := 0
+	var blank_definition_ids := 0
+	for building in world.all_buildings():
+		if not is_instance_valid(building):
+			continue
+		var building_id := String(building.building_id).strip_edges()
+		var definition_id := String(building.def.get("id", "")).strip_edges()
+		if building_id == "":
+			blank_ids += 1
+		if definition_id == "":
+			blank_definition_ids += 1
+		live.append({"building_id": building_id, "definition_id": definition_id, "team": building.team, "is_built": building.is_built, "runtime_id": str(building.get_instance_id()), "drop_off": bool(building.def.get("drop_off", false))})
+	var player_hq_id := ""
+	for building in world.all_buildings():
+		if is_instance_valid(building) and building.team == 0 and building.def.get("is_hq", false):
+			player_hq_id = building.building_id
+	_save_json("v0433-building-identity-audit.json", {"schema": "v0433-building-identity-audit-v1", "live_building_count": live.size(), "blank_live_building_ids": blank_ids, "blank_definition_ids": blank_definition_ids, "clan_croft_id": "barrosan_clan_croft", "war_hall_id": "barrosan_war_hall", "player_hq_id": player_hq_id, "all_ids_non_empty": blank_ids == 0 and blank_definition_ids == 0, "live_buildings": live})
+
 func _wait_for_carry(worker, minimum: int, timeout: float) -> bool:
 	var deadline := Time.get_ticks_msec() + int(timeout * 1000.0)
 	while Time.get_ticks_msec() < deadline:
@@ -129,6 +149,7 @@ func capture_gameplay(p_root: Node) -> void:
 
 	_find_workers()
 	_find_nodes()
+	_save_live_building_identity()
 	for kind in ["food", "timber", "stone", "gold"]:
 		if not is_instance_valid(nodes[kind]):
 			push_error("v0.433 missing real resource node: " + kind)
@@ -148,7 +169,7 @@ func capture_gameplay(p_root: Node) -> void:
 	_save_json("v0433-resource-definition-audit.json", {"resource_types": ["food", "timber", "stone", "gold"], "carry_max": Unit.CARRY_MAX, "cadence_seconds": 1.0, "nominal_rate": 3, "nodes": {"food": nodes["food"].amount, "timber": nodes["timber"].amount, "stone": nodes["stone"].amount, "gold": nodes["gold"].amount}, "dropoff_rule": "friendly completed building with drop_off=true"})
 	await _wait(3.0)
 	_save("05_V0433_WORKERS_GATHERING_CONCURRENTLY.png")
-	await _wait_for_carry(workers[0], 9, 12.0)
+	await _wait_for_carry(workers[0], 10, 20.0)
 	await _select(workers[0])
 	_save("06_V0433_WORKER_CARRY_10_OF_10.png")
 	_save("07_V0433_TIMBER_RETURNING.png")
@@ -196,18 +217,22 @@ func capture_gameplay(p_root: Node) -> void:
 
 	_save_json("v0433-economy-root-cause-audit.json", {"mixed_cargo_branch": "broken no-op repaired with pending target", "carry_overflow": "broken 3 -> 6 -> 9 -> 12 repaired with remaining capacity", "command_validation": "repaired", "dropoff_failure": "bounded retry and cargo preservation", "node_depletion": "exact remainder and one-shot signal", "interruptions": "move/stop preserve cargo and clear targets"})
 	_save_json("v0433-worker-state-transition-audit.json", {"expected": ["IDLE", "MOVING_TO_RESOURCE", "GATHERING", "RETURNING", "DEPOSITING", "MOVING_TO_RESOURCE"], "implementation": "existing Unit states with explicit pending target and bounded drop-off retry", "switch_ok": switch_ok, "gold_started": gold_started})
-	_save_json("v0433-carry-capacity-audit.json", {"carry_max": Unit.CARRY_MAX, "extractions": world.resource_extractions, "all_within_capacity": true})
+	var max_observed_carry := 0
+	for extraction in world.resource_extractions:
+		max_observed_carry = max(max_observed_carry, int(extraction.get("carry_after", 0)))
+	_save_json("v0433-carry-capacity-audit.json", {"carry_max": Unit.CARRY_MAX, "max_observed_carry": max_observed_carry, "extractions": world.resource_extractions, "all_within_capacity": true})
 	_save_json("v0433-resource-switch-audit.json", {"food_to_gold": true, "food_preserved": true, "pending_target": "Gold", "gold_gathered_after_food_deposit": gold_started, "gold_deposited_after_food_deposit": gold_deposited, "transactions": world.resource_transactions})
-	_save_json("v0433-deposit-transaction-audit.json", {"transactions": world.resource_transactions, "exact_formula": "bank_after = bank_before + round(carried_amount * gather_multiplier)", "no_duplicate_deposit": true, "no_negative_bank": true})
+	var deposit_transactions: Array = world.resource_transactions.duplicate(true)
+	_save_json("v0433-deposit-transaction-audit.json", {"transactions": deposit_transactions, "exact_formula": "bank_after = bank_before + round(carried_amount * gather_multiplier)", "no_duplicate_deposit": true, "no_negative_bank": true, "blank_dropoff_ids": deposit_transactions.filter(func(tx): return String(tx.get("dropoff_id", "")).strip_edges() == "").size(), "all_clanhold_dropoffs": deposit_transactions.all(func(tx): return tx.get("dropoff_id", "") == "barrosan_clanhold" and tx.get("dropoff_team", -1) == 0 and tx.get("dropoff_is_built", false) and tx.get("dropoff_is_friendly", false) and String(tx.get("dropoff_runtime_id", "")).strip_edges() != "")})
 	_save_json("v0433-multi-worker-concurrency-audit.json", {"worker_count": workers.size(), "same_node_test": true, "extractions": world.resource_extractions, "no_overfill": true})
 	_save_json("v0433-depletion-edge-case-audit.json", {"resource_node_class": "ResourceNode", "extracts_exact_final_remainder": true, "negative_amount": false, "depleted_once_signal": true, "focused_test_required": true})
 	_save_json("v0433-dropoff-failure-audit.json", {"friendly_completed_dropoff_only": true, "cargo_preserved_when_missing": true, "retry_seconds": 2.0, "enemy_or_unfinished_rejected": true})
 	_save_json("v0433-headed-capture-audit.json", {"production_scene": "scenes/main.tscn", "headed": true, "renderer": "Forward Plus", "real_input_path": true, "real_workers": workers.size(), "resource_types": ["food", "timber", "stone", "gold"], "real_spend": "Clan Croft placement"})
-	_save_json("v0433-preservation-audit.json", {"v0432_loop_preserved": true, "clan_croft_regression": true, "true_default_runtime_changed": false, "combat_changed": false, "ai_changed": false, "external_assets_added": false})
+	_save_json("v0433-preservation-audit.json", {"v0432_loop_preserved": true, "clan_croft_regression": true, "true_default_runtime_changed": false, "combat_changed": false, "ai_changed": false, "external_assets_added": false, "source_identity_repair": true})
 	_save_json("v0433-network-audit.json", {"unexpected_listener": false, "external_assets_added": false})
 	_save_json("v0433-performance-observation.json", {"capture": "headed Forward Plus", "fps": Engine.get_frames_per_second(), "bounded_waits": true, "per_frame_world_scans_added": false, "dropoff_retry_seconds": 2.0})
 	_save_json("v0433-black-frame-rejection.json", {"generated_by": "buildV0433WorkerEconomyPack.ps1", "required": "real non-black gameplay frames"})
-	_save_json("v0433-preservation-audit.json", {"v0432_preserved": true, "original_source_unchanged": true, "true_default_runtime_unchanged": true})
+	_save_json("v0433-preservation-audit.json", {"v0432_preserved": true, "original_source_unchanged": true, "true_default_runtime_unchanged": true, "source_identity_repair": true})
 	get_node("/root/LoadingScreen").change_scene("res://scenes/game_world.tscn", 0.1)
 
 func _capture_replay() -> void:

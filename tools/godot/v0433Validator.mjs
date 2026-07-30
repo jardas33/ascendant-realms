@@ -24,7 +24,8 @@ const evidence = [
   'v0433-dropoff-failure-audit.json','v0433-pause-audit.json','v0433-shared-bank-spend-audit.json',
   'v0433-fresh-scene-replay-audit.json','v0433-v0432-regression-audit.json','v0433-preservation-audit.json',
   'v0433-network-audit.json','v0433-performance-observation.json','v0433-headed-capture-audit.json',
-  'v0433-black-frame-rejection.json','v0433-luminance-comparison.json','v0433-capture-command.json'
+  'v0433-black-frame-rejection.json','v0433-luminance-comparison.json','v0433-capture-command.json',
+  'v0433-building-identity-audit.json','v0433-starting-hq-identity-matrix.json'
 ];
 const exists = async file => { try { await fs.access(file); return true; } catch { return false; } };
 const readJson = async name => JSON.parse((await fs.readFile(path.join(pack, name), 'utf8')).replace(/^\uFEFF/, ''));
@@ -56,6 +57,7 @@ const projectFile = await fs.readFile(path.join(project, 'project.godot'), 'utf8
 if (!unit.includes('remaining_capacity') || !unit.includes('_pending_gather_node') || !unit.includes('get_economy_text')) failures.push('worker economy repair missing');
 if (!node.includes('depleted_once') || !node.includes('min(max(0, per_tick)')) failures.push('ResourceNode exact depletion guard missing');
 if (!world.includes('find_nearest_resource_exact') || !world.includes('record_resource_deposit') || !world.includes('is_resource_command_valid')) failures.push('world economy audit/dropoff helpers missing');
+if (!world.includes('authoritative definition ID') || !world.includes('dropoff_runtime_id') || !world.includes('dropoff_is_friendly')) failures.push('authoritative building/dropoff identity repair missing');
 if (!root.includes('ASCENDANT_V0433_CAPTURE') || !projectFile.includes('V0433Capture') || !mainMenu.includes('ASCENDANT_V0433_CAPTURE')) failures.push('v0433 headed capture wiring missing');
 if (!map.includes('"kind": "food"') || !map.includes('c + toward * 3.0 - side * 15.0')) failures.push('reachable food node missing from starting clusters');
 if (!hud.includes('get_economy_text')) failures.push('selected worker economy panel missing');
@@ -65,11 +67,16 @@ if (JSON.stringify(defs.resource_types) !== JSON.stringify(['food', 'timber', 's
 const input = await readJson('v0433-input-command-audit.json');
 if (input.right_click_path_used !== true || input.timber !== true || input.stone !== true || input.food !== true || input.workers < 3) failures.push('real initial resource command audit failed');
 const cap = await readJson('v0433-carry-capacity-audit.json');
-if (cap.all_within_capacity !== true || (cap.extractions || []).some(x => x.granted > x.capacity)) failures.push('carry capacity audit failed');
+if (cap.all_within_capacity !== true || cap.max_observed_carry !== 10 || (cap.extractions || []).some(x => x.granted > x.capacity || x.carry_after > x.capacity)) failures.push('carry capacity audit failed');
 const sw = await readJson('v0433-resource-switch-audit.json');
 if (sw.food_to_gold !== true || sw.food_preserved !== true || sw.gold_gathered_after_food_deposit !== true || sw.gold_deposited_after_food_deposit !== true) failures.push('resource switch audit failed');
 const dep = await readJson('v0433-deposit-transaction-audit.json');
-if (dep.no_duplicate_deposit !== true || dep.no_negative_bank !== true || !['food', 'timber', 'stone', 'gold'].every(kind => (dep.transactions || []).some(x => x.kind === kind))) failures.push('deposit transaction audit failed');
+const transactions = dep.transactions || [];
+if (dep.no_duplicate_deposit !== true || dep.no_negative_bank !== true || dep.blank_dropoff_ids !== 0 || dep.all_clanhold_dropoffs !== true || !['food', 'timber', 'stone', 'gold'].every(kind => transactions.some(x => x.kind === kind)) || transactions.some(x => !x.dropoff_id || !x.dropoff_runtime_id || x.dropoff_id !== x.dropoff_building_id || x.dropoff_team !== 0 || x.dropoff_is_built !== true || x.dropoff_is_friendly !== true)) failures.push('deposit transaction identity/arithmetic audit failed');
+const buildings = await readJson('v0433-building-identity-audit.json');
+if (buildings.blank_live_building_ids !== 0 || buildings.blank_definition_ids !== 0 || buildings.clan_croft_id !== 'barrosan_clan_croft' || buildings.war_hall_id !== 'barrosan_war_hall' || buildings.all_ids_non_empty !== true) failures.push('live building identity audit failed');
+const hq = await readJson('v0433-starting-hq-identity-matrix.json');
+if (hq.race_count !== 10 || hq.blank_ids !== 0 || hq.all_race_hqs_valid !== true || (hq.races || []).some(x => !x.main_building || x.building_id !== x.main_building || x.definition_id !== x.main_building || x.prebuilt !== true || x.completed !== true || !x.runtime_id)) failures.push('all-race starting HQ identity matrix failed');
 const pause = await readJson('v0433-pause-audit.json');
 if (pause.extraction_stopped !== true || pause.resumed !== true) failures.push('pause audit failed');
 const spend = await readJson('v0433-shared-bank-spend-audit.json');
@@ -79,9 +86,9 @@ if (replay.command_ok !== true || replay.deposit_count < 1 || replay.stale_cargo
 const luminance = await readJson('v0433-luminance-comparison.json');
 if (!Array.isArray(luminance) || luminance.some(x => x.nonBlack !== true || x.meaningfulVariance !== true)) failures.push('black/low-variance frame detected');
 const capture = await readJson('v0433-capture-command.json');
-if (!ancestor(capture.captureSourceSha, head) || !ancestor(baseSha, capture.captureSourceSha) || !capture.method.includes('real worker right-click')) failures.push('capture provenance/method mismatch');
+if (!capture.captureSourceSha || capture.captureSourceSha === baseSha || !capture.identityRepairSha || capture.identityRepairSha === baseSha || !ancestor(capture.captureSourceSha, head) || !ancestor(capture.identityRepairSha, capture.captureSourceSha) || !ancestor(baseSha, capture.identityRepairSha) || !capture.method.includes('real worker right-click')) failures.push('capture provenance/method mismatch');
 
-const result = { schema: 'v0433-multi-resource-worker-economy-validator-v2', baseSha, finalCommitSha: head, captureSourceSha: capture.captureSourceSha, branch, frames, evidence, failures, passed: failures.length === 0 };
+const result = { schema: 'v0433-multi-resource-worker-economy-validator-v3-identity-repair', baseSha, identityRepairSha: capture.identityRepairSha, captureSourceSha: capture.captureSourceSha, validationInputSha: head, branch, prNumber: 7, frames, evidence, failures, passed: failures.length === 0 };
 await writeJson('v0433-validation.json', result);
 if (failures.length) { console.error(JSON.stringify(result, null, 2)); process.exitCode = 1; }
 else console.log(JSON.stringify(result, null, 2));
