@@ -139,6 +139,7 @@ func _save_navigation_evidence() -> void:
 			elif String(event.get("kind", "")).contains("boundary_recovery"):
 				recovery_events.append(event)
 	_save_json("v0436-navigation-root-cause-audit.json", {"cause":"pre-v0436 NavigationAgent/avoidance drift outside playable map", "bounded_repath":true, "safe_stop_after_three_invalid":true, "boundary_recovery":true, "units":world.all_units().map(func(u): return _unit_audit(u))})
+	_save_json("v0436-navigation-runtime-probe.json", world.navigation_runtime_snapshot())
 	_save_json("v0436-navigation-boundary-contract.json", world.playable_bounds_contract())
 	_save_json("v0436-invalid-next-point-audit.json", {"events":invalid_events, "rejected_without_straight_line_fallback":true})
 	_save_json("v0436-avoidance-velocity-audit.json", {"events":avoidance_events, "rejected_out_of_bounds_or_non_finite":true})
@@ -247,6 +248,9 @@ func capture_gameplay(p_root: Node) -> void:
 		await _save("03_V0436_PLAYER_ASSAULT_FORCE_READY.png")
 		await _focus(enemy_hq.global_position, 30.0)
 		await _save("04_V0436_ENEMY_COMMANDER_TARGET.png")
+		# Capture the repaired navigation map and direct-server path evidence before
+		# the long combat sequence can obscure the movement result.
+		_save_navigation_evidence()
 		for _i in range(8):
 			var threats := _enemy_combatants()
 			if threats.is_empty() or _player_combatants().is_empty():

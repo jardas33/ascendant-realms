@@ -19,6 +19,10 @@ var player_team := 0
 var player_commander = null
 
 var nav_region: NavigationRegion3D
+var navigation_map_rid := RID()
+var navigation_ready := false
+var navigation_ready_frame := -1
+var navigation_map_iteration := 0
 var terrain_mesh: MeshInstance3D
 var _projectile_container: Node3D
 var _fx_container: Node3D
@@ -355,10 +359,17 @@ func _build_navigation() -> void:
 	var size: float = map["size"] * 2.0
 	# Define the walkable region as a big box; bake from terrain plane.
 	nav.filter_baking_aabb = AABB(Vector3(-size*0.5, -2, -size*0.5), Vector3(size, 10, size))
-	nav_region.navigation_mesh = nav
-	add_child(nav_region)
 	# Build a simple flat navmesh procedurally (no baking needed for a flat plane).
 	_build_flat_navmesh(nav, map["size"])
+	# Assign only after the authored polygons exist. Assigning first and mutating
+	# the resource afterwards leaves the live NavigationServer region waiting for
+	# a synchronization it never receives reliably at match start.
+	nav_region.navigation_mesh = nav
+	add_child(nav_region)
+	navigation_map_rid = nav_region.get_navigation_map()
+	navigation_ready = false
+	navigation_ready_frame = -1
+	navigation_map_iteration = 0
 
 func _build_flat_navmesh(nav: NavigationMesh, half: float) -> void:
 	# Create a single quad navmesh covering the play field.
@@ -371,6 +382,61 @@ func _build_flat_navmesh(nav: NavigationMesh, half: float) -> void:
 	nav.vertices = verts
 	nav.add_polygon(PackedInt32Array([0, 1, 2]))
 	nav.add_polygon(PackedInt32Array([0, 2, 3]))
+
+func is_navigation_ready() -> bool:
+	if not is_instance_valid(nav_region) or not nav_region.enabled:
+		return false
+	var map_rid := nav_region.get_navigation_map()
+	if not map_rid.is_valid():
+		return false
+	var regions := NavigationServer3D.map_get_regions(map_rid)
+	var iteration := NavigationServer3D.map_get_iteration_id(map_rid)
+	return not regions.is_empty() and iteration > 0
+
+func navigation_target_snapshot(requested: Vector3) -> Dictionary:
+	var bounded := clamp_to_playable_bounds(requested)
+	var snapshot := {
+		"ready": is_navigation_ready(),
+		"map_rid": str(navigation_map_rid),
+		"iteration": navigation_map_iteration,
+		"requested": requested,
+		"bounded": bounded,
+		"projected": bounded,
+		"projection_distance": 0.0,
+		"reason": "navigation_map_not_ready",
+	}
+	if not snapshot["ready"]:
+		return snapshot
+	var owner := NavigationServer3D.map_get_closest_point_owner(navigation_map_rid, bounded)
+	if not owner.is_valid():
+		snapshot["ready"] = false
+		snapshot["reason"] = "target_not_on_navigation_map"
+		return snapshot
+	var projected := NavigationServer3D.map_get_closest_point(navigation_map_rid, bounded)
+	if not _finite_position(projected):
+		snapshot["ready"] = false
+		snapshot["reason"] = "non_finite_projected_target"
+		return snapshot
+	snapshot["projected"] = projected
+	snapshot["projection_distance"] = bounded.distance_to(projected)
+	snapshot["reason"] = "projected"
+	return snapshot
+
+func navigation_runtime_snapshot() -> Dictionary:
+	var rid := nav_region.get_navigation_map() if is_instance_valid(nav_region) else RID()
+	var result := {"ready": is_navigation_ready(), "map_rid": str(rid), "iteration": NavigationServer3D.map_get_iteration_id(rid) if rid.is_valid() else 0, "regions": NavigationServer3D.map_get_regions(rid).size() if rid.is_valid() else 0, "units": []}
+	if not rid.is_valid():
+		return result
+	for u in all_units():
+		if not is_instance_valid(u) or u.is_dead:
+			continue
+		var source: Vector3 = u.global_position
+		var target: Vector3 = u.get("_navigation_effective_target")
+		var source_point := NavigationServer3D.map_get_closest_point(rid, source)
+		var target_point := NavigationServer3D.map_get_closest_point(rid, target)
+		var path := NavigationServer3D.map_get_path(rid, source, target, true)
+		result["units"].append({"unit_id": String(u.unit_id), "state": int(u.state), "command": String(u.get("_navigation_command_type")), "source": source, "target": target, "source_closest": source_point, "target_closest": target_point, "direct_path_size": path.size(), "direct_path_first": path[0] if not path.is_empty() else Vector3.ZERO, "direct_path_last": path[path.size() - 1] if not path.is_empty() else Vector3.ZERO})
+	return result
 
 # --------------------------------------------------------------------------
 # Commanders & starting bases
@@ -806,6 +872,12 @@ func _start_match() -> void:
 	emit_signal("alert", "The battle for Hollowspan Crossing begins!", Vector3.ZERO)
 
 func _physics_process(delta: float) -> void:
+	var ready_now := is_navigation_ready()
+	if ready_now and not navigation_ready:
+		navigation_ready_frame = Engine.get_physics_frames()
+		navigation_map_rid = nav_region.get_navigation_map() if is_instance_valid(nav_region) else RID()
+		navigation_map_iteration = NavigationServer3D.map_get_iteration_id(navigation_map_rid) if navigation_map_rid.is_valid() else 0
+	navigation_ready = ready_now
 	if not game_running:
 		return
 	match_time += delta

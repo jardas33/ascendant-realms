@@ -110,6 +110,14 @@ var _navigation_rejected_velocity_count := 0
 var _navigation_failure_count := 0
 var _navigation_last_invalid_reason := ""
 var _navigation_audit_events: Array = []
+var _navigation_target_pending := true
+var _navigation_target_projection_distance := 0.0
+var _navigation_path_wait_frames := 0
+var _navigation_terminal_failure_recorded := false
+var _navigation_last_target := Vector3(INF, INF, INF)
+var _navigation_last_target_ready := false
+var _navigation_retry_elapsed := 0.0
+var _navigation_repath_cooldown := 0.0
 var _boundary_recovery_active := false
 var _boundary_recovery_target := Vector3.ZERO
 var _boundary_resume_state := State.IDLE
@@ -120,6 +128,8 @@ var _health_bar_fill: MeshInstance3D
 var _health_bar_back: MeshInstance3D
 
 const ARRIVE_DIST := 1.2
+const NAVIGATION_REPATH_INTERVAL := 0.20
+const NAVIGATION_RETRY_BUDGET := 2.5
 
 func _ready() -> void:
 	add_to_group("units")
@@ -538,12 +548,28 @@ func _set_agent_target(pos: Vector3, command_type: String = "") -> void:
 	_requested_move_target = pos
 	if command_type != "":
 		_navigation_command_type = command_type
-	var effective := pos
-	if world and world.has_method("clamp_to_playable_bounds"):
-		effective = world.clamp_to_playable_bounds(pos)
+	var snapshot := {"ready": true, "projected": pos, "projection_distance": 0.0, "reason": "local"}
+	if world and world.has_method("navigation_target_snapshot"):
+		snapshot = world.navigation_target_snapshot(pos)
+	_navigation_target_pending = not bool(snapshot.get("ready", false))
+	_navigation_target_projection_distance = float(snapshot.get("projection_distance", 0.0))
+	if _navigation_target_pending:
+		_navigation_path_wait_frames = 0
+		if not _navigation_last_target_ready:
+			_record_navigation_event("navigation_target_deferred", {"reason": snapshot.get("reason", "navigation_map_not_ready")})
+		_navigation_last_target_ready = false
+		return
+	var effective: Vector3 = snapshot.get("projected", pos)
+	var changed := not _navigation_last_target_ready or _navigation_last_target.distance_to(effective) > 0.05
 	_navigation_effective_target = effective
-	if agent:
+	_navigation_last_target = effective
+	_navigation_last_target_ready = true
+	_navigation_terminal_failure_recorded = false
+	if agent and changed:
 		agent.target_position = effective
+		_navigation_path_wait_frames = 0
+		_navigation_retry_elapsed = 0.0
+		_navigation_repath_cooldown = 0.0
 
 func _record_navigation_event(kind: String, details: Dictionary = {}) -> void:
 	var event := {"kind": kind, "timestamp": Time.get_ticks_msec(), "unit_id": unit_id, "runtime_id": str(get_instance_id()), "command": _navigation_command_type, "state": int(state), "position": {"x": global_position.x, "y": global_position.y, "z": global_position.z}, "requested_target": {"x": _requested_move_target.x, "y": _requested_move_target.y, "z": _requested_move_target.z}, "effective_target": {"x": _navigation_effective_target.x, "y": _navigation_effective_target.y, "z": _navigation_effective_target.z}}
@@ -552,6 +578,23 @@ func _record_navigation_event(kind: String, details: Dictionary = {}) -> void:
 	_navigation_audit_events.append(event)
 	if _navigation_audit_events.size() > 120:
 		_navigation_audit_events.pop_front()
+
+func _navigation_terminal_stop(reason: String) -> void:
+	if _navigation_terminal_failure_recorded:
+		return
+	_navigation_terminal_failure_recorded = true
+	_navigation_failure_count += 1
+	_record_navigation_event("navigation_terminal_failure", {
+		"reason": reason,
+		"command_preserved_during_retry": true,
+		"retry_count": _navigation_repath_attempts,
+		"retry_elapsed": _navigation_retry_elapsed,
+		"map_ready": world.is_navigation_ready() if world and world.has_method("is_navigation_ready") else false,
+	})
+	# A terminal failure is the one deliberate place where the owning state is
+	# released. Transient failures never call command_stop and therefore retain
+	# build/gather/return/attack-move/pursuit context through the retry budget.
+	command_stop()
 
 func _finite_position(pos: Vector3) -> bool:
 	return abs(pos.x) < 1000000.0 and abs(pos.y) < 1000000.0 and abs(pos.z) < 1000000.0 and pos.x == pos.x and pos.y == pos.y and pos.z == pos.z
@@ -982,8 +1025,28 @@ func _healer_tick(delta: float) -> void:
 func _move_along_path(delta: float) -> bool:
 	if not agent:
 		return true
+	if world and world.has_method("is_navigation_ready") and not world.is_navigation_ready():
+		_navigation_target_pending = true
+		_navigation_path_wait_frames = 0
+		velocity = Vector3.ZERO
+		return false
+	if _navigation_target_pending:
+		velocity = Vector3.ZERO
+		return false
+	_navigation_repath_cooldown = maxf(0.0, _navigation_repath_cooldown - delta)
 	if agent.is_navigation_finished():
 		if global_position.distance_to(_navigation_effective_target) > ARRIVE_DIST:
+			_navigation_path_wait_frames += 1
+			# NavigationAgent3D can report finished for a frame while its map
+			# synchronization/path query is still pending. Do not turn that
+			# transient state into a command failure.
+			if _navigation_path_wait_frames <= 8:
+				velocity = Vector3.ZERO
+				return false
+			_navigation_retry_elapsed += delta
+			if _navigation_retry_elapsed >= NAVIGATION_RETRY_BUDGET:
+				_navigation_terminal_stop("navigation_finished_before_target_retry_budget_exhausted")
+				return false
 			_navigation_invalid_count += 1
 			_navigation_invalid_consecutive += 1
 			_navigation_last_invalid_reason = "navigation_finished_before_effective_target"
@@ -991,12 +1054,10 @@ func _move_along_path(delta: float) -> bool:
 			velocity = Vector3.ZERO
 			if agent:
 				agent.set_velocity(Vector3.ZERO)
-			if _navigation_invalid_consecutive >= 3:
-				_navigation_failure_count += 1
-				_record_navigation_event("navigation_safe_stop", {"reason": "navigation_finished_before_target_three_times"})
-				command_stop()
-			else:
+			if _navigation_repath_cooldown <= 0.0:
 				_navigation_repath_attempts += 1
+				_navigation_repath_cooldown = NAVIGATION_REPATH_INTERVAL
+				_navigation_path_wait_frames = 0
 				if agent:
 					agent.target_position = _navigation_effective_target
 			return false
@@ -1013,11 +1074,12 @@ func _move_along_path(delta: float) -> bool:
 		invalid_reason = "non_finite_next_path_point"
 	elif world and not world.is_inside_playable_bounds(next, world.playable_recovery_tolerance):
 		invalid_reason = "next_path_point_outside_playable_bounds"
-	elif next.distance_to(global_position) > maxf(48.0, move_speed * 12.0):
-		invalid_reason = "implausible_next_path_jump"
-	elif next.distance_to(_navigation_effective_target) > 48.0:
-		invalid_reason = "next_path_point_far_from_effective_target"
+	# A flat production region legitimately returns a direct long segment for
+	# distant targets. Fixed-distance waypoint guards misclassified that valid
+	# path as unusable and stopped attack/pursuit orders. The map projection and
+	# finite/in-bounds checks above are the authoritative safety boundary here.
 	if invalid_reason != "":
+		_navigation_retry_elapsed += delta
 		_navigation_invalid_count += 1
 		_navigation_invalid_consecutive += 1
 		_navigation_last_invalid_reason = invalid_reason
@@ -1027,16 +1089,17 @@ func _move_along_path(delta: float) -> bool:
 			agent.set_velocity(Vector3.ZERO)
 		if world and not world.is_inside_playable_bounds(global_position, world.playable_recovery_tolerance):
 			_begin_boundary_recovery("invalid_next_path_point_while_outside")
-		elif _navigation_invalid_consecutive >= 3:
-			_navigation_failure_count += 1
-			_record_navigation_event("navigation_safe_stop", {"reason": "three_consecutive_invalid_repaths"})
-			command_stop()
-		else:
+		elif _navigation_retry_elapsed >= NAVIGATION_RETRY_BUDGET:
+			_navigation_terminal_stop("invalid_next_path_point_retry_budget_exhausted")
+		elif _navigation_repath_cooldown <= 0.0:
 			_navigation_repath_attempts += 1
+			_navigation_repath_cooldown = NAVIGATION_REPATH_INTERVAL
 			if agent:
 				agent.target_position = _navigation_effective_target
 		return false
 	_navigation_invalid_consecutive = 0
+	_navigation_retry_elapsed = 0.0
+	_navigation_repath_cooldown = 0.0
 	var dir := (next - global_position)
 	dir.y = 0
 	if dir.length() < 0.05:
@@ -1058,6 +1121,9 @@ func _move_along_path(delta: float) -> bool:
 	return false
 
 func _on_velocity_computed(safe_vel: Vector3) -> void:
+	if state == State.IDLE or state == State.HOLD or state == State.DEAD:
+		velocity = Vector3.ZERO
+		return
 	var invalid_reason := ""
 	if not _finite_position(safe_vel):
 		invalid_reason = "non_finite_avoidance_velocity"
@@ -1070,6 +1136,7 @@ func _on_velocity_computed(safe_vel: Vector3) -> void:
 		elif world and not _boundary_recovery_active and not world.is_inside_playable_bounds(predicted, world.playable_recovery_tolerance):
 			invalid_reason = "avoidance_velocity_predicts_out_of_bounds"
 	if invalid_reason != "":
+		_navigation_retry_elapsed += get_physics_process_delta_time()
 		_navigation_rejected_velocity_count += 1
 		_navigation_invalid_consecutive += 1
 		_record_navigation_event("rejected_avoidance_velocity", {"reason": invalid_reason, "velocity": {"x": safe_vel.x, "y": safe_vel.y, "z": safe_vel.z}, "rejected_velocity_count": _navigation_rejected_velocity_count})
@@ -1078,10 +1145,11 @@ func _on_velocity_computed(safe_vel: Vector3) -> void:
 			agent.set_velocity(Vector3.ZERO)
 		if world and not world.is_inside_playable_bounds(global_position, world.playable_recovery_tolerance):
 			_begin_boundary_recovery("rejected_avoidance_velocity_while_outside")
-		elif _navigation_invalid_consecutive >= 3:
-			_navigation_failure_count += 1
-			command_stop()
-		elif agent:
+		elif _navigation_retry_elapsed >= NAVIGATION_RETRY_BUDGET:
+			_navigation_terminal_stop("rejected_avoidance_velocity_retry_budget_exhausted")
+		elif agent and _navigation_repath_cooldown <= 0.0:
+			_navigation_repath_attempts += 1
+			_navigation_repath_cooldown = NAVIGATION_REPATH_INTERVAL
 			agent.target_position = _navigation_effective_target
 		return
 	_navigation_invalid_consecutive = 0

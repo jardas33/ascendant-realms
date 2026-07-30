@@ -1,0 +1,15 @@
+{
+  "schema": "v0436-r1-production-navigation-system-repair-validator-v1",
+  "baseSha": "73f01bdd76b35c1b7c43886d9fb48ffd9d936803",
+  "validationInputSha": "73f01bdd76b35c1b7c43886d9fb48ffd9d936803",
+  "branch": "codex/v0436-first-complete-conquest-victory",
+  "failures": [],
+  "passed": true,
+  "evidence": [
+    "v0436-navigation-runtime-probe.json",
+    "01_V0436_REAL_SKIRMISH_INITIAL_STATE.png",
+    "02_V0436_PLAYER_WAR_HALL_BUILT.png",
+    "03_V0436_PLAYER_ASSAULT_FORCE_READY.png",
+    "04_V0436_ENEMY_COMMANDER_TARGET.png"
+  ]
+}

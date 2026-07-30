@@ -20,7 +20,7 @@ func _init() -> void:
 	assert(unit.contains("if world and not world.game_running"), "unit simulation freeze gate missing")
 	assert(world.contains("is_inside_playable_bounds") and world.contains("nearest_safe_in_bounds_recovery_point") and world.contains("playable_bounds_contract"), "shared playable bounds contract missing")
 	assert(unit.contains("_requested_move_target") and unit.contains("_navigation_effective_target") and unit.contains("_navigation_invalid_consecutive"), "authoritative navigation target audit missing")
-	assert(unit.contains("invalid_next_path_point") and unit.contains("three_consecutive_invalid_repaths") and unit.contains("boundary_recovery_started"), "bounded repath and recovery handling missing")
+	assert(unit.contains("invalid_next_path_point") and unit.contains("navigation_terminal_failure") and unit.contains("command_preserved_during_retry") and unit.contains("boundary_recovery_started"), "bounded repath and recovery handling missing")
 	assert(unit.contains("rejected_avoidance_velocity") and unit.contains("avoidance_velocity_predicts_out_of_bounds"), "avoidance velocity safety gate missing")
 	assert(unit.contains("_move_target = _target.global_position"), "attack target recording missing")
 	assert(root.contains("ASCENDANT_V0436_CAPTURE") and root.contains("_start_v0436_capture"), "capture wiring missing")
