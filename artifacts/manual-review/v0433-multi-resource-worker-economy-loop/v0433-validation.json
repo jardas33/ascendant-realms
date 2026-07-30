@@ -3,7 +3,7 @@
   "baseSha": "eb6485805c06ecf7bb92a616ff16de95c0dead5c",
   "identityRepairSha": "cc2ee707f9727f853ce8dae67ef4876c6ed0d9ce",
   "captureSourceSha": "e322f15b866700c7cd277b7fdcb9ac3ce9465cda",
-  "validationInputSha": "e322f15b866700c7cd277b7fdcb9ac3ce9465cda",
+  "validationInputSha": "e1d4ac1675d780c1848bc2d78084fa0b0a1d0c42",
   "branch": "codex/v0433-multi-resource-worker-economy-loop",
   "prNumber": 7,
   "frames": [

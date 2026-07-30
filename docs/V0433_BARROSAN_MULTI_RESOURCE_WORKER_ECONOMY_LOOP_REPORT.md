@@ -113,4 +113,10 @@ The v0.433 branch remains stacked directly on accepted v0.432. The parent branch
 
 ## R1 publication record
 
-The original implementation and documentation publication remain preserved above. The identity/evidence repair is intentionally staged on the same draft PR #7. The final evidence/report commit, exact pushed SHA, GitHub Actions run, and clean-sync proof are appended after the regenerated pack is committed and published.
+The original implementation and documentation publication remain preserved above. The identity/evidence repair is intentionally stacked on the same draft PR #7.
+
+- Evidence/report commit: `e1d4ac1675d780c1848bc2d78084fa0b0a1d0c42`.
+- Exact pushed branch: `codex/v0433-multi-resource-worker-economy-loop`.
+- Exact-SHA GitHub Actions: run `30507590120` (`CI Release Matrix Dry Run`) completed with `success` for `e1d4ac16...`.
+- The post-publication dedicated validator passed with `validationInputSha=e1d4ac16...`, identity repair `cc2ee707...`, and capture source `e322f15b...`; the validation schema contains no self-referential `finalCommitSha`.
+- Final documentation refresh and its exact-SHA CI result are recorded by the closing commit and branch proof that follow this evidence update.
