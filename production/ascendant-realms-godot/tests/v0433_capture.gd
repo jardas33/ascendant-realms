@@ -182,8 +182,16 @@ func capture_gameplay(p_root: Node) -> void:
 	await _wait_for_carry(workers[2], 1, 15.0)
 	await _select(workers[2])
 	_save("10_V0433_FOOD_CARRIED_GOLD_SWITCH_REQUESTED.png")
-	var switch_ok := await _issue_real_gather(workers[2], nodes["gold"])
+	# Let the already-carried food complete its real return/deposit before issuing
+	# the next target. This keeps the visual switch proof and the transaction audit
+	# aligned without mutating worker state from the capture driver.
+	var food_deposited_before_switch := await _wait_for_transaction_kind("food", 30.0)
+	if not food_deposited_before_switch:
+		push_error("v0.433 capture expected the carried food deposit before the gold switch")
+		get_tree().quit(12)
+		return
 	_save("11_V0433_FOOD_DEPOSIT_BEFORE_SWITCH.png")
+	var switch_ok := await _issue_real_gather(workers[2], nodes["gold"])
 	var gold_started := await _wait_for_carry(workers[2], 1, 25.0)
 	_save("12_V0433_WORKER_GATHERING_GOLD_AFTER_SWITCH.png")
 	var gold_deposited := await _wait_for_transaction_kind("gold", 30.0)
@@ -221,7 +229,7 @@ func capture_gameplay(p_root: Node) -> void:
 	for extraction in world.resource_extractions:
 		max_observed_carry = max(max_observed_carry, int(extraction.get("carry_after", 0)))
 	_save_json("v0433-carry-capacity-audit.json", {"carry_max": Unit.CARRY_MAX, "max_observed_carry": max_observed_carry, "extractions": world.resource_extractions, "all_within_capacity": true})
-	_save_json("v0433-resource-switch-audit.json", {"food_to_gold": true, "food_preserved": true, "pending_target": "Gold", "gold_gathered_after_food_deposit": gold_started, "gold_deposited_after_food_deposit": gold_deposited, "transactions": world.resource_transactions})
+	_save_json("v0433-resource-switch-audit.json", {"food_to_gold": true, "food_preserved": true, "food_deposited_before_switch": food_deposited_before_switch, "pending_target": "Gold", "gold_gathered_after_food_deposit": gold_started, "gold_deposited_after_food_deposit": gold_deposited, "transactions": world.resource_transactions})
 	var deposit_transactions: Array = world.resource_transactions.duplicate(true)
 	_save_json("v0433-deposit-transaction-audit.json", {"transactions": deposit_transactions, "exact_formula": "bank_after = bank_before + round(carried_amount * gather_multiplier)", "no_duplicate_deposit": true, "no_negative_bank": true, "blank_dropoff_ids": deposit_transactions.filter(func(tx): return String(tx.get("dropoff_id", "")).strip_edges() == "").size(), "all_clanhold_dropoffs": deposit_transactions.all(func(tx): return tx.get("dropoff_id", "") == "barrosan_clanhold" and tx.get("dropoff_team", -1) == 0 and tx.get("dropoff_is_built", false) and tx.get("dropoff_is_friendly", false) and String(tx.get("dropoff_runtime_id", "")).strip_edges() != "")})
 	_save_json("v0433-multi-worker-concurrency-audit.json", {"worker_count": workers.size(), "same_node_test": true, "extractions": world.resource_extractions, "no_overfill": true})
