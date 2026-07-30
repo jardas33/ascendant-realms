@@ -133,7 +133,15 @@ The repository’s pre-existing historical untracked backlog was left untouched.
 
 ## CI and closeout
 
-Exact-SHA GitHub Actions confirmation is performed after the implementation and evidence commit is pushed. The final Actions run ID and result are recorded in the closeout message and, if needed, appended to this report without changing the combat scope.
+The evidence closeout was pushed and verified by GitHub Actions:
+
+- Exact final-source SHA before this documentation-only closeout: `94de933eb98502d0f20213e3a2560f26934c0c27`
+- GitHub Actions run: `30513563109` / run 645
+- Workflow: `CI Release Matrix Dry Run`
+- Result: success
+- Verified jobs: unit/pure-rule tests, production build, content validation, art-intake validation, E2E fast smoke, and production preview smoke
+
+This report-only confirmation does not change combat behavior. The final documentation closeout commit and its exact-SHA Actions result are recorded in the repository handoff after this update.
 
 ## Final state target
 
