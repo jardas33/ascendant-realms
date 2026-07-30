@@ -1,6 +1,14 @@
 {
-  "ai_deaths": 3,
+  "ai_deaths": 2,
+  "difficulty": "easy",
+  "distinct_roles": [
+    "ranged",
+    "melee",
+    "defender"
+  ],
   "fresh_scene_pending": true,
+  "mixed_roles": true,
+  "opponent_race": "lioraen",
   "passed": true,
   "player_building_damage": true,
   "player_unit_damage": true,
@@ -11,10 +19,37 @@
     "food",
     "gold"
   ],
+  "start_resources": "standard",
+  "wave_count": 6,
+  "wave_participant_ids": [
+    "lioraen_thorn_ranger",
+    "lioraen_thorn_ranger",
+    "lioraen_bloomdancer",
+    "lioraen_rootwarden_guard",
+    "lioraen_bloomdancer",
+    "lioraen_rootwarden_guard"
+  ],
+  "wave_participant_roles": [
+    "ranged",
+    "ranged",
+    "melee",
+    "defender",
+    "melee",
+    "defender"
+  ],
+  "wave_participant_runtime_ids": [
+    "170221636394",
+    "640923209049",
+    "732744912218",
+    "865905675634",
+    "958281026977",
+    "1091257241017"
+  ],
+  "wave_threshold": 6,
   "worker_count": 7,
   "schema": "v0435-first-autonomous-easy-opponent-wave-validator-v1",
   "baseSha": "6d52ec1309b09401ed6c705b6dda98707d26b33e",
-  "validationInputSha": "6d52ec1309b09401ed6c705b6dda98707d26b33e",
+  "validationInputSha": "403e9ba0df63c6c984ae808a4c4ddb4b64fb455c",
   "branch": "codex/v0435-first-autonomous-easy-opponent-wave",
   "prTargetBranch": "codex/v0434-first-combat-casualty-loop",
   "frames": [

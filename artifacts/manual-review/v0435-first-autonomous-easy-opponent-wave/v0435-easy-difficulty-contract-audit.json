@@ -1,0 +1,21 @@
+{
+  "base_values": {
+    "army_attack_size": 6,
+    "brutal_income": 0,
+    "eco_efficiency": 0.7,
+    "tech_aggression": 0.6,
+    "think_interval": 2,
+    "worker_target": 7
+  },
+  "capture_driver_timer_mutation": false,
+  "final_values": {
+    "army_attack_size": 6,
+    "brutal_income": 0,
+    "eco_efficiency": 0.7,
+    "tech_aggression": 0.6,
+    "think_interval": 2,
+    "worker_target": 7
+  },
+  "qa_wave_override": false,
+  "wave_threshold_source": "EnemyAI._army_attack_size"
+}

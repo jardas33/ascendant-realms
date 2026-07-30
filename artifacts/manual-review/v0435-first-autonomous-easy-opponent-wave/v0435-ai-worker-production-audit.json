@@ -1,180 +1,200 @@
 {
   "events": [
     {
-      "building_id": "vorthak_nighthold",
+      "building_id": "lioraen_groveheart",
       "event": "worker_queue",
       "queue_count": 1,
       "resources_after": {
-        "food": 755,
-        "gold": 600,
-        "stone": 600,
-        "timber": 900
+        "food": 150,
+        "gold": 180,
+        "stone": 180,
+        "timber": 300
       },
       "resources_before": {
-        "food": 800,
-        "gold": 600,
-        "stone": 600,
-        "timber": 900
+        "food": 200,
+        "gold": 180,
+        "stone": 180,
+        "timber": 300
       },
-      "time": 1.01194093939394,
-      "unit_id": "vorthak_worker"
+      "time": 2.00358266666667,
+      "unit_id": "lioraen_worker"
     },
     {
-      "building_id": "vorthak_nighthold",
+      "building_id": "lioraen_groveheart",
       "event": "worker_queue",
       "queue_count": 1,
       "resources_after": {
-        "food": 710,
-        "gold": 600,
-        "stone": 570,
-        "timber": 780
+        "food": 100,
+        "gold": 180,
+        "stone": 140,
+        "timber": 170
       },
       "resources_before": {
-        "food": 755,
-        "gold": 600,
-        "stone": 570,
-        "timber": 780
+        "food": 150,
+        "gold": 180,
+        "stone": 140,
+        "timber": 170
       },
-      "time": 12.0423103333335,
-      "unit_id": "vorthak_worker"
+      "time": 14.3092846666668,
+      "unit_id": "lioraen_worker"
     },
     {
-      "building_id": "vorthak_nighthold",
+      "building_id": "lioraen_groveheart",
       "event": "worker_queue",
       "queue_count": 1,
       "resources_after": {
-        "food": 675,
-        "gold": 600,
-        "stone": 560,
-        "timber": 730
+        "food": 60,
+        "gold": 180,
+        "stone": 130,
+        "timber": 110
       },
       "resources_before": {
-        "food": 720,
-        "gold": 600,
-        "stone": 560,
-        "timber": 730
+        "food": 110,
+        "gold": 180,
+        "stone": 130,
+        "timber": 110
       },
-      "time": 23.1735036666661,
-      "unit_id": "vorthak_worker"
+      "time": 26.4220473333337,
+      "unit_id": "lioraen_worker"
     },
     {
-      "building_id": "vorthak_nighthold",
+      "building_id": "lioraen_groveheart",
       "event": "worker_queue",
       "queue_count": 1,
       "resources_after": {
-        "food": 640,
-        "gold": 600,
-        "stone": 580,
-        "timber": 740
+        "food": 20,
+        "gold": 180,
+        "stone": 150,
+        "timber": 120
       },
       "resources_before": {
-        "food": 685,
-        "gold": 600,
-        "stone": 580,
-        "timber": 740
+        "food": 70,
+        "gold": 180,
+        "stone": 150,
+        "timber": 120
       },
-      "time": 34.3196516666654,
-      "unit_id": "vorthak_worker"
+      "time": 38.5820473333331,
+      "unit_id": "lioraen_worker"
     },
     {
-      "building_id": "vorthak_bone_barracks",
+      "building_id": "lioraen_thornhall",
       "event": "mixed_unit_queue",
       "queue_count": 1,
       "resources_after": {
-        "food": 600,
-        "gold": 595,
-        "stone": 580,
-        "timber": 750
+        "food": 0,
+        "gold": 190,
+        "stone": 170,
+        "timber": 120
       },
       "resources_before": {
-        "food": 640,
-        "gold": 600,
-        "stone": 580,
-        "timber": 750
+        "food": 50,
+        "gold": 190,
+        "stone": 170,
+        "timber": 150
       },
-      "role": "melee",
-      "time": 36.3385503333324,
-      "unit_id": "vorthak_ash_thrall"
+      "role": "ranged",
+      "time": 52.759073999999,
+      "unit_id": "lioraen_thorn_ranger"
     },
     {
-      "building_id": "vorthak_bone_barracks",
+      "building_id": "lioraen_thornhall",
       "event": "mixed_unit_queue",
       "queue_count": 1,
       "resources_after": {
-        "food": 580,
-        "gold": 600,
-        "stone": 590,
-        "timber": 760
+        "food": 10,
+        "gold": 210,
+        "stone": 190,
+        "timber": 140
       },
       "resources_before": {
-        "food": 620,
-        "gold": 605,
-        "stone": 590,
-        "timber": 760
+        "food": 70,
+        "gold": 210,
+        "stone": 190,
+        "timber": 150
       },
       "role": "melee",
-      "time": 45.4533226666677,
-      "unit_id": "vorthak_ash_thrall"
+      "time": 68.9720019999996,
+      "unit_id": "lioraen_bloomdancer"
     },
     {
-      "building_id": "vorthak_bone_barracks",
+      "building_id": "lioraen_thornhall",
       "event": "mixed_unit_queue",
       "queue_count": 1,
       "resources_after": {
-        "food": 570,
-        "gold": 605,
-        "stone": 600,
-        "timber": 780
+        "food": 20,
+        "gold": 230,
+        "stone": 210,
+        "timber": 140
       },
       "resources_before": {
-        "food": 610,
-        "gold": 610,
-        "stone": 600,
-        "timber": 780
+        "food": 90,
+        "gold": 230,
+        "stone": 210,
+        "timber": 170
       },
-      "role": "melee",
-      "time": 54.5730946666697,
-      "unit_id": "vorthak_ash_thrall"
+      "role": "defender",
+      "time": 83.1583140000027,
+      "unit_id": "lioraen_rootwarden_guard"
     },
     {
-      "building_id": "vorthak_bone_barracks",
+      "building_id": "lioraen_thornhall",
       "event": "mixed_unit_queue",
       "queue_count": 1,
       "resources_after": {
-        "food": 900,
-        "gold": 933,
-        "stone": 720,
-        "timber": 940
+        "food": 40,
+        "gold": 260,
+        "stone": 240,
+        "timber": 160
       },
       "resources_before": {
-        "food": 940,
-        "gold": 938,
-        "stone": 720,
-        "timber": 940
+        "food": 100,
+        "gold": 260,
+        "stone": 240,
+        "timber": 170
       },
       "role": "melee",
-      "time": 134.587602333348,
-      "unit_id": "vorthak_ash_thrall"
+      "time": 101.397858000007,
+      "unit_id": "lioraen_bloomdancer"
     },
     {
-      "building_id": "vorthak_bone_barracks",
+      "building_id": "lioraen_thornhall",
       "event": "mixed_unit_queue",
       "queue_count": 1,
       "resources_after": {
-        "food": 900,
-        "gold": 996,
-        "stone": 730,
-        "timber": 960
+        "food": 50,
+        "gold": 280,
+        "stone": 250,
+        "timber": 160
       },
       "resources_before": {
-        "food": 940,
-        "gold": 1001,
-        "stone": 730,
-        "timber": 960
+        "food": 120,
+        "gold": 280,
+        "stone": 250,
+        "timber": 190
+      },
+      "role": "defender",
+      "time": 115.58417000001,
+      "unit_id": "lioraen_rootwarden_guard"
+    },
+    {
+      "building_id": "lioraen_thornhall",
+      "event": "mixed_unit_queue",
+      "queue_count": 1,
+      "resources_after": {
+        "food": 180,
+        "gold": 708,
+        "stone": 390,
+        "timber": 320
+      },
+      "resources_before": {
+        "food": 240,
+        "gold": 708,
+        "stone": 390,
+        "timber": 330
       },
       "role": "melee",
-      "time": 143.70737433334,
-      "unit_id": "vorthak_ash_thrall"
+      "time": 216.850370666697,
+      "unit_id": "lioraen_bloomdancer"
     }
   ],
   "real_hq_queue": true,

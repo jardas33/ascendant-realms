@@ -1,345 +1,1165 @@
 {
-  "ai_source_events": 34,
+  "ai_source_events": 116,
   "events": [
     {
       "building_id": "barrosan_clanhold",
-      "building_runtime_id": "165675010652",
-      "building_team": 0,
-      "hp_after": 2199,
-      "kind": "melee",
-      "source_id": "vorthak_ash_thrall",
-      "source_team": 1,
-      "timestamp": 158974
-    },
-    {
-      "building_id": "barrosan_clanhold",
-      "building_runtime_id": "165675010652",
+      "building_runtime_id": "166127995484",
       "building_team": 0,
       "hp_after": 2198,
       "kind": "melee",
-      "source_id": "vorthak_ash_thrall",
+      "source_id": "lioraen_bloomdancer",
       "source_team": 1,
-      "timestamp": 159574
+      "timestamp": 128711
     },
     {
       "building_id": "barrosan_clanhold",
-      "building_runtime_id": "165675010652",
-      "building_team": 0,
-      "hp_after": 2197,
-      "kind": "melee",
-      "source_id": "vorthak_ash_thrall",
-      "source_team": 1,
-      "timestamp": 160427
-    },
-    {
-      "building_id": "barrosan_clanhold",
-      "building_runtime_id": "165675010652",
+      "building_runtime_id": "166127995484",
       "building_team": 0,
       "hp_after": 2196,
       "kind": "melee",
-      "source_id": "vorthak_ash_thrall",
+      "source_id": "lioraen_bloomdancer",
       "source_team": 1,
-      "timestamp": 160787
+      "timestamp": 129298
     },
     {
       "building_id": "barrosan_clanhold",
-      "building_runtime_id": "165675010652",
+      "building_runtime_id": "166127995484",
       "building_team": 0,
       "hp_after": 2195,
-      "kind": "melee",
-      "source_id": "vorthak_ash_thrall",
+      "kind": "thorn",
+      "source_id": "lioraen_thorn_ranger",
       "source_team": 1,
-      "timestamp": 162161
+      "timestamp": 129616
     },
     {
       "building_id": "barrosan_clanhold",
-      "building_runtime_id": "165675010652",
-      "building_team": 0,
-      "hp_after": 2194,
-      "kind": "melee",
-      "source_id": "vorthak_ash_thrall",
-      "source_team": 1,
-      "timestamp": 163174
-    },
-    {
-      "building_id": "barrosan_clanhold",
-      "building_runtime_id": "165675010652",
+      "building_runtime_id": "166127995484",
       "building_team": 0,
       "hp_after": 2193,
       "kind": "melee",
-      "source_id": "vorthak_ash_thrall",
+      "source_id": "lioraen_bloomdancer",
       "source_team": 1,
-      "timestamp": 164161
+      "timestamp": 129640
     },
     {
       "building_id": "barrosan_clanhold",
-      "building_runtime_id": "165675010652",
-      "building_team": 0,
-      "hp_after": 2192,
-      "kind": "melee",
-      "source_id": "vorthak_ash_thrall",
-      "source_team": 1,
-      "timestamp": 165162
-    },
-    {
-      "building_id": "barrosan_clanhold",
-      "building_runtime_id": "165675010652",
+      "building_runtime_id": "166127995484",
       "building_team": 0,
       "hp_after": 2191,
       "kind": "melee",
-      "source_id": "vorthak_ash_thrall",
+      "source_id": "lioraen_bloomdancer",
       "source_team": 1,
-      "timestamp": 166164
+      "timestamp": 130138
     },
     {
       "building_id": "barrosan_clanhold",
-      "building_runtime_id": "165675010652",
+      "building_runtime_id": "166127995484",
       "building_team": 0,
       "hp_after": 2190,
-      "kind": "melee",
-      "source_id": "vorthak_ash_thrall",
+      "kind": "thorn",
+      "source_id": "lioraen_thorn_ranger",
       "source_team": 1,
-      "timestamp": 167163
+      "timestamp": 130230
     },
     {
       "building_id": "barrosan_clanhold",
-      "building_runtime_id": "165675010652",
-      "building_team": 0,
-      "hp_after": 2189,
-      "kind": "melee",
-      "source_id": "vorthak_ash_thrall",
-      "source_team": 1,
-      "timestamp": 168163
-    },
-    {
-      "building_id": "barrosan_clanhold",
-      "building_runtime_id": "165675010652",
+      "building_runtime_id": "166127995484",
       "building_team": 0,
       "hp_after": 2188,
       "kind": "melee",
-      "source_id": "vorthak_ash_thrall",
+      "source_id": "lioraen_bloomdancer",
       "source_team": 1,
-      "timestamp": 169163
+      "timestamp": 130618
     },
     {
       "building_id": "barrosan_clanhold",
-      "building_runtime_id": "165675010652",
+      "building_runtime_id": "166127995484",
       "building_team": 0,
       "hp_after": 2187,
-      "kind": "melee",
-      "source_id": "vorthak_ash_thrall",
+      "kind": "thorn",
+      "source_id": "lioraen_thorn_ranger",
       "source_team": 1,
-      "timestamp": 170164
+      "timestamp": 130816
     },
     {
       "building_id": "barrosan_clanhold",
-      "building_runtime_id": "165675010652",
-      "building_team": 0,
-      "hp_after": 2186,
-      "kind": "melee",
-      "source_id": "vorthak_ash_thrall",
-      "source_team": 1,
-      "timestamp": 171163
-    },
-    {
-      "building_id": "barrosan_clanhold",
-      "building_runtime_id": "165675010652",
+      "building_runtime_id": "166127995484",
       "building_team": 0,
       "hp_after": 2185,
       "kind": "melee",
-      "source_id": "vorthak_ash_thrall",
+      "source_id": "lioraen_bloomdancer",
       "source_team": 1,
-      "timestamp": 172163
+      "timestamp": 131481
     },
     {
       "building_id": "barrosan_clanhold",
-      "building_runtime_id": "165675010652",
+      "building_runtime_id": "166127995484",
       "building_team": 0,
       "hp_after": 2184,
-      "kind": "melee",
-      "source_id": "vorthak_ash_thrall",
+      "kind": "thorn",
+      "source_id": "lioraen_thorn_ranger",
       "source_team": 1,
-      "timestamp": 173164
+      "timestamp": 131884
     },
     {
       "building_id": "barrosan_clanhold",
-      "building_runtime_id": "165675010652",
-      "building_team": 0,
-      "hp_after": 2183,
-      "kind": "melee",
-      "source_id": "vorthak_ash_thrall",
-      "source_team": 1,
-      "timestamp": 174164
-    },
-    {
-      "building_id": "barrosan_clanhold",
-      "building_runtime_id": "165675010652",
+      "building_runtime_id": "166127995484",
       "building_team": 0,
       "hp_after": 2182,
       "kind": "melee",
-      "source_id": "vorthak_ash_thrall",
+      "source_id": "lioraen_bloomdancer",
       "source_team": 1,
-      "timestamp": 175166
+      "timestamp": 132043
     },
     {
       "building_id": "barrosan_clanhold",
-      "building_runtime_id": "165675010652",
-      "building_team": 0,
-      "hp_after": 2181,
-      "kind": "melee",
-      "source_id": "vorthak_ash_thrall",
-      "source_team": 1,
-      "timestamp": 176166
-    },
-    {
-      "building_id": "barrosan_clanhold",
-      "building_runtime_id": "165675010652",
+      "building_runtime_id": "166127995484",
       "building_team": 0,
       "hp_after": 2180,
       "kind": "melee",
-      "source_id": "vorthak_ash_thrall",
+      "source_id": "lioraen_bloomdancer",
       "source_team": 1,
-      "timestamp": 177166
+      "timestamp": 132536
     },
     {
       "building_id": "barrosan_clanhold",
-      "building_runtime_id": "165675010652",
+      "building_runtime_id": "166127995484",
       "building_team": 0,
       "hp_after": 2179,
-      "kind": "melee",
-      "source_id": "vorthak_ash_thrall",
+      "kind": "thorn",
+      "source_id": "lioraen_thorn_ranger",
       "source_team": 1,
-      "timestamp": 178166
+      "timestamp": 132590
     },
     {
       "building_id": "barrosan_clanhold",
-      "building_runtime_id": "165675010652",
-      "building_team": 0,
-      "hp_after": 2178,
-      "kind": "melee",
-      "source_id": "vorthak_ash_thrall",
-      "source_team": 1,
-      "timestamp": 179166
-    },
-    {
-      "building_id": "barrosan_clanhold",
-      "building_runtime_id": "165675010652",
+      "building_runtime_id": "166127995484",
       "building_team": 0,
       "hp_after": 2177,
       "kind": "melee",
-      "source_id": "vorthak_ash_thrall",
+      "source_id": "lioraen_bloomdancer",
       "source_team": 1,
-      "timestamp": 180166
+      "timestamp": 133005
     },
     {
       "building_id": "barrosan_clanhold",
-      "building_runtime_id": "165675010652",
+      "building_runtime_id": "166127995484",
       "building_team": 0,
       "hp_after": 2176,
-      "kind": "melee",
-      "source_id": "vorthak_ash_thrall",
+      "kind": "thorn",
+      "source_id": "lioraen_thorn_ranger",
       "source_team": 1,
-      "timestamp": 181168
+      "timestamp": 133310
     },
     {
       "building_id": "barrosan_clanhold",
-      "building_runtime_id": "165675010652",
-      "building_team": 0,
-      "hp_after": 2175,
-      "kind": "melee",
-      "source_id": "vorthak_ash_thrall",
-      "source_team": 1,
-      "timestamp": 182168
-    },
-    {
-      "building_id": "barrosan_clanhold",
-      "building_runtime_id": "165675010652",
+      "building_runtime_id": "166127995484",
       "building_team": 0,
       "hp_after": 2174,
       "kind": "melee",
-      "source_id": "vorthak_ash_thrall",
+      "source_id": "lioraen_bloomdancer",
       "source_team": 1,
-      "timestamp": 183169
+      "timestamp": 133497
     },
     {
       "building_id": "barrosan_clanhold",
-      "building_runtime_id": "165675010652",
-      "building_team": 0,
-      "hp_after": 2173,
-      "kind": "melee",
-      "source_id": "vorthak_ash_thrall",
-      "source_team": 1,
-      "timestamp": 184168
-    },
-    {
-      "building_id": "barrosan_clanhold",
-      "building_runtime_id": "165675010652",
+      "building_runtime_id": "166127995484",
       "building_team": 0,
       "hp_after": 2172,
       "kind": "melee",
-      "source_id": "vorthak_ash_thrall",
+      "source_id": "lioraen_bloomdancer",
       "source_team": 1,
-      "timestamp": 185168
+      "timestamp": 133979
     },
     {
       "building_id": "barrosan_clanhold",
-      "building_runtime_id": "165675010652",
+      "building_runtime_id": "166127995484",
       "building_team": 0,
       "hp_after": 2171,
-      "kind": "melee",
-      "source_id": "vorthak_ash_thrall",
+      "kind": "thorn",
+      "source_id": "lioraen_thorn_ranger",
       "source_team": 1,
-      "timestamp": 186169
+      "timestamp": 134017
     },
     {
       "building_id": "barrosan_clanhold",
-      "building_runtime_id": "165675010652",
-      "building_team": 0,
-      "hp_after": 2170,
-      "kind": "melee",
-      "source_id": "vorthak_ash_thrall",
-      "source_team": 1,
-      "timestamp": 187170
-    },
-    {
-      "building_id": "barrosan_clanhold",
-      "building_runtime_id": "165675010652",
+      "building_runtime_id": "166127995484",
       "building_team": 0,
       "hp_after": 2169,
       "kind": "melee",
-      "source_id": "vorthak_ash_thrall",
+      "source_id": "lioraen_bloomdancer",
       "source_team": 1,
-      "timestamp": 188169
+      "timestamp": 134459
     },
     {
       "building_id": "barrosan_clanhold",
-      "building_runtime_id": "165675010652",
+      "building_runtime_id": "166127995484",
       "building_team": 0,
       "hp_after": 2168,
-      "kind": "melee",
-      "source_id": "vorthak_ash_thrall",
+      "kind": "thorn",
+      "source_id": "lioraen_thorn_ranger",
       "source_team": 1,
-      "timestamp": 189171
+      "timestamp": 134604
     },
     {
       "building_id": "barrosan_clanhold",
-      "building_runtime_id": "165675010652",
-      "building_team": 0,
-      "hp_after": 2167,
-      "kind": "melee",
-      "source_id": "vorthak_ash_thrall",
-      "source_team": 1,
-      "timestamp": 190170
-    },
-    {
-      "building_id": "barrosan_clanhold",
-      "building_runtime_id": "165675010652",
+      "building_runtime_id": "166127995484",
       "building_team": 0,
       "hp_after": 2166,
       "kind": "melee",
-      "source_id": "vorthak_ash_thrall",
+      "source_id": "lioraen_bloomdancer",
       "source_team": 1,
-      "timestamp": 191171
+      "timestamp": 134938
+    },
+    {
+      "building_id": "barrosan_clanhold",
+      "building_runtime_id": "166127995484",
+      "building_team": 0,
+      "hp_after": 2165,
+      "kind": "thorn",
+      "source_id": "lioraen_thorn_ranger",
+      "source_team": 1,
+      "timestamp": 135191
+    },
+    {
+      "building_id": "barrosan_clanhold",
+      "building_runtime_id": "166127995484",
+      "building_team": 0,
+      "hp_after": 2163,
+      "kind": "melee",
+      "source_id": "lioraen_bloomdancer",
+      "source_team": 1,
+      "timestamp": 135431
+    },
+    {
+      "building_id": "barrosan_clanhold",
+      "building_runtime_id": "166127995484",
+      "building_team": 0,
+      "hp_after": 2162,
+      "kind": "thorn",
+      "source_id": "lioraen_thorn_ranger",
+      "source_team": 1,
+      "timestamp": 135751
+    },
+    {
+      "building_id": "barrosan_clanhold",
+      "building_runtime_id": "166127995484",
+      "building_team": 0,
+      "hp_after": 2160,
+      "kind": "melee",
+      "source_id": "lioraen_bloomdancer",
+      "source_team": 1,
+      "timestamp": 135913
+    },
+    {
+      "building_id": "barrosan_clanhold",
+      "building_runtime_id": "166127995484",
+      "building_team": 0,
+      "hp_after": 2158,
+      "kind": "melee",
+      "source_id": "lioraen_bloomdancer",
+      "source_team": 1,
+      "timestamp": 136394
+    },
+    {
+      "building_id": "barrosan_clanhold",
+      "building_runtime_id": "166127995484",
+      "building_team": 0,
+      "hp_after": 2157,
+      "kind": "thorn",
+      "source_id": "lioraen_thorn_ranger",
+      "source_team": 1,
+      "timestamp": 136417
+    },
+    {
+      "building_id": "barrosan_clanhold",
+      "building_runtime_id": "166127995484",
+      "building_team": 0,
+      "hp_after": 2155,
+      "kind": "melee",
+      "source_id": "lioraen_bloomdancer",
+      "source_team": 1,
+      "timestamp": 136874
+    },
+    {
+      "building_id": "barrosan_clanhold",
+      "building_runtime_id": "166127995484",
+      "building_team": 0,
+      "hp_after": 2154,
+      "kind": "thorn",
+      "source_id": "lioraen_thorn_ranger",
+      "source_team": 1,
+      "timestamp": 137151
+    },
+    {
+      "building_id": "barrosan_clanhold",
+      "building_runtime_id": "166127995484",
+      "building_team": 0,
+      "hp_after": 2152,
+      "kind": "melee",
+      "source_id": "lioraen_bloomdancer",
+      "source_team": 1,
+      "timestamp": 137365
+    },
+    {
+      "building_id": "barrosan_clanhold",
+      "building_runtime_id": "166127995484",
+      "building_team": 0,
+      "hp_after": 2150,
+      "kind": "melee",
+      "source_id": "lioraen_bloomdancer",
+      "source_team": 1,
+      "timestamp": 137847
+    },
+    {
+      "building_id": "barrosan_clanhold",
+      "building_runtime_id": "166127995484",
+      "building_team": 0,
+      "hp_after": 2149,
+      "kind": "thorn",
+      "source_id": "lioraen_thorn_ranger",
+      "source_team": 1,
+      "timestamp": 137872
+    },
+    {
+      "building_id": "barrosan_clanhold",
+      "building_runtime_id": "166127995484",
+      "building_team": 0,
+      "hp_after": 2147,
+      "kind": "melee",
+      "source_id": "lioraen_bloomdancer",
+      "source_team": 1,
+      "timestamp": 138332
+    },
+    {
+      "building_id": "barrosan_clanhold",
+      "building_runtime_id": "166127995484",
+      "building_team": 0,
+      "hp_after": 2146,
+      "kind": "thorn",
+      "source_id": "lioraen_thorn_ranger",
+      "source_team": 1,
+      "timestamp": 138552
+    },
+    {
+      "building_id": "barrosan_clanhold",
+      "building_runtime_id": "166127995484",
+      "building_team": 0,
+      "hp_after": 2144,
+      "kind": "melee",
+      "source_id": "lioraen_bloomdancer",
+      "source_team": 1,
+      "timestamp": 138808
+    },
+    {
+      "building_id": "barrosan_clanhold",
+      "building_runtime_id": "166127995484",
+      "building_team": 0,
+      "hp_after": 2143,
+      "kind": "thorn",
+      "source_id": "lioraen_thorn_ranger",
+      "source_team": 1,
+      "timestamp": 139139
+    },
+    {
+      "building_id": "barrosan_clanhold",
+      "building_runtime_id": "166127995484",
+      "building_team": 0,
+      "hp_after": 2141,
+      "kind": "melee",
+      "source_id": "lioraen_bloomdancer",
+      "source_team": 1,
+      "timestamp": 139313
+    },
+    {
+      "building_id": "barrosan_clanhold",
+      "building_runtime_id": "166127995484",
+      "building_team": 0,
+      "hp_after": 2140,
+      "kind": "thorn",
+      "source_id": "lioraen_thorn_ranger",
+      "source_team": 1,
+      "timestamp": 139726
+    },
+    {
+      "building_id": "barrosan_clanhold",
+      "building_runtime_id": "166127995484",
+      "building_team": 0,
+      "hp_after": 2138,
+      "kind": "melee",
+      "source_id": "lioraen_bloomdancer",
+      "source_team": 1,
+      "timestamp": 139793
+    },
+    {
+      "building_id": "barrosan_clanhold",
+      "building_runtime_id": "166127995484",
+      "building_team": 0,
+      "hp_after": 2136,
+      "kind": "melee",
+      "source_id": "lioraen_bloomdancer",
+      "source_team": 1,
+      "timestamp": 140283
+    },
+    {
+      "building_id": "barrosan_clanhold",
+      "building_runtime_id": "166127995484",
+      "building_team": 0,
+      "hp_after": 2135,
+      "kind": "thorn",
+      "source_id": "lioraen_thorn_ranger",
+      "source_team": 1,
+      "timestamp": 140287
+    },
+    {
+      "building_id": "barrosan_clanhold",
+      "building_runtime_id": "166127995484",
+      "building_team": 0,
+      "hp_after": 2133,
+      "kind": "melee",
+      "source_id": "lioraen_bloomdancer",
+      "source_team": 1,
+      "timestamp": 140766
+    },
+    {
+      "building_id": "barrosan_clanhold",
+      "building_runtime_id": "166127995484",
+      "building_team": 0,
+      "hp_after": 2132,
+      "kind": "thorn",
+      "source_id": "lioraen_thorn_ranger",
+      "source_team": 1,
+      "timestamp": 140992
+    },
+    {
+      "building_id": "barrosan_clanhold",
+      "building_runtime_id": "166127995484",
+      "building_team": 0,
+      "hp_after": 2130,
+      "kind": "melee",
+      "source_id": "lioraen_bloomdancer",
+      "source_team": 1,
+      "timestamp": 141248
+    },
+    {
+      "building_id": "barrosan_clanhold",
+      "building_runtime_id": "166127995484",
+      "building_team": 0,
+      "hp_after": 2129,
+      "kind": "thorn",
+      "source_id": "lioraen_thorn_ranger",
+      "source_team": 1,
+      "timestamp": 141726
+    },
+    {
+      "building_id": "barrosan_clanhold",
+      "building_runtime_id": "166127995484",
+      "building_team": 0,
+      "hp_after": 2127,
+      "kind": "melee",
+      "source_id": "lioraen_bloomdancer",
+      "source_team": 1,
+      "timestamp": 141737
+    },
+    {
+      "building_id": "barrosan_clanhold",
+      "building_runtime_id": "166127995484",
+      "building_team": 0,
+      "hp_after": 2125,
+      "kind": "melee",
+      "source_id": "lioraen_bloomdancer",
+      "source_team": 1,
+      "timestamp": 142208
+    },
+    {
+      "building_id": "barrosan_clanhold",
+      "building_runtime_id": "166127995484",
+      "building_team": 0,
+      "hp_after": 2124,
+      "kind": "thorn",
+      "source_id": "lioraen_thorn_ranger",
+      "source_team": 1,
+      "timestamp": 142446
+    },
+    {
+      "building_id": "barrosan_clanhold",
+      "building_runtime_id": "166127995484",
+      "building_team": 0,
+      "hp_after": 2122,
+      "kind": "melee",
+      "source_id": "lioraen_bloomdancer",
+      "source_team": 1,
+      "timestamp": 142701
+    },
+    {
+      "building_id": "barrosan_clanhold",
+      "building_runtime_id": "166127995484",
+      "building_team": 0,
+      "hp_after": 2121,
+      "kind": "thorn",
+      "source_id": "lioraen_thorn_ranger",
+      "source_team": 1,
+      "timestamp": 143087
+    },
+    {
+      "building_id": "barrosan_clanhold",
+      "building_runtime_id": "166127995484",
+      "building_team": 0,
+      "hp_after": 2119,
+      "kind": "melee",
+      "source_id": "lioraen_bloomdancer",
+      "source_team": 1,
+      "timestamp": 143181
+    },
+    {
+      "building_id": "barrosan_clanhold",
+      "building_runtime_id": "166127995484",
+      "building_team": 0,
+      "hp_after": 2117,
+      "kind": "melee",
+      "source_id": "lioraen_bloomdancer",
+      "source_team": 1,
+      "timestamp": 143662
+    },
+    {
+      "building_id": "barrosan_clanhold",
+      "building_runtime_id": "166127995484",
+      "building_team": 0,
+      "hp_after": 2116,
+      "kind": "thorn",
+      "source_id": "lioraen_thorn_ranger",
+      "source_team": 1,
+      "timestamp": 143674
+    },
+    {
+      "building_id": "barrosan_clanhold",
+      "building_runtime_id": "166127995484",
+      "building_team": 0,
+      "hp_after": 2114,
+      "kind": "melee",
+      "source_id": "lioraen_bloomdancer",
+      "source_team": 1,
+      "timestamp": 144142
+    },
+    {
+      "building_id": "barrosan_clanhold",
+      "building_runtime_id": "166127995484",
+      "building_team": 0,
+      "hp_after": 2113,
+      "kind": "thorn",
+      "source_id": "lioraen_thorn_ranger",
+      "source_team": 1,
+      "timestamp": 144247
+    },
+    {
+      "building_id": "barrosan_clanhold",
+      "building_runtime_id": "166127995484",
+      "building_team": 0,
+      "hp_after": 2111,
+      "kind": "melee",
+      "source_id": "lioraen_bloomdancer",
+      "source_team": 1,
+      "timestamp": 144634
+    },
+    {
+      "building_id": "barrosan_clanhold",
+      "building_runtime_id": "166127995484",
+      "building_team": 0,
+      "hp_after": 2110,
+      "kind": "thorn",
+      "source_id": "lioraen_thorn_ranger",
+      "source_team": 1,
+      "timestamp": 144847
+    },
+    {
+      "building_id": "barrosan_clanhold",
+      "building_runtime_id": "166127995484",
+      "building_team": 0,
+      "hp_after": 2108,
+      "kind": "melee",
+      "source_id": "lioraen_bloomdancer",
+      "source_team": 1,
+      "timestamp": 145128
+    },
+    {
+      "building_id": "barrosan_clanhold",
+      "building_runtime_id": "166127995484",
+      "building_team": 0,
+      "hp_after": 2107,
+      "kind": "thorn",
+      "source_id": "lioraen_thorn_ranger",
+      "source_team": 1,
+      "timestamp": 145555
+    },
+    {
+      "building_id": "barrosan_clanhold",
+      "building_runtime_id": "166127995484",
+      "building_team": 0,
+      "hp_after": 2105,
+      "kind": "melee",
+      "source_id": "lioraen_bloomdancer",
+      "source_team": 1,
+      "timestamp": 145608
+    },
+    {
+      "building_id": "barrosan_clanhold",
+      "building_runtime_id": "166127995484",
+      "building_team": 0,
+      "hp_after": 2103,
+      "kind": "melee",
+      "source_id": "lioraen_bloomdancer",
+      "source_team": 1,
+      "timestamp": 146101
+    },
+    {
+      "building_id": "barrosan_clanhold",
+      "building_runtime_id": "166127995484",
+      "building_team": 0,
+      "hp_after": 2102,
+      "kind": "thorn",
+      "source_id": "lioraen_thorn_ranger",
+      "source_team": 1,
+      "timestamp": 146288
+    },
+    {
+      "building_id": "barrosan_clanhold",
+      "building_runtime_id": "166127995484",
+      "building_team": 0,
+      "hp_after": 2100,
+      "kind": "melee",
+      "source_id": "lioraen_bloomdancer",
+      "source_team": 1,
+      "timestamp": 146582
+    },
+    {
+      "building_id": "barrosan_clanhold",
+      "building_runtime_id": "166127995484",
+      "building_team": 0,
+      "hp_after": 2099,
+      "kind": "thorn",
+      "source_id": "lioraen_thorn_ranger",
+      "source_team": 1,
+      "timestamp": 147009
+    },
+    {
+      "building_id": "barrosan_clanhold",
+      "building_runtime_id": "166127995484",
+      "building_team": 0,
+      "hp_after": 2097,
+      "kind": "melee",
+      "source_id": "lioraen_bloomdancer",
+      "source_team": 1,
+      "timestamp": 147063
+    },
+    {
+      "building_id": "barrosan_clanhold",
+      "building_runtime_id": "166127995484",
+      "building_team": 0,
+      "hp_after": 2095,
+      "kind": "melee",
+      "source_id": "lioraen_bloomdancer",
+      "source_team": 1,
+      "timestamp": 147542
+    },
+    {
+      "building_id": "barrosan_clanhold",
+      "building_runtime_id": "166127995484",
+      "building_team": 0,
+      "hp_after": 2094,
+      "kind": "thorn",
+      "source_id": "lioraen_thorn_ranger",
+      "source_team": 1,
+      "timestamp": 147648
+    },
+    {
+      "building_id": "barrosan_clanhold",
+      "building_runtime_id": "166127995484",
+      "building_team": 0,
+      "hp_after": 2092,
+      "kind": "melee",
+      "source_id": "lioraen_bloomdancer",
+      "source_team": 1,
+      "timestamp": 148036
+    },
+    {
+      "building_id": "barrosan_clanhold",
+      "building_runtime_id": "166127995484",
+      "building_team": 0,
+      "hp_after": 2091,
+      "kind": "thorn",
+      "source_id": "lioraen_thorn_ranger",
+      "source_team": 1,
+      "timestamp": 148209
+    },
+    {
+      "building_id": "barrosan_clanhold",
+      "building_runtime_id": "166127995484",
+      "building_team": 0,
+      "hp_after": 2089,
+      "kind": "melee",
+      "source_id": "lioraen_bloomdancer",
+      "source_team": 1,
+      "timestamp": 148515
+    },
+    {
+      "building_id": "barrosan_clanhold",
+      "building_runtime_id": "166127995484",
+      "building_team": 0,
+      "hp_after": 2088,
+      "kind": "thorn",
+      "source_id": "lioraen_thorn_ranger",
+      "source_team": 1,
+      "timestamp": 148796
+    },
+    {
+      "building_id": "barrosan_clanhold",
+      "building_runtime_id": "166127995484",
+      "building_team": 0,
+      "hp_after": 2086,
+      "kind": "melee",
+      "source_id": "lioraen_bloomdancer",
+      "source_team": 1,
+      "timestamp": 148996
+    },
+    {
+      "building_id": "barrosan_clanhold",
+      "building_runtime_id": "166127995484",
+      "building_team": 0,
+      "hp_after": 2085,
+      "kind": "thorn",
+      "source_id": "lioraen_thorn_ranger",
+      "source_team": 1,
+      "timestamp": 149409
+    },
+    {
+      "building_id": "barrosan_clanhold",
+      "building_runtime_id": "166127995484",
+      "building_team": 0,
+      "hp_after": 2083,
+      "kind": "melee",
+      "source_id": "lioraen_bloomdancer",
+      "source_team": 1,
+      "timestamp": 149718
+    },
+    {
+      "building_id": "barrosan_clanhold",
+      "building_runtime_id": "166127995484",
+      "building_team": 0,
+      "hp_after": 2082,
+      "kind": "thorn",
+      "source_id": "lioraen_thorn_ranger",
+      "source_team": 1,
+      "timestamp": 150129
+    },
+    {
+      "building_id": "barrosan_clanhold",
+      "building_runtime_id": "166127995484",
+      "building_team": 0,
+      "hp_after": 2080,
+      "kind": "melee",
+      "source_id": "lioraen_bloomdancer",
+      "source_team": 1,
+      "timestamp": 150197
+    },
+    {
+      "building_id": "barrosan_clanhold",
+      "building_runtime_id": "166127995484",
+      "building_team": 0,
+      "hp_after": 2078,
+      "kind": "melee",
+      "source_id": "lioraen_bloomdancer",
+      "source_team": 1,
+      "timestamp": 150682
+    },
+    {
+      "building_id": "barrosan_clanhold",
+      "building_runtime_id": "166127995484",
+      "building_team": 0,
+      "hp_after": 2077,
+      "kind": "thorn",
+      "source_id": "lioraen_thorn_ranger",
+      "source_team": 1,
+      "timestamp": 150863
+    },
+    {
+      "building_id": "barrosan_clanhold",
+      "building_runtime_id": "166127995484",
+      "building_team": 0,
+      "hp_after": 2075,
+      "kind": "melee",
+      "source_id": "lioraen_bloomdancer",
+      "source_team": 1,
+      "timestamp": 151170
+    },
+    {
+      "building_id": "barrosan_clanhold",
+      "building_runtime_id": "166127995484",
+      "building_team": 0,
+      "hp_after": 2074,
+      "kind": "thorn",
+      "source_id": "lioraen_thorn_ranger",
+      "source_team": 1,
+      "timestamp": 151582
+    },
+    {
+      "building_id": "barrosan_clanhold",
+      "building_runtime_id": "166127995484",
+      "building_team": 0,
+      "hp_after": 2072,
+      "kind": "melee",
+      "source_id": "lioraen_bloomdancer",
+      "source_team": 1,
+      "timestamp": 151651
+    },
+    {
+      "building_id": "barrosan_clanhold",
+      "building_runtime_id": "166127995484",
+      "building_team": 0,
+      "hp_after": 2070,
+      "kind": "melee",
+      "source_id": "lioraen_bloomdancer",
+      "source_team": 1,
+      "timestamp": 152131
+    },
+    {
+      "building_id": "barrosan_clanhold",
+      "building_runtime_id": "166127995484",
+      "building_team": 0,
+      "hp_after": 2069,
+      "kind": "thorn",
+      "source_id": "lioraen_thorn_ranger",
+      "source_team": 1,
+      "timestamp": 152156
+    },
+    {
+      "building_id": "barrosan_clanhold",
+      "building_runtime_id": "166127995484",
+      "building_team": 0,
+      "hp_after": 2067,
+      "kind": "melee",
+      "source_id": "lioraen_bloomdancer",
+      "source_team": 1,
+      "timestamp": 152612
+    },
+    {
+      "building_id": "barrosan_clanhold",
+      "building_runtime_id": "166127995484",
+      "building_team": 0,
+      "hp_after": 2066,
+      "kind": "thorn",
+      "source_id": "lioraen_thorn_ranger",
+      "source_team": 1,
+      "timestamp": 152744
+    },
+    {
+      "building_id": "barrosan_clanhold",
+      "building_runtime_id": "166127995484",
+      "building_team": 0,
+      "hp_after": 2064,
+      "kind": "melee",
+      "source_id": "lioraen_bloomdancer",
+      "source_team": 1,
+      "timestamp": 153104
+    },
+    {
+      "building_id": "barrosan_clanhold",
+      "building_runtime_id": "166127995484",
+      "building_team": 0,
+      "hp_after": 2063,
+      "kind": "thorn",
+      "source_id": "lioraen_thorn_ranger",
+      "source_team": 1,
+      "timestamp": 153317
+    },
+    {
+      "building_id": "barrosan_clanhold",
+      "building_runtime_id": "166127995484",
+      "building_team": 0,
+      "hp_after": 2061,
+      "kind": "melee",
+      "source_id": "lioraen_bloomdancer",
+      "source_team": 1,
+      "timestamp": 153586
+    },
+    {
+      "building_id": "barrosan_clanhold",
+      "building_runtime_id": "166127995484",
+      "building_team": 0,
+      "hp_after": 2060,
+      "kind": "thorn",
+      "source_id": "lioraen_thorn_ranger",
+      "source_team": 1,
+      "timestamp": 153984
+    },
+    {
+      "building_id": "barrosan_clanhold",
+      "building_runtime_id": "166127995484",
+      "building_team": 0,
+      "hp_after": 2058,
+      "kind": "melee",
+      "source_id": "lioraen_bloomdancer",
+      "source_team": 1,
+      "timestamp": 154066
+    },
+    {
+      "building_id": "barrosan_clanhold",
+      "building_runtime_id": "166127995484",
+      "building_team": 0,
+      "hp_after": 2056,
+      "kind": "melee",
+      "source_id": "lioraen_bloomdancer",
+      "source_team": 1,
+      "timestamp": 154546
+    },
+    {
+      "building_id": "barrosan_clanhold",
+      "building_runtime_id": "166127995484",
+      "building_team": 0,
+      "hp_after": 2055,
+      "kind": "thorn",
+      "source_id": "lioraen_thorn_ranger",
+      "source_team": 1,
+      "timestamp": 154717
+    },
+    {
+      "building_id": "barrosan_clanhold",
+      "building_runtime_id": "166127995484",
+      "building_team": 0,
+      "hp_after": 2053,
+      "kind": "melee",
+      "source_id": "lioraen_bloomdancer",
+      "source_team": 1,
+      "timestamp": 155038
+    },
+    {
+      "building_id": "barrosan_clanhold",
+      "building_runtime_id": "166127995484",
+      "building_team": 0,
+      "hp_after": 2052,
+      "kind": "thorn",
+      "source_id": "lioraen_thorn_ranger",
+      "source_team": 1,
+      "timestamp": 155425
+    },
+    {
+      "building_id": "barrosan_clanhold",
+      "building_runtime_id": "166127995484",
+      "building_team": 0,
+      "hp_after": 2050,
+      "kind": "melee",
+      "source_id": "lioraen_bloomdancer",
+      "source_team": 1,
+      "timestamp": 155518
+    },
+    {
+      "building_id": "barrosan_clanhold",
+      "building_runtime_id": "166127995484",
+      "building_team": 0,
+      "hp_after": 2048,
+      "kind": "melee",
+      "source_id": "lioraen_bloomdancer",
+      "source_team": 1,
+      "timestamp": 155999
+    },
+    {
+      "building_id": "barrosan_clanhold",
+      "building_runtime_id": "166127995484",
+      "building_team": 0,
+      "hp_after": 2047,
+      "kind": "thorn",
+      "source_id": "lioraen_thorn_ranger",
+      "source_team": 1,
+      "timestamp": 156132
+    },
+    {
+      "building_id": "barrosan_clanhold",
+      "building_runtime_id": "166127995484",
+      "building_team": 0,
+      "hp_after": 2045,
+      "kind": "melee",
+      "source_id": "lioraen_bloomdancer",
+      "source_team": 1,
+      "timestamp": 156479
+    },
+    {
+      "building_id": "barrosan_clanhold",
+      "building_runtime_id": "166127995484",
+      "building_team": 0,
+      "hp_after": 2044,
+      "kind": "thorn",
+      "source_id": "lioraen_thorn_ranger",
+      "source_team": 1,
+      "timestamp": 156692
+    },
+    {
+      "building_id": "barrosan_clanhold",
+      "building_runtime_id": "166127995484",
+      "building_team": 0,
+      "hp_after": 2042,
+      "kind": "melee",
+      "source_id": "lioraen_bloomdancer",
+      "source_team": 1,
+      "timestamp": 156973
+    },
+    {
+      "building_id": "barrosan_clanhold",
+      "building_runtime_id": "166127995484",
+      "building_team": 0,
+      "hp_after": 2041,
+      "kind": "thorn",
+      "source_id": "lioraen_thorn_ranger",
+      "source_team": 1,
+      "timestamp": 157279
+    },
+    {
+      "building_id": "barrosan_clanhold",
+      "building_runtime_id": "166127995484",
+      "building_team": 0,
+      "hp_after": 2039,
+      "kind": "melee",
+      "source_id": "lioraen_bloomdancer",
+      "source_team": 1,
+      "timestamp": 157453
+    },
+    {
+      "building_id": "barrosan_clanhold",
+      "building_runtime_id": "166127995484",
+      "building_team": 0,
+      "hp_after": 2038,
+      "kind": "thorn",
+      "source_id": "lioraen_thorn_ranger",
+      "source_team": 1,
+      "timestamp": 157852
+    },
+    {
+      "building_id": "barrosan_clanhold",
+      "building_runtime_id": "166127995484",
+      "building_team": 0,
+      "hp_after": 2036,
+      "kind": "melee",
+      "source_id": "lioraen_bloomdancer",
+      "source_team": 1,
+      "timestamp": 157935
+    },
+    {
+      "building_id": "barrosan_clanhold",
+      "building_runtime_id": "166127995484",
+      "building_team": 0,
+      "hp_after": 2034,
+      "kind": "melee",
+      "source_id": "lioraen_bloomdancer",
+      "source_team": 1,
+      "timestamp": 158413
+    },
+    {
+      "building_id": "barrosan_clanhold",
+      "building_runtime_id": "166127995484",
+      "building_team": 0,
+      "hp_after": 2033,
+      "kind": "thorn",
+      "source_id": "lioraen_thorn_ranger",
+      "source_team": 1,
+      "timestamp": 158545
+    },
+    {
+      "building_id": "barrosan_clanhold",
+      "building_runtime_id": "166127995484",
+      "building_team": 0,
+      "hp_after": 2031,
+      "kind": "melee",
+      "source_id": "lioraen_bloomdancer",
+      "source_team": 1,
+      "timestamp": 158905
+    },
+    {
+      "building_id": "barrosan_clanhold",
+      "building_runtime_id": "166127995484",
+      "building_team": 0,
+      "hp_after": 2030,
+      "kind": "thorn",
+      "source_id": "lioraen_thorn_ranger",
+      "source_team": 1,
+      "timestamp": 159279
+    },
+    {
+      "building_id": "barrosan_clanhold",
+      "building_runtime_id": "166127995484",
+      "building_team": 0,
+      "hp_after": 2028,
+      "kind": "melee",
+      "source_id": "lioraen_bloomdancer",
+      "source_team": 1,
+      "timestamp": 159387
+    },
+    {
+      "building_id": "barrosan_clanhold",
+      "building_runtime_id": "166127995484",
+      "building_team": 0,
+      "hp_after": 2026,
+      "kind": "melee",
+      "source_id": "lioraen_bloomdancer",
+      "source_team": 1,
+      "timestamp": 159868
+    },
+    {
+      "building_id": "barrosan_clanhold",
+      "building_runtime_id": "166127995484",
+      "building_team": 0,
+      "hp_after": 2025,
+      "kind": "thorn",
+      "source_id": "lioraen_thorn_ranger",
+      "source_team": 1,
+      "timestamp": 159999
+    },
+    {
+      "building_id": "barrosan_clanhold",
+      "building_runtime_id": "166127995484",
+      "building_team": 0,
+      "hp_after": 2023,
+      "kind": "melee",
+      "source_id": "lioraen_bloomdancer",
+      "source_team": 1,
+      "timestamp": 160348
+    },
+    {
+      "building_id": "barrosan_clanhold",
+      "building_runtime_id": "166127995484",
+      "building_team": 0,
+      "hp_after": 2022,
+      "kind": "thorn",
+      "source_id": "lioraen_thorn_ranger",
+      "source_team": 1,
+      "timestamp": 160667
+    },
+    {
+      "building_id": "barrosan_clanhold",
+      "building_runtime_id": "166127995484",
+      "building_team": 0,
+      "hp_after": 2020,
+      "kind": "melee",
+      "source_id": "lioraen_bloomdancer",
+      "source_team": 1,
+      "timestamp": 160840
+    },
+    {
+      "building_id": "barrosan_clanhold",
+      "building_runtime_id": "166127995484",
+      "building_team": 0,
+      "hp_after": 2019,
+      "kind": "thorn",
+      "source_id": "lioraen_thorn_ranger",
+      "source_team": 1,
+      "timestamp": 161227
+    },
+    {
+      "building_id": "barrosan_clanhold",
+      "building_runtime_id": "166127995484",
+      "building_team": 0,
+      "hp_after": 2017,
+      "kind": "melee",
+      "source_id": "lioraen_bloomdancer",
+      "source_team": 1,
+      "timestamp": 161322
     }
   ],
   "real_building_damage": true

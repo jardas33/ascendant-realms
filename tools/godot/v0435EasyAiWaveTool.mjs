@@ -77,7 +77,8 @@ async function validate() {
   const projectFile = await fs.readFile(path.join(project, 'project.godot'), 'utf8');
   if (!ai.includes('_easy_mode') || !ai.includes('_think_easy()') || !ai.includes('_easy_wave_launched')) failures.push('bounded Easy AI lane missing');
   if (ai.includes('_easy_wave_size')) failures.push('independent Easy wave-size override remains');
-  if (!/"easy":\s*\n\s*_think_interval = 2\.0; _worker_target = 7; _army_attack_size = 6/.test(ai)) failures.push('historical Easy tuning not restored');
+  const easyBlock = ai.match(/"easy":([\s\S]*?)\n\s*"normal":/);
+  if (!easyBlock || !/_think_interval = 2\.0; _worker_target = 7; _army_attack_size = 6/.test(easyBlock[1]) || !/_eco_efficiency = 0\.7; _tech_aggression = 0\.6; _brutal_income = 0\.0/.test(easyBlock[1])) failures.push('historical Easy tuning not restored');
   if (!ai.includes('find_nearest_resource_exact') || !ai.includes('_easy_resource_shortages') || !ai.includes('_easy_bank_ledger')) failures.push('exact resource/shortage/bank ledger missing');
   if (!ai.includes('world.can_place_building') || !ai.includes('_find_easy_build_spot')) failures.push('shared deterministic placement missing');
   if (!ai.includes('queue_unit') || !ai.includes('_choose_easy_mixed_unit')) failures.push('real mixed production queue missing');
@@ -100,7 +101,7 @@ async function validate() {
   let runtimeProof = {};
   if (await exists(runtimePath)) {
     runtimeProof = await readJson('v0435-validation.json');
-    if (runtimeProof.passed !== true || Number(runtimeProof.worker_count) < 3 || Number(runtimeProof.ai_deaths) < 2 || runtimeProof.player_unit_damage !== true || runtimeProof.player_building_damage !== true || runtimeProof.replacement_queued !== true) failures.push('runtime validation does not prove autonomous worker/economy/wave/contact/casualty/replacement chain');
+    if (Number(runtimeProof.worker_count) < 3 || Number(runtimeProof.ai_deaths) < 2 || runtimeProof.player_unit_damage !== true || runtimeProof.player_building_damage !== true || runtimeProof.replacement_queued !== true || runtimeProof.fresh_scene_pending !== true) failures.push('runtime validation does not prove autonomous worker/economy/wave/contact/casualty/replacement chain');
     if (runtimeProof.opponent_race !== 'lioraen' || runtimeProof.difficulty !== 'easy' || runtimeProof.start_resources !== 'standard') failures.push('runtime match contract does not prove Barrosan/Lioraen Easy Standard');
     if (Number(runtimeProof.wave_count) < 6 || Number(runtimeProof.wave_threshold) !== 6 || runtimeProof.mixed_roles !== true || !Array.isArray(runtimeProof.distinct_roles) || runtimeProof.distinct_roles.length < 2) failures.push('runtime wave does not prove six-unit mixed-role launch');
   }
@@ -115,6 +116,8 @@ async function validate() {
   if (await exists(diffPath)) { const d = await readJson('v0435-easy-difficulty-contract-audit.json'); const v = d.final_values || {}; if (v.think_interval !== 2 || v.worker_target !== 7 || v.army_attack_size !== 6 || v.eco_efficiency !== 0.7 || v.tech_aggression !== 0.6 || v.brutal_income !== 0 || d.qa_wave_override !== false) failures.push('Easy difficulty contract audit failed'); }
   const productionPath = path.join(pack, 'v0435-lioraen-production-contract-audit.json');
   if (await exists(productionPath)) { const p = await readJson('v0435-lioraen-production-contract-audit.json'); if (p.race !== 'lioraen' || p.all_ai_units_same_race !== true || p.all_ai_buildings_same_race !== true || !Array.isArray(p.legal_age_one_roles) || p.legal_age_one_roles.length < 2) failures.push('Lioraen production contract audit failed'); }
+  const replacementPath = path.join(pack, 'v0435-casualty-replacement-audit.json');
+  if (await exists(replacementPath)) { const r = await readJson('v0435-casualty-replacement-audit.json'); const replacement = r.replacement?.[0] || {}; if (r.replacement_queued !== true || replacement.opponent_race !== 'lioraen' || !String(replacement.unit_id || '').startsWith('lioraen_') || !String(replacement.building_id || '').startsWith('lioraen_') || /vorthak/i.test(JSON.stringify(replacement))) failures.push('same-race Lioraen replacement audit failed'); }
   const result = { ...runtimeProof, schema: 'v0435-first-autonomous-easy-opponent-wave-validator-v1', baseSha, validationInputSha: head, branch, prTargetBranch: 'codex/v0434-first-combat-casualty-loop', frames, evidence, failures, passed: failures.length === 0 };
   await writeJson('v0435-validation.json', result);
   if (failures.length) { console.error(JSON.stringify(result, null, 2)); process.exitCode = 1; } else console.log(JSON.stringify(result, null, 2));

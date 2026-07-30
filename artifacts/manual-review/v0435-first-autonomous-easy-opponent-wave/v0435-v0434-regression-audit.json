@@ -1,6 +1,6 @@
 {
   "attack_move_resume": true,
-  "combat_damage_events": 13,
-  "death_events": 3,
+  "combat_damage_events": 28,
+  "death_events": 2,
   "projectile_provenance": true
 }

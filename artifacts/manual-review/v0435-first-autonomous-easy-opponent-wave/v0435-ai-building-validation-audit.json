@@ -1,7 +1,7 @@
 {
   "events": [
     {
-      "building_id": "vorthak_bone_barracks",
+      "building_id": "lioraen_thornhall",
       "event": "placed",
       "is_built": false,
       "kind": "barracks",
@@ -11,22 +11,22 @@
         "z": 91.5147171020508
       },
       "resources_after": {
-        "food": 755,
-        "gold": 600,
-        "stone": 560,
-        "timber": 760
+        "food": 150,
+        "gold": 180,
+        "stone": 130,
+        "timber": 150
       },
       "resources_before": {
-        "food": 755,
-        "gold": 600,
-        "stone": 600,
-        "timber": 900
+        "food": 150,
+        "gold": 180,
+        "stone": 180,
+        "timber": 300
       },
-      "time": 1.01194093939394,
-      "worker_id": "vorthak_worker"
+      "time": 2.00358266666667,
+      "worker_id": "lioraen_worker"
     },
     {
-      "building_id": "vorthak_thrall_pit",
+      "building_id": "lioraen_lifewell",
       "event": "placed",
       "is_built": false,
       "kind": "house",
@@ -36,19 +36,19 @@
         "z": 85.8578643798828
       },
       "resources_after": {
-        "food": 710,
-        "gold": 600,
-        "stone": 550,
-        "timber": 730
+        "food": 100,
+        "gold": 180,
+        "stone": 120,
+        "timber": 110
       },
       "resources_before": {
-        "food": 710,
-        "gold": 600,
-        "stone": 570,
-        "timber": 780
+        "food": 100,
+        "gold": 180,
+        "stone": 140,
+        "timber": 170
       },
-      "time": 12.0423103333335,
-      "worker_id": "vorthak_worker"
+      "time": 14.3092846666668,
+      "worker_id": "lioraen_worker"
     }
   ],
   "failed_sites_spend_zero": true,

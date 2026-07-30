@@ -3,14 +3,46 @@
   "events": [
     {
       "attack_move": true,
-      "count": 4,
+      "count": 6,
+      "difficulty": "easy",
+      "distinct_roles": [
+        "ranged",
+        "melee",
+        "defender"
+      ],
       "event": "first_wave_launched",
+      "opponent_race": "lioraen",
       "target": {
         "x": -100,
         "y": 0,
         "z": -100
       },
-      "time": 68.7594066666728
+      "threshold": 6,
+      "time": 139.903562000015,
+      "wave_participant_ids": [
+        "lioraen_thorn_ranger",
+        "lioraen_thorn_ranger",
+        "lioraen_bloomdancer",
+        "lioraen_rootwarden_guard",
+        "lioraen_bloomdancer",
+        "lioraen_rootwarden_guard"
+      ],
+      "wave_participant_roles": [
+        "ranged",
+        "ranged",
+        "melee",
+        "defender",
+        "melee",
+        "defender"
+      ],
+      "wave_participant_runtime_ids": [
+        "170221636394",
+        "640923209049",
+        "732744912218",
+        "865905675634",
+        "958281026977",
+        "1091257241017"
+      ]
     }
   ],
   "launched": true
