@@ -324,10 +324,8 @@ func _issue_context_command(queue: bool) -> void:
 	var units := _selected_units()
 	if hit and ("team" in hit):
 		if hit.team != player_team:
-			# attack enemy
-			for u in units:
-				u.command_attack(hit)
-			world.spawn_ring_fx(hit.global_position, Color(0.9,0.3,0.3), 1.2)
+			# attack enemy through the same public path used by deterministic capture.
+			issue_attack_target(hit)
 			return
 		elif (hit is ResourceNode):
 			pass
@@ -344,6 +342,19 @@ func _issue_context_command(queue: bool) -> void:
 	if ground != null:
 		_formation_move(units, ground)
 		world.spawn_ring_fx(ground, world.player_commander.color, 1.0)
+
+func issue_attack_target(target) -> bool:
+	_clean_selection()
+	if not is_instance_valid(target) or not ("team" in target) or int(target.team) == player_team:
+		return false
+	var issued := false
+	for u in _selected_units():
+		if u.has_method("command_attack"):
+			u.command_attack(target)
+			issued = u.state == Unit.State.ATTACKING or issued
+	if issued and world:
+		world.spawn_ring_fx(target.global_position, Color(0.9, 0.3, 0.3), 1.2)
+	return issued
 
 func _formation_move(units: Array, target: Vector3) -> void:
 	if units.size() <= 1:
@@ -364,13 +375,25 @@ func _formation_move(units: Array, target: Vector3) -> void:
 func _begin_attack_move() -> void:
 	var ground = _raycast_ground()
 	if ground != null:
-		for u in _selected_units():
-			u.command_move(ground, true)
+		issue_attack_move_destination(ground)
 		world.spawn_ring_fx(ground, Color(0.9,0.4,0.3), 1.2)
 
+func issue_attack_move_destination(destination: Vector3) -> bool:
+	var issued := false
+	for u in _selected_units():
+		u.command_move(destination, true)
+		issued = true
+	return issued
+
 func _cmd_stop() -> void:
+	issue_stop()
+
+func issue_stop() -> bool:
+	var issued := false
 	for u in _selected_units():
 		u.command_stop()
+		issued = true
+	return issued
 
 func _cmd_hold() -> void:
 	for u in _selected_units():
