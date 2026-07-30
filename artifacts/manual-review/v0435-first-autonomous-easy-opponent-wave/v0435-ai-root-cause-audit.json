@@ -1,0 +1,9 @@
+{
+  "bounded_easy_lane": true,
+  "brutal_income": 0,
+  "direct_capture_driver_ai_commands": false,
+  "exact_resource_assignment": true,
+  "one_enemy_ai_node": true,
+  "shared_build_contract": true,
+  "shortage_fallback_is_explicit": true
+}

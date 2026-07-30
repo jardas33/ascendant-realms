@@ -34,6 +34,7 @@ var kills_by_player := 0
 var combat_damage_events: Array = []
 var combat_death_events: Array = []
 var combat_kill_events: Array = []
+var building_damage_events: Array = []
 
 # v0.431 runtime evidence: this is an audit trail around the existing
 # construction transaction, not a second economy or construction system.
@@ -407,7 +408,7 @@ func place_building(building_id: String, team: int, pos: Vector3):
 	if bdef.is_empty():
 		return null
 	bdef["id"] = building_id
-	if team < 0 or team >= commanders.size():
+	if not can_place_building(building_id, team, pos, true):
 		return null
 	var cmd = commanders[team]
 	var is_v0431_target := building_id == "barrosan_clan_croft" and team == 0
@@ -443,6 +444,47 @@ func place_building(building_id: String, team: int, pos: Vector3):
 	b.set_meta("v0431_transaction_id", tx_id)
 	b.set_meta("v0431_cost", cost)
 	return b
+
+## Shared authoritative build-site contract used by both the player controller
+## and EnemyAI. This is validation only: it does not spend resources or create
+## nodes. A caller still owns the construction transaction through
+## place_building(), so invalid previews and failed AI attempts are side-effect
+## free.
+func can_place_building(building_id: String, team: int, pos: Vector3, check_affordability: bool = true, worker = null) -> bool:
+	var bdef := GameData.get_building(building_id)
+	if bdef.is_empty() or team < 0 or team >= commanders.size():
+		return false
+	var cmd = commanders[team]
+	if not is_instance_valid(cmd) or cmd.defeated:
+		return false
+	if check_affordability and not cmd.can_afford(bdef.get("cost", {})):
+		return false
+	var fp := float(bdef.get("footprint", 4.0))
+	var lim := float(map.get("size", MapDefs.MAP_SIZE)) - 6.0
+	if abs(pos.x) > lim or abs(pos.z) > lim or abs(pos.y) > 1.0:
+		return false
+	# A real construction worker is required, but the worker is not reserved by
+	# this pure validation call. This catches AI/player attempts that could never
+	# be serviced while leaving the existing worker command as the authority.
+	var has_worker := false
+	for u in cmd.units:
+		if is_instance_valid(u) and not u.is_dead and u.is_worker and u.state != u.State.BUILDING:
+			if worker == null or u == worker:
+				has_worker = true
+				break
+	if not has_worker:
+		return false
+	# Entire radial footprint must clear every friendly and enemy building,
+	# including unfinished buildings, and resource nodes.
+	for b in all_buildings():
+		if is_instance_valid(b) and not b.is_dead:
+			var other_fp := float(b.def.get("footprint", 4.0))
+			if pos.distance_to(b.global_position) < fp + other_fp:
+				return false
+	for r in get_tree().get_nodes_in_group("resources"):
+		if is_instance_valid(r) and not r.depleted and pos.distance_to(r.global_position) < fp + 2.0:
+			return false
+	return true
 
 func spawn_projectile(from: Vector3, target, dmg: float, dtype: String, team: int, kind: String, splash: float, source) -> void:
 	var p = ProjectileScript.new()
@@ -568,7 +610,9 @@ func find_nearest_resource_exact(pos: Vector3, kind: String):
 func is_resource_command_valid(node, worker) -> bool:
 	if not is_instance_valid(node) or not (node is ResourceNode) or node.depleted:
 		return false
-	if not is_instance_valid(worker) or not worker.is_worker or worker.is_dead or worker.team != player_team:
+	if not is_instance_valid(worker) or not worker.is_worker or worker.is_dead:
+		return false
+	if worker.team < 0 or worker.team >= commanders.size() or commanders[worker.team].defeated:
 		return false
 	var half := float(map.get("size", MapDefs.MAP_SIZE))
 	return abs(node.global_position.x) <= half and abs(node.global_position.z) <= half
@@ -778,6 +822,21 @@ func record_combat_damage(victim, source, final_damage: float, hp_before: float,
 	combat_damage_events.append({"victim_id": String(victim.unit_id), "victim_runtime_id": str(victim.get_instance_id()), "source_id": source_id, "source_runtime_id": source_runtime_id, "source_team": source_team, "damage_type": String(victim._last_damage_type), "kind": kind, "final_damage": final_damage, "hp_before": hp_before, "hp_after": hp_after, "killing_blow": hp_after <= 0.0, "timestamp": Time.get_ticks_msec()})
 
 func on_building_damaged(building, from) -> void:
+	var source_team := -1
+	var source_id := ""
+	var kind := "environment"
+	if from is Dictionary:
+		source_team = int(from.get("source_team", -1))
+		source_id = String(from.get("source_unit_id", ""))
+		kind = String(from.get("projectile_kind", "melee"))
+	elif is_instance_valid(from):
+		source_team = int(from.team) if "team" in from else -1
+		source_id = String(from.unit_id) if "unit_id" in from else ""
+		kind = String(from.projectile_kind) if "projectile_kind" in from else "melee"
+	building_damage_events.append({"building_id": String(building.building_id),
+		"building_runtime_id": str(building.get_instance_id()), "building_team": int(building.team),
+		"source_id": source_id, "source_team": source_team, "kind": kind,
+		"hp_after": building.hp, "timestamp": Time.get_ticks_msec()})
 	if building.team == player_team:
 		if randf() < 0.02:
 			Sfx.play("under_attack", -6.0)

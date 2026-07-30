@@ -1,0 +1,13 @@
+{
+  "schema": "v0435-capture-command-v1",
+  "baseSha": "6d52ec1309b09401ed6c705b6dda98707d26b33e",
+  "captureSourceSha": "6d52ec1309b09401ed6c705b6dda98707d26b33e",
+  "branch": "codex/v0435-first-autonomous-easy-opponent-wave",
+  "productionScene": "scenes/main.tscn",
+  "method": "headed official Godot Forward Plus runtime observing one autonomous Easy EnemyAI and using RTSController only for player response",
+  "directAiCommands": false,
+  "directResourceWrites": false,
+  "directHpWrites": false,
+  "directDeathCalls": false,
+  "status": "completed"
+}

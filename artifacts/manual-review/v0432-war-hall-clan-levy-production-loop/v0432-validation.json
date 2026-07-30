@@ -2,8 +2,8 @@
   "schema": "v0432-war-hall-production-validator-v1",
   "baseSha": "16fcf322316a626e0e32bf834020bafdce7d0647",
   "captureSourceSha": "16fcf322316a626e0e32bf834020bafdce7d0647",
-  "finalCommitSha": "d54cea08af9ae871fa53ed7257e06e28da2f70e6",
-  "branch": "codex/v0432-war-hall-clan-levy-production-loop",
+  "finalCommitSha": "6d52ec1309b09401ed6c705b6dda98707d26b33e",
+  "branch": "codex/v0435-first-autonomous-easy-opponent-wave",
   "frames": [
     "01_V0432_INITIAL_GAMEPLAY_STATE.png",
     "02_V0432_WORKER_SELECTED.png",

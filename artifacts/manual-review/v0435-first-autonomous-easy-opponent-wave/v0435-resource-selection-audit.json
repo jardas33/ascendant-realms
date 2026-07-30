@@ -1,0 +1,87 @@
+{
+  "assignments": [
+    {
+      "assigned": "food",
+      "explicit_fallback": false,
+      "node_id": "171731585925",
+      "requested": "food",
+      "time": 1.01194093939394,
+      "worker_id": "vorthak_worker",
+      "worker_runtime_id": "168409696997"
+    },
+    {
+      "assigned": "timber",
+      "explicit_fallback": false,
+      "node_id": "172570446760",
+      "requested": "timber",
+      "time": 1.01194093939394,
+      "worker_id": "vorthak_worker",
+      "worker_runtime_id": "168862681852"
+    },
+    {
+      "assigned": "stone",
+      "explicit_fallback": false,
+      "node_id": "172234902426",
+      "requested": "stone",
+      "time": 1.01194093939394,
+      "worker_id": "vorthak_worker",
+      "worker_runtime_id": "169315666707"
+    },
+    {
+      "assigned": "food",
+      "explicit_fallback": false,
+      "node_id": "171731585925",
+      "requested": "food",
+      "time": 12.0423103333335,
+      "worker_id": "vorthak_worker",
+      "worker_runtime_id": "326887278865"
+    },
+    {
+      "assigned": "timber",
+      "explicit_fallback": false,
+      "node_id": "172402674593",
+      "requested": "timber",
+      "time": 23.1735036666661,
+      "worker_id": "vorthak_worker",
+      "worker_runtime_id": "477731228884"
+    },
+    {
+      "assigned": "food",
+      "explicit_fallback": false,
+      "node_id": "171731585925",
+      "requested": "food",
+      "time": 34.3196516666654,
+      "worker_id": "vorthak_worker",
+      "worker_runtime_id": "168862681852"
+    },
+    {
+      "assigned": "gold",
+      "explicit_fallback": false,
+      "node_id": "171899358092",
+      "requested": "gold",
+      "time": 34.3196516666654,
+      "worker_id": "vorthak_worker",
+      "worker_runtime_id": "631880289577"
+    },
+    {
+      "assigned": "food",
+      "explicit_fallback": false,
+      "node_id": "171731585925",
+      "requested": "food",
+      "time": 36.3385503333324,
+      "worker_id": "vorthak_worker",
+      "worker_runtime_id": "168409696997"
+    },
+    {
+      "assigned": "food",
+      "explicit_fallback": false,
+      "node_id": "171731585925",
+      "requested": "food",
+      "time": 45.4533226666677,
+      "worker_id": "vorthak_worker",
+      "worker_runtime_id": "783663762730"
+    }
+  ],
+  "no_mixed_cargo": true,
+  "shortages": []
+}

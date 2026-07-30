@@ -1,0 +1,346 @@
+{
+  "ai_source_events": 34,
+  "events": [
+    {
+      "building_id": "barrosan_clanhold",
+      "building_runtime_id": "165675010652",
+      "building_team": 0,
+      "hp_after": 2199,
+      "kind": "melee",
+      "source_id": "vorthak_ash_thrall",
+      "source_team": 1,
+      "timestamp": 158974
+    },
+    {
+      "building_id": "barrosan_clanhold",
+      "building_runtime_id": "165675010652",
+      "building_team": 0,
+      "hp_after": 2198,
+      "kind": "melee",
+      "source_id": "vorthak_ash_thrall",
+      "source_team": 1,
+      "timestamp": 159574
+    },
+    {
+      "building_id": "barrosan_clanhold",
+      "building_runtime_id": "165675010652",
+      "building_team": 0,
+      "hp_after": 2197,
+      "kind": "melee",
+      "source_id": "vorthak_ash_thrall",
+      "source_team": 1,
+      "timestamp": 160427
+    },
+    {
+      "building_id": "barrosan_clanhold",
+      "building_runtime_id": "165675010652",
+      "building_team": 0,
+      "hp_after": 2196,
+      "kind": "melee",
+      "source_id": "vorthak_ash_thrall",
+      "source_team": 1,
+      "timestamp": 160787
+    },
+    {
+      "building_id": "barrosan_clanhold",
+      "building_runtime_id": "165675010652",
+      "building_team": 0,
+      "hp_after": 2195,
+      "kind": "melee",
+      "source_id": "vorthak_ash_thrall",
+      "source_team": 1,
+      "timestamp": 162161
+    },
+    {
+      "building_id": "barrosan_clanhold",
+      "building_runtime_id": "165675010652",
+      "building_team": 0,
+      "hp_after": 2194,
+      "kind": "melee",
+      "source_id": "vorthak_ash_thrall",
+      "source_team": 1,
+      "timestamp": 163174
+    },
+    {
+      "building_id": "barrosan_clanhold",
+      "building_runtime_id": "165675010652",
+      "building_team": 0,
+      "hp_after": 2193,
+      "kind": "melee",
+      "source_id": "vorthak_ash_thrall",
+      "source_team": 1,
+      "timestamp": 164161
+    },
+    {
+      "building_id": "barrosan_clanhold",
+      "building_runtime_id": "165675010652",
+      "building_team": 0,
+      "hp_after": 2192,
+      "kind": "melee",
+      "source_id": "vorthak_ash_thrall",
+      "source_team": 1,
+      "timestamp": 165162
+    },
+    {
+      "building_id": "barrosan_clanhold",
+      "building_runtime_id": "165675010652",
+      "building_team": 0,
+      "hp_after": 2191,
+      "kind": "melee",
+      "source_id": "vorthak_ash_thrall",
+      "source_team": 1,
+      "timestamp": 166164
+    },
+    {
+      "building_id": "barrosan_clanhold",
+      "building_runtime_id": "165675010652",
+      "building_team": 0,
+      "hp_after": 2190,
+      "kind": "melee",
+      "source_id": "vorthak_ash_thrall",
+      "source_team": 1,
+      "timestamp": 167163
+    },
+    {
+      "building_id": "barrosan_clanhold",
+      "building_runtime_id": "165675010652",
+      "building_team": 0,
+      "hp_after": 2189,
+      "kind": "melee",
+      "source_id": "vorthak_ash_thrall",
+      "source_team": 1,
+      "timestamp": 168163
+    },
+    {
+      "building_id": "barrosan_clanhold",
+      "building_runtime_id": "165675010652",
+      "building_team": 0,
+      "hp_after": 2188,
+      "kind": "melee",
+      "source_id": "vorthak_ash_thrall",
+      "source_team": 1,
+      "timestamp": 169163
+    },
+    {
+      "building_id": "barrosan_clanhold",
+      "building_runtime_id": "165675010652",
+      "building_team": 0,
+      "hp_after": 2187,
+      "kind": "melee",
+      "source_id": "vorthak_ash_thrall",
+      "source_team": 1,
+      "timestamp": 170164
+    },
+    {
+      "building_id": "barrosan_clanhold",
+      "building_runtime_id": "165675010652",
+      "building_team": 0,
+      "hp_after": 2186,
+      "kind": "melee",
+      "source_id": "vorthak_ash_thrall",
+      "source_team": 1,
+      "timestamp": 171163
+    },
+    {
+      "building_id": "barrosan_clanhold",
+      "building_runtime_id": "165675010652",
+      "building_team": 0,
+      "hp_after": 2185,
+      "kind": "melee",
+      "source_id": "vorthak_ash_thrall",
+      "source_team": 1,
+      "timestamp": 172163
+    },
+    {
+      "building_id": "barrosan_clanhold",
+      "building_runtime_id": "165675010652",
+      "building_team": 0,
+      "hp_after": 2184,
+      "kind": "melee",
+      "source_id": "vorthak_ash_thrall",
+      "source_team": 1,
+      "timestamp": 173164
+    },
+    {
+      "building_id": "barrosan_clanhold",
+      "building_runtime_id": "165675010652",
+      "building_team": 0,
+      "hp_after": 2183,
+      "kind": "melee",
+      "source_id": "vorthak_ash_thrall",
+      "source_team": 1,
+      "timestamp": 174164
+    },
+    {
+      "building_id": "barrosan_clanhold",
+      "building_runtime_id": "165675010652",
+      "building_team": 0,
+      "hp_after": 2182,
+      "kind": "melee",
+      "source_id": "vorthak_ash_thrall",
+      "source_team": 1,
+      "timestamp": 175166
+    },
+    {
+      "building_id": "barrosan_clanhold",
+      "building_runtime_id": "165675010652",
+      "building_team": 0,
+      "hp_after": 2181,
+      "kind": "melee",
+      "source_id": "vorthak_ash_thrall",
+      "source_team": 1,
+      "timestamp": 176166
+    },
+    {
+      "building_id": "barrosan_clanhold",
+      "building_runtime_id": "165675010652",
+      "building_team": 0,
+      "hp_after": 2180,
+      "kind": "melee",
+      "source_id": "vorthak_ash_thrall",
+      "source_team": 1,
+      "timestamp": 177166
+    },
+    {
+      "building_id": "barrosan_clanhold",
+      "building_runtime_id": "165675010652",
+      "building_team": 0,
+      "hp_after": 2179,
+      "kind": "melee",
+      "source_id": "vorthak_ash_thrall",
+      "source_team": 1,
+      "timestamp": 178166
+    },
+    {
+      "building_id": "barrosan_clanhold",
+      "building_runtime_id": "165675010652",
+      "building_team": 0,
+      "hp_after": 2178,
+      "kind": "melee",
+      "source_id": "vorthak_ash_thrall",
+      "source_team": 1,
+      "timestamp": 179166
+    },
+    {
+      "building_id": "barrosan_clanhold",
+      "building_runtime_id": "165675010652",
+      "building_team": 0,
+      "hp_after": 2177,
+      "kind": "melee",
+      "source_id": "vorthak_ash_thrall",
+      "source_team": 1,
+      "timestamp": 180166
+    },
+    {
+      "building_id": "barrosan_clanhold",
+      "building_runtime_id": "165675010652",
+      "building_team": 0,
+      "hp_after": 2176,
+      "kind": "melee",
+      "source_id": "vorthak_ash_thrall",
+      "source_team": 1,
+      "timestamp": 181168
+    },
+    {
+      "building_id": "barrosan_clanhold",
+      "building_runtime_id": "165675010652",
+      "building_team": 0,
+      "hp_after": 2175,
+      "kind": "melee",
+      "source_id": "vorthak_ash_thrall",
+      "source_team": 1,
+      "timestamp": 182168
+    },
+    {
+      "building_id": "barrosan_clanhold",
+      "building_runtime_id": "165675010652",
+      "building_team": 0,
+      "hp_after": 2174,
+      "kind": "melee",
+      "source_id": "vorthak_ash_thrall",
+      "source_team": 1,
+      "timestamp": 183169
+    },
+    {
+      "building_id": "barrosan_clanhold",
+      "building_runtime_id": "165675010652",
+      "building_team": 0,
+      "hp_after": 2173,
+      "kind": "melee",
+      "source_id": "vorthak_ash_thrall",
+      "source_team": 1,
+      "timestamp": 184168
+    },
+    {
+      "building_id": "barrosan_clanhold",
+      "building_runtime_id": "165675010652",
+      "building_team": 0,
+      "hp_after": 2172,
+      "kind": "melee",
+      "source_id": "vorthak_ash_thrall",
+      "source_team": 1,
+      "timestamp": 185168
+    },
+    {
+      "building_id": "barrosan_clanhold",
+      "building_runtime_id": "165675010652",
+      "building_team": 0,
+      "hp_after": 2171,
+      "kind": "melee",
+      "source_id": "vorthak_ash_thrall",
+      "source_team": 1,
+      "timestamp": 186169
+    },
+    {
+      "building_id": "barrosan_clanhold",
+      "building_runtime_id": "165675010652",
+      "building_team": 0,
+      "hp_after": 2170,
+      "kind": "melee",
+      "source_id": "vorthak_ash_thrall",
+      "source_team": 1,
+      "timestamp": 187170
+    },
+    {
+      "building_id": "barrosan_clanhold",
+      "building_runtime_id": "165675010652",
+      "building_team": 0,
+      "hp_after": 2169,
+      "kind": "melee",
+      "source_id": "vorthak_ash_thrall",
+      "source_team": 1,
+      "timestamp": 188169
+    },
+    {
+      "building_id": "barrosan_clanhold",
+      "building_runtime_id": "165675010652",
+      "building_team": 0,
+      "hp_after": 2168,
+      "kind": "melee",
+      "source_id": "vorthak_ash_thrall",
+      "source_team": 1,
+      "timestamp": 189171
+    },
+    {
+      "building_id": "barrosan_clanhold",
+      "building_runtime_id": "165675010652",
+      "building_team": 0,
+      "hp_after": 2167,
+      "kind": "melee",
+      "source_id": "vorthak_ash_thrall",
+      "source_team": 1,
+      "timestamp": 190170
+    },
+    {
+      "building_id": "barrosan_clanhold",
+      "building_runtime_id": "165675010652",
+      "building_team": 0,
+      "hp_after": 2166,
+      "kind": "melee",
+      "source_id": "vorthak_ash_thrall",
+      "source_team": 1,
+      "timestamp": 191171
+    }
+  ],
+  "real_building_damage": true
+}

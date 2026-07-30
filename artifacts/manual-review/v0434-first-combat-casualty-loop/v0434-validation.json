@@ -2,9 +2,9 @@
   "schema": "v0434-first-real-combat-validator-v1",
   "baseSha": "3b09035fc1001acd423801d46c557852daec8f70",
   "combatRepairSha": "9d5035443ccd5cafa39a555a3197cefc33893502",
-  "captureSourceSha": "9d5035443ccd5cafa39a555a3197cefc33893502",
-  "validationInputSha": "9d5035443ccd5cafa39a555a3197cefc33893502",
-  "branch": "codex/v0434-first-combat-casualty-loop",
+  "captureSourceSha": "6d52ec1309b09401ed6c705b6dda98707d26b33e",
+  "validationInputSha": "6d52ec1309b09401ed6c705b6dda98707d26b33e",
+  "branch": "codex/v0435-first-autonomous-easy-opponent-wave",
   "prNumber": 8,
   "frames": [
     "01_V0434_INITIAL_REAL_SKIRMISH.png",

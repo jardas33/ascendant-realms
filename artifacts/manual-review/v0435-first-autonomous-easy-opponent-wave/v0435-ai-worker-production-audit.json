@@ -1,0 +1,182 @@
+{
+  "events": [
+    {
+      "building_id": "vorthak_nighthold",
+      "event": "worker_queue",
+      "queue_count": 1,
+      "resources_after": {
+        "food": 755,
+        "gold": 600,
+        "stone": 600,
+        "timber": 900
+      },
+      "resources_before": {
+        "food": 800,
+        "gold": 600,
+        "stone": 600,
+        "timber": 900
+      },
+      "time": 1.01194093939394,
+      "unit_id": "vorthak_worker"
+    },
+    {
+      "building_id": "vorthak_nighthold",
+      "event": "worker_queue",
+      "queue_count": 1,
+      "resources_after": {
+        "food": 710,
+        "gold": 600,
+        "stone": 570,
+        "timber": 780
+      },
+      "resources_before": {
+        "food": 755,
+        "gold": 600,
+        "stone": 570,
+        "timber": 780
+      },
+      "time": 12.0423103333335,
+      "unit_id": "vorthak_worker"
+    },
+    {
+      "building_id": "vorthak_nighthold",
+      "event": "worker_queue",
+      "queue_count": 1,
+      "resources_after": {
+        "food": 675,
+        "gold": 600,
+        "stone": 560,
+        "timber": 730
+      },
+      "resources_before": {
+        "food": 720,
+        "gold": 600,
+        "stone": 560,
+        "timber": 730
+      },
+      "time": 23.1735036666661,
+      "unit_id": "vorthak_worker"
+    },
+    {
+      "building_id": "vorthak_nighthold",
+      "event": "worker_queue",
+      "queue_count": 1,
+      "resources_after": {
+        "food": 640,
+        "gold": 600,
+        "stone": 580,
+        "timber": 740
+      },
+      "resources_before": {
+        "food": 685,
+        "gold": 600,
+        "stone": 580,
+        "timber": 740
+      },
+      "time": 34.3196516666654,
+      "unit_id": "vorthak_worker"
+    },
+    {
+      "building_id": "vorthak_bone_barracks",
+      "event": "mixed_unit_queue",
+      "queue_count": 1,
+      "resources_after": {
+        "food": 600,
+        "gold": 595,
+        "stone": 580,
+        "timber": 750
+      },
+      "resources_before": {
+        "food": 640,
+        "gold": 600,
+        "stone": 580,
+        "timber": 750
+      },
+      "role": "melee",
+      "time": 36.3385503333324,
+      "unit_id": "vorthak_ash_thrall"
+    },
+    {
+      "building_id": "vorthak_bone_barracks",
+      "event": "mixed_unit_queue",
+      "queue_count": 1,
+      "resources_after": {
+        "food": 580,
+        "gold": 600,
+        "stone": 590,
+        "timber": 760
+      },
+      "resources_before": {
+        "food": 620,
+        "gold": 605,
+        "stone": 590,
+        "timber": 760
+      },
+      "role": "melee",
+      "time": 45.4533226666677,
+      "unit_id": "vorthak_ash_thrall"
+    },
+    {
+      "building_id": "vorthak_bone_barracks",
+      "event": "mixed_unit_queue",
+      "queue_count": 1,
+      "resources_after": {
+        "food": 570,
+        "gold": 605,
+        "stone": 600,
+        "timber": 780
+      },
+      "resources_before": {
+        "food": 610,
+        "gold": 610,
+        "stone": 600,
+        "timber": 780
+      },
+      "role": "melee",
+      "time": 54.5730946666697,
+      "unit_id": "vorthak_ash_thrall"
+    },
+    {
+      "building_id": "vorthak_bone_barracks",
+      "event": "mixed_unit_queue",
+      "queue_count": 1,
+      "resources_after": {
+        "food": 900,
+        "gold": 933,
+        "stone": 720,
+        "timber": 940
+      },
+      "resources_before": {
+        "food": 940,
+        "gold": 938,
+        "stone": 720,
+        "timber": 940
+      },
+      "role": "melee",
+      "time": 134.587602333348,
+      "unit_id": "vorthak_ash_thrall"
+    },
+    {
+      "building_id": "vorthak_bone_barracks",
+      "event": "mixed_unit_queue",
+      "queue_count": 1,
+      "resources_after": {
+        "food": 900,
+        "gold": 996,
+        "stone": 730,
+        "timber": 960
+      },
+      "resources_before": {
+        "food": 940,
+        "gold": 1001,
+        "stone": 730,
+        "timber": 960
+      },
+      "role": "melee",
+      "time": 143.70737433334,
+      "unit_id": "vorthak_ash_thrall"
+    }
+  ],
+  "real_hq_queue": true,
+  "worker_count": 7
+}

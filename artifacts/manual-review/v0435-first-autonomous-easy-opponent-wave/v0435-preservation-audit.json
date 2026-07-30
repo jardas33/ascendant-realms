@@ -1,0 +1,9 @@
+{
+  "direct_ai_commands": false,
+  "direct_death_calls": false,
+  "direct_hp_writes": false,
+  "resources_not_injected": true,
+  "saves_unchanged": true,
+  "stable_ids_unchanged": true,
+  "true_default_unchanged": true
+}

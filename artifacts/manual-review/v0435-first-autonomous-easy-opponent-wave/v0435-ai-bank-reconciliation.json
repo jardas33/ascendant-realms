@@ -1,0 +1,2735 @@
+{
+  "ledger": [
+    {
+      "after": {
+        "food": 755,
+        "gold": 600,
+        "stone": 600,
+        "timber": 900
+      },
+      "before": {
+        "food": 800,
+        "gold": 600,
+        "stone": 600,
+        "timber": 900
+      },
+      "event": "worker_queue",
+      "subject": "vorthak_worker",
+      "time": 1.01194093939394
+    },
+    {
+      "after": {
+        "food": 755,
+        "gold": 600,
+        "stone": 560,
+        "timber": 760
+      },
+      "before": {
+        "food": 755,
+        "gold": 600,
+        "stone": 600,
+        "timber": 900
+      },
+      "event": "building_placed",
+      "subject": "vorthak_bone_barracks",
+      "time": 1.01194093939394
+    },
+    {
+      "after": {
+        "food": 755,
+        "gold": 600,
+        "stone": 560,
+        "timber": 770
+      },
+      "amount": 10,
+      "before": {
+        "food": 755,
+        "gold": 600,
+        "stone": 560,
+        "timber": 760
+      },
+      "dropoff_id": "vorthak_nighthold",
+      "event": "deposit",
+      "resource": "timber",
+      "timestamp_msec": 31459,
+      "worker_id": "vorthak_worker"
+    },
+    {
+      "after": {
+        "food": 755,
+        "gold": 600,
+        "stone": 560,
+        "timber": 780
+      },
+      "amount": 10,
+      "before": {
+        "food": 755,
+        "gold": 600,
+        "stone": 560,
+        "timber": 770
+      },
+      "dropoff_id": "vorthak_nighthold",
+      "event": "deposit",
+      "resource": "timber",
+      "timestamp_msec": 36515,
+      "worker_id": "vorthak_worker"
+    },
+    {
+      "after": {
+        "food": 755,
+        "gold": 600,
+        "stone": 570,
+        "timber": 780
+      },
+      "amount": 10,
+      "before": {
+        "food": 755,
+        "gold": 600,
+        "stone": 560,
+        "timber": 780
+      },
+      "dropoff_id": "vorthak_nighthold",
+      "event": "deposit",
+      "resource": "stone",
+      "timestamp_msec": 36541,
+      "worker_id": "vorthak_worker"
+    },
+    {
+      "after": {
+        "food": 710,
+        "gold": 600,
+        "stone": 570,
+        "timber": 780
+      },
+      "before": {
+        "food": 755,
+        "gold": 600,
+        "stone": 570,
+        "timber": 780
+      },
+      "event": "worker_queue",
+      "subject": "vorthak_worker",
+      "time": 12.0423103333335
+    },
+    {
+      "after": {
+        "food": 710,
+        "gold": 600,
+        "stone": 550,
+        "timber": 730
+      },
+      "before": {
+        "food": 710,
+        "gold": 600,
+        "stone": 570,
+        "timber": 780
+      },
+      "event": "building_placed",
+      "subject": "vorthak_thrall_pit",
+      "time": 12.0423103333335
+    },
+    {
+      "after": {
+        "food": 710,
+        "gold": 600,
+        "stone": 560,
+        "timber": 730
+      },
+      "amount": 10,
+      "before": {
+        "food": 710,
+        "gold": 600,
+        "stone": 550,
+        "timber": 730
+      },
+      "dropoff_id": "vorthak_nighthold",
+      "event": "deposit",
+      "resource": "stone",
+      "timestamp_msec": 45585,
+      "worker_id": "vorthak_worker"
+    },
+    {
+      "after": {
+        "food": 720,
+        "gold": 600,
+        "stone": 560,
+        "timber": 730
+      },
+      "amount": 10,
+      "before": {
+        "food": 710,
+        "gold": 600,
+        "stone": 560,
+        "timber": 730
+      },
+      "dropoff_id": "vorthak_nighthold",
+      "event": "deposit",
+      "resource": "food",
+      "timestamp_msec": 49039,
+      "worker_id": "vorthak_worker"
+    },
+    {
+      "after": {
+        "food": 675,
+        "gold": 600,
+        "stone": 560,
+        "timber": 730
+      },
+      "before": {
+        "food": 720,
+        "gold": 600,
+        "stone": 560,
+        "timber": 730
+      },
+      "event": "worker_queue",
+      "subject": "vorthak_worker",
+      "time": 23.1735036666661
+    },
+    {
+      "after": {
+        "food": 675,
+        "gold": 600,
+        "stone": 570,
+        "timber": 730
+      },
+      "amount": 10,
+      "before": {
+        "food": 675,
+        "gold": 600,
+        "stone": 560,
+        "timber": 730
+      },
+      "dropoff_id": "vorthak_nighthold",
+      "event": "deposit",
+      "resource": "stone",
+      "timestamp_msec": 52773,
+      "worker_id": "vorthak_worker"
+    },
+    {
+      "after": {
+        "food": 685,
+        "gold": 600,
+        "stone": 570,
+        "timber": 730
+      },
+      "amount": 10,
+      "before": {
+        "food": 675,
+        "gold": 600,
+        "stone": 570,
+        "timber": 730
+      },
+      "dropoff_id": "vorthak_nighthold",
+      "event": "deposit",
+      "resource": "food",
+      "timestamp_msec": 56268,
+      "worker_id": "vorthak_worker"
+    },
+    {
+      "after": {
+        "food": 685,
+        "gold": 600,
+        "stone": 570,
+        "timber": 740
+      },
+      "amount": 10,
+      "before": {
+        "food": 685,
+        "gold": 600,
+        "stone": 570,
+        "timber": 730
+      },
+      "dropoff_id": "vorthak_nighthold",
+      "event": "deposit",
+      "resource": "timber",
+      "timestamp_msec": 56601,
+      "worker_id": "vorthak_worker"
+    },
+    {
+      "after": {
+        "food": 685,
+        "gold": 600,
+        "stone": 580,
+        "timber": 740
+      },
+      "amount": 10,
+      "before": {
+        "food": 685,
+        "gold": 600,
+        "stone": 570,
+        "timber": 740
+      },
+      "dropoff_id": "vorthak_nighthold",
+      "event": "deposit",
+      "resource": "stone",
+      "timestamp_msec": 59936,
+      "worker_id": "vorthak_worker"
+    },
+    {
+      "after": {
+        "food": 640,
+        "gold": 600,
+        "stone": 580,
+        "timber": 740
+      },
+      "before": {
+        "food": 685,
+        "gold": 600,
+        "stone": 580,
+        "timber": 740
+      },
+      "event": "worker_queue",
+      "subject": "vorthak_worker",
+      "time": 34.3196516666654
+    },
+    {
+      "after": {
+        "food": 640,
+        "gold": 600,
+        "stone": 580,
+        "timber": 750
+      },
+      "amount": 10,
+      "before": {
+        "food": 640,
+        "gold": 600,
+        "stone": 580,
+        "timber": 740
+      },
+      "dropoff_id": "vorthak_nighthold",
+      "event": "deposit",
+      "resource": "timber",
+      "timestamp_msec": 62044,
+      "worker_id": "vorthak_worker"
+    },
+    {
+      "after": {
+        "food": 600,
+        "gold": 595,
+        "stone": 580,
+        "timber": 750
+      },
+      "before": {
+        "food": 640,
+        "gold": 600,
+        "stone": 580,
+        "timber": 750
+      },
+      "event": "mixed_unit_queue",
+      "subject": "vorthak_ash_thrall",
+      "time": 36.3385503333324
+    },
+    {
+      "after": {
+        "food": 610,
+        "gold": 595,
+        "stone": 580,
+        "timber": 750
+      },
+      "amount": 10,
+      "before": {
+        "food": 600,
+        "gold": 595,
+        "stone": 580,
+        "timber": 750
+      },
+      "dropoff_id": "vorthak_nighthold",
+      "event": "deposit",
+      "resource": "food",
+      "timestamp_msec": 64738,
+      "worker_id": "vorthak_worker"
+    },
+    {
+      "after": {
+        "food": 610,
+        "gold": 595,
+        "stone": 580,
+        "timber": 760
+      },
+      "amount": 10,
+      "before": {
+        "food": 610,
+        "gold": 595,
+        "stone": 580,
+        "timber": 750
+      },
+      "dropoff_id": "vorthak_nighthold",
+      "event": "deposit",
+      "resource": "timber",
+      "timestamp_msec": 68019,
+      "worker_id": "vorthak_worker"
+    },
+    {
+      "after": {
+        "food": 610,
+        "gold": 595,
+        "stone": 590,
+        "timber": 760
+      },
+      "amount": 10,
+      "before": {
+        "food": 610,
+        "gold": 595,
+        "stone": 580,
+        "timber": 760
+      },
+      "dropoff_id": "vorthak_nighthold",
+      "event": "deposit",
+      "resource": "stone",
+      "timestamp_msec": 68366,
+      "worker_id": "vorthak_worker"
+    },
+    {
+      "after": {
+        "food": 620,
+        "gold": 595,
+        "stone": 590,
+        "timber": 760
+      },
+      "amount": 10,
+      "before": {
+        "food": 610,
+        "gold": 595,
+        "stone": 590,
+        "timber": 760
+      },
+      "dropoff_id": "vorthak_nighthold",
+      "event": "deposit",
+      "resource": "food",
+      "timestamp_msec": 72087,
+      "worker_id": "vorthak_worker"
+    },
+    {
+      "after": {
+        "food": 620,
+        "gold": 605,
+        "stone": 590,
+        "timber": 760
+      },
+      "amount": 10,
+      "before": {
+        "food": 620,
+        "gold": 595,
+        "stone": 590,
+        "timber": 760
+      },
+      "dropoff_id": "vorthak_nighthold",
+      "event": "deposit",
+      "resource": "gold",
+      "timestamp_msec": 72674,
+      "worker_id": "vorthak_worker"
+    },
+    {
+      "after": {
+        "food": 580,
+        "gold": 600,
+        "stone": 590,
+        "timber": 760
+      },
+      "before": {
+        "food": 620,
+        "gold": 605,
+        "stone": 590,
+        "timber": 760
+      },
+      "event": "mixed_unit_queue",
+      "subject": "vorthak_ash_thrall",
+      "time": 45.4533226666677
+    },
+    {
+      "after": {
+        "food": 580,
+        "gold": 600,
+        "stone": 590,
+        "timber": 770
+      },
+      "amount": 10,
+      "before": {
+        "food": 580,
+        "gold": 600,
+        "stone": 590,
+        "timber": 760
+      },
+      "dropoff_id": "vorthak_nighthold",
+      "event": "deposit",
+      "resource": "timber",
+      "timestamp_msec": 73169,
+      "worker_id": "vorthak_worker"
+    },
+    {
+      "after": {
+        "food": 590,
+        "gold": 600,
+        "stone": 590,
+        "timber": 770
+      },
+      "amount": 10,
+      "before": {
+        "food": 580,
+        "gold": 600,
+        "stone": 590,
+        "timber": 770
+      },
+      "dropoff_id": "vorthak_nighthold",
+      "event": "deposit",
+      "resource": "food",
+      "timestamp_msec": 75368,
+      "worker_id": "vorthak_worker"
+    },
+    {
+      "after": {
+        "food": 590,
+        "gold": 600,
+        "stone": 600,
+        "timber": 770
+      },
+      "amount": 10,
+      "before": {
+        "food": 590,
+        "gold": 600,
+        "stone": 590,
+        "timber": 770
+      },
+      "dropoff_id": "vorthak_nighthold",
+      "event": "deposit",
+      "resource": "stone",
+      "timestamp_msec": 75556,
+      "worker_id": "vorthak_worker"
+    },
+    {
+      "after": {
+        "food": 600,
+        "gold": 600,
+        "stone": 600,
+        "timber": 770
+      },
+      "amount": 10,
+      "before": {
+        "food": 590,
+        "gold": 600,
+        "stone": 600,
+        "timber": 770
+      },
+      "dropoff_id": "vorthak_nighthold",
+      "event": "deposit",
+      "resource": "food",
+      "timestamp_msec": 77369,
+      "worker_id": "vorthak_worker"
+    },
+    {
+      "after": {
+        "food": 600,
+        "gold": 600,
+        "stone": 600,
+        "timber": 780
+      },
+      "amount": 10,
+      "before": {
+        "food": 600,
+        "gold": 600,
+        "stone": 600,
+        "timber": 770
+      },
+      "dropoff_id": "vorthak_nighthold",
+      "event": "deposit",
+      "resource": "timber",
+      "timestamp_msec": 78290,
+      "worker_id": "vorthak_worker"
+    },
+    {
+      "after": {
+        "food": 600,
+        "gold": 610,
+        "stone": 600,
+        "timber": 780
+      },
+      "amount": 10,
+      "before": {
+        "food": 600,
+        "gold": 600,
+        "stone": 600,
+        "timber": 780
+      },
+      "dropoff_id": "vorthak_nighthold",
+      "event": "deposit",
+      "resource": "gold",
+      "timestamp_msec": 79596,
+      "worker_id": "vorthak_worker"
+    },
+    {
+      "after": {
+        "food": 610,
+        "gold": 610,
+        "stone": 600,
+        "timber": 780
+      },
+      "amount": 10,
+      "before": {
+        "food": 600,
+        "gold": 610,
+        "stone": 600,
+        "timber": 780
+      },
+      "dropoff_id": "vorthak_nighthold",
+      "event": "deposit",
+      "resource": "food",
+      "timestamp_msec": 80611,
+      "worker_id": "vorthak_worker"
+    },
+    {
+      "after": {
+        "food": 570,
+        "gold": 605,
+        "stone": 600,
+        "timber": 780
+      },
+      "before": {
+        "food": 610,
+        "gold": 610,
+        "stone": 600,
+        "timber": 780
+      },
+      "event": "mixed_unit_queue",
+      "subject": "vorthak_ash_thrall",
+      "time": 54.5730946666697
+    },
+    {
+      "after": {
+        "food": 570,
+        "gold": 605,
+        "stone": 610,
+        "timber": 780
+      },
+      "amount": 10,
+      "before": {
+        "food": 570,
+        "gold": 605,
+        "stone": 600,
+        "timber": 780
+      },
+      "dropoff_id": "vorthak_nighthold",
+      "event": "deposit",
+      "resource": "stone",
+      "timestamp_msec": 82744,
+      "worker_id": "vorthak_worker"
+    },
+    {
+      "after": {
+        "food": 580,
+        "gold": 605,
+        "stone": 610,
+        "timber": 780
+      },
+      "amount": 10,
+      "before": {
+        "food": 570,
+        "gold": 605,
+        "stone": 610,
+        "timber": 780
+      },
+      "dropoff_id": "vorthak_nighthold",
+      "event": "deposit",
+      "resource": "food",
+      "timestamp_msec": 83038,
+      "worker_id": "vorthak_worker"
+    },
+    {
+      "after": {
+        "food": 580,
+        "gold": 605,
+        "stone": 610,
+        "timber": 790
+      },
+      "amount": 10,
+      "before": {
+        "food": 580,
+        "gold": 605,
+        "stone": 610,
+        "timber": 780
+      },
+      "dropoff_id": "vorthak_nighthold",
+      "event": "deposit",
+      "resource": "timber",
+      "timestamp_msec": 83358,
+      "worker_id": "vorthak_worker"
+    },
+    {
+      "after": {
+        "food": 590,
+        "gold": 605,
+        "stone": 610,
+        "timber": 790
+      },
+      "amount": 10,
+      "before": {
+        "food": 580,
+        "gold": 605,
+        "stone": 610,
+        "timber": 790
+      },
+      "dropoff_id": "vorthak_nighthold",
+      "event": "deposit",
+      "resource": "food",
+      "timestamp_msec": 84238,
+      "worker_id": "vorthak_worker"
+    },
+    {
+      "after": {
+        "food": 600,
+        "gold": 605,
+        "stone": 610,
+        "timber": 790
+      },
+      "amount": 10,
+      "before": {
+        "food": 590,
+        "gold": 605,
+        "stone": 610,
+        "timber": 790
+      },
+      "dropoff_id": "vorthak_nighthold",
+      "event": "deposit",
+      "resource": "food",
+      "timestamp_msec": 85265,
+      "worker_id": "vorthak_worker"
+    },
+    {
+      "after": {
+        "food": 600,
+        "gold": 615,
+        "stone": 610,
+        "timber": 790
+      },
+      "amount": 10,
+      "before": {
+        "food": 600,
+        "gold": 605,
+        "stone": 610,
+        "timber": 790
+      },
+      "dropoff_id": "vorthak_nighthold",
+      "event": "deposit",
+      "resource": "gold",
+      "timestamp_msec": 86506,
+      "worker_id": "vorthak_worker"
+    },
+    {
+      "after": {
+        "food": 610,
+        "gold": 615,
+        "stone": 610,
+        "timber": 790
+      },
+      "amount": 10,
+      "before": {
+        "food": 600,
+        "gold": 615,
+        "stone": 610,
+        "timber": 790
+      },
+      "dropoff_id": "vorthak_nighthold",
+      "event": "deposit",
+      "resource": "food",
+      "timestamp_msec": 88227,
+      "worker_id": "vorthak_worker"
+    },
+    {
+      "after": {
+        "food": 610,
+        "gold": 615,
+        "stone": 610,
+        "timber": 800
+      },
+      "amount": 10,
+      "before": {
+        "food": 610,
+        "gold": 615,
+        "stone": 610,
+        "timber": 790
+      },
+      "dropoff_id": "vorthak_nighthold",
+      "event": "deposit",
+      "resource": "timber",
+      "timestamp_msec": 88427,
+      "worker_id": "vorthak_worker"
+    },
+    {
+      "after": {
+        "food": 610,
+        "gold": 615,
+        "stone": 620,
+        "timber": 800
+      },
+      "amount": 10,
+      "before": {
+        "food": 610,
+        "gold": 615,
+        "stone": 610,
+        "timber": 800
+      },
+      "dropoff_id": "vorthak_nighthold",
+      "event": "deposit",
+      "resource": "stone",
+      "timestamp_msec": 89905,
+      "worker_id": "vorthak_worker"
+    },
+    {
+      "after": {
+        "food": 620,
+        "gold": 615,
+        "stone": 620,
+        "timber": 800
+      },
+      "amount": 10,
+      "before": {
+        "food": 610,
+        "gold": 615,
+        "stone": 620,
+        "timber": 800
+      },
+      "dropoff_id": "vorthak_nighthold",
+      "event": "deposit",
+      "resource": "food",
+      "timestamp_msec": 90880,
+      "worker_id": "vorthak_worker"
+    },
+    {
+      "after": {
+        "food": 630,
+        "gold": 615,
+        "stone": 620,
+        "timber": 800
+      },
+      "amount": 10,
+      "before": {
+        "food": 620,
+        "gold": 615,
+        "stone": 620,
+        "timber": 800
+      },
+      "dropoff_id": "vorthak_nighthold",
+      "event": "deposit",
+      "resource": "food",
+      "timestamp_msec": 92642,
+      "worker_id": "vorthak_worker"
+    },
+    {
+      "after": {
+        "food": 630,
+        "gold": 615,
+        "stone": 620,
+        "timber": 810
+      },
+      "amount": 10,
+      "before": {
+        "food": 630,
+        "gold": 615,
+        "stone": 620,
+        "timber": 800
+      },
+      "dropoff_id": "vorthak_nighthold",
+      "event": "deposit",
+      "resource": "timber",
+      "timestamp_msec": 93495,
+      "worker_id": "vorthak_worker"
+    },
+    {
+      "after": {
+        "food": 630,
+        "gold": 625,
+        "stone": 620,
+        "timber": 810
+      },
+      "amount": 10,
+      "before": {
+        "food": 630,
+        "gold": 615,
+        "stone": 620,
+        "timber": 810
+      },
+      "dropoff_id": "vorthak_nighthold",
+      "event": "deposit",
+      "resource": "gold",
+      "timestamp_msec": 93535,
+      "worker_id": "vorthak_worker"
+    },
+    {
+      "after": {
+        "food": 640,
+        "gold": 625,
+        "stone": 620,
+        "timber": 810
+      },
+      "amount": 10,
+      "before": {
+        "food": 630,
+        "gold": 625,
+        "stone": 620,
+        "timber": 810
+      },
+      "dropoff_id": "vorthak_nighthold",
+      "event": "deposit",
+      "resource": "food",
+      "timestamp_msec": 93547,
+      "worker_id": "vorthak_worker"
+    },
+    {
+      "after": {
+        "food": 650,
+        "gold": 625,
+        "stone": 620,
+        "timber": 810
+      },
+      "amount": 10,
+      "before": {
+        "food": 640,
+        "gold": 625,
+        "stone": 620,
+        "timber": 810
+      },
+      "dropoff_id": "vorthak_nighthold",
+      "event": "deposit",
+      "resource": "food",
+      "timestamp_msec": 95735,
+      "worker_id": "vorthak_worker"
+    },
+    {
+      "after": {
+        "food": 650,
+        "gold": 625,
+        "stone": 630,
+        "timber": 810
+      },
+      "amount": 10,
+      "before": {
+        "food": 650,
+        "gold": 625,
+        "stone": 620,
+        "timber": 810
+      },
+      "dropoff_id": "vorthak_nighthold",
+      "event": "deposit",
+      "resource": "stone",
+      "timestamp_msec": 98350,
+      "worker_id": "vorthak_worker"
+    },
+    {
+      "after": {
+        "food": 660,
+        "gold": 625,
+        "stone": 630,
+        "timber": 810
+      },
+      "amount": 10,
+      "before": {
+        "food": 650,
+        "gold": 625,
+        "stone": 630,
+        "timber": 810
+      },
+      "dropoff_id": "vorthak_nighthold",
+      "event": "deposit",
+      "resource": "food",
+      "timestamp_msec": 99618,
+      "worker_id": "vorthak_worker"
+    },
+    {
+      "after": {
+        "food": 660,
+        "gold": 625,
+        "stone": 630,
+        "timber": 820
+      },
+      "amount": 10,
+      "before": {
+        "food": 660,
+        "gold": 625,
+        "stone": 630,
+        "timber": 810
+      },
+      "dropoff_id": "vorthak_nighthold",
+      "event": "deposit",
+      "resource": "timber",
+      "timestamp_msec": 99831,
+      "worker_id": "vorthak_worker"
+    },
+    {
+      "after": {
+        "food": 660,
+        "gold": 635,
+        "stone": 630,
+        "timber": 820
+      },
+      "amount": 10,
+      "before": {
+        "food": 660,
+        "gold": 625,
+        "stone": 630,
+        "timber": 820
+      },
+      "dropoff_id": "vorthak_nighthold",
+      "event": "deposit",
+      "resource": "gold",
+      "timestamp_msec": 101711,
+      "worker_id": "vorthak_worker"
+    },
+    {
+      "after": {
+        "food": 670,
+        "gold": 635,
+        "stone": 630,
+        "timber": 820
+      },
+      "amount": 10,
+      "before": {
+        "food": 660,
+        "gold": 635,
+        "stone": 630,
+        "timber": 820
+      },
+      "dropoff_id": "vorthak_nighthold",
+      "event": "deposit",
+      "resource": "food",
+      "timestamp_msec": 102245,
+      "worker_id": "vorthak_worker"
+    },
+    {
+      "after": {
+        "food": 680,
+        "gold": 635,
+        "stone": 630,
+        "timber": 820
+      },
+      "amount": 10,
+      "before": {
+        "food": 670,
+        "gold": 635,
+        "stone": 630,
+        "timber": 820
+      },
+      "dropoff_id": "vorthak_nighthold",
+      "event": "deposit",
+      "resource": "food",
+      "timestamp_msec": 102565,
+      "worker_id": "vorthak_worker"
+    },
+    {
+      "after": {
+        "food": 690,
+        "gold": 635,
+        "stone": 630,
+        "timber": 820
+      },
+      "amount": 10,
+      "before": {
+        "food": 680,
+        "gold": 635,
+        "stone": 630,
+        "timber": 820
+      },
+      "dropoff_id": "vorthak_nighthold",
+      "event": "deposit",
+      "resource": "food",
+      "timestamp_msec": 104872,
+      "worker_id": "vorthak_worker"
+    },
+    {
+      "after": {
+        "food": 690,
+        "gold": 635,
+        "stone": 630,
+        "timber": 830
+      },
+      "amount": 10,
+      "before": {
+        "food": 690,
+        "gold": 635,
+        "stone": 630,
+        "timber": 820
+      },
+      "dropoff_id": "vorthak_nighthold",
+      "event": "deposit",
+      "resource": "timber",
+      "timestamp_msec": 104899,
+      "worker_id": "vorthak_worker"
+    },
+    {
+      "after": {
+        "food": 690,
+        "gold": 635,
+        "stone": 640,
+        "timber": 830
+      },
+      "amount": 10,
+      "before": {
+        "food": 690,
+        "gold": 635,
+        "stone": 630,
+        "timber": 830
+      },
+      "dropoff_id": "vorthak_nighthold",
+      "event": "deposit",
+      "resource": "stone",
+      "timestamp_msec": 105513,
+      "worker_id": "vorthak_worker"
+    },
+    {
+      "after": {
+        "food": 700,
+        "gold": 635,
+        "stone": 640,
+        "timber": 830
+      },
+      "amount": 10,
+      "before": {
+        "food": 690,
+        "gold": 635,
+        "stone": 640,
+        "timber": 830
+      },
+      "dropoff_id": "vorthak_nighthold",
+      "event": "deposit",
+      "resource": "food",
+      "timestamp_msec": 108008,
+      "worker_id": "vorthak_worker"
+    },
+    {
+      "after": {
+        "food": 700,
+        "gold": 645,
+        "stone": 640,
+        "timber": 830
+      },
+      "amount": 10,
+      "before": {
+        "food": 700,
+        "gold": 635,
+        "stone": 640,
+        "timber": 830
+      },
+      "dropoff_id": "vorthak_nighthold",
+      "event": "deposit",
+      "resource": "gold",
+      "timestamp_msec": 108621,
+      "worker_id": "vorthak_worker"
+    },
+    {
+      "after": {
+        "food": 700,
+        "gold": 645,
+        "stone": 640,
+        "timber": 840
+      },
+      "amount": 10,
+      "before": {
+        "food": 700,
+        "gold": 645,
+        "stone": 640,
+        "timber": 830
+      },
+      "dropoff_id": "vorthak_nighthold",
+      "event": "deposit",
+      "resource": "timber",
+      "timestamp_msec": 109968,
+      "worker_id": "vorthak_worker"
+    },
+    {
+      "after": {
+        "food": 710,
+        "gold": 645,
+        "stone": 640,
+        "timber": 840
+      },
+      "amount": 10,
+      "before": {
+        "food": 700,
+        "gold": 645,
+        "stone": 640,
+        "timber": 840
+      },
+      "dropoff_id": "vorthak_nighthold",
+      "event": "deposit",
+      "resource": "food",
+      "timestamp_msec": 110046,
+      "worker_id": "vorthak_worker"
+    },
+    {
+      "after": {
+        "food": 720,
+        "gold": 645,
+        "stone": 640,
+        "timber": 840
+      },
+      "amount": 10,
+      "before": {
+        "food": 710,
+        "gold": 645,
+        "stone": 640,
+        "timber": 840
+      },
+      "dropoff_id": "vorthak_nighthold",
+      "event": "deposit",
+      "resource": "food",
+      "timestamp_msec": 110635,
+      "worker_id": "vorthak_worker"
+    },
+    {
+      "after": {
+        "food": 720,
+        "gold": 645,
+        "stone": 650,
+        "timber": 840
+      },
+      "amount": 10,
+      "before": {
+        "food": 720,
+        "gold": 645,
+        "stone": 640,
+        "timber": 840
+      },
+      "dropoff_id": "vorthak_nighthold",
+      "event": "deposit",
+      "resource": "stone",
+      "timestamp_msec": 112688,
+      "worker_id": "vorthak_worker"
+    },
+    {
+      "after": {
+        "food": 730,
+        "gold": 645,
+        "stone": 650,
+        "timber": 840
+      },
+      "amount": 10,
+      "before": {
+        "food": 720,
+        "gold": 645,
+        "stone": 650,
+        "timber": 840
+      },
+      "dropoff_id": "vorthak_nighthold",
+      "event": "deposit",
+      "resource": "food",
+      "timestamp_msec": 112715,
+      "worker_id": "vorthak_worker"
+    },
+    {
+      "after": {
+        "food": 730,
+        "gold": 645,
+        "stone": 650,
+        "timber": 850
+      },
+      "amount": 10,
+      "before": {
+        "food": 730,
+        "gold": 645,
+        "stone": 650,
+        "timber": 840
+      },
+      "dropoff_id": "vorthak_nighthold",
+      "event": "deposit",
+      "resource": "timber",
+      "timestamp_msec": 115034,
+      "worker_id": "vorthak_worker"
+    },
+    {
+      "after": {
+        "food": 740,
+        "gold": 645,
+        "stone": 650,
+        "timber": 850
+      },
+      "amount": 10,
+      "before": {
+        "food": 730,
+        "gold": 645,
+        "stone": 650,
+        "timber": 850
+      },
+      "dropoff_id": "vorthak_nighthold",
+      "event": "deposit",
+      "resource": "food",
+      "timestamp_msec": 115410,
+      "worker_id": "vorthak_worker"
+    },
+    {
+      "after": {
+        "food": 740,
+        "gold": 655,
+        "stone": 650,
+        "timber": 850
+      },
+      "amount": 10,
+      "before": {
+        "food": 740,
+        "gold": 645,
+        "stone": 650,
+        "timber": 850
+      },
+      "dropoff_id": "vorthak_nighthold",
+      "event": "deposit",
+      "resource": "gold",
+      "timestamp_msec": 115516,
+      "worker_id": "vorthak_worker"
+    },
+    {
+      "after": {
+        "food": 750,
+        "gold": 655,
+        "stone": 650,
+        "timber": 850
+      },
+      "amount": 10,
+      "before": {
+        "food": 740,
+        "gold": 655,
+        "stone": 650,
+        "timber": 850
+      },
+      "dropoff_id": "vorthak_nighthold",
+      "event": "deposit",
+      "resource": "food",
+      "timestamp_msec": 117837,
+      "worker_id": "vorthak_worker"
+    },
+    {
+      "after": {
+        "food": 760,
+        "gold": 655,
+        "stone": 650,
+        "timber": 850
+      },
+      "amount": 10,
+      "before": {
+        "food": 750,
+        "gold": 655,
+        "stone": 650,
+        "timber": 850
+      },
+      "dropoff_id": "vorthak_nighthold",
+      "event": "deposit",
+      "resource": "food",
+      "timestamp_msec": 118117,
+      "worker_id": "vorthak_worker"
+    },
+    {
+      "after": {
+        "food": 760,
+        "gold": 655,
+        "stone": 660,
+        "timber": 850
+      },
+      "amount": 10,
+      "before": {
+        "food": 760,
+        "gold": 655,
+        "stone": 650,
+        "timber": 850
+      },
+      "dropoff_id": "vorthak_nighthold",
+      "event": "deposit",
+      "resource": "stone",
+      "timestamp_msec": 119917,
+      "worker_id": "vorthak_worker"
+    },
+    {
+      "after": {
+        "food": 770,
+        "gold": 655,
+        "stone": 660,
+        "timber": 850
+      },
+      "amount": 10,
+      "before": {
+        "food": 760,
+        "gold": 655,
+        "stone": 660,
+        "timber": 850
+      },
+      "dropoff_id": "vorthak_nighthold",
+      "event": "deposit",
+      "resource": "food",
+      "timestamp_msec": 120050,
+      "worker_id": "vorthak_worker"
+    },
+    {
+      "after": {
+        "food": 770,
+        "gold": 655,
+        "stone": 660,
+        "timber": 860
+      },
+      "amount": 10,
+      "before": {
+        "food": 770,
+        "gold": 655,
+        "stone": 660,
+        "timber": 850
+      },
+      "dropoff_id": "vorthak_nighthold",
+      "event": "deposit",
+      "resource": "timber",
+      "timestamp_msec": 120104,
+      "worker_id": "vorthak_worker"
+    },
+    {
+      "after": {
+        "food": 770,
+        "gold": 665,
+        "stone": 660,
+        "timber": 860
+      },
+      "amount": 10,
+      "before": {
+        "food": 770,
+        "gold": 655,
+        "stone": 660,
+        "timber": 860
+      },
+      "dropoff_id": "vorthak_nighthold",
+      "event": "deposit",
+      "resource": "gold",
+      "timestamp_msec": 122426,
+      "worker_id": "vorthak_worker"
+    },
+    {
+      "after": {
+        "food": 780,
+        "gold": 665,
+        "stone": 660,
+        "timber": 860
+      },
+      "amount": 10,
+      "before": {
+        "food": 770,
+        "gold": 665,
+        "stone": 660,
+        "timber": 860
+      },
+      "dropoff_id": "vorthak_nighthold",
+      "event": "deposit",
+      "resource": "food",
+      "timestamp_msec": 123212,
+      "worker_id": "vorthak_worker"
+    },
+    {
+      "after": {
+        "food": 780,
+        "gold": 665,
+        "stone": 660,
+        "timber": 870
+      },
+      "amount": 10,
+      "before": {
+        "food": 780,
+        "gold": 665,
+        "stone": 660,
+        "timber": 860
+      },
+      "dropoff_id": "vorthak_nighthold",
+      "event": "deposit",
+      "resource": "timber",
+      "timestamp_msec": 125186,
+      "worker_id": "vorthak_worker"
+    },
+    {
+      "after": {
+        "food": 790,
+        "gold": 665,
+        "stone": 660,
+        "timber": 870
+      },
+      "amount": 10,
+      "before": {
+        "food": 780,
+        "gold": 665,
+        "stone": 660,
+        "timber": 870
+      },
+      "dropoff_id": "vorthak_nighthold",
+      "event": "deposit",
+      "resource": "food",
+      "timestamp_msec": 126159,
+      "worker_id": "vorthak_worker"
+    },
+    {
+      "after": {
+        "food": 800,
+        "gold": 665,
+        "stone": 660,
+        "timber": 870
+      },
+      "amount": 10,
+      "before": {
+        "food": 790,
+        "gold": 665,
+        "stone": 660,
+        "timber": 870
+      },
+      "dropoff_id": "vorthak_nighthold",
+      "event": "deposit",
+      "resource": "food",
+      "timestamp_msec": 126427,
+      "worker_id": "vorthak_worker"
+    },
+    {
+      "after": {
+        "food": 800,
+        "gold": 677,
+        "stone": 670,
+        "timber": 870
+      },
+      "amount": 10,
+      "before": {
+        "food": 800,
+        "gold": 677,
+        "stone": 660,
+        "timber": 870
+      },
+      "dropoff_id": "vorthak_nighthold",
+      "event": "deposit",
+      "resource": "stone",
+      "timestamp_msec": 127107,
+      "worker_id": "vorthak_worker"
+    },
+    {
+      "after": {
+        "food": 810,
+        "gold": 689,
+        "stone": 670,
+        "timber": 870
+      },
+      "amount": 10,
+      "before": {
+        "food": 800,
+        "gold": 689,
+        "stone": 670,
+        "timber": 870
+      },
+      "dropoff_id": "vorthak_nighthold",
+      "event": "deposit",
+      "resource": "food",
+      "timestamp_msec": 128854,
+      "worker_id": "vorthak_worker"
+    },
+    {
+      "after": {
+        "food": 810,
+        "gold": 699,
+        "stone": 670,
+        "timber": 870
+      },
+      "amount": 10,
+      "before": {
+        "food": 810,
+        "gold": 689,
+        "stone": 670,
+        "timber": 870
+      },
+      "dropoff_id": "vorthak_nighthold",
+      "event": "deposit",
+      "resource": "gold",
+      "timestamp_msec": 129321,
+      "worker_id": "vorthak_worker"
+    },
+    {
+      "after": {
+        "food": 810,
+        "gold": 699,
+        "stone": 670,
+        "timber": 880
+      },
+      "amount": 10,
+      "before": {
+        "food": 810,
+        "gold": 699,
+        "stone": 670,
+        "timber": 870
+      },
+      "dropoff_id": "vorthak_nighthold",
+      "event": "deposit",
+      "resource": "timber",
+      "timestamp_msec": 130294,
+      "worker_id": "vorthak_worker"
+    },
+    {
+      "after": {
+        "food": 820,
+        "gold": 711,
+        "stone": 670,
+        "timber": 880
+      },
+      "amount": 10,
+      "before": {
+        "food": 810,
+        "gold": 711,
+        "stone": 670,
+        "timber": 880
+      },
+      "dropoff_id": "vorthak_nighthold",
+      "event": "deposit",
+      "resource": "food",
+      "timestamp_msec": 131213,
+      "worker_id": "vorthak_worker"
+    },
+    {
+      "after": {
+        "food": 820,
+        "gold": 723,
+        "stone": 680,
+        "timber": 880
+      },
+      "amount": 10,
+      "before": {
+        "food": 820,
+        "gold": 723,
+        "stone": 670,
+        "timber": 880
+      },
+      "dropoff_id": "vorthak_nighthold",
+      "event": "deposit",
+      "resource": "stone",
+      "timestamp_msec": 134282,
+      "worker_id": "vorthak_worker"
+    },
+    {
+      "after": {
+        "food": 830,
+        "gold": 723,
+        "stone": 680,
+        "timber": 880
+      },
+      "amount": 10,
+      "before": {
+        "food": 820,
+        "gold": 723,
+        "stone": 680,
+        "timber": 880
+      },
+      "dropoff_id": "vorthak_nighthold",
+      "event": "deposit",
+      "resource": "food",
+      "timestamp_msec": 134362,
+      "worker_id": "vorthak_worker"
+    },
+    {
+      "after": {
+        "food": 840,
+        "gold": 735,
+        "stone": 680,
+        "timber": 880
+      },
+      "amount": 10,
+      "before": {
+        "food": 830,
+        "gold": 735,
+        "stone": 680,
+        "timber": 880
+      },
+      "dropoff_id": "vorthak_nighthold",
+      "event": "deposit",
+      "resource": "food",
+      "timestamp_msec": 134696,
+      "worker_id": "vorthak_worker"
+    },
+    {
+      "after": {
+        "food": 840,
+        "gold": 735,
+        "stone": 680,
+        "timber": 890
+      },
+      "amount": 10,
+      "before": {
+        "food": 840,
+        "gold": 735,
+        "stone": 680,
+        "timber": 880
+      },
+      "dropoff_id": "vorthak_nighthold",
+      "event": "deposit",
+      "resource": "timber",
+      "timestamp_msec": 135430,
+      "worker_id": "vorthak_worker"
+    },
+    {
+      "after": {
+        "food": 840,
+        "gold": 745,
+        "stone": 680,
+        "timber": 890
+      },
+      "amount": 10,
+      "before": {
+        "food": 840,
+        "gold": 735,
+        "stone": 680,
+        "timber": 890
+      },
+      "dropoff_id": "vorthak_nighthold",
+      "event": "deposit",
+      "resource": "gold",
+      "timestamp_msec": 136230,
+      "worker_id": "vorthak_worker"
+    },
+    {
+      "after": {
+        "food": 850,
+        "gold": 757,
+        "stone": 680,
+        "timber": 890
+      },
+      "amount": 10,
+      "before": {
+        "food": 840,
+        "gold": 757,
+        "stone": 680,
+        "timber": 890
+      },
+      "dropoff_id": "vorthak_nighthold",
+      "event": "deposit",
+      "resource": "food",
+      "timestamp_msec": 136949,
+      "worker_id": "vorthak_worker"
+    },
+    {
+      "after": {
+        "food": 860,
+        "gold": 757,
+        "stone": 680,
+        "timber": 890
+      },
+      "amount": 10,
+      "before": {
+        "food": 850,
+        "gold": 757,
+        "stone": 680,
+        "timber": 890
+      },
+      "dropoff_id": "vorthak_nighthold",
+      "event": "deposit",
+      "resource": "food",
+      "timestamp_msec": 138563,
+      "worker_id": "vorthak_worker"
+    },
+    {
+      "after": {
+        "food": 860,
+        "gold": 769,
+        "stone": 680,
+        "timber": 900
+      },
+      "amount": 10,
+      "before": {
+        "food": 860,
+        "gold": 769,
+        "stone": 680,
+        "timber": 890
+      },
+      "dropoff_id": "vorthak_nighthold",
+      "event": "deposit",
+      "resource": "timber",
+      "timestamp_msec": 140564,
+      "worker_id": "vorthak_worker"
+    },
+    {
+      "after": {
+        "food": 860,
+        "gold": 781,
+        "stone": 690,
+        "timber": 900
+      },
+      "amount": 10,
+      "before": {
+        "food": 860,
+        "gold": 781,
+        "stone": 680,
+        "timber": 900
+      },
+      "dropoff_id": "vorthak_nighthold",
+      "event": "deposit",
+      "resource": "stone",
+      "timestamp_msec": 141444,
+      "worker_id": "vorthak_worker"
+    },
+    {
+      "after": {
+        "food": 870,
+        "gold": 781,
+        "stone": 690,
+        "timber": 900
+      },
+      "amount": 10,
+      "before": {
+        "food": 860,
+        "gold": 781,
+        "stone": 690,
+        "timber": 900
+      },
+      "dropoff_id": "vorthak_nighthold",
+      "event": "deposit",
+      "resource": "food",
+      "timestamp_msec": 142231,
+      "worker_id": "vorthak_worker"
+    },
+    {
+      "after": {
+        "food": 880,
+        "gold": 781,
+        "stone": 690,
+        "timber": 900
+      },
+      "amount": 10,
+      "before": {
+        "food": 870,
+        "gold": 781,
+        "stone": 690,
+        "timber": 900
+      },
+      "dropoff_id": "vorthak_nighthold",
+      "event": "deposit",
+      "resource": "food",
+      "timestamp_msec": 142445,
+      "worker_id": "vorthak_worker"
+    },
+    {
+      "after": {
+        "food": 880,
+        "gold": 803,
+        "stone": 690,
+        "timber": 900
+      },
+      "amount": 10,
+      "before": {
+        "food": 880,
+        "gold": 793,
+        "stone": 690,
+        "timber": 900
+      },
+      "dropoff_id": "vorthak_nighthold",
+      "event": "deposit",
+      "resource": "gold",
+      "timestamp_msec": 143126,
+      "worker_id": "vorthak_worker"
+    },
+    {
+      "after": {
+        "food": 890,
+        "gold": 815,
+        "stone": 690,
+        "timber": 900
+      },
+      "amount": 10,
+      "before": {
+        "food": 880,
+        "gold": 815,
+        "stone": 690,
+        "timber": 900
+      },
+      "dropoff_id": "vorthak_nighthold",
+      "event": "deposit",
+      "resource": "food",
+      "timestamp_msec": 144833,
+      "worker_id": "vorthak_worker"
+    },
+    {
+      "after": {
+        "food": 890,
+        "gold": 815,
+        "stone": 690,
+        "timber": 910
+      },
+      "amount": 10,
+      "before": {
+        "food": 890,
+        "gold": 815,
+        "stone": 690,
+        "timber": 900
+      },
+      "dropoff_id": "vorthak_nighthold",
+      "event": "deposit",
+      "resource": "timber",
+      "timestamp_msec": 145701,
+      "worker_id": "vorthak_worker"
+    },
+    {
+      "after": {
+        "food": 900,
+        "gold": 827,
+        "stone": 690,
+        "timber": 910
+      },
+      "amount": 10,
+      "before": {
+        "food": 890,
+        "gold": 827,
+        "stone": 690,
+        "timber": 910
+      },
+      "dropoff_id": "vorthak_nighthold",
+      "event": "deposit",
+      "resource": "food",
+      "timestamp_msec": 147287,
+      "worker_id": "vorthak_worker"
+    },
+    {
+      "after": {
+        "food": 900,
+        "gold": 827,
+        "stone": 700,
+        "timber": 910
+      },
+      "amount": 10,
+      "before": {
+        "food": 900,
+        "gold": 827,
+        "stone": 690,
+        "timber": 910
+      },
+      "dropoff_id": "vorthak_nighthold",
+      "event": "deposit",
+      "resource": "stone",
+      "timestamp_msec": 148619,
+      "worker_id": "vorthak_worker"
+    },
+    {
+      "after": {
+        "food": 900,
+        "gold": 849,
+        "stone": 700,
+        "timber": 910
+      },
+      "amount": 10,
+      "before": {
+        "food": 900,
+        "gold": 839,
+        "stone": 700,
+        "timber": 910
+      },
+      "dropoff_id": "vorthak_nighthold",
+      "event": "deposit",
+      "resource": "gold",
+      "timestamp_msec": 150036,
+      "worker_id": "vorthak_worker"
+    },
+    {
+      "after": {
+        "food": 910,
+        "gold": 849,
+        "stone": 700,
+        "timber": 910
+      },
+      "amount": 10,
+      "before": {
+        "food": 900,
+        "gold": 849,
+        "stone": 700,
+        "timber": 910
+      },
+      "dropoff_id": "vorthak_nighthold",
+      "event": "deposit",
+      "resource": "food",
+      "timestamp_msec": 150153,
+      "worker_id": "vorthak_worker"
+    },
+    {
+      "after": {
+        "food": 920,
+        "gold": 849,
+        "stone": 700,
+        "timber": 910
+      },
+      "amount": 10,
+      "before": {
+        "food": 910,
+        "gold": 849,
+        "stone": 700,
+        "timber": 910
+      },
+      "dropoff_id": "vorthak_nighthold",
+      "event": "deposit",
+      "resource": "food",
+      "timestamp_msec": 150395,
+      "worker_id": "vorthak_worker"
+    },
+    {
+      "after": {
+        "food": 920,
+        "gold": 861,
+        "stone": 700,
+        "timber": 920
+      },
+      "amount": 10,
+      "before": {
+        "food": 920,
+        "gold": 861,
+        "stone": 700,
+        "timber": 910
+      },
+      "dropoff_id": "vorthak_nighthold",
+      "event": "deposit",
+      "resource": "timber",
+      "timestamp_msec": 150835,
+      "worker_id": "vorthak_worker"
+    },
+    {
+      "after": {
+        "food": 930,
+        "gold": 873,
+        "stone": 700,
+        "timber": 920
+      },
+      "amount": 10,
+      "before": {
+        "food": 920,
+        "gold": 873,
+        "stone": 700,
+        "timber": 920
+      },
+      "dropoff_id": "vorthak_nighthold",
+      "event": "deposit",
+      "resource": "food",
+      "timestamp_msec": 154156,
+      "worker_id": "vorthak_worker"
+    },
+    {
+      "after": {
+        "food": 890,
+        "gold": 868,
+        "stone": 700,
+        "timber": 920
+      },
+      "before": {
+        "food": 930,
+        "gold": 873,
+        "stone": 700,
+        "timber": 920
+      },
+      "event": "replacement_queue",
+      "subject": "vorthak_ash_thrall",
+      "time": 125.488977000018
+    },
+    {
+      "after": {
+        "food": 900,
+        "gold": 880,
+        "stone": 700,
+        "timber": 920
+      },
+      "amount": 10,
+      "before": {
+        "food": 890,
+        "gold": 880,
+        "stone": 700,
+        "timber": 920
+      },
+      "dropoff_id": "vorthak_nighthold",
+      "event": "deposit",
+      "resource": "food",
+      "timestamp_msec": 155796,
+      "worker_id": "vorthak_worker"
+    },
+    {
+      "after": {
+        "food": 900,
+        "gold": 880,
+        "stone": 710,
+        "timber": 920
+      },
+      "amount": 10,
+      "before": {
+        "food": 900,
+        "gold": 880,
+        "stone": 700,
+        "timber": 920
+      },
+      "dropoff_id": "vorthak_nighthold",
+      "event": "deposit",
+      "resource": "stone",
+      "timestamp_msec": 156571,
+      "worker_id": "vorthak_worker"
+    },
+    {
+      "after": {
+        "food": 900,
+        "gold": 880,
+        "stone": 710,
+        "timber": 930
+      },
+      "amount": 10,
+      "before": {
+        "food": 900,
+        "gold": 880,
+        "stone": 710,
+        "timber": 920
+      },
+      "dropoff_id": "vorthak_nighthold",
+      "event": "deposit",
+      "resource": "timber",
+      "timestamp_msec": 156758,
+      "worker_id": "vorthak_worker"
+    },
+    {
+      "after": {
+        "food": 900,
+        "gold": 902,
+        "stone": 710,
+        "timber": 930
+      },
+      "amount": 10,
+      "before": {
+        "food": 900,
+        "gold": 892,
+        "stone": 710,
+        "timber": 930
+      },
+      "dropoff_id": "vorthak_nighthold",
+      "event": "deposit",
+      "resource": "gold",
+      "timestamp_msec": 157731,
+      "worker_id": "vorthak_worker"
+    },
+    {
+      "after": {
+        "food": 910,
+        "gold": 902,
+        "stone": 710,
+        "timber": 930
+      },
+      "amount": 10,
+      "before": {
+        "food": 900,
+        "gold": 902,
+        "stone": 710,
+        "timber": 930
+      },
+      "dropoff_id": "vorthak_nighthold",
+      "event": "deposit",
+      "resource": "food",
+      "timestamp_msec": 159568,
+      "worker_id": "vorthak_worker"
+    },
+    {
+      "after": {
+        "food": 920,
+        "gold": 902,
+        "stone": 710,
+        "timber": 930
+      },
+      "amount": 10,
+      "before": {
+        "food": 910,
+        "gold": 902,
+        "stone": 710,
+        "timber": 930
+      },
+      "dropoff_id": "vorthak_nighthold",
+      "event": "deposit",
+      "resource": "food",
+      "timestamp_msec": 159719,
+      "worker_id": "vorthak_worker"
+    },
+    {
+      "after": {
+        "food": 920,
+        "gold": 926,
+        "stone": 710,
+        "timber": 940
+      },
+      "amount": 10,
+      "before": {
+        "food": 920,
+        "gold": 926,
+        "stone": 710,
+        "timber": 930
+      },
+      "dropoff_id": "vorthak_nighthold",
+      "event": "deposit",
+      "resource": "timber",
+      "timestamp_msec": 162626,
+      "worker_id": "vorthak_worker"
+    },
+    {
+      "after": {
+        "food": 930,
+        "gold": 926,
+        "stone": 710,
+        "timber": 940
+      },
+      "amount": 10,
+      "before": {
+        "food": 920,
+        "gold": 926,
+        "stone": 710,
+        "timber": 940
+      },
+      "dropoff_id": "vorthak_nighthold",
+      "event": "deposit",
+      "resource": "food",
+      "timestamp_msec": 162932,
+      "worker_id": "vorthak_worker"
+    },
+    {
+      "after": {
+        "food": 930,
+        "gold": 938,
+        "stone": 720,
+        "timber": 940
+      },
+      "amount": 10,
+      "before": {
+        "food": 930,
+        "gold": 938,
+        "stone": 710,
+        "timber": 940
+      },
+      "dropoff_id": "vorthak_nighthold",
+      "event": "deposit",
+      "resource": "stone",
+      "timestamp_msec": 164545,
+      "worker_id": "vorthak_worker"
+    },
+    {
+      "after": {
+        "food": 940,
+        "gold": 938,
+        "stone": 720,
+        "timber": 940
+      },
+      "amount": 10,
+      "before": {
+        "food": 930,
+        "gold": 938,
+        "stone": 720,
+        "timber": 940
+      },
+      "dropoff_id": "vorthak_nighthold",
+      "event": "deposit",
+      "resource": "food",
+      "timestamp_msec": 164560,
+      "worker_id": "vorthak_worker"
+    },
+    {
+      "after": {
+        "food": 900,
+        "gold": 933,
+        "stone": 720,
+        "timber": 940
+      },
+      "before": {
+        "food": 940,
+        "gold": 938,
+        "stone": 720,
+        "timber": 940
+      },
+      "event": "mixed_unit_queue",
+      "subject": "vorthak_ash_thrall",
+      "time": 134.587602333348
+    },
+    {
+      "after": {
+        "food": 900,
+        "gold": 943,
+        "stone": 720,
+        "timber": 940
+      },
+      "amount": 10,
+      "before": {
+        "food": 900,
+        "gold": 933,
+        "stone": 720,
+        "timber": 940
+      },
+      "dropoff_id": "vorthak_nighthold",
+      "event": "deposit",
+      "resource": "gold",
+      "timestamp_msec": 165427,
+      "worker_id": "vorthak_worker"
+    },
+    {
+      "after": {
+        "food": 910,
+        "gold": 955,
+        "stone": 720,
+        "timber": 940
+      },
+      "amount": 10,
+      "before": {
+        "food": 900,
+        "gold": 955,
+        "stone": 720,
+        "timber": 940
+      },
+      "dropoff_id": "vorthak_nighthold",
+      "event": "deposit",
+      "resource": "food",
+      "timestamp_msec": 167560,
+      "worker_id": "vorthak_worker"
+    },
+    {
+      "after": {
+        "food": 910,
+        "gold": 955,
+        "stone": 720,
+        "timber": 950
+      },
+      "amount": 10,
+      "before": {
+        "food": 910,
+        "gold": 955,
+        "stone": 720,
+        "timber": 940
+      },
+      "dropoff_id": "vorthak_nighthold",
+      "event": "deposit",
+      "resource": "timber",
+      "timestamp_msec": 167722,
+      "worker_id": "vorthak_worker"
+    },
+    {
+      "after": {
+        "food": 920,
+        "gold": 955,
+        "stone": 720,
+        "timber": 950
+      },
+      "amount": 10,
+      "before": {
+        "food": 910,
+        "gold": 955,
+        "stone": 720,
+        "timber": 950
+      },
+      "dropoff_id": "vorthak_nighthold",
+      "event": "deposit",
+      "resource": "food",
+      "timestamp_msec": 167788,
+      "worker_id": "vorthak_worker"
+    },
+    {
+      "after": {
+        "food": 930,
+        "gold": 967,
+        "stone": 720,
+        "timber": 950
+      },
+      "amount": 10,
+      "before": {
+        "food": 920,
+        "gold": 967,
+        "stone": 720,
+        "timber": 950
+      },
+      "dropoff_id": "vorthak_nighthold",
+      "event": "deposit",
+      "resource": "food",
+      "timestamp_msec": 170349,
+      "worker_id": "vorthak_worker"
+    },
+    {
+      "after": {
+        "food": 930,
+        "gold": 979,
+        "stone": 730,
+        "timber": 950
+      },
+      "amount": 10,
+      "before": {
+        "food": 930,
+        "gold": 979,
+        "stone": 720,
+        "timber": 950
+      },
+      "dropoff_id": "vorthak_nighthold",
+      "event": "deposit",
+      "resource": "stone",
+      "timestamp_msec": 171709,
+      "worker_id": "vorthak_worker"
+    },
+    {
+      "after": {
+        "food": 930,
+        "gold": 989,
+        "stone": 730,
+        "timber": 950
+      },
+      "amount": 10,
+      "before": {
+        "food": 930,
+        "gold": 979,
+        "stone": 730,
+        "timber": 950
+      },
+      "dropoff_id": "vorthak_nighthold",
+      "event": "deposit",
+      "resource": "gold",
+      "timestamp_msec": 172321,
+      "worker_id": "vorthak_worker"
+    },
+    {
+      "after": {
+        "food": 930,
+        "gold": 1001,
+        "stone": 730,
+        "timber": 960
+      },
+      "amount": 10,
+      "before": {
+        "food": 930,
+        "gold": 1001,
+        "stone": 730,
+        "timber": 950
+      },
+      "dropoff_id": "vorthak_nighthold",
+      "event": "deposit",
+      "resource": "timber",
+      "timestamp_msec": 172790,
+      "worker_id": "vorthak_worker"
+    },
+    {
+      "after": {
+        "food": 940,
+        "gold": 1001,
+        "stone": 730,
+        "timber": 960
+      },
+      "amount": 10,
+      "before": {
+        "food": 930,
+        "gold": 1001,
+        "stone": 730,
+        "timber": 960
+      },
+      "dropoff_id": "vorthak_nighthold",
+      "event": "deposit",
+      "resource": "food",
+      "timestamp_msec": 172896,
+      "worker_id": "vorthak_worker"
+    },
+    {
+      "after": {
+        "food": 900,
+        "gold": 996,
+        "stone": 730,
+        "timber": 960
+      },
+      "before": {
+        "food": 940,
+        "gold": 1001,
+        "stone": 730,
+        "timber": 960
+      },
+      "event": "mixed_unit_queue",
+      "subject": "vorthak_ash_thrall",
+      "time": 143.70737433334
+    },
+    {
+      "after": {
+        "food": 910,
+        "gold": 1008,
+        "stone": 730,
+        "timber": 960
+      },
+      "amount": 10,
+      "before": {
+        "food": 900,
+        "gold": 1008,
+        "stone": 730,
+        "timber": 960
+      },
+      "dropoff_id": "vorthak_nighthold",
+      "event": "deposit",
+      "resource": "food",
+      "timestamp_msec": 175658,
+      "worker_id": "vorthak_worker"
+    },
+    {
+      "after": {
+        "food": 920,
+        "gold": 1008,
+        "stone": 730,
+        "timber": 960
+      },
+      "amount": 10,
+      "before": {
+        "food": 910,
+        "gold": 1008,
+        "stone": 730,
+        "timber": 960
+      },
+      "dropoff_id": "vorthak_nighthold",
+      "event": "deposit",
+      "resource": "food",
+      "timestamp_msec": 175924,
+      "worker_id": "vorthak_worker"
+    },
+    {
+      "after": {
+        "food": 920,
+        "gold": 1020,
+        "stone": 730,
+        "timber": 970
+      },
+      "amount": 10,
+      "before": {
+        "food": 920,
+        "gold": 1020,
+        "stone": 730,
+        "timber": 960
+      },
+      "dropoff_id": "vorthak_nighthold",
+      "event": "deposit",
+      "resource": "timber",
+      "timestamp_msec": 177857,
+      "worker_id": "vorthak_worker"
+    },
+    {
+      "after": {
+        "food": 930,
+        "gold": 1020,
+        "stone": 730,
+        "timber": 970
+      },
+      "amount": 10,
+      "before": {
+        "food": 920,
+        "gold": 1020,
+        "stone": 730,
+        "timber": 970
+      },
+      "dropoff_id": "vorthak_nighthold",
+      "event": "deposit",
+      "resource": "food",
+      "timestamp_msec": 178323,
+      "worker_id": "vorthak_worker"
+    },
+    {
+      "after": {
+        "food": 930,
+        "gold": 1032,
+        "stone": 740,
+        "timber": 970
+      },
+      "amount": 10,
+      "before": {
+        "food": 930,
+        "gold": 1032,
+        "stone": 730,
+        "timber": 970
+      },
+      "dropoff_id": "vorthak_nighthold",
+      "event": "deposit",
+      "resource": "stone",
+      "timestamp_msec": 178885,
+      "worker_id": "vorthak_worker"
+    },
+    {
+      "after": {
+        "food": 930,
+        "gold": 1042,
+        "stone": 740,
+        "timber": 970
+      },
+      "amount": 10,
+      "before": {
+        "food": 930,
+        "gold": 1032,
+        "stone": 740,
+        "timber": 970
+      },
+      "dropoff_id": "vorthak_nighthold",
+      "event": "deposit",
+      "resource": "gold",
+      "timestamp_msec": 179230,
+      "worker_id": "vorthak_worker"
+    },
+    {
+      "after": {
+        "food": 940,
+        "gold": 1054,
+        "stone": 740,
+        "timber": 970
+      },
+      "amount": 10,
+      "before": {
+        "food": 930,
+        "gold": 1054,
+        "stone": 740,
+        "timber": 970
+      },
+      "dropoff_id": "vorthak_nighthold",
+      "event": "deposit",
+      "resource": "food",
+      "timestamp_msec": 180779,
+      "worker_id": "vorthak_worker"
+    },
+    {
+      "after": {
+        "food": 940,
+        "gold": 1066,
+        "stone": 740,
+        "timber": 980
+      },
+      "amount": 10,
+      "before": {
+        "food": 940,
+        "gold": 1066,
+        "stone": 740,
+        "timber": 970
+      },
+      "dropoff_id": "vorthak_nighthold",
+      "event": "deposit",
+      "resource": "timber",
+      "timestamp_msec": 182927,
+      "worker_id": "vorthak_worker"
+    },
+    {
+      "after": {
+        "food": 950,
+        "gold": 1066,
+        "stone": 740,
+        "timber": 980
+      },
+      "amount": 10,
+      "before": {
+        "food": 940,
+        "gold": 1066,
+        "stone": 740,
+        "timber": 980
+      },
+      "dropoff_id": "vorthak_nighthold",
+      "event": "deposit",
+      "resource": "food",
+      "timestamp_msec": 183633,
+      "worker_id": "vorthak_worker"
+    },
+    {
+      "after": {
+        "food": 960,
+        "gold": 1066,
+        "stone": 740,
+        "timber": 980
+      },
+      "amount": 10,
+      "before": {
+        "food": 950,
+        "gold": 1066,
+        "stone": 740,
+        "timber": 980
+      },
+      "dropoff_id": "vorthak_nighthold",
+      "event": "deposit",
+      "resource": "food",
+      "timestamp_msec": 183833,
+      "worker_id": "vorthak_worker"
+    },
+    {
+      "after": {
+        "food": 970,
+        "gold": 1078,
+        "stone": 740,
+        "timber": 980
+      },
+      "amount": 10,
+      "before": {
+        "food": 960,
+        "gold": 1078,
+        "stone": 740,
+        "timber": 980
+      },
+      "dropoff_id": "vorthak_nighthold",
+      "event": "deposit",
+      "resource": "food",
+      "timestamp_msec": 185726,
+      "worker_id": "vorthak_worker"
+    },
+    {
+      "after": {
+        "food": 970,
+        "gold": 1078,
+        "stone": 750,
+        "timber": 980
+      },
+      "amount": 10,
+      "before": {
+        "food": 970,
+        "gold": 1078,
+        "stone": 740,
+        "timber": 980
+      },
+      "dropoff_id": "vorthak_nighthold",
+      "event": "deposit",
+      "resource": "stone",
+      "timestamp_msec": 186047,
+      "worker_id": "vorthak_worker"
+    },
+    {
+      "after": {
+        "food": 970,
+        "gold": 1088,
+        "stone": 750,
+        "timber": 980
+      },
+      "amount": 10,
+      "before": {
+        "food": 970,
+        "gold": 1078,
+        "stone": 750,
+        "timber": 980
+      },
+      "dropoff_id": "vorthak_nighthold",
+      "event": "deposit",
+      "resource": "gold",
+      "timestamp_msec": 186128,
+      "worker_id": "vorthak_worker"
+    },
+    {
+      "after": {
+        "food": 970,
+        "gold": 1100,
+        "stone": 750,
+        "timber": 990
+      },
+      "amount": 10,
+      "before": {
+        "food": 970,
+        "gold": 1100,
+        "stone": 750,
+        "timber": 980
+      },
+      "dropoff_id": "vorthak_nighthold",
+      "event": "deposit",
+      "resource": "timber",
+      "timestamp_msec": 187994,
+      "worker_id": "vorthak_worker"
+    },
+    {
+      "after": {
+        "food": 971,
+        "gold": 1100,
+        "stone": 750,
+        "timber": 990
+      },
+      "amount": 1,
+      "before": {
+        "food": 970,
+        "gold": 1100,
+        "stone": 750,
+        "timber": 990
+      },
+      "dropoff_id": "vorthak_nighthold",
+      "event": "deposit",
+      "resource": "food",
+      "timestamp_msec": 188634,
+      "worker_id": "vorthak_worker"
+    }
+  ],
+  "reconciled": true,
+  "resources": {
+    "food": 971,
+    "gold": 1124,
+    "stone": 750,
+    "timber": 990
+  }
+}

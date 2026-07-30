@@ -1,0 +1,24 @@
+{
+  "ai_deaths": 3,
+  "replacement": [
+    {
+      "event": "replacement_queue_after_casualty",
+      "losses_before_queue": 1,
+      "resources_after": {
+        "food": 890,
+        "gold": 868,
+        "stone": 700,
+        "timber": 920
+      },
+      "resources_before": {
+        "food": 930,
+        "gold": 873,
+        "stone": 700,
+        "timber": 920
+      },
+      "time": 125.488977000018,
+      "unit_id": "vorthak_ash_thrall"
+    }
+  ],
+  "replacement_queued": true
+}

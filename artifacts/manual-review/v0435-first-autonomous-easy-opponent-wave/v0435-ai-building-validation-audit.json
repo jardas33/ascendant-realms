@@ -1,0 +1,56 @@
+{
+  "events": [
+    {
+      "building_id": "vorthak_bone_barracks",
+      "event": "placed",
+      "is_built": false,
+      "kind": "barracks",
+      "position": {
+        "x": 77.3725814819336,
+        "y": 0,
+        "z": 91.5147171020508
+      },
+      "resources_after": {
+        "food": 755,
+        "gold": 600,
+        "stone": 560,
+        "timber": 760
+      },
+      "resources_before": {
+        "food": 755,
+        "gold": 600,
+        "stone": 600,
+        "timber": 900
+      },
+      "time": 1.01194093939394,
+      "worker_id": "vorthak_worker"
+    },
+    {
+      "building_id": "vorthak_thrall_pit",
+      "event": "placed",
+      "is_built": false,
+      "kind": "house",
+      "position": {
+        "x": 114.142135620117,
+        "y": 0,
+        "z": 85.8578643798828
+      },
+      "resources_after": {
+        "food": 710,
+        "gold": 600,
+        "stone": 550,
+        "timber": 730
+      },
+      "resources_before": {
+        "food": 710,
+        "gold": 600,
+        "stone": 570,
+        "timber": 780
+      },
+      "time": 12.0423103333335,
+      "worker_id": "vorthak_worker"
+    }
+  ],
+  "failed_sites_spend_zero": true,
+  "shared_world_contract": true
+}

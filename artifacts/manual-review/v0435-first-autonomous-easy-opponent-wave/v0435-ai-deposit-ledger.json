@@ -1,0 +1,4547 @@
+{
+  "entries": [
+    {
+      "bank_after": {
+        "food": 755,
+        "gold": 600,
+        "stone": 560,
+        "timber": 770
+      },
+      "bank_before": {
+        "food": 755,
+        "gold": 600,
+        "stone": 560,
+        "timber": 760
+      },
+      "carried_amount": 10,
+      "deposit_count": 1,
+      "deposited_amount": 10,
+      "dropoff_building_id": "vorthak_nighthold",
+      "dropoff_definition_name": "Nighthold",
+      "dropoff_id": "vorthak_nighthold",
+      "dropoff_is_built": true,
+      "dropoff_is_friendly": true,
+      "dropoff_position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "dropoff_runtime_id": "168174815962",
+      "dropoff_team": 1,
+      "gather_multiplier": 1,
+      "kind": "timber",
+      "next_target": "Timber",
+      "resource_node_runtime_id": "172570446760",
+      "timestamp_msec": 31459,
+      "worker_id": "vorthak_worker",
+      "worker_runtime_id": "168862681852"
+    },
+    {
+      "bank_after": {
+        "food": 755,
+        "gold": 600,
+        "stone": 560,
+        "timber": 780
+      },
+      "bank_before": {
+        "food": 755,
+        "gold": 600,
+        "stone": 560,
+        "timber": 770
+      },
+      "carried_amount": 10,
+      "deposit_count": 2,
+      "deposited_amount": 10,
+      "dropoff_building_id": "vorthak_nighthold",
+      "dropoff_definition_name": "Nighthold",
+      "dropoff_id": "vorthak_nighthold",
+      "dropoff_is_built": true,
+      "dropoff_is_friendly": true,
+      "dropoff_position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "dropoff_runtime_id": "168174815962",
+      "dropoff_team": 1,
+      "gather_multiplier": 1,
+      "kind": "timber",
+      "next_target": "Timber",
+      "resource_node_runtime_id": "172570446760",
+      "timestamp_msec": 36515,
+      "worker_id": "vorthak_worker",
+      "worker_runtime_id": "168862681852"
+    },
+    {
+      "bank_after": {
+        "food": 755,
+        "gold": 600,
+        "stone": 570,
+        "timber": 780
+      },
+      "bank_before": {
+        "food": 755,
+        "gold": 600,
+        "stone": 560,
+        "timber": 780
+      },
+      "carried_amount": 10,
+      "deposit_count": 1,
+      "deposited_amount": 10,
+      "dropoff_building_id": "vorthak_nighthold",
+      "dropoff_definition_name": "Nighthold",
+      "dropoff_id": "vorthak_nighthold",
+      "dropoff_is_built": true,
+      "dropoff_is_friendly": true,
+      "dropoff_position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "dropoff_runtime_id": "168174815962",
+      "dropoff_team": 1,
+      "gather_multiplier": 1,
+      "kind": "stone",
+      "next_target": "Stone",
+      "resource_node_runtime_id": "172234902426",
+      "timestamp_msec": 36541,
+      "worker_id": "vorthak_worker",
+      "worker_runtime_id": "169315666707"
+    },
+    {
+      "bank_after": {
+        "food": 710,
+        "gold": 600,
+        "stone": 560,
+        "timber": 730
+      },
+      "bank_before": {
+        "food": 710,
+        "gold": 600,
+        "stone": 550,
+        "timber": 730
+      },
+      "carried_amount": 10,
+      "deposit_count": 2,
+      "deposited_amount": 10,
+      "dropoff_building_id": "vorthak_nighthold",
+      "dropoff_definition_name": "Nighthold",
+      "dropoff_id": "vorthak_nighthold",
+      "dropoff_is_built": true,
+      "dropoff_is_friendly": true,
+      "dropoff_position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "dropoff_runtime_id": "168174815962",
+      "dropoff_team": 1,
+      "gather_multiplier": 1,
+      "kind": "stone",
+      "next_target": "Stone",
+      "resource_node_runtime_id": "172234902426",
+      "timestamp_msec": 45585,
+      "worker_id": "vorthak_worker",
+      "worker_runtime_id": "169315666707"
+    },
+    {
+      "bank_after": {
+        "food": 720,
+        "gold": 600,
+        "stone": 560,
+        "timber": 730
+      },
+      "bank_before": {
+        "food": 710,
+        "gold": 600,
+        "stone": 560,
+        "timber": 730
+      },
+      "carried_amount": 10,
+      "deposit_count": 1,
+      "deposited_amount": 10,
+      "dropoff_building_id": "vorthak_nighthold",
+      "dropoff_definition_name": "Nighthold",
+      "dropoff_id": "vorthak_nighthold",
+      "dropoff_is_built": true,
+      "dropoff_is_friendly": true,
+      "dropoff_position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "dropoff_runtime_id": "168174815962",
+      "dropoff_team": 1,
+      "gather_multiplier": 1,
+      "kind": "food",
+      "next_target": "Food",
+      "resource_node_runtime_id": "171731585925",
+      "timestamp_msec": 49039,
+      "worker_id": "vorthak_worker",
+      "worker_runtime_id": "326887278865"
+    },
+    {
+      "bank_after": {
+        "food": 675,
+        "gold": 600,
+        "stone": 570,
+        "timber": 730
+      },
+      "bank_before": {
+        "food": 675,
+        "gold": 600,
+        "stone": 560,
+        "timber": 730
+      },
+      "carried_amount": 10,
+      "deposit_count": 3,
+      "deposited_amount": 10,
+      "dropoff_building_id": "vorthak_nighthold",
+      "dropoff_definition_name": "Nighthold",
+      "dropoff_id": "vorthak_nighthold",
+      "dropoff_is_built": true,
+      "dropoff_is_friendly": true,
+      "dropoff_position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "dropoff_runtime_id": "168174815962",
+      "dropoff_team": 1,
+      "gather_multiplier": 1,
+      "kind": "stone",
+      "next_target": "Stone",
+      "resource_node_runtime_id": "172234902426",
+      "timestamp_msec": 52773,
+      "worker_id": "vorthak_worker",
+      "worker_runtime_id": "169315666707"
+    },
+    {
+      "bank_after": {
+        "food": 685,
+        "gold": 600,
+        "stone": 570,
+        "timber": 730
+      },
+      "bank_before": {
+        "food": 675,
+        "gold": 600,
+        "stone": 570,
+        "timber": 730
+      },
+      "carried_amount": 10,
+      "deposit_count": 2,
+      "deposited_amount": 10,
+      "dropoff_building_id": "vorthak_nighthold",
+      "dropoff_definition_name": "Nighthold",
+      "dropoff_id": "vorthak_nighthold",
+      "dropoff_is_built": true,
+      "dropoff_is_friendly": true,
+      "dropoff_position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "dropoff_runtime_id": "168174815962",
+      "dropoff_team": 1,
+      "gather_multiplier": 1,
+      "kind": "food",
+      "next_target": "Food",
+      "resource_node_runtime_id": "171731585925",
+      "timestamp_msec": 56268,
+      "worker_id": "vorthak_worker",
+      "worker_runtime_id": "326887278865"
+    },
+    {
+      "bank_after": {
+        "food": 685,
+        "gold": 600,
+        "stone": 570,
+        "timber": 740
+      },
+      "bank_before": {
+        "food": 685,
+        "gold": 600,
+        "stone": 570,
+        "timber": 730
+      },
+      "carried_amount": 10,
+      "deposit_count": 1,
+      "deposited_amount": 10,
+      "dropoff_building_id": "vorthak_nighthold",
+      "dropoff_definition_name": "Nighthold",
+      "dropoff_id": "vorthak_nighthold",
+      "dropoff_is_built": true,
+      "dropoff_is_friendly": true,
+      "dropoff_position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "dropoff_runtime_id": "168174815962",
+      "dropoff_team": 1,
+      "gather_multiplier": 1,
+      "kind": "timber",
+      "next_target": "Timber",
+      "resource_node_runtime_id": "172402674593",
+      "timestamp_msec": 56601,
+      "worker_id": "vorthak_worker",
+      "worker_runtime_id": "477731228884"
+    },
+    {
+      "bank_after": {
+        "food": 685,
+        "gold": 600,
+        "stone": 580,
+        "timber": 740
+      },
+      "bank_before": {
+        "food": 685,
+        "gold": 600,
+        "stone": 570,
+        "timber": 740
+      },
+      "carried_amount": 10,
+      "deposit_count": 4,
+      "deposited_amount": 10,
+      "dropoff_building_id": "vorthak_nighthold",
+      "dropoff_definition_name": "Nighthold",
+      "dropoff_id": "vorthak_nighthold",
+      "dropoff_is_built": true,
+      "dropoff_is_friendly": true,
+      "dropoff_position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "dropoff_runtime_id": "168174815962",
+      "dropoff_team": 1,
+      "gather_multiplier": 1,
+      "kind": "stone",
+      "next_target": "Stone",
+      "resource_node_runtime_id": "172234902426",
+      "timestamp_msec": 59936,
+      "worker_id": "vorthak_worker",
+      "worker_runtime_id": "169315666707"
+    },
+    {
+      "bank_after": {
+        "food": 640,
+        "gold": 600,
+        "stone": 580,
+        "timber": 750
+      },
+      "bank_before": {
+        "food": 640,
+        "gold": 600,
+        "stone": 580,
+        "timber": 740
+      },
+      "carried_amount": 10,
+      "deposit_count": 2,
+      "deposited_amount": 10,
+      "dropoff_building_id": "vorthak_nighthold",
+      "dropoff_definition_name": "Nighthold",
+      "dropoff_id": "vorthak_nighthold",
+      "dropoff_is_built": true,
+      "dropoff_is_friendly": true,
+      "dropoff_position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "dropoff_runtime_id": "168174815962",
+      "dropoff_team": 1,
+      "gather_multiplier": 1,
+      "kind": "timber",
+      "next_target": "Timber",
+      "resource_node_runtime_id": "172402674593",
+      "timestamp_msec": 62044,
+      "worker_id": "vorthak_worker",
+      "worker_runtime_id": "477731228884"
+    },
+    {
+      "bank_after": {
+        "food": 610,
+        "gold": 595,
+        "stone": 580,
+        "timber": 750
+      },
+      "bank_before": {
+        "food": 600,
+        "gold": 595,
+        "stone": 580,
+        "timber": 750
+      },
+      "carried_amount": 10,
+      "deposit_count": 3,
+      "deposited_amount": 10,
+      "dropoff_building_id": "vorthak_nighthold",
+      "dropoff_definition_name": "Nighthold",
+      "dropoff_id": "vorthak_nighthold",
+      "dropoff_is_built": true,
+      "dropoff_is_friendly": true,
+      "dropoff_position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "dropoff_runtime_id": "168174815962",
+      "dropoff_team": 1,
+      "gather_multiplier": 1,
+      "kind": "food",
+      "next_target": "Food",
+      "resource_node_runtime_id": "171731585925",
+      "timestamp_msec": 64738,
+      "worker_id": "vorthak_worker",
+      "worker_runtime_id": "326887278865"
+    },
+    {
+      "bank_after": {
+        "food": 610,
+        "gold": 595,
+        "stone": 580,
+        "timber": 760
+      },
+      "bank_before": {
+        "food": 610,
+        "gold": 595,
+        "stone": 580,
+        "timber": 750
+      },
+      "carried_amount": 10,
+      "deposit_count": 3,
+      "deposited_amount": 10,
+      "dropoff_building_id": "vorthak_nighthold",
+      "dropoff_definition_name": "Nighthold",
+      "dropoff_id": "vorthak_nighthold",
+      "dropoff_is_built": true,
+      "dropoff_is_friendly": true,
+      "dropoff_position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "dropoff_runtime_id": "168174815962",
+      "dropoff_team": 1,
+      "gather_multiplier": 1,
+      "kind": "timber",
+      "next_target": "Timber",
+      "resource_node_runtime_id": "172402674593",
+      "timestamp_msec": 68019,
+      "worker_id": "vorthak_worker",
+      "worker_runtime_id": "477731228884"
+    },
+    {
+      "bank_after": {
+        "food": 610,
+        "gold": 595,
+        "stone": 590,
+        "timber": 760
+      },
+      "bank_before": {
+        "food": 610,
+        "gold": 595,
+        "stone": 580,
+        "timber": 760
+      },
+      "carried_amount": 10,
+      "deposit_count": 5,
+      "deposited_amount": 10,
+      "dropoff_building_id": "vorthak_nighthold",
+      "dropoff_definition_name": "Nighthold",
+      "dropoff_id": "vorthak_nighthold",
+      "dropoff_is_built": true,
+      "dropoff_is_friendly": true,
+      "dropoff_position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "dropoff_runtime_id": "168174815962",
+      "dropoff_team": 1,
+      "gather_multiplier": 1,
+      "kind": "stone",
+      "next_target": "Stone",
+      "resource_node_runtime_id": "172234902426",
+      "timestamp_msec": 68366,
+      "worker_id": "vorthak_worker",
+      "worker_runtime_id": "169315666707"
+    },
+    {
+      "bank_after": {
+        "food": 620,
+        "gold": 595,
+        "stone": 590,
+        "timber": 760
+      },
+      "bank_before": {
+        "food": 610,
+        "gold": 595,
+        "stone": 590,
+        "timber": 760
+      },
+      "carried_amount": 10,
+      "deposit_count": 4,
+      "deposited_amount": 10,
+      "dropoff_building_id": "vorthak_nighthold",
+      "dropoff_definition_name": "Nighthold",
+      "dropoff_id": "vorthak_nighthold",
+      "dropoff_is_built": true,
+      "dropoff_is_friendly": true,
+      "dropoff_position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "dropoff_runtime_id": "168174815962",
+      "dropoff_team": 1,
+      "gather_multiplier": 1,
+      "kind": "food",
+      "next_target": "Food",
+      "resource_node_runtime_id": "171731585925",
+      "timestamp_msec": 72087,
+      "worker_id": "vorthak_worker",
+      "worker_runtime_id": "326887278865"
+    },
+    {
+      "bank_after": {
+        "food": 620,
+        "gold": 605,
+        "stone": 590,
+        "timber": 760
+      },
+      "bank_before": {
+        "food": 620,
+        "gold": 595,
+        "stone": 590,
+        "timber": 760
+      },
+      "carried_amount": 10,
+      "deposit_count": 1,
+      "deposited_amount": 10,
+      "dropoff_building_id": "vorthak_nighthold",
+      "dropoff_definition_name": "Nighthold",
+      "dropoff_id": "vorthak_nighthold",
+      "dropoff_is_built": true,
+      "dropoff_is_friendly": true,
+      "dropoff_position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "dropoff_runtime_id": "168174815962",
+      "dropoff_team": 1,
+      "gather_multiplier": 1,
+      "kind": "gold",
+      "next_target": "Gold",
+      "resource_node_runtime_id": "171899358092",
+      "timestamp_msec": 72674,
+      "worker_id": "vorthak_worker",
+      "worker_runtime_id": "631880289577"
+    },
+    {
+      "bank_after": {
+        "food": 580,
+        "gold": 600,
+        "stone": 590,
+        "timber": 770
+      },
+      "bank_before": {
+        "food": 580,
+        "gold": 600,
+        "stone": 590,
+        "timber": 760
+      },
+      "carried_amount": 10,
+      "deposit_count": 4,
+      "deposited_amount": 10,
+      "dropoff_building_id": "vorthak_nighthold",
+      "dropoff_definition_name": "Nighthold",
+      "dropoff_id": "vorthak_nighthold",
+      "dropoff_is_built": true,
+      "dropoff_is_friendly": true,
+      "dropoff_position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "dropoff_runtime_id": "168174815962",
+      "dropoff_team": 1,
+      "gather_multiplier": 1,
+      "kind": "timber",
+      "next_target": "Timber",
+      "resource_node_runtime_id": "172402674593",
+      "timestamp_msec": 73169,
+      "worker_id": "vorthak_worker",
+      "worker_runtime_id": "477731228884"
+    },
+    {
+      "bank_after": {
+        "food": 590,
+        "gold": 600,
+        "stone": 590,
+        "timber": 770
+      },
+      "bank_before": {
+        "food": 580,
+        "gold": 600,
+        "stone": 590,
+        "timber": 770
+      },
+      "carried_amount": 10,
+      "deposit_count": 1,
+      "deposited_amount": 10,
+      "dropoff_building_id": "vorthak_nighthold",
+      "dropoff_definition_name": "Nighthold",
+      "dropoff_id": "vorthak_nighthold",
+      "dropoff_is_built": true,
+      "dropoff_is_friendly": true,
+      "dropoff_position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "dropoff_runtime_id": "168174815962",
+      "dropoff_team": 1,
+      "gather_multiplier": 1,
+      "kind": "food",
+      "next_target": "Food",
+      "resource_node_runtime_id": "171731585925",
+      "timestamp_msec": 75368,
+      "worker_id": "vorthak_worker",
+      "worker_runtime_id": "168409696997"
+    },
+    {
+      "bank_after": {
+        "food": 590,
+        "gold": 600,
+        "stone": 600,
+        "timber": 770
+      },
+      "bank_before": {
+        "food": 590,
+        "gold": 600,
+        "stone": 590,
+        "timber": 770
+      },
+      "carried_amount": 10,
+      "deposit_count": 6,
+      "deposited_amount": 10,
+      "dropoff_building_id": "vorthak_nighthold",
+      "dropoff_definition_name": "Nighthold",
+      "dropoff_id": "vorthak_nighthold",
+      "dropoff_is_built": true,
+      "dropoff_is_friendly": true,
+      "dropoff_position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "dropoff_runtime_id": "168174815962",
+      "dropoff_team": 1,
+      "gather_multiplier": 1,
+      "kind": "stone",
+      "next_target": "Stone",
+      "resource_node_runtime_id": "172234902426",
+      "timestamp_msec": 75556,
+      "worker_id": "vorthak_worker",
+      "worker_runtime_id": "169315666707"
+    },
+    {
+      "bank_after": {
+        "food": 600,
+        "gold": 600,
+        "stone": 600,
+        "timber": 770
+      },
+      "bank_before": {
+        "food": 590,
+        "gold": 600,
+        "stone": 600,
+        "timber": 770
+      },
+      "carried_amount": 10,
+      "deposit_count": 3,
+      "deposited_amount": 10,
+      "dropoff_building_id": "vorthak_nighthold",
+      "dropoff_definition_name": "Nighthold",
+      "dropoff_id": "vorthak_nighthold",
+      "dropoff_is_built": true,
+      "dropoff_is_friendly": true,
+      "dropoff_position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "dropoff_runtime_id": "168174815962",
+      "dropoff_team": 1,
+      "gather_multiplier": 1,
+      "kind": "food",
+      "next_target": "Food",
+      "resource_node_runtime_id": "171731585925",
+      "timestamp_msec": 77369,
+      "worker_id": "vorthak_worker",
+      "worker_runtime_id": "168862681852"
+    },
+    {
+      "bank_after": {
+        "food": 600,
+        "gold": 600,
+        "stone": 600,
+        "timber": 780
+      },
+      "bank_before": {
+        "food": 600,
+        "gold": 600,
+        "stone": 600,
+        "timber": 770
+      },
+      "carried_amount": 10,
+      "deposit_count": 5,
+      "deposited_amount": 10,
+      "dropoff_building_id": "vorthak_nighthold",
+      "dropoff_definition_name": "Nighthold",
+      "dropoff_id": "vorthak_nighthold",
+      "dropoff_is_built": true,
+      "dropoff_is_friendly": true,
+      "dropoff_position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "dropoff_runtime_id": "168174815962",
+      "dropoff_team": 1,
+      "gather_multiplier": 1,
+      "kind": "timber",
+      "next_target": "Timber",
+      "resource_node_runtime_id": "172402674593",
+      "timestamp_msec": 78290,
+      "worker_id": "vorthak_worker",
+      "worker_runtime_id": "477731228884"
+    },
+    {
+      "bank_after": {
+        "food": 600,
+        "gold": 610,
+        "stone": 600,
+        "timber": 780
+      },
+      "bank_before": {
+        "food": 600,
+        "gold": 600,
+        "stone": 600,
+        "timber": 780
+      },
+      "carried_amount": 10,
+      "deposit_count": 2,
+      "deposited_amount": 10,
+      "dropoff_building_id": "vorthak_nighthold",
+      "dropoff_definition_name": "Nighthold",
+      "dropoff_id": "vorthak_nighthold",
+      "dropoff_is_built": true,
+      "dropoff_is_friendly": true,
+      "dropoff_position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "dropoff_runtime_id": "168174815962",
+      "dropoff_team": 1,
+      "gather_multiplier": 1,
+      "kind": "gold",
+      "next_target": "Gold",
+      "resource_node_runtime_id": "171899358092",
+      "timestamp_msec": 79596,
+      "worker_id": "vorthak_worker",
+      "worker_runtime_id": "631880289577"
+    },
+    {
+      "bank_after": {
+        "food": 610,
+        "gold": 610,
+        "stone": 600,
+        "timber": 780
+      },
+      "bank_before": {
+        "food": 600,
+        "gold": 610,
+        "stone": 600,
+        "timber": 780
+      },
+      "carried_amount": 10,
+      "deposit_count": 5,
+      "deposited_amount": 10,
+      "dropoff_building_id": "vorthak_nighthold",
+      "dropoff_definition_name": "Nighthold",
+      "dropoff_id": "vorthak_nighthold",
+      "dropoff_is_built": true,
+      "dropoff_is_friendly": true,
+      "dropoff_position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "dropoff_runtime_id": "168174815962",
+      "dropoff_team": 1,
+      "gather_multiplier": 1,
+      "kind": "food",
+      "next_target": "Food",
+      "resource_node_runtime_id": "171731585925",
+      "timestamp_msec": 80611,
+      "worker_id": "vorthak_worker",
+      "worker_runtime_id": "326887278865"
+    },
+    {
+      "bank_after": {
+        "food": 570,
+        "gold": 605,
+        "stone": 610,
+        "timber": 780
+      },
+      "bank_before": {
+        "food": 570,
+        "gold": 605,
+        "stone": 600,
+        "timber": 780
+      },
+      "carried_amount": 10,
+      "deposit_count": 7,
+      "deposited_amount": 10,
+      "dropoff_building_id": "vorthak_nighthold",
+      "dropoff_definition_name": "Nighthold",
+      "dropoff_id": "vorthak_nighthold",
+      "dropoff_is_built": true,
+      "dropoff_is_friendly": true,
+      "dropoff_position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "dropoff_runtime_id": "168174815962",
+      "dropoff_team": 1,
+      "gather_multiplier": 1,
+      "kind": "stone",
+      "next_target": "Stone",
+      "resource_node_runtime_id": "172234902426",
+      "timestamp_msec": 82744,
+      "worker_id": "vorthak_worker",
+      "worker_runtime_id": "169315666707"
+    },
+    {
+      "bank_after": {
+        "food": 580,
+        "gold": 605,
+        "stone": 610,
+        "timber": 780
+      },
+      "bank_before": {
+        "food": 570,
+        "gold": 605,
+        "stone": 610,
+        "timber": 780
+      },
+      "carried_amount": 10,
+      "deposit_count": 2,
+      "deposited_amount": 10,
+      "dropoff_building_id": "vorthak_nighthold",
+      "dropoff_definition_name": "Nighthold",
+      "dropoff_id": "vorthak_nighthold",
+      "dropoff_is_built": true,
+      "dropoff_is_friendly": true,
+      "dropoff_position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "dropoff_runtime_id": "168174815962",
+      "dropoff_team": 1,
+      "gather_multiplier": 1,
+      "kind": "food",
+      "next_target": "Food",
+      "resource_node_runtime_id": "171731585925",
+      "timestamp_msec": 83038,
+      "worker_id": "vorthak_worker",
+      "worker_runtime_id": "168409696997"
+    },
+    {
+      "bank_after": {
+        "food": 580,
+        "gold": 605,
+        "stone": 610,
+        "timber": 790
+      },
+      "bank_before": {
+        "food": 580,
+        "gold": 605,
+        "stone": 610,
+        "timber": 780
+      },
+      "carried_amount": 10,
+      "deposit_count": 6,
+      "deposited_amount": 10,
+      "dropoff_building_id": "vorthak_nighthold",
+      "dropoff_definition_name": "Nighthold",
+      "dropoff_id": "vorthak_nighthold",
+      "dropoff_is_built": true,
+      "dropoff_is_friendly": true,
+      "dropoff_position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "dropoff_runtime_id": "168174815962",
+      "dropoff_team": 1,
+      "gather_multiplier": 1,
+      "kind": "timber",
+      "next_target": "Timber",
+      "resource_node_runtime_id": "172402674593",
+      "timestamp_msec": 83358,
+      "worker_id": "vorthak_worker",
+      "worker_runtime_id": "477731228884"
+    },
+    {
+      "bank_after": {
+        "food": 590,
+        "gold": 605,
+        "stone": 610,
+        "timber": 790
+      },
+      "bank_before": {
+        "food": 580,
+        "gold": 605,
+        "stone": 610,
+        "timber": 790
+      },
+      "carried_amount": 10,
+      "deposit_count": 1,
+      "deposited_amount": 10,
+      "dropoff_building_id": "vorthak_nighthold",
+      "dropoff_definition_name": "Nighthold",
+      "dropoff_id": "vorthak_nighthold",
+      "dropoff_is_built": true,
+      "dropoff_is_friendly": true,
+      "dropoff_position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "dropoff_runtime_id": "168174815962",
+      "dropoff_team": 1,
+      "gather_multiplier": 1,
+      "kind": "food",
+      "next_target": "Food",
+      "resource_node_runtime_id": "171731585925",
+      "timestamp_msec": 84238,
+      "worker_id": "vorthak_worker",
+      "worker_runtime_id": "783663762730"
+    },
+    {
+      "bank_after": {
+        "food": 600,
+        "gold": 605,
+        "stone": 610,
+        "timber": 790
+      },
+      "bank_before": {
+        "food": 590,
+        "gold": 605,
+        "stone": 610,
+        "timber": 790
+      },
+      "carried_amount": 10,
+      "deposit_count": 4,
+      "deposited_amount": 10,
+      "dropoff_building_id": "vorthak_nighthold",
+      "dropoff_definition_name": "Nighthold",
+      "dropoff_id": "vorthak_nighthold",
+      "dropoff_is_built": true,
+      "dropoff_is_friendly": true,
+      "dropoff_position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "dropoff_runtime_id": "168174815962",
+      "dropoff_team": 1,
+      "gather_multiplier": 1,
+      "kind": "food",
+      "next_target": "Food",
+      "resource_node_runtime_id": "171731585925",
+      "timestamp_msec": 85265,
+      "worker_id": "vorthak_worker",
+      "worker_runtime_id": "168862681852"
+    },
+    {
+      "bank_after": {
+        "food": 600,
+        "gold": 615,
+        "stone": 610,
+        "timber": 790
+      },
+      "bank_before": {
+        "food": 600,
+        "gold": 605,
+        "stone": 610,
+        "timber": 790
+      },
+      "carried_amount": 10,
+      "deposit_count": 3,
+      "deposited_amount": 10,
+      "dropoff_building_id": "vorthak_nighthold",
+      "dropoff_definition_name": "Nighthold",
+      "dropoff_id": "vorthak_nighthold",
+      "dropoff_is_built": true,
+      "dropoff_is_friendly": true,
+      "dropoff_position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "dropoff_runtime_id": "168174815962",
+      "dropoff_team": 1,
+      "gather_multiplier": 1,
+      "kind": "gold",
+      "next_target": "Gold",
+      "resource_node_runtime_id": "171899358092",
+      "timestamp_msec": 86506,
+      "worker_id": "vorthak_worker",
+      "worker_runtime_id": "631880289577"
+    },
+    {
+      "bank_after": {
+        "food": 610,
+        "gold": 615,
+        "stone": 610,
+        "timber": 790
+      },
+      "bank_before": {
+        "food": 600,
+        "gold": 615,
+        "stone": 610,
+        "timber": 790
+      },
+      "carried_amount": 10,
+      "deposit_count": 6,
+      "deposited_amount": 10,
+      "dropoff_building_id": "vorthak_nighthold",
+      "dropoff_definition_name": "Nighthold",
+      "dropoff_id": "vorthak_nighthold",
+      "dropoff_is_built": true,
+      "dropoff_is_friendly": true,
+      "dropoff_position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "dropoff_runtime_id": "168174815962",
+      "dropoff_team": 1,
+      "gather_multiplier": 1,
+      "kind": "food",
+      "next_target": "Food",
+      "resource_node_runtime_id": "171731585925",
+      "timestamp_msec": 88227,
+      "worker_id": "vorthak_worker",
+      "worker_runtime_id": "326887278865"
+    },
+    {
+      "bank_after": {
+        "food": 610,
+        "gold": 615,
+        "stone": 610,
+        "timber": 800
+      },
+      "bank_before": {
+        "food": 610,
+        "gold": 615,
+        "stone": 610,
+        "timber": 790
+      },
+      "carried_amount": 10,
+      "deposit_count": 7,
+      "deposited_amount": 10,
+      "dropoff_building_id": "vorthak_nighthold",
+      "dropoff_definition_name": "Nighthold",
+      "dropoff_id": "vorthak_nighthold",
+      "dropoff_is_built": true,
+      "dropoff_is_friendly": true,
+      "dropoff_position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "dropoff_runtime_id": "168174815962",
+      "dropoff_team": 1,
+      "gather_multiplier": 1,
+      "kind": "timber",
+      "next_target": "Timber",
+      "resource_node_runtime_id": "172402674593",
+      "timestamp_msec": 88427,
+      "worker_id": "vorthak_worker",
+      "worker_runtime_id": "477731228884"
+    },
+    {
+      "bank_after": {
+        "food": 610,
+        "gold": 615,
+        "stone": 620,
+        "timber": 800
+      },
+      "bank_before": {
+        "food": 610,
+        "gold": 615,
+        "stone": 610,
+        "timber": 800
+      },
+      "carried_amount": 10,
+      "deposit_count": 8,
+      "deposited_amount": 10,
+      "dropoff_building_id": "vorthak_nighthold",
+      "dropoff_definition_name": "Nighthold",
+      "dropoff_id": "vorthak_nighthold",
+      "dropoff_is_built": true,
+      "dropoff_is_friendly": true,
+      "dropoff_position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "dropoff_runtime_id": "168174815962",
+      "dropoff_team": 1,
+      "gather_multiplier": 1,
+      "kind": "stone",
+      "next_target": "Stone",
+      "resource_node_runtime_id": "172234902426",
+      "timestamp_msec": 89905,
+      "worker_id": "vorthak_worker",
+      "worker_runtime_id": "169315666707"
+    },
+    {
+      "bank_after": {
+        "food": 620,
+        "gold": 615,
+        "stone": 620,
+        "timber": 800
+      },
+      "bank_before": {
+        "food": 610,
+        "gold": 615,
+        "stone": 620,
+        "timber": 800
+      },
+      "carried_amount": 10,
+      "deposit_count": 3,
+      "deposited_amount": 10,
+      "dropoff_building_id": "vorthak_nighthold",
+      "dropoff_definition_name": "Nighthold",
+      "dropoff_id": "vorthak_nighthold",
+      "dropoff_is_built": true,
+      "dropoff_is_friendly": true,
+      "dropoff_position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "dropoff_runtime_id": "168174815962",
+      "dropoff_team": 1,
+      "gather_multiplier": 1,
+      "kind": "food",
+      "next_target": "Food",
+      "resource_node_runtime_id": "171731585925",
+      "timestamp_msec": 90880,
+      "worker_id": "vorthak_worker",
+      "worker_runtime_id": "168409696997"
+    },
+    {
+      "bank_after": {
+        "food": 630,
+        "gold": 615,
+        "stone": 620,
+        "timber": 800
+      },
+      "bank_before": {
+        "food": 620,
+        "gold": 615,
+        "stone": 620,
+        "timber": 800
+      },
+      "carried_amount": 10,
+      "deposit_count": 2,
+      "deposited_amount": 10,
+      "dropoff_building_id": "vorthak_nighthold",
+      "dropoff_definition_name": "Nighthold",
+      "dropoff_id": "vorthak_nighthold",
+      "dropoff_is_built": true,
+      "dropoff_is_friendly": true,
+      "dropoff_position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "dropoff_runtime_id": "168174815962",
+      "dropoff_team": 1,
+      "gather_multiplier": 1,
+      "kind": "food",
+      "next_target": "Food",
+      "resource_node_runtime_id": "171731585925",
+      "timestamp_msec": 92642,
+      "worker_id": "vorthak_worker",
+      "worker_runtime_id": "783663762730"
+    },
+    {
+      "bank_after": {
+        "food": 630,
+        "gold": 615,
+        "stone": 620,
+        "timber": 810
+      },
+      "bank_before": {
+        "food": 630,
+        "gold": 615,
+        "stone": 620,
+        "timber": 800
+      },
+      "carried_amount": 10,
+      "deposit_count": 8,
+      "deposited_amount": 10,
+      "dropoff_building_id": "vorthak_nighthold",
+      "dropoff_definition_name": "Nighthold",
+      "dropoff_id": "vorthak_nighthold",
+      "dropoff_is_built": true,
+      "dropoff_is_friendly": true,
+      "dropoff_position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "dropoff_runtime_id": "168174815962",
+      "dropoff_team": 1,
+      "gather_multiplier": 1,
+      "kind": "timber",
+      "next_target": "Timber",
+      "resource_node_runtime_id": "172402674593",
+      "timestamp_msec": 93495,
+      "worker_id": "vorthak_worker",
+      "worker_runtime_id": "477731228884"
+    },
+    {
+      "bank_after": {
+        "food": 630,
+        "gold": 625,
+        "stone": 620,
+        "timber": 810
+      },
+      "bank_before": {
+        "food": 630,
+        "gold": 615,
+        "stone": 620,
+        "timber": 810
+      },
+      "carried_amount": 10,
+      "deposit_count": 4,
+      "deposited_amount": 10,
+      "dropoff_building_id": "vorthak_nighthold",
+      "dropoff_definition_name": "Nighthold",
+      "dropoff_id": "vorthak_nighthold",
+      "dropoff_is_built": true,
+      "dropoff_is_friendly": true,
+      "dropoff_position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "dropoff_runtime_id": "168174815962",
+      "dropoff_team": 1,
+      "gather_multiplier": 1,
+      "kind": "gold",
+      "next_target": "Gold",
+      "resource_node_runtime_id": "171899358092",
+      "timestamp_msec": 93535,
+      "worker_id": "vorthak_worker",
+      "worker_runtime_id": "631880289577"
+    },
+    {
+      "bank_after": {
+        "food": 640,
+        "gold": 625,
+        "stone": 620,
+        "timber": 810
+      },
+      "bank_before": {
+        "food": 630,
+        "gold": 625,
+        "stone": 620,
+        "timber": 810
+      },
+      "carried_amount": 10,
+      "deposit_count": 5,
+      "deposited_amount": 10,
+      "dropoff_building_id": "vorthak_nighthold",
+      "dropoff_definition_name": "Nighthold",
+      "dropoff_id": "vorthak_nighthold",
+      "dropoff_is_built": true,
+      "dropoff_is_friendly": true,
+      "dropoff_position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "dropoff_runtime_id": "168174815962",
+      "dropoff_team": 1,
+      "gather_multiplier": 1,
+      "kind": "food",
+      "next_target": "Food",
+      "resource_node_runtime_id": "171731585925",
+      "timestamp_msec": 93547,
+      "worker_id": "vorthak_worker",
+      "worker_runtime_id": "168862681852"
+    },
+    {
+      "bank_after": {
+        "food": 650,
+        "gold": 625,
+        "stone": 620,
+        "timber": 810
+      },
+      "bank_before": {
+        "food": 640,
+        "gold": 625,
+        "stone": 620,
+        "timber": 810
+      },
+      "carried_amount": 10,
+      "deposit_count": 7,
+      "deposited_amount": 10,
+      "dropoff_building_id": "vorthak_nighthold",
+      "dropoff_definition_name": "Nighthold",
+      "dropoff_id": "vorthak_nighthold",
+      "dropoff_is_built": true,
+      "dropoff_is_friendly": true,
+      "dropoff_position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "dropoff_runtime_id": "168174815962",
+      "dropoff_team": 1,
+      "gather_multiplier": 1,
+      "kind": "food",
+      "next_target": "Food",
+      "resource_node_runtime_id": "171731585925",
+      "timestamp_msec": 95735,
+      "worker_id": "vorthak_worker",
+      "worker_runtime_id": "326887278865"
+    },
+    {
+      "bank_after": {
+        "food": 650,
+        "gold": 625,
+        "stone": 630,
+        "timber": 810
+      },
+      "bank_before": {
+        "food": 650,
+        "gold": 625,
+        "stone": 620,
+        "timber": 810
+      },
+      "carried_amount": 10,
+      "deposit_count": 9,
+      "deposited_amount": 10,
+      "dropoff_building_id": "vorthak_nighthold",
+      "dropoff_definition_name": "Nighthold",
+      "dropoff_id": "vorthak_nighthold",
+      "dropoff_is_built": true,
+      "dropoff_is_friendly": true,
+      "dropoff_position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "dropoff_runtime_id": "168174815962",
+      "dropoff_team": 1,
+      "gather_multiplier": 1,
+      "kind": "stone",
+      "next_target": "Stone",
+      "resource_node_runtime_id": "172234902426",
+      "timestamp_msec": 98350,
+      "worker_id": "vorthak_worker",
+      "worker_runtime_id": "169315666707"
+    },
+    {
+      "bank_after": {
+        "food": 660,
+        "gold": 625,
+        "stone": 630,
+        "timber": 810
+      },
+      "bank_before": {
+        "food": 650,
+        "gold": 625,
+        "stone": 630,
+        "timber": 810
+      },
+      "carried_amount": 10,
+      "deposit_count": 4,
+      "deposited_amount": 10,
+      "dropoff_building_id": "vorthak_nighthold",
+      "dropoff_definition_name": "Nighthold",
+      "dropoff_id": "vorthak_nighthold",
+      "dropoff_is_built": true,
+      "dropoff_is_friendly": true,
+      "dropoff_position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "dropoff_runtime_id": "168174815962",
+      "dropoff_team": 1,
+      "gather_multiplier": 1,
+      "kind": "food",
+      "next_target": "Food",
+      "resource_node_runtime_id": "171731585925",
+      "timestamp_msec": 99618,
+      "worker_id": "vorthak_worker",
+      "worker_runtime_id": "168409696997"
+    },
+    {
+      "bank_after": {
+        "food": 660,
+        "gold": 625,
+        "stone": 630,
+        "timber": 820
+      },
+      "bank_before": {
+        "food": 660,
+        "gold": 625,
+        "stone": 630,
+        "timber": 810
+      },
+      "carried_amount": 10,
+      "deposit_count": 9,
+      "deposited_amount": 10,
+      "dropoff_building_id": "vorthak_nighthold",
+      "dropoff_definition_name": "Nighthold",
+      "dropoff_id": "vorthak_nighthold",
+      "dropoff_is_built": true,
+      "dropoff_is_friendly": true,
+      "dropoff_position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "dropoff_runtime_id": "168174815962",
+      "dropoff_team": 1,
+      "gather_multiplier": 1,
+      "kind": "timber",
+      "next_target": "Timber",
+      "resource_node_runtime_id": "172402674593",
+      "timestamp_msec": 99831,
+      "worker_id": "vorthak_worker",
+      "worker_runtime_id": "477731228884"
+    },
+    {
+      "bank_after": {
+        "food": 660,
+        "gold": 635,
+        "stone": 630,
+        "timber": 820
+      },
+      "bank_before": {
+        "food": 660,
+        "gold": 625,
+        "stone": 630,
+        "timber": 820
+      },
+      "carried_amount": 10,
+      "deposit_count": 5,
+      "deposited_amount": 10,
+      "dropoff_building_id": "vorthak_nighthold",
+      "dropoff_definition_name": "Nighthold",
+      "dropoff_id": "vorthak_nighthold",
+      "dropoff_is_built": true,
+      "dropoff_is_friendly": true,
+      "dropoff_position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "dropoff_runtime_id": "168174815962",
+      "dropoff_team": 1,
+      "gather_multiplier": 1,
+      "kind": "gold",
+      "next_target": "Gold",
+      "resource_node_runtime_id": "171899358092",
+      "timestamp_msec": 101711,
+      "worker_id": "vorthak_worker",
+      "worker_runtime_id": "631880289577"
+    },
+    {
+      "bank_after": {
+        "food": 670,
+        "gold": 635,
+        "stone": 630,
+        "timber": 820
+      },
+      "bank_before": {
+        "food": 660,
+        "gold": 635,
+        "stone": 630,
+        "timber": 820
+      },
+      "carried_amount": 10,
+      "deposit_count": 3,
+      "deposited_amount": 10,
+      "dropoff_building_id": "vorthak_nighthold",
+      "dropoff_definition_name": "Nighthold",
+      "dropoff_id": "vorthak_nighthold",
+      "dropoff_is_built": true,
+      "dropoff_is_friendly": true,
+      "dropoff_position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "dropoff_runtime_id": "168174815962",
+      "dropoff_team": 1,
+      "gather_multiplier": 1,
+      "kind": "food",
+      "next_target": "Food",
+      "resource_node_runtime_id": "171731585925",
+      "timestamp_msec": 102245,
+      "worker_id": "vorthak_worker",
+      "worker_runtime_id": "783663762730"
+    },
+    {
+      "bank_after": {
+        "food": 680,
+        "gold": 635,
+        "stone": 630,
+        "timber": 820
+      },
+      "bank_before": {
+        "food": 670,
+        "gold": 635,
+        "stone": 630,
+        "timber": 820
+      },
+      "carried_amount": 10,
+      "deposit_count": 6,
+      "deposited_amount": 10,
+      "dropoff_building_id": "vorthak_nighthold",
+      "dropoff_definition_name": "Nighthold",
+      "dropoff_id": "vorthak_nighthold",
+      "dropoff_is_built": true,
+      "dropoff_is_friendly": true,
+      "dropoff_position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "dropoff_runtime_id": "168174815962",
+      "dropoff_team": 1,
+      "gather_multiplier": 1,
+      "kind": "food",
+      "next_target": "Food",
+      "resource_node_runtime_id": "171731585925",
+      "timestamp_msec": 102565,
+      "worker_id": "vorthak_worker",
+      "worker_runtime_id": "168862681852"
+    },
+    {
+      "bank_after": {
+        "food": 690,
+        "gold": 635,
+        "stone": 630,
+        "timber": 820
+      },
+      "bank_before": {
+        "food": 680,
+        "gold": 635,
+        "stone": 630,
+        "timber": 820
+      },
+      "carried_amount": 10,
+      "deposit_count": 8,
+      "deposited_amount": 10,
+      "dropoff_building_id": "vorthak_nighthold",
+      "dropoff_definition_name": "Nighthold",
+      "dropoff_id": "vorthak_nighthold",
+      "dropoff_is_built": true,
+      "dropoff_is_friendly": true,
+      "dropoff_position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "dropoff_runtime_id": "168174815962",
+      "dropoff_team": 1,
+      "gather_multiplier": 1,
+      "kind": "food",
+      "next_target": "Food",
+      "resource_node_runtime_id": "171731585925",
+      "timestamp_msec": 104872,
+      "worker_id": "vorthak_worker",
+      "worker_runtime_id": "326887278865"
+    },
+    {
+      "bank_after": {
+        "food": 690,
+        "gold": 635,
+        "stone": 630,
+        "timber": 830
+      },
+      "bank_before": {
+        "food": 690,
+        "gold": 635,
+        "stone": 630,
+        "timber": 820
+      },
+      "carried_amount": 10,
+      "deposit_count": 10,
+      "deposited_amount": 10,
+      "dropoff_building_id": "vorthak_nighthold",
+      "dropoff_definition_name": "Nighthold",
+      "dropoff_id": "vorthak_nighthold",
+      "dropoff_is_built": true,
+      "dropoff_is_friendly": true,
+      "dropoff_position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "dropoff_runtime_id": "168174815962",
+      "dropoff_team": 1,
+      "gather_multiplier": 1,
+      "kind": "timber",
+      "next_target": "Timber",
+      "resource_node_runtime_id": "172402674593",
+      "timestamp_msec": 104899,
+      "worker_id": "vorthak_worker",
+      "worker_runtime_id": "477731228884"
+    },
+    {
+      "bank_after": {
+        "food": 690,
+        "gold": 635,
+        "stone": 640,
+        "timber": 830
+      },
+      "bank_before": {
+        "food": 690,
+        "gold": 635,
+        "stone": 630,
+        "timber": 830
+      },
+      "carried_amount": 10,
+      "deposit_count": 10,
+      "deposited_amount": 10,
+      "dropoff_building_id": "vorthak_nighthold",
+      "dropoff_definition_name": "Nighthold",
+      "dropoff_id": "vorthak_nighthold",
+      "dropoff_is_built": true,
+      "dropoff_is_friendly": true,
+      "dropoff_position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "dropoff_runtime_id": "168174815962",
+      "dropoff_team": 1,
+      "gather_multiplier": 1,
+      "kind": "stone",
+      "next_target": "Stone",
+      "resource_node_runtime_id": "172234902426",
+      "timestamp_msec": 105513,
+      "worker_id": "vorthak_worker",
+      "worker_runtime_id": "169315666707"
+    },
+    {
+      "bank_after": {
+        "food": 700,
+        "gold": 635,
+        "stone": 640,
+        "timber": 830
+      },
+      "bank_before": {
+        "food": 690,
+        "gold": 635,
+        "stone": 640,
+        "timber": 830
+      },
+      "carried_amount": 10,
+      "deposit_count": 5,
+      "deposited_amount": 10,
+      "dropoff_building_id": "vorthak_nighthold",
+      "dropoff_definition_name": "Nighthold",
+      "dropoff_id": "vorthak_nighthold",
+      "dropoff_is_built": true,
+      "dropoff_is_friendly": true,
+      "dropoff_position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "dropoff_runtime_id": "168174815962",
+      "dropoff_team": 1,
+      "gather_multiplier": 1,
+      "kind": "food",
+      "next_target": "Food",
+      "resource_node_runtime_id": "171731585925",
+      "timestamp_msec": 108008,
+      "worker_id": "vorthak_worker",
+      "worker_runtime_id": "168409696997"
+    },
+    {
+      "bank_after": {
+        "food": 700,
+        "gold": 645,
+        "stone": 640,
+        "timber": 830
+      },
+      "bank_before": {
+        "food": 700,
+        "gold": 635,
+        "stone": 640,
+        "timber": 830
+      },
+      "carried_amount": 10,
+      "deposit_count": 6,
+      "deposited_amount": 10,
+      "dropoff_building_id": "vorthak_nighthold",
+      "dropoff_definition_name": "Nighthold",
+      "dropoff_id": "vorthak_nighthold",
+      "dropoff_is_built": true,
+      "dropoff_is_friendly": true,
+      "dropoff_position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "dropoff_runtime_id": "168174815962",
+      "dropoff_team": 1,
+      "gather_multiplier": 1,
+      "kind": "gold",
+      "next_target": "Gold",
+      "resource_node_runtime_id": "171899358092",
+      "timestamp_msec": 108621,
+      "worker_id": "vorthak_worker",
+      "worker_runtime_id": "631880289577"
+    },
+    {
+      "bank_after": {
+        "food": 700,
+        "gold": 645,
+        "stone": 640,
+        "timber": 840
+      },
+      "bank_before": {
+        "food": 700,
+        "gold": 645,
+        "stone": 640,
+        "timber": 830
+      },
+      "carried_amount": 10,
+      "deposit_count": 11,
+      "deposited_amount": 10,
+      "dropoff_building_id": "vorthak_nighthold",
+      "dropoff_definition_name": "Nighthold",
+      "dropoff_id": "vorthak_nighthold",
+      "dropoff_is_built": true,
+      "dropoff_is_friendly": true,
+      "dropoff_position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "dropoff_runtime_id": "168174815962",
+      "dropoff_team": 1,
+      "gather_multiplier": 1,
+      "kind": "timber",
+      "next_target": "Timber",
+      "resource_node_runtime_id": "172402674593",
+      "timestamp_msec": 109968,
+      "worker_id": "vorthak_worker",
+      "worker_runtime_id": "477731228884"
+    },
+    {
+      "bank_after": {
+        "food": 710,
+        "gold": 645,
+        "stone": 640,
+        "timber": 840
+      },
+      "bank_before": {
+        "food": 700,
+        "gold": 645,
+        "stone": 640,
+        "timber": 840
+      },
+      "carried_amount": 10,
+      "deposit_count": 4,
+      "deposited_amount": 10,
+      "dropoff_building_id": "vorthak_nighthold",
+      "dropoff_definition_name": "Nighthold",
+      "dropoff_id": "vorthak_nighthold",
+      "dropoff_is_built": true,
+      "dropoff_is_friendly": true,
+      "dropoff_position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "dropoff_runtime_id": "168174815962",
+      "dropoff_team": 1,
+      "gather_multiplier": 1,
+      "kind": "food",
+      "next_target": "Food",
+      "resource_node_runtime_id": "171731585925",
+      "timestamp_msec": 110046,
+      "worker_id": "vorthak_worker",
+      "worker_runtime_id": "783663762730"
+    },
+    {
+      "bank_after": {
+        "food": 720,
+        "gold": 645,
+        "stone": 640,
+        "timber": 840
+      },
+      "bank_before": {
+        "food": 710,
+        "gold": 645,
+        "stone": 640,
+        "timber": 840
+      },
+      "carried_amount": 10,
+      "deposit_count": 7,
+      "deposited_amount": 10,
+      "dropoff_building_id": "vorthak_nighthold",
+      "dropoff_definition_name": "Nighthold",
+      "dropoff_id": "vorthak_nighthold",
+      "dropoff_is_built": true,
+      "dropoff_is_friendly": true,
+      "dropoff_position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "dropoff_runtime_id": "168174815962",
+      "dropoff_team": 1,
+      "gather_multiplier": 1,
+      "kind": "food",
+      "next_target": "Food",
+      "resource_node_runtime_id": "171731585925",
+      "timestamp_msec": 110635,
+      "worker_id": "vorthak_worker",
+      "worker_runtime_id": "168862681852"
+    },
+    {
+      "bank_after": {
+        "food": 720,
+        "gold": 645,
+        "stone": 650,
+        "timber": 840
+      },
+      "bank_before": {
+        "food": 720,
+        "gold": 645,
+        "stone": 640,
+        "timber": 840
+      },
+      "carried_amount": 10,
+      "deposit_count": 11,
+      "deposited_amount": 10,
+      "dropoff_building_id": "vorthak_nighthold",
+      "dropoff_definition_name": "Nighthold",
+      "dropoff_id": "vorthak_nighthold",
+      "dropoff_is_built": true,
+      "dropoff_is_friendly": true,
+      "dropoff_position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "dropoff_runtime_id": "168174815962",
+      "dropoff_team": 1,
+      "gather_multiplier": 1,
+      "kind": "stone",
+      "next_target": "Stone",
+      "resource_node_runtime_id": "172234902426",
+      "timestamp_msec": 112688,
+      "worker_id": "vorthak_worker",
+      "worker_runtime_id": "169315666707"
+    },
+    {
+      "bank_after": {
+        "food": 730,
+        "gold": 645,
+        "stone": 650,
+        "timber": 840
+      },
+      "bank_before": {
+        "food": 720,
+        "gold": 645,
+        "stone": 650,
+        "timber": 840
+      },
+      "carried_amount": 10,
+      "deposit_count": 9,
+      "deposited_amount": 10,
+      "dropoff_building_id": "vorthak_nighthold",
+      "dropoff_definition_name": "Nighthold",
+      "dropoff_id": "vorthak_nighthold",
+      "dropoff_is_built": true,
+      "dropoff_is_friendly": true,
+      "dropoff_position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "dropoff_runtime_id": "168174815962",
+      "dropoff_team": 1,
+      "gather_multiplier": 1,
+      "kind": "food",
+      "next_target": "Food",
+      "resource_node_runtime_id": "171731585925",
+      "timestamp_msec": 112715,
+      "worker_id": "vorthak_worker",
+      "worker_runtime_id": "326887278865"
+    },
+    {
+      "bank_after": {
+        "food": 730,
+        "gold": 645,
+        "stone": 650,
+        "timber": 850
+      },
+      "bank_before": {
+        "food": 730,
+        "gold": 645,
+        "stone": 650,
+        "timber": 840
+      },
+      "carried_amount": 10,
+      "deposit_count": 12,
+      "deposited_amount": 10,
+      "dropoff_building_id": "vorthak_nighthold",
+      "dropoff_definition_name": "Nighthold",
+      "dropoff_id": "vorthak_nighthold",
+      "dropoff_is_built": true,
+      "dropoff_is_friendly": true,
+      "dropoff_position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "dropoff_runtime_id": "168174815962",
+      "dropoff_team": 1,
+      "gather_multiplier": 1,
+      "kind": "timber",
+      "next_target": "Timber",
+      "resource_node_runtime_id": "172402674593",
+      "timestamp_msec": 115034,
+      "worker_id": "vorthak_worker",
+      "worker_runtime_id": "477731228884"
+    },
+    {
+      "bank_after": {
+        "food": 740,
+        "gold": 645,
+        "stone": 650,
+        "timber": 850
+      },
+      "bank_before": {
+        "food": 730,
+        "gold": 645,
+        "stone": 650,
+        "timber": 850
+      },
+      "carried_amount": 10,
+      "deposit_count": 6,
+      "deposited_amount": 10,
+      "dropoff_building_id": "vorthak_nighthold",
+      "dropoff_definition_name": "Nighthold",
+      "dropoff_id": "vorthak_nighthold",
+      "dropoff_is_built": true,
+      "dropoff_is_friendly": true,
+      "dropoff_position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "dropoff_runtime_id": "168174815962",
+      "dropoff_team": 1,
+      "gather_multiplier": 1,
+      "kind": "food",
+      "next_target": "Food",
+      "resource_node_runtime_id": "171731585925",
+      "timestamp_msec": 115410,
+      "worker_id": "vorthak_worker",
+      "worker_runtime_id": "168409696997"
+    },
+    {
+      "bank_after": {
+        "food": 740,
+        "gold": 655,
+        "stone": 650,
+        "timber": 850
+      },
+      "bank_before": {
+        "food": 740,
+        "gold": 645,
+        "stone": 650,
+        "timber": 850
+      },
+      "carried_amount": 10,
+      "deposit_count": 7,
+      "deposited_amount": 10,
+      "dropoff_building_id": "vorthak_nighthold",
+      "dropoff_definition_name": "Nighthold",
+      "dropoff_id": "vorthak_nighthold",
+      "dropoff_is_built": true,
+      "dropoff_is_friendly": true,
+      "dropoff_position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "dropoff_runtime_id": "168174815962",
+      "dropoff_team": 1,
+      "gather_multiplier": 1,
+      "kind": "gold",
+      "next_target": "Gold",
+      "resource_node_runtime_id": "171899358092",
+      "timestamp_msec": 115516,
+      "worker_id": "vorthak_worker",
+      "worker_runtime_id": "631880289577"
+    },
+    {
+      "bank_after": {
+        "food": 750,
+        "gold": 655,
+        "stone": 650,
+        "timber": 850
+      },
+      "bank_before": {
+        "food": 740,
+        "gold": 655,
+        "stone": 650,
+        "timber": 850
+      },
+      "carried_amount": 10,
+      "deposit_count": 5,
+      "deposited_amount": 10,
+      "dropoff_building_id": "vorthak_nighthold",
+      "dropoff_definition_name": "Nighthold",
+      "dropoff_id": "vorthak_nighthold",
+      "dropoff_is_built": true,
+      "dropoff_is_friendly": true,
+      "dropoff_position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "dropoff_runtime_id": "168174815962",
+      "dropoff_team": 1,
+      "gather_multiplier": 1,
+      "kind": "food",
+      "next_target": "Food",
+      "resource_node_runtime_id": "171731585925",
+      "timestamp_msec": 117837,
+      "worker_id": "vorthak_worker",
+      "worker_runtime_id": "783663762730"
+    },
+    {
+      "bank_after": {
+        "food": 760,
+        "gold": 655,
+        "stone": 650,
+        "timber": 850
+      },
+      "bank_before": {
+        "food": 750,
+        "gold": 655,
+        "stone": 650,
+        "timber": 850
+      },
+      "carried_amount": 10,
+      "deposit_count": 8,
+      "deposited_amount": 10,
+      "dropoff_building_id": "vorthak_nighthold",
+      "dropoff_definition_name": "Nighthold",
+      "dropoff_id": "vorthak_nighthold",
+      "dropoff_is_built": true,
+      "dropoff_is_friendly": true,
+      "dropoff_position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "dropoff_runtime_id": "168174815962",
+      "dropoff_team": 1,
+      "gather_multiplier": 1,
+      "kind": "food",
+      "next_target": "Food",
+      "resource_node_runtime_id": "171731585925",
+      "timestamp_msec": 118117,
+      "worker_id": "vorthak_worker",
+      "worker_runtime_id": "168862681852"
+    },
+    {
+      "bank_after": {
+        "food": 760,
+        "gold": 655,
+        "stone": 660,
+        "timber": 850
+      },
+      "bank_before": {
+        "food": 760,
+        "gold": 655,
+        "stone": 650,
+        "timber": 850
+      },
+      "carried_amount": 10,
+      "deposit_count": 12,
+      "deposited_amount": 10,
+      "dropoff_building_id": "vorthak_nighthold",
+      "dropoff_definition_name": "Nighthold",
+      "dropoff_id": "vorthak_nighthold",
+      "dropoff_is_built": true,
+      "dropoff_is_friendly": true,
+      "dropoff_position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "dropoff_runtime_id": "168174815962",
+      "dropoff_team": 1,
+      "gather_multiplier": 1,
+      "kind": "stone",
+      "next_target": "Stone",
+      "resource_node_runtime_id": "172234902426",
+      "timestamp_msec": 119917,
+      "worker_id": "vorthak_worker",
+      "worker_runtime_id": "169315666707"
+    },
+    {
+      "bank_after": {
+        "food": 770,
+        "gold": 655,
+        "stone": 660,
+        "timber": 850
+      },
+      "bank_before": {
+        "food": 760,
+        "gold": 655,
+        "stone": 660,
+        "timber": 850
+      },
+      "carried_amount": 10,
+      "deposit_count": 10,
+      "deposited_amount": 10,
+      "dropoff_building_id": "vorthak_nighthold",
+      "dropoff_definition_name": "Nighthold",
+      "dropoff_id": "vorthak_nighthold",
+      "dropoff_is_built": true,
+      "dropoff_is_friendly": true,
+      "dropoff_position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "dropoff_runtime_id": "168174815962",
+      "dropoff_team": 1,
+      "gather_multiplier": 1,
+      "kind": "food",
+      "next_target": "Food",
+      "resource_node_runtime_id": "171731585925",
+      "timestamp_msec": 120050,
+      "worker_id": "vorthak_worker",
+      "worker_runtime_id": "326887278865"
+    },
+    {
+      "bank_after": {
+        "food": 770,
+        "gold": 655,
+        "stone": 660,
+        "timber": 860
+      },
+      "bank_before": {
+        "food": 770,
+        "gold": 655,
+        "stone": 660,
+        "timber": 850
+      },
+      "carried_amount": 10,
+      "deposit_count": 13,
+      "deposited_amount": 10,
+      "dropoff_building_id": "vorthak_nighthold",
+      "dropoff_definition_name": "Nighthold",
+      "dropoff_id": "vorthak_nighthold",
+      "dropoff_is_built": true,
+      "dropoff_is_friendly": true,
+      "dropoff_position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "dropoff_runtime_id": "168174815962",
+      "dropoff_team": 1,
+      "gather_multiplier": 1,
+      "kind": "timber",
+      "next_target": "Timber",
+      "resource_node_runtime_id": "172402674593",
+      "timestamp_msec": 120104,
+      "worker_id": "vorthak_worker",
+      "worker_runtime_id": "477731228884"
+    },
+    {
+      "bank_after": {
+        "food": 770,
+        "gold": 665,
+        "stone": 660,
+        "timber": 860
+      },
+      "bank_before": {
+        "food": 770,
+        "gold": 655,
+        "stone": 660,
+        "timber": 860
+      },
+      "carried_amount": 10,
+      "deposit_count": 8,
+      "deposited_amount": 10,
+      "dropoff_building_id": "vorthak_nighthold",
+      "dropoff_definition_name": "Nighthold",
+      "dropoff_id": "vorthak_nighthold",
+      "dropoff_is_built": true,
+      "dropoff_is_friendly": true,
+      "dropoff_position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "dropoff_runtime_id": "168174815962",
+      "dropoff_team": 1,
+      "gather_multiplier": 1,
+      "kind": "gold",
+      "next_target": "Gold",
+      "resource_node_runtime_id": "171899358092",
+      "timestamp_msec": 122426,
+      "worker_id": "vorthak_worker",
+      "worker_runtime_id": "631880289577"
+    },
+    {
+      "bank_after": {
+        "food": 780,
+        "gold": 665,
+        "stone": 660,
+        "timber": 860
+      },
+      "bank_before": {
+        "food": 770,
+        "gold": 665,
+        "stone": 660,
+        "timber": 860
+      },
+      "carried_amount": 10,
+      "deposit_count": 7,
+      "deposited_amount": 10,
+      "dropoff_building_id": "vorthak_nighthold",
+      "dropoff_definition_name": "Nighthold",
+      "dropoff_id": "vorthak_nighthold",
+      "dropoff_is_built": true,
+      "dropoff_is_friendly": true,
+      "dropoff_position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "dropoff_runtime_id": "168174815962",
+      "dropoff_team": 1,
+      "gather_multiplier": 1,
+      "kind": "food",
+      "next_target": "Food",
+      "resource_node_runtime_id": "171731585925",
+      "timestamp_msec": 123212,
+      "worker_id": "vorthak_worker",
+      "worker_runtime_id": "168409696997"
+    },
+    {
+      "bank_after": {
+        "food": 780,
+        "gold": 665,
+        "stone": 660,
+        "timber": 870
+      },
+      "bank_before": {
+        "food": 780,
+        "gold": 665,
+        "stone": 660,
+        "timber": 860
+      },
+      "carried_amount": 10,
+      "deposit_count": 14,
+      "deposited_amount": 10,
+      "dropoff_building_id": "vorthak_nighthold",
+      "dropoff_definition_name": "Nighthold",
+      "dropoff_id": "vorthak_nighthold",
+      "dropoff_is_built": true,
+      "dropoff_is_friendly": true,
+      "dropoff_position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "dropoff_runtime_id": "168174815962",
+      "dropoff_team": 1,
+      "gather_multiplier": 1,
+      "kind": "timber",
+      "next_target": "Timber",
+      "resource_node_runtime_id": "172402674593",
+      "timestamp_msec": 125186,
+      "worker_id": "vorthak_worker",
+      "worker_runtime_id": "477731228884"
+    },
+    {
+      "bank_after": {
+        "food": 790,
+        "gold": 665,
+        "stone": 660,
+        "timber": 870
+      },
+      "bank_before": {
+        "food": 780,
+        "gold": 665,
+        "stone": 660,
+        "timber": 870
+      },
+      "carried_amount": 10,
+      "deposit_count": 9,
+      "deposited_amount": 10,
+      "dropoff_building_id": "vorthak_nighthold",
+      "dropoff_definition_name": "Nighthold",
+      "dropoff_id": "vorthak_nighthold",
+      "dropoff_is_built": true,
+      "dropoff_is_friendly": true,
+      "dropoff_position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "dropoff_runtime_id": "168174815962",
+      "dropoff_team": 1,
+      "gather_multiplier": 1,
+      "kind": "food",
+      "next_target": "Food",
+      "resource_node_runtime_id": "171731585925",
+      "timestamp_msec": 126159,
+      "worker_id": "vorthak_worker",
+      "worker_runtime_id": "168862681852"
+    },
+    {
+      "bank_after": {
+        "food": 800,
+        "gold": 665,
+        "stone": 660,
+        "timber": 870
+      },
+      "bank_before": {
+        "food": 790,
+        "gold": 665,
+        "stone": 660,
+        "timber": 870
+      },
+      "carried_amount": 10,
+      "deposit_count": 6,
+      "deposited_amount": 10,
+      "dropoff_building_id": "vorthak_nighthold",
+      "dropoff_definition_name": "Nighthold",
+      "dropoff_id": "vorthak_nighthold",
+      "dropoff_is_built": true,
+      "dropoff_is_friendly": true,
+      "dropoff_position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "dropoff_runtime_id": "168174815962",
+      "dropoff_team": 1,
+      "gather_multiplier": 1,
+      "kind": "food",
+      "next_target": "Food",
+      "resource_node_runtime_id": "171731585925",
+      "timestamp_msec": 126427,
+      "worker_id": "vorthak_worker",
+      "worker_runtime_id": "783663762730"
+    },
+    {
+      "bank_after": {
+        "food": 800,
+        "gold": 677,
+        "stone": 670,
+        "timber": 870
+      },
+      "bank_before": {
+        "food": 800,
+        "gold": 677,
+        "stone": 660,
+        "timber": 870
+      },
+      "carried_amount": 10,
+      "deposit_count": 13,
+      "deposited_amount": 10,
+      "dropoff_building_id": "vorthak_nighthold",
+      "dropoff_definition_name": "Nighthold",
+      "dropoff_id": "vorthak_nighthold",
+      "dropoff_is_built": true,
+      "dropoff_is_friendly": true,
+      "dropoff_position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "dropoff_runtime_id": "168174815962",
+      "dropoff_team": 1,
+      "gather_multiplier": 1,
+      "kind": "stone",
+      "next_target": "Stone",
+      "resource_node_runtime_id": "172234902426",
+      "timestamp_msec": 127107,
+      "worker_id": "vorthak_worker",
+      "worker_runtime_id": "169315666707"
+    },
+    {
+      "bank_after": {
+        "food": 810,
+        "gold": 689,
+        "stone": 670,
+        "timber": 870
+      },
+      "bank_before": {
+        "food": 800,
+        "gold": 689,
+        "stone": 670,
+        "timber": 870
+      },
+      "carried_amount": 10,
+      "deposit_count": 11,
+      "deposited_amount": 10,
+      "dropoff_building_id": "vorthak_nighthold",
+      "dropoff_definition_name": "Nighthold",
+      "dropoff_id": "vorthak_nighthold",
+      "dropoff_is_built": true,
+      "dropoff_is_friendly": true,
+      "dropoff_position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "dropoff_runtime_id": "168174815962",
+      "dropoff_team": 1,
+      "gather_multiplier": 1,
+      "kind": "food",
+      "next_target": "Food",
+      "resource_node_runtime_id": "171731585925",
+      "timestamp_msec": 128854,
+      "worker_id": "vorthak_worker",
+      "worker_runtime_id": "326887278865"
+    },
+    {
+      "bank_after": {
+        "food": 810,
+        "gold": 699,
+        "stone": 670,
+        "timber": 870
+      },
+      "bank_before": {
+        "food": 810,
+        "gold": 689,
+        "stone": 670,
+        "timber": 870
+      },
+      "carried_amount": 10,
+      "deposit_count": 9,
+      "deposited_amount": 10,
+      "dropoff_building_id": "vorthak_nighthold",
+      "dropoff_definition_name": "Nighthold",
+      "dropoff_id": "vorthak_nighthold",
+      "dropoff_is_built": true,
+      "dropoff_is_friendly": true,
+      "dropoff_position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "dropoff_runtime_id": "168174815962",
+      "dropoff_team": 1,
+      "gather_multiplier": 1,
+      "kind": "gold",
+      "next_target": "Gold",
+      "resource_node_runtime_id": "171899358092",
+      "timestamp_msec": 129321,
+      "worker_id": "vorthak_worker",
+      "worker_runtime_id": "631880289577"
+    },
+    {
+      "bank_after": {
+        "food": 810,
+        "gold": 699,
+        "stone": 670,
+        "timber": 880
+      },
+      "bank_before": {
+        "food": 810,
+        "gold": 699,
+        "stone": 670,
+        "timber": 870
+      },
+      "carried_amount": 10,
+      "deposit_count": 15,
+      "deposited_amount": 10,
+      "dropoff_building_id": "vorthak_nighthold",
+      "dropoff_definition_name": "Nighthold",
+      "dropoff_id": "vorthak_nighthold",
+      "dropoff_is_built": true,
+      "dropoff_is_friendly": true,
+      "dropoff_position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "dropoff_runtime_id": "168174815962",
+      "dropoff_team": 1,
+      "gather_multiplier": 1,
+      "kind": "timber",
+      "next_target": "Timber",
+      "resource_node_runtime_id": "172402674593",
+      "timestamp_msec": 130294,
+      "worker_id": "vorthak_worker",
+      "worker_runtime_id": "477731228884"
+    },
+    {
+      "bank_after": {
+        "food": 820,
+        "gold": 711,
+        "stone": 670,
+        "timber": 880
+      },
+      "bank_before": {
+        "food": 810,
+        "gold": 711,
+        "stone": 670,
+        "timber": 880
+      },
+      "carried_amount": 10,
+      "deposit_count": 8,
+      "deposited_amount": 10,
+      "dropoff_building_id": "vorthak_nighthold",
+      "dropoff_definition_name": "Nighthold",
+      "dropoff_id": "vorthak_nighthold",
+      "dropoff_is_built": true,
+      "dropoff_is_friendly": true,
+      "dropoff_position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "dropoff_runtime_id": "168174815962",
+      "dropoff_team": 1,
+      "gather_multiplier": 1,
+      "kind": "food",
+      "next_target": "Food",
+      "resource_node_runtime_id": "171731585925",
+      "timestamp_msec": 131213,
+      "worker_id": "vorthak_worker",
+      "worker_runtime_id": "168409696997"
+    },
+    {
+      "bank_after": {
+        "food": 820,
+        "gold": 723,
+        "stone": 680,
+        "timber": 880
+      },
+      "bank_before": {
+        "food": 820,
+        "gold": 723,
+        "stone": 670,
+        "timber": 880
+      },
+      "carried_amount": 10,
+      "deposit_count": 14,
+      "deposited_amount": 10,
+      "dropoff_building_id": "vorthak_nighthold",
+      "dropoff_definition_name": "Nighthold",
+      "dropoff_id": "vorthak_nighthold",
+      "dropoff_is_built": true,
+      "dropoff_is_friendly": true,
+      "dropoff_position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "dropoff_runtime_id": "168174815962",
+      "dropoff_team": 1,
+      "gather_multiplier": 1,
+      "kind": "stone",
+      "next_target": "Stone",
+      "resource_node_runtime_id": "172234902426",
+      "timestamp_msec": 134282,
+      "worker_id": "vorthak_worker",
+      "worker_runtime_id": "169315666707"
+    },
+    {
+      "bank_after": {
+        "food": 830,
+        "gold": 723,
+        "stone": 680,
+        "timber": 880
+      },
+      "bank_before": {
+        "food": 820,
+        "gold": 723,
+        "stone": 680,
+        "timber": 880
+      },
+      "carried_amount": 10,
+      "deposit_count": 10,
+      "deposited_amount": 10,
+      "dropoff_building_id": "vorthak_nighthold",
+      "dropoff_definition_name": "Nighthold",
+      "dropoff_id": "vorthak_nighthold",
+      "dropoff_is_built": true,
+      "dropoff_is_friendly": true,
+      "dropoff_position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "dropoff_runtime_id": "168174815962",
+      "dropoff_team": 1,
+      "gather_multiplier": 1,
+      "kind": "food",
+      "next_target": "Food",
+      "resource_node_runtime_id": "171731585925",
+      "timestamp_msec": 134362,
+      "worker_id": "vorthak_worker",
+      "worker_runtime_id": "168862681852"
+    },
+    {
+      "bank_after": {
+        "food": 840,
+        "gold": 735,
+        "stone": 680,
+        "timber": 880
+      },
+      "bank_before": {
+        "food": 830,
+        "gold": 735,
+        "stone": 680,
+        "timber": 880
+      },
+      "carried_amount": 10,
+      "deposit_count": 7,
+      "deposited_amount": 10,
+      "dropoff_building_id": "vorthak_nighthold",
+      "dropoff_definition_name": "Nighthold",
+      "dropoff_id": "vorthak_nighthold",
+      "dropoff_is_built": true,
+      "dropoff_is_friendly": true,
+      "dropoff_position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "dropoff_runtime_id": "168174815962",
+      "dropoff_team": 1,
+      "gather_multiplier": 1,
+      "kind": "food",
+      "next_target": "Food",
+      "resource_node_runtime_id": "171731585925",
+      "timestamp_msec": 134696,
+      "worker_id": "vorthak_worker",
+      "worker_runtime_id": "783663762730"
+    },
+    {
+      "bank_after": {
+        "food": 840,
+        "gold": 735,
+        "stone": 680,
+        "timber": 890
+      },
+      "bank_before": {
+        "food": 840,
+        "gold": 735,
+        "stone": 680,
+        "timber": 880
+      },
+      "carried_amount": 10,
+      "deposit_count": 16,
+      "deposited_amount": 10,
+      "dropoff_building_id": "vorthak_nighthold",
+      "dropoff_definition_name": "Nighthold",
+      "dropoff_id": "vorthak_nighthold",
+      "dropoff_is_built": true,
+      "dropoff_is_friendly": true,
+      "dropoff_position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "dropoff_runtime_id": "168174815962",
+      "dropoff_team": 1,
+      "gather_multiplier": 1,
+      "kind": "timber",
+      "next_target": "Timber",
+      "resource_node_runtime_id": "172402674593",
+      "timestamp_msec": 135430,
+      "worker_id": "vorthak_worker",
+      "worker_runtime_id": "477731228884"
+    },
+    {
+      "bank_after": {
+        "food": 840,
+        "gold": 745,
+        "stone": 680,
+        "timber": 890
+      },
+      "bank_before": {
+        "food": 840,
+        "gold": 735,
+        "stone": 680,
+        "timber": 890
+      },
+      "carried_amount": 10,
+      "deposit_count": 10,
+      "deposited_amount": 10,
+      "dropoff_building_id": "vorthak_nighthold",
+      "dropoff_definition_name": "Nighthold",
+      "dropoff_id": "vorthak_nighthold",
+      "dropoff_is_built": true,
+      "dropoff_is_friendly": true,
+      "dropoff_position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "dropoff_runtime_id": "168174815962",
+      "dropoff_team": 1,
+      "gather_multiplier": 1,
+      "kind": "gold",
+      "next_target": "Gold",
+      "resource_node_runtime_id": "171899358092",
+      "timestamp_msec": 136230,
+      "worker_id": "vorthak_worker",
+      "worker_runtime_id": "631880289577"
+    },
+    {
+      "bank_after": {
+        "food": 850,
+        "gold": 757,
+        "stone": 680,
+        "timber": 890
+      },
+      "bank_before": {
+        "food": 840,
+        "gold": 757,
+        "stone": 680,
+        "timber": 890
+      },
+      "carried_amount": 10,
+      "deposit_count": 12,
+      "deposited_amount": 10,
+      "dropoff_building_id": "vorthak_nighthold",
+      "dropoff_definition_name": "Nighthold",
+      "dropoff_id": "vorthak_nighthold",
+      "dropoff_is_built": true,
+      "dropoff_is_friendly": true,
+      "dropoff_position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "dropoff_runtime_id": "168174815962",
+      "dropoff_team": 1,
+      "gather_multiplier": 1,
+      "kind": "food",
+      "next_target": "Food",
+      "resource_node_runtime_id": "171731585925",
+      "timestamp_msec": 136949,
+      "worker_id": "vorthak_worker",
+      "worker_runtime_id": "326887278865"
+    },
+    {
+      "bank_after": {
+        "food": 860,
+        "gold": 757,
+        "stone": 680,
+        "timber": 890
+      },
+      "bank_before": {
+        "food": 850,
+        "gold": 757,
+        "stone": 680,
+        "timber": 890
+      },
+      "carried_amount": 10,
+      "deposit_count": 9,
+      "deposited_amount": 10,
+      "dropoff_building_id": "vorthak_nighthold",
+      "dropoff_definition_name": "Nighthold",
+      "dropoff_id": "vorthak_nighthold",
+      "dropoff_is_built": true,
+      "dropoff_is_friendly": true,
+      "dropoff_position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "dropoff_runtime_id": "168174815962",
+      "dropoff_team": 1,
+      "gather_multiplier": 1,
+      "kind": "food",
+      "next_target": "Food",
+      "resource_node_runtime_id": "171731585925",
+      "timestamp_msec": 138563,
+      "worker_id": "vorthak_worker",
+      "worker_runtime_id": "168409696997"
+    },
+    {
+      "bank_after": {
+        "food": 860,
+        "gold": 769,
+        "stone": 680,
+        "timber": 900
+      },
+      "bank_before": {
+        "food": 860,
+        "gold": 769,
+        "stone": 680,
+        "timber": 890
+      },
+      "carried_amount": 10,
+      "deposit_count": 17,
+      "deposited_amount": 10,
+      "dropoff_building_id": "vorthak_nighthold",
+      "dropoff_definition_name": "Nighthold",
+      "dropoff_id": "vorthak_nighthold",
+      "dropoff_is_built": true,
+      "dropoff_is_friendly": true,
+      "dropoff_position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "dropoff_runtime_id": "168174815962",
+      "dropoff_team": 1,
+      "gather_multiplier": 1,
+      "kind": "timber",
+      "next_target": "Timber",
+      "resource_node_runtime_id": "172402674593",
+      "timestamp_msec": 140564,
+      "worker_id": "vorthak_worker",
+      "worker_runtime_id": "477731228884"
+    },
+    {
+      "bank_after": {
+        "food": 860,
+        "gold": 781,
+        "stone": 690,
+        "timber": 900
+      },
+      "bank_before": {
+        "food": 860,
+        "gold": 781,
+        "stone": 680,
+        "timber": 900
+      },
+      "carried_amount": 10,
+      "deposit_count": 15,
+      "deposited_amount": 10,
+      "dropoff_building_id": "vorthak_nighthold",
+      "dropoff_definition_name": "Nighthold",
+      "dropoff_id": "vorthak_nighthold",
+      "dropoff_is_built": true,
+      "dropoff_is_friendly": true,
+      "dropoff_position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "dropoff_runtime_id": "168174815962",
+      "dropoff_team": 1,
+      "gather_multiplier": 1,
+      "kind": "stone",
+      "next_target": "Stone",
+      "resource_node_runtime_id": "172234902426",
+      "timestamp_msec": 141444,
+      "worker_id": "vorthak_worker",
+      "worker_runtime_id": "169315666707"
+    },
+    {
+      "bank_after": {
+        "food": 870,
+        "gold": 781,
+        "stone": 690,
+        "timber": 900
+      },
+      "bank_before": {
+        "food": 860,
+        "gold": 781,
+        "stone": 690,
+        "timber": 900
+      },
+      "carried_amount": 10,
+      "deposit_count": 8,
+      "deposited_amount": 10,
+      "dropoff_building_id": "vorthak_nighthold",
+      "dropoff_definition_name": "Nighthold",
+      "dropoff_id": "vorthak_nighthold",
+      "dropoff_is_built": true,
+      "dropoff_is_friendly": true,
+      "dropoff_position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "dropoff_runtime_id": "168174815962",
+      "dropoff_team": 1,
+      "gather_multiplier": 1,
+      "kind": "food",
+      "next_target": "Food",
+      "resource_node_runtime_id": "171731585925",
+      "timestamp_msec": 142231,
+      "worker_id": "vorthak_worker",
+      "worker_runtime_id": "783663762730"
+    },
+    {
+      "bank_after": {
+        "food": 880,
+        "gold": 781,
+        "stone": 690,
+        "timber": 900
+      },
+      "bank_before": {
+        "food": 870,
+        "gold": 781,
+        "stone": 690,
+        "timber": 900
+      },
+      "carried_amount": 10,
+      "deposit_count": 11,
+      "deposited_amount": 10,
+      "dropoff_building_id": "vorthak_nighthold",
+      "dropoff_definition_name": "Nighthold",
+      "dropoff_id": "vorthak_nighthold",
+      "dropoff_is_built": true,
+      "dropoff_is_friendly": true,
+      "dropoff_position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "dropoff_runtime_id": "168174815962",
+      "dropoff_team": 1,
+      "gather_multiplier": 1,
+      "kind": "food",
+      "next_target": "Food",
+      "resource_node_runtime_id": "171731585925",
+      "timestamp_msec": 142445,
+      "worker_id": "vorthak_worker",
+      "worker_runtime_id": "168862681852"
+    },
+    {
+      "bank_after": {
+        "food": 880,
+        "gold": 803,
+        "stone": 690,
+        "timber": 900
+      },
+      "bank_before": {
+        "food": 880,
+        "gold": 793,
+        "stone": 690,
+        "timber": 900
+      },
+      "carried_amount": 10,
+      "deposit_count": 11,
+      "deposited_amount": 10,
+      "dropoff_building_id": "vorthak_nighthold",
+      "dropoff_definition_name": "Nighthold",
+      "dropoff_id": "vorthak_nighthold",
+      "dropoff_is_built": true,
+      "dropoff_is_friendly": true,
+      "dropoff_position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "dropoff_runtime_id": "168174815962",
+      "dropoff_team": 1,
+      "gather_multiplier": 1,
+      "kind": "gold",
+      "next_target": "Gold",
+      "resource_node_runtime_id": "171899358092",
+      "timestamp_msec": 143126,
+      "worker_id": "vorthak_worker",
+      "worker_runtime_id": "631880289577"
+    },
+    {
+      "bank_after": {
+        "food": 890,
+        "gold": 815,
+        "stone": 690,
+        "timber": 900
+      },
+      "bank_before": {
+        "food": 880,
+        "gold": 815,
+        "stone": 690,
+        "timber": 900
+      },
+      "carried_amount": 10,
+      "deposit_count": 13,
+      "deposited_amount": 10,
+      "dropoff_building_id": "vorthak_nighthold",
+      "dropoff_definition_name": "Nighthold",
+      "dropoff_id": "vorthak_nighthold",
+      "dropoff_is_built": true,
+      "dropoff_is_friendly": true,
+      "dropoff_position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "dropoff_runtime_id": "168174815962",
+      "dropoff_team": 1,
+      "gather_multiplier": 1,
+      "kind": "food",
+      "next_target": "Food",
+      "resource_node_runtime_id": "171731585925",
+      "timestamp_msec": 144833,
+      "worker_id": "vorthak_worker",
+      "worker_runtime_id": "326887278865"
+    },
+    {
+      "bank_after": {
+        "food": 890,
+        "gold": 815,
+        "stone": 690,
+        "timber": 910
+      },
+      "bank_before": {
+        "food": 890,
+        "gold": 815,
+        "stone": 690,
+        "timber": 900
+      },
+      "carried_amount": 10,
+      "deposit_count": 18,
+      "deposited_amount": 10,
+      "dropoff_building_id": "vorthak_nighthold",
+      "dropoff_definition_name": "Nighthold",
+      "dropoff_id": "vorthak_nighthold",
+      "dropoff_is_built": true,
+      "dropoff_is_friendly": true,
+      "dropoff_position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "dropoff_runtime_id": "168174815962",
+      "dropoff_team": 1,
+      "gather_multiplier": 1,
+      "kind": "timber",
+      "next_target": "Timber",
+      "resource_node_runtime_id": "172402674593",
+      "timestamp_msec": 145701,
+      "worker_id": "vorthak_worker",
+      "worker_runtime_id": "477731228884"
+    },
+    {
+      "bank_after": {
+        "food": 900,
+        "gold": 827,
+        "stone": 690,
+        "timber": 910
+      },
+      "bank_before": {
+        "food": 890,
+        "gold": 827,
+        "stone": 690,
+        "timber": 910
+      },
+      "carried_amount": 10,
+      "deposit_count": 10,
+      "deposited_amount": 10,
+      "dropoff_building_id": "vorthak_nighthold",
+      "dropoff_definition_name": "Nighthold",
+      "dropoff_id": "vorthak_nighthold",
+      "dropoff_is_built": true,
+      "dropoff_is_friendly": true,
+      "dropoff_position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "dropoff_runtime_id": "168174815962",
+      "dropoff_team": 1,
+      "gather_multiplier": 1,
+      "kind": "food",
+      "next_target": "Food",
+      "resource_node_runtime_id": "171731585925",
+      "timestamp_msec": 147287,
+      "worker_id": "vorthak_worker",
+      "worker_runtime_id": "168409696997"
+    },
+    {
+      "bank_after": {
+        "food": 900,
+        "gold": 827,
+        "stone": 700,
+        "timber": 910
+      },
+      "bank_before": {
+        "food": 900,
+        "gold": 827,
+        "stone": 690,
+        "timber": 910
+      },
+      "carried_amount": 10,
+      "deposit_count": 16,
+      "deposited_amount": 10,
+      "dropoff_building_id": "vorthak_nighthold",
+      "dropoff_definition_name": "Nighthold",
+      "dropoff_id": "vorthak_nighthold",
+      "dropoff_is_built": true,
+      "dropoff_is_friendly": true,
+      "dropoff_position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "dropoff_runtime_id": "168174815962",
+      "dropoff_team": 1,
+      "gather_multiplier": 1,
+      "kind": "stone",
+      "next_target": "Stone",
+      "resource_node_runtime_id": "172234902426",
+      "timestamp_msec": 148619,
+      "worker_id": "vorthak_worker",
+      "worker_runtime_id": "169315666707"
+    },
+    {
+      "bank_after": {
+        "food": 900,
+        "gold": 849,
+        "stone": 700,
+        "timber": 910
+      },
+      "bank_before": {
+        "food": 900,
+        "gold": 839,
+        "stone": 700,
+        "timber": 910
+      },
+      "carried_amount": 10,
+      "deposit_count": 12,
+      "deposited_amount": 10,
+      "dropoff_building_id": "vorthak_nighthold",
+      "dropoff_definition_name": "Nighthold",
+      "dropoff_id": "vorthak_nighthold",
+      "dropoff_is_built": true,
+      "dropoff_is_friendly": true,
+      "dropoff_position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "dropoff_runtime_id": "168174815962",
+      "dropoff_team": 1,
+      "gather_multiplier": 1,
+      "kind": "gold",
+      "next_target": "Gold",
+      "resource_node_runtime_id": "171899358092",
+      "timestamp_msec": 150036,
+      "worker_id": "vorthak_worker",
+      "worker_runtime_id": "631880289577"
+    },
+    {
+      "bank_after": {
+        "food": 910,
+        "gold": 849,
+        "stone": 700,
+        "timber": 910
+      },
+      "bank_before": {
+        "food": 900,
+        "gold": 849,
+        "stone": 700,
+        "timber": 910
+      },
+      "carried_amount": 10,
+      "deposit_count": 12,
+      "deposited_amount": 10,
+      "dropoff_building_id": "vorthak_nighthold",
+      "dropoff_definition_name": "Nighthold",
+      "dropoff_id": "vorthak_nighthold",
+      "dropoff_is_built": true,
+      "dropoff_is_friendly": true,
+      "dropoff_position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "dropoff_runtime_id": "168174815962",
+      "dropoff_team": 1,
+      "gather_multiplier": 1,
+      "kind": "food",
+      "next_target": "Food",
+      "resource_node_runtime_id": "171731585925",
+      "timestamp_msec": 150153,
+      "worker_id": "vorthak_worker",
+      "worker_runtime_id": "168862681852"
+    },
+    {
+      "bank_after": {
+        "food": 920,
+        "gold": 849,
+        "stone": 700,
+        "timber": 910
+      },
+      "bank_before": {
+        "food": 910,
+        "gold": 849,
+        "stone": 700,
+        "timber": 910
+      },
+      "carried_amount": 10,
+      "deposit_count": 9,
+      "deposited_amount": 10,
+      "dropoff_building_id": "vorthak_nighthold",
+      "dropoff_definition_name": "Nighthold",
+      "dropoff_id": "vorthak_nighthold",
+      "dropoff_is_built": true,
+      "dropoff_is_friendly": true,
+      "dropoff_position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "dropoff_runtime_id": "168174815962",
+      "dropoff_team": 1,
+      "gather_multiplier": 1,
+      "kind": "food",
+      "next_target": "Food",
+      "resource_node_runtime_id": "171731585925",
+      "timestamp_msec": 150395,
+      "worker_id": "vorthak_worker",
+      "worker_runtime_id": "783663762730"
+    },
+    {
+      "bank_after": {
+        "food": 920,
+        "gold": 861,
+        "stone": 700,
+        "timber": 920
+      },
+      "bank_before": {
+        "food": 920,
+        "gold": 861,
+        "stone": 700,
+        "timber": 910
+      },
+      "carried_amount": 10,
+      "deposit_count": 19,
+      "deposited_amount": 10,
+      "dropoff_building_id": "vorthak_nighthold",
+      "dropoff_definition_name": "Nighthold",
+      "dropoff_id": "vorthak_nighthold",
+      "dropoff_is_built": true,
+      "dropoff_is_friendly": true,
+      "dropoff_position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "dropoff_runtime_id": "168174815962",
+      "dropoff_team": 1,
+      "gather_multiplier": 1,
+      "kind": "timber",
+      "next_target": "Timber",
+      "resource_node_runtime_id": "172402674593",
+      "timestamp_msec": 150835,
+      "worker_id": "vorthak_worker",
+      "worker_runtime_id": "477731228884"
+    },
+    {
+      "bank_after": {
+        "food": 930,
+        "gold": 873,
+        "stone": 700,
+        "timber": 920
+      },
+      "bank_before": {
+        "food": 920,
+        "gold": 873,
+        "stone": 700,
+        "timber": 920
+      },
+      "carried_amount": 10,
+      "deposit_count": 14,
+      "deposited_amount": 10,
+      "dropoff_building_id": "vorthak_nighthold",
+      "dropoff_definition_name": "Nighthold",
+      "dropoff_id": "vorthak_nighthold",
+      "dropoff_is_built": true,
+      "dropoff_is_friendly": true,
+      "dropoff_position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "dropoff_runtime_id": "168174815962",
+      "dropoff_team": 1,
+      "gather_multiplier": 1,
+      "kind": "food",
+      "next_target": "Food",
+      "resource_node_runtime_id": "171731585925",
+      "timestamp_msec": 154156,
+      "worker_id": "vorthak_worker",
+      "worker_runtime_id": "326887278865"
+    },
+    {
+      "bank_after": {
+        "food": 900,
+        "gold": 880,
+        "stone": 700,
+        "timber": 920
+      },
+      "bank_before": {
+        "food": 890,
+        "gold": 880,
+        "stone": 700,
+        "timber": 920
+      },
+      "carried_amount": 10,
+      "deposit_count": 11,
+      "deposited_amount": 10,
+      "dropoff_building_id": "vorthak_nighthold",
+      "dropoff_definition_name": "Nighthold",
+      "dropoff_id": "vorthak_nighthold",
+      "dropoff_is_built": true,
+      "dropoff_is_friendly": true,
+      "dropoff_position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "dropoff_runtime_id": "168174815962",
+      "dropoff_team": 1,
+      "gather_multiplier": 1,
+      "kind": "food",
+      "next_target": "Food",
+      "resource_node_runtime_id": "171731585925",
+      "timestamp_msec": 155796,
+      "worker_id": "vorthak_worker",
+      "worker_runtime_id": "168409696997"
+    },
+    {
+      "bank_after": {
+        "food": 900,
+        "gold": 880,
+        "stone": 710,
+        "timber": 920
+      },
+      "bank_before": {
+        "food": 900,
+        "gold": 880,
+        "stone": 700,
+        "timber": 920
+      },
+      "carried_amount": 10,
+      "deposit_count": 17,
+      "deposited_amount": 10,
+      "dropoff_building_id": "vorthak_nighthold",
+      "dropoff_definition_name": "Nighthold",
+      "dropoff_id": "vorthak_nighthold",
+      "dropoff_is_built": true,
+      "dropoff_is_friendly": true,
+      "dropoff_position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "dropoff_runtime_id": "168174815962",
+      "dropoff_team": 1,
+      "gather_multiplier": 1,
+      "kind": "stone",
+      "next_target": "Stone",
+      "resource_node_runtime_id": "172234902426",
+      "timestamp_msec": 156571,
+      "worker_id": "vorthak_worker",
+      "worker_runtime_id": "169315666707"
+    },
+    {
+      "bank_after": {
+        "food": 900,
+        "gold": 880,
+        "stone": 710,
+        "timber": 930
+      },
+      "bank_before": {
+        "food": 900,
+        "gold": 880,
+        "stone": 710,
+        "timber": 920
+      },
+      "carried_amount": 10,
+      "deposit_count": 20,
+      "deposited_amount": 10,
+      "dropoff_building_id": "vorthak_nighthold",
+      "dropoff_definition_name": "Nighthold",
+      "dropoff_id": "vorthak_nighthold",
+      "dropoff_is_built": true,
+      "dropoff_is_friendly": true,
+      "dropoff_position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "dropoff_runtime_id": "168174815962",
+      "dropoff_team": 1,
+      "gather_multiplier": 1,
+      "kind": "timber",
+      "next_target": "Timber",
+      "resource_node_runtime_id": "172402674593",
+      "timestamp_msec": 156758,
+      "worker_id": "vorthak_worker",
+      "worker_runtime_id": "477731228884"
+    },
+    {
+      "bank_after": {
+        "food": 900,
+        "gold": 902,
+        "stone": 710,
+        "timber": 930
+      },
+      "bank_before": {
+        "food": 900,
+        "gold": 892,
+        "stone": 710,
+        "timber": 930
+      },
+      "carried_amount": 10,
+      "deposit_count": 13,
+      "deposited_amount": 10,
+      "dropoff_building_id": "vorthak_nighthold",
+      "dropoff_definition_name": "Nighthold",
+      "dropoff_id": "vorthak_nighthold",
+      "dropoff_is_built": true,
+      "dropoff_is_friendly": true,
+      "dropoff_position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "dropoff_runtime_id": "168174815962",
+      "dropoff_team": 1,
+      "gather_multiplier": 1,
+      "kind": "gold",
+      "next_target": "Gold",
+      "resource_node_runtime_id": "171899358092",
+      "timestamp_msec": 157731,
+      "worker_id": "vorthak_worker",
+      "worker_runtime_id": "631880289577"
+    },
+    {
+      "bank_after": {
+        "food": 910,
+        "gold": 902,
+        "stone": 710,
+        "timber": 930
+      },
+      "bank_before": {
+        "food": 900,
+        "gold": 902,
+        "stone": 710,
+        "timber": 930
+      },
+      "carried_amount": 10,
+      "deposit_count": 10,
+      "deposited_amount": 10,
+      "dropoff_building_id": "vorthak_nighthold",
+      "dropoff_definition_name": "Nighthold",
+      "dropoff_id": "vorthak_nighthold",
+      "dropoff_is_built": true,
+      "dropoff_is_friendly": true,
+      "dropoff_position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "dropoff_runtime_id": "168174815962",
+      "dropoff_team": 1,
+      "gather_multiplier": 1,
+      "kind": "food",
+      "next_target": "Food",
+      "resource_node_runtime_id": "171731585925",
+      "timestamp_msec": 159568,
+      "worker_id": "vorthak_worker",
+      "worker_runtime_id": "783663762730"
+    },
+    {
+      "bank_after": {
+        "food": 920,
+        "gold": 902,
+        "stone": 710,
+        "timber": 930
+      },
+      "bank_before": {
+        "food": 910,
+        "gold": 902,
+        "stone": 710,
+        "timber": 930
+      },
+      "carried_amount": 10,
+      "deposit_count": 13,
+      "deposited_amount": 10,
+      "dropoff_building_id": "vorthak_nighthold",
+      "dropoff_definition_name": "Nighthold",
+      "dropoff_id": "vorthak_nighthold",
+      "dropoff_is_built": true,
+      "dropoff_is_friendly": true,
+      "dropoff_position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "dropoff_runtime_id": "168174815962",
+      "dropoff_team": 1,
+      "gather_multiplier": 1,
+      "kind": "food",
+      "next_target": "Food",
+      "resource_node_runtime_id": "171731585925",
+      "timestamp_msec": 159719,
+      "worker_id": "vorthak_worker",
+      "worker_runtime_id": "168862681852"
+    },
+    {
+      "bank_after": {
+        "food": 920,
+        "gold": 926,
+        "stone": 710,
+        "timber": 940
+      },
+      "bank_before": {
+        "food": 920,
+        "gold": 926,
+        "stone": 710,
+        "timber": 930
+      },
+      "carried_amount": 10,
+      "deposit_count": 21,
+      "deposited_amount": 10,
+      "dropoff_building_id": "vorthak_nighthold",
+      "dropoff_definition_name": "Nighthold",
+      "dropoff_id": "vorthak_nighthold",
+      "dropoff_is_built": true,
+      "dropoff_is_friendly": true,
+      "dropoff_position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "dropoff_runtime_id": "168174815962",
+      "dropoff_team": 1,
+      "gather_multiplier": 1,
+      "kind": "timber",
+      "next_target": "Timber",
+      "resource_node_runtime_id": "172402674593",
+      "timestamp_msec": 162626,
+      "worker_id": "vorthak_worker",
+      "worker_runtime_id": "477731228884"
+    },
+    {
+      "bank_after": {
+        "food": 930,
+        "gold": 926,
+        "stone": 710,
+        "timber": 940
+      },
+      "bank_before": {
+        "food": 920,
+        "gold": 926,
+        "stone": 710,
+        "timber": 940
+      },
+      "carried_amount": 10,
+      "deposit_count": 15,
+      "deposited_amount": 10,
+      "dropoff_building_id": "vorthak_nighthold",
+      "dropoff_definition_name": "Nighthold",
+      "dropoff_id": "vorthak_nighthold",
+      "dropoff_is_built": true,
+      "dropoff_is_friendly": true,
+      "dropoff_position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "dropoff_runtime_id": "168174815962",
+      "dropoff_team": 1,
+      "gather_multiplier": 1,
+      "kind": "food",
+      "next_target": "Food",
+      "resource_node_runtime_id": "171731585925",
+      "timestamp_msec": 162932,
+      "worker_id": "vorthak_worker",
+      "worker_runtime_id": "326887278865"
+    },
+    {
+      "bank_after": {
+        "food": 930,
+        "gold": 938,
+        "stone": 720,
+        "timber": 940
+      },
+      "bank_before": {
+        "food": 930,
+        "gold": 938,
+        "stone": 710,
+        "timber": 940
+      },
+      "carried_amount": 10,
+      "deposit_count": 18,
+      "deposited_amount": 10,
+      "dropoff_building_id": "vorthak_nighthold",
+      "dropoff_definition_name": "Nighthold",
+      "dropoff_id": "vorthak_nighthold",
+      "dropoff_is_built": true,
+      "dropoff_is_friendly": true,
+      "dropoff_position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "dropoff_runtime_id": "168174815962",
+      "dropoff_team": 1,
+      "gather_multiplier": 1,
+      "kind": "stone",
+      "next_target": "Stone",
+      "resource_node_runtime_id": "172234902426",
+      "timestamp_msec": 164545,
+      "worker_id": "vorthak_worker",
+      "worker_runtime_id": "169315666707"
+    },
+    {
+      "bank_after": {
+        "food": 940,
+        "gold": 938,
+        "stone": 720,
+        "timber": 940
+      },
+      "bank_before": {
+        "food": 930,
+        "gold": 938,
+        "stone": 720,
+        "timber": 940
+      },
+      "carried_amount": 10,
+      "deposit_count": 12,
+      "deposited_amount": 10,
+      "dropoff_building_id": "vorthak_nighthold",
+      "dropoff_definition_name": "Nighthold",
+      "dropoff_id": "vorthak_nighthold",
+      "dropoff_is_built": true,
+      "dropoff_is_friendly": true,
+      "dropoff_position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "dropoff_runtime_id": "168174815962",
+      "dropoff_team": 1,
+      "gather_multiplier": 1,
+      "kind": "food",
+      "next_target": "Food",
+      "resource_node_runtime_id": "171731585925",
+      "timestamp_msec": 164560,
+      "worker_id": "vorthak_worker",
+      "worker_runtime_id": "168409696997"
+    },
+    {
+      "bank_after": {
+        "food": 900,
+        "gold": 943,
+        "stone": 720,
+        "timber": 940
+      },
+      "bank_before": {
+        "food": 900,
+        "gold": 933,
+        "stone": 720,
+        "timber": 940
+      },
+      "carried_amount": 10,
+      "deposit_count": 14,
+      "deposited_amount": 10,
+      "dropoff_building_id": "vorthak_nighthold",
+      "dropoff_definition_name": "Nighthold",
+      "dropoff_id": "vorthak_nighthold",
+      "dropoff_is_built": true,
+      "dropoff_is_friendly": true,
+      "dropoff_position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "dropoff_runtime_id": "168174815962",
+      "dropoff_team": 1,
+      "gather_multiplier": 1,
+      "kind": "gold",
+      "next_target": "Gold",
+      "resource_node_runtime_id": "171899358092",
+      "timestamp_msec": 165427,
+      "worker_id": "vorthak_worker",
+      "worker_runtime_id": "631880289577"
+    },
+    {
+      "bank_after": {
+        "food": 910,
+        "gold": 955,
+        "stone": 720,
+        "timber": 940
+      },
+      "bank_before": {
+        "food": 900,
+        "gold": 955,
+        "stone": 720,
+        "timber": 940
+      },
+      "carried_amount": 10,
+      "deposit_count": 11,
+      "deposited_amount": 10,
+      "dropoff_building_id": "vorthak_nighthold",
+      "dropoff_definition_name": "Nighthold",
+      "dropoff_id": "vorthak_nighthold",
+      "dropoff_is_built": true,
+      "dropoff_is_friendly": true,
+      "dropoff_position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "dropoff_runtime_id": "168174815962",
+      "dropoff_team": 1,
+      "gather_multiplier": 1,
+      "kind": "food",
+      "next_target": "Food",
+      "resource_node_runtime_id": "171731585925",
+      "timestamp_msec": 167560,
+      "worker_id": "vorthak_worker",
+      "worker_runtime_id": "783663762730"
+    },
+    {
+      "bank_after": {
+        "food": 910,
+        "gold": 955,
+        "stone": 720,
+        "timber": 950
+      },
+      "bank_before": {
+        "food": 910,
+        "gold": 955,
+        "stone": 720,
+        "timber": 940
+      },
+      "carried_amount": 10,
+      "deposit_count": 22,
+      "deposited_amount": 10,
+      "dropoff_building_id": "vorthak_nighthold",
+      "dropoff_definition_name": "Nighthold",
+      "dropoff_id": "vorthak_nighthold",
+      "dropoff_is_built": true,
+      "dropoff_is_friendly": true,
+      "dropoff_position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "dropoff_runtime_id": "168174815962",
+      "dropoff_team": 1,
+      "gather_multiplier": 1,
+      "kind": "timber",
+      "next_target": "Timber",
+      "resource_node_runtime_id": "172402674593",
+      "timestamp_msec": 167722,
+      "worker_id": "vorthak_worker",
+      "worker_runtime_id": "477731228884"
+    },
+    {
+      "bank_after": {
+        "food": 920,
+        "gold": 955,
+        "stone": 720,
+        "timber": 950
+      },
+      "bank_before": {
+        "food": 910,
+        "gold": 955,
+        "stone": 720,
+        "timber": 950
+      },
+      "carried_amount": 10,
+      "deposit_count": 14,
+      "deposited_amount": 10,
+      "dropoff_building_id": "vorthak_nighthold",
+      "dropoff_definition_name": "Nighthold",
+      "dropoff_id": "vorthak_nighthold",
+      "dropoff_is_built": true,
+      "dropoff_is_friendly": true,
+      "dropoff_position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "dropoff_runtime_id": "168174815962",
+      "dropoff_team": 1,
+      "gather_multiplier": 1,
+      "kind": "food",
+      "next_target": "Food",
+      "resource_node_runtime_id": "171731585925",
+      "timestamp_msec": 167788,
+      "worker_id": "vorthak_worker",
+      "worker_runtime_id": "168862681852"
+    },
+    {
+      "bank_after": {
+        "food": 930,
+        "gold": 967,
+        "stone": 720,
+        "timber": 950
+      },
+      "bank_before": {
+        "food": 920,
+        "gold": 967,
+        "stone": 720,
+        "timber": 950
+      },
+      "carried_amount": 10,
+      "deposit_count": 16,
+      "deposited_amount": 10,
+      "dropoff_building_id": "vorthak_nighthold",
+      "dropoff_definition_name": "Nighthold",
+      "dropoff_id": "vorthak_nighthold",
+      "dropoff_is_built": true,
+      "dropoff_is_friendly": true,
+      "dropoff_position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "dropoff_runtime_id": "168174815962",
+      "dropoff_team": 1,
+      "gather_multiplier": 1,
+      "kind": "food",
+      "next_target": "Food",
+      "resource_node_runtime_id": "171731585925",
+      "timestamp_msec": 170349,
+      "worker_id": "vorthak_worker",
+      "worker_runtime_id": "326887278865"
+    },
+    {
+      "bank_after": {
+        "food": 930,
+        "gold": 979,
+        "stone": 730,
+        "timber": 950
+      },
+      "bank_before": {
+        "food": 930,
+        "gold": 979,
+        "stone": 720,
+        "timber": 950
+      },
+      "carried_amount": 10,
+      "deposit_count": 19,
+      "deposited_amount": 10,
+      "dropoff_building_id": "vorthak_nighthold",
+      "dropoff_definition_name": "Nighthold",
+      "dropoff_id": "vorthak_nighthold",
+      "dropoff_is_built": true,
+      "dropoff_is_friendly": true,
+      "dropoff_position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "dropoff_runtime_id": "168174815962",
+      "dropoff_team": 1,
+      "gather_multiplier": 1,
+      "kind": "stone",
+      "next_target": "Stone",
+      "resource_node_runtime_id": "172234902426",
+      "timestamp_msec": 171709,
+      "worker_id": "vorthak_worker",
+      "worker_runtime_id": "169315666707"
+    },
+    {
+      "bank_after": {
+        "food": 930,
+        "gold": 989,
+        "stone": 730,
+        "timber": 950
+      },
+      "bank_before": {
+        "food": 930,
+        "gold": 979,
+        "stone": 730,
+        "timber": 950
+      },
+      "carried_amount": 10,
+      "deposit_count": 15,
+      "deposited_amount": 10,
+      "dropoff_building_id": "vorthak_nighthold",
+      "dropoff_definition_name": "Nighthold",
+      "dropoff_id": "vorthak_nighthold",
+      "dropoff_is_built": true,
+      "dropoff_is_friendly": true,
+      "dropoff_position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "dropoff_runtime_id": "168174815962",
+      "dropoff_team": 1,
+      "gather_multiplier": 1,
+      "kind": "gold",
+      "next_target": "Gold",
+      "resource_node_runtime_id": "171899358092",
+      "timestamp_msec": 172321,
+      "worker_id": "vorthak_worker",
+      "worker_runtime_id": "631880289577"
+    },
+    {
+      "bank_after": {
+        "food": 930,
+        "gold": 1001,
+        "stone": 730,
+        "timber": 960
+      },
+      "bank_before": {
+        "food": 930,
+        "gold": 1001,
+        "stone": 730,
+        "timber": 950
+      },
+      "carried_amount": 10,
+      "deposit_count": 23,
+      "deposited_amount": 10,
+      "dropoff_building_id": "vorthak_nighthold",
+      "dropoff_definition_name": "Nighthold",
+      "dropoff_id": "vorthak_nighthold",
+      "dropoff_is_built": true,
+      "dropoff_is_friendly": true,
+      "dropoff_position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "dropoff_runtime_id": "168174815962",
+      "dropoff_team": 1,
+      "gather_multiplier": 1,
+      "kind": "timber",
+      "next_target": "Timber",
+      "resource_node_runtime_id": "172402674593",
+      "timestamp_msec": 172790,
+      "worker_id": "vorthak_worker",
+      "worker_runtime_id": "477731228884"
+    },
+    {
+      "bank_after": {
+        "food": 940,
+        "gold": 1001,
+        "stone": 730,
+        "timber": 960
+      },
+      "bank_before": {
+        "food": 930,
+        "gold": 1001,
+        "stone": 730,
+        "timber": 960
+      },
+      "carried_amount": 10,
+      "deposit_count": 13,
+      "deposited_amount": 10,
+      "dropoff_building_id": "vorthak_nighthold",
+      "dropoff_definition_name": "Nighthold",
+      "dropoff_id": "vorthak_nighthold",
+      "dropoff_is_built": true,
+      "dropoff_is_friendly": true,
+      "dropoff_position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "dropoff_runtime_id": "168174815962",
+      "dropoff_team": 1,
+      "gather_multiplier": 1,
+      "kind": "food",
+      "next_target": "Food",
+      "resource_node_runtime_id": "171731585925",
+      "timestamp_msec": 172896,
+      "worker_id": "vorthak_worker",
+      "worker_runtime_id": "168409696997"
+    },
+    {
+      "bank_after": {
+        "food": 910,
+        "gold": 1008,
+        "stone": 730,
+        "timber": 960
+      },
+      "bank_before": {
+        "food": 900,
+        "gold": 1008,
+        "stone": 730,
+        "timber": 960
+      },
+      "carried_amount": 10,
+      "deposit_count": 15,
+      "deposited_amount": 10,
+      "dropoff_building_id": "vorthak_nighthold",
+      "dropoff_definition_name": "Nighthold",
+      "dropoff_id": "vorthak_nighthold",
+      "dropoff_is_built": true,
+      "dropoff_is_friendly": true,
+      "dropoff_position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "dropoff_runtime_id": "168174815962",
+      "dropoff_team": 1,
+      "gather_multiplier": 1,
+      "kind": "food",
+      "next_target": "Food",
+      "resource_node_runtime_id": "171731585925",
+      "timestamp_msec": 175658,
+      "worker_id": "vorthak_worker",
+      "worker_runtime_id": "168862681852"
+    },
+    {
+      "bank_after": {
+        "food": 920,
+        "gold": 1008,
+        "stone": 730,
+        "timber": 960
+      },
+      "bank_before": {
+        "food": 910,
+        "gold": 1008,
+        "stone": 730,
+        "timber": 960
+      },
+      "carried_amount": 10,
+      "deposit_count": 12,
+      "deposited_amount": 10,
+      "dropoff_building_id": "vorthak_nighthold",
+      "dropoff_definition_name": "Nighthold",
+      "dropoff_id": "vorthak_nighthold",
+      "dropoff_is_built": true,
+      "dropoff_is_friendly": true,
+      "dropoff_position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "dropoff_runtime_id": "168174815962",
+      "dropoff_team": 1,
+      "gather_multiplier": 1,
+      "kind": "food",
+      "next_target": "Food",
+      "resource_node_runtime_id": "171731585925",
+      "timestamp_msec": 175924,
+      "worker_id": "vorthak_worker",
+      "worker_runtime_id": "783663762730"
+    },
+    {
+      "bank_after": {
+        "food": 920,
+        "gold": 1020,
+        "stone": 730,
+        "timber": 970
+      },
+      "bank_before": {
+        "food": 920,
+        "gold": 1020,
+        "stone": 730,
+        "timber": 960
+      },
+      "carried_amount": 10,
+      "deposit_count": 24,
+      "deposited_amount": 10,
+      "dropoff_building_id": "vorthak_nighthold",
+      "dropoff_definition_name": "Nighthold",
+      "dropoff_id": "vorthak_nighthold",
+      "dropoff_is_built": true,
+      "dropoff_is_friendly": true,
+      "dropoff_position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "dropoff_runtime_id": "168174815962",
+      "dropoff_team": 1,
+      "gather_multiplier": 1,
+      "kind": "timber",
+      "next_target": "Timber",
+      "resource_node_runtime_id": "172402674593",
+      "timestamp_msec": 177857,
+      "worker_id": "vorthak_worker",
+      "worker_runtime_id": "477731228884"
+    },
+    {
+      "bank_after": {
+        "food": 930,
+        "gold": 1020,
+        "stone": 730,
+        "timber": 970
+      },
+      "bank_before": {
+        "food": 920,
+        "gold": 1020,
+        "stone": 730,
+        "timber": 970
+      },
+      "carried_amount": 10,
+      "deposit_count": 17,
+      "deposited_amount": 10,
+      "dropoff_building_id": "vorthak_nighthold",
+      "dropoff_definition_name": "Nighthold",
+      "dropoff_id": "vorthak_nighthold",
+      "dropoff_is_built": true,
+      "dropoff_is_friendly": true,
+      "dropoff_position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "dropoff_runtime_id": "168174815962",
+      "dropoff_team": 1,
+      "gather_multiplier": 1,
+      "kind": "food",
+      "next_target": "Food",
+      "resource_node_runtime_id": "171731585925",
+      "timestamp_msec": 178323,
+      "worker_id": "vorthak_worker",
+      "worker_runtime_id": "326887278865"
+    },
+    {
+      "bank_after": {
+        "food": 930,
+        "gold": 1032,
+        "stone": 740,
+        "timber": 970
+      },
+      "bank_before": {
+        "food": 930,
+        "gold": 1032,
+        "stone": 730,
+        "timber": 970
+      },
+      "carried_amount": 10,
+      "deposit_count": 20,
+      "deposited_amount": 10,
+      "dropoff_building_id": "vorthak_nighthold",
+      "dropoff_definition_name": "Nighthold",
+      "dropoff_id": "vorthak_nighthold",
+      "dropoff_is_built": true,
+      "dropoff_is_friendly": true,
+      "dropoff_position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "dropoff_runtime_id": "168174815962",
+      "dropoff_team": 1,
+      "gather_multiplier": 1,
+      "kind": "stone",
+      "next_target": "Stone",
+      "resource_node_runtime_id": "172234902426",
+      "timestamp_msec": 178885,
+      "worker_id": "vorthak_worker",
+      "worker_runtime_id": "169315666707"
+    },
+    {
+      "bank_after": {
+        "food": 930,
+        "gold": 1042,
+        "stone": 740,
+        "timber": 970
+      },
+      "bank_before": {
+        "food": 930,
+        "gold": 1032,
+        "stone": 740,
+        "timber": 970
+      },
+      "carried_amount": 10,
+      "deposit_count": 16,
+      "deposited_amount": 10,
+      "dropoff_building_id": "vorthak_nighthold",
+      "dropoff_definition_name": "Nighthold",
+      "dropoff_id": "vorthak_nighthold",
+      "dropoff_is_built": true,
+      "dropoff_is_friendly": true,
+      "dropoff_position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "dropoff_runtime_id": "168174815962",
+      "dropoff_team": 1,
+      "gather_multiplier": 1,
+      "kind": "gold",
+      "next_target": "Gold",
+      "resource_node_runtime_id": "171899358092",
+      "timestamp_msec": 179230,
+      "worker_id": "vorthak_worker",
+      "worker_runtime_id": "631880289577"
+    },
+    {
+      "bank_after": {
+        "food": 940,
+        "gold": 1054,
+        "stone": 740,
+        "timber": 970
+      },
+      "bank_before": {
+        "food": 930,
+        "gold": 1054,
+        "stone": 740,
+        "timber": 970
+      },
+      "carried_amount": 10,
+      "deposit_count": 14,
+      "deposited_amount": 10,
+      "dropoff_building_id": "vorthak_nighthold",
+      "dropoff_definition_name": "Nighthold",
+      "dropoff_id": "vorthak_nighthold",
+      "dropoff_is_built": true,
+      "dropoff_is_friendly": true,
+      "dropoff_position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "dropoff_runtime_id": "168174815962",
+      "dropoff_team": 1,
+      "gather_multiplier": 1,
+      "kind": "food",
+      "next_target": "Food",
+      "resource_node_runtime_id": "171731585925",
+      "timestamp_msec": 180779,
+      "worker_id": "vorthak_worker",
+      "worker_runtime_id": "168409696997"
+    },
+    {
+      "bank_after": {
+        "food": 940,
+        "gold": 1066,
+        "stone": 740,
+        "timber": 980
+      },
+      "bank_before": {
+        "food": 940,
+        "gold": 1066,
+        "stone": 740,
+        "timber": 970
+      },
+      "carried_amount": 10,
+      "deposit_count": 25,
+      "deposited_amount": 10,
+      "dropoff_building_id": "vorthak_nighthold",
+      "dropoff_definition_name": "Nighthold",
+      "dropoff_id": "vorthak_nighthold",
+      "dropoff_is_built": true,
+      "dropoff_is_friendly": true,
+      "dropoff_position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "dropoff_runtime_id": "168174815962",
+      "dropoff_team": 1,
+      "gather_multiplier": 1,
+      "kind": "timber",
+      "next_target": "Timber",
+      "resource_node_runtime_id": "172402674593",
+      "timestamp_msec": 182927,
+      "worker_id": "vorthak_worker",
+      "worker_runtime_id": "477731228884"
+    },
+    {
+      "bank_after": {
+        "food": 950,
+        "gold": 1066,
+        "stone": 740,
+        "timber": 980
+      },
+      "bank_before": {
+        "food": 940,
+        "gold": 1066,
+        "stone": 740,
+        "timber": 980
+      },
+      "carried_amount": 10,
+      "deposit_count": 13,
+      "deposited_amount": 10,
+      "dropoff_building_id": "vorthak_nighthold",
+      "dropoff_definition_name": "Nighthold",
+      "dropoff_id": "vorthak_nighthold",
+      "dropoff_is_built": true,
+      "dropoff_is_friendly": true,
+      "dropoff_position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "dropoff_runtime_id": "168174815962",
+      "dropoff_team": 1,
+      "gather_multiplier": 1,
+      "kind": "food",
+      "next_target": "Food",
+      "resource_node_runtime_id": "171731585925",
+      "timestamp_msec": 183633,
+      "worker_id": "vorthak_worker",
+      "worker_runtime_id": "783663762730"
+    },
+    {
+      "bank_after": {
+        "food": 960,
+        "gold": 1066,
+        "stone": 740,
+        "timber": 980
+      },
+      "bank_before": {
+        "food": 950,
+        "gold": 1066,
+        "stone": 740,
+        "timber": 980
+      },
+      "carried_amount": 10,
+      "deposit_count": 16,
+      "deposited_amount": 10,
+      "dropoff_building_id": "vorthak_nighthold",
+      "dropoff_definition_name": "Nighthold",
+      "dropoff_id": "vorthak_nighthold",
+      "dropoff_is_built": true,
+      "dropoff_is_friendly": true,
+      "dropoff_position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "dropoff_runtime_id": "168174815962",
+      "dropoff_team": 1,
+      "gather_multiplier": 1,
+      "kind": "food",
+      "next_target": "Food",
+      "resource_node_runtime_id": "171731585925",
+      "timestamp_msec": 183833,
+      "worker_id": "vorthak_worker",
+      "worker_runtime_id": "168862681852"
+    },
+    {
+      "bank_after": {
+        "food": 970,
+        "gold": 1078,
+        "stone": 740,
+        "timber": 980
+      },
+      "bank_before": {
+        "food": 960,
+        "gold": 1078,
+        "stone": 740,
+        "timber": 980
+      },
+      "carried_amount": 10,
+      "deposit_count": 18,
+      "deposited_amount": 10,
+      "dropoff_building_id": "vorthak_nighthold",
+      "dropoff_definition_name": "Nighthold",
+      "dropoff_id": "vorthak_nighthold",
+      "dropoff_is_built": true,
+      "dropoff_is_friendly": true,
+      "dropoff_position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "dropoff_runtime_id": "168174815962",
+      "dropoff_team": 1,
+      "gather_multiplier": 1,
+      "kind": "food",
+      "next_target": "Food",
+      "resource_node_runtime_id": "171731585925",
+      "timestamp_msec": 185726,
+      "worker_id": "vorthak_worker",
+      "worker_runtime_id": "326887278865"
+    },
+    {
+      "bank_after": {
+        "food": 970,
+        "gold": 1078,
+        "stone": 750,
+        "timber": 980
+      },
+      "bank_before": {
+        "food": 970,
+        "gold": 1078,
+        "stone": 740,
+        "timber": 980
+      },
+      "carried_amount": 10,
+      "deposit_count": 21,
+      "deposited_amount": 10,
+      "dropoff_building_id": "vorthak_nighthold",
+      "dropoff_definition_name": "Nighthold",
+      "dropoff_id": "vorthak_nighthold",
+      "dropoff_is_built": true,
+      "dropoff_is_friendly": true,
+      "dropoff_position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "dropoff_runtime_id": "168174815962",
+      "dropoff_team": 1,
+      "gather_multiplier": 1,
+      "kind": "stone",
+      "next_target": "Stone",
+      "resource_node_runtime_id": "172234902426",
+      "timestamp_msec": 186047,
+      "worker_id": "vorthak_worker",
+      "worker_runtime_id": "169315666707"
+    },
+    {
+      "bank_after": {
+        "food": 970,
+        "gold": 1088,
+        "stone": 750,
+        "timber": 980
+      },
+      "bank_before": {
+        "food": 970,
+        "gold": 1078,
+        "stone": 750,
+        "timber": 980
+      },
+      "carried_amount": 10,
+      "deposit_count": 17,
+      "deposited_amount": 10,
+      "dropoff_building_id": "vorthak_nighthold",
+      "dropoff_definition_name": "Nighthold",
+      "dropoff_id": "vorthak_nighthold",
+      "dropoff_is_built": true,
+      "dropoff_is_friendly": true,
+      "dropoff_position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "dropoff_runtime_id": "168174815962",
+      "dropoff_team": 1,
+      "gather_multiplier": 1,
+      "kind": "gold",
+      "next_target": "Gold",
+      "resource_node_runtime_id": "171899358092",
+      "timestamp_msec": 186128,
+      "worker_id": "vorthak_worker",
+      "worker_runtime_id": "631880289577"
+    },
+    {
+      "bank_after": {
+        "food": 970,
+        "gold": 1100,
+        "stone": 750,
+        "timber": 990
+      },
+      "bank_before": {
+        "food": 970,
+        "gold": 1100,
+        "stone": 750,
+        "timber": 980
+      },
+      "carried_amount": 10,
+      "deposit_count": 26,
+      "deposited_amount": 10,
+      "dropoff_building_id": "vorthak_nighthold",
+      "dropoff_definition_name": "Nighthold",
+      "dropoff_id": "vorthak_nighthold",
+      "dropoff_is_built": true,
+      "dropoff_is_friendly": true,
+      "dropoff_position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "dropoff_runtime_id": "168174815962",
+      "dropoff_team": 1,
+      "gather_multiplier": 1,
+      "kind": "timber",
+      "next_target": "Timber",
+      "resource_node_runtime_id": "172402674593",
+      "timestamp_msec": 187994,
+      "worker_id": "vorthak_worker",
+      "worker_runtime_id": "477731228884"
+    },
+    {
+      "bank_after": {
+        "food": 971,
+        "gold": 1100,
+        "stone": 750,
+        "timber": 990
+      },
+      "bank_before": {
+        "food": 970,
+        "gold": 1100,
+        "stone": 750,
+        "timber": 990
+      },
+      "carried_amount": 1,
+      "deposit_count": 14,
+      "deposited_amount": 1,
+      "dropoff_building_id": "vorthak_nighthold",
+      "dropoff_definition_name": "Nighthold",
+      "dropoff_id": "vorthak_nighthold",
+      "dropoff_is_built": true,
+      "dropoff_is_friendly": true,
+      "dropoff_position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "dropoff_runtime_id": "168174815962",
+      "dropoff_team": 1,
+      "gather_multiplier": 1,
+      "kind": "food",
+      "next_target": "Food",
+      "resource_node_runtime_id": "171731585925",
+      "timestamp_msec": 188634,
+      "worker_id": "vorthak_worker",
+      "worker_runtime_id": "783663762730"
+    }
+  ],
+  "entry_count": 126,
+  "exact_kinds": [
+    "food",
+    "timber",
+    "stone",
+    "gold"
+  ]
+}

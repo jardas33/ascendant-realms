@@ -1,0 +1,17 @@
+{
+  "attack_move": true,
+  "events": [
+    {
+      "attack_move": true,
+      "count": 4,
+      "event": "first_wave_launched",
+      "target": {
+        "x": -100,
+        "y": 0,
+        "z": -100
+      },
+      "time": 68.7594066666728
+    }
+  ],
+  "launched": true
+}

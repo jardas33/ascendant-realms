@@ -534,20 +534,7 @@ func _is_build_spot_valid(pos: Vector3) -> bool:
 	var bdef := GameData.get_building(_build_id)
 	if bdef.is_empty() or not world or not is_instance_valid(world.player_commander):
 		return false
-	if not world.player_commander.can_afford(bdef.get("cost", {})):
-		return false
-	var fp := float(bdef.get("footprint", 4.0))
-	var lim := MapDefs.MAP_SIZE - 6.0
-	if abs(pos.x) > lim or abs(pos.z) > lim:
-		return false
-	for b in world.all_buildings():
-		if is_instance_valid(b) and not b.is_dead:
-			if pos.distance_to(b.global_position) < (fp + float(b.def.get("footprint", 4.0))):
-				return false
-	for r in world.get_tree().get_nodes_in_group("resources"):
-		if is_instance_valid(r) and pos.distance_to(r.global_position) < fp + 2.0:
-			return false
-	return true
+	return world.can_place_building(_build_id, player_team, pos, true)
 
 func _try_place_building() -> void:
 	var g = _raycast_ground()
