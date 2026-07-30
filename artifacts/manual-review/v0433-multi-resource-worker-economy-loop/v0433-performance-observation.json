@@ -2,6 +2,6 @@
   "bounded_waits": true,
   "capture": "headed Forward Plus",
   "dropoff_retry_seconds": 2,
-  "fps": 55,
+  "fps": 41,
   "per_frame_world_scans_added": false
 }

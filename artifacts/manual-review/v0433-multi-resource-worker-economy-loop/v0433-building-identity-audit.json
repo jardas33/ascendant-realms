@@ -1,0 +1,28 @@
+{
+  "all_ids_non_empty": true,
+  "blank_definition_ids": 0,
+  "blank_live_building_ids": 0,
+  "clan_croft_id": "barrosan_clan_croft",
+  "live_building_count": 2,
+  "live_buildings": [
+    {
+      "building_id": "barrosan_clanhold",
+      "definition_id": "barrosan_clanhold",
+      "drop_off": true,
+      "is_built": true,
+      "runtime_id": "164819372632",
+      "team": 0
+    },
+    {
+      "building_id": "vorthak_nighthold",
+      "definition_id": "vorthak_nighthold",
+      "drop_off": true,
+      "is_built": true,
+      "runtime_id": "166731975347",
+      "team": 1
+    }
+  ],
+  "player_hq_id": "barrosan_clanhold",
+  "schema": "v0433-building-identity-audit-v1",
+  "war_hall_id": "barrosan_war_hall"
+}

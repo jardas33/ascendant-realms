@@ -4,6 +4,7 @@
   "extractions": [
     {
       "capacity": 10,
+      "carry_after": 3,
       "granted": 3,
       "kind": "stone",
       "node_after": 697,
@@ -14,6 +15,7 @@
     },
     {
       "capacity": 10,
+      "carry_after": 6,
       "granted": 3,
       "kind": "stone",
       "node_after": 694,
@@ -24,6 +26,7 @@
     },
     {
       "capacity": 10,
+      "carry_after": 9,
       "granted": 3,
       "kind": "stone",
       "node_after": 691,
@@ -34,6 +37,7 @@
     },
     {
       "capacity": 10,
+      "carry_after": 3,
       "granted": 3,
       "kind": "timber",
       "node_after": 797,
@@ -44,6 +48,7 @@
     },
     {
       "capacity": 10,
+      "carry_after": 10,
       "granted": 1,
       "kind": "stone",
       "node_after": 690,
@@ -54,6 +59,7 @@
     },
     {
       "capacity": 10,
+      "carry_after": 6,
       "granted": 3,
       "kind": "timber",
       "node_after": 794,
@@ -64,6 +70,7 @@
     },
     {
       "capacity": 10,
+      "carry_after": 9,
       "granted": 3,
       "kind": "timber",
       "node_after": 791,
@@ -74,6 +81,7 @@
     },
     {
       "capacity": 10,
+      "carry_after": 3,
       "granted": 3,
       "kind": "food",
       "node_after": 597,
@@ -84,6 +92,7 @@
     },
     {
       "capacity": 10,
+      "carry_after": 10,
       "granted": 1,
       "kind": "timber",
       "node_after": 790,
@@ -94,6 +103,7 @@
     },
     {
       "capacity": 10,
+      "carry_after": 6,
       "granted": 3,
       "kind": "food",
       "node_after": 594,
@@ -104,6 +114,7 @@
     },
     {
       "capacity": 10,
+      "carry_after": 9,
       "granted": 3,
       "kind": "food",
       "node_after": 591,
@@ -114,6 +125,7 @@
     },
     {
       "capacity": 10,
+      "carry_after": 3,
       "granted": 3,
       "kind": "stone",
       "node_after": 687,
@@ -124,6 +136,18 @@
     },
     {
       "capacity": 10,
+      "carry_after": 10,
+      "granted": 1,
+      "kind": "food",
+      "node_after": 590,
+      "node_before": 591,
+      "node_id": "168644578062",
+      "worker_id": "barrosan_worker",
+      "worker_runtime_id": "165725342339"
+    },
+    {
+      "capacity": 10,
+      "carry_after": 3,
       "granted": 3,
       "kind": "timber",
       "node_after": 787,
@@ -134,6 +158,7 @@
     },
     {
       "capacity": 10,
+      "carry_after": 6,
       "granted": 3,
       "kind": "stone",
       "node_after": 684,
@@ -144,6 +169,7 @@
     },
     {
       "capacity": 10,
+      "carry_after": 6,
       "granted": 3,
       "kind": "timber",
       "node_after": 784,
@@ -154,6 +180,7 @@
     },
     {
       "capacity": 10,
+      "carry_after": 9,
       "granted": 3,
       "kind": "stone",
       "node_after": 681,
@@ -164,6 +191,7 @@
     },
     {
       "capacity": 10,
+      "carry_after": 9,
       "granted": 3,
       "kind": "timber",
       "node_after": 781,
@@ -174,6 +202,7 @@
     },
     {
       "capacity": 10,
+      "carry_after": 10,
       "granted": 1,
       "kind": "stone",
       "node_after": 680,
@@ -184,6 +213,7 @@
     },
     {
       "capacity": 10,
+      "carry_after": 10,
       "granted": 1,
       "kind": "timber",
       "node_after": 780,
@@ -194,6 +224,7 @@
     },
     {
       "capacity": 10,
+      "carry_after": 3,
       "granted": 3,
       "kind": "timber",
       "node_after": 777,
@@ -204,6 +235,7 @@
     },
     {
       "capacity": 10,
+      "carry_after": 6,
       "granted": 3,
       "kind": "timber",
       "node_after": 774,
@@ -214,16 +246,7 @@
     },
     {
       "capacity": 10,
-      "granted": 3,
-      "kind": "gold",
-      "node_after": 897,
-      "node_before": 900,
-      "node_id": "168829127446",
-      "worker_id": "barrosan_worker",
-      "worker_runtime_id": "165725342339"
-    },
-    {
-      "capacity": 10,
+      "carry_after": 3,
       "granted": 3,
       "kind": "stone",
       "node_after": 677,
@@ -234,6 +257,7 @@
     },
     {
       "capacity": 10,
+      "carry_after": 9,
       "granted": 3,
       "kind": "timber",
       "node_after": 771,
@@ -244,16 +268,18 @@
     },
     {
       "capacity": 10,
+      "carry_after": 3,
       "granted": 3,
       "kind": "gold",
-      "node_after": 894,
-      "node_before": 897,
+      "node_after": 897,
+      "node_before": 900,
       "node_id": "168829127446",
       "worker_id": "barrosan_worker",
       "worker_runtime_id": "165725342339"
     },
     {
       "capacity": 10,
+      "carry_after": 6,
       "granted": 3,
       "kind": "stone",
       "node_after": 674,
@@ -264,6 +290,7 @@
     },
     {
       "capacity": 10,
+      "carry_after": 10,
       "granted": 1,
       "kind": "timber",
       "node_after": 770,
@@ -274,16 +301,18 @@
     },
     {
       "capacity": 10,
+      "carry_after": 6,
       "granted": 3,
       "kind": "gold",
-      "node_after": 891,
-      "node_before": 894,
+      "node_after": 894,
+      "node_before": 897,
       "node_id": "168829127446",
       "worker_id": "barrosan_worker",
       "worker_runtime_id": "165725342339"
     },
     {
       "capacity": 10,
+      "carry_after": 9,
       "granted": 3,
       "kind": "stone",
       "node_after": 671,
@@ -294,16 +323,18 @@
     },
     {
       "capacity": 10,
-      "granted": 1,
+      "carry_after": 9,
+      "granted": 3,
       "kind": "gold",
-      "node_after": 890,
-      "node_before": 891,
+      "node_after": 891,
+      "node_before": 894,
       "node_id": "168829127446",
       "worker_id": "barrosan_worker",
       "worker_runtime_id": "165725342339"
     },
     {
       "capacity": 10,
+      "carry_after": 10,
       "granted": 1,
       "kind": "stone",
       "node_after": 670,
@@ -314,6 +345,18 @@
     },
     {
       "capacity": 10,
+      "carry_after": 10,
+      "granted": 1,
+      "kind": "gold",
+      "node_after": 890,
+      "node_before": 891,
+      "node_id": "168829127446",
+      "worker_id": "barrosan_worker",
+      "worker_runtime_id": "165725342339"
+    },
+    {
+      "capacity": 10,
+      "carry_after": 3,
       "granted": 3,
       "kind": "timber",
       "node_after": 767,
@@ -324,6 +367,7 @@
     },
     {
       "capacity": 10,
+      "carry_after": 6,
       "granted": 3,
       "kind": "timber",
       "node_after": 764,
@@ -334,6 +378,7 @@
     },
     {
       "capacity": 10,
+      "carry_after": 9,
       "granted": 3,
       "kind": "timber",
       "node_after": 761,
@@ -344,6 +389,7 @@
     },
     {
       "capacity": 10,
+      "carry_after": 10,
       "granted": 1,
       "kind": "timber",
       "node_after": 760,
@@ -354,6 +400,18 @@
     },
     {
       "capacity": 10,
+      "carry_after": 3,
+      "granted": 3,
+      "kind": "stone",
+      "node_after": 667,
+      "node_before": 670,
+      "node_id": "169181448997",
+      "worker_id": "barrosan_worker",
+      "worker_runtime_id": "165389798003"
+    },
+    {
+      "capacity": 10,
+      "carry_after": 3,
       "granted": 3,
       "kind": "gold",
       "node_after": 887,
@@ -364,6 +422,7 @@
     },
     {
       "capacity": 10,
+      "carry_after": 6,
       "granted": 3,
       "kind": "gold",
       "node_after": 884,
@@ -374,6 +433,7 @@
     },
     {
       "capacity": 10,
+      "carry_after": 3,
       "granted": 3,
       "kind": "timber",
       "node_after": 757,
@@ -384,16 +444,7 @@
     },
     {
       "capacity": 10,
-      "granted": 3,
-      "kind": "timber",
-      "node_after": 754,
-      "node_before": 757,
-      "node_id": "169365998381",
-      "worker_id": "barrosan_worker",
-      "worker_runtime_id": "165389798003"
-    },
-    {
-      "capacity": 10,
+      "carry_after": 9,
       "granted": 3,
       "kind": "gold",
       "node_after": 881,
@@ -404,16 +455,18 @@
     },
     {
       "capacity": 10,
+      "carry_after": 6,
       "granted": 3,
       "kind": "timber",
-      "node_after": 751,
-      "node_before": 754,
+      "node_after": 754,
+      "node_before": 757,
       "node_id": "169365998381",
       "worker_id": "barrosan_worker",
       "worker_runtime_id": "165054253667"
     },
     {
       "capacity": 10,
+      "carry_after": 10,
       "granted": 1,
       "kind": "gold",
       "node_after": 880,
@@ -421,6 +474,18 @@
       "node_id": "168829127446",
       "worker_id": "barrosan_worker",
       "worker_runtime_id": "165725342339"
+    },
+    {
+      "capacity": 10,
+      "carry_after": 9,
+      "granted": 3,
+      "kind": "timber",
+      "node_after": 751,
+      "node_before": 754,
+      "node_id": "169365998381",
+      "worker_id": "barrosan_worker",
+      "worker_runtime_id": "165054253667"
     }
-  ]
+  ],
+  "max_observed_carry": 10
 }

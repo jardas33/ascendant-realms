@@ -22,6 +22,20 @@ The implementation stays inside the existing `ResourceNode`, `Unit`, `GameWorld`
 4. Drop-off lookup failure preserves cargo and retries on a bounded timer rather than scanning every frame.
 5. `ResourceNode` clamps extraction and emits one depletion signal with the final remainder.
 6. The selected worker card now exposes concise activity, carry, capacity, and target text without raw implementation names.
+7. Starting headquarters now receive the authoritative race `main_building` definition ID at the shared creation boundary; blank definition IDs are rejected before a building instance can be created.
+8. Deposit evidence now records the live drop-off building ID, runtime ID, team, position, built/friendly flags, and definition name. The compatibility `dropoff_id` field is the same authoritative ID.
+
+## v0.433-R1 identity and evidence repair
+
+The first headed recapture exposed two evidence-truth defects: live starting buildings needed an explicit authoritative definition ID, and the capture driver switched the food worker to gold before the real food deposit had completed. The bounded repair was:
+
+- `cc2ee707f9727f853ce8dae67ef4876c6ed0d9ce` repairs the shared starting-building definition boundary, rejects blank IDs, records authoritative live drop-off identity, and adds the all-race starting-HQ identity test.
+- `eed400929f35bc3ac3a8634e8037960ba08f684c` repairs only the headed capture timing so the real carried food deposit completes before the gold switch proof.
+- `e322f15b866700c7cd277b7fdcb9ac3ce9465cda` records identity-repair and capture-source provenance separately in the capture metadata.
+- `v0433-starting-hq-identity-matrix.json` proves all ten race `main_building` IDs resolve to completed, prebuilt starting HQ definitions.
+- `v0433-building-identity-audit.json` proves live building and definition IDs are non-empty, including `barrosan_clan_croft` and `barrosan_war_hall`.
+- `v0433-deposit-transaction-audit.json` proves every recorded deposit uses the friendly completed `barrosan_clanhold` with team `0`, a non-empty runtime ID, and the authoritative `dropoff_id` alias.
+- `v0433-capture-command.json` records `identityRepairSha=cc2ee707...` and `captureSourceSha=e322f15b...`; the validator reads the current checkout SHA dynamically and rejects self-referential final-commit metadata.
 
 ## Four-resource production path
 
@@ -36,6 +50,7 @@ The headed driver uses the real Forward Plus production scene, real Barrosan wor
 Required commands:
 
 - `npm run godot:test:v0433-worker-economy`
+- `npm run godot:test:v0433-worker-economy` — passed focused economy and all-race building identity tests
 - `npm run godot:smoke:v0433-worker-economy`
 - `npm run godot:capture:v0433-worker-economy`
 - `npm run godot:validate:v0433-worker-economy`
@@ -58,7 +73,9 @@ The dedicated validator checks the exact base ancestry, branch, source repairs, 
 - All 20 required headed frames exist at 1920x1080 and are non-black with meaningful luminance variance.
 - The real input audit records timber, stone, and food assignment through `RTSController._issue_context_command -> Unit.command_gather`.
 - The deposit ledger contains food, timber, stone, and gold transactions; the gold entry follows the food-to-gold switch and updates the shared Commander bank exactly once.
-- Carry evidence reaches `Timber 9 / 10` without overflow; extraction is bounded by remaining capacity and exact node remainder.
+- Carry evidence reaches `Timber 10 / 10` without overflow; extraction is bounded by remaining capacity and exact node remainder.
+- The switch sequence proves `FOOD 9/10` in the pre-switch frame, a real food deposit before the next command, `GOLD 10/10` while returning, and the subsequent gold bank update.
+- All deposit transactions contain a non-empty authoritative drop-off ID; blank-ID count is zero and every current deposit resolves to the live friendly completed Clanhold.
 - Pause evidence shows extraction and carry unchanged while paused, then resumed gathering after unpause.
 - The shared-bank frame records a real Clan Croft placement using the updated live bank.
 - Fresh-scene replay reloads `scenes/game_world.tscn`, gathers timber again, deposits once, and reports no stale cargo or target state.
@@ -66,10 +83,10 @@ The dedicated validator checks the exact base ancestry, branch, source repairs, 
 
 ## Validation completed locally
 
-- `npm run godot:test:v0433-worker-economy`
+- `npm run godot:test:v0433-worker-economy` — passed focused economy and all-race building identity tests
 - `npm run godot:smoke:v0433-worker-economy`
 - `npm run godot:capture:v0433-worker-economy`
-- `npm run godot:validate:v0433-worker-economy` — passed, schema v2
+- `npm run godot:validate:v0433-worker-economy` — passed, schema v3 identity-repair
 - `npm run godot:smoke:v0432-war-hall-production` — passed
 - `npm run godot:validate:v0432-war-hall-production` — passed on the documented v0.433 descendant branch
 - `npm test` — 122 test files / 887 tests passed
@@ -93,3 +110,7 @@ The v0.433 branch remains stacked directly on accepted v0.432. The parent branch
 - The dedicated v0.433 validator passed before publication; its capture provenance is an ancestor of the implementation commit, and the pushed branch contains the report and review pack.
 - Tracked working tree is clean after publication. Historical untracked backlog remains intentionally preserved and unstaged; no unrelated files were deleted or reset.
 - Remote branch `origin/codex/v0433-multi-resource-worker-economy-loop` resolves to the implementation commit.
+
+## R1 publication record
+
+The original implementation and documentation publication remain preserved above. The identity/evidence repair is intentionally staged on the same draft PR #7. The final evidence/report commit, exact pushed SHA, GitHub Actions run, and clean-sync proof are appended after the regenerated pack is committed and published.

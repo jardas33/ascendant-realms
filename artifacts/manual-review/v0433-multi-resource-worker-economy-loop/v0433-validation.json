@@ -1,9 +1,11 @@
 {
-  "schema": "v0433-multi-resource-worker-economy-validator-v2",
+  "schema": "v0433-multi-resource-worker-economy-validator-v3-identity-repair",
   "baseSha": "eb6485805c06ecf7bb92a616ff16de95c0dead5c",
-  "finalCommitSha": "fa8fb0516a80ebbfb6eac71bb1412281e78816e3",
-  "captureSourceSha": "eb6485805c06ecf7bb92a616ff16de95c0dead5c",
+  "identityRepairSha": "cc2ee707f9727f853ce8dae67ef4876c6ed0d9ce",
+  "captureSourceSha": "e322f15b866700c7cd277b7fdcb9ac3ce9465cda",
+  "validationInputSha": "e322f15b866700c7cd277b7fdcb9ac3ce9465cda",
   "branch": "codex/v0433-multi-resource-worker-economy-loop",
+  "prNumber": 7,
   "frames": [
     "01_V0433_INITIAL_BANK_AND_WORKERS.png",
     "02_V0433_TIMBER_WORKER_ASSIGNED.png",
@@ -47,7 +49,9 @@
     "v0433-headed-capture-audit.json",
     "v0433-black-frame-rejection.json",
     "v0433-luminance-comparison.json",
-    "v0433-capture-command.json"
+    "v0433-capture-command.json",
+    "v0433-building-identity-audit.json",
+    "v0433-starting-hq-identity-matrix.json"
   ],
   "failures": [],
   "passed": true
