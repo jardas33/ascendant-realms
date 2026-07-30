@@ -33,7 +33,6 @@ var _easy_elapsed := 0.0
 var _easy_tick_timer := 0.0
 var _easy_wave_launched := false
 var _easy_wave_target := Vector3.ZERO
-var _easy_wave_size := 4
 var _easy_wave_staged := false
 var _easy_replacement_queued := false
 var _easy_resource_cursor := 0
@@ -63,8 +62,10 @@ func setup(p_world, p_commander, p_difficulty: String) -> void:
 func _apply_difficulty() -> void:
 	match difficulty:
 		"easy":
-			_think_interval = 1.0; _worker_target = 7; _army_attack_size = 4
-			_eco_efficiency = 1.0; _tech_aggression = 0.6; _brutal_income = 0.0
+			# Preserve the accepted v0.434 Easy tuning. The bounded v0.435 lane
+			# adds observability and real production, not a second difficulty model.
+			_think_interval = 2.0; _worker_target = 7; _army_attack_size = 6
+			_eco_efficiency = 0.7; _tech_aggression = 0.6; _brutal_income = 0.0
 		"normal":
 			_think_interval = 1.3; _worker_target = 10; _army_attack_size = 9
 			_eco_efficiency = 1.0; _tech_aggression = 1.0
@@ -239,7 +240,7 @@ func _manage_easy_buildings() -> void:
 
 func _manage_easy_mixed_production() -> void:
 	var barracks = _get_building_of_kind("barracks")
-	if not barracks or barracks.queue.size() >= 1 or _army_size() >= _easy_wave_size:
+	if not barracks or barracks.queue.size() >= 1 or _army_size() + _queued_easy_combat_count(barracks) >= _army_attack_size:
 		return
 	var pick := _choose_easy_mixed_unit(barracks.def.get("produces", []))
 	if pick == "":
@@ -254,20 +255,67 @@ func _manage_easy_mixed_production() -> void:
 		_record_easy_bank_event("mixed_unit_queue", pick, before, commander.resources)
 
 func _choose_easy_mixed_unit(choices: Array) -> String:
-	var preference := ["melee", "ranged", "defender", "flanker"]
-	for role in preference:
-		for c in choices:
-			var d := GameData.get_unit(String(c))
-			if d.is_empty() or String(d.get("role", "")) != role:
-				continue
-			if int(d.get("tier", 1)) <= commander.tier and commander.can_afford(d.get("cost", {})) and commander.has_pop_for(d):
-				return String(c)
+	var legal: Array = []
+	for c in choices:
+		var id := String(c)
+		var d := GameData.get_unit(id)
+		if d.is_empty() or String(d.get("race", "")) != commander.race:
+			continue
+		if String(d.get("role", "")) in ["worker", "hero"] or bool(d.get("is_hero", false)):
+			continue
+		if int(d.get("tier", 1)) > commander.tier:
+			continue
+		if commander.can_afford(d.get("cost", {})) and commander.has_pop_for(d):
+			legal.append(id)
+	if legal.is_empty():
+		return ""
+	var role_counts := _easy_combat_role_counts()
+	# Cover a missing legal Age-I role before adding a duplicate role. This is
+	# derived from the live/queued roster, never from a faction-specific ID.
+	var preferred_roles := ["melee", "defender", "ranged", "flanker"]
+	for role in preferred_roles:
+		if int(role_counts.get(role, 0)) > 0:
+			continue
+		for id in legal:
+			if String(GameData.get_unit(id).get("role", "")) == role:
+				return id
+	# Once role coverage exists, rotate through legal choices deterministically.
+	for offset in legal.size():
+		var id := String(legal[(_easy_unit_cursor + offset) % legal.size()])
+		_easy_unit_cursor = (_easy_unit_cursor + offset + 1) % legal.size()
+		return id
 	return ""
+
+func _easy_combat_role_counts() -> Dictionary:
+	var counts := {}
+	for u in _easy_army():
+		var role := String(u.def.get("role", ""))
+		if role != "":
+			counts[role] = int(counts.get(role, 0)) + 1
+	var barracks = _get_building_of_kind("barracks")
+	if barracks:
+		for item in barracks.queue:
+			if item.get("kind", "") != "unit":
+				continue
+			var role := String(GameData.get_unit(String(item.get("id", ""))).get("role", ""))
+			if role != "":
+				counts[role] = int(counts.get(role, 0)) + 1
+	return counts
+
+func _queued_easy_combat_count(barracks) -> int:
+	var count := 0
+	for item in barracks.queue:
+		if item.get("kind", "") != "unit":
+			continue
+		var d := GameData.get_unit(String(item.get("id", "")))
+		if not d.is_empty() and String(d.get("race", "")) == commander.race and String(d.get("role", "")) not in ["worker", "hero"]:
+			count += 1
+	return count
 
 func _manage_easy_staging_and_wave() -> void:
 	if _easy_wave_launched:
 		return
-	if _army_size() < _easy_wave_size:
+	if _army_size() < _army_attack_size:
 		return
 	if _easy_wave_target == Vector3.ZERO:
 		_easy_wave_target = _find_player_target()
@@ -293,7 +341,19 @@ func _manage_easy_staging_and_wave() -> void:
 		if is_instance_valid(u) and not u.is_dead:
 			u.command_move(_easy_wave_target, true)
 	_easy_wave_launched = true
+	var participant_ids: Array = []
+	var participant_runtime_ids: Array = []
+	var participant_roles: Array = []
+	for u in army:
+		participant_ids.append(u.unit_id)
+		participant_runtime_ids.append(str(u.get_instance_id()))
+		participant_roles.append(String(u.def.get("role", "")))
 	_easy_wave_audit.append({"event": "first_wave_launched", "count": army.size(),
+		"threshold": _army_attack_size, "opponent_race": commander.race,
+		"difficulty": difficulty, "wave_participant_ids": participant_ids,
+		"wave_participant_runtime_ids": participant_runtime_ids,
+		"wave_participant_roles": participant_roles,
+		"distinct_roles": _distinct_strings(participant_roles),
 		"target": _vec_payload(_easy_wave_target), "attack_move": true, "time": _easy_elapsed})
 
 func _manage_easy_hq_pressure() -> void:
@@ -329,7 +389,7 @@ func _manage_easy_replacement() -> void:
 	for e in world.combat_death_events:
 		if int(e.get("victim_team", -1)) == commander.team:
 			enemy_losses += 1
-	if enemy_losses < 1 or _army_size() >= _easy_wave_size:
+	if enemy_losses < 1 or _army_size() >= _army_attack_size:
 		return
 	var barracks = _get_building_of_kind("barracks")
 	if not barracks or not barracks.queue.is_empty():
@@ -338,18 +398,23 @@ func _manage_easy_replacement() -> void:
 	if pick == "":
 		return
 	var before: Dictionary = commander.resources.duplicate()
+	var reserved_before := commander.reserved_pop
 	var result: Dictionary = barracks.queue_unit(pick)
 	if result.get("ok", false):
 		_easy_replacement_queued = true
 		_easy_replacement_audit.append({"event": "replacement_queue_after_casualty", "unit_id": pick,
+			"opponent_race": commander.race, "building_id": barracks.building_id,
+			"role": String(GameData.get_unit(pick).get("role", "")),
 			"losses_before_queue": enemy_losses, "resources_before": before,
-			"resources_after": commander.resources.duplicate(), "time": _easy_elapsed})
+			"resources_after": commander.resources.duplicate(),
+			"reserved_population_before": reserved_before,
+			"reserved_population_after": commander.reserved_pop, "time": _easy_elapsed})
 		_record_easy_bank_event("replacement_queue", pick, before, commander.resources)
 
 func _easy_army() -> Array:
 	var out: Array = []
 	for u in commander.units:
-		if is_instance_valid(u) and not u.is_dead and not u.is_worker and not u.is_hero:
+		if is_instance_valid(u) and not u.is_dead and not u.is_worker and not u.is_hero and String(u.def.get("race", "")) == commander.race:
 			out.append(u)
 	return out
 
@@ -369,6 +434,14 @@ func _find_player_target() -> Vector3:
 
 func _vec_payload(pos: Vector3) -> Dictionary:
 	return {"x": pos.x, "y": pos.y, "z": pos.z}
+
+func _distinct_strings(values: Array) -> Array:
+	var out: Array = []
+	for value in values:
+		var text := String(value)
+		if text != "" and text not in out:
+			out.append(text)
+	return out
 
 func _record_easy_bank_event(event: String, subject: String, before: Dictionary, after: Dictionary) -> void:
 	_easy_bank_ledger.append({"event": event, "subject": subject,
@@ -440,7 +513,9 @@ func get_v0435_audit() -> Dictionary:
 		"wave_audit": _easy_wave_audit.duplicate(true),
 		"replacement_audit": _easy_replacement_audit.duplicate(true),
 		"wave_launched": _easy_wave_launched, "wave_staged": _easy_wave_staged,
-		"wave_target": _vec_payload(_easy_wave_target), "army_size": _army_size()}
+		"wave_target": _vec_payload(_easy_wave_target), "army_size": _army_size(),
+		"opponent_race": commander.race, "wave_threshold": _army_attack_size,
+		"wave_role_counts": _easy_combat_role_counts()}
 
 # --- economy --------------------------------------------------------------
 func _assign_idle_workers() -> void:

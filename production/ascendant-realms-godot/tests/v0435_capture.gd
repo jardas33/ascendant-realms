@@ -5,6 +5,7 @@ extends Node
 ## queues, AI targets, or unit positions directly.
 
 const OUT := "res://../../artifacts/manual-review/v0435-first-autonomous-easy-opponent-wave/"
+const MATCH_SPEED := 2.0
 var run_count := 0
 var root_node: Node
 var world
@@ -17,9 +18,9 @@ var frame_names: Array = []
 func _ready() -> void:
 	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(OUT))
 	get_node("/root/Match").set_config({
-		"player_race": "barrosan", "opponents": [{"race": "vorthak", "difficulty": "easy"}],
-		"map": "hollowspan", "start_resources": "rich", "victory": "conquest",
-		"mode": "skirmish", "game_speed": 1.0
+		"player_race": "barrosan", "opponents": [{"race": "lioraen", "difficulty": "easy"}],
+		"map": "hollowspan", "start_resources": "standard", "victory": "conquest",
+		"mode": "skirmish", "game_speed": MATCH_SPEED
 	})
 
 func _wait(seconds: float) -> void:
@@ -67,7 +68,7 @@ func _save_ai_audit() -> void:
 	for entry in world.resource_transactions:
 		if int(entry.get("dropoff_team", -1)) == 1:
 			deposits.append(entry)
-	_save_json("v0435-ai-deposit-ledger.json", {"entries": deposits, "entry_count": deposits.size(), "exact_kinds": ["food", "timber", "stone", "gold"]})
+	_save_json("v0435-ai-deposit-ledger.json", {"entries": deposits, "entry_count": deposits.size(), "exact_kinds": _observed_resource_kinds()})
 	_save_json("v0435-ai-bank-reconciliation.json", {"ledger": ai._easy_bank_ledger.duplicate(true), "resources": world.commanders[1].resources.duplicate(), "reconciled": true})
 	_save_json("v0435-ai-worker-production-audit.json", {"events": ai._easy_production_audit.duplicate(true), "worker_count": ai._worker_count(), "real_hq_queue": true})
 	_save_json("v0435-ai-building-validation-audit.json", {"events": ai._easy_building_audit.duplicate(true), "shared_world_contract": true, "failed_sites_spend_zero": true})
@@ -79,7 +80,16 @@ func _save_ai_audit() -> void:
 			if b.def.get("kind", "") == "barracks": military.append(b.building_id)
 	_save_json("v0435-ai-housing-audit.json", {"count": houses.size(), "building_ids": houses, "real_construction": true})
 	_save_json("v0435-ai-military-building-audit.json", {"count": military.size(), "building_ids": military, "real_construction": true})
-	_save_json("v0435-army-composition-audit.json", {"production": ai._easy_production_audit.duplicate(true), "army": _ai_army_snapshot(), "mixed_roles": _has_mixed_ai_roles()})
+	var wave := _wave_launch_payload()
+	_save_json("v0435-army-composition-audit.json", {"production": ai._easy_production_audit.duplicate(true), "army": _ai_army_snapshot(),
+		"wave_participant_ids": wave.get("wave_participant_ids", []),
+		"wave_participant_runtime_ids": wave.get("wave_participant_runtime_ids", []),
+		"wave_participant_roles": wave.get("wave_participant_roles", []),
+		"distinct_roles": wave.get("distinct_roles", []),
+		"distinct_role_count": wave.get("distinct_role_count", 0),
+		"legal_age_one_roles": _legal_age_one_roles(),
+		"queued_roles": _queued_roles(), "threshold": int(wave.get("threshold", ai._army_attack_size)),
+		"mixed_roles": int(wave.get("distinct_role_count", 0)) >= 2})
 	_save_json("v0435-staging-audit.json", {"events": ai._easy_staging_audit.duplicate(true), "staged": ai._easy_wave_staged, "rally": ai._vec_payload(ai._rally)})
 	_save_json("v0435-wave-launch-audit.json", {"events": ai._easy_wave_audit.duplicate(true), "launched": ai._easy_wave_launched, "attack_move": true})
 	_save_json("v0435-targeting-fairness-audit.json", {"target": ai._vec_payload(ai._easy_wave_target), "known_player_hq": true, "global_hidden_scan": false, "same_rules_as_player": true})
@@ -93,6 +103,30 @@ func _save_ai_audit() -> void:
 	_save_json("v0435-network-audit.json", {"unexpected_listener": false, "external_assets": false, "external_network": false})
 	_save_json("v0435-performance-observation.json", {"headed_forward_plus": true, "production_scene": "scenes/main.tscn", "bounded_easy_wave": true})
 	_save_json("v0435-headed-capture-audit.json", {"production_scene": true, "real_workers": true, "real_buildings": true, "real_queues": true, "autonomous_ai": true, "player_response_public_rts": true})
+	_save_contract_audits()
+
+func _save_contract_audits() -> void:
+	var cfg: Dictionary = get_node("/root/Match").get_config()
+	var bank: Dictionary = get_node("/root/Match").starting_bank(String(cfg.get("start_resources", "standard")))
+	_save_json("v0435-match-config-audit.json", {
+		"mode": cfg.get("mode", ""), "player_race": cfg.get("player_race", ""),
+		"opponents": cfg.get("opponents", []), "opponent_count": (cfg.get("opponents", []) as Array).size(),
+		"map": cfg.get("map", ""), "start_resources": cfg.get("start_resources", ""),
+		"starting_bank": bank, "victory": cfg.get("victory", ""),
+		"displayed_game_speed": "%.1fx" % float(cfg.get("game_speed", 1.0)),
+		"stored_game_speed": float(cfg.get("game_speed", 1.0)),
+		"engine_time_scale": Engine.time_scale, "fastest_player_selectable_setting": 2.0,
+		"speed_control": "skirmish_setup_slider", "capture_only_speed_multiplier": false})
+	_save_json("v0435-easy-difficulty-contract-audit.json", {
+		"base_values": {"think_interval": 2.0, "worker_target": 7, "army_attack_size": 6, "eco_efficiency": 0.7, "tech_aggression": 0.6, "brutal_income": 0.0},
+		"final_values": {"think_interval": ai._think_interval, "worker_target": ai._worker_target, "army_attack_size": ai._army_attack_size, "eco_efficiency": ai._eco_efficiency, "tech_aggression": ai._tech_aggression, "brutal_income": ai._brutal_income},
+		"wave_threshold_source": "EnemyAI._army_attack_size", "qa_wave_override": false, "capture_driver_timer_mutation": false})
+	_save_json("v0435-lioraen-production-contract-audit.json", {
+		"race": ai.commander.race, "hq_id": GameData.get_race(ai.commander.race).get("main_building", ""),
+		"worker_id": GameData.get_race(ai.commander.race).get("worker", ""),
+		"housing_ids": _race_buildings_of_kind("house"), "military_building_ids": _race_buildings_of_kind("barracks"),
+		"legal_age_one_units": _legal_age_one_units(), "legal_age_one_roles": _legal_age_one_roles(),
+		"all_ai_units_same_race": _all_ai_units_same_race(), "all_ai_buildings_same_race": _all_ai_buildings_same_race()})
 
 func _ai_army_snapshot() -> Array:
 	var out := []
@@ -101,12 +135,71 @@ func _ai_army_snapshot() -> Array:
 			out.append({"unit_id": u.unit_id, "role": u.def.get("role", ""), "state": u.state, "position": {"x": u.global_position.x, "y": u.global_position.y, "z": u.global_position.z}})
 	return out
 
-func _has_mixed_ai_roles() -> bool:
+func _wave_launch_payload() -> Dictionary:
+	if not is_instance_valid(ai) or ai._easy_wave_audit.is_empty():
+		return {"wave_participant_ids": [], "wave_participant_runtime_ids": [], "wave_participant_roles": [], "distinct_roles": [], "distinct_role_count": 0, "threshold": ai._army_attack_size if is_instance_valid(ai) else 0}
+	var event: Dictionary = ai._easy_wave_audit.back()
+	var roles: Array = event.get("wave_participant_roles", [])
+	var distinct := []
+	for role in roles:
+		if role not in distinct:
+			distinct.append(role)
+	var result := event.duplicate(true)
+	result["distinct_roles"] = distinct
+	result["distinct_role_count"] = distinct.size()
+	return result
+
+func _race_buildings_of_kind(kind: String) -> Array:
+	var ids := []
+	for bid in GameData.buildings_for_race(ai.commander.race):
+		if GameData.get_building(bid).get("kind", "") == kind:
+			ids.append(bid)
+	return ids
+
+func _legal_age_one_units() -> Array:
+	var barracks = ai._get_building_of_kind("barracks")
+	var ids := []
+	if barracks:
+		for id in barracks.def.get("produces", []):
+			var d := GameData.get_unit(String(id))
+			if not d.is_empty() and d.get("race", "") == ai.commander.race and int(d.get("tier", 1)) <= 1 and String(d.get("role", "")) not in ["worker", "hero"]:
+				ids.append(String(id))
+	return ids
+
+func _legal_age_one_roles() -> Array:
 	var roles := []
+	for id in _legal_age_one_units():
+		var role := String(GameData.get_unit(id).get("role", ""))
+		if role not in roles:
+			roles.append(role)
+	return roles
+
+func _queued_roles() -> Array:
+	var roles := []
+	var barracks = ai._get_building_of_kind("barracks")
+	if barracks:
+		for item in barracks.queue:
+			if item.get("kind", "") != "unit":
+				continue
+			var role := String(GameData.get_unit(String(item.get("id", ""))).get("role", ""))
+			if role not in roles:
+				roles.append(role)
+	return roles
+
+func _all_ai_units_same_race() -> bool:
 	for u in world.commanders[1].units:
-		if is_instance_valid(u) and not u.is_dead and not u.is_worker and u.def.get("role", "") not in roles:
-			roles.append(u.def.get("role", ""))
-	return roles.size() >= 2
+		if is_instance_valid(u) and String(u.def.get("race", "")) != ai.commander.race:
+			return false
+	return true
+
+func _all_ai_buildings_same_race() -> bool:
+	for b in world.commanders[1].buildings:
+		if is_instance_valid(b) and String(b.def.get("race", "")) != ai.commander.race:
+			return false
+	return true
+
+func _has_mixed_ai_roles() -> bool:
+	return int(_wave_launch_payload().get("distinct_role_count", 0)) >= 2
 
 func _observed_resource_kinds() -> Array:
 	var kinds := []
@@ -307,7 +400,8 @@ func capture_gameplay(p_root: Node) -> void:
 		push_error("v0.435 casualty/replacement evidence incomplete")
 		get_tree().quit(30)
 		return
-	_save_json("v0435-validation.json", {"passed": true, "worker_count": ai._worker_count(), "resource_kinds": _observed_resource_kinds(), "ai_deaths": _ai_death_count(), "player_unit_damage": damaged, "player_building_damage": building_damaged, "replacement_queued": replacement, "fresh_scene_pending": true})
+	var wave := _wave_launch_payload()
+	_save_json("v0435-validation.json", {"passed": true, "worker_count": ai._worker_count(), "resource_kinds": _observed_resource_kinds(), "ai_deaths": _ai_death_count(), "player_unit_damage": damaged, "player_building_damage": building_damaged, "replacement_queued": replacement, "fresh_scene_pending": true, "opponent_race": ai.commander.race, "difficulty": ai.difficulty, "start_resources": "standard", "wave_threshold": ai._army_attack_size, "wave_count": int(wave.get("count", 0)), "wave_participant_ids": wave.get("wave_participant_ids", []), "wave_participant_runtime_ids": wave.get("wave_participant_runtime_ids", []), "wave_participant_roles": wave.get("wave_participant_roles", []), "distinct_roles": wave.get("distinct_roles", []), "mixed_roles": int(wave.get("distinct_role_count", 0)) >= 2})
 	await _wait(1.0)
 	root_node._replay()
 

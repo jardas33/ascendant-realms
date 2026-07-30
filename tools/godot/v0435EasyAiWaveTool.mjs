@@ -39,7 +39,16 @@ async function capture() {
   await fs.mkdir(pack, { recursive: true });
   const log = path.join(pack, 'v0435-headed-runtime.log');
   runGodot(['--path', project, '--resolution', '1920x1080', '--verbose', '--log-file', log], { ASCENDANT_V0435_CAPTURE: '1' });
-  await writeJson('v0435-capture-command.json', { schema: 'v0435-capture-command-v1', baseSha, captureSourceSha: git(['rev-parse', 'HEAD']), branch: git(['branch', '--show-current']), productionScene: 'scenes/main.tscn', method: 'headed official Godot Forward Plus runtime observing one autonomous Easy EnemyAI and using RTSController only for player response', directAiCommands: false, directResourceWrites: false, directHpWrites: false, directDeathCalls: false, status: 'completed' });
+  const captureSourceSha = git(['rev-parse', 'HEAD']);
+  await writeJson('v0435-capture-command.json', {
+    schema: 'v0435-capture-command-v2', baseSha, aiRepairSha: captureSourceSha,
+    captureSourceSha, validationInputSha: captureSourceSha, branch: git(['branch', '--show-current']),
+    prNumber: 9, productionScene: 'scenes/main.tscn',
+    matchConfig: { playerRace: 'barrosan', opponentRace: 'lioraen', opponentCount: 1, difficulty: 'easy', startResources: 'standard', map: 'hollowspan', mode: 'skirmish', victory: 'conquest', gameSpeed: 2.0 },
+    captureGeneratedAfterAiRepair: true,
+    method: 'headed official Godot Forward Plus runtime observing one autonomous Easy EnemyAI and using RTSController only for player response',
+    directAiCommands: false, directResourceWrites: false, directHpWrites: false, directDeathCalls: false, status: 'completed'
+  });
   console.log(`v0.435 headed Easy AI capture complete: ${pack}`);
 }
 
@@ -67,6 +76,8 @@ async function validate() {
   const root = await fs.readFile(path.join(project, 'scripts/world/game_root.gd'), 'utf8');
   const projectFile = await fs.readFile(path.join(project, 'project.godot'), 'utf8');
   if (!ai.includes('_easy_mode') || !ai.includes('_think_easy()') || !ai.includes('_easy_wave_launched')) failures.push('bounded Easy AI lane missing');
+  if (ai.includes('_easy_wave_size')) failures.push('independent Easy wave-size override remains');
+  if (!/"easy":\s*\n\s*_think_interval = 2\.0; _worker_target = 7; _army_attack_size = 6/.test(ai)) failures.push('historical Easy tuning not restored');
   if (!ai.includes('find_nearest_resource_exact') || !ai.includes('_easy_resource_shortages') || !ai.includes('_easy_bank_ledger')) failures.push('exact resource/shortage/bank ledger missing');
   if (!ai.includes('world.can_place_building') || !ai.includes('_find_easy_build_spot')) failures.push('shared deterministic placement missing');
   if (!ai.includes('queue_unit') || !ai.includes('_choose_easy_mixed_unit')) failures.push('real mixed production queue missing');
@@ -74,7 +85,13 @@ async function validate() {
   if (!world.includes('func can_place_building') || !world.includes('building_damage_events') || !world.includes('resource_transactions')) failures.push('world shared contracts missing');
   if (!root.includes('ASCENDANT_V0435_CAPTURE') || !projectFile.includes('V0435Capture')) failures.push('capture wiring missing');
   const metaPath = path.join(pack, 'v0435-capture-command.json');
-  if (await exists(metaPath)) { const meta = await readJson('v0435-capture-command.json'); if (meta.baseSha !== baseSha || meta.directAiCommands !== false || meta.directResourceWrites !== false || meta.directHpWrites !== false || meta.directDeathCalls !== false) failures.push('capture provenance/scope contract failed'); }
+  if (await exists(metaPath)) {
+    const meta = await readJson('v0435-capture-command.json');
+    if (meta.baseSha !== baseSha || !meta.aiRepairSha || !meta.captureSourceSha || !meta.validationInputSha || meta.captureSourceSha === baseSha || meta.aiRepairSha === baseSha || meta.captureGeneratedAfterAiRepair !== true) failures.push('capture provenance/repair-source contract failed');
+    if (meta.branch !== branch || meta.prNumber !== 9 || meta.matchConfig?.playerRace !== 'barrosan' || meta.matchConfig?.opponentRace !== 'lioraen' || meta.matchConfig?.difficulty !== 'easy' || meta.matchConfig?.startResources !== 'standard' || meta.matchConfig?.gameSpeed !== 2.0) failures.push('capture match contract metadata failed');
+    for (const sha of [meta.aiRepairSha, meta.captureSourceSha]) { try { execFileSync('git', ['merge-base', '--is-ancestor', sha, 'HEAD'], { cwd: repo, stdio: 'ignore' }); } catch { failures.push(`capture SHA is not an ancestor of HEAD: ${sha}`); } }
+    try { execFileSync('git', ['merge-base', '--is-ancestor', baseSha, meta.aiRepairSha], { cwd: repo, stdio: 'ignore' }); } catch { failures.push('aiRepairSha is not based on v0.434'); }
+  }
   else failures.push('missing v0435 capture command metadata');
   const blackPath = path.join(pack, 'v0435-black-frame-rejection.json');
   if (await exists(blackPath)) { const black = await readJson('v0435-black-frame-rejection.json'); if ((black.rejected_black || []).length || (black.rejected_blank || []).length || black.all_real_gameplay !== true) failures.push('black/blank rejection failed'); }
@@ -84,12 +101,20 @@ async function validate() {
   if (await exists(runtimePath)) {
     runtimeProof = await readJson('v0435-validation.json');
     if (runtimeProof.passed !== true || Number(runtimeProof.worker_count) < 3 || Number(runtimeProof.ai_deaths) < 2 || runtimeProof.player_unit_damage !== true || runtimeProof.player_building_damage !== true || runtimeProof.replacement_queued !== true) failures.push('runtime validation does not prove autonomous worker/economy/wave/contact/casualty/replacement chain');
+    if (runtimeProof.opponent_race !== 'lioraen' || runtimeProof.difficulty !== 'easy' || runtimeProof.start_resources !== 'standard') failures.push('runtime match contract does not prove Barrosan/Lioraen Easy Standard');
+    if (Number(runtimeProof.wave_count) < 6 || Number(runtimeProof.wave_threshold) !== 6 || runtimeProof.mixed_roles !== true || !Array.isArray(runtimeProof.distinct_roles) || runtimeProof.distinct_roles.length < 2) failures.push('runtime wave does not prove six-unit mixed-role launch');
   }
   else failures.push('missing runtime validation evidence');
   const depositPath = path.join(pack, 'v0435-ai-deposit-ledger.json');
-  if (await exists(depositPath)) { const d = await readJson('v0435-ai-deposit-ledger.json'); if (Number(d.entry_count) < 2 || !Array.isArray(d.entries)) failures.push('AI deposit ledger has insufficient real deposits'); }
+  if (await exists(depositPath)) { const d = await readJson('v0435-ai-deposit-ledger.json'); if (Number(d.entry_count) < 2 || !Array.isArray(d.entries) || !['food','timber','stone','gold'].every(k => d.exact_kinds?.includes(k))) failures.push('AI deposit ledger does not prove all four exact resource kinds'); }
   const wavePath = path.join(pack, 'v0435-wave-launch-audit.json');
-  if (await exists(wavePath)) { const w = await readJson('v0435-wave-launch-audit.json'); if (w.launched !== true) failures.push('wave audit does not prove launch'); }
+  if (await exists(wavePath)) { const w = await readJson('v0435-wave-launch-audit.json'); const event = (w.events || []).find(e => e.event === 'first_wave_launched') || {}; if (w.launched !== true || event.count < 6 || event.threshold !== 6 || event.opponent_race !== 'lioraen' || new Set(event.wave_participant_roles || []).size < 2 || (event.wave_participant_ids || []).some(id => /worker|hero/i.test(String(id)))) failures.push('wave audit does not prove six-unit Lioraen mixed-role launch'); }
+  const matchPath = path.join(pack, 'v0435-match-config-audit.json');
+  if (await exists(matchPath)) { const m = await readJson('v0435-match-config-audit.json'); if (m.player_race !== 'barrosan' || m.opponents?.[0]?.race !== 'lioraen' || m.opponents?.[0]?.difficulty !== 'easy' || m.start_resources !== 'standard' || m.opponent_count !== 1 || m.stored_game_speed !== 2 || m.engine_time_scale !== 2) failures.push('headed match configuration audit failed'); }
+  const diffPath = path.join(pack, 'v0435-easy-difficulty-contract-audit.json');
+  if (await exists(diffPath)) { const d = await readJson('v0435-easy-difficulty-contract-audit.json'); const v = d.final_values || {}; if (v.think_interval !== 2 || v.worker_target !== 7 || v.army_attack_size !== 6 || v.eco_efficiency !== 0.7 || v.tech_aggression !== 0.6 || v.brutal_income !== 0 || d.qa_wave_override !== false) failures.push('Easy difficulty contract audit failed'); }
+  const productionPath = path.join(pack, 'v0435-lioraen-production-contract-audit.json');
+  if (await exists(productionPath)) { const p = await readJson('v0435-lioraen-production-contract-audit.json'); if (p.race !== 'lioraen' || p.all_ai_units_same_race !== true || p.all_ai_buildings_same_race !== true || !Array.isArray(p.legal_age_one_roles) || p.legal_age_one_roles.length < 2) failures.push('Lioraen production contract audit failed'); }
   const result = { ...runtimeProof, schema: 'v0435-first-autonomous-easy-opponent-wave-validator-v1', baseSha, validationInputSha: head, branch, prTargetBranch: 'codex/v0434-first-combat-casualty-loop', frames, evidence, failures, passed: failures.length === 0 };
   await writeJson('v0435-validation.json', result);
   if (failures.length) { console.error(JSON.stringify(result, null, 2)); process.exitCode = 1; } else console.log(JSON.stringify(result, null, 2));
