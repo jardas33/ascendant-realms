@@ -83,4 +83,13 @@ The dedicated validator checks the exact base ancestry, branch, source repairs, 
 
 ## Closeout
 
-The v0.433 branch remains stacked directly on accepted v0.432. The parent branch and PR #6 were not retargeted, merged, closed, or force-pushed. Exact commit, PR, Actions run, and final clean/sync state are appended after publication.
+The v0.433 branch remains stacked directly on accepted v0.432. The parent branch and PR #6 were not retargeted, merged, closed, or force-pushed.
+
+## Published closeout proof
+
+- Implementation commit: `fa8fb0516a80ebbfb6eac71bb1412281e78816e3`
+- Stacked draft PR: `https://github.com/jardas33/ascendant-realms/pull/7`
+- Exact-SHA GitHub Actions: run `30503818802` (`CI Release Matrix Dry Run`) completed with `success` for the implementation commit.
+- The dedicated v0.433 validator passed before publication; its capture provenance is an ancestor of the implementation commit, and the pushed branch contains the report and review pack.
+- Tracked working tree is clean after publication. Historical untracked backlog remains intentionally preserved and unstaged; no unrelated files were deleted or reset.
+- Remote branch `origin/codex/v0433-multi-resource-worker-economy-loop` resolves to the implementation commit.

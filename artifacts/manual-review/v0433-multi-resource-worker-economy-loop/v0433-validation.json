@@ -1,7 +1,7 @@
 {
   "schema": "v0433-multi-resource-worker-economy-validator-v2",
   "baseSha": "eb6485805c06ecf7bb92a616ff16de95c0dead5c",
-  "finalCommitSha": "eb6485805c06ecf7bb92a616ff16de95c0dead5c",
+  "finalCommitSha": "fa8fb0516a80ebbfb6eac71bb1412281e78816e3",
   "captureSourceSha": "eb6485805c06ecf7bb92a616ff16de95c0dead5c",
   "branch": "codex/v0433-multi-resource-worker-economy-loop",
   "frames": [
