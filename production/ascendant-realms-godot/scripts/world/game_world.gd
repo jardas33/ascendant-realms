@@ -24,6 +24,15 @@ var _projectile_container: Node3D
 var _fx_container: Node3D
 
 var game_running := false
+var match_ended := false
+var playable_min := Vector3(-136.0, -100.0, -136.0)
+var playable_max := Vector3(136.0, 100.0, 136.0)
+var playable_safety_margin := 4.0
+var playable_recovery_tolerance := 2.0
+var game_over_count := 0
+var profile_record_count := 0
+var result_snapshot := {}
+var _profile_recorded := false
 var _victory_kind := "conquest"
 var _aura_timer := 0.0
 var _slow_timer := 0.0
@@ -35,6 +44,10 @@ var combat_damage_events: Array = []
 var combat_death_events: Array = []
 var combat_kill_events: Array = []
 var building_damage_events: Array = []
+var building_destruction_events: Array = []
+var navigation_watchdog_samples: Array = []
+var navigation_watchdog_violations: Array = []
+var _navigation_watchdog_timer := 0.0
 
 # v0.431 runtime evidence: this is an audit trail around the existing
 # construction transaction, not a second economy or construction system.
@@ -54,6 +67,7 @@ var _theme := {}
 func _ready() -> void:
 	var cfg := Match.get_config()
 	map = MapDefs.get_map(cfg.get("map", "hollowspan"))
+	_setup_playable_bounds()
 	_theme = MapDefs.theme(map.get("theme", "highland"))
 	_projectile_container = Node3D.new()
 	_projectile_container.name = "Projectiles"
@@ -69,6 +83,70 @@ func _ready() -> void:
 	_spawn_resources()
 	_spawn_capture_points()
 	call_deferred("_start_match")
+
+func _setup_playable_bounds() -> void:
+	# MapDefs owns the actual battlefield half-extent. The safety margin keeps
+	# unit bodies away from the edge while the recovery tolerance accepts the
+	# small numerical overshoot produced by CharacterBody3D movement.
+	var half_extent: float = maxf(8.0, float(map.get("size", 140.0)))
+	playable_safety_margin = minf(4.0, half_extent * 0.08)
+	playable_recovery_tolerance = minf(2.0, playable_safety_margin * 0.5)
+	playable_min = Vector3(-half_extent + playable_safety_margin, -100.0, -half_extent + playable_safety_margin)
+	playable_max = Vector3(half_extent - playable_safety_margin, 100.0, half_extent - playable_safety_margin)
+
+func is_inside_playable_bounds(position: Vector3, tolerance: float = 0.0) -> bool:
+	if not _finite_position(position):
+		return false
+	return position.x >= playable_min.x - tolerance and position.x <= playable_max.x + tolerance and position.z >= playable_min.z - tolerance and position.z <= playable_max.z + tolerance
+
+func clamp_to_playable_bounds(position: Vector3) -> Vector3:
+	if not _finite_position(position):
+		return Vector3.ZERO
+	return Vector3(clampf(position.x, playable_min.x, playable_max.x), position.y, clampf(position.z, playable_min.z, playable_max.z))
+
+func nearest_safe_in_bounds_recovery_point(position: Vector3) -> Vector3:
+	return clamp_to_playable_bounds(position)
+
+func distance_outside_playable_bounds(position: Vector3) -> float:
+	if not _finite_position(position):
+		return INF
+	var dx := maxf(playable_min.x - position.x, 0.0) + maxf(position.x - playable_max.x, 0.0)
+	var dz := maxf(playable_min.z - position.z, 0.0) + maxf(position.z - playable_max.z, 0.0)
+	return maxf(dx, dz)
+
+func playable_bounds_contract() -> Dictionary:
+	return {"minimum_x": playable_min.x, "maximum_x": playable_max.x, "minimum_z": playable_min.z, "maximum_z": playable_max.z, "safety_margin": playable_safety_margin, "recovery_tolerance": playable_recovery_tolerance, "source": "MapDefs.map.size"}
+
+func _finite_position(position: Vector3) -> bool:
+	return abs(position.x) < 1000000.0 and abs(position.y) < 1000000.0 and abs(position.z) < 1000000.0 and position.x == position.x and position.y == position.y and position.z == position.z
+
+func _sample_navigation_watchdog() -> void:
+	var live: Array = []
+	for u in all_units():
+		if not is_instance_valid(u) or u.is_dead:
+			continue
+		var inside := is_inside_playable_bounds(u.global_position, playable_recovery_tolerance)
+		var outside_distance := distance_outside_playable_bounds(u.global_position)
+		var recovery := bool(u.get("_boundary_recovery_active"))
+		var sample := {"runtime_id": str(u.get_instance_id()), "unit_id": String(u.unit_id), "team": int(u.team), "state": int(u.state), "command": String(u.get("_navigation_command_type")), "position": {"x": u.global_position.x, "y": u.global_position.y, "z": u.global_position.z}, "requested_target": {"x": u.get("_requested_move_target").x, "y": u.get("_requested_move_target").y, "z": u.get("_requested_move_target").z}, "effective_target": {"x": u.get("_navigation_effective_target").x, "y": u.get("_navigation_effective_target").y, "z": u.get("_navigation_effective_target").z}, "inside_bounds": inside, "recovery_active": recovery, "distance_outside": outside_distance, "invalid_path_count": int(u.get("_navigation_invalid_count")), "rejected_velocity_count": int(u.get("_navigation_rejected_velocity_count"))}
+		live.append(sample)
+		if outside_distance > playable_recovery_tolerance and not recovery:
+			navigation_watchdog_violations.append(sample.duplicate(true))
+	navigation_watchdog_samples.append({"timestamp": Time.get_ticks_msec(), "units": live})
+	if navigation_watchdog_samples.size() > 240:
+		navigation_watchdog_samples.pop_front()
+	if navigation_watchdog_violations.size() > 120:
+		navigation_watchdog_violations.pop_front()
+
+func navigation_watchdog_snapshot() -> Dictionary:
+	var max_abs_x := 0.0
+	var max_abs_z := 0.0
+	for sample in navigation_watchdog_samples:
+		for unit_sample in sample.get("units", []):
+			var p: Dictionary = unit_sample.get("position", {})
+			max_abs_x = maxf(max_abs_x, abs(float(p.get("x", 0.0))))
+			max_abs_z = maxf(max_abs_z, abs(float(p.get("z", 0.0))))
+	return {"samples": navigation_watchdog_samples.duplicate(true), "violations": navigation_watchdog_violations.duplicate(true), "max_observed_abs_x": max_abs_x, "max_observed_abs_z": max_abs_z, "final_live_units_inside_tolerance": navigation_watchdog_violations.is_empty()}
 
 # --------------------------------------------------------------------------
 # Environment
@@ -732,6 +810,10 @@ func _physics_process(delta: float) -> void:
 		return
 	match_time += delta
 	_aura_timer += delta
+	_navigation_watchdog_timer += delta
+	if _navigation_watchdog_timer >= 0.25:
+		_navigation_watchdog_timer = 0.0
+		_sample_navigation_watchdog()
 	if _aura_timer >= 0.4:
 		_update_command_auras()
 		_aura_timer = 0.0
@@ -757,14 +839,18 @@ func _update_command_auras() -> void:
 					u.set_aura_bonus(hero.aura_dmg, hero.aura_armor)
 
 func _check_victory() -> void:
-	# a team is defeated when it has no HQ and no units capable of building
+	# Conquest requires no HQ, no live rebuilding worker, and no live buildings.
 	for cmd in commanders:
 		if cmd.defeated:
 			continue
-		if not cmd.has_hq() and _no_workers(cmd) and cmd.alive_buildings() == 0:
+		var no_hq: bool = not cmd.has_hq()
+		var no_workers: bool = bool(_no_workers(cmd))
+		var no_buildings: bool = cmd.alive_buildings() == 0
+		if no_hq and no_workers and no_buildings:
 			cmd.defeated = true
+			cmd.defeat_reason = "conquest_rebuild_capability_eliminated"
 			if cmd.team == player_team:
-				_end_game(false)
+				_end_game(false, "hq_destroyed" if no_hq else "no_live_buildings")
 				return
 	# domination victory: hold all capture points for a while — simplified to conquest here
 	var alive_teams := 0
@@ -775,7 +861,10 @@ func _check_victory() -> void:
 			if cmd.team == player_team:
 				player_alive = true
 	if player_alive and alive_teams == 1:
-		_end_game(true)
+		for cmd in commanders:
+			if cmd.team != player_team and cmd.defeated and cmd.defeat_reason == "":
+				cmd.defeat_reason = "conquest_rebuild_capability_eliminated"
+		_end_game(true, "Conquest")
 
 func _no_workers(cmd) -> bool:
 	for u in cmd.units:
@@ -783,18 +872,27 @@ func _no_workers(cmd) -> bool:
 			return false
 	return true
 
-func _end_game(victory: bool) -> void:
-	if not game_running:
+func _end_game(victory: bool, reason: String = "Conquest") -> void:
+	if match_ended:
 		return
+	match_ended = true
 	game_running = false
+	game_over_count += 1
 	AudioManager.play_music_path(Sfx.music_key("victory" if victory else "defeat"), -6.0, false)
 	# rewards
 	var xp := 200.0 + float(kills_by_player) * 12.0 + match_time * 0.5
 	if victory:
 		xp *= 1.6
-	if ProfileManager.has_hero():
+	if not _profile_recorded and ProfileManager.has_hero():
+		_profile_recorded = true
+		profile_record_count += 1
 		ProfileManager.record_battle(victory, kills_by_player, xp)
-	Match.last_result = {"victory": victory, "kills": kills_by_player, "xp": xp, "time": match_time}
+	result_snapshot = {"victory": victory, "reason": reason, "mode": Match.get_config().get("mode", "skirmish"),
+		"victory_kind": _victory_kind, "player_team": player_team, "kills": kills_by_player,
+		"building_kills": building_destruction_events.filter(func(e): return int(e.get("source_team", -1)) == player_team).size(),
+		"xp": xp, "time": match_time, "completion_timestamp": Time.get_unix_time_from_system(),
+		"defeated_teams": commanders.filter(func(c): return c.defeated).map(func(c): return c.team)}
+	Match.last_result = result_snapshot.duplicate(true)
 	emit_signal("game_over", victory)
 
 # --------------------------------------------------------------------------
@@ -821,7 +919,7 @@ func record_combat_damage(victim, source, final_damage: float, hp_before: float,
 		kind = String(source.projectile_kind) if "projectile_kind" in source else "melee"
 	combat_damage_events.append({"victim_id": String(victim.unit_id), "victim_runtime_id": str(victim.get_instance_id()), "source_id": source_id, "source_runtime_id": source_runtime_id, "source_team": source_team, "damage_type": String(victim._last_damage_type), "kind": kind, "final_damage": final_damage, "hp_before": hp_before, "hp_after": hp_after, "killing_blow": hp_after <= 0.0, "timestamp": Time.get_ticks_msec()})
 
-func on_building_damaged(building, from) -> void:
+func on_building_damaged(building, from, hp_before: float = -1.0, final_damage: float = -1.0) -> void:
 	var source_team := -1
 	var source_id := ""
 	var kind := "environment"
@@ -833,10 +931,16 @@ func on_building_damaged(building, from) -> void:
 		source_team = int(from.team) if "team" in from else -1
 		source_id = String(from.unit_id) if "unit_id" in from else ""
 		kind = String(from.projectile_kind) if "projectile_kind" in from else "melee"
+	if hp_before < 0.0:
+		hp_before = building.hp + maxf(0.0, final_damage)
+	if final_damage < 0.0:
+		final_damage = maxf(0.0, hp_before - building.hp)
 	building_damage_events.append({"building_id": String(building.building_id),
 		"building_runtime_id": str(building.get_instance_id()), "building_team": int(building.team),
 		"source_id": source_id, "source_team": source_team, "kind": kind,
-		"hp_after": building.hp, "timestamp": Time.get_ticks_msec()})
+		"damage_type": kind, "raw_damage": final_damage, "effective_damage": final_damage,
+		"final_damage": final_damage, "hp_before": hp_before, "hp_after": building.hp,
+		"killing_blow": building.hp <= 0.0, "timestamp": Time.get_ticks_msec()})
 	if building.team == player_team:
 		if randf() < 0.02:
 			Sfx.play("under_attack", -6.0)
@@ -891,6 +995,21 @@ func get_v0431_construction_audit() -> Dictionary:
 		"completed_count": construction_events.size()}
 
 func on_building_destroyed(building) -> void:
+	if building.get_meta("v0436_destruction_recorded", false):
+		return
+	building.set_meta("v0436_destruction_recorded", true)
+	var source_team := -1
+	var source_id := ""
+	if not building_damage_events.is_empty():
+		var last: Dictionary = building_damage_events.back()
+		if String(last.get("building_runtime_id", "")) == str(building.get_instance_id()) and last.get("killing_blow", false):
+			source_team = int(last.get("source_team", -1))
+			source_id = String(last.get("source_id", ""))
+	building_destruction_events.append({"building_id": String(building.building_id),
+		"building_runtime_id": str(building.get_instance_id()), "building_team": int(building.team),
+		"kind": String(building.def.get("kind", "")), "is_hq": bool(building.def.get("is_hq", false)),
+		"source_id": source_id, "source_team": source_team, "destroyed_once": true,
+		"queue_cleared": building.queue.is_empty(), "collision_disabled": building.collision_layer == 0})
 	if building.team == player_team:
 		emit_signal("alert", "You lost a %s!" % building.def.get("name", "building"), building.global_position)
 

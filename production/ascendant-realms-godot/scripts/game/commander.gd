@@ -34,6 +34,7 @@ var units: Array = []          # Unit nodes
 var buildings: Array = []      # Building nodes
 var hero_ref = null            # the hero Unit
 var defeated: bool = false
+var defeat_reason := ""
 
 func setup(p_team: int, p_race: String, p_human: bool, start_bank: Dictionary, p_hero_stats: Dictionary) -> void:
 	team = p_team

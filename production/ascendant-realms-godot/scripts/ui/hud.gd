@@ -1003,7 +1003,8 @@ func _on_game_over(victory: bool) -> void:
 	var t := int(result.get("time", 0))
 	var mins := int(t) / 60
 	var secs := int(t) % 60
-	var summary := "Enemies defeated: %d     Experience gained: %d     Time: %d:%02d" % [kills, xp, mins, secs]
+	var reason := String(result.get("reason", "Conquest"))
+	var summary := "%s   |   Enemies defeated: %d     Experience gained: %d     Time: %d:%02d" % [reason, kills, xp, mins, secs]
 	var sum_label := _mk_label(summary, 20, Color(0.9, 0.87, 0.78))
 	sum_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	box.add_child(sum_label)

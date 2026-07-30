@@ -1,0 +1,22 @@
+{
+  "hall_built": false,
+  "hall_progress": 0,
+  "hall_valid": true,
+  "worker_states": [
+    {
+      "id": "barrosan_worker",
+      "position": "(-90, 0, -100)",
+      "state": 6
+    },
+    {
+      "id": "barrosan_worker",
+      "position": "(-93.53105, 0, -92.64621)",
+      "state": 6
+    },
+    {
+      "id": "barrosan_worker",
+      "position": "(-100.7598, 0, -100)",
+      "state": 6
+    }
+  ]
+}

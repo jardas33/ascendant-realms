@@ -1,0 +1,37 @@
+{
+  "schema": "v0436-capture-failure-audit-attempt-03-v1",
+  "status": "BLOCKED_PREEXISTING_NAVIGATION_SYSTEM",
+  "attempt": 3,
+  "command": "npm run godot:capture:v0436-conquest-victory",
+  "result": "timeout",
+  "shell_timeout_seconds": 900,
+  "setup": {
+    "war_hall_built": true,
+    "queue_results": [
+      {"ok": true},
+      {"ok": true},
+      {"ok": true},
+      {"ok": true}
+    ],
+    "crag_archers_ready": 4,
+    "real_standard_resource_deductions": true,
+    "evidence": "v0436-player-assault-setup-audit.json"
+  },
+  "frames_produced_before_timeout": [
+    "01_V0436_REAL_SKIRMISH_INITIAL_STATE.png",
+    "02_V0436_PLAYER_WAR_HALL_BUILT.png",
+    "03_V0436_PLAYER_ASSAULT_FORCE_READY.png",
+    "04_V0436_ENEMY_COMMANDER_TARGET.png"
+  ],
+  "victory": false,
+  "result_snapshot_produced": false,
+  "review_pack_accepted": false,
+  "root_cause": "real headed conquest assault did not resolve within the bounded retry window after navigation containment repair; no Victory evidence is accepted",
+  "preserved_boundaries": {
+    "no_direct_position_writes": true,
+    "no_direct_hp_writes": true,
+    "no_ai_state_writes": true,
+    "no_resource_writes": true,
+    "no_balance_changes": true
+  }
+}

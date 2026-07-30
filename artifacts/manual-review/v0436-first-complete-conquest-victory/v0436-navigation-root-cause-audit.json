@@ -1,0 +1,400 @@
+{
+  "boundary_recovery": true,
+  "bounded_repath": true,
+  "cause": "pre-v0436 NavigationAgent/avoidance drift outside playable map",
+  "safe_stop_after_three_invalid": true,
+  "units": [
+    {
+      "command": "build",
+      "dead": false,
+      "effective_target": {
+        "x": -76,
+        "y": 0,
+        "z": -100
+      },
+      "hp": 60,
+      "id": "barrosan_worker",
+      "invalid_path_count": 2716,
+      "max_observed_abs_x": 90,
+      "max_observed_abs_z": 100,
+      "position": {
+        "x": -90,
+        "y": 0,
+        "z": -100
+      },
+      "recovery_active": false,
+      "rejected_velocity_count": 0,
+      "requested_target": {
+        "x": -76,
+        "y": 0,
+        "z": -100
+      },
+      "state": 6,
+      "team": 0
+    },
+    {
+      "command": "build",
+      "dead": false,
+      "effective_target": {
+        "x": -76,
+        "y": 0,
+        "z": -100
+      },
+      "hp": 60,
+      "id": "barrosan_worker",
+      "invalid_path_count": 2658,
+      "max_observed_abs_x": 100,
+      "max_observed_abs_z": 92.6769638061523,
+      "position": {
+        "x": -93.5310516357422,
+        "y": 0,
+        "z": -92.6462097167969
+      },
+      "recovery_active": false,
+      "rejected_velocity_count": 0,
+      "requested_target": {
+        "x": -76,
+        "y": 0,
+        "z": -100
+      },
+      "state": 6,
+      "team": 0
+    },
+    {
+      "command": "build",
+      "dead": false,
+      "effective_target": {
+        "x": -76,
+        "y": 0,
+        "z": -100
+      },
+      "hp": 60,
+      "id": "barrosan_worker",
+      "invalid_path_count": 2639,
+      "max_observed_abs_x": 110,
+      "max_observed_abs_z": 100,
+      "position": {
+        "x": -100.759788513184,
+        "y": 0,
+        "z": -100
+      },
+      "recovery_active": false,
+      "rejected_velocity_count": 0,
+      "requested_target": {
+        "x": -76,
+        "y": 0,
+        "z": -100
+      },
+      "state": 6,
+      "team": 0
+    },
+    {
+      "command": "",
+      "dead": false,
+      "effective_target": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "hp": 180,
+      "id": "barrosan_spear_guard",
+      "invalid_path_count": 0,
+      "max_observed_abs_x": 100,
+      "max_observed_abs_z": 110,
+      "position": {
+        "x": -100,
+        "y": 0,
+        "z": -110
+      },
+      "recovery_active": false,
+      "rejected_velocity_count": 0,
+      "requested_target": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "state": 0,
+      "team": 0
+    },
+    {
+      "command": "",
+      "dead": false,
+      "effective_target": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "hp": 493,
+      "id": "barrosan_hero_thane",
+      "invalid_path_count": 0,
+      "max_observed_abs_x": 94,
+      "max_observed_abs_z": 94,
+      "position": {
+        "x": -94,
+        "y": 0,
+        "z": -94
+      },
+      "recovery_active": false,
+      "rejected_velocity_count": 0,
+      "requested_target": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "state": 0,
+      "team": 0
+    },
+    {
+      "command": "build",
+      "dead": false,
+      "effective_target": {
+        "x": 77.3725814819336,
+        "y": 0,
+        "z": 91.5147171020508
+      },
+      "hp": 55,
+      "id": "lioraen_worker",
+      "invalid_path_count": 2672,
+      "max_observed_abs_x": 110,
+      "max_observed_abs_z": 100,
+      "position": {
+        "x": 110,
+        "y": 0,
+        "z": 100
+      },
+      "recovery_active": false,
+      "rejected_velocity_count": 0,
+      "requested_target": {
+        "x": 77.3725814819336,
+        "y": 0,
+        "z": 91.5147171020508
+      },
+      "state": 6,
+      "team": 1
+    },
+    {
+      "command": "build",
+      "dead": false,
+      "effective_target": {
+        "x": 114.142135620117,
+        "y": 0,
+        "z": 85.8578643798828
+      },
+      "hp": 55,
+      "id": "lioraen_worker",
+      "invalid_path_count": 2237,
+      "max_observed_abs_x": 100.429817199707,
+      "max_observed_abs_z": 110.869575500488,
+      "position": {
+        "x": 100.429817199707,
+        "y": 0,
+        "z": 101.390625
+      },
+      "recovery_active": false,
+      "rejected_velocity_count": 0,
+      "requested_target": {
+        "x": 114.142135620117,
+        "y": 0,
+        "z": 85.8578643798828
+      },
+      "state": 6,
+      "team": 1
+    },
+    {
+      "command": "gather",
+      "dead": false,
+      "effective_target": {
+        "x": 108.485275268555,
+        "y": 0,
+        "z": 87.2720794677734
+      },
+      "hp": 55,
+      "id": "lioraen_worker",
+      "invalid_path_count": 2622,
+      "max_observed_abs_x": 95.3535461425781,
+      "max_observed_abs_z": 100,
+      "position": {
+        "x": 95.3535461425781,
+        "y": 0,
+        "z": 96.313850402832
+      },
+      "recovery_active": false,
+      "rejected_velocity_count": 0,
+      "requested_target": {
+        "x": 108.485275268555,
+        "y": 0,
+        "z": 87.2720794677734
+      },
+      "state": 4,
+      "team": 1
+    },
+    {
+      "command": "",
+      "dead": false,
+      "effective_target": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "hp": 85,
+      "id": "lioraen_thorn_ranger",
+      "invalid_path_count": 0,
+      "max_observed_abs_x": 100,
+      "max_observed_abs_z": 90,
+      "position": {
+        "x": 100,
+        "y": 0,
+        "z": 90
+      },
+      "recovery_active": false,
+      "rejected_velocity_count": 0,
+      "requested_target": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "state": 0,
+      "team": 1
+    },
+    {
+      "command": "",
+      "dead": false,
+      "effective_target": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "hp": 340,
+      "id": "lioraen_hero_warden",
+      "invalid_path_count": 0,
+      "max_observed_abs_x": 106,
+      "max_observed_abs_z": 106,
+      "position": {
+        "x": 106,
+        "y": 0,
+        "z": 106
+      },
+      "recovery_active": false,
+      "rejected_velocity_count": 0,
+      "requested_target": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "state": 0,
+      "team": 1
+    },
+    {
+      "command": "gather",
+      "dead": false,
+      "effective_target": {
+        "x": 87.2720794677734,
+        "y": 0,
+        "z": 108.485275268555
+      },
+      "hp": 55,
+      "id": "lioraen_worker",
+      "invalid_path_count": 2296,
+      "max_observed_abs_x": 107.361213684082,
+      "max_observed_abs_z": 104.588447570801,
+      "position": {
+        "x": 105.166015625,
+        "y": 0,
+        "z": 104.289741516113
+      },
+      "recovery_active": false,
+      "rejected_velocity_count": 0,
+      "requested_target": {
+        "x": 87.2720794677734,
+        "y": 0,
+        "z": 108.485275268555
+      },
+      "state": 4,
+      "team": 1
+    },
+    {
+      "command": "return",
+      "dead": false,
+      "effective_target": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "hp": 55,
+      "id": "lioraen_worker",
+      "invalid_path_count": 0,
+      "max_observed_abs_x": 111.09309387207,
+      "max_observed_abs_z": 104.25,
+      "position": {
+        "x": 106.817581176758,
+        "y": 0,
+        "z": 95.280158996582
+      },
+      "recovery_active": false,
+      "rejected_velocity_count": 0,
+      "requested_target": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "state": 5,
+      "team": 1
+    },
+    {
+      "command": "gather",
+      "dead": false,
+      "effective_target": {
+        "x": 95.7573547363281,
+        "y": 0,
+        "z": 85.8578643798828
+      },
+      "hp": 55,
+      "id": "lioraen_worker",
+      "invalid_path_count": 1584,
+      "max_observed_abs_x": 107.813682556152,
+      "max_observed_abs_z": 104.25,
+      "position": {
+        "x": 107.813682556152,
+        "y": 0,
+        "z": 103.843208312988
+      },
+      "recovery_active": false,
+      "rejected_velocity_count": 0,
+      "requested_target": {
+        "x": 95.7573547363281,
+        "y": 0,
+        "z": 85.8578643798828
+      },
+      "state": 4,
+      "team": 1
+    },
+    {
+      "command": "gather",
+      "dead": false,
+      "effective_target": {
+        "x": 87.2720794677734,
+        "y": 0,
+        "z": 108.485275268555
+      },
+      "hp": 55,
+      "id": "lioraen_worker",
+      "invalid_path_count": 1126,
+      "max_observed_abs_x": 107.361213684082,
+      "max_observed_abs_z": 104.990089416504,
+      "position": {
+        "x": 105.902221679688,
+        "y": 0,
+        "z": 104.990089416504
+      },
+      "recovery_active": false,
+      "rejected_velocity_count": 0,
+      "requested_target": {
+        "x": 87.2720794677734,
+        "y": 0,
+        "z": 108.485275268555
+      },
+      "state": 4,
+      "team": 1
+    }
+  ]
+}

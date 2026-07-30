@@ -1,0 +1,14 @@
+{
+  "schema": "v0436-capture-failure-audit-attempt-01-v1",
+  "status": "FAILED_SETUP",
+  "attempt": 1,
+  "command": "npm run godot:capture:v0436-conquest-victory",
+  "war_hall_built": false,
+  "hall_progress": 0,
+  "workers": "remained in BUILDING state at valid in-bounds positions",
+  "root_cause": "first bounded-containment repair rejected a legitimate initial navigation point as an implausible one-step jump",
+  "repair_followup": "finished-before-effective-target repath case added before attempt 2",
+  "victory": false,
+  "result_snapshot_produced": false,
+  "review_pack_accepted": false
+}

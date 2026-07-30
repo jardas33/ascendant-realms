@@ -100,6 +100,21 @@ var selection_ring: MeshInstance3D
 var _anim_names := {}
 var _cur_anim := ""
 var _repath := 0.0
+var _requested_move_target := Vector3.ZERO
+var _navigation_effective_target := Vector3.ZERO
+var _navigation_command_type := ""
+var _navigation_invalid_count := 0
+var _navigation_invalid_consecutive := 0
+var _navigation_repath_attempts := 0
+var _navigation_rejected_velocity_count := 0
+var _navigation_failure_count := 0
+var _navigation_last_invalid_reason := ""
+var _navigation_audit_events: Array = []
+var _boundary_recovery_active := false
+var _boundary_recovery_target := Vector3.ZERO
+var _boundary_resume_state := State.IDLE
+var _boundary_recovery_reason := ""
+var _boundary_recovery_distance_last := 0.0
 var _health_bar_root: Node3D
 var _health_bar_fill: MeshInstance3D
 var _health_bar_back: MeshInstance3D
@@ -413,7 +428,7 @@ func command_move(pos: Vector3, attack_move: bool = false, queue: bool = false) 
 	_move_target = pos
 	_attack_move_ordered = attack_move
 	_attack_move_destination = pos if attack_move else Vector3.ZERO
-	_set_agent_target(pos)
+	_set_agent_target(pos, "attack_move" if attack_move else "move")
 	state = State.ATTACK_MOVE if attack_move else State.MOVING
 
 func command_stop() -> void:
@@ -428,6 +443,8 @@ func command_stop() -> void:
 	_attack_move_destination = Vector3.ZERO
 	state = State.IDLE
 	velocity = Vector3.ZERO
+	_boundary_recovery_active = false
+	_navigation_invalid_consecutive = 0
 	if agent: agent.set_velocity(Vector3.ZERO)
 
 func command_hold() -> void:
@@ -467,7 +484,7 @@ func command_patrol(pos: Vector3) -> void:
 	_patrol_a = global_position
 	_patrol_b = pos
 	state = State.PATROL
-	_set_agent_target(_patrol_b)
+	_set_agent_target(_patrol_b, "patrol")
 
 func command_guard(tgt) -> void:
 	if is_dead or not is_instance_valid(tgt): return
@@ -517,17 +534,98 @@ func command_build(building) -> void:
 	_build_target = building
 	state = State.BUILDING
 
-func _set_agent_target(pos: Vector3) -> void:
+func _set_agent_target(pos: Vector3, command_type: String = "") -> void:
+	_requested_move_target = pos
+	if command_type != "":
+		_navigation_command_type = command_type
+	var effective := pos
+	if world and world.has_method("clamp_to_playable_bounds"):
+		effective = world.clamp_to_playable_bounds(pos)
+	_navigation_effective_target = effective
 	if agent:
-		agent.target_position = pos
+		agent.target_position = effective
+
+func _record_navigation_event(kind: String, details: Dictionary = {}) -> void:
+	var event := {"kind": kind, "timestamp": Time.get_ticks_msec(), "unit_id": unit_id, "runtime_id": str(get_instance_id()), "command": _navigation_command_type, "state": int(state), "position": {"x": global_position.x, "y": global_position.y, "z": global_position.z}, "requested_target": {"x": _requested_move_target.x, "y": _requested_move_target.y, "z": _requested_move_target.z}, "effective_target": {"x": _navigation_effective_target.x, "y": _navigation_effective_target.y, "z": _navigation_effective_target.z}}
+	for key in details:
+		event[key] = details[key]
+	_navigation_audit_events.append(event)
+	if _navigation_audit_events.size() > 120:
+		_navigation_audit_events.pop_front()
+
+func _finite_position(pos: Vector3) -> bool:
+	return abs(pos.x) < 1000000.0 and abs(pos.y) < 1000000.0 and abs(pos.z) < 1000000.0 and pos.x == pos.x and pos.y == pos.y and pos.z == pos.z
+
+func _inside_playable(pos: Vector3, tolerance: float = 0.0) -> bool:
+	return not world or not world.has_method("is_inside_playable_bounds") or world.is_inside_playable_bounds(pos, tolerance)
+
+func _begin_boundary_recovery(reason: String) -> void:
+	if is_dead or (world and not world.game_running):
+		return
+	if not _boundary_recovery_active:
+		_boundary_resume_state = state
+		_boundary_recovery_active = true
+		_boundary_recovery_reason = reason
+		_boundary_recovery_target = world.nearest_safe_in_bounds_recovery_point(global_position) if world and world.has_method("nearest_safe_in_bounds_recovery_point") else Vector3(clampf(global_position.x, -136.0, 136.0), 0.0, clampf(global_position.z, -136.0, 136.0))
+		_boundary_recovery_distance_last = world.distance_outside_playable_bounds(global_position) if world and world.has_method("distance_outside_playable_bounds") else 0.0
+		_navigation_invalid_consecutive = 0
+		_record_navigation_event("boundary_recovery_started", {"reason": reason, "recovery_target": {"x": _boundary_recovery_target.x, "y": _boundary_recovery_target.y, "z": _boundary_recovery_target.z}})
+
+func _state_boundary_recovery(delta: float) -> void:
+	if is_dead or (world and not world.game_running):
+		velocity = Vector3.ZERO
+		return
+	if _inside_playable(global_position, 0.0):
+		_boundary_recovery_active = false
+		velocity = Vector3.ZERO
+		_navigation_invalid_consecutive = 0
+		_record_navigation_event("boundary_recovery_completed", {"reason": _boundary_recovery_reason})
+		_boundary_recovery_reason = ""
+		if _boundary_resume_state == State.ATTACKING and (not is_instance_valid(_target) or _target.is_dead or not _inside_playable(_target.global_position, world.playable_recovery_tolerance)):
+			state = State.IDLE
+		elif _boundary_resume_state == State.BUILDING and (not is_instance_valid(_build_target) or _build_target.is_dead or not _inside_playable(_build_target.global_position, world.playable_recovery_tolerance)):
+			state = State.IDLE
+		else:
+			state = _boundary_resume_state
+		_set_agent_target(_requested_move_target, _navigation_command_type)
+		return
+	var to_safe := _boundary_recovery_target - global_position
+	to_safe.y = 0.0
+	var distance := to_safe.length()
+	if world and world.has_method("distance_outside_playable_bounds"):
+		var remaining: float = float(world.distance_outside_playable_bounds(global_position))
+		if remaining > _boundary_recovery_distance_last + 0.05:
+			_record_navigation_event("boundary_recovery_distance_increased", {"previous": _boundary_recovery_distance_last, "current": remaining})
+		_boundary_recovery_distance_last = remaining
+	if distance <= 0.2:
+		velocity = Vector3.ZERO
+		return
+	var recovery_speed := move_speed
+	if _slow > 0.0: recovery_speed *= 0.5
+	var direction := to_safe.normalized()
+	velocity = direction * recovery_speed
+	velocity.y = 0.0
+	move_and_slide()
+	_face(global_position + direction)
+	_play("walk")
 
 # --------------------------------------------------------------------------
 # Main loop
 # --------------------------------------------------------------------------
 func _physics_process(delta: float) -> void:
+	if world and not world.game_running:
+		velocity = Vector3.ZERO
+		return
 	if is_dead:
 		if is_instance_valid(_health_bar_root):
 			_health_bar_root.visible = false
+		return
+	set_meta("v0436_max_abs_x", maxf(abs(global_position.x), float(get_meta("v0436_max_abs_x", 0.0))))
+	set_meta("v0436_max_abs_z", maxf(abs(global_position.z), float(get_meta("v0436_max_abs_z", 0.0))))
+	if world and world.has_method("is_inside_playable_bounds") and not world.is_inside_playable_bounds(global_position, world.playable_recovery_tolerance) and not _boundary_recovery_active:
+		_begin_boundary_recovery("position_outside_playable_tolerance")
+	if _boundary_recovery_active:
+		_state_boundary_recovery(delta)
 		return
 	_update_health_bar()
 	# timers
@@ -623,7 +721,7 @@ func _state_patrol(delta: float) -> void:
 		var tmp := _patrol_a
 		_patrol_a = _patrol_b
 		_patrol_b = tmp
-		_set_agent_target(_patrol_b)
+		_set_agent_target(_patrol_b, "patrol")
 
 func _state_follow(delta: float) -> void:
 	if not is_instance_valid(_follow_target) or _follow_target.is_dead:
@@ -636,7 +734,7 @@ func _state_follow(delta: float) -> void:
 		return
 	var d := global_position.distance_to(_follow_target.global_position)
 	if d > 5.0:
-		_set_agent_target(_follow_target.global_position)
+		_set_agent_target(_follow_target.global_position, "follow")
 		_move_along_path(delta)
 	else:
 		velocity.x = 0; velocity.z = 0
@@ -655,7 +753,7 @@ func _state_attack(delta: float) -> void:
 			_target = e
 		elif _attack_move_ordered:
 			_move_target = _attack_move_destination
-			_set_agent_target(_attack_move_destination)
+			_set_agent_target(_attack_move_destination, "attack_move")
 			state = State.ATTACK_MOVE
 		else:
 			state = State.HOLD if _hold_position else State.IDLE
@@ -669,7 +767,8 @@ func _state_attack(delta: float) -> void:
 				_target = null
 				state = State.HOLD
 				return
-		_set_agent_target(_target.global_position)
+		_move_target = _target.global_position
+		_set_agent_target(_move_target, "attack")
 		_move_along_path(delta)
 	else:
 		# in range: face + attack
@@ -733,7 +832,8 @@ func _state_gather(delta: float) -> void:
 			return
 	var d := global_position.distance_to(_gather_node.global_position)
 	if d > 2.2:
-		_set_agent_target(_gather_node.global_position)
+		_move_target = _gather_node.global_position
+		_set_agent_target(_move_target, "gather")
 		_move_along_path(delta)
 	else:
 		velocity.x = 0; velocity.z = 0
@@ -771,7 +871,8 @@ func _state_return(delta: float) -> void:
 		return
 	var d := global_position.distance_to(drop.global_position)
 	if d > (float(drop.def.get("footprint", 4.0)) + 1.0):
-		_set_agent_target(drop.global_position)
+		_move_target = drop.global_position
+		_set_agent_target(_move_target, "return")
 		_move_along_path(delta)
 	else:
 		if _carry > 0 and commander:
@@ -853,7 +954,8 @@ func _state_build(delta: float) -> void:
 	var reach: float = float(_build_target.def.get("footprint", 4.0)) + 1.2
 	var d := global_position.distance_to(_build_target.global_position)
 	if d > reach:
-		_set_agent_target(_build_target.global_position)
+		_move_target = _build_target.global_position
+		_set_agent_target(_move_target, "build")
 		_move_along_path(delta)
 	else:
 		velocity.x = 0; velocity.z = 0
@@ -881,11 +983,60 @@ func _move_along_path(delta: float) -> bool:
 	if not agent:
 		return true
 	if agent.is_navigation_finished():
+		if global_position.distance_to(_navigation_effective_target) > ARRIVE_DIST:
+			_navigation_invalid_count += 1
+			_navigation_invalid_consecutive += 1
+			_navigation_last_invalid_reason = "navigation_finished_before_effective_target"
+			_record_navigation_event("invalid_next_path_point", {"reason": _navigation_last_invalid_reason, "invalid_consecutive": _navigation_invalid_consecutive})
+			velocity = Vector3.ZERO
+			if agent:
+				agent.set_velocity(Vector3.ZERO)
+			if _navigation_invalid_consecutive >= 3:
+				_navigation_failure_count += 1
+				_record_navigation_event("navigation_safe_stop", {"reason": "navigation_finished_before_target_three_times"})
+				command_stop()
+			else:
+				_navigation_repath_attempts += 1
+				if agent:
+					agent.target_position = _navigation_effective_target
+			return false
 		velocity.x = 0; velocity.z = 0
 		move_and_slide()
 		_play("idle")
 		return true
 	var next := agent.get_next_path_position()
+	# NavigationAgent output is advisory. The command destination remains
+	# authoritative, but an invalid next point triggers bounded repath and a
+	# safe stop rather than unrestricted straight-line movement.
+	var invalid_reason := ""
+	if not _finite_position(next):
+		invalid_reason = "non_finite_next_path_point"
+	elif world and not world.is_inside_playable_bounds(next, world.playable_recovery_tolerance):
+		invalid_reason = "next_path_point_outside_playable_bounds"
+	elif next.distance_to(global_position) > maxf(48.0, move_speed * 12.0):
+		invalid_reason = "implausible_next_path_jump"
+	elif next.distance_to(_navigation_effective_target) > 48.0:
+		invalid_reason = "next_path_point_far_from_effective_target"
+	if invalid_reason != "":
+		_navigation_invalid_count += 1
+		_navigation_invalid_consecutive += 1
+		_navigation_last_invalid_reason = invalid_reason
+		_record_navigation_event("invalid_next_path_point", {"reason": invalid_reason, "invalid_consecutive": _navigation_invalid_consecutive, "next": {"x": next.x, "y": next.y, "z": next.z}})
+		velocity = Vector3.ZERO
+		if agent:
+			agent.set_velocity(Vector3.ZERO)
+		if world and not world.is_inside_playable_bounds(global_position, world.playable_recovery_tolerance):
+			_begin_boundary_recovery("invalid_next_path_point_while_outside")
+		elif _navigation_invalid_consecutive >= 3:
+			_navigation_failure_count += 1
+			_record_navigation_event("navigation_safe_stop", {"reason": "three_consecutive_invalid_repaths"})
+			command_stop()
+		else:
+			_navigation_repath_attempts += 1
+			if agent:
+				agent.target_position = _navigation_effective_target
+		return false
+	_navigation_invalid_consecutive = 0
 	var dir := (next - global_position)
 	dir.y = 0
 	if dir.length() < 0.05:
@@ -907,6 +1058,33 @@ func _move_along_path(delta: float) -> bool:
 	return false
 
 func _on_velocity_computed(safe_vel: Vector3) -> void:
+	var invalid_reason := ""
+	if not _finite_position(safe_vel):
+		invalid_reason = "non_finite_avoidance_velocity"
+	elif safe_vel.length() > move_speed * 1.1 + 0.25:
+		invalid_reason = "avoidance_velocity_exceeds_unit_speed"
+	else:
+		var predicted := global_position + safe_vel * get_physics_process_delta_time()
+		if world and _boundary_recovery_active and world.distance_outside_playable_bounds(predicted) > world.distance_outside_playable_bounds(global_position) + 0.05:
+			invalid_reason = "avoidance_velocity_increases_recovery_distance"
+		elif world and not _boundary_recovery_active and not world.is_inside_playable_bounds(predicted, world.playable_recovery_tolerance):
+			invalid_reason = "avoidance_velocity_predicts_out_of_bounds"
+	if invalid_reason != "":
+		_navigation_rejected_velocity_count += 1
+		_navigation_invalid_consecutive += 1
+		_record_navigation_event("rejected_avoidance_velocity", {"reason": invalid_reason, "velocity": {"x": safe_vel.x, "y": safe_vel.y, "z": safe_vel.z}, "rejected_velocity_count": _navigation_rejected_velocity_count})
+		velocity = Vector3.ZERO
+		if agent:
+			agent.set_velocity(Vector3.ZERO)
+		if world and not world.is_inside_playable_bounds(global_position, world.playable_recovery_tolerance):
+			_begin_boundary_recovery("rejected_avoidance_velocity_while_outside")
+		elif _navigation_invalid_consecutive >= 3:
+			_navigation_failure_count += 1
+			command_stop()
+		elif agent:
+			agent.target_position = _navigation_effective_target
+		return
+	_navigation_invalid_consecutive = 0
 	velocity.x = safe_vel.x
 	velocity.z = safe_vel.z
 	move_and_slide()
@@ -924,7 +1102,7 @@ func _face(target_pos: Vector3) -> void:
 # Damage / death / heal
 # --------------------------------------------------------------------------
 func take_damage(amount: float, from = null) -> void:
-	if is_dead:
+	if is_dead or (world and not world.game_running):
 		return
 	var source_team := _combat_source_team(from)
 	if source_team == team:

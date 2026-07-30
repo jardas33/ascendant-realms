@@ -1,0 +1,7 @@
+{
+  "combat_units_bounded": true,
+  "default_runtime_unchanged": true,
+  "focused_tests": true,
+  "production_smoke": true,
+  "workers_build_and_gather_contract_retained": true
+}

@@ -1,0 +1,30 @@
+extends SceneTree
+
+func _source(path: String) -> String:
+	var f := FileAccess.open(path, FileAccess.READ)
+	assert(f != null, "source readable: " + path)
+	return f.get_as_text()
+
+func _init() -> void:
+	var world := _source("res://scripts/world/game_world.gd")
+	var building := _source("res://scripts/buildings/building.gd")
+	var unit := _source("res://scripts/units/unit.gd")
+	var root := _source("res://scripts/world/game_root.gd")
+	var hud := _source("res://scripts/ui/hud.gd")
+	var project := _source("res://project.godot")
+	assert(world.contains("match_ended") and world.contains("result_snapshot"), "atomic match result gate missing")
+	assert(world.contains("building_destruction_events") and world.contains("conquest_rebuild_capability_eliminated"), "conquest/destruction evidence missing")
+	assert(world.contains("profile_record_count") and world.contains("game_over_count"), "idempotence counters missing")
+	assert(world.contains("hp_before") and world.contains("final_damage") and world.contains("killing_blow"), "building damage provenance missing")
+	assert(building.contains("func take_damage(amount: float, from = null)") and building.contains("v0436_destroyed_once"), "building destruction gate missing")
+	assert(unit.contains("if world and not world.game_running"), "unit simulation freeze gate missing")
+	assert(world.contains("is_inside_playable_bounds") and world.contains("nearest_safe_in_bounds_recovery_point") and world.contains("playable_bounds_contract"), "shared playable bounds contract missing")
+	assert(unit.contains("_requested_move_target") and unit.contains("_navigation_effective_target") and unit.contains("_navigation_invalid_consecutive"), "authoritative navigation target audit missing")
+	assert(unit.contains("invalid_next_path_point") and unit.contains("three_consecutive_invalid_repaths") and unit.contains("boundary_recovery_started"), "bounded repath and recovery handling missing")
+	assert(unit.contains("rejected_avoidance_velocity") and unit.contains("avoidance_velocity_predicts_out_of_bounds"), "avoidance velocity safety gate missing")
+	assert(unit.contains("_move_target = _target.global_position"), "attack target recording missing")
+	assert(root.contains("ASCENDANT_V0436_CAPTURE") and root.contains("_start_v0436_capture"), "capture wiring missing")
+	assert(hud.contains("Play Again") and hud.contains("Continue") and hud.contains("result.get(\"reason\""), "victory HUD result contract missing")
+	assert(project.contains("V0436Capture"), "capture autoload missing")
+	print("v0.436 focused destruction, conquest predicate, atomic freeze, result HUD and replay source tests passed")
+	quit(0)

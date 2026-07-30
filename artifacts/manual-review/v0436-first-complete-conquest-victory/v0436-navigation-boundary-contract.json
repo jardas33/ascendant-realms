@@ -1,0 +1,9 @@
+{
+  "maximum_x": 136,
+  "maximum_z": 136,
+  "minimum_x": -136,
+  "minimum_z": -136,
+  "recovery_tolerance": 2,
+  "safety_margin": 4,
+  "source": "MapDefs.map.size"
+}

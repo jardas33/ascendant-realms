@@ -161,7 +161,7 @@ func can_produce(unit_id: String) -> bool:
 	return unit_id in def.get("produces", [])
 
 func queue_unit(unit_id: String) -> Dictionary:
-	if not is_built or is_dead:
+	if not is_built or is_dead or (world and not world.game_running):
 		return {"ok": false, "reason": "Not ready"}
 	if not can_produce(unit_id):
 		return {"ok": false, "reason": "Not produced here"}
@@ -187,7 +187,7 @@ func queue_unit(unit_id: String) -> Dictionary:
 	return {"ok": true}
 
 func queue_tech(tech_id: String) -> Dictionary:
-	if not is_built or is_dead:
+	if not is_built or is_dead or (world and not world.game_running):
 		return {"ok": false, "reason": "Not ready"}
 	if not commander.can_research(tech_id):
 		return {"ok": false, "reason": "Unavailable"}
@@ -218,7 +218,7 @@ func cancel_queue_item(index: int) -> void:
 	emit_signal("production_updated")
 
 func _process_production(delta: float) -> void:
-	if queue.is_empty():
+	if is_dead or (world and not world.game_running) or queue.is_empty():
 		return
 	var item = queue[0]
 	item["time_left"] -= delta
@@ -324,11 +324,20 @@ func get_hp_ratio() -> float:
 	return hp / max_hp if max_hp > 0 else 0.0
 
 func take_damage(amount: float, from = null) -> void:
-	if is_dead:
+	if is_dead or (world and not world.game_running):
 		return
-	hp -= amount
+	var source_team := -1
+	if from is Dictionary:
+		source_team = int(from.get("source_team", -1))
+	elif is_instance_valid(from) and "team" in from:
+		source_team = int(from.team)
+	if source_team == team:
+		return
+	var hp_before := hp
+	var final_damage := maxf(0.0, amount)
+	hp = maxf(0.0, hp - final_damage)
 	if world:
-		world.on_building_damaged(self, from)
+		world.on_building_damaged(self, from, hp_before, final_damage)
 	_update_damage_visual()
 	if hp <= 0.0:
 		_destroy(from)
@@ -349,6 +358,7 @@ func _destroy(from = null) -> void:
 	is_dead = true
 	set_selected(false)
 	collision_layer = 0
+	set_meta("v0436_destroyed_once", true)
 	# refund queue
 	for i in range(queue.size() - 1, -1, -1):
 		cancel_queue_item(i)
