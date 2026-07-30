@@ -1,0 +1,7 @@
+{
+  "depleted_once_signal": true,
+  "extracts_exact_final_remainder": true,
+  "focused_test_required": true,
+  "negative_amount": false,
+  "resource_node_class": "ResourceNode"
+}

@@ -1,0 +1,8 @@
+{
+  "carry_overflow": "broken 3 -> 6 -> 9 -> 12 repaired with remaining capacity",
+  "command_validation": "repaired",
+  "dropoff_failure": "bounded retry and cargo preservation",
+  "interruptions": "move/stop preserve cargo and clear targets",
+  "mixed_cargo_branch": "broken no-op repaired with pending target",
+  "node_depletion": "exact remainder and one-shot signal"
+}

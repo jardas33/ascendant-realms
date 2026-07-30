@@ -107,6 +107,10 @@ static func _cluster(c: Vector3, rich: float) -> Array:
 	toward = toward.normalized()
 	var side := Vector3(-toward.z, 0, toward.x)
 	var out := [
+		# Every starting cluster exposes a nearby food node so the four-resource
+		# economy is playable from any real worker start, not only at the
+		# contested centre of the map.
+		{"kind": "food", "pos": c + toward * 3.0 - side * 15.0},
 		{"kind": "gold", "pos": c + toward * 13.0 + side * 7.0},
 		{"kind": "gold", "pos": c + toward * 13.0 - side * 7.0},
 		{"kind": "stone", "pos": c + toward * 3.0 + side * 15.0},
@@ -128,6 +132,7 @@ static func _contested(rich: float) -> Array:
 		{"kind": "stone", "pos": Vector3(0, 0, -34)},
 		{"kind": "timber", "pos": Vector3(-20, 0, 30)},
 		{"kind": "timber", "pos": Vector3(20, 0, -30)},
+		{"kind": "food", "pos": Vector3(0, 0, 30)},
 	]
 	if rich >= 1.4:
 		out.append({"kind": "gold", "pos": Vector3(-46, 0, 8)})

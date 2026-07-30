@@ -2,6 +2,8 @@ class_name ResourceNode
 extends StaticBody3D
 ## A gatherable resource on the map (forest, quarry, gold-lume vein, farm).
 
+signal depleted_once(node: ResourceNode)
+
 var resource_kind := "gold"    # food | timber | stone | gold
 var amount := 1000
 var max_amount := 1000
@@ -34,13 +36,14 @@ func configure(kind: String, amt: int, model_path: String, scale_h: float) -> vo
 		model_root.add_child(mi)
 
 func extract(per_tick: int) -> int:
-	if depleted:
+	if depleted or per_tick <= 0:
 		return 0
-	var got: int = min(per_tick, amount)
+	var got: int = min(max(0, per_tick), max(0, amount))
 	amount -= got
 	if amount <= 0:
 		amount = 0
 		depleted = true
+		emit_signal("depleted_once", self)
 		_deplete_visual()
 	return got
 

@@ -1,0 +1,427 @@
+{
+  "extractions": [
+    {
+      "capacity": 10,
+      "granted": 3,
+      "kind": "stone",
+      "node_after": 697,
+      "node_before": 700,
+      "node_id": "169181448997",
+      "worker_id": "barrosan_worker",
+      "worker_runtime_id": "165389798003"
+    },
+    {
+      "capacity": 10,
+      "granted": 3,
+      "kind": "stone",
+      "node_after": 694,
+      "node_before": 697,
+      "node_id": "169181448997",
+      "worker_id": "barrosan_worker",
+      "worker_runtime_id": "165389798003"
+    },
+    {
+      "capacity": 10,
+      "granted": 3,
+      "kind": "stone",
+      "node_after": 691,
+      "node_before": 694,
+      "node_id": "169181448997",
+      "worker_id": "barrosan_worker",
+      "worker_runtime_id": "165389798003"
+    },
+    {
+      "capacity": 10,
+      "granted": 3,
+      "kind": "timber",
+      "node_after": 797,
+      "node_before": 800,
+      "node_id": "169365998381",
+      "worker_id": "barrosan_worker",
+      "worker_runtime_id": "165054253667"
+    },
+    {
+      "capacity": 10,
+      "granted": 1,
+      "kind": "stone",
+      "node_after": 690,
+      "node_before": 691,
+      "node_id": "169181448997",
+      "worker_id": "barrosan_worker",
+      "worker_runtime_id": "165389798003"
+    },
+    {
+      "capacity": 10,
+      "granted": 3,
+      "kind": "timber",
+      "node_after": 794,
+      "node_before": 797,
+      "node_id": "169365998381",
+      "worker_id": "barrosan_worker",
+      "worker_runtime_id": "165054253667"
+    },
+    {
+      "capacity": 10,
+      "granted": 3,
+      "kind": "timber",
+      "node_after": 791,
+      "node_before": 794,
+      "node_id": "169365998381",
+      "worker_id": "barrosan_worker",
+      "worker_runtime_id": "165054253667"
+    },
+    {
+      "capacity": 10,
+      "granted": 3,
+      "kind": "food",
+      "node_after": 597,
+      "node_before": 600,
+      "node_id": "168644578062",
+      "worker_id": "barrosan_worker",
+      "worker_runtime_id": "165725342339"
+    },
+    {
+      "capacity": 10,
+      "granted": 1,
+      "kind": "timber",
+      "node_after": 790,
+      "node_before": 791,
+      "node_id": "169365998381",
+      "worker_id": "barrosan_worker",
+      "worker_runtime_id": "165054253667"
+    },
+    {
+      "capacity": 10,
+      "granted": 3,
+      "kind": "food",
+      "node_after": 594,
+      "node_before": 597,
+      "node_id": "168644578062",
+      "worker_id": "barrosan_worker",
+      "worker_runtime_id": "165725342339"
+    },
+    {
+      "capacity": 10,
+      "granted": 3,
+      "kind": "food",
+      "node_after": 591,
+      "node_before": 594,
+      "node_id": "168644578062",
+      "worker_id": "barrosan_worker",
+      "worker_runtime_id": "165725342339"
+    },
+    {
+      "capacity": 10,
+      "granted": 3,
+      "kind": "stone",
+      "node_after": 687,
+      "node_before": 690,
+      "node_id": "169181448997",
+      "worker_id": "barrosan_worker",
+      "worker_runtime_id": "165389798003"
+    },
+    {
+      "capacity": 10,
+      "granted": 3,
+      "kind": "timber",
+      "node_after": 787,
+      "node_before": 790,
+      "node_id": "169365998381",
+      "worker_id": "barrosan_worker",
+      "worker_runtime_id": "165054253667"
+    },
+    {
+      "capacity": 10,
+      "granted": 3,
+      "kind": "stone",
+      "node_after": 684,
+      "node_before": 687,
+      "node_id": "169181448997",
+      "worker_id": "barrosan_worker",
+      "worker_runtime_id": "165389798003"
+    },
+    {
+      "capacity": 10,
+      "granted": 3,
+      "kind": "timber",
+      "node_after": 784,
+      "node_before": 787,
+      "node_id": "169365998381",
+      "worker_id": "barrosan_worker",
+      "worker_runtime_id": "165054253667"
+    },
+    {
+      "capacity": 10,
+      "granted": 3,
+      "kind": "stone",
+      "node_after": 681,
+      "node_before": 684,
+      "node_id": "169181448997",
+      "worker_id": "barrosan_worker",
+      "worker_runtime_id": "165389798003"
+    },
+    {
+      "capacity": 10,
+      "granted": 3,
+      "kind": "timber",
+      "node_after": 781,
+      "node_before": 784,
+      "node_id": "169365998381",
+      "worker_id": "barrosan_worker",
+      "worker_runtime_id": "165054253667"
+    },
+    {
+      "capacity": 10,
+      "granted": 1,
+      "kind": "stone",
+      "node_after": 680,
+      "node_before": 681,
+      "node_id": "169181448997",
+      "worker_id": "barrosan_worker",
+      "worker_runtime_id": "165389798003"
+    },
+    {
+      "capacity": 10,
+      "granted": 1,
+      "kind": "timber",
+      "node_after": 780,
+      "node_before": 781,
+      "node_id": "169365998381",
+      "worker_id": "barrosan_worker",
+      "worker_runtime_id": "165054253667"
+    },
+    {
+      "capacity": 10,
+      "granted": 3,
+      "kind": "timber",
+      "node_after": 777,
+      "node_before": 780,
+      "node_id": "169365998381",
+      "worker_id": "barrosan_worker",
+      "worker_runtime_id": "165054253667"
+    },
+    {
+      "capacity": 10,
+      "granted": 3,
+      "kind": "timber",
+      "node_after": 774,
+      "node_before": 777,
+      "node_id": "169365998381",
+      "worker_id": "barrosan_worker",
+      "worker_runtime_id": "165054253667"
+    },
+    {
+      "capacity": 10,
+      "granted": 3,
+      "kind": "gold",
+      "node_after": 897,
+      "node_before": 900,
+      "node_id": "168829127446",
+      "worker_id": "barrosan_worker",
+      "worker_runtime_id": "165725342339"
+    },
+    {
+      "capacity": 10,
+      "granted": 3,
+      "kind": "stone",
+      "node_after": 677,
+      "node_before": 680,
+      "node_id": "169181448997",
+      "worker_id": "barrosan_worker",
+      "worker_runtime_id": "165389798003"
+    },
+    {
+      "capacity": 10,
+      "granted": 3,
+      "kind": "timber",
+      "node_after": 771,
+      "node_before": 774,
+      "node_id": "169365998381",
+      "worker_id": "barrosan_worker",
+      "worker_runtime_id": "165054253667"
+    },
+    {
+      "capacity": 10,
+      "granted": 3,
+      "kind": "gold",
+      "node_after": 894,
+      "node_before": 897,
+      "node_id": "168829127446",
+      "worker_id": "barrosan_worker",
+      "worker_runtime_id": "165725342339"
+    },
+    {
+      "capacity": 10,
+      "granted": 3,
+      "kind": "stone",
+      "node_after": 674,
+      "node_before": 677,
+      "node_id": "169181448997",
+      "worker_id": "barrosan_worker",
+      "worker_runtime_id": "165389798003"
+    },
+    {
+      "capacity": 10,
+      "granted": 1,
+      "kind": "timber",
+      "node_after": 770,
+      "node_before": 771,
+      "node_id": "169365998381",
+      "worker_id": "barrosan_worker",
+      "worker_runtime_id": "165054253667"
+    },
+    {
+      "capacity": 10,
+      "granted": 3,
+      "kind": "gold",
+      "node_after": 891,
+      "node_before": 894,
+      "node_id": "168829127446",
+      "worker_id": "barrosan_worker",
+      "worker_runtime_id": "165725342339"
+    },
+    {
+      "capacity": 10,
+      "granted": 3,
+      "kind": "stone",
+      "node_after": 671,
+      "node_before": 674,
+      "node_id": "169181448997",
+      "worker_id": "barrosan_worker",
+      "worker_runtime_id": "165389798003"
+    },
+    {
+      "capacity": 10,
+      "granted": 1,
+      "kind": "gold",
+      "node_after": 890,
+      "node_before": 891,
+      "node_id": "168829127446",
+      "worker_id": "barrosan_worker",
+      "worker_runtime_id": "165725342339"
+    },
+    {
+      "capacity": 10,
+      "granted": 1,
+      "kind": "stone",
+      "node_after": 670,
+      "node_before": 671,
+      "node_id": "169181448997",
+      "worker_id": "barrosan_worker",
+      "worker_runtime_id": "165389798003"
+    },
+    {
+      "capacity": 10,
+      "granted": 3,
+      "kind": "timber",
+      "node_after": 767,
+      "node_before": 770,
+      "node_id": "169365998381",
+      "worker_id": "barrosan_worker",
+      "worker_runtime_id": "165054253667"
+    },
+    {
+      "capacity": 10,
+      "granted": 3,
+      "kind": "timber",
+      "node_after": 764,
+      "node_before": 767,
+      "node_id": "169365998381",
+      "worker_id": "barrosan_worker",
+      "worker_runtime_id": "165054253667"
+    },
+    {
+      "capacity": 10,
+      "granted": 3,
+      "kind": "timber",
+      "node_after": 761,
+      "node_before": 764,
+      "node_id": "169365998381",
+      "worker_id": "barrosan_worker",
+      "worker_runtime_id": "165054253667"
+    },
+    {
+      "capacity": 10,
+      "granted": 1,
+      "kind": "timber",
+      "node_after": 760,
+      "node_before": 761,
+      "node_id": "169365998381",
+      "worker_id": "barrosan_worker",
+      "worker_runtime_id": "165054253667"
+    },
+    {
+      "capacity": 10,
+      "granted": 3,
+      "kind": "gold",
+      "node_after": 887,
+      "node_before": 890,
+      "node_id": "168829127446",
+      "worker_id": "barrosan_worker",
+      "worker_runtime_id": "165725342339"
+    },
+    {
+      "capacity": 10,
+      "granted": 3,
+      "kind": "gold",
+      "node_after": 884,
+      "node_before": 887,
+      "node_id": "168829127446",
+      "worker_id": "barrosan_worker",
+      "worker_runtime_id": "165725342339"
+    },
+    {
+      "capacity": 10,
+      "granted": 3,
+      "kind": "timber",
+      "node_after": 757,
+      "node_before": 760,
+      "node_id": "169365998381",
+      "worker_id": "barrosan_worker",
+      "worker_runtime_id": "165054253667"
+    },
+    {
+      "capacity": 10,
+      "granted": 3,
+      "kind": "timber",
+      "node_after": 754,
+      "node_before": 757,
+      "node_id": "169365998381",
+      "worker_id": "barrosan_worker",
+      "worker_runtime_id": "165389798003"
+    },
+    {
+      "capacity": 10,
+      "granted": 3,
+      "kind": "gold",
+      "node_after": 881,
+      "node_before": 884,
+      "node_id": "168829127446",
+      "worker_id": "barrosan_worker",
+      "worker_runtime_id": "165725342339"
+    },
+    {
+      "capacity": 10,
+      "granted": 3,
+      "kind": "timber",
+      "node_after": 751,
+      "node_before": 754,
+      "node_id": "169365998381",
+      "worker_id": "barrosan_worker",
+      "worker_runtime_id": "165054253667"
+    },
+    {
+      "capacity": 10,
+      "granted": 1,
+      "kind": "gold",
+      "node_after": 880,
+      "node_before": 881,
+      "node_id": "168829127446",
+      "worker_id": "barrosan_worker",
+      "worker_runtime_id": "165725342339"
+    }
+  ],
+  "no_overfill": true,
+  "same_node_test": true,
+  "worker_count": 3
+}

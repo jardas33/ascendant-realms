@@ -1,0 +1,21 @@
+{
+  "action": "real Clan Croft placement",
+  "bank_after": {
+    "food": 209,
+    "gold": 190,
+    "stone": 190,
+    "timber": 280
+  },
+  "bank_before": {
+    "food": 209,
+    "gold": 190,
+    "stone": 210,
+    "timber": 340
+  },
+  "cost": {
+    "stone": 20,
+    "timber": 60
+  },
+  "placement_used_real_path": true,
+  "same_live_commander_bank": true
+}

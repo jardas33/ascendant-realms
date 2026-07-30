@@ -1,0 +1,192 @@
+﻿[
+    {
+        "file":  "01_V0433_INITIAL_BANK_AND_WORKERS.png",
+        "width":  1920,
+        "height":  1061,
+        "bytes":  4649560,
+        "meanLuma":  106.23,
+        "lumaVariance":  1354,
+        "nonBlack":  true,
+        "meaningfulVariance":  true
+    },
+    {
+        "file":  "02_V0433_TIMBER_WORKER_ASSIGNED.png",
+        "width":  1920,
+        "height":  1061,
+        "bytes":  4410189,
+        "meanLuma":  99.583,
+        "lumaVariance":  1809,
+        "nonBlack":  true,
+        "meaningfulVariance":  true
+    },
+    {
+        "file":  "03_V0433_STONE_WORKER_ASSIGNED.png",
+        "width":  1920,
+        "height":  1061,
+        "bytes":  4407771,
+        "meanLuma":  99.583,
+        "lumaVariance":  1810,
+        "nonBlack":  true,
+        "meaningfulVariance":  true
+    },
+    {
+        "file":  "04_V0433_FOOD_WORKER_ASSIGNED.png",
+        "width":  1920,
+        "height":  1061,
+        "bytes":  4407818,
+        "meanLuma":  99.602,
+        "lumaVariance":  1809,
+        "nonBlack":  true,
+        "meaningfulVariance":  true
+    },
+    {
+        "file":  "05_V0433_WORKERS_GATHERING_CONCURRENTLY.png",
+        "width":  1920,
+        "height":  1061,
+        "bytes":  4408856,
+        "meanLuma":  99.678,
+        "lumaVariance":  1807,
+        "nonBlack":  true,
+        "meaningfulVariance":  true
+    },
+    {
+        "file":  "06_V0433_WORKER_CARRY_10_OF_10.png",
+        "width":  1920,
+        "height":  1061,
+        "bytes":  4409357,
+        "meanLuma":  99.672,
+        "lumaVariance":  1808,
+        "nonBlack":  true,
+        "meaningfulVariance":  true
+    },
+    {
+        "file":  "07_V0433_TIMBER_RETURNING.png",
+        "width":  1920,
+        "height":  1061,
+        "bytes":  4409357,
+        "meanLuma":  99.672,
+        "lumaVariance":  1808,
+        "nonBlack":  true,
+        "meaningfulVariance":  true
+    },
+    {
+        "file":  "08_V0433_TIMBER_DEPOSIT_BANK_UPDATED.png",
+        "width":  1920,
+        "height":  1061,
+        "bytes":  4409459,
+        "meanLuma":  99.693,
+        "lumaVariance":  1807,
+        "nonBlack":  true,
+        "meaningfulVariance":  true
+    },
+    {
+        "file":  "09_V0433_STONE_DEPOSIT_BANK_UPDATED.png",
+        "width":  1920,
+        "height":  1061,
+        "bytes":  4409795,
+        "meanLuma":  99.706,
+        "lumaVariance":  1806,
+        "nonBlack":  true,
+        "meaningfulVariance":  true
+    },
+    {
+        "file":  "10_V0433_FOOD_CARRIED_GOLD_SWITCH_REQUESTED.png",
+        "width":  1920,
+        "height":  1061,
+        "bytes":  4409178,
+        "meanLuma":  99.699,
+        "lumaVariance":  1807,
+        "nonBlack":  true,
+        "meaningfulVariance":  true
+    },
+    {
+        "file":  "11_V0433_FOOD_DEPOSIT_BEFORE_SWITCH.png",
+        "width":  1920,
+        "height":  1061,
+        "bytes":  4408990,
+        "meanLuma":  99.7,
+        "lumaVariance":  1807,
+        "nonBlack":  true,
+        "meaningfulVariance":  true
+    },
+    {
+        "file":  "12_V0433_WORKER_GATHERING_GOLD_AFTER_SWITCH.png",
+        "width":  1920,
+        "height":  1061,
+        "bytes":  4408990,
+        "meanLuma":  99.7,
+        "lumaVariance":  1807,
+        "nonBlack":  true,
+        "meaningfulVariance":  true
+    },
+    {
+        "file":  "13_V0433_GOLD_DEPOSIT_BANK_UPDATED.png",
+        "width":  1920,
+        "height":  1061,
+        "bytes":  4409760,
+        "meanLuma":  99.683,
+        "lumaVariance":  1806,
+        "nonBlack":  true,
+        "meaningfulVariance":  true
+    },
+    {
+        "file":  "14_V0433_PAUSED_GATHERING_STATE.png",
+        "width":  1920,
+        "height":  1061,
+        "bytes":  3091113,
+        "meanLuma":  37.793,
+        "lumaVariance":  368,
+        "nonBlack":  true,
+        "meaningfulVariance":  true
+    },
+    {
+        "file":  "15_V0433_UNPAUSED_GATHERING_RESUMED.png",
+        "width":  1920,
+        "height":  1061,
+        "bytes":  4408755,
+        "meanLuma":  99.685,
+        "lumaVariance":  1808,
+        "nonBlack":  true,
+        "meaningfulVariance":  true
+    },
+    {
+        "file":  "16_V0433_MULTI_WORKER_SAME_NODE_AUDIT.png",
+        "width":  1920,
+        "height":  1061,
+        "bytes":  4409443,
+        "meanLuma":  99.695,
+        "lumaVariance":  1808,
+        "nonBlack":  true,
+        "meaningfulVariance":  true
+    },
+    {
+        "file":  "17_V0433_SHARED_BANK_SPEND_RESULT.png",
+        "width":  1920,
+        "height":  1061,
+        "bytes":  4408782,
+        "meanLuma":  99.657,
+        "lumaVariance":  1806,
+        "nonBlack":  true,
+        "meaningfulVariance":  true
+    },
+    {
+        "file":  "18_V0433_FRESH_SCENE_TIMBER_REPLAY.png",
+        "width":  1920,
+        "height":  1061,
+        "bytes":  4409822,
+        "meanLuma":  99.691,
+        "lumaVariance":  1806,
+        "nonBlack":  true,
+        "meaningfulVariance":  true
+    },
+    {
+        "file":  "19_V0433_V0432_REGRESSION_PRESERVATION.png",
+        "width":  1920,
+        "height":  1061,
+        "bytes":  4409822,
+        "meanLuma":  99.691,
+        "lumaVariance":  1806,
+        "nonBlack":  true,
+        "meaningfulVariance":  true
+    }
+]

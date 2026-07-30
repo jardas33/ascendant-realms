@@ -1,0 +1,232 @@
+{
+  "exact_formula": "bank_after = bank_before + round(carried_amount * gather_multiplier)",
+  "no_duplicate_deposit": true,
+  "no_negative_bank": true,
+  "transactions": [
+    {
+      "bank_after": {
+        "food": 200,
+        "gold": 180,
+        "stone": 190,
+        "timber": 300
+      },
+      "bank_before": {
+        "food": 200,
+        "gold": 180,
+        "stone": 180,
+        "timber": 300
+      },
+      "carried_amount": 10,
+      "deposit_count": 1,
+      "deposited_amount": 10,
+      "dropoff_id": "",
+      "gather_multiplier": 1,
+      "kind": "stone",
+      "next_target": "Stone",
+      "resource_node_runtime_id": "169181448997",
+      "timestamp_msec": 29345,
+      "worker_id": "barrosan_worker",
+      "worker_runtime_id": "165389798003"
+    },
+    {
+      "bank_after": {
+        "food": 200,
+        "gold": 180,
+        "stone": 190,
+        "timber": 310
+      },
+      "bank_before": {
+        "food": 200,
+        "gold": 180,
+        "stone": 190,
+        "timber": 300
+      },
+      "carried_amount": 10,
+      "deposit_count": 1,
+      "deposited_amount": 10,
+      "dropoff_id": "",
+      "gather_multiplier": 1,
+      "kind": "timber",
+      "next_target": "Timber",
+      "resource_node_runtime_id": "169365998381",
+      "timestamp_msec": 31186,
+      "worker_id": "barrosan_worker",
+      "worker_runtime_id": "165054253667"
+    },
+    {
+      "bank_after": {
+        "food": 209,
+        "gold": 180,
+        "stone": 190,
+        "timber": 310
+      },
+      "bank_before": {
+        "food": 200,
+        "gold": 180,
+        "stone": 190,
+        "timber": 310
+      },
+      "carried_amount": 9,
+      "deposit_count": 1,
+      "deposited_amount": 9,
+      "dropoff_id": "",
+      "gather_multiplier": 1,
+      "kind": "food",
+      "next_target": "Gold",
+      "resource_node_runtime_id": "168644578062",
+      "timestamp_msec": 35267,
+      "worker_id": "barrosan_worker",
+      "worker_runtime_id": "165725342339"
+    },
+    {
+      "bank_after": {
+        "food": 209,
+        "gold": 180,
+        "stone": 190,
+        "timber": 320
+      },
+      "bank_before": {
+        "food": 209,
+        "gold": 180,
+        "stone": 190,
+        "timber": 310
+      },
+      "carried_amount": 10,
+      "deposit_count": 2,
+      "deposited_amount": 10,
+      "dropoff_id": "",
+      "gather_multiplier": 1,
+      "kind": "timber",
+      "next_target": "Timber",
+      "resource_node_runtime_id": "169365998381",
+      "timestamp_msec": 37895,
+      "worker_id": "barrosan_worker",
+      "worker_runtime_id": "165054253667"
+    },
+    {
+      "bank_after": {
+        "food": 209,
+        "gold": 180,
+        "stone": 200,
+        "timber": 320
+      },
+      "bank_before": {
+        "food": 209,
+        "gold": 180,
+        "stone": 190,
+        "timber": 320
+      },
+      "carried_amount": 10,
+      "deposit_count": 2,
+      "deposited_amount": 10,
+      "dropoff_id": "",
+      "gather_multiplier": 1,
+      "kind": "stone",
+      "next_target": "Stone",
+      "resource_node_runtime_id": "169181448997",
+      "timestamp_msec": 38615,
+      "worker_id": "barrosan_worker",
+      "worker_runtime_id": "165389798003"
+    },
+    {
+      "bank_after": {
+        "food": 209,
+        "gold": 180,
+        "stone": 200,
+        "timber": 330
+      },
+      "bank_before": {
+        "food": 209,
+        "gold": 180,
+        "stone": 200,
+        "timber": 320
+      },
+      "carried_amount": 10,
+      "deposit_count": 3,
+      "deposited_amount": 10,
+      "dropoff_id": "",
+      "gather_multiplier": 1,
+      "kind": "timber",
+      "next_target": "Timber",
+      "resource_node_runtime_id": "169365998381",
+      "timestamp_msec": 43430,
+      "worker_id": "barrosan_worker",
+      "worker_runtime_id": "165054253667"
+    },
+    {
+      "bank_after": {
+        "food": 209,
+        "gold": 190,
+        "stone": 200,
+        "timber": 330
+      },
+      "bank_before": {
+        "food": 209,
+        "gold": 180,
+        "stone": 200,
+        "timber": 330
+      },
+      "carried_amount": 10,
+      "deposit_count": 2,
+      "deposited_amount": 10,
+      "dropoff_id": "",
+      "gather_multiplier": 1,
+      "kind": "gold",
+      "next_target": "Gold",
+      "resource_node_runtime_id": "168829127446",
+      "timestamp_msec": 46044,
+      "worker_id": "barrosan_worker",
+      "worker_runtime_id": "165725342339"
+    },
+    {
+      "bank_after": {
+        "food": 209,
+        "gold": 190,
+        "stone": 210,
+        "timber": 330
+      },
+      "bank_before": {
+        "food": 209,
+        "gold": 190,
+        "stone": 200,
+        "timber": 330
+      },
+      "carried_amount": 10,
+      "deposit_count": 3,
+      "deposited_amount": 10,
+      "dropoff_id": "",
+      "gather_multiplier": 1,
+      "kind": "stone",
+      "next_target": "Stone",
+      "resource_node_runtime_id": "169181448997",
+      "timestamp_msec": 47965,
+      "worker_id": "barrosan_worker",
+      "worker_runtime_id": "165389798003"
+    },
+    {
+      "bank_after": {
+        "food": 209,
+        "gold": 190,
+        "stone": 210,
+        "timber": 340
+      },
+      "bank_before": {
+        "food": 209,
+        "gold": 190,
+        "stone": 210,
+        "timber": 330
+      },
+      "carried_amount": 10,
+      "deposit_count": 4,
+      "deposited_amount": 10,
+      "dropoff_id": "",
+      "gather_multiplier": 1,
+      "kind": "timber",
+      "next_target": "Timber",
+      "resource_node_runtime_id": "169365998381",
+      "timestamp_msec": 50720,
+      "worker_id": "barrosan_worker",
+      "worker_runtime_id": "165054253667"
+    }
+  ]
+}

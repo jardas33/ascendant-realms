@@ -1,0 +1,6 @@
+{
+  "cargo_preserved_when_missing": true,
+  "enemy_or_unfinished_rejected": true,
+  "friendly_completed_dropoff_only": true,
+  "retry_seconds": 2
+}

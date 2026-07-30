@@ -36,6 +36,9 @@ var kills_by_player := 0
 # construction transaction, not a second economy or construction system.
 var build_transactions: Array = []
 var construction_events: Array = []
+var resource_transactions: Array = []
+var resource_rejections: Array = []
+var resource_extractions: Array = []
 var _active_build_transaction := ""
 var _build_transaction_seq := 0
 
@@ -536,6 +539,36 @@ func find_nearest_resource(pos: Vector3, kind: String):
 	if best == null and kind != "":
 		return find_nearest_resource(pos, "")
 	return best
+
+func find_nearest_resource_exact(pos: Vector3, kind: String):
+	var best = null
+	var best_d := INF
+	for r in get_tree().get_nodes_in_group("resources"):
+		if not is_instance_valid(r) or r.depleted or r.resource_kind != kind:
+			continue
+		var d = pos.distance_squared_to(r.global_position)
+		if d < best_d:
+			best_d = d
+			best = r
+	return best
+
+func is_resource_command_valid(node, worker) -> bool:
+	if not is_instance_valid(node) or not (node is ResourceNode) or node.depleted:
+		return false
+	if not is_instance_valid(worker) or not worker.is_worker or worker.is_dead or worker.team != player_team:
+		return false
+	var half := float(map.get("size", MapDefs.MAP_SIZE))
+	return abs(node.global_position.x) <= half and abs(node.global_position.z) <= half
+
+func record_resource_command_rejection(worker, node, reason: String) -> void:
+	resource_rejections.append({"worker_id": worker.unit_id if is_instance_valid(worker) else "", "node_id": str(node.get_instance_id()) if is_instance_valid(node) else "", "reason": reason})
+
+func record_resource_extraction(worker, node, before_amount: int, after_amount: int, granted: int) -> void:
+	resource_extractions.append({"worker_id": worker.unit_id, "worker_runtime_id": str(worker.get_instance_id()), "node_id": str(node.get_instance_id()), "kind": node.resource_kind, "node_before": before_amount, "node_after": after_amount, "granted": granted, "capacity": worker.CARRY_MAX})
+
+func record_resource_deposit(worker, drop, kind: String, carried: int, multiplier: float, deposited: int, bank_before: Dictionary, bank_after: Dictionary) -> void:
+	var snap: Dictionary = worker.get_economy_snapshot()
+	resource_transactions.append({"worker_id": worker.unit_id, "worker_runtime_id": str(worker.get_instance_id()), "resource_node_runtime_id": snap.get("source_node_id", ""), "kind": kind, "carried_amount": carried, "gather_multiplier": multiplier, "deposited_amount": deposited, "bank_before": bank_before, "bank_after": bank_after, "deposit_count": snap.get("deposit_sequence", 0), "timestamp_msec": Time.get_ticks_msec(), "dropoff_id": drop.building_id if is_instance_valid(drop) else "", "next_target": snap.get("target", "None")})
 
 func find_nearest_dropoff(pos: Vector3, team: int):
 	var best = null

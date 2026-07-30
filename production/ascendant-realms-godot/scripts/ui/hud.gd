@@ -50,6 +50,7 @@ var _single_hp_bar: ProgressBar = null
 var _single_hp_text: Label = null
 var _single_mana_bar: ProgressBar = null
 var _single_stat_label: Label = null
+var _single_economy_label: Label = null
 var _ability_widgets := []             # [{id, button, cd_overlay}]
 var _multi_bars := []                  # [{unit, bar}]
 var _queue_container: HBoxContainer = null
@@ -426,6 +427,7 @@ func _reset_selection_widgets() -> void:
 	_single_hp_text = null
 	_single_mana_bar = null
 	_single_stat_label = null
+	_single_economy_label = null
 	_ability_widgets.clear()
 	_multi_bars.clear()
 	_queue_container = null
@@ -519,6 +521,10 @@ func _build_single_unit(u) -> void:
 
 	_single_stat_label = _mk_label("", 15, Color(0.88, 0.85, 0.75))
 	info.add_child(_single_stat_label)
+	if u.is_worker and u.has_method("get_economy_text"):
+		_single_economy_label = _mk_label("", 14, Color(0.78, 0.9, 0.72))
+		_single_economy_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		info.add_child(_single_economy_label)
 
 	# ability buttons for hero
 	if u.is_hero and not u.abilities.is_empty():
@@ -565,6 +571,8 @@ func _refresh_single_live() -> void:
 			var role: String = u.def.get("role", "")
 			_single_stat_label.text = "DMG %d   ARM %d   %s" % [
 				int(u.cur_dmg()), int(u.cur_armor()), role.capitalize()]
+	if is_instance_valid(_single_economy_label) and u.has_method("get_economy_text"):
+		_single_economy_label.text = u.get_economy_text()
 	# ability cooldown / affordability visuals
 	for w in _ability_widgets:
 		var btn: Button = w["button"]

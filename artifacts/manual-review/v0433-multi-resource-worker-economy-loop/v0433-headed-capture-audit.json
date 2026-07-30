@@ -1,0 +1,17 @@
+﻿{
+    "schema":  "v0433-headed-capture-audit-v1",
+    "executable":  "C:\\Users\\barro\\AppData\\Local\\AscendantRealms\\tools\\godot-4.3-stable\\Godot_v4.3-stable_win64.exe",
+    "executableSha256":  "B554BA80FB2AD8F1817BC21242AC8ADBB9E41F806C49AD5CC73603DB71FEE32F",
+    "displayDriver":  "headed Windows display",
+    "renderingMethod":  "Forward Plus",
+    "viewport":  "1920x1080",
+    "processExitStatus":  0,
+    "firstRenderedFrame":  "01_V0433_INITIAL_BANK_AND_WORKERS.png",
+    "requiredFrames":  [
+                           "06_V0433_WORKER_CARRY_10_OF_10.png",
+                           "11_V0433_FOOD_DEPOSIT_BEFORE_SWITCH.png",
+                           "13_V0433_GOLD_DEPOSIT_BANK_UPDATED.png",
+                           "17_V0433_SHARED_BANK_SPEND_RESULT.png",
+                           "18_V0433_FRESH_SCENE_TIMBER_REPLAY.png"
+                       ]
+}
