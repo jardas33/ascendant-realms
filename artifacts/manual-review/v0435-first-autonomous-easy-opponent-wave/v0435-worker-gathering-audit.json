@@ -1,0 +1,86 @@
+{
+  "worker_count": 7,
+  "workers": [
+    {
+      "assigned": "food",
+      "explicit_fallback": false,
+      "node_id": "172184570757",
+      "requested": "food",
+      "time": 2.00358266666667,
+      "worker_id": "lioraen_worker",
+      "worker_runtime_id": "168862681829"
+    },
+    {
+      "assigned": "timber",
+      "explicit_fallback": false,
+      "node_id": "173023431592",
+      "requested": "timber",
+      "time": 2.00358266666667,
+      "worker_id": "lioraen_worker",
+      "worker_runtime_id": "169315666684"
+    },
+    {
+      "assigned": "stone",
+      "explicit_fallback": false,
+      "node_id": "172687887258",
+      "requested": "stone",
+      "time": 2.00358266666667,
+      "worker_id": "lioraen_worker",
+      "worker_runtime_id": "169768651539"
+    },
+    {
+      "assigned": "food",
+      "explicit_fallback": false,
+      "node_id": "172184570757",
+      "requested": "food",
+      "time": 14.3092846666668,
+      "worker_id": "lioraen_worker",
+      "worker_runtime_id": "263989497044"
+    },
+    {
+      "assigned": "timber",
+      "explicit_fallback": false,
+      "node_id": "172855659425",
+      "requested": "timber",
+      "time": 26.4220473333337,
+      "worker_id": "lioraen_worker",
+      "worker_runtime_id": "347456146706"
+    },
+    {
+      "assigned": "gold",
+      "explicit_fallback": false,
+      "node_id": "172352342924",
+      "requested": "gold",
+      "time": 38.5820473333331,
+      "worker_id": "lioraen_worker",
+      "worker_runtime_id": "431895874858"
+    },
+    {
+      "assigned": "food",
+      "explicit_fallback": false,
+      "node_id": "172184570757",
+      "requested": "food",
+      "time": 40.5993779999996,
+      "worker_id": "lioraen_worker",
+      "worker_runtime_id": "168862681829"
+    },
+    {
+      "assigned": "food",
+      "explicit_fallback": false,
+      "node_id": "172184570757",
+      "requested": "food",
+      "time": 40.5993779999996,
+      "worker_id": "lioraen_worker",
+      "worker_runtime_id": "169315666684"
+    },
+    {
+      "assigned": "food",
+      "explicit_fallback": false,
+      "node_id": "172184570757",
+      "requested": "food",
+      "time": 50.7324579999991,
+      "worker_id": "lioraen_worker",
+      "worker_runtime_id": "514590772545"
+    }
+  ]
+}

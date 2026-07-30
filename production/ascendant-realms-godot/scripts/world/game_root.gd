@@ -92,7 +92,9 @@ func _ready() -> void:
 		tutorial = TutorialScript.new()
 		tut_layer.add_child(tutorial)
 		tutorial.setup(world, rts)
-	if OS.get_environment("ASCENDANT_V0434_CAPTURE") == "1":
+	if OS.get_environment("ASCENDANT_V0435_CAPTURE") == "1":
+		call_deferred("_start_v0435_capture")
+	elif OS.get_environment("ASCENDANT_V0434_CAPTURE") == "1":
 		call_deferred("_start_v0434_capture")
 	elif OS.get_environment("ASCENDANT_V0433_CAPTURE") == "1":
 		call_deferred("_start_v0433_capture")
@@ -113,6 +115,11 @@ func _start_v0433_capture() -> void:
 
 func _start_v0434_capture() -> void:
 	var runner = get_node_or_null("/root/V0434Capture")
+	if runner and runner.has_method("capture_gameplay"):
+		runner.capture_gameplay(self)
+
+func _start_v0435_capture() -> void:
+	var runner = get_node_or_null("/root/V0435Capture")
 	if runner and runner.has_method("capture_gameplay"):
 		runner.capture_gameplay(self)
 

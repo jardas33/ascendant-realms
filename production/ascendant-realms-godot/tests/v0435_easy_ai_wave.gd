@@ -1,0 +1,29 @@
+extends SceneTree
+
+func _source(path: String) -> String:
+	var file := FileAccess.open(path, FileAccess.READ)
+	assert(file != null, "source must be readable: " + path)
+	return file.get_as_text()
+
+func _init() -> void:
+	var ai := _source("res://scripts/ai/enemy_ai.gd")
+	var world := _source("res://scripts/world/game_world.gd")
+	var root := _source("res://scripts/world/game_root.gd")
+	var project := _source("res://project.godot")
+	var unit := _source("res://scripts/units/unit.gd")
+	var building := _source("res://scripts/buildings/building.gd")
+	assert(ai.contains("_easy_mode") and ai.contains("_think_easy()"), "bounded Easy lane missing")
+	assert(ai.contains("find_nearest_resource_exact") and ai.contains("_easy_resource_shortages"), "exact resource assignment/shortage audit missing")
+	assert(ai.contains("world.can_place_building") and ai.contains("_find_easy_build_spot"), "shared deterministic build validation missing")
+	assert(ai.contains("queue_unit") and ai.contains("_choose_easy_mixed_unit"), "real mixed unit queues missing")
+	assert(ai.contains("command_move(_easy_wave_target, true)") and ai.contains("_easy_wave_launched"), "autonomous attack-move wave missing")
+	assert(ai.contains("_easy_replacement_audit") and ai.contains("replacement_queue_after_casualty"), "replacement queue missing")
+	assert(ai.contains("_brutal_income = 0.0"), "Easy passive income must remain zero")
+	assert(world.contains("func can_place_building") and world.contains("all_buildings()") and world.contains("resource_transactions"), "world placement/economy contract missing")
+	assert(world.contains("building_damage_events"), "building damage evidence missing")
+	assert(root.contains("ASCENDANT_V0435_CAPTURE") and root.contains("_start_v0435_capture"), "v0.435 capture wiring missing")
+	assert(project.contains("V0435Capture"), "v0.435 capture autoload missing")
+	assert(unit.contains("func command_move(pos: Vector3, attack_move: bool = false") and unit.contains("func command_gather(node)"), "real unit command paths missing")
+	assert(building.contains("func queue_unit(unit_id: String)"), "real building queue path missing")
+	print("v0.435 focused Easy AI economy, shared placement, autonomous wave, damage, casualties and replacement tests passed")
+	quit(0)

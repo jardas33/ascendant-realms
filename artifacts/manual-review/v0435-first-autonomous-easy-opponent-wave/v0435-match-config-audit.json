@@ -1,0 +1,26 @@
+{
+  "capture_only_speed_multiplier": false,
+  "displayed_game_speed": "2.0x",
+  "engine_time_scale": 2,
+  "fastest_player_selectable_setting": 2,
+  "map": "hollowspan",
+  "mode": "skirmish",
+  "opponent_count": 1,
+  "opponents": [
+    {
+      "difficulty": "easy",
+      "race": "lioraen"
+    }
+  ],
+  "player_race": "barrosan",
+  "speed_control": "skirmish_setup_slider",
+  "start_resources": "standard",
+  "starting_bank": {
+    "food": 200,
+    "gold": 180,
+    "stone": 180,
+    "timber": 300
+  },
+  "stored_game_speed": 2,
+  "victory": "conquest"
+}

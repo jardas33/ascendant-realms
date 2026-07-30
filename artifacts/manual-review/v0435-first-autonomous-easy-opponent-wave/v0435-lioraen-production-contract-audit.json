@@ -1,0 +1,23 @@
+{
+  "all_ai_buildings_same_race": true,
+  "all_ai_units_same_race": true,
+  "housing_ids": [
+    "lioraen_lifewell"
+  ],
+  "hq_id": "lioraen_groveheart",
+  "legal_age_one_roles": [
+    "melee",
+    "defender",
+    "ranged"
+  ],
+  "legal_age_one_units": [
+    "lioraen_bloomdancer",
+    "lioraen_rootwarden_guard",
+    "lioraen_thorn_ranger"
+  ],
+  "military_building_ids": [
+    "lioraen_thornhall"
+  ],
+  "race": "lioraen",
+  "worker_id": "lioraen_worker"
+}

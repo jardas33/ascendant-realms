@@ -1,0 +1,10 @@
+{
+  "global_hidden_scan": false,
+  "known_player_hq": true,
+  "same_rules_as_player": true,
+  "target": {
+    "x": -100,
+    "y": 0,
+    "z": -100
+  }
+}

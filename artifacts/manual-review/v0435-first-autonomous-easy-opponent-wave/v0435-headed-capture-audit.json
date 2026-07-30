@@ -1,0 +1,8 @@
+{
+  "autonomous_ai": true,
+  "player_response_public_rts": true,
+  "production_scene": true,
+  "real_buildings": true,
+  "real_queues": true,
+  "real_workers": true
+}

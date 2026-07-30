@@ -3,8 +3,8 @@
   "baseSha": "eb6485805c06ecf7bb92a616ff16de95c0dead5c",
   "identityRepairSha": "cc2ee707f9727f853ce8dae67ef4876c6ed0d9ce",
   "captureSourceSha": "e322f15b866700c7cd277b7fdcb9ac3ce9465cda",
-  "validationInputSha": "e1d4ac1675d780c1848bc2d78084fa0b0a1d0c42",
-  "branch": "codex/v0433-multi-resource-worker-economy-loop",
+  "validationInputSha": "6d52ec1309b09401ed6c705b6dda98707d26b33e",
+  "branch": "codex/v0435-first-autonomous-easy-opponent-wave",
   "prNumber": 7,
   "frames": [
     "01_V0433_INITIAL_BANK_AND_WORKERS.png",

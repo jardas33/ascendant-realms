@@ -1,0 +1,56 @@
+{
+  "events": [
+    {
+      "building_id": "lioraen_thornhall",
+      "event": "placed",
+      "is_built": false,
+      "kind": "barracks",
+      "position": {
+        "x": 77.3725814819336,
+        "y": 0,
+        "z": 91.5147171020508
+      },
+      "resources_after": {
+        "food": 150,
+        "gold": 180,
+        "stone": 130,
+        "timber": 150
+      },
+      "resources_before": {
+        "food": 150,
+        "gold": 180,
+        "stone": 180,
+        "timber": 300
+      },
+      "time": 2.00358266666667,
+      "worker_id": "lioraen_worker"
+    },
+    {
+      "building_id": "lioraen_lifewell",
+      "event": "placed",
+      "is_built": false,
+      "kind": "house",
+      "position": {
+        "x": 114.142135620117,
+        "y": 0,
+        "z": 85.8578643798828
+      },
+      "resources_after": {
+        "food": 100,
+        "gold": 180,
+        "stone": 120,
+        "timber": 110
+      },
+      "resources_before": {
+        "food": 100,
+        "gold": 180,
+        "stone": 140,
+        "timber": 170
+      },
+      "time": 14.3092846666668,
+      "worker_id": "lioraen_worker"
+    }
+  ],
+  "failed_sites_spend_zero": true,
+  "shared_world_contract": true
+}

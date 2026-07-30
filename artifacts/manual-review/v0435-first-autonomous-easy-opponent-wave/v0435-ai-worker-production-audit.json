@@ -1,0 +1,202 @@
+{
+  "events": [
+    {
+      "building_id": "lioraen_groveheart",
+      "event": "worker_queue",
+      "queue_count": 1,
+      "resources_after": {
+        "food": 150,
+        "gold": 180,
+        "stone": 180,
+        "timber": 300
+      },
+      "resources_before": {
+        "food": 200,
+        "gold": 180,
+        "stone": 180,
+        "timber": 300
+      },
+      "time": 2.00358266666667,
+      "unit_id": "lioraen_worker"
+    },
+    {
+      "building_id": "lioraen_groveheart",
+      "event": "worker_queue",
+      "queue_count": 1,
+      "resources_after": {
+        "food": 100,
+        "gold": 180,
+        "stone": 140,
+        "timber": 170
+      },
+      "resources_before": {
+        "food": 150,
+        "gold": 180,
+        "stone": 140,
+        "timber": 170
+      },
+      "time": 14.3092846666668,
+      "unit_id": "lioraen_worker"
+    },
+    {
+      "building_id": "lioraen_groveheart",
+      "event": "worker_queue",
+      "queue_count": 1,
+      "resources_after": {
+        "food": 60,
+        "gold": 180,
+        "stone": 130,
+        "timber": 110
+      },
+      "resources_before": {
+        "food": 110,
+        "gold": 180,
+        "stone": 130,
+        "timber": 110
+      },
+      "time": 26.4220473333337,
+      "unit_id": "lioraen_worker"
+    },
+    {
+      "building_id": "lioraen_groveheart",
+      "event": "worker_queue",
+      "queue_count": 1,
+      "resources_after": {
+        "food": 20,
+        "gold": 180,
+        "stone": 150,
+        "timber": 120
+      },
+      "resources_before": {
+        "food": 70,
+        "gold": 180,
+        "stone": 150,
+        "timber": 120
+      },
+      "time": 38.5820473333331,
+      "unit_id": "lioraen_worker"
+    },
+    {
+      "building_id": "lioraen_thornhall",
+      "event": "mixed_unit_queue",
+      "queue_count": 1,
+      "resources_after": {
+        "food": 0,
+        "gold": 190,
+        "stone": 170,
+        "timber": 120
+      },
+      "resources_before": {
+        "food": 50,
+        "gold": 190,
+        "stone": 170,
+        "timber": 150
+      },
+      "role": "ranged",
+      "time": 52.759073999999,
+      "unit_id": "lioraen_thorn_ranger"
+    },
+    {
+      "building_id": "lioraen_thornhall",
+      "event": "mixed_unit_queue",
+      "queue_count": 1,
+      "resources_after": {
+        "food": 10,
+        "gold": 210,
+        "stone": 190,
+        "timber": 140
+      },
+      "resources_before": {
+        "food": 70,
+        "gold": 210,
+        "stone": 190,
+        "timber": 150
+      },
+      "role": "melee",
+      "time": 68.9720019999996,
+      "unit_id": "lioraen_bloomdancer"
+    },
+    {
+      "building_id": "lioraen_thornhall",
+      "event": "mixed_unit_queue",
+      "queue_count": 1,
+      "resources_after": {
+        "food": 20,
+        "gold": 230,
+        "stone": 210,
+        "timber": 140
+      },
+      "resources_before": {
+        "food": 90,
+        "gold": 230,
+        "stone": 210,
+        "timber": 170
+      },
+      "role": "defender",
+      "time": 83.1583140000027,
+      "unit_id": "lioraen_rootwarden_guard"
+    },
+    {
+      "building_id": "lioraen_thornhall",
+      "event": "mixed_unit_queue",
+      "queue_count": 1,
+      "resources_after": {
+        "food": 40,
+        "gold": 260,
+        "stone": 240,
+        "timber": 160
+      },
+      "resources_before": {
+        "food": 100,
+        "gold": 260,
+        "stone": 240,
+        "timber": 170
+      },
+      "role": "melee",
+      "time": 101.397858000007,
+      "unit_id": "lioraen_bloomdancer"
+    },
+    {
+      "building_id": "lioraen_thornhall",
+      "event": "mixed_unit_queue",
+      "queue_count": 1,
+      "resources_after": {
+        "food": 50,
+        "gold": 280,
+        "stone": 250,
+        "timber": 160
+      },
+      "resources_before": {
+        "food": 120,
+        "gold": 280,
+        "stone": 250,
+        "timber": 190
+      },
+      "role": "defender",
+      "time": 115.58417000001,
+      "unit_id": "lioraen_rootwarden_guard"
+    },
+    {
+      "building_id": "lioraen_thornhall",
+      "event": "mixed_unit_queue",
+      "queue_count": 1,
+      "resources_after": {
+        "food": 180,
+        "gold": 708,
+        "stone": 390,
+        "timber": 320
+      },
+      "resources_before": {
+        "food": 240,
+        "gold": 708,
+        "stone": 390,
+        "timber": 330
+      },
+      "role": "melee",
+      "time": 216.850370666697,
+      "unit_id": "lioraen_bloomdancer"
+    }
+  ],
+  "real_hq_queue": true,
+  "worker_count": 7
+}

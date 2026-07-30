@@ -1,0 +1,29 @@
+{
+  "ai_deaths": 2,
+  "replacement": [
+    {
+      "building_id": "lioraen_thornhall",
+      "event": "replacement_queue_after_casualty",
+      "losses_before_queue": 1,
+      "opponent_race": "lioraen",
+      "reserved_population_after": 1,
+      "reserved_population_before": 0,
+      "resources_after": {
+        "food": 240,
+        "gold": 592,
+        "stone": 370,
+        "timber": 290
+      },
+      "resources_before": {
+        "food": 290,
+        "gold": 592,
+        "stone": 370,
+        "timber": 320
+      },
+      "role": "ranged",
+      "time": 200.683012666695,
+      "unit_id": "lioraen_thorn_ranger"
+    }
+  ],
+  "replacement_queued": true
+}
