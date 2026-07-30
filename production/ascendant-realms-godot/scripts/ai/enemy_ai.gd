@@ -398,7 +398,7 @@ func _manage_easy_replacement() -> void:
 	if pick == "":
 		return
 	var before: Dictionary = commander.resources.duplicate()
-	var reserved_before := commander.reserved_pop
+	var reserved_before: int = commander.reserved_pop
 	var result: Dictionary = barracks.queue_unit(pick)
 	if result.get("ok", false):
 		_easy_replacement_queued = true
