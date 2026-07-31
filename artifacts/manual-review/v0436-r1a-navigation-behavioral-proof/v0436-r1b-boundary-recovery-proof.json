@@ -1,0 +1,1569 @@
+{
+  "boundary": {
+    "active_map_rid": "RID(3551937953792)",
+    "ai_process_mode_after": [
+      0
+    ],
+    "ai_process_mode_before": [
+      0
+    ],
+    "ai_processing_restored": true,
+    "ai_processing_suspended_for_fixture": true,
+    "ai_state_after": [
+      {
+        "difficulty": "easy",
+        "easy_replacement_queued": false,
+        "easy_wave_launched": false,
+        "easy_wave_staged": false,
+        "production_audit": 5,
+        "resource_assignments": 9,
+        "wave_number": 0
+      }
+    ],
+    "ai_state_before": [
+      {
+        "difficulty": "easy",
+        "easy_replacement_queued": false,
+        "easy_wave_launched": false,
+        "easy_wave_staged": false,
+        "production_audit": 5,
+        "resource_assignments": 9,
+        "wave_number": 0
+      }
+    ],
+    "boundary_contract": {
+      "maximum_x": 136,
+      "maximum_z": 136,
+      "minimum_x": -136,
+      "minimum_z": -136,
+      "recovery_tolerance": 2,
+      "safety_margin": 4,
+      "source": "MapDefs.map.size"
+    },
+    "branch": "codex/v0436-first-complete-conquest-victory",
+    "cleanup_result": true,
+    "commander_roster_after": {
+      "pop_cap": 12,
+      "pop_used": 5,
+      "reserved_pop": 0,
+      "resources": {
+        "food": 200,
+        "gold": 180,
+        "stone": 120,
+        "timber": 160
+      },
+      "roster_count": 5,
+      "roster_ids": [
+        "barrosan_worker",
+        "barrosan_worker",
+        "barrosan_worker",
+        "barrosan_spear_guard",
+        "barrosan_hero_thane"
+      ]
+    },
+    "commander_roster_before": {
+      "pop_cap": 12,
+      "pop_used": 5,
+      "reserved_pop": 0,
+      "resources": {
+        "food": 200,
+        "gold": 180,
+        "stone": 120,
+        "timber": 160
+      },
+      "roster_count": 5,
+      "roster_ids": [
+        "barrosan_worker",
+        "barrosan_worker",
+        "barrosan_worker",
+        "barrosan_spear_guard",
+        "barrosan_hero_thane"
+      ]
+    },
+    "contamination_free": true,
+    "final_inside_bounds": true,
+    "final_position": {
+      "x": 135.980163574219,
+      "y": 0,
+      "z": 0
+    },
+    "fixture_design": "pre_tree_real_unit_under_dedicated_navigation_region_container",
+    "fixture_present": true,
+    "fixture_present_after_cleanup": false,
+    "fixture_started_timestamp": 87470,
+    "fixture_unit_definition": "barrosan_worker",
+    "fixture_unit_id": "v0436_boundary_fixture_worker",
+    "initial_outside_distance": 4,
+    "initial_position": {
+      "x": 140,
+      "y": 0,
+      "z": 0
+    },
+    "initial_transform_assignment_count": 1,
+    "match_result_after": {
+      "game_over_count": 0,
+      "match_ended": false,
+      "result_snapshot": {
+
+      }
+    },
+    "match_result_before": {
+      "game_over_count": 0,
+      "match_ended": false,
+      "result_snapshot": {
+
+      }
+    },
+    "maximum_allowed_single_frame_displacement": 1.35,
+    "maximum_allowed_speed": 5.4,
+    "maximum_sampled_speed": 4.11747951133578,
+    "maximum_single_frame_displacement": 0.65997314453125,
+    "navigation_iteration": 1,
+    "navigation_region_count": 1,
+    "no_material_outward_drift": true,
+    "no_non_finite_position": true,
+    "normal_match_quiesced_for_fixture": true,
+    "normal_match_quiesced_unit_count": 14,
+    "passed": true,
+    "population_after": {
+      "pop_cap": 12,
+      "pop_used": 5,
+      "reserved_pop": 0
+    },
+    "population_before": {
+      "pop_cap": 12,
+      "pop_used": 5,
+      "reserved_pop": 0
+    },
+    "post_start_position_write_count": 0,
+    "production_scene": "scenes/main.tscn -> scenes/game_world.tscn",
+    "recovery_completed": true,
+    "recovery_completed_event": {
+      "command": "",
+      "effective_target": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "kind": "boundary_recovery_completed",
+      "position": {
+        "x": 135.980163574219,
+        "y": 0,
+        "z": 0
+      },
+      "reason": "position_outside_playable_tolerance",
+      "requested_target": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "runtime_id": "235048799589",
+      "state": 0,
+      "timestamp": 89218,
+      "unit_id": "v0436_boundary_fixture_worker"
+    },
+    "recovery_started": true,
+    "recovery_started_event": {
+      "command": "",
+      "effective_target": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "kind": "boundary_recovery_started",
+      "position": {
+        "x": 140,
+        "y": 0,
+        "z": 0
+      },
+      "reason": "position_outside_playable_tolerance",
+      "recovery_target": {
+        "x": 136,
+        "y": 0,
+        "z": 0
+      },
+      "requested_target": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "runtime_id": "235048799589",
+      "state": 0,
+      "timestamp": 87472,
+      "unit_id": "v0436_boundary_fixture_worker"
+    },
+    "recovery_target": {
+      "x": 136,
+      "y": 0,
+      "z": 0
+    },
+    "recovery_tolerance": 2,
+    "resources_after": {
+      "food": 200,
+      "gold": 180,
+      "stone": 120,
+      "timber": 160
+    },
+    "resources_before": {
+      "food": 200,
+      "gold": 180,
+      "stone": 120,
+      "timber": 160
+    },
+    "samples": [
+      {
+        "calculated_speed": 0,
+        "distance_outside": 4,
+        "frame_delta_seconds": 0,
+        "frame_distance": 0,
+        "inside_bounds": false,
+        "inside_recovery_tolerance": false,
+        "position": {
+          "x": 140,
+          "y": 0,
+          "z": 0
+        },
+        "previous_position": {
+          "x": 140,
+          "y": 0,
+          "z": 0
+        },
+        "recovery_active": false,
+        "state": 0,
+        "timestamp_ms": 87470,
+        "travelled_distance": 0
+      },
+      {
+        "calculated_speed": 53.3311631944445,
+        "distance_outside": 3.52001953125,
+        "frame_delta_seconds": 0.009,
+        "frame_distance": 0.47998046875,
+        "inside_bounds": false,
+        "inside_recovery_tolerance": false,
+        "position": {
+          "x": 139.52001953125,
+          "y": 0,
+          "z": 0
+        },
+        "previous_position": {
+          "x": 140,
+          "y": 0,
+          "z": 0
+        },
+        "recovery_active": true,
+        "speed_sample_timing_valid": false,
+        "state": 0,
+        "timestamp_ms": 87479,
+        "travelled_distance": 0.47998046875
+      },
+      {
+        "calculated_speed": 0.708125691557135,
+        "distance_outside": 2.86004638671875,
+        "frame_delta_seconds": 0.932,
+        "frame_distance": 0.65997314453125,
+        "inside_bounds": false,
+        "inside_recovery_tolerance": false,
+        "position": {
+          "x": 138.860046386719,
+          "y": 0,
+          "z": 0
+        },
+        "previous_position": {
+          "x": 139.52001953125,
+          "y": 0,
+          "z": 0
+        },
+        "recovery_active": true,
+        "speed_sample_timing_valid": true,
+        "state": 0,
+        "timestamp_ms": 88411,
+        "travelled_distance": 1.13995361328125
+      },
+      {
+        "calculated_speed": 4.11747951133578,
+        "distance_outside": 2.4400634765625,
+        "frame_delta_seconds": 0.102,
+        "frame_distance": 0.41998291015625,
+        "inside_bounds": false,
+        "inside_recovery_tolerance": false,
+        "position": {
+          "x": 138.440063476563,
+          "y": 0,
+          "z": 0
+        },
+        "previous_position": {
+          "x": 138.860046386719,
+          "y": 0,
+          "z": 0
+        },
+        "recovery_active": true,
+        "speed_sample_timing_valid": true,
+        "state": 0,
+        "timestamp_ms": 88513,
+        "travelled_distance": 1.5599365234375
+      },
+      {
+        "calculated_speed": 3.39608822228774,
+        "distance_outside": 2.080078125,
+        "frame_delta_seconds": 0.106,
+        "frame_distance": 0.3599853515625,
+        "inside_bounds": false,
+        "inside_recovery_tolerance": false,
+        "position": {
+          "x": 138.080078125,
+          "y": 0,
+          "z": 0
+        },
+        "previous_position": {
+          "x": 138.440063476563,
+          "y": 0,
+          "z": 0
+        },
+        "recovery_active": true,
+        "speed_sample_timing_valid": true,
+        "state": 0,
+        "timestamp_ms": 88619,
+        "travelled_distance": 1.919921875
+      },
+      {
+        "calculated_speed": 3.39608822228774,
+        "distance_outside": 1.7200927734375,
+        "frame_delta_seconds": 0.106,
+        "frame_distance": 0.3599853515625,
+        "inside_bounds": false,
+        "inside_recovery_tolerance": true,
+        "position": {
+          "x": 137.720092773438,
+          "y": 0,
+          "z": 0
+        },
+        "previous_position": {
+          "x": 138.080078125,
+          "y": 0,
+          "z": 0
+        },
+        "recovery_active": true,
+        "speed_sample_timing_valid": true,
+        "state": 0,
+        "timestamp_ms": 88725,
+        "travelled_distance": 2.2799072265625
+      },
+      {
+        "calculated_speed": 3.92507392669393,
+        "distance_outside": 1.30010986328125,
+        "frame_delta_seconds": 0.107,
+        "frame_distance": 0.41998291015625,
+        "inside_bounds": false,
+        "inside_recovery_tolerance": true,
+        "position": {
+          "x": 137.300109863281,
+          "y": 0,
+          "z": 0
+        },
+        "previous_position": {
+          "x": 137.720092773438,
+          "y": 0,
+          "z": 0
+        },
+        "recovery_active": true,
+        "speed_sample_timing_valid": true,
+        "state": 0,
+        "timestamp_ms": 88832,
+        "travelled_distance": 2.69989013671875
+      },
+      {
+        "calculated_speed": 3.33319769965278,
+        "distance_outside": 0.94012451171875,
+        "frame_delta_seconds": 0.108,
+        "frame_distance": 0.3599853515625,
+        "inside_bounds": false,
+        "inside_recovery_tolerance": true,
+        "position": {
+          "x": 136.940124511719,
+          "y": 0,
+          "z": 0
+        },
+        "previous_position": {
+          "x": 137.300109863281,
+          "y": 0,
+          "z": 0
+        },
+        "recovery_active": true,
+        "speed_sample_timing_valid": true,
+        "state": 0,
+        "timestamp_ms": 88940,
+        "travelled_distance": 3.05987548828125
+      },
+      {
+        "calculated_speed": 3.42843191964286,
+        "distance_outside": 0.58013916015625,
+        "frame_delta_seconds": 0.105,
+        "frame_distance": 0.3599853515625,
+        "inside_bounds": false,
+        "inside_recovery_tolerance": true,
+        "position": {
+          "x": 136.580139160156,
+          "y": 0,
+          "z": 0
+        },
+        "previous_position": {
+          "x": 136.940124511719,
+          "y": 0,
+          "z": 0
+        },
+        "recovery_active": true,
+        "speed_sample_timing_valid": true,
+        "state": 0,
+        "timestamp_ms": 89045,
+        "travelled_distance": 3.41986083984375
+      },
+      {
+        "calculated_speed": 3.88873064959491,
+        "distance_outside": 0.16015625,
+        "frame_delta_seconds": 0.108,
+        "frame_distance": 0.41998291015625,
+        "inside_bounds": false,
+        "inside_recovery_tolerance": true,
+        "position": {
+          "x": 136.16015625,
+          "y": 0,
+          "z": 0
+        },
+        "previous_position": {
+          "x": 136.580139160156,
+          "y": 0,
+          "z": 0
+        },
+        "recovery_active": true,
+        "speed_sample_timing_valid": true,
+        "state": 0,
+        "timestamp_ms": 89153,
+        "travelled_distance": 3.83984375
+      },
+      {
+        "calculated_speed": 1.69804411114387,
+        "distance_outside": 0,
+        "frame_delta_seconds": 0.106,
+        "frame_distance": 0.17999267578125,
+        "inside_bounds": true,
+        "inside_recovery_tolerance": true,
+        "position": {
+          "x": 135.980163574219,
+          "y": 0,
+          "z": 0
+        },
+        "previous_position": {
+          "x": 136.16015625,
+          "y": 0,
+          "z": 0
+        },
+        "recovery_active": false,
+        "speed_sample_timing_valid": true,
+        "state": 0,
+        "timestamp_ms": 89259,
+        "travelled_distance": 4.01983642578125
+      }
+    ],
+    "schema": "v0436-r1b-boundary-recovery-proof-v1",
+    "source_sha": "ed7a66a05d8d7750ba5f8e7f0d4124c6eb40c2b2",
+    "terminal_failure": false,
+    "travelled_distance": 4.01983642578125,
+    "unit_move_speed": 3.6
+  },
+  "branch": "codex/v0436-first-complete-conquest-victory",
+  "events": [
+    {
+      "deferred_target_event": true,
+      "early_command_issued_before_ready": true,
+      "kind": "navigation_ready_before_commands",
+      "passed": true,
+      "runtime": {
+        "iteration": 1,
+        "map_rid": "RID(3551937953792)",
+        "ready": true,
+        "regions": 1,
+        "units": [
+          {
+            "command": "move",
+            "direct_path_first": "(-90, 0.05, -100)",
+            "direct_path_last": "(0, 0.05, 0)",
+            "direct_path_size": 2,
+            "source": "(-90, 0, -100)",
+            "source_closest": "(-90, 0.05, -100)",
+            "state": 1,
+            "target": "(0, 0, 0)",
+            "target_closest": "(0, 0.05, 0)",
+            "unit_id": "barrosan_worker"
+          },
+          {
+            "command": "",
+            "direct_path_first": "(-100, 0.05, -90)",
+            "direct_path_last": "(0, 0.05, 0)",
+            "direct_path_size": 2,
+            "source": "(-100, 0, -90)",
+            "source_closest": "(-100, 0.05, -90)",
+            "state": 0,
+            "target": "(0, 0, 0)",
+            "target_closest": "(0, 0.05, 0)",
+            "unit_id": "barrosan_worker"
+          },
+          {
+            "command": "",
+            "direct_path_first": "(-110, 0.05, -100)",
+            "direct_path_last": "(0, 0.05, 0)",
+            "direct_path_size": 2,
+            "source": "(-110, 0, -100)",
+            "source_closest": "(-110, 0.05, -100)",
+            "state": 0,
+            "target": "(0, 0, 0)",
+            "target_closest": "(0, 0.05, 0)",
+            "unit_id": "barrosan_worker"
+          },
+          {
+            "command": "",
+            "direct_path_first": "(-100, 0.05, -110)",
+            "direct_path_last": "(0, 0.05, 0)",
+            "direct_path_size": 2,
+            "source": "(-100, 0, -110)",
+            "source_closest": "(-100, 0.05, -110)",
+            "state": 0,
+            "target": "(0, 0, 0)",
+            "target_closest": "(0, 0.05, 0)",
+            "unit_id": "barrosan_spear_guard"
+          },
+          {
+            "command": "",
+            "direct_path_first": "(-94, 0.05, -94)",
+            "direct_path_last": "(0, 0.05, 0)",
+            "direct_path_size": 2,
+            "source": "(-94, 0, -94)",
+            "source_closest": "(-94, 0.05, -94)",
+            "state": 0,
+            "target": "(0, 0, 0)",
+            "target_closest": "(0, 0.05, 0)",
+            "unit_id": "barrosan_hero_thane"
+          },
+          {
+            "command": "",
+            "direct_path_first": "(110, 0.05, 99.99998)",
+            "direct_path_last": "(0, 0.05, 0)",
+            "direct_path_size": 2,
+            "source": "(110, 0, 100)",
+            "source_closest": "(110, 0.05, 99.99998)",
+            "state": 0,
+            "target": "(0, 0, 0)",
+            "target_closest": "(0, 0.05, 0)",
+            "unit_id": "lioraen_worker"
+          },
+          {
+            "command": "",
+            "direct_path_first": "(99.99998, 0.05, 110)",
+            "direct_path_last": "(0, 0.05, 0)",
+            "direct_path_size": 2,
+            "source": "(100, 0, 110)",
+            "source_closest": "(99.99998, 0.05, 110)",
+            "state": 0,
+            "target": "(0, 0, 0)",
+            "target_closest": "(0, 0.05, 0)",
+            "unit_id": "lioraen_worker"
+          },
+          {
+            "command": "",
+            "direct_path_first": "(89.99998, 0.05, 99.99998)",
+            "direct_path_last": "(0, 0.05, 0)",
+            "direct_path_size": 2,
+            "source": "(90, 0, 100)",
+            "source_closest": "(89.99998, 0.05, 99.99998)",
+            "state": 0,
+            "target": "(0, 0, 0)",
+            "target_closest": "(0, 0.05, 0)",
+            "unit_id": "lioraen_worker"
+          },
+          {
+            "command": "",
+            "direct_path_first": "(99.99998, 0.05, 89.99998)",
+            "direct_path_last": "(0, 0.05, 0)",
+            "direct_path_size": 2,
+            "source": "(100, 0, 90)",
+            "source_closest": "(99.99998, 0.05, 89.99998)",
+            "state": 0,
+            "target": "(0, 0, 0)",
+            "target_closest": "(0, 0.05, 0)",
+            "unit_id": "lioraen_thorn_ranger"
+          },
+          {
+            "command": "",
+            "direct_path_first": "(106, 0.05, 106)",
+            "direct_path_last": "(0, 0.05, 0)",
+            "direct_path_size": 2,
+            "source": "(106, 0, 106)",
+            "source_closest": "(106, 0.05, 106)",
+            "state": 0,
+            "target": "(0, 0, 0)",
+            "target_closest": "(0, 0.05, 0)",
+            "unit_id": "lioraen_hero_warden"
+          }
+        ]
+      },
+      "time_ms": 21866
+    },
+    {
+      "distance_travelled": 30.7185382843018,
+      "kind": "ordinary_move_arrival",
+      "passed": true,
+      "samples": [
+        {
+          "command": "move",
+          "inside_bounds": true,
+          "position": {
+            "x": -87.489990234375,
+            "y": 0,
+            "z": -98.587890625
+          },
+          "state": 1,
+          "timestamp_ms": 24036
+        },
+        {
+          "command": "move",
+          "inside_bounds": true,
+          "position": {
+            "x": -84.97998046875,
+            "y": 0,
+            "z": -97.1758651733398
+          },
+          "state": 1,
+          "timestamp_ms": 24911
+        },
+        {
+          "command": "move",
+          "inside_bounds": true,
+          "position": {
+            "x": -82.469970703125,
+            "y": 0,
+            "z": -95.7640228271484
+          },
+          "state": 1,
+          "timestamp_ms": 25649
+        },
+        {
+          "command": "move",
+          "inside_bounds": true,
+          "position": {
+            "x": -79.9599609375,
+            "y": 0,
+            "z": -94.3521728515625
+          },
+          "state": 1,
+          "timestamp_ms": 26450
+        }
+      ],
+      "start": {
+        "x": -90,
+        "z": -100
+      },
+      "target": {
+        "x": -58,
+        "z": -82
+      },
+      "time_ms": 31772,
+      "unit": {
+        "command": "move",
+        "effective_target": {
+          "x": -58.0000038146973,
+          "y": 0.0500000007450581,
+          "z": -82
+        },
+        "id": "barrosan_worker",
+        "invalid_path_count": 0,
+        "position": {
+          "x": -63.226505279541,
+          "y": 0,
+          "z": -84.9398345947266
+        },
+        "recovery_active": false,
+        "requested_target": {
+          "x": -58,
+          "y": 0,
+          "z": -82
+        },
+        "state": 1,
+        "team": 0,
+        "terminal_failure": false,
+        "worker": true
+      }
+    },
+    {
+      "distance_to_hall": 22.3401317596436,
+      "kind": "worker_inside_build_range",
+      "passed": true,
+      "time_ms": 34183,
+      "travel_distance": 3.65986919403076,
+      "unit": {
+        "command": "build",
+        "effective_target": {
+          "x": -76,
+          "y": 0.0500000007450581,
+          "z": -100
+        },
+        "id": "barrosan_worker",
+        "invalid_path_count": 0,
+        "position": {
+          "x": -96.621711730957,
+          "y": 0,
+          "z": -91.4077682495117
+        },
+        "recovery_active": false,
+        "requested_target": {
+          "x": -76,
+          "y": 0,
+          "z": -100
+        },
+        "state": 6,
+        "team": 0,
+        "terminal_failure": false,
+        "worker": true
+      }
+    },
+    {
+      "hall_built": true,
+      "hall_id": "barrosan_war_hall",
+      "issued": true,
+      "kind": "worker_construction_completion",
+      "passed": true,
+      "time_ms": 69692,
+      "worker": {
+        "command": "build",
+        "effective_target": {
+          "x": -76,
+          "y": 0.0500000007450581,
+          "z": -100
+        },
+        "id": "barrosan_worker",
+        "invalid_path_count": 0,
+        "position": {
+          "x": -73.1956253051758,
+          "y": 0,
+          "z": -101.168197631836
+        },
+        "recovery_active": false,
+        "requested_target": {
+          "x": -76,
+          "y": 0,
+          "z": -100
+        },
+        "state": 6,
+        "team": 0,
+        "terminal_failure": false,
+        "worker": true
+      }
+    },
+    {
+      "carry_started": true,
+      "deposit_seen": true,
+      "issued": true,
+      "kind": "worker_gather_and_return",
+      "passed": true,
+      "returning": true,
+      "time_ms": 78069,
+      "transactions": [
+        {
+          "bank_after": {
+            "food": 40,
+            "gold": 180,
+            "stone": 160,
+            "timber": 140
+          },
+          "bank_before": {
+            "food": 30,
+            "gold": 180,
+            "stone": 160,
+            "timber": 140
+          },
+          "carried_amount": 10,
+          "deposit_count": 4,
+          "deposited_amount": 10,
+          "dropoff_building_id": "lioraen_groveheart",
+          "dropoff_definition_name": "Groveheart",
+          "dropoff_id": "lioraen_groveheart",
+          "dropoff_is_built": true,
+          "dropoff_is_friendly": true,
+          "dropoff_position": {
+            "x": 100,
+            "y": 0,
+            "z": 100
+          },
+          "dropoff_runtime_id": "159333223130",
+          "dropoff_team": 1,
+          "gather_multiplier": 1,
+          "kind": "food",
+          "next_target": "Food",
+          "resource_node_runtime_id": "162889993093",
+          "timestamp_msec": 72719,
+          "worker_id": "lioraen_worker",
+          "worker_runtime_id": "182485781713"
+        },
+        {
+          "bank_after": {
+            "food": 40,
+            "gold": 180,
+            "stone": 160,
+            "timber": 150
+          },
+          "bank_before": {
+            "food": 40,
+            "gold": 180,
+            "stone": 160,
+            "timber": 140
+          },
+          "carried_amount": 10,
+          "deposit_count": 4,
+          "deposited_amount": 10,
+          "dropoff_building_id": "lioraen_groveheart",
+          "dropoff_definition_name": "Groveheart",
+          "dropoff_id": "lioraen_groveheart",
+          "dropoff_is_built": true,
+          "dropoff_is_friendly": true,
+          "dropoff_position": {
+            "x": 100,
+            "y": 0,
+            "z": 100
+          },
+          "dropoff_runtime_id": "159333223130",
+          "dropoff_team": 1,
+          "gather_multiplier": 1,
+          "kind": "timber",
+          "next_target": "Timber",
+          "resource_node_runtime_id": "163561081761",
+          "timestamp_msec": 75160,
+          "worker_id": "lioraen_worker",
+          "worker_runtime_id": "198407359771"
+        },
+        {
+          "bank_after": {
+            "food": 40,
+            "gold": 190,
+            "stone": 160,
+            "timber": 150
+          },
+          "bank_before": {
+            "food": 40,
+            "gold": 180,
+            "stone": 160,
+            "timber": 150
+          },
+          "carried_amount": 10,
+          "deposit_count": 1,
+          "deposited_amount": 10,
+          "dropoff_building_id": "lioraen_groveheart",
+          "dropoff_definition_name": "Groveheart",
+          "dropoff_id": "lioraen_groveheart",
+          "dropoff_is_built": true,
+          "dropoff_is_friendly": true,
+          "dropoff_position": {
+            "x": 100,
+            "y": 0,
+            "z": 100
+          },
+          "dropoff_runtime_id": "159333223130",
+          "dropoff_team": 1,
+          "gather_multiplier": 1,
+          "kind": "gold",
+          "next_target": "Gold",
+          "resource_node_runtime_id": "163057765260",
+          "timestamp_msec": 75533,
+          "worker_id": "lioraen_worker",
+          "worker_runtime_id": "213976616243"
+        },
+        {
+          "bank_after": {
+            "food": 40,
+            "gold": 190,
+            "stone": 170,
+            "timber": 150
+          },
+          "bank_before": {
+            "food": 40,
+            "gold": 190,
+            "stone": 160,
+            "timber": 150
+          },
+          "carried_amount": 10,
+          "deposit_count": 6,
+          "deposited_amount": 10,
+          "dropoff_building_id": "lioraen_groveheart",
+          "dropoff_definition_name": "Groveheart",
+          "dropoff_id": "lioraen_groveheart",
+          "dropoff_is_built": true,
+          "dropoff_is_friendly": true,
+          "dropoff_position": {
+            "x": 100,
+            "y": 0,
+            "z": 100
+          },
+          "dropoff_runtime_id": "159333223130",
+          "dropoff_team": 1,
+          "gather_multiplier": 1,
+          "kind": "stone",
+          "next_target": "Stone",
+          "resource_node_runtime_id": "163393309594",
+          "timestamp_msec": 75973,
+          "worker_id": "lioraen_worker",
+          "worker_runtime_id": "160474073875"
+        },
+        {
+          "bank_after": {
+            "food": 50,
+            "gold": 190,
+            "stone": 170,
+            "timber": 150
+          },
+          "bank_before": {
+            "food": 40,
+            "gold": 190,
+            "stone": 170,
+            "timber": 150
+          },
+          "carried_amount": 10,
+          "deposit_count": 1,
+          "deposited_amount": 10,
+          "dropoff_building_id": "lioraen_groveheart",
+          "dropoff_definition_name": "Groveheart",
+          "dropoff_id": "lioraen_groveheart",
+          "dropoff_is_built": true,
+          "dropoff_is_friendly": true,
+          "dropoff_position": {
+            "x": 100,
+            "y": 0,
+            "z": 100
+          },
+          "dropoff_runtime_id": "159333223130",
+          "dropoff_team": 1,
+          "gather_multiplier": 1,
+          "kind": "food",
+          "next_target": "Food",
+          "resource_node_runtime_id": "162889993093",
+          "timestamp_msec": 77707,
+          "worker_id": "lioraen_worker",
+          "worker_runtime_id": "159568104165"
+        },
+        {
+          "bank_after": {
+            "food": 200,
+            "gold": 180,
+            "stone": 120,
+            "timber": 160
+          },
+          "bank_before": {
+            "food": 200,
+            "gold": 180,
+            "stone": 120,
+            "timber": 150
+          },
+          "carried_amount": 10,
+          "deposit_count": 1,
+          "deposited_amount": 10,
+          "dropoff_building_id": "barrosan_clanhold",
+          "dropoff_definition_name": "Clanhold",
+          "dropoff_id": "barrosan_clanhold",
+          "dropoff_is_built": true,
+          "dropoff_is_friendly": true,
+          "dropoff_position": {
+            "x": -100,
+            "y": 0,
+            "z": -100
+          },
+          "dropoff_runtime_id": "156833417820",
+          "dropoff_team": 0,
+          "gather_multiplier": 1,
+          "kind": "timber",
+          "next_target": "Timber",
+          "resource_node_runtime_id": "162554448759",
+          "timestamp_msec": 78067,
+          "worker_id": "barrosan_worker",
+          "worker_runtime_id": "157974268565"
+        }
+      ],
+      "worker": {
+        "command": "return",
+        "effective_target": {
+          "x": -100,
+          "y": 0.0500000007450581,
+          "z": -100
+        },
+        "id": "barrosan_worker",
+        "invalid_path_count": 0,
+        "position": {
+          "x": -106.173690795898,
+          "y": 0,
+          "z": -95.0615539550781
+        },
+        "recovery_active": false,
+        "requested_target": {
+          "x": -100,
+          "y": 0,
+          "z": -100
+        },
+        "state": 4,
+        "team": 0,
+        "terminal_failure": false,
+        "worker": true
+      }
+    },
+    {
+      "group_size": 2,
+      "issued": true,
+      "kind": "attack_move_progress",
+      "passed": true,
+      "progress": true,
+      "time_ms": 80958,
+      "unit": {
+        "command": "attack_move",
+        "effective_target": {
+          "x": 99.9999847412109,
+          "y": 0.0500000007450581,
+          "z": 89.9999847412109
+        },
+        "id": "barrosan_spear_guard",
+        "invalid_path_count": 0,
+        "position": {
+          "x": -97.8433685302734,
+          "y": 0,
+          "z": -107.843368530273
+        },
+        "recovery_active": false,
+        "requested_target": {
+          "x": 100,
+          "y": 0,
+          "z": 90
+        },
+        "state": 2,
+        "team": 0,
+        "terminal_failure": false,
+        "worker": false
+      }
+    },
+    {
+      "issued": true,
+      "kind": "bounded_pursuit_progress",
+      "passed": true,
+      "progress": true,
+      "target": "lioraen_thorn_ranger",
+      "target_position_not_reset_per_frame": true,
+      "target_updates": 1,
+      "time_ms": 85999,
+      "unit": {
+        "command": "attack",
+        "effective_target": {
+          "x": 99.9999847412109,
+          "y": 0.0500000007450581,
+          "z": 89.9999847412109
+        },
+        "id": "barrosan_spear_guard",
+        "invalid_path_count": 0,
+        "position": {
+          "x": -91.1259918212891,
+          "y": 0,
+          "z": -101.125991821289
+        },
+        "recovery_active": false,
+        "requested_target": {
+          "x": 100,
+          "y": 0,
+          "z": 90
+        },
+        "state": 3,
+        "team": 0,
+        "terminal_failure": false,
+        "worker": false
+      }
+    },
+    {
+      "kind": "invalid_target_terminal_failure",
+      "passed": true,
+      "retries_bounded": true,
+      "safe_stop": true,
+      "structured_reason": "RTSController rejected null target through ordinary command validation",
+      "time_ms": 86741
+    },
+    {
+      "active_map_rid": "RID(3551937953792)",
+      "ai_process_mode_after": [
+        0
+      ],
+      "ai_process_mode_before": [
+        0
+      ],
+      "ai_processing_restored": true,
+      "ai_processing_suspended_for_fixture": true,
+      "ai_state_after": [
+        {
+          "difficulty": "easy",
+          "easy_replacement_queued": false,
+          "easy_wave_launched": false,
+          "easy_wave_staged": false,
+          "production_audit": 5,
+          "resource_assignments": 9,
+          "wave_number": 0
+        }
+      ],
+      "ai_state_before": [
+        {
+          "difficulty": "easy",
+          "easy_replacement_queued": false,
+          "easy_wave_launched": false,
+          "easy_wave_staged": false,
+          "production_audit": 5,
+          "resource_assignments": 9,
+          "wave_number": 0
+        }
+      ],
+      "boundary_contract": {
+        "maximum_x": 136,
+        "maximum_z": 136,
+        "minimum_x": -136,
+        "minimum_z": -136,
+        "recovery_tolerance": 2,
+        "safety_margin": 4,
+        "source": "MapDefs.map.size"
+      },
+      "branch": "codex/v0436-first-complete-conquest-victory",
+      "cleanup_result": true,
+      "commander_roster_after": {
+        "pop_cap": 12,
+        "pop_used": 5,
+        "reserved_pop": 0,
+        "resources": {
+          "food": 200,
+          "gold": 180,
+          "stone": 120,
+          "timber": 160
+        },
+        "roster_count": 5,
+        "roster_ids": [
+          "barrosan_worker",
+          "barrosan_worker",
+          "barrosan_worker",
+          "barrosan_spear_guard",
+          "barrosan_hero_thane"
+        ]
+      },
+      "commander_roster_before": {
+        "pop_cap": 12,
+        "pop_used": 5,
+        "reserved_pop": 0,
+        "resources": {
+          "food": 200,
+          "gold": 180,
+          "stone": 120,
+          "timber": 160
+        },
+        "roster_count": 5,
+        "roster_ids": [
+          "barrosan_worker",
+          "barrosan_worker",
+          "barrosan_worker",
+          "barrosan_spear_guard",
+          "barrosan_hero_thane"
+        ]
+      },
+      "contamination_free": true,
+      "final_inside_bounds": true,
+      "final_position": {
+        "x": 135.980163574219,
+        "y": 0,
+        "z": 0
+      },
+      "fixture_design": "pre_tree_real_unit_under_dedicated_navigation_region_container",
+      "fixture_present": true,
+      "fixture_present_after_cleanup": false,
+      "fixture_started_timestamp": 87470,
+      "fixture_unit_definition": "barrosan_worker",
+      "fixture_unit_id": "v0436_boundary_fixture_worker",
+      "initial_outside_distance": 4,
+      "initial_position": {
+        "x": 140,
+        "y": 0,
+        "z": 0
+      },
+      "initial_transform_assignment_count": 1,
+      "kind": "boundary_recovery",
+      "match_result_after": {
+        "game_over_count": 0,
+        "match_ended": false,
+        "result_snapshot": {
+
+        }
+      },
+      "match_result_before": {
+        "game_over_count": 0,
+        "match_ended": false,
+        "result_snapshot": {
+
+        }
+      },
+      "maximum_allowed_single_frame_displacement": 1.35,
+      "maximum_allowed_speed": 5.4,
+      "maximum_sampled_speed": 4.11747951133578,
+      "maximum_single_frame_displacement": 0.65997314453125,
+      "navigation_iteration": 1,
+      "navigation_region_count": 1,
+      "no_material_outward_drift": true,
+      "no_non_finite_position": true,
+      "normal_match_quiesced_for_fixture": true,
+      "normal_match_quiesced_unit_count": 14,
+      "passed": true,
+      "population_after": {
+        "pop_cap": 12,
+        "pop_used": 5,
+        "reserved_pop": 0
+      },
+      "population_before": {
+        "pop_cap": 12,
+        "pop_used": 5,
+        "reserved_pop": 0
+      },
+      "post_start_position_write_count": 0,
+      "production_scene": "scenes/main.tscn -> scenes/game_world.tscn",
+      "recovery_completed": true,
+      "recovery_completed_event": {
+        "command": "",
+        "effective_target": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "kind": "boundary_recovery_completed",
+        "position": {
+          "x": 135.980163574219,
+          "y": 0,
+          "z": 0
+        },
+        "reason": "position_outside_playable_tolerance",
+        "requested_target": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "runtime_id": "235048799589",
+        "state": 0,
+        "timestamp": 89218,
+        "unit_id": "v0436_boundary_fixture_worker"
+      },
+      "recovery_started": true,
+      "recovery_started_event": {
+        "command": "",
+        "effective_target": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "kind": "boundary_recovery_started",
+        "position": {
+          "x": 140,
+          "y": 0,
+          "z": 0
+        },
+        "reason": "position_outside_playable_tolerance",
+        "recovery_target": {
+          "x": 136,
+          "y": 0,
+          "z": 0
+        },
+        "requested_target": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "runtime_id": "235048799589",
+        "state": 0,
+        "timestamp": 87472,
+        "unit_id": "v0436_boundary_fixture_worker"
+      },
+      "recovery_target": {
+        "x": 136,
+        "y": 0,
+        "z": 0
+      },
+      "recovery_tolerance": 2,
+      "resources_after": {
+        "food": 200,
+        "gold": 180,
+        "stone": 120,
+        "timber": 160
+      },
+      "resources_before": {
+        "food": 200,
+        "gold": 180,
+        "stone": 120,
+        "timber": 160
+      },
+      "samples": [
+        {
+          "calculated_speed": 0,
+          "distance_outside": 4,
+          "frame_delta_seconds": 0,
+          "frame_distance": 0,
+          "inside_bounds": false,
+          "inside_recovery_tolerance": false,
+          "position": {
+            "x": 140,
+            "y": 0,
+            "z": 0
+          },
+          "previous_position": {
+            "x": 140,
+            "y": 0,
+            "z": 0
+          },
+          "recovery_active": false,
+          "state": 0,
+          "timestamp_ms": 87470,
+          "travelled_distance": 0
+        },
+        {
+          "calculated_speed": 53.3311631944445,
+          "distance_outside": 3.52001953125,
+          "frame_delta_seconds": 0.009,
+          "frame_distance": 0.47998046875,
+          "inside_bounds": false,
+          "inside_recovery_tolerance": false,
+          "position": {
+            "x": 139.52001953125,
+            "y": 0,
+            "z": 0
+          },
+          "previous_position": {
+            "x": 140,
+            "y": 0,
+            "z": 0
+          },
+          "recovery_active": true,
+          "speed_sample_timing_valid": false,
+          "state": 0,
+          "timestamp_ms": 87479,
+          "travelled_distance": 0.47998046875
+        },
+        {
+          "calculated_speed": 0.708125691557135,
+          "distance_outside": 2.86004638671875,
+          "frame_delta_seconds": 0.932,
+          "frame_distance": 0.65997314453125,
+          "inside_bounds": false,
+          "inside_recovery_tolerance": false,
+          "position": {
+            "x": 138.860046386719,
+            "y": 0,
+            "z": 0
+          },
+          "previous_position": {
+            "x": 139.52001953125,
+            "y": 0,
+            "z": 0
+          },
+          "recovery_active": true,
+          "speed_sample_timing_valid": true,
+          "state": 0,
+          "timestamp_ms": 88411,
+          "travelled_distance": 1.13995361328125
+        },
+        {
+          "calculated_speed": 4.11747951133578,
+          "distance_outside": 2.4400634765625,
+          "frame_delta_seconds": 0.102,
+          "frame_distance": 0.41998291015625,
+          "inside_bounds": false,
+          "inside_recovery_tolerance": false,
+          "position": {
+            "x": 138.440063476563,
+            "y": 0,
+            "z": 0
+          },
+          "previous_position": {
+            "x": 138.860046386719,
+            "y": 0,
+            "z": 0
+          },
+          "recovery_active": true,
+          "speed_sample_timing_valid": true,
+          "state": 0,
+          "timestamp_ms": 88513,
+          "travelled_distance": 1.5599365234375
+        },
+        {
+          "calculated_speed": 3.39608822228774,
+          "distance_outside": 2.080078125,
+          "frame_delta_seconds": 0.106,
+          "frame_distance": 0.3599853515625,
+          "inside_bounds": false,
+          "inside_recovery_tolerance": false,
+          "position": {
+            "x": 138.080078125,
+            "y": 0,
+            "z": 0
+          },
+          "previous_position": {
+            "x": 138.440063476563,
+            "y": 0,
+            "z": 0
+          },
+          "recovery_active": true,
+          "speed_sample_timing_valid": true,
+          "state": 0,
+          "timestamp_ms": 88619,
+          "travelled_distance": 1.919921875
+        },
+        {
+          "calculated_speed": 3.39608822228774,
+          "distance_outside": 1.7200927734375,
+          "frame_delta_seconds": 0.106,
+          "frame_distance": 0.3599853515625,
+          "inside_bounds": false,
+          "inside_recovery_tolerance": true,
+          "position": {
+            "x": 137.720092773438,
+            "y": 0,
+            "z": 0
+          },
+          "previous_position": {
+            "x": 138.080078125,
+            "y": 0,
+            "z": 0
+          },
+          "recovery_active": true,
+          "speed_sample_timing_valid": true,
+          "state": 0,
+          "timestamp_ms": 88725,
+          "travelled_distance": 2.2799072265625
+        },
+        {
+          "calculated_speed": 3.92507392669393,
+          "distance_outside": 1.30010986328125,
+          "frame_delta_seconds": 0.107,
+          "frame_distance": 0.41998291015625,
+          "inside_bounds": false,
+          "inside_recovery_tolerance": true,
+          "position": {
+            "x": 137.300109863281,
+            "y": 0,
+            "z": 0
+          },
+          "previous_position": {
+            "x": 137.720092773438,
+            "y": 0,
+            "z": 0
+          },
+          "recovery_active": true,
+          "speed_sample_timing_valid": true,
+          "state": 0,
+          "timestamp_ms": 88832,
+          "travelled_distance": 2.69989013671875
+        },
+        {
+          "calculated_speed": 3.33319769965278,
+          "distance_outside": 0.94012451171875,
+          "frame_delta_seconds": 0.108,
+          "frame_distance": 0.3599853515625,
+          "inside_bounds": false,
+          "inside_recovery_tolerance": true,
+          "position": {
+            "x": 136.940124511719,
+            "y": 0,
+            "z": 0
+          },
+          "previous_position": {
+            "x": 137.300109863281,
+            "y": 0,
+            "z": 0
+          },
+          "recovery_active": true,
+          "speed_sample_timing_valid": true,
+          "state": 0,
+          "timestamp_ms": 88940,
+          "travelled_distance": 3.05987548828125
+        },
+        {
+          "calculated_speed": 3.42843191964286,
+          "distance_outside": 0.58013916015625,
+          "frame_delta_seconds": 0.105,
+          "frame_distance": 0.3599853515625,
+          "inside_bounds": false,
+          "inside_recovery_tolerance": true,
+          "position": {
+            "x": 136.580139160156,
+            "y": 0,
+            "z": 0
+          },
+          "previous_position": {
+            "x": 136.940124511719,
+            "y": 0,
+            "z": 0
+          },
+          "recovery_active": true,
+          "speed_sample_timing_valid": true,
+          "state": 0,
+          "timestamp_ms": 89045,
+          "travelled_distance": 3.41986083984375
+        },
+        {
+          "calculated_speed": 3.88873064959491,
+          "distance_outside": 0.16015625,
+          "frame_delta_seconds": 0.108,
+          "frame_distance": 0.41998291015625,
+          "inside_bounds": false,
+          "inside_recovery_tolerance": true,
+          "position": {
+            "x": 136.16015625,
+            "y": 0,
+            "z": 0
+          },
+          "previous_position": {
+            "x": 136.580139160156,
+            "y": 0,
+            "z": 0
+          },
+          "recovery_active": true,
+          "speed_sample_timing_valid": true,
+          "state": 0,
+          "timestamp_ms": 89153,
+          "travelled_distance": 3.83984375
+        },
+        {
+          "calculated_speed": 1.69804411114387,
+          "distance_outside": 0,
+          "frame_delta_seconds": 0.106,
+          "frame_distance": 0.17999267578125,
+          "inside_bounds": true,
+          "inside_recovery_tolerance": true,
+          "position": {
+            "x": 135.980163574219,
+            "y": 0,
+            "z": 0
+          },
+          "previous_position": {
+            "x": 136.16015625,
+            "y": 0,
+            "z": 0
+          },
+          "recovery_active": false,
+          "speed_sample_timing_valid": true,
+          "state": 0,
+          "timestamp_ms": 89259,
+          "travelled_distance": 4.01983642578125
+        }
+      ],
+      "schema": "v0436-r1b-boundary-recovery-proof-v1",
+      "source_sha": "ed7a66a05d8d7750ba5f8e7f0d4124c6eb40c2b2",
+      "terminal_failure": false,
+      "time_ms": 90307,
+      "travelled_distance": 4.01983642578125,
+      "unit_move_speed": 3.6
+    }
+  ],
+  "failures": [],
+  "no_direct_state_writes": true,
+  "no_full_conquest_capture": true,
+  "production_scene": "scenes/main.tscn -> scenes/game_world.tscn",
+  "schema": "v0436-r1b-boundary-recovery-proof-v1",
+  "source_sha": "ed7a66a05d8d7750ba5f8e7f0d4124c6eb40c2b2",
+  "status": "PASSED_NAVIGATION_BEHAVIORAL_PROOF"
+}

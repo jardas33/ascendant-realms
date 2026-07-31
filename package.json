@@ -53,6 +53,7 @@
     "godot:capture:v0436-r1-navigation-behavioral-proof": "node tools/godot/v0436R1NavigationBehavioralProofTool.mjs capture",
     "godot:validate:v0436-r1-navigation-behavioral-proof": "node tools/godot/v0436R1NavigationBehavioralProofTool.mjs validate",
     "godot:test:v0436-r1-navigation-behavior": "node tools/godot/v0436R1NavigationBehavioralProofTool.mjs focused-tests",
+    "godot:test:v0436-r1-boundary-recovery": "node tools/godot/v0436R1NavigationBehavioralProofTool.mjs boundary-tests",
     "godot:smoke:v0436-r1-navigation-behavior": "node tools/godot/v0436R1NavigationBehavioralProofTool.mjs smoke",
     "godot:capture:v0436-r1-navigation-behavior": "node tools/godot/v0436R1NavigationBehavioralProofTool.mjs capture",
     "godot:validate:v0436-r1-navigation-behavior": "node tools/godot/v0436R1NavigationBehavioralProofTool.mjs validate",

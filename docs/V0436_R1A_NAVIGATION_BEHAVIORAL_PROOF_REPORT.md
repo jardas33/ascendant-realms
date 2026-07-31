@@ -1,6 +1,8 @@
 # v0.436-R1A Navigation Behavioral Proof
 
-Status: `BLOCKED_EXACT_BEHAVIORAL_PROOF`.
+Status at the original R1A publication: `BLOCKED_EXACT_BEHAVIORAL_PROOF`.
+
+R1B amendment: the previously missing isolated boundary fixture is now present and passes the dedicated real-`Unit` proof. The original blocked status remains preserved historically; the current focused R1A/R1B behavioral result is recorded in `docs/V0436_R1B_BOUNDARY_RECOVERY_PROOF_REPORT.md`.
 
 This checkpoint is intentionally fail-closed. The real headed production capture proves the supported navigation behaviors listed below, but the required isolated out-of-bounds boundary-recovery fixture is not present in the accepted production setup. The checkpoint must not be described as passed until that fixture exists and produces truthful evidence.
 

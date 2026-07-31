@@ -640,9 +640,6 @@ func _state_boundary_recovery(delta: float) -> void:
 		if remaining > _boundary_recovery_distance_last + 0.05:
 			_record_navigation_event("boundary_recovery_distance_increased", {"previous": _boundary_recovery_distance_last, "current": remaining})
 		_boundary_recovery_distance_last = remaining
-	if distance <= 0.2:
-		velocity = Vector3.ZERO
-		return
 	var recovery_speed := move_speed
 	if _slow > 0.0: recovery_speed *= 0.5
 	var direction := to_safe.normalized()

@@ -1,13 +1,14 @@
 {
-  "schema": "v0436-r1a-navigation-behavioral-validator-v2",
-  "baseSha": "9e9312560bccd1c04aee8ff39f8677074c30b10f",
-  "validationInputSha": "9e9312560bccd1c04aee8ff39f8677074c30b10f",
-  "branch": "codex/v0436-first-complete-conquest-victory",
-  "runtimeStatus": "BLOCKED_EXACT_BEHAVIORAL_PROOF",
-  "failures": [
-    "runtime status BLOCKED_EXACT_BEHAVIORAL_PROOF"
+  "schema": "v0436-r1b-navigation-behavioral-validator-v1",
+  "baseSha": "ed7a66a05d8d7750ba5f8e7f0d4124c6eb40c2b2",
+  "validationInputSha": "ed7a66a05d8d7750ba5f8e7f0d4124c6eb40c2b2",
+  "acceptedSourceShas": [
+    "ed7a66a05d8d7750ba5f8e7f0d4124c6eb40c2b2"
   ],
-  "passed": false,
+  "branch": "codex/v0436-first-complete-conquest-victory",
+  "runtimeStatus": "PASSED_NAVIGATION_BEHAVIORAL_PROOF",
+  "failures": [],
+  "passed": true,
   "evidence": [
     "01_PRODUCTION_MATCH_INITIAL_STATE.png",
     "02_NAVIGATION_MAP_READY.png",
@@ -33,5 +34,5 @@
     "22_NAVIGATION_BEHAVIORAL_CONTACT_SHEET.png"
   ],
   "pack": "artifacts/manual-review/v0436-r1a-navigation-behavioral-proof/",
-  "report": "docs/V0436_R1A_NAVIGATION_BEHAVIORAL_PROOF_REPORT.md"
+  "report": "docs/V0436_R1B_BOUNDARY_RECOVERY_PROOF_REPORT.md"
 }

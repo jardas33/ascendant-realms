@@ -1,7 +1,9 @@
 {
+  "branch": "codex/v0436-first-complete-conquest-victory",
   "command": "npm run godot:capture:v0436-r1-navigation-behavior",
   "environment": "ASCENDANT_V0436_R1_CAPTURE=1",
   "production_scene": "scenes/main.tscn -> scenes/game_world.tscn",
-  "schema": "v0436-r1a-navigation-behavioral-capture-command-v2",
-  "scope": "bounded real command proof; no full conquest capture"
+  "schema": "v0436-r1a-navigation-behavioral-capture-command-v3",
+  "scope": "bounded real command proof; no full conquest capture",
+  "source_sha": "ed7a66a05d8d7750ba5f8e7f0d4124c6eb40c2b2"
 }
