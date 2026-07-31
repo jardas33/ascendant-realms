@@ -1,8 +1,9 @@
 {
   "schema": "v0436-r1b-navigation-behavioral-validator-v1",
   "baseSha": "ed7a66a05d8d7750ba5f8e7f0d4124c6eb40c2b2",
-  "validationInputSha": "ed7a66a05d8d7750ba5f8e7f0d4124c6eb40c2b2",
+  "validationInputSha": "48b529def3e7fd9fdb0533b297deae7131d33c36",
   "acceptedSourceShas": [
+    "48b529def3e7fd9fdb0533b297deae7131d33c36",
     "ed7a66a05d8d7750ba5f8e7f0d4124c6eb40c2b2"
   ],
   "branch": "codex/v0436-first-complete-conquest-victory",
