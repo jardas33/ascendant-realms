@@ -1,0 +1,24 @@
+{
+  "schema": "v0436-r1f-duplicate-movement-audit-v1",
+  "runs": [
+    {
+      "run_index": "01",
+      "maximum_movement_applications_same_frame": 1,
+      "duplicate_movement_frames": [],
+      "callbacks_that_moved_after_recovery": 0
+    },
+    {
+      "run_index": "02",
+      "maximum_movement_applications_same_frame": 1,
+      "duplicate_movement_frames": [],
+      "callbacks_that_moved_after_recovery": 0
+    },
+    {
+      "run_index": "03",
+      "maximum_movement_applications_same_frame": 1,
+      "duplicate_movement_frames": [],
+      "callbacks_that_moved_after_recovery": 0
+    }
+  ],
+  "passed": true
+}

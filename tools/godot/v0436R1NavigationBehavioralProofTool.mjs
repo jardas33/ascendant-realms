@@ -27,18 +27,19 @@ const git = args => execFileSync('git', args, { cwd: repo, encoding: 'utf8' }).t
 const godot = () => process.env.ASCENDANT_REALMS_GODOT || path.join(process.env.LOCALAPPDATA || '', 'AscendantRealms/tools/godot-4.3-stable/Godot_v4.3-stable_win64.exe');
 function run(args, env = {}) { execFileSync(godot(), args, { cwd: repo, stdio: 'inherit', env: { ...process.env, ...env } }); }
 function focused() { run(['--headless', '--path', project, '--script', 'res://tests/v0436_navigation_repair.gd', '--quit-after', '20']); }
-function smoke() { run(['--headless', '--path', project, '--quit-after', '30', '--log-file', path.join(pack, 'v0436-r1a-navigation-smoke.log')]); }
+function smoke() { run(['--headless', '--path', project, '--quit-after', '30']); }
 function capture() {
-  run(['--path', project, '--resolution', '1920x1080', '--rendering-method', 'gl_compatibility', '--verbose', '--log-file', path.join(pack, 'v0436-r1a-navigation-runtime.log')], {
+  run(['--path', project, '--resolution', '1920x1080', '--verbose'], {
     ASCENDANT_V0436_R1_CAPTURE: '1',
     ASCENDANT_V0436_R1_SOURCE_SHA: git(['rev-parse', 'HEAD']),
     ASCENDANT_V0436_R1_BRANCH: git(['branch', '--show-current']),
   });
 }
 function boundaryTests() {
-  run(['--path', project, '--resolution', '1920x1080', '--rendering-method', 'gl_compatibility', '--verbose', '--log-file', path.join(pack, 'v0436-r1b-boundary-recovery-runtime.log')], {
+  run(['--path', project, '--resolution', '1920x1080', '--verbose'], {
     ASCENDANT_V0436_R1_CAPTURE: '1',
     ASCENDANT_V0436_R1_BOUNDARY_ONLY: '1',
+    ASCENDANT_V0436_R1F_BOUNDARY_AUDIT: '1',
     ASCENDANT_V0436_R1_SOURCE_SHA: git(['rev-parse', 'HEAD']),
     ASCENDANT_V0436_R1_BRANCH: git(['branch', '--show-current']),
   });
@@ -120,5 +121,26 @@ async function validate() {
   await fs.writeFile(path.join(pack, 'v0436-r1a-navigation-behavioral-validation.json'), JSON.stringify(out, null, 2) + '\n');
   if (failures.length) { console.error(JSON.stringify(out, null, 2)); process.exitCode = 1; } else console.log(JSON.stringify(out, null, 2));
 }
+async function legacyDiagnose() {
+  const boundaryPath = path.join(pack, 'v0436-r1b-boundary-recovery-proof.json');
+  const boundary = JSON.parse(await read(boundaryPath));
+  const result = {
+    schema: 'v0436-r1b-legacy-timer-diagnostic-v1',
+    status: 'HISTORICAL_R1E_TIMER_CONTRACT_FALSE_POSITIVE',
+    source_sha: boundary.source_sha,
+    branch: boundary.branch,
+    diagnostic_only: true,
+    active_gate: false,
+    reason: 'Legacy timer intervals are retained as historical evidence and are not physics-frame acceptance.',
+    legacy_metrics: {
+      maximum_sampled_speed: boundary.boundary?.maximum_sampled_speed ?? boundary.maximum_sampled_speed,
+      maximum_single_frame_displacement: boundary.boundary?.maximum_single_frame_displacement ?? boundary.maximum_single_frame_displacement,
+      maximum_allowed_speed: boundary.boundary?.maximum_allowed_speed ?? boundary.maximum_allowed_speed,
+      maximum_allowed_single_frame_displacement: boundary.boundary?.maximum_allowed_single_frame_displacement ?? boundary.maximum_allowed_single_frame_displacement,
+    },
+  };
+  await fs.writeFile(path.join(pack, 'v0436-r1b-legacy-timer-diagnostic.json'), JSON.stringify(result, null, 2) + '\n');
+  console.log(JSON.stringify(result, null, 2));
+}
 const command = process.argv[2] || 'validate';
-if (command === 'focused-tests') focused(); else if (command === 'boundary-tests') boundaryTests(); else if (command === 'smoke') smoke(); else if (command === 'capture') capture(); else await validate();
+if (command === 'focused-tests') focused(); else if (command === 'boundary-tests') boundaryTests(); else if (command === 'smoke') smoke(); else if (command === 'capture') capture(); else if (command === 'legacy-diagnose') await legacyDiagnose(); else await validate();

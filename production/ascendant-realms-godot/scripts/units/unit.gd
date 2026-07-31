@@ -123,6 +123,10 @@ var _boundary_recovery_target := Vector3.ZERO
 var _boundary_resume_state := State.IDLE
 var _boundary_recovery_reason := ""
 var _boundary_recovery_distance_last := 0.0
+var _v0436_r1f_physics_audit: Array = []
+var _v0436_r1f_last_move_frame := -1
+var _v0436_r1f_move_count := 0
+var _v0436_r1f_last_recovery_move_frame := -1
 var _health_bar_root: Node3D
 var _health_bar_fill: MeshInstance3D
 var _health_bar_back: MeshInstance3D
@@ -130,6 +134,7 @@ var _health_bar_back: MeshInstance3D
 const ARRIVE_DIST := 1.2
 const NAVIGATION_REPATH_INTERVAL := 0.20
 const NAVIGATION_RETRY_BUDGET := 2.5
+const V0436_R1F_AUDIT_CAP := 512
 
 func _ready() -> void:
 	add_to_group("units")
@@ -599,6 +604,46 @@ func _navigation_terminal_stop(reason: String) -> void:
 func _finite_position(pos: Vector3) -> bool:
 	return abs(pos.x) < 1000000.0 and abs(pos.y) < 1000000.0 and abs(pos.z) < 1000000.0 and pos.x == pos.x and pos.y == pos.y and pos.z == pos.z
 
+func _v0436_r1f_audit_enabled() -> bool:
+	return bool(get_meta("v0436_boundary_fixture", false)) or OS.get_environment("ASCENDANT_V0436_R1F_BOUNDARY_AUDIT") == "1"
+
+func _v0436_r1f_vec(value: Vector3) -> Dictionary:
+	return {"x": value.x, "y": value.y, "z": value.z}
+
+func _v0436_r1f_note_move(frame: int) -> int:
+	if _v0436_r1f_last_move_frame != frame:
+		_v0436_r1f_last_move_frame = frame
+		_v0436_r1f_move_count = 0
+	_v0436_r1f_move_count += 1
+	return _v0436_r1f_move_count
+
+func _v0436_r1f_record(entry: Dictionary) -> void:
+	if not _v0436_r1f_audit_enabled():
+		return
+	_v0436_r1f_physics_audit.append(entry)
+	if _v0436_r1f_physics_audit.size() > V0436_R1F_AUDIT_CAP:
+		_v0436_r1f_physics_audit.pop_front()
+
+func v0436_r1f_physics_audit_snapshot() -> Array:
+	return _v0436_r1f_physics_audit.duplicate(true)
+
+func _v0436_r1f_record_callback(frame: int, safe_vel: Vector3, before: Vector3, after: Vector3, called_move: bool, recovery_already_moved: bool) -> void:
+	_v0436_r1f_record({
+		"kind": "avoidance_callback",
+		"physics_frame": frame,
+		"wall_timestamp_ms": Time.get_ticks_msec(),
+		"physics_delta": get_physics_process_delta_time(),
+		"time_scale": Engine.time_scale,
+		"physics_ticks_per_second": Engine.physics_ticks_per_second,
+		"safe_velocity": _v0436_r1f_vec(safe_vel),
+		"position_before": _v0436_r1f_vec(before),
+		"position_after": _v0436_r1f_vec(after),
+		"called_move_and_slide": called_move,
+		"displacement": before.distance_to(after),
+		"recovery_already_moved": recovery_already_moved,
+		"movement_applications_same_frame": _v0436_r1f_move_count if _v0436_r1f_last_move_frame == frame else 0,
+	})
+
 func _inside_playable(pos: Vector3, tolerance: float = 0.0) -> bool:
 	return not world or not world.has_method("is_inside_playable_bounds") or world.is_inside_playable_bounds(pos, tolerance)
 
@@ -643,9 +688,39 @@ func _state_boundary_recovery(delta: float) -> void:
 	var recovery_speed := move_speed
 	if _slow > 0.0: recovery_speed *= 0.5
 	var direction := to_safe.normalized()
+	var audit_enabled := _v0436_r1f_audit_enabled()
+	var audit_frame := Engine.get_physics_frames()
+	var position_before := global_position
+	var velocity_before := velocity
+	var outside_before: float = float(world.distance_outside_playable_bounds(position_before)) if world and world.has_method("distance_outside_playable_bounds") else 0.0
 	velocity = direction * recovery_speed
 	velocity.y = 0.0
 	move_and_slide()
+	if audit_enabled:
+		_v0436_r1f_last_recovery_move_frame = audit_frame
+		var movement_count := _v0436_r1f_note_move(audit_frame)
+		var position_after := global_position
+		var outside_after: float = float(world.distance_outside_playable_bounds(position_after)) if world and world.has_method("distance_outside_playable_bounds") else 0.0
+		var physics_delta := maxf(delta, 0.000001)
+		_v0436_r1f_record({
+			"kind": "recovery_step",
+			"physics_frame": audit_frame,
+			"wall_timestamp_ms": Time.get_ticks_msec(),
+			"physics_delta": delta,
+			"time_scale": Engine.time_scale,
+			"physics_ticks_per_second": Engine.physics_ticks_per_second,
+			"position_before": _v0436_r1f_vec(position_before),
+			"position_after": _v0436_r1f_vec(position_after),
+			"displacement": position_before.distance_to(position_after),
+			"requested_recovery_speed": recovery_speed,
+			"simulation_speed": position_before.distance_to(position_after) / physics_delta,
+			"velocity_before": _v0436_r1f_vec(velocity_before),
+			"velocity_after": _v0436_r1f_vec(velocity),
+			"recovery_target": _v0436_r1f_vec(_boundary_recovery_target),
+			"distance_outside_before": outside_before,
+			"distance_outside_after": outside_after,
+			"movement_applications_same_frame": movement_count,
+		})
 	_face(global_position + direction)
 	_play("walk")
 
@@ -1118,8 +1193,14 @@ func _move_along_path(delta: float) -> bool:
 	return false
 
 func _on_velocity_computed(safe_vel: Vector3) -> void:
+	var audit_enabled := _v0436_r1f_audit_enabled()
+	var audit_frame := Engine.get_physics_frames()
+	var callback_position_before := global_position
+	var recovery_already_moved := _v0436_r1f_last_recovery_move_frame == audit_frame
 	if state == State.IDLE or state == State.HOLD or state == State.DEAD:
 		velocity = Vector3.ZERO
+		if audit_enabled and (_boundary_recovery_active or recovery_already_moved):
+			_v0436_r1f_record_callback(audit_frame, safe_vel, callback_position_before, global_position, false, recovery_already_moved)
 		return
 	var invalid_reason := ""
 	if not _finite_position(safe_vel):
@@ -1148,11 +1229,16 @@ func _on_velocity_computed(safe_vel: Vector3) -> void:
 			_navigation_repath_attempts += 1
 			_navigation_repath_cooldown = NAVIGATION_REPATH_INTERVAL
 			agent.target_position = _navigation_effective_target
+		if audit_enabled and (_boundary_recovery_active or recovery_already_moved):
+			_v0436_r1f_record_callback(audit_frame, safe_vel, callback_position_before, global_position, false, recovery_already_moved)
 		return
 	_navigation_invalid_consecutive = 0
 	velocity.x = safe_vel.x
 	velocity.z = safe_vel.z
 	move_and_slide()
+	if audit_enabled and (_boundary_recovery_active or recovery_already_moved):
+		_v0436_r1f_note_move(audit_frame)
+		_v0436_r1f_record_callback(audit_frame, safe_vel, callback_position_before, global_position, true, recovery_already_moved)
 
 func _face(target_pos: Vector3) -> void:
 	var to := target_pos - global_position

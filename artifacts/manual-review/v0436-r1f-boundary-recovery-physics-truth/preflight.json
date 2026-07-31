@@ -1,0 +1,9 @@
+{
+  "schema": "v0436-r1f-preflight-v1",
+  "branch": "codex/v0436-first-complete-conquest-victory",
+  "head": "6b14ba305afc4b3090d57f400da885550d512183",
+  "base": "6b14ba305afc4b3090d57f400da885550d512183",
+  "godot": "C:\\Users\\barro\\AppData\\Local\\AscendantRealms\\tools\\godot-4.3-stable\\Godot_v4.3-stable_win64.exe",
+  "project": "D:\\Code for projects\\WB game like\\ascendant-realms-v0223-recovery\\production\\ascendant-realms-godot",
+  "no_r1c_or_conquest_capture": true
+}

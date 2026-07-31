@@ -1,0 +1,14 @@
+{
+  "schema": "v0436-r1f-boundary-physics-validator-v1",
+  "branch": "codex/v0436-first-complete-conquest-victory",
+  "head": "6b14ba305afc4b3090d57f400da885550d512183",
+  "expectedBase": "6b14ba305afc4b3090d57f400da885550d512183",
+  "failures": [],
+  "passed": true,
+  "runs": [
+    "01",
+    "02",
+    "03"
+  ],
+  "pack": "artifacts/manual-review/v0436-r1f-boundary-recovery-physics-truth/"
+}

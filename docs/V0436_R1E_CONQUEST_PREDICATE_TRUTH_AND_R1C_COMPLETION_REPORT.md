@@ -77,3 +77,11 @@ P0-NAV-001 remains not promotable because the fresh boundary gate failed. P0-RES
 - R1E blocked review directory: `artifacts/manual-review/v0436-r1e-conquest-predicate-truth-and-r1c-completion/`
 
 No R1E success frames are present or claimed. The checkpoint stops at the required fail-closed boundary result; it does not start v0.437 and does not merge PR #10.
+
+## Dated R1F follow-up — 2026-07-30
+
+The R1E boundary failure was investigated by the isolated v0.436-R1F physics-frame audit. Three fresh headed runs through the corrected npm wrapper all completed recovery in bounds with zero post-start position writes, zero direct state writes, no contamination, no outward drift, a maximum per-physics-step displacement of `0.1199951171875`, a maximum simulation speed of `3.599853515625` against the existing `5.4` allowance, and exactly one body movement application per physics frame. The audit recorded `34` avoidance callbacks per run and zero callbacks that moved after recovery movement. No duplicate movement was proven and no production overspeed was proven.
+
+The prior `9.41138174019608` sampled speed and `1.919921875` sampled interval displacement remain valid historical observations of the old timer harness, not physics-frame truth. R1F classifies the issue as `PASSED_V0436_R1F_BOUNDARY_MEASUREMENT_CONTRACT_REPAIRED`: timer interval displacement is now labelled diagnostic, while active R1B acceptance is based on physics-step displacement and simulation speed. `npm run godot:test:v0436-r1-boundary-recovery` and `npm run godot:validate:v0436-r1-navigation-behavioral-proof` now pass fresh physics evidence. The old timer source/output remains available as `npm run godot:diagnose:v0436-r1b-legacy-timer-contract` with status `HISTORICAL_R1E_TIMER_CONTRACT_FALSE_POSITIVE`. The only production-script change is bounded fixture-only read-only instrumentation; no movement repair or gameplay semantic change was made. R1C and conquest-predicate capture were not resumed. R1E's original blocked history remains intact and is not being rewritten as a success.
+
+R1F evidence: `artifacts/manual-review/v0436-r1f-boundary-recovery-physics-truth/`. R1F report: `docs/V0436_R1F_BOUNDARY_RECOVERY_PHYSICS_TRUTH_REPORT.md`.

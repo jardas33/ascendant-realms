@@ -98,7 +98,21 @@ async function validate() {
     if (!String(audit.scene || '').includes('scenes/main.tscn')) failures.push(`production audit scene mismatch: ${name}`);
     if (!audit.samples?.some(sample => Number(sample.r) + Number(sample.g) + Number(sample.b) > 0.05)) failures.push(`production frame samples are black: ${name}`);
   }
-  const allowed = new Set(['production/ascendant-realms-godot/project.godot','production/ascendant-realms-godot/scripts/main_menu.gd','production/ascendant-realms-godot/tests/v0436_r1d_startup_capture.gd','tools/godot/v0436R1DHeadedStartupRecoveryTool.mjs','tools/godot/v0436R1CConquestResultReplayTool.mjs','package.json','docs/V0436_R1D_HEADED_GODOT_STARTUP_RECOVERY_REPORT.md','docs/V0436_R1C_NATURAL_CONQUEST_RESULT_REPLAY_PROOF_REPORT.md']);
+  const allowed = new Set([
+    'production/ascendant-realms-godot/project.godot',
+    'production/ascendant-realms-godot/scripts/main_menu.gd',
+    'production/ascendant-realms-godot/scripts/units/unit.gd',
+    'production/ascendant-realms-godot/scripts/world/game_root.gd',
+    'production/ascendant-realms-godot/tests/v0436_r1d_startup_capture.gd',
+    'tools/godot/v0436R1DHeadedStartupRecoveryTool.mjs',
+    'tools/godot/v0436R1CConquestResultReplayTool.mjs',
+    'tools/godot/v0436R1NavigationBehavioralProofTool.mjs',
+    'package.json',
+    'docs/V0436_R1D_HEADED_GODOT_STARTUP_RECOVERY_REPORT.md',
+    'docs/V0436_R1C_NATURAL_CONQUEST_RESULT_REPLAY_PROOF_REPORT.md',
+    'docs/V0436_R1E_CONQUEST_PREDICATE_TRUTH_AND_R1C_COMPLETION_REPORT.md',
+    'docs/ASCENDANT_REALMS_MASTER_PLAYER_EXPERIENCE_BACKLOG.md'
+  ]);
   allowed.add('artifacts/manual-review/v0436-r1c-natural-conquest-result-replay-proof/r1c-headed-startup-blocker.json');
   allowed.add('artifacts/manual-review/v0436-r1c-natural-conquest-result-replay-proof/r1c-production-blocker.json');
   allowed.add('artifacts/manual-review/v0436-r1c-natural-conquest-result-replay-proof/session-a/r1c-session-failure.json');
