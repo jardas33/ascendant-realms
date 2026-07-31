@@ -1,0 +1,37 @@
+{
+  "schema": "v0436-r1a-navigation-behavioral-validator-v2",
+  "baseSha": "9e9312560bccd1c04aee8ff39f8677074c30b10f",
+  "validationInputSha": "9e9312560bccd1c04aee8ff39f8677074c30b10f",
+  "branch": "codex/v0436-first-complete-conquest-victory",
+  "runtimeStatus": "BLOCKED_EXACT_BEHAVIORAL_PROOF",
+  "failures": [
+    "runtime status BLOCKED_EXACT_BEHAVIORAL_PROOF"
+  ],
+  "passed": false,
+  "evidence": [
+    "01_PRODUCTION_MATCH_INITIAL_STATE.png",
+    "02_NAVIGATION_MAP_READY.png",
+    "03_WORKER_CONSTRUCTION_COMMAND_ISSUED.png",
+    "04_WORKER_CONSTRUCTION_TRAVELLING.png",
+    "05_WORKER_INSIDE_BUILD_RANGE.png",
+    "06_REAL_CONSTRUCTION_PROGRESS.png",
+    "07_COMPLETED_WAR_HALL.png",
+    "08_WORKER_GATHERING.png",
+    "09_WORKER_CARRYING_RESOURCES.png",
+    "10_WORKER_RETURNING.png",
+    "11_REAL_DEPOSIT_COMPLETED.png",
+    "12_MILITARY_MOVE_UNDERWAY.png",
+    "13_MILITARY_MOVE_ARRIVED.png",
+    "14_GROUP_ATTACK_MOVE_BEGINNING.png",
+    "15_GROUP_CROSSING_BATTLEFIELD.png",
+    "16_ENEMY_CONTACT.png",
+    "17_MOVING_TARGET_PURSUIT.png",
+    "18_INVALID_TARGET_TERMINAL_FAILURE.png",
+    "19_BOUNDARY_RECOVERY_UNDERWAY.png",
+    "20_BOUNDARY_RECOVERY_COMPLETE.png",
+    "21_FINAL_BOUNDED_UNIT_OVERVIEW.png",
+    "22_NAVIGATION_BEHAVIORAL_CONTACT_SHEET.png"
+  ],
+  "pack": "artifacts/manual-review/v0436-r1a-navigation-behavioral-proof/",
+  "report": "docs/V0436_R1A_NAVIGATION_BEHAVIORAL_PROOF_REPORT.md"
+}

@@ -1,0 +1,7 @@
+{
+  "command": "npm run godot:capture:v0436-r1-navigation-behavior",
+  "environment": "ASCENDANT_V0436_R1_CAPTURE=1",
+  "production_scene": "scenes/main.tscn -> scenes/game_world.tscn",
+  "schema": "v0436-r1a-navigation-behavioral-capture-command-v2",
+  "scope": "bounded real command proof; no full conquest capture"
+}

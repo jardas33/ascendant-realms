@@ -33,6 +33,7 @@ V0433Capture="*res://tests/v0433_capture.gd"
 V0434Capture="*res://tests/v0434_capture.gd"
 V0435Capture="*res://tests/v0435_capture.gd"
 V0436Capture="*res://tests/v0436_capture.gd"
+V0436R1Capture="*res://tests/v0436_r1_navigation_behavioral_proof.gd"
 
 [debug]
 
