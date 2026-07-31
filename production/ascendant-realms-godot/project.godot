@@ -35,6 +35,7 @@ V0435Capture="*res://tests/v0435_capture.gd"
 V0436Capture="*res://tests/v0436_capture.gd"
 V0436R1Capture="*res://tests/v0436_r1_navigation_behavioral_proof.gd"
 V0436R1CCapture="*res://tests/v0436_r1c_capture.gd"
+V0436R1DStartupCapture="*res://tests/v0436_r1d_startup_capture.gd"
 
 [debug]
 

@@ -1,0 +1,12 @@
+{
+  "schema": "v0436-r1c-production-blocker-v1",
+  "session": "A",
+  "source_sha": "f05ba19f8398d1a1bfd01bbe31b05fe3eeff1779",
+  "branch": "codex/v0436-first-complete-conquest-victory",
+  "status": "BLOCKED_R1C_NATURAL_CONQUEST_NOT_RESOLVED_AFTER_REAL_FRAMES",
+  "exit_status": 22,
+  "observed": "real production frames through the conquest predicate were written; match_ended remained false and no genuine result or replay proof was produced",
+  "root_cause": "natural production conquest did not resolve before the bounded 120-second result wait; no gameplay or result-state write was added",
+  "launch_correction_proven": "R1D startup gate passed with quoted project path, real headed window, project-default renderer, and three stable 32-second starts",
+  "next_safe_action": "diagnose the production combat-time process exit without changing gameplay, then rerun the bounded R1C capture"
+}

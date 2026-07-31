@@ -1,0 +1,271 @@
+{
+  "schema": "v0436-r1d-headed-godot-startup-recovery-v1",
+  "status": "PASSED_V0436_R1D_HEADED_STARTUP_RECOVERY_R1C_NOT_RUN",
+  "source_sha": "f05ba19f8398d1a1bfd01bbe31b05fe3eeff1779",
+  "required_base_sha": "f05ba19f8398d1a1bfd01bbe31b05fe3eeff1779",
+  "branch": "codex/v0436-first-complete-conquest-victory",
+  "upstream": "origin/codex/v0436-first-complete-conquest-victory",
+  "official_url": "https://github.com/godotengine/godot/releases/download/4.3-stable/Godot_v4.3-stable_win64.exe.zip",
+  "current_executable": {
+    "path": "C:\\Users\\barro\\AppData\\Local\\AscendantRealms\\tools\\godot-4.3-stable\\Godot_v4.3-stable_win64.exe",
+    "exists": true,
+    "sha256": "b554ba80fb2ad8f1817bc21242ac8adbb9e41f806c49ad5cc73603db71fee32f",
+    "version": "4.3.stable.official.77dcf97d8"
+  },
+  "fresh_official_executable": {
+    "path": "C:\\Users\\barro\\AppData\\Local\\AscendantRealms\\tools\\godot-4.3-stable-r1d-probe\\official-extracted\\Godot_v4.3-stable_win64.exe",
+    "exists": true,
+    "sha256": "b554ba80fb2ad8f1817bc21242ac8adbb9e41f806c49ad5cc73603db71fee32f",
+    "version": "4.3.stable.official.77dcf97d8"
+  },
+  "fresh_archive": {
+    "path": "C:\\Users\\barro\\AppData\\Local\\AscendantRealms\\tools\\godot-4.3-stable-r1d-probe\\Godot_v4.3-stable_win64.exe.zip",
+    "exists": true,
+    "sha256": "8f2c75b734bd956027ae3ca92c41f78b5d5a255dacc0f20e4e3c523c545ad410",
+    "version": "ERROR:EFTYPE"
+  },
+  "platform": {
+    "os": "win32",
+    "arch": "x64",
+    "node": "v24.11.0"
+  },
+  "environment": {
+    "explicit_godot": null,
+    "godot": null,
+    "vulkan_sdk": null,
+    "vk_icd": null
+  },
+  "root_cause": {
+    "classification": "LAUNCH_CONTRACT_FAILURE",
+    "observed": "Godot 4.3 crashed with 0xc0000005 when invoked with --log-file pointing to an absolute or nested repository path; hidden-window startup was also not accepted.",
+    "faulting_module": "Godot_v4.3-stable_win64.exe",
+    "repair": "Use a real headed window, quote the spaced project path, omit --log-file from the Godot launch contract, and capture stdout/stderr through the runner. Use the project Forward Plus default unless explicitly overridden."
+  },
+  "matrix": {
+    "current_binary_plain_minimal": "PASS_RENDERED_FRAME",
+    "current_binary_hidden_or_absolute_log": "FAIL_0xC0000005",
+    "fresh_binary_plain_minimal_default": "PASS_RENDERED_FRAME",
+    "fresh_binary_plain_minimal_gl": "PASS_RENDERED_FRAME",
+    "production_default_renderer": "PASS_RENDERED_FRAME",
+    "production_stable_runs": 3,
+    "each_stable_run_seconds": 32,
+    "headless_substitution": false
+  },
+  "frames": [
+    {
+      "name": "01_R1D_FRESH_MINIMAL_DEFAULT.png",
+      "exists": true,
+      "bytes": 5117
+    },
+    {
+      "name": "01_R1D_FRESH_MINIMAL_GL_COMPATIBILITY.png",
+      "exists": true,
+      "bytes": 5610
+    },
+    {
+      "name": "01_R1D_CURRENT_MINIMAL_PLAIN.png",
+      "exists": true,
+      "bytes": 5117
+    },
+    {
+      "name": "02_R1D_PRODUCTION_DEFAULT_RENDERER.png",
+      "exists": true,
+      "bytes": 1095782
+    },
+    {
+      "name": "03_R1D_PRODUCTION_STABLE_01.png",
+      "exists": true,
+      "bytes": 1095782
+    },
+    {
+      "name": "04_R1D_PRODUCTION_STABLE_02.png",
+      "exists": true,
+      "bytes": 1095782
+    },
+    {
+      "name": "05_R1D_PRODUCTION_STABLE_03.png",
+      "exists": true,
+      "bytes": 1095782
+    }
+  ],
+  "audits": [
+    {
+      "name": "02_R1D_PRODUCTION_DEFAULT_RENDERER.json",
+      "exists": true,
+      "value": {
+        "frame_count": 60,
+        "samples": [
+          {
+            "a": 1,
+            "b": 0.270588248968124,
+            "g": 0.286274522542953,
+            "r": 0.309803932905197,
+            "x": 1,
+            "y": 1
+          },
+          {
+            "a": 1,
+            "b": 0.176470592617989,
+            "g": 0.388235300779343,
+            "r": 0.47843137383461,
+            "x": 640,
+            "y": 360
+          },
+          {
+            "a": 1,
+            "b": 0.0509803928434849,
+            "g": 0.0274509806185961,
+            "r": 0.0156862754374743,
+            "x": 1278,
+            "y": 718
+          }
+        ],
+        "saved": true,
+        "scene": "res://scenes/main.tscn",
+        "schema": "v0436-r1d-headed-production-frame-v1",
+        "status": "FRAME_CAPTURED",
+        "timestamp": "2026-07-31T03:35:22",
+        "viewport": {
+          "height": 720,
+          "width": 1280
+        }
+      }
+    },
+    {
+      "name": "03_R1D_PRODUCTION_STABLE_01.json",
+      "exists": true,
+      "value": {
+        "frame_count": 60,
+        "samples": [
+          {
+            "a": 1,
+            "b": 0.270588248968124,
+            "g": 0.286274522542953,
+            "r": 0.309803932905197,
+            "x": 1,
+            "y": 1
+          },
+          {
+            "a": 1,
+            "b": 0.176470592617989,
+            "g": 0.388235300779343,
+            "r": 0.47843137383461,
+            "x": 640,
+            "y": 360
+          },
+          {
+            "a": 1,
+            "b": 0.0509803928434849,
+            "g": 0.0274509806185961,
+            "r": 0.0156862754374743,
+            "x": 1278,
+            "y": 718
+          }
+        ],
+        "saved": true,
+        "scene": "res://scenes/main.tscn",
+        "schema": "v0436-r1d-headed-production-frame-v1",
+        "status": "FRAME_CAPTURED",
+        "timestamp": "2026-07-31T03:36:04",
+        "viewport": {
+          "height": 720,
+          "width": 1280
+        }
+      }
+    },
+    {
+      "name": "04_R1D_PRODUCTION_STABLE_02.json",
+      "exists": true,
+      "value": {
+        "frame_count": 60,
+        "samples": [
+          {
+            "a": 1,
+            "b": 0.270588248968124,
+            "g": 0.286274522542953,
+            "r": 0.309803932905197,
+            "x": 1,
+            "y": 1
+          },
+          {
+            "a": 1,
+            "b": 0.176470592617989,
+            "g": 0.388235300779343,
+            "r": 0.47843137383461,
+            "x": 640,
+            "y": 360
+          },
+          {
+            "a": 1,
+            "b": 0.0509803928434849,
+            "g": 0.0274509806185961,
+            "r": 0.0156862754374743,
+            "x": 1278,
+            "y": 718
+          }
+        ],
+        "saved": true,
+        "scene": "res://scenes/main.tscn",
+        "schema": "v0436-r1d-headed-production-frame-v1",
+        "status": "FRAME_CAPTURED",
+        "timestamp": "2026-07-31T03:36:35",
+        "viewport": {
+          "height": 720,
+          "width": 1280
+        }
+      }
+    },
+    {
+      "name": "05_R1D_PRODUCTION_STABLE_03.json",
+      "exists": true,
+      "value": {
+        "frame_count": 60,
+        "samples": [
+          {
+            "a": 1,
+            "b": 0.270588248968124,
+            "g": 0.286274522542953,
+            "r": 0.309803932905197,
+            "x": 1,
+            "y": 1
+          },
+          {
+            "a": 1,
+            "b": 0.176470592617989,
+            "g": 0.388235300779343,
+            "r": 0.47843137383461,
+            "x": 640,
+            "y": 360
+          },
+          {
+            "a": 1,
+            "b": 0.0509803928434849,
+            "g": 0.0274509806185961,
+            "r": 0.0156862754374743,
+            "x": 1278,
+            "y": 718
+          }
+        ],
+        "saved": true,
+        "scene": "res://scenes/main.tscn",
+        "schema": "v0436-r1d-headed-production-frame-v1",
+        "status": "FRAME_CAPTURED",
+        "timestamp": "2026-07-31T03:37:07",
+        "viewport": {
+          "height": 720,
+          "width": 1280
+        }
+      }
+    }
+  ],
+  "production_scope": {
+    "gameplay_source_changed": false,
+    "result_state_changed": false,
+    "movement_added": false,
+    "combat_added": false,
+    "economy_changed": false,
+    "accepted_chain_changed": false,
+    "diagnostic_files_only": true
+  },
+  "generated_at": "2026-07-31T03:42:15.315Z"
+}

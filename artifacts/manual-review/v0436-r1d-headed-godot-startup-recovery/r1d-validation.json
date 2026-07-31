@@ -1,0 +1,11 @@
+{
+  "schema": "v0436-r1d-headed-godot-startup-recovery-validator-v1",
+  "status": "PASSED_V0436_R1D_HEADED_STARTUP_RECOVERY_R1C_NOT_RUN",
+  "passed": true,
+  "source_sha": "f05ba19f8398d1a1bfd01bbe31b05fe3eeff1779",
+  "branch": "codex/v0436-first-complete-conquest-victory",
+  "failures": [],
+  "diagnostic": "artifacts/manual-review/v0436-r1d-headed-godot-startup-recovery/r1d-headed-startup-diagnostic.json",
+  "no_headless_false_pass": true,
+  "no_gameplay_mutation": true
+}

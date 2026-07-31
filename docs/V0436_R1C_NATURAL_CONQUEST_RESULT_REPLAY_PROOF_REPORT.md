@@ -76,3 +76,17 @@ The scoped publication commit is `dec93d7ad3af338328abb156de87ad51677afee9`. Exa
 ## Final disposition
 
 This is a truthful R1C tooling-and-blocker record, not a completed natural conquest proof. Do not close P0-RESULT-001, do not claim Continue/Play Again success, and do not start v0.437.
+
+## v0.436-R1D startup-recovery follow-up
+
+R1D passed the headed startup gate at exact source SHA `f05ba19f8398d1a1bfd01bbe31b05fe3eeff1779` using the official Godot 4.3.0 executable. The root cause of the original startup failure was narrowed to the old launch contract: hidden-window execution and Godot `--log-file` targeting an absolute/nested path reproduced Windows `0xc0000005` in `Godot_v4.3-stable_win64.exe`; a normal headed launch with a quoted spaced project path and runner-owned stdout/stderr handling produced real frames. R1D recorded the current/fresh executable hashes, official archive hash, Windows/GPU evidence, matrix, renderer contact sheet, one production frame, and three consecutive 32-second production starts.
+
+R1C was resumed after this gate with the fresh reviewed executable and the project-default renderer. The capture-only menu bypass reached the real `scenes/game_world.tscn` and produced genuine runtime frames through the conquest predicate, as well as live configuration, transaction, and assault-navigation audits. The bounded natural-conquest result wait then expired with `match_ended=false` before result/replay proof. No victory result, Continue, Play Again, fresh replay, or final result-HUD frame is claimed.
+
+Current R1C status:
+
+`BLOCKED_R1C_NATURAL_CONQUEST_NOT_RESOLVED_AFTER_REAL_FRAMES`
+
+R1D report: `docs/V0436_R1D_HEADED_GODOT_STARTUP_RECOVERY_REPORT.md`
+
+R1D review pack: `artifacts/manual-review/v0436-r1d-headed-godot-startup-recovery/`

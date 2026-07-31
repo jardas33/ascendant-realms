@@ -1,7 +1,9 @@
 import fs from 'node:fs/promises';
+import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { execFileSync } from 'node:child_process';
+import crypto from 'node:crypto';
 
 const repo = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', '..');
 const project = path.join(repo, 'production', 'ascendant-realms-godot');
@@ -18,6 +20,8 @@ const exists = async p => { try { await fs.access(p); return true; } catch { ret
 const writeJson = async (file, value) => { await fs.mkdir(path.dirname(file), { recursive: true }); await fs.writeFile(file, JSON.stringify(value, null, 2) + '\n'); };
 const sourceSha = () => git(['rev-parse', 'HEAD']);
 const envBase = { ASCENDANT_V0436_R1C_CAPTURE:'1', ASCENDANT_V0436_R1C_SOURCE_SHA:sourceSha(), ASCENDANT_V0436_R1C_BRANCH:git(['branch','--show-current']) };
+const renderer = () => process.env.ASCENDANT_V0436_R1C_RENDERER || 'Forward Plus';
+const executableHash = () => crypto.createHash('sha256').update(readFileSync(godot())).digest('hex');
 
 function runSession(session) {
   const dir = path.join(pack, `session-${session.toLowerCase()}`);
@@ -25,17 +29,21 @@ function runSession(session) {
   const started = new Date().toISOString();
   const env = { ...envBase, ASCENDANT_V0436_R1C_SESSION:session };
   try {
-    execFileSync(godot(), ['--path', project, '--resolution', '1920x1080', '--rendering-method', 'gl_compatibility', '--verbose', '--log-file', log], { cwd: repo, stdio: 'inherit', env: { ...process.env, ...env } });
+    const args = ['--path', project, '--resolution', '1920x1080', '--verbose', '--log-file', path.basename(log)];
+    if (process.env.ASCENDANT_V0436_R1C_RENDERER) args.push('--rendering-method', process.env.ASCENDANT_V0436_R1C_RENDERER);
+    execFileSync(godot(), args, { cwd: dir, stdio: 'inherit', env: { ...process.env, ...env } });
   } catch (error) {
-    return writeJson(path.join(dir, 'r1c-session-failure.json'), { schema:'v0436-r1c-session-failure-v1', session, started, ended:new Date().toISOString(), source_sha:env.ASCENDANT_V0436_R1C_SOURCE_SHA, branch:env.ASCENDANT_V0436_R1C_BRANCH, status:'BLOCKED_CAPTURE_PROCESS', exit_status:error.status ?? null, error:String(error) }).then(() => { throw error; });
+    const naturalTimeout = Number(error.status) === 22;
+    const blocker = { schema:'v0436-r1c-production-blocker-v1', session, started, ended:new Date().toISOString(), source_sha:env.ASCENDANT_V0436_R1C_SOURCE_SHA, branch:env.ASCENDANT_V0436_R1C_BRANCH, status:naturalTimeout ? 'BLOCKED_R1C_NATURAL_CONQUEST_NOT_RESOLVED_AFTER_REAL_FRAMES' : 'BLOCKED_R1C_HEADED_CONQUEST_PROCESS_EXIT_MINUS_1_AFTER_REAL_FRAMES', exit_status:error.status ?? null, error:String(error), observed:'real production frames through the conquest predicate were written; match_ended remained false and no genuine result/replay proof was produced', root_cause:naturalTimeout ? 'natural production conquest did not resolve before the bounded 120-second result wait; no gameplay or result-state write was added' : 'headed production process terminated after partial natural conquest capture; no gameplay or result-state write was added' };
+    return Promise.all([writeJson(path.join(dir, 'r1c-session-failure.json'), blocker), writeJson(path.join(pack, 'r1c-production-blocker.json'), blocker)]).then(() => { throw error; });
   }
 }
 
 async function capture() {
   await fs.mkdir(pack, { recursive: true });
-  await writeJson(path.join(pack, 'r1c-capture-manifest.json'), { schema:'v0436-r1c-natural-conquest-result-replay-capture-v1', status:'CAPTURE_STARTED', base_sha:baseSha, source_sha:envBase.ASCENDANT_V0436_R1C_SOURCE_SHA, branch:envBase.ASCENDANT_V0436_R1C_BRANCH, production_scene:'scenes/main.tscn', sessions, session_purpose:{A:'natural Victory plus actual Continue button and destination',B:'second natural Victory plus actual Play Again button and fresh replay'}, match_config:{player_race:'barrosan', opponent_race:'lioraen', difficulty:'easy', opponent_count:1, start_resources:'standard', map:'hollowspan', mode:'skirmish', victory:'conquest', game_speed:2.0}, forbidden_driver_writes:['positions after initialization','worker state','resources','HP','damage','death','destruction','defeat','result','AI state','match state','scene reset'] });
+  await writeJson(path.join(pack, 'r1c-capture-manifest.json'), { schema:'v0436-r1c-natural-conquest-result-replay-capture-v2', status:'CAPTURE_STARTED', base_sha:baseSha, source_sha:envBase.ASCENDANT_V0436_R1C_SOURCE_SHA, branch:envBase.ASCENDANT_V0436_R1C_BRANCH, production_scene:'scenes/main.tscn', sessions, executable:godot(), executable_sha256:executableHash(), renderer:renderer(), launch_contract:'headed Windows display; no Godot --log-file absolute path; renderer is project default unless explicitly opted in', sessions_purpose:{A:'natural Victory plus actual Continue button and destination',B:'second natural Victory plus actual Play Again button and fresh replay'}, match_config:{player_race:'barrosan', opponent_race:'lioraen', difficulty:'easy', opponent_count:1, start_resources:'standard', map:'hollowspan', mode:'skirmish', victory:'conquest', game_speed:2.0}, forbidden_driver_writes:['positions after initialization','worker state','resources','HP','damage','death','destruction','defeat','result','AI state','match state','scene reset'] });
   for (const session of sessions) await runSession(session);
-  await writeJson(path.join(pack, 'r1c-capture-manifest.json'), { schema:'v0436-r1c-natural-conquest-result-replay-capture-v1', status:'CAPTURE_COMPLETED', base_sha:baseSha, source_sha:envBase.ASCENDANT_V0436_R1C_SOURCE_SHA, branch:envBase.ASCENDANT_V0436_R1C_BRANCH, sessions, generated_at:new Date().toISOString() });
+  await writeJson(path.join(pack, 'r1c-capture-manifest.json'), { schema:'v0436-r1c-natural-conquest-result-replay-capture-v2', status:'CAPTURE_COMPLETED', base_sha:baseSha, source_sha:envBase.ASCENDANT_V0436_R1C_SOURCE_SHA, branch:envBase.ASCENDANT_V0436_R1C_BRANCH, sessions, executable:godot(), executable_sha256:executableHash(), renderer:renderer(), generated_at:new Date().toISOString() });
 }
 
 async function focused() {
@@ -61,6 +69,8 @@ async function validate() {
   if (manifest && (manifest.source_sha !== head || manifest.branch !== branch)) failures.push('manifest provenance mismatch');
   const headedBlocker = await audit(pack, 'r1c-headed-startup-blocker.json');
   if (headedBlocker) failures.unshift(`${headedBlocker.status}: ${headedBlocker.observed_error}`);
+  const productionBlocker = await audit(pack, 'r1c-production-blocker.json');
+  if (productionBlocker) failures.unshift(`${productionBlocker.status}: ${productionBlocker.observed}`);
   for (const session of sessions) {
     const dir = path.join(pack, `session-${session.toLowerCase()}`);
     const runtime = await audit(dir, `r1c-${session === 'A' ? 'victory' : 'victory'}-runtime-audit.json`);
@@ -79,7 +89,7 @@ async function validate() {
   if (!replayAudit || replayAudit.observed?.match_ended !== false || replayAudit.observed?.game_running !== true || Object.keys(replayAudit.observed?.result || {}).length !== 0) failures.push('fresh replay proof failed');
   const files = await fs.readdir(pack, { recursive:true });
   if (files.filter(f => f.endsWith('.png')).length < 20) failures.push('insufficient R1C rendered frames');
-  const result = { schema:'v0436-r1c-natural-conquest-result-replay-validator-v1', status:headedBlocker ? headedBlocker.status : (failures.length ? 'BLOCKED_R1C_EVIDENCE_VALIDATION' : 'PASSED_V0436_NATURAL_CONQUEST_RESULT_REPLAY_PROOF'), passed:failures.length === 0, base_sha:baseSha, source_sha:head, branch, failures, pack:'artifacts/manual-review/v0436-r1c-natural-conquest-result-replay-proof/', sessions, evidence_integrity:{runtime_derived:true, hardcoded_success_fields_rejected:true, stale_pack_rejected:true, exact_source_sha_required:true, actual_ui_button_paths:true} };
+  const result = { schema:'v0436-r1c-natural-conquest-result-replay-validator-v1', status:headedBlocker ? headedBlocker.status : (productionBlocker ? productionBlocker.status : (failures.length ? 'BLOCKED_R1C_EVIDENCE_VALIDATION' : 'PASSED_V0436_NATURAL_CONQUEST_RESULT_REPLAY_PROOF')), passed:failures.length === 0, base_sha:baseSha, source_sha:head, branch, failures, pack:'artifacts/manual-review/v0436-r1c-natural-conquest-result-replay-proof/', sessions, evidence_integrity:{runtime_derived:true, hardcoded_success_fields_rejected:true, stale_pack_rejected:true, exact_source_sha_required:true, actual_ui_button_paths:true} };
   await writeJson(path.join(pack,'r1c-validation.json'), result);
   if (failures.length) { console.error(JSON.stringify(result,null,2)); process.exitCode=1; } else console.log(JSON.stringify(result,null,2));
 }

@@ -1,15 +1,19 @@
 {
-  "schema": "v0436-r1c-natural-conquest-result-replay-capture-v1",
+  "schema": "v0436-r1c-natural-conquest-result-replay-capture-v2",
   "status": "CAPTURE_STARTED",
   "base_sha": "1ef22db8809719b0fbb9d399d7f1897aa993467c",
-  "source_sha": "1ef22db8809719b0fbb9d399d7f1897aa993467c",
+  "source_sha": "f05ba19f8398d1a1bfd01bbe31b05fe3eeff1779",
   "branch": "codex/v0436-first-complete-conquest-victory",
   "production_scene": "scenes/main.tscn",
   "sessions": [
     "A",
     "B"
   ],
-  "session_purpose": {
+  "executable": "C:\\Users\\barro\\AppData\\Local\\AscendantRealms\\tools\\godot-4.3-stable-r1d-probe\\official-extracted\\Godot_v4.3-stable_win64.exe",
+  "executable_sha256": "b554ba80fb2ad8f1817bc21242ac8adbb9e41f806c49ad5cc73603db71fee32f",
+  "renderer": "Forward Plus",
+  "launch_contract": "headed Windows display; no Godot --log-file absolute path; renderer is project default unless explicitly opted in",
+  "sessions_purpose": {
     "A": "natural Victory plus actual Continue button and destination",
     "B": "second natural Victory plus actual Play Again button and fresh replay"
   },
