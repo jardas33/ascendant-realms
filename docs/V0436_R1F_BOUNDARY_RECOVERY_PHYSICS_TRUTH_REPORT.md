@@ -72,7 +72,7 @@ The active retained command `npm run godot:test:v0436-r1-boundary-recovery` now 
 
 ## CI and final state
 
-The current active R1B/R1F acceptance is green locally. This remains a working-tree follow-up until the scoped changes are committed, pushed, and confirmed by exact-SHA Actions. PR #10 remains open, draft, and unmerged.
+The current active R1B/R1F acceptance is green locally and published in commit `1111f306929665b40dab998de7e2aaad7f4f43ae`. GitHub Actions run `30607800767` completed successfully for that exact SHA. PR #10 remains open, draft, and unmerged.
 
 ## Full local validation evidence
 
