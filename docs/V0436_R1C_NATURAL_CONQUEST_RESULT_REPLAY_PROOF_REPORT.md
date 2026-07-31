@@ -14,6 +14,7 @@ R1C is intentionally fail-closed. The new capture and validator path is implemen
 - PR #10 remains open, draft, and unmerged against `codex/v0435-first-autonomous-easy-opponent-wave`.
 - Initial R1C worktree ownership count: 6 tracked dirty paths and 3,130 untracked files. Those paths were preserved.
 - Final pre-publication working state after scoped R1C edits: 15 tracked dirty paths and 3,132 untracked files. The additional tracked paths are the R1C source/package wiring; the additional untracked paths are the isolated R1C pack and capture source.
+- After the scoped commit and retained validation commands, the final checkout has 12 tracked dirty paths and 3,130 untracked files. These are preserved/generated non-R1C artifacts; `git diff --check` is clean and no scoped R1C path remains dirty.
 
 No reset, clean, restore, broad staging, or deletion was used.
 
@@ -65,6 +66,8 @@ Passed before the headed attempt:
 The dedicated R1C validator was run and failed closed because the headed process produced no rendered session evidence. It reports the missing runtime audits/frames, missing genuine result/UI/replay evidence, and does not convert the blocker into a pass.
 
 The full repository test/build/content/art/runtime ladder and exact-SHA publication are not claimed for this blocked capture checkpoint. No production gameplay source, balance, economy, AI, conquest rule, visual, HUD, portrait, minimap, menu wording, command-panel, or unrelated gameplay code was changed.
+
+The scoped publication commit is `dec93d7ad3af338328abb156de87ad51677afee9`. Exact GitHub Actions run `30599677742` completed successfully for that SHA. The PR remains open, draft, and unmerged.
 
 ## Backlog and next safe action
 
