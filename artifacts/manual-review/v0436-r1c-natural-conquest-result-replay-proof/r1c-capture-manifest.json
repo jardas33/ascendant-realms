@@ -1,0 +1,41 @@
+{
+  "schema": "v0436-r1c-natural-conquest-result-replay-capture-v1",
+  "status": "CAPTURE_STARTED",
+  "base_sha": "1ef22db8809719b0fbb9d399d7f1897aa993467c",
+  "source_sha": "1ef22db8809719b0fbb9d399d7f1897aa993467c",
+  "branch": "codex/v0436-first-complete-conquest-victory",
+  "production_scene": "scenes/main.tscn",
+  "sessions": [
+    "A",
+    "B"
+  ],
+  "session_purpose": {
+    "A": "natural Victory plus actual Continue button and destination",
+    "B": "second natural Victory plus actual Play Again button and fresh replay"
+  },
+  "match_config": {
+    "player_race": "barrosan",
+    "opponent_race": "lioraen",
+    "difficulty": "easy",
+    "opponent_count": 1,
+    "start_resources": "standard",
+    "map": "hollowspan",
+    "mode": "skirmish",
+    "victory": "conquest",
+    "game_speed": 2
+  },
+  "forbidden_driver_writes": [
+    "positions after initialization",
+    "worker state",
+    "resources",
+    "HP",
+    "damage",
+    "death",
+    "destruction",
+    "defeat",
+    "result",
+    "AI state",
+    "match state",
+    "scene reset"
+  ]
+}

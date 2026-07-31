@@ -94,6 +94,8 @@ func _ready() -> void:
 		tutorial.setup(world, rts)
 	if OS.get_environment("ASCENDANT_V0436_R1_CAPTURE") == "1":
 		call_deferred("_start_v0436_r1_capture")
+	elif OS.get_environment("ASCENDANT_V0436_R1C_CAPTURE") == "1":
+		call_deferred("_start_v0436_r1c_capture")
 	elif OS.get_environment("ASCENDANT_V0435_CAPTURE") == "1":
 		call_deferred("_start_v0435_capture")
 	elif OS.get_environment("ASCENDANT_V0436_CAPTURE") == "1":
@@ -134,6 +136,11 @@ func _start_v0436_capture() -> void:
 
 func _start_v0436_r1_capture() -> void:
 	var runner = get_node_or_null("/root/V0436R1Capture")
+	if runner and runner.has_method("capture_gameplay"):
+		runner.capture_gameplay(self)
+
+func _start_v0436_r1c_capture() -> void:
+	var runner = get_node_or_null("/root/V0436R1CCapture")
 	if runner and runner.has_method("capture_gameplay"):
 		runner.capture_gameplay(self)
 

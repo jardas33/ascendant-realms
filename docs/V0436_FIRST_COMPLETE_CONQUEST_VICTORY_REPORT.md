@@ -58,6 +58,10 @@ The capture command was run three times and failed closed; therefore no claim is
 
 ## Blocked exit
 
+## R1/R1A/R1B/R1C supersession history — 2026-07-30
+
+R1 repaired the production navigation lifecycle, R1A proved the focused navigation behaviors, and R1B added and passed the isolated real-`Unit` boundary-recovery proof. R1C then added an isolated evidence-integrity capture/validator path for the still-open natural conquest -> result -> Continue/Play Again requirement. The first authorized R1C headed session was blocked before the production scene rendered because the installed Godot 4.3 executable crashed with Windows signal 11 during headed startup. The R1C report records the exact command and preserves the fail-closed state. No Victory-looking historical frames are promoted, and P0-RESULT-001 remains open.
+
 `BLOCKED_PREEXISTING_NAVIGATION_SYSTEM`
 
 The safe next repair is a separately scoped navigation-system repair with focused tests for bounded repath, safe stop, avoidance velocity, and recovery, followed by a new bounded headed capture budget. Do not treat the stale Victory-looking images as v0.436 proof and do not begin v0.437 until the navigation defect is repaired or explicitly re-scoped.
