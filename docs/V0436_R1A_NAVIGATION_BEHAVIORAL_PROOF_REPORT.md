@@ -87,3 +87,21 @@ There is no full conquest capture, no balance or economy change, no AI or wave c
 ## Closeout condition
 
 The checkpoint can close only after a supported isolated fixture starts slightly out of bounds before the fixture begins, then demonstrates recovery or a truthful terminal failure without position writes after fixture start, and the validator plus exact-SHA CI pass. Until then, the honest status is `BLOCKED_EXACT_BEHAVIORAL_PROOF`.
+
+## Validation and publication evidence
+
+Local results for this commit:
+
+- focused R1 navigation repair tests, smoke, and validator: passed;
+- v0.436 conquest focused tests and smoke: passed; full conquest capture was not run;
+- `npm test`: 887 tests passed;
+- `npm run build`: passed;
+- content, art-intake, runtime-art-slot, artifact-retention, `npm run godot:all`, and `git diff --check`: passed;
+- dedicated R1A behavioral validator: failed closed on `runtime status BLOCKED_EXACT_BEHAVIORAL_PROOF`;
+- retained v0.432-v0.435 validators were executed and failed only their historical branch/capture-provenance contracts on this later branch. No source repair was made to weaken those validators.
+
+Published commit: `8ae52b125ea1d2492a3e8510c289bc14319311fc`.
+
+Exact GitHub Actions proof: run `30594187115` completed `success` for that exact SHA.
+
+The checkout intentionally retains pre-existing user-owned tracked and untracked work outside this scoped commit. The R1A commit itself contains only the opt-in proof wiring, validator, report/backlog, and dedicated review pack.
