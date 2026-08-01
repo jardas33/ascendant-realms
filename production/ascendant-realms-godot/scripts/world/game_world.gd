@@ -71,6 +71,8 @@ var _theme := {}
 func _v0436_r1j_recorder():
 	if OS.get_environment("ASCENDANT_V0436_R1J_CAPTURE") != "1":
 		return null
+	if not has_meta("v0436_r1j_recorder"):
+		return null
 	var recorder = get_meta("v0436_r1j_recorder", null)
 	return recorder if is_instance_valid(recorder) else null
 
@@ -1063,7 +1065,8 @@ func _on_unit_died(unit) -> void:
 	combat_death_events.append({"victim_id": String(unit.unit_id), "victim_runtime_id": str(unit.get_instance_id()), "victim_team": unit.team, "source_id": String(unit._last_damage_source_id), "source_team": source_team, "kind": String(unit._last_damage_kind), "credited_to_player": credited})
 	var recorder = _v0436_r1j_recorder()
 	if recorder:
-		recorder.record_death_event({"victim_id":String(unit.unit_id), "victim_runtime_id":str(unit.get_instance_id()), "victim_team":int(unit.team), "final_attacker_runtime_id":String(unit._last_damage_source_id), "final_damage_event_id":String(unit.get_meta("v0436_r1j_last_damage_event_id", "")), "current_command":String(unit.get("_navigation_command_type")), "current_state":int(unit.state)})
+		var final_damage_event_id := String(unit.get_meta("v0436_r1j_last_damage_event_id", "")) if unit.has_meta("v0436_r1j_last_damage_event_id") else ""
+		recorder.record_death_event({"victim_id":String(unit.unit_id), "victim_runtime_id":str(unit.get_instance_id()), "victim_team":int(unit.team), "final_attacker_runtime_id":String(unit._last_damage_source_id), "final_damage_event_id":final_damage_event_id, "current_command":String(unit.get("_navigation_command_type")), "current_state":int(unit.state)})
 	if unit.team < commanders.size():
 		commanders[unit.team].units.erase(unit)
 		commanders[unit.team].recompute_pop()

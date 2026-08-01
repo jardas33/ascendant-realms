@@ -139,6 +139,8 @@ const V0436_R1F_AUDIT_CAP := 512
 func _v0436_r1j_recorder():
 	if OS.get_environment("ASCENDANT_V0436_R1J_CAPTURE") != "1" or not world:
 		return null
+	if not world.has_meta("v0436_r1j_recorder"):
+		return null
 	var recorder = world.get_meta("v0436_r1j_recorder", null)
 	return recorder if is_instance_valid(recorder) else null
 
