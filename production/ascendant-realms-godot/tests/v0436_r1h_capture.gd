@@ -3,7 +3,8 @@ extends Node
 ## Opt-in evidence only: real production scene, real workers, real queues, and
 ## public RTS commands. This script never writes gameplay state directly.
 
-const OUT := "res://../../artifacts/manual-review/v0436-r1h-natural-player-assault-viability/"
+const R1H_OUT := "res://../../artifacts/manual-review/v0436-r1h-natural-player-assault-viability/"
+const R1I_OUT := "res://../../artifacts/manual-review/v0436-r1i-prepared-assault-combat-causality/"
 const PREPARATION_LIMIT_SECONDS := 720.0
 const ASSAULT_TIMEOUT_SECONDS := 90.0
 const FORCE_PLAN := ["barrosan_spear_guard", "barrosan_spear_guard", "barrosan_crag_archer", "barrosan_crag_archer"]
@@ -12,7 +13,8 @@ var root_node: Node
 var world
 var rts
 var session := "A"
-var out_path := OUT
+var evidence_mode := "R1I" if OS.get_environment("ASCENDANT_V0436_R1I_CAPTURE") == "1" else "R1H"
+var out_path := R1I_OUT if evidence_mode == "R1I" else R1H_OUT
 var started := false
 var replay_captured := false
 var frame_names: Array[String] = []
@@ -28,14 +30,16 @@ var force_plan_audit: Dictionary = {}
 func _ready() -> void:
 	session = OS.get_environment("ASCENDANT_V0436_R1H_SESSION")
 	if session != "A" and session != "B": session = "A"
-	out_path = OUT + "session-%s/" % session.to_lower()
+	out_path = (R1I_OUT if evidence_mode == "R1I" else R1H_OUT) + "session-%s/" % session.to_lower()
 	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(out_path))
 	Match.set_config({"player_race":"barrosan", "opponents":[{"race":"lioraen", "difficulty":"easy"}], "map":"hollowspan", "start_resources":"standard", "victory":"conquest", "mode":"skirmish", "game_speed":2.0})
 
 func _vec(v: Vector3) -> Dictionary: return {"x":v.x, "y":v.y, "z":v.z}
 
 func _provenance(label: String) -> Dictionary:
-	return {"schema":"v0436-r1h-live-evidence-v1", "session":session, "attempt":label, "source_sha":OS.get_environment("ASCENDANT_V0436_R1H_SOURCE_SHA"), "branch":OS.get_environment("ASCENDANT_V0436_R1H_BRANCH"), "production_scene":"scenes/main.tscn -> scenes/game_world.tscn", "timestamp_ms":Time.get_ticks_msec()}
+	var source_sha := OS.get_environment("ASCENDANT_V0436_R1I_SOURCE_SHA") if evidence_mode == "R1I" else OS.get_environment("ASCENDANT_V0436_R1H_SOURCE_SHA")
+	var branch := OS.get_environment("ASCENDANT_V0436_R1I_BRANCH") if evidence_mode == "R1I" else OS.get_environment("ASCENDANT_V0436_R1H_BRANCH")
+	return {"schema":"v0436-%s-live-evidence-v1" % evidence_mode.to_lower(), "session":session, "attempt":label, "source_sha":source_sha, "branch":branch, "production_scene":"scenes/main.tscn -> scenes/game_world.tscn", "timestamp_ms":Time.get_ticks_msec()}
 
 func _wait_seconds(seconds: float) -> void: await get_tree().create_timer(seconds).timeout
 
@@ -46,7 +50,12 @@ func _wait_until(check: Callable, timeout: float) -> bool:
 		await get_tree().process_frame
 	return bool(check.call())
 
+func _evidence_name(name: String) -> String:
+	if evidence_mode == "R1I": return name.replace("R1H", "R1I").replace("r1h-", "r1i-")
+	return name
+
 func _save(name: String) -> void:
+	name = _evidence_name(name)
 	await RenderingServer.frame_post_draw
 	var image := get_viewport().get_texture().get_image()
 	image.save_png(ProjectSettings.globalize_path(out_path + name))
@@ -54,6 +63,7 @@ func _save(name: String) -> void:
 	last_valid_frame = name
 
 func _save_json(name: String, value) -> void:
+	name = _evidence_name(name)
 	var file := FileAccess.open(ProjectSettings.globalize_path(out_path + name), FileAccess.WRITE)
 	if file:
 		file.store_string(JSON.stringify(value, "  "))
@@ -72,6 +82,14 @@ func _live_building(building) -> bool: return is_instance_valid(building) and no
 
 func _unit_record(unit) -> Dictionary:
 	return {"definition_id":String(unit.unit_id), "runtime_id":str(unit.get_instance_id()), "team":int(unit.team), "role":String(unit.def.get("role", "")), "hp":float(unit.hp), "max_hp":float(unit.max_hp) if "max_hp" in unit else null, "dead":bool(unit.is_dead), "position":_vec(unit.global_position), "state":int(unit.state), "navigation_command":String(unit.get("_navigation_command_type"))}
+
+func _events_since(events: Array, start: int) -> Array:
+	var result: Array = []
+	for index in range(start, events.size()): result.append(events[index].duplicate(true))
+	return result
+
+func _r1i_checkpoint(a_name: String, b_name: String) -> void:
+	if evidence_mode == "R1I": await _save(a_name if session == "A" else b_name)
 
 func _building_record(building) -> Dictionary:
 	return {"definition_id":String(building.building_id), "runtime_id":str(building.get_instance_id()), "team":int(building.team), "hp":float(building.hp), "max_hp":float(building.max_hp) if "max_hp" in building else null, "dead":bool(building.is_dead), "built":bool(building.is_built), "position":_vec(building.global_position), "is_hq":bool(building.def.get("is_hq", false)), "state":str(building.get("state"))}
@@ -204,7 +222,10 @@ func _assault_target(target, category: String, label: String) -> Dictionary:
 	audit["commands"] = []
 	audit["hp_samples"] = []
 	audit["position_samples"] = []
+	audit["attacker_samples"] = []
 	audit["damage_event_count_before"] = world.combat_damage_events.size() + world.building_damage_events.size()
+	var combat_events_before: int = world.combat_damage_events.size()
+	var death_events_before: int = world.combat_death_events.size()
 	var army := _player_combatants()
 	if army.is_empty(): audit["terminal_disposition"] = "BLOCKED_R1H_PLAYER_PRODUCTION_CANNOT_RECOVER"; target_lifecycles.append(audit); return audit
 	await _select_many(army)
@@ -218,6 +239,7 @@ func _assault_target(target, category: String, label: String) -> Dictionary:
 		if _player_combatants().is_empty(): audit["terminal_disposition"] = "BLOCKED_R1H_PREPARED_ASSAULT_FORCE_ELIMINATED"; break
 		audit.hp_samples.append({"timestamp_ms":Time.get_ticks_msec(), "hp":float(target.hp), "dead":bool(target.is_dead)})
 		audit.position_samples.append({"timestamp_ms":Time.get_ticks_msec(), "position":_vec(target.global_position), "state":int(target.state) if "state" in target else null})
+		audit.attacker_samples.append({"timestamp_ms":Time.get_ticks_msec(), "units":_player_combatants().map(func(u): return _unit_record(u))})
 		if Time.get_ticks_msec() >= next_reissue:
 			var idle := _player_combatants().filter(func(u): return int(u.state) == Unit.State.IDLE or String(u.get("_navigation_command_type")) == "")
 			if not idle.is_empty():
@@ -235,6 +257,8 @@ func _assault_target(target, category: String, label: String) -> Dictionary:
 	audit["final_hp"] = float(target.hp) if is_instance_valid(target) and "hp" in target else null
 	audit["final_position"] = _vec(target.global_position) if is_instance_valid(target) else null
 	audit["damage_event_count_after"] = world.combat_damage_events.size() + world.building_damage_events.size()
+	audit["combat_events"] = _events_since(world.combat_damage_events, combat_events_before)
+	audit["death_events"] = _events_since(world.combat_death_events, death_events_before)
 	audit["elapsed_wall_seconds"] = float(Time.get_ticks_msec() - started_ms) / 1000.0
 	audit["navigation_snapshot"] = world.navigation_runtime_snapshot()
 	target_lifecycles.append(audit)
@@ -260,7 +284,7 @@ func _contact_sheet(blocked := false) -> void:
 		source.convert(Image.FORMAT_RGBA8)
 		source.resize(thumb.x, thumb.y, Image.INTERPOLATE_BILINEAR)
 		sheet.blit_rect(source, Rect2i(0,0,thumb.x,thumb.y), Vector2i((i % 5) * thumb.x, (i / 5) * thumb.y))
-	sheet.save_png(ProjectSettings.globalize_path(out_path + ("26_R1H_BLOCKER_CONTACT_SHEET.png" if blocked else "26_R1H_CONTACT_SHEET.png")))
+	sheet.save_png(ProjectSettings.globalize_path(out_path + _evidence_name("26_R1H_BLOCKER_CONTACT_SHEET.png" if blocked else "26_R1H_CONTACT_SHEET.png")))
 
 func _capture_match() -> void:
 	if not await _wait_until(func(): return is_instance_valid(world) and world.game_running, 30.0): await _failure("BLOCKED_R1H_CAPTURE_STRATEGY_INCONCLUSIVE", "production match did not start"); return
@@ -271,6 +295,7 @@ func _capture_match() -> void:
 	await _save("02_R1H_WORKERS_RESUME_ECONOMY.png")
 	if not await _normal_production_setup(): await _failure("BLOCKED_R1H_STANDARD_ECONOMY_STALLED", "normal construction, worker resume, or mixed production could not progress"); return
 	await _save("05_R1H_FORCE_READINESS_TRUE.png")
+	await _r1i_checkpoint("01_R1I_SESSION_A_FORCE_READY.png", "06_R1I_SESSION_B_FORCE_READY.png")
 	_record_economy("force_readiness")
 	_save_json("force-readiness.json", {"provenance":_provenance("readiness"), "ready":true, "hero_included":is_instance_valid(world.player_commander.hero_ref) and not world.player_commander.hero_ref.is_dead, "force":_player_combatants().map(func(u): return _unit_record(u)), "total_hp":_player_combatants().reduce(func(sum, u): return sum + float(u.hp), 0.0), "population":_commander_record(world.player_commander), "resources":world.player_commander.resources.duplicate(true), "queue_capability":_queue_record(world.player_commander.buildings.filter(func(b): return b.building_id == "barrosan_war_hall")[0])})
 	var enemies := _enemy_combatants()
@@ -279,15 +304,19 @@ func _capture_match() -> void:
 	_save_json("enemy-defender-inventory.json", {"provenance":_provenance("enemy_inventory"), "units":_enemy_combatants().map(func(u): return _unit_record(u)), "buildings":_enemy_buildings().map(func(b): return _building_record(b))})
 	if enemies.is_empty(): await _failure("BLOCKED_R1H_TARGET_UNREACHABLE", "enemy defender inventory was empty"); return
 	await _save("07_R1H_WAVE_ONE_COMMAND.png")
+	await _r1i_checkpoint("02_R1I_SESSION_A_TARGET_ORDER.png", "07_R1I_SESSION_B_HERO_FOCUS_COMMAND.png")
 	var wave_one: Array = []
 	for target in enemies:
 		if not is_instance_valid(target) or target.is_dead: continue
 		var audit := await _assault_target(target, "combatant", "wave_one_defender")
 		wave_one.append(audit)
+		if wave_one.size() == 1: await _r1i_checkpoint("04_R1I_SESSION_A_CASUALTY_STATE.png", "09_R1I_SESSION_B_CASUALTY_STATE.png")
+		elif wave_one.size() == 2: await _r1i_checkpoint("03_R1I_SESSION_A_HERO_CONTACT.png", "08_R1I_SESSION_B_HERO_FOCUS_CONTACT.png")
 		if String(audit.get("terminal_disposition", "")).begins_with("BLOCKED_R1H_"): break
 	await _save("08_R1H_WAVE_ONE_COMBAT.png")
 	_save_json("wave-one-audit.json", {"provenance":_provenance("wave_one"), "strategy":"eliminate active enemy combatants before buildings", "targets":wave_one, "remaining_enemy_combatants":_enemy_combatants().map(func(u): return _unit_record(u)), "player_force":_player_combatants().map(func(u): return _unit_record(u))})
 	await _save("09_R1H_WAVE_ONE_TERMINAL_STATE.png")
+	await _r1i_checkpoint("05_R1I_SESSION_A_TERMINAL.png", "10_R1I_SESSION_B_TERMINAL.png")
 	if _player_combatants().is_empty(): await _failure("BLOCKED_R1H_PREPARED_ASSAULT_FORCE_ELIMINATED", "prepared normal mixed force was eliminated in wave one"); return
 	if not _enemy_combatants().is_empty(): await _failure("BLOCKED_R1H_CAPTURE_STRATEGY_INCONCLUSIVE", "wave one did not clear the live defender inventory within the bounded assault budget"); return
 	var hqs := _enemy_buildings().filter(func(b): return bool(b.def.get("is_hq", false)))
