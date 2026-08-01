@@ -285,18 +285,39 @@ async function validate() {
   const manifest = await readJson(path.join(pack, 'capture-manifest.json')).catch(() => ({}));
   const source = await fs.readFile(captureScript, 'utf8').catch(() => '');
   const forbiddenPatterns = ['--log-file', 'set("hp"', 'set("is_dead"', 'set("defeated"', 'set("match_ended"', 'set("game_running"', 'Engine.time_scale', 'spawn_unit('].filter(pattern => source.includes(pattern));
+  const evidenceHead = String(preflight.source_sha || sourceSha());
+  const currentHead = sourceSha();
+  let sourceIsAncestor = evidenceHead === currentHead;
+  if (!sourceIsAncestor) {
+    try { execFileSync('git', ['merge-base', '--is-ancestor', evidenceHead, currentHead], { cwd: repo, stdio: 'ignore' }); sourceIsAncestor = true; } catch { sourceIsAncestor = false; }
+  }
+  const postCapturePaths = sourceIsAncestor && evidenceHead !== currentHead
+    ? git(['diff', '--name-only', `${evidenceHead}..${currentHead}`]).split(/\r?\n/).filter(Boolean)
+    : [];
+  const allowedPostCapturePrefixes = [
+    R1J_PACK,
+    'docs/V0436_R1J_COMPLETE_COMBAT_ATTRIBUTION_AND_CONDITIONAL_REPAIR_REPORT.md',
+    'docs/V0436_R1I_PREPARED_ASSAULT_COMBAT_CAUSALITY_REPORT.md',
+    'docs/ASCENDANT_REALMS_MASTER_PLAYER_EXPERIENCE_BACKLOG.md',
+    'tools/godot/v0436R1JCompleteCombatAttributionTool.mjs',
+    'tools/godot/v0436R1JCompleteCombatAttributionValidator.mjs',
+    'tools/godot/v0436R1JCompleteCombatAttributionValidator.test.ts',
+  ];
+  const unsafePostCapturePaths = postCapturePaths.filter(file => !allowedPostCapturePrefixes.some(prefix => file === prefix || file.startsWith(prefix)));
   const contract = await evaluateR1JValidatorContract({
     repo,
     branch: branch(),
-    validatedHead: sourceSha(),
-    expectedHead: sourceSha(),
+    validatedHead: evidenceHead,
+    expectedHead: evidenceHead,
     rootFiles,
     preflight,
     manifest,
     sessions,
     forbiddenPatterns,
   });
-  const result = { ...contract, status: contract.failures.length ? 'BLOCKED_R1J_EVIDENCE_VALIDATION' : R1J_STATUS, source_sha: sourceSha(), pack: R1J_PACK, production_repair_made: false, v0437_started: false, merge_performed: false };
+  if (!sourceIsAncestor) contract.failures.push(`evidence source SHA ${evidenceHead} is not an ancestor of current HEAD ${currentHead}`);
+  if (unsafePostCapturePaths.length) contract.failures.push(`unexpected post-capture changes: ${unsafePostCapturePaths.join(', ')}`);
+  const result = { ...contract, status: contract.failures.length ? 'BLOCKED_R1J_EVIDENCE_VALIDATION' : R1J_STATUS, source_sha: evidenceHead, current_head: currentHead, evidence_source_sha: evidenceHead, post_capture_paths: postCapturePaths, production_repair_made: false, v0437_started: false, merge_performed: false };
   await writeJson(path.join(pack, 'final-validation.json'), result);
   if (contract.failures.length) { console.error(JSON.stringify(result, null, 2)); process.exitCode = 1; } else console.log(JSON.stringify(result, null, 2));
 }

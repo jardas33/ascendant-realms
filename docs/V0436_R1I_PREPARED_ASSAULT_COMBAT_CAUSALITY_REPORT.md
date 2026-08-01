@@ -128,3 +128,16 @@ The retained R1F contract and R1H viability validator remain passing and truthfu
 ## Final validation and state
 
 The final publication validation records exact local command results, exact Stage-A and Stage-B CI runs, PR metadata, and unrelated dirty/generated-file counts. The branch must remain at its pushed Stage-B SHA with `HEAD == origin/codex/v0436-first-complete-conquest-victory` and ahead/behind `0/0`. The broader worktree is intentionally not claimed clean because unrelated user/generated files are preserved.
+
+## Dated R1J follow-up — 2026-08-01
+
+R1J completed two fresh comparable headed production sessions and published the
+complete command, target-transition, attack, projectile, damage, and death
+attribution graphs at the final R1J evidence SHA. The dedicated R1J validator
+passes the causal evidence contract. The resulting classification remains
+`BLOCKED_R1J_COMPLETE_ATTRIBUTION_INCONCLUSIVE`: no single localized production
+defect was proven, so no combat or balance repair was authorized. R1I's status,
+evidence, and conclusions remain unchanged and are not relabeled. See
+`docs/V0436_R1J_COMPLETE_COMBAT_ATTRIBUTION_AND_CONDITIONAL_REPAIR_REPORT.md`
+and
+`artifacts/manual-review/v0436-r1j-complete-combat-attribution-and-conditional-repair/`.
