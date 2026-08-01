@@ -355,7 +355,7 @@ func issue_attack_target(target) -> bool:
 		return false
 	var units := _selected_units()
 	var recorder = _v0436_r1j_recorder()
-	var order_id := recorder.record_public_order("attack_target", units, target, Vector3.ZERO) if recorder else ""
+	var order_id: String = recorder.record_public_order("attack_target", units, target, Vector3.ZERO) if recorder else ""
 	var issued := false
 	for u in units:
 		if u.has_method("command_attack"):
@@ -390,7 +390,7 @@ func _begin_attack_move() -> void:
 func issue_attack_move_destination(destination: Vector3) -> bool:
 	var units := _selected_units()
 	var recorder = _v0436_r1j_recorder()
-	var order_id := recorder.record_public_order("attack_move_destination", units, null, destination) if recorder else ""
+	var order_id: String = recorder.record_public_order("attack_move_destination", units, null, destination) if recorder else ""
 	var issued := false
 	for u in units:
 		u.command_move(destination, true, false, order_id)
