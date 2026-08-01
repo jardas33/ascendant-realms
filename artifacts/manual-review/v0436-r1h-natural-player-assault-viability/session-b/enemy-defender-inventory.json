@@ -1,0 +1,143 @@
+{
+  "buildings": [
+    {
+      "built": true,
+      "dead": false,
+      "definition_id": "lioraen_groveheart",
+      "hp": 2000,
+      "is_hq": true,
+      "max_hp": 2000,
+      "position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "runtime_id": "172838882024",
+      "state": "<null>",
+      "team": 1
+    },
+    {
+      "built": true,
+      "dead": false,
+      "definition_id": "lioraen_thornhall",
+      "hp": 850,
+      "is_hq": false,
+      "max_hp": 850,
+      "position": {
+        "x": 77.3725814819336,
+        "y": 0,
+        "z": 91.5147171020508
+      },
+      "runtime_id": "192954764506",
+      "state": "<null>",
+      "team": 1
+    },
+    {
+      "built": true,
+      "dead": false,
+      "definition_id": "lioraen_lifewell",
+      "hp": 500,
+      "is_hq": false,
+      "max_hp": 500,
+      "position": {
+        "x": 114.142135620117,
+        "y": 0,
+        "z": 85.8578643798828
+      },
+      "runtime_id": "276320750865",
+      "state": "<null>",
+      "team": 1
+    }
+  ],
+  "provenance": {
+    "attempt": "enemy_inventory",
+    "branch": "codex/v0436-first-complete-conquest-victory",
+    "production_scene": "scenes/main.tscn -> scenes/game_world.tscn",
+    "schema": "v0436-r1h-live-evidence-v1",
+    "session": "B",
+    "source_sha": "2f18357a64f3a8869ecf52481136cbc799370e5f",
+    "timestamp_ms": 68312
+  },
+  "units": [
+    {
+      "dead": false,
+      "definition_id": "lioraen_thorn_ranger",
+      "hp": 85,
+      "max_hp": 85,
+      "navigation_command": "",
+      "position": {
+        "x": 100,
+        "y": 0,
+        "z": 90
+      },
+      "role": "ranged",
+      "runtime_id": "174432717624",
+      "state": 0,
+      "team": 1
+    },
+    {
+      "dead": false,
+      "definition_id": "lioraen_hero_warden",
+      "hp": 340,
+      "max_hp": 340,
+      "navigation_command": "",
+      "position": {
+        "x": 106,
+        "y": 0,
+        "z": 106
+      },
+      "role": "hero",
+      "runtime_id": "174885702479",
+      "state": 0,
+      "team": 1
+    },
+    {
+      "dead": false,
+      "definition_id": "lioraen_thorn_ranger",
+      "hp": 85,
+      "max_hp": 85,
+      "navigation_command": "",
+      "position": {
+        "x": 77.3725814819336,
+        "y": 0,
+        "z": 98.0147171020508
+      },
+      "role": "ranged",
+      "runtime_id": "652314938765",
+      "state": 0,
+      "team": 1
+    },
+    {
+      "dead": false,
+      "definition_id": "lioraen_bloomdancer",
+      "hp": 115,
+      "max_hp": 115,
+      "navigation_command": "",
+      "position": {
+        "x": 77.3725814819336,
+        "y": 0,
+        "z": 98.0147171020508
+      },
+      "role": "melee",
+      "runtime_id": "744807730622",
+      "state": 0,
+      "team": 1
+    },
+    {
+      "dead": false,
+      "definition_id": "lioraen_rootwarden_guard",
+      "hp": 200,
+      "max_hp": 200,
+      "navigation_command": "",
+      "position": {
+        "x": 77.3725814819336,
+        "y": 0,
+        "z": 98.0147171020508
+      },
+      "role": "defender",
+      "runtime_id": "878085934573",
+      "state": 0,
+      "team": 1
+    }
+  ]
+}

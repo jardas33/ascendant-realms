@@ -1,0 +1,133 @@
+{
+  "schema": "v0436-r1h-black-frame-rejection-v1",
+  "status": "PASSED",
+  "policy": "each required headed PNG must exist and exceed 4096 bytes; visual inspection remains required",
+  "checks": [
+    {
+      "session": "A",
+      "frame": "01_R1H_STANDARD_MATCH_START.png",
+      "present": true,
+      "bytes": 4488701,
+      "rejected": false
+    },
+    {
+      "session": "A",
+      "frame": "02_R1H_WORKERS_RESUME_ECONOMY.png",
+      "present": true,
+      "bytes": 4477489,
+      "rejected": false
+    },
+    {
+      "session": "A",
+      "frame": "03_R1H_PRODUCTION_INFRASTRUCTURE.png",
+      "present": true,
+      "bytes": 4475630,
+      "rejected": false
+    },
+    {
+      "session": "A",
+      "frame": "04_R1H_MIXED_FORCE_IN_PRODUCTION.png",
+      "present": true,
+      "bytes": 4477445,
+      "rejected": false
+    },
+    {
+      "session": "A",
+      "frame": "05_R1H_FORCE_READINESS_TRUE.png",
+      "present": true,
+      "bytes": 4477375,
+      "rejected": false
+    },
+    {
+      "session": "A",
+      "frame": "06_R1H_ENEMY_DEFENDER_INVENTORY.png",
+      "present": true,
+      "bytes": 3817559,
+      "rejected": false
+    },
+    {
+      "session": "A",
+      "frame": "07_R1H_WAVE_ONE_COMMAND.png",
+      "present": true,
+      "bytes": 3817056,
+      "rejected": false
+    },
+    {
+      "session": "A",
+      "frame": "08_R1H_WAVE_ONE_COMBAT.png",
+      "present": true,
+      "bytes": 3748174,
+      "rejected": false
+    },
+    {
+      "session": "A",
+      "frame": "09_R1H_WAVE_ONE_TERMINAL_STATE.png",
+      "present": true,
+      "bytes": 3748029,
+      "rejected": false
+    },
+    {
+      "session": "B",
+      "frame": "01_R1H_STANDARD_MATCH_START.png",
+      "present": true,
+      "bytes": 4488713,
+      "rejected": false
+    },
+    {
+      "session": "B",
+      "frame": "02_R1H_WORKERS_RESUME_ECONOMY.png",
+      "present": true,
+      "bytes": 4477460,
+      "rejected": false
+    },
+    {
+      "session": "B",
+      "frame": "03_R1H_PRODUCTION_INFRASTRUCTURE.png",
+      "present": true,
+      "bytes": 4475602,
+      "rejected": false
+    },
+    {
+      "session": "B",
+      "frame": "04_R1H_MIXED_FORCE_IN_PRODUCTION.png",
+      "present": true,
+      "bytes": 4477467,
+      "rejected": false
+    },
+    {
+      "session": "B",
+      "frame": "05_R1H_FORCE_READINESS_TRUE.png",
+      "present": true,
+      "bytes": 4477436,
+      "rejected": false
+    },
+    {
+      "session": "B",
+      "frame": "06_R1H_ENEMY_DEFENDER_INVENTORY.png",
+      "present": true,
+      "bytes": 3816902,
+      "rejected": false
+    },
+    {
+      "session": "B",
+      "frame": "07_R1H_WAVE_ONE_COMMAND.png",
+      "present": true,
+      "bytes": 3817099,
+      "rejected": false
+    },
+    {
+      "session": "B",
+      "frame": "08_R1H_WAVE_ONE_COMBAT.png",
+      "present": true,
+      "bytes": 3748469,
+      "rejected": false
+    },
+    {
+      "session": "B",
+      "frame": "09_R1H_WAVE_ONE_TERMINAL_STATE.png",
+      "present": true,
+      "bytes": 3748544,
+      "rejected": false
+    }
+  ]
+}

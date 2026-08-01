@@ -101,3 +101,27 @@ Retained R1/R1A/R1B/R1D/R1F gates also remain green, including the R1F contract 
 ## Final disposition and safest next action
 
 This is a truthful blocked R1G capture/tooling publication. Do not close `P0-RESULT-001`, do not claim conquest victory or replay success, and do not alter production gameplay semantics in response to this evidence. The safest next step requires a separately authorized bounded investigation of why the normal player assault force is eliminated before the enemy HQ is destroyed, while preserving this pack as the R1G evidence baseline.
+
+## v0.436-R1H follow-up — natural player assault viability
+
+R1H is an append-only follow-up to the R1G record above. The R1G blocker and all earlier evidence remain unchanged. R1H did not repair production gameplay, balance, navigation, combat values, result semantics, or replay semantics. It added only an opt-in headed capture and fail-closed validator for a normal-economy assault viability observation.
+
+- Stage-A implementation SHA: `2f18357a64f3a8869ecf52481136cbc799370e5f`
+- Stage-A exact CI: `30687260709` / run 663 — success
+- Branch: `codex/v0436-first-complete-conquest-victory`
+- Capture pack: `artifacts/manual-review/v0436-r1h-natural-player-assault-viability/`
+- Dedicated commands: `npm run godot:test:v0436-r1h-natural-assault-viability`, `npm run godot:smoke:v0436-r1h-natural-assault-viability`, `npm run godot:capture:v0436-r1h-natural-assault-viability`, and `npm run godot:validate:v0436-r1h-natural-assault-viability`
+
+Both fresh headed sessions used the production `scenes/main.tscn -> scenes/game_world.tscn` path, Barrosan versus Lioraen Easy, Hollowspan, standard resources, Conquest, and game speed 2.0. Workers constructed a real War Hall, resumed gathering through normal commands, crossed the recorded food threshold, and queued the mixed force through the real-cost production path. The readiness audit records the produced Barrosan force and normal resource/queue transactions; no resources, units, HP, death, defeat, result, or replay state were injected by the capture.
+
+The live result was the same in sessions A and B: `BLOCKED_R1H_PREPARED_ASSAULT_FORCE_ELIMINATED`. The bounded assault destroyed one real enemy defender and produced real damage/lifecycle samples, but the remaining enemy hero survived while the prepared player combat force was eliminated. The final read-only predicate remained non-terminal: `match_ended=false`, `game_running=true`, `game_over_count=0`, empty result, both commanders not defeated, and no valid victory/result/replay state.
+
+This is a passed validator result for truthful blocked evidence, not a passed conquest result. Success-only frames `17_R1H_FINAL_CONQUEST_PREDICATE.png` through `25_R1H_FRESH_REPLAY.png` are intentionally absent. The real rendered frames `01_R1H_STANDARD_MATCH_START.png` through `09_R1H_WAVE_ONE_TERMINAL_STATE.png`, the two blocker contact sheets, economy/production audits, target lifecycles, predicate snapshots, and black-frame report are retained under the R1H pack.
+
+R1H disposition: keep `P0-RESULT-001` open, keep `P0-NAV-001` as a separate investigation concern, and do not claim victory, result freeze, Continue, Play Again, or fresh replay. The safest next step is a separately authorized bounded diagnosis of the assault-force-eliminated blocker; no R1H repair is implied by this evidence-only checkpoint.
+
+### R1H closeout validation clarification
+
+After the Stage-A descendant, the retained R1F boundary-physics validator was re-run and passed once its exact documentation allowlist included the R1F contract source itself. This was a validator-provenance compatibility repair only; no production gameplay behavior changed.
+
+The retained R1B navigation-behavior validator remains blocked by its historical boundary-recovery evidence (`6b14ba305afc4b3090d57f400da885550d512183`, `BLOCKED_BOUNDARY_RECOVERY`, with speed/no-teleport predicates still false). The retained v0.436 conquest-victory validator remains blocked because its three repaired headed attempts did not produce a genuine Victory result. These retained statuses remain visible and fail-closed; they are not relabeled as green for R1H.

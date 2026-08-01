@@ -14,6 +14,7 @@ export const R1F_DOCUMENTATION_DESCENDANT_ALLOWLIST = Object.freeze([
   'tools/godot/v0436R1HNaturalAssaultViabilityTool.mjs',
   'tools/godot/v0436R1HValidatorContract.mjs',
   'tools/godot/v0436R1HValidatorContract.test.ts',
+  'tools/godot/v0436R1FValidatorContract.mjs',
   'package.json',
 ]);
 

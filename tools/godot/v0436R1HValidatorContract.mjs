@@ -27,13 +27,13 @@ export const REQUIRED_R1H_FRAMES = Object.freeze([
   '07_R1H_WAVE_ONE_COMMAND.png',
   '08_R1H_WAVE_ONE_COMBAT.png',
   '09_R1H_WAVE_ONE_TERMINAL_STATE.png',
+]);
+
+export const SUCCESS_R1H_FRAMES = Object.freeze([
   '17_R1H_FINAL_CONQUEST_PREDICATE.png',
   '18_R1H_GENUINE_VICTORY.png',
   '19_R1H_RESULT_UI.png',
   '20_R1H_MATCH_FROZEN.png',
-]);
-
-export const SUCCESS_R1H_FRAMES = Object.freeze([
   '21_R1H_CONTINUE_BUTTON.png',
   '22_R1H_CONTINUE_DESTINATION.png',
   '24_R1H_PLAY_AGAIN_BUTTON.png',

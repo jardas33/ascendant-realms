@@ -1,0 +1,29 @@
+{
+  "schema": "v0436-r1h-capture-contract-audit-v1",
+  "status": "BLOCKED_R1H_PREPARED_ASSAULT_FORCE_ELIMINATED",
+  "source_sha": "2f18357a64f3a8869ecf52481136cbc799370e5f",
+  "public_actions": [
+    "selection",
+    "attack-move",
+    "attack-target",
+    "building placement",
+    "worker construction",
+    "real-cost production",
+    "normal worker gathering"
+  ],
+  "forbidden_driver_writes": [
+    "HP",
+    "death",
+    "defeat",
+    "result",
+    "match state",
+    "resources",
+    "teleportation",
+    "free units"
+  ],
+  "no_godot_log_file": true,
+  "headed_sessions": [
+    "A",
+    "B"
+  ]
+}

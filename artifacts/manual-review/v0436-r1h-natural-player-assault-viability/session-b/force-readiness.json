@@ -1,0 +1,425 @@
+{
+  "force": [
+    {
+      "dead": false,
+      "definition_id": "barrosan_spear_guard",
+      "hp": 180,
+      "max_hp": 180,
+      "navigation_command": "",
+      "position": {
+        "x": -100,
+        "y": 0,
+        "z": -110
+      },
+      "role": "defender",
+      "runtime_id": "171932912314",
+      "state": 0,
+      "team": 0
+    },
+    {
+      "dead": false,
+      "definition_id": "barrosan_hero_thane",
+      "hp": 493,
+      "max_hp": 493,
+      "navigation_command": "",
+      "position": {
+        "x": -94,
+        "y": 0,
+        "z": -94
+      },
+      "role": "hero",
+      "runtime_id": "172385897169",
+      "state": 0,
+      "team": 0
+    },
+    {
+      "dead": false,
+      "definition_id": "barrosan_spear_guard",
+      "hp": 180,
+      "max_hp": 180,
+      "navigation_command": "",
+      "position": {
+        "x": -76,
+        "y": 0,
+        "z": -93.5
+      },
+      "role": "defender",
+      "runtime_id": "541987966325",
+      "state": 0,
+      "team": 0
+    },
+    {
+      "dead": false,
+      "definition_id": "barrosan_spear_guard",
+      "hp": 180,
+      "max_hp": 180,
+      "navigation_command": "",
+      "position": {
+        "x": -76,
+        "y": 0,
+        "z": -93.5
+      },
+      "role": "defender",
+      "runtime_id": "667548650917",
+      "state": 0,
+      "team": 0
+    },
+    {
+      "dead": false,
+      "definition_id": "barrosan_crag_archer",
+      "hp": 90,
+      "max_hp": 90,
+      "navigation_command": "",
+      "position": {
+        "x": -76,
+        "y": 0,
+        "z": -93.5
+      },
+      "role": "ranged",
+      "runtime_id": "779419127254",
+      "state": 0,
+      "team": 0
+    },
+    {
+      "dead": false,
+      "definition_id": "barrosan_crag_archer",
+      "hp": 90,
+      "max_hp": 90,
+      "navigation_command": "",
+      "position": {
+        "x": -76,
+        "y": 0.100000001490116,
+        "z": -93.5
+      },
+      "role": "ranged",
+      "runtime_id": "891105054213",
+      "state": 0,
+      "team": 0
+    }
+  ],
+  "hero_included": true,
+  "population": {
+    "alive_buildings": 2,
+    "buildings": [
+      {
+        "built": true,
+        "dead": false,
+        "definition_id": "barrosan_clanhold",
+        "hp": 2200,
+        "is_hq": true,
+        "max_hp": 2200,
+        "position": {
+          "x": -100,
+          "y": 0,
+          "z": -100
+        },
+        "runtime_id": "170339076714",
+        "state": "<null>",
+        "team": 0
+      },
+      {
+        "built": true,
+        "dead": false,
+        "definition_id": "barrosan_war_hall",
+        "hp": 950,
+        "is_hq": false,
+        "max_hp": 950,
+        "position": {
+          "x": -76,
+          "y": 0,
+          "z": -100
+        },
+        "runtime_id": "186260655357",
+        "state": "<null>",
+        "team": 0
+      }
+    ],
+    "defeat_reason": "",
+    "defeated": false,
+    "has_hq": true,
+    "live_buildings": [
+      {
+        "built": true,
+        "dead": false,
+        "definition_id": "barrosan_clanhold",
+        "hp": 2200,
+        "is_hq": true,
+        "max_hp": 2200,
+        "position": {
+          "x": -100,
+          "y": 0,
+          "z": -100
+        },
+        "runtime_id": "170339076714",
+        "state": "<null>",
+        "team": 0
+      },
+      {
+        "built": true,
+        "dead": false,
+        "definition_id": "barrosan_war_hall",
+        "hp": 950,
+        "is_hq": false,
+        "max_hp": 950,
+        "position": {
+          "x": -76,
+          "y": 0,
+          "z": -100
+        },
+        "runtime_id": "186260655357",
+        "state": "<null>",
+        "team": 0
+      }
+    ],
+    "live_hq": [
+      {
+        "built": true,
+        "dead": false,
+        "definition_id": "barrosan_clanhold",
+        "hp": 2200,
+        "is_hq": true,
+        "max_hp": 2200,
+        "position": {
+          "x": -100,
+          "y": 0,
+          "z": -100
+        },
+        "runtime_id": "170339076714",
+        "state": "<null>",
+        "team": 0
+      }
+    ],
+    "live_workers": [
+      {
+        "dead": false,
+        "definition_id": "barrosan_worker",
+        "hp": 60,
+        "max_hp": 60,
+        "navigation_command": "return",
+        "position": {
+          "x": -87.965934753418,
+          "y": 0,
+          "z": -108.691513061523
+        },
+        "role": "worker",
+        "runtime_id": "170573957749",
+        "state": 5,
+        "team": 0
+      },
+      {
+        "dead": false,
+        "definition_id": "barrosan_worker",
+        "hp": 60,
+        "max_hp": 60,
+        "navigation_command": "return",
+        "position": {
+          "x": -88.4211959838867,
+          "y": 0,
+          "z": -106.638877868652
+        },
+        "role": "worker",
+        "runtime_id": "171026942604",
+        "state": 5,
+        "team": 0
+      },
+      {
+        "dead": false,
+        "definition_id": "barrosan_worker",
+        "hp": 60,
+        "max_hp": 60,
+        "navigation_command": "return",
+        "position": {
+          "x": -86.9853286743164,
+          "y": 0,
+          "z": -108.353385925293
+        },
+        "role": "worker",
+        "runtime_id": "171479927459",
+        "state": 5,
+        "team": 0
+      }
+    ],
+    "no_buildings": false,
+    "no_hq": false,
+    "no_workers": false,
+    "pop_cap": 12,
+    "pop_used": 11,
+    "race": "barrosan",
+    "reserved_pop": 0,
+    "resources": {
+      "food": 230,
+      "gold": 180,
+      "stone": 100,
+      "timber": 50
+    },
+    "team": 0,
+    "units": [
+      {
+        "dead": false,
+        "definition_id": "barrosan_worker",
+        "hp": 60,
+        "max_hp": 60,
+        "navigation_command": "return",
+        "position": {
+          "x": -87.965934753418,
+          "y": 0,
+          "z": -108.691513061523
+        },
+        "role": "worker",
+        "runtime_id": "170573957749",
+        "state": 5,
+        "team": 0
+      },
+      {
+        "dead": false,
+        "definition_id": "barrosan_worker",
+        "hp": 60,
+        "max_hp": 60,
+        "navigation_command": "return",
+        "position": {
+          "x": -88.4211959838867,
+          "y": 0,
+          "z": -106.638877868652
+        },
+        "role": "worker",
+        "runtime_id": "171026942604",
+        "state": 5,
+        "team": 0
+      },
+      {
+        "dead": false,
+        "definition_id": "barrosan_worker",
+        "hp": 60,
+        "max_hp": 60,
+        "navigation_command": "return",
+        "position": {
+          "x": -86.9853286743164,
+          "y": 0,
+          "z": -108.353385925293
+        },
+        "role": "worker",
+        "runtime_id": "171479927459",
+        "state": 5,
+        "team": 0
+      },
+      {
+        "dead": false,
+        "definition_id": "barrosan_spear_guard",
+        "hp": 180,
+        "max_hp": 180,
+        "navigation_command": "",
+        "position": {
+          "x": -100,
+          "y": 0,
+          "z": -110
+        },
+        "role": "defender",
+        "runtime_id": "171932912314",
+        "state": 0,
+        "team": 0
+      },
+      {
+        "dead": false,
+        "definition_id": "barrosan_hero_thane",
+        "hp": 493,
+        "max_hp": 493,
+        "navigation_command": "",
+        "position": {
+          "x": -94,
+          "y": 0,
+          "z": -94
+        },
+        "role": "hero",
+        "runtime_id": "172385897169",
+        "state": 0,
+        "team": 0
+      },
+      {
+        "dead": false,
+        "definition_id": "barrosan_spear_guard",
+        "hp": 180,
+        "max_hp": 180,
+        "navigation_command": "",
+        "position": {
+          "x": -76,
+          "y": 0,
+          "z": -93.5
+        },
+        "role": "defender",
+        "runtime_id": "541987966325",
+        "state": 0,
+        "team": 0
+      },
+      {
+        "dead": false,
+        "definition_id": "barrosan_spear_guard",
+        "hp": 180,
+        "max_hp": 180,
+        "navigation_command": "",
+        "position": {
+          "x": -76,
+          "y": 0,
+          "z": -93.5
+        },
+        "role": "defender",
+        "runtime_id": "667548650917",
+        "state": 0,
+        "team": 0
+      },
+      {
+        "dead": false,
+        "definition_id": "barrosan_crag_archer",
+        "hp": 90,
+        "max_hp": 90,
+        "navigation_command": "",
+        "position": {
+          "x": -76,
+          "y": 0,
+          "z": -93.5
+        },
+        "role": "ranged",
+        "runtime_id": "779419127254",
+        "state": 0,
+        "team": 0
+      },
+      {
+        "dead": false,
+        "definition_id": "barrosan_crag_archer",
+        "hp": 90,
+        "max_hp": 90,
+        "navigation_command": "",
+        "position": {
+          "x": -76,
+          "y": 0.100000001490116,
+          "z": -93.5
+        },
+        "role": "ranged",
+        "runtime_id": "891105054213",
+        "state": 0,
+        "team": 0
+      }
+    ]
+  },
+  "provenance": {
+    "attempt": "readiness",
+    "branch": "codex/v0436-first-complete-conquest-victory",
+    "production_scene": "scenes/main.tscn -> scenes/game_world.tscn",
+    "schema": "v0436-r1h-live-evidence-v1",
+    "session": "B",
+    "source_sha": "2f18357a64f3a8869ecf52481136cbc799370e5f",
+    "timestamp_ms": 67780
+  },
+  "queue_capability": {
+    "building_id": "barrosan_war_hall",
+    "built": true,
+    "queue": []
+  },
+  "ready": true,
+  "resources": {
+    "food": 230,
+    "gold": 180,
+    "stone": 100,
+    "timber": 50
+  },
+  "total_hp": 1213
+}

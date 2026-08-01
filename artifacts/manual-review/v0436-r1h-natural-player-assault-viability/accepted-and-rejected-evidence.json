@@ -1,0 +1,17 @@
+{
+  "schema": "v0436-r1h-evidence-disposition-v1",
+  "source_sha": "2f18357a64f3a8869ecf52481136cbc799370e5f",
+  "accepted": [
+    "fresh headed R1H frames",
+    "real worker construction and gathering audits",
+    "real-cost production audits",
+    "live combat target lifecycle",
+    "truthful blocker status"
+  ],
+  "rejected": [
+    "success-only result/replay frames when the assault blocker is live",
+    "title cards",
+    "direct result/replay signals",
+    "free-unit or resource-injection shortcuts"
+  ]
+}

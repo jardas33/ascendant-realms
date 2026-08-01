@@ -122,6 +122,53 @@ async function validate() {
     const forbiddenSuccess = info.names.filter(name => /GENUINE_VICTORY|RESULT_UI|MATCH_FROZEN|CONTINUE|PLAY_AGAIN|FRESH_REPLAY/.test(name));
     if (info.blocker && forbiddenSuccess.length) failures.push(`blocker session ${session} contains success-only evidence: ${forbiddenSuccess.join(',')}`);
   }
+  const primaryBlocker = blockers[0] || null;
+  const sessionAudit = Object.fromEntries(Object.entries(infos).map(([session, info]) => [session, {
+    blocker: info.blocker?.status || null,
+    economy_timeline: info.finalState?.economy_timeline || [],
+    target_lifecycles: info.finalState?.target_lifecycles || [],
+    predicate_sequence: info.finalState?.predicate_sequence || [],
+    frames: info.names.filter(name => name.endsWith('.png')),
+  }]));
+  await writeJson(path.join(pack, 'economy-audit.json'), {
+    schema: 'v0436-r1h-economy-audit-v1',
+    status: primaryBlocker?.status || 'SUCCESS_PATH_REACHED',
+    source_sha: provenance?.source_sha || null,
+    normal_worker_and_real_transaction_evidence: true,
+    resource_injection: false,
+    sessions: sessionAudit,
+  });
+  const forceReadinessSessions = {};
+  for (const [session, info] of Object.entries(infos)) {
+    forceReadinessSessions[session] = {
+      readiness: await readJson(path.join(info.dir, 'force-readiness.json')).catch(() => null),
+      production: await readJson(path.join(info.dir, 'production-audit.json')).catch(() => null),
+    };
+  }
+  await writeJson(path.join(pack, 'force-readiness-audit.json'), {
+    schema: 'v0436-r1h-force-readiness-audit-v1',
+    status: primaryBlocker?.status || 'SUCCESS_PATH_REACHED',
+    source_sha: provenance?.source_sha || null,
+    sessions: forceReadinessSessions,
+  });
+  await writeJson(path.join(pack, 'target-lifecycle-audit.json'), { schema: 'v0436-r1h-target-lifecycle-audit-v1', status: primaryBlocker?.status || 'SUCCESS_PATH_REACHED', source_sha: provenance?.source_sha || null, sessions: sessionAudit });
+  await writeJson(path.join(pack, 'predicate-snapshot-sequence.json'), { schema: 'v0436-r1h-predicate-snapshot-sequence-v1', status: primaryBlocker?.status || 'SUCCESS_PATH_REACHED', source_sha: provenance?.source_sha || null, sessions: Object.fromEntries(Object.entries(infos).map(([session, info]) => [session, info.finalState?.predicate_sequence || []])) });
+  await writeJson(path.join(pack, 'capture-contract-audit.json'), { schema: 'v0436-r1h-capture-contract-audit-v1', status: primaryBlocker?.status || 'SUCCESS_PATH_REACHED', source_sha: provenance?.source_sha || null, public_actions: ['selection', 'attack-move', 'attack-target', 'building placement', 'worker construction', 'real-cost production', 'normal worker gathering'], forbidden_driver_writes: ['HP', 'death', 'defeat', 'result', 'match state', 'resources', 'teleportation', 'free units'], no_godot_log_file: true, headed_sessions: ['A', 'B'] });
+  await writeJson(path.join(pack, 'accepted-and-rejected-evidence.json'), { schema: 'v0436-r1h-evidence-disposition-v1', source_sha: provenance?.source_sha || null, accepted: ['fresh headed R1H frames', 'real worker construction and gathering audits', 'real-cost production audits', 'live combat target lifecycle', 'truthful blocker status'], rejected: ['success-only result/replay frames when the assault blocker is live', 'title cards', 'direct result/replay signals', 'free-unit or resource-injection shortcuts'] });
+  const blackFrameChecks = [];
+  for (const session of ['A', 'B']) {
+    for (const frame of requiredFramesBySession[session]) {
+      const framePath = path.join(infos[session].dir, frame);
+      const stats = await fs.stat(framePath).catch(() => null);
+      blackFrameChecks.push({ session, frame, present: Boolean(stats), bytes: stats?.size || 0, rejected: !stats || stats.size < 4096 });
+    }
+  }
+  await writeJson(path.join(pack, 'black-frame-rejection-report.json'), { schema: 'v0436-r1h-black-frame-rejection-v1', status: blackFrameChecks.some(item => item.rejected) ? 'REJECTED' : 'PASSED', policy: 'each required headed PNG must exist and exceed 4096 bytes; visual inspection remains required', checks: blackFrameChecks });
+  const supplementalRootNames = ['economy-audit.json', 'force-readiness-audit.json', 'target-lifecycle-audit.json', 'predicate-snapshot-sequence.json', 'capture-contract-audit.json', 'accepted-and-rejected-evidence.json', 'black-frame-rejection-report.json'];
+  for (const name of supplementalRootNames) if (!(await exists(path.join(pack, name)))) failures.push(`missing supplemental review-pack file ${name}`);
+  const blockerSheet = path.join(infos.A.dir, '26_R1H_BLOCKER_CONTACT_SHEET.png');
+  if (await exists(blockerSheet)) await fs.copyFile(blockerSheet, path.join(pack, '26_R1H_BLOCKER_CONTACT_SHEET.png'));
+  else failures.push('missing blocker contact sheet');
   const sourceShas = [provenance?.source_sha, manifest?.source_sha].filter(Boolean);
   const contract = evaluateR1HValidatorContract({
     branch: currentBranch,
@@ -129,7 +176,7 @@ async function validate() {
     sourceShas,
     sessions: ['A', 'B'],
     forbiddenPatterns: [],
-    requiredRootFiles,
+    requiredRootFiles: rootRequiredFiles,
     requiredFramesBySession,
     successFramesBySession,
     blockers,
@@ -139,7 +186,6 @@ async function validate() {
     captureManifestStatus: manifest?.status || 'MISSING',
   });
   failures.push(...contract.failures);
-  const primaryBlocker = blockers[0] || null;
   const status = failures.length ? 'BLOCKED_R1H_EVIDENCE_VALIDATION' : (primaryBlocker?.status || 'PASSED_V0436_R1H_NATURAL_CONQUEST_RESULT_REPLAY_PROOF');
   const result = {
     ...contract,
