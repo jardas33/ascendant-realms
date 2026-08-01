@@ -4,6 +4,15 @@ export const REQUIRED_R1K_BRANCH = 'codex/v0436-first-complete-conquest-victory'
 export const R1K_PACK = 'artifacts/manual-review/v0436-r1k-controlled-combat-variable-isolation/';
 export const R1K_STATUS = 'BLOCKED_R1K_CONTROLLED_MATRIX_INCONCLUSIVE';
 export const R1K_IMPLEMENTATION_STATUS = 'R1K_IMPLEMENTATION_READY';
+export const R1K_STAGE_A2_STATUS = 'NON_EVIDENCE_STAGE_A2_COMPACT_SPACING_SETTLEMENT_VALIDATED';
+export const R1K_STAGE_A2_PHYSICAL_BLOCKER = 'BLOCKED_R1K_COMPACT_SPACING_PHYSICALLY_UNACHIEVABLE';
+export const R1K_STAGE_A2_UNSTABLE_BLOCKER = 'BLOCKED_R1K_COMPACT_SPACING_UNSTABLE';
+export const R1K_STAGE_A2_POST_STOP_WINDOW_BLOCKER = 'BLOCKED_R1K_POST_STOP_WINDOW_INCOMPLETE';
+const R1K_DESTINATION_TOLERANCE = 1.5;
+const R1K_MIN_ARRIVAL_TAIL_SAMPLES = 10;
+const R1K_MIN_ARRIVAL_TAIL_SPAN_MS = 1000;
+const R1K_MIN_POST_STOP_SAMPLES = 5;
+const R1K_MIN_POST_STOP_SPAN_MS = 500;
 export const R1K_CELLS = Object.freeze([
   'hero-spear-wide-thorn-ranger-first',
   'hero-spear-compact-thorn-ranger-first',
@@ -38,11 +47,82 @@ const exists = async file => { try { await fs.access(file); return true; } catch
 
 function unique(values) { return new Set(values).size === values.length; }
 
+function strictlyIncreasing(values) {
+  return values.length > 1 && values.every((value, index) => index === 0 || value > values[index - 1]);
+}
+
+function unitsProveArrival(sample, frozenIds = null) {
+  if (!Array.isArray(sample?.units) || !sample.units.length) return false;
+  const ids = sample.units.map(unit => String(unit.runtime_id ?? ''));
+  if (frozenIds && (ids.length !== frozenIds.size || ids.some(id => !frozenIds.has(id)))) return false;
+  return sample.units.every(unit => unit.valid === true && unit.alive === true && Number.isFinite(Number(unit.destination_error)) && Number(unit.destination_error) <= R1K_DESTINATION_TOLERANCE);
+}
+
 export function spacingPairPasses(wide, compact) {
   const wideDistances = Array.isArray(wide?.pairwise_distances) ? wide.pairwise_distances.map(Number).filter(Number.isFinite) : [];
   const compactDistances = Array.isArray(compact?.pairwise_distances) ? compact.pairwise_distances.map(Number).filter(Number.isFinite) : [];
   if (!wideDistances.length || !compactDistances.length) return false;
   return Math.min(...wideDistances) > Math.max(...compactDistances) + 1;
+}
+
+export function evaluateR1KStageA2Diagnostic({ diagnostic, branch, expectedBranch = REQUIRED_R1K_BRANCH, expectedSourceSha, outputScope = 'diagnostics/stage-a2-compact-spacing-settlement' }) {
+  const failures = [];
+  const summary = diagnostic?.summary || diagnostic;
+  const measurement = summary?.spacing_measurement || {};
+  const postStop = Array.isArray(measurement.post_stop_samples) ? measurement.post_stop_samples : [];
+  const provisional = Array.isArray(measurement.provisional_settlement_samples) ? measurement.provisional_settlement_samples : [];
+  const assignments = Array.isArray(measurement.assigned_destinations) ? measurement.assigned_destinations : [];
+  const commands = Array.isArray(diagnostic?.public_commands) ? diagnostic.public_commands : (Array.isArray(summary?.metrics?.public_commands) ? summary.metrics.public_commands : []);
+  if (!summary || summary.schema !== 'v0436-r1k-stage-a2-diagnostic-summary-v1') failures.push('missing Stage-A.2 diagnostic summary schema');
+  if (summary?.non_evidence !== true) failures.push('Stage-A.2 diagnostic is not explicitly marked non-evidence');
+  if (branch !== expectedBranch || summary?.branch !== expectedBranch) failures.push('Stage-A.2 branch provenance mismatch');
+  if (expectedSourceSha && summary?.source_sha !== expectedSourceSha) failures.push('Stage-A.2 source SHA mismatch');
+  if (summary?.headed !== true || summary?.hidden_window !== false) failures.push('Stage-A.2 is not proven headed and visible');
+  if (summary?.no_direct_state_writes !== true || summary?.no_resource_injection !== true || summary?.no_free_units !== true) failures.push('Stage-A.2 mutation guard is not proven');
+  if (summary?.cell?.spacing !== 'compact' || summary?.cell?.spacing_comparable !== true) failures.push('Stage-A.2 compact spacing contract is missing');
+  if (summary?.cell?.command_path !== 'diagnostic-spacing-only') failures.push('Stage-A.2 command path is not diagnostic-only');
+  if ([R1K_STAGE_A2_STATUS, R1K_STAGE_A2_PHYSICAL_BLOCKER, R1K_STAGE_A2_UNSTABLE_BLOCKER, R1K_STAGE_A2_POST_STOP_WINDOW_BLOCKER].includes(summary?.status)) {
+    if (postStop.length < 5) failures.push('successful Stage-A.2 diagnostic lacks five post-stop samples');
+    const frozenIds = Array.isArray(measurement.frozen_unit_ids) ? new Set(measurement.frozen_unit_ids.map(String)) : null;
+    const arrivalStart = Number(measurement.arrival_hold_start_index);
+    const arrivalEnd = Number(measurement.arrival_hold_end_index);
+    const declaredArrivalCount = Number(measurement.arrival_hold_sample_count);
+    const arrivalTailValid = Number.isInteger(arrivalStart) && Number.isInteger(arrivalEnd) && arrivalStart >= 0 && arrivalEnd >= arrivalStart && arrivalEnd < provisional.length && declaredArrivalCount === arrivalEnd - arrivalStart + 1;
+    if (!arrivalTailValid) failures.push('Stage-A.2 lacks a contiguous declared arrival-hold tail');
+    const arrivalTail = arrivalTailValid ? provisional.slice(arrivalStart, arrivalEnd + 1) : [];
+    const arrivalTimes = arrivalTail.map(sample => Number(sample.timestamp_ms));
+    const arrivalTailSpan = arrivalTimes.length ? Math.max(...arrivalTimes) - Math.min(...arrivalTimes) : 0;
+    if (arrivalTail.length < R1K_MIN_ARRIVAL_TAIL_SAMPLES) failures.push('successful Stage-A.2 diagnostic lacks ten consecutive arrival-tail samples');
+    if (!strictlyIncreasing(arrivalTimes) || arrivalTailSpan < R1K_MIN_ARRIVAL_TAIL_SPAN_MS) failures.push('successful Stage-A.2 arrival-hold tail does not span one real second');
+    if (Number(measurement.arrival_hold_start_timestamp_ms) !== arrivalTimes[0] || Number(measurement.arrival_hold_end_timestamp_ms) !== arrivalTimes[arrivalTimes.length - 1] || Number(measurement.arrival_hold_span_ms) !== arrivalTailSpan) failures.push('Stage-A.2 arrival-hold timestamps do not match the declared tail');
+    if (frozenIds === null || frozenIds.size !== assignments.length || !frozenIds.size) failures.push('Stage-A.2 lacks the frozen controlled unit IDs');
+    if (!arrivalTail.every(sample => unitsProveArrival(sample, frozenIds))) failures.push('successful Stage-A.2 arrival-hold tail does not prove destination tolerance');
+    if (Number(measurement.settled_hold_seconds) < 1) failures.push('successful Stage-A.2 diagnostic lacks one-second arrival hold');
+    if (Number(measurement.public_stop_command_count) !== 1) failures.push('successful Stage-A.2 diagnostic does not prove exactly one public stop command');
+    const stopCommands = commands.filter(command => command.kind === 'stop');
+    const stopTimestamp = Number(stopCommands[0]?.timestamp_ms);
+    const arrivalEndTimestamp = Number(measurement.arrival_hold_end_timestamp_ms);
+    if (!Number.isFinite(stopTimestamp) || !Number.isFinite(arrivalEndTimestamp) || stopTimestamp <= arrivalEndTimestamp) failures.push('public stop timestamp is not after the valid arrival-hold tail');
+    const postStopTimes = postStop.map(sample => Number(sample.timestamp_ms));
+    const postStopTimingValid = postStopTimes.length >= R1K_MIN_POST_STOP_SAMPLES && strictlyIncreasing(postStopTimes) && Number.isFinite(stopTimestamp) && postStopTimes[0] >= stopTimestamp && postStopTimes[postStopTimes.length - 1] - postStopTimes[0] >= R1K_MIN_POST_STOP_SPAN_MS;
+    if (!postStopTimingValid) failures.push('successful Stage-A.2 post-stop window does not satisfy the five-sample, strictly increasing, post-stop 500 ms contract');
+    if (!postStop.every(sample => unitsProveArrival(sample, frozenIds))) failures.push('successful Stage-A.2 post-stop samples do not prove destination arrival');
+    if (summary.status === R1K_STAGE_A2_POST_STOP_WINDOW_BLOCKER) failures.push('Stage-A.2 runtime reported an incomplete post-stop timing window');
+    const postStopDistances = postStop.map(sample => Number(sample.hero_to_companion_distance)).filter(Number.isFinite);
+    if (!postStopDistances.length) failures.push('successful Stage-A.2 diagnostic lacks post-stop distance distribution');
+    else if (postStopTimingValid && summary.status === R1K_STAGE_A2_STATUS && Math.max(...postStopDistances) > 3.2) failures.push('settlement classification contradicts post-stop compact threshold');
+    else if (postStopTimingValid && summary.status === R1K_STAGE_A2_PHYSICAL_BLOCKER && Math.min(...postStopDistances) <= 3.2) failures.push('physical-infeasibility classification contradicts post-stop compact threshold');
+    else if (postStopTimingValid && summary.status === R1K_STAGE_A2_UNSTABLE_BLOCKER && (Math.min(...postStopDistances) > 3.2 || Math.max(...postStopDistances) <= 3.2)) failures.push('unstable classification does not cross the compact threshold');
+  }
+  if (!assignments.length || assignments.some(item => !item.runtime_id || !item.destination || item.command_accepted !== true)) failures.push('Stage-A.2 lacks per-unit accepted public destination assignments');
+  if (!commands.some(command => command.kind === 'attack_move_destination') || commands.filter(command => command.kind === 'stop').length !== 1) failures.push('Stage-A.2 lacks exactly one public movement-stop command history');
+  const allSamples = [...provisional, ...postStop];
+  if (!allSamples.every(sample => Number.isFinite(Number(sample.timestamp_ms)))) failures.push('Stage-A.2 samples are not timestamped');
+  if (allSamples.some(sample => Object.values(sample.combat_event_counts || {}).some(value => Number(value) !== 0))) failures.push('combat interference occurred during Stage-A.2 spacing staging');
+  if (summary?.metrics?.combat_interference === true || measurement.combat_interference === true) failures.push('Stage-A.2 diagnostic reports combat interference');
+  if (summary?.metrics?.direct_state_writes === true || summary?.metrics?.resource_injection === true) failures.push('Stage-A.2 diagnostic reports forbidden mutation');
+  if (outputScope.includes('artifacts/manual-review/v0436-r1k-controlled-combat-variable-isolation/hero-spear-')) failures.push('Stage-A.2 diagnostic output is inside a final matrix cell');
+  return { schema: 'v0436-r1k-stage-a2-diagnostic-validator-v1', passed: failures.length === 0, status: failures.length ? 'BLOCKED_R1K_STAGE_A2_VALIDATION' : 'STAGE_A2_DIAGNOSTIC_VALIDATED', failures, diagnostic_status: summary?.status || null, source_sha: summary?.source_sha || null, branch: summary?.branch || null, output_scope: outputScope, non_evidence: true };
 }
 
 function validateCell(cell, failures, requireCapturedRepetition) {
