@@ -26,7 +26,7 @@ function launchEnv(session) {
   const sha = sourceSha();
   const currentBranch = branch();
   return { ...process.env,
-    ASCENDANT_V0436_R1I_CAPTURE: '1', ASCENDANT_V0436_R1I_SOURCE_SHA: sha,
+    ASCENDANT_V0436_R1I_CAPTURE: '1', ASCENDANT_V0436_R1H_CAPTURE: '1', ASCENDANT_V0436_R1I_SOURCE_SHA: sha,
     ASCENDANT_V0436_R1I_BRANCH: currentBranch, ASCENDANT_V0436_R1I_SESSION: session,
     ASCENDANT_V0436_R1H_SOURCE_SHA: sha, ASCENDANT_V0436_R1H_BRANCH: currentBranch,
     ASCENDANT_V0436_R1H_SESSION: session,
