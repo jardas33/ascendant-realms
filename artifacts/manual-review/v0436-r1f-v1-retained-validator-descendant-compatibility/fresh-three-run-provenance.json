@@ -1,0 +1,51 @@
+{
+  "schema": "v0436-r1f-v1-fresh-three-run-provenance-v1",
+  "validatedHead": "dbdac3a179c54b4b7a3227475b3b99c7b810f26f",
+  "runs": [
+    {
+      "run_index": "01",
+      "branch": "codex/v0436-first-complete-conquest-victory",
+      "source_sha": "dbdac3a179c54b4b7a3227475b3b99c7b810f26f",
+      "status": "PASSED_V0436_R1F_BOUNDARY_PHYSICS",
+      "maximum_simulation_speed": 3.599853515625,
+      "maximum_allowed_speed": 5.4,
+      "maximum_per_physics_step_displacement": 0.1199951171875,
+      "maximum_movement_applications_same_frame": 1,
+      "duplicate_movement_frames": [],
+      "callbacks_that_moved_after_recovery": 0,
+      "final_inside_bounds": true,
+      "contamination_free": true,
+      "cleanup_result": true
+    },
+    {
+      "run_index": "02",
+      "branch": "codex/v0436-first-complete-conquest-victory",
+      "source_sha": "dbdac3a179c54b4b7a3227475b3b99c7b810f26f",
+      "status": "PASSED_V0436_R1F_BOUNDARY_PHYSICS",
+      "maximum_simulation_speed": 3.599853515625,
+      "maximum_allowed_speed": 5.4,
+      "maximum_per_physics_step_displacement": 0.1199951171875,
+      "maximum_movement_applications_same_frame": 1,
+      "duplicate_movement_frames": [],
+      "callbacks_that_moved_after_recovery": 0,
+      "final_inside_bounds": true,
+      "contamination_free": true,
+      "cleanup_result": true
+    },
+    {
+      "run_index": "03",
+      "branch": "codex/v0436-first-complete-conquest-victory",
+      "source_sha": "dbdac3a179c54b4b7a3227475b3b99c7b810f26f",
+      "status": "PASSED_V0436_R1F_BOUNDARY_PHYSICS",
+      "maximum_simulation_speed": 3.599853515625,
+      "maximum_allowed_speed": 5.4,
+      "maximum_per_physics_step_displacement": 0.1199951171875,
+      "maximum_movement_applications_same_frame": 1,
+      "duplicate_movement_frames": [],
+      "callbacks_that_moved_after_recovery": 0,
+      "final_inside_bounds": true,
+      "contamination_free": true,
+      "cleanup_result": true
+    }
+  ]
+}

@@ -93,3 +93,7 @@ The closeout validation set completed successfully before publication:
 - `git diff --check`
 
 The remaining dirty paths are pre-existing/generated work outside the R1F scope and were preserved. Only the R1F source, reports, validator wiring, and dedicated review pack are intended for the publication commit.
+
+## 2026-07-31 — R1F-V1 retained-validator descendant compatibility
+
+The retained navigation-behavior validator was found to require the obsolete exact base `6b14ba305afc4b3090d57f400da885550d512183` after the accepted documentation descendant `dbdac3a179c54b4b7a3227475b3b99c7b810f26f`. R1F-V1 repairs that tooling contract only: it validates real Git ancestry, exact branch/run/source provenance, and an explicit documentation/review-pack descendant allowlist while preserving all original physics and integrity checks. A pure ten-case matrix and three fresh headed R1F runs at the current descendant HEAD pass. No R1G or R1C work was resumed. See `docs/V0436_R1F_V1_RETAINED_VALIDATOR_DESCENDANT_COMPATIBILITY_REPORT.md` and `artifacts/manual-review/v0436-r1f-v1-retained-validator-descendant-compatibility/`.

@@ -118,7 +118,18 @@ async function validate() {
   allowed.add('artifacts/manual-review/v0436-r1c-natural-conquest-result-replay-proof/session-a/r1c-session-failure.json');
   allowed.add('artifacts/manual-review/v0436-r1c-natural-conquest-result-replay-proof/r1c-capture-manifest.json');
   allowed.add('artifacts/manual-review/v0436-r1c-natural-conquest-result-replay-proof/r1c-validation.json');
-  const allowedCaptureArtifact = file => file.startsWith('artifacts/manual-review/v0436-r1c-natural-conquest-result-replay-proof/session-a/') || file.startsWith('artifacts/manual-review/v0436-r1d-headed-godot-startup-recovery/');
+  const allowedR1FCompatibility = new Set([
+    'tools/godot/v0436R1FBoundaryPhysicsTool.mjs',
+    'tools/godot/v0436R1FValidatorContract.mjs',
+    'tools/godot/v0436R1FValidatorContract.test.ts',
+    'docs/V0436_R1F_BOUNDARY_RECOVERY_PHYSICS_TRUTH_REPORT.md',
+    'docs/V0436_R1F_V1_RETAINED_VALIDATOR_DESCENDANT_COMPATIBILITY_REPORT.md'
+  ]);
+  const allowedCaptureArtifact = file => file.startsWith('artifacts/manual-review/v0436-r1c-natural-conquest-result-replay-proof/session-a/')
+    || file.startsWith('artifacts/manual-review/v0436-r1d-headed-godot-startup-recovery/')
+    || file.startsWith('artifacts/manual-review/v0436-r1f-boundary-recovery-physics-truth/')
+    || file.startsWith('artifacts/manual-review/v0436-r1f-v1-retained-validator-descendant-compatibility/')
+    || allowedR1FCompatibility.has(file);
   const preservedPreexistingDirty = new Set([
     'artifacts/manual-review/v0432-war-hall-clan-levy-production-loop/v0432-validation.json',
     'artifacts/manual-review/v0433-multi-resource-worker-economy-loop/v0433-validation.json',

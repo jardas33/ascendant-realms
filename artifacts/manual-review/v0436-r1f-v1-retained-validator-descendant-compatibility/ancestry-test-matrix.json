@@ -1,0 +1,17 @@
+{
+  "schema": "v0436-r1f-v1-ancestry-test-matrix-v1",
+  "status": "PASSED",
+  "cases": [
+    {"id": 1, "name": "exact implementation current evidence", "expected": "pass", "observed": "pass"},
+    {"id": 2, "name": "known documentation descendant", "expected": "pass", "observed": "pass"},
+    {"id": 3, "name": "fresh current-head evidence", "expected": "pass", "observed": "pass"},
+    {"id": 4, "name": "non-descendant head", "expected": "fail", "observed": "fail"},
+    {"id": 5, "name": "wrong branch", "expected": "fail", "observed": "fail"},
+    {"id": 6, "name": "mixed evidence SHAs", "expected": "fail", "observed": "fail"},
+    {"id": 7, "name": "stale evidence plus production source", "expected": "fail", "observed": "fail"},
+    {"id": 8, "name": "stale evidence plus validator tool", "expected": "fail", "observed": "fail"},
+    {"id": 9, "name": "missing SHA or branch", "expected": "fail", "observed": "fail"},
+    {"id": 10, "name": "unrelated documentation path", "expected": "fail", "observed": "fail"}
+  ],
+  "testCommand": "npx vitest run tools/godot/v0436R1FValidatorContract.test.ts"
+}

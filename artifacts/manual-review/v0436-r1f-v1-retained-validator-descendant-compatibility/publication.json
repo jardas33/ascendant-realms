@@ -1,0 +1,9 @@
+{
+  "schema": "v0436-r1f-v1-publication-v1",
+  "status": "PUBLICATION_PENDING_LOCAL_VALIDATION",
+  "implementationCommit": null,
+  "exactShaCiRun": null,
+  "pr": 10,
+  "branch": "codex/v0436-first-complete-conquest-victory",
+  "nextGate": "run required retained and full validation, then commit and publish"
+}

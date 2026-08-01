@@ -1,0 +1,23 @@
+{
+  "schema": "v0436-r1f-v1-retained-checks-v1",
+  "status": "PASSED",
+  "checks": [
+    {"command": "npm run godot:validate:v0436-r1d-headed-startup", "result": "passed after minimal R1F compatibility allowlist repair"},
+    {"command": "npm run godot:test:v0436-r1-navigation-repair", "result": "passed"},
+    {"command": "npm run godot:smoke:v0436-r1-navigation-repair", "result": "passed"},
+    {"command": "npm run godot:validate:v0436-r1-navigation-repair", "result": "passed"},
+    {"command": "npm run godot:test:v0436-r1-navigation-behavioral-proof", "result": "passed"},
+    {"command": "npm run godot:smoke:v0436-r1-navigation-behavioral-proof", "result": "passed"},
+    {"command": "npm run godot:test:v0436-conquest-victory", "result": "passed"},
+    {"command": "npm run godot:smoke:v0436-conquest-victory", "result": "passed"},
+    {"command": "npm run godot:diagnose:v0436-r1b-legacy-timer-contract", "result": "historical diagnostic passed; active_gate false; HISTORICAL_R1E_TIMER_CONTRACT_FALSE_POSITIVE"},
+    {"command": "npm test", "result": "123 files, 897 tests passed"},
+    {"command": "npm run build", "result": "passed"},
+    {"command": "npm run validate:content", "result": "passed"},
+    {"command": "npm run validate:art-intake", "result": "passed"},
+    {"command": "npm run validate:runtime-art-slots", "result": "passed; 52 slots"},
+    {"command": "npm run validate:artifact-retention", "result": "passed"},
+    {"command": "npm run godot:all", "result": "passed"},
+    {"command": "git diff --check", "result": "passed with existing line-ending warnings only"}
+  ]
+}
