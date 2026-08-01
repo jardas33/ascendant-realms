@@ -1,0 +1,157 @@
+{
+  "schema": "v0436-r1j-attacker-uptime-v1",
+  "sessions": [
+    "A",
+    "B"
+  ],
+  "by_attacker": {
+    "171765140087": {
+      "sample_count": 11210,
+      "bounded": true
+    },
+    "172218124942": {
+      "sample_count": 11210,
+      "bounded": true
+    },
+    "172671109797": {
+      "sample_count": 11209,
+      "bounded": true
+    },
+    "173124094652": {
+      "sample_count": 11208,
+      "bounded": true
+    },
+    "173577079507": {
+      "sample_count": 10800,
+      "bounded": true
+    },
+    "174264945397": {
+      "sample_count": 11208,
+      "bounded": true
+    },
+    "174717930252": {
+      "sample_count": 11208,
+      "bounded": true
+    },
+    "175170915107": {
+      "sample_count": 11208,
+      "bounded": true
+    },
+    "175623899962": {
+      "sample_count": 10184,
+      "bounded": true
+    },
+    "176076884817": {
+      "sample_count": 11208,
+      "bounded": true
+    },
+    "277327383777": {
+      "sample_count": 5186,
+      "bounded": true
+    },
+    "372605193510": {
+      "sample_count": 4765,
+      "bounded": true
+    },
+    "457581792585": {
+      "sample_count": 4400,
+      "bounded": true
+    },
+    "540561902945": {
+      "sample_count": 4042,
+      "bounded": true
+    },
+    "542558391672": {
+      "sample_count": 4036,
+      "bounded": true
+    },
+    "654865075600": {
+      "sample_count": 3551,
+      "bounded": true
+    },
+    "666592349608": {
+      "sample_count": 3502,
+      "bounded": true
+    },
+    "768211946943": {
+      "sample_count": 3064,
+      "bounded": true
+    },
+    "778093727192": {
+      "sample_count": 2903,
+      "bounded": true
+    },
+    "859966541297": {
+      "sample_count": 2668,
+      "bounded": true
+    },
+    "889964203528": {
+      "sample_count": 2500,
+      "bounded": true
+    },
+    "949053558366": {
+      "sample_count": 2243,
+      "bounded": true
+    },
+    "1059279867508": {
+      "sample_count": 1728,
+      "bounded": true
+    },
+    "1319410600782": {
+      "sample_count": 513,
+      "bounded": true
+    },
+    "278065581278": {
+      "sample_count": 5178,
+      "bounded": true
+    },
+    "373527940400": {
+      "sample_count": 4755,
+      "bounded": true
+    },
+    "458135440713": {
+      "sample_count": 4391,
+      "bounded": true
+    },
+    "540595457352": {
+      "sample_count": 4036,
+      "bounded": true
+    },
+    "543330143608": {
+      "sample_count": 4026,
+      "bounded": true
+    },
+    "663656336785": {
+      "sample_count": 3541,
+      "bounded": true
+    },
+    "675232615826": {
+      "sample_count": 3496,
+      "bounded": true
+    },
+    "785962241474": {
+      "sample_count": 3055,
+      "bounded": true
+    },
+    "796095679959": {
+      "sample_count": 2887,
+      "bounded": true
+    },
+    "878706691569": {
+      "sample_count": 2659,
+      "bounded": true
+    },
+    "907966156295": {
+      "sample_count": 2329,
+      "bounded": true
+    },
+    "987288833630": {
+      "sample_count": 2144,
+      "bounded": true
+    },
+    "1071778893428": {
+      "sample_count": 1749,
+      "bounded": true
+    }
+  }
+}

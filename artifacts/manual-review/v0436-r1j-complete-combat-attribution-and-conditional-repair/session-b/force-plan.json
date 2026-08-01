@@ -1,0 +1,314 @@
+{
+  "plan": {
+    "available_roles": [
+      {
+        "definition": {
+          "armor": 1,
+          "armor_class": "light",
+          "attack_cd": 1.1,
+          "build_time": 14,
+          "cost": {
+            "food": 60,
+            "timber": 10
+          },
+          "desc": "Cheap, sturdy frontline warrior. Good against unarmored foes.",
+          "dmg": 12,
+          "dmg_type": "slash",
+          "height": 1.8,
+          "hp": 130,
+          "model": "res://assets/characters/barrosan_clan_levy/barrosan_clan_levy.glb",
+          "name": "Clan Levy",
+          "pop": 1,
+          "produced_by": "barracks",
+          "race": "barrosan",
+          "range": 0,
+          "role": "melee",
+          "speed": 3.7,
+          "tier": 1,
+          "vision": 20
+        },
+        "id": "barrosan_clan_levy",
+        "reason": "live War Hall roster audit"
+      },
+      {
+        "definition": {
+          "armor": 4,
+          "armor_class": "heavy",
+          "attack_cd": 1.3,
+          "build_time": 18,
+          "cost": {
+            "food": 70,
+            "stone": 10,
+            "timber": 20
+          },
+          "desc": "Heavily armored anchor. Excels at holding the line and shredding large units.",
+          "dmg": 14,
+          "dmg_type": "pierce",
+          "height": 1.85,
+          "hp": 180,
+          "model": "res://assets/characters/barrosan_spear_guard/barrosan_spear_guard.glb",
+          "name": "Stoneward Spears",
+          "pop": 2,
+          "produced_by": "barracks",
+          "race": "barrosan",
+          "range": 0,
+          "role": "defender",
+          "speed": 3,
+          "tier": 1,
+          "vision": 20
+        },
+        "id": "barrosan_spear_guard",
+        "reason": "live War Hall roster audit"
+      },
+      {
+        "definition": {
+          "armor": 0,
+          "armor_class": "light",
+          "attack_cd": 1.4,
+          "build_time": 16,
+          "cost": {
+            "food": 50,
+            "timber": 30
+          },
+          "desc": "Ranged pierce damage from the high ground. Fragile up close.",
+          "dmg": 16,
+          "dmg_type": "pierce",
+          "height": 1.8,
+          "hp": 90,
+          "model": "res://assets/characters/barrosan_crag_archer/barrosan_crag_archer.glb",
+          "name": "Crag Archer",
+          "pop": 1,
+          "produced_by": "barracks",
+          "projectile": "arrow",
+          "race": "barrosan",
+          "range": 16,
+          "role": "ranged",
+          "speed": 3.5,
+          "tier": 1,
+          "vision": 24
+        },
+        "id": "barrosan_crag_archer",
+        "reason": "live War Hall roster audit"
+      },
+      {
+        "definition": {
+          "armor": 1,
+          "armor_class": "light",
+          "attack_cd": 1,
+          "build_time": 18,
+          "cost": {
+            "food": 80,
+            "gold": 20
+          },
+          "desc": "Fast raider that runs down archers and harasses workers.",
+          "dmg": 15,
+          "dmg_type": "slash",
+          "height": 1.8,
+          "hp": 120,
+          "model": "res://assets/characters/barrosan_outrider/barrosan_outrider.glb",
+          "name": "Highland Outrider",
+          "pop": 2,
+          "produced_by": "barracks",
+          "race": "barrosan",
+          "range": 0,
+          "role": "flanker",
+          "speed": 5.4,
+          "tier": 2,
+          "vision": 26
+        },
+        "id": "barrosan_outrider",
+        "reason": "live War Hall roster audit"
+      },
+      {
+        "definition": {
+          "armor": 5,
+          "armor_class": "heavy",
+          "attack_cd": 1.7,
+          "build_time": 26,
+          "cost": {
+            "food": 110,
+            "gold": 40,
+            "stone": 40
+          },
+          "desc": "Slow siege-fist elite. Crushes heavy armor and structures.",
+          "dmg": 30,
+          "dmg_type": "blunt",
+          "height": 1.95,
+          "hp": 240,
+          "model": "res://assets/characters/barrosan_anvil_breaker/barrosan_anvil_breaker.glb",
+          "name": "Anvil Breaker",
+          "pop": 3,
+          "produced_by": "barracks",
+          "race": "barrosan",
+          "range": 0,
+          "role": "antiarmor",
+          "speed": 2.8,
+          "tier": 3,
+          "vision": 20
+        },
+        "id": "barrosan_anvil_breaker",
+        "reason": "live War Hall roster audit"
+      },
+      {
+        "definition": {
+          "armor": 2,
+          "armor_class": "medium",
+          "attack_cd": 2.6,
+          "build_time": 30,
+          "cost": {
+            "gold": 60,
+            "timber": 120
+          },
+          "desc": "Long-range siege bolt-thrower. Devastating on buildings, weak in melee.",
+          "dmg": 55,
+          "dmg_type": "siege",
+          "height": 2.2,
+          "hp": 160,
+          "is_siege": true,
+          "model": "res://assets/props/vehicles/barrosan_ballista.glb",
+          "name": "Clan Ballista",
+          "pop": 3,
+          "produced_by": "barracks",
+          "projectile": "bolt",
+          "race": "barrosan",
+          "range": 22,
+          "role": "siege",
+          "speed": 2.4,
+          "tier": 3,
+          "vision": 26
+        },
+        "id": "barrosan_ballista",
+        "reason": "live War Hall roster audit"
+      }
+    ],
+    "building": {
+      "armor": 5,
+      "armor_class": "fortified",
+      "build_time": 30,
+      "cost": {
+        "stone": 60,
+        "timber": 150
+      },
+      "desc": "Trains the clan's soldiers, archers, elites and siege.",
+      "footprint": 5,
+      "grants_pop": 0,
+      "hp": 950,
+      "kind": "barracks",
+      "model": "res://assets/environment/buildings/barrosan_war_hall.glb",
+      "name": "War Hall",
+      "produces": [
+        "barrosan_clan_levy",
+        "barrosan_spear_guard",
+        "barrosan_crag_archer",
+        "barrosan_outrider",
+        "barrosan_anvil_breaker",
+        "barrosan_ballista"
+      ],
+      "race": "barrosan"
+    },
+    "building_id": "barrosan_war_hall",
+    "hero_definition": {
+      "armor": 6,
+      "armor_class": "heavy",
+      "attack_cd": 1.1,
+      "desc": "Frontline commander. Rally aura strengthens nearby allies.",
+      "dmg": 34,
+      "dmg_type": "slash",
+      "height": 2,
+      "hp": 400,
+      "is_hero": true,
+      "model": "res://assets/characters/barrosan_hero_thane/barrosan_hero_thane.glb",
+      "name": "War-Thane",
+      "pop": 0,
+      "race": "barrosan",
+      "range": 0,
+      "role": "hero",
+      "speed": 3.9,
+      "tier": 1,
+      "vision": 28
+    },
+    "max_live_combatants": 16,
+    "max_preparation_wall_seconds": 720,
+    "planned_roles": [
+      {
+        "armor_class": "heavy",
+        "build_time": 18,
+        "cost": {
+          "food": 70,
+          "stone": 10,
+          "timber": 20
+        },
+        "dmg": 14,
+        "dmg_type": "pierce",
+        "hp": 180,
+        "id": "barrosan_spear_guard",
+        "pop": 2,
+        "range": 0,
+        "reason": "frontline durability or ranged damage in a normal mixed force",
+        "role": "defender"
+      },
+      {
+        "armor_class": "heavy",
+        "build_time": 18,
+        "cost": {
+          "food": 70,
+          "stone": 10,
+          "timber": 20
+        },
+        "dmg": 14,
+        "dmg_type": "pierce",
+        "hp": 180,
+        "id": "barrosan_spear_guard",
+        "pop": 2,
+        "range": 0,
+        "reason": "frontline durability or ranged damage in a normal mixed force",
+        "role": "defender"
+      },
+      {
+        "armor_class": "light",
+        "build_time": 16,
+        "cost": {
+          "food": 50,
+          "timber": 30
+        },
+        "dmg": 16,
+        "dmg_type": "pierce",
+        "hp": 90,
+        "id": "barrosan_crag_archer",
+        "pop": 1,
+        "range": 16,
+        "reason": "frontline durability or ranged damage in a normal mixed force",
+        "role": "ranged"
+      },
+      {
+        "armor_class": "light",
+        "build_time": 16,
+        "cost": {
+          "food": 50,
+          "timber": 30
+        },
+        "dmg": 16,
+        "dmg_type": "pierce",
+        "hp": 90,
+        "id": "barrosan_crag_archer",
+        "pop": 1,
+        "range": 16,
+        "reason": "frontline durability or ranged damage in a normal mixed force",
+        "role": "ranged"
+      }
+    ],
+    "population_cap_bound": 12
+  },
+  "provenance": {
+    "attempt": "force_plan",
+    "branch": "codex/v0436-first-complete-conquest-victory",
+    "godot_log_file_argument": false,
+    "headed": true,
+    "hidden_window": false,
+    "production_scene": "scenes/main.tscn -> scenes/game_world.tscn",
+    "schema": "v0436-r1j-live-evidence-v1",
+    "session": "B",
+    "source_sha": "23a57b723bb6539f7b2011f2f69abe515df08ff9",
+    "timestamp_ms": 16958
+  }
+}

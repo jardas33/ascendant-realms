@@ -1,0 +1,1905 @@
+{
+  "events": [
+    {
+      "physics_frame": 3531,
+      "process_frame": 3953,
+      "reason": "public_order",
+      "target_after": {
+        "alive": true,
+        "definition_id": "lioraen_hero_warden",
+        "runtime_id": "176076884817",
+        "team": 1
+      },
+      "target_before": {
+        "alive": false,
+        "definition_id": "",
+        "runtime_id": "",
+        "team": -1
+      },
+      "target_transition_event_id": "r1j-target-043880",
+      "timestamp_ms": 69798,
+      "unit": {
+        "alive": true,
+        "definition_id": "barrosan_spear_guard",
+        "runtime_id": "173124094652",
+        "team": 0
+      }
+    },
+    {
+      "physics_frame": 3531,
+      "process_frame": 3953,
+      "reason": "public_order",
+      "target_after": {
+        "alive": true,
+        "definition_id": "lioraen_hero_warden",
+        "runtime_id": "176076884817",
+        "team": 1
+      },
+      "target_before": {
+        "alive": false,
+        "definition_id": "",
+        "runtime_id": "",
+        "team": -1
+      },
+      "target_transition_event_id": "r1j-target-043882",
+      "timestamp_ms": 69798,
+      "unit": {
+        "alive": true,
+        "definition_id": "barrosan_hero_thane",
+        "runtime_id": "173577079507",
+        "team": 0
+      }
+    },
+    {
+      "physics_frame": 3531,
+      "process_frame": 3953,
+      "reason": "public_order",
+      "target_after": {
+        "alive": true,
+        "definition_id": "lioraen_hero_warden",
+        "runtime_id": "176076884817",
+        "team": 1
+      },
+      "target_before": {
+        "alive": false,
+        "definition_id": "",
+        "runtime_id": "",
+        "team": -1
+      },
+      "target_transition_event_id": "r1j-target-043884",
+      "timestamp_ms": 69798,
+      "unit": {
+        "alive": true,
+        "definition_id": "barrosan_spear_guard",
+        "runtime_id": "540595457352",
+        "team": 0
+      }
+    },
+    {
+      "physics_frame": 3531,
+      "process_frame": 3953,
+      "reason": "public_order",
+      "target_after": {
+        "alive": true,
+        "definition_id": "lioraen_hero_warden",
+        "runtime_id": "176076884817",
+        "team": 1
+      },
+      "target_before": {
+        "alive": false,
+        "definition_id": "",
+        "runtime_id": "",
+        "team": -1
+      },
+      "target_transition_event_id": "r1j-target-043886",
+      "timestamp_ms": 69798,
+      "unit": {
+        "alive": true,
+        "definition_id": "barrosan_spear_guard",
+        "runtime_id": "675232615826",
+        "team": 0
+      }
+    },
+    {
+      "physics_frame": 3531,
+      "process_frame": 3953,
+      "reason": "public_order",
+      "target_after": {
+        "alive": true,
+        "definition_id": "lioraen_hero_warden",
+        "runtime_id": "176076884817",
+        "team": 1
+      },
+      "target_before": {
+        "alive": false,
+        "definition_id": "",
+        "runtime_id": "",
+        "team": -1
+      },
+      "target_transition_event_id": "r1j-target-043888",
+      "timestamp_ms": 69798,
+      "unit": {
+        "alive": true,
+        "definition_id": "barrosan_crag_archer",
+        "runtime_id": "796095679959",
+        "team": 0
+      }
+    },
+    {
+      "physics_frame": 3531,
+      "process_frame": 3953,
+      "reason": "public_order",
+      "target_after": {
+        "alive": true,
+        "definition_id": "lioraen_hero_warden",
+        "runtime_id": "176076884817",
+        "team": 1
+      },
+      "target_before": {
+        "alive": false,
+        "definition_id": "",
+        "runtime_id": "",
+        "team": -1
+      },
+      "target_transition_event_id": "r1j-target-043890",
+      "timestamp_ms": 69798,
+      "unit": {
+        "alive": true,
+        "definition_id": "barrosan_crag_archer",
+        "runtime_id": "907966156295",
+        "team": 0
+      }
+    },
+    {
+      "physics_frame": 4839,
+      "process_frame": 5570,
+      "reason": "auto_acquisition",
+      "target_after": {
+        "alive": true,
+        "definition_id": "barrosan_hero_thane",
+        "runtime_id": "173577079507",
+        "team": 0
+      },
+      "target_before": {
+        "alive": false,
+        "definition_id": "",
+        "runtime_id": "",
+        "team": -1
+      },
+      "target_transition_event_id": "r1j-target-072851",
+      "timestamp_ms": 92332,
+      "unit": {
+        "alive": true,
+        "definition_id": "lioraen_bloomdancer",
+        "runtime_id": "878706691569",
+        "team": 1
+      }
+    },
+    {
+      "physics_frame": 4842,
+      "process_frame": 5574,
+      "reason": "auto_acquisition",
+      "target_after": {
+        "alive": true,
+        "definition_id": "barrosan_hero_thane",
+        "runtime_id": "173577079507",
+        "team": 0
+      },
+      "target_before": {
+        "alive": false,
+        "definition_id": "",
+        "runtime_id": "",
+        "team": -1
+      },
+      "target_transition_event_id": "r1j-target-072917",
+      "timestamp_ms": 92384,
+      "unit": {
+        "alive": true,
+        "definition_id": "lioraen_thorn_ranger",
+        "runtime_id": "663656336785",
+        "team": 1
+      }
+    },
+    {
+      "physics_frame": 4843,
+      "process_frame": 5575,
+      "reason": "auto_acquisition",
+      "target_after": {
+        "alive": true,
+        "definition_id": "barrosan_hero_thane",
+        "runtime_id": "173577079507",
+        "team": 0
+      },
+      "target_before": {
+        "alive": false,
+        "definition_id": "",
+        "runtime_id": "",
+        "team": -1
+      },
+      "target_transition_event_id": "r1j-target-072948",
+      "timestamp_ms": 92399,
+      "unit": {
+        "alive": true,
+        "definition_id": "lioraen_bloomdancer",
+        "runtime_id": "1071778893428",
+        "team": 1
+      }
+    },
+    {
+      "physics_frame": 4844,
+      "process_frame": 5576,
+      "reason": "auto_acquisition",
+      "target_after": {
+        "alive": true,
+        "definition_id": "barrosan_hero_thane",
+        "runtime_id": "173577079507",
+        "team": 0
+      },
+      "target_before": {
+        "alive": false,
+        "definition_id": "",
+        "runtime_id": "",
+        "team": -1
+      },
+      "target_transition_event_id": "r1j-target-072969",
+      "timestamp_ms": 92414,
+      "unit": {
+        "alive": true,
+        "definition_id": "lioraen_thorn_ranger",
+        "runtime_id": "785962241474",
+        "team": 1
+      }
+    },
+    {
+      "physics_frame": 4846,
+      "process_frame": 5579,
+      "reason": "auto_acquisition",
+      "target_after": {
+        "alive": true,
+        "definition_id": "barrosan_hero_thane",
+        "runtime_id": "173577079507",
+        "team": 0
+      },
+      "target_before": {
+        "alive": false,
+        "definition_id": "",
+        "runtime_id": "",
+        "team": -1
+      },
+      "target_transition_event_id": "r1j-target-073022",
+      "timestamp_ms": 92452,
+      "unit": {
+        "alive": true,
+        "definition_id": "lioraen_thorn_ranger",
+        "runtime_id": "987288833630",
+        "team": 1
+      }
+    },
+    {
+      "physics_frame": 4850,
+      "process_frame": 5584,
+      "reason": "auto_acquisition",
+      "target_after": {
+        "alive": true,
+        "definition_id": "barrosan_hero_thane",
+        "runtime_id": "173577079507",
+        "team": 0
+      },
+      "target_before": {
+        "alive": false,
+        "definition_id": "",
+        "runtime_id": "",
+        "team": -1
+      },
+      "target_transition_event_id": "r1j-target-073104",
+      "timestamp_ms": 92518,
+      "unit": {
+        "alive": true,
+        "definition_id": "lioraen_thorn_ranger",
+        "runtime_id": "175623899962",
+        "team": 1
+      }
+    },
+    {
+      "physics_frame": 5339,
+      "process_frame": 6195,
+      "reason": "auto_acquisition",
+      "target_after": {
+        "alive": true,
+        "definition_id": "barrosan_hero_thane",
+        "runtime_id": "173577079507",
+        "team": 0
+      },
+      "target_before": {
+        "alive": false,
+        "definition_id": "",
+        "runtime_id": "",
+        "team": -1
+      },
+      "target_transition_event_id": "r1j-target-084399",
+      "timestamp_ms": 100668,
+      "unit": {
+        "alive": true,
+        "definition_id": "lioraen_hero_warden",
+        "runtime_id": "176076884817",
+        "team": 1
+      }
+    },
+    {
+      "physics_frame": 5720,
+      "process_frame": 6671,
+      "reason": "target_dead",
+      "target_after": {
+        "alive": false,
+        "definition_id": "",
+        "runtime_id": "",
+        "team": -1
+      },
+      "target_before": {
+        "alive": false,
+        "definition_id": "barrosan_hero_thane",
+        "runtime_id": "173577079507",
+        "team": 0
+      },
+      "target_transition_event_id": "r1j-target-093270",
+      "timestamp_ms": 107019,
+      "unit": {
+        "alive": true,
+        "definition_id": "lioraen_thorn_ranger",
+        "runtime_id": "175623899962",
+        "team": 1
+      }
+    },
+    {
+      "physics_frame": 5720,
+      "process_frame": 6671,
+      "reason": "fallback_target",
+      "target_after": {
+        "alive": true,
+        "definition_id": "barrosan_crag_archer",
+        "runtime_id": "907966156295",
+        "team": 0
+      },
+      "target_before": {
+        "alive": false,
+        "definition_id": "",
+        "runtime_id": "",
+        "team": -1
+      },
+      "target_transition_event_id": "r1j-target-093271",
+      "timestamp_ms": 107019,
+      "unit": {
+        "alive": true,
+        "definition_id": "lioraen_thorn_ranger",
+        "runtime_id": "175623899962",
+        "team": 1
+      }
+    },
+    {
+      "physics_frame": 5720,
+      "process_frame": 6671,
+      "reason": "target_dead",
+      "target_after": {
+        "alive": false,
+        "definition_id": "",
+        "runtime_id": "",
+        "team": -1
+      },
+      "target_before": {
+        "alive": false,
+        "definition_id": "barrosan_hero_thane",
+        "runtime_id": "173577079507",
+        "team": 0
+      },
+      "target_transition_event_id": "r1j-target-093273",
+      "timestamp_ms": 107019,
+      "unit": {
+        "alive": true,
+        "definition_id": "lioraen_hero_warden",
+        "runtime_id": "176076884817",
+        "team": 1
+      }
+    },
+    {
+      "physics_frame": 5720,
+      "process_frame": 6671,
+      "reason": "fallback_target",
+      "target_after": {
+        "alive": true,
+        "definition_id": "barrosan_spear_guard",
+        "runtime_id": "675232615826",
+        "team": 0
+      },
+      "target_before": {
+        "alive": false,
+        "definition_id": "",
+        "runtime_id": "",
+        "team": -1
+      },
+      "target_transition_event_id": "r1j-target-093274",
+      "timestamp_ms": 107019,
+      "unit": {
+        "alive": true,
+        "definition_id": "lioraen_hero_warden",
+        "runtime_id": "176076884817",
+        "team": 1
+      }
+    },
+    {
+      "physics_frame": 5720,
+      "process_frame": 6671,
+      "reason": "target_dead",
+      "target_after": {
+        "alive": false,
+        "definition_id": "",
+        "runtime_id": "",
+        "team": -1
+      },
+      "target_before": {
+        "alive": false,
+        "definition_id": "barrosan_hero_thane",
+        "runtime_id": "173577079507",
+        "team": 0
+      },
+      "target_transition_event_id": "r1j-target-093281",
+      "timestamp_ms": 107020,
+      "unit": {
+        "alive": true,
+        "definition_id": "lioraen_thorn_ranger",
+        "runtime_id": "663656336785",
+        "team": 1
+      }
+    },
+    {
+      "physics_frame": 5720,
+      "process_frame": 6671,
+      "reason": "fallback_target",
+      "target_after": {
+        "alive": true,
+        "definition_id": "barrosan_crag_archer",
+        "runtime_id": "907966156295",
+        "team": 0
+      },
+      "target_before": {
+        "alive": false,
+        "definition_id": "",
+        "runtime_id": "",
+        "team": -1
+      },
+      "target_transition_event_id": "r1j-target-093282",
+      "timestamp_ms": 107020,
+      "unit": {
+        "alive": true,
+        "definition_id": "lioraen_thorn_ranger",
+        "runtime_id": "663656336785",
+        "team": 1
+      }
+    },
+    {
+      "physics_frame": 5720,
+      "process_frame": 6671,
+      "reason": "target_dead",
+      "target_after": {
+        "alive": false,
+        "definition_id": "",
+        "runtime_id": "",
+        "team": -1
+      },
+      "target_before": {
+        "alive": false,
+        "definition_id": "barrosan_hero_thane",
+        "runtime_id": "173577079507",
+        "team": 0
+      },
+      "target_transition_event_id": "r1j-target-093285",
+      "timestamp_ms": 107020,
+      "unit": {
+        "alive": true,
+        "definition_id": "lioraen_thorn_ranger",
+        "runtime_id": "785962241474",
+        "team": 1
+      }
+    },
+    {
+      "physics_frame": 5720,
+      "process_frame": 6671,
+      "reason": "fallback_target",
+      "target_after": {
+        "alive": true,
+        "definition_id": "barrosan_crag_archer",
+        "runtime_id": "907966156295",
+        "team": 0
+      },
+      "target_before": {
+        "alive": false,
+        "definition_id": "",
+        "runtime_id": "",
+        "team": -1
+      },
+      "target_transition_event_id": "r1j-target-093286",
+      "timestamp_ms": 107020,
+      "unit": {
+        "alive": true,
+        "definition_id": "lioraen_thorn_ranger",
+        "runtime_id": "785962241474",
+        "team": 1
+      }
+    },
+    {
+      "physics_frame": 5720,
+      "process_frame": 6671,
+      "reason": "target_dead",
+      "target_after": {
+        "alive": false,
+        "definition_id": "",
+        "runtime_id": "",
+        "team": -1
+      },
+      "target_before": {
+        "alive": false,
+        "definition_id": "barrosan_hero_thane",
+        "runtime_id": "173577079507",
+        "team": 0
+      },
+      "target_transition_event_id": "r1j-target-093289",
+      "timestamp_ms": 107020,
+      "unit": {
+        "alive": true,
+        "definition_id": "lioraen_bloomdancer",
+        "runtime_id": "878706691569",
+        "team": 1
+      }
+    },
+    {
+      "physics_frame": 5720,
+      "process_frame": 6671,
+      "reason": "fallback_target",
+      "target_after": {
+        "alive": true,
+        "definition_id": "barrosan_spear_guard",
+        "runtime_id": "540595457352",
+        "team": 0
+      },
+      "target_before": {
+        "alive": false,
+        "definition_id": "",
+        "runtime_id": "",
+        "team": -1
+      },
+      "target_transition_event_id": "r1j-target-093290",
+      "timestamp_ms": 107020,
+      "unit": {
+        "alive": true,
+        "definition_id": "lioraen_bloomdancer",
+        "runtime_id": "878706691569",
+        "team": 1
+      }
+    },
+    {
+      "physics_frame": 5720,
+      "process_frame": 6671,
+      "reason": "target_dead",
+      "target_after": {
+        "alive": false,
+        "definition_id": "",
+        "runtime_id": "",
+        "team": -1
+      },
+      "target_before": {
+        "alive": false,
+        "definition_id": "barrosan_hero_thane",
+        "runtime_id": "173577079507",
+        "team": 0
+      },
+      "target_transition_event_id": "r1j-target-093293",
+      "timestamp_ms": 107020,
+      "unit": {
+        "alive": true,
+        "definition_id": "lioraen_thorn_ranger",
+        "runtime_id": "987288833630",
+        "team": 1
+      }
+    },
+    {
+      "physics_frame": 5720,
+      "process_frame": 6671,
+      "reason": "fallback_target",
+      "target_after": {
+        "alive": true,
+        "definition_id": "barrosan_crag_archer",
+        "runtime_id": "907966156295",
+        "team": 0
+      },
+      "target_before": {
+        "alive": false,
+        "definition_id": "",
+        "runtime_id": "",
+        "team": -1
+      },
+      "target_transition_event_id": "r1j-target-093294",
+      "timestamp_ms": 107020,
+      "unit": {
+        "alive": true,
+        "definition_id": "lioraen_thorn_ranger",
+        "runtime_id": "987288833630",
+        "team": 1
+      }
+    },
+    {
+      "physics_frame": 5720,
+      "process_frame": 6671,
+      "reason": "target_dead",
+      "target_after": {
+        "alive": false,
+        "definition_id": "",
+        "runtime_id": "",
+        "team": -1
+      },
+      "target_before": {
+        "alive": false,
+        "definition_id": "barrosan_hero_thane",
+        "runtime_id": "173577079507",
+        "team": 0
+      },
+      "target_transition_event_id": "r1j-target-093296",
+      "timestamp_ms": 107020,
+      "unit": {
+        "alive": true,
+        "definition_id": "lioraen_bloomdancer",
+        "runtime_id": "1071778893428",
+        "team": 1
+      }
+    },
+    {
+      "physics_frame": 5720,
+      "process_frame": 6671,
+      "reason": "fallback_target",
+      "target_after": {
+        "alive": true,
+        "definition_id": "barrosan_spear_guard",
+        "runtime_id": "540595457352",
+        "team": 0
+      },
+      "target_before": {
+        "alive": false,
+        "definition_id": "",
+        "runtime_id": "",
+        "team": -1
+      },
+      "target_transition_event_id": "r1j-target-093297",
+      "timestamp_ms": 107020,
+      "unit": {
+        "alive": true,
+        "definition_id": "lioraen_bloomdancer",
+        "runtime_id": "1071778893428",
+        "team": 1
+      }
+    },
+    {
+      "physics_frame": 5762,
+      "process_frame": 6724,
+      "reason": "target_dead",
+      "target_after": {
+        "alive": false,
+        "definition_id": "",
+        "runtime_id": "",
+        "team": -1
+      },
+      "target_before": {
+        "alive": false,
+        "definition_id": "barrosan_crag_archer",
+        "runtime_id": "907966156295",
+        "team": 0
+      },
+      "target_transition_event_id": "r1j-target-094276",
+      "timestamp_ms": 107727,
+      "unit": {
+        "alive": true,
+        "definition_id": "lioraen_thorn_ranger",
+        "runtime_id": "175623899962",
+        "team": 1
+      }
+    },
+    {
+      "physics_frame": 5762,
+      "process_frame": 6724,
+      "reason": "fallback_target",
+      "target_after": {
+        "alive": true,
+        "definition_id": "barrosan_crag_archer",
+        "runtime_id": "796095679959",
+        "team": 0
+      },
+      "target_before": {
+        "alive": false,
+        "definition_id": "",
+        "runtime_id": "",
+        "team": -1
+      },
+      "target_transition_event_id": "r1j-target-094277",
+      "timestamp_ms": 107727,
+      "unit": {
+        "alive": true,
+        "definition_id": "lioraen_thorn_ranger",
+        "runtime_id": "175623899962",
+        "team": 1
+      }
+    },
+    {
+      "physics_frame": 5762,
+      "process_frame": 6724,
+      "reason": "target_dead",
+      "target_after": {
+        "alive": false,
+        "definition_id": "",
+        "runtime_id": "",
+        "team": -1
+      },
+      "target_before": {
+        "alive": false,
+        "definition_id": "barrosan_crag_archer",
+        "runtime_id": "907966156295",
+        "team": 0
+      },
+      "target_transition_event_id": "r1j-target-094285",
+      "timestamp_ms": 107728,
+      "unit": {
+        "alive": true,
+        "definition_id": "lioraen_thorn_ranger",
+        "runtime_id": "663656336785",
+        "team": 1
+      }
+    },
+    {
+      "physics_frame": 5762,
+      "process_frame": 6724,
+      "reason": "fallback_target",
+      "target_after": {
+        "alive": true,
+        "definition_id": "barrosan_crag_archer",
+        "runtime_id": "796095679959",
+        "team": 0
+      },
+      "target_before": {
+        "alive": false,
+        "definition_id": "",
+        "runtime_id": "",
+        "team": -1
+      },
+      "target_transition_event_id": "r1j-target-094286",
+      "timestamp_ms": 107728,
+      "unit": {
+        "alive": true,
+        "definition_id": "lioraen_thorn_ranger",
+        "runtime_id": "663656336785",
+        "team": 1
+      }
+    },
+    {
+      "physics_frame": 5762,
+      "process_frame": 6724,
+      "reason": "target_dead",
+      "target_after": {
+        "alive": false,
+        "definition_id": "",
+        "runtime_id": "",
+        "team": -1
+      },
+      "target_before": {
+        "alive": false,
+        "definition_id": "barrosan_crag_archer",
+        "runtime_id": "907966156295",
+        "team": 0
+      },
+      "target_transition_event_id": "r1j-target-094289",
+      "timestamp_ms": 107728,
+      "unit": {
+        "alive": true,
+        "definition_id": "lioraen_thorn_ranger",
+        "runtime_id": "785962241474",
+        "team": 1
+      }
+    },
+    {
+      "physics_frame": 5762,
+      "process_frame": 6724,
+      "reason": "fallback_target",
+      "target_after": {
+        "alive": true,
+        "definition_id": "barrosan_crag_archer",
+        "runtime_id": "796095679959",
+        "team": 0
+      },
+      "target_before": {
+        "alive": false,
+        "definition_id": "",
+        "runtime_id": "",
+        "team": -1
+      },
+      "target_transition_event_id": "r1j-target-094290",
+      "timestamp_ms": 107728,
+      "unit": {
+        "alive": true,
+        "definition_id": "lioraen_thorn_ranger",
+        "runtime_id": "785962241474",
+        "team": 1
+      }
+    },
+    {
+      "physics_frame": 5762,
+      "process_frame": 6724,
+      "reason": "target_dead",
+      "target_after": {
+        "alive": false,
+        "definition_id": "",
+        "runtime_id": "",
+        "team": -1
+      },
+      "target_before": {
+        "alive": false,
+        "definition_id": "barrosan_crag_archer",
+        "runtime_id": "907966156295",
+        "team": 0
+      },
+      "target_transition_event_id": "r1j-target-094295",
+      "timestamp_ms": 107728,
+      "unit": {
+        "alive": true,
+        "definition_id": "lioraen_thorn_ranger",
+        "runtime_id": "987288833630",
+        "team": 1
+      }
+    },
+    {
+      "physics_frame": 5762,
+      "process_frame": 6724,
+      "reason": "fallback_target",
+      "target_after": {
+        "alive": true,
+        "definition_id": "barrosan_crag_archer",
+        "runtime_id": "796095679959",
+        "team": 0
+      },
+      "target_before": {
+        "alive": false,
+        "definition_id": "",
+        "runtime_id": "",
+        "team": -1
+      },
+      "target_transition_event_id": "r1j-target-094296",
+      "timestamp_ms": 107728,
+      "unit": {
+        "alive": true,
+        "definition_id": "lioraen_thorn_ranger",
+        "runtime_id": "987288833630",
+        "team": 1
+      }
+    },
+    {
+      "physics_frame": 5840,
+      "process_frame": 6821,
+      "reason": "target_dead",
+      "target_after": {
+        "alive": false,
+        "definition_id": "",
+        "runtime_id": "",
+        "team": -1
+      },
+      "target_before": {
+        "alive": false,
+        "definition_id": "barrosan_crag_archer",
+        "runtime_id": "796095679959",
+        "team": 0
+      },
+      "target_transition_event_id": "r1j-target-096071",
+      "timestamp_ms": 109019,
+      "unit": {
+        "alive": true,
+        "definition_id": "lioraen_thorn_ranger",
+        "runtime_id": "175623899962",
+        "team": 1
+      }
+    },
+    {
+      "physics_frame": 5840,
+      "process_frame": 6821,
+      "reason": "fallback_target",
+      "target_after": {
+        "alive": true,
+        "definition_id": "barrosan_spear_guard",
+        "runtime_id": "540595457352",
+        "team": 0
+      },
+      "target_before": {
+        "alive": false,
+        "definition_id": "",
+        "runtime_id": "",
+        "team": -1
+      },
+      "target_transition_event_id": "r1j-target-096072",
+      "timestamp_ms": 109019,
+      "unit": {
+        "alive": true,
+        "definition_id": "lioraen_thorn_ranger",
+        "runtime_id": "175623899962",
+        "team": 1
+      }
+    },
+    {
+      "physics_frame": 5840,
+      "process_frame": 6821,
+      "reason": "target_dead",
+      "target_after": {
+        "alive": false,
+        "definition_id": "",
+        "runtime_id": "",
+        "team": -1
+      },
+      "target_before": {
+        "alive": false,
+        "definition_id": "barrosan_crag_archer",
+        "runtime_id": "796095679959",
+        "team": 0
+      },
+      "target_transition_event_id": "r1j-target-096080",
+      "timestamp_ms": 109019,
+      "unit": {
+        "alive": true,
+        "definition_id": "lioraen_thorn_ranger",
+        "runtime_id": "663656336785",
+        "team": 1
+      }
+    },
+    {
+      "physics_frame": 5840,
+      "process_frame": 6821,
+      "reason": "fallback_target",
+      "target_after": {
+        "alive": true,
+        "definition_id": "barrosan_spear_guard",
+        "runtime_id": "540595457352",
+        "team": 0
+      },
+      "target_before": {
+        "alive": false,
+        "definition_id": "",
+        "runtime_id": "",
+        "team": -1
+      },
+      "target_transition_event_id": "r1j-target-096081",
+      "timestamp_ms": 109019,
+      "unit": {
+        "alive": true,
+        "definition_id": "lioraen_thorn_ranger",
+        "runtime_id": "663656336785",
+        "team": 1
+      }
+    },
+    {
+      "physics_frame": 5840,
+      "process_frame": 6821,
+      "reason": "target_dead",
+      "target_after": {
+        "alive": false,
+        "definition_id": "",
+        "runtime_id": "",
+        "team": -1
+      },
+      "target_before": {
+        "alive": false,
+        "definition_id": "barrosan_crag_archer",
+        "runtime_id": "796095679959",
+        "team": 0
+      },
+      "target_transition_event_id": "r1j-target-096084",
+      "timestamp_ms": 109019,
+      "unit": {
+        "alive": true,
+        "definition_id": "lioraen_thorn_ranger",
+        "runtime_id": "785962241474",
+        "team": 1
+      }
+    },
+    {
+      "physics_frame": 5840,
+      "process_frame": 6821,
+      "reason": "fallback_target",
+      "target_after": {
+        "alive": true,
+        "definition_id": "barrosan_spear_guard",
+        "runtime_id": "540595457352",
+        "team": 0
+      },
+      "target_before": {
+        "alive": false,
+        "definition_id": "",
+        "runtime_id": "",
+        "team": -1
+      },
+      "target_transition_event_id": "r1j-target-096085",
+      "timestamp_ms": 109019,
+      "unit": {
+        "alive": true,
+        "definition_id": "lioraen_thorn_ranger",
+        "runtime_id": "785962241474",
+        "team": 1
+      }
+    },
+    {
+      "physics_frame": 5840,
+      "process_frame": 6821,
+      "reason": "target_dead",
+      "target_after": {
+        "alive": false,
+        "definition_id": "",
+        "runtime_id": "",
+        "team": -1
+      },
+      "target_before": {
+        "alive": false,
+        "definition_id": "barrosan_crag_archer",
+        "runtime_id": "796095679959",
+        "team": 0
+      },
+      "target_transition_event_id": "r1j-target-096090",
+      "timestamp_ms": 109020,
+      "unit": {
+        "alive": true,
+        "definition_id": "lioraen_thorn_ranger",
+        "runtime_id": "987288833630",
+        "team": 1
+      }
+    },
+    {
+      "physics_frame": 5840,
+      "process_frame": 6821,
+      "reason": "fallback_target",
+      "target_after": {
+        "alive": true,
+        "definition_id": "barrosan_spear_guard",
+        "runtime_id": "540595457352",
+        "team": 0
+      },
+      "target_before": {
+        "alive": false,
+        "definition_id": "",
+        "runtime_id": "",
+        "team": -1
+      },
+      "target_transition_event_id": "r1j-target-096091",
+      "timestamp_ms": 109020,
+      "unit": {
+        "alive": true,
+        "definition_id": "lioraen_thorn_ranger",
+        "runtime_id": "987288833630",
+        "team": 1
+      }
+    },
+    {
+      "physics_frame": 5983,
+      "process_frame": 7000,
+      "reason": "target_dead",
+      "target_after": {
+        "alive": false,
+        "definition_id": "",
+        "runtime_id": "",
+        "team": -1
+      },
+      "target_before": {
+        "alive": false,
+        "definition_id": "barrosan_spear_guard",
+        "runtime_id": "540595457352",
+        "team": 0
+      },
+      "target_transition_event_id": "r1j-target-099083",
+      "timestamp_ms": 111406,
+      "unit": {
+        "alive": true,
+        "definition_id": "lioraen_thorn_ranger",
+        "runtime_id": "175623899962",
+        "team": 1
+      }
+    },
+    {
+      "physics_frame": 5983,
+      "process_frame": 7000,
+      "reason": "fallback_target",
+      "target_after": {
+        "alive": true,
+        "definition_id": "barrosan_spear_guard",
+        "runtime_id": "675232615826",
+        "team": 0
+      },
+      "target_before": {
+        "alive": false,
+        "definition_id": "",
+        "runtime_id": "",
+        "team": -1
+      },
+      "target_transition_event_id": "r1j-target-099084",
+      "timestamp_ms": 111406,
+      "unit": {
+        "alive": true,
+        "definition_id": "lioraen_thorn_ranger",
+        "runtime_id": "175623899962",
+        "team": 1
+      }
+    },
+    {
+      "physics_frame": 5983,
+      "process_frame": 7000,
+      "reason": "target_dead",
+      "target_after": {
+        "alive": false,
+        "definition_id": "",
+        "runtime_id": "",
+        "team": -1
+      },
+      "target_before": {
+        "alive": false,
+        "definition_id": "barrosan_spear_guard",
+        "runtime_id": "540595457352",
+        "team": 0
+      },
+      "target_transition_event_id": "r1j-target-099092",
+      "timestamp_ms": 111407,
+      "unit": {
+        "alive": true,
+        "definition_id": "lioraen_thorn_ranger",
+        "runtime_id": "663656336785",
+        "team": 1
+      }
+    },
+    {
+      "physics_frame": 5983,
+      "process_frame": 7000,
+      "reason": "fallback_target",
+      "target_after": {
+        "alive": true,
+        "definition_id": "barrosan_spear_guard",
+        "runtime_id": "675232615826",
+        "team": 0
+      },
+      "target_before": {
+        "alive": false,
+        "definition_id": "",
+        "runtime_id": "",
+        "team": -1
+      },
+      "target_transition_event_id": "r1j-target-099093",
+      "timestamp_ms": 111407,
+      "unit": {
+        "alive": true,
+        "definition_id": "lioraen_thorn_ranger",
+        "runtime_id": "663656336785",
+        "team": 1
+      }
+    },
+    {
+      "physics_frame": 5983,
+      "process_frame": 7000,
+      "reason": "target_dead",
+      "target_after": {
+        "alive": false,
+        "definition_id": "",
+        "runtime_id": "",
+        "team": -1
+      },
+      "target_before": {
+        "alive": false,
+        "definition_id": "barrosan_spear_guard",
+        "runtime_id": "540595457352",
+        "team": 0
+      },
+      "target_transition_event_id": "r1j-target-099096",
+      "timestamp_ms": 111407,
+      "unit": {
+        "alive": true,
+        "definition_id": "lioraen_thorn_ranger",
+        "runtime_id": "785962241474",
+        "team": 1
+      }
+    },
+    {
+      "physics_frame": 5983,
+      "process_frame": 7000,
+      "reason": "fallback_target",
+      "target_after": {
+        "alive": true,
+        "definition_id": "barrosan_spear_guard",
+        "runtime_id": "675232615826",
+        "team": 0
+      },
+      "target_before": {
+        "alive": false,
+        "definition_id": "",
+        "runtime_id": "",
+        "team": -1
+      },
+      "target_transition_event_id": "r1j-target-099097",
+      "timestamp_ms": 111407,
+      "unit": {
+        "alive": true,
+        "definition_id": "lioraen_thorn_ranger",
+        "runtime_id": "785962241474",
+        "team": 1
+      }
+    },
+    {
+      "physics_frame": 5983,
+      "process_frame": 7000,
+      "reason": "target_dead",
+      "target_after": {
+        "alive": false,
+        "definition_id": "",
+        "runtime_id": "",
+        "team": -1
+      },
+      "target_before": {
+        "alive": false,
+        "definition_id": "barrosan_spear_guard",
+        "runtime_id": "540595457352",
+        "team": 0
+      },
+      "target_transition_event_id": "r1j-target-099099",
+      "timestamp_ms": 111407,
+      "unit": {
+        "alive": true,
+        "definition_id": "lioraen_bloomdancer",
+        "runtime_id": "878706691569",
+        "team": 1
+      }
+    },
+    {
+      "physics_frame": 5983,
+      "process_frame": 7000,
+      "reason": "fallback_target",
+      "target_after": {
+        "alive": true,
+        "definition_id": "barrosan_spear_guard",
+        "runtime_id": "675232615826",
+        "team": 0
+      },
+      "target_before": {
+        "alive": false,
+        "definition_id": "",
+        "runtime_id": "",
+        "team": -1
+      },
+      "target_transition_event_id": "r1j-target-099100",
+      "timestamp_ms": 111407,
+      "unit": {
+        "alive": true,
+        "definition_id": "lioraen_bloomdancer",
+        "runtime_id": "878706691569",
+        "team": 1
+      }
+    },
+    {
+      "physics_frame": 5983,
+      "process_frame": 7000,
+      "reason": "target_dead",
+      "target_after": {
+        "alive": false,
+        "definition_id": "",
+        "runtime_id": "",
+        "team": -1
+      },
+      "target_before": {
+        "alive": false,
+        "definition_id": "barrosan_spear_guard",
+        "runtime_id": "540595457352",
+        "team": 0
+      },
+      "target_transition_event_id": "r1j-target-099102",
+      "timestamp_ms": 111407,
+      "unit": {
+        "alive": true,
+        "definition_id": "lioraen_thorn_ranger",
+        "runtime_id": "987288833630",
+        "team": 1
+      }
+    },
+    {
+      "physics_frame": 5983,
+      "process_frame": 7000,
+      "reason": "fallback_target",
+      "target_after": {
+        "alive": true,
+        "definition_id": "barrosan_spear_guard",
+        "runtime_id": "675232615826",
+        "team": 0
+      },
+      "target_before": {
+        "alive": false,
+        "definition_id": "",
+        "runtime_id": "",
+        "team": -1
+      },
+      "target_transition_event_id": "r1j-target-099103",
+      "timestamp_ms": 111407,
+      "unit": {
+        "alive": true,
+        "definition_id": "lioraen_thorn_ranger",
+        "runtime_id": "987288833630",
+        "team": 1
+      }
+    },
+    {
+      "physics_frame": 5983,
+      "process_frame": 7000,
+      "reason": "target_dead",
+      "target_after": {
+        "alive": false,
+        "definition_id": "",
+        "runtime_id": "",
+        "team": -1
+      },
+      "target_before": {
+        "alive": false,
+        "definition_id": "barrosan_spear_guard",
+        "runtime_id": "540595457352",
+        "team": 0
+      },
+      "target_transition_event_id": "r1j-target-099105",
+      "timestamp_ms": 111407,
+      "unit": {
+        "alive": true,
+        "definition_id": "lioraen_bloomdancer",
+        "runtime_id": "1071778893428",
+        "team": 1
+      }
+    },
+    {
+      "physics_frame": 5983,
+      "process_frame": 7000,
+      "reason": "fallback_target",
+      "target_after": {
+        "alive": true,
+        "definition_id": "barrosan_spear_guard",
+        "runtime_id": "675232615826",
+        "team": 0
+      },
+      "target_before": {
+        "alive": false,
+        "definition_id": "",
+        "runtime_id": "",
+        "team": -1
+      },
+      "target_transition_event_id": "r1j-target-099106",
+      "timestamp_ms": 111407,
+      "unit": {
+        "alive": true,
+        "definition_id": "lioraen_bloomdancer",
+        "runtime_id": "1071778893428",
+        "team": 1
+      }
+    },
+    {
+      "physics_frame": 5984,
+      "process_frame": 7001,
+      "reason": "target_dead",
+      "target_after": {
+        "alive": false,
+        "definition_id": "",
+        "runtime_id": "",
+        "team": -1
+      },
+      "target_before": {
+        "alive": false,
+        "definition_id": "barrosan_spear_guard",
+        "runtime_id": "675232615826",
+        "team": 0
+      },
+      "target_transition_event_id": "r1j-target-099117",
+      "timestamp_ms": 111419,
+      "unit": {
+        "alive": true,
+        "definition_id": "lioraen_thorn_ranger",
+        "runtime_id": "175623899962",
+        "team": 1
+      }
+    },
+    {
+      "physics_frame": 5984,
+      "process_frame": 7001,
+      "reason": "fallback_target",
+      "target_after": {
+        "alive": true,
+        "definition_id": "barrosan_spear_guard",
+        "runtime_id": "173124094652",
+        "team": 0
+      },
+      "target_before": {
+        "alive": false,
+        "definition_id": "",
+        "runtime_id": "",
+        "team": -1
+      },
+      "target_transition_event_id": "r1j-target-099118",
+      "timestamp_ms": 111419,
+      "unit": {
+        "alive": true,
+        "definition_id": "lioraen_thorn_ranger",
+        "runtime_id": "175623899962",
+        "team": 1
+      }
+    },
+    {
+      "physics_frame": 5984,
+      "process_frame": 7001,
+      "reason": "target_dead",
+      "target_after": {
+        "alive": false,
+        "definition_id": "",
+        "runtime_id": "",
+        "team": -1
+      },
+      "target_before": {
+        "alive": false,
+        "definition_id": "barrosan_spear_guard",
+        "runtime_id": "675232615826",
+        "team": 0
+      },
+      "target_transition_event_id": "r1j-target-099120",
+      "timestamp_ms": 111420,
+      "unit": {
+        "alive": true,
+        "definition_id": "lioraen_hero_warden",
+        "runtime_id": "176076884817",
+        "team": 1
+      }
+    },
+    {
+      "physics_frame": 5984,
+      "process_frame": 7001,
+      "reason": "fallback_target",
+      "target_after": {
+        "alive": true,
+        "definition_id": "barrosan_spear_guard",
+        "runtime_id": "173124094652",
+        "team": 0
+      },
+      "target_before": {
+        "alive": false,
+        "definition_id": "",
+        "runtime_id": "",
+        "team": -1
+      },
+      "target_transition_event_id": "r1j-target-099121",
+      "timestamp_ms": 111420,
+      "unit": {
+        "alive": true,
+        "definition_id": "lioraen_hero_warden",
+        "runtime_id": "176076884817",
+        "team": 1
+      }
+    },
+    {
+      "physics_frame": 5984,
+      "process_frame": 7001,
+      "reason": "target_dead",
+      "target_after": {
+        "alive": false,
+        "definition_id": "",
+        "runtime_id": "",
+        "team": -1
+      },
+      "target_before": {
+        "alive": false,
+        "definition_id": "barrosan_spear_guard",
+        "runtime_id": "675232615826",
+        "team": 0
+      },
+      "target_transition_event_id": "r1j-target-099128",
+      "timestamp_ms": 111420,
+      "unit": {
+        "alive": true,
+        "definition_id": "lioraen_thorn_ranger",
+        "runtime_id": "663656336785",
+        "team": 1
+      }
+    },
+    {
+      "physics_frame": 5984,
+      "process_frame": 7001,
+      "reason": "fallback_target",
+      "target_after": {
+        "alive": true,
+        "definition_id": "barrosan_spear_guard",
+        "runtime_id": "173124094652",
+        "team": 0
+      },
+      "target_before": {
+        "alive": false,
+        "definition_id": "",
+        "runtime_id": "",
+        "team": -1
+      },
+      "target_transition_event_id": "r1j-target-099129",
+      "timestamp_ms": 111420,
+      "unit": {
+        "alive": true,
+        "definition_id": "lioraen_thorn_ranger",
+        "runtime_id": "663656336785",
+        "team": 1
+      }
+    },
+    {
+      "physics_frame": 5984,
+      "process_frame": 7001,
+      "reason": "target_dead",
+      "target_after": {
+        "alive": false,
+        "definition_id": "",
+        "runtime_id": "",
+        "team": -1
+      },
+      "target_before": {
+        "alive": false,
+        "definition_id": "barrosan_spear_guard",
+        "runtime_id": "675232615826",
+        "team": 0
+      },
+      "target_transition_event_id": "r1j-target-099132",
+      "timestamp_ms": 111420,
+      "unit": {
+        "alive": true,
+        "definition_id": "lioraen_thorn_ranger",
+        "runtime_id": "785962241474",
+        "team": 1
+      }
+    },
+    {
+      "physics_frame": 5984,
+      "process_frame": 7001,
+      "reason": "fallback_target",
+      "target_after": {
+        "alive": true,
+        "definition_id": "barrosan_spear_guard",
+        "runtime_id": "173124094652",
+        "team": 0
+      },
+      "target_before": {
+        "alive": false,
+        "definition_id": "",
+        "runtime_id": "",
+        "team": -1
+      },
+      "target_transition_event_id": "r1j-target-099133",
+      "timestamp_ms": 111420,
+      "unit": {
+        "alive": true,
+        "definition_id": "lioraen_thorn_ranger",
+        "runtime_id": "785962241474",
+        "team": 1
+      }
+    },
+    {
+      "physics_frame": 5984,
+      "process_frame": 7001,
+      "reason": "target_dead",
+      "target_after": {
+        "alive": false,
+        "definition_id": "",
+        "runtime_id": "",
+        "team": -1
+      },
+      "target_before": {
+        "alive": false,
+        "definition_id": "barrosan_spear_guard",
+        "runtime_id": "675232615826",
+        "team": 0
+      },
+      "target_transition_event_id": "r1j-target-099135",
+      "timestamp_ms": 111420,
+      "unit": {
+        "alive": true,
+        "definition_id": "lioraen_bloomdancer",
+        "runtime_id": "878706691569",
+        "team": 1
+      }
+    },
+    {
+      "physics_frame": 5984,
+      "process_frame": 7001,
+      "reason": "fallback_target",
+      "target_after": {
+        "alive": true,
+        "definition_id": "barrosan_spear_guard",
+        "runtime_id": "173124094652",
+        "team": 0
+      },
+      "target_before": {
+        "alive": false,
+        "definition_id": "",
+        "runtime_id": "",
+        "team": -1
+      },
+      "target_transition_event_id": "r1j-target-099136",
+      "timestamp_ms": 111420,
+      "unit": {
+        "alive": true,
+        "definition_id": "lioraen_bloomdancer",
+        "runtime_id": "878706691569",
+        "team": 1
+      }
+    },
+    {
+      "physics_frame": 5984,
+      "process_frame": 7001,
+      "reason": "target_dead",
+      "target_after": {
+        "alive": false,
+        "definition_id": "",
+        "runtime_id": "",
+        "team": -1
+      },
+      "target_before": {
+        "alive": false,
+        "definition_id": "barrosan_spear_guard",
+        "runtime_id": "675232615826",
+        "team": 0
+      },
+      "target_transition_event_id": "r1j-target-099138",
+      "timestamp_ms": 111420,
+      "unit": {
+        "alive": true,
+        "definition_id": "lioraen_thorn_ranger",
+        "runtime_id": "987288833630",
+        "team": 1
+      }
+    },
+    {
+      "physics_frame": 5984,
+      "process_frame": 7001,
+      "reason": "fallback_target",
+      "target_after": {
+        "alive": true,
+        "definition_id": "barrosan_spear_guard",
+        "runtime_id": "173124094652",
+        "team": 0
+      },
+      "target_before": {
+        "alive": false,
+        "definition_id": "",
+        "runtime_id": "",
+        "team": -1
+      },
+      "target_transition_event_id": "r1j-target-099139",
+      "timestamp_ms": 111420,
+      "unit": {
+        "alive": true,
+        "definition_id": "lioraen_thorn_ranger",
+        "runtime_id": "987288833630",
+        "team": 1
+      }
+    },
+    {
+      "physics_frame": 5984,
+      "process_frame": 7001,
+      "reason": "target_dead",
+      "target_after": {
+        "alive": false,
+        "definition_id": "",
+        "runtime_id": "",
+        "team": -1
+      },
+      "target_before": {
+        "alive": false,
+        "definition_id": "barrosan_spear_guard",
+        "runtime_id": "675232615826",
+        "team": 0
+      },
+      "target_transition_event_id": "r1j-target-099141",
+      "timestamp_ms": 111420,
+      "unit": {
+        "alive": true,
+        "definition_id": "lioraen_bloomdancer",
+        "runtime_id": "1071778893428",
+        "team": 1
+      }
+    },
+    {
+      "physics_frame": 5984,
+      "process_frame": 7001,
+      "reason": "fallback_target",
+      "target_after": {
+        "alive": true,
+        "definition_id": "barrosan_spear_guard",
+        "runtime_id": "173124094652",
+        "team": 0
+      },
+      "target_before": {
+        "alive": false,
+        "definition_id": "",
+        "runtime_id": "",
+        "team": -1
+      },
+      "target_transition_event_id": "r1j-target-099142",
+      "timestamp_ms": 111420,
+      "unit": {
+        "alive": true,
+        "definition_id": "lioraen_bloomdancer",
+        "runtime_id": "1071778893428",
+        "team": 1
+      }
+    },
+    {
+      "physics_frame": 6124,
+      "process_frame": 7176,
+      "reason": "target_dead",
+      "target_after": {
+        "alive": false,
+        "definition_id": "",
+        "runtime_id": "",
+        "team": -1
+      },
+      "target_before": {
+        "alive": false,
+        "definition_id": "barrosan_spear_guard",
+        "runtime_id": "173124094652",
+        "team": 0
+      },
+      "target_transition_event_id": "r1j-target-101858",
+      "timestamp_ms": 113755,
+      "unit": {
+        "alive": true,
+        "definition_id": "lioraen_thorn_ranger",
+        "runtime_id": "175623899962",
+        "team": 1
+      }
+    },
+    {
+      "physics_frame": 6124,
+      "process_frame": 7176,
+      "reason": "target_dead",
+      "target_after": {
+        "alive": false,
+        "definition_id": "",
+        "runtime_id": "",
+        "team": -1
+      },
+      "target_before": {
+        "alive": false,
+        "definition_id": "barrosan_spear_guard",
+        "runtime_id": "173124094652",
+        "team": 0
+      },
+      "target_transition_event_id": "r1j-target-101860",
+      "timestamp_ms": 113755,
+      "unit": {
+        "alive": true,
+        "definition_id": "lioraen_hero_warden",
+        "runtime_id": "176076884817",
+        "team": 1
+      }
+    },
+    {
+      "physics_frame": 6124,
+      "process_frame": 7176,
+      "reason": "target_dead",
+      "target_after": {
+        "alive": false,
+        "definition_id": "",
+        "runtime_id": "",
+        "team": -1
+      },
+      "target_before": {
+        "alive": false,
+        "definition_id": "barrosan_spear_guard",
+        "runtime_id": "173124094652",
+        "team": 0
+      },
+      "target_transition_event_id": "r1j-target-101866",
+      "timestamp_ms": 113755,
+      "unit": {
+        "alive": true,
+        "definition_id": "lioraen_thorn_ranger",
+        "runtime_id": "663656336785",
+        "team": 1
+      }
+    },
+    {
+      "physics_frame": 6124,
+      "process_frame": 7176,
+      "reason": "target_dead",
+      "target_after": {
+        "alive": false,
+        "definition_id": "",
+        "runtime_id": "",
+        "team": -1
+      },
+      "target_before": {
+        "alive": false,
+        "definition_id": "barrosan_spear_guard",
+        "runtime_id": "173124094652",
+        "team": 0
+      },
+      "target_transition_event_id": "r1j-target-101868",
+      "timestamp_ms": 113755,
+      "unit": {
+        "alive": true,
+        "definition_id": "lioraen_thorn_ranger",
+        "runtime_id": "785962241474",
+        "team": 1
+      }
+    },
+    {
+      "physics_frame": 6124,
+      "process_frame": 7176,
+      "reason": "target_dead",
+      "target_after": {
+        "alive": false,
+        "definition_id": "",
+        "runtime_id": "",
+        "team": -1
+      },
+      "target_before": {
+        "alive": false,
+        "definition_id": "barrosan_spear_guard",
+        "runtime_id": "173124094652",
+        "team": 0
+      },
+      "target_transition_event_id": "r1j-target-101870",
+      "timestamp_ms": 113755,
+      "unit": {
+        "alive": true,
+        "definition_id": "lioraen_bloomdancer",
+        "runtime_id": "878706691569",
+        "team": 1
+      }
+    },
+    {
+      "physics_frame": 6124,
+      "process_frame": 7176,
+      "reason": "target_dead",
+      "target_after": {
+        "alive": false,
+        "definition_id": "",
+        "runtime_id": "",
+        "team": -1
+      },
+      "target_before": {
+        "alive": false,
+        "definition_id": "barrosan_spear_guard",
+        "runtime_id": "173124094652",
+        "team": 0
+      },
+      "target_transition_event_id": "r1j-target-101872",
+      "timestamp_ms": 113755,
+      "unit": {
+        "alive": true,
+        "definition_id": "lioraen_thorn_ranger",
+        "runtime_id": "987288833630",
+        "team": 1
+      }
+    },
+    {
+      "physics_frame": 6124,
+      "process_frame": 7176,
+      "reason": "target_dead",
+      "target_after": {
+        "alive": false,
+        "definition_id": "",
+        "runtime_id": "",
+        "team": -1
+      },
+      "target_before": {
+        "alive": false,
+        "definition_id": "barrosan_spear_guard",
+        "runtime_id": "173124094652",
+        "team": 0
+      },
+      "target_transition_event_id": "r1j-target-101874",
+      "timestamp_ms": 113755,
+      "unit": {
+        "alive": true,
+        "definition_id": "lioraen_bloomdancer",
+        "runtime_id": "1071778893428",
+        "team": 1
+      }
+    }
+  ],
+  "schema": "v0436-r1j-target-transition-graph-v1"
+}

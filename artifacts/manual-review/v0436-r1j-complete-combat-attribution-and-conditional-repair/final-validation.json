@@ -1,0 +1,40 @@
+{
+  "schema": "v0436-r1j-complete-combat-attribution-validator-v1",
+  "branch": "codex/v0436-first-complete-conquest-victory",
+  "validatedHead": "23a57b723bb6539f7b2011f2f69abe515df08ff9",
+  "expectedHead": "23a57b723bb6539f7b2011f2f69abe515df08ff9",
+  "failures": [],
+  "passed": true,
+  "status": "BLOCKED_R1J_COMPLETE_ATTRIBUTION_INCONCLUSIVE",
+  "sessions": [
+    {
+      "session": "A",
+      "orders": 4,
+      "commands": 43,
+      "transitions": 93,
+      "attacks": 116,
+      "projectiles": 86,
+      "damage": 110,
+      "deaths": 7,
+      "samples": 100000
+    },
+    {
+      "session": "B",
+      "orders": 2,
+      "commands": 28,
+      "transitions": 76,
+      "attacks": 120,
+      "projectiles": 99,
+      "damage": 110,
+      "deaths": 6,
+      "samples": 100000
+    }
+  ],
+  "source_sha": "23a57b723bb6539f7b2011f2f69abe515df08ff9",
+  "current_head": "23a57b723bb6539f7b2011f2f69abe515df08ff9",
+  "evidence_source_sha": "23a57b723bb6539f7b2011f2f69abe515df08ff9",
+  "post_capture_paths": [],
+  "production_repair_made": false,
+  "v0437_started": false,
+  "merge_performed": false
+}

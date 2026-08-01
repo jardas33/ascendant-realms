@@ -1,0 +1,16 @@
+{
+  "schema": "v0436-r1j-expected-observed-v1",
+  "sessions": [
+    {
+      "session": "A",
+      "damage_events": 110,
+      "expected_formula_audited": true
+    },
+    {
+      "session": "B",
+      "damage_events": 110,
+      "expected_formula_audited": true
+    }
+  ],
+  "complete_attribution": true
+}

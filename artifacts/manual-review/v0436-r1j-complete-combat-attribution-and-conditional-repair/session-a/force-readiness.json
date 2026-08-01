@@ -1,0 +1,119 @@
+{
+  "force": [
+    {
+      "dead": false,
+      "definition_id": "barrosan_spear_guard",
+      "hp": 180,
+      "max_hp": 180,
+      "navigation_command": "",
+      "position": {
+        "x": -100,
+        "y": 0,
+        "z": -110
+      },
+      "role": "defender",
+      "runtime_id": "173124094652",
+      "state": 0,
+      "team": 0
+    },
+    {
+      "dead": false,
+      "definition_id": "barrosan_hero_thane",
+      "hp": 493,
+      "max_hp": 493,
+      "navigation_command": "",
+      "position": {
+        "x": -94,
+        "y": 0,
+        "z": -94
+      },
+      "role": "hero",
+      "runtime_id": "173577079507",
+      "state": 0,
+      "team": 0
+    },
+    {
+      "dead": false,
+      "definition_id": "barrosan_spear_guard",
+      "hp": 180,
+      "max_hp": 180,
+      "navigation_command": "",
+      "position": {
+        "x": -76,
+        "y": 0,
+        "z": -93.5
+      },
+      "role": "defender",
+      "runtime_id": "540561902945",
+      "state": 0,
+      "team": 0
+    },
+    {
+      "dead": false,
+      "definition_id": "barrosan_spear_guard",
+      "hp": 180,
+      "max_hp": 180,
+      "navigation_command": "",
+      "position": {
+        "x": -76,
+        "y": 0,
+        "z": -93.5
+      },
+      "role": "defender",
+      "runtime_id": "666592349608",
+      "state": 0,
+      "team": 0
+    },
+    {
+      "dead": false,
+      "definition_id": "barrosan_crag_archer",
+      "hp": 90,
+      "max_hp": 90,
+      "navigation_command": "",
+      "position": {
+        "x": -76,
+        "y": 0,
+        "z": -93.5
+      },
+      "role": "ranged",
+      "runtime_id": "778093727192",
+      "state": 0,
+      "team": 0
+    },
+    {
+      "dead": false,
+      "definition_id": "barrosan_crag_archer",
+      "hp": 90,
+      "max_hp": 90,
+      "navigation_command": "",
+      "position": {
+        "x": -76,
+        "y": 0.100000001490116,
+        "z": -93.5
+      },
+      "role": "ranged",
+      "runtime_id": "889964203528",
+      "state": 0,
+      "team": 0
+    }
+  ],
+  "provenance": {
+    "attempt": "readiness",
+    "branch": "codex/v0436-first-complete-conquest-victory",
+    "godot_log_file_argument": false,
+    "headed": true,
+    "hidden_window": false,
+    "production_scene": "scenes/main.tscn -> scenes/game_world.tscn",
+    "schema": "v0436-r1j-live-evidence-v1",
+    "session": "A",
+    "source_sha": "23a57b723bb6539f7b2011f2f69abe515df08ff9",
+    "timestamp_ms": 73192
+  },
+  "ready": true,
+  "resources": {
+    "food": 230,
+    "gold": 180,
+    "stone": 100,
+    "timber": 50
+  }
+}

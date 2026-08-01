@@ -1,0 +1,18 @@
+{
+  "schema": "v0436-r1j-evidence-disposition-v1",
+  "accepted": [
+    "fresh headed session A",
+    "fresh headed session B",
+    "complete event graphs",
+    "bounded samples",
+    "truthful inconclusive classification"
+  ],
+  "rejected": [
+    "stale frames",
+    "title cards",
+    "direct state writes",
+    "free units",
+    "resource injection",
+    "unsupported single-cause repair"
+  ]
+}

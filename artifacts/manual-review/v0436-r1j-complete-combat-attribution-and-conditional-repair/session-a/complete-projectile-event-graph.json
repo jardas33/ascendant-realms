@@ -1,0 +1,2671 @@
+{
+  "events": [
+    {
+      "attacker_runtime_id": "654865075600",
+      "intended_target_runtime_id": "173577079507",
+      "kind": "thorn",
+      "originating_attack_event_id": "r1j-attack-073004",
+      "phase": "impact",
+      "phases": [
+        {
+          "phase": "impact",
+          "physics_frame": 4891,
+          "position": {
+            "x": 38.0544242858887,
+            "y": 0.811882436275482,
+            "z": 35.9097061157227
+          },
+          "process_frame": 5586,
+          "target_runtime_id": "173577079507",
+          "target_valid": true,
+          "timestamp_ms": 96416
+        }
+      ],
+      "physics_frame": 4877,
+      "process_frame": 5569,
+      "projectile_event_id": "r1j-projectile-073005",
+      "spawn_position": {
+        "x": 48.034107208252,
+        "y": 1.20000004768372,
+        "z": 46.7413558959961
+      },
+      "timestamp_ms": 96189
+    },
+    {
+      "attacker_runtime_id": "1059279867508",
+      "intended_target_runtime_id": "173577079507",
+      "kind": "thorn",
+      "originating_attack_event_id": "r1j-attack-073108",
+      "phase": "impact",
+      "phases": [
+        {
+          "phase": "impact",
+          "physics_frame": 4895,
+          "position": {
+            "x": 38.3700332641602,
+            "y": 0.809739053249359,
+            "z": 36.285530090332
+          },
+          "process_frame": 5591,
+          "target_runtime_id": "173577079507",
+          "target_valid": true,
+          "timestamp_ms": 96483
+        }
+      ],
+      "physics_frame": 4881,
+      "process_frame": 5574,
+      "projectile_event_id": "r1j-projectile-073109",
+      "spawn_position": {
+        "x": 48.0071105957031,
+        "y": 1.20000004768372,
+        "z": 47.4230308532715
+      },
+      "timestamp_ms": 96256
+    },
+    {
+      "attacker_runtime_id": "768211946943",
+      "intended_target_runtime_id": "173577079507",
+      "kind": "thorn",
+      "originating_attack_event_id": "r1j-attack-073222",
+      "phase": "impact",
+      "phases": [
+        {
+          "phase": "impact",
+          "physics_frame": 4900,
+          "position": {
+            "x": 38.8132972717285,
+            "y": 0.810268700122833,
+            "z": 36.8474159240723
+          },
+          "process_frame": 5598,
+          "target_runtime_id": "173577079507",
+          "target_valid": true,
+          "timestamp_ms": 96575
+        }
+      ],
+      "physics_frame": 4886,
+      "process_frame": 5580,
+      "projectile_event_id": "r1j-projectile-073223",
+      "spawn_position": {
+        "x": 47.282787322998,
+        "y": 1.20000004768372,
+        "z": 48.8957748413086
+      },
+      "timestamp_ms": 96336
+    },
+    {
+      "attacker_runtime_id": "175623899962",
+      "intended_target_runtime_id": "173577079507",
+      "kind": "thorn",
+      "originating_attack_event_id": "r1j-attack-073238",
+      "phase": "impact",
+      "phases": [
+        {
+          "phase": "impact",
+          "physics_frame": 4901,
+          "position": {
+            "x": 39.0173072814941,
+            "y": 0.813780665397644,
+            "z": 37.0109558105469
+          },
+          "process_frame": 5599,
+          "target_runtime_id": "173577079507",
+          "target_valid": true,
+          "timestamp_ms": 96588
+        }
+      ],
+      "physics_frame": 4887,
+      "process_frame": 5581,
+      "projectile_event_id": "r1j-projectile-073239",
+      "spawn_position": {
+        "x": 48.8110122680664,
+        "y": 1.20000004768372,
+        "z": 48.0111389160156
+      },
+      "timestamp_ms": 96349
+    },
+    {
+      "attacker_runtime_id": "654865075600",
+      "intended_target_runtime_id": "173577079507",
+      "kind": "thorn",
+      "originating_attack_event_id": "r1j-attack-073918",
+      "phase": "impact",
+      "phases": [
+        {
+          "phase": "impact",
+          "physics_frame": 4922,
+          "position": {
+            "x": 40.6761322021484,
+            "y": 0.802890360355377,
+            "z": 38.9429931640625
+          },
+          "process_frame": 5625,
+          "target_runtime_id": "173577079507",
+          "target_valid": true,
+          "timestamp_ms": 96936
+        }
+      ],
+      "physics_frame": 4916,
+      "process_frame": 5618,
+      "projectile_event_id": "r1j-projectile-073919",
+      "spawn_position": {
+        "x": 44.6050338745117,
+        "y": 1.20000004768372,
+        "z": 43.0068511962891
+      },
+      "timestamp_ms": 96844
+    },
+    {
+      "attacker_runtime_id": "1059279867508",
+      "intended_target_runtime_id": "173577079507",
+      "kind": "thorn",
+      "originating_attack_event_id": "r1j-attack-074019",
+      "phase": "impact",
+      "phases": [
+        {
+          "phase": "impact",
+          "physics_frame": 4925,
+          "position": {
+            "x": 41.727466583252,
+            "y": 0.890333235263824,
+            "z": 40.1713790893555
+          },
+          "process_frame": 5629,
+          "target_runtime_id": "173577079507",
+          "target_valid": true,
+          "timestamp_ms": 96989
+        }
+      ],
+      "physics_frame": 4920,
+      "process_frame": 5623,
+      "projectile_event_id": "r1j-projectile-074020",
+      "spawn_position": {
+        "x": 44.6835174560547,
+        "y": 1.20000004768372,
+        "z": 43.594352722168
+      },
+      "timestamp_ms": 96911
+    },
+    {
+      "attacker_runtime_id": "768211946943",
+      "intended_target_runtime_id": "173577079507",
+      "kind": "thorn",
+      "originating_attack_event_id": "r1j-attack-074133",
+      "phase": "impact",
+      "phases": [
+        {
+          "phase": "impact",
+          "physics_frame": 4931,
+          "position": {
+            "x": 41.4882125854492,
+            "y": 0.806236624717712,
+            "z": 39.9585227966309
+          },
+          "process_frame": 5636,
+          "target_runtime_id": "173577079507",
+          "target_valid": true,
+          "timestamp_ms": 97082
+        }
+      ],
+      "physics_frame": 4925,
+      "process_frame": 5629,
+      "projectile_event_id": "r1j-projectile-074134",
+      "spawn_position": {
+        "x": 44.0346946716309,
+        "y": 1.20000004768372,
+        "z": 45.0043182373047
+      },
+      "timestamp_ms": 96990
+    },
+    {
+      "attacker_runtime_id": "175623899962",
+      "intended_target_runtime_id": "173577079507",
+      "kind": "thorn",
+      "originating_attack_event_id": "r1j-attack-074149",
+      "phase": "impact",
+      "phases": [
+        {
+          "phase": "impact",
+          "physics_frame": 4932,
+          "position": {
+            "x": 41.6129264831543,
+            "y": 0.808631598949432,
+            "z": 40.0801124572754
+          },
+          "process_frame": 5638,
+          "target_runtime_id": "173577079507",
+          "target_valid": true,
+          "timestamp_ms": 97109
+        }
+      ],
+      "physics_frame": 4926,
+      "process_frame": 5630,
+      "projectile_event_id": "r1j-projectile-074150",
+      "spawn_position": {
+        "x": 45.2163543701172,
+        "y": 1.20000004768372,
+        "z": 44.4358215332031
+      },
+      "timestamp_ms": 97002
+    },
+    {
+      "attacker_runtime_id": "654865075600",
+      "intended_target_runtime_id": "173577079507",
+      "kind": "thorn",
+      "originating_attack_event_id": "r1j-attack-074832",
+      "phase": "impact",
+      "phases": [
+        {
+          "phase": "impact",
+          "physics_frame": 4960,
+          "position": {
+            "x": 43.1159172058105,
+            "y": 0.815526008605957,
+            "z": 43.2969703674316
+          },
+          "process_frame": 5673,
+          "target_runtime_id": "173577079507",
+          "target_valid": true,
+          "timestamp_ms": 97578
+        }
+      ],
+      "physics_frame": 4955,
+      "process_frame": 5666,
+      "projectile_event_id": "r1j-projectile-074833",
+      "spawn_position": {
+        "x": 41.8105583190918,
+        "y": 1.20000004768372,
+        "z": 38.9728164672852
+      },
+      "timestamp_ms": 97483
+    },
+    {
+      "attacker_runtime_id": "1059279867508",
+      "intended_target_runtime_id": "173577079507",
+      "kind": "thorn",
+      "originating_attack_event_id": "r1j-attack-074933",
+      "phase": "impact",
+      "phases": [
+        {
+          "phase": "impact",
+          "physics_frame": 4963,
+          "position": {
+            "x": 42.8342094421387,
+            "y": 0.877351939678192,
+            "z": 42.7467041015625
+          },
+          "process_frame": 5676,
+          "target_runtime_id": "173577079507",
+          "target_valid": true,
+          "timestamp_ms": 97618
+        }
+      ],
+      "physics_frame": 4959,
+      "process_frame": 5671,
+      "projectile_event_id": "r1j-projectile-074934",
+      "spawn_position": {
+        "x": 42.1415901184082,
+        "y": 1.20000004768372,
+        "z": 39.4363441467285
+      },
+      "timestamp_ms": 97552
+    },
+    {
+      "attacker_runtime_id": "768211946943",
+      "intended_target_runtime_id": "173577079507",
+      "kind": "thorn",
+      "originating_attack_event_id": "r1j-attack-075048",
+      "phase": "impact",
+      "phases": [
+        {
+          "phase": "impact",
+          "physics_frame": 4967,
+          "position": {
+            "x": 42.2215118408203,
+            "y": 0.847889423370361,
+            "z": 43.093334197998
+          },
+          "process_frame": 5681,
+          "target_runtime_id": "173577079507",
+          "target_valid": true,
+          "timestamp_ms": 97682
+        }
+      ],
+      "physics_frame": 4964,
+      "process_frame": 5678,
+      "projectile_event_id": "r1j-projectile-075049",
+      "spawn_position": {
+        "x": 40.3900718688965,
+        "y": 1.20000004768372,
+        "z": 41.8052177429199
+      },
+      "timestamp_ms": 97644
+    },
+    {
+      "attacker_runtime_id": "175623899962",
+      "intended_target_runtime_id": "173577079507",
+      "kind": "thorn",
+      "originating_attack_event_id": "r1j-attack-075064",
+      "phase": "impact",
+      "phases": [
+        {
+          "phase": "impact",
+          "physics_frame": 4967,
+          "position": {
+            "x": 42.067554473877,
+            "y": 0.916226148605347,
+            "z": 43.0402946472168
+          },
+          "process_frame": 5681,
+          "target_runtime_id": "173577079507",
+          "target_valid": true,
+          "timestamp_ms": 97683
+        }
+      ],
+      "physics_frame": 4965,
+      "process_frame": 5679,
+      "projectile_event_id": "r1j-projectile-075065",
+      "spawn_position": {
+        "x": 41.1127738952637,
+        "y": 1.20000004768372,
+        "z": 42.4996376037598
+      },
+      "timestamp_ms": 97658
+    },
+    {
+      "attacker_runtime_id": "778093727192",
+      "intended_target_runtime_id": "175623899962",
+      "kind": "arrow",
+      "originating_attack_event_id": "r1j-attack-075379",
+      "phase": "impact",
+      "phases": [
+        {
+          "phase": "impact",
+          "physics_frame": 4992,
+          "position": {
+            "x": 39.1635971069336,
+            "y": 0.807248890399933,
+            "z": 40.4213562011719
+          },
+          "process_frame": 5711,
+          "target_runtime_id": "175623899962",
+          "target_valid": false,
+          "timestamp_ms": 98686
+        }
+      ],
+      "physics_frame": 4978,
+      "process_frame": 5695,
+      "projectile_event_id": "r1j-projectile-075380",
+      "spawn_position": {
+        "x": 33.2199783325195,
+        "y": 1.20000004768372,
+        "z": 26.9465141296387
+      },
+      "timestamp_ms": 97870
+    },
+    {
+      "attacker_runtime_id": "889964203528",
+      "intended_target_runtime_id": "175623899962",
+      "kind": "arrow",
+      "originating_attack_event_id": "r1j-attack-075429",
+      "phase": "impact",
+      "phases": [
+        {
+          "phase": "impact",
+          "physics_frame": 4994,
+          "position": {
+            "x": 39.0388793945313,
+            "y": 0.813414812088013,
+            "z": 40.2144966125488
+          },
+          "process_frame": 5711,
+          "target_runtime_id": "175623899962",
+          "target_valid": false,
+          "timestamp_ms": 98693
+        }
+      ],
+      "physics_frame": 4980,
+      "process_frame": 5698,
+      "projectile_event_id": "r1j-projectile-075430",
+      "spawn_position": {
+        "x": 32.3105010986328,
+        "y": 1.20000004768372,
+        "z": 27.1131057739258
+      },
+      "timestamp_ms": 97910
+    },
+    {
+      "attacker_runtime_id": "654865075600",
+      "intended_target_runtime_id": "173577079507",
+      "kind": "thorn",
+      "originating_attack_event_id": "r1j-attack-075761",
+      "phase": "impact",
+      "phases": [
+        {
+          "phase": "impact",
+          "physics_frame": 5002,
+          "position": {
+            "x": 41.6142539978027,
+            "y": 0.807417154312134,
+            "z": 42.4642677307129
+          },
+          "process_frame": 5712,
+          "target_runtime_id": "173577079507",
+          "target_valid": true,
+          "timestamp_ms": 99208
+        }
+      ],
+      "physics_frame": 4994,
+      "process_frame": 5711,
+      "projectile_event_id": "r1j-projectile-075762",
+      "spawn_position": {
+        "x": 38.3814849853516,
+        "y": 1.20000004768372,
+        "z": 35.2383117675781
+      },
+      "timestamp_ms": 98695
+    },
+    {
+      "attacker_runtime_id": "1059279867508",
+      "intended_target_runtime_id": "173577079507",
+      "kind": "thorn",
+      "originating_attack_event_id": "r1j-attack-075862",
+      "phase": "impact",
+      "phases": [
+        {
+          "phase": "impact",
+          "physics_frame": 5006,
+          "position": {
+            "x": 42.0142860412598,
+            "y": 0.807455778121948,
+            "z": 42.8545074462891
+          },
+          "process_frame": 5712,
+          "target_runtime_id": "173577079507",
+          "target_valid": true,
+          "timestamp_ms": 99221
+        }
+      ],
+      "physics_frame": 4998,
+      "process_frame": 5711,
+      "projectile_event_id": "r1j-projectile-075863",
+      "spawn_position": {
+        "x": 38.814208984375,
+        "y": 1.20000004768372,
+        "z": 35.6110877990723
+      },
+      "timestamp_ms": 98713
+    },
+    {
+      "attacker_runtime_id": "768211946943",
+      "intended_target_runtime_id": "173577079507",
+      "kind": "thorn",
+      "originating_attack_event_id": "r1j-attack-076000",
+      "phase": "impact",
+      "phases": [
+        {
+          "phase": "impact",
+          "physics_frame": 5010,
+          "position": {
+            "x": 41.9201850891113,
+            "y": 0.839952290058136,
+            "z": 42.7761306762695
+          },
+          "process_frame": 5715,
+          "target_runtime_id": "173577079507",
+          "target_valid": true,
+          "timestamp_ms": 99242
+        }
+      ],
+      "physics_frame": 5003,
+      "process_frame": 5712,
+      "projectile_event_id": "r1j-projectile-076001",
+      "spawn_position": {
+        "x": 37.3779373168945,
+        "y": 1.20000004768372,
+        "z": 37.7286605834961
+      },
+      "timestamp_ms": 99213
+    },
+    {
+      "attacker_runtime_id": "176076884817",
+      "intended_target_runtime_id": "173577079507",
+      "kind": "lume_bolt",
+      "originating_attack_event_id": "r1j-attack-086685",
+      "phase": "impact",
+      "phases": [
+        {
+          "phase": "impact",
+          "physics_frame": 5503,
+          "position": {
+            "x": 92.2374725341797,
+            "y": 0.833284437656403,
+            "z": 92.4347381591797
+          },
+          "process_frame": 6321,
+          "target_runtime_id": "173577079507",
+          "target_valid": true,
+          "timestamp_ms": 107739
+        }
+      ],
+      "physics_frame": 5486,
+      "process_frame": 6300,
+      "projectile_event_id": "r1j-projectile-086686",
+      "spawn_position": {
+        "x": 100.589691162109,
+        "y": 1.20000004768372,
+        "z": 100.667327880859
+      },
+      "timestamp_ms": 107459
+    },
+    {
+      "attacker_runtime_id": "176076884817",
+      "intended_target_runtime_id": "173577079507",
+      "kind": "lume_bolt",
+      "originating_attack_event_id": "r1j-attack-087480",
+      "phase": "impact",
+      "phases": [
+        {
+          "phase": "impact",
+          "physics_frame": 5528,
+          "position": {
+            "x": 94.3389511108398,
+            "y": 0.830266714096069,
+            "z": 94.462646484375
+          },
+          "process_frame": 6352,
+          "target_runtime_id": "173577079507",
+          "target_valid": true,
+          "timestamp_ms": 108152
+        }
+      ],
+      "physics_frame": 5522,
+      "process_frame": 6345,
+      "projectile_event_id": "r1j-projectile-087481",
+      "spawn_position": {
+        "x": 96.9147644042969,
+        "y": 1.20000004768372,
+        "z": 97.0451354980469
+      },
+      "timestamp_ms": 108059
+    },
+    {
+      "attacker_runtime_id": "176076884817",
+      "intended_target_runtime_id": "173577079507",
+      "kind": "lume_bolt",
+      "originating_attack_event_id": "r1j-attack-088279",
+      "phase": "impact",
+      "phases": [
+        {
+          "phase": "impact",
+          "physics_frame": 5561,
+          "position": {
+            "x": 93.9512710571289,
+            "y": 0.807758748531342,
+            "z": 95.0242309570313
+          },
+          "process_frame": 6394,
+          "target_runtime_id": "173577079507",
+          "target_valid": true,
+          "timestamp_ms": 108712
+        }
+      ],
+      "physics_frame": 5558,
+      "process_frame": 6390,
+      "projectile_event_id": "r1j-projectile-088280",
+      "spawn_position": {
+        "x": 92.8079299926758,
+        "y": 1.20000004768372,
+        "z": 94.1942138671875
+      },
+      "timestamp_ms": 108659
+    },
+    {
+      "attacker_runtime_id": "768211946943",
+      "intended_target_runtime_id": "173577079507",
+      "kind": "thorn",
+      "originating_attack_event_id": "r1j-attack-088444",
+      "phase": "impact",
+      "phases": [
+        {
+          "phase": "impact",
+          "physics_frame": 5579,
+          "position": {
+            "x": 91.7893600463867,
+            "y": 0.813296854496002,
+            "z": 93.0856246948242
+          },
+          "process_frame": 6416,
+          "target_runtime_id": "173577079507",
+          "target_valid": true,
+          "timestamp_ms": 109006
+        }
+      ],
+      "physics_frame": 5565,
+      "process_frame": 6399,
+      "projectile_event_id": "r1j-projectile-088445",
+      "spawn_position": {
+        "x": 81.7883453369141,
+        "y": 1.20000004768372,
+        "z": 82.2741851806641
+      },
+      "timestamp_ms": 108780
+    },
+    {
+      "attacker_runtime_id": "1059279867508",
+      "intended_target_runtime_id": "173577079507",
+      "kind": "thorn",
+      "originating_attack_event_id": "r1j-attack-088451",
+      "phase": "impact",
+      "phases": [
+        {
+          "phase": "impact",
+          "physics_frame": 5579,
+          "position": {
+            "x": 91.7940368652344,
+            "y": 0.814318239688873,
+            "z": 93.0367279052734
+          },
+          "process_frame": 6416,
+          "target_runtime_id": "173577079507",
+          "target_valid": true,
+          "timestamp_ms": 109007
+        }
+      ],
+      "physics_frame": 5565,
+      "process_frame": 6399,
+      "projectile_event_id": "r1j-projectile-088452",
+      "spawn_position": {
+        "x": 82.5293807983398,
+        "y": 1.20000004768372,
+        "z": 81.589111328125
+      },
+      "timestamp_ms": 108780
+    },
+    {
+      "attacker_runtime_id": "654865075600",
+      "intended_target_runtime_id": "173577079507",
+      "kind": "thorn",
+      "originating_attack_event_id": "r1j-attack-088600",
+      "phase": "impact",
+      "phases": [
+        {
+          "phase": "impact",
+          "physics_frame": 5586,
+          "position": {
+            "x": 91.0620574951172,
+            "y": 0.814063668251038,
+            "z": 92.3917999267578
+          },
+          "process_frame": 6425,
+          "target_runtime_id": "173577079507",
+          "target_valid": true,
+          "timestamp_ms": 109126
+        }
+      ],
+      "physics_frame": 5572,
+      "process_frame": 6407,
+      "projectile_event_id": "r1j-projectile-088601",
+      "spawn_position": {
+        "x": 81.1501998901367,
+        "y": 1.20000004768372,
+        "z": 81.498420715332
+      },
+      "timestamp_ms": 108886
+    },
+    {
+      "attacker_runtime_id": "778093727192",
+      "intended_target_runtime_id": "176076884817",
+      "kind": "arrow",
+      "originating_attack_event_id": "r1j-attack-088881",
+      "phase": "impact",
+      "phases": [
+        {
+          "phase": "impact",
+          "physics_frame": 5597,
+          "position": {
+            "x": 88.6617050170898,
+            "y": 0.817156553268433,
+            "z": 89.9433898925781
+          },
+          "process_frame": 6439,
+          "target_runtime_id": "176076884817",
+          "target_valid": true,
+          "timestamp_ms": 109312
+        }
+      ],
+      "physics_frame": 5584,
+      "process_frame": 6422,
+      "projectile_event_id": "r1j-projectile-088882",
+      "spawn_position": {
+        "x": 80.9915542602539,
+        "y": 1.20000004768372,
+        "z": 78.7216110229492
+      },
+      "timestamp_ms": 109087
+    },
+    {
+      "attacker_runtime_id": "889964203528",
+      "intended_target_runtime_id": "176076884817",
+      "kind": "arrow",
+      "originating_attack_event_id": "r1j-attack-088932",
+      "phase": "impact",
+      "phases": [
+        {
+          "phase": "impact",
+          "physics_frame": 5599,
+          "position": {
+            "x": 88.3843307495117,
+            "y": 0.819570958614349,
+            "z": 89.699348449707
+          },
+          "process_frame": 6441,
+          "target_runtime_id": "176076884817",
+          "target_valid": true,
+          "timestamp_ms": 109340
+        }
+      ],
+      "physics_frame": 5586,
+      "process_frame": 6425,
+      "projectile_event_id": "r1j-projectile-088933",
+      "spawn_position": {
+        "x": 80.103889465332,
+        "y": 1.20000004768372,
+        "z": 78.9186782836914
+      },
+      "timestamp_ms": 109128
+    },
+    {
+      "attacker_runtime_id": "176076884817",
+      "intended_target_runtime_id": "173577079507",
+      "kind": "lume_bolt",
+      "originating_attack_event_id": "r1j-attack-089107",
+      "phase": "impact",
+      "phases": [
+        {
+          "phase": "impact",
+          "physics_frame": 5597,
+          "position": {
+            "x": 90.1517791748047,
+            "y": 0.835619449615479,
+            "z": 91.5618133544922
+          },
+          "process_frame": 6439,
+          "target_runtime_id": "173577079507",
+          "target_valid": true,
+          "timestamp_ms": 109313
+        }
+      ],
+      "physics_frame": 5594,
+      "process_frame": 6435,
+      "projectile_event_id": "r1j-projectile-089108",
+      "spawn_position": {
+        "x": 89.1330032348633,
+        "y": 1.20000004768372,
+        "z": 90.572021484375
+      },
+      "timestamp_ms": 109260
+    },
+    {
+      "attacker_runtime_id": "768211946943",
+      "intended_target_runtime_id": "173577079507",
+      "kind": "thorn",
+      "originating_attack_event_id": "r1j-attack-089350",
+      "phase": "impact",
+      "phases": [
+        {
+          "phase": "impact",
+          "physics_frame": 5610,
+          "position": {
+            "x": 88.8840866088867,
+            "y": 0.807464778423309,
+            "z": 90.3059921264648
+          },
+          "process_frame": 6455,
+          "target_runtime_id": "173577079507",
+          "target_valid": true,
+          "timestamp_ms": 109527
+        }
+      ],
+      "physics_frame": 5604,
+      "process_frame": 6447,
+      "projectile_event_id": "r1j-projectile-089351",
+      "spawn_position": {
+        "x": 85.2720184326172,
+        "y": 1.20000004768372,
+        "z": 85.9578094482422
+      },
+      "timestamp_ms": 109420
+    },
+    {
+      "attacker_runtime_id": "1059279867508",
+      "intended_target_runtime_id": "173577079507",
+      "kind": "thorn",
+      "originating_attack_event_id": "r1j-attack-089357",
+      "phase": "impact",
+      "phases": [
+        {
+          "phase": "impact",
+          "physics_frame": 5610,
+          "position": {
+            "x": 88.8289413452148,
+            "y": 0.818521678447723,
+            "z": 90.1641616821289
+          },
+          "process_frame": 6455,
+          "target_runtime_id": "173577079507",
+          "target_valid": true,
+          "timestamp_ms": 109527
+        }
+      ],
+      "physics_frame": 5604,
+      "process_frame": 6447,
+      "projectile_event_id": "r1j-projectile-089358",
+      "spawn_position": {
+        "x": 86.0022888183594,
+        "y": 1.20000004768372,
+        "z": 85.2691192626953
+      },
+      "timestamp_ms": 109421
+    },
+    {
+      "attacker_runtime_id": "654865075600",
+      "intended_target_runtime_id": "173577079507",
+      "kind": "thorn",
+      "originating_attack_event_id": "r1j-attack-089515",
+      "phase": "impact",
+      "phases": [
+        {
+          "phase": "impact",
+          "physics_frame": 5617,
+          "position": {
+            "x": 88.1691818237305,
+            "y": 0.809511840343475,
+            "z": 89.5977630615234
+          },
+          "process_frame": 6464,
+          "target_runtime_id": "173577079507",
+          "target_valid": true,
+          "timestamp_ms": 109646
+        }
+      ],
+      "physics_frame": 5611,
+      "process_frame": 6456,
+      "projectile_event_id": "r1j-projectile-089516",
+      "spawn_position": {
+        "x": 84.5966796875,
+        "y": 1.20000004768372,
+        "z": 85.2168579101563
+      },
+      "timestamp_ms": 109540
+    },
+    {
+      "attacker_runtime_id": "778093727192",
+      "intended_target_runtime_id": "176076884817",
+      "kind": "arrow",
+      "originating_attack_event_id": "r1j-attack-089866",
+      "phase": "impact",
+      "phases": [
+        {
+          "phase": "impact",
+          "physics_frame": 5631,
+          "position": {
+            "x": 85.4345169067383,
+            "y": 0.808717846870422,
+            "z": 86.8623504638672
+          },
+          "process_frame": 6481,
+          "target_runtime_id": "176076884817",
+          "target_valid": true,
+          "timestamp_ms": 109873
+        }
+      ],
+      "physics_frame": 5626,
+      "process_frame": 6475,
+      "projectile_event_id": "r1j-projectile-089867",
+      "spawn_position": {
+        "x": 84.0140762329102,
+        "y": 1.20000004768372,
+        "z": 82.5783081054688
+      },
+      "timestamp_ms": 109794
+    },
+    {
+      "attacker_runtime_id": "889964203528",
+      "intended_target_runtime_id": "176076884817",
+      "kind": "arrow",
+      "originating_attack_event_id": "r1j-attack-089916",
+      "phase": "impact",
+      "phases": [
+        {
+          "phase": "impact",
+          "physics_frame": 5632,
+          "position": {
+            "x": 84.768913269043,
+            "y": 0.912383735179901,
+            "z": 85.7334671020508
+          },
+          "process_frame": 6482,
+          "target_runtime_id": "176076884817",
+          "target_valid": true,
+          "timestamp_ms": 109886
+        }
+      ],
+      "physics_frame": 5628,
+      "process_frame": 6477,
+      "projectile_event_id": "r1j-projectile-089917",
+      "spawn_position": {
+        "x": 83.1464157104492,
+        "y": 1.20000004768372,
+        "z": 82.7597274780273
+      },
+      "timestamp_ms": 109820
+    },
+    {
+      "attacker_runtime_id": "176076884817",
+      "intended_target_runtime_id": "173577079507",
+      "kind": "lume_bolt",
+      "originating_attack_event_id": "r1j-attack-089953",
+      "phase": "impact",
+      "phases": [
+        {
+          "phase": "impact",
+          "physics_frame": 5633,
+          "position": {
+            "x": 86.474723815918,
+            "y": 0.861449003219604,
+            "z": 87.951042175293
+          },
+          "process_frame": 6484,
+          "target_runtime_id": "173577079507",
+          "target_valid": true,
+          "timestamp_ms": 109913
+        }
+      ],
+      "physics_frame": 5630,
+      "process_frame": 6480,
+      "projectile_event_id": "r1j-projectile-089954",
+      "spawn_position": {
+        "x": 85.4580764770508,
+        "y": 1.20000004768372,
+        "z": 86.9498291015625
+      },
+      "timestamp_ms": 109860
+    },
+    {
+      "attacker_runtime_id": "768211946943",
+      "intended_target_runtime_id": "173577079507",
+      "kind": "thorn",
+      "originating_attack_event_id": "r1j-attack-090265",
+      "phase": "impact",
+      "phases": [
+        {
+          "phase": "impact",
+          "physics_frame": 5648,
+          "position": {
+            "x": 85.253532409668,
+            "y": 0.808557391166687,
+            "z": 86.6931457519531
+          },
+          "process_frame": 6502,
+          "target_runtime_id": "173577079507",
+          "target_valid": true,
+          "timestamp_ms": 110153
+        }
+      ],
+      "physics_frame": 5643,
+      "process_frame": 6496,
+      "projectile_event_id": "r1j-projectile-090266",
+      "spawn_position": {
+        "x": 89.4587707519531,
+        "y": 1.20000004768372,
+        "z": 88.3334350585938
+      },
+      "timestamp_ms": 110073
+    },
+    {
+      "attacker_runtime_id": "1059279867508",
+      "intended_target_runtime_id": "173577079507",
+      "kind": "thorn",
+      "originating_attack_event_id": "r1j-attack-090272",
+      "phase": "impact",
+      "phases": [
+        {
+          "phase": "impact",
+          "physics_frame": 5648,
+          "position": {
+            "x": 85.9355087280273,
+            "y": 0.856782257556915,
+            "z": 86.8378753662109
+          },
+          "process_frame": 6502,
+          "target_runtime_id": "173577079507",
+          "target_valid": true,
+          "timestamp_ms": 110154
+        }
+      ],
+      "physics_frame": 5643,
+      "process_frame": 6496,
+      "projectile_event_id": "r1j-projectile-090273",
+      "spawn_position": {
+        "x": 90.3719940185547,
+        "y": 1.20000004768372,
+        "z": 87.6915893554688
+      },
+      "timestamp_ms": 110074
+    },
+    {
+      "attacker_runtime_id": "654865075600",
+      "intended_target_runtime_id": "173577079507",
+      "kind": "thorn",
+      "originating_attack_event_id": "r1j-attack-090430",
+      "phase": "impact",
+      "phases": [
+        {
+          "phase": "impact",
+          "physics_frame": 5655,
+          "position": {
+            "x": 84.6541442871094,
+            "y": 0.816628456115723,
+            "z": 86.0498046875
+          },
+          "process_frame": 6511,
+          "target_runtime_id": "173577079507",
+          "target_valid": true,
+          "timestamp_ms": 110272
+        }
+      ],
+      "physics_frame": 5650,
+      "process_frame": 6505,
+      "projectile_event_id": "r1j-projectile-090431",
+      "spawn_position": {
+        "x": 88.8523635864258,
+        "y": 1.20000004768372,
+        "z": 87.7108840942383
+      },
+      "timestamp_ms": 110194
+    },
+    {
+      "attacker_runtime_id": "176076884817",
+      "intended_target_runtime_id": "173577079507",
+      "kind": "lume_bolt",
+      "originating_attack_event_id": "r1j-attack-090795",
+      "phase": "impact",
+      "phases": [
+        {
+          "phase": "impact",
+          "physics_frame": 5669,
+          "position": {
+            "x": 82.8030776977539,
+            "y": 0.883730351924896,
+            "z": 84.3328552246094
+          },
+          "process_frame": 6529,
+          "target_runtime_id": "173577079507",
+          "target_valid": true,
+          "timestamp_ms": 110513
+        }
+      ],
+      "physics_frame": 5666,
+      "process_frame": 6525,
+      "projectile_event_id": "r1j-projectile-090796",
+      "spawn_position": {
+        "x": 81.7831497192383,
+        "y": 1.20000004768372,
+        "z": 83.32763671875
+      },
+      "timestamp_ms": 110460
+    },
+    {
+      "attacker_runtime_id": "778093727192",
+      "intended_target_runtime_id": "176076884817",
+      "kind": "arrow",
+      "originating_attack_event_id": "r1j-attack-090852",
+      "phase": "impact",
+      "phases": [
+        {
+          "phase": "impact",
+          "physics_frame": 5675,
+          "position": {
+            "x": 81.4385070800781,
+            "y": 0.825281918048859,
+            "z": 82.7578430175781
+          },
+          "process_frame": 6536,
+          "target_runtime_id": "176076884817",
+          "target_valid": true,
+          "timestamp_ms": 110607
+        }
+      ],
+      "physics_frame": 5668,
+      "process_frame": 6527,
+      "projectile_event_id": "r1j-projectile-090853",
+      "spawn_position": {
+        "x": 87.6569671630859,
+        "y": 1.20000004768372,
+        "z": 85.4766464233398
+      },
+      "timestamp_ms": 110487
+    },
+    {
+      "attacker_runtime_id": "889964203528",
+      "intended_target_runtime_id": "176076884817",
+      "kind": "arrow",
+      "originating_attack_event_id": "r1j-attack-090903",
+      "phase": "impact",
+      "phases": [
+        {
+          "phase": "impact",
+          "physics_frame": 5677,
+          "position": {
+            "x": 80.8225326538086,
+            "y": 0.803444385528564,
+            "z": 82.3595352172852
+          },
+          "process_frame": 6539,
+          "target_runtime_id": "176076884817",
+          "target_valid": true,
+          "timestamp_ms": 110646
+        }
+      ],
+      "physics_frame": 5670,
+      "process_frame": 6530,
+      "projectile_event_id": "r1j-projectile-090904",
+      "spawn_position": {
+        "x": 86.7175979614258,
+        "y": 1.20000004768372,
+        "z": 85.7211227416992
+      },
+      "timestamp_ms": 110528
+    },
+    {
+      "attacker_runtime_id": "768211946943",
+      "intended_target_runtime_id": "173577079507",
+      "kind": "thorn",
+      "originating_attack_event_id": "r1j-attack-091180",
+      "phase": "impact",
+      "phases": [
+        {
+          "phase": "impact",
+          "physics_frame": 5697,
+          "position": {
+            "x": 80.5722885131836,
+            "y": 0.807673931121826,
+            "z": 82.08984375
+          },
+          "process_frame": 6564,
+          "target_runtime_id": "173577079507",
+          "target_valid": true,
+          "timestamp_ms": 110980
+        }
+      ],
+      "physics_frame": 5682,
+      "process_frame": 6545,
+      "projectile_event_id": "r1j-projectile-091181",
+      "spawn_position": {
+        "x": 92.9424438476563,
+        "y": 1.20000004768372,
+        "z": 92.0170593261719
+      },
+      "timestamp_ms": 110728
+    },
+    {
+      "attacker_runtime_id": "1059279867508",
+      "intended_target_runtime_id": "173577079507",
+      "kind": "thorn",
+      "originating_attack_event_id": "r1j-attack-091187",
+      "phase": "impact",
+      "phases": [
+        {
+          "phase": "impact",
+          "physics_frame": 5697,
+          "position": {
+            "x": 80.8495101928711,
+            "y": 0.814231634140015,
+            "z": 82.2737884521484
+          },
+          "process_frame": 6564,
+          "target_runtime_id": "173577079507",
+          "target_valid": true,
+          "timestamp_ms": 110981
+        }
+      ],
+      "physics_frame": 5682,
+      "process_frame": 6545,
+      "projectile_event_id": "r1j-projectile-091188",
+      "spawn_position": {
+        "x": 93.8053283691406,
+        "y": 1.20000004768372,
+        "z": 91.4221038818359
+      },
+      "timestamp_ms": 110730
+    },
+    {
+      "attacker_runtime_id": "654865075600",
+      "intended_target_runtime_id": "173577079507",
+      "kind": "thorn",
+      "originating_attack_event_id": "r1j-attack-091343",
+      "phase": "impact",
+      "phases": [
+        {
+          "phase": "impact",
+          "physics_frame": 5704,
+          "position": {
+            "x": 79.9543609619141,
+            "y": 0.809736847877502,
+            "z": 81.4700164794922
+          },
+          "process_frame": 6572,
+          "target_runtime_id": "173577079507",
+          "target_valid": true,
+          "timestamp_ms": 111087
+        }
+      ],
+      "physics_frame": 5689,
+      "process_frame": 6554,
+      "projectile_event_id": "r1j-projectile-091344",
+      "spawn_position": {
+        "x": 92.2988433837891,
+        "y": 1.20000004768372,
+        "z": 91.4293212890625
+      },
+      "timestamp_ms": 110847
+    },
+    {
+      "attacker_runtime_id": "176076884817",
+      "intended_target_runtime_id": "173577079507",
+      "kind": "lume_bolt",
+      "originating_attack_event_id": "r1j-attack-091640",
+      "phase": "impact",
+      "phases": [
+        {
+          "phase": "impact",
+          "physics_frame": 5705,
+          "position": {
+            "x": 79.1310958862305,
+            "y": 0.903189301490784,
+            "z": 80.7136535644531
+          },
+          "process_frame": 6574,
+          "target_runtime_id": "173577079507",
+          "target_valid": true,
+          "timestamp_ms": 111113
+        }
+      ],
+      "physics_frame": 5702,
+      "process_frame": 6570,
+      "projectile_event_id": "r1j-projectile-091641",
+      "spawn_position": {
+        "x": 78.1082229614258,
+        "y": 1.20000004768372,
+        "z": 79.7054443359375
+      },
+      "timestamp_ms": 111060
+    },
+    {
+      "attacker_runtime_id": "176076884817",
+      "intended_target_runtime_id": "173577079507",
+      "kind": "lume_bolt",
+      "originating_attack_event_id": "r1j-attack-092472",
+      "phase": "impact",
+      "phases": [
+        {
+          "phase": "impact",
+          "physics_frame": 5741,
+          "position": {
+            "x": 75.458625793457,
+            "y": 0.920333743095398,
+            "z": 77.0938949584961
+          },
+          "process_frame": 6619,
+          "target_runtime_id": "173577079507",
+          "target_valid": true,
+          "timestamp_ms": 111713
+        }
+      ],
+      "physics_frame": 5738,
+      "process_frame": 6615,
+      "projectile_event_id": "r1j-projectile-092473",
+      "spawn_position": {
+        "x": 74.4332962036133,
+        "y": 1.20000004768372,
+        "z": 76.083251953125
+      },
+      "timestamp_ms": 111660
+    },
+    {
+      "attacker_runtime_id": "176076884817",
+      "intended_target_runtime_id": "173577079507",
+      "kind": "lume_bolt",
+      "originating_attack_event_id": "r1j-attack-093303",
+      "phase": "impact",
+      "phases": [
+        {
+          "phase": "impact",
+          "physics_frame": 5777,
+          "position": {
+            "x": 71.785758972168,
+            "y": 0.935571730136871,
+            "z": 73.4737319946289
+          },
+          "process_frame": 6664,
+          "target_runtime_id": "173577079507",
+          "target_valid": true,
+          "timestamp_ms": 112314
+        }
+      ],
+      "physics_frame": 5774,
+      "process_frame": 6660,
+      "projectile_event_id": "r1j-projectile-093304",
+      "spawn_position": {
+        "x": 70.7583694458008,
+        "y": 1.20000004768372,
+        "z": 72.4610595703125
+      },
+      "timestamp_ms": 112260
+    },
+    {
+      "attacker_runtime_id": "176076884817",
+      "intended_target_runtime_id": "173577079507",
+      "kind": "lume_bolt",
+      "originating_attack_event_id": "r1j-attack-094136",
+      "phase": "impact",
+      "phases": [
+        {
+          "phase": "impact",
+          "physics_frame": 5813,
+          "position": {
+            "x": 68.1125793457031,
+            "y": 0.949212074279785,
+            "z": 69.8532485961914
+          },
+          "process_frame": 6709,
+          "target_runtime_id": "173577079507",
+          "target_valid": true,
+          "timestamp_ms": 112914
+        }
+      ],
+      "physics_frame": 5810,
+      "process_frame": 6705,
+      "projectile_event_id": "r1j-projectile-094137",
+      "spawn_position": {
+        "x": 67.0834426879883,
+        "y": 1.20000004768372,
+        "z": 68.8388671875
+      },
+      "timestamp_ms": 112861
+    },
+    {
+      "attacker_runtime_id": "176076884817",
+      "intended_target_runtime_id": "173577079507",
+      "kind": "lume_bolt",
+      "originating_attack_event_id": "r1j-attack-094967",
+      "phase": "impact",
+      "phases": [
+        {
+          "phase": "impact",
+          "physics_frame": 5850,
+          "position": {
+            "x": 64.9511260986328,
+            "y": 0.81671130657196,
+            "z": 66.737190246582
+          },
+          "process_frame": 6755,
+          "target_runtime_id": "173577079507",
+          "target_valid": true,
+          "timestamp_ms": 113528
+        }
+      ],
+      "physics_frame": 5846,
+      "process_frame": 6750,
+      "projectile_event_id": "r1j-projectile-094968",
+      "spawn_position": {
+        "x": 63.4085159301758,
+        "y": 1.20000004768372,
+        "z": 65.2166748046875
+      },
+      "timestamp_ms": 113461
+    },
+    {
+      "attacker_runtime_id": "654865075600",
+      "intended_target_runtime_id": "778093727192",
+      "kind": "thorn",
+      "originating_attack_event_id": "r1j-attack-095106",
+      "phase": "impact",
+      "phases": [
+        {
+          "phase": "impact",
+          "physics_frame": 5853,
+          "position": {
+            "x": 78.0591812133789,
+            "y": 0.835125088691711,
+            "z": 79.3535461425781
+          },
+          "process_frame": 6759,
+          "target_runtime_id": "778093727192",
+          "target_valid": true,
+          "timestamp_ms": 113581
+        }
+      ],
+      "physics_frame": 5851,
+      "process_frame": 6756,
+      "projectile_event_id": "r1j-projectile-095107",
+      "spawn_position": {
+        "x": 78.5556793212891,
+        "y": 1.20000004768372,
+        "z": 80.3047561645508
+      },
+      "timestamp_ms": 113543
+    },
+    {
+      "attacker_runtime_id": "768211946943",
+      "intended_target_runtime_id": "778093727192",
+      "kind": "thorn",
+      "originating_attack_event_id": "r1j-attack-095110",
+      "phase": "impact",
+      "phases": [
+        {
+          "phase": "impact",
+          "physics_frame": 5853,
+          "position": {
+            "x": 78.5550231933594,
+            "y": 0.941876411437988,
+            "z": 79.5309982299805
+          },
+          "process_frame": 6759,
+          "target_runtime_id": "778093727192",
+          "target_valid": true,
+          "timestamp_ms": 113581
+        }
+      ],
+      "physics_frame": 5851,
+      "process_frame": 6756,
+      "projectile_event_id": "r1j-projectile-095111",
+      "spawn_position": {
+        "x": 79.5440902709961,
+        "y": 1.20000004768372,
+        "z": 80.0204467773438
+      },
+      "timestamp_ms": 113543
+    },
+    {
+      "attacker_runtime_id": "1059279867508",
+      "intended_target_runtime_id": "778093727192",
+      "kind": "thorn",
+      "originating_attack_event_id": "r1j-attack-095119",
+      "phase": "impact",
+      "phases": [
+        {
+          "phase": "impact",
+          "physics_frame": 5853,
+          "position": {
+            "x": 78.0532608032227,
+            "y": 0.815294504165649,
+            "z": 79.2554397583008
+          },
+          "process_frame": 6759,
+          "target_runtime_id": "778093727192",
+          "target_valid": true,
+          "timestamp_ms": 113582
+        }
+      ],
+      "physics_frame": 5851,
+      "process_frame": 6756,
+      "projectile_event_id": "r1j-projectile-095120",
+      "spawn_position": {
+        "x": 79.1065521240234,
+        "y": 1.20000004768372,
+        "z": 79.0910720825195
+      },
+      "timestamp_ms": 113544
+    },
+    {
+      "attacker_runtime_id": "176076884817",
+      "intended_target_runtime_id": "666592349608",
+      "kind": "lume_bolt",
+      "originating_attack_event_id": "r1j-attack-095830",
+      "phase": "impact",
+      "phases": [
+        {
+          "phase": "impact",
+          "physics_frame": 5889,
+          "position": {
+            "x": 63.7106552124023,
+            "y": 0.865441620349884,
+            "z": 63.4461288452148
+          },
+          "process_frame": 6804,
+          "target_runtime_id": "666592349608",
+          "target_valid": true,
+          "timestamp_ms": 114181
+        }
+      ],
+      "physics_frame": 5882,
+      "process_frame": 6795,
+      "projectile_event_id": "r1j-projectile-095831",
+      "spawn_position": {
+        "x": 59.7335891723633,
+        "y": 1.20000004768372,
+        "z": 61.5943908691406
+      },
+      "timestamp_ms": 114061
+    },
+    {
+      "attacker_runtime_id": "654865075600",
+      "intended_target_runtime_id": "778093727192",
+      "kind": "thorn",
+      "originating_attack_event_id": "r1j-attack-096025",
+      "phase": "impact",
+      "phases": [
+        {
+          "phase": "impact",
+          "physics_frame": 5892,
+          "position": {
+            "x": 74.9659194946289,
+            "y": 0.816206216812134,
+            "z": 76.1163940429688
+          },
+          "process_frame": 6807,
+          "target_runtime_id": "778093727192",
+          "target_valid": true,
+          "timestamp_ms": 114221
+        }
+      ],
+      "physics_frame": 5890,
+      "process_frame": 6805,
+      "projectile_event_id": "r1j-projectile-096026",
+      "spawn_position": {
+        "x": 75.0297775268555,
+        "y": 1.20000004768372,
+        "z": 77.1808547973633
+      },
+      "timestamp_ms": 114195
+    },
+    {
+      "attacker_runtime_id": "768211946943",
+      "intended_target_runtime_id": "778093727192",
+      "kind": "thorn",
+      "originating_attack_event_id": "r1j-attack-096029",
+      "phase": "impact",
+      "phases": [
+        {
+          "phase": "impact",
+          "physics_frame": 5892,
+          "position": {
+            "x": 75.0350723266602,
+            "y": 0.829110264778137,
+            "z": 76.1150741577148
+          },
+          "process_frame": 6807,
+          "target_runtime_id": "778093727192",
+          "target_valid": true,
+          "timestamp_ms": 114222
+        }
+      ],
+      "physics_frame": 5890,
+      "process_frame": 6805,
+      "projectile_event_id": "r1j-projectile-096030",
+      "spawn_position": {
+        "x": 75.9504852294922,
+        "y": 1.20000004768372,
+        "z": 76.6708679199219
+      },
+      "timestamp_ms": 114196
+    },
+    {
+      "attacker_runtime_id": "1059279867508",
+      "intended_target_runtime_id": "778093727192",
+      "kind": "thorn",
+      "originating_attack_event_id": "r1j-attack-096036",
+      "phase": "impact",
+      "phases": [
+        {
+          "phase": "impact",
+          "physics_frame": 5892,
+          "position": {
+            "x": 75.1317596435547,
+            "y": 0.861863732337952,
+            "z": 75.9676971435547
+          },
+          "process_frame": 6807,
+          "target_runtime_id": "778093727192",
+          "target_valid": false,
+          "timestamp_ms": 114223
+        }
+      ],
+      "physics_frame": 5890,
+      "process_frame": 6805,
+      "projectile_event_id": "r1j-projectile-096037",
+      "spawn_position": {
+        "x": 76.0529174804688,
+        "y": 1.20000004768372,
+        "z": 75.4006271362305
+      },
+      "timestamp_ms": 114196
+    },
+    {
+      "attacker_runtime_id": "176076884817",
+      "intended_target_runtime_id": "666592349608",
+      "kind": "lume_bolt",
+      "originating_attack_event_id": "r1j-attack-096682",
+      "phase": "impact",
+      "phases": [
+        {
+          "phase": "impact",
+          "physics_frame": 5927,
+          "position": {
+            "x": 60.9303092956543,
+            "y": 0.838698208332062,
+            "z": 61.2175369262695
+          },
+          "process_frame": 6851,
+          "target_runtime_id": "666592349608",
+          "target_valid": true,
+          "timestamp_ms": 114808
+        }
+      ],
+      "physics_frame": 5918,
+      "process_frame": 6840,
+      "projectile_event_id": "r1j-projectile-096683",
+      "spawn_position": {
+        "x": 56.0586624145508,
+        "y": 1.20000004768372,
+        "z": 57.9720611572266
+      },
+      "timestamp_ms": 114662
+    },
+    {
+      "attacker_runtime_id": "654865075600",
+      "intended_target_runtime_id": "889964203528",
+      "kind": "thorn",
+      "originating_attack_event_id": "r1j-attack-096943",
+      "phase": "impact",
+      "phases": [
+        {
+          "phase": "impact",
+          "physics_frame": 5932,
+          "position": {
+            "x": 70.7471389770508,
+            "y": 0.850616872310638,
+            "z": 72.2270965576172
+          },
+          "process_frame": 6857,
+          "target_runtime_id": "889964203528",
+          "target_valid": true,
+          "timestamp_ms": 114888
+        }
+      ],
+      "physics_frame": 5929,
+      "process_frame": 6854,
+      "projectile_event_id": "r1j-projectile-096944",
+      "spawn_position": {
+        "x": 71.7501831054688,
+        "y": 1.20000004768372,
+        "z": 74.2291564941406
+      },
+      "timestamp_ms": 114848
+    },
+    {
+      "attacker_runtime_id": "768211946943",
+      "intended_target_runtime_id": "889964203528",
+      "kind": "thorn",
+      "originating_attack_event_id": "r1j-attack-096947",
+      "phase": "impact",
+      "phases": [
+        {
+          "phase": "impact",
+          "physics_frame": 5932,
+          "position": {
+            "x": 71.3794250488281,
+            "y": 0.910167813301086,
+            "z": 72.3190078735352
+          },
+          "process_frame": 6857,
+          "target_runtime_id": "889964203528",
+          "target_valid": true,
+          "timestamp_ms": 114889
+        }
+      ],
+      "physics_frame": 5929,
+      "process_frame": 6854,
+      "projectile_event_id": "r1j-projectile-096948",
+      "spawn_position": {
+        "x": 73.4009094238281,
+        "y": 1.20000004768372,
+        "z": 73.3023529052734
+      },
+      "timestamp_ms": 114849
+    },
+    {
+      "attacker_runtime_id": "1059279867508",
+      "intended_target_runtime_id": "889964203528",
+      "kind": "thorn",
+      "originating_attack_event_id": "r1j-attack-096954",
+      "phase": "impact",
+      "phases": [
+        {
+          "phase": "impact",
+          "physics_frame": 5931,
+          "position": {
+            "x": 71.1356964111328,
+            "y": 0.917671620845795,
+            "z": 72.0235290527344
+          },
+          "process_frame": 6856,
+          "target_runtime_id": "889964203528",
+          "target_valid": true,
+          "timestamp_ms": 114875
+        }
+      ],
+      "physics_frame": 5929,
+      "process_frame": 6854,
+      "projectile_event_id": "r1j-projectile-096955",
+      "spawn_position": {
+        "x": 72.232421875,
+        "y": 1.20000004768372,
+        "z": 72.067512512207
+      },
+      "timestamp_ms": 114850
+    },
+    {
+      "attacker_runtime_id": "176076884817",
+      "intended_target_runtime_id": "666592349608",
+      "kind": "lume_bolt",
+      "originating_attack_event_id": "r1j-attack-097498",
+      "phase": "impact",
+      "phases": [
+        {
+          "phase": "impact",
+          "physics_frame": 5965,
+          "position": {
+            "x": 58.3096733093262,
+            "y": 0.8321373462677,
+            "z": 58.6537742614746
+          },
+          "process_frame": 6899,
+          "target_runtime_id": "666592349608",
+          "target_valid": true,
+          "timestamp_ms": 115448
+        }
+      ],
+      "physics_frame": 5954,
+      "process_frame": 6885,
+      "projectile_event_id": "r1j-projectile-097499",
+      "spawn_position": {
+        "x": 52.3837356567383,
+        "y": 1.20000004768372,
+        "z": 54.3497314453125
+      },
+      "timestamp_ms": 115262
+    },
+    {
+      "attacker_runtime_id": "654865075600",
+      "intended_target_runtime_id": "889964203528",
+      "kind": "thorn",
+      "originating_attack_event_id": "r1j-attack-097817",
+      "phase": "impact",
+      "phases": [
+        {
+          "phase": "impact",
+          "physics_frame": 5970,
+          "position": {
+            "x": 67.6965255737305,
+            "y": 0.963071703910828,
+            "z": 69.6350631713867
+          },
+          "process_frame": 6905,
+          "target_runtime_id": "889964203528",
+          "target_valid": true,
+          "timestamp_ms": 115529
+        }
+      ],
+      "physics_frame": 5968,
+      "process_frame": 6902,
+      "projectile_event_id": "r1j-projectile-097818",
+      "spawn_position": {
+        "x": 68.3541641235352,
+        "y": 1.20000004768372,
+        "z": 70.5271530151367
+      },
+      "timestamp_ms": 115489
+    },
+    {
+      "attacker_runtime_id": "768211946943",
+      "intended_target_runtime_id": "889964203528",
+      "kind": "thorn",
+      "originating_attack_event_id": "r1j-attack-097821",
+      "phase": "impact",
+      "phases": [
+        {
+          "phase": "impact",
+          "physics_frame": 5971,
+          "position": {
+            "x": 67.6400146484375,
+            "y": 0.873543739318848,
+            "z": 69.1388702392578
+          },
+          "process_frame": 6906,
+          "target_runtime_id": "889964203528",
+          "target_valid": false,
+          "timestamp_ms": 115541
+        }
+      ],
+      "physics_frame": 5968,
+      "process_frame": 6902,
+      "projectile_event_id": "r1j-projectile-097822",
+      "spawn_position": {
+        "x": 69.7394790649414,
+        "y": 1.20000004768372,
+        "z": 69.9279937744141
+      },
+      "timestamp_ms": 115490
+    },
+    {
+      "attacker_runtime_id": "1059279867508",
+      "intended_target_runtime_id": "889964203528",
+      "kind": "thorn",
+      "originating_attack_event_id": "r1j-attack-097828",
+      "phase": "impact",
+      "phases": [
+        {
+          "phase": "impact",
+          "physics_frame": 5970,
+          "position": {
+            "x": 67.3675079345703,
+            "y": 0.842333078384399,
+            "z": 68.99072265625
+          },
+          "process_frame": 6905,
+          "target_runtime_id": "889964203528",
+          "target_valid": true,
+          "timestamp_ms": 115529
+        }
+      ],
+      "physics_frame": 5968,
+      "process_frame": 6902,
+      "projectile_event_id": "r1j-projectile-097829",
+      "spawn_position": {
+        "x": 68.4119262695313,
+        "y": 1.20000004768372,
+        "z": 68.7343978881836
+      },
+      "timestamp_ms": 115490
+    },
+    {
+      "attacker_runtime_id": "176076884817",
+      "intended_target_runtime_id": "666592349608",
+      "kind": "lume_bolt",
+      "originating_attack_event_id": "r1j-attack-098294",
+      "phase": "impact",
+      "phases": [
+        {
+          "phase": "impact",
+          "physics_frame": 6003,
+          "position": {
+            "x": 55.4861450195313,
+            "y": 0.820982456207275,
+            "z": 56.3276405334473
+          },
+          "process_frame": 6946,
+          "target_runtime_id": "666592349608",
+          "target_valid": true,
+          "timestamp_ms": 116075
+        }
+      ],
+      "physics_frame": 5990,
+      "process_frame": 6930,
+      "projectile_event_id": "r1j-projectile-098295",
+      "spawn_position": {
+        "x": 48.7088088989258,
+        "y": 1.20000004768372,
+        "z": 50.7274017333984
+      },
+      "timestamp_ms": 115862
+    },
+    {
+      "attacker_runtime_id": "654865075600",
+      "intended_target_runtime_id": "540561902945",
+      "kind": "thorn",
+      "originating_attack_event_id": "r1j-attack-098661",
+      "phase": "impact",
+      "phases": [
+        {
+          "phase": "impact",
+          "physics_frame": 6020,
+          "position": {
+            "x": 58.5813980102539,
+            "y": 0.816486775875092,
+            "z": 56.0156555175781
+          },
+          "process_frame": 6967,
+          "target_runtime_id": "540561902945",
+          "target_valid": true,
+          "timestamp_ms": 116355
+        }
+      ],
+      "physics_frame": 6007,
+      "process_frame": 6951,
+      "projectile_event_id": "r1j-projectile-098662",
+      "spawn_position": {
+        "x": 64.8327026367188,
+        "y": 1.20000004768372,
+        "z": 68.0866165161133
+      },
+      "timestamp_ms": 116142
+    },
+    {
+      "attacker_runtime_id": "768211946943",
+      "intended_target_runtime_id": "540561902945",
+      "kind": "thorn",
+      "originating_attack_event_id": "r1j-attack-098665",
+      "phase": "impact",
+      "phases": [
+        {
+          "phase": "impact",
+          "physics_frame": 6019,
+          "position": {
+            "x": 58.8961563110352,
+            "y": 0.826611995697021,
+            "z": 56.3262634277344
+          },
+          "process_frame": 6966,
+          "target_runtime_id": "540561902945",
+          "target_valid": true,
+          "timestamp_ms": 116341
+        }
+      ],
+      "physics_frame": 6007,
+      "process_frame": 6951,
+      "projectile_event_id": "r1j-projectile-098666",
+      "spawn_position": {
+        "x": 66.0479049682617,
+        "y": 1.20000004768372,
+        "z": 66.5305786132813
+      },
+      "timestamp_ms": 116143
+    },
+    {
+      "attacker_runtime_id": "1059279867508",
+      "intended_target_runtime_id": "540561902945",
+      "kind": "thorn",
+      "originating_attack_event_id": "r1j-attack-098671",
+      "phase": "impact",
+      "phases": [
+        {
+          "phase": "impact",
+          "physics_frame": 6018,
+          "position": {
+            "x": 58.5287437438965,
+            "y": 0.808414936065674,
+            "z": 55.8235893249512
+          },
+          "process_frame": 6965,
+          "target_runtime_id": "540561902945",
+          "target_valid": true,
+          "timestamp_ms": 116328
+        }
+      ],
+      "physics_frame": 6007,
+      "process_frame": 6951,
+      "projectile_event_id": "r1j-projectile-098672",
+      "spawn_position": {
+        "x": 64.6192932128906,
+        "y": 1.20000004768372,
+        "z": 65.3727951049805
+      },
+      "timestamp_ms": 116144
+    },
+    {
+      "attacker_runtime_id": "176076884817",
+      "intended_target_runtime_id": "666592349608",
+      "kind": "lume_bolt",
+      "originating_attack_event_id": "r1j-attack-099066",
+      "phase": "impact",
+      "phases": [
+        {
+          "phase": "impact",
+          "physics_frame": 6041,
+          "position": {
+            "x": 52.7258338928223,
+            "y": 0.813217520713806,
+            "z": 53.8938217163086
+          },
+          "process_frame": 6994,
+          "target_runtime_id": "666592349608",
+          "target_valid": true,
+          "timestamp_ms": 116715
+        }
+      ],
+      "physics_frame": 6026,
+      "process_frame": 6975,
+      "projectile_event_id": "r1j-projectile-099067",
+      "spawn_position": {
+        "x": 45.0338821411133,
+        "y": 1.20000004768372,
+        "z": 47.1050720214844
+      },
+      "timestamp_ms": 116462
+    },
+    {
+      "attacker_runtime_id": "654865075600",
+      "intended_target_runtime_id": "540561902945",
+      "kind": "thorn",
+      "originating_attack_event_id": "r1j-attack-099497",
+      "phase": "impact",
+      "phases": [
+        {
+          "phase": "impact",
+          "physics_frame": 6058,
+          "position": {
+            "x": 55.8177070617676,
+            "y": 0.811789929866791,
+            "z": 53.2991256713867
+          },
+          "process_frame": 7015,
+          "target_runtime_id": "540561902945",
+          "target_valid": true,
+          "timestamp_ms": 116995
+        }
+      ],
+      "physics_frame": 6046,
+      "process_frame": 7000,
+      "projectile_event_id": "r1j-projectile-099498",
+      "spawn_position": {
+        "x": 61.2393493652344,
+        "y": 1.20000004768372,
+        "z": 64.5101089477539
+      },
+      "timestamp_ms": 116796
+    },
+    {
+      "attacker_runtime_id": "768211946943",
+      "intended_target_runtime_id": "540561902945",
+      "kind": "thorn",
+      "originating_attack_event_id": "r1j-attack-099501",
+      "phase": "impact",
+      "phases": [
+        {
+          "phase": "impact",
+          "physics_frame": 6057,
+          "position": {
+            "x": 56.1420822143555,
+            "y": 0.823149502277374,
+            "z": 53.6140823364258
+          },
+          "process_frame": 7014,
+          "target_runtime_id": "540561902945",
+          "target_valid": true,
+          "timestamp_ms": 116982
+        }
+      ],
+      "physics_frame": 6046,
+      "process_frame": 7000,
+      "projectile_event_id": "r1j-projectile-099502",
+      "spawn_position": {
+        "x": 62.2979965209961,
+        "y": 1.20000004768372,
+        "z": 63.1183166503906
+      },
+      "timestamp_ms": 116797
+    },
+    {
+      "attacker_runtime_id": "1059279867508",
+      "intended_target_runtime_id": "540561902945",
+      "kind": "thorn",
+      "originating_attack_event_id": "r1j-attack-099507",
+      "phase": "impact",
+      "phases": [
+        {
+          "phase": "impact",
+          "physics_frame": 6056,
+          "position": {
+            "x": 55.8394775390625,
+            "y": 0.80435848236084,
+            "z": 53.1420059204102
+          },
+          "process_frame": 7012,
+          "target_runtime_id": "540561902945",
+          "target_valid": true,
+          "timestamp_ms": 116955
+        }
+      ],
+      "physics_frame": 6046,
+      "process_frame": 7000,
+      "projectile_event_id": "r1j-projectile-099508",
+      "spawn_position": {
+        "x": 60.7987976074219,
+        "y": 1.20000004768372,
+        "z": 62.0397682189941
+      },
+      "timestamp_ms": 116797
+    },
+    {
+      "attacker_runtime_id": "176076884817",
+      "intended_target_runtime_id": "666592349608",
+      "kind": "lume_bolt",
+      "originating_attack_event_id": "r1j-attack-099825",
+      "phase": "impact",
+      "phases": [
+        {
+          "phase": "impact",
+          "physics_frame": 6079,
+          "position": {
+            "x": 50.0066223144531,
+            "y": 0.807219743728638,
+            "z": 51.4031410217285
+          },
+          "process_frame": 7041,
+          "target_runtime_id": "666592349608",
+          "target_valid": true,
+          "timestamp_ms": 117342
+        }
+      ],
+      "physics_frame": 6062,
+      "process_frame": 7020,
+      "projectile_event_id": "r1j-projectile-099826",
+      "spawn_position": {
+        "x": 41.3589553833008,
+        "y": 1.20000004768372,
+        "z": 43.4827423095703
+      },
+      "timestamp_ms": 117063
+    },
+    {
+      "attacker_runtime_id": "654865075600",
+      "intended_target_runtime_id": "540561902945",
+      "kind": "thorn",
+      "originating_attack_event_id": "r1j-attack-100298",
+      "phase": "impact",
+      "phases": [
+        {
+          "phase": "impact",
+          "physics_frame": 6096,
+          "position": {
+            "x": 52.5229644775391,
+            "y": 0.802690446376801,
+            "z": 50.8390846252441
+          },
+          "process_frame": 7062,
+          "target_runtime_id": "540561902945",
+          "target_valid": true,
+          "timestamp_ms": 117622
+        }
+      ],
+      "physics_frame": 6085,
+      "process_frame": 7049,
+      "projectile_event_id": "r1j-projectile-100299",
+      "spawn_position": {
+        "x": 57.6460304260254,
+        "y": 1.20000004768372,
+        "z": 60.9334716796875
+      },
+      "timestamp_ms": 117449
+    },
+    {
+      "attacker_runtime_id": "768211946943",
+      "intended_target_runtime_id": "540561902945",
+      "kind": "thorn",
+      "originating_attack_event_id": "r1j-attack-100302",
+      "phase": "impact",
+      "phases": [
+        {
+          "phase": "impact",
+          "physics_frame": 6095,
+          "position": {
+            "x": 52.8689804077148,
+            "y": 0.817409515380859,
+            "z": 51.2448043823242
+          },
+          "process_frame": 7061,
+          "target_runtime_id": "540561902945",
+          "target_valid": true,
+          "timestamp_ms": 117609
+        }
+      ],
+      "physics_frame": 6085,
+      "process_frame": 7049,
+      "projectile_event_id": "r1j-projectile-100303",
+      "spawn_position": {
+        "x": 58.548168182373,
+        "y": 1.20000004768372,
+        "z": 59.7060546875
+      },
+      "timestamp_ms": 117450
+    },
+    {
+      "attacker_runtime_id": "1059279867508",
+      "intended_target_runtime_id": "540561902945",
+      "kind": "thorn",
+      "originating_attack_event_id": "r1j-attack-100307",
+      "phase": "impact",
+      "phases": [
+        {
+          "phase": "impact",
+          "physics_frame": 6093,
+          "position": {
+            "x": 53.1982154846191,
+            "y": 0.83909797668457,
+            "z": 51.7434501647949
+          },
+          "process_frame": 7059,
+          "target_runtime_id": "540561902945",
+          "target_valid": true,
+          "timestamp_ms": 117582
+        }
+      ],
+      "physics_frame": 6085,
+      "process_frame": 7049,
+      "projectile_event_id": "r1j-projectile-100308",
+      "spawn_position": {
+        "x": 56.9783020019531,
+        "y": 1.20000004768372,
+        "z": 58.7068023681641
+      },
+      "timestamp_ms": 117451
+    },
+    {
+      "attacker_runtime_id": "176076884817",
+      "intended_target_runtime_id": "666592349608",
+      "kind": "lume_bolt",
+      "originating_attack_event_id": "r1j-attack-100574",
+      "phase": "impact",
+      "phases": [
+        {
+          "phase": "impact",
+          "physics_frame": 6116,
+          "position": {
+            "x": 46.9853134155273,
+            "y": 0.822648108005524,
+            "z": 48.5773696899414
+          },
+          "process_frame": 7087,
+          "target_runtime_id": "666592349608",
+          "target_valid": true,
+          "timestamp_ms": 117956
+        }
+      ],
+      "physics_frame": 6098,
+      "process_frame": 7065,
+      "projectile_event_id": "r1j-projectile-100575",
+      "spawn_position": {
+        "x": 37.8907203674316,
+        "y": 1.20000004768372,
+        "z": 40.0590171813965
+      },
+      "timestamp_ms": 117662
+    },
+    {
+      "attacker_runtime_id": "654865075600",
+      "intended_target_runtime_id": "173124094652",
+      "kind": "thorn",
+      "originating_attack_event_id": "r1j-attack-101117",
+      "phase": "impact",
+      "phases": [
+        {
+          "phase": "impact",
+          "physics_frame": 6140,
+          "position": {
+            "x": 42.0644416809082,
+            "y": 0.818784773349762,
+            "z": 45.3373947143555
+          },
+          "process_frame": 7117,
+          "target_runtime_id": "173124094652",
+          "target_valid": true,
+          "timestamp_ms": 118356
+        }
+      ],
+      "physics_frame": 6124,
+      "process_frame": 7097,
+      "projectile_event_id": "r1j-projectile-101118",
+      "spawn_position": {
+        "x": 54.0704307556152,
+        "y": 1.20000004768372,
+        "z": 57.3549270629883
+      },
+      "timestamp_ms": 118090
+    },
+    {
+      "attacker_runtime_id": "768211946943",
+      "intended_target_runtime_id": "173124094652",
+      "kind": "thorn",
+      "originating_attack_event_id": "r1j-attack-101121",
+      "phase": "impact",
+      "phases": [
+        {
+          "phase": "impact",
+          "physics_frame": 6140,
+          "position": {
+            "x": 41.9553565979004,
+            "y": 0.814994990825653,
+            "z": 45.173698425293
+          },
+          "process_frame": 7117,
+          "target_runtime_id": "173124094652",
+          "target_valid": true,
+          "timestamp_ms": 118356
+        }
+      ],
+      "physics_frame": 6124,
+      "process_frame": 7097,
+      "projectile_event_id": "r1j-projectile-101122",
+      "spawn_position": {
+        "x": 54.8017272949219,
+        "y": 1.20000004768372,
+        "z": 56.2900924682617
+      },
+      "timestamp_ms": 118090
+    },
+    {
+      "attacker_runtime_id": "1059279867508",
+      "intended_target_runtime_id": "173124094652",
+      "kind": "thorn",
+      "originating_attack_event_id": "r1j-attack-101126",
+      "phase": "impact",
+      "phases": [
+        {
+          "phase": "impact",
+          "physics_frame": 6138,
+          "position": {
+            "x": 42.3180923461914,
+            "y": 0.823485136032104,
+            "z": 45.4127349853516
+          },
+          "process_frame": 7115,
+          "target_runtime_id": "173124094652",
+          "target_valid": true,
+          "timestamp_ms": 118329
+        }
+      ],
+      "physics_frame": 6124,
+      "process_frame": 7097,
+      "projectile_event_id": "r1j-projectile-101127",
+      "spawn_position": {
+        "x": 53.1578063964844,
+        "y": 1.20000004768372,
+        "z": 55.373836517334
+      },
+      "timestamp_ms": 118091
+    },
+    {
+      "attacker_runtime_id": "176076884817",
+      "intended_target_runtime_id": "173124094652",
+      "kind": "lume_bolt",
+      "originating_attack_event_id": "r1j-attack-101318",
+      "phase": "impact",
+      "phases": [
+        {
+          "phase": "impact",
+          "physics_frame": 6136,
+          "position": {
+            "x": 41.6820449829102,
+            "y": 0.97014045715332,
+            "z": 44.2823677062988
+          },
+          "process_frame": 7112,
+          "target_runtime_id": "173124094652",
+          "target_valid": true,
+          "timestamp_ms": 118290
+        }
+      ],
+      "physics_frame": 6134,
+      "process_frame": 7110,
+      "projectile_event_id": "r1j-projectile-101319",
+      "spawn_position": {
+        "x": 41.6566963195801,
+        "y": 1.20000004768372,
+        "z": 43.5864524841309
+      },
+      "timestamp_ms": 118263
+    },
+    {
+      "attacker_runtime_id": "654865075600",
+      "intended_target_runtime_id": "173124094652",
+      "kind": "thorn",
+      "originating_attack_event_id": "r1j-attack-101911",
+      "phase": "impact",
+      "phases": [
+        {
+          "phase": "impact",
+          "physics_frame": 6173,
+          "position": {
+            "x": 43.8413352966309,
+            "y": 0.829316318035126,
+            "z": 46.0611953735352
+          },
+          "process_frame": 7159,
+          "target_runtime_id": "173124094652",
+          "target_valid": true,
+          "timestamp_ms": 118916
+        }
+      ],
+      "physics_frame": 6163,
+      "process_frame": 7146,
+      "projectile_event_id": "r1j-projectile-101912",
+      "spawn_position": {
+        "x": 50.638858795166,
+        "y": 1.20000004768372,
+        "z": 53.6562919616699
+      },
+      "timestamp_ms": 118743
+    },
+    {
+      "attacker_runtime_id": "768211946943",
+      "intended_target_runtime_id": "173124094652",
+      "kind": "thorn",
+      "originating_attack_event_id": "r1j-attack-101915",
+      "phase": "impact",
+      "phases": [
+        {
+          "phase": "impact",
+          "physics_frame": 6173,
+          "position": {
+            "x": 43.7022857666016,
+            "y": 0.819155752658844,
+            "z": 45.8214874267578
+          },
+          "process_frame": 7159,
+          "target_runtime_id": "173124094652",
+          "target_valid": true,
+          "timestamp_ms": 118917
+        }
+      ],
+      "physics_frame": 6163,
+      "process_frame": 7146,
+      "projectile_event_id": "r1j-projectile-101916",
+      "spawn_position": {
+        "x": 51.2313613891602,
+        "y": 1.20000004768372,
+        "z": 52.6920776367188
+      },
+      "timestamp_ms": 118744
+    },
+    {
+      "attacker_runtime_id": "1059279867508",
+      "intended_target_runtime_id": "173124094652",
+      "kind": "thorn",
+      "originating_attack_event_id": "r1j-attack-101920",
+      "phase": "impact",
+      "phases": [
+        {
+          "phase": "impact",
+          "physics_frame": 6171,
+          "position": {
+            "x": 43.958625793457,
+            "y": 0.852998733520508,
+            "z": 46.2199630737305
+          },
+          "process_frame": 7156,
+          "target_runtime_id": "173124094652",
+          "target_valid": true,
+          "timestamp_ms": 118876
+        }
+      ],
+      "physics_frame": 6163,
+      "process_frame": 7146,
+      "projectile_event_id": "r1j-projectile-101921",
+      "spawn_position": {
+        "x": 49.3373107910156,
+        "y": 1.20000004768372,
+        "z": 52.0408706665039
+      },
+      "timestamp_ms": 118745
+    },
+    {
+      "attacker_runtime_id": "176076884817",
+      "intended_target_runtime_id": "173124094652",
+      "kind": "lume_bolt",
+      "originating_attack_event_id": "r1j-attack-102051",
+      "phase": "impact",
+      "phases": [
+        {
+          "phase": "impact",
+          "physics_frame": 6174,
+          "position": {
+            "x": 43.709285736084,
+            "y": 0.856490969657898,
+            "z": 45.7775077819824
+          },
+          "process_frame": 7160,
+          "target_runtime_id": "173124094652",
+          "target_valid": true,
+          "timestamp_ms": 118929
+        }
+      ],
+      "physics_frame": 6170,
+      "process_frame": 7155,
+      "projectile_event_id": "r1j-projectile-102052",
+      "spawn_position": {
+        "x": 45.4226722717285,
+        "y": 1.20000004768372,
+        "z": 47.1138877868652
+      },
+      "timestamp_ms": 118863
+    },
+    {
+      "attacker_runtime_id": "654865075600",
+      "intended_target_runtime_id": "173124094652",
+      "kind": "thorn",
+      "originating_attack_event_id": "r1j-attack-102672",
+      "phase": "impact",
+      "phases": [
+        {
+          "phase": "impact",
+          "physics_frame": 6205,
+          "position": {
+            "x": 46.0469131469727,
+            "y": 0.879768371582031,
+            "z": 48.0754623413086
+          },
+          "process_frame": 7199,
+          "target_runtime_id": "173124094652",
+          "target_valid": true,
+          "timestamp_ms": 119449
+        }
+      ],
+      "physics_frame": 6202,
+      "process_frame": 7195,
+      "projectile_event_id": "r1j-projectile-102673",
+      "spawn_position": {
+        "x": 47.0946578979492,
+        "y": 1.20000004768372,
+        "z": 50.0595703125
+      },
+      "timestamp_ms": 119397
+    },
+    {
+      "attacker_runtime_id": "768211946943",
+      "intended_target_runtime_id": "173124094652",
+      "kind": "thorn",
+      "originating_attack_event_id": "r1j-attack-102675",
+      "phase": "impact",
+      "phases": [
+        {
+          "phase": "impact",
+          "physics_frame": 6205,
+          "position": {
+            "x": 46.3962516784668,
+            "y": 0.889953970909119,
+            "z": 47.8043098449707
+          },
+          "process_frame": 7199,
+          "target_runtime_id": "173124094652",
+          "target_valid": true,
+          "timestamp_ms": 119450
+        }
+      ],
+      "physics_frame": 6202,
+      "process_frame": 7195,
+      "projectile_event_id": "r1j-projectile-102676",
+      "spawn_position": {
+        "x": 48.5044479370117,
+        "y": 1.20000004768372,
+        "z": 48.5767936706543
+      },
+      "timestamp_ms": 119397
+    },
+    {
+      "attacker_runtime_id": "1059279867508",
+      "intended_target_runtime_id": "173124094652",
+      "kind": "thorn",
+      "originating_attack_event_id": "r1j-attack-102680",
+      "phase": "impact",
+      "phases": [
+        {
+          "phase": "impact",
+          "physics_frame": 6204,
+          "position": {
+            "x": 45.7118606567383,
+            "y": 0.869322419166565,
+            "z": 47.7563629150391
+          },
+          "process_frame": 7197,
+          "target_runtime_id": "173124094652",
+          "target_valid": true,
+          "timestamp_ms": 119423
+        }
+      ],
+      "physics_frame": 6202,
+      "process_frame": 7195,
+      "projectile_event_id": "r1j-projectile-102681",
+      "spawn_position": {
+        "x": 45.6738395690918,
+        "y": 1.20000004768372,
+        "z": 48.839714050293
+      },
+      "timestamp_ms": 119398
+    },
+    {
+      "attacker_runtime_id": "176076884817",
+      "intended_target_runtime_id": "173124094652",
+      "kind": "lume_bolt",
+      "originating_attack_event_id": "r1j-attack-102748",
+      "phase": "impact",
+      "phases": [
+        {
+          "phase": "impact",
+          "physics_frame": 6212,
+          "position": {
+            "x": 46.5151329040527,
+            "y": 0.825350403785706,
+            "z": 48.160530090332
+          },
+          "process_frame": 7207,
+          "target_runtime_id": "173124094652",
+          "target_valid": true,
+          "timestamp_ms": 119556
+        }
+      ],
+      "physics_frame": 6206,
+      "process_frame": 7200,
+      "projectile_event_id": "r1j-projectile-102749",
+      "spawn_position": {
+        "x": 49.188648223877,
+        "y": 1.20000004768372,
+        "z": 50.6413230895996
+      },
+      "timestamp_ms": 119463
+    }
+  ],
+  "schema": "v0436-r1j-projectile-event-graph-v1"
+}
