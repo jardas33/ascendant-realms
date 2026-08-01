@@ -16,11 +16,13 @@ var source_team := -1
 var source_unit_id := ""
 var source_runtime_id := ""
 var projectile_kind := "arrow"
+var r1j_attack_event_id := ""
+var r1j_projectile_event_id := ""
 var _alive_time := 0.0
 
 var _mesh: MeshInstance3D
 
-func setup(from: Vector3, tgt, dmg: float, dtype: String, p_team: int, p_world, p_kind: String, p_splash: float = 0.0, p_source = null) -> void:
+func setup(from: Vector3, tgt, dmg: float, dtype: String, p_team: int, p_world, p_kind: String, p_splash: float = 0.0, p_source = null, p_attack_event_id: String = "") -> void:
 	global_position = from
 	target = tgt
 	damage = dmg
@@ -29,6 +31,7 @@ func setup(from: Vector3, tgt, dmg: float, dtype: String, p_team: int, p_world, 
 	world = p_world
 	kind = p_kind
 	projectile_kind = p_kind
+	r1j_attack_event_id = p_attack_event_id
 	source = p_source if is_instance_valid(p_source) else null
 	source_team = p_team
 	if is_instance_valid(p_source):
@@ -88,6 +91,9 @@ func _build_visual() -> void:
 func _physics_process(delta: float) -> void:
 	_alive_time += delta
 	if _alive_time > 5.0:
+		if world and world.has_method("_v0436_r1j_recorder"):
+			var recorder = world._v0436_r1j_recorder()
+			if recorder: recorder.record_projectile_phase(self, "despawn", {"reason":"lifetime_expired"})
 		queue_free()
 		return
 	if is_instance_valid(target) and not target.is_dead:

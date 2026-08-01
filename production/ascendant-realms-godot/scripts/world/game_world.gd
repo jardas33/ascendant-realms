@@ -68,6 +68,12 @@ var _unit_cache_timer := 0.0
 
 var _theme := {}
 
+func _v0436_r1j_recorder():
+	if OS.get_environment("ASCENDANT_V0436_R1J_CAPTURE") != "1":
+		return null
+	var recorder = get_meta("v0436_r1j_recorder", null)
+	return recorder if is_instance_valid(recorder) else null
+
 func _ready() -> void:
 	var cfg := Match.get_config()
 	map = MapDefs.get_map(cfg.get("map", "hollowspan"))
@@ -630,10 +636,13 @@ func can_place_building(building_id: String, team: int, pos: Vector3, check_affo
 			return false
 	return true
 
-func spawn_projectile(from: Vector3, target, dmg: float, dtype: String, team: int, kind: String, splash: float, source) -> void:
+func spawn_projectile(from: Vector3, target, dmg: float, dtype: String, team: int, kind: String, splash: float, source, attack_event_id: String = "") -> void:
 	var p = ProjectileScript.new()
 	_projectile_container.add_child(p)
-	p.setup(from, target, dmg, dtype, team, self, kind, splash, source)
+	p.setup(from, target, dmg, dtype, team, self, kind, splash, source, attack_event_id)
+	var recorder = _v0436_r1j_recorder()
+	if recorder:
+		p.r1j_projectile_event_id = recorder.record_projectile_spawn(p)
 	# speed by kind
 	if kind in ["arrow", "bolt", "thorn"]:
 		p.speed = 34.0
@@ -645,15 +654,18 @@ func spawn_projectile(from: Vector3, target, dmg: float, dtype: String, team: in
 # --------------------------------------------------------------------------
 func projectile_impact(pos: Vector3, target, dmg: float, dtype: String, team: int, splash: float, kind: String, projectile = null) -> void:
 	spawn_hit_fx(pos, kind)
+	var recorder = _v0436_r1j_recorder()
+	if recorder and is_instance_valid(projectile):
+		recorder.record_projectile_phase(projectile, "impact", {"position": {"x":pos.x, "y":pos.y, "z":pos.z}, "target_valid":is_instance_valid(target) and not _is_dead(target), "target_runtime_id":str(target.get_instance_id()) if is_instance_valid(target) else ""})
 	if is_instance_valid(target) and not _is_dead(target) and target.team != team:
 		var ac = target.armor_class if "armor_class" in target else "medium"
 		var ar = target.cur_armor() if target.has_method("cur_armor") else 0.0
 		var final = GameData.compute_damage(dmg, dtype, ac, ar)
 		var source_unit = projectile.source if is_instance_valid(projectile) and is_instance_valid(projectile.source) else null
-		var source_payload = {"source_unit": source_unit, "source_team": team, "source_unit_id": String(projectile.source_unit_id) if is_instance_valid(projectile) else "", "source_runtime_id": String(projectile.source_runtime_id) if is_instance_valid(projectile) else "", "projectile_kind": kind, "damage_type": dtype}
+		var source_payload = {"source_unit": source_unit, "source_team": team, "source_unit_id": String(projectile.source_unit_id) if is_instance_valid(projectile) else "", "source_runtime_id": String(projectile.source_runtime_id) if is_instance_valid(projectile) else "", "projectile_kind": kind, "damage_type": dtype, "raw_damage":dmg, "armor_class":ac, "flat_armor":ar, "multiplier":GameData.damage_multiplier(dtype, ac), "calculated_damage_before_clamp":dmg * GameData.damage_multiplier(dtype, ac) - maxf(0.0, ar) * 0.5, "expected_applied_damage":final, "attack_event_id":String(projectile.r1j_attack_event_id) if is_instance_valid(projectile) else "", "projectile_event_id":String(projectile.r1j_projectile_event_id) if is_instance_valid(projectile) else ""}
 		target.take_damage(final, source_payload)
 	if splash > 0.0:
-		var splash_source = {"source_unit": projectile.source if is_instance_valid(projectile) and is_instance_valid(projectile.source) else null, "source_team": team, "source_unit_id": String(projectile.source_unit_id) if is_instance_valid(projectile) else "", "source_runtime_id": String(projectile.source_runtime_id) if is_instance_valid(projectile) else "", "projectile_kind": kind, "damage_type": dtype}
+		var splash_source = {"source_unit": projectile.source if is_instance_valid(projectile) and is_instance_valid(projectile.source) else null, "source_team": team, "source_unit_id": String(projectile.source_unit_id) if is_instance_valid(projectile) else "", "source_runtime_id": String(projectile.source_runtime_id) if is_instance_valid(projectile) else "", "projectile_kind": kind, "damage_type": dtype, "raw_damage":dmg * 0.5, "attack_event_id":String(projectile.r1j_attack_event_id) if is_instance_valid(projectile) else "", "projectile_event_id":String(projectile.r1j_projectile_event_id) if is_instance_valid(projectile) else ""}
 		apply_splash(pos, splash, dmg * 0.5, dtype, team, target, splash_source, kind)
 
 func apply_splash(center: Vector3, radius: float, dmg: float, dtype: String, team: int, exclude, source = null, kind: String = "splash") -> void:
@@ -979,17 +991,38 @@ func record_combat_damage(victim, source, final_damage: float, hp_before: float,
 	var source_id := ""
 	var source_runtime_id := ""
 	var kind := "environment"
+	var attack_event_id := ""
+	var projectile_event_id := ""
+	var raw_damage := final_damage
+	var armor_class := String(victim.armor_class) if "armor_class" in victim else ""
+	var flat_armor := float(victim.cur_armor()) if victim.has_method("cur_armor") else 0.0
+	var multiplier := 1.0
+	var calculated_before_clamp := final_damage
+	var expected_applied_damage := final_damage
 	if source is Dictionary:
 		source_team = int(source.get("source_team", -1))
 		source_id = String(source.get("source_unit_id", source.get("source_id", "")))
 		source_runtime_id = String(source.get("source_runtime_id", ""))
 		kind = String(source.get("projectile_kind", "melee"))
+		attack_event_id = String(source.get("attack_event_id", ""))
+		projectile_event_id = String(source.get("projectile_event_id", ""))
+		raw_damage = float(source.get("raw_damage", final_damage))
+		armor_class = String(source.get("armor_class", armor_class))
+		flat_armor = float(source.get("flat_armor", flat_armor))
+		multiplier = float(source.get("multiplier", 1.0))
+		calculated_before_clamp = float(source.get("calculated_damage_before_clamp", final_damage))
+		expected_applied_damage = float(source.get("expected_applied_damage", final_damage))
 	elif is_instance_valid(source):
 		source_team = int(source.source_team) if "source_team" in source else int(source.team) if "team" in source else -1
 		source_id = String(source.unit_id) if "unit_id" in source else String(source.source_unit_id) if "source_unit_id" in source else ""
 		source_runtime_id = str(source.get_instance_id())
 		kind = String(source.projectile_kind) if "projectile_kind" in source else "melee"
-	combat_damage_events.append({"victim_id": String(victim.unit_id), "victim_runtime_id": str(victim.get_instance_id()), "source_id": source_id, "source_runtime_id": source_runtime_id, "source_team": source_team, "damage_type": String(victim._last_damage_type), "kind": kind, "final_damage": final_damage, "hp_before": hp_before, "hp_after": hp_after, "killing_blow": hp_after <= 0.0, "timestamp": Time.get_ticks_msec()})
+	var event := {"victim_id": String(victim.unit_id), "victim_runtime_id": str(victim.get_instance_id()), "source_id": source_id, "source_runtime_id": source_runtime_id, "source_team": source_team, "damage_type": String(victim._last_damage_type), "kind": kind, "final_damage": final_damage, "hp_before": hp_before, "hp_after": hp_after, "killing_blow": hp_after <= 0.0, "timestamp": Time.get_ticks_msec(), "attack_event_id":attack_event_id, "projectile_event_id":projectile_event_id, "raw_damage":raw_damage, "armor_class":armor_class, "flat_armor":flat_armor, "multiplier":multiplier, "calculated_damage_before_clamp":calculated_before_clamp, "expected_applied_damage":expected_applied_damage, "observed_hp_delta":hp_before - hp_after}
+	var recorder = _v0436_r1j_recorder()
+	if recorder:
+		event["damage_event_id"] = recorder.record_damage_event(event)
+		victim.set_meta("v0436_r1j_last_damage_event_id", String(event["damage_event_id"]))
+	combat_damage_events.append(event)
 
 func on_building_damaged(building, from, hp_before: float = -1.0, final_damage: float = -1.0) -> void:
 	var source_team := -1
@@ -1028,6 +1061,9 @@ func _on_unit_died(unit) -> void:
 		kills_by_player += 1
 		combat_kill_events.append({"victim_id": String(unit.unit_id), "victim_runtime_id": str(unit.get_instance_id()), "source_id": String(unit._last_damage_source_id), "source_team": source_team, "kind": String(unit._last_damage_kind), "kill_index": kills_by_player})
 	combat_death_events.append({"victim_id": String(unit.unit_id), "victim_runtime_id": str(unit.get_instance_id()), "victim_team": unit.team, "source_id": String(unit._last_damage_source_id), "source_team": source_team, "kind": String(unit._last_damage_kind), "credited_to_player": credited})
+	var recorder = _v0436_r1j_recorder()
+	if recorder:
+		recorder.record_death_event({"victim_id":String(unit.unit_id), "victim_runtime_id":str(unit.get_instance_id()), "victim_team":int(unit.team), "final_attacker_runtime_id":String(unit._last_damage_source_id), "final_damage_event_id":String(unit.get_meta("v0436_r1j_last_damage_event_id", "")), "current_command":String(unit.get("_navigation_command_type")), "current_state":int(unit.state)})
 	if unit.team < commanders.size():
 		commanders[unit.team].units.erase(unit)
 		commanders[unit.team].recompute_pop()

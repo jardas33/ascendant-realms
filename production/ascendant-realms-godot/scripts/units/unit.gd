@@ -136,6 +136,24 @@ const NAVIGATION_REPATH_INTERVAL := 0.20
 const NAVIGATION_RETRY_BUDGET := 2.5
 const V0436_R1F_AUDIT_CAP := 512
 
+func _v0436_r1j_recorder():
+	if OS.get_environment("ASCENDANT_V0436_R1J_CAPTURE") != "1" or not world:
+		return null
+	var recorder = world.get_meta("v0436_r1j_recorder", null)
+	return recorder if is_instance_valid(recorder) else null
+
+func _v0436_r1j_target_ref(target) -> Dictionary:
+	if not is_instance_valid(target):
+		return {"runtime_id":"", "definition_id":"", "team":-1, "alive":false}
+	return {"runtime_id":str(target.get_instance_id()), "definition_id":String(target.unit_id) if target is Unit else String(target.building_id), "team":int(target.team), "alive":not bool(target.is_dead)}
+
+func _v0436_r1j_set_target(value, reason: String) -> void:
+	var previous = _target
+	_target = value
+	var recorder = _v0436_r1j_recorder()
+	if recorder and previous != value:
+		recorder.record_target_transition(self, previous, value, reason)
+
 func _ready() -> void:
 	add_to_group("units")
 	collision_layer = 2       # units layer
@@ -430,12 +448,14 @@ func get_hp_ratio() -> float:
 # --------------------------------------------------------------------------
 # Commands
 # --------------------------------------------------------------------------
-func command_move(pos: Vector3, attack_move: bool = false, queue: bool = false) -> void:
+func command_move(pos: Vector3, attack_move: bool = false, queue: bool = false, r1j_order_id: String = "") -> void:
 	if is_dead:
 		return
+	var before_state := state
+	var before_target = _target
 	_carry_hold = _carry > 0
 	_hold_position = false
-	_target = null
+	_v0436_r1j_set_target(null, "public_order")
 	_gather_node = null
 	_pending_gather_node = null
 	_build_target = null
@@ -445,11 +465,16 @@ func command_move(pos: Vector3, attack_move: bool = false, queue: bool = false) 
 	_attack_move_destination = pos if attack_move else Vector3.ZERO
 	_set_agent_target(pos, "attack_move" if attack_move else "move")
 	state = State.ATTACK_MOVE if attack_move else State.MOVING
+	var recorder = _v0436_r1j_recorder()
+	if recorder:
+		recorder.record_unit_command(self, r1j_order_id, "attack_move" if attack_move else "move", before_state, state, before_target, _target, pos)
 
 func command_stop() -> void:
 	if is_dead: return
+	var before_state := state
+	var before_target = _target
 	_carry_hold = _carry > 0
-	_target = null
+	_v0436_r1j_set_target(null, "command_cancellation")
 	_gather_node = null
 	_pending_gather_node = null
 	_build_target = null
@@ -461,6 +486,9 @@ func command_stop() -> void:
 	_boundary_recovery_active = false
 	_navigation_invalid_consecutive = 0
 	if agent: agent.set_velocity(Vector3.ZERO)
+	var recorder = _v0436_r1j_recorder()
+	if recorder:
+		recorder.record_unit_command(self, "", "stop", before_state, state, before_target, _target, Vector3.ZERO)
 
 func command_hold() -> void:
 	if is_dead: return
@@ -468,16 +496,21 @@ func command_hold() -> void:
 	_hold_position = true
 	state = State.HOLD
 
-func command_attack(tgt) -> void:
+func command_attack(tgt, r1j_order_id: String = "") -> void:
 	if not _can_attack_target(tgt):
 		return
+	var before_state := state
+	var before_target = _target
 	_hold_position = false
 	_gather_node = null
 	_build_target = null
 	_attack_move_ordered = false
 	_attack_move_destination = Vector3.ZERO
-	_target = tgt
+	_v0436_r1j_set_target(tgt, "public_order" if r1j_order_id != "" else "auto_acquisition")
 	state = State.ATTACKING
+	var recorder = _v0436_r1j_recorder()
+	if recorder:
+		recorder.record_unit_command(self, r1j_order_id, "attack_target" if r1j_order_id != "" else "auto_attack", before_state, state, before_target, _target, tgt.global_position)
 
 func _can_attack_target(tgt) -> bool:
 	if is_dead or not is_instance_valid(tgt) or tgt == self:
@@ -518,7 +551,7 @@ func command_gather(node) -> void:
 			world.record_resource_command_rejection(self, node, "depleted_or_unreachable")
 		return
 	_hold_position = false
-	_target = null
+	_v0436_r1j_set_target(null, "command_cancellation")
 	_build_target = null
 	_attack_move_ordered = false
 	_attack_move_destination = Vector3.ZERO
@@ -544,7 +577,7 @@ func command_build(building) -> void:
 	_attack_move_ordered = false
 	_attack_move_destination = Vector3.ZERO
 	_hold_position = false
-	_target = null
+	_v0436_r1j_set_target(null, "public_order")
 	_gather_node = null
 	_build_target = building
 	state = State.BUILDING
@@ -728,6 +761,9 @@ func _state_boundary_recovery(delta: float) -> void:
 # Main loop
 # --------------------------------------------------------------------------
 func _physics_process(delta: float) -> void:
+	var r1j_recorder = _v0436_r1j_recorder()
+	if r1j_recorder:
+		r1j_recorder.record_unit_sample(self)
 	if world and not world.game_running:
 		velocity = Vector3.ZERO
 		return
@@ -811,14 +847,14 @@ func _state_idle(delta: float) -> void:
 		elif e and _hold_position:
 			# hold: attack only if within attack range
 			if global_position.distance_to(e.global_position) <= _engage_range() + 1.0:
-				_target = e
+				_v0436_r1j_set_target(e, "threat_response")
 				state = State.ATTACKING
 
 func _state_move(delta: float, attack_move: bool) -> void:
 	if attack_move and _attack_move_ordered:
 		var e = world.find_enemy_in_range(self, vision * 0.7) if world else null
 		if e and _can_attack_target(e):
-			_target = e
+			_v0436_r1j_set_target(e, "auto_acquisition")
 			state = State.ATTACKING
 			return
 	if _move_along_path(delta):
@@ -829,7 +865,7 @@ func _state_move(delta: float, attack_move: bool) -> void:
 func _state_patrol(delta: float) -> void:
 	var e = world.find_enemy_in_range(self, vision * 0.7) if world else null
 	if e:
-		_target = e
+		_v0436_r1j_set_target(e, "auto_acquisition")
 		state = State.ATTACKING
 		return
 	if _move_along_path(delta):
@@ -844,7 +880,7 @@ func _state_follow(delta: float) -> void:
 		return
 	var e = world.find_enemy_in_range(self, vision * 0.6) if world else null
 	if e:
-		_target = e
+		_v0436_r1j_set_target(e, "threat_response")
 		state = State.ATTACKING
 		return
 	var d := global_position.distance_to(_follow_target.global_position)
@@ -861,11 +897,12 @@ func _engage_range() -> float:
 
 func _state_attack(delta: float) -> void:
 	if not _can_attack_target(_target):
-		_target = null
+		var invalid_reason := "target_dead" if is_instance_valid(_target) and _target.is_dead else "target_invalid"
+		_v0436_r1j_set_target(null, invalid_reason)
 		# after kill, look for next enemy nearby
 		var e = world.find_enemy_in_range(self, vision) if world else null
 		if e and not _hold_position and _can_attack_target(e):
-			_target = e
+			_v0436_r1j_set_target(e, "fallback_target")
 		elif _attack_move_ordered:
 			_move_target = _attack_move_destination
 			_set_agent_target(_attack_move_destination, "attack_move")
@@ -879,7 +916,7 @@ func _state_attack(delta: float) -> void:
 		if _hold_position:
 			# don't chase far when holding
 			if d > er + 4.0:
-				_target = null
+				_v0436_r1j_set_target(null, "target_out_of_acquisition_rules")
 				state = State.HOLD
 				return
 		_move_target = _target.global_position
@@ -896,8 +933,12 @@ func _state_attack(delta: float) -> void:
 func _do_attack() -> void:
 	_attack_timer = attack_cd
 	_play("attack", true)
+	var r1j_recorder = _v0436_r1j_recorder()
+	var attack_event_id := ""
+	if r1j_recorder:
+		attack_event_id = r1j_recorder.record_attack_start(self, _target, cur_dmg(), dmg_type, _engage_range(), global_position.distance_to(_target.global_position), state, _navigation_command_type)
 	if atk_range > 0.0 and def.has("projectile"):
-		_spawn_projectile()
+		_spawn_projectile(attack_event_id)
 		_play_sfx("arrow" if dmg_type == "pierce" else "spell", -8.0)
 	else:
 		# melee: apply after small delay
@@ -905,31 +946,39 @@ func _do_attack() -> void:
 		var tgt = _target
 		get_tree().create_timer(0.25).timeout.connect(func():
 			if not is_dead and _can_attack_target(tgt) and global_position.distance_to(tgt.global_position) <= _engage_range() + 0.15:
-				var dealt = _resolve_damage(tgt, cur_dmg())
+				if r1j_recorder:
+					r1j_recorder.record_attack_phase(attack_event_id, "windup_completed", {"target_valid":true, "distance":global_position.distance_to(tgt.global_position)})
+				var dealt = _resolve_damage(tgt, cur_dmg(), attack_event_id)
 				_on_dealt_damage(dealt, tgt)
+				if r1j_recorder:
+					r1j_recorder.record_attack_phase(attack_event_id, "melee_resolution", {"applied_damage":dealt})
 				if splash > 0.0:
 					world.apply_splash(tgt.global_position, splash, cur_dmg() * 0.5, dmg_type, team, tgt, self, "melee")
 		)
 
-func _spawn_projectile() -> void:
+func _spawn_projectile(attack_event_id: String = "") -> void:
 	if not world:
 		return
 	var muzzle := global_position + Vector3.UP * 1.2
 	world.spawn_projectile(muzzle, _target, cur_dmg(), dmg_type, team,
-		def.get("projectile", "arrow"), splash, self)
+		def.get("projectile", "arrow"), splash, self, attack_event_id)
 
 func _on_dealt_damage(dealt: float, tgt) -> void:
 	# lifesteal
 	if hero_flags.get("lifesteal", 0.0) > 0.0:
 		hp = min(max_hp, hp + dealt * float(hero_flags["lifesteal"]))
 
-func _resolve_damage(tgt, raw: float) -> float:
+func _resolve_damage(tgt, raw: float, attack_event_id: String = "", projectile_event_id: String = "") -> float:
 	if not _can_attack_target(tgt):
 		return 0.0
 	var ac: String = tgt.armor_class if "armor_class" in tgt else "medium"
 	var ar: float = tgt.cur_armor() if tgt.has_method("cur_armor") else 0.0
 	var dmg := GameData.compute_damage(raw, dmg_type, ac, ar)
-	tgt.take_damage(dmg, self)
+	var r1j_recorder = _v0436_r1j_recorder()
+	if r1j_recorder and attack_event_id != "":
+		tgt.take_damage(dmg, {"source_unit":self, "source_team":team, "source_unit_id":unit_id, "source_runtime_id":str(get_instance_id()), "projectile_kind":"melee", "damage_type":dmg_type, "raw_damage":raw, "armor_class":ac, "flat_armor":ar, "multiplier":GameData.damage_multiplier(dmg_type, ac), "calculated_damage_before_clamp":raw * GameData.damage_multiplier(dmg_type, ac) - maxf(0.0, ar) * 0.5, "expected_applied_damage":dmg, "attack_event_id":attack_event_id, "projectile_event_id":projectile_event_id})
+	else:
+		tgt.take_damage(dmg, self)
 	return dmg
 
 # --- worker: gathering ----------------------------------------------------
