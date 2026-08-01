@@ -2,7 +2,7 @@
 
 ## Status
 
-`IN_PROGRESS_LOCAL_VALIDATION` — the tooling repair and fresh evidence are complete; publication and exact-SHA CI remain pending.
+`PASSED_V0436_R1F_V1_RETAINED_VALIDATOR_DESCENDANT_COMPATIBILITY` — tooling repair, fresh evidence, local validation, publication, and exact-SHA CI are green.
 
 ## Scope
 
@@ -12,7 +12,7 @@ This is a tooling-only descendant-compatibility checkpoint for the accepted R1F 
 
 - Branch: `codex/v0436-first-complete-conquest-victory`
 - Accepted implementation: `1111f306929665b40dab998de7e2aaad7f4f43ae`
-- Validated local HEAD before publication: `dbdac3a179c54b4b7a3227475b3b99c7b810f26f`
+- Publication implementation commit: `341c7d20133f5721c1e4a97e1576e63fbe2ec815`
 - Accepted implementation is an ancestor of the validated HEAD: `true`
 - Pull request: `#10`, open, draft, unmerged
 
@@ -49,7 +49,11 @@ Completed at this point:
 
 The first R1D run exposed the stale allowlist defect and failed closed. After the minimal R1D compatibility extension, `npm run godot:validate:v0436-r1d-headed-startup` passed with no failures. Because that extension is tooling, the final publication SHA must receive a fresh three-run R1F capture before closeout.
 
-Still required before publication: the explicit R1F focused test/smoke/capture/validator set, retained R1D/nav/conquest checks, full npm/content/art/runtime/artifact-retention/Godot validation, commit, push, exact-SHA Actions success, and clean/synced publication state.
+The explicit R1F focused test/smoke/capture/validator set, retained R1D/nav/conquest checks, full npm/content/art/runtime/artifact-retention/Godot validation, commit, push, and exact-SHA Actions success are complete. Actions run `30683380528` is green for the exact implementation SHA `341c7d20133f5721c1e4a97e1576e63fbe2ec815`.
+
+## Final publication rule
+
+The fresh evidence metadata generated after the implementation commit is published as a documentation/review-pack descendant. The R1F-V1 validator accepts this descendant class only when ancestry and the path allowlist remain true. No production or gameplay change follows the fresh capture.
 
 ## Closeout rule
 

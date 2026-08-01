@@ -1,9 +1,9 @@
 {
   "schema": "v0436-r1f-boundary-physics-validator-v2",
   "branch": "codex/v0436-first-complete-conquest-victory",
-  "validatedHead": "dbdac3a179c54b4b7a3227475b3b99c7b810f26f",
+  "validatedHead": "341c7d20133f5721c1e4a97e1576e63fbe2ec815",
   "acceptedImplementationSha": "1111f306929665b40dab998de7e2aaad7f4f43ae",
-  "evidenceSourceSha": "dbdac3a179c54b4b7a3227475b3b99c7b810f26f",
+  "evidenceSourceSha": "341c7d20133f5721c1e4a97e1576e63fbe2ec815",
   "acceptedImplementationIsAncestor": true,
   "evidenceSourceIsCurrentHead": true,
   "evidenceSourceIsAncestor": true,

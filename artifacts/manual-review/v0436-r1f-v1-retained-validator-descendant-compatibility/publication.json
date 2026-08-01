@@ -1,9 +1,9 @@
 {
   "schema": "v0436-r1f-v1-publication-v1",
-  "status": "PUBLICATION_PENDING_LOCAL_VALIDATION",
-  "implementationCommit": null,
-  "exactShaCiRun": null,
+  "status": "PUBLISHED_IMPLEMENTATION_CI_GREEN",
+  "implementationCommit": "341c7d20133f5721c1e4a97e1576e63fbe2ec815",
+  "exactShaCiRun": {"id": 30683380528, "conclusion": "success", "sha": "341c7d20133f5721c1e4a97e1576e63fbe2ec815"},
   "pr": 10,
   "branch": "codex/v0436-first-complete-conquest-victory",
-  "nextGate": "run required retained and full validation, then commit and publish"
+  "nextGate": "none for R1F-V1; R1G requires fresh explicit authorization rebased onto the final published head"
 }
