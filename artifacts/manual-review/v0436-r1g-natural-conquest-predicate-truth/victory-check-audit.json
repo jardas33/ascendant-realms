@@ -1,0 +1,6 @@
+{
+  "schema": "v0436-r1g-victory-check-audit-v1",
+  "status": "NOT_REACHED_DUE_BLOCKER",
+  "source_sha": "cce2fea33accf68d0494385b97a75b72d03d5e88",
+  "observation": "No victory claim was made because the normal assault terminated at a live blocker before final predicate truth."
+}

@@ -14,7 +14,7 @@ func _ready() -> void:
 		theme = load("res://assets/ui/theme.tres") as Theme
 	AudioManager.play_music_path(Sfx.music_key("menu"), -8.0, true)
 	_build()
-	if OS.get_environment("ASCENDANT_V0436_R1F_CAPTURE") == "1" or OS.get_environment("ASCENDANT_V0436_R1_CAPTURE") == "1" or OS.get_environment("ASCENDANT_V0436_R1C_CAPTURE") == "1" or OS.get_environment("ASCENDANT_V0436_CAPTURE") == "1" or OS.get_environment("ASCENDANT_V0435_CAPTURE") == "1" or OS.get_environment("ASCENDANT_V0434_CAPTURE") == "1" or OS.get_environment("ASCENDANT_V0433_CAPTURE") == "1" or OS.get_environment("ASCENDANT_V0432_CAPTURE") == "1" or OS.get_environment("ASCENDANT_V0431_CAPTURE") == "1":
+	if OS.get_environment("ASCENDANT_V0436_R1G_CAPTURE") == "1" or OS.get_environment("ASCENDANT_V0436_R1F_CAPTURE") == "1" or OS.get_environment("ASCENDANT_V0436_R1_CAPTURE") == "1" or OS.get_environment("ASCENDANT_V0436_R1C_CAPTURE") == "1" or OS.get_environment("ASCENDANT_V0436_CAPTURE") == "1" or OS.get_environment("ASCENDANT_V0435_CAPTURE") == "1" or OS.get_environment("ASCENDANT_V0434_CAPTURE") == "1" or OS.get_environment("ASCENDANT_V0433_CAPTURE") == "1" or OS.get_environment("ASCENDANT_V0432_CAPTURE") == "1" or OS.get_environment("ASCENDANT_V0431_CAPTURE") == "1":
 		call_deferred("_start_v0431_capture_scene")
 
 func _start_v0431_capture_scene() -> void:

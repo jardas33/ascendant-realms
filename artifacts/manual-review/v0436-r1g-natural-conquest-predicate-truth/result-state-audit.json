@@ -1,0 +1,10 @@
+{
+  "schema": "v0436-r1g-result-state-audit-v1",
+  "status": "NOT_REACHED_DUE_BLOCKER",
+  "source_sha": "cce2fea33accf68d0494385b97a75b72d03d5e88",
+  "sessions": [
+    "A",
+    "B"
+  ],
+  "note": "Success-only result evidence is intentionally absent."
+}

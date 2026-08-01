@@ -37,6 +37,7 @@ V0436R1Capture="*res://tests/v0436_r1_navigation_behavioral_proof.gd"
 V0436R1FCapture="*res://tests/v0436_r1f_boundary_physics.gd"
 V0436R1CCapture="*res://tests/v0436_r1c_capture.gd"
 V0436R1DStartupCapture="*res://tests/v0436_r1d_startup_capture.gd"
+V0436R1GCapture="*res://tests/v0436_r1g_capture.gd"
 
 [debug]
 

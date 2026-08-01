@@ -1,0 +1,1355 @@
+{
+  "schema": "v0436-r1g-predicate-snapshot-sequence-v1",
+  "status": "BLOCKED_WITH_TRUTHFUL_LIVE_EVIDENCE",
+  "source_sha": "cce2fea33accf68d0494385b97a75b72d03d5e88",
+  "sessions": [
+    {
+      "session": "A",
+      "sequence": [],
+      "predicate": {
+        "commanders": [
+          {
+            "alive_buildings": 2,
+            "buildings": [
+              {
+                "built": true,
+                "dead": false,
+                "definition_id": "barrosan_clanhold",
+                "hp": 2200,
+                "is_hq": true,
+                "max_hp": 2200,
+                "position": {
+                  "x": -100,
+                  "y": 0,
+                  "z": -100
+                },
+                "runtime_id": "169466661480",
+                "state": "<null>",
+                "team": 0
+              },
+              {
+                "built": true,
+                "dead": false,
+                "definition_id": "barrosan_war_hall",
+                "hp": 950,
+                "is_hq": false,
+                "max_hp": 950,
+                "position": {
+                  "x": -76,
+                  "y": 0,
+                  "z": -100
+                },
+                "runtime_id": "185623120157",
+                "state": "<null>",
+                "team": 0
+              }
+            ],
+            "defeat_reason": "",
+            "defeated": false,
+            "has_hq": true,
+            "live_buildings": [
+              {
+                "built": true,
+                "dead": false,
+                "definition_id": "barrosan_clanhold",
+                "hp": 2200,
+                "is_hq": true,
+                "max_hp": 2200,
+                "position": {
+                  "x": -100,
+                  "y": 0,
+                  "z": -100
+                },
+                "runtime_id": "169466661480",
+                "state": "<null>",
+                "team": 0
+              },
+              {
+                "built": true,
+                "dead": false,
+                "definition_id": "barrosan_war_hall",
+                "hp": 950,
+                "is_hq": false,
+                "max_hp": 950,
+                "position": {
+                  "x": -76,
+                  "y": 0,
+                  "z": -100
+                },
+                "runtime_id": "185623120157",
+                "state": "<null>",
+                "team": 0
+              }
+            ],
+            "live_hq": [
+              {
+                "built": true,
+                "dead": false,
+                "definition_id": "barrosan_clanhold",
+                "hp": 2200,
+                "is_hq": true,
+                "max_hp": 2200,
+                "position": {
+                  "x": -100,
+                  "y": 0,
+                  "z": -100
+                },
+                "runtime_id": "169466661480",
+                "state": "<null>",
+                "team": 0
+              }
+            ],
+            "live_workers": [
+              {
+                "dead": false,
+                "definition_id": "barrosan_worker",
+                "hp": 60,
+                "max_hp": 60,
+                "navigation_command": "build",
+                "position": {
+                  "x": -78.4797134399414,
+                  "y": 0,
+                  "z": -98.9474029541016
+                },
+                "runtime_id": "169701542515",
+                "state": 0,
+                "team": 0
+              },
+              {
+                "dead": false,
+                "definition_id": "barrosan_worker",
+                "hp": 60,
+                "max_hp": 60,
+                "navigation_command": "build",
+                "position": {
+                  "x": -73.2790222167969,
+                  "y": 0,
+                  "z": -102.275741577148
+                },
+                "runtime_id": "170154527370",
+                "state": 0,
+                "team": 0
+              },
+              {
+                "dead": false,
+                "definition_id": "barrosan_worker",
+                "hp": 60,
+                "max_hp": 60,
+                "navigation_command": "build",
+                "position": {
+                  "x": -80.5109405517578,
+                  "y": 0,
+                  "z": -99.8133850097656
+                },
+                "runtime_id": "170607512225",
+                "state": 0,
+                "team": 0
+              }
+            ],
+            "no_buildings": false,
+            "no_hq": false,
+            "no_workers": false,
+            "race": "barrosan",
+            "resources": {
+              "food": 0,
+              "gold": 552,
+              "stone": 120,
+              "timber": 30
+            },
+            "team": 0,
+            "units": [
+              {
+                "dead": false,
+                "definition_id": "barrosan_worker",
+                "hp": 60,
+                "max_hp": 60,
+                "navigation_command": "build",
+                "position": {
+                  "x": -78.4797134399414,
+                  "y": 0,
+                  "z": -98.9474029541016
+                },
+                "runtime_id": "169701542515",
+                "state": 0,
+                "team": 0
+              },
+              {
+                "dead": false,
+                "definition_id": "barrosan_worker",
+                "hp": 60,
+                "max_hp": 60,
+                "navigation_command": "build",
+                "position": {
+                  "x": -73.2790222167969,
+                  "y": 0,
+                  "z": -102.275741577148
+                },
+                "runtime_id": "170154527370",
+                "state": 0,
+                "team": 0
+              },
+              {
+                "dead": false,
+                "definition_id": "barrosan_worker",
+                "hp": 60,
+                "max_hp": 60,
+                "navigation_command": "build",
+                "position": {
+                  "x": -80.5109405517578,
+                  "y": 0,
+                  "z": -99.8133850097656
+                },
+                "runtime_id": "170607512225",
+                "state": 0,
+                "team": 0
+              }
+            ]
+          },
+          {
+            "alive_buildings": 3,
+            "buildings": [
+              {
+                "built": true,
+                "dead": false,
+                "definition_id": "lioraen_groveheart",
+                "hp": 1749.12,
+                "is_hq": true,
+                "max_hp": 2000,
+                "position": {
+                  "x": 100,
+                  "y": 0,
+                  "z": 100
+                },
+                "runtime_id": "171966466790",
+                "state": "<null>",
+                "team": 1
+              },
+              {
+                "built": true,
+                "dead": false,
+                "definition_id": "lioraen_thornhall",
+                "hp": 850,
+                "is_hq": false,
+                "max_hp": 850,
+                "position": {
+                  "x": 77.3725814819336,
+                  "y": 0,
+                  "z": 91.5147171020508
+                },
+                "runtime_id": "191646141656",
+                "state": "<null>",
+                "team": 1
+              },
+              {
+                "built": true,
+                "dead": false,
+                "definition_id": "lioraen_lifewell",
+                "hp": 500,
+                "is_hq": false,
+                "max_hp": 500,
+                "position": {
+                  "x": 114.142135620117,
+                  "y": 0,
+                  "z": 85.8578643798828
+                },
+                "runtime_id": "274827578589",
+                "state": "<null>",
+                "team": 1
+              }
+            ],
+            "defeat_reason": "",
+            "defeated": false,
+            "has_hq": true,
+            "live_buildings": [
+              {
+                "built": true,
+                "dead": false,
+                "definition_id": "lioraen_groveheart",
+                "hp": 1749.12,
+                "is_hq": true,
+                "max_hp": 2000,
+                "position": {
+                  "x": 100,
+                  "y": 0,
+                  "z": 100
+                },
+                "runtime_id": "171966466790",
+                "state": "<null>",
+                "team": 1
+              },
+              {
+                "built": true,
+                "dead": false,
+                "definition_id": "lioraen_thornhall",
+                "hp": 850,
+                "is_hq": false,
+                "max_hp": 850,
+                "position": {
+                  "x": 77.3725814819336,
+                  "y": 0,
+                  "z": 91.5147171020508
+                },
+                "runtime_id": "191646141656",
+                "state": "<null>",
+                "team": 1
+              },
+              {
+                "built": true,
+                "dead": false,
+                "definition_id": "lioraen_lifewell",
+                "hp": 500,
+                "is_hq": false,
+                "max_hp": 500,
+                "position": {
+                  "x": 114.142135620117,
+                  "y": 0,
+                  "z": 85.8578643798828
+                },
+                "runtime_id": "274827578589",
+                "state": "<null>",
+                "team": 1
+              }
+            ],
+            "live_hq": [
+              {
+                "built": true,
+                "dead": false,
+                "definition_id": "lioraen_groveheart",
+                "hp": 1749.12,
+                "is_hq": true,
+                "max_hp": 2000,
+                "position": {
+                  "x": 100,
+                  "y": 0,
+                  "z": 100
+                },
+                "runtime_id": "171966466790",
+                "state": "<null>",
+                "team": 1
+              }
+            ],
+            "live_workers": [
+              {
+                "dead": false,
+                "definition_id": "lioraen_worker",
+                "hp": 55,
+                "max_hp": 55,
+                "navigation_command": "gather",
+                "position": {
+                  "x": 70.6114883422852,
+                  "y": 0,
+                  "z": 86.1517715454102
+                },
+                "runtime_id": "172201347825",
+                "state": 4,
+                "team": 1
+              },
+              {
+                "dead": false,
+                "definition_id": "lioraen_worker",
+                "hp": 55,
+                "max_hp": 55,
+                "navigation_command": "gather",
+                "position": {
+                  "x": 59.953254699707,
+                  "y": 0,
+                  "z": 83.0852813720703
+                },
+                "runtime_id": "172654332680",
+                "state": 4,
+                "team": 1
+              },
+              {
+                "dead": false,
+                "definition_id": "lioraen_worker",
+                "hp": 55,
+                "max_hp": 55,
+                "navigation_command": "gather",
+                "position": {
+                  "x": 105.113777160645,
+                  "y": 0,
+                  "z": 92.1540756225586
+                },
+                "runtime_id": "173107317535",
+                "state": 4,
+                "team": 1
+              },
+              {
+                "dead": false,
+                "definition_id": "lioraen_worker",
+                "hp": 55,
+                "max_hp": 55,
+                "navigation_command": "gather",
+                "position": {
+                  "x": 56.8639602661133,
+                  "y": 0,
+                  "z": 81.8479156494141
+                },
+                "runtime_id": "274357816538",
+                "state": 4,
+                "team": 1
+              },
+              {
+                "dead": false,
+                "definition_id": "lioraen_worker",
+                "hp": 55,
+                "max_hp": 55,
+                "navigation_command": "gather",
+                "position": {
+                  "x": 108.09538269043,
+                  "y": 0,
+                  "z": 94.469841003418
+                },
+                "runtime_id": "358126456095",
+                "state": 4,
+                "team": 1
+              },
+              {
+                "dead": false,
+                "definition_id": "lioraen_worker",
+                "hp": 55,
+                "max_hp": 55,
+                "navigation_command": "return",
+                "position": {
+                  "x": 97.5384140014648,
+                  "y": 0,
+                  "z": 91.7843017578125
+                },
+                "runtime_id": "443086277956",
+                "state": 5,
+                "team": 1
+              },
+              {
+                "dead": false,
+                "definition_id": "lioraen_worker",
+                "hp": 55,
+                "max_hp": 55,
+                "navigation_command": "gather",
+                "position": {
+                  "x": 57.2257537841797,
+                  "y": 0,
+                  "z": 83.8757095336914
+                },
+                "runtime_id": "528230649229",
+                "state": 4,
+                "team": 1
+              }
+            ],
+            "no_buildings": false,
+            "no_hq": false,
+            "no_workers": false,
+            "race": "lioraen",
+            "resources": {
+              "food": 231,
+              "gold": 360,
+              "stone": 340,
+              "timber": 250
+            },
+            "team": 1,
+            "units": [
+              {
+                "dead": false,
+                "definition_id": "lioraen_worker",
+                "hp": 55,
+                "max_hp": 55,
+                "navigation_command": "gather",
+                "position": {
+                  "x": 70.6114883422852,
+                  "y": 0,
+                  "z": 86.1517715454102
+                },
+                "runtime_id": "172201347825",
+                "state": 4,
+                "team": 1
+              },
+              {
+                "dead": false,
+                "definition_id": "lioraen_worker",
+                "hp": 55,
+                "max_hp": 55,
+                "navigation_command": "gather",
+                "position": {
+                  "x": 59.953254699707,
+                  "y": 0,
+                  "z": 83.0852813720703
+                },
+                "runtime_id": "172654332680",
+                "state": 4,
+                "team": 1
+              },
+              {
+                "dead": false,
+                "definition_id": "lioraen_worker",
+                "hp": 55,
+                "max_hp": 55,
+                "navigation_command": "gather",
+                "position": {
+                  "x": 105.113777160645,
+                  "y": 0,
+                  "z": 92.1540756225586
+                },
+                "runtime_id": "173107317535",
+                "state": 4,
+                "team": 1
+              },
+              {
+                "dead": false,
+                "definition_id": "lioraen_hero_warden",
+                "hp": 355,
+                "max_hp": 355,
+                "navigation_command": "attack",
+                "position": {
+                  "x": 97.0410842895508,
+                  "y": 0,
+                  "z": 97.2761917114258
+                },
+                "runtime_id": "174013287245",
+                "state": 0,
+                "team": 1
+              },
+              {
+                "dead": false,
+                "definition_id": "lioraen_worker",
+                "hp": 55,
+                "max_hp": 55,
+                "navigation_command": "gather",
+                "position": {
+                  "x": 56.8639602661133,
+                  "y": 0,
+                  "z": 81.8479156494141
+                },
+                "runtime_id": "274357816538",
+                "state": 4,
+                "team": 1
+              },
+              {
+                "dead": false,
+                "definition_id": "lioraen_worker",
+                "hp": 55,
+                "max_hp": 55,
+                "navigation_command": "gather",
+                "position": {
+                  "x": 108.09538269043,
+                  "y": 0,
+                  "z": 94.469841003418
+                },
+                "runtime_id": "358126456095",
+                "state": 4,
+                "team": 1
+              },
+              {
+                "dead": false,
+                "definition_id": "lioraen_worker",
+                "hp": 55,
+                "max_hp": 55,
+                "navigation_command": "return",
+                "position": {
+                  "x": 97.5384140014648,
+                  "y": 0,
+                  "z": 91.7843017578125
+                },
+                "runtime_id": "443086277956",
+                "state": 5,
+                "team": 1
+              },
+              {
+                "dead": false,
+                "definition_id": "lioraen_worker",
+                "hp": 55,
+                "max_hp": 55,
+                "navigation_command": "gather",
+                "position": {
+                  "x": 57.2257537841797,
+                  "y": 0,
+                  "z": 83.8757095336914
+                },
+                "runtime_id": "528230649229",
+                "state": 4,
+                "team": 1
+              },
+              {
+                "dead": false,
+                "definition_id": "lioraen_thorn_ranger",
+                "hp": 85,
+                "max_hp": 85,
+                "navigation_command": "attack_move",
+                "position": {
+                  "x": 82.2595367431641,
+                  "y": 0,
+                  "z": 80.2790985107422
+                },
+                "runtime_id": "655234174395",
+                "state": 2,
+                "team": 1
+              },
+              {
+                "dead": false,
+                "definition_id": "lioraen_bloomdancer",
+                "hp": 115,
+                "max_hp": 115,
+                "navigation_command": "attack_move",
+                "position": {
+                  "x": 93.5798263549805,
+                  "y": 0,
+                  "z": 92.3494186401367
+                },
+                "runtime_id": "745009057259",
+                "state": 2,
+                "team": 1
+              },
+              {
+                "dead": false,
+                "definition_id": "lioraen_rootwarden_guard",
+                "hp": 200,
+                "max_hp": 200,
+                "navigation_command": "attack_move",
+                "position": {
+                  "x": 92.4248428344727,
+                  "y": 0,
+                  "z": 91.1868591308594
+                },
+                "runtime_id": "868522921536",
+                "state": 2,
+                "team": 1
+              },
+              {
+                "dead": false,
+                "definition_id": "lioraen_bloomdancer",
+                "hp": 115,
+                "max_hp": 115,
+                "navigation_command": "attack_move",
+                "position": {
+                  "x": 93.2973175048828,
+                  "y": 0,
+                  "z": 93.6766586303711
+                },
+                "runtime_id": "954086723160",
+                "state": 2,
+                "team": 1
+              },
+              {
+                "dead": false,
+                "definition_id": "lioraen_rootwarden_guard",
+                "hp": 200,
+                "max_hp": 200,
+                "navigation_command": "attack_move",
+                "position": {
+                  "x": 92.1315383911133,
+                  "y": 0,
+                  "z": 92.5008163452148
+                },
+                "runtime_id": "1076744949292",
+                "state": 2,
+                "team": 1
+              },
+              {
+                "dead": false,
+                "definition_id": "lioraen_thorn_ranger",
+                "hp": 85,
+                "max_hp": 85,
+                "navigation_command": "attack",
+                "position": {
+                  "x": 91.811637878418,
+                  "y": 0,
+                  "z": 94.2632217407227
+                },
+                "runtime_id": "1240507353910",
+                "state": 0,
+                "team": 1
+              }
+            ]
+          }
+        ],
+        "game_over_count": 0,
+        "game_running": true,
+        "label": "blocker",
+        "match_ended": false,
+        "match_result": {},
+        "physics_frame": 5732,
+        "process_frame": 6708,
+        "profile_record_count": 0,
+        "result": {},
+        "sole_non_defeated_commanders": [
+          0,
+          1
+        ],
+        "timestamp_ms": 107174,
+        "victory_check_observation": "read-only state snapshot; no capture-only victory counter was added"
+      }
+    },
+    {
+      "session": "B",
+      "sequence": [],
+      "predicate": {
+        "commanders": [
+          {
+            "alive_buildings": 2,
+            "buildings": [
+              {
+                "built": true,
+                "dead": false,
+                "definition_id": "barrosan_clanhold",
+                "hp": 2200,
+                "is_hq": true,
+                "max_hp": 2200,
+                "position": {
+                  "x": -100,
+                  "y": 0,
+                  "z": -100
+                },
+                "runtime_id": "169466661480",
+                "state": "<null>",
+                "team": 0
+              },
+              {
+                "built": true,
+                "dead": false,
+                "definition_id": "barrosan_war_hall",
+                "hp": 950,
+                "is_hq": false,
+                "max_hp": 950,
+                "position": {
+                  "x": -76,
+                  "y": 0,
+                  "z": -100
+                },
+                "runtime_id": "185623120157",
+                "state": "<null>",
+                "team": 0
+              }
+            ],
+            "defeat_reason": "",
+            "defeated": false,
+            "has_hq": true,
+            "live_buildings": [
+              {
+                "built": true,
+                "dead": false,
+                "definition_id": "barrosan_clanhold",
+                "hp": 2200,
+                "is_hq": true,
+                "max_hp": 2200,
+                "position": {
+                  "x": -100,
+                  "y": 0,
+                  "z": -100
+                },
+                "runtime_id": "169466661480",
+                "state": "<null>",
+                "team": 0
+              },
+              {
+                "built": true,
+                "dead": false,
+                "definition_id": "barrosan_war_hall",
+                "hp": 950,
+                "is_hq": false,
+                "max_hp": 950,
+                "position": {
+                  "x": -76,
+                  "y": 0,
+                  "z": -100
+                },
+                "runtime_id": "185623120157",
+                "state": "<null>",
+                "team": 0
+              }
+            ],
+            "live_hq": [
+              {
+                "built": true,
+                "dead": false,
+                "definition_id": "barrosan_clanhold",
+                "hp": 2200,
+                "is_hq": true,
+                "max_hp": 2200,
+                "position": {
+                  "x": -100,
+                  "y": 0,
+                  "z": -100
+                },
+                "runtime_id": "169466661480",
+                "state": "<null>",
+                "team": 0
+              }
+            ],
+            "live_workers": [
+              {
+                "dead": false,
+                "definition_id": "barrosan_worker",
+                "hp": 60,
+                "max_hp": 60,
+                "navigation_command": "build",
+                "position": {
+                  "x": -78.6976013183594,
+                  "y": 0,
+                  "z": -99.2262954711914
+                },
+                "runtime_id": "169701542515",
+                "state": 0,
+                "team": 0
+              },
+              {
+                "dead": false,
+                "definition_id": "barrosan_worker",
+                "hp": 60,
+                "max_hp": 60,
+                "navigation_command": "build",
+                "position": {
+                  "x": -73.6769485473633,
+                  "y": 0,
+                  "z": -102.606979370117
+                },
+                "runtime_id": "170154527370",
+                "state": 0,
+                "team": 0
+              },
+              {
+                "dead": false,
+                "definition_id": "barrosan_worker",
+                "hp": 60,
+                "max_hp": 60,
+                "navigation_command": "build",
+                "position": {
+                  "x": -80.5266418457031,
+                  "y": 0,
+                  "z": -99.8773345947266
+                },
+                "runtime_id": "170607512225",
+                "state": 0,
+                "team": 0
+              }
+            ],
+            "no_buildings": false,
+            "no_hq": false,
+            "no_workers": false,
+            "race": "barrosan",
+            "resources": {
+              "food": 0,
+              "gold": 528,
+              "stone": 120,
+              "timber": 30
+            },
+            "team": 0,
+            "units": [
+              {
+                "dead": false,
+                "definition_id": "barrosan_worker",
+                "hp": 60,
+                "max_hp": 60,
+                "navigation_command": "build",
+                "position": {
+                  "x": -78.6976013183594,
+                  "y": 0,
+                  "z": -99.2262954711914
+                },
+                "runtime_id": "169701542515",
+                "state": 0,
+                "team": 0
+              },
+              {
+                "dead": false,
+                "definition_id": "barrosan_worker",
+                "hp": 60,
+                "max_hp": 60,
+                "navigation_command": "build",
+                "position": {
+                  "x": -73.6769485473633,
+                  "y": 0,
+                  "z": -102.606979370117
+                },
+                "runtime_id": "170154527370",
+                "state": 0,
+                "team": 0
+              },
+              {
+                "dead": false,
+                "definition_id": "barrosan_worker",
+                "hp": 60,
+                "max_hp": 60,
+                "navigation_command": "build",
+                "position": {
+                  "x": -80.5266418457031,
+                  "y": 0,
+                  "z": -99.8773345947266
+                },
+                "runtime_id": "170607512225",
+                "state": 0,
+                "team": 0
+              }
+            ]
+          },
+          {
+            "alive_buildings": 3,
+            "buildings": [
+              {
+                "built": true,
+                "dead": false,
+                "definition_id": "lioraen_groveheart",
+                "hp": 1877.44,
+                "is_hq": true,
+                "max_hp": 2000,
+                "position": {
+                  "x": 100,
+                  "y": 0,
+                  "z": 100
+                },
+                "runtime_id": "171966466790",
+                "state": "<null>",
+                "team": 1
+              },
+              {
+                "built": true,
+                "dead": false,
+                "definition_id": "lioraen_thornhall",
+                "hp": 850,
+                "is_hq": false,
+                "max_hp": 850,
+                "position": {
+                  "x": 77.3725814819336,
+                  "y": 0,
+                  "z": 91.5147171020508
+                },
+                "runtime_id": "190723394793",
+                "state": "<null>",
+                "team": 1
+              },
+              {
+                "built": true,
+                "dead": false,
+                "definition_id": "lioraen_lifewell",
+                "hp": 500,
+                "is_hq": false,
+                "max_hp": 500,
+                "position": {
+                  "x": 114.142135620117,
+                  "y": 0,
+                  "z": 85.8578643798828
+                },
+                "runtime_id": "287947361568",
+                "state": "<null>",
+                "team": 1
+              }
+            ],
+            "defeat_reason": "",
+            "defeated": false,
+            "has_hq": true,
+            "live_buildings": [
+              {
+                "built": true,
+                "dead": false,
+                "definition_id": "lioraen_groveheart",
+                "hp": 1877.44,
+                "is_hq": true,
+                "max_hp": 2000,
+                "position": {
+                  "x": 100,
+                  "y": 0,
+                  "z": 100
+                },
+                "runtime_id": "171966466790",
+                "state": "<null>",
+                "team": 1
+              },
+              {
+                "built": true,
+                "dead": false,
+                "definition_id": "lioraen_thornhall",
+                "hp": 850,
+                "is_hq": false,
+                "max_hp": 850,
+                "position": {
+                  "x": 77.3725814819336,
+                  "y": 0,
+                  "z": 91.5147171020508
+                },
+                "runtime_id": "190723394793",
+                "state": "<null>",
+                "team": 1
+              },
+              {
+                "built": true,
+                "dead": false,
+                "definition_id": "lioraen_lifewell",
+                "hp": 500,
+                "is_hq": false,
+                "max_hp": 500,
+                "position": {
+                  "x": 114.142135620117,
+                  "y": 0,
+                  "z": 85.8578643798828
+                },
+                "runtime_id": "287947361568",
+                "state": "<null>",
+                "team": 1
+              }
+            ],
+            "live_hq": [
+              {
+                "built": true,
+                "dead": false,
+                "definition_id": "lioraen_groveheart",
+                "hp": 1877.44,
+                "is_hq": true,
+                "max_hp": 2000,
+                "position": {
+                  "x": 100,
+                  "y": 0,
+                  "z": 100
+                },
+                "runtime_id": "171966466790",
+                "state": "<null>",
+                "team": 1
+              }
+            ],
+            "live_workers": [
+              {
+                "dead": false,
+                "definition_id": "lioraen_worker",
+                "hp": 55,
+                "max_hp": 55,
+                "navigation_command": "gather",
+                "position": {
+                  "x": 88.8318710327148,
+                  "y": 0,
+                  "z": 108.480453491211
+                },
+                "runtime_id": "172201347825",
+                "state": 4,
+                "team": 1
+              },
+              {
+                "dead": false,
+                "definition_id": "lioraen_worker",
+                "hp": 55,
+                "max_hp": 55,
+                "navigation_command": "gather",
+                "position": {
+                  "x": 109.798751831055,
+                  "y": 0,
+                  "z": 93.1157760620117
+                },
+                "runtime_id": "172654332680",
+                "state": 4,
+                "team": 1
+              },
+              {
+                "dead": false,
+                "definition_id": "lioraen_worker",
+                "hp": 55,
+                "max_hp": 55,
+                "navigation_command": "gather",
+                "position": {
+                  "x": 108.505767822266,
+                  "y": 0,
+                  "z": 87.2415084838867
+                },
+                "runtime_id": "173107317535",
+                "state": 4,
+                "team": 1
+              },
+              {
+                "dead": false,
+                "definition_id": "lioraen_worker",
+                "hp": 55,
+                "max_hp": 55,
+                "navigation_command": "gather",
+                "position": {
+                  "x": 88.2148132324219,
+                  "y": 0,
+                  "z": 106.78702545166
+                },
+                "runtime_id": "273804168413",
+                "state": 4,
+                "team": 1
+              },
+              {
+                "dead": false,
+                "definition_id": "lioraen_worker",
+                "hp": 55,
+                "max_hp": 55,
+                "navigation_command": "gather",
+                "position": {
+                  "x": 111.112411499023,
+                  "y": 0,
+                  "z": 92.4440078735352
+                },
+                "runtime_id": "370491264299",
+                "state": 4,
+                "team": 1
+              },
+              {
+                "dead": false,
+                "definition_id": "lioraen_worker",
+                "hp": 55,
+                "max_hp": 55,
+                "navigation_command": "gather",
+                "position": {
+                  "x": 97.2767639160156,
+                  "y": 0,
+                  "z": 90.9227066040039
+                },
+                "runtime_id": "455652412765",
+                "state": 4,
+                "team": 1
+              },
+              {
+                "dead": false,
+                "definition_id": "lioraen_worker",
+                "hp": 55,
+                "max_hp": 55,
+                "navigation_command": "gather",
+                "position": {
+                  "x": 89.1864624023438,
+                  "y": 0,
+                  "z": 107.387130737305
+                },
+                "runtime_id": "540964556173",
+                "state": 4,
+                "team": 1
+              }
+            ],
+            "no_buildings": false,
+            "no_hq": false,
+            "no_workers": false,
+            "race": "lioraen",
+            "resources": {
+              "food": 150,
+              "gold": 360,
+              "stone": 330,
+              "timber": 456
+            },
+            "team": 1,
+            "units": [
+              {
+                "dead": false,
+                "definition_id": "lioraen_worker",
+                "hp": 55,
+                "max_hp": 55,
+                "navigation_command": "gather",
+                "position": {
+                  "x": 88.8318710327148,
+                  "y": 0,
+                  "z": 108.480453491211
+                },
+                "runtime_id": "172201347825",
+                "state": 4,
+                "team": 1
+              },
+              {
+                "dead": false,
+                "definition_id": "lioraen_worker",
+                "hp": 55,
+                "max_hp": 55,
+                "navigation_command": "gather",
+                "position": {
+                  "x": 109.798751831055,
+                  "y": 0,
+                  "z": 93.1157760620117
+                },
+                "runtime_id": "172654332680",
+                "state": 4,
+                "team": 1
+              },
+              {
+                "dead": false,
+                "definition_id": "lioraen_worker",
+                "hp": 55,
+                "max_hp": 55,
+                "navigation_command": "gather",
+                "position": {
+                  "x": 108.505767822266,
+                  "y": 0,
+                  "z": 87.2415084838867
+                },
+                "runtime_id": "173107317535",
+                "state": 4,
+                "team": 1
+              },
+              {
+                "dead": false,
+                "definition_id": "lioraen_hero_warden",
+                "hp": 340,
+                "max_hp": 340,
+                "navigation_command": "attack",
+                "position": {
+                  "x": 106.116371154785,
+                  "y": 0,
+                  "z": 106.185485839844
+                },
+                "runtime_id": "174013287245",
+                "state": 0,
+                "team": 1
+              },
+              {
+                "dead": false,
+                "definition_id": "lioraen_worker",
+                "hp": 55,
+                "max_hp": 55,
+                "navigation_command": "gather",
+                "position": {
+                  "x": 88.2148132324219,
+                  "y": 0,
+                  "z": 106.78702545166
+                },
+                "runtime_id": "273804168413",
+                "state": 4,
+                "team": 1
+              },
+              {
+                "dead": false,
+                "definition_id": "lioraen_worker",
+                "hp": 55,
+                "max_hp": 55,
+                "navigation_command": "gather",
+                "position": {
+                  "x": 111.112411499023,
+                  "y": 0,
+                  "z": 92.4440078735352
+                },
+                "runtime_id": "370491264299",
+                "state": 4,
+                "team": 1
+              },
+              {
+                "dead": false,
+                "definition_id": "lioraen_worker",
+                "hp": 55,
+                "max_hp": 55,
+                "navigation_command": "gather",
+                "position": {
+                  "x": 97.2767639160156,
+                  "y": 0,
+                  "z": 90.9227066040039
+                },
+                "runtime_id": "455652412765",
+                "state": 4,
+                "team": 1
+              },
+              {
+                "dead": false,
+                "definition_id": "lioraen_worker",
+                "hp": 55,
+                "max_hp": 55,
+                "navigation_command": "gather",
+                "position": {
+                  "x": 89.1864624023438,
+                  "y": 0,
+                  "z": 107.387130737305
+                },
+                "runtime_id": "540964556173",
+                "state": 4,
+                "team": 1
+              },
+              {
+                "dead": false,
+                "definition_id": "lioraen_thorn_ranger",
+                "hp": 85,
+                "max_hp": 85,
+                "navigation_command": "attack_move",
+                "position": {
+                  "x": 73.4126739501953,
+                  "y": 0,
+                  "z": 73.0172882080078
+                },
+                "runtime_id": "653573230011",
+                "state": 2,
+                "team": 1
+              },
+              {
+                "dead": false,
+                "definition_id": "lioraen_thorn_ranger",
+                "hp": 85,
+                "max_hp": 85,
+                "navigation_command": "attack_move",
+                "position": {
+                  "x": 72.6397247314453,
+                  "y": 0,
+                  "z": 73.7820358276367
+                },
+                "runtime_id": "763497549354",
+                "state": 2,
+                "team": 1
+              },
+              {
+                "dead": false,
+                "definition_id": "lioraen_bloomdancer",
+                "hp": 130,
+                "max_hp": 130,
+                "navigation_command": "attack_move",
+                "position": {
+                  "x": 85.431640625,
+                  "y": 0,
+                  "z": 83.5747756958008
+                },
+                "runtime_id": "849380117995",
+                "state": 2,
+                "team": 1
+              },
+              {
+                "dead": false,
+                "definition_id": "lioraen_bloomdancer",
+                "hp": 115,
+                "max_hp": 115,
+                "navigation_command": "attack_move",
+                "position": {
+                  "x": 84.0470352172852,
+                  "y": 0,
+                  "z": 83.1743240356445
+                },
+                "runtime_id": "940346183256",
+                "state": 2,
+                "team": 1
+              },
+              {
+                "dead": false,
+                "definition_id": "lioraen_thorn_ranger",
+                "hp": 85,
+                "max_hp": 85,
+                "navigation_command": "attack_move",
+                "position": {
+                  "x": 75.033203125,
+                  "y": 0,
+                  "z": 72.0983047485352
+                },
+                "runtime_id": "1050790596162",
+                "state": 2,
+                "team": 1
+              },
+              {
+                "dead": false,
+                "definition_id": "lioraen_rootwarden_guard",
+                "hp": 200,
+                "max_hp": 200,
+                "navigation_command": "attack",
+                "position": {
+                  "x": 81.8025817871094,
+                  "y": 0,
+                  "z": 88.4485015869141
+                },
+                "runtime_id": "1245456632647",
+                "state": 0,
+                "team": 1
+              }
+            ]
+          }
+        ],
+        "game_over_count": 0,
+        "game_running": true,
+        "label": "blocker",
+        "match_ended": false,
+        "match_result": {},
+        "physics_frame": 5592,
+        "process_frame": 6574,
+        "profile_record_count": 0,
+        "result": {},
+        "sole_non_defeated_commanders": [
+          0,
+          1
+        ],
+        "timestamp_ms": 104162,
+        "victory_check_observation": "read-only state snapshot; no capture-only victory counter was added"
+      }
+    }
+  ]
+}

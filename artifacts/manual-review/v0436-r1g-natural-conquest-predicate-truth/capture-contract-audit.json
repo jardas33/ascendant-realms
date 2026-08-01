@@ -1,0 +1,24 @@
+{
+  "schema": "v0436-r1g-capture-contract-audit-v1",
+  "status": "BLOCKED_WITH_TRUTHFUL_LIVE_EVIDENCE",
+  "source_sha": "cce2fea33accf68d0494385b97a75b72d03d5e88",
+  "normal_public_actions": [
+    "selection",
+    "attack-move",
+    "attack-target",
+    "building placement",
+    "worker construction",
+    "real-cost production"
+  ],
+  "forbidden_driver_writes": [
+    "HP",
+    "death",
+    "defeat",
+    "result",
+    "match state",
+    "resources",
+    "post-start teleportation"
+  ],
+  "no_direct_button_signal_emission": true,
+  "no_godot_log_file": true
+}

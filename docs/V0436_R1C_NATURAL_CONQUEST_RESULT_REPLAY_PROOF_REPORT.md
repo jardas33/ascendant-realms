@@ -90,3 +90,13 @@ Current R1C status:
 R1D report: `docs/V0436_R1D_HEADED_GODOT_STARTUP_RECOVERY_REPORT.md`
 
 R1D review pack: `artifacts/manual-review/v0436-r1d-headed-godot-startup-recovery/`
+
+## v0.436-R1G follow-up — natural predicate truth
+
+R1G resumed from the published R1F-V1 head `cce2fea33accf68d0494385b97a75b72d03d5e88` with a separate opt-in headed capture and no production gameplay repair. It produced real frames through production setup, navigation readiness, assault command, combat contact, damage, and enemy-HQ inspection in two sessions. Both sessions ended truthfully at `BLOCKED_R1G_PLAYER_ASSAULT_FORCE_ELIMINATED`: the player assault force was gone while the enemy Groveheart HQ remained alive. The live predicate recorded `match_ended=false`, `game_running=true`, `game_over_count=0`, `profile_record_count=0`, and an empty result. No success-only result, Continue, Play Again, or fresh replay evidence was emitted or claimed.
+
+R1G report: `docs/V0436_R1G_NATURAL_CONQUEST_PREDICATE_TRUTH_AND_RESULT_REPLAY_REPORT.md`
+
+R1G review pack: `artifacts/manual-review/v0436-r1g-natural-conquest-predicate-truth/`
+
+The dedicated R1G validator passes the integrity of the blocked evidence pack and rejects success claims when the natural terminal fact is absent. `P0-RESULT-001` remains open; no new production repair or v0.437 milestone is authorized by R1G.

@@ -1,0 +1,1311 @@
+{
+  "category": "building",
+  "commands": [
+    {
+      "attack_move_return": true,
+      "attack_target_return": true,
+      "kind": "initial",
+      "target_position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "timestamp_ms": 89261
+    }
+  ],
+  "damage_event_count_after": 125,
+  "damage_event_count_before": 12,
+  "definition_id": "lioraen_groveheart",
+  "elapsed_wall_seconds": 17.467,
+  "final_hp": 1749.12,
+  "final_position": {
+    "x": 100,
+    "y": 0,
+    "z": 100
+  },
+  "final_valid": true,
+  "hp_samples": [
+    {
+      "dead": false,
+      "hp": 2000,
+      "timestamp_ms": 89261
+    },
+    {
+      "dead": false,
+      "hp": 2000,
+      "timestamp_ms": 89482
+    },
+    {
+      "dead": false,
+      "hp": 2000,
+      "timestamp_ms": 89735
+    },
+    {
+      "dead": false,
+      "hp": 2000,
+      "timestamp_ms": 89988
+    },
+    {
+      "dead": false,
+      "hp": 2000,
+      "timestamp_ms": 90242
+    },
+    {
+      "dead": false,
+      "hp": 2000,
+      "timestamp_ms": 90509
+    },
+    {
+      "dead": false,
+      "hp": 2000,
+      "timestamp_ms": 90762
+    },
+    {
+      "dead": false,
+      "hp": 2000,
+      "timestamp_ms": 91014
+    },
+    {
+      "dead": false,
+      "hp": 2000,
+      "timestamp_ms": 91269
+    },
+    {
+      "dead": false,
+      "hp": 2000,
+      "timestamp_ms": 91523
+    },
+    {
+      "dead": false,
+      "hp": 2000,
+      "timestamp_ms": 91776
+    },
+    {
+      "dead": false,
+      "hp": 2000,
+      "timestamp_ms": 92030
+    },
+    {
+      "dead": false,
+      "hp": 2000,
+      "timestamp_ms": 92282
+    },
+    {
+      "dead": false,
+      "hp": 2000,
+      "timestamp_ms": 92535
+    },
+    {
+      "dead": false,
+      "hp": 2000,
+      "timestamp_ms": 92790
+    },
+    {
+      "dead": false,
+      "hp": 1979.5,
+      "timestamp_ms": 93044
+    },
+    {
+      "dead": false,
+      "hp": 1979.5,
+      "timestamp_ms": 93297
+    },
+    {
+      "dead": false,
+      "hp": 1959,
+      "timestamp_ms": 93549
+    },
+    {
+      "dead": false,
+      "hp": 1959,
+      "timestamp_ms": 93803
+    },
+    {
+      "dead": false,
+      "hp": 1938.5,
+      "timestamp_ms": 94057
+    },
+    {
+      "dead": false,
+      "hp": 1938.5,
+      "timestamp_ms": 94310
+    },
+    {
+      "dead": false,
+      "hp": 1908.4,
+      "timestamp_ms": 94565
+    },
+    {
+      "dead": false,
+      "hp": 1908.4,
+      "timestamp_ms": 94816
+    },
+    {
+      "dead": false,
+      "hp": 1902.16,
+      "timestamp_ms": 95071
+    },
+    {
+      "dead": false,
+      "hp": 1875.42,
+      "timestamp_ms": 95325
+    },
+    {
+      "dead": false,
+      "hp": 1875.42,
+      "timestamp_ms": 95579
+    },
+    {
+      "dead": false,
+      "hp": 1842.44,
+      "timestamp_ms": 95832
+    },
+    {
+      "dead": false,
+      "hp": 1842.44,
+      "timestamp_ms": 96083
+    },
+    {
+      "dead": false,
+      "hp": 1815.7,
+      "timestamp_ms": 96338
+    },
+    {
+      "dead": false,
+      "hp": 1809.46,
+      "timestamp_ms": 96595
+    },
+    {
+      "dead": false,
+      "hp": 1788.96,
+      "timestamp_ms": 96844
+    },
+    {
+      "dead": false,
+      "hp": 1780.32,
+      "timestamp_ms": 97098
+    },
+    {
+      "dead": false,
+      "hp": 1777.92,
+      "timestamp_ms": 97350
+    },
+    {
+      "dead": false,
+      "hp": 1777.92,
+      "timestamp_ms": 97605
+    },
+    {
+      "dead": false,
+      "hp": 1770.72,
+      "timestamp_ms": 97859
+    },
+    {
+      "dead": false,
+      "hp": 1768.32,
+      "timestamp_ms": 98111
+    },
+    {
+      "dead": false,
+      "hp": 1768.32,
+      "timestamp_ms": 98365
+    },
+    {
+      "dead": false,
+      "hp": 1763.52,
+      "timestamp_ms": 98616
+    },
+    {
+      "dead": false,
+      "hp": 1761.12,
+      "timestamp_ms": 98872
+    },
+    {
+      "dead": false,
+      "hp": 1761.12,
+      "timestamp_ms": 99125
+    },
+    {
+      "dead": false,
+      "hp": 1758.72,
+      "timestamp_ms": 99378
+    },
+    {
+      "dead": false,
+      "hp": 1753.92,
+      "timestamp_ms": 99632
+    },
+    {
+      "dead": false,
+      "hp": 1753.92,
+      "timestamp_ms": 99884
+    },
+    {
+      "dead": false,
+      "hp": 1749.12,
+      "timestamp_ms": 100138
+    },
+    {
+      "dead": false,
+      "hp": 1749.12,
+      "timestamp_ms": 100392
+    },
+    {
+      "dead": false,
+      "hp": 1749.12,
+      "timestamp_ms": 100646
+    },
+    {
+      "dead": false,
+      "hp": 1749.12,
+      "timestamp_ms": 100899
+    },
+    {
+      "dead": false,
+      "hp": 1749.12,
+      "timestamp_ms": 101151
+    },
+    {
+      "dead": false,
+      "hp": 1749.12,
+      "timestamp_ms": 101406
+    },
+    {
+      "dead": false,
+      "hp": 1749.12,
+      "timestamp_ms": 101659
+    },
+    {
+      "dead": false,
+      "hp": 1749.12,
+      "timestamp_ms": 101913
+    },
+    {
+      "dead": false,
+      "hp": 1749.12,
+      "timestamp_ms": 102165
+    },
+    {
+      "dead": false,
+      "hp": 1749.12,
+      "timestamp_ms": 102418
+    },
+    {
+      "dead": false,
+      "hp": 1749.12,
+      "timestamp_ms": 102672
+    },
+    {
+      "dead": false,
+      "hp": 1749.12,
+      "timestamp_ms": 102925
+    },
+    {
+      "dead": false,
+      "hp": 1749.12,
+      "timestamp_ms": 103179
+    },
+    {
+      "dead": false,
+      "hp": 1749.12,
+      "timestamp_ms": 103434
+    },
+    {
+      "dead": false,
+      "hp": 1749.12,
+      "timestamp_ms": 103685
+    },
+    {
+      "dead": false,
+      "hp": 1749.12,
+      "timestamp_ms": 103940
+    },
+    {
+      "dead": false,
+      "hp": 1749.12,
+      "timestamp_ms": 104193
+    },
+    {
+      "dead": false,
+      "hp": 1749.12,
+      "timestamp_ms": 104445
+    },
+    {
+      "dead": false,
+      "hp": 1749.12,
+      "timestamp_ms": 104700
+    },
+    {
+      "dead": false,
+      "hp": 1749.12,
+      "timestamp_ms": 104952
+    },
+    {
+      "dead": false,
+      "hp": 1749.12,
+      "timestamp_ms": 105207
+    },
+    {
+      "dead": false,
+      "hp": 1749.12,
+      "timestamp_ms": 105460
+    },
+    {
+      "dead": false,
+      "hp": 1749.12,
+      "timestamp_ms": 105713
+    },
+    {
+      "dead": false,
+      "hp": 1749.12,
+      "timestamp_ms": 105967
+    },
+    {
+      "dead": false,
+      "hp": 1749.12,
+      "timestamp_ms": 106220
+    },
+    {
+      "dead": false,
+      "hp": 1749.12,
+      "timestamp_ms": 106473
+    }
+  ],
+  "initial_hp": 2000,
+  "initial_position": {
+    "x": 100,
+    "y": 0,
+    "z": 100
+  },
+  "maximum_hp": 2000,
+  "navigation_snapshot": {
+    "iteration": 1,
+    "map_rid": "RID(20684562497536)",
+    "ready": true,
+    "regions": 1,
+    "units": [
+      {
+        "command": "build",
+        "direct_path_first": "(-78.47971, 0.05, -98.94741)",
+        "direct_path_last": "(-76, 0.05, -100)",
+        "direct_path_size": 2,
+        "source": "(-78.47971, 0, -98.9474)",
+        "source_closest": "(-78.47971, 0.05, -98.94741)",
+        "state": 0,
+        "target": "(-76, 0.05, -100)",
+        "target_closest": "(-76, 0.05, -100)",
+        "unit_id": "barrosan_worker"
+      },
+      {
+        "command": "build",
+        "direct_path_first": "(-73.27904, 0.05, -102.2758)",
+        "direct_path_last": "(-76, 0.05, -100)",
+        "direct_path_size": 2,
+        "source": "(-73.27902, 0, -102.2757)",
+        "source_closest": "(-73.27904, 0.05, -102.2758)",
+        "state": 0,
+        "target": "(-76, 0.05, -100)",
+        "target_closest": "(-76, 0.05, -100)",
+        "unit_id": "barrosan_worker"
+      },
+      {
+        "command": "build",
+        "direct_path_first": "(-80.51095, 0.05, -99.81339)",
+        "direct_path_last": "(-76, 0.05, -100)",
+        "direct_path_size": 2,
+        "source": "(-80.51094, 0, -99.81339)",
+        "source_closest": "(-80.51095, 0.05, -99.81339)",
+        "state": 0,
+        "target": "(-76, 0.05, -100)",
+        "target_closest": "(-76, 0.05, -100)",
+        "unit_id": "barrosan_worker"
+      },
+      {
+        "command": "gather",
+        "direct_path_first": "(70.61147, 0.05, 86.15176)",
+        "direct_path_last": "(0, 0.05, 30)",
+        "direct_path_size": 2,
+        "source": "(70.61149, 0, 86.15177)",
+        "source_closest": "(70.61147, 0.05, 86.15176)",
+        "state": 4,
+        "target": "(0, 0.05, 30)",
+        "target_closest": "(0, 0.05, 30)",
+        "unit_id": "lioraen_worker"
+      },
+      {
+        "command": "gather",
+        "direct_path_first": "(59.95328, 0.05, 83.08527)",
+        "direct_path_last": "(0, 0.05, 30)",
+        "direct_path_size": 2,
+        "source": "(59.95325, 0, 83.08528)",
+        "source_closest": "(59.95328, 0.05, 83.08527)",
+        "state": 4,
+        "target": "(0, 0.05, 30)",
+        "target_closest": "(0, 0.05, 30)",
+        "unit_id": "lioraen_worker"
+      },
+      {
+        "command": "gather",
+        "direct_path_first": "(105.1138, 0.05, 92.1541)",
+        "direct_path_last": "(108.4853, 0.05, 87.27211)",
+        "direct_path_size": 2,
+        "source": "(105.1138, 0, 92.15408)",
+        "source_closest": "(105.1138, 0.05, 92.1541)",
+        "state": 4,
+        "target": "(108.4853, 0.05, 87.27211)",
+        "target_closest": "(108.4853, 0.05, 87.27211)",
+        "unit_id": "lioraen_worker"
+      },
+      {
+        "command": "attack",
+        "direct_path_first": "(97.04108, 0.05, 97.27618)",
+        "direct_path_last": "(91.28476, 0.05, 90.91187)",
+        "direct_path_size": 3,
+        "source": "(97.04108, 0, 97.27619)",
+        "source_closest": "(97.04108, 0.05, 97.27618)",
+        "state": 0,
+        "target": "(91.28476, 0.05, 90.91187)",
+        "target_closest": "(91.28476, 0.05, 90.91187)",
+        "unit_id": "lioraen_hero_warden"
+      },
+      {
+        "command": "gather",
+        "direct_path_first": "(56.86395, 0.05, 81.84793)",
+        "direct_path_last": "(0, 0.05, 30)",
+        "direct_path_size": 2,
+        "source": "(56.86396, 0, 81.84792)",
+        "source_closest": "(56.86395, 0.05, 81.84793)",
+        "state": 4,
+        "target": "(0, 0.05, 30)",
+        "target_closest": "(0, 0.05, 30)",
+        "unit_id": "lioraen_worker"
+      },
+      {
+        "command": "gather",
+        "direct_path_first": "(108.0954, 0.05, 94.46982)",
+        "direct_path_last": "(109.1924, 0.05, 93.63611)",
+        "direct_path_size": 2,
+        "source": "(108.0954, 0, 94.46984)",
+        "source_closest": "(108.0954, 0.05, 94.46982)",
+        "state": 4,
+        "target": "(109.1924, 0.05, 93.63608)",
+        "target_closest": "(109.1924, 0.05, 93.63611)",
+        "unit_id": "lioraen_worker"
+      },
+      {
+        "command": "return",
+        "direct_path_first": "(97.53841, 0.05, 91.78429)",
+        "direct_path_last": "(99.99997, 0.05, 99.99997)",
+        "direct_path_size": 2,
+        "source": "(97.53841, 0, 91.7843)",
+        "source_closest": "(97.53841, 0.05, 91.78429)",
+        "state": 5,
+        "target": "(99.99998, 0.05, 99.99998)",
+        "target_closest": "(99.99997, 0.05, 99.99997)",
+        "unit_id": "lioraen_worker"
+      },
+      {
+        "command": "gather",
+        "direct_path_first": "(57.22572, 0.05, 83.8757)",
+        "direct_path_last": "(0, 0.05, 30)",
+        "direct_path_size": 2,
+        "source": "(57.22575, 0, 83.87571)",
+        "source_closest": "(57.22572, 0.05, 83.8757)",
+        "state": 4,
+        "target": "(0, 0.05, 30)",
+        "target_closest": "(0, 0.05, 30)",
+        "unit_id": "lioraen_worker"
+      },
+      {
+        "command": "attack_move",
+        "direct_path_first": "(82.25954, 0.05, 80.27908)",
+        "direct_path_last": "(-100, 0.05, -100)",
+        "direct_path_size": 2,
+        "source": "(82.25954, 0, 80.2791)",
+        "source_closest": "(82.25954, 0.05, 80.27908)",
+        "state": 2,
+        "target": "(-100, 0.05, -100)",
+        "target_closest": "(-100, 0.05, -100)",
+        "unit_id": "lioraen_thorn_ranger"
+      },
+      {
+        "command": "attack_move",
+        "direct_path_first": "(93.57982, 0.05, 92.34941)",
+        "direct_path_last": "(-100, 0.05, -100)",
+        "direct_path_size": 2,
+        "source": "(93.57983, 0, 92.34942)",
+        "source_closest": "(93.57982, 0.05, 92.34941)",
+        "state": 2,
+        "target": "(-100, 0.05, -100)",
+        "target_closest": "(-100, 0.05, -100)",
+        "unit_id": "lioraen_bloomdancer"
+      },
+      {
+        "command": "attack_move",
+        "direct_path_first": "(92.42484, 0.05, 91.18686)",
+        "direct_path_last": "(-100, 0.05, -100)",
+        "direct_path_size": 2,
+        "source": "(92.42484, 0, 91.18686)",
+        "source_closest": "(92.42484, 0.05, 91.18686)",
+        "state": 2,
+        "target": "(-100, 0.05, -100)",
+        "target_closest": "(-100, 0.05, -100)",
+        "unit_id": "lioraen_rootwarden_guard"
+      },
+      {
+        "command": "attack_move",
+        "direct_path_first": "(93.29733, 0.05, 93.67667)",
+        "direct_path_last": "(-100, 0.05, -100)",
+        "direct_path_size": 2,
+        "source": "(93.29732, 0, 93.67666)",
+        "source_closest": "(93.29733, 0.05, 93.67667)",
+        "state": 2,
+        "target": "(-100, 0.05, -100)",
+        "target_closest": "(-100, 0.05, -100)",
+        "unit_id": "lioraen_bloomdancer"
+      },
+      {
+        "command": "attack_move",
+        "direct_path_first": "(92.13152, 0.05, 92.50082)",
+        "direct_path_last": "(-100, 0.05, -100)",
+        "direct_path_size": 2,
+        "source": "(92.13154, 0, 92.50082)",
+        "source_closest": "(92.13152, 0.05, 92.50082)",
+        "state": 2,
+        "target": "(-100, 0.05, -100)",
+        "target_closest": "(-100, 0.05, -100)",
+        "unit_id": "lioraen_rootwarden_guard"
+      },
+      {
+        "command": "attack",
+        "direct_path_first": "(91.81163, 0.05, 94.26322)",
+        "direct_path_last": "(89.18552, 0.05, 88.1465)",
+        "direct_path_size": 3,
+        "source": "(91.81164, 0, 94.26322)",
+        "source_closest": "(91.81163, 0.05, 94.26322)",
+        "state": 0,
+        "target": "(89.18552, 0.05, 88.1465)",
+        "target_closest": "(89.18552, 0.05, 88.1465)",
+        "unit_id": "lioraen_thorn_ranger"
+      }
+    ]
+  },
+  "player_assault_force": [
+    {
+      "dead": false,
+      "definition_id": "barrosan_spear_guard",
+      "hp": 180,
+      "max_hp": 180,
+      "navigation_command": "attack",
+      "position": {
+        "x": 26.2637462615967,
+        "y": 0,
+        "z": 17.4120693206787
+      },
+      "runtime_id": "171060497080",
+      "state": 0,
+      "team": 0
+    },
+    {
+      "dead": false,
+      "definition_id": "barrosan_hero_thane",
+      "hp": 415.3,
+      "max_hp": 493,
+      "navigation_command": "attack",
+      "position": {
+        "x": 76.3244018554688,
+        "y": 0,
+        "z": 78.8322372436523
+      },
+      "runtime_id": "171513481935",
+      "state": 3,
+      "team": 0
+    },
+    {
+      "dead": false,
+      "definition_id": "barrosan_crag_archer",
+      "hp": 90,
+      "max_hp": 90,
+      "navigation_command": "attack",
+      "position": {
+        "x": 68.0523529052734,
+        "y": 0,
+        "z": 61.8974151611328
+      },
+      "runtime_id": "401411673411",
+      "state": 3,
+      "team": 0
+    },
+    {
+      "dead": false,
+      "definition_id": "barrosan_crag_archer",
+      "hp": 90,
+      "max_hp": 90,
+      "navigation_command": "attack",
+      "position": {
+        "x": 67.0416030883789,
+        "y": 0,
+        "z": 61.5719947814941
+      },
+      "runtime_id": "513533807988",
+      "state": 3,
+      "team": 0
+    },
+    {
+      "dead": false,
+      "definition_id": "barrosan_crag_archer",
+      "hp": 90,
+      "max_hp": 90,
+      "navigation_command": "attack",
+      "position": {
+        "x": 67.2351760864258,
+        "y": 0,
+        "z": 60.5906105041504
+      },
+      "runtime_id": "625404284323",
+      "state": 3,
+      "team": 0
+    },
+    {
+      "dead": false,
+      "definition_id": "barrosan_crag_archer",
+      "hp": 90,
+      "max_hp": 90,
+      "navigation_command": "attack",
+      "position": {
+        "x": 68.2785186767578,
+        "y": 0,
+        "z": 60.9081573486328
+      },
+      "runtime_id": "737274760659",
+      "state": 3,
+      "team": 0
+    }
+  ],
+  "position_samples": [
+    {
+      "position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "state": null,
+      "timestamp_ms": 89261
+    },
+    {
+      "position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "state": null,
+      "timestamp_ms": 89482
+    },
+    {
+      "position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "state": null,
+      "timestamp_ms": 89735
+    },
+    {
+      "position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "state": null,
+      "timestamp_ms": 89988
+    },
+    {
+      "position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "state": null,
+      "timestamp_ms": 90242
+    },
+    {
+      "position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "state": null,
+      "timestamp_ms": 90509
+    },
+    {
+      "position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "state": null,
+      "timestamp_ms": 90762
+    },
+    {
+      "position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "state": null,
+      "timestamp_ms": 91014
+    },
+    {
+      "position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "state": null,
+      "timestamp_ms": 91269
+    },
+    {
+      "position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "state": null,
+      "timestamp_ms": 91523
+    },
+    {
+      "position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "state": null,
+      "timestamp_ms": 91776
+    },
+    {
+      "position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "state": null,
+      "timestamp_ms": 92030
+    },
+    {
+      "position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "state": null,
+      "timestamp_ms": 92282
+    },
+    {
+      "position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "state": null,
+      "timestamp_ms": 92535
+    },
+    {
+      "position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "state": null,
+      "timestamp_ms": 92790
+    },
+    {
+      "position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "state": null,
+      "timestamp_ms": 93044
+    },
+    {
+      "position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "state": null,
+      "timestamp_ms": 93297
+    },
+    {
+      "position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "state": null,
+      "timestamp_ms": 93549
+    },
+    {
+      "position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "state": null,
+      "timestamp_ms": 93803
+    },
+    {
+      "position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "state": null,
+      "timestamp_ms": 94057
+    },
+    {
+      "position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "state": null,
+      "timestamp_ms": 94310
+    },
+    {
+      "position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "state": null,
+      "timestamp_ms": 94565
+    },
+    {
+      "position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "state": null,
+      "timestamp_ms": 94816
+    },
+    {
+      "position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "state": null,
+      "timestamp_ms": 95071
+    },
+    {
+      "position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "state": null,
+      "timestamp_ms": 95325
+    },
+    {
+      "position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "state": null,
+      "timestamp_ms": 95579
+    },
+    {
+      "position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "state": null,
+      "timestamp_ms": 95832
+    },
+    {
+      "position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "state": null,
+      "timestamp_ms": 96083
+    },
+    {
+      "position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "state": null,
+      "timestamp_ms": 96338
+    },
+    {
+      "position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "state": null,
+      "timestamp_ms": 96595
+    },
+    {
+      "position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "state": null,
+      "timestamp_ms": 96844
+    },
+    {
+      "position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "state": null,
+      "timestamp_ms": 97098
+    },
+    {
+      "position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "state": null,
+      "timestamp_ms": 97350
+    },
+    {
+      "position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "state": null,
+      "timestamp_ms": 97605
+    },
+    {
+      "position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "state": null,
+      "timestamp_ms": 97859
+    },
+    {
+      "position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "state": null,
+      "timestamp_ms": 98111
+    },
+    {
+      "position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "state": null,
+      "timestamp_ms": 98365
+    },
+    {
+      "position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "state": null,
+      "timestamp_ms": 98616
+    },
+    {
+      "position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "state": null,
+      "timestamp_ms": 98872
+    },
+    {
+      "position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "state": null,
+      "timestamp_ms": 99125
+    },
+    {
+      "position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "state": null,
+      "timestamp_ms": 99378
+    },
+    {
+      "position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "state": null,
+      "timestamp_ms": 99632
+    },
+    {
+      "position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "state": null,
+      "timestamp_ms": 99884
+    },
+    {
+      "position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "state": null,
+      "timestamp_ms": 100138
+    },
+    {
+      "position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "state": null,
+      "timestamp_ms": 100392
+    },
+    {
+      "position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "state": null,
+      "timestamp_ms": 100646
+    },
+    {
+      "position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "state": null,
+      "timestamp_ms": 100899
+    },
+    {
+      "position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "state": null,
+      "timestamp_ms": 101151
+    },
+    {
+      "position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "state": null,
+      "timestamp_ms": 101406
+    },
+    {
+      "position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "state": null,
+      "timestamp_ms": 101659
+    },
+    {
+      "position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "state": null,
+      "timestamp_ms": 101913
+    },
+    {
+      "position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "state": null,
+      "timestamp_ms": 102165
+    },
+    {
+      "position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "state": null,
+      "timestamp_ms": 102418
+    },
+    {
+      "position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "state": null,
+      "timestamp_ms": 102672
+    },
+    {
+      "position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "state": null,
+      "timestamp_ms": 102925
+    },
+    {
+      "position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "state": null,
+      "timestamp_ms": 103179
+    },
+    {
+      "position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "state": null,
+      "timestamp_ms": 103434
+    },
+    {
+      "position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "state": null,
+      "timestamp_ms": 103685
+    },
+    {
+      "position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "state": null,
+      "timestamp_ms": 103940
+    },
+    {
+      "position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "state": null,
+      "timestamp_ms": 104193
+    },
+    {
+      "position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "state": null,
+      "timestamp_ms": 104445
+    },
+    {
+      "position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "state": null,
+      "timestamp_ms": 104700
+    },
+    {
+      "position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "state": null,
+      "timestamp_ms": 104952
+    },
+    {
+      "position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "state": null,
+      "timestamp_ms": 105207
+    },
+    {
+      "position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "state": null,
+      "timestamp_ms": 105460
+    },
+    {
+      "position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "state": null,
+      "timestamp_ms": 105713
+    },
+    {
+      "position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "state": null,
+      "timestamp_ms": 105967
+    },
+    {
+      "position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "state": null,
+      "timestamp_ms": 106220
+    },
+    {
+      "position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "state": null,
+      "timestamp_ms": 106473
+    }
+  ],
+  "reissues": [],
+  "runtime_id": "171966466790",
+  "terminal_disposition": "BLOCKED_R1G_PLAYER_ASSAULT_FORCE_ELIMINATED"
+}

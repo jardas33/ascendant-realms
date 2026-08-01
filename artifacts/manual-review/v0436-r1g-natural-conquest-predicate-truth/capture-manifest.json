@@ -1,0 +1,11 @@
+{
+  "schema": "v0436-r1g-natural-conquest-predicate-truth-capture-v1",
+  "status": "CAPTURE_COMPLETED",
+  "source_sha": "cce2fea33accf68d0494385b97a75b72d03d5e88",
+  "branch": "codex/v0436-first-complete-conquest-victory",
+  "sessions": [
+    "A",
+    "B"
+  ],
+  "pack": "artifacts/manual-review/v0436-r1g-natural-conquest-predicate-truth/"
+}
