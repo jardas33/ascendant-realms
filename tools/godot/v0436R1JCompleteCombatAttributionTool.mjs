@@ -218,7 +218,7 @@ async function buildRootPack() {
   await writeJson(path.join(pack, 'damage-formula-audit.json'), damageAudit());
 
   const graphNames = [
-    ['complete-command-event-graph.json', 'public_orders', 'unit_commands'],
+    ['complete-command-event-graph.json', ['public_orders', 'orders'], ['unit_commands', 'commands']],
     ['complete-target-transition-graph.json', 'transitions'],
     ['complete-attack-event-graph.json', 'attacks'],
     ['complete-projectile-event-graph.json', 'projectiles'],
@@ -227,7 +227,10 @@ async function buildRootPack() {
   ];
   for (const [filename, ...keys] of graphNames) {
     const value = {};
-    for (const key of keys) value[key] = flatten(sessions, key === 'transitions' ? 'transitions' : key);
+    for (const key of keys) {
+      if (Array.isArray(key)) value[key[0]] = flatten(sessions, key[1]);
+      else value[key] = flatten(sessions, key);
+    }
     value.schema = `v0436-r1j-${filename.replace('.json', '')}-v1`;
     await writeJson(path.join(pack, filename), value);
   }
