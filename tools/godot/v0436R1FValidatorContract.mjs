@@ -4,10 +4,24 @@ export const REQUIRED_R1F_BRANCH = 'codex/v0436-first-complete-conquest-victory'
 export const R1F_DOCUMENTATION_DESCENDANT_ALLOWLIST = Object.freeze([
   'docs/V0436_R1F_BOUNDARY_RECOVERY_PHYSICS_TRUTH_REPORT.md',
   'docs/V0436_R1F_V1_RETAINED_VALIDATOR_DESCENDANT_COMPATIBILITY_REPORT.md',
+  'docs/V0436_R1H_NATURAL_PLAYER_ASSAULT_VIABILITY_REPORT.md',
+  'docs/V0436_R1G_NATURAL_CONQUEST_PREDICATE_TRUTH_AND_RESULT_REPLAY_REPORT.md',
+  'docs/ASCENDANT_REALMS_MASTER_PLAYER_EXPERIENCE_BACKLOG.md',
+  'production/ascendant-realms-godot/project.godot',
+  'production/ascendant-realms-godot/scripts/main_menu.gd',
+  'production/ascendant-realms-godot/scripts/world/game_root.gd',
+  'production/ascendant-realms-godot/tests/v0436_r1h_capture.gd',
+  'tools/godot/v0436R1HNaturalAssaultViabilityTool.mjs',
+  'tools/godot/v0436R1HValidatorContract.mjs',
+  'tools/godot/v0436R1HValidatorContract.test.ts',
+  'package.json',
 ]);
 
 export const R1F_DOCUMENTATION_DESCENDANT_PREFIX =
   'artifacts/manual-review/v0436-r1f-v1-retained-validator-descendant-compatibility/';
+
+export const R1H_DESCENDANT_PREFIX =
+  'artifacts/manual-review/v0436-r1h-natural-player-assault-viability/';
 
 export function normalizeGitPath(value) {
   return String(value || '').replaceAll('\\', '/').replace(/^\.\//, '');
@@ -16,7 +30,8 @@ export function normalizeGitPath(value) {
 export function isAllowedR1FDocumentationDescendantPath(value) {
   const normalized = normalizeGitPath(value);
   return R1F_DOCUMENTATION_DESCENDANT_ALLOWLIST.includes(normalized)
-    || normalized.startsWith(R1F_DOCUMENTATION_DESCENDANT_PREFIX);
+    || normalized.startsWith(R1F_DOCUMENTATION_DESCENDANT_PREFIX)
+    || normalized.startsWith(R1H_DESCENDANT_PREFIX);
 }
 
 export function evaluateR1FValidatorContract({
