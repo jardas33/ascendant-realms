@@ -1,7 +1,7 @@
 {
   "schema": "v0436-r1h-natural-player-assault-viability-validator-v1",
   "branch": "codex/v0436-first-complete-conquest-victory",
-  "validatedHead": "2f18357a64f3a8869ecf52481136cbc799370e5f",
+  "validatedHead": "bebd64ef511a36ea10a99a8cda80486c5f11ebc7",
   "sourceSha": "2f18357a64f3a8869ecf52481136cbc799370e5f",
   "sessions": {
     "A": {
@@ -40,7 +40,7 @@
   "failures": [],
   "passed": true,
   "status": "BLOCKED_R1H_PREPARED_ASSAULT_FORCE_ELIMINATED",
-  "source_sha": "2f18357a64f3a8869ecf52481136cbc799370e5f",
+  "source_sha": "bebd64ef511a36ea10a99a8cda80486c5f11ebc7",
   "evidence_source_shas": [
     "2f18357a64f3a8869ecf52481136cbc799370e5f",
     "2f18357a64f3a8869ecf52481136cbc799370e5f"

@@ -81,7 +81,9 @@ The retained R1F boundary-physics validator was re-run after the Stage-A descend
 
 The retained R1B navigation-behavior validator remains a truthful pre-existing blocker: its retained boundary evidence is sourced from `6b14ba305afc4b3090d57f400da885550d512183`, reports `BLOCKED_BOUNDARY_RECOVERY`, and fails its historical speed/no-teleport predicates. The retained v0.436 conquest-victory validator also remains blocked with `BLOCKED_PREEXISTING_NAVIGATION_SYSTEM` because its three repaired headed attempts did not produce a genuine Victory result. These retained failures are not R1H failures and were not weakened or rewritten.
 
-The final publication commit and exact CI are recorded in the closeout update to this report.
+Final publication commit: `bebd64ef511a36ea10a99a8cda80486c5f11ebc7`.
+Final publication exact GitHub Actions: `30688551166` / run 664 - success for that exact SHA.
+PR #10 remains open, draft, and unmerged.
 
 ## Final disposition and next action
 
