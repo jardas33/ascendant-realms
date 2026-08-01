@@ -40,6 +40,7 @@ V0436R1DStartupCapture="*res://tests/v0436_r1d_startup_capture.gd"
 V0436R1GCapture="*res://tests/v0436_r1g_capture.gd"
 V0436R1HCapture="*res://tests/v0436_r1h_capture.gd"
 V0436R1JCapture="*res://tests/v0436_r1j_capture.gd"
+V0436R1KCapture="*res://tests/v0436_r1k_capture.gd"
 
 [debug]
 
