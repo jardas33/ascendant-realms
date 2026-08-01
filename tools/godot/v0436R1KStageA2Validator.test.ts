@@ -154,4 +154,26 @@ describe('v0.436-R1K Stage-A.2c timing and arrival-tail contract', () => {
     expect(source).toContain('replacement-1');
     expect(source).toContain('replacement-2');
   });
+
+  it('defines an isolated replacement-3 route with fail-closed provenance guards', () => {
+    const source = readFileSync(new URL('./v0436R1KControlledCombatMatrixTool.mjs', import.meta.url), 'utf8');
+    expect(source).toContain("const STAGE_A2D_ATTEMPT_ID = 'stage-a2-compact-spacing-settlement-replacement-3'");
+    expect(source).toContain('const stageA2DPack = path.join(pack');
+    expect(source).toContain("command === 'capture-stage-a2-replacement-3'");
+    expect(source).toContain("command === 'validate-stage-a2-replacement-3'");
+    expect(source).toContain('refusing to overwrite evidence');
+    expect(source).toContain('scopedImplementationClean()');
+    expect(source).toContain('currentOriginSha()');
+    expect(source).toContain('headed_launch_count: 1');
+    expect(source).toContain('expectedAttemptId: STAGE_A2D_ATTEMPT_ID');
+    expect(source).toContain("'01_STAGE_A2D_START.png'");
+    expect(source).toContain('replacement-2 provenance appeared in replacement-3 output');
+  });
+
+  it('keeps replacement-3 output outside final matrix assembly', () => {
+    const source = readFileSync(new URL('./v0436R1KControlledCombatMatrixTool.mjs', import.meta.url), 'utf8');
+    const assemblyBody = source.slice(source.indexOf('async function assemble()'), source.indexOf('async function focused()'));
+    expect(assemblyBody).not.toContain('stageA2DPack');
+    expect(assemblyBody).not.toContain('stage-a2-compact-spacing-settlement-replacement-3');
+  });
 });

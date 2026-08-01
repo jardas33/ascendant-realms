@@ -31,7 +31,9 @@ var spacing_measurement: Dictionary = {}
 var natural_mode := false
 var stage_a2_mode := false
 var stage_a2b_mode := false
+var stage_a2d_mode := false
 var stage_a2b_output_root_abs := ""
+var stage_a2d_attempt_id := ""
 var stage_a2b_output_failed := false
 var stage_a2b_writer_records: Array = []
 var spacing_assignments: Array = []
@@ -52,6 +54,10 @@ func _ready() -> void:
 	natural_mode = OS.get_environment("ASCENDANT_V0436_R1K_NATURAL_CAPTURE") == "1"
 	stage_a2_mode = OS.get_environment("ASCENDANT_V0436_R1K_STAGE_A2") == "1"
 	stage_a2b_mode = OS.get_environment("ASCENDANT_V0436_R1K_STAGE_A2B") == "1"
+	stage_a2d_mode = OS.get_environment("ASCENDANT_V0436_R1K_STAGE_A2D") == "1"
+	if stage_a2b_mode and stage_a2d_mode:
+		get_tree().quit(2)
+		return
 	if stage_a2b_mode:
 		stage_a2_mode = true
 		stage_a2b_output_root_abs = OS.get_environment("ASCENDANT_V0436_R1K_OUTPUT_ROOT_ABS").simplify_path()
@@ -62,18 +68,28 @@ func _ready() -> void:
 			var probe_ok := _stage_a2b_run_output_probe()
 			get_tree().quit(0 if probe_ok else 2)
 			return
+	if stage_a2d_mode:
+		stage_a2_mode = true
+		stage_a2d_attempt_id = OS.get_environment("ASCENDANT_V0436_R1K_STAGE_A2_ATTEMPT_ID")
+		stage_a2b_output_root_abs = OS.get_environment("ASCENDANT_V0436_R1K_OUTPUT_ROOT_ABS").simplify_path()
+		if stage_a2d_attempt_id != "stage-a2-compact-spacing-settlement-replacement-3" or not _stage_a2d_configure_root(stage_a2b_output_root_abs):
+			get_tree().quit(2)
+			return
 	session = "%s-rep-%d" % [cell_id, repetition]
 	if stage_a2_mode:
 		cell_id = "hero-spear-compact-thorn-ranger-first"
 		repetition = 1
-		session = "stage-a2b-compact-spacing-settlement-replacement-2" if stage_a2b_mode else "stage-a2a-compact-spacing-settlement-replacement-1"
+		if stage_a2d_mode:
+			session = stage_a2d_attempt_id
+		else:
+			session = "stage-a2b-compact-spacing-settlement-replacement-2" if stage_a2b_mode else "stage-a2a-compact-spacing-settlement-replacement-1"
 		var diagnostic_output := OS.get_environment("ASCENDANT_V0436_R1K_STAGE_A2_OUT")
 		if diagnostic_output != "": stage_a2_output_override = diagnostic_output
 	if natural_mode:
 		cell_id = OS.get_environment("ASCENDANT_V0436_R1K_NATURAL_SESSION")
 		session = cell_id
 	out_path = R1K_OUT + "%s/rep-%d/" % [cell_id, repetition]
-	if stage_a2b_mode:
+	if stage_a2b_mode or stage_a2d_mode:
 		out_path = stage_a2b_output_root_abs + "/"
 	elif stage_a2_mode:
 		out_path = stage_a2_output_override if stage_a2_output_override != "" else R1K_OUT + "diagnostics/stage-a2-compact-spacing-settlement/"
@@ -90,12 +106,23 @@ func _ready() -> void:
 func _stage_a2b_path(name: String) -> String:
 	return stage_a2b_output_root_abs + "/" + name
 
+func _stage_a2_frame_suffix() -> String:
+	if stage_a2d_mode: return "A2D"
+	if stage_a2b_mode: return "A2B"
+	return "A2A"
+
 func _stage_a2b_configure_root(raw_root: String) -> bool:
 	var repository_root := OS.get_environment("ASCENDANT_V0436_R1K_REPO_ROOT_ABS").replace("\\", "/").simplify_path()
 	var canonical_root := raw_root.replace("\\", "/").simplify_path()
 	if raw_root.is_empty() or not raw_root.is_absolute_path() or raw_root.contains("..") or canonical_root.is_empty(): return false
 	if repository_root.is_empty() or not canonical_root.begins_with(repository_root + "/"): return false
 	return DirAccess.make_dir_recursive_absolute(canonical_root) == OK
+
+func _stage_a2d_configure_root(raw_root: String) -> bool:
+	var repository_root := OS.get_environment("ASCENDANT_V0436_R1K_REPO_ROOT_ABS").replace("\\", "/").simplify_path()
+	var canonical_root := raw_root.replace("\\", "/").simplify_path()
+	var expected_root := repository_root + "/artifacts/manual-review/v0436-r1k-controlled-combat-variable-isolation/diagnostics/stage-a2-compact-spacing-settlement-replacement-3"
+	return not repository_root.is_empty() and canonical_root == expected_root and DirAccess.make_dir_recursive_absolute(canonical_root) == OK
 
 func _stage_a2b_record(record: Dictionary) -> void:
 	stage_a2b_writer_records.append(record)
@@ -156,7 +183,7 @@ func _stage_a2b_run_output_probe() -> bool:
 	return code == OK and png_record.exists and png_record.readable and png_record.bytes > 0 and json_record.exists and json_record.readable and json_record.bytes > 0
 
 func _save(name: String) -> void:
-	if stage_a2b_mode:
+	if stage_a2b_mode or stage_a2d_mode:
 		await _stage_a2b_save_png(name)
 		return
 	await RenderingServer.frame_post_draw
@@ -166,7 +193,7 @@ func _save(name: String) -> void:
 	frame_names.append(name)
 
 func _save_json(name: String, value: Dictionary) -> void:
-	if stage_a2b_mode:
+	if stage_a2b_mode or stage_a2d_mode:
 		_stage_a2b_save_json(name, value)
 		return
 	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(out_path))
@@ -334,7 +361,7 @@ func _issue_stage_a2_spacing_commands() -> Dictionary:
 		spacing_assignments.append(assignment)
 		spacing_public_commands.append({"kind":"attack_move_destination", "runtime_id":str(unit.get_instance_id()), "destination":_vec(destination), "accepted":accepted, "timestamp_ms":Time.get_ticks_msec()})
 		if not accepted: return _stage_a2_spacing_metrics("BLOCKED_R1K_SPACING_PUBLIC_COMMAND_REJECTED", "public attack-move command was rejected during compact-spacing staging", {"attacks":attack_events.size(), "projectiles":projectile_events.size(), "damage":damage_events.size(), "deaths":death_events.size()}, 0, 0.0)
-	if stage_a2b_mode: await _save("02_STAGE_A2B_DESTINATIONS_ASSIGNED.png")
+	if stage_a2b_mode or stage_a2d_mode: await _save("02_STAGE_%s_DESTINATIONS_ASSIGNED.png" % _stage_a2_frame_suffix())
 	else: await _save("02_STAGE_A2A_DESTINATIONS_ASSIGNED.png")
 	var baseline := {"attacks":attack_events.size(), "projectiles":projectile_events.size(), "damage":damage_events.size(), "deaths":death_events.size(), "target_transitions":target_transitions.size()}
 	var deadline := Time.get_ticks_msec() + 20000
@@ -366,14 +393,14 @@ func _issue_stage_a2_spacing_commands() -> Dictionary:
 		await _wait_seconds(R1K_SETTLEMENT_SAMPLE_INTERVAL)
 	if not settled:
 		return _stage_a2_spacing_metrics("BLOCKED_R1K_SPACING_DESTINATION_NOT_REACHED", "public-command destinations did not settle inside the bounded diagnostic window", baseline, consecutive, 0.0 if hold_started < 0 else float(Time.get_ticks_msec() - hold_started) / 1000.0)
-	if stage_a2b_mode: await _save("03_STAGE_A2B_ARRIVAL_HOLD_PROVEN.png")
+	if stage_a2b_mode or stage_a2d_mode: await _save("03_STAGE_%s_ARRIVAL_HOLD_PROVEN.png" % _stage_a2_frame_suffix())
 	else: await _save("03_STAGE_A2A_ARRIVAL_HOLD_PROVEN.png")
 	await _select_many(frozen_controlled_force)
 	var stop_accepted := bool(rts.issue_stop())
 	spacing_public_stop_count += 1 if stop_accepted else 0
 	spacing_public_commands.append({"kind":"stop", "runtime_ids":frozen_controlled_force.map(func(unit): return str(unit.get_instance_id())), "accepted":stop_accepted, "timestamp_ms":Time.get_ticks_msec()})
 	if not stop_accepted: return _stage_a2_spacing_metrics("BLOCKED_R1K_SPACING_PUBLIC_STOP_REJECTED", "public stop command was rejected after provisional spacing settlement", baseline, consecutive, R1K_SETTLEMENT_HOLD_SECONDS)
-	if stage_a2b_mode: await _save("04_STAGE_A2B_PUBLIC_STOP_ISSUED.png")
+	if stage_a2b_mode or stage_a2d_mode: await _save("04_STAGE_%s_PUBLIC_STOP_ISSUED.png" % _stage_a2_frame_suffix())
 	else: await _save("04_STAGE_A2A_PUBLIC_STOP_ISSUED.png")
 	var post_stop_first_timestamp := -1
 	var post_stop_deadline := Time.get_ticks_msec() + R1K_POST_STOP_TIMEOUT_MS
@@ -394,7 +421,7 @@ func _issue_stage_a2_spacing_commands() -> Dictionary:
 		next_post_stop_sample_at = post_timestamp + R1K_POST_STOP_SAMPLE_INTERVAL_MS
 	if spacing_post_stop_samples.size() < R1K_POST_STOP_SAMPLE_COUNT or post_stop_first_timestamp < 0 or int(spacing_post_stop_samples[-1].get("timestamp_ms", -1)) - post_stop_first_timestamp < R1K_POST_STOP_MIN_SPAN_MS:
 		return _stage_a2_spacing_metrics(R1K_POST_STOP_WINDOW_BLOCKER, "post-stop samples did not satisfy the bounded five-sample and 500 ms monotonic timing contract", baseline, consecutive, R1K_SETTLEMENT_HOLD_SECONDS)
-	if stage_a2b_mode: await _save("05_STAGE_A2B_POST_STOP_MEASUREMENT.png")
+	if stage_a2b_mode or stage_a2d_mode: await _save("05_STAGE_%s_POST_STOP_MEASUREMENT.png" % _stage_a2_frame_suffix())
 	else: await _save("05_STAGE_A2A_POST_STOP_MEASUREMENT.png")
 	if post_stop_arrival_failed: return _stage_a2_spacing_metrics("BLOCKED_R1K_COMPACT_SPACING_UNSTABLE", "destination arrival did not remain stable during the complete post-stop window", baseline, consecutive, R1K_SETTLEMENT_HOLD_SECONDS)
 	var post_stop_distances: Array = spacing_post_stop_samples.map(func(sample): return float(sample.get("hero_to_companion_distance", INF))).filter(func(value): return is_finite(value))
@@ -469,9 +496,9 @@ func _finish_r1k(status: String, reason: String, metrics: Dictionary = {}) -> vo
 	_write_graphs()
 	var summary_name := "r1k-natural-confirmation-summary.json" if natural_mode else ("stage-a2-diagnostic-summary.json" if stage_a2_mode else "r1k-session-summary.json")
 	var schema := "v0436-r1k-stage-a2-diagnostic-summary-v1" if stage_a2_mode else "v0436-r1k-session-summary-v2"
-	_save_json(summary_name, {"schema":schema, "status":status, "reason":reason, "non_evidence":stage_a2_mode, "cell_id":cell_id, "repetition":repetition, "natural_confirmation":natural_mode, "provenance":_provenance("stage_a2_diagnostic" if stage_a2_mode else "r1k_final"), "cell":cell, "source_sha":OS.get_environment("ASCENDANT_V0436_R1K_SOURCE_SHA"), "branch":OS.get_environment("ASCENDANT_V0436_R1K_BRANCH"), "headed":true, "hidden_window":false, "renderer":"Forward Plus", "production_scene":"scenes/main.tscn -> scenes/game_world.tscn", "no_direct_state_writes":true, "no_resource_injection":true, "no_free_units":true, "metrics":metrics, "selected_force_initial":initial_controlled_force_records, "selected_force_terminal":terminal_controlled_force_records, "selected_force_runtime_ids":frozen_controlled_ids.keys(), "spacing_measurement":spacing_measurement, "resources":world.commanders[0].resources.duplicate(true), "unit_positions":_player_combatants().map(func(unit): return _vec(unit.global_position)), "stage_a2b_writer_records":stage_a2b_writer_records, "stage_a2b_output_failed":stage_a2b_output_failed})
-	if stage_a2_mode: _save_json("stage-a2-diagnostic-contract.json", {"schema":"v0436-r1k-stage-a2-diagnostic-contract-v1", "non_evidence":true, "status":status, "source_sha":OS.get_environment("ASCENDANT_V0436_R1K_SOURCE_SHA"), "branch":OS.get_environment("ASCENDANT_V0436_R1K_BRANCH"), "output_scope":"diagnostics/stage-a2-compact-spacing-settlement-replacement-2" if stage_a2b_mode else "diagnostics/stage-a2-compact-spacing-settlement-replacement-1", "production_repair_made":false, "public_command_only":true, "direct_state_writes":false})
-	if not stage_a2b_mode: await _contact_sheet()
+	_save_json(summary_name, {"schema":schema, "status":status, "reason":reason, "non_evidence":stage_a2_mode, "attempt_id":stage_a2d_attempt_id if stage_a2d_mode else ("stage-a2-compact-spacing-settlement-replacement-2" if stage_a2b_mode else "stage-a2-compact-spacing-settlement-replacement-1"), "cell_id":cell_id, "repetition":repetition, "natural_confirmation":natural_mode, "provenance":_provenance("stage_a2_diagnostic" if stage_a2_mode else "r1k_final"), "cell":cell, "source_sha":OS.get_environment("ASCENDANT_V0436_R1K_SOURCE_SHA"), "branch":OS.get_environment("ASCENDANT_V0436_R1K_BRANCH"), "headed":true, "hidden_window":false, "renderer":"Forward Plus", "production_scene":"scenes/main.tscn -> scenes/game_world.tscn", "no_direct_state_writes":true, "no_resource_injection":true, "no_free_units":true, "metrics":metrics, "selected_force_initial":initial_controlled_force_records, "selected_force_terminal":terminal_controlled_force_records, "selected_force_runtime_ids":frozen_controlled_ids.keys(), "spacing_measurement":spacing_measurement, "resources":world.commanders[0].resources.duplicate(true), "unit_positions":_player_combatants().map(func(unit): return _vec(unit.global_position)), "stage_a2b_writer_records":stage_a2b_writer_records, "stage_a2b_output_failed":stage_a2b_output_failed})
+	if stage_a2_mode: _save_json("stage-a2-diagnostic-contract.json", {"schema":"v0436-r1k-stage-a2-diagnostic-contract-v1", "non_evidence":true, "attempt_id":stage_a2d_attempt_id if stage_a2d_mode else ("stage-a2-compact-spacing-settlement-replacement-2" if stage_a2b_mode else "stage-a2-compact-spacing-settlement-replacement-1"), "status":status, "source_sha":OS.get_environment("ASCENDANT_V0436_R1K_SOURCE_SHA"), "branch":OS.get_environment("ASCENDANT_V0436_R1K_BRANCH"), "output_scope":"diagnostics/stage-a2-compact-spacing-settlement-replacement-3" if stage_a2d_mode else ("diagnostics/stage-a2-compact-spacing-settlement-replacement-2" if stage_a2b_mode else "diagnostics/stage-a2-compact-spacing-settlement-replacement-1"), "production_repair_made":false, "public_command_only":true, "direct_state_writes":false})
+	if not stage_a2b_mode and not stage_a2d_mode: await _contact_sheet()
 	get_tree().quit(0)
 
 func _capture_r1k_session() -> void:
@@ -511,10 +538,10 @@ func _capture_r1k_session() -> void:
 func _capture_stage_a2_spacing_diagnostic() -> void:
 	if frozen_controlled_force.is_empty(): await _finish_r1k("BLOCKED_R1K_COMPARABILITY_FAILED", "required natural unit inventory was not present"); return
 	await _focus(world.player_commander.buildings[0].global_position)
-	if stage_a2b_mode: await _save("01_STAGE_A2B_START.png")
-	else: await _save("01_STAGE_A2A_START.png")
+	await _save("01_STAGE_%s_START.png" % _stage_a2_frame_suffix())
 	await _focus(frozen_controlled_force[0].global_position)
 	var outcome := await _issue_stage_a2_spacing_commands()
+	if stage_a2d_mode: outcome["attempt_id"] = stage_a2d_attempt_id
 	await _focus(frozen_controlled_force[0].global_position)
 	_save_json("stage-a2-spacing-diagnostic.json", outcome)
 	await _finish_r1k(String(outcome.get("status", "BLOCKED_R1K_SPACING_DESTINATION_NOT_REACHED")), String(outcome.get("reason", "stage-a2 spacing diagnostic did not complete")), outcome)

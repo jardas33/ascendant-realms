@@ -65,7 +65,7 @@ export function spacingPairPasses(wide, compact) {
   return Math.min(...wideDistances) > Math.max(...compactDistances) + 1;
 }
 
-export function evaluateR1KStageA2Diagnostic({ diagnostic, branch, expectedBranch = REQUIRED_R1K_BRANCH, expectedSourceSha, outputScope = 'diagnostics/stage-a2-compact-spacing-settlement' }) {
+export function evaluateR1KStageA2Diagnostic({ diagnostic, branch, expectedBranch = REQUIRED_R1K_BRANCH, expectedSourceSha, outputScope = 'diagnostics/stage-a2-compact-spacing-settlement', expectedAttemptId = null }) {
   const failures = [];
   const summary = diagnostic?.summary || diagnostic;
   const measurement = summary?.spacing_measurement || {};
@@ -78,6 +78,9 @@ export function evaluateR1KStageA2Diagnostic({ diagnostic, branch, expectedBranc
   if (branch !== expectedBranch || summary?.branch !== expectedBranch) failures.push('Stage-A.2 branch provenance mismatch');
   if (expectedSourceSha && summary?.source_sha !== expectedSourceSha) failures.push('Stage-A.2 source SHA mismatch');
   if (summary?.headed !== true || summary?.hidden_window !== false) failures.push('Stage-A.2 is not proven headed and visible');
+  if (expectedAttemptId && summary?.attempt_id !== expectedAttemptId) failures.push(`Stage-A.2 summary attempt identity mismatch: expected ${expectedAttemptId}`);
+  if (expectedAttemptId && diagnostic?.attempt_id !== expectedAttemptId) failures.push(`Stage-A.2 spacing diagnostic attempt identity mismatch: expected ${expectedAttemptId}`);
+  if (expectedAttemptId && JSON.stringify(diagnostic || {}).includes('replacement-2')) failures.push('Stage-A.2 replacement-2 provenance appears in the requested attempt output');
   if (summary?.no_direct_state_writes !== true || summary?.no_resource_injection !== true || summary?.no_free_units !== true) failures.push('Stage-A.2 mutation guard is not proven');
   if (summary?.cell?.spacing !== 'compact' || summary?.cell?.spacing_comparable !== true) failures.push('Stage-A.2 compact spacing contract is missing');
   if (summary?.cell?.command_path !== 'diagnostic-spacing-only') failures.push('Stage-A.2 command path is not diagnostic-only');

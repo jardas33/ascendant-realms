@@ -12,7 +12,9 @@ const pack = path.join(repo, R1K_PACK);
 const stageA2Pack = path.join(pack, 'diagnostics', 'stage-a2-compact-spacing-settlement');
 const stageA2ReplacementPack = path.join(pack, 'diagnostics', 'stage-a2-compact-spacing-settlement-replacement-1');
 const stageA2BPack = path.join(pack, 'diagnostics', 'stage-a2-compact-spacing-settlement-replacement-2');
+const stageA2DPack = path.join(pack, 'diagnostics', 'stage-a2-compact-spacing-settlement-replacement-3');
 const stageA2OutputProbePack = path.join(pack, 'diagnostics', 'stage-a2-output-routing-probe');
+const STAGE_A2D_ATTEMPT_ID = 'stage-a2-compact-spacing-settlement-replacement-3';
 const captureScript = path.join(repo, 'production', 'ascendant-realms-godot', 'tests', 'v0436_r1k_capture.gd');
 const godot = () => process.env.ASCENDANT_REALMS_GODOT || path.join(process.env.LOCALAPPDATA || '', 'AscendantRealms/tools/godot-4.3-stable/Godot_v4.3-stable_win64.exe');
 const git = args => execFileSync('git', args, { cwd: repo, encoding: 'utf8' }).trim();
@@ -32,10 +34,17 @@ const r1kHarnessFiles = [
   'tools/godot/v0436R1KStageA2Validator.test.ts',
 ];
 const requiredStageA2BPNGs = ['01_STAGE_A2B_START.png', '02_STAGE_A2B_DESTINATIONS_ASSIGNED.png', '03_STAGE_A2B_ARRIVAL_HOLD_PROVEN.png', '04_STAGE_A2B_PUBLIC_STOP_ISSUED.png', '05_STAGE_A2B_POST_STOP_MEASUREMENT.png'];
+const requiredStageA2DPNGs = ['01_STAGE_A2D_START.png', '02_STAGE_A2D_DESTINATIONS_ASSIGNED.png', '03_STAGE_A2D_ARRIVAL_HOLD_PROVEN.png', '04_STAGE_A2D_PUBLIC_STOP_ISSUED.png', '05_STAGE_A2D_POST_STOP_MEASUREMENT.png'];
 const pathInside = (root, file) => {
   const relative = path.relative(root, file);
   return relative !== '' && !relative.startsWith(`..${path.sep}`) && !path.isAbsolute(relative);
 };
+const currentOriginSha = () => git(['rev-parse', `origin/${REQUIRED_R1K_BRANCH}`]);
+const scopedImplementationClean = () => {
+  const status = execFileSync('git', ['status', '--porcelain=v1', '--untracked-files=all', '--', ...r1kHarnessFiles], { cwd: repo, encoding: 'utf8' }).trim();
+  return status === '';
+};
+const directoryIsEmptyOrAbsent = async dir => !await exists(dir) || (await fs.readdir(dir)).length === 0;
 
 const CELL_DEFINITIONS = Object.freeze([
   { cell_id: R1K_CELLS[0], selected_force: 'hero-plus-spear-guard', spacing: 'wide', spacing_comparable: true, command_path: 'direct-target', target_order: 'thorn-ranger-first', target: 'thorn-ranger' },
@@ -124,7 +133,7 @@ async function collectStageA2Artifacts(root) {
   return entries.sort((a, b) => a.relative_path.localeCompare(b.relative_path));
 }
 
-async function collectManifestFiles(root, writerRecords = []) {
+async function collectManifestFiles(root, writerRecords = [], attemptId = 'stage-a2-compact-spacing-settlement-replacement-2') {
   const artifacts = await collectStageA2Artifacts(root);
   const recordByAbsolutePath = new Map(writerRecords.map(record => [path.resolve(record.absolute_path), record]));
   return artifacts.map(file => {
@@ -137,8 +146,8 @@ async function collectManifestFiles(root, writerRecords = []) {
       writer_return_code: writer?.writer_return_code ?? 'NODE_OK',
       exists: writer?.exists ?? true,
       readable: writer?.readable ?? (file.kind === 'png' ? Boolean(file.dimensions) : file.bytes > 0),
-      generated_before_replacement_2: relative === 'stage-a2b-preflight.json',
-      generated_during_replacement_2: relative !== 'stage-a2b-preflight.json',
+      [`generated_before_${attemptId.replaceAll('-', '_')}`]: relative === (attemptId === STAGE_A2D_ATTEMPT_ID ? 'stage-a2d-preflight.json' : 'stage-a2b-preflight.json'),
+      [`generated_during_${attemptId.replaceAll('-', '_')}`]: relative !== (attemptId === STAGE_A2D_ATTEMPT_ID ? 'stage-a2d-preflight.json' : 'stage-a2b-preflight.json'),
     };
   });
 }
@@ -296,6 +305,110 @@ async function validateStageA2() {
   if (!result.passed) { console.error(JSON.stringify(result, null, 2)); process.exitCode = 1; } else console.log(JSON.stringify(result, null, 2));
 }
 
+async function captureStageA2D() {
+  if (branch() !== REQUIRED_R1K_BRANCH) throw new Error(`Stage-A.2d requires branch ${REQUIRED_R1K_BRANCH}`);
+  const sha = sourceSha();
+  const branchName = branch();
+  if (sha !== currentOriginSha()) throw new Error(`Stage-A.2d requires HEAD equal to origin/${REQUIRED_R1K_BRANCH}; local ${sha}, origin ${currentOriginSha()}`);
+  if (!scopedImplementationClean()) throw new Error('Stage-A.2d refuses headed launch while scoped implementation files are locally modified');
+  if (!await directoryIsEmptyOrAbsent(stageA2DPack)) throw new Error(`Stage-A.2d replacement output already exists and is non-empty: ${stageA2DPack}; refusing to overwrite evidence`);
+  await fs.mkdir(stageA2DPack, { recursive: true });
+  const localDiffHash = diffBinaryHash();
+  const absoluteRoot = path.resolve(stageA2DPack);
+  const cell = { cell_id: 'hero-spear-compact-thorn-ranger-first', selected_force: 'hero-plus-spear-guard', spacing: 'compact', spacing_comparable: true, command_path: 'diagnostic-spacing-only', target: 'thorn-ranger', diagnostic_only: true };
+  await writeJson(path.join(stageA2DPack, 'stage-a2d-preflight.json'), {
+    schema: 'v0436-r1k-stage-a2d-preflight-v1', status: 'STAGE_A2D_PREPARED', non_evidence: true, attempt_id: STAGE_A2D_ATTEMPT_ID,
+    committed_baseline_sha: sha, source_sha: sha, branch: branchName, headed: true, hidden_window: false, renderer: 'Forward Plus',
+    production_scene: 'scenes/main.tscn -> scenes/game_world.tscn', output_root_abs: absoluteRoot, local_modified_r1k_harness_files: r1kHarnessFiles,
+    local_git_diff_binary_sha256: localDiffHash, scoped_implementation_diff_clean: true, origin_sha: currentOriginSha(), headed_launch_count: 0,
+    no_direct_state_writes: true, no_resource_injection: true, no_free_units: true, cell,
+  });
+  let child = { status: null, signal: null, stdout: '', stderr: '', error: null };
+  let validator = { passed: false, failures: ['headed diagnostic not executed'] };
+  let manifest;
+  try {
+    child = runChild(['--path', project, '--resolution', '1920x1080', '--verbose'], stageA2DPack, {
+      ...process.env,
+      ASCENDANT_V0436_R1K_CAPTURE: '1',
+      ASCENDANT_V0436_R1J_CAPTURE: '1',
+      ASCENDANT_V0436_R1K_STAGE_A2: '1',
+      ASCENDANT_V0436_R1K_STAGE_A2D: '1',
+      ASCENDANT_V0436_R1K_STAGE_A2_ATTEMPT_ID: STAGE_A2D_ATTEMPT_ID,
+      ASCENDANT_V0436_R1K_OUTPUT_ROOT_ABS: absoluteRoot,
+      ASCENDANT_V0436_R1K_REPO_ROOT_ABS: repo,
+      ASCENDANT_V0436_R1K_SOURCE_SHA: sha,
+      ASCENDANT_V0436_R1K_BRANCH: branchName,
+      ASCENDANT_V0436_R1J_SOURCE_SHA: sha,
+      ASCENDANT_V0436_R1J_BRANCH: branchName,
+      ASCENDANT_V0436_R1K_CELL: cell.cell_id,
+      ASCENDANT_V0436_R1K_REPETITION: '1',
+      ASCENDANT_V0436_R1K_OUT: stageA2DPack,
+      ASCENDANT_V0436_R1K_LOCAL_DIFF_SHA256: localDiffHash,
+    });
+    const outputLog = `${child.stdout}\n${child.stderr}`;
+    const summaryFile = path.join(stageA2DPack, 'stage-a2-diagnostic-summary.json');
+    const diagnosticFile = path.join(stageA2DPack, 'stage-a2-spacing-diagnostic.json');
+    const summary = await exists(summaryFile) ? await readJson(summaryFile) : null;
+    const writerRecords = Array.isArray(summary?.stage_a2b_writer_records) ? summary.stage_a2b_writer_records : [];
+    let files = (await collectManifestFiles(stageA2DPack, writerRecords, STAGE_A2D_ATTEMPT_ID)).filter(file => file.relative_path !== 'stage-a2d-artifact-manifest.json');
+    const requiredChecks = Object.fromEntries(requiredStageA2DPNGs.map(required => {
+      const file = files.find(candidate => candidate.relative_path === required);
+      return [required, Boolean(file && file.kind === 'png' && file.bytes > 1024 && file.dimensions?.width >= 2 && file.dimensions?.height >= 2 && file.readable && file.inside_authorized_output_root)];
+    }));
+    const contractFile = path.join(stageA2DPack, 'stage-a2-diagnostic-contract.json');
+    const spacingDiagnostic = summary && await exists(diagnosticFile) ? await readJson(diagnosticFile) : null;
+    const diagnostic = summary && spacingDiagnostic ? { summary, attempt_id: spacingDiagnostic.attempt_id, public_commands: spacingDiagnostic.public_commands || [], contract: await exists(contractFile) ? await readJson(contractFile) : null, manifest: null } : null;
+    manifest = { schema: 'v0436-r1k-stage-a2d-artifact-manifest-v1', non_evidence: true, attempt_id: STAGE_A2D_ATTEMPT_ID, source_sha: sha, branch: branchName, output_root_abs: absoluteRoot, local_modified_r1k_harness_files: r1kHarnessFiles, local_git_diff_binary_sha256: localDiffHash, scoped_implementation_diff_clean: true, origin_sha: currentOriginSha(), headed_launch_count: 1, no_direct_state_writes: true, no_resource_injection: true, no_free_units: true, renderer: 'Forward Plus', production_scene: 'scenes/main.tscn -> scenes/game_world.tscn', required_pngs: requiredStageA2DPNGs, required_artifact_checks: requiredChecks, files, manifest_path: path.join(stageA2DPack, 'stage-a2d-artifact-manifest.json') };
+    await writeJson(path.join(stageA2DPack, 'stage-a2d-artifact-manifest.json'), manifest);
+    if (diagnostic) {
+      diagnostic.manifest = manifest;
+      validator = evaluateR1KStageA2Diagnostic({ diagnostic, branch: branchName, expectedSourceSha: sha, outputScope: 'diagnostics/stage-a2-compact-spacing-settlement-replacement-3', expectedAttemptId: STAGE_A2D_ATTEMPT_ID });
+    } else validator = { passed: false, failures: ['missing Stage-A.2d diagnostic summary or spacing diagnostic'] };
+    validator.failures = [...(validator.failures || []), ...(summary?.stage_a2b_output_failed ? ['GDScript reported Stage-A.2d output failure'] : []), ...(/Can't save PNG|SCRIPT ERROR|Failed to load image/i.test(outputLog) ? ['Godot log reported required output failure'] : []), ...(JSON.stringify(diagnostic || {}).includes('replacement-2') ? ['replacement-2 provenance appeared in replacement-3 output'] : [])];
+    validator.passed = validator.failures.length === 0 && child.status === 0 && requiredStageA2DPNGs.every(required => requiredChecks[required]);
+    files = await collectManifestFiles(stageA2DPack, writerRecords, STAGE_A2D_ATTEMPT_ID);
+    manifest.files = files;
+    await writeJson(path.join(stageA2DPack, 'stage-a2d-artifact-manifest.json'), manifest);
+    const wrapper = { schema: 'v0436-r1k-stage-a2d-wrapper-result-v1', attempt_id: STAGE_A2D_ATTEMPT_ID, child_exit_code: child.status, signal: child.signal, child_error: child.error, required_artifact_checks: requiredChecks, validator_result: validator, overall_pass: validator.passed, stdout_tail: child.stdout.slice(-6000), stderr_tail: child.stderr.slice(-6000), source_sha: sha, branch: branchName, origin_sha: currentOriginSha(), scoped_implementation_diff_clean: true, headed_launch_count: 1, local_git_diff_binary_sha256: localDiffHash };
+    await writeJson(path.join(stageA2DPack, 'stage-a2d-wrapper-result.json'), wrapper);
+    const finalFiles = (await collectManifestFiles(stageA2DPack, writerRecords, STAGE_A2D_ATTEMPT_ID)).filter(file => file.relative_path !== 'stage-a2d-artifact-manifest.json');
+    manifest.files = finalFiles;
+    await writeJson(path.join(stageA2DPack, 'stage-a2d-artifact-manifest.json'), manifest);
+    if (!wrapper.overall_pass) { console.error(JSON.stringify(wrapper, null, 2)); process.exitCode = 1; } else console.log(JSON.stringify(wrapper, null, 2));
+  } catch (error) {
+    const files = (await collectManifestFiles(stageA2DPack, [], STAGE_A2D_ATTEMPT_ID)).filter(file => file.relative_path !== 'stage-a2d-artifact-manifest.json');
+    const wrapper = { schema: 'v0436-r1k-stage-a2d-wrapper-result-v1', attempt_id: STAGE_A2D_ATTEMPT_ID, child_exit_code: child.status, signal: child.signal, child_error: child.error, required_artifact_checks: Object.fromEntries(requiredStageA2DPNGs.map(name => [name, false])), validator_result: validator, overall_pass: false, error: String(error), source_sha: sha, branch: branchName, origin_sha: currentOriginSha(), scoped_implementation_diff_clean: true, headed_launch_count: child.status === null ? 0 : 1, local_git_diff_binary_sha256: localDiffHash };
+    await writeJson(path.join(stageA2DPack, 'stage-a2d-wrapper-result.json'), wrapper);
+    await writeJson(path.join(stageA2DPack, 'stage-a2d-artifact-manifest.json'), { schema: 'v0436-r1k-stage-a2d-artifact-manifest-v1', non_evidence: true, attempt_id: STAGE_A2D_ATTEMPT_ID, source_sha: sha, branch: branchName, output_root_abs: absoluteRoot, local_git_diff_binary_sha256: localDiffHash, headed_launch_count: wrapper.headed_launch_count, required_pngs: requiredStageA2DPNGs, files, manifest_path: path.join(stageA2DPack, 'stage-a2d-artifact-manifest.json') });
+    console.error(JSON.stringify(wrapper, null, 2));
+    process.exitCode = 1;
+  }
+}
+
+async function validateStageA2D() {
+  const summaryFile = path.join(stageA2DPack, 'stage-a2-diagnostic-summary.json');
+  const diagnosticFile = path.join(stageA2DPack, 'stage-a2-spacing-diagnostic.json');
+  const manifestFile = path.join(stageA2DPack, 'stage-a2d-artifact-manifest.json');
+  const summary = await exists(summaryFile) ? await readJson(summaryFile) : null;
+  const manifest = await exists(manifestFile) ? await readJson(manifestFile) : null;
+  const spacingDiagnostic = summary && await exists(diagnosticFile) ? await readJson(diagnosticFile) : null;
+  const diagnostic = summary && spacingDiagnostic ? { summary, attempt_id: spacingDiagnostic.attempt_id, public_commands: spacingDiagnostic.public_commands || [], contract: await exists(path.join(stageA2DPack, 'stage-a2-diagnostic-contract.json')) ? await readJson(path.join(stageA2DPack, 'stage-a2-diagnostic-contract.json')) : null, manifest } : { summary: summary || {}, public_commands: [], manifest };
+  const result = evaluateR1KStageA2Diagnostic({ diagnostic, branch: branch(), expectedSourceSha: sourceSha(), outputScope: 'diagnostics/stage-a2-compact-spacing-settlement-replacement-3', expectedAttemptId: STAGE_A2D_ATTEMPT_ID });
+  if (!summary) result.failures.push(`missing Stage-A.2d diagnostic summary: ${summaryFile}`);
+  if (!await exists(diagnosticFile)) result.failures.push(`missing Stage-A.2d spacing diagnostic: ${diagnosticFile}`);
+  if (!manifest) result.failures.push(`missing Stage-A.2d artifact manifest: ${manifestFile}`);
+  if (manifest?.attempt_id !== STAGE_A2D_ATTEMPT_ID || manifest?.source_sha !== sourceSha() || manifest?.branch !== branch() || path.resolve(manifest?.output_root_abs || '') !== path.resolve(stageA2DPack)) result.failures.push('Stage-A.2d manifest provenance mismatch');
+  for (const required of requiredStageA2DPNGs) {
+    const entry = manifest?.files?.find(file => file.relative_path === required);
+    if (!entry || entry.kind !== 'png' || entry.bytes <= 1024 || !entry.dimensions || entry.readable !== true || entry.inside_authorized_output_root !== true) result.failures.push(`invalid or missing required Stage-A.2d PNG ${required}`);
+  }
+  if (JSON.stringify({ summary, manifest }).includes('replacement-2')) result.failures.push('replacement-2 provenance is present in replacement-3 evidence');
+  result.passed = result.failures.length === 0;
+  result.status = result.passed ? 'STAGE_A2D_DIAGNOSTIC_VALIDATED' : 'BLOCKED_R1K_STAGE_A2D_VALIDATION';
+  await writeJson(path.join(stageA2DPack, 'stage-a2d-validation.json'), result);
+  if (!result.passed) { console.error(JSON.stringify(result, null, 2)); process.exitCode = 1; } else console.log(JSON.stringify(result, null, 2));
+}
+
 async function naturalPlan() {
   await fs.mkdir(pack, { recursive: true });
   await writeJson(path.join(pack, 'natural-confirmation-plan.json'), {
@@ -396,8 +509,10 @@ const command = process.argv[2] || 'validate';
 if (command === 'capture') await capture();
 else if (command === 'capture-one') await captureOne(process.argv[3], Number(process.argv[4] || 1));
 else if (command === 'capture-stage-a2') await captureStageA2();
+else if (command === 'capture-stage-a2-replacement-3') await captureStageA2D();
 else if (command === 'finalize-stage-a2b') await finalizeStageA2B();
 else if (command === 'validate-stage-a2') await validateStageA2();
+else if (command === 'validate-stage-a2-replacement-3') await validateStageA2D();
 else if (command === 'natural-plan') await naturalPlan();
 else if (command === 'capture-natural') await captureNatural();
 else if (command === 'assemble') await assemble();
