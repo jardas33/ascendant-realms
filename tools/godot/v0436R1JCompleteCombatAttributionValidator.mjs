@@ -49,7 +49,10 @@ function validateGraph({ session, failures }) {
   for (const event of damage) {
     if (!event.attack_event_id) failures.push(`damage ${event.damage_event_id} is not linked to an attack`);
     if (!event.victim_runtime_id || !event.source_runtime_id) failures.push(`damage ${event.damage_event_id} lacks attacker/victim runtime IDs`);
-    if (event.observed_hp_delta !== undefined && Math.abs(Number(event.observed_hp_delta) - Number(event.final_damage)) > 0.001) failures.push(`damage ${event.damage_event_id} HP delta contradicts applied damage`);
+		if (event.observed_hp_delta !== undefined) {
+			const expectedHpDelta = Math.min(Number(event.final_damage), Math.max(0, Number(event.hp_before)));
+			if (Math.abs(Number(event.observed_hp_delta) - expectedHpDelta) > 0.001) failures.push(`damage ${event.damage_event_id} HP delta contradicts applied damage`);
+		}
     if (event.expected_applied_damage !== undefined && Math.abs(Number(event.expected_applied_damage) - Number(event.final_damage)) > 0.001) failures.push(`damage ${event.damage_event_id} contradicts expected formula`);
   }
   const attackIds = new Set(attacks.map(event => String(event.attack_event_id)));

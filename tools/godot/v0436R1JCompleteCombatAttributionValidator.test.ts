@@ -18,6 +18,12 @@ describe('v0.436-R1J complete combat attribution contract', () => {
     const result = await evaluateR1JValidatorContract(base);
     expect(result).toMatchObject({ passed:true, status:R1J_STATUS });
   });
+  it('accepts lethal overkill when observed HP delta is clamped to remaining HP', async () => {
+    const overkill = structuredClone(base);
+    overkill.sessions[0].damage[0] = { damage_event_id:'d-overkill', attack_event_id:'a1', projectile_event_id:'p1', victim_runtime_id:'v1', source_runtime_id:'u1', hp_before:3, observed_hp_delta:3, final_damage:5, expected_applied_damage:5 };
+    const result = await evaluateR1JValidatorContract(overkill);
+    expect(result).toMatchObject({ passed:true, status:R1J_STATUS });
+  });
   it('rejects unknown target transitions and unlinked damage', async () => {
     const unknown = structuredClone(base); unknown.sessions[0].transitions[0].reason = 'unknown';
     expect((await evaluateR1JValidatorContract(unknown)).passed).toBe(false);
