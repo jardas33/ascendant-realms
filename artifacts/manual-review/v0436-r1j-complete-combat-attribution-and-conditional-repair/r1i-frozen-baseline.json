@@ -1,0 +1,7 @@
+{
+  "schema": "v0436-r1j-r1i-frozen-baseline-v1",
+  "source_sha": "23a57b723bb6539f7b2011f2f69abe515df08ff9",
+  "retained_r1i_status": "BLOCKED_R1I_COMBAT_CAUSALITY_INCONCLUSIVE",
+  "retained_r1i_pack": "artifacts/manual-review/v0436-r1i-combat-causality/",
+  "historical_r1i_evidence_reused": false
+}

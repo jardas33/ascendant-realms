@@ -1,0 +1,13 @@
+{
+  "schema": "v0436-r1f-evidence-disposition-v1",
+  "accepted": [
+    "fresh three-run physics-step audit",
+    "corrected no-log-file headed wrapper",
+    "real headed frames"
+  ],
+  "rejected": [
+    "R1E wall-clock interval as single-frame proof",
+    "stale R1B runtime log dependency"
+  ],
+  "no_r1c_or_conquest_work": true
+}

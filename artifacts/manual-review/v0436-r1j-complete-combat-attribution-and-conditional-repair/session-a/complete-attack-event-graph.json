@@ -1,0 +1,3701 @@
+{
+  "events": [
+    {
+      "attack_event_id": "r1j-attack-073004",
+      "attack_range": 17,
+      "attack_start_ms": 96189,
+      "attack_type": "projectile",
+      "attacker": {
+        "alive": true,
+        "definition_id": "lioraen_thorn_ranger",
+        "runtime_id": "654865075600",
+        "team": 1
+      },
+      "command": "attack",
+      "configured_raw_damage": 15,
+      "current_distance": 16.9144668579102,
+      "damage_type": "pierce",
+      "intended_target": {
+        "alive": true,
+        "definition_id": "barrosan_hero_thane",
+        "runtime_id": "173577079507",
+        "team": 0
+      },
+      "phase": "attack_started",
+      "phases": [],
+      "physics_frame": 4877,
+      "process_frame": 5569,
+      "state": 3,
+      "timestamp_ms": 96189
+    },
+    {
+      "attack_event_id": "r1j-attack-073108",
+      "attack_range": 17,
+      "attack_start_ms": 96256,
+      "attack_type": "projectile",
+      "attacker": {
+        "alive": true,
+        "definition_id": "lioraen_thorn_ranger",
+        "runtime_id": "1059279867508",
+        "team": 1
+      },
+      "command": "attack",
+      "configured_raw_damage": 15,
+      "current_distance": 16.8449897766113,
+      "damage_type": "pierce",
+      "intended_target": {
+        "alive": true,
+        "definition_id": "barrosan_hero_thane",
+        "runtime_id": "173577079507",
+        "team": 0
+      },
+      "phase": "attack_started",
+      "phases": [],
+      "physics_frame": 4881,
+      "process_frame": 5574,
+      "state": 3,
+      "timestamp_ms": 96256
+    },
+    {
+      "attack_event_id": "r1j-attack-073222",
+      "attack_range": 17,
+      "attack_start_ms": 96336,
+      "attack_type": "projectile",
+      "attacker": {
+        "alive": true,
+        "definition_id": "lioraen_thorn_ranger",
+        "runtime_id": "768211946943",
+        "team": 1
+      },
+      "command": "attack",
+      "configured_raw_damage": 15,
+      "current_distance": 16.8515338897705,
+      "damage_type": "pierce",
+      "intended_target": {
+        "alive": true,
+        "definition_id": "barrosan_hero_thane",
+        "runtime_id": "173577079507",
+        "team": 0
+      },
+      "phase": "attack_started",
+      "phases": [],
+      "physics_frame": 4886,
+      "process_frame": 5580,
+      "state": 3,
+      "timestamp_ms": 96336
+    },
+    {
+      "attack_event_id": "r1j-attack-073238",
+      "attack_range": 17,
+      "attack_start_ms": 96349,
+      "attack_type": "projectile",
+      "attacker": {
+        "alive": true,
+        "definition_id": "lioraen_thorn_ranger",
+        "runtime_id": "175623899962",
+        "team": 1
+      },
+      "command": "attack_move",
+      "configured_raw_damage": 15,
+      "current_distance": 16.9774341583252,
+      "damage_type": "pierce",
+      "intended_target": {
+        "alive": true,
+        "definition_id": "barrosan_hero_thane",
+        "runtime_id": "173577079507",
+        "team": 0
+      },
+      "phase": "attack_started",
+      "phases": [],
+      "physics_frame": 4887,
+      "process_frame": 5581,
+      "state": 3,
+      "timestamp_ms": 96349
+    },
+    {
+      "attack_event_id": "r1j-attack-073918",
+      "attack_range": 17,
+      "attack_start_ms": 96843,
+      "attack_type": "projectile",
+      "attacker": {
+        "alive": true,
+        "definition_id": "lioraen_thorn_ranger",
+        "runtime_id": "654865075600",
+        "team": 1
+      },
+      "command": "attack",
+      "configured_raw_damage": 15,
+      "current_distance": 6.3869481086731,
+      "damage_type": "pierce",
+      "intended_target": {
+        "alive": true,
+        "definition_id": "barrosan_hero_thane",
+        "runtime_id": "173577079507",
+        "team": 0
+      },
+      "phase": "attack_started",
+      "phases": [],
+      "physics_frame": 4916,
+      "process_frame": 5618,
+      "state": 3,
+      "timestamp_ms": 96843
+    },
+    {
+      "attack_event_id": "r1j-attack-074019",
+      "attack_range": 17,
+      "attack_start_ms": 96911,
+      "attack_type": "projectile",
+      "attacker": {
+        "alive": true,
+        "definition_id": "lioraen_thorn_ranger",
+        "runtime_id": "1059279867508",
+        "team": 1
+      },
+      "command": "attack",
+      "configured_raw_damage": 15,
+      "current_distance": 6.31521511077881,
+      "damage_type": "pierce",
+      "intended_target": {
+        "alive": true,
+        "definition_id": "barrosan_hero_thane",
+        "runtime_id": "173577079507",
+        "team": 0
+      },
+      "phase": "attack_started",
+      "phases": [],
+      "physics_frame": 4920,
+      "process_frame": 5623,
+      "state": 3,
+      "timestamp_ms": 96911
+    },
+    {
+      "attack_event_id": "r1j-attack-074133",
+      "attack_range": 17,
+      "attack_start_ms": 96990,
+      "attack_type": "projectile",
+      "attacker": {
+        "alive": true,
+        "definition_id": "lioraen_thorn_ranger",
+        "runtime_id": "768211946943",
+        "team": 1
+      },
+      "command": "attack",
+      "configured_raw_damage": 15,
+      "current_distance": 6.4149341583252,
+      "damage_type": "pierce",
+      "intended_target": {
+        "alive": true,
+        "definition_id": "barrosan_hero_thane",
+        "runtime_id": "173577079507",
+        "team": 0
+      },
+      "phase": "attack_started",
+      "phases": [],
+      "physics_frame": 4925,
+      "process_frame": 5629,
+      "state": 3,
+      "timestamp_ms": 96990
+    },
+    {
+      "attack_event_id": "r1j-attack-074149",
+      "attack_range": 17,
+      "attack_start_ms": 97002,
+      "attack_type": "projectile",
+      "attacker": {
+        "alive": true,
+        "definition_id": "lioraen_thorn_ranger",
+        "runtime_id": "175623899962",
+        "team": 1
+      },
+      "command": "attack_move",
+      "configured_raw_damage": 15,
+      "current_distance": 6.46195459365845,
+      "damage_type": "pierce",
+      "intended_target": {
+        "alive": true,
+        "definition_id": "barrosan_hero_thane",
+        "runtime_id": "173577079507",
+        "team": 0
+      },
+      "phase": "attack_started",
+      "phases": [],
+      "physics_frame": 4926,
+      "process_frame": 5630,
+      "state": 3,
+      "timestamp_ms": 97002
+    },
+    {
+      "attack_event_id": "r1j-attack-074162",
+      "attack_range": 1.6,
+      "attack_start_ms": 97003,
+      "attack_type": "projectile",
+      "attacker": {
+        "alive": true,
+        "definition_id": "lioraen_bloomdancer",
+        "runtime_id": "859966541297",
+        "team": 1
+      },
+      "command": "attack",
+      "configured_raw_damage": 14,
+      "current_distance": 1.51520371437073,
+      "damage_type": "slash",
+      "intended_target": {
+        "alive": true,
+        "definition_id": "barrosan_hero_thane",
+        "runtime_id": "173577079507",
+        "team": 0
+      },
+      "phase": "attack_started",
+      "phases": [],
+      "physics_frame": 4926,
+      "process_frame": 5630,
+      "state": 3,
+      "timestamp_ms": 97003
+    },
+    {
+      "attack_event_id": "r1j-attack-074165",
+      "attack_range": 1.6,
+      "attack_start_ms": 97004,
+      "attack_type": "projectile",
+      "attacker": {
+        "alive": true,
+        "definition_id": "lioraen_bloomdancer",
+        "runtime_id": "949053558366",
+        "team": 1
+      },
+      "command": "attack",
+      "configured_raw_damage": 14,
+      "current_distance": 1.57280457019806,
+      "damage_type": "slash",
+      "intended_target": {
+        "alive": true,
+        "definition_id": "barrosan_hero_thane",
+        "runtime_id": "173577079507",
+        "team": 0
+      },
+      "phase": "melee_resolution",
+      "phases": [
+        {
+          "distance": 1.1352972984314,
+          "phase": "windup_completed",
+          "physics_frame": 4933,
+          "process_frame": 5639,
+          "target_valid": true,
+          "timestamp_ms": 97124
+        },
+        {
+          "applied_damage": 6.75,
+          "phase": "melee_resolution",
+          "physics_frame": 4933,
+          "process_frame": 5639,
+          "timestamp_ms": 97124
+        }
+      ],
+      "physics_frame": 4926,
+      "process_frame": 5630,
+      "state": 3,
+      "timestamp_ms": 97004
+    },
+    {
+      "attack_event_id": "r1j-attack-074635",
+      "attack_range": 1.6,
+      "attack_start_ms": 97348,
+      "attack_type": "projectile",
+      "attacker": {
+        "alive": true,
+        "definition_id": "barrosan_hero_thane",
+        "runtime_id": "173577079507",
+        "team": 0
+      },
+      "command": "attack",
+      "configured_raw_damage": 49,
+      "current_distance": 1.49020338058472,
+      "damage_type": "slash",
+      "intended_target": {
+        "alive": true,
+        "definition_id": "lioraen_thorn_ranger",
+        "runtime_id": "175623899962",
+        "team": 1
+      },
+      "phase": "melee_resolution",
+      "phases": [
+        {
+          "distance": 1.09362602233887,
+          "phase": "windup_completed",
+          "physics_frame": 4954,
+          "process_frame": 5665,
+          "target_valid": true,
+          "timestamp_ms": 97472
+        },
+        {
+          "applied_damage": 56.35,
+          "phase": "melee_resolution",
+          "physics_frame": 4954,
+          "process_frame": 5665,
+          "timestamp_ms": 97472
+        }
+      ],
+      "physics_frame": 4947,
+      "process_frame": 5656,
+      "state": 3,
+      "timestamp_ms": 97348
+    },
+    {
+      "attack_event_id": "r1j-attack-074832",
+      "attack_range": 17,
+      "attack_start_ms": 97483,
+      "attack_type": "projectile",
+      "attacker": {
+        "alive": true,
+        "definition_id": "lioraen_thorn_ranger",
+        "runtime_id": "654865075600",
+        "team": 1
+      },
+      "command": "attack",
+      "configured_raw_damage": 15,
+      "current_distance": 4.16436290740967,
+      "damage_type": "pierce",
+      "intended_target": {
+        "alive": true,
+        "definition_id": "barrosan_hero_thane",
+        "runtime_id": "173577079507",
+        "team": 0
+      },
+      "phase": "attack_started",
+      "phases": [],
+      "physics_frame": 4955,
+      "process_frame": 5666,
+      "state": 3,
+      "timestamp_ms": 97483
+    },
+    {
+      "attack_event_id": "r1j-attack-074933",
+      "attack_range": 17,
+      "attack_start_ms": 97551,
+      "attack_type": "projectile",
+      "attacker": {
+        "alive": true,
+        "definition_id": "lioraen_thorn_ranger",
+        "runtime_id": "1059279867508",
+        "team": 1
+      },
+      "command": "attack",
+      "configured_raw_damage": 15,
+      "current_distance": 4.1887845993042,
+      "damage_type": "pierce",
+      "intended_target": {
+        "alive": true,
+        "definition_id": "barrosan_hero_thane",
+        "runtime_id": "173577079507",
+        "team": 0
+      },
+      "phase": "attack_started",
+      "phases": [],
+      "physics_frame": 4959,
+      "process_frame": 5671,
+      "state": 3,
+      "timestamp_ms": 97551
+    },
+    {
+      "attack_event_id": "r1j-attack-075002",
+      "attack_range": 1.6,
+      "attack_start_ms": 97612,
+      "attack_type": "projectile",
+      "attacker": {
+        "alive": true,
+        "definition_id": "lioraen_bloomdancer",
+        "runtime_id": "859966541297",
+        "team": 1
+      },
+      "command": "attack",
+      "configured_raw_damage": 14,
+      "current_distance": 1.53095388412476,
+      "damage_type": "slash",
+      "intended_target": {
+        "alive": true,
+        "definition_id": "barrosan_hero_thane",
+        "runtime_id": "173577079507",
+        "team": 0
+      },
+      "phase": "melee_resolution",
+      "phases": [
+        {
+          "distance": 1.13935565948486,
+          "phase": "windup_completed",
+          "physics_frame": 4969,
+          "process_frame": 5684,
+          "target_valid": true,
+          "timestamp_ms": 97725
+        },
+        {
+          "applied_damage": 6.75,
+          "phase": "melee_resolution",
+          "physics_frame": 4969,
+          "process_frame": 5684,
+          "timestamp_ms": 97725
+        }
+      ],
+      "physics_frame": 4962,
+      "process_frame": 5675,
+      "state": 3,
+      "timestamp_ms": 97612
+    },
+    {
+      "attack_event_id": "r1j-attack-075048",
+      "attack_range": 17,
+      "attack_start_ms": 97644,
+      "attack_type": "projectile",
+      "attacker": {
+        "alive": true,
+        "definition_id": "lioraen_thorn_ranger",
+        "runtime_id": "768211946943",
+        "team": 1
+      },
+      "command": "attack",
+      "configured_raw_damage": 15,
+      "current_distance": 2.8083598613739,
+      "damage_type": "pierce",
+      "intended_target": {
+        "alive": true,
+        "definition_id": "barrosan_hero_thane",
+        "runtime_id": "173577079507",
+        "team": 0
+      },
+      "phase": "attack_started",
+      "phases": [],
+      "physics_frame": 4964,
+      "process_frame": 5678,
+      "state": 3,
+      "timestamp_ms": 97644
+    },
+    {
+      "attack_event_id": "r1j-attack-075064",
+      "attack_range": 17,
+      "attack_start_ms": 97658,
+      "attack_type": "projectile",
+      "attacker": {
+        "alive": true,
+        "definition_id": "lioraen_thorn_ranger",
+        "runtime_id": "175623899962",
+        "team": 1
+      },
+      "command": "attack_move",
+      "configured_raw_damage": 15,
+      "current_distance": 1.6866295337677,
+      "damage_type": "pierce",
+      "intended_target": {
+        "alive": true,
+        "definition_id": "barrosan_hero_thane",
+        "runtime_id": "173577079507",
+        "team": 0
+      },
+      "phase": "attack_started",
+      "phases": [],
+      "physics_frame": 4965,
+      "process_frame": 5679,
+      "state": 3,
+      "timestamp_ms": 97658
+    },
+    {
+      "attack_event_id": "r1j-attack-075364",
+      "attack_range": 1.6,
+      "attack_start_ms": 97868,
+      "attack_type": "projectile",
+      "attacker": {
+        "alive": true,
+        "definition_id": "barrosan_hero_thane",
+        "runtime_id": "173577079507",
+        "team": 0
+      },
+      "command": "attack",
+      "configured_raw_damage": 49,
+      "current_distance": 1.53388404846191,
+      "damage_type": "slash",
+      "intended_target": {
+        "alive": true,
+        "definition_id": "lioraen_thorn_ranger",
+        "runtime_id": "175623899962",
+        "team": 1
+      },
+      "phase": "melee_resolution",
+      "phases": [
+        {
+          "distance": 1.46758329868317,
+          "phase": "windup_completed",
+          "physics_frame": 4985,
+          "process_frame": 5704,
+          "target_valid": true,
+          "timestamp_ms": 97991
+        },
+        {
+          "applied_damage": 56.35,
+          "phase": "melee_resolution",
+          "physics_frame": 4985,
+          "process_frame": 5704,
+          "timestamp_ms": 97992
+        }
+      ],
+      "physics_frame": 4978,
+      "process_frame": 5695,
+      "state": 3,
+      "timestamp_ms": 97868
+    },
+    {
+      "attack_event_id": "r1j-attack-075379",
+      "attack_range": 16,
+      "attack_start_ms": 97869,
+      "attack_type": "projectile",
+      "attacker": {
+        "alive": true,
+        "definition_id": "barrosan_crag_archer",
+        "runtime_id": "778093727192",
+        "team": 0
+      },
+      "command": "attack",
+      "configured_raw_damage": 16,
+      "current_distance": 15.8450546264648,
+      "damage_type": "pierce",
+      "intended_target": {
+        "alive": true,
+        "definition_id": "lioraen_thorn_ranger",
+        "runtime_id": "175623899962",
+        "team": 1
+      },
+      "phase": "attack_started",
+      "phases": [],
+      "physics_frame": 4978,
+      "process_frame": 5695,
+      "state": 3,
+      "timestamp_ms": 97869
+    },
+    {
+      "attack_event_id": "r1j-attack-075429",
+      "attack_range": 16,
+      "attack_start_ms": 97910,
+      "attack_type": "projectile",
+      "attacker": {
+        "alive": true,
+        "definition_id": "barrosan_crag_archer",
+        "runtime_id": "889964203528",
+        "team": 0
+      },
+      "command": "attack",
+      "configured_raw_damage": 16,
+      "current_distance": 15.8547067642212,
+      "damage_type": "pierce",
+      "intended_target": {
+        "alive": true,
+        "definition_id": "lioraen_thorn_ranger",
+        "runtime_id": "175623899962",
+        "team": 1
+      },
+      "phase": "attack_started",
+      "phases": [],
+      "physics_frame": 4980,
+      "process_frame": 5698,
+      "state": 3,
+      "timestamp_ms": 97910
+    },
+    {
+      "attack_event_id": "r1j-attack-075694",
+      "attack_range": 1.6,
+      "attack_start_ms": 98682,
+      "attack_type": "projectile",
+      "attacker": {
+        "alive": true,
+        "definition_id": "lioraen_bloomdancer",
+        "runtime_id": "859966541297",
+        "team": 1
+      },
+      "command": "attack",
+      "configured_raw_damage": 14,
+      "current_distance": 1.13912725448608,
+      "damage_type": "slash",
+      "intended_target": {
+        "alive": true,
+        "definition_id": "barrosan_hero_thane",
+        "runtime_id": "173577079507",
+        "team": 0
+      },
+      "phase": "melee_resolution",
+      "phases": [
+        {
+          "distance": 1.22270750999451,
+          "phase": "windup_completed",
+          "physics_frame": 4998,
+          "process_frame": 5711,
+          "target_valid": true,
+          "timestamp_ms": 98719
+        },
+        {
+          "applied_damage": 6.75,
+          "phase": "melee_resolution",
+          "physics_frame": 4998,
+          "process_frame": 5711,
+          "timestamp_ms": 98719
+        }
+      ],
+      "physics_frame": 4991,
+      "process_frame": 5711,
+      "state": 3,
+      "timestamp_ms": 98682
+    },
+    {
+      "attack_event_id": "r1j-attack-075743",
+      "attack_range": 1.6,
+      "attack_start_ms": 98691,
+      "attack_type": "projectile",
+      "attacker": {
+        "alive": true,
+        "definition_id": "lioraen_bloomdancer",
+        "runtime_id": "949053558366",
+        "team": 1
+      },
+      "command": "attack",
+      "configured_raw_damage": 14,
+      "current_distance": 1.56406211853027,
+      "damage_type": "slash",
+      "intended_target": {
+        "alive": true,
+        "definition_id": "barrosan_hero_thane",
+        "runtime_id": "173577079507",
+        "team": 0
+      },
+      "phase": "melee_resolution",
+      "phases": [
+        {
+          "distance": 1.32112777233124,
+          "phase": "windup_completed",
+          "physics_frame": 4998,
+          "process_frame": 5711,
+          "target_valid": true,
+          "timestamp_ms": 98719
+        },
+        {
+          "applied_damage": 6.75,
+          "phase": "melee_resolution",
+          "physics_frame": 4998,
+          "process_frame": 5711,
+          "timestamp_ms": 98720
+        }
+      ],
+      "physics_frame": 4993,
+      "process_frame": 5711,
+      "state": 3,
+      "timestamp_ms": 98691
+    },
+    {
+      "attack_event_id": "r1j-attack-075761",
+      "attack_range": 17,
+      "attack_start_ms": 98694,
+      "attack_type": "projectile",
+      "attacker": {
+        "alive": true,
+        "definition_id": "lioraen_thorn_ranger",
+        "runtime_id": "654865075600",
+        "team": 1
+      },
+      "command": "attack",
+      "configured_raw_damage": 15,
+      "current_distance": 7.28304815292358,
+      "damage_type": "pierce",
+      "intended_target": {
+        "alive": true,
+        "definition_id": "barrosan_hero_thane",
+        "runtime_id": "173577079507",
+        "team": 0
+      },
+      "phase": "attack_started",
+      "phases": [],
+      "physics_frame": 4994,
+      "process_frame": 5711,
+      "state": 3,
+      "timestamp_ms": 98694
+    },
+    {
+      "attack_event_id": "r1j-attack-075862",
+      "attack_range": 17,
+      "attack_start_ms": 98712,
+      "attack_type": "projectile",
+      "attacker": {
+        "alive": true,
+        "definition_id": "lioraen_thorn_ranger",
+        "runtime_id": "1059279867508",
+        "team": 1
+      },
+      "command": "attack",
+      "configured_raw_damage": 15,
+      "current_distance": 7.21484422683716,
+      "damage_type": "pierce",
+      "intended_target": {
+        "alive": true,
+        "definition_id": "barrosan_hero_thane",
+        "runtime_id": "173577079507",
+        "team": 0
+      },
+      "phase": "attack_started",
+      "phases": [],
+      "physics_frame": 4998,
+      "process_frame": 5711,
+      "state": 3,
+      "timestamp_ms": 98712
+    },
+    {
+      "attack_event_id": "r1j-attack-076000",
+      "attack_range": 17,
+      "attack_start_ms": 99213,
+      "attack_type": "projectile",
+      "attacker": {
+        "alive": true,
+        "definition_id": "lioraen_thorn_ranger",
+        "runtime_id": "768211946943",
+        "team": 1
+      },
+      "command": "attack",
+      "configured_raw_damage": 15,
+      "current_distance": 6.80720901489258,
+      "damage_type": "pierce",
+      "intended_target": {
+        "alive": true,
+        "definition_id": "barrosan_hero_thane",
+        "runtime_id": "173577079507",
+        "team": 0
+      },
+      "phase": "attack_started",
+      "phases": [],
+      "physics_frame": 5003,
+      "process_frame": 5712,
+      "state": 3,
+      "timestamp_ms": 99213
+    },
+    {
+      "attack_event_id": "r1j-attack-086685",
+      "attack_range": 15,
+      "attack_start_ms": 107459,
+      "attack_type": "projectile",
+      "attacker": {
+        "alive": true,
+        "definition_id": "lioraen_hero_warden",
+        "runtime_id": "176076884817",
+        "team": 1
+      },
+      "command": "attack",
+      "configured_raw_damage": 26,
+      "current_distance": 14.7881097793579,
+      "damage_type": "arcane",
+      "intended_target": {
+        "alive": true,
+        "definition_id": "barrosan_hero_thane",
+        "runtime_id": "173577079507",
+        "team": 0
+      },
+      "phase": "attack_started",
+      "phases": [],
+      "physics_frame": 5486,
+      "process_frame": 6300,
+      "state": 3,
+      "timestamp_ms": 107459
+    },
+    {
+      "attack_event_id": "r1j-attack-087480",
+      "attack_range": 15,
+      "attack_start_ms": 108059,
+      "attack_type": "projectile",
+      "attacker": {
+        "alive": true,
+        "definition_id": "lioraen_hero_warden",
+        "runtime_id": "176076884817",
+        "team": 1
+      },
+      "command": "attack",
+      "configured_raw_damage": 26,
+      "current_distance": 4.58800506591797,
+      "damage_type": "arcane",
+      "intended_target": {
+        "alive": true,
+        "definition_id": "barrosan_hero_thane",
+        "runtime_id": "173577079507",
+        "team": 0
+      },
+      "phase": "attack_started",
+      "phases": [],
+      "physics_frame": 5522,
+      "process_frame": 6345,
+      "state": 3,
+      "timestamp_ms": 108059
+    },
+    {
+      "attack_event_id": "r1j-attack-087743",
+      "attack_range": 1.6,
+      "attack_start_ms": 108258,
+      "attack_type": "projectile",
+      "attacker": {
+        "alive": true,
+        "definition_id": "barrosan_hero_thane",
+        "runtime_id": "173577079507",
+        "team": 0
+      },
+      "command": "attack",
+      "configured_raw_damage": 49,
+      "current_distance": 1.57484257221222,
+      "damage_type": "slash",
+      "intended_target": {
+        "alive": true,
+        "definition_id": "lioraen_hero_warden",
+        "runtime_id": "176076884817",
+        "team": 1
+      },
+      "phase": "melee_resolution",
+      "phases": [
+        {
+          "distance": 1.11549818515778,
+          "phase": "windup_completed",
+          "physics_frame": 5541,
+          "process_frame": 6369,
+          "target_valid": true,
+          "timestamp_ms": 108381
+        },
+        {
+          "applied_damage": 47.5,
+          "phase": "melee_resolution",
+          "physics_frame": 5541,
+          "process_frame": 6369,
+          "timestamp_ms": 108381
+        }
+      ],
+      "physics_frame": 5534,
+      "process_frame": 6360,
+      "state": 3,
+      "timestamp_ms": 108258
+    },
+    {
+      "attack_event_id": "r1j-attack-088067",
+      "attack_range": 1.6,
+      "attack_start_ms": 108486,
+      "attack_type": "projectile",
+      "attacker": {
+        "alive": true,
+        "definition_id": "lioraen_bloomdancer",
+        "runtime_id": "859966541297",
+        "team": 1
+      },
+      "command": "attack",
+      "configured_raw_damage": 14,
+      "current_distance": 1.51863861083984,
+      "damage_type": "slash",
+      "intended_target": {
+        "alive": true,
+        "definition_id": "barrosan_hero_thane",
+        "runtime_id": "173577079507",
+        "team": 0
+      },
+      "phase": "melee_resolution",
+      "phases": [
+        {
+          "distance": 1.10631310939789,
+          "phase": "windup_completed",
+          "physics_frame": 5555,
+          "process_frame": 6386,
+          "target_valid": true,
+          "timestamp_ms": 108608
+        },
+        {
+          "applied_damage": 6.75,
+          "phase": "melee_resolution",
+          "physics_frame": 5555,
+          "process_frame": 6386,
+          "timestamp_ms": 108608
+        }
+      ],
+      "physics_frame": 5548,
+      "process_frame": 6377,
+      "state": 3,
+      "timestamp_ms": 108486
+    },
+    {
+      "attack_event_id": "r1j-attack-088279",
+      "attack_range": 15,
+      "attack_start_ms": 108659,
+      "attack_type": "projectile",
+      "attacker": {
+        "alive": true,
+        "definition_id": "lioraen_hero_warden",
+        "runtime_id": "176076884817",
+        "team": 1
+      },
+      "command": "attack",
+      "configured_raw_damage": 26,
+      "current_distance": 1.71852493286133,
+      "damage_type": "arcane",
+      "intended_target": {
+        "alive": true,
+        "definition_id": "barrosan_hero_thane",
+        "runtime_id": "173577079507",
+        "team": 0
+      },
+      "phase": "attack_started",
+      "phases": [],
+      "physics_frame": 5558,
+      "process_frame": 6390,
+      "state": 3,
+      "timestamp_ms": 108659
+    },
+    {
+      "attack_event_id": "r1j-attack-088444",
+      "attack_range": 17,
+      "attack_start_ms": 108779,
+      "attack_type": "projectile",
+      "attacker": {
+        "alive": true,
+        "definition_id": "lioraen_thorn_ranger",
+        "runtime_id": "768211946943",
+        "team": 1
+      },
+      "command": "attack",
+      "configured_raw_damage": 15,
+      "current_distance": 16.9531364440918,
+      "damage_type": "pierce",
+      "intended_target": {
+        "alive": true,
+        "definition_id": "barrosan_hero_thane",
+        "runtime_id": "173577079507",
+        "team": 0
+      },
+      "phase": "attack_started",
+      "phases": [],
+      "physics_frame": 5565,
+      "process_frame": 6399,
+      "state": 3,
+      "timestamp_ms": 108779
+    },
+    {
+      "attack_event_id": "r1j-attack-088451",
+      "attack_range": 17,
+      "attack_start_ms": 108780,
+      "attack_type": "projectile",
+      "attacker": {
+        "alive": true,
+        "definition_id": "lioraen_thorn_ranger",
+        "runtime_id": "1059279867508",
+        "team": 1
+      },
+      "command": "attack",
+      "configured_raw_damage": 15,
+      "current_distance": 16.9727745056152,
+      "damage_type": "pierce",
+      "intended_target": {
+        "alive": true,
+        "definition_id": "barrosan_hero_thane",
+        "runtime_id": "173577079507",
+        "team": 0
+      },
+      "phase": "attack_started",
+      "phases": [],
+      "physics_frame": 5565,
+      "process_frame": 6399,
+      "state": 3,
+      "timestamp_ms": 108780
+    },
+    {
+      "attack_event_id": "r1j-attack-088600",
+      "attack_range": 17,
+      "attack_start_ms": 108886,
+      "attack_type": "projectile",
+      "attacker": {
+        "alive": true,
+        "definition_id": "lioraen_thorn_ranger",
+        "runtime_id": "654865075600",
+        "team": 1
+      },
+      "command": "attack",
+      "configured_raw_damage": 15,
+      "current_distance": 16.9810829162598,
+      "damage_type": "pierce",
+      "intended_target": {
+        "alive": true,
+        "definition_id": "barrosan_hero_thane",
+        "runtime_id": "173577079507",
+        "team": 0
+      },
+      "phase": "attack_started",
+      "phases": [],
+      "physics_frame": 5572,
+      "process_frame": 6407,
+      "state": 3,
+      "timestamp_ms": 108886
+    },
+    {
+      "attack_event_id": "r1j-attack-088881",
+      "attack_range": 16,
+      "attack_start_ms": 109087,
+      "attack_type": "projectile",
+      "attacker": {
+        "alive": true,
+        "definition_id": "barrosan_crag_archer",
+        "runtime_id": "778093727192",
+        "team": 0
+      },
+      "command": "attack",
+      "configured_raw_damage": 16,
+      "current_distance": 15.7872905731201,
+      "damage_type": "pierce",
+      "intended_target": {
+        "alive": true,
+        "definition_id": "lioraen_hero_warden",
+        "runtime_id": "176076884817",
+        "team": 1
+      },
+      "phase": "attack_started",
+      "phases": [],
+      "physics_frame": 5584,
+      "process_frame": 6422,
+      "state": 3,
+      "timestamp_ms": 109087
+    },
+    {
+      "attack_event_id": "r1j-attack-088932",
+      "attack_range": 16,
+      "attack_start_ms": 109128,
+      "attack_type": "projectile",
+      "attacker": {
+        "alive": true,
+        "definition_id": "barrosan_crag_archer",
+        "runtime_id": "889964203528",
+        "team": 0
+      },
+      "command": "attack",
+      "configured_raw_damage": 16,
+      "current_distance": 15.8791589736938,
+      "damage_type": "pierce",
+      "intended_target": {
+        "alive": true,
+        "definition_id": "lioraen_hero_warden",
+        "runtime_id": "176076884817",
+        "team": 1
+      },
+      "phase": "attack_started",
+      "phases": [],
+      "physics_frame": 5586,
+      "process_frame": 6425,
+      "state": 3,
+      "timestamp_ms": 109128
+    },
+    {
+      "attack_event_id": "r1j-attack-089107",
+      "attack_range": 15,
+      "attack_start_ms": 109259,
+      "attack_type": "projectile",
+      "attacker": {
+        "alive": true,
+        "definition_id": "lioraen_hero_warden",
+        "runtime_id": "176076884817",
+        "team": 1
+      },
+      "command": "attack",
+      "configured_raw_damage": 26,
+      "current_distance": 1.82926797866821,
+      "damage_type": "arcane",
+      "intended_target": {
+        "alive": true,
+        "definition_id": "barrosan_hero_thane",
+        "runtime_id": "173577079507",
+        "team": 0
+      },
+      "phase": "attack_started",
+      "phases": [],
+      "physics_frame": 5594,
+      "process_frame": 6435,
+      "state": 3,
+      "timestamp_ms": 109259
+    },
+    {
+      "attack_event_id": "r1j-attack-089350",
+      "attack_range": 17,
+      "attack_start_ms": 109420,
+      "attack_type": "projectile",
+      "attacker": {
+        "alive": true,
+        "definition_id": "lioraen_thorn_ranger",
+        "runtime_id": "768211946943",
+        "team": 1
+      },
+      "command": "attack",
+      "configured_raw_damage": 15,
+      "current_distance": 6.44335985183716,
+      "damage_type": "pierce",
+      "intended_target": {
+        "alive": true,
+        "definition_id": "barrosan_hero_thane",
+        "runtime_id": "173577079507",
+        "team": 0
+      },
+      "phase": "attack_started",
+      "phases": [],
+      "physics_frame": 5604,
+      "process_frame": 6447,
+      "state": 3,
+      "timestamp_ms": 109420
+    },
+    {
+      "attack_event_id": "r1j-attack-089357",
+      "attack_range": 17,
+      "attack_start_ms": 109421,
+      "attack_type": "projectile",
+      "attacker": {
+        "alive": true,
+        "definition_id": "lioraen_thorn_ranger",
+        "runtime_id": "1059279867508",
+        "team": 1
+      },
+      "command": "attack",
+      "configured_raw_damage": 15,
+      "current_distance": 6.57248067855835,
+      "damage_type": "pierce",
+      "intended_target": {
+        "alive": true,
+        "definition_id": "barrosan_hero_thane",
+        "runtime_id": "173577079507",
+        "team": 0
+      },
+      "phase": "attack_started",
+      "phases": [],
+      "physics_frame": 5604,
+      "process_frame": 6447,
+      "state": 3,
+      "timestamp_ms": 109421
+    },
+    {
+      "attack_event_id": "r1j-attack-089515",
+      "attack_range": 17,
+      "attack_start_ms": 109540,
+      "attack_type": "projectile",
+      "attacker": {
+        "alive": true,
+        "definition_id": "lioraen_thorn_ranger",
+        "runtime_id": "654865075600",
+        "team": 1
+      },
+      "command": "attack",
+      "configured_raw_damage": 15,
+      "current_distance": 6.46957635879517,
+      "damage_type": "pierce",
+      "intended_target": {
+        "alive": true,
+        "definition_id": "barrosan_hero_thane",
+        "runtime_id": "173577079507",
+        "team": 0
+      },
+      "phase": "attack_started",
+      "phases": [],
+      "physics_frame": 5611,
+      "process_frame": 6456,
+      "state": 3,
+      "timestamp_ms": 109540
+    },
+    {
+      "attack_event_id": "r1j-attack-089866",
+      "attack_range": 16,
+      "attack_start_ms": 109794,
+      "attack_type": "projectile",
+      "attacker": {
+        "alive": true,
+        "definition_id": "barrosan_crag_archer",
+        "runtime_id": "778093727192",
+        "team": 0
+      },
+      "command": "attack",
+      "configured_raw_damage": 17.8,
+      "current_distance": 5.1207480430603,
+      "damage_type": "pierce",
+      "intended_target": {
+        "alive": true,
+        "definition_id": "lioraen_hero_warden",
+        "runtime_id": "176076884817",
+        "team": 1
+      },
+      "phase": "attack_started",
+      "phases": [],
+      "physics_frame": 5626,
+      "process_frame": 6475,
+      "state": 3,
+      "timestamp_ms": 109794
+    },
+    {
+      "attack_event_id": "r1j-attack-089916",
+      "attack_range": 16,
+      "attack_start_ms": 109820,
+      "attack_type": "projectile",
+      "attacker": {
+        "alive": true,
+        "definition_id": "barrosan_crag_archer",
+        "runtime_id": "889964203528",
+        "team": 0
+      },
+      "command": "attack",
+      "configured_raw_damage": 17.8,
+      "current_distance": 5.06094694137573,
+      "damage_type": "pierce",
+      "intended_target": {
+        "alive": true,
+        "definition_id": "lioraen_hero_warden",
+        "runtime_id": "176076884817",
+        "team": 1
+      },
+      "phase": "attack_started",
+      "phases": [],
+      "physics_frame": 5628,
+      "process_frame": 6477,
+      "state": 3,
+      "timestamp_ms": 109820
+    },
+    {
+      "attack_event_id": "r1j-attack-089953",
+      "attack_range": 15,
+      "attack_start_ms": 109860,
+      "attack_type": "projectile",
+      "attacker": {
+        "alive": true,
+        "definition_id": "lioraen_hero_warden",
+        "runtime_id": "176076884817",
+        "team": 1
+      },
+      "command": "attack",
+      "configured_raw_damage": 26,
+      "current_distance": 1.94922399520874,
+      "damage_type": "arcane",
+      "intended_target": {
+        "alive": true,
+        "definition_id": "barrosan_hero_thane",
+        "runtime_id": "173577079507",
+        "team": 0
+      },
+      "phase": "attack_started",
+      "phases": [],
+      "physics_frame": 5630,
+      "process_frame": 6480,
+      "state": 3,
+      "timestamp_ms": 109860
+    },
+    {
+      "attack_event_id": "r1j-attack-090265",
+      "attack_range": 17,
+      "attack_start_ms": 110073,
+      "attack_type": "projectile",
+      "attacker": {
+        "alive": true,
+        "definition_id": "lioraen_thorn_ranger",
+        "runtime_id": "768211946943",
+        "team": 1
+      },
+      "command": "attack",
+      "configured_raw_damage": 15,
+      "current_distance": 4.11680746078491,
+      "damage_type": "pierce",
+      "intended_target": {
+        "alive": true,
+        "definition_id": "barrosan_hero_thane",
+        "runtime_id": "173577079507",
+        "team": 0
+      },
+      "phase": "attack_started",
+      "phases": [],
+      "physics_frame": 5643,
+      "process_frame": 6496,
+      "state": 3,
+      "timestamp_ms": 110073
+    },
+    {
+      "attack_event_id": "r1j-attack-090272",
+      "attack_range": 17,
+      "attack_start_ms": 110074,
+      "attack_type": "projectile",
+      "attacker": {
+        "alive": true,
+        "definition_id": "lioraen_thorn_ranger",
+        "runtime_id": "1059279867508",
+        "team": 1
+      },
+      "command": "attack",
+      "configured_raw_damage": 15,
+      "current_distance": 4.86545562744141,
+      "damage_type": "pierce",
+      "intended_target": {
+        "alive": true,
+        "definition_id": "barrosan_hero_thane",
+        "runtime_id": "173577079507",
+        "team": 0
+      },
+      "phase": "attack_started",
+      "phases": [],
+      "physics_frame": 5643,
+      "process_frame": 6496,
+      "state": 3,
+      "timestamp_ms": 110074
+    },
+    {
+      "attack_event_id": "r1j-attack-090430",
+      "attack_range": 17,
+      "attack_start_ms": 110194,
+      "attack_type": "projectile",
+      "attacker": {
+        "alive": true,
+        "definition_id": "lioraen_thorn_ranger",
+        "runtime_id": "654865075600",
+        "team": 1
+      },
+      "command": "attack",
+      "configured_raw_damage": 15,
+      "current_distance": 4.22445011138916,
+      "damage_type": "pierce",
+      "intended_target": {
+        "alive": true,
+        "definition_id": "barrosan_hero_thane",
+        "runtime_id": "173577079507",
+        "team": 0
+      },
+      "phase": "attack_started",
+      "phases": [],
+      "physics_frame": 5650,
+      "process_frame": 6505,
+      "state": 3,
+      "timestamp_ms": 110194
+    },
+    {
+      "attack_event_id": "r1j-attack-090795",
+      "attack_range": 15,
+      "attack_start_ms": 110460,
+      "attack_type": "projectile",
+      "attacker": {
+        "alive": true,
+        "definition_id": "lioraen_hero_warden",
+        "runtime_id": "176076884817",
+        "team": 1
+      },
+      "command": "attack",
+      "configured_raw_damage": 26,
+      "current_distance": 2.06918025016785,
+      "damage_type": "arcane",
+      "intended_target": {
+        "alive": true,
+        "definition_id": "barrosan_hero_thane",
+        "runtime_id": "173577079507",
+        "team": 0
+      },
+      "phase": "attack_started",
+      "phases": [],
+      "physics_frame": 5666,
+      "process_frame": 6525,
+      "state": 3,
+      "timestamp_ms": 110460
+    },
+    {
+      "attack_event_id": "r1j-attack-090852",
+      "attack_range": 16,
+      "attack_start_ms": 110487,
+      "attack_type": "projectile",
+      "attacker": {
+        "alive": true,
+        "definition_id": "barrosan_crag_archer",
+        "runtime_id": "778093727192",
+        "team": 0
+      },
+      "command": "attack",
+      "configured_raw_damage": 17.8,
+      "current_distance": 6.51655435562134,
+      "damage_type": "pierce",
+      "intended_target": {
+        "alive": true,
+        "definition_id": "lioraen_hero_warden",
+        "runtime_id": "176076884817",
+        "team": 1
+      },
+      "phase": "attack_started",
+      "phases": [],
+      "physics_frame": 5668,
+      "process_frame": 6527,
+      "state": 3,
+      "timestamp_ms": 110487
+    },
+    {
+      "attack_event_id": "r1j-attack-090903",
+      "attack_range": 16,
+      "attack_start_ms": 110528,
+      "attack_type": "projectile",
+      "attacker": {
+        "alive": true,
+        "definition_id": "barrosan_crag_archer",
+        "runtime_id": "889964203528",
+        "team": 0
+      },
+      "command": "attack",
+      "configured_raw_damage": 17.8,
+      "current_distance": 6.03013849258423,
+      "damage_type": "pierce",
+      "intended_target": {
+        "alive": true,
+        "definition_id": "lioraen_hero_warden",
+        "runtime_id": "176076884817",
+        "team": 1
+      },
+      "phase": "attack_started",
+      "phases": [],
+      "physics_frame": 5670,
+      "process_frame": 6530,
+      "state": 3,
+      "timestamp_ms": 110528
+    },
+    {
+      "attack_event_id": "r1j-attack-091180",
+      "attack_range": 17,
+      "attack_start_ms": 110728,
+      "attack_type": "projectile",
+      "attacker": {
+        "alive": true,
+        "definition_id": "lioraen_thorn_ranger",
+        "runtime_id": "768211946943",
+        "team": 1
+      },
+      "command": "attack",
+      "configured_raw_damage": 15,
+      "current_distance": 14.3130540847778,
+      "damage_type": "pierce",
+      "intended_target": {
+        "alive": true,
+        "definition_id": "barrosan_hero_thane",
+        "runtime_id": "173577079507",
+        "team": 0
+      },
+      "phase": "attack_started",
+      "phases": [],
+      "physics_frame": 5682,
+      "process_frame": 6545,
+      "state": 3,
+      "timestamp_ms": 110728
+    },
+    {
+      "attack_event_id": "r1j-attack-091187",
+      "attack_range": 17,
+      "attack_start_ms": 110729,
+      "attack_type": "projectile",
+      "attacker": {
+        "alive": true,
+        "definition_id": "lioraen_thorn_ranger",
+        "runtime_id": "1059279867508",
+        "team": 1
+      },
+      "command": "attack",
+      "configured_raw_damage": 15,
+      "current_distance": 14.6611042022705,
+      "damage_type": "pierce",
+      "intended_target": {
+        "alive": true,
+        "definition_id": "barrosan_hero_thane",
+        "runtime_id": "173577079507",
+        "team": 0
+      },
+      "phase": "attack_started",
+      "phases": [],
+      "physics_frame": 5682,
+      "process_frame": 6545,
+      "state": 3,
+      "timestamp_ms": 110729
+    },
+    {
+      "attack_event_id": "r1j-attack-091343",
+      "attack_range": 17,
+      "attack_start_ms": 110847,
+      "attack_type": "projectile",
+      "attacker": {
+        "alive": true,
+        "definition_id": "lioraen_thorn_ranger",
+        "runtime_id": "654865075600",
+        "team": 1
+      },
+      "command": "attack",
+      "configured_raw_damage": 15,
+      "current_distance": 14.4176292419434,
+      "damage_type": "pierce",
+      "intended_target": {
+        "alive": true,
+        "definition_id": "barrosan_hero_thane",
+        "runtime_id": "173577079507",
+        "team": 0
+      },
+      "phase": "attack_started",
+      "phases": [],
+      "physics_frame": 5689,
+      "process_frame": 6554,
+      "state": 3,
+      "timestamp_ms": 110847
+    },
+    {
+      "attack_event_id": "r1j-attack-091640",
+      "attack_range": 15,
+      "attack_start_ms": 111060,
+      "attack_type": "projectile",
+      "attacker": {
+        "alive": true,
+        "definition_id": "lioraen_hero_warden",
+        "runtime_id": "176076884817",
+        "team": 1
+      },
+      "command": "attack",
+      "configured_raw_damage": 26,
+      "current_distance": 2.18920063972473,
+      "damage_type": "arcane",
+      "intended_target": {
+        "alive": true,
+        "definition_id": "barrosan_hero_thane",
+        "runtime_id": "173577079507",
+        "team": 0
+      },
+      "phase": "attack_started",
+      "phases": [],
+      "physics_frame": 5702,
+      "process_frame": 6570,
+      "state": 3,
+      "timestamp_ms": 111060
+    },
+    {
+      "attack_event_id": "r1j-attack-092472",
+      "attack_range": 15,
+      "attack_start_ms": 111660,
+      "attack_type": "projectile",
+      "attacker": {
+        "alive": true,
+        "definition_id": "lioraen_hero_warden",
+        "runtime_id": "176076884817",
+        "team": 1
+      },
+      "command": "attack",
+      "configured_raw_damage": 26,
+      "current_distance": 2.30915188789368,
+      "damage_type": "arcane",
+      "intended_target": {
+        "alive": true,
+        "definition_id": "barrosan_hero_thane",
+        "runtime_id": "173577079507",
+        "team": 0
+      },
+      "phase": "attack_started",
+      "phases": [],
+      "physics_frame": 5738,
+      "process_frame": 6615,
+      "state": 3,
+      "timestamp_ms": 111660
+    },
+    {
+      "attack_event_id": "r1j-attack-093303",
+      "attack_range": 15,
+      "attack_start_ms": 112260,
+      "attack_type": "projectile",
+      "attacker": {
+        "alive": true,
+        "definition_id": "lioraen_hero_warden",
+        "runtime_id": "176076884817",
+        "team": 1
+      },
+      "command": "attack",
+      "configured_raw_damage": 26,
+      "current_distance": 2.42908668518066,
+      "damage_type": "arcane",
+      "intended_target": {
+        "alive": true,
+        "definition_id": "barrosan_hero_thane",
+        "runtime_id": "173577079507",
+        "team": 0
+      },
+      "phase": "attack_started",
+      "phases": [],
+      "physics_frame": 5774,
+      "process_frame": 6660,
+      "state": 3,
+      "timestamp_ms": 112260
+    },
+    {
+      "attack_event_id": "r1j-attack-093566",
+      "attack_range": 1.6,
+      "attack_start_ms": 112447,
+      "attack_type": "projectile",
+      "attacker": {
+        "alive": true,
+        "definition_id": "barrosan_spear_guard",
+        "runtime_id": "666592349608",
+        "team": 0
+      },
+      "command": "attack",
+      "configured_raw_damage": 15.8,
+      "current_distance": 1.53241729736328,
+      "damage_type": "pierce",
+      "intended_target": {
+        "alive": true,
+        "definition_id": "lioraen_hero_warden",
+        "runtime_id": "176076884817",
+        "team": 1
+      },
+      "phase": "melee_resolution",
+      "phases": [
+        {
+          "distance": 1.28542101383209,
+          "phase": "windup_completed",
+          "physics_frame": 5792,
+          "process_frame": 6683,
+          "target_valid": true,
+          "timestamp_ms": 112568
+        },
+        {
+          "applied_damage": 14.3,
+          "phase": "melee_resolution",
+          "physics_frame": 5792,
+          "process_frame": 6683,
+          "timestamp_ms": 112568
+        }
+      ],
+      "physics_frame": 5785,
+      "process_frame": 6674,
+      "state": 3,
+      "timestamp_ms": 112447
+    },
+    {
+      "attack_event_id": "r1j-attack-094136",
+      "attack_range": 15,
+      "attack_start_ms": 112861,
+      "attack_type": "projectile",
+      "attacker": {
+        "alive": true,
+        "definition_id": "lioraen_hero_warden",
+        "runtime_id": "176076884817",
+        "team": 1
+      },
+      "command": "attack",
+      "configured_raw_damage": 26,
+      "current_distance": 2.54903221130371,
+      "damage_type": "arcane",
+      "intended_target": {
+        "alive": true,
+        "definition_id": "barrosan_hero_thane",
+        "runtime_id": "173577079507",
+        "team": 0
+      },
+      "phase": "attack_started",
+      "phases": [],
+      "physics_frame": 5810,
+      "process_frame": 6705,
+      "state": 3,
+      "timestamp_ms": 112861
+    },
+    {
+      "attack_event_id": "r1j-attack-094967",
+      "attack_range": 15,
+      "attack_start_ms": 113461,
+      "attack_type": "projectile",
+      "attacker": {
+        "alive": true,
+        "definition_id": "lioraen_hero_warden",
+        "runtime_id": "176076884817",
+        "team": 1
+      },
+      "command": "attack",
+      "configured_raw_damage": 26,
+      "current_distance": 2.66898322105408,
+      "damage_type": "arcane",
+      "intended_target": {
+        "alive": true,
+        "definition_id": "barrosan_hero_thane",
+        "runtime_id": "173577079507",
+        "team": 0
+      },
+      "phase": "attack_started",
+      "phases": [],
+      "physics_frame": 5846,
+      "process_frame": 6750,
+      "state": 3,
+      "timestamp_ms": 113461
+    },
+    {
+      "attack_event_id": "r1j-attack-095106",
+      "attack_range": 17,
+      "attack_start_ms": 113542,
+      "attack_type": "projectile",
+      "attacker": {
+        "alive": true,
+        "definition_id": "lioraen_thorn_ranger",
+        "runtime_id": "654865075600",
+        "team": 1
+      },
+      "command": "attack",
+      "configured_raw_damage": 15,
+      "current_distance": 1.07025516033173,
+      "damage_type": "pierce",
+      "intended_target": {
+        "alive": true,
+        "definition_id": "barrosan_crag_archer",
+        "runtime_id": "778093727192",
+        "team": 0
+      },
+      "phase": "attack_started",
+      "phases": [],
+      "physics_frame": 5851,
+      "process_frame": 6756,
+      "state": 3,
+      "timestamp_ms": 113542
+    },
+    {
+      "attack_event_id": "r1j-attack-095110",
+      "attack_range": 17,
+      "attack_start_ms": 113543,
+      "attack_type": "projectile",
+      "attacker": {
+        "alive": true,
+        "definition_id": "lioraen_thorn_ranger",
+        "runtime_id": "768211946943",
+        "team": 1
+      },
+      "command": "attack",
+      "configured_raw_damage": 15,
+      "current_distance": 1.59648394584656,
+      "damage_type": "pierce",
+      "intended_target": {
+        "alive": true,
+        "definition_id": "barrosan_crag_archer",
+        "runtime_id": "778093727192",
+        "team": 0
+      },
+      "phase": "attack_started",
+      "phases": [],
+      "physics_frame": 5851,
+      "process_frame": 6756,
+      "state": 3,
+      "timestamp_ms": 113543
+    },
+    {
+      "attack_event_id": "r1j-attack-095114",
+      "attack_range": 1.6,
+      "attack_start_ms": 113544,
+      "attack_type": "projectile",
+      "attacker": {
+        "alive": true,
+        "definition_id": "lioraen_bloomdancer",
+        "runtime_id": "859966541297",
+        "team": 1
+      },
+      "command": "attack",
+      "configured_raw_damage": 14,
+      "current_distance": 1.51405107975006,
+      "damage_type": "slash",
+      "intended_target": {
+        "alive": true,
+        "definition_id": "barrosan_spear_guard",
+        "runtime_id": "540561902945",
+        "team": 0
+      },
+      "phase": "melee_resolution",
+      "phases": [
+        {
+          "distance": 1.33342087268829,
+          "phase": "windup_completed",
+          "physics_frame": 5858,
+          "process_frame": 6765,
+          "target_valid": true,
+          "timestamp_ms": 113663
+        },
+        {
+          "applied_damage": 8.5,
+          "phase": "melee_resolution",
+          "physics_frame": 5858,
+          "process_frame": 6765,
+          "timestamp_ms": 113663
+        }
+      ],
+      "physics_frame": 5851,
+      "process_frame": 6756,
+      "state": 3,
+      "timestamp_ms": 113544
+    },
+    {
+      "attack_event_id": "r1j-attack-095117",
+      "attack_range": 1.6,
+      "attack_start_ms": 113544,
+      "attack_type": "projectile",
+      "attacker": {
+        "alive": true,
+        "definition_id": "lioraen_bloomdancer",
+        "runtime_id": "949053558366",
+        "team": 1
+      },
+      "command": "attack",
+      "configured_raw_damage": 14,
+      "current_distance": 1.05447363853455,
+      "damage_type": "slash",
+      "intended_target": {
+        "alive": true,
+        "definition_id": "barrosan_spear_guard",
+        "runtime_id": "540561902945",
+        "team": 0
+      },
+      "phase": "melee_resolution",
+      "phases": [
+        {
+          "distance": 1.15844261646271,
+          "phase": "windup_completed",
+          "physics_frame": 5858,
+          "process_frame": 6765,
+          "target_valid": true,
+          "timestamp_ms": 113663
+        },
+        {
+          "applied_damage": 8.5,
+          "phase": "melee_resolution",
+          "physics_frame": 5858,
+          "process_frame": 6765,
+          "timestamp_ms": 113663
+        }
+      ],
+      "physics_frame": 5851,
+      "process_frame": 6756,
+      "state": 3,
+      "timestamp_ms": 113544
+    },
+    {
+      "attack_event_id": "r1j-attack-095119",
+      "attack_range": 17,
+      "attack_start_ms": 113544,
+      "attack_type": "projectile",
+      "attacker": {
+        "alive": true,
+        "definition_id": "lioraen_thorn_ranger",
+        "runtime_id": "1059279867508",
+        "team": 1
+      },
+      "command": "attack",
+      "configured_raw_damage": 15,
+      "current_distance": 1.03377842903137,
+      "damage_type": "pierce",
+      "intended_target": {
+        "alive": true,
+        "definition_id": "barrosan_crag_archer",
+        "runtime_id": "778093727192",
+        "team": 0
+      },
+      "phase": "attack_started",
+      "phases": [],
+      "physics_frame": 5851,
+      "process_frame": 6756,
+      "state": 3,
+      "timestamp_ms": 113544
+    },
+    {
+      "attack_event_id": "r1j-attack-095472",
+      "attack_range": 1.6,
+      "attack_start_ms": 113795,
+      "attack_type": "projectile",
+      "attacker": {
+        "alive": true,
+        "definition_id": "lioraen_rootwarden_guard",
+        "runtime_id": "1319410600782",
+        "team": 1
+      },
+      "command": "attack",
+      "configured_raw_damage": 12,
+      "current_distance": 1.59937787055969,
+      "damage_type": "blunt",
+      "intended_target": {
+        "alive": true,
+        "definition_id": "barrosan_crag_archer",
+        "runtime_id": "889964203528",
+        "team": 0
+      },
+      "phase": "melee_resolution",
+      "phases": [
+        {
+          "distance": 1.63948357105255,
+          "phase": "windup_completed",
+          "physics_frame": 5873,
+          "process_frame": 6784,
+          "target_valid": true,
+          "timestamp_ms": 113916
+        },
+        {
+          "applied_damage": 10.8,
+          "phase": "melee_resolution",
+          "physics_frame": 5873,
+          "process_frame": 6784,
+          "timestamp_ms": 113916
+        }
+      ],
+      "physics_frame": 5866,
+      "process_frame": 6775,
+      "state": 3,
+      "timestamp_ms": 113795
+    },
+    {
+      "attack_event_id": "r1j-attack-095792",
+      "attack_range": 1.6,
+      "attack_start_ms": 114023,
+      "attack_type": "projectile",
+      "attacker": {
+        "alive": true,
+        "definition_id": "lioraen_bloomdancer",
+        "runtime_id": "859966541297",
+        "team": 1
+      },
+      "command": "attack",
+      "configured_raw_damage": 14,
+      "current_distance": 1.53663468360901,
+      "damage_type": "slash",
+      "intended_target": {
+        "alive": true,
+        "definition_id": "barrosan_spear_guard",
+        "runtime_id": "540561902945",
+        "team": 0
+      },
+      "phase": "melee_resolution",
+      "phases": [
+        {
+          "distance": 1.65090131759644,
+          "phase": "windup_completed",
+          "physics_frame": 5887,
+          "process_frame": 6801,
+          "target_valid": true,
+          "timestamp_ms": 114142
+        },
+        {
+          "applied_damage": 8.5,
+          "phase": "melee_resolution",
+          "physics_frame": 5887,
+          "process_frame": 6801,
+          "timestamp_ms": 114143
+        }
+      ],
+      "physics_frame": 5880,
+      "process_frame": 6792,
+      "state": 3,
+      "timestamp_ms": 114023
+    },
+    {
+      "attack_event_id": "r1j-attack-095795",
+      "attack_range": 1.6,
+      "attack_start_ms": 114023,
+      "attack_type": "projectile",
+      "attacker": {
+        "alive": true,
+        "definition_id": "lioraen_bloomdancer",
+        "runtime_id": "949053558366",
+        "team": 1
+      },
+      "command": "attack",
+      "configured_raw_damage": 14,
+      "current_distance": 1.59080362319946,
+      "damage_type": "slash",
+      "intended_target": {
+        "alive": true,
+        "definition_id": "barrosan_spear_guard",
+        "runtime_id": "540561902945",
+        "team": 0
+      },
+      "phase": "melee_resolution",
+      "phases": [
+        {
+          "distance": 1.44982194900513,
+          "phase": "windup_completed",
+          "physics_frame": 5887,
+          "process_frame": 6801,
+          "target_valid": true,
+          "timestamp_ms": 114143
+        },
+        {
+          "applied_damage": 8.5,
+          "phase": "melee_resolution",
+          "physics_frame": 5887,
+          "process_frame": 6801,
+          "timestamp_ms": 114143
+        }
+      ],
+      "physics_frame": 5880,
+      "process_frame": 6792,
+      "state": 3,
+      "timestamp_ms": 114023
+    },
+    {
+      "attack_event_id": "r1j-attack-095830",
+      "attack_range": 15,
+      "attack_start_ms": 114061,
+      "attack_type": "projectile",
+      "attacker": {
+        "alive": true,
+        "definition_id": "lioraen_hero_warden",
+        "runtime_id": "176076884817",
+        "team": 1
+      },
+      "command": "attack",
+      "configured_raw_damage": 26,
+      "current_distance": 5.74064254760742,
+      "damage_type": "arcane",
+      "intended_target": {
+        "alive": true,
+        "definition_id": "barrosan_spear_guard",
+        "runtime_id": "666592349608",
+        "team": 0
+      },
+      "phase": "attack_started",
+      "phases": [],
+      "physics_frame": 5882,
+      "process_frame": 6795,
+      "state": 3,
+      "timestamp_ms": 114061
+    },
+    {
+      "attack_event_id": "r1j-attack-096025",
+      "attack_range": 17,
+      "attack_start_ms": 114195,
+      "attack_type": "projectile",
+      "attacker": {
+        "alive": true,
+        "definition_id": "lioraen_thorn_ranger",
+        "runtime_id": "654865075600",
+        "team": 1
+      },
+      "command": "attack",
+      "configured_raw_damage": 15,
+      "current_distance": 1.05293416976929,
+      "damage_type": "pierce",
+      "intended_target": {
+        "alive": true,
+        "definition_id": "barrosan_crag_archer",
+        "runtime_id": "778093727192",
+        "team": 0
+      },
+      "phase": "attack_started",
+      "phases": [],
+      "physics_frame": 5890,
+      "process_frame": 6805,
+      "state": 3,
+      "timestamp_ms": 114195
+    },
+    {
+      "attack_event_id": "r1j-attack-096029",
+      "attack_range": 17,
+      "attack_start_ms": 114195,
+      "attack_type": "projectile",
+      "attacker": {
+        "alive": true,
+        "definition_id": "lioraen_thorn_ranger",
+        "runtime_id": "768211946943",
+        "team": 1
+      },
+      "command": "attack",
+      "configured_raw_damage": 15,
+      "current_distance": 1.0383927822113,
+      "damage_type": "pierce",
+      "intended_target": {
+        "alive": true,
+        "definition_id": "barrosan_crag_archer",
+        "runtime_id": "778093727192",
+        "team": 0
+      },
+      "phase": "attack_started",
+      "phases": [],
+      "physics_frame": 5890,
+      "process_frame": 6805,
+      "state": 3,
+      "timestamp_ms": 114195
+    },
+    {
+      "attack_event_id": "r1j-attack-096036",
+      "attack_range": 17,
+      "attack_start_ms": 114196,
+      "attack_type": "projectile",
+      "attacker": {
+        "alive": true,
+        "definition_id": "lioraen_thorn_ranger",
+        "runtime_id": "1059279867508",
+        "team": 1
+      },
+      "command": "attack",
+      "configured_raw_damage": 15,
+      "current_distance": 1.22711825370789,
+      "damage_type": "pierce",
+      "intended_target": {
+        "alive": true,
+        "definition_id": "barrosan_crag_archer",
+        "runtime_id": "778093727192",
+        "team": 0
+      },
+      "phase": "attack_started",
+      "phases": [],
+      "physics_frame": 5890,
+      "process_frame": 6805,
+      "state": 3,
+      "timestamp_ms": 114196
+    },
+    {
+      "attack_event_id": "r1j-attack-096236",
+      "attack_range": 1.6,
+      "attack_start_ms": 114340,
+      "attack_type": "projectile",
+      "attacker": {
+        "alive": true,
+        "definition_id": "barrosan_spear_guard",
+        "runtime_id": "173124094652",
+        "team": 0
+      },
+      "command": "attack",
+      "configured_raw_damage": 14,
+      "current_distance": 1.58228731155396,
+      "damage_type": "pierce",
+      "intended_target": {
+        "alive": true,
+        "definition_id": "lioraen_hero_warden",
+        "runtime_id": "176076884817",
+        "team": 1
+      },
+      "phase": "melee_resolution",
+      "phases": [
+        {
+          "distance": 1.08800160884857,
+          "phase": "windup_completed",
+          "physics_frame": 5906,
+          "process_frame": 6825,
+          "target_valid": true,
+          "timestamp_ms": 114463
+        },
+        {
+          "applied_damage": 12.5,
+          "phase": "melee_resolution",
+          "physics_frame": 5906,
+          "process_frame": 6825,
+          "timestamp_ms": 114463
+        }
+      ],
+      "physics_frame": 5899,
+      "process_frame": 6816,
+      "state": 3,
+      "timestamp_ms": 114340
+    },
+    {
+      "attack_event_id": "r1j-attack-096483",
+      "attack_range": 1.6,
+      "attack_start_ms": 114515,
+      "attack_type": "projectile",
+      "attacker": {
+        "alive": true,
+        "definition_id": "lioraen_bloomdancer",
+        "runtime_id": "859966541297",
+        "team": 1
+      },
+      "command": "attack",
+      "configured_raw_damage": 14,
+      "current_distance": 1.33971846103668,
+      "damage_type": "slash",
+      "intended_target": {
+        "alive": true,
+        "definition_id": "barrosan_spear_guard",
+        "runtime_id": "540561902945",
+        "team": 0
+      },
+      "phase": "melee_resolution",
+      "phases": [
+        {
+          "distance": 1.09671747684479,
+          "phase": "windup_completed",
+          "physics_frame": 5916,
+          "process_frame": 6838,
+          "target_valid": true,
+          "timestamp_ms": 114635
+        },
+        {
+          "applied_damage": 8.5,
+          "phase": "melee_resolution",
+          "physics_frame": 5916,
+          "process_frame": 6838,
+          "timestamp_ms": 114636
+        }
+      ],
+      "physics_frame": 5909,
+      "process_frame": 6829,
+      "state": 3,
+      "timestamp_ms": 114515
+    },
+    {
+      "attack_event_id": "r1j-attack-096682",
+      "attack_range": 15,
+      "attack_start_ms": 114662,
+      "attack_type": "projectile",
+      "attacker": {
+        "alive": true,
+        "definition_id": "lioraen_hero_warden",
+        "runtime_id": "176076884817",
+        "team": 1
+      },
+      "command": "attack",
+      "configured_raw_damage": 26,
+      "current_distance": 7.17249393463135,
+      "damage_type": "arcane",
+      "intended_target": {
+        "alive": true,
+        "definition_id": "barrosan_spear_guard",
+        "runtime_id": "666592349608",
+        "team": 0
+      },
+      "phase": "attack_started",
+      "phases": [],
+      "physics_frame": 5918,
+      "process_frame": 6840,
+      "state": 3,
+      "timestamp_ms": 114661
+    },
+    {
+      "attack_event_id": "r1j-attack-096943",
+      "attack_range": 17,
+      "attack_start_ms": 114848,
+      "attack_type": "projectile",
+      "attacker": {
+        "alive": true,
+        "definition_id": "lioraen_thorn_ranger",
+        "runtime_id": "654865075600",
+        "team": 1
+      },
+      "command": "attack",
+      "configured_raw_damage": 15,
+      "current_distance": 2.36138701438904,
+      "damage_type": "pierce",
+      "intended_target": {
+        "alive": true,
+        "definition_id": "barrosan_crag_archer",
+        "runtime_id": "889964203528",
+        "team": 0
+      },
+      "phase": "attack_started",
+      "phases": [],
+      "physics_frame": 5929,
+      "process_frame": 6854,
+      "state": 3,
+      "timestamp_ms": 114848
+    },
+    {
+      "attack_event_id": "r1j-attack-096947",
+      "attack_range": 17,
+      "attack_start_ms": 114849,
+      "attack_type": "projectile",
+      "attacker": {
+        "alive": true,
+        "definition_id": "lioraen_thorn_ranger",
+        "runtime_id": "768211946943",
+        "team": 1
+      },
+      "command": "attack",
+      "configured_raw_damage": 15,
+      "current_distance": 2.90370416641235,
+      "damage_type": "pierce",
+      "intended_target": {
+        "alive": true,
+        "definition_id": "barrosan_crag_archer",
+        "runtime_id": "889964203528",
+        "team": 0
+      },
+      "phase": "attack_started",
+      "phases": [],
+      "physics_frame": 5929,
+      "process_frame": 6854,
+      "state": 3,
+      "timestamp_ms": 114849
+    },
+    {
+      "attack_event_id": "r1j-attack-096954",
+      "attack_range": 17,
+      "attack_start_ms": 114850,
+      "attack_type": "projectile",
+      "attacker": {
+        "alive": true,
+        "definition_id": "lioraen_thorn_ranger",
+        "runtime_id": "1059279867508",
+        "team": 1
+      },
+      "command": "attack",
+      "configured_raw_damage": 15,
+      "current_distance": 1.46675407886505,
+      "damage_type": "pierce",
+      "intended_target": {
+        "alive": true,
+        "definition_id": "barrosan_crag_archer",
+        "runtime_id": "889964203528",
+        "team": 0
+      },
+      "phase": "attack_started",
+      "phases": [],
+      "physics_frame": 5929,
+      "process_frame": 6854,
+      "state": 3,
+      "timestamp_ms": 114850
+    },
+    {
+      "attack_event_id": "r1j-attack-097134",
+      "attack_range": 1.6,
+      "attack_start_ms": 114982,
+      "attack_type": "projectile",
+      "attacker": {
+        "alive": true,
+        "definition_id": "lioraen_bloomdancer",
+        "runtime_id": "949053558366",
+        "team": 1
+      },
+      "command": "attack",
+      "configured_raw_damage": 14,
+      "current_distance": 1.57505524158478,
+      "damage_type": "slash",
+      "intended_target": {
+        "alive": true,
+        "definition_id": "barrosan_spear_guard",
+        "runtime_id": "540561902945",
+        "team": 0
+      },
+      "phase": "melee_resolution",
+      "phases": [
+        {
+          "distance": 1.37699854373932,
+          "phase": "windup_completed",
+          "physics_frame": 5944,
+          "process_frame": 6873,
+          "target_valid": true,
+          "timestamp_ms": 115102
+        },
+        {
+          "applied_damage": 8.5,
+          "phase": "melee_resolution",
+          "physics_frame": 5944,
+          "process_frame": 6873,
+          "timestamp_ms": 115102
+        }
+      ],
+      "physics_frame": 5937,
+      "process_frame": 6864,
+      "state": 3,
+      "timestamp_ms": 114982
+    },
+    {
+      "attack_event_id": "r1j-attack-097498",
+      "attack_range": 15,
+      "attack_start_ms": 115262,
+      "attack_type": "projectile",
+      "attacker": {
+        "alive": true,
+        "definition_id": "lioraen_hero_warden",
+        "runtime_id": "176076884817",
+        "team": 1
+      },
+      "command": "attack",
+      "configured_raw_damage": 26,
+      "current_distance": 8.86491680145264,
+      "damage_type": "arcane",
+      "intended_target": {
+        "alive": true,
+        "definition_id": "barrosan_spear_guard",
+        "runtime_id": "666592349608",
+        "team": 0
+      },
+      "phase": "attack_started",
+      "phases": [],
+      "physics_frame": 5954,
+      "process_frame": 6885,
+      "state": 3,
+      "timestamp_ms": 115262
+    },
+    {
+      "attack_event_id": "r1j-attack-097576",
+      "attack_range": 1.6,
+      "attack_start_ms": 115315,
+      "attack_type": "projectile",
+      "attacker": {
+        "alive": true,
+        "definition_id": "lioraen_bloomdancer",
+        "runtime_id": "859966541297",
+        "team": 1
+      },
+      "command": "attack",
+      "configured_raw_damage": 14,
+      "current_distance": 1.49283146858215,
+      "damage_type": "slash",
+      "intended_target": {
+        "alive": true,
+        "definition_id": "barrosan_spear_guard",
+        "runtime_id": "540561902945",
+        "team": 0
+      },
+      "phase": "melee_resolution",
+      "phases": [
+        {
+          "distance": 1.01523995399475,
+          "phase": "windup_completed",
+          "physics_frame": 5964,
+          "process_frame": 6898,
+          "target_valid": true,
+          "timestamp_ms": 115434
+        },
+        {
+          "applied_damage": 8.5,
+          "phase": "melee_resolution",
+          "physics_frame": 5964,
+          "process_frame": 6898,
+          "timestamp_ms": 115434
+        }
+      ],
+      "physics_frame": 5957,
+      "process_frame": 6889,
+      "state": 3,
+      "timestamp_ms": 115315
+    },
+    {
+      "attack_event_id": "r1j-attack-097817",
+      "attack_range": 17,
+      "attack_start_ms": 115489,
+      "attack_type": "projectile",
+      "attacker": {
+        "alive": true,
+        "definition_id": "lioraen_thorn_ranger",
+        "runtime_id": "654865075600",
+        "team": 1
+      },
+      "command": "attack",
+      "configured_raw_damage": 15,
+      "current_distance": 1.75768327713013,
+      "damage_type": "pierce",
+      "intended_target": {
+        "alive": true,
+        "definition_id": "barrosan_crag_archer",
+        "runtime_id": "889964203528",
+        "team": 0
+      },
+      "phase": "attack_started",
+      "phases": [],
+      "physics_frame": 5968,
+      "process_frame": 6902,
+      "state": 3,
+      "timestamp_ms": 115489
+    },
+    {
+      "attack_event_id": "r1j-attack-097821",
+      "attack_range": 17,
+      "attack_start_ms": 115490,
+      "attack_type": "projectile",
+      "attacker": {
+        "alive": true,
+        "definition_id": "lioraen_thorn_ranger",
+        "runtime_id": "768211946943",
+        "team": 1
+      },
+      "command": "attack",
+      "configured_raw_damage": 15,
+      "current_distance": 2.54632997512817,
+      "damage_type": "pierce",
+      "intended_target": {
+        "alive": true,
+        "definition_id": "barrosan_crag_archer",
+        "runtime_id": "889964203528",
+        "team": 0
+      },
+      "phase": "attack_started",
+      "phases": [],
+      "physics_frame": 5968,
+      "process_frame": 6902,
+      "state": 3,
+      "timestamp_ms": 115490
+    },
+    {
+      "attack_event_id": "r1j-attack-097828",
+      "attack_range": 17,
+      "attack_start_ms": 115490,
+      "attack_type": "projectile",
+      "attacker": {
+        "alive": true,
+        "definition_id": "lioraen_thorn_ranger",
+        "runtime_id": "1059279867508",
+        "team": 1
+      },
+      "command": "attack",
+      "configured_raw_damage": 15,
+      "current_distance": 1.13850903511047,
+      "damage_type": "pierce",
+      "intended_target": {
+        "alive": true,
+        "definition_id": "barrosan_crag_archer",
+        "runtime_id": "889964203528",
+        "team": 0
+      },
+      "phase": "attack_started",
+      "phases": [],
+      "physics_frame": 5968,
+      "process_frame": 6902,
+      "state": 3,
+      "timestamp_ms": 115490
+    },
+    {
+      "attack_event_id": "r1j-attack-098218",
+      "attack_range": 1.6,
+      "attack_start_ms": 115795,
+      "attack_type": "projectile",
+      "attacker": {
+        "alive": true,
+        "definition_id": "lioraen_bloomdancer",
+        "runtime_id": "859966541297",
+        "team": 1
+      },
+      "command": "attack",
+      "configured_raw_damage": 14,
+      "current_distance": 1.40066027641296,
+      "damage_type": "slash",
+      "intended_target": {
+        "alive": true,
+        "definition_id": "barrosan_spear_guard",
+        "runtime_id": "540561902945",
+        "team": 0
+      },
+      "phase": "melee_resolution",
+      "phases": [
+        {
+          "distance": 1.11833810806274,
+          "phase": "windup_completed",
+          "physics_frame": 5993,
+          "process_frame": 6934,
+          "target_valid": true,
+          "timestamp_ms": 115917
+        },
+        {
+          "applied_damage": 8.5,
+          "phase": "melee_resolution",
+          "physics_frame": 5993,
+          "process_frame": 6934,
+          "timestamp_ms": 115917
+        }
+      ],
+      "physics_frame": 5986,
+      "process_frame": 6925,
+      "state": 3,
+      "timestamp_ms": 115795
+    },
+    {
+      "attack_event_id": "r1j-attack-098294",
+      "attack_range": 15,
+      "attack_start_ms": 115862,
+      "attack_type": "projectile",
+      "attacker": {
+        "alive": true,
+        "definition_id": "lioraen_hero_warden",
+        "runtime_id": "176076884817",
+        "team": 1
+      },
+      "command": "attack",
+      "configured_raw_damage": 26,
+      "current_distance": 10.3904809951782,
+      "damage_type": "arcane",
+      "intended_target": {
+        "alive": true,
+        "definition_id": "barrosan_spear_guard",
+        "runtime_id": "666592349608",
+        "team": 0
+      },
+      "phase": "attack_started",
+      "phases": [],
+      "physics_frame": 5990,
+      "process_frame": 6930,
+      "state": 3,
+      "timestamp_ms": 115862
+    },
+    {
+      "attack_event_id": "r1j-attack-098661",
+      "attack_range": 17,
+      "attack_start_ms": 116142,
+      "attack_type": "projectile",
+      "attacker": {
+        "alive": true,
+        "definition_id": "lioraen_thorn_ranger",
+        "runtime_id": "654865075600",
+        "team": 1
+      },
+      "command": "attack",
+      "configured_raw_damage": 15,
+      "current_distance": 13.1018314361572,
+      "damage_type": "pierce",
+      "intended_target": {
+        "alive": true,
+        "definition_id": "barrosan_spear_guard",
+        "runtime_id": "540561902945",
+        "team": 0
+      },
+      "phase": "attack_started",
+      "phases": [],
+      "physics_frame": 6007,
+      "process_frame": 6951,
+      "state": 3,
+      "timestamp_ms": 116142
+    },
+    {
+      "attack_event_id": "r1j-attack-098665",
+      "attack_range": 17,
+      "attack_start_ms": 116143,
+      "attack_type": "projectile",
+      "attacker": {
+        "alive": true,
+        "definition_id": "lioraen_thorn_ranger",
+        "runtime_id": "768211946943",
+        "team": 1
+      },
+      "command": "attack",
+      "configured_raw_damage": 15,
+      "current_distance": 12.3742942810059,
+      "damage_type": "pierce",
+      "intended_target": {
+        "alive": true,
+        "definition_id": "barrosan_spear_guard",
+        "runtime_id": "540561902945",
+        "team": 0
+      },
+      "phase": "attack_started",
+      "phases": [],
+      "physics_frame": 6007,
+      "process_frame": 6951,
+      "state": 3,
+      "timestamp_ms": 116143
+    },
+    {
+      "attack_event_id": "r1j-attack-098671",
+      "attack_range": 17,
+      "attack_start_ms": 116143,
+      "attack_type": "projectile",
+      "attacker": {
+        "alive": true,
+        "definition_id": "lioraen_thorn_ranger",
+        "runtime_id": "1059279867508",
+        "team": 1
+      },
+      "command": "attack",
+      "configured_raw_damage": 15,
+      "current_distance": 10.6229181289673,
+      "damage_type": "pierce",
+      "intended_target": {
+        "alive": true,
+        "definition_id": "barrosan_spear_guard",
+        "runtime_id": "540561902945",
+        "team": 0
+      },
+      "phase": "attack_started",
+      "phases": [],
+      "physics_frame": 6007,
+      "process_frame": 6951,
+      "state": 3,
+      "timestamp_ms": 116143
+    },
+    {
+      "attack_event_id": "r1j-attack-098735",
+      "attack_range": 1.6,
+      "attack_start_ms": 116196,
+      "attack_type": "projectile",
+      "attacker": {
+        "alive": true,
+        "definition_id": "lioraen_bloomdancer",
+        "runtime_id": "949053558366",
+        "team": 1
+      },
+      "command": "attack",
+      "configured_raw_damage": 14,
+      "current_distance": 1.59446728229523,
+      "damage_type": "slash",
+      "intended_target": {
+        "alive": true,
+        "definition_id": "barrosan_spear_guard",
+        "runtime_id": "540561902945",
+        "team": 0
+      },
+      "phase": "melee_resolution",
+      "phases": [
+        {
+          "distance": 1.31583738327026,
+          "phase": "windup_completed",
+          "physics_frame": 6017,
+          "process_frame": 6964,
+          "target_valid": true,
+          "timestamp_ms": 116317
+        },
+        {
+          "applied_damage": 8.5,
+          "phase": "melee_resolution",
+          "physics_frame": 6017,
+          "process_frame": 6964,
+          "timestamp_ms": 116317
+        }
+      ],
+      "physics_frame": 6010,
+      "process_frame": 6955,
+      "state": 3,
+      "timestamp_ms": 116195
+    },
+    {
+      "attack_event_id": "r1j-attack-098839",
+      "attack_range": 1.6,
+      "attack_start_ms": 116276,
+      "attack_type": "projectile",
+      "attacker": {
+        "alive": true,
+        "definition_id": "lioraen_bloomdancer",
+        "runtime_id": "859966541297",
+        "team": 1
+      },
+      "command": "attack",
+      "configured_raw_damage": 14,
+      "current_distance": 1.41235816478729,
+      "damage_type": "slash",
+      "intended_target": {
+        "alive": true,
+        "definition_id": "barrosan_spear_guard",
+        "runtime_id": "540561902945",
+        "team": 0
+      },
+      "phase": "attack_started",
+      "phases": [],
+      "physics_frame": 6015,
+      "process_frame": 6961,
+      "state": 3,
+      "timestamp_ms": 116276
+    },
+    {
+      "attack_event_id": "r1j-attack-099066",
+      "attack_range": 15,
+      "attack_start_ms": 116462,
+      "attack_type": "projectile",
+      "attacker": {
+        "alive": true,
+        "definition_id": "lioraen_hero_warden",
+        "runtime_id": "176076884817",
+        "team": 1
+      },
+      "command": "attack",
+      "configured_raw_damage": 26,
+      "current_distance": 11.938009262085,
+      "damage_type": "arcane",
+      "intended_target": {
+        "alive": true,
+        "definition_id": "barrosan_spear_guard",
+        "runtime_id": "666592349608",
+        "team": 0
+      },
+      "phase": "attack_started",
+      "phases": [],
+      "physics_frame": 6026,
+      "process_frame": 6975,
+      "state": 3,
+      "timestamp_ms": 116462
+    },
+    {
+      "attack_event_id": "r1j-attack-099352",
+      "attack_range": 1.6,
+      "attack_start_ms": 116676,
+      "attack_type": "projectile",
+      "attacker": {
+        "alive": true,
+        "definition_id": "lioraen_bloomdancer",
+        "runtime_id": "949053558366",
+        "team": 1
+      },
+      "command": "attack",
+      "configured_raw_damage": 14,
+      "current_distance": 1.03667998313904,
+      "damage_type": "slash",
+      "intended_target": {
+        "alive": true,
+        "definition_id": "barrosan_spear_guard",
+        "runtime_id": "540561902945",
+        "team": 0
+      },
+      "phase": "melee_resolution",
+      "phases": [
+        {
+          "distance": 1.69596719741821,
+          "phase": "windup_completed",
+          "physics_frame": 6046,
+          "process_frame": 7000,
+          "target_valid": true,
+          "timestamp_ms": 116803
+        },
+        {
+          "applied_damage": 8.5,
+          "phase": "melee_resolution",
+          "physics_frame": 6046,
+          "process_frame": 7000,
+          "timestamp_ms": 116803
+        }
+      ],
+      "physics_frame": 6039,
+      "process_frame": 6991,
+      "state": 3,
+      "timestamp_ms": 116676
+    },
+    {
+      "attack_event_id": "r1j-attack-099457",
+      "attack_range": 1.6,
+      "attack_start_ms": 116756,
+      "attack_type": "projectile",
+      "attacker": {
+        "alive": true,
+        "definition_id": "lioraen_bloomdancer",
+        "runtime_id": "859966541297",
+        "team": 1
+      },
+      "command": "attack",
+      "configured_raw_damage": 14,
+      "current_distance": 1.16248142719269,
+      "damage_type": "slash",
+      "intended_target": {
+        "alive": true,
+        "definition_id": "barrosan_spear_guard",
+        "runtime_id": "540561902945",
+        "team": 0
+      },
+      "phase": "melee_resolution",
+      "phases": [
+        {
+          "distance": 1.55779385566711,
+          "phase": "windup_completed",
+          "physics_frame": 6051,
+          "process_frame": 7006,
+          "target_valid": true,
+          "timestamp_ms": 116877
+        },
+        {
+          "applied_damage": 8.5,
+          "phase": "melee_resolution",
+          "physics_frame": 6051,
+          "process_frame": 7006,
+          "timestamp_ms": 116877
+        }
+      ],
+      "physics_frame": 6044,
+      "process_frame": 6997,
+      "state": 3,
+      "timestamp_ms": 116756
+    },
+    {
+      "attack_event_id": "r1j-attack-099497",
+      "attack_range": 17,
+      "attack_start_ms": 116796,
+      "attack_type": "projectile",
+      "attacker": {
+        "alive": true,
+        "definition_id": "lioraen_thorn_ranger",
+        "runtime_id": "654865075600",
+        "team": 1
+      },
+      "command": "attack",
+      "configured_raw_damage": 15,
+      "current_distance": 11.9617414474487,
+      "damage_type": "pierce",
+      "intended_target": {
+        "alive": true,
+        "definition_id": "barrosan_spear_guard",
+        "runtime_id": "540561902945",
+        "team": 0
+      },
+      "phase": "attack_started",
+      "phases": [],
+      "physics_frame": 6046,
+      "process_frame": 7000,
+      "state": 3,
+      "timestamp_ms": 116796
+    },
+    {
+      "attack_event_id": "r1j-attack-099501",
+      "attack_range": 17,
+      "attack_start_ms": 116796,
+      "attack_type": "projectile",
+      "attacker": {
+        "alive": true,
+        "definition_id": "lioraen_thorn_ranger",
+        "runtime_id": "768211946943",
+        "team": 1
+      },
+      "command": "attack",
+      "configured_raw_damage": 15,
+      "current_distance": 11.2030334472656,
+      "damage_type": "pierce",
+      "intended_target": {
+        "alive": true,
+        "definition_id": "barrosan_spear_guard",
+        "runtime_id": "540561902945",
+        "team": 0
+      },
+      "phase": "attack_started",
+      "phases": [],
+      "physics_frame": 6046,
+      "process_frame": 7000,
+      "state": 3,
+      "timestamp_ms": 116796
+    },
+    {
+      "attack_event_id": "r1j-attack-099507",
+      "attack_range": 17,
+      "attack_start_ms": 116797,
+      "attack_type": "projectile",
+      "attacker": {
+        "alive": true,
+        "definition_id": "lioraen_thorn_ranger",
+        "runtime_id": "1059279867508",
+        "team": 1
+      },
+      "command": "attack",
+      "configured_raw_damage": 15,
+      "current_distance": 9.53443717956543,
+      "damage_type": "pierce",
+      "intended_target": {
+        "alive": true,
+        "definition_id": "barrosan_spear_guard",
+        "runtime_id": "540561902945",
+        "team": 0
+      },
+      "phase": "attack_started",
+      "phases": [],
+      "physics_frame": 6046,
+      "process_frame": 7000,
+      "state": 3,
+      "timestamp_ms": 116797
+    },
+    {
+      "attack_event_id": "r1j-attack-099825",
+      "attack_range": 15,
+      "attack_start_ms": 117062,
+      "attack_type": "projectile",
+      "attacker": {
+        "alive": true,
+        "definition_id": "lioraen_hero_warden",
+        "runtime_id": "176076884817",
+        "team": 1
+      },
+      "command": "attack",
+      "configured_raw_damage": 26,
+      "current_distance": 13.4928665161133,
+      "damage_type": "arcane",
+      "intended_target": {
+        "alive": true,
+        "definition_id": "barrosan_spear_guard",
+        "runtime_id": "666592349608",
+        "team": 0
+      },
+      "phase": "attack_started",
+      "phases": [],
+      "physics_frame": 6062,
+      "process_frame": 7020,
+      "state": 3,
+      "timestamp_ms": 117062
+    },
+    {
+      "attack_event_id": "r1j-attack-100056",
+      "attack_range": 1.6,
+      "attack_start_ms": 117249,
+      "attack_type": "projectile",
+      "attacker": {
+        "alive": true,
+        "definition_id": "lioraen_bloomdancer",
+        "runtime_id": "859966541297",
+        "team": 1
+      },
+      "command": "attack",
+      "configured_raw_damage": 14,
+      "current_distance": 1.23096990585327,
+      "damage_type": "slash",
+      "intended_target": {
+        "alive": true,
+        "definition_id": "barrosan_spear_guard",
+        "runtime_id": "540561902945",
+        "team": 0
+      },
+      "phase": "melee_resolution",
+      "phases": [
+        {
+          "distance": 1.3944228887558,
+          "phase": "windup_completed",
+          "physics_frame": 6080,
+          "process_frame": 7043,
+          "target_valid": true,
+          "timestamp_ms": 117369
+        },
+        {
+          "applied_damage": 8.5,
+          "phase": "melee_resolution",
+          "physics_frame": 6080,
+          "process_frame": 7043,
+          "timestamp_ms": 117369
+        }
+      ],
+      "physics_frame": 6073,
+      "process_frame": 7034,
+      "state": 3,
+      "timestamp_ms": 117249
+    },
+    {
+      "attack_event_id": "r1j-attack-100058",
+      "attack_range": 1.6,
+      "attack_start_ms": 117249,
+      "attack_type": "projectile",
+      "attacker": {
+        "alive": true,
+        "definition_id": "lioraen_bloomdancer",
+        "runtime_id": "949053558366",
+        "team": 1
+      },
+      "command": "attack",
+      "configured_raw_damage": 14,
+      "current_distance": 1.59013676643372,
+      "damage_type": "slash",
+      "intended_target": {
+        "alive": true,
+        "definition_id": "barrosan_spear_guard",
+        "runtime_id": "540561902945",
+        "team": 0
+      },
+      "phase": "melee_resolution",
+      "phases": [
+        {
+          "distance": 1.24588394165039,
+          "phase": "windup_completed",
+          "physics_frame": 6080,
+          "process_frame": 7043,
+          "target_valid": true,
+          "timestamp_ms": 117369
+        },
+        {
+          "applied_damage": 8.5,
+          "phase": "melee_resolution",
+          "physics_frame": 6080,
+          "process_frame": 7043,
+          "timestamp_ms": 117369
+        }
+      ],
+      "physics_frame": 6073,
+      "process_frame": 7034,
+      "state": 3,
+      "timestamp_ms": 117249
+    },
+    {
+      "attack_event_id": "r1j-attack-100298",
+      "attack_range": 17,
+      "attack_start_ms": 117449,
+      "attack_type": "projectile",
+      "attacker": {
+        "alive": true,
+        "definition_id": "lioraen_thorn_ranger",
+        "runtime_id": "654865075600",
+        "team": 1
+      },
+      "command": "attack",
+      "configured_raw_damage": 15,
+      "current_distance": 10.530403137207,
+      "damage_type": "pierce",
+      "intended_target": {
+        "alive": true,
+        "definition_id": "barrosan_spear_guard",
+        "runtime_id": "540561902945",
+        "team": 0
+      },
+      "phase": "attack_started",
+      "phases": [],
+      "physics_frame": 6085,
+      "process_frame": 7049,
+      "state": 3,
+      "timestamp_ms": 117449
+    },
+    {
+      "attack_event_id": "r1j-attack-100302",
+      "attack_range": 17,
+      "attack_start_ms": 117450,
+      "attack_type": "projectile",
+      "attacker": {
+        "alive": true,
+        "definition_id": "lioraen_thorn_ranger",
+        "runtime_id": "768211946943",
+        "team": 1
+      },
+      "command": "attack",
+      "configured_raw_damage": 15,
+      "current_distance": 9.87630462646484,
+      "damage_type": "pierce",
+      "intended_target": {
+        "alive": true,
+        "definition_id": "barrosan_spear_guard",
+        "runtime_id": "540561902945",
+        "team": 0
+      },
+      "phase": "attack_started",
+      "phases": [],
+      "physics_frame": 6085,
+      "process_frame": 7049,
+      "state": 3,
+      "timestamp_ms": 117450
+    },
+    {
+      "attack_event_id": "r1j-attack-100307",
+      "attack_range": 17,
+      "attack_start_ms": 117450,
+      "attack_type": "projectile",
+      "attacker": {
+        "alive": true,
+        "definition_id": "lioraen_thorn_ranger",
+        "runtime_id": "1059279867508",
+        "team": 1
+      },
+      "command": "attack",
+      "configured_raw_damage": 15,
+      "current_distance": 8.23302173614502,
+      "damage_type": "pierce",
+      "intended_target": {
+        "alive": true,
+        "definition_id": "barrosan_spear_guard",
+        "runtime_id": "540561902945",
+        "team": 0
+      },
+      "phase": "attack_started",
+      "phases": [],
+      "physics_frame": 6085,
+      "process_frame": 7049,
+      "state": 3,
+      "timestamp_ms": 117450
+    },
+    {
+      "attack_event_id": "r1j-attack-100574",
+      "attack_range": 15,
+      "attack_start_ms": 117662,
+      "attack_type": "projectile",
+      "attacker": {
+        "alive": true,
+        "definition_id": "lioraen_hero_warden",
+        "runtime_id": "176076884817",
+        "team": 1
+      },
+      "command": "attack",
+      "configured_raw_damage": 26,
+      "current_distance": 14.7639141082764,
+      "damage_type": "arcane",
+      "intended_target": {
+        "alive": true,
+        "definition_id": "barrosan_spear_guard",
+        "runtime_id": "666592349608",
+        "team": 0
+      },
+      "phase": "attack_started",
+      "phases": [],
+      "physics_frame": 6098,
+      "process_frame": 7065,
+      "state": 3,
+      "timestamp_ms": 117662
+    },
+    {
+      "attack_event_id": "r1j-attack-101117",
+      "attack_range": 17,
+      "attack_start_ms": 118089,
+      "attack_type": "projectile",
+      "attacker": {
+        "alive": true,
+        "definition_id": "lioraen_thorn_ranger",
+        "runtime_id": "654865075600",
+        "team": 1
+      },
+      "command": "attack",
+      "configured_raw_damage": 15,
+      "current_distance": 16.8170185089111,
+      "damage_type": "pierce",
+      "intended_target": {
+        "alive": true,
+        "definition_id": "barrosan_spear_guard",
+        "runtime_id": "173124094652",
+        "team": 0
+      },
+      "phase": "attack_started",
+      "phases": [],
+      "physics_frame": 6124,
+      "process_frame": 7097,
+      "state": 3,
+      "timestamp_ms": 118089
+    },
+    {
+      "attack_event_id": "r1j-attack-101121",
+      "attack_range": 17,
+      "attack_start_ms": 118090,
+      "attack_type": "projectile",
+      "attacker": {
+        "alive": true,
+        "definition_id": "lioraen_thorn_ranger",
+        "runtime_id": "768211946943",
+        "team": 1
+      },
+      "command": "attack",
+      "configured_raw_damage": 15,
+      "current_distance": 16.5732078552246,
+      "damage_type": "pierce",
+      "intended_target": {
+        "alive": true,
+        "definition_id": "barrosan_spear_guard",
+        "runtime_id": "173124094652",
+        "team": 0
+      },
+      "phase": "attack_started",
+      "phases": [],
+      "physics_frame": 6124,
+      "process_frame": 7097,
+      "state": 3,
+      "timestamp_ms": 118090
+    },
+    {
+      "attack_event_id": "r1j-attack-101126",
+      "attack_range": 17,
+      "attack_start_ms": 118091,
+      "attack_type": "projectile",
+      "attacker": {
+        "alive": true,
+        "definition_id": "lioraen_thorn_ranger",
+        "runtime_id": "1059279867508",
+        "team": 1
+      },
+      "command": "attack",
+      "configured_raw_damage": 15,
+      "current_distance": 14.7544803619385,
+      "damage_type": "pierce",
+      "intended_target": {
+        "alive": true,
+        "definition_id": "barrosan_spear_guard",
+        "runtime_id": "173124094652",
+        "team": 0
+      },
+      "phase": "attack_started",
+      "phases": [],
+      "physics_frame": 6124,
+      "process_frame": 7097,
+      "state": 3,
+      "timestamp_ms": 118091
+    },
+    {
+      "attack_event_id": "r1j-attack-101273",
+      "attack_range": 1.6,
+      "attack_start_ms": 118222,
+      "attack_type": "projectile",
+      "attacker": {
+        "alive": true,
+        "definition_id": "barrosan_spear_guard",
+        "runtime_id": "173124094652",
+        "team": 0
+      },
+      "command": "attack",
+      "configured_raw_damage": 14,
+      "current_distance": 1.52598571777344,
+      "damage_type": "pierce",
+      "intended_target": {
+        "alive": true,
+        "definition_id": "lioraen_hero_warden",
+        "runtime_id": "176076884817",
+        "team": 1
+      },
+      "phase": "melee_resolution",
+      "phases": [
+        {
+          "distance": 1.0654069185257,
+          "phase": "windup_completed",
+          "physics_frame": 6139,
+          "process_frame": 7116,
+          "target_valid": true,
+          "timestamp_ms": 118345
+        },
+        {
+          "applied_damage": 12.5,
+          "phase": "melee_resolution",
+          "physics_frame": 6139,
+          "process_frame": 7116,
+          "timestamp_ms": 118345
+        }
+      ],
+      "physics_frame": 6132,
+      "process_frame": 7107,
+      "state": 3,
+      "timestamp_ms": 118222
+    },
+    {
+      "attack_event_id": "r1j-attack-101318",
+      "attack_range": 15,
+      "attack_start_ms": 118262,
+      "attack_type": "projectile",
+      "attacker": {
+        "alive": true,
+        "definition_id": "lioraen_hero_warden",
+        "runtime_id": "176076884817",
+        "team": 1
+      },
+      "command": "attack",
+      "configured_raw_damage": 26,
+      "current_distance": 1.2278847694397,
+      "damage_type": "arcane",
+      "intended_target": {
+        "alive": true,
+        "definition_id": "barrosan_spear_guard",
+        "runtime_id": "173124094652",
+        "team": 0
+      },
+      "phase": "attack_started",
+      "phases": [],
+      "physics_frame": 6134,
+      "process_frame": 7110,
+      "state": 3,
+      "timestamp_ms": 118262
+    },
+    {
+      "attack_event_id": "r1j-attack-101911",
+      "attack_range": 17,
+      "attack_start_ms": 118743,
+      "attack_type": "projectile",
+      "attacker": {
+        "alive": true,
+        "definition_id": "lioraen_thorn_ranger",
+        "runtime_id": "654865075600",
+        "team": 1
+      },
+      "command": "attack",
+      "configured_raw_damage": 15,
+      "current_distance": 11.8005905151367,
+      "damage_type": "pierce",
+      "intended_target": {
+        "alive": true,
+        "definition_id": "barrosan_spear_guard",
+        "runtime_id": "173124094652",
+        "team": 0
+      },
+      "phase": "attack_started",
+      "phases": [],
+      "physics_frame": 6163,
+      "process_frame": 7146,
+      "state": 3,
+      "timestamp_ms": 118743
+    },
+    {
+      "attack_event_id": "r1j-attack-101915",
+      "attack_range": 17,
+      "attack_start_ms": 118744,
+      "attack_type": "projectile",
+      "attacker": {
+        "alive": true,
+        "definition_id": "lioraen_thorn_ranger",
+        "runtime_id": "768211946943",
+        "team": 1
+      },
+      "command": "attack",
+      "configured_raw_damage": 15,
+      "current_distance": 11.5433721542358,
+      "damage_type": "pierce",
+      "intended_target": {
+        "alive": true,
+        "definition_id": "barrosan_spear_guard",
+        "runtime_id": "173124094652",
+        "team": 0
+      },
+      "phase": "attack_started",
+      "phases": [],
+      "physics_frame": 6163,
+      "process_frame": 7146,
+      "state": 3,
+      "timestamp_ms": 118744
+    },
+    {
+      "attack_event_id": "r1j-attack-101920",
+      "attack_range": 17,
+      "attack_start_ms": 118744,
+      "attack_type": "projectile",
+      "attacker": {
+        "alive": true,
+        "definition_id": "lioraen_thorn_ranger",
+        "runtime_id": "1059279867508",
+        "team": 1
+      },
+      "command": "attack",
+      "configured_raw_damage": 15,
+      "current_distance": 9.73144245147705,
+      "damage_type": "pierce",
+      "intended_target": {
+        "alive": true,
+        "definition_id": "barrosan_spear_guard",
+        "runtime_id": "173124094652",
+        "team": 0
+      },
+      "phase": "attack_started",
+      "phases": [],
+      "physics_frame": 6163,
+      "process_frame": 7146,
+      "state": 3,
+      "timestamp_ms": 118744
+    },
+    {
+      "attack_event_id": "r1j-attack-102051",
+      "attack_range": 15,
+      "attack_start_ms": 118863,
+      "attack_type": "projectile",
+      "attacker": {
+        "alive": true,
+        "definition_id": "lioraen_hero_warden",
+        "runtime_id": "176076884817",
+        "team": 1
+      },
+      "command": "attack",
+      "configured_raw_damage": 26,
+      "current_distance": 2.80409479141235,
+      "damage_type": "arcane",
+      "intended_target": {
+        "alive": true,
+        "definition_id": "barrosan_spear_guard",
+        "runtime_id": "173124094652",
+        "team": 0
+      },
+      "phase": "attack_started",
+      "phases": [],
+      "physics_frame": 6170,
+      "process_frame": 7155,
+      "state": 3,
+      "timestamp_ms": 118863
+    },
+    {
+      "attack_event_id": "r1j-attack-102104",
+      "attack_range": 1.6,
+      "attack_start_ms": 118890,
+      "attack_type": "projectile",
+      "attacker": {
+        "alive": true,
+        "definition_id": "lioraen_bloomdancer",
+        "runtime_id": "949053558366",
+        "team": 1
+      },
+      "command": "attack",
+      "configured_raw_damage": 14,
+      "current_distance": 1.59184002876282,
+      "damage_type": "slash",
+      "intended_target": {
+        "alive": true,
+        "definition_id": "barrosan_spear_guard",
+        "runtime_id": "173124094652",
+        "team": 0
+      },
+      "phase": "melee_resolution",
+      "phases": [
+        {
+          "distance": 1.0097883939743,
+          "phase": "windup_completed",
+          "physics_frame": 6179,
+          "process_frame": 7166,
+          "target_valid": true,
+          "timestamp_ms": 119011
+        },
+        {
+          "applied_damage": 8.5,
+          "phase": "melee_resolution",
+          "physics_frame": 6179,
+          "process_frame": 7166,
+          "timestamp_ms": 119011
+        }
+      ],
+      "physics_frame": 6172,
+      "process_frame": 7157,
+      "state": 3,
+      "timestamp_ms": 118890
+    },
+    {
+      "attack_event_id": "r1j-attack-102262",
+      "attack_range": 1.6,
+      "attack_start_ms": 119023,
+      "attack_type": "projectile",
+      "attacker": {
+        "alive": true,
+        "definition_id": "lioraen_bloomdancer",
+        "runtime_id": "859966541297",
+        "team": 1
+      },
+      "command": "attack",
+      "configured_raw_damage": 14,
+      "current_distance": 1.58289396762848,
+      "damage_type": "slash",
+      "intended_target": {
+        "alive": true,
+        "definition_id": "barrosan_spear_guard",
+        "runtime_id": "173124094652",
+        "team": 0
+      },
+      "phase": "melee_resolution",
+      "phases": [
+        {
+          "distance": 1.00736856460571,
+          "phase": "windup_completed",
+          "physics_frame": 6187,
+          "process_frame": 7176,
+          "target_valid": true,
+          "timestamp_ms": 119144
+        },
+        {
+          "applied_damage": 8.5,
+          "phase": "melee_resolution",
+          "physics_frame": 6187,
+          "process_frame": 7176,
+          "timestamp_ms": 119145
+        }
+      ],
+      "physics_frame": 6180,
+      "process_frame": 7167,
+      "state": 3,
+      "timestamp_ms": 119023
+    },
+    {
+      "attack_event_id": "r1j-attack-102672",
+      "attack_range": 17,
+      "attack_start_ms": 119396,
+      "attack_type": "projectile",
+      "attacker": {
+        "alive": true,
+        "definition_id": "lioraen_thorn_ranger",
+        "runtime_id": "654865075600",
+        "team": 1
+      },
+      "command": "attack",
+      "configured_raw_damage": 15,
+      "current_distance": 2.97207880020142,
+      "damage_type": "pierce",
+      "intended_target": {
+        "alive": true,
+        "definition_id": "barrosan_spear_guard",
+        "runtime_id": "173124094652",
+        "team": 0
+      },
+      "phase": "attack_started",
+      "phases": [],
+      "physics_frame": 6202,
+      "process_frame": 7195,
+      "state": 3,
+      "timestamp_ms": 119396
+    },
+    {
+      "attack_event_id": "r1j-attack-102675",
+      "attack_range": 17,
+      "attack_start_ms": 119397,
+      "attack_type": "projectile",
+      "attacker": {
+        "alive": true,
+        "definition_id": "lioraen_thorn_ranger",
+        "runtime_id": "768211946943",
+        "team": 1
+      },
+      "command": "attack",
+      "configured_raw_damage": 15,
+      "current_distance": 3.07041025161743,
+      "damage_type": "pierce",
+      "intended_target": {
+        "alive": true,
+        "definition_id": "barrosan_spear_guard",
+        "runtime_id": "173124094652",
+        "team": 0
+      },
+      "phase": "attack_started",
+      "phases": [],
+      "physics_frame": 6202,
+      "process_frame": 7195,
+      "state": 3,
+      "timestamp_ms": 119397
+    },
+    {
+      "attack_event_id": "r1j-attack-102680",
+      "attack_range": 17,
+      "attack_start_ms": 119398,
+      "attack_type": "projectile",
+      "attacker": {
+        "alive": true,
+        "definition_id": "lioraen_thorn_ranger",
+        "runtime_id": "1059279867508",
+        "team": 1
+      },
+      "command": "attack",
+      "configured_raw_damage": 15,
+      "current_distance": 1.37321770191193,
+      "damage_type": "pierce",
+      "intended_target": {
+        "alive": true,
+        "definition_id": "barrosan_spear_guard",
+        "runtime_id": "173124094652",
+        "team": 0
+      },
+      "phase": "attack_started",
+      "phases": [],
+      "physics_frame": 6202,
+      "process_frame": 7195,
+      "state": 3,
+      "timestamp_ms": 119398
+    },
+    {
+      "attack_event_id": "r1j-attack-102748",
+      "attack_range": 15,
+      "attack_start_ms": 119463,
+      "attack_type": "projectile",
+      "attacker": {
+        "alive": true,
+        "definition_id": "lioraen_hero_warden",
+        "runtime_id": "176076884817",
+        "team": 1
+      },
+      "command": "attack",
+      "configured_raw_damage": 26,
+      "current_distance": 4.3610692024231,
+      "damage_type": "arcane",
+      "intended_target": {
+        "alive": true,
+        "definition_id": "barrosan_spear_guard",
+        "runtime_id": "173124094652",
+        "team": 0
+      },
+      "phase": "attack_started",
+      "phases": [],
+      "physics_frame": 6206,
+      "process_frame": 7200,
+      "state": 3,
+      "timestamp_ms": 119463
+    },
+    {
+      "attack_event_id": "r1j-attack-102811",
+      "attack_range": 1.6,
+      "attack_start_ms": 119516,
+      "attack_type": "projectile",
+      "attacker": {
+        "alive": true,
+        "definition_id": "lioraen_bloomdancer",
+        "runtime_id": "859966541297",
+        "team": 1
+      },
+      "command": "attack",
+      "configured_raw_damage": 14,
+      "current_distance": 1.43387007713318,
+      "damage_type": "slash",
+      "intended_target": {
+        "alive": true,
+        "definition_id": "barrosan_spear_guard",
+        "runtime_id": "173124094652",
+        "team": 0
+      },
+      "phase": "melee_resolution",
+      "phases": [
+        {
+          "distance": 1.21879625320435,
+          "phase": "windup_completed",
+          "physics_frame": 6216,
+          "process_frame": 7213,
+          "target_valid": true,
+          "timestamp_ms": 119636
+        },
+        {
+          "applied_damage": 8.5,
+          "phase": "melee_resolution",
+          "physics_frame": 6216,
+          "process_frame": 7213,
+          "timestamp_ms": 119637
+        }
+      ],
+      "physics_frame": 6209,
+      "process_frame": 7204,
+      "state": 3,
+      "timestamp_ms": 119516
+    }
+  ],
+  "schema": "v0436-r1j-attack-event-graph-v1"
+}

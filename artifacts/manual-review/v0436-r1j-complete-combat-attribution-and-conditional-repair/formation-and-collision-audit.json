@@ -1,0 +1,15 @@
+{
+  "schema": "v0436-r1j-formation-collision-v1",
+  "sessions": [
+    {
+      "session": "A",
+      "audited_read_only": true,
+      "collision_or_formation_cause_proven": false
+    },
+    {
+      "session": "B",
+      "audited_read_only": true,
+      "collision_or_formation_cause_proven": false
+    }
+  ]
+}

@@ -1,0 +1,37 @@
+{
+  "audits": [
+    {
+      "commands": [
+        {
+          "attack_move_return": true,
+          "attack_target_return": true,
+          "target": {
+            "alive": true,
+            "definition_id": "lioraen_hero_warden",
+            "runtime_id": "176076884817",
+            "team": 1
+          }
+        }
+      ],
+      "elapsed_wall_seconds": 44.697,
+      "frames": [],
+      "label": "B",
+      "player_survivors": [],
+      "started_ms": 69772,
+      "target": {
+        "alive": true,
+        "definition_id": "lioraen_hero_warden",
+        "runtime_id": "176076884817",
+        "team": 1
+      },
+      "target_final": {
+        "alive": true,
+        "definition_id": "lioraen_hero_warden",
+        "runtime_id": "176076884817",
+        "team": 1
+      }
+    }
+  ],
+  "intentional_difference": "hero-first",
+  "session": "B"
+}

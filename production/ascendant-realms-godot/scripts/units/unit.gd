@@ -100,11 +100,61 @@ var selection_ring: MeshInstance3D
 var _anim_names := {}
 var _cur_anim := ""
 var _repath := 0.0
+var _requested_move_target := Vector3.ZERO
+var _navigation_effective_target := Vector3.ZERO
+var _navigation_command_type := ""
+var _navigation_invalid_count := 0
+var _navigation_invalid_consecutive := 0
+var _navigation_repath_attempts := 0
+var _navigation_rejected_velocity_count := 0
+var _navigation_failure_count := 0
+var _navigation_last_invalid_reason := ""
+var _navigation_audit_events: Array = []
+var _navigation_target_pending := true
+var _navigation_target_projection_distance := 0.0
+var _navigation_path_wait_frames := 0
+var _navigation_terminal_failure_recorded := false
+var _navigation_last_target := Vector3(INF, INF, INF)
+var _navigation_last_target_ready := false
+var _navigation_retry_elapsed := 0.0
+var _navigation_repath_cooldown := 0.0
+var _boundary_recovery_active := false
+var _boundary_recovery_target := Vector3.ZERO
+var _boundary_resume_state := State.IDLE
+var _boundary_recovery_reason := ""
+var _boundary_recovery_distance_last := 0.0
+var _v0436_r1f_physics_audit: Array = []
+var _v0436_r1f_last_move_frame := -1
+var _v0436_r1f_move_count := 0
+var _v0436_r1f_last_recovery_move_frame := -1
 var _health_bar_root: Node3D
 var _health_bar_fill: MeshInstance3D
 var _health_bar_back: MeshInstance3D
 
 const ARRIVE_DIST := 1.2
+const NAVIGATION_REPATH_INTERVAL := 0.20
+const NAVIGATION_RETRY_BUDGET := 2.5
+const V0436_R1F_AUDIT_CAP := 512
+
+func _v0436_r1j_recorder():
+	if OS.get_environment("ASCENDANT_V0436_R1J_CAPTURE") != "1" or not world:
+		return null
+	if not world.has_meta("v0436_r1j_recorder"):
+		return null
+	var recorder = world.get_meta("v0436_r1j_recorder", null)
+	return recorder if is_instance_valid(recorder) else null
+
+func _v0436_r1j_target_ref(target) -> Dictionary:
+	if not is_instance_valid(target):
+		return {"runtime_id":"", "definition_id":"", "team":-1, "alive":false}
+	return {"runtime_id":str(target.get_instance_id()), "definition_id":String(target.unit_id) if target is Unit else String(target.building_id), "team":int(target.team), "alive":not bool(target.is_dead)}
+
+func _v0436_r1j_set_target(value, reason: String) -> void:
+	var previous = _target
+	_target = value
+	var recorder = _v0436_r1j_recorder()
+	if recorder and previous != value:
+		recorder.record_target_transition(self, previous, value, reason)
 
 func _ready() -> void:
 	add_to_group("units")
@@ -400,12 +450,14 @@ func get_hp_ratio() -> float:
 # --------------------------------------------------------------------------
 # Commands
 # --------------------------------------------------------------------------
-func command_move(pos: Vector3, attack_move: bool = false, queue: bool = false) -> void:
+func command_move(pos: Vector3, attack_move: bool = false, queue: bool = false, r1j_order_id: String = "") -> void:
 	if is_dead:
 		return
+	var before_state := state
+	var before_target = _target
 	_carry_hold = _carry > 0
 	_hold_position = false
-	_target = null
+	_v0436_r1j_set_target(null, "public_order")
 	_gather_node = null
 	_pending_gather_node = null
 	_build_target = null
@@ -413,13 +465,18 @@ func command_move(pos: Vector3, attack_move: bool = false, queue: bool = false) 
 	_move_target = pos
 	_attack_move_ordered = attack_move
 	_attack_move_destination = pos if attack_move else Vector3.ZERO
-	_set_agent_target(pos)
+	_set_agent_target(pos, "attack_move" if attack_move else "move")
 	state = State.ATTACK_MOVE if attack_move else State.MOVING
+	var recorder = _v0436_r1j_recorder()
+	if recorder:
+		recorder.record_unit_command(self, r1j_order_id, "attack_move" if attack_move else "move", before_state, state, before_target, _target, pos)
 
 func command_stop() -> void:
 	if is_dead: return
+	var before_state := state
+	var before_target = _target
 	_carry_hold = _carry > 0
-	_target = null
+	_v0436_r1j_set_target(null, "command_cancellation")
 	_gather_node = null
 	_pending_gather_node = null
 	_build_target = null
@@ -428,7 +485,12 @@ func command_stop() -> void:
 	_attack_move_destination = Vector3.ZERO
 	state = State.IDLE
 	velocity = Vector3.ZERO
+	_boundary_recovery_active = false
+	_navigation_invalid_consecutive = 0
 	if agent: agent.set_velocity(Vector3.ZERO)
+	var recorder = _v0436_r1j_recorder()
+	if recorder:
+		recorder.record_unit_command(self, "", "stop", before_state, state, before_target, _target, Vector3.ZERO)
 
 func command_hold() -> void:
 	if is_dead: return
@@ -436,16 +498,21 @@ func command_hold() -> void:
 	_hold_position = true
 	state = State.HOLD
 
-func command_attack(tgt) -> void:
+func command_attack(tgt, r1j_order_id: String = "") -> void:
 	if not _can_attack_target(tgt):
 		return
+	var before_state := state
+	var before_target = _target
 	_hold_position = false
 	_gather_node = null
 	_build_target = null
 	_attack_move_ordered = false
 	_attack_move_destination = Vector3.ZERO
-	_target = tgt
+	_v0436_r1j_set_target(tgt, "public_order" if r1j_order_id != "" else "auto_acquisition")
 	state = State.ATTACKING
+	var recorder = _v0436_r1j_recorder()
+	if recorder:
+		recorder.record_unit_command(self, r1j_order_id, "attack_target" if r1j_order_id != "" else "auto_attack", before_state, state, before_target, _target, tgt.global_position)
 
 func _can_attack_target(tgt) -> bool:
 	if is_dead or not is_instance_valid(tgt) or tgt == self:
@@ -467,7 +534,7 @@ func command_patrol(pos: Vector3) -> void:
 	_patrol_a = global_position
 	_patrol_b = pos
 	state = State.PATROL
-	_set_agent_target(_patrol_b)
+	_set_agent_target(_patrol_b, "patrol")
 
 func command_guard(tgt) -> void:
 	if is_dead or not is_instance_valid(tgt): return
@@ -486,7 +553,7 @@ func command_gather(node) -> void:
 			world.record_resource_command_rejection(self, node, "depleted_or_unreachable")
 		return
 	_hold_position = false
-	_target = null
+	_v0436_r1j_set_target(null, "command_cancellation")
 	_build_target = null
 	_attack_move_ordered = false
 	_attack_move_destination = Vector3.ZERO
@@ -512,22 +579,206 @@ func command_build(building) -> void:
 	_attack_move_ordered = false
 	_attack_move_destination = Vector3.ZERO
 	_hold_position = false
-	_target = null
+	_v0436_r1j_set_target(null, "public_order")
 	_gather_node = null
 	_build_target = building
 	state = State.BUILDING
 
-func _set_agent_target(pos: Vector3) -> void:
-	if agent:
-		agent.target_position = pos
+func _set_agent_target(pos: Vector3, command_type: String = "") -> void:
+	_requested_move_target = pos
+	if command_type != "":
+		_navigation_command_type = command_type
+	var snapshot := {"ready": true, "projected": pos, "projection_distance": 0.0, "reason": "local"}
+	if world and world.has_method("navigation_target_snapshot"):
+		snapshot = world.navigation_target_snapshot(pos)
+	_navigation_target_pending = not bool(snapshot.get("ready", false))
+	_navigation_target_projection_distance = float(snapshot.get("projection_distance", 0.0))
+	if _navigation_target_pending:
+		_navigation_path_wait_frames = 0
+		if not _navigation_last_target_ready:
+			_record_navigation_event("navigation_target_deferred", {"reason": snapshot.get("reason", "navigation_map_not_ready")})
+		_navigation_last_target_ready = false
+		return
+	var effective: Vector3 = snapshot.get("projected", pos)
+	var changed := not _navigation_last_target_ready or _navigation_last_target.distance_to(effective) > 0.05
+	_navigation_effective_target = effective
+	_navigation_last_target = effective
+	_navigation_last_target_ready = true
+	_navigation_terminal_failure_recorded = false
+	if agent and changed:
+		agent.target_position = effective
+		_navigation_path_wait_frames = 0
+		_navigation_retry_elapsed = 0.0
+		_navigation_repath_cooldown = 0.0
+
+func _record_navigation_event(kind: String, details: Dictionary = {}) -> void:
+	var event := {"kind": kind, "timestamp": Time.get_ticks_msec(), "unit_id": unit_id, "runtime_id": str(get_instance_id()), "command": _navigation_command_type, "state": int(state), "position": {"x": global_position.x, "y": global_position.y, "z": global_position.z}, "requested_target": {"x": _requested_move_target.x, "y": _requested_move_target.y, "z": _requested_move_target.z}, "effective_target": {"x": _navigation_effective_target.x, "y": _navigation_effective_target.y, "z": _navigation_effective_target.z}}
+	for key in details:
+		event[key] = details[key]
+	_navigation_audit_events.append(event)
+	if _navigation_audit_events.size() > 120:
+		_navigation_audit_events.pop_front()
+
+func _navigation_terminal_stop(reason: String) -> void:
+	if _navigation_terminal_failure_recorded:
+		return
+	_navigation_terminal_failure_recorded = true
+	_navigation_failure_count += 1
+	_record_navigation_event("navigation_terminal_failure", {
+		"reason": reason,
+		"command_preserved_during_retry": true,
+		"retry_count": _navigation_repath_attempts,
+		"retry_elapsed": _navigation_retry_elapsed,
+		"map_ready": world.is_navigation_ready() if world and world.has_method("is_navigation_ready") else false,
+	})
+	# A terminal failure is the one deliberate place where the owning state is
+	# released. Transient failures never call command_stop and therefore retain
+	# build/gather/return/attack-move/pursuit context through the retry budget.
+	command_stop()
+
+func _finite_position(pos: Vector3) -> bool:
+	return abs(pos.x) < 1000000.0 and abs(pos.y) < 1000000.0 and abs(pos.z) < 1000000.0 and pos.x == pos.x and pos.y == pos.y and pos.z == pos.z
+
+func _v0436_r1f_audit_enabled() -> bool:
+	return bool(get_meta("v0436_boundary_fixture", false)) or OS.get_environment("ASCENDANT_V0436_R1F_BOUNDARY_AUDIT") == "1"
+
+func _v0436_r1f_vec(value: Vector3) -> Dictionary:
+	return {"x": value.x, "y": value.y, "z": value.z}
+
+func _v0436_r1f_note_move(frame: int) -> int:
+	if _v0436_r1f_last_move_frame != frame:
+		_v0436_r1f_last_move_frame = frame
+		_v0436_r1f_move_count = 0
+	_v0436_r1f_move_count += 1
+	return _v0436_r1f_move_count
+
+func _v0436_r1f_record(entry: Dictionary) -> void:
+	if not _v0436_r1f_audit_enabled():
+		return
+	_v0436_r1f_physics_audit.append(entry)
+	if _v0436_r1f_physics_audit.size() > V0436_R1F_AUDIT_CAP:
+		_v0436_r1f_physics_audit.pop_front()
+
+func v0436_r1f_physics_audit_snapshot() -> Array:
+	return _v0436_r1f_physics_audit.duplicate(true)
+
+func _v0436_r1f_record_callback(frame: int, safe_vel: Vector3, before: Vector3, after: Vector3, called_move: bool, recovery_already_moved: bool) -> void:
+	_v0436_r1f_record({
+		"kind": "avoidance_callback",
+		"physics_frame": frame,
+		"wall_timestamp_ms": Time.get_ticks_msec(),
+		"physics_delta": get_physics_process_delta_time(),
+		"time_scale": Engine.time_scale,
+		"physics_ticks_per_second": Engine.physics_ticks_per_second,
+		"safe_velocity": _v0436_r1f_vec(safe_vel),
+		"position_before": _v0436_r1f_vec(before),
+		"position_after": _v0436_r1f_vec(after),
+		"called_move_and_slide": called_move,
+		"displacement": before.distance_to(after),
+		"recovery_already_moved": recovery_already_moved,
+		"movement_applications_same_frame": _v0436_r1f_move_count if _v0436_r1f_last_move_frame == frame else 0,
+	})
+
+func _inside_playable(pos: Vector3, tolerance: float = 0.0) -> bool:
+	return not world or not world.has_method("is_inside_playable_bounds") or world.is_inside_playable_bounds(pos, tolerance)
+
+func _begin_boundary_recovery(reason: String) -> void:
+	if is_dead or (world and not world.game_running):
+		return
+	if not _boundary_recovery_active:
+		_boundary_resume_state = state
+		_boundary_recovery_active = true
+		_boundary_recovery_reason = reason
+		_boundary_recovery_target = world.nearest_safe_in_bounds_recovery_point(global_position) if world and world.has_method("nearest_safe_in_bounds_recovery_point") else Vector3(clampf(global_position.x, -136.0, 136.0), 0.0, clampf(global_position.z, -136.0, 136.0))
+		_boundary_recovery_distance_last = world.distance_outside_playable_bounds(global_position) if world and world.has_method("distance_outside_playable_bounds") else 0.0
+		_navigation_invalid_consecutive = 0
+		_record_navigation_event("boundary_recovery_started", {"reason": reason, "recovery_target": {"x": _boundary_recovery_target.x, "y": _boundary_recovery_target.y, "z": _boundary_recovery_target.z}})
+
+func _state_boundary_recovery(delta: float) -> void:
+	if is_dead or (world and not world.game_running):
+		velocity = Vector3.ZERO
+		return
+	if _inside_playable(global_position, 0.0):
+		_boundary_recovery_active = false
+		velocity = Vector3.ZERO
+		_navigation_invalid_consecutive = 0
+		_record_navigation_event("boundary_recovery_completed", {"reason": _boundary_recovery_reason})
+		_boundary_recovery_reason = ""
+		if _boundary_resume_state == State.ATTACKING and (not is_instance_valid(_target) or _target.is_dead or not _inside_playable(_target.global_position, world.playable_recovery_tolerance)):
+			state = State.IDLE
+		elif _boundary_resume_state == State.BUILDING and (not is_instance_valid(_build_target) or _build_target.is_dead or not _inside_playable(_build_target.global_position, world.playable_recovery_tolerance)):
+			state = State.IDLE
+		else:
+			state = _boundary_resume_state
+		_set_agent_target(_requested_move_target, _navigation_command_type)
+		return
+	var to_safe := _boundary_recovery_target - global_position
+	to_safe.y = 0.0
+	var distance := to_safe.length()
+	if world and world.has_method("distance_outside_playable_bounds"):
+		var remaining: float = float(world.distance_outside_playable_bounds(global_position))
+		if remaining > _boundary_recovery_distance_last + 0.05:
+			_record_navigation_event("boundary_recovery_distance_increased", {"previous": _boundary_recovery_distance_last, "current": remaining})
+		_boundary_recovery_distance_last = remaining
+	var recovery_speed := move_speed
+	if _slow > 0.0: recovery_speed *= 0.5
+	var direction := to_safe.normalized()
+	var audit_enabled := _v0436_r1f_audit_enabled()
+	var audit_frame := Engine.get_physics_frames()
+	var position_before := global_position
+	var velocity_before := velocity
+	var outside_before: float = float(world.distance_outside_playable_bounds(position_before)) if world and world.has_method("distance_outside_playable_bounds") else 0.0
+	velocity = direction * recovery_speed
+	velocity.y = 0.0
+	move_and_slide()
+	if audit_enabled:
+		_v0436_r1f_last_recovery_move_frame = audit_frame
+		var movement_count := _v0436_r1f_note_move(audit_frame)
+		var position_after := global_position
+		var outside_after: float = float(world.distance_outside_playable_bounds(position_after)) if world and world.has_method("distance_outside_playable_bounds") else 0.0
+		var physics_delta := maxf(delta, 0.000001)
+		_v0436_r1f_record({
+			"kind": "recovery_step",
+			"physics_frame": audit_frame,
+			"wall_timestamp_ms": Time.get_ticks_msec(),
+			"physics_delta": delta,
+			"time_scale": Engine.time_scale,
+			"physics_ticks_per_second": Engine.physics_ticks_per_second,
+			"position_before": _v0436_r1f_vec(position_before),
+			"position_after": _v0436_r1f_vec(position_after),
+			"displacement": position_before.distance_to(position_after),
+			"requested_recovery_speed": recovery_speed,
+			"simulation_speed": position_before.distance_to(position_after) / physics_delta,
+			"velocity_before": _v0436_r1f_vec(velocity_before),
+			"velocity_after": _v0436_r1f_vec(velocity),
+			"recovery_target": _v0436_r1f_vec(_boundary_recovery_target),
+			"distance_outside_before": outside_before,
+			"distance_outside_after": outside_after,
+			"movement_applications_same_frame": movement_count,
+		})
+	_face(global_position + direction)
+	_play("walk")
 
 # --------------------------------------------------------------------------
 # Main loop
 # --------------------------------------------------------------------------
 func _physics_process(delta: float) -> void:
+	var r1j_recorder = _v0436_r1j_recorder()
+	if r1j_recorder:
+		r1j_recorder.record_unit_sample(self)
+	if world and not world.game_running:
+		velocity = Vector3.ZERO
+		return
 	if is_dead:
 		if is_instance_valid(_health_bar_root):
 			_health_bar_root.visible = false
+		return
+	set_meta("v0436_max_abs_x", maxf(abs(global_position.x), float(get_meta("v0436_max_abs_x", 0.0))))
+	set_meta("v0436_max_abs_z", maxf(abs(global_position.z), float(get_meta("v0436_max_abs_z", 0.0))))
+	if world and world.has_method("is_inside_playable_bounds") and not world.is_inside_playable_bounds(global_position, world.playable_recovery_tolerance) and not _boundary_recovery_active:
+		_begin_boundary_recovery("position_outside_playable_tolerance")
+	if _boundary_recovery_active:
+		_state_boundary_recovery(delta)
 		return
 	_update_health_bar()
 	# timers
@@ -598,14 +849,14 @@ func _state_idle(delta: float) -> void:
 		elif e and _hold_position:
 			# hold: attack only if within attack range
 			if global_position.distance_to(e.global_position) <= _engage_range() + 1.0:
-				_target = e
+				_v0436_r1j_set_target(e, "threat_response")
 				state = State.ATTACKING
 
 func _state_move(delta: float, attack_move: bool) -> void:
 	if attack_move and _attack_move_ordered:
 		var e = world.find_enemy_in_range(self, vision * 0.7) if world else null
 		if e and _can_attack_target(e):
-			_target = e
+			_v0436_r1j_set_target(e, "auto_acquisition")
 			state = State.ATTACKING
 			return
 	if _move_along_path(delta):
@@ -616,14 +867,14 @@ func _state_move(delta: float, attack_move: bool) -> void:
 func _state_patrol(delta: float) -> void:
 	var e = world.find_enemy_in_range(self, vision * 0.7) if world else null
 	if e:
-		_target = e
+		_v0436_r1j_set_target(e, "auto_acquisition")
 		state = State.ATTACKING
 		return
 	if _move_along_path(delta):
 		var tmp := _patrol_a
 		_patrol_a = _patrol_b
 		_patrol_b = tmp
-		_set_agent_target(_patrol_b)
+		_set_agent_target(_patrol_b, "patrol")
 
 func _state_follow(delta: float) -> void:
 	if not is_instance_valid(_follow_target) or _follow_target.is_dead:
@@ -631,12 +882,12 @@ func _state_follow(delta: float) -> void:
 		return
 	var e = world.find_enemy_in_range(self, vision * 0.6) if world else null
 	if e:
-		_target = e
+		_v0436_r1j_set_target(e, "threat_response")
 		state = State.ATTACKING
 		return
 	var d := global_position.distance_to(_follow_target.global_position)
 	if d > 5.0:
-		_set_agent_target(_follow_target.global_position)
+		_set_agent_target(_follow_target.global_position, "follow")
 		_move_along_path(delta)
 	else:
 		velocity.x = 0; velocity.z = 0
@@ -648,14 +899,15 @@ func _engage_range() -> float:
 
 func _state_attack(delta: float) -> void:
 	if not _can_attack_target(_target):
-		_target = null
+		var invalid_reason := "target_dead" if is_instance_valid(_target) and _target.is_dead else "target_invalid"
+		_v0436_r1j_set_target(null, invalid_reason)
 		# after kill, look for next enemy nearby
 		var e = world.find_enemy_in_range(self, vision) if world else null
 		if e and not _hold_position and _can_attack_target(e):
-			_target = e
+			_v0436_r1j_set_target(e, "fallback_target")
 		elif _attack_move_ordered:
 			_move_target = _attack_move_destination
-			_set_agent_target(_attack_move_destination)
+			_set_agent_target(_attack_move_destination, "attack_move")
 			state = State.ATTACK_MOVE
 		else:
 			state = State.HOLD if _hold_position else State.IDLE
@@ -666,10 +918,11 @@ func _state_attack(delta: float) -> void:
 		if _hold_position:
 			# don't chase far when holding
 			if d > er + 4.0:
-				_target = null
+				_v0436_r1j_set_target(null, "target_out_of_acquisition_rules")
 				state = State.HOLD
 				return
-		_set_agent_target(_target.global_position)
+		_move_target = _target.global_position
+		_set_agent_target(_move_target, "attack")
 		_move_along_path(delta)
 	else:
 		# in range: face + attack
@@ -682,8 +935,12 @@ func _state_attack(delta: float) -> void:
 func _do_attack() -> void:
 	_attack_timer = attack_cd
 	_play("attack", true)
+	var r1j_recorder = _v0436_r1j_recorder()
+	var attack_event_id := ""
+	if r1j_recorder:
+		attack_event_id = r1j_recorder.record_attack_start(self, _target, cur_dmg(), dmg_type, _engage_range(), global_position.distance_to(_target.global_position), state, _navigation_command_type)
 	if atk_range > 0.0 and def.has("projectile"):
-		_spawn_projectile()
+		_spawn_projectile(attack_event_id)
 		_play_sfx("arrow" if dmg_type == "pierce" else "spell", -8.0)
 	else:
 		# melee: apply after small delay
@@ -691,31 +948,39 @@ func _do_attack() -> void:
 		var tgt = _target
 		get_tree().create_timer(0.25).timeout.connect(func():
 			if not is_dead and _can_attack_target(tgt) and global_position.distance_to(tgt.global_position) <= _engage_range() + 0.15:
-				var dealt = _resolve_damage(tgt, cur_dmg())
+				if r1j_recorder:
+					r1j_recorder.record_attack_phase(attack_event_id, "windup_completed", {"target_valid":true, "distance":global_position.distance_to(tgt.global_position)})
+				var dealt = _resolve_damage(tgt, cur_dmg(), attack_event_id)
 				_on_dealt_damage(dealt, tgt)
+				if r1j_recorder:
+					r1j_recorder.record_attack_phase(attack_event_id, "melee_resolution", {"applied_damage":dealt})
 				if splash > 0.0:
 					world.apply_splash(tgt.global_position, splash, cur_dmg() * 0.5, dmg_type, team, tgt, self, "melee")
 		)
 
-func _spawn_projectile() -> void:
+func _spawn_projectile(attack_event_id: String = "") -> void:
 	if not world:
 		return
 	var muzzle := global_position + Vector3.UP * 1.2
 	world.spawn_projectile(muzzle, _target, cur_dmg(), dmg_type, team,
-		def.get("projectile", "arrow"), splash, self)
+		def.get("projectile", "arrow"), splash, self, attack_event_id)
 
 func _on_dealt_damage(dealt: float, tgt) -> void:
 	# lifesteal
 	if hero_flags.get("lifesteal", 0.0) > 0.0:
 		hp = min(max_hp, hp + dealt * float(hero_flags["lifesteal"]))
 
-func _resolve_damage(tgt, raw: float) -> float:
+func _resolve_damage(tgt, raw: float, attack_event_id: String = "", projectile_event_id: String = "") -> float:
 	if not _can_attack_target(tgt):
 		return 0.0
 	var ac: String = tgt.armor_class if "armor_class" in tgt else "medium"
 	var ar: float = tgt.cur_armor() if tgt.has_method("cur_armor") else 0.0
 	var dmg := GameData.compute_damage(raw, dmg_type, ac, ar)
-	tgt.take_damage(dmg, self)
+	var r1j_recorder = _v0436_r1j_recorder()
+	if r1j_recorder and attack_event_id != "":
+		tgt.take_damage(dmg, {"source_unit":self, "source_team":team, "source_unit_id":unit_id, "source_runtime_id":str(get_instance_id()), "projectile_kind":"melee", "damage_type":dmg_type, "raw_damage":raw, "armor_class":ac, "flat_armor":ar, "multiplier":GameData.damage_multiplier(dmg_type, ac), "calculated_damage_before_clamp":raw * GameData.damage_multiplier(dmg_type, ac) - maxf(0.0, ar) * 0.5, "expected_applied_damage":dmg, "attack_event_id":attack_event_id, "projectile_event_id":projectile_event_id})
+	else:
+		tgt.take_damage(dmg, self)
 	return dmg
 
 # --- worker: gathering ----------------------------------------------------
@@ -733,7 +998,8 @@ func _state_gather(delta: float) -> void:
 			return
 	var d := global_position.distance_to(_gather_node.global_position)
 	if d > 2.2:
-		_set_agent_target(_gather_node.global_position)
+		_move_target = _gather_node.global_position
+		_set_agent_target(_move_target, "gather")
 		_move_along_path(delta)
 	else:
 		velocity.x = 0; velocity.z = 0
@@ -771,7 +1037,8 @@ func _state_return(delta: float) -> void:
 		return
 	var d := global_position.distance_to(drop.global_position)
 	if d > (float(drop.def.get("footprint", 4.0)) + 1.0):
-		_set_agent_target(drop.global_position)
+		_move_target = drop.global_position
+		_set_agent_target(_move_target, "return")
 		_move_along_path(delta)
 	else:
 		if _carry > 0 and commander:
@@ -853,7 +1120,8 @@ func _state_build(delta: float) -> void:
 	var reach: float = float(_build_target.def.get("footprint", 4.0)) + 1.2
 	var d := global_position.distance_to(_build_target.global_position)
 	if d > reach:
-		_set_agent_target(_build_target.global_position)
+		_move_target = _build_target.global_position
+		_set_agent_target(_move_target, "build")
 		_move_along_path(delta)
 	else:
 		velocity.x = 0; velocity.z = 0
@@ -880,12 +1148,81 @@ func _healer_tick(delta: float) -> void:
 func _move_along_path(delta: float) -> bool:
 	if not agent:
 		return true
+	if world and world.has_method("is_navigation_ready") and not world.is_navigation_ready():
+		_navigation_target_pending = true
+		_navigation_path_wait_frames = 0
+		velocity = Vector3.ZERO
+		return false
+	if _navigation_target_pending:
+		velocity = Vector3.ZERO
+		return false
+	_navigation_repath_cooldown = maxf(0.0, _navigation_repath_cooldown - delta)
 	if agent.is_navigation_finished():
+		if global_position.distance_to(_navigation_effective_target) > ARRIVE_DIST:
+			_navigation_path_wait_frames += 1
+			# NavigationAgent3D can report finished for a frame while its map
+			# synchronization/path query is still pending. Do not turn that
+			# transient state into a command failure.
+			if _navigation_path_wait_frames <= 8:
+				velocity = Vector3.ZERO
+				return false
+			_navigation_retry_elapsed += delta
+			if _navigation_retry_elapsed >= NAVIGATION_RETRY_BUDGET:
+				_navigation_terminal_stop("navigation_finished_before_target_retry_budget_exhausted")
+				return false
+			_navigation_invalid_count += 1
+			_navigation_invalid_consecutive += 1
+			_navigation_last_invalid_reason = "navigation_finished_before_effective_target"
+			_record_navigation_event("invalid_next_path_point", {"reason": _navigation_last_invalid_reason, "invalid_consecutive": _navigation_invalid_consecutive})
+			velocity = Vector3.ZERO
+			if agent:
+				agent.set_velocity(Vector3.ZERO)
+			if _navigation_repath_cooldown <= 0.0:
+				_navigation_repath_attempts += 1
+				_navigation_repath_cooldown = NAVIGATION_REPATH_INTERVAL
+				_navigation_path_wait_frames = 0
+				if agent:
+					agent.target_position = _navigation_effective_target
+			return false
 		velocity.x = 0; velocity.z = 0
 		move_and_slide()
 		_play("idle")
 		return true
 	var next := agent.get_next_path_position()
+	# NavigationAgent output is advisory. The command destination remains
+	# authoritative, but an invalid next point triggers bounded repath and a
+	# safe stop rather than unrestricted straight-line movement.
+	var invalid_reason := ""
+	if not _finite_position(next):
+		invalid_reason = "non_finite_next_path_point"
+	elif world and not world.is_inside_playable_bounds(next, world.playable_recovery_tolerance):
+		invalid_reason = "next_path_point_outside_playable_bounds"
+	# A flat production region legitimately returns a direct long segment for
+	# distant targets. Fixed-distance waypoint guards misclassified that valid
+	# path as unusable and stopped attack/pursuit orders. The map projection and
+	# finite/in-bounds checks above are the authoritative safety boundary here.
+	if invalid_reason != "":
+		_navigation_retry_elapsed += delta
+		_navigation_invalid_count += 1
+		_navigation_invalid_consecutive += 1
+		_navigation_last_invalid_reason = invalid_reason
+		_record_navigation_event("invalid_next_path_point", {"reason": invalid_reason, "invalid_consecutive": _navigation_invalid_consecutive, "next": {"x": next.x, "y": next.y, "z": next.z}})
+		velocity = Vector3.ZERO
+		if agent:
+			agent.set_velocity(Vector3.ZERO)
+		if world and not world.is_inside_playable_bounds(global_position, world.playable_recovery_tolerance):
+			_begin_boundary_recovery("invalid_next_path_point_while_outside")
+		elif _navigation_retry_elapsed >= NAVIGATION_RETRY_BUDGET:
+			_navigation_terminal_stop("invalid_next_path_point_retry_budget_exhausted")
+		elif _navigation_repath_cooldown <= 0.0:
+			_navigation_repath_attempts += 1
+			_navigation_repath_cooldown = NAVIGATION_REPATH_INTERVAL
+			if agent:
+				agent.target_position = _navigation_effective_target
+		return false
+	_navigation_invalid_consecutive = 0
+	_navigation_retry_elapsed = 0.0
+	_navigation_repath_cooldown = 0.0
 	var dir := (next - global_position)
 	dir.y = 0
 	if dir.length() < 0.05:
@@ -907,9 +1244,52 @@ func _move_along_path(delta: float) -> bool:
 	return false
 
 func _on_velocity_computed(safe_vel: Vector3) -> void:
+	var audit_enabled := _v0436_r1f_audit_enabled()
+	var audit_frame := Engine.get_physics_frames()
+	var callback_position_before := global_position
+	var recovery_already_moved := _v0436_r1f_last_recovery_move_frame == audit_frame
+	if state == State.IDLE or state == State.HOLD or state == State.DEAD:
+		velocity = Vector3.ZERO
+		if audit_enabled and (_boundary_recovery_active or recovery_already_moved):
+			_v0436_r1f_record_callback(audit_frame, safe_vel, callback_position_before, global_position, false, recovery_already_moved)
+		return
+	var invalid_reason := ""
+	if not _finite_position(safe_vel):
+		invalid_reason = "non_finite_avoidance_velocity"
+	elif safe_vel.length() > move_speed * 1.1 + 0.25:
+		invalid_reason = "avoidance_velocity_exceeds_unit_speed"
+	else:
+		var predicted := global_position + safe_vel * get_physics_process_delta_time()
+		if world and _boundary_recovery_active and world.distance_outside_playable_bounds(predicted) > world.distance_outside_playable_bounds(global_position) + 0.05:
+			invalid_reason = "avoidance_velocity_increases_recovery_distance"
+		elif world and not _boundary_recovery_active and not world.is_inside_playable_bounds(predicted, world.playable_recovery_tolerance):
+			invalid_reason = "avoidance_velocity_predicts_out_of_bounds"
+	if invalid_reason != "":
+		_navigation_retry_elapsed += get_physics_process_delta_time()
+		_navigation_rejected_velocity_count += 1
+		_navigation_invalid_consecutive += 1
+		_record_navigation_event("rejected_avoidance_velocity", {"reason": invalid_reason, "velocity": {"x": safe_vel.x, "y": safe_vel.y, "z": safe_vel.z}, "rejected_velocity_count": _navigation_rejected_velocity_count})
+		velocity = Vector3.ZERO
+		if agent:
+			agent.set_velocity(Vector3.ZERO)
+		if world and not world.is_inside_playable_bounds(global_position, world.playable_recovery_tolerance):
+			_begin_boundary_recovery("rejected_avoidance_velocity_while_outside")
+		elif _navigation_retry_elapsed >= NAVIGATION_RETRY_BUDGET:
+			_navigation_terminal_stop("rejected_avoidance_velocity_retry_budget_exhausted")
+		elif agent and _navigation_repath_cooldown <= 0.0:
+			_navigation_repath_attempts += 1
+			_navigation_repath_cooldown = NAVIGATION_REPATH_INTERVAL
+			agent.target_position = _navigation_effective_target
+		if audit_enabled and (_boundary_recovery_active or recovery_already_moved):
+			_v0436_r1f_record_callback(audit_frame, safe_vel, callback_position_before, global_position, false, recovery_already_moved)
+		return
+	_navigation_invalid_consecutive = 0
 	velocity.x = safe_vel.x
 	velocity.z = safe_vel.z
 	move_and_slide()
+	if audit_enabled and (_boundary_recovery_active or recovery_already_moved):
+		_v0436_r1f_note_move(audit_frame)
+		_v0436_r1f_record_callback(audit_frame, safe_vel, callback_position_before, global_position, true, recovery_already_moved)
 
 func _face(target_pos: Vector3) -> void:
 	var to := target_pos - global_position
@@ -924,7 +1304,7 @@ func _face(target_pos: Vector3) -> void:
 # Damage / death / heal
 # --------------------------------------------------------------------------
 func take_damage(amount: float, from = null) -> void:
-	if is_dead:
+	if is_dead or (world and not world.game_running):
 		return
 	var source_team := _combat_source_team(from)
 	if source_team == team:

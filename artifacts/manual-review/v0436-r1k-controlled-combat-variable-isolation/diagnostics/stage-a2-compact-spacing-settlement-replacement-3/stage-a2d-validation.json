@@ -1,0 +1,11 @@
+{
+  "schema": "v0436-r1k-stage-a2-diagnostic-validator-v1",
+  "passed": true,
+  "status": "STAGE_A2D_DIAGNOSTIC_VALIDATED",
+  "failures": [],
+  "diagnostic_status": "BLOCKED_R1K_COMPACT_SPACING_PHYSICALLY_UNACHIEVABLE",
+  "source_sha": "bf9a9f0f935cd6103fd12ab7275ff266843ce884",
+  "branch": "codex/v0436-first-complete-conquest-victory",
+  "output_scope": "diagnostics/stage-a2-compact-spacing-settlement-replacement-3",
+  "non_evidence": true
+}

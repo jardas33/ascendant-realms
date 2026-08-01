@@ -1,0 +1,869 @@
+{
+  "observed": {
+    "commands": [
+      {
+        "issued_attack_move": true,
+        "issued_attack_target": true,
+        "label": "opening_enemy_contact",
+        "source": "RTSController public command",
+        "target_id": "lioraen_thorn_ranger",
+        "target_runtime_id": "678873271734",
+        "timestamp": 60554
+      }
+    ],
+    "navigation": {
+      "iteration": 1,
+      "map_rid": "RID(20684562497536)",
+      "ready": true,
+      "regions": 1,
+      "units": [
+        {
+          "command": "build",
+          "direct_path_first": "(-78.71873, 0.05, -99.20718)",
+          "direct_path_last": "(-76, 0.05, -100)",
+          "direct_path_size": 2,
+          "source": "(-78.71873, 0, -99.20717)",
+          "source_closest": "(-78.71873, 0.05, -99.20718)",
+          "state": 0,
+          "target": "(-76, 0.05, -100)",
+          "target_closest": "(-76, 0.05, -100)",
+          "unit_id": "barrosan_worker"
+        },
+        {
+          "command": "build",
+          "direct_path_first": "(-73.49327, 0.05, -102.7102)",
+          "direct_path_last": "(-76, 0.05, -100)",
+          "direct_path_size": 2,
+          "source": "(-73.49327, 0, -102.7102)",
+          "source_closest": "(-73.49327, 0.05, -102.7102)",
+          "state": 0,
+          "target": "(-76, 0.05, -100)",
+          "target_closest": "(-76, 0.05, -100)",
+          "unit_id": "barrosan_worker"
+        },
+        {
+          "command": "build",
+          "direct_path_first": "(-80.30171, 0.05, -99.89342)",
+          "direct_path_last": "(-76, 0.05, -100)",
+          "direct_path_size": 2,
+          "source": "(-80.3017, 0, -99.89341)",
+          "source_closest": "(-80.30171, 0.05, -99.89342)",
+          "state": 0,
+          "target": "(-76, 0.05, -100)",
+          "target_closest": "(-76, 0.05, -100)",
+          "unit_id": "barrosan_worker"
+        },
+        {
+          "command": "attack",
+          "direct_path_first": "(-84.23319, 0.05, -91.50877)",
+          "direct_path_last": "(77.37262, 0.05, 98.01467)",
+          "direct_path_size": 3,
+          "source": "(-84.23319, 0, -91.50877)",
+          "source_closest": "(-84.23319, 0.05, -91.50877)",
+          "state": 3,
+          "target": "(77.37259, 0.05, 98.01469)",
+          "target_closest": "(77.37262, 0.05, 98.01467)",
+          "unit_id": "barrosan_spear_guard"
+        },
+        {
+          "command": "attack",
+          "direct_path_first": "(-71.34668, 0.05, -68.61915)",
+          "direct_path_last": "(77.37262, 0.05, 98.01467)",
+          "direct_path_size": 2,
+          "source": "(-71.34667, 0, -68.61914)",
+          "source_closest": "(-71.34668, 0.05, -68.61915)",
+          "state": 3,
+          "target": "(77.37259, 0.05, 98.01469)",
+          "target_closest": "(77.37262, 0.05, 98.01467)",
+          "unit_id": "barrosan_hero_thane"
+        },
+        {
+          "command": "gather",
+          "direct_path_first": "(89.32191, 0.05, 107.8358)",
+          "direct_path_last": "(87.27211, 0.05, 108.4853)",
+          "direct_path_size": 2,
+          "source": "(89.32197, 0, 107.8358)",
+          "source_closest": "(89.32191, 0.05, 107.8358)",
+          "state": 4,
+          "target": "(87.27211, 0.05, 108.4853)",
+          "target_closest": "(87.27211, 0.05, 108.4853)",
+          "unit_id": "lioraen_worker"
+        },
+        {
+          "command": "gather",
+          "direct_path_first": "(109.6416, 0.05, 93.36046)",
+          "direct_path_last": "(109.1924, 0.05, 93.63611)",
+          "direct_path_size": 2,
+          "source": "(109.6416, 0, 93.3604)",
+          "source_closest": "(109.6416, 0.05, 93.36046)",
+          "state": 4,
+          "target": "(109.1924, 0.05, 93.63608)",
+          "target_closest": "(109.1924, 0.05, 93.63611)",
+          "unit_id": "lioraen_worker"
+        },
+        {
+          "command": "gather",
+          "direct_path_first": "(109.664, 0.05, 85.50688)",
+          "direct_path_last": "(108.4853, 0.05, 87.27211)",
+          "direct_path_size": 2,
+          "source": "(109.664, 0, 85.5069)",
+          "source_closest": "(109.664, 0.05, 85.50688)",
+          "state": 4,
+          "target": "(108.4853, 0.05, 87.27211)",
+          "target_closest": "(108.4853, 0.05, 87.27211)",
+          "unit_id": "lioraen_worker"
+        },
+        {
+          "command": "",
+          "direct_path_first": "(99.99998, 0.05, 89.99998)",
+          "direct_path_last": "(0, 0.05, 0)",
+          "direct_path_size": 2,
+          "source": "(100, 0, 90)",
+          "source_closest": "(99.99998, 0.05, 89.99998)",
+          "state": 0,
+          "target": "(0, 0, 0)",
+          "target_closest": "(0, 0.05, 0)",
+          "unit_id": "lioraen_thorn_ranger"
+        },
+        {
+          "command": "",
+          "direct_path_first": "(106, 0.05, 106)",
+          "direct_path_last": "(0, 0.05, 0)",
+          "direct_path_size": 2,
+          "source": "(106, 0, 106)",
+          "source_closest": "(106, 0.05, 106)",
+          "state": 0,
+          "target": "(0, 0, 0)",
+          "target_closest": "(0, 0.05, 0)",
+          "unit_id": "lioraen_hero_warden"
+        },
+        {
+          "command": "gather",
+          "direct_path_first": "(90.02557, 0.05, 106.4289)",
+          "direct_path_last": "(87.27211, 0.05, 108.4853)",
+          "direct_path_size": 2,
+          "source": "(90.02554, 0, 106.4289)",
+          "source_closest": "(90.02557, 0.05, 106.4289)",
+          "state": 4,
+          "target": "(87.27211, 0.05, 108.4853)",
+          "target_closest": "(87.27211, 0.05, 108.4853)",
+          "unit_id": "lioraen_worker"
+        },
+        {
+          "command": "gather",
+          "direct_path_first": "(110.6517, 0.05, 94.05896)",
+          "direct_path_last": "(109.1924, 0.05, 93.63611)",
+          "direct_path_size": 2,
+          "source": "(110.6518, 0, 94.05893)",
+          "source_closest": "(110.6517, 0.05, 94.05896)",
+          "state": 4,
+          "target": "(109.1924, 0.05, 93.63608)",
+          "target_closest": "(109.1924, 0.05, 93.63611)",
+          "unit_id": "lioraen_worker"
+        },
+        {
+          "command": "attack",
+          "direct_path_first": "(-58.44992, 0.05, -71.36729)",
+          "direct_path_last": "(77.37262, 0.05, 98.01467)",
+          "direct_path_size": 3,
+          "source": "(-58.44991, 0, -71.36729)",
+          "source_closest": "(-58.44992, 0.05, -71.36729)",
+          "state": 3,
+          "target": "(77.37259, 0.05, 98.01469)",
+          "target_closest": "(77.37262, 0.05, 98.01467)",
+          "unit_id": "barrosan_crag_archer"
+        },
+        {
+          "command": "gather",
+          "direct_path_first": "(95.21449, 0.05, 83.9254)",
+          "direct_path_last": "(95.75737, 0.05, 85.85789)",
+          "direct_path_size": 2,
+          "source": "(95.2145, 0, 83.92538)",
+          "source_closest": "(95.21449, 0.05, 83.9254)",
+          "state": 4,
+          "target": "(95.75737, 0.05, 85.85789)",
+          "target_closest": "(95.75737, 0.05, 85.85789)",
+          "unit_id": "lioraen_worker"
+        },
+        {
+          "command": "attack",
+          "direct_path_first": "(-59.42733, 0.05, -71.76818)",
+          "direct_path_last": "(77.37262, 0.05, 98.01467)",
+          "direct_path_size": 3,
+          "source": "(-59.42733, 0, -71.76817)",
+          "source_closest": "(-59.42733, 0.05, -71.76818)",
+          "state": 3,
+          "target": "(77.37259, 0.05, 98.01469)",
+          "target_closest": "(77.37262, 0.05, 98.01467)",
+          "unit_id": "barrosan_crag_archer"
+        },
+        {
+          "command": "gather",
+          "direct_path_first": "(91.20032, 0.05, 105.9568)",
+          "direct_path_last": "(87.27211, 0.05, 108.4853)",
+          "direct_path_size": 2,
+          "source": "(91.20036, 0, 105.9568)",
+          "source_closest": "(91.20032, 0.05, 105.9568)",
+          "state": 4,
+          "target": "(87.27211, 0.05, 108.4853)",
+          "target_closest": "(87.27211, 0.05, 108.4853)",
+          "unit_id": "lioraen_worker"
+        },
+        {
+          "command": "attack",
+          "direct_path_first": "(-58.96273, 0.05, -72.68069)",
+          "direct_path_last": "(77.37262, 0.05, 98.01467)",
+          "direct_path_size": 3,
+          "source": "(-58.96272, 0, -72.68068)",
+          "source_closest": "(-58.96273, 0.05, -72.68069)",
+          "state": 3,
+          "target": "(77.37259, 0.05, 98.01469)",
+          "target_closest": "(77.37262, 0.05, 98.01467)",
+          "unit_id": "barrosan_crag_archer"
+        },
+        {
+          "command": "",
+          "direct_path_first": "(77.37259, 0.05, 98.01469)",
+          "direct_path_last": "(0, 0.05, 0)",
+          "direct_path_size": 2,
+          "source": "(77.37258, 0, 98.01472)",
+          "source_closest": "(77.37259, 0.05, 98.01469)",
+          "state": 0,
+          "target": "(0, 0, 0)",
+          "target_closest": "(0, 0.05, 0)",
+          "unit_id": "lioraen_thorn_ranger"
+        },
+        {
+          "command": "attack",
+          "direct_path_first": "(-57.95167, 0.05, -72.23767)",
+          "direct_path_last": "(77.37262, 0.05, 98.01467)",
+          "direct_path_size": 3,
+          "source": "(-57.95166, 0, -72.23767)",
+          "source_closest": "(-57.95167, 0.05, -72.23767)",
+          "state": 3,
+          "target": "(77.37259, 0.05, 98.01469)",
+          "target_closest": "(77.37262, 0.05, 98.01467)",
+          "unit_id": "barrosan_crag_archer"
+        },
+        {
+          "command": "",
+          "direct_path_first": "(77.37259, 0.05, 98.01469)",
+          "direct_path_last": "(0, 0.05, 0)",
+          "direct_path_size": 2,
+          "source": "(77.37258, 0, 98.01472)",
+          "source_closest": "(77.37259, 0.05, 98.01469)",
+          "state": 0,
+          "target": "(0, 0, 0)",
+          "target_closest": "(0, 0.05, 0)",
+          "unit_id": "lioraen_thorn_ranger"
+        }
+      ]
+    },
+    "position_samples": [
+      {
+        "label": "opening_enemy_contact",
+        "timestamp": 60864,
+        "units": [
+          {
+            "id": "barrosan_spear_guard",
+            "position": {
+              "x": -98.5726318359375,
+              "y": 0,
+              "z": -108.325897216797
+            },
+            "runtime_id": "169634433716",
+            "speed": 3
+          },
+          {
+            "id": "barrosan_hero_thane",
+            "position": {
+              "x": -91.9490814208984,
+              "y": 0,
+              "z": -91.7021789550781
+            },
+            "runtime_id": "170087418571",
+            "speed": 4.19999933242798
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": -74.6494750976563,
+              "y": 0,
+              "z": -91.4064636230469
+            },
+            "runtime_id": "407954787647",
+            "speed": 3.49999976158142
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": -75.5159683227539,
+              "y": 0,
+              "z": -91.9105529785156
+            },
+            "runtime_id": "527962213720",
+            "speed": 3.50000023841858
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": -75.0127258300781,
+              "y": 0,
+              "z": -92.8597564697266
+            },
+            "runtime_id": "648087080351",
+            "speed": 3.5
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": -74.027473449707,
+              "y": 0,
+              "z": -92.3432159423828
+            },
+            "runtime_id": "768027397583",
+            "speed": 3.5
+          }
+        ]
+      },
+      {
+        "label": "opening_enemy_contact",
+        "timestamp": 61370,
+        "units": [
+          {
+            "id": "barrosan_spear_guard",
+            "position": {
+              "x": -96.5613403320313,
+              "y": 0,
+              "z": -105.966934204102
+            },
+            "runtime_id": "169634433716",
+            "speed": 3
+          },
+          {
+            "id": "barrosan_hero_thane",
+            "position": {
+              "x": -89.0591506958008,
+              "y": 0,
+              "z": -88.4643402099609
+            },
+            "runtime_id": "170087418571",
+            "speed": 4.19999933242798
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": -72.3760528564453,
+              "y": 0,
+              "z": -88.5936660766602
+            },
+            "runtime_id": "407954787647",
+            "speed": 3.49999976158142
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": -73.2397994995117,
+              "y": 0,
+              "z": -89.0998840332031
+            },
+            "runtime_id": "527962213720",
+            "speed": 3.5
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": -72.7613754272461,
+              "y": 0,
+              "z": -90.0291900634766
+            },
+            "runtime_id": "648087080351",
+            "speed": 3.50000023841858
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": -71.7829360961914,
+              "y": 0,
+              "z": -89.5073318481445
+            },
+            "runtime_id": "768027397583",
+            "speed": 3.5
+          }
+        ]
+      },
+      {
+        "label": "opening_enemy_contact",
+        "timestamp": 61875,
+        "units": [
+          {
+            "id": "barrosan_spear_guard",
+            "position": {
+              "x": -94.6149291992188,
+              "y": 0,
+              "z": -103.684066772461
+            },
+            "runtime_id": "169634433716",
+            "speed": 2.99999976158142
+          },
+          {
+            "id": "barrosan_hero_thane",
+            "position": {
+              "x": -86.2624435424805,
+              "y": 0,
+              "z": -85.3309478759766
+            },
+            "runtime_id": "170087418571",
+            "speed": 4.19999980926514
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": -70.1785659790039,
+              "y": 0,
+              "z": -85.869499206543
+            },
+            "runtime_id": "407954787647",
+            "speed": 3.50000023841858
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": -71.0417938232422,
+              "y": 0,
+              "z": -86.3761215209961
+            },
+            "runtime_id": "527962213720",
+            "speed": 3.5
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": -70.5826416015625,
+              "y": 0,
+              "z": -87.2899551391602
+            },
+            "runtime_id": "648087080351",
+            "speed": 3.5
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": -69.6075744628906,
+              "y": 0,
+              "z": -86.7654876708984
+            },
+            "runtime_id": "768027397583",
+            "speed": 3.49999976158142
+          }
+        ]
+      },
+      {
+        "label": "opening_enemy_contact",
+        "timestamp": 62381,
+        "units": [
+          {
+            "id": "barrosan_spear_guard",
+            "position": {
+              "x": -92.6684951782227,
+              "y": 0,
+              "z": -101.40119934082
+            },
+            "runtime_id": "169634433716",
+            "speed": 3
+          },
+          {
+            "id": "barrosan_hero_thane",
+            "position": {
+              "x": -83.4657363891602,
+              "y": 0,
+              "z": -82.1975555419922
+            },
+            "runtime_id": "170087418571",
+            "speed": 4.19999933242798
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": -67.9503173828125,
+              "y": 0,
+              "z": -83.1797103881836
+            },
+            "runtime_id": "407954787647",
+            "speed": 3.49999976158142
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": -68.8635559082031,
+              "y": 0,
+              "z": -83.6375503540039
+            },
+            "runtime_id": "527962213720",
+            "speed": 3.5
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": -68.4039001464844,
+              "y": 0,
+              "z": -84.5507278442383
+            },
+            "runtime_id": "648087080351",
+            "speed": 3.5
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": -67.4233169555664,
+              "y": 0,
+              "z": -84.0390853881836
+            },
+            "runtime_id": "768027397583",
+            "speed": 3.5
+          }
+        ]
+      },
+      {
+        "label": "opening_enemy_contact",
+        "timestamp": 62888,
+        "units": [
+          {
+            "id": "barrosan_spear_guard",
+            "position": {
+              "x": -90.6569976806641,
+              "y": 0,
+              "z": -99.042236328125
+            },
+            "runtime_id": "169634433716",
+            "speed": 3
+          },
+          {
+            "id": "barrosan_hero_thane",
+            "position": {
+              "x": -80.5758056640625,
+              "y": 0,
+              "z": -78.959716796875
+            },
+            "runtime_id": "170087418571",
+            "speed": 4.19999980926514
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": -65.6714096069336,
+              "y": 0,
+              "z": -80.3772277832031
+            },
+            "runtime_id": "407954787647",
+            "speed": 3.49999976158142
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": -66.6023635864258,
+              "y": 0,
+              "z": -80.8148956298828
+            },
+            "runtime_id": "527962213720",
+            "speed": 3.49999976158142
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": -66.1525497436523,
+              "y": 0,
+              "z": -81.7201614379883
+            },
+            "runtime_id": "648087080351",
+            "speed": 3.49999976158142
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": -65.1554489135742,
+              "y": 0,
+              "z": -81.2398910522461
+            },
+            "runtime_id": "768027397583",
+            "speed": 3.5
+          }
+        ]
+      },
+      {
+        "label": "opening_enemy_contact",
+        "timestamp": 63396,
+        "units": [
+          {
+            "id": "barrosan_spear_guard",
+            "position": {
+              "x": -88.7103881835938,
+              "y": 0,
+              "z": -96.7593688964844
+            },
+            "runtime_id": "169634433716",
+            "speed": 3
+          },
+          {
+            "id": "barrosan_hero_thane",
+            "position": {
+              "x": -77.7790985107422,
+              "y": 0,
+              "z": -75.8263092041016
+            },
+            "runtime_id": "170087418571",
+            "speed": 4.19999980926514
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": -63.4937782287598,
+              "y": 0,
+              "z": -77.6371688842773
+            },
+            "runtime_id": "407954787647",
+            "speed": 3.5
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": -64.4189605712891,
+              "y": 0,
+              "z": -78.0794372558594
+            },
+            "runtime_id": "527962213720",
+            "speed": 3.50000023841858
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": -63.9738235473633,
+              "y": 0,
+              "z": -78.9809036254883
+            },
+            "runtime_id": "648087080351",
+            "speed": 3.5
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": -62.9802551269531,
+              "y": 0,
+              "z": -78.4979019165039
+            },
+            "runtime_id": "768027397583",
+            "speed": 3.49999976158142
+          }
+        ]
+      },
+      {
+        "label": "opening_enemy_contact",
+        "timestamp": 63902,
+        "units": [
+          {
+            "id": "barrosan_spear_guard",
+            "position": {
+              "x": -86.6988906860352,
+              "y": 0,
+              "z": -94.4004058837891
+            },
+            "runtime_id": "169634433716",
+            "speed": 3
+          },
+          {
+            "id": "barrosan_hero_thane",
+            "position": {
+              "x": -74.8891677856445,
+              "y": 0,
+              "z": -72.5883026123047
+            },
+            "runtime_id": "170087418571",
+            "speed": 4.19999980926514
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": -61.2259292602539,
+              "y": 0,
+              "z": -74.8223114013672
+            },
+            "runtime_id": "407954787647",
+            "speed": 3.5
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": -62.2008972167969,
+              "y": 0,
+              "z": -75.2265777587891
+            },
+            "runtime_id": "527962213720",
+            "speed": 3.49999976158142
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": -61.7224502563477,
+              "y": 0,
+              "z": -76.1503829956055
+            },
+            "runtime_id": "648087080351",
+            "speed": 3.5
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": -60.7194557189941,
+              "y": 0,
+              "z": -75.6877746582031
+            },
+            "runtime_id": "768027397583",
+            "speed": 3.5
+          }
+        ]
+      },
+      {
+        "label": "opening_enemy_contact",
+        "timestamp": 64409,
+        "units": [
+          {
+            "id": "barrosan_spear_guard",
+            "position": {
+              "x": -84.7522888183594,
+              "y": 0,
+              "z": -92.1175384521484
+            },
+            "runtime_id": "169634433716",
+            "speed": 3
+          },
+          {
+            "id": "barrosan_hero_thane",
+            "position": {
+              "x": -72.0924606323242,
+              "y": 0,
+              "z": -69.4547653198242
+            },
+            "runtime_id": "170087418571",
+            "speed": 4.19999980926514
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": -59.0297203063965,
+              "y": 0,
+              "z": -72.0986785888672
+            },
+            "runtime_id": "407954787647",
+            "speed": 3.49999976158142
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": -60.0124931335449,
+              "y": 0,
+              "z": -72.4952774047852
+            },
+            "runtime_id": "527962213720",
+            "speed": 3.49999976158142
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": -59.5437164306641,
+              "y": 0,
+              "z": -73.4111480712891
+            },
+            "runtime_id": "648087080351",
+            "speed": 3.49999976158142
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": -58.5310516357422,
+              "y": 0,
+              "z": -72.9693908691406
+            },
+            "runtime_id": "768027397583",
+            "speed": 3.49999976158142
+          }
+        ]
+      },
+      {
+        "label": "after_opening_contact",
+        "timestamp": 64409,
+        "units": [
+          {
+            "id": "barrosan_spear_guard",
+            "position": {
+              "x": -84.7522888183594,
+              "y": 0,
+              "z": -92.1175384521484
+            },
+            "runtime_id": "169634433716",
+            "speed": 3
+          },
+          {
+            "id": "barrosan_hero_thane",
+            "position": {
+              "x": -72.0924606323242,
+              "y": 0,
+              "z": -69.4547653198242
+            },
+            "runtime_id": "170087418571",
+            "speed": 4.19999980926514
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": -59.0297203063965,
+              "y": 0,
+              "z": -72.0986785888672
+            },
+            "runtime_id": "407954787647",
+            "speed": 3.49999976158142
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": -60.0124931335449,
+              "y": 0,
+              "z": -72.4952774047852
+            },
+            "runtime_id": "527962213720",
+            "speed": 3.49999976158142
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": -59.5437164306641,
+              "y": 0,
+              "z": -73.4111480712891
+            },
+            "runtime_id": "648087080351",
+            "speed": 3.49999976158142
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": -58.5310516357422,
+              "y": 0,
+              "z": -72.9693908691406
+            },
+            "runtime_id": "768027397583",
+            "speed": 3.49999976158142
+          }
+        ]
+      }
+    ]
+  },
+  "provenance": {
+    "branch": "codex/v0436-first-complete-conquest-victory",
+    "capture_attempt": "assault",
+    "capture_session": "A",
+    "production_scene": "scenes/main.tscn -> scenes/game_world.tscn",
+    "schema": "v0436-r1c-observed-runtime-evidence-v1",
+    "sequence_time_ms": 65357,
+    "source_sha": "f05ba19f8398d1a1bfd01bbe31b05fe3eeff1779"
+  },
+  "source": "live unit transforms/velocity and RTSController public commands"
+}

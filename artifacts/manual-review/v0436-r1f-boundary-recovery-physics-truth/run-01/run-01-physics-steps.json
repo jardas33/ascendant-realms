@@ -1,0 +1,2515 @@
+{
+  "ai_processing_restored": true,
+  "avoidance_callbacks_during_recovery": 34,
+  "branch": "codex/v0436-first-complete-conquest-victory",
+  "callbacks_that_moved_after_recovery": 0,
+  "cleanup_result": true,
+  "contamination_free": true,
+  "duplicate_movement_frames": [],
+  "expected_recovery_speed": 3.6,
+  "final_inside_bounds": true,
+  "final_position": {
+    "x": 135.920166015625,
+    "y": 0,
+    "z": 0
+  },
+  "fixture_present": true,
+  "initial_position": {
+    "x": 140,
+    "y": 0,
+    "z": 0
+  },
+  "maximum_allowed_speed": 5.4,
+  "maximum_movement_applications_same_frame": 1,
+  "maximum_per_physics_step_displacement": 0.1199951171875,
+  "maximum_sampled_interval_displacement": 1.199951171875,
+  "maximum_simulation_speed": 3.599853515625,
+  "maximum_wall_clock_derived_speed": 9.41138174019608,
+  "no_direct_state_writes": true,
+  "no_duplicate_movement": true,
+  "no_full_conquest_capture": true,
+  "no_material_outward_drift": true,
+  "no_non_finite_position": true,
+  "no_r1c_capture": true,
+  "passed": true,
+  "physics_audit": [
+    {
+      "displacement": 0.1199951171875,
+      "distance_outside_after": 3.8800048828125,
+      "distance_outside_before": 4,
+      "kind": "recovery_step",
+      "movement_applications_same_frame": 1,
+      "physics_delta": 0.0333333333333333,
+      "physics_frame": 441,
+      "physics_ticks_per_second": 60,
+      "position_after": {
+        "x": 139.880004882813,
+        "y": 0,
+        "z": 0
+      },
+      "position_before": {
+        "x": 140,
+        "y": 0,
+        "z": 0
+      },
+      "recovery_target": {
+        "x": 136,
+        "y": 0,
+        "z": 0
+      },
+      "requested_recovery_speed": 3.6,
+      "simulation_speed": 3.599853515625,
+      "time_scale": 2,
+      "velocity_after": {
+        "x": -3.59999990463257,
+        "y": 0,
+        "z": 0
+      },
+      "velocity_before": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "wall_timestamp_ms": 16908
+    },
+    {
+      "called_move_and_slide": false,
+      "displacement": 0,
+      "kind": "avoidance_callback",
+      "movement_applications_same_frame": 1,
+      "physics_delta": 0.0333333333333333,
+      "physics_frame": 441,
+      "physics_ticks_per_second": 60,
+      "position_after": {
+        "x": 139.880004882813,
+        "y": 0,
+        "z": 0
+      },
+      "position_before": {
+        "x": 139.880004882813,
+        "y": 0,
+        "z": 0
+      },
+      "recovery_already_moved": true,
+      "safe_velocity": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "time_scale": 2,
+      "wall_timestamp_ms": 16908
+    },
+    {
+      "displacement": 0.1199951171875,
+      "distance_outside_after": 3.760009765625,
+      "distance_outside_before": 3.8800048828125,
+      "kind": "recovery_step",
+      "movement_applications_same_frame": 1,
+      "physics_delta": 0.0333333333333333,
+      "physics_frame": 442,
+      "physics_ticks_per_second": 60,
+      "position_after": {
+        "x": 139.760009765625,
+        "y": 0,
+        "z": 0
+      },
+      "position_before": {
+        "x": 139.880004882813,
+        "y": 0,
+        "z": 0
+      },
+      "recovery_target": {
+        "x": 136,
+        "y": 0,
+        "z": 0
+      },
+      "requested_recovery_speed": 3.6,
+      "simulation_speed": 3.599853515625,
+      "time_scale": 2,
+      "velocity_after": {
+        "x": -3.59999990463257,
+        "y": 0,
+        "z": 0
+      },
+      "velocity_before": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "wall_timestamp_ms": 16909
+    },
+    {
+      "called_move_and_slide": false,
+      "displacement": 0,
+      "kind": "avoidance_callback",
+      "movement_applications_same_frame": 1,
+      "physics_delta": 0.0333333333333333,
+      "physics_frame": 442,
+      "physics_ticks_per_second": 60,
+      "position_after": {
+        "x": 139.760009765625,
+        "y": 0,
+        "z": 0
+      },
+      "position_before": {
+        "x": 139.760009765625,
+        "y": 0,
+        "z": 0
+      },
+      "recovery_already_moved": true,
+      "safe_velocity": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "time_scale": 2,
+      "wall_timestamp_ms": 16909
+    },
+    {
+      "displacement": 0.1199951171875,
+      "distance_outside_after": 3.6400146484375,
+      "distance_outside_before": 3.760009765625,
+      "kind": "recovery_step",
+      "movement_applications_same_frame": 1,
+      "physics_delta": 0.0333333333333333,
+      "physics_frame": 443,
+      "physics_ticks_per_second": 60,
+      "position_after": {
+        "x": 139.640014648438,
+        "y": 0,
+        "z": 0
+      },
+      "position_before": {
+        "x": 139.760009765625,
+        "y": 0,
+        "z": 0
+      },
+      "recovery_target": {
+        "x": 136,
+        "y": 0,
+        "z": 0
+      },
+      "requested_recovery_speed": 3.6,
+      "simulation_speed": 3.599853515625,
+      "time_scale": 2,
+      "velocity_after": {
+        "x": -3.59999990463257,
+        "y": 0,
+        "z": 0
+      },
+      "velocity_before": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "wall_timestamp_ms": 16909
+    },
+    {
+      "called_move_and_slide": false,
+      "displacement": 0,
+      "kind": "avoidance_callback",
+      "movement_applications_same_frame": 1,
+      "physics_delta": 0.0333333333333333,
+      "physics_frame": 443,
+      "physics_ticks_per_second": 60,
+      "position_after": {
+        "x": 139.640014648438,
+        "y": 0,
+        "z": 0
+      },
+      "position_before": {
+        "x": 139.640014648438,
+        "y": 0,
+        "z": 0
+      },
+      "recovery_already_moved": true,
+      "safe_velocity": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "time_scale": 2,
+      "wall_timestamp_ms": 16909
+    },
+    {
+      "displacement": 0.1199951171875,
+      "distance_outside_after": 3.52001953125,
+      "distance_outside_before": 3.6400146484375,
+      "kind": "recovery_step",
+      "movement_applications_same_frame": 1,
+      "physics_delta": 0.0333333333333333,
+      "physics_frame": 444,
+      "physics_ticks_per_second": 60,
+      "position_after": {
+        "x": 139.52001953125,
+        "y": 0,
+        "z": 0
+      },
+      "position_before": {
+        "x": 139.640014648438,
+        "y": 0,
+        "z": 0
+      },
+      "recovery_target": {
+        "x": 136,
+        "y": 0,
+        "z": 0
+      },
+      "requested_recovery_speed": 3.6,
+      "simulation_speed": 3.599853515625,
+      "time_scale": 2,
+      "velocity_after": {
+        "x": -3.59999990463257,
+        "y": 0,
+        "z": 0
+      },
+      "velocity_before": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "wall_timestamp_ms": 16909
+    },
+    {
+      "called_move_and_slide": false,
+      "displacement": 0,
+      "kind": "avoidance_callback",
+      "movement_applications_same_frame": 1,
+      "physics_delta": 0.0333333333333333,
+      "physics_frame": 444,
+      "physics_ticks_per_second": 60,
+      "position_after": {
+        "x": 139.52001953125,
+        "y": 0,
+        "z": 0
+      },
+      "position_before": {
+        "x": 139.52001953125,
+        "y": 0,
+        "z": 0
+      },
+      "recovery_already_moved": true,
+      "safe_velocity": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "time_scale": 2,
+      "wall_timestamp_ms": 16909
+    },
+    {
+      "displacement": 0.1199951171875,
+      "distance_outside_after": 3.4000244140625,
+      "distance_outside_before": 3.52001953125,
+      "kind": "recovery_step",
+      "movement_applications_same_frame": 1,
+      "physics_delta": 0.0333333333333333,
+      "physics_frame": 445,
+      "physics_ticks_per_second": 60,
+      "position_after": {
+        "x": 139.400024414063,
+        "y": 0,
+        "z": 0
+      },
+      "position_before": {
+        "x": 139.52001953125,
+        "y": 0,
+        "z": 0
+      },
+      "recovery_target": {
+        "x": 136,
+        "y": 0,
+        "z": 0
+      },
+      "requested_recovery_speed": 3.6,
+      "simulation_speed": 3.599853515625,
+      "time_scale": 2,
+      "velocity_after": {
+        "x": -3.59999990463257,
+        "y": 0,
+        "z": 0
+      },
+      "velocity_before": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "wall_timestamp_ms": 16910
+    },
+    {
+      "called_move_and_slide": false,
+      "displacement": 0,
+      "kind": "avoidance_callback",
+      "movement_applications_same_frame": 1,
+      "physics_delta": 0.0333333333333333,
+      "physics_frame": 445,
+      "physics_ticks_per_second": 60,
+      "position_after": {
+        "x": 139.400024414063,
+        "y": 0,
+        "z": 0
+      },
+      "position_before": {
+        "x": 139.400024414063,
+        "y": 0,
+        "z": 0
+      },
+      "recovery_already_moved": true,
+      "safe_velocity": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "time_scale": 2,
+      "wall_timestamp_ms": 16910
+    },
+    {
+      "displacement": 0.1199951171875,
+      "distance_outside_after": 3.280029296875,
+      "distance_outside_before": 3.4000244140625,
+      "kind": "recovery_step",
+      "movement_applications_same_frame": 1,
+      "physics_delta": 0.0333333333333333,
+      "physics_frame": 446,
+      "physics_ticks_per_second": 60,
+      "position_after": {
+        "x": 139.280029296875,
+        "y": 0,
+        "z": 0
+      },
+      "position_before": {
+        "x": 139.400024414063,
+        "y": 0,
+        "z": 0
+      },
+      "recovery_target": {
+        "x": 136,
+        "y": 0,
+        "z": 0
+      },
+      "requested_recovery_speed": 3.6,
+      "simulation_speed": 3.599853515625,
+      "time_scale": 2,
+      "velocity_after": {
+        "x": -3.59999990463257,
+        "y": 0,
+        "z": 0
+      },
+      "velocity_before": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "wall_timestamp_ms": 16910
+    },
+    {
+      "called_move_and_slide": false,
+      "displacement": 0,
+      "kind": "avoidance_callback",
+      "movement_applications_same_frame": 1,
+      "physics_delta": 0.0333333333333333,
+      "physics_frame": 446,
+      "physics_ticks_per_second": 60,
+      "position_after": {
+        "x": 139.280029296875,
+        "y": 0,
+        "z": 0
+      },
+      "position_before": {
+        "x": 139.280029296875,
+        "y": 0,
+        "z": 0
+      },
+      "recovery_already_moved": true,
+      "safe_velocity": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "time_scale": 2,
+      "wall_timestamp_ms": 16910
+    },
+    {
+      "displacement": 0.1199951171875,
+      "distance_outside_after": 3.1600341796875,
+      "distance_outside_before": 3.280029296875,
+      "kind": "recovery_step",
+      "movement_applications_same_frame": 1,
+      "physics_delta": 0.0333333333333333,
+      "physics_frame": 447,
+      "physics_ticks_per_second": 60,
+      "position_after": {
+        "x": 139.160034179688,
+        "y": 0,
+        "z": 0
+      },
+      "position_before": {
+        "x": 139.280029296875,
+        "y": 0,
+        "z": 0
+      },
+      "recovery_target": {
+        "x": 136,
+        "y": 0,
+        "z": 0
+      },
+      "requested_recovery_speed": 3.6,
+      "simulation_speed": 3.599853515625,
+      "time_scale": 2,
+      "velocity_after": {
+        "x": -3.59999990463257,
+        "y": 0,
+        "z": 0
+      },
+      "velocity_before": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "wall_timestamp_ms": 16910
+    },
+    {
+      "called_move_and_slide": false,
+      "displacement": 0,
+      "kind": "avoidance_callback",
+      "movement_applications_same_frame": 1,
+      "physics_delta": 0.0333333333333333,
+      "physics_frame": 447,
+      "physics_ticks_per_second": 60,
+      "position_after": {
+        "x": 139.160034179688,
+        "y": 0,
+        "z": 0
+      },
+      "position_before": {
+        "x": 139.160034179688,
+        "y": 0,
+        "z": 0
+      },
+      "recovery_already_moved": true,
+      "safe_velocity": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "time_scale": 2,
+      "wall_timestamp_ms": 16911
+    },
+    {
+      "displacement": 0.1199951171875,
+      "distance_outside_after": 3.0400390625,
+      "distance_outside_before": 3.1600341796875,
+      "kind": "recovery_step",
+      "movement_applications_same_frame": 1,
+      "physics_delta": 0.0333333333333333,
+      "physics_frame": 448,
+      "physics_ticks_per_second": 60,
+      "position_after": {
+        "x": 139.0400390625,
+        "y": 0,
+        "z": 0
+      },
+      "position_before": {
+        "x": 139.160034179688,
+        "y": 0,
+        "z": 0
+      },
+      "recovery_target": {
+        "x": 136,
+        "y": 0,
+        "z": 0
+      },
+      "requested_recovery_speed": 3.6,
+      "simulation_speed": 3.599853515625,
+      "time_scale": 2,
+      "velocity_after": {
+        "x": -3.59999990463257,
+        "y": 0,
+        "z": 0
+      },
+      "velocity_before": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "wall_timestamp_ms": 16911
+    },
+    {
+      "called_move_and_slide": false,
+      "displacement": 0,
+      "kind": "avoidance_callback",
+      "movement_applications_same_frame": 1,
+      "physics_delta": 0.0333333333333333,
+      "physics_frame": 448,
+      "physics_ticks_per_second": 60,
+      "position_after": {
+        "x": 139.0400390625,
+        "y": 0,
+        "z": 0
+      },
+      "position_before": {
+        "x": 139.0400390625,
+        "y": 0,
+        "z": 0
+      },
+      "recovery_already_moved": true,
+      "safe_velocity": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "time_scale": 2,
+      "wall_timestamp_ms": 16912
+    },
+    {
+      "displacement": 0.1199951171875,
+      "distance_outside_after": 2.9200439453125,
+      "distance_outside_before": 3.0400390625,
+      "kind": "recovery_step",
+      "movement_applications_same_frame": 1,
+      "physics_delta": 0.0333333333333333,
+      "physics_frame": 449,
+      "physics_ticks_per_second": 60,
+      "position_after": {
+        "x": 138.920043945313,
+        "y": 0,
+        "z": 0
+      },
+      "position_before": {
+        "x": 139.0400390625,
+        "y": 0,
+        "z": 0
+      },
+      "recovery_target": {
+        "x": 136,
+        "y": 0,
+        "z": 0
+      },
+      "requested_recovery_speed": 3.6,
+      "simulation_speed": 3.599853515625,
+      "time_scale": 2,
+      "velocity_after": {
+        "x": -3.59999990463257,
+        "y": 0,
+        "z": 0
+      },
+      "velocity_before": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "wall_timestamp_ms": 16934
+    },
+    {
+      "called_move_and_slide": false,
+      "displacement": 0,
+      "kind": "avoidance_callback",
+      "movement_applications_same_frame": 1,
+      "physics_delta": 0.0333333333333333,
+      "physics_frame": 449,
+      "physics_ticks_per_second": 60,
+      "position_after": {
+        "x": 138.920043945313,
+        "y": 0,
+        "z": 0
+      },
+      "position_before": {
+        "x": 138.920043945313,
+        "y": 0,
+        "z": 0
+      },
+      "recovery_already_moved": true,
+      "safe_velocity": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "time_scale": 2,
+      "wall_timestamp_ms": 16934
+    },
+    {
+      "displacement": 0.1199951171875,
+      "distance_outside_after": 2.800048828125,
+      "distance_outside_before": 2.9200439453125,
+      "kind": "recovery_step",
+      "movement_applications_same_frame": 1,
+      "physics_delta": 0.0333333333333333,
+      "physics_frame": 450,
+      "physics_ticks_per_second": 60,
+      "position_after": {
+        "x": 138.800048828125,
+        "y": 0,
+        "z": 0
+      },
+      "position_before": {
+        "x": 138.920043945313,
+        "y": 0,
+        "z": 0
+      },
+      "recovery_target": {
+        "x": 136,
+        "y": 0,
+        "z": 0
+      },
+      "requested_recovery_speed": 3.6,
+      "simulation_speed": 3.599853515625,
+      "time_scale": 2,
+      "velocity_after": {
+        "x": -3.59999990463257,
+        "y": 0,
+        "z": 0
+      },
+      "velocity_before": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "wall_timestamp_ms": 17500
+    },
+    {
+      "called_move_and_slide": false,
+      "displacement": 0,
+      "kind": "avoidance_callback",
+      "movement_applications_same_frame": 1,
+      "physics_delta": 0.0333333333333333,
+      "physics_frame": 450,
+      "physics_ticks_per_second": 60,
+      "position_after": {
+        "x": 138.800048828125,
+        "y": 0,
+        "z": 0
+      },
+      "position_before": {
+        "x": 138.800048828125,
+        "y": 0,
+        "z": 0
+      },
+      "recovery_already_moved": true,
+      "safe_velocity": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "time_scale": 2,
+      "wall_timestamp_ms": 17500
+    },
+    {
+      "displacement": 0.1199951171875,
+      "distance_outside_after": 2.6800537109375,
+      "distance_outside_before": 2.800048828125,
+      "kind": "recovery_step",
+      "movement_applications_same_frame": 1,
+      "physics_delta": 0.0333333333333333,
+      "physics_frame": 451,
+      "physics_ticks_per_second": 60,
+      "position_after": {
+        "x": 138.680053710938,
+        "y": 0,
+        "z": 0
+      },
+      "position_before": {
+        "x": 138.800048828125,
+        "y": 0,
+        "z": 0
+      },
+      "recovery_target": {
+        "x": 136,
+        "y": 0,
+        "z": 0
+      },
+      "requested_recovery_speed": 3.6,
+      "simulation_speed": 3.599853515625,
+      "time_scale": 2,
+      "velocity_after": {
+        "x": -3.59999990463257,
+        "y": 0,
+        "z": 0
+      },
+      "velocity_before": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "wall_timestamp_ms": 17500
+    },
+    {
+      "called_move_and_slide": false,
+      "displacement": 0,
+      "kind": "avoidance_callback",
+      "movement_applications_same_frame": 1,
+      "physics_delta": 0.0333333333333333,
+      "physics_frame": 451,
+      "physics_ticks_per_second": 60,
+      "position_after": {
+        "x": 138.680053710938,
+        "y": 0,
+        "z": 0
+      },
+      "position_before": {
+        "x": 138.680053710938,
+        "y": 0,
+        "z": 0
+      },
+      "recovery_already_moved": true,
+      "safe_velocity": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "time_scale": 2,
+      "wall_timestamp_ms": 17500
+    },
+    {
+      "displacement": 0.1199951171875,
+      "distance_outside_after": 2.56005859375,
+      "distance_outside_before": 2.6800537109375,
+      "kind": "recovery_step",
+      "movement_applications_same_frame": 1,
+      "physics_delta": 0.0333333333333333,
+      "physics_frame": 452,
+      "physics_ticks_per_second": 60,
+      "position_after": {
+        "x": 138.56005859375,
+        "y": 0,
+        "z": 0
+      },
+      "position_before": {
+        "x": 138.680053710938,
+        "y": 0,
+        "z": 0
+      },
+      "recovery_target": {
+        "x": 136,
+        "y": 0,
+        "z": 0
+      },
+      "requested_recovery_speed": 3.6,
+      "simulation_speed": 3.599853515625,
+      "time_scale": 2,
+      "velocity_after": {
+        "x": -3.59999990463257,
+        "y": 0,
+        "z": 0
+      },
+      "velocity_before": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "wall_timestamp_ms": 17501
+    },
+    {
+      "called_move_and_slide": false,
+      "displacement": 0,
+      "kind": "avoidance_callback",
+      "movement_applications_same_frame": 1,
+      "physics_delta": 0.0333333333333333,
+      "physics_frame": 452,
+      "physics_ticks_per_second": 60,
+      "position_after": {
+        "x": 138.56005859375,
+        "y": 0,
+        "z": 0
+      },
+      "position_before": {
+        "x": 138.56005859375,
+        "y": 0,
+        "z": 0
+      },
+      "recovery_already_moved": true,
+      "safe_velocity": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "time_scale": 2,
+      "wall_timestamp_ms": 17501
+    },
+    {
+      "displacement": 0.1199951171875,
+      "distance_outside_after": 2.4400634765625,
+      "distance_outside_before": 2.56005859375,
+      "kind": "recovery_step",
+      "movement_applications_same_frame": 1,
+      "physics_delta": 0.0333333333333333,
+      "physics_frame": 453,
+      "physics_ticks_per_second": 60,
+      "position_after": {
+        "x": 138.440063476563,
+        "y": 0,
+        "z": 0
+      },
+      "position_before": {
+        "x": 138.56005859375,
+        "y": 0,
+        "z": 0
+      },
+      "recovery_target": {
+        "x": 136,
+        "y": 0,
+        "z": 0
+      },
+      "requested_recovery_speed": 3.6,
+      "simulation_speed": 3.599853515625,
+      "time_scale": 2,
+      "velocity_after": {
+        "x": -3.59999990463257,
+        "y": 0,
+        "z": 0
+      },
+      "velocity_before": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "wall_timestamp_ms": 17501
+    },
+    {
+      "called_move_and_slide": false,
+      "displacement": 0,
+      "kind": "avoidance_callback",
+      "movement_applications_same_frame": 1,
+      "physics_delta": 0.0333333333333333,
+      "physics_frame": 453,
+      "physics_ticks_per_second": 60,
+      "position_after": {
+        "x": 138.440063476563,
+        "y": 0,
+        "z": 0
+      },
+      "position_before": {
+        "x": 138.440063476563,
+        "y": 0,
+        "z": 0
+      },
+      "recovery_already_moved": true,
+      "safe_velocity": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "time_scale": 2,
+      "wall_timestamp_ms": 17501
+    },
+    {
+      "displacement": 0.1199951171875,
+      "distance_outside_after": 2.320068359375,
+      "distance_outside_before": 2.4400634765625,
+      "kind": "recovery_step",
+      "movement_applications_same_frame": 1,
+      "physics_delta": 0.0333333333333333,
+      "physics_frame": 454,
+      "physics_ticks_per_second": 60,
+      "position_after": {
+        "x": 138.320068359375,
+        "y": 0,
+        "z": 0
+      },
+      "position_before": {
+        "x": 138.440063476563,
+        "y": 0,
+        "z": 0
+      },
+      "recovery_target": {
+        "x": 136,
+        "y": 0,
+        "z": 0
+      },
+      "requested_recovery_speed": 3.6,
+      "simulation_speed": 3.599853515625,
+      "time_scale": 2,
+      "velocity_after": {
+        "x": -3.59999990463257,
+        "y": 0,
+        "z": 0
+      },
+      "velocity_before": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "wall_timestamp_ms": 17502
+    },
+    {
+      "called_move_and_slide": false,
+      "displacement": 0,
+      "kind": "avoidance_callback",
+      "movement_applications_same_frame": 1,
+      "physics_delta": 0.0333333333333333,
+      "physics_frame": 454,
+      "physics_ticks_per_second": 60,
+      "position_after": {
+        "x": 138.320068359375,
+        "y": 0,
+        "z": 0
+      },
+      "position_before": {
+        "x": 138.320068359375,
+        "y": 0,
+        "z": 0
+      },
+      "recovery_already_moved": true,
+      "safe_velocity": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "time_scale": 2,
+      "wall_timestamp_ms": 17502
+    },
+    {
+      "displacement": 0.1199951171875,
+      "distance_outside_after": 2.2000732421875,
+      "distance_outside_before": 2.320068359375,
+      "kind": "recovery_step",
+      "movement_applications_same_frame": 1,
+      "physics_delta": 0.0333333333333333,
+      "physics_frame": 455,
+      "physics_ticks_per_second": 60,
+      "position_after": {
+        "x": 138.200073242188,
+        "y": 0,
+        "z": 0
+      },
+      "position_before": {
+        "x": 138.320068359375,
+        "y": 0,
+        "z": 0
+      },
+      "recovery_target": {
+        "x": 136,
+        "y": 0,
+        "z": 0
+      },
+      "requested_recovery_speed": 3.6,
+      "simulation_speed": 3.599853515625,
+      "time_scale": 2,
+      "velocity_after": {
+        "x": -3.59999990463257,
+        "y": 0,
+        "z": 0
+      },
+      "velocity_before": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "wall_timestamp_ms": 17502
+    },
+    {
+      "called_move_and_slide": false,
+      "displacement": 0,
+      "kind": "avoidance_callback",
+      "movement_applications_same_frame": 1,
+      "physics_delta": 0.0333333333333333,
+      "physics_frame": 455,
+      "physics_ticks_per_second": 60,
+      "position_after": {
+        "x": 138.200073242188,
+        "y": 0,
+        "z": 0
+      },
+      "position_before": {
+        "x": 138.200073242188,
+        "y": 0,
+        "z": 0
+      },
+      "recovery_already_moved": true,
+      "safe_velocity": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "time_scale": 2,
+      "wall_timestamp_ms": 17503
+    },
+    {
+      "displacement": 0.1199951171875,
+      "distance_outside_after": 2.080078125,
+      "distance_outside_before": 2.2000732421875,
+      "kind": "recovery_step",
+      "movement_applications_same_frame": 1,
+      "physics_delta": 0.0333333333333333,
+      "physics_frame": 456,
+      "physics_ticks_per_second": 60,
+      "position_after": {
+        "x": 138.080078125,
+        "y": 0,
+        "z": 0
+      },
+      "position_before": {
+        "x": 138.200073242188,
+        "y": 0,
+        "z": 0
+      },
+      "recovery_target": {
+        "x": 136,
+        "y": 0,
+        "z": 0
+      },
+      "requested_recovery_speed": 3.6,
+      "simulation_speed": 3.599853515625,
+      "time_scale": 2,
+      "velocity_after": {
+        "x": -3.59999990463257,
+        "y": 0,
+        "z": 0
+      },
+      "velocity_before": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "wall_timestamp_ms": 17503
+    },
+    {
+      "called_move_and_slide": false,
+      "displacement": 0,
+      "kind": "avoidance_callback",
+      "movement_applications_same_frame": 1,
+      "physics_delta": 0.0333333333333333,
+      "physics_frame": 456,
+      "physics_ticks_per_second": 60,
+      "position_after": {
+        "x": 138.080078125,
+        "y": 0,
+        "z": 0
+      },
+      "position_before": {
+        "x": 138.080078125,
+        "y": 0,
+        "z": 0
+      },
+      "recovery_already_moved": true,
+      "safe_velocity": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "time_scale": 2,
+      "wall_timestamp_ms": 17504
+    },
+    {
+      "displacement": 0.1199951171875,
+      "distance_outside_after": 1.9600830078125,
+      "distance_outside_before": 2.080078125,
+      "kind": "recovery_step",
+      "movement_applications_same_frame": 1,
+      "physics_delta": 0.0333333333333333,
+      "physics_frame": 457,
+      "physics_ticks_per_second": 60,
+      "position_after": {
+        "x": 137.960083007813,
+        "y": 0,
+        "z": 0
+      },
+      "position_before": {
+        "x": 138.080078125,
+        "y": 0,
+        "z": 0
+      },
+      "recovery_target": {
+        "x": 136,
+        "y": 0,
+        "z": 0
+      },
+      "requested_recovery_speed": 3.6,
+      "simulation_speed": 3.599853515625,
+      "time_scale": 2,
+      "velocity_after": {
+        "x": -3.59999990463257,
+        "y": 0,
+        "z": 0
+      },
+      "velocity_before": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "wall_timestamp_ms": 17504
+    },
+    {
+      "called_move_and_slide": false,
+      "displacement": 0,
+      "kind": "avoidance_callback",
+      "movement_applications_same_frame": 1,
+      "physics_delta": 0.0333333333333333,
+      "physics_frame": 457,
+      "physics_ticks_per_second": 60,
+      "position_after": {
+        "x": 137.960083007813,
+        "y": 0,
+        "z": 0
+      },
+      "position_before": {
+        "x": 137.960083007813,
+        "y": 0,
+        "z": 0
+      },
+      "recovery_already_moved": true,
+      "safe_velocity": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "time_scale": 2,
+      "wall_timestamp_ms": 17504
+    },
+    {
+      "displacement": 0.1199951171875,
+      "distance_outside_after": 1.840087890625,
+      "distance_outside_before": 1.9600830078125,
+      "kind": "recovery_step",
+      "movement_applications_same_frame": 1,
+      "physics_delta": 0.0333333333333333,
+      "physics_frame": 458,
+      "physics_ticks_per_second": 60,
+      "position_after": {
+        "x": 137.840087890625,
+        "y": 0,
+        "z": 0
+      },
+      "position_before": {
+        "x": 137.960083007813,
+        "y": 0,
+        "z": 0
+      },
+      "recovery_target": {
+        "x": 136,
+        "y": 0,
+        "z": 0
+      },
+      "requested_recovery_speed": 3.6,
+      "simulation_speed": 3.599853515625,
+      "time_scale": 2,
+      "velocity_after": {
+        "x": -3.59999990463257,
+        "y": 0,
+        "z": 0
+      },
+      "velocity_before": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "wall_timestamp_ms": 17508
+    },
+    {
+      "called_move_and_slide": false,
+      "displacement": 0,
+      "kind": "avoidance_callback",
+      "movement_applications_same_frame": 1,
+      "physics_delta": 0.0333333333333333,
+      "physics_frame": 458,
+      "physics_ticks_per_second": 60,
+      "position_after": {
+        "x": 137.840087890625,
+        "y": 0,
+        "z": 0
+      },
+      "position_before": {
+        "x": 137.840087890625,
+        "y": 0,
+        "z": 0
+      },
+      "recovery_already_moved": true,
+      "safe_velocity": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "time_scale": 2,
+      "wall_timestamp_ms": 17508
+    },
+    {
+      "displacement": 0.1199951171875,
+      "distance_outside_after": 1.7200927734375,
+      "distance_outside_before": 1.840087890625,
+      "kind": "recovery_step",
+      "movement_applications_same_frame": 1,
+      "physics_delta": 0.0333333333333333,
+      "physics_frame": 459,
+      "physics_ticks_per_second": 60,
+      "position_after": {
+        "x": 137.720092773438,
+        "y": 0,
+        "z": 0
+      },
+      "position_before": {
+        "x": 137.840087890625,
+        "y": 0,
+        "z": 0
+      },
+      "recovery_target": {
+        "x": 136,
+        "y": 0,
+        "z": 0
+      },
+      "requested_recovery_speed": 3.6,
+      "simulation_speed": 3.599853515625,
+      "time_scale": 2,
+      "velocity_after": {
+        "x": -3.59999990463257,
+        "y": 0,
+        "z": 0
+      },
+      "velocity_before": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "wall_timestamp_ms": 17523
+    },
+    {
+      "called_move_and_slide": false,
+      "displacement": 0,
+      "kind": "avoidance_callback",
+      "movement_applications_same_frame": 1,
+      "physics_delta": 0.0333333333333333,
+      "physics_frame": 459,
+      "physics_ticks_per_second": 60,
+      "position_after": {
+        "x": 137.720092773438,
+        "y": 0,
+        "z": 0
+      },
+      "position_before": {
+        "x": 137.720092773438,
+        "y": 0,
+        "z": 0
+      },
+      "recovery_already_moved": true,
+      "safe_velocity": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "time_scale": 2,
+      "wall_timestamp_ms": 17523
+    },
+    {
+      "displacement": 0.1199951171875,
+      "distance_outside_after": 1.60009765625,
+      "distance_outside_before": 1.7200927734375,
+      "kind": "recovery_step",
+      "movement_applications_same_frame": 1,
+      "physics_delta": 0.0333333333333333,
+      "physics_frame": 460,
+      "physics_ticks_per_second": 60,
+      "position_after": {
+        "x": 137.60009765625,
+        "y": 0,
+        "z": 0
+      },
+      "position_before": {
+        "x": 137.720092773438,
+        "y": 0,
+        "z": 0
+      },
+      "recovery_target": {
+        "x": 136,
+        "y": 0,
+        "z": 0
+      },
+      "requested_recovery_speed": 3.6,
+      "simulation_speed": 3.599853515625,
+      "time_scale": 2,
+      "velocity_after": {
+        "x": -3.59999990463257,
+        "y": 0,
+        "z": 0
+      },
+      "velocity_before": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "wall_timestamp_ms": 18079
+    },
+    {
+      "called_move_and_slide": false,
+      "displacement": 0,
+      "kind": "avoidance_callback",
+      "movement_applications_same_frame": 1,
+      "physics_delta": 0.0333333333333333,
+      "physics_frame": 460,
+      "physics_ticks_per_second": 60,
+      "position_after": {
+        "x": 137.60009765625,
+        "y": 0,
+        "z": 0
+      },
+      "position_before": {
+        "x": 137.60009765625,
+        "y": 0,
+        "z": 0
+      },
+      "recovery_already_moved": true,
+      "safe_velocity": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "time_scale": 2,
+      "wall_timestamp_ms": 18079
+    },
+    {
+      "displacement": 0.1199951171875,
+      "distance_outside_after": 1.4801025390625,
+      "distance_outside_before": 1.60009765625,
+      "kind": "recovery_step",
+      "movement_applications_same_frame": 1,
+      "physics_delta": 0.0333333333333333,
+      "physics_frame": 461,
+      "physics_ticks_per_second": 60,
+      "position_after": {
+        "x": 137.480102539063,
+        "y": 0,
+        "z": 0
+      },
+      "position_before": {
+        "x": 137.60009765625,
+        "y": 0,
+        "z": 0
+      },
+      "recovery_target": {
+        "x": 136,
+        "y": 0,
+        "z": 0
+      },
+      "requested_recovery_speed": 3.6,
+      "simulation_speed": 3.599853515625,
+      "time_scale": 2,
+      "velocity_after": {
+        "x": -3.59999990463257,
+        "y": 0,
+        "z": 0
+      },
+      "velocity_before": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "wall_timestamp_ms": 18079
+    },
+    {
+      "called_move_and_slide": false,
+      "displacement": 0,
+      "kind": "avoidance_callback",
+      "movement_applications_same_frame": 1,
+      "physics_delta": 0.0333333333333333,
+      "physics_frame": 461,
+      "physics_ticks_per_second": 60,
+      "position_after": {
+        "x": 137.480102539063,
+        "y": 0,
+        "z": 0
+      },
+      "position_before": {
+        "x": 137.480102539063,
+        "y": 0,
+        "z": 0
+      },
+      "recovery_already_moved": true,
+      "safe_velocity": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "time_scale": 2,
+      "wall_timestamp_ms": 18079
+    },
+    {
+      "displacement": 0.1199951171875,
+      "distance_outside_after": 1.360107421875,
+      "distance_outside_before": 1.4801025390625,
+      "kind": "recovery_step",
+      "movement_applications_same_frame": 1,
+      "physics_delta": 0.0333333333333333,
+      "physics_frame": 462,
+      "physics_ticks_per_second": 60,
+      "position_after": {
+        "x": 137.360107421875,
+        "y": 0,
+        "z": 0
+      },
+      "position_before": {
+        "x": 137.480102539063,
+        "y": 0,
+        "z": 0
+      },
+      "recovery_target": {
+        "x": 136,
+        "y": 0,
+        "z": 0
+      },
+      "requested_recovery_speed": 3.6,
+      "simulation_speed": 3.599853515625,
+      "time_scale": 2,
+      "velocity_after": {
+        "x": -3.59999990463257,
+        "y": 0,
+        "z": 0
+      },
+      "velocity_before": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "wall_timestamp_ms": 18080
+    },
+    {
+      "called_move_and_slide": false,
+      "displacement": 0,
+      "kind": "avoidance_callback",
+      "movement_applications_same_frame": 1,
+      "physics_delta": 0.0333333333333333,
+      "physics_frame": 462,
+      "physics_ticks_per_second": 60,
+      "position_after": {
+        "x": 137.360107421875,
+        "y": 0,
+        "z": 0
+      },
+      "position_before": {
+        "x": 137.360107421875,
+        "y": 0,
+        "z": 0
+      },
+      "recovery_already_moved": true,
+      "safe_velocity": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "time_scale": 2,
+      "wall_timestamp_ms": 18080
+    },
+    {
+      "displacement": 0.1199951171875,
+      "distance_outside_after": 1.2401123046875,
+      "distance_outside_before": 1.360107421875,
+      "kind": "recovery_step",
+      "movement_applications_same_frame": 1,
+      "physics_delta": 0.0333333333333333,
+      "physics_frame": 463,
+      "physics_ticks_per_second": 60,
+      "position_after": {
+        "x": 137.240112304688,
+        "y": 0,
+        "z": 0
+      },
+      "position_before": {
+        "x": 137.360107421875,
+        "y": 0,
+        "z": 0
+      },
+      "recovery_target": {
+        "x": 136,
+        "y": 0,
+        "z": 0
+      },
+      "requested_recovery_speed": 3.6,
+      "simulation_speed": 3.599853515625,
+      "time_scale": 2,
+      "velocity_after": {
+        "x": -3.59999990463257,
+        "y": 0,
+        "z": 0
+      },
+      "velocity_before": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "wall_timestamp_ms": 18080
+    },
+    {
+      "called_move_and_slide": false,
+      "displacement": 0,
+      "kind": "avoidance_callback",
+      "movement_applications_same_frame": 1,
+      "physics_delta": 0.0333333333333333,
+      "physics_frame": 463,
+      "physics_ticks_per_second": 60,
+      "position_after": {
+        "x": 137.240112304688,
+        "y": 0,
+        "z": 0
+      },
+      "position_before": {
+        "x": 137.240112304688,
+        "y": 0,
+        "z": 0
+      },
+      "recovery_already_moved": true,
+      "safe_velocity": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "time_scale": 2,
+      "wall_timestamp_ms": 18080
+    },
+    {
+      "displacement": 0.1199951171875,
+      "distance_outside_after": 1.1201171875,
+      "distance_outside_before": 1.2401123046875,
+      "kind": "recovery_step",
+      "movement_applications_same_frame": 1,
+      "physics_delta": 0.0333333333333333,
+      "physics_frame": 464,
+      "physics_ticks_per_second": 60,
+      "position_after": {
+        "x": 137.1201171875,
+        "y": 0,
+        "z": 0
+      },
+      "position_before": {
+        "x": 137.240112304688,
+        "y": 0,
+        "z": 0
+      },
+      "recovery_target": {
+        "x": 136,
+        "y": 0,
+        "z": 0
+      },
+      "requested_recovery_speed": 3.6,
+      "simulation_speed": 3.599853515625,
+      "time_scale": 2,
+      "velocity_after": {
+        "x": -3.59999990463257,
+        "y": 0,
+        "z": 0
+      },
+      "velocity_before": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "wall_timestamp_ms": 18081
+    },
+    {
+      "called_move_and_slide": false,
+      "displacement": 0,
+      "kind": "avoidance_callback",
+      "movement_applications_same_frame": 1,
+      "physics_delta": 0.0333333333333333,
+      "physics_frame": 464,
+      "physics_ticks_per_second": 60,
+      "position_after": {
+        "x": 137.1201171875,
+        "y": 0,
+        "z": 0
+      },
+      "position_before": {
+        "x": 137.1201171875,
+        "y": 0,
+        "z": 0
+      },
+      "recovery_already_moved": true,
+      "safe_velocity": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "time_scale": 2,
+      "wall_timestamp_ms": 18081
+    },
+    {
+      "displacement": 0.1199951171875,
+      "distance_outside_after": 1.0001220703125,
+      "distance_outside_before": 1.1201171875,
+      "kind": "recovery_step",
+      "movement_applications_same_frame": 1,
+      "physics_delta": 0.0333333333333333,
+      "physics_frame": 465,
+      "physics_ticks_per_second": 60,
+      "position_after": {
+        "x": 137.000122070313,
+        "y": 0,
+        "z": 0
+      },
+      "position_before": {
+        "x": 137.1201171875,
+        "y": 0,
+        "z": 0
+      },
+      "recovery_target": {
+        "x": 136,
+        "y": 0,
+        "z": 0
+      },
+      "requested_recovery_speed": 3.6,
+      "simulation_speed": 3.599853515625,
+      "time_scale": 2,
+      "velocity_after": {
+        "x": -3.59999990463257,
+        "y": 0,
+        "z": 0
+      },
+      "velocity_before": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "wall_timestamp_ms": 18081
+    },
+    {
+      "called_move_and_slide": false,
+      "displacement": 0,
+      "kind": "avoidance_callback",
+      "movement_applications_same_frame": 1,
+      "physics_delta": 0.0333333333333333,
+      "physics_frame": 465,
+      "physics_ticks_per_second": 60,
+      "position_after": {
+        "x": 137.000122070313,
+        "y": 0,
+        "z": 0
+      },
+      "position_before": {
+        "x": 137.000122070313,
+        "y": 0,
+        "z": 0
+      },
+      "recovery_already_moved": true,
+      "safe_velocity": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "time_scale": 2,
+      "wall_timestamp_ms": 18081
+    },
+    {
+      "displacement": 0.1199951171875,
+      "distance_outside_after": 0.880126953125,
+      "distance_outside_before": 1.0001220703125,
+      "kind": "recovery_step",
+      "movement_applications_same_frame": 1,
+      "physics_delta": 0.0333333333333333,
+      "physics_frame": 466,
+      "physics_ticks_per_second": 60,
+      "position_after": {
+        "x": 136.880126953125,
+        "y": 0,
+        "z": 0
+      },
+      "position_before": {
+        "x": 137.000122070313,
+        "y": 0,
+        "z": 0
+      },
+      "recovery_target": {
+        "x": 136,
+        "y": 0,
+        "z": 0
+      },
+      "requested_recovery_speed": 3.6,
+      "simulation_speed": 3.599853515625,
+      "time_scale": 2,
+      "velocity_after": {
+        "x": -3.59999990463257,
+        "y": 0,
+        "z": 0
+      },
+      "velocity_before": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "wall_timestamp_ms": 18081
+    },
+    {
+      "called_move_and_slide": false,
+      "displacement": 0,
+      "kind": "avoidance_callback",
+      "movement_applications_same_frame": 1,
+      "physics_delta": 0.0333333333333333,
+      "physics_frame": 466,
+      "physics_ticks_per_second": 60,
+      "position_after": {
+        "x": 136.880126953125,
+        "y": 0,
+        "z": 0
+      },
+      "position_before": {
+        "x": 136.880126953125,
+        "y": 0,
+        "z": 0
+      },
+      "recovery_already_moved": true,
+      "safe_velocity": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "time_scale": 2,
+      "wall_timestamp_ms": 18081
+    },
+    {
+      "displacement": 0.1199951171875,
+      "distance_outside_after": 0.7601318359375,
+      "distance_outside_before": 0.880126953125,
+      "kind": "recovery_step",
+      "movement_applications_same_frame": 1,
+      "physics_delta": 0.0333333333333333,
+      "physics_frame": 467,
+      "physics_ticks_per_second": 60,
+      "position_after": {
+        "x": 136.760131835938,
+        "y": 0,
+        "z": 0
+      },
+      "position_before": {
+        "x": 136.880126953125,
+        "y": 0,
+        "z": 0
+      },
+      "recovery_target": {
+        "x": 136,
+        "y": 0,
+        "z": 0
+      },
+      "requested_recovery_speed": 3.6,
+      "simulation_speed": 3.599853515625,
+      "time_scale": 2,
+      "velocity_after": {
+        "x": -3.59999990463257,
+        "y": 0,
+        "z": 0
+      },
+      "velocity_before": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "wall_timestamp_ms": 18082
+    },
+    {
+      "called_move_and_slide": false,
+      "displacement": 0,
+      "kind": "avoidance_callback",
+      "movement_applications_same_frame": 1,
+      "physics_delta": 0.0333333333333333,
+      "physics_frame": 467,
+      "physics_ticks_per_second": 60,
+      "position_after": {
+        "x": 136.760131835938,
+        "y": 0,
+        "z": 0
+      },
+      "position_before": {
+        "x": 136.760131835938,
+        "y": 0,
+        "z": 0
+      },
+      "recovery_already_moved": true,
+      "safe_velocity": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "time_scale": 2,
+      "wall_timestamp_ms": 18082
+    },
+    {
+      "displacement": 0.1199951171875,
+      "distance_outside_after": 0.64013671875,
+      "distance_outside_before": 0.7601318359375,
+      "kind": "recovery_step",
+      "movement_applications_same_frame": 1,
+      "physics_delta": 0.0333333333333333,
+      "physics_frame": 468,
+      "physics_ticks_per_second": 60,
+      "position_after": {
+        "x": 136.64013671875,
+        "y": 0,
+        "z": 0
+      },
+      "position_before": {
+        "x": 136.760131835938,
+        "y": 0,
+        "z": 0
+      },
+      "recovery_target": {
+        "x": 136,
+        "y": 0,
+        "z": 0
+      },
+      "requested_recovery_speed": 3.6,
+      "simulation_speed": 3.599853515625,
+      "time_scale": 2,
+      "velocity_after": {
+        "x": -3.59999990463257,
+        "y": 0,
+        "z": 0
+      },
+      "velocity_before": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "wall_timestamp_ms": 18084
+    },
+    {
+      "called_move_and_slide": false,
+      "displacement": 0,
+      "kind": "avoidance_callback",
+      "movement_applications_same_frame": 1,
+      "physics_delta": 0.0333333333333333,
+      "physics_frame": 468,
+      "physics_ticks_per_second": 60,
+      "position_after": {
+        "x": 136.64013671875,
+        "y": 0,
+        "z": 0
+      },
+      "position_before": {
+        "x": 136.64013671875,
+        "y": 0,
+        "z": 0
+      },
+      "recovery_already_moved": true,
+      "safe_velocity": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "time_scale": 2,
+      "wall_timestamp_ms": 18084
+    },
+    {
+      "displacement": 0.1199951171875,
+      "distance_outside_after": 0.5201416015625,
+      "distance_outside_before": 0.64013671875,
+      "kind": "recovery_step",
+      "movement_applications_same_frame": 1,
+      "physics_delta": 0.0333333333333333,
+      "physics_frame": 469,
+      "physics_ticks_per_second": 60,
+      "position_after": {
+        "x": 136.520141601563,
+        "y": 0,
+        "z": 0
+      },
+      "position_before": {
+        "x": 136.64013671875,
+        "y": 0,
+        "z": 0
+      },
+      "recovery_target": {
+        "x": 136,
+        "y": 0,
+        "z": 0
+      },
+      "requested_recovery_speed": 3.6,
+      "simulation_speed": 3.599853515625,
+      "time_scale": 2,
+      "velocity_after": {
+        "x": -3.59999990463257,
+        "y": 0,
+        "z": 0
+      },
+      "velocity_before": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "wall_timestamp_ms": 18088
+    },
+    {
+      "called_move_and_slide": false,
+      "displacement": 0,
+      "kind": "avoidance_callback",
+      "movement_applications_same_frame": 1,
+      "physics_delta": 0.0333333333333333,
+      "physics_frame": 469,
+      "physics_ticks_per_second": 60,
+      "position_after": {
+        "x": 136.520141601563,
+        "y": 0,
+        "z": 0
+      },
+      "position_before": {
+        "x": 136.520141601563,
+        "y": 0,
+        "z": 0
+      },
+      "recovery_already_moved": true,
+      "safe_velocity": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "time_scale": 2,
+      "wall_timestamp_ms": 18089
+    },
+    {
+      "displacement": 0.1199951171875,
+      "distance_outside_after": 0.400146484375,
+      "distance_outside_before": 0.5201416015625,
+      "kind": "recovery_step",
+      "movement_applications_same_frame": 1,
+      "physics_delta": 0.0333333333333333,
+      "physics_frame": 470,
+      "physics_ticks_per_second": 60,
+      "position_after": {
+        "x": 136.400146484375,
+        "y": 0,
+        "z": 0
+      },
+      "position_before": {
+        "x": 136.520141601563,
+        "y": 0,
+        "z": 0
+      },
+      "recovery_target": {
+        "x": 136,
+        "y": 0,
+        "z": 0
+      },
+      "requested_recovery_speed": 3.6,
+      "simulation_speed": 3.599853515625,
+      "time_scale": 2,
+      "velocity_after": {
+        "x": -3.59999990463257,
+        "y": 0,
+        "z": 0
+      },
+      "velocity_before": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "wall_timestamp_ms": 18107
+    },
+    {
+      "called_move_and_slide": false,
+      "displacement": 0,
+      "kind": "avoidance_callback",
+      "movement_applications_same_frame": 1,
+      "physics_delta": 0.0333333333333333,
+      "physics_frame": 470,
+      "physics_ticks_per_second": 60,
+      "position_after": {
+        "x": 136.400146484375,
+        "y": 0,
+        "z": 0
+      },
+      "position_before": {
+        "x": 136.400146484375,
+        "y": 0,
+        "z": 0
+      },
+      "recovery_already_moved": true,
+      "safe_velocity": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "time_scale": 2,
+      "wall_timestamp_ms": 18107
+    },
+    {
+      "displacement": 0.1199951171875,
+      "distance_outside_after": 0.2801513671875,
+      "distance_outside_before": 0.400146484375,
+      "kind": "recovery_step",
+      "movement_applications_same_frame": 1,
+      "physics_delta": 0.0333333333333333,
+      "physics_frame": 471,
+      "physics_ticks_per_second": 60,
+      "position_after": {
+        "x": 136.280151367188,
+        "y": 0,
+        "z": 0
+      },
+      "position_before": {
+        "x": 136.400146484375,
+        "y": 0,
+        "z": 0
+      },
+      "recovery_target": {
+        "x": 136,
+        "y": 0,
+        "z": 0
+      },
+      "requested_recovery_speed": 3.6,
+      "simulation_speed": 3.599853515625,
+      "time_scale": 2,
+      "velocity_after": {
+        "x": -3.59999990463257,
+        "y": 0,
+        "z": 0
+      },
+      "velocity_before": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "wall_timestamp_ms": 18133
+    },
+    {
+      "called_move_and_slide": false,
+      "displacement": 0,
+      "kind": "avoidance_callback",
+      "movement_applications_same_frame": 1,
+      "physics_delta": 0.0333333333333333,
+      "physics_frame": 471,
+      "physics_ticks_per_second": 60,
+      "position_after": {
+        "x": 136.280151367188,
+        "y": 0,
+        "z": 0
+      },
+      "position_before": {
+        "x": 136.280151367188,
+        "y": 0,
+        "z": 0
+      },
+      "recovery_already_moved": true,
+      "safe_velocity": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "time_scale": 2,
+      "wall_timestamp_ms": 18133
+    },
+    {
+      "displacement": 0.1199951171875,
+      "distance_outside_after": 0.16015625,
+      "distance_outside_before": 0.2801513671875,
+      "kind": "recovery_step",
+      "movement_applications_same_frame": 1,
+      "physics_delta": 0.0333333333333333,
+      "physics_frame": 472,
+      "physics_ticks_per_second": 60,
+      "position_after": {
+        "x": 136.16015625,
+        "y": 0,
+        "z": 0
+      },
+      "position_before": {
+        "x": 136.280151367188,
+        "y": 0,
+        "z": 0
+      },
+      "recovery_target": {
+        "x": 136,
+        "y": 0,
+        "z": 0
+      },
+      "requested_recovery_speed": 3.6,
+      "simulation_speed": 3.599853515625,
+      "time_scale": 2,
+      "velocity_after": {
+        "x": -3.59999990463257,
+        "y": 0,
+        "z": 0
+      },
+      "velocity_before": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "wall_timestamp_ms": 18159
+    },
+    {
+      "called_move_and_slide": false,
+      "displacement": 0,
+      "kind": "avoidance_callback",
+      "movement_applications_same_frame": 1,
+      "physics_delta": 0.0333333333333333,
+      "physics_frame": 472,
+      "physics_ticks_per_second": 60,
+      "position_after": {
+        "x": 136.16015625,
+        "y": 0,
+        "z": 0
+      },
+      "position_before": {
+        "x": 136.16015625,
+        "y": 0,
+        "z": 0
+      },
+      "recovery_already_moved": true,
+      "safe_velocity": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "time_scale": 2,
+      "wall_timestamp_ms": 18160
+    },
+    {
+      "displacement": 0.1199951171875,
+      "distance_outside_after": 0.0401611328125,
+      "distance_outside_before": 0.16015625,
+      "kind": "recovery_step",
+      "movement_applications_same_frame": 1,
+      "physics_delta": 0.0333333333333333,
+      "physics_frame": 473,
+      "physics_ticks_per_second": 60,
+      "position_after": {
+        "x": 136.040161132813,
+        "y": 0,
+        "z": 0
+      },
+      "position_before": {
+        "x": 136.16015625,
+        "y": 0,
+        "z": 0
+      },
+      "recovery_target": {
+        "x": 136,
+        "y": 0,
+        "z": 0
+      },
+      "requested_recovery_speed": 3.6,
+      "simulation_speed": 3.599853515625,
+      "time_scale": 2,
+      "velocity_after": {
+        "x": -3.59999990463257,
+        "y": 0,
+        "z": 0
+      },
+      "velocity_before": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "wall_timestamp_ms": 18173
+    },
+    {
+      "called_move_and_slide": false,
+      "displacement": 0,
+      "kind": "avoidance_callback",
+      "movement_applications_same_frame": 1,
+      "physics_delta": 0.0333333333333333,
+      "physics_frame": 473,
+      "physics_ticks_per_second": 60,
+      "position_after": {
+        "x": 136.040161132813,
+        "y": 0,
+        "z": 0
+      },
+      "position_before": {
+        "x": 136.040161132813,
+        "y": 0,
+        "z": 0
+      },
+      "recovery_already_moved": true,
+      "safe_velocity": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "time_scale": 2,
+      "wall_timestamp_ms": 18174
+    },
+    {
+      "displacement": 0.1199951171875,
+      "distance_outside_after": 0,
+      "distance_outside_before": 0.0401611328125,
+      "kind": "recovery_step",
+      "movement_applications_same_frame": 1,
+      "physics_delta": 0.0333333333333333,
+      "physics_frame": 474,
+      "physics_ticks_per_second": 60,
+      "position_after": {
+        "x": 135.920166015625,
+        "y": 0,
+        "z": 0
+      },
+      "position_before": {
+        "x": 136.040161132813,
+        "y": 0,
+        "z": 0
+      },
+      "recovery_target": {
+        "x": 136,
+        "y": 0,
+        "z": 0
+      },
+      "requested_recovery_speed": 3.6,
+      "simulation_speed": 3.599853515625,
+      "time_scale": 2,
+      "velocity_after": {
+        "x": -3.59999990463257,
+        "y": 0,
+        "z": 0
+      },
+      "velocity_before": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "wall_timestamp_ms": 18199
+    },
+    {
+      "called_move_and_slide": false,
+      "displacement": 0,
+      "kind": "avoidance_callback",
+      "movement_applications_same_frame": 1,
+      "physics_delta": 0.0333333333333333,
+      "physics_frame": 474,
+      "physics_ticks_per_second": 60,
+      "position_after": {
+        "x": 135.920166015625,
+        "y": 0,
+        "z": 0
+      },
+      "position_before": {
+        "x": 135.920166015625,
+        "y": 0,
+        "z": 0
+      },
+      "recovery_already_moved": true,
+      "safe_velocity": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "time_scale": 2,
+      "wall_timestamp_ms": 18199
+    }
+  ],
+  "physics_step_count": 34,
+  "post_start_position_write_count": 0,
+  "recovery_completed": true,
+  "recovery_completed_event": {
+    "command": "",
+    "effective_target": {
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "kind": "boundary_recovery_completed",
+    "position": {
+      "x": 135.920166015625,
+      "y": 0,
+      "z": 0
+    },
+    "reason": "position_outside_playable_tolerance",
+    "requested_target": {
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "runtime_id": "183626632442",
+    "state": 0,
+    "timestamp": 18212,
+    "unit_id": "v0436_r1f_boundary_fixture_worker"
+  },
+  "recovery_duration_physics_frames": 33,
+  "recovery_started": true,
+  "recovery_started_event": {
+    "command": "",
+    "effective_target": {
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "kind": "boundary_recovery_started",
+    "position": {
+      "x": 140,
+      "y": 0,
+      "z": 0
+    },
+    "reason": "position_outside_playable_tolerance",
+    "recovery_target": {
+      "x": 136,
+      "y": 0,
+      "z": 0
+    },
+    "requested_target": {
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "runtime_id": "183626632442",
+    "state": 0,
+    "timestamp": 16908,
+    "unit_id": "v0436_r1f_boundary_fixture_worker"
+  },
+  "run_index": "01",
+  "samples": [
+    {
+      "distance_outside": 3.0400390625,
+      "inside_bounds": false,
+      "inside_recovery_tolerance": false,
+      "physics_frame": 448,
+      "position": {
+        "x": 139.0400390625,
+        "y": 0,
+        "z": 0
+      },
+      "previous_position": {
+        "x": 140,
+        "y": 0,
+        "z": 0
+      },
+      "recovery_active": true,
+      "sampled_interval_displacement": 0.9599609375,
+      "speed_sample_timing_valid": true,
+      "timer_sampling_jitter_observed": true,
+      "timestamp_ms": 16912,
+      "travelled_distance": 0.9599609375,
+      "wall_clock_derived_speed": 1.68414199561404,
+      "wall_clock_sample_interval_seconds": 0.57
+    },
+    {
+      "distance_outside": 1.9600830078125,
+      "inside_bounds": false,
+      "inside_recovery_tolerance": true,
+      "physics_frame": 457,
+      "position": {
+        "x": 137.960083007813,
+        "y": 0,
+        "z": 0
+      },
+      "previous_position": {
+        "x": 139.0400390625,
+        "y": 0,
+        "z": 0
+      },
+      "recovery_active": true,
+      "sampled_interval_displacement": 1.0799560546875,
+      "speed_sample_timing_valid": true,
+      "timer_sampling_jitter_observed": true,
+      "timestamp_ms": 17505,
+      "travelled_distance": 2.0399169921875,
+      "wall_clock_derived_speed": 1.82117378530776,
+      "wall_clock_sample_interval_seconds": 0.593
+    },
+    {
+      "distance_outside": 0.7601318359375,
+      "inside_bounds": false,
+      "inside_recovery_tolerance": true,
+      "physics_frame": 467,
+      "position": {
+        "x": 136.760131835938,
+        "y": 0,
+        "z": 0
+      },
+      "previous_position": {
+        "x": 137.960083007813,
+        "y": 0,
+        "z": 0
+      },
+      "recovery_active": true,
+      "sampled_interval_displacement": 1.199951171875,
+      "speed_sample_timing_valid": true,
+      "timer_sampling_jitter_observed": true,
+      "timestamp_ms": 18083,
+      "travelled_distance": 3.2398681640625,
+      "wall_clock_derived_speed": 2.07604008974914,
+      "wall_clock_sample_interval_seconds": 0.578
+    },
+    {
+      "distance_outside": 0.2801513671875,
+      "inside_bounds": false,
+      "inside_recovery_tolerance": true,
+      "physics_frame": 471,
+      "position": {
+        "x": 136.280151367188,
+        "y": 0,
+        "z": 0
+      },
+      "previous_position": {
+        "x": 136.760131835938,
+        "y": 0,
+        "z": 0
+      },
+      "recovery_active": true,
+      "sampled_interval_displacement": 0.47998046875,
+      "speed_sample_timing_valid": true,
+      "timer_sampling_jitter_observed": true,
+      "timestamp_ms": 18134,
+      "travelled_distance": 3.7198486328125,
+      "wall_clock_derived_speed": 9.41138174019608,
+      "wall_clock_sample_interval_seconds": 0.051
+    },
+    {
+      "distance_outside": 0,
+      "inside_bounds": true,
+      "inside_recovery_tolerance": true,
+      "physics_frame": 474,
+      "position": {
+        "x": 135.920166015625,
+        "y": 0,
+        "z": 0
+      },
+      "previous_position": {
+        "x": 136.280151367188,
+        "y": 0,
+        "z": 0
+      },
+      "recovery_active": true,
+      "sampled_interval_displacement": 0.3599853515625,
+      "speed_sample_timing_valid": true,
+      "timer_sampling_jitter_observed": true,
+      "timestamp_ms": 18200,
+      "travelled_distance": 4.079833984375,
+      "wall_clock_derived_speed": 5.45432350852273,
+      "wall_clock_sample_interval_seconds": 0.066
+    },
+    {
+      "distance_outside": 0,
+      "inside_bounds": true,
+      "inside_recovery_tolerance": true,
+      "physics_frame": 477,
+      "position": {
+        "x": 135.920166015625,
+        "y": 0,
+        "z": 0
+      },
+      "previous_position": {
+        "x": 135.920166015625,
+        "y": 0,
+        "z": 0
+      },
+      "recovery_active": false,
+      "sampled_interval_displacement": 0,
+      "speed_sample_timing_valid": true,
+      "timer_sampling_jitter_observed": true,
+      "timestamp_ms": 18254,
+      "travelled_distance": 4.079833984375,
+      "wall_clock_derived_speed": 0,
+      "wall_clock_sample_interval_seconds": 0.054
+    },
+    {
+      "distance_outside": 0,
+      "inside_bounds": true,
+      "inside_recovery_tolerance": true,
+      "physics_frame": 481,
+      "position": {
+        "x": 135.920166015625,
+        "y": 0,
+        "z": 0
+      },
+      "previous_position": {
+        "x": 135.920166015625,
+        "y": 0,
+        "z": 0
+      },
+      "recovery_active": false,
+      "sampled_interval_displacement": 0,
+      "speed_sample_timing_valid": true,
+      "timer_sampling_jitter_observed": true,
+      "timestamp_ms": 18307,
+      "travelled_distance": 4.079833984375,
+      "wall_clock_derived_speed": 0,
+      "wall_clock_sample_interval_seconds": 0.053
+    }
+  ],
+  "schema": "v0436-r1f-boundary-recovery-physics-truth-v1",
+  "source_sha": "6b14ba305afc4b3090d57f400da885550d512183",
+  "status": "PASSED_V0436_R1F_BOUNDARY_PHYSICS",
+  "timer_metrics_are_diagnostic_only": true,
+  "total_recovery_distance": 4.079833984375
+}

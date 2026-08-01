@@ -1,0 +1,29 @@
+{
+  "schema": "v0436-r1f-timer-versus-physics-v1",
+  "runs": [
+    {
+      "run_index": "01",
+      "maximum_wall_clock_derived_speed": 9.41138174019608,
+      "maximum_sampled_interval_displacement": 1.199951171875,
+      "maximum_simulation_speed": 3.599853515625,
+      "maximum_per_physics_step_displacement": 0.1199951171875,
+      "timer_metrics_are_diagnostic_only": true
+    },
+    {
+      "run_index": "02",
+      "maximum_wall_clock_derived_speed": 9.599609375,
+      "maximum_sampled_interval_displacement": 1.199951171875,
+      "maximum_simulation_speed": 3.599853515625,
+      "maximum_per_physics_step_displacement": 0.1199951171875,
+      "timer_metrics_are_diagnostic_only": true
+    },
+    {
+      "run_index": "03",
+      "maximum_wall_clock_derived_speed": 7.05853630514706,
+      "maximum_sampled_interval_displacement": 1.43994140625,
+      "maximum_simulation_speed": 3.599853515625,
+      "maximum_per_physics_step_displacement": 0.1199951171875,
+      "timer_metrics_are_diagnostic_only": true
+    }
+  ]
+}

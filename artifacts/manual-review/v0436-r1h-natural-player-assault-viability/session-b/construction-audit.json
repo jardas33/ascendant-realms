@@ -1,0 +1,33 @@
+{
+  "building": {
+    "built": false,
+    "dead": false,
+    "definition_id": "barrosan_war_hall",
+    "hp": 142.5,
+    "is_hq": false,
+    "max_hp": 950,
+    "position": {
+      "x": -76,
+      "y": 0,
+      "z": -100
+    },
+    "runtime_id": "186260655357",
+    "state": "<null>",
+    "team": 0
+  },
+  "provenance": {
+    "attempt": "construction",
+    "branch": "codex/v0436-first-complete-conquest-victory",
+    "production_scene": "scenes/main.tscn -> scenes/game_world.tscn",
+    "schema": "v0436-r1h-live-evidence-v1",
+    "session": "B",
+    "source_sha": "2f18357a64f3a8869ecf52481136cbc799370e5f",
+    "timestamp_ms": 15840
+  },
+  "real_public_path": "GameWorld.place_building -> Unit.command_build",
+  "worker_runtime_ids": [
+    "170573957749",
+    "171026942604",
+    "171479927459"
+  ]
+}

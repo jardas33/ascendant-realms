@@ -1,0 +1,13 @@
+{
+  "schema": "v0436-r1j-complete-combat-attribution-capture-v1",
+  "status": "CAPTURE_COMPLETED",
+  "source_sha": "23a57b723bb6539f7b2011f2f69abe515df08ff9",
+  "branch": "codex/v0436-first-complete-conquest-victory",
+  "sessions": [
+    "A",
+    "B"
+  ],
+  "pack": "artifacts/manual-review/v0436-r1j-complete-combat-attribution-and-conditional-repair/",
+  "causal_status": "BLOCKED_R1J_COMPLETE_ATTRIBUTION_INCONCLUSIVE",
+  "historical_evidence_reused": false
+}

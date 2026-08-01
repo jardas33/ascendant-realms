@@ -1,0 +1,38 @@
+{
+  "schema": "v0436-r1k-stage-a2d-preflight-v1",
+  "status": "STAGE_A2D_PREPARED",
+  "non_evidence": true,
+  "attempt_id": "stage-a2-compact-spacing-settlement-replacement-3",
+  "committed_baseline_sha": "bf9a9f0f935cd6103fd12ab7275ff266843ce884",
+  "source_sha": "bf9a9f0f935cd6103fd12ab7275ff266843ce884",
+  "branch": "codex/v0436-first-complete-conquest-victory",
+  "headed": true,
+  "hidden_window": false,
+  "renderer": "Forward Plus",
+  "production_scene": "scenes/main.tscn -> scenes/game_world.tscn",
+  "output_root_abs": "D:\\Code for projects\\WB game like\\ascendant-realms-v0223-recovery\\artifacts\\manual-review\\v0436-r1k-controlled-combat-variable-isolation\\diagnostics\\stage-a2-compact-spacing-settlement-replacement-3",
+  "local_modified_r1k_harness_files": [
+    "package.json",
+    "production/ascendant-realms-godot/tests/v0436_r1k_capture.gd",
+    "tools/godot/v0436R1KControlledCombatMatrixTool.mjs",
+    "tools/godot/v0436R1KControlledCombatMatrixValidator.mjs",
+    "tools/godot/v0436R1KControlledCombatMatrixValidator.test.ts",
+    "tools/godot/v0436R1KStageA2Validator.test.ts"
+  ],
+  "local_git_diff_binary_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "scoped_implementation_diff_clean": true,
+  "origin_sha": "bf9a9f0f935cd6103fd12ab7275ff266843ce884",
+  "headed_launch_count": 0,
+  "no_direct_state_writes": true,
+  "no_resource_injection": true,
+  "no_free_units": true,
+  "cell": {
+    "cell_id": "hero-spear-compact-thorn-ranger-first",
+    "selected_force": "hero-plus-spear-guard",
+    "spacing": "compact",
+    "spacing_comparable": true,
+    "command_path": "diagnostic-spacing-only",
+    "target": "thorn-ranger",
+    "diagnostic_only": true
+  }
+}

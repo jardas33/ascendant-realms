@@ -1,0 +1,16 @@
+{
+  "schema": "v0436-r1g-evidence-disposition-v1",
+  "source_sha": "165084f320f4ae29e579601cc739690f3d8faed3",
+  "accepted": [
+    "fresh headed R1G frames",
+    "live predicate snapshots",
+    "target lifecycle audits",
+    "truthful blocker"
+  ],
+  "rejected": [
+    "historical R1C frames",
+    "title cards",
+    "success-named frames without matching live state",
+    "direct result/replay signals"
+  ]
+}

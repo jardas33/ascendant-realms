@@ -1,0 +1,10 @@
+{
+  "schema": "v0436-r1f-wrapper-launch-contract-v1",
+  "command": "npm run godot:capture:v0436-r1f-boundary-physics",
+  "executable": "C:\\Users\\barro\\AppData\\Local\\AscendantRealms\\tools\\godot-4.3-stable\\Godot_v4.3-stable_win64.exe",
+  "headed": true,
+  "project_default_renderer": true,
+  "godot_log_file_argument": false,
+  "runner_owned_stdout_stderr": true,
+  "three_runs": true
+}

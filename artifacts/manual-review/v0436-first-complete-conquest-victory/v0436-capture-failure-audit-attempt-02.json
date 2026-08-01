@@ -1,0 +1,15 @@
+{
+  "schema": "v0436-capture-failure-audit-attempt-02-v1",
+  "status": "FAILED_SETUP",
+  "attempt": 2,
+  "command": "npm run godot:capture:v0436-conquest-victory",
+  "war_hall_built": false,
+  "hall_progress": 0,
+  "workers": "remained in BUILDING state at valid in-bounds positions",
+  "navigation_contract": "bounded repath and safe-stop evidence recorded",
+  "invalid_next_path_point_evidence": "v0436-invalid-next-point-audit.json",
+  "root_cause": "NavigationAgent continued reporting invalid/implausible path output; containment prevented drift but no construction progress occurred",
+  "victory": false,
+  "result_snapshot_produced": false,
+  "review_pack_accepted": false
+}

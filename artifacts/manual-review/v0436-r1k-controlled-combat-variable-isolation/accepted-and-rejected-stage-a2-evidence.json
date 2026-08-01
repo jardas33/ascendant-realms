@@ -1,0 +1,37 @@
+{
+  "schema": "v0436-r1k-stage-a2-evidence-disposition-v1",
+  "source_sha": "bf9a9f0f935cd6103fd12ab7275ff266843ce884",
+  "branch": "codex/v0436-first-complete-conquest-victory",
+  "exact_ci": {"run_id": "30720639071", "run_number": 682, "conclusion": "success", "sha": "bf9a9f0f935cd6103fd12ab7275ff266843ce884"},
+  "immutable_attempts": ["diagnostics/stage-a2-compact-spacing-settlement/", "diagnostics/stage-a2-compact-spacing-settlement-replacement-1/", "diagnostics/stage-a2-compact-spacing-settlement-replacement-2/", "diagnostics/stage-a2-compact-spacing-settlement-replacement-3/", "diagnostics/stage-a2-output-routing-probe/"],
+  "accepted_as_diagnostic_contract_evidence": {
+    "attempt_id": "stage-a2-compact-spacing-settlement-replacement-3",
+    "path": "diagnostics/stage-a2-compact-spacing-settlement-replacement-3/",
+    "status": "BLOCKED_R1K_COMPACT_SPACING_PHYSICALLY_UNACHIEVABLE",
+    "validator_status": "STAGE_A2D_DIAGNOSTIC_VALIDATED",
+    "validator_passed": true,
+    "non_evidence": true,
+    "final_evidence": false,
+    "files": ["stage-a2d-preflight.json", "stage-a2d-wrapper-result.json", "stage-a2d-validation.json", "stage-a2-diagnostic-summary.json", "stage-a2-spacing-diagnostic.json", "stage-a2-diagnostic-contract.json", "stage-a2d-artifact-manifest.json", "01_STAGE_A2D_START.png", "02_STAGE_A2D_DESTINATIONS_ASSIGNED.png", "03_STAGE_A2D_ARRIVAL_HOLD_PROVEN.png", "04_STAGE_A2D_PUBLIC_STOP_ISSUED.png", "05_STAGE_A2D_POST_STOP_MEASUREMENT.png"],
+    "visual_artifacts": [
+      {"file": "01_STAGE_A2D_START.png", "bytes": 4409027, "sha256": "805f2007b3b4a0ac32e7f3650a9e694af655de4ea8ef62b2a2ebcf1a0fc76d47", "dimensions": "1920x1061", "nonblank": true},
+      {"file": "02_STAGE_A2D_DESTINATIONS_ASSIGNED.png", "bytes": 4243834, "sha256": "29fefb8f9645d069466608591c284cac3225b3eb8019f6c8d131f5360f927f04", "dimensions": "1920x1061", "nonblank": true},
+      {"file": "03_STAGE_A2D_ARRIVAL_HOLD_PROVEN.png", "bytes": 4243902, "sha256": "797adf614c2b75f606084b105544ba9ab396b627dee066599594e3b43fba0bbd", "dimensions": "1920x1061", "nonblank": true},
+      {"file": "04_STAGE_A2D_PUBLIC_STOP_ISSUED.png", "bytes": 4228162, "sha256": "d9d975f3e77e98d3b78296867f931d28471ae7f659d7329dc495b9933ddb860b", "dimensions": "1920x1061", "nonblank": true},
+      {"file": "05_STAGE_A2D_POST_STOP_MEASUREMENT.png", "bytes": 4228392, "sha256": "d1508c3212e18f5c477417b9272d350e3855bbb3073e5ffef719a4d46797a7ab", "dimensions": "1920x1061", "nonblank": true}
+    ],
+    "artifact_manifest": {"file": "stage-a2d-artifact-manifest.json", "sha256": "0264106962987eb98248dc704e0cf0ffc3e1278d485607d5641701b9050adae1"},
+    "raw_context_not_used_as_a2d_evidence": ["02_R1J_WORKERS_RESUME_ECONOMY.png", "03_R1J_PRODUCTION_INFRASTRUCTURE.png", "04_R1J_MIXED_FORCE_IN_PRODUCTION.png"]
+  },
+  "rejected_as_final_matrix_evidence": [
+    {"path": "diagnostics/stage-a2-compact-spacing-settlement/", "status": "BLOCKED_R1K_STAGE_A2_HARNESS_PREDICATE_INCOMPLETE"},
+    {"path": "diagnostics/stage-a2-compact-spacing-settlement-replacement-1/", "status": "BLOCKED_R1K_STAGE_A2_VISUAL_EVIDENCE_INVALID"},
+    {"path": "diagnostics/stage-a2-compact-spacing-settlement-replacement-2/", "status": "BLOCKED_R1K_STAGE_A2B_VALIDATION", "reason": "390 ms post-stop window explicitly rejected"},
+    {"path": "stopped c5bed126 Stage-B1 partial captures", "status": "REJECTED"},
+    {"path": "all pre-A.1 material", "status": "REJECTED"},
+    {"path": "missing controlled cells", "status": "REJECTED"},
+    {"path": "natural confirmations", "status": "NOT_RUN_AND_NOT_EVIDENCE"}
+  ],
+  "disposition": {"r1k_status": "BLOCKED_R1K_MATRIX_CONTRACT_COMPACT_SPACING_PHYSICALLY_UNACHIEVABLE", "stage_b_authorized": false, "production_repair_authorized": false, "threshold_change_authorized": false, "matrix_redesign_authorized": false, "natural_confirmation_authorized": false, "p0_result_001": "OPEN"},
+  "immutability_statement": "No existing diagnostic attempt is modified, overwritten, renamed, deleted, regenerated, or relabeled by this publication record."
+}

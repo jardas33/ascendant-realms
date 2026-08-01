@@ -1,0 +1,186 @@
+{
+  "schema": "v0436-r1i-session-comparability-v1",
+  "sessions": [
+    "A",
+    "B"
+  ],
+  "configuration": {
+    "player": "barrosan",
+    "opponent": "one Lioraen Easy opponent",
+    "map": "hollowspan",
+    "resources": "standard",
+    "mode": "skirmish",
+    "victory": "conquest",
+    "game_speed": 2
+  },
+  "same_force_plan": true,
+  "same_scene": true,
+  "same_renderer": true,
+  "comparable": true,
+  "summaries": {
+    "A": {
+      "blocker_status": "BLOCKED_R1H_PREPARED_ASSAULT_FORCE_ELIMINATED",
+      "comparable": true,
+      "force_plan": [
+        "barrosan_spear_guard",
+        "barrosan_spear_guard",
+        "barrosan_crag_archer",
+        "barrosan_crag_archer"
+      ],
+      "command_count": 2,
+      "command_returns": [
+        {
+          "attack_move_return": true,
+          "attack_target_return": true,
+          "target_position": {
+            "x": 100,
+            "y": 0,
+            "z": 90
+          },
+          "timestamp_ms": 70529
+        },
+        {
+          "attack_move_return": true,
+          "attack_target_return": true,
+          "target_position": {
+            "x": 106,
+            "y": 0,
+            "z": 106
+          },
+          "timestamp_ms": 95383
+        }
+      ],
+      "target_count": 2,
+      "target_results": [
+        {
+          "definition_id": "lioraen_thorn_ranger",
+          "runtime_id": "174432717624",
+          "initial_hp": 85,
+          "final_hp": 0,
+          "initial_position": {
+            "x": 100,
+            "y": 0,
+            "z": 90
+          },
+          "final_position": {
+            "x": 46.3020057678223,
+            "y": 0,
+            "z": 41.841796875
+          },
+          "terminal_disposition": "DESTROYED",
+          "elapsed_wall_seconds": 24.381,
+          "damage_events": 12,
+          "death_events": 1
+        },
+        {
+          "definition_id": "lioraen_hero_warden",
+          "runtime_id": "174885702479",
+          "initial_hp": 340,
+          "final_hp": 127.9,
+          "initial_position": {
+            "x": 106,
+            "y": 0,
+            "z": 106
+          },
+          "final_position": {
+            "x": 48.7587127685547,
+            "y": 0,
+            "z": 44.8380966186523
+          },
+          "terminal_disposition": "BLOCKED_R1H_PREPARED_ASSAULT_FORCE_ELIMINATED",
+          "elapsed_wall_seconds": 20.585,
+          "damage_events": 97,
+          "death_events": 6
+        }
+      ],
+      "observed_damage_event_count": 109,
+      "observed_death_event_count": 7,
+      "attack_sample_count": 1002,
+      "idle_sample_count": 0,
+      "command_retention": false,
+      "source_match": true
+    },
+    "B": {
+      "blocker_status": "BLOCKED_R1H_PREPARED_ASSAULT_FORCE_ELIMINATED",
+      "comparable": true,
+      "force_plan": [
+        "barrosan_spear_guard",
+        "barrosan_spear_guard",
+        "barrosan_crag_archer",
+        "barrosan_crag_archer"
+      ],
+      "command_count": 2,
+      "command_returns": [
+        {
+          "attack_move_return": true,
+          "attack_target_return": true,
+          "target_position": {
+            "x": 100,
+            "y": 0,
+            "z": 90
+          },
+          "timestamp_ms": 68235
+        },
+        {
+          "attack_move_return": true,
+          "attack_target_return": true,
+          "target_position": {
+            "x": 106,
+            "y": 0,
+            "z": 106
+          },
+          "timestamp_ms": 92595
+        }
+      ],
+      "target_count": 2,
+      "target_results": [
+        {
+          "definition_id": "lioraen_thorn_ranger",
+          "runtime_id": "174432717624",
+          "initial_hp": 85,
+          "final_hp": 0,
+          "initial_position": {
+            "x": 100,
+            "y": 0,
+            "z": 90
+          },
+          "final_position": {
+            "x": 43.766658782959,
+            "y": 0,
+            "z": 39.4205207824707
+          },
+          "terminal_disposition": "DESTROYED",
+          "elapsed_wall_seconds": 23.869,
+          "damage_events": 16,
+          "death_events": 1
+        },
+        {
+          "definition_id": "lioraen_hero_warden",
+          "runtime_id": "174885702479",
+          "initial_hp": 340,
+          "final_hp": 169.2,
+          "initial_position": {
+            "x": 106,
+            "y": 0,
+            "z": 106
+          },
+          "final_position": {
+            "x": 29.0273265838623,
+            "y": 0,
+            "z": 25.4264545440674
+          },
+          "terminal_disposition": "BLOCKED_R1H_PREPARED_ASSAULT_FORCE_ELIMINATED",
+          "elapsed_wall_seconds": 20.09,
+          "damage_events": 96,
+          "death_events": 6
+        }
+      ],
+      "observed_damage_event_count": 112,
+      "observed_death_event_count": 7,
+      "attack_sample_count": 960,
+      "idle_sample_count": 0,
+      "command_retention": false,
+      "source_match": true
+    }
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "branch": "codex/v0436-first-complete-conquest-victory",
+  "command": "npm run godot:test:v0436-r1-boundary-recovery",
+  "environment": "ASCENDANT_V0436_R1_CAPTURE=1 + ASCENDANT_V0436_R1_BOUNDARY_ONLY=1",
+  "production_scene": "scenes/main.tscn -> scenes/game_world.tscn",
+  "schema": "v0436-r1b-boundary-recovery-capture-command-v1",
+  "source_sha": "ed7a66a05d8d7750ba5f8e7f0d4124c6eb40c2b2"
+}

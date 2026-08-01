@@ -1,0 +1,210 @@
+{
+  "direct_state_writes": false,
+  "navigation": {
+    "iteration": 1,
+    "map_rid": "RID(3551937953792)",
+    "ready": true,
+    "regions": 1,
+    "units": [
+      {
+        "command": "move",
+        "direct_path_first": "(-90, 0.05, -100)",
+        "direct_path_last": "(0, 0.05, 0)",
+        "direct_path_size": 2,
+        "source": "(-90, 0, -100)",
+        "source_closest": "(-90, 0.05, -100)",
+        "state": 1,
+        "target": "(0, 0, 0)",
+        "target_closest": "(0, 0.05, 0)",
+        "unit_id": "barrosan_worker"
+      },
+      {
+        "command": "",
+        "direct_path_first": "(-100, 0.05, -90)",
+        "direct_path_last": "(0, 0.05, 0)",
+        "direct_path_size": 2,
+        "source": "(-100, 0, -90)",
+        "source_closest": "(-100, 0.05, -90)",
+        "state": 0,
+        "target": "(0, 0, 0)",
+        "target_closest": "(0, 0.05, 0)",
+        "unit_id": "barrosan_worker"
+      },
+      {
+        "command": "",
+        "direct_path_first": "(-110, 0.05, -100)",
+        "direct_path_last": "(0, 0.05, 0)",
+        "direct_path_size": 2,
+        "source": "(-110, 0, -100)",
+        "source_closest": "(-110, 0.05, -100)",
+        "state": 0,
+        "target": "(0, 0, 0)",
+        "target_closest": "(0, 0.05, 0)",
+        "unit_id": "barrosan_worker"
+      },
+      {
+        "command": "",
+        "direct_path_first": "(-100, 0.05, -110)",
+        "direct_path_last": "(0, 0.05, 0)",
+        "direct_path_size": 2,
+        "source": "(-100, 0, -110)",
+        "source_closest": "(-100, 0.05, -110)",
+        "state": 0,
+        "target": "(0, 0, 0)",
+        "target_closest": "(0, 0.05, 0)",
+        "unit_id": "barrosan_spear_guard"
+      },
+      {
+        "command": "",
+        "direct_path_first": "(-94, 0.05, -94)",
+        "direct_path_last": "(0, 0.05, 0)",
+        "direct_path_size": 2,
+        "source": "(-94, 0, -94)",
+        "source_closest": "(-94, 0.05, -94)",
+        "state": 0,
+        "target": "(0, 0, 0)",
+        "target_closest": "(0, 0.05, 0)",
+        "unit_id": "barrosan_hero_thane"
+      },
+      {
+        "command": "",
+        "direct_path_first": "(110, 0.05, 99.99998)",
+        "direct_path_last": "(0, 0.05, 0)",
+        "direct_path_size": 2,
+        "source": "(110, 0, 100)",
+        "source_closest": "(110, 0.05, 99.99998)",
+        "state": 0,
+        "target": "(0, 0, 0)",
+        "target_closest": "(0, 0.05, 0)",
+        "unit_id": "lioraen_worker"
+      },
+      {
+        "command": "",
+        "direct_path_first": "(99.99998, 0.05, 110)",
+        "direct_path_last": "(0, 0.05, 0)",
+        "direct_path_size": 2,
+        "source": "(100, 0, 110)",
+        "source_closest": "(99.99998, 0.05, 110)",
+        "state": 0,
+        "target": "(0, 0, 0)",
+        "target_closest": "(0, 0.05, 0)",
+        "unit_id": "lioraen_worker"
+      },
+      {
+        "command": "",
+        "direct_path_first": "(89.99998, 0.05, 99.99998)",
+        "direct_path_last": "(0, 0.05, 0)",
+        "direct_path_size": 2,
+        "source": "(90, 0, 100)",
+        "source_closest": "(89.99998, 0.05, 99.99998)",
+        "state": 0,
+        "target": "(0, 0, 0)",
+        "target_closest": "(0, 0.05, 0)",
+        "unit_id": "lioraen_worker"
+      },
+      {
+        "command": "",
+        "direct_path_first": "(99.99998, 0.05, 89.99998)",
+        "direct_path_last": "(0, 0.05, 0)",
+        "direct_path_size": 2,
+        "source": "(100, 0, 90)",
+        "source_closest": "(99.99998, 0.05, 89.99998)",
+        "state": 0,
+        "target": "(0, 0, 0)",
+        "target_closest": "(0, 0.05, 0)",
+        "unit_id": "lioraen_thorn_ranger"
+      },
+      {
+        "command": "",
+        "direct_path_first": "(106, 0.05, 106)",
+        "direct_path_last": "(0, 0.05, 0)",
+        "direct_path_size": 2,
+        "source": "(106, 0, 106)",
+        "source_closest": "(106, 0.05, 106)",
+        "state": 0,
+        "target": "(0, 0, 0)",
+        "target_closest": "(0, 0.05, 0)",
+        "unit_id": "lioraen_hero_warden"
+      }
+    ]
+  },
+  "production_scene": "scenes/main.tscn",
+  "schema": "v0436-r1-navigation-preflight-v1",
+  "workers": [
+    {
+      "command": "move",
+      "effective_target": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "id": "barrosan_worker",
+      "invalid_path_count": 0,
+      "position": {
+        "x": -90,
+        "y": 0,
+        "z": -100
+      },
+      "recovery_active": false,
+      "requested_target": {
+        "x": -66,
+        "y": 0,
+        "z": -84
+      },
+      "state": 1,
+      "team": 0,
+      "terminal_failure": false,
+      "worker": true
+    },
+    {
+      "command": "",
+      "effective_target": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "id": "barrosan_worker",
+      "invalid_path_count": 0,
+      "position": {
+        "x": -100,
+        "y": 0,
+        "z": -90
+      },
+      "recovery_active": false,
+      "requested_target": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "state": 0,
+      "team": 0,
+      "terminal_failure": false,
+      "worker": true
+    },
+    {
+      "command": "",
+      "effective_target": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "id": "barrosan_worker",
+      "invalid_path_count": 0,
+      "position": {
+        "x": -110,
+        "y": 0,
+        "z": -100
+      },
+      "recovery_active": false,
+      "requested_target": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "state": 0,
+      "team": 0,
+      "terminal_failure": false,
+      "worker": true
+    }
+  ]
+}

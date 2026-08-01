@@ -1,0 +1,13 @@
+{
+  "player": "barrosan",
+  "opponent": "one Lioraen Easy opponent",
+  "map": "hollowspan",
+  "resources": "standard",
+  "victory": "conquest",
+  "mode": "skirmish",
+  "game_speed": 2,
+  "sessions": [
+    "A",
+    "B"
+  ]
+}

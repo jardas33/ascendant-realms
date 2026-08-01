@@ -1,0 +1,6029 @@
+{
+  "assigned_destinations": [
+    {
+      "command_accepted": true,
+      "definition_id": "barrosan_hero_thane",
+      "destination": {
+        "x": -85.5999984741211,
+        "y": 0,
+        "z": -94.3499984741211
+      },
+      "runtime_id": "174768261845"
+    },
+    {
+      "command_accepted": true,
+      "definition_id": "barrosan_spear_guard",
+      "destination": {
+        "x": -84.4000015258789,
+        "y": 0,
+        "z": -94.3499984741211
+      },
+      "runtime_id": "563563466108"
+    }
+  ],
+  "attempt_id": "stage-a2-compact-spacing-settlement-replacement-3",
+  "combat_interference": false,
+  "post_stop_samples": [
+    {
+      "combat_event_counts": {
+        "attacks": 0,
+        "damage": 0,
+        "deaths": 0,
+        "projectiles": 0,
+        "target_transitions": 0
+      },
+      "hero_to_companion_distance": 3.48830461502075,
+      "pairwise_distances": [
+        3.48830461502075
+      ],
+      "physics_frame": 3654,
+      "process_frame": 4091,
+      "timestamp_ms": 72969,
+      "units": [
+        {
+          "alive": true,
+          "command": "attack_move",
+          "destination": {
+            "x": -85.5999984741211,
+            "y": 0,
+            "z": -94.3499984741211
+          },
+          "destination_error": 1.12735748291016,
+          "position": {
+            "x": -86.7263793945313,
+            "y": 0,
+            "z": -94.3030853271484
+          },
+          "runtime_id": "174768261845",
+          "state": 0,
+          "valid": true,
+          "velocity": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          }
+        },
+        {
+          "alive": true,
+          "command": "attack_move",
+          "destination": {
+            "x": -84.4000015258789,
+            "y": 0,
+            "z": -94.3499984741211
+          },
+          "destination_error": 1.16319167613983,
+          "position": {
+            "x": -83.2380828857422,
+            "y": 0,
+            "z": -94.2955932617188
+          },
+          "runtime_id": "563563466108",
+          "state": 0,
+          "valid": true,
+          "velocity": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          }
+        }
+      ]
+    },
+    {
+      "combat_event_counts": {
+        "attacks": 0,
+        "damage": 0,
+        "deaths": 0,
+        "projectiles": 0,
+        "target_transitions": 0
+      },
+      "hero_to_companion_distance": 3.48830461502075,
+      "pairwise_distances": [
+        3.48830461502075
+      ],
+      "physics_frame": 3671,
+      "process_frame": 4104,
+      "timestamp_ms": 73103,
+      "units": [
+        {
+          "alive": true,
+          "command": "attack_move",
+          "destination": {
+            "x": -85.5999984741211,
+            "y": 0,
+            "z": -94.3499984741211
+          },
+          "destination_error": 1.12735748291016,
+          "position": {
+            "x": -86.7263793945313,
+            "y": 0,
+            "z": -94.3030853271484
+          },
+          "runtime_id": "174768261845",
+          "state": 0,
+          "valid": true,
+          "velocity": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          }
+        },
+        {
+          "alive": true,
+          "command": "attack_move",
+          "destination": {
+            "x": -84.4000015258789,
+            "y": 0,
+            "z": -94.3499984741211
+          },
+          "destination_error": 1.16319167613983,
+          "position": {
+            "x": -83.2380828857422,
+            "y": 0,
+            "z": -94.2955932617188
+          },
+          "runtime_id": "563563466108",
+          "state": 0,
+          "valid": true,
+          "velocity": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          }
+        }
+      ]
+    },
+    {
+      "combat_event_counts": {
+        "attacks": 0,
+        "damage": 0,
+        "deaths": 0,
+        "projectiles": 0,
+        "target_transitions": 0
+      },
+      "hero_to_companion_distance": 3.48830461502075,
+      "pairwise_distances": [
+        3.48830461502075
+      ],
+      "physics_frame": 3679,
+      "process_frame": 4114,
+      "timestamp_ms": 73236,
+      "units": [
+        {
+          "alive": true,
+          "command": "attack_move",
+          "destination": {
+            "x": -85.5999984741211,
+            "y": 0,
+            "z": -94.3499984741211
+          },
+          "destination_error": 1.12735748291016,
+          "position": {
+            "x": -86.7263793945313,
+            "y": 0,
+            "z": -94.3030853271484
+          },
+          "runtime_id": "174768261845",
+          "state": 0,
+          "valid": true,
+          "velocity": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          }
+        },
+        {
+          "alive": true,
+          "command": "attack_move",
+          "destination": {
+            "x": -84.4000015258789,
+            "y": 0,
+            "z": -94.3499984741211
+          },
+          "destination_error": 1.16319167613983,
+          "position": {
+            "x": -83.2380828857422,
+            "y": 0,
+            "z": -94.2955932617188
+          },
+          "runtime_id": "563563466108",
+          "state": 0,
+          "valid": true,
+          "velocity": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          }
+        }
+      ]
+    },
+    {
+      "combat_event_counts": {
+        "attacks": 0,
+        "damage": 0,
+        "deaths": 0,
+        "projectiles": 0,
+        "target_transitions": 0
+      },
+      "hero_to_companion_distance": 3.48830461502075,
+      "pairwise_distances": [
+        3.48830461502075
+      ],
+      "physics_frame": 3687,
+      "process_frame": 4124,
+      "timestamp_ms": 73369,
+      "units": [
+        {
+          "alive": true,
+          "command": "attack_move",
+          "destination": {
+            "x": -85.5999984741211,
+            "y": 0,
+            "z": -94.3499984741211
+          },
+          "destination_error": 1.12735748291016,
+          "position": {
+            "x": -86.7263793945313,
+            "y": 0,
+            "z": -94.3030853271484
+          },
+          "runtime_id": "174768261845",
+          "state": 0,
+          "valid": true,
+          "velocity": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          }
+        },
+        {
+          "alive": true,
+          "command": "attack_move",
+          "destination": {
+            "x": -84.4000015258789,
+            "y": 0,
+            "z": -94.3499984741211
+          },
+          "destination_error": 1.16319167613983,
+          "position": {
+            "x": -83.2380828857422,
+            "y": 0,
+            "z": -94.2955932617188
+          },
+          "runtime_id": "563563466108",
+          "state": 0,
+          "valid": true,
+          "velocity": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          }
+        }
+      ]
+    },
+    {
+      "combat_event_counts": {
+        "attacks": 0,
+        "damage": 0,
+        "deaths": 0,
+        "projectiles": 0,
+        "target_transitions": 0
+      },
+      "hero_to_companion_distance": 3.48830461502075,
+      "pairwise_distances": [
+        3.48830461502075
+      ],
+      "physics_frame": 3695,
+      "process_frame": 4134,
+      "timestamp_ms": 73503,
+      "units": [
+        {
+          "alive": true,
+          "command": "attack_move",
+          "destination": {
+            "x": -85.5999984741211,
+            "y": 0,
+            "z": -94.3499984741211
+          },
+          "destination_error": 1.12735748291016,
+          "position": {
+            "x": -86.7263793945313,
+            "y": 0,
+            "z": -94.3030853271484
+          },
+          "runtime_id": "174768261845",
+          "state": 0,
+          "valid": true,
+          "velocity": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          }
+        },
+        {
+          "alive": true,
+          "command": "attack_move",
+          "destination": {
+            "x": -84.4000015258789,
+            "y": 0,
+            "z": -94.3499984741211
+          },
+          "destination_error": 1.16319167613983,
+          "position": {
+            "x": -83.2380828857422,
+            "y": 0,
+            "z": -94.2955932617188
+          },
+          "runtime_id": "563563466108",
+          "state": 0,
+          "valid": true,
+          "velocity": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          }
+        }
+      ]
+    }
+  ],
+  "provisional_samples": [
+    {
+      "combat_event_counts": {
+        "attacks": 0,
+        "damage": 0,
+        "deaths": 0,
+        "projectiles": 0,
+        "target_transitions": 0
+      },
+      "hero_to_companion_distance": 18.0069427490234,
+      "pairwise_distances": [
+        18.0069427490234
+      ],
+      "physics_frame": 3513,
+      "process_frame": 3934,
+      "timestamp_ms": 70034,
+      "units": [
+        {
+          "alive": true,
+          "command": "attack_move",
+          "destination": {
+            "x": -85.5999984741211,
+            "y": 0,
+            "z": -94.3499984741211
+          },
+          "destination_error": 8.4072904586792,
+          "position": {
+            "x": -94,
+            "y": 0,
+            "z": -94
+          },
+          "runtime_id": "174768261845",
+          "state": 2,
+          "valid": true,
+          "velocity": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          }
+        },
+        {
+          "alive": true,
+          "command": "attack_move",
+          "destination": {
+            "x": -84.4000015258789,
+            "y": 0,
+            "z": -94.3499984741211
+          },
+          "destination_error": 8.44289779663086,
+          "position": {
+            "x": -76,
+            "y": 0,
+            "z": -93.5
+          },
+          "runtime_id": "563563466108",
+          "state": 2,
+          "valid": true,
+          "velocity": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          }
+        }
+      ]
+    },
+    {
+      "combat_event_counts": {
+        "attacks": 0,
+        "damage": 0,
+        "deaths": 0,
+        "projectiles": 0,
+        "target_transitions": 0
+      },
+      "hero_to_companion_distance": 16.0906829833984,
+      "pairwise_distances": [
+        16.0906829833984
+      ],
+      "physics_frame": 3521,
+      "process_frame": 3935,
+      "timestamp_ms": 70051,
+      "units": [
+        {
+          "alive": true,
+          "command": "attack_move",
+          "destination": {
+            "x": -85.5999984741211,
+            "y": 0,
+            "z": -94.3499984741211
+          },
+          "destination_error": 7.28730058670044,
+          "position": {
+            "x": -92.8809814453125,
+            "y": 0,
+            "z": -94.046630859375
+          },
+          "runtime_id": "174768261845",
+          "state": 2,
+          "valid": true,
+          "velocity": {
+            "x": 4.19635915756226,
+            "y": 0,
+            "z": -0.17484039068222
+          }
+        },
+        {
+          "alive": true,
+          "command": "attack_move",
+          "destination": {
+            "x": -84.4000015258789,
+            "y": 0,
+            "z": -94.3499984741211
+          },
+          "destination_error": 7.64407253265381,
+          "position": {
+            "x": -76.7979888916016,
+            "y": 0,
+            "z": -93.5492172241211
+          },
+          "runtime_id": "563563466108",
+          "state": 2,
+          "valid": true,
+          "velocity": {
+            "x": -2.99968099594116,
+            "y": 0,
+            "z": -0.04373744875193
+          }
+        }
+      ]
+    },
+    {
+      "combat_event_counts": {
+        "attacks": 0,
+        "damage": 0,
+        "deaths": 0,
+        "projectiles": 0,
+        "target_transitions": 0
+      },
+      "hero_to_companion_distance": 15.133113861084,
+      "pairwise_distances": [
+        15.133113861084
+      ],
+      "physics_frame": 3525,
+      "process_frame": 3938,
+      "timestamp_ms": 70068,
+      "units": [
+        {
+          "alive": true,
+          "command": "attack_move",
+          "destination": {
+            "x": -85.5999984741211,
+            "y": 0,
+            "z": -94.3499984741211
+          },
+          "destination_error": 6.72730541229248,
+          "position": {
+            "x": -92.3214721679688,
+            "y": 0,
+            "z": -94.0699462890625
+          },
+          "runtime_id": "174768261845",
+          "state": 2,
+          "valid": true,
+          "velocity": {
+            "x": 4.19635915756226,
+            "y": 0,
+            "z": -0.17483818531036
+          }
+        },
+        {
+          "alive": true,
+          "command": "attack_move",
+          "destination": {
+            "x": -84.4000015258789,
+            "y": 0,
+            "z": -94.3499984741211
+          },
+          "destination_error": 7.24577665328979,
+          "position": {
+            "x": -77.1967468261719,
+            "y": 0,
+            "z": -93.566162109375
+          },
+          "runtime_id": "563563466108",
+          "state": 2,
+          "valid": true,
+          "velocity": {
+            "x": -2.98239469528198,
+            "y": 0,
+            "z": -0.32453274726868
+          }
+        }
+      ]
+    },
+    {
+      "combat_event_counts": {
+        "attacks": 0,
+        "damage": 0,
+        "deaths": 0,
+        "projectiles": 0,
+        "target_transitions": 0
+      },
+      "hero_to_companion_distance": 14.415150642395,
+      "pairwise_distances": [
+        14.415150642395
+      ],
+      "physics_frame": 3528,
+      "process_frame": 3942,
+      "timestamp_ms": 70104,
+      "units": [
+        {
+          "alive": true,
+          "command": "attack_move",
+          "destination": {
+            "x": -85.5999984741211,
+            "y": 0,
+            "z": -94.3499984741211
+          },
+          "destination_error": 6.3073091506958,
+          "position": {
+            "x": -91.9018402099609,
+            "y": 0,
+            "z": -94.0874328613281
+          },
+          "runtime_id": "174768261845",
+          "state": 2,
+          "valid": true,
+          "velocity": {
+            "x": 4.19635915756226,
+            "y": 0,
+            "z": -0.17483629286289
+          }
+        },
+        {
+          "alive": true,
+          "command": "attack_move",
+          "destination": {
+            "x": -84.4000015258789,
+            "y": 0,
+            "z": -94.3499984741211
+          },
+          "destination_error": 6.94578266143799,
+          "position": {
+            "x": -77.4949798583984,
+            "y": 0,
+            "z": -93.5986175537109
+          },
+          "runtime_id": "563563466108",
+          "state": 2,
+          "valid": true,
+          "velocity": {
+            "x": -2.98239493370056,
+            "y": 0,
+            "z": -0.32453155517578
+          }
+        }
+      ]
+    },
+    {
+      "combat_event_counts": {
+        "attacks": 0,
+        "damage": 0,
+        "deaths": 0,
+        "projectiles": 0,
+        "target_transitions": 0
+      },
+      "hero_to_companion_distance": 13.6971940994263,
+      "pairwise_distances": [
+        13.6971940994263
+      ],
+      "physics_frame": 3531,
+      "process_frame": 3946,
+      "timestamp_ms": 70157,
+      "units": [
+        {
+          "alive": true,
+          "command": "attack_move",
+          "destination": {
+            "x": -85.5999984741211,
+            "y": 0,
+            "z": -94.3499984741211
+          },
+          "destination_error": 5.88731288909912,
+          "position": {
+            "x": -91.4822082519531,
+            "y": 0,
+            "z": -94.1049194335938
+          },
+          "runtime_id": "174768261845",
+          "state": 2,
+          "valid": true,
+          "velocity": {
+            "x": 4.19635915756226,
+            "y": 0,
+            "z": -0.17483413219452
+          }
+        },
+        {
+          "alive": true,
+          "command": "attack_move",
+          "destination": {
+            "x": -84.4000015258789,
+            "y": 0,
+            "z": -94.3499984741211
+          },
+          "destination_error": 6.64578866958618,
+          "position": {
+            "x": -77.793212890625,
+            "y": 0,
+            "z": -93.6310729980469
+          },
+          "runtime_id": "563563466108",
+          "state": 2,
+          "valid": true,
+          "velocity": {
+            "x": -2.98239493370056,
+            "y": 0,
+            "z": -0.32453018426895
+          }
+        }
+      ]
+    },
+    {
+      "combat_event_counts": {
+        "attacks": 0,
+        "damage": 0,
+        "deaths": 0,
+        "projectiles": 0,
+        "target_transitions": 0
+      },
+      "hero_to_companion_distance": 12.9792451858521,
+      "pairwise_distances": [
+        12.9792451858521
+      ],
+      "physics_frame": 3534,
+      "process_frame": 3950,
+      "timestamp_ms": 70208,
+      "units": [
+        {
+          "alive": true,
+          "command": "attack_move",
+          "destination": {
+            "x": -85.5999984741211,
+            "y": 0,
+            "z": -94.3499984741211
+          },
+          "destination_error": 5.4673171043396,
+          "position": {
+            "x": -91.0625762939453,
+            "y": 0,
+            "z": -94.1224060058594
+          },
+          "runtime_id": "174768261845",
+          "state": 2,
+          "valid": true,
+          "velocity": {
+            "x": 4.19635963439941,
+            "y": 0,
+            "z": -0.1748316437006
+          }
+        },
+        {
+          "alive": true,
+          "command": "attack_move",
+          "destination": {
+            "x": -84.4000015258789,
+            "y": 0,
+            "z": -94.3499984741211
+          },
+          "destination_error": 6.34579515457153,
+          "position": {
+            "x": -78.0914459228516,
+            "y": 0,
+            "z": -93.6635284423828
+          },
+          "runtime_id": "563563466108",
+          "state": 2,
+          "valid": true,
+          "velocity": {
+            "x": -2.98239517211914,
+            "y": 0,
+            "z": -0.3245287835598
+          }
+        }
+      ]
+    },
+    {
+      "combat_event_counts": {
+        "attacks": 0,
+        "damage": 0,
+        "deaths": 0,
+        "projectiles": 0,
+        "target_transitions": 0
+      },
+      "hero_to_companion_distance": 12.0219926834106,
+      "pairwise_distances": [
+        12.0219926834106
+      ],
+      "physics_frame": 3538,
+      "process_frame": 3954,
+      "timestamp_ms": 70264,
+      "units": [
+        {
+          "alive": true,
+          "command": "attack_move",
+          "destination": {
+            "x": -85.5999984741211,
+            "y": 0,
+            "z": -94.3499984741211
+          },
+          "destination_error": 4.90732192993164,
+          "position": {
+            "x": -90.5030670166016,
+            "y": 0,
+            "z": -94.1457214355469
+          },
+          "runtime_id": "174768261845",
+          "state": 2,
+          "valid": true,
+          "velocity": {
+            "x": 4.19635963439941,
+            "y": 0,
+            "z": -0.17482767999172
+          }
+        },
+        {
+          "alive": true,
+          "command": "attack_move",
+          "destination": {
+            "x": -84.4000015258789,
+            "y": 0,
+            "z": -94.3499984741211
+          },
+          "destination_error": 5.94580316543579,
+          "position": {
+            "x": -78.4890899658203,
+            "y": 0,
+            "z": -93.7068023681641
+          },
+          "runtime_id": "563563466108",
+          "state": 2,
+          "valid": true,
+          "velocity": {
+            "x": -2.98239517211914,
+            "y": 0,
+            "z": -0.32452663779259
+          }
+        }
+      ]
+    },
+    {
+      "combat_event_counts": {
+        "attacks": 0,
+        "damage": 0,
+        "deaths": 0,
+        "projectiles": 0,
+        "target_transitions": 0
+      },
+      "hero_to_companion_distance": 11.3040647506714,
+      "pairwise_distances": [
+        11.3040647506714
+      ],
+      "physics_frame": 3541,
+      "process_frame": 3958,
+      "timestamp_ms": 70317,
+      "units": [
+        {
+          "alive": true,
+          "command": "attack_move",
+          "destination": {
+            "x": -85.5999984741211,
+            "y": 0,
+            "z": -94.3499984741211
+          },
+          "destination_error": 4.48732614517212,
+          "position": {
+            "x": -90.0834350585938,
+            "y": 0,
+            "z": -94.1632080078125
+          },
+          "runtime_id": "174768261845",
+          "state": 2,
+          "valid": true,
+          "velocity": {
+            "x": 4.19635963439941,
+            "y": 0,
+            "z": -0.17482407391071
+          }
+        },
+        {
+          "alive": true,
+          "command": "attack_move",
+          "destination": {
+            "x": -84.4000015258789,
+            "y": 0,
+            "z": -94.3499984741211
+          },
+          "destination_error": 5.64580965042114,
+          "position": {
+            "x": -78.7873229980469,
+            "y": 0,
+            "z": -93.7392578125
+          },
+          "runtime_id": "563563466108",
+          "state": 2,
+          "valid": true,
+          "velocity": {
+            "x": -2.9823956489563,
+            "y": 0,
+            "z": -0.32452484965324
+          }
+        }
+      ]
+    },
+    {
+      "combat_event_counts": {
+        "attacks": 0,
+        "damage": 0,
+        "deaths": 0,
+        "projectiles": 0,
+        "target_transitions": 0
+      },
+      "hero_to_companion_distance": 10.5861501693726,
+      "pairwise_distances": [
+        10.5861501693726
+      ],
+      "physics_frame": 3544,
+      "process_frame": 3962,
+      "timestamp_ms": 70370,
+      "units": [
+        {
+          "alive": true,
+          "command": "attack_move",
+          "destination": {
+            "x": -85.5999984741211,
+            "y": 0,
+            "z": -94.3499984741211
+          },
+          "destination_error": 4.06732988357544,
+          "position": {
+            "x": -89.6638031005859,
+            "y": 0,
+            "z": -94.1806945800781
+          },
+          "runtime_id": "174768261845",
+          "state": 2,
+          "valid": true,
+          "velocity": {
+            "x": 4.19636011123657,
+            "y": 0,
+            "z": -0.17481976747513
+          }
+        },
+        {
+          "alive": true,
+          "command": "attack_move",
+          "destination": {
+            "x": -84.4000015258789,
+            "y": 0,
+            "z": -94.3499984741211
+          },
+          "destination_error": 5.34581565856934,
+          "position": {
+            "x": -79.0855560302734,
+            "y": 0,
+            "z": -93.7717132568359
+          },
+          "runtime_id": "563563466108",
+          "state": 2,
+          "valid": true,
+          "velocity": {
+            "x": -2.98239588737488,
+            "y": 0,
+            "z": -0.32452285289764
+          }
+        }
+      ]
+    },
+    {
+      "combat_event_counts": {
+        "attacks": 0,
+        "damage": 0,
+        "deaths": 0,
+        "projectiles": 0,
+        "target_transitions": 0
+      },
+      "hero_to_companion_distance": 9.86825084686279,
+      "pairwise_distances": [
+        9.86825084686279
+      ],
+      "physics_frame": 3547,
+      "process_frame": 3966,
+      "timestamp_ms": 70423,
+      "units": [
+        {
+          "alive": true,
+          "command": "attack_move",
+          "destination": {
+            "x": -85.5999984741211,
+            "y": 0,
+            "z": -94.3499984741211
+          },
+          "destination_error": 3.64733362197876,
+          "position": {
+            "x": -89.2441711425781,
+            "y": 0,
+            "z": -94.1981811523438
+          },
+          "runtime_id": "174768261845",
+          "state": 2,
+          "valid": true,
+          "velocity": {
+            "x": 4.19636011123657,
+            "y": 0,
+            "z": -0.17481449246407
+          }
+        },
+        {
+          "alive": true,
+          "command": "attack_move",
+          "destination": {
+            "x": -84.4000015258789,
+            "y": 0,
+            "z": -94.3499984741211
+          },
+          "destination_error": 5.04582166671753,
+          "position": {
+            "x": -79.3837890625,
+            "y": 0,
+            "z": -93.8041687011719
+          },
+          "runtime_id": "563563466108",
+          "state": 2,
+          "valid": true,
+          "velocity": {
+            "x": -2.98239612579346,
+            "y": 0,
+            "z": -0.32452058792114
+          }
+        }
+      ]
+    },
+    {
+      "combat_event_counts": {
+        "attacks": 0,
+        "damage": 0,
+        "deaths": 0,
+        "projectiles": 0,
+        "target_transitions": 0
+      },
+      "hero_to_companion_distance": 9.15037155151367,
+      "pairwise_distances": [
+        9.15037155151367
+      ],
+      "physics_frame": 3550,
+      "process_frame": 3970,
+      "timestamp_ms": 70475,
+      "units": [
+        {
+          "alive": true,
+          "command": "attack_move",
+          "destination": {
+            "x": -85.5999984741211,
+            "y": 0,
+            "z": -94.3499984741211
+          },
+          "destination_error": 3.22733759880066,
+          "position": {
+            "x": -88.8245391845703,
+            "y": 0,
+            "z": -94.2156677246094
+          },
+          "runtime_id": "174768261845",
+          "state": 2,
+          "valid": true,
+          "velocity": {
+            "x": 4.19636058807373,
+            "y": 0,
+            "z": -0.17480790615082
+          }
+        },
+        {
+          "alive": true,
+          "command": "attack_move",
+          "destination": {
+            "x": -84.4000015258789,
+            "y": 0,
+            "z": -94.3499984741211
+          },
+          "destination_error": 4.74582815170288,
+          "position": {
+            "x": -79.6820220947266,
+            "y": 0,
+            "z": -93.8366241455078
+          },
+          "runtime_id": "563563466108",
+          "state": 2,
+          "valid": true,
+          "velocity": {
+            "x": -2.98239636421204,
+            "y": 0,
+            "z": -0.32451808452606
+          }
+        }
+      ]
+    },
+    {
+      "combat_event_counts": {
+        "attacks": 0,
+        "damage": 0,
+        "deaths": 0,
+        "projectiles": 0,
+        "target_transitions": 0
+      },
+      "hero_to_companion_distance": 8.19323635101318,
+      "pairwise_distances": [
+        8.19323635101318
+      ],
+      "physics_frame": 3554,
+      "process_frame": 3974,
+      "timestamp_ms": 70530,
+      "units": [
+        {
+          "alive": true,
+          "command": "attack_move",
+          "destination": {
+            "x": -85.5999984741211,
+            "y": 0,
+            "z": -94.3499984741211
+          },
+          "destination_error": 2.66734266281128,
+          "position": {
+            "x": -88.2650299072266,
+            "y": 0,
+            "z": -94.2389831542969
+          },
+          "runtime_id": "174768261845",
+          "state": 2,
+          "valid": true,
+          "velocity": {
+            "x": 4.19636106491089,
+            "y": 0,
+            "z": -0.17479604482651
+          }
+        },
+        {
+          "alive": true,
+          "command": "attack_move",
+          "destination": {
+            "x": -84.4000015258789,
+            "y": 0,
+            "z": -94.3499984741211
+          },
+          "destination_error": 4.34583616256714,
+          "position": {
+            "x": -80.0796661376953,
+            "y": 0,
+            "z": -93.8798980712891
+          },
+          "runtime_id": "563563466108",
+          "state": 2,
+          "valid": true,
+          "velocity": {
+            "x": -2.98239684104919,
+            "y": 0,
+            "z": -0.3245142698288
+          }
+        }
+      ]
+    },
+    {
+      "combat_event_counts": {
+        "attacks": 0,
+        "damage": 0,
+        "deaths": 0,
+        "projectiles": 0,
+        "target_transitions": 0
+      },
+      "hero_to_companion_distance": 7.47542333602905,
+      "pairwise_distances": [
+        7.47542333602905
+      ],
+      "physics_frame": 3557,
+      "process_frame": 3978,
+      "timestamp_ms": 70583,
+      "units": [
+        {
+          "alive": true,
+          "command": "attack_move",
+          "destination": {
+            "x": -85.5999984741211,
+            "y": 0,
+            "z": -94.3499984741211
+          },
+          "destination_error": 2.2473464012146,
+          "position": {
+            "x": -87.8453979492188,
+            "y": 0,
+            "z": -94.2564697265625
+          },
+          "runtime_id": "174768261845",
+          "state": 2,
+          "valid": true,
+          "velocity": {
+            "x": 4.19636106491089,
+            "y": 0,
+            "z": -0.17478349804878
+          }
+        },
+        {
+          "alive": true,
+          "command": "attack_move",
+          "destination": {
+            "x": -84.4000015258789,
+            "y": 0,
+            "z": -94.3499984741211
+          },
+          "destination_error": 4.04584264755249,
+          "position": {
+            "x": -80.3778991699219,
+            "y": 0,
+            "z": -93.912353515625
+          },
+          "runtime_id": "563563466108",
+          "state": 2,
+          "valid": true,
+          "velocity": {
+            "x": -2.98239707946777,
+            "y": 0,
+            "z": -0.32451084256172
+          }
+        }
+      ]
+    },
+    {
+      "combat_event_counts": {
+        "attacks": 0,
+        "damage": 0,
+        "deaths": 0,
+        "projectiles": 0,
+        "target_transitions": 0
+      },
+      "hero_to_companion_distance": 6.75765466690063,
+      "pairwise_distances": [
+        6.75765466690063
+      ],
+      "physics_frame": 3560,
+      "process_frame": 3982,
+      "timestamp_ms": 70637,
+      "units": [
+        {
+          "alive": true,
+          "command": "attack_move",
+          "destination": {
+            "x": -85.5999984741211,
+            "y": 0,
+            "z": -94.3499984741211
+          },
+          "destination_error": 1.8273503780365,
+          "position": {
+            "x": -87.4257659912109,
+            "y": 0,
+            "z": -94.2739562988281
+          },
+          "runtime_id": "174768261845",
+          "state": 2,
+          "valid": true,
+          "velocity": {
+            "x": 4.19636201858521,
+            "y": 0,
+            "z": -0.17476563155651
+          }
+        },
+        {
+          "alive": true,
+          "command": "attack_move",
+          "destination": {
+            "x": -84.4000015258789,
+            "y": 0,
+            "z": -94.3499984741211
+          },
+          "destination_error": 3.74584865570068,
+          "position": {
+            "x": -80.6761322021484,
+            "y": 0,
+            "z": -93.9448089599609
+          },
+          "runtime_id": "563563466108",
+          "state": 2,
+          "valid": true,
+          "velocity": {
+            "x": -2.98239755630493,
+            "y": 0,
+            "z": -0.32450693845749
+          }
+        }
+      ]
+    },
+    {
+      "combat_event_counts": {
+        "attacks": 0,
+        "damage": 0,
+        "deaths": 0,
+        "projectiles": 0,
+        "target_transitions": 0
+      },
+      "hero_to_companion_distance": 6.03994512557983,
+      "pairwise_distances": [
+        6.03994512557983
+      ],
+      "physics_frame": 3563,
+      "process_frame": 3986,
+      "timestamp_ms": 70690,
+      "units": [
+        {
+          "alive": true,
+          "command": "attack_move",
+          "destination": {
+            "x": -85.5999984741211,
+            "y": 0,
+            "z": -94.3499984741211
+          },
+          "destination_error": 1.40735459327698,
+          "position": {
+            "x": -87.0061340332031,
+            "y": 0,
+            "z": -94.2914352416992
+          },
+          "runtime_id": "174768261845",
+          "state": 2,
+          "valid": true,
+          "velocity": {
+            "x": 4.19636249542236,
+            "y": 0,
+            "z": -0.17475870251656
+          }
+        },
+        {
+          "alive": true,
+          "command": "attack_move",
+          "destination": {
+            "x": -84.4000015258789,
+            "y": 0,
+            "z": -94.3499984741211
+          },
+          "destination_error": 3.44585466384888,
+          "position": {
+            "x": -80.974365234375,
+            "y": 0,
+            "z": -93.9772644042969
+          },
+          "runtime_id": "563563466108",
+          "state": 2,
+          "valid": true,
+          "velocity": {
+            "x": -2.98239803314209,
+            "y": 0,
+            "z": -0.32450234889984
+          }
+        }
+      ]
+    },
+    {
+      "combat_event_counts": {
+        "attacks": 0,
+        "damage": 0,
+        "deaths": 0,
+        "projectiles": 0,
+        "target_transitions": 0
+      },
+      "hero_to_companion_distance": 5.46166563034058,
+      "pairwise_distances": [
+        5.46166563034058
+      ],
+      "physics_frame": 3566,
+      "process_frame": 3990,
+      "timestamp_ms": 70744,
+      "units": [
+        {
+          "alive": true,
+          "command": "attack_move",
+          "destination": {
+            "x": -85.5999984741211,
+            "y": 0,
+            "z": -94.3499984741211
+          },
+          "destination_error": 1.12735748291016,
+          "position": {
+            "x": -86.7263793945313,
+            "y": 0,
+            "z": -94.3030853271484
+          },
+          "runtime_id": "174768261845",
+          "state": 0,
+          "valid": true,
+          "velocity": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          }
+        },
+        {
+          "alive": true,
+          "command": "attack_move",
+          "destination": {
+            "x": -84.4000015258789,
+            "y": 0,
+            "z": -94.3499984741211
+          },
+          "destination_error": 3.14586091041565,
+          "position": {
+            "x": -81.2725982666016,
+            "y": 0,
+            "z": -94.0097198486328
+          },
+          "runtime_id": "563563466108",
+          "state": 2,
+          "valid": true,
+          "velocity": {
+            "x": -2.98239874839783,
+            "y": 0,
+            "z": -0.32449692487717
+          }
+        }
+      ]
+    },
+    {
+      "combat_event_counts": {
+        "attacks": 0,
+        "damage": 0,
+        "deaths": 0,
+        "projectiles": 0,
+        "target_transitions": 0
+      },
+      "hero_to_companion_distance": 5.16214561462402,
+      "pairwise_distances": [
+        5.16214561462402
+      ],
+      "physics_frame": 3569,
+      "process_frame": 3994,
+      "timestamp_ms": 70797,
+      "units": [
+        {
+          "alive": true,
+          "command": "attack_move",
+          "destination": {
+            "x": -85.5999984741211,
+            "y": 0,
+            "z": -94.3499984741211
+          },
+          "destination_error": 1.12735748291016,
+          "position": {
+            "x": -86.7263793945313,
+            "y": 0,
+            "z": -94.3030853271484
+          },
+          "runtime_id": "174768261845",
+          "state": 0,
+          "valid": true,
+          "velocity": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          }
+        },
+        {
+          "alive": true,
+          "command": "attack_move",
+          "destination": {
+            "x": -84.4000015258789,
+            "y": 0,
+            "z": -94.3499984741211
+          },
+          "destination_error": 2.84586691856384,
+          "position": {
+            "x": -81.5708312988281,
+            "y": 0,
+            "z": -94.0421752929688
+          },
+          "runtime_id": "563563466108",
+          "state": 2,
+          "valid": true,
+          "velocity": {
+            "x": -2.98239922523499,
+            "y": 0,
+            "z": -0.3244903087616
+          }
+        }
+      ]
+    },
+    {
+      "combat_event_counts": {
+        "attacks": 0,
+        "damage": 0,
+        "deaths": 0,
+        "projectiles": 0,
+        "target_transitions": 0
+      },
+      "hero_to_companion_distance": 4.86268472671509,
+      "pairwise_distances": [
+        4.86268472671509
+      ],
+      "physics_frame": 3572,
+      "process_frame": 3998,
+      "timestamp_ms": 70847,
+      "units": [
+        {
+          "alive": true,
+          "command": "attack_move",
+          "destination": {
+            "x": -85.5999984741211,
+            "y": 0,
+            "z": -94.3499984741211
+          },
+          "destination_error": 1.12735748291016,
+          "position": {
+            "x": -86.7263793945313,
+            "y": 0,
+            "z": -94.3030853271484
+          },
+          "runtime_id": "174768261845",
+          "state": 0,
+          "valid": true,
+          "velocity": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          }
+        },
+        {
+          "alive": true,
+          "command": "attack_move",
+          "destination": {
+            "x": -84.4000015258789,
+            "y": 0,
+            "z": -94.3499984741211
+          },
+          "destination_error": 2.54587316513062,
+          "position": {
+            "x": -81.8690643310547,
+            "y": 0,
+            "z": -94.0746307373047
+          },
+          "runtime_id": "563563466108",
+          "state": 2,
+          "valid": true,
+          "velocity": {
+            "x": -2.9824001789093,
+            "y": 0,
+            "z": -0.3244823217392
+          }
+        }
+      ]
+    },
+    {
+      "combat_event_counts": {
+        "attacks": 0,
+        "damage": 0,
+        "deaths": 0,
+        "projectiles": 0,
+        "target_transitions": 0
+      },
+      "hero_to_companion_distance": 4.56329298019409,
+      "pairwise_distances": [
+        4.56329298019409
+      ],
+      "physics_frame": 3575,
+      "process_frame": 4002,
+      "timestamp_ms": 70902,
+      "units": [
+        {
+          "alive": true,
+          "command": "attack_move",
+          "destination": {
+            "x": -85.5999984741211,
+            "y": 0,
+            "z": -94.3499984741211
+          },
+          "destination_error": 1.12735748291016,
+          "position": {
+            "x": -86.7263793945313,
+            "y": 0,
+            "z": -94.3030853271484
+          },
+          "runtime_id": "174768261845",
+          "state": 0,
+          "valid": true,
+          "velocity": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          }
+        },
+        {
+          "alive": true,
+          "command": "attack_move",
+          "destination": {
+            "x": -84.4000015258789,
+            "y": 0,
+            "z": -94.3499984741211
+          },
+          "destination_error": 2.24587941169739,
+          "position": {
+            "x": -82.1672973632813,
+            "y": 0,
+            "z": -94.1070861816406
+          },
+          "runtime_id": "563563466108",
+          "state": 2,
+          "valid": true,
+          "velocity": {
+            "x": -2.9824013710022,
+            "y": 0,
+            "z": -0.32447230815887
+          }
+        }
+      ]
+    },
+    {
+      "combat_event_counts": {
+        "attacks": 0,
+        "damage": 0,
+        "deaths": 0,
+        "projectiles": 0,
+        "target_transitions": 0
+      },
+      "hero_to_companion_distance": 4.16423940658569,
+      "pairwise_distances": [
+        4.16423940658569
+      ],
+      "physics_frame": 3579,
+      "process_frame": 4006,
+      "timestamp_ms": 70958,
+      "units": [
+        {
+          "alive": true,
+          "command": "attack_move",
+          "destination": {
+            "x": -85.5999984741211,
+            "y": 0,
+            "z": -94.3499984741211
+          },
+          "destination_error": 1.12735748291016,
+          "position": {
+            "x": -86.7263793945313,
+            "y": 0,
+            "z": -94.3030853271484
+          },
+          "runtime_id": "174768261845",
+          "state": 0,
+          "valid": true,
+          "velocity": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          }
+        },
+        {
+          "alive": true,
+          "command": "attack_move",
+          "destination": {
+            "x": -84.4000015258789,
+            "y": 0,
+            "z": -94.3499984741211
+          },
+          "destination_error": 1.84588766098022,
+          "position": {
+            "x": -82.56494140625,
+            "y": 0,
+            "z": -94.1503601074219
+          },
+          "runtime_id": "563563466108",
+          "state": 2,
+          "valid": true,
+          "velocity": {
+            "x": -2.98240327835083,
+            "y": 0,
+            "z": -0.32445400953293
+          }
+        }
+      ]
+    },
+    {
+      "combat_event_counts": {
+        "attacks": 0,
+        "damage": 0,
+        "deaths": 0,
+        "projectiles": 0,
+        "target_transitions": 0
+      },
+      "hero_to_companion_distance": 3.86735129356384,
+      "pairwise_distances": [
+        3.86735129356384
+      ],
+      "physics_frame": 3582,
+      "process_frame": 4010,
+      "timestamp_ms": 71009,
+      "units": [
+        {
+          "alive": true,
+          "command": "attack_move",
+          "destination": {
+            "x": -85.5999984741211,
+            "y": 0,
+            "z": -94.3499984741211
+          },
+          "destination_error": 1.12735748291016,
+          "position": {
+            "x": -86.7263793945313,
+            "y": 0,
+            "z": -94.3030853271484
+          },
+          "runtime_id": "174768261845",
+          "state": 0,
+          "valid": true,
+          "velocity": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          }
+        },
+        {
+          "alive": true,
+          "command": "attack_move",
+          "destination": {
+            "x": -84.4000015258789,
+            "y": 0,
+            "z": -94.3499984741211
+          },
+          "destination_error": 1.54751026630402,
+          "position": {
+            "x": -82.8606414794922,
+            "y": 0,
+            "z": -94.1913833618164
+          },
+          "runtime_id": "563563466108",
+          "state": 2,
+          "valid": true,
+          "velocity": {
+            "x": -2.90624856948853,
+            "y": 0,
+            "z": -0.58147549629211
+          }
+        }
+      ]
+    },
+    {
+      "combat_event_counts": {
+        "attacks": 0,
+        "damage": 0,
+        "deaths": 0,
+        "projectiles": 0,
+        "target_transitions": 0
+      },
+      "hero_to_companion_distance": 3.58192777633667,
+      "pairwise_distances": [
+        3.58192777633667
+      ],
+      "physics_frame": 3585,
+      "process_frame": 4014,
+      "timestamp_ms": 71064,
+      "units": [
+        {
+          "alive": true,
+          "command": "attack_move",
+          "destination": {
+            "x": -85.5999984741211,
+            "y": 0,
+            "z": -94.3499984741211
+          },
+          "destination_error": 1.12735748291016,
+          "position": {
+            "x": -86.7263793945313,
+            "y": 0,
+            "z": -94.3030853271484
+          },
+          "runtime_id": "174768261845",
+          "state": 0,
+          "valid": true,
+          "velocity": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          }
+        },
+        {
+          "alive": true,
+          "command": "attack_move",
+          "destination": {
+            "x": -84.4000015258789,
+            "y": 0,
+            "z": -94.3499984741211
+          },
+          "destination_error": 1.25804853439331,
+          "position": {
+            "x": -83.1446228027344,
+            "y": 0,
+            "z": -94.2680816650391
+          },
+          "runtime_id": "563563466108",
+          "state": 2,
+          "valid": true,
+          "velocity": {
+            "x": -2.81896233558655,
+            "y": 0,
+            "z": -0.81055599451065
+          }
+        }
+      ]
+    },
+    {
+      "combat_event_counts": {
+        "attacks": 0,
+        "damage": 0,
+        "deaths": 0,
+        "projectiles": 0,
+        "target_transitions": 0
+      },
+      "hero_to_companion_distance": 3.48830461502075,
+      "pairwise_distances": [
+        3.48830461502075
+      ],
+      "physics_frame": 3588,
+      "process_frame": 4018,
+      "timestamp_ms": 71117,
+      "units": [
+        {
+          "alive": true,
+          "command": "attack_move",
+          "destination": {
+            "x": -85.5999984741211,
+            "y": 0,
+            "z": -94.3499984741211
+          },
+          "destination_error": 1.12735748291016,
+          "position": {
+            "x": -86.7263793945313,
+            "y": 0,
+            "z": -94.3030853271484
+          },
+          "runtime_id": "174768261845",
+          "state": 0,
+          "valid": true,
+          "velocity": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          }
+        },
+        {
+          "alive": true,
+          "command": "attack_move",
+          "destination": {
+            "x": -84.4000015258789,
+            "y": 0,
+            "z": -94.3499984741211
+          },
+          "destination_error": 1.16319167613983,
+          "position": {
+            "x": -83.2380828857422,
+            "y": 0,
+            "z": -94.2955932617188
+          },
+          "runtime_id": "563563466108",
+          "state": 0,
+          "valid": true,
+          "velocity": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          }
+        }
+      ]
+    },
+    {
+      "combat_event_counts": {
+        "attacks": 0,
+        "damage": 0,
+        "deaths": 0,
+        "projectiles": 0,
+        "target_transitions": 0
+      },
+      "hero_to_companion_distance": 3.48830461502075,
+      "pairwise_distances": [
+        3.48830461502075
+      ],
+      "physics_frame": 3591,
+      "process_frame": 4022,
+      "timestamp_ms": 71169,
+      "units": [
+        {
+          "alive": true,
+          "command": "attack_move",
+          "destination": {
+            "x": -85.5999984741211,
+            "y": 0,
+            "z": -94.3499984741211
+          },
+          "destination_error": 1.12735748291016,
+          "position": {
+            "x": -86.7263793945313,
+            "y": 0,
+            "z": -94.3030853271484
+          },
+          "runtime_id": "174768261845",
+          "state": 0,
+          "valid": true,
+          "velocity": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          }
+        },
+        {
+          "alive": true,
+          "command": "attack_move",
+          "destination": {
+            "x": -84.4000015258789,
+            "y": 0,
+            "z": -94.3499984741211
+          },
+          "destination_error": 1.16319167613983,
+          "position": {
+            "x": -83.2380828857422,
+            "y": 0,
+            "z": -94.2955932617188
+          },
+          "runtime_id": "563563466108",
+          "state": 0,
+          "valid": true,
+          "velocity": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          }
+        }
+      ]
+    },
+    {
+      "combat_event_counts": {
+        "attacks": 0,
+        "damage": 0,
+        "deaths": 0,
+        "projectiles": 0,
+        "target_transitions": 0
+      },
+      "hero_to_companion_distance": 3.48830461502075,
+      "pairwise_distances": [
+        3.48830461502075
+      ],
+      "physics_frame": 3595,
+      "process_frame": 4026,
+      "timestamp_ms": 71224,
+      "units": [
+        {
+          "alive": true,
+          "command": "attack_move",
+          "destination": {
+            "x": -85.5999984741211,
+            "y": 0,
+            "z": -94.3499984741211
+          },
+          "destination_error": 1.12735748291016,
+          "position": {
+            "x": -86.7263793945313,
+            "y": 0,
+            "z": -94.3030853271484
+          },
+          "runtime_id": "174768261845",
+          "state": 0,
+          "valid": true,
+          "velocity": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          }
+        },
+        {
+          "alive": true,
+          "command": "attack_move",
+          "destination": {
+            "x": -84.4000015258789,
+            "y": 0,
+            "z": -94.3499984741211
+          },
+          "destination_error": 1.16319167613983,
+          "position": {
+            "x": -83.2380828857422,
+            "y": 0,
+            "z": -94.2955932617188
+          },
+          "runtime_id": "563563466108",
+          "state": 0,
+          "valid": true,
+          "velocity": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          }
+        }
+      ]
+    },
+    {
+      "combat_event_counts": {
+        "attacks": 0,
+        "damage": 0,
+        "deaths": 0,
+        "projectiles": 0,
+        "target_transitions": 0
+      },
+      "hero_to_companion_distance": 3.48830461502075,
+      "pairwise_distances": [
+        3.48830461502075
+      ],
+      "physics_frame": 3598,
+      "process_frame": 4030,
+      "timestamp_ms": 71277,
+      "units": [
+        {
+          "alive": true,
+          "command": "attack_move",
+          "destination": {
+            "x": -85.5999984741211,
+            "y": 0,
+            "z": -94.3499984741211
+          },
+          "destination_error": 1.12735748291016,
+          "position": {
+            "x": -86.7263793945313,
+            "y": 0,
+            "z": -94.3030853271484
+          },
+          "runtime_id": "174768261845",
+          "state": 0,
+          "valid": true,
+          "velocity": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          }
+        },
+        {
+          "alive": true,
+          "command": "attack_move",
+          "destination": {
+            "x": -84.4000015258789,
+            "y": 0,
+            "z": -94.3499984741211
+          },
+          "destination_error": 1.16319167613983,
+          "position": {
+            "x": -83.2380828857422,
+            "y": 0,
+            "z": -94.2955932617188
+          },
+          "runtime_id": "563563466108",
+          "state": 0,
+          "valid": true,
+          "velocity": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          }
+        }
+      ]
+    },
+    {
+      "combat_event_counts": {
+        "attacks": 0,
+        "damage": 0,
+        "deaths": 0,
+        "projectiles": 0,
+        "target_transitions": 0
+      },
+      "hero_to_companion_distance": 3.48830461502075,
+      "pairwise_distances": [
+        3.48830461502075
+      ],
+      "physics_frame": 3601,
+      "process_frame": 4034,
+      "timestamp_ms": 71330,
+      "units": [
+        {
+          "alive": true,
+          "command": "attack_move",
+          "destination": {
+            "x": -85.5999984741211,
+            "y": 0,
+            "z": -94.3499984741211
+          },
+          "destination_error": 1.12735748291016,
+          "position": {
+            "x": -86.7263793945313,
+            "y": 0,
+            "z": -94.3030853271484
+          },
+          "runtime_id": "174768261845",
+          "state": 0,
+          "valid": true,
+          "velocity": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          }
+        },
+        {
+          "alive": true,
+          "command": "attack_move",
+          "destination": {
+            "x": -84.4000015258789,
+            "y": 0,
+            "z": -94.3499984741211
+          },
+          "destination_error": 1.16319167613983,
+          "position": {
+            "x": -83.2380828857422,
+            "y": 0,
+            "z": -94.2955932617188
+          },
+          "runtime_id": "563563466108",
+          "state": 0,
+          "valid": true,
+          "velocity": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          }
+        }
+      ]
+    },
+    {
+      "combat_event_counts": {
+        "attacks": 0,
+        "damage": 0,
+        "deaths": 0,
+        "projectiles": 0,
+        "target_transitions": 0
+      },
+      "hero_to_companion_distance": 3.48830461502075,
+      "pairwise_distances": [
+        3.48830461502075
+      ],
+      "physics_frame": 3604,
+      "process_frame": 4038,
+      "timestamp_ms": 71384,
+      "units": [
+        {
+          "alive": true,
+          "command": "attack_move",
+          "destination": {
+            "x": -85.5999984741211,
+            "y": 0,
+            "z": -94.3499984741211
+          },
+          "destination_error": 1.12735748291016,
+          "position": {
+            "x": -86.7263793945313,
+            "y": 0,
+            "z": -94.3030853271484
+          },
+          "runtime_id": "174768261845",
+          "state": 0,
+          "valid": true,
+          "velocity": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          }
+        },
+        {
+          "alive": true,
+          "command": "attack_move",
+          "destination": {
+            "x": -84.4000015258789,
+            "y": 0,
+            "z": -94.3499984741211
+          },
+          "destination_error": 1.16319167613983,
+          "position": {
+            "x": -83.2380828857422,
+            "y": 0,
+            "z": -94.2955932617188
+          },
+          "runtime_id": "563563466108",
+          "state": 0,
+          "valid": true,
+          "velocity": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          }
+        }
+      ]
+    },
+    {
+      "combat_event_counts": {
+        "attacks": 0,
+        "damage": 0,
+        "deaths": 0,
+        "projectiles": 0,
+        "target_transitions": 0
+      },
+      "hero_to_companion_distance": 3.48830461502075,
+      "pairwise_distances": [
+        3.48830461502075
+      ],
+      "physics_frame": 3607,
+      "process_frame": 4042,
+      "timestamp_ms": 71435,
+      "units": [
+        {
+          "alive": true,
+          "command": "attack_move",
+          "destination": {
+            "x": -85.5999984741211,
+            "y": 0,
+            "z": -94.3499984741211
+          },
+          "destination_error": 1.12735748291016,
+          "position": {
+            "x": -86.7263793945313,
+            "y": 0,
+            "z": -94.3030853271484
+          },
+          "runtime_id": "174768261845",
+          "state": 0,
+          "valid": true,
+          "velocity": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          }
+        },
+        {
+          "alive": true,
+          "command": "attack_move",
+          "destination": {
+            "x": -84.4000015258789,
+            "y": 0,
+            "z": -94.3499984741211
+          },
+          "destination_error": 1.16319167613983,
+          "position": {
+            "x": -83.2380828857422,
+            "y": 0,
+            "z": -94.2955932617188
+          },
+          "runtime_id": "563563466108",
+          "state": 0,
+          "valid": true,
+          "velocity": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          }
+        }
+      ]
+    },
+    {
+      "combat_event_counts": {
+        "attacks": 0,
+        "damage": 0,
+        "deaths": 0,
+        "projectiles": 0,
+        "target_transitions": 0
+      },
+      "hero_to_companion_distance": 3.48830461502075,
+      "pairwise_distances": [
+        3.48830461502075
+      ],
+      "physics_frame": 3611,
+      "process_frame": 4046,
+      "timestamp_ms": 71491,
+      "units": [
+        {
+          "alive": true,
+          "command": "attack_move",
+          "destination": {
+            "x": -85.5999984741211,
+            "y": 0,
+            "z": -94.3499984741211
+          },
+          "destination_error": 1.12735748291016,
+          "position": {
+            "x": -86.7263793945313,
+            "y": 0,
+            "z": -94.3030853271484
+          },
+          "runtime_id": "174768261845",
+          "state": 0,
+          "valid": true,
+          "velocity": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          }
+        },
+        {
+          "alive": true,
+          "command": "attack_move",
+          "destination": {
+            "x": -84.4000015258789,
+            "y": 0,
+            "z": -94.3499984741211
+          },
+          "destination_error": 1.16319167613983,
+          "position": {
+            "x": -83.2380828857422,
+            "y": 0,
+            "z": -94.2955932617188
+          },
+          "runtime_id": "563563466108",
+          "state": 0,
+          "valid": true,
+          "velocity": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          }
+        }
+      ]
+    },
+    {
+      "combat_event_counts": {
+        "attacks": 0,
+        "damage": 0,
+        "deaths": 0,
+        "projectiles": 0,
+        "target_transitions": 0
+      },
+      "hero_to_companion_distance": 3.48830461502075,
+      "pairwise_distances": [
+        3.48830461502075
+      ],
+      "physics_frame": 3614,
+      "process_frame": 4050,
+      "timestamp_ms": 71543,
+      "units": [
+        {
+          "alive": true,
+          "command": "attack_move",
+          "destination": {
+            "x": -85.5999984741211,
+            "y": 0,
+            "z": -94.3499984741211
+          },
+          "destination_error": 1.12735748291016,
+          "position": {
+            "x": -86.7263793945313,
+            "y": 0,
+            "z": -94.3030853271484
+          },
+          "runtime_id": "174768261845",
+          "state": 0,
+          "valid": true,
+          "velocity": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          }
+        },
+        {
+          "alive": true,
+          "command": "attack_move",
+          "destination": {
+            "x": -84.4000015258789,
+            "y": 0,
+            "z": -94.3499984741211
+          },
+          "destination_error": 1.16319167613983,
+          "position": {
+            "x": -83.2380828857422,
+            "y": 0,
+            "z": -94.2955932617188
+          },
+          "runtime_id": "563563466108",
+          "state": 0,
+          "valid": true,
+          "velocity": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          }
+        }
+      ]
+    },
+    {
+      "combat_event_counts": {
+        "attacks": 0,
+        "damage": 0,
+        "deaths": 0,
+        "projectiles": 0,
+        "target_transitions": 0
+      },
+      "hero_to_companion_distance": 3.48830461502075,
+      "pairwise_distances": [
+        3.48830461502075
+      ],
+      "physics_frame": 3617,
+      "process_frame": 4054,
+      "timestamp_ms": 71597,
+      "units": [
+        {
+          "alive": true,
+          "command": "attack_move",
+          "destination": {
+            "x": -85.5999984741211,
+            "y": 0,
+            "z": -94.3499984741211
+          },
+          "destination_error": 1.12735748291016,
+          "position": {
+            "x": -86.7263793945313,
+            "y": 0,
+            "z": -94.3030853271484
+          },
+          "runtime_id": "174768261845",
+          "state": 0,
+          "valid": true,
+          "velocity": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          }
+        },
+        {
+          "alive": true,
+          "command": "attack_move",
+          "destination": {
+            "x": -84.4000015258789,
+            "y": 0,
+            "z": -94.3499984741211
+          },
+          "destination_error": 1.16319167613983,
+          "position": {
+            "x": -83.2380828857422,
+            "y": 0,
+            "z": -94.2955932617188
+          },
+          "runtime_id": "563563466108",
+          "state": 0,
+          "valid": true,
+          "velocity": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          }
+        }
+      ]
+    },
+    {
+      "combat_event_counts": {
+        "attacks": 0,
+        "damage": 0,
+        "deaths": 0,
+        "projectiles": 0,
+        "target_transitions": 0
+      },
+      "hero_to_companion_distance": 3.48830461502075,
+      "pairwise_distances": [
+        3.48830461502075
+      ],
+      "physics_frame": 3620,
+      "process_frame": 4058,
+      "timestamp_ms": 71650,
+      "units": [
+        {
+          "alive": true,
+          "command": "attack_move",
+          "destination": {
+            "x": -85.5999984741211,
+            "y": 0,
+            "z": -94.3499984741211
+          },
+          "destination_error": 1.12735748291016,
+          "position": {
+            "x": -86.7263793945313,
+            "y": 0,
+            "z": -94.3030853271484
+          },
+          "runtime_id": "174768261845",
+          "state": 0,
+          "valid": true,
+          "velocity": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          }
+        },
+        {
+          "alive": true,
+          "command": "attack_move",
+          "destination": {
+            "x": -84.4000015258789,
+            "y": 0,
+            "z": -94.3499984741211
+          },
+          "destination_error": 1.16319167613983,
+          "position": {
+            "x": -83.2380828857422,
+            "y": 0,
+            "z": -94.2955932617188
+          },
+          "runtime_id": "563563466108",
+          "state": 0,
+          "valid": true,
+          "velocity": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          }
+        }
+      ]
+    },
+    {
+      "combat_event_counts": {
+        "attacks": 0,
+        "damage": 0,
+        "deaths": 0,
+        "projectiles": 0,
+        "target_transitions": 0
+      },
+      "hero_to_companion_distance": 3.48830461502075,
+      "pairwise_distances": [
+        3.48830461502075
+      ],
+      "physics_frame": 3623,
+      "process_frame": 4062,
+      "timestamp_ms": 71702,
+      "units": [
+        {
+          "alive": true,
+          "command": "attack_move",
+          "destination": {
+            "x": -85.5999984741211,
+            "y": 0,
+            "z": -94.3499984741211
+          },
+          "destination_error": 1.12735748291016,
+          "position": {
+            "x": -86.7263793945313,
+            "y": 0,
+            "z": -94.3030853271484
+          },
+          "runtime_id": "174768261845",
+          "state": 0,
+          "valid": true,
+          "velocity": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          }
+        },
+        {
+          "alive": true,
+          "command": "attack_move",
+          "destination": {
+            "x": -84.4000015258789,
+            "y": 0,
+            "z": -94.3499984741211
+          },
+          "destination_error": 1.16319167613983,
+          "position": {
+            "x": -83.2380828857422,
+            "y": 0,
+            "z": -94.2955932617188
+          },
+          "runtime_id": "563563466108",
+          "state": 0,
+          "valid": true,
+          "velocity": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          }
+        }
+      ]
+    },
+    {
+      "combat_event_counts": {
+        "attacks": 0,
+        "damage": 0,
+        "deaths": 0,
+        "projectiles": 0,
+        "target_transitions": 0
+      },
+      "hero_to_companion_distance": 3.48830461502075,
+      "pairwise_distances": [
+        3.48830461502075
+      ],
+      "physics_frame": 3627,
+      "process_frame": 4066,
+      "timestamp_ms": 71757,
+      "units": [
+        {
+          "alive": true,
+          "command": "attack_move",
+          "destination": {
+            "x": -85.5999984741211,
+            "y": 0,
+            "z": -94.3499984741211
+          },
+          "destination_error": 1.12735748291016,
+          "position": {
+            "x": -86.7263793945313,
+            "y": 0,
+            "z": -94.3030853271484
+          },
+          "runtime_id": "174768261845",
+          "state": 0,
+          "valid": true,
+          "velocity": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          }
+        },
+        {
+          "alive": true,
+          "command": "attack_move",
+          "destination": {
+            "x": -84.4000015258789,
+            "y": 0,
+            "z": -94.3499984741211
+          },
+          "destination_error": 1.16319167613983,
+          "position": {
+            "x": -83.2380828857422,
+            "y": 0,
+            "z": -94.2955932617188
+          },
+          "runtime_id": "563563466108",
+          "state": 0,
+          "valid": true,
+          "velocity": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          }
+        }
+      ]
+    },
+    {
+      "combat_event_counts": {
+        "attacks": 0,
+        "damage": 0,
+        "deaths": 0,
+        "projectiles": 0,
+        "target_transitions": 0
+      },
+      "hero_to_companion_distance": 3.48830461502075,
+      "pairwise_distances": [
+        3.48830461502075
+      ],
+      "physics_frame": 3630,
+      "process_frame": 4070,
+      "timestamp_ms": 71810,
+      "units": [
+        {
+          "alive": true,
+          "command": "attack_move",
+          "destination": {
+            "x": -85.5999984741211,
+            "y": 0,
+            "z": -94.3499984741211
+          },
+          "destination_error": 1.12735748291016,
+          "position": {
+            "x": -86.7263793945313,
+            "y": 0,
+            "z": -94.3030853271484
+          },
+          "runtime_id": "174768261845",
+          "state": 0,
+          "valid": true,
+          "velocity": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          }
+        },
+        {
+          "alive": true,
+          "command": "attack_move",
+          "destination": {
+            "x": -84.4000015258789,
+            "y": 0,
+            "z": -94.3499984741211
+          },
+          "destination_error": 1.16319167613983,
+          "position": {
+            "x": -83.2380828857422,
+            "y": 0,
+            "z": -94.2955932617188
+          },
+          "runtime_id": "563563466108",
+          "state": 0,
+          "valid": true,
+          "velocity": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          }
+        }
+      ]
+    },
+    {
+      "combat_event_counts": {
+        "attacks": 0,
+        "damage": 0,
+        "deaths": 0,
+        "projectiles": 0,
+        "target_transitions": 0
+      },
+      "hero_to_companion_distance": 3.48830461502075,
+      "pairwise_distances": [
+        3.48830461502075
+      ],
+      "physics_frame": 3633,
+      "process_frame": 4074,
+      "timestamp_ms": 71864,
+      "units": [
+        {
+          "alive": true,
+          "command": "attack_move",
+          "destination": {
+            "x": -85.5999984741211,
+            "y": 0,
+            "z": -94.3499984741211
+          },
+          "destination_error": 1.12735748291016,
+          "position": {
+            "x": -86.7263793945313,
+            "y": 0,
+            "z": -94.3030853271484
+          },
+          "runtime_id": "174768261845",
+          "state": 0,
+          "valid": true,
+          "velocity": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          }
+        },
+        {
+          "alive": true,
+          "command": "attack_move",
+          "destination": {
+            "x": -84.4000015258789,
+            "y": 0,
+            "z": -94.3499984741211
+          },
+          "destination_error": 1.16319167613983,
+          "position": {
+            "x": -83.2380828857422,
+            "y": 0,
+            "z": -94.2955932617188
+          },
+          "runtime_id": "563563466108",
+          "state": 0,
+          "valid": true,
+          "velocity": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          }
+        }
+      ]
+    },
+    {
+      "combat_event_counts": {
+        "attacks": 0,
+        "damage": 0,
+        "deaths": 0,
+        "projectiles": 0,
+        "target_transitions": 0
+      },
+      "hero_to_companion_distance": 3.48830461502075,
+      "pairwise_distances": [
+        3.48830461502075
+      ],
+      "physics_frame": 3636,
+      "process_frame": 4078,
+      "timestamp_ms": 71917,
+      "units": [
+        {
+          "alive": true,
+          "command": "attack_move",
+          "destination": {
+            "x": -85.5999984741211,
+            "y": 0,
+            "z": -94.3499984741211
+          },
+          "destination_error": 1.12735748291016,
+          "position": {
+            "x": -86.7263793945313,
+            "y": 0,
+            "z": -94.3030853271484
+          },
+          "runtime_id": "174768261845",
+          "state": 0,
+          "valid": true,
+          "velocity": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          }
+        },
+        {
+          "alive": true,
+          "command": "attack_move",
+          "destination": {
+            "x": -84.4000015258789,
+            "y": 0,
+            "z": -94.3499984741211
+          },
+          "destination_error": 1.16319167613983,
+          "position": {
+            "x": -83.2380828857422,
+            "y": 0,
+            "z": -94.2955932617188
+          },
+          "runtime_id": "563563466108",
+          "state": 0,
+          "valid": true,
+          "velocity": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          }
+        }
+      ]
+    },
+    {
+      "combat_event_counts": {
+        "attacks": 0,
+        "damage": 0,
+        "deaths": 0,
+        "projectiles": 0,
+        "target_transitions": 0
+      },
+      "hero_to_companion_distance": 3.48830461502075,
+      "pairwise_distances": [
+        3.48830461502075
+      ],
+      "physics_frame": 3639,
+      "process_frame": 4082,
+      "timestamp_ms": 71968,
+      "units": [
+        {
+          "alive": true,
+          "command": "attack_move",
+          "destination": {
+            "x": -85.5999984741211,
+            "y": 0,
+            "z": -94.3499984741211
+          },
+          "destination_error": 1.12735748291016,
+          "position": {
+            "x": -86.7263793945313,
+            "y": 0,
+            "z": -94.3030853271484
+          },
+          "runtime_id": "174768261845",
+          "state": 0,
+          "valid": true,
+          "velocity": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          }
+        },
+        {
+          "alive": true,
+          "command": "attack_move",
+          "destination": {
+            "x": -84.4000015258789,
+            "y": 0,
+            "z": -94.3499984741211
+          },
+          "destination_error": 1.16319167613983,
+          "position": {
+            "x": -83.2380828857422,
+            "y": 0,
+            "z": -94.2955932617188
+          },
+          "runtime_id": "563563466108",
+          "state": 0,
+          "valid": true,
+          "velocity": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          }
+        }
+      ]
+    },
+    {
+      "combat_event_counts": {
+        "attacks": 0,
+        "damage": 0,
+        "deaths": 0,
+        "projectiles": 0,
+        "target_transitions": 0
+      },
+      "hero_to_companion_distance": 3.48830461502075,
+      "pairwise_distances": [
+        3.48830461502075
+      ],
+      "physics_frame": 3643,
+      "process_frame": 4086,
+      "timestamp_ms": 72024,
+      "units": [
+        {
+          "alive": true,
+          "command": "attack_move",
+          "destination": {
+            "x": -85.5999984741211,
+            "y": 0,
+            "z": -94.3499984741211
+          },
+          "destination_error": 1.12735748291016,
+          "position": {
+            "x": -86.7263793945313,
+            "y": 0,
+            "z": -94.3030853271484
+          },
+          "runtime_id": "174768261845",
+          "state": 0,
+          "valid": true,
+          "velocity": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          }
+        },
+        {
+          "alive": true,
+          "command": "attack_move",
+          "destination": {
+            "x": -84.4000015258789,
+            "y": 0,
+            "z": -94.3499984741211
+          },
+          "destination_error": 1.16319167613983,
+          "position": {
+            "x": -83.2380828857422,
+            "y": 0,
+            "z": -94.2955932617188
+          },
+          "runtime_id": "563563466108",
+          "state": 0,
+          "valid": true,
+          "velocity": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          }
+        }
+      ]
+    },
+    {
+      "combat_event_counts": {
+        "attacks": 0,
+        "damage": 0,
+        "deaths": 0,
+        "projectiles": 0,
+        "target_transitions": 0
+      },
+      "hero_to_companion_distance": 3.48830461502075,
+      "pairwise_distances": [
+        3.48830461502075
+      ],
+      "physics_frame": 3646,
+      "process_frame": 4090,
+      "timestamp_ms": 72077,
+      "units": [
+        {
+          "alive": true,
+          "command": "attack_move",
+          "destination": {
+            "x": -85.5999984741211,
+            "y": 0,
+            "z": -94.3499984741211
+          },
+          "destination_error": 1.12735748291016,
+          "position": {
+            "x": -86.7263793945313,
+            "y": 0,
+            "z": -94.3030853271484
+          },
+          "runtime_id": "174768261845",
+          "state": 0,
+          "valid": true,
+          "velocity": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          }
+        },
+        {
+          "alive": true,
+          "command": "attack_move",
+          "destination": {
+            "x": -84.4000015258789,
+            "y": 0,
+            "z": -94.3499984741211
+          },
+          "destination_error": 1.16319167613983,
+          "position": {
+            "x": -83.2380828857422,
+            "y": 0,
+            "z": -94.2955932617188
+          },
+          "runtime_id": "563563466108",
+          "state": 0,
+          "valid": true,
+          "velocity": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          }
+        }
+      ]
+    }
+  ],
+  "public_commands": [
+    {
+      "accepted": true,
+      "destination": {
+        "x": -85.5999984741211,
+        "y": 0,
+        "z": -94.3499984741211
+      },
+      "kind": "attack_move_destination",
+      "runtime_id": "174768261845",
+      "timestamp_ms": 69615
+    },
+    {
+      "accepted": true,
+      "destination": {
+        "x": -84.4000015258789,
+        "y": 0,
+        "z": -94.3499984741211
+      },
+      "kind": "attack_move_destination",
+      "runtime_id": "563563466108",
+      "timestamp_ms": 69621
+    },
+    {
+      "accepted": true,
+      "kind": "stop",
+      "runtime_ids": [
+        "174768261845",
+        "563563466108"
+      ],
+      "timestamp_ms": 72529
+    }
+  ],
+  "reason": "arrival hold and public stop completed, but the stable post-stop distance remained above the unchanged compact threshold",
+  "spacing_measurement": {
+    "arrival_hold_consecutive_samples": 20,
+    "arrival_hold_end_index": 40,
+    "arrival_hold_end_timestamp_ms": 72077,
+    "arrival_hold_sample_count": 20,
+    "arrival_hold_span_ms": 1013,
+    "arrival_hold_start_index": 21,
+    "arrival_hold_start_timestamp_ms": 71064,
+    "assigned_destinations": [
+      {
+        "command_accepted": true,
+        "definition_id": "barrosan_hero_thane",
+        "destination": {
+          "x": -85.5999984741211,
+          "y": 0,
+          "z": -94.3499984741211
+        },
+        "runtime_id": "174768261845"
+      },
+      {
+        "command_accepted": true,
+        "definition_id": "barrosan_spear_guard",
+        "destination": {
+          "x": -84.4000015258789,
+          "y": 0,
+          "z": -94.3499984741211
+        },
+        "runtime_id": "563563466108"
+      }
+    ],
+    "combat_interference": false,
+    "comparable": true,
+    "configured_spacing": "compact",
+    "destination_tolerance": 1.5,
+    "diagnostic_reason": "arrival hold and public stop completed, but the stable post-stop distance remained above the unchanged compact threshold",
+    "diagnostic_status": "BLOCKED_R1K_COMPACT_SPACING_PHYSICALLY_UNACHIEVABLE",
+    "formation_bounds": {
+      "max_x": -83.2380828857422,
+      "max_z": -94.2955932617188,
+      "min_x": -86.7263793945313,
+      "min_z": -94.3030853271484
+    },
+    "frozen_unit_ids": [
+      "174768261845",
+      "563563466108"
+    ],
+    "hero_to_companion_distance": 3.48830461502075,
+    "measured_before_first_combat_order": true,
+    "pairwise_distances": [
+      3.48830461502075
+    ],
+    "post_stop_distribution": {
+      "count": 5,
+      "maximum": 3.48830461502075,
+      "median": 3.48830461502075,
+      "minimum": 3.48830461502075
+    },
+    "post_stop_samples": [
+      {
+        "combat_event_counts": {
+          "attacks": 0,
+          "damage": 0,
+          "deaths": 0,
+          "projectiles": 0,
+          "target_transitions": 0
+        },
+        "hero_to_companion_distance": 3.48830461502075,
+        "pairwise_distances": [
+          3.48830461502075
+        ],
+        "physics_frame": 3654,
+        "process_frame": 4091,
+        "timestamp_ms": 72969,
+        "units": [
+          {
+            "alive": true,
+            "command": "attack_move",
+            "destination": {
+              "x": -85.5999984741211,
+              "y": 0,
+              "z": -94.3499984741211
+            },
+            "destination_error": 1.12735748291016,
+            "position": {
+              "x": -86.7263793945313,
+              "y": 0,
+              "z": -94.3030853271484
+            },
+            "runtime_id": "174768261845",
+            "state": 0,
+            "valid": true,
+            "velocity": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            }
+          },
+          {
+            "alive": true,
+            "command": "attack_move",
+            "destination": {
+              "x": -84.4000015258789,
+              "y": 0,
+              "z": -94.3499984741211
+            },
+            "destination_error": 1.16319167613983,
+            "position": {
+              "x": -83.2380828857422,
+              "y": 0,
+              "z": -94.2955932617188
+            },
+            "runtime_id": "563563466108",
+            "state": 0,
+            "valid": true,
+            "velocity": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            }
+          }
+        ]
+      },
+      {
+        "combat_event_counts": {
+          "attacks": 0,
+          "damage": 0,
+          "deaths": 0,
+          "projectiles": 0,
+          "target_transitions": 0
+        },
+        "hero_to_companion_distance": 3.48830461502075,
+        "pairwise_distances": [
+          3.48830461502075
+        ],
+        "physics_frame": 3671,
+        "process_frame": 4104,
+        "timestamp_ms": 73103,
+        "units": [
+          {
+            "alive": true,
+            "command": "attack_move",
+            "destination": {
+              "x": -85.5999984741211,
+              "y": 0,
+              "z": -94.3499984741211
+            },
+            "destination_error": 1.12735748291016,
+            "position": {
+              "x": -86.7263793945313,
+              "y": 0,
+              "z": -94.3030853271484
+            },
+            "runtime_id": "174768261845",
+            "state": 0,
+            "valid": true,
+            "velocity": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            }
+          },
+          {
+            "alive": true,
+            "command": "attack_move",
+            "destination": {
+              "x": -84.4000015258789,
+              "y": 0,
+              "z": -94.3499984741211
+            },
+            "destination_error": 1.16319167613983,
+            "position": {
+              "x": -83.2380828857422,
+              "y": 0,
+              "z": -94.2955932617188
+            },
+            "runtime_id": "563563466108",
+            "state": 0,
+            "valid": true,
+            "velocity": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            }
+          }
+        ]
+      },
+      {
+        "combat_event_counts": {
+          "attacks": 0,
+          "damage": 0,
+          "deaths": 0,
+          "projectiles": 0,
+          "target_transitions": 0
+        },
+        "hero_to_companion_distance": 3.48830461502075,
+        "pairwise_distances": [
+          3.48830461502075
+        ],
+        "physics_frame": 3679,
+        "process_frame": 4114,
+        "timestamp_ms": 73236,
+        "units": [
+          {
+            "alive": true,
+            "command": "attack_move",
+            "destination": {
+              "x": -85.5999984741211,
+              "y": 0,
+              "z": -94.3499984741211
+            },
+            "destination_error": 1.12735748291016,
+            "position": {
+              "x": -86.7263793945313,
+              "y": 0,
+              "z": -94.3030853271484
+            },
+            "runtime_id": "174768261845",
+            "state": 0,
+            "valid": true,
+            "velocity": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            }
+          },
+          {
+            "alive": true,
+            "command": "attack_move",
+            "destination": {
+              "x": -84.4000015258789,
+              "y": 0,
+              "z": -94.3499984741211
+            },
+            "destination_error": 1.16319167613983,
+            "position": {
+              "x": -83.2380828857422,
+              "y": 0,
+              "z": -94.2955932617188
+            },
+            "runtime_id": "563563466108",
+            "state": 0,
+            "valid": true,
+            "velocity": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            }
+          }
+        ]
+      },
+      {
+        "combat_event_counts": {
+          "attacks": 0,
+          "damage": 0,
+          "deaths": 0,
+          "projectiles": 0,
+          "target_transitions": 0
+        },
+        "hero_to_companion_distance": 3.48830461502075,
+        "pairwise_distances": [
+          3.48830461502075
+        ],
+        "physics_frame": 3687,
+        "process_frame": 4124,
+        "timestamp_ms": 73369,
+        "units": [
+          {
+            "alive": true,
+            "command": "attack_move",
+            "destination": {
+              "x": -85.5999984741211,
+              "y": 0,
+              "z": -94.3499984741211
+            },
+            "destination_error": 1.12735748291016,
+            "position": {
+              "x": -86.7263793945313,
+              "y": 0,
+              "z": -94.3030853271484
+            },
+            "runtime_id": "174768261845",
+            "state": 0,
+            "valid": true,
+            "velocity": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            }
+          },
+          {
+            "alive": true,
+            "command": "attack_move",
+            "destination": {
+              "x": -84.4000015258789,
+              "y": 0,
+              "z": -94.3499984741211
+            },
+            "destination_error": 1.16319167613983,
+            "position": {
+              "x": -83.2380828857422,
+              "y": 0,
+              "z": -94.2955932617188
+            },
+            "runtime_id": "563563466108",
+            "state": 0,
+            "valid": true,
+            "velocity": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            }
+          }
+        ]
+      },
+      {
+        "combat_event_counts": {
+          "attacks": 0,
+          "damage": 0,
+          "deaths": 0,
+          "projectiles": 0,
+          "target_transitions": 0
+        },
+        "hero_to_companion_distance": 3.48830461502075,
+        "pairwise_distances": [
+          3.48830461502075
+        ],
+        "physics_frame": 3695,
+        "process_frame": 4134,
+        "timestamp_ms": 73503,
+        "units": [
+          {
+            "alive": true,
+            "command": "attack_move",
+            "destination": {
+              "x": -85.5999984741211,
+              "y": 0,
+              "z": -94.3499984741211
+            },
+            "destination_error": 1.12735748291016,
+            "position": {
+              "x": -86.7263793945313,
+              "y": 0,
+              "z": -94.3030853271484
+            },
+            "runtime_id": "174768261845",
+            "state": 0,
+            "valid": true,
+            "velocity": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            }
+          },
+          {
+            "alive": true,
+            "command": "attack_move",
+            "destination": {
+              "x": -84.4000015258789,
+              "y": 0,
+              "z": -94.3499984741211
+            },
+            "destination_error": 1.16319167613983,
+            "position": {
+              "x": -83.2380828857422,
+              "y": 0,
+              "z": -94.2955932617188
+            },
+            "runtime_id": "563563466108",
+            "state": 0,
+            "valid": true,
+            "velocity": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            }
+          }
+        ]
+      }
+    ],
+    "provisional_distribution": {
+      "count": 41,
+      "maximum": 18.0069427490234,
+      "median": 3.86735129356384,
+      "minimum": 3.48830461502075
+    },
+    "provisional_settlement_samples": [
+      {
+        "combat_event_counts": {
+          "attacks": 0,
+          "damage": 0,
+          "deaths": 0,
+          "projectiles": 0,
+          "target_transitions": 0
+        },
+        "hero_to_companion_distance": 18.0069427490234,
+        "pairwise_distances": [
+          18.0069427490234
+        ],
+        "physics_frame": 3513,
+        "process_frame": 3934,
+        "timestamp_ms": 70034,
+        "units": [
+          {
+            "alive": true,
+            "command": "attack_move",
+            "destination": {
+              "x": -85.5999984741211,
+              "y": 0,
+              "z": -94.3499984741211
+            },
+            "destination_error": 8.4072904586792,
+            "position": {
+              "x": -94,
+              "y": 0,
+              "z": -94
+            },
+            "runtime_id": "174768261845",
+            "state": 2,
+            "valid": true,
+            "velocity": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            }
+          },
+          {
+            "alive": true,
+            "command": "attack_move",
+            "destination": {
+              "x": -84.4000015258789,
+              "y": 0,
+              "z": -94.3499984741211
+            },
+            "destination_error": 8.44289779663086,
+            "position": {
+              "x": -76,
+              "y": 0,
+              "z": -93.5
+            },
+            "runtime_id": "563563466108",
+            "state": 2,
+            "valid": true,
+            "velocity": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            }
+          }
+        ]
+      },
+      {
+        "combat_event_counts": {
+          "attacks": 0,
+          "damage": 0,
+          "deaths": 0,
+          "projectiles": 0,
+          "target_transitions": 0
+        },
+        "hero_to_companion_distance": 16.0906829833984,
+        "pairwise_distances": [
+          16.0906829833984
+        ],
+        "physics_frame": 3521,
+        "process_frame": 3935,
+        "timestamp_ms": 70051,
+        "units": [
+          {
+            "alive": true,
+            "command": "attack_move",
+            "destination": {
+              "x": -85.5999984741211,
+              "y": 0,
+              "z": -94.3499984741211
+            },
+            "destination_error": 7.28730058670044,
+            "position": {
+              "x": -92.8809814453125,
+              "y": 0,
+              "z": -94.046630859375
+            },
+            "runtime_id": "174768261845",
+            "state": 2,
+            "valid": true,
+            "velocity": {
+              "x": 4.19635915756226,
+              "y": 0,
+              "z": -0.17484039068222
+            }
+          },
+          {
+            "alive": true,
+            "command": "attack_move",
+            "destination": {
+              "x": -84.4000015258789,
+              "y": 0,
+              "z": -94.3499984741211
+            },
+            "destination_error": 7.64407253265381,
+            "position": {
+              "x": -76.7979888916016,
+              "y": 0,
+              "z": -93.5492172241211
+            },
+            "runtime_id": "563563466108",
+            "state": 2,
+            "valid": true,
+            "velocity": {
+              "x": -2.99968099594116,
+              "y": 0,
+              "z": -0.04373744875193
+            }
+          }
+        ]
+      },
+      {
+        "combat_event_counts": {
+          "attacks": 0,
+          "damage": 0,
+          "deaths": 0,
+          "projectiles": 0,
+          "target_transitions": 0
+        },
+        "hero_to_companion_distance": 15.133113861084,
+        "pairwise_distances": [
+          15.133113861084
+        ],
+        "physics_frame": 3525,
+        "process_frame": 3938,
+        "timestamp_ms": 70068,
+        "units": [
+          {
+            "alive": true,
+            "command": "attack_move",
+            "destination": {
+              "x": -85.5999984741211,
+              "y": 0,
+              "z": -94.3499984741211
+            },
+            "destination_error": 6.72730541229248,
+            "position": {
+              "x": -92.3214721679688,
+              "y": 0,
+              "z": -94.0699462890625
+            },
+            "runtime_id": "174768261845",
+            "state": 2,
+            "valid": true,
+            "velocity": {
+              "x": 4.19635915756226,
+              "y": 0,
+              "z": -0.17483818531036
+            }
+          },
+          {
+            "alive": true,
+            "command": "attack_move",
+            "destination": {
+              "x": -84.4000015258789,
+              "y": 0,
+              "z": -94.3499984741211
+            },
+            "destination_error": 7.24577665328979,
+            "position": {
+              "x": -77.1967468261719,
+              "y": 0,
+              "z": -93.566162109375
+            },
+            "runtime_id": "563563466108",
+            "state": 2,
+            "valid": true,
+            "velocity": {
+              "x": -2.98239469528198,
+              "y": 0,
+              "z": -0.32453274726868
+            }
+          }
+        ]
+      },
+      {
+        "combat_event_counts": {
+          "attacks": 0,
+          "damage": 0,
+          "deaths": 0,
+          "projectiles": 0,
+          "target_transitions": 0
+        },
+        "hero_to_companion_distance": 14.415150642395,
+        "pairwise_distances": [
+          14.415150642395
+        ],
+        "physics_frame": 3528,
+        "process_frame": 3942,
+        "timestamp_ms": 70104,
+        "units": [
+          {
+            "alive": true,
+            "command": "attack_move",
+            "destination": {
+              "x": -85.5999984741211,
+              "y": 0,
+              "z": -94.3499984741211
+            },
+            "destination_error": 6.3073091506958,
+            "position": {
+              "x": -91.9018402099609,
+              "y": 0,
+              "z": -94.0874328613281
+            },
+            "runtime_id": "174768261845",
+            "state": 2,
+            "valid": true,
+            "velocity": {
+              "x": 4.19635915756226,
+              "y": 0,
+              "z": -0.17483629286289
+            }
+          },
+          {
+            "alive": true,
+            "command": "attack_move",
+            "destination": {
+              "x": -84.4000015258789,
+              "y": 0,
+              "z": -94.3499984741211
+            },
+            "destination_error": 6.94578266143799,
+            "position": {
+              "x": -77.4949798583984,
+              "y": 0,
+              "z": -93.5986175537109
+            },
+            "runtime_id": "563563466108",
+            "state": 2,
+            "valid": true,
+            "velocity": {
+              "x": -2.98239493370056,
+              "y": 0,
+              "z": -0.32453155517578
+            }
+          }
+        ]
+      },
+      {
+        "combat_event_counts": {
+          "attacks": 0,
+          "damage": 0,
+          "deaths": 0,
+          "projectiles": 0,
+          "target_transitions": 0
+        },
+        "hero_to_companion_distance": 13.6971940994263,
+        "pairwise_distances": [
+          13.6971940994263
+        ],
+        "physics_frame": 3531,
+        "process_frame": 3946,
+        "timestamp_ms": 70157,
+        "units": [
+          {
+            "alive": true,
+            "command": "attack_move",
+            "destination": {
+              "x": -85.5999984741211,
+              "y": 0,
+              "z": -94.3499984741211
+            },
+            "destination_error": 5.88731288909912,
+            "position": {
+              "x": -91.4822082519531,
+              "y": 0,
+              "z": -94.1049194335938
+            },
+            "runtime_id": "174768261845",
+            "state": 2,
+            "valid": true,
+            "velocity": {
+              "x": 4.19635915756226,
+              "y": 0,
+              "z": -0.17483413219452
+            }
+          },
+          {
+            "alive": true,
+            "command": "attack_move",
+            "destination": {
+              "x": -84.4000015258789,
+              "y": 0,
+              "z": -94.3499984741211
+            },
+            "destination_error": 6.64578866958618,
+            "position": {
+              "x": -77.793212890625,
+              "y": 0,
+              "z": -93.6310729980469
+            },
+            "runtime_id": "563563466108",
+            "state": 2,
+            "valid": true,
+            "velocity": {
+              "x": -2.98239493370056,
+              "y": 0,
+              "z": -0.32453018426895
+            }
+          }
+        ]
+      },
+      {
+        "combat_event_counts": {
+          "attacks": 0,
+          "damage": 0,
+          "deaths": 0,
+          "projectiles": 0,
+          "target_transitions": 0
+        },
+        "hero_to_companion_distance": 12.9792451858521,
+        "pairwise_distances": [
+          12.9792451858521
+        ],
+        "physics_frame": 3534,
+        "process_frame": 3950,
+        "timestamp_ms": 70208,
+        "units": [
+          {
+            "alive": true,
+            "command": "attack_move",
+            "destination": {
+              "x": -85.5999984741211,
+              "y": 0,
+              "z": -94.3499984741211
+            },
+            "destination_error": 5.4673171043396,
+            "position": {
+              "x": -91.0625762939453,
+              "y": 0,
+              "z": -94.1224060058594
+            },
+            "runtime_id": "174768261845",
+            "state": 2,
+            "valid": true,
+            "velocity": {
+              "x": 4.19635963439941,
+              "y": 0,
+              "z": -0.1748316437006
+            }
+          },
+          {
+            "alive": true,
+            "command": "attack_move",
+            "destination": {
+              "x": -84.4000015258789,
+              "y": 0,
+              "z": -94.3499984741211
+            },
+            "destination_error": 6.34579515457153,
+            "position": {
+              "x": -78.0914459228516,
+              "y": 0,
+              "z": -93.6635284423828
+            },
+            "runtime_id": "563563466108",
+            "state": 2,
+            "valid": true,
+            "velocity": {
+              "x": -2.98239517211914,
+              "y": 0,
+              "z": -0.3245287835598
+            }
+          }
+        ]
+      },
+      {
+        "combat_event_counts": {
+          "attacks": 0,
+          "damage": 0,
+          "deaths": 0,
+          "projectiles": 0,
+          "target_transitions": 0
+        },
+        "hero_to_companion_distance": 12.0219926834106,
+        "pairwise_distances": [
+          12.0219926834106
+        ],
+        "physics_frame": 3538,
+        "process_frame": 3954,
+        "timestamp_ms": 70264,
+        "units": [
+          {
+            "alive": true,
+            "command": "attack_move",
+            "destination": {
+              "x": -85.5999984741211,
+              "y": 0,
+              "z": -94.3499984741211
+            },
+            "destination_error": 4.90732192993164,
+            "position": {
+              "x": -90.5030670166016,
+              "y": 0,
+              "z": -94.1457214355469
+            },
+            "runtime_id": "174768261845",
+            "state": 2,
+            "valid": true,
+            "velocity": {
+              "x": 4.19635963439941,
+              "y": 0,
+              "z": -0.17482767999172
+            }
+          },
+          {
+            "alive": true,
+            "command": "attack_move",
+            "destination": {
+              "x": -84.4000015258789,
+              "y": 0,
+              "z": -94.3499984741211
+            },
+            "destination_error": 5.94580316543579,
+            "position": {
+              "x": -78.4890899658203,
+              "y": 0,
+              "z": -93.7068023681641
+            },
+            "runtime_id": "563563466108",
+            "state": 2,
+            "valid": true,
+            "velocity": {
+              "x": -2.98239517211914,
+              "y": 0,
+              "z": -0.32452663779259
+            }
+          }
+        ]
+      },
+      {
+        "combat_event_counts": {
+          "attacks": 0,
+          "damage": 0,
+          "deaths": 0,
+          "projectiles": 0,
+          "target_transitions": 0
+        },
+        "hero_to_companion_distance": 11.3040647506714,
+        "pairwise_distances": [
+          11.3040647506714
+        ],
+        "physics_frame": 3541,
+        "process_frame": 3958,
+        "timestamp_ms": 70317,
+        "units": [
+          {
+            "alive": true,
+            "command": "attack_move",
+            "destination": {
+              "x": -85.5999984741211,
+              "y": 0,
+              "z": -94.3499984741211
+            },
+            "destination_error": 4.48732614517212,
+            "position": {
+              "x": -90.0834350585938,
+              "y": 0,
+              "z": -94.1632080078125
+            },
+            "runtime_id": "174768261845",
+            "state": 2,
+            "valid": true,
+            "velocity": {
+              "x": 4.19635963439941,
+              "y": 0,
+              "z": -0.17482407391071
+            }
+          },
+          {
+            "alive": true,
+            "command": "attack_move",
+            "destination": {
+              "x": -84.4000015258789,
+              "y": 0,
+              "z": -94.3499984741211
+            },
+            "destination_error": 5.64580965042114,
+            "position": {
+              "x": -78.7873229980469,
+              "y": 0,
+              "z": -93.7392578125
+            },
+            "runtime_id": "563563466108",
+            "state": 2,
+            "valid": true,
+            "velocity": {
+              "x": -2.9823956489563,
+              "y": 0,
+              "z": -0.32452484965324
+            }
+          }
+        ]
+      },
+      {
+        "combat_event_counts": {
+          "attacks": 0,
+          "damage": 0,
+          "deaths": 0,
+          "projectiles": 0,
+          "target_transitions": 0
+        },
+        "hero_to_companion_distance": 10.5861501693726,
+        "pairwise_distances": [
+          10.5861501693726
+        ],
+        "physics_frame": 3544,
+        "process_frame": 3962,
+        "timestamp_ms": 70370,
+        "units": [
+          {
+            "alive": true,
+            "command": "attack_move",
+            "destination": {
+              "x": -85.5999984741211,
+              "y": 0,
+              "z": -94.3499984741211
+            },
+            "destination_error": 4.06732988357544,
+            "position": {
+              "x": -89.6638031005859,
+              "y": 0,
+              "z": -94.1806945800781
+            },
+            "runtime_id": "174768261845",
+            "state": 2,
+            "valid": true,
+            "velocity": {
+              "x": 4.19636011123657,
+              "y": 0,
+              "z": -0.17481976747513
+            }
+          },
+          {
+            "alive": true,
+            "command": "attack_move",
+            "destination": {
+              "x": -84.4000015258789,
+              "y": 0,
+              "z": -94.3499984741211
+            },
+            "destination_error": 5.34581565856934,
+            "position": {
+              "x": -79.0855560302734,
+              "y": 0,
+              "z": -93.7717132568359
+            },
+            "runtime_id": "563563466108",
+            "state": 2,
+            "valid": true,
+            "velocity": {
+              "x": -2.98239588737488,
+              "y": 0,
+              "z": -0.32452285289764
+            }
+          }
+        ]
+      },
+      {
+        "combat_event_counts": {
+          "attacks": 0,
+          "damage": 0,
+          "deaths": 0,
+          "projectiles": 0,
+          "target_transitions": 0
+        },
+        "hero_to_companion_distance": 9.86825084686279,
+        "pairwise_distances": [
+          9.86825084686279
+        ],
+        "physics_frame": 3547,
+        "process_frame": 3966,
+        "timestamp_ms": 70423,
+        "units": [
+          {
+            "alive": true,
+            "command": "attack_move",
+            "destination": {
+              "x": -85.5999984741211,
+              "y": 0,
+              "z": -94.3499984741211
+            },
+            "destination_error": 3.64733362197876,
+            "position": {
+              "x": -89.2441711425781,
+              "y": 0,
+              "z": -94.1981811523438
+            },
+            "runtime_id": "174768261845",
+            "state": 2,
+            "valid": true,
+            "velocity": {
+              "x": 4.19636011123657,
+              "y": 0,
+              "z": -0.17481449246407
+            }
+          },
+          {
+            "alive": true,
+            "command": "attack_move",
+            "destination": {
+              "x": -84.4000015258789,
+              "y": 0,
+              "z": -94.3499984741211
+            },
+            "destination_error": 5.04582166671753,
+            "position": {
+              "x": -79.3837890625,
+              "y": 0,
+              "z": -93.8041687011719
+            },
+            "runtime_id": "563563466108",
+            "state": 2,
+            "valid": true,
+            "velocity": {
+              "x": -2.98239612579346,
+              "y": 0,
+              "z": -0.32452058792114
+            }
+          }
+        ]
+      },
+      {
+        "combat_event_counts": {
+          "attacks": 0,
+          "damage": 0,
+          "deaths": 0,
+          "projectiles": 0,
+          "target_transitions": 0
+        },
+        "hero_to_companion_distance": 9.15037155151367,
+        "pairwise_distances": [
+          9.15037155151367
+        ],
+        "physics_frame": 3550,
+        "process_frame": 3970,
+        "timestamp_ms": 70475,
+        "units": [
+          {
+            "alive": true,
+            "command": "attack_move",
+            "destination": {
+              "x": -85.5999984741211,
+              "y": 0,
+              "z": -94.3499984741211
+            },
+            "destination_error": 3.22733759880066,
+            "position": {
+              "x": -88.8245391845703,
+              "y": 0,
+              "z": -94.2156677246094
+            },
+            "runtime_id": "174768261845",
+            "state": 2,
+            "valid": true,
+            "velocity": {
+              "x": 4.19636058807373,
+              "y": 0,
+              "z": -0.17480790615082
+            }
+          },
+          {
+            "alive": true,
+            "command": "attack_move",
+            "destination": {
+              "x": -84.4000015258789,
+              "y": 0,
+              "z": -94.3499984741211
+            },
+            "destination_error": 4.74582815170288,
+            "position": {
+              "x": -79.6820220947266,
+              "y": 0,
+              "z": -93.8366241455078
+            },
+            "runtime_id": "563563466108",
+            "state": 2,
+            "valid": true,
+            "velocity": {
+              "x": -2.98239636421204,
+              "y": 0,
+              "z": -0.32451808452606
+            }
+          }
+        ]
+      },
+      {
+        "combat_event_counts": {
+          "attacks": 0,
+          "damage": 0,
+          "deaths": 0,
+          "projectiles": 0,
+          "target_transitions": 0
+        },
+        "hero_to_companion_distance": 8.19323635101318,
+        "pairwise_distances": [
+          8.19323635101318
+        ],
+        "physics_frame": 3554,
+        "process_frame": 3974,
+        "timestamp_ms": 70530,
+        "units": [
+          {
+            "alive": true,
+            "command": "attack_move",
+            "destination": {
+              "x": -85.5999984741211,
+              "y": 0,
+              "z": -94.3499984741211
+            },
+            "destination_error": 2.66734266281128,
+            "position": {
+              "x": -88.2650299072266,
+              "y": 0,
+              "z": -94.2389831542969
+            },
+            "runtime_id": "174768261845",
+            "state": 2,
+            "valid": true,
+            "velocity": {
+              "x": 4.19636106491089,
+              "y": 0,
+              "z": -0.17479604482651
+            }
+          },
+          {
+            "alive": true,
+            "command": "attack_move",
+            "destination": {
+              "x": -84.4000015258789,
+              "y": 0,
+              "z": -94.3499984741211
+            },
+            "destination_error": 4.34583616256714,
+            "position": {
+              "x": -80.0796661376953,
+              "y": 0,
+              "z": -93.8798980712891
+            },
+            "runtime_id": "563563466108",
+            "state": 2,
+            "valid": true,
+            "velocity": {
+              "x": -2.98239684104919,
+              "y": 0,
+              "z": -0.3245142698288
+            }
+          }
+        ]
+      },
+      {
+        "combat_event_counts": {
+          "attacks": 0,
+          "damage": 0,
+          "deaths": 0,
+          "projectiles": 0,
+          "target_transitions": 0
+        },
+        "hero_to_companion_distance": 7.47542333602905,
+        "pairwise_distances": [
+          7.47542333602905
+        ],
+        "physics_frame": 3557,
+        "process_frame": 3978,
+        "timestamp_ms": 70583,
+        "units": [
+          {
+            "alive": true,
+            "command": "attack_move",
+            "destination": {
+              "x": -85.5999984741211,
+              "y": 0,
+              "z": -94.3499984741211
+            },
+            "destination_error": 2.2473464012146,
+            "position": {
+              "x": -87.8453979492188,
+              "y": 0,
+              "z": -94.2564697265625
+            },
+            "runtime_id": "174768261845",
+            "state": 2,
+            "valid": true,
+            "velocity": {
+              "x": 4.19636106491089,
+              "y": 0,
+              "z": -0.17478349804878
+            }
+          },
+          {
+            "alive": true,
+            "command": "attack_move",
+            "destination": {
+              "x": -84.4000015258789,
+              "y": 0,
+              "z": -94.3499984741211
+            },
+            "destination_error": 4.04584264755249,
+            "position": {
+              "x": -80.3778991699219,
+              "y": 0,
+              "z": -93.912353515625
+            },
+            "runtime_id": "563563466108",
+            "state": 2,
+            "valid": true,
+            "velocity": {
+              "x": -2.98239707946777,
+              "y": 0,
+              "z": -0.32451084256172
+            }
+          }
+        ]
+      },
+      {
+        "combat_event_counts": {
+          "attacks": 0,
+          "damage": 0,
+          "deaths": 0,
+          "projectiles": 0,
+          "target_transitions": 0
+        },
+        "hero_to_companion_distance": 6.75765466690063,
+        "pairwise_distances": [
+          6.75765466690063
+        ],
+        "physics_frame": 3560,
+        "process_frame": 3982,
+        "timestamp_ms": 70637,
+        "units": [
+          {
+            "alive": true,
+            "command": "attack_move",
+            "destination": {
+              "x": -85.5999984741211,
+              "y": 0,
+              "z": -94.3499984741211
+            },
+            "destination_error": 1.8273503780365,
+            "position": {
+              "x": -87.4257659912109,
+              "y": 0,
+              "z": -94.2739562988281
+            },
+            "runtime_id": "174768261845",
+            "state": 2,
+            "valid": true,
+            "velocity": {
+              "x": 4.19636201858521,
+              "y": 0,
+              "z": -0.17476563155651
+            }
+          },
+          {
+            "alive": true,
+            "command": "attack_move",
+            "destination": {
+              "x": -84.4000015258789,
+              "y": 0,
+              "z": -94.3499984741211
+            },
+            "destination_error": 3.74584865570068,
+            "position": {
+              "x": -80.6761322021484,
+              "y": 0,
+              "z": -93.9448089599609
+            },
+            "runtime_id": "563563466108",
+            "state": 2,
+            "valid": true,
+            "velocity": {
+              "x": -2.98239755630493,
+              "y": 0,
+              "z": -0.32450693845749
+            }
+          }
+        ]
+      },
+      {
+        "combat_event_counts": {
+          "attacks": 0,
+          "damage": 0,
+          "deaths": 0,
+          "projectiles": 0,
+          "target_transitions": 0
+        },
+        "hero_to_companion_distance": 6.03994512557983,
+        "pairwise_distances": [
+          6.03994512557983
+        ],
+        "physics_frame": 3563,
+        "process_frame": 3986,
+        "timestamp_ms": 70690,
+        "units": [
+          {
+            "alive": true,
+            "command": "attack_move",
+            "destination": {
+              "x": -85.5999984741211,
+              "y": 0,
+              "z": -94.3499984741211
+            },
+            "destination_error": 1.40735459327698,
+            "position": {
+              "x": -87.0061340332031,
+              "y": 0,
+              "z": -94.2914352416992
+            },
+            "runtime_id": "174768261845",
+            "state": 2,
+            "valid": true,
+            "velocity": {
+              "x": 4.19636249542236,
+              "y": 0,
+              "z": -0.17475870251656
+            }
+          },
+          {
+            "alive": true,
+            "command": "attack_move",
+            "destination": {
+              "x": -84.4000015258789,
+              "y": 0,
+              "z": -94.3499984741211
+            },
+            "destination_error": 3.44585466384888,
+            "position": {
+              "x": -80.974365234375,
+              "y": 0,
+              "z": -93.9772644042969
+            },
+            "runtime_id": "563563466108",
+            "state": 2,
+            "valid": true,
+            "velocity": {
+              "x": -2.98239803314209,
+              "y": 0,
+              "z": -0.32450234889984
+            }
+          }
+        ]
+      },
+      {
+        "combat_event_counts": {
+          "attacks": 0,
+          "damage": 0,
+          "deaths": 0,
+          "projectiles": 0,
+          "target_transitions": 0
+        },
+        "hero_to_companion_distance": 5.46166563034058,
+        "pairwise_distances": [
+          5.46166563034058
+        ],
+        "physics_frame": 3566,
+        "process_frame": 3990,
+        "timestamp_ms": 70744,
+        "units": [
+          {
+            "alive": true,
+            "command": "attack_move",
+            "destination": {
+              "x": -85.5999984741211,
+              "y": 0,
+              "z": -94.3499984741211
+            },
+            "destination_error": 1.12735748291016,
+            "position": {
+              "x": -86.7263793945313,
+              "y": 0,
+              "z": -94.3030853271484
+            },
+            "runtime_id": "174768261845",
+            "state": 0,
+            "valid": true,
+            "velocity": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            }
+          },
+          {
+            "alive": true,
+            "command": "attack_move",
+            "destination": {
+              "x": -84.4000015258789,
+              "y": 0,
+              "z": -94.3499984741211
+            },
+            "destination_error": 3.14586091041565,
+            "position": {
+              "x": -81.2725982666016,
+              "y": 0,
+              "z": -94.0097198486328
+            },
+            "runtime_id": "563563466108",
+            "state": 2,
+            "valid": true,
+            "velocity": {
+              "x": -2.98239874839783,
+              "y": 0,
+              "z": -0.32449692487717
+            }
+          }
+        ]
+      },
+      {
+        "combat_event_counts": {
+          "attacks": 0,
+          "damage": 0,
+          "deaths": 0,
+          "projectiles": 0,
+          "target_transitions": 0
+        },
+        "hero_to_companion_distance": 5.16214561462402,
+        "pairwise_distances": [
+          5.16214561462402
+        ],
+        "physics_frame": 3569,
+        "process_frame": 3994,
+        "timestamp_ms": 70797,
+        "units": [
+          {
+            "alive": true,
+            "command": "attack_move",
+            "destination": {
+              "x": -85.5999984741211,
+              "y": 0,
+              "z": -94.3499984741211
+            },
+            "destination_error": 1.12735748291016,
+            "position": {
+              "x": -86.7263793945313,
+              "y": 0,
+              "z": -94.3030853271484
+            },
+            "runtime_id": "174768261845",
+            "state": 0,
+            "valid": true,
+            "velocity": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            }
+          },
+          {
+            "alive": true,
+            "command": "attack_move",
+            "destination": {
+              "x": -84.4000015258789,
+              "y": 0,
+              "z": -94.3499984741211
+            },
+            "destination_error": 2.84586691856384,
+            "position": {
+              "x": -81.5708312988281,
+              "y": 0,
+              "z": -94.0421752929688
+            },
+            "runtime_id": "563563466108",
+            "state": 2,
+            "valid": true,
+            "velocity": {
+              "x": -2.98239922523499,
+              "y": 0,
+              "z": -0.3244903087616
+            }
+          }
+        ]
+      },
+      {
+        "combat_event_counts": {
+          "attacks": 0,
+          "damage": 0,
+          "deaths": 0,
+          "projectiles": 0,
+          "target_transitions": 0
+        },
+        "hero_to_companion_distance": 4.86268472671509,
+        "pairwise_distances": [
+          4.86268472671509
+        ],
+        "physics_frame": 3572,
+        "process_frame": 3998,
+        "timestamp_ms": 70847,
+        "units": [
+          {
+            "alive": true,
+            "command": "attack_move",
+            "destination": {
+              "x": -85.5999984741211,
+              "y": 0,
+              "z": -94.3499984741211
+            },
+            "destination_error": 1.12735748291016,
+            "position": {
+              "x": -86.7263793945313,
+              "y": 0,
+              "z": -94.3030853271484
+            },
+            "runtime_id": "174768261845",
+            "state": 0,
+            "valid": true,
+            "velocity": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            }
+          },
+          {
+            "alive": true,
+            "command": "attack_move",
+            "destination": {
+              "x": -84.4000015258789,
+              "y": 0,
+              "z": -94.3499984741211
+            },
+            "destination_error": 2.54587316513062,
+            "position": {
+              "x": -81.8690643310547,
+              "y": 0,
+              "z": -94.0746307373047
+            },
+            "runtime_id": "563563466108",
+            "state": 2,
+            "valid": true,
+            "velocity": {
+              "x": -2.9824001789093,
+              "y": 0,
+              "z": -0.3244823217392
+            }
+          }
+        ]
+      },
+      {
+        "combat_event_counts": {
+          "attacks": 0,
+          "damage": 0,
+          "deaths": 0,
+          "projectiles": 0,
+          "target_transitions": 0
+        },
+        "hero_to_companion_distance": 4.56329298019409,
+        "pairwise_distances": [
+          4.56329298019409
+        ],
+        "physics_frame": 3575,
+        "process_frame": 4002,
+        "timestamp_ms": 70902,
+        "units": [
+          {
+            "alive": true,
+            "command": "attack_move",
+            "destination": {
+              "x": -85.5999984741211,
+              "y": 0,
+              "z": -94.3499984741211
+            },
+            "destination_error": 1.12735748291016,
+            "position": {
+              "x": -86.7263793945313,
+              "y": 0,
+              "z": -94.3030853271484
+            },
+            "runtime_id": "174768261845",
+            "state": 0,
+            "valid": true,
+            "velocity": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            }
+          },
+          {
+            "alive": true,
+            "command": "attack_move",
+            "destination": {
+              "x": -84.4000015258789,
+              "y": 0,
+              "z": -94.3499984741211
+            },
+            "destination_error": 2.24587941169739,
+            "position": {
+              "x": -82.1672973632813,
+              "y": 0,
+              "z": -94.1070861816406
+            },
+            "runtime_id": "563563466108",
+            "state": 2,
+            "valid": true,
+            "velocity": {
+              "x": -2.9824013710022,
+              "y": 0,
+              "z": -0.32447230815887
+            }
+          }
+        ]
+      },
+      {
+        "combat_event_counts": {
+          "attacks": 0,
+          "damage": 0,
+          "deaths": 0,
+          "projectiles": 0,
+          "target_transitions": 0
+        },
+        "hero_to_companion_distance": 4.16423940658569,
+        "pairwise_distances": [
+          4.16423940658569
+        ],
+        "physics_frame": 3579,
+        "process_frame": 4006,
+        "timestamp_ms": 70958,
+        "units": [
+          {
+            "alive": true,
+            "command": "attack_move",
+            "destination": {
+              "x": -85.5999984741211,
+              "y": 0,
+              "z": -94.3499984741211
+            },
+            "destination_error": 1.12735748291016,
+            "position": {
+              "x": -86.7263793945313,
+              "y": 0,
+              "z": -94.3030853271484
+            },
+            "runtime_id": "174768261845",
+            "state": 0,
+            "valid": true,
+            "velocity": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            }
+          },
+          {
+            "alive": true,
+            "command": "attack_move",
+            "destination": {
+              "x": -84.4000015258789,
+              "y": 0,
+              "z": -94.3499984741211
+            },
+            "destination_error": 1.84588766098022,
+            "position": {
+              "x": -82.56494140625,
+              "y": 0,
+              "z": -94.1503601074219
+            },
+            "runtime_id": "563563466108",
+            "state": 2,
+            "valid": true,
+            "velocity": {
+              "x": -2.98240327835083,
+              "y": 0,
+              "z": -0.32445400953293
+            }
+          }
+        ]
+      },
+      {
+        "combat_event_counts": {
+          "attacks": 0,
+          "damage": 0,
+          "deaths": 0,
+          "projectiles": 0,
+          "target_transitions": 0
+        },
+        "hero_to_companion_distance": 3.86735129356384,
+        "pairwise_distances": [
+          3.86735129356384
+        ],
+        "physics_frame": 3582,
+        "process_frame": 4010,
+        "timestamp_ms": 71009,
+        "units": [
+          {
+            "alive": true,
+            "command": "attack_move",
+            "destination": {
+              "x": -85.5999984741211,
+              "y": 0,
+              "z": -94.3499984741211
+            },
+            "destination_error": 1.12735748291016,
+            "position": {
+              "x": -86.7263793945313,
+              "y": 0,
+              "z": -94.3030853271484
+            },
+            "runtime_id": "174768261845",
+            "state": 0,
+            "valid": true,
+            "velocity": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            }
+          },
+          {
+            "alive": true,
+            "command": "attack_move",
+            "destination": {
+              "x": -84.4000015258789,
+              "y": 0,
+              "z": -94.3499984741211
+            },
+            "destination_error": 1.54751026630402,
+            "position": {
+              "x": -82.8606414794922,
+              "y": 0,
+              "z": -94.1913833618164
+            },
+            "runtime_id": "563563466108",
+            "state": 2,
+            "valid": true,
+            "velocity": {
+              "x": -2.90624856948853,
+              "y": 0,
+              "z": -0.58147549629211
+            }
+          }
+        ]
+      },
+      {
+        "combat_event_counts": {
+          "attacks": 0,
+          "damage": 0,
+          "deaths": 0,
+          "projectiles": 0,
+          "target_transitions": 0
+        },
+        "hero_to_companion_distance": 3.58192777633667,
+        "pairwise_distances": [
+          3.58192777633667
+        ],
+        "physics_frame": 3585,
+        "process_frame": 4014,
+        "timestamp_ms": 71064,
+        "units": [
+          {
+            "alive": true,
+            "command": "attack_move",
+            "destination": {
+              "x": -85.5999984741211,
+              "y": 0,
+              "z": -94.3499984741211
+            },
+            "destination_error": 1.12735748291016,
+            "position": {
+              "x": -86.7263793945313,
+              "y": 0,
+              "z": -94.3030853271484
+            },
+            "runtime_id": "174768261845",
+            "state": 0,
+            "valid": true,
+            "velocity": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            }
+          },
+          {
+            "alive": true,
+            "command": "attack_move",
+            "destination": {
+              "x": -84.4000015258789,
+              "y": 0,
+              "z": -94.3499984741211
+            },
+            "destination_error": 1.25804853439331,
+            "position": {
+              "x": -83.1446228027344,
+              "y": 0,
+              "z": -94.2680816650391
+            },
+            "runtime_id": "563563466108",
+            "state": 2,
+            "valid": true,
+            "velocity": {
+              "x": -2.81896233558655,
+              "y": 0,
+              "z": -0.81055599451065
+            }
+          }
+        ]
+      },
+      {
+        "combat_event_counts": {
+          "attacks": 0,
+          "damage": 0,
+          "deaths": 0,
+          "projectiles": 0,
+          "target_transitions": 0
+        },
+        "hero_to_companion_distance": 3.48830461502075,
+        "pairwise_distances": [
+          3.48830461502075
+        ],
+        "physics_frame": 3588,
+        "process_frame": 4018,
+        "timestamp_ms": 71117,
+        "units": [
+          {
+            "alive": true,
+            "command": "attack_move",
+            "destination": {
+              "x": -85.5999984741211,
+              "y": 0,
+              "z": -94.3499984741211
+            },
+            "destination_error": 1.12735748291016,
+            "position": {
+              "x": -86.7263793945313,
+              "y": 0,
+              "z": -94.3030853271484
+            },
+            "runtime_id": "174768261845",
+            "state": 0,
+            "valid": true,
+            "velocity": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            }
+          },
+          {
+            "alive": true,
+            "command": "attack_move",
+            "destination": {
+              "x": -84.4000015258789,
+              "y": 0,
+              "z": -94.3499984741211
+            },
+            "destination_error": 1.16319167613983,
+            "position": {
+              "x": -83.2380828857422,
+              "y": 0,
+              "z": -94.2955932617188
+            },
+            "runtime_id": "563563466108",
+            "state": 0,
+            "valid": true,
+            "velocity": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            }
+          }
+        ]
+      },
+      {
+        "combat_event_counts": {
+          "attacks": 0,
+          "damage": 0,
+          "deaths": 0,
+          "projectiles": 0,
+          "target_transitions": 0
+        },
+        "hero_to_companion_distance": 3.48830461502075,
+        "pairwise_distances": [
+          3.48830461502075
+        ],
+        "physics_frame": 3591,
+        "process_frame": 4022,
+        "timestamp_ms": 71169,
+        "units": [
+          {
+            "alive": true,
+            "command": "attack_move",
+            "destination": {
+              "x": -85.5999984741211,
+              "y": 0,
+              "z": -94.3499984741211
+            },
+            "destination_error": 1.12735748291016,
+            "position": {
+              "x": -86.7263793945313,
+              "y": 0,
+              "z": -94.3030853271484
+            },
+            "runtime_id": "174768261845",
+            "state": 0,
+            "valid": true,
+            "velocity": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            }
+          },
+          {
+            "alive": true,
+            "command": "attack_move",
+            "destination": {
+              "x": -84.4000015258789,
+              "y": 0,
+              "z": -94.3499984741211
+            },
+            "destination_error": 1.16319167613983,
+            "position": {
+              "x": -83.2380828857422,
+              "y": 0,
+              "z": -94.2955932617188
+            },
+            "runtime_id": "563563466108",
+            "state": 0,
+            "valid": true,
+            "velocity": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            }
+          }
+        ]
+      },
+      {
+        "combat_event_counts": {
+          "attacks": 0,
+          "damage": 0,
+          "deaths": 0,
+          "projectiles": 0,
+          "target_transitions": 0
+        },
+        "hero_to_companion_distance": 3.48830461502075,
+        "pairwise_distances": [
+          3.48830461502075
+        ],
+        "physics_frame": 3595,
+        "process_frame": 4026,
+        "timestamp_ms": 71224,
+        "units": [
+          {
+            "alive": true,
+            "command": "attack_move",
+            "destination": {
+              "x": -85.5999984741211,
+              "y": 0,
+              "z": -94.3499984741211
+            },
+            "destination_error": 1.12735748291016,
+            "position": {
+              "x": -86.7263793945313,
+              "y": 0,
+              "z": -94.3030853271484
+            },
+            "runtime_id": "174768261845",
+            "state": 0,
+            "valid": true,
+            "velocity": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            }
+          },
+          {
+            "alive": true,
+            "command": "attack_move",
+            "destination": {
+              "x": -84.4000015258789,
+              "y": 0,
+              "z": -94.3499984741211
+            },
+            "destination_error": 1.16319167613983,
+            "position": {
+              "x": -83.2380828857422,
+              "y": 0,
+              "z": -94.2955932617188
+            },
+            "runtime_id": "563563466108",
+            "state": 0,
+            "valid": true,
+            "velocity": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            }
+          }
+        ]
+      },
+      {
+        "combat_event_counts": {
+          "attacks": 0,
+          "damage": 0,
+          "deaths": 0,
+          "projectiles": 0,
+          "target_transitions": 0
+        },
+        "hero_to_companion_distance": 3.48830461502075,
+        "pairwise_distances": [
+          3.48830461502075
+        ],
+        "physics_frame": 3598,
+        "process_frame": 4030,
+        "timestamp_ms": 71277,
+        "units": [
+          {
+            "alive": true,
+            "command": "attack_move",
+            "destination": {
+              "x": -85.5999984741211,
+              "y": 0,
+              "z": -94.3499984741211
+            },
+            "destination_error": 1.12735748291016,
+            "position": {
+              "x": -86.7263793945313,
+              "y": 0,
+              "z": -94.3030853271484
+            },
+            "runtime_id": "174768261845",
+            "state": 0,
+            "valid": true,
+            "velocity": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            }
+          },
+          {
+            "alive": true,
+            "command": "attack_move",
+            "destination": {
+              "x": -84.4000015258789,
+              "y": 0,
+              "z": -94.3499984741211
+            },
+            "destination_error": 1.16319167613983,
+            "position": {
+              "x": -83.2380828857422,
+              "y": 0,
+              "z": -94.2955932617188
+            },
+            "runtime_id": "563563466108",
+            "state": 0,
+            "valid": true,
+            "velocity": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            }
+          }
+        ]
+      },
+      {
+        "combat_event_counts": {
+          "attacks": 0,
+          "damage": 0,
+          "deaths": 0,
+          "projectiles": 0,
+          "target_transitions": 0
+        },
+        "hero_to_companion_distance": 3.48830461502075,
+        "pairwise_distances": [
+          3.48830461502075
+        ],
+        "physics_frame": 3601,
+        "process_frame": 4034,
+        "timestamp_ms": 71330,
+        "units": [
+          {
+            "alive": true,
+            "command": "attack_move",
+            "destination": {
+              "x": -85.5999984741211,
+              "y": 0,
+              "z": -94.3499984741211
+            },
+            "destination_error": 1.12735748291016,
+            "position": {
+              "x": -86.7263793945313,
+              "y": 0,
+              "z": -94.3030853271484
+            },
+            "runtime_id": "174768261845",
+            "state": 0,
+            "valid": true,
+            "velocity": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            }
+          },
+          {
+            "alive": true,
+            "command": "attack_move",
+            "destination": {
+              "x": -84.4000015258789,
+              "y": 0,
+              "z": -94.3499984741211
+            },
+            "destination_error": 1.16319167613983,
+            "position": {
+              "x": -83.2380828857422,
+              "y": 0,
+              "z": -94.2955932617188
+            },
+            "runtime_id": "563563466108",
+            "state": 0,
+            "valid": true,
+            "velocity": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            }
+          }
+        ]
+      },
+      {
+        "combat_event_counts": {
+          "attacks": 0,
+          "damage": 0,
+          "deaths": 0,
+          "projectiles": 0,
+          "target_transitions": 0
+        },
+        "hero_to_companion_distance": 3.48830461502075,
+        "pairwise_distances": [
+          3.48830461502075
+        ],
+        "physics_frame": 3604,
+        "process_frame": 4038,
+        "timestamp_ms": 71384,
+        "units": [
+          {
+            "alive": true,
+            "command": "attack_move",
+            "destination": {
+              "x": -85.5999984741211,
+              "y": 0,
+              "z": -94.3499984741211
+            },
+            "destination_error": 1.12735748291016,
+            "position": {
+              "x": -86.7263793945313,
+              "y": 0,
+              "z": -94.3030853271484
+            },
+            "runtime_id": "174768261845",
+            "state": 0,
+            "valid": true,
+            "velocity": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            }
+          },
+          {
+            "alive": true,
+            "command": "attack_move",
+            "destination": {
+              "x": -84.4000015258789,
+              "y": 0,
+              "z": -94.3499984741211
+            },
+            "destination_error": 1.16319167613983,
+            "position": {
+              "x": -83.2380828857422,
+              "y": 0,
+              "z": -94.2955932617188
+            },
+            "runtime_id": "563563466108",
+            "state": 0,
+            "valid": true,
+            "velocity": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            }
+          }
+        ]
+      },
+      {
+        "combat_event_counts": {
+          "attacks": 0,
+          "damage": 0,
+          "deaths": 0,
+          "projectiles": 0,
+          "target_transitions": 0
+        },
+        "hero_to_companion_distance": 3.48830461502075,
+        "pairwise_distances": [
+          3.48830461502075
+        ],
+        "physics_frame": 3607,
+        "process_frame": 4042,
+        "timestamp_ms": 71435,
+        "units": [
+          {
+            "alive": true,
+            "command": "attack_move",
+            "destination": {
+              "x": -85.5999984741211,
+              "y": 0,
+              "z": -94.3499984741211
+            },
+            "destination_error": 1.12735748291016,
+            "position": {
+              "x": -86.7263793945313,
+              "y": 0,
+              "z": -94.3030853271484
+            },
+            "runtime_id": "174768261845",
+            "state": 0,
+            "valid": true,
+            "velocity": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            }
+          },
+          {
+            "alive": true,
+            "command": "attack_move",
+            "destination": {
+              "x": -84.4000015258789,
+              "y": 0,
+              "z": -94.3499984741211
+            },
+            "destination_error": 1.16319167613983,
+            "position": {
+              "x": -83.2380828857422,
+              "y": 0,
+              "z": -94.2955932617188
+            },
+            "runtime_id": "563563466108",
+            "state": 0,
+            "valid": true,
+            "velocity": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            }
+          }
+        ]
+      },
+      {
+        "combat_event_counts": {
+          "attacks": 0,
+          "damage": 0,
+          "deaths": 0,
+          "projectiles": 0,
+          "target_transitions": 0
+        },
+        "hero_to_companion_distance": 3.48830461502075,
+        "pairwise_distances": [
+          3.48830461502075
+        ],
+        "physics_frame": 3611,
+        "process_frame": 4046,
+        "timestamp_ms": 71491,
+        "units": [
+          {
+            "alive": true,
+            "command": "attack_move",
+            "destination": {
+              "x": -85.5999984741211,
+              "y": 0,
+              "z": -94.3499984741211
+            },
+            "destination_error": 1.12735748291016,
+            "position": {
+              "x": -86.7263793945313,
+              "y": 0,
+              "z": -94.3030853271484
+            },
+            "runtime_id": "174768261845",
+            "state": 0,
+            "valid": true,
+            "velocity": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            }
+          },
+          {
+            "alive": true,
+            "command": "attack_move",
+            "destination": {
+              "x": -84.4000015258789,
+              "y": 0,
+              "z": -94.3499984741211
+            },
+            "destination_error": 1.16319167613983,
+            "position": {
+              "x": -83.2380828857422,
+              "y": 0,
+              "z": -94.2955932617188
+            },
+            "runtime_id": "563563466108",
+            "state": 0,
+            "valid": true,
+            "velocity": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            }
+          }
+        ]
+      },
+      {
+        "combat_event_counts": {
+          "attacks": 0,
+          "damage": 0,
+          "deaths": 0,
+          "projectiles": 0,
+          "target_transitions": 0
+        },
+        "hero_to_companion_distance": 3.48830461502075,
+        "pairwise_distances": [
+          3.48830461502075
+        ],
+        "physics_frame": 3614,
+        "process_frame": 4050,
+        "timestamp_ms": 71543,
+        "units": [
+          {
+            "alive": true,
+            "command": "attack_move",
+            "destination": {
+              "x": -85.5999984741211,
+              "y": 0,
+              "z": -94.3499984741211
+            },
+            "destination_error": 1.12735748291016,
+            "position": {
+              "x": -86.7263793945313,
+              "y": 0,
+              "z": -94.3030853271484
+            },
+            "runtime_id": "174768261845",
+            "state": 0,
+            "valid": true,
+            "velocity": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            }
+          },
+          {
+            "alive": true,
+            "command": "attack_move",
+            "destination": {
+              "x": -84.4000015258789,
+              "y": 0,
+              "z": -94.3499984741211
+            },
+            "destination_error": 1.16319167613983,
+            "position": {
+              "x": -83.2380828857422,
+              "y": 0,
+              "z": -94.2955932617188
+            },
+            "runtime_id": "563563466108",
+            "state": 0,
+            "valid": true,
+            "velocity": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            }
+          }
+        ]
+      },
+      {
+        "combat_event_counts": {
+          "attacks": 0,
+          "damage": 0,
+          "deaths": 0,
+          "projectiles": 0,
+          "target_transitions": 0
+        },
+        "hero_to_companion_distance": 3.48830461502075,
+        "pairwise_distances": [
+          3.48830461502075
+        ],
+        "physics_frame": 3617,
+        "process_frame": 4054,
+        "timestamp_ms": 71597,
+        "units": [
+          {
+            "alive": true,
+            "command": "attack_move",
+            "destination": {
+              "x": -85.5999984741211,
+              "y": 0,
+              "z": -94.3499984741211
+            },
+            "destination_error": 1.12735748291016,
+            "position": {
+              "x": -86.7263793945313,
+              "y": 0,
+              "z": -94.3030853271484
+            },
+            "runtime_id": "174768261845",
+            "state": 0,
+            "valid": true,
+            "velocity": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            }
+          },
+          {
+            "alive": true,
+            "command": "attack_move",
+            "destination": {
+              "x": -84.4000015258789,
+              "y": 0,
+              "z": -94.3499984741211
+            },
+            "destination_error": 1.16319167613983,
+            "position": {
+              "x": -83.2380828857422,
+              "y": 0,
+              "z": -94.2955932617188
+            },
+            "runtime_id": "563563466108",
+            "state": 0,
+            "valid": true,
+            "velocity": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            }
+          }
+        ]
+      },
+      {
+        "combat_event_counts": {
+          "attacks": 0,
+          "damage": 0,
+          "deaths": 0,
+          "projectiles": 0,
+          "target_transitions": 0
+        },
+        "hero_to_companion_distance": 3.48830461502075,
+        "pairwise_distances": [
+          3.48830461502075
+        ],
+        "physics_frame": 3620,
+        "process_frame": 4058,
+        "timestamp_ms": 71650,
+        "units": [
+          {
+            "alive": true,
+            "command": "attack_move",
+            "destination": {
+              "x": -85.5999984741211,
+              "y": 0,
+              "z": -94.3499984741211
+            },
+            "destination_error": 1.12735748291016,
+            "position": {
+              "x": -86.7263793945313,
+              "y": 0,
+              "z": -94.3030853271484
+            },
+            "runtime_id": "174768261845",
+            "state": 0,
+            "valid": true,
+            "velocity": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            }
+          },
+          {
+            "alive": true,
+            "command": "attack_move",
+            "destination": {
+              "x": -84.4000015258789,
+              "y": 0,
+              "z": -94.3499984741211
+            },
+            "destination_error": 1.16319167613983,
+            "position": {
+              "x": -83.2380828857422,
+              "y": 0,
+              "z": -94.2955932617188
+            },
+            "runtime_id": "563563466108",
+            "state": 0,
+            "valid": true,
+            "velocity": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            }
+          }
+        ]
+      },
+      {
+        "combat_event_counts": {
+          "attacks": 0,
+          "damage": 0,
+          "deaths": 0,
+          "projectiles": 0,
+          "target_transitions": 0
+        },
+        "hero_to_companion_distance": 3.48830461502075,
+        "pairwise_distances": [
+          3.48830461502075
+        ],
+        "physics_frame": 3623,
+        "process_frame": 4062,
+        "timestamp_ms": 71702,
+        "units": [
+          {
+            "alive": true,
+            "command": "attack_move",
+            "destination": {
+              "x": -85.5999984741211,
+              "y": 0,
+              "z": -94.3499984741211
+            },
+            "destination_error": 1.12735748291016,
+            "position": {
+              "x": -86.7263793945313,
+              "y": 0,
+              "z": -94.3030853271484
+            },
+            "runtime_id": "174768261845",
+            "state": 0,
+            "valid": true,
+            "velocity": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            }
+          },
+          {
+            "alive": true,
+            "command": "attack_move",
+            "destination": {
+              "x": -84.4000015258789,
+              "y": 0,
+              "z": -94.3499984741211
+            },
+            "destination_error": 1.16319167613983,
+            "position": {
+              "x": -83.2380828857422,
+              "y": 0,
+              "z": -94.2955932617188
+            },
+            "runtime_id": "563563466108",
+            "state": 0,
+            "valid": true,
+            "velocity": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            }
+          }
+        ]
+      },
+      {
+        "combat_event_counts": {
+          "attacks": 0,
+          "damage": 0,
+          "deaths": 0,
+          "projectiles": 0,
+          "target_transitions": 0
+        },
+        "hero_to_companion_distance": 3.48830461502075,
+        "pairwise_distances": [
+          3.48830461502075
+        ],
+        "physics_frame": 3627,
+        "process_frame": 4066,
+        "timestamp_ms": 71757,
+        "units": [
+          {
+            "alive": true,
+            "command": "attack_move",
+            "destination": {
+              "x": -85.5999984741211,
+              "y": 0,
+              "z": -94.3499984741211
+            },
+            "destination_error": 1.12735748291016,
+            "position": {
+              "x": -86.7263793945313,
+              "y": 0,
+              "z": -94.3030853271484
+            },
+            "runtime_id": "174768261845",
+            "state": 0,
+            "valid": true,
+            "velocity": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            }
+          },
+          {
+            "alive": true,
+            "command": "attack_move",
+            "destination": {
+              "x": -84.4000015258789,
+              "y": 0,
+              "z": -94.3499984741211
+            },
+            "destination_error": 1.16319167613983,
+            "position": {
+              "x": -83.2380828857422,
+              "y": 0,
+              "z": -94.2955932617188
+            },
+            "runtime_id": "563563466108",
+            "state": 0,
+            "valid": true,
+            "velocity": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            }
+          }
+        ]
+      },
+      {
+        "combat_event_counts": {
+          "attacks": 0,
+          "damage": 0,
+          "deaths": 0,
+          "projectiles": 0,
+          "target_transitions": 0
+        },
+        "hero_to_companion_distance": 3.48830461502075,
+        "pairwise_distances": [
+          3.48830461502075
+        ],
+        "physics_frame": 3630,
+        "process_frame": 4070,
+        "timestamp_ms": 71810,
+        "units": [
+          {
+            "alive": true,
+            "command": "attack_move",
+            "destination": {
+              "x": -85.5999984741211,
+              "y": 0,
+              "z": -94.3499984741211
+            },
+            "destination_error": 1.12735748291016,
+            "position": {
+              "x": -86.7263793945313,
+              "y": 0,
+              "z": -94.3030853271484
+            },
+            "runtime_id": "174768261845",
+            "state": 0,
+            "valid": true,
+            "velocity": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            }
+          },
+          {
+            "alive": true,
+            "command": "attack_move",
+            "destination": {
+              "x": -84.4000015258789,
+              "y": 0,
+              "z": -94.3499984741211
+            },
+            "destination_error": 1.16319167613983,
+            "position": {
+              "x": -83.2380828857422,
+              "y": 0,
+              "z": -94.2955932617188
+            },
+            "runtime_id": "563563466108",
+            "state": 0,
+            "valid": true,
+            "velocity": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            }
+          }
+        ]
+      },
+      {
+        "combat_event_counts": {
+          "attacks": 0,
+          "damage": 0,
+          "deaths": 0,
+          "projectiles": 0,
+          "target_transitions": 0
+        },
+        "hero_to_companion_distance": 3.48830461502075,
+        "pairwise_distances": [
+          3.48830461502075
+        ],
+        "physics_frame": 3633,
+        "process_frame": 4074,
+        "timestamp_ms": 71864,
+        "units": [
+          {
+            "alive": true,
+            "command": "attack_move",
+            "destination": {
+              "x": -85.5999984741211,
+              "y": 0,
+              "z": -94.3499984741211
+            },
+            "destination_error": 1.12735748291016,
+            "position": {
+              "x": -86.7263793945313,
+              "y": 0,
+              "z": -94.3030853271484
+            },
+            "runtime_id": "174768261845",
+            "state": 0,
+            "valid": true,
+            "velocity": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            }
+          },
+          {
+            "alive": true,
+            "command": "attack_move",
+            "destination": {
+              "x": -84.4000015258789,
+              "y": 0,
+              "z": -94.3499984741211
+            },
+            "destination_error": 1.16319167613983,
+            "position": {
+              "x": -83.2380828857422,
+              "y": 0,
+              "z": -94.2955932617188
+            },
+            "runtime_id": "563563466108",
+            "state": 0,
+            "valid": true,
+            "velocity": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            }
+          }
+        ]
+      },
+      {
+        "combat_event_counts": {
+          "attacks": 0,
+          "damage": 0,
+          "deaths": 0,
+          "projectiles": 0,
+          "target_transitions": 0
+        },
+        "hero_to_companion_distance": 3.48830461502075,
+        "pairwise_distances": [
+          3.48830461502075
+        ],
+        "physics_frame": 3636,
+        "process_frame": 4078,
+        "timestamp_ms": 71917,
+        "units": [
+          {
+            "alive": true,
+            "command": "attack_move",
+            "destination": {
+              "x": -85.5999984741211,
+              "y": 0,
+              "z": -94.3499984741211
+            },
+            "destination_error": 1.12735748291016,
+            "position": {
+              "x": -86.7263793945313,
+              "y": 0,
+              "z": -94.3030853271484
+            },
+            "runtime_id": "174768261845",
+            "state": 0,
+            "valid": true,
+            "velocity": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            }
+          },
+          {
+            "alive": true,
+            "command": "attack_move",
+            "destination": {
+              "x": -84.4000015258789,
+              "y": 0,
+              "z": -94.3499984741211
+            },
+            "destination_error": 1.16319167613983,
+            "position": {
+              "x": -83.2380828857422,
+              "y": 0,
+              "z": -94.2955932617188
+            },
+            "runtime_id": "563563466108",
+            "state": 0,
+            "valid": true,
+            "velocity": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            }
+          }
+        ]
+      },
+      {
+        "combat_event_counts": {
+          "attacks": 0,
+          "damage": 0,
+          "deaths": 0,
+          "projectiles": 0,
+          "target_transitions": 0
+        },
+        "hero_to_companion_distance": 3.48830461502075,
+        "pairwise_distances": [
+          3.48830461502075
+        ],
+        "physics_frame": 3639,
+        "process_frame": 4082,
+        "timestamp_ms": 71968,
+        "units": [
+          {
+            "alive": true,
+            "command": "attack_move",
+            "destination": {
+              "x": -85.5999984741211,
+              "y": 0,
+              "z": -94.3499984741211
+            },
+            "destination_error": 1.12735748291016,
+            "position": {
+              "x": -86.7263793945313,
+              "y": 0,
+              "z": -94.3030853271484
+            },
+            "runtime_id": "174768261845",
+            "state": 0,
+            "valid": true,
+            "velocity": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            }
+          },
+          {
+            "alive": true,
+            "command": "attack_move",
+            "destination": {
+              "x": -84.4000015258789,
+              "y": 0,
+              "z": -94.3499984741211
+            },
+            "destination_error": 1.16319167613983,
+            "position": {
+              "x": -83.2380828857422,
+              "y": 0,
+              "z": -94.2955932617188
+            },
+            "runtime_id": "563563466108",
+            "state": 0,
+            "valid": true,
+            "velocity": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            }
+          }
+        ]
+      },
+      {
+        "combat_event_counts": {
+          "attacks": 0,
+          "damage": 0,
+          "deaths": 0,
+          "projectiles": 0,
+          "target_transitions": 0
+        },
+        "hero_to_companion_distance": 3.48830461502075,
+        "pairwise_distances": [
+          3.48830461502075
+        ],
+        "physics_frame": 3643,
+        "process_frame": 4086,
+        "timestamp_ms": 72024,
+        "units": [
+          {
+            "alive": true,
+            "command": "attack_move",
+            "destination": {
+              "x": -85.5999984741211,
+              "y": 0,
+              "z": -94.3499984741211
+            },
+            "destination_error": 1.12735748291016,
+            "position": {
+              "x": -86.7263793945313,
+              "y": 0,
+              "z": -94.3030853271484
+            },
+            "runtime_id": "174768261845",
+            "state": 0,
+            "valid": true,
+            "velocity": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            }
+          },
+          {
+            "alive": true,
+            "command": "attack_move",
+            "destination": {
+              "x": -84.4000015258789,
+              "y": 0,
+              "z": -94.3499984741211
+            },
+            "destination_error": 1.16319167613983,
+            "position": {
+              "x": -83.2380828857422,
+              "y": 0,
+              "z": -94.2955932617188
+            },
+            "runtime_id": "563563466108",
+            "state": 0,
+            "valid": true,
+            "velocity": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            }
+          }
+        ]
+      },
+      {
+        "combat_event_counts": {
+          "attacks": 0,
+          "damage": 0,
+          "deaths": 0,
+          "projectiles": 0,
+          "target_transitions": 0
+        },
+        "hero_to_companion_distance": 3.48830461502075,
+        "pairwise_distances": [
+          3.48830461502075
+        ],
+        "physics_frame": 3646,
+        "process_frame": 4090,
+        "timestamp_ms": 72077,
+        "units": [
+          {
+            "alive": true,
+            "command": "attack_move",
+            "destination": {
+              "x": -85.5999984741211,
+              "y": 0,
+              "z": -94.3499984741211
+            },
+            "destination_error": 1.12735748291016,
+            "position": {
+              "x": -86.7263793945313,
+              "y": 0,
+              "z": -94.3030853271484
+            },
+            "runtime_id": "174768261845",
+            "state": 0,
+            "valid": true,
+            "velocity": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            }
+          },
+          {
+            "alive": true,
+            "command": "attack_move",
+            "destination": {
+              "x": -84.4000015258789,
+              "y": 0,
+              "z": -94.3499984741211
+            },
+            "destination_error": 1.16319167613983,
+            "position": {
+              "x": -83.2380828857422,
+              "y": 0,
+              "z": -94.2955932617188
+            },
+            "runtime_id": "563563466108",
+            "state": 0,
+            "valid": true,
+            "velocity": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            }
+          }
+        ]
+      }
+    ],
+    "public_movement_command_count": 3,
+    "public_stop_command_count": 1,
+    "sampled_unit_runtime_ids": [
+      "174768261845",
+      "563563466108"
+    ],
+    "settled_consecutive_samples": 20,
+    "settled_hold_seconds": 1
+  },
+  "status": "BLOCKED_R1K_COMPACT_SPACING_PHYSICALLY_UNACHIEVABLE"
+}

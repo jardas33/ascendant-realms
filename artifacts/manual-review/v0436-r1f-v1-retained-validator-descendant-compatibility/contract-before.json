@@ -1,0 +1,9 @@
+{
+  "schema": "v0436-r1f-v1-contract-before-v1",
+  "validator": "tools/godot/v0436R1FBoundaryPhysicsTool.mjs",
+  "failureMode": "hard-coded expectedBase equality",
+  "obsoleteExpectedBase": "6b14ba305afc4b3090d57f400da885550d512183",
+  "acceptedImplementationSha": "1111f306929665b40dab998de7e2aaad7f4f43ae",
+  "currentValidatedHead": "dbdac3a179c54b4b7a3227475b3b99c7b810f26f",
+  "result": "retained validator blocked on valid documentation descendant"
+}

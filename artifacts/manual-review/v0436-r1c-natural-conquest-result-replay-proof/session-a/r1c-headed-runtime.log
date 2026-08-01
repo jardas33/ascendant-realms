@@ -1,0 +1,42 @@
+Godot Engine v4.3.stable.official.77dcf97d8 - https://godotengine.org
+TextServer: Added interface "Dummy"
+TextServer: Added interface "ICU / HarfBuzz / Graphite (Built-in)"
+Native OpenGL API detected: 3.3: NVIDIA - NVIDIA GeForce GTX 1070
+NVAPI: Init OK!
+NVAPI: Profile not found, creating...
+NVAPI: Application not found in profile, creating...
+NVAPI: Error creating application: NVAPI_EXECUTABLE_ALREADY_IN_USE(code -167)
+Using "winink" pen tablet driver...
+Shader 'CanvasSdfShaderGLES3' SHA256: 2cd9c2091572025a0b7f8bc7a7c1731efa01da2070d64609ffd74f561d29ff2e
+Shader 'SkeletonShaderGLES3' SHA256: da75f7c36dc5576bdd6f3dbf974e0871cbfb519a9c21cf35e46234b7e04d27c1
+Shader 'ParticlesShaderGLES3' SHA256: 6c4d0cac5c89c022aede1aa076fa2a8ce03aa04a8123d2a35dfb8f139270a972
+Shader 'ParticlesCopyShaderGLES3' SHA256: f6eb9e86edc9c68d13ffdc7b8120abcd156649e044e292633c53c47fa1d6ef67
+Shader 'CopyShaderGLES3' SHA256: 70e8ba6f05908c8fb59d19c6414b4e1ee47e8f1fcf5a2e648ecc99bff9fc1b2a
+Shader 'CubemapFilterShaderGLES3' SHA256: b311654a8c5014c34363750d403787e2425473cd8a17a2d384b7c2be4f21f417
+Shader 'GlowShaderGLES3' SHA256: 95f7b410d30f5f2c20681cc9012e3fa9cf7bce8b270568065ecea41b94ac9fcb
+Shader 'PostShaderGLES3' SHA256: 451818b648d25c290aad9d9fb2b1b2abfa5dda01405819cb6072e3059f992667
+Shader 'CanvasShaderGLES3' SHA256: d78418e277bb55ef04f632f1fa30a34633820c28b75331e3bcd462c99e455683
+Shader 'CanvasOcclusionShaderGLES3' SHA256: dad61289b097a09ae5de98de45bcf5e97c3026a6c6ca1f66d7952bb8ea18402a
+Shader 'SceneShaderGLES3' SHA256: 339831fe9ea72180b645f01fc21b9bfd75e4dec686f88c151c216c32964b0874
+Shader 'SkyShaderGLES3' SHA256: 71e5f731a4f0b50fee9fd7d9f6098efbd96db30717aa34099ca68af806125586
+OpenGL API 3.3.0 NVIDIA 582.28 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce GTX 1070
+WASAPI: Activated output_device using IAudioClient3 interface
+WASAPI: wFormatTag = 65534
+WASAPI: nChannels = 2
+WASAPI: nSamplesPerSec = 44100
+WASAPI: nAvgBytesPerSec = 352800
+WASAPI: nBlockAlign = 8
+WASAPI: wBitsPerSample = 32
+WASAPI: cbSize = 22
+WASAPI: mix_rate = 44100
+WASAPI: fundamental_period_frames = 441
+WASAPI: min_period_frames = 441
+WASAPI: max_period_frames = 441
+WASAPI: selected a period frame size of 441
+WASAPI: detected 2 channels
+WASAPI: audio buffer frames: 441 calculated latency: 10ms
+
+TextServer: Primary interface set to: "ICU / HarfBuzz / Graphite (Built-in)".
+CORE API HASH: 966092234
+EDITOR API HASH: 444927587
+Loaded system CA certificates

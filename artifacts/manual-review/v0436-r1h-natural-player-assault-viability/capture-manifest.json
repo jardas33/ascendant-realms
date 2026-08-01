@@ -1,0 +1,11 @@
+{
+  "schema": "v0436-r1h-natural-player-assault-viability-capture-v1",
+  "status": "CAPTURE_COMPLETED",
+  "source_sha": "2f18357a64f3a8869ecf52481136cbc799370e5f",
+  "branch": "codex/v0436-first-complete-conquest-victory",
+  "sessions": [
+    "A",
+    "B"
+  ],
+  "pack": "artifacts/manual-review/v0436-r1h-natural-player-assault-viability/"
+}

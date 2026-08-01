@@ -1,0 +1,15 @@
+{
+  "schema": "v0436-r1j-range-reachability-v1",
+  "sessions": [
+    {
+      "session": "A",
+      "sample_count": 100000,
+      "audited_read_only": true
+    },
+    {
+      "session": "B",
+      "sample_count": 100000,
+      "audited_read_only": true
+    }
+  ]
+}

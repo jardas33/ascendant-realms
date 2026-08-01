@@ -1,0 +1,12 @@
+{
+  "production_scene": "scenes/main.tscn -> scenes/game_world.tscn",
+  "command": "Godot --path production/ascendant-realms-godot --resolution 1920x1080 --verbose",
+  "headed": true,
+  "hidden_window": false,
+  "forbidden": [
+    "--log-file",
+    "free units",
+    "resource injection",
+    "direct HP/death/defeat/result writes"
+  ]
+}

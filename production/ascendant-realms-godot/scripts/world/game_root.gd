@@ -92,8 +92,24 @@ func _ready() -> void:
 		tutorial = TutorialScript.new()
 		tut_layer.add_child(tutorial)
 		tutorial.setup(world, rts)
-	if OS.get_environment("ASCENDANT_V0435_CAPTURE") == "1":
+	if OS.get_environment("ASCENDANT_V0436_R1K_CAPTURE") == "1":
+		call_deferred("_start_v0436_r1k_capture")
+	elif OS.get_environment("ASCENDANT_V0436_R1J_CAPTURE") == "1":
+		call_deferred("_start_v0436_r1j_capture")
+	elif OS.get_environment("ASCENDANT_V0436_R1H_CAPTURE") == "1":
+		call_deferred("_start_v0436_r1h_capture")
+	elif OS.get_environment("ASCENDANT_V0436_R1G_CAPTURE") == "1":
+		call_deferred("_start_v0436_r1g_capture")
+	elif OS.get_environment("ASCENDANT_V0436_R1F_CAPTURE") == "1":
+		call_deferred("_start_v0436_r1f_capture")
+	elif OS.get_environment("ASCENDANT_V0436_R1_CAPTURE") == "1":
+		call_deferred("_start_v0436_r1_capture")
+	elif OS.get_environment("ASCENDANT_V0436_R1C_CAPTURE") == "1":
+		call_deferred("_start_v0436_r1c_capture")
+	elif OS.get_environment("ASCENDANT_V0435_CAPTURE") == "1":
 		call_deferred("_start_v0435_capture")
+	elif OS.get_environment("ASCENDANT_V0436_CAPTURE") == "1":
+		call_deferred("_start_v0436_capture")
 	elif OS.get_environment("ASCENDANT_V0434_CAPTURE") == "1":
 		call_deferred("_start_v0434_capture")
 	elif OS.get_environment("ASCENDANT_V0433_CAPTURE") == "1":
@@ -120,6 +136,46 @@ func _start_v0434_capture() -> void:
 
 func _start_v0435_capture() -> void:
 	var runner = get_node_or_null("/root/V0435Capture")
+	if runner and runner.has_method("capture_gameplay"):
+		runner.capture_gameplay(self)
+
+func _start_v0436_capture() -> void:
+	var runner = get_node_or_null("/root/V0436Capture")
+	if runner and runner.has_method("capture_gameplay"):
+		runner.capture_gameplay(self)
+
+func _start_v0436_r1_capture() -> void:
+	var runner = get_node_or_null("/root/V0436R1Capture")
+	if runner and runner.has_method("capture_gameplay"):
+		runner.capture_gameplay(self)
+
+func _start_v0436_r1f_capture() -> void:
+	var runner = get_node_or_null("/root/V0436R1FCapture")
+	if runner and runner.has_method("capture_gameplay"):
+		runner.capture_gameplay(self)
+
+func _start_v0436_r1c_capture() -> void:
+	var runner = get_node_or_null("/root/V0436R1CCapture")
+	if runner and runner.has_method("capture_gameplay"):
+		runner.capture_gameplay(self)
+
+func _start_v0436_r1g_capture() -> void:
+	var runner = get_node_or_null("/root/V0436R1GCapture")
+	if runner and runner.has_method("capture_gameplay"):
+		runner.capture_gameplay(self)
+
+func _start_v0436_r1h_capture() -> void:
+	var runner = get_node_or_null("/root/V0436R1HCapture")
+	if runner and runner.has_method("capture_gameplay"):
+		runner.capture_gameplay(self)
+
+func _start_v0436_r1j_capture() -> void:
+	var runner = get_node_or_null("/root/V0436R1JCapture")
+	if runner and runner.has_method("capture_gameplay"):
+		runner.capture_gameplay(self)
+
+func _start_v0436_r1k_capture() -> void:
+	var runner = get_node_or_null("/root/V0436R1KCapture")
 	if runner and runner.has_method("capture_gameplay"):
 		runner.capture_gameplay(self)
 

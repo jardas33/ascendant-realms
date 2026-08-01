@@ -1,0 +1,19 @@
+{
+  "schema": "v0436-r1f-v1-scope-audit-v1",
+  "productionCodeChanged": false,
+  "gameplayChanged": false,
+  "captureWiringChanged": false,
+  "validatorContractChanged": true,
+  "allowedImplementationPaths": [
+    "tools/godot/v0436R1FBoundaryPhysicsTool.mjs",
+    "tools/godot/v0436R1FValidatorContract.mjs",
+    "tools/godot/v0436R1FValidatorContract.test.ts",
+    "tools/godot/v0436R1DHeadedStartupRecoveryTool.mjs"
+  ],
+  "allowedPublicationPaths": [
+    "docs/V0436_R1F_V1_RETAINED_VALIDATOR_DESCENDANT_COMPATIBILITY_REPORT.md",
+    "docs/V0436_R1F_BOUNDARY_RECOVERY_PHYSICS_TRUTH_REPORT.md",
+    "artifacts/manual-review/v0436-r1f-v1-retained-validator-descendant-compatibility/"
+  ],
+  "forbiddenWorkResumed": ["R1G", "R1C", "conquest", "result/replay", "balance", "AI", "combat", "economy", "v0.437", "P1-P4"]
+}

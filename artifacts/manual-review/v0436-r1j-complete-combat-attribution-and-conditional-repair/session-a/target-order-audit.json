@@ -1,0 +1,165 @@
+{
+  "audits": [
+    {
+      "commands": [
+        {
+          "attack_move_return": true,
+          "attack_target_return": true,
+          "target": {
+            "alive": true,
+            "definition_id": "lioraen_thorn_ranger",
+            "runtime_id": "175623899962",
+            "team": 1
+          }
+        }
+      ],
+      "elapsed_wall_seconds": 24.954,
+      "frames": [],
+      "label": "A",
+      "player_survivors": [
+        {
+          "dead": false,
+          "definition_id": "barrosan_spear_guard",
+          "hp": 180,
+          "max_hp": 180,
+          "navigation_command": "attack",
+          "position": {
+            "x": -2.53636479377747,
+            "y": 0,
+            "z": -8.1855583190918
+          },
+          "role": "defender",
+          "runtime_id": "173124094652",
+          "state": 0,
+          "team": 0
+        },
+        {
+          "dead": false,
+          "definition_id": "barrosan_hero_thane",
+          "hp": 398.5,
+          "max_hp": 493,
+          "navigation_command": "attack",
+          "position": {
+            "x": 40.530403137207,
+            "y": 0,
+            "z": 41.8638801574707
+          },
+          "role": "hero",
+          "runtime_id": "173577079507",
+          "state": 3,
+          "team": 0
+        },
+        {
+          "dead": false,
+          "definition_id": "barrosan_spear_guard",
+          "hp": 180,
+          "max_hp": 180,
+          "navigation_command": "attack",
+          "position": {
+            "x": 19.1914520263672,
+            "y": 0,
+            "z": 10.8710279464722
+          },
+          "role": "defender",
+          "runtime_id": "540561902945",
+          "state": 0,
+          "team": 0
+        },
+        {
+          "dead": false,
+          "definition_id": "barrosan_spear_guard",
+          "hp": 180,
+          "max_hp": 180,
+          "navigation_command": "attack",
+          "position": {
+            "x": 18.1649494171143,
+            "y": 0,
+            "z": 10.7462615966797
+          },
+          "role": "defender",
+          "runtime_id": "666592349608",
+          "state": 0,
+          "team": 0
+        },
+        {
+          "dead": false,
+          "definition_id": "barrosan_crag_archer",
+          "hp": 90,
+          "max_hp": 90,
+          "navigation_command": "attack",
+          "position": {
+            "x": 33.9785079956055,
+            "y": 0,
+            "z": 28.2563381195068
+          },
+          "role": "ranged",
+          "runtime_id": "778093727192",
+          "state": 3,
+          "team": 0
+        },
+        {
+          "dead": false,
+          "definition_id": "barrosan_crag_archer",
+          "hp": 90,
+          "max_hp": 90,
+          "navigation_command": "attack",
+          "position": {
+            "x": 32.913818359375,
+            "y": 0,
+            "z": 28.245777130127
+          },
+          "role": "ranged",
+          "runtime_id": "889964203528",
+          "state": 3,
+          "team": 0
+        }
+      ],
+      "started_ms": 73722,
+      "target": {
+        "alive": true,
+        "definition_id": "lioraen_thorn_ranger",
+        "runtime_id": "175623899962",
+        "team": 1
+      },
+      "target_final": {
+        "alive": false,
+        "definition_id": "lioraen_thorn_ranger",
+        "runtime_id": "175623899962",
+        "team": 1
+      }
+    },
+    {
+      "commands": [
+        {
+          "attack_move_return": true,
+          "attack_target_return": true,
+          "target": {
+            "alive": true,
+            "definition_id": "lioraen_hero_warden",
+            "runtime_id": "176076884817",
+            "team": 1
+          }
+        }
+      ],
+      "elapsed_wall_seconds": 21.525,
+      "frames": [],
+      "label": "B",
+      "player_survivors": [],
+      "started_ms": 98676,
+      "target": {
+        "alive": true,
+        "definition_id": "lioraen_hero_warden",
+        "runtime_id": "176076884817",
+        "team": 1
+      },
+      "target_final": {
+        "alive": true,
+        "definition_id": "lioraen_hero_warden",
+        "runtime_id": "176076884817",
+        "team": 1
+      }
+    }
+  ],
+  "intentional_difference": "defender-first",
+  "session": "A"
+}

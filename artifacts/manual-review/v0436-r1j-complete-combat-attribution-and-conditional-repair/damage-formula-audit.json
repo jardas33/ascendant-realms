@@ -1,0 +1,6 @@
+{
+  "schema": "v0436-r1j-damage-formula-audit-v1",
+  "source": "production/ascendant-realms-godot/scripts/game/game_data.gd",
+  "observation_policy": "runtime combat events are copied read-only; no balance or formula changes",
+  "formula": "runtime formula is audited from source and compared with observed damage events"
+}

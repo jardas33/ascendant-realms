@@ -1,0 +1,5023 @@
+{
+  "observed": {
+    "assault_commands": [
+      {
+        "issued_attack_move": true,
+        "issued_attack_target": true,
+        "label": "opening_enemy_contact",
+        "source": "RTSController public command",
+        "target_id": "lioraen_thorn_ranger",
+        "target_runtime_id": "678873271734",
+        "timestamp": 60554
+      },
+      {
+        "issued_attack_move": true,
+        "issued_attack_target": true,
+        "label": "enemy_hq",
+        "source": "RTSController public command",
+        "target_id": "lioraen_groveheart",
+        "target_runtime_id": "170540403426",
+        "timestamp": 65876
+      },
+      {
+        "issued_attack_move": true,
+        "issued_attack_target": true,
+        "label": "remaining_building",
+        "source": "RTSController public command",
+        "target_id": "lioraen_groveheart",
+        "target_runtime_id": "170540403426",
+        "timestamp": 70748
+      },
+      {
+        "issued_attack_move": true,
+        "issued_attack_target": true,
+        "label": "remaining_building",
+        "source": "RTSController public command",
+        "target_id": "lioraen_thornhall",
+        "target_runtime_id": "187250511077",
+        "timestamp": 74653
+      },
+      {
+        "issued_attack_move": true,
+        "issued_attack_target": true,
+        "label": "remaining_building",
+        "source": "RTSController public command",
+        "target_id": "lioraen_lifewell",
+        "target_runtime_id": "289390202139",
+        "timestamp": 78710
+      },
+      {
+        "issued_attack_move": true,
+        "issued_attack_target": true,
+        "label": "rebuild_worker",
+        "source": "RTSController public command",
+        "target_id": "lioraen_worker",
+        "target_runtime_id": "170775284461",
+        "timestamp": 83324
+      },
+      {
+        "issued_attack_move": true,
+        "issued_attack_target": true,
+        "label": "rebuild_worker",
+        "source": "RTSController public command",
+        "target_id": "lioraen_worker",
+        "target_runtime_id": "171228269316",
+        "timestamp": 87218
+      },
+      {
+        "issued_attack_move": true,
+        "issued_attack_target": true,
+        "label": "rebuild_worker",
+        "source": "RTSController public command",
+        "target_id": "lioraen_worker",
+        "target_runtime_id": "171681254171",
+        "timestamp": 91272
+      },
+      {
+        "issued_attack_move": true,
+        "issued_attack_target": true,
+        "label": "rebuild_worker",
+        "source": "RTSController public command",
+        "target_id": "lioraen_worker",
+        "target_runtime_id": "274441702666",
+        "timestamp": 95329
+      },
+      {
+        "issued_attack_move": true,
+        "issued_attack_target": true,
+        "label": "rebuild_worker",
+        "source": "RTSController public command",
+        "target_id": "lioraen_worker",
+        "target_runtime_id": "375608315176",
+        "timestamp": 98370
+      }
+    ],
+    "frames": [
+      "01_R1C_MATCH_CONFIGURATION.png",
+      "02_R1C_INITIAL_PRODUCTION_MATCH.png",
+      "03_R1C_NAVIGATION_READY.png",
+      "04_R1C_WAR_HALL_PLACED.png",
+      "05_R1C_WORKERS_TRAVELLING_TO_BUILD.png",
+      "06_R1C_WAR_HALL_CONSTRUCTION_PROGRESS.png",
+      "07_R1C_WAR_HALL_COMPLETED.png",
+      "08_R1C_ARCHER_QUEUE_TRANSACTIONS.png",
+      "09_R1C_FOUR_ARCHERS_READY.png",
+      "10_R1C_ASSAULT_COMMAND_ISSUED.png",
+      "11_R1C_ARMY_CROSSING_HOLLOWSPAN.png",
+      "12_R1C_ENEMY_CONTACT.png",
+      "13_R1C_REAL_COMBAT_DAMAGE.png",
+      "14_R1C_ENEMY_BUILDING_DAMAGE.png",
+      "15_R1C_FIRST_BUILDING_DESTROYED.png",
+      "16_R1C_ENEMY_HQ_DESTROYED.png",
+      "17_R1C_REBUILD_CAPABILITY_ELIMINATED.png",
+      "18_R1C_FINAL_CONQUEST_PREDICATE.png"
+    ],
+    "match_ended": false,
+    "position_samples": [
+      {
+        "label": "opening_enemy_contact",
+        "timestamp": 60864,
+        "units": [
+          {
+            "id": "barrosan_spear_guard",
+            "position": {
+              "x": -98.5726318359375,
+              "y": 0,
+              "z": -108.325897216797
+            },
+            "runtime_id": "169634433716",
+            "speed": 3
+          },
+          {
+            "id": "barrosan_hero_thane",
+            "position": {
+              "x": -91.9490814208984,
+              "y": 0,
+              "z": -91.7021789550781
+            },
+            "runtime_id": "170087418571",
+            "speed": 4.19999933242798
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": -74.6494750976563,
+              "y": 0,
+              "z": -91.4064636230469
+            },
+            "runtime_id": "407954787647",
+            "speed": 3.49999976158142
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": -75.5159683227539,
+              "y": 0,
+              "z": -91.9105529785156
+            },
+            "runtime_id": "527962213720",
+            "speed": 3.50000023841858
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": -75.0127258300781,
+              "y": 0,
+              "z": -92.8597564697266
+            },
+            "runtime_id": "648087080351",
+            "speed": 3.5
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": -74.027473449707,
+              "y": 0,
+              "z": -92.3432159423828
+            },
+            "runtime_id": "768027397583",
+            "speed": 3.5
+          }
+        ]
+      },
+      {
+        "label": "opening_enemy_contact",
+        "timestamp": 61370,
+        "units": [
+          {
+            "id": "barrosan_spear_guard",
+            "position": {
+              "x": -96.5613403320313,
+              "y": 0,
+              "z": -105.966934204102
+            },
+            "runtime_id": "169634433716",
+            "speed": 3
+          },
+          {
+            "id": "barrosan_hero_thane",
+            "position": {
+              "x": -89.0591506958008,
+              "y": 0,
+              "z": -88.4643402099609
+            },
+            "runtime_id": "170087418571",
+            "speed": 4.19999933242798
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": -72.3760528564453,
+              "y": 0,
+              "z": -88.5936660766602
+            },
+            "runtime_id": "407954787647",
+            "speed": 3.49999976158142
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": -73.2397994995117,
+              "y": 0,
+              "z": -89.0998840332031
+            },
+            "runtime_id": "527962213720",
+            "speed": 3.5
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": -72.7613754272461,
+              "y": 0,
+              "z": -90.0291900634766
+            },
+            "runtime_id": "648087080351",
+            "speed": 3.50000023841858
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": -71.7829360961914,
+              "y": 0,
+              "z": -89.5073318481445
+            },
+            "runtime_id": "768027397583",
+            "speed": 3.5
+          }
+        ]
+      },
+      {
+        "label": "opening_enemy_contact",
+        "timestamp": 61875,
+        "units": [
+          {
+            "id": "barrosan_spear_guard",
+            "position": {
+              "x": -94.6149291992188,
+              "y": 0,
+              "z": -103.684066772461
+            },
+            "runtime_id": "169634433716",
+            "speed": 2.99999976158142
+          },
+          {
+            "id": "barrosan_hero_thane",
+            "position": {
+              "x": -86.2624435424805,
+              "y": 0,
+              "z": -85.3309478759766
+            },
+            "runtime_id": "170087418571",
+            "speed": 4.19999980926514
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": -70.1785659790039,
+              "y": 0,
+              "z": -85.869499206543
+            },
+            "runtime_id": "407954787647",
+            "speed": 3.50000023841858
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": -71.0417938232422,
+              "y": 0,
+              "z": -86.3761215209961
+            },
+            "runtime_id": "527962213720",
+            "speed": 3.5
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": -70.5826416015625,
+              "y": 0,
+              "z": -87.2899551391602
+            },
+            "runtime_id": "648087080351",
+            "speed": 3.5
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": -69.6075744628906,
+              "y": 0,
+              "z": -86.7654876708984
+            },
+            "runtime_id": "768027397583",
+            "speed": 3.49999976158142
+          }
+        ]
+      },
+      {
+        "label": "opening_enemy_contact",
+        "timestamp": 62381,
+        "units": [
+          {
+            "id": "barrosan_spear_guard",
+            "position": {
+              "x": -92.6684951782227,
+              "y": 0,
+              "z": -101.40119934082
+            },
+            "runtime_id": "169634433716",
+            "speed": 3
+          },
+          {
+            "id": "barrosan_hero_thane",
+            "position": {
+              "x": -83.4657363891602,
+              "y": 0,
+              "z": -82.1975555419922
+            },
+            "runtime_id": "170087418571",
+            "speed": 4.19999933242798
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": -67.9503173828125,
+              "y": 0,
+              "z": -83.1797103881836
+            },
+            "runtime_id": "407954787647",
+            "speed": 3.49999976158142
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": -68.8635559082031,
+              "y": 0,
+              "z": -83.6375503540039
+            },
+            "runtime_id": "527962213720",
+            "speed": 3.5
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": -68.4039001464844,
+              "y": 0,
+              "z": -84.5507278442383
+            },
+            "runtime_id": "648087080351",
+            "speed": 3.5
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": -67.4233169555664,
+              "y": 0,
+              "z": -84.0390853881836
+            },
+            "runtime_id": "768027397583",
+            "speed": 3.5
+          }
+        ]
+      },
+      {
+        "label": "opening_enemy_contact",
+        "timestamp": 62888,
+        "units": [
+          {
+            "id": "barrosan_spear_guard",
+            "position": {
+              "x": -90.6569976806641,
+              "y": 0,
+              "z": -99.042236328125
+            },
+            "runtime_id": "169634433716",
+            "speed": 3
+          },
+          {
+            "id": "barrosan_hero_thane",
+            "position": {
+              "x": -80.5758056640625,
+              "y": 0,
+              "z": -78.959716796875
+            },
+            "runtime_id": "170087418571",
+            "speed": 4.19999980926514
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": -65.6714096069336,
+              "y": 0,
+              "z": -80.3772277832031
+            },
+            "runtime_id": "407954787647",
+            "speed": 3.49999976158142
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": -66.6023635864258,
+              "y": 0,
+              "z": -80.8148956298828
+            },
+            "runtime_id": "527962213720",
+            "speed": 3.49999976158142
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": -66.1525497436523,
+              "y": 0,
+              "z": -81.7201614379883
+            },
+            "runtime_id": "648087080351",
+            "speed": 3.49999976158142
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": -65.1554489135742,
+              "y": 0,
+              "z": -81.2398910522461
+            },
+            "runtime_id": "768027397583",
+            "speed": 3.5
+          }
+        ]
+      },
+      {
+        "label": "opening_enemy_contact",
+        "timestamp": 63396,
+        "units": [
+          {
+            "id": "barrosan_spear_guard",
+            "position": {
+              "x": -88.7103881835938,
+              "y": 0,
+              "z": -96.7593688964844
+            },
+            "runtime_id": "169634433716",
+            "speed": 3
+          },
+          {
+            "id": "barrosan_hero_thane",
+            "position": {
+              "x": -77.7790985107422,
+              "y": 0,
+              "z": -75.8263092041016
+            },
+            "runtime_id": "170087418571",
+            "speed": 4.19999980926514
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": -63.4937782287598,
+              "y": 0,
+              "z": -77.6371688842773
+            },
+            "runtime_id": "407954787647",
+            "speed": 3.5
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": -64.4189605712891,
+              "y": 0,
+              "z": -78.0794372558594
+            },
+            "runtime_id": "527962213720",
+            "speed": 3.50000023841858
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": -63.9738235473633,
+              "y": 0,
+              "z": -78.9809036254883
+            },
+            "runtime_id": "648087080351",
+            "speed": 3.5
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": -62.9802551269531,
+              "y": 0,
+              "z": -78.4979019165039
+            },
+            "runtime_id": "768027397583",
+            "speed": 3.49999976158142
+          }
+        ]
+      },
+      {
+        "label": "opening_enemy_contact",
+        "timestamp": 63902,
+        "units": [
+          {
+            "id": "barrosan_spear_guard",
+            "position": {
+              "x": -86.6988906860352,
+              "y": 0,
+              "z": -94.4004058837891
+            },
+            "runtime_id": "169634433716",
+            "speed": 3
+          },
+          {
+            "id": "barrosan_hero_thane",
+            "position": {
+              "x": -74.8891677856445,
+              "y": 0,
+              "z": -72.5883026123047
+            },
+            "runtime_id": "170087418571",
+            "speed": 4.19999980926514
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": -61.2259292602539,
+              "y": 0,
+              "z": -74.8223114013672
+            },
+            "runtime_id": "407954787647",
+            "speed": 3.5
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": -62.2008972167969,
+              "y": 0,
+              "z": -75.2265777587891
+            },
+            "runtime_id": "527962213720",
+            "speed": 3.49999976158142
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": -61.7224502563477,
+              "y": 0,
+              "z": -76.1503829956055
+            },
+            "runtime_id": "648087080351",
+            "speed": 3.5
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": -60.7194557189941,
+              "y": 0,
+              "z": -75.6877746582031
+            },
+            "runtime_id": "768027397583",
+            "speed": 3.5
+          }
+        ]
+      },
+      {
+        "label": "opening_enemy_contact",
+        "timestamp": 64409,
+        "units": [
+          {
+            "id": "barrosan_spear_guard",
+            "position": {
+              "x": -84.7522888183594,
+              "y": 0,
+              "z": -92.1175384521484
+            },
+            "runtime_id": "169634433716",
+            "speed": 3
+          },
+          {
+            "id": "barrosan_hero_thane",
+            "position": {
+              "x": -72.0924606323242,
+              "y": 0,
+              "z": -69.4547653198242
+            },
+            "runtime_id": "170087418571",
+            "speed": 4.19999980926514
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": -59.0297203063965,
+              "y": 0,
+              "z": -72.0986785888672
+            },
+            "runtime_id": "407954787647",
+            "speed": 3.49999976158142
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": -60.0124931335449,
+              "y": 0,
+              "z": -72.4952774047852
+            },
+            "runtime_id": "527962213720",
+            "speed": 3.49999976158142
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": -59.5437164306641,
+              "y": 0,
+              "z": -73.4111480712891
+            },
+            "runtime_id": "648087080351",
+            "speed": 3.49999976158142
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": -58.5310516357422,
+              "y": 0,
+              "z": -72.9693908691406
+            },
+            "runtime_id": "768027397583",
+            "speed": 3.49999976158142
+          }
+        ]
+      },
+      {
+        "label": "after_opening_contact",
+        "timestamp": 64409,
+        "units": [
+          {
+            "id": "barrosan_spear_guard",
+            "position": {
+              "x": -84.7522888183594,
+              "y": 0,
+              "z": -92.1175384521484
+            },
+            "runtime_id": "169634433716",
+            "speed": 3
+          },
+          {
+            "id": "barrosan_hero_thane",
+            "position": {
+              "x": -72.0924606323242,
+              "y": 0,
+              "z": -69.4547653198242
+            },
+            "runtime_id": "170087418571",
+            "speed": 4.19999980926514
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": -59.0297203063965,
+              "y": 0,
+              "z": -72.0986785888672
+            },
+            "runtime_id": "407954787647",
+            "speed": 3.49999976158142
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": -60.0124931335449,
+              "y": 0,
+              "z": -72.4952774047852
+            },
+            "runtime_id": "527962213720",
+            "speed": 3.49999976158142
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": -59.5437164306641,
+              "y": 0,
+              "z": -73.4111480712891
+            },
+            "runtime_id": "648087080351",
+            "speed": 3.49999976158142
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": -58.5310516357422,
+              "y": 0,
+              "z": -72.9693908691406
+            },
+            "runtime_id": "768027397583",
+            "speed": 3.49999976158142
+          }
+        ]
+      },
+      {
+        "label": "enemy_hq",
+        "timestamp": 66212,
+        "units": [
+          {
+            "id": "barrosan_spear_guard",
+            "position": {
+              "x": -81.5999221801758,
+              "y": 0,
+              "z": -88.6342239379883
+            },
+            "runtime_id": "169634433716",
+            "speed": 3
+          },
+          {
+            "id": "barrosan_hero_thane",
+            "position": {
+              "x": -67.5586395263672,
+              "y": 0,
+              "z": -64.6907348632813
+            },
+            "runtime_id": "170087418571",
+            "speed": 4.19999980926514
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": -55.4593887329102,
+              "y": 0,
+              "z": -67.9467163085938
+            },
+            "runtime_id": "407954787647",
+            "speed": 3.5
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": -56.4563293457031,
+              "y": 0,
+              "z": -68.3274993896484
+            },
+            "runtime_id": "527962213720",
+            "speed": 3.5
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": -55.9846267700195,
+              "y": 0,
+              "z": -69.2477798461914
+            },
+            "runtime_id": "648087080351",
+            "speed": 3.49999976158142
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": -54.9636001586914,
+              "y": 0,
+              "z": -68.8195419311523
+            },
+            "runtime_id": "768027397583",
+            "speed": 3.5
+          }
+        ]
+      },
+      {
+        "label": "enemy_hq",
+        "timestamp": 66716,
+        "units": [
+          {
+            "id": "barrosan_spear_guard",
+            "position": {
+              "x": -79.5193862915039,
+              "y": 0,
+              "z": -86.4728927612305
+            },
+            "runtime_id": "169634433716",
+            "speed": 3
+          },
+          {
+            "id": "barrosan_hero_thane",
+            "position": {
+              "x": -64.5632629394531,
+              "y": 0,
+              "z": -61.7466278076172
+            },
+            "runtime_id": "170087418571",
+            "speed": 4.19999980926514
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": -53.088134765625,
+              "y": 0,
+              "z": -65.3723983764648
+            },
+            "runtime_id": "407954787647",
+            "speed": 3.50000023841858
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": -54.0735549926758,
+              "y": 0,
+              "z": -65.7637939453125
+            },
+            "runtime_id": "527962213720",
+            "speed": 3.49999976158142
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": -53.6126098632813,
+              "y": 0,
+              "z": -66.6741256713867
+            },
+            "runtime_id": "648087080351",
+            "speed": 3.49999976158142
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": -52.5937232971191,
+              "y": 0,
+              "z": -66.2439651489258
+            },
+            "runtime_id": "768027397583",
+            "speed": 3.5
+          }
+        ]
+      },
+      {
+        "label": "enemy_hq",
+        "timestamp": 67224,
+        "units": [
+          {
+            "id": "barrosan_spear_guard",
+            "position": {
+              "x": -77.369499206543,
+              "y": 0,
+              "z": -84.2395172119141
+            },
+            "runtime_id": "169634433716",
+            "speed": 3
+          },
+          {
+            "id": "barrosan_hero_thane",
+            "position": {
+              "x": -61.4680404663086,
+              "y": 0,
+              "z": -58.7043838500977
+            },
+            "runtime_id": "170087418571",
+            "speed": 4.19999980926514
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": -50.627498626709,
+              "y": 0,
+              "z": -62.7229232788086
+            },
+            "runtime_id": "407954787647",
+            "speed": 3.5
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": -51.623908996582,
+              "y": 0,
+              "z": -63.1035995483398
+            },
+            "runtime_id": "527962213720",
+            "speed": 3.5
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": -51.1615219116211,
+              "y": 0,
+              "z": -64.0146255493164
+            },
+            "runtime_id": "648087080351",
+            "speed": 3.49999976158142
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": -50.1368713378906,
+              "y": 0,
+              "z": -63.5965843200684
+            },
+            "runtime_id": "768027397583",
+            "speed": 3.5
+          }
+        ]
+      },
+      {
+        "label": "enemy_hq",
+        "timestamp": 67731,
+        "units": [
+          {
+            "id": "barrosan_spear_guard",
+            "position": {
+              "x": -75.2889633178711,
+              "y": 0,
+              "z": -82.0781860351563
+            },
+            "runtime_id": "169634433716",
+            "speed": 3
+          },
+          {
+            "id": "barrosan_hero_thane",
+            "position": {
+              "x": -58.4726638793945,
+              "y": 0,
+              "z": -55.7602767944336
+            },
+            "runtime_id": "170087418571",
+            "speed": 4.19999980926514
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": -48.2402000427246,
+              "y": 0,
+              "z": -60.164722442627
+            },
+            "runtime_id": "407954787647",
+            "speed": 3.5
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": -49.243465423584,
+              "y": 0,
+              "z": -60.5377616882324
+            },
+            "runtime_id": "527962213720",
+            "speed": 3.5
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": -48.7894973754883,
+              "y": 0,
+              "z": -61.4409828186035
+            },
+            "runtime_id": "648087080351",
+            "speed": 3.49999976158142
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": -47.7560043334961,
+              "y": 0,
+              "z": -61.0418319702148
+            },
+            "runtime_id": "768027397583",
+            "speed": 3.49999976158142
+          }
+        ]
+      },
+      {
+        "label": "enemy_hq",
+        "timestamp": 68238,
+        "units": [
+          {
+            "id": "barrosan_spear_guard",
+            "position": {
+              "x": -73.1390762329102,
+              "y": 0,
+              "z": -79.8448104858398
+            },
+            "runtime_id": "169634433716",
+            "speed": 2.99999976158142
+          },
+          {
+            "id": "barrosan_hero_thane",
+            "position": {
+              "x": -55.37744140625,
+              "y": 0,
+              "z": -52.7180328369141
+            },
+            "runtime_id": "170087418571",
+            "speed": 4.19999980926514
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": -45.7884788513184,
+              "y": 0,
+              "z": -57.5070991516113
+            },
+            "runtime_id": "407954787647",
+            "speed": 3.49999976158142
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": -46.8078536987305,
+              "y": 0,
+              "z": -57.8657608032227
+            },
+            "runtime_id": "527962213720",
+            "speed": 3.5
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": -46.3384132385254,
+              "y": 0,
+              "z": -58.7815399169922
+            },
+            "runtime_id": "648087080351",
+            "speed": 3.50000023841858
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": -45.3055534362793,
+              "y": 0,
+              "z": -58.3841819763184
+            },
+            "runtime_id": "768027397583",
+            "speed": 3.5
+          }
+        ]
+      },
+      {
+        "label": "enemy_hq",
+        "timestamp": 68744,
+        "units": [
+          {
+            "id": "barrosan_spear_guard",
+            "position": {
+              "x": -71.0585403442383,
+              "y": 0,
+              "z": -77.683479309082
+            },
+            "runtime_id": "169634433716",
+            "speed": 3
+          },
+          {
+            "id": "barrosan_hero_thane",
+            "position": {
+              "x": -52.3820648193359,
+              "y": 0,
+              "z": -49.77392578125
+            },
+            "runtime_id": "170087418571",
+            "speed": 4.19999980926514
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": -43.4189262390137,
+              "y": 0,
+              "z": -54.931209564209
+            },
+            "runtime_id": "407954787647",
+            "speed": 3.5
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": -44.4251556396484,
+              "y": 0,
+              "z": -55.3020248413086
+            },
+            "runtime_id": "527962213720",
+            "speed": 3.5
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": -43.9663887023926,
+              "y": 0,
+              "z": -56.2078971862793
+            },
+            "runtime_id": "648087080351",
+            "speed": 3.5
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": -42.9363784790039,
+              "y": 0,
+              "z": -55.8079452514648
+            },
+            "runtime_id": "768027397583",
+            "speed": 3.49999976158142
+          }
+        ]
+      },
+      {
+        "label": "enemy_hq",
+        "timestamp": 69250,
+        "units": [
+          {
+            "id": "barrosan_spear_guard",
+            "position": {
+              "x": -68.9780044555664,
+              "y": 0,
+              "z": -75.5221481323242
+            },
+            "runtime_id": "169634433716",
+            "speed": 3
+          },
+          {
+            "id": "barrosan_hero_thane",
+            "position": {
+              "x": -49.3866882324219,
+              "y": 0,
+              "z": -46.8298187255859
+            },
+            "runtime_id": "170087418571",
+            "speed": 4.19999980926514
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": -41.0478096008301,
+              "y": 0,
+              "z": -52.3567543029785
+            },
+            "runtime_id": "407954787647",
+            "speed": 3.5
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": -42.0654182434082,
+              "y": 0,
+              "z": -52.7181701660156
+            },
+            "runtime_id": "527962213720",
+            "speed": 3.5
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": -41.5943641662598,
+              "y": 0,
+              "z": -53.6342506408691
+            },
+            "runtime_id": "648087080351",
+            "speed": 3.5
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": -40.5655174255371,
+              "y": 0,
+              "z": -53.2332649230957
+            },
+            "runtime_id": "768027397583",
+            "speed": 3.49999976158142
+          }
+        ]
+      },
+      {
+        "label": "enemy_hq",
+        "timestamp": 69758,
+        "units": [
+          {
+            "id": "barrosan_spear_guard",
+            "position": {
+              "x": -66.8281173706055,
+              "y": 0,
+              "z": -73.2887725830078
+            },
+            "runtime_id": "169634433716",
+            "speed": 3
+          },
+          {
+            "id": "barrosan_hero_thane",
+            "position": {
+              "x": -46.2914657592773,
+              "y": 0,
+              "z": -43.7875747680664
+            },
+            "runtime_id": "170087418571",
+            "speed": 4.19999980926514
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": -38.5913848876953,
+              "y": 0,
+              "z": -49.7035598754883
+            },
+            "runtime_id": "407954787647",
+            "speed": 3.49999976158142
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": -39.6096687316895,
+              "y": 0,
+              "z": -50.0631866455078
+            },
+            "runtime_id": "527962213720",
+            "speed": 3.5
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": -39.1432800292969,
+              "y": 0,
+              "z": -50.9748001098633
+            },
+            "runtime_id": "648087080351",
+            "speed": 3.5
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": -38.1126480102539,
+              "y": 0,
+              "z": -50.5817413330078
+            },
+            "runtime_id": "768027397583",
+            "speed": 3.5
+          }
+        ]
+      },
+      {
+        "label": "remaining_building",
+        "timestamp": 71093,
+        "units": [
+          {
+            "id": "barrosan_spear_guard",
+            "position": {
+              "x": -64.1232681274414,
+              "y": 0,
+              "z": -70.4790420532227
+            },
+            "runtime_id": "169634433716",
+            "speed": 3
+          },
+          {
+            "id": "barrosan_hero_thane",
+            "position": {
+              "x": -42.3974761962891,
+              "y": 0,
+              "z": -39.9602355957031
+            },
+            "runtime_id": "170087418571",
+            "speed": 4.19999933242798
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": -35.5123710632324,
+              "y": 0,
+              "z": -46.3537406921387
+            },
+            "runtime_id": "407954787647",
+            "speed": 3.5
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": -36.5252876281738,
+              "y": 0,
+              "z": -46.7186965942383
+            },
+            "runtime_id": "527962213720",
+            "speed": 3.5
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": -36.0596504211426,
+              "y": 0,
+              "z": -47.6290550231934
+            },
+            "runtime_id": "648087080351",
+            "speed": 3.49999976158142
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": -35.0288619995117,
+              "y": 0,
+              "z": -47.2362060546875
+            },
+            "runtime_id": "768027397583",
+            "speed": 3.5
+          }
+        ]
+      },
+      {
+        "label": "remaining_building",
+        "timestamp": 71597,
+        "units": [
+          {
+            "id": "barrosan_spear_guard",
+            "position": {
+              "x": -62.0426139831543,
+              "y": 0,
+              "z": -68.3177108764648
+            },
+            "runtime_id": "169634433716",
+            "speed": 3
+          },
+          {
+            "id": "barrosan_hero_thane",
+            "position": {
+              "x": -39.402099609375,
+              "y": 0,
+              "z": -37.0161285400391
+            },
+            "runtime_id": "170087418571",
+            "speed": 4.19999980926514
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": -33.1377906799316,
+              "y": 0,
+              "z": -43.7824668884277
+            },
+            "runtime_id": "407954787647",
+            "speed": 3.5
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": -34.158260345459,
+              "y": 0,
+              "z": -44.1415100097656
+            },
+            "runtime_id": "527962213720",
+            "speed": 3.49999976158142
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": -33.687629699707,
+              "y": 0,
+              "z": -45.0554084777832
+            },
+            "runtime_id": "648087080351",
+            "speed": 3.5
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": -32.6567878723145,
+              "y": 0,
+              "z": -44.6626625061035
+            },
+            "runtime_id": "768027397583",
+            "speed": 3.49999976158142
+          }
+        ]
+      },
+      {
+        "label": "remaining_building",
+        "timestamp": 72106,
+        "units": [
+          {
+            "id": "barrosan_spear_guard",
+            "position": {
+              "x": -59.8926086425781,
+              "y": 0,
+              "z": -66.0843353271484
+            },
+            "runtime_id": "169634433716",
+            "speed": 2.99999976158142
+          },
+          {
+            "id": "barrosan_hero_thane",
+            "position": {
+              "x": -36.3068771362305,
+              "y": 0,
+              "z": -33.9738845825195
+            },
+            "runtime_id": "170087418571",
+            "speed": 4.19999980926514
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": -30.6841239929199,
+              "y": 0,
+              "z": -41.1257667541504
+            },
+            "runtime_id": "407954787647",
+            "speed": 3.5
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": -31.7046012878418,
+              "y": 0,
+              "z": -41.4846611022949
+            },
+            "runtime_id": "527962213720",
+            "speed": 3.49999976158142
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": -31.2365646362305,
+              "y": 0,
+              "z": -42.3959579467773
+            },
+            "runtime_id": "648087080351",
+            "speed": 3.5
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": -30.2054176330566,
+              "y": 0,
+              "z": -42.0045623779297
+            },
+            "runtime_id": "768027397583",
+            "speed": 3.49999976158142
+          }
+        ]
+      },
+      {
+        "label": "remaining_building",
+        "timestamp": 72614,
+        "units": [
+          {
+            "id": "barrosan_spear_guard",
+            "position": {
+              "x": -57.8119583129883,
+              "y": 0,
+              "z": -63.9230117797852
+            },
+            "runtime_id": "169634433716",
+            "speed": 3
+          },
+          {
+            "id": "barrosan_hero_thane",
+            "position": {
+              "x": -33.3115005493164,
+              "y": 0,
+              "z": -31.0297775268555
+            },
+            "runtime_id": "170087418571",
+            "speed": 4.19999980926514
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": -28.3034152984619,
+              "y": 0,
+              "z": -38.5610961914063
+            },
+            "runtime_id": "407954787647",
+            "speed": 3.5
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": -29.3372611999512,
+              "y": 0,
+              "z": -38.9075050354004
+            },
+            "runtime_id": "527962213720",
+            "speed": 3.49999976158142
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": -28.8646011352539,
+              "y": 0,
+              "z": -39.8223037719727
+            },
+            "runtime_id": "648087080351",
+            "speed": 3.5
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": -27.827974319458,
+              "y": 0,
+              "z": -39.4432029724121
+            },
+            "runtime_id": "768027397583",
+            "speed": 3.5
+          }
+        ]
+      },
+      {
+        "label": "remaining_building",
+        "timestamp": 73119,
+        "units": [
+          {
+            "id": "barrosan_spear_guard",
+            "position": {
+              "x": -55.6619529724121,
+              "y": 0,
+              "z": -61.689754486084
+            },
+            "runtime_id": "169634433716",
+            "speed": 3
+          },
+          {
+            "id": "barrosan_hero_thane",
+            "position": {
+              "x": -30.2162780761719,
+              "y": 0,
+              "z": -27.9875335693359
+            },
+            "runtime_id": "170087418571",
+            "speed": 4.19999933242798
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": -25.8518524169922,
+              "y": 0,
+              "z": -35.9028091430664
+            },
+            "runtime_id": "407954787647",
+            "speed": 3.5
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": -26.8849697113037,
+              "y": 0,
+              "z": -36.2496795654297
+            },
+            "runtime_id": "527962213720",
+            "speed": 3.49999976158142
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": -26.4135646820068,
+              "y": 0,
+              "z": -37.1628723144531
+            },
+            "runtime_id": "648087080351",
+            "speed": 3.5
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": -25.3779468536377,
+              "y": 0,
+              "z": -36.7834663391113
+            },
+            "runtime_id": "768027397583",
+            "speed": 3.5
+          }
+        ]
+      },
+      {
+        "label": "remaining_building",
+        "timestamp": 73626,
+        "units": [
+          {
+            "id": "barrosan_spear_guard",
+            "position": {
+              "x": -53.5813026428223,
+              "y": 0,
+              "z": -59.5285377502441
+            },
+            "runtime_id": "169634433716",
+            "speed": 3
+          },
+          {
+            "id": "barrosan_hero_thane",
+            "position": {
+              "x": -27.2209014892578,
+              "y": 0,
+              "z": -25.0434265136719
+            },
+            "runtime_id": "170087418571",
+            "speed": 4.19999980926514
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": -23.4807300567627,
+              "y": 0,
+              "z": -33.3283805847168
+            },
+            "runtime_id": "407954787647",
+            "speed": 3.5
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": -24.5022754669189,
+              "y": 0,
+              "z": -33.6859436035156
+            },
+            "runtime_id": "527962213720",
+            "speed": 3.5
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": -24.0415992736816,
+              "y": 0,
+              "z": -34.5892219543457
+            },
+            "runtime_id": "648087080351",
+            "speed": 3.5
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": -23.0066680908203,
+              "y": 0,
+              "z": -34.2091636657715
+            },
+            "runtime_id": "768027397583",
+            "speed": 3.5
+          }
+        ]
+      },
+      {
+        "label": "remaining_building",
+        "timestamp": 74131,
+        "units": [
+          {
+            "id": "barrosan_spear_guard",
+            "position": {
+              "x": -51.5006523132324,
+              "y": 0,
+              "z": -57.3673210144043
+            },
+            "runtime_id": "169634433716",
+            "speed": 3
+          },
+          {
+            "id": "barrosan_hero_thane",
+            "position": {
+              "x": -24.2255249023438,
+              "y": 0,
+              "z": -22.0993194580078
+            },
+            "runtime_id": "170087418571",
+            "speed": 4.19999980926514
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": -21.0990009307861,
+              "y": 0,
+              "z": -30.7644958496094
+            },
+            "runtime_id": "407954787647",
+            "speed": 3.5
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": -22.1248455047607,
+              "y": 0,
+              "z": -31.1173267364502
+            },
+            "runtime_id": "527962213720",
+            "speed": 3.5
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": -21.6696395874023,
+              "y": 0,
+              "z": -32.0155601501465
+            },
+            "runtime_id": "648087080351",
+            "speed": 3.5
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": -20.6284275054932,
+              "y": 0,
+              "z": -31.6480865478516
+            },
+            "runtime_id": "768027397583",
+            "speed": 3.5
+          }
+        ]
+      },
+      {
+        "label": "remaining_building",
+        "timestamp": 74640,
+        "units": [
+          {
+            "id": "barrosan_spear_guard",
+            "position": {
+              "x": -49.3506469726563,
+              "y": 0,
+              "z": -55.1340637207031
+            },
+            "runtime_id": "169634433716",
+            "speed": 3
+          },
+          {
+            "id": "barrosan_hero_thane",
+            "position": {
+              "x": -21.1303024291992,
+              "y": 0,
+              "z": -19.0570755004883
+            },
+            "runtime_id": "170087418571",
+            "speed": 4.19999980926514
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": -18.6512241363525,
+              "y": 0,
+              "z": -28.1023769378662
+            },
+            "runtime_id": "407954787647",
+            "speed": 3.49999976158142
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": -19.6710052490234,
+              "y": 0,
+              "z": -28.4604625701904
+            },
+            "runtime_id": "527962213720",
+            "speed": 3.5
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": -19.2186107635498,
+              "y": 0,
+              "z": -29.3561134338379
+            },
+            "runtime_id": "648087080351",
+            "speed": 3.5
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": -18.179557800293,
+              "y": 0,
+              "z": -28.9866733551025
+            },
+            "runtime_id": "768027397583",
+            "speed": 3.5
+          }
+        ]
+      },
+      {
+        "label": "remaining_building",
+        "timestamp": 75147,
+        "units": [
+          {
+            "id": "barrosan_spear_guard",
+            "position": {
+              "x": -47.3852691650391,
+              "y": 0,
+              "z": -52.8677520751953
+            },
+            "runtime_id": "169634433716",
+            "speed": 3
+          },
+          {
+            "id": "barrosan_hero_thane",
+            "position": {
+              "x": -18.3300151824951,
+              "y": 0,
+              "z": -15.927227973938
+            },
+            "runtime_id": "170087418571",
+            "speed": 4.19999980926514
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": -16.4552783966064,
+              "y": 0,
+              "z": -25.3777770996094
+            },
+            "runtime_id": "407954787647",
+            "speed": 3.49999976158142
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": -17.4753952026367,
+              "y": 0,
+              "z": -25.7351398468018
+            },
+            "runtime_id": "527962213720",
+            "speed": 3.49999976158142
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": -17.0254287719727,
+              "y": 0,
+              "z": -26.6318092346191
+            },
+            "runtime_id": "648087080351",
+            "speed": 3.5
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": -15.9862823486328,
+              "y": 0,
+              "z": -26.2622394561768
+            },
+            "runtime_id": "768027397583",
+            "speed": 3.5
+          }
+        ]
+      },
+      {
+        "label": "remaining_building",
+        "timestamp": 75654,
+        "units": [
+          {
+            "id": "barrosan_spear_guard",
+            "position": {
+              "x": -45.3584861755371,
+              "y": 0,
+              "z": -50.5221519470215
+            },
+            "runtime_id": "169634433716",
+            "speed": 3
+          },
+          {
+            "id": "barrosan_hero_thane",
+            "position": {
+              "x": -15.4433364868164,
+              "y": 0,
+              "z": -12.6864624023438
+            },
+            "runtime_id": "170087418571",
+            "speed": 4.19999980926514
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": -14.2021722793579,
+              "y": 0,
+              "z": -22.5486812591553
+            },
+            "runtime_id": "407954787647",
+            "speed": 3.5
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": -15.2499675750732,
+              "y": 0,
+              "z": -22.8875503540039
+            },
+            "runtime_id": "527962213720",
+            "speed": 3.49999976158142
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": -14.7679872512817,
+              "y": 0,
+              "z": -23.80615234375
+            },
+            "runtime_id": "648087080351",
+            "speed": 3.5
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": -13.7331838607788,
+              "y": 0,
+              "z": -23.4331378936768
+            },
+            "runtime_id": "768027397583",
+            "speed": 3.5
+          }
+        ]
+      },
+      {
+        "label": "remaining_building",
+        "timestamp": 76162,
+        "units": [
+          {
+            "id": "barrosan_spear_guard",
+            "position": {
+              "x": -43.3970832824707,
+              "y": 0,
+              "z": -48.2522163391113
+            },
+            "runtime_id": "169634433716",
+            "speed": 3
+          },
+          {
+            "id": "barrosan_hero_thane",
+            "position": {
+              "x": -12.6497764587402,
+              "y": 0,
+              "z": -9.55023765563965
+            },
+            "runtime_id": "170087418571",
+            "speed": 4.19999980926514
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": -12.0190877914429,
+              "y": 0,
+              "z": -19.8129634857178
+            },
+            "runtime_id": "407954787647",
+            "speed": 3.5
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": -13.0495147705078,
+              "y": 0,
+              "z": -20.1657848358154
+            },
+            "runtime_id": "527962213720",
+            "speed": 3.49999976158142
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": -12.5833530426025,
+              "y": 0,
+              "z": -21.0716724395752
+            },
+            "runtime_id": "648087080351",
+            "speed": 3.5
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": -11.5506076812744,
+              "y": 0,
+              "z": -20.6970176696777
+            },
+            "runtime_id": "768027397583",
+            "speed": 3.5
+          }
+        ]
+      },
+      {
+        "label": "remaining_building",
+        "timestamp": 76667,
+        "units": [
+          {
+            "id": "barrosan_spear_guard",
+            "position": {
+              "x": -41.4356803894043,
+              "y": 0,
+              "z": -45.9822807312012
+            },
+            "runtime_id": "169634433716",
+            "speed": 3
+          },
+          {
+            "id": "barrosan_hero_thane",
+            "position": {
+              "x": -9.85621643066406,
+              "y": 0,
+              "z": -6.41400527954102
+            },
+            "runtime_id": "170087418571",
+            "speed": 4.19999980926514
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": -9.83548545837402,
+              "y": 0,
+              "z": -17.0776634216309
+            },
+            "runtime_id": "407954787647",
+            "speed": 3.5
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": -10.8568563461304,
+              "y": 0,
+              "z": -17.4377307891846
+            },
+            "runtime_id": "527962213720",
+            "speed": 3.5
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": -10.3987264633179,
+              "y": 0,
+              "z": -18.3371772766113
+            },
+            "runtime_id": "648087080351",
+            "speed": 3.5
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": -9.36714458465576,
+              "y": 0,
+              "z": -17.9616146087646
+            },
+            "runtime_id": "768027397583",
+            "speed": 3.49999976158142
+          }
+        ]
+      },
+      {
+        "label": "remaining_building",
+        "timestamp": 77174,
+        "units": [
+          {
+            "id": "barrosan_spear_guard",
+            "position": {
+              "x": -39.4088973999023,
+              "y": 0,
+              "z": -43.6366806030273
+            },
+            "runtime_id": "169634433716",
+            "speed": 2.99999976158142
+          },
+          {
+            "id": "barrosan_hero_thane",
+            "position": {
+              "x": -6.96953773498535,
+              "y": 0,
+              "z": -3.17322492599487
+            },
+            "runtime_id": "170087418571",
+            "speed": 4.19999933242798
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": -7.5722222328186,
+              "y": 0,
+              "z": -14.2570304870605
+            },
+            "runtime_id": "407954787647",
+            "speed": 3.5
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": -8.59529685974121,
+              "y": 0,
+              "z": -14.615382194519
+            },
+            "runtime_id": "527962213720",
+            "speed": 3.5
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": -8.14128589630127,
+              "y": 0,
+              "z": -15.5115242004395
+            },
+            "runtime_id": "648087080351",
+            "speed": 3.5
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": -7.10874462127686,
+              "y": 0,
+              "z": -15.1390895843506
+            },
+            "runtime_id": "768027397583",
+            "speed": 3.49972724914551
+          }
+        ]
+      },
+      {
+        "label": "remaining_building",
+        "timestamp": 77681,
+        "units": [
+          {
+            "id": "barrosan_spear_guard",
+            "position": {
+              "x": -37.4474945068359,
+              "y": 0,
+              "z": -41.3667449951172
+            },
+            "runtime_id": "169634433716",
+            "speed": 2.99999976158142
+          },
+          {
+            "id": "barrosan_hero_thane",
+            "position": {
+              "x": -4.17597770690918,
+              "y": 0,
+              "z": -0.0369863435626
+            },
+            "runtime_id": "170087418571",
+            "speed": 4.19999933242798
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": -5.38867998123169,
+              "y": 0,
+              "z": -11.5217084884644
+            },
+            "runtime_id": "407954787647",
+            "speed": 3.5
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": -6.43279790878296,
+              "y": 0,
+              "z": -11.8664636611938
+            },
+            "runtime_id": "527962213720",
+            "speed": 3.5
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": -5.95665121078491,
+              "y": 0,
+              "z": -12.7770462036133
+            },
+            "runtime_id": "648087080351",
+            "speed": 3.5
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": -4.9233193397522,
+              "y": 0,
+              "z": -12.4075508117676
+            },
+            "runtime_id": "768027397583",
+            "speed": 3.49999976158142
+          }
+        ]
+      },
+      {
+        "label": "remaining_building",
+        "timestamp": 78188,
+        "units": [
+          {
+            "id": "barrosan_spear_guard",
+            "position": {
+              "x": -35.420711517334,
+              "y": 0,
+              "z": -39.0211448669434
+            },
+            "runtime_id": "169634433716",
+            "speed": 2.99999976158142
+          },
+          {
+            "id": "barrosan_hero_thane",
+            "position": {
+              "x": -1.2892918586731,
+              "y": 0,
+              "z": 3.2037935256958
+            },
+            "runtime_id": "170087418571",
+            "speed": 4.19999980926514
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": -3.13072848320007,
+              "y": 0,
+              "z": -8.6964807510376
+            },
+            "runtime_id": "407954787647",
+            "speed": 3.5
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": -4.16332769393921,
+              "y": 0,
+              "z": -9.05047702789307
+            },
+            "runtime_id": "527962213720",
+            "speed": 3.5
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": -3.69918751716614,
+              "y": 0,
+              "z": -9.95143604278564
+            },
+            "runtime_id": "648087080351",
+            "speed": 3.49999976158142
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": -2.66570210456848,
+              "y": 0,
+              "z": -9.58214569091797
+            },
+            "runtime_id": "768027397583",
+            "speed": 3.5
+          }
+        ]
+      },
+      {
+        "label": "remaining_building",
+        "timestamp": 78696,
+        "units": [
+          {
+            "id": "barrosan_spear_guard",
+            "position": {
+              "x": -33.4593086242676,
+              "y": 0,
+              "z": -36.7512092590332
+            },
+            "runtime_id": "169634433716",
+            "speed": 3
+          },
+          {
+            "id": "barrosan_hero_thane",
+            "position": {
+              "x": 1.50427412986755,
+              "y": 0,
+              "z": 6.34003257751465
+            },
+            "runtime_id": "170087418571",
+            "speed": 4.19999980926514
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": -0.9460409283638,
+              "y": 0,
+              "z": -5.96204376220703
+            },
+            "runtime_id": "407954787647",
+            "speed": 3.49999976158142
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": -1.99013817310333,
+              "y": 0,
+              "z": -6.30875444412231
+            },
+            "runtime_id": "527962213720",
+            "speed": 3.5
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": -1.51455366611481,
+              "y": 0,
+              "z": -7.21696758270264
+            },
+            "runtime_id": "648087080351",
+            "speed": 3.49999976158142
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": -0.48115113377571,
+              "y": 0,
+              "z": -6.84760141372681
+            },
+            "runtime_id": "768027397583",
+            "speed": 3.49999976158142
+          }
+        ]
+      },
+      {
+        "label": "remaining_building",
+        "timestamp": 79200,
+        "units": [
+          {
+            "id": "barrosan_spear_guard",
+            "position": {
+              "x": -31.1630401611328,
+              "y": 0,
+              "z": -34.8226661682129
+            },
+            "runtime_id": "169634433716",
+            "speed": 2.99999976158142
+          },
+          {
+            "id": "barrosan_hero_thane",
+            "position": {
+              "x": 4.91470003128052,
+              "y": 0,
+              "z": 8.78531455993652
+            },
+            "runtime_id": "170087418571",
+            "speed": 4.19999980926514
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": 1.73771727085114,
+              "y": 0,
+              "z": -3.72469329833984
+            },
+            "runtime_id": "407954787647",
+            "speed": 3.5
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": 0.696109175682068,
+              "y": 0,
+              "z": -4.08129787445068
+            },
+            "runtime_id": "527962213720",
+            "speed": 3.5
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": 1.18164670467377,
+              "y": 0,
+              "z": -5.00979661941528
+            },
+            "runtime_id": "648087080351",
+            "speed": 3.5
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": 2.22579407691956,
+              "y": 0,
+              "z": -4.63317012786865
+            },
+            "runtime_id": "768027397583",
+            "speed": 3.5
+          }
+        ]
+      },
+      {
+        "label": "remaining_building",
+        "timestamp": 79708,
+        "units": [
+          {
+            "id": "barrosan_spear_guard",
+            "position": {
+              "x": -28.7782974243164,
+              "y": 0,
+              "z": -32.8420028686523
+            },
+            "runtime_id": "169634433716",
+            "speed": 3
+          },
+          {
+            "id": "barrosan_hero_thane",
+            "position": {
+              "x": 8.46078491210938,
+              "y": 0,
+              "z": 11.2874851226807
+            },
+            "runtime_id": "170087418571",
+            "speed": 4.19999980926514
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": 4.56650352478027,
+              "y": 0,
+              "z": -1.4712837934494
+            },
+            "runtime_id": "407954787647",
+            "speed": 3.5
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": 3.52890253067017,
+              "y": 0,
+              "z": -1.83284211158752
+            },
+            "runtime_id": "527962213720",
+            "speed": 3.5
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": 3.99970841407776,
+              "y": 0,
+              "z": -2.74290919303894
+            },
+            "runtime_id": "648087080351",
+            "speed": 3.49999976158142
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": 5.04350614547729,
+              "y": 0,
+              "z": -2.36584210395813
+            },
+            "runtime_id": "768027397583",
+            "speed": 3.5
+          }
+        ]
+      },
+      {
+        "label": "remaining_building",
+        "timestamp": 80217,
+        "units": [
+          {
+            "id": "barrosan_spear_guard",
+            "position": {
+              "x": -26.4704818725586,
+              "y": 0,
+              "z": -30.9252643585205
+            },
+            "runtime_id": "169634433716",
+            "speed": 3
+          },
+          {
+            "id": "barrosan_hero_thane",
+            "position": {
+              "x": 11.8924674987793,
+              "y": 0,
+              "z": 13.7089405059814
+            },
+            "runtime_id": "170087418571",
+            "speed": 4.19999980926514
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": 7.29905462265015,
+              "y": 0,
+              "z": 0.715755939483643
+            },
+            "runtime_id": "407954787647",
+            "speed": 3.5
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": 6.26704120635986,
+              "y": 0,
+              "z": 0.347198665142059
+            },
+            "runtime_id": "527962213720",
+            "speed": 3.5
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": 6.73451852798462,
+              "y": 0,
+              "z": -0.56781661510468
+            },
+            "runtime_id": "648087080351",
+            "speed": 3.5
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": 7.77424955368042,
+              "y": 0,
+              "z": -0.1766217648983
+            },
+            "runtime_id": "768027397583",
+            "speed": 3.49999976158142
+          }
+        ]
+      },
+      {
+        "label": "remaining_building",
+        "timestamp": 80722,
+        "units": [
+          {
+            "id": "barrosan_spear_guard",
+            "position": {
+              "x": -24.0857391357422,
+              "y": 0,
+              "z": -28.9446601867676
+            },
+            "runtime_id": "169634433716",
+            "speed": 3
+          },
+          {
+            "id": "barrosan_hero_thane",
+            "position": {
+              "x": 15.4385433197021,
+              "y": 0,
+              "z": 16.2111110687256
+            },
+            "runtime_id": "170087418571",
+            "speed": 4.19999980926514
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": 10.1206331253052,
+              "y": 0,
+              "z": 2.97819256782532
+            },
+            "runtime_id": "407954787647",
+            "speed": 3.5
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": 9.09323215484619,
+              "y": 0,
+              "z": 2.60394549369812
+            },
+            "runtime_id": "527962213720",
+            "speed": 3.49999976158142
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": 9.55226421356201,
+              "y": 0,
+              "z": 1.69946110248566
+            },
+            "runtime_id": "648087080351",
+            "speed": 3.49999976158142
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": 10.590726852417,
+              "y": 0,
+              "z": 2.09224104881287
+            },
+            "runtime_id": "768027397583",
+            "speed": 3.5
+          }
+        ]
+      },
+      {
+        "label": "remaining_building",
+        "timestamp": 81230,
+        "units": [
+          {
+            "id": "barrosan_spear_guard",
+            "position": {
+              "x": -21.7779235839844,
+              "y": 0,
+              "z": -27.027946472168
+            },
+            "runtime_id": "169634433716",
+            "speed": 3
+          },
+          {
+            "id": "barrosan_hero_thane",
+            "position": {
+              "x": 18.8702297210693,
+              "y": 0,
+              "z": 18.6325664520264
+            },
+            "runtime_id": "170087418571",
+            "speed": 4.19999933242798
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": 12.8484086990356,
+              "y": 0,
+              "z": 5.17118787765503
+            },
+            "runtime_id": "407954787647",
+            "speed": 3.5
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": 11.8246412277222,
+              "y": 0,
+              "z": 4.79241704940796
+            },
+            "runtime_id": "527962213720",
+            "speed": 3.49999976158142
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": 12.279107093811,
+              "y": 0,
+              "z": 3.8936173915863
+            },
+            "runtime_id": "648087080351",
+            "speed": 3.49999976158142
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": 13.3176031112671,
+              "y": 0,
+              "z": 4.2863564491272
+            },
+            "runtime_id": "768027397583",
+            "speed": 3.49999976158142
+          }
+        ]
+      },
+      {
+        "label": "remaining_building",
+        "timestamp": 81735,
+        "units": [
+          {
+            "id": "barrosan_spear_guard",
+            "position": {
+              "x": -19.4701080322266,
+              "y": 0,
+              "z": -25.1112327575684
+            },
+            "runtime_id": "169634433716",
+            "speed": 3
+          },
+          {
+            "id": "barrosan_hero_thane",
+            "position": {
+              "x": 22.3019123077393,
+              "y": 0,
+              "z": 21.0540218353271
+            },
+            "runtime_id": "170087418571",
+            "speed": 4.19999980926514
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": 15.580943107605,
+              "y": 0,
+              "z": 7.35790348052979
+            },
+            "runtime_id": "407954787647",
+            "speed": 3.5
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": 14.5537729263306,
+              "y": 0,
+              "z": 6.98372983932495
+            },
+            "runtime_id": "527962213720",
+            "speed": 3.49999976158142
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": 15.0059480667114,
+              "y": 0,
+              "z": 6.08777856826782
+            },
+            "runtime_id": "648087080351",
+            "speed": 3.49999976158142
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": 16.0480098724365,
+              "y": 0,
+              "z": 6.47241067886353
+            },
+            "runtime_id": "768027397583",
+            "speed": 3.5
+          }
+        ]
+      },
+      {
+        "label": "remaining_building",
+        "timestamp": 82244,
+        "units": [
+          {
+            "id": "barrosan_spear_guard",
+            "position": {
+              "x": -17.0853652954102,
+              "y": 0,
+              "z": -23.1306285858154
+            },
+            "runtime_id": "169634433716",
+            "speed": 3
+          },
+          {
+            "id": "barrosan_hero_thane",
+            "position": {
+              "x": 25.8479843139648,
+              "y": 0,
+              "z": 23.5561923980713
+            },
+            "runtime_id": "170087418571",
+            "speed": 4.19999980926514
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": 18.3976516723633,
+              "y": 0,
+              "z": 9.6264762878418
+            },
+            "runtime_id": "407954787647",
+            "speed": 3.49999976158142
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": 17.3633117675781,
+              "y": 0,
+              "z": 9.26065254211426
+            },
+            "runtime_id": "527962213720",
+            "speed": 3.5
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": 17.8236846923828,
+              "y": 0,
+              "z": 8.35507583618164
+            },
+            "runtime_id": "648087080351",
+            "speed": 3.5
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": 18.8643665313721,
+              "y": 0,
+              "z": 8.74142646789551
+            },
+            "runtime_id": "768027397583",
+            "speed": 3.5
+          }
+        ]
+      },
+      {
+        "label": "remaining_building",
+        "timestamp": 82750,
+        "units": [
+          {
+            "id": "barrosan_spear_guard",
+            "position": {
+              "x": -14.7775344848633,
+              "y": 0,
+              "z": -21.2139148712158
+            },
+            "runtime_id": "169634433716",
+            "speed": 3
+          },
+          {
+            "id": "barrosan_hero_thane",
+            "position": {
+              "x": 29.2796669006348,
+              "y": 0,
+              "z": 25.9776477813721
+            },
+            "runtime_id": "170087418571",
+            "speed": 4.19999980926514
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": 21.1269016265869,
+              "y": 0,
+              "z": 11.8174800872803
+            },
+            "runtime_id": "407954787647",
+            "speed": 3.49999976158142
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": 20.0908126831055,
+              "y": 0,
+              "z": 11.4538793563843
+            },
+            "runtime_id": "527962213720",
+            "speed": 3.49999976158142
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": 20.5505275726318,
+              "y": 0,
+              "z": 10.5492181777954
+            },
+            "runtime_id": "648087080351",
+            "speed": 3.49999976158142
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": 21.5927772521973,
+              "y": 0,
+              "z": 10.9324522018433
+            },
+            "runtime_id": "768027397583",
+            "speed": 3.49819660186768
+          }
+        ]
+      },
+      {
+        "label": "rebuild_worker",
+        "timestamp": 83658,
+        "units": [
+          {
+            "id": "barrosan_spear_guard",
+            "position": {
+              "x": -12.7272920608521,
+              "y": 0,
+              "z": -18.9052429199219
+            },
+            "runtime_id": "169634433716",
+            "speed": 3
+          },
+          {
+            "id": "barrosan_hero_thane",
+            "position": {
+              "x": 32.0731391906738,
+              "y": 0,
+              "z": 29.2386131286621
+            },
+            "runtime_id": "170087418571",
+            "speed": 4.19999980926514
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": 23.4235992431641,
+              "y": 0,
+              "z": 14.5737581253052
+            },
+            "runtime_id": "407954787647",
+            "speed": 3.5
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": 22.3575401306152,
+              "y": 0,
+              "z": 14.2354955673218
+            },
+            "runtime_id": "527962213720",
+            "speed": 3.5
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": 22.8248329162598,
+              "y": 0,
+              "z": 13.3126392364502
+            },
+            "runtime_id": "648087080351",
+            "speed": 3.49999976158142
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": 23.8830394744873,
+              "y": 0,
+              "z": 13.6667509078979
+            },
+            "runtime_id": "768027397583",
+            "speed": 3.5
+          }
+        ]
+      },
+      {
+        "label": "rebuild_worker",
+        "timestamp": 84165,
+        "units": [
+          {
+            "id": "barrosan_spear_guard",
+            "position": {
+              "x": -10.8070449829102,
+              "y": 0,
+              "z": -16.600414276123
+            },
+            "runtime_id": "169634433716",
+            "speed": 3
+          },
+          {
+            "id": "barrosan_hero_thane",
+            "position": {
+              "x": 34.641242980957,
+              "y": 0,
+              "z": 32.5616226196289
+            },
+            "runtime_id": "170087418571",
+            "speed": 4.19999980926514
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": 25.4926910400391,
+              "y": 0,
+              "z": 17.3964653015137
+            },
+            "runtime_id": "407954787647",
+            "speed": 3.5
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": 24.4358081817627,
+              "y": 0,
+              "z": 17.0506649017334
+            },
+            "runtime_id": "527962213720",
+            "speed": 3.5
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": 24.9065437316895,
+              "y": 0,
+              "z": 16.1260509490967
+            },
+            "runtime_id": "648087080351",
+            "speed": 3.5
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": 25.9494972229004,
+              "y": 0,
+              "z": 16.4913730621338
+            },
+            "runtime_id": "768027397583",
+            "speed": 3.5
+          }
+        ]
+      },
+      {
+        "label": "rebuild_worker",
+        "timestamp": 84670,
+        "units": [
+          {
+            "id": "barrosan_spear_guard",
+            "position": {
+              "x": -8.86807918548584,
+              "y": 0,
+              "z": -14.3112907409668
+            },
+            "runtime_id": "169634433716",
+            "speed": 3
+          },
+          {
+            "id": "barrosan_hero_thane",
+            "position": {
+              "x": 37.2541275024414,
+              "y": 0,
+              "z": 35.8496284484863
+            },
+            "runtime_id": "170087418571",
+            "speed": 4.19999980926514
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": 27.594841003418,
+              "y": 0,
+              "z": 20.194278717041
+            },
+            "runtime_id": "407954787647",
+            "speed": 3.50000023841858
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": 26.554723739624,
+              "y": 0,
+              "z": 19.835506439209
+            },
+            "runtime_id": "527962213720",
+            "speed": 3.50000023841858
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": 27.0201568603516,
+              "y": 0,
+              "z": 18.9154796600342
+            },
+            "runtime_id": "648087080351",
+            "speed": 3.5
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": 28.0566082000732,
+              "y": 0,
+              "z": 19.2858142852783
+            },
+            "runtime_id": "768027397583",
+            "speed": 3.49999976158142
+          }
+        ]
+      },
+      {
+        "label": "rebuild_worker",
+        "timestamp": 85177,
+        "units": [
+          {
+            "id": "barrosan_spear_guard",
+            "position": {
+              "x": -6.92177295684814,
+              "y": 0,
+              "z": -11.8985395431519
+            },
+            "runtime_id": "169634433716",
+            "speed": 3
+          },
+          {
+            "id": "barrosan_hero_thane",
+            "position": {
+              "x": 39.8064804077148,
+              "y": 0,
+              "z": 39.3592910766602
+            },
+            "runtime_id": "170087418571",
+            "speed": 4.19999980926514
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": 29.6837730407715,
+              "y": 0,
+              "z": 23.1464061737061
+            },
+            "runtime_id": "407954787647",
+            "speed": 3.5
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": 28.6268749237061,
+              "y": 0,
+              "z": 22.7980937957764
+            },
+            "runtime_id": "527962213720",
+            "speed": 3.49999976158142
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": 29.1019458770752,
+              "y": 0,
+              "z": 21.8723735809326
+            },
+            "runtime_id": "648087080351",
+            "speed": 3.5
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": 30.1353340148926,
+              "y": 0,
+              "z": 22.2450790405273
+            },
+            "runtime_id": "768027397583",
+            "speed": 3.50000023841858
+          }
+        ]
+      },
+      {
+        "label": "rebuild_worker",
+        "timestamp": 85685,
+        "units": [
+          {
+            "id": "barrosan_spear_guard",
+            "position": {
+              "x": -5.09167003631592,
+              "y": 0,
+              "z": -9.52145481109619
+            },
+            "runtime_id": "169634433716",
+            "speed": 2.99999976158142
+          },
+          {
+            "id": "barrosan_hero_thane",
+            "position": {
+              "x": 42.1332855224609,
+              "y": 0,
+              "z": 42.8556518554688
+            },
+            "runtime_id": "170087418571",
+            "speed": 4.19999980926514
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": 31.5992813110352,
+              "y": 0,
+              "z": 26.0755500793457
+            },
+            "runtime_id": "407954787647",
+            "speed": 3.49999976158142
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": 30.5333251953125,
+              "y": 0,
+              "z": 25.7306461334229
+            },
+            "runtime_id": "527962213720",
+            "speed": 3.49999976158142
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": 31.0193614959717,
+              "y": 0,
+              "z": 24.8003349304199
+            },
+            "runtime_id": "648087080351",
+            "speed": 3.5
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": 32.045597076416,
+              "y": 0,
+              "z": 25.1776752471924
+            },
+            "runtime_id": "768027397583",
+            "speed": 3.5
+          }
+        ]
+      },
+      {
+        "label": "rebuild_worker",
+        "timestamp": 86192,
+        "units": [
+          {
+            "id": "barrosan_spear_guard",
+            "position": {
+              "x": -3.16661477088928,
+              "y": 0,
+              "z": -7.09169340133667
+            },
+            "runtime_id": "169634433716",
+            "speed": 3
+          },
+          {
+            "id": "barrosan_hero_thane",
+            "position": {
+              "x": 44.6333427429199,
+              "y": 0,
+              "z": 46.4028053283691
+            },
+            "runtime_id": "170087418571",
+            "speed": 4.19999980926514
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": 33.6400184631348,
+              "y": 0,
+              "z": 29.0611343383789
+            },
+            "runtime_id": "407954787647",
+            "speed": 3.49999976158142
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": 32.5963973999023,
+              "y": 0,
+              "z": 28.7009010314941
+            },
+            "runtime_id": "527962213720",
+            "speed": 3.5
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": 33.0637397766113,
+              "y": 0,
+              "z": 27.7835273742676
+            },
+            "runtime_id": "648087080351",
+            "speed": 3.5
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": 34.0910530090332,
+              "y": 0,
+              "z": 28.1600551605225
+            },
+            "runtime_id": "768027397583",
+            "speed": 3.5
+          }
+        ]
+      },
+      {
+        "label": "rebuild_worker",
+        "timestamp": 86699,
+        "units": [
+          {
+            "id": "barrosan_spear_guard",
+            "position": {
+              "x": -1.32366383075714,
+              "y": 0,
+              "z": -4.72462701797485
+            },
+            "runtime_id": "169634433716",
+            "speed": 3
+          },
+          {
+            "id": "barrosan_hero_thane",
+            "position": {
+              "x": 46.9931526184082,
+              "y": 0,
+              "z": 49.8765907287598
+            },
+            "runtime_id": "170087418571",
+            "speed": 4.19999980926514
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": 35.5866813659668,
+              "y": 0,
+              "z": 31.9695281982422
+            },
+            "runtime_id": "407954787647",
+            "speed": 3.5
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": 34.5302925109863,
+              "y": 0,
+              "z": 31.6163005828857
+            },
+            "runtime_id": "527962213720",
+            "speed": 3.5
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": 35.004207611084,
+              "y": 0,
+              "z": 30.695894241333
+            },
+            "runtime_id": "648087080351",
+            "speed": 3.5
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": 36.0317306518555,
+              "y": 0,
+              "z": 31.072359085083
+            },
+            "runtime_id": "768027397583",
+            "speed": 3.5
+          }
+        ]
+      },
+      {
+        "label": "rebuild_worker",
+        "timestamp": 87203,
+        "units": [
+          {
+            "id": "barrosan_spear_guard",
+            "position": {
+              "x": 0.520843744277954,
+              "y": 0,
+              "z": -2.35876393318176
+            },
+            "runtime_id": "169634433716",
+            "speed": 3
+          },
+          {
+            "id": "barrosan_hero_thane",
+            "position": {
+              "x": 49.3591194152832,
+              "y": 0,
+              "z": 53.3461875915527
+            },
+            "runtime_id": "170087418571",
+            "speed": 4.19999933242798
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": 37.5235328674316,
+              "y": 0,
+              "z": 34.8844375610352
+            },
+            "runtime_id": "407954787647",
+            "speed": 3.5
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": 36.484992980957,
+              "y": 0,
+              "z": 34.5193786621094
+            },
+            "runtime_id": "527962213720",
+            "speed": 3.5
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": 36.9475135803223,
+              "y": 0,
+              "z": 33.6065635681152
+            },
+            "runtime_id": "648087080351",
+            "speed": 3.49999976158142
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": 37.973503112793,
+              "y": 0,
+              "z": 33.9839859008789
+            },
+            "runtime_id": "768027397583",
+            "speed": 3.49999976158142
+          }
+        ]
+      },
+      {
+        "label": "rebuild_worker",
+        "timestamp": 87713,
+        "units": [
+          {
+            "id": "barrosan_spear_guard",
+            "position": {
+              "x": 2.83128809928894,
+              "y": 0,
+              "z": -0.29418286681175
+            },
+            "runtime_id": "169634433716",
+            "speed": 3
+          },
+          {
+            "id": "barrosan_hero_thane",
+            "position": {
+              "x": 52.9247398376465,
+              "y": 0,
+              "z": 55.8049659729004
+            },
+            "runtime_id": "170087418571",
+            "speed": 4.19999980926514
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": 40.2516136169434,
+              "y": 0,
+              "z": 37.2442092895508
+            },
+            "runtime_id": "407954787647",
+            "speed": 3.5
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": 39.2144165039063,
+              "y": 0,
+              "z": 36.8672256469727
+            },
+            "runtime_id": "527962213720",
+            "speed": 3.49999976158142
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": 39.687671661377,
+              "y": 0,
+              "z": 35.9323196411133
+            },
+            "runtime_id": "648087080351",
+            "speed": 3.5
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": 40.7271919250488,
+              "y": 0,
+              "z": 36.322093963623
+            },
+            "runtime_id": "768027397583",
+            "speed": 3.5
+          }
+        ]
+      },
+      {
+        "label": "rebuild_worker",
+        "timestamp": 88219,
+        "units": [
+          {
+            "id": "barrosan_spear_guard",
+            "position": {
+              "x": 5.09267854690552,
+              "y": 0,
+              "z": 1.67706036567688
+            },
+            "runtime_id": "169634433716",
+            "speed": 3
+          },
+          {
+            "id": "barrosan_hero_thane",
+            "position": {
+              "x": 56.4362373352051,
+              "y": 0,
+              "z": 58.1086349487305
+            },
+            "runtime_id": "170087418571",
+            "speed": 4.19999980926514
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": 42.9823799133301,
+              "y": 0,
+              "z": 39.4331550598145
+            },
+            "runtime_id": "407954787647",
+            "speed": 3.5
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": 41.9469223022461,
+              "y": 0,
+              "z": 39.0540504455566
+            },
+            "runtime_id": "527962213720",
+            "speed": 3.49999976158142
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": 42.4021797180176,
+              "y": 0,
+              "z": 38.1413497924805
+            },
+            "runtime_id": "648087080351",
+            "speed": 3.49945545196533
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": 43.4425468444824,
+              "y": 0,
+              "z": 38.5298500061035
+            },
+            "runtime_id": "768027397583",
+            "speed": 3.49999976158142
+          }
+        ]
+      },
+      {
+        "label": "rebuild_worker",
+        "timestamp": 88726,
+        "units": [
+          {
+            "id": "barrosan_spear_guard",
+            "position": {
+              "x": 7.3818039894104,
+              "y": 0,
+              "z": 3.76741528511047
+            },
+            "runtime_id": "169634433716",
+            "speed": 3
+          },
+          {
+            "id": "barrosan_hero_thane",
+            "position": {
+              "x": 59.9475631713867,
+              "y": 0,
+              "z": 60.658763885498
+            },
+            "runtime_id": "170087418571",
+            "speed": 4.19999980926514
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": 45.7094421386719,
+              "y": 0,
+              "z": 41.8083419799805
+            },
+            "runtime_id": "407954787647",
+            "speed": 3.5
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": 44.6761665344238,
+              "y": 0,
+              "z": 41.4267730712891
+            },
+            "runtime_id": "527962213720",
+            "speed": 3.5
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": 45.1222305297852,
+              "y": 0,
+              "z": 40.5243377685547
+            },
+            "runtime_id": "648087080351",
+            "speed": 3.5
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": 46.1610794067383,
+              "y": 0,
+              "z": 40.9141998291016
+            },
+            "runtime_id": "768027397583",
+            "speed": 3.5
+          }
+        ]
+      },
+      {
+        "label": "rebuild_worker",
+        "timestamp": 89233,
+        "units": [
+          {
+            "id": "barrosan_spear_guard",
+            "position": {
+              "x": 9.62476634979248,
+              "y": 0,
+              "z": 5.75952959060669
+            },
+            "runtime_id": "169634433716",
+            "speed": 2.99999976158142
+          },
+          {
+            "id": "barrosan_hero_thane",
+            "position": {
+              "x": 63.4218978881836,
+              "y": 0,
+              "z": 63.0173187255859
+            },
+            "runtime_id": "170087418571",
+            "speed": 4.19999980926514
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": 48.3910942077637,
+              "y": 0,
+              "z": 44.056640625
+            },
+            "runtime_id": "407954787647",
+            "speed": 3.49999976158142
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": 47.3566360473633,
+              "y": 0,
+              "z": 43.6768379211426
+            },
+            "runtime_id": "527962213720",
+            "speed": 3.5
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": 47.8057403564453,
+              "y": 0,
+              "z": 42.7707939147949
+            },
+            "runtime_id": "648087080351",
+            "speed": 3.5
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": 48.8460388183594,
+              "y": 0,
+              "z": 43.158203125
+            },
+            "runtime_id": "768027397583",
+            "speed": 3.48915410041809
+          }
+        ]
+      },
+      {
+        "label": "rebuild_worker",
+        "timestamp": 89738,
+        "units": [
+          {
+            "id": "barrosan_spear_guard",
+            "position": {
+              "x": 11.892237663269,
+              "y": 0,
+              "z": 7.72378158569336
+            },
+            "runtime_id": "169634433716",
+            "speed": 3
+          },
+          {
+            "id": "barrosan_hero_thane",
+            "position": {
+              "x": 66.9622802734375,
+              "y": 0,
+              "z": 65.2762222290039
+            },
+            "runtime_id": "170087418571",
+            "speed": 4.19999980926514
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": 51.1274490356445,
+              "y": 0,
+              "z": 46.2385177612305
+            },
+            "runtime_id": "407954787647",
+            "speed": 3.49999976158142
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": 50.0889549255371,
+              "y": 0,
+              "z": 45.8639678955078
+            },
+            "runtime_id": "527962213720",
+            "speed": 3.49999976158142
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": 50.5348129272461,
+              "y": 0,
+              "z": 44.9615478515625
+            },
+            "runtime_id": "648087080351",
+            "speed": 3.49999976158142
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": 51.5770874023438,
+              "y": 0,
+              "z": 45.3460884094238
+            },
+            "runtime_id": "768027397583",
+            "speed": 3.5
+          }
+        ]
+      },
+      {
+        "label": "rebuild_worker",
+        "timestamp": 90253,
+        "units": [
+          {
+            "id": "barrosan_spear_guard",
+            "position": {
+              "x": 14.1990413665771,
+              "y": 0,
+              "z": 9.79463863372803
+            },
+            "runtime_id": "169634433716",
+            "speed": 3
+          },
+          {
+            "id": "barrosan_hero_thane",
+            "position": {
+              "x": 70.5170593261719,
+              "y": 0,
+              "z": 67.7655563354492
+            },
+            "runtime_id": "170087418571",
+            "speed": 4.19999980926514
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": 53.8737487792969,
+              "y": 0,
+              "z": 48.5915870666504
+            },
+            "runtime_id": "407954787647",
+            "speed": 3.5
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": 52.8300590515137,
+              "y": 0,
+              "z": 48.2226943969727
+            },
+            "runtime_id": "527962213720",
+            "speed": 3.49999976158142
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": 53.2857666015625,
+              "y": 0,
+              "z": 47.3092575073242
+            },
+            "runtime_id": "648087080351",
+            "speed": 3.5
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": 54.3255310058594,
+              "y": 0,
+              "z": 47.6963539123535
+            },
+            "runtime_id": "768027397583",
+            "speed": 3.5
+          }
+        ]
+      },
+      {
+        "label": "rebuild_worker",
+        "timestamp": 90753,
+        "units": [
+          {
+            "id": "barrosan_spear_guard",
+            "position": {
+              "x": 16.4665622711182,
+              "y": 0,
+              "z": 11.7588624954224
+            },
+            "runtime_id": "169634433716",
+            "speed": 3
+          },
+          {
+            "id": "barrosan_hero_thane",
+            "position": {
+              "x": 74.0599517822266,
+              "y": 0,
+              "z": 70.0207138061523
+            },
+            "runtime_id": "170087418571",
+            "speed": 4.19999980926514
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": 56.6100311279297,
+              "y": 0,
+              "z": 50.7736701965332
+            },
+            "runtime_id": "407954787647",
+            "speed": 3.5
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": 55.5659446716309,
+              "y": 0,
+              "z": 50.4053840637207
+            },
+            "runtime_id": "527962213720",
+            "speed": 3.5
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": 56.0156364440918,
+              "y": 0,
+              "z": 49.4995079040527
+            },
+            "runtime_id": "648087080351",
+            "speed": 3.5
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": 57.0593528747559,
+              "y": 0,
+              "z": 49.8800430297852
+            },
+            "runtime_id": "768027397583",
+            "speed": 3.49498796463013
+          }
+        ]
+      },
+      {
+        "label": "rebuild_worker",
+        "timestamp": 91262,
+        "units": [
+          {
+            "id": "barrosan_spear_guard",
+            "position": {
+              "x": 18.7676391601563,
+              "y": 0,
+              "z": 13.8359422683716
+            },
+            "runtime_id": "169634433716",
+            "speed": 3
+          },
+          {
+            "id": "barrosan_hero_thane",
+            "position": {
+              "x": 77.577278137207,
+              "y": 0,
+              "z": 72.560546875
+            },
+            "runtime_id": "170087418571",
+            "speed": 4.19999980926514
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": 59.3479766845703,
+              "y": 0,
+              "z": 53.1358680725098
+            },
+            "runtime_id": "407954787647",
+            "speed": 3.5
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": 58.3105430603027,
+              "y": 0,
+              "z": 52.7600936889648
+            },
+            "runtime_id": "527962213720",
+            "speed": 3.5
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": 58.7524566650391,
+              "y": 0,
+              "z": 51.8621559143066
+            },
+            "runtime_id": "648087080351",
+            "speed": 3.5
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": 59.7963066101074,
+              "y": 0,
+              "z": 52.2425231933594
+            },
+            "runtime_id": "768027397583",
+            "speed": 3.5
+          }
+        ]
+      },
+      {
+        "label": "rebuild_worker",
+        "timestamp": 91766,
+        "units": [
+          {
+            "id": "barrosan_spear_guard",
+            "position": {
+              "x": 21.0194282531738,
+              "y": 0,
+              "z": 15.818018913269
+            },
+            "runtime_id": "169634433716",
+            "speed": 2.99999976158142
+          },
+          {
+            "id": "barrosan_hero_thane",
+            "position": {
+              "x": 81.1228942871094,
+              "y": 0,
+              "z": 74.8069610595703
+            },
+            "runtime_id": "170087418571",
+            "speed": 4.19999980926514
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": 62.0442199707031,
+              "y": 0,
+              "z": 55.3659324645996
+            },
+            "runtime_id": "407954787647",
+            "speed": 3.50000023841858
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": 61.0013008117676,
+              "y": 0,
+              "z": 54.995906829834
+            },
+            "runtime_id": "527962213720",
+            "speed": 3.5
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": 61.4586143493652,
+              "y": 0,
+              "z": 54.080810546875
+            },
+            "runtime_id": "648087080351",
+            "speed": 3.5
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": 62.5020294189453,
+              "y": 0,
+              "z": 54.4612770080566
+            },
+            "runtime_id": "768027397583",
+            "speed": 3.5
+          }
+        ]
+      },
+      {
+        "label": "rebuild_worker",
+        "timestamp": 92273,
+        "units": [
+          {
+            "id": "barrosan_spear_guard",
+            "position": {
+              "x": 23.3378467559814,
+              "y": 0,
+              "z": 17.7217102050781
+            },
+            "runtime_id": "169634433716",
+            "speed": 2.99999976158142
+          },
+          {
+            "id": "barrosan_hero_thane",
+            "position": {
+              "x": 84.9297790527344,
+              "y": 0,
+              "z": 76.5732498168945
+            },
+            "runtime_id": "170087418571",
+            "speed": 4.19999980926514
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": 64.8956527709961,
+              "y": 0,
+              "z": 57.3942794799805
+            },
+            "runtime_id": "407954787647",
+            "speed": 3.5
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": 63.8507118225098,
+              "y": 0,
+              "z": 57.0271339416504
+            },
+            "runtime_id": "527962213720",
+            "speed": 3.49999976158142
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": 64.3083648681641,
+              "y": 0,
+              "z": 56.1115646362305
+            },
+            "runtime_id": "648087080351",
+            "speed": 3.5
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": 65.3564834594727,
+              "y": 0,
+              "z": 56.4853782653809
+            },
+            "runtime_id": "768027397583",
+            "speed": 3.5
+          }
+        ]
+      },
+      {
+        "label": "rebuild_worker",
+        "timestamp": 92781,
+        "units": [
+          {
+            "id": "barrosan_spear_guard",
+            "position": {
+              "x": 25.7510547637939,
+              "y": 0,
+              "z": 19.667350769043
+            },
+            "runtime_id": "169634433716",
+            "speed": 2.99999976158142
+          },
+          {
+            "id": "barrosan_hero_thane",
+            "position": {
+              "x": 88.9172668457031,
+              "y": 0,
+              "z": 78.2760391235352
+            },
+            "runtime_id": "170087418571",
+            "speed": 4.19999933242798
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": 67.8988952636719,
+              "y": 0,
+              "z": 59.4084510803223
+            },
+            "runtime_id": "407954787647",
+            "speed": 3.5
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": 66.8583450317383,
+              "y": 0,
+              "z": 59.0350532531738
+            },
+            "runtime_id": "527962213720",
+            "speed": 3.49999976158142
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": 67.2986373901367,
+              "y": 0,
+              "z": 58.1296272277832
+            },
+            "runtime_id": "648087080351",
+            "speed": 3.48378729820251
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": 68.3460159301758,
+              "y": 0,
+              "z": 58.5076293945313
+            },
+            "runtime_id": "768027397583",
+            "speed": 3.48715472221375
+          }
+        ]
+      },
+      {
+        "label": "rebuild_worker",
+        "timestamp": 93289,
+        "units": [
+          {
+            "id": "barrosan_spear_guard",
+            "position": {
+              "x": 28.0536079406738,
+              "y": 0,
+              "z": 21.5902996063232
+            },
+            "runtime_id": "169634433716",
+            "speed": 3
+          },
+          {
+            "id": "barrosan_hero_thane",
+            "position": {
+              "x": 92.6383895874023,
+              "y": 0,
+              "z": 80.2154769897461
+            },
+            "runtime_id": "170087418571",
+            "speed": 4.19999980926514
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": 70.7160263061523,
+              "y": 0,
+              "z": 61.4842681884766
+            },
+            "runtime_id": "407954787647",
+            "speed": 3.49999976158142
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": 69.6723327636719,
+              "y": 0,
+              "z": 61.1154975891113
+            },
+            "runtime_id": "527962213720",
+            "speed": 3.49999976158142
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": 70.1142654418945,
+              "y": 0,
+              "z": 60.1981201171875
+            },
+            "runtime_id": "648087080351",
+            "speed": 3.49999976158142
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": 71.1573715209961,
+              "y": 0,
+              "z": 60.5849571228027
+            },
+            "runtime_id": "768027397583",
+            "speed": 3.49818515777588
+          }
+        ]
+      },
+      {
+        "label": "rebuild_worker",
+        "timestamp": 93794,
+        "units": [
+          {
+            "id": "barrosan_spear_guard",
+            "position": {
+              "x": 30.4772319793701,
+              "y": 0,
+              "z": 23.5230979919434
+            },
+            "runtime_id": "169634433716",
+            "speed": 3
+          },
+          {
+            "id": "barrosan_hero_thane",
+            "position": {
+              "x": 96.7056655883789,
+              "y": 0,
+              "z": 81.7197952270508
+            },
+            "runtime_id": "170087418571",
+            "speed": 4.19999933242798
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": 73.7377014160156,
+              "y": 0,
+              "z": 63.4712333679199
+            },
+            "runtime_id": "407954787647",
+            "speed": 3.5
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": 72.6954116821289,
+              "y": 0,
+              "z": 63.1003227233887
+            },
+            "runtime_id": "527962213720",
+            "speed": 3.50000023841858
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": 73.1284637451172,
+              "y": 0,
+              "z": 62.1864547729492
+            },
+            "runtime_id": "648087080351",
+            "speed": 3.4795253276825
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": 74.1746520996094,
+              "y": 0,
+              "z": 62.5697135925293
+            },
+            "runtime_id": "768027397583",
+            "speed": 3.48684358596802
+          }
+        ]
+      },
+      {
+        "label": "rebuild_worker",
+        "timestamp": 94304,
+        "units": [
+          {
+            "id": "barrosan_spear_guard",
+            "position": {
+              "x": 32.761962890625,
+              "y": 0,
+              "z": 25.4670257568359
+            },
+            "runtime_id": "169634433716",
+            "speed": 2.99999976158142
+          },
+          {
+            "id": "barrosan_hero_thane",
+            "position": {
+              "x": 100.121276855469,
+              "y": 0,
+              "z": 84.1243438720703
+            },
+            "runtime_id": "170087418571",
+            "speed": 4.19999980926514
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": 76.499885559082,
+              "y": 0,
+              "z": 65.6168441772461
+            },
+            "runtime_id": "407954787647",
+            "speed": 3.49999976158142
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": 75.4899749755859,
+              "y": 0,
+              "z": 65.2043151855469
+            },
+            "runtime_id": "527962213720",
+            "speed": 3.49999976158142
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": 75.8976440429688,
+              "y": 0,
+              "z": 64.2922286987305
+            },
+            "runtime_id": "648087080351",
+            "speed": 3.5
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": 76.9290771484375,
+              "y": 0,
+              "z": 64.7142486572266
+            },
+            "runtime_id": "768027397583",
+            "speed": 3.5
+          }
+        ]
+      },
+      {
+        "label": "rebuild_worker",
+        "timestamp": 94808,
+        "units": [
+          {
+            "id": "barrosan_spear_guard",
+            "position": {
+              "x": 34.9689865112305,
+              "y": 0,
+              "z": 27.4987640380859
+            },
+            "runtime_id": "169634433716",
+            "speed": 3
+          },
+          {
+            "id": "barrosan_hero_thane",
+            "position": {
+              "x": 102.261222839355,
+              "y": 0,
+              "z": 87.6967544555664
+            },
+            "runtime_id": "170087418571",
+            "speed": 4.19999980926514
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": 79.0317306518555,
+              "y": 0,
+              "z": 68.0309448242188
+            },
+            "runtime_id": "407954787647",
+            "speed": 3.5
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": 78.0280456542969,
+              "y": 0,
+              "z": 67.612548828125
+            },
+            "runtime_id": "527962213720",
+            "speed": 3.49999976158142
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": 78.4334335327148,
+              "y": 0,
+              "z": 66.698127746582
+            },
+            "runtime_id": "648087080351",
+            "speed": 3.5
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": 79.4604873657227,
+              "y": 0,
+              "z": 67.1272125244141
+            },
+            "runtime_id": "768027397583",
+            "speed": 3.5
+          }
+        ]
+      },
+      {
+        "label": "rebuild_worker",
+        "timestamp": 95315,
+        "units": [
+          {
+            "id": "barrosan_spear_guard",
+            "position": {
+              "x": 37.2646636962891,
+              "y": 0,
+              "z": 29.5816497802734
+            },
+            "runtime_id": "169634433716",
+            "speed": 2.99999976158142
+          },
+          {
+            "id": "barrosan_hero_thane",
+            "position": {
+              "x": 105.384338378906,
+              "y": 0,
+              "z": 90.2568588256836
+            },
+            "runtime_id": "170087418571",
+            "speed": 4.19999980926514
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": 81.6831283569336,
+              "y": 0,
+              "z": 70.4870223999023
+            },
+            "runtime_id": "407954787647",
+            "speed": 3.5
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": 80.6738357543945,
+              "y": 0,
+              "z": 70.0749893188477
+            },
+            "runtime_id": "527962213720",
+            "speed": 3.5
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": 81.1022491455078,
+              "y": 0,
+              "z": 69.1360778808594
+            },
+            "runtime_id": "648087080351",
+            "speed": 3.5
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": 82.1254959106445,
+              "y": 0,
+              "z": 69.5682067871094
+            },
+            "runtime_id": "768027397583",
+            "speed": 3.5
+          }
+        ]
+      },
+      {
+        "label": "rebuild_worker",
+        "timestamp": 95822,
+        "units": [
+          {
+            "id": "barrosan_spear_guard",
+            "position": {
+              "x": 38.8592948913574,
+              "y": 0,
+              "z": 32.1173400878906
+            },
+            "runtime_id": "169634433716",
+            "speed": 3
+          },
+          {
+            "id": "barrosan_hero_thane",
+            "position": {
+              "x": 102.639839172363,
+              "y": 0,
+              "z": 93.1228713989258
+            },
+            "runtime_id": "170087418571",
+            "speed": 4.19999980926514
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": 82.3162384033203,
+              "y": 0,
+              "z": 73.8547439575195
+            },
+            "runtime_id": "407954787647",
+            "speed": 3.5
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": 81.2139587402344,
+              "y": 0,
+              "z": 73.4995193481445
+            },
+            "runtime_id": "527962213720",
+            "speed": 3.49999976158142
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": 81.6654968261719,
+              "y": 0,
+              "z": 72.5112915039063
+            },
+            "runtime_id": "648087080351",
+            "speed": 3.49999976158142
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": 82.724739074707,
+              "y": 0,
+              "z": 72.8746185302734
+            },
+            "runtime_id": "768027397583",
+            "speed": 3.5
+          }
+        ]
+      },
+      {
+        "label": "rebuild_worker",
+        "timestamp": 96329,
+        "units": [
+          {
+            "id": "barrosan_spear_guard",
+            "position": {
+              "x": 40.5243835449219,
+              "y": 0,
+              "z": 34.7318992614746
+            },
+            "runtime_id": "169634433716",
+            "speed": 3
+          },
+          {
+            "id": "barrosan_hero_thane",
+            "position": {
+              "x": 99.5956726074219,
+              "y": 0,
+              "z": 96.2160797119141
+            },
+            "runtime_id": "170087418571",
+            "speed": 4.19999933242798
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": 82.8567352294922,
+              "y": 0,
+              "z": 77.4292449951172
+            },
+            "runtime_id": "407954787647",
+            "speed": 3.5
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": 81.8072738647461,
+              "y": 0,
+              "z": 77.0619888305664
+            },
+            "runtime_id": "527962213720",
+            "speed": 3.49999976158142
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": 82.2482681274414,
+              "y": 0,
+              "z": 76.0787734985352
+            },
+            "runtime_id": "648087080351",
+            "speed": 3.49999976158142
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": 83.2589874267578,
+              "y": 0,
+              "z": 76.4499282836914
+            },
+            "runtime_id": "768027397583",
+            "speed": 3.5
+          }
+        ]
+      },
+      {
+        "label": "rebuild_worker",
+        "timestamp": 96835,
+        "units": [
+          {
+            "id": "barrosan_spear_guard",
+            "position": {
+              "x": 42.1558418273926,
+              "y": 0,
+              "z": 37.2492637634277
+            },
+            "runtime_id": "169634433716",
+            "speed": 2.99999976158142
+          },
+          {
+            "id": "barrosan_hero_thane",
+            "position": {
+              "x": 96.6336669921875,
+              "y": 0,
+              "z": 99.1937408447266
+            },
+            "runtime_id": "170087418571",
+            "speed": 4.19999980926514
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": 83.4634170532227,
+              "y": 0,
+              "z": 80.8753128051758
+            },
+            "runtime_id": "407954787647",
+            "speed": 3.49999976158142
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": 82.437255859375,
+              "y": 0,
+              "z": 80.501953125
+            },
+            "runtime_id": "527962213720",
+            "speed": 3.49999976158142
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": 82.8627014160156,
+              "y": 0,
+              "z": 79.5227890014648
+            },
+            "runtime_id": "648087080351",
+            "speed": 3.5
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": 83.8667907714844,
+              "y": 0,
+              "z": 79.8954925537109
+            },
+            "runtime_id": "768027397583",
+            "speed": 3.49999976158142
+          }
+        ]
+      },
+      {
+        "label": "rebuild_worker",
+        "timestamp": 97340,
+        "units": [
+          {
+            "id": "barrosan_spear_guard",
+            "position": {
+              "x": 43.7224464416504,
+              "y": 0,
+              "z": 39.8076286315918
+            },
+            "runtime_id": "169634433716",
+            "speed": 3
+          },
+          {
+            "id": "barrosan_hero_thane",
+            "position": {
+              "x": 93.7437210083008,
+              "y": 0,
+              "z": 102.239273071289
+            },
+            "runtime_id": "170087418571",
+            "speed": 4.19999980926514
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": 83.8619232177734,
+              "y": 0,
+              "z": 84.3518371582031
+            },
+            "runtime_id": "407954787647",
+            "speed": 3.49999976158142
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": 82.7929306030273,
+              "y": 0,
+              "z": 83.9528961181641
+            },
+            "runtime_id": "527962213720",
+            "speed": 3.5
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": 83.2816162109375,
+              "y": 0,
+              "z": 82.9926300048828
+            },
+            "runtime_id": "648087080351",
+            "speed": 3.48269557952881
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": 84.2650299072266,
+              "y": 0,
+              "z": 83.3722076416016
+            },
+            "runtime_id": "768027397583",
+            "speed": 3.5
+          }
+        ]
+      },
+      {
+        "label": "rebuild_worker",
+        "timestamp": 97850,
+        "units": [
+          {
+            "id": "barrosan_spear_guard",
+            "position": {
+              "x": 45.4496803283691,
+              "y": 0,
+              "z": 42.3814849853516
+            },
+            "runtime_id": "169634433716",
+            "speed": 3.00000023841858
+          },
+          {
+            "id": "barrosan_hero_thane",
+            "position": {
+              "x": 91.4532852172852,
+              "y": 0,
+              "z": 105.871597290039
+            },
+            "runtime_id": "170087418571",
+            "speed": 4.19999980926514
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": 84.7159576416016,
+              "y": 0,
+              "z": 87.8616714477539
+            },
+            "runtime_id": "407954787647",
+            "speed": 3.5
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": 83.6739959716797,
+              "y": 0,
+              "z": 87.4551010131836
+            },
+            "runtime_id": "527962213720",
+            "speed": 3.49999976158142
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": 84.1626586914063,
+              "y": 0,
+              "z": 86.4928894042969
+            },
+            "runtime_id": "648087080351",
+            "speed": 3.49999976158142
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": 85.1633911132813,
+              "y": 0,
+              "z": 86.8708419799805
+            },
+            "runtime_id": "768027397583",
+            "speed": 3.5
+          }
+        ]
+      },
+      {
+        "label": "rebuild_worker",
+        "timestamp": 98355,
+        "units": [
+          {
+            "id": "barrosan_spear_guard",
+            "position": {
+              "x": 45.8562889099121,
+              "y": 0,
+              "z": 42.9512786865234
+            },
+            "runtime_id": "169634433716",
+            "speed": 0
+          },
+          {
+            "id": "barrosan_hero_thane",
+            "position": {
+              "x": 92.0232925415039,
+              "y": 0,
+              "z": 105.043548583984
+            },
+            "runtime_id": "170087418571",
+            "speed": 4.19999980926514
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": 85.9583740234375,
+              "y": 0,
+              "z": 91.1335601806641
+            },
+            "runtime_id": "407954787647",
+            "speed": 3.5
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": 84.9661102294922,
+              "y": 0,
+              "z": 90.707633972168
+            },
+            "runtime_id": "527962213720",
+            "speed": 3.49999976158142
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": 85.4094696044922,
+              "y": 0,
+              "z": 89.7631378173828
+            },
+            "runtime_id": "648087080351",
+            "speed": 3.5
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": 86.4154510498047,
+              "y": 0,
+              "z": 90.1390838623047
+            },
+            "runtime_id": "768027397583",
+            "speed": 3.5
+          }
+        ]
+      },
+      {
+        "label": "rebuild_worker",
+        "timestamp": 98862,
+        "units": [
+          {
+            "id": "barrosan_spear_guard",
+            "position": {
+              "x": 48.1513442993164,
+              "y": 0,
+              "z": 44.882984161377
+            },
+            "runtime_id": "169634433716",
+            "speed": 3
+          },
+          {
+            "id": "barrosan_hero_thane",
+            "position": {
+              "x": 95.7362976074219,
+              "y": 0,
+              "z": 102.801490783691
+            },
+            "runtime_id": "170087418571",
+            "speed": 4.19999933242798
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": 89.2770767211914,
+              "y": 0,
+              "z": 92.0568466186523
+            },
+            "runtime_id": "407954787647",
+            "speed": 3.45382261276245
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": 88.2173614501953,
+              "y": 0,
+              "z": 91.659294128418
+            },
+            "runtime_id": "527962213720",
+            "speed": 3.45345664024353
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": 88.7920074462891,
+              "y": 0,
+              "z": 90.6609191894531
+            },
+            "runtime_id": "648087080351",
+            "speed": 3.5
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": 89.8642883300781,
+              "y": 0,
+              "z": 91.0375595092773
+            },
+            "runtime_id": "768027397583",
+            "speed": 3.5
+          }
+        ]
+      },
+      {
+        "label": "rebuild_worker",
+        "timestamp": 99374,
+        "units": [
+          {
+            "id": "barrosan_spear_guard",
+            "position": {
+              "x": 50.5257148742676,
+              "y": 0,
+              "z": 46.7164421081543
+            },
+            "runtime_id": "169634433716",
+            "speed": 3
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": 92.7290344238281,
+              "y": 0,
+              "z": 92.1880111694336
+            },
+            "runtime_id": "407954787647",
+            "speed": 3.5
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": 91.6708374023438,
+              "y": 0,
+              "z": 91.8499374389648
+            },
+            "runtime_id": "527962213720",
+            "speed": 3.5
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": 92.278694152832,
+              "y": 0,
+              "z": 90.9326019287109
+            },
+            "runtime_id": "648087080351",
+            "speed": 3.5
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": 93.3538436889648,
+              "y": 0,
+              "z": 91.2670440673828
+            },
+            "runtime_id": "768027397583",
+            "speed": 3.49999976158142
+          }
+        ]
+      },
+      {
+        "label": "rebuild_worker",
+        "timestamp": 99874,
+        "units": [
+          {
+            "id": "barrosan_spear_guard",
+            "position": {
+              "x": 52.860523223877,
+              "y": 0,
+              "z": 48.5997886657715
+            },
+            "runtime_id": "169634433716",
+            "speed": 2.99999976158142
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": 94.1947326660156,
+              "y": 0,
+              "z": 91.6771926879883
+            },
+            "runtime_id": "527962213720",
+            "speed": 2.65818762779236
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": 95.7346801757813,
+              "y": 0,
+              "z": 91.4525909423828
+            },
+            "runtime_id": "648087080351",
+            "speed": 3.49999976158142
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": 96.8216171264648,
+              "y": 0,
+              "z": 91.7119903564453
+            },
+            "runtime_id": "768027397583",
+            "speed": 3.49999976158142
+          }
+        ]
+      },
+      {
+        "label": "rebuild_worker",
+        "timestamp": 100387,
+        "units": [
+          {
+            "id": "barrosan_spear_guard",
+            "position": {
+              "x": 52.860523223877,
+              "y": 0,
+              "z": 48.5997886657715
+            },
+            "runtime_id": "169634433716",
+            "speed": 0
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": 99.2717056274414,
+              "y": 0,
+              "z": 92.2077713012695
+            },
+            "runtime_id": "648087080351",
+            "speed": 3.49999976158142
+          },
+          {
+            "id": "barrosan_crag_archer",
+            "position": {
+              "x": 100.387321472168,
+              "y": 0,
+              "z": 92.3139572143555
+            },
+            "runtime_id": "768027397583",
+            "speed": 3.5
+          }
+        ]
+      }
+    ],
+    "result": {
+
+    }
+  },
+  "provenance": {
+    "branch": "codex/v0436-first-complete-conquest-victory",
+    "capture_attempt": "failure",
+    "capture_session": "A",
+    "production_scene": "scenes/main.tscn -> scenes/game_world.tscn",
+    "schema": "v0436-r1c-observed-runtime-evidence-v1",
+    "sequence_time_ms": 221458,
+    "source_sha": "f05ba19f8398d1a1bfd01bbe31b05fe3eeff1779"
+  },
+  "source": "live capture runner failure",
+  "status": "BLOCKED_NATURAL_CONQUEST_NOT_RESOLVED"
+}

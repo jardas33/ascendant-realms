@@ -1,0 +1,17 @@
+{
+  "schema": "v0436-r1i-idle-attack-uptime-v1",
+  "sessions": {
+    "A": {
+      "attack_samples": 1002,
+      "idle_samples": 0,
+      "command_retention": false,
+      "exact_attack_uptime_not_available": true
+    },
+    "B": {
+      "attack_samples": 960,
+      "idle_samples": 0,
+      "command_retention": false,
+      "exact_attack_uptime_not_available": true
+    }
+  }
+}

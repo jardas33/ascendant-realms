@@ -1,0 +1,17 @@
+{
+  "schema": "v0436-first-complete-conquest-victory-validator-v1",
+  "baseSha": "642fcb67bf38f1ca76874b33bfb8dd254ee6eeff",
+  "validationInputSha": "642fcb67bf38f1ca76874b33bfb8dd254ee6eeff",
+  "branch": "codex/v0436-first-complete-conquest-victory",
+  "status": "BLOCKED_PREEXISTING_NAVIGATION_SYSTEM",
+  "passed": false,
+  "failures": [
+    "three repaired headed attempts did not produce a genuine Victory result; stale victory evidence rejected"
+  ],
+  "failureAudits": [
+    "v0436-capture-failure-audit-attempt-01.json",
+    "v0436-capture-failure-audit-attempt-02.json",
+    "v0436-capture-failure-audit-attempt-03.json"
+  ],
+  "victoryReviewPackAccepted": false
+}

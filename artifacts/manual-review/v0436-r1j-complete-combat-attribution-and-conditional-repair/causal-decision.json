@@ -1,0 +1,19 @@
+{
+  "schema": "v0436-r1j-causal-decision-v1",
+  "status": "BLOCKED_R1J_COMPLETE_ATTRIBUTION_INCONCLUSIVE",
+  "proven": [
+    "public command continuity",
+    "target transition reasons",
+    "attack/projectile lifecycle linkage",
+    "damage event linkage",
+    "death attribution linkage where deaths occurred",
+    "bounded unit samples"
+  ],
+  "not_proven": [
+    "single localized production defect",
+    "balance or composition defect versus code defect",
+    "natural conquest success causality"
+  ],
+  "repair_made": false,
+  "finding": "Fresh headed sessions provide a complete causal event graph, but no single localized code defect is proven by the evidence. Preserve the runtime and publish attribution evidence without repair."
+}

@@ -1,0 +1,15 @@
+{
+  "schema": "v0436-r1f-v1-preflight-v1",
+  "status": "PASSED_V0436_R1F_V1_PREFLIGHT",
+  "branch": "codex/v0436-first-complete-conquest-victory",
+  "validatedHeadBeforePublication": "dbdac3a179c54b4b7a3227475b3b99c7b810f26f",
+  "acceptedImplementationSha": "1111f306929665b40dab998de7e2aaad7f4f43ae",
+  "upstream": "origin/codex/v0436-first-complete-conquest-victory",
+  "ahead": 0,
+  "behind": 0,
+  "pr": 10,
+  "prState": "open-draft-unmerged",
+  "r1gResumed": false,
+  "r1cResumed": false,
+  "scope": "retained R1F validator descendant compatibility only"
+}

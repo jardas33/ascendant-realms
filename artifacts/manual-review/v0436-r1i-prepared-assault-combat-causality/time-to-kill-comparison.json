@@ -1,0 +1,95 @@
+{
+  "schema": "v0436-r1i-time-to-kill-v1",
+  "sessions": {
+    "A": {
+      "target_results": [
+        {
+          "definition_id": "lioraen_thorn_ranger",
+          "runtime_id": "174432717624",
+          "initial_hp": 85,
+          "final_hp": 0,
+          "initial_position": {
+            "x": 100,
+            "y": 0,
+            "z": 90
+          },
+          "final_position": {
+            "x": 46.3020057678223,
+            "y": 0,
+            "z": 41.841796875
+          },
+          "terminal_disposition": "DESTROYED",
+          "elapsed_wall_seconds": 24.381,
+          "damage_events": 12,
+          "death_events": 1
+        },
+        {
+          "definition_id": "lioraen_hero_warden",
+          "runtime_id": "174885702479",
+          "initial_hp": 340,
+          "final_hp": 127.9,
+          "initial_position": {
+            "x": 106,
+            "y": 0,
+            "z": 106
+          },
+          "final_position": {
+            "x": 48.7587127685547,
+            "y": 0,
+            "z": 44.8380966186523
+          },
+          "terminal_disposition": "BLOCKED_R1H_PREPARED_ASSAULT_FORCE_ELIMINATED",
+          "elapsed_wall_seconds": 20.585,
+          "damage_events": 97,
+          "death_events": 6
+        }
+      ],
+      "expected_time_to_kill_not_provable_without_attack_uptime_and_target_assignment": true
+    },
+    "B": {
+      "target_results": [
+        {
+          "definition_id": "lioraen_thorn_ranger",
+          "runtime_id": "174432717624",
+          "initial_hp": 85,
+          "final_hp": 0,
+          "initial_position": {
+            "x": 100,
+            "y": 0,
+            "z": 90
+          },
+          "final_position": {
+            "x": 43.766658782959,
+            "y": 0,
+            "z": 39.4205207824707
+          },
+          "terminal_disposition": "DESTROYED",
+          "elapsed_wall_seconds": 23.869,
+          "damage_events": 16,
+          "death_events": 1
+        },
+        {
+          "definition_id": "lioraen_hero_warden",
+          "runtime_id": "174885702479",
+          "initial_hp": 340,
+          "final_hp": 169.2,
+          "initial_position": {
+            "x": 106,
+            "y": 0,
+            "z": 106
+          },
+          "final_position": {
+            "x": 29.0273265838623,
+            "y": 0,
+            "z": 25.4264545440674
+          },
+          "terminal_disposition": "BLOCKED_R1H_PREPARED_ASSAULT_FORCE_ELIMINATED",
+          "elapsed_wall_seconds": 20.09,
+          "damage_events": 96,
+          "death_events": 6
+        }
+      ],
+      "expected_time_to_kill_not_provable_without_attack_uptime_and_target_assignment": true
+    }
+  }
+}

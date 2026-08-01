@@ -1,0 +1,30 @@
+{
+  "schema": "v0436-r1j-session-comparability-v1",
+  "sessions": [
+    {
+      "session": "A",
+      "source_sha": "23a57b723bb6539f7b2011f2f69abe515df08ff9",
+      "same_force_plan": true,
+      "same_configuration": true,
+      "intentional_target_order": "defender-first",
+      "comparable": true
+    },
+    {
+      "session": "B",
+      "source_sha": "23a57b723bb6539f7b2011f2f69abe515df08ff9",
+      "same_force_plan": true,
+      "same_configuration": true,
+      "intentional_target_order": "hero-first",
+      "comparable": true
+    }
+  ],
+  "configuration": {
+    "player": "barrosan",
+    "opponent": "one Lioraen Easy",
+    "map": "hollowspan",
+    "resources": "standard",
+    "mode": "skirmish",
+    "victory": "conquest",
+    "game_speed": 2
+  }
+}

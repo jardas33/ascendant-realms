@@ -1,0 +1,27 @@
+{
+  "schema": "v0436-r1j-launch-contract-v1",
+  "command": "Godot --path production/ascendant-realms-godot --resolution 1920x1080 --verbose",
+  "headed": true,
+  "hidden_window": false,
+  "renderer": "Forward Plus",
+  "production_scene": "scenes/main.tscn -> scenes/game_world.tscn",
+  "sessions": [
+    "A",
+    "B"
+  ],
+  "configuration": {
+    "player": "barrosan",
+    "opponent": "one Lioraen Easy",
+    "map": "hollowspan",
+    "resources": "standard",
+    "mode": "skirmish",
+    "victory": "conquest",
+    "game_speed": 2
+  },
+  "forbidden": [
+    "--log-file",
+    "free units",
+    "resource injection",
+    "direct HP/death/defeat/result writes"
+  ]
+}

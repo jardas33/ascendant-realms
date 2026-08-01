@@ -1,0 +1,38 @@
+{
+  "expected": {
+    "difficulty": "easy",
+    "game_speed": 2,
+    "map": "hollowspan",
+    "mode": "skirmish",
+    "opponent_race": "lioraen",
+    "player_race": "barrosan",
+    "start_resources": "standard",
+    "victory": "conquest"
+  },
+  "observed": {
+    "game_speed": 2,
+    "map": "hollowspan",
+    "mode": "skirmish",
+    "opponents": [
+      {
+        "difficulty": "easy",
+        "race": "lioraen"
+      }
+    ],
+    "player_race": "barrosan",
+    "start_resources": "standard",
+    "victory": "conquest"
+  },
+  "provenance": {
+    "attempt": "configuration",
+    "branch": "codex/v0436-first-complete-conquest-victory",
+    "godot_log_file_argument": false,
+    "headed": true,
+    "hidden_window": false,
+    "production_scene": "scenes/main.tscn -> scenes/game_world.tscn",
+    "schema": "v0436-r1j-live-evidence-v1",
+    "session": "A",
+    "source_sha": "23a57b723bb6539f7b2011f2f69abe515df08ff9",
+    "timestamp_ms": 20871
+  }
+}

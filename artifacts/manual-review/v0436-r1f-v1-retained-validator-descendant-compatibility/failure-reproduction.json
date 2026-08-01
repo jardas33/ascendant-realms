@@ -1,0 +1,10 @@
+{
+  "schema": "v0436-r1f-v1-failure-reproduction-v1",
+  "status": "REPRODUCED_AND_REPAIRED",
+  "command": "npm run godot:validate:v0436-r1-navigation-behavioral-proof",
+  "failureBeforeRepair": "expected base HEAD 6b14ba305afc4b3090d57f400da885550d512183, got dbdac3a179c54b4b7a3227475b3b99c7b810f26f",
+  "cause": "retained validator required an obsolete exact HEAD instead of validating the accepted implementation ancestry and evidence provenance",
+  "repairBoundary": "tooling-only contract compatibility; no gameplay or production movement change",
+  "freshEvidenceRequired": true,
+  "freshEvidenceProduced": true
+}

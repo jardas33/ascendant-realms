@@ -1,0 +1,93 @@
+{
+  "schema": "v0436-r1j-effective-dps-v1",
+  "by_attacker": {
+    "654865075600": {
+      "damage_events": 18,
+      "observed_damage": 183
+    },
+    "1059279867508": {
+      "damage_events": 17,
+      "observed_damage": 163.5
+    },
+    "768211946943": {
+      "damage_events": 17,
+      "observed_damage": 163.5
+    },
+    "175623899962": {
+      "damage_events": 17,
+      "observed_damage": 147.25
+    },
+    "949053558366": {
+      "damage_events": 9,
+      "observed_damage": 73
+    },
+    "173577079507": {
+      "damage_events": 4,
+      "observed_damage": 207.7
+    },
+    "859966541297": {
+      "damage_events": 12,
+      "observed_damage": 96.75
+    },
+    "176076884817": {
+      "damage_events": 41,
+      "observed_damage": 1107.1499999999996
+    },
+    "778093727192": {
+      "damage_events": 3,
+      "observed_damage": 47.1
+    },
+    "889964203528": {
+      "damage_events": 3,
+      "observed_damage": 47.1
+    },
+    "666592349608": {
+      "damage_events": 1,
+      "observed_damage": 14.3
+    },
+    "1319410600782": {
+      "damage_events": 1,
+      "observed_damage": 10.8
+    },
+    "173124094652": {
+      "damage_events": 3,
+      "observed_damage": 37.5
+    },
+    "663656336785": {
+      "damage_events": 16,
+      "observed_damage": 155
+    },
+    "785962241474": {
+      "damage_events": 17,
+      "observed_damage": 152.5
+    },
+    "987288833630": {
+      "damage_events": 17,
+      "observed_damage": 163.5
+    },
+    "878706691569": {
+      "damage_events": 6,
+      "observed_damage": 47.5
+    },
+    "1071778893428": {
+      "damage_events": 10,
+      "observed_damage": 81.5
+    },
+    "907966156295": {
+      "damage_events": 3,
+      "observed_damage": 47.1
+    },
+    "796095679959": {
+      "damage_events": 3,
+      "observed_damage": 47.1
+    },
+    "540595457352": {
+      "damage_events": 1,
+      "observed_damage": 14.3
+    },
+    "675232615826": {
+      "damage_events": 1,
+      "observed_damage": 14.3
+    }
+  }
+}

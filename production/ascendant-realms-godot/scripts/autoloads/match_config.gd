@@ -5,6 +5,9 @@ extends Node
 var config := {}
 var last_result := {}
 
+func clear_result() -> void:
+	last_result = {}
+
 func default_config() -> Dictionary:
 	return {
 		"player_race": "barrosan",

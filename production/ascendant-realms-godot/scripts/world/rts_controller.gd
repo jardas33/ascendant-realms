@@ -66,6 +66,12 @@ func _player_hq_pos() -> Vector3:
 			return b.global_position
 	return Vector3.ZERO
 
+func _v0436_r1j_recorder():
+	if OS.get_environment("ASCENDANT_V0436_R1J_CAPTURE") != "1" or not world:
+		return null
+	var recorder = world.get_meta("v0436_r1j_recorder", null)
+	return recorder if is_instance_valid(recorder) else null
+
 func _build_camera() -> void:
 	cam_pivot = Node3D.new()
 	cam_pivot.name = "CamPivot"
@@ -347,10 +353,13 @@ func issue_attack_target(target) -> bool:
 	_clean_selection()
 	if not is_instance_valid(target) or not ("team" in target) or int(target.team) == player_team:
 		return false
+	var units := _selected_units()
+	var recorder = _v0436_r1j_recorder()
+	var order_id: String = recorder.record_public_order("attack_target", units, target, Vector3.ZERO) if recorder else ""
 	var issued := false
-	for u in _selected_units():
+	for u in units:
 		if u.has_method("command_attack"):
-			u.command_attack(target)
+			u.command_attack(target, order_id)
 			issued = u.state == Unit.State.ATTACKING or issued
 	if issued and world:
 		world.spawn_ring_fx(target.global_position, Color(0.9, 0.3, 0.3), 1.2)
@@ -379,9 +388,12 @@ func _begin_attack_move() -> void:
 		world.spawn_ring_fx(ground, Color(0.9,0.4,0.3), 1.2)
 
 func issue_attack_move_destination(destination: Vector3) -> bool:
+	var units := _selected_units()
+	var recorder = _v0436_r1j_recorder()
+	var order_id: String = recorder.record_public_order("attack_move_destination", units, null, destination) if recorder else ""
 	var issued := false
-	for u in _selected_units():
-		u.command_move(destination, true)
+	for u in units:
+		u.command_move(destination, true, false, order_id)
 		issued = true
 	return issued
 

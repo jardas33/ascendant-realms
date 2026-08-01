@@ -1,0 +1,20 @@
+{
+  "schema": "v0436-r1f-boundary-physics-validator-v2",
+  "branch": "codex/v0436-first-complete-conquest-victory",
+  "validatedHead": "341c7d20133f5721c1e4a97e1576e63fbe2ec815",
+  "acceptedImplementationSha": "1111f306929665b40dab998de7e2aaad7f4f43ae",
+  "evidenceSourceSha": "341c7d20133f5721c1e4a97e1576e63fbe2ec815",
+  "acceptedImplementationIsAncestor": true,
+  "evidenceSourceIsCurrentHead": true,
+  "evidenceSourceIsAncestor": true,
+  "descendantChangedPaths": [],
+  "descendantPathsAllowed": true,
+  "failures": [],
+  "passed": true,
+  "runs": [
+    "01",
+    "02",
+    "03"
+  ],
+  "pack": "artifacts/manual-review/v0436-r1f-boundary-recovery-physics-truth/"
+}

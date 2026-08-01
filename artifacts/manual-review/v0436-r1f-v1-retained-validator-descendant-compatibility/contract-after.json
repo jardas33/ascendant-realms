@@ -1,0 +1,12 @@
+{
+  "schema": "v0436-r1f-v1-contract-after-v1",
+  "helper": "tools/godot/v0436R1FValidatorContract.mjs",
+  "acceptedImplementationSha": "1111f306929665b40dab998de7e2aaad7f4f43ae",
+  "requiredBranch": "codex/v0436-first-complete-conquest-victory",
+  "ancestry": "git merge-base --is-ancestor",
+  "evidenceRequirements": ["three runs", "one source SHA", "one branch", "run indexes 01/02/03", "original physics and integrity checks"],
+  "staleEvidenceRule": "only an ancestor with accepted implementation ancestry and documentation/review-pack-only descendant paths",
+  "productionOrToolDescendant": "rejected unless fresh evidence is captured",
+  "retainedR1DCompatibility": "minimal R1D allowlist extension accepts R1F and R1F-V1 evidence/tool/report paths",
+  "result": "fresh current-head evidence passes"
+}

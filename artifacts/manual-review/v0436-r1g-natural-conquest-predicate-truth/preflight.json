@@ -1,0 +1,21 @@
+{
+  "schema": "v0436-r1g-preflight-v1",
+  "status": "CAPTURE_STARTED",
+  "branch": "codex/v0436-first-complete-conquest-victory",
+  "source_sha": "cce2fea33accf68d0494385b97a75b72d03d5e88",
+  "upstream": "origin/codex/v0436-first-complete-conquest-victory",
+  "executable": "C:\\Users\\barro\\AppData\\Local\\AscendantRealms\\tools\\godot-4.3-stable\\Godot_v4.3-stable_win64.exe",
+  "executable_sha256": "b554ba80fb2ad8f1817bc21242ac8adbb9e41f806c49ad5cc73603db71fee32f",
+  "renderer": "project-default Forward Plus",
+  "launch_contract": "headed Windows display; runner-owned stdout/stderr; no Godot --log-file; real production scenes/main.tscn -> scenes/game_world.tscn",
+  "match_configuration": {
+    "player_race": "barrosan",
+    "opponent_race": "lioraen",
+    "difficulty": "easy",
+    "map": "hollowspan",
+    "start_resources": "standard",
+    "mode": "skirmish",
+    "victory": "conquest",
+    "game_speed": 2
+  }
+}

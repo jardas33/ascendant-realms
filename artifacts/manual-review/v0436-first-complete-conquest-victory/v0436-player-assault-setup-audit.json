@@ -1,0 +1,26 @@
+{
+  "archers_ready": 4,
+  "hall_built": true,
+  "player_resources_after_queue": {
+    "food": 0,
+    "gold": 180,
+    "stone": 120,
+    "timber": 30
+  },
+  "queue_empty": true,
+  "queue_results": [
+    {
+      "ok": true
+    },
+    {
+      "ok": true
+    },
+    {
+      "ok": true
+    },
+    {
+      "ok": true
+    }
+  ],
+  "trained": true
+}

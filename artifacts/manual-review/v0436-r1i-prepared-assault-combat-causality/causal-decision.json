@@ -1,0 +1,23 @@
+{
+  "schema": "v0436-r1i-causal-decision-v1",
+  "status": "BLOCKED_R1I_COMBAT_CAUSALITY_INCONCLUSIVE",
+  "supported_by_sessions": [
+    "A",
+    "B"
+  ],
+  "finding": "Commands were accepted and damage resolution occurred, but the existing runtime evidence cannot separate target priority, hero overmatch, damage/armor interaction, formation/navigation interference, projectile/hit failure, or force insufficiency.",
+  "proven": [
+    "two comparable headed sessions",
+    "public attack-move and attack-target accepted",
+    "one defender destroyed",
+    "hero received damage",
+    "player force eliminated before result"
+  ],
+  "not_proven": [
+    "single root cause",
+    "per-attacker damage attribution",
+    "complete per-unit casualty attribution",
+    "exact attack cadence and target assignment",
+    "natural conquest result"
+  ]
+}

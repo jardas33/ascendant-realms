@@ -1,0 +1,72 @@
+{
+  "schema": "v0436-r1i-casualty-ledger-v1",
+  "session": "A",
+  "source_sha": "bfc04f73a152bdeb108184dec72328ab5a3cfd9c",
+  "present": true,
+  "events": [
+    {
+      "credited_to_player": true,
+      "kind": "melee",
+      "source_id": "barrosan_hero_thane",
+      "source_team": 0,
+      "victim_id": "lioraen_thorn_ranger",
+      "victim_runtime_id": "174432717624",
+      "victim_team": 1
+    },
+    {
+      "credited_to_player": false,
+      "kind": "lume_bolt",
+      "source_id": "lioraen_hero_warden",
+      "source_team": 1,
+      "victim_id": "barrosan_hero_thane",
+      "victim_runtime_id": "172385897169",
+      "victim_team": 0
+    },
+    {
+      "credited_to_player": false,
+      "kind": "melee",
+      "source_id": "lioraen_rootwarden_guard",
+      "source_team": 1,
+      "victim_id": "barrosan_crag_archer",
+      "victim_runtime_id": "820623969751",
+      "victim_team": 0
+    },
+    {
+      "credited_to_player": false,
+      "kind": "thorn",
+      "source_id": "lioraen_thorn_ranger",
+      "source_team": 1,
+      "victim_id": "barrosan_crag_archer",
+      "victim_runtime_id": "940564286982",
+      "victim_team": 0
+    },
+    {
+      "credited_to_player": false,
+      "kind": "lume_bolt",
+      "source_id": "lioraen_hero_warden",
+      "source_team": 1,
+      "victim_id": "barrosan_spear_guard",
+      "victim_runtime_id": "171932912314",
+      "victim_team": 0
+    },
+    {
+      "credited_to_player": false,
+      "kind": "thorn",
+      "source_id": "lioraen_thorn_ranger",
+      "source_team": 1,
+      "victim_id": "barrosan_spear_guard",
+      "victim_runtime_id": "566247820663",
+      "victim_team": 0
+    },
+    {
+      "credited_to_player": false,
+      "kind": "thorn",
+      "source_id": "lioraen_thorn_ranger",
+      "source_team": 1,
+      "victim_id": "barrosan_spear_guard",
+      "victim_runtime_id": "700868201894",
+      "victim_team": 0
+    }
+  ],
+  "attribution_available": true
+}

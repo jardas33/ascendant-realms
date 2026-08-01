@@ -1,0 +1,34 @@
+{
+  "schema": "v0436-r1j-production-combat-definition-audit-v1",
+  "source": [
+    "production/ascendant-realms-godot/scripts/game/unit_defs.gd",
+    "production/ascendant-realms-godot/scripts/game/game_data.gd",
+    "production/ascendant-realms-godot/scripts/units/unit.gd",
+    "production/ascendant-realms-godot/scripts/world/game_world.gd"
+  ],
+  "player_force": [
+    {
+      "id": "barrosan_spear_guard",
+      "count": 3
+    },
+    {
+      "id": "barrosan_crag_archer",
+      "count": 2
+    },
+    {
+      "id": "barrosan_hero_thane",
+      "count": 1
+    }
+  ],
+  "enemy_targets": [
+    {
+      "id": "lioraen_thorn_ranger",
+      "count": 1
+    },
+    {
+      "id": "lioraen_hero_warden",
+      "count": 1
+    }
+  ],
+  "source_integrity": "read-only definition audit; no runtime definition changes"
+}

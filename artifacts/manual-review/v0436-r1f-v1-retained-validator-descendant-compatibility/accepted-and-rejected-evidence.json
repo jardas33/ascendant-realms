@@ -1,0 +1,18 @@
+{
+  "schema": "v0436-r1f-v1-evidence-disposition-v1",
+  "accepted": [
+    "pure ten-case contract matrix",
+    "fresh three-run headed R1F evidence at dbdac3a179c54b4b7a3227475b3b99c7b810f26f",
+    "real ancestry checks",
+    "original physics and integrity assertions"
+  ],
+  "rejected": [
+    "obsolete exact-HEAD equality",
+    "stale evidence after production source changes",
+    "stale evidence after validator/tool changes",
+    "mixed run source SHAs",
+    "wrong branch provenance",
+    "title-card-only or synthetic runtime proof"
+  ],
+  "r1gOrR1cEvidence": "not captured; outside this checkpoint"
+}
