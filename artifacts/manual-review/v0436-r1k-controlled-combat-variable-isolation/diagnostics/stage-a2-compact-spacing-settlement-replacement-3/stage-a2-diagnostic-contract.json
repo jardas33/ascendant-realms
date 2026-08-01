@@ -1,0 +1,12 @@
+{
+  "attempt_id": "stage-a2-compact-spacing-settlement-replacement-3",
+  "branch": "codex/v0436-first-complete-conquest-victory",
+  "direct_state_writes": false,
+  "non_evidence": true,
+  "output_scope": "diagnostics/stage-a2-compact-spacing-settlement-replacement-3",
+  "production_repair_made": false,
+  "public_command_only": true,
+  "schema": "v0436-r1k-stage-a2-diagnostic-contract-v1",
+  "source_sha": "bf9a9f0f935cd6103fd12ab7275ff266843ce884",
+  "status": "BLOCKED_R1K_COMPACT_SPACING_PHYSICALLY_UNACHIEVABLE"
+}

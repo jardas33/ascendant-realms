@@ -1,0 +1,187 @@
+{
+  "public_orders": [
+    {
+      "order_event_id": "r1j-order-043666",
+      "physics_frame": 3513,
+      "process_frame": 3933,
+      "requested_command": "attack_move_destination",
+      "requested_destination": {
+        "x": -85.5999984741211,
+        "y": 0,
+        "z": -94.3499984741211
+      },
+      "requested_target": {
+        "alive": false,
+        "definition_id": "",
+        "runtime_id": "",
+        "team": -1
+      },
+      "rts_return_value": true,
+      "selection_runtime_ids": [
+        "174768261845"
+      ],
+      "timestamp_ms": 69615
+    },
+    {
+      "order_event_id": "r1j-order-043668",
+      "physics_frame": 3513,
+      "process_frame": 3934,
+      "requested_command": "attack_move_destination",
+      "requested_destination": {
+        "x": -84.4000015258789,
+        "y": 0,
+        "z": -94.3499984741211
+      },
+      "requested_target": {
+        "alive": false,
+        "definition_id": "",
+        "runtime_id": "",
+        "team": -1
+      },
+      "rts_return_value": true,
+      "selection_runtime_ids": [
+        "563563466108"
+      ],
+      "timestamp_ms": 69621
+    }
+  ],
+  "schema": "v0436-r1j-command-event-graph-v1",
+  "unit_commands": [
+    {
+      "assigned_target_after": {
+        "alive": false,
+        "definition_id": "",
+        "runtime_id": "",
+        "team": -1
+      },
+      "assigned_target_before": {
+        "alive": false,
+        "definition_id": "",
+        "runtime_id": "",
+        "team": -1
+      },
+      "destination": {
+        "x": -85.5999984741211,
+        "y": 0,
+        "z": -94.3499984741211
+      },
+      "order_event_id": "r1j-order-043666",
+      "physics_frame": 3513,
+      "process_frame": 3933,
+      "requested_command": "attack_move",
+      "return_state": "accepted",
+      "timestamp_ms": 69615,
+      "unit": {
+        "alive": true,
+        "definition_id": "barrosan_hero_thane",
+        "runtime_id": "174768261845",
+        "team": 0
+      },
+      "unit_command_after": 2,
+      "unit_command_before": 0,
+      "unit_command_event_id": "r1j-unit-command-043667"
+    },
+    {
+      "assigned_target_after": {
+        "alive": false,
+        "definition_id": "",
+        "runtime_id": "",
+        "team": -1
+      },
+      "assigned_target_before": {
+        "alive": false,
+        "definition_id": "",
+        "runtime_id": "",
+        "team": -1
+      },
+      "destination": {
+        "x": -84.4000015258789,
+        "y": 0,
+        "z": -94.3499984741211
+      },
+      "order_event_id": "r1j-order-043668",
+      "physics_frame": 3513,
+      "process_frame": 3934,
+      "requested_command": "attack_move",
+      "return_state": "accepted",
+      "timestamp_ms": 69621,
+      "unit": {
+        "alive": true,
+        "definition_id": "barrosan_spear_guard",
+        "runtime_id": "563563466108",
+        "team": 0
+      },
+      "unit_command_after": 2,
+      "unit_command_before": 0,
+      "unit_command_event_id": "r1j-unit-command-043669"
+    },
+    {
+      "assigned_target_after": {
+        "alive": false,
+        "definition_id": "",
+        "runtime_id": "",
+        "team": -1
+      },
+      "assigned_target_before": {
+        "alive": false,
+        "definition_id": "",
+        "runtime_id": "",
+        "team": -1
+      },
+      "destination": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "order_event_id": "",
+      "physics_frame": 3654,
+      "process_frame": 4091,
+      "requested_command": "stop",
+      "return_state": "not_attacking",
+      "timestamp_ms": 72529,
+      "unit": {
+        "alive": true,
+        "definition_id": "barrosan_hero_thane",
+        "runtime_id": "174768261845",
+        "team": 0
+      },
+      "unit_command_after": 0,
+      "unit_command_before": 0,
+      "unit_command_event_id": "r1j-unit-command-046631"
+    },
+    {
+      "assigned_target_after": {
+        "alive": false,
+        "definition_id": "",
+        "runtime_id": "",
+        "team": -1
+      },
+      "assigned_target_before": {
+        "alive": false,
+        "definition_id": "",
+        "runtime_id": "",
+        "team": -1
+      },
+      "destination": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "order_event_id": "",
+      "physics_frame": 3654,
+      "process_frame": 4091,
+      "requested_command": "stop",
+      "return_state": "not_attacking",
+      "timestamp_ms": 72529,
+      "unit": {
+        "alive": true,
+        "definition_id": "barrosan_spear_guard",
+        "runtime_id": "563563466108",
+        "team": 0
+      },
+      "unit_command_after": 0,
+      "unit_command_before": 0,
+      "unit_command_event_id": "r1j-unit-command-046632"
+    }
+  ]
+}

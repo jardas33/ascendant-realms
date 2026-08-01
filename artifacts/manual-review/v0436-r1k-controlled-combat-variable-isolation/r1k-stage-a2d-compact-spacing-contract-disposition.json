@@ -1,0 +1,38 @@
+{
+  "schema": "v0436-r1k-stage-a2d-compact-spacing-contract-disposition-v1",
+  "status": "BLOCKED_R1K_MATRIX_CONTRACT_COMPACT_SPACING_PHYSICALLY_UNACHIEVABLE",
+  "source_sha": "bf9a9f0f935cd6103fd12ab7275ff266843ce884",
+  "branch": "codex/v0436-first-complete-conquest-victory",
+  "github_actions": {"run_id": "30720639071", "run_number": 682, "conclusion": "success", "exact_sha": "bf9a9f0f935cd6103fd12ab7275ff266843ce884"},
+  "attempt_id": "stage-a2-compact-spacing-settlement-replacement-3",
+  "attempt_path": "diagnostics/stage-a2-compact-spacing-settlement-replacement-3",
+  "validator": {"command": "npm run godot:validate:v0436-r1k-stage-a2-replacement-3", "status": "STAGE_A2D_DIAGNOSTIC_VALIDATED", "passed": true, "failures": [], "non_evidence": true, "final_evidence": false},
+  "authorization": {"stage_b_authorized": false, "production_repair_authorized": false, "threshold_change_authorized": false, "matrix_redesign_authorized": false, "natural_confirmation_authorized": false},
+  "diagnostic": {
+    "cell_id": "hero-spear-compact-thorn-ranger-first",
+    "command_path": "diagnostic-spacing-only",
+    "diagnostic_only": true,
+    "selected_force": "hero-plus-spear-guard",
+    "spacing": "compact",
+    "target": "thorn-ranger",
+    "headed": true,
+    "hidden_window": false,
+    "headed_launch_count": 1,
+    "combat_interference": false,
+    "diagnostic_status": "BLOCKED_R1K_COMPACT_SPACING_PHYSICALLY_UNACHIEVABLE",
+    "diagnostic_reason": "arrival hold and public stop completed, but the stable post-stop distance remained above the unchanged compact threshold"
+  },
+  "decisive_facts": {
+    "arrival_tail": {"consecutive_samples": 20, "span_ms": 1013, "destination_error_tolerance": 1.5, "destination_errors": [1.12735748291016, 1.16319167613983], "both_within_tolerance": true},
+    "public_commands": {"accepted_attack_move_destination_commands": 2, "accepted_public_stop_commands": 1, "command_protocol": "two accepted attack-move destination commands followed by exactly one accepted public stop command"},
+    "post_stop": {"sample_count": 5, "timestamps_ms": [72969, 73103, 73236, 73369, 73503], "strictly_increasing": true, "span_ms": 534, "all_velocities_zero": true, "distance": 3.48830461502075, "distance_min": 3.48830461502075, "distance_max": 3.48830461502075, "distance_stable": true},
+    "threshold": {"compact_spacing_max": 3.2, "unchanged": true, "threshold_met": false},
+    "interference_counts": {"attacks": 0, "projectiles": 0, "damage": 0, "deaths": 0, "target_transitions": 0},
+    "mutation_guards": {"direct_writes": 0, "resource_injection": 0, "free_units": 0, "production_mutation": 0}
+  },
+  "interpretation": {
+    "proves": "This exact two-unit compact-spacing setup cannot meet the declared 3.2 threshold through the authorized public movement and stop commands while preserving normal production collision/avoidance behavior.",
+    "does_not_prove": ["a production navigation defect", "a combat defect", "that all possible formation contracts are impossible", "that 3.2 should be silently raised", "that the controlled matrix passed", "that Stage-B can proceed"]
+  },
+  "final_state": {"r1k_blocked": true, "final_evidence": false, "p0_result_001": "OPEN", "existing_diagnostics_immutable": true, "no_further_diagnostic_authorized": true}
+}
