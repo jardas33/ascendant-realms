@@ -1,0 +1,13 @@
+{
+  "schema": "v0436-r1i-prepared-assault-combat-causality-capture-v1",
+  "status": "CAPTURE_COMPLETED",
+  "source_sha": "bfc04f73a152bdeb108184dec72328ab5a3cfd9c",
+  "branch": "codex/v0436-first-complete-conquest-victory",
+  "sessions": [
+    "A",
+    "B"
+  ],
+  "pack": "artifacts/manual-review/v0436-r1i-prepared-assault-combat-causality/",
+  "causal_status": "BLOCKED_R1I_COMBAT_CAUSALITY_INCONCLUSIVE",
+  "historical_r1h_screenshots_reused_as_r1i": false
+}

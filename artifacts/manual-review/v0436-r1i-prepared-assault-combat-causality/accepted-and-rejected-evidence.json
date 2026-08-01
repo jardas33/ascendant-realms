@@ -1,0 +1,18 @@
+{
+  "schema": "v0436-r1i-evidence-disposition-v1",
+  "accepted": [
+    "fresh R1I headed session frames",
+    "read-only combat event copies",
+    "public command return values",
+    "target HP/position histories",
+    "truthful inconclusive classification"
+  ],
+  "rejected": [
+    "R1H screenshots relabeled as R1I",
+    "success/result/replay frames",
+    "direct HP/death/defeat/result writes",
+    "free units",
+    "resource injection",
+    "unsupported single-cause claim"
+  ]
+}

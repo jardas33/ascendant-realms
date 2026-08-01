@@ -1,0 +1,10 @@
+{
+  "schema": "v0436-r1i-r1h-baseline-contract-v1",
+  "base_head": "bfc04f73a152bdeb108184dec72328ab5a3cfd9c",
+  "retained_r1h_pack": "artifacts/manual-review/v0436-r1h-natural-player-assault-viability/",
+  "production_scene": "scenes/main.tscn -> scenes/game_world.tscn",
+  "resource_injection": false,
+  "free_units": false,
+  "direct_state_writes": false,
+  "historical_frames_reused_as_r1i": false
+}

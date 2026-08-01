@@ -1,0 +1,510 @@
+{
+  "provenance": {
+    "attempt": "production",
+    "branch": "codex/v0436-first-complete-conquest-victory",
+    "production_scene": "scenes/main.tscn -> scenes/game_world.tscn",
+    "schema": "v0436-r1i-live-evidence-v1",
+    "session": "A",
+    "source_sha": "bfc04f73a152bdeb108184dec72328ab5a3cfd9c",
+    "timestamp_ms": 34355
+  },
+  "queue_plan": [
+    "barrosan_spear_guard",
+    "barrosan_spear_guard",
+    "barrosan_crag_archer",
+    "barrosan_crag_archer"
+  ],
+  "queue_results": [
+    {
+      "pop_used": 5,
+      "reserved_pop": 2,
+      "resources_after": {
+        "food": 170,
+        "gold": 180,
+        "stone": 110,
+        "timber": 130
+      },
+      "result": {
+        "ok": true
+      },
+      "unit_id": "barrosan_spear_guard"
+    },
+    {
+      "pop_used": 5,
+      "reserved_pop": 4,
+      "resources_after": {
+        "food": 100,
+        "gold": 180,
+        "stone": 100,
+        "timber": 110
+      },
+      "result": {
+        "ok": true
+      },
+      "unit_id": "barrosan_spear_guard"
+    },
+    {
+      "pop_used": 5,
+      "reserved_pop": 5,
+      "resources_after": {
+        "food": 50,
+        "gold": 180,
+        "stone": 100,
+        "timber": 80
+      },
+      "result": {
+        "ok": true
+      },
+      "unit_id": "barrosan_crag_archer"
+    },
+    {
+      "pop_used": 5,
+      "reserved_pop": 6,
+      "resources_after": {
+        "food": 0,
+        "gold": 180,
+        "stone": 100,
+        "timber": 50
+      },
+      "result": {
+        "ok": true
+      },
+      "unit_id": "barrosan_crag_archer"
+    }
+  ],
+  "resource_transactions": [
+    {
+      "bank_after": {
+        "food": 150,
+        "gold": 180,
+        "stone": 130,
+        "timber": 160
+      },
+      "bank_before": {
+        "food": 150,
+        "gold": 180,
+        "stone": 130,
+        "timber": 150
+      },
+      "carried_amount": 10,
+      "deposit_count": 1,
+      "deposited_amount": 10,
+      "dropoff_building_id": "lioraen_groveheart",
+      "dropoff_definition_name": "Groveheart",
+      "dropoff_id": "lioraen_groveheart",
+      "dropoff_is_built": true,
+      "dropoff_is_friendly": true,
+      "dropoff_position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "dropoff_runtime_id": "172838882024",
+      "dropoff_team": 1,
+      "gather_multiplier": 1,
+      "kind": "timber",
+      "next_target": "Timber",
+      "resource_node_runtime_id": "177234512822",
+      "timestamp_msec": 20563,
+      "worker_id": "lioraen_worker",
+      "worker_runtime_id": "173526747914"
+    },
+    {
+      "bank_after": {
+        "food": 150,
+        "gold": 180,
+        "stone": 140,
+        "timber": 160
+      },
+      "bank_before": {
+        "food": 150,
+        "gold": 180,
+        "stone": 130,
+        "timber": 160
+      },
+      "carried_amount": 10,
+      "deposit_count": 1,
+      "deposited_amount": 10,
+      "dropoff_building_id": "lioraen_groveheart",
+      "dropoff_definition_name": "Groveheart",
+      "dropoff_id": "lioraen_groveheart",
+      "dropoff_is_built": true,
+      "dropoff_is_friendly": true,
+      "dropoff_position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "dropoff_runtime_id": "172838882024",
+      "dropoff_team": 1,
+      "gather_multiplier": 1,
+      "kind": "stone",
+      "next_target": "Stone",
+      "resource_node_runtime_id": "176898968488",
+      "timestamp_msec": 23085,
+      "worker_id": "lioraen_worker",
+      "worker_runtime_id": "173979732769"
+    },
+    {
+      "bank_after": {
+        "food": 150,
+        "gold": 180,
+        "stone": 140,
+        "timber": 170
+      },
+      "bank_before": {
+        "food": 150,
+        "gold": 180,
+        "stone": 140,
+        "timber": 160
+      },
+      "carried_amount": 10,
+      "deposit_count": 2,
+      "deposited_amount": 10,
+      "dropoff_building_id": "lioraen_groveheart",
+      "dropoff_definition_name": "Groveheart",
+      "dropoff_id": "lioraen_groveheart",
+      "dropoff_is_built": true,
+      "dropoff_is_friendly": true,
+      "dropoff_position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "dropoff_runtime_id": "172838882024",
+      "dropoff_team": 1,
+      "gather_multiplier": 1,
+      "kind": "timber",
+      "next_target": "Timber",
+      "resource_node_runtime_id": "177234512822",
+      "timestamp_msec": 23177,
+      "worker_id": "lioraen_worker",
+      "worker_runtime_id": "173526747914"
+    },
+    {
+      "bank_after": {
+        "food": 100,
+        "gold": 180,
+        "stone": 130,
+        "timber": 110
+      },
+      "bank_before": {
+        "food": 100,
+        "gold": 180,
+        "stone": 120,
+        "timber": 110
+      },
+      "carried_amount": 10,
+      "deposit_count": 2,
+      "deposited_amount": 10,
+      "dropoff_building_id": "lioraen_groveheart",
+      "dropoff_definition_name": "Groveheart",
+      "dropoff_id": "lioraen_groveheart",
+      "dropoff_is_built": true,
+      "dropoff_is_friendly": true,
+      "dropoff_position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "dropoff_runtime_id": "172838882024",
+      "dropoff_team": 1,
+      "gather_multiplier": 1,
+      "kind": "stone",
+      "next_target": "Stone",
+      "resource_node_runtime_id": "176898968488",
+      "timestamp_msec": 27311,
+      "worker_id": "lioraen_worker",
+      "worker_runtime_id": "173979732769"
+    },
+    {
+      "bank_after": {
+        "food": 110,
+        "gold": 180,
+        "stone": 130,
+        "timber": 110
+      },
+      "bank_before": {
+        "food": 100,
+        "gold": 180,
+        "stone": 130,
+        "timber": 110
+      },
+      "carried_amount": 10,
+      "deposit_count": 1,
+      "deposited_amount": 10,
+      "dropoff_building_id": "lioraen_groveheart",
+      "dropoff_definition_name": "Groveheart",
+      "dropoff_id": "lioraen_groveheart",
+      "dropoff_is_built": true,
+      "dropoff_is_friendly": true,
+      "dropoff_position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "dropoff_runtime_id": "172838882024",
+      "dropoff_team": 1,
+      "gather_multiplier": 1,
+      "kind": "food",
+      "next_target": "Food",
+      "resource_node_runtime_id": "176395651987",
+      "timestamp_msec": 29446,
+      "worker_id": "lioraen_worker",
+      "worker_runtime_id": "281689459986"
+    },
+    {
+      "bank_after": {
+        "food": 210,
+        "gold": 180,
+        "stone": 120,
+        "timber": 150
+      },
+      "bank_before": {
+        "food": 200,
+        "gold": 180,
+        "stone": 120,
+        "timber": 150
+      },
+      "carried_amount": 10,
+      "deposit_count": 1,
+      "deposited_amount": 10,
+      "dropoff_building_id": "barrosan_clanhold",
+      "dropoff_definition_name": "Clanhold",
+      "dropoff_id": "barrosan_clanhold",
+      "dropoff_is_built": true,
+      "dropoff_is_friendly": true,
+      "dropoff_position": {
+        "x": -100,
+        "y": 0,
+        "z": -100
+      },
+      "dropoff_runtime_id": "170339076714",
+      "dropoff_team": 0,
+      "gather_multiplier": 1,
+      "kind": "food",
+      "next_target": "Food",
+      "resource_node_runtime_id": "175338687334",
+      "timestamp_msec": 29779,
+      "worker_id": "barrosan_worker",
+      "worker_runtime_id": "171479927459"
+    },
+    {
+      "bank_after": {
+        "food": 220,
+        "gold": 180,
+        "stone": 120,
+        "timber": 150
+      },
+      "bank_before": {
+        "food": 210,
+        "gold": 180,
+        "stone": 120,
+        "timber": 150
+      },
+      "carried_amount": 10,
+      "deposit_count": 1,
+      "deposited_amount": 10,
+      "dropoff_building_id": "barrosan_clanhold",
+      "dropoff_definition_name": "Clanhold",
+      "dropoff_id": "barrosan_clanhold",
+      "dropoff_is_built": true,
+      "dropoff_is_friendly": true,
+      "dropoff_position": {
+        "x": -100,
+        "y": 0,
+        "z": -100
+      },
+      "dropoff_runtime_id": "170339076714",
+      "dropoff_team": 0,
+      "gather_multiplier": 1,
+      "kind": "food",
+      "next_target": "Food",
+      "resource_node_runtime_id": "175338687334",
+      "timestamp_msec": 29899,
+      "worker_id": "barrosan_worker",
+      "worker_runtime_id": "170573957749"
+    },
+    {
+      "bank_after": {
+        "food": 230,
+        "gold": 180,
+        "stone": 120,
+        "timber": 150
+      },
+      "bank_before": {
+        "food": 220,
+        "gold": 180,
+        "stone": 120,
+        "timber": 150
+      },
+      "carried_amount": 10,
+      "deposit_count": 1,
+      "deposited_amount": 10,
+      "dropoff_building_id": "barrosan_clanhold",
+      "dropoff_definition_name": "Clanhold",
+      "dropoff_id": "barrosan_clanhold",
+      "dropoff_is_built": true,
+      "dropoff_is_friendly": true,
+      "dropoff_position": {
+        "x": -100,
+        "y": 0,
+        "z": -100
+      },
+      "dropoff_runtime_id": "170339076714",
+      "dropoff_team": 0,
+      "gather_multiplier": 1,
+      "kind": "food",
+      "next_target": "Food",
+      "resource_node_runtime_id": "175338687334",
+      "timestamp_msec": 30299,
+      "worker_id": "barrosan_worker",
+      "worker_runtime_id": "171026942604"
+    },
+    {
+      "bank_after": {
+        "food": 60,
+        "gold": 180,
+        "stone": 140,
+        "timber": 110
+      },
+      "bank_before": {
+        "food": 60,
+        "gold": 180,
+        "stone": 130,
+        "timber": 110
+      },
+      "carried_amount": 10,
+      "deposit_count": 3,
+      "deposited_amount": 10,
+      "dropoff_building_id": "lioraen_groveheart",
+      "dropoff_definition_name": "Groveheart",
+      "dropoff_id": "lioraen_groveheart",
+      "dropoff_is_built": true,
+      "dropoff_is_friendly": true,
+      "dropoff_position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "dropoff_runtime_id": "172838882024",
+      "dropoff_team": 1,
+      "gather_multiplier": 1,
+      "kind": "stone",
+      "next_target": "Stone",
+      "resource_node_runtime_id": "176898968488",
+      "timestamp_msec": 30979,
+      "worker_id": "lioraen_worker",
+      "worker_runtime_id": "173979732769"
+    },
+    {
+      "bank_after": {
+        "food": 70,
+        "gold": 180,
+        "stone": 140,
+        "timber": 110
+      },
+      "bank_before": {
+        "food": 60,
+        "gold": 180,
+        "stone": 140,
+        "timber": 110
+      },
+      "carried_amount": 10,
+      "deposit_count": 2,
+      "deposited_amount": 10,
+      "dropoff_building_id": "lioraen_groveheart",
+      "dropoff_definition_name": "Groveheart",
+      "dropoff_id": "lioraen_groveheart",
+      "dropoff_is_built": true,
+      "dropoff_is_friendly": true,
+      "dropoff_position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "dropoff_runtime_id": "172838882024",
+      "dropoff_team": 1,
+      "gather_multiplier": 1,
+      "kind": "food",
+      "next_target": "Food",
+      "resource_node_runtime_id": "176395651987",
+      "timestamp_msec": 33087,
+      "worker_id": "lioraen_worker",
+      "worker_runtime_id": "281689459986"
+    },
+    {
+      "bank_after": {
+        "food": 70,
+        "gold": 180,
+        "stone": 140,
+        "timber": 120
+      },
+      "bank_before": {
+        "food": 70,
+        "gold": 180,
+        "stone": 140,
+        "timber": 110
+      },
+      "carried_amount": 10,
+      "deposit_count": 1,
+      "deposited_amount": 10,
+      "dropoff_building_id": "lioraen_groveheart",
+      "dropoff_definition_name": "Groveheart",
+      "dropoff_id": "lioraen_groveheart",
+      "dropoff_is_built": true,
+      "dropoff_is_friendly": true,
+      "dropoff_position": {
+        "x": 100,
+        "y": 0,
+        "z": 100
+      },
+      "dropoff_runtime_id": "172838882024",
+      "dropoff_team": 1,
+      "gather_multiplier": 1,
+      "kind": "timber",
+      "next_target": "Timber",
+      "resource_node_runtime_id": "177066740655",
+      "timestamp_msec": 33714,
+      "worker_id": "lioraen_worker",
+      "worker_runtime_id": "368628992287"
+    },
+    {
+      "bank_after": {
+        "food": 240,
+        "gold": 180,
+        "stone": 120,
+        "timber": 150
+      },
+      "bank_before": {
+        "food": 230,
+        "gold": 180,
+        "stone": 120,
+        "timber": 150
+      },
+      "carried_amount": 10,
+      "deposit_count": 2,
+      "deposited_amount": 10,
+      "dropoff_building_id": "barrosan_clanhold",
+      "dropoff_definition_name": "Clanhold",
+      "dropoff_id": "barrosan_clanhold",
+      "dropoff_is_built": true,
+      "dropoff_is_friendly": true,
+      "dropoff_position": {
+        "x": -100,
+        "y": 0,
+        "z": -100
+      },
+      "dropoff_runtime_id": "170339076714",
+      "dropoff_team": 0,
+      "gather_multiplier": 1,
+      "kind": "food",
+      "next_target": "Food",
+      "resource_node_runtime_id": "175338687334",
+      "timestamp_msec": 34301,
+      "worker_id": "barrosan_worker",
+      "worker_runtime_id": "171479927459"
+    }
+  ],
+  "source": "normal placement, worker construction, resumed worker gathering, and real-cost Building.queue_unit"
+}

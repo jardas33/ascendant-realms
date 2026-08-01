@@ -1,0 +1,29 @@
+{
+  "schema": "v0436-r1i-command-ledger-v1",
+  "session": "B",
+  "source_sha": "bfc04f73a152bdeb108184dec72328ab5a3cfd9c",
+  "commands": [
+    {
+      "attack_move_return": true,
+      "attack_target_return": true,
+      "target_position": {
+        "x": 100,
+        "y": 0,
+        "z": 90
+      },
+      "timestamp_ms": 68235
+    },
+    {
+      "attack_move_return": true,
+      "attack_target_return": true,
+      "target_position": {
+        "x": 106,
+        "y": 0,
+        "z": 106
+      },
+      "timestamp_ms": 92595
+    }
+  ],
+  "command_count": 2,
+  "public_command_surface": true
+}

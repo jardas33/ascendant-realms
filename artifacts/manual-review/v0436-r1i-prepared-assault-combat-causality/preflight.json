@@ -1,0 +1,24 @@
+{
+  "schema": "v0436-r1i-prepared-assault-combat-causality-preflight-v1",
+  "status": "CAPTURE_STARTED",
+  "branch": "codex/v0436-first-complete-conquest-victory",
+  "source_sha": "bfc04f73a152bdeb108184dec72328ab5a3cfd9c",
+  "upstream": "origin/codex/v0436-first-complete-conquest-victory",
+  "headed": true,
+  "hidden_window": false,
+  "godot_log_file_argument": false,
+  "executable": "C:\\Users\\barro\\AppData\\Local\\AscendantRealms\\tools\\godot-4.3-stable\\Godot_v4.3-stable_win64.exe",
+  "executable_sha256": "b554ba80fb2ad8f1817bc21242ac8adbb9e41f806c49ad5cc73603db71fee32f",
+  "renderer": "Forward Plus",
+  "production_scene": "scenes/main.tscn -> scenes/game_world.tscn",
+  "configuration": {
+    "player": "barrosan",
+    "opponent": "one Lioraen Easy opponent",
+    "map": "hollowspan",
+    "resources": "standard",
+    "mode": "skirmish",
+    "victory": "conquest",
+    "game_speed": 2
+  },
+  "historical_r1h_screenshots_reused_as_r1i": false
+}

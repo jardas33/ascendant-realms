@@ -87,6 +87,14 @@ Final closeout metadata commit: `a09c6e37072a4978911449179672bec8000dd711`.
 Final closeout metadata exact GitHub Actions: `30689101262` / run 665 - success for that exact SHA.
 PR #10 remains open, draft, and unmerged.
 
+## Dated R1I follow-up — 2026-08-01
+
+R1I is the authorized diagnosis-only follow-up to this preserved R1H blocker. It ran two fresh comparable headed sessions at Stage-A SHA `bfc04f73a152bdeb108184dec72328ab5a3cfd9c` and reproduced the same prepared-force-eliminated outcome. It adds no production repair and does not relabel the R1H result.
+
+The exact classification is `BLOCKED_R1I_COMBAT_CAUSALITY_INCONCLUSIVE`. Public attack-move and attack-target commands returned true, one enemy defender was destroyed, the enemy hero received real damage, and the player force was eliminated before a result. The available evidence still cannot separate target priority, hero overmatch, damage/armor interaction, formation/navigation interference, projectile/hit failure, unintended target switching, or force composition insufficiency. The exact R1I report and evidence pack are `docs/V0436_R1I_PREPARED_ASSAULT_COMBAT_CAUSALITY_REPORT.md` and `artifacts/manual-review/v0436-r1i-prepared-assault-combat-causality/`.
+
+`P0-RESULT-001` remains open. `P0-GAME-001` is updated only with the exact inconclusive classification. `P0-NAV-001` is not marked proven, P1–P4 remain unchanged, and no R1J, v0.437, production repair, or PR merge occurred.
+
 ## Final disposition and next action
 
 R1H is a truthful blocked viability result. Keep `P0-RESULT-001` open. The next authorized checkpoint should be a bounded diagnosis of the natural assault-force-eliminated blocker, not an automatic balance or gameplay rewrite.
