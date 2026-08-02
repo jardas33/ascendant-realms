@@ -40,7 +40,7 @@ export function renderHud(snapshot: HUDSnapshot): string {
       <button class="hud-button compact" data-testid="battle-menu" data-action="menu">Menu</button>
     </div>
     ${renderHeroHudPanel(snapshot.hero, density)}
-    <div class="${sidePanelClass}" data-testid="selection-side-panel" data-side-panel-minimized="false">
+    <div class="${sidePanelClass}" data-testid="selection-side-panel" data-hud-density="${density}" data-side-panel-minimized="false" aria-label="Selected entity and commands">
       <div class="panel-title side-panel-title">
         <span class="side-panel-title-text">${escapeHtml(selectionTitle(selected))}</span>
         <button class="hud-button compact mini side-panel-minimize" type="button" data-testid="side-panel-minimize" data-action="side-panel-minimize" aria-expanded="true" aria-label="Hide or show selected unit panel">
@@ -54,7 +54,8 @@ export function renderHud(snapshot: HUDSnapshot): string {
           selectedOne,
           selected,
           snapshot.controlGroups ?? [],
-          snapshot.lumeSiteSummaries ?? {}
+          snapshot.lumeSiteSummaries ?? {},
+          density
         )}</div>
       </div>
     </div>

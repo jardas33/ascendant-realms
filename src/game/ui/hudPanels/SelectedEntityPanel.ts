@@ -28,7 +28,7 @@ import {
 } from "../../data/unitRoles";
 import { describeUnitOrder, summarizeUnitOrders } from "../UnitOrderSummary";
 import { escapeHtml, formatBuildingRole, formatBuildingUnlockSummary, renderProgress, unitName, upgradeName } from "./HudFormatting";
-import type { HUDSnapshot } from "./HudTypes";
+import type { HUDSnapshot, HudDensityMode } from "./HudTypes";
 import type { ControlGroupSummary } from "../../systems/ControlGroupSystem";
 
 type SelectedEntity = HUDSnapshot["selected"][number];
@@ -37,7 +37,8 @@ export function renderSelectionSummary(
   selectedOne: SelectedEntity | undefined,
   selected: SelectedEntity[],
   controlGroups: ControlGroupSummary[] = [],
-  lumeSiteSummaries: NonNullable<HUDSnapshot["lumeSiteSummaries"]> = {}
+  lumeSiteSummaries: NonNullable<HUDSnapshot["lumeSiteSummaries"]> = {},
+  density: HudDensityMode = "standard"
 ): string {
   const controlGroupSummary = renderControlGroupSummary(controlGroups);
   if (!selectedOne) {
@@ -70,7 +71,7 @@ export function renderSelectionSummary(
     return `
       ${renderSelectionFocus("Hero selected", "Champion / commander", "Hero abilities and build identity are active from this selection.", "hero")}
       ${renderOrderSummary(order.label, order.detail, order.tone)}
-      ${renderRoleIdentitySummary(HERO_ROLE_IDENTITY)}
+      ${renderRoleIdentitySummary(HERO_ROLE_IDENTITY, density)}
       ${controlGroupSummary}
       ${renderBehaviourControls([selectedOne])}
       <div class="hero-command-summary">
@@ -105,17 +106,17 @@ export function renderSelectionSummary(
     return `
       ${renderSelectionFocus(focusTitle, selectedOne.definition.name, focusDetail, focusTone)}
       ${renderOrderSummary(order.label, order.detail, order.tone)}
-      ${renderRoleIdentitySummary(roleIdentity)}
+      ${renderRoleIdentitySummary(roleIdentity, density)}
       ${controlGroupSummary}
       ${selectedOne.team === "player" ? renderBehaviourControls([selectedOne]) : ""}
       <div class="stat-list" data-testid="selected-unit-stats">
         <span>Role ${escapeHtml(roleIdentity.label)}</span>
-        <span>Tags ${escapeHtml(formatUnitRoleTags(roleIdentity))}</span>
+        <span class="density-optional">Tags ${escapeHtml(formatUnitRoleTags(roleIdentity))}</span>
         <span>Rank ${escapeHtml(rank.name)}</span>
-        <span>XP ${escapeHtml(xpProgress)}</span>
-        <span>Kills ${selectedOne.veterancy.kills}</span>
-        <span>Bonuses ${escapeHtml(bonuses)}</span>
-        <span>Veterancy ${escapeHtml(retinueState)}</span>
+        <span class="density-optional">XP ${escapeHtml(xpProgress)}</span>
+        <span class="density-optional">Kills ${selectedOne.veterancy.kills}</span>
+        <span class="density-optional">Bonuses ${escapeHtml(bonuses)}</span>
+        <span class="density-optional">Veterancy ${escapeHtml(retinueState)}</span>
         ${eliteState}
         <span>HP ${Math.ceil(selectedOne.hp)}/${selectedOne.maxHp}</span>
         <span>Damage ${Math.round(selectedOne.damage)}</span>
@@ -145,10 +146,10 @@ export function renderSelectionSummary(
         <span>Level ${selectedOne.siteLevel}/${RESOURCE_SITE_MAX_LEVEL}</span>
         <span>Resource ${escapeHtml(selectedOne.definition.resource)}</span>
         <span>Base income +${selectedOne.definition.incomeAmount}/${selectedOne.definition.incomeInterval}s</span>
-        <span>Upgrade bonus +${breakdown.upgradeBonusAmount}/${selectedOne.definition.incomeInterval}s</span>
+        <span class="density-optional">Upgrade bonus +${breakdown.upgradeBonusAmount}/${selectedOne.definition.incomeInterval}s</span>
         <span>Worker slots ${workerSlotsUsed}/${workerSlotCapacity}</span>
-        <span>Assigned ${escapeHtml(slotNames)}</span>
-        <span>Worker bonus +${breakdown.workerBonusAmount}/${selectedOne.definition.incomeInterval}s (${workerSiteBonusAmount(selectedOne)} each)</span>
+        <span class="density-optional">Assigned ${escapeHtml(slotNames)}</span>
+        <span class="density-optional">Worker bonus +${breakdown.workerBonusAmount}/${selectedOne.definition.incomeInterval}s (${workerSiteBonusAmount(selectedOne)} each)</span>
         <span>Total income +${breakdown.totalAmount}/${selectedOne.definition.incomeInterval}s</span>
         <span>Status ${escapeHtml(status)}</span>
       </div>
@@ -251,12 +252,12 @@ function renderSelectionFocus(
   `;
 }
 
-function renderRoleIdentitySummary(identity: UnitRoleIdentity): string {
+function renderRoleIdentitySummary(identity: UnitRoleIdentity, density: HudDensityMode): string {
   return `
     <div class="role-identity-summary" data-testid="selected-role-summary">
       <strong>${escapeHtml(identity.label)}</strong>
-      <span>${escapeHtml(identity.summary)}</span>
-      <small>${escapeHtml(identity.tacticalHint)}</small>
+      <span class="${density === "minimal" ? "density-optional" : ""}">${escapeHtml(identity.summary)}</span>
+      <small class="${density === "minimal" ? "density-optional" : ""}">${escapeHtml(identity.tacticalHint)}</small>
     </div>
   `;
 }
@@ -362,7 +363,7 @@ function renderProductionQueue(building: Building): string {
             <div class="queue-row">
               <div>
                 <span>${escapeHtml(unitName(item.unitId))}</span>
-                ${renderProgress("", progress)}
+                ${renderProgress(`${Math.round(progress * 100)}%`, progress)}
               </div>
               <button class="hud-button compact mini" data-action="cancel-train" data-source-id="${building.id}" data-index="${index}">Cancel</button>
             </div>
@@ -387,7 +388,7 @@ function renderUpgradeQueue(building: Building): string {
             <div class="queue-row">
               <div>
                 <span>${escapeHtml(upgradeName(item.upgradeId))}</span>
-                ${renderProgress("", progress)}
+                ${renderProgress(`${Math.round(progress * 100)}%`, progress)}
               </div>
               <button class="hud-button compact mini" data-action="cancel-upgrade" data-source-id="${building.id}" data-index="${index}">Cancel</button>
             </div>

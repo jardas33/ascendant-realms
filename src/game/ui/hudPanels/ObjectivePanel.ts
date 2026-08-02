@@ -47,12 +47,15 @@ export function renderObjectives(
           const classes = ["objective-row", objective.completed ? "completed" : "", isNext ? "current" : ""]
             .filter(Boolean)
             .join(" ");
+          const descriptionClass = isNext ? "objective-description" : "objective-description density-optional";
           return `
-            <div class="${classes}" data-objective-id="${escapeHtml(objective.id)}">
+            <div class="${classes}" data-objective-id="${escapeHtml(objective.id)}" data-objective-state="${state.toLowerCase()}" aria-label="${escapeHtml(
+              `${state}: ${objective.name}`
+            )}">
               <span>${state}</span>
               <div>
                 <b>${escapeHtml(objective.name)}</b>
-                <small class="density-optional">${escapeHtml(objective.description)}</small>
+                <small class="${descriptionClass}">${escapeHtml(objective.description)}</small>
               </div>
             </div>
           `;
@@ -89,7 +92,7 @@ function renderLumeNetwork(network: LumeNetworkHudSummary, density: HudDensityMo
       <div>
         <b>${escapeHtml(network.title)}</b>
         <small class="lume-objective-line">${escapeHtml(network.objective)}</small>
-        <small class="density-optional">${escapeHtml(network.status)}</small>
+        <small>${escapeHtml(network.status)}</small>
         <details class="objective-details ${density === "minimal" ? "density-optional" : ""}" data-testid="lume-network-details">
           <summary>Details</summary>
           <small>${escapeHtml(network.benefit)}</small>
@@ -178,7 +181,7 @@ function renderBattlefieldEvent(event: HUDBattlefieldEventSnapshot, density: Hud
       <div>
         <b>${escapeHtml(event.title)}</b>
         <small>${escapeHtml(event.objective)}</small>
-        <small class="density-optional">${escapeHtml(event.progress)}</small>
+        <small>${escapeHtml(event.progress)}</small>
         <details class="objective-details ${density === "minimal" ? "density-optional" : ""}">
           <summary>Details</summary>
           <small>Counterplay: ${escapeHtml(event.counterplay)}</small>

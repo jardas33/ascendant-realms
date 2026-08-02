@@ -2,6 +2,25 @@ import { describe, expect, it } from "vitest";
 import { renderObjectives } from "./ObjectivePanel";
 
 describe("ObjectivePanel", () => {
+  it("keeps the current objective guidance visible in minimal player density", () => {
+    const html = renderObjectives(
+      [
+        { id: "capture", name: "Capture the Ford", description: "Send a Worker to the ford.", completed: false },
+        { id: "hold", name: "Hold the Ford", description: "Keep the site safe.", completed: false }
+      ],
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      false,
+      "minimal"
+    );
+
+    expect(html).toContain('data-objective-state="next"');
+    expect(html).toContain('class="objective-description">Send a Worker to the ford.</small>');
+    expect(html).toContain('class="objective-description density-optional">Keep the site safe.</small>');
+  });
+
   it("marks the first unfinished objective as the next action", () => {
     const html = renderObjectives([
       {

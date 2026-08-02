@@ -61,7 +61,7 @@ describe("CommandPanel", () => {
     const markup = renderCommandActions(barracks, fakeSnapshot(["command_hall", "barracks"]));
 
     expect(markup).toContain('class="command-entry ready"');
-    expect(markup).toContain("command-details");
+    expect(markup).toContain('class="command-details density-optional"');
     expect(markup).toContain('aria-describedby="command-details-train-militia"');
     expect(markup).toContain("Show command details for Train Militia");
     expect(markup).toContain(">More Details</summary>");

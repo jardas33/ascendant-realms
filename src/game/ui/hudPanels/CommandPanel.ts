@@ -355,7 +355,7 @@ function renderCommandButton(options: {
       </button>
       ${
         hasDetails
-          ? `<details id="${detailsId}" class="command-details">
+           ? `<details id="${detailsId}" class="command-details density-optional">
               <summary aria-label="Show command details for ${escapeHtml(options.verb)} ${escapeHtml(options.name)}">More Details</summary>
               ${options.description ? `<small class="command-details-description">${escapeHtml(options.description)}</small>` : ""}
               ${options.effect ? `<small class="command-details-effect">${escapeHtml(options.effect)}</small>` : ""}

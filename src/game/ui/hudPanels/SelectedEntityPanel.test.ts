@@ -83,6 +83,17 @@ describe("SelectedEntityPanel", () => {
     expect(markup).toContain("Utility unit");
   });
 
+  it("keeps player density focused on role, orders, and combat essentials", () => {
+    const militia = fakeUnit("player-1", "Militia", "guard_area", { unitId: "militia", veterancyXp: 140 });
+
+    const markup = renderSelectionSummary(militia, [militia], [], {}, "minimal");
+
+    expect(markup).toContain("Frontline / Melee");
+    expect(markup).toContain("HP 90/90");
+    expect(markup).toContain('class="density-optional">Tags Frontline / Melee / Holds Ground</span>');
+    expect(markup).toContain('class="density-optional">XP ');
+  });
+
   it("summarizes selected group roles and ranked members", () => {
     const militia = fakeUnit("player-1", "Militia", "guard_area", { unitId: "militia", veterancyXp: 140 });
     const ranger = fakeUnit("player-2", "Ranger", "guard_area", { unitId: "ranger" });
