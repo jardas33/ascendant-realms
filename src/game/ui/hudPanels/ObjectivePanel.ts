@@ -8,6 +8,8 @@ import type {
 } from "./HudTypes";
 import { escapeHtml } from "./HudFormatting";
 
+type ObjectivePanelSnapshot = HUDObjectiveSnapshot & { isPrimary?: boolean };
+
 export function renderObjectives(
   objectives: HUDObjectiveSnapshot[] | undefined,
   enemyDoctrine?: HUDEnemyDoctrineSnapshot,
@@ -24,6 +26,7 @@ export function renderObjectives(
   const missionObjectives = objectives ?? [];
   const completedCount = missionObjectives.filter((objective) => objective.completed).length;
   const nextObjectiveIndex = missionObjectives.findIndex((objective) => !objective.completed);
+  const hasPrimaryObjective = missionObjectives.some((objective) => (objective as ObjectivePanelSnapshot).isPrimary === true);
   const showLumeProgressOnly = Boolean(lumeNetwork && missionObjectives.length === 0);
   const showMissionSummary = missionObjectives.length > 0;
   return `
@@ -35,21 +38,26 @@ export function renderObjectives(
       ${renderHudDebugCounters(debugCounters, density)}
       ${
         showMissionSummary
-          ? `<strong>Objectives ${completedCount}/${missionObjectives.length}</strong>`
+          ? hasPrimaryObjective
+            ? `<strong class="primary-objective-heading">PRIMARY OBJECTIVE</strong>${
+                missionObjectives.length > 1 ? `<small class="objective-count">Objectives ${completedCount}/${missionObjectives.length}</small>` : ""
+              }`
+            : `<strong>Objectives ${completedCount}/${missionObjectives.length}</strong>`
           : showLumeProgressOnly
           ? `<strong data-testid="lume-links-progress">${escapeHtml(lumeNetwork?.progressLabel ?? `LUME LINKS ${lumeNetwork?.activeLinkCount ?? 0}/${lumeNetwork?.maxActiveLinks ?? 0}`)}</strong>`
           : ""
       }
       ${missionObjectives
         .map((objective, index) => {
+          const isPrimary = (objective as ObjectivePanelSnapshot).isPrimary === true;
           const isNext = index === nextObjectiveIndex;
-          const state = objective.completed ? "Done" : isNext ? "Next" : "Open";
-          const classes = ["objective-row", objective.completed ? "completed" : "", isNext ? "current" : ""]
+          const state = isPrimary ? (objective.completed ? "Completed" : "In progress") : objective.completed ? "Done" : isNext ? "Next" : "Open";
+          const classes = ["objective-row", isPrimary ? "primary-objective-row" : "", objective.completed ? "completed" : "", isNext ? "current" : ""]
             .filter(Boolean)
             .join(" ");
           const descriptionClass = isNext ? "objective-description" : "objective-description density-optional";
           return `
-            <div class="${classes}" data-objective-id="${escapeHtml(objective.id)}" data-objective-state="${state.toLowerCase()}" aria-label="${escapeHtml(
+            <div class="${classes}" data-objective-id="${escapeHtml(objective.id)}" data-objective-kind="${isPrimary ? "primary" : "secondary"}" data-objective-state="${state.toLowerCase()}" aria-label="${escapeHtml(
               `${state}: ${objective.name}`
             )}">
               <span>${state}</span>

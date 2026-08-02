@@ -1,7 +1,27 @@
 import { describe, expect, it } from "vitest";
 import { renderObjectives } from "./ObjectivePanel";
+import type { HUDObjectiveSnapshot } from "./HudTypes";
 
 describe("ObjectivePanel", () => {
+  it("renders the canonical primary objective with player-facing copy and truthful progress", () => {
+    const html = renderObjectives([
+      {
+        id: "destroy_enemy_stronghold",
+        name: "Destroy the Enemy Stronghold",
+        description: "Build your forces, cross Broken Ford, and destroy the enemy Stronghold.",
+        completed: false,
+        isPrimary: true
+      } as HUDObjectiveSnapshot & { isPrimary: boolean }
+    ]);
+
+    expect(html).toContain("PRIMARY OBJECTIVE");
+    expect(html).toContain('data-objective-kind="primary"');
+    expect(html).toContain('data-objective-state="in progress"');
+    expect(html).toContain("Destroy the Enemy Stronghold");
+    expect(html).toContain("Build your forces, cross Broken Ford, and destroy the enemy Stronghold.");
+    expect(html).not.toContain("%");
+  });
+
   it("keeps the current objective guidance visible in minimal player density", () => {
     const html = renderObjectives(
       [

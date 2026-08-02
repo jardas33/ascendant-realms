@@ -167,7 +167,12 @@ export const BROKEN_FORD_MAP: BattleMapDefinition = {
       ],
       objectives: {
         playerBaseBuildingId: "command_hall",
-        enemyBaseBuildingId: "enemy_stronghold"
+        enemyBaseBuildingId: "enemy_stronghold",
+        primaryObjective: {
+          id: "destroy_enemy_stronghold",
+          name: "Destroy the Enemy Stronghold",
+          description: "Build your forces, cross Broken Ford, and destroy the enemy Stronghold."
+        }
       },
       enemyAI: {
         incomeInterval: 5,

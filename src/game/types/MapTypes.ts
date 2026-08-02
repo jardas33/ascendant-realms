@@ -66,9 +66,16 @@ export interface BattleSecondaryObjectiveDefinition {
   targetId: string;
 }
 
+export interface BattlePrimaryObjectiveDefinition {
+  id: string;
+  name: string;
+  description: string;
+}
+
 export interface BattleObjectiveDefinition {
   playerBaseBuildingId: string;
   enemyBaseBuildingId: string;
+  primaryObjective?: BattlePrimaryObjectiveDefinition;
   secondaryObjectives?: BattleSecondaryObjectiveDefinition[];
 }
 

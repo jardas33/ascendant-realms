@@ -127,7 +127,7 @@ import {
   normalizeHudDensityMode,
   shouldRenderHudDebugCounters
 } from "../ui/hudPanels/HudDensity";
-import { createHudMatchContext } from "../ui/hudPanels/HudTypes";
+import { createHudMatchContext, type HUDObjectiveSnapshot } from "../ui/hudPanels/HudTypes";
 import type { HudDensityMode } from "../ui/hudPanels/HudTypes";
 import {
   commandFeedbackMarkerPresentation,
@@ -142,6 +142,7 @@ import {
   type TutorialStepViewModel
 } from "../tutorial/TutorialStepModel";
 import type { TutorialDefinition, TutorialFocusTargetDefinition } from "../core/GameTypes";
+import type { BattleObjectiveDefinition } from "../types/MapTypes";
 import { AudioManager } from "../systems/AudioManager";
 import { CollisionSystem } from "../systems/CollisionSystem";
 import { isEntityVisibleToPlayer, type FogOfWarSystem, type VisionSource } from "../systems/FogOfWarSystem";
@@ -315,6 +316,35 @@ interface LumeRenderSiteMarkerSnapshot {
 interface LumeRenderSnapshot {
   links: LumeRenderLinkSnapshot[];
   siteMarkers: LumeRenderSiteMarkerSnapshot[];
+}
+
+export type BattleObjectiveHudSnapshot = HUDObjectiveSnapshot & { isPrimary?: boolean };
+
+export function createMissionObjectiveSnapshots(
+  objectives: BattleObjectiveDefinition,
+  completedObjectiveIds: Iterable<string>,
+  enemyBaseAlive: boolean,
+  includePrimaryObjective = true
+): BattleObjectiveHudSnapshot[] {
+  const completed = new Set(completedObjectiveIds);
+  const primaryObjective = includePrimaryObjective && objectives.primaryObjective
+    ? [
+        {
+          id: objectives.primaryObjective.id,
+          name: objectives.primaryObjective.name,
+          description: objectives.primaryObjective.description,
+          completed: !enemyBaseAlive,
+          isPrimary: true
+        }
+      ]
+    : [];
+  const secondaryObjectives = (objectives.secondaryObjectives ?? []).map((objective) => ({
+    id: objective.id,
+    name: objective.name,
+    description: objective.description,
+    completed: completed.has(objective.id)
+  }));
+  return [...primaryObjective, ...secondaryObjectives];
 }
 
 export class BattleScene extends Phaser.Scene {
@@ -1834,14 +1864,12 @@ export class BattleScene extends Phaser.Scene {
   }
 
   private createObjectiveSnapshot() {
-    const objectives = this.activeMap.scenario.objectives.secondaryObjectives ?? [];
-    const completed = new Set(this.runtime.stats.completedObjectiveIds);
-    const missionObjectives = objectives.map((objective) => ({
-      id: objective.id,
-      name: objective.name,
-      description: objective.description,
-      completed: completed.has(objective.id)
-    }));
+    const missionObjectives = createMissionObjectiveSnapshots(
+      this.activeMap.scenario.objectives,
+      this.runtime.stats.completedObjectiveIds,
+      this.isEnemyBaseAlive(),
+      !this.isPrivateLumeDemo()
+    );
     const finalePhase = this.createAct1FinaleObjectiveSnapshot();
     return finalePhase ? [finalePhase, ...missionObjectives] : missionObjectives;
   }
@@ -2807,8 +2835,8 @@ export class BattleScene extends Phaser.Scene {
 
   private checkEndConditions(): void {
     const outcome = this.runtime.evaluateObjectives({
-      playerBaseAlive: Boolean(this.findBuilding(this.activeMap.scenario.objectives.playerBaseBuildingId, "player")),
-      enemyBaseAlive: Boolean(this.findBuilding(this.activeMap.scenario.objectives.enemyBaseBuildingId, "enemy"))
+      playerBaseAlive: this.isPlayerBaseAlive(),
+      enemyBaseAlive: this.isEnemyBaseAlive()
     });
     if (outcome) {
       this.endBattle(outcome);
@@ -2984,6 +3012,14 @@ export class BattleScene extends Phaser.Scene {
 
   private findBuilding(id: string, team: "player" | "enemy"): Building | undefined {
     return this.buildings.find((building) => building.alive && building.team === team && building.definition.id === id);
+  }
+
+  private isPlayerBaseAlive(): boolean {
+    return Boolean(this.findBuilding(this.activeMap.scenario.objectives.playerBaseBuildingId, "player"));
+  }
+
+  private isEnemyBaseAlive(): boolean {
+    return Boolean(this.findBuilding(this.activeMap.scenario.objectives.enemyBaseBuildingId, "enemy"));
   }
 
   private findEntityById(id: string): Unit | Building | undefined {
