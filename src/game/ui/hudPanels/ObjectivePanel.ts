@@ -195,7 +195,7 @@ function renderBattlefieldEvent(event: HUDBattlefieldEventSnapshot, density: Hud
 function renderEnemyDoctrine(doctrine: HUDEnemyDoctrineSnapshot, density: HudDensityMode): string {
   return `
     <div class="enemy-doctrine-row compact-tracker-row" data-testid="enemy-doctrine-status">
-      <span>Doctrine</span>
+      <span>${density === "minimal" ? "Threat" : "Doctrine"}</span>
       <div>
         <b>${escapeHtml(doctrine.name)}</b>
         <small>${escapeHtml(doctrine.status)}</small>

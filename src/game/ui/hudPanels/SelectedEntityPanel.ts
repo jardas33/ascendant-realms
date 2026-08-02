@@ -40,7 +40,7 @@ export function renderSelectionSummary(
   lumeSiteSummaries: NonNullable<HUDSnapshot["lumeSiteSummaries"]> = {},
   density: HudDensityMode = "standard"
 ): string {
-  const controlGroupSummary = renderControlGroupSummary(controlGroups);
+  const controlGroupSummary = renderControlGroupSummary(controlGroups, density);
   if (!selectedOne) {
     if (selected.length > 1) {
       const selectedUnits = selected.filter((entity): entity is Unit => entity instanceof Unit && entity.team === "player");
@@ -91,8 +91,8 @@ export function renderSelectionSummary(
     const retinueState = selectedOne.retinueUnitId ? "Deployed retinue veteran" : "Battle-only unit";
     const eliteState = selectedOne.enemyEliteSquadId
       ? `<span>Elite ${escapeHtml(selectedOne.enemyEliteSquadName ?? selectedOne.enemyEliteSquadLabel ?? "Enemy squad")}</span>
-        <span>Elite bonus ${escapeHtml(selectedOne.enemyEliteBonusSummary ?? "Modest enemy bonus")}</span>
-        <span>Counterplay ${escapeHtml(selectedOne.enemyEliteCounterplay ?? "Focus fire with a grouped army.")}</span>`
+        <span class="${density === "minimal" ? "density-optional" : ""}">Elite bonus ${escapeHtml(selectedOne.enemyEliteBonusSummary ?? "Modest enemy bonus")}</span>
+        <span class="${density === "minimal" ? "density-optional" : ""}">Counterplay ${escapeHtml(selectedOne.enemyEliteCounterplay ?? "Focus fire with a grouped army.")}</span>`
       : "";
     const isWorker = selectedOne.definition.id === "worker";
     const focusTitle = selectedOne.team === "enemy" ? "Enemy inspected" : isWorker ? "Worker selected" : "Unit selected";
@@ -223,7 +223,7 @@ function renderLumeSiteSummary(summary: NonNullable<HUDSnapshot["lumeSiteSummari
   `;
 }
 
-function renderControlGroupSummary(groups: ControlGroupSummary[]): string {
+function renderControlGroupSummary(groups: ControlGroupSummary[], density: HudDensityMode): string {
   if (groups.length === 0) {
     return "";
   }
@@ -232,7 +232,7 @@ function renderControlGroupSummary(groups: ControlGroupSummary[]): string {
     <div class="control-group-summary" data-testid="control-group-summary">
       <strong>Control Groups</strong>
       <span>${groups.map((group) => `${group.slot}:${group.count}`).join(" ")}</span>
-      <small>Ctrl+1-5 assigns; 1-5 recalls.</small>
+    <small class="${density === "minimal" ? "density-optional" : ""}">Ctrl+1-5 assigns; 1-5 recalls.</small>
     </div>
   `;
 }

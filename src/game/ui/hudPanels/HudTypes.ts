@@ -13,6 +13,9 @@ import type { RepairTargetSummary } from "../../systems/RepairSystem";
 import type { ResourceSiteAssignmentSummary } from "../../systems/ResourceSystem";
 import type { TutorialStepViewModel } from "../../tutorial/TutorialStepModel";
 import type { MinimapSnapshot } from "../MinimapView";
+import type { BattleLaunchRequest } from "../../battle/BattleLaunchRequest";
+import { getBattleDifficulty } from "../../data/battlePacing";
+import { FACTION_BY_ID } from "../../data/contentIndex";
 
 export interface HUDCallbacks {
   onBuild: (buildingId: string, sourceBuildingId: string) => void;
@@ -70,6 +73,27 @@ export interface HUDSnapshot {
   hudDensity?: HudDensityMode;
   hudDensityControls?: HUDDensityControl[];
   hudDebugCounters?: HUDDebugCounterSnapshot;
+  matchContext?: HUDMatchContext;
+}
+
+export interface HUDMatchContext {
+  opponentFactionName: string;
+  difficultyLabel: string;
+  speedLabel: string;
+}
+
+export function createHudMatchContext(
+  request: Pick<BattleLaunchRequest, "enemyProfileId" | "difficulty">
+): HUDMatchContext | undefined {
+  const opponentFaction = request.enemyProfileId ? FACTION_BY_ID[request.enemyProfileId] : undefined;
+  if (!opponentFaction) {
+    return undefined;
+  }
+  return {
+    opponentFactionName: opponentFaction.name,
+    difficultyLabel: getBattleDifficulty(request.difficulty).name,
+    speedLabel: "1×"
+  };
 }
 
 export type HudDensityMode = "minimal" | "standard" | "debug";

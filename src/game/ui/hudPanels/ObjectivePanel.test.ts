@@ -68,6 +68,42 @@ describe("ObjectivePanel", () => {
     expect(html).not.toContain("Objectives 0/0");
   });
 
+  it("uses player-facing threat language while retaining full doctrine detail in debug density", () => {
+    const minimal = renderObjectives(
+      [],
+      {
+        name: "Raider",
+        status: "Raider doctrine: economy pressure",
+        warning: "Raiders will look for exposed Workers and resource sites.",
+        counterplay: "Protect sites with Militia screens."
+      },
+      undefined,
+      undefined,
+      undefined,
+      false,
+      "minimal"
+    );
+    const debug = renderObjectives(
+      [],
+      {
+        name: "Raider",
+        status: "Raider doctrine: economy pressure",
+        warning: "Raiders will look for exposed Workers and resource sites.",
+        counterplay: "Protect sites with Militia screens."
+      },
+      undefined,
+      undefined,
+      undefined,
+      false,
+      "debug"
+    );
+
+    expect(minimal).toContain(">Threat</span>");
+    expect(minimal).not.toContain(">Doctrine</span>");
+    expect(debug).toContain(">Doctrine</span>");
+    expect(debug).toContain("Counterplay");
+  });
+
   it("renders a dynamic battlefield event with plan support", () => {
     const html = renderObjectives([], undefined, {
       title: "Site Under Threat",

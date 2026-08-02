@@ -30,6 +30,7 @@ export function renderHud(snapshot: HUDSnapshot): string {
     <div class="hud-density-root hud-density-${density}" data-testid="battle-hud-density-${density}" data-hud-density="${density}">
     <div class="top-bar" data-testid="battle-hud">
       <div class="resource-row" data-testid="battle-resources">${renderResources(snapshot.resources)}</div>
+      ${renderMatchContext(snapshot.matchContext)}
       ${renderOnboardingHelpSurface({
         testId: "battle-help-surface",
         className: "battle-help-surface",
@@ -73,10 +74,36 @@ export function renderHud(snapshot: HUDSnapshot): string {
     ${renderTutorialPanel(snapshot.tutorial)}
     ${renderPauseMenu(snapshot.pauseMenu)}
     ${renderPlacementBanner(snapshot.isPlacing)}
-    ${renderStatusLine(snapshot.status, snapshot.isPlacing, snapshot.statusCategory)}
+    ${renderStatusLine(playerFacingStatus(snapshot.status), snapshot.isPlacing, snapshot.statusCategory)}
     ${renderHintLine(snapshot.hint)}
     </div>
   `;
+}
+
+/**
+ * The simulation status is also used as a player-facing transient message.
+ * Keep the useful clock while removing the internal AI state label from the
+ * public HUD. Private/debug surfaces retain their own diagnostics elsewhere.
+ */
+export function playerFacingStatus(status: string): string {
+  const match = status.match(/^AI:\s*[^-]+-\s*Time\s+(.+)$/i);
+  return match ? `Match active · Time ${match[1]}` : status;
+}
+
+export function renderMatchContext(matchContext: HUDSnapshot["matchContext"]): string {
+  if (!matchContext) {
+    return "";
+  }
+  return (
+    '<div class="match-context" data-testid="battle-match-context" aria-label="Match context">' +
+    '<span>Opponent: <strong>' +
+    escapeHtml(matchContext.opponentFactionName) +
+    '</strong></span><span>' +
+    escapeHtml(matchContext.difficultyLabel) +
+    '</span><span>' +
+    escapeHtml(matchContext.speedLabel) +
+    "</span></div>"
+  );
 }
 
 function renderHudDensityControls(controls: HUDDensityControl[]): string {

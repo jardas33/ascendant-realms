@@ -127,6 +127,7 @@ import {
   normalizeHudDensityMode,
   shouldRenderHudDebugCounters
 } from "../ui/hudPanels/HudDensity";
+import { createHudMatchContext } from "../ui/hudPanels/HudTypes";
 import type { HudDensityMode } from "../ui/hudPanels/HudTypes";
 import {
   commandFeedbackMarkerPresentation,
@@ -2733,6 +2734,7 @@ export class BattleScene extends Phaser.Scene {
       hudDebugCounters: shouldRenderHudDebugCounters(this.hudDensityMode, this.canUsePrivateHudDensityControls())
         ? this.createPrivatePerformanceCounters()
         : undefined,
+      matchContext: createHudMatchContext(this.launch.request),
       pauseMenu: this.menuPaused
         ? {
             visible: true,
