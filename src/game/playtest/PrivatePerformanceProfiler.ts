@@ -338,6 +338,7 @@ export class PrivatePerformanceProfiler implements PrivatePerformanceProfilerPub
     this.button.className = "private-performance-toggle";
     this.button.dataset.testid = "private-performance-toggle";
     this.button.textContent = "Perf F8";
+    this.button.hidden = true;
     this.button.addEventListener("click", () => this.toggle());
 
     this.panel = document.createElement("aside");
@@ -366,6 +367,7 @@ export class PrivatePerformanceProfiler implements PrivatePerformanceProfilerPub
     this.lastPanelRefreshAt = this.startedAt;
     this.active = true;
     this.panel.hidden = false;
+    this.button.hidden = false;
     this.button.textContent = "Perf On";
     this.installLongTaskObserver();
     this.frameRequest = requestAnimationFrame((time) => this.recordFrame(time));
@@ -375,6 +377,7 @@ export class PrivatePerformanceProfiler implements PrivatePerformanceProfilerPub
   stop(): PrivatePerformanceSummary {
     this.active = false;
     this.button.textContent = "Perf F8";
+    this.button.hidden = true;
     if (this.frameRequest) {
       cancelAnimationFrame(this.frameRequest);
       this.frameRequest = 0;

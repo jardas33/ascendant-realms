@@ -126,6 +126,13 @@ describe("PrivatePerformanceProfiler", () => {
 
     expect(panelRule).toContain("pointer-events: none");
   });
+
+  it("keeps the private profiler control hidden until explicit profiling starts", () => {
+    const source = readFileSync(resolve(process.cwd(), "src/game/playtest/PrivatePerformanceProfiler.ts"), "utf8");
+
+    expect(source).toContain('this.button.hidden = true;');
+    expect(source).toContain('this.button.hidden = false;');
+  });
 });
 
 function sample(atMs: number, frameMs: number, counters: Partial<ReturnType<typeof defaultPerformanceCounters>> = {}): PrivatePerformanceSample {
