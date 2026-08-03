@@ -1,10 +1,67 @@
 import { describe, expect, it } from "vitest";
-import { BUILDING_BY_ID, UNIT_BY_ID } from "../../data/contentIndex";
+import { BUILDING_BY_ID, UNIT_BY_ID, UPGRADE_BY_ID } from "../../data/contentIndex";
 import { Building } from "../../entities/Building";
 import { CaptureSite } from "../../entities/CaptureSite";
 import { Unit } from "../../entities/Unit";
-import { renderCommandActions } from "./CommandPanel";
+import { buildCommandAvailability, trainingCommandAvailability, upgradeCommandAvailability } from "../../systems/CommandAvailability";
+import { renderCommandActions as renderCommandActionsFromSnapshot } from "./CommandPanel";
 import type { HUDSnapshot } from "./HudTypes";
+
+function renderCommandActions(
+  selectedOne: HUDSnapshot["selected"][number] | undefined,
+  snapshot: HUDSnapshot
+): string {
+  if (!selectedOne || snapshot.commandAvailability.length > 0) {
+    return renderCommandActionsFromSnapshot(selectedOne, snapshot);
+  }
+
+  const commandAvailability = [] as HUDSnapshot["commandAvailability"];
+  if (selectedOne instanceof Unit || selectedOne instanceof Building) {
+    (selectedOne.definition.buildOptions ?? []).forEach((buildingId) => {
+      const definition = BUILDING_BY_ID[buildingId];
+      if (definition) {
+        commandAvailability.push({
+          action: "build",
+          id: definition.id,
+          sourceId: selectedOne.id,
+          ...buildCommandAvailability(selectedOne, definition, snapshot.techState, snapshot.resources)
+        });
+      }
+    });
+  }
+  if (selectedOne instanceof Building) {
+    selectedOne.definition.trainOptions.forEach((unitId) => {
+      const definition = UNIT_BY_ID[unitId];
+      if (definition) {
+        commandAvailability.push({
+          action: "train",
+          id: definition.id,
+          sourceId: selectedOne.id,
+          ...trainingCommandAvailability(selectedOne, definition, snapshot.resources, snapshot.techState)
+        });
+      }
+    });
+    selectedOne.definition.upgradeOptions.forEach((upgradeId) => {
+      const definition = UPGRADE_BY_ID[upgradeId];
+      if (definition) {
+        commandAvailability.push({
+          action: "upgrade",
+          id: definition.id,
+          sourceId: selectedOne.id,
+          ...upgradeCommandAvailability(
+            selectedOne,
+            definition,
+            snapshot.resources,
+            snapshot.techState,
+            snapshot.techState.researchedUpgradeIds.has(upgradeId),
+            selectedOne.upgradeQueue.some((entry) => entry.upgradeId === upgradeId)
+          )
+        });
+      }
+    });
+  }
+  return renderCommandActionsFromSnapshot(selectedOne, { ...snapshot, commandAvailability });
+}
 
 describe("CommandPanel", () => {
   it("keeps the Command Hall Worker-only and moves basic army actions to Barracks", () => {
@@ -50,9 +107,11 @@ describe("CommandPanel", () => {
       fakeSnapshot(["command_hall"], { crowns: 0, stone: 0, iron: 0, aether: 0 })
     );
 
-    expect(markup).toContain("Insufficient resources. Cost: 50 Crowns");
-    expect(markup).toContain("Insufficient resources. Cost: 90 Crowns, 70 Stone");
-    expect(markup).not.toContain("Insufficient resources. Cost: 120 Crowns, 70 Iron");
+    expect(markup).toContain("Reason: Need 50 Crowns");
+    expect(markup).toContain("Cost: 50 Crowns");
+    expect(markup).toContain("Reason: Need 90 Crowns and 70 Stone");
+    expect(markup).toContain("Cost: 90 Crowns, 70 Stone");
+    expect(markup).not.toContain("Need 120 Crowns and 70 Iron");
   });
 
   it("keeps long command copy behind compact details without removing accessible labels", () => {
@@ -107,21 +166,24 @@ describe("CommandPanel", () => {
 
     const lockedMarkup = renderCommandActions(watchtower, fakeSnapshot(["command_hall", "watchtower"]));
     expect(lockedMarkup).toContain('data-testid="command-upgrade-sentry_bracing_1"');
-    expect(lockedMarkup).toContain("Requires Camp Foundations 1. Cost: 90 Crowns, 80 Stone, 40 Iron");
+    expect(lockedMarkup).toContain("Reason: Requires Camp Foundations 1");
+    expect(lockedMarkup).toContain("Cost: 90 Crowns, 80 Stone, 40 Iron");
     expect(lockedMarkup).toContain("Owner: Watchtower");
     expect(lockedMarkup).toContain("Requires: completed Watchtower, Camp Foundations I");
     expect(lockedMarkup).toContain("Effect: Watchtowers: +1 armor.");
 
     watchtower.upgradeQueue = [{ upgradeId: "sentry_bracing_1", remaining: 10, total: 20, announce: true, paidCost: {} }];
     const queuedMarkup = renderCommandActions(watchtower, fakeSnapshot(["command_hall", "watchtower"], undefined, ["camp_foundations_1"]));
-    expect(queuedMarkup).toContain("Researching. Cost: 90 Crowns, 80 Stone, 40 Iron");
+    expect(queuedMarkup).toContain("Reason: Researching");
+    expect(queuedMarkup).toContain("Cost: 90 Crowns, 80 Stone, 40 Iron");
 
     watchtower.upgradeQueue = [];
     const researchedMarkup = renderCommandActions(
       watchtower,
       fakeSnapshot(["command_hall", "watchtower"], undefined, ["camp_foundations_1", "sentry_bracing_1"])
     );
-    expect(researchedMarkup).toContain("Researched. Cost: 90 Crowns, 80 Stone, 40 Iron");
+    expect(researchedMarkup).toContain("Reason: Researched");
+    expect(researchedMarkup).toContain("Cost: 90 Crowns, 80 Stone, 40 Iron");
   });
 
   it("shows Mystic Lodge train and research ownership only when complete", () => {
@@ -151,6 +213,15 @@ describe("CommandPanel", () => {
     expect(markup).toContain("Cost: 120 Crowns, 100 Stone, 40 Iron");
     expect(markup).not.toContain('data-action="train"');
     expect(markup).not.toContain('data-action="upgrade"');
+  });
+
+  it("fails closed when the HUD snapshot omits a canonical command decision", () => {
+    const markup = renderCommandActionsFromSnapshot(fakeWorker(), fakeSnapshot(["command_hall"]));
+
+    expect(markup).toContain('data-testid="command-build-barracks"');
+    expect(markup).toContain('data-command-state="locked"');
+    expect(markup).toContain("Reason: Unavailable");
+    expect(markup).toContain("Cost: 180 Crowns, 120 Stone");
   });
 
   it("renders Worker repair commands for damaged completed friendly buildings", () => {
@@ -298,7 +369,8 @@ describe("CommandPanel", () => {
 
     expect(markup).toContain('data-testid="command-build-barracks"');
     expect(markup).toContain('data-testid="command-build-watchtower"');
-    expect(markup).toContain("Insufficient resources. Cost: 160 Crowns, 100 Stone, 80 Aether");
+    expect(markup).toContain("Reason: Need 5 Aether");
+    expect(markup).toContain("Cost: 160 Crowns, 100 Stone, 80 Aether");
   });
 
   it("renders a compact Patrol command for combat-capable selected units", () => {
@@ -354,7 +426,8 @@ describe("CommandPanel", () => {
     expect(readyMarkup).toContain("Ready reserves 1/2");
     expect(readyMarkup).toContain("Cost: 75 Crowns");
     expect(lockedMarkup).toContain('data-disabled-reason="No Ready reserve Retinue"');
-    expect(lockedMarkup).toContain("No Ready reserve Retinue. Cost: 75 Crowns");
+    expect(lockedMarkup).toContain("Reason: No Ready reserve Retinue");
+    expect(lockedMarkup).toContain("Cost: 75 Crowns");
   });
 });
 
@@ -466,6 +539,7 @@ function fakeSnapshot(
 ): HUDSnapshot {
   return {
     resources,
+    commandAvailability: [],
     selected: [],
     hero: {} as HUDSnapshot["hero"],
     elapsedSeconds: 0,

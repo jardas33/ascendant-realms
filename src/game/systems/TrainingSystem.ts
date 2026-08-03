@@ -1,12 +1,13 @@
 import Phaser from "phaser";
 import type { BattleMapDefinition, Position, ResourceBag, Team, UnitDefinition } from "../core/GameTypes";
-import { addResources, canAfford, payCost } from "../core/MathUtils";
+import { addResources, payCost } from "../core/MathUtils";
 import { requireUnit } from "../data/contentIndex";
 import type { StrongholdBattleEffects } from "../data/strongholdUpgrades";
 import { Building } from "../entities/Building";
 import { Unit } from "../entities/Unit";
+import { trainingCommandAvailability, type CommandAvailabilityDecision } from "./CommandAvailability";
 import { DEFAULT_PATHFINDING_CELL_SIZE, PathfindingGrid, type PathfindingStaticObstacle } from "./PathfindingGrid";
-import { checkPrerequisites, type TechState } from "./PrerequisiteSystem";
+import type { TechState } from "./PrerequisiteSystem";
 import { applyRallyPointToTrainedUnit } from "./RallyPointSystem";
 
 interface TrainingSystemOptions {
@@ -85,35 +86,22 @@ export class TrainingSystem {
 
   constructor(private readonly options: TrainingSystemOptions) {}
 
+  getTrainingAvailability(building: Building, unitId: string, resources: ResourceBag): CommandAvailabilityDecision {
+    return trainingCommandAvailability(
+      building,
+      requireUnit(unitId),
+      resources,
+      this.options.getTechState?.(building.team)
+    );
+  }
+
   queueTraining(building: Building, unitId: string, resources: ResourceBag, options: { announce?: boolean } = {}): boolean {
-    const unitDefinition = requireUnit(unitId);
     const announce = options.announce ?? building.team === "player";
-    if (!building.isCompleted()) {
+    const unitDefinition = requireUnit(unitId);
+    const availability = this.getTrainingAvailability(building, unitId, resources);
+    if (!availability.available) {
       if (announce) {
-        this.options.onMessage("Construction must finish first", building.position.x, building.position.y - 60, "#ffd27a", {
-          priority: "command"
-        });
-      }
-      return false;
-    }
-    if (!building.definition.trainOptions.includes(unitId)) {
-      return false;
-    }
-    const techState = this.options.getTechState?.(building.team);
-    if (techState) {
-      const prerequisite = checkPrerequisites(unitDefinition.prerequisites, techState);
-      if (!prerequisite.ok) {
-        if (announce) {
-          this.options.onMessage(prerequisite.reason ?? "Locked", building.position.x, building.position.y - 60, "#ffd27a", {
-            priority: "command"
-          });
-        }
-        return false;
-      }
-    }
-    if (!canAfford(resources, unitDefinition.cost)) {
-      if (announce) {
-        this.options.onMessage(`Not enough resources for ${unitDefinition.name}`, building.position.x, building.position.y - 60, "#ffd27a", {
+        this.options.onMessage(availability.reason ?? "Unavailable", building.position.x, building.position.y - 60, "#ffd27a", {
           priority: "command"
         });
       }

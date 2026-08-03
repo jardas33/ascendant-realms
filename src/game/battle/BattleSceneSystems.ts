@@ -29,6 +29,7 @@ import { AISystem } from "../systems/AISystem";
 import { behaviourModeDefinition, setBehaviourMode, type BehaviourMode } from "../systems/BehaviourModeSystem";
 import { BuildingSystem } from "../systems/BuildingSystem";
 import { CameraSystem } from "../systems/CameraSystem";
+import { buildCommandAvailability } from "../systems/CommandAvailability";
 import { CombatSystem } from "../systems/CombatSystem";
 import { ControlGroupSystem } from "../systems/ControlGroupSystem";
 import { FogOfWarSystem } from "../systems/FogOfWarSystem";
@@ -414,9 +415,10 @@ export function createBattleSceneSystems(options: CreateBattleSceneSystemsOption
             Boolean(entry.definition.buildOptions?.includes(buildingId))
         );
         const definition = BUILDING_BY_ID[buildingId];
-        if (!builder) {
+        const availability = buildCommandAvailability(builder, definition, getTechState("player"), resources.player);
+        if (!availability.available || !builder || !definition) {
           showMessage(
-            `Select a Worker to build ${definition?.name ?? "this structure"}.`,
+            availability.reason ?? "Unavailable",
             undefined,
             undefined,
             "#ffd27a",

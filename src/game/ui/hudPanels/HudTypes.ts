@@ -14,6 +14,7 @@ import type { ResourceSiteAssignmentSummary } from "../../systems/ResourceSystem
 import type { TutorialStepViewModel } from "../../tutorial/TutorialStepModel";
 import type { MinimapSnapshot } from "../MinimapView";
 import type { BattleLaunchRequest } from "../../battle/BattleLaunchRequest";
+import type { CommandAvailabilityReasonCode } from "../../systems/CommandAvailability";
 import { getBattleDifficulty } from "../../data/battlePacing";
 import { FACTION_BY_ID } from "../../data/contentIndex";
 
@@ -48,6 +49,7 @@ export interface HUDCallbacks {
 
 export interface HUDSnapshot {
   resources: ResourceBag;
+  commandAvailability: HUDCommandAvailabilitySnapshot[];
   hero: Hero;
   selected: Array<Unit | Building | CaptureSite>;
   elapsedSeconds: number;
@@ -74,6 +76,16 @@ export interface HUDSnapshot {
   hudDensityControls?: HUDDensityControl[];
   hudDebugCounters?: HUDDebugCounterSnapshot;
   matchContext?: HUDMatchContext;
+}
+
+export interface HUDCommandAvailabilitySnapshot {
+  action: "build" | "train" | "upgrade";
+  id: string;
+  sourceId: string;
+  available: boolean;
+  reasonCode?: CommandAvailabilityReasonCode;
+  reason?: string;
+  missingResources?: Partial<ResourceBag>;
 }
 
 export interface HUDMatchContext {

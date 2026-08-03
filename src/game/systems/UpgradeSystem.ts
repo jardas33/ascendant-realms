@@ -1,8 +1,9 @@
 import type { ResourceBag, Team, UpgradeDefinition } from "../core/GameTypes";
-import { addResources, canAfford, payCost } from "../core/MathUtils";
+import { addResources, payCost } from "../core/MathUtils";
 import { requireUpgrade } from "../data/contentIndex";
 import { Building } from "../entities/Building";
-import { checkPrerequisites, type TechState } from "./PrerequisiteSystem";
+import { upgradeCommandAvailability, type CommandAvailabilityDecision } from "./CommandAvailability";
+import type { TechState } from "./PrerequisiteSystem";
 
 interface UpgradeSystemOptions {
   getTechState: (team: Team) => TechState;
@@ -20,48 +21,24 @@ interface UpgradeSystemMessageOptions {
 export class UpgradeSystem {
   constructor(private readonly options: UpgradeSystemOptions) {}
 
+  getUpgradeAvailability(building: Building, upgradeId: string, resources: ResourceBag): CommandAvailabilityDecision {
+    return upgradeCommandAvailability(
+      building,
+      requireUpgrade(upgradeId),
+      resources,
+      this.options.getTechState(building.team),
+      this.options.isResearched(building.team, upgradeId),
+      building.upgradeQueue.some((entry) => entry.upgradeId === upgradeId)
+    );
+  }
+
   queueUpgrade(building: Building, upgradeId: string, resources: ResourceBag, options: { announce?: boolean } = {}): boolean {
     const upgrade = requireUpgrade(upgradeId);
     const announce = options.announce ?? building.team === "player";
-    if (!building.isCompleted()) {
+    const availability = this.getUpgradeAvailability(building, upgradeId, resources);
+    if (!availability.available) {
       if (announce) {
-        this.options.onMessage("Construction must finish first", building.position.x, building.position.y - 60, "#ffd27a", {
-          priority: "command"
-        });
-      }
-      return false;
-    }
-    if (!building.definition.upgradeOptions.includes(upgradeId)) {
-      return false;
-    }
-    if (this.options.isResearched(building.team, upgradeId)) {
-      if (announce) {
-        this.options.onMessage("Upgrade already researched", building.position.x, building.position.y - 60, "#ffd27a", {
-          priority: "command"
-        });
-      }
-      return false;
-    }
-    if (building.upgradeQueue.some((entry) => entry.upgradeId === upgradeId)) {
-      if (announce) {
-        this.options.onMessage("Upgrade already queued", building.position.x, building.position.y - 60, "#ffd27a", {
-          priority: "command"
-        });
-      }
-      return false;
-    }
-    const prerequisite = checkPrerequisites(upgrade.prerequisites, this.options.getTechState(building.team));
-    if (!prerequisite.ok) {
-      if (announce) {
-        this.options.onMessage(prerequisite.reason ?? "Locked", building.position.x, building.position.y - 60, "#ffd27a", {
-          priority: "command"
-        });
-      }
-      return false;
-    }
-    if (!canAfford(resources, upgrade.cost)) {
-      if (announce) {
-        this.options.onMessage(`Not enough resources for ${upgrade.name}`, building.position.x, building.position.y - 60, "#ffd27a", {
+        this.options.onMessage(availability.reason ?? "Unavailable", building.position.x, building.position.y - 60, "#ffd27a", {
           priority: "command"
         });
       }

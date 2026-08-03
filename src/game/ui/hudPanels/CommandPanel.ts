@@ -5,7 +5,6 @@ import { formatUnitRoleTags, getUnitRoleIdentity } from "../../data/unitRoles";
 import { Building } from "../../entities/Building";
 import { CaptureSite } from "../../entities/CaptureSite";
 import { Unit } from "../../entities/Unit";
-import { checkPrerequisites } from "../../systems/PrerequisiteSystem";
 import { isPatrolEligibleUnit } from "../../systems/PatrolRules";
 import { RESOURCE_SITE_MAX_LEVEL, RESOURCE_SITE_UPGRADE_COST } from "../../systems/ResourceSystem";
 import { formatCost } from "../BuildMenu";
@@ -51,24 +50,19 @@ export function renderCommandActions(selectedOne: UnitDefinitionOwner | undefine
     .map((buildingId) => BUILDING_BY_ID[buildingId])
     .filter((definition): definition is BuildingDefinition => definition !== undefined)
     .map((definition) => {
-      const roleIdentity = getUnitRoleIdentity(definition.id);
-      const prerequisite = checkPrerequisites(definition.prerequisites, snapshot.techState);
-      const lockReason = !prerequisite.ok
-        ? prerequisite.reason
-        : canAfford(snapshot.resources, definition.cost)
-          ? undefined
-          : "Insufficient resources";
+      const availability = commandAvailabilityFor(snapshot, "build", definition.id, selectedOne.id);
+      const lockReason = commandLockReason(availability);
       return renderCommandButton({
         action: "build",
         verb: "Build",
         id: definition.id,
         sourceId: selectedOne.id,
         name: definition.name,
-        detail: formatCommandDetail(definition.cost, lockReason),
+        detail: formatCommandDetail(definition.cost),
         lockReason,
         description: definition.description,
         effect: formatBuildingSummary(definition),
-        locked: Boolean(lockReason)
+        locked: !availability?.available
       });
     })
     .join("") : "";
@@ -78,23 +72,19 @@ export function renderCommandActions(selectedOne: UnitDefinitionOwner | undefine
     .filter((definition): definition is UnitDefinition => definition !== undefined)
     .map((definition) => {
       const roleIdentity = getUnitRoleIdentity(definition.id);
-      const prerequisite = checkPrerequisites(definition.prerequisites, snapshot.techState);
-      const lockReason = !prerequisite.ok
-        ? prerequisite.reason
-        : canAfford(snapshot.resources, definition.cost)
-          ? undefined
-          : "Insufficient resources";
+      const availability = commandAvailabilityFor(snapshot, "train", definition.id, selectedOne.id);
+      const lockReason = commandLockReason(availability);
       return renderCommandButton({
         action: "train",
         verb: "Train",
         id: definition.id,
         sourceId: selectedOne.id,
         name: definition.name,
-        detail: formatCommandDetail(definition.cost, lockReason),
+        detail: formatCommandDetail(definition.cost),
         lockReason,
         description: `${roleIdentity.label}. ${roleIdentity.summary} ${definition.description}`,
         effect: `${formatUnitSummary(definition)} - Tags: ${formatUnitRoleTags(roleIdentity)}`,
-        locked: Boolean(lockReason)
+        locked: !availability?.available
       });
     })
     .join("") : "";
@@ -103,29 +93,19 @@ export function renderCommandActions(selectedOne: UnitDefinitionOwner | undefine
     .map((upgradeId) => UPGRADE_BY_ID[upgradeId])
     .filter((definition): definition is UpgradeDefinition => definition !== undefined)
     .map((definition) => {
-      const researched = snapshot.techState.researchedUpgradeIds.has(definition.id);
-      const queued = selectedOne.upgradeQueue.some((entry) => entry.upgradeId === definition.id);
-      const prerequisite = checkPrerequisites(definition.prerequisites, snapshot.techState);
-      const lockReason = researched
-        ? "Researched"
-        : queued
-          ? "Researching"
-          : !prerequisite.ok
-            ? prerequisite.reason
-            : canAfford(snapshot.resources, definition.cost)
-              ? undefined
-              : "Insufficient resources";
+      const availability = commandAvailabilityFor(snapshot, "upgrade", definition.id, selectedOne.id);
+      const lockReason = commandLockReason(availability);
       return renderCommandButton({
         action: "upgrade",
         verb: "Research",
         id: definition.id,
         sourceId: selectedOne.id,
         name: definition.name,
-        detail: formatCommandDetail(definition.cost, lockReason),
+        detail: formatCommandDetail(definition.cost),
         lockReason,
         description: `${definition.description} ${formatUpgradeOwner(definition)}. ${formatUpgradeRequirements(definition)}. ${formatUpgradeCategory(definition)}.`,
         effect: `Effect: ${formatUpgradeEffects(definition)}`,
-        locked: Boolean(lockReason)
+        locked: !availability?.available
       });
     })
     .join("") : "";
@@ -207,7 +187,7 @@ export function renderCommandActions(selectedOne: UnitDefinitionOwner | undefine
             id: selectedOne.id,
             sourceId: selectedOne.id,
             name: selectedOne.definition.name,
-            detail: formatCommandDetail(upgradeCost, lockReason),
+            detail: formatCommandDetail(upgradeCost),
             lockReason,
             description: site?.upgradeStatus ?? "Upgrade captured sites to improve income and Worker capacity.",
             effect: "Effect: adds a modest income bonus and unlocks a second Worker slot.",
@@ -251,7 +231,7 @@ function renderRetinueReinforcementButton(snapshot: HUDSnapshot): string {
   }
   const detail = state.available
     ? `Cost: ${formatCost(state.cost)}`
-    : `${state.reason ?? "Unavailable"}. Cost: ${formatCost(state.cost)}`;
+    : `Cost: ${formatCost(state.cost)}`;
   return renderCommandButton({
     action: "retinue-reinforcement",
     verb: "Call",
@@ -297,9 +277,25 @@ function renderTacticsButtons(selectedUnits: Unit[]): string {
   ].join("");
 }
 
-function formatCommandDetail(cost: Cost, lockReason?: string): string {
-  const costText = `Cost: ${formatCost(cost)}`;
-  return lockReason ? `${lockReason}. ${costText}` : costText;
+function formatCommandDetail(cost: Cost): string {
+  return `Cost: ${formatCost(cost)}`;
+}
+
+function commandAvailabilityFor(
+  snapshot: HUDSnapshot,
+  action: "build" | "train" | "upgrade",
+  id: string,
+  sourceId: string
+) {
+  return snapshot.commandAvailability.find(
+    (entry) => entry.action === action && entry.id === id && entry.sourceId === sourceId
+  );
+}
+
+function commandLockReason(
+  availability: ReturnType<typeof commandAvailabilityFor>
+): string | undefined {
+  return availability?.available ? undefined : availability?.reason ?? "Unavailable";
 }
 
 type UnitDefinitionOwner = HUDSnapshot["selected"][number];
@@ -326,7 +322,8 @@ function renderCommandButton(options: {
   locked: boolean;
 }): string {
   const extra = [options.description, options.effect].filter(Boolean).join(" ");
-  const label = `${options.verb} ${options.name}. ${options.detail}${extra ? `. ${extra}` : ""}`;
+  const stateLabel = options.locked ? "Unavailable" : "Available";
+  const label = `${options.verb} ${options.name}. ${stateLabel}. ${options.detail}${options.lockReason ? `. Reason: ${options.lockReason}` : ""}${extra ? `. ${extra}` : ""}`;
   const detailsId = `command-details-${options.action}-${sanitizeCommandId(options.id)}`;
   const hasDetails = Boolean(options.description || options.effect);
   return `
@@ -350,8 +347,9 @@ function renderCommandButton(options: {
           <span class="command-verb">${escapeHtml(options.verb)}</span>
           <span class="command-name">${escapeHtml(options.name)}</span>
         </span>
-        <small>${escapeHtml(options.detail)}</small>
-        ${options.lockReason ? `<small class="command-lock">Locked: ${escapeHtml(options.lockReason)}</small>` : ""}
+        <small class="command-cost">${escapeHtml(options.detail)}</small>
+        <small class="command-state">${stateLabel}</small>
+        ${options.lockReason ? `<small class="command-lock">Reason: ${escapeHtml(options.lockReason)}</small>` : ""}
       </button>
       ${
         hasDetails

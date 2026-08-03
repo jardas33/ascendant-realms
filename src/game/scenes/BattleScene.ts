@@ -21,11 +21,13 @@ import { SCENE_KEYS } from "../core/SceneKeys";
 import { DEFAULT_SETTINGS, applySettingsToDocument, normalizeSettingsData } from "../core/Settings";
 import {
   AI_PERSONALITY_BY_ID,
+  BUILDING_BY_ID,
   CAMPAIGN_NODE_BY_ID,
   CAMPAIGN_MODIFIER_BY_ID,
   FACTION_BY_ID,
   requireBuilding,
   requireUnit,
+  UNIT_BY_ID,
   UPGRADE_BY_ID
 } from "../data/contentIndex";
 import { getBattleDifficulty } from "../data/battlePacing";
@@ -86,6 +88,7 @@ import { createBattleMinimapSnapshot } from "../battle/BattleSceneSnapshots";
 import { completeBattleSecondaryObjective } from "../battle/BattleSceneObjectives";
 import { applySecondaryObjectiveBattleEffect } from "../battle/SecondaryObjectiveEffects";
 import { spawnBattleScenario, spawnRetinueUnitFromSave, type NeutralCampLabel } from "../battle/BattleSceneSpawner";
+import { buildCommandAvailability } from "../systems/CommandAvailability";
 import {
   applyFirstCaptureBonusAdditions,
   createBattleFogOfWar,
@@ -127,7 +130,7 @@ import {
   normalizeHudDensityMode,
   shouldRenderHudDebugCounters
 } from "../ui/hudPanels/HudDensity";
-import { createHudMatchContext, type HUDObjectiveSnapshot } from "../ui/hudPanels/HudTypes";
+import { createHudMatchContext, type HUDCommandAvailabilitySnapshot, type HUDObjectiveSnapshot } from "../ui/hudPanels/HudTypes";
 import type { HudDensityMode } from "../ui/hudPanels/HudTypes";
 import {
   commandFeedbackMarkerPresentation,
@@ -2761,6 +2764,7 @@ export class BattleScene extends Phaser.Scene {
       this.buildingSystem.placementMessage || "Click valid ground near your base to place the building.";
     this.uiSystem.update(deltaSeconds, {
       resources: this.resources.player,
+      commandAvailability: this.createCommandAvailabilitySnapshot(selected),
       hero: this.hero,
       selected,
       elapsedSeconds: this.runtime.elapsedSeconds,
@@ -2800,6 +2804,60 @@ export class BattleScene extends Phaser.Scene {
           }
         : undefined
     });
+  }
+
+  private createCommandAvailabilitySnapshot(selected: Array<Unit | Building | CaptureSite>): HUDCommandAvailabilitySnapshot[] {
+    if (selected.length !== 1) {
+      return [];
+    }
+
+    const selectedOne = selected[0];
+    const techState = this.getTechState("player");
+    const entries: HUDCommandAvailabilitySnapshot[] = [];
+    if (selectedOne instanceof Unit || selectedOne instanceof Building) {
+      (selectedOne.definition.buildOptions ?? []).forEach((buildingId) => {
+        const definition = BUILDING_BY_ID[buildingId];
+        if (!definition) {
+          return;
+        }
+        const decision = buildCommandAvailability(selectedOne, definition, techState, this.resources.player);
+        entries.push({
+          action: "build",
+          id: definition.id,
+          sourceId: selectedOne.id,
+          ...decision
+        });
+      });
+    }
+    if (selectedOne instanceof Building) {
+      selectedOne.definition.trainOptions.forEach((unitId) => {
+        const definition = UNIT_BY_ID[unitId];
+        if (!definition) {
+          return;
+        }
+        const decision = this.trainingSystem.getTrainingAvailability(selectedOne, unitId, this.resources.player);
+        entries.push({
+          action: "train",
+          id: definition.id,
+          sourceId: selectedOne.id,
+          ...decision
+        });
+      });
+      selectedOne.definition.upgradeOptions.forEach((upgradeId) => {
+        const definition = UPGRADE_BY_ID[upgradeId];
+        if (!definition) {
+          return;
+        }
+        const decision = this.upgradeSystem.getUpgradeAvailability(selectedOne, upgradeId, this.resources.player);
+        entries.push({
+          action: "upgrade",
+          id: definition.id,
+          sourceId: selectedOne.id,
+          ...decision
+        });
+      });
+    }
+    return entries;
   }
 
   private shouldRefreshBattleHud(deltaSeconds: number): boolean {

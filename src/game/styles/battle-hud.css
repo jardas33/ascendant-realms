@@ -634,6 +634,17 @@
   line-height: var(--ui-type-caption-line-height);
 }
 
+.command-button .command-state {
+  color: #aee6d7;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.command-button.locked .command-state {
+  color: #ffcfaa;
+}
+
 .hud-button.locked small {
   color: #ffcfaa;
 }
