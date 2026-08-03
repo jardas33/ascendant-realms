@@ -2,6 +2,7 @@ import Phaser from "phaser";
 import type { ActiveStatusEffect, EntityKind, Position, Team } from "../core/GameTypes";
 import { clamp } from "../core/MathUtils";
 import { recordRenderLifecycleMetrics } from "../systems/RenderLifecycleMetrics";
+import { getCommonPresentationDefaults } from "../ui/EntityPresentationConfig";
 import { resolveSelectionRingPresentation } from "../ui/SelectionPresentation";
 import type { HudDensityMode } from "../ui/hudPanels/HudTypes";
 
@@ -70,21 +71,35 @@ export abstract class BaseEntity {
     this.armor = options.armor;
   }
 
-  protected createCommonView(scene: Phaser.Scene, label: string, healthColor: number, showHealth = true): void {
+  protected createCommonView(
+    scene: Phaser.Scene,
+    label: string,
+    healthColor: number,
+    showHealth = true,
+    presentation: { fixedDepth?: number } = {}
+  ): void {
+    const defaults = getCommonPresentationDefaults();
     this.view = scene.add.container(this.position.x, this.position.y);
-    const selectionRadius = this.radius + 7;
+    const selectionRadius = this.radius + defaults.selection.radiusAddPx;
     // Entity-specific sprite layout decides the final footprint position; keep selected state as a ground marker.
     this.selectionRing = scene.add
-      .ellipse(0, 0, selectionRadius * 2.1, Math.max(8, selectionRadius * 0.62), 0xf5f3d1, 0.08)
+      .ellipse(
+        0,
+        0,
+        selectionRadius * defaults.selection.widthRadiusMultiplier,
+        Math.max(defaults.selection.minHeightPx, selectionRadius * defaults.selection.heightRadiusMultiplier),
+        0xf5f3d1,
+        0.08
+      )
       .setStrokeStyle(2, 0xf5f3d1, 0.86)
       .setSmoothness(48);
     this.selectionRing.setVisible(false);
     this.view.add(this.selectionRing);
 
     if (showHealth) {
-      const width = Math.max(34, this.radius * 2.4);
-      const height = 5;
-      const y = -this.radius - 13;
+      const width = Math.max(defaults.health.minWidthPx, this.radius * defaults.health.widthRadiusMultiplier);
+      const height = defaults.health.heightPx;
+      const y = -this.radius - defaults.health.topOffsetPx;
       this.healthBarWidth = width;
       this.healthBarHeight = height;
       this.healthBack = scene.add
@@ -111,7 +126,7 @@ export abstract class BaseEntity {
     this.view.add([this.statusBadge, this.statusBadgeLabel]);
 
     this.label = scene.add
-      .text(0, this.radius + 11, label, {
+      .text(0, this.radius + defaults.label.radiusOffsetPx, label, {
         fontFamily: "Verdana, Arial, sans-serif",
         fontSize: "10px",
         color: "#e9ecd8",
@@ -121,7 +136,7 @@ export abstract class BaseEntity {
       .setOrigin(0.5, 0);
     recordRenderLifecycleMetrics({ textObjectsCreated: 1 });
     this.view.add(this.label);
-    this.view.setDepth(this.kind === "building" ? 5 : 10);
+    this.view.setDepth(presentation.fixedDepth ?? (this.kind === "building" ? defaults.depth.building : defaults.depth.nonBuilding));
     this.updateHealthBar();
     this.updateHealthBarVisibility();
   }
@@ -139,10 +154,15 @@ export abstract class BaseEntity {
     if (this.selectionRing) {
       const selectionWidth =
         options.selectionWidth ??
-        (options.selectionRadius !== undefined ? options.selectionRadius * 2.1 : undefined);
+        (options.selectionRadius !== undefined ? options.selectionRadius * getCommonPresentationDefaults().selection.widthRadiusMultiplier : undefined);
       const selectionHeight =
         options.selectionHeight ??
-        (options.selectionRadius !== undefined ? Math.max(8, options.selectionRadius * 0.62) : undefined);
+        (options.selectionRadius !== undefined
+          ? Math.max(
+              getCommonPresentationDefaults().selection.minHeightPx,
+              options.selectionRadius * getCommonPresentationDefaults().selection.heightRadiusMultiplier
+            )
+          : undefined);
       if (selectionWidth !== undefined && selectionHeight !== undefined) {
         this.selectionRing.setSize(selectionWidth, selectionHeight);
       }

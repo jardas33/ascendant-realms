@@ -4,6 +4,7 @@ import { BUILDING_BY_ID, UNIT_BY_ID } from "../data/contentIndex";
 import { createBurnStatus } from "../systems/StatusEffectSystem";
 import { Unit } from "./Unit";
 import { Building } from "./Building";
+import { getCommonPresentationDefaults } from "../ui/EntityPresentationConfig";
 
 interface SceneStub extends Phaser.Scene {
   __objects: {
@@ -43,6 +44,16 @@ interface StubGameObject {
 }
 
 describe("BaseEntity view layout", () => {
+  it("keeps common layout defaults presentation-only and legacy-equivalent", () => {
+    const common = getCommonPresentationDefaults();
+
+    expect(common.selection.radiusAddPx).toBe(7);
+    expect(common.selection.widthRadiusMultiplier).toBe(2.1);
+    expect(common.selection.heightRadiusMultiplier).toBe(0.62);
+    expect(common.health.widthRadiusMultiplier).toBe(2.4);
+    expect(common.depth).toEqual({ building: 5, nonBuilding: 10 });
+  });
+
   it("keeps the burn status marker labeled and clear of the health bar after damage", () => {
     const scene = createSceneStub();
     const worker = new Unit(scene, UNIT_BY_ID.worker, "player", 100, 100);

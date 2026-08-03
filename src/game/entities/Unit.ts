@@ -17,6 +17,7 @@ import {
 import { DEFAULT_BEHAVIOUR_MODE, type BehaviourMode } from "../systems/BehaviourModeSystem";
 import { recordRenderLifecycleMetrics } from "../systems/RenderLifecycleMetrics";
 import { resolveUnitPlaceholderPresentation } from "../ui/PlaceholderBattlefieldPresentation";
+import { resolveEntityPresentationConfig, type UnitPresentationConfig } from "../ui/EntityPresentationConfig";
 import { BaseEntity } from "./BaseEntity";
 
 const PLAYER_MOVE_COMBAT_SUPPRESSION_SECONDS = 1.15;
@@ -95,7 +96,10 @@ export class Unit extends BaseEntity {
     this.unitTypeId = definition.id;
     this.veterancy = createUnitVeterancyState(this.id, definition.id);
     const isHero = options.kind === "hero";
-    this.createCommonView(scene, definition.name, this.healthColorForTeam(), true);
+    const presentation = resolveEntityPresentationConfig(isHero ? "hero" : "unit") as UnitPresentationConfig;
+    this.createCommonView(scene, definition.name, this.healthColorForTeam(), true, {
+      fixedDepth: presentation.depth.fixedDepth
+    });
     this.setLabelVisibleByDefault(
       resolveUnitPlaceholderPresentation({
         unitId: definition.id,
@@ -104,17 +108,23 @@ export class Unit extends BaseEntity {
         baseColor: definition.color
       }).labelVisibleByDefault
     );
-    const layout = this.addBattleView(scene, options.kind ?? "unit");
-    const selectionRadius = Math.max(this.radius + 7, isHero ? 23 : 20);
+    const layout = this.addBattleView(scene, options.kind ?? "unit", presentation);
+    const selectionRadius = Math.max(
+      this.radius + presentation.layout.selectionRadiusAddPx,
+      presentation.layout.selectionRadiusMinPx
+    );
     this.configureCommonViewLayout({
-      healthBarY: layout.visualTop - (isHero ? 13 : 11),
-      healthBarWidth: isHero ? 56 : 42,
-      healthBarHeight: isHero ? 6 : 5,
-      labelY: layout.visualBottom + 7,
+      healthBarY: layout.visualTop - presentation.layout.healthTopOffsetPx,
+      healthBarWidth: presentation.layout.healthWidthPx,
+      healthBarHeight: presentation.layout.healthHeightPx,
+      labelY: layout.visualBottom + presentation.layout.labelBottomOffsetPx,
       selectionRadius,
-      selectionWidth: selectionRadius * (isHero ? 2.35 : 2.15),
-      selectionHeight: Math.max(9, selectionRadius * (isHero ? 0.62 : 0.56)),
-      selectionY: layout.visualBottom + 0.5
+      selectionWidth: selectionRadius * presentation.layout.selectionWidthRadiusMultiplier,
+      selectionHeight: Math.max(
+        presentation.layout.selectionHeightMinPx,
+        selectionRadius * presentation.layout.selectionHeightRadiusMultiplier
+      ),
+      selectionY: layout.visualBottom + presentation.layout.selectionYOffsetPx
     });
     this.setSelectionRingLayer(1);
   }
@@ -404,18 +414,26 @@ export class Unit extends BaseEntity {
 
   private addBattleView(
     scene: Phaser.Scene,
-    kind: Extract<EntityKind, "unit" | "hero">
+    kind: Extract<EntityKind, "unit" | "hero">,
+    layoutConfig: UnitPresentationConfig
   ): { visualTop: number; visualBottom: number } {
     const assetId = unitBattleAssetIds(this.definition.id).find((candidate) => scene.textures.exists(candidate));
-    const shadow = scene.add.ellipse(0, this.radius * 0.58, this.radius * 2.5, this.radius * 0.72, 0x000000, 0.32);
+    const shadow = scene.add.ellipse(
+      0,
+      this.radius * layoutConfig.shadow.yRadiusMultiplier,
+      this.radius * layoutConfig.shadow.widthRadiusMultiplier,
+      this.radius * layoutConfig.shadow.heightRadiusMultiplier,
+      0x000000,
+      layoutConfig.shadow.opacity
+    );
     this.view?.addAt(shadow, 0);
 
     if (assetId) {
-      const spriteY = this.radius * 0.1;
-      const originY = 0.8;
+      const spriteY = this.radius * layoutConfig.sprite.yRadiusMultiplier;
+      const originY = layoutConfig.sprite.originY;
       this.sprite = scene.add.image(0, spriteY, assetId).setOrigin(0.5, originY);
       recordRenderLifecycleMetrics({ spritesCreated: 1 });
-      const targetHeight = kind === "hero" ? this.radius * 4.35 : this.radius * 3.65;
+      const targetHeight = this.radius * layoutConfig.sprite.targetHeightRadiusMultiplier;
       const sourceHeight = Math.max(1, this.sprite.height);
       this.sprite.setScale(targetHeight / sourceHeight);
       this.sprite.setDepth(1);
@@ -426,34 +444,34 @@ export class Unit extends BaseEntity {
       };
     }
 
-    const presentation = resolveUnitPlaceholderPresentation({
+    const placeholder = resolveUnitPlaceholderPresentation({
       unitId: this.definition.id,
       team: this.team,
       kind,
       baseColor: this.definition.color
     });
     this.body = scene.add
-      .ellipse(0, 0, this.radius * 1.5, this.radius * 2.05, presentation.fillColor, presentation.bodyAlpha)
-      .setStrokeStyle(2, presentation.strokeColor, presentation.strokeAlpha);
+      .ellipse(0, 0, this.radius * 1.5, this.radius * 2.05, placeholder.fillColor, placeholder.bodyAlpha)
+      .setStrokeStyle(2, placeholder.strokeColor, placeholder.strokeAlpha);
     this.view?.addAt(this.body, 1);
-    const accent = presentation.accentColor;
-    if (presentation.silhouette === "hero") {
+    const accent = placeholder.accentColor;
+    if (placeholder.silhouette === "hero") {
       this.view?.addAt(scene.add.rectangle(0, -this.radius * 1.12, 6, this.radius * 1.45, accent, 0.9), 2);
       this.view?.addAt(scene.add.rectangle(10, -this.radius * 1.44, 22, 11, accent, 0.82), 3);
       this.view?.addAt(scene.add.circle(0, -this.radius * 0.5, this.radius * 0.33, 0xf5efc2, 0.92), 4);
-    } else if (presentation.silhouette === "worker") {
+    } else if (placeholder.silhouette === "worker") {
       this.view?.addAt(
         scene.add.rectangle(0, this.radius * 0.12, this.radius * 1.34, this.radius * 0.82, 0x2a3a2d, 0.84).setStrokeStyle(2, accent, 0.72),
         2
       );
       this.view?.addAt(scene.add.rectangle(0, -this.radius * 0.58, this.radius * 1.04, 7, accent, 0.86), 3);
-    } else if (presentation.silhouette === "ranged") {
+    } else if (placeholder.silhouette === "ranged") {
       this.view?.addAt(scene.add.rectangle(0, -this.radius * 0.68, this.radius * 1.3, 5, accent, 0.78), 2);
       this.view?.addAt(scene.add.rectangle(this.radius * 0.62, -2, 4, this.radius * 1.35, 0xf5efc2, 0.78), 3);
-    } else if (presentation.silhouette === "caster") {
+    } else if (placeholder.silhouette === "caster") {
       this.view?.addAt(scene.add.circle(0, -this.radius * 0.64, this.radius * 0.36, accent, 0.84), 2);
       this.view?.addAt(scene.add.rectangle(0, this.radius * 0.44, this.radius * 1.24, 4, 0x8ff6e5, 0.64), 3);
-    } else if (presentation.silhouette === "commander") {
+    } else if (placeholder.silhouette === "commander") {
       this.view?.addAt(scene.add.rectangle(0, -this.radius * 0.2, this.radius * 1.72, this.radius * 0.42, accent, 0.8), 2);
       this.view?.addAt(scene.add.rectangle(0, -this.radius * 1.08, 5, this.radius * 1.1, 0xffdf7a, 0.86), 3);
     } else {
@@ -463,8 +481,8 @@ export class Unit extends BaseEntity {
       );
     }
     return {
-      visualTop: kind === "hero" ? -this.radius * 1.62 : -this.radius * 1.28,
-      visualBottom: this.radius * 1.04
+      visualTop: this.radius * layoutConfig.fallback.visualTopRadiusMultiplier,
+      visualBottom: this.radius * layoutConfig.fallback.visualBottomRadiusMultiplier
     };
   }
 

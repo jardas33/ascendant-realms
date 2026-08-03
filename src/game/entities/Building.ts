@@ -4,6 +4,7 @@ import { clamp } from "../core/MathUtils";
 import type { BuildingConstructionState, BuildingDefinition, Cost, Position, Team } from "../core/GameTypes";
 import { recordRenderLifecycleMetrics } from "../systems/RenderLifecycleMetrics";
 import { resolveBuildingPlaceholderPresentation } from "../ui/PlaceholderBattlefieldPresentation";
+import { resolveEntityPresentationConfig, type BuildingPresentationConfig } from "../ui/EntityPresentationConfig";
 import { BaseEntity } from "./BaseEntity";
 
 export interface TrainingQueueItem {
@@ -73,7 +74,10 @@ export class Building extends BaseEntity {
         ? `Waiting for ${this.assignedWorkerName ?? "Worker"}`
         : "Under construction"
       : "Complete";
-    this.createCommonView(scene, definition.name, team === "player" ? 0x80d982 : 0xe46960, true);
+    const presentation = resolveEntityPresentationConfig("building") as BuildingPresentationConfig;
+    this.createCommonView(scene, definition.name, team === "player" ? 0x80d982 : 0xe46960, true, {
+      fixedDepth: presentation.depth.fixedDepth
+    });
     this.setLabelVisibleByDefault(
       resolveBuildingPlaceholderPresentation({
         buildingId: definition.id,
@@ -81,17 +85,29 @@ export class Building extends BaseEntity {
         baseColor: definition.color
       }).labelVisibleByDefault
     );
-    const layout = this.addBattleView(scene, definition, team);
-    const selectionRadius = Math.max(this.radius + 7, Math.max(definition.size.width, definition.size.height) * 0.64);
+    const layout = this.addBattleView(scene, definition, team, presentation);
+    const selectionRadius = Math.max(
+      this.radius + presentation.layout.selectionRadiusAddPx,
+      Math.max(definition.size.width, definition.size.height) * presentation.layout.selectionRadiusSizeMultiplier
+    );
     this.configureCommonViewLayout({
-      healthBarY: layout.visualTop - 14,
-      healthBarWidth: Math.max(64, definition.size.width * 1.08),
-      healthBarHeight: 7,
-      labelY: layout.visualBottom + 8,
+      healthBarY: layout.visualTop - presentation.layout.healthTopOffsetPx,
+      healthBarWidth: Math.max(
+        presentation.layout.healthMinWidthPx,
+        definition.size.width * presentation.layout.healthWidthSizeMultiplier
+      ),
+      healthBarHeight: presentation.layout.healthHeightPx,
+      labelY: layout.visualBottom + presentation.layout.labelBottomOffsetPx,
       selectionRadius,
-      selectionWidth: Math.max(definition.size.width * 1.16, selectionRadius * 2.05),
-      selectionHeight: Math.max(18, definition.size.height * 0.38),
-      selectionY: layout.visualBottom - 2
+      selectionWidth: Math.max(
+        definition.size.width * presentation.layout.selectionWidthSizeMultiplier,
+        selectionRadius * presentation.layout.selectionWidthRadiusMultiplier
+      ),
+      selectionHeight: Math.max(
+        presentation.layout.selectionMinHeightPx,
+        definition.size.height * presentation.layout.selectionHeightSizeMultiplier
+      ),
+      selectionY: layout.visualBottom + presentation.layout.selectionYOffsetPx
     });
     this.setSelectionRingLayer(1);
     this.applyInitialConstructionHealth();
@@ -164,18 +180,26 @@ export class Building extends BaseEntity {
   private addBattleView(
     scene: Phaser.Scene,
     definition: BuildingDefinition,
-    team: Team
+    team: Team,
+    layoutConfig: BuildingPresentationConfig
   ): { visualTop: number; visualBottom: number } {
     const assetId = buildingBattleAssetIds(definition.id).find((candidate) => scene.textures.exists(candidate));
-    const shadow = scene.add.ellipse(0, definition.size.height * 0.3, definition.size.width * 1.1, definition.size.height * 0.46, 0x000000, 0.28);
+    const shadow = scene.add.ellipse(
+      0,
+      definition.size.height * layoutConfig.shadow.ySizeHeightMultiplier,
+      definition.size.width * layoutConfig.shadow.widthSizeMultiplier,
+      definition.size.height * layoutConfig.shadow.heightSizeMultiplier,
+      0x000000,
+      layoutConfig.shadow.opacity
+    );
     this.view?.addAt(shadow, 0);
 
     if (assetId) {
-      const originY = 0.66;
+      const originY = layoutConfig.sprite.originY;
       const sprite = scene.add.image(0, 0, assetId).setOrigin(0.5, originY);
       recordRenderLifecycleMetrics({ spritesCreated: 1 });
-      const maxWidth = definition.size.width * 1.24;
-      const maxHeight = definition.size.height * 1.42;
+      const maxWidth = definition.size.width * layoutConfig.sprite.maxWidthSizeMultiplier;
+      const maxHeight = definition.size.height * layoutConfig.sprite.maxHeightSizeMultiplier;
       const scale = Math.min(maxWidth / Math.max(1, sprite.width), maxHeight / Math.max(1, sprite.height));
       sprite.setScale(scale);
       const visualHeight = sprite.height * scale;
@@ -189,35 +213,35 @@ export class Building extends BaseEntity {
       };
     }
 
-    const presentation = resolveBuildingPlaceholderPresentation({
+    const placeholder = resolveBuildingPlaceholderPresentation({
       buildingId: definition.id,
       team,
       baseColor: definition.color
     });
     const base = scene.add
-      .rectangle(0, 0, definition.size.width, definition.size.height, presentation.fillColor, 0.96)
-      .setStrokeStyle(3, presentation.strokeColor, 0.9);
+      .rectangle(0, 0, definition.size.width, definition.size.height, placeholder.fillColor, 0.96)
+      .setStrokeStyle(3, placeholder.strokeColor, 0.9);
     this.view?.addAt(base, 1);
-    const accent = presentation.accentColor;
-    if (presentation.silhouette === "command") {
+    const accent = placeholder.accentColor;
+    if (placeholder.silhouette === "command") {
       this.view?.addAt(scene.add.rectangle(0, -definition.size.height * 0.44, definition.size.width * 0.86, 14, accent, 0.72), 2);
       this.view?.addAt(scene.add.rectangle(0, 4, definition.size.width * 0.34, definition.size.height * 0.58, 0x111713, 0.32), 3);
-    } else if (presentation.silhouette === "barracks") {
+    } else if (placeholder.silhouette === "barracks") {
       this.view?.addAt(scene.add.rectangle(0, -definition.size.height * 0.34, definition.size.width * 0.82, 8, accent, 0.68), 2);
       this.view?.addAt(scene.add.rectangle(-definition.size.width * 0.32, 0, 8, definition.size.height * 0.72, 0x111713, 0.34), 3);
       this.view?.addAt(scene.add.rectangle(definition.size.width * 0.32, 0, 8, definition.size.height * 0.72, 0x111713, 0.34), 4);
-    } else if (presentation.silhouette === "shrine") {
+    } else if (placeholder.silhouette === "shrine") {
       this.view?.addAt(scene.add.rectangle(0, -definition.size.height * 0.08, definition.size.width * 0.28, definition.size.height * 0.92, 0x112c2f, 0.72), 2);
       this.view?.addAt(scene.add.circle(0, -definition.size.height * 0.42, 9, accent, 0.82), 3);
-    } else if (presentation.silhouette === "tower") {
+    } else if (placeholder.silhouette === "tower") {
       this.view?.addAt(scene.add.rectangle(0, -definition.size.height * 0.16, definition.size.width * 0.46, definition.size.height * 0.9, 0x151d17, 0.42), 2);
       this.view?.addAt(scene.add.rectangle(0, -definition.size.height * 0.58, definition.size.width * 0.78, 12, accent, 0.72), 3);
     } else {
       this.view?.addAt(scene.add.rectangle(0, 0, definition.size.width * 0.62, definition.size.height * 0.52, accent, 0.42), 2);
     }
     return {
-      visualTop: -definition.size.height / 2,
-      visualBottom: definition.size.height / 2
+      visualTop: definition.size.height * layoutConfig.fallback.visualTopSizeMultiplier,
+      visualBottom: definition.size.height * layoutConfig.fallback.visualBottomSizeMultiplier
     };
   }
 }
