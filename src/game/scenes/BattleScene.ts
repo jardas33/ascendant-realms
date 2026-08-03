@@ -890,6 +890,7 @@ export class BattleScene extends Phaser.Scene {
 
   private addUnit(unit: Unit): void {
     this.units.push(unit);
+    unit.setHealthPresentationMode(this.hudDensityMode);
     this.applyResearchedUpgradesToUnit(unit);
     if (unit.team === "enemy" && unit.enemyEliteSquadId) {
       this.runtime.recordEnemyEliteSquad(unit.enemyEliteSquadId);
@@ -898,6 +899,7 @@ export class BattleScene extends Phaser.Scene {
 
   private addBuilding(building: Building): void {
     this.buildings.push(building);
+    building.setHealthPresentationMode(this.hudDensityMode);
     this.applyResearchedUpgradesToBuilding(building);
   }
 
@@ -1439,6 +1441,7 @@ export class BattleScene extends Phaser.Scene {
       return true;
     }
     this.hudDensityMode = nextMode;
+    [...this.units, ...this.buildings, ...this.captureSites].forEach((entity) => entity.setHealthPresentationMode(nextMode));
     this.syncBattlefieldGuides(Boolean(this.buildingSystem?.pendingBuildingId));
     this.showMessage(`HUD density: ${hudDensityLabel(nextMode)}`, undefined, undefined, "#74d3f2", {
       priority: "command"

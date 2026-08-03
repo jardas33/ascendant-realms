@@ -3,6 +3,7 @@ import type { ActiveStatusEffect, EntityKind, Position, Team } from "../core/Gam
 import { clamp } from "../core/MathUtils";
 import { recordRenderLifecycleMetrics } from "../systems/RenderLifecycleMetrics";
 import { resolveSelectionRingPresentation } from "../ui/SelectionPresentation";
+import type { HudDensityMode } from "../ui/hudPanels/HudTypes";
 
 let nextEntityNumber = 1;
 const STATUS_BADGE_RADIUS = 5;
@@ -45,6 +46,7 @@ export abstract class BaseEntity {
   private healthBarWidth = 0;
   private healthBarHeight = 0;
   private lastHealthBarDisplayWidth = -1;
+  private healthPresentationMode: HudDensityMode = "minimal";
   private labelVisibleByDefault = true;
   private diagnosticLabelHidden = false;
 
@@ -121,6 +123,7 @@ export abstract class BaseEntity {
     this.view.add(this.label);
     this.view.setDepth(this.kind === "building" ? 5 : 10);
     this.updateHealthBar();
+    this.updateHealthBarVisibility();
   }
 
   protected configureCommonViewLayout(options: {
@@ -232,6 +235,7 @@ export abstract class BaseEntity {
   setSelected(selected: boolean): void {
     this.selected = selected;
     this.updateLabelVisibility();
+    this.updateHealthBarVisibility();
     if (!this.selectionRing) {
       return;
     }
@@ -250,6 +254,14 @@ export abstract class BaseEntity {
     this.updateLabelVisibility();
   }
 
+  setHealthPresentationMode(mode: HudDensityMode): void {
+    if (this.healthPresentationMode === mode) {
+      return;
+    }
+    this.healthPresentationMode = mode;
+    this.updateHealthBarVisibility();
+  }
+
   updateHealthBar(): void {
     if (!this.healthFill || !this.healthBack) {
       return;
@@ -262,6 +274,7 @@ export abstract class BaseEntity {
     this.lastHealthBarDisplayWidth = nextDisplayWidth;
     this.healthFill.displayWidth = nextDisplayWidth;
     recordRenderLifecycleMetrics({ healthBarUpdates: 1 });
+    this.updateHealthBarVisibility();
   }
 
   protected setLabelVisibleByDefault(visible: boolean): void {
@@ -293,6 +306,16 @@ export abstract class BaseEntity {
     const markerY = -this.radius - STATUS_BADGE_RADIUS - STATUS_BADGE_GAP;
     this.statusBadge.setPosition(markerX, markerY);
     this.statusBadgeLabel?.setPosition(markerX + STATUS_BADGE_RADIUS + STATUS_BADGE_LABEL_GAP, markerY);
+  }
+
+  private updateHealthBarVisibility(): void {
+    if (!this.healthBack || !this.healthFill) {
+      return;
+    }
+    const isDamaged = this.hp < this.maxHp;
+    const visible = this.healthPresentationMode === "debug" || this.selected || isDamaged;
+    this.healthBack.setVisible(visible);
+    this.healthFill.setVisible(visible);
   }
 
   destroyView(): void {

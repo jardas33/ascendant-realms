@@ -1,8 +1,9 @@
 import type Phaser from "phaser";
 import { describe, expect, it, vi } from "vitest";
-import { UNIT_BY_ID } from "../data/contentIndex";
+import { BUILDING_BY_ID, UNIT_BY_ID } from "../data/contentIndex";
 import { createBurnStatus } from "../systems/StatusEffectSystem";
 import { Unit } from "./Unit";
+import { Building } from "./Building";
 
 interface SceneStub extends Phaser.Scene {
   __objects: {
@@ -27,6 +28,7 @@ interface StubGameObject {
   setColor: ReturnType<typeof vi.fn>;
   setDepth: ReturnType<typeof vi.fn>;
   setDisplaySize: ReturnType<typeof vi.fn>;
+  setFillStyle: ReturnType<typeof vi.fn>;
   setOrigin: ReturnType<typeof vi.fn>;
   setPosition: ReturnType<typeof vi.fn>;
   setScale: ReturnType<typeof vi.fn>;
@@ -62,6 +64,58 @@ describe("BaseEntity view layout", () => {
     expect(statusBadgeLabel?.y).toBe(statusBadge.y);
     expect(healthFill.displayWidth).toBeLessThan(42);
   });
+
+  it("shows selected or damaged health bars in player density and restores them after healing", () => {
+    const scene = createSceneStub();
+    const worker = new Unit(scene, UNIT_BY_ID.worker, "player", 100, 100);
+    const healthBack = scene.__objects.rectangles[0];
+    const healthFill = scene.__objects.rectangles[1];
+
+    expect(healthBack.visible).toBe(false);
+    expect(healthFill.visible).toBe(false);
+
+    worker.setSelected(true);
+    expect(healthBack.visible).toBe(true);
+    expect(healthFill.visible).toBe(true);
+
+    worker.setSelected(false);
+    worker.takeDamage(9);
+    expect(healthBack.visible).toBe(true);
+    expect(healthFill.displayWidth).toBeLessThan(42);
+
+    worker.heal(1000);
+    expect(healthBack.visible).toBe(false);
+    expect(healthFill.visible).toBe(false);
+  });
+
+  it("keeps full-health bars available in debug and hides them again in minimal", () => {
+    const scene = createSceneStub();
+    const worker = new Unit(scene, UNIT_BY_ID.worker, "player", 100, 100);
+    const healthBack = scene.__objects.rectangles[0];
+
+    worker.setHealthPresentationMode("debug");
+    expect(healthBack.visible).toBe(true);
+
+    worker.setHealthPresentationMode("minimal");
+    expect(healthBack.visible).toBe(false);
+  });
+
+  it("uses the same truthful visibility contract for selected and damaged buildings", () => {
+    const scene = createSceneStub();
+    const hall = new Building(scene, BUILDING_BY_ID.command_hall, "player", 220, 180);
+    const healthBack = scene.__objects.rectangles[0];
+
+    expect(healthBack.visible).toBe(false);
+    hall.setSelected(true);
+    expect(healthBack.visible).toBe(true);
+
+    hall.setSelected(false);
+    hall.takeDamage(20);
+    expect(healthBack.visible).toBe(true);
+
+    hall.heal(1000);
+    expect(healthBack.visible).toBe(false);
+  });
 });
 
 function createSceneStub(): SceneStub {
@@ -91,6 +145,7 @@ function createSceneStub(): SceneStub {
         object.displayHeight = height;
         return object;
       }),
+      setFillStyle: vi.fn(() => object),
       setOrigin: vi.fn(() => object),
       setPosition: vi.fn((x: number, y: number) => {
         object.x = x;
