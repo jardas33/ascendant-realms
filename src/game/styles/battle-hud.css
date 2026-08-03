@@ -8,6 +8,10 @@
   position: absolute;
   inset: 0;
   pointer-events: none;
+  --hud-safe-top: max(12px, env(safe-area-inset-top, 0px));
+  --hud-safe-right: max(12px, env(safe-area-inset-right, 0px));
+  --hud-safe-bottom: max(12px, env(safe-area-inset-bottom, 0px));
+  --hud-safe-left: max(12px, env(safe-area-inset-left, 0px));
 }
 
 .hud-density-minimal .density-optional {
@@ -66,9 +70,9 @@
 
 .top-bar {
   position: absolute;
-  top: 12px;
-  left: 12px;
-  right: 12px;
+  top: var(--hud-safe-top);
+  left: var(--hud-safe-left);
+  right: var(--hud-safe-right);
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
@@ -141,10 +145,13 @@
 
 .objectives-panel {
   position: absolute;
-  left: 12px;
+  left: var(--hud-safe-left);
   right: auto;
-  top: 58px;
+  top: calc(var(--hud-safe-top) + 46px);
   width: min(272px, calc(100vw - 24px));
+  max-height: min(220px, calc(100vh - var(--hud-safe-top) - var(--hud-safe-bottom) - 164px));
+  overflow: auto;
+  scrollbar-gutter: stable;
   display: grid;
   gap: 6px;
   padding: 8px;
@@ -773,14 +780,16 @@
 
 .hero-panel {
   position: absolute;
-  left: 12px;
-  bottom: 12px;
+  left: var(--hud-safe-left);
+  bottom: var(--hud-safe-bottom);
   width: min(360px, calc(100vw - 24px));
+  max-height: min(164px, calc(100vh - var(--hud-safe-top) - var(--hud-safe-bottom) - 96px));
   display: grid;
   grid-template-columns: 56px minmax(0, 1fr);
   gap: 10px;
   padding: 11px 12px 13px;
-  overflow: hidden;
+  overflow: auto;
+  scrollbar-gutter: stable;
   border: 1px solid rgba(246, 237, 180, 0.34);
   border-style: solid;
   border-image-source: var(--ui-battle-hud-panel, var(--ui-panel-frame));
@@ -852,8 +861,8 @@
 
 .side-panel {
   position: absolute;
-  right: 12px;
-  bottom: 12px;
+  right: var(--hud-safe-right);
+  bottom: var(--hud-safe-bottom);
   width: min(326px, calc(100vw - 24px));
   max-height: min(360px, calc(100vh - 128px));
   overflow: auto;

@@ -200,9 +200,9 @@
   }
 
   .side-panel {
-    right: 8px;
-    left: 8px;
-    bottom: 110px;
+    right: max(8px, env(safe-area-inset-right, 0px));
+    left: max(8px, env(safe-area-inset-left, 0px));
+    bottom: calc(110px + env(safe-area-inset-bottom, 0px));
     width: auto;
     max-height: 268px;
     padding: 8px;
@@ -241,22 +241,22 @@
   }
 
   .hero-panel {
-    left: 8px;
-    bottom: 8px;
+    left: max(8px, env(safe-area-inset-left, 0px));
+    bottom: max(8px, env(safe-area-inset-bottom, 0px));
   }
 
   .minimap-shell {
-    right: 8px;
-    top: 202px;
+    right: max(8px, env(safe-area-inset-right, 0px));
+    top: calc(202px + env(safe-area-inset-top, 0px));
     width: 112px;
     height: 78px;
     padding: 6px;
   }
 
   .objectives-panel {
-    left: 8px;
+    left: max(8px, env(safe-area-inset-left, 0px));
     right: auto;
-    top: 202px;
+    top: calc(202px + env(safe-area-inset-top, 0px));
     width: min(360px, calc(100vw - 140px));
     max-height: 118px;
     overflow: auto;
@@ -337,7 +337,7 @@
   }
 
   .side-panel {
-    bottom: 100px;
+    bottom: calc(100px + env(safe-area-inset-bottom, 0px));
     max-height: min(268px, calc(100vh - 288px));
   }
 
