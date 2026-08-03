@@ -55,6 +55,10 @@ describe("UnitOrderSummary", () => {
 
   it("describes active and paused Worker repair orders", () => {
     expect(describeUnitOrder({ activeRepairTargetId: "player-barracks", moveTarget: { x: 400, y: 600 } })).toMatchObject({
+      label: "Traveling to Repair",
+      detail: expect.stringContaining("repair begins when it arrives")
+    });
+    expect(describeUnitOrder({ activeRepairTargetId: "player-barracks" })).toMatchObject({
       label: "Repairing",
       detail: expect.stringContaining("Worker must stay near")
     });
@@ -77,7 +81,7 @@ describe("UnitOrderSummary", () => {
         moveTarget: { x: 340, y: 360 }
       })
     ).toMatchObject({
-      label: "Moving to Build",
+      label: "Traveling to Build",
       detail: expect.stringContaining("construction site")
     });
     expect(describeUnitOrder({ activeConstructionSiteId: "player-barracks-site" })).toMatchObject({
@@ -98,8 +102,8 @@ describe("UnitOrderSummary", () => {
         moveTarget: { x: 850, y: 780 }
       })
     ).toMatchObject({
-      label: "Returning to Site",
-      detail: expect.stringContaining("bonus starts when the Worker is in range")
+      label: "Moving to Assigned Site",
+      detail: expect.stringContaining("Moving to the assigned site")
     });
     expect(
       describeUnitOrder({
@@ -107,8 +111,19 @@ describe("UnitOrderSummary", () => {
         activeResourceSiteLabel: "Crown Shrine"
       })
     ).toMatchObject({
-      label: "Working Site",
+      label: "Assigned to Site",
       detail: expect.stringContaining("Boosting captured-site income")
+    });
+  });
+
+  it("fails closed for dead units and hides enemy command state", () => {
+    expect(describeUnitOrder({ alive: false, attackTargetId: "enemy", attackTargetLabel: "Raider" })).toMatchObject({
+      label: "Unavailable",
+      detail: expect.stringContaining("no actionable order")
+    });
+    expect(describeUnitOrder({ team: "enemy", attackTargetId: "player-hero", attackTargetLabel: "Aster" })).toMatchObject({
+      label: "Activity hidden",
+      detail: expect.stringContaining("Enemy orders are not shown")
     });
   });
 
@@ -145,6 +160,6 @@ describe("UnitOrderSummary", () => {
         { activeConstructionSiteId: "barracks-site" },
         { activeResourceSiteId: "crown_shrine" }
       ])
-    ).toBe("1 Moving, 1 Repositioning, 1 Attacking, 1 Holding Ground, 1 Building, 1 Working Site");
+    ).toBe("1 Moving, 1 Repositioning, 1 Attacking, 1 Holding Ground, 1 Building, 1 Assigned to Site");
   });
 });

@@ -83,6 +83,18 @@ describe("SelectedEntityPanel", () => {
     expect(markup).toContain("Utility unit");
   });
 
+  it("exposes the current order as a readable status region", () => {
+    const unit = fakeUnit("player-1", "Militia", "hold_ground", { unitId: "militia" });
+
+    const markup = renderSelectionSummary(unit, [unit]);
+
+    expect(markup).toContain('data-testid="unit-order-summary"');
+    expect(markup).toContain('role="status"');
+    expect(markup).toContain('aria-label="Current order"');
+    expect(markup).toContain(">Holding Ground</strong>");
+    expect(markup).toContain("Staying put; attacks only immediate threats");
+  });
+
   it("makes a selected Worker's resource-site assignment explicit", () => {
     const assigned = fakeUnit("player-worker", "Worker", "guard_area", { unitId: "worker" });
     assigned.activeResourceSiteId = "crown_shrine";

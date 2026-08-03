@@ -473,10 +473,10 @@ function renderBehaviourModeButton(mode: BehaviourMode, currentMode?: BehaviourM
 
 function renderOrderSummary(label: string, detail: string, tone: "active" | "neutral" = "neutral"): string {
   return `
-    <div class="order-summary ${tone}" data-testid="unit-order-summary">
+    <section class="order-summary ${tone}" data-testid="unit-order-summary" aria-label="Current order" role="status">
       <strong>${escapeHtml(label)}</strong>
       <span>${escapeHtml(detail)}</span>
-    </div>
+    </section>
   `;
 }
 

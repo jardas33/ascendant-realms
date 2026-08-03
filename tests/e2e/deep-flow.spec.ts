@@ -3373,6 +3373,7 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
         upgradeBonus: Math.max(1, Math.round(site.definition.incomeAmount * 0.15))
       };
     }, { workerId: trainedWorker.id, secondWorkerId: secondWorker.id });
+    const resourceLabel = setup.resource.charAt(0).toUpperCase() + setup.resource.slice(1);
 
     const assignButton = page.locator(`button[data-action='assign-resource-site'][data-id='${setup.siteEntityId}']`);
     await expect(assignButton).toBeEnabled();
@@ -3391,7 +3392,7 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
       setup.siteEntityId,
       "deep-flow Worker assign captured resource site command"
     );
-    await expect(page.locator(".side-panel")).toContainText("Working Site");
+    await expect(page.locator(".side-panel")).toContainText("Assigned to Site");
 
     await page.evaluate((siteEntityId) => {
       const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
@@ -3402,10 +3403,12 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
       }
     }, setup.siteEntityId);
     await expect(page.locator(".side-panel")).toContainText("Level 1/2");
-    await expect(page.locator(".side-panel")).toContainText("Worker slots 1/1");
-    await expect(page.locator(".side-panel")).toContainText("Assigned Worker");
-    await expect(page.locator(".side-panel")).toContainText(`Worker bonus +${setup.bonusIncome}/${setup.incomeInterval}s`);
-    await expect(page.locator(".side-panel")).toContainText(`Total income +${setup.baseIncome + setup.bonusIncome}/${setup.incomeInterval}s`);
+    await expect(page.locator(".side-panel")).toContainText("Workers 1/1");
+    await expect(page.locator(".side-panel")).toContainText("Assigned: Worker");
+    await expect(page.locator(".side-panel")).toContainText(`Workers +${setup.bonusIncome}`);
+    await expect(page.locator(".side-panel")).toContainText(
+      `Total +${setup.baseIncome + setup.bonusIncome} ${resourceLabel} every ${setup.incomeInterval}s`
+    );
 
     const upgradeButton = page.locator(`button[data-action='upgrade-resource-site'][data-id='${setup.siteEntityId}']`);
     await expect(upgradeButton).toBeEnabled();
@@ -3446,7 +3449,7 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
       );
     }
     await expect(page.locator(".side-panel")).toContainText("Level 2/2");
-    await expect(page.locator(".side-panel")).toContainText("Worker slots 1/2");
+    await expect(page.locator(".side-panel")).toContainText("Workers 1/2");
 
     await page.evaluate(
       ({ secondWorkerId, siteEntityId }) => {
@@ -3475,7 +3478,7 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
       setup.siteEntityId,
       "deep-flow Worker assign upgraded second resource slot"
     );
-    await expect(page.locator(".side-panel")).toContainText("Working Site");
+    await expect(page.locator(".side-panel")).toContainText("Assigned to Site");
 
     await page.evaluate((siteEntityId) => {
       const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
@@ -3485,11 +3488,11 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
         scene.refreshBattleHud?.(0);
       }
     }, setup.siteEntityId);
-    await expect(page.locator(".side-panel")).toContainText("Worker slots 2/2");
-    await expect(page.locator(".side-panel")).toContainText(`Upgrade bonus +${setup.upgradeBonus}/${setup.incomeInterval}s`);
-    await expect(page.locator(".side-panel")).toContainText(`Worker bonus +${setup.bonusIncome * 2}/${setup.incomeInterval}s`);
+    await expect(page.locator(".side-panel")).toContainText("Workers 2/2");
+    await expect(page.locator(".side-panel")).toContainText(`Upgrade +${setup.upgradeBonus}`);
+    await expect(page.locator(".side-panel")).toContainText(`Workers +${setup.bonusIncome * 2}`);
     await expect(page.locator(".side-panel")).toContainText(
-      `Total income +${setup.baseIncome + setup.upgradeBonus + setup.bonusIncome * 2}/${setup.incomeInterval}s`
+      `Total +${setup.baseIncome + setup.upgradeBonus + setup.bonusIncome * 2} ${resourceLabel} every ${setup.incomeInterval}s`
     );
 
     const incomeResult = await page.evaluate(

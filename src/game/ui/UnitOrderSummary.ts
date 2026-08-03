@@ -2,6 +2,8 @@ import type { Position } from "../core/GameTypes";
 import { behaviourModeDefinition, normalizeBehaviourMode, type BehaviourMode } from "../systems/BehaviourModeSystem";
 
 export interface UnitOrderState {
+  alive?: boolean;
+  team?: "player" | "enemy" | "neutral";
   attackTargetId?: string;
   attackTargetLabel?: string;
   moveTarget?: Position;
@@ -24,6 +26,22 @@ export interface UnitOrderSummary {
 }
 
 export function describeUnitOrder(unit: UnitOrderState): UnitOrderSummary {
+  if (unit.alive === false) {
+    return {
+      label: "Unavailable",
+      detail: "This unit is destroyed and has no actionable order.",
+      tone: "neutral"
+    };
+  }
+
+  if (unit.team === "enemy") {
+    return {
+      label: "Activity hidden",
+      detail: "Enemy orders are not shown in the player HUD.",
+      tone: "neutral"
+    };
+  }
+
   if (unit.attackTargetId) {
     const target = unit.attackTargetLabel ? ` Target: ${unit.attackTargetLabel}.` : "";
     return {
@@ -50,17 +68,19 @@ export function describeUnitOrder(unit: UnitOrderState): UnitOrderSummary {
 
   if (unit.activeRepairTargetId) {
     return {
-      label: "Repairing",
-      detail: "Restoring a friendly completed building; Worker must stay near the footprint.",
+      label: unit.moveTarget ? "Traveling to Repair" : "Repairing",
+      detail: unit.moveTarget
+        ? "Worker is traveling to the damaged building; repair begins when it arrives."
+        : "Restoring a friendly completed building; Worker must stay near the footprint.",
       tone: "active"
     };
   }
 
   if (unit.activeConstructionSiteId) {
     return {
-      label: unit.moveTarget ? "Moving to Build" : "Building",
+      label: unit.moveTarget ? "Traveling to Build" : "Building",
       detail: unit.moveTarget
-        ? "Worker is moving to the construction site; progress resumes when it arrives."
+        ? "Worker is traveling to the construction site; progress resumes when it arrives."
         : "Worker is building or finishing this construction site.",
       tone: "active"
     };
@@ -68,9 +88,9 @@ export function describeUnitOrder(unit: UnitOrderState): UnitOrderSummary {
 
   if (unit.activeResourceSiteId) {
     const site = unit.activeResourceSiteLabel ? ` Site: ${unit.activeResourceSiteLabel}.` : "";
-    const moving = unit.moveTarget ? " Returning to the site; bonus starts when the Worker is in range." : "";
+    const moving = unit.moveTarget ? " Moving to the assigned site; bonus starts when the Worker is in range." : "";
     return {
-      label: unit.moveTarget ? "Returning to Site" : "Working Site",
+      label: unit.moveTarget ? "Moving to Assigned Site" : "Assigned to Site",
       detail: `${site}${moving || " Boosting captured-site income while assigned and nearby."}`.trim(),
       tone: "active"
     };
