@@ -7,6 +7,36 @@ import { Unit } from "../../entities/Unit";
 import { renderSelectionSummary } from "./SelectedEntityPanel";
 
 describe("SelectedEntityPanel", () => {
+  it("summarizes multi-selection composition, ownership, health, focus, and current orders", () => {
+    const militia = fakeUnit("player-1", "Militia", "guard_area");
+    const ranger = fakeUnit("player-2", "Ranger", "press_attack");
+    ranger.hp = 65;
+
+    const markup = renderSelectionSummary(undefined, [militia, ranger]);
+
+    expect(markup).toContain('data-testid="multi-selection-summary"');
+    expect(markup).toContain("2 selected");
+    expect(markup).toContain("1 Militia");
+    expect(markup).toContain("1 Ranger");
+    expect(markup).toContain("Ownership</strong><span>Player");
+    expect(markup).toContain("1 healthy · 1 damaged");
+    expect(markup).toContain("Primary</strong><span>Militia");
+    expect(markup).toContain("Order</strong><span>Mixed orders");
+    expect(markup).toContain("Commands</strong><span>2 player units eligible.");
+    expect(markup).not.toContain("friendly selections");
+  });
+
+  it("fails closed for mixed ownership without exposing an actionable enemy order", () => {
+    const player = fakeUnit("player-1", "Militia", "guard_area");
+    const enemy = fakeUnit("enemy-1", "Raider", "press_attack", { team: "enemy" });
+
+    const markup = renderSelectionSummary(undefined, [player, enemy]);
+
+    expect(markup).toContain("Mixed ownership");
+    expect(markup).toContain("Order</strong><span>unavailable");
+    expect(markup).toContain("Commands</strong><span>1 player units eligible.");
+  });
+
   it("renders behaviour mode controls for selected unit groups", () => {
     const markup = renderSelectionSummary(undefined, [
       fakeUnit("player-1", "Militia", "guard_area"),

@@ -1336,6 +1336,52 @@
   line-height: 1.2;
 }
 
+.multi-selection-summary {
+  display: grid;
+  gap: 4px;
+  margin: 0 0 9px;
+  padding: 8px 9px;
+  border: 1px solid rgba(174, 230, 215, 0.24);
+  border-left: 3px solid rgba(116, 211, 242, 0.78);
+  border-radius: 5px;
+  background:
+    linear-gradient(90deg, rgba(116, 211, 242, 0.11), transparent 46%),
+    var(--plate-bg);
+}
+
+.multi-selection-heading,
+.summary-line {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  margin: 0;
+}
+
+.multi-selection-heading strong {
+  color: #f6edb4;
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.multi-selection-heading span,
+.summary-line span {
+  color: #dce2d0;
+  font-size: 11px;
+  line-height: 1.2;
+  text-align: right;
+}
+
+.summary-line strong {
+  color: #aeb9aa;
+  flex: 0 0 auto;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
 .selection-grid span {
   overflow: hidden;
   text-overflow: ellipsis;

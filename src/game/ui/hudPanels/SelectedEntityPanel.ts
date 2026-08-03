@@ -26,13 +26,79 @@ import {
   summarizeUnitRoleMix,
   type UnitRoleIdentity
 } from "../../data/unitRoles";
-import { describeUnitOrder, summarizeUnitOrders } from "../UnitOrderSummary";
+import { describeUnitOrder } from "../UnitOrderSummary";
 import { renderEntityPortrait } from "../EntityPortrait";
 import { escapeHtml, formatBuildingRole, formatBuildingUnlockSummary, renderProgress, unitName, upgradeName } from "./HudFormatting";
 import type { HUDSnapshot, HudDensityMode } from "./HudTypes";
 import type { ControlGroupSummary } from "../../systems/ControlGroupSystem";
 
 type SelectedEntity = HUDSnapshot["selected"][number];
+
+type SelectionOwnership = "player" | "enemy" | "mixed" | "neutral";
+
+function selectionOwnership(entity: SelectedEntity): Exclude<SelectionOwnership, "mixed"> {
+  if (entity instanceof CaptureSite) return entity.owner;
+  if (entity instanceof Unit || entity instanceof Building) {
+    return entity.team === "enemy" ? "enemy" : entity.team === "player" ? "player" : "neutral";
+  }
+  return "neutral";
+}
+
+function selectionHealthState(entity: SelectedEntity): "healthy" | "damaged" | "unavailable" {
+  if (typeof entity.hp !== "number" || typeof entity.maxHp !== "number" || !Number.isFinite(entity.hp) || !Number.isFinite(entity.maxHp)) {
+    return "unavailable";
+  }
+  return entity.hp >= entity.maxHp ? "healthy" : "damaged";
+}
+
+function renderMultiSelectionSummary(selected: SelectedEntity[]): string {
+  const composition = new Map<string, number>();
+  selected.forEach((entity) => composition.set(entity.definition.name, (composition.get(entity.definition.name) ?? 0) + 1));
+  const compositionLabel = [...composition.entries()]
+    .map(([name, count]) => `${count} ${escapeHtml(name)}`)
+    .join(" · ");
+  const ownerships = new Set(selected.map(selectionOwnership));
+  const ownership: SelectionOwnership = ownerships.size === 1 ? [...ownerships][0] : "mixed";
+  const ownershipLabel = ownership === "player" ? "Player" : ownership === "enemy" ? "Enemy" : ownership === "neutral" ? "Neutral" : "Mixed ownership";
+  const healthCounts = selected.reduce(
+    (counts, entity) => {
+      const state = selectionHealthState(entity);
+      if (state === "healthy") counts.healthy += 1;
+      if (state === "damaged") counts.damaged += 1;
+      if (state === "unavailable") counts.unavailable += 1;
+      return counts;
+    },
+    { healthy: 0, damaged: 0, unavailable: 0 }
+  );
+  const healthLabel = [
+    healthCounts.healthy > 0 ? `${healthCounts.healthy} healthy` : "",
+    healthCounts.damaged > 0 ? `${healthCounts.damaged} damaged` : "",
+    healthCounts.unavailable > 0 ? `${healthCounts.unavailable} unavailable` : ""
+  ]
+    .filter(Boolean)
+    .join(" · ");
+  const primary = selected[0]?.definition.name ?? "Unavailable";
+  const playerUnits = selected.filter((entity): entity is Unit => entity instanceof Unit && entity.team === "player");
+  let orderLabel = "unavailable";
+  if (playerUnits.length > 0 && ownership === "player") {
+    try {
+      const orders = playerUnits.map((unit) => describeUnitOrder(unit).label);
+      orderLabel = orders.every((label) => label === orders[0]) ? orders[0] : "Mixed orders";
+    } catch {
+      orderLabel = "unavailable";
+    }
+  }
+
+  return `<section class="multi-selection-summary" data-testid="multi-selection-summary" aria-label="Selection summary">
+    <div class="multi-selection-heading"><strong>Selection summary</strong><span>${selected.length} selected</span></div>
+    <p class="summary-line"><strong>Composition</strong><span>${compositionLabel}</span></p>
+    <p class="summary-line"><strong>Ownership</strong><span>${ownershipLabel}</span></p>
+    <p class="summary-line"><strong>Health</strong><span>${healthLabel}</span></p>
+    <p class="summary-line"><strong>Primary</strong><span>${escapeHtml(primary)}</span></p>
+    <p class="summary-line"><strong>Order</strong><span>${escapeHtml(orderLabel)}</span></p>
+    <p class="summary-line"><strong>Commands</strong><span>${playerUnits.length > 0 ? `${playerUnits.length} player units eligible.` : "No player units eligible."}</span></p>
+  </section>`;
+}
 
 export function renderSelectionSummary(
   selectedOne: SelectedEntity | undefined,
@@ -49,9 +115,8 @@ export function renderSelectionSummary(
         (entity): entity is Building => entity instanceof Building && entity.isCompleted() && entity.definition.trainOptions.length > 0
       );
       const hiddenCount = Math.max(0, selected.length - 12);
-      return `${renderSelectionFocus("Squad selected", `${selected.length} friendly selections`, "Orders apply to the player units in this group.", "player")}
-      <p class="selection-count"><strong>${selected.length} selected</strong><span>Commands apply to this group.</span></p>
-      ${selectedUnits.length > 0 ? renderOrderSummary("Current Orders", summarizeUnitOrders(selectedUnits)) : ""}
+      return `${renderSelectionFocus("Squad selected", `${selected.length} selected`, "Review composition and current orders before issuing a command.", "player")}
+      ${renderMultiSelectionSummary(selected)}
       ${selectedUnits.length > 0 ? renderGroupRoleSummary(selectedUnits) : ""}
       ${controlGroupSummary}
       ${renderBehaviourControls(selectedUnits)}
