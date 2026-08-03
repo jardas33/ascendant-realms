@@ -350,51 +350,85 @@ function renderOrderSummary(label: string, detail: string, tone: "active" | "neu
 }
 
 function renderProductionQueue(building: Building): string {
-  if (building.trainingQueue.length === 0) {
+  if (building.team !== "player" || !building.alive || !building.isCompleted() || building.trainingQueue.length === 0) {
     return "";
   }
   return `
-    <div class="queue-list">
-      <strong>Training Queue</strong>
+    <section class="queue-list" aria-label="Training queue" data-testid="training-queue">
+      <div class="queue-heading"><strong>Training Queue</strong><span>${escapeHtml(building.definition.name)}</span></div>
       ${building.trainingQueue
         .map((item, index) => {
-          const progress = item.total > 0 ? 1 - item.remaining / item.total : 1;
+          const active = index === 0;
+          const progress = queueProgressPercent(item.remaining, item.total);
+          const unitLabel = unitName(item.unitId);
+          const positionLabel = `Queue position ${index + 1}`;
+          const stateLabel = active ? "Training now" : `Queued · Position ${index + 1}`;
           return `
-            <div class="queue-row">
-              <div>
-                <span>${escapeHtml(unitName(item.unitId))}</span>
-                ${renderProgress(`${Math.round(progress * 100)}%`, progress)}
+            <div class="queue-row ${active ? "queue-row-active" : "queue-row-waiting"}" data-queue-type="training" data-queue-index="${index}">
+              <div class="queue-item-copy">
+                <span class="queue-item-name">${escapeHtml(unitLabel)}</span>
+                <span class="queue-entry-state">${escapeHtml(stateLabel)}</span>
+                ${
+                  active
+                    ? renderQueueProgress(`Training ${unitLabel} progress`, progress)
+                    : `<span class="queue-position">${escapeHtml(positionLabel)}</span>`
+                }
               </div>
-              <button class="hud-button compact mini" data-action="cancel-train" data-source-id="${building.id}" data-index="${index}">Cancel</button>
+              <button class="hud-button compact mini queue-cancel" type="button" data-action="cancel-train" data-source-id="${building.id}" data-index="${index}" aria-label="Cancel ${escapeHtml(unitLabel)} training, queue position ${index + 1}" title="Cancel ${escapeHtml(unitLabel)} training, queue position ${index + 1}">Cancel</button>
             </div>
           `;
         })
         .join("")}
-    </div>
+    </section>
   `;
 }
 
 function renderUpgradeQueue(building: Building): string {
-  if (building.upgradeQueue.length === 0) {
+  if (building.team !== "player" || !building.alive || !building.isCompleted() || building.upgradeQueue.length === 0) {
     return "";
   }
   return `
-    <div class="queue-list">
-      <strong>Research Queue</strong>
+    <section class="queue-list" aria-label="Research queue" data-testid="research-queue">
+      <div class="queue-heading"><strong>Research Queue</strong><span>${escapeHtml(building.definition.name)}</span></div>
       ${building.upgradeQueue
         .map((item, index) => {
-          const progress = item.total > 0 ? 1 - item.remaining / item.total : 1;
+          const active = index === 0;
+          const progress = queueProgressPercent(item.remaining, item.total);
+          const upgradeLabel = upgradeName(item.upgradeId);
+          const positionLabel = `Queue position ${index + 1}`;
+          const stateLabel = active ? "Researching now" : `Queued · Position ${index + 1}`;
           return `
-            <div class="queue-row">
-              <div>
-                <span>${escapeHtml(upgradeName(item.upgradeId))}</span>
-                ${renderProgress(`${Math.round(progress * 100)}%`, progress)}
+            <div class="queue-row ${active ? "queue-row-active" : "queue-row-waiting"}" data-queue-type="research" data-queue-index="${index}">
+              <div class="queue-item-copy">
+                <span class="queue-item-name">${escapeHtml(upgradeLabel)}</span>
+                <span class="queue-entry-state">${escapeHtml(stateLabel)}</span>
+                ${
+                  active
+                    ? renderQueueProgress(`Research ${upgradeLabel} progress`, progress)
+                    : `<span class="queue-position">${escapeHtml(positionLabel)}</span>`
+                }
               </div>
-              <button class="hud-button compact mini" data-action="cancel-upgrade" data-source-id="${building.id}" data-index="${index}">Cancel</button>
+              <button class="hud-button compact mini queue-cancel" type="button" data-action="cancel-upgrade" data-source-id="${building.id}" data-index="${index}" aria-label="Cancel ${escapeHtml(upgradeLabel)} research, queue position ${index + 1}" title="Cancel ${escapeHtml(upgradeLabel)} research, queue position ${index + 1}">Cancel</button>
             </div>
           `;
         })
         .join("")}
+    </section>
+  `;
+}
+
+function queueProgressPercent(remaining: number, total: number): number {
+  if (!Number.isFinite(total) || total <= 0 || !Number.isFinite(remaining)) {
+    return 0;
+  }
+  return Math.round(Math.max(0, Math.min(1, (total - remaining) / total)) * 100);
+}
+
+function renderQueueProgress(label: string, percent: number): string {
+  return `
+    <div class="queue-progress" role="progressbar" aria-label="${escapeHtml(label)}" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${percent}">
+      <div class="queue-progress-track"><i style="width:${percent}%"></i></div>
+      <span>${percent}%</span>
     </div>
   `;
 }

@@ -1286,9 +1286,24 @@ details.action-group {
   margin: 9px 0 10px;
 }
 
-.queue-list > strong {
+.queue-heading {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.queue-heading strong {
   color: #f0d978;
   font-size: 13px;
+}
+
+.queue-heading > span {
+  overflow: hidden;
+  color: rgba(220, 226, 208, 0.7);
+  font-size: 11px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .queue-row {
@@ -1303,11 +1318,59 @@ details.action-group {
   background: var(--plate-bg);
 }
 
-.queue-row span {
+.queue-row-active {
+  border-color: rgba(116, 211, 242, 0.35);
+}
+
+.queue-item-copy {
+  min-width: 0;
+}
+
+.queue-item-copy > span {
   display: block;
   margin-bottom: 4px;
   color: #dce2d0;
   font-size: 13px;
+}
+
+.queue-item-copy .queue-entry-state,
+.queue-item-copy .queue-position {
+  margin-bottom: 4px;
+  color: rgba(220, 226, 208, 0.68);
+  font-size: 11px;
+}
+
+.queue-item-copy .queue-entry-state {
+  color: #9fe7ff;
+  font-weight: 700;
+}
+
+.queue-progress {
+  display: grid;
+  grid-template-columns: minmax(60px, 1fr) auto;
+  align-items: center;
+  gap: 6px;
+  color: #dce2d0;
+  font-size: 11px;
+}
+
+.queue-progress-track {
+  height: 6px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 246, 200, 0.14);
+  border-radius: 999px;
+  background: rgba(6, 9, 9, 0.72);
+}
+
+.queue-progress-track i {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #74d3f2, #f0d978);
+}
+
+.queue-cancel {
+  align-self: center;
 }
 
 .progress-line {

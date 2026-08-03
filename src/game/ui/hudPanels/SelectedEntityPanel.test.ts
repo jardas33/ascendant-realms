@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { BUILDING_BY_ID } from "../../data/contentIndex";
 import { createUnitVeterancyState } from "../../data/unitVeterancy";
-import { Building } from "../../entities/Building";
+import { Building, type TrainingQueueItem, type UpgradeQueueItem } from "../../entities/Building";
 import { CaptureSite } from "../../entities/CaptureSite";
 import { Unit } from "../../entities/Unit";
 import { renderSelectionSummary } from "./SelectedEntityPanel";
@@ -164,6 +164,72 @@ describe("SelectedEntityPanel", () => {
     expect(markup).toContain("Repair Damaged - select a Worker and use Repair/right-click");
   });
 
+  it("renders active and waiting training entries with canonical positions and cancel indexes", () => {
+    const trainingQueue: TrainingQueueItem[] = [
+      { unitId: "worker", remaining: 40, total: 100, announce: true, paidCost: { crowns: 50 } },
+      { unitId: "militia", remaining: 100, total: 100, announce: true, paidCost: { crowns: 60, iron: 20 } }
+    ];
+    const building = fakeBuilding("player-barracks", "barracks", { trainingQueue });
+
+    const markup = renderSelectionSummary(building, []);
+
+    expect(markup).toContain('data-testid="training-queue"');
+    expect(markup).toContain("Training now");
+    expect(markup).toContain("Queued · Position 2");
+    expect(markup).toContain('data-queue-index="1"');
+    expect(markup).toContain('aria-valuenow="60"');
+    expect(markup).toContain('aria-label="Cancel Militia training, queue position 2"');
+    expect(markup.match(/role="progressbar"/g)).toHaveLength(1);
+    expect(markup).not.toContain('aria-valuenow="100"');
+  });
+
+  it("keeps research separate and fails safely for malformed progress", () => {
+    const upgradeQueue: UpgradeQueueItem[] = [
+      { upgradeId: "camp_foundations_1", remaining: 10, total: 20, announce: true, paidCost: { crowns: 90, stone: 70 } },
+      { upgradeId: "sentry_bracing_1", remaining: 0, total: 0, announce: true, paidCost: { crowns: 90, stone: 80, iron: 40 } }
+    ];
+    const building = fakeBuilding("player-watchtower", "watchtower", {
+      trainingQueue: [{ unitId: "worker", remaining: -5, total: 100, announce: true, paidCost: { crowns: 50 } }],
+      upgradeQueue
+    });
+    const before = JSON.stringify({ training: building.trainingQueue, upgrade: building.upgradeQueue });
+
+    const markup = renderSelectionSummary(building, []);
+
+    expect(markup).toContain('data-testid="training-queue"');
+    expect(markup).toContain('data-testid="research-queue"');
+    expect(markup).toContain("Researching now");
+    expect(markup).toContain("Queued · Position 2");
+    expect(markup).toContain('aria-valuenow="100"');
+    expect(markup).toContain('aria-valuenow="50"');
+    expect(markup).not.toContain("NaN");
+    expect(markup).not.toContain("Infinity");
+    expect(JSON.stringify({ training: building.trainingQueue, upgrade: building.upgradeQueue })).toBe(before);
+  });
+
+  it("keeps enemy and dead building inspection free of player queue controls", () => {
+    const enemyMarkup = renderSelectionSummary(
+      fakeBuilding("enemy-barracks", "barracks", {
+        team: "enemy",
+        trainingQueue: [{ unitId: "militia", remaining: 10, total: 20, announce: false, paidCost: { crowns: 60, iron: 20 } }]
+      }),
+      []
+    );
+    const deadMarkup = renderSelectionSummary(
+      fakeBuilding("dead-barracks", "barracks", {
+        alive: false,
+        trainingQueue: [{ unitId: "militia", remaining: 10, total: 20, announce: false, paidCost: { crowns: 60, iron: 20 } }]
+      }),
+      []
+    );
+
+    expect(enemyMarkup).toContain("Enemy building inspected");
+    expect(enemyMarkup).not.toContain("Training Queue");
+    expect(enemyMarkup).not.toContain('data-action="cancel-train"');
+    expect(deadMarkup).not.toContain("Training Queue");
+    expect(deadMarkup).not.toContain('data-action="cancel-train"');
+  });
+
   it("shows captured resource-site Worker slot and income boost details", () => {
     const site = fakeCaptureSite({
       owner: "player",
@@ -278,6 +344,10 @@ function fakeBuilding(
     underConstruction?: boolean;
     hp?: number;
     maxHp?: number;
+    team?: "player" | "enemy" | "neutral";
+    alive?: boolean;
+    trainingQueue?: TrainingQueueItem[];
+    upgradeQueue?: UpgradeQueueItem[];
   } = {}
 ): Building {
   const definition = BUILDING_BY_ID[buildingId];
@@ -288,11 +358,11 @@ function fakeBuilding(
   return Object.assign(Object.create(Building.prototype), {
     id,
     kind: "building",
-    team: "player",
-    alive: true,
+    team: options.team ?? "player",
+    alive: options.alive ?? true,
     rallyPoint: undefined,
-    trainingQueue: [],
-    upgradeQueue: [],
+    trainingQueue: options.trainingQueue ?? [],
+    upgradeQueue: options.upgradeQueue ?? [],
     hp: options.hp ?? 100,
     maxHp: options.maxHp ?? 100,
     armor: 1,
