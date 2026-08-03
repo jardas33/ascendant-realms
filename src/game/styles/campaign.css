@@ -638,6 +638,116 @@
   font-size: var(--ui-type-body-compact-size);
 }
 
+.campaign-briefing-card {
+  display: grid;
+  gap: 7px;
+  padding: 9px;
+  border: 1px solid rgba(116, 211, 242, 0.2);
+  border-radius: var(--ui-radius-panel);
+  background:
+    linear-gradient(135deg, rgba(116, 211, 242, 0.08), rgba(8, 12, 12, 0.42)),
+    rgba(7, 11, 10, 0.48);
+}
+
+.campaign-briefing-heading,
+.campaign-briefing-identity,
+.campaign-briefing-objective,
+.campaign-briefing-state {
+  margin: 0;
+}
+
+.campaign-briefing-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.campaign-briefing-heading h3 {
+  margin: 0;
+  color: #f6edb4;
+  font-size: var(--ui-type-panel-heading-size);
+  line-height: var(--ui-type-panel-heading-line-height);
+}
+
+.campaign-briefing-readiness {
+  flex: 0 0 auto;
+  max-width: 48%;
+  padding: 4px 7px;
+  border: 1px solid rgba(116, 211, 242, 0.26);
+  border-radius: var(--ui-radius-small);
+  color: #d9fbf3;
+  font-size: var(--ui-type-caption-size);
+  font-weight: 800;
+  line-height: var(--ui-type-caption-line-height);
+  text-align: right;
+}
+
+.campaign-briefing-readiness.blocked {
+  border-color: rgba(246, 170, 120, 0.3);
+  color: #f6d0b4;
+}
+
+.campaign-briefing-identity {
+  color: #d9fbf3;
+  font-size: var(--ui-type-caption-size);
+  line-height: var(--ui-type-caption-line-height);
+}
+
+.campaign-briefing-facts {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 5px;
+  margin: 0;
+}
+
+.campaign-briefing-facts div {
+  min-width: 0;
+  padding: 5px 6px;
+  border: 1px solid rgba(246, 237, 180, 0.1);
+  border-radius: var(--ui-radius-small);
+  background: rgba(4, 9, 7, 0.24);
+}
+
+.campaign-briefing-facts dt,
+.campaign-briefing-facts dd,
+.campaign-briefing-objective span,
+.campaign-briefing-state span {
+  margin: 0;
+}
+
+.campaign-briefing-facts dt,
+.campaign-briefing-objective span,
+.campaign-briefing-state span {
+  color: #c8d0bd;
+  font-size: var(--ui-type-caption-size);
+  line-height: var(--ui-type-caption-line-height);
+}
+
+.campaign-briefing-facts dd {
+  overflow-wrap: anywhere;
+  color: #f6edb4;
+  font-size: var(--ui-type-body-compact-size);
+  font-weight: 700;
+  line-height: var(--ui-type-body-compact-line-height);
+}
+
+.campaign-briefing-objective,
+.campaign-briefing-state {
+  display: grid;
+  gap: 2px;
+  padding: 5px 6px;
+  border-left: 2px solid rgba(116, 211, 242, 0.35);
+  background: rgba(4, 9, 7, 0.18);
+}
+
+.campaign-briefing-objective strong,
+.campaign-briefing-state strong {
+  color: #f6f1ce;
+  font-size: var(--ui-type-body-compact-size);
+  line-height: var(--ui-type-body-compact-line-height);
+}
+
 .campaign-selected-facts {
   display: grid;
   gap: 6px;

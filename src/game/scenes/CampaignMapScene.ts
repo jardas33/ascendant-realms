@@ -22,7 +22,7 @@ import { getCampaignActStepForNode, getCampaignNodeLockedReason } from "../core/
 import { SaveSystem, createFallbackHeroSave } from "../core/SaveSystem";
 import { SCENE_KEYS } from "../core/SceneKeys";
 import { CAMPAIGN_NODES } from "../data/campaignNodes";
-import { HERO_CLASS_BY_ID, ORIGIN_BY_ID } from "../data/contentIndex";
+import { CAMPAIGN_CHAPTER_BY_ID, HERO_CLASS_BY_ID, ORIGIN_BY_ID } from "../data/contentIndex";
 import { consumeBattleCampaignModifiers } from "../data/campaignModifiers";
 import { DEFAULT_TACTICAL_PLAN_ID, getTacticalPlan, normalizeTacticalPlanId } from "../data/tacticalPlans";
 import { getReputationBattleLaunchModifiers } from "../data/reputation";
@@ -61,6 +61,7 @@ import {
   restorePrivatePlaytestHubSave
 } from "../playtest/PrivatePlaytestTools";
 import { renderOnboardingHelpSurface } from "../ui/OnboardingHelp";
+import { renderCampaignPreBattleBriefing } from "../campaign/CampaignPreBattleBriefing";
 
 type CampaignTabId = "map" | "stronghold" | "hero" | "inventory" | "intel" | "reputation";
 
@@ -637,13 +638,12 @@ export class CampaignMapScene extends Phaser.Scene {
     const status = getCampaignNodeStatus(node, this.campaignSave);
     const missionReward = getCampaignMissionRewardState(this.campaignSave, node);
     const briefing = getCampaignMissionBriefing(node);
-    const actStep = getCampaignActStepForNode(node.id);
     const description = shortDescription(node.description);
     const stateLabel = node.isPlaceholder ? "upcoming" : status === "completed" && node.nodeType === "battle" ? "completed / replayable" : status;
     const lockReason = status === "locked" || node.isPlaceholder ? getCampaignNodeLockedReason(node, this.campaignSave) : "";
     const nextStepLine = formatCampaignMissionPanelNextStep(node, this.campaignSave);
     const nextStepLabel = lockReason ? "Lock reason" : "Recommended next step";
-    const pacingLabel = actStep ? titleCase(actStep.pacingTier) : titleCase(node.difficulty);
+    const pacingLabel = titleCase(node.difficulty);
     const hasChoices = Boolean(node.choices?.length);
     const detailOpen = hasChoices ? " open" : "";
     return `
@@ -654,6 +654,17 @@ export class CampaignMapScene extends Phaser.Scene {
         </div>
         <h2>${escapeHtml(node.name)}</h2>
         <p>${escapeHtml(description)}</p>
+        <div class="campaign-selected-actions">
+          ${this.renderSelectedPrimaryAction()}
+        </div>
+        ${renderCampaignPreBattleBriefing({
+          node,
+          heroSave: this.heroSave,
+          campaignName: (node.chapterId ? CAMPAIGN_CHAPTER_BY_ID[node.chapterId]?.title : undefined)?.replace(/^Chapter \d+:\s*/, "") ?? "The Barrosan Marches",
+          stateLabel,
+          lockReason,
+          canStart: this.canStartSelectedNode()
+        })}
         <div class="campaign-selected-facts">
           <div class="campaign-objective-line">
             <span>Primary objective</span>
@@ -669,9 +680,6 @@ export class CampaignMapScene extends Phaser.Scene {
             <span>${escapeHtml(nextStepLabel)}</span>
             <strong>${escapeHtml(nextStepLine)}</strong>
           </div>
-        </div>
-        <div class="campaign-selected-actions">
-          ${this.renderSelectedPrimaryAction()}
         </div>
       </div>
       ${this.renderFirstSessionCampaignCard(node)}
