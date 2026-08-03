@@ -30,16 +30,19 @@ describe("renderMinimap", () => {
 
     expect(markup).toContain("data-minimap=\"true\"");
     expect(markup).toContain("class=\"minimap-unit\"");
-    expect(markup).toContain("cx=\"10\"");
+    expect(markup).toContain("viewBox=\"0 0 2400 1600\"");
+    expect(markup).toContain("preserveAspectRatio=\"none\"");
+    expect(markup).toContain("cx=\"240\"");
     expect(markup).toContain("class=\"minimap-building\"");
-    expect(markup).toContain("x=\"88\"");
+    expect(markup).toContain("x=\"2128\"");
     expect(markup).toContain("class=\"minimap-site-marker neutral objective\"");
     expect(markup).toContain("Objective resource site");
     expect(markup).toContain("stroke=\"#f0d978\"");
     expect(markup).toContain("class=\"minimap-camera\"");
-    expect(markup).toContain("x=\"25\"");
-    expect(markup).toContain("width=\"50\"");
+    expect(markup).toContain("x=\"600\"");
+    expect(markup).toContain("width=\"1200\"");
     expect(markup).toContain("Enemy wave incoming");
+    expect(markup).toContain("Battlefield minimap showing units, buildings, sites. Click to move camera.");
   });
 
   it("reuses stable minimap markup and invalidates when camera or ping state changes", () => {
@@ -58,5 +61,20 @@ describe("renderMinimap", () => {
     expect(createMinimapRenderSignature(movedCamera)).not.toBe(createMinimapRenderSignature(snapshot));
     expect(renderMinimap(movedCamera)).not.toBe(first);
     expect(createMinimapRenderSignature(agedPing)).not.toBe(createMinimapRenderSignature(snapshot));
+  });
+
+  it("keeps malformed dimensions and coordinates finite and clamped", () => {
+    const malformed = renderMinimap({
+      ...snapshot,
+      mapWidth: Number.NaN,
+      mapHeight: Number.POSITIVE_INFINITY,
+      markers: [{ id: "bad", kind: "unit", team: "player", x: Number.NaN, y: Number.POSITIVE_INFINITY }],
+      camera: { x: Number.NEGATIVE_INFINITY, y: Number.NaN, width: Number.POSITIVE_INFINITY, height: Number.NaN },
+      pings: [{ ...snapshot.pings[0], x: Number.NaN, y: Number.POSITIVE_INFINITY, ageSeconds: Number.NaN }]
+    });
+
+    expect(malformed).not.toMatch(/NaN|Infinity/);
+    expect(malformed).toContain('viewBox="0 0 1 1"');
+    expect(malformed).toContain('cx="0"');
   });
 });

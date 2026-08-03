@@ -87,12 +87,16 @@ export function renderMinimap(snapshot: MinimapSnapshot): string {
   if (signature === lastRenderSignature) {
     return lastRenderMarkup;
   }
+  const mapWidth = safeDimension(snapshot.mapWidth);
+  const mapHeight = safeDimension(snapshot.mapHeight);
   const markers = [...snapshot.markers].sort((left, right) => markerSortOrder(left) - markerSortOrder(right));
   const markup = `
-    <div class="mini-map" data-testid="minimap" data-minimap="true" role="button" aria-label="Minimap">
-      <svg class="minimap-svg" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
-        <rect class="minimap-terrain" x="0" y="0" width="100" height="100"></rect>
-        <rect class="minimap-bounds" x="0.5" y="0.5" width="99" height="99"></rect>
+    <div class="mini-map" data-testid="minimap" data-minimap="true" data-map-width="${mapWidth}" data-map-height="${mapHeight}" role="button" aria-label="${escapeAttribute(
+      minimapAriaLabel(snapshot)
+    )}" style="--minimap-map-aspect: ${formatNumber(mapWidth / mapHeight)}">
+      <svg class="minimap-svg" viewBox="0 0 ${mapWidth} ${mapHeight}" preserveAspectRatio="none" aria-hidden="true">
+        <rect class="minimap-terrain" x="0" y="0" width="${mapWidth}" height="${mapHeight}"></rect>
+        <rect class="minimap-bounds" x="0" y="0" width="${mapWidth}" height="${mapHeight}"></rect>
         ${renderFog(snapshot)}
         ${markers.map((marker) => renderMarker(snapshot, marker)).join("")}
         ${snapshot.pings.map((ping) => renderPing(snapshot, ping)).join("")}
@@ -127,8 +131,8 @@ export function createMinimapRenderSignature(snapshot: MinimapSnapshot): string 
         .join("|")
     : "off";
   return [
-    snapshot.mapWidth,
-    snapshot.mapHeight,
+    safeDimension(snapshot.mapWidth),
+    safeDimension(snapshot.mapHeight),
     snapshot.colorblindPalette ? "colorblind" : "standard",
     `${formatNumber(snapshot.camera.x)}:${formatNumber(snapshot.camera.y)}:${formatNumber(snapshot.camera.width)}:${formatNumber(snapshot.camera.height)}`,
     markerSignature,
@@ -146,8 +150,8 @@ function renderFog(snapshot: MinimapSnapshot): string {
     .map((cell) => {
       const x = worldToMinimapX(snapshot, cell.x);
       const y = worldToMinimapY(snapshot, cell.y);
-      const width = formatNumber(clamp((cell.width / snapshot.mapWidth) * 100, 0, 100));
-      const height = formatNumber(clamp((cell.height / snapshot.mapHeight) * 100, 0, 100));
+      const width = formatNumber(clamp(finiteNumber(cell.width, 0), 0, safeDimension(snapshot.mapWidth) - Number(x)));
+      const height = formatNumber(clamp(finiteNumber(cell.height, 0), 0, safeDimension(snapshot.mapHeight) - Number(y)));
       const presentation = resolveFogCellPresentation(cell.state === "unseen" ? "unseen" : "explored");
       return `<rect class="minimap-fog ${cell.state}" x="${x}" y="${y}" width="${width}" height="${height}" rx="0.8" fill="${presentation.fillColorCss}" opacity="${formatNumber(presentation.fillAlpha)}"></rect>`;
     })
@@ -157,6 +161,7 @@ function renderFog(snapshot: MinimapSnapshot): string {
 function renderMarker(snapshot: MinimapSnapshot, marker: MinimapMarker): string {
   const x = worldToMinimapX(snapshot, marker.x);
   const y = worldToMinimapY(snapshot, marker.y);
+  const scale = minimapUnitScale(snapshot);
   if (marker.kind === "capture-site") {
     const color = marker.resourceColor ?? "#f5efc2";
     const fill = marker.team === "neutral" ? "#18251e" : teamColor(marker.team, snapshot);
@@ -164,20 +169,20 @@ function renderMarker(snapshot: MinimapSnapshot, marker: MinimapMarker): string 
     const innerStroke = marker.team === "neutral" ? color : teamStroke(marker.team, snapshot);
     return `
       <g class="minimap-site-marker ${marker.team}${marker.isObjective ? " objective" : ""}" aria-label="${escapeAttribute(marker.isObjective ? "Objective resource site" : "Resource site")}">
-        <circle cx="${x}" cy="${y}" r="${marker.isObjective ? "4.8" : "4"}" fill="${fill}" fill-opacity="${marker.team === "neutral" ? "0.52" : "0.4"}" stroke="${stroke}" stroke-width="${marker.isObjective ? "1.45" : "1.05"}"></circle>
-        <circle cx="${x}" cy="${y}" r="1.55" fill="${color}" stroke="${innerStroke}" stroke-width="0.55"></circle>
+        <circle cx="${x}" cy="${y}" r="${formatNumber((marker.isObjective ? 4.8 : 4) * scale)}" fill="${fill}" fill-opacity="${marker.team === "neutral" ? "0.52" : "0.4"}" stroke="${stroke}" stroke-width="${formatNumber(1.05 * scale)}"></circle>
+        <circle cx="${x}" cy="${y}" r="${formatNumber(1.55 * scale)}" fill="${color}" stroke="${innerStroke}" stroke-width="${formatNumber(0.55 * scale)}"></circle>
       </g>
     `;
   }
 
   if (marker.kind === "building") {
-    const size = formatNumber(marker.size ?? 3.6);
-    const half = formatNumber((marker.size ?? 3.6) / 2);
-    return `<rect class="minimap-building" x="${formatNumber(Number(x) - Number(half))}" y="${formatNumber(Number(y) - Number(half))}" width="${size}" height="${size}" rx="0.55" fill="${teamColor(marker.team, snapshot)}" stroke="${teamStroke(marker.team, snapshot)}" stroke-width="0.75"></rect>`;
+    const size = finiteNumber(marker.size, 3.6) * scale;
+    const half = size / 2;
+    return `<rect class="minimap-building" x="${formatNumber(Number(x) - half)}" y="${formatNumber(Number(y) - half)}" width="${formatNumber(size)}" height="${formatNumber(size)}" rx="${formatNumber(0.55 * scale)}" fill="${teamColor(marker.team, snapshot)}" stroke="${teamStroke(marker.team, snapshot)}" stroke-width="${formatNumber(0.75 * scale)}"></rect>`;
   }
 
   if (marker.kind === "camp") {
-    const radius = marker.size ?? 2.4;
+    const radius = finiteNumber(marker.size, 2.4) * scale;
     const points = [
       `${x},${formatNumber(Number(y) - radius)}`,
       `${formatNumber(Number(x) + radius)},${y}`,
@@ -190,14 +195,14 @@ function renderMarker(snapshot: MinimapSnapshot, marker: MinimapMarker): string 
   if (marker.kind === "rally") {
     return `
       <g class="minimap-rally">
-        <circle cx="${x}" cy="${y}" r="2.2" fill="#11351f" stroke="#9cf7b1" stroke-width="0.65"></circle>
-        <path d="M ${x} ${formatNumber(Number(y) + 2.8)} L ${x} ${formatNumber(Number(y) - 4)} L ${formatNumber(Number(x) + 4.2)} ${formatNumber(Number(y) - 2.5)} L ${x} ${formatNumber(Number(y) - 1)} Z" fill="#78dc7b" stroke="#f5efc2" stroke-width="0.45"></path>
+        <circle cx="${x}" cy="${y}" r="${formatNumber(2.2 * scale)}" fill="#11351f" stroke="#9cf7b1" stroke-width="${formatNumber(0.65 * scale)}"></circle>
+        <path d="M ${x} ${formatNumber(Number(y) + 2.8 * scale)} L ${x} ${formatNumber(Number(y) - 4 * scale)} L ${formatNumber(Number(x) + 4.2 * scale)} ${formatNumber(Number(y) - 2.5 * scale)} L ${x} ${formatNumber(Number(y) - 1 * scale)} Z" fill="#78dc7b" stroke="#f5efc2" stroke-width="${formatNumber(0.45 * scale)}"></path>
       </g>
     `;
   }
 
   if (marker.kind === "enemy-hero") {
-    const radius = marker.size ?? 2.6;
+    const radius = finiteNumber(marker.size, 2.6) * scale;
     const points = [
       `${x},${formatNumber(Number(y) - radius)}`,
       `${formatNumber(Number(x) + radius)},${y}`,
@@ -207,17 +212,17 @@ function renderMarker(snapshot: MinimapSnapshot, marker: MinimapMarker): string 
     return `<polygon class="minimap-enemy-hero" points="${points}" fill="${teamColor(marker.team, snapshot)}" stroke="#ffd28a" stroke-width="0.8" aria-label="Enemy commander marker"></polygon>`;
   }
 
-  return `<circle class="minimap-unit" cx="${x}" cy="${y}" r="${formatNumber(marker.size ?? 1.55)}" fill="${teamColor(marker.team, snapshot)}" stroke="${teamStroke(marker.team, snapshot)}" stroke-width="0.5"></circle>`;
+  return `<circle class="minimap-unit" cx="${x}" cy="${y}" r="${formatNumber(finiteNumber(marker.size, 1.55) * scale)}" fill="${teamColor(marker.team, snapshot)}" stroke="${teamStroke(marker.team, snapshot)}" stroke-width="${formatNumber(0.5 * scale)}"></circle>`;
 }
 
 function renderPing(snapshot: MinimapSnapshot, ping: MinimapPing): string {
-  const progress = clamp(ping.ageSeconds / Math.max(0.01, ping.durationSeconds), 0, 1);
+  const progress = clamp(finiteNumber(ping.ageSeconds, 0) / Math.max(0.01, finiteNumber(ping.durationSeconds, 0)), 0, 1);
   const opacity = formatNumber(0.9 * (1 - progress));
-  const radius = formatNumber(2.2 + progress * 9);
+  const radius = formatNumber((2.2 + progress * 9) * minimapUnitScale(snapshot));
   return `
     <g class="minimap-ping" aria-label="${escapeAttribute(ping.label)}">
       <circle cx="${worldToMinimapX(snapshot, ping.x)}" cy="${worldToMinimapY(snapshot, ping.y)}" r="${radius}" fill="none" stroke="${escapeAttribute(ping.color)}" stroke-width="1.25" opacity="${opacity}"></circle>
-      <circle cx="${worldToMinimapX(snapshot, ping.x)}" cy="${worldToMinimapY(snapshot, ping.y)}" r="1.25" fill="${escapeAttribute(ping.color)}" opacity="${opacity}"></circle>
+      <circle cx="${worldToMinimapX(snapshot, ping.x)}" cy="${worldToMinimapY(snapshot, ping.y)}" r="${formatNumber(1.25 * minimapUnitScale(snapshot))}" fill="${escapeAttribute(ping.color)}" opacity="${opacity}"></circle>
     </g>
   `;
 }
@@ -225,8 +230,8 @@ function renderPing(snapshot: MinimapSnapshot, ping: MinimapPing): string {
 function renderCamera(snapshot: MinimapSnapshot): string {
   const x = worldToMinimapX(snapshot, snapshot.camera.x);
   const y = worldToMinimapY(snapshot, snapshot.camera.y);
-  const width = formatNumber(clamp((snapshot.camera.width / snapshot.mapWidth) * 100, 0, 100));
-  const height = formatNumber(clamp((snapshot.camera.height / snapshot.mapHeight) * 100, 0, 100));
+  const width = formatNumber(clamp(finiteNumber(snapshot.camera.width, 0), 0, safeDimension(snapshot.mapWidth) - Number(x)));
+  const height = formatNumber(clamp(finiteNumber(snapshot.camera.height, 0), 0, safeDimension(snapshot.mapHeight) - Number(y)));
   return `<rect class="minimap-camera" x="${x}" y="${y}" width="${width}" height="${height}"></rect>`;
 }
 
@@ -250,11 +255,26 @@ function markerSortOrder(marker: MinimapMarker): number {
 }
 
 function worldToMinimapX(snapshot: MinimapSnapshot, x: number): string {
-  return formatNumber(clamp((x / snapshot.mapWidth) * 100, 0, 100));
+  return formatNumber(clamp(finiteNumber(x, 0), 0, safeDimension(snapshot.mapWidth)));
 }
 
 function worldToMinimapY(snapshot: MinimapSnapshot, y: number): string {
-  return formatNumber(clamp((y / snapshot.mapHeight) * 100, 0, 100));
+  return formatNumber(clamp(finiteNumber(y, 0), 0, safeDimension(snapshot.mapHeight)));
+}
+
+function minimapUnitScale(snapshot: MinimapSnapshot): number {
+  return Math.min(safeDimension(snapshot.mapWidth), safeDimension(snapshot.mapHeight)) / 100;
+}
+
+function minimapAriaLabel(snapshot: MinimapSnapshot): string {
+  const kinds = new Set(snapshot.markers.map((marker) => marker.kind));
+  const categories = [
+    kinds.has("unit") || kinds.has("enemy-hero") ? "units" : "",
+    kinds.has("building") ? "buildings" : "",
+    kinds.has("capture-site") || kinds.has("camp") ? "sites" : ""
+  ].filter(Boolean);
+  const summary = categories.length > 0 ? ` showing ${categories.join(", ")}` : "";
+  return `Battlefield minimap${summary}. Click to move camera.`;
 }
 
 function teamColor(team: Team, snapshot: MinimapSnapshot): string {
@@ -270,7 +290,15 @@ function clamp(value: number, min: number, max: number): number {
 }
 
 function formatNumber(value: number): string {
-  return Number(value.toFixed(2)).toString();
+  return finiteNumber(value, 0).toFixed(2).replace(/\.00$/, "").replace(/(\.\d)0$/, "$1");
+}
+
+function finiteNumber(value: number | undefined, fallback: number): number {
+  return typeof value === "number" && Number.isFinite(value) ? value : fallback;
+}
+
+function safeDimension(value: number): number {
+  return Math.max(1, finiteNumber(value, 1));
 }
 
 function escapeAttribute(value: string): string {
