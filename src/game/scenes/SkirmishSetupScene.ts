@@ -106,15 +106,15 @@ export class SkirmishSetupScene extends Phaser.Scene {
         <section class="menu-panel extra-wide">
           <p class="eyebrow">Skirmish Setup</p>
           <h1>Choose The Battlefield</h1>
-          <div class="setup-grid">
-            <section class="setup-section">
+          <div class="setup-grid" data-testid="setup-options">
+            <section class="setup-section" aria-label="Hero and Enemy Faction">
               <h2>Hero</h2>
               ${this.renderHeroSummary()}
               <h2>Enemy Faction</h2>
               <div class="enemy-grid">${this.renderEnemyChoices()}</div>
             </section>
-            <section class="setup-section">
-              <h2>Map</h2>
+            <section class="setup-section" aria-label="Battlefield, Battle Difficulty, and AI Personality">
+              <h2>Battlefield</h2>
               <div class="map-grid">${this.renderMapChoices()}</div>
               <h2>Difficulty</h2>
               <div class="difficulty-grid">${this.renderDifficultyChoices()}</div>
@@ -122,9 +122,13 @@ export class SkirmishSetupScene extends Phaser.Scene {
               <div class="difficulty-grid">${this.renderPersonalityChoices()}</div>
             </section>
           </div>
-          <div class="menu-actions row">
-            <button data-testid="setup-start-battle" data-setup-action="start">Start Battle</button>
-            <button data-testid="setup-back" data-setup-action="back">Back</button>
+          <aside class="setup-match-summary" data-testid="setup-match-summary" aria-label="Current match summary">
+            <p class="eyebrow">Current match</p>
+            ${this.renderMatchSummary()}
+          </aside>
+          <div class="menu-actions row setup-actions">
+            <button type="button" data-testid="setup-start-battle" data-setup-action="start">Start Battle</button>
+            <button type="button" data-testid="setup-back" data-setup-action="back">Back</button>
           </div>
         </section>
       </main>
@@ -156,10 +160,11 @@ export class SkirmishSetupScene extends Phaser.Scene {
       .map((faction) => {
         const locked = !SELECTABLE_ENEMY_FACTION_IDS.has(faction.id);
         return `
-          <button class="choice compact-choice ${faction.id === this.selectedEnemyFactionId ? "selected" : ""}" data-testid="setup-enemy-${faction.id}" data-setup-kind="enemy" data-id="${faction.id}" ${locked ? "disabled" : ""}>
+          <button type="button" class="choice compact-choice ${faction.id === this.selectedEnemyFactionId ? "selected" : ""}" data-testid="setup-enemy-${faction.id}" data-setup-kind="enemy" data-id="${faction.id}" aria-pressed="${faction.id === this.selectedEnemyFactionId ? "true" : "false"}" ${locked ? "disabled aria-disabled=\"true\"" : ""}>
             <strong>${escapeHtml(faction.name)}</strong>
             <span>${escapeHtml(locked ? `${faction.fantasy} Future AI profile.` : faction.mechanics.militaryStyle)}</span>
             <small>${escapeHtml(locked ? "Locked for now" : faction.mechanics.magicStyle)}</small>
+            <small class="setup-choice-state">${locked ? "Unavailable" : faction.id === this.selectedEnemyFactionId ? "Selected" : "Available"}</small>
           </button>
         `;
       })
@@ -169,11 +174,12 @@ export class SkirmishSetupScene extends Phaser.Scene {
   private renderMapChoices(): string {
     return MAPS.map(
       (map) => `
-        <button class="choice map-choice ${map.id === this.selectedMapId ? "selected" : ""}" data-testid="setup-map-${map.id}" data-setup-kind="map" data-id="${map.id}">
+        <button type="button" class="choice map-choice ${map.id === this.selectedMapId ? "selected" : ""}" data-testid="setup-map-${map.id}" data-setup-kind="map" data-id="${map.id}" aria-pressed="${map.id === this.selectedMapId ? "true" : "false"}">
           <strong>${escapeHtml(map.name)}</strong>
           <span>${escapeHtml(map.role)}</span>
           <small>${map.width}x${map.height} - ${map.captureSites.length} sites - ${map.neutralCamps.length} camps</small>
           <p>${escapeHtml(map.description)}</p>
+          <small class="setup-choice-state">${map.id === this.selectedMapId ? "Selected" : "Available"}</small>
         </button>
       `
     ).join("");
@@ -182,9 +188,10 @@ export class SkirmishSetupScene extends Phaser.Scene {
   private renderDifficultyChoices(): string {
     return BATTLE_DIFFICULTIES.map(
       (difficulty) => `
-        <button class="choice compact-choice ${difficulty.id === this.selectedDifficulty ? "selected" : ""}" data-testid="setup-difficulty-${difficulty.id}" data-setup-kind="difficulty" data-id="${difficulty.id}">
-          <strong>${difficulty.name}</strong>
-          <span>${difficulty.description}</span>
+        <button type="button" class="choice compact-choice ${difficulty.id === this.selectedDifficulty ? "selected" : ""}" data-testid="setup-difficulty-${difficulty.id}" data-setup-kind="difficulty" data-id="${difficulty.id}" aria-pressed="${difficulty.id === this.selectedDifficulty ? "true" : "false"}">
+          <strong>${escapeHtml(difficulty.name)}</strong>
+          <span>${escapeHtml(difficulty.description)}</span>
+          <small class="setup-choice-state">${difficulty.id === this.selectedDifficulty ? "Selected" : "Available"}</small>
         </button>
       `
     ).join("");
@@ -193,12 +200,30 @@ export class SkirmishSetupScene extends Phaser.Scene {
   private renderPersonalityChoices(): string {
     return AI_PERSONALITIES.map(
       (personality) => `
-        <button class="choice compact-choice ${personality.id === this.selectedAiPersonalityId ? "selected" : ""}" data-testid="setup-personality-${personality.id}" data-setup-kind="personality" data-id="${personality.id}">
+        <button type="button" class="choice compact-choice ${personality.id === this.selectedAiPersonalityId ? "selected" : ""}" data-testid="setup-personality-${personality.id}" data-setup-kind="personality" data-id="${personality.id}" aria-pressed="${personality.id === this.selectedAiPersonalityId ? "true" : "false"}">
           <strong>${escapeHtml(personality.name)}</strong>
           <span>${escapeHtml(personality.shortDescription)}</span>
+          <small class="setup-choice-state">${personality.id === this.selectedAiPersonalityId ? "Selected" : "Available"}</small>
         </button>
       `
     ).join("");
+  }
+
+  private renderMatchSummary(): string {
+    const summary = createSkirmishSetupSummary({
+      enemyFactionId: this.selectedEnemyFactionId,
+      mapId: this.selectedMapId,
+      difficultyId: this.selectedDifficulty,
+      aiPersonalityId: this.selectedAiPersonalityId
+    });
+    return `
+      <div class="setup-summary-grid">
+        <span><small>Enemy</small><strong>${escapeHtml(summary.enemyName)}</strong></span>
+        <span><small>Battlefield</small><strong>${escapeHtml(summary.mapName)}</strong></span>
+        <span><small>Difficulty</small><strong>${escapeHtml(summary.difficultyName)}</strong></span>
+        <span><small>AI personality</small><strong>${escapeHtml(summary.personalityName)}</strong></span>
+      </div>
+    `;
   }
 
   private toCssColor(value: number): string {
@@ -210,6 +235,25 @@ export class SkirmishSetupScene extends Phaser.Scene {
       this.root.removeEventListener("click", this.handler);
     }
   }
+}
+
+export function createSkirmishSetupSummary(input: {
+  enemyFactionId: string;
+  mapId: string;
+  difficultyId: BattleDifficulty;
+  aiPersonalityId: EnemyAIPersonalityId;
+}): {
+  enemyName: string;
+  mapName: string;
+  difficultyName: string;
+  personalityName: string;
+} {
+  return {
+    enemyName: FACTIONS.find((entry) => entry.id === input.enemyFactionId)?.name ?? "Unknown enemy faction",
+    mapName: MAPS.find((entry) => entry.id === input.mapId)?.name ?? "Unknown battlefield",
+    difficultyName: BATTLE_DIFFICULTIES.find((entry) => entry.id === input.difficultyId)?.name ?? "Unknown difficulty",
+    personalityName: AI_PERSONALITIES.find((entry) => entry.id === input.aiPersonalityId)?.name ?? "Unknown AI personality"
+  };
 }
 
 function escapeHtml(value: string): string {
