@@ -1,3 +1,4 @@
+import { buildingBattleAssetIds, heroPortraitAssetId, resourceIconAssetId, unitBattleAssetIds } from "../../assets/AssetKeys";
 import { Building } from "../../entities/Building";
 import { CaptureSite } from "../../entities/CaptureSite";
 import { Hero } from "../../entities/Hero";
@@ -26,6 +27,7 @@ import {
   type UnitRoleIdentity
 } from "../../data/unitRoles";
 import { describeUnitOrder, summarizeUnitOrders } from "../UnitOrderSummary";
+import { renderEntityPortrait } from "../EntityPortrait";
 import { escapeHtml, formatBuildingRole, formatBuildingUnlockSummary, renderProgress, unitName, upgradeName } from "./HudFormatting";
 import type { HUDSnapshot, HudDensityMode } from "./HudTypes";
 import type { ControlGroupSummary } from "../../systems/ControlGroupSystem";
@@ -69,6 +71,7 @@ export function renderSelectionSummary(
     const order = describeUnitOrder(selectedOne);
     return `
       ${renderSelectionFocus("Hero selected", "Champion / commander", "Hero abilities and build identity are active from this selection.", "hero")}
+      ${renderPortraitForHero(selectedOne)}
       ${renderOrderSummary(order.label, order.detail, order.tone)}
       ${renderRoleIdentitySummary(HERO_ROLE_IDENTITY, density)}
       ${controlGroupSummary}
@@ -105,6 +108,7 @@ export function renderSelectionSummary(
           : "Combat unit. Move, attack, Patrol, and behaviour commands are available.";
     return `
       ${renderSelectionFocus(focusTitle, selectedOne.definition.name, focusDetail, focusTone)}
+      ${renderPortraitForUnit(selectedOne, roleIdentity.label)}
       ${renderOrderSummary(order.label, order.detail, order.tone)}
       ${renderRoleIdentitySummary(roleIdentity, density)}
       ${resourceAssignment}
@@ -152,6 +156,7 @@ export function renderSelectionSummary(
         : "Locked · capture this site before upgrading";
     return `
       ${renderSelectionFocus("Resource site selected", selectedOne.definition.name, assignmentInstruction, ownershipTone)}
+      ${renderPortraitForResourceSite(selectedOne, resourceLabel)}
       <section class="resource-site-summary" data-testid="selected-resource-site-summary" aria-label="Resource site details">
         <div class="resource-site-heading">
           <strong>Resource site</strong>
@@ -195,6 +200,7 @@ export function renderSelectionSummary(
   const showRally = selectedOne.isCompleted() && selectedOne.definition.trainOptions.length > 0;
   return `
     ${renderSelectionFocus(selectedOne.team === "enemy" ? "Enemy building inspected" : "Building selected", selectedOne.definition.name, selectedOne.team === "enemy" ? "Read-only structure information. Attack with selected forces." : "Building actions and rally state appear in the command tray.", selectedOne.team === "enemy" ? "enemy" : "building")}
+    ${renderPortraitForBuilding(selectedOne)}
     <div class="stat-list">
       <span>HP ${Math.ceil(selectedOne.hp)}/${selectedOne.maxHp}</span>
       <span>Armor ${selectedOne.armor}</span>
@@ -235,6 +241,59 @@ export function renderSelectionSummary(
     ${renderProductionQueue(selectedOne)}
     ${renderUpgradeQueue(selectedOne)}
   `;
+}
+
+function renderPortraitForHero(hero: Hero): string {
+  return renderEntityPortrait({
+    kind: "hero",
+    name: hero.heroName,
+    role: "Hero / Commander",
+    team: "player",
+    accent: toPortraitAccent(hero.definition.color, "#80d982"),
+    assetIds: [heroPortraitAssetId(hero.classId), ...unitBattleAssetIds(hero.definition.id)].filter(
+      (assetId): assetId is string => Boolean(assetId)
+    )
+  });
+}
+
+function renderPortraitForUnit(unit: Unit, role: string): string {
+  return renderEntityPortrait({
+    kind: "unit",
+    name: unit.definition.name,
+    role,
+    team: unit.team,
+    accent: toPortraitAccent(unit.definition.color, unit.team === "enemy" ? "#e46960" : "#80d982"),
+    assetIds: unitBattleAssetIds(unit.definition.id)
+  });
+}
+
+function renderPortraitForBuilding(building: Building): string {
+  return renderEntityPortrait({
+    kind: "building",
+    name: building.definition.name,
+    role: building.isUnderConstruction() ? "Building / Under construction" : "Building",
+    team: building.team,
+    accent: toPortraitAccent(building.team === "enemy" ? 0xe46960 : 0x80d982, building.team === "enemy" ? "#e46960" : "#80d982"),
+    assetIds: buildingBattleAssetIds(building.definition.id)
+  });
+}
+
+function renderPortraitForResourceSite(site: CaptureSite, resourceLabel: string): string {
+  return renderEntityPortrait({
+    kind: "resource-site",
+    name: site.definition.name,
+    role: `${resourceLabel} resource site`,
+    team: site.owner,
+    accent: toPortraitAccent(
+      site.owner === "enemy" ? 0xe46960 : site.owner === "player" ? 0x80d982 : 0xf0d978,
+      site.owner === "enemy" ? "#e46960" : site.owner === "player" ? "#80d982" : "#f0d978"
+    ),
+    assetIds: [resourceIconAssetId(site.definition.resource)].filter((assetId): assetId is string => Boolean(assetId))
+  });
+}
+
+function toPortraitAccent(value: number | undefined, fallback: string): string {
+  return typeof value === "number" && Number.isFinite(value) ? `#${value.toString(16).padStart(6, "0")}` : fallback;
 }
 
 function renderConstructionSummary(building: Building): string {
