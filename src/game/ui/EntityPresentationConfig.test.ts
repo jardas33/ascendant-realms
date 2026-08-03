@@ -1,8 +1,10 @@
 import { describe, expect, it } from "vitest";
 import {
+  calculateUnitContentAwareVisualLayout,
   getCommonPresentationDefaults,
   presentationConfigHasGameplayFields,
-  resolveEntityPresentationConfig
+  resolveEntityPresentationConfig,
+  resolveUnitContentAwarePresentationMetadata
 } from "./EntityPresentationConfig";
 
 describe("EntityPresentationConfig", () => {
@@ -90,5 +92,41 @@ describe("EntityPresentationConfig", () => {
     expect(config.sprite.originY).toBe(0.75);
     expect(config.depth.fixedDepth).toBe(11);
     expect(JSON.stringify(config)).not.toMatch(/radius|footprint|position/);
+  });
+
+  it("exposes only the three canonical humanoid assets with validated source metadata", () => {
+    const warlord = resolveUnitContentAwarePresentationMetadata("warlord_hero_battle_sprite");
+    const militia = resolveUnitContentAwarePresentationMetadata("militia_unit_sprite");
+    const ranger = resolveUnitContentAwarePresentationMetadata("ranger_unit_sprite");
+
+    expect([warlord, militia, ranger].every(Boolean)).toBe(true);
+    expect(warlord?.sourceCanvas).toEqual({ width: 512, height: 512 });
+    expect(warlord?.alphaThreshold).toBe(8);
+    expect(warlord?.alphaContentBounds).toEqual({
+      left: 0.1875,
+      top: 0.0703125,
+      right: 0.814453125,
+      bottom: 0.9296875
+    });
+    expect(militia?.feetAnchor).toEqual({ x: 0.5, y: 0.9296875 });
+    expect(ranger?.manualFeetAnchor).toBe(false);
+    expect(resolveUnitContentAwarePresentationMetadata("wild_hound_unit_sprite")).toBeUndefined();
+    expect(resolveUnitContentAwarePresentationMetadata("missing_asset")).toBeUndefined();
+  });
+
+  it("grounds content-aware layouts and preserves the legacy target-content height", () => {
+    const hero = calculateUnitContentAwareVisualLayout("warlord_hero_battle_sprite", 19);
+    const militia = calculateUnitContentAwareVisualLayout("militia_unit_sprite", 13);
+
+    expect(hero).toBeDefined();
+    expect(militia).toBeDefined();
+    expect(hero?.targetContentHeight).toBeCloseTo(19 * 4.35, 8);
+    expect(militia?.targetContentHeight).toBeCloseTo(13 * 3.65, 8);
+    expect(hero?.visualBottom).toBeCloseTo(0, 8);
+    expect(militia?.visualBottom).toBeCloseTo(0, 8);
+    expect(hero?.visualTop).toBeLessThan(0);
+    expect(Number.isFinite(hero?.scale)).toBe(true);
+    expect(calculateUnitContentAwareVisualLayout("wild_hound_unit_sprite", 13)).toBeUndefined();
+    expect(calculateUnitContentAwareVisualLayout("militia_unit_sprite", Number.NaN)).toBeUndefined();
   });
 });

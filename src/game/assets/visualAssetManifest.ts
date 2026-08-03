@@ -1,4 +1,5 @@
 import type { VisualAssetManifest, VisualAssetManifestEntry } from "./VisualAssetManifestTypes";
+import { resolveUnitContentAwarePresentationMetadata } from "../ui/EntityPresentationConfig";
 
 type VisualAssetDefaultField =
   | "currentStatus"
@@ -40,12 +41,17 @@ function visualAsset(input: VisualAssetDraft): VisualAssetManifestEntry {
   };
 }
 
+function withUnitPresentationMetadata(entry: VisualAssetManifestEntry): VisualAssetManifestEntry {
+  const presentationMetadata = resolveUnitContentAwarePresentationMetadata(entry.id);
+  return presentationMetadata ? { ...entry, presentationMetadata } : entry;
+}
+
 const heroSprites = [
   ["warlord_hero_battle_sprite", "Warlord Hero Battle Sprite", "warlord"],
   ["arcanist_hero_battle_sprite", "Arcanist Hero Battle Sprite", "arcanist"],
   ["shepherd_hero_battle_sprite", "Shepherd Hero Battle Sprite", "shepherd"]
 ].map(([id, displayName, filename]) =>
-  visualAsset({
+  withUnitPresentationMetadata(visualAsset({
     id,
     filePath: `public/assets/final/units/${filename}_hero_battle_sprite.png`,
     category: "hero-sprite",
@@ -60,7 +66,7 @@ const heroSprites = [
     styleConsistency: "medium",
     replacementPriority: "medium",
     notes: "Current in-battle hero sprite. Usable for prototype readability, but source/license review and class style-sheet review remain required."
-  })
+  }))
 );
 
 const unitSprites = [
@@ -83,7 +89,7 @@ const unitSprites = [
 ] as const;
 
 const unitSpriteAssets = unitSprites.map(([id, displayName, filename, visualFamily, scaleClass, height]) =>
-  visualAsset({
+  withUnitPresentationMetadata(visualAsset({
     id,
     filePath: `public/assets/final/units/${filename}_unit_sprite.png`,
     category: "unit-sprite",
@@ -101,7 +107,7 @@ const unitSpriteAssets = unitSprites.map(([id, displayName, filename, visualFami
       scaleClass === "enemy-commander"
         ? "Enemy commander is readable but not yet on the same future hero/elite visual scale standard as the player hero."
         : "Current unit sprite is readable through labels, bars, and selection rings, but source/style consistency still needs review."
-  })
+  }))
 );
 
 const unitConceptAssets = [

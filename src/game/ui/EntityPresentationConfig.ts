@@ -8,6 +8,24 @@
 
 export type PresentationFamily = "unit" | "hero" | "building";
 
+import type { VisualAssetPresentationMetadata } from "../assets/VisualAssetManifestTypes";
+
+export type ContentAwareHumanoidAssetId =
+  | "warlord_hero_battle_sprite"
+  | "militia_unit_sprite"
+  | "ranger_unit_sprite";
+
+export interface UnitContentAwareVisualLayout {
+  readonly originX: number;
+  readonly originY: number;
+  readonly spriteY: 0;
+  readonly shadowY: 0;
+  readonly scale: number;
+  readonly targetContentHeight: number;
+  readonly visualTop: number;
+  readonly visualBottom: number;
+}
+
 export interface CommonPresentationDefaults {
   readonly selection: {
     readonly radiusAddPx: number;
@@ -146,6 +164,42 @@ const COMMON_PRESENTATION_DEFAULTS: CommonPresentationDefaults = {
   }
 };
 
+const CONTENT_AWARE_HUMANOID_METADATA: Record<ContentAwareHumanoidAssetId, VisualAssetPresentationMetadata> = {
+  warlord_hero_battle_sprite: {
+    schemaVersion: 1,
+    assetId: "warlord_hero_battle_sprite",
+    sourceCanvas: { width: 512, height: 512 },
+    alphaThreshold: 8,
+    alphaContentBounds: { left: 0.1875, top: 0.0703125, right: 0.814453125, bottom: 0.9296875 },
+    feetAnchor: { x: 0.5009765625, y: 0.9296875 },
+    targetContentHeightRule: "legacy-radius-multiplier",
+    targetContentHeightRadiusMultiplier: 4.35,
+    manualFeetAnchor: false
+  },
+  militia_unit_sprite: {
+    schemaVersion: 1,
+    assetId: "militia_unit_sprite",
+    sourceCanvas: { width: 512, height: 512 },
+    alphaThreshold: 8,
+    alphaContentBounds: { left: 0.234375, top: 0.0703125, right: 0.765625, bottom: 0.9296875 },
+    feetAnchor: { x: 0.5, y: 0.9296875 },
+    targetContentHeightRule: "legacy-radius-multiplier",
+    targetContentHeightRadiusMultiplier: 3.65,
+    manualFeetAnchor: false
+  },
+  ranger_unit_sprite: {
+    schemaVersion: 1,
+    assetId: "ranger_unit_sprite",
+    sourceCanvas: { width: 512, height: 512 },
+    alphaThreshold: 8,
+    alphaContentBounds: { left: 0.1953125, top: 0.0703125, right: 0.806640625, bottom: 0.9296875 },
+    feetAnchor: { x: 0.5009765625, y: 0.9296875 },
+    targetContentHeightRule: "legacy-radius-multiplier",
+    targetContentHeightRadiusMultiplier: 3.65,
+    manualFeetAnchor: false
+  }
+};
+
 const UNIT_BASE = {
   sprite: { yRadiusMultiplier: 0.1, originY: 0.8, targetHeightRadiusMultiplier: 3.65 },
   shadow: { yRadiusMultiplier: 0.58, widthRadiusMultiplier: 2.5, heightRadiusMultiplier: 0.72, opacity: 0.32 },
@@ -211,6 +265,80 @@ function freeze<T>(value: T): T {
 }
 
 const COMMON_FROZEN = freeze(COMMON_PRESENTATION_DEFAULTS);
+const CONTENT_AWARE_HUMANOID_METADATA_FROZEN = freeze(CONTENT_AWARE_HUMANOID_METADATA);
+
+function isContentAwareHumanoidAssetId(assetId: string): assetId is ContentAwareHumanoidAssetId {
+  return Object.prototype.hasOwnProperty.call(CONTENT_AWARE_HUMANOID_METADATA_FROZEN, assetId);
+}
+
+function isValidContentAwareMetadata(metadata: VisualAssetPresentationMetadata): boolean {
+  const bounds = metadata.alphaContentBounds;
+  const feet = metadata.feetAnchor;
+  return (
+    metadata.schemaVersion === 1 &&
+    metadata.sourceCanvas.width > 0 &&
+    metadata.sourceCanvas.height > 0 &&
+    Number.isInteger(metadata.sourceCanvas.width) &&
+    Number.isInteger(metadata.sourceCanvas.height) &&
+    validNumber(metadata.alphaThreshold, 0, 255) &&
+    metadata.targetContentHeightRule === "legacy-radius-multiplier" &&
+    validNumber(metadata.targetContentHeightRadiusMultiplier, 0.01, 20) &&
+    metadata.manualFeetAnchor === false &&
+    validNumber(bounds.left, 0, 1) &&
+    validNumber(bounds.top, 0, 1) &&
+    validNumber(bounds.right, 0, 1) &&
+    validNumber(bounds.bottom, 0, 1) &&
+    bounds.left < bounds.right &&
+    bounds.top < bounds.bottom &&
+    validNumber(feet.x, bounds.left, bounds.right) &&
+    validNumber(feet.y, bounds.top, bounds.bottom)
+  );
+}
+
+export function resolveUnitContentAwarePresentationMetadata(
+  assetId: string
+): VisualAssetPresentationMetadata | undefined {
+  if (!isContentAwareHumanoidAssetId(assetId)) {
+    return undefined;
+  }
+  const metadata = CONTENT_AWARE_HUMANOID_METADATA_FROZEN[assetId];
+  return isValidContentAwareMetadata(metadata) ? metadata : undefined;
+}
+
+export function calculateUnitContentAwareVisualLayout(
+  assetId: string,
+  radius: number,
+  textureHeight?: number
+): UnitContentAwareVisualLayout | undefined {
+  const metadata = resolveUnitContentAwarePresentationMetadata(assetId);
+  if (!metadata || !validNumber(radius, 0.01, 1000)) {
+    return undefined;
+  }
+  const sourceHeight = textureHeight ?? metadata.sourceCanvas.height;
+  const contentHeight = (metadata.alphaContentBounds.bottom - metadata.alphaContentBounds.top) * sourceHeight;
+  if (!validNumber(sourceHeight, 1, 100000) || !validNumber(contentHeight, 0.01, 100000)) {
+    return undefined;
+  }
+  const targetContentHeight = radius * metadata.targetContentHeightRadiusMultiplier;
+  const scale = targetContentHeight / contentHeight;
+  const visualTop =
+    (metadata.alphaContentBounds.top - metadata.feetAnchor.y) * sourceHeight * scale;
+  const visualBottom =
+    (metadata.alphaContentBounds.bottom - metadata.feetAnchor.y) * sourceHeight * scale;
+  if (![scale, visualTop, visualBottom].every(Number.isFinite)) {
+    return undefined;
+  }
+  return {
+    originX: metadata.feetAnchor.x,
+    originY: metadata.feetAnchor.y,
+    spriteY: 0,
+    shadowY: 0,
+    scale,
+    targetContentHeight,
+    visualTop,
+    visualBottom
+  };
+}
 
 function buildUnitConfig(family: "unit" | "hero"): UnitPresentationConfig {
   const base = family === "hero" ? HERO_BASE : UNIT_BASE;

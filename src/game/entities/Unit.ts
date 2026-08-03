@@ -17,7 +17,12 @@ import {
 import { DEFAULT_BEHAVIOUR_MODE, type BehaviourMode } from "../systems/BehaviourModeSystem";
 import { recordRenderLifecycleMetrics } from "../systems/RenderLifecycleMetrics";
 import { resolveUnitPlaceholderPresentation } from "../ui/PlaceholderBattlefieldPresentation";
-import { resolveEntityPresentationConfig, type UnitPresentationConfig } from "../ui/EntityPresentationConfig";
+import {
+  calculateUnitContentAwareVisualLayout,
+  resolveEntityPresentationConfig,
+  resolveUnitContentAwarePresentationMetadata,
+  type UnitPresentationConfig
+} from "../ui/EntityPresentationConfig";
 import { BaseEntity } from "./BaseEntity";
 
 const PLAYER_MOVE_COMBAT_SUPPRESSION_SECONDS = 1.15;
@@ -418,9 +423,11 @@ export class Unit extends BaseEntity {
     layoutConfig: UnitPresentationConfig
   ): { visualTop: number; visualBottom: number } {
     const assetId = unitBattleAssetIds(this.definition.id).find((candidate) => scene.textures.exists(candidate));
+    const contentAwareMetadata = assetId ? resolveUnitContentAwarePresentationMetadata(assetId) : undefined;
+    const contentAwareLayout = assetId ? calculateUnitContentAwareVisualLayout(assetId, this.radius) : undefined;
     const shadow = scene.add.ellipse(
       0,
-      this.radius * layoutConfig.shadow.yRadiusMultiplier,
+      contentAwareLayout ? contentAwareLayout.shadowY : this.radius * layoutConfig.shadow.yRadiusMultiplier,
       this.radius * layoutConfig.shadow.widthRadiusMultiplier,
       this.radius * layoutConfig.shadow.heightRadiusMultiplier,
       0x000000,
@@ -429,9 +436,30 @@ export class Unit extends BaseEntity {
     this.view?.addAt(shadow, 0);
 
     if (assetId) {
+      this.sprite = scene.add.image(
+        0,
+        contentAwareLayout ? contentAwareLayout.spriteY : this.radius * layoutConfig.sprite.yRadiusMultiplier,
+        assetId
+      ).setOrigin(
+        contentAwareLayout ? contentAwareLayout.originX : 0.5,
+        contentAwareLayout ? contentAwareLayout.originY : layoutConfig.sprite.originY
+      );
+      if (contentAwareMetadata && contentAwareLayout) {
+        const textureAwareLayout = calculateUnitContentAwareVisualLayout(assetId, this.radius, this.sprite.height);
+        if (textureAwareLayout) {
+          recordRenderLifecycleMetrics({ spritesCreated: 1 });
+          this.sprite.setScale(textureAwareLayout.scale);
+          this.sprite.setDepth(1);
+          this.view?.addAt(this.sprite, 1);
+          return {
+            visualTop: textureAwareLayout.visualTop,
+            visualBottom: textureAwareLayout.visualBottom
+          };
+        }
+      }
       const spriteY = this.radius * layoutConfig.sprite.yRadiusMultiplier;
       const originY = layoutConfig.sprite.originY;
-      this.sprite = scene.add.image(0, spriteY, assetId).setOrigin(0.5, originY);
+      this.sprite.setPosition(0, spriteY).setOrigin(0.5, originY);
       recordRenderLifecycleMetrics({ spritesCreated: 1 });
       const targetHeight = this.radius * layoutConfig.sprite.targetHeightRadiusMultiplier;
       const sourceHeight = Math.max(1, this.sprite.height);

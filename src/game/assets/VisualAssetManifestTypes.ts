@@ -105,6 +105,29 @@ export const VISUAL_ASSET_REPLACEMENT_PRIORITIES = ["low", "medium", "high", "cr
 
 export type VisualAssetReplacementPriority = (typeof VISUAL_ASSET_REPLACEMENT_PRIORITIES)[number];
 
+export interface VisualAssetPresentationMetadata {
+  readonly schemaVersion: 1;
+  readonly assetId: string;
+  readonly sourceCanvas: {
+    readonly width: number;
+    readonly height: number;
+  };
+  readonly alphaThreshold: number;
+  readonly alphaContentBounds: {
+    readonly left: number;
+    readonly top: number;
+    readonly right: number;
+    readonly bottom: number;
+  };
+  readonly feetAnchor: {
+    readonly x: number;
+    readonly y: number;
+  };
+  readonly targetContentHeightRule: "legacy-radius-multiplier";
+  readonly targetContentHeightRadiusMultiplier: number;
+  readonly manualFeetAnchor: false;
+}
+
 export interface VisualAssetManifestEntry {
   id: string;
   filePath: string;
@@ -120,6 +143,7 @@ export interface VisualAssetManifestEntry {
   scaleClass: VisualAssetScaleClass;
   intendedWorldHeightPx?: number;
   currentRenderHeightPx?: number;
+  presentationMetadata?: VisualAssetPresentationMetadata;
   silhouetteReadability: VisualAssetReviewRating;
   styleConsistency: VisualAssetReviewRating;
   replacementPriority: VisualAssetReplacementPriority;

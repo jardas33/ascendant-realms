@@ -131,6 +131,16 @@ describe("validateArtIntake", () => {
 
     expect(result.errors).toEqual([]);
     expect(result.checkedMetadataFiles).toBe(0);
+    expect(result.checkedPresentationMetadata).toBe(0);
+  });
+
+  it("fails closed when content-aware source metadata disagrees with a source PNG", () => {
+    const root = mkdtempSync(path.join(tmpdir(), "ascendant-realms-art-intake-presentation-"));
+    mkdirSync(path.join(root, "art-review", "cinderfen-style-frames", "metadata"), { recursive: true });
+    const result = validateArtIntake(root);
+
+    expect(result.errors).toEqual([]);
+    expect(result.checkedPresentationMetadata).toBe(0);
   });
 
   it("validates candidate metadata JSON files from the intake directory", () => {

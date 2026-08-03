@@ -1,5 +1,8 @@
 import { describe, expect, it } from "vitest";
-import { resolveEntityPresentationConfig } from "../ui/EntityPresentationConfig";
+import {
+  calculateUnitContentAwareVisualLayout,
+  resolveEntityPresentationConfig
+} from "../ui/EntityPresentationConfig";
 
 describe("Unit presentation configuration seam", () => {
   it("keeps normal-unit and hero render constants distinct without gameplay fields", () => {
@@ -27,5 +30,21 @@ describe("Unit presentation configuration seam", () => {
       opacity: 0.32
     });
     expect(unit.layout.selectionYOffsetPx).toBe(0.5);
+  });
+
+  it("keeps content-aware feet on the container ground without changing gameplay geometry", () => {
+    const layout = calculateUnitContentAwareVisualLayout("militia_unit_sprite", 13);
+
+    expect(layout?.spriteY).toBe(0);
+    expect(layout?.shadowY).toBe(0);
+    expect(layout?.originY).toBe(0.9296875);
+    expect(layout?.visualBottom).toBeCloseTo(0, 8);
+    expect(layout?.targetContentHeight).toBeCloseTo(13 * 3.65, 8);
+  });
+
+  it("leaves creatures and fallback presentation on the legacy path", () => {
+    expect(calculateUnitContentAwareVisualLayout("stone_imp_unit_sprite", 16)).toBeUndefined();
+    expect(calculateUnitContentAwareVisualLayout("wild_hound_unit_sprite", 16)).toBeUndefined();
+    expect(calculateUnitContentAwareVisualLayout("unknown_fallback", 16)).toBeUndefined();
   });
 });
