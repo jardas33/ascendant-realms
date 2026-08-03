@@ -508,6 +508,20 @@ describe("campaign map presentation helpers", () => {
     expect(detailsHtml).toContain("More Cinderfen content coming later.");
   });
 
+  it("exposes selected campaign-node state without changing node activation semantics", () => {
+    const node = CAMPAIGN_NODES.find((entry) => entry.id === "border_village")!;
+    const selectedHtml = renderNodeButton(createCampaignNodeCardViewModel({ node, status: "available", selected: true }));
+    const unselectedHtml = renderNodeButton(createCampaignNodeCardViewModel({ node, status: "available", selected: false }));
+
+    expect(selectedHtml).toContain('data-campaign-selected="true"');
+    expect(selectedHtml).toContain('aria-current="true"');
+    expect(selectedHtml).toContain('aria-label="Salto Outskirts Battle Available Selected"');
+    expect(selectedHtml).toContain('class="campaign-node-selected"');
+    expect(unselectedHtml).toContain('data-campaign-selected="false"');
+    expect(unselectedHtml).not.toContain('aria-current="true"');
+    expect(unselectedHtml).not.toContain('class="campaign-node-selected"');
+  });
+
   it("shows reputation ranks and active reputation effects in the view model", () => {
     const hero = {
       ...createNewHeroSave("Aster", "warlord", "exiled_noble"),

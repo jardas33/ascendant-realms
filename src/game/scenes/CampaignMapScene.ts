@@ -651,6 +651,7 @@ export class CampaignMapScene extends Phaser.Scene {
         <div class="campaign-selected-state-row">
           <span class="campaign-state-chip">${escapeHtml(stateLabel)}</span>
           <span class="campaign-difficulty-chip">${escapeHtml(pacingLabel)}</span>
+          <span class="campaign-selection-chip">Selected node</span>
         </div>
         <h2>${escapeHtml(node.name)}</h2>
         <p>${escapeHtml(description)}</p>

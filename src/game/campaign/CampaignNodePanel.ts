@@ -50,6 +50,7 @@ interface RenderNodeDetailsOptions {
 
 export function renderNodeButton(nodeView: CampaignNodeViewModel): string {
   const { node } = nodeView;
+  const accessibleState = `${node.name} ${nodeView.nodeTypeLabel} ${nodeView.statusLabel}${nodeView.selected ? " Selected" : ""}${nodeView.rewardStateLabel ? ` ${nodeView.rewardStateLabel}` : ""}`;
   return `
       <button
         class="${escapeHtml(nodeView.cssClass)}"
@@ -57,12 +58,15 @@ export function renderNodeButton(nodeView: CampaignNodeViewModel): string {
         data-campaign-node="${node.id}"
         data-campaign-chapter="${escapeHtml(nodeView.chapterId)}"
         data-campaign-state="${escapeHtml(nodeView.status)}"
-        aria-label="${escapeHtml(`${node.name} ${nodeView.nodeTypeLabel} ${nodeView.statusLabel}${nodeView.rewardStateLabel ? ` ${nodeView.rewardStateLabel}` : ""}`)}"
+        data-campaign-selected="${nodeView.selected ? "true" : "false"}"
+        ${nodeView.selected ? 'aria-current="true"' : ""}
+        aria-label="${escapeHtml(accessibleState)}"
         title="${escapeHtml(nodeView.rewardStateLabel ?? nodeView.statusLabel)}"
         style="${escapeHtml(nodeView.style)}"
       >
         <strong>${escapeHtml(node.name)}</strong>
         <span class="campaign-node-meta campaign-node-state">${escapeHtml(`${nodeView.nodeTypeLabel} - ${nodeView.statusLabel}`)}</span>
+        ${nodeView.selected ? '<span class="campaign-node-selected" aria-hidden="true">Selected</span>' : ""}
       </button>
     `;
 }
