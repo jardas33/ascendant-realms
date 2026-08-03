@@ -2812,6 +2812,9 @@ export class BattleScene extends Phaser.Scene {
     }
 
     const selectedOne = selected[0];
+    if (!selectedOne.alive || selectedOne.team !== "player") {
+      return [];
+    }
     const techState = this.getTechState("player");
     const entries: HUDCommandAvailabilitySnapshot[] = [];
     if (selectedOne instanceof Unit || selectedOne instanceof Building) {

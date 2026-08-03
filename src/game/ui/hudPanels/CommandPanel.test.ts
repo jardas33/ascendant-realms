@@ -224,6 +224,18 @@ describe("CommandPanel", () => {
     expect(markup).toContain("Cost: 180 Crowns, 120 Stone");
   });
 
+  it("keeps enemy building inspection free of player command groups", () => {
+    const enemyBarracks = fakeBuilding("enemy-barracks", "barracks", true, "enemy");
+
+    const markup = renderCommandActionsFromSnapshot(enemyBarracks, fakeSnapshot(["command_hall", "barracks"]));
+
+    expect(markup).toContain("Building role");
+    expect(markup).toContain("Army production");
+    expect(markup).not.toContain('data-command-kind="build"');
+    expect(markup).not.toContain('data-command-kind="train"');
+    expect(markup).not.toContain('data-command-kind="upgrade"');
+  });
+
   it("renders Worker repair commands for damaged completed friendly buildings", () => {
     const worker = fakeWorker();
 
@@ -431,7 +443,7 @@ describe("CommandPanel", () => {
   });
 });
 
-function fakeBuilding(id: string, buildingId: string, completed = true): Building {
+function fakeBuilding(id: string, buildingId: string, completed = true, team: "player" | "enemy" = "player"): Building {
   const definition = BUILDING_BY_ID[buildingId];
   if (!definition) {
     throw new Error(`Missing building ${buildingId}`);
@@ -440,7 +452,7 @@ function fakeBuilding(id: string, buildingId: string, completed = true): Buildin
   return Object.assign(Object.create(Building.prototype), {
     id,
     kind: "building",
-    team: "player",
+    team,
     alive: true,
     definition,
     trainingQueue: [],

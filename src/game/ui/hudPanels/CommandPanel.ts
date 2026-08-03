@@ -46,7 +46,8 @@ export function renderCommandActions(selectedOne: UnitDefinitionOwner | undefine
     </div>`;
   }
 
-  const buildButtons = selectedOne instanceof Unit || selectedOne instanceof Building ? (selectedOne.definition.buildOptions ?? [])
+  const isPlayerCommandSource = (selectedOne instanceof Unit || selectedOne instanceof Building) && selectedOne.alive && selectedOne.team === "player";
+  const buildButtons = isPlayerCommandSource ? (selectedOne.definition.buildOptions ?? [])
     .map((buildingId) => BUILDING_BY_ID[buildingId])
     .filter((definition): definition is BuildingDefinition => definition !== undefined)
     .map((definition) => {
@@ -67,7 +68,7 @@ export function renderCommandActions(selectedOne: UnitDefinitionOwner | undefine
     })
     .join("") : "";
 
-  const trainButtons = selectedOne instanceof Building ? selectedOne.definition.trainOptions
+  const trainButtons = isPlayerCommandSource && selectedOne instanceof Building ? selectedOne.definition.trainOptions
     .map((unitId) => UNIT_BY_ID[unitId])
     .filter((definition): definition is UnitDefinition => definition !== undefined)
     .map((definition) => {
@@ -89,7 +90,7 @@ export function renderCommandActions(selectedOne: UnitDefinitionOwner | undefine
     })
     .join("") : "";
 
-  const upgradeButtons = selectedOne instanceof Building ? selectedOne.definition.upgradeOptions
+  const upgradeButtons = isPlayerCommandSource && selectedOne instanceof Building ? selectedOne.definition.upgradeOptions
     .map((upgradeId) => UPGRADE_BY_ID[upgradeId])
     .filter((definition): definition is UpgradeDefinition => definition !== undefined)
     .map((definition) => {
