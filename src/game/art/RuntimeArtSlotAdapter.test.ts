@@ -21,6 +21,33 @@ describe("RuntimeArtSlotAdapter", () => {
     expect(resolveRuntimeArtSlots().every((resolution) => resolution.source === "fallback")).toBe(true);
   });
 
+  it("records sprite-primary and vector-fallback truth for the four audited core families", () => {
+    const audited = ["barrosan-hero", "barrosan-militia", "barrosan-ranger", "barrosan-command-hall"];
+    const records = audited.map((slotId) => RUNTIME_ART_SLOTS.find((slot) => slot.slotId === slotId));
+
+    expect(records.every((record) => record !== undefined)).toBe(true);
+    for (const record of records) {
+      expect(record?.runtimeSurface).toContain("loaded sprite primary when texture exists");
+      expect(record?.fallback.kind).toBe("phaser-vector");
+      expect(record?.fallback.owner).toBe("src/game/ui/PlaceholderBattlefieldPresentation.ts");
+      expect(record?.fallback.description).toContain("only when");
+      expect(record?.registryMapping.notes).toContain("Provenance, licence, and production approval remain incomplete.");
+    }
+
+    const aster = records[0];
+    const militia = records[1];
+    const ranger = records[2];
+    const commandHall = records[3];
+    expect(aster?.registryMapping.notes).toContain("warlord_hero_battle_sprite");
+    expect(militia?.registryMapping.notes).toContain("militia_unit_sprite");
+    expect(ranger?.registryMapping.notes).toContain("ranger_unit_sprite");
+    expect(commandHall?.registryMapping.notes).toContain("command_hall_building_sprite");
+    expect(RUNTIME_ART_SLOTS).toHaveLength(52);
+    expect(RUNTIME_ART_SLOTS.find((slot) => slot.slotId === "barrosan-worker")?.fallback.owner).toBe(
+      "src/game/ui/PlaceholderBattlefieldPresentation.ts"
+    );
+  });
+
   it("rejects unknown slots and never treats missing runtime art as a load blocker", () => {
     expect(() => resolveRuntimeArtSlot("missing-slot")).toThrow(/Unknown runtime art slot/u);
     const resolution = resolveRuntimeArtSlot("terrain-ground");

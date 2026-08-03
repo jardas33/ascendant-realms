@@ -110,17 +110,17 @@ export const RUNTIME_ART_SLOTS = [
   slot("lume-link", "battlefield", "Lume Link", "LumeNetworkRendering", "phaser-vector", "src/game/battle/LumeNetworkRendering.ts", "lume-links-progress", "Lume links use procedural strokes and pulse fills.", ["v088_lume_link_style_frame", "v088_battlefield_style_frame"]),
   slot("lume-transition", "battlefield", "Lume Transition", "LumeNetworkRendering", "phaser-vector", "src/game/battle/LumeNetworkRendering.ts", "lume-visibility-controls", "Lume state changes use existing vector emphasis and HUD status.", ["v088_lume_link_style_frame", "v088_battlefield_style_frame"]),
 
-  slot("barrosan-hero", "units", "Barrosan Hero", "Unit", "phaser-vector", "src/game/ui/PlaceholderBattlefieldPresentation.ts", "battle-hero-panel", "Hero silhouette uses placeholder battlefield presentation.", ["v088_barrosan_hero_concept_sheet"]),
+  spritePrimarySlot("barrosan-hero", "units", "Barrosan Hero", "src/game/entities/Unit.ts", "battle-hero-panel", "warlord_hero_battle_sprite", "/assets/final/units/warlord_hero_battle_sprite.png", "Hero silhouette uses PlaceholderBattlefieldPresentation only when the final battle texture is unavailable.", ["v088_barrosan_hero_concept_sheet"]),
   slot("barrosan-worker", "units", "Barrosan Worker", "Unit", "phaser-vector", "src/game/ui/PlaceholderBattlefieldPresentation.ts", "battle-hud", "Worker silhouette uses placeholder battlefield presentation.", ["v088_barrosan_worker_concept_sheet"]),
-  slot("barrosan-militia", "units", "Barrosan Militia", "Unit", "phaser-vector", "src/game/ui/PlaceholderBattlefieldPresentation.ts", "unit-order-summary", "Militia silhouette uses placeholder battlefield presentation.", ["v088_barrosan_militia_concept_sheet"]),
-  slot("barrosan-ranger", "units", "Barrosan Ranger", "Unit", "phaser-vector", "src/game/ui/PlaceholderBattlefieldPresentation.ts", "unit-order-summary", "Ranger silhouette uses placeholder battlefield presentation.", ["v088_barrosan_ranger_concept_sheet"]),
+  spritePrimarySlot("barrosan-militia", "units", "Barrosan Militia", "src/game/entities/Unit.ts", "unit-order-summary", "militia_unit_sprite", "/assets/final/units/militia_unit_sprite.png", "Militia silhouette uses PlaceholderBattlefieldPresentation only when the final battle texture is unavailable.", ["v088_barrosan_militia_concept_sheet"]),
+  spritePrimarySlot("barrosan-ranger", "units", "Barrosan Ranger", "src/game/entities/Unit.ts", "unit-order-summary", "ranger_unit_sprite", "/assets/final/units/ranger_unit_sprite.png", "Ranger silhouette uses PlaceholderBattlefieldPresentation only when the final battle texture is unavailable.", ["v088_barrosan_ranger_concept_sheet"]),
   slot("barrosan-acolyte", "units", "Barrosan Acolyte", "Unit", "phaser-vector", "src/game/ui/PlaceholderBattlefieldPresentation.ts", "unit-order-summary", "Acolyte caster silhouette uses placeholder battlefield presentation.", ["v088_barrosan_hero_concept_sheet"]),
   slot("ashen-raider", "units", "Ashen Raider", "Unit", "phaser-vector", "src/game/ui/PlaceholderBattlefieldPresentation.ts", "battle-canvas", "Ashen raider silhouette uses placeholder battlefield presentation.", ["v088_ashen_enemy_concept_sheet"]),
   slot("ashen-brute", "units", "Ashen Brute", "Unit", "phaser-vector", "src/game/ui/PlaceholderBattlefieldPresentation.ts", "battle-canvas", "Ashen brute silhouette uses placeholder battlefield presentation.", ["v088_ashen_enemy_concept_sheet"]),
   slot("ashen-hexer", "units", "Ashen Hexer", "Unit", "phaser-vector", "src/game/ui/PlaceholderBattlefieldPresentation.ts", "battle-canvas", "Ashen caster silhouette uses placeholder battlefield presentation.", ["v088_ashen_enemy_concept_sheet"]),
   slot("ashen-commander", "units", "Ashen Commander", "Unit", "phaser-vector", "src/game/ui/PlaceholderBattlefieldPresentation.ts", "battle-canvas", "Ashen commander silhouette uses placeholder battlefield presentation.", ["v088_ashen_enemy_concept_sheet"]),
 
-  slot("barrosan-command-hall", "buildings", "Barrosan Command Hall", "Building", "phaser-vector", "src/game/ui/PlaceholderBattlefieldPresentation.ts", "battle-hud", "Command Hall placeholder shape remains the runtime fallback.", ["v088_barrosan_command_hall_concept_sheet"]),
+  spritePrimarySlot("barrosan-command-hall", "buildings", "Barrosan Command Hall", "src/game/entities/Building.ts", "battle-hud", "command_hall_building_sprite", "/assets/final/buildings/command_hall_building_sprite.png", "Command Hall vector shape is a fallback only when the final building texture is unavailable.", ["v088_barrosan_command_hall_concept_sheet"]),
   slot("barrosan-barracks", "buildings", "Barrosan Barracks", "Building", "phaser-vector", "src/game/ui/PlaceholderBattlefieldPresentation.ts", "battle-hud", "Barracks placeholder shape remains the runtime fallback.", ["v088_barrosan_barracks_concept_sheet"]),
   slot("barrosan-shrine", "buildings", "Barrosan Shrine", "Building", "phaser-vector", "src/game/ui/PlaceholderBattlefieldPresentation.ts", "battle-hud", "Shrine placeholder shape remains the runtime fallback.", ["v088_barrosan_shrine_concept_sheet"]),
   slot("barrosan-watchtower", "buildings", "Barrosan Watchtower", "Building", "phaser-vector", "src/game/ui/PlaceholderBattlefieldPresentation.ts", "battle-hud", "Watchtower placeholder shape remains the runtime fallback.", ["v088_barrosan_barracks_concept_sheet"]),
@@ -140,6 +140,37 @@ export const RUNTIME_ART_SLOTS = [
 export type RuntimeArtSlotId = (typeof RUNTIME_ART_SLOTS)[number]["slotId"];
 
 export const RUNTIME_ART_SLOT_IDS = RUNTIME_ART_SLOTS.map((slot) => slot.slotId) as RuntimeArtSlotId[];
+
+function spritePrimarySlot(
+  slotId: (typeof EXPECTED_RUNTIME_ART_SLOT_IDS)[number],
+  group: RuntimeArtSlotDefinition["group"],
+  label: string,
+  runtimeOwner: string,
+  dataTestId: string,
+  textureKey: string,
+  assetPath: string,
+  fallbackDescription: string,
+  referenceAssetIds: string[]
+): RuntimeArtSlotDefinition {
+  const entry = slot(
+    slotId,
+    group,
+    label,
+    `${runtimeOwner} (loaded sprite primary when texture exists)`,
+    "phaser-vector",
+    "src/game/ui/PlaceholderBattlefieldPresentation.ts",
+    dataTestId,
+    fallbackDescription,
+    referenceAssetIds
+  );
+  return {
+    ...entry,
+    registryMapping: {
+      ...entry.registryMapping,
+      notes: `Normal runtime primary is texture ${textureKey} at ${assetPath} through ${runtimeOwner}; ${entry.fallback.owner} remains the vector fallback when that texture is unavailable. Provenance, licence, and production approval remain incomplete.`
+    }
+  };
+}
 
 function slot(
   slotId: (typeof EXPECTED_RUNTIME_ART_SLOT_IDS)[number],
