@@ -36,6 +36,66 @@ interface StaticTerrainGeometryCache {
 
 const staticTerrainGeometryCache = new Map<string, StaticTerrainGeometryCache>();
 
+export function createTerrainPresentationGeometryFingerprint(activeMap: BattleMapDefinition): string {
+  return JSON.stringify({
+    id: activeMap.id,
+    width: activeMap.width,
+    height: activeMap.height,
+    visualPaths: activeMap.visualPaths.map((path) => ({
+      id: path.id,
+      width: path.width,
+      points: path.points
+    })),
+    terrainZones: activeMap.terrainZones.map((zone) => ({
+      id: zone.id,
+      type: zone.type,
+      x: zone.x,
+      y: zone.y,
+      width: zone.width,
+      height: zone.height
+    }))
+  });
+}
+
+export function createWaterShorelinePoints(zone: {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+}): Position[] {
+  const inset = Math.max(14, Math.min(zone.width, zone.height) * 0.12);
+  return createOrganicZonePolygon(zone, inset);
+}
+
+export function createRoadShoulderPoints(points: Position[], width: number, pathId = "road"): Position[] {
+  const shoulders: Position[] = [];
+  for (let index = 0; index < points.length - 1; index += 1) {
+    const start = points[index];
+    const end = points[index + 1];
+    const dx = end.x - start.x;
+    const dy = end.y - start.y;
+    const length = Math.hypot(dx, dy);
+    if (length === 0) {
+      continue;
+    }
+    const normalX = -dy / length;
+    const normalY = dx / length;
+    const midpoint = { x: (start.x + end.x) / 2, y: (start.y + end.y) / 2 };
+    const shoulderOffset = width * 0.62 + noise01(hashString(`${pathId}:${index}`)) * Math.max(8, width * 0.22);
+    shoulders.push(
+      {
+        x: midpoint.x + normalX * shoulderOffset,
+        y: midpoint.y + normalY * shoulderOffset
+      },
+      {
+        x: midpoint.x - normalX * shoulderOffset,
+        y: midpoint.y - normalY * shoulderOffset
+      }
+    );
+  }
+  return shoulders;
+}
+
 export function drawBattleMap(
   scene: Phaser.Scene,
   activeMap: BattleMapDefinition,
@@ -77,18 +137,18 @@ function drawBaseTerrain(
   recordRenderLifecycleMetrics?: RenderLifecycleMetricsRecorder
 ): void {
   const cached = cachedStaticTerrainGeometry(activeMap, recordRenderLifecycleMetrics);
-  graphics.fillStyle(0x17261b, 1);
+  graphics.fillStyle(0x243a27, 1);
   graphics.fillRect(0, 0, activeMap.width, activeMap.height);
 
-  graphics.fillStyle(0x0c130f, 0.18);
+  graphics.fillStyle(0x0c130f, 0.1);
   graphics.fillRect(0, 0, activeMap.width, activeMap.height);
-  graphics.fillStyle(0x213923, 0.6);
+  graphics.fillStyle(0x385533, 0.32);
   graphics.fillEllipse(570, 780, 980, 720);
-  graphics.fillStyle(0x243223, 0.54);
+  graphics.fillStyle(0x3b5130, 0.3);
   graphics.fillEllipse(1650, 770, 1220, 760);
-  graphics.fillStyle(0x1a2e27, 0.46);
+  graphics.fillStyle(0x2d4a3d, 0.24);
   graphics.fillEllipse(1160, 230, 620, 300);
-  graphics.fillStyle(0x263827, 0.42);
+  graphics.fillStyle(0x33492f, 0.22);
   graphics.fillEllipse(1250, 1370, 840, 280);
 
   cached.baseFlecks.forEach((fleck) => {
@@ -103,7 +163,15 @@ function drawBaseTerrain(
 }
 
 function drawBattleRoads(graphics: Phaser.GameObjects.Graphics, activeMap: BattleMapDefinition): void {
-  activeMap.visualPaths.forEach((path) => drawPath(graphics, path.points, path.width));
+  activeMap.visualPaths.forEach((path) => {
+    drawPath(graphics, path.points, path.width);
+    const shoulders = createRoadShoulderPoints(path.points, path.width, path.id);
+    graphics.fillStyle(0x9b8559, 0.18);
+    shoulders.forEach((point, index) => {
+      const radius = 2 + noise01(hashString(`${path.id}:stone:${index}`)) * 3;
+      graphics.fillEllipse(point.x, point.y, radius * 2.6, radius * 1.3);
+    });
+  });
 }
 
 function drawBuildableGround(
@@ -111,10 +179,12 @@ function drawBuildableGround(
   zone: { x: number; y: number; width: number; height: number },
   showBattlefieldGuides: boolean
 ): void {
-  graphics.fillStyle(0x2c3f2b, 0.55);
+  graphics.fillStyle(0x385536, 0.16);
   graphics.fillRect(zone.x, zone.y, zone.width, zone.height);
-  graphics.fillStyle(0x6b5837, 0.16);
-  graphics.fillRect(zone.x + 18, zone.y + 18, zone.width - 36, zone.height - 36);
+  graphics.fillStyle(0x806443, 0.1);
+  graphics.fillPoints(createOrganicZonePolygon(zone, Math.max(24, Math.min(zone.width, zone.height) * 0.08)), true);
+  graphics.fillStyle(0x5b774c, 0.12);
+  graphics.fillEllipse(zone.x + zone.width * 0.5, zone.y + zone.height * 0.52, zone.width * 0.76, zone.height * 0.62);
   if (!showBattlefieldGuides) {
     return;
   }
@@ -165,14 +235,17 @@ function drawWaterGround(
 ): void {
   const centerX = zone.x + zone.width / 2;
   const centerY = zone.y + zone.height / 2;
-  graphics.fillStyle(0x10241f, 0.42);
-  graphics.fillEllipse(centerX + 8, centerY + 10, zone.width * 1.16, zone.height * 1.22);
-  graphics.fillStyle(0x1d5564, 0.92);
-  graphics.fillEllipse(centerX, centerY, zone.width * 1.06, zone.height * 1.1);
-  graphics.fillStyle(0x276c78, 0.5);
+  const shoreline = createWaterShorelinePoints(zone);
+  graphics.fillStyle(0x0b252b, 0.64);
+  graphics.fillRect(zone.x, zone.y, zone.width, zone.height);
+  graphics.fillStyle(0x1d5564, 0.74);
+  graphics.fillPoints(shoreline, true);
+  graphics.fillStyle(0x2b7280, 0.28);
   graphics.fillEllipse(centerX - zone.width * 0.12, centerY - zone.height * 0.08, zone.width * 0.58, zone.height * 0.38);
-  graphics.lineStyle(8, 0xa2b077, 0.18);
-  graphics.strokeEllipse(centerX, centerY, zone.width * 1.1, zone.height * 1.15);
+  graphics.lineStyle(6, 0x082126, 0.52);
+  graphics.strokePoints(shoreline, true);
+  graphics.lineStyle(3, 0xa2b077, 0.28);
+  graphics.strokePoints(createOrganicZonePolygon(zone, Math.max(28, Math.min(zone.width, zone.height) * 0.2)), true);
   graphics.lineStyle(2, 0xbfe9df, 0.22);
   for (let index = 0; index < 4; index += 1) {
     const y = centerY - zone.height * 0.23 + index * (zone.height * 0.15);
@@ -229,18 +302,36 @@ function drawMapBorder(graphics: Phaser.GameObjects.Graphics, activeMap: BattleM
 }
 
 function drawPath(graphics: Phaser.GameObjects.Graphics, points: Position[], width: number): void {
-  graphics.lineStyle(width + 28, 0x080b08, 0.28);
+  graphics.lineStyle(width + 28, 0x080b08, 0.22);
   strokePolyline(graphics, points);
-  graphics.lineStyle(width + 18, 0x10140f, 0.34);
+  graphics.lineStyle(width + 16, 0x243527, 0.34);
   strokePolyline(graphics, points);
-  graphics.lineStyle(width + 8, 0x5b462d, 0.38);
+  graphics.lineStyle(width + 8, 0x5b462d, 0.52);
   strokePolyline(graphics, points);
-  graphics.lineStyle(width, 0x8a6a3f, 0.46);
+  graphics.lineStyle(width, 0x936f42, 0.7);
   strokePolyline(graphics, points);
-  graphics.lineStyle(Math.max(4, width * 0.16), 0xc09a5f, 0.16);
+  graphics.lineStyle(Math.max(4, width * 0.16), 0xd1aa6b, 0.2);
   strokePolyline(graphics, points);
-  graphics.lineStyle(2, 0xf0d978, 0.18);
+  graphics.lineStyle(2, 0xf0d978, 0.12);
   strokePolyline(graphics, points);
+}
+
+function createOrganicZonePolygon(
+  zone: { x: number; y: number; width: number; height: number },
+  inset: number
+): Position[] {
+  const safeInset = Math.max(1, Math.min(inset, Math.min(zone.width, zone.height) * 0.45));
+  return [
+    { x: zone.x + safeInset, y: zone.y + safeInset * 0.72 },
+    { x: zone.x + zone.width * 0.28, y: zone.y + safeInset * 0.38 },
+    { x: zone.x + zone.width * 0.64, y: zone.y + safeInset * 0.86 },
+    { x: zone.x + zone.width - safeInset, y: zone.y + safeInset * 0.58 },
+    { x: zone.x + zone.width - safeInset * 0.62, y: zone.y + zone.height * 0.42 },
+    { x: zone.x + zone.width * 0.76, y: zone.y + zone.height - safeInset * 0.76 },
+    { x: zone.x + zone.width * 0.4, y: zone.y + zone.height - safeInset * 0.28 },
+    { x: zone.x + safeInset * 0.56, y: zone.y + zone.height - safeInset },
+    { x: zone.x + safeInset * 0.24, y: zone.y + zone.height * 0.52 }
+  ];
 }
 
 function strokePolyline(graphics: Phaser.GameObjects.Graphics, points: Position[]): void {
@@ -324,14 +415,16 @@ function cachedStaticTerrainGeometry(
 }
 
 function createStaticTerrainGeometrySignature(activeMap: BattleMapDefinition): string {
-  return [
-    activeMap.id,
-    activeMap.width,
-    activeMap.height,
-    activeMap.terrainZones.length,
-    activeMap.visualPaths.length,
-    activeMap.captureSites.length
-  ].join(":");
+  return createTerrainPresentationGeometryFingerprint(activeMap);
+}
+
+function hashString(value: string): number {
+  let hash = 2166136261;
+  for (let index = 0; index < value.length; index += 1) {
+    hash ^= value.charCodeAt(index);
+    hash = Math.imul(hash, 16777619);
+  }
+  return Math.abs(hash);
 }
 
 function noise01(seed: number): number {
