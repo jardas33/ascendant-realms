@@ -11,8 +11,7 @@ import {
 import {
   RESOURCE_SITE_MAX_LEVEL,
   resourceSiteIncomeBreakdown,
-  resourceSiteWorkerSlotCapacity,
-  workerSiteBonusAmount
+  resourceSiteWorkerSlotCapacity
 } from "../../systems/ResourceSystem";
 import {
   formatUnitVeterancyBonusSummary,
@@ -95,6 +94,7 @@ export function renderSelectionSummary(
         <span class="${density === "minimal" ? "density-optional" : ""}">Counterplay ${escapeHtml(selectedOne.enemyEliteCounterplay ?? "Focus fire with a grouped army.")}</span>`
       : "";
     const isWorker = selectedOne.definition.id === "worker";
+    const resourceAssignment = isWorker && selectedOne.team === "player" ? renderWorkerResourceAssignment(selectedOne) : "";
     const focusTitle = selectedOne.team === "enemy" ? "Enemy inspected" : isWorker ? "Worker selected" : "Unit selected";
     const focusTone = selectedOne.team === "enemy" ? "enemy" : isWorker ? "worker" : "player";
     const focusDetail =
@@ -107,6 +107,7 @@ export function renderSelectionSummary(
       ${renderSelectionFocus(focusTitle, selectedOne.definition.name, focusDetail, focusTone)}
       ${renderOrderSummary(order.label, order.detail, order.tone)}
       ${renderRoleIdentitySummary(roleIdentity, density)}
+      ${resourceAssignment}
       ${controlGroupSummary}
       ${selectedOne.team === "player" ? renderBehaviourControls([selectedOne]) : ""}
       <div class="stat-list" data-testid="selected-unit-stats">
@@ -139,22 +140,51 @@ export function renderSelectionSummary(
       selectedOne.owner === "player" ? "Friendly captured" : selectedOne.owner === "enemy" ? "Enemy controlled" : "Neutral";
     const assignmentInstruction = siteAssignmentInstruction(selectedOne);
     const status = siteStatusDetail(selectedOne, assignmentInstruction);
+    const ownershipTone = selectedOne.owner === "enemy" ? "enemy" : selectedOne.owner === "player" ? "player" : "neutral";
+    const resourceLabel = selectedOne.definition.resource.charAt(0).toUpperCase() + selectedOne.definition.resource.slice(1);
+    const isPlayerOwned = selectedOne.owner === "player";
+    const upgradeSummary = isPlayerOwned
+      ? selectedOne.siteLevel >= RESOURCE_SITE_MAX_LEVEL
+        ? "Improved · maximum level reached"
+        : "Available · Level 2 adds income and a second Worker slot"
+      : selectedOne.owner === "enemy"
+        ? "Locked · capture this site before upgrading"
+        : "Locked · capture this site before upgrading";
     return `
-      ${renderSelectionFocus("Site selected", selectedOne.definition.name, assignmentInstruction, selectedOne.owner === "enemy" ? "enemy" : selectedOne.owner === "player" ? "player" : "neutral")}
-      <div class="stat-list" data-testid="selected-resource-site-stats">
-        <span>Control ${escapeHtml(ownerLabel)}</span>
-        <span>Level ${selectedOne.siteLevel}/${RESOURCE_SITE_MAX_LEVEL}</span>
-        <span>Resource ${escapeHtml(selectedOne.definition.resource)}</span>
-        <span>Base income +${selectedOne.definition.incomeAmount}/${selectedOne.definition.incomeInterval}s</span>
-        <span class="density-optional">Upgrade bonus +${breakdown.upgradeBonusAmount}/${selectedOne.definition.incomeInterval}s</span>
-        <span>Worker slots ${workerSlotsUsed}/${workerSlotCapacity}</span>
-        <span class="density-optional">Assigned ${escapeHtml(slotNames)}</span>
-        <span class="density-optional">Worker bonus +${breakdown.workerBonusAmount}/${selectedOne.definition.incomeInterval}s (${workerSiteBonusAmount(selectedOne)} each)</span>
-        <span>Total income +${breakdown.totalAmount}/${selectedOne.definition.incomeInterval}s</span>
-        <span>Status ${escapeHtml(status)}</span>
-      </div>
+      ${renderSelectionFocus("Resource site selected", selectedOne.definition.name, assignmentInstruction, ownershipTone)}
+      <section class="resource-site-summary" data-testid="selected-resource-site-summary" aria-label="Resource site details">
+        <div class="resource-site-heading">
+          <strong>Resource site</strong>
+          <span>${escapeHtml(resourceLabel)}</span>
+        </div>
+        <div class="resource-site-metrics" data-testid="selected-resource-site-stats">
+          <span>Owner ${escapeHtml(ownerLabel)}</span>
+          <span>Level ${selectedOne.siteLevel}/${RESOURCE_SITE_MAX_LEVEL}</span>
+          <span>Income every ${selectedOne.definition.incomeInterval}s</span>
+          <span>Workers ${workerSlotsUsed}/${workerSlotCapacity}</span>
+        </div>
+        <div class="resource-site-income" data-testid="resource-site-income-summary">
+          <strong>${isPlayerOwned ? `Current ${resourceLabel} income` : `${escapeHtml(ownerLabel)} income`}</strong>
+          ${
+            isPlayerOwned
+              ? `<span>Base +${breakdown.baseAmount} · Upgrade +${breakdown.upgradeBonusAmount} · Workers +${breakdown.workerBonusAmount}</span>
+                 <span>Total +${breakdown.totalAmount} ${escapeHtml(resourceLabel)} every ${selectedOne.definition.incomeInterval}s</span>`
+              : `<span>Player income inactive until this site is captured.</span>`
+          }
+        </div>
+        <div class="resource-site-workers" data-testid="resource-site-worker-summary">
+          <strong>Worker assignment</strong>
+          <span>Assigned: ${escapeHtml(slotNames)}</span>
+          <small>Status: ${escapeHtml(status)}</small>
+        </div>
+        <div class="resource-site-upgrade" data-testid="resource-site-upgrade-summary">
+          <strong>Upgrade</strong>
+          <span>${escapeHtml(upgradeSummary)}</span>
+          ${isPlayerOwned && selectedOne.siteLevel < RESOURCE_SITE_MAX_LEVEL ? "<small>Effect: adds upgrade income and one additional Worker slot.</small>" : ""}
+        </div>
+      </section>
       ${lumeSummary ? renderLumeSiteSummary(lumeSummary) : ""}
-      <p class="quiet">${escapeHtml(assignmentInstruction)}</p>
+      <p class="quiet resource-site-next-action">${escapeHtml(assignmentInstruction)}</p>
     `;
   }
 
@@ -335,6 +365,24 @@ function renderSelectionFocus(
   `;
 }
 
+function renderWorkerResourceAssignment(worker: Unit): string {
+  const assignment = worker.activeResourceSiteLabel
+    ? `Assigned to ${worker.activeResourceSiteLabel}`
+    : worker.activeResourceSiteId
+      ? "Assigned to a resource site"
+      : "No resource site assigned";
+  const detail = worker.activeResourceSiteId
+    ? "This Worker is assigned; assigning elsewhere will replace the current site assignment."
+    : "Select a captured resource site and right-click it, or use the Resource Sites command.";
+  return `
+    <div class="worker-resource-assignment" data-testid="selected-worker-resource-assignment" aria-label="Worker resource-site assignment">
+      <strong>Resource assignment</strong>
+      <span>${escapeHtml(assignment)}</span>
+      <small>${escapeHtml(detail)}</small>
+    </div>
+  `;
+}
+
 function renderRoleIdentitySummary(identity: UnitRoleIdentity, density: HudDensityMode): string {
   return `
     <div class="role-identity-summary" data-testid="selected-role-summary">
@@ -365,7 +413,7 @@ function siteAssignmentInstruction(site: CaptureSite): string {
     return "Capture this site before assigning a Worker.";
   }
   if (site.workerAssignments.length >= resourceSiteWorkerSlotCapacity(site)) {
-    return "Move, attack, build, repair, or assign the Worker elsewhere to stop this boost.";
+    return `Worker slots full (${site.workerAssignments.length}/${resourceSiteWorkerSlotCapacity(site)}). Assign a different site to replace a Worker assignment.`;
   }
   return "Select a Worker and right-click this captured site, or use the Worker Resource Sites command.";
 }

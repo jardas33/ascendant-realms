@@ -168,7 +168,7 @@ export function renderCommandActions(selectedOne: UnitDefinitionOwner | undefine
       : "";
 
   const resourceSiteUpgradeButtons =
-    selectedOne instanceof CaptureSite
+    selectedOne instanceof CaptureSite && selectedOne.owner === "player"
       ? (() => {
           const site = snapshot.resourceSites.find((entry) => entry.id === selectedOne.id);
           const level = site?.level ?? selectedOne.siteLevel;

@@ -371,6 +371,54 @@ describe("CommandPanel", () => {
     expect(markup).toContain("adds a modest income bonus and unlocks a second Worker slot");
   });
 
+  it("does not expose a player upgrade control for a neutral or enemy site", () => {
+    const site = fakeCaptureSite("stone_quarry");
+    site.owner = "neutral";
+    site.team = "neutral";
+
+    const markup = renderCommandActions(
+      site,
+      fakeSnapshot([], undefined, [], [], [
+        fakeResourceSiteSummary({
+          id: "stone_quarry",
+          name: "Stone Quarry",
+          resource: "stone",
+          owner: "neutral",
+          isAssignable: false,
+          canUpgrade: false,
+          status: "Neutral - capture before upgrading"
+        })
+      ])
+    );
+
+    expect(markup).not.toContain('data-action="upgrade-resource-site"');
+    expect(markup).not.toContain("Upgrade Stone Quarry");
+  });
+
+  it("does not expose a player upgrade control for an enemy site", () => {
+    const site = fakeCaptureSite("stone_quarry");
+    site.owner = "enemy";
+    site.team = "enemy";
+
+    const markup = renderCommandActions(
+      site,
+      fakeSnapshot([], undefined, [], [], [
+        fakeResourceSiteSummary({
+          id: "stone_quarry",
+          name: "Stone Quarry",
+          resource: "stone",
+          owner: "enemy",
+          isAssignable: false,
+          canUpgrade: false,
+          status: "Enemy controlled"
+        })
+      ])
+    );
+
+    expect(markup).not.toContain('data-action="upgrade-resource-site"');
+    expect(markup).not.toContain("Upgrade Stone Quarry");
+  });
+
   it("keeps Worker building costs visible when a structure is unaffordable", () => {
     const worker = fakeWorker();
 

@@ -83,6 +83,34 @@ describe("SelectedEntityPanel", () => {
     expect(markup).toContain("Utility unit");
   });
 
+  it("makes a selected Worker's resource-site assignment explicit", () => {
+    const assigned = fakeUnit("player-worker", "Worker", "guard_area", { unitId: "worker" });
+    assigned.activeResourceSiteId = "crown_shrine";
+    assigned.activeResourceSiteLabel = "Crown Shrine";
+    const assignedMarkup = renderSelectionSummary(assigned, [assigned]);
+
+    expect(assignedMarkup).toContain('data-testid="selected-worker-resource-assignment"');
+    expect(assignedMarkup).toContain("Assigned to Crown Shrine");
+    expect(assignedMarkup).toContain("assigning elsewhere will replace");
+
+    const unassigned = fakeUnit("player-worker-2", "Worker", "guard_area", { unitId: "worker" });
+    const unassignedMarkup = renderSelectionSummary(unassigned, [unassigned]);
+    expect(unassignedMarkup).toContain("No resource site assigned");
+    expect(unassignedMarkup).toContain("Select a captured resource site");
+  });
+
+  it("does not expose player resource assignment guidance for an enemy Worker", () => {
+    const enemyWorker = fakeUnit("enemy-worker", "Worker", "guard_area", { unitId: "worker" });
+    enemyWorker.team = "enemy";
+    enemyWorker.activeResourceSiteId = "stone_quarry";
+    enemyWorker.activeResourceSiteLabel = "Stone Quarry";
+
+    const markup = renderSelectionSummary(enemyWorker, [enemyWorker]);
+
+    expect(markup).not.toContain('data-testid="selected-worker-resource-assignment"');
+    expect(markup).not.toContain("Assigning elsewhere will replace");
+  });
+
   it("keeps player density focused on role, orders, and combat essentials", () => {
     const militia = fakeUnit("player-1", "Militia", "guard_area", { unitId: "militia", veterancyXp: 140 });
 
@@ -281,16 +309,16 @@ describe("SelectedEntityPanel", () => {
 
     const markup = renderSelectionSummary(site, []);
 
-    expect(markup).toContain("Control Friendly captured");
+    expect(markup).toContain("Owner Friendly captured");
     expect(markup).toContain("Level 1/2");
-    expect(markup).toContain("Resource crowns");
-    expect(markup).toContain("Base income +30/5s");
-    expect(markup).toContain("Upgrade bonus +0/5s");
-    expect(markup).toContain("Worker slots 1/1");
-    expect(markup).toContain("Assigned Worker");
-    expect(markup).toContain("Worker bonus +6/5s (6 each)");
-    expect(markup).toContain("Total income +36/5s");
-    expect(markup).toContain("Status Worker working");
+    expect(markup).toContain("Crowns");
+    expect(markup).toContain("Income every 5s");
+    expect(markup).toContain("Workers 1/1");
+    expect(markup).toContain("Base +30 · Upgrade +0 · Workers +6");
+    expect(markup).toContain("Total +36 Crowns every 5s");
+    expect(markup).toContain("Assigned: Worker");
+    expect(markup).toContain("Status: Worker working");
+    expect(markup).toContain("Effect: adds upgrade income and one additional Worker slot.");
   });
 
   it("explains neutral resource sites must be captured before Worker assignment", () => {
@@ -298,11 +326,26 @@ describe("SelectedEntityPanel", () => {
 
     const markup = renderSelectionSummary(site, []);
 
-    expect(markup).toContain("Control Neutral");
-    expect(markup).toContain("Worker slots 0/1");
-    expect(markup).toContain("Assigned Empty");
-    expect(markup).toContain("Status Capture this site before assigning a Worker.");
+    expect(markup).toContain("Owner Neutral");
+    expect(markup).toContain("Workers 0/1");
+    expect(markup).toContain("Assigned: Empty");
+    expect(markup).toContain("Player income inactive until this site is captured.");
     expect(markup).toContain("Capture this site before assigning a Worker.");
+    expect(markup).not.toContain("Total +30 crowns");
+    expect(markup).not.toContain("Workers +0");
+  });
+
+  it("keeps enemy resource-site inspection free of player income claims", () => {
+    const markup = renderSelectionSummary(
+      fakeCaptureSite({ owner: "enemy", workerAssignmentStatusDetail: "Enemy logistics 1/1 boosting" }),
+      []
+    );
+
+    expect(markup).toContain("Owner Enemy controlled");
+    expect(markup).toContain("Enemy controlled income");
+    expect(markup).toContain("Player income inactive until this site is captured.");
+    expect(markup).not.toContain("Total +30 crowns");
+    expect(markup).not.toContain("Worker bonus");
   });
 
   it("shows Lume link status for eligible selected sites", () => {
@@ -337,6 +380,8 @@ function fakeUnit(
     enemyEliteSquadName?: string;
     enemyEliteBonusSummary?: string;
     enemyEliteCounterplay?: string;
+    activeResourceSiteId?: string;
+    activeResourceSiteLabel?: string;
   } = {}
 ): Unit {
   const unitId = options.unitId ?? name.toLowerCase();
@@ -360,6 +405,8 @@ function fakeUnit(
     enemyEliteSquadName: options.enemyEliteSquadName,
     enemyEliteBonusSummary: options.enemyEliteBonusSummary,
     enemyEliteCounterplay: options.enemyEliteCounterplay,
+    activeResourceSiteId: options.activeResourceSiteId,
+    activeResourceSiteLabel: options.activeResourceSiteLabel,
     definition: {
       id: unitId,
       name,
