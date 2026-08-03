@@ -29,4 +29,17 @@ describe("battle HUD safe-layout contract", () => {
     expect(responsiveCss).toContain("top: calc(202px + env(safe-area-inset-top, 0px));");
     expect(responsiveCss).toContain("bottom: calc(100px + env(safe-area-inset-bottom, 0px));");
   });
+
+  it("keeps player-facing identity, state, and command hierarchy scannable", () => {
+    expect(battleHudCss).toContain(".selected-entity-identity strong");
+    expect(battleHudCss).toContain("font-size: 14px;");
+    expect(battleHudCss).toContain(".selection-count strong");
+    expect(battleHudCss).toContain(".multi-selection-heading strong");
+    expect(battleHudCss).toContain(".summary-line strong");
+    expect(battleHudCss).toContain("font-size: 11px;");
+    expect(battleHudCss).toContain(".command-details summary");
+    expect(responsiveCss).toContain(".side-panel .multi-selection-heading strong");
+    expect(responsiveCss).toContain(".side-panel .command-effect");
+    expect(responsiveCss).toContain("font-size: 11px;");
+  });
 });

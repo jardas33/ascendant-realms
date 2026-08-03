@@ -82,7 +82,7 @@
   }
 
   .side-panel .action-group .hud-button small {
-    font-size: 10px;
+    font-size: 11px;
     line-height: 1.12;
   }
 
@@ -91,7 +91,7 @@
   }
 
   .side-panel .command-effect {
-    font-size: 10px;
+    font-size: 11px;
     line-height: 1.12;
   }
 
@@ -102,9 +102,19 @@
   }
 
   .side-panel .command-verb {
-    font-size: 10px;
+    font-size: 11px;
     line-height: 1;
     text-transform: uppercase;
+  }
+
+  .side-panel .multi-selection-heading strong,
+  .side-panel .multi-selection-heading span,
+  .side-panel .summary-line span {
+    font-size: 11px;
+  }
+
+  .side-panel .summary-line strong {
+    font-size: 10px;
   }
 
   .side-panel .command-name {
