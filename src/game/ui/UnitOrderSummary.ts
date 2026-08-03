@@ -19,10 +19,67 @@ export interface UnitOrderState {
   patrolRoute?: unknown;
 }
 
+export interface UnitOrderIntent {
+  kind: "target" | "destination";
+  label: string;
+  /** Stable in-memory comparison key; never render this value to players. */
+  key: string;
+}
+
 export interface UnitOrderSummary {
   label: string;
   detail: string;
   tone: "active" | "neutral";
+  intent?: UnitOrderIntent;
+}
+
+function orderIntent(unit: UnitOrderState): UnitOrderIntent | undefined {
+  if (unit.team === "enemy" || unit.alive === false) {
+    return undefined;
+  }
+  if (unit.attackTargetId) {
+    return {
+      kind: "target",
+      label: unit.attackTargetLabel ?? "Target unavailable",
+      key: `attack:${unit.attackTargetId}`
+    };
+  }
+  if (unit.activeRepairTargetId || unit.pausedRepairTargetId) {
+    return {
+      kind: "target",
+      label: "Repair target",
+      key: `repair:${unit.activeRepairTargetId ?? unit.pausedRepairTargetId}`
+    };
+  }
+  if (unit.activeConstructionSiteId || unit.pausedConstructionSiteId) {
+    return {
+      kind: "target",
+      label: "Build site",
+      key: `build:${unit.activeConstructionSiteId ?? unit.pausedConstructionSiteId}`
+    };
+  }
+  if (unit.activeResourceSiteId) {
+    return {
+      kind: "target",
+      label: unit.activeResourceSiteLabel ?? "Resource site",
+      key: `resource:${unit.activeResourceSiteId}`
+    };
+  }
+  if (unit.patrolRoute && unit.moveTarget) {
+    return {
+      kind: "destination",
+      label: "Patrol point",
+      key: `patrol:${unit.moveTarget.x}:${unit.moveTarget.y}`
+    };
+  }
+  if (unit.moveTarget) {
+    return {
+      kind: "destination",
+      label: "Map destination",
+      key: `move:${unit.moveTarget.x}:${unit.moveTarget.y}`
+    };
+  }
+  return undefined;
 }
 
 export function describeUnitOrder(unit: UnitOrderState): UnitOrderSummary {
@@ -47,7 +104,8 @@ export function describeUnitOrder(unit: UnitOrderState): UnitOrderSummary {
     return {
       label: "Attacking",
       detail: `${target} Pursuing until in weapon range; HP drops when attacks land.`.trim(),
-      tone: "active"
+      tone: "active",
+      intent: orderIntent(unit)
     };
   }
 
@@ -56,13 +114,15 @@ export function describeUnitOrder(unit: UnitOrderState): UnitOrderSummary {
       return {
         label: "Patrolling",
         detail: "Moving between the patrol point and origin; fights nearby enemies by current behavior.",
-        tone: "active"
+        tone: "active",
+        intent: orderIntent(unit)
       };
     }
     return {
       label: "Attack-moving",
       detail: "Moving while engaging enemies along the route.",
-      tone: "active"
+      tone: "active",
+      intent: orderIntent(unit)
     };
   }
 
@@ -72,7 +132,8 @@ export function describeUnitOrder(unit: UnitOrderState): UnitOrderSummary {
       detail: unit.moveTarget
         ? "Worker is traveling to the damaged building; repair begins when it arrives."
         : "Restoring a friendly completed building; Worker must stay near the footprint.",
-      tone: "active"
+      tone: "active",
+      intent: orderIntent(unit)
     };
   }
 
@@ -82,7 +143,8 @@ export function describeUnitOrder(unit: UnitOrderState): UnitOrderSummary {
       detail: unit.moveTarget
         ? "Worker is traveling to the construction site; progress resumes when it arrives."
         : "Worker is building or finishing this construction site.",
-      tone: "active"
+      tone: "active",
+      intent: orderIntent(unit)
     };
   }
 
@@ -92,7 +154,8 @@ export function describeUnitOrder(unit: UnitOrderState): UnitOrderSummary {
     return {
       label: unit.moveTarget ? "Moving to Assigned Site" : "Assigned to Site",
       detail: `${site}${moving || " Boosting captured-site income while assigned and nearby."}`.trim(),
-      tone: "active"
+      tone: "active",
+      intent: orderIntent(unit)
     };
   }
 
@@ -100,7 +163,8 @@ export function describeUnitOrder(unit: UnitOrderState): UnitOrderSummary {
     return {
       label: "Repair Paused",
       detail: "Issue Repair again on the damaged building to resume.",
-      tone: "neutral"
+      tone: "neutral",
+      intent: orderIntent(unit)
     };
   }
 
@@ -108,7 +172,8 @@ export function describeUnitOrder(unit: UnitOrderState): UnitOrderSummary {
     return {
       label: "Construction Paused",
       detail: "Issue Build/Resume on the construction site, or right-click it with a Worker, to continue.",
-      tone: "neutral"
+      tone: "neutral",
+      intent: orderIntent(unit)
     };
   }
 
@@ -117,13 +182,15 @@ export function describeUnitOrder(unit: UnitOrderState): UnitOrderSummary {
       return {
         label: "Repositioning",
         detail: "Retreat or move order is taking priority; target reacquisition waits briefly.",
-        tone: "active"
+        tone: "active",
+        intent: orderIntent(unit)
       };
     }
     return {
       label: "Moving",
       detail: "Moving to the ordered point; use attack-move to fight along the route.",
-      tone: "neutral"
+      tone: "neutral",
+      intent: orderIntent(unit)
     };
   }
 

@@ -26,7 +26,7 @@ import {
   summarizeUnitRoleMix,
   type UnitRoleIdentity
 } from "../../data/unitRoles";
-import { describeUnitOrder } from "../UnitOrderSummary";
+import { describeUnitOrder, type UnitOrderIntent, type UnitOrderSummary } from "../UnitOrderSummary";
 import { renderEntityPortrait } from "../EntityPortrait";
 import { escapeHtml, formatBuildingRole, formatBuildingUnlockSummary, renderProgress, unitName, upgradeName } from "./HudFormatting";
 import type { HUDSnapshot, HudDensityMode } from "./HudTypes";
@@ -88,6 +88,19 @@ function renderMultiSelectionSummary(selected: SelectedEntity[]): string {
       orderLabel = "unavailable";
     }
   }
+  const orderSummaries = playerUnits.map((unit) => describeUnitOrder(unit));
+  const intentKeys = orderSummaries.map((summary) => summary.intent?.key ?? "none");
+  const hasIntent = intentKeys.some((key) => key !== "none");
+  const sharedIntent =
+    orderSummaries.length > 0 && hasIntent && intentKeys.every((key) => key === intentKeys[0])
+      ? orderSummaries[0].intent
+      : undefined;
+  const targetLabel =
+    orderLabel !== "unavailable" && orderLabel !== "Mixed orders" && playerUnits.length > 0 && ownership === "player" && hasIntent
+      ? sharedIntent
+        ? formatOrderIntent(sharedIntent)
+        : "Mixed targets"
+      : "";
 
   return `<section class="multi-selection-summary" data-testid="multi-selection-summary" aria-label="Selection summary">
     <div class="multi-selection-heading"><strong>Selection summary</strong><span>${selected.length} selected</span></div>
@@ -96,6 +109,7 @@ function renderMultiSelectionSummary(selected: SelectedEntity[]): string {
     <p class="summary-line"><strong>Health</strong><span>${healthLabel}</span></p>
     <p class="summary-line"><strong>Primary</strong><span>${escapeHtml(primary)}</span></p>
     <p class="summary-line"><strong>Order</strong><span>${escapeHtml(orderLabel)}</span></p>
+    ${targetLabel ? `<p class="summary-line"><strong>Intent</strong><span>${escapeHtml(targetLabel)}</span></p>` : ""}
     <p class="summary-line"><strong>Commands</strong><span>${playerUnits.length > 0 ? `${playerUnits.length} player units eligible.` : "No player units eligible."}</span></p>
   </section>`;
 }
@@ -137,7 +151,7 @@ export function renderSelectionSummary(
     return `
       ${renderSelectionFocus("Hero selected", "Champion / commander", "Hero abilities and build identity are active from this selection.", "hero")}
       ${renderPortraitForHero(selectedOne)}
-      ${renderOrderSummary(order.label, order.detail, order.tone)}
+      ${renderOrderSummary(order)}
       ${renderRoleIdentitySummary(HERO_ROLE_IDENTITY, density)}
       ${controlGroupSummary}
       ${renderBehaviourControls([selectedOne])}
@@ -174,7 +188,7 @@ export function renderSelectionSummary(
     return `
       ${renderSelectionFocus(focusTitle, selectedOne.definition.name, focusDetail, focusTone)}
       ${renderPortraitForUnit(selectedOne, roleIdentity.label)}
-      ${renderOrderSummary(order.label, order.detail, order.tone)}
+      ${renderOrderSummary(order)}
       ${renderRoleIdentitySummary(roleIdentity, density)}
       ${resourceAssignment}
       ${controlGroupSummary}
@@ -595,11 +609,24 @@ function renderBehaviourModeButton(mode: BehaviourMode, currentMode?: BehaviourM
   `;
 }
 
-function renderOrderSummary(label: string, detail: string, tone: "active" | "neutral" = "neutral"): string {
+function formatOrderIntent(intent: UnitOrderIntent): string {
+  return `${intent.kind === "destination" ? "Destination" : "Target"}: ${intent.label}`;
+}
+
+function renderOrderSummary(order: UnitOrderSummary): string {
+  const detailAlreadyNamesIntent = Boolean(
+    order.intent &&
+      (order.detail.toLowerCase().includes(order.intent.label.toLowerCase()) ||
+        (order.intent.kind === "target" && order.detail.toLowerCase().includes("target:")))
+  );
+  const intentMarkup = order.intent && !detailAlreadyNamesIntent
+    ? `<span class="order-intent" data-testid="unit-order-intent"><strong>${escapeHtml(order.intent.kind === "destination" ? "Destination" : "Target")}</strong> ${escapeHtml(order.intent.label)}</span>`
+    : "";
   return `
-    <section class="order-summary ${tone}" data-testid="unit-order-summary" aria-label="Current order" role="status">
-      <strong>${escapeHtml(label)}</strong>
-      <span>${escapeHtml(detail)}</span>
+    <section class="order-summary ${order.tone}" data-testid="unit-order-summary" aria-label="Current order" role="status">
+      <strong>${escapeHtml(order.label)}</strong>
+      <span>${escapeHtml(order.detail)}</span>
+      ${intentMarkup}
     </section>
   `;
 }

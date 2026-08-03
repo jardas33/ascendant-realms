@@ -37,6 +37,42 @@ describe("SelectedEntityPanel", () => {
     expect(markup).toContain("Commands</strong><span>1 player units eligible.");
   });
 
+  it("distinguishes shared and mixed canonical targets without exposing IDs", () => {
+    const sharedA = fakeUnit("player-1", "Militia", "guard_area");
+    const sharedB = fakeUnit("player-2", "Ranger", "guard_area");
+    sharedA.moveTarget = { x: 200, y: 320 };
+    sharedB.moveTarget = { x: 200, y: 320 };
+    const sharedMarkup = renderSelectionSummary(undefined, [sharedA, sharedB]);
+    expect(sharedMarkup).toContain("Intent</strong><span>Destination: Map destination");
+    expect(sharedMarkup).not.toContain("200");
+    expect(sharedMarkup).not.toContain("320");
+
+    const mixedB = fakeUnit("player-3", "Ranger", "guard_area");
+    mixedB.moveTarget = { x: 420, y: 320 };
+    const mixedMarkup = renderSelectionSummary(undefined, [sharedA, mixedB]);
+    expect(mixedMarkup).toContain("Intent</strong><span>Mixed targets");
+
+    const mixedOrder = fakeUnit("player-4", "Militia", "guard_area");
+    mixedOrder.moveTarget = { x: 200, y: 320 };
+    mixedOrder.moveOrderCombatSuppressionSeconds = 0.3;
+    const mixedOrderMarkup = renderSelectionSummary(undefined, [sharedA, mixedOrder]);
+    expect(mixedOrderMarkup).toContain("Order</strong><span>Mixed orders");
+    expect(mixedOrderMarkup).not.toContain('class="summary-line"><strong>Intent</strong>');
+  });
+
+  it("keeps mixed ownership target information fail-closed", () => {
+    const player = fakeUnit("player-1", "Militia", "guard_area");
+    player.attackTargetId = "enemy-raider";
+    player.attackTargetLabel = "Raider";
+    const enemy = fakeUnit("enemy-1", "Raider", "press_attack", { team: "enemy" });
+    enemy.attackTargetId = "player-hero";
+    enemy.attackTargetLabel = "Aster";
+
+    const markup = renderSelectionSummary(undefined, [player, enemy]);
+    expect(markup).toContain("Order</strong><span>unavailable");
+    expect(markup).not.toContain('class="summary-line"><strong>Intent</strong>');
+  });
+
   it("renders behaviour mode controls for selected unit groups", () => {
     const markup = renderSelectionSummary(undefined, [
       fakeUnit("player-1", "Militia", "guard_area"),

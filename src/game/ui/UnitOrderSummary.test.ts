@@ -6,7 +6,22 @@ describe("UnitOrderSummary", () => {
     expect(describeUnitOrder({ attackTargetId: "enemy-raider", attackTargetLabel: "Raider" })).toMatchObject({
       label: "Attacking",
       detail: expect.stringContaining("Target: Raider"),
-      tone: "active"
+      tone: "active",
+      intent: { kind: "target", label: "Raider" }
+    });
+  });
+
+  it("exposes canonical destination and neutral target detail without coordinates or IDs", () => {
+    expect(describeUnitOrder({ moveTarget: { x: 120, y: 240 } })).toMatchObject({
+      label: "Moving",
+      intent: { kind: "destination", label: "Map destination" }
+    });
+    expect(describeUnitOrder({ activeConstructionSiteId: "barracks-site" })).toMatchObject({
+      label: "Building",
+      intent: { kind: "target", label: "Build site" }
+    });
+    expect(describeUnitOrder({ attackTargetId: "enemy-raider" })).toMatchObject({
+      intent: { kind: "target", label: "Target unavailable" }
     });
   });
 
