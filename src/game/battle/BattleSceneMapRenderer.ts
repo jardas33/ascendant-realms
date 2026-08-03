@@ -1,6 +1,12 @@
 import Phaser from "phaser";
 import type { BattleMapDefinition, Position } from "../core/GameTypes";
 import type { RenderLifecycleMetricsRecorder } from "../systems/RenderLifecycleMetrics";
+import type { HudDensityMode } from "../ui/hudPanels/HudTypes";
+
+export interface BattleMapPresentationOptions {
+  hudDensityMode?: HudDensityMode;
+  isPlacingBuilding?: boolean;
+}
 
 interface TerrainEllipseCommand {
   x: number;
@@ -33,17 +39,19 @@ const staticTerrainGeometryCache = new Map<string, StaticTerrainGeometryCache>()
 export function drawBattleMap(
   scene: Phaser.Scene,
   activeMap: BattleMapDefinition,
-  recordRenderLifecycleMetrics?: RenderLifecycleMetricsRecorder
-): void {
+  recordRenderLifecycleMetrics?: RenderLifecycleMetricsRecorder,
+  presentation: BattleMapPresentationOptions = {}
+): Phaser.GameObjects.Graphics {
   scene.cameras.main.setBounds(0, 0, activeMap.width, activeMap.height);
   const graphics = scene.add.graphics().setDepth(-20);
+  const showBattlefieldGuides = shouldShowBattlefieldGuides(presentation.hudDensityMode, presentation.isPlacingBuilding);
   recordRenderLifecycleMetrics?.({ graphicsCreated: 1, terrainRedraws: 1 });
   drawBaseTerrain(graphics, activeMap, recordRenderLifecycleMetrics);
   drawBattleRoads(graphics, activeMap);
 
   activeMap.terrainZones.forEach((zone) => {
     if (zone.type === "buildable") {
-      drawBuildableGround(graphics, zone);
+      drawBuildableGround(graphics, zone, showBattlefieldGuides);
     }
     if (zone.type === "blocked") {
       drawBlockedGround(graphics, zone);
@@ -56,6 +64,11 @@ export function drawBattleMap(
   drawCaptureSiteGrounds(graphics, activeMap);
   drawTerrainDetails(graphics, activeMap, recordRenderLifecycleMetrics);
   drawMapBorder(graphics, activeMap);
+  return graphics;
+}
+
+export function shouldShowBattlefieldGuides(hudDensityMode: HudDensityMode = "minimal", isPlacingBuilding = false): boolean {
+  return hudDensityMode === "debug" || isPlacingBuilding;
 }
 
 function drawBaseTerrain(
@@ -95,12 +108,16 @@ function drawBattleRoads(graphics: Phaser.GameObjects.Graphics, activeMap: Battl
 
 function drawBuildableGround(
   graphics: Phaser.GameObjects.Graphics,
-  zone: { x: number; y: number; width: number; height: number }
+  zone: { x: number; y: number; width: number; height: number },
+  showBattlefieldGuides: boolean
 ): void {
   graphics.fillStyle(0x2c3f2b, 0.55);
   graphics.fillRect(zone.x, zone.y, zone.width, zone.height);
   graphics.fillStyle(0x6b5837, 0.16);
   graphics.fillRect(zone.x + 18, zone.y + 18, zone.width - 36, zone.height - 36);
+  if (!showBattlefieldGuides) {
+    return;
+  }
   graphics.lineStyle(3, 0xd6c37d, 0.24);
   graphics.strokeRect(zone.x + 16, zone.y + 16, zone.width - 32, zone.height - 32);
 

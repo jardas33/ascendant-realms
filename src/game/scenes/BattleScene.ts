@@ -80,7 +80,7 @@ import {
   type BattleStatusOptions,
   type BattleStatusPriority
 } from "../battle/BattleStatusPriority";
-import { drawBattleMap } from "../battle/BattleSceneMapRenderer";
+import { drawBattleMap, shouldShowBattlefieldGuides } from "../battle/BattleSceneMapRenderer";
 import { endBattleAndOpenResults } from "../battle/BattleSceneResults";
 import { createBattleMinimapSnapshot } from "../battle/BattleSceneSnapshots";
 import { completeBattleSecondaryObjective } from "../battle/BattleSceneObjectives";
@@ -423,6 +423,8 @@ export class BattleScene extends Phaser.Scene {
   private menuPaused = false;
   private performanceCounters = this.createEmptyPerformanceCounters();
   private hudDensityMode: HudDensityMode = "minimal";
+  private battleMapGraphics?: Phaser.GameObjects.Graphics;
+  private battlefieldGuidesVisible = false;
   private trustedBenchmarkDiagnostics = createDefaultTrustedDiagnostics();
   private battleLoopDiagnostics = createDefaultBattleLoopDiagnostics();
   private battleLoopPhaseProfiler = new BattleLoopPhaseProfiler();
@@ -603,6 +605,9 @@ export class BattleScene extends Phaser.Scene {
     this.activeMap = this.launch.map;
     this.fogOverlay?.destroy();
     this.fogOverlay = undefined;
+    this.battleMapGraphics?.destroy();
+    this.battleMapGraphics = undefined;
+    this.battlefieldGuidesVisible = false;
     this.fogOfWar = createBattleFogOfWar(this.activeMap);
     this.fogUpdateTimer = 0;
     this.lastFogRenderSignature = "";
@@ -688,11 +693,29 @@ export class BattleScene extends Phaser.Scene {
   }
 
   private drawMap(): void {
-    drawBattleMap(
+    this.battleMapGraphics = drawBattleMap(
       this,
       this.activeMap,
-      isPrivatePlaytestToolsEnabled() ? (delta) => this.recordRenderLifecycleMetrics(delta) : undefined
+      isPrivatePlaytestToolsEnabled() ? (delta) => this.recordRenderLifecycleMetrics(delta) : undefined,
+      { hudDensityMode: this.hudDensityMode }
     );
+    this.battlefieldGuidesVisible = shouldShowBattlefieldGuides(this.hudDensityMode);
+  }
+
+  private syncBattlefieldGuides(isPlacingBuilding: boolean): void {
+    const shouldShow = shouldShowBattlefieldGuides(this.hudDensityMode, isPlacingBuilding);
+    if (shouldShow === this.battlefieldGuidesVisible || !this.battleMapGraphics) {
+      return;
+    }
+    this.battleMapGraphics.destroy();
+    this.recordRenderLifecycleMetrics({ graphicsDestroyed: 1 });
+    this.battleMapGraphics = drawBattleMap(
+      this,
+      this.activeMap,
+      isPrivatePlaytestToolsEnabled() ? (delta) => this.recordRenderLifecycleMetrics(delta) : undefined,
+      { hudDensityMode: this.hudDensityMode, isPlacingBuilding }
+    );
+    this.battlefieldGuidesVisible = shouldShow;
   }
 
   private spawnScenario(): void {
@@ -1416,6 +1439,7 @@ export class BattleScene extends Phaser.Scene {
       return true;
     }
     this.hudDensityMode = nextMode;
+    this.syncBattlefieldGuides(Boolean(this.buildingSystem?.pendingBuildingId));
     this.showMessage(`HUD density: ${hudDensityLabel(nextMode)}`, undefined, undefined, "#74d3f2", {
       priority: "command"
     });
@@ -2729,6 +2753,7 @@ export class BattleScene extends Phaser.Scene {
     const selected = this.selectedEntities();
     this.playSelectionAudio(selected);
     const isPlacing = Boolean(this.buildingSystem.pendingBuildingId);
+    this.syncBattlefieldGuides(isPlacing);
     const placementStatus =
       this.buildingSystem.placementMessage || "Click valid ground near your base to place the building.";
     this.uiSystem.update(deltaSeconds, {
@@ -3936,6 +3961,9 @@ export class BattleScene extends Phaser.Scene {
     this.clearCommandFeedbackMarkers();
     this.neutralCampLabels.forEach((entry) => entry.label.destroy());
     this.neutralCampLabels = [];
+    this.battleMapGraphics?.destroy();
+    this.battleMapGraphics = undefined;
+    this.battlefieldGuidesVisible = false;
     this.lumeLinkGraphics?.destroy();
     this.lumeLinkGraphics = undefined;
     this.lumeRenderPulses.clear();
