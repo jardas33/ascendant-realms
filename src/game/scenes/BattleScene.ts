@@ -151,6 +151,7 @@ import { CollisionSystem } from "../systems/CollisionSystem";
 import { isEntityVisibleToPlayer, type FogOfWarSystem, type VisionSource } from "../systems/FogOfWarSystem";
 import { canUseRallyPoint, setRallyPointForBuildings } from "../systems/RallyPointSystem";
 import { evaluateRetinueReinforcement, selectRetinueReinforcementUnit } from "../systems/RetinueReinforcementRules";
+import { resolveBattlefieldViewportLayout } from "../ui/hudPanels/HudRoot";
 import {
   addSpatialQueryCounters,
   cloneSpatialQueryCounters,
@@ -474,6 +475,7 @@ export class BattleScene extends Phaser.Scene {
     this.updateFogOfWar(0, true);
     this.cameraSystem.centerOn(this.hero.position);
     this.selectionSystem.setSelection(this.initialPlayerSelection());
+    this.syncBattlefieldViewport();
     this.applyPrivatePlaytestHubScenarioSetup();
     this.updateAct1Finale();
     this.installTestHooks();
@@ -494,6 +496,7 @@ export class BattleScene extends Phaser.Scene {
     try {
       if (this.menuPaused) {
         this.measureBattleLoopPhase("hudDom", () => this.refreshBattleHud(deltaSeconds));
+        this.syncBattlefieldViewport();
         return;
       }
 
@@ -580,6 +583,7 @@ export class BattleScene extends Phaser.Scene {
         if (!this.isBattleLoopDiagnosticPaused("hudDomPatches")) {
           this.refreshBattleHud(deltaSeconds);
         }
+        this.syncBattlefieldViewport();
       });
       this.measureBattleLoopPhase("endConditions", () => {
         if (!simulationPaused) {
@@ -2922,6 +2926,45 @@ export class BattleScene extends Phaser.Scene {
     });
   }
 
+  private syncBattlefieldViewport(): void {
+    if (!this.cameraSystem || !this.game?.canvas) {
+      return;
+    }
+
+    const canvas = this.game.canvas;
+    const canvasRect = canvas.getBoundingClientRect();
+    const canvasWidth = Math.max(1, Math.round(canvas.width || this.scale.width));
+    const canvasHeight = Math.max(1, Math.round(canvas.height || this.scale.height));
+    const panel = document.querySelector<HTMLElement>("[data-testid='selection-side-panel']");
+    const panelRect = panel?.getBoundingClientRect();
+    const panelStyle = panel ? window.getComputedStyle(panel) : undefined;
+    const panelVisible = Boolean(
+      panel &&
+        panelRect &&
+        panelRect.width > 0 &&
+        panelRect.height > 0 &&
+        !panel.hidden &&
+        panelStyle?.display !== "none" &&
+        panelStyle?.visibility !== "hidden"
+    );
+    const layout = resolveBattlefieldViewportLayout(
+      canvasWidth,
+      canvasHeight,
+      canvasRect.left,
+      canvasRect.width,
+      panelVisible && panelRect ? panelRect.left : null
+    );
+
+    this.cameraSystem.setBattlefieldViewportBase(canvasWidth, canvasHeight);
+    const applied = this.cameraSystem.setBattlefieldRightInset(layout.rightInset);
+    canvas.dataset.battlefieldViewportWidth = String(applied.width);
+    canvas.dataset.battlefieldViewportHeight = String(applied.height);
+    canvas.dataset.battlefieldViewportRight = String(applied.rightEdge);
+    canvas.dataset.battlefieldViewportInset = String(applied.rightInset);
+    canvas.dataset.battlefieldPanelVisible = panelVisible ? "true" : "false";
+    canvas.dataset.battlefieldPanelLeft = panelVisible && panelRect ? String(Math.round(panelRect.left - canvasRect.left)) : "none";
+  }
+
   private checkEndConditions(): void {
     const outcome = this.runtime.evaluateObjectives({
       playerBaseAlive: this.isPlayerBaseAlive(),
@@ -4019,6 +4062,14 @@ export class BattleScene extends Phaser.Scene {
     this.removeTestHooks();
     this.inputSystem?.destroy();
     this.uiSystem?.destroy();
+    if (this.game?.canvas) {
+      delete this.game.canvas.dataset.battlefieldViewportWidth;
+      delete this.game.canvas.dataset.battlefieldViewportHeight;
+      delete this.game.canvas.dataset.battlefieldViewportRight;
+      delete this.game.canvas.dataset.battlefieldViewportInset;
+      delete this.game.canvas.dataset.battlefieldPanelVisible;
+      delete this.game.canvas.dataset.battlefieldPanelLeft;
+    }
     this.buildingSystem?.cancelPlacement();
     this.rallyMarkers.forEach((marker) => marker.destroy(true));
     this.rallyMarkers.clear();

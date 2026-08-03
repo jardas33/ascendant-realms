@@ -16,6 +16,36 @@ import { renderResources } from "./ResourceBar";
 import { renderSelectionSummary } from "./SelectedEntityPanel";
 import { renderTutorialPanel } from "./TutorialPanel";
 
+export interface BattlefieldViewportLayout {
+  width: number;
+  height: number;
+  rightEdge: number;
+  rightInset: number;
+}
+
+export function resolveBattlefieldViewportLayout(
+  canvasWidth: number,
+  canvasHeight: number,
+  canvasCssLeft: number,
+  canvasCssWidth: number,
+  panelCssLeft: number | null
+): BattlefieldViewportLayout {
+  const safeWidth = Math.max(1, Math.round(canvasWidth));
+  const safeHeight = Math.max(1, Math.round(canvasHeight));
+  if (panelCssLeft === null || canvasCssWidth <= 0 || !Number.isFinite(panelCssLeft)) {
+    return { width: safeWidth, height: safeHeight, rightEdge: safeWidth, rightInset: 0 };
+  }
+
+  const scale = safeWidth / canvasCssWidth;
+  const rightEdge = Math.min(safeWidth, Math.max(1, Math.round((panelCssLeft - canvasCssLeft) * scale)));
+  return {
+    width: rightEdge,
+    height: safeHeight,
+    rightEdge,
+    rightInset: safeWidth - rightEdge
+  };
+}
+
 export function renderHud(snapshot: HUDSnapshot): string {
   const density = snapshot.hudDensity ?? "minimal";
   const selected = snapshot.selected.filter((entity) => entity.alive);
