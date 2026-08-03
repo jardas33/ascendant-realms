@@ -180,10 +180,7 @@ export function renderSelectionSummary(
       }
       ${
         selectedOne.isUnderConstruction()
-          ? `<span>Status ${escapeHtml(selectedOne.constructionStatusDetail ?? "Under construction")}</span>
-             <span>Construction ${Math.round(selectedOne.constructionProgress * 100)}%</span>
-             <span>Assigned ${escapeHtml(selectedOne.assignedWorkerName ?? (selectedOne.assignedWorkerId ? "Worker" : "Unassigned"))}</span>
-             <span>Continue: select Worker and right-click site</span>
+          ? `${renderConstructionSummary(selectedOne)}
              <span>${escapeHtml(formatBuildingUnlockSummary(selectedOne.definition))}</span>`
           : training
             ? `<span>Training ${escapeHtml(unitName(training.unitId))} ${Math.ceil(training.remaining)}s</span>`
@@ -205,10 +202,96 @@ export function renderSelectionSummary(
       ${showRally ? `<span>Rally Point: ${selectedOne.rallyPoint ? "Set" : "None"}</span>` : ""}
     </div>
     ${showRally ? `<p class="quiet">Right-click ground to set rally point.</p>` : ""}
-    ${selectedOne.isUnderConstruction() ? renderProgress("Construction", selectedOne.constructionProgress) : ""}
     ${renderProductionQueue(selectedOne)}
     ${renderUpgradeQueue(selectedOne)}
   `;
+}
+
+function renderConstructionSummary(building: Building): string {
+  const presentation = constructionPresentation(building);
+  const progressPercent = constructionProgressPercent(building.constructionProgress);
+  const workerLabel = building.assignedWorkerName ?? (building.assignedWorkerId ? "Worker" : "Unassigned");
+  return `
+    <div class="construction-summary construction-state-${presentation.stateClass}" data-testid="construction-status" role="group" aria-label="Construction status: ${escapeHtml(presentation.stateLabel)}">
+      <div class="construction-summary-header">
+        <strong>Construction status</strong>
+        <span>${escapeHtml(presentation.stateLabel)}</span>
+      </div>
+      <div class="construction-summary-grid">
+        <span>Status ${escapeHtml(presentation.stateLabel)}</span>
+        <span>Construction ${progressPercent}%</span>
+        <span>Worker ${escapeHtml(workerLabel)}</span>
+      </div>
+      <div class="progress-line construction-summary-progress" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${progressPercent}" aria-label="Construction progress ${progressPercent}%">
+        <span>Progress</span>
+        <div class="progress-strip"><i style="width:${progressPercent}%"></i></div>
+      </div>
+      <small class="construction-summary-detail">${escapeHtml(presentation.detail)}</small>
+      <small class="construction-summary-action">${escapeHtml(presentation.action)}</small>
+    </div>
+  `;
+}
+
+function constructionProgressPercent(progress: number): number {
+  return Number.isFinite(progress) ? Math.round(Math.max(0, Math.min(1, progress)) * 100) : 0;
+}
+
+function constructionPresentation(building: Building): {
+  stateLabel: string;
+  stateClass: "active" | "traveling" | "paused" | "missing" | "unassigned" | "assigned";
+  detail: string;
+  action: string;
+} {
+  const detail = building.constructionStatusDetail?.trim() ?? "";
+  const normalized = detail.toLowerCase();
+  const playerAction = "Continue: select Worker and right-click site.";
+
+  if (!building.assignedWorkerId) {
+    return {
+      stateLabel: "Unassigned",
+      stateClass: "unassigned",
+      detail: "No Worker is assigned, so construction is paused.",
+      action: playerAction
+    };
+  }
+  if (normalized.includes("missing")) {
+    return {
+      stateLabel: "Worker missing",
+      stateClass: "missing",
+      detail: `${building.assignedWorkerName ?? "Assigned Worker"} is unavailable; progress cannot advance.`,
+      action: "Continue: select another Worker and right-click site."
+    };
+  }
+  if (normalized.includes("paused") || normalized.includes("away")) {
+    return {
+      stateLabel: "Paused",
+      stateClass: "paused",
+      detail: "The assigned Worker is away or paused; progress is not advancing.",
+      action: "Continue: issue Build/Resume or right-click this site with the Worker."
+    };
+  }
+  if (normalized.includes("traveling") || normalized.includes("moving")) {
+    return {
+      stateLabel: "Worker traveling",
+      stateClass: "traveling",
+      detail: "The assigned Worker is moving to the site; progress resumes on arrival.",
+      action: "Action: wait for the Worker to arrive, or reissue Build if needed."
+    };
+  }
+  if (building.constructionProgressing || normalized === "building") {
+    return {
+      stateLabel: "Building",
+      stateClass: "active",
+      detail: "The assigned Worker is in range and construction is advancing.",
+      action: "Action: no input required while construction is advancing."
+    };
+  }
+  return {
+    stateLabel: "Assigned",
+    stateClass: "assigned",
+    detail: detail || "The Worker is assigned; progress begins when the site is reached.",
+    action: playerAction
+  };
 }
 
 function renderLumeSiteSummary(summary: NonNullable<HUDSnapshot["lumeSiteSummaries"]>[string]): string {

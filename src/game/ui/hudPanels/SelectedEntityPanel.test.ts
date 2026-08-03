@@ -131,16 +131,57 @@ describe("SelectedEntityPanel", () => {
     const markup = renderSelectionSummary(fakeBuilding("barracks", "barracks", {
       constructionProgress: 0.44,
       constructionStatusDetail: "Building",
+      constructionProgressing: true,
+      assignedWorkerId: "worker-1",
       assignedWorkerName: "Worker",
       underConstruction: true
     }), []);
 
     expect(markup).toContain("Status Building");
     expect(markup).toContain("Construction 44%");
-    expect(markup).toContain("Assigned Worker");
-    expect(markup).toContain("Continue: select Worker and right-click site");
+    expect(markup).toContain("Worker Worker");
+    expect(markup).toContain("construction is advancing");
+    expect(markup).toContain("no input required");
+    expect(markup).toContain('role="progressbar"');
+    expect(markup).toContain('aria-valuenow="44"');
+    expect(markup).toContain('aria-label="Construction progress 44%"');
     expect(markup).toContain("Role Army production");
     expect(markup).toContain("Unlocks when complete: trains Militia, Ranger; researches Infantry Weapons I, Reinforced Armor I, Ranger Training I.");
+  });
+
+  it.each([
+    ["unassigned", {}, "Status Unassigned", "No Worker is assigned", "Continue: select Worker and right-click site."],
+    ["traveling", { assignedWorkerId: "worker-1", assignedWorkerName: "Worker", constructionStatusDetail: "Worker traveling" }, "Status Worker traveling", "progress resumes on arrival", "wait for the Worker to arrive"],
+    ["paused", { assignedWorkerId: "worker-1", assignedWorkerName: "Worker", constructionStatusDetail: "Paused - issue Build to resume" }, "Status Paused", "progress is not advancing", "issue Build/Resume"],
+    ["missing", { assignedWorkerId: "worker-1", assignedWorkerName: "Worker", constructionStatusDetail: "Worker missing" }, "Status Worker missing", "is unavailable", "select another Worker"]
+  ])("explains the construction state and resume action for %s", (_state, options, status, detail, action) => {
+    const markup = renderSelectionSummary(fakeBuilding("construction-site", "barracks", {
+      constructionProgress: 0.32,
+      underConstruction: true,
+      ...options
+    }), []);
+
+    expect(markup).toContain('data-testid="construction-status"');
+    expect(markup).toContain(status);
+    expect(markup).toContain(detail);
+    expect(markup).toContain(action);
+  });
+
+  it.each([
+    [0, "0"],
+    [0.5, "50"],
+    [1.4, "100"],
+    [-0.2, "0"],
+    [Number.NaN, "0"]
+  ])("clamps construction progress %s to an accessible finite value", (progress, expected) => {
+    const markup = renderSelectionSummary(fakeBuilding("construction-site", "barracks", {
+      constructionProgress: progress,
+      underConstruction: true
+    }), []);
+
+    expect(markup).toContain(`aria-valuenow="${expected}"`);
+    expect(markup).not.toContain("NaN");
+    expect(markup).not.toContain("Infinity");
   });
 
   it("labels completed building roles for production and defense", () => {
@@ -340,6 +381,8 @@ function fakeBuilding(
   options: {
     constructionProgress?: number;
     constructionStatusDetail?: string;
+    constructionProgressing?: boolean;
+    assignedWorkerId?: string;
     assignedWorkerName?: string;
     underConstruction?: boolean;
     hp?: number;
@@ -368,6 +411,8 @@ function fakeBuilding(
     armor: 1,
     constructionProgress: options.constructionProgress ?? 1,
     constructionStatusDetail: options.constructionStatusDetail,
+    constructionProgressing: options.constructionProgressing ?? false,
+    assignedWorkerId: options.assignedWorkerId,
     assignedWorkerName: options.assignedWorkerName,
     definition,
     isCompleted: () => !options.underConstruction,
