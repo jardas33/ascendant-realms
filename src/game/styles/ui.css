@@ -14,3 +14,90 @@
 @import "./results.css";
 @import "./runtime-art-slots.css";
 @import "./responsive.css";
+
+/* Batch 19: keep hero creation choices legible at the tested 1280px viewport. */
+.creation-panel {
+  max-width: calc(100vw - 28px);
+  overflow-x: hidden;
+  box-sizing: border-box;
+}
+
+.menu-shell.creation {
+  overflow-x: hidden;
+}
+
+.creation-flow {
+  min-width: 0;
+}
+
+.creation-selected-strip {
+  align-items: stretch;
+  gap: 8px;
+}
+
+.creation-selected-strip > span,
+.creation-summary-grid > span {
+  display: grid;
+  gap: 2px;
+}
+
+.creation-selected-strip small,
+.creation-summary-grid small {
+  color: var(--text-muted, #9ba7b8);
+  font-size: 0.68rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.creation-choice-selected {
+  display: inline-flex;
+  width: fit-content;
+  margin-top: 8px;
+  padding: 3px 7px;
+  border: 1px solid color-mix(in srgb, var(--accent, #e0b75a) 70%, transparent);
+  border-radius: 999px;
+  color: var(--accent, #e0b75a);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.creation-summary-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  margin: 12px 0;
+}
+
+.creation-summary-grid > span {
+  min-width: 0;
+  padding: 8px;
+  border: 1px solid color-mix(in srgb, var(--border, #526071) 65%, transparent);
+  border-radius: 6px;
+}
+
+.creation-summary-grid strong,
+.creation-selected-strip strong {
+  overflow-wrap: anywhere;
+}
+
+.creation-summary-grid strong {
+  overflow: visible;
+  text-overflow: clip;
+  white-space: normal;
+  font-size: 0.82rem;
+}
+
+.creation-review-card [data-testid="hero-start-status"] {
+  display: block;
+  margin-top: 10px;
+  color: var(--accent, #e0b75a);
+}
+
+@media (min-width: 981px) and (max-width: 1360px) {
+  .creation-flow {
+    grid-template-columns: minmax(0, 1.08fr) minmax(0, 0.92fr) minmax(260px, 0.72fr);
+  }
+}

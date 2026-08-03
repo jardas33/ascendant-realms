@@ -20,6 +20,7 @@ interface HeroCreationData {
 export class HeroCreationScene extends Phaser.Scene {
   private root?: HTMLElement;
   private handler?: (event: MouseEvent) => void;
+  private inputHandler?: (event: Event) => void;
   private keyboardHandler?: (event: KeyboardEvent) => void;
   private selectedClassId = HERO_CLASSES[0].id;
   private selectedOriginId = ORIGINS[0].id;
@@ -91,6 +92,14 @@ export class HeroCreationScene extends Phaser.Scene {
     };
 
     this.root.addEventListener("click", this.handler);
+    this.inputHandler = (event) => {
+      const input = event.target;
+      if (input instanceof HTMLInputElement && input.id === "hero-name") {
+        this.heroName = input.value;
+        this.updateHeroSummary();
+      }
+    };
+    this.root.addEventListener("input", this.inputHandler);
     this.keyboardHandler = (event) => stopKeyboardEventForEditableTarget(event);
     this.root.addEventListener("keydown", this.keyboardHandler, true);
     this.root.addEventListener("keyup", this.keyboardHandler, true);
@@ -104,6 +113,12 @@ export class HeroCreationScene extends Phaser.Scene {
     }
     const selectedClass = HERO_CLASSES.find((entry) => entry.id === this.selectedClassId) ?? HERO_CLASSES[0];
     const selectedOrigin = ORIGINS.find((entry) => entry.id === this.selectedOriginId) ?? ORIGINS[0];
+    const summary = createHeroCreationSummary({
+      heroName: this.heroName,
+      heroClass: selectedClass,
+      origin: selectedOrigin,
+      nextMode: this.nextMode
+    });
     this.root.className = "ui-root menu-ui";
     this.root.innerHTML = `
       <main class="menu-shell creation asset-screen-bg" data-testid="hero-creation" ${AssetLoader.screenStyle({ backgroundAssetId: ASSET_IDS.ui.mainMenuBackground })}>
@@ -114,9 +129,10 @@ export class HeroCreationScene extends Phaser.Scene {
               <h1>Choose Your Ascendant</h1>
               ${this.privatePlaytestHub ? `<p class="menu-copy" data-testid="hero-creation-private-note">${escapeHtml(PRIVATE_PLAYTEST_HUB_NOTICE)}</p>` : ""}
             </div>
-            <div class="creation-selected-strip" aria-label="Selected hero build">
-              <span>${escapeHtml(selectedClass.name)}</span>
-              <span>${escapeHtml(selectedOrigin.name)}</span>
+            <div class="creation-selected-strip" data-testid="hero-selected-strip" aria-label="Current hero choices">
+              <span><small>Hero</small><strong data-testid="hero-selected-hero">${escapeHtml(summary.heroName)}</strong></span>
+              <span><small>Class</small><strong>${escapeHtml(summary.className)}</strong></span>
+              <span><small>Origin</small><strong>${escapeHtml(summary.originName)}</strong></span>
             </div>
           </div>
           <div class="creation-flow">
@@ -145,13 +161,15 @@ export class HeroCreationScene extends Phaser.Scene {
               </div>
               <label class="field-label" for="hero-name">Hero Name</label>
               <input id="hero-name" data-testid="hero-name-input" value="${escapeHtml(this.heroName)}" maxlength="24" />
-              <div class="creation-review-card">
-                <strong>${escapeHtml(selectedClass.name)} from ${escapeHtml(selectedOrigin.name)}</strong>
-                <p>${
-                  this.nextMode === "campaign"
-                    ? "Begin at Salto Outskirts with this persistent hero. Rules, saves, rewards, and class IDs are unchanged."
-                    : "Continue to skirmish setup with this persistent hero profile."
-                }</p>
+              <div class="creation-review-card" data-testid="hero-summary" aria-label="Current hero summary">
+                <p class="eyebrow">Current choice</p>
+                <div class="creation-summary-grid">
+                  <span><small>Hero</small><strong data-testid="hero-summary-name">${escapeHtml(summary.heroName)}</strong></span>
+                  <span><small>Class</small><strong data-testid="hero-summary-class">${escapeHtml(summary.className)}</strong></span>
+                  <span><small>Origin</small><strong data-testid="hero-summary-origin">${escapeHtml(summary.originName)}</strong></span>
+                </div>
+                <p data-testid="hero-summary-meaning">${escapeHtml(summary.meaning)}</p>
+                <p data-testid="hero-summary-action">${escapeHtml(summary.actionDescription)}</p>
                 <div class="tag-row">
                   ${classTraitList(selectedClass)
                     .slice(0, 3)
@@ -159,6 +177,7 @@ export class HeroCreationScene extends Phaser.Scene {
                     .join("")}
                 </div>
                 <small>${escapeHtml(originMechanicsSummary(selectedOrigin))}</small>
+                <small data-testid="hero-start-status">${escapeHtml(summary.status)}</small>
               </div>
               <div class="menu-actions row creation-actions">
                 <button class="menu-primary-button" data-testid="hero-start" data-hero-action="start">${
@@ -185,6 +204,7 @@ export class HeroCreationScene extends Phaser.Scene {
           data-option-kind="class"
           data-id="${heroClass.id}"
           aria-pressed="${selected ? "true" : "false"}"
+          aria-label="${escapeHtml(`${heroClass.name} class option${selected ? ". Selected." : "."} ${heroClass.description}`)}"
         >
           <span class="choice-content">
             <span class="choice-portrait ${hasPortrait ? "has-asset" : ""}" ${AssetLoader.portraitStyle(portraitId, this.toCssColor(heroClass.color))}></span>
@@ -193,6 +213,7 @@ export class HeroCreationScene extends Phaser.Scene {
               <span>${escapeHtml(heroClass.description)}</span>
             </span>
           </span>
+          ${selected ? `<span class="creation-choice-selected" aria-hidden="true">Selected</span>` : ""}
         </button>
         <div class="creation-trait-grid" aria-label="${escapeHtml(heroClass.name)} traits">
           ${classTraitList(heroClass)
@@ -219,9 +240,11 @@ export class HeroCreationScene extends Phaser.Scene {
           data-option-kind="origin"
           data-id="${origin.id}"
           aria-pressed="${selected ? "true" : "false"}"
+          aria-label="${escapeHtml(`${origin.name} origin option${selected ? ". Selected." : "."} ${origin.description}`)}"
         >
           <strong>${escapeHtml(origin.name)}</strong>
           <span>${escapeHtml(origin.description)}</span>
+          ${selected ? `<span class="creation-choice-selected" aria-hidden="true">Selected</span>` : ""}
         </button>
         <div class="creation-trait-grid origin-traits" aria-label="${escapeHtml(origin.name)} traits">
           ${originTraitList(origin)
@@ -242,15 +265,72 @@ export class HeroCreationScene extends Phaser.Scene {
     return `#${value.toString(16).padStart(6, "0")}`;
   }
 
+  private updateHeroSummary(): void {
+    if (!this.root) {
+      return;
+    }
+    const selectedClass = HERO_CLASSES.find((entry) => entry.id === this.selectedClassId) ?? HERO_CLASSES[0];
+    const selectedOrigin = ORIGINS.find((entry) => entry.id === this.selectedOriginId) ?? ORIGINS[0];
+    const summary = createHeroCreationSummary({
+      heroName: this.heroName,
+      heroClass: selectedClass,
+      origin: selectedOrigin,
+      nextMode: this.nextMode
+    });
+    const text = (testId: string, value: string): void => {
+      const element = this.root?.querySelector<HTMLElement>(`[data-testid="${testId}"]`);
+      if (element) {
+        element.textContent = value;
+      }
+    };
+    text("hero-selected-hero", summary.heroName);
+    text("hero-summary-name", summary.heroName);
+    text("hero-summary-class", summary.className);
+    text("hero-summary-origin", summary.originName);
+    text("hero-summary-meaning", summary.meaning);
+    text("hero-summary-action", summary.actionDescription);
+    text("hero-start-status", summary.status);
+  }
+
   private cleanup(): void {
     if (this.root && this.handler) {
       this.root.removeEventListener("click", this.handler);
+    }
+    if (this.root && this.inputHandler) {
+      this.root.removeEventListener("input", this.inputHandler);
     }
     if (this.root && this.keyboardHandler) {
       this.root.removeEventListener("keydown", this.keyboardHandler, true);
       this.root.removeEventListener("keyup", this.keyboardHandler, true);
     }
   }
+}
+
+export function createHeroCreationSummary(options: {
+  heroName: string;
+  heroClass: (typeof HERO_CLASSES)[number];
+  origin: (typeof ORIGINS)[number];
+  nextMode: "campaign" | "skirmish";
+}): {
+  heroName: string;
+  className: string;
+  originName: string;
+  meaning: string;
+  actionDescription: string;
+  status: string;
+} {
+  const trimmedName = options.heroName.trim();
+  return {
+    heroName: trimmedName || "Aster",
+    className: options.heroClass.name,
+    originName: options.origin.name,
+    meaning: `${options.heroClass.name}: ${options.heroClass.description} ${options.origin.name}: ${options.origin.description}`,
+    actionDescription:
+      options.nextMode === "campaign"
+        ? "Begin at Salto Outskirts with this persistent hero. Your name, class, and origin will be used to start the campaign."
+        : "Continue to skirmish setup with this persistent hero profile.",
+    status: trimmedName ? "Ready to begin." : "Blank names use the existing Aster default."
+  };
 }
 
 function escapeHtml(value: string): string {
