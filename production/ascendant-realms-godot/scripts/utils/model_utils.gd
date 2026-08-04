@@ -67,6 +67,63 @@ static func add_per_part_convex_collision(node: Node3D, collision_layer: int = 1
 				sb.collision_mask = 0
 				break
 
+## Generate the same per-part convex collision policy, but move each generated
+## body beneath a caller-owned destination root so visible meshes never own
+## their physical descendants. The source mesh transforms and collision policy
+## intentionally remain unchanged.
+static func add_per_part_convex_collision_to(node: Node3D, destination_root: Node3D, collision_layer: int = 1) -> int:
+	if not node or not destination_root:
+		return 0
+	var meshes = get_mesh_instances(node)
+	var parts: Array[Dictionary] = []
+	for child in meshes:
+		var mi = child as MeshInstance3D
+		if not mi or not mi.mesh:
+			continue
+		var aabb = mi.get_aabb()
+		var vol = aabb.size.x * aabb.size.y * aabb.size.z
+		parts.append({"mesh": mi, "volume": vol})
+	parts.sort_custom(func(a, b): return a["volume"] > b["volume"])
+	var filtered: Array[MeshInstance3D] = []
+	for i in min(parts.size(), 25):
+		filtered.append(parts[i]["mesh"])
+	var generated_count := 0
+	for mi in filtered:
+		var shape = mi.mesh.create_convex_shape(true, true)
+		if not shape:
+			continue
+		var body := StaticBody3D.new()
+		body.name = "%s_collision" % mi.name
+		body.collision_layer = collision_layer
+		body.collision_mask = 0
+		var mesh_transform := _transform_to_ancestor(mi, node.get_parent() as Node3D)
+		destination_root.add_child(body)
+		body.transform = mesh_transform
+		var collision_shape := CollisionShape3D.new()
+		collision_shape.shape = shape
+		body.add_child(collision_shape)
+		generated_count += 1
+	return generated_count
+
+static func get_mesh_instances(node: Node) -> Array[MeshInstance3D]:
+	var result: Array[MeshInstance3D] = []
+	_collect_mesh_instances(node, result)
+	return result
+
+static func _collect_mesh_instances(node: Node, result: Array[MeshInstance3D]) -> void:
+	for child in node.get_children():
+		if child is MeshInstance3D:
+			result.append(child as MeshInstance3D)
+		_collect_mesh_instances(child, result)
+
+static func _transform_to_ancestor(node: Node3D, ancestor: Node3D) -> Transform3D:
+	var result := Transform3D.IDENTITY
+	var cursor: Node3D = node
+	while cursor and cursor != ancestor:
+		result = cursor.transform * result
+		cursor = cursor.get_parent() as Node3D
+	return result
+
 static func set_animation_loops(anim_player: AnimationPlayer) -> void:
 	var oneshot_anims = ["jump", "attack", "slash", "shoot", "hurt", "die", "death",
 		"fall", "climb", "dive", "hit", "cast", "throw", "reload", "pick_up", "punch", "spell"]

@@ -36,6 +36,8 @@ var _tower_cd := 0.0
 var _aura_timer := 0.0
 
 var model_root: Node3D
+var visual_root: Node3D
+var collision_root: Node3D
 var selection_ring: MeshInstance3D
 var _mesh_instances: Array = []
 var _construct_mat: StandardMaterial3D
@@ -76,17 +78,22 @@ func _build_model() -> void:
 	model_root = Node3D.new()
 	model_root.name = "MeshRoot"
 	add_child(model_root)
+	visual_root = Node3D.new()
+	visual_root.name = "VisualRoot"
+	model_root.add_child(visual_root)
+	collision_root = Node3D.new()
+	collision_root.name = "CollisionRoot"
+	model_root.add_child(collision_root)
 	var path: String = def.get("model", "")
 	if path != "" and ResourceLoader.exists(path):
 		var m = load(path).instantiate()
-		model_root.add_child(m)
+		visual_root.add_child(m)
 		# scale building to a sensible footprint-based size
 		var target_h: float = footprint * 1.4
 		ModelUtils.scale_to_height(m, target_h)
 		ModelUtils.ground_model(m)
-		ModelUtils.add_per_part_convex_collision(m, 4)
-		for mi in m.find_children("*", "MeshInstance3D"):
-			_mesh_instances.append(mi)
+		ModelUtils.add_per_part_convex_collision_to(m, collision_root, 4)
+		_mesh_instances.append_array(ModelUtils.get_mesh_instances(m))
 	else:
 		var mi := MeshInstance3D.new()
 		var bm := BoxMesh.new()
@@ -96,7 +103,7 @@ func _build_model() -> void:
 		var mat := StandardMaterial3D.new()
 		mat.albedo_color = commander.color.lerp(Color(0.5,0.5,0.5), 0.5) if commander else Color.GRAY
 		mi.material_override = mat
-		model_root.add_child(mi)
+		visual_root.add_child(mi)
 		_mesh_instances.append(mi)
 
 func _build_selection_ring() -> void:
@@ -146,7 +153,7 @@ func _complete_build() -> void:
 	build_progress = 1.0
 	hp = max_hp
 	_set_construction_visual(1.0)
-	Sfx.play("build_complete", -4.0)
+	_play_sfx("build_complete", -4.0)
 	if commander:
 		commander.recompute_pop()
 		if int(def.get("tier_unlock", 0)) > commander.tier:
@@ -267,11 +274,16 @@ func _spawn_unit(unit_id: String) -> bool:
 			continue
 		var u = world.spawn_unit(unit_id, team, candidate)
 		if u:
-			Sfx.play("ready", -6.0) if commander.is_human else null
+			_play_sfx("ready", -6.0) if commander.is_human else null
 			if _has_rally:
 				u.command_move(rally_point)
 			return true
 	return false
+
+func _play_sfx(key: String, volume_db: float = -6.0) -> void:
+	var sfx = get_node_or_null("/root/Sfx")
+	if sfx and sfx.has_method("play"):
+		sfx.play(key, volume_db)
 
 func set_rally(pos: Vector3) -> void:
 	rally_point = pos
