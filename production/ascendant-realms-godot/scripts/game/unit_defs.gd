@@ -12,7 +12,7 @@ static func get_all() -> Dictionary:
 	# ---------------- BARROSAN CLANS ----------------
 	"barrosan_worker": {
 		"race": "barrosan", "name": "Highland Worker", "role": "worker", "tier": 1,
-		"model": _char("barrosan_highlander_worker"), "height": 1.8,
+		"model": _char("barrosan_highlander_worker"), "height": 1.8, "visual_scale": 0.90,
 		"hp": 60, "dmg": 5, "dmg_type": "blunt", "armor_class": "light", "armor": 0,
 		"range": 0.0, "attack_cd": 1.2, "speed": 3.6, "vision": 18.0,
 		"cost": {"food": 50}, "build_time": 12, "pop": 1,
@@ -28,7 +28,7 @@ static func get_all() -> Dictionary:
 	},
 	"barrosan_spear_guard": {
 		"race": "barrosan", "name": "Stoneward Spears", "role": "defender", "tier": 1,
-		"model": _char("barrosan_spear_guard"), "height": 1.85,
+		"model": _char("barrosan_spear_guard"), "height": 1.85, "visual_scale": 1.0,
 		"hp": 180, "dmg": 14, "dmg_type": "pierce", "armor_class": "heavy", "armor": 4,
 		"range": 0.0, "attack_cd": 1.3, "speed": 3.0, "vision": 20.0,
 		"cost": {"food": 70, "timber": 20, "stone": 10}, "build_time": 18, "pop": 2, "produced_by": "barracks",
@@ -187,7 +187,7 @@ static func get_all() -> Dictionary:
 	# ---------------- HEROES ----------------
 	"barrosan_hero_thane": {
 		"race": "barrosan", "name": "War-Thane", "role": "hero", "tier": 1, "is_hero": true,
-		"model": _char("barrosan_hero_thane"), "height": 2.0,
+		"model": _char("barrosan_hero_thane"), "height": 2.0, "visual_scale": 1.13,
 		"hp": 400, "dmg": 34, "dmg_type": "slash", "armor_class": "heavy", "armor": 6,
 		"range": 0.0, "attack_cd": 1.1, "speed": 3.9, "vision": 28.0, "pop": 0,
 		"desc": "Frontline commander. Rally aura strengthens nearby allies.",

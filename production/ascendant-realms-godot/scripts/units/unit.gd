@@ -289,6 +289,13 @@ func _build_model() -> void:
 		var m = scn.instantiate()
 		model_root.add_child(m)
 		ModelUtils.setup_character_for_movement(m, float(def.get("height", 1.8)))
+		# Barrosan role hierarchy is a presentation-only transform on the visual
+		# subtree. Gameplay height, pick shape, navigation and unit positions stay
+		# governed by the definition and CharacterBody3D, not this scale.
+		var visual_scale := float(def.get("visual_scale", 1.0))
+		if not is_equal_approx(visual_scale, 1.0):
+			model_root.scale = Vector3.ONE * visual_scale
+			ModelUtils.ground_model(model_root)
 		# animation
 		anim = m.find_child("AnimationPlayer", true, false)
 		if not anim:
