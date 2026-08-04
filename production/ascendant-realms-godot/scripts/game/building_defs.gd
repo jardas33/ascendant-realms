@@ -13,6 +13,7 @@ static func get_all() -> Dictionary:
 	# ---------------- BARROSAN ----------------
 	"barrosan_clanhold": {
 		"race": "barrosan", "name": "Clanhold", "kind": "main", "model": _b("barrosan_clanhold"),
+		"visual_scale": 1.18,
 		"hp": 2200, "armor_class": "fortified", "armor": 10, "footprint": 7.0,
 		"cost": {"timber": 350, "stone": 200}, "build_time": 60, "grants_pop": 12, "tier_unlock": 1,
 		"produces": ["barrosan_worker"], "drop_off": true, "is_hq": true,
@@ -20,12 +21,14 @@ static func get_all() -> Dictionary:
 	},
 	"barrosan_clan_croft": {
 		"race": "barrosan", "name": "Clan Croft", "kind": "house", "model": _b("barrosan_clan_croft"),
+		"visual_scale": 0.90,
 		"hp": 550, "armor_class": "medium", "armor": 2, "footprint": 3.6,
 		"cost": {"timber": 60, "stone": 20}, "build_time": 18, "grants_pop": 8,
 		"produces": [], "desc": "Highland homestead. Raises your population capacity.",
 	},
 	"barrosan_war_hall": {
 		"race": "barrosan", "name": "War Hall", "kind": "barracks", "model": _b("barrosan_war_hall"),
+		"visual_scale": 1.00,
 		"hp": 950, "armor_class": "fortified", "armor": 5, "footprint": 5.0,
 		"cost": {"timber": 150, "stone": 60}, "build_time": 30, "grants_pop": 0,
 		"produces": ["barrosan_clan_levy", "barrosan_spear_guard", "barrosan_crag_archer",

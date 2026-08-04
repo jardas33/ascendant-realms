@@ -94,6 +94,9 @@ func _build_model() -> void:
 		ModelUtils.ground_model(m)
 		ModelUtils.add_per_part_convex_collision_to(m, collision_root, 4)
 		_mesh_instances.append_array(ModelUtils.get_mesh_instances(m))
+		var visual_scale := float(def.get("visual_scale", 1.0))
+		visual_root.scale = Vector3.ONE * visual_scale
+		ModelUtils.ground_model(visual_root)
 	else:
 		var mi := MeshInstance3D.new()
 		var bm := BoxMesh.new()
