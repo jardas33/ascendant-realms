@@ -8,7 +8,10 @@
 
 export type PresentationFamily = "unit" | "hero" | "building";
 
-import type { VisualAssetPresentationMetadata } from "../assets/VisualAssetManifestTypes";
+import type {
+  VisualAssetBuildingPresentationMetadata,
+  VisualAssetPresentationMetadata
+} from "../assets/VisualAssetManifestTypes";
 
 export type ContentAwareHumanoidAssetId =
   | "warlord_hero_battle_sprite"
@@ -22,6 +25,18 @@ export interface UnitContentAwareVisualLayout {
   readonly shadowY: 0;
   readonly scale: number;
   readonly targetContentHeight: number;
+  readonly visualTop: number;
+  readonly visualBottom: number;
+}
+
+export interface BuildingContentAwareVisualLayout {
+  readonly originX: number;
+  readonly originY: number;
+  readonly spriteY: 0;
+  readonly shadowY: 0;
+  readonly scale: number;
+  readonly contentWidth: number;
+  readonly contentHeight: number;
   readonly visualTop: number;
   readonly visualBottom: number;
 }
@@ -200,6 +215,22 @@ const CONTENT_AWARE_HUMANOID_METADATA: Record<ContentAwareHumanoidAssetId, Visua
   }
 };
 
+const COMMAND_HALL_BUILDING_METADATA: VisualAssetBuildingPresentationMetadata = {
+  schemaVersion: 1,
+  assetId: "command_hall_building_sprite",
+  sourceCanvas: { width: 768, height: 768 },
+  alphaThreshold: 8,
+  alphaContentBounds: {
+    left: 0.0703125,
+    top: 0.11848958333333333,
+    right: 0.9296875,
+    bottom: 0.8815104166666666
+  },
+  groundAnchor: { x: 0.5, y: 0.8815104166666666 },
+  fitPolicy: "content-bounds-within-legacy-envelope",
+  groundAnchorMode: "manual-authored"
+};
+
 const UNIT_BASE = {
   sprite: { yRadiusMultiplier: 0.1, originY: 0.8, targetHeightRadiusMultiplier: 3.65 },
   shadow: { yRadiusMultiplier: 0.58, widthRadiusMultiplier: 2.5, heightRadiusMultiplier: 0.72, opacity: 0.32 },
@@ -266,6 +297,7 @@ function freeze<T>(value: T): T {
 
 const COMMON_FROZEN = freeze(COMMON_PRESENTATION_DEFAULTS);
 const CONTENT_AWARE_HUMANOID_METADATA_FROZEN = freeze(CONTENT_AWARE_HUMANOID_METADATA);
+const COMMAND_HALL_BUILDING_METADATA_FROZEN = freeze(COMMAND_HALL_BUILDING_METADATA);
 
 function isContentAwareHumanoidAssetId(assetId: string): assetId is ContentAwareHumanoidAssetId {
   return Object.prototype.hasOwnProperty.call(CONTENT_AWARE_HUMANOID_METADATA_FROZEN, assetId);
@@ -292,6 +324,30 @@ function isValidContentAwareMetadata(metadata: VisualAssetPresentationMetadata):
     bounds.top < bounds.bottom &&
     validNumber(feet.x, bounds.left, bounds.right) &&
     validNumber(feet.y, bounds.top, bounds.bottom)
+  );
+}
+
+function isValidBuildingContentAwareMetadata(metadata: VisualAssetBuildingPresentationMetadata): boolean {
+  const bounds = metadata.alphaContentBounds;
+  const ground = metadata.groundAnchor;
+  return (
+    metadata.schemaVersion === 1 &&
+    metadata.assetId === "command_hall_building_sprite" &&
+    Number.isInteger(metadata.sourceCanvas.width) &&
+    Number.isInteger(metadata.sourceCanvas.height) &&
+    validNumber(metadata.sourceCanvas.width, 1, 100000) &&
+    validNumber(metadata.sourceCanvas.height, 1, 100000) &&
+    validNumber(metadata.alphaThreshold, 0, 255) &&
+    metadata.fitPolicy === "content-bounds-within-legacy-envelope" &&
+    (metadata.groundAnchorMode === "manual-authored" || metadata.groundAnchorMode === "automatic-lower-contact-center") &&
+    validNumber(bounds.left, 0, 1) &&
+    validNumber(bounds.top, 0, 1) &&
+    validNumber(bounds.right, 0, 1) &&
+    validNumber(bounds.bottom, 0, 1) &&
+    bounds.left < bounds.right &&
+    bounds.top < bounds.bottom &&
+    validNumber(ground.x, bounds.left, bounds.right) &&
+    validNumber(ground.y, bounds.top, bounds.bottom)
   );
 }
 
@@ -335,6 +391,64 @@ export function calculateUnitContentAwareVisualLayout(
     shadowY: 0,
     scale,
     targetContentHeight,
+    visualTop,
+    visualBottom
+  };
+}
+
+export function resolveBuildingContentAwarePresentationMetadata(
+  assetId: string
+): VisualAssetBuildingPresentationMetadata | undefined {
+  if (assetId !== "command_hall_building_sprite") {
+    return undefined;
+  }
+  return isValidBuildingContentAwareMetadata(COMMAND_HALL_BUILDING_METADATA_FROZEN)
+    ? COMMAND_HALL_BUILDING_METADATA_FROZEN
+    : undefined;
+}
+
+export function calculateBuildingContentAwareVisualLayout(
+  assetId: string,
+  definitionWidth: number,
+  definitionHeight: number,
+  textureWidth?: number,
+  textureHeight?: number
+): BuildingContentAwareVisualLayout | undefined {
+  const metadata = resolveBuildingContentAwarePresentationMetadata(assetId);
+  if (!metadata || !validNumber(definitionWidth, 0.01, 100000) || !validNumber(definitionHeight, 0.01, 100000)) {
+    return undefined;
+  }
+  const sourceWidth = textureWidth ?? metadata.sourceCanvas.width;
+  const sourceHeight = textureHeight ?? metadata.sourceCanvas.height;
+  if (
+    !validNumber(sourceWidth, 1, 100000) ||
+    !validNumber(sourceHeight, 1, 100000) ||
+    sourceWidth !== metadata.sourceCanvas.width ||
+    sourceHeight !== metadata.sourceCanvas.height
+  ) {
+    return undefined;
+  }
+  const sourceContentWidth = (metadata.alphaContentBounds.right - metadata.alphaContentBounds.left) * sourceWidth;
+  const sourceContentHeight = (metadata.alphaContentBounds.bottom - metadata.alphaContentBounds.top) * sourceHeight;
+  const maxWidth = definitionWidth * BUILDING_BASE.sprite.maxWidthSizeMultiplier;
+  const maxHeight = definitionHeight * BUILDING_BASE.sprite.maxHeightSizeMultiplier;
+  const scale = Math.min(maxWidth / sourceContentWidth, maxHeight / sourceContentHeight);
+  const contentWidth = sourceContentWidth * scale;
+  const contentHeight = sourceContentHeight * scale;
+  const visualTop = (metadata.alphaContentBounds.top - metadata.groundAnchor.y) * sourceHeight * scale;
+  const transformedContentBottom = (metadata.alphaContentBounds.bottom - metadata.groundAnchor.y) * sourceHeight * scale;
+  const visualBottom = Math.max(definitionHeight * 0.46, transformedContentBottom);
+  if (![sourceContentWidth, sourceContentHeight, contentWidth, contentHeight, maxWidth, maxHeight, scale, visualTop, visualBottom].every(Number.isFinite)) {
+    return undefined;
+  }
+  return {
+    originX: metadata.groundAnchor.x,
+    originY: metadata.groundAnchor.y,
+    spriteY: 0,
+    shadowY: 0,
+    scale,
+    contentWidth,
+    contentHeight,
     visualTop,
     visualBottom
   };

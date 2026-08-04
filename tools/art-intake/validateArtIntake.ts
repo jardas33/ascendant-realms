@@ -3,7 +3,10 @@ import { inflateSync } from "node:zlib";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { VISUAL_ASSET_MANIFEST } from "../../src/game/assets/visualAssetManifest";
-import type { VisualAssetPresentationMetadata } from "../../src/game/assets/VisualAssetManifestTypes";
+import type {
+  VisualAssetBuildingPresentationMetadata,
+  VisualAssetPresentationMetadata
+} from "../../src/game/assets/VisualAssetManifestTypes";
 
 export interface ArtIntakeValidationIssue {
   filePath: string;
@@ -27,6 +30,7 @@ const CONTENT_AWARE_ASSET_IDS = new Set([
   "militia_unit_sprite",
   "ranger_unit_sprite"
 ]);
+const CONTENT_AWARE_BUILDING_ASSET_IDS = new Set(["command_hall_building_sprite"]);
 const PNG_SIGNATURE = Buffer.from([137, 80, 78, 71, 13, 10, 26, 10]);
 
 function isNonEmptyString(value: unknown): value is string {
@@ -299,18 +303,28 @@ function sameFloat(a: number, b: number): boolean {
 }
 
 function validatePresentationMetadata(projectRoot: string, result: ArtIntakeValidationResult): void {
-  const sourceRoot = path.join(projectRoot, "public", "assets", "final", "units");
-  if (!existsSync(sourceRoot)) return;
+  const unitSourceRoot = path.join(projectRoot, "public", "assets", "final", "units");
+  const buildingSourceRoot = path.join(projectRoot, "public", "assets", "final", "buildings");
+  if (!existsSync(unitSourceRoot) && !existsSync(buildingSourceRoot)) return;
   const entries = VISUAL_ASSET_MANIFEST.assets.filter((entry) => entry.presentationMetadata);
-  const actualIds = new Set(entries.map((entry) => entry.id));
-  if (entries.length !== CONTENT_AWARE_ASSET_IDS.size || [...CONTENT_AWARE_ASSET_IDS].some((id) => !actualIds.has(id))) {
+  const unitEntries = entries.filter((entry) => entry.presentationMetadata && "feetAnchor" in entry.presentationMetadata);
+  const buildingEntries = entries.filter((entry) => entry.presentationMetadata && "groundAnchor" in entry.presentationMetadata);
+  const unitIds = new Set(unitEntries.map((entry) => entry.id));
+  const buildingIds = new Set(buildingEntries.map((entry) => entry.id));
+  if (unitEntries.length !== CONTENT_AWARE_ASSET_IDS.size || [...CONTENT_AWARE_ASSET_IDS].some((id) => !unitIds.has(id))) {
     addIssue(result.errors, "src/game/assets/visualAssetManifest.ts", "Content-aware humanoid metadata must cover exactly the three authorized asset IDs.");
-    return;
+  }
+  if (buildingEntries.length !== CONTENT_AWARE_BUILDING_ASSET_IDS.size || [...CONTENT_AWARE_BUILDING_ASSET_IDS].some((id) => !buildingIds.has(id))) {
+    addIssue(result.errors, "src/game/assets/visualAssetManifest.ts", "Content-aware building metadata must cover exactly the authorized Command Hall asset ID.");
+  }
+  if (entries.length !== CONTENT_AWARE_ASSET_IDS.size + CONTENT_AWARE_BUILDING_ASSET_IDS.size) {
+    addIssue(result.errors, "src/game/assets/visualAssetManifest.ts", "Content-aware metadata must not cover any additional asset IDs.");
   }
   for (const entry of entries) {
     const metadata = entry.presentationMetadata;
     if (!metadata) continue;
     result.checkedPresentationMetadata += 1;
+    const isBuilding = "groundAnchor" in metadata;
     const sourcePath = path.join(projectRoot, entry.filePath);
     if (!existsSync(sourcePath)) {
       addIssue(result.errors, entry.filePath, "Content-aware metadata source file does not exist.");
@@ -327,8 +341,19 @@ function validatePresentationMetadata(projectRoot: string, result: ArtIntakeVali
       if (!(sameFloat(actualBounds.left, expected.left) && sameFloat(actualBounds.top, expected.top) && sameFloat(actualBounds.right, expected.right) && sameFloat(actualBounds.bottom, expected.bottom))) {
         addIssue(result.errors, entry.filePath, "Committed alpha-content bounds disagree with the source PNG at the declared threshold.");
       }
-      if (metadata.feetAnchor.x < expected.left || metadata.feetAnchor.x > expected.right || metadata.feetAnchor.y < expected.top || metadata.feetAnchor.y > expected.bottom) {
-        addIssue(result.errors, entry.filePath, "Committed feet anchor is outside the declared alpha-content bounds.");
+      if (isBuilding) {
+        const buildingMetadata = metadata as VisualAssetBuildingPresentationMetadata;
+        if (buildingMetadata.fitPolicy !== "content-bounds-within-legacy-envelope" || !["manual-authored", "automatic-lower-contact-center"].includes(buildingMetadata.groundAnchorMode)) {
+          addIssue(result.errors, entry.filePath, "Committed building metadata has an invalid fit policy or ground-anchor mode.");
+        }
+        if (buildingMetadata.groundAnchor.x < expected.left || buildingMetadata.groundAnchor.x > expected.right || buildingMetadata.groundAnchor.y < expected.top || buildingMetadata.groundAnchor.y > expected.bottom) {
+          addIssue(result.errors, entry.filePath, "Committed ground anchor is outside the declared alpha-content bounds.");
+        }
+      } else {
+        const unitMetadata = metadata as VisualAssetPresentationMetadata;
+        if (unitMetadata.feetAnchor.x < expected.left || unitMetadata.feetAnchor.x > expected.right || unitMetadata.feetAnchor.y < expected.top || unitMetadata.feetAnchor.y > expected.bottom) {
+          addIssue(result.errors, entry.filePath, "Committed feet anchor is outside the declared alpha-content bounds.");
+        }
       }
     } catch (error) {
       addIssue(result.errors, entry.filePath, `Unable to verify content-aware metadata: ${(error as Error).message}`);

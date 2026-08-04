@@ -128,6 +128,28 @@ export interface VisualAssetPresentationMetadata {
   readonly manualFeetAnchor: false;
 }
 
+export interface VisualAssetBuildingPresentationMetadata {
+  readonly schemaVersion: 1;
+  readonly assetId: string;
+  readonly sourceCanvas: {
+    readonly width: number;
+    readonly height: number;
+  };
+  readonly alphaThreshold: number;
+  readonly alphaContentBounds: {
+    readonly left: number;
+    readonly top: number;
+    readonly right: number;
+    readonly bottom: number;
+  };
+  readonly groundAnchor: {
+    readonly x: number;
+    readonly y: number;
+  };
+  readonly fitPolicy: "content-bounds-within-legacy-envelope";
+  readonly groundAnchorMode: "manual-authored" | "automatic-lower-contact-center";
+}
+
 export interface VisualAssetManifestEntry {
   id: string;
   filePath: string;
@@ -143,7 +165,7 @@ export interface VisualAssetManifestEntry {
   scaleClass: VisualAssetScaleClass;
   intendedWorldHeightPx?: number;
   currentRenderHeightPx?: number;
-  presentationMetadata?: VisualAssetPresentationMetadata;
+  presentationMetadata?: VisualAssetPresentationMetadata | VisualAssetBuildingPresentationMetadata;
   silhouetteReadability: VisualAssetReviewRating;
   styleConsistency: VisualAssetReviewRating;
   replacementPriority: VisualAssetReplacementPriority;

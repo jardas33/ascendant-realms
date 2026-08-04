@@ -1,9 +1,11 @@
 import { describe, expect, it } from "vitest";
 import {
   calculateUnitContentAwareVisualLayout,
+  calculateBuildingContentAwareVisualLayout,
   getCommonPresentationDefaults,
   presentationConfigHasGameplayFields,
   resolveEntityPresentationConfig,
+  resolveBuildingContentAwarePresentationMetadata,
   resolveUnitContentAwarePresentationMetadata
 } from "./EntityPresentationConfig";
 
@@ -128,5 +130,33 @@ describe("EntityPresentationConfig", () => {
     expect(Number.isFinite(hero?.scale)).toBe(true);
     expect(calculateUnitContentAwareVisualLayout("wild_hound_unit_sprite", 13)).toBeUndefined();
     expect(calculateUnitContentAwareVisualLayout("militia_unit_sprite", Number.NaN)).toBeUndefined();
+  });
+
+  it("resolves only the exact Command Hall building metadata and grounds its content bounds", () => {
+    const metadata = resolveBuildingContentAwarePresentationMetadata("command_hall_building_sprite");
+    const layout = calculateBuildingContentAwareVisualLayout("command_hall_building_sprite", 100, 80, 768, 768);
+
+    expect(metadata).toBeDefined();
+    expect(metadata?.sourceCanvas).toEqual({ width: 768, height: 768 });
+    expect(metadata?.alphaThreshold).toBe(8);
+    expect(metadata?.alphaContentBounds).toEqual({
+      left: 0.0703125,
+      top: 0.11848958333333333,
+      right: 0.9296875,
+      bottom: 0.8815104166666666
+    });
+    expect(metadata?.groundAnchor).toEqual({ x: 0.5, y: 0.8815104166666666 });
+    expect(metadata?.fitPolicy).toBe("content-bounds-within-legacy-envelope");
+    expect(metadata?.groundAnchorMode).toBe("manual-authored");
+    expect(resolveBuildingContentAwarePresentationMetadata("barracks_building_sprite")).toBeUndefined();
+    expect(layout).toBeDefined();
+    expect(layout?.contentWidth).toBeCloseTo(660 * (124 / 660), 10);
+    expect(layout?.contentHeight).toBeCloseTo(586 * (124 / 660), 10);
+    expect(layout?.scale).toBeCloseTo(Math.min(124 / 660, 113.6 / 586), 10);
+    expect(layout?.visualTop).toBeLessThan(0);
+    expect(layout?.visualBottom).toBeCloseTo(36.8, 10);
+    expect((0.8815104166666666 - 0.8815104166666666) * 768 * (layout?.scale ?? 0)).toBe(0);
+    expect(calculateBuildingContentAwareVisualLayout("command_hall_building_sprite", 100, 80, 767, 768)).toBeUndefined();
+    expect(calculateBuildingContentAwareVisualLayout("command_hall_building_sprite", 100, 80, Number.NaN, 768)).toBeUndefined();
   });
 });

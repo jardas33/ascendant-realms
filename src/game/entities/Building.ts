@@ -4,7 +4,11 @@ import { clamp } from "../core/MathUtils";
 import type { BuildingConstructionState, BuildingDefinition, Cost, Position, Team } from "../core/GameTypes";
 import { recordRenderLifecycleMetrics } from "../systems/RenderLifecycleMetrics";
 import { resolveBuildingPlaceholderPresentation } from "../ui/PlaceholderBattlefieldPresentation";
-import { resolveEntityPresentationConfig, type BuildingPresentationConfig } from "../ui/EntityPresentationConfig";
+import {
+  calculateBuildingContentAwareVisualLayout,
+  resolveEntityPresentationConfig,
+  type BuildingPresentationConfig
+} from "../ui/EntityPresentationConfig";
 import { BaseEntity } from "./BaseEntity";
 
 export interface TrainingQueueItem {
@@ -195,17 +199,34 @@ export class Building extends BaseEntity {
     this.view?.addAt(shadow, 0);
 
     if (assetId) {
-      const originY = layoutConfig.sprite.originY;
-      const sprite = scene.add.image(0, 0, assetId).setOrigin(0.5, originY);
+      const sprite = scene.add.image(0, 0, assetId);
       recordRenderLifecycleMetrics({ spritesCreated: 1 });
+      const contentAwareLayout = calculateBuildingContentAwareVisualLayout(
+        assetId,
+        definition.size.width,
+        definition.size.height,
+        sprite.width,
+        sprite.height
+      );
+      if (team === "enemy") {
+        sprite.setTint(0xf0aaa0);
+      }
+      if (contentAwareLayout) {
+        sprite.setOrigin(contentAwareLayout.originX, contentAwareLayout.originY);
+        sprite.setScale(contentAwareLayout.scale);
+        this.view?.addAt(sprite, 1);
+        return {
+          visualTop: contentAwareLayout.visualTop,
+          visualBottom: contentAwareLayout.visualBottom
+        };
+      }
+      const originY = layoutConfig.sprite.originY;
+      sprite.setOrigin(0.5, originY);
       const maxWidth = definition.size.width * layoutConfig.sprite.maxWidthSizeMultiplier;
       const maxHeight = definition.size.height * layoutConfig.sprite.maxHeightSizeMultiplier;
       const scale = Math.min(maxWidth / Math.max(1, sprite.width), maxHeight / Math.max(1, sprite.height));
       sprite.setScale(scale);
       const visualHeight = sprite.height * scale;
-      if (team === "enemy") {
-        sprite.setTint(0xf0aaa0);
-      }
       this.view?.addAt(sprite, 1);
       return {
         visualTop: -visualHeight * originY,

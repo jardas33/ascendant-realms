@@ -1,5 +1,8 @@
 import type { VisualAssetManifest, VisualAssetManifestEntry } from "./VisualAssetManifestTypes";
-import { resolveUnitContentAwarePresentationMetadata } from "../ui/EntityPresentationConfig";
+import {
+  resolveBuildingContentAwarePresentationMetadata,
+  resolveUnitContentAwarePresentationMetadata
+} from "../ui/EntityPresentationConfig";
 
 type VisualAssetDefaultField =
   | "currentStatus"
@@ -43,6 +46,11 @@ function visualAsset(input: VisualAssetDraft): VisualAssetManifestEntry {
 
 function withUnitPresentationMetadata(entry: VisualAssetManifestEntry): VisualAssetManifestEntry {
   const presentationMetadata = resolveUnitContentAwarePresentationMetadata(entry.id);
+  return presentationMetadata ? { ...entry, presentationMetadata } : entry;
+}
+
+function withBuildingPresentationMetadata(entry: VisualAssetManifestEntry): VisualAssetManifestEntry {
+  const presentationMetadata = resolveBuildingContentAwarePresentationMetadata(entry.id);
   return presentationMetadata ? { ...entry, presentationMetadata } : entry;
 }
 
@@ -149,7 +157,7 @@ const buildingSprites = [
 ] as const;
 
 const buildingSpriteAssets = buildingSprites.map(([id, displayName, filename, visualFamily, scaleClass, height]) =>
-  visualAsset({
+  withBuildingPresentationMetadata(visualAsset({
     id,
     filePath: `public/assets/final/buildings/${filename}_building_sprite.png`,
     category: "building-sprite",
@@ -164,7 +172,7 @@ const buildingSpriteAssets = buildingSprites.map(([id, displayName, filename, vi
     styleConsistency: "low",
     replacementPriority: visualFamily.includes("stronghold") ? "high" : "medium",
     notes: "Current building sprite is footprint-scaled and readable, but needs source/license and architectural style review."
-  })
+  }))
 );
 
 const buildingConceptAssets = [
