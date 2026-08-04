@@ -1,4 +1,5 @@
 extends Node
+const CaptureGate = preload("res://tests/capture_autoload_gate.gd")
 ## v0.436 headed production capture. Player-side actions use RTSController and
 ## real queues/building/combat paths; this driver never writes AI state, HP,
 ## death, timers, resources, or positions directly.
@@ -13,6 +14,8 @@ var assault_log: Array = []
 var first_result := {}
 
 func _ready() -> void:
+	if not CaptureGate.guard_autoload(self, "V0436Capture"):
+		return
 	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(OUT))
 	get_node("/root/Match").set_config({
 		"player_race": "barrosan", "opponents": [{"race": "lioraen", "difficulty": "easy"}],

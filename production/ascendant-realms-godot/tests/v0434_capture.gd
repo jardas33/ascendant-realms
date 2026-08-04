@@ -1,4 +1,5 @@
 extends Node
+const CaptureGate = preload("res://tests/capture_autoload_gate.gd")
 ## v0.434 headed combat driver. It uses the production scene, real starting
 ## units, the real War Hall queue and public RTSController command paths.
 ## It never writes HP, calls _die, creates projectiles, or edits kill counts.
@@ -15,6 +16,8 @@ var enemy_workers: Array = []
 var combat_frames: Array = []
 
 func _ready() -> void:
+	if not CaptureGate.guard_autoload(self, "V0434Capture"):
+		return
 	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(OUT))
 	get_node("/root/Match").set_config({
 		"player_race": "barrosan", "opponents": [{"race": "lioraen", "difficulty": "easy"}],

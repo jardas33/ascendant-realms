@@ -1,4 +1,5 @@
 extends Node
+const CaptureGate = preload("res://tests/capture_autoload_gate.gd")
 ## v0.435 headed production capture. The Easy opponent is autonomous: this
 ## driver observes and records it, while player-side combat responses travel
 ## through RTSController public commands. It never writes resources, HP, deaths,
@@ -16,6 +17,8 @@ var hero
 var frame_names: Array = []
 
 func _ready() -> void:
+	if not CaptureGate.guard_autoload(self, "V0435Capture"):
+		return
 	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(OUT))
 	get_node("/root/Match").set_config({
 		"player_race": "barrosan", "opponents": [{"race": "lioraen", "difficulty": "easy"}],

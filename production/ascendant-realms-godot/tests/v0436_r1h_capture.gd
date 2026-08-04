@@ -26,8 +26,11 @@ var last_valid_frame := ""
 var preparation_started_ms := 0
 var primary_status := ""
 var force_plan_audit: Dictionary = {}
+const CaptureGate = preload("res://tests/capture_autoload_gate.gd")
 
 func _ready() -> void:
+	if not CaptureGate.guard_autoload(self, "V0436R1HCapture"):
+		return
 	session = OS.get_environment("ASCENDANT_V0436_R1H_SESSION")
 	if session != "A" and session != "B": session = "A"
 	out_path = (R1I_OUT if evidence_mode == "R1I" else R1H_OUT) + "session-%s/" % session.to_lower()

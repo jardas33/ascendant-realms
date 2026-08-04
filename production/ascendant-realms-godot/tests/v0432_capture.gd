@@ -1,4 +1,5 @@
 extends Node
+const CaptureGate = preload("res://tests/capture_autoload_gate.gd")
 ## v0.432 headed QA driver. It uses the production worker/build/HUD/Building
 ## path and records the real War Hall -> Clan Levy transaction.
 
@@ -9,6 +10,8 @@ var capture_run_count := 0
 var valid_pos := Vector3.ZERO
 
 func _ready() -> void:
+	if not CaptureGate.guard_autoload(self, "V0432Capture"):
+		return
 	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(OUT))
 	var marker := FileAccess.open(ProjectSettings.globalize_path(OUT + "v0432-driver-started.txt"), FileAccess.WRITE)
 	if marker:

@@ -1,4 +1,5 @@
 extends Node
+const CaptureGate = preload("res://tests/capture_autoload_gate.gd")
 ## v0.436-R1G natural-conquest predicate/result/replay evidence.
 ## This runner is opt-in capture tooling. It observes the production scene and
 ## uses public RTS, build, queue, and Button input paths only.
@@ -20,6 +21,8 @@ var predicate_sequence: Array = []
 var last_valid_frame := ""
 
 func _ready() -> void:
+	if not CaptureGate.guard_autoload(self, "V0436R1GCapture"):
+		return
 	session = OS.get_environment("ASCENDANT_V0436_R1G_SESSION")
 	if session != "A" and session != "B":
 		session = "A"

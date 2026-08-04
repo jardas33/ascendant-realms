@@ -7,6 +7,8 @@ var r1f_frame_names: Array[String] = []
 var r1f_run_index := "01"
 
 func _ready() -> void:
+	if not CaptureGate.guard_autoload(self, "V0436R1FCapture"):
+		return
 	super._ready()
 	r1f_run_index = OS.get_environment("ASCENDANT_V0436_R1F_RUN_INDEX")
 	if r1f_run_index.is_empty():

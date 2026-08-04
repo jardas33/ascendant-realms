@@ -1,4 +1,5 @@
 extends Node
+const CaptureGate = preload("res://tests/capture_autoload_gate.gd")
 ## v0.433 headed economy driver. It uses the production scene, actual workers,
 ## real resource nodes, the real right-click command path and one real spend.
 ## It never edits carry, node amounts, Commander resources or timers directly.
@@ -12,6 +13,8 @@ var workers: Array = []
 var nodes := {}
 
 func _ready() -> void:
+	if not CaptureGate.guard_autoload(self, "V0433Capture"):
+		return
 	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(OUT))
 	get_node("/root/Match").set_config({
 		"player_race": "barrosan", "opponents": [{"race": "vorthak", "difficulty": "normal"}],

@@ -15,8 +15,11 @@ var fresh_replay_captured := false
 var first_result: Dictionary = {}
 var session := "A"
 var out_path := ""
+const CaptureGate = preload("res://tests/capture_autoload_gate.gd")
 
 func _ready() -> void:
+	if not CaptureGate.guard_autoload(self, "V0436R1CCapture"):
+		return
 	session = OS.get_environment("ASCENDANT_V0436_R1C_SESSION")
 	if session != "A" and session != "B": session = "A"
 	out_path = "res://../../artifacts/manual-review/v0436-r1c-natural-conquest-result-replay-proof/session-%s/" % session.to_lower()

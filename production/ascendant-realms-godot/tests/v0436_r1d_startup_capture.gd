@@ -1,10 +1,13 @@
 extends Node
+const CaptureGate = preload("res://tests/capture_autoload_gate.gd")
 ## v0.436-R1D headed-startup evidence hook. Inert unless explicitly opted in.
 
 var active := false
 var frame_count := 0
 
 func _ready() -> void:
+	if not CaptureGate.guard_autoload(self, "V0436R1DStartupCapture"):
+		return
 	active = OS.get_environment("ASCENDANT_V0436_R1D_STARTUP_CAPTURE") == "1"
 	if not active:
 		set_process(false)

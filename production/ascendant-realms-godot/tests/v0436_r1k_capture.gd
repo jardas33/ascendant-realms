@@ -47,6 +47,8 @@ var arrival_hold_start_index := -1
 var arrival_hold_end_index := -1
 
 func _ready() -> void:
+	if not CaptureGate.guard_autoload(self, "V0436R1KCapture"):
+		return
 	evidence_mode = "R1K"
 	cell_id = OS.get_environment("ASCENDANT_V0436_R1K_CELL")
 	repetition = int(OS.get_environment("ASCENDANT_V0436_R1K_REPETITION"))

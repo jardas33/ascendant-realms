@@ -1,4 +1,5 @@
 extends Node
+const CaptureGate = preload("res://tests/capture_autoload_gate.gd")
 ## v0.431 QA capture driver. It drives the real GameWorld, RTSController,
 ## worker, HUD and Building nodes; it never injects a completed state.
 
@@ -13,6 +14,8 @@ var capture_run_count := 0
 var first_loop_audit: Dictionary = {}
 
 func _ready() -> void:
+	if not CaptureGate.guard_autoload(self, "V0431Capture"):
+		return
 	var marker := FileAccess.open(ProjectSettings.globalize_path(OUT + "v0431-driver-started.txt"), FileAccess.WRITE)
 	if marker:
 		marker.store_line("ready environment=" + OS.get_environment("ASCENDANT_V0431_CAPTURE"))

@@ -24,6 +24,8 @@ var _attack_by_id := {}
 var _projectile_by_id := {}
 
 func _ready() -> void:
+	if not CaptureGate.guard_autoload(self, "V0436R1JCapture"):
+		return
 	evidence_mode = "R1J"
 	session = OS.get_environment("ASCENDANT_V0436_R1J_SESSION")
 	if session != "A" and session != "B": session = "A"

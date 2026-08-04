@@ -1,4 +1,5 @@
 extends Node
+const CaptureGate = preload("res://tests/capture_autoload_gate.gd")
 ## v0.436-R1 bounded headed behavioral proof.
 ## Uses only production command APIs on the real scene. It deliberately stops
 ## before the v0.436 conquest capture and never writes positions, HP, resources,
@@ -16,6 +17,8 @@ var boundary_overlay_layer: CanvasLayer
 var boundary_overlay: Label
 
 func _ready() -> void:
+	if not CaptureGate.guard_autoload(self, "V0436R1Capture"):
+		return
 	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(OUT))
 	get_node("/root/Match").set_config({
 		"player_race": "barrosan", "opponents": [{"race": "lioraen", "difficulty": "easy"}],
