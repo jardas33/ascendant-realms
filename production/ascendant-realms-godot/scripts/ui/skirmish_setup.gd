@@ -14,6 +14,7 @@ const VICTORY_LABELS := ["Conquest", "Domination"]
 
 var _player_race := "barrosan"
 var _player_opt: OptionButton
+var _identity_note: Label
 var _num_opponents := 1
 var _opp_rows := []          # array of {race_opt, diff_opt}
 var _opp_container: VBoxContainer
@@ -88,16 +89,14 @@ func _build() -> void:
 		_player_opt.add_item(GameData.RACES[rid].get("name", rid), i)
 	var player_idx: int = race_ids.find(_player_race)
 	_player_opt.select(max(0, player_idx))
-	_player_opt.item_selected.connect(func(idx): _player_race = str(race_ids[idx]); Sfx.play("select"))
+	_player_opt.item_selected.connect(_on_player_race_selected.bind(race_ids))
 	v.add_child(_player_opt)
-	if ProfileManager.has_hero():
-		var note := Label.new()
-		var pr_name: String = GameData.RACES.get(_player_race, {}).get("name", _player_race)
-		note.text = "Your hero hails from %s, and will fight best under their banner." % pr_name
-		note.add_theme_color_override("font_color", Color(0.8, 0.8, 0.72))
-		note.add_theme_font_size_override("font_size", 16)
-		note.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-		v.add_child(note)
+	_identity_note = Label.new()
+	_identity_note.add_theme_color_override("font_color", Color(0.8, 0.8, 0.72))
+	_identity_note.add_theme_font_size_override("font_size", 16)
+	_identity_note.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	v.add_child(_identity_note)
+	_update_identity_note()
 
 	# Opponent count
 	v.add_child(_heading("Opponents"))
@@ -181,6 +180,24 @@ func _set_opponents(n: int) -> void:
 		if b is Button:
 			b.button_pressed = (b.get_meta("count", 0) == n)
 	_rebuild_opponents()
+
+func _on_player_race_selected(idx: int, race_ids: Array) -> void:
+	if idx >= 0 and idx < race_ids.size():
+		_player_race = str(race_ids[idx])
+	_update_identity_note()
+	Sfx.play("select")
+
+func _update_identity_note() -> void:
+	if not is_instance_valid(_identity_note):
+		return
+	var profile := ProfileManager.hero()
+	var faction_name: String = str(GameData.RACES.get(_player_race, {}).get("name", _player_race))
+	if profile.is_empty():
+		_identity_note.text = "Profile hero: none. Skirmish faction: %s." % faction_name
+		return
+	var profile_race := str(profile.get("race", "unknown"))
+	var profile_race_name: String = str(GameData.RACES.get(profile_race, {}).get("name", profile_race))
+	_identity_note.text = "Profile hero: %s — %s. Skirmish faction: %s. Persistent hero progression will be applied to this battle." % [str(profile.get("name", "Unnamed hero")), profile_race_name, faction_name]
 
 func _rebuild_opponents() -> void:
 	for c in _opp_container.get_children():

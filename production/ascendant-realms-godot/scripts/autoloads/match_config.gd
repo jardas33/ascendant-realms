@@ -28,6 +28,21 @@ func get_config() -> Dictionary:
 		return default_config()
 	return config
 
+func get_identity_snapshot() -> Dictionary:
+	var cfg := get_config()
+	var opponents: Array = []
+	for opponent in cfg.get("opponents", []):
+		opponents.append({"race": str(opponent.get("race", "")), "difficulty": str(opponent.get("difficulty", "normal"))})
+	return {
+		"player_race": str(cfg.get("player_race", "barrosan")),
+		"opponents": opponents,
+		"map": str(cfg.get("map", "hollowspan")),
+		"start_resources": str(cfg.get("start_resources", "standard")),
+		"victory": str(cfg.get("victory", "conquest")),
+		"mode": str(cfg.get("mode", "skirmish")),
+		"game_speed": float(cfg.get("game_speed", 1.0)),
+	}
+
 func starting_bank(kind: String) -> Dictionary:
 	match kind:
 		"quick":

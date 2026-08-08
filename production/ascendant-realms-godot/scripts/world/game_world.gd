@@ -28,6 +28,7 @@ var _projectile_container: Node3D
 var _fx_container: Node3D
 
 var game_running := false
+var last_alert_message := ""
 var match_ended := false
 var playable_min := Vector3(-136.0, -100.0, -136.0)
 var playable_max := Vector3(136.0, 100.0, 136.0)
@@ -883,7 +884,44 @@ func _start_match() -> void:
 	game_running = true
 	AudioManager.play_music_path(Sfx.music_key("battle"), -10.0, true)
 	_battle_music = true
-	emit_signal("alert", "The battle for Hollowspan Crossing begins!", Vector3.ZERO)
+	last_alert_message = "The battle for %s begins!" % str(map.get("name", Match.get_config().get("map", "the selected battlefield")))
+	emit_signal("alert", last_alert_message, Vector3.ZERO)
+
+func get_runtime_identity_snapshot() -> Dictionary:
+	var cfg := Match.get_identity_snapshot()
+	var configured_opponents: Array = cfg.get("opponents", [])
+	var runtime_opponents: Array = []
+	for i in range(1, commanders.size()):
+		var commander = commanders[i]
+		var difficulty := "normal"
+		if i - 1 < configured_opponents.size():
+			difficulty = str(configured_opponents[i - 1].get("difficulty", "normal"))
+		runtime_opponents.append({"race": String(commander.race), "difficulty": difficulty})
+	var player_hq := ""
+	var starting_units: Array = []
+	if is_instance_valid(player_commander):
+		for building in player_commander.buildings:
+			if is_instance_valid(building) and bool(building.def.get("is_hq", false)):
+				player_hq = String(building.building_id)
+				break
+		for unit in player_commander.units:
+			if is_instance_valid(unit):
+				starting_units.append(String(unit.unit_id))
+	var hero_definition := ""
+	if is_instance_valid(player_commander) and is_instance_valid(player_commander.hero_ref):
+		hero_definition = String(player_commander.hero_ref.def.get("id", ""))
+	return {
+		"config": cfg,
+		"runtime_map_id": String(map.get("id", "")),
+		"runtime_map_name": String(map.get("name", map.get("id", ""))),
+		"runtime_player_race": String(player_commander.race) if is_instance_valid(player_commander) else "",
+		"runtime_player_hq": player_hq,
+		"runtime_starting_units": starting_units,
+		"runtime_hero_definition": hero_definition,
+		"battle_start_alert": last_alert_message,
+		"runtime_opponents": runtime_opponents,
+		"profile_hero": ProfileManager.hero().duplicate(true),
+	}
 
 func _physics_process(delta: float) -> void:
 	var ready_now := is_navigation_ready()
