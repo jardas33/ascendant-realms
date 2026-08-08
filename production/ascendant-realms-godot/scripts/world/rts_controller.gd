@@ -642,7 +642,11 @@ func _raycast_ground():
 	return from + dir * t
 
 func _raycast_object():
-	var mp := get_viewport().get_mouse_position()
+	return raycast_selection_at(get_viewport().get_mouse_position())
+
+## The same physics selection query used by normal left-click selection.
+## Exposed for deterministic in-engine review harnesses without screen injection.
+func raycast_selection_at(mp: Vector2):
 	var from := camera.project_ray_origin(mp)
 	var to := from + camera.project_ray_normal(mp) * 1000.0
 	var space := get_world_3d().direct_space_state

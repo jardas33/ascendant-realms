@@ -25,6 +25,8 @@
     "godot:capture:p1s2-camera-bounds": "node tools/godot/p1s2CameraBoundsTool.mjs capture",
     "godot:test:p1s2-camera-bounds": "node tools/godot/p1s2CameraBoundsTool.mjs validate",
     "godot:capture:p1s1-viewport-safearea": "node tools/godot/p1s1ViewportSafeAreaTool.mjs capture",
+    "godot:capture:p1s3-selection-readability": "node tools/godot/p1s3SelectionReadabilityTool.mjs capture",
+    "godot:test:p1s3-selection-readability": "node tools/godot/p1s3SelectionReadabilityTool.mjs validate",
     "godot:validate:production": "node tools/godot/tesanaProductionTool.mjs validate",
     "godot:asset-scan:production": "node tools/godot/tesanaProductionTool.mjs asset-scan",
     "godot:smoke:v0431-gameplay-construction": "node tools/godot/v0431GameplayConstructionTool.mjs smoke",

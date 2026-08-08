@@ -39,6 +39,8 @@ var model_root: Node3D
 var selection_ring: MeshInstance3D
 var _mesh_instances: Array = []
 var _construct_mat: StandardMaterial3D
+var _selection_visual_extents := Vector2(2.0, 2.0)
+var _selection_indicator_extents := Vector2(2.2, 2.2)
 
 func _ready() -> void:
 	add_to_group("buildings")
@@ -98,12 +100,29 @@ func _build_model() -> void:
 		mi.material_override = mat
 		model_root.add_child(mi)
 		_mesh_instances.append(mi)
+	_add_selection_pick_shape()
+
+func _add_selection_pick_shape() -> void:
+	## Selection-only envelope for visible-footprint coverage. Its zero mask
+	## keeps it out of physical interactions and navigation.
+	var extents := _measure_selection_visual_extents()
+	var height := maxf(1.0, footprint * 1.4)
+	var shape := CollisionShape3D.new()
+	var box := BoxShape3D.new()
+	box.size = Vector3(extents.x * 2.0, height, extents.y * 2.0)
+	shape.shape = box
+	shape.position.y = height * 0.5
+	add_child(shape)
 
 func _build_selection_ring() -> void:
 	selection_ring = MeshInstance3D.new()
 	var torus := TorusMesh.new()
-	torus.inner_radius = footprint * 0.9
-	torus.outer_radius = footprint * 1.05
+	_selection_visual_extents = _measure_selection_visual_extents()
+	_selection_indicator_extents = Vector2(
+		_selection_visual_extents.x * 1.12,
+		_selection_visual_extents.y * 1.12)
+	torus.inner_radius = 0.88
+	torus.outer_radius = 1.0
 	selection_ring.mesh = torus
 	var mat := StandardMaterial3D.new()
 	mat.albedo_color = commander.color if commander else Color.WHITE
@@ -112,8 +131,42 @@ func _build_selection_ring() -> void:
 	mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
 	selection_ring.material_override = mat
 	selection_ring.position.y = 0.1
+	selection_ring.scale = Vector3(_selection_indicator_extents.x, 1.0, _selection_indicator_extents.y)
 	selection_ring.visible = false
 	add_child(selection_ring)
+
+func _measure_selection_visual_extents() -> Vector2:
+	if not is_instance_valid(model_root):
+		return Vector2(footprint * 0.7, footprint * 0.7)
+	var combined := AABB()
+	var first := true
+	for child in model_root.find_children("*", "MeshInstance3D"):
+		var mi := child as MeshInstance3D
+		if not mi or not mi.mesh:
+			continue
+		var local_transform := model_root.global_transform.inverse() * mi.global_transform if model_root.is_inside_tree() else mi.transform
+		var transformed := local_transform * mi.mesh.get_aabb()
+		if first:
+			combined = transformed
+			first = false
+		else:
+			combined = combined.merge(transformed)
+	if first:
+		return Vector2(footprint * 0.7, footprint * 0.7)
+	return Vector2(maxf(0.5, combined.size.x * 0.5), maxf(0.5, combined.size.z * 0.5))
+
+func get_selection_geometry() -> Dictionary:
+	return {
+		"entity_type": "building",
+		"visual_extents": {"x": _selection_visual_extents.x, "z": _selection_visual_extents.y},
+		"indicator_extents": {"x": _selection_indicator_extents.x, "z": _selection_indicator_extents.y},
+		"indicator_y": selection_ring.position.y if is_instance_valid(selection_ring) else 0.0,
+		"indicator_scale": {"x": selection_ring.scale.x, "z": selection_ring.scale.z} if is_instance_valid(selection_ring) else {"x": 0.0, "z": 0.0},
+		"selected": selection_ring.visible if is_instance_valid(selection_ring) else false,
+		"collision_layer": collision_layer,
+		"collision_mask": collision_mask,
+		"position": {"x": global_position.x, "y": global_position.y, "z": global_position.z}
+	}
 
 func set_selected(sel: bool) -> void:
 	if selection_ring:

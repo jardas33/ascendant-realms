@@ -97,6 +97,9 @@ var agent: NavigationAgent3D
 var model_root: Node3D
 var anim: AnimationPlayer
 var selection_ring: MeshInstance3D
+var _selection_visual_radius := 0.4
+var _selection_pick_radius := 0.5
+var _selection_indicator_radius := 0.5
 var _anim_names := {}
 var _cur_anim := ""
 var _repath := 0.0
@@ -201,10 +204,13 @@ func configure(p_def: Dictionary, p_team: int, p_commander, p_world) -> void:
 ## A capsule shape purely so mouse raycasts can pick this unit for selection.
 ## The body's collision_mask stays 0, so this never causes physical collisions.
 func _add_pick_shape() -> void:
-	var h: float = maxf(1.2, float(def.get("height", 1.8)))
+	var visual_height := ModelUtils.measure_height(model_root) if is_instance_valid(model_root) else 0.0
+	var h: float = maxf(1.2, maxf(float(def.get("height", 1.8)), visual_height))
+	_selection_visual_radius = _measure_selection_visual_radius()
+	_selection_pick_radius = clampf(_selection_visual_radius * 1.2, 0.48, 0.9)
 	var cs := CollisionShape3D.new()
 	var cap := CapsuleShape3D.new()
-	cap.radius = 0.55 if not is_hero else 0.7
+	cap.radius = _selection_pick_radius
 	cap.height = h
 	cs.shape = cap
 	cs.position.y = h * 0.5
@@ -362,9 +368,9 @@ func _add_team_marker() -> void:
 func _build_selection_ring() -> void:
 	selection_ring = MeshInstance3D.new()
 	var torus := TorusMesh.new()
-	var r: float = 0.7 if not is_hero else 1.0
-	if def.get("footprint"):
-		r = float(def["footprint"])
+	_selection_visual_radius = _measure_selection_visual_radius()
+	_selection_indicator_radius = clampf(_selection_visual_radius * (1.25 if is_hero else 1.18), 0.5, 1.15)
+	var r: float = _selection_indicator_radius
 	torus.inner_radius = r * 0.85
 	torus.outer_radius = r
 	selection_ring.mesh = torus
@@ -378,6 +384,27 @@ func _build_selection_ring() -> void:
 	selection_ring.position.y = 0.08
 	selection_ring.visible = false
 	add_child(selection_ring)
+
+func _measure_selection_visual_radius() -> float:
+	if is_instance_valid(model_root):
+		var measured := ModelUtils.measure_radius(model_root)
+		if measured > 0.05:
+			return measured
+	return 0.45 if not is_hero else 0.55
+
+func get_selection_geometry() -> Dictionary:
+	return {
+		"entity_type": "hero" if is_hero else "unit",
+		"visual_radius": _selection_visual_radius,
+		"pick_radius": _selection_pick_radius,
+		"indicator_outer_radius": _selection_indicator_radius,
+		"indicator_y": selection_ring.position.y if is_instance_valid(selection_ring) else 0.0,
+		"selected": selection_ring.visible if is_instance_valid(selection_ring) else false,
+		"pick_collision_layer": collision_layer,
+		"pick_collision_mask": collision_mask,
+		"navigation_radius": agent.radius if is_instance_valid(agent) else -1.0,
+		"position": {"x": global_position.x, "y": global_position.y, "z": global_position.z}
+	}
 
 func set_selected(sel: bool) -> void:
 	if selection_ring:
