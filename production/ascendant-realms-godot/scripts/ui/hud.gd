@@ -34,9 +34,12 @@ var _font: FontFile = null
 var _res_labels := {}                  # kind -> Label
 var _pop_label: Label = null
 var _tier_label: Label = null
+var _top_panel: PanelContainer = null
+var _menu_button: Button = null
 
 # --- minimap ---
 var _minimap: Control = null
+var _minimap_panel: PanelContainer = null
 
 # --- selection / command panels (rebuilt on selection change) ---
 var _sel_panel: PanelContainer = null
@@ -65,6 +68,7 @@ var _gameover_layer: Control = null
 # --- refresh cadence ---
 var _slow_accum := 0.0
 var _map_accum := 0.0
+var _last_viewport_size := Vector2.ZERO
 
 
 func setup(p_world, p_rts) -> void:
@@ -83,6 +87,7 @@ func setup(p_world, p_rts) -> void:
 	_build_selection_panel()
 	_build_command_panel()
 	_build_alert_feed()
+	_fit_to_viewport()
 
 	_connect_signals()
 	# prime displays
@@ -91,6 +96,37 @@ func setup(p_world, p_rts) -> void:
 		_on_pop_changed(_commander.pop_used, _commander.pop_cap)
 		_on_tier_changed(_commander.tier)
 	_rebuild_selection([])
+	_last_viewport_size = get_viewport_rect().size
+
+
+func _fit_to_viewport() -> void:
+	# HUD controls are anchored to the live client viewport. Keep the authored
+	# visual design at normal sizes, but derive the bottom inset from the actual
+	# viewport so windowed/maximized launches cannot place controls below it.
+	var viewport_size := get_viewport_rect().size
+	if viewport_size.x <= 0.0 or viewport_size.y <= 0.0:
+		return
+	var margin := 12.0
+	var selection_height := minf(156.0, maxf(128.0, viewport_size.y - margin * 2.0))
+	var command_height := minf(360.0, maxf(220.0, viewport_size.y - margin * 2.0))
+	if is_instance_valid(_minimap_panel):
+		_minimap_panel.offset_left = margin
+		_minimap_panel.offset_right = margin + MINIMAP_SIZE + 24.0
+		_minimap_panel.offset_top = -margin - MINIMAP_SIZE - 24.0
+		_minimap_panel.offset_bottom = -margin
+	if is_instance_valid(_sel_panel):
+		_sel_panel.offset_left = -240.0
+		_sel_panel.offset_right = 240.0
+		_sel_panel.offset_top = -margin - selection_height
+		_sel_panel.offset_bottom = -margin
+	if is_instance_valid(_cmd_panel):
+		_cmd_panel.offset_left = -334.0
+		_cmd_panel.offset_right = -margin
+		_cmd_panel.offset_top = -margin - command_height
+		_cmd_panel.offset_bottom = -margin
+	if is_instance_valid(_menu_button):
+		_menu_button.offset_left = -104.0
+		_menu_button.offset_right = -margin
 
 
 func _connect_signals() -> void:
@@ -186,6 +222,8 @@ func _cost_string(cost: Dictionary) -> String:
 # ---------------------------------------------------------------------------
 func _build_top_bar() -> void:
 	var panel := _mk_hud_panel()
+	_top_panel = panel
+	_top_panel.name = "TopResourceBar"
 	panel.set_anchors_and_offsets_preset(Control.PRESET_TOP_WIDE)
 	panel.offset_bottom = 66.0
 	panel.grow_horizontal = Control.GROW_DIRECTION_BOTH
@@ -232,6 +270,8 @@ func _build_top_bar() -> void:
 
 	# menu button (top-right corner)
 	var menu_btn := _mk_button("Menu", 16)
+	_menu_button = menu_btn
+	_menu_button.name = "MenuButton"
 	menu_btn.custom_minimum_size = Vector2(88, 36)
 	menu_btn.set_anchors_and_offsets_preset(Control.PRESET_TOP_RIGHT)
 	menu_btn.offset_left = -104.0
@@ -265,6 +305,8 @@ func _on_tier_changed(tier: int) -> void:
 # ---------------------------------------------------------------------------
 func _build_minimap() -> void:
 	var panel := _mk_hud_panel()
+	_minimap_panel = panel
+	_minimap_panel.name = "MinimapPanel"
 	# panel = minimap (200) + 12px stylebox content margin on each side = 224
 	var box := MINIMAP_SIZE + 24.0
 	panel.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_LEFT)
@@ -365,6 +407,11 @@ func _draw_minimap() -> void:
 # Process — low-rate polling + minimap redraw
 # ---------------------------------------------------------------------------
 func _process(delta: float) -> void:
+	var viewport_size := get_viewport_rect().size
+	if viewport_size != _last_viewport_size:
+		_fit_to_viewport()
+		_last_viewport_size = viewport_size
+
 	_map_accum += delta
 	if _map_accum >= 0.15:
 		_map_accum = 0.0
@@ -392,6 +439,7 @@ func _poll_top_bar() -> void:
 # ---------------------------------------------------------------------------
 func _build_selection_panel() -> void:
 	_sel_panel = _mk_hud_panel()
+	_sel_panel.name = "SelectionPanel"
 	_sel_panel.custom_minimum_size = Vector2(480, 156)
 	_sel_panel.grow_horizontal = Control.GROW_DIRECTION_BOTH
 	_sel_panel.grow_vertical = Control.GROW_DIRECTION_BEGIN
@@ -742,6 +790,7 @@ func _refresh_queue() -> void:
 # ---------------------------------------------------------------------------
 func _build_command_panel() -> void:
 	_cmd_panel = _mk_hud_panel()
+	_cmd_panel.name = "CommandPanel"
 	_cmd_panel.anchor_left = 1.0
 	_cmd_panel.anchor_right = 1.0
 	_cmd_panel.anchor_top = 1.0

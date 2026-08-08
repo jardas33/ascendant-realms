@@ -41,6 +41,7 @@ V0436R1GCapture="*res://tests/v0436_r1g_capture.gd"
 V0436R1HCapture="*res://tests/v0436_r1h_capture.gd"
 V0436R1JCapture="*res://tests/v0436_r1j_capture.gd"
 V0436R1KCapture="*res://tests/v0436_r1k_capture.gd"
+P1S1Capture="*res://tests/p1s1_viewport_safe_area.gd"
 
 [debug]
 
@@ -52,6 +53,8 @@ gdscript/warnings/treat_warnings_as_errors=false
 
 window/size/viewport_width=1920
 window/size/viewport_height=1080
+window/size/mode=2
+window/size/resizable=true
 window/stretch/mode="canvas_items"
 window/stretch/aspect="expand"
 

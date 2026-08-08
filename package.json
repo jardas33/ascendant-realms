@@ -21,6 +21,8 @@
     "godot:play:production": "cmd /c PLAY_ASCENDANT_REALMS_GODOT.cmd",
     "godot:import:production": "powershell -NoProfile -ExecutionPolicy Bypass -Command \"$g=$env:ASCENDANT_REALMS_GODOT; if (-not $g) {$g=Join-Path $env:LOCALAPPDATA 'AscendantRealms/tools/godot-4.3-stable/Godot_v4.3-stable_win64.exe'}; & $g --editor --path production/ascendant-realms-godot --import --quit\"",
     "godot:smoke:production": "powershell -NoProfile -ExecutionPolicy Bypass -Command \"$g=$env:ASCENDANT_REALMS_GODOT; if (-not $g) {$g=Join-Path $env:LOCALAPPDATA 'AscendantRealms/tools/godot-4.3-stable/Godot_v4.3-stable_win64.exe'}; & $g --headless --path production/ascendant-realms-godot --quit-after 120 --log-file artifacts/manual-review/v0430-tesana-canonical-production-rebase/v0430-runtime-console.log\"",
+    "godot:test:p1s1-viewport-safearea": "node tools/godot/p1s1ViewportSafeAreaTool.mjs validate",
+    "godot:capture:p1s1-viewport-safearea": "node tools/godot/p1s1ViewportSafeAreaTool.mjs capture",
     "godot:validate:production": "node tools/godot/tesanaProductionTool.mjs validate",
     "godot:asset-scan:production": "node tools/godot/tesanaProductionTool.mjs asset-scan",
     "godot:smoke:v0431-gameplay-construction": "node tools/godot/v0431GameplayConstructionTool.mjs smoke",
