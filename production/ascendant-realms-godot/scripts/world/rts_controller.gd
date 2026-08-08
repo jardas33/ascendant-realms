@@ -42,6 +42,18 @@ var _build_valid := false
 # commands
 var _last_click_time := 0.0
 var _last_clicked = null
+const COMMAND_DEFAULT := "DEFAULT"
+const COMMAND_MOVE := "MOVE"
+const COMMAND_ATTACK := "ATTACK"
+const COMMAND_GATHER := "GATHER"
+const COMMAND_BUILD_OR_REPAIR := "BUILD_OR_REPAIR"
+const COMMAND_RALLY := "RALLY"
+const COMMAND_BUILD_VALID := "BUILD_VALID"
+const COMMAND_INVALID := "INVALID"
+const COMMAND_ATTACK_MOVE := "ATTACK_MOVE"
+var _last_cursor_intent := COMMAND_DEFAULT
+var _last_cursor_shape := Input.CURSOR_ARROW
+var _last_command_feedback: Dictionary = {"accepted": false, "intent": "", "feedback_type": ""}
 
 func setup(p_world, p_team: int) -> void:
 	world = p_world
@@ -112,6 +124,45 @@ func _process(delta: float) -> void:
 		_update_build_ghost()
 	if _dragging:
 		_update_drag_box()
+	_update_command_cursor()
+
+func _exit_tree() -> void:
+	Input.set_default_cursor_shape(Input.CURSOR_ARROW)
+
+func _update_command_cursor() -> void:
+	if world == null or not world.game_running:
+		_apply_cursor_intent(COMMAND_DEFAULT)
+		return
+	var hovered := get_viewport().gui_get_hovered_control()
+	if is_instance_valid(hovered):
+		_apply_cursor_intent(COMMAND_DEFAULT)
+		return
+	var intent: String = classify_command_intent(_raycast_object(), _raycast_ground(), false)
+	_apply_cursor_intent(intent)
+
+func _apply_cursor_intent(intent: String) -> void:
+	var shape := Input.CURSOR_ARROW
+	match intent:
+		COMMAND_MOVE:
+			shape = Input.CURSOR_MOVE
+		COMMAND_ATTACK, COMMAND_RALLY, COMMAND_ATTACK_MOVE:
+			shape = Input.CURSOR_CROSS
+		COMMAND_GATHER:
+			shape = Input.CURSOR_POINTING_HAND
+		COMMAND_BUILD_OR_REPAIR, COMMAND_BUILD_VALID:
+			shape = Input.CURSOR_CAN_DROP
+		COMMAND_INVALID:
+			shape = Input.CURSOR_FORBIDDEN
+	if intent != _last_cursor_intent or shape != _last_cursor_shape:
+		Input.set_default_cursor_shape(shape)
+		_last_cursor_intent = intent
+		_last_cursor_shape = shape
+
+func get_command_intent_snapshot() -> Dictionary:
+	return {"intent": _last_cursor_intent, "cursor_shape": _last_cursor_shape}
+
+func get_command_feedback_snapshot() -> Dictionary:
+	return _last_command_feedback.duplicate(true)
 
 func _update_camera(delta: float) -> void:
 	var dir := Vector3.ZERO
@@ -356,43 +407,89 @@ func _clean_selection() -> void:
 # --------------------------------------------------------------------------
 # Commands
 # --------------------------------------------------------------------------
+func classify_command_intent(target = null, ground = null, ui_surface: bool = false) -> String:
+	if ui_surface or world == null or not world.game_running:
+		return COMMAND_DEFAULT
+	_clean_selection()
+	if _build_id != "":
+		return COMMAND_BUILD_VALID if _build_valid else COMMAND_INVALID
+	if selected.is_empty():
+		return COMMAND_DEFAULT
+	if selected.size() == 1 and (selected[0] is Building):
+		return COMMAND_RALLY if ground != null else COMMAND_INVALID
+	var units := _selected_units()
+	if units.is_empty():
+		return COMMAND_INVALID
+	if target is ResourceNode and _can_accept_gather(target, units):
+		return COMMAND_GATHER
+	if is_instance_valid(target) and ("team" in target):
+		if int(target.team) != player_team and _can_accept_attack_target(target, units):
+			return COMMAND_ATTACK
+	if target is Building and int(target.team) == player_team and not target.is_built:
+		for u in units:
+			if u.is_worker:
+				return COMMAND_BUILD_OR_REPAIR
+	return COMMAND_MOVE if ground != null else COMMAND_INVALID
+
+func _can_accept_gather(target, units: Array) -> bool:
+	if not is_instance_valid(target) or not (target is ResourceNode):
+		return false
+	for u in units:
+		if u.is_worker:
+			return true
+	return false
+
+func _can_accept_attack_target(target, units: Array) -> bool:
+	if not is_instance_valid(target) or not ("team" in target) or int(target.team) == player_team:
+		return false
+	for u in units:
+		if u.has_method("command_attack"):
+			return true
+	return false
+
 func _issue_context_command(queue: bool) -> void:
 	_clean_selection()
 	if selected.is_empty():
 		return
 	var hit = _raycast_object()
 	var ground = _raycast_ground()
+	_issue_context_command_from_context(queue, hit, ground)
+
+func _issue_context_command_from_context(queue: bool, hit, ground) -> void:
+	_clean_selection()
+	if selected.is_empty():
+		return
+	var intent: String = classify_command_intent(hit, ground, false)
 	# selected building -> set rally
-	if selected.size() == 1 and (selected[0] is Building):
+	if intent == COMMAND_RALLY and selected.size() == 1 and (selected[0] is Building):
 		if ground != null:
 			selected[0].set_rally(ground)
-			world.spawn_ring_fx(ground, world.player_commander.color, 1.5)
+			_emit_command_feedback(COMMAND_RALLY, "RALLY", ground, selected[0])
 		return
 	var units := _selected_units()
-	if hit and ("team" in hit):
-		if hit.team != player_team:
-			# attack enemy through the same public path used by deterministic capture.
-			issue_attack_target(hit)
-			return
-		elif (hit is ResourceNode):
-			pass
-	if hit and (hit is ResourceNode):
+	if intent == COMMAND_ATTACK:
+		issue_attack_target(hit)
+		return
+	if intent == COMMAND_GATHER and hit is ResourceNode:
 		for u in units:
 			if u.is_worker:
 				u.command_gather(hit)
+		_emit_command_feedback(COMMAND_GATHER, "GATHER", hit.global_position, hit)
 		return
-	if hit and (hit is Building) and hit.team == player_team and not hit.is_built:
+	if intent == COMMAND_BUILD_OR_REPAIR and hit is Building and hit.team == player_team and not hit.is_built:
 		for u in units:
 			if u.is_worker:
 				u.command_build(hit)
+		_emit_command_feedback(COMMAND_BUILD_OR_REPAIR, "BUILD/CONTINUE", hit.global_position, hit)
 		return
-	if ground != null:
+	if intent == COMMAND_MOVE and ground != null:
 		_formation_move(units, ground)
-		world.spawn_ring_fx(ground, world.player_commander.color, 1.0)
+		_emit_command_feedback(COMMAND_MOVE, "MOVE", ground, null)
 
 func issue_attack_target(target) -> bool:
 	_clean_selection()
 	if not is_instance_valid(target) or not ("team" in target) or int(target.team) == player_team:
+		_record_command_feedback(false, COMMAND_ATTACK, "ATTACK", target, Vector3.ZERO)
 		return false
 	var units := _selected_units()
 	var recorder = _v0436_r1j_recorder()
@@ -402,8 +499,8 @@ func issue_attack_target(target) -> bool:
 		if u.has_method("command_attack"):
 			u.command_attack(target, order_id)
 			issued = u.state == Unit.State.ATTACKING or issued
-	if issued and world:
-		world.spawn_ring_fx(target.global_position, Color(0.9, 0.3, 0.3), 1.2)
+	if issued:
+		_emit_command_feedback(COMMAND_ATTACK, "ATTACK", target.global_position, target)
 	return issued
 
 func _formation_move(units: Array, target: Vector3) -> void:
@@ -426,9 +523,9 @@ func _begin_attack_move() -> void:
 	var ground = _raycast_ground()
 	if ground != null:
 		issue_attack_move_destination(ground)
-		world.spawn_ring_fx(ground, Color(0.9,0.4,0.3), 1.2)
 
 func issue_attack_move_destination(destination: Vector3) -> bool:
+	_clean_selection()
 	var units := _selected_units()
 	var recorder = _v0436_r1j_recorder()
 	var order_id: String = recorder.record_public_order("attack_move_destination", units, null, destination) if recorder else ""
@@ -436,7 +533,46 @@ func issue_attack_move_destination(destination: Vector3) -> bool:
 	for u in units:
 		u.command_move(destination, true, false, order_id)
 		issued = true
+	if issued:
+		_emit_command_feedback(COMMAND_ATTACK_MOVE, "ATTACK-MOVE", destination, null)
 	return issued
+
+func _feedback_target_id(target) -> String:
+	if not is_instance_valid(target):
+		return ""
+	if target is Unit:
+		return "unit:" + String(target.unit_id)
+	if target is Building:
+		return "building:" + String(target.building_id)
+	if target is ResourceNode:
+		return "resource:" + String(target.get_instance_id())
+	return ""
+
+func _record_command_feedback(accepted: bool, intent: String, feedback_type: String, target, position: Vector3) -> void:
+	_last_command_feedback = {
+		"accepted": accepted,
+		"intent": intent,
+		"feedback_type": feedback_type,
+		"target_id": _feedback_target_id(target),
+		"position": {"x": position.x, "y": position.y, "z": position.z},
+		"timestamp_unix_ms": Time.get_unix_time_from_system() * 1000.0
+	}
+
+func _emit_command_feedback(intent: String, feedback_type: String, position: Vector3, target) -> void:
+	_record_command_feedback(true, intent, feedback_type, target, position)
+	if not world:
+		return
+	var color: Color = world.player_commander.color if is_instance_valid(world.player_commander) else Color(0.35, 0.75, 1.0)
+	match intent:
+		COMMAND_ATTACK:
+			color = Color(0.9, 0.3, 0.3)
+		COMMAND_GATHER:
+			color = Color(0.95, 0.75, 0.25)
+		COMMAND_BUILD_OR_REPAIR:
+			color = Color(0.35, 0.9, 0.45)
+		COMMAND_ATTACK_MOVE:
+			color = Color(0.95, 0.45, 0.25)
+	world.spawn_ring_fx(position, color, 1.2 if intent != COMMAND_RALLY else 1.5)
 
 func _cmd_stop() -> void:
 	issue_stop()
@@ -569,6 +705,7 @@ var _ghost_mat: StandardMaterial3D
 
 func cancel_build_mode() -> void:
 	_build_id = ""
+	_build_valid = false
 	if is_instance_valid(_build_ghost):
 		_build_ghost.queue_free()
 	_build_ghost = null
@@ -607,6 +744,7 @@ func _try_place_building() -> void:
 		var worker = _nearest_free_worker(g)
 		if worker:
 			worker.command_build(b)
+		_emit_command_feedback(COMMAND_BUILD_OR_REPAIR, "BUILD PLACEMENT", g, b)
 		Sfx.play("select", -6.0)
 	# stay in build mode if shift held for multiple
 	if not Input.is_key_pressed(KEY_SHIFT):
