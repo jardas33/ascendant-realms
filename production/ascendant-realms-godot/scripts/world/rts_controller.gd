@@ -19,6 +19,7 @@ var _cam_yaw := 0.0
 var _zoom := 55.0
 const ZOOM_MIN := 25.0
 const ZOOM_MAX := 95.0
+const CAMERA_SAFE_FOCUS_MARGIN := 8.0
 var cam_speed := 42.0
 var zoom_sens := 1.0
 var _reduce_shake := false
@@ -51,7 +52,7 @@ func setup(p_world, p_team: int) -> void:
 	# center on player base
 	if world.commanders.size() > player_team:
 		var hqpos := _player_hq_pos()
-		cam_pivot.global_position = hqpos
+		cam_pivot.global_position = _clamp_camera_focus(hqpos)
 
 func _apply_settings() -> void:
 	var s = ProfileManager.settings()
@@ -129,10 +130,7 @@ func _update_camera(delta: float) -> void:
 		elif mp.y > vs.y - m: dir.z += 1
 	if dir != Vector3.ZERO:
 		dir = dir.normalized().rotated(Vector3.UP, _cam_yaw)
-		cam_pivot.global_position += dir * cam_speed * delta
-		var lim := MapDefs.MAP_SIZE
-		cam_pivot.global_position.x = clamp(cam_pivot.global_position.x, -lim, lim)
-		cam_pivot.global_position.z = clamp(cam_pivot.global_position.z, -lim, lim)
+		cam_pivot.global_position = _clamp_camera_focus(cam_pivot.global_position + dir * cam_speed * delta)
 		emit_signal("camera_moved")
 	# rotate
 	if Input.is_action_pressed("cam_rot_l"):
@@ -144,7 +142,50 @@ func _update_camera(delta: float) -> void:
 	cam_arm.spring_length = lerp(cam_arm.spring_length, _zoom, 0.2)
 
 func focus_on(pos: Vector3) -> void:
-	cam_pivot.global_position = Vector3(pos.x, 0, pos.z)
+	cam_pivot.global_position = _clamp_camera_focus(pos)
+
+func _camera_safe_bounds() -> Dictionary:
+	var minimum_x := -MapDefs.MAP_SIZE
+	var maximum_x := MapDefs.MAP_SIZE
+	var minimum_z := -MapDefs.MAP_SIZE
+	var maximum_z := MapDefs.MAP_SIZE
+	if world != null:
+		minimum_x = float(world.playable_min.x)
+		maximum_x = float(world.playable_max.x)
+		minimum_z = float(world.playable_min.z)
+		maximum_z = float(world.playable_max.z)
+	var margin := minf(CAMERA_SAFE_FOCUS_MARGIN, maxf(0.0, (maximum_x - minimum_x) * 0.25))
+	return {
+		"minimum_x": minimum_x + margin,
+		"maximum_x": maximum_x - margin,
+		"minimum_z": minimum_z + margin,
+		"maximum_z": maximum_z - margin,
+		"margin": margin,
+		"source": "GameWorld.playable_bounds_contract"
+	}
+
+func _clamp_camera_focus(pos: Vector3) -> Vector3:
+	var bounds := _camera_safe_bounds()
+	return Vector3(
+		clampf(pos.x, float(bounds["minimum_x"]), float(bounds["maximum_x"])),
+		0.0,
+		clampf(pos.z, float(bounds["minimum_z"]), float(bounds["maximum_z"])))
+
+func get_camera_safe_bounds() -> Dictionary:
+	return _camera_safe_bounds()
+
+func is_camera_focus_within_safe_bounds() -> bool:
+	if not is_instance_valid(cam_pivot):
+		return false
+	var bounds := _camera_safe_bounds()
+	var focus := cam_pivot.global_position
+	return focus.x >= float(bounds["minimum_x"]) and focus.x <= float(bounds["maximum_x"]) and focus.z >= float(bounds["minimum_z"]) and focus.z <= float(bounds["maximum_z"])
+
+func get_camera_zoom_min() -> float:
+	return ZOOM_MIN
+
+func get_camera_zoom_max() -> float:
+	return ZOOM_MAX
 
 # --------------------------------------------------------------------------
 # Input
