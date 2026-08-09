@@ -11,6 +11,7 @@ const pack = path.join(repo, 'artifacts', 'manual-review', 'v0436-r1g-natural-co
 const branchName = 'codex/v0436-first-complete-conquest-victory';
 const godot = () => process.env.ASCENDANT_REALMS_GODOT || path.join(process.env.LOCALAPPDATA || '', 'AscendantRealms/tools/godot-4.3-stable/Godot_v4.3-stable_win64.exe');
 const git = args => execFileSync('git', args, { cwd: repo, encoding: 'utf8' }).trim();
+const upstream = () => { try { return git(['rev-parse', '--abbrev-ref', '@{u}']); } catch { return 'no-upstream'; } };
 const sourceSha = () => git(['rev-parse', 'HEAD']);
 const isAncestor = sha => { try { execFileSync('git', ['merge-base', '--is-ancestor', sha, sourceSha()], { cwd: repo, stdio: 'ignore' }); return true; } catch { return false; } };
 const startResources = () => process.env.ASCENDANT_E1_START_RESOURCES || 'standard';
@@ -39,7 +40,7 @@ function launch(session) {
 async function capture() {
   await fs.mkdir(pack, { recursive: true });
   const executable = godot();
-  await writeJson(path.join(pack, 'preflight.json'), { schema: 'v0436-r1g-preflight-v1', status: 'CAPTURE_STARTED', branch: git(['branch', '--show-current']), source_sha: sourceSha(), upstream: git(['rev-parse', '--abbrev-ref', '@{u}']), executable, executable_sha256: executableSha(), renderer: 'project-default Forward Plus', launch_contract: 'headed Windows display; runner-owned stdout/stderr; no Godot --log-file; real production scenes/main.tscn -> scenes/game_world.tscn', match_configuration: { player_race: 'barrosan', opponent_race: 'lioraen', difficulty: 'easy', map: 'hollowspan', start_resources: startResources(), mode: 'skirmish', victory: 'conquest', game_speed: 2.0 } });
+  await writeJson(path.join(pack, 'preflight.json'), { schema: 'v0436-r1g-preflight-v1', status: 'CAPTURE_STARTED', branch: git(['branch', '--show-current']), source_sha: sourceSha(), upstream: upstream(), executable, executable_sha256: executableSha(), renderer: 'project-default Forward Plus', launch_contract: 'headed Windows display; runner-owned stdout/stderr; no Godot --log-file; real production scenes/main.tscn -> scenes/game_world.tscn', match_configuration: { player_race: 'barrosan', opponent_race: 'lioraen', difficulty: 'easy', map: 'hollowspan', start_resources: startResources(), mode: 'skirmish', victory: 'conquest', game_speed: 2.0 } });
   await writeJson(path.join(pack, 'executable-provenance.json'), { executable, version: 'Godot 4.3 stable', sha256: executableSha(), renderer: 'Forward Plus', headed: true, hidden_window: false, log_owner: 'R1G runner stdout/stderr' });
   await writeJson(path.join(pack, 'launch-contract.json'), { production_scene: 'scenes/main.tscn -> scenes/game_world.tscn', command: 'Godot --path production/ascendant-realms-godot --resolution 1920x1080 --verbose', forbidden: ['--log-file', 'headless evidence', 'hidden-window evidence', 'direct gameplay state writes'] });
   await writeJson(path.join(pack, 'match-configuration.json'), { player: 'barrosan', opponent: 'one Lioraen Easy opponent', map: 'hollowspan', resources: startResources(), victory: 'conquest', mode: 'skirmish', game_speed: 2.0, sessions: ['A', 'B'] });
