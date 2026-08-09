@@ -699,13 +699,16 @@ func enter_build_mode(building_id: String) -> void:
 		ModelUtils.scale_to_height(m, presentation_height)
 		ModelUtils.ground_model(m)
 	var ring := MeshInstance3D.new()
-	var cyl := CylinderMesh.new()
-	cyl.top_radius = float(bdef.get("footprint", 4.0))
-	cyl.bottom_radius = float(bdef.get("footprint", 4.0))
-	cyl.height = 0.2
-	ring.mesh = cyl
+	var footprint := float(bdef.get("footprint", 4.0))
+	var torus := TorusMesh.new()
+	torus.inner_radius = maxf(0.15, footprint - 0.18)
+	torus.outer_radius = footprint
+	torus.rings = 32
+	torus.ring_segments = 8
+	ring.mesh = torus
+	ring.position.y = 0.06
 	_ghost_mat = StandardMaterial3D.new()
-	_ghost_mat.albedo_color = Color(0.3, 0.9, 0.4, 0.4)
+	_ghost_mat.albedo_color = Color(0.3, 0.9, 0.4, 0.28)
 	_ghost_mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
 	_ghost_mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
 	ring.material_override = _ghost_mat
@@ -729,7 +732,7 @@ func _update_build_ghost() -> void:
 	_build_ghost.global_position = g
 	_build_valid = _is_build_spot_valid(g)
 	if _ghost_mat:
-		_ghost_mat.albedo_color = Color(0.3, 0.9, 0.4, 0.4) if _build_valid else Color(0.9, 0.3, 0.3, 0.4)
+		_ghost_mat.albedo_color = Color(0.3, 0.9, 0.4, 0.28) if _build_valid else Color(0.9, 0.3, 0.3, 0.28)
 
 func _is_build_spot_valid(pos: Vector3) -> bool:
 	var bdef := GameData.get_building(_build_id)

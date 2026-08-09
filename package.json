@@ -47,6 +47,8 @@
     "godot:test:p1r7-camera-readability": "node tools/godot/p1r7CameraReadabilityTool.mjs validate",
     "godot:capture:p1r9-space-readability": "node tools/godot/p1r9SpaceReadabilityTool.mjs capture",
     "godot:test:p1r9-space-readability": "node tools/godot/p1r9SpaceReadabilityTool.mjs validate",
+    "godot:capture:p1r10-build-preview": "node tools/godot/p1r10BuildPreviewTool.mjs capture",
+    "godot:test:p1r10-build-preview": "node tools/godot/p1r10BuildPreviewTool.mjs validate",
     "godot:validate:production": "node tools/godot/tesanaProductionTool.mjs validate",
     "godot:asset-scan:production": "node tools/godot/tesanaProductionTool.mjs asset-scan",
     "godot:smoke:v0431-gameplay-construction": "node tools/godot/v0431GameplayConstructionTool.mjs smoke",
