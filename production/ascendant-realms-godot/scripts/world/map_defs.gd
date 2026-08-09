@@ -202,10 +202,12 @@ static func theme(name: String) -> Dictionary:
 			"water": {"enabled": false},
 		},
 		"volcanic": {
-			"ground_tint": Color(0.78, 0.54, 0.5), "dirt_bias": 0.2, "rock_bias": 0.5, "snow": 0.0,
-			"rock_tint": Color(0.42, 0.32, 0.32),
-			"fog_color": Color(0.5, 0.3, 0.28), "fog_density": 0.0024,
-			"sun_color": Color(1.0, 0.7, 0.55), "sun_energy": 0.95, "ambient_energy": 0.45,
+			# Presentation-only contrast grade: retain volcanic warmth while
+			# separating terrain, structures, units, and resource silhouettes.
+			"ground_tint": Color(0.68, 0.52, 0.50), "dirt_bias": 0.14, "rock_bias": 0.42, "snow": 0.0,
+			"rock_tint": Color(0.38, 0.34, 0.34),
+			"fog_color": Color(0.44, 0.34, 0.34), "fog_density": 0.0017,
+			"sun_color": Color(1.0, 0.78, 0.66), "sun_energy": 1.05, "ambient_energy": 0.55,
 			"decor_density": 0.4,
 			"water": {"enabled": true, "lava": true, "deep": Color(0.5, 0.12, 0.03), "shallow": Color(1.0, 0.5, 0.12), "foam": Color(1.0, 0.85, 0.4)},
 		},
