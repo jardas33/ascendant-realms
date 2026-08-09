@@ -14,6 +14,7 @@ const ASSAULT_TIMEOUT_SECONDS := 90.0
 const COMPETENT_ASSAULT_TIMEOUT_SECONDS := 180.0
 const FORCE_PLAN := ["barrosan_spear_guard", "barrosan_spear_guard", "barrosan_crag_archer", "barrosan_crag_archer"]
 const COMPETENT_FORCE_PLAN := ["barrosan_spear_guard", "barrosan_spear_guard", "barrosan_crag_archer", "barrosan_crag_archer", "barrosan_clan_levy", "barrosan_crag_archer", "barrosan_spear_guard", "barrosan_clan_levy", "barrosan_crag_archer"]
+const F2_FORCE_PLAN := ["barrosan_spear_guard", "barrosan_crag_archer", "barrosan_clan_levy", "barrosan_spear_guard", "barrosan_crag_archer", "barrosan_clan_levy", "barrosan_spear_guard", "barrosan_crag_archer", "barrosan_clan_levy", "barrosan_spear_guard", "barrosan_crag_archer", "barrosan_clan_levy"]
 
 var root_node: Node
 var world
@@ -21,7 +22,8 @@ var rts
 var session := "A"
 var evidence_mode := "R1I" if OS.get_environment("ASCENDANT_V0436_R1I_CAPTURE") == "1" else "R1H"
 var out_path := R1I_OUT if evidence_mode == "R1I" else R1H_OUT
-var competent_mode := OS.get_environment("ASCENDANT_V0436_E1R_CAPTURE") == "1" or OS.get_environment("ASCENDANT_V0436_F1_REINFORCEMENT_CAPTURE") == "1"
+var f2_mode := OS.get_environment("ASCENDANT_V0436_F2_CAPTURE") == "1"
+var competent_mode := OS.get_environment("ASCENDANT_V0436_E1R_CAPTURE") == "1" or OS.get_environment("ASCENDANT_V0436_F1_REINFORCEMENT_CAPTURE") == "1" or f2_mode
 var e1r2_mode := OS.get_environment("ASCENDANT_V0436_E1R2_CAPTURE") == "1"
 var tutorial_mode := OS.get_environment("ASCENDANT_V0436_E3_CAPTURE") == "1"
 var e3r_mode := OS.get_environment("ASCENDANT_V0436_E3R_CAPTURE") == "1"
@@ -44,11 +46,22 @@ var f1_sampling_active := false
 var f1_samples: Array = []
 var f1_sampled_buckets: Dictionary = {}
 var f1_queue_results: Array = []
+var f2_samples: Array = []
+var f2_sampled_buckets: Dictionary = {}
+var f2_worker_queue_results: Array = []
+var f2_military_queue_results: Array = []
+var f2_sampling_active := false
+var f2_started_ms := 0
+var f2_deadline_ms := 0
 
 func _ready() -> void:
 	session = OS.get_environment("ASCENDANT_V0436_R1H_SESSION")
 	if session != "A" and session != "B": session = "A"
-	if f1_mode:
+	if f2_mode:
+		evidence_mode = "F2"
+		out_path = OS.get_environment("ASCENDANT_V0436_F2_OUT")
+		if out_path == "": out_path = "user://v0436-f2-natural-conquest/"
+	elif f1_mode:
 		evidence_mode = "F1"
 		out_path = OS.get_environment("ASCENDANT_V0436_F1_OUT")
 		if out_path == "": out_path = "user://v0436-f1-reinforcement-diagnosis/"
@@ -177,7 +190,39 @@ func _step8_telemetry(lume, duration_seconds: float) -> void:
 		await get_tree().create_timer(0.1).timeout
 	_save_json("e3r-step8-telemetry.json", {"schema":"v0436-e3r-step8-telemetry-v1", "sample_period_seconds":0.1, "duration_seconds":duration_seconds, "target_runtime_instance_id":str(lume.get_instance_id()), "samples":samples})
 
+func _f2_capture_sample(bucket: int, label: String) -> void:
+	if f2_sampled_buckets.has(bucket) or not is_instance_valid(world): return
+	f2_sampled_buckets[bucket] = true
+	var commander = world.player_commander
+	var workers: Array = []
+	var by_classification: Dictionary = {}
+	var by_resource: Dictionary = {}
+	for unit in commander.units:
+		if not _live_unit(unit) or not bool(unit.is_worker): continue
+		var snap: Dictionary = unit.get_economy_snapshot() if unit.has_method("get_economy_snapshot") else {}
+		var classification := String(snap.get("state", snap.get("classification", "unknown")))
+		var resource_kind := String(snap.get("resource_kind", snap.get("gather_kind", "none")))
+		by_classification[classification] = int(by_classification.get(classification, 0)) + 1
+		by_resource[resource_kind] = int(by_resource.get(resource_kind, 0)) + 1
+		workers.append({"unit_id":String(unit.unit_id), "runtime_id":str(unit.get_instance_id()), "position":_vec(unit.global_position), "state":int(unit.state), "classification":classification, "resource_kind":resource_kind, "snapshot":snap})
+	var player_hq = commander.buildings.filter(func(b): return _live_building(b) and bool(b.def.get("is_hq", false))).front()
+	var enemy_hq = world.commanders[1].buildings.filter(func(b): return _live_building(b) and bool(b.def.get("is_hq", false))).front()
+	f2_samples.append({"bucket":bucket, "label":label, "simulation_time_seconds":float(world.match_time), "wall_time_seconds":float(Time.get_ticks_msec() - f2_started_ms) / 1000.0, "resources":commander.resources.duplicate(true), "resource_transaction_count":world.resource_transactions.size(), "workers_total":workers.size(), "workers_by_classification":by_classification, "workers_by_resource":by_resource, "workers":workers, "population":{"used":int(commander.pop_used), "reserved":int(commander.reserved_pop), "cap":int(commander.pop_cap)}, "player_hq_hp":float(player_hq.hp) if is_instance_valid(player_hq) else null, "enemy_hq_hp":float(enemy_hq.hp) if is_instance_valid(enemy_hq) else null, "production_buildings":commander.buildings.filter(func(b): return _live_building(b)).map(func(b): return _queue_record(b)), "completed_military_count":_player_combatants().size(), "living_combat_count":_player_combatants().size(), "hero_alive":is_instance_valid(commander.hero_ref) and not commander.hero_ref.is_dead, "enemy_combat_count":_enemy_combatants().size(), "enemy_worker_count":_enemy_workers().size(), "enemy_building_count":_enemy_buildings().size(), "game_running":bool(world.game_running), "match_ended":bool(world.match_ended)})
+
+func _f2_sampling_loop() -> void:
+	while f2_sampling_active:
+		if not is_instance_valid(world): break
+		var bucket := int(floor(float(world.match_time) / 10.0))
+		_f2_capture_sample(bucket, "ten_second_simulation_sample")
+		if bool(world.match_ended): break
+		await _wait_seconds(0.25)
+	f2_sampling_active = false
+
+func _f2_expired() -> bool:
+	return f2_mode and f2_deadline_ms > 0 and Time.get_ticks_msec() >= f2_deadline_ms
+
 func _evidence_name(name: String) -> String:
+	if f2_mode: return name.replace("R1H", "F2").replace("r1h-", "f2-")
 	if e3r_mode: return name.replace("R1H", "E3R").replace("r1h-", "e3r-")
 	if f1_mode: return name.replace("R1H", "F1").replace("r1h-", "f1-")
 	if competent_mode: return name.replace("R1H", "E1R").replace("r1h-", "e1r-")
@@ -193,7 +238,13 @@ func _save_e3r_frame(canonical: String, legacy: String) -> void:
 
 func _save(name: String) -> void:
 	name = _evidence_name(name)
-	await RenderingServer.frame_post_draw
+	if f2_mode:
+		# The heavier natural-play F2 fixture can defer frame_post_draw while the
+		# live scene is still streaming assets. A normal process frame is enough
+		# for this opt-in evidence capture and keeps the headed run fail-closed.
+		await get_tree().process_frame
+	else:
+		await RenderingServer.frame_post_draw
 	var image := get_viewport().get_texture().get_image()
 	image.save_png(_output_path(name))
 	frame_names.append(name)
@@ -404,7 +455,7 @@ func _production_definitions() -> Dictionary:
 		var d := GameData.get_unit(String(unit_id)).duplicate(true)
 		roles.append({"id":String(unit_id), "definition":d, "reason":"live War Hall roster audit"})
 	var plan: Array = []
-	var selected_plan: Array = COMPETENT_FORCE_PLAN if competent_mode else FORCE_PLAN
+	var selected_plan: Array = F2_FORCE_PLAN if f2_mode else (COMPETENT_FORCE_PLAN if competent_mode else FORCE_PLAN)
 	for unit_id in selected_plan:
 		var d := GameData.get_unit(unit_id).duplicate(true)
 		plan.append({"id":unit_id, "role":String(d.get("role", "")), "cost":d.get("cost", {}), "build_time":d.get("build_time", 0), "pop":d.get("pop", 0), "hp":d.get("hp", 0), "dmg":d.get("dmg", 0), "dmg_type":d.get("dmg_type", ""), "armor_class":d.get("armor_class", ""), "range":d.get("range", 0), "reason":"frontline durability or ranged damage in a normal mixed force"})
@@ -454,6 +505,53 @@ func _normal_production_setup() -> bool:
 		for u in _player_combatants(): ids[String(u.unit_id)] = int(ids.get(String(u.unit_id), 0)) + 1
 		return int(ids.get("barrosan_spear_guard", 0)) >= 3 and int(ids.get("barrosan_crag_archer", 0)) >= 2, 240.0)
 
+func _f2_assign_workers() -> void:
+	var resources := _resources_by_kind()
+	var food = resources.get("food")
+	var timber = resources.get("timber")
+	var workers: Array = world.player_commander.units.filter(func(u): return _live_unit(u) and bool(u.is_worker))
+	for index in workers.size():
+		var worker = workers[index]
+		var target = food if index * 100 < workers.size() * 55 else timber
+		if not is_instance_valid(target): target = food if is_instance_valid(food) else timber
+		if is_instance_valid(target): worker.command_gather(target)
+
+func _f2_expand_workers(hq) -> bool:
+	if not is_instance_valid(hq): return false
+	var worker_id := String(GameData.get_race(world.player_commander.race).get("worker", ""))
+	var target_count := 7
+	var initial_count := world.player_commander.units.filter(func(u): return _live_unit(u) and bool(u.is_worker)).size()
+	var target_reason := "target_6_to_8_workers"
+	var expansion_started := Time.get_ticks_msec()
+	while _live_unit_count_for_role(true) < target_count and not _f2_expired():
+		var before_count := _live_unit_count_for_role(true)
+		var bank_before := world.player_commander.resources.duplicate(true)
+		var queue_started := Time.get_ticks_msec()
+		var result: Dictionary = hq.queue_unit(worker_id)
+		var entry := {"unit_id":worker_id, "queue_timestamp_ms":queue_started, "result":result, "bank_before":bank_before, "bank_after_queue":world.player_commander.resources.duplicate(true), "population_before":int(world.player_commander.pop_used), "population_cap":int(world.player_commander.pop_cap)}
+		if bool(result.get("ok", false)):
+			var completed := await _wait_until(func(): return _live_unit_count_for_role(true) > before_count, 150.0)
+			entry["completion_timestamp_ms"] = Time.get_ticks_msec()
+			entry["actual_train_duration_seconds"] = float(Time.get_ticks_msec() - queue_started) / 1000.0
+			entry["completed"] = completed
+			entry["bank_after_completion"] = world.player_commander.resources.duplicate(true)
+			entry["population_after"] = int(world.player_commander.pop_used)
+			_f2_assign_workers()
+		else:
+			entry["completed"] = false
+			entry["queue_reason"] = String(result.get("reason", "unknown"))
+			await _wait_seconds(4.0)
+		f2_worker_queue_results.append(entry)
+		if not bool(entry.get("completed", false)) and f2_worker_queue_results.size() >= 8: break
+	_f2_assign_workers()
+	var final_count := _live_unit_count_for_role(true)
+	_save_json("worker-expansion.json", {"provenance":_provenance("f2_worker_expansion"), "target_count":target_count, "initial_count":initial_count, "final_count":final_count, "target_reason":target_reason, "elapsed_wall_seconds":float(Time.get_ticks_msec() - expansion_started) / 1000.0, "queue_results":f2_worker_queue_results, "normal_hq_queue":true, "state_injection":false})
+	return final_count >= initial_count
+
+func _live_unit_count_for_role(worker_role: bool) -> int:
+	if not is_instance_valid(world) or not is_instance_valid(world.player_commander): return 0
+	return world.player_commander.units.filter(func(u): return _live_unit(u) and bool(u.is_worker) == worker_role).size()
+
 func _competent_production_setup(hall) -> bool:
 	var house_pos := _find_building_position("barrosan_clan_croft")
 	var house = world.place_building("barrosan_clan_croft", 0, house_pos) if house_pos != Vector3.INF else null
@@ -475,10 +573,13 @@ func _competent_production_setup(hall) -> bool:
 		elif is_instance_valid(food): worker.command_gather(food)
 		assigned += 1
 	_record_economy("workers_gather_food_and_timber")
+	if f2_mode and not await _f2_expand_workers(world.player_commander.buildings.filter(func(b): return _live_building(b) and bool(b.def.get("is_hq", false))).front()): return false
+	if f2_mode: _f2_assign_workers()
 	await _save("02_R1H_WORKERS_RESUME_ECONOMY.png")
 	if not await _wait_until(func(): return world.resource_transactions.size() >= 6, 90.0): return false
 	var queue_results: Array = []
-	for unit_id in COMPETENT_FORCE_PLAN:
+	var selected_plan: Array = F2_FORCE_PLAN if f2_mode else COMPETENT_FORCE_PLAN
+	for unit_id in selected_plan:
 		var result = {"ok":false, "reason":"not attempted"}
 		var retry_deadline := Time.get_ticks_msec() + 90000
 		while Time.get_ticks_msec() < retry_deadline:
@@ -489,9 +590,10 @@ func _competent_production_setup(hall) -> bool:
 			await _wait_seconds(4.0)
 		await get_tree().process_frame
 	if f1_mode: f1_queue_results = queue_results.duplicate(true)
+	if f2_mode: f2_military_queue_results = queue_results.duplicate(true)
 	_record_economy("competent_mixed_force_queues_issued")
 	_save_json("production-audit.json", {"provenance":_provenance("production"), "queue_results":queue_results, "resource_transactions":world.resource_transactions.duplicate(true), "queue_plan":COMPETENT_FORCE_PLAN, "source":"normal house placement, worker construction, resumed two-resource gathering, and real-cost Building.queue_unit"})
-	return await _wait_until(func(): return _player_combatants().size() >= 10, 360.0)
+	return await _wait_until(func(): return _player_combatants().size() >= (12 if f2_mode else 10), 420.0)
 
 func _target_key(target, category: String) -> Dictionary:
 	return {"category":category, "definition_id":String(target.get("building_id") if category == "building" else target.get("unit_id")), "runtime_id":str(target.get_instance_id())}
@@ -549,10 +651,16 @@ func _assault_target(target, category: String, label: String) -> Dictionary:
 	return audit
 
 func _failure(status: String, reason: String) -> void:
+	if f2_mode:
+		status = status.replace("E1R", "F2").replace("R1H", "F2")
+		f2_sampling_active = false
+		_f2_capture_sample(int(floor(float(world.match_time) / 10.0)), "failure_terminal")
 	primary_status = status
 	var final_state := _predicate_snapshot("blocker")
 	var blocker := {"schema":"v0436-r1h-blocker-v1", "status":status, "reason":reason, "provenance":_provenance("blocker"), "force_plan":force_plan_audit, "economy_timeline":economy_timeline, "completed_production":_player_combatants().map(func(u): return _unit_record(u)), "player_inventory":final_state.get("commanders", [])[0] if final_state.get("commanders", []).size() > 0 else {}, "enemy_inventory":final_state.get("commanders", [])[1] if final_state.get("commanders", []).size() > 1 else {}, "target_lifecycles":target_lifecycles, "surviving_entities":final_state.get("commanders", []), "resource_transactions":world.resource_transactions.duplicate(true), "navigation_state":world.navigation_runtime_snapshot(), "match_state":final_state, "last_valid_frame":last_valid_frame, "later_phases_not_run":reason}
 	_save_json("r1h-blocker.json", blocker)
+	if f2_mode:
+		_save_json("f2-blocker.json", {"schema":"v0436-f2-natural-conquest-blocker-v1", "status":status, "reason":reason, "provenance":_provenance("f2_blocker"), "worker_expansion":f2_worker_queue_results, "military_queue_results":f2_military_queue_results, "samples":f2_samples, "target_lifecycles":target_lifecycles, "match_state":final_state, "resource_transactions":world.resource_transactions.duplicate(true), "navigation_state":world.navigation_runtime_snapshot(), "last_valid_frame":last_valid_frame})
 	_save_json("r1h-final-state.json", {"provenance":_provenance("final"), "status":status, "predicate":final_state, "predicate_sequence":predicate_sequence, "target_lifecycles":target_lifecycles, "economy_timeline":economy_timeline, "frames":frame_names})
 	await _contact_sheet(true)
 	push_error(status + ": " + reason)
@@ -631,6 +739,7 @@ func _competent_assault_target(target, category: String, label: String) -> Dicti
 	return audit
 
 func _competent_reinforcements() -> bool:
+	if _f2_expired(): return false
 	var hall = null
 	for building in world.player_commander.buildings:
 		if is_instance_valid(building) and not building.is_dead and String(building.building_id) == "barrosan_war_hall":
@@ -647,11 +756,17 @@ func _competent_reinforcements() -> bool:
 			if bool(result.get("ok", false)): break
 			await _wait_seconds(4.0)
 		await get_tree().process_frame
+	if f2_mode: f2_military_queue_results.append_array(queue_results)
 	_save_json("reinforcement-queue-%d.json" % target_lifecycles.size(), {"provenance":_provenance("reinforcements"), "queue_results":queue_results, "source":"normal real-cost queue after a combat retreat"})
 	return await _wait_until(func(): return _player_combatants().size() >= 8, 240.0)
 
 func _capture_competent_match() -> void:
 	if not await _wait_until(func(): return is_instance_valid(world) and world.game_running, 30.0): await _failure("BLOCKED_E1R_MATCH_NOT_STARTED", "production match did not start"); return
+	if f2_mode:
+		f2_started_ms = Time.get_ticks_msec()
+		f2_deadline_ms = f2_started_ms + 40 * 60 * 1000
+		f2_sampling_active = true
+		_f2_sampling_loop()
 	await _focus(world.player_commander.buildings[0].global_position)
 	await _save("01_R1H_STANDARD_MATCH_START.png")
 	_save_json("match-configuration.json", {"provenance":_provenance("configuration"), "observed":Match.get_config().duplicate(true), "expected":{"player_race":"barrosan", "opponent_race":"lioraen", "difficulty":"easy", "start_resources":"rich", "map":"hollowspan", "mode":"skirmish", "victory":"conquest", "game_speed":2.0}})
@@ -659,12 +774,17 @@ func _capture_competent_match() -> void:
 	await _save("02_R1H_WORKERS_RESUME_ECONOMY.png")
 	if not await _normal_production_setup(): await _failure("BLOCKED_E1R_ECONOMY_OR_PRODUCTION_STALLED", "normal construction, two-resource gathering, housing, or mixed production could not progress"); return
 	await _save("05_R1H_FORCE_READINESS_TRUE.png")
+	if f2_mode:
+		await _save("04_R1H_ARMY_READY_12PLUS.png")
+		await _save("06_R1H_MIXED_ARMY.png")
 	_record_economy("force_readiness")
 	_save_json("force-readiness.json", {"provenance":_provenance("readiness"), "ready":true, "hero_included":is_instance_valid(world.player_commander.hero_ref) and not world.player_commander.hero_ref.is_dead, "force":_player_combatants().map(func(u): return _unit_record(u)), "total_hp":_player_combatants().reduce(func(sum, u): return sum + float(u.hp), 0.0), "population":_commander_record(world.player_commander), "queue_capability":_queue_record(world.player_commander.buildings.filter(func(b): return b.building_id == "barrosan_war_hall")[0])})
 	var cycle_audits: Array = []
 	var won := false
 	for cycle in range(3):
+		if _f2_expired(): await _failure("INCONCLUSIVE_E1R_TIME_LIMIT", "40-minute F2 wall-clock bound reached before natural conquest"); return
 		var cycle_audit := {"cycle":cycle + 1, "started_force":_player_combatants().map(func(u): return _unit_record(u)), "targets":[]}
+		if f2_mode: await _save("07_R1H_MAIN_ASSAULT.png")
 		var enemy_units := _enemy_combatants().duplicate()
 		for target in enemy_units:
 			if not is_instance_valid(target) or target.is_dead: continue
@@ -673,6 +793,7 @@ func _capture_competent_match() -> void:
 			if String(audit.get("terminal_disposition", "")) in ["WITHDREW_REGROUP", "FAILED_E1R_NATURAL_PLAYER_DEFEAT"]: break
 		if is_instance_valid(world.player_commander) and bool(world.player_commander.defeated): await _failure("FAILED_E1R_NATURAL_PLAYER_DEFEAT", "player HQ or rebuild capability was naturally eliminated"); return
 		if _enemy_combatants().is_empty():
+			if f2_mode: await _save("08_R1H_ENEMY_ARMY_ENGAGEMENT.png")
 			var hqs := _enemy_buildings().filter(func(b): return bool(b.def.get("is_hq", false)))
 			if not hqs.is_empty() and _player_combatants().size() >= 4:
 				var hq_audit := await _competent_assault_target(hqs[0], "building", "cycle_%d_enemy_hq" % (cycle + 1))
@@ -699,11 +820,17 @@ func _capture_competent_match() -> void:
 		if won: break
 		if cycle < 2:
 			if not await _competent_reinforcements(): await _failure("INCONCLUSIVE_E1R_TIME_LIMIT", "normal production could not rebuild a useful fighting force after losses"); return
+			if f2_mode: await _save("09_R1H_REINFORCEMENTS.png")
 	if not won: await _failure("INCONCLUSIVE_E1R_TIME_LIMIT", "competent natural player strategy made real progress but did not reach conquest within three bounded offensive cycles"); return
+	if f2_mode:
+		f2_sampling_active = false
+		_f2_capture_sample(int(floor(float(world.match_time) / 10.0)), "pre_terminal_result")
+		_save_json("f2-match-summary.json", {"schema":"v0436-f2-natural-conquest-summary-v1", "status":"NATURAL_PREDICATE_REACHED", "provenance":_provenance("f2_summary"), "worker_queue_results":f2_worker_queue_results, "military_queue_results":f2_military_queue_results, "samples":f2_samples, "assault_cycles":cycle_audits, "wall_seconds":float(Time.get_ticks_msec() - f2_started_ms) / 1000.0, "balance_changed":false, "state_injection":false})
 	var final_predicate := _predicate_snapshot("final_conquest_predicate")
 	await _save("17_R1H_FINAL_CONQUEST_PREDICATE.png")
 	if not await _wait_until(func(): return world.match_ended, 120.0): await _failure("BLOCKED_E1R_VICTORY_TERMINAL", "natural conquest predicate did not end the match"); return
 	if not bool(world.result_snapshot.get("victory", false)) or String(world.result_snapshot.get("reason", "")) != "Conquest": await _failure("BLOCKED_E1R_RESULT_REASON", "natural end did not produce Conquest victory"); return
+	if f2_mode: await _save("15_R1H_NATURAL_CONQUEST.png")
 	await _save("18_R1H_GENUINE_VICTORY.png")
 	var layer = root_node.hud.get("_gameover_layer")
 	var continue_button := _find_button(layer, "Continue") if is_instance_valid(layer) else null
