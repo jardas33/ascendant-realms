@@ -62,6 +62,7 @@ func _begin() -> void:
 	get_tree().quit(0 if _failures.is_empty() else 1)
 
 func _capture_ghost(name: String, building_id: String, pos: Vector3, expected_valid: bool) -> void:
+	_rts.set_process(true)
 	_rts.enter_build_mode(building_id)
 	for _i in 4: await get_tree().process_frame
 	if not is_instance_valid(_rts._build_ghost):
@@ -69,7 +70,12 @@ func _capture_ghost(name: String, building_id: String, pos: Vector3, expected_va
 		return
 	_rts._build_ghost.global_position = pos
 	_rts._build_valid = _rts._is_build_spot_valid(pos)
+	if _rts._ghost_mat:
+		_rts._ghost_mat.albedo_color = Color(0.3, 0.9, 0.4, 0.28) if _rts._build_valid else Color(0.9, 0.3, 0.3, 0.28)
 	_rts.focus_on(pos)
+	# Freeze the controller while capturing so its live mouse raycast cannot
+	# overwrite the deterministic proof position before the frame is saved.
+	_rts.set_process(false)
 	for _i in 6: await get_tree().process_frame
 	if bool(_rts._build_valid) != expected_valid: _failures.append(name + ":validity_mismatch")
 	for _i in 4: await get_tree().process_frame
@@ -80,6 +86,7 @@ func _capture_ghost(name: String, building_id: String, pos: Vector3, expected_va
 		return
 	image.save_png(_output.path_join(name + ".png"))
 	_frames.append({"name": name, "png": _output.path_join(name + ".png"), "expected_valid": expected_valid, "actual_valid": bool(_rts._build_valid), "width": image.get_width(), "height": image.get_height()})
+	_rts.set_process(true)
 
 func _entity_snapshot() -> Dictionary:
 	var out := {}
