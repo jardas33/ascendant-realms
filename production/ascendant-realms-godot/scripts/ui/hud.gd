@@ -722,13 +722,15 @@ func _build_multi(units: Array) -> void:
 	_sel_body.add_child(scroll)
 
 	var grid := GridContainer.new()
-	grid.columns = 8
+	grid.columns = 6
 	grid.add_theme_constant_override("h_separation", 4)
 	grid.add_theme_constant_override("v_separation", 4)
 	grid.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	scroll.add_child(grid)
 
 	var shown := 0
+	var selected_label := _mk_label("Selected group  %d" % units.size(), 13, Color(0.95, 0.85, 0.55))
+	_sel_body.add_child(selected_label)
 	for u in units:
 		if shown >= 24:
 			break
@@ -745,7 +747,7 @@ func _build_multi(units: Array) -> void:
 			portrait.configure_entity(u)
 		else:
 			cell.add_child(_mk_icon(FRAME_PORTRAIT, 46))
-		var nm := _mk_label(str(u.def.get("name", "Unit")), 10, Color(0.9, 0.86, 0.72))
+		var nm := _mk_label(("★ " if bool(u.is_hero) else "") + str(u.def.get("name", "Unit")), 10, Color(1.0, 0.85, 0.45) if bool(u.is_hero) else Color(0.9, 0.86, 0.72))
 		nm.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		nm.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 		cell.add_child(nm)
