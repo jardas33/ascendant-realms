@@ -21,7 +21,7 @@ var rts
 var session := "A"
 var evidence_mode := "R1I" if OS.get_environment("ASCENDANT_V0436_R1I_CAPTURE") == "1" else "R1H"
 var out_path := R1I_OUT if evidence_mode == "R1I" else R1H_OUT
-var competent_mode := OS.get_environment("ASCENDANT_V0436_E1R_CAPTURE") == "1"
+var competent_mode := OS.get_environment("ASCENDANT_V0436_E1R_CAPTURE") == "1" or OS.get_environment("ASCENDANT_V0436_F1_REINFORCEMENT_CAPTURE") == "1"
 var e1r2_mode := OS.get_environment("ASCENDANT_V0436_E1R2_CAPTURE") == "1"
 var tutorial_mode := OS.get_environment("ASCENDANT_V0436_E3_CAPTURE") == "1"
 var e3r_mode := OS.get_environment("ASCENDANT_V0436_E3R_CAPTURE") == "1"
@@ -39,11 +39,20 @@ var force_plan_audit: Dictionary = {}
 var e3r_completion_diagnostic := OS.get_environment("ASCENDANT_E3R_COMPLETION_DIAGNOSTIC") == "1"
 var e3r_input_events: Array = []
 var e3r_completion_pressed_count := 0
+var f1_mode := OS.get_environment("ASCENDANT_V0436_F1_REINFORCEMENT_CAPTURE") == "1"
+var f1_sampling_active := false
+var f1_samples: Array = []
+var f1_sampled_buckets: Dictionary = {}
+var f1_queue_results: Array = []
 
 func _ready() -> void:
 	session = OS.get_environment("ASCENDANT_V0436_R1H_SESSION")
 	if session != "A" and session != "B": session = "A"
-	if e3r_mode:
+	if f1_mode:
+		evidence_mode = "F1"
+		out_path = OS.get_environment("ASCENDANT_V0436_F1_OUT")
+		if out_path == "": out_path = "user://v0436-f1-reinforcement-diagnosis/"
+	elif e3r_mode:
 		evidence_mode = "E3R"
 		out_path = E3R_OUT + "session-%s/" % session.to_lower()
 		var step8_out := OS.get_environment("ASCENDANT_E3R_STEP8_OUT")
@@ -116,6 +125,11 @@ func _completion_ui_diagnostic(button: Button) -> Dictionary:
 	var button_rect := button.get_global_rect()
 	return {"button_path":String(button.get_path()), "button_text":String(button.text), "button_rect":{"x":button_rect.position.x,"y":button_rect.position.y,"w":button_rect.size.x,"h":button_rect.size.y}, "viewport_rect":{"x":0,"y":0,"w":get_viewport().get_visible_rect().size.x,"h":get_viewport().get_visible_rect().size.y}, "button_visible":button.visible, "button_disabled":button.disabled, "button_focus_mode":button.focus_mode, "button_mouse_filter":button.mouse_filter, "button_z_index":button.z_index, "button_hovered":button.is_hovered(), "button_button_pressed":button.button_pressed, "hovered_control":String(hover.get_path()) if is_instance_valid(hover) else "", "focus_owner":String(focus.get_path()) if is_instance_valid(focus) else "", "ancestors":ancestors, "input_event_count_before":e3r_input_events.size(), "completion_pressed_count_before":e3r_completion_pressed_count}
 
+func _e3r_completion_resolution() -> Vector2i:
+	var raw := OS.get_environment("ASCENDANT_E3R_COMPLETION_RESOLUTION")
+	if raw == "1366x768": return Vector2i(1366, 768)
+	return Vector2i(1920, 1080)
+
 func _vec(v: Vector3) -> Dictionary: return {"x":v.x, "y":v.y, "z":v.z}
 
 func _provenance(label: String) -> Dictionary:
@@ -165,6 +179,7 @@ func _step8_telemetry(lume, duration_seconds: float) -> void:
 
 func _evidence_name(name: String) -> String:
 	if e3r_mode: return name.replace("R1H", "E3R").replace("r1h-", "e3r-")
+	if f1_mode: return name.replace("R1H", "F1").replace("r1h-", "f1-")
 	if competent_mode: return name.replace("R1H", "E1R").replace("r1h-", "e1r-")
 	if tutorial_mode: return name.replace("R1H", "E3").replace("r1h-", "e3-")
 	if evidence_mode == "R1I": return name.replace("R1H", "R1I").replace("r1h-", "r1i-")
@@ -240,6 +255,97 @@ func _record_economy(label: String) -> void:
 	for unit in cmd.units:
 		if is_instance_valid(unit) and not unit.is_dead and unit.is_worker: workers.append(unit.get_economy_snapshot())
 	economy_timeline.append({"label":label, "timestamp_ms":Time.get_ticks_msec(), "resources":cmd.resources.duplicate(true), "pop_used":cmd.pop_used, "reserved_pop":cmd.reserved_pop, "pop_cap":cmd.pop_cap, "workers":workers, "resource_transaction_count":world.resource_transactions.size(), "resource_transactions":world.resource_transactions.duplicate(true), "queues":cmd.buildings.map(func(b): return _queue_record(b))})
+
+func _f1_worker_record(worker) -> Dictionary:
+	var economy: Dictionary = worker.get_economy_snapshot() if worker.has_method("get_economy_snapshot") else {}
+	var command_type := String(worker.get("_navigation_command_type"))
+	var classification := "idle"
+	if command_type.contains("gather") or int(worker.state) == Unit.State.GATHERING:
+		classification = "gathering"
+	elif command_type.contains("build") or int(worker.state) == Unit.State.BUILDING:
+		classification = "building"
+	elif command_type.contains("return") or command_type.contains("deposit"):
+		classification = "returning"
+	elif int(worker.state) == Unit.State.MOVING:
+		classification = "moving"
+	economy["runtime_id"] = str(worker.get_instance_id())
+	economy["unit_id"] = String(worker.unit_id)
+	economy["state_code"] = int(worker.state)
+	economy["command_type"] = command_type
+	economy["classification"] = classification
+	economy["position"] = _vec(worker.global_position)
+	return economy
+
+func _f1_queue_snapshot() -> Array:
+	var queues: Array = []
+	for building in world.player_commander.buildings:
+		if not is_instance_valid(building) or building.is_dead: continue
+		queues.append(_queue_record(building))
+	return queues
+
+func _f1_production_theory() -> Dictionary:
+	var plan := ["barrosan_spear_guard", "barrosan_crag_archer", "barrosan_clan_levy", "barrosan_spear_guard", "barrosan_crag_archer", "barrosan_clan_levy", "barrosan_spear_guard", "barrosan_crag_archer", "barrosan_clan_levy", "barrosan_spear_guard", "barrosan_crag_archer", "barrosan_clan_levy", "barrosan_spear_guard", "barrosan_crag_archer", "barrosan_clan_levy"]
+	var totals := {"5": {"food":0, "timber":0, "stone":0, "gold":0, "build_time_seconds":0.0}, "10": {"food":0, "timber":0, "stone":0, "gold":0, "build_time_seconds":0.0}, "15": {"food":0, "timber":0, "stone":0, "gold":0, "build_time_seconds":0.0}}
+	for index in range(plan.size()):
+		var definition := GameData.get_unit(plan[index])
+		for key in ["food", "timber", "stone", "gold"]: totals["15"][key] += int(definition.get("cost", {}).get(key, 0))
+		totals["15"]["build_time_seconds"] += float(definition.get("build_time", 0))
+		if index < 10:
+			for key in ["food", "timber", "stone", "gold"]: totals["10"][key] += int(definition.get("cost", {}).get(key, 0))
+			totals["10"]["build_time_seconds"] += float(definition.get("build_time", 0))
+		if index < 5:
+			for key in ["food", "timber", "stone", "gold"]: totals["5"][key] += int(definition.get("cost", {}).get(key, 0))
+			totals["5"]["build_time_seconds"] += float(definition.get("build_time", 0))
+	return {"plan":plan, "definitions":plan.map(func(unit_id): return {"id":unit_id, "cost":GameData.get_unit(unit_id).get("cost", {}).duplicate(true), "build_time_seconds":GameData.get_unit(unit_id).get("build_time", 0)}), "totals":totals, "train_speed_multiplier_observed":world.player_commander.train_speed_mult() if world.player_commander.has_method("train_speed_mult") else null, "note":"theoretical totals use authoritative GameData costs/build times; effective runtime duration is measured separately"}
+
+func _f1_capture_sample(bucket: int, label: String) -> void:
+	if f1_sampled_buckets.has(bucket): return
+	f1_sampled_buckets[bucket] = true
+	var cmd = world.player_commander
+	var workers: Array = []
+	for worker in cmd.units:
+		if is_instance_valid(worker) and not worker.is_dead and worker.is_worker: workers.append(_f1_worker_record(worker))
+	var combat_ids: Array = []
+	for unit in cmd.units:
+		if is_instance_valid(unit) and not unit.is_dead and not unit.is_worker: combat_ids.append(str(unit.get_instance_id()))
+	var income_by_kind := {}
+	for transaction in world.resource_transactions:
+		var kind := String(transaction.get("resource_kind", transaction.get("kind", "unknown")))
+		income_by_kind[kind] = int(income_by_kind.get(kind, 0)) + int(transaction.get("amount", transaction.get("value", 0)))
+	f1_samples.append({"bucket":bucket, "label":label, "match_time_seconds":float(world.match_time), "resources":cmd.resources.duplicate(true), "workers":workers, "worker_counts":{"total":workers.size(), "idle":workers.filter(func(w): return String(w.get("classification", "")) == "idle").size(), "returning":workers.filter(func(w): return String(w.get("classification", "")) == "returning").size(), "gathering":workers.filter(func(w): return String(w.get("classification", "")) == "gathering").size(), "building":workers.filter(func(w): return String(w.get("classification", "")) == "building").size(), "moving":workers.filter(func(w): return String(w.get("classification", "")) == "moving").size()}, "pop_used":int(cmd.pop_used), "reserved_pop":int(cmd.reserved_pop), "pop_cap":int(cmd.pop_cap), "income_by_kind":income_by_kind, "resource_transaction_count":world.resource_transactions.size(), "queues":_f1_queue_snapshot(), "combat_unit_runtime_ids":combat_ids, "combat_unit_count":combat_ids.size(), "death_event_count":world.combat_death_events.size(), "world_game_running":bool(world.game_running)})
+
+func _f1_sampling_loop() -> void:
+	while f1_sampling_active and is_instance_valid(world) and float(world.match_time) <= 300.0:
+		var bucket := int(floor(float(world.match_time) / 10.0))
+		_f1_capture_sample(bucket, "simulation_10_second_sample")
+		await get_tree().create_timer(0.25).timeout
+
+func _f1_production_capture() -> void:
+	if not await _wait_until(func(): return is_instance_valid(world) and world.game_running, 30.0): await _failure("BLOCKED_F1_MATCH_NOT_STARTED", "production match did not start"); return
+	if not await _wait_until(func(): return world.is_navigation_ready(), 30.0): await _failure("BLOCKED_F1_NAVIGATION_NOT_READY", "navigation did not become ready"); return
+	var config := Match.get_config().duplicate(true)
+	_save_json("match-configuration.json", {"provenance":_provenance("f1_configuration"), "observed":config, "expected":{"player_race":"barrosan", "opponents":[{"race":"lioraen", "difficulty":"easy"}], "map":"hollowspan", "start_resources":"rich", "mode":"skirmish", "victory":"conquest", "game_speed":2.0}, "offense_before_simulation_seconds":600.0})
+	_save_json("production-theory.json", {"provenance":_provenance("f1_authoritative_theory"), "theory":_f1_production_theory()})
+	await _focus(world.player_commander.buildings[0].global_position)
+	await _save("01_F1_STANDARD_MATCH_START.png")
+	f1_sampling_active = true
+	_f1_sampling_loop()
+	var production_ok := await _normal_production_setup()
+	f1_sampling_active = false
+	_f1_capture_sample(int(floor(float(world.match_time) / 10.0)), "production_setup_terminal")
+	await _wait_seconds(0.5)
+	var reasons := {}
+	for entry in f1_queue_results:
+		var result = entry.get("result", {}) if entry is Dictionary else {}
+		var reason := String(result.get("reason", "ok")) if result is Dictionary else "unknown"
+		reasons[reason] = int(reasons.get(reason, 0)) + 1
+	var blocker_status := "PASS_F1_REINFORCEMENT_THROUGHPUT_OBSERVED" if production_ok else "BLOCKED_F1_REINFORCEMENT_THROUGHPUT"
+	var blocker_reason := "normal public production recovered a mixed force" if production_ok else "normal construction, worker gathering, or costed production did not recover the requested reinforcement force"
+	_save_json("reinforcement-throughput.json", {"schema":"v0436-f1-reinforcement-throughput-v1", "provenance":_provenance("f1_reinforcement_diagnosis"), "status":blocker_status, "reason":blocker_reason, "configuration":config, "theoretical_cost_time":_f1_production_theory(), "samples_every_simulation_seconds":10, "samples":f1_samples, "queue_results":f1_queue_results, "queue_reason_counts":reasons, "economy_timeline":economy_timeline, "no_player_offense_before_simulation_seconds":600.0, "public_actions_only":true, "state_injection":false})
+	_save_json("f1-blocker.json", {"schema":"v0436-f1-reinforcement-blocker-v1", "status":blocker_status, "reason":blocker_reason, "last_valid_frame":last_valid_frame, "resource_transactions":world.resource_transactions.duplicate(true), "queue_reason_counts":reasons, "sample_count":f1_samples.size()})
+	await _save("02_F1_ECONOMY_AND_REINFORCEMENT_STATE.png")
+	await _contact_sheet()
+	get_tree().quit(0)
 
 func _predicate_snapshot(label: String) -> Dictionary:
 	var commanders: Array = []
@@ -382,6 +488,7 @@ func _competent_production_setup(hall) -> bool:
 			if String(result.get("reason", "")).contains("higher Age"): break
 			await _wait_seconds(4.0)
 		await get_tree().process_frame
+	if f1_mode: f1_queue_results = queue_results.duplicate(true)
 	_record_economy("competent_mixed_force_queues_issued")
 	_save_json("production-audit.json", {"provenance":_provenance("production"), "queue_results":queue_results, "resource_transactions":world.resource_transactions.duplicate(true), "queue_plan":COMPETENT_FORCE_PLAN, "source":"normal house placement, worker construction, resumed two-resource gathering, and real-cost Building.queue_unit"})
 	return await _wait_until(func(): return _player_combatants().size() >= 10, 360.0)
@@ -737,11 +844,11 @@ func _capture_e3r_match() -> void:
 	else:
 		await _save("15_STEP8_LUME_OWNED.png")
 		await _save("16_TUTORIAL_COMPLETE.png")
-	DisplayServer.window_set_size(Vector2i(1366, 768))
+	DisplayServer.window_set_size(_e3r_completion_resolution())
 	await _wait_seconds(1.0)
 	await _save_e3r_frame("18_1366_TUTORIAL_COMPLETE.png", "19_1366_TUTORIAL_COMPLETE.png")
-	DisplayServer.window_set_size(Vector2i(1920, 1080))
-	await _wait_seconds(1.0)
+	var lume_after_snapshot: Dictionary = lume.get_capture_snapshot() if lume.has_method("get_capture_snapshot") else {"owner_team":lume.owner_team, "progress":lume._progress}
+	await _wait_seconds(0.5)
 	var completion_button = root_node.tutorial.get_completion_button() if root_node.tutorial.has_method("get_completion_button") else null
 	if not is_instance_valid(completion_button): await _failure("BLOCKED_E3R_COMPLETION_FLOW_BROADER_THAN_SCOPE", "completed tutorial did not expose a return action"); return
 	if e3r_completion_diagnostic:
@@ -768,7 +875,9 @@ func _capture_e3r_match() -> void:
 		await get_tree().process_frame
 	if not await _wait_until(func(): return is_instance_valid(get_tree().current_scene) and get_tree().current_scene.name == "MainMenu", 30.0): await _failure("BLOCKED_E3R_COMPLETION_FLOW_BROADER_THAN_SCOPE", "tutorial return action did not reach the main menu"); return
 	await _save_e3r_frame("16_RETURN_TO_MAIN_MENU.png", "17_TUTORIAL_RETURN_MENU.png")
-	_save_json("e3r-tutorial-manifest.json", {"schema":"v0436-e3r-real-tutorial-v1", "provenance":_provenance("real_golden_path"), "configuration":config, "tutorial_entry":"normal MainMenu How to Play button", "timeline":timeline, "lume_before":lume_before, "lume_after":lume.get_capture_snapshot() if lume.has_method("get_capture_snapshot") else {"owner_team":lume.owner_team, "progress":lume._progress}, "return_action":return_record, "tutorial_state_before_return":_tutorial_snapshot(), "public_actions_only":true, "state_injection":false})
+	if e3r_completion_diagnostic:
+		_save_json("e3r-completion-success.json", {"status":"NATIVE_COMPLETION_RETURNED_TO_MAIN_MENU", "completion_pressed_count":e3r_completion_pressed_count, "input_events":e3r_input_events.duplicate(true), "scene_after":String(get_tree().current_scene.name), "resolution":_e3r_completion_resolution()})
+	_save_json("e3r-tutorial-manifest.json", {"schema":"v0436-e3r-real-tutorial-v1", "provenance":_provenance("real_golden_path"), "configuration":config, "tutorial_entry":"normal MainMenu How to Play button", "timeline":timeline, "lume_before":lume_before, "lume_after":lume_after_snapshot, "return_action":return_record, "tutorial_state_before_return":_tutorial_snapshot(), "public_actions_only":true, "state_injection":false})
 	await _contact_sheet()
 	get_tree().quit(0)
 
@@ -835,6 +944,9 @@ func _capture_tutorial_match() -> void:
 	get_tree().quit(0)
 
 func _capture_match() -> void:
+	if f1_mode:
+		await _f1_production_capture()
+		return
 	if competent_mode:
 		await _capture_competent_match()
 		return
