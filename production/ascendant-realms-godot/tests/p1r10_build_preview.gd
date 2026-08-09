@@ -44,9 +44,10 @@ func _begin() -> void:
 	for _i in 12: await get_tree().process_frame
 	_before_entities = _entity_snapshot()
 	var base: Vector3 = _world.commanders[0].buildings[0].global_position if not _world.commanders.is_empty() and not _world.commanders[0].buildings.is_empty() else Vector3.ZERO
-	var invalid_pos := base
-	var resources := get_tree().get_nodes_in_group("resources")
-	if not resources.is_empty(): invalid_pos = resources[0].global_position
+	# This is intentionally outside the authoritative playable limit. It keeps
+	# the red proof deterministic without relying on incidental base/resource
+	# occupancy or mutating either one.
+	var invalid_pos := Vector3(135.0, 0.0, 135.0)
 	_rts.edge_scroll = false
 	_rts.focus_on(base)
 	for _i in 10: await get_tree().process_frame
