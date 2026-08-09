@@ -154,7 +154,7 @@ func _advance() -> void:
 	Sfx.play("ready", -8.0)
 	if _step >= _steps.size():
 		_completed = true
-	_show_step()
+		_show_step()
 	else:
 		_show_step()
 
@@ -174,7 +174,9 @@ func _on_skip_or_return() -> void:
 		queue_free()
 
 func get_state_snapshot() -> Dictionary:
-	var current := _steps[_step] if _step < _steps.size() else {}
+	var current: Dictionary = {}
+	if _step < _steps.size():
+		current = _steps[_step]
 	return {
 		"active": is_inside_tree(),
 		"step_index": min(_step + 1, _steps.size()),
