@@ -39,11 +39,13 @@ func configure(p_name: String, p_benefit: String, model_path: String, p_world) -
 func _build_ring() -> void:
 	ring = MeshInstance3D.new()
 	var torus := TorusMesh.new()
-	torus.inner_radius = 6.0
-	torus.outer_radius = 7.0
+	# Keep the strategic read close to the site. The capture radius remains 7.5m
+	# below; this is presentation-only and avoids a giant gameplay-looking halo.
+	torus.inner_radius = 3.4
+	torus.outer_radius = 3.9
 	ring.mesh = torus
 	var mat := StandardMaterial3D.new()
-	mat.albedo_color = Color(0.8, 0.8, 0.8, 0.5)
+	mat.albedo_color = Color(0.8, 0.8, 0.8, 0.38)
 	mat.emission_enabled = true
 	mat.emission = Color(0.8, 0.8, 0.8)
 	mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
@@ -55,19 +57,19 @@ func _build_ring() -> void:
 func _build_beam() -> void:
 	beam = MeshInstance3D.new()
 	var cyl := CylinderMesh.new()
-	cyl.top_radius = 0.6
-	cyl.bottom_radius = 1.2
-	cyl.height = 30.0
+	cyl.top_radius = 0.24
+	cyl.bottom_radius = 0.5
+	cyl.height = 12.0
 	beam.mesh = cyl
 	var mat := StandardMaterial3D.new()
-	mat.albedo_color = Color(1.0, 0.85, 0.4, 0.25)
+	mat.albedo_color = Color(1.0, 0.85, 0.4, 0.16)
 	mat.emission_enabled = true
 	mat.emission = Color(1.0, 0.85, 0.4)
 	mat.emission_energy_multiplier = 2.0
 	mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
 	mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
 	beam.material_override = mat
-	beam.position.y = 15.0
+	beam.position.y = 6.0
 	add_child(beam)
 
 func _physics_process(delta: float) -> void:
