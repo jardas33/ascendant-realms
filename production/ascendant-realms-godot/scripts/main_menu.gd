@@ -28,7 +28,7 @@ func _start_e3r_menu_capture() -> void:
 	var out := "res://../../artifacts/manual-review/v0436-e3r-real-tutorial/session-a/"
 	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(out))
 	get_viewport().get_texture().get_image().save_png(ProjectSettings.globalize_path(out + "01_MAIN_MENU_TUTORIAL_ENTRY.png"))
-	_tutorial_button.pressed.emit()
+	_on_tutorial()
 
 func _start_v0431_capture_scene() -> void:
 	LoadingScreen.preload_and_change_scene("res://scenes/game_world.tscn", 0.1)
