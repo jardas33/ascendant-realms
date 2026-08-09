@@ -12,6 +12,7 @@ signal replay
 const FONT_PATH := "res://assets/fonts/cinzel.ttf"
 const THEME_PATH := "res://assets/ui/theme.tres"
 const FRAME_PORTRAIT := "res://assets/ui/frame_portrait.png"
+const ENTITY_PORTRAIT_SCRIPT := "res://scripts/ui/entity_portrait_view.gd"
 const MAP_HALF := 140.0                # MapDefs.MAP_SIZE — world spans -140..140
 const MINIMAP_SIZE := 200.0
 const FONT_COLOR := Color(0.95, 0.9, 0.8)
@@ -543,9 +544,15 @@ func _build_single_unit(u) -> void:
 	row.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_sel_body.add_child(row)
 
-	# portrait frame
-	var portrait := _mk_icon(FRAME_PORTRAIT, 96)
-	row.add_child(portrait)
+	# Actual authored model preview, isolated from the live gameplay node.
+	var portrait: Control
+	if ResourceLoader.exists(ENTITY_PORTRAIT_SCRIPT):
+		portrait = load(ENTITY_PORTRAIT_SCRIPT).new()
+		row.add_child(portrait)
+		portrait.configure_entity(u)
+	else:
+		portrait = _mk_icon(FRAME_PORTRAIT, 96)
+		row.add_child(portrait)
 
 	# info column
 	var info := VBoxContainer.new()
@@ -699,12 +706,29 @@ func _build_single_building(b) -> void:
 	col.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_sel_body.add_child(col)
 
-	col.add_child(_mk_label(b.def.get("name", "Building"), 18, Color(0.95, 0.85, 0.55)))
-
+	var identity := HBoxContainer.new()
+	identity.add_theme_constant_override("separation", 8)
+	identity.custom_minimum_size = Vector2(0, 76)
+	identity.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	col.add_child(identity)
+	var portrait: Control
+	if ResourceLoader.exists(ENTITY_PORTRAIT_SCRIPT):
+		portrait = load(ENTITY_PORTRAIT_SCRIPT).new()
+		portrait.custom_minimum_size = Vector2(76, 76)
+		identity.add_child(portrait)
+		portrait.configure_entity(b)
+	else:
+		portrait = _mk_icon(FRAME_PORTRAIT, 76)
+		identity.add_child(portrait)
+	var identity_info := VBoxContainer.new()
+	identity_info.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	identity_info.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	identity.add_child(identity_info)
+	identity_info.add_child(_mk_label(b.def.get("name", "Building"), 18, Color(0.95, 0.85, 0.55)))
 	_single_hp_bar = _mk_bar(Color(0.35, 0.8, 0.35))
-	col.add_child(_single_hp_bar)
+	identity_info.add_child(_single_hp_bar)
 	_single_hp_text = _mk_label("", 15)
-	col.add_child(_single_hp_text)
+	identity_info.add_child(_single_hp_text)
 
 	if not b.is_built:
 		var pb := _mk_bar(Color(0.85, 0.7, 0.3))
