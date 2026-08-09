@@ -44,13 +44,16 @@ func _begin() -> void:
 	for _i in 12: await get_tree().process_frame
 	_before_entities = _entity_snapshot()
 	var base: Vector3 = _world.commanders[0].buildings[0].global_position if not _world.commanders.is_empty() and not _world.commanders[0].buildings.is_empty() else Vector3.ZERO
+	var invalid_pos := base
+	var resources := get_tree().get_nodes_in_group("resources")
+	if not resources.is_empty(): invalid_pos = resources[0].global_position
 	_rts.edge_scroll = false
 	_rts.focus_on(base)
 	for _i in 10: await get_tree().process_frame
 	await _capture_ghost("01_SMALL_VALID_GHOST", "barrosan_clan_croft", base + Vector3(24, 0, 0), true)
-	await _capture_ghost("02_SMALL_INVALID_GHOST", "barrosan_clan_croft", base, false)
+	await _capture_ghost("02_SMALL_INVALID_GHOST", "barrosan_clan_croft", invalid_pos, false)
 	await _capture_ghost("03_LARGE_VALID_GHOST", "barrosan_war_hall", base + Vector3(-26, 0, 0), true)
-	await _capture_ghost("04_LARGE_INVALID_GHOST", "barrosan_war_hall", base, false)
+	await _capture_ghost("04_LARGE_INVALID_GHOST", "barrosan_war_hall", invalid_pos, false)
 	_rts.cancel_build_mode()
 	get_tree().paused = true
 	if _entity_snapshot() != _before_entities: _failures.append("entity_positions_changed")
@@ -65,6 +68,8 @@ func _capture_ghost(name: String, building_id: String, pos: Vector3, expected_va
 		return
 	_rts._build_ghost.global_position = pos
 	_rts._build_valid = _rts._is_build_spot_valid(pos)
+	_rts.focus_on(pos)
+	for _i in 6: await get_tree().process_frame
 	if bool(_rts._build_valid) != expected_valid: _failures.append(name + ":validity_mismatch")
 	for _i in 4: await get_tree().process_frame
 	await RenderingServer.frame_post_draw
