@@ -25,7 +25,9 @@ func _ready() -> void:
 		session = "A"
 	out_path = OUT + "session-%s/" % session.to_lower()
 	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(out_path))
-	Match.set_config({"player_race":"barrosan", "opponents":[{"race":"lioraen", "difficulty":"easy"}], "map":"hollowspan", "start_resources":"standard", "victory":"conquest", "mode":"skirmish", "game_speed":2.0})
+	var start_resources := OS.get_environment("ASCENDANT_E1_START_RESOURCES")
+	if start_resources.is_empty(): start_resources = "standard"
+	Match.set_config({"player_race":"barrosan", "opponents":[{"race":"lioraen", "difficulty":"easy"}], "map":"hollowspan", "start_resources":start_resources, "victory":"conquest", "mode":"skirmish", "game_speed":2.0})
 
 func _vec(v: Vector3) -> Dictionary:
 	return {"x":v.x, "y":v.y, "z":v.z}
