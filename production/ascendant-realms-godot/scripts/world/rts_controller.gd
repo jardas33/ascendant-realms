@@ -693,7 +693,10 @@ func enter_build_mode(building_id: String) -> void:
 	if path != "" and ResourceLoader.exists(path):
 		var m = load(path).instantiate()
 		_build_ghost.add_child(m)
-		ModelUtils.scale_to_height(m, float(bdef.get("footprint", 4.0)) * 1.4)
+		# Match Building's presentation envelope without changing the authoritative
+		# footprint used by placement and affordability checks.
+		var presentation_height := clampf(float(bdef.get("footprint", 4.0)) * 1.15, 3.2, 12.0)
+		ModelUtils.scale_to_height(m, presentation_height)
 		ModelUtils.ground_model(m)
 	var ring := MeshInstance3D.new()
 	var cyl := CylinderMesh.new()

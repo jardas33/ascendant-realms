@@ -17,6 +17,11 @@ var hp := 1000.0
 var armor_class := "fortified"
 var base_armor := 0.0
 var footprint := 4.0
+## Presentation-only height envelope. GameData.footprint remains authoritative
+## for placement, collision checks, rally range, and all gameplay queries.
+const PRESENTATION_HEIGHT_MULTIPLIER := 1.15
+const PRESENTATION_HEIGHT_MIN := 3.2
+const PRESENTATION_HEIGHT_MAX := 12.0
 
 var is_built := false
 var is_dead := false
@@ -83,7 +88,7 @@ func _build_model() -> void:
 		var m = load(path).instantiate()
 		model_root.add_child(m)
 		# scale building to a sensible footprint-based size
-		var target_h: float = footprint * 1.4
+		var target_h: float = _presentation_height()
 		ModelUtils.scale_to_height(m, target_h)
 		ModelUtils.ground_model(m)
 		ModelUtils.add_per_part_convex_collision(m, 4)
@@ -92,9 +97,10 @@ func _build_model() -> void:
 	else:
 		var mi := MeshInstance3D.new()
 		var bm := BoxMesh.new()
-		bm.size = Vector3(footprint * 1.4, footprint, footprint * 1.4)
+		var presentation_height := _presentation_height()
+		bm.size = Vector3(footprint * 1.2, presentation_height, footprint * 1.2)
 		mi.mesh = bm
-		mi.position.y = footprint * 0.5
+		mi.position.y = presentation_height * 0.5
 		var mat := StandardMaterial3D.new()
 		mat.albedo_color = commander.color.lerp(Color(0.5,0.5,0.5), 0.5) if commander else Color.GRAY
 		mi.material_override = mat
@@ -113,6 +119,9 @@ func _add_selection_pick_shape() -> void:
 	shape.shape = box
 	shape.position.y = height * 0.5
 	add_child(shape)
+
+func _presentation_height() -> float:
+	return clampf(footprint * PRESENTATION_HEIGHT_MULTIPLIER, PRESENTATION_HEIGHT_MIN, PRESENTATION_HEIGHT_MAX)
 
 func _build_selection_ring() -> void:
 	selection_ring = MeshInstance3D.new()

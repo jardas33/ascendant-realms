@@ -26,7 +26,14 @@ func configure(kind: String, amt: int, model_path: String, scale_h: float) -> vo
 		ModelUtils.scale_to_height(m, scale_h)
 		ModelUtils.ground_model(m)
 		ModelUtils.add_per_part_convex_collision(m, 8)
+		# Measure the gameplay envelope before presentation-only sizing. The
+		# collision bodies are then kept at that authoritative size while the
+		# visible resource model is slightly normalized for RTS readability.
 		footprint = max(1.5, ModelUtils.measure_radius(m))
+		for collider in m.find_children("*", "StaticBody3D"):
+			if collider is StaticBody3D:
+				collider.reparent(model_root, true)
+		m.scale *= _presentation_scale_for_kind(kind)
 	else:
 		var mi := MeshInstance3D.new()
 		var bm := BoxMesh.new()
@@ -34,6 +41,13 @@ func configure(kind: String, amt: int, model_path: String, scale_h: float) -> vo
 		mi.mesh = bm
 		mi.position.y = 1.0
 		model_root.add_child(mi)
+
+func _presentation_scale_for_kind(kind: String) -> float:
+	match kind:
+		"gold": return 0.88
+		"stone": return 0.92
+		"timber", "food": return 0.90
+		_: return 1.0
 
 func extract(per_tick: int) -> int:
 	if depleted or per_tick <= 0:
