@@ -412,6 +412,72 @@ func _build_flat_navmesh(nav: NavigationMesh, half: float) -> void:
 	nav.add_polygon(PackedInt32Array([0, 1, 2]))
 	nav.add_polygon(PackedInt32Array([0, 2, 3]))
 
+## The production navmesh is intentionally a broad flat quad, so authored
+## buildings need a small deterministic route layer on top of it. This keeps
+## decorative scenery non-blocking while preventing ground-unit centers from
+## crossing completed building footprints. It only returns waypoints; it does
+## not mutate gameplay state, placement geometry, or the authoritative map.
+func navigation_waypoints_for_unit(origin: Vector3, requested: Vector3, clearance: float = 1.0) -> Array:
+	var points: Array = []
+	var current := origin
+	var ignored: Array = []
+	var final_target := requested
+	for _step in range(6):
+		var blocker = _first_route_blocking_building(current, final_target, clearance, ignored)
+		if blocker == null:
+			break
+		var radius := float(blocker.def.get("footprint", 4.0)) + clearance
+		var direct: Vector3 = final_target - blocker.global_position
+		direct.y = 0.0
+		if direct.length_squared() < 0.01:
+			direct = current - blocker.global_position
+			direct.y = 0.0
+		if direct.length_squared() < 0.01:
+			direct = Vector3.FORWARD
+		direct = direct.normalized()
+		var side := Vector3(-direct.z, 0.0, direct.x)
+		var candidate_a: Vector3 = blocker.global_position + side * radius
+		var candidate_b: Vector3 = blocker.global_position - side * radius
+		var candidate: Vector3 = candidate_a if _route_cost(current, candidate_a, final_target) <= _route_cost(current, candidate_b, final_target) else candidate_b
+		points.append(candidate)
+		current = candidate
+		ignored.append(blocker)
+		# A destination inside a building is a semantic interaction request, not
+		# a valid ground position. Stop at its safe perimeter instead.
+		if final_target.distance_to(blocker.global_position) < radius:
+			final_target = candidate
+			break
+	if points.is_empty() or points.back().distance_to(final_target) > 0.15:
+		points.append(final_target)
+	return points
+
+func _first_route_blocking_building(origin: Vector3, target: Vector3, clearance: float, ignored: Array):
+	var closest = null
+	var closest_distance := INF
+	for building in all_buildings():
+		if not is_instance_valid(building) or building.is_dead or not building.is_built or ignored.has(building):
+			continue
+		var radius := float(building.def.get("footprint", 4.0)) + clearance
+		if target.distance_to(building.global_position) < radius or _segment_intersects_route_circle(origin, target, building.global_position, radius):
+			var distance := origin.distance_to(building.global_position)
+			if distance < closest_distance:
+				closest = building
+				closest_distance = distance
+	return closest
+
+func _segment_intersects_route_circle(a: Vector3, b: Vector3, center: Vector3, radius: float) -> bool:
+	var start := Vector2(a.x, a.z)
+	var end := Vector2(b.x, b.z)
+	var point := Vector2(center.x, center.z)
+	var delta := end - start
+	if delta.length_squared() < 0.0001:
+		return start.distance_to(point) < radius
+	var t := clampf((point - start).dot(delta) / delta.length_squared(), 0.0, 1.0)
+	return start.distance_to(start + delta * t) < radius
+
+func _route_cost(from: Vector3, via: Vector3, target: Vector3) -> float:
+	return from.distance_to(via) + via.distance_to(target)
+
 func is_navigation_ready() -> bool:
 	if not is_instance_valid(nav_region) or not nav_region.enabled:
 		return false

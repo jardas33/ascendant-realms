@@ -520,12 +520,12 @@ func _f2_expand_workers(hq) -> bool:
 	if not is_instance_valid(hq): return false
 	var worker_id := String(GameData.get_race(world.player_commander.race).get("worker", ""))
 	var target_count := 7
-	var initial_count := world.player_commander.units.filter(func(u): return _live_unit(u) and bool(u.is_worker)).size()
+	var initial_count: int = world.player_commander.units.filter(func(u): return _live_unit(u) and bool(u.is_worker)).size()
 	var target_reason := "target_6_to_8_workers"
 	var expansion_started := Time.get_ticks_msec()
 	while _live_unit_count_for_role(true) < target_count and not _f2_expired():
 		var before_count := _live_unit_count_for_role(true)
-		var bank_before := world.player_commander.resources.duplicate(true)
+		var bank_before: Dictionary = world.player_commander.resources.duplicate(true)
 		var queue_started := Time.get_ticks_msec()
 		var result: Dictionary = hq.queue_unit(worker_id)
 		var entry := {"unit_id":worker_id, "queue_timestamp_ms":queue_started, "result":result, "bank_before":bank_before, "bank_after_queue":world.player_commander.resources.duplicate(true), "population_before":int(world.player_commander.pop_used), "population_cap":int(world.player_commander.pop_cap)}

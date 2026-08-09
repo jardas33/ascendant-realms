@@ -123,6 +123,10 @@ var _navigation_last_target := Vector3(INF, INF, INF)
 var _navigation_last_target_ready := false
 var _navigation_retry_elapsed := 0.0
 var _navigation_repath_cooldown := 0.0
+var _navigation_waypoints: Array = []
+var _navigation_waypoint_index := 0
+var _navigation_last_requested := Vector3(INF, INF, INF)
+var _navigation_last_command := ""
 var _boundary_recovery_active := false
 var _boundary_recovery_target := Vector3.ZERO
 var _boundary_resume_state := State.IDLE
@@ -138,11 +142,18 @@ var _health_bar_back: MeshInstance3D
 var _r15_attack_cue: MeshInstance3D
 var _r15_hit_flash: MeshInstance3D
 var _r15_hit_flash_time := 0.0
+var _attack_settled := false
+var _attack_target_anchor := Vector3.ZERO
+var _attack_target_anchor_valid := false
+var _attack_slot_angle := 0.0
 
 const ARRIVE_DIST := 1.2
 const NAVIGATION_REPATH_INTERVAL := 0.20
 const NAVIGATION_RETRY_BUDGET := 2.5
 const V0436_R1F_AUDIT_CAP := 512
+const ATTACK_RESUME_MARGIN := 0.65
+const ATTACK_SETTLE_MARGIN := 0.12
+const BUILDING_ROUTE_CLEARANCE := 1.0
 
 # P1-R13 presentation targets. These affect only the visible model envelope;
 # gameplay height, collision, navigation radius, spacing, range and speed stay
@@ -637,6 +648,8 @@ func command_move(pos: Vector3, attack_move: bool = false, queue: bool = false, 
 	_pending_gather_node = null
 	_build_target = null
 	_follow_target = null
+	_attack_settled = false
+	_attack_target_anchor_valid = false
 	_move_target = pos
 	_attack_move_ordered = attack_move
 	_attack_move_destination = pos if attack_move else Vector3.ZERO
@@ -658,6 +671,10 @@ func command_stop() -> void:
 	_follow_target = null
 	_attack_move_ordered = false
 	_attack_move_destination = Vector3.ZERO
+	_attack_settled = false
+	_attack_target_anchor_valid = false
+	_navigation_waypoints.clear()
+	_navigation_waypoint_index = 0
 	state = State.IDLE
 	velocity = Vector3.ZERO
 	_boundary_recovery_active = false
@@ -683,6 +700,9 @@ func command_attack(tgt, r1j_order_id: String = "") -> void:
 	_build_target = null
 	_attack_move_ordered = false
 	_attack_move_destination = Vector3.ZERO
+	_attack_settled = false
+	_attack_target_anchor_valid = false
+	_attack_slot_angle = fmod(absf(float(get_instance_id()) * 0.6180339), TAU)
 	_v0436_r1j_set_target(tgt, "public_order" if r1j_order_id != "" else "auto_acquisition")
 	state = State.ATTACKING
 	var recorder = _v0436_r1j_recorder()
@@ -763,9 +783,19 @@ func _set_agent_target(pos: Vector3, command_type: String = "") -> void:
 	_requested_move_target = pos
 	if command_type != "":
 		_navigation_command_type = command_type
+	var same_request := _navigation_last_requested.x != INF and _navigation_last_requested.distance_to(pos) <= 0.1 and _navigation_last_command == _navigation_command_type
+	if same_request and not _navigation_target_pending and not _navigation_waypoints.is_empty():
+		return
+	_navigation_last_requested = pos
+	_navigation_last_command = _navigation_command_type
+	_navigation_waypoints = world.navigation_waypoints_for_unit(global_position, pos, BUILDING_ROUTE_CLEARANCE) if world and world.has_method("navigation_waypoints_for_unit") else [pos]
+	_navigation_waypoint_index = 0
+	if _navigation_waypoints.is_empty():
+		_navigation_waypoints = [pos]
+	var route_target: Vector3 = _navigation_waypoints[0]
 	var snapshot := {"ready": true, "projected": pos, "projection_distance": 0.0, "reason": "local"}
 	if world and world.has_method("navigation_target_snapshot"):
-		snapshot = world.navigation_target_snapshot(pos)
+		snapshot = world.navigation_target_snapshot(route_target)
 	_navigation_target_pending = not bool(snapshot.get("ready", false))
 	_navigation_target_projection_distance = float(snapshot.get("projection_distance", 0.0))
 	if _navigation_target_pending:
@@ -774,7 +804,7 @@ func _set_agent_target(pos: Vector3, command_type: String = "") -> void:
 			_record_navigation_event("navigation_target_deferred", {"reason": snapshot.get("reason", "navigation_map_not_ready")})
 		_navigation_last_target_ready = false
 		return
-	var effective: Vector3 = snapshot.get("projected", pos)
+	var effective: Vector3 = snapshot.get("projected", route_target)
 	var changed := not _navigation_last_target_ready or _navigation_last_target.distance_to(effective) > 0.05
 	_navigation_effective_target = effective
 	_navigation_last_target = effective
@@ -810,6 +840,23 @@ func _navigation_terminal_stop(reason: String) -> void:
 	# released. Transient failures never call command_stop and therefore retain
 	# build/gather/return/attack-move/pursuit context through the retry budget.
 	command_stop()
+
+func _advance_navigation_waypoint() -> bool:
+	if _navigation_waypoint_index >= _navigation_waypoints.size() - 1:
+		return false
+	_navigation_waypoint_index += 1
+	var next_target: Vector3 = _navigation_waypoints[_navigation_waypoint_index]
+	_navigation_effective_target = next_target
+	_navigation_last_target = next_target
+	_navigation_last_target_ready = true
+	_navigation_target_pending = false
+	_navigation_path_wait_frames = 0
+	_navigation_retry_elapsed = 0.0
+	_navigation_repath_cooldown = 0.0
+	if agent:
+		agent.target_position = next_target
+		agent.set_velocity(Vector3.ZERO)
+	return true
 
 func _finite_position(pos: Vector3) -> bool:
 	return abs(pos.x) < 1000000.0 and abs(pos.y) < 1000000.0 and abs(pos.z) < 1000000.0 and pos.x == pos.x and pos.y == pos.y and pos.z == pos.z
@@ -1088,25 +1135,52 @@ func _state_attack(delta: float) -> void:
 		else:
 			state = State.HOLD if _hold_position else State.IDLE
 		return
-	var d := global_position.distance_to(_target.global_position)
-	var er := _engage_range()
-	if d > er:
+	var target_anchor: Vector3 = _target.global_position
+	if not _attack_target_anchor_valid or _attack_target_anchor.distance_to(target_anchor) > 0.75:
+		_attack_target_anchor = target_anchor
+		_attack_target_anchor_valid = true
+		_attack_settled = false
+	var combat_reach := _combat_reach(_target)
+	var d := global_position.distance_to(target_anchor)
+	if _attack_settled and d > combat_reach + ATTACK_RESUME_MARGIN:
+		_attack_settled = false
+	if not _attack_settled and d > combat_reach:
 		if _hold_position:
 			# don't chase far when holding
-			if d > er + 4.0:
+			if d > combat_reach + 4.0:
 				_v0436_r1j_set_target(null, "target_out_of_acquisition_rules")
 				state = State.HOLD
 				return
-		_move_target = _target.global_position
+		_move_target = _attack_position_for_target(_target)
 		_set_agent_target(_move_target, "attack")
 		_move_along_path(delta)
 	else:
 		# in range: face + attack
+		_attack_settled = true
 		velocity.x = 0; velocity.z = 0
-		move_and_slide()
+		if agent:
+			agent.target_position = global_position
+			agent.set_velocity(Vector3.ZERO)
 		_face(_target.global_position)
 		if _attack_timer <= 0.0:
 			_do_attack()
+
+func _combat_reach(target) -> float:
+	if target is Building:
+		return float(target.def.get("footprint", 4.0)) + _engage_range()
+	return _engage_range()
+
+func _attack_position_for_target(target) -> Vector3:
+	var away: Vector3 = global_position - target.global_position
+	away.y = 0.0
+	if away.length_squared() < 0.04:
+		away = Vector3(cos(_attack_slot_angle), 0.0, sin(_attack_slot_angle))
+	away = away.normalized()
+	var target_radius := 0.0
+	if target is Building:
+		target_radius = float(target.def.get("footprint", 4.0))
+	var desired := target_radius + maxf(0.35, _engage_range() - ATTACK_SETTLE_MARGIN)
+	return target.global_position + away * desired
 
 func _do_attack() -> void:
 	_attack_timer = attack_cd
@@ -1123,7 +1197,12 @@ func _do_attack() -> void:
 		_play_sfx("sword", -8.0)
 		var tgt = _target
 		get_tree().create_timer(0.25).timeout.connect(func():
-			if not is_dead and _can_attack_target(tgt) and global_position.distance_to(tgt.global_position) <= _engage_range() + 0.15:
+			var in_resolution_range := global_position.distance_to(tgt.global_position) <= _combat_reach(tgt) + 0.15
+			if tgt is Unit:
+				in_resolution_range = global_position.distance_to(tgt.global_position) <= _engage_range() + 0.15
+			# Unit-vs-unit damage keeps the original authoritative range contract;
+			# buildings use their physical edge reach so attackers never enter them.
+			if not is_dead and _can_attack_target(tgt) and in_resolution_range:
 				if r1j_recorder:
 					r1j_recorder.record_attack_phase(attack_event_id, "windup_completed", {"target_valid":true, "distance":global_position.distance_to(tgt.global_position)})
 				var dealt = _resolve_damage(tgt, cur_dmg(), attack_event_id)
@@ -1374,6 +1453,8 @@ func _move_along_path(delta: float) -> bool:
 				if agent:
 					agent.target_position = _navigation_effective_target
 			return false
+		if _advance_navigation_waypoint():
+			return false
 		velocity.x = 0; velocity.z = 0
 		move_and_slide()
 		_play("idle")
@@ -1438,7 +1519,7 @@ func _on_velocity_computed(safe_vel: Vector3) -> void:
 	var audit_frame := Engine.get_physics_frames()
 	var callback_position_before := global_position
 	var recovery_already_moved := _v0436_r1f_last_recovery_move_frame == audit_frame
-	if state == State.IDLE or state == State.HOLD or state == State.DEAD:
+	if state == State.IDLE or state == State.HOLD or state == State.DEAD or (state == State.ATTACKING and _attack_settled):
 		velocity = Vector3.ZERO
 		if audit_enabled and (_boundary_recovery_active or recovery_already_moved):
 			_v0436_r1f_record_callback(audit_frame, safe_vel, callback_position_before, global_position, false, recovery_already_moved)
