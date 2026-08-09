@@ -152,6 +152,14 @@ const P1R13_MILITARY_VISUAL_EMPHASIS := 1.52
 const P1R13_HERO_VISUAL_EMPHASIS := 1.68
 const P1R13_VISUAL_HEIGHT_MAX := 3.8
 
+# P1-R20 imported-model readability: a small per-instance material lift keeps
+# authored character identity intact while separating silhouettes from noisy
+# ground. TeamPip remains a secondary ownership cue; no gameplay values change.
+const P1R20_WORKER_VALUE_LIFT := 0.08
+const P1R20_MILITARY_VALUE_LIFT := 0.11
+const P1R20_HERO_VALUE_LIFT := 0.15
+const P1R20_ROUGHNESS_FLOOR := 0.28
+
 func _v0436_r1j_recorder():
 	if OS.get_environment("ASCENDANT_V0436_R1J_CAPTURE") != "1" or not world:
 		return null
@@ -310,6 +318,7 @@ func _build_model() -> void:
 		var m = scn.instantiate()
 		model_root.add_child(m)
 		ModelUtils.setup_character_for_movement(m, _visual_height)
+		_apply_p1r20_model_materials(m)
 		# animation
 		anim = m.find_child("AnimationPlayer", true, false)
 		if not anim:
@@ -338,6 +347,24 @@ func _build_model() -> void:
 		model_root.add_child(mi)
 	# team-color banner tint indicator
 	_add_team_marker()
+
+
+func _apply_p1r20_model_materials(model: Node3D) -> void:
+	var lift := P1R20_WORKER_VALUE_LIFT if is_worker else (P1R20_HERO_VALUE_LIFT if is_hero else P1R20_MILITARY_VALUE_LIFT)
+	for child in model.find_children("*", "MeshInstance3D", true, false):
+		var mi := child as MeshInstance3D
+		if not mi or not mi.mesh:
+			continue
+		for surface in mi.mesh.get_surface_count():
+			var source := mi.get_active_material(surface)
+			if not source or not source is BaseMaterial3D:
+				continue
+			# Duplicate per instance so two units sharing one imported GLB never
+			# mutate the source resource or each other's visual state.
+			var mat := (source as BaseMaterial3D).duplicate()
+			mat.albedo_color = mat.albedo_color.lerp(Color(1.08, 1.08, 1.08), lift)
+			mat.roughness = maxf(mat.roughness, P1R20_ROUGHNESS_FLOOR)
+			mi.set_surface_override_material(surface, mat)
 
 func _visual_target_height() -> float:
 	# Presentation-only emphasis: keep gameplay definitions authoritative while
