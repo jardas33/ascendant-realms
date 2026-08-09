@@ -41,6 +41,11 @@ func _begin() -> void:
 	_rts._clear_selection()
 	_rts._add_to_selection(target)
 	_rts.emit_signal("selection_changed", _rts.selected)
+	if _view == "placement":
+		_rts.enter_build_mode("clanhold")
+		if is_instance_valid(_rts._build_ghost):
+			_rts._build_ghost.global_position = Vector3(-70.0, 0.0, -90.0)
+		for _i in 12: await get_tree().process_frame
 	if target is Building:
 		_rts.focus_on(target.global_position)
 	else:
