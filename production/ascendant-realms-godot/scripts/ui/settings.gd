@@ -21,6 +21,9 @@ func _ready() -> void:
 func _title_font() -> Font:
 	return load(FONT) if ResourceLoader.exists(FONT) else ThemeDB.fallback_font
 
+func _body_font() -> Font:
+	return ThemeDB.fallback_font
+
 func _build() -> void:
 	var bg := TextureRect.new()
 	bg.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
@@ -98,11 +101,13 @@ func _build() -> void:
 	for line in CONTROLS:
 		var l := Label.new()
 		l.text = line
+		l.add_theme_font_override("font", _body_font())
 		l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		l.add_theme_color_override("font_color", Color(0.88, 0.88, 0.82))
 		l.add_theme_color_override("font_outline_color", Color(0.0, 0.0, 0.0, 0.85))
 		l.add_theme_constant_override("outline_size", 3)
 		l.add_theme_font_size_override("font_size", 16)
+		l.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 		v.add_child(l)
 
 	# Footer
@@ -136,6 +141,7 @@ func _slider_row(name: String, mn: float, mx: float, step: float, val: float, cb
 	var lbl := Label.new()
 	lbl.text = name
 	lbl.custom_minimum_size = Vector2(240, 32)
+	lbl.add_theme_font_override("font", _body_font())
 	lbl.add_theme_color_override("font_color", Color(0.9, 0.9, 0.85))
 	lbl.add_theme_font_size_override("font_size", 16)
 	row.add_child(lbl)
@@ -148,6 +154,7 @@ func _slider_row(name: String, mn: float, mx: float, step: float, val: float, cb
 	row.add_child(slider)
 	var val_lbl := Label.new()
 	val_lbl.custom_minimum_size = Vector2(70, 32)
+	val_lbl.add_theme_font_override("font", _body_font())
 	val_lbl.add_theme_color_override("font_color", Color(0.95, 0.85, 0.4))
 	val_lbl.text = "%.2f" % val
 	row.add_child(val_lbl)
@@ -162,6 +169,7 @@ func _toggle_row(name: String, on: bool, cb: Callable) -> HBoxContainer:
 	var lbl := Label.new()
 	lbl.text = name
 	lbl.custom_minimum_size = Vector2(240, 32)
+	lbl.add_theme_font_override("font", _body_font())
 	lbl.add_theme_color_override("font_color", Color(0.9, 0.9, 0.85))
 	lbl.add_theme_font_size_override("font_size", 16)
 	row.add_child(lbl)
@@ -176,6 +184,8 @@ func _button(text: String, col: Color, cb: Callable) -> Button:
 	var b := Button.new()
 	b.text = text
 	b.clip_text = false
+	b.add_theme_font_override("font", _body_font())
+	b.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 	b.custom_minimum_size = Vector2(220, 50)
 	b.focus_mode = Control.FOCUS_NONE
 	b.add_theme_font_size_override("font_size", 20)

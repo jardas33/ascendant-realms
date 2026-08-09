@@ -41,6 +41,9 @@ func _ready() -> void:
 func _title_font() -> Font:
 	return load(FONT) if ResourceLoader.exists(FONT) else ThemeDB.fallback_font
 
+func _body_font() -> Font:
+	return ThemeDB.fallback_font
+
 func _build() -> void:
 	var bg := TextureRect.new()
 	bg.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
@@ -92,9 +95,11 @@ func _build() -> void:
 	_player_opt.item_selected.connect(_on_player_race_selected.bind(race_ids))
 	v.add_child(_player_opt)
 	_identity_note = Label.new()
+	_identity_note.add_theme_font_override("font", _body_font())
 	_identity_note.add_theme_color_override("font_color", Color(0.8, 0.8, 0.72))
 	_identity_note.add_theme_font_size_override("font_size", 16)
 	_identity_note.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	_identity_note.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 	v.add_child(_identity_note)
 	_update_identity_note()
 
@@ -146,6 +151,7 @@ func _build() -> void:
 	# Game speed
 	v.add_child(_heading("Game Speed"))
 	_speed_label = Label.new()
+	_speed_label.add_theme_font_override("font", _body_font())
 	_speed_label.add_theme_color_override("font_color", Color(0.95, 0.85, 0.4))
 	v.add_child(_speed_label)
 	var slider := HSlider.new()
@@ -219,6 +225,7 @@ func _rebuild_opponents() -> void:
 		row.add_theme_constant_override("separation", 12)
 		var lbl := Label.new()
 		lbl.text = "Opponent %d" % (i + 1)
+		lbl.add_theme_font_override("font", _body_font())
 		lbl.custom_minimum_size = Vector2(140, 40)
 		lbl.add_theme_color_override("font_color", Color(0.9, 0.9, 0.85))
 		lbl.add_theme_font_size_override("font_size", 16)
@@ -307,6 +314,8 @@ func _choice_row(labels: Array, keys: Array, setter: Callable, current: String) 
 func _label_button(b: Button, text: String, col: Color) -> void:
 	b.text = text
 	b.clip_text = false
+	b.add_theme_font_override("font", _body_font())
+	b.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 	b.add_theme_color_override("font_color", col)
 	b.add_theme_color_override("font_hover_color", Color(1, 0.97, 0.85))
 

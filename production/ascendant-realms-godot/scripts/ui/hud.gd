@@ -30,6 +30,7 @@ var world = null
 var rts = null
 var _commander = null                  # player_commander shortcut
 var _font: FontFile = null
+var _body_font: Font = null
 
 # --- top bar labels ---
 var _res_labels := {}                  # kind -> Label
@@ -82,6 +83,7 @@ func setup(p_world, p_rts) -> void:
 		theme = load(THEME_PATH)
 	if ResourceLoader.exists(FONT_PATH):
 		_font = load(FONT_PATH)
+	_body_font = ThemeDB.fallback_font
 
 	_build_top_bar()
 	_build_minimap()
@@ -150,8 +152,9 @@ func _mk_label(text: String, size: int = 16, col: Color = FONT_COLOR) -> Label:
 	var l := Label.new()
 	l.text = text
 	l.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	if _font:
-		l.add_theme_font_override("font", _font)
+	if _body_font:
+		l.add_theme_font_override("font", _body_font)
+	l.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 	l.add_theme_font_size_override("font_size", size)
 	l.add_theme_color_override("font_color", col)
 	l.add_theme_color_override("font_outline_color", Color(0, 0, 0, 0.85))
@@ -162,10 +165,10 @@ func _mk_label(text: String, size: int = 16, col: Color = FONT_COLOR) -> Label:
 func _mk_button(text: String, size: int = 15) -> Button:
 	var b := Button.new()
 	b.text = text
-	b.clip_text = true
+	b.clip_text = false
 	b.mouse_filter = Control.MOUSE_FILTER_STOP
-	if _font:
-		b.add_theme_font_override("font", _font)
+	if _body_font:
+		b.add_theme_font_override("font", _body_font)
 	b.add_theme_font_size_override("font_size", size)
 	b.add_theme_color_override("font_color", FONT_COLOR)
 	b.add_theme_color_override("font_hover_color", Color(1, 1, 0.9))
@@ -175,6 +178,13 @@ func _mk_button(text: String, size: int = 15) -> Button:
 	b.add_theme_color_override("font_outline_color", Color(0, 0, 0, 0.85))
 	b.add_theme_constant_override("outline_size", 3)
 	return b
+
+
+func _mk_title_label(text: String, size: int, col: Color) -> Label:
+	var l := _mk_label(text, size, col)
+	if _font:
+		l.add_theme_font_override("font", _font)
+	return l
 
 
 func _mk_hud_panel() -> PanelContainer:
@@ -1103,7 +1113,7 @@ func _on_game_over(victory: bool) -> void:
 	box.grow_vertical = Control.GROW_DIRECTION_BOTH
 	_gameover_layer.add_child(box)
 
-	var heading := _mk_label("VICTORY" if victory else "DEFEAT", 64,
+	var heading := _mk_title_label("VICTORY" if victory else "DEFEAT", 64,
 		Color(0.98, 0.85, 0.4) if victory else Color(0.9, 0.35, 0.3))
 	heading.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	box.add_child(heading)

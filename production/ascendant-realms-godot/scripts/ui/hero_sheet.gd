@@ -15,6 +15,9 @@ func _ready() -> void:
 func _title_font() -> Font:
 	return load(FONT) if ResourceLoader.exists(FONT) else ThemeDB.fallback_font
 
+func _body_font() -> Font:
+	return ThemeDB.fallback_font
+
 func _build_static() -> void:
 	var bg := TextureRect.new()
 	bg.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
@@ -65,6 +68,7 @@ func _refresh() -> void:
 	var rd: Dictionary = GameData.get_race(str(h.get("race", "")))
 	var sub := Label.new()
 	sub.text = "%s  -  %s  -  Level %d" % [rd.get("name", h.get("race", "")), h.get("archetype", ""), int(h.get("level", 1))]
+	sub.add_theme_font_override("font", _body_font())
 	sub.add_theme_color_override("font_color", Color(0.85, 0.85, 0.78))
 	sub.add_theme_font_size_override("font_size", 18)
 	_body.add_child(sub)
@@ -81,6 +85,7 @@ func _refresh() -> void:
 	xp_bar.show_percentage = false
 	var xp_lbl := Label.new()
 	xp_lbl.text = "XP: %d / %d" % [int(xp), int(need)]
+	xp_lbl.add_theme_font_override("font", _body_font())
 	xp_lbl.add_theme_color_override("font_color", Color(0.9, 0.9, 0.8))
 	xp_lbl.add_theme_font_size_override("font_size", 16)
 	_body.add_child(xp_lbl)
@@ -91,6 +96,7 @@ func _refresh() -> void:
 	pts.text = "Skill Points: %d    Attribute Points: %d    Mastery: %d (%d pts)" % [
 		int(h.get("skill_points", 0)), int(h.get("attr_points", 0)),
 		int(h.get("mastery", 0)), int(h.get("mastery_points", 0))]
+	pts.add_theme_font_override("font", _body_font())
 	pts.add_theme_color_override("font_color", Color(0.95, 0.85, 0.4))
 	pts.add_theme_color_override("font_outline_color", Color(0.0, 0.0, 0.0, 0.85))
 	pts.add_theme_constant_override("outline_size", 3)
@@ -121,11 +127,13 @@ func _refresh() -> void:
 	for a in ProfileManager.ATTRIBUTES:
 		var nl := Label.new()
 		nl.text = a.capitalize()
+		nl.add_theme_font_override("font", _body_font())
 		nl.custom_minimum_size = Vector2(150, 30)
 		nl.add_theme_color_override("font_color", Color(0.9, 0.9, 0.85))
 		grid.add_child(nl)
 		var vl := Label.new()
 		vl.text = str(int(attrs.get(a, 0)))
+		vl.add_theme_font_override("font", _body_font())
 		vl.custom_minimum_size = Vector2(50, 30)
 		vl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		vl.add_theme_color_override("font_color", Color.WHITE)
@@ -165,6 +173,8 @@ func _refresh() -> void:
 		row.add_theme_constant_override("separation", 12)
 		var lbl := Label.new()
 		lbl.text = "%s (Rank %d)  -  %s" % [con.get("name", ""), int(spent.get(con.get("id", ""), 0)), con.get("desc", "")]
+		lbl.add_theme_font_override("font", _body_font())
+		lbl.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 		lbl.custom_minimum_size = Vector2(560, 30)
 		lbl.add_theme_color_override("font_color", Color(0.88, 0.88, 0.8))
 		row.add_child(lbl)
@@ -207,12 +217,14 @@ func _stat_line(name: String, val: String) -> HBoxContainer:
 	var row := HBoxContainer.new()
 	var a := Label.new()
 	a.text = name
+	a.add_theme_font_override("font", _body_font())
 	a.custom_minimum_size = Vector2(200, 26)
 	a.add_theme_color_override("font_color", Color(0.85, 0.85, 0.8))
 	a.add_theme_font_size_override("font_size", 16)
 	row.add_child(a)
 	var b := Label.new()
 	b.text = val
+	b.add_theme_font_override("font", _body_font())
 	b.add_theme_color_override("font_color", Color(0.6, 0.95, 0.7))
 	b.add_theme_font_size_override("font_size", 16)
 	row.add_child(b)
@@ -224,6 +236,8 @@ func _hsep() -> HSeparator:
 func _label_button(b: Button, text: String, col: Color) -> void:
 	b.text = text
 	b.clip_text = false
+	b.add_theme_font_override("font", _body_font())
+	b.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 	b.add_theme_color_override("font_color", col)
 	b.add_theme_color_override("font_hover_color", Color(1, 0.97, 0.85))
 
