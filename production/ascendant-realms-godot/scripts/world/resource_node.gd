@@ -34,6 +34,8 @@ func configure(kind: String, amt: int, model_path: String, scale_h: float) -> vo
 			if collider is StaticBody3D:
 				collider.reparent(model_root, true)
 		m.scale *= _presentation_scale_for_kind(kind)
+		_apply_p1r14_resource_readability(m)
+		_add_p1r14_resource_accent()
 	else:
 		var mi := MeshInstance3D.new()
 		var bm := BoxMesh.new()
@@ -48,6 +50,53 @@ func _presentation_scale_for_kind(kind: String) -> float:
 		"stone": return 0.92
 		"timber", "food": return 0.90
 		_: return 1.0
+
+func _apply_p1r14_resource_readability(n: Node) -> void:
+	# Keep the authored resource mesh and gameplay footprint intact; only lift
+	# value/roughness so interactive resources separate from noisy ground.
+	if n is MeshInstance3D:
+		if n.material_override is StandardMaterial3D:
+			var override_copy := (n.material_override as StandardMaterial3D).duplicate()
+			override_copy.albedo_color = override_copy.albedo_color.lightened(0.12)
+			override_copy.roughness = maxf(override_copy.roughness, 0.76)
+			n.material_override = override_copy
+		for surface in n.get_surface_override_material_count():
+			var surface_mat: Material = n.get_surface_override_material(surface)
+			if surface_mat is StandardMaterial3D:
+				var surface_copy := (surface_mat as StandardMaterial3D).duplicate()
+				surface_copy.albedo_color = surface_copy.albedo_color.lightened(0.12)
+				surface_copy.roughness = maxf(surface_copy.roughness, 0.76)
+				n.set_surface_override_material(surface, surface_copy)
+	for child in n.get_children():
+		_apply_p1r14_resource_readability(child)
+
+func _add_p1r14_resource_accent() -> void:
+	# A restrained, non-colliding base accent makes resources readable without
+	# becoming a gameplay zone or replacing their authored silhouette.
+	var accent := MeshInstance3D.new()
+	accent.name = "ResourceReadabilityAccent"
+	var ring := TorusMesh.new()
+	ring.inner_radius = maxf(0.48, footprint * 0.28)
+	ring.outer_radius = ring.inner_radius + 0.045
+	ring.rings = 12
+	ring.ring_segments = 6
+	accent.mesh = ring
+	accent.position.y = 0.035
+	accent.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	var mat := StandardMaterial3D.new()
+	mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	mat.albedo_color = _p1r14_resource_color()
+	accent.material_override = mat
+	model_root.add_child(accent)
+
+func _p1r14_resource_color() -> Color:
+	match resource_kind:
+		"gold": return Color(0.95, 0.70, 0.24, 0.86)
+		"stone": return Color(0.70, 0.78, 0.78, 0.74)
+		"timber": return Color(0.82, 0.54, 0.25, 0.78)
+		"food": return Color(0.42, 0.78, 0.40, 0.72)
+		_: return Color(0.72, 0.72, 0.72, 0.70)
 
 func extract(per_tick: int) -> int:
 	if depleted or per_tick <= 0:

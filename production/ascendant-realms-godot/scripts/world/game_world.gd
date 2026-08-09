@@ -354,8 +354,26 @@ func _prep_decor(n: Node) -> void:
 		n.set_deferred("collision_mask", 0)
 	if n is GeometryInstance3D:
 		n.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	if n is MeshInstance3D:
+		_apply_p1r14_decor_material_tone(n)
 	for c in n.get_children():
 		_prep_decor(c)
+
+func _apply_p1r14_decor_material_tone(mesh: MeshInstance3D) -> void:
+	# R14 is presentation-only: mute secondary decoration while preserving its
+	# meshes, positions, collisions and navigation exclusion.
+	if mesh.material_override is StandardMaterial3D:
+		var override_copy := (mesh.material_override as StandardMaterial3D).duplicate()
+		override_copy.albedo_color = override_copy.albedo_color.lerp(Color(0.60, 0.64, 0.56), 0.16)
+		override_copy.roughness = maxf(override_copy.roughness, 0.82)
+		mesh.material_override = override_copy
+	for surface in mesh.get_surface_override_material_count():
+		var surface_mat: Material = mesh.get_surface_override_material(surface)
+		if surface_mat is StandardMaterial3D:
+			var surface_copy := (surface_mat as StandardMaterial3D).duplicate()
+			surface_copy.albedo_color = surface_copy.albedo_color.lerp(Color(0.60, 0.64, 0.56), 0.16)
+			surface_copy.roughness = maxf(surface_copy.roughness, 0.82)
+			mesh.set_surface_override_material(surface, surface_copy)
 
 func _build_navigation() -> void:
 	nav_region = NavigationRegion3D.new()
