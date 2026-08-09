@@ -16,7 +16,9 @@ var cam_pivot: Node3D
 var cam_arm: SpringArm3D
 var camera: Camera3D
 var _cam_yaw := 0.0
-var _zoom := 55.0
+const DEFAULT_ZOOM := 48.0
+const DEFAULT_CAMERA_PITCH := -55.0
+var _zoom := DEFAULT_ZOOM
 const ZOOM_MIN := 25.0
 const ZOOM_MAX := 95.0
 const CAMERA_SAFE_FOCUS_MARGIN := 8.0
@@ -92,7 +94,7 @@ func _build_camera() -> void:
 	cam_arm = SpringArm3D.new()
 	cam_arm.name = "CamArm"
 	cam_arm.spring_length = _zoom
-	cam_arm.rotation_degrees = Vector3(-55, 0, 0)
+	cam_arm.rotation_degrees = Vector3(DEFAULT_CAMERA_PITCH, 0, 0)
 	cam_arm.collision_mask = 0
 	cam_pivot.add_child(cam_arm)
 	camera = Camera3D.new()
@@ -237,6 +239,12 @@ func get_camera_zoom_min() -> float:
 
 func get_camera_zoom_max() -> float:
 	return ZOOM_MAX
+
+func get_camera_default_zoom() -> float:
+	return DEFAULT_ZOOM
+
+func get_camera_pitch_degrees() -> float:
+	return DEFAULT_CAMERA_PITCH
 
 # --------------------------------------------------------------------------
 # Input
