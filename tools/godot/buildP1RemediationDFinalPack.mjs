@@ -22,7 +22,7 @@ function frame(lane, name) {
   const m = laneManifest(lane);
   const found = (m.captures || []).find((item) => item.name === name);
   if (!found || !existsSync(found.png)) throw new Error(`missing ${lane}:${name}`);
-  return found;
+  return { ...found, source_sha: m.source_sha };
 }
 const mapping = [
   ["01_DEFAULT_LIORAEN.png", "p1r20", "01_R20_LIORAEN_MIXED"],
