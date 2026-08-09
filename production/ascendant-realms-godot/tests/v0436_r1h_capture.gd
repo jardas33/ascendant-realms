@@ -509,9 +509,9 @@ func _capture_tutorial_match() -> void:
 	var audit: Array = []
 	await _focus(world.player_commander.buildings[0].global_position)
 	await _save("01_R1H_TUTORIAL_START.png")
-	audit.append({"step":1, "name":"camera", "condition":"match_time > 4", "observed_match_time":world.match_time, "frame":last_valid_frame})
 	await _wait_until(func(): return world.match_time > 4.0, 15.0)
 	await _save("02_R1H_TUTORIAL_CAMERA.png")
+	audit.append({"step":1, "name":"camera", "condition":"match_time > 4", "observed_match_time":world.match_time, "frame":last_valid_frame})
 	var hero = world.player_commander.hero_ref
 	var worker = world.player_commander.units.filter(func(u): return is_instance_valid(u) and bool(u.is_worker)).front() if not world.player_commander.units.filter(func(u): return is_instance_valid(u) and bool(u.is_worker)).is_empty() else null
 	var selectable = hero if is_instance_valid(hero) and not hero.is_dead else worker
