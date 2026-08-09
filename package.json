@@ -31,6 +31,8 @@
     "godot:test:p1s4-command-feedback": "node tools/godot/p1s4CommandFeedbackTool.mjs validate",
     "godot:capture:p1s5-match-identity": "node tools/godot/p1s5MatchIdentityTool.mjs capture",
     "godot:test:p1s5-match-identity": "node tools/godot/p1s5MatchIdentityTool.mjs validate",
+    "godot:capture:p1r1-unit-readability": "node tools/godot/p1r1UnitReadabilityTool.mjs capture",
+    "godot:test:p1r1-unit-readability": "node tools/godot/p1r1UnitReadabilityTool.mjs validate",
     "godot:validate:production": "node tools/godot/tesanaProductionTool.mjs validate",
     "godot:asset-scan:production": "node tools/godot/tesanaProductionTool.mjs asset-scan",
     "godot:smoke:v0431-gameplay-construction": "node tools/godot/v0431GameplayConstructionTool.mjs smoke",

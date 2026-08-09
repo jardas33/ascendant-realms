@@ -100,6 +100,7 @@ var selection_ring: MeshInstance3D
 var _selection_visual_radius := 0.4
 var _selection_pick_radius := 0.5
 var _selection_indicator_radius := 0.5
+var _visual_height := 0.0
 var _anim_names := {}
 var _cur_anim := ""
 var _repath := 0.0
@@ -290,11 +291,12 @@ func _build_model() -> void:
 	model_root.name = "MeshRoot"
 	add_child(model_root)
 	var path: String = def.get("model", "")
+	_visual_height = _visual_target_height()
 	if path != "" and ResourceLoader.exists(path):
 		var scn = load(path)
 		var m = scn.instantiate()
 		model_root.add_child(m)
-		ModelUtils.setup_character_for_movement(m, float(def.get("height", 1.8)))
+		ModelUtils.setup_character_for_movement(m, _visual_height)
 		# animation
 		anim = m.find_child("AnimationPlayer", true, false)
 		if not anim:
@@ -314,15 +316,32 @@ func _build_model() -> void:
 		var mi := MeshInstance3D.new()
 		var cap := CapsuleMesh.new()
 		cap.radius = 0.4
-		cap.height = float(def.get("height", 1.8))
+		cap.height = _visual_height
 		mi.mesh = cap
-		mi.position.y = float(def.get("height", 1.8)) * 0.5
+		mi.position.y = _visual_height * 0.5
 		var mat := StandardMaterial3D.new()
 		mat.albedo_color = commander.color if commander else Color.GRAY
 		mi.material_override = mat
 		model_root.add_child(mi)
 	# team-color banner tint indicator
 	_add_team_marker()
+
+func _visual_target_height() -> float:
+	# Presentation-only emphasis: keep gameplay definitions authoritative while
+	# giving small role silhouettes enough screen presence at RTS zoom.
+	# Selection/pick geometry is measured after this scale is applied.
+	var configured := maxf(1.0, float(def.get("height", 1.8)))
+	var role := String(def.get("role", ""))
+	var emphasis := 1.12
+	if role == "worker":
+		emphasis = 1.18
+	elif is_hero or bool(def.get("is_hero", false)):
+		emphasis = 1.34
+	elif role in ["melee", "defender", "ranged", "flanker", "antiarmor", "caster", "healer"]:
+		emphasis = 1.24
+	elif role == "siege" or bool(def.get("is_siege", false)):
+		emphasis = 1.08
+	return clampf(configured * emphasis, 1.25, 3.0)
 
 func _anim_lib_path() -> String:
 	var path: String = def.get("model", "")
@@ -414,7 +433,7 @@ func set_selected(sel: bool) -> void:
 func _build_health_bar() -> void:
 	_health_bar_root = Node3D.new()
 	_health_bar_root.name = "CombatHealthBar"
-	_health_bar_root.position.y = float(def.get("height", 1.8)) + 0.45
+	_health_bar_root.position.y = maxf(_visual_height, ModelUtils.measure_height(model_root)) + 0.45
 	add_child(_health_bar_root)
 	_health_bar_back = MeshInstance3D.new()
 	_health_bar_back.name = "HealthBarBackground"
