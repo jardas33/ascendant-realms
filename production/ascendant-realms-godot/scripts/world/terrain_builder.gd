@@ -88,7 +88,29 @@ func _make_ground_material(map: Dictionary) -> Material:
 	sm.set_shader_parameter("dirt_bias", float(_theme.get("dirt_bias", 0.0)))
 	sm.set_shader_parameter("rock_bias", float(_theme.get("rock_bias", 0.0)))
 	sm.set_shader_parameter("snow_amt", float(_theme.get("snow", 0.0)))
+	# R19 material hierarchy: calm the walkable plane first, then let roads
+	# carry a restrained value shift.  This is presentation-only and does not
+	# change the map's authored geometry or navigation data.
+	var grade := _r19_ground_grade(str(map.get("theme", "highland")))
+	sm.set_shader_parameter("ground_base", grade.ground_base)
+	sm.set_shader_parameter("road_base", grade.road_base)
+	sm.set_shader_parameter("road_edge_color", grade.road_edge_color)
+	sm.set_shader_parameter("surface_detail", grade.surface_detail)
+	sm.set_shader_parameter("surface_macro", grade.surface_macro)
+	sm.set_shader_parameter("road_detail", grade.road_detail)
+	sm.set_shader_parameter("road_edge_strength", grade.road_edge_strength)
+	sm.set_shader_parameter("surface_saturation", grade.surface_saturation)
 	return sm
+
+
+func _r19_ground_grade(theme_name: String) -> Dictionary:
+	match theme_name:
+		"volcanic":
+			return {"ground_base": Color(0.29, 0.29, 0.28), "road_base": Color(0.40, 0.35, 0.30), "road_edge_color": Color(0.15, 0.16, 0.15), "surface_detail": 0.20, "surface_macro": 0.12, "road_detail": 0.34, "road_edge_strength": 0.13, "surface_saturation": 0.22}
+		"ashen":
+			return {"ground_base": Color(0.38, 0.39, 0.40), "road_base": Color(0.46, 0.42, 0.36), "road_edge_color": Color(0.23, 0.24, 0.24), "surface_detail": 0.30, "surface_macro": 0.13, "road_detail": 0.36, "road_edge_strength": 0.13, "surface_saturation": 0.66}
+		_:
+			return {"ground_base": Color(0.34, 0.42, 0.28), "road_base": Color(0.49, 0.39, 0.26), "road_edge_color": Color(0.22, 0.25, 0.18), "surface_detail": 0.34, "surface_macro": 0.14, "road_detail": 0.42, "road_edge_strength": 0.16, "surface_saturation": 0.9}
 
 
 # ---------------------------------------------------------------------------

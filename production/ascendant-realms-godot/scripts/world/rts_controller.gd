@@ -198,10 +198,10 @@ func focus_on(pos: Vector3) -> void:
 	cam_pivot.global_position = _clamp_camera_focus(pos)
 
 func _camera_safe_bounds() -> Dictionary:
-	var minimum_x := -MapDefs.MAP_SIZE
-	var maximum_x := MapDefs.MAP_SIZE
-	var minimum_z := -MapDefs.MAP_SIZE
-	var maximum_z := MapDefs.MAP_SIZE
+	var minimum_x: float = -float(MapDefs.MAP_SIZE)
+	var maximum_x: float = float(MapDefs.MAP_SIZE)
+	var minimum_z: float = -float(MapDefs.MAP_SIZE)
+	var maximum_z: float = float(MapDefs.MAP_SIZE)
 	if world != null:
 		minimum_x = float(world.playable_min.x)
 		maximum_x = float(world.playable_max.x)
