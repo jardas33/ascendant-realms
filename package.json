@@ -140,6 +140,8 @@
     "godot:test:v0436-f2-natural-conquest": "node tools/godot/v0436F2NaturalConquestTool.mjs focused-tests",
     "godot:capture:v0436-f2-natural-conquest": "node tools/godot/v0436F2NaturalConquestTool.mjs capture",
     "godot:validate:v0436-f2-natural-conquest": "node tools/godot/v0436F2NaturalConquestTool.mjs validate",
+    "godot:test:v0436-g0-runtime-startup": "npm exec -- vitest run tools/godot/v0436G0StartupValidator.test.ts",
+    "godot:validate:v0436-g0-runtime-startup": "node tools/godot/v0436G0StartupValidator.mjs validate",
     "godot:test:v0436-r1i-combat-causality": "node tools/godot/v0436R1ICombatCausalityTool.mjs focused-tests",
     "godot:smoke:v0436-r1i-combat-causality": "node tools/godot/v0436R1ICombatCausalityTool.mjs smoke",
     "godot:capture:v0436-r1i-combat-causality": "node tools/godot/v0436R1ICombatCausalityTool.mjs capture",
