@@ -25,11 +25,9 @@ func _start_e3r_menu_capture() -> void:
 		return
 	get_tree().root.set_meta("e3r_menu_capture_consumed", true)
 	await RenderingServer.frame_post_draw
-	var step8_out := OS.get_environment("ASCENDANT_E3R_STEP8_OUT")
-	var out := step8_out if step8_out != "" else "res://../../artifacts/manual-review/v0436-e3r-real-tutorial/session-a/"
+	var out := "res://../../artifacts/manual-review/v0436-e3r-real-tutorial/session-a/"
 	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(out))
-	var name := "01_MENU_ENTRY.png" if step8_out != "" else "01_MAIN_MENU_TUTORIAL_ENTRY.png"
-	get_viewport().get_texture().get_image().save_png(ProjectSettings.globalize_path(out + name))
+	get_viewport().get_texture().get_image().save_png(ProjectSettings.globalize_path(out + "01_MAIN_MENU_TUTORIAL_ENTRY.png"))
 	_on_tutorial()
 
 func _start_v0431_capture_scene() -> void:

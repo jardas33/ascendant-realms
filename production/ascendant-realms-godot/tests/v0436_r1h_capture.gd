@@ -36,6 +36,9 @@ var last_valid_frame := ""
 var preparation_started_ms := 0
 var primary_status := ""
 var force_plan_audit: Dictionary = {}
+var e3r_completion_diagnostic := OS.get_environment("ASCENDANT_E3R_COMPLETION_DIAGNOSTIC") == "1"
+var e3r_input_events: Array = []
+var e3r_completion_pressed_count := 0
 
 func _ready() -> void:
 	session = OS.get_environment("ASCENDANT_V0436_R1H_SESSION")
@@ -54,9 +57,64 @@ func _ready() -> void:
 		out_path = E3_OUT + "session-%s/" % session.to_lower()
 	else:
 		out_path = (R1I_OUT if evidence_mode == "R1I" else R1H_OUT) + "session-%s/" % session.to_lower()
-	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(out_path))
+	DirAccess.make_dir_recursive_absolute(_output_path())
 	if not e3r_mode:
 		Match.set_config({"player_race":"barrosan", "opponents":[{"race":"lioraen", "difficulty":"easy"}], "map":"hollowspan", "start_resources":"rich" if competent_mode or tutorial_mode else "standard", "victory":"conquest", "mode":"tutorial" if tutorial_mode else "skirmish", "game_speed":2.0})
+
+func _input(event: InputEvent) -> void:
+	if not e3r_completion_diagnostic or not e3r_mode:
+		return
+	var record := {"timestamp_ms":Time.get_ticks_msec(), "event_type":event.get_class(), "handled_at_autoload":get_viewport().is_input_handled()}
+	if event is InputEventMouseMotion:
+		record["position"] = _vec2(event.position)
+		record["global_position"] = _vec2(event.global_position)
+	elif event is InputEventMouseButton:
+		record["position"] = _vec2(event.position)
+		record["global_position"] = _vec2(event.global_position)
+		record["button_index"] = event.button_index
+		record["pressed"] = event.pressed
+	e3r_input_events.append(record)
+	if e3r_input_events.size() > 2000:
+		e3r_input_events.pop_front()
+
+func _vec2(value: Vector2) -> Dictionary: return {"x":value.x, "y":value.y}
+
+func _output_path(name := "") -> String:
+	var target := out_path + name
+	return ProjectSettings.globalize_path(target) if target.begins_with("res://") or target.begins_with("user://") else target
+
+func _on_diagnostic_completion_pressed() -> void:
+	e3r_completion_pressed_count += 1
+
+func _ui_tree_record(node: Node, depth := 0) -> Dictionary:
+	var record := {"name":String(node.name), "class":node.get_class(), "visible":bool(node.visible) if node is CanvasItem else true, "process_mode":node.process_mode}
+	if node is Control:
+		var rect: Rect2 = node.get_global_rect()
+		record["rect"] = {"x":rect.position.x, "y":rect.position.y, "w":rect.size.x, "h":rect.size.y}
+		record["mouse_filter"] = node.mouse_filter
+		record["z_index"] = node.z_index
+		record["focus_mode"] = node.focus_mode
+		if node is Button:
+			record["text"] = String(node.text)
+			record["disabled"] = node.disabled
+			record["button_pressed"] = node.button_pressed
+			record["hovered"] = node.is_hovered()
+	if depth < 8:
+		record["children"] = []
+		for child in node.get_children():
+			record["children"].append(_ui_tree_record(child, depth + 1))
+	return record
+
+func _completion_ui_diagnostic(button: Button) -> Dictionary:
+	var ancestors: Array = []
+	var cursor: Node = button
+	while is_instance_valid(cursor) and ancestors.size() < 12:
+		ancestors.append(_ui_tree_record(cursor, 0))
+		cursor = cursor.get_parent()
+	var hover = get_viewport().gui_get_hovered_control()
+	var focus = get_viewport().gui_get_focus_owner()
+	var button_rect := button.get_global_rect()
+	return {"button_path":String(button.get_path()), "button_text":String(button.text), "button_rect":{"x":button_rect.position.x,"y":button_rect.position.y,"w":button_rect.size.x,"h":button_rect.size.y}, "viewport_rect":{"x":0,"y":0,"w":get_viewport().get_visible_rect().size.x,"h":get_viewport().get_visible_rect().size.y}, "button_visible":button.visible, "button_disabled":button.disabled, "button_focus_mode":button.focus_mode, "button_mouse_filter":button.mouse_filter, "button_z_index":button.z_index, "button_hovered":button.is_hovered(), "button_button_pressed":button.button_pressed, "hovered_control":String(hover.get_path()) if is_instance_valid(hover) else "", "focus_owner":String(focus.get_path()) if is_instance_valid(focus) else "", "ancestors":ancestors, "input_event_count_before":e3r_input_events.size(), "completion_pressed_count_before":e3r_completion_pressed_count}
 
 func _vec(v: Vector3) -> Dictionary: return {"x":v.x, "y":v.y, "z":v.z}
 
@@ -122,13 +180,13 @@ func _save(name: String) -> void:
 	name = _evidence_name(name)
 	await RenderingServer.frame_post_draw
 	var image := get_viewport().get_texture().get_image()
-	image.save_png(ProjectSettings.globalize_path(out_path + name))
+	image.save_png(_output_path(name))
 	frame_names.append(name)
 	last_valid_frame = name
 
 func _save_json(name: String, value) -> void:
 	name = _evidence_name(name)
-	var file := FileAccess.open(ProjectSettings.globalize_path(out_path + name), FileAccess.WRITE)
+	var file := FileAccess.open(_output_path(name), FileAccess.WRITE)
 	if file:
 		file.store_string(JSON.stringify(value, "  "))
 		file.store_line("")
@@ -398,12 +456,12 @@ func _contact_sheet(blocked := false) -> void:
 	sheet.fill(Color(0.03,0.04,0.05))
 	var thumb := Vector2i(384,216)
 	for i in range(min(frame_names.size(), 25)):
-		var source := Image.load_from_file(ProjectSettings.globalize_path(out_path + frame_names[i]))
+		var source := Image.load_from_file(_output_path(frame_names[i]))
 		if source.is_empty(): continue
 		source.convert(Image.FORMAT_RGBA8)
 		source.resize(thumb.x, thumb.y, Image.INTERPOLATE_BILINEAR)
 		sheet.blit_rect(source, Rect2i(0,0,thumb.x,thumb.y), Vector2i((i % 5) * thumb.x, (i / 5) * thumb.y))
-	sheet.save_png(ProjectSettings.globalize_path(out_path + _evidence_name("26_R1H_BLOCKER_CONTACT_SHEET.png" if blocked else "26_R1H_CONTACT_SHEET.png")))
+	sheet.save_png(_output_path(_evidence_name("26_R1H_BLOCKER_CONTACT_SHEET.png" if blocked else "26_R1H_CONTACT_SHEET.png")))
 
 func _competent_assault_target(target, category: String, label: String) -> Dictionary:
 	var audit := _target_key(target, category)
@@ -686,8 +744,25 @@ func _capture_e3r_match() -> void:
 	await _wait_seconds(1.0)
 	var completion_button = root_node.tutorial.get_completion_button() if root_node.tutorial.has_method("get_completion_button") else null
 	if not is_instance_valid(completion_button): await _failure("BLOCKED_E3R_COMPLETION_FLOW_BROADER_THAN_SCOPE", "completed tutorial did not expose a return action"); return
-	var return_record := await _click_button(completion_button)
+	if e3r_completion_diagnostic:
+		completion_button.pressed.connect(_on_diagnostic_completion_pressed)
+		var ui_before_click := _completion_ui_diagnostic(completion_button)
+		_save_json("e3r-completion-ui-before-click.json", ui_before_click)
+		_save_json("e3r-completion-native-click-ready.json", {"status":"READY_FOR_NATIVE_CLICK", "ui":ui_before_click, "source_sha":OS.get_environment("ASCENDANT_V0436_R1H_SOURCE_SHA")})
+	var return_record: Dictionary = {}
+	if e3r_completion_diagnostic:
+		return_record = {"input_route":"native OS mouse click at actual Return to Main Menu global rect center", "button_path":String(completion_button.get_path()), "button_rect":_completion_ui_diagnostic(completion_button).get("button_rect", {})}
+		await _wait_seconds(3.0)
+	else:
+		return_record = await _click_button(completion_button)
 	if not await _wait_until(func(): return is_instance_valid(get_tree().current_scene) and get_tree().current_scene.name == "MainMenu", 2.0):
+		if e3r_completion_diagnostic:
+			var failed_ui := _completion_ui_diagnostic(completion_button)
+			failed_ui["return_record"] = return_record
+			failed_ui["input_events"] = e3r_input_events.duplicate(true)
+			failed_ui["completion_pressed_count_after"] = e3r_completion_pressed_count
+			_save_json("e3r-completion-input-diagnostic.json", failed_ui)
+			await _failure("BLOCKED_E3R_COMPLETION_INPUT_OBSERVABILITY", "player-equivalent routed click did not reach the normal menu; diagnostic evidence written"); return
 		return_record["input_fallback"] = "actual completion Button pressed signal after both routed mouse paths produced no transition"
 		completion_button.pressed.emit()
 		await get_tree().process_frame
