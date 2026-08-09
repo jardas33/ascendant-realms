@@ -6,6 +6,7 @@ extends Node
 const R1H_OUT := "res://../../artifacts/manual-review/v0436-r1h-natural-player-assault-viability/"
 const R1I_OUT := "res://../../artifacts/manual-review/v0436-r1i-prepared-assault-combat-causality/"
 const E1R_OUT := "res://../../artifacts/manual-review/v0436-e1r-competent-natural-conquest/"
+const E1R2_OUT := "res://../../artifacts/manual-review/v0436-e1r2-sustainable-economy-natural-conquest-attempt-02/"
 const E3_OUT := "res://../../artifacts/manual-review/v0436-e3-tutorial-golden-path/"
 const E3R_OUT := "res://../../artifacts/manual-review/v0436-e3r-real-tutorial/"
 const PREPARATION_LIMIT_SECONDS := 720.0
@@ -21,6 +22,7 @@ var session := "A"
 var evidence_mode := "R1I" if OS.get_environment("ASCENDANT_V0436_R1I_CAPTURE") == "1" else "R1H"
 var out_path := R1I_OUT if evidence_mode == "R1I" else R1H_OUT
 var competent_mode := OS.get_environment("ASCENDANT_V0436_E1R_CAPTURE") == "1"
+var e1r2_mode := OS.get_environment("ASCENDANT_V0436_E1R2_CAPTURE") == "1"
 var tutorial_mode := OS.get_environment("ASCENDANT_V0436_E3_CAPTURE") == "1"
 var e3r_mode := OS.get_environment("ASCENDANT_V0436_E3R_CAPTURE") == "1"
 var started := false
@@ -43,7 +45,7 @@ func _ready() -> void:
 		out_path = E3R_OUT + "session-%s/" % session.to_lower()
 	elif competent_mode:
 		evidence_mode = "E1R"
-		out_path = E1R_OUT + "session-%s/" % session.to_lower()
+		out_path = (E1R2_OUT if e1r2_mode else E1R_OUT) + "session-%s/" % session.to_lower()
 	elif tutorial_mode:
 		evidence_mode = "E3"
 		out_path = E3_OUT + "session-%s/" % session.to_lower()

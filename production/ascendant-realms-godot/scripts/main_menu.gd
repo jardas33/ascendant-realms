@@ -31,6 +31,18 @@ func _start_e3r_menu_capture() -> void:
 	_on_tutorial()
 
 func _start_v0431_capture_scene() -> void:
+	if OS.get_environment("ASCENDANT_V0436_E1R2_CAPTURE") == "1":
+		var cfg := Match.default_config()
+		cfg["player_race"] = "barrosan"
+		cfg["opponents"] = [{"race": "lioraen", "difficulty": "easy"}]
+		cfg["map"] = "hollowspan"
+		cfg["start_resources"] = "rich"
+		cfg["victory"] = "conquest"
+		cfg["mode"] = "skirmish"
+		cfg["game_speed"] = 2.0
+		Match.set_config(cfg)
+		get_tree().change_scene_to_file("res://scenes/game_world.tscn")
+		return
 	LoadingScreen.preload_and_change_scene("res://scenes/game_world.tscn", 0.1)
 
 func _build() -> void:
