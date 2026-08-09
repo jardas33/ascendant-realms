@@ -141,6 +141,14 @@ const NAVIGATION_REPATH_INTERVAL := 0.20
 const NAVIGATION_RETRY_BUDGET := 2.5
 const V0436_R1F_AUDIT_CAP := 512
 
+# P1-R13 presentation targets. These affect only the visible model envelope;
+# gameplay height, collision, navigation radius, spacing, range and speed stay
+# sourced from the unit definition below.
+const P1R13_WORKER_VISUAL_EMPHASIS := 1.34
+const P1R13_MILITARY_VISUAL_EMPHASIS := 1.52
+const P1R13_HERO_VISUAL_EMPHASIS := 1.68
+const P1R13_VISUAL_HEIGHT_MAX := 3.8
+
 func _v0436_r1j_recorder():
 	if OS.get_environment("ASCENDANT_V0436_R1J_CAPTURE") != "1" or not world:
 		return null
@@ -333,16 +341,16 @@ func _visual_target_height() -> float:
 	# Selection/pick geometry is measured after this scale is applied.
 	var configured := maxf(1.0, float(def.get("height", 1.8)))
 	var role := String(def.get("role", ""))
-	var emphasis := 1.12
+	var emphasis := 1.22
 	if role == "worker":
-		emphasis = 1.18
+		emphasis = P1R13_WORKER_VISUAL_EMPHASIS
 	elif is_hero or bool(def.get("is_hero", false)):
-		emphasis = 1.34
+		emphasis = P1R13_HERO_VISUAL_EMPHASIS
 	elif role in ["melee", "defender", "ranged", "flanker", "antiarmor", "caster", "healer"]:
-		emphasis = 1.24
+		emphasis = P1R13_MILITARY_VISUAL_EMPHASIS
 	elif role == "siege" or bool(def.get("is_siege", false)):
 		emphasis = 1.08
-	return clampf(configured * emphasis, 1.25, 3.0)
+	return clampf(configured * emphasis, 1.35, P1R13_VISUAL_HEIGHT_MAX)
 
 func _anim_lib_path() -> String:
 	var path: String = def.get("model", "")
@@ -389,12 +397,12 @@ func _add_team_marker() -> void:
 	_team_marker = MeshInstance3D.new()
 	_team_marker.name = "TeamPip"
 	var pip := CylinderMesh.new()
-	var radius := 0.12 if is_worker else (0.16 if is_hero else 0.14)
+	var radius := 0.16 if is_worker else (0.20 if is_hero else 0.18)
 	pip.top_radius = radius
 	pip.bottom_radius = radius
 	pip.height = 0.10
 	_team_marker.mesh = pip
-	_team_marker.position.y = _visual_height + 0.16
+	_team_marker.position.y = _visual_height + 0.19
 	var mat := StandardMaterial3D.new()
 	mat.albedo_color = commander.color if commander else Color(0.85, 0.85, 0.85)
 	mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
