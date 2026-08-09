@@ -7,6 +7,7 @@ const R1H_OUT := "res://../../artifacts/manual-review/v0436-r1h-natural-player-a
 const R1I_OUT := "res://../../artifacts/manual-review/v0436-r1i-prepared-assault-combat-causality/"
 const E1R_OUT := "res://../../artifacts/manual-review/v0436-e1r-competent-natural-conquest/"
 const E3_OUT := "res://../../artifacts/manual-review/v0436-e3-tutorial-golden-path/"
+const E3R_OUT := "res://../../artifacts/manual-review/v0436-e3r-real-tutorial/"
 const PREPARATION_LIMIT_SECONDS := 720.0
 const ASSAULT_TIMEOUT_SECONDS := 90.0
 const COMPETENT_ASSAULT_TIMEOUT_SECONDS := 180.0
@@ -21,6 +22,7 @@ var evidence_mode := "R1I" if OS.get_environment("ASCENDANT_V0436_R1I_CAPTURE") 
 var out_path := R1I_OUT if evidence_mode == "R1I" else R1H_OUT
 var competent_mode := OS.get_environment("ASCENDANT_V0436_E1R_CAPTURE") == "1"
 var tutorial_mode := OS.get_environment("ASCENDANT_V0436_E3_CAPTURE") == "1"
+var e3r_mode := OS.get_environment("ASCENDANT_V0436_E3R_CAPTURE") == "1"
 var started := false
 var replay_captured := false
 var frame_names: Array[String] = []
@@ -36,7 +38,10 @@ var force_plan_audit: Dictionary = {}
 func _ready() -> void:
 	session = OS.get_environment("ASCENDANT_V0436_R1H_SESSION")
 	if session != "A" and session != "B": session = "A"
-	if competent_mode:
+	if e3r_mode:
+		evidence_mode = "E3R"
+		out_path = E3R_OUT + "session-%s/" % session.to_lower()
+	elif competent_mode:
 		evidence_mode = "E1R"
 		out_path = E1R_OUT + "session-%s/" % session.to_lower()
 	elif tutorial_mode:
@@ -45,7 +50,8 @@ func _ready() -> void:
 	else:
 		out_path = (R1I_OUT if evidence_mode == "R1I" else R1H_OUT) + "session-%s/" % session.to_lower()
 	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(out_path))
-	Match.set_config({"player_race":"barrosan", "opponents":[{"race":"lioraen", "difficulty":"easy"}], "map":"hollowspan", "start_resources":"rich" if competent_mode or tutorial_mode else "standard", "victory":"conquest", "mode":"tutorial" if tutorial_mode else "skirmish", "game_speed":2.0})
+	if not e3r_mode:
+		Match.set_config({"player_race":"barrosan", "opponents":[{"race":"lioraen", "difficulty":"easy"}], "map":"hollowspan", "start_resources":"rich" if competent_mode or tutorial_mode else "standard", "victory":"conquest", "mode":"tutorial" if tutorial_mode else "skirmish", "game_speed":2.0})
 
 func _vec(v: Vector3) -> Dictionary: return {"x":v.x, "y":v.y, "z":v.z}
 
@@ -64,6 +70,7 @@ func _wait_until(check: Callable, timeout: float) -> bool:
 	return bool(check.call())
 
 func _evidence_name(name: String) -> String:
+	if e3r_mode: return name.replace("R1H", "E3R").replace("r1h-", "e3r-")
 	if competent_mode: return name.replace("R1H", "E1R").replace("r1h-", "e1r-")
 	if tutorial_mode: return name.replace("R1H", "E3").replace("r1h-", "e3-")
 	if evidence_mode == "R1I": return name.replace("R1H", "R1I").replace("r1h-", "r1i-")
@@ -503,6 +510,127 @@ func _capture_competent_match() -> void:
 	await _contact_sheet()
 	get_tree().quit(0)
 
+func _tutorial_snapshot() -> Dictionary:
+	if is_instance_valid(root_node) and is_instance_valid(root_node.tutorial) and root_node.tutorial.has_method("get_state_snapshot"):
+		return root_node.tutorial.get_state_snapshot()
+	return {}
+
+func _wait_tutorial_step(expected_index: int, timeout: float = 90.0) -> bool:
+	return await _wait_until(func(): return int(_tutorial_snapshot().get("step_index", 0)) == expected_index, timeout)
+
+func _capture_e3r_match() -> void:
+	if not await _wait_until(func(): return is_instance_valid(world) and world.game_running, 30.0): await _failure("BLOCKED_E3R_TUTORIAL_NOT_STARTED", "normal menu tutorial entry did not reach a live production scene"); return
+	if not await _wait_until(func(): return world.is_navigation_ready(), 30.0): await _failure("BLOCKED_E3R_TUTORIAL_NAVIGATION", "tutorial navigation did not become ready"); return
+	var timeline: Array = []
+	var config := Match.get_config().duplicate(true)
+	_save_json("e3r-tutorial-manifest.json", {"schema":"v0436-e3r-real-tutorial-v1", "provenance":_provenance("normal_menu_tutorial_entry"), "menu_entry":"How to Play button pressed through the normal main menu", "configuration":config, "timeline":timeline})
+	var tutorial_before := _tutorial_snapshot()
+	# Step 1: real camera input, not elapsed time.
+	Input.action_press("cam_right")
+	await _wait_seconds(0.75)
+	Input.action_release("cam_right")
+	if not await _wait_tutorial_step(2, 30.0): await _failure("BLOCKED_E3R_STEP_1_REAL_EVENT_NOT_OBSERVED", "camera focus did not move from the normal camera input"); return
+	await _save("02_STEP1_CAMERA.png")
+	timeline.append({"step":1, "before":tutorial_before, "after":_tutorial_snapshot(), "real_action":"cam_right input", "camera_after":_vec(rts.cam_pivot.global_position)})
+	# Step 2: actual RTS selection signal.
+	var hero = world.player_commander.hero_ref
+	var workers := world.player_commander.units.filter(func(u): return is_instance_valid(u) and not u.is_dead and bool(u.is_worker))
+	var worker = workers.front() if not workers.is_empty() else null
+	var selectable = hero if is_instance_valid(hero) and not hero.is_dead else worker
+	if not is_instance_valid(selectable): await _failure("BLOCKED_E3R_STEP_2_REAL_EVENT_NOT_OBSERVED", "no player-owned unit was available"); return
+	await _select_many([selectable])
+	if not await _wait_tutorial_step(3, 30.0): await _failure("BLOCKED_E3R_STEP_2_REAL_EVENT_NOT_OBSERVED", "selection did not advance the tutorial"); return
+	await _save("03_STEP2_SELECT.png")
+	timeline.append({"step":2, "before":tutorial_before, "after":_tutorial_snapshot(), "real_action":"select player unit", "runtime_id":str(selectable.get_instance_id()), "unit_id":selectable.unit_id, "team":selectable.team})
+	# Step 3: real gather order plus a real extraction event.
+	var food = _resources_by_kind().get("food")
+	if not is_instance_valid(worker) or not is_instance_valid(food): await _failure("BLOCKED_E3R_STEP_3_REAL_EVENT_NOT_OBSERVED", "worker or food node unavailable"); return
+	var extraction_before := world.resource_extractions.size()
+	await _select_many([worker])
+	worker.command_gather(food)
+	if not await _wait_until(func(): return world.resource_extractions.size() > extraction_before, 60.0): await _failure("BLOCKED_E3R_STEP_3_REAL_EVENT_NOT_OBSERVED", "worker entered no truthful extraction event"); return
+	if not await _wait_tutorial_step(4, 30.0): await _failure("BLOCKED_E3R_STEP_3_REAL_EVENT_NOT_OBSERVED", "real extraction did not advance the tutorial"); return
+	await _save("04_STEP3_GATHER_EXTRACTION.png")
+	timeline.append({"step":3, "before":tutorial_before, "after":_tutorial_snapshot(), "real_action":"worker.command_gather(food)", "real_event":world.resource_extractions.back()})
+	# Step 4: normal placement API, real cost, worker construction, foundation then completion.
+	var croft_pos := _find_building_position("barrosan_clan_croft")
+	var croft = world.place_building("barrosan_clan_croft", 0, croft_pos) if croft_pos != Vector3.INF else null
+	if not is_instance_valid(croft): await _failure("BLOCKED_E3R_STEP_4_REAL_EVENT_NOT_OBSERVED", "normal Croft placement was rejected"); return
+	worker.command_build(croft)
+	await _save("05_STEP4_FOUNDATION.png")
+	if not await _wait_until(func(): return bool(croft.is_built), 90.0): await _failure("BLOCKED_E3R_STEP_4_REAL_EVENT_NOT_OBSERVED", "placed Croft did not complete construction"); return
+	if not await _wait_tutorial_step(5, 30.0): await _failure("BLOCKED_E3R_STEP_4_REAL_EVENT_NOT_OBSERVED", "completed construction did not advance the tutorial"); return
+	await _save("06_STEP4_BUILD_COMPLETE.png")
+	timeline.append({"step":4, "before":tutorial_before, "after":_tutorial_snapshot(), "real_action":"place Croft and worker.command_build", "real_event":world.get_v0431_construction_audit().get("construction_events", []).back(), "building_id":croft.building_id, "is_built":croft.is_built})
+	# Step 5: complete a War Hall, queue through the real production API, then wait for a new unit.
+	var hall_pos := _find_building_position("barrosan_war_hall")
+	var hall = world.place_building("barrosan_war_hall", 0, hall_pos) if hall_pos != Vector3.INF else null
+	if not is_instance_valid(hall): await _failure("BLOCKED_E3R_STEP_5_REAL_EVENT_NOT_OBSERVED", "normal War Hall placement was rejected"); return
+	for unit in world.player_commander.units:
+		if is_instance_valid(unit) and bool(unit.is_worker): unit.command_build(hall)
+	if not await _wait_until(func(): return bool(hall.is_built), 120.0): await _failure("BLOCKED_E3R_STEP_5_REAL_EVENT_NOT_OBSERVED", "War Hall did not complete construction"); return
+	var army_before := _army_count()
+	var queue_result = hall.queue_unit("barrosan_crag_archer")
+	await _save("07_STEP5_TRAINING.png")
+	if not await _wait_until(func(): return _army_count() > army_before, 120.0): await _failure("BLOCKED_E3R_STEP_5_REAL_EVENT_NOT_OBSERVED", "queued military unit did not complete training"); return
+	if not await _wait_tutorial_step(6, 30.0): await _failure("BLOCKED_E3R_STEP_5_REAL_EVENT_NOT_OBSERVED", "newly trained unit did not advance the tutorial"); return
+	await _save("08_STEP5_UNIT_COMPLETE.png")
+	timeline.append({"step":5, "before":tutorial_before, "after":_tutorial_snapshot(), "real_action":"War Hall queue_unit", "queue_result":queue_result, "new_army_count":_army_count()})
+	# Step 6: a real hero move order with measurable position change.
+	if not is_instance_valid(hero) or hero.is_dead: await _failure("BLOCKED_E3R_STEP_6_REAL_EVENT_NOT_OBSERVED", "hero unavailable"); return
+	await _select_many([hero])
+	var hero_before := hero.global_position
+	hero.command_move(hero_before + Vector3(10.0, 0.0, 0.0))
+	if not await _wait_tutorial_step(7, 90.0): await _failure("BLOCKED_E3R_STEP_6_REAL_EVENT_NOT_OBSERVED", "hero did not move through a real command"); return
+	await _save("09_STEP6_HERO_COMMAND.png")
+	timeline.append({"step":6, "before":tutorial_before, "after":_tutorial_snapshot(), "real_action":"hero.command_move", "position_before":_vec(hero_before), "position_after":_vec(hero.global_position)})
+	# Step 7: real attack orders, one frame before damage, then real damage evidence.
+	var enemies := _enemy_combatants()
+	var own := _player_combatants()
+	if enemies.is_empty() or own.is_empty(): await _failure("BLOCKED_E3R_STEP_7_REAL_EVENT_NOT_OBSERVED", "combat inventory unavailable"); return
+	var damage_before := world.combat_damage_events.size()
+	await _select_many(own)
+	var attack_move_ok: bool = rts.issue_attack_move_destination(enemies[0].global_position)
+	var attack_target_ok: bool = rts.issue_attack_target(enemies[0])
+	await _save("10_STEP7_ATTACK.png")
+	if not await _wait_until(func(): return world.combat_damage_events.size() > damage_before, 120.0): await _failure("BLOCKED_E3R_STEP_7_REAL_EVENT_NOT_OBSERVED", "real attack orders produced no damage event"); return
+	if not await _wait_tutorial_step(8, 30.0): await _failure("BLOCKED_E3R_STEP_7_REAL_EVENT_NOT_OBSERVED", "real combat damage did not advance the tutorial"); return
+	await _save("11_STEP7_REAL_DAMAGE.png")
+	timeline.append({"step":7, "before":tutorial_before, "after":_tutorial_snapshot(), "real_action":"attack-move and attack-target", "attack_move_return":attack_move_ok, "attack_target_return":attack_target_ok, "real_event":world.combat_damage_events.back()})
+	# Step 8: normal movement into the actual Lume capture zone and natural ownership.
+	var points := world.get_tree().get_nodes_in_group("capture_points")
+	var lume = points.front() if not points.is_empty() else null
+	if not is_instance_valid(lume): await _failure("BLOCKED_E3R_LUME_UNREACHABLE", "no live Lume capture point exists"); return
+	await _save("12_STEP8_LUME_TARGET.png")
+	var lume_before := lume.get_capture_snapshot() if lume.has_method("get_capture_snapshot") else {"owner_team":lume.owner_team, "progress":lume._progress}
+	for unit in _player_combatants():
+		unit.command_move(lume.global_position)
+	if not await _wait_until(func(): return _player_combatants().filter(func(u): return is_instance_valid(u) and u.global_position.distance_to(lume.global_position) <= 7.5).size() > 0, 120.0): await _failure("BLOCKED_E3R_LUME_UNREACHABLE", "player units did not reach the Lume capture zone"); return
+	await _save("13_STEP8_UNITS_IN_CAPTURE_ZONE.png")
+	if not await _wait_until(func(): return float(lume._progress) > 0.05, 30.0): await _failure("BLOCKED_E3R_LUME_OWNERSHIP_NOT_RECOGNIZED", "Lume capture progress never began"); return
+	await _save("14_STEP8_CAPTURE_PROGRESS.png")
+	DisplayServer.window_set_size(Vector2i(1366, 768))
+	await _wait_seconds(1.0)
+	await _save("18_1366_TUTORIAL_ACTIVE.png")
+	DisplayServer.window_set_size(Vector2i(1920, 1080))
+	await _wait_seconds(1.0)
+	if not await _wait_until(func(): return int(lume.owner_team) == int(world.player_commander.team), 120.0): await _failure("BLOCKED_E3R_LUME_OWNERSHIP_NOT_RECOGNIZED", "Lume ownership did not transition through normal CapturePoint physics"); return
+	if not await _wait_tutorial_step(9, 30.0): await _failure("BLOCKED_E3R_LUME_OWNERSHIP_NOT_RECOGNIZED", "tutorial did not observe the natural Lume ownership event"); return
+	await _save("15_STEP8_LUME_OWNED.png")
+	await _save("16_TUTORIAL_COMPLETE.png")
+	DisplayServer.window_set_size(Vector2i(1366, 768))
+	await _wait_seconds(1.0)
+	await _save("19_1366_TUTORIAL_COMPLETE.png")
+	DisplayServer.window_set_size(Vector2i(1920, 1080))
+	var completion_button = root_node.tutorial.get_completion_button() if root_node.tutorial.has_method("get_completion_button") else null
+	if not is_instance_valid(completion_button): await _failure("BLOCKED_E3R_COMPLETION_FLOW_BROADER_THAN_SCOPE", "completed tutorial did not expose a return action"); return
+	var return_record := await _click_button(completion_button)
+	if not await _wait_until(func(): return is_instance_valid(get_tree().current_scene) and get_tree().current_scene.name == "MainMenu", 30.0): await _failure("BLOCKED_E3R_COMPLETION_FLOW_BROADER_THAN_SCOPE", "tutorial return action did not reach the main menu"); return
+	await _save("17_TUTORIAL_RETURN_MENU.png")
+	_save_json("e3r-tutorial-manifest.json", {"schema":"v0436-e3r-real-tutorial-v1", "provenance":_provenance("real_golden_path"), "configuration":config, "tutorial_entry":"normal MainMenu How to Play button", "timeline":timeline, "lume_before":lume_before, "lume_after":lume.get_capture_snapshot() if lume.has_method("get_capture_snapshot") else {"owner_team":lume.owner_team, "progress":lume._progress}, "return_action":return_record, "tutorial_state_before_return":_tutorial_snapshot(), "public_actions_only":true, "state_injection":false})
+	await _contact_sheet()
+	get_tree().quit(0)
+
 func _capture_tutorial_match() -> void:
 	if not await _wait_until(func(): return is_instance_valid(world) and world.game_running, 30.0): await _failure("BLOCKED_E3_TUTORIAL_NOT_STARTED", "tutorial production scene did not start"); return
 	if not await _wait_until(func(): return world.is_navigation_ready(), 30.0): await _failure("BLOCKED_E3_TUTORIAL_NAVIGATION", "tutorial navigation did not become ready"); return
@@ -568,6 +696,9 @@ func _capture_tutorial_match() -> void:
 func _capture_match() -> void:
 	if competent_mode:
 		await _capture_competent_match()
+		return
+	if e3r_mode:
+		await _capture_e3r_match()
 		return
 	if tutorial_mode:
 		await _capture_tutorial_match()

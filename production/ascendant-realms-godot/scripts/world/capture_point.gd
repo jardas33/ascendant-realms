@@ -140,3 +140,6 @@ func _tint(c: Color, strength: float) -> void:
 		m.emission_energy_multiplier = 1.0 + strength * 2.0
 	if beam and beam.material_override:
 		(beam.material_override as StandardMaterial3D).emission = c.lerp(Color(1,0.85,0.4), 0.5)
+
+func get_capture_snapshot() -> Dictionary:
+	return {"point_name": point_name, "owner_team": owner_team, "progress": _progress, "contesting_team": _contesting_team, "global_position": global_position}
