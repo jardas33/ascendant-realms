@@ -5,9 +5,12 @@ extends Node
 
 const R1H_OUT := "res://../../artifacts/manual-review/v0436-r1h-natural-player-assault-viability/"
 const R1I_OUT := "res://../../artifacts/manual-review/v0436-r1i-prepared-assault-combat-causality/"
+const E1R_OUT := "res://../../artifacts/manual-review/v0436-e1r-competent-natural-conquest/"
 const PREPARATION_LIMIT_SECONDS := 720.0
 const ASSAULT_TIMEOUT_SECONDS := 90.0
+const COMPETENT_ASSAULT_TIMEOUT_SECONDS := 180.0
 const FORCE_PLAN := ["barrosan_spear_guard", "barrosan_spear_guard", "barrosan_crag_archer", "barrosan_crag_archer"]
+const COMPETENT_FORCE_PLAN := ["barrosan_spear_guard", "barrosan_spear_guard", "barrosan_crag_archer", "barrosan_crag_archer", "barrosan_clan_levy", "barrosan_crag_archer", "barrosan_spear_guard", "barrosan_outrider"]
 
 var root_node: Node
 var world
@@ -15,6 +18,7 @@ var rts
 var session := "A"
 var evidence_mode := "R1I" if OS.get_environment("ASCENDANT_V0436_R1I_CAPTURE") == "1" else "R1H"
 var out_path := R1I_OUT if evidence_mode == "R1I" else R1H_OUT
+var competent_mode := OS.get_environment("ASCENDANT_V0436_E1R_CAPTURE") == "1"
 var started := false
 var replay_captured := false
 var frame_names: Array[String] = []
@@ -30,9 +34,13 @@ var force_plan_audit: Dictionary = {}
 func _ready() -> void:
 	session = OS.get_environment("ASCENDANT_V0436_R1H_SESSION")
 	if session != "A" and session != "B": session = "A"
-	out_path = (R1I_OUT if evidence_mode == "R1I" else R1H_OUT) + "session-%s/" % session.to_lower()
+	if competent_mode:
+		evidence_mode = "E1R"
+		out_path = E1R_OUT + "session-%s/" % session.to_lower()
+	else:
+		out_path = (R1I_OUT if evidence_mode == "R1I" else R1H_OUT) + "session-%s/" % session.to_lower()
 	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(out_path))
-	Match.set_config({"player_race":"barrosan", "opponents":[{"race":"lioraen", "difficulty":"easy"}], "map":"hollowspan", "start_resources":"standard", "victory":"conquest", "mode":"skirmish", "game_speed":2.0})
+	Match.set_config({"player_race":"barrosan", "opponents":[{"race":"lioraen", "difficulty":"easy"}], "map":"hollowspan", "start_resources":"rich" if competent_mode else "standard", "victory":"conquest", "mode":"skirmish", "game_speed":2.0})
 
 func _vec(v: Vector3) -> Dictionary: return {"x":v.x, "y":v.y, "z":v.z}
 
@@ -51,6 +59,7 @@ func _wait_until(check: Callable, timeout: float) -> bool:
 	return bool(check.call())
 
 func _evidence_name(name: String) -> String:
+	if competent_mode: return name.replace("R1H", "E1R").replace("r1h-", "e1r-")
 	if evidence_mode == "R1I": return name.replace("R1H", "R1I").replace("r1h-", "r1i-")
 	return name
 
@@ -155,6 +164,14 @@ func _find_build_position() -> Vector3:
 			if world.can_place_building("barrosan_war_hall", 0, p, true): return p
 	return Vector3.INF
 
+func _find_building_position(building_id: String) -> Vector3:
+	var anchor: Vector3 = world.player_commander.buildings[0].global_position
+	for radius in [16.0, 20.0, 24.0, 30.0, 36.0]:
+		for i in range(16):
+			var p: Vector3 = anchor + Vector3(cos(TAU * i / 16.0), 0, sin(TAU * i / 16.0)) * radius
+			if world.can_place_building(building_id, 0, p, true): return p
+	return Vector3.INF
+
 func _production_definitions() -> Dictionary:
 	var roles: Array = []
 	var hall_def := GameData.get_building("barrosan_war_hall").duplicate(true)
@@ -162,10 +179,11 @@ func _production_definitions() -> Dictionary:
 		var d := GameData.get_unit(String(unit_id)).duplicate(true)
 		roles.append({"id":String(unit_id), "definition":d, "reason":"live War Hall roster audit"})
 	var plan: Array = []
-	for unit_id in FORCE_PLAN:
+	var selected_plan: Array = COMPETENT_FORCE_PLAN if competent_mode else FORCE_PLAN
+	for unit_id in selected_plan:
 		var d := GameData.get_unit(unit_id).duplicate(true)
 		plan.append({"id":unit_id, "role":String(d.get("role", "")), "cost":d.get("cost", {}), "build_time":d.get("build_time", 0), "pop":d.get("pop", 0), "hp":d.get("hp", 0), "dmg":d.get("dmg", 0), "dmg_type":d.get("dmg_type", ""), "armor_class":d.get("armor_class", ""), "range":d.get("range", 0), "reason":"frontline durability or ranged damage in a normal mixed force"})
-	return {"building_id":"barrosan_war_hall", "building":hall_def, "available_roles":roles, "planned_roles":plan, "hero_definition":GameData.get_unit("barrosan_hero_thane").duplicate(true), "population_cap_bound":12, "max_live_combatants":16, "max_preparation_wall_seconds":PREPARATION_LIMIT_SECONDS}
+	return {"building_id":"barrosan_war_hall", "building":hall_def, "available_roles":roles, "planned_roles":plan, "hero_definition":GameData.get_unit("barrosan_hero_thane").duplicate(true), "population_cap_bound":20 if competent_mode else 12, "max_live_combatants":16, "max_preparation_wall_seconds":PREPARATION_LIMIT_SECONDS}
 
 func _normal_production_setup() -> bool:
 	preparation_started_ms = Time.get_ticks_msec()
@@ -187,6 +205,8 @@ func _normal_production_setup() -> bool:
 	_record_economy("war_hall_built")
 	await _focus(hall.global_position)
 	await _save("04_R1H_MIXED_FORCE_IN_PRODUCTION.png")
+	if competent_mode:
+		return await _competent_production_setup(hall)
 	var resources := _resources_by_kind()
 	var food = resources.get("food")
 	if not is_instance_valid(food): return false
@@ -208,6 +228,38 @@ func _normal_production_setup() -> bool:
 		var ids: Dictionary = {}
 		for u in _player_combatants(): ids[String(u.unit_id)] = int(ids.get(String(u.unit_id), 0)) + 1
 		return int(ids.get("barrosan_spear_guard", 0)) >= 3 and int(ids.get("barrosan_crag_archer", 0)) >= 2, 240.0)
+
+func _competent_production_setup(hall) -> bool:
+	var house_pos := _find_building_position("barrosan_clan_croft")
+	var house = world.place_building("barrosan_clan_croft", 0, house_pos) if house_pos != Vector3.INF else null
+	if not is_instance_valid(house): return false
+	var workers: Array = world.commanders[0].units.filter(func(u): return is_instance_valid(u) and bool(u.is_worker))
+	for worker in workers: worker.command_build(house)
+	_record_economy("house_placement_and_worker_build_commands")
+	await _save("04_R1H_HOUSING_INFRASTRUCTURE.png")
+	if not await _wait_until(func(): return is_instance_valid(house) and bool(house.is_built), 90.0): return false
+	_record_economy("house_built")
+	var resources := _resources_by_kind()
+	var food = resources.get("food")
+	var timber = resources.get("timber")
+	var assigned := 0
+	for worker in workers:
+		if not is_instance_valid(worker): continue
+		if assigned % 2 == 0 and is_instance_valid(food): worker.command_gather(food)
+		elif is_instance_valid(timber): worker.command_gather(timber)
+		elif is_instance_valid(food): worker.command_gather(food)
+		assigned += 1
+	_record_economy("workers_gather_food_and_timber")
+	await _save("02_R1H_WORKERS_RESUME_ECONOMY.png")
+	if not await _wait_until(func(): return world.resource_transactions.size() >= 6, 90.0): return false
+	var queue_results: Array = []
+	for unit_id in COMPETENT_FORCE_PLAN:
+		var result = hall.queue_unit(unit_id)
+		queue_results.append({"unit_id":unit_id, "result":result, "resources_after":world.commanders[0].resources.duplicate(true), "pop_used":world.commanders[0].pop_used, "reserved_pop":world.commanders[0].reserved_pop})
+		await get_tree().process_frame
+	_record_economy("competent_mixed_force_queues_issued")
+	_save_json("production-audit.json", {"provenance":_provenance("production"), "queue_results":queue_results, "resource_transactions":world.resource_transactions.duplicate(true), "queue_plan":COMPETENT_FORCE_PLAN, "source":"normal house placement, worker construction, resumed two-resource gathering, and real-cost Building.queue_unit"})
+	return await _wait_until(func(): return _player_combatants().size() >= 10, 360.0)
 
 func _target_key(target, category: String) -> Dictionary:
 	return {"category":category, "definition_id":String(target.get("building_id") if category == "building" else target.get("unit_id")), "runtime_id":str(target.get_instance_id())}
@@ -286,7 +338,158 @@ func _contact_sheet(blocked := false) -> void:
 		sheet.blit_rect(source, Rect2i(0,0,thumb.x,thumb.y), Vector2i((i % 5) * thumb.x, (i / 5) * thumb.y))
 	sheet.save_png(ProjectSettings.globalize_path(out_path + _evidence_name("26_R1H_BLOCKER_CONTACT_SHEET.png" if blocked else "26_R1H_CONTACT_SHEET.png")))
 
+func _competent_assault_target(target, category: String, label: String) -> Dictionary:
+	var audit := _target_key(target, category)
+	audit["label"] = label
+	audit["initial_hp"] = float(target.hp) if is_instance_valid(target) and "hp" in target else null
+	audit["maximum_hp"] = float(target.max_hp) if is_instance_valid(target) and "max_hp" in target else null
+	audit["initial_position"] = _vec(target.global_position) if is_instance_valid(target) else null
+	audit["force_before"] = _player_combatants().map(func(u): return _unit_record(u))
+	audit["commands"] = []
+	audit["reissues"] = []
+	audit["retreats"] = []
+	audit["hp_samples"] = []
+	audit["damage_event_count_before"] = world.combat_damage_events.size() + world.building_damage_events.size()
+	var army := _player_combatants()
+	if army.is_empty():
+		audit["terminal_disposition"] = "FAILED_E1R_NATURAL_PLAYER_DEFEAT"
+		target_lifecycles.append(audit)
+		return audit
+	await _select_many(army)
+	var move_ok: bool = rts.issue_attack_move_destination(target.global_position)
+	var target_ok: bool = rts.issue_attack_target(target)
+	audit.commands.append({"kind":"attack_priority", "attack_move_return":move_ok, "attack_target_return":target_ok, "target_position":_vec(target.global_position), "timestamp_ms":Time.get_ticks_msec()})
+	var started_ms := Time.get_ticks_msec()
+	var next_reissue := started_ms + 8000
+	while Time.get_ticks_msec() - started_ms < int(COMPETENT_ASSAULT_TIMEOUT_SECONDS * 1000.0):
+		if not is_instance_valid(target) or bool(target.is_dead):
+			audit["terminal_disposition"] = "DESTROYED"
+			break
+		if not is_instance_valid(world.player_commander) or bool(world.player_commander.defeated):
+			audit["terminal_disposition"] = "FAILED_E1R_NATURAL_PLAYER_DEFEAT"
+			break
+		var live_army := _player_combatants()
+		if live_army.size() <= 3 and Time.get_ticks_msec() - started_ms > 15000:
+			var hq = world.player_commander.buildings[0] if not world.player_commander.buildings.is_empty() else null
+			if is_instance_valid(hq):
+				await _select_many(live_army)
+				for unit in live_army: unit.command_move(hq.global_position)
+				audit["retreats"].append({"timestamp_ms":Time.get_ticks_msec(), "reason":"useful_fighting_strength_low", "survivors":live_army.map(func(u): return _unit_record(u))})
+				audit["terminal_disposition"] = "WITHDREW_REGROUP"
+				break
+		audit["hp_samples"].append({"timestamp_ms":Time.get_ticks_msec(), "hp":float(target.hp), "dead":bool(target.is_dead), "force_size":live_army.size()})
+		if Time.get_ticks_msec() >= next_reissue:
+			var idle := live_army.filter(func(u): return int(u.state) == Unit.State.IDLE or String(u.get("_navigation_command_type")) == "")
+			if not idle.is_empty():
+				await _select_many(live_army)
+				var retry_move: bool = rts.issue_attack_move_destination(target.global_position)
+				var retry_target: bool = rts.issue_attack_target(target)
+				audit["reissues"].append({"timestamp_ms":Time.get_ticks_msec(), "idle_count":idle.size(), "attack_move_return":retry_move, "attack_target_return":retry_target})
+			next_reissue += 8000
+		await _wait_seconds(0.5)
+	if not audit.has("terminal_disposition"):
+		audit["terminal_disposition"] = "INCONCLUSIVE_E1R_TIME_LIMIT"
+	audit["final_valid"] = is_instance_valid(target)
+	audit["final_hp"] = float(target.hp) if is_instance_valid(target) and "hp" in target else null
+	audit["final_position"] = _vec(target.global_position) if is_instance_valid(target) else null
+	audit["damage_event_count_after"] = world.combat_damage_events.size() + world.building_damage_events.size()
+	audit["elapsed_wall_seconds"] = float(Time.get_ticks_msec() - started_ms) / 1000.0
+	audit["navigation_snapshot"] = world.navigation_runtime_snapshot()
+	target_lifecycles.append(audit)
+	return audit
+
+func _competent_reinforcements() -> bool:
+	var hall = null
+	for building in world.player_commander.buildings:
+		if is_instance_valid(building) and not building.is_dead and String(building.building_id) == "barrosan_war_hall":
+			hall = building
+			break
+	if not is_instance_valid(hall): return false
+	var queue_results: Array = []
+	for unit_id in ["barrosan_spear_guard", "barrosan_crag_archer", "barrosan_clan_levy", "barrosan_spear_guard", "barrosan_crag_archer", "barrosan_outrider"]:
+		var result = hall.queue_unit(unit_id)
+		queue_results.append({"unit_id":unit_id, "result":result, "resources_after":world.player_commander.resources.duplicate(true), "pop_used":world.player_commander.pop_used, "reserved_pop":world.player_commander.reserved_pop})
+		await get_tree().process_frame
+	_save_json("reinforcement-queue-%d.json" % target_lifecycles.size(), {"provenance":_provenance("reinforcements"), "queue_results":queue_results, "source":"normal real-cost queue after a combat retreat"})
+	return await _wait_until(func(): return _player_combatants().size() >= 8, 240.0)
+
+func _capture_competent_match() -> void:
+	if not await _wait_until(func(): return is_instance_valid(world) and world.game_running, 30.0): await _failure("BLOCKED_E1R_MATCH_NOT_STARTED", "production match did not start"); return
+	await _focus(world.player_commander.buildings[0].global_position)
+	await _save("01_R1H_STANDARD_MATCH_START.png")
+	_save_json("match-configuration.json", {"provenance":_provenance("configuration"), "observed":Match.get_config().duplicate(true), "expected":{"player_race":"barrosan", "opponent_race":"lioraen", "difficulty":"easy", "start_resources":"rich", "map":"hollowspan", "mode":"skirmish", "victory":"conquest", "game_speed":2.0}})
+	if not await _wait_until(func(): return world.is_navigation_ready(), 30.0): await _failure("BLOCKED_E1R_NAVIGATION_NOT_READY", "navigation did not become ready"); return
+	await _save("02_R1H_WORKERS_RESUME_ECONOMY.png")
+	if not await _normal_production_setup(): await _failure("BLOCKED_E1R_ECONOMY_OR_PRODUCTION_STALLED", "normal construction, two-resource gathering, housing, or mixed production could not progress"); return
+	await _save("05_R1H_FORCE_READINESS_TRUE.png")
+	_record_economy("force_readiness")
+	_save_json("force-readiness.json", {"provenance":_provenance("readiness"), "ready":true, "hero_included":is_instance_valid(world.player_commander.hero_ref) and not world.player_commander.hero_ref.is_dead, "force":_player_combatants().map(func(u): return _unit_record(u)), "total_hp":_player_combatants().reduce(func(sum, u): return sum + float(u.hp), 0.0), "population":_commander_record(world.player_commander), "queue_capability":_queue_record(world.player_commander.buildings.filter(func(b): return b.building_id == "barrosan_war_hall")[0])})
+	var cycle_audits: Array = []
+	var won := false
+	for cycle in range(3):
+		var cycle_audit := {"cycle":cycle + 1, "started_force":_player_combatants().map(func(u): return _unit_record(u)), "targets":[]}
+		var enemy_units := _enemy_combatants().duplicate()
+		for target in enemy_units:
+			if not is_instance_valid(target) or target.is_dead: continue
+			var audit := await _competent_assault_target(target, "combatant", "cycle_%d_enemy_unit" % (cycle + 1))
+			cycle_audit["targets"].append(audit)
+			if String(audit.get("terminal_disposition", "")) in ["WITHDREW_REGROUP", "FAILED_E1R_NATURAL_PLAYER_DEFEAT"]: break
+		if is_instance_valid(world.player_commander) and bool(world.player_commander.defeated): await _failure("FAILED_E1R_NATURAL_PLAYER_DEFEAT", "player HQ or rebuild capability was naturally eliminated"); return
+		if _enemy_combatants().is_empty():
+			var hqs := _enemy_buildings().filter(func(b): return bool(b.def.get("is_hq", false)))
+			if not hqs.is_empty() and _player_combatants().size() >= 4:
+				var hq_audit := await _competent_assault_target(hqs[0], "building", "cycle_%d_enemy_hq" % (cycle + 1))
+				cycle_audit["targets"].append(hq_audit)
+				if String(hq_audit.get("terminal_disposition", "")) == "DESTROYED":
+					for building in _enemy_buildings():
+						if not is_instance_valid(building) or building.is_dead: continue
+						var building_audit := await _competent_assault_target(building, "building", "cycle_%d_remaining_building" % (cycle + 1))
+						cycle_audit["targets"].append(building_audit)
+						if String(building_audit.get("terminal_disposition", "")) != "DESTROYED": break
+					for worker in _enemy_workers():
+						if not is_instance_valid(worker) or worker.is_dead: continue
+						var worker_audit := await _competent_assault_target(worker, "worker", "cycle_%d_rebuild_worker" % (cycle + 1))
+						cycle_audit["targets"].append(worker_audit)
+						if String(worker_audit.get("terminal_disposition", "")) != "DESTROYED": break
+					var final_snapshot := _predicate_snapshot("cycle_%d_predicate" % (cycle + 1))
+					var enemy_state: Dictionary = final_snapshot.get("commanders", [])[1]
+					if bool(enemy_state.get("no_hq", false)) and bool(enemy_state.get("no_buildings", false)) and bool(enemy_state.get("no_workers", false)):
+						won = true
+						break
+		cycle_audit["ended_force"] = _player_combatants().map(func(u): return _unit_record(u))
+		cycle_audits.append(cycle_audit)
+		_save_json("e1r-assault-cycles.json", {"provenance":_provenance("assault_cycles"), "cycles":cycle_audits, "strategy":"competent public-action play: clear threats, regroup after losses, rebuild, then pressure structures and workers"})
+		if won: break
+		if cycle < 2:
+			if not await _competent_reinforcements(): await _failure("INCONCLUSIVE_E1R_TIME_LIMIT", "normal production could not rebuild a useful fighting force after losses"); return
+	if not won: await _failure("INCONCLUSIVE_E1R_TIME_LIMIT", "competent natural player strategy made real progress but did not reach conquest within three bounded offensive cycles"); return
+	var final_predicate := _predicate_snapshot("final_conquest_predicate")
+	await _save("17_R1H_FINAL_CONQUEST_PREDICATE.png")
+	if not await _wait_until(func(): return world.match_ended, 120.0): await _failure("BLOCKED_E1R_VICTORY_TERMINAL", "natural conquest predicate did not end the match"); return
+	if not bool(world.result_snapshot.get("victory", false)) or String(world.result_snapshot.get("reason", "")) != "Conquest": await _failure("BLOCKED_E1R_RESULT_REASON", "natural end did not produce Conquest victory"); return
+	await _save("18_R1H_GENUINE_VICTORY.png")
+	var layer = root_node.hud.get("_gameover_layer")
+	var continue_button := _find_button(layer, "Continue") if is_instance_valid(layer) else null
+	var replay_button := _find_button(layer, "Play Again") if is_instance_valid(layer) else null
+	_save_json("result-state-audit.json", {"provenance":_provenance("result"), "observed":{"match_ended":world.match_ended, "game_running":world.game_running, "result":world.result_snapshot.duplicate(true), "labels":_labels(layer) if is_instance_valid(layer) else [], "continue_exists":is_instance_valid(continue_button), "replay_exists":is_instance_valid(replay_button)}})
+	await _save("19_R1H_RESULT_UI.png")
+	if session == "A" and is_instance_valid(continue_button) and not continue_button.disabled:
+		_save_json("continue-action-audit.json", {"provenance":_provenance("continue"), "observed":await _click_button(continue_button)})
+		await _wait_seconds(3.0)
+		await _save("22_R1H_CONTINUE_DESTINATION.png")
+		await _contact_sheet()
+		get_tree().quit(0)
+		return
+	if session == "B" and is_instance_valid(replay_button) and not replay_button.disabled:
+		_save_json("play-again-action-audit.json", {"provenance":_provenance("play_again"), "observed":await _click_button(replay_button)})
+		if not await _wait_until(func(): return replay_captured, 45.0): await _failure("BLOCKED_E1R_REPLAY_NOT_FRESH", "Play Again did not produce a fresh captured scene"); return
+	await _contact_sheet()
+	get_tree().quit(0)
+
 func _capture_match() -> void:
+	if competent_mode:
+		await _capture_competent_match()
+		return
 	if not await _wait_until(func(): return is_instance_valid(world) and world.game_running, 30.0): await _failure("BLOCKED_R1H_CAPTURE_STRATEGY_INCONCLUSIVE", "production match did not start"); return
 	await _focus(world.player_commander.buildings[0].global_position)
 	await _save("01_R1H_STANDARD_MATCH_START.png")
