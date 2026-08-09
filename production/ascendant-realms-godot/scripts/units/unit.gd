@@ -372,10 +372,16 @@ func _map_anims() -> void:
 			_anim_names["idle"] = a
 		elif "walk" in low and not _anim_names.has("walk"):
 			_anim_names["walk"] = a
+		elif ("work" in low or "build" in low or "hammer" in low or "chop" in low or "mine" in low or "gather" in low or "harvest" in low or "dig" in low or "repair" in low) and not _anim_names.has("work"):
+			_anim_names["work"] = a
 		elif ("attack" in low or "shoot" in low or "punch" in low or "spell" in low) and not _anim_names.has("attack"):
 			_anim_names["attack"] = a
 		elif "death" in low and not _anim_names.has("death"):
 			_anim_names["death"] = a
+	if not _anim_names.has("work"):
+		# Idle is the least misleading fallback when an imported character has no
+		# authored work cycle; never repurpose an attack animation for gathering.
+		_anim_names["work"] = _anim_names.get("idle", "")
 
 func _play(key: String, force: bool = false) -> void:
 	if not anim:
@@ -1127,7 +1133,7 @@ func _state_gather(delta: float) -> void:
 		_move_along_path(delta)
 	else:
 		_hold_worker_interaction(_gather_node.global_position)
-		_play("attack")
+		_play("work")
 		_gather_timer += delta
 		if _gather_timer >= 1.0:
 			_gather_timer = 0.0
@@ -1247,7 +1253,7 @@ func _state_build(delta: float) -> void:
 		_move_along_path(delta)
 	else:
 		_hold_worker_interaction(_build_target.global_position)
-		_play("attack")
+		_play("work")
 		_build_target.add_build_progress(delta, self)
 
 func _hold_worker_interaction(target_position: Vector3) -> void:
