@@ -35,6 +35,8 @@
     "godot:test:p1r1-unit-readability": "node tools/godot/p1r1UnitReadabilityTool.mjs validate",
     "godot:capture:p1r2-selected-portraits": "node tools/godot/p1r2SelectedPortraitsTool.mjs capture",
     "godot:test:p1r2-selected-portraits": "node tools/godot/p1r2SelectedPortraitsTool.mjs validate",
+    "godot:capture:p1r3-minimap-terrain": "node tools/godot/p1r3MinimapTerrainTool.mjs capture",
+    "godot:test:p1r3-minimap-terrain": "node tools/godot/p1r3MinimapTerrainTool.mjs validate",
     "godot:validate:production": "node tools/godot/tesanaProductionTool.mjs validate",
     "godot:asset-scan:production": "node tools/godot/tesanaProductionTool.mjs asset-scan",
     "godot:smoke:v0431-gameplay-construction": "node tools/godot/v0431GameplayConstructionTool.mjs smoke",

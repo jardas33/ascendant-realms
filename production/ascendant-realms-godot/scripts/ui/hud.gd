@@ -358,9 +358,31 @@ func _draw_minimap() -> void:
 	if not is_instance_valid(_minimap):
 		return
 	var size := _minimap.size
-	# background
-	_minimap.draw_rect(Rect2(Vector2.ZERO, size), Color(0.06, 0.08, 0.09, 0.95), true)
-	_minimap.draw_rect(Rect2(Vector2.ZERO, size), Color(0.35, 0.32, 0.25, 0.9), false, 2.0)
+	# Readable terrain-first map: the previous black panel only exposed dots,
+	# which made the battlefield topology impossible to read at a glance.
+	var terrain_base := Color(0.24, 0.32, 0.22, 1.0)
+	var terrain_overlay := Color(0.32, 0.39, 0.25, 0.52)
+	if is_instance_valid(world):
+		match str(world.map.get("theme", "highland")):
+			"volcanic":
+				terrain_base = Color(0.34, 0.16, 0.12, 1.0)
+				terrain_overlay = Color(0.55, 0.22, 0.12, 0.5)
+			"snow":
+				terrain_base = Color(0.38, 0.47, 0.5, 1.0)
+				terrain_overlay = Color(0.62, 0.7, 0.72, 0.48)
+			"desert", "badlands":
+				terrain_base = Color(0.42, 0.31, 0.2, 1.0)
+				terrain_overlay = Color(0.58, 0.42, 0.24, 0.48)
+		_minimap.draw_rect(Rect2(Vector2.ZERO, size), terrain_base, true)
+	_minimap.draw_rect(Rect2(Vector2(4, 4), size - Vector2(8, 8)), terrain_overlay, true)
+	# Soft terrain bands keep the map legible without pretending to be a second
+	# fog/economy system. They are a presentation-only abstraction of the
+	# existing flat battlefield bounds.
+	for i in range(5):
+		var y := 12.0 + float(i) * size.y / 5.0
+		_minimap.draw_line(Vector2(8, y), Vector2(size.x - 8, y), Color(0.5, 0.52, 0.34, 0.14), 1.0)
+	_draw_minimap_roads(size)
+	_minimap.draw_rect(Rect2(Vector2.ZERO, size), Color(0.55, 0.48, 0.3, 0.95), false, 2.0)
 
 	if not is_instance_valid(world):
 		return
@@ -402,6 +424,22 @@ func _draw_minimap() -> void:
 		var vr := 18.0
 		_minimap.draw_rect(Rect2(cp - Vector2(vr, vr), Vector2(vr * 2, vr * 2)),
 			Color(1, 1, 1, 0.9), false, 1.5)
+
+
+func _draw_minimap_roads(size: Vector2) -> void:
+	if not is_instance_valid(world):
+		return
+	var center := _world_to_map(Vector3.ZERO)
+	var road_shadow := Color(0.12, 0.13, 0.1, 0.8)
+	var road := Color(0.68, 0.55, 0.33, 0.92)
+	for start in world.map.get("start_positions", []):
+		var p := _world_to_map(start)
+		_minimap.draw_line(p, center, road_shadow, 9.0, true)
+		_minimap.draw_line(p, center, road, 5.0, true)
+	var a := _world_to_map(Vector3(-30, 0, -20))
+	var b := _world_to_map(Vector3(30, 0, 20))
+	_minimap.draw_line(a, b, road_shadow, 8.0, true)
+	_minimap.draw_line(a, b, Color(0.58, 0.47, 0.3, 0.85), 4.0, true)
 
 
 # ---------------------------------------------------------------------------
