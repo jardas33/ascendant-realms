@@ -1048,9 +1048,7 @@ func _state_gather(delta: float) -> void:
 		_set_agent_target(_move_target, "gather")
 		_move_along_path(delta)
 	else:
-		velocity.x = 0; velocity.z = 0
-		move_and_slide()
-		_face(_gather_node.global_position)
+		_hold_worker_interaction(_gather_node.global_position)
 		_play("attack")
 		_gather_timer += delta
 		if _gather_timer >= 1.0:
@@ -1170,11 +1168,27 @@ func _state_build(delta: float) -> void:
 		_set_agent_target(_move_target, "build")
 		_move_along_path(delta)
 	else:
-		velocity.x = 0; velocity.z = 0
-		move_and_slide()
-		_face(_build_target.global_position)
+		_hold_worker_interaction(_build_target.global_position)
 		_play("attack")
 		_build_target.add_build_progress(delta, self)
+
+func _hold_worker_interaction(target_position: Vector3) -> void:
+	# Once a worker reaches its work radius, cancel the stale navigation target
+	# and hold the body in place. Without this visual-only settling boundary,
+	# NavigationAgent3D can keep returning tiny corrections and the worker
+	# visibly slides/oscillates while gathering or building.
+	velocity.x = 0.0
+	velocity.z = 0.0
+	_move_target = global_position
+	_navigation_effective_target = global_position
+	_navigation_target_pending = false
+	_navigation_path_wait_frames = 0
+	_navigation_retry_elapsed = 0.0
+	if agent:
+		agent.target_position = global_position
+		agent.set_velocity(Vector3.ZERO)
+	move_and_slide()
+	_face(target_position)
 
 # --- healer support unit --------------------------------------------------
 func _healer_tick(delta: float) -> void:
