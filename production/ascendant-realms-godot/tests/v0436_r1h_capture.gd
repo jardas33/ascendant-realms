@@ -10,7 +10,7 @@ const PREPARATION_LIMIT_SECONDS := 720.0
 const ASSAULT_TIMEOUT_SECONDS := 90.0
 const COMPETENT_ASSAULT_TIMEOUT_SECONDS := 180.0
 const FORCE_PLAN := ["barrosan_spear_guard", "barrosan_spear_guard", "barrosan_crag_archer", "barrosan_crag_archer"]
-const COMPETENT_FORCE_PLAN := ["barrosan_spear_guard", "barrosan_spear_guard", "barrosan_crag_archer", "barrosan_crag_archer", "barrosan_clan_levy", "barrosan_crag_archer", "barrosan_spear_guard", "barrosan_outrider"]
+const COMPETENT_FORCE_PLAN := ["barrosan_spear_guard", "barrosan_spear_guard", "barrosan_crag_archer", "barrosan_crag_archer", "barrosan_clan_levy", "barrosan_crag_archer", "barrosan_spear_guard", "barrosan_clan_levy", "barrosan_crag_archer"]
 
 var root_node: Node
 var world
@@ -254,8 +254,14 @@ func _competent_production_setup(hall) -> bool:
 	if not await _wait_until(func(): return world.resource_transactions.size() >= 6, 90.0): return false
 	var queue_results: Array = []
 	for unit_id in COMPETENT_FORCE_PLAN:
-		var result = hall.queue_unit(unit_id)
-		queue_results.append({"unit_id":unit_id, "result":result, "resources_after":world.commanders[0].resources.duplicate(true), "pop_used":world.commanders[0].pop_used, "reserved_pop":world.commanders[0].reserved_pop})
+		var result = {"ok":false, "reason":"not attempted"}
+		var retry_deadline := Time.get_ticks_msec() + 90000
+		while Time.get_ticks_msec() < retry_deadline:
+			result = hall.queue_unit(unit_id)
+			queue_results.append({"unit_id":unit_id, "attempt":queue_results.size() + 1, "result":result, "resources_after":world.commanders[0].resources.duplicate(true), "pop_used":world.commanders[0].pop_used, "reserved_pop":world.commanders[0].reserved_pop})
+			if bool(result.get("ok", false)): break
+			if String(result.get("reason", "")).contains("higher Age"): break
+			await _wait_seconds(4.0)
 		await get_tree().process_frame
 	_record_economy("competent_mixed_force_queues_issued")
 	_save_json("production-audit.json", {"provenance":_provenance("production"), "queue_results":queue_results, "resource_transactions":world.resource_transactions.duplicate(true), "queue_plan":COMPETENT_FORCE_PLAN, "source":"normal house placement, worker construction, resumed two-resource gathering, and real-cost Building.queue_unit"})
@@ -406,9 +412,14 @@ func _competent_reinforcements() -> bool:
 			break
 	if not is_instance_valid(hall): return false
 	var queue_results: Array = []
-	for unit_id in ["barrosan_spear_guard", "barrosan_crag_archer", "barrosan_clan_levy", "barrosan_spear_guard", "barrosan_crag_archer", "barrosan_outrider"]:
-		var result = hall.queue_unit(unit_id)
-		queue_results.append({"unit_id":unit_id, "result":result, "resources_after":world.player_commander.resources.duplicate(true), "pop_used":world.player_commander.pop_used, "reserved_pop":world.player_commander.reserved_pop})
+	for unit_id in ["barrosan_spear_guard", "barrosan_crag_archer", "barrosan_clan_levy", "barrosan_spear_guard", "barrosan_crag_archer", "barrosan_clan_levy"]:
+		var result = {"ok":false, "reason":"not attempted"}
+		var retry_deadline := Time.get_ticks_msec() + 90000
+		while Time.get_ticks_msec() < retry_deadline:
+			result = hall.queue_unit(unit_id)
+			queue_results.append({"unit_id":unit_id, "attempt":queue_results.size() + 1, "result":result, "resources_after":world.player_commander.resources.duplicate(true), "pop_used":world.player_commander.pop_used, "reserved_pop":world.player_commander.reserved_pop})
+			if bool(result.get("ok", false)): break
+			await _wait_seconds(4.0)
 		await get_tree().process_frame
 	_save_json("reinforcement-queue-%d.json" % target_lifecycles.size(), {"provenance":_provenance("reinforcements"), "queue_results":queue_results, "source":"normal real-cost queue after a combat retreat"})
 	return await _wait_until(func(): return _player_combatants().size() >= 8, 240.0)
