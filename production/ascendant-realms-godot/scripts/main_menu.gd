@@ -142,6 +142,9 @@ func _on_tutorial() -> void:
 	cfg["player_race"] = "barrosan"
 	cfg["opponents"] = [{"race": "vorthak", "difficulty": "easy"}]
 	Match.set_config(cfg)
+	if OS.get_environment("ASCENDANT_V0436_E3R_CAPTURE") == "1":
+		get_tree().change_scene_to_file("res://scenes/game_world.tscn")
+		return
 	LoadingScreen.preload_and_change_scene("res://scenes/game_world.tscn", 1.5)
 
 func _on_quit() -> void:
