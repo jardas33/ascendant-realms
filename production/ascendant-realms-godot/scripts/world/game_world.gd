@@ -309,10 +309,12 @@ func _scatter_environment() -> void:
 		var pos := Vector3(cos(ang) * rad, 0.0, sin(ang) * rad)
 		_place_decor(decor, (trees if rng.randf() < 0.72 else rocks), pos, rng)
 
-	# Sparser interior groves and outcrops, kept clear of bases, center and objectives.
+	# Sparser interior groves and outcrops, kept clear of bases, center and
+	# objectives. The interior is deliberately quieter than the perimeter so
+	# tactical lanes and resource clusters remain readable at default zoom.
 	var placed := 0
 	var attempts := 0
-	var interior_target: int = int(46 * density)
+	var interior_target: int = int(24 * density)
 	while placed < interior_target and attempts < 400:
 		attempts += 1
 		var pos := Vector3(rng.randf_range(-half, half) * 0.62, 0.0, rng.randf_range(-half, half) * 0.62)
@@ -323,12 +325,12 @@ func _scatter_environment() -> void:
 
 func _too_close_to_key(pos: Vector3, starts: Array) -> bool:
 	for s in starts:
-		if pos.distance_to(s) < 34.0:
+		if pos.distance_to(s) < 42.0:
 			return true
-	if pos.distance_to(Vector3.ZERO) < 26.0:
+	if pos.distance_to(Vector3.ZERO) < 30.0:
 		return true
 	for c in map.get("capture_points", []):
-		if pos.distance_to(c.get("pos", Vector3.ZERO)) < 16.0:
+		if pos.distance_to(c.get("pos", Vector3.ZERO)) < 22.0:
 			return true
 	return false
 
