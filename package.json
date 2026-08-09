@@ -59,6 +59,8 @@
     "godot:test:p1r15-combat-readability": "node tools/godot/p1r15CombatReadabilityTool.mjs validate",
     "godot:capture:p1r16-worker-interaction": "node tools/godot/p1r16WorkerInteractionTool.mjs capture",
     "godot:test:p1r16-worker-interaction": "node tools/godot/p1r16WorkerInteractionTool.mjs validate",
+    "godot:capture:p1r17-ui-coherence": "node tools/godot/p1r17UiCoherenceTool.mjs capture",
+    "godot:test:p1r17-ui-coherence": "node tools/godot/p1r17UiCoherenceTool.mjs validate",
     "godot:validate:production": "node tools/godot/tesanaProductionTool.mjs validate",
     "godot:asset-scan:production": "node tools/godot/tesanaProductionTool.mjs asset-scan",
     "godot:smoke:v0431-gameplay-construction": "node tools/godot/v0431GameplayConstructionTool.mjs smoke",

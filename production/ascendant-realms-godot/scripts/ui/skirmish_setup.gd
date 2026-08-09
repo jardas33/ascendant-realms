@@ -4,6 +4,7 @@ extends Control
 
 const FONT := "res://assets/fonts/cinzel.ttf"
 const BG := "res://assets/textures/backgrounds/main_menu_bg.png"
+const PRESENTATION_THEME := "res://assets/ui/theme.tres"
 
 const DIFFICULTIES := ["easy", "normal", "hard", "brutal"]
 const DIFF_LABELS := ["Easy", "Normal", "Hard", "Brutal"]
@@ -29,6 +30,8 @@ func _race_ids() -> Array:
 	return GameData.RACES.keys()
 
 func _ready() -> void:
+	if ResourceLoader.exists(PRESENTATION_THEME):
+		theme = load(PRESENTATION_THEME)
 	var h := ProfileManager.hero()
 	if h.has("race"):
 		_player_race = str(h.get("race", "barrosan"))

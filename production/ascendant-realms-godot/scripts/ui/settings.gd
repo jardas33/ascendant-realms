@@ -4,6 +4,7 @@ extends Control
 
 const FONT := "res://assets/fonts/cinzel.ttf"
 const BG := "res://assets/textures/backgrounds/main_menu_bg.png"
+const PRESENTATION_THEME := "res://assets/ui/theme.tres"
 
 const CONTROLS := [
 	"Left-click: select    Drag box: multi-select    Shift: add to selection",
@@ -16,6 +17,8 @@ const CONTROLS := [
 ]
 
 func _ready() -> void:
+	if ResourceLoader.exists(PRESENTATION_THEME):
+		theme = load(PRESENTATION_THEME)
 	_build()
 
 func _title_font() -> Font:

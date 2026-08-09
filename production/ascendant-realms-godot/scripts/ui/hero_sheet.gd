@@ -4,10 +4,13 @@ extends Control
 
 const FONT := "res://assets/fonts/cinzel.ttf"
 const BG := "res://assets/textures/backgrounds/main_menu_bg.png"
+const PRESENTATION_THEME := "res://assets/ui/theme.tres"
 
 var _body: VBoxContainer
 
 func _ready() -> void:
+	if ResourceLoader.exists(PRESENTATION_THEME):
+		theme = load(PRESENTATION_THEME)
 	_build_static()
 	ProfileManager.profile_changed.connect(_refresh)
 	_refresh()
