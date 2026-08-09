@@ -6,6 +6,7 @@ extends Node
 const R1H_OUT := "res://../../artifacts/manual-review/v0436-r1h-natural-player-assault-viability/"
 const R1I_OUT := "res://../../artifacts/manual-review/v0436-r1i-prepared-assault-combat-causality/"
 const E1R_OUT := "res://../../artifacts/manual-review/v0436-e1r-competent-natural-conquest/"
+const E3_OUT := "res://../../artifacts/manual-review/v0436-e3-tutorial-golden-path/"
 const PREPARATION_LIMIT_SECONDS := 720.0
 const ASSAULT_TIMEOUT_SECONDS := 90.0
 const COMPETENT_ASSAULT_TIMEOUT_SECONDS := 180.0
@@ -19,6 +20,7 @@ var session := "A"
 var evidence_mode := "R1I" if OS.get_environment("ASCENDANT_V0436_R1I_CAPTURE") == "1" else "R1H"
 var out_path := R1I_OUT if evidence_mode == "R1I" else R1H_OUT
 var competent_mode := OS.get_environment("ASCENDANT_V0436_E1R_CAPTURE") == "1"
+var tutorial_mode := OS.get_environment("ASCENDANT_V0436_E3_CAPTURE") == "1"
 var started := false
 var replay_captured := false
 var frame_names: Array[String] = []
@@ -37,10 +39,13 @@ func _ready() -> void:
 	if competent_mode:
 		evidence_mode = "E1R"
 		out_path = E1R_OUT + "session-%s/" % session.to_lower()
+	elif tutorial_mode:
+		evidence_mode = "E3"
+		out_path = E3_OUT + "session-%s/" % session.to_lower()
 	else:
 		out_path = (R1I_OUT if evidence_mode == "R1I" else R1H_OUT) + "session-%s/" % session.to_lower()
 	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(out_path))
-	Match.set_config({"player_race":"barrosan", "opponents":[{"race":"lioraen", "difficulty":"easy"}], "map":"hollowspan", "start_resources":"rich" if competent_mode else "standard", "victory":"conquest", "mode":"skirmish", "game_speed":2.0})
+	Match.set_config({"player_race":"barrosan", "opponents":[{"race":"lioraen", "difficulty":"easy"}], "map":"hollowspan", "start_resources":"rich" if competent_mode or tutorial_mode else "standard", "victory":"conquest", "mode":"tutorial" if tutorial_mode else "skirmish", "game_speed":2.0})
 
 func _vec(v: Vector3) -> Dictionary: return {"x":v.x, "y":v.y, "z":v.z}
 
@@ -60,6 +65,7 @@ func _wait_until(check: Callable, timeout: float) -> bool:
 
 func _evidence_name(name: String) -> String:
 	if competent_mode: return name.replace("R1H", "E1R").replace("r1h-", "e1r-")
+	if tutorial_mode: return name.replace("R1H", "E3").replace("r1h-", "e3-")
 	if evidence_mode == "R1I": return name.replace("R1H", "R1I").replace("r1h-", "r1i-")
 	return name
 
@@ -497,9 +503,74 @@ func _capture_competent_match() -> void:
 	await _contact_sheet()
 	get_tree().quit(0)
 
+func _capture_tutorial_match() -> void:
+	if not await _wait_until(func(): return is_instance_valid(world) and world.game_running, 30.0): await _failure("BLOCKED_E3_TUTORIAL_NOT_STARTED", "tutorial production scene did not start"); return
+	if not await _wait_until(func(): return world.is_navigation_ready(), 30.0): await _failure("BLOCKED_E3_TUTORIAL_NAVIGATION", "tutorial navigation did not become ready"); return
+	var audit: Array = []
+	await _focus(world.player_commander.buildings[0].global_position)
+	await _save("01_R1H_TUTORIAL_START.png")
+	audit.append({"step":1, "name":"camera", "condition":"match_time > 4", "observed_match_time":world.match_time, "frame":last_valid_frame})
+	await _wait_until(func(): return world.match_time > 4.0, 15.0)
+	await _save("02_R1H_TUTORIAL_CAMERA.png")
+	var hero = world.player_commander.hero_ref
+	var worker = world.player_commander.units.filter(func(u): return is_instance_valid(u) and bool(u.is_worker)).front() if not world.player_commander.units.filter(func(u): return is_instance_valid(u) and bool(u.is_worker)).is_empty() else null
+	var selectable = hero if is_instance_valid(hero) and not hero.is_dead else worker
+	if not is_instance_valid(selectable): await _failure("BLOCKED_E3_TUTORIAL_SELECTION", "no player unit was available for tutorial selection"); return
+	await _select_many([selectable])
+	await _wait_until(func(): return rts.selected.size() > 0, 10.0)
+	await _save("03_R1H_TUTORIAL_SELECT.png")
+	audit.append({"step":2, "name":"select", "selected_count":rts.selected.size(), "frame":last_valid_frame})
+	var resources := _resources_by_kind()
+	var gather_node = resources.get("food") if is_instance_valid(resources.get("food")) else resources.get("timber")
+	if not is_instance_valid(worker) or not is_instance_valid(gather_node): await _failure("BLOCKED_E3_TUTORIAL_GATHER", "worker or resource node was unavailable"); return
+	await _select_many([worker])
+	worker.command_gather(gather_node)
+	await _wait_until(func(): return int(worker.state) == Unit.State.GATHERING, 20.0)
+	await _save("04_R1H_TUTORIAL_GATHER.png")
+	audit.append({"step":3, "name":"gather", "worker_state":int(worker.state), "resource_kind":String(gather_node.resource_kind), "frame":last_valid_frame})
+	var croft_pos := _find_building_position("barrosan_clan_croft")
+	var croft = world.place_building("barrosan_clan_croft", 0, croft_pos) if croft_pos != Vector3.INF else null
+	if not is_instance_valid(croft): await _failure("BLOCKED_E3_TUTORIAL_BUILD", "tutorial building placement was rejected"); return
+	worker.command_build(croft)
+	await _wait_until(func(): return is_instance_valid(croft), 15.0)
+	await _save("05_R1H_TUTORIAL_BUILD.png")
+	audit.append({"step":4, "name":"build", "building_id":String(croft.building_id), "built":bool(croft.is_built), "frame":last_valid_frame})
+	var hall_pos := _find_building_position("barrosan_war_hall")
+	var hall = world.place_building("barrosan_war_hall", 0, hall_pos) if hall_pos != Vector3.INF else null
+	if not is_instance_valid(hall): await _failure("BLOCKED_E3_TUTORIAL_TRAIN", "tutorial military building placement was rejected"); return
+	for unit in world.player_commander.units:
+		if is_instance_valid(unit) and bool(unit.is_worker): unit.command_build(hall)
+	if not await _wait_until(func(): return is_instance_valid(hall) and bool(hall.is_built), 90.0): await _failure("BLOCKED_E3_TUTORIAL_TRAIN", "tutorial military building did not complete"); return
+	var queue_result = hall.queue_unit("barrosan_crag_archer")
+	await _save("06_R1H_TUTORIAL_TRAIN.png")
+	audit.append({"step":5, "name":"train", "queue_result":queue_result, "queue_size":hall.queue.size(), "frame":last_valid_frame})
+	if is_instance_valid(hero) and not hero.is_dead:
+		await _select_many([hero])
+		await _wait_until(func(): return rts.selected.has(hero), 10.0)
+	await _save("07_R1H_TUTORIAL_HERO.png")
+	audit.append({"step":6, "name":"hero", "selected":is_instance_valid(hero) and rts.selected.has(hero), "frame":last_valid_frame})
+	var enemy_units := _enemy_combatants()
+	var own_combatants := _player_combatants()
+	if enemy_units.is_empty() or own_combatants.is_empty(): await _failure("BLOCKED_E3_TUTORIAL_COMBAT", "tutorial combat inventory was unavailable"); return
+	await _select_many(own_combatants)
+	var attack_move_ok: bool = rts.issue_attack_move_destination(enemy_units[0].global_position)
+	var attack_target_ok: bool = rts.issue_attack_target(enemy_units[0])
+	await _wait_until(func(): return int(world.kills_by_player) > 0, 120.0)
+	await _save("08_R1H_TUTORIAL_COMBAT.png")
+	audit.append({"step":7, "name":"combat", "attack_move_return":attack_move_ok, "attack_target_return":attack_target_ok, "kills_by_player":world.kills_by_player, "frame":last_valid_frame})
+	await _wait_seconds(4.0)
+	await _save("09_R1H_TUTORIAL_LUME.png")
+	audit.append({"step":8, "name":"final_lume", "match_time":world.match_time, "kills_by_player":world.kills_by_player, "frame":last_valid_frame})
+	_save_json("e3-tutorial-audit.json", {"provenance":_provenance("tutorial"), "steps":audit, "tutorial_step":int(root_node.tutorial.get("_step")) if is_instance_valid(root_node.tutorial) else null, "world":_predicate_snapshot("tutorial_complete"), "public_actions_only":true, "state_injection":false})
+	await _contact_sheet()
+	get_tree().quit(0)
+
 func _capture_match() -> void:
 	if competent_mode:
 		await _capture_competent_match()
+		return
+	if tutorial_mode:
+		await _capture_tutorial_match()
 		return
 	if not await _wait_until(func(): return is_instance_valid(world) and world.game_running, 30.0): await _failure("BLOCKED_R1H_CAPTURE_STRATEGY_INCONCLUSIVE", "production match did not start"); return
 	await _focus(world.player_commander.buildings[0].global_position)
