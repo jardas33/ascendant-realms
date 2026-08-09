@@ -179,7 +179,7 @@ func get_state_snapshot() -> Dictionary:
 		current = _steps[_step]
 	return {
 		"active": is_inside_tree(),
-		"step_index": min(_step + 1, _steps.size()),
+		"step_index": _steps.size() + 1 if _completed else min(_step + 1, _steps.size()),
 		"step_id": "complete" if _completed else String(current.get("id", "")),
 		"step_title": "Tutorial Complete" if _completed else String(current.get("title", "")),
 		"instruction": "You have learned the core battlefield loop." if _completed else String(current.get("text", "")),

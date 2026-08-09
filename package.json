@@ -130,6 +130,8 @@
     "godot:test:v0436-e3r-real-tutorial": "node tools/godot/v0436E3RRealTutorialTool.mjs focused-tests",
     "godot:smoke:v0436-e3r-real-tutorial": "node tools/godot/v0436E3RRealTutorialTool.mjs smoke",
     "godot:validate:v0436-e3r-real-tutorial": "node tools/godot/v0436E3RRealTutorialTool.mjs validate",
+    "godot:test:v0436-e3r-step8-repair": "node tools/godot/v0436E3RStep8RepairTool.mjs focused-tests",
+    "godot:validate:v0436-e3r-step8-repair": "node tools/godot/v0436E3RStep8RepairTool.mjs validate",
     "godot:test:v0436-e1r2-sustainable-economy": "node tools/godot/v0436E1R2SustainableEconomyTool.mjs focused-tests",
     "godot:validate:v0436-e1r2-sustainable-economy": "node tools/godot/v0436E1R2SustainableEconomyTool.mjs validate",
     "godot:test:v0436-r1i-combat-causality": "node tools/godot/v0436R1ICombatCausalityTool.mjs focused-tests",
