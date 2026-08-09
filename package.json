@@ -71,6 +71,7 @@
       "godot:test:p1r22-command-card": "node tools/godot/p1r22CommandCardTool.mjs validate",
       "godot:capture:p1r23-selected-group": "node tools/godot/p1r23SelectedGroupTool.mjs capture",
       "godot:test:p1r23-selected-group": "node tools/godot/p1r23SelectedGroupTool.mjs validate",
+      "godot:pack:p1d-final": "node tools/godot/buildP1RemediationDFinalPack.mjs",
     "godot:validate:production": "node tools/godot/tesanaProductionTool.mjs validate",
     "godot:asset-scan:production": "node tools/godot/tesanaProductionTool.mjs asset-scan",
     "godot:smoke:v0431-gameplay-construction": "node tools/godot/v0431GameplayConstructionTool.mjs smoke",
