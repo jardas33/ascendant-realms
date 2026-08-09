@@ -95,6 +95,7 @@ var _build_target = null
 # nodes
 var agent: NavigationAgent3D
 var model_root: Node3D
+var _team_marker: MeshInstance3D
 var anim: AnimationPlayer
 var selection_ring: MeshInstance3D
 var _selection_visual_radius := 0.4
@@ -381,8 +382,24 @@ func _play_sfx(key: String, volume_db: float) -> void:
 		sfx.play(key, volume_db)
 
 func _add_team_marker() -> void:
-	# small floating banner ring color already on selection ring; add a shoulder pip
-	pass
+	if is_instance_valid(_team_marker):
+		return
+	# Small role/ownership cue for normal RTS zoom. Presentation only: it does
+	# not alter selection, combat, hitboxes, or the unit's gameplay silhouette.
+	_team_marker = MeshInstance3D.new()
+	_team_marker.name = "TeamPip"
+	var pip := CylinderMesh.new()
+	var radius := 0.12 if is_worker else (0.16 if is_hero else 0.14)
+	pip.top_radius = radius
+	pip.bottom_radius = radius
+	pip.height = 0.10
+	_team_marker.mesh = pip
+	_team_marker.position.y = _visual_height + 0.16
+	var mat := StandardMaterial3D.new()
+	mat.albedo_color = commander.color if commander else Color(0.85, 0.85, 0.85)
+	mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	_team_marker.material_override = mat
+	add_child(_team_marker)
 
 func _build_selection_ring() -> void:
 	selection_ring = MeshInstance3D.new()
