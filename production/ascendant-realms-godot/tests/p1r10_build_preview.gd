@@ -43,7 +43,7 @@ func _begin() -> void:
 		return
 	for _i in 12: await get_tree().process_frame
 	_before_entities = _entity_snapshot()
-	var base := _world.commanders[0].buildings[0].global_position if not _world.commanders.is_empty() and not _world.commanders[0].buildings.is_empty() else Vector3.ZERO
+	var base: Vector3 = _world.commanders[0].buildings[0].global_position if not _world.commanders.is_empty() and not _world.commanders[0].buildings.is_empty() else Vector3.ZERO
 	_rts.edge_scroll = false
 	_rts.focus_on(base)
 	for _i in 10: await get_tree().process_frame
