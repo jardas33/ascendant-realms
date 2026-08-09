@@ -228,6 +228,24 @@ func _cost_string(cost: Dictionary) -> String:
 	return "  (" + ", ".join(parts) + ")" if not parts.is_empty() else ""
 
 
+func _mk_command_button(title: String, detail: String, tooltip: String, disabled_reason: String = "") -> Button:
+	var btn := _mk_button("%s\n%s" % [title, detail], 13)
+	btn.custom_minimum_size = Vector2(142, 54)
+	btn.alignment = HORIZONTAL_ALIGNMENT_LEFT
+	btn.clip_text = true
+	btn.tooltip_text = tooltip if disabled_reason.is_empty() else "%s\nUnavailable: %s" % [tooltip, disabled_reason]
+	return btn
+
+
+func _mk_command_grid() -> GridContainer:
+	var grid := GridContainer.new()
+	grid.columns = 2
+	grid.add_theme_constant_override("h_separation", 6)
+	grid.add_theme_constant_override("v_separation", 6)
+	grid.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	return grid
+
+
 # ---------------------------------------------------------------------------
 # 1. TOP BAR
 # ---------------------------------------------------------------------------
@@ -717,14 +735,22 @@ func _build_multi(units: Array) -> void:
 		if not is_instance_valid(u):
 			continue
 		var cell := VBoxContainer.new()
-		cell.custom_minimum_size = Vector2(46, 54)
+		cell.custom_minimum_size = Vector2(54, 64)
 		cell.add_theme_constant_override("separation", 1)
 		cell.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		var nm := _mk_label(str(u.def.get("name", "?")).left(6), 11)
-		nm.clip_text = true
+		if ResourceLoader.exists(ENTITY_PORTRAIT_SCRIPT):
+			var portrait = load(ENTITY_PORTRAIT_SCRIPT).new()
+			portrait.custom_minimum_size = Vector2(54, 46)
+			cell.add_child(portrait)
+			portrait.configure_entity(u)
+		else:
+			cell.add_child(_mk_icon(FRAME_PORTRAIT, 46))
+		var nm := _mk_label(str(u.def.get("name", "Unit")), 10, Color(0.9, 0.86, 0.72))
+		nm.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		nm.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 		cell.add_child(nm)
 		var bar := _mk_bar(Color(0.35, 0.8, 0.35))
-		bar.custom_minimum_size = Vector2(44, 10)
+		bar.custom_minimum_size = Vector2(50, 8)
 		cell.add_child(bar)
 		grid.add_child(cell)
 		_multi_bars.append({"unit": u, "bar": bar})
@@ -911,21 +937,24 @@ func _rebuild_command_card(single, selection: Array) -> void:
 
 func _build_worker_card() -> void:
 	_cmd_body.add_child(_mk_label("Build", 15, Color(0.95, 0.85, 0.55)))
+	var grid := _mk_command_grid()
+	_cmd_body.add_child(grid)
 	for bid in GameData.buildings_for_race(_commander.race):
 		var bdef := GameData.get_building(bid)
 		if bdef.is_empty():
 			continue
 		var cost: Dictionary = bdef.get("cost", {})
-		var btn := _mk_button(bdef.get("name", bid) + _cost_string(cost), 16)
-		btn.custom_minimum_size = Vector2(0, 38)
-		btn.tooltip_text = bdef.get("desc", "")
 		var affordable: bool = _commander.can_afford(cost)
+		var reason: String = ""
+		if not affordable:
+			reason = "Need " + _commander.missing_resource(cost)
+		var btn := _mk_command_button(str(bdef.get("name", bid)), "Cost: " + _cost_string(cost).trim_prefix("  (").trim_suffix(")"), str(bdef.get("desc", "")), reason)
 		btn.disabled = not affordable
 		var cap_id := String(bid)
 		btn.pressed.connect(func():
 			if is_instance_valid(rts) and rts.has_method("enter_build_mode"):
 				rts.enter_build_mode(cap_id))
-		_cmd_body.add_child(btn)
+		grid.add_child(btn)
 
 
 func _build_building_card(b) -> void:
@@ -940,23 +969,29 @@ func _build_building_card(b) -> void:
 	# production units
 	if not produces.is_empty():
 		_cmd_body.add_child(_mk_label("Train", 15, Color(0.95, 0.85, 0.55)))
+		var train_grid := _mk_command_grid()
+		_cmd_body.add_child(train_grid)
 		for uid in produces:
 			var udef := GameData.get_unit(uid)
 			if udef.is_empty():
 				continue
 			var cost: Dictionary = udef.get("cost", {})
-			var label := "%s  (T%d)%s" % [udef.get("name", uid), int(udef.get("tier", 1)), _cost_string(cost)]
-			var btn := _mk_button(label, 16)
-			btn.custom_minimum_size = Vector2(0, 38)
 			var tier := int(udef.get("tier", 1))
 			var affordable: bool = _commander.can_afford(cost)
 			var housed: bool = _commander.has_pop_for(udef)
-			btn.disabled = tier > _commander.tier or not affordable or not housed
-			btn.tooltip_text = "Requires Age %d" % tier if tier > _commander.tier else ("Need more housing" if not housed else ("Need " + _commander.missing_resource(cost) if not affordable else udef.get("desc", "")))
+			var reason: String = ""
+			if tier > _commander.tier:
+				reason = "Requires Age %d" % tier
+			elif not housed:
+				reason = "Need more housing"
+			elif not affordable:
+				reason = "Need " + _commander.missing_resource(cost)
+			var btn := _mk_command_button(str(udef.get("name", uid)), "Tier %d | Cost: %s" % [tier, _cost_string(cost).trim_prefix("  (").trim_suffix(")")], str(udef.get("desc", "")), reason)
+			btn.disabled = not reason.is_empty()
 			var cap_b = b
 			var cap_uid := String(uid)
 			btn.pressed.connect(func(): _try_queue_unit(cap_b, cap_uid))
-			_cmd_body.add_child(btn)
+			train_grid.add_child(btn)
 
 	# research + tier advance
 	var tech_ids := []
@@ -969,21 +1004,24 @@ func _build_building_card(b) -> void:
 
 	if not tech_ids.is_empty():
 		_cmd_body.add_child(_mk_label("Research", 15, Color(0.95, 0.85, 0.55)))
+		var research_grid := _mk_command_grid()
+		_cmd_body.add_child(research_grid)
 		for tid in tech_ids:
 			var tdef := GameData.get_tech(tid)
 			if tdef.is_empty():
 				continue
 			var cost: Dictionary = tdef.get("cost", {})
-			var btn := _mk_button(tdef.get("name", tid) + _cost_string(cost), 16)
-			btn.custom_minimum_size = Vector2(0, 38)
-			btn.tooltip_text = tdef.get("desc", "")
 			# grey when unavailable (already done / wrong tier / researching)
+			var available := true
 			if _commander.has_method("can_research"):
-				btn.disabled = not _commander.can_research(tid)
+				available = _commander.can_research(tid)
+			var reason := "Already researched or unavailable" if not available else ""
+			var btn := _mk_command_button(str(tdef.get("name", tid)), "Cost: " + _cost_string(cost).trim_prefix("  (").trim_suffix(")"), str(tdef.get("desc", "")), reason)
+			btn.disabled = not available
 			var cap_b = b
 			var cap_tid := String(tid)
 			btn.pressed.connect(func(): _try_queue_tech(cap_b, cap_tid))
-			_cmd_body.add_child(btn)
+			research_grid.add_child(btn)
 
 
 func _try_queue_unit(b, uid: String) -> void:
