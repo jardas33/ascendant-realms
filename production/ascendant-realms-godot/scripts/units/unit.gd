@@ -160,6 +160,12 @@ const P1R20_MILITARY_VALUE_LIFT := 0.11
 const P1R20_HERO_VALUE_LIFT := 0.15
 const P1R20_ROUGHNESS_FLOOR := 0.28
 
+# P1-R21 presentation-only motion polish. Animation timing follows the
+# already-authoritative planar velocity; it never changes movement, pathing,
+# navigation, or simulation speed.
+const P1R21_MIN_WALK_ANIMATION_SCALE := 0.72
+const P1R21_MAX_WALK_ANIMATION_SCALE := 1.18
+
 func _v0436_r1j_recorder():
 	if OS.get_environment("ASCENDANT_V0436_R1J_CAPTURE") != "1" or not world:
 		return null
@@ -417,9 +423,22 @@ func _play(key: String, force: bool = false) -> void:
 	if name == "":
 		return
 	if _cur_anim == name and not force:
+		if key == "walk":
+			_update_p1r21_animation_speed()
 		return
 	_cur_anim = name
 	anim.play(name)
+	if key == "walk":
+		_update_p1r21_animation_speed()
+	else:
+		anim.speed_scale = 1.0
+
+func _update_p1r21_animation_speed() -> void:
+	if not anim:
+		return
+	var planar_speed := Vector2(velocity.x, velocity.z).length()
+	var normalized := clampf(planar_speed / maxf(move_speed, 0.01), 0.0, 1.0)
+	anim.speed_scale = lerpf(P1R21_MIN_WALK_ANIMATION_SCALE, P1R21_MAX_WALK_ANIMATION_SCALE, normalized)
 
 func _play_sfx(key: String, volume_db: float) -> void:
 	var sfx = get_node_or_null("/root/Sfx")
