@@ -51,16 +51,18 @@ func _build_visual() -> void:
 	match kind:
 		"arrow", "bolt", "thorn":
 			var cap := CylinderMesh.new()
-			cap.top_radius = 0.04
-			cap.bottom_radius = 0.04
-			cap.height = 0.7
+			# R15 presentation-only readability at the default RTS camera. Flight
+			# speed, collision/impact timing and damage remain unchanged.
+			cap.top_radius = 0.06
+			cap.bottom_radius = 0.06
+			cap.height = 0.92
 			m = cap
 			col = Color(0.8, 0.7, 0.45) if kind != "thorn" else Color(0.5, 0.8, 0.5)
 			_mesh.rotation_degrees.x = 90.0
 		"cinder", "void_bolt", "lume_bolt", "rift_shell", "thornpod", "cannon":
 			var sp := SphereMesh.new()
-			sp.radius = 0.22
-			sp.height = 0.44
+			sp.radius = 0.26
+			sp.height = 0.52
 			m = sp
 			match kind:
 				"cinder": col = Color(1.0, 0.5, 0.15)
@@ -76,7 +78,7 @@ func _build_visual() -> void:
 	mat.albedo_color = col
 	mat.emission_enabled = true
 	mat.emission = col
-	mat.emission_energy_multiplier = 2.5
+	mat.emission_energy_multiplier = 2.9
 	mat.shading_mode = BaseMaterial3D.SHADING_MODE_PER_PIXEL
 	_mesh.material_override = mat
 	add_child(_mesh)

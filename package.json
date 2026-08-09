@@ -55,6 +55,8 @@
     "godot:test:p1r13-unit-readability": "node tools/godot/p1r13UnitReadabilityTool.mjs validate",
     "godot:capture:p1r14-tactical-hierarchy": "node tools/godot/p1r14TacticalHierarchyTool.mjs capture",
     "godot:test:p1r14-tactical-hierarchy": "node tools/godot/p1r14TacticalHierarchyTool.mjs validate",
+    "godot:capture:p1r15-combat-readability": "node tools/godot/p1r15CombatReadabilityTool.mjs capture",
+    "godot:test:p1r15-combat-readability": "node tools/godot/p1r15CombatReadabilityTool.mjs validate",
     "godot:validate:production": "node tools/godot/tesanaProductionTool.mjs validate",
     "godot:asset-scan:production": "node tools/godot/tesanaProductionTool.mjs asset-scan",
     "godot:smoke:v0431-gameplay-construction": "node tools/godot/v0431GameplayConstructionTool.mjs smoke",

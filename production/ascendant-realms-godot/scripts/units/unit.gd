@@ -135,6 +135,9 @@ var _v0436_r1f_last_recovery_move_frame := -1
 var _health_bar_root: Node3D
 var _health_bar_fill: MeshInstance3D
 var _health_bar_back: MeshInstance3D
+var _r15_attack_cue: MeshInstance3D
+var _r15_hit_flash: MeshInstance3D
+var _r15_hit_flash_time := 0.0
 
 const ARRIVE_DIST := 1.2
 const NAVIGATION_REPATH_INTERVAL := 0.20
@@ -209,6 +212,7 @@ func configure(p_def: Dictionary, p_team: int, p_commander, p_world) -> void:
 	_add_pick_shape()
 	_build_selection_ring()
 	_build_health_bar()
+	_build_r15_combat_presentation()
 	refresh_upgrade_bonuses()
 
 ## A capsule shape purely so mouse raycasts can pick this unit for selection.
@@ -491,6 +495,54 @@ func _update_health_bar() -> void:
 	if is_instance_valid(_health_bar_fill):
 		_health_bar_fill.scale.x = maxf(0.02, ratio)
 		_health_bar_fill.position.x = -0.575 * (1.0 - ratio)
+
+func _build_r15_combat_presentation() -> void:
+	# Presentation-only cues: no target, damage, timing or combat outcome is
+	# authored here. The existing controller and Unit combat path remain owner.
+	_r15_attack_cue = MeshInstance3D.new()
+	_r15_attack_cue.name = "CombatAttackCue"
+	var cue_mesh := TorusMesh.new()
+	var cue_radius := clampf(_selection_indicator_radius * 0.92, 0.42, 1.0)
+	cue_mesh.inner_radius = cue_radius * 0.86
+	cue_mesh.outer_radius = cue_radius
+	cue_mesh.rings = 12
+	cue_mesh.ring_segments = 6
+	_r15_attack_cue.mesh = cue_mesh
+	_r15_attack_cue.position.y = 0.12
+	_r15_attack_cue.visible = false
+	var cue_mat := StandardMaterial3D.new()
+	cue_mat.albedo_color = Color(0.96, 0.34, 0.22, 0.88)
+	cue_mat.emission_enabled = true
+	cue_mat.emission = Color(0.96, 0.20, 0.12)
+	cue_mat.emission_energy_multiplier = 1.15
+	cue_mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	_r15_attack_cue.material_override = cue_mat
+	add_child(_r15_attack_cue)
+
+	_r15_hit_flash = MeshInstance3D.new()
+	_r15_hit_flash.name = "CombatHitFlash"
+	var flash_mesh := SphereMesh.new()
+	flash_mesh.radius = 0.23
+	flash_mesh.height = 0.46
+	_r15_hit_flash.mesh = flash_mesh
+	_r15_hit_flash.position.y = maxf(0.6, _visual_height * 0.52)
+	_r15_hit_flash.visible = false
+	var flash_mat := StandardMaterial3D.new()
+	flash_mat.albedo_color = Color(1.0, 0.78, 0.36, 0.92)
+	flash_mat.emission_enabled = true
+	flash_mat.emission = Color(1.0, 0.32, 0.12)
+	flash_mat.emission_energy_multiplier = 1.8
+	flash_mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	_r15_hit_flash.material_override = flash_mat
+	add_child(_r15_hit_flash)
+
+func _update_r15_combat_presentation(delta: float) -> void:
+	if is_instance_valid(_r15_attack_cue):
+		_r15_attack_cue.visible = not is_worker and state == State.ATTACKING and _can_attack_target(_target)
+	if _r15_hit_flash_time > 0.0:
+		_r15_hit_flash_time = maxf(0.0, _r15_hit_flash_time - delta)
+	if is_instance_valid(_r15_hit_flash):
+		_r15_hit_flash.visible = _r15_hit_flash_time > 0.0 and not is_dead
 
 func refresh_upgrade_bonuses() -> void:
 	if commander:
@@ -844,6 +896,7 @@ func _physics_process(delta: float) -> void:
 		if is_instance_valid(_health_bar_root):
 			_health_bar_root.visible = false
 		return
+	_update_r15_combat_presentation(delta)
 	set_meta("v0436_max_abs_x", maxf(abs(global_position.x), float(get_meta("v0436_max_abs_x", 0.0))))
 	set_meta("v0436_max_abs_z", maxf(abs(global_position.z), float(get_meta("v0436_max_abs_z", 0.0))))
 	if world and world.has_method("is_inside_playable_bounds") and not world.is_inside_playable_bounds(global_position, world.playable_recovery_tolerance) and not _boundary_recovery_active:
@@ -1402,6 +1455,7 @@ func take_damage(amount: float, from = null) -> void:
 	_last_damage_source_id = _combat_source_id(from)
 	_last_damage_kind = _combat_source_kind(from)
 	_last_damage_type = _combat_source_type(from)
+	_r15_hit_flash_time = 0.16
 	if world:
 		world.on_unit_damaged(self, from)
 		if world.has_method("record_combat_damage"):
@@ -1446,6 +1500,9 @@ func _die(from = null) -> void:
 		return
 	is_dead = true
 	state = State.DEAD
+	_r15_hit_flash_time = 0.0
+	if is_instance_valid(_r15_attack_cue): _r15_attack_cue.visible = false
+	if is_instance_valid(_r15_hit_flash): _r15_hit_flash.visible = false
 	set_selected(false)
 	collision_layer = 0
 	_play_sfx("death", -12.0)
