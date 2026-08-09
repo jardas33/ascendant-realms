@@ -29,7 +29,9 @@ func _ready() -> void:
 	if session != "A" and session != "B": session = "A"
 	out_path = R1J_OUT + "session-%s/" % session.to_lower()
 	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(out_path))
-	Match.set_config({"player_race":"barrosan", "opponents":[{"race":"lioraen", "difficulty":"easy"}], "map":"hollowspan", "start_resources":"standard", "victory":"conquest", "mode":"skirmish", "game_speed":2.0})
+	var start_resources := OS.get_environment("ASCENDANT_E1_START_RESOURCES")
+	if start_resources.is_empty(): start_resources = "standard"
+	Match.set_config({"player_race":"barrosan", "opponents":[{"race":"lioraen", "difficulty":"easy"}], "map":"hollowspan", "start_resources":start_resources, "victory":"conquest", "mode":"skirmish", "game_speed":2.0})
 
 func _provenance(label: String) -> Dictionary:
 	return {"schema":"v0436-r1j-live-evidence-v1", "session":session, "attempt":label, "source_sha":OS.get_environment("ASCENDANT_V0436_R1J_SOURCE_SHA"), "branch":OS.get_environment("ASCENDANT_V0436_R1J_BRANCH"), "production_scene":"scenes/main.tscn -> scenes/game_world.tscn", "headed":true, "hidden_window":false, "godot_log_file_argument":false, "timestamp_ms":Time.get_ticks_msec()}
