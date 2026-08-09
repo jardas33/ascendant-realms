@@ -6,6 +6,7 @@ extends Control
 const FONT := "res://assets/fonts/cinzel.ttf"
 const BG := "res://assets/textures/backgrounds/main_menu_bg.png"
 const WORDMARK := "res://assets/ui/wordmark_title.png"
+var _tutorial_button: Button
 
 func _ready() -> void:
 	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
@@ -14,8 +15,20 @@ func _ready() -> void:
 		theme = load("res://assets/ui/theme.tres") as Theme
 	AudioManager.play_music_path(Sfx.music_key("menu"), -8.0, true)
 	_build()
+	if OS.get_environment("ASCENDANT_V0436_E3R_CAPTURE") == "1":
+		call_deferred("_start_e3r_menu_capture")
 	if OS.get_environment("ASCENDANT_V0436_R1K_CAPTURE") == "1" or OS.get_environment("ASCENDANT_V0436_R1J_CAPTURE") == "1" or OS.get_environment("ASCENDANT_V0436_R1H_CAPTURE") == "1" or OS.get_environment("ASCENDANT_V0436_R1G_CAPTURE") == "1" or OS.get_environment("ASCENDANT_V0436_R1F_CAPTURE") == "1" or OS.get_environment("ASCENDANT_V0436_R1_CAPTURE") == "1" or OS.get_environment("ASCENDANT_V0436_R1C_CAPTURE") == "1" or OS.get_environment("ASCENDANT_V0436_CAPTURE") == "1" or OS.get_environment("ASCENDANT_V0435_CAPTURE") == "1" or OS.get_environment("ASCENDANT_V0434_CAPTURE") == "1" or OS.get_environment("ASCENDANT_V0433_CAPTURE") == "1" or OS.get_environment("ASCENDANT_V0432_CAPTURE") == "1" or OS.get_environment("ASCENDANT_V0431_CAPTURE") == "1":
 		call_deferred("_start_v0431_capture_scene")
+
+func _start_e3r_menu_capture() -> void:
+	if not is_instance_valid(_tutorial_button) or get_tree().root.has_meta("e3r_menu_capture_consumed"):
+		return
+	get_tree().root.set_meta("e3r_menu_capture_consumed", true)
+	await RenderingServer.frame_post_draw
+	var out := "res://../../artifacts/manual-review/v0436-e3r-real-tutorial/session-a/"
+	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(out))
+	get_viewport().get_texture().get_image().save_png(ProjectSettings.globalize_path(out + "01_MAIN_MENU_TUTORIAL_ENTRY.png"))
+	_tutorial_button.pressed.emit()
 
 func _start_v0431_capture_scene() -> void:
 	LoadingScreen.preload_and_change_scene("res://scenes/game_world.tscn", 0.1)
@@ -61,7 +74,9 @@ func _build() -> void:
 	col.add_child(_make_button("Play Campaign", _on_campaign))
 	col.add_child(_make_button("Skirmish", _on_skirmish))
 	col.add_child(_make_button("Hero", _on_hero))
-	col.add_child(_make_button("How to Play", _on_tutorial))
+	_tutorial_button = _make_button("How to Play", _on_tutorial)
+	_tutorial_button.name = "HowToPlayButton"
+	col.add_child(_tutorial_button)
 	col.add_child(_make_button("Settings", _on_settings))
 	if not OS.has_feature("web"):
 		col.add_child(_make_button("Quit", _on_quit))
