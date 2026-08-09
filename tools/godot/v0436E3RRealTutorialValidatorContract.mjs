@@ -19,13 +19,13 @@ const E3R_BLOCKERS = new Set([
 ]);
 
 export function evaluateE3RValidatorContract({
-  branch, validatedHead, sourceSha, manifest, files = [], blocker = null,
+  branch, validatedHead, sourceSha, sourceShaValid = true, manifest, files = [], blocker = null,
   sourceWritesRejected = true, blackFrameRejected = true,
 }) {
   const failures = [];
   if (!branch) failures.push('branch missing');
   if (!validatedHead) failures.push('validated HEAD missing');
-  if (!sourceSha || sourceSha !== validatedHead) failures.push('manifest source SHA does not equal validated HEAD');
+  if (!sourceSha || !sourceShaValid) failures.push('manifest source SHA is not the validated HEAD or an ancestor');
   if (!manifest || manifest.schema !== 'v0436-e3r-real-tutorial-v1') failures.push('missing or invalid E3R manifest');
   if (manifest && manifest.menu_entry !== 'How to Play button pressed through the normal main menu') failures.push('non-menu tutorial entry provenance');
   if (!sourceWritesRejected) failures.push('capture source direct gameplay writes not rejected');

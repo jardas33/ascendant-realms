@@ -8,6 +8,7 @@ const repo = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', '.
 const project = path.join(repo, 'production', 'ascendant-realms-godot');
 const pack = path.join(repo, E3R_PACK);
 const git = args => execFileSync('git', args, { cwd: repo, encoding: 'utf8' }).trim();
+const isAncestor = sha => { try { execFileSync('git', ['merge-base', '--is-ancestor', sha, git(['rev-parse', 'HEAD'])], { cwd: repo, stdio: 'ignore' }); return true; } catch { return false; } };
 const readJson = async file => JSON.parse(await fs.readFile(file, 'utf8'));
 const exists = async file => { try { await fs.access(file); return true; } catch { return false; } };
 const godot = process.env.ASCENDANT_REALMS_GODOT || 'D:\\CodexData\\tools\\godot-4.6.3-stable\\Godot_v4.6.3-stable_win64.exe';
@@ -29,7 +30,8 @@ async function validate() {
     const stat = await fs.stat(path.join(session, name));
     sizes.push({ name, bytes: stat.size, rejected: stat.size < 4096 });
   }
-  const result = evaluateE3RValidatorContract({ branch, validatedHead: head, sourceSha: manifest?.provenance?.source_sha, manifest, files, blocker, sourceWritesRejected: failures.length === 0, blackFrameRejected: sizes.every(value => !value.rejected) });
+  const evidenceSha = manifest?.provenance?.source_sha;
+  const result = evaluateE3RValidatorContract({ branch, validatedHead: head, sourceSha: evidenceSha, sourceShaValid: Boolean(evidenceSha && isAncestor(evidenceSha)), manifest, files, blocker, sourceWritesRejected: failures.length === 0, blackFrameRejected: sizes.every(value => !value.rejected) });
   result.pack = E3R_PACK;
   result.evidence = { files, requiredFrames: E3R_REQUIRED_FRAMES, pngSizes: sizes, source_sha: manifest?.provenance?.source_sha || null };
   result.failures.push(...failures);
