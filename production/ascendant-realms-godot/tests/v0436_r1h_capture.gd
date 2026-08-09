@@ -156,6 +156,12 @@ func _enemy_combatants() -> Array: return world.commanders[1].units.filter(func(
 func _enemy_workers() -> Array: return world.commanders[1].units.filter(func(u): return _live_unit(u) and bool(u.is_worker))
 func _enemy_buildings() -> Array: return world.commanders[1].buildings.filter(func(b): return _live_building(b))
 
+func _army_count() -> int:
+	var count := 0
+	for unit in world.commanders[0].units:
+		if _live_unit(unit): count += 1
+	return count
+
 func _select_many(nodes: Array) -> void:
 	rts._clear_selection()
 	for node in nodes:
@@ -534,7 +540,7 @@ func _capture_e3r_match() -> void:
 	timeline.append({"step":1, "before":tutorial_before, "after":_tutorial_snapshot(), "real_action":"cam_right input", "camera_after":_vec(rts.cam_pivot.global_position)})
 	# Step 2: actual RTS selection signal.
 	var hero = world.player_commander.hero_ref
-	var workers := world.player_commander.units.filter(func(u): return is_instance_valid(u) and not u.is_dead and bool(u.is_worker))
+	var workers: Array = world.player_commander.units.filter(func(u): return is_instance_valid(u) and not u.is_dead and bool(u.is_worker))
 	var worker = workers.front() if not workers.is_empty() else null
 	var selectable = hero if is_instance_valid(hero) and not hero.is_dead else worker
 	if not is_instance_valid(selectable): await _failure("BLOCKED_E3R_STEP_2_REAL_EVENT_NOT_OBSERVED", "no player-owned unit was available"); return
@@ -545,7 +551,7 @@ func _capture_e3r_match() -> void:
 	# Step 3: real gather order plus a real extraction event.
 	var food = _resources_by_kind().get("food")
 	if not is_instance_valid(worker) or not is_instance_valid(food): await _failure("BLOCKED_E3R_STEP_3_REAL_EVENT_NOT_OBSERVED", "worker or food node unavailable"); return
-	var extraction_before := world.resource_extractions.size()
+	var extraction_before: int = world.resource_extractions.size()
 	await _select_many([worker])
 	worker.command_gather(food)
 	if not await _wait_until(func(): return world.resource_extractions.size() > extraction_before, 60.0): await _failure("BLOCKED_E3R_STEP_3_REAL_EVENT_NOT_OBSERVED", "worker entered no truthful extraction event"); return
@@ -569,7 +575,7 @@ func _capture_e3r_match() -> void:
 	for unit in world.player_commander.units:
 		if is_instance_valid(unit) and bool(unit.is_worker): unit.command_build(hall)
 	if not await _wait_until(func(): return bool(hall.is_built), 120.0): await _failure("BLOCKED_E3R_STEP_5_REAL_EVENT_NOT_OBSERVED", "War Hall did not complete construction"); return
-	var army_before := _army_count()
+	var army_before: int = _army_count()
 	var queue_result = hall.queue_unit("barrosan_crag_archer")
 	await _save("07_STEP5_TRAINING.png")
 	if not await _wait_until(func(): return _army_count() > army_before, 120.0): await _failure("BLOCKED_E3R_STEP_5_REAL_EVENT_NOT_OBSERVED", "queued military unit did not complete training"); return
@@ -579,7 +585,7 @@ func _capture_e3r_match() -> void:
 	# Step 6: a real hero move order with measurable position change.
 	if not is_instance_valid(hero) or hero.is_dead: await _failure("BLOCKED_E3R_STEP_6_REAL_EVENT_NOT_OBSERVED", "hero unavailable"); return
 	await _select_many([hero])
-	var hero_before := hero.global_position
+	var hero_before: Vector3 = hero.global_position
 	hero.command_move(hero_before + Vector3(10.0, 0.0, 0.0))
 	if not await _wait_tutorial_step(7, 90.0): await _failure("BLOCKED_E3R_STEP_6_REAL_EVENT_NOT_OBSERVED", "hero did not move through a real command"); return
 	await _save("09_STEP6_HERO_COMMAND.png")
@@ -588,7 +594,7 @@ func _capture_e3r_match() -> void:
 	var enemies := _enemy_combatants()
 	var own := _player_combatants()
 	if enemies.is_empty() or own.is_empty(): await _failure("BLOCKED_E3R_STEP_7_REAL_EVENT_NOT_OBSERVED", "combat inventory unavailable"); return
-	var damage_before := world.combat_damage_events.size()
+	var damage_before: int = world.combat_damage_events.size()
 	await _select_many(own)
 	var attack_move_ok: bool = rts.issue_attack_move_destination(enemies[0].global_position)
 	var attack_target_ok: bool = rts.issue_attack_target(enemies[0])
@@ -598,11 +604,11 @@ func _capture_e3r_match() -> void:
 	await _save("11_STEP7_REAL_DAMAGE.png")
 	timeline.append({"step":7, "before":tutorial_before, "after":_tutorial_snapshot(), "real_action":"attack-move and attack-target", "attack_move_return":attack_move_ok, "attack_target_return":attack_target_ok, "real_event":world.combat_damage_events.back()})
 	# Step 8: normal movement into the actual Lume capture zone and natural ownership.
-	var points := world.get_tree().get_nodes_in_group("capture_points")
+	var points: Array = world.get_tree().get_nodes_in_group("capture_points")
 	var lume = points.front() if not points.is_empty() else null
 	if not is_instance_valid(lume): await _failure("BLOCKED_E3R_LUME_UNREACHABLE", "no live Lume capture point exists"); return
 	await _save("12_STEP8_LUME_TARGET.png")
-	var lume_before := lume.get_capture_snapshot() if lume.has_method("get_capture_snapshot") else {"owner_team":lume.owner_team, "progress":lume._progress}
+	var lume_before: Dictionary = lume.get_capture_snapshot() if lume.has_method("get_capture_snapshot") else {"owner_team":lume.owner_team, "progress":lume._progress}
 	for unit in _player_combatants():
 		unit.command_move(lume.global_position)
 	if not await _wait_until(func(): return _player_combatants().filter(func(u): return is_instance_valid(u) and u.global_position.distance_to(lume.global_position) <= 7.5).size() > 0, 120.0): await _failure("BLOCKED_E3R_LUME_UNREACHABLE", "player units did not reach the Lume capture zone"); return
