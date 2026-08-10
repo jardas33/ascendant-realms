@@ -100,10 +100,27 @@ static func _assemble(s: Dictionary) -> Dictionary:
 		"water_axis": "crossing" if s.get("bridge", false) else "north_bay",
 		"water_center_z": 52.0 if s.get("bridge", false) else 118.0,
 		"water_width": 22.0 if s.get("bridge", false) else 34.0,
+		"roads": _overview_roads(starts, s["layout"]),
 	}
 	if s.get("bridge", false) and m["water"].get("enabled", false):
 		m["bridge"] = {"pos": Vector3(0, 0, 52), "model": BRIDGE}
 	return m
+
+static func _overview_roads(starts: Array, layout: String) -> Array:
+	# Presentation-only polylines derived from the same starts used by the
+	# terrain shader. They add readable bends to the miniature without adding
+	# gameplay geometry or changing navigation.
+	var roads: Array = []
+	for start in starts:
+		var planar := Vector2(start.x, start.z)
+		var side := Vector2(-planar.y, planar.x).normalized()
+		var bend := Vector3(side.x * 11.0, 0.0, side.y * 11.0)
+		roads.append([start, start.lerp(Vector3.ZERO, 0.52) + bend, Vector3.ZERO])
+	if layout == "corners":
+		roads.append([Vector3(-30, 0, -20), Vector3.ZERO, Vector3(30, 0, 20)])
+	else:
+		roads.append([Vector3(-30, 0, 0), Vector3.ZERO, Vector3(30, 0, 0)])
+	return roads
 
 static func _corners(sp: float) -> Array:
 	return [Vector3(-sp, 0, -sp), Vector3(sp, 0, sp), Vector3(sp, 0, -sp), Vector3(-sp, 0, sp)]

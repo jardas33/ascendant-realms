@@ -15,6 +15,7 @@ const FRAME_PORTRAIT := "res://assets/ui/frame_portrait.png"
 const ENTITY_PORTRAIT_SCRIPT := "res://scripts/ui/entity_portrait_view.gd"
 const MAP_HALF := 140.0                # MapDefs.MAP_SIZE — world spans -140..140
 const MINIMAP_SIZE := 200.0
+const MINIMAP_RASTER_SIZE := 128
 const MINIMAP_PANEL_HEIGHT := MINIMAP_SIZE + 68.0
 const COMMAND_PANEL_WIDTH := 390.0
 const FONT_COLOR := Color(0.95, 0.9, 0.8)
@@ -43,6 +44,8 @@ var _menu_button: Button = null
 
 # --- minimap ---
 var _minimap: Control = null
+var _minimap_background: ImageTexture = null
+var _minimap_background_key := ""
 var _minimap_panel: PanelContainer = null
 
 # --- selection / command panels (rebuilt on selection change) ---
@@ -443,25 +446,13 @@ func _draw_minimap() -> void:
 	if not is_instance_valid(_minimap):
 		return
 	var size := _minimap.size
-	# Readable terrain-first map: this is a deterministic miniature of the
-	# authoritative MapDefs contract, not a second world renderer.
-	var terrain_base := Color(0.24, 0.32, 0.22, 1.0)
-	var terrain_overlay := Color(0.32, 0.39, 0.25, 1.0)
 	if is_instance_valid(world):
-		match str(world.map.get("theme", "highland")):
-			"volcanic":
-				terrain_base = Color(0.34, 0.16, 0.12, 1.0)
-				terrain_overlay = Color(0.55, 0.22, 0.12, 0.5)
-			"snow":
-				terrain_base = Color(0.38, 0.47, 0.5, 1.0)
-				terrain_overlay = Color(0.62, 0.7, 0.72, 0.48)
-			"desert", "badlands":
-				terrain_base = Color(0.42, 0.31, 0.2, 1.0)
-				terrain_overlay = Color(0.58, 0.42, 0.24, 0.48)
-		_minimap.draw_rect(Rect2(Vector2.ZERO, size), terrain_base, true)
-		_minimap.draw_rect(Rect2(Vector2(4, 4), size - Vector2(8, 8)), terrain_overlay, true)
+		_ensure_minimap_background()
+		if is_instance_valid(_minimap_background):
+			_minimap.draw_texture_rect(_minimap_background, Rect2(Vector2.ZERO, size), false)
+		else:
+			_minimap.draw_rect(Rect2(Vector2.ZERO, size), _minimap_theme_color(str(world.map.get("theme", "highland")), false), true)
 		_draw_minimap_terrain(size)
-		_draw_minimap_water(size)
 	_draw_minimap_roads(size)
 	var bridge_data = world.map.get("bridge", {})
 	if bridge_data is Dictionary and bridge_data.get("pos") is Vector3:
@@ -498,6 +489,15 @@ func _draw_minimap() -> void:
 		_minimap.draw_rect(Rect2(p - Vector2(4.0, 4.0), Vector2(8, 8)), Color(0.06, 0.07, 0.06, 0.9), true)
 		_minimap.draw_rect(Rect2(p - Vector2(3.0, 3.0), Vector2(6, 6)), col, true)
 
+	# Live resource landmarks make the miniature useful without inventing a
+	# second simulation. Depleted nodes remain absent, matching the world.
+	for resource in world.get_tree().get_nodes_in_group("resources"):
+		if not is_instance_valid(resource) or bool(resource.get("depleted")):
+			continue
+		var rp := _world_to_map(resource.global_position)
+		_minimap.draw_circle(rp, 3.8, Color(0.04, 0.05, 0.04, 0.9))
+		_minimap.draw_circle(rp, 2.5, _minimap_resource_color(str(resource.get("resource_kind", ""))))
+
 	# units (small but readable diamonds)
 	for u in world.all_units():
 		if not is_instance_valid(u) or u.is_dead:
@@ -532,58 +532,107 @@ func _draw_minimap_terrain(size: Vector2) -> void:
 	_minimap.draw_rect(Rect2(Vector2(7, 7), size - Vector2(14, 14)), edge, false, 5.0)
 	for start in world.map.get("start_positions", []):
 		var p := _world_to_map(start)
-		_minimap.draw_circle(p, 13.0, Color(0.75, 0.68, 0.42, 0.11))
-		_minimap.draw_arc(p, 13.0, 0.0, TAU, 20, Color(0.78, 0.72, 0.48, 0.34), 1.0, true)
-	_minimap.draw_circle(_world_to_map(Vector3.ZERO), 12.0, Color(0.9, 0.78, 0.38, 0.08))
-
-
-func _draw_minimap_water(size: Vector2) -> void:
-	var water: Dictionary = world.map.get("water", {})
-	if not bool(water.get("enabled", false)):
-		return
-	var overview: Dictionary = world.map.get("overview", {})
-	var axis := str(overview.get("water_axis", "north_bay"))
-	var center_z := float(overview.get("water_center_z", 118.0))
-	var half_width := float(overview.get("water_width", 34.0)) * 0.5
-	var deep: Color = water.get("deep", Color(0.05, 0.22, 0.34))
-	var shallow: Color = water.get("shallow", Color(0.16, 0.48, 0.58))
-	var pts := PackedVector2Array()
-	if axis == "crossing":
-		pts = PackedVector2Array([
-			_world_to_map(Vector3(-MAP_HALF, 0, center_z - half_width)),
-			_world_to_map(Vector3(-70, 0, center_z - half_width - 5)),
-			_world_to_map(Vector3(0, 0, center_z - half_width + 2)),
-			_world_to_map(Vector3(70, 0, center_z - half_width - 4)),
-			_world_to_map(Vector3(MAP_HALF, 0, center_z - half_width)),
-			_world_to_map(Vector3(MAP_HALF, 0, center_z + half_width)),
-			_world_to_map(Vector3(68, 0, center_z + half_width + 4)),
-			_world_to_map(Vector3(0, 0, center_z + half_width - 2)),
-			_world_to_map(Vector3(-70, 0, center_z + half_width + 5)),
-			_world_to_map(Vector3(-MAP_HALF, 0, center_z + half_width))])
-	else:
-		pts = PackedVector2Array([
-			_world_to_map(Vector3(-MAP_HALF, 0, center_z - half_width)),
-			_world_to_map(Vector3(MAP_HALF, 0, center_z - half_width)),
-			_world_to_map(Vector3(MAP_HALF, 0, MAP_HALF)),
-			_world_to_map(Vector3(-MAP_HALF, 0, MAP_HALF))])
-	_minimap.draw_colored_polygon(pts, deep.darkened(0.12))
-	_minimap.draw_polyline(pts, shallow.lightened(0.18), 2.0, true)
+		_draw_minimap_region(p, Vector2(19.0, 15.0), Color(0.75, 0.68, 0.42, 0.13), Color(0.78, 0.72, 0.48, 0.42))
+	_draw_minimap_region(_world_to_map(Vector3.ZERO), Vector2(17.0, 14.0), Color(0.9, 0.78, 0.38, 0.10), Color(0.9, 0.78, 0.38, 0.28))
 
 
 func _draw_minimap_roads(size: Vector2) -> void:
 	if not is_instance_valid(world):
 		return
-	var center := _world_to_map(Vector3.ZERO)
 	var road_shadow := Color(0.12, 0.13, 0.1, 0.8)
 	var road := Color(0.68, 0.55, 0.33, 0.92)
-	for start in world.map.get("start_positions", []):
-		var p := _world_to_map(start)
-		_minimap.draw_line(p, center, road_shadow, 9.0, true)
-		_minimap.draw_line(p, center, road, 5.0, true)
-	var a := _world_to_map(Vector3(-30, 0, -20))
-	var b := _world_to_map(Vector3(30, 0, 20))
-	_minimap.draw_line(a, b, road_shadow, 8.0, true)
-	_minimap.draw_line(a, b, Color(0.58, 0.47, 0.3, 0.85), 4.0, true)
+	var overview: Dictionary = world.map.get("overview", {})
+	for route in overview.get("roads", []):
+		if not route is Array or route.size() < 2:
+			continue
+		var points := PackedVector2Array()
+		for world_point in route:
+			points.append(_world_to_map(world_point))
+		_minimap.draw_polyline(points, road_shadow, 9.0, true)
+		_minimap.draw_polyline(points, road, 5.0, true)
+
+func _draw_minimap_region(center: Vector2, radius: Vector2, fill: Color, edge: Color) -> void:
+	var points := PackedVector2Array()
+	for i in range(20):
+		var angle := TAU * float(i) / 20.0
+		points.append(center + Vector2(cos(angle) * radius.x, sin(angle) * radius.y))
+	_minimap.draw_colored_polygon(points, fill)
+	var outline := PackedVector2Array(points)
+	outline.append(points[0])
+	_minimap.draw_polyline(outline, edge, 1.2, true)
+
+func _minimap_resource_color(kind: String) -> Color:
+	match kind:
+		"food": return Color(0.86, 0.70, 0.28, 1.0)
+		"gold": return Color(0.96, 0.83, 0.32, 1.0)
+		"stone": return Color(0.72, 0.76, 0.78, 1.0)
+		"timber": return Color(0.52, 0.78, 0.34, 1.0)
+		_: return Color(0.82, 0.82, 0.82, 1.0)
+
+func _minimap_theme_color(theme_name: String, accent: bool) -> Color:
+	match theme_name:
+		"volcanic": return Color(0.42, 0.25, 0.18, 1.0) if not accent else Color(0.58, 0.32, 0.18, 1.0)
+		"snow": return Color(0.37, 0.45, 0.48, 1.0) if not accent else Color(0.60, 0.68, 0.70, 1.0)
+		"desert", "badlands": return Color(0.40, 0.29, 0.18, 1.0) if not accent else Color(0.58, 0.42, 0.24, 1.0)
+		_: return Color(0.22, 0.30, 0.20, 1.0) if not accent else Color(0.30, 0.38, 0.24, 1.0)
+
+func _ensure_minimap_background() -> void:
+	if not is_instance_valid(world):
+		return
+	var map_id := str(world.map.get("id", ""))
+	var theme_name := str(world.map.get("theme", "highland"))
+	var cache_key := map_id + ":" + theme_name
+	if cache_key == _minimap_background_key and is_instance_valid(_minimap_background):
+		return
+	var image := Image.create(MINIMAP_RASTER_SIZE, MINIMAP_RASTER_SIZE, false, Image.FORMAT_RGBA8)
+	var water: Dictionary = world.map.get("water", {})
+	var overview: Dictionary = world.map.get("overview", {})
+	var base := _minimap_theme_color(theme_name, false)
+	var accent := _minimap_theme_color(theme_name, true)
+	var water_enabled := bool(water.get("enabled", false))
+	var axis := str(overview.get("water_axis", "north_bay"))
+	var center_z := float(overview.get("water_center_z", 118.0))
+	var half_width := float(overview.get("water_width", 34.0)) * 0.5
+	var deep: Color = water.get("deep", Color(0.05, 0.22, 0.34))
+	var shallow: Color = water.get("shallow", Color(0.16, 0.48, 0.58))
+	for y in range(MINIMAP_RASTER_SIZE):
+		for x in range(MINIMAP_RASTER_SIZE):
+			var wp := Vector3(
+				(float(x) / float(MINIMAP_RASTER_SIZE - 1) * MAP_HALF * 2.0) - MAP_HALF,
+				0.0,
+				(float(y) / float(MINIMAP_RASTER_SIZE - 1) * MAP_HALF * 2.0) - MAP_HALF)
+			var col := base
+			var edge := minf(minf(wp.x + MAP_HALF, MAP_HALF - wp.x), minf(wp.z + MAP_HALF, MAP_HALF - wp.z))
+			if edge < 10.0:
+				col = col.darkened(0.10)
+			if water_enabled:
+				var distance := _minimap_water_distance(wp, axis, center_z, half_width)
+				if distance <= 0.0:
+					col = deep
+				elif distance < 5.0:
+					col = shallow.lerp(base, distance / 5.0)
+			var road_distance := 9999.0
+			for route in overview.get("roads", []):
+				if not route is Array:
+					continue
+				for index in range(route.size() - 1):
+					road_distance = minf(road_distance, _minimap_segment_distance(wp, route[index], route[index + 1]))
+			if road_distance < 6.0:
+				col = Color(0.16, 0.13, 0.09, 1.0) if road_distance < 2.3 else accent.darkened(0.12)
+			image.set_pixel(x, y, col)
+	_minimap_background = ImageTexture.create_from_image(image)
+	_minimap_background_key = cache_key
+
+func _minimap_segment_distance(point: Vector3, a: Vector3, b: Vector3) -> float:
+	var ab := Vector2(b.x - a.x, b.z - a.z)
+	var ap := Vector2(point.x - a.x, point.z - a.z)
+	var t := clampf(ap.dot(ab) / maxf(ab.length_squared(), 0.0001), 0.0, 1.0)
+	return Vector2(point.x, point.z).distance_to(Vector2(a.x, a.z) + ab * t)
+
+func _minimap_water_distance(pos: Vector3, axis: String, center_z: float, half_width: float) -> float:
+	if axis == "crossing":
+		return absf(pos.z - center_z) - half_width
+	return center_z - half_width - pos.z
 
 
 # ---------------------------------------------------------------------------
