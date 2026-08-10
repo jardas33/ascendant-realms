@@ -15,6 +15,8 @@ const FRAME_PORTRAIT := "res://assets/ui/frame_portrait.png"
 const ENTITY_PORTRAIT_SCRIPT := "res://scripts/ui/entity_portrait_view.gd"
 const MAP_HALF := 140.0                # MapDefs.MAP_SIZE — world spans -140..140
 const MINIMAP_SIZE := 200.0
+const MINIMAP_PANEL_HEIGHT := MINIMAP_SIZE + 68.0
+const COMMAND_PANEL_WIDTH := 390.0
 const FONT_COLOR := Color(0.95, 0.9, 0.8)
 const RES_ICONS := {
 	"food": "res://assets/ui/icon_food.png",
@@ -115,7 +117,7 @@ func _fit_to_viewport() -> void:
 	if is_instance_valid(_minimap_panel):
 		_minimap_panel.offset_left = margin
 		_minimap_panel.offset_right = margin + MINIMAP_SIZE + 24.0
-		_minimap_panel.offset_top = -margin - MINIMAP_SIZE - 24.0
+		_minimap_panel.offset_top = -margin - MINIMAP_PANEL_HEIGHT
 		_minimap_panel.offset_bottom = -margin
 	if is_instance_valid(_sel_panel):
 		_sel_panel.offset_left = -240.0
@@ -123,7 +125,7 @@ func _fit_to_viewport() -> void:
 		_sel_panel.offset_top = -margin - selection_height
 		_sel_panel.offset_bottom = -margin
 	if is_instance_valid(_cmd_panel):
-		_cmd_panel.offset_left = -334.0
+		_cmd_panel.offset_left = -COMMAND_PANEL_WIDTH
 		_cmd_panel.offset_right = -margin
 		_cmd_panel.offset_top = -margin - command_height
 		_cmd_panel.offset_bottom = -margin
@@ -230,9 +232,10 @@ func _cost_string(cost: Dictionary) -> String:
 
 func _mk_command_button(title: String, detail: String, tooltip: String, disabled_reason: String = "") -> Button:
 	var btn := _mk_button("%s\n%s" % [title, detail], 13)
-	btn.custom_minimum_size = Vector2(150, 58)
+	btn.custom_minimum_size = Vector2(174, 62)
 	btn.alignment = HORIZONTAL_ALIGNMENT_LEFT
 	btn.clip_text = true
+	btn.focus_mode = Control.FOCUS_NONE
 	btn.tooltip_text = tooltip if disabled_reason.is_empty() else "%s\nUnavailable: %s" % [tooltip, disabled_reason]
 	var normal := StyleBoxFlat.new()
 	normal.bg_color = Color(0.10, 0.12, 0.14, 0.96)
@@ -257,10 +260,17 @@ func _mk_command_button(title: String, detail: String, tooltip: String, disabled
 func _mk_command_grid() -> GridContainer:
 	var grid := GridContainer.new()
 	grid.columns = 2
-	grid.add_theme_constant_override("h_separation", 6)
-	grid.add_theme_constant_override("v_separation", 6)
+	grid.add_theme_constant_override("h_separation", 8)
+	grid.add_theme_constant_override("v_separation", 8)
 	grid.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	return grid
+
+
+func _add_command_section(title: String, hint: String = "") -> void:
+	_cmd_body.add_child(HSeparator.new())
+	_cmd_body.add_child(_mk_label(title.to_upper(), 13, Color(0.95, 0.85, 0.55)))
+	if not hint.is_empty():
+		_cmd_body.add_child(_mk_label(hint, 11, Color(0.65, 0.66, 0.61)))
 
 
 # ---------------------------------------------------------------------------
@@ -353,24 +363,36 @@ func _build_minimap() -> void:
 	var panel := _mk_hud_panel()
 	_minimap_panel = panel
 	_minimap_panel.name = "MinimapPanel"
-	# panel = minimap (200) + 12px stylebox content margin on each side = 224
+	# panel = minimap (200) + framing/legend content and style margins
 	var box := MINIMAP_SIZE + 24.0
 	panel.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_LEFT)
 	panel.grow_vertical = Control.GROW_DIRECTION_BEGIN
 	panel.grow_horizontal = Control.GROW_DIRECTION_END
 	panel.offset_left = 12.0
 	panel.offset_right = 12.0 + box
-	panel.offset_top = -12.0 - box
+	panel.offset_top = -12.0 - MINIMAP_PANEL_HEIGHT
 	panel.offset_bottom = -12.0
-	panel.custom_minimum_size = Vector2(box, box)
+	panel.custom_minimum_size = Vector2(box, MINIMAP_PANEL_HEIGHT)
 	add_child(panel)
 
+	var column := VBoxContainer.new()
+	column.add_theme_constant_override("separation", 3)
+	column.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	column.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	panel.add_child(column)
+	var title := _mk_label("TACTICAL MAP", 13, Color(0.95, 0.85, 0.55))
+	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	column.add_child(title)
 	_minimap = Control.new()
 	_minimap.custom_minimum_size = Vector2(MINIMAP_SIZE, MINIMAP_SIZE)
+	_minimap.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	_minimap.mouse_filter = Control.MOUSE_FILTER_STOP
 	_minimap.draw.connect(_draw_minimap)
 	_minimap.gui_input.connect(_on_minimap_input)
-	panel.add_child(_minimap)
+	column.add_child(_minimap)
+	var legend := _mk_label("ALLY  •  ENEMY  •  STRUCTURE  •  VIEW", 9, Color(0.67, 0.68, 0.63))
+	legend.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	column.add_child(legend)
 
 
 func _on_minimap_input(event: InputEvent) -> void:
@@ -427,6 +449,11 @@ func _draw_minimap() -> void:
 		var y := 12.0 + float(i) * size.y / 5.0
 		_minimap.draw_line(Vector2(8, y), Vector2(size.x - 8, y), Color(0.5, 0.52, 0.34, 0.14), 1.0)
 	_draw_minimap_roads(size)
+	var bridge_data = world.map.get("bridge", {})
+	if bridge_data is Dictionary and bridge_data.get("pos") is Vector3:
+		var bridge_p := _world_to_map(bridge_data["pos"])
+		_minimap.draw_line(bridge_p - Vector2(9, 0), bridge_p + Vector2(9, 0), Color(0.95, 0.78, 0.36, 1.0), 5.0, true)
+		_minimap.draw_rect(Rect2(bridge_p - Vector2(11, 4), Vector2(22, 8)), Color(0.22, 0.15, 0.08, 0.95), false, 1.0)
 	_minimap.draw_rect(Rect2(Vector2.ZERO, size), Color(0.55, 0.48, 0.3, 0.95), false, 2.0)
 
 	if not is_instance_valid(world):
@@ -827,10 +854,12 @@ func _build_single_building(b) -> void:
 	if not b.is_built:
 		var pb := _mk_bar(Color(0.85, 0.7, 0.3))
 		pb.value = clamp(b.build_progress, 0.0, 1.0)
-		col.add_child(_mk_label("Under construction", 12, Color(0.85, 0.8, 0.6)))
+		var progress_label := _mk_label("Construction progress: %d%%" % roundi(clampf(b.build_progress, 0.0, 1.0) * 100.0), 12, Color(0.85, 0.8, 0.6))
+		col.add_child(progress_label)
 		col.add_child(pb)
 		var cap_b = b
 		var cap_pb = pb
+		var cap_label = progress_label
 		# tick construction bar off the slow poll via a lambda-friendly approach:
 		# store it on the building bar reference reused each poll is overkill; use a timer.
 		var t := Timer.new()
@@ -839,7 +868,9 @@ func _build_single_building(b) -> void:
 		cap_pb.add_child(t)
 		t.timeout.connect(func():
 			if is_instance_valid(cap_b) and is_instance_valid(cap_pb):
-				cap_pb.value = clamp(cap_b.build_progress, 0.0, 1.0))
+				cap_pb.value = clamp(cap_b.build_progress, 0.0, 1.0)
+				if is_instance_valid(cap_label):
+					cap_label.text = "Construction progress: %d%%" % roundi(clampf(cap_b.build_progress, 0.0, 1.0) * 100.0))
 
 	# production queue row (only meaningful when it produces)
 	if not b.def.get("produces", []).is_empty() or not b.def.get("research", []).is_empty() \
@@ -915,7 +946,7 @@ func _build_command_panel() -> void:
 	_cmd_panel.anchor_bottom = 1.0
 	_cmd_panel.grow_horizontal = Control.GROW_DIRECTION_BEGIN
 	_cmd_panel.grow_vertical = Control.GROW_DIRECTION_BEGIN
-	_cmd_panel.offset_left = -334
+	_cmd_panel.offset_left = -COMMAND_PANEL_WIDTH
 	_cmd_panel.offset_right = -12
 	_cmd_panel.offset_top = -372
 	_cmd_panel.offset_bottom = -12
@@ -956,7 +987,7 @@ func _rebuild_command_card(single, selection: Array) -> void:
 
 
 func _build_worker_card() -> void:
-	_cmd_body.add_child(_mk_label("Build", 15, Color(0.95, 0.85, 0.55)))
+	_add_command_section("Build", "Choose a structure; click once to enter placement.")
 	var grid := _mk_command_grid()
 	_cmd_body.add_child(grid)
 	for bid in GameData.buildings_for_race(_commander.race):
@@ -979,7 +1010,25 @@ func _build_worker_card() -> void:
 
 func _build_building_card(b) -> void:
 	if not b.is_built:
-		_cmd_body.add_child(_mk_label("Constructing...", 14, Color(0.85, 0.8, 0.6)))
+		_add_command_section("Construction", "Workers are building this structure.")
+		var progress_label := _mk_label("Build progress: %d%%" % roundi(clampf(b.build_progress, 0.0, 1.0) * 100.0), 12, Color(0.85, 0.8, 0.6))
+		_cmd_body.add_child(progress_label)
+		var progress_bar := _mk_bar(Color(0.85, 0.7, 0.3))
+		progress_bar.value = clampf(b.build_progress, 0.0, 1.0)
+		_cmd_body.add_child(progress_bar)
+		var cap_b = b
+		var cap_label := progress_label
+		var cap_bar := progress_bar
+		var t := Timer.new()
+		t.wait_time = 0.2
+		t.autostart = true
+		_cmd_body.add_child(t)
+		t.timeout.connect(func():
+			if is_instance_valid(cap_b) and is_instance_valid(cap_label) and is_instance_valid(cap_bar):
+				var pct := roundi(clampf(cap_b.build_progress, 0.0, 1.0) * 100.0)
+				cap_label.text = "Build progress: %d%%" % pct
+				cap_bar.value = clampf(cap_b.build_progress, 0.0, 1.0)
+		)
 		return
 	var def: Dictionary = b.def
 	var produces: Array = def.get("produces", [])
@@ -988,7 +1037,7 @@ func _build_building_card(b) -> void:
 
 	# production units
 	if not produces.is_empty():
-		_cmd_body.add_child(_mk_label("Train", 15, Color(0.95, 0.85, 0.55)))
+		_add_command_section("Train", "Queue a unit; hover a card for cost and availability.")
 		var train_grid := _mk_command_grid()
 		_cmd_body.add_child(train_grid)
 		for uid in produces:
@@ -1023,7 +1072,7 @@ func _build_building_card(b) -> void:
 			tech_ids.append(tid)
 
 	if not tech_ids.is_empty():
-		_cmd_body.add_child(_mk_label("Research", 15, Color(0.95, 0.85, 0.55)))
+		_add_command_section("Research", "Advance technology when the requirements are met.")
 		var research_grid := _mk_command_grid()
 		_cmd_body.add_child(research_grid)
 		for tid in tech_ids:

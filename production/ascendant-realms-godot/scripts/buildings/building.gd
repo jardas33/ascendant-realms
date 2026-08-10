@@ -182,9 +182,11 @@ func set_selected(sel: bool) -> void:
 		selection_ring.visible = sel
 
 func _set_construction_visual(p: float) -> void:
-	# rise from ground + translucency during construction
+	# Keep the footprint visibly grounded while construction progresses. The old
+	# full-footprint sink made unfinished structures disappear into the terrain,
+	# which read as a missing building rather than a truthful construction state.
 	if model_root:
-		model_root.position.y = lerp(-footprint * 0.9, 0.0, clamp(p, 0.0, 1.0))
+		model_root.position.y = lerp(-0.15, 0.0, clamp(p, 0.0, 1.0))
 	var building_now := p < 1.0
 	for mi in _mesh_instances:
 		if not is_instance_valid(mi):
