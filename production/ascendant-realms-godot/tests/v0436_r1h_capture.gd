@@ -8,6 +8,7 @@ const R1I_OUT := "res://../../artifacts/manual-review/v0436-r1i-prepared-assault
 const E1R_OUT := "res://../../artifacts/manual-review/v0436-e1r-competent-natural-conquest/"
 const E1R2_OUT := "res://../../artifacts/manual-review/v0436-e1r2-sustainable-economy-natural-conquest-attempt-02/"
 const K1_OUT := "res://../../artifacts/manual-review/v0436-playtest3-continuation-k/"
+const K2_OUT := "res://../../artifacts/manual-review/v0436-playtest3-continuation-k2/"
 const E3_OUT := "res://../../artifacts/manual-review/v0436-e3-tutorial-golden-path/"
 const E3R_OUT := "res://../../artifacts/manual-review/v0436-e3r-real-tutorial/"
 const PREPARATION_LIMIT_SECONDS := 720.0
@@ -16,6 +17,7 @@ const COMPETENT_ASSAULT_TIMEOUT_SECONDS := 180.0
 const FORCE_PLAN := ["barrosan_spear_guard", "barrosan_spear_guard", "barrosan_crag_archer", "barrosan_crag_archer"]
 const COMPETENT_FORCE_PLAN := ["barrosan_spear_guard", "barrosan_spear_guard", "barrosan_crag_archer", "barrosan_crag_archer", "barrosan_clan_levy", "barrosan_crag_archer", "barrosan_spear_guard", "barrosan_clan_levy", "barrosan_crag_archer"]
 const F2_FORCE_PLAN := ["barrosan_spear_guard", "barrosan_crag_archer", "barrosan_clan_levy", "barrosan_spear_guard", "barrosan_crag_archer", "barrosan_clan_levy", "barrosan_spear_guard", "barrosan_crag_archer", "barrosan_clan_levy", "barrosan_spear_guard", "barrosan_crag_archer", "barrosan_clan_levy"]
+const K2_FORCE_PLAN := ["barrosan_spear_guard", "barrosan_crag_archer", "barrosan_clan_levy", "barrosan_spear_guard", "barrosan_crag_archer"]
 
 var root_node: Node
 var world
@@ -25,7 +27,8 @@ var evidence_mode := "R1I" if OS.get_environment("ASCENDANT_V0436_R1I_CAPTURE") 
 var out_path := R1I_OUT if evidence_mode == "R1I" else R1H_OUT
 var f2_mode := OS.get_environment("ASCENDANT_V0436_F2_CAPTURE") == "1"
 var k1_mode := OS.get_environment("ASCENDANT_V0436_K1_BEGINNER_ECONOMY_CAPTURE") == "1"
-var competent_mode := OS.get_environment("ASCENDANT_V0436_E1R_CAPTURE") == "1" or OS.get_environment("ASCENDANT_V0436_F1_REINFORCEMENT_CAPTURE") == "1" or f2_mode or k1_mode
+var k2_mode := OS.get_environment("ASCENDANT_V0436_K2_COMBAT_CAPTURE") == "1"
+var competent_mode := OS.get_environment("ASCENDANT_V0436_E1R_CAPTURE") == "1" or OS.get_environment("ASCENDANT_V0436_F1_REINFORCEMENT_CAPTURE") == "1" or f2_mode or k1_mode or k2_mode
 var e1r2_mode := OS.get_environment("ASCENDANT_V0436_E1R2_CAPTURE") == "1"
 var tutorial_mode := OS.get_environment("ASCENDANT_V0436_E3_CAPTURE") == "1"
 var e3r_mode := OS.get_environment("ASCENDANT_V0436_E3R_CAPTURE") == "1"
@@ -59,14 +62,31 @@ var k1_samples: Array = []
 var k1_sampled_buckets: Dictionary = {}
 var k1_action_trace: Array = []
 var k1_sampling_active := false
+var k2_samples: Array = []
+var k2_telemetry: Array = []
+var k2_first_wave_time := -1.0
+var k2_first_contact_time := -1.0
+var k2_first_damage_time := -1.0
+var k2_resolution_time := -1.0
+var k2_run_status := ""
 
 func _ready() -> void:
+	var k2_debug_out := OS.get_environment("ASCENDANT_V0436_K2_OUT")
+	if k2_debug_out != "":
+		DirAccess.make_dir_recursive_absolute(k2_debug_out)
+		var k2_debug_file := FileAccess.open(k2_debug_out.path_join("k2-harness-startup.json"), FileAccess.WRITE)
+		if k2_debug_file:
+			k2_debug_file.store_string(JSON.stringify({"k2_env":OS.get_environment("ASCENDANT_V0436_K2_COMBAT_CAPTURE"), "k1_env":OS.get_environment("ASCENDANT_V0436_K1_BEGINNER_ECONOMY_CAPTURE"), "r1h_env":OS.get_environment("ASCENDANT_V0436_R1H_CAPTURE")}) + "\n")
 	session = OS.get_environment("ASCENDANT_V0436_R1H_SESSION")
-	if session != "A" and session != "B": session = "A"
+	if session != "A" and session != "B" and session != "C": session = "A"
 	if f2_mode:
 		evidence_mode = "F2"
 		out_path = OS.get_environment("ASCENDANT_V0436_F2_OUT")
 		if out_path == "": out_path = "user://v0436-f2-natural-conquest/"
+	elif k2_mode:
+		evidence_mode = "K2"
+		out_path = OS.get_environment("ASCENDANT_V0436_K2_OUT")
+		if out_path == "": out_path = K2_OUT + "run-%s/" % session.to_lower()
 	elif k1_mode:
 		evidence_mode = "K1"
 		out_path = OS.get_environment("ASCENDANT_V0436_K1_OUT")
@@ -231,10 +251,11 @@ func _f2_sampling_loop() -> void:
 	f2_sampling_active = false
 
 func _f2_expired() -> bool:
-	return (f2_mode and f2_deadline_ms > 0 and Time.get_ticks_msec() >= f2_deadline_ms) or (k1_mode and is_instance_valid(world) and float(world.match_time) >= 600.0)
+	return (f2_mode and f2_deadline_ms > 0 and Time.get_ticks_msec() >= f2_deadline_ms) or ((k1_mode or k2_mode) and is_instance_valid(world) and float(world.match_time) >= 900.0)
 
 func _evidence_name(name: String) -> String:
 	if f2_mode: return name.replace("R1H", "F2").replace("r1h-", "f2-")
+	if k2_mode: return name.replace("R1H", "K2").replace("r1h-", "k2-")
 	if k1_mode: return name.replace("R1H", "K1").replace("r1h-", "k1-")
 	if e3r_mode: return name.replace("R1H", "E3R").replace("r1h-", "e3r-")
 	if f1_mode: return name.replace("R1H", "F1").replace("r1h-", "f1-")
@@ -412,7 +433,7 @@ func _k1_sampling_loop() -> void:
 		await get_tree().create_timer(0.25).timeout
 
 func _k1_action(name: String, target: String, before_resources: Dictionary, before_pop: Dictionary, result: Dictionary, reason: String, prerequisites: Dictionary) -> void:
-	if not k1_mode: return
+	if not (k1_mode or k2_mode): return
 	k1_action_trace.append({"simulation_time_seconds":float(world.match_time) if is_instance_valid(world) else null, "action":name, "target":target, "resources_before":before_resources, "resources_after":world.player_commander.resources.duplicate(true) if is_instance_valid(world) and is_instance_valid(world.player_commander) else {}, "population_before":before_pop, "population_after":{"used":int(world.player_commander.pop_used), "reserved":int(world.player_commander.reserved_pop), "cap":int(world.player_commander.pop_cap)} if is_instance_valid(world) and is_instance_valid(world.player_commander) else {}, "prerequisites":prerequisites, "result":result, "reason":reason})
 
 func _k1_production_capture() -> void:
@@ -667,12 +688,12 @@ func _competent_production_setup(hall) -> bool:
 		_k1_action("ASSIGN_WORKER", String(food.resource_kind if assigned % 2 == 0 and is_instance_valid(food) else timber.resource_kind if is_instance_valid(timber) else "food"), world.player_commander.resources.duplicate(true), {"used":int(world.player_commander.pop_used), "reserved":int(world.player_commander.reserved_pop), "cap":int(world.player_commander.pop_cap)}, {"ok":is_instance_valid(food) or is_instance_valid(timber), "worker_runtime_id":str(worker.get_instance_id())}, "worker assigned to resource gathering", {"housing_built":true, "resource_target_found":is_instance_valid(food) or is_instance_valid(timber)})
 		assigned += 1
 	_record_economy("workers_gather_food_and_timber")
-	if (f2_mode or k1_mode) and not await _f2_expand_workers(world.player_commander.buildings.filter(func(b): return _live_building(b) and bool(b.def.get("is_hq", false))).front()): return false
+	if (f2_mode or k1_mode or k2_mode) and not await _f2_expand_workers(world.player_commander.buildings.filter(func(b): return _live_building(b) and bool(b.def.get("is_hq", false))).front()): return false
 	if f2_mode: _f2_assign_workers()
 	await _save("02_R1H_WORKERS_RESUME_ECONOMY.png")
 	if not await _wait_until(func(): return world.resource_transactions.size() >= 6, 90.0): return false
 	var queue_results: Array = []
-	var selected_plan: Array = F2_FORCE_PLAN if f2_mode else COMPETENT_FORCE_PLAN
+	var selected_plan: Array = F2_FORCE_PLAN if f2_mode else (K2_FORCE_PLAN if k2_mode else COMPETENT_FORCE_PLAN)
 	for unit_id in selected_plan:
 		var result = {"ok":false, "reason":"not attempted"}
 		var retry_deadline := Time.get_ticks_msec() + 90000
@@ -696,7 +717,7 @@ func _competent_production_setup(hall) -> bool:
 	if f2_mode: f2_military_queue_results = queue_results.duplicate(true)
 	_record_economy("competent_mixed_force_queues_issued")
 	_save_json("production-audit.json", {"provenance":_provenance("production"), "queue_results":queue_results, "resource_transactions":world.resource_transactions.duplicate(true), "queue_plan":COMPETENT_FORCE_PLAN, "source":"normal house placement, worker construction, resumed two-resource gathering, and real-cost Building.queue_unit"})
-	return await _wait_until(func(): return _player_combatants().size() >= (12 if f2_mode else (5 if k1_mode else 10)) or (k1_mode and float(world.match_time) >= 600.0), 420.0)
+	return await _wait_until(func(): return _player_combatants().size() >= (12 if f2_mode else (5 if k1_mode or k2_mode else 10)) or ((k1_mode or k2_mode) and float(world.match_time) >= 900.0), 420.0)
 
 func _target_key(target, category: String) -> Dictionary:
 	return {"category":category, "definition_id":String(target.get("building_id") if category == "building" else target.get("unit_id")), "runtime_id":str(target.get_instance_id())}
@@ -754,6 +775,15 @@ func _assault_target(target, category: String, label: String) -> Dictionary:
 	return audit
 
 func _failure(status: String, reason: String) -> void:
+	if k2_mode:
+		primary_status = status
+		k2_run_status = status
+		var final_state_k2 := _predicate_snapshot("k2_blocker")
+		_save_json("k2-run.json", {"schema":"v0436-k2-run-v1", "status":status, "reason":reason, "run":session, "source":_provenance("k2_blocker"), "samples":k2_samples, "telemetry":k2_telemetry, "milestones":{"first_wave":k2_first_wave_time, "first_contact":k2_first_contact_time, "first_damage":k2_first_damage_time, "resolution":k2_resolution_time}, "predicate":final_state_k2, "resource_transactions":world.resource_transactions.duplicate(true), "last_valid_frame":last_valid_frame})
+		await _contact_sheet(true)
+		push_error(status + ": " + reason)
+		get_tree().quit(0)
+		return
 	if f2_mode:
 		status = status.replace("E1R", "F2").replace("R1H", "F2")
 		f2_sampling_active = false
@@ -780,6 +810,190 @@ func _contact_sheet(blocked := false) -> void:
 		source.resize(thumb.x, thumb.y, Image.INTERPOLATE_BILINEAR)
 		sheet.blit_rect(source, Rect2i(0,0,thumb.x,thumb.y), Vector2i((i % 5) * thumb.x, (i / 5) * thumb.y))
 	sheet.save_png(_output_path(_evidence_name("26_R1H_BLOCKER_CONTACT_SHEET.png" if blocked else "26_R1H_CONTACT_SHEET.png")))
+
+func _k2_target_for(unit):
+	var target = unit.get("_target")
+	return target if is_instance_valid(target) else null
+
+func _k2_unit_telemetry(unit, all_buildings: Array) -> Dictionary:
+	var target = _k2_target_for(unit)
+	var target_position := Vector3.ZERO
+	var target_id := ""
+	var target_team := -1
+	var distance = null
+	var target_stationary = null
+	if is_instance_valid(target):
+		target_position = target.global_position
+		target_id = str(target.get_instance_id())
+		target_team = int(target.team) if "team" in target else -1
+		distance = float(unit.global_position.distance_to(target_position))
+	var effective_variant = unit.get("_navigation_effective_target")
+	var effective_target: Vector3 = effective_variant if effective_variant is Vector3 else Vector3.ZERO
+	var requested_variant = unit.get("_requested_move_target")
+	var requested_target: Vector3 = requested_variant if requested_variant is Vector3 else Vector3.ZERO
+	var anchor_variant = unit.get("_attack_target_anchor")
+	var anchor: Vector3 = anchor_variant if anchor_variant is Vector3 else Vector3.ZERO
+	var safe_variant = unit.get("_navigation_safe_velocity")
+	var safe_velocity: Vector3 = safe_variant if safe_variant is Vector3 else unit.velocity
+	var overlaps: Array = []
+	for building in all_buildings:
+		if not _live_building(building): continue
+		var footprint := float(building.def.get("footprint", 4.0))
+		var clearance := footprint + 0.9
+		var center_distance: float = unit.global_position.distance_to(building.global_position)
+		if center_distance < clearance:
+			overlaps.append({"building_runtime_id":str(building.get_instance_id()), "building_id":String(building.building_id), "center_distance":center_distance, "footprint":footprint, "clearance":clearance})
+	var engage_range := float(unit._engage_range()) if unit.has_method("_engage_range") else float(unit.get("atk_range"))
+	return {
+		"timestamp_ms":Time.get_ticks_msec(), "simulation_time_seconds":float(world.match_time),
+		"runtime_id":str(unit.get_instance_id()), "unit_id":String(unit.unit_id), "team":int(unit.team),
+		"role":String(unit.def.get("role", "")), "state":int(unit.state),
+		"position":_vec(unit.global_position), "velocity":_vec(unit.velocity), "safe_velocity":_vec(safe_velocity),
+		"target_runtime_id":target_id, "target_team":target_team, "target_position":_vec(target_position) if is_instance_valid(target) else null,
+		"target_distance":distance, "target_stationary":target_stationary,
+		"attack_range":float(unit.get("atk_range")), "engage_range":engage_range,
+		"attack_timer":float(unit.get("_attack_timer")), "navigation_command":String(unit.get("_navigation_command_type")),
+		"effective_target":_vec(effective_target), "requested_target":_vec(requested_target),
+		"path_pending":bool(unit.get("_navigation_target_pending")), "engagement_anchor":_vec(anchor),
+		"slot_angle":float(unit.get("_attack_slot_angle")), "building_overlaps":overlaps,
+		"target_moving":is_instance_valid(target) and target is Unit and target.velocity.length() > 0.2,
+		"attack_state":int(unit.state) == Unit.State.ATTACKING
+	}
+
+func _k2_ai_snapshots(node: Node, result: Array) -> void:
+	if node.has_method("get_v0435_audit"):
+		result.append({"node":String(node.get_path()), "audit":node.get_v0435_audit()})
+	for child in node.get_children():
+		_k2_ai_snapshots(child, result)
+
+func _k2_world_snapshot(label: String) -> Dictionary:
+	var buildings: Array = []
+	var all_buildings: Array = []
+	for commander in world.commanders:
+		for building in commander.buildings:
+			if is_instance_valid(building):
+				all_buildings.append(building)
+				buildings.append(_building_record(building))
+	var units: Array = []
+	for unit in world.all_units():
+		if _live_unit(unit): units.append(_k2_unit_telemetry(unit, all_buildings))
+	var ai: Array = []
+	_k2_ai_snapshots(world, ai)
+	return {"label":label, "simulation_time_seconds":float(world.match_time), "workers":_live_unit_count_for_role(true), "player_combat_count":_player_combatants().size(), "enemy_combat_count":_enemy_combatants().size(), "player_resources":world.player_commander.resources.duplicate(true), "player_population":{"used":int(world.player_commander.pop_used), "reserved":int(world.player_commander.reserved_pop), "cap":int(world.player_commander.pop_cap)}, "buildings":buildings, "units":units, "ai_snapshots":ai, "combat_damage_event_count":world.combat_damage_events.size(), "combat_death_event_count":world.combat_death_events.size(), "building_damage_event_count":world.building_damage_events.size(), "building_destruction_event_count":world.building_destruction_events.size(), "navigation":world.navigation_runtime_snapshot()}
+
+func _k2_capture_sample(label: String) -> void:
+	if not is_instance_valid(world): return
+	k2_samples.append(_k2_world_snapshot(label))
+
+func _k2_precombat_sampling() -> void:
+	while is_instance_valid(world) and world.game_running and float(world.match_time) < 900.0 and k2_first_wave_time < 0.0:
+		_k2_capture_sample("simulation_5_second_precombat_sample")
+		await _wait_seconds(2.5)
+
+func _k2_wave_approaching() -> bool:
+	if not is_instance_valid(world): return false
+	var hq_candidates: Array = world.player_commander.buildings.filter(func(b): return _live_building(b) and bool(b.def.get("is_hq", false)))
+	if hq_candidates.is_empty(): return false
+	var hq = hq_candidates.front()
+	for unit in _enemy_combatants():
+		var command := String(unit.get("_navigation_command_type"))
+		if (command.contains("attack") or int(unit.state) == Unit.State.ATTACK_MOVE) and unit.global_position.distance_to(hq.global_position) < 120.0:
+			return true
+	return false
+
+func _k2_any_contact() -> bool:
+	if not is_instance_valid(world): return false
+	var player_units := _player_combatants()
+	for enemy in _enemy_combatants():
+		for player in player_units:
+			if enemy.global_position.distance_to(player.global_position) <= 18.0: return true
+	return world.combat_damage_events.size() > 0
+
+func _k2_active_units() -> Array:
+	return world.all_units().filter(func(u): return _live_unit(u) and not bool(u.is_worker) and int(u.state) == Unit.State.ATTACKING)
+
+func _k2_capture_combat_telemetry(duration_seconds: float, save_active := false) -> void:
+	var started_ms := Time.get_ticks_msec()
+	var damage_before: int = world.combat_damage_events.size()
+	var last_damage_count := damage_before
+	var quiet_seconds := 0.0
+	var active_saved := false
+	while is_instance_valid(world) and world.game_running and float(Time.get_ticks_msec() - started_ms) / 1000.0 < duration_seconds:
+		var all_buildings: Array = []
+		for commander in world.commanders: all_buildings.append_array(commander.buildings)
+		for unit in world.all_units():
+			if _live_unit(unit) and not bool(unit.is_worker): k2_telemetry.append(_k2_unit_telemetry(unit, all_buildings))
+		var damage_count: int = world.combat_damage_events.size()
+		if damage_count > damage_before and k2_first_damage_time < 0.0: k2_first_damage_time = float(world.match_time)
+		if damage_count == last_damage_count:
+			quiet_seconds += 0.1
+		else:
+			quiet_seconds = 0.0
+		last_damage_count = damage_count
+		if save_active and not active_saved and (damage_count > damage_before or float(Time.get_ticks_msec() - started_ms) > 3000.0):
+			await _save("05_K2_ACTIVE_COMBAT.png")
+			active_saved = true
+		if active_saved and (world.combat_death_events.size() > 0 or _k2_active_units().is_empty()) and quiet_seconds >= 8.0:
+			break
+		await _wait_seconds(0.1)
+	if save_active and not active_saved: await _save("05_K2_ACTIVE_COMBAT.png")
+
+func _k2_route_around_demo() -> Dictionary:
+	var live := _player_combatants()
+	var buildings: Array = world.player_commander.buildings.filter(func(b): return _live_building(b))
+	if live.is_empty() or buildings.is_empty(): return {"attempted":false, "reason":"no_live_unit_or_building"}
+	var building = buildings.front()
+	var unit = live.front()
+	var direction: Vector3 = unit.global_position - building.global_position
+	direction.y = 0.0
+	if direction.length_squared() < 0.01: direction = Vector3(1, 0, 0)
+	direction = direction.normalized()
+	var destination: Vector3 = building.global_position - direction * (float(building.def.get("footprint", 4.0)) + 10.0)
+	var before := _vec(unit.global_position)
+	unit.command_move(destination)
+	await _wait_seconds(4.0)
+	var after := _vec(unit.global_position)
+	return {"attempted":true, "command":"Unit.command_move public path", "unit_runtime_id":str(unit.get_instance_id()), "building_runtime_id":str(building.get_instance_id()), "building_footprint":float(building.def.get("footprint", 4.0)), "before":before, "destination":_vec(destination), "after":after, "overlap_samples":k2_telemetry.filter(func(sample): return String(sample.get("runtime_id")) == str(unit.get_instance_id()) and not sample.get("building_overlaps", []).is_empty())}
+
+func _k2_combat_capture() -> void:
+	if not await _wait_until(func(): return is_instance_valid(world) and world.game_running, 30.0): await _failure("BLOCKED_K2_MATCH_NOT_STARTED", "production match did not start"); return
+	if not await _wait_until(func(): return world.is_navigation_ready(), 30.0): await _failure("BLOCKED_K2_NAVIGATION_NOT_READY", "navigation did not become ready"); return
+	_save_json("k2-match-configuration.json", {"schema":"v0436-k2-original-easy-combat-configuration-v1", "provenance":_provenance("k2_configuration"), "observed":Match.get_config().duplicate(true), "expected":{"player_race":"barrosan", "opponent_race":"lioraen", "difficulty":"easy", "map":"hollowspan", "start_resources":"rich", "mode":"skirmish", "victory":"conquest", "game_speed":2.0}, "state_injection":false, "player_offense_before_first_wave":false})
+	await _focus(world.player_commander.buildings[0].global_position)
+	await _save("01_K2_BASE_OPENING.png")
+	var production_ok := false
+	_k2_precombat_sampling()
+	production_ok = await _normal_production_setup()
+	await _save("02_K2_DEFENDERS_READY.png")
+	if not production_ok:
+		k2_run_status = "BLOCKED_K2_DRIVER_REGRESSION_ECONOMY_OR_PRODUCTION"
+		await _failure(k2_run_status, "normal K1-qualified opening did not produce the defensive force"); return
+	_k2_capture_sample("defenders_ready")
+	var wave_seen := await _wait_until(Callable(self, "_k2_wave_approaching"), 900.0)
+	if not wave_seen:
+		k2_run_status = "INCONCLUSIVE_K2_NO_QUALIFIED_FIRST_WAVE_WITHIN_BOUND"
+		_save_json("k2-run.json", {"schema":"v0436-k2-run-v1", "status":k2_run_status, "run":session, "samples":k2_samples, "telemetry":k2_telemetry, "world":_k2_world_snapshot("no_wave_terminal"), "milestones":{"first_wave":k2_first_wave_time, "first_contact":k2_first_contact_time, "first_damage":k2_first_damage_time, "resolution":k2_resolution_time}})
+		await _save("06_K2_FIRST_WAVE_RESULT.png"); await _contact_sheet(true); get_tree().quit(0); return
+	k2_first_wave_time = float(world.match_time)
+	await _save("03_K2_FIRST_WAVE_APPROACH.png")
+	var contact_seen := await _wait_until(Callable(self, "_k2_any_contact"), 120.0)
+	if contact_seen:
+		k2_first_contact_time = float(world.match_time)
+		await _save("04_K2_FIRST_CONTACT.png")
+	else:
+		await _save("04_K2_FIRST_CONTACT.png")
+	await _k2_capture_combat_telemetry(120.0, true)
+	k2_resolution_time = float(world.match_time)
+	await _save("06_K2_FIRST_WAVE_RESULT.png")
+	var route := await _k2_route_around_demo()
+	await _save("10_K2_COMBAT_BESIDE_BUILDING.png")
+	await _save("11_K2_ROUTE_AROUND_BUILDING.png")
+	if session == "C": await _save("12_K2_1366_FIRST_WAVE.png")
+	var classifications := {"orbiting":"PENDING_OFFLINE_ANALYSIS", "building_penetration":"PENDING_OFFLINE_ANALYSIS", "ranged_overclosing":"PENDING_OFFLINE_ANALYSIS", "group_settling":"PENDING_OFFLINE_ANALYSIS"}
+	k2_run_status = "QUALIFIED_FIRST_WAVE_OBSERVED"
+	_save_json("k2-run.json", {"schema":"v0436-k2-run-v1", "status":k2_run_status, "run":session, "source":_provenance("k2_run"), "samples":k2_samples, "telemetry":k2_telemetry, "milestones":{"first_wave":k2_first_wave_time, "first_contact":k2_first_contact_time, "first_damage":k2_first_damage_time, "resolution":k2_resolution_time}, "route_around_building":route, "classifications":classifications, "combat_result":{"player_combat_alive":_player_combatants().size(), "enemy_combat_alive":_enemy_combatants().size(), "player_workers_alive":_live_unit_count_for_role(true), "player_resources":world.player_commander.resources.duplicate(true), "pressure_not_applicable":true}, "world":_k2_world_snapshot("terminal")})
+	await _contact_sheet(false)
+	get_tree().quit(0)
 
 func _competent_assault_target(target, category: String, label: String) -> Dictionary:
 	var audit := _target_key(target, category)
@@ -1174,6 +1388,9 @@ func _capture_tutorial_match() -> void:
 	get_tree().quit(0)
 
 func _capture_match() -> void:
+	if k2_mode:
+		await _k2_combat_capture()
+		return
 	if k1_mode:
 		await _k1_production_capture()
 		return
