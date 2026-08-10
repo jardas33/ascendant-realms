@@ -5,7 +5,7 @@ class_name EntityPortraitView
 ## no gameplay node, selection state, collision, or simulation object is used.
 
 const FRAME_PATH := "res://assets/ui/frame_portrait.png"
-const VIEW_SIZE := Vector2i(96, 96)
+const VIEW_SIZE := Vector2i(128, 128)
 
 var _viewport_container: SubViewportContainer
 var _viewport: SubViewport
@@ -14,12 +14,12 @@ var _camera: Camera3D
 
 func _ready() -> void:
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
-	custom_minimum_size = Vector2(96, 96)
+	custom_minimum_size = Vector2(112, 112)
 	_build_view()
 
 func _build_view() -> void:
 	var bg := ColorRect.new()
-	bg.color = Color(0.025, 0.035, 0.05, 0.96)
+	bg.color = Color(0.055, 0.065, 0.075, 0.98)
 	bg.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	bg.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(bg)
@@ -47,22 +47,22 @@ func _build_view() -> void:
 	var env_node := WorldEnvironment.new()
 	var env := Environment.new()
 	env.background_mode = Environment.BG_COLOR
-	env.background_color = Color(0.025, 0.035, 0.05, 1.0)
+	env.background_color = Color(0.055, 0.065, 0.075, 1.0)
 	env.ambient_light_source = Environment.AMBIENT_SOURCE_COLOR
 	env.ambient_light_color = Color(0.62, 0.66, 0.78)
-	env.ambient_light_energy = 0.7
+	env.ambient_light_energy = 0.86
 	env_node.environment = env
 	_viewport.add_child(env_node)
 
 	var key := DirectionalLight3D.new()
 	key.light_color = Color(1.0, 0.93, 0.82)
 	key.light_energy = 1.15
-	key.rotation_degrees = Vector3(-35.0, -28.0, 0.0)
+	key.rotation_degrees = Vector3(-38.0, -32.0, 0.0)
 	_viewport.add_child(key)
 
 	var fill := DirectionalLight3D.new()
 	fill.light_color = Color(0.55, 0.68, 1.0)
-	fill.light_energy = 0.35
+	fill.light_energy = 0.42
 	fill.rotation_degrees = Vector3(-20.0, 145.0, 0.0)
 	_viewport.add_child(fill)
 
@@ -88,7 +88,7 @@ func configure_entity(entity) -> void:
 	var definition: Dictionary = entity.def if "def" in entity and entity.def is Dictionary else {}
 	var path := str(definition.get("model", ""))
 	var is_building: bool = entity.get_class() == "Building"
-	var target_height := 2.25 if is_building else 1.75
+	var target_height: float = 2.45 if is_building else 1.95
 	var model: Node3D = null
 	if not path.is_empty() and ResourceLoader.exists(path):
 		var packed = load(path)
@@ -110,7 +110,7 @@ func configure_entity(entity) -> void:
 		mesh.position.y = target_height * 0.5
 		_pivot.add_child(mesh)
 
-	var distance := 3.0 if not is_building else 3.65
-	_camera.position = Vector3(0.0, target_height * 0.58, distance)
-	_camera.look_at(Vector3(0.0, target_height * 0.47, 0.0), Vector3.UP)
-	_pivot.rotation_degrees.y = -12.0
+	var distance: float = 3.15 if not is_building else 3.75
+	_camera.position = Vector3(0.0, target_height * 0.6, distance)
+	_camera.look_at(Vector3(0.0, target_height * 0.48, 0.0), Vector3.UP)
+	_pivot.rotation_degrees.y = -18.0

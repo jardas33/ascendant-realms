@@ -230,10 +230,27 @@ func _cost_string(cost: Dictionary) -> String:
 
 func _mk_command_button(title: String, detail: String, tooltip: String, disabled_reason: String = "") -> Button:
 	var btn := _mk_button("%s\n%s" % [title, detail], 13)
-	btn.custom_minimum_size = Vector2(142, 54)
+	btn.custom_minimum_size = Vector2(150, 58)
 	btn.alignment = HORIZONTAL_ALIGNMENT_LEFT
 	btn.clip_text = true
 	btn.tooltip_text = tooltip if disabled_reason.is_empty() else "%s\nUnavailable: %s" % [tooltip, disabled_reason]
+	var normal := StyleBoxFlat.new()
+	normal.bg_color = Color(0.10, 0.12, 0.14, 0.96)
+	normal.border_color = Color(0.34, 0.38, 0.38, 0.9)
+	normal.set_border_width_all(1)
+	normal.set_corner_radius_all(4)
+	normal.set_content_margin_all(7)
+	var hover := normal.duplicate()
+	hover.bg_color = Color(0.18, 0.19, 0.16, 0.98)
+	hover.border_color = Color(0.82, 0.68, 0.32, 1.0)
+	var disabled := normal.duplicate()
+	disabled.bg_color = Color(0.06, 0.07, 0.08, 0.9)
+	disabled.border_color = Color(0.20, 0.22, 0.22, 0.75)
+	btn.add_theme_stylebox_override("normal", normal)
+	btn.add_theme_stylebox_override("hover", hover)
+	btn.add_theme_stylebox_override("pressed", hover)
+	btn.add_theme_stylebox_override("disabled", disabled)
+	btn.add_theme_color_override("font_disabled_color", Color(0.48, 0.47, 0.43, 0.9))
 	return btn
 
 
@@ -614,6 +631,7 @@ func _build_single_unit(u) -> void:
 	var portrait: Control
 	if ResourceLoader.exists(ENTITY_PORTRAIT_SCRIPT):
 		portrait = load(ENTITY_PORTRAIT_SCRIPT).new()
+		portrait.custom_minimum_size = Vector2(108, 108)
 		row.add_child(portrait)
 		portrait.configure_entity(u)
 	else:
@@ -790,7 +808,7 @@ func _build_single_building(b) -> void:
 	var portrait: Control
 	if ResourceLoader.exists(ENTITY_PORTRAIT_SCRIPT):
 		portrait = load(ENTITY_PORTRAIT_SCRIPT).new()
-		portrait.custom_minimum_size = Vector2(76, 76)
+		portrait.custom_minimum_size = Vector2(92, 92)
 		identity.add_child(portrait)
 		portrait.configure_entity(b)
 	else:
