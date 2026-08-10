@@ -91,6 +91,16 @@ static func _assemble(s: Dictionary) -> Dictionary:
 	}
 	var th := theme(s["theme"])
 	m["water"] = th.get("water", {"enabled": false})
+	# Presentation-only overview contract consumed by the HUD minimap. Keep it
+	# alongside the authoritative map definition so the miniature describes the
+	# same starts, crossing, and biome as the world without creating gameplay
+	# geometry or a second simulation.
+	m["overview"] = {
+		"layout": s["layout"],
+		"water_axis": "crossing" if s.get("bridge", false) else "north_bay",
+		"water_center_z": 52.0 if s.get("bridge", false) else 118.0,
+		"water_width": 22.0 if s.get("bridge", false) else 34.0,
+	}
 	if s.get("bridge", false) and m["water"].get("enabled", false):
 		m["bridge"] = {"pos": Vector3(0, 0, 52), "model": BRIDGE}
 	return m
