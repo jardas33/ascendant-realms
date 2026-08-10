@@ -426,19 +426,28 @@ func navigation_waypoints_for_unit(origin: Vector3, requested: Vector3, clearanc
 		var blocker = _first_route_blocking_building(current, final_target, clearance, ignored)
 		if blocker == null:
 			break
-		var radius := float(blocker.def.get("footprint", 4.0)) + clearance
-		var direct: Vector3 = final_target - blocker.global_position
-		direct.y = 0.0
-		if direct.length_squared() < 0.01:
-			direct = current - blocker.global_position
-			direct.y = 0.0
-		if direct.length_squared() < 0.01:
-			direct = Vector3.FORWARD
-		direct = direct.normalized()
-		var side := Vector3(-direct.z, 0.0, direct.x)
-		var candidate_a: Vector3 = blocker.global_position + side * radius
-		var candidate_b: Vector3 = blocker.global_position - side * radius
-		var candidate: Vector3 = candidate_a if _route_cost(current, candidate_a, final_target) <= _route_cost(current, candidate_b, final_target) else candidate_b
+		# The old two-side heuristic could choose a waypoint that cleared the
+		# first leg but let the next leg cut back through the same footprint. Use
+		# deterministic perimeter candidates and require both legs to clear the
+		# blocker before it can be ignored for the next route segment.
+		var radius := float(blocker.def.get("footprint", 4.0)) + clearance + 0.2
+		var candidates: Array[Vector3] = []
+		for candidate_index in range(16):
+			var angle := TAU * float(candidate_index) / 16.0
+			candidates.append(blocker.global_position + Vector3(cos(angle), 0.0, sin(angle)) * radius)
+		var destination_inside := final_target.distance_to(blocker.global_position) < radius
+		var legal_candidates: Array[Vector3] = []
+		for candidate in candidates:
+			var incoming_clear := not _segment_intersects_route_circle(current, candidate, blocker.global_position, radius)
+			var outgoing_clear := destination_inside or not _segment_intersects_route_circle(candidate, final_target, blocker.global_position, radius)
+			if incoming_clear and outgoing_clear:
+				legal_candidates.append(candidate)
+		var candidate: Vector3 = candidates.front()
+		if not legal_candidates.is_empty():
+			candidate = legal_candidates[0]
+			for alternative in legal_candidates:
+				if _route_cost(current, alternative, final_target) < _route_cost(current, candidate, final_target):
+					candidate = alternative
 		points.append(candidate)
 		current = candidate
 		ignored.append(blocker)
