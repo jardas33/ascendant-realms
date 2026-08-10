@@ -437,7 +437,7 @@ func navigation_waypoints_for_unit(origin: Vector3, requested: Vector3, clearanc
 			candidates.append(blocker.global_position + Vector3(cos(angle), 0.0, sin(angle)) * radius)
 		var destination_inside := final_target.distance_to(blocker.global_position) < radius
 		var origin_inside_clearance := current.distance_to(blocker.global_position) < radius
-		var target_direction := final_target - blocker.global_position
+		var target_direction: Vector3 = final_target - blocker.global_position
 		target_direction.y = 0.0
 		if target_direction.length_squared() > 0.01:
 			target_direction = target_direction.normalized()
@@ -447,9 +447,9 @@ func navigation_waypoints_for_unit(origin: Vector3, requested: Vector3, clearanc
 			# position is the result of an earlier close approach, not a legal
 			# incoming route. Force the next waypoint onto the non-target-facing
 			# side so the unit exits the envelope before the target leg resumes.
-			var candidate_direction := candidate - blocker.global_position
+			var candidate_direction: Vector3 = candidate - blocker.global_position
 			candidate_direction.y = 0.0
-			var exits_away_from_target := not origin_inside_clearance or target_direction.length_squared() < 0.01 or candidate_direction.dot(target_direction) <= 0.01
+			var exits_away_from_target: bool = not origin_inside_clearance or target_direction.length_squared() < 0.01 or candidate_direction.dot(target_direction) <= 0.01
 			var incoming_clear := origin_inside_clearance or not _segment_intersects_route_circle(current, candidate, blocker.global_position, radius)
 			var outgoing_clear := destination_inside or not _segment_intersects_route_circle(candidate, final_target, blocker.global_position, radius)
 			if incoming_clear and outgoing_clear and exits_away_from_target:
