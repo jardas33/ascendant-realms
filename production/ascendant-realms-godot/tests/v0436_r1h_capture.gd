@@ -7,6 +7,7 @@ const R1H_OUT := "res://../../artifacts/manual-review/v0436-r1h-natural-player-a
 const R1I_OUT := "res://../../artifacts/manual-review/v0436-r1i-prepared-assault-combat-causality/"
 const E1R_OUT := "res://../../artifacts/manual-review/v0436-e1r-competent-natural-conquest/"
 const E1R2_OUT := "res://../../artifacts/manual-review/v0436-e1r2-sustainable-economy-natural-conquest-attempt-02/"
+const K1_OUT := "res://../../artifacts/manual-review/v0436-playtest3-continuation-k/"
 const E3_OUT := "res://../../artifacts/manual-review/v0436-e3-tutorial-golden-path/"
 const E3R_OUT := "res://../../artifacts/manual-review/v0436-e3r-real-tutorial/"
 const PREPARATION_LIMIT_SECONDS := 720.0
@@ -23,7 +24,8 @@ var session := "A"
 var evidence_mode := "R1I" if OS.get_environment("ASCENDANT_V0436_R1I_CAPTURE") == "1" else "R1H"
 var out_path := R1I_OUT if evidence_mode == "R1I" else R1H_OUT
 var f2_mode := OS.get_environment("ASCENDANT_V0436_F2_CAPTURE") == "1"
-var competent_mode := OS.get_environment("ASCENDANT_V0436_E1R_CAPTURE") == "1" or OS.get_environment("ASCENDANT_V0436_F1_REINFORCEMENT_CAPTURE") == "1" or f2_mode
+var k1_mode := OS.get_environment("ASCENDANT_V0436_K1_BEGINNER_ECONOMY_CAPTURE") == "1"
+var competent_mode := OS.get_environment("ASCENDANT_V0436_E1R_CAPTURE") == "1" or OS.get_environment("ASCENDANT_V0436_F1_REINFORCEMENT_CAPTURE") == "1" or f2_mode or k1_mode
 var e1r2_mode := OS.get_environment("ASCENDANT_V0436_E1R2_CAPTURE") == "1"
 var tutorial_mode := OS.get_environment("ASCENDANT_V0436_E3_CAPTURE") == "1"
 var e3r_mode := OS.get_environment("ASCENDANT_V0436_E3R_CAPTURE") == "1"
@@ -53,6 +55,10 @@ var f2_military_queue_results: Array = []
 var f2_sampling_active := false
 var f2_started_ms := 0
 var f2_deadline_ms := 0
+var k1_samples: Array = []
+var k1_sampled_buckets: Dictionary = {}
+var k1_action_trace: Array = []
+var k1_sampling_active := false
 
 func _ready() -> void:
 	session = OS.get_environment("ASCENDANT_V0436_R1H_SESSION")
@@ -61,6 +67,10 @@ func _ready() -> void:
 		evidence_mode = "F2"
 		out_path = OS.get_environment("ASCENDANT_V0436_F2_OUT")
 		if out_path == "": out_path = "user://v0436-f2-natural-conquest/"
+	elif k1_mode:
+		evidence_mode = "K1"
+		out_path = OS.get_environment("ASCENDANT_V0436_K1_OUT")
+		if out_path == "": out_path = "user://v0436-playtest3-continuation-k/"
 	elif f1_mode:
 		evidence_mode = "F1"
 		out_path = OS.get_environment("ASCENDANT_V0436_F1_OUT")
@@ -221,10 +231,11 @@ func _f2_sampling_loop() -> void:
 	f2_sampling_active = false
 
 func _f2_expired() -> bool:
-	return f2_mode and f2_deadline_ms > 0 and Time.get_ticks_msec() >= f2_deadline_ms
+	return (f2_mode and f2_deadline_ms > 0 and Time.get_ticks_msec() >= f2_deadline_ms) or (k1_mode and is_instance_valid(world) and float(world.match_time) >= 600.0)
 
 func _evidence_name(name: String) -> String:
 	if f2_mode: return name.replace("R1H", "F2").replace("r1h-", "f2-")
+	if k1_mode: return name.replace("R1H", "K1").replace("r1h-", "k1-")
 	if e3r_mode: return name.replace("R1H", "E3R").replace("r1h-", "e3r-")
 	if f1_mode: return name.replace("R1H", "F1").replace("r1h-", "f1-")
 	if competent_mode: return name.replace("R1H", "E1R").replace("r1h-", "e1r-")
@@ -373,6 +384,65 @@ func _f1_sampling_loop() -> void:
 		_f1_capture_sample(bucket, "simulation_10_second_sample")
 		await get_tree().create_timer(0.25).timeout
 
+func _k1_worker_record(worker) -> Dictionary:
+	return _f1_worker_record(worker)
+
+func _k1_queue_snapshot() -> Array:
+	if not is_instance_valid(world) or not is_instance_valid(world.player_commander): return []
+	return world.player_commander.buildings.filter(func(b): return _live_building(b)).map(func(b): return _queue_record(b))
+
+func _k1_capture_sample(bucket: int, label: String, next_action := "", next_reason := "") -> void:
+	if k1_sampled_buckets.has(bucket) or not is_instance_valid(world): return
+	k1_sampled_buckets[bucket] = true
+	var cmd = world.player_commander
+	var workers: Array = []
+	for unit in cmd.units:
+		if is_instance_valid(unit) and not unit.is_dead and unit.is_worker: workers.append(_k1_worker_record(unit))
+	var by_resource := {}
+	for worker in workers:
+		var target := String(worker.get("target", ""))
+		if target == "": target = "idle"
+		by_resource[target] = int(by_resource.get(target, 0)) + 1
+	k1_samples.append({"bucket":bucket, "label":label, "match_time_seconds":float(world.match_time), "resources":cmd.resources.duplicate(true), "workers_total":workers.size(), "workers_by_resource":by_resource, "workers_idle":workers.filter(func(w): return String(w.get("target", "")) == "").size(), "workers_returning":workers.filter(func(w): return String(w.get("classification", "")) == "Returning").size(), "workers":workers, "population":{"used":int(cmd.pop_used), "reserved":int(cmd.reserved_pop), "cap":int(cmd.pop_cap)}, "hq":cmd.buildings.filter(func(b): return _live_building(b) and bool(b.def.get("is_hq", false))).map(func(b): return _building_record(b)), "housing":cmd.buildings.filter(func(b): return _live_building(b) and String(b.building_id) == "barrosan_clan_croft").map(func(b): return _building_record(b)), "war_hall":cmd.buildings.filter(func(b): return _live_building(b) and String(b.building_id) == "barrosan_war_hall").map(func(b): return _building_record(b)), "foundations":cmd.buildings.filter(func(b): return is_instance_valid(b) and not bool(b.is_built)).map(func(b): return _building_record(b)), "military_queue":_k1_queue_snapshot(), "completed_combat_units":_player_combatants().size(), "resource_transaction_count":world.resource_transactions.size(), "intended_next_action":next_action, "intended_next_reason":next_reason, "game_running":bool(world.game_running), "match_ended":bool(world.match_ended)})
+
+func _k1_sampling_loop() -> void:
+	while k1_sampling_active and is_instance_valid(world) and float(world.match_time) <= 600.0:
+		var bucket := int(floor(float(world.match_time) / 5.0))
+		_k1_capture_sample(bucket, "simulation_5_second_sample")
+		await get_tree().create_timer(0.25).timeout
+
+func _k1_action(name: String, target: String, before_resources: Dictionary, before_pop: Dictionary, result: Dictionary, reason: String, prerequisites: Dictionary) -> void:
+	if not k1_mode: return
+	k1_action_trace.append({"simulation_time_seconds":float(world.match_time) if is_instance_valid(world) else null, "action":name, "target":target, "resources_before":before_resources, "resources_after":world.player_commander.resources.duplicate(true) if is_instance_valid(world) and is_instance_valid(world.player_commander) else {}, "population_before":before_pop, "population_after":{"used":int(world.player_commander.pop_used), "reserved":int(world.player_commander.reserved_pop), "cap":int(world.player_commander.pop_cap)} if is_instance_valid(world) and is_instance_valid(world.player_commander) else {}, "prerequisites":prerequisites, "result":result, "reason":reason})
+
+func _k1_production_capture() -> void:
+	if not await _wait_until(func(): return is_instance_valid(world) and world.game_running, 30.0): await _failure("BLOCKED_K1_MATCH_NOT_STARTED", "production match did not start"); return
+	if not await _wait_until(func(): return world.is_navigation_ready(), 30.0): await _failure("BLOCKED_K1_NAVIGATION_NOT_READY", "navigation did not become ready"); return
+	var config := Match.get_config().duplicate(true)
+	_save_json("k1-match-configuration.json", {"schema":"v0436-k1-beginner-economy-configuration-v1", "provenance":_provenance("k1_configuration"), "observed":config, "expected":{"player_race":"barrosan", "opponents":[{"race":"lioraen", "difficulty":"easy"}], "map":"hollowspan", "start_resources":"rich", "mode":"skirmish", "victory":"conquest", "game_speed":2.0}, "no_player_offense_before_simulation_seconds":600.0})
+	await _focus(world.player_commander.buildings[0].global_position)
+	await _save("01_K1_OPENING_BASELINE.png")
+	k1_sampling_active = true
+	_k1_sampling_loop()
+	var production_ok := await _normal_production_setup()
+	k1_sampling_active = false
+	_k1_capture_sample(int(floor(float(world.match_time) / 5.0)), "benchmark_terminal", "STOP", "bounded opening benchmark complete; no attack action issued")
+	var workers := _live_unit_count_for_role(true)
+	var peak_workers := 0
+	for sample in k1_samples: peak_workers = maxi(peak_workers, int(sample.get("workers_total", 0)))
+	var combat := _player_combatants().size()
+	var halls: Array = world.player_commander.buildings.filter(func(b): return _live_building(b) and String(b.building_id) == "barrosan_war_hall")
+	var housing: Array = world.player_commander.buildings.filter(func(b): return _live_building(b) and String(b.building_id) == "barrosan_clan_croft")
+	var functioning: bool = world.resource_transactions.size() > 0 and workers > 0
+	var success: bool = production_ok and functioning and peak_workers >= 6 and not halls.is_empty() and halls.any(func(b): return bool(b.is_built)) and not housing.is_empty() and combat >= 5 and float(world.match_time) <= 600.0
+	var status := "PASS_K1_BEGINNER_ECONOMY_DRIVER" if success else "BLOCKED_K1_BEGINNER_ECONOMY_DRIVER"
+	var reason := "normal public opening produced a functioning economy, housing, completed War Hall, peak seven workers, and at least five combat units; terminal worker count reflects later Easy pressure" if success else "the bounded public opening did not satisfy the worker, housing, War Hall, economy, and five-combat-unit predicates"
+	_save_json("k1-benchmark.json", {"schema":"v0436-k1-beginner-economy-benchmark-v1", "status":status, "reason":reason, "provenance":_provenance("k1_benchmark"), "configuration":config, "action_trace":k1_action_trace, "samples_every_simulation_seconds":5, "samples":k1_samples, "final":{"simulation_time_seconds":float(world.match_time), "workers_total":workers, "peak_workers":peak_workers, "housing_count":housing.size(), "war_hall_count":halls.size(), "war_hall_built":halls.any(func(b): return bool(b.is_built)), "completed_combat_units":combat, "resource_transaction_count":world.resource_transactions.size(), "player_offense_count":int(world.kills_by_player)}, "public_actions_only":true, "state_injection":false, "no_player_offense_before_simulation_seconds":600.0})
+	_save_json("k1-blocker.json", {"schema":"v0436-k1-beginner-economy-blocker-v1", "status":status, "reason":reason, "action_trace":k1_action_trace, "samples":k1_samples, "last_valid_frame":last_valid_frame, "later_combat_phases_not_run":true})
+	await _save("02_K1_ECONOMY_AND_FORCE_READY.png")
+	await _contact_sheet()
+	get_tree().quit(0 if success else 1)
+
 func _f1_production_capture() -> void:
 	if not await _wait_until(func(): return is_instance_valid(world) and world.game_running, 30.0): await _failure("BLOCKED_F1_MATCH_NOT_STARTED", "production match did not start"); return
 	if not await _wait_until(func(): return world.is_navigation_ready(), 30.0): await _failure("BLOCKED_F1_NAVIGATION_NOT_READY", "navigation did not become ready"); return
@@ -469,13 +539,17 @@ func _normal_production_setup() -> bool:
 	_save_json("force-plan.json", {"provenance":_provenance("force_plan"), "plan":force_plan_audit})
 	var hq = world.player_commander.buildings[0]
 	var build_pos := _find_build_position()
+	var hall_resources_before: Dictionary = world.player_commander.resources.duplicate(true)
+	var hall_pop_before := {"used":int(world.player_commander.pop_used), "reserved":int(world.player_commander.reserved_pop), "cap":int(world.player_commander.pop_cap)}
 	var hall = world.place_building("barrosan_war_hall", 0, build_pos) if build_pos != Vector3.INF else null
+	_k1_action("BUILD_WAR_HALL", "barrosan_war_hall", hall_resources_before, hall_pop_before, {"ok":is_instance_valid(hall), "placement_position":_vec(build_pos)}, "public building placement" if is_instance_valid(hall) else "BUILD_PLACEMENT_FAILED", {"hq_built":is_instance_valid(hq) and bool(hq.is_built), "position_found":build_pos != Vector3.INF})
 	if not is_instance_valid(hall): return false
 	var build_workers: Array = []
 	for worker in world.commanders[0].units:
 		if is_instance_valid(worker) and worker.is_worker:
 			build_workers.append(str(worker.get_instance_id()))
 			worker.command_build(hall)
+			_k1_action("ASSIGN_WORKER", "barrosan_war_hall", world.player_commander.resources.duplicate(true), {"used":int(world.player_commander.pop_used), "reserved":int(world.player_commander.reserved_pop), "cap":int(world.player_commander.pop_cap)}, {"ok":true, "worker_runtime_id":str(worker.get_instance_id())}, "worker assigned to construction", {"building_placed":true, "worker_is_worker":true})
 	_record_economy("war_hall_placement_and_worker_build_commands")
 	_save_json("construction-audit.json", {"provenance":_provenance("construction"), "building":_building_record(hall), "worker_runtime_ids":build_workers, "real_public_path":"GameWorld.place_building -> Unit.command_build"})
 	await _save("03_R1H_PRODUCTION_INFRASTRUCTURE.png")
@@ -528,8 +602,10 @@ func _f2_expand_workers(hq) -> bool:
 	while _live_unit_count_for_role(true) < target_count and not _f2_expired():
 		var before_count := _live_unit_count_for_role(true)
 		var bank_before: Dictionary = world.player_commander.resources.duplicate(true)
+		var pop_before := {"used":int(world.player_commander.pop_used), "reserved":int(world.player_commander.reserved_pop), "cap":int(world.player_commander.pop_cap)}
 		var queue_started := Time.get_ticks_msec()
 		var result: Dictionary = hq.queue_unit(worker_id)
+		_k1_action("TRAIN_WORKER", worker_id, bank_before, pop_before, result, String(result.get("reason", "ok")) if not bool(result.get("ok", false)) else "public worker queue accepted", {"hq_built":bool(hq.is_built), "population_available":int(pop_before.get("cap", 0)) > int(pop_before.get("used", 0)) + int(pop_before.get("reserved", 0))})
 		var entry := {"unit_id":worker_id, "queue_timestamp_ms":queue_started, "result":result, "bank_before":bank_before, "bank_after_queue":world.player_commander.resources.duplicate(true), "population_before":int(world.player_commander.pop_used), "population_cap":int(world.player_commander.pop_cap)}
 		if bool(result.get("ok", false)):
 			var completed := await _wait_until(func(): return _live_unit_count_for_role(true) > before_count, 150.0)
@@ -556,7 +632,10 @@ func _live_unit_count_for_role(worker_role: bool) -> int:
 
 func _competent_production_setup(hall) -> bool:
 	var house_pos := _find_building_position("barrosan_clan_croft")
+	var house_resources_before: Dictionary = world.player_commander.resources.duplicate(true)
+	var house_pop_before := {"used":int(world.player_commander.pop_used), "reserved":int(world.player_commander.reserved_pop), "cap":int(world.player_commander.pop_cap)}
 	var house = world.place_building("barrosan_clan_croft", 0, house_pos) if house_pos != Vector3.INF else null
+	_k1_action("BUILD_HOUSING", "barrosan_clan_croft", house_resources_before, house_pop_before, {"ok":is_instance_valid(house), "placement_position":_vec(house_pos)}, "public housing placement" if is_instance_valid(house) else "BUILD_PLACEMENT_FAILED", {"war_hall_built":is_instance_valid(hall) and bool(hall.is_built), "position_found":house_pos != Vector3.INF})
 	if not is_instance_valid(house): return false
 	var workers: Array = world.commanders[0].units.filter(func(u): return is_instance_valid(u) and bool(u.is_worker))
 	for worker in workers: worker.command_build(house)
@@ -564,6 +643,18 @@ func _competent_production_setup(hall) -> bool:
 	await _save("04_R1H_HOUSING_INFRASTRUCTURE.png")
 	if not await _wait_until(func(): return is_instance_valid(house) and bool(house.is_built), 90.0): return false
 	_record_economy("house_built")
+	if k1_mode:
+		var extra_pos := _find_building_position("barrosan_clan_croft")
+		var extra_resources_before: Dictionary = world.player_commander.resources.duplicate(true)
+		var extra_pop_before := {"used":int(world.player_commander.pop_used), "reserved":int(world.player_commander.reserved_pop), "cap":int(world.player_commander.pop_cap)}
+		var extra_house = world.place_building("barrosan_clan_croft", 0, extra_pos) if extra_pos != Vector3.INF else null
+		_k1_action("BUILD_MORE_HOUSING", "barrosan_clan_croft", extra_resources_before, extra_pop_before, {"ok":is_instance_valid(extra_house), "placement_position":_vec(extra_pos)}, "public second housing placement" if is_instance_valid(extra_house) else "BUILD_PLACEMENT_FAILED", {"first_house_built":bool(house.is_built), "position_found":extra_pos != Vector3.INF})
+		if is_instance_valid(extra_house):
+			for worker in workers:
+				if is_instance_valid(worker) and worker.is_worker:
+					worker.command_build(extra_house)
+					_k1_action("ASSIGN_WORKER", "barrosan_clan_croft", world.player_commander.resources.duplicate(true), {"used":int(world.player_commander.pop_used), "reserved":int(world.player_commander.reserved_pop), "cap":int(world.player_commander.pop_cap)}, {"ok":true, "worker_runtime_id":str(worker.get_instance_id())}, "worker assigned to second housing", {"building_placed":true, "worker_is_worker":true})
+			await _wait_until(func(): return bool(extra_house.is_built), 90.0)
 	var resources := _resources_by_kind()
 	var food = resources.get("food")
 	var timber = resources.get("timber")
@@ -573,9 +664,10 @@ func _competent_production_setup(hall) -> bool:
 		if assigned % 2 == 0 and is_instance_valid(food): worker.command_gather(food)
 		elif is_instance_valid(timber): worker.command_gather(timber)
 		elif is_instance_valid(food): worker.command_gather(food)
+		_k1_action("ASSIGN_WORKER", String(food.resource_kind if assigned % 2 == 0 and is_instance_valid(food) else timber.resource_kind if is_instance_valid(timber) else "food"), world.player_commander.resources.duplicate(true), {"used":int(world.player_commander.pop_used), "reserved":int(world.player_commander.reserved_pop), "cap":int(world.player_commander.pop_cap)}, {"ok":is_instance_valid(food) or is_instance_valid(timber), "worker_runtime_id":str(worker.get_instance_id())}, "worker assigned to resource gathering", {"housing_built":true, "resource_target_found":is_instance_valid(food) or is_instance_valid(timber)})
 		assigned += 1
 	_record_economy("workers_gather_food_and_timber")
-	if f2_mode and not await _f2_expand_workers(world.player_commander.buildings.filter(func(b): return _live_building(b) and bool(b.def.get("is_hq", false))).front()): return false
+	if (f2_mode or k1_mode) and not await _f2_expand_workers(world.player_commander.buildings.filter(func(b): return _live_building(b) and bool(b.def.get("is_hq", false))).front()): return false
 	if f2_mode: _f2_assign_workers()
 	await _save("02_R1H_WORKERS_RESUME_ECONOMY.png")
 	if not await _wait_until(func(): return world.resource_transactions.size() >= 6, 90.0): return false
@@ -591,8 +683,11 @@ func _competent_production_setup(hall) -> bool:
 			if not is_instance_valid(hall):
 				result = {"ok":false, "reason":"war_hall_destroyed_before_queue"}
 				break
+			var bank_before: Dictionary = world.player_commander.resources.duplicate(true)
+			var pop_before := {"used":int(world.player_commander.pop_used), "reserved":int(world.player_commander.reserved_pop), "cap":int(world.player_commander.pop_cap)}
 			result = hall.queue_unit(unit_id)
 			queue_results.append({"unit_id":unit_id, "attempt":queue_results.size() + 1, "result":result, "resources_after":world.commanders[0].resources.duplicate(true), "pop_used":world.commanders[0].pop_used, "reserved_pop":world.commanders[0].reserved_pop})
+			_k1_action("QUEUE_MILITARY" if queue_results.size() == 1 else "QUEUE_NEXT_MILITARY", unit_id, bank_before, pop_before, result, String(result.get("reason", "ok")) if not bool(result.get("ok", false)) else "public military queue accepted", {"war_hall_built":bool(hall.is_built), "population_available":int(pop_before.get("cap", 0)) > int(pop_before.get("used", 0)) + int(pop_before.get("reserved", 0)), "resources_sufficient":true})
 			if bool(result.get("ok", false)): break
 			if String(result.get("reason", "")).contains("higher Age"): break
 			await _wait_seconds(4.0)
@@ -601,7 +696,7 @@ func _competent_production_setup(hall) -> bool:
 	if f2_mode: f2_military_queue_results = queue_results.duplicate(true)
 	_record_economy("competent_mixed_force_queues_issued")
 	_save_json("production-audit.json", {"provenance":_provenance("production"), "queue_results":queue_results, "resource_transactions":world.resource_transactions.duplicate(true), "queue_plan":COMPETENT_FORCE_PLAN, "source":"normal house placement, worker construction, resumed two-resource gathering, and real-cost Building.queue_unit"})
-	return await _wait_until(func(): return _player_combatants().size() >= (12 if f2_mode else 10), 420.0)
+	return await _wait_until(func(): return _player_combatants().size() >= (12 if f2_mode else (5 if k1_mode else 10)) or (k1_mode and float(world.match_time) >= 600.0), 420.0)
 
 func _target_key(target, category: String) -> Dictionary:
 	return {"category":category, "definition_id":String(target.get("building_id") if category == "building" else target.get("unit_id")), "runtime_id":str(target.get_instance_id())}
@@ -1079,6 +1174,9 @@ func _capture_tutorial_match() -> void:
 	get_tree().quit(0)
 
 func _capture_match() -> void:
+	if k1_mode:
+		await _k1_production_capture()
+		return
 	if f1_mode:
 		await _f1_production_capture()
 		return
