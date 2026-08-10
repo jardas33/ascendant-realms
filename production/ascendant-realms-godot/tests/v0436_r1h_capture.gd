@@ -30,7 +30,9 @@ var f2_mode := OS.get_environment("ASCENDANT_V0436_F2_CAPTURE") == "1"
 var k1_mode := OS.get_environment("ASCENDANT_V0436_K1_BEGINNER_ECONOMY_CAPTURE") == "1"
 var k2_mode := OS.get_environment("ASCENDANT_V0436_K2_COMBAT_CAPTURE") == "1"
 var k3r_mode := OS.get_environment("ASCENDANT_V0436_K3R_COMBAT_DIAGNOSTIC") == "1"
-var competent_mode := OS.get_environment("ASCENDANT_V0436_E1R_CAPTURE") == "1" or OS.get_environment("ASCENDANT_V0436_F1_REINFORCEMENT_CAPTURE") == "1" or f2_mode or k1_mode or k2_mode
+var k3r_natural_mode := OS.get_environment("ASCENDANT_V0436_K3R_NATURAL_CAPTURE") == "1"
+var k3r_natural_run := OS.get_environment("ASCENDANT_V0436_K3R_NATURAL_RUN")
+var competent_mode := OS.get_environment("ASCENDANT_V0436_E1R_CAPTURE") == "1" or OS.get_environment("ASCENDANT_V0436_F1_REINFORCEMENT_CAPTURE") == "1" or f2_mode or k1_mode or k2_mode or k3r_natural_mode
 var e1r2_mode := OS.get_environment("ASCENDANT_V0436_E1R2_CAPTURE") == "1"
 var tutorial_mode := OS.get_environment("ASCENDANT_V0436_E3_CAPTURE") == "1"
 var e3r_mode := OS.get_environment("ASCENDANT_V0436_E3R_CAPTURE") == "1"
@@ -71,6 +73,8 @@ var k2_first_contact_time := -1.0
 var k2_first_damage_time := -1.0
 var k2_resolution_time := -1.0
 var k2_run_status := ""
+var k3r_natural_samples: Array = []
+var k3r_natural_worker_lifecycle: Dictionary = {}
 
 func _ready() -> void:
 	var k3r_debug_out := OS.get_environment("ASCENDANT_V0436_K3R_OUT")
@@ -78,7 +82,7 @@ func _ready() -> void:
 		DirAccess.make_dir_recursive_absolute(k3r_debug_out)
 		var k3r_debug_file := FileAccess.open(k3r_debug_out.path_join("k3r-harness-startup.json"), FileAccess.WRITE)
 		if k3r_debug_file:
-			k3r_debug_file.store_string(JSON.stringify({"k3r_env":OS.get_environment("ASCENDANT_V0436_K3R_COMBAT_DIAGNOSTIC"), "r1h_env":OS.get_environment("ASCENDANT_V0436_R1H_CAPTURE")}) + "\n")
+			k3r_debug_file.store_string(JSON.stringify({"k3r_env":OS.get_environment("ASCENDANT_V0436_K3R_COMBAT_DIAGNOSTIC"), "k3r_natural_env":OS.get_environment("ASCENDANT_V0436_K3R_NATURAL_CAPTURE"), "r1h_env":OS.get_environment("ASCENDANT_V0436_R1H_CAPTURE")}) + "\n")
 	var k2_debug_out := OS.get_environment("ASCENDANT_V0436_K2_OUT")
 	if k2_debug_out != "":
 		DirAccess.make_dir_recursive_absolute(k2_debug_out)
@@ -87,7 +91,11 @@ func _ready() -> void:
 			k2_debug_file.store_string(JSON.stringify({"k2_env":OS.get_environment("ASCENDANT_V0436_K2_COMBAT_CAPTURE"), "k1_env":OS.get_environment("ASCENDANT_V0436_K1_BEGINNER_ECONOMY_CAPTURE"), "r1h_env":OS.get_environment("ASCENDANT_V0436_R1H_CAPTURE")}) + "\n")
 	session = OS.get_environment("ASCENDANT_V0436_R1H_SESSION")
 	if session != "A" and session != "B" and session != "C": session = "A"
-	if k3r_mode:
+	if k3r_natural_mode:
+		evidence_mode = "K3R-NATURAL"
+		out_path = OS.get_environment("ASCENDANT_V0436_K3R_NATURAL_OUT")
+		if out_path == "": out_path = "user://v0436-k3r-natural/"
+	elif k3r_mode:
 		evidence_mode = "K3R"
 		out_path = OS.get_environment("ASCENDANT_V0436_K3R_OUT")
 		if out_path == "": out_path = "user://v0436-k3r-combat-diagnostic/"
@@ -445,7 +453,7 @@ func _k1_sampling_loop() -> void:
 		await get_tree().create_timer(0.25).timeout
 
 func _k1_action(name: String, target: String, before_resources: Dictionary, before_pop: Dictionary, result: Dictionary, reason: String, prerequisites: Dictionary) -> void:
-	if not (k1_mode or k2_mode): return
+	if not (k1_mode or k2_mode or k3r_natural_mode): return
 	k1_action_trace.append({"simulation_time_seconds":float(world.match_time) if is_instance_valid(world) else null, "action":name, "target":target, "resources_before":before_resources, "resources_after":world.player_commander.resources.duplicate(true) if is_instance_valid(world) and is_instance_valid(world.player_commander) else {}, "population_before":before_pop, "population_after":{"used":int(world.player_commander.pop_used), "reserved":int(world.player_commander.reserved_pop), "cap":int(world.player_commander.pop_cap)} if is_instance_valid(world) and is_instance_valid(world.player_commander) else {}, "prerequisites":prerequisites, "result":result, "reason":reason})
 
 func _k1_production_capture() -> void:
@@ -475,6 +483,112 @@ func _k1_production_capture() -> void:
 	await _save("02_K1_ECONOMY_AND_FORCE_READY.png")
 	await _contact_sheet()
 	get_tree().quit(0 if success else 1)
+
+func _k3r_natural_worker_sample(label: String) -> Array:
+	var workers: Array = []
+	for cmd in world.commanders:
+		for unit in cmd.units:
+			if not is_instance_valid(unit) or not bool(unit.is_worker): continue
+			var runtime_id := str(unit.get_instance_id())
+			var record := {"runtime_id":runtime_id, "definition_id":String(unit.unit_id), "team":int(unit.team), "hp":float(unit.hp), "dead":bool(unit.is_dead), "in_tree":unit.is_inside_tree(), "position":_vec(unit.global_position), "state":int(unit.state), "timestamp_ms":Time.get_ticks_msec()}
+			workers.append(record)
+			if not k3r_natural_worker_lifecycle.has(runtime_id):
+				k3r_natural_worker_lifecycle[runtime_id] = {"spawn":record.duplicate(true), "samples":[], "damage_events":[], "death_events":[]}
+			k3r_natural_worker_lifecycle[runtime_id]["samples"].append(record.duplicate(true))
+	var damage_tail: Array = world.combat_damage_events.slice(maxi(0, world.combat_damage_events.size() - 12))
+	var death_tail: Array = world.combat_death_events.slice(maxi(0, world.combat_death_events.size() - 12))
+	for runtime_id in k3r_natural_worker_lifecycle:
+		var lifecycle: Dictionary = k3r_natural_worker_lifecycle[runtime_id]
+		lifecycle["damage_events"] = damage_tail.duplicate(true)
+		lifecycle["death_events"] = death_tail.duplicate(true)
+	return workers
+
+func _k3r_natural_ai_audit() -> Array:
+	var found: Array = []
+	if is_instance_valid(root_node): _k3r_collect_enemy_ai(root_node, found)
+	var audits: Array = []
+	for node in found:
+		if is_instance_valid(node) and node.has_method("get_v0435_audit"):
+			audits.append({"node_path":String(node.get_path()), "audit":node.get_v0435_audit()})
+	return audits
+
+func _k3r_natural_geometry_snapshot() -> Array:
+	var geometry: Array = []
+	for cmd in world.commanders:
+		for building in cmd.buildings:
+			if not is_instance_valid(building) or building.is_dead or not building.is_built: continue
+			geometry.append(_k3r_building_geometry_record(building))
+	return geometry
+
+func _k3r_natural_sample(label: String) -> Dictionary:
+	var record := {"label":label, "simulation_time_seconds":float(world.match_time), "physics_frame":Engine.get_physics_frames(), "commanders":world.commanders.map(func(cmd): return _commander_record(cmd)), "workers":_k3r_natural_worker_sample(label), "ai":_k3r_natural_ai_audit(), "damage_event_count":world.combat_damage_events.size(), "death_event_count":world.combat_death_events.size(), "building_damage_event_count":world.building_damage_events.size(), "building_destruction_event_count":world.building_destruction_events.size(), "building_geometry":_k3r_natural_geometry_snapshot(), "navigation":world.navigation_runtime_snapshot(), "match_ended":bool(world.match_ended)}
+	k3r_natural_samples.append(record)
+	return record
+
+func _k3r_natural_capture() -> void:
+	if not await _wait_until(func(): return is_instance_valid(world) and world.game_running, 30.0): await _failure("BLOCKED_K3R_NATURAL_MATCH_NOT_STARTED", "natural Easy match did not start"); return
+	if not await _wait_until(func(): return world.is_navigation_ready(), 30.0): await _failure("BLOCKED_K3R_NATURAL_NAVIGATION_NOT_READY", "natural Easy navigation did not become ready"); return
+	var config := Match.get_config().duplicate(true)
+	var expected := {"player_race":"barrosan", "opponents":[{"race":"lioraen", "difficulty":"easy"}], "map":"hollowspan", "start_resources":"rich", "victory":"conquest", "mode":"skirmish", "game_speed":2.0}
+	_save_json("k3r-natural-run-configuration.json", {"schema":"v0436-k3r-natural-run-configuration-v1", "run":k3r_natural_run, "observed":config, "expected":expected, "state_injection":false, "strategic_ai_disabled":false, "player_offense_before_first_wave":false, "public_actions_only":true})
+	await _focus(world.player_commander.buildings[0].global_position)
+	await _save("09_EASY_WAVE_APPROACH.png")
+	var damage_before: int = world.combat_damage_events.size()
+	var death_before: int = world.combat_death_events.size()
+	var building_damage_before: int = world.building_damage_events.size()
+	var production_ok := await _normal_production_setup()
+	var after_production := _k3r_natural_sample("after_k1_opening")
+	var first_wave_time := -1.0
+	var first_damage_time := -1.0
+	var first_casualty_time := -1.0
+	var first_wave_audit: Dictionary = {}
+	var saved_damage := false
+	var saved_group := false
+	var saved_building := false
+	var sample_bucket := -1
+	var deadline := float(world.match_time) + 300.0
+	while is_instance_valid(world) and world.game_running and not world.match_ended and float(world.match_time) < deadline:
+		var bucket := int(floor(float(world.match_time) / 5.0))
+		if bucket != sample_bucket:
+			sample_bucket = bucket
+			var sample := _k3r_natural_sample("simulation_5_second_sample")
+			for ai_entry in sample.get("ai", []):
+				var wave_audit: Array = ai_entry.get("audit", {}).get("wave_audit", [])
+				if first_wave_time < 0.0 and not wave_audit.is_empty():
+					var wave: Dictionary = wave_audit[0]
+					first_wave_time = float(wave.get("time", world.match_time))
+					first_wave_audit = wave.duplicate(true)
+			if first_damage_time < 0.0 and world.combat_damage_events.size() > damage_before:
+				first_damage_time = float(world.match_time)
+				if not saved_damage:
+					saved_damage = true
+					await _save("10_EASY_FIRST_DAMAGE.png")
+			if first_casualty_time < 0.0 and world.combat_death_events.size() > death_before:
+				first_casualty_time = float(world.match_time)
+				if not saved_group:
+					saved_group = true
+					await _save("13_EASY_FIRST_CASUALTY.png")
+			if not saved_building and world.building_damage_events.size() > building_damage_before:
+				saved_building = true
+				await _save("12_EASY_BUILDING_AVOIDANCE.png")
+			if saved_damage and not saved_group and float(world.match_time) - first_damage_time > 20.0:
+				await _save("11_EASY_GROUP_SETTLED.png")
+				saved_group = true
+		await get_tree().create_timer(0.25).timeout
+	if not saved_damage: await _save("10_EASY_FIRST_DAMAGE.png")
+	if not saved_group: await _save("11_EASY_GROUP_SETTLED.png")
+	if not saved_building: await _save("12_EASY_BUILDING_AVOIDANCE.png")
+	await _save("14_EASY_FIRST_WAVE_RESULT.png")
+	await _save("15_1366_EASY_COMBAT.png")
+	var final_sample := _k3r_natural_sample("bounded_first_wave_terminal")
+	var worker_lifecycles: Array = []
+	for runtime_id in k3r_natural_worker_lifecycle:
+		worker_lifecycles.append(k3r_natural_worker_lifecycle[runtime_id])
+	var result_status := "NATURAL_FIRST_WAVE_OBSERVED" if first_wave_time >= 0.0 else "BLOCKED_K3R_NATURAL_FIRST_WAVE_NOT_OBSERVED"
+	_save_json("k3r-natural-run.json", {"schema":"v0436-k3r-natural-run-v1", "status":result_status, "run":k3r_natural_run, "configuration":config, "production_ok":production_ok, "state_injection":false, "strategic_ai_disabled":false, "player_offense_before_first_wave":false, "first_wave_time_seconds":first_wave_time, "first_wave_audit":first_wave_audit, "first_damage_time_seconds":first_damage_time, "first_casualty_time_seconds":first_casualty_time, "damage_events_delta":world.combat_damage_events.size() - damage_before, "death_events_delta":world.combat_death_events.size() - death_before, "building_damage_events_delta":world.building_damage_events.size() - building_damage_before, "samples":k3r_natural_samples, "worker_lifecycle":worker_lifecycles, "controlled_building_geometry":_k3r_natural_geometry_snapshot(), "body_clipping_assessment":"raw authoritative building geometry, colliders, unit positions, and lifecycle snapshots recorded; no approximate circular penetration verdict emitted", "final":final_sample, "result":world.result_snapshot.duplicate(true), "public_actions_only":true})
+	_save_json("k3r-worker-lifecycle.json", {"schema":"v0436-k3r-worker-lifecycle-v1", "run":k3r_natural_run, "workers":worker_lifecycles, "combat_damage_events":world.combat_damage_events.duplicate(true), "combat_death_events":world.combat_death_events.duplicate(true)})
+	await _contact_sheet()
+	get_tree().quit(0 if first_wave_time >= 0.0 and production_ok else 2)
 
 func _f1_production_capture() -> void:
 	if not await _wait_until(func(): return is_instance_valid(world) and world.game_running, 30.0): await _failure("BLOCKED_F1_MATCH_NOT_STARTED", "production match did not start"); return
@@ -676,7 +790,7 @@ func _competent_production_setup(hall) -> bool:
 	await _save("04_R1H_HOUSING_INFRASTRUCTURE.png")
 	if not await _wait_until(func(): return is_instance_valid(house) and bool(house.is_built), 90.0): return false
 	_record_economy("house_built")
-	if k1_mode:
+	if k1_mode or k3r_natural_mode:
 		var extra_pos := _find_building_position("barrosan_clan_croft")
 		var extra_resources_before: Dictionary = world.player_commander.resources.duplicate(true)
 		var extra_pop_before := {"used":int(world.player_commander.pop_used), "reserved":int(world.player_commander.reserved_pop), "cap":int(world.player_commander.pop_cap)}
@@ -700,12 +814,12 @@ func _competent_production_setup(hall) -> bool:
 		_k1_action("ASSIGN_WORKER", String(food.resource_kind if assigned % 2 == 0 and is_instance_valid(food) else timber.resource_kind if is_instance_valid(timber) else "food"), world.player_commander.resources.duplicate(true), {"used":int(world.player_commander.pop_used), "reserved":int(world.player_commander.reserved_pop), "cap":int(world.player_commander.pop_cap)}, {"ok":is_instance_valid(food) or is_instance_valid(timber), "worker_runtime_id":str(worker.get_instance_id())}, "worker assigned to resource gathering", {"housing_built":true, "resource_target_found":is_instance_valid(food) or is_instance_valid(timber)})
 		assigned += 1
 	_record_economy("workers_gather_food_and_timber")
-	if (f2_mode or k1_mode or k2_mode) and not await _f2_expand_workers(world.player_commander.buildings.filter(func(b): return _live_building(b) and bool(b.def.get("is_hq", false))).front()): return false
+	if (f2_mode or k1_mode or k2_mode or k3r_natural_mode) and not await _f2_expand_workers(world.player_commander.buildings.filter(func(b): return _live_building(b) and bool(b.def.get("is_hq", false))).front()): return false
 	if f2_mode: _f2_assign_workers()
 	await _save("02_R1H_WORKERS_RESUME_ECONOMY.png")
 	if not await _wait_until(func(): return world.resource_transactions.size() >= 6, 90.0): return false
 	var queue_results: Array = []
-	var selected_plan: Array = F2_FORCE_PLAN if f2_mode else (K2_FORCE_PLAN if k2_mode else COMPETENT_FORCE_PLAN)
+	var selected_plan: Array = F2_FORCE_PLAN if f2_mode else (K2_FORCE_PLAN if k2_mode or k3r_natural_mode else COMPETENT_FORCE_PLAN)
 	for unit_id in selected_plan:
 		var result = {"ok":false, "reason":"not attempted"}
 		var retry_deadline := Time.get_ticks_msec() + 90000
@@ -729,7 +843,7 @@ func _competent_production_setup(hall) -> bool:
 	if f2_mode: f2_military_queue_results = queue_results.duplicate(true)
 	_record_economy("competent_mixed_force_queues_issued")
 	_save_json("production-audit.json", {"provenance":_provenance("production"), "queue_results":queue_results, "resource_transactions":world.resource_transactions.duplicate(true), "queue_plan":COMPETENT_FORCE_PLAN, "source":"normal house placement, worker construction, resumed two-resource gathering, and real-cost Building.queue_unit"})
-	return await _wait_until(func(): return _player_combatants().size() >= (12 if f2_mode else (5 if k1_mode or k2_mode else 10)) or ((k1_mode or k2_mode) and float(world.match_time) >= 900.0), 420.0)
+	return await _wait_until(func(): return _player_combatants().size() >= (12 if f2_mode else (5 if k1_mode or k2_mode or k3r_natural_mode else 10)) or ((k1_mode or k2_mode or k3r_natural_mode) and float(world.match_time) >= 900.0), 420.0)
 
 func _target_key(target, category: String) -> Dictionary:
 	return {"category":category, "definition_id":String(target.get("building_id") if category == "building" else target.get("unit_id")), "runtime_id":str(target.get_instance_id())}
@@ -1664,6 +1778,9 @@ func _capture_tutorial_match() -> void:
 	get_tree().quit(0)
 
 func _capture_match() -> void:
+	if k3r_natural_mode:
+		await _k3r_natural_capture()
+		return
 	if k3r_mode:
 		await _k3r_combat_diagnostic()
 		return
