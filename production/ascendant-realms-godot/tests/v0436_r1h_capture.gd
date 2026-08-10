@@ -520,8 +520,68 @@ func _k3r_natural_geometry_snapshot() -> Array:
 			geometry.append(_k3r_building_geometry_record(building))
 	return geometry
 
+func _k3r_natural_building_owner(node):
+	var current = node
+	while is_instance_valid(current):
+		if current.get("building_id") != null and current.get("is_built") != null:
+			return current
+		current = current.get_parent()
+	return null
+
+func _k3r_natural_overlap_records(unit, shape_node: CollisionShape3D) -> Dictionary:
+	var result := {"center_penetration": [], "body_clearance": [], "query_available": false}
+	if not is_instance_valid(shape_node) or not is_instance_valid(shape_node.shape): return result
+	var space = unit.get_world_3d().direct_space_state
+	if not is_instance_valid(space): return result
+	var excluded: Array[RID] = [unit.get_rid()]
+	var shape_query := PhysicsShapeQueryParameters3D.new()
+	shape_query.shape = shape_node.shape
+	shape_query.transform = shape_node.global_transform
+	shape_query.exclude = excluded
+	shape_query.collide_with_bodies = true
+	shape_query.collide_with_areas = true
+	var body_hits: Array[Dictionary] = space.intersect_shape(shape_query, 32)
+	var point_query := PhysicsPointQueryParameters3D.new()
+	point_query.position = unit.global_position
+	point_query.exclude = excluded
+	point_query.collide_with_bodies = true
+	point_query.collide_with_areas = true
+	var point_hits: Array[Dictionary] = space.intersect_point(point_query, 32)
+	result["query_available"] = true
+	for hit in body_hits:
+		var owner = _k3r_natural_building_owner(hit.get("collider"))
+		if is_instance_valid(owner):
+			result["body_clearance"].append({"building_id":String(owner.building_id), "runtime_id":str(owner.get_instance_id()), "collider_path":String(hit.get("collider").get_path())})
+	for hit in point_hits:
+		var owner = _k3r_natural_building_owner(hit.get("collider"))
+		if is_instance_valid(owner):
+			result["center_penetration"].append({"building_id":String(owner.building_id), "runtime_id":str(owner.get_instance_id()), "collider_path":String(hit.get("collider").get_path())})
+	return result
+
+func _k3r_natural_combat_snapshot() -> Dictionary:
+	var units: Array = []
+	for cmd in world.commanders:
+		for unit in cmd.units:
+			if not _k3r_live_unit(unit): continue
+			var shape_node: CollisionShape3D = null
+			var pending: Array = [unit]
+			while not pending.is_empty() and not is_instance_valid(shape_node):
+				var node = pending.pop_back()
+				for child in node.get_children():
+					if child is CollisionShape3D and is_instance_valid(child.shape):
+						shape_node = child
+						break
+					pending.append(child)
+			var record := _k3r_unit_record(unit)
+			record["timestamp_ms"] = Time.get_ticks_msec()
+			record["agent_radius"] = float(unit.agent.radius) if is_instance_valid(unit.get("agent")) else null
+			record["collision_shape"] = {"shape_type":shape_node.shape.get_class(), "shape_size":_k3r_shape_size(shape_node.shape), "path":String(shape_node.get_path())} if is_instance_valid(shape_node) else null
+			record["authoritative_overlap"] = _k3r_natural_overlap_records(unit, shape_node)
+			units.append(record)
+	return {"timestamp_ms":Time.get_ticks_msec(), "units":units, "building_geometry":_k3r_natural_geometry_snapshot()}
+
 func _k3r_natural_sample(label: String) -> Dictionary:
-	var record := {"label":label, "simulation_time_seconds":float(world.match_time), "physics_frame":Engine.get_physics_frames(), "commanders":world.commanders.map(func(cmd): return _commander_record(cmd)), "workers":_k3r_natural_worker_sample(label), "ai":_k3r_natural_ai_audit(), "damage_event_count":world.combat_damage_events.size(), "death_event_count":world.combat_death_events.size(), "building_damage_event_count":world.building_damage_events.size(), "building_destruction_event_count":world.building_destruction_events.size(), "building_geometry":_k3r_natural_geometry_snapshot(), "navigation":world.navigation_runtime_snapshot(), "match_ended":bool(world.match_ended)}
+	var record := {"label":label, "simulation_time_seconds":float(world.match_time), "physics_frame":Engine.get_physics_frames(), "commanders":world.commanders.map(func(cmd): return _commander_record(cmd)), "workers":_k3r_natural_worker_sample(label), "combat":_k3r_natural_combat_snapshot(), "ai":_k3r_natural_ai_audit(), "damage_event_count":world.combat_damage_events.size(), "death_event_count":world.combat_death_events.size(), "building_damage_event_count":world.building_damage_events.size(), "building_destruction_event_count":world.building_destruction_events.size(), "building_geometry":_k3r_natural_geometry_snapshot(), "navigation":world.navigation_runtime_snapshot(), "match_ended":bool(world.match_ended)}
 	k3r_natural_samples.append(record)
 	return record
 
@@ -546,6 +606,7 @@ func _k3r_natural_capture() -> void:
 	var expected := {"player_race":"barrosan", "opponents":[{"race":"lioraen", "difficulty":"easy"}], "map":"hollowspan", "start_resources":"rich", "victory":"conquest", "mode":"skirmish", "game_speed":2.0}
 	_save_json("k3r-natural-run-configuration.json", {"schema":"v0436-k3r-natural-run-configuration-v1", "run":k3r_natural_run, "observed":config, "expected":expected, "state_injection":false, "strategic_ai_disabled":false, "player_offense_before_first_wave":false, "public_actions_only":true})
 	if not await _k3r_natural_configuration_preflight(config, expected): return
+	if k3r_natural_run == "RICH_RUN4": await _save("01_RUN4_RICH_PREFLIGHT.png")
 	await _focus(world.player_commander.buildings[0].global_position)
 	await _save("09_EASY_WAVE_APPROACH.png")
 	await _save("02_RICH_BEGINNER_BASE.png")
@@ -555,6 +616,7 @@ func _k3r_natural_capture() -> void:
 	var production_ok := await _normal_production_setup()
 	var after_production := _k3r_natural_sample("after_k1_opening")
 	await _save("03_RICH_DEFENDERS_READY.png")
+	if k3r_natural_run == "RICH_RUN4": await _save("02_RUN4_DEFENDERS_READY.png")
 	var first_wave_time := -1.0
 	var first_damage_time := -1.0
 	var first_casualty_time := -1.0
@@ -576,26 +638,38 @@ func _k3r_natural_capture() -> void:
 					first_wave_time = float(wave.get("time", world.match_time))
 					first_wave_audit = wave.duplicate(true)
 					await _save("04_RICH_FIRST_WAVE.png")
+					if k3r_natural_run == "RICH_RUN4": await _save("03_RUN4_FIRST_WAVE.png")
 			if first_damage_time < 0.0 and world.combat_damage_events.size() > damage_before:
 				first_damage_time = float(world.match_time)
 				if not saved_damage:
 					saved_damage = true
 					await _save("10_EASY_FIRST_DAMAGE.png")
 					await _save("05_RICH_FIRST_DAMAGE.png")
+					if k3r_natural_run == "RICH_RUN4":
+						await _save("04_RUN4_FIRST_CONTACT.png")
+						await _save("10_RUN4_FIRST_DAMAGE.png")
 			if first_casualty_time < 0.0 and world.combat_death_events.size() > death_before:
 				first_casualty_time = float(world.match_time)
 				if not saved_group:
 					saved_group = true
 					await _save("13_EASY_FIRST_CASUALTY.png")
+					if k3r_natural_run == "RICH_RUN4": await _save("11_RUN4_FIRST_CASUALTY.png")
 			if not saved_building and world.building_damage_events.size() > building_damage_before:
 				saved_building = true
 				await _save("12_EASY_BUILDING_AVOIDANCE.png")
 				await _save("09_RICH_COMBAT_BESIDE_BUILDING.png")
+				if k3r_natural_run == "RICH_RUN4":
+					await _save("08_RUN4_COMBAT_BESIDE_BUILDING.png")
+					await _save("09_RUN4_ROUTE_AROUND_BUILDING.png")
 			if saved_damage and not saved_group and float(world.match_time) - first_damage_time > 20.0:
 				await _save("11_EASY_GROUP_SETTLED.png")
 				await _save("06_RICH_MELEE_SETTLED.png")
 				await _save("07_RICH_RANGED_SETTLED.png")
 				await _save("08_RICH_GROUP_COMBAT.png")
+				if k3r_natural_run == "RICH_RUN4":
+					await _save("05_RUN4_MELEE_SETTLED.png")
+					await _save("06_RUN4_RANGED_SETTLED.png")
+					await _save("07_RUN4_GROUP_SETTLED.png")
 				saved_group = true
 		await get_tree().create_timer(0.25).timeout
 	if not saved_damage: await _save("10_EASY_FIRST_DAMAGE.png")
@@ -606,6 +680,9 @@ func _k3r_natural_capture() -> void:
 	await _save("12_RICH_FIRST_WAVE_RESULT.png")
 	await _save("13_RICH_WORKERS_AFTER_WAVE.png")
 	await _save("14_RICH_1366_COMBAT.png")
+	if k3r_natural_run == "RICH_RUN4":
+		await _save("12_RUN4_FIRST_WAVE_RESULT.png")
+		await _save("13_RUN4_WORKERS_AFTER_WAVE.png")
 	var final_sample := _k3r_natural_sample("bounded_first_wave_terminal")
 	var worker_lifecycles: Array = []
 	for runtime_id in k3r_natural_worker_lifecycle:
