@@ -1503,6 +1503,8 @@ func _move_along_path(delta: float) -> bool:
 	if _slow > 0.0: spd *= 0.5
 	if _rooted > 0.0: spd = 0.0
 	var desired := dir * spd
+	if world and world.has_method("constrain_unit_velocity_around_buildings"):
+		desired = world.constrain_unit_velocity_around_buildings(global_position, desired, delta, BUILDING_ROUTE_CLEARANCE)
 	if agent.avoidance_enabled:
 		agent.set_velocity(desired)
 	else:
@@ -1554,6 +1556,8 @@ func _on_velocity_computed(safe_vel: Vector3) -> void:
 		if audit_enabled and (_boundary_recovery_active or recovery_already_moved):
 			_v0436_r1f_record_callback(audit_frame, safe_vel, callback_position_before, global_position, false, recovery_already_moved)
 		return
+	if world and world.has_method("constrain_unit_velocity_around_buildings"):
+		safe_vel = world.constrain_unit_velocity_around_buildings(global_position, safe_vel, get_physics_process_delta_time(), BUILDING_ROUTE_CLEARANCE)
 	_navigation_invalid_consecutive = 0
 	velocity.x = safe_vel.x
 	velocity.z = safe_vel.z

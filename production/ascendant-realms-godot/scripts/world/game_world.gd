@@ -499,6 +499,39 @@ func _segment_intersects_route_circle(a: Vector3, b: Vector3, center: Vector3, r
 func _route_cost(from: Vector3, via: Vector3, target: Vector3) -> float:
 	return from.distance_to(via) + via.distance_to(target)
 
+## Last-frame guard for the broad production navmesh. It only constrains a
+## movement velocity when a completed-building clearance envelope would be
+## entered; it does not change targets, combat range, or authoritative state.
+func constrain_unit_velocity_around_buildings(origin: Vector3, requested_velocity: Vector3, delta: float, clearance: float = 1.0) -> Vector3:
+	var speed := requested_velocity.length()
+	if speed < 0.01:
+		return requested_velocity
+	var step_end := origin + requested_velocity * maxf(delta, 0.016)
+	for building in all_buildings():
+		if not is_instance_valid(building) or building.is_dead or not building.is_built:
+			continue
+		var radius := float(building.def.get("footprint", 4.0)) + clearance
+		var radial := origin - building.global_position
+		radial.y = 0.0
+		if radial.length() < radius:
+			if radial.length_squared() < 0.01:
+				radial = Vector3.RIGHT
+			return radial.normalized() * speed
+		if not _segment_intersects_route_circle(origin, step_end, building.global_position, radius):
+			continue
+		var travel_target := origin + requested_velocity.normalized() * maxf(radius * 4.0, 12.0)
+		var waypoints := navigation_waypoints_for_unit(origin, travel_target, clearance)
+		if not waypoints.is_empty():
+			var waypoint_direction: Vector3 = waypoints[0] - origin
+			waypoint_direction.y = 0.0
+			if waypoint_direction.length_squared() > 0.01:
+				return waypoint_direction.normalized() * speed
+		var tangent := Vector3(-radial.z, 0.0, radial.x).normalized()
+		if tangent.dot(requested_velocity) < 0.0:
+			tangent = -tangent
+		return tangent * speed
+	return requested_velocity
+
 func is_navigation_ready() -> bool:
 	if not is_instance_valid(nav_region) or not nav_region.enabled:
 		return false
