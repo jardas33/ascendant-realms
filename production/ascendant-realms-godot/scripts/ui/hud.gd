@@ -539,15 +539,15 @@ func _draw_minimap_terrain(size: Vector2) -> void:
 
 
 func _draw_minimap_water(size: Vector2) -> void:
-	var water := world.map.get("water", {})
+	var water: Dictionary = world.map.get("water", {})
 	if not bool(water.get("enabled", false)):
 		return
 	var overview: Dictionary = world.map.get("overview", {})
 	var axis := str(overview.get("water_axis", "north_bay"))
 	var center_z := float(overview.get("water_center_z", 118.0))
 	var half_width := float(overview.get("water_width", 34.0)) * 0.5
-	var deep := water.get("deep", Color(0.05, 0.22, 0.34))
-	var shallow := water.get("shallow", Color(0.16, 0.48, 0.58))
+	var deep: Color = water.get("deep", Color(0.05, 0.22, 0.34))
+	var shallow: Color = water.get("shallow", Color(0.16, 0.48, 0.58))
 	var pts := PackedVector2Array()
 	if axis == "crossing":
 		pts = PackedVector2Array([
