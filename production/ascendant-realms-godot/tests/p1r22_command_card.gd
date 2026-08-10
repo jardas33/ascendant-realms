@@ -72,8 +72,13 @@ func _begin() -> void:
 	var image := get_viewport().get_texture().get_image()
 	if image == null or image.is_empty(): _failures.append("empty_frame")
 	else:
+		var command_panel := get_node_or_null("/root/GameRoot/HUDLayer").find_child("CommandPanel", true, false)
+		var command_buttons: Array = command_panel.find_children("*", "Button", true, false) if command_panel else []
+		var command_button_texts: Array[String] = []
+		for command_button in command_buttons:
+			command_button_texts.append(str(command_button.text))
 		var png := _output.path_join("%s.png" % OS.get_environment("ASCENDANT_P1R22_NAME")); image.save_png(png)
-		_frames.append({"name":OS.get_environment("ASCENDANT_P1R22_NAME"),"view":_view,"png":png,"width":image.get_width(),"height":image.get_height(),"target_id":String(target.unit_id) if "unit_id" in target else String(target.building_id),"target_name":String(target.def.get("name","")),"command_panel_contract":true})
+		_frames.append({"name":OS.get_environment("ASCENDANT_P1R22_NAME"),"view":_view,"png":png,"width":image.get_width(),"height":image.get_height(),"target_id":String(target.unit_id) if "unit_id" in target else String(target.building_id),"target_name":String(target.def.get("name","")),"command_panel_contract":true,"command_button_count":command_buttons.size(),"command_button_texts":command_button_texts})
 	_write_manifest(); get_tree().quit(0 if _failures.is_empty() else 1)
 
 func _pick_target():
