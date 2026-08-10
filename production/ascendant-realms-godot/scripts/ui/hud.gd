@@ -496,7 +496,7 @@ func _draw_minimap() -> void:
 			continue
 		var rp := _world_to_map(resource.global_position)
 		_minimap.draw_circle(rp, 3.8, Color(0.04, 0.05, 0.04, 0.9))
-		_minimap.draw_circle(rp, 2.5, _minimap_resource_color(str(resource.get("resource_kind", ""))))
+		_minimap.draw_circle(rp, 2.5, _minimap_resource_color(str(resource.resource_kind)))
 
 	# units (small but readable diamonds)
 	for u in world.all_units():
