@@ -205,8 +205,10 @@ func _f2_capture_sample(bucket: int, label: String) -> void:
 		by_classification[classification] = int(by_classification.get(classification, 0)) + 1
 		by_resource[resource_kind] = int(by_resource.get(resource_kind, 0)) + 1
 		workers.append({"unit_id":String(unit.unit_id), "runtime_id":str(unit.get_instance_id()), "position":_vec(unit.global_position), "state":int(unit.state), "classification":classification, "resource_kind":resource_kind, "snapshot":snap})
-	var player_hq = commander.buildings.filter(func(b): return _live_building(b) and bool(b.def.get("is_hq", false))).front()
-	var enemy_hq = world.commanders[1].buildings.filter(func(b): return _live_building(b) and bool(b.def.get("is_hq", false))).front()
+	var player_hq_candidates: Array = commander.buildings.filter(func(b): return _live_building(b) and bool(b.def.get("is_hq", false)))
+	var enemy_hq_candidates: Array = world.commanders[1].buildings.filter(func(b): return _live_building(b) and bool(b.def.get("is_hq", false)))
+	var player_hq = player_hq_candidates.front() if not player_hq_candidates.is_empty() else null
+	var enemy_hq = enemy_hq_candidates.front() if not enemy_hq_candidates.is_empty() else null
 	f2_samples.append({"bucket":bucket, "label":label, "simulation_time_seconds":float(world.match_time), "wall_time_seconds":float(Time.get_ticks_msec() - f2_started_ms) / 1000.0, "resources":commander.resources.duplicate(true), "resource_transaction_count":world.resource_transactions.size(), "workers_total":workers.size(), "workers_by_classification":by_classification, "workers_by_resource":by_resource, "workers":workers, "population":{"used":int(commander.pop_used), "reserved":int(commander.reserved_pop), "cap":int(commander.pop_cap)}, "player_hq_hp":float(player_hq.hp) if is_instance_valid(player_hq) else null, "enemy_hq_hp":float(enemy_hq.hp) if is_instance_valid(enemy_hq) else null, "production_buildings":commander.buildings.filter(func(b): return _live_building(b)).map(func(b): return _queue_record(b)), "completed_military_count":_player_combatants().size(), "living_combat_count":_player_combatants().size(), "hero_alive":is_instance_valid(commander.hero_ref) and not commander.hero_ref.is_dead, "enemy_combat_count":_enemy_combatants().size(), "enemy_worker_count":_enemy_workers().size(), "enemy_building_count":_enemy_buildings().size(), "game_running":bool(world.game_running), "match_ended":bool(world.match_ended)})
 
 func _f2_sampling_loop() -> void:
@@ -583,6 +585,12 @@ func _competent_production_setup(hall) -> bool:
 		var result = {"ok":false, "reason":"not attempted"}
 		var retry_deadline := Time.get_ticks_msec() + 90000
 		while Time.get_ticks_msec() < retry_deadline:
+			if not is_instance_valid(hall):
+				var live_halls: Array = world.commanders[0].buildings.filter(func(b): return _live_building(b) and String(b.building_id) == "barrosan_war_hall")
+				hall = live_halls.front() if not live_halls.is_empty() else null
+			if not is_instance_valid(hall):
+				result = {"ok":false, "reason":"war_hall_destroyed_before_queue"}
+				break
 			result = hall.queue_unit(unit_id)
 			queue_results.append({"unit_id":unit_id, "attempt":queue_results.size() + 1, "result":result, "resources_after":world.commanders[0].resources.duplicate(true), "pop_used":world.commanders[0].pop_used, "reserved_pop":world.commanders[0].reserved_pop})
 			if bool(result.get("ok", false)): break

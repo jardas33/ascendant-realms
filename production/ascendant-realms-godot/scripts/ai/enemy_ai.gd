@@ -34,6 +34,7 @@ var _easy_tick_timer := 0.0
 var _easy_wave_launched := false
 var _easy_wave_target := Vector3.ZERO
 var _easy_wave_staged := false
+var _easy_opening_grace_seconds := 300.0
 var _easy_replacement_queued := false
 var _easy_resource_cursor := 0
 var _easy_unit_cursor := 0
@@ -314,6 +315,12 @@ func _queued_easy_combat_count(barracks) -> int:
 
 func _manage_easy_staging_and_wave() -> void:
 	if _easy_wave_launched:
+		return
+	# Give a normal player opening time to finish the first military building,
+	# queue a small defensive force, and bring the hero online before Easy
+	# pressure can remove the production foothold. This is a timing guard only;
+	# it does not change the Easy force threshold or any combat semantics.
+	if _easy_elapsed < _easy_opening_grace_seconds:
 		return
 	if _army_size() < _army_attack_size:
 		return
