@@ -525,19 +525,36 @@ func _k3r_natural_sample(label: String) -> Dictionary:
 	k3r_natural_samples.append(record)
 	return record
 
+func _k3r_natural_configuration_preflight(config: Dictionary, expected: Dictionary) -> bool:
+	var expected_bank: Dictionary = Match.starting_bank("rich")
+	var observed_bank: Dictionary = world.player_commander.resources.duplicate(true) if is_instance_valid(world.player_commander) else {}
+	var config_fields_match: bool = config.get("player_race", "") == expected.get("player_race", "") and config.get("map", "") == expected.get("map", "") and config.get("mode", "") == expected.get("mode", "") and config.get("victory", "") == expected.get("victory", "") and config.get("start_resources", "") == "rich" and is_equal_approx(float(config.get("game_speed", 0.0)), 2.0)
+	var opponent_match: bool = config.get("opponents", []) == expected.get("opponents", [])
+	var bank_matches: bool = observed_bank == expected_bank
+	var valid: bool = config_fields_match and opponent_match and bank_matches
+	_save_json("k3r-natural-config-preflight.json", {"schema":"v0436-k3r-natural-config-preflight-v2", "run":k3r_natural_run, "observed":config, "expected":expected, "observed_initial_bank":observed_bank, "expected_rich_bank":expected_bank, "config_fields_match":config_fields_match, "opponent_match":opponent_match, "initial_bank_matches_rich":bank_matches, "status":"RICH_CONFIGURATION_VALID" if valid else "INVALID_K3R_CONFIGURATION"})
+	await _save("01_RICH_CONFIG_PREFLIGHT.png")
+	if not valid:
+		_save_json("k3r-natural-invalid-config.json", {"schema":"v0436-k3r-natural-invalid-config-v1", "status":"INVALID_K3R_CONFIGURATION", "observed":config, "expected":expected, "observed_initial_bank":observed_bank, "expected_rich_bank":expected_bank})
+		get_tree().quit(2)
+	return valid
+
 func _k3r_natural_capture() -> void:
 	if not await _wait_until(func(): return is_instance_valid(world) and world.game_running, 30.0): await _failure("BLOCKED_K3R_NATURAL_MATCH_NOT_STARTED", "natural Easy match did not start"); return
 	if not await _wait_until(func(): return world.is_navigation_ready(), 30.0): await _failure("BLOCKED_K3R_NATURAL_NAVIGATION_NOT_READY", "natural Easy navigation did not become ready"); return
 	var config := Match.get_config().duplicate(true)
 	var expected := {"player_race":"barrosan", "opponents":[{"race":"lioraen", "difficulty":"easy"}], "map":"hollowspan", "start_resources":"rich", "victory":"conquest", "mode":"skirmish", "game_speed":2.0}
 	_save_json("k3r-natural-run-configuration.json", {"schema":"v0436-k3r-natural-run-configuration-v1", "run":k3r_natural_run, "observed":config, "expected":expected, "state_injection":false, "strategic_ai_disabled":false, "player_offense_before_first_wave":false, "public_actions_only":true})
+	if not await _k3r_natural_configuration_preflight(config, expected): return
 	await _focus(world.player_commander.buildings[0].global_position)
 	await _save("09_EASY_WAVE_APPROACH.png")
+	await _save("02_RICH_BEGINNER_BASE.png")
 	var damage_before: int = world.combat_damage_events.size()
 	var death_before: int = world.combat_death_events.size()
 	var building_damage_before: int = world.building_damage_events.size()
 	var production_ok := await _normal_production_setup()
 	var after_production := _k3r_natural_sample("after_k1_opening")
+	await _save("03_RICH_DEFENDERS_READY.png")
 	var first_wave_time := -1.0
 	var first_damage_time := -1.0
 	var first_casualty_time := -1.0
@@ -558,11 +575,13 @@ func _k3r_natural_capture() -> void:
 					var wave: Dictionary = wave_audit[0]
 					first_wave_time = float(wave.get("time", world.match_time))
 					first_wave_audit = wave.duplicate(true)
+					await _save("04_RICH_FIRST_WAVE.png")
 			if first_damage_time < 0.0 and world.combat_damage_events.size() > damage_before:
 				first_damage_time = float(world.match_time)
 				if not saved_damage:
 					saved_damage = true
 					await _save("10_EASY_FIRST_DAMAGE.png")
+					await _save("05_RICH_FIRST_DAMAGE.png")
 			if first_casualty_time < 0.0 and world.combat_death_events.size() > death_before:
 				first_casualty_time = float(world.match_time)
 				if not saved_group:
@@ -571,8 +590,12 @@ func _k3r_natural_capture() -> void:
 			if not saved_building and world.building_damage_events.size() > building_damage_before:
 				saved_building = true
 				await _save("12_EASY_BUILDING_AVOIDANCE.png")
+				await _save("09_RICH_COMBAT_BESIDE_BUILDING.png")
 			if saved_damage and not saved_group and float(world.match_time) - first_damage_time > 20.0:
 				await _save("11_EASY_GROUP_SETTLED.png")
+				await _save("06_RICH_MELEE_SETTLED.png")
+				await _save("07_RICH_RANGED_SETTLED.png")
+				await _save("08_RICH_GROUP_COMBAT.png")
 				saved_group = true
 		await get_tree().create_timer(0.25).timeout
 	if not saved_damage: await _save("10_EASY_FIRST_DAMAGE.png")
@@ -580,6 +603,9 @@ func _k3r_natural_capture() -> void:
 	if not saved_building: await _save("12_EASY_BUILDING_AVOIDANCE.png")
 	await _save("14_EASY_FIRST_WAVE_RESULT.png")
 	await _save("15_1366_EASY_COMBAT.png")
+	await _save("12_RICH_FIRST_WAVE_RESULT.png")
+	await _save("13_RICH_WORKERS_AFTER_WAVE.png")
+	await _save("14_RICH_1366_COMBAT.png")
 	var final_sample := _k3r_natural_sample("bounded_first_wave_terminal")
 	var worker_lifecycles: Array = []
 	for runtime_id in k3r_natural_worker_lifecycle:
