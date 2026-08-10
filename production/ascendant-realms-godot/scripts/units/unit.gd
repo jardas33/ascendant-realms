@@ -156,7 +156,7 @@ const ATTACK_SETTLE_MARGIN := 0.12
 const BUILDING_ROUTE_CLEARANCE := 1.0
 
 func _building_route_clearance() -> float:
-	return BUILDING_ROUTE_CLEARANCE + 1.5 if is_worker else BUILDING_ROUTE_CLEARANCE
+	return BUILDING_ROUTE_CLEARANCE + 1.7 if is_worker else BUILDING_ROUTE_CLEARANCE
 
 # P1-R13 presentation targets. These affect only the visible model envelope;
 # gameplay height, collision, navigation radius, spacing, range and speed stay
