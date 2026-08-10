@@ -90,16 +90,25 @@ for (const record of bodyAudit) {
 const bodyIncidents = [...bodyGroups.entries()].map(([key, records]) => ({ key, runtime_id: records[0].runtime_id, unit_id: records[0].unit_id, building_id: records[0].building_id, sample_count: records.length, start_seconds: Math.min(...records.map(record => record.timestamp_seconds)), end_seconds: Math.max(...records.map(record => record.timestamp_seconds)), duration_seconds: Math.max(...records.map(record => record.timestamp_seconds)) - Math.min(...records.map(record => record.timestamp_seconds)), maximum_penetration_depth_xz: Math.max(...records.map(record => record.penetration_depth_xz)), center_outside_all_samples: records.every(record => record.center_outside), body_radius: records[0].body_radius }));
 const audit = {
   schema: "v0436-k3p-center-incident-audit-v1",
-  source_run: "RICH_RUN4",
+  source_run: String(run.run || path.basename(sourceRoot)),
   source_path: path.join(sourceRoot, "k3r-natural-run.json"),
   center_incidents: incidents,
   center_incident_count: incidents.length,
-  center_decision: incidents.every(incident => incident.valid_production_defect) ? "PROVEN_K3_BUILDING_CLEARANCE_DEFECT" : "BLOCKED_K3P_CENTER_INCIDENT_CAUSALITY_INSUFFICIENT",
+  center_decision: incidents.length === 0
+    ? "K3_CENTER_PENETRATION_SIGNAL_DISPROVEN"
+    : incidents.some(incident => incident.valid_production_defect)
+      ? "PROVEN_K3_BUILDING_CLEARANCE_DEFECT"
+      : "BLOCKED_K3P_CENTER_INCIDENT_CAUSALITY_INSUFFICIENT",
   body_clearance: { total_samples: bodyAudit.length, incident_count: bodyIncidents.length, unique_units: new Set(bodyAudit.map(record => record.runtime_id)).size, unique_buildings: new Set(bodyAudit.map(record => record.building_id)).size, depth_distribution: distribution, maximum_duration_seconds: bodyIncidents.length ? Math.max(...bodyIncidents.map(incident => incident.duration_seconds)) : 0, median_depth_xz: bodyAudit.length ? bodyAudit.map(record => record.penetration_depth_xz).sort((a, b) => a - b)[Math.floor(bodyAudit.length / 2)] : 0, maximum_depth_xz: bodyAudit.length ? Math.max(...bodyAudit.map(record => record.penetration_depth_xz)) : 0, incidents: bodyIncidents },
-  visual_correlation: "No exact timestamped rendered frame exists for the four center incidents; closest available real gameplay frames are recorded per incident and remain visual-only evidence.",
+  visual_correlation: incidents.length === 0
+    ? "No authoritative center-penetration samples were retained in this run; rendered evidence remains separate from the physics decision."
+    : "No exact timestamped rendered frame exists for the retained center incidents; closest available real gameplay frames remain visual-only evidence.",
   production_repair_authority: "AUTHORIZED_ONLY_IF_PROVEN_K3_BUILDING_CLEARANCE_DEFECT",
 };
 await fs.mkdir(outputRoot, { recursive: true });
 await fs.writeFile(path.join(outputRoot, "k3p-center-incident-audit.json"), `${JSON.stringify(audit, null, 2)}\n`);
-await fs.writeFile(path.join(outputRoot, "k3p-center-incident-audit.md"), `# K3P Center Incident Audit\n\nDecision: **${audit.center_decision}**\n\nAll four retained center-penetration samples are against completed, valid Lioraen Groveheart geometry. The final building ledger reports the same runtime building alive with 2000/2000 HP. The unit samples are normal ground units, not construction transitions. Retained axis-aligned BoxShape3D half-extents are 4.9 x 4.9 in X/Z; measured center penetration depths are ${incidents.map(incident => incident.geometry.penetration_depth_xz.toFixed(3)).join(", ")}.\n\nNo exact timestamped rendered frame exists for these incidents; visual correlation therefore remains unknown rather than inferred. The body-overlap distribution and grouped incidents are in the JSON ledger.\n`);
+const centerSummary = incidents.length === 0
+  ? "No authoritative center-penetration samples were retained in this run."
+  : `Retained center-penetration samples: ${incidents.map(incident => Number(incident.geometry.penetration_depth_xz || 0).toFixed(3)).join(", ")}.`;
+await fs.writeFile(path.join(outputRoot, "k3p-center-incident-audit.md"), `# K3P Center Incident Audit\n\nSource run: **${audit.source_run}**\n\nDecision: **${audit.center_decision}**\n\n${centerSummary}\n\n${audit.visual_correlation}\nThe body-overlap distribution and grouped incidents are in the JSON ledger.\n`);
 console.log(JSON.stringify(audit, null, 2));
