@@ -253,7 +253,6 @@ func _mk_command_button(title: String, detail: String, tooltip: String, disabled
 	if ResourceLoader.exists(icon_path):
 		btn.icon = load(icon_path)
 		btn.expand_icon = true
-		btn.icon_max_width = 30
 		btn.icon_alignment = HORIZONTAL_ALIGNMENT_LEFT
 	btn.tooltip_text = tooltip if disabled_reason.is_empty() else "%s\nUnavailable: %s" % [tooltip, disabled_reason]
 	var normal := StyleBoxFlat.new()
