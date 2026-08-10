@@ -114,10 +114,26 @@ Passed focused commands:
 - P1-R22 command-card capture, exit 0
 - P1-R3 minimap capture, exit 0
 
-The combined production build/content/art/runtime/artifact-retention/Godot-all
-closeout remains pending final execution in this worktree. The H1 capture
-blocker and the historical v0.435 capture metadata mismatch remain explicit;
-neither is hidden by this report.
+Project-wide results:
+
+- `npm test` — exit 0, 134 test files / 954 tests passed
+- `npm run build` — exit 0
+- `npm run validate:content` — exit 0
+- `npm run validate:art-intake` — exit 0
+- `npm run validate:runtime-art-slots` — exit 0
+- certified `npm run godot:all` — exit 0
+- `git diff --check` — exit 0
+- `npm run validate:artifact-retention` — exit 1 with the unchanged
+  `FAIL_V0167_SALTO_EXPERIMENTAL_ARTIFACT_RETENTION` diagnostic
+
+The dedicated P1-R2, P1-R22, and P1-R3 validators were also run against the
+current dirty H worktree. They failed their legacy source-SHA / scope-clean
+contracts because their valid earlier manifests point at source SHA
+`27e272676d9d120bc9a86a4bf2d0167aa9144ce0` and the H worktree contains
+generated/imported evidence changes. A separate clean-worktree recapture at the
+final H SHA `98a2886a` timed out before producing frames, so those validators
+are not claimed green. The H1 capture blocker and the historical v0.435
+capture metadata mismatch remain explicit; neither is hidden by this report.
 
 ## Protected state
 
