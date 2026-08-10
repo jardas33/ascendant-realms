@@ -77,8 +77,11 @@ func _begin() -> void:
 		var command_button_texts: Array[String] = []
 		for command_button in command_buttons:
 			command_button_texts.append(str(command_button.text))
+		var player_commander = _world.player_commander if _world and "player_commander" in _world else null
+		var commander_race := str(player_commander.race) if player_commander else ""
+		var available_buildings: Array = GameData.buildings_for_race(commander_race) if not commander_race.is_empty() else []
 		var png := _output.path_join("%s.png" % OS.get_environment("ASCENDANT_P1R22_NAME")); image.save_png(png)
-		_frames.append({"name":OS.get_environment("ASCENDANT_P1R22_NAME"),"view":_view,"png":png,"width":image.get_width(),"height":image.get_height(),"target_id":String(target.unit_id) if "unit_id" in target else String(target.building_id),"target_name":String(target.def.get("name","")),"command_panel_contract":true,"command_button_count":command_buttons.size(),"command_button_texts":command_button_texts})
+		_frames.append({"name":OS.get_environment("ASCENDANT_P1R22_NAME"),"view":_view,"png":png,"width":image.get_width(),"height":image.get_height(),"target_id":String(target.unit_id) if "unit_id" in target else String(target.building_id),"target_name":String(target.def.get("name","")),"command_panel_contract":true,"command_button_count":command_buttons.size(),"command_button_texts":command_button_texts,"commander_race":commander_race,"available_building_count":available_buildings.size(),"command_body_child_count":command_panel.get_child_count() if command_panel else 0})
 	_write_manifest(); get_tree().quit(0 if _failures.is_empty() else 1)
 
 func _pick_target():
