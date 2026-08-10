@@ -45,6 +45,12 @@ Representative rendered proof:
 
 The representative PNGs are nonblank rendered gameplay frames, not title cards or black placeholders. The visual evidence proves that the normal opening and first-wave scene were reached; it does not falsely claim that combat resolution passed.
 
+Representative SHA-256 hashes:
+
+- `run-1\01_K2_BASE_OPENING.png`: `A92F67ADE8948C35E07D2079B9DC947FB051BB9C53FAFB4072C2CDA771EA91DA`
+- `run-1\05_K2_ACTIVE_COMBAT.png`: `9E1D5F5EE308774F23C7D9B3D0AE4B1FA7CFE7A74C61F78CF41EB59F60D6E3AD`
+- `run-3\12_K2_1366_FIRST_WAVE.png`: `F6F13554E9DC96C4CAF19EF5FC8CAF1C6BC2418721D5CD825FDA1332DB68F77E`
+
 ## Run results
 
 | Run | First wave/contact | First damage | Resolution | Enemy combat alive | Player combat alive | Player workers alive | Primary observation |
