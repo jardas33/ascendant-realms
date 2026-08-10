@@ -506,12 +506,12 @@ func constrain_unit_velocity_around_buildings(origin: Vector3, requested_velocit
 	var speed := requested_velocity.length()
 	if speed < 0.01:
 		return requested_velocity
-	var step_end := origin + requested_velocity * maxf(delta, 0.016)
+	var step_end: Vector3 = origin + requested_velocity * maxf(delta, 0.016)
 	for building in all_buildings():
 		if not is_instance_valid(building) or building.is_dead or not building.is_built:
 			continue
 		var radius := float(building.def.get("footprint", 4.0)) + clearance
-		var radial := origin - building.global_position
+		var radial: Vector3 = origin - building.global_position
 		radial.y = 0.0
 		if radial.length() < radius:
 			if radial.length_squared() < 0.01:
@@ -519,14 +519,14 @@ func constrain_unit_velocity_around_buildings(origin: Vector3, requested_velocit
 			return radial.normalized() * speed
 		if not _segment_intersects_route_circle(origin, step_end, building.global_position, radius):
 			continue
-		var travel_target := origin + requested_velocity.normalized() * maxf(radius * 4.0, 12.0)
-		var waypoints := navigation_waypoints_for_unit(origin, travel_target, clearance)
+		var travel_target: Vector3 = origin + requested_velocity.normalized() * maxf(radius * 4.0, 12.0)
+		var waypoints: Array = navigation_waypoints_for_unit(origin, travel_target, clearance)
 		if not waypoints.is_empty():
 			var waypoint_direction: Vector3 = waypoints[0] - origin
 			waypoint_direction.y = 0.0
 			if waypoint_direction.length_squared() > 0.01:
 				return waypoint_direction.normalized() * speed
-		var tangent := Vector3(-radial.z, 0.0, radial.x).normalized()
+		var tangent: Vector3 = Vector3(-radial.z, 0.0, radial.x).normalized()
 		if tangent.dot(requested_velocity) < 0.0:
 			tangent = -tangent
 		return tangent * speed
