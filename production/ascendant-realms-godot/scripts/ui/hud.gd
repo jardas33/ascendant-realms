@@ -230,12 +230,31 @@ func _cost_string(cost: Dictionary) -> String:
 	return "  (" + ", ".join(parts) + ")" if not parts.is_empty() else ""
 
 
-func _mk_command_button(title: String, detail: String, tooltip: String, disabled_reason: String = "") -> Button:
-	var btn := _mk_button("%s\n%s" % [title, detail], 13)
+func _command_icon_path(title: String, detail: String) -> String:
+	var haystack := (title + " " + detail).to_lower()
+	for kind in RES_ORDER:
+		if haystack.contains(kind):
+			return RES_ICONS[kind]
+	# There is no separate command-card sprite atlas in the current authored kit;
+	# use the existing portrait frame as a neutral entity affordance rather than
+	# inventing a fake building thumbnail.
+	return FRAME_PORTRAIT
+
+
+func _mk_command_button(title: String, detail: String, tooltip: String, disabled_reason: String = "", state: String = "READY") -> Button:
+	var state_text := "[%s] " % state if not state.is_empty() else ""
+	var btn := _mk_button("%s\n%s%s" % [title, state_text, detail], 13)
 	btn.custom_minimum_size = Vector2(174, 62)
 	btn.alignment = HORIZONTAL_ALIGNMENT_LEFT
 	btn.clip_text = true
 	btn.focus_mode = Control.FOCUS_NONE
+	btn.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	var icon_path := _command_icon_path(title, detail)
+	if ResourceLoader.exists(icon_path):
+		btn.icon = load(icon_path)
+		btn.expand_icon = true
+		btn.icon_max_width = 30
+		btn.icon_alignment = HORIZONTAL_ALIGNMENT_LEFT
 	btn.tooltip_text = tooltip if disabled_reason.is_empty() else "%s\nUnavailable: %s" % [tooltip, disabled_reason]
 	var normal := StyleBoxFlat.new()
 	normal.bg_color = Color(0.10, 0.12, 0.14, 0.96)
@@ -425,10 +444,10 @@ func _draw_minimap() -> void:
 	if not is_instance_valid(_minimap):
 		return
 	var size := _minimap.size
-	# Readable terrain-first map: the previous black panel only exposed dots,
-	# which made the battlefield topology impossible to read at a glance.
+	# Readable terrain-first map: this is a deterministic miniature of the
+	# authoritative MapDefs contract, not a second world renderer.
 	var terrain_base := Color(0.24, 0.32, 0.22, 1.0)
-	var terrain_overlay := Color(0.32, 0.39, 0.25, 0.52)
+	var terrain_overlay := Color(0.32, 0.39, 0.25, 1.0)
 	if is_instance_valid(world):
 		match str(world.map.get("theme", "highland")):
 			"volcanic":
@@ -441,25 +460,22 @@ func _draw_minimap() -> void:
 				terrain_base = Color(0.42, 0.31, 0.2, 1.0)
 				terrain_overlay = Color(0.58, 0.42, 0.24, 0.48)
 		_minimap.draw_rect(Rect2(Vector2.ZERO, size), terrain_base, true)
-	_minimap.draw_rect(Rect2(Vector2(4, 4), size - Vector2(8, 8)), terrain_overlay, true)
-	# Soft terrain bands keep the map legible without pretending to be a second
-	# fog/economy system. They are a presentation-only abstraction of the
-	# existing flat battlefield bounds.
-	for i in range(5):
-		var y := 12.0 + float(i) * size.y / 5.0
-		_minimap.draw_line(Vector2(8, y), Vector2(size.x - 8, y), Color(0.5, 0.52, 0.34, 0.14), 1.0)
+		_minimap.draw_rect(Rect2(Vector2(4, 4), size - Vector2(8, 8)), terrain_overlay, true)
+		_draw_minimap_terrain(size)
+		_draw_minimap_water(size)
 	_draw_minimap_roads(size)
 	var bridge_data = world.map.get("bridge", {})
 	if bridge_data is Dictionary and bridge_data.get("pos") is Vector3:
 		var bridge_p := _world_to_map(bridge_data["pos"])
-		_minimap.draw_line(bridge_p - Vector2(9, 0), bridge_p + Vector2(9, 0), Color(0.95, 0.78, 0.36, 1.0), 5.0, true)
-		_minimap.draw_rect(Rect2(bridge_p - Vector2(11, 4), Vector2(22, 8)), Color(0.22, 0.15, 0.08, 0.95), false, 1.0)
+		_minimap.draw_line(bridge_p - Vector2(10, 0), bridge_p + Vector2(10, 0), Color(0.12, 0.08, 0.05, 1.0), 8.0, true)
+		_minimap.draw_line(bridge_p - Vector2(10, 0), bridge_p + Vector2(10, 0), Color(0.95, 0.78, 0.36, 1.0), 4.0, true)
+		_minimap.draw_rect(Rect2(bridge_p - Vector2(12, 5), Vector2(24, 10)), Color(0.22, 0.15, 0.08, 0.95), false, 1.0)
 	_minimap.draw_rect(Rect2(Vector2.ZERO, size), Color(0.55, 0.48, 0.3, 0.95), false, 2.0)
 
 	if not is_instance_valid(world):
 		return
 
-	# capture points as diamonds
+	# capture points as diamonds, using the live nodes so ownership remains true.
 	for cp in world.get_tree().get_nodes_in_group("capture_points"):
 		if not is_instance_valid(cp):
 			continue
@@ -474,28 +490,85 @@ func _draw_minimap() -> void:
 			p + Vector2(0, -r), p + Vector2(r, 0), p + Vector2(0, r),
 			p + Vector2(-r, 0), p + Vector2(0, -r)]), Color(0, 0, 0, 0.8), 1.0)
 
-	# buildings (larger squares)
+	# buildings (larger squares with a dark footprint and team face)
 	for b in world.all_buildings():
 		if not is_instance_valid(b) or b.is_dead:
 			continue
 		var col: Color = GameData.TEAM_COLORS.get(b.team, Color.WHITE)
 		var p := _world_to_map(b.global_position)
-		_minimap.draw_rect(Rect2(p - Vector2(2.5, 2.5), Vector2(5, 5)), col, true)
+		_minimap.draw_rect(Rect2(p - Vector2(4.0, 4.0), Vector2(8, 8)), Color(0.06, 0.07, 0.06, 0.9), true)
+		_minimap.draw_rect(Rect2(p - Vector2(3.0, 3.0), Vector2(6, 6)), col, true)
 
-	# units (dots)
+	# units (small but readable diamonds)
 	for u in world.all_units():
 		if not is_instance_valid(u) or u.is_dead:
 			continue
 		var col: Color = GameData.TEAM_COLORS.get(u.team, Color.WHITE)
 		var p := _world_to_map(u.global_position)
-		_minimap.draw_rect(Rect2(p - Vector2(1.5, 1.5), Vector2(3, 3)), col, true)
+		var unit_shape := PackedVector2Array([p + Vector2(0, -3.0), p + Vector2(3.0, 0), p + Vector2(0, 3.0), p + Vector2(-3.0, 0)])
+		_minimap.draw_colored_polygon(unit_shape, col)
 
-	# camera view marker
+	# camera view marker corresponds to the current RTS camera footprint, not a
+	# fixed square that implied a false zoom level.
 	if is_instance_valid(rts) and "cam_pivot" in rts and is_instance_valid(rts.cam_pivot):
 		var cp := _world_to_map(rts.cam_pivot.global_position)
-		var vr := 18.0
-		_minimap.draw_rect(Rect2(cp - Vector2(vr, vr), Vector2(vr * 2, vr * 2)),
-			Color(1, 1, 1, 0.9), false, 1.5)
+		var aspect := get_viewport_rect().size.x / maxf(get_viewport_rect().size.y, 1.0)
+		var zoom := float(rts.get("_zoom")) if rts.get("_zoom") != null else 42.0
+		var half_y := clampf(zoom * 0.72, 18.0, 78.0)
+		var half_x := clampf(half_y * aspect, 24.0, 118.0)
+		var corners := PackedVector2Array([
+			_world_to_map(rts.cam_pivot.global_position + Vector3(-half_x, 0, -half_y)),
+			_world_to_map(rts.cam_pivot.global_position + Vector3(half_x, 0, -half_y)),
+			_world_to_map(rts.cam_pivot.global_position + Vector3(half_x, 0, half_y)),
+			_world_to_map(rts.cam_pivot.global_position + Vector3(-half_x, 0, half_y)),
+			_world_to_map(rts.cam_pivot.global_position + Vector3(-half_x, 0, -half_y))])
+		_minimap.draw_polyline(corners, Color(1, 1, 1, 0.94), 1.5, true)
+
+
+func _draw_minimap_terrain(size: Vector2) -> void:
+	# Broad, low-contrast land shelves are derived from the existing map bounds
+	# and start positions. They give the eye a battlefield silhouette without
+	# inventing fog, units, or gameplay zones.
+	var edge := Color(0.10, 0.13, 0.10, 0.55)
+	_minimap.draw_rect(Rect2(Vector2(7, 7), size - Vector2(14, 14)), edge, false, 5.0)
+	for start in world.map.get("start_positions", []):
+		var p := _world_to_map(start)
+		_minimap.draw_circle(p, 13.0, Color(0.75, 0.68, 0.42, 0.11))
+		_minimap.draw_arc(p, 13.0, 0.0, TAU, 20, Color(0.78, 0.72, 0.48, 0.34), 1.0, true)
+	_minimap.draw_circle(_world_to_map(Vector3.ZERO), 12.0, Color(0.9, 0.78, 0.38, 0.08))
+
+
+func _draw_minimap_water(size: Vector2) -> void:
+	var water := world.map.get("water", {})
+	if not bool(water.get("enabled", false)):
+		return
+	var overview: Dictionary = world.map.get("overview", {})
+	var axis := str(overview.get("water_axis", "north_bay"))
+	var center_z := float(overview.get("water_center_z", 118.0))
+	var half_width := float(overview.get("water_width", 34.0)) * 0.5
+	var deep := water.get("deep", Color(0.05, 0.22, 0.34))
+	var shallow := water.get("shallow", Color(0.16, 0.48, 0.58))
+	var pts := PackedVector2Array()
+	if axis == "crossing":
+		pts = PackedVector2Array([
+			_world_to_map(Vector3(-MAP_HALF, 0, center_z - half_width)),
+			_world_to_map(Vector3(-70, 0, center_z - half_width - 5)),
+			_world_to_map(Vector3(0, 0, center_z - half_width + 2)),
+			_world_to_map(Vector3(70, 0, center_z - half_width - 4)),
+			_world_to_map(Vector3(MAP_HALF, 0, center_z - half_width)),
+			_world_to_map(Vector3(MAP_HALF, 0, center_z + half_width)),
+			_world_to_map(Vector3(68, 0, center_z + half_width + 4)),
+			_world_to_map(Vector3(0, 0, center_z + half_width - 2)),
+			_world_to_map(Vector3(-70, 0, center_z + half_width + 5)),
+			_world_to_map(Vector3(-MAP_HALF, 0, center_z + half_width))])
+	else:
+		pts = PackedVector2Array([
+			_world_to_map(Vector3(-MAP_HALF, 0, center_z - half_width)),
+			_world_to_map(Vector3(MAP_HALF, 0, center_z - half_width)),
+			_world_to_map(Vector3(MAP_HALF, 0, MAP_HALF)),
+			_world_to_map(Vector3(-MAP_HALF, 0, MAP_HALF))])
+	_minimap.draw_colored_polygon(pts, deep.darkened(0.12))
+	_minimap.draw_polyline(pts, shallow.lightened(0.18), 2.0, true)
 
 
 func _draw_minimap_roads(size: Vector2) -> void:
@@ -999,7 +1072,7 @@ func _build_worker_card() -> void:
 		var reason: String = ""
 		if not affordable:
 			reason = "Need " + _commander.missing_resource(cost)
-		var btn := _mk_command_button(str(bdef.get("name", bid)), "Cost: " + _cost_string(cost).trim_prefix("  (").trim_suffix(")"), str(bdef.get("desc", "")), reason)
+		var btn := _mk_command_button(str(bdef.get("name", bid)), "Cost: " + _cost_string(cost).trim_prefix("  (").trim_suffix(")"), str(bdef.get("desc", "")), reason, "LOCKED" if not affordable else "READY")
 		btn.disabled = not affordable
 		var cap_id := String(bid)
 		btn.pressed.connect(func():
@@ -1055,7 +1128,7 @@ func _build_building_card(b) -> void:
 				reason = "Need more housing"
 			elif not affordable:
 				reason = "Need " + _commander.missing_resource(cost)
-			var btn := _mk_command_button(str(udef.get("name", uid)), "Tier %d | Cost: %s" % [tier, _cost_string(cost).trim_prefix("  (").trim_suffix(")")], str(udef.get("desc", "")), reason)
+			var btn := _mk_command_button(str(udef.get("name", uid)), "Tier %d | Cost: %s" % [tier, _cost_string(cost).trim_prefix("  (").trim_suffix(")")], str(udef.get("desc", "")), reason, "LOCKED" if not reason.is_empty() else "READY")
 			btn.disabled = not reason.is_empty()
 			var cap_b = b
 			var cap_uid := String(uid)
@@ -1085,7 +1158,7 @@ func _build_building_card(b) -> void:
 			if _commander.has_method("can_research"):
 				available = _commander.can_research(tid)
 			var reason := "Already researched or unavailable" if not available else ""
-			var btn := _mk_command_button(str(tdef.get("name", tid)), "Cost: " + _cost_string(cost).trim_prefix("  (").trim_suffix(")"), str(tdef.get("desc", "")), reason)
+			var btn := _mk_command_button(str(tdef.get("name", tid)), "Cost: " + _cost_string(cost).trim_prefix("  (").trim_suffix(")"), str(tdef.get("desc", "")), reason, "LOCKED" if not available else "READY")
 			btn.disabled = not available
 			var cap_b = b
 			var cap_tid := String(tid)
