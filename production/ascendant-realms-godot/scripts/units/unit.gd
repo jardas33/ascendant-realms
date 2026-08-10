@@ -1510,7 +1510,7 @@ func _move_along_path(delta: float) -> bool:
 	if world and world.has_method("constrain_unit_velocity_around_buildings"):
 		desired = world.constrain_unit_velocity_around_buildings(global_position, desired, delta, _building_route_clearance())
 	var clearance_redirected: bool = desired.distance_to(requested_velocity) > 0.05
-	if clearance_redirected:
+	if clearance_redirected and is_worker:
 		velocity.x = desired.x
 		velocity.z = desired.z
 		move_and_slide()
