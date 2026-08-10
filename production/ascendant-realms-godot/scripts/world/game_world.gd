@@ -430,7 +430,7 @@ func navigation_waypoints_for_unit(origin: Vector3, requested: Vector3, clearanc
 		# first leg but let the next leg cut back through the same footprint. Use
 		# deterministic perimeter candidates and require both legs to clear the
 		# blocker before it can be ignored for the next route segment.
-		var radius := float(blocker.def.get("footprint", 4.0)) + clearance + 0.2
+		var radius := _building_route_radius(blocker, clearance) + 0.2
 		var candidates: Array[Vector3] = []
 		for candidate_index in range(16):
 			var angle := TAU * float(candidate_index) / 16.0
@@ -478,7 +478,7 @@ func _first_route_blocking_building(origin: Vector3, target: Vector3, clearance:
 	for building in all_buildings():
 		if not is_instance_valid(building) or building.is_dead or not building.is_built or ignored.has(building):
 			continue
-		var radius := float(building.def.get("footprint", 4.0)) + clearance
+		var radius := _building_route_radius(building, clearance)
 		if target.distance_to(building.global_position) < radius or _segment_intersects_route_circle(origin, target, building.global_position, radius):
 			var distance := origin.distance_to(building.global_position)
 			if distance < closest_distance:
@@ -499,6 +499,14 @@ func _segment_intersects_route_circle(a: Vector3, b: Vector3, center: Vector3, r
 func _route_cost(from: Vector3, via: Vector3, target: Vector3) -> float:
 	return from.distance_to(via) + via.distance_to(target)
 
+func _building_route_radius(building, clearance: float) -> float:
+	var base_radius := float(building.def.get("footprint", 4.0))
+	if is_instance_valid(building) and building.has_method("get_selection_geometry"):
+		var geometry: Dictionary = building.get_selection_geometry()
+		var visual_extents: Dictionary = geometry.get("visual_extents", {})
+		base_radius = maxf(base_radius, maxf(float(visual_extents.get("x", 0.0)), float(visual_extents.get("z", 0.0))))
+	return base_radius + clearance
+
 ## Last-frame guard for the broad production navmesh. It only constrains a
 ## movement velocity when a completed-building clearance envelope would be
 ## entered; it does not change targets, combat range, or authoritative state.
@@ -510,7 +518,7 @@ func constrain_unit_velocity_around_buildings(origin: Vector3, requested_velocit
 	for building in all_buildings():
 		if not is_instance_valid(building) or building.is_dead or not building.is_built:
 			continue
-		var radius := float(building.def.get("footprint", 4.0)) + clearance
+		var radius := _building_route_radius(building, clearance)
 		var radial: Vector3 = origin - building.global_position
 		radial.y = 0.0
 		if radial.length() < radius:
