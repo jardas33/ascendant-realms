@@ -1505,10 +1505,16 @@ func _move_along_path(delta: float) -> bool:
 	var spd := move_speed
 	if _slow > 0.0: spd *= 0.5
 	if _rooted > 0.0: spd = 0.0
-	var desired := dir * spd
+	var requested_velocity: Vector3 = dir * spd
+	var desired: Vector3 = requested_velocity
 	if world and world.has_method("constrain_unit_velocity_around_buildings"):
 		desired = world.constrain_unit_velocity_around_buildings(global_position, desired, delta, _building_route_clearance())
-	if agent.avoidance_enabled:
+	var clearance_redirected: bool = desired.distance_to(requested_velocity) > 0.05
+	if clearance_redirected:
+		velocity.x = desired.x
+		velocity.z = desired.z
+		move_and_slide()
+	elif agent.avoidance_enabled:
 		agent.set_velocity(desired)
 	else:
 		velocity.x = desired.x
