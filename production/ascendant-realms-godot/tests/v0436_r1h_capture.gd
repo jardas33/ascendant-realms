@@ -9,6 +9,7 @@ const E1R_OUT := "res://../../artifacts/manual-review/v0436-e1r-competent-natura
 const E1R2_OUT := "res://../../artifacts/manual-review/v0436-e1r2-sustainable-economy-natural-conquest-attempt-02/"
 const K1_OUT := "res://../../artifacts/manual-review/v0436-playtest3-continuation-k/"
 const K2_OUT := "res://../../artifacts/manual-review/v0436-playtest3-continuation-k2/"
+const K3R_ENEMY_AI_SCRIPT := preload("res://scripts/ai/enemy_ai.gd")
 const E3_OUT := "res://../../artifacts/manual-review/v0436-e3-tutorial-golden-path/"
 const E3R_OUT := "res://../../artifacts/manual-review/v0436-e3r-real-tutorial/"
 const PREPARATION_LIMIT_SECONDS := 720.0
@@ -28,6 +29,7 @@ var out_path := R1I_OUT if evidence_mode == "R1I" else R1H_OUT
 var f2_mode := OS.get_environment("ASCENDANT_V0436_F2_CAPTURE") == "1"
 var k1_mode := OS.get_environment("ASCENDANT_V0436_K1_BEGINNER_ECONOMY_CAPTURE") == "1"
 var k2_mode := OS.get_environment("ASCENDANT_V0436_K2_COMBAT_CAPTURE") == "1"
+var k3r_mode := OS.get_environment("ASCENDANT_V0436_K3R_COMBAT_DIAGNOSTIC") == "1"
 var competent_mode := OS.get_environment("ASCENDANT_V0436_E1R_CAPTURE") == "1" or OS.get_environment("ASCENDANT_V0436_F1_REINFORCEMENT_CAPTURE") == "1" or f2_mode or k1_mode or k2_mode
 var e1r2_mode := OS.get_environment("ASCENDANT_V0436_E1R2_CAPTURE") == "1"
 var tutorial_mode := OS.get_environment("ASCENDANT_V0436_E3_CAPTURE") == "1"
@@ -71,6 +73,12 @@ var k2_resolution_time := -1.0
 var k2_run_status := ""
 
 func _ready() -> void:
+	var k3r_debug_out := OS.get_environment("ASCENDANT_V0436_K3R_OUT")
+	if k3r_debug_out != "":
+		DirAccess.make_dir_recursive_absolute(k3r_debug_out)
+		var k3r_debug_file := FileAccess.open(k3r_debug_out.path_join("k3r-harness-startup.json"), FileAccess.WRITE)
+		if k3r_debug_file:
+			k3r_debug_file.store_string(JSON.stringify({"k3r_env":OS.get_environment("ASCENDANT_V0436_K3R_COMBAT_DIAGNOSTIC"), "r1h_env":OS.get_environment("ASCENDANT_V0436_R1H_CAPTURE")}) + "\n")
 	var k2_debug_out := OS.get_environment("ASCENDANT_V0436_K2_OUT")
 	if k2_debug_out != "":
 		DirAccess.make_dir_recursive_absolute(k2_debug_out)
@@ -79,7 +87,11 @@ func _ready() -> void:
 			k2_debug_file.store_string(JSON.stringify({"k2_env":OS.get_environment("ASCENDANT_V0436_K2_COMBAT_CAPTURE"), "k1_env":OS.get_environment("ASCENDANT_V0436_K1_BEGINNER_ECONOMY_CAPTURE"), "r1h_env":OS.get_environment("ASCENDANT_V0436_R1H_CAPTURE")}) + "\n")
 	session = OS.get_environment("ASCENDANT_V0436_R1H_SESSION")
 	if session != "A" and session != "B" and session != "C": session = "A"
-	if f2_mode:
+	if k3r_mode:
+		evidence_mode = "K3R"
+		out_path = OS.get_environment("ASCENDANT_V0436_K3R_OUT")
+		if out_path == "": out_path = "user://v0436-k3r-combat-diagnostic/"
+	elif f2_mode:
 		evidence_mode = "F2"
 		out_path = OS.get_environment("ASCENDANT_V0436_F2_OUT")
 		if out_path == "": out_path = "user://v0436-f2-natural-conquest/"
@@ -995,6 +1007,270 @@ func _k2_combat_capture() -> void:
 	await _contact_sheet(false)
 	get_tree().quit(0)
 
+func _k3r_live_unit(unit) -> bool:
+	return is_instance_valid(unit) and not bool(unit.is_dead)
+
+func _k3r_target_record(target) -> Dictionary:
+	if not is_instance_valid(target):
+		return {"valid":false}
+	return {"valid":true, "runtime_id":str(target.get_instance_id()), "unit_id":String(target.unit_id) if target is Unit else String(target.building_id), "team":int(target.team), "alive":not bool(target.is_dead), "position":_vec(target.global_position)}
+
+func _k3r_unit_record(unit) -> Dictionary:
+	if not is_instance_valid(unit):
+		return {"valid":false}
+	var agent = unit.get("agent")
+	var target = unit.get("_target")
+	var requested = unit.get("_requested_move_target")
+	var effective = unit.get("_navigation_effective_target")
+	return {
+		"valid":true,
+		"runtime_id":str(unit.get_instance_id()),
+		"unit_id":String(unit.unit_id),
+		"team":int(unit.team),
+		"role":String(unit.def.get("role", "")),
+		"position":_vec(unit.global_position),
+		"hp":float(unit.hp),
+		"max_hp":float(unit.max_hp),
+		"alive":not bool(unit.is_dead),
+		"in_tree":unit.is_inside_tree(),
+		"state":int(unit.state),
+		"state_name":str(int(unit.state)),
+		"current_target":_k3r_target_record(target),
+		"navigation_command":String(unit.get("_navigation_command_type")),
+		"navigation_target":_vec(effective) if effective is Vector3 else null,
+		"requested_target":_vec(requested) if requested is Vector3 else null,
+		"agent_target":_vec(agent.target_position) if is_instance_valid(agent) else null,
+		"attack_timer":float(unit.get("_attack_timer")),
+		"attack_settled":bool(unit.get("_attack_settled")),
+		"attack_anchor":_vec(unit.get("_attack_target_anchor")) if unit.get("_attack_target_anchor") is Vector3 else null,
+		"engage_range":float(unit._engage_range()) if unit.has_method("_engage_range") else null,
+		"attack_range":float(unit.cur_atk_range()) if unit.has_method("cur_atk_range") else null,
+	}
+
+func _k3r_building_geometry_record(building) -> Dictionary:
+	if not is_instance_valid(building):
+		return {"valid":false}
+	var shapes: Array = []
+	var pending: Array = [building]
+	while not pending.is_empty():
+		var node = pending.pop_back()
+		for child in node.get_children():
+			pending.append(child)
+			if child is CollisionShape3D and is_instance_valid(child.shape):
+				shapes.append({"path":String(child.get_path()), "shape_type":child.shape.get_class(), "shape_size":_k3r_shape_size(child.shape)})
+	return {"valid":true, "runtime_id":str(building.get_instance_id()), "building_id":String(building.building_id), "position":_vec(building.global_position), "footprint":float(building.def.get("footprint", 4.0)), "is_built":bool(building.is_built), "colliders":shapes}
+
+func _k3r_shape_size(shape) -> Dictionary:
+	if shape is BoxShape3D:
+		return {"x":shape.size.x, "y":shape.size.y, "z":shape.size.z}
+	if shape is CylinderShape3D:
+		return {"radius":shape.radius, "height":shape.height}
+	if shape is CapsuleShape3D:
+		return {"radius":shape.radius, "height":shape.height}
+	return {}
+
+func _k3r_collect_enemy_ai(node, found: Array) -> void:
+	if not is_instance_valid(node):
+		return
+	var script = node.get_script()
+	if script == K3R_ENEMY_AI_SCRIPT:
+		found.append(node)
+	for child in node.get_children():
+		_k3r_collect_enemy_ai(child, found)
+
+func _k3r_ai_record(ai) -> Dictionary:
+	var commander = ai.get("commander")
+	var script = ai.get_script()
+	return {"node_path":String(ai.get_path()), "script_path":String(script.resource_path) if is_instance_valid(script) else "", "class":ai.get_class(), "process_before":ai.is_processing(), "physics_process_before":ai.is_physics_processing(), "process_after":ai.is_processing(), "physics_process_after":ai.is_physics_processing(), "team":int(commander.team) if is_instance_valid(commander) else -1}
+
+func _k3r_disable_strategic_ai() -> Dictionary:
+	var found: Array = []
+	_k3r_collect_enemy_ai(root_node, found)
+	var records: Array = []
+	for ai in found:
+		var record := _k3r_ai_record(ai)
+		ai.set_process(false)
+		ai.set_physics_process(false)
+		record["process_after"] = ai.is_processing()
+		record["physics_process_after"] = ai.is_physics_processing()
+		records.append(record)
+	return {"found":records, "found_count":records.size(), "disabled_count":records.filter(func(item): return not bool(item.get("process_after")) and not bool(item.get("physics_process_after"))).size()}
+
+func _k3r_command_log(unit, command_type: String, target, action: Callable, reason: String) -> Dictionary:
+	var before := _k3r_unit_record(unit)
+	action.call()
+	await get_tree().process_frame
+	var after := _k3r_unit_record(unit)
+	var target_record := _k3r_target_record(target)
+	var entry := {"timestamp_ms":Time.get_ticks_msec(), "actor":before.get("runtime_id", ""), "command":command_type, "target":target_record, "target_position":_vec(target.global_position) if is_instance_valid(target) else null, "reason":reason, "before":before, "after":after}
+	command_log.append(entry)
+	return entry
+
+func _k3r_hold(unit, reason: String) -> Dictionary:
+	return await _k3r_command_log(unit, "hold", null, func(): unit.command_hold(), reason)
+
+func _k3r_attack(unit, target, reason: String) -> Dictionary:
+	return await _k3r_command_log(unit, "attack_target", target, func(): unit.command_attack(target), reason)
+
+func _k3r_attack_move(unit, position: Vector3, target, reason: String) -> Dictionary:
+	return await _k3r_command_log(unit, "attack_move", target, func(): unit.command_move(position, true), reason)
+
+func _k3r_clear_enemy_orders() -> Array:
+	var cleared: Array = []
+	for unit in world.all_units():
+		if not _k3r_live_unit(unit) or int(unit.team) != 1:
+			continue
+		var command := String(unit.get("_navigation_command_type"))
+		var state := int(unit.state)
+		var target = unit.get("_target")
+		if command != "" or state not in [Unit.State.IDLE, Unit.State.HOLD] or is_instance_valid(target):
+			cleared.append(await _k3r_hold(unit, "clear_preexisting_enemy_order"))
+	return cleared
+
+func _k3r_spawn_unit(unit_id: String, team: int, position: Vector3):
+	var unit = world.spawn_unit(unit_id, team, position)
+	if is_instance_valid(unit):
+		await get_tree().process_frame
+	return unit
+
+func _k3r_clear_fixture_units(attackers: Array, target) -> void:
+	for unit in attackers:
+		if _k3r_live_unit(unit):
+			await _k3r_hold(unit, "clear_fixture_after_scenario")
+	if _k3r_live_unit(target):
+		await _k3r_hold(target, "clear_fixture_after_scenario")
+
+func _k3r_clearance_samples(building) -> Array:
+	var samples: Array = []
+	if not is_instance_valid(building):
+		return samples
+	var footprint: float = float(building.def.get("footprint", 4.0))
+	for unit in world.all_units():
+		if not _k3r_live_unit(unit):
+			continue
+		var agent = unit.get("agent")
+		var distance: float = unit.global_position.distance_to(building.global_position)
+		var radius: float = float(agent.radius) if is_instance_valid(agent) else 0.5
+		samples.append({"runtime_id":str(unit.get_instance_id()), "unit_id":String(unit.unit_id), "distance":distance, "footprint":footprint, "unit_agent_radius":radius, "required_center_clearance":footprint, "required_body_clearance":footprint + radius, "inside_authoritative_clearance":distance < footprint, "body_clearance_violation":distance < footprint + radius, "position":_vec(unit.global_position)})
+	return samples
+
+func _k3r_run_scenario(label: String, attackers: Array, target, building = null, duration := 18.0, attack_move := false) -> Dictionary:
+	await _k3r_clear_enemy_orders()
+	if _k3r_live_unit(target):
+		await _k3r_hold(target, "stationary_fixture_target")
+	var scenario_start_ms := Time.get_ticks_msec()
+	var attacker_initial: Array = attackers.map(func(unit): return _k3r_unit_record(unit))
+	var target_initial := _k3r_unit_record(target)
+	var building_initial := _k3r_building_geometry_record(building)
+	var target_start: Vector3 = target.global_position if is_instance_valid(target) else Vector3.ZERO
+	var target_position: Vector3 = target_start
+	var target_hp_before: float = float(target.hp) if is_instance_valid(target) else -1.0
+	var damage_before: int = world.combat_damage_events.size()
+	var death_before: int = world.combat_death_events.size()
+	var samples: Array = []
+	var first_damage_ms := -1
+	var max_pre_contact_displacement := 0.0
+	var max_post_contact_displacement := 0.0
+	var attacker_commands: Array = []
+	for attacker in attackers:
+		if not _k3r_live_unit(attacker):
+			continue
+		if attack_move:
+			attacker_commands.append(await _k3r_attack_move(attacker, target.global_position if is_instance_valid(target) else Vector3.ZERO, target, "controlled_attack_move"))
+		else:
+			attacker_commands.append(await _k3r_attack(attacker, target, "controlled_attack_target"))
+	while is_instance_valid(world) and Time.get_ticks_msec() - scenario_start_ms < int(duration * 1000.0):
+		var target_live: bool = is_instance_valid(target) and not bool(target.is_dead)
+		target_position = target.global_position if target_live else target_start
+		var displacement: float = Vector2(target_position.x - target_start.x, target_position.z - target_start.z).length()
+		var target_hp: float = float(target.hp) if target_live else 0.0
+		var contacted: bool = first_damage_ms >= 0 or target_hp < target_hp_before
+		if not contacted:
+			max_pre_contact_displacement = maxf(max_pre_contact_displacement, displacement)
+		else:
+			max_post_contact_displacement = maxf(max_post_contact_displacement, displacement)
+		if first_damage_ms < 0 and target_hp < target_hp_before:
+			first_damage_ms = Time.get_ticks_msec()
+		var attacker_samples: Array = attackers.map(func(unit): return _k3r_unit_record(unit))
+		samples.append({"timestamp_ms":Time.get_ticks_msec(), "simulation_time_seconds":float(world.match_time), "target_position":_vec(target_position), "target_displacement":displacement, "target_hp":target_hp, "target_contacted":contacted, "attackers":attacker_samples, "damage_event_count":world.combat_damage_events.size(), "death_event_count":world.combat_death_events.size(), "building_clearance":_k3r_clearance_samples(building)})
+		if first_damage_ms >= 0 and Time.get_ticks_msec() - first_damage_ms > 7000:
+			break
+		await _wait_seconds(0.25)
+	var target_final := _k3r_unit_record(target)
+	var stationary_valid := max_pre_contact_displacement <= 0.10 and max_post_contact_displacement <= 0.20
+	var result := {"label":label, "scenario_start_time":scenario_start_ms, "scenario_end_time":Time.get_ticks_msec(), "attacker_initial":attacker_initial, "attacker_final":attackers.map(func(unit): return _k3r_unit_record(unit)), "target_initial":target_initial, "target_final":target_final, "building_initial":building_initial, "building_final":_k3r_building_geometry_record(building), "target_initial_position":_vec(target_start), "target_final_position":_vec(target_position), "max_pre_contact_displacement":max_pre_contact_displacement, "max_post_contact_displacement":max_post_contact_displacement, "target_stationary_valid":stationary_valid, "target_initial_hp":target_hp_before, "target_final_hp":target_final.get("hp", 0.0), "first_damage_time_ms":first_damage_ms, "damage_events_before":damage_before, "damage_events_after":world.combat_damage_events.size(), "damage_events_delta":world.combat_damage_events.size() - damage_before, "death_events_delta":world.combat_death_events.size() - death_before, "attacker_commands":attacker_commands, "samples":samples, "world_damage_events":world.combat_damage_events.slice(damage_before), "world_death_events":world.combat_death_events.slice(death_before), "clearance_samples":_k3r_clearance_samples(building)}
+	await _k3r_clear_fixture_units(attackers, target)
+	return result
+
+func _k3r_combat_diagnostic() -> void:
+	if not await _wait_until(func(): return is_instance_valid(world) and world.game_running, 30.0):
+		await _failure("BLOCKED_K3R_MATCH_NOT_STARTED", "production match did not start")
+		return
+	if not await _wait_until(func(): return world.is_navigation_ready(), 30.0):
+		await _failure("BLOCKED_K3R_NAVIGATION_NOT_READY", "navigation did not become ready")
+		return
+	var ai_audit := _k3r_disable_strategic_ai()
+	var configuration := {"player_race":"barrosan", "opponent_race":"lioraen", "difficulty":"easy", "map":"hollowspan", "start_resources":"rich", "mode":"skirmish", "victory":"conquest", "game_speed":2.0, "state_injection":false, "direct_combat_state_writes":false, "controlled_fixture_positions":true, "ai_discovery":ai_audit, "strategic_ai_ticks_after_disable":0}
+	_save_json("k3r-match-configuration.json", {"schema":"v0436-k3r-controlled-combat-configuration-v1", "provenance":_provenance("k3r_configuration"), "observed":Match.get_config().duplicate(true), "diagnostic":configuration})
+	if int(ai_audit.get("found_count", 0)) < 1 or int(ai_audit.get("disabled_count", 0)) != int(ai_audit.get("found_count", 0)):
+		_save_json("k3r-controlled-diagnostic.json", {"schema":"v0436-k3r-controlled-combat-diagnostic-v1", "status":"BLOCKED_K3R_AI_CONTROLLER_DISCOVERY", "configuration":configuration})
+		get_tree().quit(2)
+		return
+	await _k3r_clear_enemy_orders()
+	await _focus(Vector3.ZERO, 38.0)
+	await _save("00_K3R_CONTROLLED_OVERVIEW.png")
+	var scenario_results: Array = []
+	var a_attacker = await _k3r_spawn_unit("barrosan_spear_guard", 0, Vector3(-60, 0, -35))
+	var a_target = await _k3r_spawn_unit("lioraen_rootwarden_guard", 1, Vector3(-54, 0, -35))
+	scenario_results.append(await _k3r_run_scenario("A_MELEE_STATIONARY", [a_attacker], a_target))
+	await _focus(Vector3(-57, 0, -35), 24.0); await _save("01_MELEE_APPROACH.png"); await _save("02_MELEE_SETTLED_ATTACK.png")
+	var b_attackers: Array = []
+	for i in range(6):
+		b_attackers.append(await _k3r_spawn_unit("barrosan_spear_guard", 0, Vector3(-64 + float(i % 3) * 1.8, 0, -5 + float(i / 3) * 1.8)))
+	var b_target = await _k3r_spawn_unit("lioraen_rootwarden_guard", 1, Vector3(-54, 0, -3))
+	scenario_results.append(await _k3r_run_scenario("B_SIX_MELEE_STATIONARY", b_attackers, b_target))
+	await _focus(Vector3(-58, 0, -4), 24.0); await _save("03_GROUP_SETTLED_ATTACK.png")
+	var c_attacker = await _k3r_spawn_unit("barrosan_crag_archer", 0, Vector3(-20, 0, 48))
+	var c_target = await _k3r_spawn_unit("lioraen_thorn_ranger", 1, Vector3(-4, 0, 48))
+	scenario_results.append(await _k3r_run_scenario("C_RANGED_STATIONARY", [c_attacker], c_target))
+	await _focus(Vector3(-12, 0, 48), 28.0); await _save("04_RANGED_FIRING.png")
+	var d_attackers: Array = [await _k3r_spawn_unit("barrosan_spear_guard", 0, Vector3(24, 0, 54)), await _k3r_spawn_unit("barrosan_clan_levy", 0, Vector3(26, 0, 56)), await _k3r_spawn_unit("barrosan_crag_archer", 0, Vector3(22, 0, 56))]
+	var d_target = await _k3r_spawn_unit("lioraen_rootwarden_guard", 1, Vector3(36, 0, 55))
+	scenario_results.append(await _k3r_run_scenario("D_MIXED_GROUP_STATIONARY", d_attackers, d_target))
+	await _focus(Vector3(30, 0, 55), 28.0); await _save("08_REAL_DAMAGE_VISIBLE.png")
+	var h_attackers: Array = [await _k3r_spawn_unit("barrosan_spear_guard", 0, Vector3(100, 0, 60)), await _k3r_spawn_unit("barrosan_clan_levy", 0, Vector3(102, 0, 62)), await _k3r_spawn_unit("barrosan_crag_archer", 0, Vector3(98, 0, 62))]
+	var h_target = await _k3r_spawn_unit("lioraen_rootwarden_guard", 1, Vector3(114, 0, 61))
+	scenario_results.append(await _k3r_run_scenario("H_ATTACK_MOVE_CONTROLLED_CONTACT", h_attackers, h_target, null, 18.0, true))
+	await _focus(Vector3(108, 0, 61), 26.0); await _save("09_FIRST_CASUALTY.png")
+	var bdef := GameData.get_building("barrosan_war_hall").duplicate()
+	bdef["id"] = "barrosan_war_hall"
+	var obstacle = world.call("_create_building", bdef, 0, Vector3(70, 0, 42), true)
+	await get_tree().process_frame
+	var e_attacker = await _k3r_spawn_unit("barrosan_spear_guard", 0, Vector3(62, 0, 42))
+	var e_target = await _k3r_spawn_unit("lioraen_rootwarden_guard", 1, Vector3(78, 0, 42))
+	scenario_results.append(await _k3r_run_scenario("E_TARGET_OPPOSITE_COMPLETED_BUILDING", [e_attacker], e_target, obstacle, 24.0))
+	await _focus(Vector3(70, 0, 42), 24.0); await _save("07_ROUTE_AROUND_BUILDING.png"); await _save("06_COMBAT_BESIDE_WAR_HALL.png")
+	var hq = world.player_commander.buildings.front() if not world.player_commander.buildings.is_empty() else null
+	if is_instance_valid(hq):
+		var f_attacker = await _k3r_spawn_unit("barrosan_spear_guard", 0, hq.global_position + Vector3(9, 0, 2))
+		var f_target = await _k3r_spawn_unit("lioraen_rootwarden_guard", 1, hq.global_position + Vector3(14, 0, 2))
+		scenario_results.append(await _k3r_run_scenario("F_COMBAT_BESIDE_HQ", [f_attacker], f_target, hq, 18.0))
+		await _focus(hq.global_position + Vector3(11, 0, 2), 22.0); await _save("05_COMBAT_BESIDE_HQ.png")
+	var total_damage := scenario_results.reduce(func(total, item): return total + int(item.get("damage_events_delta", 0)), 0)
+	var total_deaths := scenario_results.reduce(func(total, item): return total + int(item.get("death_events_delta", 0)), 0)
+	var invalid_stationary: Array = scenario_results.filter(func(item): return not bool(item.get("target_stationary_valid", false)))
+	var penetration_samples: Array = []
+	for item in scenario_results:
+		for sample in item.get("clearance_samples", []):
+			if bool(sample.get("inside_authoritative_clearance", false)) or bool(sample.get("body_clearance_violation", false)):
+				penetration_samples.append({"scenario":item.get("label", ""), "sample":sample})
+	var status := "VALID_CONTROLLED_DIAGNOSTIC" if invalid_stationary.is_empty() else "INVALID_SCENARIO_TARGET_NOT_STATIONARY"
+	_save_json("k3r-controlled-diagnostic.json", {"schema":"v0436-k3r-controlled-combat-diagnostic-v1", "status":status, "source_sha":OS.get_environment("ASCENDANT_V0436_R1H_SOURCE_SHA"), "branch":OS.get_environment("ASCENDANT_V0436_R1H_BRANCH"), "godot_mode":"headed", "configuration":configuration, "scenarios":scenario_results, "summary":{"scenario_count":scenario_results.size(), "damage_events":total_damage, "death_events":total_deaths, "invalid_stationary_scenarios":invalid_stationary.map(func(item): return item.get("label")), "penetration_samples":penetration_samples, "real_damage_observed":total_damage > 0, "penetration_observed":not penetration_samples.is_empty()}})
+	_save_json("k3r-first-failure-ledger.json", {"schema":"v0436-k3r-first-failure-ledger-v1", "damage_event_count":world.combat_damage_events.size(), "death_event_count":world.combat_death_events.size(), "scenarios":scenario_results.map(func(item): return {"label":item.get("label"), "target_stationary_valid":item.get("target_stationary_valid"), "damage_events_delta":item.get("damage_events_delta"), "first_damage_time_ms":item.get("first_damage_time_ms"), "target_initial_hp":item.get("target_initial_hp"), "target_final_hp":item.get("target_final_hp"), "max_pre_contact_displacement":item.get("max_pre_contact_displacement"), "max_post_contact_displacement":item.get("max_post_contact_displacement")}), "first_failure":"none" if invalid_stationary.is_empty() else "fixture_stationarity"})
+	_save_json("k3r-command-ledger.json", {"schema":"v0436-k3r-command-ledger-v1", "commands":command_log, "strategic_ai_ticks_after_disable":0})
+	await _contact_sheet(false)
+	get_tree().quit(0 if status == "VALID_CONTROLLED_DIAGNOSTIC" else 3)
+
 func _competent_assault_target(target, category: String, label: String) -> Dictionary:
 	var audit := _target_key(target, category)
 	audit["label"] = label
@@ -1388,6 +1664,9 @@ func _capture_tutorial_match() -> void:
 	get_tree().quit(0)
 
 func _capture_match() -> void:
+	if k3r_mode:
+		await _k3r_combat_diagnostic()
+		return
 	if k2_mode:
 		await _k2_combat_capture()
 		return
