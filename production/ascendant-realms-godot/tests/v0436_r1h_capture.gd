@@ -1251,7 +1251,7 @@ func _k3r_unit_record(unit) -> Dictionary:
 	var requested = unit.get("_requested_move_target")
 	var effective = unit.get("_navigation_effective_target")
 	var runtime_id := str(unit.get_instance_id())
-	var position := unit.global_position
+	var position: Vector3 = unit.global_position
 	var previous_position = k3p_previous_unit_positions.get(runtime_id)
 	var target_runtime_id := str(target.get_instance_id()) if is_instance_valid(target) else ""
 	var target_position = target.global_position if is_instance_valid(target) else null
@@ -1260,8 +1260,8 @@ func _k3r_unit_record(unit) -> Dictionary:
 	var previous_navigation_target = k3p_previous_navigation_targets.get(runtime_id)
 	var attack_anchor = unit.get("_attack_target_anchor")
 	var previous_attack_anchor = k3p_previous_attack_anchors.get(runtime_id)
-	var destination_changed := previous_navigation_target is Vector3 and navigation_target is Vector3 and previous_navigation_target.distance_to(navigation_target) > 0.05
-	var reslot_changed := previous_attack_anchor is Vector3 and attack_anchor is Vector3 and previous_attack_anchor.distance_to(attack_anchor) > 0.05 and target_runtime_id != ""
+	var destination_changed: bool = previous_navigation_target is Vector3 and navigation_target is Vector3 and previous_navigation_target.distance_to(navigation_target) > 0.05
+	var reslot_changed: bool = previous_attack_anchor is Vector3 and attack_anchor is Vector3 and previous_attack_anchor.distance_to(attack_anchor) > 0.05 and target_runtime_id != ""
 	if destination_changed: k3p_destination_change_counts[runtime_id] = int(k3p_destination_change_counts.get(runtime_id, 0)) + 1
 	if reslot_changed: k3p_reslot_counts[runtime_id] = int(k3p_reslot_counts.get(runtime_id, 0)) + 1
 	var attack_event_count := 0
@@ -1271,11 +1271,11 @@ func _k3r_unit_record(unit) -> Dictionary:
 		if str(event.get("victim_runtime_id", "")) == runtime_id: damage_event_count += 1
 	var velocity_value = unit.get("velocity")
 	var velocity = _vec(velocity_value) if velocity_value is Vector3 else null
-	var target_movement_delta = previous_target_position.distance_to(target_position) if previous_target_position is Dictionary and target_position is Vector3 else null
-	k3p_previous_unit_positions[runtime_id] = _vec(position)
-	if target_runtime_id != "": k3p_previous_target_positions[target_runtime_id] = _vec(target_position)
-	if navigation_target is Vector3: k3p_previous_navigation_targets[runtime_id] = _vec(navigation_target)
-	if attack_anchor is Vector3: k3p_previous_attack_anchors[runtime_id] = _vec(attack_anchor)
+	var target_movement_delta = previous_target_position.distance_to(target_position) if previous_target_position is Vector3 and target_position is Vector3 else null
+	k3p_previous_unit_positions[runtime_id] = position
+	if target_runtime_id != "": k3p_previous_target_positions[target_runtime_id] = target_position
+	if navigation_target is Vector3: k3p_previous_navigation_targets[runtime_id] = navigation_target
+	if attack_anchor is Vector3: k3p_previous_attack_anchors[runtime_id] = attack_anchor
 	return {
 		"valid":true,
 		"runtime_id":runtime_id,
@@ -1284,7 +1284,7 @@ func _k3r_unit_record(unit) -> Dictionary:
 		"role":String(unit.def.get("role", "")),
 		"position":_vec(position),
 		"velocity":velocity,
-		"translation_since_previous_sample":previous_position.distance_to(position) if previous_position is Dictionary else null,
+		"translation_since_previous_sample":previous_position.distance_to(position) if previous_position is Vector3 else null,
 		"hp":float(unit.hp),
 		"max_hp":float(unit.max_hp),
 		"alive":not bool(unit.is_dead),
