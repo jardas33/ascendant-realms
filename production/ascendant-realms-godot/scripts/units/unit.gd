@@ -155,6 +155,9 @@ const ATTACK_RESUME_MARGIN := 0.65
 const ATTACK_SETTLE_MARGIN := 0.12
 const BUILDING_ROUTE_CLEARANCE := 1.0
 
+func _building_route_clearance() -> float:
+	return BUILDING_ROUTE_CLEARANCE + 1.5 if is_worker else BUILDING_ROUTE_CLEARANCE
+
 # P1-R13 presentation targets. These affect only the visible model envelope;
 # gameplay height, collision, navigation radius, spacing, range and speed stay
 # sourced from the unit definition below.
@@ -788,7 +791,7 @@ func _set_agent_target(pos: Vector3, command_type: String = "") -> void:
 		return
 	_navigation_last_requested = pos
 	_navigation_last_command = _navigation_command_type
-	_navigation_waypoints = world.navigation_waypoints_for_unit(global_position, pos, BUILDING_ROUTE_CLEARANCE) if world and world.has_method("navigation_waypoints_for_unit") else [pos]
+	_navigation_waypoints = world.navigation_waypoints_for_unit(global_position, pos, _building_route_clearance()) if world and world.has_method("navigation_waypoints_for_unit") else [pos]
 	_navigation_waypoint_index = 0
 	if _navigation_waypoints.is_empty():
 		_navigation_waypoints = [pos]
@@ -1504,7 +1507,7 @@ func _move_along_path(delta: float) -> bool:
 	if _rooted > 0.0: spd = 0.0
 	var desired := dir * spd
 	if world and world.has_method("constrain_unit_velocity_around_buildings"):
-		desired = world.constrain_unit_velocity_around_buildings(global_position, desired, delta, BUILDING_ROUTE_CLEARANCE)
+		desired = world.constrain_unit_velocity_around_buildings(global_position, desired, delta, _building_route_clearance())
 	if agent.avoidance_enabled:
 		agent.set_velocity(desired)
 	else:
@@ -1557,7 +1560,7 @@ func _on_velocity_computed(safe_vel: Vector3) -> void:
 			_v0436_r1f_record_callback(audit_frame, safe_vel, callback_position_before, global_position, false, recovery_already_moved)
 		return
 	if world and world.has_method("constrain_unit_velocity_around_buildings"):
-		safe_vel = world.constrain_unit_velocity_around_buildings(global_position, safe_vel, get_physics_process_delta_time(), BUILDING_ROUTE_CLEARANCE)
+		safe_vel = world.constrain_unit_velocity_around_buildings(global_position, safe_vel, get_physics_process_delta_time(), _building_route_clearance())
 	_navigation_invalid_consecutive = 0
 	velocity.x = safe_vel.x
 	velocity.z = safe_vel.z
