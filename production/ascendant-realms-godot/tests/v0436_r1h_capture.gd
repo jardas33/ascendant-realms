@@ -1257,6 +1257,7 @@ func _k3r_unit_record(unit) -> Dictionary:
 	var target_position = target.global_position if is_instance_valid(target) else null
 	var previous_target_position = k3p_previous_target_positions.get(target_runtime_id) if target_runtime_id != "" else null
 	var navigation_target = effective if effective is Vector3 else null
+	var route_probe: Array = world.navigation_waypoints_for_unit(position, navigation_target, 1.0) if is_instance_valid(world) and navigation_target is Vector3 and world.has_method("navigation_waypoints_for_unit") else []
 	var previous_navigation_target = k3p_previous_navigation_targets.get(runtime_id)
 	var attack_anchor = unit.get("_attack_target_anchor")
 	var previous_attack_anchor = k3p_previous_attack_anchors.get(runtime_id)
@@ -1296,6 +1297,8 @@ func _k3r_unit_record(unit) -> Dictionary:
 		"target_movement_delta":target_movement_delta,
 		"navigation_command":String(unit.get("_navigation_command_type")),
 		"navigation_target":_vec(effective) if effective is Vector3 else null,
+		"route_probe_waypoint_count":route_probe.size(),
+		"route_probe_first":_vec(route_probe[0]) if not route_probe.is_empty() else null,
 		"destination_changed":destination_changed,
 		"destination_change_count":int(k3p_destination_change_counts.get(runtime_id, 0)),
 		"requested_target":_vec(requested) if requested is Vector3 else null,
