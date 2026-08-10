@@ -50,7 +50,24 @@ func _begin() -> void:
 		_rts.focus_on(target.global_position)
 	else:
 		_rts.focus_on(target.global_position)
-	for _i in 18: await get_tree().process_frame
+	# World readiness can precede HUD construction while imported portraits and
+	# materials finish streaming. Wait for the actual player-facing command
+	# surface instead of accepting a world-only frame as UI evidence.
+	var hud_ready := false
+	var hud_deadline := Time.get_ticks_msec() + 12000
+	while Time.get_ticks_msec() < hud_deadline:
+		var hud_layer := get_node_or_null("/root/GameRoot/HUDLayer")
+		var command_panel := hud_layer.find_child("CommandPanel", true, false) if hud_layer else null
+		if is_instance_valid(command_panel) and command_panel.visible and command_panel.get_child_count() > 0:
+			hud_ready = true
+			break
+		await get_tree().process_frame
+	if not hud_ready:
+		_failures.append("hud_surface_timeout:%s" % _view)
+		_write_manifest()
+		get_tree().quit(1)
+		return
+	for _i in 12: await get_tree().process_frame
 	await RenderingServer.frame_post_draw
 	var image := get_viewport().get_texture().get_image()
 	if image == null or image.is_empty(): _failures.append("empty_frame")
