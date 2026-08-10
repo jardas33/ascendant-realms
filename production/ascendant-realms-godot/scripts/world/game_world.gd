@@ -430,7 +430,7 @@ func navigation_waypoints_for_unit(origin: Vector3, requested: Vector3, clearanc
 		# first leg but let the next leg cut back through the same footprint. Use
 		# deterministic perimeter candidates and require both legs to clear the
 		# blocker before it can be ignored for the next route segment.
-		var radius := float(blocker.def.get("footprint", 4.0)) + clearance + 0.2
+		var radius := float(blocker.def.get("footprint", 4.0)) + clearance + 1.5
 		var candidates: Array[Vector3] = []
 		for candidate_index in range(16):
 			var angle := TAU * float(candidate_index) / 16.0
@@ -478,7 +478,7 @@ func _first_route_blocking_building(origin: Vector3, target: Vector3, clearance:
 	for building in all_buildings():
 		if not is_instance_valid(building) or building.is_dead or not building.is_built or ignored.has(building):
 			continue
-		var radius := float(building.def.get("footprint", 4.0)) + clearance
+		var radius := float(building.def.get("footprint", 4.0)) + clearance + 1.5
 		if target.distance_to(building.global_position) < radius or _segment_intersects_route_circle(origin, target, building.global_position, radius):
 			var distance := origin.distance_to(building.global_position)
 			if distance < closest_distance:
@@ -510,7 +510,7 @@ func constrain_unit_velocity_around_buildings(origin: Vector3, requested_velocit
 	for building in all_buildings():
 		if not is_instance_valid(building) or building.is_dead or not building.is_built:
 			continue
-		var radius := float(building.def.get("footprint", 4.0)) + clearance
+		var radius := float(building.def.get("footprint", 4.0)) + clearance + 1.5
 		var radial: Vector3 = origin - building.global_position
 		radial.y = 0.0
 		if radial.length() < radius:
