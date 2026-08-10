@@ -44,6 +44,8 @@ var model_root: Node3D
 var selection_ring: MeshInstance3D
 var _mesh_instances: Array = []
 var _construct_mat: StandardMaterial3D
+var _construction_stage_root: Node3D
+var _construction_stage_meshes: Array = []
 var _selection_visual_extents := Vector2(2.0, 2.0)
 var _selection_indicator_extents := Vector2(2.2, 2.2)
 
@@ -67,6 +69,7 @@ func configure(p_def: Dictionary, p_team: int, p_commander, p_world, prebuilt: b
 		build_time *= commander.build_speed_mult()
 	rally_point = global_position + Vector3(0, 0, footprint + 3.0)
 	_build_model()
+	_build_construction_stage_visual()
 	_build_selection_ring()
 	if prebuilt:
 		is_built = true
@@ -107,6 +110,46 @@ func _build_model() -> void:
 		model_root.add_child(mi)
 		_mesh_instances.append(mi)
 	_add_selection_pick_shape()
+
+
+func _build_construction_stage_visual() -> void:
+	# Non-colliding presentation geometry only. Existing gameplay building
+	# models remain authoritative; these timber frames make foundation/early
+	# construction legible before the model becomes opaque.
+	_construction_stage_root = Node3D.new()
+	_construction_stage_root.name = "ConstructionStageVisual"
+	_construction_stage_root.position.y = 0.04
+	add_child(_construction_stage_root)
+	var mat := StandardMaterial3D.new()
+	mat.albedo_color = Color(0.55, 0.34, 0.16, 0.82)
+	mat.roughness = 0.92
+	mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	mat.shading_mode = BaseMaterial3D.SHADING_MODE_PER_PIXEL
+	var span := maxf(1.3, footprint * 0.44)
+	var post_height := maxf(1.1, _presentation_height() * 0.72)
+	for x in [-span, span]:
+		for z in [-span, span]:
+			var post := MeshInstance3D.new()
+			var cm := CylinderMesh.new()
+			cm.top_radius = 0.10
+			cm.bottom_radius = 0.14
+			cm.height = post_height
+			post.mesh = cm
+			post.position = Vector3(x, post_height * 0.5, z)
+			post.material_override = mat
+			post.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_ON
+			_construction_stage_root.add_child(post)
+			_construction_stage_meshes.append(post)
+	for z in [-span, span]:
+		var beam := MeshInstance3D.new()
+		var bm := BoxMesh.new()
+		bm.size = Vector3(span * 2.0, 0.16, 0.16)
+		beam.mesh = bm
+		beam.position = Vector3(0, post_height, z)
+		beam.material_override = mat
+		beam.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_ON
+		_construction_stage_root.add_child(beam)
+		_construction_stage_meshes.append(beam)
 
 func _add_selection_pick_shape() -> void:
 	## Selection-only envelope for visible-footprint coverage. Its zero mask
@@ -188,6 +231,13 @@ func _set_construction_visual(p: float) -> void:
 	if model_root:
 		model_root.position.y = lerp(-0.15, 0.0, clamp(p, 0.0, 1.0))
 	var building_now := p < 1.0
+	if is_instance_valid(_construction_stage_root):
+		var stage := clampf(p, 0.0, 1.0)
+		_construction_stage_root.visible = stage < 0.9
+		_construction_stage_root.scale.y = lerpf(0.28, 1.0, clampf(stage / 0.72, 0.0, 1.0))
+		for mesh in _construction_stage_meshes:
+			if is_instance_valid(mesh):
+				mesh.visible = stage < 0.9
 	for mi in _mesh_instances:
 		if not is_instance_valid(mi):
 			continue
