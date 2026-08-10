@@ -75,6 +75,12 @@ var k2_resolution_time := -1.0
 var k2_run_status := ""
 var k3r_natural_samples: Array = []
 var k3r_natural_worker_lifecycle: Dictionary = {}
+var k3p_previous_unit_positions: Dictionary = {}
+var k3p_previous_target_positions: Dictionary = {}
+var k3p_previous_navigation_targets: Dictionary = {}
+var k3p_previous_attack_anchors: Dictionary = {}
+var k3p_destination_change_counts: Dictionary = {}
+var k3p_reslot_counts: Dictionary = {}
 
 func _ready() -> void:
 	var k3r_debug_out := OS.get_environment("ASCENDANT_V0436_K3R_OUT")
@@ -622,8 +628,11 @@ func _k3r_natural_capture() -> void:
 	var first_casualty_time := -1.0
 	var first_wave_audit: Dictionary = {}
 	var saved_damage := false
-	var saved_group := false
-	var saved_building := false
+	var saved_first_casualty := false
+	var saved_melee_settled := false
+	var saved_ranged_settled := false
+	var saved_group_settled := false
+	var saved_building_route := false
 	var sample_bucket := -1
 	var deadline := float(world.match_time) + 300.0
 	while is_instance_valid(world) and world.game_running and not world.match_ended and float(world.match_time) < deadline:
@@ -650,18 +659,18 @@ func _k3r_natural_capture() -> void:
 						await _save("10_RUN4_FIRST_DAMAGE.png")
 			if first_casualty_time < 0.0 and world.combat_death_events.size() > death_before:
 				first_casualty_time = float(world.match_time)
-				if not saved_group:
-					saved_group = true
+				if not saved_first_casualty:
+					saved_first_casualty = true
 					await _save("13_EASY_FIRST_CASUALTY.png")
 					if k3r_natural_run == "RICH_RUN4": await _save("11_RUN4_FIRST_CASUALTY.png")
-			if not saved_building and world.building_damage_events.size() > building_damage_before:
-				saved_building = true
+			if not saved_building_route and world.building_damage_events.size() > building_damage_before:
+				saved_building_route = true
 				await _save("12_EASY_BUILDING_AVOIDANCE.png")
 				await _save("09_RICH_COMBAT_BESIDE_BUILDING.png")
 				if k3r_natural_run == "RICH_RUN4":
 					await _save("08_RUN4_COMBAT_BESIDE_BUILDING.png")
 					await _save("09_RUN4_ROUTE_AROUND_BUILDING.png")
-			if saved_damage and not saved_group and float(world.match_time) - first_damage_time > 20.0:
+			if saved_damage and not saved_group_settled and float(world.match_time) - first_damage_time > 20.0:
 				await _save("11_EASY_GROUP_SETTLED.png")
 				await _save("06_RICH_MELEE_SETTLED.png")
 				await _save("07_RICH_RANGED_SETTLED.png")
@@ -670,11 +679,13 @@ func _k3r_natural_capture() -> void:
 					await _save("05_RUN4_MELEE_SETTLED.png")
 					await _save("06_RUN4_RANGED_SETTLED.png")
 					await _save("07_RUN4_GROUP_SETTLED.png")
-				saved_group = true
+				saved_melee_settled = true
+				saved_ranged_settled = true
+				saved_group_settled = true
 		await get_tree().create_timer(0.25).timeout
 	if not saved_damage: await _save("10_EASY_FIRST_DAMAGE.png")
-	if not saved_group: await _save("11_EASY_GROUP_SETTLED.png")
-	if not saved_building: await _save("12_EASY_BUILDING_AVOIDANCE.png")
+	if not saved_group_settled: await _save("11_EASY_GROUP_SETTLED.png")
+	if not saved_building_route: await _save("12_EASY_BUILDING_AVOIDANCE.png")
 	await _save("14_EASY_FIRST_WAVE_RESULT.png")
 	await _save("15_1366_EASY_COMBAT.png")
 	await _save("12_RICH_FIRST_WAVE_RESULT.png")
@@ -1239,13 +1250,41 @@ func _k3r_unit_record(unit) -> Dictionary:
 	var target = unit.get("_target")
 	var requested = unit.get("_requested_move_target")
 	var effective = unit.get("_navigation_effective_target")
+	var runtime_id := str(unit.get_instance_id())
+	var position := unit.global_position
+	var previous_position = k3p_previous_unit_positions.get(runtime_id)
+	var target_runtime_id := str(target.get_instance_id()) if is_instance_valid(target) else ""
+	var target_position = target.global_position if is_instance_valid(target) else null
+	var previous_target_position = k3p_previous_target_positions.get(target_runtime_id) if target_runtime_id != "" else null
+	var navigation_target = effective if effective is Vector3 else null
+	var previous_navigation_target = k3p_previous_navigation_targets.get(runtime_id)
+	var attack_anchor = unit.get("_attack_target_anchor")
+	var previous_attack_anchor = k3p_previous_attack_anchors.get(runtime_id)
+	var destination_changed := previous_navigation_target is Vector3 and navigation_target is Vector3 and previous_navigation_target.distance_to(navigation_target) > 0.05
+	var reslot_changed := previous_attack_anchor is Vector3 and attack_anchor is Vector3 and previous_attack_anchor.distance_to(attack_anchor) > 0.05 and target_runtime_id != ""
+	if destination_changed: k3p_destination_change_counts[runtime_id] = int(k3p_destination_change_counts.get(runtime_id, 0)) + 1
+	if reslot_changed: k3p_reslot_counts[runtime_id] = int(k3p_reslot_counts.get(runtime_id, 0)) + 1
+	var attack_event_count := 0
+	var damage_event_count := 0
+	for event in world.combat_damage_events:
+		if str(event.get("source_runtime_id", "")) == runtime_id: attack_event_count += 1
+		if str(event.get("victim_runtime_id", "")) == runtime_id: damage_event_count += 1
+	var velocity_value = unit.get("velocity")
+	var velocity = _vec(velocity_value) if velocity_value is Vector3 else null
+	var target_movement_delta = previous_target_position.distance_to(target_position) if previous_target_position is Dictionary and target_position is Vector3 else null
+	k3p_previous_unit_positions[runtime_id] = _vec(position)
+	if target_runtime_id != "": k3p_previous_target_positions[target_runtime_id] = _vec(target_position)
+	if navigation_target is Vector3: k3p_previous_navigation_targets[runtime_id] = _vec(navigation_target)
+	if attack_anchor is Vector3: k3p_previous_attack_anchors[runtime_id] = _vec(attack_anchor)
 	return {
 		"valid":true,
-		"runtime_id":str(unit.get_instance_id()),
+		"runtime_id":runtime_id,
 		"unit_id":String(unit.unit_id),
 		"team":int(unit.team),
 		"role":String(unit.def.get("role", "")),
-		"position":_vec(unit.global_position),
+		"position":_vec(position),
+		"velocity":velocity,
+		"translation_since_previous_sample":previous_position.distance_to(position) if previous_position is Dictionary else null,
 		"hp":float(unit.hp),
 		"max_hp":float(unit.max_hp),
 		"alive":not bool(unit.is_dead),
@@ -1253,13 +1292,22 @@ func _k3r_unit_record(unit) -> Dictionary:
 		"state":int(unit.state),
 		"state_name":str(int(unit.state)),
 		"current_target":_k3r_target_record(target),
+		"target_distance":position.distance_to(target_position) if target_position is Vector3 else null,
+		"target_movement_delta":target_movement_delta,
 		"navigation_command":String(unit.get("_navigation_command_type")),
 		"navigation_target":_vec(effective) if effective is Vector3 else null,
+		"destination_changed":destination_changed,
+		"destination_change_count":int(k3p_destination_change_counts.get(runtime_id, 0)),
 		"requested_target":_vec(requested) if requested is Vector3 else null,
 		"agent_target":_vec(agent.target_position) if is_instance_valid(agent) else null,
 		"attack_timer":float(unit.get("_attack_timer")),
 		"attack_settled":bool(unit.get("_attack_settled")),
-		"attack_anchor":_vec(unit.get("_attack_target_anchor")) if unit.get("_attack_target_anchor") is Vector3 else null,
+		"attack_anchor":_vec(attack_anchor) if attack_anchor is Vector3 else null,
+		"engagement_anchor":_vec(attack_anchor) if attack_anchor is Vector3 else null,
+		"reslot_changed":reslot_changed,
+		"reslot_count":int(k3p_reslot_counts.get(runtime_id, 0)),
+		"attack_event_count":attack_event_count,
+		"damage_event_count":damage_event_count,
 		"engage_range":float(unit._engage_range()) if unit.has_method("_engage_range") else null,
 		"attack_range":float(unit.cur_atk_range()) if unit.has_method("cur_atk_range") else null,
 	}
