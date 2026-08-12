@@ -711,7 +711,9 @@ func command_stop() -> void:
 	velocity = Vector3.ZERO
 	_boundary_recovery_active = false
 	_navigation_invalid_consecutive = 0
-	if agent: agent.set_velocity(Vector3.ZERO)
+	if agent:
+		agent.target_desired_distance = ARRIVE_DIST
+		agent.set_velocity(Vector3.ZERO)
 	var recorder = _v0436_r1j_recorder()
 	if recorder:
 		recorder.record_unit_command(self, "", "stop", before_state, state, before_target, _target, Vector3.ZERO)
@@ -1507,6 +1509,14 @@ func _state_build(delta: float) -> void:
 	var interaction := get_construction_interaction_snapshot(_build_target)
 	if not bool(interaction.get("valid", false)):
 		_move_target = _construction_interaction_target(_build_target, interaction)
+		# Construction targets sit on the building perimeter. The normal arrival
+		# distance (1.2m) stops a worker too far from the perimeter to satisfy the
+		# smaller 1.2m build interaction threshold, leaving it permanently in
+		# BUILDING state. Close only this construction leg to the target's safe
+		# interaction point; ordinary movement keeps the normal arrival distance.
+		if agent:
+			var interaction_threshold := float(interaction.get("interaction_threshold", _building_route_clearance() + 0.2))
+			agent.target_desired_distance = maxf(0.05, interaction_threshold - _building_route_clearance())
 		_set_agent_target(_move_target, "build")
 		_move_along_path(delta)
 	else:
@@ -1527,6 +1537,7 @@ func _hold_worker_interaction(target_position: Vector3) -> void:
 	_navigation_path_wait_frames = 0
 	_navigation_retry_elapsed = 0.0
 	if agent:
+		agent.target_desired_distance = ARRIVE_DIST
 		agent.target_position = global_position
 		agent.set_velocity(Vector3.ZERO)
 	move_and_slide()
