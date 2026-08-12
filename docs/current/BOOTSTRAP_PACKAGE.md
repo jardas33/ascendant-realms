@@ -1,75 +1,53 @@
-# Golden Battle Sprint 1 — one-time specialist bootstrap
+# Golden Battle Sprint 1 Specialist Bootstrap
 
-## Why this package exists
+Common base: `3a49c2d2901fa5c868f5bb2c2cd81d6b0e4625b8`
 
-The Codex app project registry exposes `D:\Code for projects\WB game like` as a non-Git workspace, but the active Git candidate is `D:\CodexData\worktrees\ascendant-realms-human-playtest4-movement`. The Lead therefore cannot truthfully instantiate repository-scoped specialist worktree threads from this session. Do not create projectless threads for these missions.
+All four specialist worktrees are real, clean, local Git worktrees. Start each thread in the matching folder below. Read `AGENTS.md`, `docs/codex/AUTONOMY_POLICY.md`, `docs/codex/PARALLEL_WORK_POLICY.md`, `docs/current/ACTIVE_SPRINT.md`, and `docs/current/HIGH_LEVERAGE_BACKLOG.md`.
 
-Create four Codex threads once, each attached to the candidate repository/worktree through the app's normal project/worktree flow. The Lead will coordinate their handoffs and local integration afterward.
+Shared policy: make one bounded player-facing improvement, preserve saves and stable IDs, run focused validation plus one proportionate rehearsal, record changed files/tests/evidence/blockers, and make one scoped local commit. No push, PR, merge, rebase, protected-checkout mutation, destructive Git, or cross-lane edits.
 
-## Shared safety header
+## Core Gameplay
 
-Every thread must start by reading `AGENTS.md`, `docs/codex/AUTONOMY_POLICY.md`, `docs/codex/PARALLEL_WORK_POLICY.md`, `docs/current/ACTIVE_SPRINT.md`, and `docs/current/HIGH_LEVERAGE_BACKLOG.md`.
+- Thread: `Golden S1 Core Gameplay`
+- Worktree: `D:\CodexData\worktrees\ascendant-realms-golden-s1-core`
+- Branch: `codex/golden-s1-core`
+- Outcome: dependable select -> move -> gather -> construct -> produce -> rally -> combat opening.
+- Own: `src/game/battle`, `src/game/entities`, `src/game/pathfinding`, `src/game/results`.
+- Proof: normal Hollowspan Crossing, Barrosan vs Lioraen Easy opening; focused tests and one normal rehearsal.
 
-Expected base: `251853ebd936767dd8f8a5c4d6c5d6cbee54b9b9`.
+## AI / Skirmish
 
-Use isolated worktrees. Local commits are authorized when scoped and validated. No push, PR, remote merge, protected-checkout mutation, destructive Git, or shared-history rebase.
+- Thread: `Golden S1 Easy AI Skirmish`
+- Worktree: `D:\CodexData\worktrees\ascendant-realms-golden-s1-ai`
+- Branch: `codex/golden-s1-ai`
+- Outcome: coherent Lioraen Easy economy, production, movement, first contact, pressure, and recovery.
+- Own: `src/game/ai` and relevant AI doctrine/data only.
+- Proof: one normal Hollowspan Crossing rehearsal with focused tests and a structured handoff.
 
-## Thread 1 — Core Gameplay
+## World / Visuals
 
-Suggested title: `Golden S1 Core Gameplay`
+- Thread: `Golden S1 World Visual Readability`
+- Worktree: `D:\CodexData\worktrees\ascendant-realms-golden-s1-world`
+- Branch: `codex/golden-s1-world`
+- Outcome: clearer unit/building silhouettes, ownership/health separation, terrain/road/river/bridge hierarchy, grounding, or camera framing.
+- Own: visual metadata, opt-in Godot/world presentation, narrowly scoped visual styling.
+- Proof: real before/after gameplay-scale captures, focused validation, and a local commit.
 
-Suggested branch: `codex/golden-s1-core`
+## UI/UX + Combat Feel
 
-Kickoff:
+- Thread: `Golden S1 UX Combat Readability`
+- Worktree: `D:\CodexData\worktrees\ascendant-realms-golden-s1-combat`
+- Branch: `codex/golden-s1-combat`
+- Outcome: clearer objective, selection, command feedback, action icons/tooltips/disabled reasons, ownership/health/status, or combat readability.
+- Own: `src/game/ui`, command/selection/damage feedback presentation, related styles/tests.
+- Proof: focused tests and fresh normal-scale evidence at supported resolutions.
 
-```text
-You are the Core Gameplay specialist for Ascendant Realms Golden Battle Sprint 1. Work only in your isolated worktree from base 251853ebd936767dd8f8a5c4d6c5d6cbee54b9b9. Read the shared safety docs. Reproduce the highest-impact concrete player-facing blocker in a normal Hollowspan Crossing, Barrosan vs Lioraen Easy opening. Focus on select worker/unit, move, gather, construct/complete, produce/rally, and entering combat. Repair one causal blocker only. Preserve saves, stable IDs, content scope, AI/art boundaries, and protected checkout. Run focused tests and one proportionate rehearsal, inspect evidence, write a structured handoff with changed files/tests/evidence/blockers, and make a scoped local commit. Do not push, merge, rebase, or broaden scope.
-```
+## Lead Integration / QA
 
-Owned systems: `src/game/battle`, `src/game/entities`, `src/game/pathfinding`, `src/game/results`.
+- Worktree: `D:\CodexData\worktrees\ascendant-realms-golden-s1-integration`
+- Branch: `codex/golden-s1-integration`
+- Role: inspect specialist handoffs, accept only scoped commits, run combined validation, and prepare a local playable candidate.
+- Baseline: `npm test`, `npm run build`, `git diff --check`, and a lightweight existing Godot/runtime sanity check if cheap.
+- Do not run native M41 smoke as part of this baseline. Do not push or merge.
 
-## Thread 2 — AI / Skirmish
-
-Suggested title: `Golden S1 Easy AI Skirmish`
-
-Suggested branch: `codex/golden-s1-ai`
-
-Kickoff:
-
-```text
-You are the AI/Skirmish specialist for Ascendant Realms Golden Battle Sprint 1. Work only in your isolated worktree from base 251853ebd936767dd8f8a5c4d6c5d6cbee54b9b9. Read the shared safety docs. Improve one concrete player-facing coherence problem in a normal Hollowspan Crossing Barrosan vs Lioraen Easy match: economy, workers, housing, production, army composition, reinforcement, movement, clearance, attack planning, first contact, continued pressure, or recovery. Do not rebalance to hide correctness defects. Preserve the accepted gameplay contract, saves, stable IDs, and protected checkout. Run focused tests and one proportionate rehearsal, inspect evidence, write a structured handoff, and make a scoped local commit. Do not push, merge, rebase, or broaden scope.
-```
-
-Owned systems: `src/game/ai`, relevant AI data/doctrine files, with no edits to UI/art lanes unless explicitly justified.
-
-## Thread 3 — World / Visuals
-
-Suggested title: `Golden S1 World Visual Readability`
-
-Suggested branch: `codex/golden-s1-world`
-
-Kickoff:
-
-```text
-You are the World/Visuals specialist for Ascendant Realms Golden Battle Sprint 1. Work only in your isolated worktree from base 251853ebd936767dd8f8a5c4d6c5d6cbee54b9b9. Read the shared safety docs. Improve one bounded player-facing readability problem in the Hollowspan Golden Battle: unit/building silhouettes, ownership/health separation, terrain/road/river/bridge hierarchy, grounding, or camera framing. Use the smallest authored or existing opt-in presentation change; do not rewrite the renderer, alter gameplay geometry, import unapproved assets, or change behavior. Provide real before/after gameplay-scale captures, focused validation, a structured handoff, and a scoped local commit. Do not push, merge, rebase, or broaden scope.
-```
-
-Owned systems: visual metadata, presentation skin, opt-in Godot/world presentation, and narrowly scoped visual styling.
-
-## Thread 4 — UI/UX + Combat Feel
-
-Suggested title: `Golden S1 UX Combat Readability`
-
-Suggested branch: `codex/golden-s1-combat`
-
-Kickoff:
-
-```text
-You are the UI/UX and Combat Feel specialist for Ascendant Realms Golden Battle Sprint 1. Work only in your isolated worktree from base 251853ebd936767dd8f8a5c4d6c5d6cbee54b9b9. Read the shared safety docs. Implement one bounded player-facing improvement to objective, selection card, command feedback, action icons/tooltips/disabled reasons, ownership/health/status, or combat readability. Keep debug/review overlays explicit, preserve gameplay semantics and state, and do not redesign the whole HUD. Run focused tests, inspect fresh normal-scale evidence at supported resolutions, write a structured handoff, and make a scoped local commit. Do not push, merge, rebase, or broaden scope.
-```
-
-Owned systems: `src/game/ui`, command/selection/damage feedback presentation, and related styles/tests.
-
-## Lead integration
-
-After threads exist, report their branch/worktree paths to the Lead. The Lead will create/use a dedicated local integration worktree, inspect each handoff, cherry-pick only accepted scoped commits, run risk-based combined validation, and prepare a daily brief. No remote action is authorized.
+Report every handoff with branch, worktree, base, local commit, changed-file manifest, tests, evidence, blocker, and next safe priority.
