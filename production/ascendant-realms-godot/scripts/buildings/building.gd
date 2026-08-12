@@ -88,7 +88,11 @@ func _build_model() -> void:
 	add_child(model_root)
 	var path: String = def.get("model", "")
 	if path != "" and ResourceLoader.exists(path):
+		var load_start := Time.get_ticks_usec()
 		var m = load(path).instantiate()
+		var recorder = get_node_or_null("/root/HP4M20Startup")
+		if recorder and OS.get_environment("ASCENDANT_HP4_M20_DIAGNOSTICS") == "1":
+			recorder.record_resource_load(path, "building._build_model", load_start, Time.get_ticks_usec(), "load_instantiate")
 		model_root.add_child(m)
 		# scale building to a sensible footprint-based size
 		var target_h: float = _presentation_height()

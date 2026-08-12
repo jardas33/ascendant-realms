@@ -1,0 +1,2356 @@
+{
+  "schema": "ascendant-realms.c1-preservation-manifest.v1",
+  "generated_at_utc": "2026-08-12T03:02:59.495Z",
+  "source_root": "D:\\CodexData\\worktrees\\ascendant-realms-human-playtest4-movement",
+  "source_head": "510dabb0f9bdf23d7185c2456aaa5476173d8578",
+  "source_branch": "codex/local-human-playtest4-movement",
+  "source_status_entry_count": 608,
+  "tracked_modified_paths": [
+    "package.json",
+    "production/ascendant-realms-godot/assets/characters/barrosan_anvil_breaker/barrosan_anvil_breaker.glb.import",
+    "production/ascendant-realms-godot/assets/characters/barrosan_clan_levy/barrosan_clan_levy.glb.import",
+    "production/ascendant-realms-godot/assets/characters/barrosan_crag_archer/barrosan_crag_archer.glb.import",
+    "production/ascendant-realms-godot/assets/characters/barrosan_hero_thane/barrosan_hero_thane.glb.import",
+    "production/ascendant-realms-godot/assets/characters/barrosan_highlander_worker/barrosan_highlander_worker.glb.import",
+    "production/ascendant-realms-godot/assets/characters/barrosan_outrider/barrosan_outrider.glb.import",
+    "production/ascendant-realms-godot/assets/characters/barrosan_spear_guard/barrosan_spear_guard.glb.import",
+    "production/ascendant-realms-godot/assets/characters/beastfolk_wolf_warrior/beastfolk_wolf_warrior.glb.import",
+    "production/ascendant-realms-godot/assets/characters/dwarf_warrior/dwarf_warrior.glb.import",
+    "production/ascendant-realms-godot/assets/characters/frostborn_hero_jarl/frostborn_hero_jarl.glb.import",
+    "production/ascendant-realms-godot/assets/characters/frostborn_warrior/frostborn_warrior.glb.import",
+    "production/ascendant-realms-godot/assets/characters/grimtusk_hero_warlord/grimtusk_hero_warlord.glb.import",
+    "production/ascendant-realms-godot/assets/characters/highelf_archer/highelf_archer.glb.import",
+    "production/ascendant-realms-godot/assets/characters/hollow_hero_lich/hollow_hero_lich.glb.import",
+    "production/ascendant-realms-godot/assets/characters/karak_hero_thanelord/karak_hero_thanelord.glb.import",
+    "production/ascendant-realms-godot/assets/characters/lioraen_bloomdancer/lioraen_bloomdancer.glb.import",
+    "production/ascendant-realms-godot/assets/characters/lioraen_canopy_mender/lioraen_canopy_mender.glb.import",
+    "production/ascendant-realms-godot/assets/characters/lioraen_hero_warden/lioraen_hero_warden.glb.import",
+    "production/ascendant-realms-godot/assets/characters/lioraen_rootwarden_guard/lioraen_rootwarden_guard.glb.import",
+    "production/ascendant-realms-godot/assets/characters/lioraen_seedkeeper_worker/lioraen_seedkeeper_worker.glb.import",
+    "production/ascendant-realms-godot/assets/characters/lioraen_thorn_ranger/lioraen_thorn_ranger.glb.import",
+    "production/ascendant-realms-godot/assets/characters/lioraen_windstrider/lioraen_windstrider.glb.import",
+    "production/ascendant-realms-godot/assets/characters/orc_grunt/orc_grunt.glb.import",
+    "production/ascendant-realms-godot/assets/characters/sunspear_hero_pharaoh/sunspear_hero_pharaoh.glb.import",
+    "production/ascendant-realms-godot/assets/characters/sunspear_legionary/sunspear_legionary.glb.import",
+    "production/ascendant-realms-godot/assets/characters/sylvan_hero_archon/sylvan_hero_archon.glb.import",
+    "production/ascendant-realms-godot/assets/characters/undead_skeleton/undead_skeleton.glb.import",
+    "production/ascendant-realms-godot/assets/characters/vorthak_ash_thrall/vorthak_ash_thrall.glb.import",
+    "production/ascendant-realms-godot/assets/characters/vorthak_bondservant_worker/vorthak_bondservant_worker.glb.import",
+    "production/ascendant-realms-godot/assets/characters/vorthak_cinder_spitter/vorthak_cinder_spitter.glb.import",
+    "production/ascendant-realms-godot/assets/characters/vorthak_gloom_hound/vorthak_gloom_hound.glb.import",
+    "production/ascendant-realms-godot/assets/characters/vorthak_hero_binder/vorthak_hero_binder.glb.import",
+    "production/ascendant-realms-godot/assets/characters/vorthak_rift_blade/vorthak_rift_blade.glb.import",
+    "production/ascendant-realms-godot/assets/characters/vorthak_veil_warlock/vorthak_veil_warlock.glb.import",
+    "production/ascendant-realms-godot/assets/characters/wyldkin_hero_alpha/wyldkin_hero_alpha.glb.import",
+    "production/ascendant-realms-godot/assets/environment/buildings/barrosan_clan_croft.glb.import",
+    "production/ascendant-realms-godot/assets/environment/buildings/barrosan_clan_croft_tripo_model_basecolor.jpg.import",
+    "production/ascendant-realms-godot/assets/environment/buildings/barrosan_clan_croft_tripo_model_normal.jpg.import",
+    "production/ascendant-realms-godot/assets/environment/buildings/barrosan_clan_croft_tripo_model_rm.jpg.import",
+    "production/ascendant-realms-godot/assets/environment/buildings/barrosan_clanhold.glb.import",
+    "production/ascendant-realms-godot/assets/environment/buildings/barrosan_clanhold_tripo_model_basecolor.jpg.import",
+    "production/ascendant-realms-godot/assets/environment/buildings/barrosan_clanhold_tripo_model_normal.jpg.import",
+    "production/ascendant-realms-godot/assets/environment/buildings/barrosan_clanhold_tripo_model_rm.jpg.import",
+    "production/ascendant-realms-godot/assets/environment/buildings/barrosan_iron_forge.glb.import",
+    "production/ascendant-realms-godot/assets/environment/buildings/barrosan_iron_forge_tripo_model_basecolor.jpg.import",
+    "production/ascendant-realms-godot/assets/environment/buildings/barrosan_iron_forge_tripo_model_normal.jpg.import",
+    "production/ascendant-realms-godot/assets/environment/buildings/barrosan_iron_forge_tripo_model_rm.jpg.import",
+    "production/ascendant-realms-godot/assets/environment/buildings/barrosan_war_hall.glb.import",
+    "production/ascendant-realms-godot/assets/environment/buildings/barrosan_war_hall_tripo_model_basecolor.jpg.import",
+    "production/ascendant-realms-godot/assets/environment/buildings/barrosan_war_hall_tripo_model_normal.jpg.import",
+    "production/ascendant-realms-godot/assets/environment/buildings/barrosan_war_hall_tripo_model_rm.jpg.import",
+    "production/ascendant-realms-godot/assets/environment/buildings/barrosan_watchtower.glb.import",
+    "production/ascendant-realms-godot/assets/environment/buildings/barrosan_watchtower_tripo_model_basecolor.jpg.import",
+    "production/ascendant-realms-godot/assets/environment/buildings/barrosan_watchtower_tripo_model_normal.jpg.import",
+    "production/ascendant-realms-godot/assets/environment/buildings/barrosan_watchtower_tripo_model_rm.jpg.import",
+    "production/ascendant-realms-godot/assets/environment/buildings/frostborn_mead_hall.glb.import",
+    "production/ascendant-realms-godot/assets/environment/buildings/frostborn_mead_hall_tripo_model_basecolor.jpg.import",
+    "production/ascendant-realms-godot/assets/environment/buildings/frostborn_mead_hall_tripo_model_normal.jpg.import",
+    "production/ascendant-realms-godot/assets/environment/buildings/frostborn_mead_hall_tripo_model_rm.jpg.import",
+    "production/ascendant-realms-godot/assets/environment/buildings/grimtusk_stronghold.glb.import",
+    "production/ascendant-realms-godot/assets/environment/buildings/grimtusk_stronghold_tripo_model_basecolor.jpg.import",
+    "production/ascendant-realms-godot/assets/environment/buildings/grimtusk_stronghold_tripo_model_normal.jpg.import",
+    "production/ascendant-realms-godot/assets/environment/buildings/grimtusk_stronghold_tripo_model_rm.jpg.import",
+    "production/ascendant-realms-godot/assets/environment/buildings/hollow_necropolis.glb.import",
+    "production/ascendant-realms-godot/assets/environment/buildings/hollow_necropolis_tripo_model_basecolor.jpg.import",
+    "production/ascendant-realms-godot/assets/environment/buildings/hollow_necropolis_tripo_model_normal.jpg.import",
+    "production/ascendant-realms-godot/assets/environment/buildings/hollow_necropolis_tripo_model_rm.jpg.import",
+    "production/ascendant-realms-godot/assets/environment/buildings/karak_hold.glb.import",
+    "production/ascendant-realms-godot/assets/environment/buildings/karak_hold_tripo_model_basecolor.jpg.import",
+    "production/ascendant-realms-godot/assets/environment/buildings/karak_hold_tripo_model_normal.jpg.import",
+    "production/ascendant-realms-godot/assets/environment/buildings/karak_hold_tripo_model_rm.jpg.import",
+    "production/ascendant-realms-godot/assets/environment/buildings/lioraen_bloom_spire.glb.import",
+    "production/ascendant-realms-godot/assets/environment/buildings/lioraen_bloom_spire_tripo_model_basecolor.jpg.import",
+    "production/ascendant-realms-godot/assets/environment/buildings/lioraen_bloom_spire_tripo_model_normal.jpg.import",
+    "production/ascendant-realms-godot/assets/environment/buildings/lioraen_bloom_spire_tripo_model_rm.jpg.import",
+    "production/ascendant-realms-godot/assets/environment/buildings/lioraen_groveheart.glb.import",
+    "production/ascendant-realms-godot/assets/environment/buildings/lioraen_groveheart_tripo_model_basecolor.jpg.import",
+    "production/ascendant-realms-godot/assets/environment/buildings/lioraen_groveheart_tripo_model_normal.jpg.import",
+    "production/ascendant-realms-godot/assets/environment/buildings/lioraen_groveheart_tripo_model_rm.jpg.import",
+    "production/ascendant-realms-godot/assets/environment/buildings/lioraen_lifewell.glb.import",
+    "production/ascendant-realms-godot/assets/environment/buildings/lioraen_lifewell_tripo_model_basecolor.jpg.import",
+    "production/ascendant-realms-godot/assets/environment/buildings/lioraen_lifewell_tripo_model_normal.jpg.import",
+    "production/ascendant-realms-godot/assets/environment/buildings/lioraen_lifewell_tripo_model_rm.jpg.import",
+    "production/ascendant-realms-godot/assets/environment/buildings/lioraen_spirit_glade.glb.import",
+    "production/ascendant-realms-godot/assets/environment/buildings/lioraen_spirit_glade_tripo_model_basecolor.jpg.import",
+    "production/ascendant-realms-godot/assets/environment/buildings/lioraen_spirit_glade_tripo_model_normal.jpg.import",
+    "production/ascendant-realms-godot/assets/environment/buildings/lioraen_spirit_glade_tripo_model_rm.jpg.import",
+    "production/ascendant-realms-godot/assets/environment/buildings/lioraen_thornhall.glb.import",
+    "production/ascendant-realms-godot/assets/environment/buildings/lioraen_thornhall_tripo_model_basecolor.jpg.import",
+    "production/ascendant-realms-godot/assets/environment/buildings/lioraen_thornhall_tripo_model_normal.jpg.import",
+    "production/ascendant-realms-godot/assets/environment/buildings/lioraen_thornhall_tripo_model_rm.jpg.import",
+    "production/ascendant-realms-godot/assets/environment/buildings/sunspear_palace.glb.import",
+    "production/ascendant-realms-godot/assets/environment/buildings/sunspear_palace_tripo_model_basecolor.jpg.import",
+    "production/ascendant-realms-godot/assets/environment/buildings/sunspear_palace_tripo_model_normal.jpg.import",
+    "production/ascendant-realms-godot/assets/environment/buildings/sunspear_palace_tripo_model_rm.jpg.import",
+    "production/ascendant-realms-godot/assets/environment/buildings/sylvan_court.glb.import",
+    "production/ascendant-realms-godot/assets/environment/buildings/sylvan_court_tripo_model_basecolor.jpg.import",
+    "production/ascendant-realms-godot/assets/environment/buildings/sylvan_court_tripo_model_normal.jpg.import",
+    "production/ascendant-realms-godot/assets/environment/buildings/sylvan_court_tripo_model_rm.jpg.import",
+    "production/ascendant-realms-godot/assets/environment/buildings/vorthak_ash_forge.glb.import",
+    "production/ascendant-realms-godot/assets/environment/buildings/vorthak_ash_forge_tripo_model_basecolor.jpg.import",
+    "production/ascendant-realms-godot/assets/environment/buildings/vorthak_ash_forge_tripo_model_normal.jpg.import",
+    "production/ascendant-realms-godot/assets/environment/buildings/vorthak_ash_forge_tripo_model_rm.jpg.import",
+    "production/ascendant-realms-godot/assets/environment/buildings/vorthak_bone_barracks.glb.import",
+    "production/ascendant-realms-godot/assets/environment/buildings/vorthak_bone_barracks_tripo_model_basecolor.jpg.import",
+    "production/ascendant-realms-godot/assets/environment/buildings/vorthak_bone_barracks_tripo_model_normal.jpg.import",
+    "production/ascendant-realms-godot/assets/environment/buildings/vorthak_bone_barracks_tripo_model_rm.jpg.import",
+    "production/ascendant-realms-godot/assets/environment/buildings/vorthak_nighthold.glb.import",
+    "production/ascendant-realms-godot/assets/environment/buildings/vorthak_nighthold_tripo_model_basecolor.jpg.import",
+    "production/ascendant-realms-godot/assets/environment/buildings/vorthak_nighthold_tripo_model_normal.jpg.import",
+    "production/ascendant-realms-godot/assets/environment/buildings/vorthak_nighthold_tripo_model_rm.jpg.import",
+    "production/ascendant-realms-godot/assets/environment/buildings/vorthak_rift_obelisk.glb.import",
+    "production/ascendant-realms-godot/assets/environment/buildings/vorthak_rift_obelisk_tripo_model_basecolor.jpg.import",
+    "production/ascendant-realms-godot/assets/environment/buildings/vorthak_rift_obelisk_tripo_model_normal.jpg.import",
+    "production/ascendant-realms-godot/assets/environment/buildings/vorthak_rift_obelisk_tripo_model_rm.jpg.import",
+    "production/ascendant-realms-godot/assets/environment/buildings/vorthak_warlock_spire.glb.import",
+    "production/ascendant-realms-godot/assets/environment/buildings/vorthak_warlock_spire_tripo_model_basecolor.jpg.import",
+    "production/ascendant-realms-godot/assets/environment/buildings/vorthak_warlock_spire_tripo_model_normal.jpg.import",
+    "production/ascendant-realms-godot/assets/environment/buildings/vorthak_warlock_spire_tripo_model_rm.jpg.import",
+    "production/ascendant-realms-godot/assets/environment/buildings/wyldkin_denhold.glb.import",
+    "production/ascendant-realms-godot/assets/environment/buildings/wyldkin_denhold_tripo_model_basecolor.jpg.import",
+    "production/ascendant-realms-godot/assets/environment/buildings/wyldkin_denhold_tripo_model_normal.jpg.import",
+    "production/ascendant-realms-godot/assets/environment/buildings/wyldkin_denhold_tripo_model_rm.jpg.import",
+    "production/ascendant-realms-godot/assets/environment/rocks/gold_mine_lumevein.glb.import",
+    "production/ascendant-realms-godot/assets/environment/rocks/gold_mine_lumevein_tripo_model_basecolor.jpg.import",
+    "production/ascendant-realms-godot/assets/environment/rocks/gold_mine_lumevein_tripo_model_normal.jpg.import",
+    "production/ascendant-realms-godot/assets/environment/rocks/gold_mine_lumevein_tripo_model_rm.jpg.import",
+    "production/ascendant-realms-godot/assets/environment/rocks/highland_rock_cluster.glb.import",
+    "production/ascendant-realms-godot/assets/environment/rocks/highland_rock_cluster_tripo_model_basecolor.jpg.import",
+    "production/ascendant-realms-godot/assets/environment/rocks/highland_rock_cluster_tripo_model_normal.jpg.import",
+    "production/ascendant-realms-godot/assets/environment/rocks/highland_rock_cluster_tripo_model_rm.jpg.import",
+    "production/ascendant-realms-godot/assets/environment/rocks/mossy_boulder.glb.import",
+    "production/ascendant-realms-godot/assets/environment/rocks/mossy_boulder_tripo_model_basecolor.jpg.import",
+    "production/ascendant-realms-godot/assets/environment/rocks/mossy_boulder_tripo_model_normal.jpg.import",
+    "production/ascendant-realms-godot/assets/environment/rocks/mossy_boulder_tripo_model_rm.jpg.import",
+    "production/ascendant-realms-godot/assets/environment/structures/ancient_ruin_pillar.glb.import",
+    "production/ascendant-realms-godot/assets/environment/structures/ancient_ruin_pillar_tripo_model_basecolor.jpg.import",
+    "production/ascendant-realms-godot/assets/environment/structures/ancient_ruin_pillar_tripo_model_normal.jpg.import",
+    "production/ascendant-realms-godot/assets/environment/structures/ancient_ruin_pillar_tripo_model_rm.jpg.import",
+    "production/ascendant-realms-godot/assets/environment/structures/highland_crossing_bridge.glb.import",
+    "production/ascendant-realms-godot/assets/environment/structures/highland_crossing_bridge_tripo_model_basecolor.jpg.import",
+    "production/ascendant-realms-godot/assets/environment/structures/highland_crossing_bridge_tripo_model_normal.jpg.import",
+    "production/ascendant-realms-godot/assets/environment/structures/highland_crossing_bridge_tripo_model_rm.jpg.import",
+    "production/ascendant-realms-godot/assets/environment/structures/lume_spire_ruin.glb.import",
+    "production/ascendant-realms-godot/assets/environment/structures/lume_spire_ruin_tripo_model_basecolor.jpg.import",
+    "production/ascendant-realms-godot/assets/environment/structures/lume_spire_ruin_tripo_model_normal.jpg.import",
+    "production/ascendant-realms-godot/assets/environment/structures/lume_spire_ruin_tripo_model_rm.jpg.import",
+    "production/ascendant-realms-godot/assets/environment/vegetation/broadleaf_oak.glb.import",
+    "production/ascendant-realms-godot/assets/environment/vegetation/broadleaf_oak_tripo_model_basecolor.jpg.import",
+    "production/ascendant-realms-godot/assets/environment/vegetation/broadleaf_oak_tripo_model_normal.jpg.import",
+    "production/ascendant-realms-godot/assets/environment/vegetation/broadleaf_oak_tripo_model_rm.jpg.import",
+    "production/ascendant-realms-godot/assets/environment/vegetation/highland_pine.glb.import",
+    "production/ascendant-realms-godot/assets/environment/vegetation/highland_pine_tripo_model_basecolor.jpg.import",
+    "production/ascendant-realms-godot/assets/environment/vegetation/highland_pine_tripo_model_normal.jpg.import",
+    "production/ascendant-realms-godot/assets/environment/vegetation/highland_pine_tripo_model_rm.jpg.import",
+    "production/ascendant-realms-godot/assets/fonts/cinzel.ttf.import",
+    "production/ascendant-realms-godot/assets/props/containers/resource_timber_pile.glb.import",
+    "production/ascendant-realms-godot/assets/props/containers/resource_timber_pile_tripo_image_638c8fc4-0756-4d59-adea-dc3cbeb1ac30_0.jpg.import",
+    "production/ascendant-realms-godot/assets/props/containers/resource_timber_pile_tripo_image_638c8fc4-0756-4d59-adea-dc3cbeb1ac30_1.jpg.import",
+    "production/ascendant-realms-godot/assets/props/containers/resource_timber_pile_tripo_image_638c8fc4-0756-4d59-adea-dc3cbeb1ac30_2.jpg.import",
+    "production/ascendant-realms-godot/assets/props/items/hero_relic_amulet.glb.import",
+    "production/ascendant-realms-godot/assets/props/items/hero_relic_amulet_tripo_image_69811146-03da-4fda-bc3e-db721c99ca1c_0.jpg.import",
+    "production/ascendant-realms-godot/assets/props/items/hero_relic_amulet_tripo_image_69811146-03da-4fda-bc3e-db721c99ca1c_1.jpg.import",
+    "production/ascendant-realms-godot/assets/props/items/hero_relic_amulet_tripo_image_69811146-03da-4fda-bc3e-db721c99ca1c_2.jpg.import",
+    "production/ascendant-realms-godot/assets/props/items/lume_shard_crystal.glb.import",
+    "production/ascendant-realms-godot/assets/props/items/lume_shard_crystal_tripo_image_2c1668fa-13fb-44d0-a8ad-7ae29e235dfa_0.jpg.import",
+    "production/ascendant-realms-godot/assets/props/items/lume_shard_crystal_tripo_image_2c1668fa-13fb-44d0-a8ad-7ae29e235dfa_1.jpg.import",
+    "production/ascendant-realms-godot/assets/props/items/lume_shard_crystal_tripo_image_2c1668fa-13fb-44d0-a8ad-7ae29e235dfa_2.jpg.import",
+    "production/ascendant-realms-godot/assets/props/misc/resource_stone_quarry_chunk.glb.import",
+    "production/ascendant-realms-godot/assets/props/misc/resource_stone_quarry_chunk_tripo_image_f5f21f0c-2af3-43ac-9dd6-56f13eb5211a_0.jpg.import",
+    "production/ascendant-realms-godot/assets/props/misc/resource_stone_quarry_chunk_tripo_image_f5f21f0c-2af3-43ac-9dd6-56f13eb5211a_1.jpg.import",
+    "production/ascendant-realms-godot/assets/props/misc/resource_stone_quarry_chunk_tripo_image_f5f21f0c-2af3-43ac-9dd6-56f13eb5211a_2.jpg.import",
+    "production/ascendant-realms-godot/assets/props/vehicles/barrosan_ballista.glb.import",
+    "production/ascendant-realms-godot/assets/props/vehicles/barrosan_ballista_tripo_image_7eacbfb6-e37d-4429-9a5c-6af2063f8e8c_0.jpg.import",
+    "production/ascendant-realms-godot/assets/props/vehicles/barrosan_ballista_tripo_image_7eacbfb6-e37d-4429-9a5c-6af2063f8e8c_1.jpg.import",
+    "production/ascendant-realms-godot/assets/props/vehicles/barrosan_ballista_tripo_image_7eacbfb6-e37d-4429-9a5c-6af2063f8e8c_2.jpg.import",
+    "production/ascendant-realms-godot/assets/props/vehicles/lioraen_thornthrower.glb.import",
+    "production/ascendant-realms-godot/assets/props/vehicles/lioraen_thornthrower_tripo_image_7eacbfb6-e37d-4429-9a5c-6af2063f8e8c_0.jpg.import",
+    "production/ascendant-realms-godot/assets/props/vehicles/lioraen_thornthrower_tripo_image_7eacbfb6-e37d-4429-9a5c-6af2063f8e8c_1.jpg.import",
+    "production/ascendant-realms-godot/assets/props/vehicles/lioraen_thornthrower_tripo_image_7eacbfb6-e37d-4429-9a5c-6af2063f8e8c_2.jpg.import",
+    "production/ascendant-realms-godot/assets/props/vehicles/vorthak_fracture_engine.glb.import",
+    "production/ascendant-realms-godot/assets/props/vehicles/vorthak_fracture_engine_tripo_image_4d488b6b-48e9-4669-83a2-5520fb153bc4_0.jpg.import",
+    "production/ascendant-realms-godot/assets/props/vehicles/vorthak_fracture_engine_tripo_image_4d488b6b-48e9-4669-83a2-5520fb153bc4_1.jpg.import",
+    "production/ascendant-realms-godot/assets/props/vehicles/vorthak_fracture_engine_tripo_image_4d488b6b-48e9-4669-83a2-5520fb153bc4_2.jpg.import",
+    "production/ascendant-realms-godot/assets/props/weapons/barrosan_claymore.glb.import",
+    "production/ascendant-realms-godot/assets/props/weapons/barrosan_claymore_tripo_model_basecolor.jpg.import",
+    "production/ascendant-realms-godot/assets/props/weapons/barrosan_claymore_tripo_model_normal.jpg.import",
+    "production/ascendant-realms-godot/assets/props/weapons/barrosan_claymore_tripo_model_rm.jpg.import",
+    "production/ascendant-realms-godot/assets/props/weapons/lioraen_bloomblade.glb.import",
+    "production/ascendant-realms-godot/assets/props/weapons/lioraen_bloomblade_tripo_model_basecolor.jpg.import",
+    "production/ascendant-realms-godot/assets/props/weapons/lioraen_bloomblade_tripo_model_normal.jpg.import",
+    "production/ascendant-realms-godot/assets/props/weapons/lioraen_bloomblade_tripo_model_rm.jpg.import",
+    "production/ascendant-realms-godot/assets/props/weapons/vorthak_rift_staff.glb.import",
+    "production/ascendant-realms-godot/assets/props/weapons/vorthak_rift_staff_tripo_model_basecolor.jpg.import",
+    "production/ascendant-realms-godot/assets/props/weapons/vorthak_rift_staff_tripo_model_normal.jpg.import",
+    "production/ascendant-realms-godot/assets/props/weapons/vorthak_rift_staff_tripo_model_rm.jpg.import",
+    "production/ascendant-realms-godot/assets/textures/backgrounds/main_menu_bg.png.import",
+    "production/ascendant-realms-godot/assets/textures/nature/highland_dirt_path.png.import",
+    "production/ascendant-realms-godot/assets/textures/nature/highland_grass.png.import",
+    "production/ascendant-realms-godot/assets/textures/nature/highland_meadow_grass.png.import",
+    "production/ascendant-realms-godot/assets/textures/skyboxes/highland_storm_sky_skybox.png.import",
+    "production/ascendant-realms-godot/assets/textures/stone/highland_rock.png.import",
+    "production/ascendant-realms-godot/assets/ui/btn_play.png.import",
+    "production/ascendant-realms-godot/assets/ui/btn_skirmish.png.import",
+    "production/ascendant-realms-godot/assets/ui/frame_portrait.png.import",
+    "production/ascendant-realms-godot/assets/ui/icon_food.png.import",
+    "production/ascendant-realms-godot/assets/ui/icon_gold.png.import",
+    "production/ascendant-realms-godot/assets/ui/icon_lume.png.import",
+    "production/ascendant-realms-godot/assets/ui/icon_stone.png.import",
+    "production/ascendant-realms-godot/assets/ui/icon_timber.png.import",
+    "production/ascendant-realms-godot/assets/ui/loading_screen.png.import",
+    "production/ascendant-realms-godot/assets/ui/panel_command.png.import",
+    "production/ascendant-realms-godot/assets/ui/panel_hud.png.import",
+    "production/ascendant-realms-godot/assets/ui/panel_main.png.import",
+    "production/ascendant-realms-godot/assets/ui/title_poster.webp.import",
+    "production/ascendant-realms-godot/assets/ui/title_poster_sm.webp.import",
+    "production/ascendant-realms-godot/assets/ui/wordmark_title.png.import",
+    "production/ascendant-realms-godot/scripts/buildings/building.gd",
+    "production/ascendant-realms-godot/scripts/ui/entity_portrait_view.gd",
+    "production/ascendant-realms-godot/scripts/ui/hud.gd",
+    "production/ascendant-realms-godot/scripts/units/unit.gd",
+    "production/ascendant-realms-godot/scripts/utils/model_utils.gd",
+    "production/ascendant-realms-godot/scripts/world/capture_point.gd",
+    "production/ascendant-realms-godot/scripts/world/game_root.gd",
+    "production/ascendant-realms-godot/scripts/world/game_world.gd",
+    "production/ascendant-realms-godot/scripts/world/resource_node.gd",
+    "production/ascendant-realms-godot/scripts/world/rts_controller.gd"
+  ],
+  "staged_paths": [],
+  "untracked_paths": [
+    "docs/V0436_HUMAN_PLAYTEST4_M_REMEDIATION_REPORT.md",
+    "docs/current/CODEX_PROJECT_BOOTSTRAP_STATUS.md",
+    "production/ascendant-realms-godot/01_MAIN_MENU_SKIRMISH_POINTER_VALID.png",
+    "production/ascendant-realms-godot/01_MAIN_MENU_SKIRMISH_POINTER_VALID.png.import",
+    "production/ascendant-realms-godot/02_SKIRMISH_SETUP.png",
+    "production/ascendant-realms-godot/02_SKIRMISH_SETUP.png.import",
+    "production/ascendant-realms-godot/capture-01_MAIN_MENU_SKIRMISH_POINTER_VALID.json",
+    "production/ascendant-realms-godot/capture-02_SKIRMISH_SETUP.json",
+    "production/ascendant-realms-godot/scenes/dev/asset_gallery.gd.uid",
+    "production/ascendant-realms-godot/scripts/ui/entity_portrait_view.gd.uid",
+    "production/ascendant-realms-godot/tests/asset_load_scan.gd.uid",
+    "production/ascendant-realms-godot/tests/human_playtest4_m15_qualification.gd",
+    "production/ascendant-realms-godot/tests/human_playtest4_m15_qualification.gd.uid",
+    "production/ascendant-realms-godot/tests/human_playtest4_m16_placement.gd",
+    "production/ascendant-realms-godot/tests/human_playtest4_m16_placement.gd.uid",
+    "production/ascendant-realms-godot/tests/human_playtest4_m17_route.gd",
+    "production/ascendant-realms-godot/tests/human_playtest4_m17_route.gd.uid",
+    "production/ascendant-realms-godot/tests/human_playtest4_m18_lifecycle.gd",
+    "production/ascendant-realms-godot/tests/human_playtest4_m18_lifecycle.gd.uid",
+    "production/ascendant-realms-godot/tests/human_playtest4_m19_loading.gd",
+    "production/ascendant-realms-godot/tests/human_playtest4_m19_loading.gd.uid",
+    "production/ascendant-realms-godot/tests/human_playtest4_m20_loading.gd",
+    "production/ascendant-realms-godot/tests/human_playtest4_m20_loading.gd.uid",
+    "production/ascendant-realms-godot/tests/human_playtest4_m20_startup.gd",
+    "production/ascendant-realms-godot/tests/human_playtest4_m20_startup.gd.uid",
+    "production/ascendant-realms-godot/tests/human_playtest4_m21_focus.gd",
+    "production/ascendant-realms-godot/tests/human_playtest4_m21_focus.gd.uid",
+    "production/ascendant-realms-godot/tests/human_playtest4_m21_startup.gd",
+    "production/ascendant-realms-godot/tests/human_playtest4_m21_startup.gd.uid",
+    "production/ascendant-realms-godot/tests/human_playtest4_m22_missing.gd",
+    "production/ascendant-realms-godot/tests/human_playtest4_m22_missing.gd.uid",
+    "production/ascendant-realms-godot/tests/human_playtest4_m23_native.gd",
+    "production/ascendant-realms-godot/tests/human_playtest4_m23_native.gd.uid",
+    "production/ascendant-realms-godot/tests/human_playtest4_m24_native.gd",
+    "production/ascendant-realms-godot/tests/human_playtest4_m24_native.gd.uid",
+    "production/ascendant-realms-godot/tests/human_playtest4_m27_native.gd",
+    "production/ascendant-realms-godot/tests/human_playtest4_m27_native.gd.uid",
+    "production/ascendant-realms-godot/tests/human_playtest4_m29_window.gd",
+    "production/ascendant-realms-godot/tests/human_playtest4_m29_window.gd.uid",
+    "production/ascendant-realms-godot/tests/human_playtest4_m30_native.gd",
+    "production/ascendant-realms-godot/tests/human_playtest4_m30_native.gd.uid",
+    "production/ascendant-realms-godot/tests/human_playtest4_m31_native.gd",
+    "production/ascendant-realms-godot/tests/human_playtest4_m31_native.gd.uid",
+    "production/ascendant-realms-godot/tests/human_playtest4_m32_native.gd",
+    "production/ascendant-realms-godot/tests/human_playtest4_m32_native.gd.uid",
+    "production/ascendant-realms-godot/tests/human_playtest4_m33_native.gd",
+    "production/ascendant-realms-godot/tests/human_playtest4_m33_native.gd.uid",
+    "production/ascendant-realms-godot/tests/human_playtest4_m34_native.gd",
+    "production/ascendant-realms-godot/tests/human_playtest4_m34_native.gd.uid",
+    "production/ascendant-realms-godot/tests/human_playtest4_m35_native.gd",
+    "production/ascendant-realms-godot/tests/human_playtest4_m35_native.gd.uid",
+    "production/ascendant-realms-godot/tests/human_playtest4_m36_native.gd",
+    "production/ascendant-realms-godot/tests/human_playtest4_m36_native.gd.uid",
+    "production/ascendant-realms-godot/tests/human_playtest4_m37_native.gd",
+    "production/ascendant-realms-godot/tests/human_playtest4_m37_native.gd.uid",
+    "production/ascendant-realms-godot/tests/human_playtest4_m39_native.gd",
+    "production/ascendant-realms-godot/tests/human_playtest4_m39_native.gd.uid",
+    "production/ascendant-realms-godot/tests/human_playtest4_m41_native.gd",
+    "production/ascendant-realms-godot/tests/human_playtest4_m41_native.gd.uid",
+    "production/ascendant-realms-godot/tests/human_playtest4_m41r2_native.gd",
+    "production/ascendant-realms-godot/tests/human_playtest4_m41r2_native.gd.uid",
+    "production/ascendant-realms-godot/tests/human_playtest4_m41r3_native.gd",
+    "production/ascendant-realms-godot/tests/human_playtest4_m41r3_native.gd.uid",
+    "production/ascendant-realms-godot/tests/human_playtest4_m41r6_native.gd",
+    "production/ascendant-realms-godot/tests/human_playtest4_m41r6_native.gd.uid",
+    "production/ascendant-realms-godot/tests/human_playtest4_m41r6p2_native.gd",
+    "production/ascendant-realms-godot/tests/human_playtest4_m41r6p2_native.gd.uid",
+    "production/ascendant-realms-godot/tests/human_playtest4_m41r6p3_native.gd",
+    "production/ascendant-realms-godot/tests/human_playtest4_m41r6p3_native.gd.uid",
+    "production/ascendant-realms-godot/tests/human_playtest4_m41r6p4_native.gd",
+    "production/ascendant-realms-godot/tests/human_playtest4_m41r6p4_native.gd.uid",
+    "production/ascendant-realms-godot/tests/human_playtest4_m41r6p4s_native.gd",
+    "production/ascendant-realms-godot/tests/human_playtest4_m41r6p4s_native.gd.uid",
+    "production/ascendant-realms-godot/tests/human_playtest4_m41r6p_native.gd",
+    "production/ascendant-realms-godot/tests/human_playtest4_m41r6p_native.gd.uid",
+    "production/ascendant-realms-godot/tests/human_playtest4_m41r6s_native.gd",
+    "production/ascendant-realms-godot/tests/human_playtest4_m41r6s_native.gd.uid",
+    "production/ascendant-realms-godot/tests/human_playtest4_m41r_native.gd",
+    "production/ascendant-realms-godot/tests/human_playtest4_m41r_native.gd.uid",
+    "production/ascendant-realms-godot/tests/human_playtest4_movement.gd",
+    "production/ascendant-realms-godot/tests/human_playtest4_movement.gd.uid",
+    "production/ascendant-realms-godot/tests/p1r10_build_preview.gd.uid",
+    "production/ascendant-realms-godot/tests/p1r13_unit_readability.gd.uid",
+    "production/ascendant-realms-godot/tests/p1r14_tactical_hierarchy.gd.uid",
+    "production/ascendant-realms-godot/tests/p1r17_ui_capture.gd.uid",
+    "production/ascendant-realms-godot/tests/p1r19_tactical_ground.gd.uid",
+    "production/ascendant-realms-godot/tests/p1r1_unit_readability.gd.uid",
+    "production/ascendant-realms-godot/tests/p1r20_character_separation.gd.uid",
+    "production/ascendant-realms-godot/tests/p1r21_motion_grounding.gd.uid",
+    "production/ascendant-realms-godot/tests/p1r22_command_card.gd.uid",
+    "production/ascendant-realms-godot/tests/p1r23_selected_group.gd.uid",
+    "production/ascendant-realms-godot/tests/p1r2_selected_portraits.gd.uid",
+    "production/ascendant-realms-godot/tests/p1r3_minimap_terrain.gd.uid",
+    "production/ascendant-realms-godot/tests/p1r4_worker_interaction.gd.uid",
+    "production/ascendant-realms-godot/tests/p1r5_gameplay_ui_legibility.gd.uid",
+    "production/ascendant-realms-godot/tests/p1r6_strategic_site_markers.gd.uid",
+    "production/ascendant-realms-godot/tests/p1r7_camera_readability.gd.uid",
+    "production/ascendant-realms-godot/tests/p1r9_space_readability.gd.uid",
+    "production/ascendant-realms-godot/tests/p1s1_viewport_safe_area.gd.uid",
+    "production/ascendant-realms-godot/tests/p1s2_camera_bounds.gd.uid",
+    "production/ascendant-realms-godot/tests/p1s3_selection_readability.gd.uid",
+    "production/ascendant-realms-godot/tests/p1s4_command_feedback.gd.uid",
+    "production/ascendant-realms-godot/tests/p1s5_match_identity.gd.uid",
+    "production/ascendant-realms-godot/tests/v0431_capture.gd.uid",
+    "production/ascendant-realms-godot/tests/v0432_capture.gd.uid",
+    "production/ascendant-realms-godot/tests/v0433_capture.gd.uid",
+    "production/ascendant-realms-godot/tests/v0433_economy_unit_test.gd.uid",
+    "production/ascendant-realms-godot/tests/v0433_identity_unit_test.gd.uid",
+    "production/ascendant-realms-godot/tests/v0434_capture.gd.uid",
+    "production/ascendant-realms-godot/tests/v0434_combat_unit_test.gd.uid",
+    "production/ascendant-realms-godot/tests/v0435_capture.gd.uid",
+    "production/ascendant-realms-godot/tests/v0435_easy_ai_wave.gd.uid",
+    "production/ascendant-realms-godot/tests/v0436_capture.gd.uid",
+    "production/ascendant-realms-godot/tests/v0436_conquest_victory.gd.uid",
+    "production/ascendant-realms-godot/tests/v0436_navigation_repair.gd.uid",
+    "production/ascendant-realms-godot/tests/v0436_r1c_capture.gd.uid",
+    "production/ascendant-realms-godot/tests/v0436_r1d_startup_capture.gd.uid",
+    "production/ascendant-realms-godot/tests/v0436_r1f_boundary_physics.gd.uid",
+    "production/ascendant-realms-godot/tests/v0436_r1g_capture.gd.uid",
+    "production/ascendant-realms-godot/tests/v0436_r1h_capture.gd.uid",
+    "production/ascendant-realms-godot/tests/v0436_r1j_capture.gd.uid",
+    "production/ascendant-realms-godot/tests/v0436_r1k_capture.gd.uid",
+    "tools/godot/humanPlayTest4M40FTool.mjs",
+    "tools/godot/humanPlayTest4M40GTool.mjs",
+    "tools/godot/humanPlayTest4M40VTool.mjs",
+    "tools/godot/humanPlayTest4M41R2Tool.mjs",
+    "tools/godot/humanPlayTest4M41R3Tool.mjs",
+    "tools/godot/humanPlayTest4M41R4Tool.mjs",
+    "tools/godot/humanPlayTest4M41R4WTool.mjs",
+    "tools/godot/humanPlayTest4M41R5Tool.mjs",
+    "tools/godot/humanPlayTest4M41R6P2ITool.mjs",
+    "tools/godot/humanPlayTest4M41R6P2Tool.mjs",
+    "tools/godot/humanPlayTest4M41R6P3FTool.mjs",
+    "tools/godot/humanPlayTest4M41R6P3Tool.mjs",
+    "tools/godot/humanPlayTest4M41R6P4S2Tool.mjs",
+    "tools/godot/humanPlayTest4M41R6P4S3Tool.mjs",
+    "tools/godot/humanPlayTest4M41R6P4S4Tool.mjs",
+    "tools/godot/humanPlayTest4M41R6P4S5Tool.mjs",
+    "tools/godot/humanPlayTest4M41R6P4S6Tool.mjs",
+    "tools/godot/humanPlayTest4M41R6P4STool.mjs",
+    "tools/godot/humanPlayTest4M41R6P4Tool.mjs",
+    "tools/godot/humanPlayTest4M41R6PTool.mjs",
+    "tools/godot/humanPlayTest4M41R6STool.mjs",
+    "tools/godot/humanPlayTest4M41R6Tool.mjs",
+    "tools/godot/humanPlaytest4M15Tool.mjs",
+    "tools/godot/humanPlaytest4M16Tool.mjs",
+    "tools/godot/humanPlaytest4M17Tool.mjs",
+    "tools/godot/humanPlaytest4M18Tool.mjs",
+    "tools/godot/humanPlaytest4M19Tool.mjs",
+    "tools/godot/humanPlaytest4M20Tool.mjs",
+    "tools/godot/humanPlaytest4M21Tool.mjs",
+    "tools/godot/humanPlaytest4M22Tool.mjs",
+    "tools/godot/humanPlaytest4M23Tool.mjs",
+    "tools/godot/humanPlaytest4M24Tool.mjs",
+    "tools/godot/humanPlaytest4M25Tool.mjs",
+    "tools/godot/humanPlaytest4M26Tool.mjs",
+    "tools/godot/humanPlaytest4M27Tool.mjs",
+    "tools/godot/humanPlaytest4M28Tool.mjs",
+    "tools/godot/humanPlaytest4M29Tool.mjs",
+    "tools/godot/humanPlaytest4M30Tool.mjs",
+    "tools/godot/humanPlaytest4M31Tool.mjs",
+    "tools/godot/humanPlaytest4M32Tool.mjs",
+    "tools/godot/humanPlaytest4M33Tool.mjs",
+    "tools/godot/humanPlaytest4M34Tool.mjs",
+    "tools/godot/humanPlaytest4M35Tool.mjs",
+    "tools/godot/humanPlaytest4M36Tool.mjs",
+    "tools/godot/humanPlaytest4M37Tool.mjs",
+    "tools/godot/humanPlaytest4M38Tool.mjs",
+    "tools/godot/humanPlaytest4M39NativeTool.mjs",
+    "tools/godot/humanPlaytest4M39Tool.mjs",
+    "tools/godot/humanPlaytest4M40DTool.mjs",
+    "tools/godot/humanPlaytest4M40ETool.mjs",
+    "tools/godot/humanPlaytest4M40RTool.mjs",
+    "tools/godot/humanPlaytest4M40Tool.mjs",
+    "tools/godot/humanPlaytest4M41RTool.mjs",
+    "tools/godot/humanPlaytest4M41Tool.mjs",
+    "tools/godot/humanPlaytest4MovementTool.mjs",
+    "tools/godot/lib/playerWindowContract.mjs",
+    "tools/godot/lib/qualificationWindowGeometry.mjs",
+    "tools/godot/m23NativeClick.ps1",
+    "tools/godot/m25NativeClick.ps1",
+    "tools/godot/m25Win32Receiver.ps1",
+    "tools/godot/m41r6p4s6-window-probe.ps1",
+    "tools/godot/m41r6p4s6d1-detector-audit.mjs",
+    "tools/godot/m41r6p4s6d1-window-probe.ps1",
+    "tools/godot/m41r6p4s6d2-forensic.mjs",
+    "tools/godot/m41r6p4s6r3cEvidence.mjs",
+    "tools/m29-window-contract-r3c/M29WindowContractR3C.csproj",
+    "tools/m29-window-contract-r3c/Program.cs",
+    "tools/m29-window-contract-r3c/bin/Release/net8.0-windows/M29WindowContractR3C.deps.json",
+    "tools/m29-window-contract-r3c/bin/Release/net8.0-windows/M29WindowContractR3C.dll",
+    "tools/m29-window-contract-r3c/bin/Release/net8.0-windows/M29WindowContractR3C.exe",
+    "tools/m29-window-contract-r3c/bin/Release/net8.0-windows/M29WindowContractR3C.pdb",
+    "tools/m29-window-contract-r3c/bin/Release/net8.0-windows/M29WindowContractR3C.runtimeconfig.json",
+    "tools/m29-window-contract-r3c/bin/Release/net8.0-windows/win-x64/M29WindowContractR3C.deps.json",
+    "tools/m29-window-contract-r3c/bin/Release/net8.0-windows/win-x64/M29WindowContractR3C.dll",
+    "tools/m29-window-contract-r3c/bin/Release/net8.0-windows/win-x64/M29WindowContractR3C.exe",
+    "tools/m29-window-contract-r3c/bin/Release/net8.0-windows/win-x64/M29WindowContractR3C.pdb",
+    "tools/m29-window-contract-r3c/bin/Release/net8.0-windows/win-x64/M29WindowContractR3C.runtimeconfig.json",
+    "tools/m29-window-contract-r3c/obj/M29WindowContractR3C.csproj.nuget.dgspec.json",
+    "tools/m29-window-contract-r3c/obj/M29WindowContractR3C.csproj.nuget.g.props",
+    "tools/m29-window-contract-r3c/obj/M29WindowContractR3C.csproj.nuget.g.targets",
+    "tools/m29-window-contract-r3c/obj/Release/net8.0-windows/.NETCoreApp,Version=v8.0.AssemblyAttributes.cs",
+    "tools/m29-window-contract-r3c/obj/Release/net8.0-windows/M29WindowContractR3C.AssemblyInfo.cs",
+    "tools/m29-window-contract-r3c/obj/Release/net8.0-windows/M29WindowContractR3C.AssemblyInfoInputs.cache",
+    "tools/m29-window-contract-r3c/obj/Release/net8.0-windows/M29WindowContractR3C.GeneratedMSBuildEditorConfig.editorconfig",
+    "tools/m29-window-contract-r3c/obj/Release/net8.0-windows/M29WindowContractR3C.GlobalUsings.g.cs",
+    "tools/m29-window-contract-r3c/obj/Release/net8.0-windows/M29WindowContractR3C.assets.cache",
+    "tools/m29-window-contract-r3c/obj/Release/net8.0-windows/M29WindowContractR3C.csproj.CoreCompileInputs.cache",
+    "tools/m29-window-contract-r3c/obj/Release/net8.0-windows/M29WindowContractR3C.csproj.FileListAbsolute.txt",
+    "tools/m29-window-contract-r3c/obj/Release/net8.0-windows/M29WindowContractR3C.dll",
+    "tools/m29-window-contract-r3c/obj/Release/net8.0-windows/M29WindowContractR3C.genruntimeconfig.cache",
+    "tools/m29-window-contract-r3c/obj/Release/net8.0-windows/M29WindowContractR3C.pdb",
+    "tools/m29-window-contract-r3c/obj/Release/net8.0-windows/M29WindowContractR3C.sourcelink.json",
+    "tools/m29-window-contract-r3c/obj/Release/net8.0-windows/apphost.exe",
+    "tools/m29-window-contract-r3c/obj/Release/net8.0-windows/ref/M29WindowContractR3C.dll",
+    "tools/m29-window-contract-r3c/obj/Release/net8.0-windows/refint/M29WindowContractR3C.dll",
+    "tools/m29-window-contract-r3c/obj/Release/net8.0-windows/win-x64/.NETCoreApp,Version=v8.0.AssemblyAttributes.cs",
+    "tools/m29-window-contract-r3c/obj/Release/net8.0-windows/win-x64/M29WindowContractR3C.AssemblyInfo.cs",
+    "tools/m29-window-contract-r3c/obj/Release/net8.0-windows/win-x64/M29WindowContractR3C.AssemblyInfoInputs.cache",
+    "tools/m29-window-contract-r3c/obj/Release/net8.0-windows/win-x64/M29WindowContractR3C.GeneratedMSBuildEditorConfig.editorconfig",
+    "tools/m29-window-contract-r3c/obj/Release/net8.0-windows/win-x64/M29WindowContractR3C.GlobalUsings.g.cs",
+    "tools/m29-window-contract-r3c/obj/Release/net8.0-windows/win-x64/M29WindowContractR3C.assets.cache",
+    "tools/m29-window-contract-r3c/obj/Release/net8.0-windows/win-x64/M29WindowContractR3C.csproj.CoreCompileInputs.cache",
+    "tools/m29-window-contract-r3c/obj/Release/net8.0-windows/win-x64/M29WindowContractR3C.csproj.FileListAbsolute.txt",
+    "tools/m29-window-contract-r3c/obj/Release/net8.0-windows/win-x64/M29WindowContractR3C.dll",
+    "tools/m29-window-contract-r3c/obj/Release/net8.0-windows/win-x64/M29WindowContractR3C.genruntimeconfig.cache",
+    "tools/m29-window-contract-r3c/obj/Release/net8.0-windows/win-x64/M29WindowContractR3C.pdb",
+    "tools/m29-window-contract-r3c/obj/Release/net8.0-windows/win-x64/M29WindowContractR3C.sourcelink.json",
+    "tools/m29-window-contract-r3c/obj/Release/net8.0-windows/win-x64/PublishOutputs.de3e459edd.txt",
+    "tools/m29-window-contract-r3c/obj/Release/net8.0-windows/win-x64/apphost.exe",
+    "tools/m29-window-contract-r3c/obj/Release/net8.0-windows/win-x64/ref/M29WindowContractR3C.dll",
+    "tools/m29-window-contract-r3c/obj/Release/net8.0-windows/win-x64/refint/M29WindowContractR3C.dll",
+    "tools/m29-window-contract-r3c/obj/project.assets.json",
+    "tools/m29-window-contract-r3c/obj/project.nuget.cache",
+    "tools/m40e-fixture/M40EFixture.csproj",
+    "tools/m40e-fixture/Program.cs",
+    "tools/m40e-fixture/bin/Release/net8.0-windows/M40EFixture.deps.json",
+    "tools/m40e-fixture/bin/Release/net8.0-windows/M40EFixture.dll",
+    "tools/m40e-fixture/bin/Release/net8.0-windows/M40EFixture.exe",
+    "tools/m40e-fixture/bin/Release/net8.0-windows/M40EFixture.pdb",
+    "tools/m40e-fixture/bin/Release/net8.0-windows/M40EFixture.runtimeconfig.json",
+    "tools/m40e-fixture/bin/Release/net8.0-windows/win-x64/M40EFixture.deps.json",
+    "tools/m40e-fixture/bin/Release/net8.0-windows/win-x64/M40EFixture.dll",
+    "tools/m40e-fixture/bin/Release/net8.0-windows/win-x64/M40EFixture.exe",
+    "tools/m40e-fixture/bin/Release/net8.0-windows/win-x64/M40EFixture.pdb",
+    "tools/m40e-fixture/bin/Release/net8.0-windows/win-x64/M40EFixture.runtimeconfig.json",
+    "tools/m40e-fixture/obj/M40EFixture.csproj.nuget.dgspec.json",
+    "tools/m40e-fixture/obj/M40EFixture.csproj.nuget.g.props",
+    "tools/m40e-fixture/obj/M40EFixture.csproj.nuget.g.targets",
+    "tools/m40e-fixture/obj/Release/net8.0-windows/.NETCoreApp,Version=v8.0.AssemblyAttributes.cs",
+    "tools/m40e-fixture/obj/Release/net8.0-windows/M40EFixture.AssemblyInfo.cs",
+    "tools/m40e-fixture/obj/Release/net8.0-windows/M40EFixture.AssemblyInfoInputs.cache",
+    "tools/m40e-fixture/obj/Release/net8.0-windows/M40EFixture.GeneratedMSBuildEditorConfig.editorconfig",
+    "tools/m40e-fixture/obj/Release/net8.0-windows/M40EFixture.GlobalUsings.g.cs",
+    "tools/m40e-fixture/obj/Release/net8.0-windows/M40EFixture.assets.cache",
+    "tools/m40e-fixture/obj/Release/net8.0-windows/M40EFixture.csproj.CoreCompileInputs.cache",
+    "tools/m40e-fixture/obj/Release/net8.0-windows/M40EFixture.csproj.FileListAbsolute.txt",
+    "tools/m40e-fixture/obj/Release/net8.0-windows/M40EFixture.dll",
+    "tools/m40e-fixture/obj/Release/net8.0-windows/M40EFixture.genruntimeconfig.cache",
+    "tools/m40e-fixture/obj/Release/net8.0-windows/M40EFixture.pdb",
+    "tools/m40e-fixture/obj/Release/net8.0-windows/M40EFixture.sourcelink.json",
+    "tools/m40e-fixture/obj/Release/net8.0-windows/apphost.exe",
+    "tools/m40e-fixture/obj/Release/net8.0-windows/ref/M40EFixture.dll",
+    "tools/m40e-fixture/obj/Release/net8.0-windows/refint/M40EFixture.dll",
+    "tools/m40e-fixture/obj/Release/net8.0-windows/win-x64/.NETCoreApp,Version=v8.0.AssemblyAttributes.cs",
+    "tools/m40e-fixture/obj/Release/net8.0-windows/win-x64/M40EFixture.AssemblyInfo.cs",
+    "tools/m40e-fixture/obj/Release/net8.0-windows/win-x64/M40EFixture.AssemblyInfoInputs.cache",
+    "tools/m40e-fixture/obj/Release/net8.0-windows/win-x64/M40EFixture.GeneratedMSBuildEditorConfig.editorconfig",
+    "tools/m40e-fixture/obj/Release/net8.0-windows/win-x64/M40EFixture.GlobalUsings.g.cs",
+    "tools/m40e-fixture/obj/Release/net8.0-windows/win-x64/M40EFixture.assets.cache",
+    "tools/m40e-fixture/obj/Release/net8.0-windows/win-x64/M40EFixture.csproj.CoreCompileInputs.cache",
+    "tools/m40e-fixture/obj/Release/net8.0-windows/win-x64/M40EFixture.csproj.FileListAbsolute.txt",
+    "tools/m40e-fixture/obj/Release/net8.0-windows/win-x64/M40EFixture.dll",
+    "tools/m40e-fixture/obj/Release/net8.0-windows/win-x64/M40EFixture.genruntimeconfig.cache",
+    "tools/m40e-fixture/obj/Release/net8.0-windows/win-x64/M40EFixture.pdb",
+    "tools/m40e-fixture/obj/Release/net8.0-windows/win-x64/M40EFixture.sourcelink.json",
+    "tools/m40e-fixture/obj/Release/net8.0-windows/win-x64/PublishOutputs.ae89ca978e.txt",
+    "tools/m40e-fixture/obj/Release/net8.0-windows/win-x64/apphost.exe",
+    "tools/m40e-fixture/obj/Release/net8.0-windows/win-x64/ref/M40EFixture.dll",
+    "tools/m40e-fixture/obj/Release/net8.0-windows/win-x64/refint/M40EFixture.dll",
+    "tools/m40e-fixture/obj/project.assets.json",
+    "tools/m40e-fixture/obj/project.nuget.cache",
+    "tools/m40f-observer/M40FObserver.csproj",
+    "tools/m40f-observer/Program.cs",
+    "tools/m40f-observer/bin/Release/net8.0-windows/M40FObserver.deps.json",
+    "tools/m40f-observer/bin/Release/net8.0-windows/M40FObserver.dll",
+    "tools/m40f-observer/bin/Release/net8.0-windows/M40FObserver.exe",
+    "tools/m40f-observer/bin/Release/net8.0-windows/M40FObserver.pdb",
+    "tools/m40f-observer/bin/Release/net8.0-windows/M40FObserver.runtimeconfig.json",
+    "tools/m40f-observer/obj/M40FObserver.csproj.nuget.dgspec.json",
+    "tools/m40f-observer/obj/M40FObserver.csproj.nuget.g.props",
+    "tools/m40f-observer/obj/M40FObserver.csproj.nuget.g.targets",
+    "tools/m40f-observer/obj/Release/net8.0-windows/.NETCoreApp,Version=v8.0.AssemblyAttributes.cs",
+    "tools/m40f-observer/obj/Release/net8.0-windows/M40FObserver.AssemblyInfo.cs",
+    "tools/m40f-observer/obj/Release/net8.0-windows/M40FObserver.AssemblyInfoInputs.cache",
+    "tools/m40f-observer/obj/Release/net8.0-windows/M40FObserver.GeneratedMSBuildEditorConfig.editorconfig",
+    "tools/m40f-observer/obj/Release/net8.0-windows/M40FObserver.GlobalUsings.g.cs",
+    "tools/m40f-observer/obj/Release/net8.0-windows/M40FObserver.assets.cache",
+    "tools/m40f-observer/obj/Release/net8.0-windows/M40FObserver.csproj.CoreCompileInputs.cache",
+    "tools/m40f-observer/obj/Release/net8.0-windows/M40FObserver.csproj.FileListAbsolute.txt",
+    "tools/m40f-observer/obj/Release/net8.0-windows/M40FObserver.dll",
+    "tools/m40f-observer/obj/Release/net8.0-windows/M40FObserver.genruntimeconfig.cache",
+    "tools/m40f-observer/obj/Release/net8.0-windows/M40FObserver.pdb",
+    "tools/m40f-observer/obj/Release/net8.0-windows/M40FObserver.sourcelink.json",
+    "tools/m40f-observer/obj/Release/net8.0-windows/apphost.exe",
+    "tools/m40f-observer/obj/Release/net8.0-windows/ref/M40FObserver.dll",
+    "tools/m40f-observer/obj/Release/net8.0-windows/refint/M40FObserver.dll",
+    "tools/m40f-observer/obj/project.assets.json",
+    "tools/m40f-observer/obj/project.nuget.cache",
+    "tools/m41-native-input/M41NativeInput.csproj",
+    "tools/m41-native-input/Program.cs",
+    "tools/m41-native-input/bin/Release/net8.0-windows/M41NativeInput.deps.json",
+    "tools/m41-native-input/bin/Release/net8.0-windows/M41NativeInput.dll",
+    "tools/m41-native-input/bin/Release/net8.0-windows/M41NativeInput.exe",
+    "tools/m41-native-input/bin/Release/net8.0-windows/M41NativeInput.pdb",
+    "tools/m41-native-input/bin/Release/net8.0-windows/M41NativeInput.runtimeconfig.json",
+    "tools/m41-native-input/obj/M41NativeInput.csproj.nuget.dgspec.json",
+    "tools/m41-native-input/obj/M41NativeInput.csproj.nuget.g.props",
+    "tools/m41-native-input/obj/M41NativeInput.csproj.nuget.g.targets",
+    "tools/m41-native-input/obj/Release/net8.0-windows/.NETCoreApp,Version=v8.0.AssemblyAttributes.cs",
+    "tools/m41-native-input/obj/Release/net8.0-windows/M41NativeInput.AssemblyInfo.cs",
+    "tools/m41-native-input/obj/Release/net8.0-windows/M41NativeInput.AssemblyInfoInputs.cache",
+    "tools/m41-native-input/obj/Release/net8.0-windows/M41NativeInput.GeneratedMSBuildEditorConfig.editorconfig",
+    "tools/m41-native-input/obj/Release/net8.0-windows/M41NativeInput.GlobalUsings.g.cs",
+    "tools/m41-native-input/obj/Release/net8.0-windows/M41NativeInput.assets.cache",
+    "tools/m41-native-input/obj/Release/net8.0-windows/M41NativeInput.csproj.CoreCompileInputs.cache",
+    "tools/m41-native-input/obj/Release/net8.0-windows/M41NativeInput.csproj.FileListAbsolute.txt",
+    "tools/m41-native-input/obj/Release/net8.0-windows/M41NativeInput.dll",
+    "tools/m41-native-input/obj/Release/net8.0-windows/M41NativeInput.genruntimeconfig.cache",
+    "tools/m41-native-input/obj/Release/net8.0-windows/M41NativeInput.pdb",
+    "tools/m41-native-input/obj/Release/net8.0-windows/M41NativeInput.sourcelink.json",
+    "tools/m41-native-input/obj/Release/net8.0-windows/apphost.exe",
+    "tools/m41-native-input/obj/Release/net8.0-windows/ref/M41NativeInput.dll",
+    "tools/m41-native-input/obj/Release/net8.0-windows/refint/M41NativeInput.dll",
+    "tools/m41-native-input/obj/project.assets.json",
+    "tools/m41-native-input/obj/project.nuget.cache",
+    "tools/m41r2-native-input/M41R2NativeInput.csproj",
+    "tools/m41r2-native-input/Program.cs",
+    "tools/m41r2-native-input/bin/Release/net8.0-windows/M41R2NativeInput.deps.json",
+    "tools/m41r2-native-input/bin/Release/net8.0-windows/M41R2NativeInput.dll",
+    "tools/m41r2-native-input/bin/Release/net8.0-windows/M41R2NativeInput.exe",
+    "tools/m41r2-native-input/bin/Release/net8.0-windows/M41R2NativeInput.pdb",
+    "tools/m41r2-native-input/bin/Release/net8.0-windows/M41R2NativeInput.runtimeconfig.json",
+    "tools/m41r2-native-input/obj/M41R2NativeInput.csproj.nuget.dgspec.json",
+    "tools/m41r2-native-input/obj/M41R2NativeInput.csproj.nuget.g.props",
+    "tools/m41r2-native-input/obj/M41R2NativeInput.csproj.nuget.g.targets",
+    "tools/m41r2-native-input/obj/Release/net8.0-windows/.NETCoreApp,Version=v8.0.AssemblyAttributes.cs",
+    "tools/m41r2-native-input/obj/Release/net8.0-windows/M41R2NativeInput.AssemblyInfo.cs",
+    "tools/m41r2-native-input/obj/Release/net8.0-windows/M41R2NativeInput.AssemblyInfoInputs.cache",
+    "tools/m41r2-native-input/obj/Release/net8.0-windows/M41R2NativeInput.GeneratedMSBuildEditorConfig.editorconfig",
+    "tools/m41r2-native-input/obj/Release/net8.0-windows/M41R2NativeInput.GlobalUsings.g.cs",
+    "tools/m41r2-native-input/obj/Release/net8.0-windows/M41R2NativeInput.assets.cache",
+    "tools/m41r2-native-input/obj/Release/net8.0-windows/M41R2NativeInput.csproj.CoreCompileInputs.cache",
+    "tools/m41r2-native-input/obj/Release/net8.0-windows/M41R2NativeInput.csproj.FileListAbsolute.txt",
+    "tools/m41r2-native-input/obj/Release/net8.0-windows/M41R2NativeInput.dll",
+    "tools/m41r2-native-input/obj/Release/net8.0-windows/M41R2NativeInput.genruntimeconfig.cache",
+    "tools/m41r2-native-input/obj/Release/net8.0-windows/M41R2NativeInput.pdb",
+    "tools/m41r2-native-input/obj/Release/net8.0-windows/M41R2NativeInput.sourcelink.json",
+    "tools/m41r2-native-input/obj/Release/net8.0-windows/apphost.exe",
+    "tools/m41r2-native-input/obj/Release/net8.0-windows/ref/M41R2NativeInput.dll",
+    "tools/m41r2-native-input/obj/Release/net8.0-windows/refint/M41R2NativeInput.dll",
+    "tools/m41r2-native-input/obj/project.assets.json",
+    "tools/m41r2-native-input/obj/project.nuget.cache"
+  ],
+  "relevant_current_godot_files": [
+    {
+      "path": "production/ascendant-realms-godot/01_MAIN_MENU_SKIRMISH_POINTER_VALID.png",
+      "bytes": 1042595,
+      "sha256": "f9f71fdca03ef67b184e492b32a500a7ebbb7bdbb2082d140fbc7a2a3e2210ce"
+    },
+    {
+      "path": "production/ascendant-realms-godot/01_MAIN_MENU_SKIRMISH_POINTER_VALID.png.import",
+      "bytes": 1013,
+      "sha256": "071e09c83321870716a7ef42c112fd0bb38c2e0edf2445487c240d41eb21b713"
+    },
+    {
+      "path": "production/ascendant-realms-godot/02_SKIRMISH_SETUP.png",
+      "bytes": 722762,
+      "sha256": "e354abc878fdb0d9262faeec691bcc3a53a1df8ecbff2a4a0f1ef11a41d3c7cc"
+    },
+    {
+      "path": "production/ascendant-realms-godot/02_SKIRMISH_SETUP.png.import",
+      "bytes": 959,
+      "sha256": "4c35bd7cf9310db7860c082d6fe698d5ea82c2596e3023dfffffaa13f2da3a50"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/characters/barrosan_anvil_breaker/barrosan_anvil_breaker.glb.import",
+      "bytes": 1785,
+      "sha256": "9eca47d9a3e47a98b7867cdcfd7f8467e4c799c87345040c69b8a12971aff878"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/characters/barrosan_clan_levy/barrosan_clan_levy.glb.import",
+      "bytes": 1769,
+      "sha256": "a0443dd6f461713bf00c431fc1f46da473fc0edc470727a74b6787804591d15f"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/characters/barrosan_crag_archer/barrosan_crag_archer.glb.import",
+      "bytes": 1776,
+      "sha256": "d060a8f7665366e1be29f20f81f88b30f8e6e7e36394402cc5e6f28f78ccc168"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/characters/barrosan_hero_thane/barrosan_hero_thane.glb.import",
+      "bytes": 1772,
+      "sha256": "bda30623a8d2920a3d2d888c7bb884e6c3aa34c82887ee25fa9e1f1dbcdc77a5"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/characters/barrosan_highlander_worker/barrosan_highlander_worker.glb.import",
+      "bytes": 1800,
+      "sha256": "d0149882d0f5f3b025cbd864860ae034aaf4a4fe26a2d18f72c4fe5617b3b258"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/characters/barrosan_outrider/barrosan_outrider.glb.import",
+      "bytes": 1764,
+      "sha256": "eb322c00545e05ba5ec90028caa2f1613136b773f3eef10961e9c3e8728a95ba"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/characters/barrosan_spear_guard/barrosan_spear_guard.glb.import",
+      "bytes": 1777,
+      "sha256": "12d5f20e372561af34b6e6dc4b330997fafaea632fb3815f619906b34c5f20b3"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/characters/beastfolk_wolf_warrior/beastfolk_wolf_warrior.glb.import",
+      "bytes": 1784,
+      "sha256": "46005294c8c37f7ee7e29f98fd94b4832cecb434db8bfed20f3ad094305d1966"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/characters/dwarf_warrior/dwarf_warrior.glb.import",
+      "bytes": 1749,
+      "sha256": "cd9a7e13ba90998656910b56d7e988341f754f4a09d18129d9b22590a4af48ea"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/characters/frostborn_hero_jarl/frostborn_hero_jarl.glb.import",
+      "bytes": 1772,
+      "sha256": "3874daa76339c79fa4ad35805900f2d9a3e3227eadbb67ca6c71806e5999fe9f"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/characters/frostborn_warrior/frostborn_warrior.glb.import",
+      "bytes": 1765,
+      "sha256": "0794e088f2071dfdc4b5d6419cc24448d490d0e387252022c409f0071bbd17b8"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/characters/grimtusk_hero_warlord/grimtusk_hero_warlord.glb.import",
+      "bytes": 1781,
+      "sha256": "24d69e3e513ae4451d5bedaf4947171a32aae0a5481467669decd483298017a3"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/characters/highelf_archer/highelf_archer.glb.import",
+      "bytes": 1752,
+      "sha256": "e830706c773f99d1f2fd452b23aa87bd818280c92f595ae98eb82eadb479897b"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/characters/hollow_hero_lich/hollow_hero_lich.glb.import",
+      "bytes": 1760,
+      "sha256": "6d69055c4f122773272b32ac8dddd9e80b3d7f64c9cddcb8299b9321c2e0b3b6"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/characters/karak_hero_thanelord/karak_hero_thanelord.glb.import",
+      "bytes": 1777,
+      "sha256": "c900f5522d8585f816e12eb7242de3be7c8602dc6994c2ca7a69d3d746838424"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/characters/lioraen_bloomdancer/lioraen_bloomdancer.glb.import",
+      "bytes": 1773,
+      "sha256": "0fec8e94d0651891178c18a74aeabd8ba29c5cee0de47750df3622edd7c54e25"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/characters/lioraen_canopy_mender/lioraen_canopy_mender.glb.import",
+      "bytes": 1780,
+      "sha256": "66b1426f8c8a4c81fef602d8bfb6038f8516c34596df8a127e0adf34308b60c2"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/characters/lioraen_hero_warden/lioraen_hero_warden.glb.import",
+      "bytes": 1773,
+      "sha256": "059a0fcafe70d0f179acbe8258d33f1a7d755c5626e9561e99c2b46624e98a67"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/characters/lioraen_rootwarden_guard/lioraen_rootwarden_guard.glb.import",
+      "bytes": 1793,
+      "sha256": "7551fcc673fbe2c529c31e8a5d660d5f57a575f5183ccd82def953434c360ada"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/characters/lioraen_seedkeeper_worker/lioraen_seedkeeper_worker.glb.import",
+      "bytes": 1797,
+      "sha256": "a042e06294132f3c8796994daeeda4012dd6447d45f411fc659a918dd2cc2a35"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/characters/lioraen_thorn_ranger/lioraen_thorn_ranger.glb.import",
+      "bytes": 1777,
+      "sha256": "afd2d3b4c2d0d6a9f59cb24c7a2685589b5ab6a5361d975e4d786e97ed0d9e52"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/characters/lioraen_windstrider/lioraen_windstrider.glb.import",
+      "bytes": 1773,
+      "sha256": "d63a49087ebdc7938a8df06e04a4b98ffcb4c31d532448e2edbb10cccd2c9706"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/characters/orc_grunt/orc_grunt.glb.import",
+      "bytes": 1733,
+      "sha256": "ab035f814ed0f0a71cd2a4d7802999754fbe6abae54ecaac414889043bf08af5"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/characters/sunspear_hero_pharaoh/sunspear_hero_pharaoh.glb.import",
+      "bytes": 1781,
+      "sha256": "8b7afdcefe6b78d625bc492a4f68236ce1cbe2f43c8dc6b972585912f254646c"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/characters/sunspear_legionary/sunspear_legionary.glb.import",
+      "bytes": 1769,
+      "sha256": "c7de81f9a073cd993f4a1c54b1e9b3ffd04415bac5995e5e011aafdaef3ca11f"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/characters/sylvan_hero_archon/sylvan_hero_archon.glb.import",
+      "bytes": 1768,
+      "sha256": "e048d66dc58502affa528fb0c5ceef7ff60dbc10deed0b43b1c0eb710d80ed2b"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/characters/undead_skeleton/undead_skeleton.glb.import",
+      "bytes": 1756,
+      "sha256": "aca447e2d08927ce2f46bf64d69aeb6ca737c58ad87a28985308bdd9864f6888"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/characters/vorthak_ash_thrall/vorthak_ash_thrall.glb.import",
+      "bytes": 1768,
+      "sha256": "fa93bf7749372a6fc8ca05ea24b36fc18ab245a4a44b0e0489030b59cd59c870"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/characters/vorthak_bondservant_worker/vorthak_bondservant_worker.glb.import",
+      "bytes": 1801,
+      "sha256": "facbde6dd3074c81506f006709ac5f520e57a88974c18831e72356f6b02681f7"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/characters/vorthak_cinder_spitter/vorthak_cinder_spitter.glb.import",
+      "bytes": 1785,
+      "sha256": "5a321ff51f24df834e604b591dff330428fc05a257500fca6eaf8133d9475498"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/characters/vorthak_gloom_hound/vorthak_gloom_hound.glb.import",
+      "bytes": 1773,
+      "sha256": "650526f1e6b9923ce8acd9572f7279266b4533f156de7d450bf1a6a88d2a6459"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/characters/vorthak_hero_binder/vorthak_hero_binder.glb.import",
+      "bytes": 1773,
+      "sha256": "aa8643f66e67a5f834969e0a52f332960a5b6e496841556f01c15e15d319590e"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/characters/vorthak_rift_blade/vorthak_rift_blade.glb.import",
+      "bytes": 1769,
+      "sha256": "8d2e9e0dd36b10fbc7dea6c65646acbd82ce6df7940ff3564f12daa0f1ea196f"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/characters/vorthak_veil_warlock/vorthak_veil_warlock.glb.import",
+      "bytes": 1776,
+      "sha256": "631599289376ab522161ad21cbb9340f6c6023ba8ec9b3bfb671600e5ed4d5cd"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/characters/wyldkin_hero_alpha/wyldkin_hero_alpha.glb.import",
+      "bytes": 1769,
+      "sha256": "a046720cc599eb58c03ef3c1f0bade07959513d9b3d4d946c4d23a33acb97e83"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/environment/buildings/barrosan_clan_croft.glb.import",
+      "bytes": 1092,
+      "sha256": "3c60f061e766570fc9e028dd9ca63b82e7da68140121882a776ae9b966cac33b"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/environment/buildings/barrosan_clan_croft_tripo_model_basecolor.jpg.import",
+      "bytes": 1126,
+      "sha256": "bfd1e862c317dd5b790a2b5fe39ff8ea7a66e422d1aa2fca09d340c1bb59114d"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/environment/buildings/barrosan_clan_croft_tripo_model_normal.jpg.import",
+      "bytes": 1117,
+      "sha256": "62f064eaf3849c85ba91d1ed9a6245c3d8dda678f6199c56aa6ced61b7060ee5"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/environment/buildings/barrosan_clan_croft_tripo_model_rm.jpg.import",
+      "bytes": 1104,
+      "sha256": "c0ad37fcce149c68ea1511135f11a938dc172b7923108320e07e6b36b8e878c3"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/environment/buildings/barrosan_clanhold.glb.import",
+      "bytes": 1086,
+      "sha256": "ae8568ca95bad773c7ddc58979e74cc0e1a24360695766b1027c7ad108c68c06"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/environment/buildings/barrosan_clanhold_tripo_model_basecolor.jpg.import",
+      "bytes": 1119,
+      "sha256": "874649333f8ca1473d4feee8db8677461fccb8a953582e636282e159d039cf17"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/environment/buildings/barrosan_clanhold_tripo_model_normal.jpg.import",
+      "bytes": 1110,
+      "sha256": "5c84e4fb9e216ad67911d319b532acc96082ef93bc7986ea051d554a48413897"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/environment/buildings/barrosan_clanhold_tripo_model_rm.jpg.import",
+      "bytes": 1099,
+      "sha256": "599bc84893077ab4c14e7b5b4511aa72c5a25bbbc5dc1c490ddd0941792cc608"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/environment/buildings/barrosan_iron_forge.glb.import",
+      "bytes": 1092,
+      "sha256": "fd0695e9da87d021bdc8c2d381f3079cdea063bb3040b16b38f39c1807fce2f9"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/environment/buildings/barrosan_iron_forge_tripo_model_basecolor.jpg.import",
+      "bytes": 1126,
+      "sha256": "87598bbfb5a957d8ac4605e5b921984e8e08949144c19ffddb36e7c838a4e518"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/environment/buildings/barrosan_iron_forge_tripo_model_normal.jpg.import",
+      "bytes": 1116,
+      "sha256": "e62fe5feafa3a98c3d9feb91cb8221e6bd61a4d21cc74b5ec82c21fed1136362"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/environment/buildings/barrosan_iron_forge_tripo_model_rm.jpg.import",
+      "bytes": 1105,
+      "sha256": "669d74fc5d158198aa7e572594d6761ca1ac814f7913ba7f3bbc7960daac3545"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/environment/buildings/barrosan_war_hall.glb.import",
+      "bytes": 1086,
+      "sha256": "725c6eb184a6d228a80a58c096afc3686aacafd086626183e2e10d53ae8f6dc2"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/environment/buildings/barrosan_war_hall_tripo_model_basecolor.jpg.import",
+      "bytes": 1120,
+      "sha256": "9dc99433b57689784e59dd390925d4b0578be385ee1c6cc4490cea9306c068b7"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/environment/buildings/barrosan_war_hall_tripo_model_normal.jpg.import",
+      "bytes": 1111,
+      "sha256": "22c59639a6931fbcc9e2e197dab638a7a3611c6319a72ecb8aa1bae660532ab6"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/environment/buildings/barrosan_war_hall_tripo_model_rm.jpg.import",
+      "bytes": 1098,
+      "sha256": "40b606dc2004de4939e05e52eff433755656078bc9bc4d26a5dff45d52c29762"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/environment/buildings/barrosan_watchtower.glb.import",
+      "bytes": 1092,
+      "sha256": "8d9a94b13fbefbfa0dd602854431e292d6d02493d54ef0799f764d398ab3e85b"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/environment/buildings/barrosan_watchtower_tripo_model_basecolor.jpg.import",
+      "bytes": 1125,
+      "sha256": "07075ef34c7cbb62f3422fd15392085805f6872b5cdaebd160b2cbd2dd1765ee"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/environment/buildings/barrosan_watchtower_tripo_model_normal.jpg.import",
+      "bytes": 1117,
+      "sha256": "0b544d15f2d0b0300e4c22b8137f6f7dee9d97a325e17fe70075effd45381dcd"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/environment/buildings/barrosan_watchtower_tripo_model_rm.jpg.import",
+      "bytes": 1104,
+      "sha256": "35779e1a6a3e8711b7ae86f8d402d507c246882461c8e91f5e29f1cdd61ad175"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/environment/buildings/frostborn_mead_hall.glb.import",
+      "bytes": 1092,
+      "sha256": "24776fbd4e17b168973cc6cbaf11d17fec74f458a122ce507a49875b6d972e22"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/environment/buildings/frostborn_mead_hall_tripo_model_basecolor.jpg.import",
+      "bytes": 1126,
+      "sha256": "1a706a9461f9b23765ad1a563c303e21463078a4864070bf1e4cf6c8674900cc"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/environment/buildings/frostborn_mead_hall_tripo_model_normal.jpg.import",
+      "bytes": 1117,
+      "sha256": "98bd10c15e8f1c74d6dc7f6bf61b9dcf4602dd419d465fda8eaeee30976441ee"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/environment/buildings/frostborn_mead_hall_tripo_model_rm.jpg.import",
+      "bytes": 1104,
+      "sha256": "9cdf9354255d0d92fdd44dee266fc1a0a12574ed6bd7d08594b522259971e32a"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/environment/buildings/grimtusk_stronghold.glb.import",
+      "bytes": 1092,
+      "sha256": "7203afc068b7fdab86f6b872a6a7a5f789ef9e2a920bdc1bb6997e1c935be9d5"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/environment/buildings/grimtusk_stronghold_tripo_model_basecolor.jpg.import",
+      "bytes": 1126,
+      "sha256": "094f4225b6064f0f0438e4551542a5955513517c6648006ec1d7908c849f50ff"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/environment/buildings/grimtusk_stronghold_tripo_model_normal.jpg.import",
+      "bytes": 1117,
+      "sha256": "cda38e6760dfc6c21464eb36a324d26bffa2506e631c762bd714ef3feee2ecf7"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/environment/buildings/grimtusk_stronghold_tripo_model_rm.jpg.import",
+      "bytes": 1105,
+      "sha256": "2f747f7f21b230af1d295110da78321262d32d27e792202f686bbe2397dbd486"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/environment/buildings/hollow_necropolis.glb.import",
+      "bytes": 1086,
+      "sha256": "4b7d0301d9104b2e2e04230640eba5fa9ae75ff459039ac83eab1d8224ca461a"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/environment/buildings/hollow_necropolis_tripo_model_basecolor.jpg.import",
+      "bytes": 1120,
+      "sha256": "0c3551f590b7b823ce855500a1e34316a74305a833dd2c82784cadfc9583366b"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/environment/buildings/hollow_necropolis_tripo_model_normal.jpg.import",
+      "bytes": 1111,
+      "sha256": "a1756eb04a4d9afb957e13d3b3a80a78c4012d19cf21238454a9ba64dcfdc533"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/environment/buildings/hollow_necropolis_tripo_model_rm.jpg.import",
+      "bytes": 1099,
+      "sha256": "1ed2299780443efd0570a32695731902378bb2f5afcd7162b80bd7c974e4d4bc"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/environment/buildings/karak_hold.glb.import",
+      "bytes": 1065,
+      "sha256": "8c8d897af76355cb6783d23a290625cf281a581828a20eb05ba23490749bcdc9"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/environment/buildings/karak_hold_tripo_model_basecolor.jpg.import",
+      "bytes": 1099,
+      "sha256": "03a5199663a55f1b70ad19c51c3ecae52e8b0779bd4fe97debac7cffeafceb3a"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/environment/buildings/karak_hold_tripo_model_normal.jpg.import",
+      "bytes": 1089,
+      "sha256": "f5d1a84265c9ca56634966214bb84f58566919b56bf0acc54815ad60bfccfdd8"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/environment/buildings/karak_hold_tripo_model_rm.jpg.import",
+      "bytes": 1078,
+      "sha256": "45254b1e354c597fb28827d71868b562342e028321bc600dc888e78333d417ed"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/environment/buildings/lioraen_bloom_spire.glb.import",
+      "bytes": 1092,
+      "sha256": "8f28c83d838128ab706466e2f9ecbebeb571765e82550904c62af50cd9689329"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/environment/buildings/lioraen_bloom_spire_tripo_model_basecolor.jpg.import",
+      "bytes": 1125,
+      "sha256": "961f7b73a0ced68f379d0dcf3ff5e492b8a926dd76bdb2e241fe0c8a046a6e2d"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/environment/buildings/lioraen_bloom_spire_tripo_model_normal.jpg.import",
+      "bytes": 1117,
+      "sha256": "170b66fc743fcc501ed019807341c0906b211a3f46b2e4898e7cd98a89eb0a01"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/environment/buildings/lioraen_bloom_spire_tripo_model_rm.jpg.import",
+      "bytes": 1104,
+      "sha256": "29bb7a59798a9d39a9404c977ae26ef8b97d58f13bd6c34a82bc5b3984f3a530"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/environment/buildings/lioraen_groveheart.glb.import",
+      "bytes": 1089,
+      "sha256": "7d20517ce54abe996bff0266e86c17c3af103939d2c91dc5b6a7aa3d0e615e97"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/environment/buildings/lioraen_groveheart_tripo_model_basecolor.jpg.import",
+      "bytes": 1122,
+      "sha256": "13250cd76bf844b85f26358eb4cbff35ba103c56f1454cac7c8233c904f8d33e"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/environment/buildings/lioraen_groveheart_tripo_model_normal.jpg.import",
+      "bytes": 1114,
+      "sha256": "3f457cc4d4ce5b0ec00d9f60b8681aeb603b67652578037de304b04caca619a9"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/environment/buildings/lioraen_groveheart_tripo_model_rm.jpg.import",
+      "bytes": 1102,
+      "sha256": "de87598321c357c7ce84025e31726a5fe1cb791f1e18e4029a3f496797723deb"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/environment/buildings/lioraen_lifewell.glb.import",
+      "bytes": 1083,
+      "sha256": "3f6d8b285a854a1b1ce96c1f59abfa6508d608576f223981c5c99edc3cb16c5c"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/environment/buildings/lioraen_lifewell_tripo_model_basecolor.jpg.import",
+      "bytes": 1117,
+      "sha256": "f0fba829eda3c1222d6c543f56bce92f6050c4c71d495b88cd81a27c338a6382"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/environment/buildings/lioraen_lifewell_tripo_model_normal.jpg.import",
+      "bytes": 1108,
+      "sha256": "a09058de5c2767aa6ff490b11250b0ddbde0a29e6e191286b149935e5a20a030"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/environment/buildings/lioraen_lifewell_tripo_model_rm.jpg.import",
+      "bytes": 1096,
+      "sha256": "86070bbde4df36d70eef0f7726232c32c09eb6da0262f75dec3d86ee13329110"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/environment/buildings/lioraen_spirit_glade.glb.import",
+      "bytes": 1095,
+      "sha256": "96d942c7ba863c965a59b9cead33dd98990e4452dbe7ff065621a42cf469ef07"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/environment/buildings/lioraen_spirit_glade_tripo_model_basecolor.jpg.import",
+      "bytes": 1129,
+      "sha256": "651315f566517bd4877e950bd9208d3d0eba35296ef32ede17e70bfdc97751cd"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/environment/buildings/lioraen_spirit_glade_tripo_model_normal.jpg.import",
+      "bytes": 1120,
+      "sha256": "2c930e440aa84e54da946c481cdd62e7c38d03c62100832e085c49991eaedc58"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/environment/buildings/lioraen_spirit_glade_tripo_model_rm.jpg.import",
+      "bytes": 1108,
+      "sha256": "387e641224dd9653bba4e04fd8fa5db17d8d6dbec5734a43ab98503b99d24a7f"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/environment/buildings/lioraen_thornhall.glb.import",
+      "bytes": 1086,
+      "sha256": "439689bbe190538976f45fbb7cfd5d92be090064929fa6b35dff4e262861330d"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/environment/buildings/lioraen_thornhall_tripo_model_basecolor.jpg.import",
+      "bytes": 1119,
+      "sha256": "b0c0f797f919e1526c5d18791acb74af49b5a2fa8e833f7725ce057fb4be2cf6"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/environment/buildings/lioraen_thornhall_tripo_model_normal.jpg.import",
+      "bytes": 1111,
+      "sha256": "7e9f4b84080ea0400a333a5b01e666bdef9860b75975af70f6370b30d8f1014c"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/environment/buildings/lioraen_thornhall_tripo_model_rm.jpg.import",
+      "bytes": 1098,
+      "sha256": "eed8f687b46508eb246ec4242924174326852c8db0a2955b6662e7dcc01452f5"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/environment/buildings/sunspear_palace.glb.import",
+      "bytes": 1080,
+      "sha256": "ebb4c89738a8258408aad355f31892052372036f4f96059efa3724c9ca7c2cde"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/environment/buildings/sunspear_palace_tripo_model_basecolor.jpg.import",
+      "bytes": 1114,
+      "sha256": "cbc039022f99c1d4ccdc76a5a62dde7b201694735787060745c28a91d5bff751"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/environment/buildings/sunspear_palace_tripo_model_normal.jpg.import",
+      "bytes": 1105,
+      "sha256": "b6fa64fd844c009cdfdbdee5cf777098962a8d023e1bcbf3e5b7003e4a73cee7"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/environment/buildings/sunspear_palace_tripo_model_rm.jpg.import",
+      "bytes": 1093,
+      "sha256": "18dbdd24de2afdd8de3d36cdd539c1f61c368bb7304a54430f6860f1fae81aee"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/environment/buildings/sylvan_court.glb.import",
+      "bytes": 1071,
+      "sha256": "4742d06d0ebad1c24fc576c5e8d08e1af7896f4238dd93e25aa1d64b84b3fa57"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/environment/buildings/sylvan_court_tripo_model_basecolor.jpg.import",
+      "bytes": 1104,
+      "sha256": "a2ddc4865a173e095e9b29d30b1d317f5d8a61192eb78b575ed9be269e755097"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/environment/buildings/sylvan_court_tripo_model_normal.jpg.import",
+      "bytes": 1096,
+      "sha256": "c54b06aa00841b3712fa5640fce89647d7fe0ee1e96960c27895904a4b5a69a5"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/environment/buildings/sylvan_court_tripo_model_rm.jpg.import",
+      "bytes": 1084,
+      "sha256": "4b44af0b935c3e742aff480ff79819e5b604cfc0a2a1f39dac9beb2ead9329c6"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/environment/buildings/vorthak_ash_forge.glb.import",
+      "bytes": 1086,
+      "sha256": "534331f360975cc96da90c1eda35a08129855a90c04c71f4bdbcfd557923712d"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/environment/buildings/vorthak_ash_forge_tripo_model_basecolor.jpg.import",
+      "bytes": 1120,
+      "sha256": "2908cb6d00c3608b9e4f940cb6160f51d8786012298ebd545d979a088bb843b6"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/environment/buildings/vorthak_ash_forge_tripo_model_normal.jpg.import",
+      "bytes": 1111,
+      "sha256": "f4ae36ab08761773f6088a58d74213a15c47df28448c3a2dc7439150852b5e56"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/environment/buildings/vorthak_ash_forge_tripo_model_rm.jpg.import",
+      "bytes": 1099,
+      "sha256": "0346a7e0b3b85297142338bd915bc8a35a52533aaf2a0c25ea137407455a71d3"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/environment/buildings/vorthak_bone_barracks.glb.import",
+      "bytes": 1098,
+      "sha256": "c026e83e8229401aac3ebfd1410baa2885cdd6a50646549717087a6eee5c4ec8"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/environment/buildings/vorthak_bone_barracks_tripo_model_basecolor.jpg.import",
+      "bytes": 1132,
+      "sha256": "6c4ec803e119446907417ff7e35ecb7617cf675478ffeaf1940d92528612f8c6"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/environment/buildings/vorthak_bone_barracks_tripo_model_normal.jpg.import",
+      "bytes": 1123,
+      "sha256": "bf681124bc9ce89f445abe74f51fdb70b5a4c13d954d45e61a02b3329145c680"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/environment/buildings/vorthak_bone_barracks_tripo_model_rm.jpg.import",
+      "bytes": 1110,
+      "sha256": "358f2e9c0a5eca690a265cfa486052ca75f6119bc22a5d07da4facb858002d93"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/environment/buildings/vorthak_nighthold.glb.import",
+      "bytes": 1086,
+      "sha256": "d585ae1056f0886d3a082a7caf201d78006ff5fea59c12e4e673041a9e727452"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/environment/buildings/vorthak_nighthold_tripo_model_basecolor.jpg.import",
+      "bytes": 1120,
+      "sha256": "382104fd49d6520e57c6026ee41b1c49213b922d615733271c52872cf8460e68"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/environment/buildings/vorthak_nighthold_tripo_model_normal.jpg.import",
+      "bytes": 1111,
+      "sha256": "14194f592127910aa68e1b187ee4b64511da70836b0419ebf2a22206bd67a584"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/environment/buildings/vorthak_nighthold_tripo_model_rm.jpg.import",
+      "bytes": 1099,
+      "sha256": "7ed27731ffad6d6f04834429ea2713823687da70f0a4de8bfe08c4457d9accb7"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/environment/buildings/vorthak_rift_obelisk.glb.import",
+      "bytes": 1094,
+      "sha256": "3e38afc111767fa57c7a9b40e6f1431b8c6dda5a15a24ad7d1900e8adb808dae"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/environment/buildings/vorthak_rift_obelisk_tripo_model_basecolor.jpg.import",
+      "bytes": 1129,
+      "sha256": "ae11690005a8bff1742f0bf985a943648194adf26a824e3837941321aa6ac25f"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/environment/buildings/vorthak_rift_obelisk_tripo_model_normal.jpg.import",
+      "bytes": 1119,
+      "sha256": "02d4b689bf877fbe2c29f2d093c79a6b30792b60113226adfee17ecba7277b6e"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/environment/buildings/vorthak_rift_obelisk_tripo_model_rm.jpg.import",
+      "bytes": 1108,
+      "sha256": "1f2cd4f5d31ca7cfed53f8c89d920dae3914d27fcd3dea3fdf42038c6a69d4bc"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/environment/buildings/vorthak_warlock_spire.glb.import",
+      "bytes": 1098,
+      "sha256": "bee0b3ca02d0ae5854b3fdc27ba6425bdb4f3a53075430ecf5572135f9b27048"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/environment/buildings/vorthak_warlock_spire_tripo_model_basecolor.jpg.import",
+      "bytes": 1132,
+      "sha256": "5c4e13afc2e3438ca8ea5fd1b61ce9c16addc11f9fd24465cbff089f0ab434ae"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/environment/buildings/vorthak_warlock_spire_tripo_model_normal.jpg.import",
+      "bytes": 1123,
+      "sha256": "81b705ef73d25fb913d58d4d7a773a51823ec947095dbb8a0368bcd003f57aaf"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/environment/buildings/vorthak_warlock_spire_tripo_model_rm.jpg.import",
+      "bytes": 1111,
+      "sha256": "822ffa6d0ac7e209ede659d3d31555469abf3d19f4a618bdd5c2eb9ea0fb1e79"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/environment/buildings/wyldkin_denhold.glb.import",
+      "bytes": 1079,
+      "sha256": "3823101af4b28a66193c3b3f5ee1b1ed95c2963ef664c6c6e803dbc25a397456"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/environment/buildings/wyldkin_denhold_tripo_model_basecolor.jpg.import",
+      "bytes": 1114,
+      "sha256": "48e4f6a207f72af9c11b9e311e32bb1241347db6ab4659804f35e2e3e3de7bce"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/environment/buildings/wyldkin_denhold_tripo_model_normal.jpg.import",
+      "bytes": 1104,
+      "sha256": "e7bf097cb2425623c220a3622c86c8e3e5cd8b09bda74569a5a8183327ec8ac7"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/environment/buildings/wyldkin_denhold_tripo_model_rm.jpg.import",
+      "bytes": 1092,
+      "sha256": "4bfb985bb8d2caad4437ac8714657466c8394ee865b4ede5ba28cf0f30a85c50"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/environment/rocks/gold_mine_lumevein.glb.import",
+      "bytes": 1085,
+      "sha256": "284277355ad3c7b13a6f1ddd118b1ad1bcef18e761ae5dc267aa230dad4a8267"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/environment/rocks/gold_mine_lumevein_tripo_model_basecolor.jpg.import",
+      "bytes": 1119,
+      "sha256": "f2e6551682006d441a4e0ec395ea62f66b81c11cab1ca13eb7cea20ef6c71ffa"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/environment/rocks/gold_mine_lumevein_tripo_model_normal.jpg.import",
+      "bytes": 1109,
+      "sha256": "3c45de5ac23d61a0fd8cfe284baf752bda69c65804f3f611a702d25ed757ee1d"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/environment/rocks/gold_mine_lumevein_tripo_model_rm.jpg.import",
+      "bytes": 1098,
+      "sha256": "f87f07c0dc7f8fa90a0afaa867a0d720eb2dd4b6b6b1aa402829771634f72790"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/environment/rocks/highland_rock_cluster.glb.import",
+      "bytes": 1093,
+      "sha256": "62e673d91a628c8b066bc5a88db50f028b4639e4e8b57ddd699192e0619eaef7"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/environment/rocks/highland_rock_cluster_tripo_model_basecolor.jpg.import",
+      "bytes": 1128,
+      "sha256": "981530834cd1b95a10ccc99b3888908cbb7c709db099e8df13f7b3d04b28a9c4"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/environment/rocks/highland_rock_cluster_tripo_model_normal.jpg.import",
+      "bytes": 1118,
+      "sha256": "f20c594148d0a53f6c47511ee0269ee4ca2129502ec3179524ea5c6069198a0b"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/environment/rocks/highland_rock_cluster_tripo_model_rm.jpg.import",
+      "bytes": 1107,
+      "sha256": "4a17ccbb74da7df720f6cabfa06371637173b71c82ee254e8c6fa1f3c46c9037"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/environment/rocks/mossy_boulder.glb.import",
+      "bytes": 1069,
+      "sha256": "f6b897a8e02cbc5242a4f9332dfb9fe24c7e8507314105ab5bf0d0d9a4063bd3"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/environment/rocks/mossy_boulder_tripo_model_basecolor.jpg.import",
+      "bytes": 1104,
+      "sha256": "07d4ef5a77025787299b34702f9d7fd74729b182d1dd04f3830889a2aae29e74"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/environment/rocks/mossy_boulder_tripo_model_normal.jpg.import",
+      "bytes": 1095,
+      "sha256": "1378a173202dd38c340b474feacc0b8105cfb3b34c992feab250b271c4bffbcd"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/environment/rocks/mossy_boulder_tripo_model_rm.jpg.import",
+      "bytes": 1083,
+      "sha256": "d5d37250e663402a0d1a1a80cc1b0a72ff068b411b829920d9676712633da406"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/environment/structures/ancient_ruin_pillar.glb.import",
+      "bytes": 1092,
+      "sha256": "66a52e76fda8cf07b27d49bd85ac6e60c570b28b5b4de57b8555c01576c04390"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/environment/structures/ancient_ruin_pillar_tripo_model_basecolor.jpg.import",
+      "bytes": 1127,
+      "sha256": "502b498af04d8510168a0599cf1aeffd808ada302a85d50d40a277ab54bb4a3f"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/environment/structures/ancient_ruin_pillar_tripo_model_normal.jpg.import",
+      "bytes": 1118,
+      "sha256": "c89bdd8e47c9449e522b0c40b8ae8b88707ca37304d612f5bcb646caa4352e64"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/environment/structures/ancient_ruin_pillar_tripo_model_rm.jpg.import",
+      "bytes": 1105,
+      "sha256": "49ec893276599e1ee3ed5b4aad3b8cc1187df81d39e2f50c91329f4824d86396"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/environment/structures/highland_crossing_bridge.glb.import",
+      "bytes": 1108,
+      "sha256": "79f9170fa5dbc89f349e22118fa9e91501f5a62b74f9fbb6260de42bce2a1015"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/environment/structures/highland_crossing_bridge_tripo_model_basecolor.jpg.import",
+      "bytes": 1142,
+      "sha256": "69e09e44267b0c51ef42fac7295c0d85f3849081954b5418f63f9f9c65514c55"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/environment/structures/highland_crossing_bridge_tripo_model_normal.jpg.import",
+      "bytes": 1133,
+      "sha256": "c4ef2395d0ad189f7a8a3e15a368c29e27c4f599bccb34a4d9919afff1746b64"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/environment/structures/highland_crossing_bridge_tripo_model_rm.jpg.import",
+      "bytes": 1121,
+      "sha256": "7ab27630fb420f0680daa49730b7ae18d293e27b71b472eb817945f8cd6a4234"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/environment/structures/lume_spire_ruin.glb.import",
+      "bytes": 1081,
+      "sha256": "20ab0397757ecd6c4fb6caaca121bb58532c5a37898eb774d76e1a39117ed3e4"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/environment/structures/lume_spire_ruin_tripo_model_basecolor.jpg.import",
+      "bytes": 1115,
+      "sha256": "96c5d72927bb4c6d3e1b349aeea9898041de8510503578fa82497bdcba1da5b8"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/environment/structures/lume_spire_ruin_tripo_model_normal.jpg.import",
+      "bytes": 1105,
+      "sha256": "38d494c934ae82cba91358f3d1a2d47dd865790f528b00a940a7415aeac1f85d"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/environment/structures/lume_spire_ruin_tripo_model_rm.jpg.import",
+      "bytes": 1094,
+      "sha256": "0b17c8bf45c7ade2842dc9db8794281bd668d29d0d6109677e461079ae44b33d"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/environment/vegetation/broadleaf_oak.glb.import",
+      "bytes": 1075,
+      "sha256": "f43cbd9e01466afe976a5d92a637f0923f3044b81d1ab5b66839b2ea7cf4b1f5"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/environment/vegetation/broadleaf_oak_tripo_model_basecolor.jpg.import",
+      "bytes": 1109,
+      "sha256": "454122ca52cd740ccaf498f5fd40cdba9ac0bcc1c5518f7b69ba455b82e288b8"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/environment/vegetation/broadleaf_oak_tripo_model_normal.jpg.import",
+      "bytes": 1099,
+      "sha256": "f52c39b0e2ffcbf117bb34fb19cc16c24d0ea4442c8e819fb88ffaea76303f4d"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/environment/vegetation/broadleaf_oak_tripo_model_rm.jpg.import",
+      "bytes": 1088,
+      "sha256": "eea76e15eeec347b465613a7996fc7873da8873ae99b164f3c4e49e3bf1e1728"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/environment/vegetation/highland_pine.glb.import",
+      "bytes": 1074,
+      "sha256": "82a02a8930e046d1a3e75841276e8348fb87f72e1a6078a366fb7dcdd016dbe1"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/environment/vegetation/highland_pine_tripo_model_basecolor.jpg.import",
+      "bytes": 1109,
+      "sha256": "4cb913c14b31a7b51558a7f73b9e28d5d1807357a4a301227cfa21e06b76d52c"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/environment/vegetation/highland_pine_tripo_model_normal.jpg.import",
+      "bytes": 1100,
+      "sha256": "63eddd3d3b95dc07bbcabdb40907b6a9d10fc350689aab4fd872d973b0de831f"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/environment/vegetation/highland_pine_tripo_model_rm.jpg.import",
+      "bytes": 1088,
+      "sha256": "290bb92be6a25a89142e8607b44d0ce07b646ba92cf43b7de839a44d42c4082f"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/fonts/cinzel.ttf.import",
+      "bytes": 756,
+      "sha256": "b63ddcc701d1f95de68182b279c291616527c3c143e2d0a4d040f045294cb12f"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/props/containers/resource_timber_pile.glb.import",
+      "bytes": 1089,
+      "sha256": "39ea524400443acec65303821115e7600c09fd31e672178d44fff816ddf1c950"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/props/containers/resource_timber_pile_tripo_image_638c8fc4-0756-4d59-adea-dc3cbeb1ac30_0.jpg.import",
+      "bytes": 1210,
+      "sha256": "c967283e103c9fd16b21544bb4935cb7b9c7be90a53df55b44f5c2a1bf9ffd13"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/props/containers/resource_timber_pile_tripo_image_638c8fc4-0756-4d59-adea-dc3cbeb1ac30_1.jpg.import",
+      "bytes": 1211,
+      "sha256": "b8acb7819823d73eeff62e968333f38273cec4d1348094394e0bc86f6aed06b3"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/props/containers/resource_timber_pile_tripo_image_638c8fc4-0756-4d59-adea-dc3cbeb1ac30_2.jpg.import",
+      "bytes": 1211,
+      "sha256": "faf2e1b9a9cc1a844503c80245af0004c7e4fdb33238698a7b4fe505337003b4"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/props/items/hero_relic_amulet.glb.import",
+      "bytes": 1076,
+      "sha256": "1296f4c192c381bf75a4a39585c7e6014d1d7244776925610cdcda728c15563f"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/props/items/hero_relic_amulet_tripo_image_69811146-03da-4fda-bc3e-db721c99ca1c_0.jpg.import",
+      "bytes": 1197,
+      "sha256": "ba0bfd3716cd46d2d978270cb2ed08db4c3c123e0c9b7f8ec548d16b0a983a01"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/props/items/hero_relic_amulet_tripo_image_69811146-03da-4fda-bc3e-db721c99ca1c_1.jpg.import",
+      "bytes": 1197,
+      "sha256": "9897bc0b829e1fceba8b4dd6ea1ddb80fb68f97211634fb0e3ed26859af76ea0"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/props/items/hero_relic_amulet_tripo_image_69811146-03da-4fda-bc3e-db721c99ca1c_2.jpg.import",
+      "bytes": 1197,
+      "sha256": "bb153070ba6bdf788704adbb994a9288992377b75f0d5688124643b779a27289"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/props/items/lume_shard_crystal.glb.import",
+      "bytes": 1079,
+      "sha256": "ea12920dd2e919004c8dc15b932ceb8080a91559c4dcf0795051d1a2abffed48"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/props/items/lume_shard_crystal_tripo_image_2c1668fa-13fb-44d0-a8ad-7ae29e235dfa_0.jpg.import",
+      "bytes": 1199,
+      "sha256": "c8da18c1af5b1b1d720b97d713e7b0f1ef6ba900829491edcea2d2a8adf52d32"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/props/items/lume_shard_crystal_tripo_image_2c1668fa-13fb-44d0-a8ad-7ae29e235dfa_1.jpg.import",
+      "bytes": 1199,
+      "sha256": "67f6be2cf3913f1e8070921dbb3c67d38ab71201daf2603a1910d983f93e3d68"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/props/items/lume_shard_crystal_tripo_image_2c1668fa-13fb-44d0-a8ad-7ae29e235dfa_2.jpg.import",
+      "bytes": 1200,
+      "sha256": "114f233733a3128877765866e170a7065f25a652a60d7adbc097ef5c3de62888"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/props/misc/resource_stone_quarry_chunk.glb.import",
+      "bytes": 1104,
+      "sha256": "36691e4c2a15a3450e26180e491a445632db985a2597e0da0114f5e22fdfee62"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/props/misc/resource_stone_quarry_chunk_tripo_image_f5f21f0c-2af3-43ac-9dd6-56f13eb5211a_0.jpg.import",
+      "bytes": 1226,
+      "sha256": "b1d3159250d7c95ffe64ec448db16540205561db8dea6de0f4ff08f0ce0c8766"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/props/misc/resource_stone_quarry_chunk_tripo_image_f5f21f0c-2af3-43ac-9dd6-56f13eb5211a_1.jpg.import",
+      "bytes": 1226,
+      "sha256": "ba2aa41d2d3039bc9115298d1e3141859317a07bb15d4c1e25e90fdeaee7541e"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/props/misc/resource_stone_quarry_chunk_tripo_image_f5f21f0c-2af3-43ac-9dd6-56f13eb5211a_2.jpg.import",
+      "bytes": 1226,
+      "sha256": "6f06eabd72d6555ad847921d813511a72cfd1909e693f6796cb60b269b26cd60"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/props/vehicles/barrosan_ballista.glb.import",
+      "bytes": 1079,
+      "sha256": "3c3981efe8d285f6c8bacb10030e9b5437e25bdd90d87a43195e4ee02afbcd20"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/props/vehicles/barrosan_ballista_tripo_image_7eacbfb6-e37d-4429-9a5c-6af2063f8e8c_0.jpg.import",
+      "bytes": 1200,
+      "sha256": "7f4fe47ae20bd5f3d557c30b5fd574a4a2cdfc7f3454a45e0ab4d25ade174ec7"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/props/vehicles/barrosan_ballista_tripo_image_7eacbfb6-e37d-4429-9a5c-6af2063f8e8c_1.jpg.import",
+      "bytes": 1199,
+      "sha256": "5bba5950618ac64f9e382d992ee4ccbfd57d0eecf371ad70e3309796c4db5413"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/props/vehicles/barrosan_ballista_tripo_image_7eacbfb6-e37d-4429-9a5c-6af2063f8e8c_2.jpg.import",
+      "bytes": 1199,
+      "sha256": "622fdd97a674488cbf73a681583c49e669cebf388765a923366f33712a67f89b"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/props/vehicles/lioraen_thornthrower.glb.import",
+      "bytes": 1088,
+      "sha256": "04937770ab99a8db79875275ad93222f4922fba916f4375ca400d59cbd8c9d3d"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/props/vehicles/lioraen_thornthrower_tripo_image_7eacbfb6-e37d-4429-9a5c-6af2063f8e8c_0.jpg.import",
+      "bytes": 1208,
+      "sha256": "9b89a7c0640a4f455b1c52adb89384c53eda1b7e4a393d7a62db350fd4560e0a"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/props/vehicles/lioraen_thornthrower_tripo_image_7eacbfb6-e37d-4429-9a5c-6af2063f8e8c_1.jpg.import",
+      "bytes": 1208,
+      "sha256": "1536994d21ec262298df087dca8095af3ce6a903f36d0d8dd45beae9523c0469"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/props/vehicles/lioraen_thornthrower_tripo_image_7eacbfb6-e37d-4429-9a5c-6af2063f8e8c_2.jpg.import",
+      "bytes": 1209,
+      "sha256": "2a29a090fdf9fdb1634be8fc2777fceb8471dcfbe5b5900fc420739784ed9dbe"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/props/vehicles/vorthak_fracture_engine.glb.import",
+      "bytes": 1097,
+      "sha256": "1f5477b6c6f50e10de541970f2d27cacf638f096d3e1659518d0f1600d5fcfd2"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/props/vehicles/vorthak_fracture_engine_tripo_image_4d488b6b-48e9-4669-83a2-5520fb153bc4_0.jpg.import",
+      "bytes": 1218,
+      "sha256": "084edc8905e4fa7a3f4ce0a350b1475db0c6eeead1c09141da8deab151f3ed95"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/props/vehicles/vorthak_fracture_engine_tripo_image_4d488b6b-48e9-4669-83a2-5520fb153bc4_1.jpg.import",
+      "bytes": 1218,
+      "sha256": "103132f4541eab058262abea02d6c2a170731638b470ab21f817c37d07dd54c5"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/props/vehicles/vorthak_fracture_engine_tripo_image_4d488b6b-48e9-4669-83a2-5520fb153bc4_2.jpg.import",
+      "bytes": 1218,
+      "sha256": "5291a22e70638ff7f13dd4154a9e4b85bc65dd1c76ded27c2dab630c7657b68f"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/props/weapons/barrosan_claymore.glb.import",
+      "bytes": 1077,
+      "sha256": "1917eddf265127d13aa672c5ff4501fc91ca1561c2d9d3f4ea11c3663a95afb2"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/props/weapons/barrosan_claymore_tripo_model_basecolor.jpg.import",
+      "bytes": 1112,
+      "sha256": "675c3bf6ea2cf5ba9bcdce3224429bd93dd2b39cff64d669eaabf56f22b25a20"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/props/weapons/barrosan_claymore_tripo_model_normal.jpg.import",
+      "bytes": 1103,
+      "sha256": "357ee02b730c53532a45e14458da5dcb1d245d755e2dc63d08057ed5e139078b"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/props/weapons/barrosan_claymore_tripo_model_rm.jpg.import",
+      "bytes": 1091,
+      "sha256": "6be191851a337e8f6b292f567633fb7b90d3d3511d4b1808878b9c08fb2a5a57"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/props/weapons/lioraen_bloomblade.glb.import",
+      "bytes": 1081,
+      "sha256": "82a4b5e0f6b86100ffaf8a6c313eb1f5f31d7f3f6951744f2bb19cdd0b699808"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/props/weapons/lioraen_bloomblade_tripo_model_basecolor.jpg.import",
+      "bytes": 1115,
+      "sha256": "ee53c99cd9e7dd55c124d4003b27eda4f50f2b8779748b5fd817e2eebcc42d9e"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/props/weapons/lioraen_bloomblade_tripo_model_normal.jpg.import",
+      "bytes": 1106,
+      "sha256": "76375f49082320a7dd9ed4aeaf5eecf99c18a4601c3653013a9f5590b1597cc6"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/props/weapons/lioraen_bloomblade_tripo_model_rm.jpg.import",
+      "bytes": 1093,
+      "sha256": "18333d200360936a7c60922f5c63e169f22babaf404d2b6eaf7e55874e6d3d0f"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/props/weapons/vorthak_rift_staff.glb.import",
+      "bytes": 1080,
+      "sha256": "44ddbdc5713b90c6d626d1898a539dc913d39faf0da4898de2551da256c2383e"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/props/weapons/vorthak_rift_staff_tripo_model_basecolor.jpg.import",
+      "bytes": 1114,
+      "sha256": "89cc51517fb01e0c34641bfeede3d9bdc4c8a04fc89df69a3cabbf00c70b7d11"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/props/weapons/vorthak_rift_staff_tripo_model_normal.jpg.import",
+      "bytes": 1106,
+      "sha256": "ef921fee7b8147d7831129cddcd224c18aae0421e317d288c0b1f4c473f47b67"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/props/weapons/vorthak_rift_staff_tripo_model_rm.jpg.import",
+      "bytes": 1094,
+      "sha256": "2ee3acee3258a78b62b0f6208406eab250b383f8bf2feb8c5814fb73bb4124c3"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/textures/backgrounds/main_menu_bg.png.import",
+      "bytes": 972,
+      "sha256": "7cc3d803bd368118109ad0133c320a9ffeddc0b9279b4127aac6cb6d5e5ae360"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/textures/nature/highland_dirt_path.png.import",
+      "bytes": 985,
+      "sha256": "3e0969537abc6b3347d0c6978a0ef56ea51c90b2e45a558a5d9d4aa7dde93859"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/textures/nature/highland_grass.png.import",
+      "bytes": 973,
+      "sha256": "b9d21d195d0bc30cb3597a92a2923d865a473b21b82d2ba83cd610a1016f33e6"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/textures/nature/highland_meadow_grass.png.import",
+      "bytes": 994,
+      "sha256": "11eb94837aa8fc62a4e91d151362d2b606dd8a7f16416883f287005107f0e4c6"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/textures/skyboxes/highland_storm_sky_skybox.png.import",
+      "bytes": 1002,
+      "sha256": "16b4dbcb7a38f6b7524afdf606bd12f8a11913ccfee5bbeb743afd633c889ea8"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/textures/stone/highland_rock.png.import",
+      "bytes": 969,
+      "sha256": "2aac9c2e93aa3960eb50cea3b2d26fafe7c5b2c85785d500023a601ec74fdb91"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/ui/btn_play.png.import",
+      "bytes": 941,
+      "sha256": "0cdc9652ee18097a439cbb63ccc6b24adeeb8536b71c09e815866593d4a538a0"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/ui/btn_skirmish.png.import",
+      "bytes": 954,
+      "sha256": "7eb08cba18cae0ba1fc9ba3827e9d606feb16c095b4571509aabb34277cc40cd"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/ui/frame_portrait.png.import",
+      "bytes": 960,
+      "sha256": "fac39027145927042ec6bc320c37c9d8b30660c3e171d1526a21b6440cfd31cd"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/ui/icon_food.png.import",
+      "bytes": 945,
+      "sha256": "5ad6e5dbabac884a0375b17ddbf3355af09d706db41233a8fde861b3a7c9bfd1"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/ui/icon_gold.png.import",
+      "bytes": 945,
+      "sha256": "5d4378b7f5836252706b5842d9ea691e24d97a41f42bd92382f0df7dd8b5939a"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/ui/icon_lume.png.import",
+      "bytes": 945,
+      "sha256": "d91e161d3ed96f749e521024a797ca7b521d44e3ed811632b3b797e13ad6c2ad"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/ui/icon_stone.png.import",
+      "bytes": 948,
+      "sha256": "1610ee143f5d5fbd9033eb8d484f76bdc9c0b360af3d91742028739b02acd540"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/ui/icon_timber.png.import",
+      "bytes": 950,
+      "sha256": "044d7e5965194c20bcfd68ba874f28e546ec68bf17aee3742f430f0a75e80b51"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/ui/loading_screen.png.import",
+      "bytes": 960,
+      "sha256": "96aeb88d90c5fc678e1ec7e12d442bb5e6b462fe101b9c64b98af6ed9aa6c5a0"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/ui/panel_command.png.import",
+      "bytes": 957,
+      "sha256": "866cf244086fcdf9ae227e5258a890956d7ad45cef3f47b55ee27316e9eade62"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/ui/panel_hud.png.import",
+      "bytes": 945,
+      "sha256": "f8fa8d0ca36bc795f69d28245c4689187bb3bd5f658d236e7f8735b81e9e19df"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/ui/panel_main.png.import",
+      "bytes": 947,
+      "sha256": "af1789f19c301b81e34ac8dc6f53fbb808e32182805f0596e5c9cfda2329416a"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/ui/title_poster.webp.import",
+      "bytes": 957,
+      "sha256": "bb71bb3cbb0cb8f899c71f2ecac420cd81f2cc02f9d4e626cf8a4c2136f7bf52"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/ui/title_poster_sm.webp.import",
+      "bytes": 965,
+      "sha256": "8713204e2f1b470255dbe92c4c55a32cf315a7e9ad3142a8b00de70de3084973"
+    },
+    {
+      "path": "production/ascendant-realms-godot/assets/ui/wordmark_title.png.import",
+      "bytes": 960,
+      "sha256": "0f1af2d179f5788fc8c627ebc30e002834b76fffecec82892add21ddb480b8f2"
+    },
+    {
+      "path": "production/ascendant-realms-godot/capture-01_MAIN_MENU_SKIRMISH_POINTER_VALID.json",
+      "bytes": 816,
+      "sha256": "6f87f9a91e5f7e6dfe16a590f357a4eacd3daab0f69ce0398a336361edc009c8"
+    },
+    {
+      "path": "production/ascendant-realms-godot/capture-02_SKIRMISH_SETUP.json",
+      "bytes": 746,
+      "sha256": "5f6af4c88a12bb8b9aae816cf4b3735d0998d2e615ecfbe5a9c17e43da300b7f"
+    },
+    {
+      "path": "production/ascendant-realms-godot/scenes/dev/asset_gallery.gd.uid",
+      "bytes": 19,
+      "sha256": "8718adc8d25ee82cca3fa4e50219e3089944f14df373c0e6bdec6a8e4a7b3731"
+    },
+    {
+      "path": "production/ascendant-realms-godot/scripts/buildings/building.gd",
+      "bytes": 17975,
+      "sha256": "a777b88b1d54bc111fc5f66d87bb6ec149053b0cf50e34dc6ec05c8cfa10499d"
+    },
+    {
+      "path": "production/ascendant-realms-godot/scripts/ui/entity_portrait_view.gd",
+      "bytes": 4877,
+      "sha256": "4de098a01311d3b79d293ddda6e66f0970097c21affe18c23d97cc96bfece3fa"
+    },
+    {
+      "path": "production/ascendant-realms-godot/scripts/ui/entity_portrait_view.gd.uid",
+      "bytes": 20,
+      "sha256": "c0262a493bba68442877433cfbdce00828132e72252f248bccdbcd8bb590c936"
+    },
+    {
+      "path": "production/ascendant-realms-godot/scripts/ui/hud.gd",
+      "bytes": 54413,
+      "sha256": "5e19c6579e9b8ba02c4129abbe779746bb4e1431c2b396ef56b878eeb90435cc"
+    },
+    {
+      "path": "production/ascendant-realms-godot/scripts/units/unit.gd",
+      "bytes": 78428,
+      "sha256": "7b2b829593a9268235019cd0e9ea1b7305433e878846630b1282063287c09797"
+    },
+    {
+      "path": "production/ascendant-realms-godot/scripts/utils/model_utils.gd",
+      "bytes": 6621,
+      "sha256": "369e6620b0beb82745c844337733c7e1189eb39f02643553ba3a48808827eedc"
+    },
+    {
+      "path": "production/ascendant-realms-godot/scripts/world/capture_point.gd",
+      "bytes": 4948,
+      "sha256": "7fc4b180cbf03e153d8f97562439ad6f85aff6aa44aa5a5fe3f823401c491784"
+    },
+    {
+      "path": "production/ascendant-realms-godot/scripts/world/game_root.gd",
+      "bytes": 8825,
+      "sha256": "221fe71ceaac82e95183aa2703ee5ffbdb5ed42c90e4afb537ebf4fc8cba5703"
+    },
+    {
+      "path": "production/ascendant-realms-godot/scripts/world/game_world.gd",
+      "bytes": 72854,
+      "sha256": "bbce8158b80ab6b778cfbb0793382f6138ca4e5503dc212e221612d6513289be"
+    },
+    {
+      "path": "production/ascendant-realms-godot/scripts/world/resource_node.gd",
+      "bytes": 7787,
+      "sha256": "ef95d6051f3b328fff610d51ea39322cee507f1e9caffee58f4ea0acaf9e873f"
+    },
+    {
+      "path": "production/ascendant-realms-godot/scripts/world/rts_controller.gd",
+      "bytes": 28158,
+      "sha256": "3e99c5649361b7f0bd564606f39aaa4aa00a83b6fef354307d5265e111612b60"
+    },
+    {
+      "path": "production/ascendant-realms-godot/tests/asset_load_scan.gd.uid",
+      "bytes": 20,
+      "sha256": "1884ee30a30ade7f13456b834aa6dd959c702c6cbbefed721f3ded99921b262e"
+    },
+    {
+      "path": "production/ascendant-realms-godot/tests/human_playtest4_m15_qualification.gd",
+      "bytes": 16774,
+      "sha256": "12ff864f8e1f7066dede6588805ae6c67219c563be27f6430f437f63913d4e1d"
+    },
+    {
+      "path": "production/ascendant-realms-godot/tests/human_playtest4_m15_qualification.gd.uid",
+      "bytes": 19,
+      "sha256": "553587605c9757616a00e5d5e2f7a72c67ed047dd0842d120b3c6584498dfce2"
+    },
+    {
+      "path": "production/ascendant-realms-godot/tests/human_playtest4_m16_placement.gd",
+      "bytes": 11327,
+      "sha256": "6050b338a304240a5690ac595b672e3250b063b9aec0b827647e0cdaad073044"
+    },
+    {
+      "path": "production/ascendant-realms-godot/tests/human_playtest4_m16_placement.gd.uid",
+      "bytes": 19,
+      "sha256": "fc684175f5f394478cf430157e47562dba87b9804e1cce3c70b05612c733f30b"
+    },
+    {
+      "path": "production/ascendant-realms-godot/tests/human_playtest4_m17_route.gd",
+      "bytes": 11918,
+      "sha256": "7564257590cd9f420c8f253be4f39a600609eea5a51d9bfac4d63b5dc0ab62cf"
+    },
+    {
+      "path": "production/ascendant-realms-godot/tests/human_playtest4_m17_route.gd.uid",
+      "bytes": 20,
+      "sha256": "70b4c161c337e7a9bd39f786b91d9d1bea3a6ccb01f6881fb609362477260a1f"
+    },
+    {
+      "path": "production/ascendant-realms-godot/tests/human_playtest4_m18_lifecycle.gd",
+      "bytes": 17203,
+      "sha256": "b36fdf1be87929913224dc36747565667dc2e2c9f80d4b887e44c2113c29bcda"
+    },
+    {
+      "path": "production/ascendant-realms-godot/tests/human_playtest4_m18_lifecycle.gd.uid",
+      "bytes": 19,
+      "sha256": "4b4f98017139dc504a23f78591a59eb6819bf7be0d4623294c2344d9e92f735c"
+    },
+    {
+      "path": "production/ascendant-realms-godot/tests/human_playtest4_m19_loading.gd",
+      "bytes": 9660,
+      "sha256": "fdb98b5eed6cdb938f89f5691328402c96ca68133380bc933c3812032a852122"
+    },
+    {
+      "path": "production/ascendant-realms-godot/tests/human_playtest4_m19_loading.gd.uid",
+      "bytes": 20,
+      "sha256": "98b2f1ddbd72db96074ec689506bc11d6ac0c99f4ac456e5a5ea77e8b5f92956"
+    },
+    {
+      "path": "production/ascendant-realms-godot/tests/human_playtest4_m20_loading.gd",
+      "bytes": 7608,
+      "sha256": "ec8c942f8e1b22c24287191e690195b60b6e862edd15442442bd6f7c60f3bf9a"
+    },
+    {
+      "path": "production/ascendant-realms-godot/tests/human_playtest4_m20_loading.gd.uid",
+      "bytes": 20,
+      "sha256": "9b5e522615819e2b3b6e343c46d095f90953201f74dc142136d6eaff699f5123"
+    },
+    {
+      "path": "production/ascendant-realms-godot/tests/human_playtest4_m20_startup.gd",
+      "bytes": 2899,
+      "sha256": "f9f45add704a88141ea50c6570abcc357862f1aeb51001ba5800727a32a96fdf"
+    },
+    {
+      "path": "production/ascendant-realms-godot/tests/human_playtest4_m20_startup.gd.uid",
+      "bytes": 20,
+      "sha256": "4008e9a26bd10df7787b6a8526a99abd5427858fe466446cda48402c33272883"
+    },
+    {
+      "path": "production/ascendant-realms-godot/tests/human_playtest4_m21_focus.gd",
+      "bytes": 3071,
+      "sha256": "ed867f6476a9c80133e41246d1d7fbbe81aa6c81c37ff9111d01ead3abc41963"
+    },
+    {
+      "path": "production/ascendant-realms-godot/tests/human_playtest4_m21_focus.gd.uid",
+      "bytes": 20,
+      "sha256": "76f4dd0ebb4fda5472c1ed5b95ab55e51e725579d1e8a9c5b30a564953128706"
+    },
+    {
+      "path": "production/ascendant-realms-godot/tests/human_playtest4_m21_startup.gd",
+      "bytes": 1129,
+      "sha256": "6a2e63efe95a5ae605135949c1b751cf0c2aef4a6c8a3c2955fd5ebe0efbd304"
+    },
+    {
+      "path": "production/ascendant-realms-godot/tests/human_playtest4_m21_startup.gd.uid",
+      "bytes": 20,
+      "sha256": "deb1c9e40080563cede35258935a457fe4c10d7ca0b81550988cabef70c37bf1"
+    },
+    {
+      "path": "production/ascendant-realms-godot/tests/human_playtest4_m22_missing.gd",
+      "bytes": 15234,
+      "sha256": "3fcff680d1f7bb28224aba6e2eb8829190a636fa68639d6a9a8034b14d3c3132"
+    },
+    {
+      "path": "production/ascendant-realms-godot/tests/human_playtest4_m22_missing.gd.uid",
+      "bytes": 20,
+      "sha256": "ce8b53be600b4f36538e8b721ecef10053b2c089de84776b4893962952834d2e"
+    },
+    {
+      "path": "production/ascendant-realms-godot/tests/human_playtest4_m23_native.gd",
+      "bytes": 7826,
+      "sha256": "f3670040b738c33e64673a7f4c85585111ebbf88acec2a9e7466be0af9f2500e"
+    },
+    {
+      "path": "production/ascendant-realms-godot/tests/human_playtest4_m23_native.gd.uid",
+      "bytes": 19,
+      "sha256": "6bd29d76a13331d2f9ddf88daa7143acc33d6bf137f31aa51a74b84d85f1344e"
+    },
+    {
+      "path": "production/ascendant-realms-godot/tests/human_playtest4_m24_native.gd",
+      "bytes": 9804,
+      "sha256": "20adbcea393d57c990e735784de679cacdd8e8724d69fad2ef9e460a964b2225"
+    },
+    {
+      "path": "production/ascendant-realms-godot/tests/human_playtest4_m24_native.gd.uid",
+      "bytes": 20,
+      "sha256": "019f7f5c6dcb43637cc4918af2bcbe6bb4f00766fd541e5d876c7742c9ffcd62"
+    },
+    {
+      "path": "production/ascendant-realms-godot/tests/human_playtest4_m27_native.gd",
+      "bytes": 15082,
+      "sha256": "a3de67e19a1af74ea208e8f712c5071c3c4642b07e23e7d610784adc7b9fa643"
+    },
+    {
+      "path": "production/ascendant-realms-godot/tests/human_playtest4_m27_native.gd.uid",
+      "bytes": 20,
+      "sha256": "d1128869adafade15e5d2fc8189bbb6ff19d0181f4c5fa0b1c1f14cc93fea860"
+    },
+    {
+      "path": "production/ascendant-realms-godot/tests/human_playtest4_m29_window.gd",
+      "bytes": 9008,
+      "sha256": "35918b4c2ce3e7adb96ebf595f445c0114271604079708994911f5f4fb9239c8"
+    },
+    {
+      "path": "production/ascendant-realms-godot/tests/human_playtest4_m29_window.gd.uid",
+      "bytes": 20,
+      "sha256": "04e984bebfe8872e26dc9536ddf5c2b5c73d90a2fdaa64e3aa0714fb107a7c63"
+    },
+    {
+      "path": "production/ascendant-realms-godot/tests/human_playtest4_m30_native.gd",
+      "bytes": 12847,
+      "sha256": "20095edc73182ac1c719c0611eb93abcf2b5179cfba4aefbc6f461e531fb021c"
+    },
+    {
+      "path": "production/ascendant-realms-godot/tests/human_playtest4_m30_native.gd.uid",
+      "bytes": 20,
+      "sha256": "5b8be3b4b52810c4f71406ef41c361534de8827fd319891e53ec4aa6494a6e38"
+    },
+    {
+      "path": "production/ascendant-realms-godot/tests/human_playtest4_m31_native.gd",
+      "bytes": 17846,
+      "sha256": "373fa627cfeda8ae7249347874b3db40da115affb0f631befa62ad3cd6b8840d"
+    },
+    {
+      "path": "production/ascendant-realms-godot/tests/human_playtest4_m31_native.gd.uid",
+      "bytes": 20,
+      "sha256": "b20f4957a0d62c2ac4f335c69a90d0f89c6b5bb42ecc6d1467fb2cf40b2f522e"
+    },
+    {
+      "path": "production/ascendant-realms-godot/tests/human_playtest4_m32_native.gd",
+      "bytes": 20748,
+      "sha256": "2c5ee32c5ba25127b9541e282dd98db7be367aaaac71f392f2c894dc10ec7057"
+    },
+    {
+      "path": "production/ascendant-realms-godot/tests/human_playtest4_m32_native.gd.uid",
+      "bytes": 20,
+      "sha256": "5a9a8d00b7aa02b052b294329785f73bd4bae7aacb84a738416ecf647a8b19dc"
+    },
+    {
+      "path": "production/ascendant-realms-godot/tests/human_playtest4_m33_native.gd",
+      "bytes": 22816,
+      "sha256": "f91dc9471e355569cf22dd5a4b81ddda72212680fe2152930183213e05aa3898"
+    },
+    {
+      "path": "production/ascendant-realms-godot/tests/human_playtest4_m33_native.gd.uid",
+      "bytes": 20,
+      "sha256": "c7d11fb707a8027c6a9a5b6163f18d500690c97fe9a8fe1b182c83a1d5e7de20"
+    },
+    {
+      "path": "production/ascendant-realms-godot/tests/human_playtest4_m34_native.gd",
+      "bytes": 16173,
+      "sha256": "89edd83a7c8242906987ec743e671a87dfc633cfb735b8a5b3fee2f3df3b5deb"
+    },
+    {
+      "path": "production/ascendant-realms-godot/tests/human_playtest4_m34_native.gd.uid",
+      "bytes": 20,
+      "sha256": "edf3a617ed646c39ea8d45788b237af282f56dc8a1fd32b71db893d6f47397f2"
+    },
+    {
+      "path": "production/ascendant-realms-godot/tests/human_playtest4_m35_native.gd",
+      "bytes": 23595,
+      "sha256": "182fb01149d30700a2b92a06cc785b9ffa2256adce5551c8ea9c6fbae90b6254"
+    },
+    {
+      "path": "production/ascendant-realms-godot/tests/human_playtest4_m35_native.gd.uid",
+      "bytes": 19,
+      "sha256": "7730dfad681b82cff1fe204db0a3cac8a107770c82e1873d95c5f602e1a88f08"
+    },
+    {
+      "path": "production/ascendant-realms-godot/tests/human_playtest4_m36_native.gd",
+      "bytes": 25950,
+      "sha256": "e23b8a38dd65628b2ccb681cf5eba1d8f7261ee9ea788293eae8777c5b121b7b"
+    },
+    {
+      "path": "production/ascendant-realms-godot/tests/human_playtest4_m36_native.gd.uid",
+      "bytes": 20,
+      "sha256": "8afa2308d29994fdc82a7f39ccf81ef74ccd962e52603a3de1cacd3c987a5f91"
+    },
+    {
+      "path": "production/ascendant-realms-godot/tests/human_playtest4_m37_native.gd",
+      "bytes": 13360,
+      "sha256": "6a57a352a2ac297b814c85ee1b1d402ca9f7fdca234e765993146283f65ef838"
+    },
+    {
+      "path": "production/ascendant-realms-godot/tests/human_playtest4_m37_native.gd.uid",
+      "bytes": 20,
+      "sha256": "7e7c91a66c7c0274b796d7ad91339e32577d45fdb4447b5bcb0b2708fa5e3564"
+    },
+    {
+      "path": "production/ascendant-realms-godot/tests/human_playtest4_m39_native.gd",
+      "bytes": 16243,
+      "sha256": "d6ce67c0a99838e870ff7f8af69147a48d1be00f6a2ce42b9598fb02eaec65d5"
+    },
+    {
+      "path": "production/ascendant-realms-godot/tests/human_playtest4_m39_native.gd.uid",
+      "bytes": 20,
+      "sha256": "af1de4a8495af4f22cfe1dac80cad24b2bbfbd1db7de52c78ac6ceaeaab231ef"
+    },
+    {
+      "path": "production/ascendant-realms-godot/tests/human_playtest4_m41_native.gd",
+      "bytes": 8036,
+      "sha256": "8474e8a302ded18c8dfc4dfb492204d068225599543f76772021dc374df972c9"
+    },
+    {
+      "path": "production/ascendant-realms-godot/tests/human_playtest4_m41_native.gd.uid",
+      "bytes": 20,
+      "sha256": "587407c2e7ae0baae6591145d952507b74d1eb4aa272a125a27abeced9635fd7"
+    },
+    {
+      "path": "production/ascendant-realms-godot/tests/human_playtest4_m41r2_native.gd",
+      "bytes": 1419,
+      "sha256": "915aa0cca8625931ecacac7e1d19c969b22e5ffd2f4591be0d422e1fa9d07c32"
+    },
+    {
+      "path": "production/ascendant-realms-godot/tests/human_playtest4_m41r2_native.gd.uid",
+      "bytes": 20,
+      "sha256": "94ad7a23c6d2c411d0a4475aa15e50f933b6c9bfa9e90939a46e04d28e401f02"
+    },
+    {
+      "path": "production/ascendant-realms-godot/tests/human_playtest4_m41r3_native.gd",
+      "bytes": 1436,
+      "sha256": "65a2096478bdae1e093ccbfb27ad6befcc88ee114e3297f08039be1ba9de14d0"
+    },
+    {
+      "path": "production/ascendant-realms-godot/tests/human_playtest4_m41r3_native.gd.uid",
+      "bytes": 19,
+      "sha256": "285758e0d21e91ef10ac1ccf119f808961a813342001ab4c3278e010b65e2689"
+    },
+    {
+      "path": "production/ascendant-realms-godot/tests/human_playtest4_m41r6_native.gd",
+      "bytes": 3701,
+      "sha256": "e11ef95efd0e05254950ffadb3171ca52d9e2dd05256f9c2778519176f095bb5"
+    },
+    {
+      "path": "production/ascendant-realms-godot/tests/human_playtest4_m41r6_native.gd.uid",
+      "bytes": 20,
+      "sha256": "5f6edfb45a0bc5ee4769dac9b6dd2d9e3e38b466b01df1c939e255c4178e5ebb"
+    },
+    {
+      "path": "production/ascendant-realms-godot/tests/human_playtest4_m41r6p2_native.gd",
+      "bytes": 166,
+      "sha256": "532115a4a4dc76380793d93b5904ad30bb617fac4e5d1858fa551e0d8e8d8b93"
+    },
+    {
+      "path": "production/ascendant-realms-godot/tests/human_playtest4_m41r6p2_native.gd.uid",
+      "bytes": 19,
+      "sha256": "ffaeb9b04dae3f620ea6ddc0c98e8b0831b122dedcada3f9f24156312b20d1d4"
+    },
+    {
+      "path": "production/ascendant-realms-godot/tests/human_playtest4_m41r6p3_native.gd",
+      "bytes": 214,
+      "sha256": "2c247c040d358a2c4219c278e28a31d87650c796e33be9289bf08bd0c0b045b8"
+    },
+    {
+      "path": "production/ascendant-realms-godot/tests/human_playtest4_m41r6p3_native.gd.uid",
+      "bytes": 19,
+      "sha256": "acf4995f6d029b6b5b5594788c2b45d791b27e7f529965a4788c166456d7f1fc"
+    },
+    {
+      "path": "production/ascendant-realms-godot/tests/human_playtest4_m41r6p4_native.gd",
+      "bytes": 470,
+      "sha256": "020ece422546cd75661dfaa0f1d93876c61f977ffd8d8856249b440b68ae1a07"
+    },
+    {
+      "path": "production/ascendant-realms-godot/tests/human_playtest4_m41r6p4_native.gd.uid",
+      "bytes": 20,
+      "sha256": "1816aa0f35722368416b462b33da5b90ee60d49917063c9402814f07ff5d393c"
+    },
+    {
+      "path": "production/ascendant-realms-godot/tests/human_playtest4_m41r6p4s_native.gd",
+      "bytes": 440,
+      "sha256": "73c370475de0d8073166ae5bf013a629191c8d4e73c5aed6b967bcd1bdfcd81f"
+    },
+    {
+      "path": "production/ascendant-realms-godot/tests/human_playtest4_m41r6p4s_native.gd.uid",
+      "bytes": 19,
+      "sha256": "242aa6343d812cfab5539bd09c53caa1bc7d9bff9a3ebcd7b2eae8e6c37f1d23"
+    },
+    {
+      "path": "production/ascendant-realms-godot/tests/human_playtest4_m41r6p_native.gd",
+      "bytes": 7213,
+      "sha256": "850b8e79f4ed3320bb694be8c2392965152a186ecb67d6f95eff1396c3afb968"
+    },
+    {
+      "path": "production/ascendant-realms-godot/tests/human_playtest4_m41r6p_native.gd.uid",
+      "bytes": 20,
+      "sha256": "0cf6158357a569b2efb3c59cee18fc55404c3c27919dcab223ec35f10ed0eef3"
+    },
+    {
+      "path": "production/ascendant-realms-godot/tests/human_playtest4_m41r6s_native.gd",
+      "bytes": 576,
+      "sha256": "aeef09f1eaa53f26edeee56886ff7cdf693f895fe52f08dc3a9b3ec1418ccc7c"
+    },
+    {
+      "path": "production/ascendant-realms-godot/tests/human_playtest4_m41r6s_native.gd.uid",
+      "bytes": 19,
+      "sha256": "af2a956f8ce5dede97e811d06c915f103868d670a244855ab0e2addd261ce12e"
+    },
+    {
+      "path": "production/ascendant-realms-godot/tests/human_playtest4_m41r_native.gd",
+      "bytes": 9211,
+      "sha256": "42fec1c1800dee82dc00199d1e9d287b6fd52a53f3f622ea976727013b9cd073"
+    },
+    {
+      "path": "production/ascendant-realms-godot/tests/human_playtest4_m41r_native.gd.uid",
+      "bytes": 20,
+      "sha256": "6ae9924c6bd9b15bcbec4af45f1b4feb85fa7d5f5088c6780acec1eb14c841f3"
+    },
+    {
+      "path": "production/ascendant-realms-godot/tests/human_playtest4_movement.gd",
+      "bytes": 11463,
+      "sha256": "dda44bfec5df4545fef411ab5b292554f6692020e2b9959f7fb1004e56a60440"
+    },
+    {
+      "path": "production/ascendant-realms-godot/tests/human_playtest4_movement.gd.uid",
+      "bytes": 20,
+      "sha256": "74b7fede5f58c3a197d75f8ef4f079cefabdebaaf59bd3d6eb3e46f860fa3f0c"
+    },
+    {
+      "path": "production/ascendant-realms-godot/tests/p1r10_build_preview.gd.uid",
+      "bytes": 20,
+      "sha256": "4355af2dd27002c44be97385ab39e29581858a2d426527c4691fc46f15c3f04c"
+    },
+    {
+      "path": "production/ascendant-realms-godot/tests/p1r13_unit_readability.gd.uid",
+      "bytes": 20,
+      "sha256": "2a515e74ece5e4fc12821746187f84388b8207c46ad5c51ce20cc52e58e9820c"
+    },
+    {
+      "path": "production/ascendant-realms-godot/tests/p1r14_tactical_hierarchy.gd.uid",
+      "bytes": 20,
+      "sha256": "341f83877e9bb5d5ea35a7bb7688cf29d2fcaa6cb9115b853c236f901715448e"
+    },
+    {
+      "path": "production/ascendant-realms-godot/tests/p1r17_ui_capture.gd.uid",
+      "bytes": 20,
+      "sha256": "4b039b96b82fb0a1c0662010d913b22d848f9b447e526b99ea7717f703ba76d8"
+    },
+    {
+      "path": "production/ascendant-realms-godot/tests/p1r19_tactical_ground.gd.uid",
+      "bytes": 20,
+      "sha256": "e25061671334a493faec2687eece53ba55a6886a9315469100bc362366e23aea"
+    },
+    {
+      "path": "production/ascendant-realms-godot/tests/p1r1_unit_readability.gd.uid",
+      "bytes": 19,
+      "sha256": "ca8950f8037c7294d4ae480307a14a6ae24fabb0e5fbf4a5f829ba173dadf3d0"
+    },
+    {
+      "path": "production/ascendant-realms-godot/tests/p1r20_character_separation.gd.uid",
+      "bytes": 20,
+      "sha256": "b43a660ac62c844f0dde6d5812c01637cb150bd7e38dce6495f5dd32c06496c9"
+    },
+    {
+      "path": "production/ascendant-realms-godot/tests/p1r21_motion_grounding.gd.uid",
+      "bytes": 20,
+      "sha256": "39d121d8b025f35766227641f51736813c08b6e0c0a5b26f3ac3890e08a55d2b"
+    },
+    {
+      "path": "production/ascendant-realms-godot/tests/p1r22_command_card.gd.uid",
+      "bytes": 20,
+      "sha256": "35cca01b7a59fb9704b338fc743092b1c2a953e2a023190a9bf6eebf8c9d0a5f"
+    },
+    {
+      "path": "production/ascendant-realms-godot/tests/p1r23_selected_group.gd.uid",
+      "bytes": 19,
+      "sha256": "7afc09595ce344eee1e1da8851d3c19b660404be029903973b7f81521393179c"
+    },
+    {
+      "path": "production/ascendant-realms-godot/tests/p1r2_selected_portraits.gd.uid",
+      "bytes": 20,
+      "sha256": "ee23f1bb7f816574b2b0c884860c52cce5989083a1c768428bf1ba1ea7307449"
+    },
+    {
+      "path": "production/ascendant-realms-godot/tests/p1r3_minimap_terrain.gd.uid",
+      "bytes": 20,
+      "sha256": "71b1fcd9c4b2c20c539f66685259d84348523014ef6ab29a9a56bbb15c078cef"
+    },
+    {
+      "path": "production/ascendant-realms-godot/tests/p1r4_worker_interaction.gd.uid",
+      "bytes": 19,
+      "sha256": "ae7fa55dccbb343bf76df1f0918d2160c8cd8860e193ef10e40f87fb1bccf321"
+    },
+    {
+      "path": "production/ascendant-realms-godot/tests/p1r5_gameplay_ui_legibility.gd.uid",
+      "bytes": 20,
+      "sha256": "72b53d8ba3b7f90c43db52b72038b74127201b3969442a1d23d2a11ca6dffd49"
+    },
+    {
+      "path": "production/ascendant-realms-godot/tests/p1r6_strategic_site_markers.gd.uid",
+      "bytes": 20,
+      "sha256": "9ce65655b7e9574f4de7f7cdda46a7ede9f4e88dd22db9df02b747c36b688565"
+    },
+    {
+      "path": "production/ascendant-realms-godot/tests/p1r7_camera_readability.gd.uid",
+      "bytes": 20,
+      "sha256": "2de2ecb23ce2fdd1de9d3f35757b06aabeb34f6a0c0750566d4dfd88782ced35"
+    },
+    {
+      "path": "production/ascendant-realms-godot/tests/p1r9_space_readability.gd.uid",
+      "bytes": 20,
+      "sha256": "64b22748191fc15ee16e6db2143829802658148a2d0f7ed33138544074143ed2"
+    },
+    {
+      "path": "production/ascendant-realms-godot/tests/p1s1_viewport_safe_area.gd.uid",
+      "bytes": 20,
+      "sha256": "56064fa46907b9ea2c11111c3a17da826c9444601b34298e1d9b7a0346a5616e"
+    },
+    {
+      "path": "production/ascendant-realms-godot/tests/p1s2_camera_bounds.gd.uid",
+      "bytes": 20,
+      "sha256": "45a0644ed563a2046dabb9acaa3dc0b4049ebf4d95502dd0790f8a01157d6b73"
+    },
+    {
+      "path": "production/ascendant-realms-godot/tests/p1s3_selection_readability.gd.uid",
+      "bytes": 19,
+      "sha256": "8ab12425959f92415d14fa5f771576835cc3e9ac39e7fb228de9b2fb35bf1791"
+    },
+    {
+      "path": "production/ascendant-realms-godot/tests/p1s4_command_feedback.gd.uid",
+      "bytes": 19,
+      "sha256": "ba466cf23d209dbd4d3cf16b5c3f068cddbc4e4b610ec39e13e345d3056cf32f"
+    },
+    {
+      "path": "production/ascendant-realms-godot/tests/p1s5_match_identity.gd.uid",
+      "bytes": 20,
+      "sha256": "6b02c6ba1416dca6346f3914bb79d157acf07ea43f029109a803d4e6819a2053"
+    },
+    {
+      "path": "production/ascendant-realms-godot/tests/v0431_capture.gd.uid",
+      "bytes": 20,
+      "sha256": "1944843104dda8d2797dc359bf86365dd7bbbaf33ac4ed3e8ec6cb99597bdafc"
+    },
+    {
+      "path": "production/ascendant-realms-godot/tests/v0432_capture.gd.uid",
+      "bytes": 20,
+      "sha256": "ff207149cb40cfa7f883ebbd7ce7bcad428ab8b5ad0a3ce4984db1deba3ec21e"
+    },
+    {
+      "path": "production/ascendant-realms-godot/tests/v0433_capture.gd.uid",
+      "bytes": 19,
+      "sha256": "b5c2fb8613c96154ef1b58dc880da2289a953be581a9fae4845ffb594ff150d1"
+    },
+    {
+      "path": "production/ascendant-realms-godot/tests/v0433_economy_unit_test.gd.uid",
+      "bytes": 19,
+      "sha256": "7194feacb3b3be9e0278bfdc5b895544afcc8d7950d1d0877b33fd4a5ece9346"
+    },
+    {
+      "path": "production/ascendant-realms-godot/tests/v0433_identity_unit_test.gd.uid",
+      "bytes": 19,
+      "sha256": "db3327f8d06b2ee97a5e0a0965a67cd9f13602d7fa410c8602057b64706581a6"
+    },
+    {
+      "path": "production/ascendant-realms-godot/tests/v0434_capture.gd.uid",
+      "bytes": 20,
+      "sha256": "61589532178428c044916f012077650a462e216e1cb54e957dc722c476d13cc7"
+    },
+    {
+      "path": "production/ascendant-realms-godot/tests/v0434_combat_unit_test.gd.uid",
+      "bytes": 20,
+      "sha256": "0841851593b7774df23dfeb18d9ce0f28ddcc74c1b55ded2bf6c0e240a92eda6"
+    },
+    {
+      "path": "production/ascendant-realms-godot/tests/v0435_capture.gd.uid",
+      "bytes": 20,
+      "sha256": "6e5b9c805d275cced47d2e959cf6c4cee8df70fd60525bf4f4ead802e0a7ddd0"
+    },
+    {
+      "path": "production/ascendant-realms-godot/tests/v0435_easy_ai_wave.gd.uid",
+      "bytes": 20,
+      "sha256": "fbe0c5038e160c5d2e67af2eadeb8e07600a4adfa11f992560f878380bba3fb3"
+    },
+    {
+      "path": "production/ascendant-realms-godot/tests/v0436_capture.gd.uid",
+      "bytes": 19,
+      "sha256": "7dcc1f00966d7d08981af0a4dd27ae43df4f109230673339c9d49b3321888bfa"
+    },
+    {
+      "path": "production/ascendant-realms-godot/tests/v0436_conquest_victory.gd.uid",
+      "bytes": 20,
+      "sha256": "8f555aba012baf191147147408a959be2338c1c06993b9fd63a1b83876c8b6a9"
+    },
+    {
+      "path": "production/ascendant-realms-godot/tests/v0436_navigation_repair.gd.uid",
+      "bytes": 20,
+      "sha256": "17a33acba8100d63958bc80d0e4b989f8416cb99be2447f7ab9614aae01dc4e4"
+    },
+    {
+      "path": "production/ascendant-realms-godot/tests/v0436_r1c_capture.gd.uid",
+      "bytes": 20,
+      "sha256": "c7810caa79a701f6b82238a13879624faf7cf22d092b085cfddab55a8aa98034"
+    },
+    {
+      "path": "production/ascendant-realms-godot/tests/v0436_r1d_startup_capture.gd.uid",
+      "bytes": 19,
+      "sha256": "a2efcb21f25e84b39211b717af870a074f483ad0f8d01fc38f335c798cf2c2ea"
+    },
+    {
+      "path": "production/ascendant-realms-godot/tests/v0436_r1f_boundary_physics.gd.uid",
+      "bytes": 20,
+      "sha256": "4da17ced4022fff106719584db9b5c491a3b3b7e0bf4897761a0017228790ff6"
+    },
+    {
+      "path": "production/ascendant-realms-godot/tests/v0436_r1g_capture.gd.uid",
+      "bytes": 20,
+      "sha256": "9c771aa8250d8348ea52975f8ec647b2d1339c4e3109bf14bcad835859d80df6"
+    },
+    {
+      "path": "production/ascendant-realms-godot/tests/v0436_r1h_capture.gd.uid",
+      "bytes": 20,
+      "sha256": "17103c08961802e98c230068ecdb353bc04bc1a8a1ca946e64c61a422117c95b"
+    },
+    {
+      "path": "production/ascendant-realms-godot/tests/v0436_r1j_capture.gd.uid",
+      "bytes": 20,
+      "sha256": "508780530c9b4d2da1505108e97531927a0e486eea4f558661ab3c31323b395b"
+    },
+    {
+      "path": "production/ascendant-realms-godot/tests/v0436_r1k_capture.gd.uid",
+      "bytes": 20,
+      "sha256": "72b65e56d8fd55dfdc57ce8f4eaf0e09d73828be03d262886aa7f183f563a177"
+    }
+  ],
+  "project_identity": {
+    "path": "production/ascendant-realms-godot/project.godot",
+    "bytes": 11685,
+    "sha256": "f2b2c9d55c6dff46689cf2941a25623d0f4d94bb4590e6e024243057f72db03f",
+    "config_name": "Ascendant Realms",
+    "main_scene": "res://scenes/main.tscn"
+  },
+  "partition": {
+    "ACCEPTED_CURRENT_GODOT_PRODUCTION": "to be classified before selective copy",
+    "QA_QUALIFICATION_TOOLING": "preserved in source snapshot; to be classified before selective copy",
+    "GENERATED_OR_EPHEMERAL": "preserved in source snapshot; excluded unless repository policy requires it",
+    "DOCUMENTATION": "classified separately",
+    "UNCERTAIN_OR_EXPERIMENTAL": "preserved in source snapshot; excluded until acceptance is established"
+  }
+}

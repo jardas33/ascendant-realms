@@ -11,11 +11,14 @@ var _viewport_container: SubViewportContainer
 var _viewport: SubViewport
 var _pivot: Node3D
 var _camera: Camera3D
+var _pending_entity = null
 
 func _ready() -> void:
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
 	custom_minimum_size = Vector2(112, 112)
 	_build_view()
+	if is_instance_valid(_pending_entity):
+		_apply_entity(_pending_entity)
 
 func _build_view() -> void:
 	var bg := ColorRect.new()
@@ -81,8 +84,17 @@ func _build_view() -> void:
 	add_child(frame)
 
 func configure_entity(entity) -> void:
+	if not is_instance_valid(entity):
+		return
+	_pending_entity = entity
+	if not is_instance_valid(_pivot):
+		return
+	_apply_entity(entity)
+
+func _apply_entity(entity) -> void:
 	if not is_instance_valid(entity) or not is_instance_valid(_pivot):
 		return
+	_pending_entity = null
 	for child in _pivot.get_children():
 		child.queue_free()
 	var definition: Dictionary = entity.def if "def" in entity and entity.def is Dictionary else {}
@@ -110,7 +122,12 @@ func configure_entity(entity) -> void:
 		mesh.position.y = target_height * 0.5
 		_pivot.add_child(mesh)
 
-	var distance: float = 3.15 if not is_building else 3.75
+	# Group cards are intentionally compact.  Keep the authored model readable
+	# at that size instead of shrinking it into the portrait frame's dark center.
+	# The single-card presentation keeps the established camera distance.
+	var compact_card := custom_minimum_size.x < 80.0
+	var distance: float = 2.15 if compact_card and not is_building else (2.55 if compact_card else (3.15 if not is_building else 3.75))
 	_camera.position = Vector3(0.0, target_height * 0.6, distance)
+	_camera.fov = 58.0 if compact_card else 75.0
 	_camera.look_at(Vector3(0.0, target_height * 0.48, 0.0), Vector3.UP)
 	_pivot.rotation_degrees.y = -18.0

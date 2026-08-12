@@ -4,11 +4,12 @@ Audit date: 2026-08-11. This is an observed snapshot, not a release claim.
 
 ## Runtime
 
-- Primary implementation: Phaser 3 + TypeScript + Vite browser prototype.
-- Parallel lane: repository-driven Godot scenes/tools for opt-in presentation and qualification.
-- Current candidate: `D:\CodexData\worktrees\ascendant-realms-human-playtest4-movement`, branch `codex/local-human-playtest4-movement`, HEAD `24095ea3b2e4f2dd57b50a9b73afa92ccae801f5`.
-- Candidate was already dirty with a large historical patch before this documentation reset.
-- Candidate `production/ascendant-realms-godot/project.godot` audit hash: `F2B2C9D55C6DFF46689CF2941A25623D0F4D94BB4590E6E024243057F72DB03F`.
+- Canonical production implementation: Godot 4.6.3 at `production/ascendant-realms-godot`.
+- Main scene: `res://scenes/main.tscn`; project identity: Ascendant Realms.
+- The repository-root Phaser 3 + TypeScript + Vite surface under `src/` is `LEGACY_BROWSER_PROTOTYPE`, not Golden Battle production proof.
+- `desktop-spikes/godot-salto` is not the canonical current production project.
+- The authoritative dirty source snapshot is preserved separately at `D:\CodexData\worktrees\ascendant-realms-human-playtest4-movement`; see the C1 preservation manifest for its complete inventory.
+- This clean consolidation candidate starts at docs/bootstrap HEAD `510dabb0f9bdf23d7185c2456aaa5476173d8578` and is not a release claim until Godot-specific proof passes.
 - Protected checkout: `D:\Code for projects\WB game like\ascendant-realms-v0223-recovery`, branch `codex/v0436-first-complete-conquest-victory`, HEAD `ad4ef9f895a60748af3ac0be8def9028adaa9f6c`.
 
 ## Current confidence

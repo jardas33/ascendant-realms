@@ -175,6 +175,7 @@ function getCurrentCommit() {
 function getGodotBinary() {
   const candidates = [
     process.env.GODOT_BIN,
+    process.env.ASCENDANT_REALMS_GODOT,
     join(repoRoot, ".tools", "godot", "Godot_v4.6.3-stable_win64.exe"),
     commandExists("godot"),
     commandExists("godot4")

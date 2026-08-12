@@ -18,7 +18,23 @@ var debug_overlay
 var tutorial
 var ais := []
 
+func _m20_recorder():
+	if OS.get_environment("ASCENDANT_HP4_M20_DIAGNOSTICS") != "1":
+		return null
+	var recorder = get_node_or_null("/root/HP4M20Startup")
+	return recorder if is_instance_valid(recorder) else null
+
+func _m20_begin(stage: String, parent_stage: String = "", depth: int = 0) -> Dictionary:
+	var recorder = _m20_recorder()
+	return recorder.begin_stage(stage, parent_stage, depth) if recorder else {}
+
+func _m20_end(token: Dictionary) -> void:
+	var recorder = _m20_recorder()
+	if recorder:
+		recorder.end_stage(token)
+
 func _ready() -> void:
+	var ready_stage := _m20_begin("GAMEROOT_READY")
 	# apply saved audio volumes
 	var s = ProfileManager.settings()
 	AudioManager.set_bus_volume("Music", float(s.get("music_vol", 0.7)))
@@ -27,20 +43,25 @@ func _ready() -> void:
 	Engine.time_scale = float(Match.get_config().get("game_speed", 1.0))
 
 	# world
+	var world_stage := _m20_begin("GAMEROOT_GAMEWORLD", "GAMEROOT_READY", 1)
 	world = GameWorldScript.new()
 	world.name = "GameWorld"
 	add_child(world)
 	world.game_over.connect(_on_game_over)
+	_m20_end(world_stage)
 
 	# rts controller (needs world ready — world builds commanders in its _ready)
+	var rts_stage := _m20_begin("GAMEROOT_RTS_CONTROLLER", "GAMEROOT_READY", 1)
 	rts = RTSControllerScript.new()
 	rts.name = "RTS"
 	add_child(rts)
 	rts.setup(world, 0)
+	_m20_end(rts_stage)
 
 	# AI for each non-human commander
 	var cfg := Match.get_config()
 	var opps: Array = cfg.get("opponents", [])
+	var ai_stage := _m20_begin("GAMEROOT_AI", "GAMEROOT_READY", 1)
 	for i in range(1, world.commanders.size()):
 		var ai = EnemyAIScript.new()
 		add_child(ai)
@@ -49,8 +70,10 @@ func _ready() -> void:
 			diff = opps[i - 1].get("difficulty", "normal")
 		ai.setup(world, world.commanders[i], diff)
 		ais.append(ai)
+	_m20_end(ai_stage)
 
 	# HUD
+	var hud_stage := _m20_begin("GAMEROOT_HUD", "GAMEROOT_READY", 1)
 	var hud_layer := CanvasLayer.new()
 	hud_layer.name = "HUDLayer"
 	hud_layer.layer = 2
@@ -61,8 +84,10 @@ func _ready() -> void:
 	hud.pause_requested.connect(_toggle_pause)
 	hud.return_to_menu.connect(_return_to_menu)
 	hud.replay.connect(_replay)
+	_m20_end(hud_stage)
 
 	# Pause menu
+	var pause_stage := _m20_begin("GAMEROOT_PAUSE", "GAMEROOT_READY", 1)
 	var pause_layer := CanvasLayer.new()
 	pause_layer.name = "PauseLayer"
 	pause_layer.layer = 8
@@ -73,8 +98,10 @@ func _ready() -> void:
 	pause_menu.setup()
 	pause_menu.resume_requested.connect(_toggle_pause)
 	pause_menu.quit_requested.connect(_return_to_menu)
+	_m20_end(pause_stage)
 
 	# Debug overlay
+	var debug_stage := _m20_begin("GAMEROOT_DEBUG_OVERLAY", "GAMEROOT_READY", 1)
 	var dbg_layer := CanvasLayer.new()
 	dbg_layer.name = "DebugLayer"
 	dbg_layer.layer = 6
@@ -82,6 +109,7 @@ func _ready() -> void:
 	debug_overlay = DebugOverlayScript.new()
 	dbg_layer.add_child(debug_overlay)
 	debug_overlay.setup(world, rts)
+	_m20_end(debug_stage)
 
 	# Tutorial (only in tutorial mode)
 	if cfg.get("mode", "skirmish") == "tutorial":
@@ -92,6 +120,7 @@ func _ready() -> void:
 		tutorial = TutorialScript.new()
 		tut_layer.add_child(tutorial)
 		tutorial.setup(world, rts)
+	_m20_end(ready_stage)
 	if OS.get_environment("ASCENDANT_V0436_R1K_CAPTURE") == "1":
 		call_deferred("_start_v0436_r1k_capture")
 	elif OS.get_environment("ASCENDANT_V0436_R1J_CAPTURE") == "1":

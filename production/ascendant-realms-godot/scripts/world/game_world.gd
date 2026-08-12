@@ -77,10 +77,33 @@ func _v0436_r1j_recorder():
 	var recorder = get_meta("v0436_r1j_recorder", null)
 	return recorder if is_instance_valid(recorder) else null
 
+func _m20_recorder():
+	if OS.get_environment("ASCENDANT_HP4_M20_DIAGNOSTICS") != "1":
+		return null
+	var recorder = get_node_or_null("/root/HP4M20Startup")
+	return recorder if is_instance_valid(recorder) else null
+
+func _m20_begin(stage: String, parent_stage: String = "", depth: int = 0) -> Dictionary:
+	var recorder = _m20_recorder()
+	return recorder.begin_stage(stage, parent_stage, depth) if recorder else {}
+
+func _m20_end(token: Dictionary) -> void:
+	var recorder = _m20_recorder()
+	if recorder:
+		recorder.end_stage(token)
+
+func _m20_record_resource(resource_path: String, caller: String, start_us: int, end_us: int, operation: String) -> void:
+	var recorder = _m20_recorder()
+	if recorder:
+		recorder.record_resource_load(resource_path, caller, start_us, end_us, operation)
+
 func _ready() -> void:
+	var ready_stage := _m20_begin("GAMEWORLD_READY")
 	var cfg := Match.get_config()
 	map = MapDefs.get_map(cfg.get("map", "hollowspan"))
+	var bounds_stage := _m20_begin("GAMEWORLD_BOUNDS", "GAMEWORLD_READY", 1)
 	_setup_playable_bounds()
+	_m20_end(bounds_stage)
 	_theme = MapDefs.theme(map.get("theme", "highland"))
 	_projectile_container = Node3D.new()
 	_projectile_container.name = "Projectiles"
@@ -88,14 +111,29 @@ func _ready() -> void:
 	_fx_container = Node3D.new()
 	_fx_container.name = "FX"
 	add_child(_fx_container)
+	var environment_stage := _m20_begin("GAMEWORLD_ENVIRONMENT", "GAMEWORLD_READY", 1)
 	_setup_environment()
+	_m20_end(environment_stage)
+	var terrain_stage := _m20_begin("GAMEWORLD_TERRAIN", "GAMEWORLD_READY", 1)
 	_build_terrain()
+	_m20_end(terrain_stage)
+	var navigation_stage := _m20_begin("GAMEWORLD_NAVIGATION", "GAMEWORLD_READY", 1)
 	_build_navigation()
+	_m20_end(navigation_stage)
+	var decoration_stage := _m20_begin("GAMEWORLD_DECORATION", "GAMEWORLD_READY", 1)
 	_scatter_environment()
+	_m20_end(decoration_stage)
+	var commanders_stage := _m20_begin("GAMEWORLD_COMMANDERS", "GAMEWORLD_READY", 1)
 	_setup_commanders()
+	_m20_end(commanders_stage)
+	var resources_stage := _m20_begin("GAMEWORLD_RESOURCES", "GAMEWORLD_READY", 1)
 	_spawn_resources()
+	_m20_end(resources_stage)
+	var capture_stage := _m20_begin("GAMEWORLD_CAPTURE_POINTS", "GAMEWORLD_READY", 1)
 	_spawn_capture_points()
+	_m20_end(capture_stage)
 	call_deferred("_start_match")
+	_m20_end(ready_stage)
 
 func _setup_playable_bounds() -> void:
 	# MapDefs owns the actual battlefield half-extent. The safety margin keeps
@@ -169,7 +207,9 @@ func _setup_environment() -> void:
 	env.background_mode = Environment.BG_SKY
 	var sky_path := "res://assets/textures/skyboxes/highland_storm_sky_sky.tres"
 	if ResourceLoader.exists(sky_path):
+		var load_start := Time.get_ticks_usec()
 		env.sky = load(sky_path)
+		_m20_record_resource(sky_path, "game_world._setup_environment", load_start, Time.get_ticks_usec(), "load")
 		env.ambient_light_source = Environment.AMBIENT_SOURCE_SKY
 		env.reflected_light_source = Environment.REFLECTION_SOURCE_SKY
 	else:
@@ -260,7 +300,10 @@ func _scatter_environment() -> void:
 	# bridge centerpiece
 	var bridge = map.get("bridge", {})
 	if bridge and ResourceLoader.exists(bridge.get("model", "")):
-		var b = load(bridge["model"]).instantiate()
+		var bridge_path: String = bridge["model"]
+		var load_start := Time.get_ticks_usec()
+		var b = load(bridge_path).instantiate()
+		_m20_record_resource(bridge_path, "game_world._scatter_environment.bridge", load_start, Time.get_ticks_usec(), "load_instantiate")
 		add_child(b)
 		b.position = bridge["pos"]
 		ModelUtils.scale_to_height(b, 8.0)
@@ -290,15 +333,22 @@ func _scatter_environment() -> void:
 	var has_water: bool = _theme.get("water", {}).get("enabled", false)
 
 	# Dense perimeter belt of woodland ringing the play field.
-	for i in int(54 * density):
+	var perimeter_start := Time.get_ticks_usec()
+	var perimeter_count := int(54 * density)
+	for i in perimeter_count:
 		var ang := rng.randf() * TAU
 		var rad := half * rng.randf_range(0.70, 0.97)
 		var pos := Vector3(cos(ang) * rad, 0.0, sin(ang) * rad)
 		_place_decor(decor, (trees if rng.randf() < 0.62 else rocks), pos, rng)
+	var recorder = _m20_recorder()
+	if recorder:
+		recorder.record_population("perimeter_decor", perimeter_count, float(Time.get_ticks_usec() - perimeter_start) / 1000.0, 0.0, "game_world._scatter_environment")
 
 	# Outer foothill forest bridging the walls out to the mountain bases (all
 	# decoration beyond the ±140 bounds; skips the northern lake bay when present).
-	for i in int(84 * density):
+	var foothill_start := Time.get_ticks_usec()
+	var foothill_count := int(84 * density)
+	for i in foothill_count:
 		var ang := rng.randf() * TAU
 		var nrm := ang
 		while nrm > PI: nrm -= TAU
@@ -308,6 +358,8 @@ func _scatter_environment() -> void:
 		var rad := half * rng.randf_range(1.03, 1.37)
 		var pos := Vector3(cos(ang) * rad, 0.0, sin(ang) * rad)
 		_place_decor(decor, (trees if rng.randf() < 0.72 else rocks), pos, rng)
+	if recorder:
+		recorder.record_population("foothill_decor", foothill_count, float(Time.get_ticks_usec() - foothill_start) / 1000.0, 0.0, "game_world._scatter_environment")
 
 	# Sparser interior groves and outcrops, kept clear of bases, center and
 	# objectives. The interior is deliberately quieter than the perimeter so
@@ -315,6 +367,7 @@ func _scatter_environment() -> void:
 	var placed := 0
 	var attempts := 0
 	var interior_target: int = int(24 * density)
+	var interior_start := Time.get_ticks_usec()
 	while placed < interior_target and attempts < 400:
 		attempts += 1
 		var pos := Vector3(rng.randf_range(-half, half) * 0.62, 0.0, rng.randf_range(-half, half) * 0.62)
@@ -322,6 +375,8 @@ func _scatter_environment() -> void:
 			continue
 		_place_decor(decor, (trees if rng.randf() < 0.68 else rocks), pos, rng)
 		placed += 1
+	if recorder:
+		recorder.record_population("interior_decor", placed, float(Time.get_ticks_usec() - interior_start) / 1000.0, 0.0, "game_world._scatter_environment")
 
 func _too_close_to_key(pos: Vector3, starts: Array) -> bool:
 	for s in starts:
@@ -338,7 +393,9 @@ func _place_decor(parent: Node3D, pool: Array, pos: Vector3, rng: RandomNumberGe
 	if pool.is_empty():
 		return
 	var path: String = pool[rng.randi() % pool.size()]
+	var load_start := Time.get_ticks_usec()
 	var inst = load(path).instantiate()
+	_m20_record_resource(path, "game_world._place_decor", load_start, Time.get_ticks_usec(), "load_instantiate")
 	parent.add_child(inst)
 	inst.position = pos
 	var is_tree: bool = "vegetation" in path
@@ -376,6 +433,7 @@ func _apply_p1r14_decor_material_tone(mesh: MeshInstance3D) -> void:
 			mesh.set_surface_override_material(surface, surface_copy)
 
 func _build_navigation() -> void:
+	var stage := _m20_begin("GAMEWORLD_NAVMESH", "GAMEWORLD_NAVIGATION", 2)
 	nav_region = NavigationRegion3D.new()
 	nav_region.name = "NavRegion"
 	var nav := NavigationMesh.new()
@@ -399,6 +457,7 @@ func _build_navigation() -> void:
 	navigation_ready = false
 	navigation_ready_frame = -1
 	navigation_map_iteration = 0
+	_m20_end(stage)
 
 func _build_flat_navmesh(nav: NavigationMesh, half: float) -> void:
 	# Create a single quad navmesh covering the play field.
@@ -430,10 +489,19 @@ func navigation_waypoints_for_unit(origin: Vector3, requested: Vector3, clearanc
 		# first leg but let the next leg cut back through the same footprint. Use
 		# deterministic perimeter candidates and require both legs to clear the
 		# blocker before it can be ignored for the next route segment.
+		# Keep a small deterministic margin beyond the live clearance envelope.
+		# With the corrected segment-circle predicate this leaves enough tangent
+		# room for units that begin close to the perimeter without selecting an
+		# incoming segment that cuts through the building.
 		var radius := _building_route_radius(blocker, clearance) + 0.2
 		var candidates: Array[Vector3] = []
-		for candidate_index in range(16):
-			var angle := TAU * float(candidate_index) / 16.0
+		# A unit can begin close to a building perimeter, leaving only a narrow
+		# tangent corridor between the origin and the safe route circle. Sample
+		# densely enough to find that corridor instead of falling back to an
+		# invalid straight-through candidate.
+		const ROUTE_CANDIDATE_COUNT := 64
+		for candidate_index in range(ROUTE_CANDIDATE_COUNT):
+			var angle := TAU * float(candidate_index) / float(ROUTE_CANDIDATE_COUNT)
 			candidates.append(blocker.global_position + Vector3(cos(angle), 0.0, sin(angle)) * radius)
 		var destination_inside := final_target.distance_to(blocker.global_position) < radius
 		var origin_inside_clearance := current.distance_to(blocker.global_position) < radius
@@ -450,8 +518,10 @@ func navigation_waypoints_for_unit(origin: Vector3, requested: Vector3, clearanc
 			var candidate_direction: Vector3 = candidate - blocker.global_position
 			candidate_direction.y = 0.0
 			var exits_away_from_target: bool = not origin_inside_clearance or target_direction.length_squared() < 0.01 or candidate_direction.dot(target_direction) <= 0.01
-			var incoming_clear := origin_inside_clearance or not _segment_intersects_route_circle(current, candidate, blocker.global_position, radius)
-			var outgoing_clear := destination_inside or not _segment_intersects_route_circle(candidate, final_target, blocker.global_position, radius)
+			var incoming_clearance := _segment_clearance(current, candidate, blocker.global_position)
+			var outgoing_clearance := _segment_clearance(candidate, final_target, blocker.global_position)
+			var incoming_clear := origin_inside_clearance or incoming_clearance >= radius - 0.001
+			var outgoing_clear := destination_inside or outgoing_clearance >= radius - 0.001
 			if incoming_clear and outgoing_clear and exits_away_from_target:
 				legal_candidates.append(candidate)
 		var candidate: Vector3 = candidates.front()
@@ -459,6 +529,18 @@ func navigation_waypoints_for_unit(origin: Vector3, requested: Vector3, clearanc
 			candidate = legal_candidates[0]
 			for alternative in legal_candidates:
 				if _route_cost(current, alternative, final_target) < _route_cost(current, candidate, final_target):
+					candidate = alternative
+		else:
+			# Never use an arbitrary perimeter point when the sampled legal set is
+			# empty. Pick the best available two-leg clearance instead, which keeps
+			# the route as far from the blocker as the deterministic sample allows.
+			var best_clearance := -INF
+			for alternative in candidates:
+				var incoming_score := _segment_clearance(current, alternative, blocker.global_position)
+				var outgoing_score := _segment_clearance(alternative, final_target, blocker.global_position)
+				var score := minf(incoming_score if not origin_inside_clearance else INF, outgoing_score if not destination_inside else INF)
+				if score > best_clearance:
+					best_clearance = score
 					candidate = alternative
 		points.append(candidate)
 		current = candidate
@@ -487,14 +569,21 @@ func _first_route_blocking_building(origin: Vector3, target: Vector3, clearance:
 	return closest
 
 func _segment_intersects_route_circle(a: Vector3, b: Vector3, center: Vector3, radius: float) -> bool:
+	return _segment_clearance(a, b, center) < radius
+
+func _segment_clearance(a: Vector3, b: Vector3, center: Vector3) -> float:
 	var start := Vector2(a.x, a.z)
 	var end := Vector2(b.x, b.z)
 	var point := Vector2(center.x, center.z)
 	var delta := end - start
 	if delta.length_squared() < 0.0001:
-		return start.distance_to(point) < radius
+		return start.distance_to(point)
 	var t := clampf((point - start).dot(delta) / delta.length_squared(), 0.0, 1.0)
-	return start.distance_to(start + delta * t) < radius
+	# Measure the closest point on the segment against the circle centre. The
+	# previous start-to-projection distance treated every segment whose circle
+	# lay behind its origin as an intersection, producing false detours around
+	# the player's own HQ during ordinary movement.
+	return point.distance_to(start + delta * t)
 
 func _route_cost(from: Vector3, via: Vector3, target: Vector3) -> float:
 	return from.distance_to(via) + via.distance_to(target)
@@ -599,6 +688,7 @@ func navigation_runtime_snapshot() -> Dictionary:
 # Commanders & starting bases
 # --------------------------------------------------------------------------
 func _setup_commanders() -> void:
+	var stage := _m20_begin("GAMEWORLD_COMMANDER_SETUP", "GAMEWORLD_COMMANDERS", 2)
 	var cfg := Match.get_config()
 	player_team = 0
 	_victory_kind = cfg.get("victory", "conquest")
@@ -631,8 +721,10 @@ func _setup_commanders() -> void:
 	# build starting bases
 	for i in commanders.size():
 		_build_starting_base(commanders[i], map["start_positions"][i])
+	_m20_end(stage)
 
 func _build_starting_base(cmd, pos: Vector3) -> void:
+	var stage := _m20_begin("GAMEWORLD_STARTING_BASE_%d" % int(cmd.team), "GAMEWORLD_COMMANDER_SETUP", 3)
 	var race := GameData.get_race(cmd.race)
 	var main_id: String = race.get("main_building", "")
 	var main_def := GameData.get_building(main_id)
@@ -657,6 +749,7 @@ func _build_starting_base(cmd, pos: Vector3) -> void:
 		cmd.hero_ref = hero
 		if ProfileManager.has_hero() and cmd.is_human:
 			hero.def = hero.def  # name already set from def
+	_m20_end(stage)
 
 func _resolve_unit_id(race: String, key: String) -> String:
 	# start_units use short keys; map to actual ids
@@ -995,6 +1088,7 @@ func commander_for_team(team: int):
 # Resources & capture points
 # --------------------------------------------------------------------------
 func _spawn_resources() -> void:
+	var stage := _m20_begin("GAMEWORLD_RESOURCE_NODES", "GAMEWORLD_RESOURCES", 2)
 	var models := {
 		"timber": "res://assets/props/containers/resource_timber_pile.glb",
 		"stone": "res://assets/props/misc/resource_stone_quarry_chunk.glb",
@@ -1009,14 +1103,23 @@ func _spawn_resources() -> void:
 		add_child(node)
 		node.global_position = r["pos"]
 		node.configure(kind, amounts.get(kind, 800), models.get(kind, ""), heights.get(kind, 2.0))
+	var recorder = _m20_recorder()
+	if recorder:
+		recorder.record_population("resource_nodes", map.get("resources", []).size(), 0.0, 0.0, "game_world._spawn_resources")
+	_m20_end(stage)
 
 func _spawn_capture_points() -> void:
+	var stage := _m20_begin("GAMEWORLD_CAPTURE_NODE_SETUP", "GAMEWORLD_CAPTURE_POINTS", 2)
 	for c in map.get("capture_points", []):
 		var cp = CapturePointScript.new()
 		add_child(cp)
 		cp.global_position = c["pos"]
 		cp.configure(c["name"], c["benefit"], c.get("model", ""), self)
 		cp.captured.connect(_on_point_captured_signal)
+	var recorder = _m20_recorder()
+	if recorder:
+		recorder.record_population("capture_points", map.get("capture_points", []).size(), 0.0, 0.0, "game_world._spawn_capture_points")
+	_m20_end(stage)
 
 func on_point_captured(point, team: int) -> void:
 	if team == player_team:

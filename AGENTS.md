@@ -1,6 +1,18 @@
 # Ascendant Realms agent map
 
-This repository is a Phaser 3 + TypeScript + Vite browser RTS/RPG prototype with an opt-in Godot presentation and qualification lane. Read this file before changing anything.
+This repository contains the Ascendant Realms production game in Godot plus a legacy browser prototype. Read this file before changing anything.
+
+## Canonical production runtime
+
+- Production game: `production/ascendant-realms-godot`
+- Engine: Godot 4.6.3 stable
+- Certified executable: `D:/CodexData/tools/godot-4.6.3-stable/Godot_v4.6.3-stable_win64.exe`
+- Main scene: `res://scenes/main.tscn`
+- Runtime identity and launch contract: [`docs/current/CANONICAL_RUNTIME.md`](docs/current/CANONICAL_RUNTIME.md)
+- The repository-root `src/` Phaser/Vite surface is `LEGACY_BROWSER_PROTOTYPE` and is not valid Golden Battle production proof.
+- `desktop-spikes/godot-salto` is an experimental spike, not the canonical production project.
+
+Before a production specialist edits files, verify the expected baseline SHA, this file, the canonical runtime document, `production/ascendant-realms-godot/project.godot`, `config/name="Ascendant Realms"`, and `run/main_scene="res://scenes/main.tscn"`. Opening the root browser prototype is a `WRONG_RUNTIME_TARGET` failure.
 
 ## Source of truth
 

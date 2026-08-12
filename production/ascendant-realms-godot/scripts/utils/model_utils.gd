@@ -1,5 +1,7 @@
 class_name ModelUtils
 
+static var _convex_shape_cache: Dictionary = {}
+
 ## Ground a model so its mesh bottom sits at the given y_offset in world space.
 static func ground_model(node: Node3D, y_offset: float = 0.0) -> void:
 	var min_y := INF
@@ -66,6 +68,66 @@ static func add_per_part_convex_collision(node: Node3D, collision_layer: int = 1
 				sb.collision_layer = collision_layer
 				sb.collision_mask = 0
 				break
+
+## Adds one private collision body per selected mesh part while reusing the
+## immutable generated Shape3D for repeated imported meshes. Body and shape
+## nodes remain instance-local so collision layers, transforms, and lifecycle
+## stay equivalent to add_per_part_convex_collision().
+static func add_cached_per_part_convex_collision(node: Node3D, collision_layer: int = 1, cache_namespace: String = "") -> Dictionary:
+	var meshes = node.find_children("*", "MeshInstance3D")
+	var parts: Array[Dictionary] = []
+	for child in meshes:
+		var mi = child as MeshInstance3D
+		if not mi or not mi.mesh:
+			continue
+		var aabb = mi.get_aabb()
+		var vol = aabb.size.x * aabb.size.y * aabb.size.z
+		parts.append({"mesh": mi, "volume": vol})
+	parts.sort_custom(func(a, b): return a["volume"] > b["volume"])
+	var filtered: Array[MeshInstance3D] = []
+	for i in min(parts.size(), 25):
+		filtered.append(parts[i]["mesh"])
+	var cache_hits := 0
+	var cache_misses := 0
+	for mi in filtered:
+		var mesh_key := String(mi.mesh.resource_path)
+		var cache_key := "%s|%s|%s" % [cache_namespace, mesh_key, String(mi.name)]
+		var cached = _convex_shape_cache.get(cache_key)
+		if cached is Dictionary and cached.get("shape") is Shape3D:
+			var body := StaticBody3D.new()
+			body.name = String(cached.get("body_name", "StaticBody3D"))
+			body.transform = cached.get("body_transform", Transform3D.IDENTITY)
+			body.collision_layer = collision_layer
+			body.collision_mask = 0
+			var shape_node := CollisionShape3D.new()
+			shape_node.name = String(cached.get("shape_name", "CollisionShape3D"))
+			shape_node.shape = cached["shape"]
+			shape_node.transform = cached.get("shape_transform", Transform3D.IDENTITY)
+			body.add_child(shape_node)
+			mi.add_child(body)
+			cache_hits += 1
+			continue
+		cache_misses += 1
+		mi.create_convex_collision(true, true)
+		var generated_body: StaticBody3D = null
+		for child_idx in range(mi.get_child_count() - 1, -1, -1):
+			if mi.get_child(child_idx) is StaticBody3D:
+				generated_body = mi.get_child(child_idx) as StaticBody3D
+				break
+		if generated_body:
+			generated_body.collision_layer = collision_layer
+			generated_body.collision_mask = 0
+			var generated_shapes = generated_body.find_children("*", "CollisionShape3D", true, false)
+			var generated_shape: CollisionShape3D = generated_shapes[0] if not generated_shapes.is_empty() else null
+			if generated_shape and generated_shape.shape:
+				_convex_shape_cache[cache_key] = {
+					"shape": generated_shape.shape,
+					"body_name": generated_body.name,
+					"body_transform": generated_body.transform,
+					"shape_name": generated_shape.name,
+					"shape_transform": generated_shape.transform,
+				}
+	return {"cache_hits": cache_hits, "cache_misses": cache_misses, "parts": filtered.size()}
 
 static func set_animation_loops(anim_player: AnimationPlayer) -> void:
 	var oneshot_anims = ["jump", "attack", "slash", "shoot", "hurt", "die", "death",

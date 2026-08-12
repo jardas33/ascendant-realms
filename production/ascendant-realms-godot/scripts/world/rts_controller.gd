@@ -516,14 +516,17 @@ func _formation_move(units: Array, target: Vector3) -> void:
 		if units.size() == 1:
 			units[0].command_move(target)
 		return
-	# grid formation around target
-	var cols := int(ceil(sqrt(units.size())))
+	# Center a deterministic rectangular formation around the clicked point. The
+	# previous half-cell offset pushed every group toward one corner and made the
+	# arrival read as a collapse. Slots remain ordinary public move commands.
+	var cols := maxi(1, int(ceil(sqrt(float(units.size())))))
+	var rows := int(ceil(float(units.size()) / float(cols)))
 	var spacing := 2.4
 	var i := 0
 	for u in units:
 		var row := i / cols
 		var col := i % cols
-		var offset := Vector3((col - cols/2.0) * spacing, 0, (row - cols/2.0) * spacing)
+		var offset := Vector3((float(col) - float(cols - 1) * 0.5) * spacing, 0, (float(row) - float(rows - 1) * 0.5) * spacing)
 		u.command_move(target + offset)
 		i += 1
 

@@ -11,31 +11,90 @@ var depleted := false
 var model_root: Node3D
 var footprint := 2.5
 
+func _m21_recorder():
+	if OS.get_environment("ASCENDANT_HP4_M21_DIAGNOSTICS") != "1":
+		return null
+	var recorder = get_node_or_null("/root/HP4M21Startup")
+	return recorder if is_instance_valid(recorder) else null
+
+func _m21_mesh_snapshot(root: Node) -> Array:
+	var out: Array = []
+	for child in root.find_children("*", "MeshInstance3D", true, false):
+		var mi := child as MeshInstance3D
+		if not mi or not mi.mesh:
+			continue
+		var mesh = mi.mesh
+		var aabb := mesh.get_aabb()
+		out.append({"node_name":String(mi.name), "mesh_class":String(mesh.get_class()), "mesh_resource_path":String(mesh.resource_path), "surface_count":mesh.get_surface_count(), "aabb_size":{"x":aabb.size.x,"y":aabb.size.y,"z":aabb.size.z}})
+	return out
+
+func _m21_record(row: Dictionary) -> void:
+	var recorder = _m21_recorder()
+	if recorder:
+		recorder.record_configure(row)
+
 func configure(kind: String, amt: int, model_path: String, scale_h: float) -> void:
+	var m21_total_start := Time.get_ticks_usec()
+	var m21_recorder = _m21_recorder()
+	var m21_index := int(get_meta("m21_index", -1))
 	resource_kind = kind
 	amount = amt
 	max_amount = amt
 	add_to_group("resources")
 	collision_layer = 8
 	collision_mask = 0
+	var m21_tree_start := Time.get_ticks_usec()
 	model_root = Node3D.new()
 	add_child(model_root)
+	var m21_tree_end := Time.get_ticks_usec()
+	var m21_model_acquisition_us := 0
+	var m21_model_instantiation_us := 0
+	var m21_visual_setup_us := 0
+	var m21_collision_helper_us := 0
+	var m21_collision_attach_us := 0
+	var m21_remaining_us := 0
+	var m21_meshes: Array = []
+	var m21_collision_shapes := 0
+	var m21_collision_bodies := 0
+	var m21_collision_cache_hits := 0
+	var m21_collision_cache_misses := 0
 	if model_path != "" and ResourceLoader.exists(model_path):
-		var m = load(model_path).instantiate()
+		var model_load_start := Time.get_ticks_usec()
+		var m
+		if m21_recorder:
+			var packed = load(model_path)
+			m21_model_acquisition_us = Time.get_ticks_usec() - model_load_start
+			var instantiate_start := Time.get_ticks_usec()
+			m = packed.instantiate()
+			m21_model_instantiation_us = Time.get_ticks_usec() - instantiate_start
+		else:
+			m = load(model_path).instantiate()
 		model_root.add_child(m)
+		var visual_start := Time.get_ticks_usec()
 		ModelUtils.scale_to_height(m, scale_h)
 		ModelUtils.ground_model(m)
-		ModelUtils.add_per_part_convex_collision(m, 8)
+		m21_visual_setup_us = Time.get_ticks_usec() - visual_start
+		var collision_start := Time.get_ticks_usec()
+		var collision_stats: Dictionary = ModelUtils.add_cached_per_part_convex_collision(m, 8, "resource:" + model_path)
+		m21_collision_cache_hits = int(collision_stats.get("cache_hits", 0))
+		m21_collision_cache_misses = int(collision_stats.get("cache_misses", 0))
+		m21_collision_helper_us = Time.get_ticks_usec() - collision_start
 		# Measure the gameplay envelope before presentation-only sizing. The
 		# collision bodies are then kept at that authoritative size while the
 		# visible resource model is slightly normalized for RTS readability.
 		footprint = max(1.5, ModelUtils.measure_radius(m))
+		var attach_start := Time.get_ticks_usec()
 		for collider in m.find_children("*", "StaticBody3D"):
 			if collider is StaticBody3D:
 				collider.reparent(model_root, true)
+		m21_collision_attach_us = Time.get_ticks_usec() - attach_start
 		m.scale *= _presentation_scale_for_kind(kind)
 		_apply_p1r14_resource_readability(m)
 		_add_p1r14_resource_accent()
+		m21_remaining_us = Time.get_ticks_usec() - (collision_start + m21_collision_helper_us + m21_collision_attach_us)
+		m21_meshes = _m21_mesh_snapshot(m)
+		m21_collision_shapes = m.find_children("*", "CollisionShape3D", true, false).size()
+		m21_collision_bodies = m.find_children("*", "StaticBody3D", true, false).size()
 	else:
 		var mi := MeshInstance3D.new()
 		var bm := BoxMesh.new()
@@ -43,6 +102,9 @@ func configure(kind: String, amt: int, model_path: String, scale_h: float) -> vo
 		mi.mesh = bm
 		mi.position.y = 1.0
 		model_root.add_child(mi)
+		m21_remaining_us = Time.get_ticks_usec() - m21_tree_start
+	if m21_recorder:
+		_m21_record({"index":m21_index, "resource_kind":kind, "model_path":model_path, "scale_height":scale_h, "configure_total_us":Time.get_ticks_usec() - m21_total_start, "tree_setup_us":m21_tree_end - m21_tree_start, "model_acquisition_us":m21_model_acquisition_us, "model_instantiation_us":m21_model_instantiation_us, "visual_setup_us":m21_visual_setup_us, "collision_helper_us":m21_collision_helper_us, "collision_attach_us":m21_collision_attach_us, "remaining_us":m21_remaining_us, "mesh_identities":m21_meshes, "collision_shape_count":m21_collision_shapes, "collision_body_count":m21_collision_bodies, "collision_layer":collision_layer, "collision_cache_hits":m21_collision_cache_hits, "collision_cache_misses":m21_collision_cache_misses})
 
 func _presentation_scale_for_kind(kind: String) -> float:
 	match kind:

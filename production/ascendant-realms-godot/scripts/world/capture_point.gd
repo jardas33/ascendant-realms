@@ -27,7 +27,11 @@ func configure(p_name: String, p_benefit: String, model_path: String, p_world) -
 	var root := Node3D.new()
 	add_child(root)
 	if model_path != "" and ResourceLoader.exists(model_path):
+		var load_start := Time.get_ticks_usec()
 		var m = load(model_path).instantiate()
+		var recorder = get_node_or_null("/root/HP4M20Startup")
+		if recorder and OS.get_environment("ASCENDANT_HP4M20_DIAGNOSTICS") == "1":
+			recorder.record_resource_load(model_path, "capture_point.configure", load_start, Time.get_ticks_usec(), "load_instantiate")
 		root.add_child(m)
 		ModelUtils.scale_to_height(m, 6.0)
 		ModelUtils.ground_model(m)

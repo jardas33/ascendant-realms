@@ -77,17 +77,40 @@ var _slow_accum := 0.0
 var _map_accum := 0.0
 var _last_viewport_size := Vector2.ZERO
 
+func _m20_recorder():
+	if OS.get_environment("ASCENDANT_HP4_M20_DIAGNOSTICS") != "1":
+		return null
+	var recorder = get_node_or_null("/root/HP4M20Startup")
+	return recorder if is_instance_valid(recorder) else null
+
+func _m20_begin(stage: String, parent_stage: String = "", depth: int = 0) -> Dictionary:
+	var recorder = _m20_recorder()
+	return recorder.begin_stage(stage, parent_stage, depth) if recorder else {}
+
+func _m20_end(token: Dictionary) -> void:
+	var recorder = _m20_recorder()
+	if recorder:
+		recorder.end_stage(token)
+
 
 func setup(p_world, p_rts) -> void:
+	var stage := _m20_begin("HUD_SETUP")
 	world = p_world
 	rts = p_rts
 	_commander = world.player_commander if world else null
 	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var recorder = _m20_recorder()
 	if ResourceLoader.exists(THEME_PATH):
+		var theme_start := Time.get_ticks_usec()
 		theme = load(THEME_PATH)
+		if recorder:
+			recorder.record_resource_load(THEME_PATH, "hud.setup", theme_start, Time.get_ticks_usec(), "load")
 	if ResourceLoader.exists(FONT_PATH):
+		var font_start := Time.get_ticks_usec()
 		_font = load(FONT_PATH)
+		if recorder:
+			recorder.record_resource_load(FONT_PATH, "hud.setup", font_start, Time.get_ticks_usec(), "load")
 	_body_font = ThemeDB.fallback_font
 
 	_build_top_bar()
@@ -105,6 +128,7 @@ func setup(p_world, p_rts) -> void:
 		_on_tier_changed(_commander.tier)
 	_rebuild_selection([])
 	_last_viewport_size = get_viewport_rect().size
+	_m20_end(stage)
 
 
 func _fit_to_viewport() -> void:

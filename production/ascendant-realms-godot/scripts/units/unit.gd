@@ -146,6 +146,9 @@ var _attack_settled := false
 var _attack_target_anchor := Vector3.ZERO
 var _attack_target_anchor_valid := false
 var _attack_slot_angle := 0.0
+var _m_motion_last_position := Vector3.ZERO
+var _m_motion_still_time := 0.0
+var _m_motion_initialized := false
 
 const ARRIVE_DIST := 1.2
 const NAVIGATION_REPATH_INTERVAL := 0.20
@@ -156,7 +159,11 @@ const ATTACK_SETTLE_MARGIN := 0.12
 const BUILDING_ROUTE_CLEARANCE := 1.0
 
 func _building_route_clearance() -> float:
-	return BUILDING_ROUTE_CLEARANCE + 4.0 if is_worker else BUILDING_ROUTE_CLEARANCE
+	# Workers do not use physics collisions against buildings (their body mask is
+	# zero), so a larger worker-only envelope incorrectly classifies nearby
+	# construction points as blocked. Keep the measured geometry clearance for
+	# every ground unit; route safety remains centralized in GameWorld.
+	return BUILDING_ROUTE_CLEARANCE
 
 # P1-R13 presentation targets. These affect only the visible model envelope;
 # gameplay height, collision, navigation radius, spacing, range and speed stay
@@ -168,7 +175,8 @@ const P1R13_VISUAL_HEIGHT_MAX := 3.8
 
 # P1-R20 imported-model readability: a small per-instance material lift keeps
 # authored character identity intact while separating silhouettes from noisy
-# ground. TeamPip remains a secondary ownership cue; no gameplay values change.
+# ground. TeamPip is an explicit debug/review-only ownership cue; no gameplay
+# values change.
 const P1R20_WORKER_VALUE_LIFT := 0.08
 const P1R20_MILITARY_VALUE_LIFT := 0.11
 const P1R20_HERO_VALUE_LIFT := 0.15
@@ -334,8 +342,12 @@ func _build_model() -> void:
 	var path: String = def.get("model", "")
 	_visual_height = _visual_target_height()
 	if path != "" and ResourceLoader.exists(path):
+		var load_start := Time.get_ticks_usec()
 		var scn = load(path)
 		var m = scn.instantiate()
+		var recorder = get_node_or_null("/root/HP4M20Startup")
+		if recorder and OS.get_environment("ASCENDANT_HP4_M20_DIAGNOSTICS") == "1":
+			recorder.record_resource_load(path, "unit._build_model", load_start, Time.get_ticks_usec(), "load_instantiate")
 		model_root.add_child(m)
 		ModelUtils.setup_character_for_movement(m, _visual_height)
 		_apply_p1r20_model_materials(m)
@@ -346,7 +358,10 @@ func _build_model() -> void:
 			if lib_path != "" and ResourceLoader.exists(lib_path):
 				anim = AnimationPlayer.new()
 				m.add_child(anim)
+				var anim_start := Time.get_ticks_usec()
 				var lib = load(lib_path)
+				if recorder and OS.get_environment("ASCENDANT_HP4_M20_DIAGNOSTICS") == "1":
+					recorder.record_resource_load(lib_path, "unit._build_model.animation", anim_start, Time.get_ticks_usec(), "load")
 				if lib:
 					anim.add_animation_library("", lib)
 		if anim:
@@ -367,6 +382,17 @@ func _build_model() -> void:
 		model_root.add_child(mi)
 	# team-color banner tint indicator
 	_add_team_marker()
+	# M7: establish a stable battlefield-facing pose after the world places the unit.
+	call_deferred("_apply_m_initial_facing")
+
+func _apply_m_initial_facing() -> void:
+	if not model_root or is_dead:
+		return
+	var to_battlefield := Vector3.ZERO - global_position
+	to_battlefield.y = 0.0
+	if to_battlefield.length_squared() < 0.01:
+		return
+	model_root.rotation.y = atan2(-to_battlefield.x, -to_battlefield.z)
 
 
 func _apply_p1r20_model_materials(model: Node3D) -> void:
@@ -462,8 +488,11 @@ func _play_sfx(key: String, volume_db: float) -> void:
 func _add_team_marker() -> void:
 	if is_instance_valid(_team_marker):
 		return
-	# Small role/ownership cue for normal RTS zoom. Presentation only: it does
-	# not alter selection, combat, hitboxes, or the unit's gameplay silhouette.
+	# M8: normal player mode uses selection, health, and material contrast rather
+	# than floating debug-heavy pips. Review tooling can opt in explicitly without
+	# changing the underlying ownership data or selection behavior.
+	if OS.get_environment("ASCENDANT_REALMS_DEBUG_REVIEW") != "1":
+		return
 	_team_marker = MeshInstance3D.new()
 	_team_marker.name = "TeamPip"
 	var pip := CylinderMesh.new()
@@ -782,6 +811,84 @@ func command_build(building) -> void:
 	_build_target = building
 	state = State.BUILDING
 
+static func construction_interaction_for_point(point: Vector3, building_center: Vector3, extents: Vector2, threshold: float) -> Dictionary:
+	var relative: Vector3 = point - building_center
+	var nearest_local := Vector2(clampf(relative.x, -extents.x, extents.x), clampf(relative.z, -extents.y, extents.y))
+	var boundary_distance := Vector2(relative.x - nearest_local.x, relative.z - nearest_local.y).length()
+	var inside_footprint := absf(relative.x) <= extents.x and absf(relative.z) <= extents.y
+	return {
+		"valid": not inside_footprint and boundary_distance <= threshold,
+		"reason": "inside_footprint" if inside_footprint else ("within_footprint_interaction" if boundary_distance <= threshold else "outside_interaction_threshold"),
+		"distance_to_boundary": boundary_distance,
+		"interaction_threshold": threshold,
+		"inside_footprint": inside_footprint,
+		"nearest_local": nearest_local,
+	}
+
+func get_construction_interaction_snapshot(building = null) -> Dictionary:
+	var target = building if is_instance_valid(building) else _build_target
+	if not is_instance_valid(target):
+		return {"valid": false, "reason": "no_construction_target", "distance_to_boundary": null, "interaction_threshold": null, "inside_footprint": false}
+	var threshold := _building_route_clearance() + 0.2
+	var extents := Vector2(float(target.def.get("footprint", 4.0)), float(target.def.get("footprint", 4.0)))
+	if target.has_method("get_selection_geometry"):
+		var geometry: Dictionary = target.get_selection_geometry()
+		var visual_extents: Dictionary = geometry.get("visual_extents", {})
+		extents = Vector2(maxf(extents.x, float(visual_extents.get("x", extents.x))), maxf(extents.y, float(visual_extents.get("z", extents.y))))
+	var snapshot := construction_interaction_for_point(global_position, target.global_position, extents, threshold)
+	var nearest_local: Vector2 = snapshot.get("nearest_local", Vector2.ZERO)
+	snapshot["footprint_extents"] = {"x": extents.x, "z": extents.y}
+	snapshot["nearest_footprint_point"] = {"x": target.global_position.x + nearest_local.x, "y": global_position.y, "z": target.global_position.z + nearest_local.y}
+	snapshot["building_runtime_id"] = str(target.get_instance_id())
+	snapshot["building_id"] = String(target.building_id)
+	snapshot.erase("nearest_local")
+	return snapshot
+
+func _construction_interaction_target(building, interaction: Dictionary) -> Vector3:
+	var threshold := maxf(0.1, float(interaction.get("interaction_threshold", _building_route_clearance() + 0.2)))
+	var route_clearance := maxf(0.1, _building_route_clearance())
+	var edge_offset := route_clearance
+	var corner_offset := route_clearance / sqrt(2.0)
+	var extents_data: Dictionary = interaction.get("footprint_extents", {})
+	var half_x := maxf(0.1, float(extents_data.get("x", building.def.get("footprint", 4.0))))
+	var half_z := maxf(0.1, float(extents_data.get("z", building.def.get("footprint", 4.0))))
+	var center: Vector3 = building.global_position
+	var candidates: Array[Vector3] = [
+		center + Vector3(half_x + edge_offset, 0.0, 0.0),
+		center + Vector3(-half_x - edge_offset, 0.0, 0.0),
+		center + Vector3(0.0, 0.0, half_z + edge_offset),
+		center + Vector3(0.0, 0.0, -half_z - edge_offset),
+		center + Vector3(half_x + corner_offset, 0.0, half_z + corner_offset),
+		center + Vector3(-half_x - corner_offset, 0.0, half_z + corner_offset),
+		center + Vector3(half_x + corner_offset, 0.0, -half_z - corner_offset),
+		center + Vector3(-half_x - corner_offset, 0.0, -half_z - corner_offset),
+	]
+	var best := Vector3.INF
+	var best_cost := INF
+	var direct_best := candidates[0]
+	var direct_best_cost := INF
+	for candidate in candidates:
+		var candidate_snapshot := construction_interaction_for_point(candidate, center, Vector2(half_x, half_z), threshold)
+		if not bool(candidate_snapshot.get("valid", false)):
+			continue
+		var route: Array = world.navigation_waypoints_for_unit(global_position, candidate, _building_route_clearance()) if world and world.has_method("navigation_waypoints_for_unit") else [candidate]
+		if route.is_empty():
+			continue
+		var final_point: Vector3 = route.back()
+		if final_point.distance_to(candidate) > 0.2:
+			continue
+		var final_snapshot := construction_interaction_for_point(final_point, center, Vector2(half_x, half_z), threshold)
+		if not bool(final_snapshot.get("valid", false)):
+			continue
+		var cost := global_position.distance_to(candidate)
+		if cost < best_cost:
+			best = candidate
+			best_cost = cost
+		if route.size() == 1 and cost < direct_best_cost:
+			direct_best = candidate
+			direct_best_cost = cost
+	return direct_best if direct_best_cost < INF else best
+
 func _set_agent_target(pos: Vector3, command_type: String = "") -> void:
 	_requested_move_target = pos
 	if command_type != "":
@@ -1055,6 +1162,29 @@ func _physics_process(delta: float) -> void:
 			_state_patrol(delta)
 		State.FOLLOW:
 			_state_follow(delta)
+	_update_m_motion_presentation(delta)
+
+func _update_m_motion_presentation(delta: float) -> void:
+	var current_position := global_position
+	if not _m_motion_initialized:
+		_m_motion_last_position = current_position
+		_m_motion_initialized = true
+		return
+	var planar_displacement := Vector2(current_position.x - _m_motion_last_position.x, current_position.z - _m_motion_last_position.z).length()
+	_m_motion_last_position = current_position
+	var moving_state := state == State.MOVING or state == State.ATTACK_MOVE or state == State.PATROL or state == State.FOLLOW or state == State.GATHERING or state == State.RETURNING
+	if not moving_state:
+		_m_motion_still_time = 0.0
+		return
+	if planar_displacement >= 0.003:
+		_m_motion_still_time = 0.0
+		_play("walk")
+	else:
+		_m_motion_still_time += delta
+		# A short measured hysteresis prevents a single navigation-sync frame from
+		# flashing idle, while ensuring a stalled command is not shown as walking.
+		if _m_motion_still_time >= 0.28:
+			_play("idle")
 
 func _state_idle(delta: float) -> void:
 	velocity.x = 0
@@ -1373,10 +1503,9 @@ func _state_build(delta: float) -> void:
 		_build_target = null
 		state = State.IDLE
 		return
-	var reach: float = float(_build_target.def.get("footprint", 4.0)) + 1.2
-	var d := global_position.distance_to(_build_target.global_position)
-	if d > reach:
-		_move_target = _build_target.global_position
+	var interaction := get_construction_interaction_snapshot(_build_target)
+	if not bool(interaction.get("valid", false)):
+		_move_target = _construction_interaction_target(_build_target, interaction)
 		_set_agent_target(_move_target, "build")
 		_move_along_path(delta)
 	else:
@@ -1463,6 +1592,12 @@ func _move_along_path(delta: float) -> bool:
 		_play("idle")
 		return true
 	var next := agent.get_next_path_position()
+	# The production navmesh is intentionally broad and does not encode the
+	# authored building-clearance route. When that route exists, steer toward
+	# its current safe waypoint rather than the navmesh's stale centre point;
+	# NavigationAgent avoidance still arbitrates the submitted velocity.
+	if _navigation_waypoints.size() > 1:
+		next = _navigation_effective_target
 	# NavigationAgent output is advisory. The command destination remains
 	# authoritative, but an invalid next point triggers bounded repath and a
 	# safe stop rather than unrestricted straight-line movement.
@@ -1507,7 +1642,13 @@ func _move_along_path(delta: float) -> bool:
 	if _rooted > 0.0: spd = 0.0
 	var requested_velocity: Vector3 = dir * spd
 	var desired: Vector3 = requested_velocity
-	if world and world.has_method("constrain_unit_velocity_around_buildings"):
+	# Once the explicit route has advanced beyond its first waypoint, the
+	# authored navigation leg has already cleared the building envelope. Keep
+	# NavigationAgent avoidance active, but do not run the separate generic
+	# building redirect again on the same leg; that duplicate redirect could
+	# pin a unit on the waypoint during an ordinary player move.
+	var route_leg_already_cleared := _navigation_waypoints.size() > 1 and _navigation_waypoint_index > 0
+	if world and world.has_method("constrain_unit_velocity_around_buildings") and not (is_worker and state == State.BUILDING) and not route_leg_already_cleared:
 		desired = world.constrain_unit_velocity_around_buildings(global_position, desired, delta, _building_route_clearance())
 	var clearance_redirected: bool = desired.distance_to(requested_velocity) > 0.05
 	if clearance_redirected and is_worker:
@@ -1522,7 +1663,6 @@ func _move_along_path(delta: float) -> bool:
 		move_and_slide()
 	if desired.length() > 0.1:
 		_face(global_position + dir)
-		_play("walk")
 	return false
 
 func _on_velocity_computed(safe_vel: Vector3) -> void:
@@ -1565,7 +1705,8 @@ func _on_velocity_computed(safe_vel: Vector3) -> void:
 		if audit_enabled and (_boundary_recovery_active or recovery_already_moved):
 			_v0436_r1f_record_callback(audit_frame, safe_vel, callback_position_before, global_position, false, recovery_already_moved)
 		return
-	if world and world.has_method("constrain_unit_velocity_around_buildings"):
+	var route_leg_already_cleared := _navigation_waypoints.size() > 1 and _navigation_waypoint_index > 0
+	if world and world.has_method("constrain_unit_velocity_around_buildings") and not (is_worker and state == State.BUILDING) and not route_leg_already_cleared:
 		safe_vel = world.constrain_unit_velocity_around_buildings(global_position, safe_vel, get_physics_process_delta_time(), _building_route_clearance())
 	_navigation_invalid_consecutive = 0
 	velocity.x = safe_vel.x
