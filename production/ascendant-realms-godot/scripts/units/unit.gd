@@ -142,6 +142,8 @@ var _health_bar_back: MeshInstance3D
 var _r15_attack_cue: MeshInstance3D
 var _r15_hit_flash: MeshInstance3D
 var _r15_hit_flash_time := 0.0
+var _r15_damage_label: Label3D
+var _r15_damage_label_time := 0.0
 var _attack_settled := false
 var _attack_target_anchor := Vector3.ZERO
 var _attack_target_anchor_valid := false
@@ -157,6 +159,7 @@ const V0436_R1F_AUDIT_CAP := 512
 const ATTACK_RESUME_MARGIN := 0.65
 const ATTACK_SETTLE_MARGIN := 0.12
 const BUILDING_ROUTE_CLEARANCE := 1.0
+const COMBAT_DAMAGE_LABEL_DURATION := 0.55
 
 func _building_route_clearance() -> float:
 	# Workers do not use physics collisions against buildings (their body mask is
@@ -631,6 +634,16 @@ func _build_r15_combat_presentation() -> void:
 	_r15_hit_flash.material_override = flash_mat
 	add_child(_r15_hit_flash)
 
+	_r15_damage_label = Label3D.new()
+	_r15_damage_label.name = "CombatDamageLabel"
+	_r15_damage_label.font_size = 32
+	_r15_damage_label.outline_size = 8
+	_r15_damage_label.billboard = BaseMaterial3D.BILLBOARD_ENABLED
+	_r15_damage_label.no_depth_test = true
+	_r15_damage_label.pixel_size = 0.004
+	_r15_damage_label.visible = false
+	add_child(_r15_damage_label)
+
 func _update_r15_combat_presentation(delta: float) -> void:
 	if is_instance_valid(_r15_attack_cue):
 		_r15_attack_cue.visible = not is_worker and state == State.ATTACKING and _can_attack_target(_target)
@@ -638,6 +651,22 @@ func _update_r15_combat_presentation(delta: float) -> void:
 		_r15_hit_flash_time = maxf(0.0, _r15_hit_flash_time - delta)
 	if is_instance_valid(_r15_hit_flash):
 		_r15_hit_flash.visible = _r15_hit_flash_time > 0.0 and not is_dead
+	if _r15_damage_label_time > 0.0:
+		_r15_damage_label_time = maxf(0.0, _r15_damage_label_time - delta)
+	if is_instance_valid(_r15_damage_label):
+		_r15_damage_label.visible = _r15_damage_label_time > 0.0 and not is_dead
+		if _r15_damage_label.visible:
+			var progress := 1.0 - (_r15_damage_label_time / COMBAT_DAMAGE_LABEL_DURATION)
+			_r15_damage_label.position.y = maxf(0.7, _visual_height * 0.55) + progress * 0.65
+			_r15_damage_label.modulate.a = 1.0 - progress
+
+func _show_r15_damage_feedback(applied: float, killing_blow: bool) -> void:
+	if applied <= 0.0 or not is_instance_valid(_r15_damage_label):
+		return
+	_r15_damage_label.text = "-%d" % maxi(1, roundi(applied))
+	_r15_damage_label.modulate = Color(1.0, 0.34, 0.24, 1.0) if killing_blow else Color(1.0, 0.82, 0.34, 1.0)
+	_r15_damage_label.position.y = maxf(0.7, _visual_height * 0.55)
+	_r15_damage_label_time = COMBAT_DAMAGE_LABEL_DURATION
 
 func refresh_upgrade_bonuses() -> void:
 	if commander:
@@ -1755,6 +1784,7 @@ func take_damage(amount: float, from = null) -> void:
 	_last_damage_kind = _combat_source_kind(from)
 	_last_damage_type = _combat_source_type(from)
 	_r15_hit_flash_time = 0.16
+	_show_r15_damage_feedback(applied, hp <= 0.0)
 	if world:
 		world.on_unit_damaged(self, from)
 		if world.has_method("record_combat_damage"):
@@ -1800,8 +1830,10 @@ func _die(from = null) -> void:
 	is_dead = true
 	state = State.DEAD
 	_r15_hit_flash_time = 0.0
+	_r15_damage_label_time = 0.0
 	if is_instance_valid(_r15_attack_cue): _r15_attack_cue.visible = false
 	if is_instance_valid(_r15_hit_flash): _r15_hit_flash.visible = false
+	if is_instance_valid(_r15_damage_label): _r15_damage_label.visible = false
 	set_selected(false)
 	collision_layer = 0
 	_play_sfx("death", -12.0)
