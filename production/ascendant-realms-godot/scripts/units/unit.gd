@@ -736,6 +736,7 @@ func command_attack(tgt, r1j_order_id: String = "") -> void:
 	_attack_target_anchor_valid = false
 	_attack_slot_angle = fmod(absf(float(get_instance_id()) * 0.6180339), TAU)
 	_v0436_r1j_set_target(tgt, "public_order" if r1j_order_id != "" else "auto_acquisition")
+	_move_target = _target.global_position
 	state = State.ATTACKING
 	var recorder = _v0436_r1j_recorder()
 	if recorder:
