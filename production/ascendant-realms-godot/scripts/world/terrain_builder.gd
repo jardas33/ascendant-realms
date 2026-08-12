@@ -110,7 +110,7 @@ func _r19_ground_grade(theme_name: String) -> Dictionary:
 		"ashen":
 			return {"ground_base": Color(0.38, 0.39, 0.40), "road_base": Color(0.46, 0.42, 0.36), "road_edge_color": Color(0.23, 0.24, 0.24), "surface_detail": 0.30, "surface_macro": 0.13, "road_detail": 0.36, "road_edge_strength": 0.13, "surface_saturation": 0.66}
 		_:
-			return {"ground_base": Color(0.34, 0.42, 0.28), "road_base": Color(0.49, 0.39, 0.26), "road_edge_color": Color(0.22, 0.25, 0.18), "surface_detail": 0.34, "surface_macro": 0.14, "road_detail": 0.42, "road_edge_strength": 0.16, "surface_saturation": 0.9}
+			return {"ground_base": Color(0.34, 0.42, 0.28), "road_base": Color(0.49, 0.39, 0.26), "road_edge_color": Color(0.22, 0.25, 0.18), "surface_detail": 0.34, "surface_macro": 0.14, "road_detail": 0.42, "road_edge_strength": 0.22, "surface_saturation": 0.9}
 
 
 # ---------------------------------------------------------------------------
