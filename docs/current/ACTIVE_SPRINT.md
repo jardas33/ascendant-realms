@@ -10,10 +10,10 @@ Hollowspan Crossing — Barrosan Clans vs Lioraen Concord — Easy — standard 
 
 | Lane | Branch | Worktree | Player outcome | Owned systems | Status | Integration order |
 | --- | --- | --- | --- | --- | --- | --- |
-| Core Gameplay | `codex/golden-s1-core` | assigned isolated worktree | dependable select → move → gather → construct → produce → rally → combat loop | battle, entities, pathfinding, results | starting | 1 |
-| AI / Skirmish | `codex/golden-s1-ai` | assigned isolated worktree | coherent Lioraen Easy economy, production, movement, first contact, pressure, recovery | `src/game/ai`, battle AI data | starting | 3, after core dependencies |
-| World / Visuals | `codex/golden-s1-world` | assigned isolated worktree | clearer unit/building/terrain/bridge/road/water readability | art metadata, opt-in visual path | starting | 2, conflict-audited |
-| UI/UX + Combat Feel | `codex/golden-s1-combat` | assigned isolated worktree | clearer objective, selection, command, health, action, and combat feedback | `src/game/ui`, feedback presentation | starting | 2, conflict-audited |
+| Core Gameplay | `codex/golden-s1-core` | bootstrap required | dependable select → move → gather → construct → produce → rally → combat loop | battle, entities, pathfinding, results | waiting for one-time thread bootstrap | 1 |
+| AI / Skirmish | `codex/golden-s1-ai` | bootstrap required | coherent Lioraen Easy economy, production, movement, first contact, pressure, recovery | `src/game/ai`, battle AI data | waiting for one-time thread bootstrap | 3, after core dependencies |
+| World / Visuals | `codex/golden-s1-world` | bootstrap required | clearer unit/building/terrain/bridge/road/water readability | art metadata, opt-in visual path | waiting for one-time thread bootstrap | 2, conflict-audited |
+| UI/UX + Combat Feel | `codex/golden-s1-combat` | bootstrap required | clearer objective, selection, command, health, action, and combat feedback | `src/game/ui`, feedback presentation | waiting for one-time thread bootstrap | 2, conflict-audited |
 | Lead / Performance / QA | local integration | dedicated integration worktree | buildability, tests, evidence, conflicts, daily candidate | docs, validation, integration | active | continuous |
 
 ## Rules
@@ -25,6 +25,10 @@ Hollowspan Crossing — Barrosan Clans vs Lioraen Concord — Easy — standard 
 - No lane may push, modify PR metadata, merge to shared/protected branches, rebase shared history, or touch the protected checkout.
 - At most one meaningful human playtest should be requested per day; Codex must inspect evidence first.
 - If a lane is blocked, the other lanes continue.
+
+## Bootstrap status
+
+The Codex app cannot currently create repository-scoped worktree threads for this candidate because the registered workspace root is not a Git project and the actual candidate path is outside the available project registry. The Lead will not create projectless threads and misrepresent them as repository lanes. Use [`BOOTSTRAP_PACKAGE.md`](BOOTSTRAP_PACKAGE.md) for the one-time setup if the app cannot be registered against the candidate path.
 
 ## Integration queue
 
