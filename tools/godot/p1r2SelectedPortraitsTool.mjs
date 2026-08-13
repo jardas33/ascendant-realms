@@ -1,7 +1,8 @@
 import { createHash } from "node:crypto";
-import { execFileSync, spawnSync } from "node:child_process";
+import { execFileSync } from "node:child_process";
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import path from "node:path";
+import { runBounded } from "../codex/runBounded.mjs";
 
 const repo = path.resolve(import.meta.dirname, "../..");
 const project = path.join(repo, "production/ascendant-realms-godot");
@@ -12,18 +13,27 @@ const mode = process.argv[2] || "validate";
 mkdirSync(evidenceRoot, { recursive: true }); mkdirSync(logsRoot, { recursive: true });
 const sha256 = (f) => createHash("sha256").update(readFileSync(f)).digest("hex");
 const sourceSha = () => execFileSync("git", ["rev-parse", "HEAD"], { cwd: repo, encoding: "utf8" }).trim();
-function withAutoload(fn) {
+async function withAutoload(fn) {
   const file = path.join(project, "project.godot"); const original = readFileSync(file, "utf8");
   const marker = 'P1R2Capture="*res://tests/p1r2_selected_portraits.gd"';
   const patched = original.includes(marker) ? original : original.replace('P1S1Capture="*res://tests/p1s1_viewport_safe_area.gd"', 'P1S1Capture="*res://tests/p1s1_viewport_safe_area.gd"\n' + marker);
-  writeFileSync(file, patched); try { return fn(); } finally { writeFileSync(file, original); }
+  writeFileSync(file, patched); try { return await fn(); } finally { writeFileSync(file, original); }
 }
-function run(width, height, output) {
+async function run(width, height, output) {
   mkdirSync(output, { recursive: true });
   const log = path.join(logsRoot, `p1r2-${width}x${height}.log`);
-  const r = spawnSync(godot, ["--path", project, "--resolution", `${width}x${height}`, "--windowed", "--position", "20,20", "--log-file", log], { cwd: repo, env: { ...process.env, TEMP: "D:\\CodexData\\temp", TMP: "D:\\CodexData\\temp", ASCENDANT_P1R2_SOURCE_SHA: sourceSha(), ASCENDANT_P1R2_WIDTH: String(width), ASCENDANT_P1R2_HEIGHT: String(height), ASCENDANT_P1R2_OUTPUT: output }, encoding: "utf8", timeout: 300000, windowsHide: false });
+  const bounded = await runBounded({
+    command: godot,
+    args: ["--path", project, "--resolution", `${width}x${height}`, "--windowed", "--position", "20,20", "--log-file", log],
+    cwd: repo,
+    env: { TEMP: "D:\\CodexData\\temp", TMP: "D:\\CodexData\\temp", ASCENDANT_P1R2_SOURCE_SHA: sourceSha(), ASCENDANT_P1R2_WIDTH: String(width), ASCENDANT_P1R2_HEIGHT: String(height), ASCENDANT_P1R2_OUTPUT: output },
+    hardTimeoutMs: 600_000,
+    noProgressTimeoutMs: 180_000,
+    progressSources: [output, log],
+    label: `p1r2-${width}x${height}`,
+  });
   const mf = path.join(output, "selected-portraits-manifest.json");
-  if (!existsSync(mf)) throw new Error(`missing ${mf}; exit=${r.status}`);
+  if (!existsSync(mf)) throw new Error(`missing ${mf}; classification=${bounded.classification}; exit=${bounded.exit_code}; stderr=${bounded.stderr_tail}`);
   return JSON.parse(readFileSync(mf, "utf8"));
 }
 function check(m, width) {
@@ -41,11 +51,11 @@ function check(m, width) {
   if (JSON.stringify(m.positions_before) !== JSON.stringify(m.positions_after)) failures.push("positions changed");
   return failures;
 }
-function capture() {
+async function capture() {
   const original = readFileSync(path.join(project, "project.godot"), "utf8");
   const runId = `run-${new Date().toISOString().replace(/[-:TZ.]/g, "").slice(0, 14)}-${sourceSha().slice(0, 8)}`;
   const dir = path.join(evidenceRoot, runId);
-  const out = withAutoload(() => [run(1920, 1080, path.join(dir, "1920x1080")), run(1366, 768, path.join(dir, "1366x768"))]);
+  const out = await withAutoload(async () => [await run(1920, 1080, path.join(dir, "1920x1080")), await run(1366, 768, path.join(dir, "1366x768"))]);
   const failures = [...check(out[0], 1920), ...check(out[1], 1366)];
   const captures = out.flatMap((m) => (m.frames || []).map((f) => ({ name: f.name, png: f.png, sha256: sha256(f.png), probe: f.portrait_probe })));
   writeFileSync(path.join(evidenceRoot, "p1r2-capture-manifest.json"), JSON.stringify({ schema: "ascendant-realms-p1r2-capture-v1", source_sha: sourceSha(), run_dir: runId, godot, captures, pass: failures.length === 0, failures }, null, 2) + "\n");
@@ -67,4 +77,4 @@ function validate() {
   const report = { schema: "ascendant-realms-p1r2-validator-v1", source_sha: sourceSha(), summary, pass: failures.length === 0, failures };
   writeFileSync(path.join(evidenceRoot, "p1r2-validator-report.json"), JSON.stringify(report, null, 2) + "\n"); console.log(JSON.stringify(report, null, 2)); if (failures.length) process.exitCode = 1;
 }
-if (mode === "capture") capture(); else validate();
+if (mode === "capture") await capture(); else validate();

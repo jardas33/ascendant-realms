@@ -35,6 +35,7 @@
     "godot:test:p1r1-unit-readability": "node tools/godot/p1r1UnitReadabilityTool.mjs validate",
     "godot:capture:p1r2-selected-portraits": "node tools/godot/p1r2SelectedPortraitsTool.mjs capture",
     "godot:test:p1r2-selected-portraits": "node tools/godot/p1r2SelectedPortraitsTool.mjs validate",
+    "codex:test:liveness": "node tools/codex/livenessFixture.mjs",
     "godot:capture:p1r3-minimap-terrain": "node tools/godot/p1r3MinimapTerrainTool.mjs capture",
     "godot:test:p1r3-minimap-terrain": "node tools/godot/p1r3MinimapTerrainTool.mjs validate",
     "godot:capture:p1r4-worker-interaction": "node tools/godot/p1r4WorkerInteractionTool.mjs capture",
