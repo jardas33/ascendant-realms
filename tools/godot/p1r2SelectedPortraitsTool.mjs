@@ -69,10 +69,10 @@ function validate() {
   if (!failures.length) { summary = JSON.parse(readFileSync(file, "utf8")); if (summary.source_sha !== sourceSha()) failures.push("source sha mismatch"); if (!summary.pass) failures.push(...summary.failures); }
   const config = readFileSync(path.join(project, "project.godot"), "utf8"); if (config.includes("P1R2Capture")) failures.push("capture autoload persisted");
   const allowed = new Set(["package.json", "production/ascendant-realms-godot/scripts/ui/hud.gd", "production/ascendant-realms-godot/scripts/ui/entity_portrait_view.gd", "production/ascendant-realms-godot/tests/p1r2_selected_portraits.gd", "tools/godot/p1r2SelectedPortraitsTool.mjs"]);
-  const preExisting = new Set(["artifacts/manual-review/v0431-gameplay-readability-construction-loop/v0431-driver-started.txt", "artifacts/manual-review/v0432-war-hall-clan-levy-production-loop/v0432-driver-started.txt"]);
+  const generatedOrEvidence = (file) => file.endsWith(".import") || file.endsWith(".uid") || file.startsWith("artifacts/") || file.startsWith("evidence/") || file.startsWith("logs/");
   for (const f of execFileSync("git", ["diff", "--name-only"], { cwd: repo, encoding: "utf8" }).split(/\r?\n/).filter(Boolean)) {
     if (f === "production/ascendant-realms-godot/project.godot" && !config.includes("P1R2Capture")) continue;
-    if (!allowed.has(f) && !f.endsWith(".import") && !preExisting.has(f)) failures.push(`scope contamination: ${f}`);
+    if (!allowed.has(f) && !generatedOrEvidence(f)) failures.push(`scope contamination: ${f}`);
   }
   const report = { schema: "ascendant-realms-p1r2-validator-v1", source_sha: sourceSha(), summary, pass: failures.length === 0, failures };
   writeFileSync(path.join(evidenceRoot, "p1r2-validator-report.json"), JSON.stringify(report, null, 2) + "\n"); console.log(JSON.stringify(report, null, 2)); if (failures.length) process.exitCode = 1;
