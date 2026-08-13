@@ -491,23 +491,24 @@ func _play_sfx(key: String, volume_db: float) -> void:
 func _add_team_marker() -> void:
 	if is_instance_valid(_team_marker):
 		return
-	# M8: normal player mode uses selection, health, and material contrast rather
-	# than floating debug-heavy pips. Review tooling can opt in explicitly without
-	# changing the underlying ownership data or selection behavior.
-	if OS.get_environment("ASCENDANT_REALMS_DEBUG_REVIEW") != "1":
-		return
+	# VIS-01: keep ownership legible at strategic and 1366px gameplay scale with
+	# one restrained, unshaded team-color pip. This is presentation-only; the
+	# authoritative team value and all selection/command behavior remain unchanged.
 	_team_marker = MeshInstance3D.new()
 	_team_marker.name = "TeamPip"
 	var pip := CylinderMesh.new()
-	var radius := 0.16 if is_worker else (0.20 if is_hero else 0.18)
+	var radius := 0.18 if is_worker else (0.23 if is_hero else 0.21)
 	pip.top_radius = radius
 	pip.bottom_radius = radius
-	pip.height = 0.10
+	pip.height = 0.12
 	_team_marker.mesh = pip
-	_team_marker.position.y = _visual_height + 0.19
+	_team_marker.position.y = _visual_height + 0.22
 	var mat := StandardMaterial3D.new()
 	mat.albedo_color = commander.color if commander else Color(0.85, 0.85, 0.85)
 	mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	mat.emission_enabled = true
+	mat.emission = mat.albedo_color
+	mat.emission_energy_multiplier = 0.8
 	_team_marker.material_override = mat
 	add_child(_team_marker)
 
@@ -517,14 +518,14 @@ func _build_selection_ring() -> void:
 	_selection_visual_radius = _measure_selection_visual_radius()
 	_selection_indicator_radius = clampf(_selection_visual_radius * (1.25 if is_hero else 1.18), 0.5, 1.15)
 	var r: float = _selection_indicator_radius
-	torus.inner_radius = r * 0.85
+	torus.inner_radius = r * 0.78
 	torus.outer_radius = r
 	selection_ring.mesh = torus
 	var mat := StandardMaterial3D.new()
 	mat.albedo_color = commander.color if commander else Color.WHITE
 	mat.emission_enabled = true
 	mat.emission = commander.color if commander else Color.WHITE
-	mat.emission_energy_multiplier = 1.5
+	mat.emission_energy_multiplier = 1.9
 	mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
 	selection_ring.material_override = mat
 	selection_ring.position.y = 0.08
@@ -565,7 +566,7 @@ func _build_health_bar() -> void:
 	_health_bar_back = MeshInstance3D.new()
 	_health_bar_back.name = "HealthBarBackground"
 	var back_mesh := BoxMesh.new()
-	back_mesh.size = Vector3(1.25, 0.09, 0.035)
+	back_mesh.size = Vector3(1.4, 0.11, 0.035)
 	_health_bar_back.mesh = back_mesh
 	var back_mat := StandardMaterial3D.new()
 	back_mat.albedo_color = Color(0.03, 0.04, 0.04, 0.9)
@@ -575,7 +576,7 @@ func _build_health_bar() -> void:
 	_health_bar_fill = MeshInstance3D.new()
 	_health_bar_fill.name = "HealthBarFill"
 	var fill_mesh := BoxMesh.new()
-	fill_mesh.size = Vector3(1.15, 0.055, 0.045)
+	fill_mesh.size = Vector3(1.3, 0.07, 0.045)
 	_health_bar_fill.mesh = fill_mesh
 	var fill_mat := StandardMaterial3D.new()
 	fill_mat.albedo_color = Color(0.25, 0.8, 0.35) if team == 0 else Color(0.85, 0.25, 0.2)
@@ -592,7 +593,7 @@ func _update_health_bar() -> void:
 	_health_bar_root.visible = show_bar
 	if is_instance_valid(_health_bar_fill):
 		_health_bar_fill.scale.x = maxf(0.02, ratio)
-		_health_bar_fill.position.x = -0.575 * (1.0 - ratio)
+		_health_bar_fill.position.x = -0.65 * (1.0 - ratio)
 
 func _build_r15_combat_presentation() -> void:
 	# Presentation-only cues: no target, damage, timing or combat outcome is
