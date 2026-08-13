@@ -1332,6 +1332,7 @@ func _show_command_feedback(message: String, col: Color) -> void:
 	if is_instance_valid(_command_feedback_box):
 		_command_feedback_box.queue_free()
 	_command_feedback_box = PanelContainer.new()
+	_command_feedback_box.custom_minimum_size = Vector2(220, 38)
 	_command_feedback_box.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_command_feedback_box.z_index = 60
 	var sb := StyleBoxFlat.new()
@@ -1351,6 +1352,7 @@ func _show_command_feedback(message: String, col: Color) -> void:
 	_command_feedback_box.offset_bottom = -176
 	add_child(_command_feedback_box)
 	var label := _mk_label(message, 16, col)
+	label.custom_minimum_size = Vector2(198, 20)
 	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_command_feedback_box.add_child(label)
 	var tw := _command_feedback_box.create_tween()
