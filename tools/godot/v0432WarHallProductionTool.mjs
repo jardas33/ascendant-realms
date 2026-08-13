@@ -55,7 +55,7 @@ function smoke() {
 async function validate() {
   const failures=[];
   const branch=git(['branch','--show-current']); const head=git(['rev-parse','HEAD']);
-  if (branch !== branchName && !branch.startsWith('codex/v0433-') && !branch.startsWith('codex/v0434-') && branch !== 'codex/v0435-first-autonomous-easy-opponent-wave' && branch !== 'codex/golden-s1-build-01-godot-r3') failures.push(`branch ${branch}`);
+  if (branch !== branchName && !branch.startsWith('codex/v0433-') && !branch.startsWith('codex/v0434-') && branch !== 'codex/v0435-first-autonomous-easy-opponent-wave' && branch !== 'codex/golden-s1-build-01-godot-r3' && branch !== 'codex/current-godot-baseline') failures.push(`branch ${branch}`);
   try { execFileSync('git',['merge-base','--is-ancestor',baseSha,'HEAD'],{cwd:repo,stdio:'ignore'}); } catch { failures.push(`base ${baseSha} is not an ancestor`); }
   for (const f of frames) { const p=path.join(pack,f); if (!(await exists(p))) failures.push(`missing frame ${f}`); else if ((await fs.stat(p)).size < 1024) failures.push(`small frame ${f}`); }
   for (const f of evidence) if (!(await exists(path.join(pack,f)))) failures.push(`missing evidence ${f}`);
