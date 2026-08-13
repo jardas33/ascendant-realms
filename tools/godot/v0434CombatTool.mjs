@@ -8,7 +8,7 @@ const project = path.join(repo, 'production', 'ascendant-realms-godot');
 const pack = path.join(repo, 'artifacts', 'manual-review', 'v0434-first-combat-casualty-loop');
 const baseSha = '3b09035fc1001acd423801d46c557852daec8f70';
 const branchName = 'codex/v0434-first-combat-casualty-loop';
-const allowedBranches = new Set([branchName, 'codex/golden-s1-core-godot']);
+const allowedBranches = new Set([branchName, 'codex/golden-s1-core-godot', 'codex/current-godot-baseline']);
 const frames = [
   '01_V0434_INITIAL_REAL_SKIRMISH.png','02_V0434_WAR_HALL_CRAG_ARCHER_QUEUE.png','03_V0434_CRAG_ARCHER_SPAWNED.png',
   '04_V0434_PLAYER_SQUAD_SELECTED.png','05_V0434_ENCOUNTER_APPROACH.png','06_V0434_DIRECT_ATTACK_ORDER.png',
