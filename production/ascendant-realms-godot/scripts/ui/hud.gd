@@ -73,6 +73,7 @@ var _alert_box: VBoxContainer = null
 
 # --- game over ---
 var _gameover_layer: Control = null
+var _command_feedback_box: PanelContainer = null
 
 # --- refresh cadence ---
 var _slow_accum := 0.0
@@ -176,6 +177,8 @@ func _connect_signals() -> void:
 		_commander.tier_changed.connect(_on_tier_changed)
 	if rts:
 		rts.selection_changed.connect(_on_selection_changed)
+		if rts.has_signal("command_feedback_changed"):
+			rts.command_feedback_changed.connect(_on_command_feedback_changed)
 	if world:
 		world.alert.connect(_on_alert)
 		world.hero_leveled.connect(_on_hero_leveled)
@@ -277,7 +280,7 @@ func _command_icon_path(title: String, detail: String) -> String:
 
 
 func _mk_command_button(title: String, detail: String, tooltip: String, disabled_reason: String = "", state: String = "READY") -> Button:
-	var state_text := "[%s] " % state if not state.is_empty() else ""
+	var state_text := "LOCKED · " if state == "LOCKED" else ""
 	var btn := _mk_button("%s\n%s%s" % [title, state_text, detail], 13)
 	btn.custom_minimum_size = Vector2(174, 62)
 	btn.alignment = HORIZONTAL_ALIGNMENT_LEFT
@@ -927,7 +930,7 @@ func _build_multi(units: Array) -> void:
 	scroll.add_child(grid)
 
 	var shown := 0
-	var selected_label := _mk_label("Selected group  %d" % units.size(), 13, Color(0.95, 0.85, 0.55))
+	var selected_label := _mk_label("Group · %d units" % units.size(), 13, Color(0.95, 0.85, 0.55))
 	_sel_body.add_child(selected_label)
 	for u in units:
 		if shown >= 24:
@@ -1140,7 +1143,7 @@ func _rebuild_command_card(single, selection: Array) -> void:
 
 
 func _build_worker_card() -> void:
-	_add_command_section("Build", "Choose a structure; click once to enter placement.")
+	_add_command_section("Build", "Choose a structure.")
 	var grid := _mk_command_grid()
 	_cmd_body.add_child(grid)
 	for bid in GameData.buildings_for_race(_commander.race):
@@ -1163,7 +1166,7 @@ func _build_worker_card() -> void:
 
 func _build_building_card(b) -> void:
 	if not b.is_built:
-		_add_command_section("Construction", "Workers are building this structure.")
+		_add_command_section("Construction", "Under construction.")
 		var progress_label := _mk_label("Build progress: %d%%" % roundi(clampf(b.build_progress, 0.0, 1.0) * 100.0), 12, Color(0.85, 0.8, 0.6))
 		_cmd_body.add_child(progress_label)
 		var progress_bar := _mk_bar(Color(0.85, 0.7, 0.3))
@@ -1190,7 +1193,7 @@ func _build_building_card(b) -> void:
 
 	# production units
 	if not produces.is_empty():
-		_add_command_section("Train", "Queue a unit; hover a card for cost and availability.")
+		_add_command_section("Train", "Queue a unit.")
 		var train_grid := _mk_command_grid()
 		_cmd_body.add_child(train_grid)
 		for uid in produces:
@@ -1225,7 +1228,7 @@ func _build_building_card(b) -> void:
 			tech_ids.append(tid)
 
 	if not tech_ids.is_empty():
-		_add_command_section("Research", "Advance technology when the requirements are met.")
+		_add_command_section("Research", "Advance technology.")
 		var research_grid := _mk_command_grid()
 		_cmd_body.add_child(research_grid)
 		for tid in tech_ids:
@@ -1298,6 +1301,62 @@ func _flash_notice(msg: String, col: Color = Color(1, 0.6, 0.5)) -> void:
 	tw.tween_interval(1.4)
 	tw.tween_property(box, "modulate:a", 0.0, 0.6)
 	tw.tween_callback(box.queue_free)
+
+
+func _on_command_feedback_changed(feedback: Dictionary) -> void:
+	var intent := String(feedback.get("intent", ""))
+	var accepted := bool(feedback.get("accepted", false))
+	var labels := {
+		"MOVE": "Move order",
+		"ATTACK": "Attack order",
+		"GATHER": "Gather order",
+		"BUILD_OR_REPAIR": "Construction order",
+		"RALLY": "Rally point",
+		"ATTACK_MOVE": "Attack-move order",
+	}
+	var message := String(labels.get(intent, "Command"))
+	var col := Color(0.45, 0.85, 1.0)
+	if intent == "ATTACK" or intent == "ATTACK_MOVE":
+		col = Color(1.0, 0.55, 0.35)
+	elif intent == "GATHER":
+		col = Color(1.0, 0.82, 0.35)
+	elif intent == "BUILD_OR_REPAIR":
+		col = Color(0.5, 0.95, 0.55)
+	if not accepted:
+		message = "No valid target"
+		col = Color(1.0, 0.5, 0.42)
+	_show_command_feedback(message, col)
+
+
+func _show_command_feedback(message: String, col: Color) -> void:
+	if is_instance_valid(_command_feedback_box):
+		_command_feedback_box.queue_free()
+	_command_feedback_box = PanelContainer.new()
+	_command_feedback_box.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_command_feedback_box.z_index = 60
+	var sb := StyleBoxFlat.new()
+	sb.bg_color = Color(0.03, 0.04, 0.05, 0.92)
+	sb.set_border_width_all(2)
+	sb.border_color = col
+	sb.set_corner_radius_all(6)
+	sb.set_content_margin_all(9)
+	_command_feedback_box.add_theme_stylebox_override("panel", sb)
+	_command_feedback_box.anchor_left = 0.5
+	_command_feedback_box.anchor_right = 0.5
+	_command_feedback_box.anchor_top = 1.0
+	_command_feedback_box.anchor_bottom = 1.0
+	_command_feedback_box.grow_horizontal = Control.GROW_DIRECTION_BOTH
+	_command_feedback_box.grow_vertical = Control.GROW_DIRECTION_BEGIN
+	_command_feedback_box.offset_top = -212
+	_command_feedback_box.offset_bottom = -176
+	add_child(_command_feedback_box)
+	var label := _mk_label(message, 16, col)
+	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_command_feedback_box.add_child(label)
+	var tw := _command_feedback_box.create_tween()
+	tw.tween_interval(0.9)
+	tw.tween_property(_command_feedback_box, "modulate:a", 0.0, 0.35)
+	tw.tween_callback(_command_feedback_box.queue_free)
 
 
 # ---------------------------------------------------------------------------

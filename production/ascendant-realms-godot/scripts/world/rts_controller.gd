@@ -4,6 +4,7 @@ extends Node3D
 
 signal selection_changed(units: Array)
 signal build_mode_changed(active: bool, building_id: String)
+signal command_feedback_changed(feedback: Dictionary)
 signal camera_moved
 
 @export var edge_scroll := true
@@ -552,11 +553,11 @@ func _feedback_target_id(target) -> String:
 	if not is_instance_valid(target):
 		return ""
 	if target is Unit:
-		return "unit:" + String(target.unit_id)
+		return "unit:" + str(target.unit_id)
 	if target is Building:
-		return "building:" + String(target.building_id)
+		return "building:" + str(target.building_id)
 	if target is ResourceNode:
-		return "resource:" + String(target.get_instance_id())
+		return "resource:" + str(target.get_instance_id())
 	return ""
 
 func _record_command_feedback(accepted: bool, intent: String, feedback_type: String, target, position: Vector3) -> void:
@@ -568,6 +569,7 @@ func _record_command_feedback(accepted: bool, intent: String, feedback_type: Str
 		"position": {"x": position.x, "y": position.y, "z": position.z},
 		"timestamp_unix_ms": Time.get_unix_time_from_system() * 1000.0
 	}
+	command_feedback_changed.emit(_last_command_feedback.duplicate(true))
 
 func _emit_command_feedback(intent: String, feedback_type: String, position: Vector3, target) -> void:
 	_record_command_feedback(true, intent, feedback_type, target, position)
