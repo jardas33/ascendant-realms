@@ -19,6 +19,8 @@ const MINIMAP_RASTER_SIZE := 128
 const MINIMAP_PANEL_HEIGHT := MINIMAP_SIZE + 68.0
 const COMMAND_PANEL_WIDTH := 390.0
 const FONT_COLOR := Color(0.95, 0.9, 0.8)
+const PLAYER_ALERT_LIMIT := 1
+const DEBUG_REVIEW_ALERT_LIMIT := 4
 const RES_ICONS := {
 	"food": "res://assets/ui/icon_food.png",
 	"timber": "res://assets/ui/icon_timber.png",
@@ -76,6 +78,12 @@ var _gameover_layer: Control = null
 var _slow_accum := 0.0
 var _map_accum := 0.0
 var _last_viewport_size := Vector2.ZERO
+
+func _debug_review_presentation() -> bool:
+	# Keep the player-facing HUD quiet while allowing capture/diagnostic runs to
+	# retain the full alert history for review evidence. This is presentation
+	# only; the world alert signal and its authoritative state remain unchanged.
+	return OS.get_environment("ASCENDANT_GOLDEN_BATTLE_DEBUG_REVIEW") == "1" or OS.get_environment("ASCENDANT_HP4_M20_DIAGNOSTICS") == "1"
 
 func _m20_recorder():
 	if OS.get_environment("ASCENDANT_HP4_M20_DIAGNOSTICS") != "1":
@@ -1320,8 +1328,11 @@ func _on_hero_leveled(level: int) -> void:
 func _push_alert(message: String, col: Color) -> void:
 	if not is_instance_valid(_alert_box):
 		return
-	# cap the feed
-	while _alert_box.get_child_count() >= 4:
+	# PLAYER mode shows only the latest meaningful alert so event history does
+	# not compete with the selected card, command panel, or battlefield. The
+	# explicit debug/review path keeps the prior four-entry feed intact.
+	var alert_limit := DEBUG_REVIEW_ALERT_LIMIT if _debug_review_presentation() else PLAYER_ALERT_LIMIT
+	while _alert_box.get_child_count() >= alert_limit:
 		var oldest := _alert_box.get_child(0)
 		_alert_box.remove_child(oldest)
 		oldest.queue_free()
