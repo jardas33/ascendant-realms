@@ -46,6 +46,9 @@ var _mesh_instances: Array = []
 var _construct_mat: StandardMaterial3D
 var _construction_stage_root: Node3D
 var _construction_stage_meshes: Array = []
+var _construction_status_label: Label3D
+var _construction_status_track: MeshInstance3D
+var _construction_status_fill: MeshInstance3D
 var _selection_visual_extents := Vector2(2.0, 2.0)
 var _selection_indicator_extents := Vector2(2.2, 2.2)
 
@@ -154,6 +157,49 @@ func _build_construction_stage_visual() -> void:
 		beam.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_ON
 		_construction_stage_root.add_child(beam)
 		_construction_stage_meshes.append(beam)
+	_build_construction_status_visual()
+
+func _build_construction_status_visual() -> void:
+	# Keep construction progress readable from the battlefield, not only from the
+	# selected-card panel. This is presentation-only and follows build_progress.
+	_construction_status_label = Label3D.new()
+	_construction_status_label.name = "ConstructionStatus"
+	_construction_status_label.billboard = BaseMaterial3D.BILLBOARD_ENABLED
+	_construction_status_label.no_depth_test = true
+	_construction_status_label.font_size = 42
+	_construction_status_label.outline_size = 12
+	_construction_status_label.pixel_size = 0.003
+	_construction_status_label.modulate = Color(1.0, 0.92, 0.58, 1.0)
+	_construction_status_label.position = Vector3(0, _presentation_height() + 1.55, 0)
+	add_child(_construction_status_label)
+
+	_construction_status_track = MeshInstance3D.new()
+	_construction_status_track.name = "ConstructionProgressTrack"
+	var track_mesh := BoxMesh.new()
+	track_mesh.size = Vector3(maxf(1.8, footprint * 0.85), 0.09, 0.08)
+	_construction_status_track.mesh = track_mesh
+	var track_mat := StandardMaterial3D.new()
+	track_mat.albedo_color = Color(0.08, 0.06, 0.04, 0.88)
+	track_mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	_construction_status_track.material_override = track_mat
+	_construction_status_track.position = Vector3(0, _presentation_height() + 0.78, 0)
+	_construction_status_track.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	add_child(_construction_status_track)
+
+	_construction_status_fill = MeshInstance3D.new()
+	_construction_status_fill.name = "ConstructionProgressFill"
+	var fill_mesh := BoxMesh.new()
+	fill_mesh.size = Vector3(maxf(1.8, footprint * 0.85), 0.11, 0.1)
+	_construction_status_fill.mesh = fill_mesh
+	var fill_mat := StandardMaterial3D.new()
+	fill_mat.albedo_color = Color(0.95, 0.62, 0.18, 0.98)
+	fill_mat.emission_enabled = true
+	fill_mat.emission = Color(0.55, 0.22, 0.04)
+	fill_mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	_construction_status_fill.material_override = fill_mat
+	_construction_status_fill.position = Vector3(0, _presentation_height() + 0.78, 0.055)
+	_construction_status_fill.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	add_child(_construction_status_fill)
 
 func _add_selection_pick_shape() -> void:
 	## Selection-only envelope for visible-footprint coverage. Its zero mask
@@ -235,6 +281,15 @@ func _set_construction_visual(p: float) -> void:
 	if model_root:
 		model_root.position.y = lerp(-0.15, 0.0, clamp(p, 0.0, 1.0))
 	var building_now := p < 1.0
+	if is_instance_valid(_construction_status_label):
+		_construction_status_label.visible = building_now
+		_construction_status_label.text = "BUILDING %d%%" % roundi(clampf(p, 0.0, 1.0) * 100.0)
+	if is_instance_valid(_construction_status_track):
+		_construction_status_track.visible = building_now
+	if is_instance_valid(_construction_status_fill):
+		_construction_status_fill.visible = building_now
+		_construction_status_fill.scale.x = maxf(0.02, clampf(p, 0.0, 1.0))
+		_construction_status_fill.position.x = (maxf(1.8, footprint * 0.85) * (clampf(p, 0.0, 1.0) - 1.0)) * 0.5
 	if is_instance_valid(_construction_stage_root):
 		var stage := clampf(p, 0.0, 1.0)
 		_construction_stage_root.visible = stage < 0.9
