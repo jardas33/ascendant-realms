@@ -166,11 +166,11 @@ func _build_construction_status_visual() -> void:
 	_construction_status_label.name = "ConstructionStatus"
 	_construction_status_label.billboard = BaseMaterial3D.BILLBOARD_ENABLED
 	_construction_status_label.no_depth_test = true
-	_construction_status_label.font_size = 42
-	_construction_status_label.outline_size = 12
-	_construction_status_label.pixel_size = 0.003
+	_construction_status_label.font_size = 48
+	_construction_status_label.outline_size = 14
+	_construction_status_label.pixel_size = 0.008
 	_construction_status_label.modulate = Color(1.0, 0.92, 0.58, 1.0)
-	_construction_status_label.position = Vector3(0, _presentation_height() + 1.55, 0)
+	_construction_status_label.position = Vector3(0, _presentation_height() + 1.1, 0)
 	add_child(_construction_status_label)
 
 	_construction_status_track = MeshInstance3D.new()
