@@ -24,6 +24,7 @@ const load01ChildPaths = new Set([
   "docs/P1_LOAD_01_SKIRMISH_LOADING_FIRST_FIX_REPORT.md",
   "artifacts/manual-review/p1-load-01-skirmish-loading-first-fix/README.md",
   "artifacts/manual-review/p1-load-01-skirmish-loading-first-fix/01_LOAD01_PLAYABLE_1920x1080.png",
+  "artifacts/manual-review/p1-load-01-skirmish-loading-first-fix/p1-load-01-validator-report.json",
 ]);
 const captureSourceIsCurrentOrDocumentedChild = (captureSha, currentSha) => {
   if (captureSha === currentSha) return true;
