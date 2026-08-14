@@ -14,6 +14,11 @@ const sourceSha = () => execFileSync("git", ["rev-parse", "HEAD"], { cwd: repo, 
 const branch = () => execFileSync("git", ["branch", "--show-current"], { cwd: repo, encoding: "utf8" }).trim();
 const json = (file) => JSON.parse(readFileSync(file, "utf8"));
 const safeName = (value) => value.replace(/[^a-zA-Z0-9_.-]/g, "-");
+const phaseElapsed = (manifest) => {
+  const t1 = manifest.phases?.T1_LOAD_TRANSITION_BEGIN?.elapsed_s;
+  const t9 = manifest.phases?.T9_BATTLEFIELD_PLAYABLE?.elapsed_s;
+  return Number.isFinite(t1) && Number.isFinite(t9) ? Number((t9 - t1).toFixed(3)) : null;
+};
 
 async function capture() {
   mkdirSync(afterRoot, { recursive: true });
@@ -59,7 +64,7 @@ async function capture() {
     });
   }
   const playable = records.filter((record) => record.exit_code === 0 && record.manifest.status === "PASSED_P1_LOAD01_REACHED_PLAYABLE_BATTLEFIELD");
-  const elapsed = playable.map((record) => record.manifest.phases?.T9_BATTLEFIELD_PLAYABLE?.elapsed_s).filter(Number.isFinite);
+  const elapsed = playable.map((record) => phaseElapsed(record.manifest)).filter(Number.isFinite);
   const summary = {
     schema: "ascendant-realms-p1-load-01-capture-v1",
     branch: branch(),
@@ -135,7 +140,7 @@ function validate() {
     source_sha: current,
     branch: currentBranch,
     godot,
-    baseline: baseline.map((manifest) => manifest.phases?.T9_BATTLEFIELD_PLAYABLE?.elapsed_s),
+    baseline: baseline.map((manifest) => phaseElapsed(manifest)),
     after: capture?.t1_to_t9_seconds || [],
     capture_manifest: capturePath,
     failures,
