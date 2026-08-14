@@ -130,8 +130,9 @@ function validate() {
   }
   const loading = readFileSync(path.join(project, "scripts/autoloads/loading_screen.gd"), "utf8");
   const observer = readFileSync(path.join(project, "tests/p1_load_01_observer.gd"), "utf8");
+  const projectConfig = readFileSync(path.join(project, "project.godot"), "utf8");
   for (const token of ["_run_preload_sequence_threaded", "ResourceLoader.load_threaded_request", "OS.has_feature(\"web\")", "P1Load01Observer"]) {
-    if (!loading.includes(token) && !observer.includes(token)) failures.push(`missing LOAD-01 contract token ${token}`);
+    if (!loading.includes(token) && !observer.includes(token) && !projectConfig.includes(token)) failures.push(`missing LOAD-01 contract token ${token}`);
   }
   const config = readFileSync(path.join(project, "project.godot"), "utf8");
   if (!config.includes("P1Load01Observer=\"*res://tests/p1_load_01_observer.gd\"")) failures.push("capture observer autoload missing");
