@@ -10,6 +10,7 @@ const baselineRoot = process.env.P1_UNITS_01_BASELINE_ROOT || "D:\\CodexData\\ev
 const p1r1 = path.join(repo, "tools/godot/p1r1UnitReadabilityTool.mjs");
 const sourceSha = () => execFileSync("git", ["rev-parse", "HEAD"], { cwd: repo, encoding: "utf8" }).trim();
 const productionSourceSha = () => process.env.P1_UNITS_01_PRODUCTION_SOURCE_SHA || sourceSha();
+const branchName = () => execFileSync("git", ["branch", "--show-current"], { cwd: repo, encoding: "utf8" }).trim();
 const readJson = (file) => JSON.parse(readFileSync(file, "utf8"));
 
 async function capture() {
@@ -35,6 +36,7 @@ async function capture() {
   const manifest = readJson(p1r1Manifest);
   const review = {
     schema: "ascendant-realms-p1-units-01-capture-v1",
+    branch: branchName(),
     source_sha: productionSourceSha(),
     validation_input_sha: sourceSha(),
     baseline_root: baselineRoot,
@@ -60,6 +62,7 @@ function validate() {
   if (!existsSync(capturePath)) failures.push("missing p1-units-01 capture manifest");
   else {
     const capture = readJson(capturePath);
+    if (capture.branch !== branchName()) failures.push("capture branch mismatch");
     if (capture.source_sha !== productionSourceSha()) failures.push("capture source SHA mismatch");
     if (capture.validation_input_sha !== sourceSha()) failures.push("validation input SHA mismatch");
     if (capture.pass !== true) failures.push(...(capture.failures || ["capture failed"]));
