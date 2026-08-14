@@ -79,6 +79,8 @@
     "godot:smoke:v0431-gameplay-construction": "node tools/godot/v0431GameplayConstructionTool.mjs smoke",
     "godot:capture:v0431-gameplay-construction": "node tools/godot/v0431GameplayConstructionTool.mjs capture",
     "godot:validate:v0431-gameplay-construction": "node tools/godot/v0431GameplayConstructionTool.mjs validate",
+    "godot:capture:p1-ui-presentation-fix-pack-1": "node tools/godot/p1UiPresentationFixPack1Tool.mjs capture",
+    "godot:validate:p1-ui-presentation-fix-pack-1": "node tools/godot/p1UiPresentationFixPack1Tool.mjs validate",
     "godot:smoke:v0432-war-hall-production": "node tools/godot/v0432WarHallProductionTool.mjs smoke",
     "godot:capture:v0432-war-hall-production": "node tools/godot/v0432WarHallProductionTool.mjs capture",
     "godot:validate:v0432-war-hall-production": "node tools/godot/v0432WarHallProductionTool.mjs validate",

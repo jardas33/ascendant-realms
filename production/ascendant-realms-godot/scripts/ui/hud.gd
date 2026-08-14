@@ -279,19 +279,31 @@ func _command_icon_path(title: String, detail: String) -> String:
 	return FRAME_PORTRAIT
 
 
-func _mk_command_button(title: String, detail: String, tooltip: String, disabled_reason: String = "", state: String = "READY") -> Button:
+func _mk_command_button(title: String, detail: String, tooltip: String, disabled_reason: String = "", state: String = "READY", preview_definition: Dictionary = {}) -> Button:
 	var state_text := "LOCKED · " if state == "LOCKED" else ""
-	var btn := _mk_button("%s\n%s%s" % [title, state_text, detail], 13)
-	btn.custom_minimum_size = Vector2(174, 62)
+	var has_preview := not preview_definition.is_empty()
+	var label_prefix := "     " if has_preview else ""
+	var btn := _mk_button("%s%s\n%s%s" % [label_prefix, title, label_prefix, state_text + detail], 12 if has_preview else 13)
+	btn.custom_minimum_size = Vector2(174, 72 if has_preview else 62)
 	btn.alignment = HORIZONTAL_ALIGNMENT_LEFT
 	btn.clip_text = true
 	btn.focus_mode = Control.FOCUS_NONE
 	btn.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
-	var icon_path := _command_icon_path(title, detail)
-	if ResourceLoader.exists(icon_path):
-		btn.icon = load(icon_path)
-		btn.expand_icon = true
-		btn.icon_alignment = HORIZONTAL_ALIGNMENT_LEFT
+	if has_preview and ResourceLoader.exists(ENTITY_PORTRAIT_SCRIPT):
+		var preview = load(ENTITY_PORTRAIT_SCRIPT).new()
+		preview.name = "BuildingPreview"
+		preview.position = Vector2(6, 7)
+		preview.size = Vector2(46, 46)
+		preview.custom_minimum_size = Vector2(46, 46)
+		preview.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		btn.add_child(preview)
+		preview.configure_definition(preview_definition)
+	else:
+		var icon_path := _command_icon_path(title, detail)
+		if ResourceLoader.exists(icon_path):
+			btn.icon = load(icon_path)
+			btn.expand_icon = true
+			btn.icon_alignment = HORIZONTAL_ALIGNMENT_LEFT
 	btn.tooltip_text = tooltip if disabled_reason.is_empty() else "%s\nUnavailable: %s" % [tooltip, disabled_reason]
 	var normal := StyleBoxFlat.new()
 	normal.bg_color = Color(0.10, 0.12, 0.14, 0.96)
@@ -1155,7 +1167,7 @@ func _build_worker_card() -> void:
 		var reason: String = ""
 		if not affordable:
 			reason = "Need " + _commander.missing_resource(cost)
-		var btn := _mk_command_button(str(bdef.get("name", bid)), "Cost: " + _cost_string(cost).trim_prefix("  (").trim_suffix(")"), str(bdef.get("desc", "")), reason, "LOCKED" if not affordable else "READY")
+		var btn := _mk_command_button(str(bdef.get("name", bid)), "Cost: " + _cost_string(cost).trim_prefix("  (").trim_suffix(")"), str(bdef.get("desc", "")), reason, "LOCKED" if not affordable else "READY", bdef)
 		btn.disabled = not affordable
 		var cap_id := String(bid)
 		btn.pressed.connect(func():

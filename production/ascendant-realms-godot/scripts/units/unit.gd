@@ -383,8 +383,11 @@ func _build_model() -> void:
 		mat.albedo_color = commander.color if commander else Color.GRAY
 		mi.material_override = mat
 		model_root.add_child(mi)
-	# team-color banner tint indicator
-	_add_team_marker()
+	# Keep the proof-oriented ownership pip available to debug/review captures,
+	# while normal PLAYER presentation uses authored model tint and selection/
+	# health feedback instead of a permanent blue dot over every unit.
+	if _debug_review_presentation():
+		_add_team_marker()
 	# M7: establish a stable battlefield-facing pose after the world places the unit.
 	call_deferred("_apply_m_initial_facing")
 
@@ -400,6 +403,8 @@ func _apply_m_initial_facing() -> void:
 
 func _apply_p1r20_model_materials(model: Node3D) -> void:
 	var lift := P1R20_WORKER_VALUE_LIFT if is_worker else (P1R20_HERO_VALUE_LIFT if is_hero else P1R20_MILITARY_VALUE_LIFT)
+	var team_tint: Color = commander.color if is_instance_valid(commander) else Color.WHITE
+	var tint_strength := 0.10 if is_hero else (0.07 if not is_worker else 0.05)
 	for child in model.find_children("*", "MeshInstance3D", true, false):
 		var mi := child as MeshInstance3D
 		if not mi or not mi.mesh:
@@ -412,8 +417,12 @@ func _apply_p1r20_model_materials(model: Node3D) -> void:
 			# mutate the source resource or each other's visual state.
 			var mat := (source as BaseMaterial3D).duplicate()
 			mat.albedo_color = mat.albedo_color.lerp(Color(1.08, 1.08, 1.08), lift)
+			mat.albedo_color = mat.albedo_color.lerp(team_tint, tint_strength)
 			mat.roughness = maxf(mat.roughness, P1R20_ROUGHNESS_FLOOR)
 			mi.set_surface_override_material(surface, mat)
+
+func _debug_review_presentation() -> bool:
+	return OS.get_environment("ASCENDANT_GOLDEN_BATTLE_DEBUG_REVIEW") == "1" or OS.get_environment("ASCENDANT_HP4_M20_DIAGNOSTICS") == "1"
 
 func _visual_target_height() -> float:
 	# Presentation-only emphasis: keep gameplay definitions authoritative while

@@ -12,6 +12,7 @@ var _viewport: SubViewport
 var _pivot: Node3D
 var _camera: Camera3D
 var _pending_entity = null
+var _pending_definition: Dictionary = {}
 
 func _ready() -> void:
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -19,6 +20,8 @@ func _ready() -> void:
 	_build_view()
 	if is_instance_valid(_pending_entity):
 		_apply_entity(_pending_entity)
+	elif not _pending_definition.is_empty():
+		_apply_definition(_pending_definition, true)
 
 func _build_view() -> void:
 	var bg := ColorRect.new()
@@ -53,7 +56,7 @@ func _build_view() -> void:
 	env.background_color = Color(0.055, 0.065, 0.075, 1.0)
 	env.ambient_light_source = Environment.AMBIENT_SOURCE_COLOR
 	env.ambient_light_color = Color(0.62, 0.66, 0.78)
-	env.ambient_light_energy = 0.86
+	env.ambient_light_energy = 1.05
 	env_node.environment = env
 	_viewport.add_child(env_node)
 
@@ -91,15 +94,27 @@ func configure_entity(entity) -> void:
 		return
 	_apply_entity(entity)
 
+
+func configure_definition(definition: Dictionary) -> void:
+	_pending_definition = definition.duplicate(true)
+	if is_instance_valid(_pivot):
+		_apply_definition(_pending_definition, true)
+
 func _apply_entity(entity) -> void:
 	if not is_instance_valid(entity) or not is_instance_valid(_pivot):
 		return
 	_pending_entity = null
+	_pending_definition = {}
+	var definition: Dictionary = entity.def if "def" in entity and entity.def is Dictionary else {}
+	_apply_definition(definition, entity.get_class() == "Building")
+
+
+func _apply_definition(definition: Dictionary, is_building: bool) -> void:
+	if not is_instance_valid(_pivot):
+		return
 	for child in _pivot.get_children():
 		child.queue_free()
-	var definition: Dictionary = entity.def if "def" in entity and entity.def is Dictionary else {}
 	var path := str(definition.get("model", ""))
-	var is_building: bool = entity.get_class() == "Building"
 	var target_height: float = 2.45 if is_building else 1.95
 	var model: Node3D = null
 	if not path.is_empty() and ResourceLoader.exists(path):
@@ -126,8 +141,8 @@ func _apply_entity(entity) -> void:
 	# at that size instead of shrinking it into the portrait frame's dark center.
 	# The single-card presentation keeps the established camera distance.
 	var compact_card := custom_minimum_size.x < 80.0
-	var distance: float = 2.15 if compact_card and not is_building else (2.55 if compact_card else (3.15 if not is_building else 3.75))
-	_camera.position = Vector3(0.0, target_height * 0.6, distance)
-	_camera.fov = 58.0 if compact_card else 75.0
+	var distance: float = 2.35 if compact_card and not is_building else (2.75 if compact_card else (2.65 if not is_building else 3.2))
+	_camera.position = Vector3(0.0, target_height * 0.58, distance)
+	_camera.fov = 56.0 if compact_card else 62.0
 	_camera.look_at(Vector3(0.0, target_height * 0.48, 0.0), Vector3.UP)
 	_pivot.rotation_degrees.y = -18.0

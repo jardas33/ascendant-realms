@@ -121,7 +121,9 @@ func _ready() -> void:
 		tut_layer.add_child(tutorial)
 		tutorial.setup(world, rts)
 	_m20_end(ready_stage)
-	if OS.get_environment("ASCENDANT_V0436_R1K_CAPTURE") == "1":
+	if OS.get_environment("ASCENDANT_P1_UI_CAPTURE") == "1":
+		call_deferred("_start_p1_ui_capture")
+	elif OS.get_environment("ASCENDANT_V0436_R1K_CAPTURE") == "1":
 		call_deferred("_start_v0436_r1k_capture")
 	elif OS.get_environment("ASCENDANT_V0436_R1J_CAPTURE") == "1":
 		call_deferred("_start_v0436_r1j_capture")
@@ -210,6 +212,11 @@ func _start_v0436_r1k_capture() -> void:
 
 func _start_v0431_capture() -> void:
 	var runner = get_node_or_null("/root/V0431Capture")
+	if runner and runner.has_method("capture_gameplay"):
+		runner.capture_gameplay(self)
+
+func _start_p1_ui_capture() -> void:
+	var runner = get_node_or_null("/root/P1UiPresentationFixPack1")
 	if runner and runner.has_method("capture_gameplay"):
 		runner.capture_gameplay(self)
 
