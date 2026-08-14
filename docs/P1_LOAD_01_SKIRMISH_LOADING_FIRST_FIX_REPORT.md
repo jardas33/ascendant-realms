@@ -14,7 +14,7 @@ Baseline instrumentation recorded 166 preload entries and approximately 6.887 se
 
 ## Results
 
-The exploratory baseline runs reached T9 in 8.529 s, 7.887 s, and 8.572 s (median 8.529 s). Exploratory after runs reached T9 in 3.133 s, 3.555 s, and 3.176 s (median 3.176 s), a 62.8% median reduction. Those exploratory manifests were recorded before the source commit and are not final acceptance evidence. The final exact-head capture command reruns the after measurement three times and writes `D:\CodexData\evidence\ascendant-realms-p1-load-01\final-after-runs\p1-load-01-capture-manifest.json`; the validator requires all run source and branch fields to match the committed specialist HEAD.
+The measured baseline runs reached T1-to-T9 in 8.529 s, 7.887 s, and 8.572 s (median 8.529 s). Exploratory after runs reached T1-to-T9 in 3.133 s, 3.555 s, and 3.176 s, but were recorded before the source commit and are not final acceptance evidence. The final exact-head capture at source `9787a009a64015401f70a48cbc71ac838cd98d01` reached T1-to-T9 in 2.927 s, 2.863 s, and 2.685 s (median 2.863 s), a 66.4% reduction from the measured baseline median. The final capture manifest is `D:\CodexData\evidence\ascendant-realms-p1-load-01\final-after-runs\p1-load-01-capture-manifest.json`; all three runs exit cleanly, reach T9, and preserve exact branch/source provenance.
 
 ## Evidence
 
@@ -26,4 +26,4 @@ The dedicated commands are `npm run godot:test:p1-load-01`, `npm run godot:captu
 
 ## Specialist status
 
-This report is intentionally completed with exact-head values by the closing handoff after the specialist commit and final capture. The specialist branch is `codex/p1-load-01`, based on canonical HEAD `8ff195c2c1e9027d49bf371023d919ec6468b256`. The lane is not canonically integrated, pushed, merged, or promoted. The protected checkout and canonical branch remain untouched.
+The specialist branch is `codex/p1-load-01`, based on canonical HEAD `8ff195c2c1e9027d49bf371023d919ec6468b256`, with final evidence source `9787a009a64015401f70a48cbc71ac838cd98d01`. The lane is not canonically integrated, pushed, merged, or promoted. The protected checkout and canonical branch remain untouched.

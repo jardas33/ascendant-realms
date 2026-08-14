@@ -1,0 +1,19 @@
+{
+  "schema": "ascendant-realms-p1-load-01-validator-v1",
+  "source_sha": "9787a009a64015401f70a48cbc71ac838cd98d01",
+  "branch": "codex/p1-load-01",
+  "godot": "D:\\CodexData\\tools\\godot-4.6.3-stable\\Godot_v4.6.3-stable_win64.exe",
+  "baseline": [
+    8.529,
+    7.887,
+    8.572
+  ],
+  "after": [
+    2.927,
+    2.863,
+    2.685
+  ],
+  "capture_manifest": "D:\\CodexData\\evidence\\ascendant-realms-p1-load-01\\final-after-runs\\p1-load-01-capture-manifest.json",
+  "failures": [],
+  "pass": true
+}
