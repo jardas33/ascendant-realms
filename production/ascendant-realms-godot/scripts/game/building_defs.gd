@@ -12,7 +12,7 @@ static func get_all() -> Dictionary:
 	return {
 	# ---------------- BARROSAN ----------------
 	"barrosan_clanhold": {
-		"race": "barrosan", "name": "Clanhold", "kind": "main", "model": _b("barrosan_clanhold"),
+		"race": "barrosan", "name": "Clanhold", "kind": "main", "model": "res://assets/environment/buildings/barrosan_clanhold_authority.glb",
 		"hp": 2200, "armor_class": "fortified", "armor": 10, "footprint": 7.0,
 		"cost": {"timber": 350, "stone": 200}, "build_time": 60, "grants_pop": 12, "tier_unlock": 1,
 		"produces": ["barrosan_worker"], "drop_off": true, "is_hq": true,
