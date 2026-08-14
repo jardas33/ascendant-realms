@@ -96,6 +96,7 @@ var _build_target = null
 var agent: NavigationAgent3D
 var model_root: Node3D
 var _team_marker: MeshInstance3D
+var _p1r22_contact_shadow: MeshInstance3D
 var anim: AnimationPlayer
 var selection_ring: MeshInstance3D
 var _selection_visual_radius := 0.4
@@ -184,6 +185,14 @@ const P1R20_WORKER_VALUE_LIFT := 0.08
 const P1R20_MILITARY_VALUE_LIFT := 0.11
 const P1R20_HERO_VALUE_LIFT := 0.15
 const P1R20_ROUGHNESS_FLOOR := 0.28
+
+# P1-UNITS-01: authored-model readability accents. These are per-instance
+# presentation values only; source materials, team data, and simulation values
+# remain untouched.
+const P1R22_WORKER_TEAM_TINT := 0.12
+const P1R22_MILITARY_TEAM_TINT := 0.16
+const P1R22_HERO_TEAM_TINT := 0.20
+const P1R22_CONTACT_SHADOW_ALPHA := 0.18
 
 # P1-R21 presentation-only motion polish. Animation timing follows the
 # already-authoritative planar velocity; it never changes movement, pathing,
@@ -383,6 +392,8 @@ func _build_model() -> void:
 		mat.albedo_color = commander.color if commander else Color.GRAY
 		mi.material_override = mat
 		model_root.add_child(mi)
+	if not _debug_review_presentation():
+		_build_p1r22_contact_shadow()
 	# Keep the proof-oriented ownership pip available to debug/review captures,
 	# while normal PLAYER presentation uses authored model tint and selection/
 	# health feedback instead of a permanent blue dot over every unit.
@@ -404,7 +415,7 @@ func _apply_m_initial_facing() -> void:
 func _apply_p1r20_model_materials(model: Node3D) -> void:
 	var lift := P1R20_WORKER_VALUE_LIFT if is_worker else (P1R20_HERO_VALUE_LIFT if is_hero else P1R20_MILITARY_VALUE_LIFT)
 	var team_tint: Color = commander.color if is_instance_valid(commander) else Color.WHITE
-	var tint_strength := 0.10 if is_hero else (0.07 if not is_worker else 0.05)
+	var tint_strength := P1R22_HERO_TEAM_TINT if is_hero else (P1R22_WORKER_TEAM_TINT if is_worker else P1R22_MILITARY_TEAM_TINT)
 	for child in model.find_children("*", "MeshInstance3D", true, false):
 		var mi := child as MeshInstance3D
 		if not mi or not mi.mesh:
@@ -420,6 +431,30 @@ func _apply_p1r20_model_materials(model: Node3D) -> void:
 			mat.albedo_color = mat.albedo_color.lerp(team_tint, tint_strength)
 			mat.roughness = maxf(mat.roughness, P1R20_ROUGHNESS_FLOOR)
 			mi.set_surface_override_material(surface, mat)
+
+func _build_p1r22_contact_shadow() -> void:
+	# A small, flat contact cue separates feet from noisy terrain without adding a
+	# selectable node, gameplay zone, ownership marker, or debug label.
+	if is_instance_valid(_p1r22_contact_shadow):
+		return
+	_p1r22_contact_shadow = MeshInstance3D.new()
+	_p1r22_contact_shadow.name = "UnitContactShadow"
+	var shadow_mesh := CylinderMesh.new()
+	var radius := 0.42 if is_worker else (0.50 if is_hero else 0.46)
+	shadow_mesh.top_radius = radius
+	shadow_mesh.bottom_radius = radius
+	shadow_mesh.height = 0.018
+	shadow_mesh.radial_segments = 24
+	_p1r22_contact_shadow.mesh = shadow_mesh
+	_p1r22_contact_shadow.scale = Vector3(1.0, 1.0, 0.66)
+	_p1r22_contact_shadow.position.y = 0.014
+	_p1r22_contact_shadow.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	var shadow_mat := StandardMaterial3D.new()
+	shadow_mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	shadow_mat.albedo_color = Color(0.035, 0.028, 0.022, P1R22_CONTACT_SHADOW_ALPHA)
+	shadow_mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	_p1r22_contact_shadow.material_override = shadow_mat
+	add_child(_p1r22_contact_shadow)
 
 func _debug_review_presentation() -> bool:
 	return OS.get_environment("ASCENDANT_GOLDEN_BATTLE_DEBUG_REVIEW") == "1" or OS.get_environment("ASCENDANT_HP4_M20_DIAGNOSTICS") == "1"

@@ -33,6 +33,8 @@
     "godot:test:p1s5-match-identity": "node tools/godot/p1s5MatchIdentityTool.mjs validate",
     "godot:capture:p1r1-unit-readability": "node tools/godot/p1r1UnitReadabilityTool.mjs capture",
     "godot:test:p1r1-unit-readability": "node tools/godot/p1r1UnitReadabilityTool.mjs validate",
+    "godot:capture:p1-units-01": "node tools/godot/p1Units01Tool.mjs capture",
+    "godot:test:p1-units-01": "node tools/godot/p1Units01Tool.mjs validate",
     "godot:capture:p1r2-selected-portraits": "node tools/godot/p1r2SelectedPortraitsTool.mjs capture",
     "godot:test:p1r2-selected-portraits": "node tools/godot/p1r2SelectedPortraitsTool.mjs validate",
     "codex:test:liveness": "node tools/codex/livenessFixture.mjs",
