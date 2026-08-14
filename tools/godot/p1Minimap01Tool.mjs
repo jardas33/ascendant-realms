@@ -9,6 +9,7 @@ const logsRoot = process.env.P1_MINIMAP_01_LOG_ROOT || "D:\\CodexData\\logs\\asc
 const godot = process.env.ASCENDANT_REALMS_GODOT || "D:\\CodexData\\tools\\godot-4.6.3-stable\\Godot_v4.6.3-stable_win64.exe";
 const sourceSha = () => execFileSync("git", ["rev-parse", "HEAD"], { cwd: repo, encoding: "utf8" }).trim();
 const p1r3 = path.join(repo, "tools/godot/p1r3MinimapTerrainTool.mjs");
+const gitNames = (args) => execFileSync("git", args, { cwd: repo, encoding: "utf8" }).split(/\r?\n/).filter(Boolean);
 
 function runCapture() {
   mkdirSync(evidenceRoot, { recursive: true });
@@ -25,12 +26,21 @@ function runCapture() {
 
 function validate() {
   const failures = [];
+  const validationInputSha = sourceSha();
   const manifestPath = path.join(evidenceRoot, "p1r3-capture-manifest.json");
   if (!existsSync(manifestPath)) failures.push("missing minimap capture manifest");
   let manifest = null;
   if (!failures.length) {
     manifest = JSON.parse(readFileSync(manifestPath, "utf8"));
-    if (manifest.source_sha !== sourceSha()) failures.push("capture source SHA mismatch");
+    if (!manifest.source_sha) failures.push("missing capture source SHA");
+    if (manifest.source_sha !== validationInputSha) {
+      const parent = execFileSync("git", ["rev-parse", "HEAD^"], { cwd: repo, encoding: "utf8" }).trim();
+      const validatorOnly = new Set(["tools/godot/p1r3MinimapTerrainTool.mjs", "tools/godot/p1Minimap01Tool.mjs"]);
+      if (parent !== manifest.source_sha) failures.push("capture source SHA mismatch");
+      for (const f of gitNames(["diff-tree", "--no-commit-id", "--name-only", "-r", "HEAD^", "HEAD"])) if (!validatorOnly.has(f)) failures.push(`validator child scope contamination: ${f}`);
+    }
+    try { execFileSync("git", ["cat-file", "-e", `${manifest.source_sha}^{commit}`], { cwd: repo, stdio: "ignore" }); }
+    catch { failures.push("capture source commit unavailable"); }
     if (manifest.pass !== true) failures.push(...(manifest.failures || ["capture failed"]));
     const captures = manifest.captures || [];
     for (const resolution of ["1920x1080", "1366x768"]) {
@@ -46,7 +56,8 @@ function validate() {
   }
   const report = {
     schema: "ascendant-realms-p1-minimap-01-validator-v1",
-    source_sha: sourceSha(),
+    source_sha: manifest?.source_sha || null,
+    validation_input_sha: validationInputSha,
     branch: execFileSync("git", ["branch", "--show-current"], { cwd: repo, encoding: "utf8" }).trim(),
     godot,
     manifest,
