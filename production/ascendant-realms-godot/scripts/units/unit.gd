@@ -1500,7 +1500,15 @@ func _state_return(delta: float) -> void:
 		state = State.IDLE
 		return
 	var d := global_position.distance_to(drop.global_position)
-	if d > (float(drop.def.get("footprint", 4.0)) + 1.0):
+	var dropoff_threshold := float(drop.def.get("footprint", 4.0)) + 1.0
+	# Navigation projects a return command to the nearest walkable point around
+	# a drop-off. That point can be a fraction beyond the scalar footprint gate,
+	# leaving a worker parked with full cargo even though its authoritative
+	# navigation leg is complete. Accept only that completed projected leg as the
+	# equivalent of reaching the drop-off; ordinary movement and resource rules
+	# remain unchanged.
+	var reached_projected_dropoff := _navigation_last_target_ready and global_position.distance_to(_navigation_effective_target) <= ARRIVE_DIST + 0.05
+	if d > dropoff_threshold and not reached_projected_dropoff:
 		_move_target = drop.global_position
 		_set_agent_target(_move_target, "return")
 		_move_along_path(delta)
