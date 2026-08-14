@@ -1,6 +1,7 @@
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
-import { spawnSync, execFileSync } from "node:child_process";
+import { execFileSync } from "node:child_process";
 import path from "node:path";
+import { runBounded } from "../codex/runBounded.mjs";
 
 const repo = path.resolve(import.meta.dirname, "../..");
 const evidenceRoot = process.env.P1_UNITS_01_EVIDENCE_ROOT || "D:\\CodexData\\evidence\\ascendant-realms-p1-units-01";
@@ -8,12 +9,15 @@ const logsRoot = process.env.P1_UNITS_01_LOG_ROOT || "D:\\CodexData\\logs\\ascen
 const baselineRoot = process.env.P1_UNITS_01_BASELINE_ROOT || "D:\\CodexData\\evidence\\ascendant-realms-p1-units-01\\baseline-p1r1";
 const p1r1 = path.join(repo, "tools/godot/p1r1UnitReadabilityTool.mjs");
 const sourceSha = () => execFileSync("git", ["rev-parse", "HEAD"], { cwd: repo, encoding: "utf8" }).trim();
+const productionSourceSha = () => process.env.P1_UNITS_01_PRODUCTION_SOURCE_SHA || sourceSha();
 const readJson = (file) => JSON.parse(readFileSync(file, "utf8"));
 
-function capture() {
+async function capture() {
   mkdirSync(evidenceRoot, { recursive: true });
   mkdirSync(logsRoot, { recursive: true });
-  const result = spawnSync(process.execPath, [p1r1, "capture"], {
+  const result = await runBounded({
+    command: process.execPath,
+    args: [p1r1, "capture"],
     cwd: repo,
     env: {
       ...process.env,
@@ -21,23 +25,24 @@ function capture() {
       P1R1_LOG_ROOT: logsRoot,
       P1R1_CAPTURE_TIMESTAMP: process.env.P1_UNITS_01_CAPTURE_TIMESTAMP || "p1units01",
       ASCENDANT_REALMS_GODOT: process.env.ASCENDANT_REALMS_GODOT,
+      P1R1_SOURCE_SHA_OVERRIDE: productionSourceSha(),
     },
-    stdio: "inherit",
-    timeout: 360000,
-    windowsHide: false,
+    hardTimeoutMs: 600_000,
+    label: "p1-units-01-capture",
   });
   const p1r1Manifest = path.join(evidenceRoot, "p1r1-capture-manifest.json");
   if (!existsSync(p1r1Manifest)) throw new Error("P1R1 capture did not produce a manifest");
   const manifest = readJson(p1r1Manifest);
   const review = {
     schema: "ascendant-realms-p1-units-01-capture-v1",
-    source_sha: sourceSha(),
+    source_sha: productionSourceSha(),
+    validation_input_sha: sourceSha(),
     baseline_root: baselineRoot,
     after_root: evidenceRoot,
     capture_tool: "p1r1UnitReadabilityTool.mjs",
     manifest,
-    pass: result.status === 0 && manifest.source_sha === sourceSha() && manifest.pass === true,
-    failures: result.status === 0 && manifest.source_sha === sourceSha() && manifest.pass === true ? [] : ["underlying P1R1 capture failed or provenance mismatched"],
+    pass: result.exit_code === 0 && manifest.source_sha === productionSourceSha() && manifest.pass === true,
+    failures: result.exit_code === 0 && manifest.source_sha === productionSourceSha() && manifest.pass === true ? [] : ["underlying P1R1 capture failed or provenance mismatched"],
   };
   writeFileSync(path.join(evidenceRoot, "p1-units-01-capture-manifest.json"), JSON.stringify(review, null, 2) + "\n");
   console.log(JSON.stringify(review, null, 2));
@@ -55,7 +60,8 @@ function validate() {
   if (!existsSync(capturePath)) failures.push("missing p1-units-01 capture manifest");
   else {
     const capture = readJson(capturePath);
-    if (capture.source_sha !== sourceSha()) failures.push("capture source SHA mismatch");
+    if (capture.source_sha !== productionSourceSha()) failures.push("capture source SHA mismatch");
+    if (capture.validation_input_sha !== sourceSha()) failures.push("validation input SHA mismatch");
     if (capture.pass !== true) failures.push(...(capture.failures || ["capture failed"]));
     if ((capture.manifest?.captures || []).length < 9) failures.push("insufficient dual-resolution unit captures");
   }
@@ -67,6 +73,6 @@ function validate() {
   if (failures.length) process.exitCode = 1;
 }
 
-if (process.argv[2] === "capture") capture();
+if (process.argv[2] === "capture") await capture();
 else if (process.argv[2] === "validate") validate();
 else throw new Error("Usage: node tools/godot/p1Units01Tool.mjs <capture|validate>");

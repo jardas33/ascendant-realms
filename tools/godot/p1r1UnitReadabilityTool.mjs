@@ -1,7 +1,8 @@
 import { createHash } from "node:crypto";
-import { execFileSync, spawnSync } from "node:child_process";
+import { execFileSync } from "node:child_process";
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import path from "node:path";
+import { runBounded } from "../codex/runBounded.mjs";
 
 const repo = path.resolve(import.meta.dirname, "../..");
 const project = path.join(repo, "production", "ascendant-realms-godot");
@@ -12,24 +13,32 @@ const mode = process.argv[2] || "validate";
 mkdirSync(evidenceRoot, { recursive: true });
 mkdirSync(logsRoot, { recursive: true });
 function sha256(file) { return createHash("sha256").update(readFileSync(file)).digest("hex"); }
-function sourceSha() { return execFileSync("git", ["rev-parse", "HEAD"], { cwd: repo, encoding: "utf8" }).trim(); }
+function sourceSha() { return process.env.P1R1_SOURCE_SHA_OVERRIDE || execFileSync("git", ["rev-parse", "HEAD"], { cwd: repo, encoding: "utf8" }).trim(); }
 function stamp() { return process.env.P1R1_CAPTURE_TIMESTAMP || new Date().toISOString().replace(/[-:TZ.]/g, "").slice(0, 14); }
-function withAutoload(fn) {
+async function withAutoload(fn) {
   const file = path.join(project, "project.godot");
   const original = readFileSync(file, "utf8");
   const marker = 'P1R1Capture="*res://tests/p1r1_unit_readability.gd"';
   const patched = original.includes(marker) ? original : original.replace('P1S1Capture="*res://tests/p1s1_viewport_safe_area.gd"', 'P1S1Capture="*res://tests/p1s1_viewport_safe_area.gd"\n' + marker);
   writeFileSync(file, patched);
-  try { return fn(); } finally { writeFileSync(file, original); }
+  try { return await fn(); } finally { writeFileSync(file, original); }
 }
-function captureOne(width, height, output) {
+async function captureOne(width, height, output) {
   mkdirSync(output, { recursive: true });
   const log = path.join(logsRoot, `p1r1-${width}x${height}.log`);
-  const result = spawnSync(godot, ["--path", project, "--resolution", `${width}x${height}`, "--windowed", "--position", "20,20", "--log-file", log], { cwd: repo, env: { ...process.env, TEMP: "D:\\CodexData\\temp", TMP: "D:\\CodexData\\temp", ASCENDANT_P1R1_SOURCE_SHA: sourceSha(), ASCENDANT_P1R1_WIDTH: String(width), ASCENDANT_P1R1_HEIGHT: String(height), ASCENDANT_P1R1_OUTPUT: output }, encoding: "utf8", timeout: 300000, windowsHide: false });
-  if (result.error) throw result.error;
+  const bounded = await runBounded({
+    command: godot,
+    args: ["--path", project, "--resolution", `${width}x${height}`, "--windowed", "--position", "20,20", "--log-file", log],
+    cwd: repo,
+    env: { TEMP: "D:\\CodexData\\temp", TMP: "D:\\CodexData\\temp", ASCENDANT_P1R1_SOURCE_SHA: sourceSha(), ASCENDANT_P1R1_WIDTH: String(width), ASCENDANT_P1R1_HEIGHT: String(height), ASCENDANT_P1R1_OUTPUT: output },
+    hardTimeoutMs: 540_000,
+    noProgressTimeoutMs: 240_000,
+    progressSources: [output, log],
+    label: `p1r1-${width}x${height}`,
+  });
   const manifest = path.join(output, "unit-readability-manifest.json");
-  if (!existsSync(manifest)) throw new Error(`missing ${manifest}`);
-  return { manifest: JSON.parse(readFileSync(manifest, "utf8")), exit: result.status };
+  if (!existsSync(manifest)) throw new Error(`missing ${manifest}; classification=${bounded.classification}; exit=${bounded.exit_code}; stderr=${bounded.stderr_tail}`);
+  return { manifest: JSON.parse(readFileSync(manifest, "utf8")), exit: bounded.exit_code, classification: bounded.classification };
 }
 function expected(width) { return width === 1920 ? ["01_LIORAEN_DEFAULT", "02_LIORAEN_NEAR", "03_LIORAEN_GROUP", "04_LIORAEN_MIXED", "05_BARROSAN_MIXED", "06_VORTHAK_MIXED"] : ["01_LIORAEN_DEFAULT", "05_BARROSAN_MIXED", "06_VORTHAK_MIXED"]; }
 function check(item, width, label) {
@@ -47,10 +56,10 @@ function check(item, width, label) {
   if (JSON.stringify(item.positions_before) !== JSON.stringify(item.positions_after)) failures.push(`${label}: positions changed`);
   return failures;
 }
-function capture() {
+async function capture() {
   const run = `run-${stamp()}-${sourceSha().slice(0, 8)}`;
   const dir = path.join(evidenceRoot, run);
-  const outputs = withAutoload(() => [captureOne(1920, 1080, path.join(dir, "1920x1080")), captureOne(1366, 768, path.join(dir, "1366x768"))]);
+  const outputs = await withAutoload(async () => [await captureOne(1920, 1080, path.join(dir, "1920x1080")), await captureOne(1366, 768, path.join(dir, "1366x768"))]);
   const failures = [...check(outputs[0].manifest, 1920, "1920"), ...check(outputs[1].manifest, 1366, "1366")];
   const captures = outputs.flatMap((o) => o.manifest.frames.map((f) => ({ name: f.name, png: f.png, sha256: sha256(f.png) })));
   const summary = { schema: "ascendant-realms-p1r1-capture-v1", source_sha: sourceSha(), run_dir: run, godot, captures, pass: failures.length === 0, failures };
@@ -85,4 +94,4 @@ function validate() {
   console.log(JSON.stringify(report, null, 2));
   if (failures.length) process.exitCode = 1;
 }
-if (mode === "capture") capture(); else validate();
+if (mode === "capture") await capture(); else validate();
