@@ -41,6 +41,8 @@ var _groups := {}          # int -> Array[Unit]
 var _build_id := ""
 var _build_ghost: Node3D = null
 var _build_valid := false
+var _ghost_surface_mats := []
+var _ghost_identity_tint := Color(0.58, 0.42, 0.25, 0.52)
 
 # commands
 var _last_click_time := 0.0
@@ -691,6 +693,7 @@ func enter_build_mode(building_id: String) -> void:
 	cancel_build_mode()
 	_build_id = building_id
 	var bdef := GameData.get_building(building_id)
+	_ghost_identity_tint = _build_ghost_identity_tint(bdef)
 	# ghost
 	_build_ghost = Node3D.new()
 	add_child(_build_ghost)
@@ -703,6 +706,7 @@ func enter_build_mode(building_id: String) -> void:
 		var presentation_height := clampf(float(bdef.get("footprint", 4.0)) * 1.15, 3.2, 12.0)
 		ModelUtils.scale_to_height(m, presentation_height)
 		ModelUtils.ground_model(m)
+		_apply_build_ghost_surface_materials(m)
 	var ring := MeshInstance3D.new()
 	var footprint := float(bdef.get("footprint", 4.0))
 	var torus := TorusMesh.new()
@@ -718,13 +722,49 @@ func enter_build_mode(building_id: String) -> void:
 	_ghost_mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
 	ring.material_override = _ghost_mat
 	_build_ghost.add_child(ring)
+	_set_build_ghost_state(false)
 	emit_signal("build_mode_changed", true, building_id)
 
 var _ghost_mat: StandardMaterial3D
 
+func _build_ghost_identity_tint(bdef: Dictionary) -> Color:
+	match String(bdef.get("kind", "")):
+		"main": return Color(0.40, 0.34, 0.27, 0.52)
+		"house": return Color(0.52, 0.34, 0.20, 0.52)
+		"barracks": return Color(0.46, 0.25, 0.18, 0.52)
+		"economy", "research": return Color(0.58, 0.38, 0.18, 0.52)
+		"tower": return Color(0.36, 0.42, 0.45, 0.52)
+		_: return Color(0.50, 0.36, 0.23, 0.52)
+
+func _apply_build_ghost_surface_materials(root: Node3D) -> void:
+	_ghost_surface_mats.clear()
+	for child in root.find_children("*", "MeshInstance3D"):
+		var mesh := child as MeshInstance3D
+		if not mesh:
+			continue
+		var mat := StandardMaterial3D.new()
+		mat.albedo_color = _ghost_identity_tint
+		mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+		mat.roughness = 0.92
+		mat.shading_mode = BaseMaterial3D.SHADING_MODE_PER_PIXEL
+		mesh.material_override = mat
+		mesh.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+		_ghost_surface_mats.append(mat)
+
+func _set_build_ghost_state(valid: bool) -> void:
+	var state_color := Color(0.30, 0.90, 0.40, 0.30) if valid else Color(0.90, 0.30, 0.30, 0.30)
+	if _ghost_mat:
+		_ghost_mat.albedo_color = state_color
+	for mat in _ghost_surface_mats:
+		if is_instance_valid(mat):
+			var surface_color := _ghost_identity_tint.lerp(state_color, 0.22)
+			surface_color.a = 0.46
+			mat.albedo_color = surface_color
+
 func cancel_build_mode() -> void:
 	_build_id = ""
 	_build_valid = false
+	_ghost_surface_mats.clear()
 	if is_instance_valid(_build_ghost):
 		_build_ghost.queue_free()
 	_build_ghost = null
@@ -736,8 +776,7 @@ func _update_build_ghost() -> void:
 		return
 	_build_ghost.global_position = g
 	_build_valid = _is_build_spot_valid(g)
-	if _ghost_mat:
-		_ghost_mat.albedo_color = Color(0.3, 0.9, 0.4, 0.28) if _build_valid else Color(0.9, 0.3, 0.3, 0.28)
+	_set_build_ghost_state(_build_valid)
 
 func _is_build_spot_valid(pos: Vector3) -> bool:
 	var bdef := GameData.get_building(_build_id)
