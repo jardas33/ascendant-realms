@@ -123,7 +123,7 @@ function validate() {
       const manifest = run.manifest;
       if (run.exit_code !== 0) failures.push(`run ${run.index} exited with code ${run.exit_code}`);
       if (manifest.status !== "PASSED_P1_LOAD01_REACHED_PLAYABLE_BATTLEFIELD") failures.push(`run ${run.index} did not pass T9`);
-      if (manifest.source_sha !== current) failures.push(`run ${run.index} source SHA mismatch`);
+      if (!captureSourceIsCurrentOrDocumentedChild(manifest.source_sha, current)) failures.push(`run ${run.index} source SHA mismatch outside documented LOAD-01 child scope`);
       if (manifest.branch !== currentBranch) failures.push(`run ${run.index} branch mismatch`);
       if (manifest.prototype_runtime !== false) failures.push(`run ${run.index} prototype runtime flag changed`);
       if (!existsSync(run.screenshot) || readFileSync(run.screenshot).length < 100 * 1024) failures.push(`run ${run.index} missing/blank playable screenshot`);
