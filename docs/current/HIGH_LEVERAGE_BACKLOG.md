@@ -39,3 +39,9 @@ Priorities are provisional and should be re-scored after fresh normal-play evide
 | PERF-01 | P2 | Keep ordinary gameplay responsive at supported resolutions | benchmark plus human review | viewport |
 
 Each row is a candidate task. Create a bounded task from [`../codex/TASK_TEMPLATE.md`](../codex/TASK_TEMPLATE.md) before implementation.
+
+## I1 evidence note — 2026-08-14
+
+The following bounded player-facing slices are locally integrated and rehearsed on the canonical D: lane at `195d265b991d359afd6c12c1ecc31c74a6864fb7`: resource identity/readability, building placement readability, normal-player construction-label cleanup, and combat impact presentation. Fresh current-source proof is recorded in `D:\CodexData\evidence\i1-resources-final`, `artifacts/manual-review/v0432-war-hall-clan-levy-production-loop`, and `artifacts/manual-review/v0434-first-combat-casualty-loop`.
+
+The next uncompleted high-value player-facing priority is PLAY-01A / AI-01: a trustworthy Easy Hollowspan opening through first contact. WORLD-02 is parked yellow and is not part of canonical integration. The retained v0.433 headed economy capture still has an independent timing/contract failure at `tests/v0433_capture.gd:190`; focused economy tests and RESOURCES-01 readability proof remain green.
