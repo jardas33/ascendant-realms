@@ -23,6 +23,9 @@ const PRESENTATION_HEIGHT_MULTIPLIER := 1.15
 const PRESENTATION_HEIGHT_MIN := 3.2
 const PRESENTATION_HEIGHT_MAX := 12.0
 
+func _debug_review_presentation() -> bool:
+	return OS.get_environment("ASCENDANT_GOLDEN_BATTLE_DEBUG_REVIEW") == "1" or OS.get_environment("ASCENDANT_HP4_M20_DIAGNOSTICS") == "1"
+
 var is_built := false
 var is_dead := false
 var build_progress := 0.0     # 0..1
@@ -282,7 +285,10 @@ func _set_construction_visual(p: float) -> void:
 		model_root.position.y = lerp(-0.15, 0.0, clamp(p, 0.0, 1.0))
 	var building_now := p < 1.0
 	if is_instance_valid(_construction_status_label):
-		_construction_status_label.visible = building_now
+		# The selected card and grounded progress track are the player-facing
+		# construction read. Keep the literal percentage label for explicit
+		# debug/review evidence so normal play is not covered by diagnostics.
+		_construction_status_label.visible = building_now and _debug_review_presentation()
 		_construction_status_label.text = "BUILDING %d%%" % roundi(clampf(p, 0.0, 1.0) * 100.0)
 	if is_instance_valid(_construction_status_track):
 		_construction_status_track.visible = building_now
