@@ -29,7 +29,11 @@ async function validate() {
   const failures = [];
   const head = git(["rev-parse", "HEAD"]);
   const branch = git(["branch", "--show-current"]);
-  if (branch !== "codex/p1-ui-presentation-fix-pack-1") failures.push(`branch=${branch}`);
+  const allowedBranches = new Set([
+    "codex/p1-ui-presentation-fix-pack-1",
+    "codex/current-godot-baseline",
+  ]);
+  if (!allowedBranches.has(branch)) failures.push(`branch=${branch}`);
   if (!(await fs.stat(project).catch(() => null))) failures.push("production project missing");
   const hud = await fs.readFile(path.join(project, "scripts/ui/hud.gd"), "utf8");
   const unit = await fs.readFile(path.join(project, "scripts/units/unit.gd"), "utf8");
