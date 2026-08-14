@@ -58,7 +58,7 @@ async function capture() {
       log,
     });
   }
-  const playable = records.filter((record) => record.manifest.status === "PASSED_P1_LOAD01_REACHED_PLAYABLE_BATTLEFIELD");
+  const playable = records.filter((record) => record.exit_code === 0 && record.manifest.status === "PASSED_P1_LOAD01_REACHED_PLAYABLE_BATTLEFIELD");
   const elapsed = playable.map((record) => record.manifest.phases?.T9_BATTLEFIELD_PLAYABLE?.elapsed_s).filter(Number.isFinite);
   const summary = {
     schema: "ascendant-realms-p1-load-01-capture-v1",
@@ -74,7 +74,7 @@ async function capture() {
     pass: records.length === runs && playable.length === runs && records.every((record) => record.manifest.source_sha === sourceSha() && record.manifest.branch === branch()),
     failures: [],
   };
-  if (!summary.pass) summary.failures.push("one or more exact-head runs did not reach the playable battlefield or has provenance mismatch");
+  if (!summary.pass) summary.failures.push("one or more exact-head runs did not exit cleanly, reach the playable battlefield, or preserve provenance");
   writeFileSync(path.join(afterRoot, "p1-load-01-capture-manifest.json"), JSON.stringify(summary, null, 2) + "\n");
   console.log(JSON.stringify(summary, null, 2));
   if (!summary.pass) process.exitCode = 1;
@@ -102,6 +102,7 @@ function validate() {
     if ((capture.runs || []).length < 3) failures.push("fewer than three exact-head after runs");
     for (const run of capture.runs || []) {
       const manifest = run.manifest;
+      if (run.exit_code !== 0) failures.push(`run ${run.index} exited with code ${run.exit_code}`);
       if (manifest.status !== "PASSED_P1_LOAD01_REACHED_PLAYABLE_BATTLEFIELD") failures.push(`run ${run.index} did not pass T9`);
       if (manifest.source_sha !== current) failures.push(`run ${run.index} source SHA mismatch`);
       if (manifest.branch !== currentBranch) failures.push(`run ${run.index} branch mismatch`);
