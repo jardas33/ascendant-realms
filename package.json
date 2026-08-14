@@ -63,6 +63,8 @@
     "godot:test:p1r13-unit-readability": "node tools/godot/p1r13UnitReadabilityTool.mjs validate",
     "godot:capture:p1r14-tactical-hierarchy": "node tools/godot/p1r14TacticalHierarchyTool.mjs capture",
     "godot:test:p1r14-tactical-hierarchy": "node tools/godot/p1r14TacticalHierarchyTool.mjs validate",
+    "godot:capture:p1-resources-01": "node tools/godot/p1Resources01Tool.mjs capture",
+    "godot:test:p1-resources-01": "node tools/godot/p1Resources01Tool.mjs validate",
     "godot:capture:p1r15-combat-readability": "node tools/godot/p1r15CombatReadabilityTool.mjs capture",
     "godot:test:p1r15-combat-readability": "node tools/godot/p1r15CombatReadabilityTool.mjs validate",
     "godot:capture:p1r16-worker-interaction": "node tools/godot/p1r16WorkerInteractionTool.mjs capture",
