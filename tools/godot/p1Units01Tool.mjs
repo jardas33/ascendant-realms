@@ -11,6 +11,7 @@ const p1r1 = path.join(repo, "tools/godot/p1r1UnitReadabilityTool.mjs");
 const sourceSha = () => execFileSync("git", ["rev-parse", "HEAD"], { cwd: repo, encoding: "utf8" }).trim();
 const productionSourceSha = () => process.env.P1_UNITS_01_PRODUCTION_SOURCE_SHA || sourceSha();
 const branchName = () => execFileSync("git", ["branch", "--show-current"], { cwd: repo, encoding: "utf8" }).trim();
+const gitNames = (args) => execFileSync("git", args, { cwd: repo, encoding: "utf8" }).split(/\r?\n/).filter(Boolean);
 const readJson = (file) => JSON.parse(readFileSync(file, "utf8"));
 
 async function capture() {
@@ -64,7 +65,16 @@ function validate() {
     const capture = readJson(capturePath);
     if (capture.branch !== branchName()) failures.push("capture branch mismatch");
     if (capture.source_sha !== productionSourceSha()) failures.push("capture source SHA mismatch");
-    if (capture.validation_input_sha !== sourceSha()) failures.push("validation input SHA mismatch");
+    if (capture.validation_input_sha !== sourceSha()) {
+      try { execFileSync("git", ["cat-file", "-e", `${capture.validation_input_sha}^{commit}`], { cwd: repo, stdio: "ignore" }); }
+      catch { failures.push("validation input commit unavailable"); }
+      const validatorOnly = new Set(["tools/godot/p1Units01Tool.mjs", "tools/godot/p1r1UnitReadabilityTool.mjs"]);
+      for (const commit of gitNames(["rev-list", "--ancestry-path", "--reverse", `${capture.validation_input_sha}..${sourceSha()}`])) {
+        for (const file of gitNames(["diff-tree", "--no-commit-id", "--name-only", "-r", commit])) {
+          if (!validatorOnly.has(file)) failures.push(`validator child scope contamination: ${commit}:${file}`);
+        }
+      }
+    }
     if (capture.pass !== true) failures.push(...(capture.failures || ["capture failed"]));
     if ((capture.manifest?.captures || []).length < 9) failures.push("insufficient dual-resolution unit captures");
   }
