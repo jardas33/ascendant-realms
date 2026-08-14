@@ -9,7 +9,12 @@ const logsRoot = process.env.P1_UNITS_01_LOG_ROOT || "D:\\CodexData\\logs\\ascen
 const baselineRoot = process.env.P1_UNITS_01_BASELINE_ROOT || "D:\\CodexData\\evidence\\ascendant-realms-p1-units-01\\baseline-p1r1";
 const p1r1 = path.join(repo, "tools/godot/p1r1UnitReadabilityTool.mjs");
 const sourceSha = () => execFileSync("git", ["rev-parse", "HEAD"], { cwd: repo, encoding: "utf8" }).trim();
-const productionSourceSha = () => process.env.P1_UNITS_01_PRODUCTION_SOURCE_SHA || sourceSha();
+const productionSourceSha = () => {
+  const sha = process.env.P1_UNITS_01_PRODUCTION_SOURCE_SHA || sourceSha();
+  try { execFileSync("git", ["cat-file", "-e", `${sha}^{commit}`], { cwd: repo, stdio: "ignore" }); }
+  catch { throw new Error(`P1 UNITS-01 production source is not a Git commit: ${sha}`); }
+  return sha;
+};
 const branchName = () => execFileSync("git", ["branch", "--show-current"], { cwd: repo, encoding: "utf8" }).trim();
 const gitNames = (args) => execFileSync("git", args, { cwd: repo, encoding: "utf8" }).split(/\r?\n/).filter(Boolean);
 const readJson = (file) => JSON.parse(readFileSync(file, "utf8"));
