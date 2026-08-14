@@ -43,6 +43,7 @@ V0436R1JCapture="*res://tests/v0436_r1j_capture.gd"
 V0436R1KCapture="*res://tests/v0436_r1k_capture.gd"
 P1S1Capture="*res://tests/p1s1_viewport_safe_area.gd"
 P1UiPresentationFixPack1="*res://tests/p1_ui_presentation_fix_pack_1.gd"
+P1Load01Observer="*res://tests/p1_load_01_observer.gd"
 
 [debug]
 

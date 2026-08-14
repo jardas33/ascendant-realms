@@ -199,6 +199,7 @@ var _cache: Dictionary = {}
 var _preloaded: bool = false
 var _busy: bool = false
 var _vfx_warmed: bool = false
+var _load01_timings: Array = []
 
 var _root: Control
 var _progress: ProgressBar
@@ -401,24 +402,111 @@ func change_scene(scene_path: String, min_display: float = 0.6) -> void:
 # is the only thing the bar cares about anyway -- you don't gain
 # meaningful parallelism on the main thread that owns the renderer.
 func _run_preload_sequence() -> void:
+	# Desktop Godot can overlap the same full preload set on the loader thread
+	# pool. Web keeps the established one-resource-per-frame path because its
+	# single-threaded export cannot provide useful background loading.
+	if not OS.has_feature("web"):
+		await _run_preload_sequence_threaded()
+		_load01_flush()
+		return
 	var total := PRELOAD_PATHS.size()
 	if total == 0:
 		set_progress(0.92)
 		return
 	for i in total:
 		var path := PRELOAD_PATHS[i]
+		var load_start_us := Time.get_ticks_usec()
+		var load_status := "skipped"
 		if _cache.has(path) or not ResourceLoader.exists(path):
+			load_status = "cached" if _cache.has(path) else "missing"
+			_load01_record(path, load_status, load_start_us)
 			set_progress(float(i + 1) / float(total) * 0.92)
 			await get_tree().process_frame
 			continue
 		var res := load(path)
 		if res:
 			_cache[path] = res
+			load_status = "loaded"
 		else:
+			load_status = "failed"
 			push_warning("LoadingScreen preload failed: " + path)
+		_load01_record(path, load_status, load_start_us)
 		# Reserve the last 8% for the actual scene swap.
 		set_progress(float(i + 1) / float(total) * 0.92)
-		await get_tree().process_frame
+	await get_tree().process_frame
+	_load01_flush()
+
+
+func _run_preload_sequence_threaded() -> void:
+	var total := PRELOAD_PATHS.size()
+	if total == 0:
+		set_progress(0.92)
+		return
+	var pending: Array = []
+	var completed := 0
+	for path in PRELOAD_PATHS:
+		var load_start_us := Time.get_ticks_usec()
+		if _cache.has(path) or not ResourceLoader.exists(path):
+			_load01_record(path, "cached" if _cache.has(path) else "missing", load_start_us)
+			completed += 1
+			continue
+		var request_error := ResourceLoader.load_threaded_request(path, "", true)
+		if request_error != OK:
+			var fallback := load(path)
+			if fallback:
+				_cache[path] = fallback
+				_load01_record(path, "loaded_fallback", load_start_us)
+			else:
+				push_warning("LoadingScreen threaded preload failed: " + path)
+				_load01_record(path, "failed", load_start_us)
+			completed += 1
+			continue
+		pending.append({"path": path, "started_us": load_start_us})
+
+	while not pending.is_empty():
+		for index in range(pending.size() - 1, -1, -1):
+			var request: Dictionary = pending[index]
+			var progress := []
+			var status := ResourceLoader.load_threaded_get_status(request["path"], progress)
+			if status == ResourceLoader.THREAD_LOAD_IN_PROGRESS:
+				continue
+			if status == ResourceLoader.THREAD_LOAD_LOADED:
+				var res := ResourceLoader.load_threaded_get(request["path"])
+				if res:
+					_cache[request["path"]] = res
+					_load01_record(request["path"], "loaded_threaded", request["started_us"])
+				else:
+					_load01_record(request["path"], "failed", request["started_us"])
+			else:
+				push_warning("LoadingScreen threaded preload failed: " + request["path"])
+				_load01_record(request["path"], "failed", request["started_us"])
+			pending.remove_at(index)
+			completed += 1
+		set_progress(float(completed) / float(total) * 0.92)
+		if not pending.is_empty():
+			await get_tree().process_frame
+
+
+func _load01_enabled() -> bool:
+	return OS.get_environment("ASCENDANT_P1_LOAD01") == "1"
+
+
+func _load01_record(resource_path: String, status: String, started_us: int) -> void:
+	if not _load01_enabled():
+		return
+	_load01_timings.append({"path": resource_path, "status": status, "duration_ms": float(Time.get_ticks_usec() - started_us) / 1000.0})
+
+
+func _load01_flush() -> void:
+	if not _load01_enabled():
+		return
+	var output_path := OS.get_environment("ASCENDANT_P1_LOAD01_TIMINGS")
+	if output_path == "":
+		return
+	var file := FileAccess.open(output_path, FileAccess.WRITE)
+	if file != null:
+		file.store_string(JSON.stringify({"schema": "p1-load-01-resource-timings-v1", "entries": _load01_timings}) + "\n")
+		file.close()
 
 
 func _change_scene_to(scene_path: String) -> void:
