@@ -13,7 +13,9 @@ const mode = process.argv[2] || "validate";
 mkdirSync(evidenceRoot, { recursive: true });
 mkdirSync(logsRoot, { recursive: true });
 function sha256(file) { return createHash("sha256").update(readFileSync(file)).digest("hex"); }
-function sourceSha() { return process.env.P1R1_SOURCE_SHA_OVERRIDE || execFileSync("git", ["rev-parse", "HEAD"], { cwd: repo, encoding: "utf8" }).trim(); }
+function currentHeadSha() { return execFileSync("git", ["rev-parse", "HEAD"], { cwd: repo, encoding: "utf8" }).trim(); }
+function sourceSha() { return process.env.P1R1_SOURCE_SHA_OVERRIDE || currentHeadSha(); }
+function gitNames(args) { return execFileSync("git", args, { cwd: repo, encoding: "utf8" }).split(/\r?\n/).filter(Boolean); }
 function stamp() { return process.env.P1R1_CAPTURE_TIMESTAMP || new Date().toISOString().replace(/[-:TZ.]/g, "").slice(0, 14); }
 async function withAutoload(fn) {
   const file = path.join(project, "project.godot");
@@ -72,24 +74,30 @@ function validate() {
   const file = path.join(evidenceRoot, "p1r1-capture-manifest.json");
   if (!existsSync(file)) failures.push("missing p1r1 capture manifest");
   let summary = null;
+  const validationInputSha = currentHeadSha();
   if (!failures.length) { summary = JSON.parse(readFileSync(file, "utf8")); if (summary.source_sha !== sourceSha()) failures.push("source sha mismatch"); if (!summary.pass) failures.push(...summary.failures); }
   const config = readFileSync(path.join(project, "project.godot"), "utf8");
   if (config.includes("P1R1Capture")) failures.push("capture autoload persisted");
-  const allowed = new Set(["package.json", "production/ascendant-realms-godot/scripts/units/unit.gd", "production/ascendant-realms-godot/tests/p1r1_unit_readability.gd", "tools/godot/p1r1UnitReadabilityTool.mjs"]);
-  const preExisting = new Set([
-    "artifacts/manual-review/v0431-gameplay-readability-construction-loop/v0431-driver-started.txt",
-    "artifacts/manual-review/v0432-war-hall-clan-levy-production-loop/v0432-driver-started.txt",
+  const allowedProduction = new Set([
+    "docs/P1_UNITS_01_UNIT_MODEL_SILHOUETTE_MOTION_READABILITY_REPORT.md",
+    "package.json",
+    "production/ascendant-realms-godot/scripts/units/unit.gd",
+    "tools/godot/p1Units01Tool.mjs",
   ]);
-  for (const f of execFileSync("git", ["diff", "--name-only"], { cwd: repo, encoding: "utf8" }).split(/\r?\n/).filter(Boolean)) {
-    // Godot's local import cache rewrites tracked .import metadata on Windows;
-    // it is generated environment state and is never staged into the slice.
-    // Godot also normalizes the tracked project file's line endings during
-    // import.  The capture restores its autoload content; leave this
-    // environment-only normalization out of the slice scope check.
-    if (f === "production/ascendant-realms-godot/project.godot" && !config.includes("P1R1Capture")) continue;
-    if (!allowed.has(f) && !f.endsWith(".import") && !preExisting.has(f)) failures.push(`scope contamination: ${f}`);
+  const allowedTooling = new Set(["tools/godot/p1Units01Tool.mjs", "tools/godot/p1r1UnitReadabilityTool.mjs"]);
+  const captureSourceSha = summary?.source_sha || null;
+  if (captureSourceSha) {
+    try { execFileSync("git", ["cat-file", "-e", `${captureSourceSha}^{commit}`], { cwd: repo, stdio: "ignore" }); }
+    catch { failures.push("capture source commit unavailable"); }
+    if (failures.length === 0) {
+      for (const f of gitNames(["diff-tree", "--no-commit-id", "--name-only", "-r", `${captureSourceSha}^`, captureSourceSha])) if (!allowedProduction.has(f)) failures.push(`captured source scope contamination: ${f}`);
+      for (const commit of gitNames(["rev-list", "--ancestry-path", "--reverse", `${captureSourceSha}..${validationInputSha}`])) {
+        for (const f of gitNames(["diff-tree", "--no-commit-id", "--name-only", "-r", commit])) if (!allowedTooling.has(f)) failures.push(`validator child scope contamination: ${commit}:${f}`);
+      }
+    }
   }
-  const report = { schema: "ascendant-realms-p1r1-validator-v1", source_sha: sourceSha(), summary, pass: failures.length === 0, failures };
+  const ambientDirtyPaths = gitNames(["diff", "--name-only"]);
+  const report = { schema: "ascendant-realms-p1r1-validator-v1", source_sha: captureSourceSha, validation_input_sha: validationInputSha, ambient_dirty_paths: ambientDirtyPaths, summary, pass: failures.length === 0, failures };
   writeFileSync(path.join(evidenceRoot, "p1r1-validator-report.json"), JSON.stringify(report, null, 2) + "\n");
   console.log(JSON.stringify(report, null, 2));
   if (failures.length) process.exitCode = 1;
