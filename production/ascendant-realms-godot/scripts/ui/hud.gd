@@ -17,6 +17,9 @@ const MAP_HALF := 140.0                # MapDefs.MAP_SIZE — world spans -140..
 const MINIMAP_SIZE := 200.0
 const MINIMAP_RASTER_SIZE := 128
 const MINIMAP_PANEL_HEIGHT := MINIMAP_SIZE + 68.0
+const MINIMAP_GRID_DIVISIONS := 4
+const MINIMAP_VIEW_FILL := Color(0.88, 0.93, 0.86, 0.08)
+const MINIMAP_VIEW_EDGE := Color(0.96, 0.92, 0.68, 0.96)
 const COMMAND_PANEL_WIDTH := 390.0
 const FONT_COLOR := Color(0.95, 0.9, 0.8)
 const PLAYER_ALERT_LIMIT := 1
@@ -504,10 +507,11 @@ func _draw_minimap() -> void:
 	var bridge_data = world.map.get("bridge", {})
 	if bridge_data is Dictionary and bridge_data.get("pos") is Vector3:
 		var bridge_p := _world_to_map(bridge_data["pos"])
-		_minimap.draw_line(bridge_p - Vector2(10, 0), bridge_p + Vector2(10, 0), Color(0.12, 0.08, 0.05, 1.0), 8.0, true)
-		_minimap.draw_line(bridge_p - Vector2(10, 0), bridge_p + Vector2(10, 0), Color(0.95, 0.78, 0.36, 1.0), 4.0, true)
-		_minimap.draw_rect(Rect2(bridge_p - Vector2(12, 5), Vector2(24, 10)), Color(0.22, 0.15, 0.08, 0.95), false, 1.0)
-	_minimap.draw_rect(Rect2(Vector2.ZERO, size), Color(0.55, 0.48, 0.3, 0.95), false, 2.0)
+		_minimap.draw_line(bridge_p - Vector2(12, 0), bridge_p + Vector2(12, 0), Color(0.04, 0.05, 0.05, 0.95), 10.0, true)
+		_minimap.draw_line(bridge_p - Vector2(12, 0), bridge_p + Vector2(12, 0), Color(0.92, 0.72, 0.30, 1.0), 5.0, true)
+		_minimap.draw_line(bridge_p - Vector2(9, -3), bridge_p + Vector2(9, -3), Color(0.30, 0.20, 0.10, 0.95), 1.0, true)
+		_minimap.draw_line(bridge_p - Vector2(9, 3), bridge_p + Vector2(9, 3), Color(0.30, 0.20, 0.10, 0.95), 1.0, true)
+	_draw_minimap_frame(size)
 
 	if not is_instance_valid(world):
 		return
@@ -522,37 +526,30 @@ func _draw_minimap() -> void:
 		var r := 5.0
 		var diamond := PackedVector2Array([
 			p + Vector2(0, -r), p + Vector2(r, 0), p + Vector2(0, r), p + Vector2(-r, 0)])
-		_minimap.draw_colored_polygon(diamond, col)
+		_minimap.draw_colored_polygon(diamond, col.darkened(0.18))
 		_minimap.draw_polyline(PackedVector2Array([
 			p + Vector2(0, -r), p + Vector2(r, 0), p + Vector2(0, r),
 			p + Vector2(-r, 0), p + Vector2(0, -r)]), Color(0, 0, 0, 0.8), 1.0)
 
-	# buildings (larger squares with a dark footprint and team face)
+	# Buildings use a footprint, wall face, and roof notch so structures read
+	# differently from units at a glance.
 	for b in world.all_buildings():
 		if not is_instance_valid(b) or b.is_dead:
 			continue
-		var col: Color = GameData.TEAM_COLORS.get(b.team, Color.WHITE)
-		var p := _world_to_map(b.global_position)
-		_minimap.draw_rect(Rect2(p - Vector2(4.0, 4.0), Vector2(8, 8)), Color(0.06, 0.07, 0.06, 0.9), true)
-		_minimap.draw_rect(Rect2(p - Vector2(3.0, 3.0), Vector2(6, 6)), col, true)
+		_draw_minimap_building(_world_to_map(b.global_position), GameData.TEAM_COLORS.get(b.team, Color.WHITE))
 
 	# Live resource landmarks make the miniature useful without inventing a
 	# second simulation. Depleted nodes remain absent, matching the world.
 	for resource in world.get_tree().get_nodes_in_group("resources"):
 		if not is_instance_valid(resource) or bool(resource.get("depleted")):
 			continue
-		var rp := _world_to_map(resource.global_position)
-		_minimap.draw_circle(rp, 3.8, Color(0.04, 0.05, 0.04, 0.9))
-		_minimap.draw_circle(rp, 2.5, _minimap_resource_color(str(resource.resource_kind)))
+		_draw_minimap_resource(_world_to_map(resource.global_position), _minimap_resource_color(str(resource.resource_kind)))
 
 	# units (small but readable diamonds)
 	for u in world.all_units():
 		if not is_instance_valid(u) or u.is_dead:
 			continue
-		var col: Color = GameData.TEAM_COLORS.get(u.team, Color.WHITE)
-		var p := _world_to_map(u.global_position)
-		var unit_shape := PackedVector2Array([p + Vector2(0, -3.0), p + Vector2(3.0, 0), p + Vector2(0, 3.0), p + Vector2(-3.0, 0)])
-		_minimap.draw_colored_polygon(unit_shape, col)
+		_draw_minimap_unit(_world_to_map(u.global_position), GameData.TEAM_COLORS.get(u.team, Color.WHITE))
 
 	# camera view marker corresponds to the current RTS camera footprint, not a
 	# fixed square that implied a false zoom level.
@@ -568,19 +565,51 @@ func _draw_minimap() -> void:
 			_world_to_map(rts.cam_pivot.global_position + Vector3(half_x, 0, half_y)),
 			_world_to_map(rts.cam_pivot.global_position + Vector3(-half_x, 0, half_y)),
 			_world_to_map(rts.cam_pivot.global_position + Vector3(-half_x, 0, -half_y))])
-		_minimap.draw_polyline(corners, Color(1, 1, 1, 0.94), 1.5, true)
+		_minimap.draw_colored_polygon(corners, MINIMAP_VIEW_FILL)
+		_minimap.draw_polyline(corners, Color(0.04, 0.05, 0.05, 0.9), 3.5, true)
+		_minimap.draw_polyline(corners, MINIMAP_VIEW_EDGE, 1.5, true)
+		for corner in corners.slice(0, 4):
+			_minimap.draw_circle(corner, 2.0, MINIMAP_VIEW_EDGE)
 
 
 func _draw_minimap_terrain(size: Vector2) -> void:
-	# Broad, low-contrast land shelves are derived from the existing map bounds
-	# and start positions. They give the eye a battlefield silhouette without
-	# inventing fog, units, or gameplay zones.
-	var edge := Color(0.10, 0.13, 0.10, 0.55)
+	# Subtle grid and broad land shelves create tactical scale without adding
+	# fake gameplay zones or a second map representation.
+	var edge := Color(0.10, 0.13, 0.10, 0.62)
+	for i in range(1, MINIMAP_GRID_DIVISIONS):
+		var x := size.x * float(i) / float(MINIMAP_GRID_DIVISIONS)
+		var y := size.y * float(i) / float(MINIMAP_GRID_DIVISIONS)
+		_minimap.draw_line(Vector2(x, 0), Vector2(x, size.y), Color(0.86, 0.84, 0.68, 0.10), 1.0, true)
+		_minimap.draw_line(Vector2(0, y), Vector2(size.x, y), Color(0.86, 0.84, 0.68, 0.10), 1.0, true)
 	_minimap.draw_rect(Rect2(Vector2(7, 7), size - Vector2(14, 14)), edge, false, 5.0)
 	for start in world.map.get("start_positions", []):
 		var p := _world_to_map(start)
-		_draw_minimap_region(p, Vector2(19.0, 15.0), Color(0.75, 0.68, 0.42, 0.13), Color(0.78, 0.72, 0.48, 0.42))
-	_draw_minimap_region(_world_to_map(Vector3.ZERO), Vector2(17.0, 14.0), Color(0.9, 0.78, 0.38, 0.10), Color(0.9, 0.78, 0.38, 0.28))
+		_draw_minimap_region(p, Vector2(19.0, 15.0), Color(0.75, 0.68, 0.42, 0.07), Color(0.78, 0.72, 0.48, 0.56))
+	_draw_minimap_region(_world_to_map(Vector3.ZERO), Vector2(17.0, 14.0), Color(0.9, 0.78, 0.38, 0.06), Color(0.9, 0.78, 0.38, 0.38))
+
+func _draw_minimap_frame(size: Vector2) -> void:
+	_minimap.draw_rect(Rect2(Vector2.ZERO, size), Color(0.03, 0.04, 0.04, 0.96), false, 5.0)
+	_minimap.draw_rect(Rect2(Vector2(3, 3), size - Vector2(6, 6)), Color(0.68, 0.55, 0.30, 0.92), false, 1.0)
+	for corner in [Vector2(4, 4), Vector2(size.x - 4, 4), Vector2(size.x - 4, size.y - 4), Vector2(4, size.y - 4)]:
+		_minimap.draw_circle(corner, 2.0, Color(0.95, 0.79, 0.38, 0.95))
+
+func _draw_minimap_building(p: Vector2, col: Color) -> void:
+	_minimap.draw_rect(Rect2(p - Vector2(5.5, 5.5), Vector2(11, 11)), Color(0.03, 0.04, 0.04, 0.95), true)
+	_minimap.draw_rect(Rect2(p - Vector2(4.5, 4.5), Vector2(9, 9)), col.darkened(0.24), true)
+	_minimap.draw_line(p + Vector2(-3.0, 3.0), p + Vector2(3.0, -3.0), col.lightened(0.25), 1.5, true)
+	_minimap.draw_line(p + Vector2(-3.0, -3.0), p + Vector2(3.0, 3.0), col.lightened(0.10), 1.0, true)
+
+func _draw_minimap_unit(p: Vector2, col: Color) -> void:
+	var r := 4.0
+	_minimap.draw_circle(p, r + 1.7, Color(0.02, 0.03, 0.03, 0.95))
+	_minimap.draw_colored_polygon(PackedVector2Array([
+		p + Vector2(0, -r), p + Vector2(r, 0), p + Vector2(0, r), p + Vector2(-r, 0)]), col)
+	_minimap.draw_line(p + Vector2(-2.0, 0), p + Vector2(2.0, 0), Color(1, 1, 1, 0.76), 1.0, true)
+
+func _draw_minimap_resource(p: Vector2, col: Color) -> void:
+	_minimap.draw_circle(p, 4.3, Color(0.03, 0.04, 0.04, 0.95))
+	_minimap.draw_circle(p, 2.8, col)
+	_minimap.draw_line(p + Vector2(-1.5, -1.5), p + Vector2(1.5, 1.5), Color(1, 1, 1, 0.55), 1.0, true)
 
 
 func _draw_minimap_roads(size: Vector2) -> void:

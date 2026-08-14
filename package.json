@@ -38,6 +38,8 @@
     "codex:test:liveness": "node tools/codex/livenessFixture.mjs",
     "godot:capture:p1r3-minimap-terrain": "node tools/godot/p1r3MinimapTerrainTool.mjs capture",
     "godot:test:p1r3-minimap-terrain": "node tools/godot/p1r3MinimapTerrainTool.mjs validate",
+    "godot:capture:p1-minimap-01": "node tools/godot/p1Minimap01Tool.mjs capture",
+    "godot:validate:p1-minimap-01": "node tools/godot/p1Minimap01Tool.mjs validate",
     "godot:capture:p1r4-worker-interaction": "node tools/godot/p1r4WorkerInteractionTool.mjs capture",
     "godot:test:p1r4-worker-interaction": "node tools/godot/p1r4WorkerInteractionTool.mjs validate",
     "godot:capture:p1r5-gameplay-ui-legibility": "node tools/godot/p1r5GameplayUiLegibilityTool.mjs capture",
