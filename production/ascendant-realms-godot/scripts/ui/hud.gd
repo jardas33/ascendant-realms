@@ -286,7 +286,7 @@ func _mk_command_button(title: String, detail: String, tooltip: String, disabled
 	var state_text := "LOCKED · " if state == "LOCKED" else ""
 	var has_preview := not preview_definition.is_empty()
 	var label_prefix := "     " if has_preview else ""
-	var btn := _mk_button("%s%s\n%s%s" % [label_prefix, title, label_prefix, state_text + detail], 12 if has_preview else 13)
+	var btn := _mk_button("" if has_preview else "%s%s\n%s%s" % [label_prefix, title, label_prefix, state_text + detail], 12 if has_preview else 13)
 	btn.custom_minimum_size = Vector2(174, 72 if has_preview else 62)
 	btn.alignment = HORIZONTAL_ALIGNMENT_LEFT
 	btn.clip_text = true
@@ -301,6 +301,30 @@ func _mk_command_button(title: String, detail: String, tooltip: String, disabled
 		preview.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		btn.add_child(preview)
 		preview.configure_definition(preview_definition)
+		# EntityPortraitView raises its own minimum to 112px for full-size cards;
+		# defer the compact-card override until its _ready() has run so the preview
+		# cannot expand back over the cost text column.
+		preview.set_deferred("custom_minimum_size", Vector2(46, 46))
+		preview.set_deferred("size", Vector2(46, 46))
+		# Keep the preview clear of the text instead of relying on leading spaces
+		# inside Button.text. The old overlay made the right side of the cost line
+		# ellipsize even when the canonical resource names were short enough.
+		var text_col := VBoxContainer.new()
+		text_col.position = Vector2(58, 7)
+		text_col.size = Vector2(108, 58)
+		text_col.custom_minimum_size = Vector2(108, 58)
+		text_col.add_theme_constant_override("separation", 1)
+		text_col.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		var title_label := _mk_label(title, 12)
+		title_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		text_col.add_child(title_label)
+		var detail_label := _mk_label(state_text + detail, 11, Color(0.86, 0.84, 0.76))
+		detail_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		detail_label.text_overrun_behavior = TextServer.OVERRUN_NO_TRIMMING
+		detail_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		detail_label.size_flags_vertical = Control.SIZE_EXPAND_FILL
+		text_col.add_child(detail_label)
+		btn.add_child(text_col)
 	else:
 		var icon_path := _command_icon_path(title, detail)
 		if ResourceLoader.exists(icon_path):
@@ -1196,7 +1220,11 @@ func _build_worker_card() -> void:
 		var reason: String = ""
 		if not affordable:
 			reason = "Need " + _commander.missing_resource(cost)
-		var btn := _mk_command_button(str(bdef.get("name", bid)), "Cost: " + _cost_string(cost).trim_prefix("  (").trim_suffix(")"), str(bdef.get("desc", "")), reason, "LOCKED" if not affordable else "READY", bdef)
+		# The Build section already establishes this as a cost line. Keeping the
+		# canonical resource name/amount but dropping the redundant "Cost:" prefix
+		# lets the existing 174px two-column card fit "50 timber" / "60 stone"
+		# without changing resource definitions or the command-card geometry.
+		var btn := _mk_command_button(str(bdef.get("name", bid)), _cost_string(cost).trim_prefix("  (").trim_suffix(")"), str(bdef.get("desc", "")), reason, "LOCKED" if not affordable else "READY", bdef)
 		btn.disabled = not affordable
 		var cap_id := String(bid)
 		btn.pressed.connect(func():
