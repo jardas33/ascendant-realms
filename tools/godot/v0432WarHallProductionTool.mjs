@@ -63,11 +63,11 @@ async function validate() {
   const commander=await fs.readFile(path.join(project,'scripts/game/commander.gd'),'utf8');
   const hud=await fs.readFile(path.join(project,'scripts/ui/hud.gd'),'utf8');
   const world=await fs.readFile(path.join(project,'scripts/world/game_world.gd'),'utf8');
-  const projectFile=await fs.readFile(path.join(project,'project.godot'),'utf8');
+  const captureBootstrap=await fs.readFile(path.join(project,'tests','capture_bootstrap.gd'),'utf8');
   if (!building.includes('can_produce(unit_id)') || !building.includes('reserve_pop') || !building.includes('release_reserved_pop') || !building.includes('MapDefs.MAP_SIZE')) failures.push('production reservation/spawn repair missing');
   if (!commander.includes('reserved_pop') || !commander.includes('func reserve_pop')) failures.push('Commander reservation missing');
   if (!hud.includes('Requires Age') || !hud.includes('reserved_pop')) failures.push('production UI gate missing');
-  if (!projectFile.includes('V0432Capture')) failures.push('v0432 capture autoload missing');
+  if (!captureBootstrap.includes('ASCENDANT_V0432_CAPTURE') || !captureBootstrap.includes('V0432Capture')) failures.push('v0432 explicit capture mapping missing');
   if (world.includes('TesanaWorldEditor')) failures.push('TesanaWorldEditor autoload/runtime drift');
   const def=await readJson('v0432-war-hall-definition-audit.json');
   if (def.id !== 'barrosan_war_hall' || def.cost?.timber !== 150 || def.cost?.stone !== 60 || def.model_resolves !== true) failures.push('War Hall definition audit failed');

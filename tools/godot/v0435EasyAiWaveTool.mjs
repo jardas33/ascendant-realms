@@ -84,7 +84,8 @@ async function validate() {
   if (!ai.includes('queue_unit') || !ai.includes('_choose_easy_mixed_unit')) failures.push('real mixed production queue missing');
   if (!ai.includes('command_move(_easy_wave_target, true)') || !ai.includes('_easy_replacement_audit')) failures.push('attack wave/replacement path missing');
   if (!world.includes('func can_place_building') || !world.includes('building_damage_events') || !world.includes('resource_transactions')) failures.push('world shared contracts missing');
-  if (!root.includes('ASCENDANT_V0435_CAPTURE') || !projectFile.includes('V0435Capture')) failures.push('capture wiring missing');
+  const captureBootstrap = await fs.readFile(path.join(project, 'tests', 'capture_bootstrap.gd'), 'utf8');
+  if (!root.includes('ASCENDANT_V0435_CAPTURE') || !captureBootstrap.includes('ASCENDANT_V0435_CAPTURE') || !captureBootstrap.includes('V0435Capture')) failures.push('capture wiring missing');
   const metaPath = path.join(pack, 'v0435-capture-command.json');
   if (await exists(metaPath)) {
     const meta = await readJson('v0435-capture-command.json');

@@ -54,12 +54,13 @@ async function validate() {
   const root = await read(path.join(project, 'scripts/world/game_root.gd'));
   const menu = await read(path.join(project, 'scripts/main_menu.gd'));
   const projectFile = await read(path.join(project, 'project.godot'));
+  const captureBootstrap = await read(path.join(project, 'tests/capture_bootstrap.gd'));
   const proof = await read(path.join(project, 'tests/v0436_r1_navigation_behavioral_proof.gd'));
   const unit = await read(path.join(project, 'scripts/units/unit.gd'));
   for (const [label, ok] of [
     ['opt-in main-menu wiring', menu.includes('ASCENDANT_V0436_R1_CAPTURE')],
     ['opt-in runtime wiring', root.includes('ASCENDANT_V0436_R1_CAPTURE') && root.includes('_start_v0436_r1_capture')],
-    ['autoload wiring', projectFile.includes('V0436R1Capture=')],
+    ['explicit capture mapping', captureBootstrap.includes('"env": "ASCENDANT_V0436_R1_CAPTURE"') && captureBootstrap.includes('"name": "V0436R1Capture"')],
     ['real command API proof', proof.includes('command_move') && proof.includes('command_build') && proof.includes('command_gather') && proof.includes('issue_attack_move_destination') && proof.includes('issue_attack_target')],
     ['no direct state writes', proof.includes('no_direct_state_writes')],
     ['bounded no-conquest scope', proof.includes('no_full_conquest_capture')],

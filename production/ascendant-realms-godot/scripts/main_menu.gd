@@ -6,6 +6,7 @@ extends Control
 const FONT := "res://assets/fonts/cinzel.ttf"
 const BG := "res://assets/textures/backgrounds/main_menu_bg.png"
 const WORDMARK := "res://assets/ui/wordmark_title.png"
+const CAPTURE_BOOTSTRAP_SCRIPT := preload("res://tests/capture_bootstrap.gd")
 var _tutorial_button: Button
 
 func _ready() -> void:
@@ -15,6 +16,7 @@ func _ready() -> void:
 		theme = load("res://assets/ui/theme.tres") as Theme
 	AudioManager.play_music_path(Sfx.music_key("menu"), -8.0, true)
 	_build()
+	CAPTURE_BOOTSTRAP_SCRIPT.new().attach_selected_driver(get_tree().root)
 	if OS.get_environment("ASCENDANT_V0436_E3R_CAPTURE") == "1":
 		call_deferred("_start_e3r_menu_capture")
 	if OS.get_environment("ASCENDANT_V0436_E3R_CAPTURE") != "1" and (OS.get_environment("ASCENDANT_P1_UI_CAPTURE") == "1" or OS.get_environment("ASCENDANT_V0436_R1K_CAPTURE") == "1" or OS.get_environment("ASCENDANT_V0436_R1J_CAPTURE") == "1" or OS.get_environment("ASCENDANT_V0436_R1H_CAPTURE") == "1" or OS.get_environment("ASCENDANT_V0436_R1G_CAPTURE") == "1" or OS.get_environment("ASCENDANT_V0436_R1F_CAPTURE") == "1" or OS.get_environment("ASCENDANT_V0436_R1_CAPTURE") == "1" or OS.get_environment("ASCENDANT_V0436_R1C_CAPTURE") == "1" or OS.get_environment("ASCENDANT_V0436_CAPTURE") == "1" or OS.get_environment("ASCENDANT_V0435_CAPTURE") == "1" or OS.get_environment("ASCENDANT_V0434_CAPTURE") == "1" or OS.get_environment("ASCENDANT_V0433_CAPTURE") == "1" or OS.get_environment("ASCENDANT_V0432_CAPTURE") == "1" or OS.get_environment("ASCENDANT_V0431_CAPTURE") == "1"):

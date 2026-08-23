@@ -54,11 +54,12 @@ const hud = await fs.readFile(path.join(project, 'scripts/ui/hud.gd'), 'utf8');
 const map = await fs.readFile(path.join(project, 'scripts/world/map_defs.gd'), 'utf8');
 const mainMenu = await fs.readFile(path.join(project, 'scripts/main_menu.gd'), 'utf8');
 const projectFile = await fs.readFile(path.join(project, 'project.godot'), 'utf8');
+const captureBootstrap = await fs.readFile(path.join(project, 'tests', 'capture_bootstrap.gd'), 'utf8');
 if (!unit.includes('remaining_capacity') || !unit.includes('_pending_gather_node') || !unit.includes('get_economy_text')) failures.push('worker economy repair missing');
 if (!node.includes('depleted_once') || !node.includes('min(max(0, per_tick)')) failures.push('ResourceNode exact depletion guard missing');
 if (!world.includes('find_nearest_resource_exact') || !world.includes('record_resource_deposit') || !world.includes('is_resource_command_valid')) failures.push('world economy audit/dropoff helpers missing');
 if (!world.includes('authoritative definition ID') || !world.includes('dropoff_runtime_id') || !world.includes('dropoff_is_friendly')) failures.push('authoritative building/dropoff identity repair missing');
-if (!root.includes('ASCENDANT_V0433_CAPTURE') || !projectFile.includes('V0433Capture') || !mainMenu.includes('ASCENDANT_V0433_CAPTURE')) failures.push('v0433 headed capture wiring missing');
+if (!root.includes('ASCENDANT_V0433_CAPTURE') || !captureBootstrap.includes('ASCENDANT_V0433_CAPTURE') || !captureBootstrap.includes('V0433Capture') || !mainMenu.includes('ASCENDANT_V0433_CAPTURE')) failures.push('v0433 headed capture wiring missing');
 if (!map.includes('"kind": "food"') || !map.includes('c + toward * 3.0 - side * 15.0')) failures.push('reachable food node missing from starting clusters');
 if (!hud.includes('get_economy_text')) failures.push('selected worker economy panel missing');
 

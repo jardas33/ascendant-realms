@@ -68,7 +68,7 @@ async function validate() {
   const unit = await fs.readFile(path.join(project, 'scripts/units/unit.gd'), 'utf8');
   for (const [label, ok] of [
     ['R1F capture wiring', root.includes('ASCENDANT_V0436_R1F_CAPTURE') && root.includes('_start_v0436_r1f_capture') && menu.includes('ASCENDANT_V0436_R1F_CAPTURE')],
-    ['autoload wiring', (await fs.readFile(path.join(project, 'project.godot'), 'utf8')).includes('V0436R1FCapture=')],
+    ['explicit capture mapping', (await fs.readFile(path.join(project, 'tests', 'capture_bootstrap.gd'), 'utf8')).includes('"env": "ASCENDANT_V0436_R1F_CAPTURE"') && (await fs.readFile(path.join(project, 'tests', 'capture_bootstrap.gd'), 'utf8')).includes('"name": "V0436R1FCapture"')],
     ['fixture audit instrumentation', unit.includes('v0436_r1f_physics_audit_snapshot') && unit.includes('recovery_step') && unit.includes('avoidance_callback')],
     ['corrected wrapper owns output', !oldWrapper.includes('--log-file') && wrapper.includes("stdio: 'inherit'")],
     ['project default renderer', wrapper.includes("run(['--path', project, '--resolution'")],

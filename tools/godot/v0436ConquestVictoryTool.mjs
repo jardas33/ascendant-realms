@@ -52,7 +52,8 @@ async function validate() {
   const projectFile = await fs.readFile(path.join(project,'project.godot'),'utf8');
   if (!world.includes('match_ended') || !world.includes('result_snapshot') || !world.includes('building_destruction_events')) failures.push('authoritative v0436 world contract missing');
   if (!building.includes('v0436_destroyed_once') || !building.includes('hp_before')) failures.push('building destruction contract missing');
-  if (!root.includes('ASCENDANT_V0436_CAPTURE') || !projectFile.includes('V0436Capture')) failures.push('capture wiring missing');
+  const captureBootstrap = await fs.readFile(path.join(project, 'tests', 'capture_bootstrap.gd'), 'utf8');
+  if (!root.includes('ASCENDANT_V0436_CAPTURE') || !captureBootstrap.includes('ASCENDANT_V0436_CAPTURE') || !captureBootstrap.includes('V0436Capture')) failures.push('capture wiring missing');
   if (!world.includes('playable_bounds_contract') || !world.includes('navigation_watchdog_snapshot')) failures.push('shared navigation boundary/watchdog contract missing');
   if (!unit.includes('invalid_next_path_point') || !unit.includes('boundary_recovery_started') || !unit.includes('rejected_avoidance_velocity')) failures.push('bounded navigation containment source contract missing');
   if (await exists(path.join(pack,'v0436-black-frame-rejection.json'))) { const b = await readJson('v0436-black-frame-rejection.json'); if (b.rejected_black?.length || b.rejected_blank?.length || b.all_real_gameplay !== true) failures.push('black/blank rejection failed'); }

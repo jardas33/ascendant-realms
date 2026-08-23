@@ -81,7 +81,8 @@ async function validate() {
   if (!projectile.includes('source_unit_id') || !projectile.includes('source_team') || !projectile.includes('projectile_kind')) failures.push('projectile source provenance missing');
   if (!world.includes('source_payload') || !world.includes('combat_kill_events') || !world.includes('source_team == player_team')) failures.push('combat attribution/kill credit missing');
   if (!rts.includes('issue_attack_target') || !rts.includes('issue_attack_move_destination') || !rts.includes('issue_stop')) failures.push('public RTS combat command path missing');
-  if (!root.includes('ASCENDANT_V0434_CAPTURE') || !projectFile.includes('V0434Capture')) failures.push('v0434 capture wiring missing');
+  const captureBootstrap = await fs.readFile(path.join(project, 'tests', 'capture_bootstrap.gd'), 'utf8');
+  if (!root.includes('ASCENDANT_V0434_CAPTURE') || !captureBootstrap.includes('ASCENDANT_V0434_CAPTURE') || !captureBootstrap.includes('V0434Capture')) failures.push('v0434 capture wiring missing');
   if (await exists(path.join(pack, 'v0434-capture-command.json'))) {
     const captureMeta = await read('v0434-capture-command.json');
     if ((!v0435Continuation && captureMeta.captureSourceSha !== head) || (v0435Continuation && !ancestor(captureMeta.captureSourceSha, head)) || captureMeta.captureGeneratedAfterCombatRepair !== true) failures.push('capture provenance mismatch');
