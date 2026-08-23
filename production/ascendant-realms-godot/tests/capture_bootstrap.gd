@@ -22,8 +22,11 @@ const DRIVER_SPECS: Array[Dictionary] = [
 	{"env": "ASCENDANT_V0432_CAPTURE", "name": "V0432Capture", "path": "res://tests/v0432_capture.gd"},
 	{"env": "ASCENDANT_V0431_CAPTURE", "name": "V0431Capture", "path": "res://tests/v0431_capture.gd"},
 ]
+const DRIVER_SCHEDULED_META := "ascendant_capture_driver_scheduled"
 
 func attach_selected_driver(root: Node) -> Node:
+	if root.has_meta(DRIVER_SCHEDULED_META):
+		return null
 	for spec in DRIVER_SPECS:
 		if OS.get_environment(String(spec["env"])) != "1":
 			continue
@@ -33,6 +36,7 @@ func attach_selected_driver(root: Node) -> Node:
 			return null
 		var runner: Node = driver_script.new()
 		runner.name = String(spec["name"])
-		root.add_child(runner)
+		root.set_meta(DRIVER_SCHEDULED_META, runner.name)
+		root.call_deferred("add_child", runner)
 		return runner
 	return null
