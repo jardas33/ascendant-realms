@@ -16,18 +16,6 @@ function sourceSha() { return execFileSync("git", ["rev-parse", "HEAD"], { cwd: 
 function sha256(file) { return createHash("sha256").update(readFileSync(file)).digest("hex"); }
 function stamp() { return process.env.P1S4_CAPTURE_TIMESTAMP || new Date().toISOString().replace(/[-:TZ.]/g, "").slice(0, 14); }
 
-function withCaptureAutoload(fn) {
-  const file = path.join(project, "project.godot");
-  const original = readFileSync(file, "utf8");
-  const marker = 'P1S4Capture="*res://tests/p1s4_command_feedback.gd"';
-  const patched = original.includes(marker) ? original : original.replace(
-    'P1S1Capture="*res://tests/p1s1_viewport_safe_area.gd"',
-    'P1S1Capture="*res://tests/p1s1_viewport_safe_area.gd"\n' + marker,
-  );
-  writeFileSync(file, patched);
-  try { return fn(); } finally { writeFileSync(file, original); }
-}
-
 function expectedNames(width) {
   return width === 1920
     ? ["01_MOVE_ACK", "02_ATTACK_ACK", "03_GATHER_ACK", "04_BUILD_CONTINUE_ACK", "05_RALLY_ACK", "06_ATTACK_MOVE_ACK", "07_BUILD_VALID_CURSOR_CONTEXT", "08_BUILD_INVALID_CURSOR_CONTEXT", "09_UI_HOVER_SAFE", "10_STOP_ACK", "11_HOLD_ACK", "12_PATROL_ACK", "13_GUARD_UNAVAILABLE", "14_BUILD_REJECTED_ACK", "15_BUILD_VALID_ACK"]
@@ -37,16 +25,17 @@ function expectedNames(width) {
 function runCapture(width, height, output, runDir) {
   const logPath = path.join(logsRoot, `p1s4-${width}x${height}.log`);
   mkdirSync(output, { recursive: true });
-  const env = {
+  const env = Object.fromEntries(Object.entries({
     ...process.env,
     TEMP: "D:\\CodexData\\temp",
     TMP: "D:\\CodexData\\temp",
     npm_config_cache: "D:\\CodexData\\cache\\npm",
+    ASCENDANT_P1S4_CAPTURE: "1",
     ASCENDANT_P1S4_SOURCE_SHA: sourceSha(),
     ASCENDANT_P1S4_WIDTH: String(width),
     ASCENDANT_P1S4_HEIGHT: String(height),
     ASCENDANT_P1S4_OUTPUT: output,
-  };
+  }).filter(([key]) => !/^ASCENDANT_.*_CAPTURE$/.test(key) || key === "ASCENDANT_P1S4_CAPTURE"));
   const result = spawnSync(godot, ["--path", project, "--resolution", `${width}x${height}`, "--windowed", "--position", "20,20", "--log-file", logPath], {
     cwd: repo, env, encoding: "utf8", timeout: 240000, windowsHide: false,
   });
@@ -84,10 +73,10 @@ function validateManifest(manifest, width, height, label) {
 function capture() {
   const runDir = `run-${stamp()}-${sourceSha().slice(0, 8)}`;
   const dir = path.join(evidenceRoot, runDir);
-  const manifests = withCaptureAutoload(() => [
+  const manifests = [
     runCapture(1920, 1080, path.join(dir, "1920x1080"), runDir),
     runCapture(1366, 768, path.join(dir, "1366x768"), runDir),
-  ]);
+  ];
   const failures = [
     ...validateManifest(manifests[0].manifest, 1920, 1080, "1920x1080"),
     ...validateManifest(manifests[1].manifest, 1366, 768, "1366x768"),

@@ -5,6 +5,7 @@ extends RefCounted
 const DRIVER_SPECS: Array[Dictionary] = [
 	{"env": "ASCENDANT_P1_UI_CAPTURE", "name": "P1UiPresentationFixPack1", "path": "res://tests/p1_ui_presentation_fix_pack_1.gd"},
 	{"env": "ASCENDANT_P1S1_CAPTURE", "name": "P1S1Capture", "path": "res://tests/p1s1_viewport_safe_area.gd"},
+	{"env": "ASCENDANT_P1S4_CAPTURE", "name": "P1S4Capture", "path": "res://tests/p1s4_command_feedback.gd"},
 	{"env": "ASCENDANT_P1_LOAD01", "name": "P1Load01Observer", "path": "res://tests/p1_load_01_observer.gd"},
 	{"env": "ASCENDANT_V0436_R1D_STARTUP_CAPTURE", "name": "V0436R1DStartupCapture", "path": "res://tests/v0436_r1d_startup_capture.gd"},
 	{"env": "ASCENDANT_V0436_R1K_CAPTURE", "name": "V0436R1KCapture", "path": "res://tests/v0436_r1k_capture.gd"},
